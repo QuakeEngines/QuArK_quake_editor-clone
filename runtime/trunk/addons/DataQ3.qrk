@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.13  2000/07/04 20:09:55  alexander
+//moved q3 specific default form here
+//
 //Revision 1.12  2000/06/27 11:03:49  tiglari
 //detail content flag reinstated
 //
@@ -3035,22 +3038,86 @@ QQRKSRC1
       model: = { typ="C" txt="MapObjects"
       items=
         "banner/banner5.md3"$0D
+        "baph/baphomet_gold.md3"$0D
+        "baph/lil_baphomet.md3"$0D
+        "bitch/fembot.md3"$0D
         "bitch/fembotbig.md3"$0D
+        "corpse/corpse.md3"$0D
+        "corpse/torso.md3"$0D
+        "gargoyle1.md3"$0D
+        "gratelamp/gratelamp.md3"$0D
+        "gratelamp/gratetorch.md3"$0D
+        "gratelamp/gratetorchbig.md3"$0D
+        "jesus/jesus.md3"$0D
         "jets/jets01.md3"$0D
+        "jets/jets01.md3"$0D
+        "kmlamp1.md3"$0D
+        "lamps/bot_lamp2.md3"$0D
         "pipe/pipe02.md3"$0D
         "pipe/pipe02b.md3"$0D
         "podium/podium4.md3"$0D
+        "portal_2/portal_2.md3"$0D
+        "skel/skel01.md3"$0D
+        "skel/skel02mid.md3"$0D
+        "skel/skel_ribs.md3"$0D
         "skel/xray.md3"$0D
-        "skel/xraybig.md3"
+        "skel/xraybig.md3"$0D
+        "skull/monkeyface.md3"$0D
+        "skull/skull.md3"$0D
+        "skull/skull_tilt1.md3"$0D
+        "spotlamp/spotlamp.md3"$0D
+        "statue_major.md3"$0D
+        "storch/storch.md3"$0D
+        "storch/storchx.md3"$0D
+        "storch/tall_torch.md3"$0D
+        "teleporter/teleporter.md3"$0D
+        "timlamp/timlamp.md3"$0D
+        "visor_posed.md3"$0D
+        "wallhead/femhead.md3"$0D
+        "wallhead/lion.md3"$0D
+        "wallhead/wallhead02.md3"$0D
+        "walllamp3.md3"
       values=
         "/models/mapobjects/banner/banner5.md3"$0D
+        "/models/mapobjects/baph/baphomet_gold.md3"$0D
+        "/models/mapobjects/baph/lil_baphomet.md3"$0D
+        "/models/mapobjects/bitch/fembot.md3"$0D
         "/models/mapobjects/bitch/fembotbig.md3"$0D
+        "/models/mapobjects/corpse/corpse.md3"$0D
+        "/models/mapobjects/corpse/torso.md3"$0D
+        "/models/mapobjects/gargoyle1.md3"$0D
+        "/models/mapobjects/gratelamp/gratelamp.md3"$0D
+        "/models/mapobjects/gratelamp/gratetorch.md3"$0D
+        "/models/mapobjects/gratelamp/gratetorchbig.md3"$0D
+        "/models/mapobjects/jesus/jesus.md3"$0D
         "/models/mapobjects/jets/jets01.md3"$0D
+        "/models/mapobjects/jets/jets01.md3"$0D
+        "/models/mapobjects/kmlamp1.md3"$0D
+        "/models/mapobjects/lamps/bot_lamp2.md3"$0D
         "/models/mapobjects/pipe/pipe02.md3"$0D
         "/models/mapobjects/pipe/pipe02b.md3"$0D
         "/models/mapobjects/podium/podium4.md3"$0D
+        "/models/mapobjects/portal_2/portal_2.md3"$0D
+        "/models/mapobjects/skel/skel01.md3"$0D
+        "/models/mapobjects/skel/skel02mid.md3"$0D
+        "/models/mapobjects/skel/skel_ribs.md3"$0D
         "/models/mapobjects/skel/xray.md3"$0D
-        "/models/mapobjects/skel/xraybig.md3"
+        "/models/mapobjects/skel/xraybig.md3"$0D
+        "/models/mapobjects/skull/monkeyface.md3"$0D
+        "/models/mapobjects/skull/skull.md3"$0D
+        "/models/mapobjects/skull/skull_tilt1.md3"$0D
+        "/models/mapobjects/spotlamp/spotlamp.md3"$0D
+        "/models/mapobjects/statue_major.md3"$0D
+        "/models/mapobjects/storch/storch.md3"$0D
+        "/models/mapobjects/storch/storchx.md3"$0D
+        "/models/mapobjects/storch/tall_torch.md3"$0D
+        "/models/mapobjects/teleporter/teleporter.md3"$0D
+        "/models/mapobjects/timlamp/timlamp.md3"$0D
+        "/models/mapobjects/visor_posed.md3"$0D
+        "/models/mapobjects/wallhead/femhead.md3"$0D
+        "/models/mapobjects/wallhead/lion.md3"$0D
+        "/models/mapobjects/wallhead/wallhead02.md3"$0D
+        "/models/mapobjects/walllamp3.md3"
       }
 
       model: = { typ="C" txt="Misc"
