@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2003/12/29 17:25:13  cdunde
+//added angles to all entities and support .md3 models in 3D view by nazar
+//
 //Revision 1.5  2002/05/09 07:54:12  tiglari
 //corrected light paths from nurail
 //
@@ -3680,6 +3683,7 @@ QQRKSRC1
         {
           ;desc = "Runner"
           Origin = "0 0 0"
+          angle = "180"
         }
       }
       Team.qtxfolder =
@@ -3988,6 +3992,44 @@ QQRKSRC1
         }
       }
     }
+  }
+  Entity forms.qctx =
+  {
+    // Definition of "includes"
+      t_modelbrowser:incl = 
+      {
+            Typ = "EP"
+            DefExt = "md3"
+            BasePath = "$Game\base\"
+            CutPath = "$Game\base\?"
+            DirSep = "/"
+            AugPath = "models"
+      }
+      t_efxbrowser:incl = 
+      {
+            Typ = "EP"
+            DefExt = "efx"
+            BasePath = "$Game\base\"
+            CutPath = "$Game\base\?\"
+            DirSep = "/"
+      }
+      t_scriptbrowser:incl = 
+      {
+            Typ = "EP"
+            DefExt = "ibi"
+            BasePath = "$Game\base\"
+            CutPath = "$Game\base\?\"
+            DirSep = "/"
+      }
+      t_soundbrowser:incl = 
+      {
+            Typ = "EP"
+            DefExt = "wav; mp3"
+            BasePath = "$Game\base\"
+            CutPath = "$Game\base\?"
+            DirSep = "/"
+            AugPath = "sound"
+      }
   }
   Entity forms.fctx =
   {
@@ -5200,9 +5242,12 @@ QQRKSRC1
     }
     misc_model:form =
     { 
+
+      bbox = '-16 -16 -24 16 16 32'
       mdl = "[model]"
       model: =
       {
+        t_modelbrowser = !
         txt = "&"
         hint = "arbitrary .md3 or .ase file to display"
         typ = "E"
@@ -5213,6 +5258,7 @@ QQRKSRC1
       mdl = "[model]"
       model: =
       {
+        t_modelbrowser = !
         txt = "&"
         hint = "arbitrary .md3 file to display"
         typ = "E"
@@ -11534,6 +11580,7 @@ QQRKSRC1
       }
       fxFile: =
       {
+        t_efxbrowser = !
         txt = "&"
         hint = "name of the effect file to play"
         typ = "E"
@@ -12120,6 +12167,7 @@ QQRKSRC1
       }
       usescript: =
       {
+        t_scriptbrowser = !
         txt = "&"
         hint = "Script to run when used"
         typ = "E"
@@ -12179,6 +12227,7 @@ QQRKSRC1
       }
       noise: =
       {
+        t_soundbrowser = !
         txt = "&"
         hint = "wav file to play"
         typ = "E"
@@ -17668,3 +17717,4 @@ QQRKSRC1
     }
   }
 }
+
