@@ -24,9 +24,9 @@ psftp&gt; quit</code></li>
 <code>&gt; putty shell.sourceforge.net
 $ cd /home/groups/q/qu/quark</code></li>
 <li>Do a CVS export of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt> modules.
-<code>$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -Dnow infobase
-$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -Dnow runtime
-$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -Dnow source
+<code>$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -rHEAD infobase
+$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -rHEAD runtime
+$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -rHEAD source
 </code>
 We use the CVS export command because that way we get a clean copy of
 the files without the CVS folders.</li>
