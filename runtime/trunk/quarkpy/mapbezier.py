@@ -488,9 +488,63 @@ class CPHandle(qhandles.GenericHandle):
             alignrow.col=0
             aligncol.col=1
 
+        def subdivide(m,self=self,editor=editor):
+            cp = copyCp(self.b2.cp)
+            new = self.b2.copy()
+            newcp = subdivideColumns(3,cp)
+            new.cp = newcp
+            undo=quarkx.action()
+            undo.exchange(self.b2, new)
+            editor.ok(undo,"subdivide")
 
+        subdiv = qmenu.item("subdivide",subdivide)
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [mesh, joinitem, knititem, alignrow, aligncol] + patchmenu
+
+        index = i*(self.b2.W)+j
+        picked=self.b2["picked"] 
+        
+        def pickClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
+            if picked is None:
+                picked = index,
+            else:
+                picked = picked + (index,)
+            undo=quarkx.action()
+            undo.setspec(b2,"picked",picked)
+            editor.ok(undo,"Pick CP")
+        
+        def unPickClick(m,editor=editor,b2=self.b2,index=index, picked=picked):
+            if len(picked)==1:
+                picked=None
+            else:
+                loc = list(picked).index(index)
+                picked = picked[:loc]+picked[loc+1:]
+            undo=quarkx.action()
+            undo.setspec(b2,"picked",picked)
+            editor.ok(undo,"Unpick CP")
+        
+        def unPickAllClick(m,editor=editor,b2=self.b2):
+            undo=quarkx.action()
+            undo.setspec(b2,"picked",None)
+            editor.ok(undo,"Unpick All")
+            editor.invalidateviews()
+            
+        pickItem = qmenu.item("Pick CP", pickClick)
+        unPickItem = qmenu.item("Unpick CP", unPickClick)
+        unPickAllItem = qmenu.item("Unpick All", unPickAllClick)
+      
+        unPickItem.state=qmenu.disabled
+        if picked is not None:
+            for ind in picked:
+                if ind==index:
+                    pickItem.state=qmenu.disabled
+                    unPickItem.state=qmenu.normal
+                    break
+        else:
+            unPickAllItem.state=qmenu.disabled
+      
+        picklist = [qmenu.sep, pickItem, unPickItem, unPickAllItem]
+        
+        return [mesh, subdiv, joinitem, knititem, alignrow, aligncol] + picklist+[qmenu.sep] + patchmenu
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -746,10 +800,28 @@ class CenterHandle(maphandles.CenterHandle):
         return mapentities.CallManager("menu", self.centerof, editor)
     # /tiglari
     
+import qbaseeditor
+from plugins.tagging import drawsquare
+def pickfinishdrawing(editor, view, oldmore=qbaseeditor.BaseEditor.finishdrawing):
+    cv = view.canvas()
+    cv.pencolor = MapColor("Duplicator")
+    for item in editor.layout.explorer.sellist:
+        if item.type==":b2" and item["picked"] is not None:
+            cp = item.cp
+            for p in item["picked"]:
+                i, j = cpPos(p, item)
+                p1 = view.proj(cp[i][j])
+                drawsquare(cv,p1,10)
+    oldmore(editor,view)
+
+qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.31  2000/08/23 12:13:53  tiglari
+#added knit edge RMB for patches; also double rows/columns
+#
 #Revision 1.30  2000/07/30 23:03:51  tiglari
 #align row/column to tagged edge added; glue to tagged removed,
 #since the one in plugins.maptagpoint already does the job.
