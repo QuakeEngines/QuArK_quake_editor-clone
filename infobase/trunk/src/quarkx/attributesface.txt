@@ -61,6 +61,13 @@ Sets the three points defining the plane that contains the face. The position of
 </td></tr>
 
 <tr><td class="doccode">
+axisbase()
+</td><td>
+returns normalized vectors in the plane paralell to the face, the first
+one horizontal (makes nice coordinate system for positioning textures, etc.)
+</td></tr>
+
+<tr><td class="doccode">
 distortion(newnormal, fixpt)
 </td><td>
 Distort the face (actually it just rotates it) so that <tt>normal</tt> becomes <tt>newnormal</tt>. The rotation is done around the fixed point <tt>fixpt</tt>.
