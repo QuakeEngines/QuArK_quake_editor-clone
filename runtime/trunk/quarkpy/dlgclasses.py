@@ -103,6 +103,61 @@ class LiveEditDlg (placepersistent_dialogbox):
             self.onclosing(self)
         placepersistent_dialogbox.onclose(self,dlg)
 
+
+class ListerDlg(LiveEditDlg):
+
+    endcolor = AQUA
+    size = (220,160)
+    dfsep = 0.35
+    dlgflags = FWF_KEEPFOCUS 
+
+  
+    def __init__(self, label, editor, pack, moresetup=None, moreaction=None, onclosing=None):
+
+
+        self.moresetup=moresetup
+            
+        self.moreaction=moreaction
+                    
+        self.dlglabel='dlg_'+label
+        self.pack=pack
+        
+        #
+        # im_func stuff needed because default values methods
+        #
+        LiveEditDlg.__init__(self, quarkx.clickform, label, editor, self.presetup.im_func, self.preaction.im_func, onclosing)
+        
+
+    def presetup(self):
+         #
+         # Part of the convolution for the buttons, to communicate
+         #  which objects methods should be called when one pushed.
+         # Cleaned up in onclosing below.
+         #
+         setattr(self.editor, self.dlglabel, self)
+         #
+         # Names and list-indexes of close planes
+         #
+         pack = self.pack
+         pack.slist = map(lambda obj:obj.shortname, pack.collected)
+         pack.klist = map(lambda d:`d`, range(len(pack.collected)))
+         self.src["collected$Items"] = string.join(pack.slist, "\015")
+         self.src["collected$Values"] = string.join(pack.klist, "\015")
+         #
+         # Note the commas, EF..1 controls take 1-tuples as data
+         #
+         self.src["num"]=len(pack.klist),
+         if self.moresetup is not None:
+             self.moresetup(self)
+
+    def preaction(self):
+        self.chosen=self.pack.collected[eval(self.src["collected"])]
+        if self.moreaction is not None:
+            self.moreaction(self)
+
+    def def_onclosing(self):
+        delattr(self.editor, self.dlglabel)
+    
 #
 # Like dialog box but with possiblity of specifying
 #   the location in the initialization.
@@ -149,6 +204,10 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.4  2000/10/10 07:57:53  tiglari
+#added onclosing support to LiveEditDlg (used in vertex movement dialog,
+# seems like a good idea).
+#
 #Revision 1.3  2000/06/03 18:01:28  alexander
 #added cvs header
 #
