@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.195  2002/06/09 02:33:01  tiglari
+//add SoF2 :form and :config
+//
 //Revision 1.194  2002/05/19 04:39:54  tiglari
 //add some hotkeys (Select Tagged Faces and Zoom to Selection)
 //
@@ -1379,7 +1382,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
         OutputMapFormat="Brush Primitives"
 
-//        StupidBuildToolKludge = "1" //those guys should get shot for that
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = "-qdir stvef"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
@@ -1764,11 +1767,11 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "yavin/woodwall_moss"
-        DefaultTextureTrigger = "system/trigger"
-        DefaultTextureOrigin = "system/origin"
-        DefaultTextureClip = "system/clip"
-        DefaultTextureCaulk = "system/caulk"
+        DefaultTexture = "jordan/wall_stucco02"
+        DefaultTextureTrigger = "tools/_trigger"
+        DefaultTextureOrigin = "tools/_origin"
+        DefaultTextureClip = "tools/_clip"
+        DefaultTextureCaulk = "tools/_caulk"
         DefaultTextureScale = "0.5"
 
         TextureFormat = ".tga"                  // primary texture fileextension

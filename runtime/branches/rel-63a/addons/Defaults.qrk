@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.6  2002/06/16 08:26:10  tiglari
+//add :form for SoF2 (not functional unless config is also added)
+//
 //Revision 1.192.2.5  2002/06/04 08:37:15  tiglari
 //update version
 //
@@ -1392,7 +1395,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
         OutputMapFormat="Brush Primitives"
 
-//        StupidBuildToolKludge = "1" //those guys should get shot for that
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = "-qdir stvef"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
