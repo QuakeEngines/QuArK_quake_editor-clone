@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2001/01/21 15:49:30  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.36  2001/01/21 07:09:07  tiglari
 Fixed OsFolders goofs (wrong version...)
 
@@ -322,7 +325,6 @@ type
              Name: String;
              constructor Create(const nName: String; nParent: QObject);
              { prep for expansion in a treeview }
-             procedure PrepareForExpand; virtual;
              procedure LoadAll;
              procedure AccesRec;
              procedure Open(F: TQStream; Taille: Integer);
@@ -388,6 +390,10 @@ type
              property PyNoParent: Boolean write FPyNoParent;
              procedure SpecificsAdd(S: String);
              function DirectDataAccess(var S: TStream; var Size: Integer) : Boolean;
+             { stuff that should be done when an object
+               has been read in from text rep. }
+             procedure FinalizeFromText; virtual;
+             function WriteSubelements : Boolean; virtual;
            end;
 
  TQList = class(TList)
@@ -1796,9 +1802,6 @@ begin
  end;
 end;
 
-procedure QObject.PrepareForExpand;
-begin
-end;
 
 procedure QObject.LoadedFileLink(const nName: String; ErrorMsg: Integer);
 var
@@ -1905,6 +1908,7 @@ begin
   end;
 end;
 
+
 procedure QObject.SaveFile1(Info: TInfoEnreg1);
 var
  CheckFormat: Integer;
@@ -1920,6 +1924,15 @@ begin
    Acces;
   end;
  SaveFile(Info);  { otherwise, save normally }
+end;
+
+procedure QObject.FinalizeFromText;
+begin
+end;
+
+function QObject.WriteSubElements;
+begin
+  Result:=true;
 end;
 
 procedure QObject.SaveFile(Info: TInfoEnreg1);
@@ -1940,7 +1953,10 @@ begin
  {BuildReferences;}
   ProgressIndicatorStart(5442, SubElements.Count+1);
   try
-   FileItemCount:=Specifics.Count + SubElements.Count;
+   if WriteSubElements then
+     FileItemCount:=Specifics.Count + SubElements.Count
+   else
+     FileItemCount:=Specifics.Count;
    if FileItemCount > qsShortSizeMax then
     begin
      Size:=RequiredBytesToContainValue(FileItemCount);
@@ -1975,6 +1991,7 @@ begin
       Names:=Names + Copy(S, 1, J);
       Inc(ItemInfo);
      end;
+    if WriteSubElements then
     for I:=0 to SubElements.Count-1 do
      begin
       Q:=SubElements[I];

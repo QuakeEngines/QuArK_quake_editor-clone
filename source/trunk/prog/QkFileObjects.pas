@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/01/21 15:48:25  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.19  2001/01/15 19:19:42  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -793,6 +796,7 @@ begin
      {if IgnoreLevel>0 then
       Dec(IgnoreLevel)
      else}
+      Level.FinalizeFromText;
       if Level=Self then
        begin
         if P^<>#0 then GlobalWarning(LoadStr1(5195));
@@ -1335,6 +1339,7 @@ begin
    L.Add(Arg);
   end;
  ProgressIndicatorIncrement;
+ if Level.WriteSubElements then
  for J:=0 to Level.SubElements.Count-1 do
   begin
    Q:=Level.SubElements[J];
