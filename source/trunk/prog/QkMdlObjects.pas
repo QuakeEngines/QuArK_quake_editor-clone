@@ -222,53 +222,9 @@ type
 
  {------------------------}
 
-procedure ClearMdlObjects;
-
- {------------------------}
-
 implementation
 
 uses PyObjects, Quarkx, PyMapView, Ed3DFX, Travail;
-
-var
- PatternBrush: HBrush;
-
-procedure ClearMdlObjects;
-begin
- if PatternBrush<>0 then
-  begin
-   DeleteObject(PatternBrush);
-   PatternBrush:=0;
-  end;
-end;
-
-type
- TCDC = record
-         B: HBrush;
-         TC, BC: TColorRef;
-        end;
-
-procedure SetupComponentDC(var CDC: TCDC);
-var
- Bmp: HBitmap;
-begin
- if PatternBrush=0 then
-  begin
-   Bmp:=LoadBitmap(HInstance, MakeIntResource(110));
-   PatternBrush:=CreatePatternBrush(Bmp);
-   DeleteObject(Bmp);
-  end;
- CDC.B:=SelectObject(Info.DC, PatternBrush);
- CDC.TC:=SetTextColor(Info.DC, $000000);
- CDC.BC:=SetBkColor(Info.DC, $FFFFFF);
-end;
-
-procedure CloseComponentDC(var CDC: TCDC);
-begin
- SelectObject(Info.DC, CDC.B);
- SetTextColor(Info.DC, CDC.TC);
- SetBkColor(Info.DC, CDC.BC);
-end;
 
  {------------------------}
 
@@ -1297,11 +1253,12 @@ begin
         begin
          dv:=Dot(Info.Clic, Normale);
          f:=(d1-dv) / (d1-d0);
-         Normalise(W2);
-         f:=Dot(V[1],W2) * (1-f) + Dot(V[0],W2) * f;
-         W1.X:=Info.Clic.X + W2.X*f;
-         W1.Y:=Info.Clic.Y + W2.Y*f;
-         W1.Z:=Info.Clic.Z + W2.Z*f;
+         W1:=W2;
+         Normalise(W1);
+         f:=Dot(V[1],W1) * (1-f) + Dot(V[0],W1) * f - Dot(Info.Clic,W1);
+         W1.X:=Info.Clic.X + W1.X*f;
+         W1.Y:=Info.Clic.Y + W1.Y*f;
+         W1.Z:=Info.Clic.Z + W1.Z*f;
 
          obj:=PyInt_FromLong(I); try
          ResultatAnalyseClic(Liste, CCoord.Proj(W1), obj);

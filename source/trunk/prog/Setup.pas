@@ -35,6 +35,8 @@ const
  mjQuake2   = 'A';
  mjHeretic2 = 'B';
  mjSin      = 'C';
+ mjKingPin  = 'D';   {/mac}
+ mjQ3A      = 'a';
 
  mjAny       = #1;
  mjNotQuake2 = #2;
@@ -43,7 +45,7 @@ const
 type
  TListeCouleurs =
   (lcVueXZ, lcVueXY, lcSelXZ, lcSelXY, lcOutOfView, lcAxes, lcGridXZ, lcGridXY, lcGridLines,
-   lcBrushEntity, lcDuplicator, lcTag, lcGrayImage, lcBSP, lcDigger);
+   lcBrushEntity, lcDuplicator, lcTag, lcGrayImage, lcBSP, lcDigger, lcBezier);
  TSetupSet =
   (ssGeneral, ssGames, ssMap, ssModel, ssToolbars{, ssTempData});
  TSetupSetArray = array[TSetupSet] of QObject;
@@ -434,6 +436,7 @@ end;
 procedure SetupChanged;
 var
  fnt: PyObject;
+ S: String;
 {SetupInfo: PyObject;}
 begin
  if Level>=scAddOns then
@@ -450,7 +453,16 @@ begin
    Info.CacherFaces:=Specifics.Values['HideFaces']<>'';
    Info.TexAntiScroll:=IntSpec['TexAntiScroll'];
   end;
- SetMarsCapActive(SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption']<>'');
+ S:=SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption'];
+ if S='?' then
+  begin
+   if MessageDlg(LoadStr1(5690), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    S:='1'
+   else
+    S:='';
+   SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption']:=S;
+  end;
+ SetMarsCapActive(S<>'');
 
   { stores the setup infos into the Quarkx Python module }
 (*SetupInfo:=PyList_New(Ord(High(T))+1); try
@@ -723,7 +735,8 @@ const
    'Tag',
    'GrayImage',
    'BSP',
-   'Digger');
+   'Digger',
+   'Bezier');
 
 function MapColors(L: TListeCouleurs) : TColor;
 begin

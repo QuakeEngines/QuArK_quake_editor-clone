@@ -53,7 +53,7 @@ var
 implementation
 
 uses qmath, PyObjects, PyImages, QkObjects, QkTextures, Game, Setup,
-     PyMath, Qk3D, QkImages;
+     PyMath, Qk3D, QkImages, QkPixelSet;
 
  {------------------------}
 
@@ -189,25 +189,27 @@ var
  tx: PyObject;
  R: TRect;
  lgr: Integer;
- Tex: QObject;
+ Tex1: QObject;
 const
  Q2ColorMapCount = 64;
 type
  PColorMapQ = ^TColorMapQ;
  TColorMapQ = array[0..255] of Byte;
 var
- Texture, ColorMapData: String;
+ {Texture,} ColorMapData: String;
  IgnoreData: Integer;
- Header: TQ1Miptex;
+ {Header: TQ1Miptex;}
  X,Y,W,H, TotalW: Integer;
  ColorMap: QObject;
  Base, Echelle, ColorT, ColorT1, PX, PY: Integer;
  ColorMap1: PColorMapQ;
  TexBits, Source1, Source, Dest1, Dest: PByte;
- LightPatch: PByte;
- GameInfo: PGameBuffer;
+ {GameInfo: PGameBuffer;}
  DC: HDC;
- Pal1: HPalette;
+ Palette, Pal1: HPalette;
+ PSD, LightPatch: TPixelSetDescription;
+ BmpInfo: TBitmapInfo256;
+ BitmapInfo: PBitmapInfo;
 begin
  try
   if Assigned(PyCanvasObj(self)^.Canvas) then
@@ -216,29 +218,29 @@ begin
     lgr:=1;
     if not PyArg_ParseTupleX(args, 'O!(iiii)|i', [@TyObject_Type, @tx, @R.Left, @R.Top, @R.Right, @R.Bottom, @lgr]) then
      Exit;
-    Tex:=QkObjFromPyObj(tx);
-    if not (Tex is QTexture) then
-     Raise EErrorFmt(4438, ['Texture']);
-    Tex:=QTexture(Tex).LoadTexture;
-    Header:=QTextureFile(Tex).BuildQ1Header;
-    W:=Header.W;
-    H:=Header.H;
+    Tex1:=QkObjFromPyObj(tx);
+    if not (Tex1 is QPixelSet) then
+     Raise EErrorFmt(4438, ['PixelSet']);
+    PSD:=QPixelSet(Tex1).Description; try
+    W:=PSD.Size.X;
+    H:=PSD.Size.Y;
     if (W>=8) and (H>=8) then
      begin
-      if QTextureFile(Tex).CustomParams and cpPalette <> 0 then
+      if not PSD.IsGamePalette(mjAny) then
        lgr:=0;  { cannot fade out textures with their custom palette }
-      GameInfo:=QTextureFile(Tex).LoadPaletteInfo; try
+      {GameInfo:=QTextureFile(Tex).LoadPaletteInfo; try}
       if SetupGameSet.Specifics.Values['Gradient']='' then
        lgr:=0;  { cannot fade out textures without a global game palette }
-      GameInfo^.BitmapInfo.bmiHeader.biWidth:=W;
-      GameInfo^.BitmapInfo.bmiHeader.biHeight:=H;
+      {GameInfo^.BitmapInfo.bmiHeader.biWidth:=W;
+      GameInfo^.BitmapInfo.bmiHeader.biHeight:=H;}
       TotalW:=R.Right-R.Left;
       Echelle:=0;
       ColorT1:=0;
-      LightPatch:=Nil;
-      GetMem(TexBits, W*H);
+      Pal1:=0;
+      Palette:=0;
+      DC:=PyCanvasObj(self)^.Canvas.Handle;
+      LightPatch:=PSDToDIB(PSD);
       try
-       TexImageToDIBits(W, QTextureFile(Tex).GetTexImage(0), TexBits^);
        if lgr<>0 then
         begin
          ColorMap:=NeedGameFile(SetupGameSet.Specifics.Values['Gradient']);
@@ -262,25 +264,29 @@ begin
         IgnoreData:=0;
        if ColorT1>0 then
         begin
-         GetMem(LightPatch, W*H);
+         TexBits:=PByte(PSD.StartPointer);
+         LightPatch.AllocData;
          Echelle := TotalW div 2;
          Base    := Echelle*Echelle*Echelle;
          Echelle := Base*2 div ColorT1 + 1;
         end
        else
         begin
-         LightPatch:=TexBits;
+         TexBits:=PByte(LightPatch.StartPointer);
          Base:=0;
         end;
-       DC:=PyCanvasObj(self)^.Canvas.Handle;
-       Pal1:=SelectPalette(DC, GameInfo^.Palette, False); try
-       RealizePalette(DC);
+       BitmapInfo:=PBitmapInfo(LightPatch.GetBitmapInfo(BmpInfo, @Palette));
+       if Palette<>0 then
+        begin
+         Pal1:=SelectPalette(DC, Palette, False);
+         RealizePalette(DC);
+        end;
        X:=0;
        repeat
         if Echelle>0 then
          begin
           Source1:=TexBits;
-          Dest1:=LightPatch;
+          Dest1:=PByte(LightPatch.StartPointer);
           for PX:=X to X+W-1 do
            begin
             if PX=TotalW then Break;
@@ -298,27 +304,28 @@ begin
             for PY:=0 to H-1 do
              begin
               Dest^:=ColorMap1^[Source^];
-              Inc(Dest, W);
-              Inc(Source, W);
+              Inc(Dest, LightPatch.ScanLine);
+              Inc(Source, PSD.ScanLine);
              end;
            end;
          end;
         Y:=R.Top;
         repeat
          SetDIBitsToDevice(DC, R.Left+X,Y,W,H, 0,0,0,H,
-          LightPatch, GameInfo^.BmpInfo, dib_RGB_Colors);
+           LightPatch.Data, BitmapInfo^, dib_RGB_Colors);
          Inc(Y, H);
         until Y>=R.Bottom;
         Inc(X, W);
        until X>=TotalW;
-       finally SelectPalette(DC, Pal1, False); end;
       finally
-       FreeMem(TexBits);
-       if Echelle>0 then
-        FreeMem(LightPatch);
+       if Pal1<>0 then
+        SelectPalette(DC, Pal1, False);
+       LightPatch.ReleasePalette(Palette);
+       LightPatch.Done;
       end;
-      finally DeleteGameBuffer(GameInfo); end;
+      {finally DeleteGameBuffer(GameInfo); end;}
      end;
+    finally PSD.Done; end;
    end;
   Result:=PyNoResult;
  except

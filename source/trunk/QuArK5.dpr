@@ -122,7 +122,9 @@ uses
   HelpPopup1 in 'Prog\HelpPopup1.pas' {HelpPopup},
   GL1 in '3DFX\GL1.pas',
   EdOpenGL in '3DFX\EdOpenGL.pas',
-  QkTga in 'Prog\QkTga.pas';
+  QkTga in 'Prog\QkTga.pas',
+  QkPixelSet in 'prog\QkPixelSet.pas',
+  Bezier in 'prog\Bezier.pas';
 
 {$R *.RES}
 

@@ -362,7 +362,7 @@ begin
       Raise EErrorFmt(5508, [TailleNom-1, S]);
      Entree.Position:=Info.F.Position-Origine;
      Q.Enregistrer1(Info);   { save in non-QuArK file format }
-     Entree.Taille:=Info.F.Position-Entree.Position;
+     Entree.Taille:=Info.F.Position-Origine-Entree.Position;
      Zero:=0;
      Info.F.WriteBuffer(Zero, (-Entree.Taille) and 3);  { align to 4 bytes }
      Zero:=Length(S);

@@ -45,11 +45,99 @@ function GetQuakeContext: TQList;
 function BuildQuakeCtxObjects(nClass: QObjectClass; const nName: String) : TQList;
 procedure ClearQuakeContext;
 
+function OpacityFromFlags(Flags: Integer) : Integer;
+function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
+
  {------------------------}
 
 implementation
 
 uses Setup, QkGroup, Quarkx;
+
+ {------------------------}
+
+type
+ TTexOpacityInfo = record
+                    Loaded: Boolean;
+                    Count: Byte;
+                    Reserved1, Reserved2: Byte;
+                    Opacity: array[0..31] of Byte;
+                   end;
+
+var
+ TInfo: TTexOpacityInfo;
+
+procedure LoadTInfo;
+var
+ I, J, K, L, M: Integer;
+ Li: TQList;
+ Val32: array[0..63] of Single;
+begin
+ FillChar(TInfo.Opacity, SizeOf(TInfo.Opacity), 255);
+ TInfo.Loaded:=True;
+ Li:=GetQuakeContext;
+ for J:=0 to Li.Count-1 do
+  begin
+   K:=Li[J].GetFloatsSpecPartial('TexFlagsTransparent', Val32);
+   for I:=0 to K div 2 - 1 do
+    begin
+     M:=Round(Val32[I*2]);
+     L:=0;
+     while not Odd(M) and (M<>0) do
+      begin
+       Inc(L);
+       M:=M shr 1;
+      end;
+     if M=1 then
+      begin
+       M:=Round((1-Val32[I*2+1])*255);
+       if M<0 then M:=0 else if M>255 then M:=255;
+       TInfo.Opacity[L]:=M;
+      end;
+    end;
+  end;
+end;
+
+function OpacityFromFlags(Flags: Integer) : Integer;
+var
+ L: Integer;
+begin
+ Result:=255;
+ if Flags=0 then Exit;
+
+ if not TInfo.Loaded then
+  LoadTInfo;
+
+ L:=0;
+ repeat
+  if Odd(Flags) and (TInfo.Opacity[L]<Result) then
+   Result:=TInfo.Opacity[L];
+  Flags:=Flags shr 1;
+  Inc(L);
+ until Flags=0;
+end;
+
+function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
+var
+ L, Best, DistMin, Dist: Integer;
+begin
+ if not TInfo.Loaded then
+  LoadTInfo;
+ Best:=0;
+ DistMin:=255-Alpha;
+ for L:=Low(TInfo.Opacity) to High(TInfo.Opacity) do
+  if TInfo.Opacity[L]<255 then
+   begin
+    Dist:=Abs(Alpha-Integer(TInfo.Opacity[L]));
+    if Dist<DistMin then
+     begin
+      DistMin:=Dist;
+      Best:=1 shl L;
+     end;
+    Flags:=Flags and not (1 shl L);
+   end;
+ Result:=Flags or Best;
+end;
 
  {------------------------}
 
@@ -60,6 +148,7 @@ procedure ClearQuakeContext;
 begin
  QuakeContext.Free;
  QuakeContext:=Nil;
+ TInfo.Loaded:=False;
 end;
 
 function GetQuakeContext: TQList;

@@ -74,13 +74,15 @@ type
                 Palette, PaletteReelle: HPalette;
                 PaletteLmp: TPaletteLmp;
                 RefCount: Integer;
+                GameName: String[19];
+                TextureExt: String[11];
                 UnifiedPalette: Boolean;
-                GameName: String;
                {AddOns: QFileObject;}
                 case Integer of
                  0: (BitmapInfo: TBitmapInfo256);
                  1: (BmpInfo: TBitmapInfo);
-               end;
+                end;
+ TGeneralGammaBuffer = array[0..255] of Byte;
 {TMQIDF = (dfWinFormat, dfTextureFormat, dfBottomUpTexture);}
 
 procedure ClearGameBuffers(CanCancel: Boolean);
@@ -116,6 +118,7 @@ procedure DeleteGameBuffer(B: PGameBuffer);
 
 procedure GameCfgDlg;
 procedure DisplayAddOnsList(ListView1: TListView);
+function InitGeneralGammaBuffer(var Buf: TGeneralGammaBuffer; var FG: Reel) : Boolean;
 
  {------------------------}
 
@@ -127,9 +130,10 @@ uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
   Game2, QkQuakeCtx, Config, Output1, Quarkx, PyImages;
 
 var
- GameFiles: TQList;
+ GameFiles: TQList = Nil;
 // SourceBases: TStringList;
  GameBuffer1: PGameBuffer;
+ FreeGBList: TList = Nil;
 
  {------------------------}
 
@@ -191,12 +195,32 @@ begin
 end;
 
 procedure SizeDownGameFiles;
+var
+ I: Integer;
+ B: PGameBuffer;
 begin
  {SizeDownTextureList(}InternalSizeDown{)};
+
+ if FreeGBList<>Nil then
+  try
+   for I:=FreeGBList.Count-1 downto 0 do
+    begin
+     B:=PGameBuffer(FreeGBList[I]);
+     {$IFDEF Debug} if B^.RefCount<>0 then Raise InternalE('SizeDownGameFiles'); {$ENDIF}
+     DeleteObject(B^.Palette);
+     DeleteObject(B^.PaletteReelle);
+    {B^.AddOns.AddRef(-1);}
+     Dispose(B);
+    end;
+  finally
+   FreeGBList.Free;
+   FreeGBList:=Nil;
+  end;
 end;
 
 function DuplicateGameBuffer(Source: PGameBuffer) : PGameBuffer;
 begin
+ {$IFDEF Debug} if Source^.RefCount<=0 then Raise InternalE('DuplicateGameBuffer'); {$ENDIF}
  Inc(Source^.RefCount);
  Result:=Source;
 end;
@@ -217,12 +241,27 @@ begin
   end;
 end;
 
+procedure DelayDeleteGameBuffer(B: PGameBuffer);
+begin
+ if B<>Nil then
+  begin
+   Dec(B^.RefCount);
+   if B^.RefCount<=0 then
+    begin
+     {$IFDEF Debug} if B^.RefCount<0 then Raise InternalE('DelayDeleteGameBuffer'); {$ENDIF}
+     if FreeGBList=Nil then
+      FreeGBList:=TList.Create;
+     FreeGBList.Add(B);
+    end;
+  end;
+end;
+
 procedure ClearGameBuffers;
 begin
  Form1.SavePendingFiles(CanCancel);
  CloseToolBoxes;
  DebutTravail(0,0); try
- DeleteGameBuffer(GameBuffer1);
+ DelayDeleteGameBuffer(GameBuffer1);
  GameBuffer1:=Nil;
  GameFiles.Free;
  GameFiles:=Nil;
@@ -235,7 +274,7 @@ end;
 
 procedure ClearGameBuffer1;
 begin
- DeleteGameBuffer(GameBuffer1);
+ DelayDeleteGameBuffer(GameBuffer1);
  GameBuffer1:=Nil;
  UpdateAddOnsContent;
 end;
@@ -257,7 +296,23 @@ begin
 end;
 
 function GettmpQuArK : String;
+var
+ I : Integer;
+ L: TQList;
+ GameDir : String;
 begin
+ { tiglari  }
+ L:=GetQuakeContext;
+ for I:=L.Count-1 downto 0 do
+  begin
+   GameDir:=L[I].Specifics.Values['GameDir'];
+   if GameDir<>'' then
+    begin
+     Result:=GameDir;
+     Exit;
+    end;
+  end;
+ {/tiglari }
  Result:=SetupGameSet.Specifics.Values['tmpQuArK'];
  if Result='' then
   Result:='tmpQuArK';
@@ -493,13 +548,16 @@ type
                  Map: array[0..255] of SmallInt;
                 end;
 
-procedure InitGammaBuffer(var Buf: TGammaBuffer);
-var
- FG: Reel;
+function GetGammaValue: Reel;
 begin
- FG:=SetupSubSet(ssGeneral, 'Display').GetFloatSpec('Gamma', 11/8);
- if FG<1.0 then FG:=1.0 else if FG>20.0 then FG:=20.0;
- Buf.Factor:=1/FG;
+ Result:=SetupSubSet(ssGeneral, 'Display').GetFloatSpec('Gamma', 11/8);
+ if Result<1.0 then Result:=1.0 else if Result>20.0 then Result:=20.0;
+ Result:=1/Result;
+end;
+
+procedure InitGammaBuffer(var Buf: TGammaBuffer);
+begin
+ Buf.Factor:=GetGammaValue;
  FillChar(Buf.Map, SizeOf(Buf.Map), -1);
  Buf.Map[0]:=0;
 end;
@@ -510,6 +568,22 @@ begin
  if Result>=0 then Exit;
  Result:=Round(Exp(Ln(B*(1.0/255))*Buf.Factor)*255);
  Buf.Map[B]:=Result;
+end;
+
+function InitGeneralGammaBuffer(var Buf: TGeneralGammaBuffer; var FG: Reel) : Boolean;
+var
+ FG1: Reel;
+ B: Integer;
+begin
+ FG1:=GetGammaValue;
+ Result:=FG<>FG1;
+ if Result then
+  begin
+   Buf[0]:=0;
+   for B:=1 to 255 do
+    Buf[B]:=Round(Exp(Ln(B*(1.0/255))*FG1)*255);
+   FG:=FG1;
+  end;
 end;
 
 procedure ColorsFromLmp(const Lmp: TPaletteLmp; var bmiColors: TBitmapInfoColors);
@@ -530,7 +604,7 @@ end;
 
 procedure ClearBmpInfo24(var BmpInfo: TBitmapInfo256);
 begin
- FillChar(BmpInfo, SizeOf(BmpInfo), 0);
+ FillChar(BmpInfo, SizeOf(TBitmapInfoHeader), 0);
  with BmpInfo.bmiHeader do
   begin
    biSize:=SizeOf(TBitmapInfoHeader);
@@ -546,7 +620,7 @@ var
  I: Integer;
  FG: TGammaBuffer;
 begin
- FillChar(BmpInfo, SizeOf(BmpInfo), 0);
+ FillChar(BmpInfo, SizeOf(TBitmapInfoHeader), 0);
  with BmpInfo.bmiHeader do
   begin
    biSize:=SizeOf(TBitmapInfoHeader);
@@ -590,7 +664,6 @@ end;
 function GameBuffer(NeededGame: Char) : PGameBuffer;
 const
  Start = Length('Data=');
- Start2 = Length('Palette=');
 var
  Lmp: TPaletteLmp;
  PaletteFile: QFileObject;
@@ -610,15 +683,13 @@ begin
       L:=GetQuakeContext;
       for J:=0 to L.Count-1 do
        begin
-        S:=L[J].GetSpecArg('Palette');
+        S:=L[J].Specifics.Values['Palette'];
         if S<>'' then
          begin
-          I:=Length(S)-Start2;
-          if I<0 then
-           I:=0
-          else if I>SizeOf(Lmp) then
+          I:=Length(S);
+          if I>SizeOf(Lmp) then
            I:=SizeOf(Lmp);
-          Move(PChar(S)[Start2], Lmp, I);
+          Move(PChar(S)^, Lmp, I);
          end;
        end;
      end
@@ -648,6 +719,7 @@ begin
    GameBuffer1^.RefCount:=1;
   {GameBuffer1^.AddOns:=Nil;}
    GameBuffer1^.GameName:=SetupGameSet.Name;
+   GameBuffer1^.TextureExt:=SetupGameSet.Specifics.Values['TextureFormat'];
    GameBuffer1^.UnifiedPalette:={PaletteFile<>Nil}SetupGameSet.Specifics.Values['UnifiedPalette']<>'';
    GameBuffer1^.PaletteLmp:=Lmp;
    PaletteFromLmp(Lmp, GameBuffer1^.BitmapInfo,

@@ -118,7 +118,7 @@ type
                     FHasOrigin: Boolean;
                     procedure SetOrigin(const nOrigin: TVect);
                   protected
-                    function RegleOrigine(Ancien: Boolean) : Boolean;
+                    procedure RegleOrigine;{(Ancien: Boolean) : Boolean;}
                    {procedure DessinePoignee(const Pts0: TPoint); override;
                     procedure Display3DModel(L: TQList);}
                     function AddModelTo3DScene : Boolean;
@@ -1082,22 +1082,23 @@ begin
  FHasOrigin:=True;
 end;
 
-function TTreeMapEntity.RegleOrigine(Ancien: Boolean) : Boolean;
+procedure TTreeMapEntity.RegleOrigine{(Ancien: Boolean) : Boolean};
 var
  S: String;
- Nouveau: TVect;
+{Nouveau: TVect;}
 begin
  S:=Specifics.Values['origin'];
- Result:=(S<>'') xor (Ancien and FHasOrigin);
+{Result:=(S<>'') xor (Ancien and FHasOrigin);}
  FHasOrigin:=S<>'';
  if FHasOrigin then
   try
-   Nouveau:=LireVecteur(S);
+  {Nouveau:=LireVecteur(S);
    Result:=Result
     or (Nouveau.X<>Origin.X)
     or (Nouveau.Y<>Origin.Y)
     or (Nouveau.Z<>Origin.Z);
-   FOrigin:=Nouveau;
+   FOrigin:=Nouveau;}
+   FOrigin:=LireVecteur(S);
   except
    FHasOrigin:=False;
   end;
@@ -1106,7 +1107,7 @@ end;
 procedure TTreeMapEntity.FixupReference;
 begin
  Acces;
- RegleOrigine(False);
+ RegleOrigine{(False)};
 end;
 
 procedure TTreeMapEntity.AnalyseClic;
@@ -1179,7 +1180,7 @@ procedure TTreeMapEntity.Deplacement(const PasGrille: Reel);
 var
  Pt: TVect;
 begin
- RegleOrigine(False);
+ RegleOrigine{(False)};
  if HasOrigin then
   begin
    Pt:=Origin;
@@ -2069,7 +2070,7 @@ begin
   I:=soAddTo3DScene;
   if not (mdParcourirSel in Info.ModeDessin) then
    Inc(I, soNonParcourirSel);
-  ListePolyedres(Polyedres, Negatifs, I, 1);
+  ListePolyedres(Polyedres, Negatifs, I, MaxInt);
   for I:=0 to Polyedres.Count-1 do
    begin
     P:=TPolyedre(Polyedres[I]);

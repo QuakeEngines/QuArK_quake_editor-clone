@@ -92,7 +92,7 @@ function OuvrirListeEntites(Racine: TTreeMapBrush; const SourceFile: String; BSP
 implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
-  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms;
+  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet;
 
 {$R *.DFM}
 
@@ -209,7 +209,7 @@ var
  LastValue : Double;
 
  Flags, Contents : LongInt;
- Q : QTexture;
+ Q : QPixelSet;
  Header : TQ2MipTex;
  
  function ReadInt(str : string) : LongInt;
@@ -730,7 +730,7 @@ begin
             begin
               { this does the real loading.  always check if loading happened.
                  if Q comes up Nil at the end, all defaults will be 0 }
-              Q:=Q.LoadTexture;
+              Q:=Q.LoadPixelSet;
               if not (Q is QTextureSin) then
                 Q:=Nil;
             end;

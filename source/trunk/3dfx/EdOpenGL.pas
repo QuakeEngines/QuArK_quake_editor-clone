@@ -67,13 +67,15 @@ type
    LightParams: TLightParams;
    procedure LoadCurrentTexture(Tex: PTexture3);
  protected
-   function GetInfo(var PW: TPaletteWarning; var VertexSize: Integer) : TBuildMode; override;
+   function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
+   procedure EndBuildScene; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
    procedure RenderTransparentGL(Transparent: Boolean);
    procedure ReleaseResources;
+   procedure BuildTexture(Texture: PTexture3); override;
  public
    destructor Destroy; override;
    procedure Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
@@ -95,15 +97,19 @@ procedure Free3DEditor;
 
 implementation
 
-uses Quarkx, QkMapPoly, Setup;
+uses Quarkx, QkMapPoly, Setup, QkPixelSet;
 
  {------------------------}
+
+var
+ HackIgnoreErrors: Boolean = False;
 
 procedure Err(Pos: Integer);  { OpenGL error check }
 var
  I, J: Integer;
  S: String;
 begin
+ if HackIgnoreErrors then Exit;
  S:='';
  for I:=1 to 25 do
   begin
@@ -125,6 +131,7 @@ end;
 
 procedure FreeOpenGLTexture(Tex: PTexture3);
 begin
+ {$IFDEF DebugGLErr} if Assigned(gl) then Err(-101); {$ENDIF}
  if (Tex^.OpenGLName<>0) and Assigned(gl) then
   begin
    gl.glDeleteTextures(1, Tex^.OpenGLName);
@@ -156,6 +163,8 @@ var
  I: Integer;
  NameArray, CurrentName: ^GLuint;
 begin
+ RenderingTextureBuffer.Free;
+ RenderingTextureBuffer:=Nil;
  with TTextureManager.GetInstance do
   begin
    GetMem(NameArray, Textures.Count*SizeOf(GLuint)); try
@@ -168,7 +177,7 @@ begin
        Inc(CurrentName);
        OpenGLName:=0;
       end;
-   if Assigned(gl) then
+   if Assigned(gl) and (CurrentName<>NameArray) then
     begin
      gl.glDeleteTextures((PChar(CurrentName)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
      {$IFDEF DebugGLErr} Err(102); {$ENDIF}
@@ -190,8 +199,10 @@ end;
 
 destructor TGLSceneObject.Destroy;
 begin
+ HackIgnoreErrors:=True; try
  ReleaseResources;
  inherited;
+ finally HackIgnoreErrors:=False; end;
 end;
 
 procedure TGLSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
@@ -301,6 +312,7 @@ var
  PL: PLightList;
 begin
  inherited;
+ {$IFDEF DebugGLErr} if Assigned(gl) then Err(-172); {$ENDIF}
  while Assigned(Lights) do
   begin
    PL:=Lights;
@@ -312,10 +324,10 @@ begin
    if Assigned(gl) then
     begin
      gl.glDeleteLists(1, DisplayLists);
-     {$IFDEF DebugGLErr} Err(101); {$ENDIF}
-    end; 
+     {$IFDEF DebugGLErr} Err(172); {$ENDIF}
+    end;
    DisplayLists:=0;
-  end; 
+  end;
 end;
 
 procedure TGLSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
@@ -347,11 +359,19 @@ begin
  ScreenY:=SY;
 end;
 
-function TGLSceneObject.GetInfo(var PW: TPaletteWarning; var VertexSize: Integer) : TBuildMode;
+function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
- PW:=Nil;
+{PW:=Nil;}
  VertexSize:=SizeOf(TVertex3D);
  Result:=bmOpenGL;
+ if RenderingTextureBuffer=Nil then
+  RenderingTextureBuffer:=TMemoryStream.Create;
+end;
+
+procedure TGLSceneObject.EndBuildScene;
+begin
+ RenderingTextureBuffer.Free;
+ RenderingTextureBuffer:=Nil;
 end;
 
 procedure TGLSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel);
@@ -397,6 +417,7 @@ var
  Buffer, BufEnd: ^GLuint;
  BufResident: ^GLboolean;
 begin
+ {$IFDEF DebugGLErr} if Assigned(gl) then Err(-103); {$ENDIF}
  if not SolidColors then
   begin
    Count:=0;
@@ -453,6 +474,7 @@ end;
 procedure TGLSceneObject.Render3DView;
 begin
  if not Assigned(gl) then Exit;
+ {$IFDEF DebugGLErr} if Assigned(gl) then Err(-50); {$ENDIF}
 {gl.wglMakeCurrent(DC,RC);
  Err(49);}
  gl.glViewport(0, 0, ScreenX, ScreenY);
@@ -476,86 +498,166 @@ begin
  Err(52);
  CurrentAlpha:=0;
  FillChar(Currentf, SizeOf(Currentf), 0);
- RenderingTextureBuffer:=TMemoryStream.Create; try
  RenderTransparentGL(False);
  Err(53);
  RenderTransparentGL(True);
  Err(54);
  gl.glFlush;
  Err(55);
- finally RenderingTextureBuffer.Free; end;
 {gl.wglMakeCurrent(0,0);}
 end;
 
-procedure TGLSceneObject.LoadCurrentTexture(Tex: PTexture3);
+procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
 var
  TexData: PChar;
- MemSize, W, H: Integer;
- Source: PChar;
+ MemSize, W, H, J: Integer;
+ Source, Dest: PChar;
  PaletteEx: array[0..255] of LongInt;
- BasePalette: Pointer;
+{BasePalette: Pointer;}
+ PSD, PSD2: TPixelSetDescription;
+ GammaBuf: Pointer;
 begin
- if Tex^.OpenGLName=0 then
+ if Texture^.OpenGLName=0 then
   begin
-   GetwhForTexture(Tex^.info, W, H);
+   {$IFDEF DebugGLErr} if Assigned(gl) then Err(-104); {$ENDIF}
+   GetwhForTexture(Texture^.info, W, H);
    MemSize:=W*H*4;
    if RenderingTextureBuffer.Size < MemSize then
     RenderingTextureBuffer.SetSize(MemSize);
 
    TexData:=RenderingTextureBuffer.Memory;
-   Source:=Tex^.info.data;
-   BasePalette:=Tex^.GuPalette;
-   asm
-    push edi
-    push esi
-    push ebx                  { Indexes in the palette --> RGB colors }
-    mov esi, [BasePalette]
-    lea edi, [PaletteEx]
-    mov ecx, 255
-    @Loop1:
-     mov eax, [esi+4*ecx]
-     bswap eax
-     shr eax, 8
-     mov [edi+4*ecx], eax
-     dec ecx
-    jns @Loop1
+   PSD2.Init;
+   {PSD2.AlphaBits:=psaNoAlpha;}
+   PSD:=GetTex3Description(Texture^); try
+   PSD2.Size.X:=W;
+   PSD2.Size.Y:=H;
+   PSDConvert(PSD2, PSD, ccTemporary);
+   Source:=PSD2.StartPointer;
+   Dest:=TexData;
+   GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
+   if PSD2.Format = psf24bpp then
+    begin
+     for J:=1 to H do
+      begin
+       asm
+        push esi
+        push edi
+        push ebx
+        mov ecx, [w]
+        mov esi, [Source]
+        mov edi, [Dest]
+        mov ebx, [GammaBuf]
+        cld
+        xor edx, edx
 
-    mov edi, [TexData]
-    mov esi, [Source]
-    mov ecx, [MemSize]
-    lea ebx, [PaletteEx]
-    xor edx, edx
-    shr ecx, 2
-    @Loop:
-     mov dl, [esi]
-     inc esi
-     mov eax, [ebx+edx*4]
-     mov [edi], eax
-     add edi, 4
-     dec ecx
-    jnz @Loop
-    pop ebx
-    pop esi
-    pop edi
-   end;
+        @xloop:
+         mov dl, [esi+1]
+         mov ah, [ebx+edx]   {G}
+         mov dl, [esi+2]
+         mov al, [ebx+edx]   {R}
+         mov dl, [esi]
+         stosw
+         mov al, [ebx+edx]   {B}
+         add esi, 3
+         stosb
+        loop @xloop
+
+        pop ebx
+        mov [Dest], edi
+        pop edi
+        pop esi
+       end;
+       Inc(Source, PSD2.ScanLine);
+      end;
+    end
+   else
+    begin
+     asm
+      push edi
+      push esi
+      push ebx
+      mov esi, [PSD2.ColorPalette]
+      add esi, 3*255
+      lea edi, [PaletteEx]
+      mov ebx, [GammaBuf]
+      mov ecx, 255
+      xor edx, edx
+
+      @Loop1:
+       mov dl, [esi+2]
+       {xor eax, eax}
+       mov ah, [ebx+edx]   {B}
+       mov dl, [esi+1]
+       shl eax, 8
+       mov ah, [ebx+edx]   {G}
+       mov dl, [esi]
+       mov al, [ebx+edx]   {R}
+       sub esi, 3
+       mov [edi+4*ecx], eax
+       dec ecx
+      jns @Loop1
+
+      pop ebx
+      pop esi
+      pop edi
+     end;
+    for J:=1 to H do
+     begin
+      asm
+       push edi
+       push esi
+       push ebx
+       mov esi, [Source]
+       mov edi, [Dest]
+       mov ecx, [W]
+       xor edx, edx
+       lea ebx, [PaletteEx]
+       cld
+
+       @xloop:
+        mov dl, [esi]
+        inc esi
+        mov eax, [ebx+4*edx]
+        stosw
+        shr eax, 16
+        stosb
+       loop @xloop
+
+       mov [Dest], edi
+       pop ebx
+       pop esi
+       pop edi
+      end;
+      Inc(Source, PSD2.ScanLine);
+     end;
+    end;
+
+   finally PSD.Done; PSD2.Done; end;
+   
   {gl.gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
-   gl.glGenTextures(1, Tex^.OpenGLName);
+   gl.glGenTextures(1, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
-   gl.glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
+   gl.glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
-   gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, W, H, 0, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);
+   gl.glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
    {$IFDEF DebugGLErr} Err(106); {$ENDIF}
    gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
    gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
    gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    gl.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    {$IFDEF DebugGLErr} Err(107); {$ENDIF}
-  end
- else
-  begin
-   gl.glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
-   {$IFDEF DebugGLErr} Err(108); {$ENDIF}
   end;
+end;
+
+procedure TGLSceneObject.LoadCurrentTexture(Tex: PTexture3);
+begin
+ {$IFDEF Debug}
+ if Tex^.OpenGLName=0 then
+  Raise InternalE('LoadCurrentTexture: texture not loaded');
+ {$ENDIF}
+ {$IFDEF DebugGLErr} if Assigned(gl) then Err(-108); {$ENDIF}
+ gl.glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
+ {$IFDEF DebugGLErr} Err(108); {$ENDIF}
 end;
 
 type
@@ -625,6 +727,7 @@ begin
   end;
  if SubList=Nil then
   begin
+   {$IFDEF DebugGLErr} if Assigned(gl) then Err(-121); {$ENDIF}
    l[0]:=LightParams.ZeroLight * Currentf[0];
    l[1]:=LightParams.ZeroLight * Currentf[1];
    l[2]:=LightParams.ZeroLight * Currentf[2];
@@ -656,6 +759,7 @@ begin
   end
  else
   begin
+   {$IFDEF DebugGLErr} if Assigned(gl) then Err(-109); {$ENDIF}
    Points[0,0].v:=PV1^;
    Points[0,SectionsI].v:=PV2^;
    Points[SectionsJ,0].v:=PV4^;
@@ -868,7 +972,7 @@ begin
         NeedTex:=False;
        end;
       PV:=PVertex3D(Surf);
-      if DisplayLights then
+      if DisplayLights and Assigned(Lights) then
        if AnyInfo.DisplayList=0 then
         begin
          UnpackColor(AlphaColor, Currentf);
@@ -876,6 +980,7 @@ begin
           begin
            Inc(DisplayLists);
            AnyInfo.DisplayList:=DisplayLists;
+           {$IFDEF DebugGLErr} Err(-110); {$ENDIF}
            gl.glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
            {$IFDEF DebugGLErr} Err(110); {$ENDIF}
            gl.glColor4fv(Currentf);
@@ -884,6 +989,7 @@ begin
          else
           if NeedColor then
            begin
+            {$IFDEF DebugGLErr} Err(-112); {$ENDIF}
             gl.glColor4fv(Currentf);
             {$IFDEF DebugGLErr} Err(112); {$ENDIF}
            end;
@@ -901,12 +1007,14 @@ begin
         {Inc(PV);}
          if DisplayLists<>-1 then
           begin
+           {$IFDEF DebugGLErr} Err(-113); {$ENDIF}
            gl.glEndList;
            {$IFDEF DebugGLErr} Err(113); {$ENDIF}
           end;
         end
        else
         begin
+         {$IFDEF DebugGLErr} Err(-114); {$ENDIF}
          gl.glCallList(AnyInfo.DisplayList);
          {$IFDEF DebugGLErr} Err(114); {$ENDIF}
         end
@@ -945,9 +1053,11 @@ begin
         if NeedColor then
          begin
           UnpackColor(AlphaColor, Currentf);
+          {$IFDEF DebugGLErr} Err(-115); {$ENDIF}
           gl.glColor4fv(Currentf);
           {$IFDEF DebugGLErr} Err(115); {$ENDIF}
          end;
+        {$IFDEF DebugGLErr} Err(-116); {$ENDIF}
         gl.glBegin(GL_POLYGON);
         for I:=1 to VertexCount do
          begin

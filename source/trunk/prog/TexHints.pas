@@ -26,8 +26,7 @@ unit TexHints;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Controls, Forms,
-     QkObjects, QkTextures;
-
+     QkObjects, QkPixelSet, QkTextures;
 type
   TTexHintWindow = class(THintWindow)
   protected
@@ -44,11 +43,10 @@ uses Setup, Game, Travail;
 
 procedure TTexHintWindow.Paint;
 var
- Data: String;
- Header: TQ1Miptex;
- Game: PGameBuffer;
+{Data: String;}
  I, X: Integer;
- Texture1: QTextureFile;
+ Texture1: QPixelSet;
+ PSD: TPixelSetDescription;
 begin
  if Textures=Nil then
   inherited
@@ -57,25 +55,19 @@ begin
    X:=0;
    for I:=0 to Textures.Count-1 do
     begin
-     Texture1:=(Textures[I] as QTexture).LoadTexture;
-     Header:=Texture1.BuildQ1Header;
-     Data:=Texture1.GetWinImage;
-     Game:=Texture1.LoadPaletteInfo; try
-     Game^.BmpInfo.bmiHeader.biWidth:=Header.W;
-     Game^.BmpInfo.bmiHeader.biHeight:=Header.H;
-     SetDIBitsToDevice(Canvas.Handle, X, 0, Header.W, Header.H, 0, 0, 0, Header.H,
-      Pointer(Data), Game^.BmpInfo, dib_RGB_Colors);
-    {Canvas.Rectangle(X-1, -1, X+Header.W+1, Header.H+1);}
-     finally DeleteGameBuffer(Game); end;
-     Inc(X, Header.W+1);
+     Texture1:=Textures[I] as QPixelSet;
+     PSD:=Texture1.Description; try
+     PSD.Paint(Canvas.Handle, X, 0);
+     Inc(X, PSD.Size.X+1);
+     finally PSD.Done; end;
     end;
   end;
 end;
 
 procedure TTexHintWindow.ActivateHint(Rect: TRect; const AHint: string);
 var
- Tex: QTexture;
- Header: TQ1Miptex;
+ Tex: QPixelSet;
+ Size: TPoint;
  S: String;
  J: Integer;
  L: TQList;
@@ -99,11 +91,11 @@ begin
      begin
       J:=Pos(';', S);
       if J=0 then J:=Length(S)+1;
-      Tex:=GlobalFindTexture(Copy(S, 1, J-1), Nil).LoadTexture;
-      Header:=Tex.BuildQ1Header;
-      Inc(nRect.Right, Header.W+1);
-      if nRect.Bottom-nRect.Top < Header.H then
-       nRect.Bottom:=nRect.Top + Header.H;
+      Tex:=GlobalFindTexture(Copy(S, 1, J-1), Nil).LoadPixelSet;
+      Size:=Tex.GetSize;
+      Inc(nRect.Right, Size.X+1);
+      if nRect.Bottom-nRect.Top < Size.Y then
+       nRect.Bottom:=nRect.Top + Size.Y;
       L.Add(Tex);
       System.Delete(S, 1, J);
      end;

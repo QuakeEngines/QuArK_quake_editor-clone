@@ -41,10 +41,12 @@ type
 
 implementation
 
-uses Windows, Quarkx, Game;
+uses Windows, Quarkx, Game, QkPixelSet;
 
 const
+ tgaAlphaBits = $1F;
  tgaTopDown = $20;
+{tgaRightLeft = $10;}   { this flag not supported }
 
 type
  TTgaHeader = packed record
@@ -77,17 +79,18 @@ procedure QTga.Charger(F: TStream; Taille: Integer);
 const
  Spec1 = 'Image1=';
  Spec2 = 'Pal=';
+ AlphaSpec = 'Alpha=';
 type
  PRGB = ^TRGB;
- TRGB = array[0..2] of Byte; 
+ TRGB = array[0..2] of Byte;
 var
  Header: TTgaHeader;
- V: array[1..2] of Single;
  Data, Buffer: String;
- ScanLine, Dest, ScanEnd, Source, SourceEnd: PChar;
- I, J, ScanW, sScanW, Delta1, K, Count: Integer;
+ ScanLine, Dest, ScanEnd, Source, SourceEnd, AlphaBuf: PChar;
+ I, J, ScanW, sScanW, Delta1, K, Count, BytesPerPixel: Integer;
  PaletteLmp: PPaletteLmp;
  TaillePalette: Integer;
+ alpha_buffer: String;   {/mac}
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
@@ -96,19 +99,23 @@ begin
       F.ReadBuffer(Header, SizeOf(Header));
       TaillePalette:=0;
       F.Seek(Header.ExtraData, 1);
-      if not (Header.TypeCode in [2,10])
-      or (Header.ColorMapType<>0)
-      or (Header.bpp<>24) then
+
+      { check the file format }
+      if not (Header.TypeCode in [2,10])   {true color}
+      {or (Header.ColorMapType<>0)          {color map avail}
+      or ((Header.bpp<>24) and (Header.bpp<>32)) then   {24- or 32-bpp}
        begin
-        if not (Header.TypeCode in [1,9])
-        or (Header.ColorMapType<>1)
-        or (Header.bpp<>8)
-        or (Header.ColorMapOrg+Header.ColorMapLen>256)
-        or (Header.ColorMapBpp<>24) then
+        if not (Header.TypeCode in [1,9])  {palettized}
+        or (Header.ColorMapType<>1)        {color map}
+        or (Header.bpp<>8)                 {8-bpp}
+        or (Header.ColorMapOrg+Header.ColorMapLen>256)  {no more than 256 colors}
+        or (Header.ColorMapBpp<>24) then   {24-bits palette entries}
          Raise EErrorFmt(5679, [LoadName, Header.ColorMapType, Header.TypeCode, Header.bpp]);
         TaillePalette:=3*Header.ColorMapLen;
         if Taille<SizeOf(Header)+Header.ExtraData+TaillePalette then
          Raise EError(5678);
+
+        { load the palette }
         Data:=Spec2;
         SetLength(Data, Length(Spec2)+SizeOf(TPaletteLmp));
         PChar(PaletteLmp):=PChar(Data)+Length(Spec2);
@@ -125,13 +132,13 @@ begin
          end;
         SpecificsAdd(Data);
        end;
-      V[1]:=Header.Width;
-      V[2]:=Header.Height;
-      SetFloatsSpec('Size', V);
-      I:=Header.Width*(Header.bpp div 8);
-      ScanW:=(I+3) and not 3;
+
+      { load the image data }
+      SetSize(Point(Header.Width, Header.Height));
+      I:=Header.Width*(Header.bpp div 8);  { bytes per line in the .tga file }
+      ScanW:=(I+3) and not 3;       { the same but rounded up, for storing the data }
       Data:=Spec1;
-      J:=ScanW*Header.Height;   { 'Image1' byte count }
+      J:=ScanW*Header.Height;       { total byte count for storage }
       SetLength(Data, Length(Spec1)+J);
       if Header.Flags and tgaTopDown <> 0 then
        begin
@@ -162,28 +169,32 @@ begin
             Dest:=ScanLine;
             ScanEnd:=Dest+I;
             Source:=PChar(Buffer);
-            SourceEnd:=Source+Length(Buffer) - Header.bpp div 8;
-            Header.bpp:=Header.bpp div 8;
+            BytesPerPixel:=Header.bpp div 8;
+            SourceEnd:=Source+Length(Buffer) - BytesPerPixel;
             repeat
              if Source^ >= #$80 then
               Delta1:=0
              else
-              Delta1:=Header.bpp;
+              Delta1:=BytesPerPixel;
              Count:=Ord(Source^) and $7F;
              Inc(Source);
              if Source+Delta1*Count > SourceEnd then Raise EError(5678);
              for K:=0 to Count do
               begin
-               if Header.bpp = 1 then
-                begin
-                 Dest^:=Source^;
-                 Inc(Dest);
-                end
-               else
-                begin
-                 PRGB(Dest)^:=PRGB(Source)^;
-                 Inc(Dest, 3);
-                end;
+               case BytesPerPixel of
+                1: begin
+                    Dest^:=Source^;
+                    Inc(Dest);
+                   end;
+                3: begin
+                    PRGB(Dest)^:=PRGB(Source)^;
+                    Inc(Dest, 3);
+                   end;
+                4: begin
+                    PLongInt(Dest)^:=PLongInt(Source)^;
+                    Inc(Dest, 4);
+                   end;
+               end;
                Inc(Source, Delta1);
                if Dest=ScanEnd then
                 begin
@@ -197,17 +208,43 @@ begin
                 end;
               end;
              if Delta1=0 then
-              Inc(Source, Header.bpp);
+              Inc(Source, BytesPerPixel);
             until J=0;
            end;
       end;
-      Specifics.Add(Data);  { "Data=xxxxx" }
+      if Header.bpp=32 then   { alpha ? }
+       begin
+        {alpha channel is assumed to be one byte per pixel if available.
+         It was loaded together with the image data into 'Data',
+         but 'Data' must now be split into two buffers : one for the image colors
+         and one for the alpha channel.}
+        alpha_buffer:=AlphaSpec;
+        J:=Header.Width*Header.Height;       { pixel count }
+        Setlength(alpha_buffer,Length(AlphaSpec)+ J); { new alpha buffer }
+        Buffer:=Data;
+        Data:=Spec1;
+        SetLength(Data, Length(Spec1)+ 4*J); { new, fixed data buffer }
+
+        Source:=PChar(Buffer)+Length(Spec1);
+        Dest:=PChar(Data)+Length(Spec1);
+        AlphaBuf:=PChar(alpha_buffer)+Length(AlphaSpec);
+        for I:=1 to J do
+         begin
+          PRGB(Dest)^:=PRGB(Source)^;  { rgb }
+          AlphaBuf^:=Source[3];      { alpha }
+          Inc(Dest, 3);
+          Inc(Source, 4);
+          Inc(AlphaBuf);
+         end;
+        Specifics.Add(alpha_buffer);  { "Alpha=xxxxx" }
+       end;
+      Specifics.Add(Data);  { "Image1=xxxxx" }
      end;
  else inherited;
  end;
 end;
 
-procedure QTga.Enregistrer(Info: TInfoEnreg1);
+(*procedure QTga.Enregistrer(Info: TInfoEnreg1);
 var
  Header: TTgaHeader;
  Data: String;
@@ -217,11 +254,11 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      if not IsTrueColor then
-       Tga:=ConvertToTrueColor
-      else
-       Tga:=Self;
-      Tga.AddRef(+1); try
+ .    if not IsTrueColor then
+  .      Tga:=ConvertToTrueColor
+  .     else
+   .      Tga:=Self;
+ .     Tga.AddRef(+1); try
 
       FillChar(Header, SizeOf(Header), 0);
       Header.TypeCode:=2;
@@ -247,6 +284,81 @@ begin
        end;
 
       finally Tga.AddRef(-1); end;
+     end;
+ else inherited;
+ end;
+end;*)
+
+procedure QTga.Enregistrer(Info: TInfoEnreg1);
+type
+ PRGB = ^TRGB;
+ TRGB = array[0..2] of Byte;
+var
+ Header: TTgaHeader;
+ LineWidth, J, K: Integer;
+ ScanLine, AlphaScanLine: PChar;
+ PSD: TPixelSetDescription;
+ LineBuffer: PChar;
+ SourceRGB: PRGB;
+begin
+ with Info do case Format of
+  1: begin  { as stand-alone file }
+      PSD:=Description; try
+
+      FillChar(Header, SizeOf(Header), 0);
+      if PSD.Format=psf8bpp then
+       begin
+        Header.TypeCode:=1;
+        Header.bpp:=8;
+       end
+      else
+       begin
+        Header.TypeCode:=2;
+        if PSD.AlphaBits=psa8bpp then
+         begin
+          Header.bpp:=32;
+          Header.Flags:=8;  { tgaAlphaBits }
+         end
+        else
+         Header.bpp:=24;
+       end;
+      with PSD.Size do
+       begin
+        Header.Width:=X;
+        Header.Height:=Y;
+       end;
+      F.WriteBuffer(Header, SizeOf(Header));
+
+       { writes the image data }
+      LineWidth:=Header.Width * (Header.bpp div 8);  { bytes per line }
+      ScanLine:=PSD.StartPointer;
+      if Header.bpp=32 then  { alpha ? }
+       begin
+        AlphaScanLine:=PSD.AlphaStartPointer;
+        GetMem(LineBuffer, LineWidth); try
+        for J:=1 to Header.Height do
+         begin
+          SourceRGB:=PRGB(ScanLine);
+          for K:=0 to Header.Width-1 do   { mix color and alpha line-by-line }
+           begin
+            PRGB(LineBuffer)^:=SourceRGB^; Inc(SourceRGB);
+            LineBuffer[3]:=AlphaScanLine[K];
+            Inc(LineBuffer, 4);
+           end;
+          F.WriteBuffer(LineBuffer^, LineWidth);
+          Inc(ScanLine, PSD.ScanLine);   { TGA format is bottom-up, and so is PSD }
+          Inc(AlphaScanLine, PSD.AlphaScanLine);
+         end;
+        finally FreeMem(LineBuffer); end;
+       end
+      else  { no alpha data }
+       for J:=1 to Header.Height do
+        begin
+         F.WriteBuffer(ScanLine^, LineWidth);
+         Inc(ScanLine, PSD.ScanLine);   { TGA format is bottom-up, and so is PSD }
+        end;
+
+      finally PSD.Done; end;
      end;
  else inherited;
  end;

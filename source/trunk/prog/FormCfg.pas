@@ -28,7 +28,7 @@ interface
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
      Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
-     CursorScrollBox;
+     CursorScrollBox, Erombbtn, Spin;
 
 const
  wp_InternalEdit = 96;
@@ -91,6 +91,15 @@ type
               procedure ClickKey(Sender: TObject);
               procedure ClickKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
               procedure ButtonClick(Sender: TObject);
+              procedure PyMacroClick(Sender: TObject);
+              procedure PyMMacroClick(Sender: TObject);
+              procedure SpinUpClick(Sender: TObject);
+              procedure SpinDownClick(Sender: TObject);
+              procedure RombUpClick(Sender: TObject);
+              procedure RombDownClick(Sender: TObject);
+              procedure RombLeftClick(Sender: TObject);
+              procedure RombRightClick(Sender: TObject);
+              function FindUpDownEdit(Tag: Integer) : TCustomEdit;
               procedure BrowseButtonClick(Sender: TObject);
               procedure AcceptDirectory(Sender: TObject);
               procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
@@ -158,7 +167,7 @@ implementation
 
 uses QkUnknown, Undo, TbPalette, QkFileObjects, Toolbar1, ToolBox1,
      Setup, QkInclude, QkMacro, QkImages, QkTextures,
-     Python, Quarkx, PyMacros, PyToolbars, PyForms;
+     Python, Quarkx, PyMacros, PyToolbars, PyForms, QkPixelSet;
 
 const
  Differs = 5391;
@@ -1091,6 +1100,147 @@ begin
 {finally FormObj.AddRef(-1); end;}
 end;
 
+procedure TFormCfg.PyMMacroClick(Sender: TObject);
+var
+ FormObj: QObject;
+ S, C, Caption: String;
+ I, Index: Integer;
+begin
+ FormObj:=Form.SousElements[(Sender as TControl).Tag-1];
+ Caption:=TToolbarButton97(Sender).Caption;
+ with FormObj do
+  begin
+   C:=Specifics.Values['Caps'];
+   Index:=0;
+   for I:=1 to length(C) do
+   begin
+     if C[I]=Caption then
+     begin
+       Index:=I;
+       break;
+     end
+   end;
+   S:=Specifics.Values['Macro'];
+   if S<>'' then
+    begin
+       Py_XDECREF(CallMacroEx(Py_BuildValueX('Oi', [@PythonObj, Index]),
+    S));    end;
+  end;
+end;
+
+procedure TFormCfg.PyMacroClick(Sender: TObject);
+var
+ FormObj: QObject;
+ S: String;
+begin
+ FormObj:=Form.SousElements[(Sender as TControl).Tag-1];
+ with FormObj do
+  begin
+   S:=Specifics.Values['Macro'];
+   if S<>'' then
+    begin
+      Py_XDECREF(CallMacro(@PythonObj, S))
+    end;
+  end;
+end;
+
+procedure TFormCfg.SpinUpClick(Sender: TObject);
+var
+  Edit : TCustomEdit;
+  Value: Double;
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ Value := StrToFloat(Edit.Text);
+ Value := Value+1;
+ Edit.Text:=ftos(Value);
+ SetArg(Sender, Edit.Text);
+
+end;
+
+procedure TFormCfg.SpinDownClick(Sender: TObject);
+var
+  Edit : TCustomEdit;
+  Value: Double;
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ Value := StrToFloat(Edit.Text);
+ Value := Value-1;
+ Edit.Text:=ftos(Value);
+ SetArg(Sender, Edit.Text);
+end;
+
+function TFormCfg.FindUpDownEdit(Tag: Integer) : TCustomEdit;
+var
+ I:Integer;
+begin
+  for I:=0 to SB.ControlCount-1 do
+  begin
+   if SB.Controls[I].Tag = Tag then
+   begin
+    if SB.Controls[I] is TCustomEdit then
+     begin
+      Result:=TCustomEdit(SB.Controls[I]);
+      Exit;
+     end
+   end
+  end;
+ raise InternalE('FindUpDownEdit');
+end;
+
+procedure TFormCfg.RombUpClick(Sender: TObject);
+var
+  Edit : TCustomEdit;
+  Values: Array [1..2] of Double;
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ LireValeurs(Edit.Text, Values);
+ Values[2] := Values[2]+1;
+ Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
+ SetArg(Sender, Edit.Text);
+end;
+
+procedure TFormCfg.RombDownClick(Sender: TObject);
+var
+  Edit : TCustomEdit;
+  Values: Array [1..2] of Double;
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ LireValeurs(Edit.Text, Values);
+ Values[2] := Values[2]-1;
+ Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
+ SetArg(Sender, Edit.Text);
+end;
+
+procedure TFormCfg.RombLeftClick(Sender: TObject);
+var
+  Edit : TCustomEdit;
+  Values: Array [1..2] of Double;
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ LireValeurs(Edit.Text, Values);
+ Values[1] := Values[1]-1;
+ Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
+ SetArg(Sender, Edit.Text);
+end;
+
+procedure TFormCfg.RombRightClick(Sender: TObject);
+var
+  Edit : TCustomEdit;
+  Values: Array [1..2] of Double;
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ LireValeurs(Edit.Text, Values);
+ Values[1] := Values[1]+1;
+ Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
+ SetArg(Sender, Edit.Text);
+end;
+
 procedure TFormCfg.BrowseButtonClick(Sender: TObject);
 var
  Path0, Path, Title: String;
@@ -1331,11 +1481,13 @@ const
  LabelMargin  = 16;
  BevelStep    = 12;
 var
- I, J, K, BitValue, X, Y, W, LeftMargin, Icone, ExtraVertSpace, MiddleX, NormalW: Integer;
- S, Spec, TextValues, HintMsg: String;
+ N, BI, I, J, K, BitValue, X, Y, W, LeftMargin, Icone, ExtraVertSpace, MiddleX, NormalW: Integer;
+ S, Captions, Spec, TextValues, HintMsg: String;
  Value: Single;
  Txt, Ctrl, ResultCtrl, SelectMe: TControl;
  Edit: TCustomEdit;
+ UpDown: TSpinButton;
+ Quad: TEnhRombButtons;
  ComboBox: TEnterComboBox;
  Notify: TNotifyEvent;
 {Cb: TCheckBox;}
@@ -1374,7 +1526,7 @@ begin
      if Msg.lParam<>0 then
       begin
        Q:=QObject(Msg.lParam);
-       if not (Q is QTexture) then
+       if not (Q is QPixelSet) then
         begin
          MessageBeep(0);
          Exit;
@@ -1658,6 +1810,40 @@ begin
                  Lbl.Parent:=SB;}
                 {Inc(X, W+MiddleMargin);}
                 end;
+           'P': begin  { Python Macro Button}
+                 if GrayForm and gfGray <> 0 then
+                  ExtraVertSpace:=1;
+                 case S[2] of  {Make a row of buttons}
+                   'M':
+                     begin
+                      N:=StrToInt(Values['Num']);
+                      Captions:=Values['Caps'];
+                      J:=X;
+                      for BI:=1 to N do
+                      begin
+                        Btn:=TToolbarButton97.Create(Self);
+                        Btn.SetBounds(J, Y, 20, LineHeight+ExtraVertSpace);
+                        Btn.Caption:=Captions[BI];
+                        Btn.Color:=clBtnFace;
+                        Btn.Parent:=SB;
+                        Btn.OnClick:=PyMMacroClick;
+                        Btn.Hint:=Values['Hint'+IntToStr(BI)];
+                        Btn.Tag:=I+1;
+                        Inc(J,20);
+                      end
+                     end
+                 else
+                 Btn:=TToolbarButton97.Create(Self);
+                 Btn.SetBounds(X,Y,W,LineHeight+ExtraVertSpace);
+                 Btn.Caption:=Values['Cap'];
+                 Btn.Color:=clBtnFace;
+                 Btn.Parent:=SB;
+                 Btn.Hint:=HintMsg;
+                 Btn.Tag:=I+1;
+                 Btn.OnClick:=PyMacroClick;
+                 ResultCtrl:=Btn;
+                 end
+                end;
            'S': if (Txt=Nil) or not (Txt is TLabel) then
                  begin  { Separator }
                   Bevel:=TBevel.Create(Self);
@@ -1925,7 +2111,9 @@ begin
                    TEnterEdit(Edit).OnEnter:=AnyControlEnter; 
                   end;
                  J:=W;
-                 if S[2] in ['D', 'T', 'P'] then
+                 Btn:=Nil;
+                 case S[2] of
+                  'D', 'T', 'P':
                   begin
                    Dec(J, 12);
                    Btn:=TToolbarButton97.Create(Self);
@@ -1935,9 +2123,39 @@ begin
                    Btn.Parent:=SB;
                    Btn.Tag:=I+1;
                    Btn.OnClick:=BrowseButtonClick;
-                  end
-                 else
-                  Btn:=Nil;
+                  end;
+                  'U':
+                   begin
+                    Dec(J, 12);
+                    UpDown := TSpinButton.Create(Self);
+                    UpDown.Parent := SB;
+                    UpDown.SetBounds(X+J+1,Y+1,13,LineHeight+ExtraVertSpace-1);
+                    TEnterEdit(Edit).Text:=Spec;
+                    UpDown.OnUpClick := SpinUpClick;
+                    UpDown.OnDownClick := SpinDownClick;
+                    UpDown.Tag := I+1;
+                    Notify:=AcceptEdit;
+                   end;
+                  'Q':
+                   begin
+                    Dec(J, 20);
+                    Quad := TEnhRombButtons.Create(Self);
+                    Quad.Parent := SB;
+                    { Quad dimensioning kinda wierd }
+                    Quad.SetBounds(X+J+1,Y+1,30,30);
+                    TEnterEdit(Edit).Text:=Spec;
+                    Quad.OnUpClick := RombUpClick;
+                    Quad.OnDownClick := RombDownClick;
+                    Quad.OnLeftClick := RombLeftClick;
+                    Quad.OnRightClick := RombRightClick;
+                    Quad.Enabled := True;
+                    {Quad.WithArrows := False;}
+                    Quad.SignalFocus := False;
+                    Quad.Hint := '5408';
+                    Quad.Tag := I+1;
+                    Notify:=AcceptEdit;
+                   end;
+                 end;
                  Edit.SetBounds(X,Y,J,LineHeight);
                  Edit.Parent:=SB;
                  Edit.Hint:=HintMsg;

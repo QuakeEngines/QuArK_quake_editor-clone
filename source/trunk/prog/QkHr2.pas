@@ -153,7 +153,7 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      Q2:=BuildQ2Header;
+      Q2:=BuildWalFileHeader;
       FillChar(Header, SizeOf(Header), 0);
       Header.Version:=MIP_VERSION;
       Header.Name:=Q2.Nom;

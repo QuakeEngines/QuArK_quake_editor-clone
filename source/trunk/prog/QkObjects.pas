@@ -78,8 +78,9 @@ const
  iiCfgFile               = 41;
  iiImport                = 42;
  iiPython                = 43;
+ iiBezier                = 44;
 
- InternalImagesCount     = 44;
+ InternalImagesCount     = 45;
 
  ModeFichier = fmOpenRead or fmShareDenyWrite;
  ModeFichierEcr = fmOpenReadWrite or fmShareDenyWrite;

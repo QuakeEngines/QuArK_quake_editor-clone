@@ -1825,6 +1825,7 @@ begin
                    try
                     Title:=LoadStr1(770);
                     DefaultExt:=Copy(Ext, 2, MaxInt);  { drop '.' }
+                    Filter:='*'+Ext+'|*'+Ext;
                     while Execute and not MoveFile(PChar(S1), PChar(FileName)) do
                      MessageDlg(LoadStr1(4427), mtError, [mbOk], 0);
                    finally

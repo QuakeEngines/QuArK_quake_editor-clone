@@ -231,7 +231,7 @@ implementation
 uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, About, Running,
   Output1, QkTreeView, Quarkx, Ed3DFX, PyProcess, Console, Python,
-  {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, QkMdlObjects, PyForms;
+  {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -438,7 +438,7 @@ begin
  Done:=ClearPool(False);
  ClearObjectManager;
  ClearTimers;
- ClearMdlObjects;
+ ClearWireframeCache;
  {$IFDEF DebugNOTYET} if MemWatch<>Nil then MemWatch.Invalidate; {$ENDIF}
  GlobalDisplayWarnings;
  if IdleJobs<>Nil then

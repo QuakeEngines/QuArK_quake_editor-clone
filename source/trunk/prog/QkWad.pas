@@ -28,7 +28,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkFileObjects, TB97, QkObjects, StdCtrls, ExtCtrls, ComCtrls, CommCtrl,
-  QkListView, QkTextures, Game, QkForm{, ImgList};
+  QkListView, QkTextures, Game, QkForm, QkPixelSet;
 
 type
  QWad = class(QLvFileObject)
@@ -68,7 +68,7 @@ type
     procedure SetInfo(nInfo: PGameBuffer);
     procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;}
     function PopulateListView(Counter: Integer) : Integer; override;
-    function AnimationNextStep(Q: QTexture; Seq: Integer) : QTexture;
+    function AnimationNextStep(Q: QPixelSet; Seq: Integer) : QPixelSet;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
@@ -136,13 +136,14 @@ function QWad.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 var
  S: String;
 begin
- if Q is QTexture then
+ if Q is QPixelSet then
   Result:=ieResult[True] + [ieListView]
  else
   begin
    S:=Q.Name+Q.TypeInfo;
-   Result:=ieResult[       { allow any ".wad_?" file }
-    CompareText(Copy(S, Length(S)-5, 5), '.wad_') = 0];
+   Result:=ieResult[       { allow any ".wad_?" or ".wad3_?" file }
+       (CompareText(Copy(S, Length(S)-5, 5), '.wad_') = 0)
+    or (CompareText(Copy(S, Length(S)-6, 6), '.wad3_') = 0)];
   end;
 end;
 
@@ -217,7 +218,8 @@ var
  Origine, Fin: LongInt;
  I, Zero: Integer;
  Q: QObject;
- Tex: QTexture;
+ Tex: QPixelSet;
+ TexFile: QTextureFile;
  S: String;
  Wad3: Boolean;
 begin
@@ -247,15 +249,19 @@ begin
          end
         else
          begin
-          if not (Q is QTexture) then
+          if not (Q is QPixelSet) then
            Raise EErrorFmt(5511, [Q.Name+Q.TypeInfo]);
           Entree.InfoType:='D';
-          Tex:=QTexture(Q);  { must convert to Quake 1 texture }
+          Tex:=QPixelSet(Q);  { must convert to Quake 1 texture }
           PasToChar(Entree.Nom, Q.Name);
          end;
         Entree.Position:=F.Position;
         if Tex<>Nil then
-         Tex.SaveAsQuake1(F)  { we turn the texure into Quake 1 format }
+         begin
+          TexFile:=CreateCopyTexture(Tex); try
+          TexFile.SaveAsQuake1(F)  { we turn the texure into Quake 1 format }
+          finally TexFile.AddRef(-1); end;
+         end
         else
          Q.Enregistrer1(Info);   { default saving method }
         Entree.Taille:=F.Position-Entree.Position;
@@ -323,7 +329,7 @@ end;
 
 function QTextureList.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
- if Q is QTexture then
+ if Q is QPixelSet then
   Result:=ieResult[True] + [ieListView]
  else
   Result:=ieResult[Q is QFileObject];
@@ -420,6 +426,7 @@ var
  Positions, P: ^LongInt;
  Origine, Fin, P1: LongInt;
  Q: QObject;
+ TexFile: QTextureFile;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -438,14 +445,18 @@ begin
       for I:=0 to SousElements.Count-1 do
        begin
         Q:=SousElements[I];
-        if Q is QTexture then
+        if Q is QPixelSet then
          begin
           P1:=F.Position;
           try
            if Q is QTexture1 then
             Q.Enregistrer1(Info)   { default saving method }
            else
-            QTexture(Q).SaveAsQuake1(F);  { convert to Quake 1 format }
+            begin
+             TexFile:=CreateCopyTexture(QPixelSet(Q)); try
+             TexFile.SaveAsQuake1(F);  { convert to Quake 1 format }
+             finally TexFile.AddRef(-1); end;
+            end;
            P^:=P1-Origine;  { ok }
           except
            F.Position:=P1;   { could not store texture }
@@ -500,7 +511,7 @@ begin
  end;
 end;*)
 
-function TFQWad.AnimationNextStep(Q: QTexture; Seq: Integer) : QTexture;
+function TFQWad.AnimationNextStep(Q: QPixelSet; Seq: Integer) : QPixelSet;
 var
  S: String;
  L: TStringList;
@@ -511,10 +522,12 @@ begin
  Result:=Q;
  if FileObject=Nil then Exit;
  try
-  QF:=Q.LoadTexture;
+  QObj:=Q.LoadPixelSet;
  except
   Exit;
  end;
+ if not (QObj is QTextureFile) then Exit;
+ QF:=QTextureFile(QObj);
  S:=QF.CheckAnim(Seq);  { find name of candidates }
  if S<>'' then
   begin
@@ -523,9 +536,9 @@ begin
    for I:=0 to L.Count-1 do
     begin
      QObj:=FileObject.SousElements.FindShortName(L[I]);
-     if (QObj<>Nil) and (QObj is QTexture) then
+     if (QObj<>Nil) and (QObj is QPixelSet) then
       begin
-       Result:=QTexture(QObj);
+       Result:=QPixelSet(QObj);
        Exit;
       end;
     end;
@@ -581,20 +594,21 @@ end;
 
 function TFQWad.PopulateListView(Counter: Integer) : Integer;
 var
- NomTexture, Image: String;
- I, J, Reduction, Gauche, Source: Integer;
- P: PChar;
- Entete: TQ1Miptex;
+ NomTexture{, Image}, ErrorMsg: String;
+ I, J, Reduction, Gauche{, Source}: Integer;
+{P: PChar;
+ Entete: TQ1Miptex;}
  DC: HDC;
- Bits: array[0..63, 0..63] of Char;
+{Bits: array[0..63, 0..63] of Char;}
  Q: QObject;
  R: TRect;
  TexLoop: TList;
  BaseImage: Integer;
- SelectNow, ZeroIsNotBlack: Boolean;
+ SelectNow{, ZeroIsNotBlack}: Boolean;
  Item: TListItem;
- GameInfo: PGameBuffer;
- Pal1: HPalette;
+{GameInfo: PGameBuffer;}
+ PSD, NewPSD: TPixelSetDescription;
+{Pal1: HPalette;}
 
 (*procedure AjouterEl(Q: QObject; Nom: String; Numero: Integer; Compter: Boolean);
   var
@@ -649,22 +663,21 @@ begin
     end;
    Exit;  { quit here - we are in an idle job }
   end;
+ NewPSD.Init;
+ PSD.Init;
  while Counter < FileObject.SousElements.Count do
   begin
    Q:=FileObject.SousElements[Counter];
-   if not (Q is QTexture)        { ignore the non-textures }
- { or not (QTexture(Q).NeededGame in [mjNotQuake2, mjQuake2])     { this should not occur apart from Hr2 }
+   Inc(Counter);
+   if not (Q is QPixelSet)   { ignore the non-images }
    or (ImageTextures.IndexOf(Q)>=0) then      { already loaded }
-    begin
-     Inc(Counter);
-     Continue;
-    end;
+    Continue;
 
     { build the animation loop }
    TexLoop:=TList.Create; try
    repeat
     TexLoop.Add(Q);
-    Q:=AnimationNextStep(QTexture(Q), 0);
+    Q:=AnimationNextStep(QPixelSet(Q), 0);
     I:=TexLoop.IndexOf(Q);
     if I>=0 then Break;   { closed the animation loop }
    until ImageTextures.IndexOf(Q)>=0;
@@ -686,64 +699,53 @@ begin
    SelectNow:=False;
    for J:=0 to TexLoop.Count-1 do
     begin
-     Q:=QTexture(TexLoop[J]);
-
-      { build the 64x64 image }
-     if Tex=Nil then
-      begin
-       Tex:=TBitmap.Create;
-       Tex.Width:=64;
-       Tex.Height:=64;
-      end;
      try
-      Entete:=QTexture(Q).BuildQ1Header;
-      Reduction:=0;
-      while (Reduction<3) and ((Entete.W>64) or (Entete.H>64)) do
+       { build the 64x64 image }
+      if Tex=Nil then
        begin
-        Entete.W:=Entete.W div 2;
-        Entete.H:=Entete.H div 2;
+        Tex:=TBitmap.Create;
+        Tex.Width:=64;
+        Tex.Height:=64;
+       end;
+      Q:=QPixelSet(TexLoop[J]).LoadPixelSet;
+      PSD.Size:=QPixelSet(Q).GetSize;
+      Reduction:=0;
+      while (PSD.Size.X>64) or (PSD.Size.Y>64) do
+       begin
+        PSD.Size.X:=PSD.Size.X div 2;
+        PSD.Size.Y:=PSD.Size.Y div 2;
         Inc(Reduction);
        end;
       if J=0 then
        case Reduction of
+        0: ;
         1: NomTexture:=NomTexture + '  (½)';
         2: NomTexture:=NomTexture + '  (¼)';
-        3: NomTexture:=NomTexture + '  (1/8)';
+       else
+           NomTexture:=NomTexture + Format('  (1/%d)', [1 shl Reduction]);
        end;
-      FillChar(Bits, SizeOf(Bits), 0);
-      Image:=QTexture(Q).GetTexImage(Reduction);
-      Source:=1;
-      P:=PChar(@Bits) + 64*Entete.H;
-      Gauche:=(64-Entete.W) div 2;
-      Inc(P, Gauche);
-      for I:=Entete.H-1 downto 0 do
-       begin
-        Dec(P, 64);
-        Move(Image[Source], P^, Entete.W);
-        Inc(Source, Entete.W);
-       end;
-      GameInfo:=QTexture(Q).LoadTexture.LoadPaletteInfo; try
-      GameInfo^.BitmapInfo.bmiHeader.biWidth:=64;
-      GameInfo^.BitmapInfo.bmiHeader.biHeight:=64;
-      DC:=Tex.Canvas.Handle;
-      Pal1:=SelectPalette(DC, GameInfo^.Palette, False); try
-      RealizePalette(DC);
-      SetDIBitsToDevice(DC, 0,0, 64,64, 0,0, 0,64,
-       @Bits, GameInfo^.BmpInfo, dib_RGB_Colors);
-      finally SelectPalette(DC, Pal1, False); end; 
-      ZeroIsNotBlack:=LongInt(GameInfo^.BitmapInfo.bmiColors[0]) <> 0;
-      finally DeleteGameBuffer(GameInfo); end;
-      GdiFlush;
-      if ZeroIsNotBlack then   { palette color 0 is not black }
-       begin
-        if Entete.W < 64 then
+
+      try
+       if Reduction=0 then
+        NewPSD:=QPixelSet(Q).Description
+       else
+        if (Q is QTextureFile) and (Reduction < (QTextureFile(Q).CustomParams and cpIndexesMax)) then
+         NewPSD:=QTextureFile(Q).ScaledDownDescription(Reduction)
+        else
          begin
-          PatBlt(DC, 0, 64-Entete.H, Gauche, Entete.H, Blackness);
-          PatBlt(DC, Gauche+Entete.W, 64-Entete.H, 64-(Gauche+Entete.W), Entete.H, Blackness);
+          NewPSD.Init;
+          NewPSD.Size:=PSD.Size;
+          PSD:=QPixelSet(Q).Description;
+          PSDConvert(NewPSD, PSD, ccTemporary);
          end;
-        if Entete.H < 64 then
-         PatBlt(DC, 0, 0, 64, 64-Entete.H, Blackness);
-       end;
+       DC:=Tex.Canvas.Handle;
+       PatBlt(DC, 0, 0, 64, 64, Blackness);
+       Gauche:=(64-NewPSD.Size.X) div 2;
+       NewPSD.Paint(DC, Gauche, 64-NewPSD.Size.Y);
+      finally
+       NewPSD.Done;
+       PSD.Done;
+      end;
      except
       on E: Exception do
        with Tex.Canvas do
@@ -751,12 +753,12 @@ begin
          PatBlt(Handle, 0,0,64,64, Whiteness);
          Font.Name:='Small fonts';
          Font.Size:=6;
-         Image:=GetExceptionMessage(E);
+         ErrorMsg:=GetExceptionMessage(E);
          R.Left:=3;
          R.Top:=5;
          R.Right:=62;
          R.Bottom:=64;
-         DrawText(Handle, PChar(Image), Length(Image), R,
+         DrawText(Handle, PChar(ErrorMsg), Length(ErrorMsg), R,
           DT_NOCLIP or DT_NOPREFIX or DT_WORDBREAK);
          if J=0 then
           NomTexture:=Q.Name;
@@ -777,6 +779,7 @@ begin
        {$ENDIF}*)
        ImageList_Add(ImageList1.Handle, Tex.Handle, 0);
       end;
+     Q:=QPixelSet(TexLoop[J]);
      ImageTextures.Add(Q);
      SelectNow:=SelectNow or (Q=SelectThis);
     end;
@@ -787,6 +790,10 @@ begin
 
    Q:=QObject(TexLoop[0]);
    Item:=ListView1.Items.Add;
+   {$IFDEF Debug}
+   if BaseImage>=ImageTextures.Count then
+    Raise InternalE('QkWad/BaseImage');
+   {$ENDIF}
    with Item do
     begin
      Data:=Q;
@@ -892,15 +899,19 @@ var
 
   procedure Animer(P: Integer);
   var
-   Q1, Q2: QTexture;
+   Q1, Q2: QPixelSet;
   begin
    with ListView1.Items[P] do
     begin
-     Q1:=QTexture(ImageTextures[ImageIndex]);
+     Q1:=QPixelSet(ImageTextures[ImageIndex]);
      Q2:=AnimationNextStep(Q1, Ord(TimerAnimation.Tag>=k_ImagesAvantChangement)+1);
      if Q1<>Q2 then
       begin
        ImageIndex:=ImageTextures.IndexOf(Q2);
+       {$IFDEF Debug}
+       if ImageIndex=-1 then
+        raise InternalE('AnimationNextStep broken');
+       {$ENDIF}
        Anime:=True;
       end;
     end;
@@ -957,16 +968,16 @@ end;
 
 function TFQWad.EnumObjs(Item: TListItem; var Q: QObject) : Boolean;
 var
- Q1: QTexture;
+ Q1: QPixelSet;
 begin
- Q1:=QTexture(Item.Data);
+ Q1:=QPixelSet(Item.Data);
  if Q=Nil then
   begin
    Q:=Q1;  { return the first texture }
    Result:=True;
    Exit;
   end;
- Q:=AnimationNextStep(Q as QTexture, 0);  { find the next one }
+ Q:=AnimationNextStep(Q as QPixelSet, 0);  { find the next one }
  Result:=Q<>Q1;  { Result:=False if we closed the loop }
 end;
 

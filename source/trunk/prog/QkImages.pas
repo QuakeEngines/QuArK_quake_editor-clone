@@ -28,21 +28,20 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, ExtCtrls, PaintPanel, Game,
-  QkForm, QkTextures;
+  QkForm, QkTextures, QkPixelSet, StdCtrls, EnterEditCtrl;
 
 type
- QImage  = class(QFileObject)
+ QImage  = class(QPixelSet)
            protected
              function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
             {procedure PasteImageDC(NeededGame: Char; DC: HDC; W,H: Integer);}
              procedure SetQuakeImageData(const Lmp: TPaletteLmp; const Data: String; W,H: Integer);
            public
              function TestConversionType(I: Integer) : QFileObjectClass; override;
-             function ConversionFrom(Source: QFileObject) : Boolean; override;
              procedure EtatObjet(var E: TEtatObjet); override;
              function IsTrueColor : Boolean;
              procedure NotTrueColor;
-             function GetSize : TPoint;
+            {function GetSize : TPoint;}
              function GetImage1 : String;
              procedure GetImageData1(var Buf; BufSize: Integer);
              function GetImagePtr1 : PChar;
@@ -54,8 +53,12 @@ type
              procedure CopyImageToDC(DC: HDC; Left, Top: Integer);
              function GetBitmapInfo1(var BmpInfo: TBitmapInfo256) : Integer;
              procedure CopyExtraData(var HasText: Boolean); override;
-             procedure GetAsTexture3D(var P: TTexture3D);
+            {procedure GetAsTexture3D(var P: TTexture3D);}
              function ConvertToTrueColor : QImage;
+             function Description : TPixelSetDescription; override;
+             function SetDescription(const PSD: TPixelSetDescription;
+                                       Confirm: TSDConfirm) : Boolean; override;
+             procedure ImageConvertTo(NewPSD: TPixelSetDescription);
            end;
  QImages = QImage;   { I don't want to correct this all around... }
  QImagesClass = class of QImages;
@@ -73,8 +76,19 @@ type
                       procedure AutoSize;
                     end;
   TFQImages = class(TQForm1)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Label1: TLabel;
+    EditSize: TEnterEdit;
+    Format8bits: TRadioButton;
+    Format24bits: TRadioButton;
+    AlphaCB: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure EditSizeAccept(Sender: TObject);
+    procedure Format8bitsClick(Sender: TObject);
+    procedure Format24bitsClick(Sender: TObject);
+    procedure AlphaCBClick(Sender: TObject);
   private
     procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
   protected
@@ -93,7 +107,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImages}) : QImagesClass
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, TbPalette, qmath, Quarkx, CCode;
+uses QkPcx, QkBmp, QkTga, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
 
 {$R *.DFM}
 
@@ -147,6 +161,22 @@ begin
    end;
 end;
 
+function LmpFromColors(const bmiColors: TBitmapInfoColors) : TPaletteLmp;
+var
+ I: Integer;
+ P: PChar;
+begin
+ P:=PChar(@Result);
+ for I:=0 to 255 do
+  with bmiColors[I] do
+   begin
+    P[0]:=Chr(rgbRed);
+    P[1]:=Chr(rgbGreen);
+    P[2]:=Chr(rgbBlue);
+    Inc(P,3);
+   end;
+end;
+
  {------------------------}
 
 function QImages.OuvrirFenetre;
@@ -172,18 +202,15 @@ begin
   Raise EError(5680);
 end;
 
-function QImages.GetSize : TPoint;
+(*function QImages.GetSize : TPoint;
 var
  V: array[1..2] of Single;
 begin
  if not GetFloatsSpec('Size', V) then
-  if Specifics.Values['Data']<>'' then
-   Raise EError(5537)
-  else
-   Raise EErrorFmt(5534, ['Size']);
+  Raise EErrorFmt(5534, ['Size']);
  Result.X:=Round(V[1]);
  Result.Y:=Round(V[2]);
-end;
+end;*)
 
 function QImages.GetImage1 : String;
 var
@@ -249,7 +276,7 @@ begin
  PChar(Result):=PChar(S)+Length('Pal=');
 end;
 
-procedure QImages.GetAsTexture3D(var P: TTexture3D);
+{procedure QImages.GetAsTexture3D(var P: TTexture3D);
 var
  I: Integer;
 begin
@@ -263,7 +290,138 @@ begin
  if I<0 then
   Raise EErrorFmt(5534, ['Image1']);
  P.BitsSource:=Specifics[I];
+end;}
+
+function QImages.Description : TPixelSetDescription;
+const
+ AlphaSpec = 'Alpha';
+var
+ S: String;
+begin
+{Acces; included in GetSize}
+ Result.Init;
+ Result.Size:=GetSize;
+ Result.Data:=GetImagePtr1;
+ if IsTrueColor then
+  begin
+   Result.Format:=psf24bpp;
+   Result.ScanLine:=-((Result.Size.X*3+3) and not 3);
+  end
+ else
+  begin
+   Result.Format:=psf8bpp;
+   Result.Palette:=pspVariable;
+   Result.ColorPalette:=GetPalettePtr1;
+   Result.ScanLine:=-((Result.Size.X+3) and not 3);
+  end;
+ S:=GetSpecArg(AlphaSpec);
+ if Length(S) = (Length(AlphaSpec)+1) + Result.Size.X*Result.Size.Y then
+  begin
+   Result.AlphaBits:=psa8bpp;
+   Result.AlphaData:=PChar(S)+(Length(AlphaSpec)+1);
+   Result.AlphaScanLine:=-Result.Size.X;
+  end
+  else
+   Result.AlphaBits:=psaNoAlpha;
 end;
+
+function QImages.SetDescription(const PSD: TPixelSetDescription;
+                                Confirm: TSDConfirm) : Boolean;
+const
+ ImageSpec = 'Image1';
+ PaletteSpec = 'Pal';
+ AlphaSpec = 'Alpha';
+var
+ NewPSD: TPixelSetDescription;
+ ImageData, PaletteData, AlphaData: String;
+begin
+ Acces;
+ { we use PSDConvert to copy and if necessary convert data from
+  PSD into NewPSD; the fields of NewPSD are set to point inside
+  Specific/Arg strings so that these strings are directly filled
+  with the good values by PSDConvert. }
+ NewPSD.Init; try
+ if PSD.Format=psf24bpp then
+  NewPSD.ScanLine:=-((PSD.Size.X*3+3) and not 3)   { expected scanline }
+ else
+  begin
+   NewPSD.ScanLine:=-((PSD.Size.X+3) and not 3);
+   PaletteData:=PaletteSpec+'=';
+   SetLength(PaletteData, (Length(PaletteSpec)+1) + SizeOf(TPaletteLmp));
+   NewPSD.ColorPalette:=PPaletteLmp(PChar(PaletteData)+(Length(PaletteSpec)+1));
+   NewPSD.Palette:=pspVariable;  { variable palette }
+  end;
+ ImageData:=ImageSpec+'=';
+ SetLength(ImageData, (Length(ImageSpec)+1) - NewPSD.ScanLine*PSD.Size.Y);
+ NewPSD.Data:=PChar(ImageData) + (Length(ImageSpec)+1);  { expected data }
+
+ if PSD.AlphaBits > psaNoAlpha then
+  begin
+   AlphaData:=AlphaSpec+'=';
+   SetLength(AlphaData, (Length(AlphaSpec)+1) + PSD.Size.X*PSD.Size.Y);
+   NewPSD.AlphaBits:=psa8bpp;   { expected alpha }
+   NewPSD.AlphaData:=PChar(AlphaData)+(Length(AlphaSpec)+1);
+   NewPSD.AlphaScanLine:=-PSD.Size.X;
+  end;
+
+ { start the copy/convert stuff }
+ Result:=PSDConvert(NewPSD, PSD, Confirm);
+ if not Result then Exit;
+
+ { remove old image data }
+ Specifics.Values[ImageSpec]:='';
+ Specifics.Values[PaletteSpec]:='';
+ Specifics.Values[AlphaSpec]:='';
+
+ { store the new data }
+ SetSize(NewPSD.Size);
+ Specifics.Add(ImageData);
+ if PaletteData<>'' then Specifics.Add(PaletteData);
+ if AlphaData<>'' then Specifics.Add(AlphaData);
+ 
+ finally NewPSD.Done; end;
+end;
+(*const
+ Spec1 = 'Image1=';
+var
+ V: array[1..2] of Single;
+ S: String;
+ nScanLine, LineLength, I: Integer;
+ Src, Dest: PChar;
+begin
+ V[1]:=PSD.Size.X;
+ V[2]:=PSD.Size.Y;
+ SetFloatsSpec('Size', V);
+ if PSD.Colors=Nil then
+  begin  { true color ]
+   Specifics.Values['Pal']:='';
+   LineLength:=PSD.Size.X*3;
+  end
+ else
+  begin
+   Specifics... 'Pal';
+   LineLength:=PSD.Size.X;
+  end;
+ Specifics.Values['Image1']:='';
+ S:=Spec1;
+ nScanLine:=-((LineLength+3) and not 3);
+ SetLength(S, Length(Spec1)-nScanLine*PSD.Size.Y);
+ if nScanLine=PSD.ScanLine then   { fast version ]
+  Move(PSD.Data^, PChar(S)[Length(Spec1)], Length(S)-Length(Spec1))
+ else
+  begin
+   Src:=StartPointer(PSD);
+   Dest:=PChar(S)+Length(S);
+   for I:=0 to PSD.Size.Y-1 do
+    begin
+     PLongInt(Dest-4)^:=0;   { fill the end of the scan lines with zeroes ]
+     Inc(Dest, nScanLine);
+     Move(Src^, Dest^, LineLength);
+     Inc(Src, PSD.ScanLine);
+    end;
+  end;
+ Specifics.Add(S);
+end;*)
 
 {function QImages.GetBitmapImage : TBitmap;
 var
@@ -284,15 +442,10 @@ end;}
 
 procedure QImages.SetQuakeImageData(const Lmp: TPaletteLmp; const Data: String; W,H: Integer);
 var
- V: array[1..2] of Single;
  PalStr: String;
 begin
- V[1]:=W;
- V[2]:=H;
- SetFloatsSpec('Size', V);
-
+ SetSize(Point(W,H));
  Specifics.Values['Image1']:=Data;
-
  SetString(PalStr, PChar(@Lmp), SizeOf(TPaletteLmp));
  Specifics.Values['Pal']:=PalStr;
 end;
@@ -329,6 +482,7 @@ var
  BitmapInfo: TBitmapInfo absolute BmpInfo;
  Source, Data: String;
  bpp, BaseMemSize: Integer;
+ TmpPalette: TPaletteLmp;
 begin
  FillChar(BmpInfo, SizeOf(BmpInfo), 0);
  with BmpInfo.bmiHeader do
@@ -350,7 +504,8 @@ begin
     PChar(Source), BitmapInfo, dib_RGB_Colors);
 
    SetLength(Data, BaseMemSize);
-   Resample(@BmpInfo.bmiColors, PChar(Source), @Game^.BmpInfo.bmiColors, PChar(Data),
+   TmpPalette:=LmpFromColors(BmpInfo.bmiColors);
+   Resample(@TmpPalette, PChar(Source), @Game^.PaletteLmp, PChar(Data),
     BmpInfo.bmiHeader.biWidth, BmpInfo.bmiHeader.biHeight, (BmpInfo.bmiHeader.biWidth+3) and not 3,
     BmpInfo.bmiHeader.biWidth, BmpInfo.bmiHeader.biHeight, (BmpInfo.bmiHeader.biWidth+3) and not 3);
   end
@@ -362,7 +517,7 @@ begin
     PChar(Source), BitmapInfo, dib_RGB_Colors);
 
    SetLength(Data, BaseMemSize);
-   Resample(Nil, PChar(Source), @Game^.BmpInfo.bmiColors, PChar(Data),
+   Resample(Nil, PChar(Source), @Game^.PaletteLmp, PChar(Data),
     BmpInfo.bmiHeader.biWidth, BmpInfo.bmiHeader.biHeight, (BmpInfo.bmiHeader.biWidth*3+3) and not 3,
     BmpInfo.bmiHeader.biWidth, BmpInfo.bmiHeader.biHeight, (BmpInfo.bmiHeader.biWidth+3) and not 3);
   end;
@@ -377,7 +532,7 @@ begin
   Result:=TestConversionTextures(I);
 end;
 
-function QImages.ConversionFrom(Source: QFileObject) : Boolean;
+(*function QImages.ConversionFrom(Source: QFileObject) : Boolean;
 var
  Header: TQ1Miptex;
  Data: String;
@@ -396,13 +551,13 @@ begin
      begin
       Header:=BuildQ1Header;
       Data:=GetWinImage;
-      LoadTexture.LoadPaletteLmp(Lmp);
+      Load~Texture.LoadPaletteLmp(Lmp);
      end;
     SetQuakeImageData(Lmp^, Data, Header.W, Header.H);
    end
   else
    Result:=False;
-end;
+end;*)
 
 function QImages.GetBitmapInfo1(var BmpInfo: TBitmapInfo256) : Integer;
 var
@@ -569,6 +724,22 @@ begin
  Result.Specifics.Add(Specifics[Specifics.IndexOfName(FloatSpecNameOf('Size'))]);
 end;
 
+procedure QImages.ImageConvertTo(NewPSD: TPixelSetDescription);
+var
+ PSD: TPixelSetDescription;
+ Temp: QImages;
+begin
+ DebutTravail(0,0); try
+ PSD:=Description; try
+ PSDConvert(NewPSD, PSD, ccConfirm);
+ Temp:=QBmp.Create('', Nil); try
+ Temp.SetDescription(NewPSD, ccAuto);
+ Undo.Action(Self, TSetSpecificsUndo.Create(LoadStr1(626), Temp.Specifics, Self));
+ finally Temp.Free; end;
+ finally NewPSD.Done; PSD.Done; end;
+ finally FinTravail; end;
+end;
+
  {------------------------}
 
 procedure TImageDisplayer.SetSource;
@@ -642,14 +813,31 @@ end;
 procedure TFQImages.wmMessageInterne(var Msg: TMessage);
 var
  Pal: TToolbar97;
+ PSD: TPixelSetDescription;
+ FileObj1: QImages;
 begin
  case Msg.wParam of
   wp_AfficherObjet:
     begin
-     ImageDisplayer.Source:=FileObject as QImages;
+     FileObj1:=FileObject as QImages;
+     ImageDisplayer.Source:=FileObj1;
      Pal:=GetPaletteToolbar(ValidParentForm(Self));
      if Pal<>Nil then
-      DynamicPaletteToolbar(Pal, FileObject, 'Pal');
+      if FileObj1.IsTrueColor then
+       Pal.Free
+      else
+       DynamicPaletteToolbar(Pal, FileObject, 'Pal');
+     PSD:=QImages(FileObject).Description;
+     FFileObject:=Nil;
+     try
+      EditSize.Text:=Format('%d %d', [PSD.Size.X, PSD.Size.Y]);
+      Format8bits.Checked:=PSD.Format=psf8bpp;
+      Format24bits.Checked:=PSD.Format=psf24bpp;
+      AlphaCB.Checked:=PSD.AlphaBits=psa8bpp;
+     finally
+      FFileObject:=FileObj1;
+      PSD.Done;
+     end;
     end;
  end;
  inherited;
@@ -684,6 +872,8 @@ begin
   { VPAL } Ord('V')+256*Ord('P')+65536*Ord('A')+16777216*Ord('L'):
      if FileObject<>Nil then
       begin
+       if (FileObject as QImage).IsTrueColor then
+        Raise EError(5689);
        Pal:=MakePaletteToolbar(ValidParentForm(Self));
        DynamicPaletteToolbar(Pal, FileObject, 'Pal');
        Pal.Show;
@@ -697,8 +887,53 @@ procedure TFQImages.FormCreate(Sender: TObject);
 begin
  inherited;
  ImageDisplayer:=TImageDisplayer.Create(Self);
- ImageDisplayer.Parent:=Self;
+ ImageDisplayer.Parent:=Panel1;
  ImageDisplayer.Align:=alClient;
+end;
+
+procedure TFQImages.EditSizeAccept(Sender: TObject);
+var
+ NewPSD: TPixelSetDescription;
+ Size: array[1..2] of Reel;
+begin
+ if not Assigned(FileObject) then Exit;
+ LireValeurs(EditSize.Text, Size);
+ NewPSD.Init;
+ NewPSD.Size.X:=Round(Size[1]);
+ NewPSD.Size.Y:=Round(Size[2]);
+ (FileObject as QImages).ImageConvertTo(NewPSD);
+end;
+
+procedure TFQImages.Format8bitsClick(Sender: TObject);
+var
+ NewPSD: TPixelSetDescription;
+begin
+ if not Assigned(FileObject) then Exit;
+ NewPSD.Init;
+ NewPSD.Format:=psf8bpp;
+ (FileObject as QImages).ImageConvertTo(NewPSD);
+end;
+
+procedure TFQImages.Format24bitsClick(Sender: TObject);
+var
+ NewPSD: TPixelSetDescription;
+begin
+ if not Assigned(FileObject) then Exit;
+ NewPSD.Init;
+ NewPSD.Format:=psf24bpp;
+ (FileObject as QImages).ImageConvertTo(NewPSD);
+end;
+
+procedure TFQImages.AlphaCBClick(Sender: TObject);
+const
+ NewAlphaBits: array[Boolean] of TPixelSetAlpha = (psaNoAlpha, psa8bpp);
+var
+ NewPSD: TPixelSetDescription;
+begin
+ if not Assigned(FileObject) then Exit;
+ NewPSD.Init;
+ NewPSD.AlphaBits:=NewAlphaBits[AlphaCB.Checked];
+ (FileObject as QImages).ImageConvertTo(NewPSD);
 end;
 
 end.

@@ -112,22 +112,32 @@ type
              end;
  TPolyedre = TPolyhedron;
 
- TFace     = class(TTreeMap)
+ TTexturedTreeMap = class(TTreeMap)   { for faces and Bezier patches }
+                    private
+                      function GetNomTex : String;
+                      procedure SetNomTex(const nTex: String);
+                      function GetTextureMirror : Boolean;
+                      procedure SetTextureMirror(Value: Boolean);
+                    protected
+                      procedure UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: Reel);
+                    public
+                      property NomTex : String read GetNomTex write SetNomTex;
+                      procedure FindTextures(SortedList: TStringList); override;
+                      function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; override;
+                      property TextureMirror: Boolean read GetTextureMirror write SetTextureMirror;
+                    end;
+
+ TFace     = class(TTexturedTreeMap)
              private
               { données internes pour gestion polyèdre }
                FFaceOfPoly: PSurface;
               {prvDescS: PTableauFSommets;
                prvNbS: Integer;}
-               function GetNomTex : String;
-               procedure SetNomTex(const nTex: String);
-               function GetTextureMirror : Boolean;
-               procedure SetTextureMirror(Value: Boolean);
               {function GetFaceCenter : TVect;}
               {function GetVertexCount(Cmpo: Integer) : Integer;
                function GetVertex(Cmpo, I: Integer) : TVect;}
                function GetFaceOfPoly: PSurface;
                procedure DestroyFace;
-               procedure UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: Reel);
              protected
                procedure InvalidateFace;
               {procedure AjouterSurfaceRef(Liste: TList; S: PSurface; Vertices: Pointer; VertexCount: Integer; ZMax: LongInt; Sel: Boolean);}
@@ -142,7 +152,6 @@ type
               {procedure PostDessinerSel; override;}
               {procedure PostDessinerSel1;}
                procedure EtatObjet(var E: TEtatObjet); override;
-               property NomTex : String read GetNomTex write SetNomTex;
               {function VecteurNormal : TVect;}
                procedure SetThreePoints(const V1, V2, V3: TVect);
                function GetThreePoints(var V1, V2, V3: TVect) : Boolean;
@@ -159,11 +168,8 @@ type
                function GetOrigin(var Pt: TVect) : Boolean; override;
                procedure ChercheExtremites(var Min, Max: TVect); override;
                procedure Deplacement(const PasGrille: Reel); override;
-               procedure FindTextures(SortedList: TStringList); override;
-               function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; override;
                procedure Distortion(const nNormal, FixPoint: TVect);
                procedure DistortionPoint(const Fix1, Fix2, Src, Dest: TVect);
-               property TextureMirror: Boolean read GetTextureMirror write SetTextureMirror;
                procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
               {property VertexCount[Cmpo: Integer] : Integer read GetVertexCount;
                property Vertex[Cmpo, I: Integer] : TVect read GetVertex;}
@@ -175,7 +181,7 @@ type
                procedure UnlinkSurface(S: PSurface);
                function Retourner : Boolean;
                procedure AddTo3DScene; override;
-               function GetFaceOpacity(Default: Integer; var Info: TTexOpacityInfo) : Integer;   { 0 - 255 }
+               function GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;   { 0 - 255 }
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
                function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
@@ -210,8 +216,8 @@ procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean
 
 implementation
 
-uses QkFileObjects, Undo, PyMapView,
-     Ed3DFX, Quarkx, PyObjects, QkSin;
+uses QkFileObjects, Undo, PyMapView, QkPixelSet,
+     Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';
@@ -1859,7 +1865,7 @@ var
 
    { tiglari }
    rval : Single; { for Value/lightvalue }
-   Q: QTexture;
+   Q: QPixelSet;
    type
      FlagDef = record
       name: Pchar;
@@ -2047,7 +2053,7 @@ var
         Q := GlobalFindTexture(F.NomTex,Nil);
         if Q<>Nil then
         begin { see comments to QkMap on what's going on here }
-         Q:=Q.LoadTexture;
+         Q:=Q.LoadPixelSet;
          if not (Q is QTextureSin) then
            Q:=Nil;
         end;
@@ -2851,27 +2857,25 @@ begin
    Result:=False;
 end;
 
-procedure TFace.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: Reel);
+procedure TTexturedTreeMap.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: Reel);
 const
  DefTexSize = 64;
 var
- Header: TQ1Miptex;
- Q: QTexture;
- TexW, TexH: Integer;
+{Header: TQ1Miptex;}
+ Q: QPixelSet;
+ Size: TPoint;
 begin
- TexW:=DefTexSize;
- TexH:=DefTexSize;
+ Size.X:=DefTexSize;
+ Size.Y:=DefTexSize;
  Q:=GlobalFindTexture(NomTex, AltTexSrc);
  if Q<>Nil then
   try
-   Header:=Q.BuildQ1Header;
-   TexW:=Header.W;
-   TexH:=Header.H;
+   Size:=Q.GetSize;
   except
    {pass}
   end;
- CorrW:=TexW*(1/EchelleTexture);
- CorrH:=TexH*(1/EchelleTexture);
+ CorrW:=Size.X*(1/EchelleTexture);
+ CorrH:=Size.Y*(1/EchelleTexture);
 end;
 
 function TFace.GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
@@ -3102,12 +3106,12 @@ begin
  and TPolyedre(FParent).CheckPolyhedron and (prvNbS>0);
 end;}
 
-function TFace.GetNomTex : String;
+function TTexturedTreeMap.GetNomTex : String;
 begin
  GetNomTex:=Specifics.Values['tex'];
 end;
 
-procedure TFace.SetNomTex(const nTex : String);
+procedure TTexturedTreeMap.SetNomTex(const nTex : String);
 begin
  Specifics.Values['tex']:=nTex;
 end;
@@ -3549,7 +3553,7 @@ begin
   end;
 end;
 
-procedure TFace.FindTextures(SortedList: TStringList);
+procedure TTexturedTreeMap.FindTextures(SortedList: TStringList);
 var
  S: String;
  J: Integer;
@@ -3559,15 +3563,15 @@ begin
   SortedList.Add(S);
 end;
 
-function TFace.ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer;
+function TTexturedTreeMap.ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer;
 var
- Dup: TFace;
+ Dup: TTexturedTreeMap;
 begin
  if ((Source='') or (CompareText(Source, NomTex) = 0)) and (NomTex<>Dest) then
   begin
    if U then
     begin
-     Dup:=Clone(FParent, False) as TFace;
+     Dup:=Clone(FParent, False) as TTexturedTreeMap;
      ListeActions.Add(TQObjectUndo.Create('', Self, Dup));
     end
    else
@@ -3676,12 +3680,12 @@ begin
   end;
 end;
 
-function TFace.GetTextureMirror : Boolean;
+function TTexturedTreeMap.GetTextureMirror : Boolean;
 begin
  GetTextureMirror:=Specifics.Values['m']<>'';
 end;
 
-procedure TFace.SetTextureMirror(Value: Boolean);
+procedure TTexturedTreeMap.SetTextureMirror(Value: Boolean);
 begin
  if Value then
   Specifics.Values['m']:='1'
@@ -3892,10 +3896,13 @@ begin
  if Dot(Cross(V1, V2), nNormale) < 0 then
   begin   { bad direction, reverse it }
    SetThreePoints(V[1], V[3], V[2]);
-   TextureMirror:=not TextureMirror;
+   TextureMirror:=True;
   end
  else
-  SetThreePoints(V[1], V[2], V[3]);
+  begin
+   SetThreePoints(V[1], V[2], V[3]);
+   TextureMirror:=False;
+  end;
 end;
 
 function TFace.GetFaceError : String;
@@ -4158,7 +4165,7 @@ begin
   end;
 end;
 
-function TFace.GetFaceOpacity(Default: Integer; var Info: TTexOpacityInfo) : Integer;
+function TFace.GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;
 var
  S: String;
 begin
@@ -4166,7 +4173,7 @@ begin
  if S='' then
   Result:=Default
  else
-  Result:=OpacityFromFlags(StrToIntDef(S,0), Info);
+  Result:=OpacityFromFlags(StrToIntDef(S,0){, Info});
 end;
 
 procedure TFace.AnalyseClic(Liste: PyObject);

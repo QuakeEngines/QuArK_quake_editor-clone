@@ -92,7 +92,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF VER90} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
-     PyForms;
+     PyForms, QkPixelSet, Bezier;
 
  {-------------------}
      
@@ -968,7 +968,7 @@ end;
 
 function xVect(self, args: PyObject) : PyObject; cdecl;
 var
- nX, nY, nZ: Double;
+ nX, nY, nZ, nS, nT: Double;
 begin
  try
   Result:=Nil;
@@ -981,9 +981,18 @@ begin
       Exit;
      end;
    end;
-  if not PyArg_ParseTupleX(args, 'ddd', [@nX, @nY, @nZ]) then
-   Exit;
-  Result:=MakePyVect3(nX, nY, nZ);
+  if PyObject_Length(args)=5 then
+   begin
+    if not PyArg_ParseTupleX(args, 'ddddd', [@nX, @nY, @nZ, @nS, @nT]) then
+     Exit;
+    Result:=MakePyVect5(nX, nY, nZ, nS, nT);
+   end
+  else
+   begin
+    if not PyArg_ParseTupleX(args, 'ddd', [@nX, @nY, @nZ]) then
+     Exit;
+    Result:=MakePyVect3(nX, nY, nZ);
+   end;
  except
   EBackToPython;
   Result:=Nil;
@@ -1375,7 +1384,7 @@ end;
 function xLoadTexture(self, args: PyObject) : PyObject; cdecl;
 var
  texname: PChar;
- Q: QTexture;
+ Q: QPixelSet;
  AltTexSrc: PyObject;
 begin
  try
@@ -1759,10 +1768,14 @@ var
 begin
  try
   Result:=Nil;
-  if not PyArg_ParseTupleX(args, 's', [@s]) then
+  s:=Nil;
+  if not PyArg_ParseTupleX(args, '|s', [@s]) then
    Exit;
   CheckQuakeDir;
-  Result:=PyString_FromString(PChar(OutputFile(s)));
+  if s=Nil then
+   Result:=PyString_FromString(PChar(GettmpQuArK))
+  else
+   Result:=PyString_FromString(PChar(OutputFile(s)));
  except
   EBackToPython;
   Result:=Nil;
@@ -2352,6 +2365,10 @@ begin
  if m=Nil then Exit;
  PyDict_SetItemString(QuarkxDict, 'redlinesicons', m);
  Py_DECREF(m);}
+ m:=PyInt_FromLong(BezierMeshCnt);
+ if m=Nil then Exit;
+ PyDict_SetItemString(QuarkxDict, 'beziermeshcnt', m);
+ Py_DECREF(m);
  Result:=True;
 end;
 

@@ -41,8 +41,13 @@ type
   TyVect = object(TyObject)
             V: TVect;
             Source3D: TCoordinates;
+            ST: Boolean;
             OffScreen: Byte;
            end;
+  PyVectST = ^TyVectST;
+  TyVectST = object(TyVect)
+              TexS, TexT: Reel;
+             end;
   PyMatrix = ^TyMatrix;
   TyMatrix = object(TyObject)
               M: TMatriceTransformation;
@@ -209,13 +214,14 @@ procedure Ellipse95(DC: HDC; X1, Y1, X2, Y2: Integer);
  {------------------------}
 
 function MakePyVect3(const nX, nY, nZ: Double) : PyVect;
+function MakePyVect5(const nX, nY, nZ, nS, nT: Double) : PyVectST;
 function MakePyVect(const nV: TVect) : PyVect;
 function MakePyVectv(const v3: vec3_t) : PyVect;
 {function MakePyVectvArray(Source: vec3_p; Count: Integer) : PyVect;}
 function PyVect_AsPP(V: PyVect) : TPointProj;
 
 function GetVectAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
-function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;
+{function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer; cdecl;}
 function CompareVect(v1, v2: PyObject) : Integer; cdecl;
 function PrintVect(self: PyObject) : PyObject; cdecl;
 function VectToStr(self: PyObject) : PyObject; cdecl;
@@ -251,7 +257,7 @@ var
    tp_basicsize:   SizeOf(TyVect);
    tp_dealloc:     SimpleDestructor;
    tp_getattr:     GetVectAttr;
-   tp_setattr:     SetVectAttr;
+  {tp_setattr:     SetVectAttr;}
    tp_compare:     CompareVect;
    tp_repr:        PrintVect;
    tp_as_number:   @VectNumbers;
@@ -314,6 +320,8 @@ var
 
 const
  Max95 = 8192;  { to clip coordinates x and y }
+ Max95r = Max95-2;
+ Max95a = Max95+2;
 
 implementation
 
@@ -353,7 +361,7 @@ begin
 
  if P1.Y<-Max95 then
   begin
-   if P2.Y<-Max95 then
+   if P2.Y<-Max95r then
     begin
      Ligne95:=False;
      Exit;
@@ -363,7 +371,7 @@ begin
   end;
  if P1.Y>Max95 then
   begin
-   if P2.Y>Max95 then
+   if P2.Y>Max95r then
     begin
      Ligne95:=False;
      Exit;
@@ -371,12 +379,12 @@ begin
    P1.X:=P2.X + (Max95-P2.Y)*(P1.X-P2.X)/(P1.Y-P2.Y);
    P1.Y:=Max95;
   end;
- if P2.Y<-Max95 then
+ if P2.Y<-Max95a then
   begin
    P2.X:=P1.X + (P1.Y+Max95)*(P2.X-P1.X)/(P1.Y-P2.Y);
    P2.Y:=-Max95;
   end;
- if P2.Y>Max95 then
+ if P2.Y>Max95a then
   begin
    P2.X:=P1.X + (Max95-P1.Y)*(P2.X-P1.X)/(P2.Y-P1.Y);
    P2.Y:=Max95;
@@ -384,7 +392,7 @@ begin
 
  if P1.X<-Max95 then
   begin
-   if P2.X<-Max95 then
+   if P2.X<-Max95r then
     begin
      Ligne95:=False;
      EXit;
@@ -394,7 +402,7 @@ begin
   end;
  if P1.X>Max95 then
   begin
-   if P2.X>Max95 then
+   if P2.X>Max95r then
     begin
      Ligne95:=False;
      Exit;
@@ -402,17 +410,17 @@ begin
    P1.Y:=P2.Y + (Max95-P2.X)*(P1.Y-P2.Y)/(P1.X-P2.X);
    P1.X:=Max95;
   end;
- if P2.X<-Max95 then
+ if P2.X<-Max95a then
   begin
    P2.Y:=P1.Y + (P1.X+Max95)*(P2.Y-P1.Y)/(P1.X-P2.X);
    P2.X:=-Max95;
   end;
- if P2.X>Max95 then
+ if P2.X>Max95a then
   begin
    P2.Y:=P1.Y + (Max95-P1.X)*(P2.Y-P1.Y)/(P2.X-P1.X);
    P2.X:=Max95;
   end;
- Result:=True; 
+ Result:=True;
 end;
 
 function TCoordinates.ClipLine95(var P1, P2: TPointProj) : Boolean;
@@ -1631,7 +1639,26 @@ begin
           with PyVect(self)^.V do
            Result:=Py_BuildValueDDD(X, Y, Z);
           Exit;
-         end;
+         end
+        else if (attr[1]='e') and (attr[2]='x') and PyVect(self)^.ST then
+         if attr[3]=#0 then
+          begin
+           with PyVectST(self)^ do
+            Result:=Py_BuildValueDD(TexS, TexT);
+           Exit;
+          end
+         else
+          if (attr[3]='_') and (attr[5]=#0) then
+           case attr[4] of
+            's': begin
+                  Result:=PyFloat_FromDouble(PyVectST(self)^.TexS);
+                  Exit;
+                 end;
+            't': begin
+                  Result:=PyFloat_FromDouble(PyVectST(self)^.TexT);
+                  Exit;
+                 end;
+           end;
    'v': if StrComp(attr, 'visible')=0 then
          begin
           with PyVect(self)^ do
@@ -1665,10 +1692,10 @@ begin
  end;
 end;
 
-function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer;
+(*function SetVectAttr(self: PyObject; attr: PChar; value: PyObject) : Integer;
 begin
  try
-(*Result:=-1;
+  Result:=-1;
   case attr[0] of
    'n': if StrComp(attr, 'name') = 0 then
          begin
@@ -1679,14 +1706,14 @@ begin
           Result:=0;
           Exit;
          end;
-  end;*)
+  end;
   PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
   Result:=-1;
  except
   EBackToPython;
   Result:=-1;
  end;
-end;
+end;*)
 
 function CompareVect(v1, v2: PyObject) : Integer;
 var
@@ -1731,6 +1758,9 @@ var
 begin
  try
   S:='<vect '+vtos(PyVect(self)^.V)+'>';
+  if PyVect(self)^.ST then
+   S:=Copy(S, 1, Length(S)-1) + ' ' + ftos(PyVectST(self)^.TexS)
+                              + ' ' + ftos(PyVectST(self)^.TexT) + '>';
   Result:=PyString_FromString(PChar(S));
  except
   EBackToPython;
@@ -1760,6 +1790,23 @@ begin
    V.Y:=nY;
    V.Z:=nZ;
    Source3D:=Nil;
+   ST:=False;
+  end;
+end;
+
+function MakePyVect5(const nX, nY, nZ, nS, nT: Double) : PyVectST;
+begin
+ GetMem(Result, SizeOf(TyVectST));
+ Result:=PyVectST(_PyObject_New(@TyVect_Type ,Result));
+ with PyVectST(Result)^ do
+  begin
+   V.X:=nX;
+   V.Y:=nY;
+   V.Z:=nZ;
+   Source3D:=Nil;
+   ST:=True;
+   TexS:=nS;
+   TexT:=nT;
   end;
 end;
 
@@ -1772,6 +1819,7 @@ begin
    V.Y:=v3[1];
    V.Z:=v3[2];
    Source3D:=Nil;
+   ST:=False;
   end;
 end;
 
@@ -1795,6 +1843,7 @@ begin
      V.Y:=Source^[1];
      V.Z:=Source^[2];
      Source3D:=Nil;
+     ST:=False;
     end;
   end;
 end;*)
@@ -1809,6 +1858,7 @@ begin
    V.Z:=P.oow;
    Source3D:=Self;
    OffScreen:=P.OffScreen;
+   ST:=False;
   end;
 end;
 
@@ -1819,6 +1869,7 @@ begin
   begin
    V:=nV;
    Source3D:=Nil;
+   ST:=False;
   end;
 end;
 
@@ -1851,7 +1902,12 @@ begin
   if (W1.Y = COERCEDFROMFLOAT)
   or (W2.Y = COERCEDFROMFLOAT) then
    Raise EError(4443);
-  Result:=MakePyVect3(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z);
+  if PyVect(v1)^.ST and PyVect(v2)^.ST then
+   Result:=MakePyVect5(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z,
+                       PyVectST(v1)^.TexS+PyVectST(v2)^.TexS,
+                       PyVectST(v1)^.TexT+PyVectST(v2)^.TexT)
+  else
+   Result:=MakePyVect3(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z);
  except
   EBackToPython;
   Result:=Nil;
@@ -1871,7 +1927,12 @@ begin
   if (W1.Y = COERCEDFROMFLOAT)
   or (W2.Y = COERCEDFROMFLOAT) then
    Raise EError(4443);
-  Result:=MakePyVect3(W1.X-W2.X, W1.Y-W2.Y, W1.Z-W2.Z);
+  if PyVect(v1)^.ST and PyVect(v2)^.ST then
+   Result:=MakePyVect5(W1.X-W2.X, W1.Y-W2.Y, W1.Z-W2.Z,
+                       PyVectST(v1)^.TexS-PyVectST(v2)^.TexS,
+                       PyVectST(v1)^.TexT-PyVectST(v2)^.TexT)
+  else
+   Result:=MakePyVect3(W1.X-W2.X, W1.Y-W2.Y, W1.Z-W2.Z);
  except
   EBackToPython;
   Result:=Nil;
@@ -1902,8 +1963,14 @@ begin
       if (W1.Y = COERCEDFROMFLOAT)
       or (W2.Y <> COERCEDFROMFLOAT) then
        Raise EError(4443);
+      v1:=v2;
      end;
-    Result:=MakePyVect3(W1.X*W2.X, W1.Y*W2.X, W1.Z*W2.X);
+    if PyVect(v2)^.ST then
+     Result:=MakePyVect5(W1.X*W2.X, W1.Y*W2.X, W1.Z*W2.X,
+                         PyVectST(v1)^.TexS*W2.X,
+                         PyVectST(v1)^.TexT*W2.X)
+    else
+     Result:=MakePyVect3(W1.X*W2.X, W1.Y*W2.X, W1.Z*W2.X);
    end;
  except
   EBackToPython;
@@ -1914,6 +1981,7 @@ end;
 function VectorDivide(v1, v2: PyObject) : PyObject;
 var
  W1, W2: TVect;
+ f: Reel;
 begin
  try
   if (v1^.ob_type <> @TyVect_Type)
@@ -1924,7 +1992,13 @@ begin
   if (W1.Y = COERCEDFROMFLOAT)
   or (W2.Y <> COERCEDFROMFLOAT) then
    Raise EError(4443);
-  Result:=MakePyVect3(W1.X/W2.X, W1.Y/W2.X, W1.Z/W2.X);
+  f:=1/W2.X;
+  if PyVect(v1)^.ST then
+   Result:=MakePyVect5(W1.X*f, W1.Y*f, W1.Z*f,
+                       PyVectST(v1)^.TexS*f,
+                       PyVectST(v1)^.TexT*f)
+  else
+   Result:=MakePyVect3(W1.X*f, W1.Y*f, W1.Z*f);
  except
   EBackToPython;
   Result:=Nil;
@@ -1939,7 +2013,12 @@ begin
   if v1^.ob_type <> @TyVect_Type then
    Raise EError(4443);
   W1:=PyVect(v1)^.V;
-  Result:=MakePyVect3(-W1.X, -W1.Y, -W1.Z);
+  if PyVect(v1)^.ST then
+   Result:=MakePyVect5(-W1.X, -W1.Y, -W1.Z,
+                       -PyVectST(v1)^.TexS,
+                       -PyVectST(v1)^.TexT)
+  else
+   Result:=MakePyVect3(-W1.X, -W1.Y, -W1.Z);
  except
   EBackToPython;
   Result:=Nil;

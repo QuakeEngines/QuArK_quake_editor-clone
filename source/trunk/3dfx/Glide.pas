@@ -1114,6 +1114,7 @@ end;
 
 const
  SoftMultiplePalettes = 20;
+ SoftTexFmt565        = 30;
  HardwareGlideVersion = 1000;
 {HardwareGlideLib     = 'glide2x.dll';
  SoftwareGlideLib     = 'qrksoftg.dll';}

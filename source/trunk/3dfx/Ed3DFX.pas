@@ -27,7 +27,7 @@ interface
 
 uses Windows, SysUtils, Classes, qmath, QkObjects, QkMapPoly, QkMdlObjects,
      Glide, Game, QkTextures, QkImages, Setup, PyMath, PyMath3D,
-     Forms, Controls;
+     Forms, Controls, QkPixelSet;
 
  {------------------------}
 
@@ -75,6 +75,9 @@ type
               DoubleSize: Boolean;
              end;
 
+const
+ MeanColorNotComputed = FxU32($FFFFFFFF);
+
 type
  PGuPalette = ^GuTexPalette;
  TSurfaceAnyInfo = record
@@ -92,8 +95,9 @@ type
               end;
  PTexture3 = ^TTexture3;
  TTexture3 = record
-              info: GrTexInfo;
+              SourceTexture: QPixelSet;
               TexW, TexH: Integer;
+              info: GrTexInfo;
               MeanColor: FxU32;
               startAddress, endAddress: FxU32;
               OpenGLName: Integer;
@@ -116,18 +120,20 @@ type
 
 type
  TBuildMode = (bm3DFX, bmOpenGL);
- TPaletteWarning = procedure of object;
+ {TPaletteWarning = procedure of object;}
 
  TSceneObject = class
  protected
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
    procedure ClearPList;
-   function GetInfo(var PW: TPaletteWarning; var VertexSize: Integer) : TBuildMode; virtual; abstract;
+   function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
+   procedure EndBuildScene; virtual;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); virtual; abstract;
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
+   procedure BuildTexture(Texture: PTexture3); virtual; abstract;
  public
    PolyFaces, ModelInfo: TList;
    BlendColor: TColorRef;
@@ -163,13 +169,14 @@ type
    ViewRect: TViewRect;
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
-   function GetInfo(var PW: TPaletteWarning; var VertexSize: Integer) : TBuildMode; override;
+   function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
    procedure PostBuild(nVertexList, nVertexList2: TList); override;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
    procedure RenderTransparent(Transparent: Boolean);
+   procedure BuildTexture(Texture: PTexture3); override;
  public
    SoftBufferFormat: Integer;
    FogTableCache: ^GrFogTable_t;
@@ -192,24 +199,26 @@ type
  private
    FTextures: TStringList;
    Scenes: TList;
-   CurrentPalettePtr: PGuPalette;
-   DummyGameInfo: PGameBuffer;
-   Colors: TBitmapInfoColors;
-   PaletteLmp: PPaletteLmp;
-   NoGamma, WallTexLoaded: Boolean;
+  {CurrentPalettePtr: PGuPalette;}
    PaletteCache: TList;
-   TexOpacityInfo: TTexOpacityInfo;
-   procedure ChangePaletteLmp(Lmp: PPaletteLmp; PalWarning: TPaletteWarning);
-   procedure ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QTexture; Image1: QImages);
-   function ComputeMeanColor(Data: PChar; Size: Integer) : FxU32;
+   DefaultGamePalette: Integer;
+   GammaValue: Reel;
+  {Colors: TBitmapInfoColors;
+   PaletteLmp: PPaletteLmp;}
+   {NoGamma{, WallTexLoaded: Boolean;}
+  {TexOpacityInfo: TTexOpacityInfo;}
+  {procedure ChangePaletteLmp(Lmp: PPaletteLmp{; PalWarning: TPaletteWarning);}
+  {procedure ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QPixelSet);}
    procedure Init(FullScreen: Boolean);
    procedure FreeTexture(Tex: PTexture3);
  public
    FFreeTexture: procedure (Tex: PTexture3);
+   DummyGameInfo: PGameBuffer;
    DownloadedPalette: PGuPalette;
+   GammaBuffer: TGeneralGammaBuffer;
    constructor Create;
    destructor Destroy; override;
-   procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject; PalWarning: TPaletteWarning);
+   procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
    procedure FreeTextures(ReallyAll: Boolean);
    function CanFree: Boolean;
    property Textures: TStringList read FTextures;
@@ -217,6 +226,7 @@ type
    class function GetInstance : TTextureManager;
    class procedure AddScene(Scene: TSceneObject; FullScreen: Boolean);
    class procedure RemoveScene(Scene: TSceneObject);
+   function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
  end;
 
 const
@@ -231,6 +241,8 @@ procedure GammaCorrection(Value: Reel);
 procedure LibererMemoireTextures;
 procedure GetwhForTexture(const info: GrTexInfo; var w,h: Integer);
 function SwapColor(Col: GrColor_t) : GrColor_t;
+function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
+function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
 
  {------------------------}
 
@@ -258,7 +270,7 @@ type
               v: PVect3D;
               s,t: scalar_t;
              end;
- TSkinType = (stNone, stTexture, stSkin);
+ {TSkinType = (stNone, stTexture, stSkin);}
 
 {$IFDEF DebugLOG}
 procedure LogTriangle(const S: String; v1,v2,v3: GrVertex);
@@ -349,6 +361,7 @@ begin
  Scenes:=TList.Create;
  FTextures:=TStringList.Create;
  FTextures.Sorted:=True;
+ GammaValue:=-1;
 end;
 
 procedure TTextureManager.FreeTexture(Tex: PTexture3);
@@ -356,6 +369,7 @@ begin
  if Assigned(FFreeTexture) then
   FFreeTexture(Tex);
  FreeMem(Tex^.info.data);
+ Tex^.SourceTexture.AddRef(-1);
  Dispose(Tex);
 end;
 
@@ -376,42 +390,39 @@ begin
  Scenes.Free;
 end;
 
-procedure TTextureManager.ChangePaletteLmp(Lmp: PPaletteLmp; PalWarning: TPaletteWarning);
+function TTextureManager.ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
 var
  nPalette: GuTexPalette;
  I: Integer;
 begin
- if (PaletteLmp<>Nil) and Assigned(PalWarning) and WallTexLoaded
- and not CompareMem(Lmp, PaletteLmp, SizeOf(TPaletteLmp)) then
-  PalWarning;
- WallTexLoaded:=Assigned(PalWarning);
- PaletteLmp:=Lmp;
- ColorsFromLmp(Lmp^, Colors);
-
- { build the new palette table }
- if NoGamma then     { no gamma correction if full screen }
-  for I:=0 to 255 do
-   nPalette[I]:=(Lmp^[I,0] shl 16)
-             or (Lmp^[I,1] shl 8)
-             or (Lmp^[I,2])
- else
-  for I:=0 to 255 do
-   with Colors[I] do
-    nPalette[I]:=(rgbRed shl 16)
-              or (rgbGreen shl 8)
-              or rgbBlue;
+ if (Lmp=@DummyGameInfo^.PaletteLmp)
+ and (PaletteCache<>Nil) and (DefaultGamePalette>=0) then
+  begin  { fast way out for unified-palette games }
+   Result:=PGuPalette(PaletteCache[DefaultGamePalette]);
+   Exit;
+  end;
+                      
+ for I:=0 to 255 do
+  nPalette[I]:=(GammaBuffer[Lmp^[I,0]] shl 16)
+            or (GammaBuffer[Lmp^[I,1]] shl 8)
+            or (GammaBuffer[Lmp^[I,2]]);
  if PaletteCache=Nil then
-  PaletteCache:=TList.Create
+  begin
+   PaletteCache:=TList.Create;
+   DefaultGamePalette:=-1;
+  end
  else
   for I:=PaletteCache.Count-1 downto 0 do
    if CompareMem(PaletteCache[I], @nPalette, SizeOf(nPalette)) then
     begin
-     CurrentPalettePtr:=PGuPalette(PaletteCache[I]);
+     if Lmp=@DummyGameInfo^.PaletteLmp then
+      DefaultGamePalette:=I;
+     Result:=PGuPalette(PaletteCache[I]);
      Exit;
     end;
- New(CurrentPalettePtr);
- CurrentPalettePtr^:=nPalette;
- PaletteCache.Add(CurrentPalettePtr);
+ New(Result);
+ Result^:=nPalette;
+ PaletteCache.Add(Result);
 end;
 
 procedure TTextureManager.FreeTextures(ReallyAll: Boolean);
@@ -422,8 +433,8 @@ var
  P: PSurfaces;
 begin
  DownloadedPalette:=Nil;
- CurrentPalettePtr:=Nil;
- PaletteLmp:=Nil;
+{CurrentPalettePtr:=Nil;}
+{PaletteLmp:=Nil;}
  for I:=0 to Textures.Count-1 do
   with PTexture3(Textures.Objects[I])^ do
    ok:=ReallyAll or not Scaled;
@@ -463,6 +474,7 @@ begin
    PaletteCache.Free;
   end;
  PaletteCache:=nPaletteCache;
+ DefaultGamePalette:=-1;
 end;
 
 function TTextureManager.CanFree;
@@ -483,45 +495,114 @@ begin
   end;
 end;
 
-function TTextureManager.ComputeMeanColor(Data: PChar; Size: Integer) : FxU32;
+const
+ DummyTexture = 16;
+
+function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
+var
+ J: Integer;
+ Dest: PChar;
+begin
+ if Tex3.SourceTexture<>Nil then
+  Result:=Tex3.SourceTexture.Description
+ else
+  begin
+   Result.Init;
+   Result.Format:=psf8bpp;
+   Result.Palette:=pspFixed;
+   Result.Size.X:=DummyTexture;
+   Result.Size.Y:=DummyTexture;
+   Result.ScanLine:=DummyTexture;
+   Result.ColorPalette:=@(TTextureManager.GetInstance.DummyGameInfo^.PaletteLmp);
+   Result.AllocData;
+   Dest:=PChar(Result.Data);
+   for J:=0 to DummyTexture*DummyTexture-1 do
+    begin       { build a checkerboard texture image }
+     if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
+      Dest^:=#0
+     else
+      Dest^:=#255;
+     Inc(Dest);
+    end;
+  end;
+end;
+
+function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
 var
  re, gr, bl: Integer;
  pl: array[0..255] of record pr, pg, pb: Integer; end;
- I: Integer;
+ I, J: Integer;
  Facteur: Reel;
+ P: PChar;
 begin
- for I:=0 to 255 do
-  with pl[I], Colors[I] do
-   begin
-    pr:=Integer(rgbRed div 2) * (Succ(Integer(rgbRed)) div 2);
-    pg:=Integer(rgbGreen div 2) * (Succ(Integer(rgbGreen)) div 2);
-    pb:=Integer(rgbBlue div 2) * (Succ(Integer(rgbBlue)) div 2);
-   end;
  re:=0;
  gr:=0;
  bl:=0;
- for I:=0 to Size-1 do
-  with pl[Ord(Data[I])] do
-   begin
-    Inc(re, pr);
-    Inc(gr, pg);
-    Inc(bl, pb);
-   end;
- Facteur:=4/Size;
+ case PSD.Format of
+  psf8bpp: begin
+            P:=PChar(PSD.ColorPalette);
+            for I:=0 to 255 do
+             with pl[I] do
+              begin
+               pr:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               Inc(P);
+               pg:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               Inc(P);
+               pb:=Integer(Ord(P^) div 2) * (Succ(Integer(Ord(P^))) div 2);
+               Inc(P);
+              end;
+            P:=PSD.StartPointer;
+            for J:=1 to PSD.Size.Y do
+             begin
+              for I:=0 to PSD.Size.X-1 do
+               with pl[Ord(P[I])] do
+                begin
+                 Inc(re, pr);
+                 Inc(gr, pg);
+                 Inc(bl, pb);
+                end;
+              Inc(P, PSD.ScanLine);
+             end;
+           end;
+  psf24bpp: begin
+             P:=PSD.StartPointer;
+             for J:=1 to PSD.Size.Y do
+              begin
+               I:=PSD.Size.X*3;
+               while I>0 do
+                begin
+                 Dec(I);
+                 Inc(bl, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Dec(I);
+                 Inc(gr, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                 Dec(I);
+                 Inc(re, Integer(Ord(P[I]) div 2) * (Succ(Integer(Ord(P[I]))) div 2));
+                end;
+               Inc(P, PSD.ScanLine);
+              end;
+            end;
+ else
+  begin
+   Result:=0;
+   Exit;
+  end;
+ end;
+ Facteur:=4.0/(PSD.Size.X*PSD.Size.Y);
  Result:=Round(Sqrt(bl*Facteur))
      or (Round(Sqrt(gr*Facteur)) shl 8)
      or (Round(Sqrt(re*Facteur)) shl 16);
 end;
 
-procedure TTextureManager.ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QTexture; Image1: QImages);
+{$IFDEF xxxNeverxxx}
+procedure TTextureManager.ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QPixelSet);
 var
- Size: TPoint;
+ PSD: TPixelSetDescription;
  I, MemSize: Integer;
- S: String;
- Source, Dest: PChar;
- Scan: Integer;
+{S: String;}
+{Source,} Dest: PChar;
+{Scan: Integer;}
 begin
- if Q<>Nil then
+(*if Q<>Nil then
   begin
    with Q.BuildQ1Header do
     begin
@@ -545,21 +626,26 @@ begin
   begin
    Image1.NotTrueColor;  { FIXME }
    Source:=Image1.GetImagePtr1;
-  end;
+  end;*)
+*
+ Q.Description(PSD);
 
  Dest:=PChar(info.data);
- MemSize:=w1*h1;
+* MemSize:=w1*h1;
  for I:=0 to 3 do
   begin
-   Resample(@Colors, Source, @Colors, Dest, Size.X, Size.Y, Size.X, w1, h1, Scan);
+*   {Resample(@Colors, Source, @Colors, Dest, Size.X, Size.Y, Size.X, w1, h1, Scan);}
+   Resample(PSD.Colors, PSD.Base.Data, @Colors, Dest,
+     PSD.Base.Size.X, PSD.Base.Size.Y, PSD.Base.ScanLine, w1, h1, w1);
    if info.largeLod=info.smallLod then Break;
-   Inc(Dest, MemSize);
+*   Inc(Dest, MemSize);
    MemSize:=MemSize div 4;
    w1:=w1 div 2;
    h1:=h1 div 2;
-   Scan:=Scan div 2;
+*   {Scan:=Scan div 2;}
   end;
 end;
+{$ENDIF}
 (*var
  SrcDC: HDC;
  Src, Bmp1: HBitmap;
@@ -666,22 +752,21 @@ begin
  end;
 end;
 
-procedure TTextureManager.GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject; PalWarning: TPaletteWarning);
-const
- DummyTexture = 16;
+procedure TTextureManager.GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
 var
- J, TexW, TexH, MemSize, w, h, max: Integer;
- Direct: Boolean;
+ {J, MemSize,} w, h, max: Integer;
+ {Direct: Boolean;}
  PTex: PTexture3;
- Q: QTexture;
- Image1: QImage;
- SkinType: TSkinType;
+ Q: QPixelSet;
+{Image1: QImage;
+ SkinType: TSkinType;}
  S: String;
- Dest: PChar;
- Lmp: PPaletteLmp;
+{Src, Dest: PChar;}
+{Lmp: PPaletteLmp;}
+ Size: TPoint;
 begin
- if Textures.Find(P^.TexName, J) then
-  PTex:=PTexture3(Textures.Objects[J])
+ if Textures.Find(P^.TexName, w) then
+  PTex:=PTexture3(Textures.Objects[w])
  else
   begin
    if not Load then
@@ -691,59 +776,50 @@ begin
    PTex^.startAddress:=GR_NULL_MIPMAP_HANDLE;
    Textures.AddObject(P^.TexName, TObject(PTex));
    Q:=Nil;
-   Image1:=Nil;
-   SkinType:=stNone;
+  {Image1:=Nil;
+   SkinType:=stNone;}
    S:=P^.TexName;
    PTex^.DefaultAlpha:=255;
    if S<>'' then
     if S[1]=':' then
      begin  { loading model skin }
-      Pointer(Image1):=P^.tmp;
-      if Image1<>Nil then
-       begin
-        Image1.Acces;
-        SkinType:=stSkin;
-       end;
+      Pointer(Q):=P^.tmp;
+      Q.Acces;
      end
     else
      begin  { loading texture }
       Q:=GlobalFindTexture(S, AltTexSrc);
-      if Q=Nil then
-       GlobalWarning(FmtLoadStr1(5588, [S]))
-      else
+      if Q<>Nil then
        try
-        PTex^.DefaultAlpha:=Q.LoadTexture.GetTexOpacity(TexOpacityInfo);
-        SkinType:=stTexture;
+        Q:=Q.LoadPixelSet;
+        if Q is QTextureFile then
+         PTex^.DefaultAlpha:=QTextureFile(Q).GetTexOpacity{(TexOpacityInfo)};
        except
-        {rien}
+        Q:=Nil;
        end;
+      if Q=Nil then
+       GlobalWarning(FmtLoadStr1(5588, [S]));
      end;
-   case SkinType of
-    stTexture: with Q.BuildQ1Header do
-                begin
-                 TexW:=W;
-                 TexH:=H;
-                 MemSize:=Indexes[1]-Indexes[0];
-                end;
-    stSkin: with Image1.GetSize do
-             begin
-              TexW:=X;
-              TexH:=Y;
-              MemSize:=X*Y;
-             end;
-    else begin
-          TexW:=DummyTexture;
-          TexH:=DummyTexture;
-          MemSize:=DummyTexture*DummyTexture;
-         end;
-   end;
-   PTex^.TexW:=TexW;
-   PTex^.TexH:=TexH;
+   if Q=Nil then
+    begin
+     {PSD.Format:=psf8bpp;}
+     Size.X:=DummyTexture;
+     Size.Y:=DummyTexture;
+    end
+   else
+    begin
+     Size:=Q.GetSize;
+     Q.AddRef(+1);
+    end;
+
+   PTex^.SourceTexture:=Q;
+   PTex^.TexW:=Size.X;
+   PTex^.TexH:=Size.Y;
    w:=8;
-   while (w<256) and (w<TexW) do w:=w*2;
+   while (w<256) and (w<Size.X) do w:=w*2;
    h:=8;
-   while (h<256) and (h<TexH) do h:=h*2;
-   Direct:=(w=TexW) and (h=TexH);
+   while (h<256) and (h<Size.Y) do h:=h*2;
+   {Direct:=(w=Size.X) and (h=Size.Y);}
    if w=h then
     PTex^.info.aspectRatio:=GR_ASPECT_1x1
    else
@@ -752,7 +828,7 @@ begin
       begin
        if w>8*h then
         begin
-         Direct:=False;
+         {Direct:=False;}
          h:=w div 8;
         end;
        PTex^.info.aspectRatio:=GR_ASPECT_8x1;
@@ -767,7 +843,7 @@ begin
       begin
        if h>8*w then
         begin
-         Direct:=False;
+         {Direct:=False;}
          w:=h div 8;
         end;
        PTex^.info.aspectRatio:=GR_ASPECT_1x8;
@@ -777,51 +853,70 @@ begin
        PTex^.info.aspectRatio:=GR_ASPECT_1x4
       else
        PTex^.info.aspectRatio:=GR_ASPECT_1x2;
-   if not Direct then
-    MemSize:=w*h;
    if w>h then
     max:=w
    else
     max:=h;
+ (*MemSize:=w*h;
 
-   case SkinType of
-    stTexture: begin
-                Lmp:=PaletteLmp;
-                if Q.LoadTexture.LoadPaletteLmp(Lmp) then
-                 ChangePaletteLmp(Lmp, PalWarning);
-               end;
-    stSkin: begin
-             Image1.NotTrueColor;   { FIXME }
-             Lmp:=Image1.GetPalettePtr1;
-             if Lmp<>PaletteLmp then
-              ChangePaletteLmp(Lmp, Nil);
-            end;
+   if PSD.Format=psf24bpp then
+    begin
+     MemSize:=MemSize*2;
+     PTex^.info.format:=GR_TEXFMT_RGB_565;
+     PTex^.GuPalette:=Nil;
+    end
    else
     begin
-    {Lmp:=@DummyGameInfo^.PaletteLmp;
-     if Lmp<>PaletteLmp then}
-     if CurrentPalettePtr=Nil then
-      ChangePaletteLmp(Lmp, Nil);
+     if Q=Nil then
+      begin
+       if CurrentPalettePtr=Nil then
+        ChangePaletteLmp(@DummyGameInfo^.PaletteLmp, Nil);
+      end
+     else
+      ChangePaletteLmp(PSD.ColorPalette, PalWarning);
+     PTex^.info.format:=GR_TEXFMT_P_8;
+     PTex^.GuPalette:=CurrentPalettePtr;
     end;
-   end;
-   PTex^.GuPalette:=CurrentPalettePtr;
-
+*)
    with PTex^.info do
     begin
-     format:=GR_TEXFMT_P_8;
      largeLod:=GetLodFor(max);
-     if SkinType=stTexture then
+     if Q is QTextureFile then
       begin
        smallLod:=GetLodFor(max div 8);
-       J:=MemSize*(64+16+4+1) div 64;
-      end 
+       {J:=MemSize*(64+16+4+1) div 64;}
+      end
      else
       begin
        smallLod:=largeLod;
-       J:=MemSize;
+       {J:=MemSize;}
       end;
-     GetMem(data, J);
+   (*GetMem(data, J);
      if Direct then
+      begin
+       Dest:=PChar(data);
+       if Q=Nil then
+        begin
+         for J:=0 to MemSize-1 do
+          begin       { build a checkerboard texture image 
+           if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
+            Dest^:=#0
+           else
+            Dest^:=#255;
+           Inc(Dest);
+          end;
+        end
+       else
+        begin
+         Src:=PSD.StartPointer;
+         if Src<>...
+         for J:=1 to h do
+          begin
+           Move(
+           Inc(Src, PSD.ScanLine);
+           Inc(Dest, 
+      end
+      
       case SkinType of
        stTexture:
          begin
@@ -835,14 +930,14 @@ begin
          end;
        stSkin:
          begin
-          Image1.NotTrueColor;  { FIXME }
+          Image1.NotTrueColor;  { FIXME 
           Image1.GetImageData1(data^, MemSize);
          end; 
        else
          begin
           Dest:=PChar(data);
           for J:=0 to MemSize-1 do
-           begin       { build a checkerboard texture image }
+           begin       { build a checkerboard texture image 
             if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
              Dest^:=#0
             else
@@ -853,28 +948,42 @@ begin
       end
      else
       begin
-       {$IFDEF Debug}
+       { $IFDEF Debug
        if SkinType=stNone then Raise InternalE('Indirect SkinType stNone');
-       {$ENDIF}
-       ScaleTexture(w,h, PTex^.info, Q, Image1);
+       { $ENDIF
+       if Q<>Nil then
+        ScaleTexture(w,h, PTex^.info, Q)
+       else
+        ScaleTexture(w,h, PTex^.info, Image1);
        PTex^.Scaled:=True;
-      end;
-     PTex^.MeanColor:=ComputeMeanColor(PChar(data), MemSize);
+      end;*)
     end;
+   PTex^.MeanColor:=MeanColorNotComputed; {ComputeMeanColor(PChar(data), MemSize);}
   end;
  P^.Texture:=PTex;
 end;
 
 procedure TTextureManager.Init(FullScreen: Boolean);
+(*var
+ I: Integer;*)
 begin
  DownloadedPalette:=Nil;
  DeleteGameBuffer(DummyGameInfo);
  DummyGameInfo:=Nil;
  DummyGameInfo:=DuplicateGameBuffer(GameBuffer(mjAny));
- TexOpacityInfo.Loaded:=False;
- NoGamma:=FullScreen;
- if DummyGameInfo^.UnifiedPalette then
-  ChangePaletteLmp(@DummyGameInfo^.PaletteLmp, Nil);
+ {TexOpacityInfo.Loaded:=False;}
+ (*if FullScreen xor NoGamma then
+  begin
+   for I:=Textures.Count-1 downto 0 do
+    with PTexture3(Textures.Objects[I])^ do
+     GuPalette:=Nil;
+   ...
+  end;*)
+ if InitGeneralGammaBuffer(GammaBuffer, GammaValue) then
+  FreeTextures(True);  { gamma value changed, free all textures (to be reloaded) }
+{NoGamma:=FullScreen;}
+{if DummyGameInfo^.UnifiedPalette then
+  ChangePaletteLmp(@DummyGameInfo^.PaletteLmp, Nil);}
 end;
 
 function TTextureManager.UnifiedPalette: Boolean;
@@ -889,11 +998,12 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
                public
                  FMinAddress, FLoopAddress, FMaxAddress: FxU32;
                  PerspectiveMode: Byte;
-                 PalWarning: Boolean;
+                 Accepts16bpp: Boolean;
+                {PalWarning: Boolean;}
                  constructor Create;
                  procedure NeedTex(PTex: PTexture3);
                  function SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
-                 procedure PaletteWarning;
+                {procedure PaletteWarning;}
                  procedure Init;
                end;
 
@@ -916,7 +1026,7 @@ begin
   end;
 end;
 
-procedure TGlideState.PaletteWarning;
+(*procedure TGlideState.PaletteWarning;
 begin
  if not PalWarning then
   begin
@@ -924,7 +1034,7 @@ begin
     GlobalWarning(LoadStr1(5656));
    PalWarning:=True;
   end;
-end;
+end;*)
 
 procedure TGlideState.NeedTex(PTex: PTexture3);
 const
@@ -933,10 +1043,14 @@ var
  I, nStartAddress, nSize: Integer;
  TextureManager: TTextureManager;
 begin
- TextureManager:=TTextureManager.GetInstance;
+ {$IFDEF Debug}
+ if PTex^.info.data=Nil then
+  Raise InternalE('NeedTex: texture not loaded');
+ {$ENDIF}
  if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
  and (gr.Version>=HardwareGlideVersion) then
   begin
+   TextureManager:=TTextureManager.GetInstance;
     { computes destination address }
    nStartAddress:=FLoopAddress;
    nSize:=gr.grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
@@ -962,11 +1076,18 @@ begin
    PTex^.startAddress:=nStartAddress;
    PTex^.endAddress:=FLoopAddress;
    {$IFDEF DeXXXXbugLOG} LogS:='DL-'; {$ENDIF}
-  end;
- if PTex^.GuPalette <> TextureManager.DownloadedPalette then
+  end
+ else
+  TextureManager:=Nil;
+ if PTex^.GuPalette<>Nil then
   begin
-   TextureManager.DownloadedPalette:=PTex^.GuPalette;
-   gr.grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
+   if TextureManager=Nil then
+    TextureManager:=TTextureManager.GetInstance;
+   if PTex^.GuPalette <> TextureManager.DownloadedPalette then
+    begin
+     TextureManager.DownloadedPalette:=PTex^.GuPalette;
+     gr.grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
+    end;
   end;
  gr.grTexSource(GR_TMU0, PTex^.startAddress,
   GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
@@ -1107,14 +1228,25 @@ procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: 
           var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single; FOG_COLOR, FrameColor: TColorRef);
 var
  I: Integer;
+ HiColor: Boolean;
 begin
  Coord:=nCoord;
  Open3DEditor(LibName, FullScreen);
  TTextureManager.AddScene(Self, FullScreen);
  TGlideState(gr.State).Init;
  Hardware3DFX:=gr.Version>=HardwareGlideVersion;
- if (gr.Version<HardwareGlideVersion) and (gr.Version>=SoftMultiplePalettes) then
-  gr.softgLoadFrameBuffer(Nil, $100 or Ord(TTextureManager.GetInstance.UnifiedPalette));
+ if gr.Version>=HardwareGlideVersion then
+  HiColor:=True
+ else
+  if gr.Version<SoftMultiplePalettes then
+   HiColor:=False
+  else
+   begin
+    HiColor:=not TTextureManager.GetInstance.UnifiedPalette;
+    gr.softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
+    HiColor:=HiColor and (gr.Version>=SoftTexFmt565);
+   end;
+ TGlideState(gr.State).Accepts16bpp:=HiColor;
 
  I:=Ord({not nCoord.FlatDisplay and} Assigned(gr.guFogGenerateExp2));
  ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
@@ -1240,12 +1372,16 @@ begin
   end;
 end;*)
 
-function T3DFXSceneObject.GetInfo(var PW: TPaletteWarning; var VertexSize: Integer) : TBuildMode;
+function T3DFXSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
- PW:=TGlideState(gr.State).PaletteWarning;
+{PW:=TGlideState(gr.State).PaletteWarning;}
  VertexSize:=SizeOf(TVertex3D);
  FBuildNo:=1;
  Result:=bm3DFX;
+end;
+
+procedure TSceneObject.EndBuildScene;
+begin
 end;
 
 procedure TSceneObject.PostBuild(nVertexList, nVertexList2: TList);
@@ -1370,7 +1506,7 @@ var
  TextureManager: TTextureManager;
  Mode: TBuildMode;
  VertexSize, VertexSize3m: Integer;
- PalWarning: TPaletteWarning;
+{PalWarning: TPaletteWarning;}
 
   procedure AddSurfaceRef(const S: String; SurfSize: Integer; tmp: Pointer);
   var
@@ -1394,9 +1530,9 @@ var
 
 begin
  ClearPList;
- Mode:=GetInfo(PalWarning, VertexSize);
+ Mode:=StartBuildScene({PalWarning,} VertexSize);
  TextureManager:=TTextureManager.GetInstance;
- TextureManager.PaletteLmp:=Nil;
+{TextureManager.PaletteLmp:=Nil;}
  VertexSize3m:=SizeOf(TSurface3D)+3*VertexSize;
  TexNames:=TStringList.Create; try
 {PList:=PSurfaces(FListSurfaces);
@@ -1460,9 +1596,11 @@ begin
   begin
    if PList^.Texture=Nil then
     begin
-     TextureManager.GetTexture(PList, False, Nil, PalWarning);
+     TextureManager.GetTexture(PList, False, Nil{, PalWarning});
      if PList^.Texture=Nil then
-      Inc(NewTextures);
+      Inc(NewTextures)
+     else
+      BuildTexture(PList^.Texture);
     end;
    PList:=PList^.Next;
   end;
@@ -1502,7 +1640,8 @@ begin
      begin
       if PList^.Texture=Nil then
        begin
-        TextureManager.GetTexture(PList, True, AltTexSrc, PalWarning);
+        TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
+        BuildTexture(PList^.Texture);
         if DC=HDC(-1) then
          begin
           {Inc(NewTexCount);
@@ -1568,7 +1707,7 @@ begin
         Dist:=F.Dist;
         VertexCount:=prvNbS;
         AlphaColor:=CurrentColor or
-         (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha, TextureManager.TexOpacityInfo) shl 24);
+         (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
         Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
        end;
       if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
@@ -1761,43 +1900,44 @@ begin
   TexNames.Free;
  end;
  PolyFaces.Clear;
+ EndBuildScene;
 end;
 
  {------------------------}
 
 procedure SetIntelPrecision;
 var
-	memvar : LongInt;
+ memvar : LongInt;
 begin
-	//taken directly from the Glide 2.4 programming Guide
-	asm
-		finit
-		fwait
-		fstcw word ptr memvar
-		fwait
-		mov eax,memvar
-		and eax,0fffffcffh
-		mov memvar,eax
-		fldcw word ptr memvar
-		fwait
-	end;
+ //taken directly from the Glide 2.4 programming Guide
+ asm
+  finit
+  fwait
+  fstcw word ptr memvar
+  fwait
+  mov eax,memvar
+  and eax,0fffffcffh
+  mov memvar,eax
+  fldcw word ptr memvar
+  fwait
+ end;
 end;
 
 procedure RestoreIntelPrecision;
 var
-	memvar : LongInt;
+ memvar : LongInt;
 begin
-	asm
-		finit
-		fwait
-		fstcw word ptr memvar
-		fwait
-		mov eax,memvar
-		or eax,0300h
-		mov memvar,eax
-		fldcw word ptr memvar
-		fwait
-	end;
+ asm
+  finit
+  fwait
+  fstcw word ptr memvar
+  fwait
+  mov eax,memvar
+  or eax,0300h
+  mov memvar,eax
+  fldcw word ptr memvar
+  fwait
+ end;
 end;
 
 function Open3DEditor(const LibName: String; var FullScreen: Boolean) : Boolean;
@@ -2242,6 +2382,7 @@ var
  LocalViewRectTop,
  LocalViewRectRight,
  LocalViewRectBottom: FxFloat;
+ PSD: TPixelSetDescription;
  {$IFDEF DebugLOG} LogS: String; {$ENDIF}
 
   procedure ScaleInterval(var PrevV1: TV1; const PV1: TV1; F: FxFloat; BBox: TBBox; nValue: FxFloat);
@@ -2520,9 +2661,17 @@ begin
       nColor:=AlphaColor;
       if SolidColors then
        with PList^.Texture^ do
-        nColor:=(((nColor and $FF)*(MeanColor and $FF)) shr 8)
-             or ((((nColor shr 8) and $FF)*((MeanColor shr 8) and $FF)) and $00FF00)
-             or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
+        begin
+         if MeanColor = MeanColorNotComputed then
+          begin
+           PSD:=GetTex3Description(PList^.Texture^); try
+           MeanColor:=ComputeMeanColor(PSD);
+           finally PSD.Done; end;
+          end;
+         nColor:=(((nColor and $FF)*(MeanColor and $FF)) shr 8)
+              or ((((nColor shr 8) and $FF)*((MeanColor shr 8) and $FF)) and $00FF00)
+              or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
+        end;
       if Assigned(gr.grConstantColorValue) and (nColor<>CurrentAlpha) then
        begin
         gr.grConstantColorValue(nColor);
@@ -3021,6 +3170,110 @@ begin
  Result:=(gr.Version<HardwareGlideVersion)
      and (SoftBufferFormat<>nQuality);
  SoftBufferFormat:=nQuality;
+end;
+
+procedure T3DFXSceneObject.BuildTexture(Texture: PTexture3);
+var
+ PSD, PSD2, PSD3: TPixelSetDescription;
+ MemSize, MemSizeTotal, J, w, h: Integer;
+ Source, Dest: PChar;
+ GammaBuf: Pointer;
+begin
+ with Texture^.info do
+  if data=Nil then
+   begin
+    GetwhForTexture(Texture^.info, w, h);
+    MemSize:=w*h;
+    PSD2.Init;
+    PSD2.AlphaBits:=psaNoAlpha;
+    PSD:=GetTex3Description(Texture^); try
+    if (PSD.Format=psf24bpp) and TGlideState(gr.State).Accepts16bpp then
+     begin
+      format:=GR_TEXFMT_RGB_565;
+      if smallLod<>largeLod then
+       raise InternalE('true-color+anti-aliasing');
+      MemSize:=MemSize*2;
+      GetMem(data, MemSize);
+      PSD2.Format:=psf24bpp;
+      PSD2.Size.X:=w;
+      PSD2.Size.Y:=h;
+      PSDConvert(PSD2, PSD, ccTemporary);
+      GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
+      Source:=PSD2.StartPointer;
+      Dest:=PChar(data);
+      for J:=1 to h do
+       begin
+        asm
+         push esi
+         push edi
+         push ebx
+         mov ecx, [w]
+         mov esi, [Source]
+         mov edi, [Dest]
+         mov ebx, [GammaBuf]
+         cld
+         xor edx, edx
+        
+         @xloop:
+          mov dl, [esi]
+          mov al, [ebx+edx]   {B}
+          mov dl, [esi+1]
+          mov ah, [ebx+edx]   {G}
+          mov dl, [esi+2]
+          shr ah, 2    {G}
+          mov dl, [ebx+edx]   {R}
+        
+          add esi, 3
+          shr ax, 3    {GB}
+          shl dl, 3    {R}
+          or ah, dl    {RGB}
+          stosw
+         loop @xloop
+
+         pop ebx
+         mov [Dest], edi
+         pop edi
+         pop esi
+        end;
+        Inc(Source, PSD2.ScanLine);
+       end;
+     end
+    else
+     begin
+      format:=GR_TEXFMT_P_8;
+      if smallLod<>largeLod then
+       MemSizeTotal:=(MemSize*(64+16+4+1)) div 64
+      else
+       MemSizeTotal:=MemSize;
+      GetMem(data, MemSizeTotal);
+      PSD2.Format:=psf8bpp;
+      PSD2.Size.X:=w;
+      PSD2.Size.Y:=h;
+      PSD2.ScanLine:=w;
+      PSD2.Data:=data;
+      PSD3:=PSD2;
+      PSDConvert(PSD2, PSD, ccTemporary);
+      { gamma correction included in ComputeGuPalette }
+      Texture^.GuPalette:=TTextureManager.GetInstance.ComputeGuPalette(PSD2.ColorPalette);
+      
+      if smallLod<>largeLod then
+        for J:=1 to 3 do
+         begin
+          Dest:=PChar(PSD2.Data);
+          PSD.Done;
+          PSD:=(Texture^.SourceTexture as QTextureFile).ScaledDownDescription(J);
+          PSD3.Size.X:=PSD3.Size.X div 2;
+          PSD3.Size.Y:=PSD3.Size.Y div 2;
+          PSD3.ScanLine:=PSD3.Size.X;
+          Inc(PChar(PSD3.Data), MemSize);
+          MemSize:=MemSize div 4;
+          PSD2.Done;
+          PSD2:=PSD3;
+          PSDConvert(PSD2, PSD, ccTemporary);
+         end;
+     end;    
+    finally PSD.Done; PSD2.Done; end;
+   end;
 end;
 
  {------------------------}

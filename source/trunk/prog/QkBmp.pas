@@ -33,6 +33,7 @@ type
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
           procedure Charger(F: TStream; Taille: Integer); override;
+          function ReadDIBData(F: TStream; Taille: Integer) : Boolean;
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -42,7 +43,7 @@ type
 
 implementation
 
-uses Game, Setup, Quarkx;
+uses Game, Setup, Quarkx, Qk1;
 
 const
  bmpSignature = $4D42;
@@ -65,6 +66,49 @@ begin
    end;
 end;
 
+var
+ Chain1: TClipboardHandler;
+
+function CollerImage(PasteNow: QObject) : Boolean;
+var
+ H: THandle;
+ SourceTaille: Integer;
+ Source: TMemoryStream;
+ Image: QBmp;
+begin
+ Result:=IsClipboardFormatAvailable(CF_DIB);
+ if Result and Assigned(PasteNow) then
+  begin
+   Image:=Nil;
+   Source:=Nil; try
+   OpenClipboard(Form1.Handle); try
+   H:=GetClipboardData(CF_DIB);
+   if H=0 then
+    begin
+     Result:=False;
+     SourceTaille:=0;
+    end
+   else
+    begin
+     SourceTaille:=GlobalSize(H);
+     Source:=TMemoryStream.Create;
+     Source.SetSize(SourceTaille);
+     Move(GlobalLock(H)^, Source.Memory^, SourceTaille);
+     GlobalUnlock(H);
+    end;
+   finally CloseClipboard; end;
+   if Result then
+    begin
+     Image:=QBmp.Create(LoadStr1(5138), PasteNow);
+     Image.AddRef(+1);
+     Image.ReadDIBData(Source, SourceTaille);
+     PasteNow.SousElements.Add(Image);
+    end;
+   finally Source.Free; Image.AddRef(-1); end;
+  end;
+ Result:=Result or Chain1(PasteNow);
+end;
+
  {------------------------}
 
 class function QBmp.TypeInfo: String;
@@ -80,17 +124,70 @@ begin
  Info.WndInfo:=[wiWindow];
 end;
 
-procedure QBmp.Charger(F: TStream; Taille: Integer);
+function QBmp.ReadDIBData(F: TStream; Taille: Integer) : Boolean;
 const
  Spec1 = 'Image1=';
  Spec2 = 'Pal=';
 var
- Header: TBitmapFileHeader;
  BmpInfo: TBitmapInfo256;
- Bitmap: TBitmap;
  V: array[1..2] of Single;
  Data: String;
- Origine, Taille0, TailleImage: LongInt;
+ TailleImage: LongInt;
+begin
+ if Taille>SizeOf(TBitmapInfoHeader) then
+  begin
+   F.ReadBuffer(BmpInfo, SizeOf(TBitmapInfoHeader));
+   if (BmpInfo.bmiHeader.biSize>=SizeOf(TBitmapInfoHeader))
+   and (Integer(BmpInfo.bmiHeader.biSize)<Taille)
+   and (BmpInfo.bmiHeader.biPlanes=1)
+   and ((BmpInfo.bmiHeader.biBitCount=8) or (BmpInfo.bmiHeader.biBitCount=24))
+   and (BmpInfo.bmiHeader.biCompression=bi_RGB)
+   and ((BmpInfo.bmiHeader.biClrUsed=0) or (BmpInfo.bmiHeader.biClrUsed=256)) then
+    begin
+     Dec(Taille, BmpInfo.bmiHeader.biSize);
+     if BmpInfo.bmiHeader.biBitCount=24 then
+      TailleImage:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
+     else
+      begin
+       TailleImage:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
+        Dec(Taille, bmpTaillePalette);
+      end;
+     if (TailleImage<0) or (TailleImage>Taille) then
+      Raise EErrorFmt(5509, [21]);
+     F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), 1);
+
+     if BmpInfo.bmiHeader.biBitCount=8 then
+      begin
+        { reads the palette }
+       F.ReadBuffer(BmpInfo.bmiColors, bmpTaillePalette);
+       Data:=Spec2;
+       SetLength(Data, Length(Spec2)+SizeOf(TPaletteLmp));
+       BmpInfoToPaletteLmp(BmpInfo,
+        PPaletteLmp(@Data[Length(Spec2)+1]));
+       SpecificsAdd(Data);  { "Pal=xxxxx" }
+      end;
+
+     { reads the image data }
+     V[1]:=BmpInfo.bmiHeader.biWidth;
+     V[2]:=BmpInfo.bmiHeader.biHeight;
+     SetFloatsSpec('Size', V);
+     Data:=Spec1;
+     SetLength(Data, Length(Spec1)+TailleImage);
+     F.ReadBuffer(Data[Length(Spec1)+1], TailleImage);
+     Specifics.Add(Data);   { Image1= }
+
+     Result:=True;
+     Exit;
+    end;
+  end;
+ Result:=False;
+end;
+
+procedure QBmp.Charger(F: TStream; Taille: Integer);
+var
+ Header: TBitmapFileHeader;
+ Origine, Taille0: LongInt;
+ Bitmap: TBitmap;
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
@@ -102,64 +199,22 @@ begin
       Dec(Taille, SizeOf(Header));
       if Header.bfType<>bmpSignature then
        Raise EErrorFmt(5535, [LoadName, Header.bfType, bmpSignature]);
-      if Taille>SizeOf(TBitmapInfoHeader) then
+
+      if not ReadDIBData(F, Taille) then
        begin
-        F.ReadBuffer(BmpInfo, SizeOf(TBitmapInfoHeader));
-        if (BmpInfo.bmiHeader.biSize>=SizeOf(TBitmapInfoHeader))
-        and (Integer(BmpInfo.bmiHeader.biSize)<Taille)
-        and (BmpInfo.bmiHeader.biPlanes=1)
-        and ((BmpInfo.bmiHeader.biBitCount=8) or (BmpInfo.bmiHeader.biBitCount=24))
-        and (BmpInfo.bmiHeader.biCompression=bi_RGB)
-        and ((BmpInfo.bmiHeader.biClrUsed=0) or (BmpInfo.bmiHeader.biClrUsed=256)) then
-         begin
-          Dec(Taille, BmpInfo.bmiHeader.biSize);
-          if BmpInfo.bmiHeader.biBitCount=24 then
-           TailleImage:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
-          else
-           begin
-            TailleImage:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
-            Dec(Taille, bmpTaillePalette);
-           end;
-          if (TailleImage<0) or (TailleImage>Taille) then
-           Raise EErrorFmt(5509, [21]);
-          F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), 1);
-
-          if BmpInfo.bmiHeader.biBitCount=8 then
-           begin
-             { reads the palette }
-            F.ReadBuffer(BmpInfo.bmiColors, bmpTaillePalette);
-            Data:=Spec2;
-            SetLength(Data, Length(Spec2)+SizeOf(TPaletteLmp));
-            BmpInfoToPaletteLmp(BmpInfo,
-             PPaletteLmp(@Data[Length(Spec2)+1]));
-            SpecificsAdd(Data);  { "Pal=xxxxx" }
-           end;
-
-           { reads the image data }
-          V[1]:=BmpInfo.bmiHeader.biWidth;
-          V[2]:=BmpInfo.bmiHeader.biHeight;
-          SetFloatsSpec('Size', V);
-          Data:=Spec1;
-          SetLength(Data, Length(Spec1)+TailleImage);
-          F.ReadBuffer(Data[Length(Spec1)+1], TailleImage);
-          Specifics.Add(Data);   { Image1= }
-
-          Exit;
-         end;
+        F.Position:=Origine;
+        case MessageDlg(FmtLoadStr1(5536, [LoadName, SetupGameSet.Name]),
+         mtConfirmation, mbYesNoCancel, 0) of
+          mrYes:begin
+                 Bitmap:=TBitmap.Create; try
+                 Bitmap.LoadFromStream(F);
+                 PasteBitmap(GameBuffer(mjAny), Bitmap);
+                 finally Bitmap.Free; end;
+                end;
+          mrNo: ReadUnformatted(F, Taille0);
+         else Abort;
+        end;
        end;
-
-      F.Position:=Origine;
-      case MessageDlg(FmtLoadStr1(5536, [LoadName, SetupGameSet.Name]),
-       mtConfirmation, mbYesNoCancel, 0) of
-        mrYes:begin
-               Bitmap:=TBitmap.Create; try
-               Bitmap.LoadFromStream(F);
-               PasteBitmap(GameBuffer(mjAny), Bitmap);
-               finally Bitmap.Free; end;
-              end;
-        mrNo: ReadUnformatted(F, Taille0);
-       else Abort;
-      end;
      end;
  else inherited;
  end;
@@ -203,4 +258,6 @@ end;
 
 initialization
   RegisterQObject(QBmp, 'k');
+  Chain1:=ClipboardChain;
+  ClipboardChain:=CollerImage;
 end.

@@ -1112,6 +1112,7 @@ begin
  case Msg.wParam of
   wp_AfficherObjet: if FileObject<>Nil then
                      try
+                      Caption:=FileObject.Name;
                       FileObject.ChangeToObjectGameMode;
                       Py_XDECREF(CallMacro(WndObject, PythonMacro));
                       PythonCodeEnd;

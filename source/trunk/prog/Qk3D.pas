@@ -112,7 +112,18 @@ var
 
  {------------------------}
 
-{function ChargeCouleursTraits : TCouleursTraits;}
+type
+ TCDC = record
+         B: HBrush;
+         TC, BC: TColorRef;
+        end;
+
+ { making a "background brush" for the back of Bezier patches or model triangles }
+procedure SetupComponentDC(var CDC: TCDC);  { initialization }
+procedure CloseComponentDC(var CDC: TCDC);  { finalization }
+procedure EnableComponentDC(var CDC: TCDC);   { activate the "background brush" (SetupComponentDC does it by default) }
+procedure DisableComponentDC(var CDC: TCDC);  { deactivate this brush and restore the previous brush }
+procedure ClearWireframeCache;
 
  {------------------------}
 
@@ -286,12 +297,12 @@ begin
  if couple=Nil then Exit;
  CCoord.CheckVisible(P);
  PyTuple_SetItem(couple, 0, CCoord.MakePyVectPtf(P));
- PyTuple_SetItem(couple, 1, @PythonObj);
  Py_INCREF(@PythonObj);
+ PyTuple_SetItem(couple, 1, @PythonObj);
 
  if Extra=Nil then Extra:=Py_None;
- PyTuple_SetItem(couple, 2, Extra);
  Py_INCREF(Extra);
+ PyTuple_SetItem(couple, 2, Extra);
  
  PyList_Append(Liste, couple);
  Py_DECREF(couple);
@@ -314,6 +325,52 @@ end;*)
 
 procedure Q3DObject.ChercheExtremites(var Min, Max: TVect);
 begin
+end;
+
+ {------------------------}
+
+var
+ PatternBrush: HBrush = 0;
+
+procedure ClearWireframeCache;
+begin
+ if PatternBrush<>0 then
+  begin
+   DeleteObject(PatternBrush);
+   PatternBrush:=0;
+  end;
+end;
+
+procedure SetupComponentDC(var CDC: TCDC);
+var
+ Bmp: HBitmap;
+begin
+ if PatternBrush=0 then
+  begin
+   Bmp:=LoadBitmap(HInstance, MakeIntResource(110));
+   PatternBrush:=CreatePatternBrush(Bmp);
+   DeleteObject(Bmp);
+  end;
+ CDC.B:=SelectObject(Info.DC, PatternBrush);
+ CDC.TC:=SetTextColor(Info.DC, $000000);
+ CDC.BC:=SetBkColor(Info.DC, $FFFFFF);
+end;
+
+procedure CloseComponentDC(var CDC: TCDC);
+begin
+ SelectObject(Info.DC, CDC.B);
+ SetTextColor(Info.DC, CDC.TC);
+ SetBkColor(Info.DC, CDC.BC);
+end;
+
+procedure EnableComponentDC(var CDC: TCDC);
+begin
+ SelectObject(Info.DC, PatternBrush);
+end;
+
+procedure DisableComponentDC(var CDC: TCDC);
+begin
+ SelectObject(Info.DC, CDC.B);
 end;
 
  {------------------------}

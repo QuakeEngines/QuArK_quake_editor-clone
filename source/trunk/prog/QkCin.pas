@@ -187,6 +187,8 @@ begin
     + (EstimatedFrameSize+BytesPerTick) * (1-Estimated);
   end;  
  Length:=FrameOfs.Count + Round((DataSize-Progress) / Estimated);
+ if Length<=FrameOfs.Count then
+  Length:=FrameOfs.Count+1;  { prevents premature end of reading }
 end;
 
 function TCinDataInfo.ReadNewHeader : Integer;
@@ -395,29 +397,24 @@ end;
 
  {------------------------}
 
-procedure Uncompress(Dest: PChar; Source: PInteger; DestSize, DestWidth: Integer; var OptData);
+procedure Uncompress(Dest: PChar; Source: PInteger; LineWidth, DestWidth, LineCount: Integer; var OptData);
 pascal; assembler;
 var
- Cnt1: PChar;
+ EndOfLine: PChar;
 asm
- mov eax, [DestWidth]
- add eax, [DestSize]
+ mov eax, [LineCount]
+ dec eax
+ mul [dword ptr DestWidth]    { DestWidth is a 4-bytes-aligned version of LineWidth }
  add eax, [Dest]
+ mov edx, eax
+ add edx, [LineWidth]
  push esi
  push edi
- mov [Cnt1], eax
- mov ecx, 1
- mov edx, [OptData]
- mov edx, [edx]
-
- @Boucle:
-  cmp eax, [Cnt1]
-  jne @step1
-  mov edi, [DestWidth]
-  sub [Cnt1], edi
-  sub eax, edi
-  sub eax, edi
-  jmp @step1
+ mov [EndOfLine], edx
+ xor ecx, ecx
+ mov edi, [OptData]
+ mov edx, [edi]
+ jmp @loopentry
 
   @loop1:
    xor edi, edi
@@ -429,6 +426,7 @@ asm
   @step1:
    dec ecx
    jnz @loop1
+  @loopentry: 
    mov edi, [Source]
    mov ecx, 32
    add edi, 4
@@ -441,8 +439,15 @@ asm
   inc eax
   mov edi, [OptData]
   mov edx, [edi + 4*edx]
-  dec [dword ptr DestSize]
- jnz @Boucle
+
+  cmp eax, [EndOfLine]
+  jne @step1
+  mov edi, [DestWidth]
+  sub [EndOfLine], edi
+  sub eax, edi
+  sub eax, [LineWidth]
+  dec [dword ptr LineCount]
+  jnz @step1
 
  pop edi
  pop esi
@@ -462,20 +467,28 @@ begin
   if nPos>=FrameOfs.Count then
    begin
     HCount:=ReadNewHeader-LongInt(FrameOfs.Last)-SizeOf(LongInt)-BytesPerTick;
+    EstimateLength;
     if nPos>=FrameOfs.Count then Exit;
    end
   else
-   Stream.Position:=LongInt(FrameOfs[nPos]);
+   begin
+    Stream.Position:=LongInt(FrameOfs[nPos]);
+    if Palettes[nPos]<>Nil then
+     begin
+      CurrentPalette:=PBitmapInfoColors(Palettes[nPos]);
+      PaletteChange:=High(TBuffers)-Low(TBuffers)+1;
+     end;
+   end;
  tagHdr:=nPos and High(TBuffers);
  if ImageHdr[tagHdr]=Nil then
-  GetMem(ImageHdr[tagHdr], FrameWidth*FrameHeight);
+  GetMem(ImageHdr[tagHdr], ((FrameWidth+3) and not 3) * FrameHeight);
  if HCount=0 then
   Stream.ReadBuffer(HCount, SizeOf(HCount));
  GetMem(HData, HCount); try
  Stream.ReadBuffer(HData^, HCount);
  if HData^<>FrameWidth*FrameHeight then
   Raise EErrorFmt(5509, [134]);
- Uncompress(PChar(ImageHdr[tagHdr]), HData, HData^, FrameWidth, OptData);
+ Uncompress(PChar(ImageHdr[tagHdr]), HData, FrameWidth, (FrameWidth+3) and not 3, FrameHeight, OptData);
  finally FreeMem(HData); end;
  if PaletteChange>0 then
   begin

@@ -909,7 +909,6 @@ procedure TMyTreeView.CheckInternalState;
   begin
    Raise InternalE('TMyTreeView.CheckInternalState: '+S);
   end;
-  procedure RecCheck(L: TQList); forward;
   procedure RecEmptyCheck(L: TQList; Special: QObject);
   var
    J: Integer;
@@ -918,7 +917,7 @@ procedure TMyTreeView.CheckInternalState;
    for J:=0 to L.Count-1 do
     begin
      Test:=L[J];
-     if Test=Special then Continue;
+     if (Test=Special) or not Odd(Test.Flags) then Continue;
      if Odd(Test.SelMult) then
       if Special=Nil then
        Err('V')
@@ -927,7 +926,7 @@ procedure TMyTreeView.CheckInternalState;
      RecEmptyCheck(Test.SousElementsC, Nil);
     end;
   end;
-  procedure RecCheck(L: TQList);
+  procedure RecCheck(L: TQList; TopLevel: Boolean);
   var
    J: Integer;
    Test: QObject;
@@ -935,6 +934,13 @@ procedure TMyTreeView.CheckInternalState;
    for J:=0 to L.Count-1 do
     begin
      Test:=L[J];
+     if TopLevel then
+      begin
+       if Odd(Test.Flags) then Err('T');
+      end
+     else
+      if not Odd(Test.Flags) then
+       Continue;
      while Test.SelMult = smSpecial do
       begin
        if not (Test is TTreeMapGroup) then Err('G');
@@ -950,11 +956,11 @@ procedure TMyTreeView.CheckInternalState;
      if Test.SelMult and smSousSelVide <> 0 then
       RecEmptyCheck(Test.SousElementsC, Nil)
      else
-      RecCheck(Test.SousElementsC);
+      RecCheck(Test.SousElementsC, False);
     end;
   end;
 begin
- RecCheck(Roots);
+ RecCheck(Roots, True);
 end;
 {$ENDIF}
 

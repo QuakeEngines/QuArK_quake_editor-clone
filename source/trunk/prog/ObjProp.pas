@@ -66,7 +66,7 @@ procedure ObjectProperties(QL: TList; nPasteTo: TQkForm);  { assume QL is non-em
 
 implementation
 
-uses Qk1, QkGroup, Quarkx, PyImages, Python, Travail, QkTextures;
+uses Qk1, QkGroup, Quarkx, PyImages, Python, Travail, QkPixelSet;
 
 {$R *.DFM}
 
@@ -195,8 +195,10 @@ begin
   begin
    DebutTravail(5457, List.Count); try
    for I:=0 to List.Count-1 do
-    if List[I] is QTexture then
-     QTexture(List[I]).LoadTexture;
+    if List[I] is QPixelSet then
+     QPixelSet(List[I]).LoadPixelSet
+    else
+     List[I].Acces;
    for I:=0 to List.Count-1 do
     begin
      ConvertClass:=(List[I] as QFileObject).TestConversionType(ListBox1.ItemIndex+1);
