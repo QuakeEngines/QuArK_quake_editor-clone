@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/05/21 20:43:19  alexander
+fixed: that R and B colors were xchanged
+fixed: distorted loading of some textures (H and W xchanged)
+
 Revision 1.3  2000/05/14 15:06:56  decker_dk
 Charger(F,Taille) -> LoadFile(F,FSize)
 ToutCharger -> LoadAll
@@ -73,6 +77,7 @@ const
 var
   LineWidth, J, K: Integer;
   sig, h, w: longint;
+  contents,flags,value:longint;
   Aname: string;
   ScanLine, AlphaScanLine: PChar;
   PSD: TPixelSetDescription;
@@ -87,6 +92,11 @@ begin
         Raise Exception.Create('.M32 Files must be 24 bit!');
       if PSD.AlphaBits<>psa8bpp then
         Raise Exception.Create('.M32 Files must have 8 bit Alpha!');
+
+      Contents:=StrToIntDef(Specifics.Values['Contents'], 0);
+      Flags   :=StrToIntDef(Specifics.Values['Flags'], 0);
+      Value   :=StrToIntDef(Specifics.Values['Value'], 0);
+
       sig:=0004; // 04 00 00 00 header
       F.WriteBuffer(sig,4);
       AName:=Name;
@@ -99,6 +109,10 @@ begin
       F.WriteBuffer(W, 2);
       WriteZeros(F, $244);
       F.WriteBuffer(H, 2);
+      WriteZeros(F, $2c4);
+      F.WriteBuffer(flags, 4);
+      F.WriteBuffer(contents , 4);
+      F.WriteBuffer(value, 4);
       WriteZeros(F, $3C8);
       LineWidth:= W * 4;  { 4 bytes per line (32 bit)}
       ScanLine:=PSD.StartPointer;
@@ -222,6 +236,7 @@ var
   tex: string;
   rgb, a: string;
   hi, wi: smallint;
+  flags,content,value: longint;
   V: array[1..2] of Single;
 begin
  case ReadFormat of
@@ -236,6 +251,10 @@ begin
        F.ReadBuffer(wi, 2);
        F.Position:=org+$244;
        F.ReadBuffer(hi, 2);
+       F.Position:=org+$2c4;
+       F.ReadBuffer(flags, 4);
+       F.ReadBuffer(content, 4);
+       F.ReadBuffer(value, 4);
        F.Position:=org+$3C8;
        V[1]:=wi;
        V[2]:=hi;
@@ -245,6 +264,10 @@ begin
 
        specificsadd(rgb);
        specificsadd(a);
+
+       SpecificsAdd(format('Contents=%d',[content]));
+       SpecificsAdd(format('Flags=%d',[flags]));
+       SpecificsAdd(format('Value=%d',[value]));
      end;
  else inherited;
  end;
@@ -266,4 +289,4 @@ end;
 initialization
   RegisterQObject(QM32, 'l');
 end.
- 
+
