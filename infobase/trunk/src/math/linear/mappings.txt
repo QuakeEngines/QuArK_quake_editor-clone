@@ -1,11 +1,11 @@
 title: Mappings & Matrices
 author: tiglari
 
-Technically, a linear mapping is a function making vectors 
+Technically, a linear mapping is a function making vectors
 from vectors that obeys this law, where L is the mapping,
 a and b are numbers (scalars), and v and w are vectors:
 <code>
-L(a*v + b*w) = a*L(v) + b*L(w) 
+L(a*v + b*w) = a*L(v) + b*L(w)
 </code>
 
 It is an immedidate consequence of the definition that if [x,
@@ -25,7 +25,7 @@ Not only does every linear mapping produce a replacement
 basis, but the reverse is true: if we pick three vectors
 at random, [xr, yr, zr], we can make a linear mapping out
 of them by choosing a (real) basis, and then transforming
-a vector v with coordinates <<a>x, y, z> as follows:
+a vector v with coordinates &lt;x, y, z> as follows:
 <code>
 M(v) = x*xr + y*yr + z*zr
 </code>
@@ -67,7 +67,7 @@ fundamental one.
 
 
 
-of 
+of
 the result
 of applying the mapping designated by M to the vector v
 (the vectors are treated as 1-column matrices).  Furthermore,
@@ -78,8 +78,8 @@ M's.
 Most of the time the basis we're most interested in is
 the standard one, which I'll repeat here:
 <code>
-xa = <1, 0, 0>
-ya = <0, 1, 0>
-za = <0, 0, 1>
+xa = &lt;1, 0, 0>
+ya = &lt;0, 1, 0>
+za = &lt;0, 0, 1>
 </code>
 
