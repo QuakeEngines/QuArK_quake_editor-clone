@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/10/16 22:27:40  aiv
+pylogging added (not fully working yet)
+
 Revision 1.8  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -111,7 +114,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      PyForms, QkPixelSet, Bezier, PyLogging;
 
  {-------------------}
-     
+
 function PyNoResult : PyObject; assembler;
 asm
  mov eax, [Py_None]
@@ -136,7 +139,7 @@ end;
  {-------------------}
 
 var
- Pool: TStringList = Nil; 
+ Pool: TStringList = Nil;
 
 function PoolObj(const nName: String) : PyObject;
 var
@@ -189,34 +192,35 @@ var
 begin
  if Pool<>Nil then
   begin
-   DT:=False; try
-   if Full then
-    Count:=MaxInt
-   else
-    Count:=OneStepCount;
-   I:=0;
-   while I<Pool.Count do
-    begin
-     oObj:=PyObject(Pool.Objects[I]);
-     if oObj^.ob_refcnt = 1 then
-      begin
-       if not DT then
-        begin
-         ProgressIndicatorStart(0,0);
-         DT:=True;
-        end;
-       Pool.Delete(I);
-       Py_DECREF(oObj);
-       Dec(Count);
-       if Count=0 then
-        begin
-         Result:=False;
-         Exit;
-        end;
-      end
-     else
-      Inc(I);
-    end;
+   DT:=False;
+   try
+    if Full then
+     Count:=MaxInt
+    else
+     Count:=OneStepCount;
+    I:=0;
+    while I<Pool.Count do
+     begin
+      oObj:=PyObject(Pool.Objects[I]);
+      if oObj^.ob_refcnt = 1 then
+       begin
+        if not DT then
+         begin
+          ProgressIndicatorStart(0,0);
+          DT:=True;
+         end;
+        Pool.Delete(I);
+        Py_DECREF(oObj);
+        Dec(Count);
+        if Count=0 then
+         begin
+          Result:=False;
+          Exit;
+         end;
+       end
+      else
+       Inc(I);
+     end;
    finally
     if DT then
      ProgressIndicatorStop;
@@ -281,7 +285,7 @@ begin
    begin
     Interval:=nInterval;
     Enabled:=True;
-   end 
+   end
   else
    Clear;
  end;
@@ -384,7 +388,7 @@ begin
       begin
        Item.Free;
        Exit;
-      end; 
+      end;
     finally
      Py_DECREF(obj1);
     end;
@@ -405,15 +409,18 @@ begin
  Result:=Nil;
  if not PyArg_ParseTupleX(args, 'O', [@obj]) then Exit;
  Form:=PyWindow(self)^.Form;
- NewMainMenu:=TMainMenu.Create(Form); try
- if not FillInMenu(Form, NewMainMenu.Items, obj) then Exit;
- OldMainMenu:=Form.Menu;
- Form.Menu:=NewMainMenu;
- if NewMainMenu=OldMainMenu then
-  NewMainMenu:=Nil
- else
-  NewMainMenu:=OldMainMenu;
- finally NewMainMenu.Free; end;
+ NewMainMenu:=TMainMenu.Create(Form);
+ try
+  if not FillInMenu(Form, NewMainMenu.Items, obj) then Exit;
+  OldMainMenu:=Form.Menu;
+  Form.Menu:=NewMainMenu;
+  if NewMainMenu=OldMainMenu then
+   NewMainMenu:=Nil
+  else
+   NewMainMenu:=OldMainMenu;
+ finally
+  NewMainMenu.Free;
+ end;
  Result:=PyNoResult;
 end;
 
@@ -518,7 +525,7 @@ begin
   EBackToPython;
   Result:=Nil;
  end;
-end;                              
+end;
 
 (*function xMainForm(self, args: PyObject) : PyObject; cdecl;
 begin
@@ -542,7 +549,7 @@ begin
   MaskX:=-1;
   if not PyArg_ParseTupleX(args, 's|O(ii)', [@FileName, @WidthObj, @MaskX, @MaskY]) then
    Exit;
-  cratio:=1; 
+  cratio:=1;
   if WidthObj=Nil then
    cx:=16
   else
@@ -557,33 +564,36 @@ begin
      if cx<=0 then
       Raise EError(4459);
     end;
-  Bitmap:=TBitmap.Create; try
-  S:=ExtractFilePath(ApplicationPath)+StrPas(FileName);
-  Ok:=FileExists(S);
-  if Ok then
-   try
-    Bitmap.LoadFromFile(S);
-   except
-    Ok:=False;
-   end;
-  if not Ok then
-   begin
-    S:=StrPas(FileName);
-    Ok:=FileExists(S);
-    if Ok then
-     try
-      Bitmap.LoadFromFile(S);
-     except
-      Ok:=False;
-     end;
-    if not Ok then
-     begin
-      PyErr_SetString(QuarkxError, PChar(FmtLoadStr1(4418, [S])));
-      Exit;
-     end;
-   end;
-  Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
-  finally Bitmap.Free; end;
+  Bitmap:=TBitmap.Create;
+  try
+   S:=ExtractFilePath(ApplicationPath)+StrPas(FileName);
+   Ok:=FileExists(S);
+   if Ok then
+    try
+     Bitmap.LoadFromFile(S);
+    except
+     Ok:=False;
+    end;
+   if not Ok then
+    begin
+     S:=StrPas(FileName);
+     Ok:=FileExists(S);
+     if Ok then
+      try
+       Bitmap.LoadFromFile(S);
+      except
+       Ok:=False;
+      end;
+     if not Ok then
+      begin
+       PyErr_SetString(QuarkxError, PChar(FmtLoadStr1(4418, [S])));
+       Exit;
+      end;
+    end;
+   Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
+  finally
+   Bitmap.Free;
+  end;
  except
   EBackToPython;
   Result:=Nil;
@@ -752,29 +762,35 @@ begin
   if Flags and fdb_SaveDialog <> 0 then
    begin
     Dec(Flags, fdb_SaveDialog);
-    SaveDialog:=TSaveDialog.Create(Application); try
-    SaveDialog.Title:=nTitle;
-    SaveDialog.Options:=TOpenOptions(Flags)
-     + [ofCreatePrompt, ofPathMustExist, ofHideReadOnly];
-    SaveDialog.DefaultExt:=nDefExt;
-    SaveDialog.FileName:=nFileName;
-    SaveDialog.Filter:=FiltersStr;
-    Ok:=SaveDialog.Execute;
-    ProcessResult(SaveDialog.Files);
-    finally SaveDialog.Free; end;
+    SaveDialog:=TSaveDialog.Create(Application);
+    try
+     SaveDialog.Title:=nTitle;
+     SaveDialog.Options:=TOpenOptions(Flags)
+      + [ofCreatePrompt, ofPathMustExist, ofHideReadOnly];
+     SaveDialog.DefaultExt:=nDefExt;
+     SaveDialog.FileName:=nFileName;
+     SaveDialog.Filter:=FiltersStr;
+     Ok:=SaveDialog.Execute;
+     ProcessResult(SaveDialog.Files);
+    finally
+     SaveDialog.Free;
+    end;
    end
   else
    begin
-    OpenDialog:=TOpenDialog.Create(Application); try
-    OpenDialog.Title:=nTitle;
-    OpenDialog.Options:=TOpenOptions(Flags)
-     + [ofFileMustExist, ofHideReadOnly];
-    OpenDialog.DefaultExt:=nDefExt;
-    OpenDialog.FileName:=nFileName;
-    OpenDialog.Filter:=FiltersStr;
-    Ok:=OpenDialog.Execute;
-    ProcessResult(OpenDialog.Files);
-    finally OpenDialog.Free; end;
+    OpenDialog:=TOpenDialog.Create(Application);
+    try
+     OpenDialog.Title:=nTitle;
+     OpenDialog.Options:=TOpenOptions(Flags)
+      + [ofFileMustExist, ofHideReadOnly];
+     OpenDialog.DefaultExt:=nDefExt;
+     OpenDialog.FileName:=nFileName;
+     OpenDialog.Filter:=FiltersStr;
+     Ok:=OpenDialog.Execute;
+     ProcessResult(OpenDialog.Files);
+    finally
+     OpenDialog.Free;
+    end;
    end
  except
   EBackToPython;
@@ -823,13 +839,16 @@ begin
    begin
     Lines:=PyString_AsString(obj);
     if Lines=Nil then Exit;
-    L:=TStringList.Create; try
-    L.Text:=Lines;
-    Result:=PyList_New(L.Count);
-    for I:=0 to L.Count-1 do
-     PyList_SetItem(Result, I, PyString_FromString(PChar(L[I])));
-    finally L.Free; end;
-   end; 
+    L:=TStringList.Create;
+    try
+     L.Text:=Lines;
+     Result:=PyList_New(L.Count);
+     for I:=0 to L.Count-1 do
+      PyList_SetItem(Result, I, PyString_FromString(PChar(L[I])));
+    finally
+     L.Free;
+    end;
+   end;
  except
   EBackToPython;
   Result:=Nil;
@@ -854,17 +873,20 @@ begin
    begin
     Count:=PyObject_Length(Lines);
     if Count<0 then Exit;
-    L:=TStringList.Create; try
-    for I:=0 to Count-1 do
-     begin
-      obj:=PyList_GetItem(Lines, I);
-      if obj=Nil then Exit;
-      Text:=PyString_AsString(obj);
-      if Text=Nil then Exit;
-      L.Add(Text);
-     end;
-    Result:=PyString_FromString(PChar(TrimStringList(L, $0A)));
-    finally L.Free; end;
+    L:=TStringList.Create;
+    try
+     for I:=0 to Count-1 do
+      begin
+       obj:=PyList_GetItem(Lines, I);
+       if obj=Nil then Exit;
+       Text:=PyString_AsString(obj);
+       if Text=Nil then Exit;
+       L.Add(Text);
+      end;
+     Result:=PyString_FromString(PChar(TrimStringList(L, $0A)));
+    finally
+     L.Free;
+    end;
    end;
  except
   EBackToPython;
@@ -895,21 +917,24 @@ var
  L: TStringList;
 begin
  try
-  L:=TStringList.Create; try
-  ListFileExt(L);
-  Result:=PyList_New(L.Count div 2);
-  if Result=Nil then Exit;
-  for I:=0 to L.Count div 2 - 1 do
-   begin
-    obj:=Py_BuildValueX('(ss)', [PChar(L[I*2]), PChar(L[I*2+1])]);
-    if obj=Nil then
-     begin
-      Py_DECREF(Result);
-      Exit;
-     end;
-    PyList_SetItem(Result, I, obj);
-   end;
-  finally L.Free; end;
+  L:=TStringList.Create;
+  try
+   ListFileExt(L);
+   Result:=PyList_New(L.Count div 2);
+   if Result=Nil then Exit;
+   for I:=0 to L.Count div 2 - 1 do
+    begin
+     obj:=Py_BuildValueX('(ss)', [PChar(L[I*2]), PChar(L[I*2+1])]);
+     if obj=Nil then
+      begin
+       Py_DECREF(Result);
+       Exit;
+      end;
+     PyList_SetItem(Result, I, obj);
+    end;
+  finally
+   L.Free;
+  end;
  except
   EBackToPython;
   Result:=Nil;
@@ -936,9 +961,12 @@ begin
      nName:=''
     else
      nName:=PName;
-    L:=BuildQuakeCtxObjects(NeedClassOfType(PType), nName); try
-    Result:=QListToPyList(L);
-    finally L.Free; end;
+    L:=BuildQuakeCtxObjects(NeedClassOfType(PType), nName);
+    try
+     Result:=QListToPyList(L);
+    finally
+     L.Free;
+    end;
    end;
  except
   EBackToPython;
@@ -959,7 +987,7 @@ begin
    PythonUpdateAll
   else
    PyWindow(obj)^.Form.RefreshMenus;
-  Result:=PyNoResult; 
+  Result:=PyNoResult;
  except
   EBackToPython;
   Result:=Nil;
@@ -1160,10 +1188,13 @@ begin
   if PyObject_IsTrue(Now) then
    begin
     Gr:=ClipboardGroup;
-    Gr.AddRef(+1); try
-    ClipboardChain(Gr);
-    Result:=QListToPyList(Gr.SubElements);
-    finally Gr.AddRef(-1); end;
+    Gr.AddRef(+1);
+    try
+     ClipboardChain(Gr);
+     Result:=QListToPyList(Gr.SubElements);
+    finally
+     Gr.AddRef(-1);
+    end;
    end
   else
    Result:=PyInt_FromLong(Ord(ClipboardChain(Nil)));
@@ -1183,10 +1214,13 @@ begin
   if not PyArg_ParseTupleX(args, 'O!', [PyList_Type, @nList]) then
    Exit;
   Gr:=ClipboardGroup;
-  Gr.AddRef(+1); try
-  PyListToQList(nList, Gr.SubElements, QObject);
-  Gr.CopierObjets(False);
-  finally Gr.AddRef(-1); end;
+  Gr.AddRef(+1);
+  try
+   PyListToQList(nList, Gr.SubElements, QObject);
+   Gr.CopierObjets(False);
+  finally
+   Gr.AddRef(-1);
+  end;
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -1306,24 +1340,27 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!', [PyList_Type, @lst]) then
    Exit;
-  L:=TStringList.Create; try
-  L.Sorted:=True;
-  for I:=0 to PyObject_Length(lst)-1 do
-   begin
-    obj:=PyList_GetItem(lst, I);
-    Q:=QkObjFromPyObj(obj);
-    if not (Q is TTreeMap) then
-     Raise EErrorFmt(4450, ['TreeMap']);
-    with TTreeMap(Q) do
-     begin
-      LoadAll;
-      FindTextures(L);
-     end;
-   end;
-  Result:=PyList_New(L.Count);
-  for I:=0 to L.Count-1 do
-   PyList_SetItem(Result, I, PyString_FromString(PChar(L[I])));
-  finally L.Free; end;
+  L:=TStringList.Create;
+  try
+   L.Sorted:=True;
+   for I:=0 to PyObject_Length(lst)-1 do
+    begin
+     obj:=PyList_GetItem(lst, I);
+     Q:=QkObjFromPyObj(obj);
+     if not (Q is TTreeMap) then
+      Raise EErrorFmt(4450, ['TreeMap']);
+     with TTreeMap(Q) do
+      begin
+       LoadAll;
+       FindTextures(L);
+      end;
+    end;
+   Result:=PyList_New(L.Count);
+   for I:=0 to L.Count-1 do
+    PyList_SetItem(Result, I, PyString_FromString(PChar(L[I])));
+  finally
+   L.Free;
+  end;
  except
   EBackToPython;
   Result:=Nil;
@@ -1368,7 +1405,7 @@ begin
         begin
          LoadAll;
          ChercheExtremites(Min, Max);
-        end; 
+        end;
      end;
    end;
   if (Min.X=MaxInt) or (Max.Z=-MaxInt) then
@@ -1442,19 +1479,25 @@ begin
    Exit;
   Count:=PyObject_Length(texnames);
   if Count<0 then Exit;
-  L:=TStringList.Create; try
-  for I:=0 to Count-1 do
-   begin
-    obj:=PyList_GetItem(texnames, I);
-    if obj=Nil then Exit;
-    P:=PyString_AsString(obj);
-    if P=Nil then Exit;
-    L.Add(P);
+  L:=TStringList.Create;
+  try
+   for I:=0 to Count-1 do
+    begin
+     obj:=PyList_GetItem(texnames, I);
+     if obj=Nil then Exit;
+     P:=PyString_AsString(obj);
+     if P=Nil then Exit;
+     L.Add(P);
+    end;
+   QL:=WriteAllTextures(L, op, QkObjFromPyObj(AltTexSrc));
+   try
+    Result:=QListToPyList(QL);
+   finally
+    QL.Free;
    end;
-  QL:=WriteAllTextures(L, op, QkObjFromPyObj(AltTexSrc)); try
-  Result:=QListToPyList(QL);
-  finally QL.Free; end;
-  finally L.Free; end;
+  finally
+   L.Free;
+  end;
  except
   EBackToUser;
   Result:=Nil;
@@ -1590,7 +1633,7 @@ begin
    ToolBox:=OpenTextureBrowser;
   if sel<>Nil then
    ToolBox.SelectTbObject(QkObjFromPyObj(sel));
-  ActivateNow(ToolBox); 
+  ActivateNow(ToolBox);
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -1618,14 +1661,17 @@ begin
    end
   else
    begin
-    QList:=Nil; try
-    if oblist<>Py_None then
-     begin
-      QList:=TQList.Create;
-      PyListToQList(oblist, QList, QObject);
-     end;
-    Result:=PyInt_FromLong(Ord(ShowAltConfigDlg(QkObjFromPyObj(obj), path, QList)));
-    finally QList.Free; end;
+    QList:=Nil;
+    try
+     if oblist<>Py_None then
+      begin
+       QList:=TQList.Create;
+       PyListToQList(oblist, QList, QObject);
+      end;
+     Result:=PyInt_FromLong(Ord(ShowAltConfigDlg(QkObjFromPyObj(obj), path, QList)));
+    finally
+     QList.Free;
+    end;
    end;
  except
   EBackToPython;
@@ -1652,7 +1698,7 @@ begin
    begin
     v1^.Source3D.CheckVisible(PP1);
     v1^.Source3D.CheckVisible(PP2);
-   end; 
+   end;
   Result:=PyTuple_New(2);
   if Ok then
    begin
@@ -1859,7 +1905,7 @@ begin
   else
    if not SetFileAttributes(s,i) then
     Raise EError(4455);
-  Result:=PyNoResult;  
+  Result:=PyNoResult;
  except
   EBackToPython;
   Result:=Nil;
@@ -1935,15 +1981,18 @@ var
   end;
 
 begin
- Reg:=TRegistry2.Create; try
- Reg.RootKey:=HKEY_CLASSES_ROOT;
- if (not Reg.ReadOpenKey('.html') and not Reg.ReadOpenKey('.htm'))
- or not Reg.ReadString('', S1) then
-  OpenError(LoadStr1(5650));
- S1:='\'+S1+'\shell\open\command';
- if not Reg.ReadOpenKey(S1) or not Reg.ReadString('', S2) or (S2='') then
-  OpenError(FmtLoadStr1(5651, [S1]));
- finally Reg.Free; end;
+ Reg:=TRegistry2.Create;
+ try
+  Reg.RootKey:=HKEY_CLASSES_ROOT;
+  if (not Reg.ReadOpenKey('.html') and not Reg.ReadOpenKey('.htm'))
+  or not Reg.ReadString('', S1) then
+   OpenError(LoadStr1(5650));
+  S1:='\'+S1+'\shell\open\command';
+  if not Reg.ReadOpenKey(S1) or not Reg.ReadString('', S2) or (S2='') then
+   OpenError(FmtLoadStr1(5651, [S1]));
+ finally
+  Reg.Free;
+ end;
 
  if S2[1]='"' then
   begin
@@ -2198,11 +2247,14 @@ begin
   if not PyArg_ParseTupleX(args, '|s', [@P]) then
    Exit;
 
-  L:=TQList.Create; try
-  SetupQrk:=MakeAddOnsList; try
-   { looks for toolbox data in all add-ons }
-  BrowseToolBoxes(SetupQrk, P, L);
-  finally SetupQrk.AddRef(-1); end;
+  L:=TQList.Create;
+  try
+   SetupQrk:=MakeAddOnsList; try
+    { looks for toolbox data in all add-ons }
+   BrowseToolBoxes(SetupQrk, P, L);
+  finally
+   SetupQrk.AddRef(-1);
+  end;
 
   Result:=PyList_New(0);
   for I:=0 to L.Count-1 do
@@ -2239,7 +2291,7 @@ begin
    Q:=NeedGameFile(f)
   else
    Q:=NeedGameFileBase(b, f);
-  Result:=GetPyObj(Q); 
+  Result:=GetPyObj(Q);
  except
   EBackToPython;
   Result:=Nil;
@@ -2645,40 +2697,46 @@ var
  Splash: TForm;
  Reminder: THandle;
 begin
- Splash:=OpenSplashScreen; try
- Reminder:=ReminderThread(Splash); try
-{InitConsole;}
- I:=InitializePython;
- if I>0 then FatalError(I);
+ Splash:=OpenSplashScreen;
+ try
+  Reminder:=ReminderThread(Splash);
+  try
+  {InitConsole;}
+   I:=InitializePython;
+   if I>0 then FatalError(I);
 
- InitApplicationPath;
+   InitApplicationPath;
 
- if not InitializeQuarkx then FatalError(-9);
+   if not InitializeQuarkx then FatalError(-9);
 
- S:=ExtractFilePath(ApplicationPath);
- if (Length(S)>0) and (S[Length(S)]='\') then
-  SetLength(S, Length(S)-1);
- for I:=Length(S) downto 1 do
-  if S[I]='\' then
-   System.Insert('\', S, I);
- S:=Format(PythonSetupString, [S]);
- { tiglari:
-   S will now be the python commands:
-    import sys
-    sys.path[:0]=["<the path to the quark exe>"]
-    import quarkpy
- }
- if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
- InitSetup;
- { tiglari:
-   runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
-   mostly sets up icons and stuff like that.}
- if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
- PythonCodeEnd;
- PythonUpdateAll;
- WaitForSingleObject(Reminder, 10000);
- finally CloseHandle(Reminder); end;
- finally Splash.Release; end;
+   S:=ExtractFilePath(ApplicationPath);
+   if (Length(S)>0) and (S[Length(S)]='\') then
+    SetLength(S, Length(S)-1);
+   for I:=Length(S) downto 1 do
+    if S[I]='\' then
+     System.Insert('\', S, I);
+   S:=Format(PythonSetupString, [S]);
+   { tiglari:
+     S will now be the python commands:
+      import sys
+      sys.path[:0]=["<the path to the quark exe>"]
+      import quarkpy
+   }
+   if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
+   InitSetup;
+   { tiglari:
+     runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
+     mostly sets up icons and stuff like that.}
+   if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
+   PythonCodeEnd;
+   PythonUpdateAll;
+   WaitForSingleObject(Reminder, 10000);
+  finally
+   CloseHandle(Reminder);
+  end;
+ finally
+  Splash.Release;
+ end;
 end;
 
 procedure PythonCodeEnd;
