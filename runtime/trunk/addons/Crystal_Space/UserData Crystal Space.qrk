@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2001/07/03 02:36:30  tiglari
+//CrystalSpace->Crystal Space
+//
 //Revision 1.2  2001/03/20 21:52:26  decker_dk
 //Added log-header
 //
@@ -61,6 +64,17 @@ QQRKSRC1
         attenuation = "realistic"
       }
     }
+    bezier: =
+    {
+      bezier:b2 =
+      {
+        v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
+          0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
+          1'
+        tex = "base_wall/basewall03"
+      }
+    }
+
   }
   Menu.qrk =
   {
