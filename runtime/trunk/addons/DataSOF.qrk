@@ -2,6 +2,9 @@ QQRKSRC1
 // Soldier of Fortune definition file for Quark
 // cre 04-05-2000 mac
 //
+//template 2000-06-04
+//
+
 
 {
   NewFiles.qtx =
@@ -13,6 +16,45 @@ QQRKSRC1
       Texture Wad.wad =
       {
       }
+    }
+  }
+
+// why does this not work ?
+//  orig_tex:incl= {;incl[] = "[:Games:KingPin:OriginTextureDef]"}
+//  trig_tex:incl= {;incl[] = "[:Games:KingPin:TriggerTextureDef]"}
+  orig_tex:incl= {tex = "armory/origin"}
+  trig_tex:incl= {tex = "armory/trigger"}
+  t_originpoly:incl =
+  {
+    ORIGIN:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   orig_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' orig_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   orig_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' orig_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   orig_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' orig_tex=! m="1"}
+    }
+    poly:p =
+    {
+      east:f = { v = '32 -32 -32 32 96 -32 32 -32 96' tex = "[auto]" }
+      west:f = { v = '-32 -32 -32 -32 -32 96 -32 96 -32' tex = "[auto]" m = "1" }
+      north:f = { v = '-32 32 -32 -32 32 96 96 32 -32' tex = "[auto]" m = "1" }
+      south:f = { v = '-32 -32 -32 96 -32 -32 -32 -32 96' tex = "[auto]" }
+      up:f = { v = '-32 -32 32 96 -32 32 -32 96 32' tex = "[auto]" }
+      down:f = { v = '-32 -32 -32 -32 96 -32 96 -32 -32' tex = "[auto]" m = "1" }
+    }
+  }
+  t_triggerpoly:incl =
+  {
+    poly:p =
+    {
+      east:f   = {v= '64 0 0 64 128 0 64 0 128'   trig_tex=!}
+      west:f   = {v='-64 0 0 -64 0 128 -64 128 0' trig_tex=! m="1"}
+      north:f  = {v= '0 64 0 0 64 128 128 64 0'   trig_tex=! m="1"}
+      south:f  = {v='0 -64 0 128 -64 0 0 -64 128' trig_tex=!}
+      up:f     = {v= '0 0 64 128 0 64 0 128 64'   trig_tex=!}
+      down:f   = {v='0 0 -64 0 128 -64 128 0 -64' trig_tex=! m="1"}
     }
   }
 
@@ -90,7 +132,6 @@ QQRKSRC1
       light:e =
       {
         origin = "0 0 0"
-        _light = "255 255 255 300"
       }
     }
   }
@@ -4226,7 +4267,7 @@ QQRKSRC1
 
 
   
-// File written by perlsof.pl 0.4 28-05-2000 
+// File written by perlsof.pl 0.4 2000-06-04 
 
 
   NewEntities.qtx =
@@ -4285,7 +4326,7 @@ QQRKSRC1
         environ_inferno:b =
         {
           ;desc = ""
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         environ_invisible_attack:e =
         {
@@ -4320,12 +4361,12 @@ QQRKSRC1
         environ_raingen:b =
         {
           ;desc = ""
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         environ_raingen:b =
         {
           ;desc = ""
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         environ_skyfade:e =
         {
@@ -4380,7 +4421,7 @@ QQRKSRC1
         environ_waterglobgen:b =
         {
           ;desc = "Drips from a 30 by 30 region around the origin of the entity"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         environ_windgen:e =
         {
@@ -4426,18 +4467,18 @@ QQRKSRC1
         func_areaportal:b =
         {
           ;desc = "This is a non-visible object that divides the world into"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_breakable_brush:b =
         {
           ;desc = "A breakable brush which has chunk size and type based upon the size and type of the brush."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_button:b =
         {
           ;desc = "When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again."
           angle = "360"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_camerashake:e =
         {
@@ -4452,7 +4493,7 @@ QQRKSRC1
         func_conveyor:b =
         {
           ;desc = "Conveyors are stationary brushes that move what's on them."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
       door.qtxfolder =
       {
@@ -4460,31 +4501,31 @@ QQRKSRC1
         {
           ;desc = ""
           angle = "360"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_door_portcullis:b =
         {
           ;desc = "can only be opened by a trigger_keep_using."
           angle = "360"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_door_rotating:b =
         {
           ;desc = "You need to have an origin brush as part of this entity.  The center of that brush will be"
           angle = "360"
-          ;incl="defpoly"
+          t_originpoly=!
         }
         func_door_rotating_smart:b =
         {
           ;desc = "The door will open in the direction opposite that of its activator."
           angle = "360"
-          ;incl="defpoly"
+          t_originpoly=!
         }
         func_door_secret:b =
         {
           ;desc = " A secret door.  Slide back and then to the side."
           angle = "360"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
       }
         func_fade:e =
@@ -4495,7 +4536,7 @@ QQRKSRC1
         func_group:b =
         {
           ;desc = "Used to group brushes together just for editor convenience. (And not needed for Quark;-)"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_hide_the_players_gun:e =
         {
@@ -4510,7 +4551,7 @@ QQRKSRC1
         func_killbox:b =
         {
           ;desc = "Kills everything inside when fired, irrespective of protection."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_mission_status:e =
         {
@@ -4525,12 +4566,12 @@ QQRKSRC1
         func_object:b =
         {
           ;desc = "This is solid bmodel that will fall if it's support it removed."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_plat:b =
         {
           ;desc = "Plats are always drawn in the extended position, so they will light correctly."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_player_armor:e =
         {
@@ -4550,7 +4591,7 @@ QQRKSRC1
         func_pushkillbox:b =
         {
           ;desc = ""
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_remote_camera:e =
         {
@@ -4560,7 +4601,7 @@ QQRKSRC1
         func_rotating:b =
         {
           ;desc = "You need to have an origin brush as part of this entity.  The center of that brush will be"
-          ;incl="defpoly"
+          t_originpoly=!
         }
         func_score:e =
         {
@@ -4580,23 +4621,23 @@ QQRKSRC1
         func_train:b =
         {
           ;desc = "Trains are moving platforms that players can ride."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_trigger_brush:b =
         {
           ;desc = "A brush that can take damage to a point, then call its triggers."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_wall:b =
         {
           ;desc = "This is just a solid wall if not inhibited"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         func_water:b =
         {
           ;desc = "func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk."
           angle = "360"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
       }
       info.qtxfolder =
@@ -6339,7 +6380,7 @@ QQRKSRC1
         dm_KOTH_targetzone:b =
         {
           ;desc = ""
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         spawner_boosterpack:e =
         {
@@ -6372,7 +6413,7 @@ QQRKSRC1
         target_character:b =
         {
           ;desc = "used with target_string (must be on same team)"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         target_crosslevel_target:e =
         {
@@ -6450,7 +6491,7 @@ QQRKSRC1
         trigger_activate:b =
         {
           ;desc = "Will make a trigger active if it is inactive, or inactive if it's active"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_always:e =
         {
@@ -6460,12 +6501,12 @@ QQRKSRC1
         trigger_countdown:b =
         {
           ;desc = "Produces a timer on screen that counts backwards.  When done it fires all of its targets and removes itself. Is activated by touch or use."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_counter:b =
         {
           ;desc = "Acts as an intermediary for an action that takes multiple inputs."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_elevator:e =
         {
@@ -6475,22 +6516,22 @@ QQRKSRC1
         trigger_gravity:b =
         {
           ;desc = "Changes the touching entites gravity to"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_heal:b =
         {
           ;desc = "A trigger that heals the user only when the player hits the use key. "
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_hurt:b =
         {
           ;desc = ""
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_keep_using:b =
         {
           ;desc = "A trigger that keeps firing as long as the player hits the use key and keeps touching it."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_key:e =
         {
@@ -6500,32 +6541,32 @@ QQRKSRC1
         trigger_monsterjump:b =
         {
           ;desc = "Walking monsters that touch this will jump in the direction of the trigger's angle"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_movedown:b =
         {
           ;desc = "A trigger that forces thing downward.  Meant to be used in conjunction with pushkill brush."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_multiple:b =
         {
           ;desc = "Variable sized repeatable trigger.  Must be targeted at one or more entities."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_objectives:b =
         {
           ;desc = "Using this entity will toggle the trigger enabled/disabled. When enabled, the trigger will"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_once:b =
         {
           ;desc = "Triggers once, then removes itself."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_push:b =
         {
           ;desc = "Pushes the player"
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_relay:e =
         {
@@ -6535,7 +6576,7 @@ QQRKSRC1
         trigger_safezone:b =
         {
           ;desc = "Using this entity will toggle whether it hides players or not."
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
         trigger_sound:e =
         {
@@ -6545,13 +6586,13 @@ QQRKSRC1
         trigger_useable:b =
         {
           ;desc = "A trigger that fires its targets only when the player hits the use key. "
-          ;incl="defpoly"
+          t_triggerpoly=!
         }
       }
     }
   }
   
-// File written by perlsof.pl 0.4 28-05-2000 
+// File written by perlsof.pl 0.4 2000-06-04 
 
 
   Entity forms.qctx =
