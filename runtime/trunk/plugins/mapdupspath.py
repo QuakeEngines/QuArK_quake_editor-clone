@@ -248,7 +248,7 @@ class PathPointHandle(PathDuplicatorPointHandle):
     # called at end of drag, resets selection
     #
     def ok(self, editor, undo, old, new):
-        editor.ok(undo, self.undomsg)
+        PathDuplicatorPointHandle.ok(self,editor,undo,old,new)
         editor.layout.explorer.sellist=[self.mainpathdup.dup]
         
     def menu(self, editor, view):
@@ -799,6 +799,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2001/02/26 02:07:21  tiglari
+#all path point handles appear when main dup is selected
+#
 #Revision 1.15  2001/02/25 16:32:54  decker_dk
 #Fix for objects that are supposed to be checked for None/Nil/Null pointer.
 #
