@@ -22,7 +22,7 @@ window. Reselect the face next to the tagged one and activate the
 Around pillar function.  The texture on the tagged face will be
 wrapped all the way around the pillar, in the direction of the
 pillar, and scaled to fit seamlessly. This only works if the edges
-where the faces to be wrapped around are all paralell
+where the faces to be wrapped around are all parallel
 (the whole pillar can however be at a slant).
 When the operation can't be performed, the item is disabled.
 
@@ -32,17 +32,17 @@ More tagging submenu), the select one at either end.  The texture
 of that face is than propagated across to the other end, and scaled
 so that it fits a full number of times across all the faces.
 Like the pillar wrap, this only works if the edges joining the
-faces are all paralell, and is disabled if it can't work.
+faces are all parallel, and is disabled if it can't work.
 
 <LI>Project texture from tagged - this is a new one.  Suppose
-want to wrap a meshlike texture over a bunch of random faces making
+want to wrap a mesh like texture over a bunch of random faces making
 various angles with each other (like a mesh stretched over a
 jumble of stuff).  None of the above methods will work, but this
 will.  The texture of the tagged face is projected onto the
 selected face, so that a texture is projected from one face
 to several faces hooked up in complicated ways, it will seem to
 be wrapped smoothly over all of them.  So that for example you can do
-a four-sided obelisk by projecting textures from parallell
+a four-sided obelisk by projecting textures from parallel
 brushes that project onto the obelisk faces but are ignored
 for building the map.  I think I've fixed the problem that
 making things not work if the projected-from brush wasn't
