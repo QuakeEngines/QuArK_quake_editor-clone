@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2001/07/19 09:49:46  tiglari
+rearrange QMap hierarchy to make QHfmFile work properly
+
 Revision 1.34  2001/06/05 18:39:33  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -1489,12 +1492,8 @@ begin
        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
        if MapOptionSpecs.Values['IgnoreToBuild']<>'' then
          saveflags:=saveflags or soIgnoreToBuild;
-       if MapOptionSpecs.Values['DisableEnhTex']<>'' then
-         saveflags:=saveflags or soDisableEnhTex;
        if MapOptionSpecs.Values['DisableFPCoord']<>'' then
          saveflags:=saveflags or soDisableFPCoord;
-       if MapOptionSpecs.Values['EnableBrushBrim']<>'' then
-         saveflags:=saveflags or soEnableBrushPrim;
       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
      { TTreeMap(Racine).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
