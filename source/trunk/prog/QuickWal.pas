@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/02/03 02:54:44  tiglari
+fixed problems in loading of .pak shader files
+
 Revision 1.19  2001/02/03 00:51:02  tiglari
 oops, incomplete namechange fixed
 
@@ -479,7 +482,7 @@ begin
   end;
 end;
 
-function ParseRecPakMerge(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
+function ParsePakTextureFolders(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
 var
   I, Index: Integer;
   Q, SubFolder, Previous: QObject;
@@ -494,13 +497,13 @@ begin
     begin
       SubFolder:=DestFolder.LocateSubElement(Q.Name,Index);
       if SubFolder=Nil then
-        LinkFolder(ParseRecPakMerge(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName, Index)
+        LinkFolder(ParsePakTextureFolders(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName, Index)
       else
-        ParseRecPakMerge(QPakFolder(Q), Base, FolderName+Q.Name+'/', SubFolder)
+        ParsePakTextureFolders(QPakFolder(Q), Base, FolderName+Q.Name+'/', SubFolder)
     end
     else
     begin
-      Previous:=DestFolder.LocateSubElement(Q.Name, Index);
+      Previous:=DestFolder.LocateSubElement(FolderName+Q.Name, Index);
       if Previous=Nil then
         TryToLink1(Result, Q.Name+Q.TypeInfo, FolderName, Base, Q, Index);
     end;
@@ -590,7 +593,7 @@ begin
   end;
 end;
 
-function ParseRecTexture(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
+function ParseTextureFolders(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 var
  F: TSearchRec;
  I, FindError: Integer;
@@ -639,11 +642,11 @@ begin
       SubFolder:=DestFolder.LocateSubElement(L[I],Index);
       if SubFolder=Nil then
       begin
-        SubFolder:= ParseRecTexture(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder);
+        SubFolder:= ParseTextureFolders(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder);
         LinkFolder(SubFolder, Result, FolderName,Index)
       end
       else
-        ParseRecTexture(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder)
+        ParseTextureFolders(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder)
     end;
   finally
     L.Free;
@@ -883,7 +886,7 @@ begin
   try
      { Find 'game' textures in directory }
      S:=PathAndFile(Path, GameTexturesPath);
-     Q:=ParseRecTexture(S, Base, '', Q);
+     Q:=ParseTextureFolders(S, Base, '', Q);
   except
      (*do nothing*)
   end;
@@ -905,7 +908,7 @@ begin
          else
            SearchFolder:=Pak.GetFolder(GameTexturesPath);
          if SearchFolder<>Nil then
-           Q:=ParseRecPakMerge(SearchFolder as QPakFolder, Base, '', Q);
+           Q:=ParsePakTextureFolders(SearchFolder as QPakFolder, Base, '', Q);
         except
          (*do nothing*)
         end;
