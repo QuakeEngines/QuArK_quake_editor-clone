@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/08/22 11:39:21  tiglari
+'q' specific processing added to shaders,for specifying image in .qrk files
+
 Revision 1.16  2000/08/19 07:30:47  tiglari
 Cacheing of DefaultImage for Shaders
 
@@ -203,12 +206,16 @@ begin
  Acces;
  Result:=Nil;
  {tiglari}
+ {alex disabled this because it led to crashes
+  (it is never initilialized)
  if DefaultImageCache<>Nil then
  begin
+
    result:=DefaultImageCache
  end
  else
  begin
+ /alex}
  {/tiglari}
  {this function tries to guess what image should be displayed
   for the shader. The priority is
@@ -281,8 +288,10 @@ begin
      end;
    end;
  { tiglari }
+ {alex
  end;
  DefaultImageCache:=Result;
+ /alex}
  { /tiglari }
  end;
 
