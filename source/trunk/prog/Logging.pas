@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/02/11 22:22:32  aiv
+Added SystemDetails unit - now logs system deails (OS, Memory, Video, DirectX etc)
+
 Revision 1.5  2001/02/09 09:26:43  tiglari
 changed setapplicationpath call to fix startup problem on my system (W98)
 
@@ -88,8 +91,6 @@ begin
   case logger of
     LOG_PASCALSOURCE: s:='QuarkLog> '+s;
     LOG_PYTHONSOURCE: s:='PythonLog> '+s;
-    else
-    s:='> '+s;
   end;
   {$I-}
   WriteLn(LogFile, s);

@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/02/11 22:26:44  aiv
+Added CVS Headers
+
 }
 unit SystemDetails;
 
@@ -684,7 +687,7 @@ end;
 procedure TCPU.Report(var sl: TStringList);
 begin
   with sl do begin
-    add(format('CPU: %d x %s %s - %d MHz',[self.Count,Vendor,VendorID,Freq]));
+    add(format('%d x %s %s - %d MHz',[self.Count,Vendor,VendorID,Freq]));
     add(format('Submodel: %s',[Submodel]));
     add(format('Model ID: Family %d  Model %d  Stepping %d  Level %d',[Family,Model,Stepping,Level]));
   end;
@@ -1649,27 +1652,56 @@ begin
   c.free;
 end;
 
+procedure GetPythonDetails(var S: TStringlist);
+var
+  R: TRegistry;
+  v: string;
+  installed: boolean;
+begin
+  R:=TRegistry.Create;
+  R.RootKey:=HKEY_LOCAL_MACHINE;
+  installed:=R.KeyExists('\Software\Python\PythonCore\CurrentVersion');
+  if installed then begin
+    R.OpenKey('\Software\Python\PythonCore\CurrentVersion', false);
+    v:=R.ReadString('');
+    S.Add('Version: '+v);
+    R.OpenKey('\Software\Python\PythonCore\'+v+'\Dll', false);
+    S.Add('Dll path: '+R.ReadString(''));
+  end else begin
+    S.Add('Not Installed!');
+  end;
+  R.free;
+end;
+
 Procedure LogSystemDetails;
 var
   s: TStringlist;
   i: integer;
 begin
   s:=TStringList.Create;
-  s.add(' #####     CPU     #####');
+  s.add('CPU:');
   GetCPUDetails(s);
-  s.add(' #####   Memory    #####');
+  s.add('');
+  s.add('MEMORY:');
   GetMemoryDetails(s);
-  s.add(' #####     OS      #####');
+  s.add('');
+  s.add('OS:');
   GetOperatingSystemDetails(s);
-  s.add(' #####   Machine   #####');
+  s.add('');
+  s.add('PYTHON:');
+  GetPythonDetails(s);
+  s.add('');
+  s.add('MACHINE:');
   GetWorkStationDetails(s);
-  s.add(' #####   Display   #####');
+  s.add('');
+  s.add('VIDEO:');
   GetDisplayDetails(s);
-  s.add(' #####   DirectX   #####');
+  s.add('');
+  s.add('DIRECTX:');
   GetDirectxDetails(s);
+  s.add('');
   for i:=0 to s.count-1 do begin
-    if s.strings[i]<>'' then
-      Log(s.strings[i]);
+    aLog(-1,'syslog> '+s.strings[i]);
   end;
 end;
 
