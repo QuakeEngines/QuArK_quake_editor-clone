@@ -87,7 +87,11 @@ class BrushNumDlg(SimpleCancelDlgBox):
 class BrushAddressNode:
     ".name, .index (int)"
     def __init__(self, nodeLabel):
-        name, index =string.split(nodeLabel,'[')
+        if string.find(nodeLabel,'[')>=0:
+            name, index =string.split(nodeLabel,'[')
+        else:
+            name = nodeLabel
+            index = '0'
         self.name = string.strip(name)
         index = string.strip(index)
         index = index[:len(index)-1]
@@ -140,4 +144,7 @@ def LoadBrushNums(editor, filename):
         quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%info)
        
 #$Log$
+#Revision 1.1.2.1  2003/03/24 10:35:32  tiglari
+#support for brush-number finder
+#
 
