@@ -1,10 +1,10 @@
 title: Turret combined with other entities
 author: Armin Rigo
 
-<html><span class="q_a">Q:</span>
+<html><b>Question:</b><br>
 Can I use other entities in conjunction with this turret?
 
-<html><span class="q_a">A:</span>
+<html><b>Answer:</b><br>
 I don't think so. Maybe you can try putting other monsters over the
 rotating objects; but they would still behave as normal monsters. I think
 the turret_driver cannot be changed into something else. I don't think

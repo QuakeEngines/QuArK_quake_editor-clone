@@ -1,10 +1,10 @@
 title: Turret entities
 author: Armin Rigo
 
-<html><span class="q_a">Q:</span>
+<html><b>Question:</b><br>
 I am working on a huge turret.
 
-<html><span class="q_a">A:</span>
+<html><b>Answer:</b><br>
 Turrets are a bit hard to design.
 
 The turret_base and turret_breach must have the same "team" specific.

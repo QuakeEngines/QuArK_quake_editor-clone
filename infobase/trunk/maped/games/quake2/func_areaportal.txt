@@ -1,13 +1,13 @@
 title: Func_areaportal entities
 author: Robert van der Schoot
 
-<html><span class="q_a">Q:</span>
+<html><b>Question:</b><br>
 I know that that is some kind of a barrier for Quake-2 used by the map-designer (me) to tell
 Quake-2 to ignore anything that is behind it, so that the framerate will not suffer from parts of the map that are not
 essential yet, but will be taken into account (and therefore use precious processing power) by Quake-2 if this func_areaportal
 is not used. But how do i place it?
 
-<html><span class="q_a">A:</span>
+<html><b>Answer:</b><br>
 Quake-2 tends to (re)draw the whole map during gameplay all the time, even the (numerous) parts
 of it that are not visible to the player (yet). This of course puts a lot of "stress" on your system (pc), resulting in a
 slower gameplay, more than necessary.
