@@ -17,10 +17,9 @@ import qhandles
 import maphandles
 import mapentities
 import dlgclasses
-import copy
 
 from plugins.tagging import *
-
+from b2utils import *
 
 class CPTexPos(dlgclasses.LiveEditDlg):
     endcolor = AQUA
@@ -94,38 +93,6 @@ def texcpclick(m):
         self.editor.invalidateviews()
  
     CPTexPos(quarkx.clickform, 'beztexpos', editor, setup, action)
-#
-# Utility-ish functions, should probably go elsewhere
-#
-
-within45 = math.cos(deg2rad*45)
-
-def iseven(num):
-  return not divmod(num,2)[1]
-
-def linearcomb(C, P):
- "linear combination"
- return reduce(lambda x,y:x+y, map(lambda p,c:c*p,C,P))
-
-#
-# Some useful things for Quadratic Beziers
-#
-
-def b2midpoint(p0, p1, p2):
-  "midpoint of the b2 line for the three points"
-  return 0.25*p0 + 0.5*p1 + 0.25*p2
-  
-def b2qtpoint(p0, p1, p2):
-  "1 quarter point of the b2 line for the three points"
-  return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
-
-def b2qt3point(p0, p1, p2):
-  "3 quarter point of the b2 line for the three points"
-  return (1/16.0)*p0+(3/8.0)*p1+(9/16.0)*p2
-
-def b2midcp(p0, m, p2):
-  "cp to get b2 line from p0 to p2 passing thru m"
-  return 2.0*m-0.5*(p0+p2)
 
 
 #
@@ -200,63 +167,75 @@ def tanaxes(cp, i, j):
   return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
   
 #
-#  Derivative matrixes for parameter->space mappings and
+#  Derivative matrix for parameter->space mappings and
 #    paramater->plane mappings, at corners.
-#
 #  Not defined at non-corners due to greater complexity and/or
 #    iff-definition (crinkles=no deriv at even-indexed cp's)
-
 #
-# parameter to 5 space
-#
-def d5(cp, i, j):
-    squawk('uereg')
+def d5(cp, (i, j)):
     dSdu = dSdv = None
     if i==0:
-        dSdu = 2.0*(cp[1][j]-cp[0][j])
+        dSdu = cp[1][j]-cp[0][j]
     elif i==len(cp)-1:
-        dSdu = 2.0*(cp[i][j]-cp[i-1][j])
+        dSdu = cp[i][j]-cp[i-1][j]
     if j==0:
-        dSdv = 2.0*(cp[i][1]-cp[i][0])
+        dSdv = cp[i][1]-cp[i][0]
     elif j==len(cp[0])-1:
-        dSdv = 2.0*(cp[i][j]-cp[i-1][j])
+        dSdv = cp[i][j]-cp[i-1][j]
     return dSdu, dSdv  
     
-#
-# This seems to be needed because copy.deepcopy() non sembra functionare
-#
-def copycp(cp):
-    "returns a copy of the cp array"
-    return map(lambda row:map(lambda v:v, row), cp)
 
-def mapcp(f, cp):
-    "returns a new cp array with f applied to each member of cp"
-    return map(lambda row,f=f:map(f, row), cp)
+def projpatch2face(cph, face, editor):
+    "projects texture-scale at cp handle to face, returning copy of face"
+    b2 = cph.b2
+    d5du, d5dv = d5(b2.cp, cph.ij)
+    #
+    # Derivatives of parameter->space and parameter->tex maps.
+    # S for space, T for texture (cap so diff from patch coords)
+    #
+    squawk(`d5du`)
+    squawk(`d5dv`)
+    dSdp = colmat_uv1(d5du.xyz, d5dv.xyz)
+    squawk(`dSdp`)
+    dTdp = colmat_uv1((d5du.s, d5du.t, 1),
+                      (d5dv.s, d5dv.t, 1))
+    squawk(`dTdp`)
+    Mat = dSdp*~dTdp
+    squawk("Mat: %s"%Mat)
 
-#
-# The basic idea here is that if the patch is sitting right over
-#  the face, the three points p0, p1, p2 should get the patch .st
-#  coordinates (0,0), (1,0) and (0, 1) respectively.
-#
-def texcp_from_face(cp, face, editor):
-    "returns a copy of cp with the texture-scale of the face projected"
-    p0, p1, p2 = face.threepoints(2,editor.TexSource)
+    #
+    # This mapping is the texture scale & offset (differential
+    #   of texture->space mapping)
+    #
+    def mapping(t3, offset=b2.cp[0][0], Mat=Mat):
+        texoffset = quarkx.vect(offset.s, offset.t, 0)
+        squawk(`Mat*(quarkx.vect(t3)-texoffset)`)
+        return Mat*(quarkx.vect(t3)-texoffset)+quarkx.vect(offset.xyz)
+    #
+    # Apply the texture differential to orign & two axes of texture
+    #   space.  Note wierdass sign-reversal (beaucoup de tah, Bill)
+    #
+    squawk('defmap')
+    texp = map(mapping,((0,0,0),(1,0,0),(0,-1,0)))
+    #
+    # Now first project the texture onto a face tangent to the patch,
+    #   then project it onto the one we want.
+    #
+    squawk('map')
+    new = quarkx.newobj("face:f")
+    squawk('new')
+    new.setthreepoints(texp,1)
+    squawk('nedw2')
+    new["tex"]=b2["tex"]
+    new.setthreepoints(texp,2)
+    squawk('set')
+    #
+    # Prolly time to do some mass reorganization of utilities
+    #
+    from plugins.maptagside import projecttexfrom
+    projecttexfrom(new, face)
     
-    def axis(p, p0=p0):
-        "turns a texp point into axis for computing b2 texcp's"
-        return (p-p0).normalized/abs(p-p0)
-
-    def project(v, p0=p0, (s_axis, t_axis)=map(axis, (p1, p2))):
-        # note the wacko sign-flip for t
-        return quarkx.vect(v.xyz + ((v-p0)*s_axis, -(v-p0)*t_axis))
-
-    return mapcp(project, cp)
-
-def b2tex_from_face(b2, face, editor):
-    "copies texture and scale from face to bezier"
-    b2["tex"] = face["tex"]
-    b2.cp = texcp_from_face(b2.cp, face, editor)
-
+    
 #
 # Handles for control points.
 #
@@ -292,7 +271,18 @@ class CPHandle(qhandles.GenericHandle):
             cv.brushcolor = self.color #DECKER
             cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
- 
+    #
+    # This is important because in general the derivative
+    #  will only be well-defined at corners
+    #
+    def iscorner(self):
+        i, j = self.ij
+        if not (i==0 or i==self.b2.H-1):
+            return 0
+        if not (j==0 or j==self.b2.W-1):
+            return 0
+        return 1
+        
     #
     # Things that are only sensible for particular control points
     #  should go here, things that are sensible for the whole patch
@@ -354,8 +344,24 @@ class CPHandle(qhandles.GenericHandle):
           
         thicken = qmenu.popup("Thicken",[addrow, addcol])
         
+        def projtexclick(m, self=self, editor=editor):
+          new = m.tagged.copy()
+          projpatch2face(self,new,editor)
+          undo = quarkx.action()
+          undo.exchange(m.tagged, new)
+          editor.ok(undo, "proj tex 2 tagged face")
+          cleartag(editor)
+          
+          
+        projtex = qmenu.item("&Project Texture to tagged", projtexclick, "|Just an interim measure for testing things")
+        tagged = gettaggedface(editor)
+        if tagged is None or not self.iscorner():
+           projtex.state=qmenu.disabled
+        else:
+           projtex.tagged = tagged
         
         return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+#        return [texcp, thicken, projtex] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -505,6 +511,8 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menu.im_func):
        projtex.tagged = tagged
 
 
+    
+
     return  [projtex]+oldmenu(o, editor)
 
 mapentities.BezierType.menu = newb2menu
@@ -528,11 +536,13 @@ class CenterHandle(maphandles.CenterHandle):
         return mapentities.CallManager("menu", self.centerof, editor)
     # /tiglari
     
-    
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2000/05/19 10:08:09  tiglari
+#Added texture projection, redid some bezier utilties
+#
 #Revision 1.16  2000/05/08 11:12:19  tiglari
 #fixed problems with keys for bezier cp movement
 #
