@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2003/10/26 00:33:50  silverpaladin
+Added Missing Shader Texture texture  To try to prevent Access Violations in 3d views
+
 Revision 1.24  2003/08/12 15:57:01  silverpaladin
 Added support for block comments in shader files
 
@@ -647,7 +650,15 @@ begin
       for I:=0 to FSize-2 do
       begin
         if (Source[I]='/') and (Source[I+1]='/') then
-          Comment:=True
+          begin
+           Comment:=True;
+           {Rowdy: handle comments starting with //*****... by replacing
+                   both // in the start of comment marker with spaces,
+                   so we do not see /* as the next character sequence}
+           Source[I] := ' ';
+           Source[I+1] := ' ';
+           {/Rowdy}
+         end
         else if (Source[I]='/') and (Source[I+1]='*') then
           SectionComment := TRUE
         else if (Source[I]='*') and (Source[I+1]='/') then
