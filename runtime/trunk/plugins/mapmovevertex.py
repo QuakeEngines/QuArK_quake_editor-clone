@@ -56,7 +56,7 @@ from quarkpy.maputils import *
 #
 # For the stuff below about moving some object containing a vertex
 #
-import mapmadsel
+from quarkpy import guiutils
 
 #
 # repeated from maputils to make it work with older quark versions.
@@ -620,7 +620,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
             return item
             
         poly=self.poly
-        list=mapmadsel.buildParentPopupList(self.poly,makeitem, editor)
+        list=guiutils.buildParentPopupList(self.poly,makeitem, editor)
         return list
      
     #
@@ -890,6 +890,10 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.5  2002/03/30 09:31:14  tiglari
+# Add 'move containing' item to the vertex RMB that moves a containing
+#   object so that the vertex becomes on-grid.
+#
 # Revision 1.4  2001/06/17 21:10:57  tiglari
 # fix button captions
 #
