@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.197  2002/06/18 11:51:49  tiglari
+//fix SOF2 gamecode
+//
 //Revision 1.196  2002/06/16 10:01:46  tiglari
 //restore StupidBuildToolKludge for STVEF
 //
@@ -896,6 +899,54 @@ QQRKSRC1
         ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataQ1.qrk"    // list of files to use as add-ons for Quake 1 (separator is the character $0D hex., example : "first.qrk"$0D"second.qrk"$0D"third.qrk"
+        AlwaysPak = ""
+        PakExt = ".pak"
+        LightFactor = '0.9'
+        3DLight = '512'
+        Console = "1"
+        Form = "GameQuake1"
+        PlayerClass = "X"
+      }
+      Genesis3D:config =
+      {
+        Game = "Genesis3D"
+        Code = "4" // Hardcoded value in Setup.PAS
+
+        Program = "Quake.EXE"
+
+        Directory = "\Quake"
+        CheckDirectory = "QUAKE.EXE"
+
+        MapCommentsPrefix = "//"
+
+        OutputMapFormat = "Quark etp"
+        BuildPgm1  = "TXQBSP.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,+PRT"
+        BuildPgm2  = "RVIS.EXE"
+        BuildArgs2 = ""
+        BuildPgm3  = "ARGHLITE.EXE"
+        BuildArgs3 = ""
+
+        DefaultTexture = "bricka2_2"
+        DefaultTextureTrigger = "trigger"
+        DefaultTextureClip = "clip"
+
+        WateryTex = "*"
+        TextureFormat = ".wad_D"
+        TextureWriteFormat = ".wad_D"
+        TextureWad = "gfx/QuArK.wad"
+
+        BaseDir = "id1"
+        tmpQuArK = "tmpQuArK"
+
+        MapHoles = ".pts"
+        Palette = "gfx/palette.lmp"
+        Gradient = "gfx/colormap.lmp"
+        UnifiedPalette = "1"
+        ExtraCmdLine = "-game %s"
+        RunMapCmdLine = " +map %s"
+        AddOns = "DataGen3D.qrk"    // list of files to use as add-ons for Quake 1 (separator is the character $0D hex., example : "first.qrk"$0D"second.qrk"$0D"third.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
         LightFactor = '0.9'
