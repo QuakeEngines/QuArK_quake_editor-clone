@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/07/16 10:46:40  tiglari
+add SolveForThreePoints procedure
+
 Revision 1.12  2001/07/15 11:18:06  tiglari
 imported 5-vec stuff from TBezier, added some TVect(5)-makers
 
@@ -95,6 +98,7 @@ type
            X, Y, Z, S, T: TDouble;
           end;
 
+function VecLength(const V1: TVect): TDouble;
 function Cross(const V1, V2: TVect) : TVect;
 function Dot(const V1, V2: TVect) : TDouble;
 procedure Normalise(var V: TVect); overload;
@@ -175,6 +179,11 @@ var
  CalculeProfondeur3D: TProfondeurEventEx;
 var
  Facteur: TDouble;
+
+function VecLength(const V1: TVect) : TDouble;
+begin
+  Result:=Sqrt(Dot(V1, V1));
+end;
 
 function Cross(const V1, V2: TVect) : TVect;
 begin
