@@ -73,11 +73,16 @@ def MakeAxes2(x):
     y = (z^x).normalized
     return xn, y, z
 
-def MakeAxes3(x):
+def MakeLevelAxes(x):
     x=x.normalized
     mapx, mapy, mapz = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
-    if abs(x*mapx)<.0001: # straight up
-        return mapy, mapx, -mapz
+    dot=x*mapy
+    if dot>0.999:
+        return mapy, -mapx, mapz
+    elif dot<-0.999:
+        return -mapy, mapx, mapz
+#    if abs(x*mapx)<.0001: # straight up
+#        return mapy, mapx, -mapz
     #
     # project onto the xy plane
     #
@@ -602,7 +607,7 @@ class PathDuplicator(StandardDuplicator):
             neworigin = pathdist.normalized*0.5*templatesize.z + thisorigin
 
             if pathlist[i]["level"]:
-               prevaxes = MakeAxes3(pathdist.normalized)
+               prevaxes = MakeLevelAxes(pathdist.normalized)
             else:
                prevaxes = NewAxes(prevaxes,pathdist.normalized)
             xax, yax, zax = prevaxes
@@ -776,7 +781,7 @@ class InstanceDuplicator(PathDuplicator):
                     # otherwise just use last pathdist
                     #
                 if pathlist[i]["level"]:
-                   prevaxes = MakeAxes3(pathdist.normalized)
+                   prevaxes = MakeLevelAxes(pathdist.normalized)
                 else:
                    prevaxes = NewAxes(prevaxes,pathdist.normalized)
                 xax, yax, zax = prevaxes
@@ -834,6 +839,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.41  2001/06/09 01:21:17  tiglari
+#fix due north bug (noted by greeze)
+#
 #Revision 1.40  2001/05/12 23:04:38  tiglari
 #make new linear fixpoint behavior contingent on 'item center' flag
 #
