@@ -30,6 +30,11 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.12  2003/01/02 22:30:51  tiglari
+//add nolinear specific to path dup to make linear mappings work
+//update wallmaker form+prefab to encourage extruded version
+//  and improve help
+//
 //Revision 1.192.2.11  2003/01/01 06:52:23  tiglari
 //add nonintegral specific to group form
 //
@@ -1902,6 +1907,7 @@ QQRKSRC1
         DisableFPCoord          = ""
 // Experimental; disable in distributions:
 //        UseIntetralVertices     = ""
+//        DontWriteNullThreeFields = ""
         AutoCheckMap            = "1"
         EntityLinesDispersion   = "1"
         CompassNumbers          = "1"
@@ -4231,7 +4237,8 @@ QQRKSRC1
       DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
 //      DisableEnhTex:          = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
-//      UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
+//      UseIntegralVertices:    = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
+//      DontWriteNullThreeFields: = {Typ="X" Txt="   ``"                          Cap="Don't write the three fields when they'e all 0" }
     }
     MapBuilding:form =
     {
@@ -4735,7 +4742,7 @@ QQRKSRC1
       {
          Txt="&"
          Typ="X"
-         Hint="If this is checked, walls will be extruded, but corners will not be mitered" $0D "If neither this nor mitered is checked,negative polys will be used;" $0D " it is best to avoid them."
+         Hint="If this is checked, walls will be extruded, but corners will not be mitered;" $0D$ " reshaping will be faster, but corners may have texturing faults and other problems." $0D "If neither this nor mitered is checked,negative polys will be used;" $0D " it is best to avoid them."
       }
      solid: =
       {
@@ -5573,7 +5580,7 @@ QQRKSRC1
           ;incl = "defpoly"
           macro = "wall maker"
           depth = "8"
-          extrude = "1"
+          miter = "1"
         }
 //  UserCenterHandle stuff better, methinks
 //        Origin Duplicator:d =
