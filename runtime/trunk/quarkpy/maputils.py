@@ -305,6 +305,10 @@ def buildLinearMatrix(dup):
     if scale is not None:
         matrix = quarkx.matrix('%.2f 0 0 0 %.2f 0 0 0 %.2f'%scale)*matrix
     angles = dup["angles"]
+    if type(angles)==type(""):
+        angles = string.split(angles)
+        angles = eval(angles[0]), eval(angles[1]), eval(angles[2])
+
     if angles is not None:
         angles = map(lambda a:a*deg2rad, angles)
         matrix = matrix_rot_y(angles[0])*matrix_rot_x(angles[1])*matrix_rot_z(angles[2])*matrix
@@ -314,6 +318,11 @@ def buildLinearMatrix(dup):
 #
 #
 #$Log$
+#Revision 1.14  2001/04/17 23:29:07  tiglari
+#texture-rescaling bug fix (fixedscale="1" added to objects when they're
+#dragged to the panel, removed when inserted to the map, blocks
+#rescaling of textures on insert-by-pressing-panel-button
+#
 #Revision 1.13  2001/04/05 22:31:12  tiglari
 #buildLinearMatrix now checks matrix not linear
 #
