@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.125  2001/04/30 10:58:55  tiglari
+//added child, key mods for next/prev of same type (look like hotkeys,
+//different implementation in quarkpy.mapselection)
+//
 //Revision 1.124  2001/04/28 02:41:06  tiglari
 //update version
 //
@@ -3953,6 +3957,12 @@ QQRKSRC1
       Files for the game.import = { }
 //      Quake Context.qctx = { }
       Game Context.qctx = { } // See also 'QuakeCtx:form'
+      Advanced Editing.qtxfolder =
+      {
+        Form Context.fctx = { }
+        Form:form = { }
+        Element: = { }
+      }
     }
   }
 
