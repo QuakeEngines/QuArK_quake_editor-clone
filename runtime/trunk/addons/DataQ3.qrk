@@ -28,6 +28,20 @@ QQRKSRC1
      $6B00D35700C74700B73B00AB2B009B1F008F17007F0F007307005F00004700002F00001B
      $0000EF00003737FFFF00000000FF2B2B231B1B1713130FEB977FC373539F57337B3F1BEB
      $D3C7C7AB9BA78B77876B579F5B53
+    ShaderFiles: =
+    {
+      scripts/shaderlist.txt = {
+        Data =
+	    "// Created by QuArK"$0D0A
+            "// All shaders are extracted to a single file called 'quark.shader'"$0D0A
+	    "quark"$0D0A
+      }
+      scripts/shaderlist.txt = {    // 2nd case: if there is no shader in the map
+        Data =
+	    "// Created by QuArK"$0D0A
+            "// No shader in this map"$0D0A
+      }
+    }
   }
 
   NewFiles.qtx =

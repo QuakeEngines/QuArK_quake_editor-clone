@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit QkTextures;
 
@@ -132,6 +137,7 @@ type
                   function Description : TPixelSetDescription; override;
                   function SetDescription(const PSD: TPixelSetDescription;
                                           Confirm: TSDConfirm) : Boolean; override;
+                  procedure ListDependencies(L: TStringList); override;
                 end;
  QTextureFileClass = class of QTextureFile;
  QTexture1 = class(QTextureFile)
@@ -240,7 +246,7 @@ implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
-  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3;
+  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkUnknown;
 
 {$R *.DFM}
 
@@ -515,7 +521,7 @@ var
  S, TexName, TexWad, WriteTo, SourceDir: String;
  Anim, TexListS, Dirs: TStringList;
  SRec: TSearchRec;
- TexList: TQList;
+ TexList, ShaderListFiles: TQList;
  Tex1, Tex: QPixelSet;
  I, J, DosError: Integer;
  walTrick, needColormap: Boolean;
@@ -523,6 +529,8 @@ var
 {PSD: TPixelSetDescription;}
  TexFormat: QPixelSetClass;
  TexFormat1: QObjectClass;
+ ShaderFile: QShaderFile;
+ Warning: Boolean;
 begin
  TexList:=TQList.Create;
  try
@@ -532,6 +540,7 @@ begin
    I:=0;
   DebutTravail(5453, I); try
   TexListS:=TStringList.Create;
+  Anim:=TStringList.Create;
   try
    DebutTravail(5453, L.Count); try
    TexFormat1:=GetRegisteredQObject(SetupGameSet.Specifics.Values['TextureFormat']);
@@ -540,34 +549,49 @@ begin
    TexFormat:=QPixelSetClass(TexFormat1);
    for I:=0 to L.Count-1 do
     begin
-     TexName:=L[I];
-     Tex1:=GlobalFindTexture(TexName, AltTexSrc);
-     if Tex1=Nil then
-      GlobalWarning(FmtLoadStr(5588, [TexName]))
-     else
-      repeat
-       if TexListS.IndexOf(TexName)>=0 then Break;  { animation loop closed }
-       Tex:=Tex1.LoadPixelSet;
-       TexList.Add(GetTexAsNameAndFormat(Tex, TexName, TexFormat));
-       TexListS.Add(TexName);
-       if not (Tex is QTextureFile) then Break;  { no animation }
-       S:=QTextureFile(Tex).CheckAnim(0);
-       if S='' then Break;   { no animation }
-       Anim:=TStringList.Create; try
-       Anim.Text:=S;
-       Tex1:=Nil;
-       for J:=0 to Anim.Count-1 do
-        begin
-         TexName:=Anim[J];
-         Tex1:=GlobalFindTexture(TexName, AltTexSrc);
-         if Tex1<>Nil then Break;  { found the next texture in the animation loop }
-        end;
-       finally Anim.Free; end;
-      until Tex1=Nil;
+     Warning:=True;
+     Anim.Clear;
+     Anim.Add(L[I]);    { "Anim" will contain all dependencies to this texture as well }
+     repeat
+       { each loop will register one texture from "Anim" and add dependencies back into "Anim" }
+      TexName:=Anim[Anim.Count-1];
+      Anim.Delete(Anim.Count-1);
+      if (TexName<>'') and (TexListS.IndexOf(TexName)<0) then   { if texture not already registered }
+       begin
+        if TexName[1]<>#255 then
+         Tex1:=GlobalFindTexture(TexName, AltTexSrc)
+        else   { #255 means direct file name }
+         try
+          Tex1:=NeedGameFile(Copy(TexName,2,MaxInt)) as QPixelSet;
+         except
+          Tex1:=Nil;  { file not found, silently ignore }
+         end;
+        if Tex1=Nil then
+         begin   { texture not found }
+          if Warning then
+           GlobalWarning(FmtLoadStr(5588, [TexName]))
+         end
+        else
+         begin
+          Tex:=Tex1.LoadPixelSet;   { load the texture (follow links) }
+          if Tex is QShader then
+           TexList.Add(Tex)      { do not attempt to convert shaders to the game's texture file format }
+          else
+           if TexName[1]=#255 then
+            TexList.Add(GetTexAsNameAndFormat(Tex, TexName, Nil))   { same remark for files directly form the disk }
+           else
+            TexList.Add(GetTexAsNameAndFormat(Tex, TexName, TexFormat));
+          TexListS.Add(TexName);
+          Tex.ListDependencies(Anim);  { add dependencies into "Anim" }
+         end;
+       end;
+      Warning:=False;     { 'texture not found' should not be displayed on dependencies }
+     until Anim.Count=0;   { loop until "Anim" is empty }
      ProgresTravail;
     end;
    finally FinTravail; end;
   finally
+   Anim.Free;
    TexListS.Free;
   end;
 
@@ -645,30 +669,73 @@ begin
     else
      begin   { write several texture files (.wal, .m8, .swl, .tga...) }
       DebutTravail(5453, TexList.Count); try
+      ShaderFile:=Nil; try
       WriteTo:=OutputFile(Q2TexPath);
       for I:=0 to TexList.Count-1 do
        begin
         Tex:=QPixelSet(TexList[I]);
-        if Tex is QTextureFile then
-         S:=QTextureFile(Tex).GetTexName
-        else
-         S:=Tex.Name;
-        S:=Q2TexPath+S;
-        Tex.EnregistrerDansFichier(rf_Default, OutputFile(S+Tex.TypeInfo));
-        {/mac: the waltrick is also needed for kingpin
-         which uses qpixelset and not qtexturefile}
-        if walTrick {and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0)} then
+        if Tex is QShader then
+         begin  { group all shaders into a single file }
+          if ShaderFile=Nil then
+           begin
+            ShaderFile:=QShaderFile.Create('tmpQuArK', Nil);
+            ShaderFile.AddRef(+1);
+           end;
+          ShaderFile.SousElements.Add(Tex);
+         end
+        else  { write non-shader textures directly to the disk }
          begin
-          Tex1:=Tex;
-          Tex:=QTexture2.Create(Tex.Name, Nil);
-          Tex.AddRef(+1); try
-          Tex.ConvertFrom(Tex1, ccAuto);   { conversion to .wal format }
-          Tex.EnregistrerDansFichier(rf_Default, OutputFile(S+'.wal'));
-          finally Tex.AddRef(-1); end;
-          needColormap:=True;
+          if Copy(Tex.Name,1,1)=#255 then
+           S:=Copy(Tex.Name,2,MaxInt)  { direct from disk }
+          else
+           begin
+            if Tex is QTextureFile then
+             S:=QTextureFile(Tex).GetTexName
+            else
+             S:=Tex.Name;
+            S:=Q2TexPath+S+Tex.TypeInfo;
+           end;
+          Tex.EnregistrerDansFichier(rf_Default, OutputFile(S));
+          {/mac: the waltrick is also needed for kingpin
+           which uses qpixelset and not qtexturefile}
+          if walTrick {and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0)} then
+           begin
+            Tex1:=Tex;
+            Tex:=QTexture2.Create(Tex.Name, Nil);
+            Tex.AddRef(+1); try
+            Tex.ConvertFrom(Tex1, ccAuto);   { conversion to .wal format }
+            Tex.EnregistrerDansFichier(rf_Default, OutputFile(ChangeFileExt(S, '.wal')));
+            finally Tex.AddRef(-1); end;
+            needColormap:=True;
+           end;
          end;
         ProgresTravail;
        end;
+      with SetupGameSet.Specifics do
+       begin   { shaders stuff }
+        S:=Values['TextureShaders'];
+        if ShaderFile<>Nil then
+         begin  { write the shaders file }
+          if S='' then Raise InternalE('"TextureShaders" expected in Defaults.qrk');
+          ShaderFile.EnregistrerDansFichier(rf_Default, OutputFile(S));
+         end;
+        if S<>'' then   { if the current game supports shaders, write the shaderlist.txt }
+         begin
+          ShaderListFiles:=BuildQuakeCtxObjects(QInternal, 'ShaderFiles'); try
+          for I:=0 to ShaderListFiles.Count-1 do
+           begin
+            ShaderListFiles[I].Acces;
+            if (ShaderFile=Nil) and (ShaderListFiles[I].SousElements.Count>1) then
+             J:=1
+            else
+             J:=0;
+            Q:=ShaderListFiles[I].SousElements[J] as QFileObject;
+            Q.EnregistrerDansFichier(rf_Default, OutputFile(Q.Name+Q.TypeInfo));
+           end;
+          finally ShaderListFiles.Free; end; 
+         end;
+       end;
+      finally ShaderFile.AddRef(-1); end;
       if needColormap then
        begin
         WriteTo:=SetupGameSet.Specifics.Values['Palette'];
@@ -1328,6 +1395,15 @@ begin
  finally DeleteGameBuffer(Game); end;
 end;
 
+procedure QTextureFile.ListDependencies(L: TStringList);
+var
+ S: String;
+begin  { build dependencies based on animations }
+ S:=CheckAnim(0);
+ if S='' then Exit;   { no animation }
+ L.Text:=L.Text+S;
+end;
+
 procedure QTextureFile.EtatObjet(var E: TEtatObjet);
 begin
  inherited;
@@ -1517,7 +1593,7 @@ begin
   oName:=QTextureFile(Tex).GetTexName
  else
   oName:=Tex.Name;
- if Tex.ClassType = Cls then
+ if (Cls=Nil) or (Tex.ClassType = Cls) then
   if oName=nName then
    Result:=Tex
   else

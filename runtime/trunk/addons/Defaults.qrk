@@ -491,9 +491,9 @@ QQRKSRC1
         //Gradient = "pics/colormap.pcx"
         //ExtractFiles = "pics/colormap.pcx"
         Q2TexPath = "textures/"
-        Q2TexFlags = "1"
+        //Q2TexFlags = "1"
         ShadersPath = "scripts/"
-        ExtraCmdLine = "+set game %s"
+        ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataQ3.qrk"
         AlwaysPak = ""
@@ -507,6 +507,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".tga"
+        TextureShaders = "scripts/quark.shader"
       }
     }
     Map:config =

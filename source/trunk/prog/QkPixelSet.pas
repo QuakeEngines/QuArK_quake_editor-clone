@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/04/14 09:50:17  arigo
+more TGA flips fix
+
 Revision 1.3  2000/04/12 22:11:22  alexander
 fixed: flipped exported TGA textures
 
@@ -33,7 +36,7 @@ unit QkPixelSet;
 
 interface
 
-uses SysUtils, Windows, Game, Python, QkObjects, PyObjects,
+uses SysUtils, Windows, Classes, Game, Python, QkObjects, PyObjects,
      Setup, QkFileObjects;
 
 type
@@ -99,6 +102,7 @@ type
                procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
                procedure Paint(DC: HDC; X, Y: Integer);
                function PyGetAttr(attr: PChar) : PyObject; override;
+               procedure ListDependencies(L: TStringList); virtual;
               end;
 
  {------------------------}
@@ -511,6 +515,10 @@ end;
 function QPixelSet.ConversionFrom(Source: QFileObject) : Boolean;
 begin
  Result:=(Source is QPixelSet) and ConvertFrom(QPixelSet(Source), ccConfirm);
+end;
+
+procedure QPixelSet.ListDependencies(L: TStringList);
+begin  { no dependency by default -- see QkTextures.pas }
 end;
 
 function QPixelSet.PyGetAttr(attr: PChar) : PyObject;

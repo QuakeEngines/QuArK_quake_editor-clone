@@ -1,9 +1,37 @@
+(**************************************************************************
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) 1996-99 Armin Rigo
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Contact the author Armin Rigo by e-mail: arigo@planetquake.com
+or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
+See also http://www.planetquake.com/quark
+**************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkQ3;
 
 interface
 
 uses
-  Windows, Classes, QkZip2, QkFileObjects, Quarkx, QkObjects, QkText,
+  SysUtils, Windows, Classes, QkZip2, QkFileObjects, Quarkx, QkObjects, QkText,
   QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
 
 type
@@ -37,6 +65,7 @@ type
               function SetDescription(const PSD: TPixelSetDescription;
                                       Confirm: TSDConfirm) : Boolean; override;
               function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
+              procedure ListDependencies(L: TStringList); override;
             end;
   QShaderStage = class(QPixelSet)
                  public
@@ -234,6 +263,22 @@ end;
 function QShader.SetDescription;
 begin
  Raise EError(5696);
+end;
+
+procedure QShader.ListDependencies(L: TStringList);
+var
+ I: Integer;
+ S, SpecialStage: String;
+begin
+ Acces;
+ SpecialStage:=LoadStr1(5699);
+ for I:=0 to SousElements.Count-1 do
+  begin
+   S:=SousElements[I].Name;
+    { to do: check for animated stages }
+   if (S<>'') and (S[1]<>'$') and (S<>SpecialStage) then
+    L.Add(#255+S);   { #255 means it is not a texture name but directly a file name }
+  end;
 end;
 
  {------------------------}
