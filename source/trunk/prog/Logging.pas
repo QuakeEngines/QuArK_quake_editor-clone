@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/02/09 09:26:43  tiglari
+changed setapplicationpath call to fix startup problem on my system (W98)
+
 Revision 1.4  2001/02/07 19:28:19  decker_dk
 Given correct argument to SetApplicationPath().
 
@@ -57,7 +60,7 @@ const
 
 implementation
 
-uses QkObjects, Setup, QkApplPaths;
+uses QkObjects, Setup, QkApplPaths, SystemDetails;
 
 var
   LogFile: TextFile;
@@ -74,6 +77,7 @@ begin
   LogOpened:=true;
   LogEx('Quark started at %s',[DateTimeToStr(now)]);
   LogEx('Quark version is %s',[QuarkVersion]);
+  LogSystemDetails;
   {$I+}
 end;
 
