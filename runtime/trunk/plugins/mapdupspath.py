@@ -714,6 +714,7 @@ class InstanceDuplicator(PathDuplicator):
 
     def handles(self, editor, view):
         h = StandardDuplicator.handles(self, editor, view)
+        h[0].hint = "Copies of my contents are placed at the path points\n"
         if self.dup["usercenter"] is not None:
             h.append(UserCenterHandle(self.dup))
         return h
@@ -790,13 +791,9 @@ class InstanceDuplicator(PathDuplicator):
             if not pathlist[i]["no instance"]:
                 list.translate(thisorigin)
                 list.linear(thisorigin,matrix)
-                matrix2=buildLinearMatrix(pathlist[i])
-                for item in templategroup.subitems:
-                    center=GetUserCenter(item)
-                    item.linear(thisorigin+center,matrix2)
-                
                 if (singleimage is None) or (i==singleimage):
                     newobjs = newobjs + [list]
+
             del list
             if (i==singleimage): # Speed up Dissociate images processing
                 break
@@ -837,6 +834,13 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.38  2001/04/08 02:43:10  tiglari
+#if a group inside the instance duplicator has a usercenter, then the
+# matrix/scale/rotate attributes of a path point will apply the transformations
+# to that group, around the center.  'track rotations' otoh apply w.r.t. the
+# usercenter attribute of the instance duplicator itself, to all of the
+# subitems of the instance duplicator collectively.
+#
 #Revision 1.37  2001/04/02 21:11:27  tiglari
 #added is None to conditional
 #
