@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.1  2002/05/19 05:00:38  tiglari
+//Add some hot keys (absence thereof construed elastically as bugs)
+//
 
 //Revision 1.192  2002/05/13 12:02:37  tiglari
 //update version
@@ -1315,7 +1318,7 @@ QQRKSRC1
         StupidBuildToolKludge = "1" //those guys should get shot for that
         SupportsBrushPrim = "1"
         BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = "-moddir .."
+        BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-vis -saveprt"
