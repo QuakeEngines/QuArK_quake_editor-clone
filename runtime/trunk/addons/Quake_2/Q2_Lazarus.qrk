@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.5  2003/04/23 07:25:23  cdunde
+// To add the feature of using Cuatom models for misc_actor and spawn_model and link Contextual help to infobase
+//
 // Revision 1.4  2003/03/03 23:05:22  cdunde
 // This is a convertion of the original Q2 Lazarus to
 //  work with the features of QuArk
@@ -13184,18 +13187,23 @@ QQRKSRC1
       bbox = '-16 -16 -24 16 16 32'
       mdl = "[3Dmodel]"
       mdlbase = "baseq2"
-//      mdlskin = "[style]"  cdunde-tried to get user assigned skin to work
+//      mdlskin = "[style]"  // cdunde-tried to get user assigned skin to work
       help = "This allows you to use your own custom entity 3D-models."
 $0D"Used as additional actors. These models will move around in the"
 $0D"game and can be set to do different things with the flags below."
 $0D"For just special effect custom models use the model_spawn entity."
 $0D"Click on this Help Book for more details."
       HTML = "help/intro.mapeditor.menu.html#optionsmenu"
-
       3Dmodel: =
       {
-        txt = "&"
-        hint = "This is a custom model for QuArK 3d views only."
+        Txt = "3D Model"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        hint = "Type in the model path or use the file browser button to the right."
+$0D"This is a custom model for QuArK 3d views only."
 $0D"It only uses the 0 skin and will not show in the actual game."
 $0D"For that use usermodel below."
       }
@@ -13309,8 +13317,15 @@ $0D"For that use usermodel below."
       }
       usermodel: =
       {
-        txt = "&"
-        hint = "This is a custom model for the actual game play only."
+        Txt = "usermodel"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        AugPath = "../"
+        hint = "Type in the model path or use the file browser button to the right."
+$0D"This is a custom model for the actual game play only."
 $0D"It will not show in QuArK's 3D views."
 $0D"For that use 3Dmodel above."
       }
@@ -14533,7 +14548,6 @@ $0D"For that use 3Dmodel above."
       bbox = '-16 -16 -24 16 16 32'
       mdl = "[3Dmodel]"
       mdlbase = "baseq2"
-      mdlskin = '0'
       help = "This allows you to use your own custom entity 3D-models."
 $0D"Used for special effects, you can control which model frames"
 $0D"are used. But the models do not fight like misc_actor entities do."
@@ -14542,8 +14556,14 @@ $0D"Click on this Help Book for more details."
 
       3Dmodel: =
       {
-        txt = "&"
-        hint = "This is a custom model for QuArK 3d views only."
+        Txt = "3D Model"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        hint = "Type in the model path or use the file browser button to the right."
+$0D"This is a custom model for QuArK 3d views only."
 $0D"It will not show in the actual game."
 $0D"For that use usermodel below."
       }
@@ -14645,8 +14665,15 @@ $0D"For that use usermodel below."
       }
       usermodel: =
       {
-        txt = "&"
-        hint = "This is a custom model for the actual game play only."
+        Txt = "usermodel"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        AugPath = "../"
+        hint = "Type in the model path or use the file browser button to the right."
+$0D"This is a custom model for the actual game play only."
 $0D"It will not show in QuArK's 3D views."
 $0D"For that use 3Dmodel above."
       }
