@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14.2.1  2002/06/18 11:58:58  tiglari
+Support SOF2's use of #0 as a filename-extension delimiter for md3 skins
+ (ugly, this will probably need to be fixed as more pathology comes to light)
+
 Revision 1.14  2002/04/09 22:29:58  aiv
 check for jk2 game mode if loading a md3 file
 
@@ -286,6 +290,7 @@ begin
   shader_filename:=SetupGameSet.Specifics.Values['ShadersPath']+shader_filename+'.shader';
   shader_texturename:=copy(tex_name, 1, pos('.', tex_name)-1);
 
+  if CharModeJeu<>mjSOF2 then
   try
     shader_file:=needgamefile(shader_filename);
     if shader_file = nil then
