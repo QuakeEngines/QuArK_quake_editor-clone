@@ -1,3 +1,5 @@
+"""   QuArK  -  Quake Army Knife
+
 Various constants and Screen Controls for editors.
 """
 #
@@ -1476,6 +1478,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.12  2002/06/10 21:23:02  tiglari
+#Remove html from overhasty cut-and-paste
+#
 #Revision 1.11  2002/06/09 22:47:14  tiglari
 #model editor bugfix by cdunde
 #
