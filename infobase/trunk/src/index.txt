@@ -1,6 +1,6 @@
 title: The Source Code
-subdir: sf intro introc struct topics pas python leaks
-subdir: quarkx math delphi
+subdir: sf intro introc struct topics pas python leaks 
+subdir: quarkx math delphi distribution
 
 This section discusses QuArK programming.
 
