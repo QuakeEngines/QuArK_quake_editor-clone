@@ -29,7 +29,12 @@ QQRKSRC1
 
 //$Header$
 // ----------- REVISION HISTORY ------------
+//
 //$Log$
+//
+//Revision 1.105.4.2  2001/04/16 12:29:09  tiglari
+//grid & thick support for brush arch/bevel
+//
 //Revision 1.105.4.1  2001/04/06 10:41:28  tiglari
 //stupidbuildtoolkludges as checkable option; on by default for Q3A
 //
@@ -3156,13 +3161,21 @@ QQRKSRC1
       leftside:  = {Txt="&" Typ="X" Hint="if checked, left side is produced"}
       rightside: = {Txt="&" Typ="X" Hint="if checked, right side is produced"}
     }
+    subdivideform:incl =
+    {
+      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate 2^n+1 control points along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds, also big patches might not show in Q3)"}
+    }     
+    brushsubdivideform:incl =
+    {
+      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate 2^n brushes along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds ...)"}
+    }     
     dup cap:form =
     {
       inverse:    = {Txt="&" Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
       lower:      = {Txt="&" Typ="X"    Hint="if checked, the whole thing is upside-down"}
       onside:     = {Txt="&" Typ="X"    Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
       thick:      = {Txt="&" Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
-      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate n patches along each side of curve"}
+      subdivideform = !
       stretchtex: = {Txt="&" Typ="X"    Hint="if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open:       = {Txt="&" Typ="X"    Hint="if checked, front and back are open"}
       more: = {
@@ -3191,7 +3204,7 @@ QQRKSRC1
       standup:    = {Txt="&" Typ="X"    Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
       left:       = {Txt="&" Typ="X"    Hint="if checked, curve goes from back to left side rather than back to right side"}
       thick:      = {Txt="&" Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
-      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate n patches along curve"}
+      subdivideform = !
       stretchtex: = {Txt="&" Typ="X"    Hint="if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open:       = {Txt="&" Typ="X"    Hint="if checked, top and bottom are open"}
       more: = {
@@ -3207,7 +3220,7 @@ QQRKSRC1
     {
       inverse:    = {Txt="&" Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
       thick:      = {Txt="&" Typ="EF1"   Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
-      subdivide:  = {Txt="&" Typ="EF1"   Hint="integer value, generate n patches along curve"}
+      subdivideform = !
       circle:     = {Txt="&" Typ="X" }
       stretchtex: = {Txt="&" Typ="X"     Hint="if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
       open:       = {Txt="&" Typ="X"     Hint="if checked, top and bottom are open"}
@@ -3240,7 +3253,7 @@ QQRKSRC1
       thick:     = {Txt="&" Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
       inner:     = {Txt="&" Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
       grid:      = {Txt="&" Typ="X"   Hint="if checked, vertex points are forced to grid"}
-      subdivide: = {Txt="&" Typ="EF1" Hint="integer value, generate n patches along each side of curve"}
+      brushsubdivideform = !
       macro:     = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushbevel:form =
@@ -3252,7 +3265,7 @@ QQRKSRC1
       thick:     = {Txt="&" Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
       inner:     = {Txt="&" Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
       grid:      = {Txt="&" Typ="X"   Hint="if checked, vertex points are forced to grid"}
-      subdivide: = {Txt="&" Typ="EF1" Hint="integer value, generate n patches along curve"}
+      brushsubdivideform = !
       macro:     = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup path:form =
