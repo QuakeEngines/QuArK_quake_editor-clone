@@ -603,10 +603,19 @@ def prepAuxFileMenuItem(item,extkey,defext):
         item.editor = editor
         item.auxfilename = auxfilename
 
+import mapbrushnum
+
+def BrushNumClick(m):
+    import mapbrushnum
+    mapbrushnum.LoadBrushNums(m.editor, m.auxfilename)
+    
+brushnumsMenuItem = qmenu.item("Select Brush Number",BrushNumClick,"|Tries to find brushes by number, as specified in compile tool error messages (the use of duplicators, etc. might subvert this.")
 
 def onclick(m):
     for args in ((leakMenuItem,"MapHoles",".lin"),
-                 (portalsMenuItem,"MapPortals",".prt")):
+                 (portalsMenuItem,"MapPortals",".prt"),
+                 (brushnumsMenuItem,"MapFileExt",".map"), # this options keyword doesn't exist
+                 ):
       apply(prepAuxFileMenuItem,args)
 
 def QuakeMenu(editor):
@@ -637,7 +646,7 @@ def QuakeMenu(editor):
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
-        for item in (leakMenuItem, portalsMenuItem):
+        for item in (leakMenuItem, portalsMenuItem, brushnumsMenuItem):
             item.editor=editor
             items.append(item)
         items.append(qmenu.sep)
@@ -652,6 +661,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.33  2003/03/21 05:56:26  cdunde
+#Update infobase and add links
+#
 #Revision 1.32  2003/03/19 22:27:58  tiglari
 #change default holes file to .lin
 #

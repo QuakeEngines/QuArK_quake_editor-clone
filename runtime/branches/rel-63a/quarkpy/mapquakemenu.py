@@ -602,10 +602,24 @@ def prepAuxFileMenuItem(item,extkey,defext):
         item.editor = editor
         item.auxfilename = auxfilename
 
+#
+# uncomment this when working on mapbrushnum, so that syntax errors
+#  will appear in the console when QuArK is loaded
+#
+# import mapbrushnum
+#
+
+def BrushNumClick(m):
+    import mapbrushnum
+    mapbrushnum.LoadBrushNums(m.editor, m.auxfilename)
+    
+brushnumsMenuItem = qmenu.item("Select Brush &Number",BrushNumClick,"|Tries to find brushes by number, as specified in compile tool error messages (the use of duplicators, etc. might subvert this.")
 
 def onclick(m):
     for args in ((leakMenuItem,"MapHoles",".lin"),
-                 (portalsMenuItem,"MapPortals",".prt")):
+                 (portalsMenuItem,"MapPortals",".prt"),
+                 (brushnumsMenuItem,"MapFileExt",".map"), # this options keyword doesn't exist
+                 ):
       apply(prepAuxFileMenuItem,args)
 
 def QuakeMenu(editor):
@@ -636,7 +650,7 @@ def QuakeMenu(editor):
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
-        for item in (leakMenuItem, portalsMenuItem):
+        for item in (leakMenuItem, portalsMenuItem, brushnumsMenuItem):
             item.editor=editor
             items.append(item)
         items.append(qmenu.sep)
@@ -649,6 +663,9 @@ def QuakeMenu(editor):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.26.2.5  2003/03/19 23:34:13  tiglari
+#portals file loading support
+#
 #Revision 1.26.2.4  2003/03/18 10:27:25  tiglari
 #load leakfile menu item enables/disables as .pts/.lin file appears or
 #  disappears (had to add an onclick function to the Game menu. etc)
