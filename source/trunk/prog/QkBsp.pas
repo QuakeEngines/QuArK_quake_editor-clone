@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/03/03 00:11:09  aiv
+addon creation from bsp files!
+
 Revision 1.14  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -1120,6 +1123,7 @@ var
   specList: TStringList;
   e_sl: TStringList;
   i,J: Integer;
+  hasOrigin: Boolean;
 
   addonRoot: QFileObject;
   TBX: QToolBox;
@@ -1201,17 +1205,20 @@ begin
     Entity:=TTreeMapEntity(EntityTBX_2.SubElements[i]);
     eForm:=QFormCfg.Create(Entity.Name, entityForms);
     entityForms.Subelements.Add(eForm);
+    hasOrigin:=false;
     for j:=Entity.Specifics.Count-1 downto 0 do
     begin
       if Entity.Specifics.Names[j][1]=';' then continue; // skip ;desc, ;incl etc
       eSpec:=QInternalObject.Create(Entity.Specifics.Names[j], eForm);
+      if uppercase(Entity.Specifics.Names[j])='ORIGIN' then
+        hasOrigin:=true;
       eSpec.SpecificsAdd('txt=&');
       eSpec.SpecificsAdd('hint=(insert hint here)');
       eSpec.SpecificsAdd('typ='+GuessArgType(Entity.Specifics.Names[j], Entity.Specifics.Values[Entity.Specifics.Names[j]]));
       Entity.Specifics.Delete(J);
       eForm.SubElements.Add(eSpec);
     end;
-    if Entity.TypeInfo = ':e' then
+    if (Entity.TypeInfo = ':e') and (hasOrigin) then
       Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
   end;
   (*
