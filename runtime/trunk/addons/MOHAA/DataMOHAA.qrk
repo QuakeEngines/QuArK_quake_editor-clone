@@ -4,6 +4,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2004/12/14 15:31:16 Hannibal
+//added weapon enitities
+//
+//Revision 1.5  2002/05/05 10:18:18  tiglari
+//Texture flags
+//
 //Revision 1.4  2002/05/01 00:16:41  tiglari
 //change deathmatch to start in default map; add texture flag info.
 // The delphi needs to be changed to write them as text
@@ -712,6 +718,115 @@ QQRKSRC1
         {
           angle = "360"
           ;incl = "defpoly"
+        }
+      }
+      Weapons & Ammo.qtxfolder =
+      {
+        playerweapon_allied_bar:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "Browning automatic rifle."
+        }
+        playerweapon_allied_bazooka:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "umm its a bazooka?."
+        }
+        playerweapon_allied_colt45:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "Colt 45 pistol."
+        }
+        playerweapon_allied_highstandard-pistol:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "silenced pistol."
+        }
+        playerweapon_allied_m1-Garand:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "M1 Garand Rifle."
+        }
+        playerweapon_allied_m2-Grenade:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "Genade?."
+        }
+        playerweapon_allied_shotgun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "shotgun."
+        }
+        playerweapon_allied_springfield:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "Springfield '03 Sniper Rifle."
+        }
+        playerweapon_allied_thompson:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "Thompson sub-machine gun."
+        }
+        playerweapon_german_kar98:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          wait = "10"
+          ;desc = "KAR 98 Rifle."
+        }
+        playerweapon_german_kar98-sniper:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "KAR 98 sniper rifle."
+        }
+        playerweapon_german_mp40:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "MP40 sub Machine gun."
+        }
+        playerweapon_german_mp44:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "mp44 sub Machine gun."
+        }
+        playerweapon_german_p38:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "P38 pistol."
+        }
+        playerweapon_german_panzerschreck:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Panzerschreck."
+        }
+        playerweapon_german_steilhandgranate:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "steilhandgranate."
         }
       }
     }
