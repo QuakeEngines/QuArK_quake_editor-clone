@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/06/05 18:41:51  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.8  2001/03/20 21:43:03  decker_dk
 Updated copyright-header
 
@@ -75,6 +78,7 @@ function MatriceInverse(const M: TMatrixTransformation) : TMatrixTransformation;
 function MatriceTranspose(const M: TMatrixTransformation) : TMatrixTransformation;
 function MatrixMultByVect(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
 function MatrixFromCols(const V1, V2, V3 : TVect) : TMatrixTransformation;
+function MatrixFromRows(const V1, V2, V3 : TVect) : TMatrixTransformation;
 function Determinant(const Matrice: TMatrixTransformation) : TDouble;
 function VectByMatrix(const Matrice : TMatrixTransformation; const V: TVect) : TVect; overload;
 function VectByMatrix(const Matrice : TMatrixTransformation; const V: vec3_t) : vec3_t; overload;
@@ -206,6 +210,7 @@ begin
       Result[J][I]:=M[I][J]
 end;
 
+(* pre-multiplication by row-vector *)
 function MatrixMultByVect(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
 begin
    Result.X:=Matrice[1,1]*V.X+Matrice[1,2]*V.Y+Matrice[1,3]*V.Z{+Matrice[1,4]};
@@ -225,6 +230,20 @@ begin
   MatrixFillCol(Result,1,V1);
   MatrixFillCol(Result,2,V2);
   MatrixFillCol(Result,3,V3);
+end;
+
+procedure MatrixFillRow(var M: TMatrixTransformation; const J : Integer; const V: TVect);
+begin
+  M[J][1]:=V.X;
+  M[J][2]:=V.Y;
+  M[J][3]:=V.Z
+end;
+
+function MatrixFromRows(const V1, V2, V3 : TVect) : TMatrixTransformation;
+begin
+  MatrixFillRow(Result,1,V1);
+  MatrixFillRow(Result,2,V2);
+  MatrixFillRow(Result,3,V3);
 end;
 
 function mxtos(const M: TMatrixTransformation) : String;
