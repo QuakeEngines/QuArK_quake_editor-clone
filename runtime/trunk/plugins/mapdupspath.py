@@ -29,8 +29,10 @@ import math
 StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 DuplicatorManager = quarkpy.mapduplicator.DuplicatorManager
 DupOffsetHandle = quarkpy.mapduplicator.DupOffsetHandle
-ObjectOrigin = quarkpy.mapentities.ObjectOrigin
-ObjectCustomOrigin = quarkpy.mapentities.ObjectCustomOrigin
+
+from quarkpy.mapentities import ObjectOrigin
+from quarkpy.maphandles import GetUserCenter  
+from quarkpy.maphandles import UserCenterHandle
 
 
 #
@@ -709,6 +711,13 @@ class PathDuplicator(StandardDuplicator):
 #
 
 class InstanceDuplicator(PathDuplicator):
+
+    def handles(self, editor, view):
+        h = StandardDuplicator.handles(self, editor, view)
+        if self.dup["usercenter"] is not None:
+            h.append(UserCenterHandle(self.dup))
+        return h
+
     def buildimages(self, singleimage=None):
 
         if len(self.dup.subitems)==0:
@@ -736,7 +745,11 @@ class InstanceDuplicator(PathDuplicator):
         else:
            newobjs = []
         templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
+#        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
+        if self.dup["usercenter"] is not None:
+            templategroup.translate(-GetUserCenter(self.dup), 0)    # Move it to (0,0,0)
+        else:
+            templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
         for item in templategroup.subitems[:]:
             if item.type==":d" and item["macro"]=="dup origin":
                 templategroup.removeitem(item)
@@ -820,6 +833,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.34  2001/03/29 09:28:55  tiglari
+#scale and rotate specifics for duplicators
+#
 #Revision 1.33  2001/03/28 23:21:03  tiglari
 #re-integrate instance dup stuff from  1.31, which somehow got dropped
 #
