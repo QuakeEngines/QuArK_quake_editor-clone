@@ -221,7 +221,6 @@ def undistortColumns(cp):
             dist = abs(cp[i][j]-cp[i-1][j])
             sum = sum + dist
             lengths.append(sum)
-#        squawk('sum')
         if sum == 0:
             sum = 1
         #
@@ -294,10 +293,13 @@ def d5(cp, (i, j)):
     return dSdu, dSdv  
     
 
-def faceTexFromCph(cph, face, editor):
+#def faceTexFromCph(cph, face, editor):
+def texPlaneFromCph(cph, editor):
     "projects texture-scale at cp handle to face, returning copy of face"
     b2 = cph.b2
     d5du, d5dv = d5(b2.cp, cph.ij)
+    if d5du is None or d5dv is None:
+        return None
     #
     # Derivatives of parameter->space and parameter->tex maps.
     # S for space, T for texture (cap so diff from patch coords)
@@ -322,22 +324,22 @@ def faceTexFromCph(cph, face, editor):
     # Now first project the texture onto a face tangent to the patch,
     #   then project it onto the face we want.
     #
-#    new = quarkx.newobj("face:f")
-    new = face.copy()
+    new = quarkx.newobj("face:f")
+#    new = face.copy()
     new.setthreepoints(texp,1)
     new["tex"]=b2["tex"]
     new.setthreepoints(texp,2,editor.TexSource)
-    #
-    # Prolly time to do some mass reorganization of utilities
-    #
-    from plugins.maptagside import projecttexfrom
-    return projecttexfrom(new, face)
+    return new
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.10  2000/06/26 22:51:55  tiglari
+#renaming: antidistort_rows/columns->undistortRows/Colunmns,
+#tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
+#
 #Revision 1.9  2000/06/25 23:48:01  tiglari
 #Function Renaming & Reorganization, hope no breakage
 #
