@@ -13,6 +13,7 @@ Map Editor Buttons and implementation of editing commands
 
 
 
+import string
 import quarkx
 import qtoolbar
 from qdictionnary import Strings
@@ -131,7 +132,7 @@ def textureof(editor):
     if len(texlist)==1:
         return texlist[0]
     else:
-        return quarkx.setupsubset()["TextureDef"]
+        return quarkx.setupsubset()["DefaultTexture"]
 
 def prepareobjecttodrop(editor, obj):
     "Call this to prepare an object to be dropped. It replaces [auto] Specifics."
@@ -139,29 +140,74 @@ def prepareobjecttodrop(editor, obj):
     oldincl = obj[";incl"]
     obj[";desc"] = None
     obj[";incl"] = None
-    if not ("TreeMap" in obj.classes): return
+    if not ("TreeMap" in obj.classes):
+        return
 
-     # replace the textures "[auto]"
+    # replace the textures "[auto]", "[trigger]", "[clip]", "[origin]" and "[caulk]"
     tex = textureof(editor)
     obj.replacetex("[auto]", tex)
 
-     # replace ";incl = defpoly" or ";incl = trigpoly"
-    if oldincl == "defpoly" or oldincl == "trigpoly": #DECKER
-        if oldincl == "trigpoly": #DECKER
-            # If its a triggerpoly, try to get the default trigger texture
-            try: #DECKER
-                trigtex = quarkx.setupsubset()["TriggerTextureDef"] #DECKER
-            except: #DECKER
-                trigtex = None #DECKER
-            if trigtex is not None and trigtex <> "": #DECKER
-                tex = trigtex #DECKER
-        defpoly = quarkx.setupsubset(SS_MAP, "Building")["DefPoly"]
-        if defpoly == "poly128":
-            obj.appenditem(newcube(128, tex))
-        elif defpoly == "poly64":
-            obj.appenditem(newcube(64, tex))
+    try:
+        tex_for_trigger = quarkx.setupsubset()["DefaultTextureTrigger"]
+        obj.replacetex("[trigger]", tex_for_trigger)
+    except:
+        tex_for_trigger = "[trigger]"
 
-     # replace "target" and "targetname"
+    try:
+        tex_for_clip = quarkx.setupsubset()["DefaultTextureClip"]
+        obj.replacetex("[clip]", tex_for_clip)
+    except:
+        tex_for_clip = "[clip]"
+
+    try:
+        tex_for_origin = quarkx.setupsubset()["DefaultTextureOrigin"]
+        obj.replacetex("[origin]", tex_for_origin)
+    except:
+        tex_for_origin = "[origin]"
+
+    try:
+        tex_for_caulk = quarkx.setupsubset()["DefaultTextureCaulk"]
+        obj.replacetex("[caulk]", tex_for_caulk)
+    except:
+        tex_for_caulk = "[caulk]"
+
+    # try to replace whatever ";incl" tells us to do
+    if (oldincl is not None) and (oldincl <> ""):
+        try:
+            # Get the user's default poly XYZ-size
+            defpoly = quarkx.setupsubset(SS_MAP, "Building")["DefPoly"]
+            defpolysize = string.split(defpoly, "x")
+        except:
+            defpolysize = ["64", "64", "64"]
+        try:
+            # Convert the text-values to int-values
+            defpolysize[0] = int(defpolysize[0])
+            defpolysize[1] = int(defpolysize[1])
+            defpolysize[2] = int(defpolysize[2])
+            # minimum values are "8x8x8"
+            if (defpolysize[0] < 8) or (defpolysize[1] < 8) or (defpolysize[2] < 8):
+                # Silent exception, since the next 'except' will catch it.
+                raise "Problem with 'Default polyhedron size'"
+        except:
+            defpolysize = [64, 64, 64] # must be an array of three values
+        oldincl = string.lower(oldincl)
+        if (string.find(oldincl, "poly") > -1):
+            # Create a default-poly
+            obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex))
+        if (string.find(oldincl, "trigger") > -1):
+            # Create a trigger-poly
+            obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_trigger, "trigger poly"))
+        if (string.find(oldincl, "clip") > -1):
+            # Create a clip-poly
+            obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_clip, "clip poly"))
+        if (string.find(oldincl, "origin") > -1):
+            # Create a origin-poly half the X/Y-size, and 1.5 less the Z-size
+            obj.appenditem(newcubeXYZ(defpolysize[0]/2, defpolysize[1]/2, defpolysize[2]/1.5, tex_for_origin, "origin poly"))
+        if (string.find(oldincl, "caulk") > -1):
+            # Create a caulk-poly
+            obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_caulk, "caulk poly"))
+
+    # replace "target" and "targetname"
     try:
         replacespecifics(obj, {})
     except KeyError:   # "target" or "targetname" really found in obj
@@ -505,7 +551,7 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                     list.append(quarkx.vect(cp[i][j].xyz))
             center = reduce(lambda x, y:x+y,list)/len(list)
             for obj in pickedObjects:
-                new = obj.copy() 
+                new = obj.copy()
                 cp=copyCp(obj.cp)
                 for p in obj["picked"]:
                     i, j = cpPos(p, obj)
@@ -566,8 +612,8 @@ def groupcolor(m):
         undo.ok(editor.Root, Strings[622])
 
 
-def newcubeXYZ(dx, dy, dz, tex):
-    p = quarkx.newobj("poly:p")
+def newcubeXYZ(dx, dy, dz, tex, cubename="poly"):
+    p = quarkx.newobj(cubename + ":p")
     dx=dx*0.5
     dy=dy*0.5
     dz=dz*0.5
@@ -634,6 +680,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.7  2000/12/31 23:59:44  tiglari
+#fixed adjust texture to fit face button problem (introduced by botched tab elimination)
+#
 #Revision 1.6  2000/12/30 05:29:37  tiglari
 #moveselection acts on picked cp's of bezier patches if any are picked
 #
