@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2002/03/27 00:24:49  tiglari
+delete/write mapversion 220 specific as needed (removed when map
+ read, added back in if written out in V220 format).
+
 Revision 1.40  2002/03/26 22:21:59  tiglari
 support UseIntegralVertexes flag
 
@@ -1205,8 +1209,10 @@ begin
              end
              else if LowerCase(s)='brushdef' then
              begin
-              { tiglari: a brushDef means it is a Quake 3 map }
+              { tiglari: a brushDef means it is a Quake 3 map -
                Result:=mjQ3A;
+                not any more, anyone could write tools to support it
+                in a brush-based game }
                ReadQ3BrushDef(); {DECKER - moved to local-procedure to increase readability}
              end
              else
