@@ -59,7 +59,11 @@ Strings = {
     163: "-- Specifics common to selected items --",
     172: "Searching for holes...",
     175: "Extracting files...",
-    176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positionning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
+#   176: "// This map has been written by QuArK - Quake Army Knife, %s\n// It is a map for the game %s.\n\n// It is recommended that you compile this map using TXQBSP, a version of QBSP\n// that can process floating-point coordinates and enhanced texture positionning.\n// For more information see QuArK's Home Page :  http://www.planetquake.com/quark\n\n",
+    ### The entries 176,177,178 are used in [QkMap.PAS] QMapFile.SaveFile()
+    176: "This map has been written by QuArK - Quake Army Knife, %s",
+    177: "It is a map for the game %s.",
+    178: "For more information see QuArK's Home Page :  http://www.planetquake.com/quark",
     179: "(%d textures)",
     180: "noname",
     181: "  Map for the game %s",
@@ -707,7 +711,7 @@ Strings = {
     # 5537: "Not a supported bitmap format",
 	5538: "Failed to convert the object to the required file type",
 	5539: "The width and the height of textures must be multiples of 8. This image's size is %d by %d pixels. The image will be expanded up to %d by %d.",
-	#5540: "The image is too large to be converted. Its size is %d by %d. It will be reduced down to %d by %d pixels.",
+    # 5540: "The image is too large to be converted. Its size is %d by %d. It will be reduced down to %d by %d pixels.",
 	5541: "The image's palette is different from the %s palette. The colors will have to be converted.",
 	5542: "QuArK tried to switch to a game that's not installed.//Mode %s",
 	5543: "QuArK must switch to %s game mode.",
@@ -789,7 +793,7 @@ Strings = {
 	5617: "This program failed to build the following file(s) :\n\n%s\nPlease see its documentation to learn more about this program. You may also want to look at the program's log file (if any) or run the program again from an MS-DOS box if you didn't have the time to read its screen output.",
 	5618: "\t%s\n",
 	# 5619: "The texture '%s' is not for Quake 2",
-        5619: "Texture file format could not be converted : %s",
+    5619: "Texture file format could not be converted : %s",
 	5620: "Your map is 'leaked', i.e. there is a hole. To help you find it, QuArK can display a list of points going through the hole. Ok ?",
 	5621: "The map is not opened. Cannot load .lin file",
 	5622: "Cannot use macro 'O' (Operation) without an object to operate on",
@@ -826,7 +830,7 @@ Strings = {
     5653: "Operation terminated.",
     5654: "To compile the QuakeC or HexenC code in this file, you must first switch to the appropriate game mode",
     5655: "'%s' is not a M8 texture file//%d should be %d",
-    #5656: "The software 3D viewer is displaying strange colors because it does not support palettized textures. If you have a 3DFX card, select the 3DFX driver in the Configuration dialog box.",
+    # 5656: "The software 3D viewer is displaying strange colors because it does not support palettized textures. If you have a 3DFX card, select the 3DFX driver in the Configuration dialog box.",
     5657: "Cannot save the setup file",
     5658: "QuArK could not save your configuration :\n\n %s",
     5659: "QuArK cannot save any file because your system's temporary directory is invalid.",
@@ -871,6 +875,7 @@ Strings = {
     5698: "Shader '%s' not found in %s",
     5699: "(complex)",
     5700: "%s or %s",
+    5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -884,6 +889,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.28  2001/01/21 15:52:31  decker_dk
+#changed the error text #5572.
+#
 #Revision 1.27  2001/01/07 13:22:05  decker_dk
 #Set Versionname.
 #
