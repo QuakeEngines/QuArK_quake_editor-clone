@@ -1,0 +1,260 @@
+QQRKSRC1
+{
+  QuArKProtected = "1"
+  Description = "HL2 CS Textures from counter-strike source shared.gcf"
+
+
+//
+// Team Fortress Classic
+//
+  HL2 CS Textures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "HL2 CS.qtxfolder"
+
+    t_hl2cs:incl =      {  v="240.SteamFS" path="cstrike/materials/"}
+    //t_hl2cs:incl =      {  v="counter-strike source shared.gcf" path="cstrike/materials/"}
+    //t_hl2cs:incl =    {  v="tmpQuArK/materials_from_cs_source_shared"}
+
+
+    HL2 CS.qtxfolder =
+    {
+    
+      cs_italy.txlist =
+      {
+         cs_italy/boxsides_T01.wl= { t_hl2cs=! }
+         cs_italy/brickwall01.wl= { t_hl2cs=! }
+         cs_italy/brickwall01_normal.wl= { t_hl2cs=! }
+         cs_italy/carpet-sn03.wl= { t_hl2cs=! }
+         cs_italy/CastFlt.wl= { t_hl2cs=! }
+         cs_italy/ceiling01.wl= { t_hl2cs=! }
+         cs_italy/cellarfloor01.wl= { t_hl2cs=! }
+         cs_italy/cellarfloor01_normal.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01a.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01a_normal.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01b.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01b_normal.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01c.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01c_normal.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01d.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01d_normal.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01e.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01e_normal.wl= { t_hl2cs=! }
+         cs_italy/cellarwall01_normal.wl= { t_hl2cs=! }
+         cs_italy/cobble02.wl= { t_hl2cs=! }
+         cs_italy/cobble02_normal.wl= { t_hl2cs=! }
+         cs_italy/cobble03.wl= { t_hl2cs=! }
+         cs_italy/cobble03_normal.wl= { t_hl2cs=! }
+         cs_italy/cobble04.wl= { t_hl2cs=! }
+         cs_italy/cobble04_normal.wl= { t_hl2cs=! }
+         cs_italy/cobble06.wl= { t_hl2cs=! }
+         cs_italy/cobble06_normal.wl= { t_hl2cs=! }
+         cs_italy/cobble07.wl= { t_hl2cs=! }
+         cs_italy/cobble07_normal.wl= { t_hl2cs=! }
+         cs_italy/Concrete1_1.wl= { t_hl2cs=! }
+         cs_italy/conc_brdr_1.wl= { t_hl2cs=! }
+         cs_italy/crown-mld1.wl= { t_hl2cs=! }
+         cs_italy/cr_miscwood2b.wl= { t_hl2cs=! }
+         cs_italy/cudre.wl= { t_hl2cs=! }
+         cs_italy/cudrh.wl= { t_hl2cs=! }
+         cs_italy/cufountaina.wl= { t_hl2cs=! }
+         cs_italy/cugena.wl= { t_hl2cs=! }
+         cs_italy/cuiceila.wl= { t_hl2cs=! }
+         cs_italy/culighta.wl= { t_hl2cs=! }
+         cs_italy/custairsa.wl= { t_hl2cs=! }
+         cs_italy/cutrme.wl= { t_hl2cs=! }
+         cs_italy/cuwlle.wl= { t_hl2cs=! }
+         cs_italy/cuwllf.wl= { t_hl2cs=! }
+         cs_italy/cuwllg.wl= { t_hl2cs=! }
+         cs_italy/cuwllj.wl= { t_hl2cs=! }
+         cs_italy/cuwllk.wl= { t_hl2cs=! }
+         cs_italy/cuwllm.wl= { t_hl2cs=! }
+         cs_italy/cuwlln.wl= { t_hl2cs=! }
+         cs_italy/cuwlls.wl= { t_hl2cs=! }
+         cs_italy/cuwndb.wl= { t_hl2cs=! }
+         cs_italy/cuwndf.wl= { t_hl2cs=! }
+         cs_italy/cuwndg.wl= { t_hl2cs=! }
+         cs_italy/cxbarrela.wl= { t_hl2cs=! }
+         cs_italy/cxbrickj.wl= { t_hl2cs=! }
+         cs_italy/cxcrptb.wl= { t_hl2cs=! }
+         cs_italy/Door_sn01.wl= { t_hl2cs=! }
+         cs_italy/Door_sn01_normal.wl= { t_hl2cs=! }
+         cs_italy/framed01sn.wl= { t_hl2cs=! }
+         cs_italy/framed02sn.wl= { t_hl2cs=! }
+         cs_italy/framed03sn.wl= { t_hl2cs=! }
+         cs_italy/framed04sn.wl= { t_hl2cs=! }
+         cs_italy/framed05sn.wl= { t_hl2cs=! }
+         cs_italy/generic64b.wl= { t_hl2cs=! }
+         cs_italy/gryStuccoTrim.wl= { t_hl2cs=! }
+         cs_italy/irongate01.wl= { t_hl2cs=! }
+         cs_italy/ironmetal01.wl= { t_hl2cs=! }
+         cs_italy/ivy01.wl= { t_hl2cs=! }
+         cs_italy/ivy02.wl= { t_hl2cs=! }
+         cs_italy/ivy03.wl= { t_hl2cs=! }
+         cs_italy/ivy04.wl= { t_hl2cs=! }
+         cs_italy/ivy05.wl= { t_hl2cs=! }
+         cs_italy/ivy05a.wl= { t_hl2cs=! }
+         cs_italy/ivy06.wl= { t_hl2cs=! }
+         cs_italy/ivy06a.wl= { t_hl2cs=! }
+         cs_italy/marketwall01a.wl= { t_hl2cs=! }
+         cs_italy/marketwall01a_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall01b.wl= { t_hl2cs=! }
+         cs_italy/marketwall01b_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall01c.wl= { t_hl2cs=! }
+         cs_italy/marketwall01c_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall01d.wl= { t_hl2cs=! }
+         cs_italy/marketwall01d_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall01e.wl= { t_hl2cs=! }
+         cs_italy/marketwall01e_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall02.wl= { t_hl2cs=! }
+         cs_italy/marketwall02a.wl= { t_hl2cs=! }
+         cs_italy/marketwall02a_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall02b.wl= { t_hl2cs=! }
+         cs_italy/marketwall02b_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall02_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall03.wl= { t_hl2cs=! }
+         cs_italy/marketwall03a.wl= { t_hl2cs=! }
+         cs_italy/marketwall03a_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall03b.wl= { t_hl2cs=! }
+         cs_italy/marketwall03b_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall03_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall04.wl= { t_hl2cs=! }
+         cs_italy/marketwall04a.wl= { t_hl2cs=! }
+         cs_italy/marketwall04a_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall04b.wl= { t_hl2cs=! }
+         cs_italy/marketwall04b_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall04_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall05.wl= { t_hl2cs=! }
+         cs_italy/marketwall05a.wl= { t_hl2cs=! }
+         cs_italy/marketwall05a_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall05b.wl= { t_hl2cs=! }
+         cs_italy/marketwall05b_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall05_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall06.wl= { t_hl2cs=! }
+         cs_italy/marketwall06a.wl= { t_hl2cs=! }
+         cs_italy/marketwall06a_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall06b.wl= { t_hl2cs=! }
+         cs_italy/marketwall06b_normal.wl= { t_hl2cs=! }
+         cs_italy/marketwall06c.wl= { t_hl2cs=! }
+         cs_italy/marketwall06_normal.wl= { t_hl2cs=! }
+         cs_italy/misc_fr00t_1.wl= { t_hl2cs=! }
+         cs_italy/misc_fr00t_1_normal.wl= { t_hl2cs=! }
+         cs_italy/misc_fr00t_2.wl= { t_hl2cs=! }
+         cs_italy/misc_fr00t_2_normal.wl= { t_hl2cs=! }
+         cs_italy/misc_fr00t_5.wl= { t_hl2cs=! }
+         cs_italy/misc_fr00t_5_normal.wl= { t_hl2cs=! }
+         cs_italy/oldRadio.wl= { t_hl2cs=! }
+         cs_italy/p3wal1.wl= { t_hl2cs=! }
+         cs_italy/p3wal2.wl= { t_hl2cs=! }
+         cs_italy/p3wal3.wl= { t_hl2cs=! }
+         cs_italy/p5wal2.wl= { t_hl2cs=! }
+         cs_italy/p5wal3.wl= { t_hl2cs=! }
+         cs_italy/p5wal4.wl= { t_hl2cs=! }
+         cs_italy/p5wal5.wl= { t_hl2cs=! }
+         cs_italy/p6wal2.wl= { t_hl2cs=! }
+         cs_italy/p6wal3.wl= { t_hl2cs=! }
+         cs_italy/p6wal4.wl= { t_hl2cs=! }
+         cs_italy/p6wal5.wl= { t_hl2cs=! }
+         cs_italy/p6wal6.wl= { t_hl2cs=! }
+         cs_italy/pcon2.wl= { t_hl2cs=! }
+         cs_italy/pcon2trim.wl= { t_hl2cs=! }
+         cs_italy/pcon2trim_normal.wl= { t_hl2cs=! }
+         cs_italy/pcurb1.wl= { t_hl2cs=! }
+         cs_italy/pcurb1_normal.wl= { t_hl2cs=! }
+         cs_italy/pcurb2.wl= { t_hl2cs=! }
+         cs_italy/pcurb2_normal.wl= { t_hl2cs=! }
+         cs_italy/pdoor1.wl= { t_hl2cs=! }
+         cs_italy/picrate1.wl= { t_hl2cs=! }
+         cs_italy/picrate1_normal.wl= { t_hl2cs=! }
+         cs_italy/picrate2.wl= { t_hl2cs=! }
+         cs_italy/picrate2_normal.wl= { t_hl2cs=! }
+         cs_italy/pipe_wall1_2.wl= { t_hl2cs=! }
+         cs_italy/pipe_wall4_3.wl= { t_hl2cs=! }
+         cs_italy/pipe_wall5_1.wl= { t_hl2cs=! }
+         cs_italy/plasterwall01.wl= { t_hl2cs=! }
+         cs_italy/plasterwall01a.wl= { t_hl2cs=! }
+         cs_italy/plasterwall01a_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall01b.wl= { t_hl2cs=! }
+         cs_italy/plasterwall01b_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall01_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall02.wl= { t_hl2cs=! }
+         cs_italy/plasterwall02a.wl= { t_hl2cs=! }
+         cs_italy/plasterwall02a_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall02b.wl= { t_hl2cs=! }
+         cs_italy/plasterwall02b_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall02_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall03.wl= { t_hl2cs=! }
+         cs_italy/plasterwall03a.wl= { t_hl2cs=! }
+         cs_italy/plasterwall03a_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall03b.wl= { t_hl2cs=! }
+         cs_italy/plasterwall03b_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall03_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall04.wl= { t_hl2cs=! }
+         cs_italy/plasterwall04a.wl= { t_hl2cs=! }
+         cs_italy/plasterwall04a_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall04b.wl= { t_hl2cs=! }
+         cs_italy/plasterwall04b_normal.wl= { t_hl2cs=! }
+         cs_italy/plasterwall04_normal.wl= { t_hl2cs=! }
+         cs_italy/plaster_wall2_1.wl= { t_hl2cs=! }
+         cs_italy/ptilefloor1.wl= { t_hl2cs=! }
+         cs_italy/ptilefloor1_normal.wl= { t_hl2cs=! }
+         cs_italy/pwal1.wl= { t_hl2cs=! }
+         cs_italy/pwal2.wl= { t_hl2cs=! }
+         cs_italy/pwal3.wl= { t_hl2cs=! }
+         cs_italy/pwal4.wl= { t_hl2cs=! }
+         cs_italy/pwal5.wl= { t_hl2cs=! }
+         cs_italy/pwal6.wl= { t_hl2cs=! }
+         cs_italy/pwal6d.wl= { t_hl2cs=! }
+         cs_italy/pwal7.wl= { t_hl2cs=! }
+         cs_italy/pwal8.wl= { t_hl2cs=! }
+         cs_italy/pwood1.wl= { t_hl2cs=! }
+         cs_italy/pwood1_normal.wl= { t_hl2cs=! }
+         cs_italy/pwtrim1.wl= { t_hl2cs=! }
+         cs_italy/pwtrim1_normal.wl= { t_hl2cs=! }
+         cs_italy/pwtrim2.wl= { t_hl2cs=! }
+         cs_italy/pwtrim2_normal.wl= { t_hl2cs=! }
+         cs_italy/rv_brickwall.wl= { t_hl2cs=! }
+         cs_italy/rv_BrnBrick.wl= { t_hl2cs=! }
+         cs_italy/stair-t01.wl= { t_hl2cs=! }
+         cs_italy/steel.wl= { t_hl2cs=! }
+         cs_italy/stonewall01.wl= { t_hl2cs=! }
+         cs_italy/stonewall01a.wl= { t_hl2cs=! }
+         cs_italy/stonewall01a_normal.wl= { t_hl2cs=! }
+         cs_italy/stonewall01b.wl= { t_hl2cs=! }
+         cs_italy/stonewall01b_normal.wl= { t_hl2cs=! }
+         cs_italy/stonewall01_normal.wl= { t_hl2cs=! }
+         cs_italy/stonewall02.wl= { t_hl2cs=! }
+         cs_italy/stonewall02_normal.wl= { t_hl2cs=! }
+         cs_italy/tileroof01.wl= { t_hl2cs=! }
+         cs_italy/tileroof01trim.wl= { t_hl2cs=! }
+         cs_italy/T_bench1.wl= { t_hl2cs=! }
+         cs_italy/T_bench2.wl= { t_hl2cs=! }
+         cs_italy/T_bench3.wl= { t_hl2cs=! }
+         cs_italy/T_bench3_base.wl= { t_hl2cs=! }
+         cs_italy/T_btm_ex_17.wl= { t_hl2cs=! }
+         cs_italy/T_btm_ex_3.wl= { t_hl2cs=! }
+         cs_italy/wallpap03d.wl= { t_hl2cs=! }
+         cs_italy/wallpap04b.wl= { t_hl2cs=! }
+         cs_italy/wallpaper01.wl= { t_hl2cs=! }
+         cs_italy/wallpaper01_normal.wl= { t_hl2cs=! }
+         cs_italy/wallpaper02.wl= { t_hl2cs=! }
+         cs_italy/wallpaper02a.wl= { t_hl2cs=! }
+         cs_italy/wallpaper02a_normal.wl= { t_hl2cs=! }
+         cs_italy/wallpaper02_normal.wl= { t_hl2cs=! }
+         cs_italy/wallpaper03.wl= { t_hl2cs=! }
+         cs_italy/wallpaper03_normal.wl= { t_hl2cs=! }
+         cs_italy/wallpaper1.wl= { t_hl2cs=! }
+         cs_italy/wfloor-sn00.wl= { t_hl2cs=! }
+         cs_italy/wfloor-sn01a.wl= { t_hl2cs=! }
+         cs_italy/wfloor-sn02.wl= { t_hl2cs=! }
+         cs_italy/white.wl= { t_hl2cs=! }
+         cs_italy/winware5.wl= { t_hl2cs=! }
+         cs_italy/woodbeam01.wl= { t_hl2cs=! }
+         cs_italy/WOOD_SHTTRZ_1.wl= { t_hl2cs=! }
+         cs_italy/yellow.wl= { t_hl2cs=! }
+      }    
+    }
+  }
+}
+                   

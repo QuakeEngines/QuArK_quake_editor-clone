@@ -1,0 +1,282 @@
+QQRKSRC1
+// This file has been written by QuArK QuArK 6.4 alpha
+// It's the text version of file: DataHL2.qrk
+
+{
+  QuArKProtected = "1"
+  NewFiles.qtx =
+  {
+    ToolBox = "New files..."
+    Root = "Halflife2 file types.qtxfolder"
+    Halflife2 file types.qtxfolder =
+    {
+      Texture Wad.wad =
+      {
+      }
+    }
+  }
+  NewMap:incl =
+  {
+    Game = "Half-Life2"
+    Root = "worldspawn:b"
+    worldspawn:b =
+    {
+      maxpropscreenwidth = "-1"
+      skyname = "sky_wasteland02"
+      newunit = "0"
+      gametitle = "0"
+      startdark = "0"
+      message = ""
+      chaptertitle = ""
+      border walls:g =
+      {
+        wall:p =
+        {
+          east:f =
+          {
+            v = '384 256 0 384 288 0 384 256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 256 0 -384 224 0 -384 256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 288 0 -416 288 0 -384 288 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 256 0 -352 256 0 -384 256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 256 128 -352 256 128 -384 288 128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 256 -128 -352 256 -128 -384 224 -128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        wall:p =
+        {
+          east:f =
+          {
+            v = '384 -320 0 384 -288 0 384 -320 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 -320 0 -384 -352 0 -384 -320 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 -256 0 -416 -256 0 -384 -256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 -288 0 -352 -288 0 -384 -288 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 -320 128 -352 -320 128 -384 -288 128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 -320 -128 -352 -320 -128 -384 -352 -128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        floor:p =
+        {
+          east:f =
+          {
+            v = '384 -256 -64 384 -224 -64 384 -256 -32'
+            tex = "Dev/dev_measurehall01"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 -256 -64 -384 -288 -64 -384 -256 -32'
+            tex = "Dev/dev_measurehall01"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 256 -64 -416 256 -64 -384 256 -32'
+            tex = "Dev/dev_measurehall01"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 -256 -64 -352 -256 -64 -384 -256 -32'
+            tex = "Dev/dev_measurehall01"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 -256 -128 -352 -256 -128 -384 -224 -128'
+            tex = "Dev/dev_measurehall01"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 -256 -160 -352 -256 -160 -384 -288 -160'
+            tex = "Dev/dev_measurehall01"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        sky:p =
+        {
+          east:f =
+          {
+            v = '384 -256 256 384 -224 256 384 -256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-384 -256 256 -384 -288 256 -384 -256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-384 256 256 -416 256 256 -384 256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-384 -256 256 -352 -256 256 -384 -256 288'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-384 -256 160 -352 -256 160 -384 -224 160'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-384 -256 128 -352 -256 128 -384 -288 128'
+            tex = "Tools/toolsskybox"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        wall:p =
+        {
+          east:f =
+          {
+            v = '-384 0 0 -384 32 0 -384 0 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '-416 0 0 -416 -32 0 -416 0 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '-448 256 0 -480 256 0 -448 256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '-448 -256 0 -416 -256 0 -448 -256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '-448 0 128 -416 0 128 -448 32 128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '-448 0 -128 -416 0 -128 -448 -32 -128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+        wall:p =
+        {
+          east:f =
+          {
+            v = '416 0 0 416 32 0 416 0 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          west:f =
+          {
+            v = '384 0 0 384 -32 0 384 0 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          north:f =
+          {
+            v = '384 256 0 352 256 0 384 256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          south:f =
+          {
+            v = '384 -256 0 416 -256 0 384 -256 32'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 32 0 0 -32'
+          }
+          up:f =
+          {
+            v = '384 0 128 416 0 128 384 32 128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 32 32 0'
+          }
+          down:f =
+          {
+            v = '384 0 -128 416 0 -128 384 -32 -128'
+            tex = "Dev/dev_measurewall01d"
+            tv = '0 0 0 -32 -32 0'
+          }
+        }
+      }
+      info_player_start:e =
+      {
+        origin = "0 -192 -120"
+        angles = "0 90 0"
+      }
+    }
+
+  }
+  Half-Life2 setup.qctx =
+  {
+    Game = "Half-Life2"
+    HTML = "help/index.html"
+
+  }
+}
