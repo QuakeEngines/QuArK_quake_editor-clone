@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2002/04/08 10:58:35  tiglari
+Add gamecode for Torque (from Desmond Fletcher)
+
 Revision 1.33  2002/04/04 17:49:06  decker_dk
 Added gamecode 'f' for Jedi Knight II support.
 
@@ -1255,7 +1258,7 @@ var
 begin
  for T:=Low(g_SetupSet) to High(g_SetupSet) do
   g_SetupSet[T].AddRef(-1);
- PyDict_SetItemString(QuarkxDict, 'setupset', Py_None);
+// PyDict_SetItemString(QuarkxDict, 'setupset', Py_None);
 end;
 
 initialization
