@@ -13,13 +13,17 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
-6.4.0 alpha 4
+6.4.0 alpha 3
 =============
- * [Decker-cdunde]: New HotKey (Alt-D) and Selection menu function,
+
+ * [slightcrazed/peter-b]: Instructions for installing QuArK on
+      GNU/Linux.
+
+ * [Decker/cdunde]: New HotKey (Alt-D) and Selection menu function,
       Make Detail for setting multiple poly and face texture flag
       to detail and related Infobase update.
 
- * [Nazar-cdunde]: Updates to Q3 and JK2 Data.qrk files to display
+ * [Nazar/cdunde]: Updates to Q3 and JK2 Data.qrk files to display
       models in views, including custom and file selection windows.
 
  * [SilverPaladin]: Improved the compiling menu for The-WildWest 
@@ -51,10 +55,6 @@ $Id$
       work if a brush entity did not contain at least on poly.  This 
       message has been eliminated in all games which support Bezier 
       Patches.
-
-
-6.4.0 alpha 3
-=============
 
  * [peter-b]: Removed reliance on external string library (QuArK now
       uses Python's built-in string library directly).
