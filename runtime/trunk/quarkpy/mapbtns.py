@@ -144,9 +144,7 @@ def prepareobjecttodrop(editor, obj):
 
     # replace the textures "[auto]", "[trigger]", "[clip]", "[origin]" and "[caulk]"
     tex = textureof(editor)
-    debug('replacing')
     obj.replacetex("[auto]", tex)
-    debug('replaced')
     try:
         tex_for_trigger = quarkx.setupsubset()["DefaultTextureTrigger"]
         obj.replacetex("[trigger]", tex_for_trigger)
@@ -694,6 +692,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.10  2001/03/31 13:00:16  tiglari
+#rotate around usercenter if there is one
+#
 #Revision 1.9  2001/02/20 08:05:21  tiglari
 #DefaultTextureScale implemented
 #
