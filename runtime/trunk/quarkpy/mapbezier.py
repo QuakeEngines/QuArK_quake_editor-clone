@@ -71,30 +71,24 @@ class CPHandle(qhandles.GenericHandle):
             for i in range(len(cpline)-1):
                 cv.line(cpline[i], cpline[i+1])
 
-    def drawred(self, redimages, view, redcolor, oldpos=None):
+    def drawred(self, redimages, view, redcolor, oldcp=None):
         #
         # Draw a rough net joining all control points while dragging one of them.
         #
-        if oldpos is None:
+        if oldcp is None:
             try:
-                oldpos = self.newpos
+                oldcp = self.newcp
             except AttributeError:
                 return
-            if oldpos is None:
+            if oldcp is None:
                 return
         cv = view.canvas()
         cv.pencolor = redcolor
         #
-        # Get control point, and update the modified one
-        #
-        cp = map(list, self.b2.cp)
-        i, j = self.ij
-        cp[j][i] = oldpos
-        #
         # Draw the net
         #
-        self.drawcpnet(view, cv, cp)
-        return oldpos
+        self.drawcpnet(view, cv, oldcp)
+        return oldcp
 
     def drag(self, v1, v2, flags, view):
         delta = v2-v1
@@ -105,16 +99,25 @@ class CPHandle(qhandles.GenericHandle):
             new = self.b2.copy()
             cp = map(list, self.b2.cp)
             i, j = self.ij
-            p = cp[j][i]
-            s, t = p.tex_s, p.tex_t   # save texture coords
-            p = p + delta
+            p = cp[j][i] + delta
             if flags&MB_CTRL:
                 p = qhandles.aligntogrid(p, 0)
-            cp[j][i] = self.newpos = quarkx.vect(p.x, p.y, p.z, s, t)
-            new.cp = cp
+            cp[j][i] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
+            if self.b2["smooth"]:
+                # keep the patch smoothness
+                def makesmooth(di,dj,i=i,j=j,cp=cp):
+                    p = 2*cp[j+dj][i+di] - cp[j][i]
+                    cp[j+dj+dj][i+di+di] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
+                if i&1:
+                    if i>2: makesmooth(-1,0)
+                    if i+2<len(cp[0]): makesmooth(1,0)
+                if j&1:
+                    if j>2: makesmooth(0,-1)
+                    if j+2<len(cp): makesmooth(0,1)
+            new.cp = self.newcp = cp
             new = [new]
         else:
-            self.newpos = None
+            self.newcp = None
             new = None
         return [self.b2], new
 

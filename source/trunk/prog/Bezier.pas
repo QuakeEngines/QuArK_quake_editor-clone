@@ -482,6 +482,8 @@ begin
      Dest^[0]:=V.X;
      Dest^[1]:=V.Y;
      Dest^[2]:=V.Z;
+     Dest^[3]:=Source^[3];
+     Dest^[4]:=Source^[4];
      Inc(Source);
      if Transpose then
       Inc(Dest, ncp.W)

@@ -775,6 +775,7 @@ begin
             Lire(sAccolade2);    { rbrace which finishes the brush }
 
             B.ControlPoints:=MeshBuf1;
+            B.AutoSetSmooth;
           finally
             FreeMem(MeshBuf1.CP);
           end;
