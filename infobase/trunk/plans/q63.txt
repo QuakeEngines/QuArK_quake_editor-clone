@@ -34,7 +34,7 @@ duplicator, no axis.  NYI for rotation buttons. Is
 this a good way to do it?
 
 <li>Form-editing: (Andy)
-<br>status: something done
+<br>status: editing only - no create
 
 <li>FAKK2 support: (?)
 <br>And what about Daikatana, Alice, & Gunman
@@ -51,8 +51,10 @@ this a good way to do it?
 <li>Model Editor: (Andy)
 <br>more progress
 
-<li>MipTex Extraction: (tiglari,Andy)
-<br>Get the add-on builder to handle Q1, Hx2 properly
+<li>Linear Matrix editor: (tiglari)
+<br>crank out matrices for rotation, scaling
+etc. from intelligible parameters (from pushbutton in duplicator
+forms).
 
 <li>OsFolders: (tiglari)
 <br>edit the properties of pre-existing OsFolders

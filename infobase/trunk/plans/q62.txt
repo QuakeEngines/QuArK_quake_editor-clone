@@ -96,6 +96,8 @@ radially around a tiltable axis, with 'spiral' attributes.
 <br> Shift+RMB during drag to swivel around selected
 object.
 
+<li>MipTex Extraction: (tiglari,Andy)
+<br>Get the add-on builder to handle Q1, Hx2 properly
 
 </ul>
 
