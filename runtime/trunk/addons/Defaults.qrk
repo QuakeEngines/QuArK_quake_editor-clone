@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.179  2002/04/08 12:26:37  tiglari
+//support for Torque (from Desmond Fletcher)
+//
 //Revision 1.178  2002/04/04 17:53:37  decker_dk
 //Preliminary Jedi Knight II support
 //
@@ -1408,7 +1411,7 @@ QQRKSRC1
       Torque:config =
       {
         Game = "Torque"
-        Code = "d" // Hardcoded value in Setup.PAS
+        Code = "g" // Hardcoded value in Setup.PAS
         Program = "map2dif_DEBUG.exe"
         Directory = "c:\Torque"
         //CheckDirectory = "map2dif_DEBUG.exe"
