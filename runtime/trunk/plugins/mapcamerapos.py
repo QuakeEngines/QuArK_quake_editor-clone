@@ -287,7 +287,7 @@ def backmenu(editor, view=None, origin=None, oldbackmenu = mapmenus.BackgroundMe
   def addClick(m,view=view,editor=editor):
       addPosition(view,editor)
       
-  if view.info["type"]=="3D":
+  if view is not None and view.info["type"]=="3D":
       menu.append(qmenu.item("Add Camera Position",addClick))
   return menu
 
@@ -452,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.7  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.6  2001/06/17 04:46:11  tiglari
 # local camera positioning, and auto 3d view opening where appropriate
 #
