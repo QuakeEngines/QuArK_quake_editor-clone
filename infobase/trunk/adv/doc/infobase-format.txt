@@ -3,14 +3,14 @@ author: Armin Rigo
 
 All ".txt" files in the infobase are formatted as follow : first, a list of keyword-value pairs, ended with a blank line, and followed by the text itself. For example :
 
-<p><pre>
-title: This is the title of what this file contains.
-author: Your Name
-subdir: list subdirectories
-subdir: can be done on several lines
-desc: list files
-desc: without ".txt" extension
-</pre>
+<html><div class="doccode">
+<html>title: This is the title of what this file contains.<br>
+<html>author: Your Name<br>
+<html>subdir: list subdirectories<br>
+<html>subdir: can be done on several lines<br>
+<html>desc: list files<br>
+<html>desc: without ".txt" extension<br>
+<html></div>
 
 The text follows the blank line.
 
@@ -20,13 +20,17 @@ The text itself is formatted paragraph-by-paragraph, with at least one blank lin
 
 A special command is <ref> : if a line starts with these 5 characters, the remaining of the line is supposed to be a path to another file of the InfoBase directory, relative to the root. It will be replaced by an HTML link to that file. Note that it may be inside a paragraph as far as it's on its own line, so that you can type for example :
 
-<p><pre>
-See
-&lt;ref&gt; src/pas/bezier/quadmath
- for more information.
-</pre>
+<html><div class="doccode">
+<html>See<br>
+<html>&lt;ref&gt; adv/doc/infobase-format<br>
+<html>for more information.<br>
+<html></div>
 
-Notice the space at the beginning of the third line.
+The example will produce this line:
+
+See
+<ref> adv/doc/infobase-format
+for more information.
 
 A line may also begin with <text> or <html>, which force the current line to be interpreted as text or html, respectively, regardless of the current paragraph mode.
 
