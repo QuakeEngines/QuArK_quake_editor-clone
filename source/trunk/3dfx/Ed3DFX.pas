@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/01/22 00:11:02  aiv
+Beginning of support for sprites in 3d view
+
 Revision 1.20  2000/12/30 15:22:19  decker_dk
 - Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
 - Created Ed3DEditors.pas which contains close/free calls
@@ -148,7 +151,7 @@ implementation
 
 uses Game, Quarkx, FullScr1, Travail,
      PyMath3D,
-     QkPixelSet, QkTextures, QkMapPoly;
+     QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 function Open3DFXEditor(const LibName: String; var FullScreen: Boolean) : Boolean; forward;
 
@@ -724,7 +727,7 @@ begin
     Free3DFXEditor;
     if LibName='' then
      Raise EError(4867);
-    if not ReloadGlide(LibName, GetDLLDirectory) then
+    if not ReloadGlide(LibName, GetApplicationDllPath()) then
      Raise EErrorFmt(4865, [LibName, GetLastError]);
     Result:=True;
     SetIntelPrecision;
