@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2002/03/07 19:15:16  decker_dk
+Added QPng and QM32 to TestConversionImages()
+Removed some 'with <var> do' statements which is a pain-in-the-a**, when trying to figure out what the
+rest of the the statements do.
+Removed QImages, as it was just another name for QImage
+
 Revision 1.9  2002/02/24 13:43:02  decker_dk
 I hate when the function-definition isn't containing the argument-list, just like the function-declaration. So I added it to QImage.PasteBitmap.
 
@@ -131,7 +137,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkJpg, QkPng, QkSoF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
+uses QkPcx, QkBmp, QkTga, QkJpg, QkPng, QkSoF,QkVTF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
 
 {$R *.DFM}
 
@@ -156,7 +162,7 @@ end;*)
 
 function TestConversionImages(var I: Integer) : QImageClass;
 const
- IntlImages: array[1..6] of QImageClass = (QPcx, QTga, QBmp, QJPeg, QPng, QM32);
+ IntlImages: array[1..7] of QImageClass = (QPcx, QTga, QBmp, QJPeg, QPng, QM32,QVTF);
 begin
  if I>High(IntlImages) then
   begin

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2002/12/30 18:07:35  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
 Revision 1.36  2002/03/07 19:16:25  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -353,12 +356,13 @@ const
   in the Games default entries}
  {FIXME-further! There should not be any 'LinkSpecificChar' at all! It should be
   so, that all supported games, uses the same specifics for the same thing! /DECKER}
- StdGameTextureLinks: array[1..5] of TStdGameTextureLink =
+ StdGameTextureLinks: array[1..6] of TStdGameTextureLink =
   ((LinkSpecificChar: 'w'; GameMode: mjQuake2  ),
    (LinkSpecificChar: 'm'; GameMode: mjHeretic2),
    (LinkSpecificChar: 'i'; GameMode: mjSin     ),
    (LinkSpecificChar: 'k'; GameMode: mjKingPin ),
-   (LinkSpecificChar: 'l'; GameMode: mjSOF     )
+   (LinkSpecificChar: 'l'; GameMode: mjSOF     ),
+   (LinkSpecificChar: 'v'; GameMode: mjHL2     )
   );
 
  { The following specifics are copied when converting a texture into another
@@ -1093,7 +1097,6 @@ begin
     if TexName='' then
       TexName:=Name;
     DefaultImageName:=Specifics.Values['q'];
-
     for I:=Low(StdGameTextureLinks) to High(StdGameTextureLinks) do
     begin
       S:=Specifics.Values[StdGameTextureLinks[I].LinkSpecificChar];

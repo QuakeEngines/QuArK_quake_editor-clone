@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.228  2004/06/02 21:29:59  cdunde
+//To up date for Sylphis_autogen.qrk addon
+//
 //Revision 1.227  2004/05/21 06:14:49  cdunde
 //To alphabetize game menu and config forms.
 //
@@ -2066,7 +2069,71 @@ QQRKSRC1
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
+
+      Half-Life2:config =
+      {
+        Game = "Half-Life2"
+        Code = "k" // Hardcoded value in Setup.PAS
+
+        Program = "HL2.EXE -console -dev -zone 1024 +set sv_cheats 1"
+
+        Directory = "\Sierra\Half-Life2"
+        CheckDirectory = "HL2.EXE"
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "Valve 220"
+
+        BuildPgm1  = "HLCSG.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP"
+        BuildPgm2  = "HLBSP.EXE"
+        BuildArgs2 = ""
+        BuildCheck2= "+BSP,+PRT,-PTS{LoadLinFile}"
+        BuildPgm3  = "HLVIS.EXE"
+        BuildArgs3 = ""
+        BuildPgm4  = "HLRAD.EXE"
+        BuildArgs4 = ""
+
+        DefaultTexture = "FIFTIES_WALL14Y"
+        DefaultTextureTrigger = "AAATRIGGER"
+        DefaultTextureOrigin = "ORIGIN"
+        DefaultTextureClip = "CLIP"
+        EnableTransparency = ""
+        TextureWad = "?"     // variable (the map name is used)
+        GameNeedWad = "1"
+        WateryTex = "!"
+        TextureFormat = ".vtf"
+        TextureWriteFormat = ".vtf"
+        TexturesPath = "hl2/materials/"
+
+        BaseDir = "hl2"
+        tmpQuArK = "hl2"
+
+        MapHoles = ".pts"
+        //Palette = "gfx/palette.lmp"
+        //Gradient = "gfx/colormap.lmp"
+        //DECKER - 'ExtractFiles' just creates troubles, if another mod-directory is choosen....
+        //ExtractFiles = "cl_dlls/*.*"
+        ExtraCmdLine = "-game %s"
+        RunMapCmdLine = " +map %s"
+
+        AddOns = "DataHL2.qrk"
+//      AddOns = "BaseData.qrk"
+
+        AlwaysPak = ""
+        PakExt = ".pak"
+        LightFactor = '0.9'
+        3DLight = '512'
+        Console = "1"
+        Form = "GameHalfLife2"
+        PlayerClass = "X"
+      }
+
+
     }
+
+
+
 
     Map:config =
     {
@@ -4469,6 +4536,95 @@ QQRKSRC1
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
+
+    GameHalfLife2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Half-Life2 command-line"
+        Items = "HL2.EXE"
+             $0D"HL2.EXE -console -dev -zone 1024 +set sv_cheats 1"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Half-Life 2"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "HL2.EXE"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Half-Life2"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      EnableTransparency: =
+      {
+        Txt = "In OpenGL window, enable transparency (slow!)"
+        Typ = "X"
+        Hint = "When checked, brush-entities that has their"
+            $0D"'rendermode' and 'renderamt' set to transparency,"
+            $0D"will be drawn transparent in the OpenGL window - "
+            $0D"though NOT exactly drawn as in-game."
+            $0D
+            $0D"Notice! When enabled the OpenGL window may"
+            $0D"be very slow to update itself, when changing"
+            $0D"the scenery."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
 
     MapColors:form =
     {

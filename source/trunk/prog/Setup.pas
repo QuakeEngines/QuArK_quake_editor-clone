@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2004/05/21 01:11:11  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
 Revision 1.39  2003/07/21 04:42:40  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -210,6 +213,8 @@ const
  mjTorque       = 'g';
  mjSOF2         = 'h';  { Soldier of Fortune II }
  mjSylphis      = 'i';  { Sylphis }
+ mjDoom3        = 'j';  { Doom3}
+ mjHL2          = 'k';  { Half Life 2}
 
  mjAny          = #1;
  mjNotQuake2    = #2;
