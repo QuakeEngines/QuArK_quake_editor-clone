@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/10/17 20:31:19  tiglari
+ancestry & brush-number writing
+
 Revision 1.11  2000/08/20 10:50:45  aiv
 Fixed 'Uses' clause for new model files
 
@@ -66,6 +69,7 @@ const
  soIgnoreToBuild  = 2;
  soDisableEnhTex  = 4;
  soDisableFPCoord = 8;
+ soEnableBrushPrim = 16;
  soDirectDup         = $04000000;
  soBSP               = $08000000;
  soOutsideWorldspawn = $10000000;
