@@ -45,6 +45,7 @@ QQRKSRC1
       {
         origin = "0 0 0"
         light = "300"
+        _color = "1 1 1"
       }
     }
     bezier: =
@@ -71,7 +72,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "Quic&kGO ! (fast QVIS and QRAD)"
+      Txt = "Quic&kGO ! (fast -vis)"
       Shortcut = "Ctrl+K"
       Textures = "1"
       QBSP1 = "1"
@@ -117,7 +118,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&Run Quake 2"
+      Txt = "&Run Quake 3"
       RunGame = "1"
     }
     item: =
@@ -126,22 +127,22 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&QBSP3 (.bsp file creation)"
+      Txt = "&Q3MAP (.bsp file creation)"
       QBSP1 = "1"
       Pause = "1"
     }
     item: =
     {
-      Txt = "&QVIS3 (visibility list)"
+      Txt = "&Q3MAP -vis (visibility list)"
       VIS1 = "1"
-      VISCmd = "-level 4"
+      VISCmd = ""
       Pause = "1"
     }
     item: =
     {
-      Txt = "&QRAD3 (light projection)"
+      Txt = "&Q3MAP -light (light projection)"
       LIGHT1 = "1"
-      LIGHTCmd = "-extra"
+      LIGHTCmd = ""
       Pause = "1"
     }
     item: =
@@ -150,7 +151,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "QBSP - only &entities"
+      Txt = "Q3MAP -onlyents (only &entities)"
       QBSP1 = "1"
       QBSPCmd = "-onlyents"
       Pause = "1"

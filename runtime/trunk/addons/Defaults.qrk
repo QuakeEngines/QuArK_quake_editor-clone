@@ -463,16 +463,16 @@ QQRKSRC1
         Directory = "\Quake3"
         CD = ""
         CDDir = "Install\Data"
-        Program = "Quake3"
-        QBSP1 = "TXQBSP3.EXE"
+        Program = "Quake3 +set sv_pure 0"
+        QBSP1 = "Q3MAP.EXE"
         QBSPCmd = ""
-        VIS1 = "TIMVIS3.EXE"
-        VISCmd = ""
-        LIGHT1 = "ARGHRAD.EXE"
-        LIGHTCmd = "-gamedir .. -moddir ."
-        QBSPDesc = "QBSP3"
-        VISDesc = "QVIS3"
-        LIGHTDesc = "QRAD3"
+        VIS1 = "Q3MAP.EXE"
+        VISCmd = "-vis"
+        LIGHT1 = "Q3MAP.EXE"
+        LIGHTCmd = "-light"
+        QBSPDesc = "Q3MAP"
+        VISDesc = "Q3MAP w/vis"
+        LIGHTDesc = "Q3MAP w/light"
         BaseDir = "baseq3"
         tmpQuArK = "tmpQuArK"
         Palette = ":pics/colormap.pcx"
@@ -1142,7 +1142,7 @@ QQRKSRC1
         Typ = "X"
         Txt = "This version of qbsp3 wants"
         Cap = ".wal texture files"
-        Hint = "check this to have QuArK write both .wal and .m8 textures (most versions of QBSP3 can't read .m8 textures)" 
+        Hint = "check this to have QuArK write both .wal and .m8 textures (most versions of QBSP3 can't read .m8 textures)"
       }
       VIS1: = {
         Typ = "EP"    // edit path to file
@@ -1469,7 +1469,7 @@ QQRKSRC1
         Typ = "X"
         Txt = "This version of qbsp3 wants"
         Cap = ".wal texture files"
-        Hint = "check this to have QuArK write both .wal and .tga textures ( kpBSP can't read tga textures)" 
+        Hint = "check this to have QuArK write both .wal and .tga textures ( kpBSP can't read tga textures)"
       }
       Console: =
       {
@@ -1545,7 +1545,7 @@ QQRKSRC1
       }
       QBSP1: = {
         Typ = "EP"    // edit path to file
-        Txt = "Path to QBSP3"
+        Txt = "Path to Q3MAP"
         DefExt = "exe"
       }
       QBSPCmd: = {
@@ -1554,7 +1554,7 @@ QQRKSRC1
       }
       VIS1: = {
         Typ = "EP"    // edit path to file
-        Txt = "Path to QVIS3"
+        Txt = "Path to Q3MAP w/vis"
         DefExt = "exe"
       }
       VISCmd: = {
@@ -1563,7 +1563,7 @@ QQRKSRC1
       }
       LIGHT1: = {
         Typ = "EP"    // edit path to file
-        Txt = "Path to QRAD3"
+        Txt = "Path to Q3MAP w/light"
         DefExt = "exe"
       }
       LIGHTCmd: = {
@@ -1945,7 +1945,7 @@ QQRKSRC1
         Typ="CL"
         Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
         Values = "" $0D "1" $0D "2"
-        Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"             
+        Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
       }
       FullScreenGamma: = {Txt="Full-screen gamma correction" Typ="EF1" Hint="Gamma correction for full-screen 3DFX mode only"}
       FullScreenSize: =  {Txt="Full-screen size" Typ="EF2" Hint="resolution is always 640x480, but a lower screen size will accelerate rendering by displaying black bands on the sides"}

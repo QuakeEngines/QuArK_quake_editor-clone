@@ -12,7 +12,7 @@ QQRKSRC1
 
   walltex:incl = {tex = "base_wall/basewall03"}
   floortex:incl = {tex = "base_floor/clangdark"}
-  ceiltex:incl = {tex = "skies/pjbasesky"}
+  ceiltex:incl = {tex = "skies/toxicskytim_dm8"}
   NewMap:incl =
   {
     Game = "Quake 3"
@@ -78,13 +78,14 @@ QQRKSRC1
       }
       info_player_deathmatch:e =
       {
-        origin = "-144 0 -72"
+        origin = "-144 0 -64"
         angle = "360"
       }
       light:e =
       {
         origin = "0 0 0"
-        _light = "255 255 255 300"
+        light = "300"
+        _color = "1 1 1"
       }
     }
   }
@@ -552,7 +553,7 @@ QQRKSRC1
           t_q3=!
         }
       }
-      Ceiling.txlist = 
+      Ceiling.txlist =
       {
         base_ceiling/metceil1d.wl =
         {
@@ -2035,7 +2036,7 @@ QQRKSRC1
         {
           t_q3=!
         }
-        organics/grass3.wl = 
+        organics/grass3.wl =
         {
           t_q3=!
         }
@@ -4705,7 +4706,6 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "This is the view seen through a portal. Must target a target_postion."
         }
-
         misc_portal_surface:e =
         {
           origin = "0 0 0"
@@ -4742,10 +4742,11 @@ QQRKSRC1
           ;incl = "defpoly"
           ;desc = "A standard rotating door"
         }
-        func_group:e =
-        {
-          ;desc = "Used to group map items together."
-        }
+// QuArK already has this functionality in its tree-view
+//        func_group:e =
+//        {
+//          ;desc = "Used to group map items together."
+//        }
         func_plat:b =
         {
           ;incl = "defpoly"
@@ -4852,6 +4853,11 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Regen power-up."
         }
+        item_health_small:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Green cross bubble equal to 5 points of health."
+        }
         item_health:e =
         {
           origin = "0 0 0"
@@ -4867,11 +4873,6 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Blue M bubble equale to 100 points of health."
         }
-        item_health_small:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Green cross bubble equal to 5 points of health."
-        }
       }
       Light Entities.qtxfolder =
       {
@@ -4879,6 +4880,8 @@ QQRKSRC1
         {
           origin = "0 0 0"
           ;desc = "Point of light"
+          light = "300"
+          _color = "1.0 1.0 1.0"
         }
       }
       Shooter Entities.qtxfolder =
@@ -4952,11 +4955,13 @@ QQRKSRC1
         team_CTF_blueplayer:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Blue player spawn position."
         }
         team_CTF_bluespawn:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "I guess the same as team_CTF_blueplayer."
         }
         team_CTF_redflag:e =
@@ -4967,11 +4972,13 @@ QQRKSRC1
         team_CTF_redplayer:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Red player spawn position."
         }
         team_CTF_redspawn:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "I guess the same as team_CTF_redplayer."
         }
       }
@@ -5007,6 +5014,11 @@ QQRKSRC1
   }
   Entity forms.qctx =
   {
+    // Definition of "includes"
+    t_player:incl = {
+      bbox = '-16 -16 -24 16 16 32'
+    }
+
     ammo_bfg:form =
     {
       Help = "This is ammo for the bfg."
@@ -5631,10 +5643,10 @@ QQRKSRC1
         Hint = "Door will rotate on this axis."
       }
     }
-    func_group:form =
-    {
-      Help = "This is to put objects in to keep them organized."
-    }
+//    func_group:form =
+//    {
+//      Help = "This is to put objects in to keep them organized."
+//    }
     func_pendulum:form =
     {
       Help = "This is a object that swings back and forth."
@@ -6027,7 +6039,7 @@ QQRKSRC1
     info_player_deathmatch:form =
     {
       Help = "This is where a player spawns into the game at."
-      bbox = '-16 -16 -32 16 16 32'
+      t_player = !
       target: =
       {
         Txt = "&"
@@ -6047,7 +6059,7 @@ QQRKSRC1
     info_player_intermission:form =
     {
       Help = "This is the view at the seen of the game."
-      bbox = '-16 -16 -32 16 16 32'
+      t_player = !
       target: =
       {
         Txt = "&"
@@ -6057,7 +6069,7 @@ QQRKSRC1
     info_player_start:form =
     {
       Help = "This is where a player spawns into the game at."
-      bbox = '-16 -16 -32 16 16 32'
+      t_player = !
       target: =
       {
         Txt = "&"
@@ -6067,7 +6079,7 @@ QQRKSRC1
     info_spectator_start:form =
     {
       Help = "This is where a player spawns into the game at."
-      bbox = '-16 -16 -32 16 16 32'
+      t_player = !
     }
     item_armor_body:form =
     {
@@ -6554,21 +6566,22 @@ QQRKSRC1
     light:form =
     {
       Help = "invisible light source"
-      bbox = '-8 -8 -8 8 8 8'
-      light: =
-      {
-        Txt = "&"
-        Hint = "light value, default 300"
-      }
+//      bbox = '-8 -8 -8 8 8 8'
       target: =
       {
         Txt = "&"
         Hint = "Aim this at an info_null to make a spotlight."
       }
+      light: =
+      {
+        Txt = "&"
+        Hint = "light value, default 300"
+      }
+      _color: = { Txt="&" Hint = "light color (not the intensity, only the color)" }
       _color: =
       {
         Txt = "&"
-        Typ = "LN"
+        Typ = "L"
         Hint = "light color (not the intensity, only the color)"
       }
       radius: =
@@ -7055,6 +7068,7 @@ QQRKSRC1
     team_CTF_blueplayer:form =
     {
       Help = "This is where the blue player spawns."
+      t_player = !
       target: =
       {
         Txt = "&"
@@ -7064,6 +7078,7 @@ QQRKSRC1
     team_CTF_bluespawn:form =
     {
       Help = "This is where the blue player spawns i think its is the same as team_CTF_blueplayer."
+      t_player = !
       target: =
       {
         Txt = "&"
@@ -7077,6 +7092,7 @@ QQRKSRC1
     team_CTF_redplayer:form =
     {
       Help = "This is where the red player spawns."
+      t_player = !
       target: =
       {
         Txt = "&"
@@ -7086,6 +7102,7 @@ QQRKSRC1
     team_CTF_redspawn:form =
     {
       Help = "This is where the red player spawns i think its is the same as team_CTF_redplayer."
+      t_player = !
       target: =
       {
         Txt = "&"
