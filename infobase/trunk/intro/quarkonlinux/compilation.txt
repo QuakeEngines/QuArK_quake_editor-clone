@@ -1,0 +1,12 @@
+title: Compiling a Map under Linux
+author: slightcrazed, Peter Brett
+
+For one reason or another when you run 
+<act>[GAME] | GO! (textures+build+[GAME])</act> it will only run the
+first build tool. So you may have to run the BSP, VIS, and RAD
+portions manually.
+
+It may be necessary to create a shell script to do the compile process
+externally to QuArK, and then reconfigure the menu to point to it.
+Please see your build tools' documentation and the man/info pages for
+your shell for more information.
