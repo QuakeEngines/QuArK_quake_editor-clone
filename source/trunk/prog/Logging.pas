@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/14 20:45:10  aiv
+Added Logging of Python version.
+
 Revision 1.6  2001/02/11 22:22:32  aiv
 Added SystemDetails unit - now logs system deails (OS, Memory, Video, DirectX etc)
 
@@ -78,8 +81,8 @@ begin
   AssignFile(LogFile, GetApplicationPath()+LOG_FILENAME);
   rewrite(LogFile);
   LogOpened:=true;
-  LogEx('Quark started at %s',[DateTimeToStr(now)]);
-  LogEx('Quark version is %s',[QuarkVersion]);
+  LogEx('QuArK started at %s',[DateTimeToStr(now)]);
+  LogEx('QuArK version is %s',[QuarkVersion]);
   LogSystemDetails;
   {$I+}
 end;
@@ -89,7 +92,7 @@ begin
   if not LogOpened then
     OpenLogFile;
   case logger of
-    LOG_PASCALSOURCE: s:='QuarkLog> '+s;
+    LOG_PASCALSOURCE: s:='QuArKLog> '+s;
     LOG_PYTHONSOURCE: s:='PythonLog> '+s;
   end;
   {$I-}
@@ -116,7 +119,7 @@ Procedure CloseLogFile;
 begin
   if not LogOpened then
     exit;
-  aLogEx(LOG_PASCALSOURCE, 'Quark closed at %s',[DateTimeToStr(now)]);
+  aLogEx(LOG_PASCALSOURCE, 'QuArK closed at %s',[DateTimeToStr(now)]);
   {$I-}
   CloseFile(LogFile);
   LogOpened:=false;
