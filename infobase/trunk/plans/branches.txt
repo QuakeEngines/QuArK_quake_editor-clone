@@ -26,4 +26,6 @@ reading.  Now s/b closed, it's stuff is on the main branch.
   stuff in main branch
 <LI> <B>pre-635c1</B> a tag before adding a bunch of stuff just prior
 to the intended rc1 (frozen selection, bilinear filtering in OBL)
+<LI> <B>rel-63a</b> the 6.3 release branch, 'a' because of the ill-fated
+63 branch above.
 </B>

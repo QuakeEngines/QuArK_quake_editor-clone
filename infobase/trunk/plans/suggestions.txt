@@ -1,10 +1,12 @@
 title: Suggestions
 author: tiglari, etc.
 
-Suggestions for implementation (proposer parenthesized).
-<UL>
-<LI>Preserve selected status for face & brush on vertex move (rd)
+Suggestions for implementation (proposer parenthesized).  Ideally these
+should be sorted into <ref>plans/q64</ref>, <ref>plans/unlikely</ref>
+or <ref>plans/q6n</ref>, but for some reason or other I can't make up
+my mind today.
 
+<UL>
 <LI>Path info for file links, so that the files can be anywhere (Seth)
 
 <LI>Rescale textures on vertex drag (rd, currently in exp. plugin).
@@ -12,8 +14,6 @@ Suggestions for implementation (proposer parenthesized).
 <LI>Selected groups colored rather than dotted outline (option perhaps?). (rd)
 
 <li>Patch-based terrain builder: (tiglari)
-
-<li>Adquedit-equivalent resource display: (Seth)
 
 <li> new projection option, 
 'project from nearest plane', emulating classic qe texture

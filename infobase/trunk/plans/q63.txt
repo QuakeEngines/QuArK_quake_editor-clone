@@ -1,22 +1,21 @@
-title: QuArK 6.3
+title: QuArK 6.3 (release candidate)
 author: tiglari, etc.
 
-This is stuff that tiglari and anyone else who updates this
-file currently envisions for the next release of
-QuArK.  Considerable material has just been put off from 6.3 to 6.4
+This is what has been implemented in QuArK 6.3, at least as much of it
+as we remembered to record!  The now uninformative 'status' info (e.g.
+'done') has been removed, but some of the more contentful ones have been
+left.  Feel free to add additional features to this list that QuArK actually
+acquired but got left out.
 
 <ul>
 <li>6DX Engine Support: (decker, Jacob Marner)
-<br>status: done.
 
 <li>Crystal Space Support: (tiglari, funkiedamouse)
-<br>status: a cleanup done.
 
 <li>Linear Matrix editor: (tiglari, lots of design from Rolf Hulsbergen)
 <br>crank out matrices for rotation, scaling
 etc. from intelligible parameters (from pushbutton in duplicator
 forms).
-<br>status: re-done.
 
 <li>Extruder: (tiglari)
 <br>generate brushes etc. from 2d outlines.
@@ -26,10 +25,8 @@ currently being added.
 <li>'New Copy One' duplicator: (tiglari)
 <br> put copies of a structure where you want it.  Inspired
 by a suggestion by Meatball402 on Quake3World editing forum.
-<br>status: done, replaces previous 'instance duplicator' idea.
 
 <li>User-configurable hot keys: (tiglari)
-<br>status: current ones all done.
 <br>What additional ones should be added?
 
 <li>User-specifible rotation/linear mapping origin: (tiglari)
@@ -42,21 +39,20 @@ in some duplicators.
 
 <li>Merge Polys: (tiglari)
 <br>bugs fixed, merge all mergeable polys in group
-<br>status: done
 
 <li>Form-editing: (Andy)
-<br>status: create capacity done.
+<br> Includes create capacity.
 
 <li> Entity Extractor: (Andy)
 <br> Entities extracted from .bsp's in many formats
-    (including Q3(T)A).
-<br> Status: done, runs out of memory on some maps in some .pk3's.
+(including Q3(T)A).  Runs out of memory on some maps in some .pk3's.
 This can be worked around by extracting the .bsps to individual
 files.
 
-<li>Face-selection modes: (tiglari)
-<br>status: done, as 'F' during RMB click, to select
-face rather than poly.
+<li>Selection modes: (tiglari)
+<br>Configuragle 'Aux Keys', by default 'F' for face, 'B' for brush,
+'C' for curve, 'E' for entity (point or brush).  'P' and 'F' don't have
+drilldown, this is a bit asymmetrical but I don't think it really matters.
 
 <li>L-square enhancements: (tiglari, ax2grind)
 <br>status: started, align & glue to tagged done.  I intend
@@ -77,20 +73,15 @@ begin with underscore.  More thought about easy preparation of
 entity addons is needed.
 
 <li>3point cutting plane: (tiglari)
-<br>status: done
 
 <li>Pythonify entity def converters: (Andy)
-<br>status: done
 
 <li>texture search facility: (Andy, suggestions from quantum_red)
-<br>status: done
 
 <li>storable camera positions: (tiglari, design from quantum_red)
-<br>status: done
 
 <li>group selection movement commands: (tiglari, design from Alan Donald and quantum_red)
 <br>exchange position & align (WC-style)
-<br>status:done
 
 <li>incrementable specifics in duplicators: (subnoodle, tiglari)
 <br>status: done except for radial duplicator.
@@ -103,55 +94,47 @@ entity addons is needed.
 for all submenus, just some of the more useful ones)
 
 <li>Code specifics for toolbar buttons: (Andy)
-<br>status: done
 
 <li>Support for Gunman, Blue Shift & other HL derivatives: (Decker)
-<br>status: done.
 
 <li>Arg Replacer: (decker)
-<br>status: done & documented
 
 <li>Show/edit entities for supported games bsp's: (tiglari)
 <br>status: done except for Sin (a fourth bsp structure
 probably over-strains the present code structure).
 
 <li>Inspect nodes & planes in bsps: (tiglari)
-<br> status: done
 
 <li>Object snapper: (tiglari, idea from quantum red)
 <br> align/move object w.r.t. face so that face and
 a face of the object are paralell.
-<br>status: done
 
 <li>Object slider enhancement: (tiglari)
 <br>Now moves object over plane and along normal.
-<br>status: done.
-
-<li>Tag side plugin: (tiglari)
-<br>More flexibility for wrap across tagged.
-<br>status: envisioned, maybe defer to 6.4
 
 <li> Don't draw restricted out stuff: (tiglari)
 <br>when hide-out-of-view is checkd.
-<br>status: done.
 
 <li> Search for defective textures: (tiglari)
 <br>whose scales are too small (request from rust QuArK forum)
-<br>status: done.
 
 <li>'Move containing' item on the vertex RMB: (tiglari)
 <br>that moves the parent item selected from the submenu so that
 the vertex becomes on-grid (solution to problem from the RQF)
-<br>status: done.
 
 <li>'Output Map Format' field in game configs: (tiglari)
 <br>replacing some of the Map Options.
-<br>status: done.
 
 <li>various selection modes: (tiglari)
 <br>frozen selections (shift RMB) that don't change until another
 frozen selection is made, selection of brush, face, patch, entity only,
-done via 'auxiliary keys' (hold down during mouseclick)
-<br>status: experimental patch, not yet committed; maybe defer for
-6.4 snapshot.
+done via 'auxiliary keys' (hold down during mouseclick).  Frozen
+selections appear to be at least a partial implementation of a suggestion
+by rd.
+
+<li>bilinear filtering option in texture views: (tiglari)
+<br>prodding from aguir_re.
+
+<li>Support Mohaa, RTCW, JKII, Torque.
+
 </ul>

@@ -2,7 +2,8 @@ title: Big Ideas
 author: tiglari, etc.
 
 Ambitious, not necessarily realistic proposals,  Ranging
-from the relatively straightforward to crazed dreams.
+from the relatively straightforward to crazed dreams.  More likely
+as Quarkplusplus features.
 
 <ul>
 
@@ -22,16 +23,14 @@ and 'orthogonal persistence' (http://www.tunes.org)
 of editing sessions
 
 <li>XML support: (?)
-<br>Maximum possible compatibility with GtkRadiant
+<br>Maximum possible compatibility with GtkRadiant Xmap, which doesn't
+seem to be going anywhere at the moment.  
 
 <li>Qrk editor: (?)
 <br>Edit .qrk's in the style of a decent XML editor
 <br>Andy's form-editing extension to the explorer are basically
 implementing this.
 
-
-<li>Big XY view: (?)
-<br> whole-screen XY view, with other stuff on RMB's
 
 <li>Integrated Dynamic bsp builder: (?)
 <br>bsp building & optimization while u're scratching

@@ -1,8 +1,9 @@
 title: QuArK 6.4
 author: tiglari, etc.
 
-Here are some things that have been envisioned for 6.4, which I (tiglari)
-hope will start pretty soon.  The stuff near the top of the list is more
+These are what I (tiglari) judge to be serious ideas for QuArK 6.4,
+which have a good chance of appearing progressively in snapshots over
+the next year or so.  The stuff near the top of the list is more
 likely to be done soon or at all than the stuff further down.  Keep in mind
 that at some point the <a href=http://quarkplusplus.sourceforge.net/>
 QuArKplusplus project</a> will overtake and subsume the development of
@@ -12,6 +13,7 @@ list are done.
 <UL>
 <li>Targetted and targetter finder: (tiglari)
 <br> suggestion by quantum_red.
+<br>status: preliminary plugin in quark groups files/Plugins area
 
 <li>Mixed-face contents finder: (tiglari)
 <br> suggestion by funkiedamouse.
@@ -20,8 +22,21 @@ list are done.
 <br>would be called something like`arc builder', probably
 basically a duplicator, emulating the wc thing's functionality.
 
+<li>Support SOF2 when it appears.
+
+<li>Radiant-style dragging, with frozen selectios: (tiglari)
+<br>The justification for this is that I think it might be fast
+and convenient in certain cirucmstances.
+
+<li>A Radiant-style XY view with vertical Z window: (tiglari)
+<br>The justification being that that gives maximal screen real estate
+for the top-down view (if you think about it, it's an extreme development
+of the Classic QuArK view).
+
 <li>importable and exportable config info (some discussion of this
 in early May2002 on quark-python)
+
+<li>make dual monitors work
 
 <li>L-square menu enhancements: (tiglari, ax2grind)
 <br>status: started, align & glue to tagged done.  I intend
@@ -41,14 +56,9 @@ What about L-join options?
 <li>Radiant-style Regioning: (?)
 <br>Hide and don't save everything not in the rectangle.
 
-<li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
-<br>an as-yet-unimplemented 4.7 feature.
-
-<li>FAKK2 support: (?)
-<br>And what about Daikatana?
-
-<li>OsFolders: (tiglari)
-<br>edit the properties of pre-existing OsFolders
+<li>Tag side plugin: (tiglari)
+<br>More flexibility for wrap across tagged.
+<br>status: envisioned.
 
 <li>Brush-based shape-builders: (tiglari, Decker)
 <br>'inner boxes' (two independently manipulable boxes, one inside
@@ -72,7 +82,7 @@ requests for it
 <li>CTF duplicator: (tiglari)
 <br>status: started, nothing committed.
 
-<li>Model Editor: (Andy)
+<li>Model Editor: (Andy, tiglari?)
 <br>more progress
 
 <li>Incorporate 'entity info files' into toolboxes: (tiglari)
@@ -80,11 +90,5 @@ requests for it
 bpxes etc) from Radiant .def files and other sources, the idea being to
 let these be automatically integrated into the toolboxes generated
 by Andy's addon-builder.
-
-<li>Map reconstructor for Q3 engine games: (tiglari)
-<br>This might be easier to do well for Q3 engine
-games because the model structure seems to include
-brush info as well as face info.
-<br>status: envisioned.
 
 </UL>
