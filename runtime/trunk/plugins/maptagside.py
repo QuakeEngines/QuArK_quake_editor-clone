@@ -415,6 +415,20 @@ def abutting_vtx(l1, l2):
     intx.reverse()
   return intx
     
+def colinear(list):
+ "first 2 should not be coincident"
+ if len(list) < 3:
+   return 1
+ norm = (list[1]-list[0]).normalized
+ v0 = list[0]
+ for v in list[2:]:
+   if v0 - v:
+ #    if not samelinenorm(line, (v0-v).normalized):
+#     if norm-(v-v0).normalized:
+     if abs(norm-(v-v0).normalized)>0.0001:
+        return 0
+ return 1
+
 def abutting_vtx2(l1, l2):
   "gets the 2 vtx of l1 that are on the same line as 2 of l2, which are"
   "supposed to be vertex-cyles of abutting faces"
@@ -434,20 +448,6 @@ def abutting_vtx2(l1, l2):
         return [i, i1]
   return []
     
-def colinear(list):
- "first 2 should not be coincident"
- if len(list) < 3:
-   return 1
- norm = (list[1]-list[0]).normalized
- v0 = list[0]
- for v in list[2:]:
-   if v0 - v:
- #    if not samelinenorm(line, (v0-v).normalized):
-#     if norm-(v-v0).normalized:
-     if abs(norm-(v-v0).normalized)>0.0001:
-        return 0
- return 1
-
 def samelinenorm(v1, v2):
   "v1 and v2 must be normalized"
   if math.fabs(v1* v2) == 1:
@@ -765,7 +765,7 @@ def AddtoTaggedClick(m):
   editor = mapeditor()
   if editor is None: return
   side = editor.layout.explorer.uniquesel
-  if side:
+  if side is not None:
       addtotaggedfaces(side, editor)  
  
 def RemovefromTaggedClick(m):
@@ -1811,6 +1811,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2001/08/07 23:35:37  tiglari
+#snap map object to tagged face command
+#
 #Revision 1.17  2001/06/17 21:10:56  tiglari
 #fix button captions
 #
