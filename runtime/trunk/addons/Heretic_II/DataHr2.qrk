@@ -4,7 +4,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
-//Revision 1.47 2003/12/04 Dann J
+//
+//Revision 1.48 2004/06/22 DannJ
+//Changed model path for Tcheckrikbust
+//Changed model paths for Obj_lab_parts_container & Obj_eyeball_jar
+//Added DEATHMATCH ONLY spawnflag to MISC_TELEPORTER
+//Modified SKINNUM in OBJ_ROPECHAIN
+//Changed model path for OBJ_LAVAEGG
+//
+//Revision 1.47 2003/12/04 DannJ
 //Added DEATHMATCH ONLY to FUNC_WALL (to block level exits in DM)
 //Removed DMG from TRIGGER_LIGHTNING (does nothing)
 //Added STYLE field to LIGHT_FLOORTORCH
@@ -11194,6 +11202,11 @@ QQRKSRC1
         Typ="X8"
         Cap="MULT_DEST"
         Hint="pad is targeted at more than one destinatio" $0D " (use for both regular and DEATHMATCH_RANDOM)"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH ONLY"
+        Hint="Only appears in a deathmatch map"}
     }
     misc_teleporter_dest:form =
     {
@@ -13934,7 +13947,7 @@ QQRKSRC1
      Help = "A jar full of eyeballs"
      bbox = '-13 -13 -18 13 13 18 1'
      HTML = "help/hr2/g_obj.htm#obj_eyeball_jar"
-     mdl = "models/objects/labs/bioglass2/tris.fm"
+     mdl = "models/objects/labs/container2/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
@@ -14532,7 +14545,7 @@ QQRKSRC1
      Help = "A container of moving body parts"
      bbox = '-8 -8 -11 8 8 11 1'
      HTML = "help/hr2/g_obj.htm#obj_lab_parts_container"
-     mdl = "models/objects/labs/container2/tris.fm"
+     mdl = "models/objects/labs/container1/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
@@ -14669,7 +14682,7 @@ QQRKSRC1
      Help = "An egg for the larva"
      bbox = '-6 -14 -6 6 14 6 1'
      HTML = "help/hr2/g_obj.htm#obj_larvaegg"
-     mdl = "models/objects/eggs/egg/tris.fm"
+     mdl = "models/objects/eggs/eggs/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
@@ -15744,10 +15757,10 @@ QQRKSRC1
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
      skinnum: =
-        {Txt = "&" Hint = "0 : rope"
+        {Txt = "&" Hint = "default 0 = Rope"
       Typ="C"
-      Items="1) chain"
-      values="1"
+      Items="0) Rope" $0D "1) Chain"
+      values="0" $0D "1"
        }
      abslight: =
         {Txt = "&" Hint = "colored inherent glow for models, a triple of numbers 0-255, R B G" $0D "  color button below displays & selects visually."
@@ -16610,7 +16623,7 @@ QQRKSRC1
      Help = "A bust of a tchecktrik" $0D " When used a necklace appears around its neck."
      bbox = '-8 -12 -15 8 12 15 1'
      HTML = "help/hr2/g_obj.htm#obj_statue_tchecktrik_bust"
-     mdl = "models/objects/statue/tchecktrikbust/tris.fm"
+     mdl = "models/items/puzzles/tchecktrikbust/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
