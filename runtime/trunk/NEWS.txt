@@ -13,6 +13,12 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
+ * [Rowdy]: For Doom 3: Added bounding boxes to the entities, re-added
+       common/* textures (like caulk, trigger), fixed the roof texture in the
+       default room, added an "export .map" option to the Doom 3 menu on the
+       map editing window (makes exporting .map files in preparation for
+       compilation somewhat easier), updated readme_doom3.txt.
+
  * [cdunde/Rowdy]: Added light Color-Picker function for Torque game engine.
 
  * [alexander]: HL2 Support started. I changed quite a lot of files:

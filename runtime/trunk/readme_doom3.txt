@@ -40,8 +40,6 @@ Specifically:
     custom texture pak4's, unless you extract the textures from the
     .pk4 files before making links
 
-  * display of bounding boxes in 2D map editing views
-
   * display of models in 3D map editing views
 
 --------------------------------------------------------------------
@@ -74,14 +72,9 @@ the CD to be inserted), pull down the console, and type 'dmap
 console.  After that, if compilation was successful, you can bring
 down the console again, and type 'devmap <mapname>' to run the map.
 
-Before you can do that, you need to get QuArK to save your map as a
-.map file into the base/maps directory under the Doom 3 installation
+Before you can do that, you need to export your map (as a .map file)
+from QuArK to the base/maps directory under the Doom 3 installation
 directory.
-
-This is an awkward manual step at the moment, but given the time it
-takes to load Doom 3 and initiate all the compilation, it is
-suspected that ppl will not be recompiling and testing a map each
-time a single wall is changed.
 
 It is hoped to better integrate map-compiling functionality in a
 future release.
@@ -97,33 +90,26 @@ So basically:
 2. save it as a .qrk file in a directory of your choice (so as to
    retain groupings etc.)
 
-3. when you are ready to compile it, save it again as a .map file in
-   the base/maps directory under the Doom 3 installation directory
+3. when you are ready to compile it, select Doom 3 - Export .map
+   file only from the editing window menu
 
-4. exit QuArK (to make sure that after compilation and/or testing,
-   you re-run QuArK and load the .qrk file you saved in step 2,
-   instead of trying to continue working with the .map file)
+4. run Doom 3
 
-5. run Doom 3
+5. pull down the console with Ctrl/Alt/~
 
-6. pull down the console with Ctrl+Alt+~(Tilde)
-
-7. type (you can omit the .map extension):
+6. type (you can omit the .map extension):
 
    dmap <mapname>
 
-8. watch the compile messages scroll by, to save them for review
+7. watch the compile messages scroll by, to save them for review
    type:
 
    conDump <filename.txt>
 
-9. if the compile was successful, pull down the Doom 3 console the
+8. if the compile was successful, pull down the Doom 3 console the
    type:
 
    devmap <mapname>
-
-10. for further editing, remember to reload the .qrk file you saved
-    in step 2
 
 --------------------------------------------------------------------
 Some interesting oddities
@@ -132,7 +118,9 @@ Some interesting oddities
 Although Doom 3 includes textures (lots of textures), it appears
 that you should use only materials (what used to be called shaders
 in older games), consequently you won't find any textures in the
-texture-browser, just materials.
+texture-browser, just materials.  One possible exception is special
+textures, like caulk and clip, although my results using either the
+textures or the invisible materials have been somewhat varied.
 
 Every entity written to a .map file must have a unique name
 specific.  You can specify your own name specific, this will not be
@@ -150,10 +138,26 @@ longer a targetname specific.  For example, set the door's "name" to
 pale blue arrows will not show up in QuArK's editing windows showing
 where targetted items are linked.
 
-Door frames (and probably lots of other things) are standardised.
-You can insert a func_static, then select one of the door frame
-models.  Then you just need to add some walls around it, and
-probably door would help.
+Doors and door frames (and probably lots of other things) are
+standardised.  You can insert a func_static, then select one of the
+door frame models, or insert a func_door and select the appropriate
+model for the door.  Then you just need to add some walls around it,
+and probably door would help.  Some of the door models are oriented
+normally, some of them sideways.  If the door model appears sideways
+in your map (which, unfortunately, you will not discover until you
+compile/run the map) just add an "angle" specific with a value of,
+say, "90" to rotate your door 90 degrees.
+
+--------------------------------------------------------------------
+Changes
+--------------------------------------------------------------------
+
+27-Dec-2004
+
+  display bounding boxes in 2D map editing views
+  
+  added an export .map file option to the Doom 3 menu in the editing
+    window (significantly simplifies preparation for compiling maps)
 
 --------------------------------------------------------------------
 Thanx
@@ -172,5 +176,4 @@ cdunde particularly for his help with cleaning up the entities
 --------------------------------------------------------------------
 
 Rowdy
-22-Dec-2004
-
+27-Dec-2004
