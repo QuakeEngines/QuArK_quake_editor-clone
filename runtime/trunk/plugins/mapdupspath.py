@@ -689,112 +689,6 @@ class PathDuplicator(StandardDuplicator):
         return newobjs
 
 
-
-    def buildimages2(self, singleimage=None):
-        try:
-            self.readvalues()
-        except:
-            print "Note: Invalid Duplicator Specific/Args."
-            return
-
-        pathlist = plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2())
-        #pathlist.insert(0, self.dup)
-
-        templategroup = self.sourcelist()
-        templatebbox = quarkx.boundingboxof([templategroup])
-        templatesize = templatebbox[1] - templatebbox[0]
-
-        # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
-        if self.speed == 1:
-           del templategroup
-           templategroup = quarkx.newobj("group:g")
-           templategroup.appenditem(plugins.deckerutils.NewXYZCube(templatesize.x, templatesize.y, templatesize.z, quarkx.setupsubset()["DefaultTexture"]))
-
-        if (singleimage is None and self.speed != 1):
-           viewabletemplategroup = templategroup.copy()
-           viewabletemplategroup[";view"] = str(VF_IGNORETOBUILDMAP)  # Do not send this to .MAP file
-           newobjs = [viewabletemplategroup]
-        else:
-           newobjs = []
-        templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(-ObjectOrigin(templategroup) * -1, 0)    # Move it to (0,0,0)
-
-        # -- If SCALETEXTURES is on, use the linear() operation
-        if (self.scaletex != 0):
-           scalematrix = quarkx.matrix((2048/templatescale,0,0), (0,1,0), (0,0,1))
-           templategroup.linear(quarkx.vect(0,0,0), scalematrix)
-        else:
-           # -- User does not want to scale textures (who wants), but then we must scale the polys in another way
-           flist = templategroup.findallsubitems("", ":f")
-           for f in flist:
-              f.translate(quarkx.vect(2048 - f.dist,0,0) * f.normal.x)
-
-        count = len(pathlist)-1
-        for i in range(count):
-            if (singleimage is not None): # Speed up Dissociate images processing
-               if (singleimage >= count):
-                  return [] # Nothing more to send back!
-               else:
-                  i = singleimage
-            thisorigin = pathlist[i].origin
-            nextorigin = pathlist[i+1].origin
-            #print "Image#", i, "this", thisorigin, "next", nextorigin
-
-            list = templategroup.copy()
-
-            pathdist = nextorigin - thisorigin
-
-            # -- Compute new X-scale of template
-#           pathlength = abs(pathdist)
-#           scalematrix = quarkx.matrix((pathlength/templatescale,0,0), (0,1,0), (0,0,1))
-#           list.linear(quarkx.vect(0,0,0), scalematrix)
-
-            # -- Compute rotation
-            rotangles = quarkx.vect(quarkpy.qhandles.vec2angles1(pathdist))
-            radx = rotangles.x * quarkpy.qeditor.deg2rad
-            rady = rotangles.y * quarkpy.qeditor.deg2rad
-            # print "rotangles", rotangles, radx, rady
-            sin1, cos1 = math.sin(rady), math.cos(rady)
-            sin2, cos2 = math.sin(radx), math.cos(radx)
-            rotatematrix = quarkx.matrix((cos2,0,-sin2),(0,1,0),(sin2,0,cos2))
-            list.linear(quarkx.vect(0,0,0), rotatematrix)
-            rotatematrix = quarkx.matrix((cos1,-sin1,0),(sin1,cos1,0),(0,0,1))
-            list.linear(quarkx.vect(0,0,0), rotatematrix)
-
-            # -- Place center between the two paths
-            neworigin = pathdist*0.5 + thisorigin
-            list.translate(neworigin, 0)
-
-            # -- Now do some cube-subtraction, so edges matches up
-            if i==0:
-                try:
-                    nextnextorigin = pathlist[i+2].origin
-                except:
-                    nextnextorigin = None
-                list = self.subtractend2(None,thisorigin,nextorigin,list,-1)
-                list = self.subtractend2(thisorigin,nextorigin,nextnextorigin,list,1)
-            elif i>0 and i<(count-1):
-                prevorigin = pathlist[i-1].origin
-                try:
-                    nextnextorigin = pathlist[i+2].origin
-                except:
-                    nextnextorigin = None
-                list = self.subtractend2(prevorigin,thisorigin,nextorigin,list,-1)
-                list = self.subtractend2(thisorigin,nextorigin,nextnextorigin,list,1)
-            elif i==(count-1):
-                prevorigin = pathlist[i-1].origin
-                list = self.subtractend2(prevorigin,thisorigin,nextorigin,list,-1)
-                list = self.subtractend2(thisorigin,nextorigin,None,list,1)
-
-            if (singleimage is None) or (i==singleimage):
-                newobjs = newobjs + [list]
-            del list
-            if (i==singleimage): # Speed up Dissociate images processing
-                break
-        return newobjs
-
-
-
     def handles(self, editor, view):
         try:
             self.readvalues()
@@ -846,6 +740,7 @@ class InstanceDuplicator(PathDuplicator):
                 templategroup.removeitem(item)
 
         count = len(pathlist)
+        prevaxes = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
         for i in range(count):
             if (singleimage is not None): # Speed up Dissociate images processing
                if (singleimage >= count):
@@ -855,12 +750,31 @@ class InstanceDuplicator(PathDuplicator):
 
             list = templategroup.copy()
             thisorigin = pathlist[i].origin
+            
+            if self.dup["track"] and count>1:
+                if i<count-1:           
+                    nextorigin = pathlist[i+1].origin
+                    pathdist = nextorigin - thisorigin
+                    #
+                    # otherwise just use last pathdist
+                    #
+                if pathlist[i]["level"]:
+                   prevaxes = MakeAxes3(pathdist.normalized)
+                else:
+                   prevaxes = NewAxes(prevaxes,pathdist.normalized)
+                xax, yax, zax = prevaxes
+                #
+                # N.B. when the three args are vectors they are indeed
+                #  input as columns.  Tuples otoh will go in as rows.
+                #
+                matrix = quarkx.matrix(xax,yax,zax)
+            else:
+                matrix=quarkx.matrix('1 0 0 0 1 0 0 0 1')
+                
             if not pathlist[i]["no instance"]:
                 linear = pathlist[i]["linear"]
                 if linear:
-                    matrix = quarkx.matrix(linear)
-                else:
-                    matrix = quarkx.matrix('1 0 0 0 1 0 0 0 1')
+                    matrix = quarkx.matrix(linear)*matrix
                 list.translate(thisorigin)
                 scale = pathlist[i]["scale"]
                 if scale is not None:
@@ -912,6 +826,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2001/03/22 08:16:08  tiglari
+#better handling of origin duplicator
+#
 #Revision 1.29  2001/03/21 21:20:30  tiglari
 #custom origin for instance dup.  doesn't seem to work right with path
 #
