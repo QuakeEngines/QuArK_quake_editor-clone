@@ -133,7 +133,7 @@ def texcpclick(m):
         src["Coords"] = cp[i][j].s, cp[i][j].t
 
     def action(self, pack=pack):
-        cp, (i, j), b2 = copycp(pack.b2.cp),   pack.ij, pack.b2
+        cp, (i, j), b2 = copyCp(pack.b2.cp),   pack.ij, pack.b2
         s, t = self.src["Coords"]
         os, ot = cp[i][j].st
         ds, dt = s-os, t-ot
@@ -363,7 +363,7 @@ class CPHandle(qhandles.GenericHandle):
         tagpt = gettaggedpt(editor)
 
         def glueclick(m, editor=editor,tagpt=tagpt,b2=self.b2,(i,j)=self.ij):
-            cp=copycp(b2.cp)
+            cp=copyCp(b2.cp)
             if quarkx.keydown('S'):
               cp[i][j]=tagpt
             else:
@@ -667,6 +667,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28  2000/07/26 11:36:01  tiglari
+#menu reorganization (one texture popup)
+#
 #Revision 1.26  2000/07/24 13:00:02  tiglari
 #reorganization of bezier texture menu, added a new positioning item, `texture at corners'.  Also a sort of `rotation' of control points.
 #
