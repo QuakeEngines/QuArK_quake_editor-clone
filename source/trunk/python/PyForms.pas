@@ -30,10 +30,13 @@ uses
   StdCtrls, TB97, Python, ExtCtrls, QkObjects, QkFileObjects, PyPanels, QkForm, Game,
   Quarkx;
 
+const
+ cioHourglass = 1;
+ cioImmediate = 2;
+ cioPythonCodeEnd = 4;
+
 type
   TPyForm = class;
-  TClickItemOption = (cioHourglass, cioImmediate, cioPythonCodeEnd);
-  TClickItemOptions = set of TClickItemOption;
 
   PyWindow = ^TyWindow;
   TyWindow = object(TyObject)
@@ -48,8 +51,6 @@ type
     WndObject: PyWindow;
     PythonMacro: String;
     PopupMenuShowing, Released: Boolean;
-    ci_options: TClickItemOptions;
-    ci_obj: PyObject;
     {DSorting: Boolean;  { sorting map views }
     procedure wmMenuSelect(var Msg: TMessage); message wm_MenuSelect;
     procedure wmInitMenuPopup(var Msg: TMessage); message wm_InitMenuPopup;
@@ -100,7 +101,8 @@ procedure PythonUpdateAll;
 procedure AutoFocus(Control: TWinControl);
 function GetParentPyForm(Control: TControl) : TPyForm;
 function NewPyForm(Q: QFileObject) : TPyForm;
-function ClickItem(obj: PyObject; Options: TClickItemOptions; nForm: TPyForm) : Boolean;
+function ClickItem(obj: PyObject; Options: Integer; {cioXXX} nForm: TPyForm) : Boolean;
+procedure PyFormsClickItem(Options: Integer; nForm: TPyForm);
 
  {-------------------}
 
@@ -114,7 +116,10 @@ uses PyMenus, PyToolbars, PyObjects, Setup, Qk1,
 
  {-------------------}
 
-function ClickItemNow(obj: PyObject; Options: TClickItemOptions; nForm: TPyForm) : Boolean;
+var
+ ci_obj: PyObject = Nil;
+
+function ClickItemNow(obj: PyObject; Options: Integer; nForm: TPyForm) : Boolean;
 var
  callback, arglist, callresult: PyObject;
 begin
@@ -129,13 +134,13 @@ begin
       ClickForm(nForm);
       arglist:=Py_BuildValueX('(O)', [obj]);
       if arglist=Nil then Exit;
-      if cioHourglass in Options then
+      if Options and cioHourglass <> 0 then
        DebutTravail(0,0);
       try
        callresult:=PyEval_CallObject(callback, arglist);
        Py_XDECREF(callresult);
       finally
-       if cioHourglass in Options then
+       if Options and cioHourglass <> 0 then
         FinTravail;
        Py_DECREF(arglist);
       end;
@@ -143,25 +148,40 @@ begin
    finally
     Py_DECREF(callback);
    end;
-   if cioPythonCodeEnd in Options then
+   if Options and cioPythonCodeEnd <> 0 then
     PythonCodeEnd;
   end;
 end;
 
-function ClickItem(obj: PyObject; Options: TClickItemOptions; nForm: TPyForm) : Boolean;
+procedure PyFormsClickItem(Options: Integer; nForm: TPyForm);
 begin
- if (nForm<>Nil) and not (cioImmediate in Options) then
+ if ci_obj<>Nil then
+  begin
+   ClickItemNow(ci_obj, Options, nForm);
+   Py_DECREF(ci_obj);
+   ci_obj:=Nil;
+  end;
+end;
+
+function ClickItem(obj: PyObject; Options: Integer; nForm: TPyForm) : Boolean;
+var
+ H: HWnd;
+begin
+ if Options and cioImmediate <> 0 then
+  Result:=ClickItemNow(obj, Options, nForm)
+ else
   begin
    Result:=PyObject_HasAttrString(obj, 'onclick');
    if not Result then Exit;
-   Py_XDECREF(nForm.ci_obj);
-   nForm.ci_obj:=obj;
+   Py_XDECREF(ci_obj);
+   ci_obj:=obj;
    Py_INCREF(obj);
-   nForm.ci_options:=Options;
-   PostMessage(nForm.Handle, wm_MessageInterne, wp_ClickItem, 0);
-  end
- else
-  Result:=ClickItemNow(obj, Options, nForm);
+   if nForm=Nil then
+    H:=Form1.Handle
+   else
+    H:=nForm.Handle;
+   PostMessage(H, wm_MessageInterne, wp_ClickItem, Options);
+  end;
 end;
 
  {-------------------}
@@ -1013,7 +1033,7 @@ begin
  obj:=PyObject(Callbacks[Info.wID-1]);
  if obj=Nil then Exit;
  Py_INCREF(obj); try
- ClickItem(obj, [cioImmediate], Self);
+ ClickItem(obj, cioImmediate, Self);
  result:=PyObject_GetAttrString(obj, 'items');
  if result=Nil then Exit;
  try
@@ -1082,7 +1102,7 @@ begin
      if obj=Nil then Exit;
      Py_INCREF(obj); try
      PopupMenuShowing:=False;
-     ClickItem(obj, [cioHourglass, cioPythonCodeEnd], Self);
+     ClickItem(obj, cioHourglass or cioPythonCodeEnd, Self);
      finally Py_DECREF(obj); end;
      Exit;
     end;
@@ -1188,12 +1208,7 @@ begin
                        if (Components[I] is TPythonExplorer) and TPythonExplorer(Components[I]).CanBeTargetted then
                         Msg.Result:=LongInt(Components[I]);
  {wp_SortMapViews: SortMapViews(Self);}
-  wp_ClickItem: if ci_obj<>Nil then
-                 begin
-                  ClickItemNow(ci_obj, ci_options, Self);
-                  Py_DECREF(ci_obj);
-                  ci_obj:=Nil;
-                 end;
+  wp_ClickItem: PyFormsClickItem(Msg.lParam, Self);
  else
   inherited;
  end;
@@ -1276,7 +1291,7 @@ begin
    if obj=Nil then
     PythonCodeEnd
    else
-    ClickItem(obj, [cioHourglass, cioPythonCodeEnd], Self);
+    ClickItem(obj, cioHourglass or cioPythonCodeEnd, Self);
   end;
 end;
 

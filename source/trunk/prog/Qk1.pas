@@ -744,6 +744,7 @@ begin
       end;}
    wp_ProcessNotifyFirst..wp_ProcessNotifyLast:
      ProcessNotify(Msg.wParam, Msg.lParam);
+   wp_ClickItem: PyFormsClickItem(Msg.lParam, Nil);
   else
    inherited;
   end;
