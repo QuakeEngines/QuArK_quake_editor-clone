@@ -11,9 +11,14 @@ Quark development can be carried out at three levels:
   
 The first two require just a text-editor, since a functioning Quark
 installation includes the Python interpreter, while the last requires
-Delphi 2 or better.  Older versions of Delphi can often be picked
-up quite inexpensively, though the improved code navigation
-features of Delphi 4/5 make life much easier.
+Delphi (Borland;s version of Pascal, enhanced with visual development
+tools).  The current developers seem to be using versions 4 or 5;
+it's possible that older versions such as 3 or even 2, might work.
+Older versions can sometimes be acquired free on computer magazine
+CD's.  The Delphi is written in a mixture of French and English,
+and the French is slowing being converted to English (so there is 
+a possibility that some references to things in the Delphi here
+will be outdated).
 
 TC's can typically be supported by creating new *.qrk files in the
 form of `addons', while supporting a new game usually requires some
@@ -27,18 +32,20 @@ well be able to provide it).
 
 Central to eveything is the concept of `QObject', Quark's universal
 format for the storage and management of structured information.
-The .Qrk files are just a written format for QObjects, and understanding
+Maps, game information supplied in add-ons, and the descriptions of
+most of the dialog boxes and other data-entry windows in Quark are
+all described as QOjects.  The .Qrk files are just QObjects presented
+in a written format for QObjects, and understanding
 them is essential for following the Python and Delphi as well.
 
 A QObject is a thing (technically an instance of a class in Delphi)
 with two kinds of properties:
-
 <html><ul><li>
 A list of attributes called `Specifics', each with a value, which
       might be a string, a number, a sequence of numbers or a few
       other things.
 <html><li>      
-A list of `subelements' (SousElements in the Delphi, .subitems
+A list of `subelements' (SubElements in the Delphi, .subitems
       in the Python), each of which is just another QObject.
 <html></ul>
       
@@ -58,15 +65,12 @@ shouldn't be thought of as a specific at all, and that is `name'.
 A QObject's name is divided into two parts, shortname, and extension.
 The shortname is usually just an identifying label (tho for entities
 it's the classname), but the extension, separated by a dot or colon,
-specifies the kind of object.  I don't fully grasp the difference
-between dot extensions, like .qctx (Quake Context) and colon extension
-like :f (face), but the dots seem to be file-like objects discriminated by
-what's done with them by the surrounding code, whereas the colon extensions
-seem to refer to delphi-defind subclasses of QObject, with special
-properties and `methods' defined in the Delphi code, and available
-in Python.  The coding details don't matter for people just modifying
-.qrk's, but here's a list of some of the major extensions:
+specifies the kind of object.  The dot separator is used for types of
+QObjects that can plausibly be stored in a file of their own (so they
+are in effect a file-type), while the colons are for smaller types
+of objects, such as the different components of a map.
 
+Here are some of the more important extensions:
 <html><ul><li>
    .qctx - Quake Context.  Contains info that modifies how things are done
 <html><li>
@@ -91,7 +95,8 @@ in Python.  The coding details don't matter for people just modifying
 <html><li>
    :b    - brush entity (attached brushes in subitems, entity attributes
               in specifics, shortname = classname)
-               
+<html><li>
+   :b2   - (quadratic) bezier patch or quilt               
 <html><li>
    :e    - point entity (entity attributes in specifics, shortname =
               classname)
@@ -103,4 +108,6 @@ for map objects, they are displayed in the tree-view, and the order is
 as given.  In principle you could make something depend on it, tho I
 don't think anyone ever has).
 
+It might be useful to note that QObjects are sort of like a limited
+form of XML, with no character data intererspersed betweeen subelements.
 With QObjects in hand, we push on to .qrk's.

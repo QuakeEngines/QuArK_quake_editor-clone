@@ -17,7 +17,8 @@ which helps Quark manage big ones with less chugging.
 
 To get a text version of a binary *.qrk, just open it, and save then save
 it (as `structured text', with the extension .txt to keep the file system
-happy).  The `technical info' zips for the quark versions also contain the
+happy).  The `technical info' zips for the older quark versions,
+and the current development snapshots, contain the
 text versions of the *.qrk files, which furthermore tend to contain useful
 information such as comments on the syntax, etc.
 
