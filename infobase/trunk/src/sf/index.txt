@@ -1,4 +1,5 @@
 title: The CVS repository at SourceForge
+subdir: eclipse
 desc: software anonymous reg
 
 The source of QuArK is now based on a CVS repository provided by
