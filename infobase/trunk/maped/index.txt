@@ -1,6 +1,8 @@
 title: Map editing
 author: Decker
 subdir: games
+subdir: curves
+subdir: builders
 subdir: builderrors
 subdir: plugins
 

@@ -1,0 +1,10 @@
+title: Shape Builders
+subdir: introduction 
+
+Shape-builders are a method for building complex objects,
+such as arches, stairways and more, on the basis
+of a boxy, 6-faced brush that gives the general dimensions
+of the object, plus additional specifics for details.
+
+
+
