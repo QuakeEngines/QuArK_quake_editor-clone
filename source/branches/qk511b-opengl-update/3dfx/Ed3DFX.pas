@@ -377,6 +377,9 @@ destructor TTextureManager.Destroy;
 var
  I: Integer;
 begin
+ {$IFDEF Debug}
+ if not CanFree then raise InternalE('texturemanager.destroy: still in use');
+ {$ENDIF}
  for I:=Textures.Count-1 downto 0 do
   FreeTexture(PTexture3(Textures.Objects[I]));
  FTextures.Free;
@@ -2014,8 +2017,11 @@ begin
     gr.grGlideShutdown;
    UnloadGlide;
   end;
- TextureManager.Free;
- TextureManager:=Nil;
+ if (TextureManager<>Nil) and TextureManager.CanFree then
+  begin
+   TextureManager.Free;
+   TextureManager:=Nil;
+  end;
 end;
 
 procedure GammaCorrection(Value: Reel);

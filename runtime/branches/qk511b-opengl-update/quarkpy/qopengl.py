@@ -17,8 +17,9 @@ OpenGL manager.
 
 import quarkx
 import qopengl   # that's myself
-from qbasemgr import BaseLayout
 from qeditor import *
+from qdictionnary import Strings
+from qbasemgr import BaseLayout
 BaseLayout.CurrentOpenGLOwner = None
 
 
@@ -97,4 +98,11 @@ def onclose1(floating):
     setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
     setup["WndRect"] = r
     setup["Warning2"] = ""
+
+
+def setupchanged(level):
+    if level>=5 and wnd is not None:   # change in the configuration dialog box
+        setprojmode(glview)
+
+SetupRoutines.append(setupchanged)
 

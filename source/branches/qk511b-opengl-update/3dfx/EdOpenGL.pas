@@ -25,7 +25,8 @@ unit EdOpenGL;
 
 interface
 
-uses Windows, SysUtils, Classes, GL1, QkObjects, Ed3DFX, qmath, PyMath, PyMath3D;
+uses Windows, SysUtils, Classes, Forms,
+     GL1, QkObjects, Ed3DFX, qmath, PyMath, PyMath3D;
 
 {$IFDEF Debug}
  {---$OPTIMIZATION OFF}
@@ -78,8 +79,8 @@ type
  protected
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
-   procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean);
-   procedure RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean);
+   procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
+   procedure RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
    procedure RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
@@ -119,7 +120,7 @@ procedure Free3DEditor;
 
 implementation
 
-uses Quarkx, QkMapPoly, Setup, QkPixelSet, Python;
+uses Quarkx, QkMapPoly, Setup, QkPixelSet, Python, QkForm, PyMapView;
 
  {------------------------}
 
@@ -198,12 +199,22 @@ type
 
 procedure TGLSceneObject.ReleaseResources;
 var
- I: Integer;
+ I, J: Integer;
  NameArray, CurrentName: ^GLuint;
 begin
  CurrentGLSceneObject:=Nil;
  RenderingTextureBuffer.Free;
  RenderingTextureBuffer:=Nil;
+
+ { mark proxy GL views as needing a complete rebuild }
+ for I:=0 to Screen.FormCount-1 do
+  with Screen.Forms[I] do
+   for J:=0 to ComponentCount-1 do
+    if Components[J] is TPyMapView then
+     with TPyMapView(Components[J]) do
+      if Scene is TGLSceneProxy then
+       Perform(wm_MessageInterne, wp_PyInvalidate, 0);
+
  with TTextureManager.GetInstance do
   begin
    GetMem(NameArray, Textures.Count*SizeOf(GLuint)); try
@@ -223,10 +234,13 @@ begin
     end;
    finally FreeMem(NameArray); end;
   end;
- if (RC<>0) and Assigned(gl) then
+ if RC<>0 then
   begin
-   gl.wglMakeCurrent(0,0);
-   gl.wglDeleteContext(RC);
+   if Assigned(gl) then
+    begin
+     gl.wglMakeCurrent(0,0);
+     gl.wglDeleteContext(RC);
+    end;
    RC:=0;
   end;
  if GLDC<>0 then
@@ -393,9 +407,47 @@ begin
    biHeight:=ScreenY;
   end;
 
- GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3); try
- gl.glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
- Err(999);
+ B:=bmiHeader.biWidth*bmiHeader.biHeight;
+ GetMem(Bits, B*3); try
+ if B>0 then
+  begin
+   gl.glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
+   Err(999);
+
+   { we have to swap the bytes (RGB --> BGR)...}
+   asm
+    push esi
+    push edi
+    mov eax, [B]
+    mov esi, [Bits]
+    lea edi, [esi+2*eax]
+    add edi, eax
+
+    @loop:
+     mov eax, [esi]   {R2B1G1R1}
+     mov edx, [esi+4] {G3R3B2G2}
+     bswap eax
+     xchg al, dh
+     ror eax, 8
+     mov [esi], eax
+
+     mov eax, [esi+8] {B4G4R4B3}
+     bswap edx
+     xchg al, dh
+     bswap eax
+     bswap edx
+     rol eax, 8
+     mov [esi+4], edx
+     mov [esi+8], eax
+
+     add esi, 12
+     cmp esi, edi
+    jne @loop
+
+    pop edi
+    pop esi
+   end;
+  end;
 
  L:=(SX-bmiHeader.biWidth) div 2;
  T:=(SY-bmiHeader.biHeight) div 2;
@@ -542,7 +594,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean);
+procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
  PList: PSurfaces;
  Count: Integer;
@@ -585,7 +637,7 @@ begin
         begin
          PList^.ok:=False;
          if BufResident^<>0 then
-          RenderPList(PList, Transparent, DisplayLights);
+          RenderPList(PList, Transparent, DisplayLights, SourceCoord);
          Inc(BufResident);
         end;
        PList:=PList^.Next;
@@ -598,7 +650,7 @@ begin
   begin
    if Transparent in PList^.Transparent then
     if SolidColors or not PList^.ok then
-     RenderPList(PList, Transparent, DisplayLights);
+     RenderPList(PList, Transparent, DisplayLights, SourceCoord);
    PList:=PList^.Next;
   end;
 end;
@@ -641,9 +693,9 @@ begin
  Err(52);
  CurrentAlpha:=0;
  FillChar(Currentf, SizeOf(Currentf), 0);
- RenderTransparentGL(Source.FListSurfaces, False, DisplayLights);
+ RenderTransparentGL(Source.FListSurfaces, False, DisplayLights, Source.Coord);
  Err(53);
- RenderTransparentGL(Source.FListSurfaces, True, DisplayLights);
+ RenderTransparentGL(Source.FListSurfaces, True, DisplayLights, Source.Coord);
  Err(54);
  gl.glFlush;
  Err(55);
@@ -786,6 +838,7 @@ begin
   {gl.gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
    gl.glGenTextures(1, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
+   if Texture^.OpenGLName=0 then Raise InternalE('out of texture numbers');
    gl.glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
    gl.glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
@@ -1090,7 +1143,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean);
+procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
  Surf: PSurface3D;
  SurfEnd: PChar;
@@ -1106,7 +1159,7 @@ begin
    begin
     Inc(Surf);
     if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-    and Coord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
+    and SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
      begin
       if AlphaColor<>CurrentAlpha then
        begin

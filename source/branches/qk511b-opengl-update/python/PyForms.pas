@@ -451,7 +451,9 @@ begin
   if PyWindow(self)^.Form<>Nil then
    with PyWindow(self)^.Form do
     begin
-     SendToBack;
+     {SendToBack;}
+     SetWindowPos(Handle, Form1.Handle, 0,0,0,0,
+      swp_NoActivate or swp_NoMove or swp_NoSize or swp_ShowWindow);
      Visible:=True;
     end;
   Result:=PyNoResult;

@@ -126,8 +126,8 @@ type
                  OldCameraPos: PyObject;
                  procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
                  procedure Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
-                 procedure Render;
-                 procedure NeedScene(NeedSetup: Boolean);
+                 function Render : Boolean;
+                 function NeedScene(NeedSetup: Boolean) : Boolean;
                  procedure SetCursor(Sender: TObject; var nCursor: TCursor);
                  function GetCentreEcran : TVect;
                  procedure SetCentreEcran(const Centre: TVect);
@@ -595,7 +595,7 @@ begin
  else
   Canvas.Handle:=DC;
  try
-  Render;
+  if not Render then Invalidate;
  finally
   if Animation<>Nil then
    Canvas.Handle:=Animation^.SrcDC
@@ -604,8 +604,9 @@ begin
  end;
 end;
 
-procedure TPyMapView.NeedScene(NeedSetup: Boolean);
+function TPyMapView.NeedScene(NeedSetup: Boolean) : Boolean;
 begin
+ Result:=True;
  if Scene=Nil then
   begin
    if ViewMode = vmOpenGL then
@@ -613,7 +614,10 @@ begin
    else
     if (MapViewProj is TCameraCoordinates)
     and (SetupSubSet(ssGeneral, 'OpenGL').Specifics.Values['Mode']<>'') then
-     FScene:=TGLSceneProxy.Create
+     begin
+      FScene:=TGLSceneProxy.Create;
+      Result:=False;
+     end
     else
      FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
    ReadSetupInformation(NeedSetup);
@@ -672,8 +676,9 @@ begin
   end;
 end;
 
-procedure TPyMapView.Render;
+function TPyMapView.Render : Boolean;
 begin
+ Result:=True;
  if MapViewProj<>Nil then
   begin
    MapViewProj.pDeltaX:=kDelta.X - DisplayHPos;
@@ -700,7 +705,11 @@ begin
    end
   else
    begin  { solid or textured mode }
-    NeedScene(False);
+    if not NeedScene(False) then
+     begin
+      Result:=False;
+      Exit;
+     end;
     if Scene.ErrorMsg='' then
      begin
       if Drawing and dfRebuildScene <> 0 then
@@ -2051,6 +2060,8 @@ begin
        {Resize;}
        CentreEcran:=Centre;
       end;
+     if ViewMode = vmOpenGL then
+      NeedScene(False);
     end;
   Result:=PyNoResult;
  except
