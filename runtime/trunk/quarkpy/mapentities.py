@@ -567,7 +567,7 @@ def lookupPyForm(f1):
 
 def registerPyForm(name, formstring):
     f = quarkx.newobj(name+":form")
-    f.loadtext(formstringstring)
+    f.loadtext(formstring)
     formdict[name] = f
 
 def LoadEntityForm(sl):
@@ -594,6 +594,10 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.21  2000/12/31 02:46:02  tiglari
+#Support for python code to add entity forms
+# (for shape-generator development: lookup/registerPyForm)
+#
 #Revision 1.20  2000/07/29 02:06:35  tiglari
 #my idea of how to do `hardcore' color coding
 #
