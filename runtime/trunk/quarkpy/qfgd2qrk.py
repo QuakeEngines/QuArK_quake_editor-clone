@@ -28,7 +28,7 @@ class Key:
         return self.m_defaultvalue
 
     def GenerateFolder(self, indent):
-        if (self.m_defaultvalue is None):
+        if (self.m_defaultvalue is None) or (self.m_defaultvalue == ""):
             return None
         indent[self.m_keyname] = str(self.m_defaultvalue)
         return None
@@ -140,8 +140,10 @@ class Entity:
     def SetDesc(self, desc):
         self.m_desc = desc
 
-    def SetSize(self, sizestring):
-        self.m_size = sizestring
+    def SetSize(self, sizeargs):
+        if (len(sizeargs) == 6):
+            self.m_size = (float(sizeargs[0]), float(sizeargs[1]), float(sizeargs[2]),
+                           float(sizeargs[3]), float(sizeargs[4]), float(sizeargs[5]))
 
     def InheritsFrom(self, inherit):
         self.m_inherit = self.m_inherit + [INHERITPREFIX + inherit]
@@ -179,7 +181,7 @@ class Entity:
     def GenerateForm(self, indent):
         s = quarkx.newobj(self.m_classname + self.TypeForm())
         if (self.m_size is not None):
-            s["bbox"] = str(self.m_size)
+            s["bbox"] = self.m_size
         for inh in self.m_inherit:
             s.specificadd(inh+"=!")
         for key in self.m_keys:
@@ -275,11 +277,7 @@ def EndInherit(token):
         for arg in currentinheritargs:
             theEntity.InheritsFrom(arg)
     elif (currentinherit == "size"):
-        if (len(currentinheritargs) == 6):
-            sizeargs = ""
-            for arg in currentinheritargs:
-                sizeargs = sizeargs + " " + arg
-            theEntity.SetSize(string.strip(sizeargs))
+        theEntity.SetSize(currentinheritargs)
     else:
         pass
     currentinherit = None
@@ -416,14 +414,14 @@ TYPE_UNKNOWN    = 0
 TYPE_NUMERIC    = 1
 TYPE_STRING     = 2
 TYPE_SYMBOL     = 3
-TYPE_SPLITTER_AT        = 10
-TYPE_SPLITTER_COLON     = 11
-TYPE_SPLITTER_EQUAL     = 12
-TYPE_SPLITTER_SQUARE_B  = 13
-TYPE_SPLITTER_SQUARE_E  = 14
-TYPE_SPLITTER_PARENTS_B = 15
-TYPE_SPLITTER_PARENTS_E = 16
-TYPE_SPLITTER_COMMA     = 17
+TYPE_SPLITTER_AT        = 10    # '@'
+TYPE_SPLITTER_COLON     = 11    # ':'
+TYPE_SPLITTER_EQUAL     = 12    # '='
+TYPE_SPLITTER_SQUARE_B  = 13    # '['
+TYPE_SPLITTER_SQUARE_E  = 14    # ']'
+TYPE_SPLITTER_PRNTSHS_B = 15    # '('
+TYPE_SPLITTER_PRNTSHS_E = 16    # ')'
+TYPE_SPLITTER_COMMA     = 17    # ','
 
 CHARS_NUMERIC  = "-0123456789."
 CHARS_STRING   = "\""
@@ -475,9 +473,9 @@ def getnexttoken(srcstring):
         elif (token == "]"):
             token_is = TYPE_SPLITTER_SQUARE_E
         elif (token == "("):
-            token_is = TYPE_SPLITTER_PARENTS_B
+            token_is = TYPE_SPLITTER_PRNTSHS_B
         elif (token == ")"):
-            token_is = TYPE_SPLITTER_PARENTS_E
+            token_is = TYPE_SPLITTER_PRNTSHS_E
         elif (token == ","):
             token_is = TYPE_SPLITTER_COMMA
     else:
@@ -488,18 +486,19 @@ def getnexttoken(srcstring):
 
 statediagram =                                                                                  \
 {                                                                                               \
+# Current state            Token-type to go to ->    Next state             Function to call with token \
  'STATE_UNKNOWN'        :[(TYPE_SPLITTER_AT        ,'STATE_CLASSBEGIN'     ,None)             ] \
                                                                                                 \
 ,'STATE_CLASSBEGIN'     :[(TYPE_SYMBOL             ,'STATE_CLASSINHERIT'   ,CreateClass)      ] \
 ,'STATE_CLASSINHERIT'   :[(TYPE_SYMBOL             ,'STATE_INHERITBEGIN'   ,BeginInherit)       \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CLASSNAME'      ,None)             ] \
                                                                                                 \
-,'STATE_INHERITBEGIN'   :[(TYPE_SPLITTER_PARENTS_B ,'STATE_INHERITMEDIUM'  ,None)             ] \
+,'STATE_INHERITBEGIN'   :[(TYPE_SPLITTER_PRNTSHS_B ,'STATE_INHERITMEDIUM'  ,None)             ] \
 ,'STATE_INHERITMEDIUM'  :[(TYPE_SYMBOL             ,'STATE_INHERITMEDIUM'  ,AddInherit)         \
                          ,(TYPE_NUMERIC            ,'STATE_INHERITMEDIUM'  ,AddInherit)         \
                          ,(TYPE_STRING             ,'STATE_INHERITMEDIUM'  ,AddInherit)         \
                          ,(TYPE_SPLITTER_COMMA     ,'STATE_INHERITMEDIUM'  ,None)               \
-                         ,(TYPE_SPLITTER_PARENTS_E ,'STATE_CLASSINHERIT'   ,EndInherit)       ] \
+                         ,(TYPE_SPLITTER_PRNTSHS_E ,'STATE_CLASSINHERIT'   ,EndInherit)       ] \
                                                                                                 \
 ,'STATE_CLASSNAME'      :[(TYPE_SYMBOL             ,'STATE_CLASSNAME2'     ,BeginClassname)   ] \
 ,'STATE_CLASSNAME2'     :[(TYPE_SPLITTER_COLON     ,'STATE_CLASSNAME3'     ,None)               \
@@ -510,9 +509,9 @@ statediagram =                                                                  
 ,'STATE_KEYSBEGIN'      :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)         ] \
                                                                                                 \
-,'STATE_KEYBEGIN'       :[(TYPE_SPLITTER_PARENTS_B ,'STATE_KEYTYPE'        ,None)             ] \
+,'STATE_KEYBEGIN'       :[(TYPE_SPLITTER_PRNTSHS_B ,'STATE_KEYTYPE'        ,None)             ] \
 ,'STATE_KEYTYPE'        :[(TYPE_SYMBOL             ,'STATE_KEYTYPE2'       ,AddKeyType)       ] \
-,'STATE_KEYTYPE2'       :[(TYPE_SPLITTER_PARENTS_E ,'STATE_KEYTYPE3'       ,None)             ] \
+,'STATE_KEYTYPE2'       :[(TYPE_SPLITTER_PRNTSHS_E ,'STATE_KEYTYPE3'       ,None)             ] \
 ,'STATE_KEYTYPE3'       :[(TYPE_SPLITTER_EQUAL     ,'STATE_VALUEFLAGS'     ,None)               \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE'          ,None)               \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
@@ -601,6 +600,11 @@ def makeqrk(root, filename, gamename):
     qutils.debug("Here ...")
     root.refreshtv()
 
+    quarkx.msgbox("The .FGD file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file, then using a text-editor do a Search-Replace of   \"!\"   with   !\nE.g. replacing a double-quoted exclamation mark, with just a exclamation mark.\n\nIf you encounter any problems using this 'Convert from Worldcraft .FGD file' utility, please post a mail in the QuArK-forum.", qutils.MT_INFORMATION, qutils.MB_OK)
+
 #
 #$Log$
+#Revision 1.3  2001/04/14 19:30:58  decker_dk
+#Handle 'color1' FGD-types too.
+#
 #
