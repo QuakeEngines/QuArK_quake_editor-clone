@@ -85,14 +85,13 @@ class BSPC_Console(qquake.BatchConsole):
                 quarkx.setfileattr(bspfile, attr-FA_ARCHIVE)
         except quarkx.error:
             pass
-        self.bspfile = bspfile
-        #### FIXME: we want to check if the aas file is created at all
+        self.aasfile = bspfile[:-4] + ".aas"
 
     def close(self):
-        attr = quarkx.getfileattr(self.bspfile)
+        attr = quarkx.getfileattr(self.aasfile)
         if (attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE):
             print "-"*79
-            print "Failed to build the file", self.bspfile
+            print "Failed to build the file", self.aasfile
             quarkx.console()
             del self.next
         else:
@@ -398,8 +397,8 @@ def Customize1Click(mnu):
     editor = mapeditor(SS_MAP)
     if editor is None: return
     setup = quarkx.setupsubset()
-    if setup["NeedQCSG"]:
-        form1 = "CustomQuakeMenuQCSG"
+    if setup["SpecialCustomQuakeMenu"]:
+        form1 = setup["SpecialCustomQuakeMenu"]
     else:
         form1 = "CustomQuakeMenu"
     gamename = setup.shortname
@@ -470,6 +469,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.6  2000/06/05 00:11:27  alexander
+#fixed history
+#
 #Revision 1.5  2000/06/05 00:09:49  alexander
 #added: kludge for stupid tools (like those of SoF) that require to run in the games base dir)
 #
