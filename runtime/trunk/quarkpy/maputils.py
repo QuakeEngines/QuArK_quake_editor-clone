@@ -195,6 +195,11 @@ def findlabelled(list,label):
     except (AttributeError):
       pass
 
+def cyclenext(i, len):
+    return (i+1)%len
+    
+def cycleprev(i, len):
+    return (i-1)%len
 
 
 
@@ -202,6 +207,9 @@ def findlabelled(list,label):
 #
 #
 #$Log$
+#Revision 1.3  2000/07/24 09:06:56  tiglari
+#findlabelled added for finding items on menus (for face/texture revamp)
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
