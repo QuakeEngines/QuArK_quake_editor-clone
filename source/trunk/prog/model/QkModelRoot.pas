@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/02/18 20:03:46  aiv
+attaching models to tags almost finished
+
 Revision 1.5  2001/02/01 22:00:56  aiv
 Remove Vertex code now in python.
 
@@ -44,7 +47,7 @@ type
 
 implementation
 
-uses quarkx, pyobjects, travail, QkObjectClassList;
+uses quarkx, pyobjects, travail, QkObjectClassList, qkmd3;
 
 function qSetComponent(self, args: PyObject) : PyObject; cdecl;
 var
@@ -79,16 +82,29 @@ begin
   end;
 end;
 
+function qTryAutoLoadParts(self, args: PyObject) : PyObject; cdecl;
+begin
+  try
+    with QkObjFromPyObj(self) as QModelRoot do
+      QMD3File(FParent).TryAutoLoadParts;
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 const
-  MethodTable: array[0..1] of TyMethodDef =
+  MethodTable: array[0..2] of TyMethodDef =
     ((ml_name: 'setcomponent';  ml_meth: qSetComponent;  ml_flags: METH_VARARGS),
-     (ml_name: 'checkcomponents';ml_meth: qCheckComponents;ml_flags: METH_VARARGS));
+     (ml_name: 'checkcomponents';ml_meth: qCheckComponents;ml_flags: METH_VARARGS),
+     (ml_name: 'tryautoloadparts';ml_meth: qTryAutoLoadParts;ml_flags: METH_VARARGS));
 
 { ----------------------------- }
 
 function Max(a,b: Longint): Longint;
 begin
-if a>b then result:=a else result:=b;
+  if a>b then result:=a else result:=b;
 end;
 
 Procedure QModelRoot.MergeCurrentWithComp(Comp: QCOmponent);
@@ -228,10 +244,14 @@ begin
 end;
 
 function QModelRoot.BuildComponentList : TQList;
+var
+  i: integer;
 begin
   Result:=TQList.Create;
   try
-    FindAllSubObjects('', QComponent, Nil, Result);
+    for i:=0 to SubElements.count-1 do
+      if Subelements[i] is QComponent then
+        Result.Add(Subelements[i]);
   except
     Result.Free;
     Raise;

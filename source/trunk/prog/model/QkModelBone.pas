@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/02/14 20:46:28  aiv
+Fixed Loading of Shaders used by md3 files.
+
 Revision 1.4  2001/01/21 15:51:16  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -17,7 +20,7 @@ unit QkModelBone;
 
 interface
 
-uses QkMdlObject, QkObjects, qmath, Windows, Graphics, Python, Sysutils;
+uses QkMdlObject, QkObjects, qmath, Windows, Graphics, Python, Sysutils, QkModelTag;
 
 {
 Internal Format:
@@ -59,8 +62,10 @@ type
   private
     Component: QObject;
   public
+    Function Tag(nname: string): QModelTag;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
+    Procedure DrawBBox;
     procedure Dessiner; override;
     Function GetEndOffset(var endpoint: vec3_p): boolean;
     Function GetEndPoint(var endpoint: vec3_p): boolean;
@@ -73,11 +78,98 @@ type
     property ParentComponent: QObject read Component write Component;
     procedure SetBoneRadius(rad: Single);
     Function GetBoneRadius: Single;
+    procedure SetQ3AData(pos,mins,maxs: vec3_t; scale: single);
+    function GetQ3A_Maxs(var maxs: vec3_p): boolean;
+    function GetQ3A_Mins(var mins: vec3_p): boolean;
+    function GetQ3A_Position(var pos: vec3_p): boolean;
+    function GetQ3A_Scale: single;
   end;
 
 implementation
 
 uses qk3d, pymath, quarkx, QkObjectClassList;
+
+function QModelBone.Tag(nname: String): QModelTag;
+begin
+  result:=QModelTag(FindSubObject(nname, QModelTag, nil)); 
+end;
+
+function QModelBone.GetQ3A_Position(var pos: vec3_p): boolean;
+var
+  S: String;
+begin
+  S:=GetSpecArg(FloatSpecNameOf('position'));
+  if S='' then begin // Get Start Point from Parent Bone
+    result:=false;
+    exit;
+  end;
+  Result:=(Length(S) - length('position='))=sizeof(vec3_t);
+  PChar(pos):=PChar(S) + length('position=');
+end;
+
+function QModelBone.GetQ3A_Mins(var mins: vec3_p): boolean;
+var
+  S: String;
+begin
+  S:=GetSpecArg(FloatSpecNameOf('mins'));
+  if S='' then begin // Get Start Point from Parent Bone
+    result:=false;
+    exit;
+  end;
+  Result:=(Length(S) - length('mins='))=sizeof(vec3_t);
+  PChar(mins):=PChar(S) + length('mins=');
+end;
+
+function QModelBone.GetQ3A_Maxs(var maxs: vec3_p): boolean;
+var
+  S: String;
+begin
+  S:=GetSpecArg(FloatSpecNameOf('maxs'));
+  if S='' then begin // Get Start Point from Parent Bone
+    result:=false;
+    exit;
+  end;
+  Result:=(Length(S) - length('maxs='))=sizeof(vec3_t);
+  PChar(maxs):=PChar(S) + length('maxs=');
+end;
+
+function QModelBone.GetQ3A_Scale: single;
+begin
+  Result:=GetFloatSpec('scale', 1);
+end;
+
+procedure QModelBone.SetQ3AData(pos,mins,maxs: vec3_t; scale: single);
+var
+  S, S0: String;
+  Dest: vec3_p;
+  i: integer;
+begin
+  S0:=FloatSpecNameOf('position');
+  S:=S0+'=';
+  SetLength(S, length(S0+'=')+SizeOf(vec3_t));
+  PChar(Dest):=PChar(S)+length(S0+'=');
+  for i:=0 to 2 do
+    Dest^[i]:=pos[i];
+  Specifics.Add(S);
+
+  S0:=FloatSpecNameOf('mins');
+  S:=S0+'=';
+  SetLength(S, length(S0+'=')+SizeOf(vec3_t));
+  PChar(Dest):=PChar(S)+length(S0+'=');
+  for i:=0 to 2 do
+    Dest^[i]:=pos[i];
+  Specifics.Add(S);
+
+  S0:=FloatSpecNameOf('maxs');
+  S:=S0+'=';
+  SetLength(S, length(S0+'=')+SizeOf(vec3_t));
+  PChar(Dest):=PChar(S)+length(S0+'=');
+  for i:=0 to 2 do
+    Dest^[i]:=pos[i];
+  Specifics.Add(S);
+
+  SetFloatSpec('scale',scale);
+end;
 
 procedure QModelBone.SetBoneRadius(rad: Single);
 begin
@@ -185,6 +277,38 @@ begin
   Result.Z:=vec^[2];
 end;
 
+Procedure QModelBone.DrawBBox;
+var
+  ok: boolean;
+  pt_start, pt_end: TPointProj;
+  NewPen, DeletePen, OldPen: HPen;
+  CDC: TCDC;
+  mins, maxs: vec3_p;
+begin
+  GetQ3A_Mins(mins);
+  GetQ3A_Maxs(maxs);
+  pt_start:=CCoord.Proj(vec3_to_tvect(mins));
+  pt_end:=CCoord.Proj(vec3_to_tvect(maxs));
+  DeletePen:=CreatePen(ps_Solid, 0, clGreen);
+  NewPen:=DeletePen;
+  OldPen:=Info.BlackBrush;
+  Info.BlackBrush:=NewPen;
+  SetupComponentDC(CDC);
+  SelectObject(Info.DC, Info.BlackBrush);
+
+  CCoord.Line95(pt_start, pt_end);
+
+  CloseComponentDC(CDC);
+  if OldPen<>0 then begin
+    SelectObject(Info.DC, OldPen);
+    Info.BlackBrush:=OldPen;
+    if DeletePen<>0 then
+      DeleteObject(DeletePen);
+  end;
+
+  inherited;
+end;
+
 procedure QModelBone.Dessiner;
 var
   start_point, end_point: vec3_p;
@@ -193,6 +317,10 @@ var
   NewPen, DeletePen, OldPen: HPen;
   CDC: TCDC;
 begin
+  if IntSpec['q3a_style']=1 then begin
+    DrawBBox;
+    exit;
+  end;
   ok:=GetStartEnd(start_point, end_point);
   if not ok then
     exit;

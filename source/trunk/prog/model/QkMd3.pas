@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/18 20:03:46  aiv
+attaching models to tags almost finished
+
 Revision 1.6  2001/02/14 20:46:28  aiv
 Fixed Loading of Shaders used by md3 files.
 
@@ -46,6 +49,10 @@ type
     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
     function Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
     function AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
+    function AttachModelToTagFromFileName(Tag_Name: string; Filename: string): boolean;
+    function TryAutoLoadParts: boolean;
+    Function GetFullFilename: string;
+    function GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
   end;
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
@@ -257,6 +264,14 @@ begin
   end;
 end;
 
+function vec3_t_add(v1,v2: vec3_t): vec3_t;
+var
+  i: integer;
+begin
+  for i:=0 to 2 do
+    result[i]:=v1[i]+v2[i];
+end;
+
 Procedure QMD3File.ReadMesh(fs: TStream; Root: QModelRoot);
 const
   Spec1 = 'Tris=';
@@ -365,6 +380,7 @@ begin
   fs.seek(org+mhead.Vertex_Start, sofrombeginning);
   for i:=1 to mhead.MeshFrame_num do begin
     Frame:=Loaded_Frame(Comp, format('Frame %d',[i]));
+    Frame.SetFloatSpec('index', i);
     GetMem(Vertexes, mhead.vertex_Num * Sizeof(TMD3Vertex));
     try
       fs.readbuffer(Vertexes^, mhead.vertex_Num * Sizeof(TMD3Vertex));
@@ -378,7 +394,7 @@ begin
       for J:=0 to mhead.vertex_Num-1 do begin
         with Vertexes2^ do begin
           for k:=0 to 2 do
-            CVert^[k]:=Vec[k+1] / 64;
+            CVert^[k]:=(Vec[k+1] / 64);
         end;
         Inc(Vertexes2);
         Inc(CVert);
@@ -400,14 +416,6 @@ begin
       break
     else
       result:=result+s[i];
-end;
-
-function vec3_t_add(v1,v2: vec3_t): vec3_t;
-var
-  i: integer;
-begin
-  for i:=0 to 2 do
-    result[i]:=v1[i]+v2[i];
 end;
 
 function vec3_t_sub(v1,v2: vec3_t): vec3_t;
@@ -459,53 +467,127 @@ begin
   end;
 end;
 
+Function QMD3File.GetFullFilename: string;
+var
+  O: QObject;
+begin
+  if Filename='' then
+  begin
+    Result:=Name+Self.TypeInfo;
+    O:=Self;
+    While O.FParent<>nil do
+    begin
+      O:=O.FParent;
+      Result:=O.Name+'\'+Result;
+    end;
+  end
+  else
+  begin
+    Result:=filename;
+  end;
+end;
+
+function TagNameToMd3FileName(name, sname: string): String;
+begin
+  result:='';
+  if (name='tag_head') and (sname='head') then result:='upper.md3'
+  else if (name='tag_head') and (sname='upper') then result:='head.md3'
+  else if (name='tag_torso') and (sname='lower') then result:='upper.md3'
+  else if (name='tag_torso') and (sname='upper') then result:='lower.md3';
+end;
+
+function QMd3File.TryAutoLoadParts: boolean;
+var
+  tag: QModelTag;
+  b: QModelBone;
+  mg: QMiscGroup;
+  fname,x: string;
+  i,j:integer;
+  TagList: TQList;
+  z_result: boolean;
+begin
+  z_result:=true;
+  mg:=GetRoot.GetMisc;
+  TagList:=TQList.Create;
+  for i:=0 to mg.Subelements.count-1 do
+  begin
+    if mg.Subelements[i] is QModelBone then
+    begin
+      b:=QModelBone(mg.Subelements[i]);
+      For j:=0 to b.subelements.count-1 do
+      begin
+        if b.subelements[j] is QModelTag then
+          TagList.Add(b.subelements[j]);
+      end;
+      break;
+    end;
+  end;
+  for i:=0 to TagList.count-1 do
+  begin
+    if TagList[i] is QModelTag then
+    begin
+      tag:=QModelTag(TagList[i]);
+      fname:=extractfilepath(GetFullFilename);
+      fname:=copy(fname, pos('\', fname)+1, length(fname)-pos('\',fname)+1);
+      x:=TagNameToMd3FileName(tag.name, name);
+      if x='' then
+        continue;
+      fname:=fname+x;
+      z_result:=z_result and AttachModelToTagFromFilename(tag.name, fname);
+    end;
+  end;
+  TagList.Free;
+  result:=z_result;
+end;
+
+function QMd3File.AttachModelToTagFromFilename(Tag_Name: string; filename: string): boolean;
+var
+  FileObj2: QObject;
+begin
+  Result:=false;
+  FileObj2:=NeedGameFile(filename);
+  if FileObj2=nil then begin
+    FileObj2:=ExactFileLink(filename, nil, false);
+    if FileObj2 = nil then
+      exit;
+  end;
+  if not(FileObj2 is QModelFile) then
+    exit;
+  FileObj2.Acces;
+  Result:=AttachModelToTag(Tag_Name, QModelFile(FileObj2));
+end;
+
+function QMD3File.GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
+begin
+  Result:=QModelBone(Root.getMisc.FindSubObject('Bone Frame '+inttostr(Frame), QModelBone, nil));
+end;
+
 function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
 var
   other_root: QModelRoot;
-  other_miscgroup: QMiscGroup;
-  other_has_same_tag: boolean;
-  other_tag: QModelTag;
-  new_component: QComponent;
-  new_frames: QFramegroup;
-  i: integer;
-  self_tag: QModelTag;
-  s_matrix, o_matrix: PMatrixTransformation;
 begin
   Logex('attaching %s to %s',[self.name, model.name]);
-  result:=false;
-  self_tag:=QModelTag(getroot.GetMisc.FindSubObject(Tag_Name, QModelTag, QObject));
-  if self_tag = nil then
-  begin
-    exit;
-  end;
   model.acces;
   other_root:=model.getRoot;
-  other_tag:=QModelTag(other_root.GetMisc.FindSubObject(Tag_Name, QModelTag, QObject));
-  other_has_same_tag := (other_tag<>nil);
-  if not other_has_same_tag then
-  begin
-    exit; // otherside tag doesn't exist
-  end;
-  self_tag.GetRotMatrix(s_matrix);
-  other_tag.GetRotMatrix(o_matrix);
-  if (s_matrix = nil) or (o_matrix = nil) then exit;
-  for i:=0 to other_root.subelements.count-1 do
+  other_root.Specifics.Values['linked_to']:=tag_name;
+  getroot.SubElements.add(other_root.clone(getroot, false));
+{  for i:=0 to other_root.subelements.count-1 do
   begin
     if other_root.subelements[i] is QComponent then
     begin
-      new_component:=QComponent(other_root.subelements[i].clone(getroot, false));
-      new_component.name:='*'+extractfilename(model.name)+' - '+new_component.name;
-      new_component.specifics.values['from_other_model']:='1';
-      new_component.rotateframes(s_matrix^);
-      new_component.translateframes(vec3_t_sub(self_tag.getposition^,other_tag.getposition^));
+      old_component:=QComponent(other_root.subelements[i]);
+      new_component:=QComponent(old_component.clone(getroot, false));
+      new_component.name:='*'+model.name+' - '+new_component.name;
+      new_component.IntSpec['linked']:=1;
       getroot.subelements.add(new_component);
     end;
-  end;
+  end;}
+  result:=true;
 end;
 
 function _3vec3t_to_matrix(t: TMD3Tag): TMatrixTransformation;
 var
-  i,j: integer;
+  i: integer;
 begin
   for i:=1 to 3 do begin
     result[i][1]:=t.rotation[i][0];
@@ -516,7 +598,7 @@ end;
 
 procedure QMd3File.LoadFile(F: TStream; Taille: Integer);
 var
-  i, org, org2: Longint;
+  i, org, org2, j: Longint;
   head: TMD3Header;
   tag: TMD3Tag;
   boneframe: TMD3BoneFrame;
@@ -525,48 +607,55 @@ var
   OTag: QModelTag;
   OBone: QModelBone;
   misc: QMiscGroup;
+  bone: QObject;
 begin
- case ReadFormat of
-  1: begin  { as stand-alone file }
+  case ReadFormat of
+    1: begin  { as stand-alone file }
       if Taille<SizeOf(TMD3Header) then
-       Raise EError(5519);
+        Raise EError(5519);
       org:=f.position;
       f.readbuffer(head,sizeof(head));
       org2:=f.position;
       if (head.id<>'IDP3') or (head.version<>15) then
         raise Exception.Create('Not a valid MD3 File!');
-
       Root:=Loaded_Root;
       ObjectGameCode:=mjQ3A;
       Misc:=Root.GetMisc;
-      if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then begin
-        f.seek(head.Tag_Start + org,soFromBeginning);
-        for i:=1 to head.tag_num do begin
-          fillchar(tag, sizeof(tag), #0);
-          f.readbuffer(tag,sizeof(tag));
-          OTag:=QModelTag.Create(beforezero(tag.name), Misc);
-          OTag.SetPosition(Tag.position);
-          OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
-          Misc.SubElements.Add(OTag);
+      if head.BoneFrame_num<>0 then begin
+        for i:=1 to head.boneframe_num do begin
+          f.readbuffer(boneframe,sizeof(boneframe));
+          OBone:=QModelBone.Create('Bone Frame '+inttostr(i), Misc);
+          OBone.IntSpec['Q3A_Style']:=1;
+          OBone.SetQ3AData(boneframe.position, boneframe.mins, boneframe.maxs, boneframe.scale);
+          Misc.SubElements.Add(OBone);
         end;
-        f.seek(org2, sofrombeginning);
+        if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then begin
+          f.seek(head.Tag_Start + org,soFromBeginning);
+          for j:=1 to head.boneframe_num do begin
+            for i:=1 to head.tag_num do begin
+              fillchar(tag, sizeof(tag), #0);
+              f.readbuffer(tag,sizeof(tag));
+              bone:=Misc.FindSubObject('Bone Frame '+inttostr(j), QModelBone, nil);
+              if bone = nil then
+                bone:=Misc;
+              OTag:=QModelTag.Create(beforezero(tag.name), bone);
+              OTag.SetPosition(Tag.position);
+              OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
+              bone.SubElements.Add(OTag);
+            end;
+          end;
+          f.seek(org2, sofrombeginning);
+        end;
       end;
-    if head.BoneFrame_num<>0 then begin
-      for i:=1 to head.boneframe_num do begin
-        f.readbuffer(boneframe,sizeof(boneframe));
-        OBone:=QModelBone.Create(beforezero(boneframe.creator), Misc);
-        Misc.SubElements.Add(OBone);
+      if head.Mesh_num<>0 then begin
+        f.seek(org + head.tag_end, sofrombeginning);
+        for i:=1 to head.Mesh_num do begin
+          ReadMesh(f, Root);
+        end;
       end;
     end;
-    if head.Mesh_num<>0 then begin
-      f.seek(org + head.tag_end, sofrombeginning);
-      for i:=1 to head.Mesh_num do begin
-        ReadMesh(f, Root);
-      end;
-    end;
-   end;
- else inherited;
- end;
+    else inherited;
+  end;
 end;
 
 procedure QMd3File.SaveFile(Info: TInfoEnreg1);
