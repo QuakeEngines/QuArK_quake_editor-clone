@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2002/05/13 11:30:43  tiglari
+remove contributors (no longer representative), add sourceforge URL
+
 Revision 1.12  2002/04/12 22:09:13  tiglari
 Reminder -> Disclaimer, Rip out registration check code
 
@@ -103,6 +106,7 @@ type
     Event: THandle;
   public
   end;
+
 
 function DisclaimerThread(F: TForm): THandle;
 
