@@ -1,21 +1,18 @@
 """   QuArK  -  Quake Army Knife Bezier shape makers
 
-
 """
-
 
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
-#
- 
+
 ########################################################
 #
 #                          Caulk Plugin
 #                          v1.0, Aug 2000
-#                      works with Quark 6.0b2        
+#                      works with Quark 6.0b2
 #
 #
-#                    by tiglari@hexenworld.net  
+#                    by tiglari@hexenworld.net
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -26,7 +23,7 @@
 ###
 ##########################################################
 
-#$Header: 
+#$Header$
 
 Info = {
    "plug-in":       "Caulk shader plugin",
@@ -34,7 +31,8 @@ Info = {
    "date":          "20 Aug 2000",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.com",
-   "quark":         "Version 6.0b2" }
+   "quark":         "Version 6.0b2" 
+}
 
 
 import quarkx
@@ -58,7 +56,8 @@ def gettaggedcorners(editor):
         # clockwise traversal
         #
         return cp[0][0], cp[0][n], cp[m][n], cp[m][0]
-     
+    return None
+
 
 def cleanpoly(poly):
     used = poly.faces
@@ -110,7 +109,7 @@ def projectOutlineTex(face,poly,outline,tex):
             result.appenditem(item)
         return result
     return core
-        
+
 
 
 def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
@@ -129,7 +128,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
             return
         poly = faces[0]
         #
-        # FIXME: get the name of the caulk texture out of 
+        # FIXME: get the name of the caulk texture out of
         #   the game config files.
         #
         new = projectOutlineTex(face, poly, corners, 'common/caulk')
@@ -137,15 +136,16 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
             undo = quarkx.action()
             undo.exchange(poly, new)
             editor.ok(undo, "caulk from tagged")
-            
+
     nodraw = qmenu.item("Caulk from tagged",nodrawclick)
     if corners is None:
         nodraw.state=qmenu.disabled
     tagpop.items.append(nodraw)
     return menu
-  
+
 quarkpy.mapentities.FaceType.menu = tagmenu
 
 
 # ----------- REVISION HISTORY ------------
-#$Log: 
+#$Log$
+#
