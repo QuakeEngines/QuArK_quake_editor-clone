@@ -277,6 +277,16 @@ def makeseam(row0, row2, texface, name):
      seam.cp = texcp_from_face(cp, texface, None)
      return seam
 
+def yflip(face):
+    (p0, p1, p2) = face.threepoints(2)
+    p2 = p0-(p2-p0)
+    face.setthreepoints((p0, p1, p2), 2)
+
+def xflip(face):
+    (p0, p1, p2) = face.threepoints(2)
+    p1 = p0-(p1-p0)
+    face.setthreepoints((p0, p1, p2), 2)
+
 def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretchtex=0):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
@@ -293,9 +303,10 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
   pd = pointdict(vtxlistdict(fdict,o))
   if lower:
       pd = pointdict_vflip(pd)
-      texface = fdict["d"]
+      pd = pointdict_hflip(pd)
+      texface = fdict["d"].copy()
   else:
-      texface = fdict["u"]
+      texface = fdict["u"].copy()
   #
   # make the basic inner curved face, a 3x5 quilt
   #
@@ -303,36 +314,30 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
   #
   # project cps from face to patch (flat projection, distorted)
   #
-  cp = texcp_from_face(cp, fdict["u"], editor)
+  cp = texcp_from_face(cp, texface, editor)
   #
   # adjust down sides if wanted
   #
   if not stretchtex:
-      for side, fulcrum, edge in ((fdict["r"], "trf", 0), (fdict["l"], "tlf", 4)):
+      if lower:
+        right, left = fdict["l"], fdict["r"]
+      else:
+        right, left = fdict["r"], fdict["l"]
+      for side, fulcrum, edge in ((right, "trf", 4), (left, "tlf", 0)):
           #
           # FIXME: this 3points stuff below shouldn't be needed, but is.
           #
           newside = texface.copy()
-          newside.setthreepoints(fdict["u"].threepoints(2),2)
+          newside.setthreepoints(texface.threepoints(2),2)
           newside.distortion(side.normal, pd[fulcrum])
           cp2 = texcp_from_face(cp, newside, editor)
           for index in range(3):
-              if lower:
-                  cp[index][edge]=cp2[index][edge]
-              else:
-#                  squawk(`cp`)
-#                  squawk(`cp2`)                  
-#                  squawk("index: %s, edge: %s"%(index, edge))
-                  if edge==0: edge=4
-                  else: edge=0
-                  cp[index][edge]=cp2[index][edge]
+              cp[index][edge]=cp2[index][edge]
   #
   # Now we smooth it out
   #
-  if lower:
-      cp = antidistort_rows(cp)
-  else:
-      cp = antidistort_columns(cp)
+  cp = antidistort_rows(cp)
+  cp = antidistort_columns(cp)
   inner = quarkx.newobj('inner:b2')
   inner.cp = cp
   inner["tex"] = texface["tex"]
@@ -361,8 +366,8 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
       return [inner, inner2, fseam, bseam]
   # end if thick
 
-  if lower:
-      inner.swapsides()
+#  if lower:
+ #     inner.swapsides()
   if inverse:
      inner.swapsides()
   if open:
@@ -373,10 +378,10 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
   else:
      fcp = makecapfacecp(pd["blf"],pd["tlf"],pd["trf"],pd["brf"])
      bcp = makecapfacecp(pd["blb"],pd["tlb"],pd["trb"],pd["brb"])
-  if lower:
-      fcp = transposecp(fcp)
-  else:
-      bcp = transposecp(bcp)
+#  if lower:
+#      fcp = transposecp(fcp)
+#  else:
+  bcp = transposecp(bcp)
   front = b2fromface(fcp, 'front', fdict["f"], editor)
   back = b2fromface(bcp,'back', fdict["b"], editor)
   if faceonly:
@@ -607,7 +612,10 @@ def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
     #
     # cf FIXME in maphandles.CenterHandle.menu
     #
-    view = editor.layout.clickedview
+    try:
+        view = editor.layout.clickedview
+    except:
+        view = None
     return  [curvemenu(o, editor, view)]+oldmenu(o, editor)
 
 #
@@ -625,6 +633,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2000/06/17 09:42:53  tiglari
+#yet another texture scale fix (upper arches de-borked again...
+#
 #Revision 1.12  2000/06/17 07:35:12  tiglari
 #arch/cap texture now projected off top or bottom for normal
 #and lower, respectively; stretchtex option added vs. complex
