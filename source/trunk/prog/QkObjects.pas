@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2000/10/17 20:29:41  tiglari
+Added Ancestry function to QObject
+
 Revision 1.27  2000/10/15 16:01:27  alexander
 set name
 
@@ -2245,15 +2248,15 @@ label bail;
     begin
       if Sue[I]=self then
       begin
-        Ind:=IntToStr(I);
+        Ind:=IntToStr(I+1);
         goto bail;
       end;
     end;
     bail:
     if Parent.GetTvParent<>Nil then {don't bother with worldspawn }
-      Result:=Parent.Ancestry+'|'+Name+'.'+Ind
+      Result:=Parent.Ancestry+' | '+Name+TypeInfo+'['+Ind+']'
     else
-    Result:=Name+'.'+Ind;
+    Result:=Name+TypeInfo+'['+Ind+']';
   end else
     Result:=Name;
 end;
