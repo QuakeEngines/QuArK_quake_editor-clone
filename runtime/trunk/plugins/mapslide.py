@@ -2,11 +2,11 @@
 ########################################################
 #
 #                          Slider Plugin
-#                          v1.0, Nov 1999
-#                      works with Quark 5.11        
+#                          v2.0, Aug 2001
+#                      works with Quark 6.3        
 #
 #
-#                    by tiglari@hexenworld.com     
+#                    by tiglari@planetquake.com     
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -24,10 +24,10 @@
 Info = {
    "plug-in":       "Slide Plugin",
    "desc":          "Sliding things along and around axes",
-   "date":          "19 Nov 1999",
+   "date":          "10 Aug 2001",
    "author":        "tiglari",
-   "author e-mail": "tiglari@hexenworld.com",
-   "quark":         "Version 5.11" }
+   "author e-mail": "tiglari@planetquake.com",
+   "quark":         "Version 6.3" }
 
 
 import string
@@ -94,7 +94,7 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
         
         force: =
         {
-        Txt = "Force"
+        Txt = "Grid"
         Typ = "X"
         Hint = "Object forced to grid after movement"
         }
@@ -120,36 +120,44 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
 #   to the gridstep, and revise delta accordingly
 #
 def gridify(delta, diff, gridstep):
-  if not gridstep:
-    return delta
-  orig = delta-diff
-  (rem, quot) = math.modf(diff/gridstep)
-  if diff < 0:
-    sign = -1
-  else:
-    sign = 1
-  if rem:
-#    squawk("d: %s, r: %s"%(delta, quot+gridstep))
-    diff = (quot+sign)*gridstep
-  return orig+diff
+#    debug('diff %d, delta %d'%(diff,delta))
+    if not gridstep:
+            return delta
+    orig = delta-diff
+    (rem, quot) = math.modf(diff/gridstep)
+#    debug("%d, %d"%(rem,quot))
+    if diff < 0:
+        sign = -1
+    else:
+        sign = 1
+    if rem:
+    #    squawk("d: %s, r: %s"%(delta, quot+gridstep))
+        diff = (quot+sign)*gridstep
+    return orig+diff
 
 #
 # Now for the click
 #
-def SlideClick(m):
-    editor = mapeditor()
-    if editor is None: return
+def EdgeSlideClick(m):
+    editor = m.editor
+    edge = m.tagged
     
     #
     # parameters are stuffed into the pack class/object,
     #  and passed thereby
     #
     class pack:
-      "a place to stick stuff"
-    edge = gettaggededge(editor)
+        "a place to stick stuff"
     pack.edge = edge
     pack.axis = (edge[0]-edge[1]).normalized
     pack.o = m.o
+    pack.along = 0
+    pack.around = 0
+    #
+    # orig_object is the original, o will be replaced as
+    #  the dlg's changes are executed
+    #
+    pack.orig_object=pack.o
       
     #
     # this initializes the dialog's values, via code in
@@ -162,46 +170,44 @@ def SlideClick(m):
     #  but easier to use once you get used to it).
     #
     def setup(self, pack=pack):
-      src = self.src
-     
-      self.axis = set_sign(pack.axis)
-      self.orig_object = pack.o
-      self.pack = pack
-      self.point = pack.edge[0]
-      self.delta = 0
-      self.gridstep = self.editor.gridstep
-      src["along"] = '0'
-      src["around"] = '0'
+        src = self.src
+
+        self.axis = set_sign(pack.axis)
+        self.pack = pack
+        self.point = pack.edge[0]
+        src["along"] = str(pack.along)
+        src["around"] = str(int(pack.around/deg2rad))
       
     #
     # And here's the `action' function that gets called
     #  every time you change the data in the dialog box.
     #
-    def action(self, pack=pack):
-      src = self.src
-      delta = eval(src["along"]) # cumulative displacement from inital position
-      if delta != self.delta:
-        delta = gridify(delta, delta-self.delta, self.gridstep)
-      src["along"] = `delta`
-      self.delta = delta
-      phi = eval(src["around"])*deg2rad
-      new = self.orig_object.copy()
-      matrix = ArbRotationMatrix(self.axis, phi)
-      new.linear(self.point, matrix)
-      new.translate(delta*self.axis)
-      if src["force"] and self.gridstep:
-        new.forcetogrid(self.gridstep)
-      
-      undo=quarkx.action()
-      undo.exchange(self.pack.o, new)
-      self.editor.ok(undo, "move object wrt axis")
-      #
-      # And this little trick is necessary to keep the undo
-      #  mechanism happy, each data change swaps in the newly
-      #  created object for the old pack.o, undo-ably.
-      #
-      self.pack.o = new
-  
+    def action(self, pack=pack, editor=m.editor):
+        src = self.src
+        delta = eval(src["along"]) # cumulative displacement from inital position
+        if delta != pack.along:
+            delta = gridify(delta, delta-pack.along, editor.gridstep)
+        pack.along=delta
+        phi = eval(src["around"])*deg2rad
+        new = pack.orig_object.copy()
+        matrix = ArbRotationMatrix(self.axis, phi)
+        new.linear(self.point, matrix)
+        new.translate(delta*self.axis)
+        if src["force"] and editor.gridstep:
+            new.forcetogrid(editor.gridstep)
+
+        undo=quarkx.action()
+        undo.exchange(pack.o, new)
+        editor.ok(undo, "move object wrt axis")
+        #
+        # And this little trick is necessary to keep the undo
+        #  mechanism happy, each data change swaps in the newly
+        #  created object for the old pack.o, undo-ably.
+        #
+        pack.o = new
+        pack.along = delta
+        pack.around = phi
+
     #
     # And finally call the dialog, with the functions we have
     #  created as parameters, and also a label, 'axis slide',
@@ -209,6 +215,135 @@ def SlideClick(m):
     #  uses (and across sessions).
     #
     SlideDlg(quarkx.clickform, 'axis_slide', editor, setup, action)
+    
+
+#
+# And a whole new one for sliding things around over a tagged face
+#  (such as after executing snap object to tagged plane_
+#
+
+class PlaneSlideDlg (quarkpy.dlgclasses.LiveEditDlg):
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (150,160)
+    dfsep = 0.40
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Slide Object above Plane "
+
+        away: = 
+        {
+        Txt = "Away"
+        Typ = "EU"
+        Hint = "Movement along the normal to plane, offset from present position." $0D "  Increment 1 or gridstep"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+        
+        across: = 
+        {
+        Txt = "Across"
+        Typ = "EQ"
+        Hint = "Movement across the surface of the plane, offset from preset position."
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+        
+        force: =
+        {
+        Txt = "Force"
+        Typ = "X"
+        Hint = "Object forced to grid after movement"
+        }
+
+        sep: = { Typ="S" Txt=""}
+
+        exit:py = {Txt="" }
+
+    }
+    """
+
+
+#
+# Now for the click
+#
+def PlaneSlideClick(m):
+    editor = m.editor
+    plane = m.tagged
+    
+    #
+    # parameters are stuffed into the pack class/object,
+    #  and passed thereby
+    #
+    class pack:
+        "a place to stick stuff"
+    pack.plane = plane
+    pack.normal = plane.normal
+    pack.o = m.o
+    pack.away = 0
+    pack.across = 0,0
+    pack.axes = bestaxes(pack.normal)
+    #
+    # orig_object is the original, o will be replaced as
+    #  the dlg's changes are executed
+    #
+    pack.orig_object=pack.o
+    
+    def setup(self, pack=pack):
+        src = self.src
+
+        src["away"] = str(pack.away)
+        src["across"] = "%.1f %.1f"%pack.across
+      
+      
+    #
+    # And here's the `action' function that gets called
+    #  every time you change the data in the dialog box.
+    #
+    def action(self, pack=pack, editor=m.editor):
+        src = self.src
+        away = eval(src["away"]) # cumulative displacement from inital position
+
+        def griddo(new, old, step=editor.gridstep):
+            if new != old:
+                return gridify(new, new-old, step)
+            else:
+                return new
+            
+        if away != pack.away:
+            away = gridify(away, away-pack.away, editor.gridstep)
+        pack.away=away
+        across = read2vec(src["across"])
+        across = tuple(map(griddo,across,pack.across))
+        new=pack.orig_object.copy()
+        new.translate(away*pack.normal+across[0]*pack.axes[0]+across[1]*pack.axes[1])
+        if src["force"] and editor.gridstep:
+            new.forcetogrid(editor.gridstep)
+
+        undo=quarkx.action()
+        undo.exchange(pack.o, new)
+        editor.ok(undo, "move object wrt axis")
+        #
+        # And this little trick is necessary to keep the undo
+        #  mechanism happy, each data change swaps in the newly
+        #  created object for the old pack.o, undo-ably.
+        #
+        pack.o = new
+        pack.away = away
+        pack.across = across
+
+    #
+    # And finally call the dialog, with the functions we have
+    #  created as parameters, and also a label, 'axis slide',
+    #  to file the position of this dialog under between
+    #  uses (and across sessions).
+    #
+    PlaneSlideDlg(quarkx.clickform, 'plane_slide', editor, setup, action)
     
 #
 #  --- Now for the menus:
@@ -220,70 +355,73 @@ types = {
     ":b": "Entity",
     ":p": "Poly"}
 
+
+def slidePopup(o, editor):
+    label = types[o.type]
+    list = [makeEdgeSlide(o,editor),makePlaneSlide(o,editor)]
+    popup=qmenu.popup('Slide %s'%label,list,hint="|Slide %s along tagged edge or above tagged plane"%label)
+    return popup
+
 #
 # returns the menu item, and disables it if appropriate
 #
-def makeslide(o, editor):
-  label = types[o.type]
-  item = qmenu.item("Slide %s"%label,
-    SlideClick, "|Slides %s along or around tagged axis."%string.lower(label))
-  tagged = gettaggededge(editor)
-  if tagged is None:
-     item.state = qmenu.disabled
-     #
-     # Add some stuff to the disabler to explain why the item
-     #   is enabled.
-     #
-     item.hint = item.hint + "\n\nTag an edge in order to enable this menu item."
-  else:
-    item.o = o
-  return item
+def makeEdgeSlide(o, editor):
+    label = types[o.type]
+    item = qmenu.item("along/around tagged edge",
+        EdgeSlideClick, "|Slides %s along or around tagged axis."%string.lower(label))
+    tagged = gettaggededge(editor)
+    if tagged is None:
+        item.state = qmenu.disabled
+        #
+        # Add some stuff to the disabler to explain why the item
+        #   is enabled.
+        #
+        item.hint = item.hint + "\n\nTag an edge in order to enable this menu item."
+    else:
+        item.o = o
+        item.editor=editor
+        item.tagged=tagged
+    return item
 
-#
-# First new menus are defined, then swapped in for the old ones.
-#  `im_func' returns from a method a function that can be
-#   assigned as a value.
-#
-def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_func):
-  "the new right-mouse menu for polys"
-  menu = oldmenu(o, editor)
-  menu[:0] = [makeslide(o, editor)]             
-  return menu  
 
-#
-# This trick of redefining things in modules you're based
-#  on and importing things from is something you couldn't
-#  even think about doing in C++...
-#
-# It's actually deprecated in the Python programming books
-#  -- can produce hard-to-understand code -- but can do cool
-#  stuff.
-#
-#
-quarkpy.mapentities.PolyhedronType.menu = newpolymenu
+def makePlaneSlide(o, editor):
+    label = types[o.type]
+    item = qmenu.item("above tagged plane",
+        PlaneSlideClick, "|Slides %s above tagged plane."%string.lower(label))
+    tagged = gettaggedplane(editor)
+    if tagged is None:
+        item.state = qmenu.disabled
+        #
+        # Add some stuff to the disabler to explain why the item
+        #   is enabled.
+        #
+        item.hint = item.hint + "\n\nTag an plane in order to enable this menu item."
+    else:
+       item.o = o
+       item.editor=editor
+       item.tagged=tagged
+    return item
 
-def newgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
-  "the new right-mouse menu for polys"
-  menu = oldmenu(o, editor)
-  menu[:0] = [makeslide(o, editor)]             
-  return menu  
 
-quarkpy.mapentities.GroupType.menu = newgroupmenu
-
-def newbrushmenu(o, editor, oldmenu=quarkpy.mapentities.BrushEntityType.menu.im_func):
-  "the new right-mouse menu for polys"
-  menu = oldmenu(o, editor)
-  menu[:0] = [makeslide(o, editor)]             
-  return menu  
-
-quarkpy.mapentities.BrushEntityType.menu = newbrushmenu
-
+for Type in (quarkpy.mapentities.PolyhedronType,
+             quarkpy.mapentities.GroupType,
+             quarkpy.mapentities.BrushEntityType):
+             
+    def newmenu(o, editor, oldmenu=Type.menu.im_func):
+        menu = oldmenu(o, editor)
+        menu[:0] = [slidePopup(o,editor)]
+        return menu
+        
+    Type.menu = newmenu
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.4  2001/06/17 21:10:56  tiglari
+# fix button captions
+#
 # Revision 1.3  2001/06/16 03:19:05  tiglari
 # add Txt="" to separators that need it
 #
