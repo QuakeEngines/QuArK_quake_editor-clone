@@ -3,8 +3,8 @@
 
 
 
-                           QuArK 6.3.0
-                          Jan 16, 2003
+                           QuArK 6.3.0 (final)
+                             Jan 16, 2003
                        
 
  This is the final release of QuArK 6.3.0.  The .0 means that we envision
