@@ -1,3 +1,10 @@
+                       QuArK 6.3e update 4
+                       
+    * [tiglari] 2nd attempt to fix problem with compilation of maps with
+        extruded wallmakers, due to bad texture scales on edges.  new .exe
+        because the problem seemed to lie in a delphi-defined method (extrudeprism),
+        so it was Armin who goofed not me (hehehehe).
+         
                        QuArK 6.3e update 3
 
     * [tiglari] fix problem with HL .pts-file loading (with some tools,
