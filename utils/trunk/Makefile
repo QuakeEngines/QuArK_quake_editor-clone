@@ -1,5 +1,4 @@
-#
-#
+###########################################################################
 # Makefile to compile Quark with the command line tools
 # and produce a snapshot package. 
 #
@@ -10,8 +9,13 @@
 # inside the cygnus environment. 
 #
 # So make sure, that the no carriage returns are there
-# e.g by making like this
-#     cat makefile | tr -d '\r' > mk ; make -f mk distro
+# by making first this
+#   make rmcr 
+# that removes CR's from the makefile, then you can build a 
+# snapshot by 
+#   make distro
+# to cleanup the generated distribution archive use
+#   make clean
 #
 ###########################################################################
 #
@@ -21,6 +25,7 @@
 
 ## customize this for your needs
 
+LASTSNAPSHOTDATE=2000/06/02
 SNAPSHOTPATH=..
 SOURCEPATH=../source
 RUNTIMEPATH=../runtime
@@ -36,7 +41,6 @@ SNAPSHOTNAME=quarksnapshot_$(shell date +%Y%m%d)
 SNAPSHOTDIR=$(SNAPSHOTPATH)/$(SNAPSHOTNAME)
 EXE=$(PROJECT).exe
 
-all:
 
 ### make a snapshot package
 distro: $(SNAPSHOTPATH)/$(SNAPSHOTNAME).ace
@@ -46,6 +50,12 @@ clean:
 	rm  -f $(RUNTIMEPATH)/*.exe
 	rm  -f $(DCUPATH)/*.dcu
 	rm -rf $(SNAPSHOTPATH)/quarksnapshot_*
+
+### remove cr's from this file. this rule is protected from cr's by 
+### the comments at the line's end. So dont remove them.
+rmcr: #
+	mv Makefile Makefile.bak ; cat Makefile.bak | tr -d '\r' > Makefile  #
+
 
 ### compile the project
 $(RUNTIMEPATH)/$(EXE):
@@ -60,6 +70,13 @@ $(SNAPSHOTDIR)/$(EXE): $(RUNTIMEPATH)/$(EXE)
 	find $(SNAPSHOTDIR) -name CVS | xargs -t -i@ rm -rf @
 	find $(SNAPSHOTDIR) -name *.pyc | xargs -t -i@ rm -f @
 	find $(SNAPSHOTDIR) -name .#* | xargs -t -i@ rm -f @
+	rm -f $(SNAPSHOTDIR)/Setup.qrk
+	echo " -------------------- HISTORY FOR .PAS files after $(LASTSNAPSHOTDATE) ---------------------------" >$(SNAPSHOTDIR)/CHANGES.TXT
+	find $(SOURCEPATH) -name "*.pas" -type f | xargs -t -i@ perl getlog.pl @ $(LASTSNAPSHOTDATE) >>$(SNAPSHOTDIR)/CHANGES.TXT
+	echo " -------------------- HISTORY FOR .py files after $(LASTSNAPSHOTDATE) ---------------------------" >>$(SNAPSHOTDIR)/CHANGES.TXT
+	find $(RUNTIMEPATH) -name "*.py" -type f | xargs -t -i@ perl getlog.pl @ $(LASTSNAPSHOTDATE) >>$(SNAPSHOTDIR)/CHANGES.TXT
+	echo " -------------------- HISTORY FOR .qrk files after $(LASTSNAPSHOTDATE) ---------------------------" >>$(SNAPSHOTDIR)/CHANGES.TXT
+	find $(RUNTIMEPATH) -name "*.qrk" -type f | xargs -t -i@ perl getlog.pl @ $(LASTSNAPSHOTDATE) >>$(SNAPSHOTDIR)/CHANGES.TXT
 	echo "This is a snapshot compile of QuArK from the current CVS." > $(SNAPSHOTDIR)/README.txt
 	echo "It represents the current development state of QuArK and " >> $(SNAPSHOTDIR)/README.txt
 	echo "probably contains Bugs. Please report them to the QuArK  " >> $(SNAPSHOTDIR)/README.txt
@@ -100,6 +117,9 @@ $(SNAPSHOTPATH)/$(SNAPSHOTNAME).ace: $(SNAPSHOTDIR)/$(EXE)
 #----------- CHANGE HISTORY ------------
 #
 # $Log$
+# Revision 1.1  2000/05/20 00:51:53  alexander
+# initial checkin: Makefile to compile snapshots of quark
+#
 #
 #
 ###########################################################################
