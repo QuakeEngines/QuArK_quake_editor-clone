@@ -236,6 +236,15 @@ Strings = {
 	794: "Sin Pak files (*.sin)|*.sin",
 	795: "Heretic II models (*.fm)|*.fm",
 	796: "TGA image (*.tga)|*.tga",
+	# zip archive support
+	797: "ZIP archives (*.zip)|*.zip",
+	# Q3 Pak Support
+	798: "Quake 3 Pak Files (*.pk3)|*.pk3",
+	799: "Quake 1 / Half-Life Sprite Files (*.spr)|*.spr",
+	800: "Quake 2 Sprite Files (*.sp2)|*.sp2",
+	801: "JPEG Image (*.jpg)|*.jpg",
+	802: "C Files (*.c)|*.c",
+	803: "C Header Files (*.h)|*.h",
 
 	809: "Invalid version number in Quake's original Progs.dat",
 
@@ -461,7 +470,6 @@ Strings = {
         4457: "Are you sure you want to delete this item(s) ?",
         4458: "Invalid arguments to 'extendcoplanar'",
         4459: "positive integer expected",
-        4460: "Invalid value assigned to 'cp'",
 
 	4614: "&More >>",
 	4616: "                     *** EXCEPTION REPORT ***\n\n%s       Address in the program : %p (%p)\n",
@@ -518,6 +526,13 @@ Strings = {
 	5166: "Sin Pak file",
         5167: ".fm file (Heretic II)",
 	5168: "TGA image",
+	# Zip File Support
+	5169: "Zip Archive",
+	5170: "Quake 3 Pak",
+	5171: "Sprite file",
+	5172: "JPEG Image",
+	5173: "C File",
+	5174: "C Header File",
 
         5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",  
 	5184: "'%s' is not a QuArK-5 file",
@@ -828,6 +843,8 @@ Strings = {
         5688: "Invalid texture extension in Defaults.qrk",
         5689: "This image has got no palette : it is a true-color 24-bit image",
         5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",  
+        5691: "Invalid Sprite File!",
+        5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 
