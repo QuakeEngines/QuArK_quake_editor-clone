@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2003/04/29 13:06:47  nerdiii
+no message
+
 Revision 1.23  2003/04/29 05:59:35  nerdiii
 Added some game specific stuff to the 'EP' file browser control
 
@@ -1330,12 +1333,18 @@ end;
 
 procedure TFormCfg.BrowseButtonClick(Sender: TObject);
 var
- Path0, Path, Title, S, DirSep, Conv, Test: String;
+ Path0, Path, Title, S, FNCopy, Conv, Test: String;
  FormObj: QObject;
  PathEdit: TWinControl;
  Ok, joker: Boolean;
  I: Integer;
 label again;
+
+procedure ConvertCodes(var S:String);
+begin
+  While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
+end; {ConvertCodes}
+
 begin
  PathEdit:=FindFormControl((Sender as TControl).Tag-1, False);
  if (PathEdit=Nil) or not (PathEdit is TEnterEdit) then
@@ -1418,7 +1427,7 @@ begin
            Title:=Specifics.Values['Txt'];
            S:=Specifics.Values['BasePath'];
            If S<>'' then begin
-             While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
+             ConvertCodes(S);
              InitialDir:=S;
            end else
            FileName:=Path;
@@ -1428,11 +1437,12 @@ begin
            again:
            Ok:=Execute;
            If Ok then begin
+             FNCopy:=FileName;
              S:=Specifics.Values['CutPath'];
              If S<>'' then begin //for some entity-specific directory cut-offs
-               While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
+               ConvertCodes(S);
                S:=LowerCase(S);
-               Conv:=LowerCase(FileName);
+               Conv:=LowerCase(FNCopy);
                joker:=false;
                while Length(S)<>0 do begin
                  Test:=Copy(S,1,Pos('\',S));
@@ -1453,12 +1463,14 @@ begin
                  S:=Copy(S,Pos('\',S)+1,Length(S));
                  If not joker then Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
                end;
-               FileName:=Conv;
+               FNCopy:=Conv;
              end;
-             DirSep:=Specifics.Values['DirSep'];
-             If DirSep='' then DirSep:='\';
-             FileName:=StringReplace(FileName,'\',DirSep,[rfReplaceAll]);
-             Path:=FileName;
+             S:=Specifics.Values['DirSep'];
+             If S='' then S:='\';
+             FNCopy:=StringReplace(FNCopy,'\',S,[rfReplaceAll]);
+             S:=Specifics.Values['AugPath'];
+             FNCopy:=S+FNCopy;
+             Path:=FNCopy;
            end;
           finally
            Free;
