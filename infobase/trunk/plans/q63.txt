@@ -114,7 +114,8 @@ for all submenus, just some of the more useful ones)
 <br>More flexibility for wrap across tagged.
 <br>status: envisioned, maybe defer to 6.4
 
-<li>Show/edit Q3A bsp's (entities only): tiglari
+<li>Show/edit Q3A, SOF, Hr2, KinPin bsp's (entities only): tiglari
+
 <li>Move object to tagged: (tiglari, idea by quantum_red)
 <br>select a face in an object, move object to tagged
 face so that selected faced is coplanar with tagged one.
