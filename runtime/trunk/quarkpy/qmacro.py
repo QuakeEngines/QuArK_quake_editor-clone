@@ -165,7 +165,7 @@ def MACRO_helpmenu(text):
 
 def MACRO_OpenGL():
     import qopengl
-    qopengl.open(bkgnd=1)
+    qopengl.open(bkgnd=1, force=1)
 
 
 #

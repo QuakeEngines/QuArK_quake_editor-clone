@@ -71,7 +71,7 @@ type
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
    RenderingTextureBuffer: TMemoryStream;
-   DoubleBuffered, FDisplayLights: Boolean;
+   DoubleBuffered, FDisplayLights, FReady: Boolean;
    VCorrection2: Single;
    Lights: PLightList;
    DisplayLists: Integer;
@@ -94,12 +94,14 @@ type
    procedure Render3DView; override;
    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
+   property Ready: Boolean read FReady write FReady;
  end;
 
  TGLSceneProxy = class(TGLSceneBase)
  private
   {MasterVersion: Integer;}
    nFrameColor: TColorRef;
+   ProxyWnd: HWnd;
  protected
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
@@ -157,7 +159,7 @@ begin
   begin
    Py_XDECREF(CallMacroEx(EmptyTuple, 'OpenGL'));
    PythonCodeEnd;
-   if CurrentGLSceneObject=Nil then Abort;
+   if CurrentGLSceneObject=Nil then Raise EAbort.Create('Python failure in OpenGL view creation');
   end;
 end;
 
@@ -344,6 +346,8 @@ begin
 
 {Inc(VersionGLSceneObject);}
  CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
+ if not Ready then
+  PostMessage(Wnd, wm_MessageInterne, wp_OpenGL, 0);
 
   { set up fog }
  if Fog then
@@ -371,6 +375,7 @@ begin
  MasterUpdate;} NeedGLSceneObject;
  if not (nCoord is TCameraCoordinates) then
   Raise InternalE('OpenGL does not support non-perspective views (yet)');
+ ProxyWnd:=Wnd; 
  Coord:=nCoord;
  nFrameColor:=FrameColor;
  FullScreen:=False;
@@ -384,6 +389,7 @@ var
  BmpInfo: TBitmapInfo absolute bmiHeader;
  Bits: Pointer;
  FrameBrush: HBrush;
+ Rc: TRect;
 
   procedure Frame(X,Y,W,H: Integer);
   var
@@ -396,6 +402,16 @@ var
   end;
 
 begin
+ if (CurrentGLSceneObject=Nil) or not CurrentGLSceneObject.FReady then
+  begin
+   Rc:=Rect(0,0,SX,SY);
+   FrameBrush:=CreateHatchBrush(HS_DIAGCROSS, $808080);
+   SetBkColor(DC, $000000);
+   FillRect(DC, Rc, FrameBrush);
+   DeleteObject(FrameBrush);
+   Exit;
+  end;
+
  L:=0;
  R:=(ScreenX+3) and not 3;
  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
@@ -670,7 +686,10 @@ end;
 procedure TGLSceneProxy.Render3DView;
 begin
  NeedGLSceneObject;
- CurrentGLSceneObject.RenderOpenGL(Self, False);
+ if CurrentGLSceneObject.Ready then
+  CurrentGLSceneObject.RenderOpenGL(Self, False)
+ else
+  InvalidateRect(ProxyWnd, Nil, True);
 end;
 
 procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
@@ -896,7 +915,7 @@ procedure LightAtPoint(var Point1: TP3D; SubList: PLightList; const Currentf: GL
 var
  LP: PLightList;
  Light: array[0..2] of Reel;
- ColoredLights, Saturation: Boolean;
+ ColoredLights: Boolean;
  Incoming: vec3_t;
  Dist1, DistToSource: Reel;
  K: Integer;
@@ -906,7 +925,6 @@ begin
    LP:=SubList;
    Light[0]:=0;
    ColoredLights:=False;
-   Saturation:=False;
    while Assigned(LP) do
     with LP^ do
      begin
@@ -921,16 +939,21 @@ begin
         DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
         if DistToSource<Brightness2 then
          begin
-          DistToSource:=Sqrt(DistToSource);
-          Dist1:=(Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos*(Incoming[0]*NormalePlan[0]+Incoming[1]*NormalePlan[1]+Incoming[2]*NormalePlan[2])/DistToSource);
+          if DistToSource < rien then
+           Dist1:=1E10
+          else
+           begin
+            DistToSource:=Sqrt(DistToSource);
+            Dist1:=(Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos*(Incoming[0]*NormalePlan[0]+Incoming[1]*NormalePlan[1]+Incoming[2]*NormalePlan[2])/DistToSource);
+           end;
           if Color = $FFFFFF then
            begin
             Light[0]:=Light[0] + Dist1;
             if not ColoredLights then
              if Light[0]>=LightParams.BrightnessSaturation then
-              begin
-               Saturation:=True;
-               Break;
+              begin   { saturation }
+               Move(Currentf, l, SizeOf(l));
+               Exit;
               end
              else
               Continue;
@@ -968,22 +991,19 @@ begin
          end;
        end;
      end;
-   if Saturation then
-    Move(Currentf, l, SizeOf(l))
+   if ColoredLights then
+    for K:=0 to 2 do
+     if Light[K]>=LightParams.BrightnessSaturation then
+      l[K]:=Currentf[K]
+     else
+      l[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K]
    else
-    if ColoredLights then
-     for K:=0 to 2 do
-      if Light[K]>=LightParams.BrightnessSaturation then
-       l[K]:=Currentf[K]
-      else
-       l[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K]
-    else
-     begin
-      Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
-      l[0]:=Light[0] * Currentf[0];
-      l[1]:=Light[0] * Currentf[1];
-      l[2]:=Light[0] * Currentf[2];
-     end;
+    begin
+     Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
+     l[0]:=Light[0] * Currentf[0];
+     l[1]:=Light[0] * Currentf[1];
+     l[2]:=Light[0] * Currentf[2];
+    end;
   end;
 end;
 
@@ -1230,7 +1250,8 @@ begin
            AnyInfo.DisplayList:=DisplayLists;
            {$IFDEF DebugGLErr} Err(-110); {$ENDIF}
            gl.glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
-           {$IFDEF DebugGLErr} Err(110); {$ENDIF}
+           if gl.glGetError <> GL_NO_ERROR then  { out of display list resources }
+            raise EError(5693);
            gl.glColor4fv(Currentf);
            {$IFDEF DebugGLErr} Err(111); {$ENDIF}
           end

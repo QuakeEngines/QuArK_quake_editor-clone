@@ -32,11 +32,17 @@ wnd = None
 glview = None
 
 
-def open(bkgnd=0):
+def open(bkgnd=0, force=0):
     # open the OpenGL window. If bkgnd=1, put it in the background.
 
     global wnd, glview
     quarkx.settimer(deadtest, None, 0)  # cancel this timer if pending
+
+    if force and wnd is not None:
+        wnd.info = None
+        close()
+        onclose1(wnd)
+
     if wnd is None:
         setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
         if setup["Warning2"]:

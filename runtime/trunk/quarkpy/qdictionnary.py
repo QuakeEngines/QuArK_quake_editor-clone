@@ -821,7 +821,7 @@ Strings = {
         5665: "Cannot save frame groups in this file format.",
         5666: "The attached file '%s' should be stored in the same folder as in the main file, that is, '%s'.",
         5667: "The Model Component and its current Frame are incompatible : the Frame has not enough vertices",
-        5668: "No problem found in this map.",   
+        5668: "No problem found in this map.",
         5669: "There is a problem in this map :\n%s",
         5670: "You cannot remove this button. It comes from the '%s' toolbox.",
         5671: "The structure of the texture file is invalid. The Heretic II tool 'WAL2M8' is known to create such strange files that result in display errors if you look at textures from very far away in the game. You should use QuArK instead of WAL2M8 to make your Heretic II textures.",
@@ -846,6 +846,7 @@ Strings = {
         5690: "Setup file was cleared. QuArK is restarted with its default configuration.\n\nDo you want to activate Colorful Captions again ?",  
         5691: "Invalid Sprite File!",
         5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
+        5693: "Out of OpenGL display lists. Disable lighting in configuration box",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 

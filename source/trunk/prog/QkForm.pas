@@ -67,6 +67,7 @@ const
  wp_FormButtonChanged    = 134;
  wp_UpdateButtons        = 135;
  wp_ClickItem            = 136;
+ wp_OpenGL               = 137;
 
  tm_DoubleClic           = 91;
  tm_BeginDrag            = 92;

@@ -126,8 +126,8 @@ type
                  OldCameraPos: PyObject;
                  procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
                  procedure Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
-                 function Render : Boolean;
-                 function NeedScene(NeedSetup: Boolean) : Boolean;
+                 procedure Render;
+                 procedure NeedScene(NeedSetup: Boolean);
                  procedure SetCursor(Sender: TObject; var nCursor: TCursor);
                  function GetCentreEcran : TVect;
                  procedure SetCentreEcran(const Centre: TVect);
@@ -415,6 +415,8 @@ begin
                    RedLines[Ord(Msg.lParam<0)]:=Y/ClientHeight;
                    SetRedLines;
                   end;
+  wp_OpenGL: if Scene is TGLSceneObject then
+              TGLSceneObject(Scene).Ready:=True;
  {wp_ResetFullScreen: ResetFullScreen(lParam<>0);}
  else
   if not DefControlMessage(Msg) then
@@ -595,7 +597,7 @@ begin
  else
   Canvas.Handle:=DC;
  try
-  if not Render then Invalidate;
+  Render;
  finally
   if Animation<>Nil then
    Canvas.Handle:=Animation^.SrcDC
@@ -604,9 +606,8 @@ begin
  end;
 end;
 
-function TPyMapView.NeedScene(NeedSetup: Boolean) : Boolean;
+procedure TPyMapView.NeedScene(NeedSetup: Boolean);
 begin
- Result:=True;
  if Scene=Nil then
   begin
    if ViewMode = vmOpenGL then
@@ -614,10 +615,7 @@ begin
    else
     if (MapViewProj is TCameraCoordinates)
     and (SetupSubSet(ssGeneral, 'OpenGL').Specifics.Values['Mode']<>'') then
-     begin
-      FScene:=TGLSceneProxy.Create;
-      Result:=False;
-     end
+     FScene:=TGLSceneProxy.Create
     else
      FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
    ReadSetupInformation(NeedSetup);
@@ -676,9 +674,8 @@ begin
   end;
 end;
 
-function TPyMapView.Render : Boolean;
+procedure TPyMapView.Render;
 begin
- Result:=True;
  if MapViewProj<>Nil then
   begin
    MapViewProj.pDeltaX:=kDelta.X - DisplayHPos;
@@ -705,11 +702,7 @@ begin
    end
   else
    begin  { solid or textured mode }
-    if not NeedScene(False) then
-     begin
-      Result:=False;
-      Exit;
-     end;
+    NeedScene(False);
     if Scene.ErrorMsg='' then
      begin
       if Drawing and dfRebuildScene <> 0 then
