@@ -3,6 +3,12 @@
 #      Subsystem:      mapmakeprism
 #      Program:        mapmakeprism
 #      Copyright (c) 1998 - Descartes Systems Sciences
+#
+# Code review:
+#
+# tiglari's remarks on some suggested code changes, prefaced by tig:
+#
+#
 #-------------------------------------------------------------------------------
 # $Header$
 
@@ -17,14 +23,17 @@ Info = {
    "quark":         "Version 6.x"
 }
 
+
+import quarkpy.qmenu
 import math
 import quarkx
 import quarkpy.qmacro
 import quarkpy.qtoolbar
 import quarkpy.mapsearch
 import quarkpy.mapbtns
-import quarkpy.qutils
 from quarkpy.maputils import *
+import mapsearch1
+
 
 class MakePrismDlg(quarkpy.qmacro.dialogbox):
     # Dialog layout
@@ -133,6 +142,14 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
                 Cap = "Yes, make me some stairs."
             }
 
+            ramp: =
+            {
+                Typ = "X"
+                Txt = "Ramp:"
+                Cap = "Yes, make me a ramp."
+            }
+
+
 
             sep: = { Typ ="S" Txt=""}
 
@@ -195,6 +212,8 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
                 "make prism",
                 ico_editor, 3,
                 "Make Prism"))
+
+
 
     def MakePrism(self, btn):
         # Commit any pending changes in the dialog box
@@ -388,15 +407,30 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
                     f = down.copy()
                     p1.appenditem(f)
 
+
                 p.appenditem(p1);
+
 
             # Next point
             angle = angle - step
             i = i + 1
 
-        # Drop the items
+
+
+        # Remove borken polys and faces then Drop the items
+
+        p.rebuildall()
+        list = p.findallsubitems("", ':p')+p.findallsubitems("", ':f')
+        list = filter(lambda p: p.broken, list)
+        faces = list
+        for face in faces:
+            if face.broken:
+                face.parent.removeitem(face)
+
+
         quarkpy.mapbtns.dropitemsnow(self.editor, [p], "make n sided prism")
         return
+
 
     def ComputePoint(self, angle, radiusX, radiusY, gridsize, z):
         # Compute the vertex
@@ -417,12 +451,14 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
             y = quarkx.rnd(y / gridsize) * gridsize
         return quarkx.vect(x, y, z)
 
+
 def MakePrismClick(m):
     # Function to start the dialog
     editor = mapeditor()
     if editor is None:
         return
     MakePrismDlg(quarkx.clickform, editor)
+
 
 # Register the replace texture menu item
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep) # separator
