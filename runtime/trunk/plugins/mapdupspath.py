@@ -226,14 +226,34 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                 else:
                     walker["speeddraw"] = "1"
             #FIXME - How to redraw the duplicator, to reflect the change?!?
-
+            
         menulist = [qmenu.item("Insert after",  after1click)]
         if (self.pathdupmaster == 0):
             # if it is not the PathDup, then it must be a PathDupCorner, and two more menuitems are available
             menulist.append(qmenu.item("Insert before", before1click))
             menulist.append(qmenu.item("Remove",        remove1click))
         menulist.append(qmenu.item("Toggle speeddraw",  speeddraw1click))
+
         return menulist
+
+
+class PathPointHandle(PathDuplicatorPointHandle):
+
+    def __init__(self, origin, centerof, mainpathdup):
+        quarkpy.qhandles.IconHandle.__init__(self, origin, centerof)
+        self.pathdupmaster = 0
+        self.mainpathdup = mainpathdup
+
+    #
+    # called at end of drag, resets selection
+    #
+    def ok(self, editor, undo, old, new):
+        editor.ok(undo, self.undomsg)
+        editor.layout.explorer.sellist=[self.mainpathdup.dup]
+        
+    def menu(self, editor, view):
+#        return [qmenu.item("Fuck Me",None)]
+        return PathDuplicatorPointHandle.menu(self, editor, view)
 
 
 class PathDuplicatorPoint(DuplicatorManager):
@@ -246,7 +266,6 @@ class PathDuplicatorPoint(DuplicatorManager):
     def handles(self, editor, view):
         hndl = PathDuplicatorPointHandle(self.dup.origin, self.dup)
         return [hndl]
-
 
 class PathDuplicator(StandardDuplicator):
 
@@ -556,7 +575,16 @@ class PathDuplicator(StandardDuplicator):
 
 
     def handles(self, editor, view):
-        return DuplicatorManager.handles(self, editor, view) + [PathDuplicatorPointHandle(self.dup.origin, self.dup, 1)]
+        try:
+            self.readvalues()
+        except:
+            print "Note: Invalid Duplicator Specific/Args."
+            return
+        def makehandle(item,self=self):
+            return PathPointHandle(item.origin, item, self)
+        pathHandles=map(makehandle,plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2()))
+       
+        return DuplicatorManager.handles(self, editor, view) + [PathDuplicatorPointHandle(self.dup.origin, self.dup, 1)]+pathHandles
 
 
 # OLD STUFF
@@ -771,6 +799,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2001/02/25 16:32:54  decker_dk
+#Fix for objects that are supposed to be checked for None/Nil/Null pointer.
+#
 #Revision 1.14  2001/02/23 03:41:51  tiglari
 #square end and setback
 #
