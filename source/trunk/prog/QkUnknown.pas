@@ -105,6 +105,7 @@ begin
 {Info.FileExtCount:=1;
  Info.FileExt[0]:=774;}
  Info.FileExt:=774;
+ Info.Unformatted:=True;
 end;
 
 function QUnknown.IsExplorerItem(Q: QObject) : TIsExplorerItem;
