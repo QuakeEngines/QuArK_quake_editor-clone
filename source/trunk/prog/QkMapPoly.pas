@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2002/05/02 21:57:42  tiglari
+oops, didn't save before committing previous version
+
 Revision 1.53  2002/05/02 20:57:55  tiglari
 Fix for broken mirror duplicators (and probably other things not yet reported)
 
@@ -2310,15 +2313,15 @@ var
     ((' //TX1', ' //TX2'),
      (' ;TX1',  ' ;TX2' ));
   var
-   S, S1, S2, S3: String;
-   I, R, J, K, L, R2 : Integer;
+   S, S1, S2, S3, SpecStr, Spec, Val, Spec2, Val2: String;
+   I, R, J, K, L, R2, Pozzie : Integer;
    P, PT, VT: TThreePoints;
    Params: TFaceParams;
    Delta1, V, V2: TVect;
    Facteur: TDouble;
    FS: PSurface;
    PX, PY: array[1..3] of Double;
-
+   Single3: array[1..3] of Single;
    { tiglari }
    rval : Single; { for Value/lightvalue }
    Q: QPixelSet;
@@ -2700,6 +2703,52 @@ var
           if S2='' then S2:='0';
           if S3='' then S3:='0';
           S:=S+' '+S1+' '+S2+' '+S3;
+//<mohaa>
+          if MJ=mjMOHAA then
+          begin
+            Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+            if Q<>Nil then Q:=Q.LoadPixelSet;      { load it }
+            for I := 0 to F.Specifics.Count-1 do
+            begin
+              SpecStr:=F.Specifics.Strings[I];
+              if Copy(SpecStr,0,5)='_esp_' then
+              begin
+                Pozzie:=Pos('=', SpecStr);
+                Spec:=Copy(SpecStr,6,Pozzie-6);
+                Val:=Copy(SpecStr,Pozzie+1,Maxint);
+                { we only want to write it if it's different from the
+                  shader's spec }
+                Val2:=Q.Specifics.Values['_esp_'+Spec];
+                if Val='1' then  // the face is positively specified
+                begin
+                  if Val2<>'1' then  // the shader is not specified
+                    S:=S+' +surfaceparm '+Spec
+                end
+                else
+                if Val2='1' then //the face is not positively specified and the shader is
+                    S:=S+' -surfaceparm '+Spec;
+              end;
+            end;
+           { tiglari - now write the other face properties }
+            S1:=F.Specifics.Values['surfaceLight'];
+            if (S1<>'') then
+              S:=S+' surfaceLight '+S1;
+            if F.GetFloatsSpec('surfaceColor',Single3) then
+            begin
+              S:=S+' '+FloatToStrF(Single3[1], ffFixed, 20, 6);
+              S:=S+' '+FloatToStrF(Single3[2], ffFixed, 20, 6);
+              S:=S+' '+FloatToStrF(Single3[3], ffFixed, 20, 6);
+            end;
+            S1:=F.Specifics.Values['angleLight'];
+            if (S1<>'') then
+              S:=S+' surfaceAngle '+S1;
+            rval:=F.GetFloatSpec('tesselation',0);
+            if (rval<>0) then
+              S:=S+' tesselation '+FloatToStrF(rval, ffFixed, 20, 6);
+
+          end;
+
+//</mohaa>
         end;
      end;
 
