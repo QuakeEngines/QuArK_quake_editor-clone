@@ -720,11 +720,13 @@ for menitem, keytag in [(menextsel, "Extend Selection"),
 # -- selection menu items
 #
 
-
+stashItem = qmenu.item("&Mark selectioin", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
+zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "Fill the views with selected.")
 
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     reorganizePop.state = parentSelPop.state=qmenu.disabled
     menrestsel.state=menextsel.state=qmenu.disabled
+    stashItem.state = zoomItem.state = qmenu.disabled
     oldcommand(menu)
     editor = mapeditor()
     if editor is None: return
@@ -735,10 +737,12 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
                            (reorganizePop, reorganizePopItems(sel))):
         popup.items = items
         popup.state=qmenu.normal
+    stashItem.object = zoomItem.object = sel
+    stashItem.state = zoomItem.state = qmenu.normal
     if menrestsel.state != qmenu.checked:
-       menrestsel.state=qmenu.normal
+        menrestsel.state=qmenu.normal
     if sel.type == ':f':
-      menextsel.state = quarkpy.qmenu.normal
+        menextsel.state = quarkpy.qmenu.normal
 
     
 quarkpy.mapselection.onclick = selectionclick  
@@ -749,6 +753,8 @@ quarkpy.mapselection.items.append(reorganizePop)
 quarkpy.mapselection.items.append(menextsel)
 quarkpy.mapselection.items.append(menunrestrict)
 quarkpy.mapselection.items.append(menrestsel)
+quarkpy.mapselection.items.append(zoomItem)
+quarkpy.mapselection.items.append(stashItem)
 
 
 #
@@ -763,6 +769,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.10  2001/05/04 06:43:51  tiglari
+# Accelerators added to selection menu
+#
 # Revision 1.9  2001/05/04 03:51:07  tiglari
 # shift commands from commands to (new) selection menu
 #
