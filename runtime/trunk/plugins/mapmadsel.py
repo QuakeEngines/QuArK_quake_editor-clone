@@ -148,10 +148,8 @@ def ZoomToMe(m):
     #
     # 3d views
     #
-    debug('3d')
     views = filter(lambda v:v.info["type"]=="3D", editor.layout.views)
     for view in views:
-        debug(' view')
         pos, yaw, pitch = view.cameraposition
         def between(pair):
             return (pair[0]+pair[1])/2
@@ -159,7 +157,6 @@ def ZoomToMe(m):
         dir = (center-pos).normalized
         pitch, yaw = vec2rads(dir)
         view.cameraposition = pos, yaw, pitch
-        debug('   cam')
     editor.invalidateviews()
 
 
@@ -769,6 +766,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.11  2001/05/06 08:03:17  tiglari
+# put Mark, Zoom on selection menu
+#
 # Revision 1.10  2001/05/04 06:43:51  tiglari
 # Accelerators added to selection menu
 #
