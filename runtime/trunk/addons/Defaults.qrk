@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.127  2001/05/04 09:06:49  tiglari
+//fix default texture for stvef
+//
 //Revision 1.126  2001/05/04 00:25:15  aiv
 //form and form element creation done.
 //
@@ -3495,14 +3498,26 @@ QQRKSRC1
       {
         Txt="&"
         Typ="CL"
-        Items="hollow"  $0D "solid" $0D "autobox"
-        Values="t" $0D "b" $0D "ab" 
+        Items="hollow"  $0D "solid" $0D "autobox" $0D "patches"
+        Values="t" $0D "b" $0D "ab" $ 0D "p" 
       }
       edge: =
       {
         Txt="&"
         Typ="EF1"
         Hint="length of patch-connecting edge in pipe mode"
+      }
+      inverse: =
+      {
+        Txt="&"
+        Typ="X"
+        Hint="If checked, texture shown on outside rather than inside." $0D "  Only meaningful for patch type."        
+      }
+      open: =
+      {
+        Txt="&"
+        Typ="X"
+        Hint="If checked, open line rather than closed loop." $0D "  Only meaningful for patch and pipe types."        
       }
 
 //      texture specs: =

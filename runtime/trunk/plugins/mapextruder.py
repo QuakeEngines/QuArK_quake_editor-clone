@@ -38,6 +38,7 @@ from quarkpy.dlgclasses import placepersistent_dialogbox
 from quarkpy.qeditor import matrix_rot_z
 from quarkpy.qeditor import matrix_rot_y
 from quarkpy.qhandles import aligntogrid
+from quarkpy import b2utils
 
 #
 # --- wtf
@@ -124,13 +125,6 @@ def write3tup(vec):
   return "%.2f %.2f %.2f"%(vec[0], vec[1], vec[2])
 
 
-#
-# adapted from face2patch in maputils
-#
-def setthreepointspatch(patch, texp):
-  v = getBezierControlP(patch)
-  patch.vst = map(lambda v, texp=texp: quarkx.vect((v-texp[0])*texp[1], -(v-texp[0])*texp[2], 0), v)
-  patch.vupdate()
 
 #
 #  should be in a utility file but isn't
@@ -1409,11 +1403,8 @@ def make_patches(dup, points, limit=0, editor=None):
         pos0 = prev_pos[k]
         pos1 = prev_pos[k+1]
         pos0e, pos1e = curr_pos[k], curr_pos[k+1]
-        v = range(16)
-        v[0], v[3], v[12], v[15] = pos0, pos1, pos0e, pos1e
-        b3 = quarkx.newobj("side %d:b3"%k)
-        adjustinternals(v, 0, 1, 4)
-        SetBezierPointsVec(b3, v)
+        b2 = quarkx.newobj("side %d:b2"%k)
+        b2.cp = b2utils.interpolateGrid(pos0, pos1, pos0e, pos1e)
         if texpos is not None:
 #          squawk(`k`)
 #          side = texpos.subitem[k]
@@ -1430,13 +1421,12 @@ def make_patches(dup, points, limit=0, editor=None):
           tex_face2patch(editor,texface,b3)
 
         else:
-          b3["tex"] = dup["tex"]
+          b2["tex"] = dup["tex"]
 #        b3.texturename = data.CircAttr(k, "tex")
 #        b3.texturename = texname
         if not inverse:
-          b3.swapsides()
-        b3["_ptype"] = 2
-        group.appenditem(b3)
+          b2.swapsides()
+        group.appenditem(b2)
       prev_org = curr_org
       prev_axes = axes
       prev_pos = curr_pos
@@ -2671,3 +2661,6 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.5  2001/05/04 23:07:31  tiglari
+#fix log
+#
