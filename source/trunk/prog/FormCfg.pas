@@ -28,7 +28,7 @@ interface
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
      Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
-     CursorScrollBox, Spin;
+     CursorScrollBox, Spin, SmArrowBtn;
 
 const
  wp_InternalEdit = 96;
@@ -95,6 +95,7 @@ type
               procedure PyMMacroClick(Sender: TObject);
               procedure SpinUpClick(Sender: TObject);
               procedure SpinDownClick(Sender: TObject);
+              procedure SmArrowBtnClick(Sender: TObject; Direction: Integer);
               procedure RombUpClick(Sender: TObject);
               procedure RombDownClick(Sender: TObject);
               procedure RombLeftClick(Sender: TObject);
@@ -1189,6 +1190,27 @@ begin
  raise InternalE('FindUpDownEdit');
 end;
 
+procedure TFormCfg.SmArrowBtnClick(Sender: TObject; Direction : Integer);
+var
+  Edit : TCustomEdit;
+  Values: Array [1..2] of Double;
+ { Direction : Integer; }
+begin
+ Edit := FindUpDownEdit((Sender as TControl).Tag);
+ AnyControlEnter(Sender);
+ LireValeurs(Edit.Text, Values);
+ {Direction := (Sender as TSmallArrowButtons).Direction; }
+ case Direction of
+  sabDirectionUp: Values[2] := Values[2]+1;
+  sabDirectionDown:  Values[2] := Values[2]-1;
+  sabDirectionLeft:  Values[1] := Values[1]-1;
+  sabDirectionRight:  Values[1] := Values[1]+1;
+ end;
+ Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
+ SetArg(Sender, Edit.Text);
+end;
+
+
 procedure TFormCfg.RombUpClick(Sender: TObject);
 var
   Edit : TCustomEdit;
@@ -1487,7 +1509,7 @@ var
  Txt, Ctrl, ResultCtrl, SelectMe: TControl;
  Edit: TCustomEdit;
  UpDown: TSpinButton;
-{Quad: TEnhRombButtons;}
+ Quad: TSmallArrowButtons;
  ComboBox: TEnterComboBox;
  Notify: TNotifyEvent;
 {Cb: TCheckBox;}
@@ -2136,25 +2158,23 @@ begin
                     UpDown.Tag := I+1;
                     Notify:=AcceptEdit;
                    end;
-                (*'Q':
+                  'Q':
                    begin
                     Dec(J, 20);
-                    Quad := TEnhRombButtons.Create(Self);
+                    Quad := TSmallArrowButtons.Create(Self);
+                    ExtraVertSpace:=8;
                     Quad.Parent := SB;
                     { Quad dimensioning kinda wierd }
-                    Quad.SetBounds(X+J+1,Y+1,30,30);
+                    Quad.SetBounds(X+J+1,Y-1,23,33);
                     TEnterEdit(Edit).Text:=Spec;
-                    Quad.OnUpClick := RombUpClick;
-                    Quad.OnDownClick := RombDownClick;
-                    Quad.OnLeftClick := RombLeftClick;
-                    Quad.OnRightClick := RombRightClick;
+                    Quad.OnArrowClick := SmArrowBtnClick;
                     Quad.Enabled := True;
-                    {Quad.WithArrows := False;}
-                    Quad.SignalFocus := False;
+                    {Quad.WithArrows := False;
+                    Quad.SignalFocus := False;}
                     Quad.Hint := '5408';
                     Quad.Tag := I+1;
-                    Notify:=AcceptEdit;
-                   end;*)
+                    { Notify:=AcceptEdit; }
+                   end;
                  end;
                  Edit.SetBounds(X,Y,J,LineHeight);
                  Edit.Parent:=SB;
