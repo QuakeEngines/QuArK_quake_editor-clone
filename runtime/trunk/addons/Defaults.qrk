@@ -30,6 +30,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.27  2000/06/04 15:52:52  alexander
+//added: origin default texture entry for both SoF and KingPin
+//fixed: wrong default texture for SoF
+//
 //Revision 1.26  2000/05/21 01:20:15  tiglari
 //Added cap duplicator specifics
 //
@@ -551,9 +555,12 @@ QQRKSRC1
         VISCmd = "-vis"
         LIGHT1 = "Q3MAP.EXE"
         LIGHTCmd = "-light"
+        BSPC1 = "BSPC.EXE"
+        BSPCCmd = ""
         QBSPDesc = "Q3MAP"
         VISDesc = "Q3MAP w/vis"
         LIGHTDesc = "Q3MAP w/light"
+        BSPCDesc = "BSPC -bsp2aas"
         BaseDir = "baseq3"
         tmpQuArK = "tmpQuArK"
         Palette = ":pics/colormap.pcx"
@@ -1805,6 +1812,15 @@ QQRKSRC1
         DefExt = "exe"
       }
       LIGHTCmd: = {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      BSPC1: = {
+        Typ = "EP"    // edit path to file
+        Txt = "Path to bspc tool"
+        DefExt = "exe"
+      }
+      BSPCCmd: = {
         Typ = "E"
         Txt = "...command-line parameters"
       }
