@@ -1,8 +1,12 @@
 QQRKSRC1
 // STVEF definition file for Quark
+
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2001/02/11 11:24:48  decker_dk
+//Moved from addons directory
+//
 //Revision 1.1  2000/10/15 16:49:12  alexander
 //rename StarTrek EF to STVEF
 //
@@ -13,7 +17,7 @@ QQRKSRC1
 //new: StarTrek Voyager Elite Force Support file
 //
 //
-// 
+//
 //template 2000-09-17
 //
 {

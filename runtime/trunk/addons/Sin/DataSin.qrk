@@ -1,31 +1,10 @@
 QQRKSRC1
-//**************************************************************************
-//QuArK -- Quake Army Knife -- 3D game editor
-//Copyright (C) 1996-99 Armin Rigo
-//
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either version 2
-//of the License, or (at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-//Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-//or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-//See also http://www.planetquake.com/quark
-//**************************************************************************
-
 // Configuration file for Sin
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
 
-//    Version 5.11
 // modified by tiglari with textures and entities
 //  & lots of help & inputs from Eutectic
 
@@ -23762,12 +23741,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -23807,12 +23786,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -23832,12 +23811,12 @@ QQRKSRC1
      angles: =
         {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -23857,12 +23836,12 @@ QQRKSRC1
      angles: =
         {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -23885,12 +23864,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -23913,12 +23892,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -24104,7 +24083,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "set this to brush faces 'group' name in surface inspector (default 0)."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_OFF"
@@ -24143,12 +24122,12 @@ QQRKSRC1
      target: =
         {Txt = "&" Hint = "point this to a func_camera or func_securitycamera entity."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="VISIBLE"
         Hint="trigger brush will be both visible and solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
@@ -24235,17 +24214,17 @@ QQRKSRC1
      health: =
         {Txt = "&" Hint = "how much damage needed to kill."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not hurt player"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="NOT_MONSTERS"
         Hint="trigger does not hurt monster"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
@@ -24296,22 +24275,22 @@ QQRKSRC1
      noise: =
         {Txt = "&" Hint = "no hint yet1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="INVISIBLE"
         Hint="trigger will still be solid but not visible"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to damage caused by players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to damage caused by monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="ACCUMULATIVE"
@@ -24534,22 +24513,22 @@ QQRKSRC1
      message: =
         {Txt = "&" Hint = "text string to print on the screen when the trigger is activated. Trigger also makes a clicking sound."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOTOUCH"
         Hint="this makes the trigger non-solid when "$22"health"$22" is set"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
@@ -24611,32 +24590,32 @@ QQRKSRC1
       Items="120) gunsmoke" $0D "121) blood" $0D "123) orangeglow" $0D "124) blueyellow" $0D "125) debris trail" $0D "128) oil" $0D "129) waterspray"
       values="120" $0D "121" $0D "123" $0D "124" $0D "125" $0D "128" $0D "129"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOSOUND"
         Hint="no sound will be played"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
         Hint="trigger will respond to projectiles (rockets, grenades, mines)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="RANDSTYLE"
         Hint="particles will be set to random colors in the particlestyle"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="BRIGHT"
@@ -24663,17 +24642,17 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction in which the entities are pushed (-1 is up, -2 is down, default -1)."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not push players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="NOT_MONSTERS"
         Hint="trigger will not push monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="NOT_PROJECTILES"
@@ -24785,37 +24764,37 @@ QQRKSRC1
       Items="120) gunsmoke" $0D "121) blood" $0D "123) orangeglow" $0D "124) blueyellow" $0D "125) debris trail" $0D "128) oil" $0D "129) waterspray"
       values="120" $0D "121" $0D "123" $0D "124" $0D "125" $0D "128" $0D "129"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_ON"
         Hint="particle effect will initially be on and turn off when triggered"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOSOUND"
         Hint="no sound will be played"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
         Hint="trigger will respond to projectiles (rockets, grenades, mines)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="RANDSTYLE"
         Hint="particles will be set to random colors in the particlestyle"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="BRIGHT"
@@ -24864,22 +24843,22 @@ QQRKSRC1
      mindelay: =
         {Txt = "&" Hint = "minimum delay between sounds (default 3)."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="RELIABLE"
         Hint="should only be set for crucial voice-overs or sounds"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
@@ -24962,22 +24941,22 @@ QQRKSRC1
     trigger_secret:form =
     {
      Help = "Variable size secret counter trigger. Automaticall" $0D "  sets and increments the script variables level.total_secret" $0D "  and level.found_secrets.  Triggers once, then removes itself" $0D "  Make one for each secret in your map."
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOTOUCH"
         Hint="this makes the trigger non-solid when "$22"health"$22" is set"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
@@ -25042,37 +25021,37 @@ QQRKSRC1
      noise: =
         {Txt = "&" Hint = "sound (.wav file) to play."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBIENT_ON"
         Hint="ambient sounds start on and toggle on/off each time the speaker is triggered"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="RELIABLE"
         Hint="should only be set for crucial voice-overs or sounds"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
         Hint="trigger will respond to projectiles (rockets, grenades, mines)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="AMBIENT_OFF"
         Hint="ambient sounds start off and toggle on/off each time the speaker is triggered (default)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="TOGGLE"
@@ -25120,17 +25099,17 @@ QQRKSRC1
      thread: =
         {Txt = "&" Hint = "name of thread to call. This can be in a different script file as well by using the '::' notation."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="trigger does not respond to players"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
         Hint="trigger will respond to monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="PROJECTILES"
@@ -25185,17 +25164,17 @@ QQRKSRC1
      message: =
         {Txt = "&" Hint = "text string to print on the screen every time the trigger is used. Trigger also makes a clicking sound."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="VISIBLE"
         Hint="trigger brush will be both visible and solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="NOT_PLAYERS"
         Hint="doesn't respond to player"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="MONSTERS"
@@ -25274,12 +25253,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25394,12 +25373,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25451,12 +25430,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25664,12 +25643,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25716,12 +25695,12 @@ QQRKSRC1
      angles: =
         {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25741,12 +25720,12 @@ QQRKSRC1
      angles: =
         {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25787,12 +25766,12 @@ QQRKSRC1
      killtarget: =
         {Txt = "&" Hint = "targeted object disappears when fires."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25824,12 +25803,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25863,12 +25842,12 @@ QQRKSRC1
      angles: =
         {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25938,12 +25917,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -25990,12 +25969,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26015,12 +25994,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26049,12 +26028,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26074,12 +26053,12 @@ QQRKSRC1
      killtarget: =
         {Txt = "&" Hint = "targeted object disappears when fires."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26102,12 +26081,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26165,12 +26144,12 @@ QQRKSRC1
      angles: =
         {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26216,12 +26195,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "alter size, default=1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOT_SOLID"
         Hint="object is not solid"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOT_DAMAGABLE"
@@ -26264,7 +26243,7 @@ QQRKSRC1
      soundtrack: =
         {Txt = "&" Hint = "name of .mus music configuration file to use for map. Music files are in the base/music folder and the file extension must be omitted (default none)."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="CINEMATIC"

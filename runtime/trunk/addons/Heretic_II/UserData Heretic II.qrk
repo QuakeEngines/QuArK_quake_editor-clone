@@ -2,6 +2,10 @@ QQRKSRC1
 // This file has been written by QuArK Version 5.2
 // It's the text version of file: UserData Heretic II.qrk
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+
 {
   Description = "Custom configuration file for Heretic II."
   MapObjPanel.qrk =

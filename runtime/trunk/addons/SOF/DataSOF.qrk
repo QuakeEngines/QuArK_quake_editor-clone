@@ -1,8 +1,12 @@
 QQRKSRC1
 // Soldier of Fortune definition file for Quark
+
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2001/02/11 11:31:42  decker_dk
+//Moved from addons directory
+//
 //Revision 1.14  2001/01/30 19:09:17  decker_dk
 //Texture-links for 1.06 pak2.pak supplied by Sniper-HQ@gmx.de
 //

@@ -1,33 +1,6 @@
 QQRKSRC1
-//**************************************************************************
-//QuArK -- Quake Army Knife -- 3D game editor
-//Copyright (C) 1996-99 Armin Rigo
-//
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either version 2
-//of the License, or (at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-//Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-//or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-//See also http://www.planetquake.com/quark
-//**************************************************************************
-
 // Configuration file for Hexen II
 
-
-//    Version 5.11
-//
-//
 //    This file contains :
 //
 //    * List of Hexen II entities
@@ -47,6 +20,10 @@ QQRKSRC1
 //    Nov 17 1998: some omissions restored by tiglari
 //
 //    See comments in file Defaults.qrk.
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
 
 {
   QuArKProtected = "1"
@@ -203,19 +180,19 @@ QQRKSRC1
 
 
      Player Starts.qtxfolder = {
-       info_player_coop:e = 
+       info_player_coop:e =
        {
          origin = "0 0 0"
          angle = "360"
          ;desc = "potential spawning position for coop games"
        }
-       info_player_deathmatch:e = 
+       info_player_deathmatch:e =
        {
          origin = "0 0 0"
          angle = "360"
          ;desc = "potential spawning position for deathmatch games"
        }
-       info_player_start:e = 
+       info_player_start:e =
        {
          origin = "0 0 0"
          angle = "360"
@@ -223,47 +200,47 @@ QQRKSRC1
        }
      }
      Items.qtxfolder = {
-       item_armor_amulet:e = 
+       item_armor_amulet:e =
        {
          origin = "0 0 0"
          ;desc = "Player gets some armour, depending on class"
        }
-       item_armor_bracer:e = 
+       item_armor_bracer:e =
        {
          origin = "0 0 0"
          ;desc = "Player gets some armour, depending on class"
        }
-       item_armor_breastplate:e = 
+       item_armor_breastplate:e =
        {
          origin = "0 0 0"
          ;desc = "Player gets some armour, depending on class"
        }
-       item_armor_helmet:e = 
+       item_armor_helmet:e =
        {
          origin = "0 0 0"
          ;desc = "Player gets some armour, depending on class"
        }
-       item_health:e = 
+       item_health:e =
        {
          origin = "0 0 0"
          ;desc = "Crystal Vial, Player is given 10 health instantly"
        }
-       item_mana_blue:e = 
+       item_mana_blue:e =
        {
          origin = "0 0 0"
          ;desc = "Player is given 15 blue mana instantly"
        }
-       item_mana_both:e = 
+       item_mana_both:e =
        {
          origin = "0 0 0"
          ;desc = "Player is given 15 green and 10 blue mana instantly"
        }
-       item_mana_green:e = 
+       item_mana_green:e =
        {
          origin = "0 0 0"
          ;desc = "Player is given 15 green mana instantly"
        }
-       item_spawner:e = 
+       item_spawner:e =
        {
          origin = "0 0 0"
          ;desc = "Artifact spawner"
@@ -271,143 +248,143 @@ QQRKSRC1
        }
      }
      Artifacts and Rings.qtxfolder = {
-       art_HealthBoost:e = 
+       art_HealthBoost:e =
        {
          origin = "0 0 0"
          ;desc = "Quartz Flask artifact (Health Boost)"
        }
-       art_SuperHBoost:e = 
+       art_SuperHBoost:e =
        {
          origin = "0 0 0"
          ;desc = "Mystic Urn artifact (Super Health Boost)"
        }
-       art_blastradius:e = 
+       art_blastradius:e =
        {
          origin = "0 0 0"
          ;desc = "Disk of Repulsion artifact"
        }
-       art_cubeofforce:e = 
+       art_cubeofforce:e =
        {
          origin = "0 0 0"
          ;desc = "Cube Of Force artifact"
        }
-       art_glyph:e = 
+       art_glyph:e =
        {
          origin = "0 0 0"
          ;desc = "Glyph of the Ancients artifact"
        }
-       art_haste:e = 
+       art_haste:e =
        {
          origin = "0 0 0"
          ;desc = "Boots of Speed artifact"
        }
-       art_invincibility:e = 
+       art_invincibility:e =
        {
          origin = "0 0 0"
          ;desc = "Icon of the Defender (Invincibility) artifact"
        }
-       art_invisibility:e = 
+       art_invisibility:e =
        {
          origin = "0 0 0"
          ;desc = "Invisibility Sphere artifact"
        }
-       art_manaboost:e = 
+       art_manaboost:e =
        {
          origin = "0 0 0"
          ;desc = "Krater of  Might artifact"
        }
-       art_polymorph:e = 
+       art_polymorph:e =
        {
          origin = "0 0 0"
          ;desc = "Seal of the Ovinimancer artifact"
        }
-       art_summon:e = 
+       art_summon:e =
        {
          origin = "0 0 0"
          ;desc = "Stone of Summoning artifact"
        }
-       art_teleport:e = 
+       art_teleport:e =
        {
          origin = "0 0 0"
          ;desc = "Chaos Device artifact"
        }
-       art_tomeofpower:e = 
+       art_tomeofpower:e =
        {
          origin = "0 0 0"
          ;desc = "Tome of Power artifact"
        }
-       art_torch:e = 
+       art_torch:e =
        {
          origin = "0 0 0"
          ;desc = "torch artifact"
        }
-       Ring_Flight:e = 
+       Ring_Flight:e =
        {
          origin = "0 0 0"
          ;desc = "Ring of Flight"
        }
-       Ring_Regeneration:e = 
+       Ring_Regeneration:e =
        {
          origin = "0 0 0"
          ;desc = "Ring of Regeneration (regenerates health)"
        }
-       Ring_Turning:e = 
+       Ring_Turning:e =
        {
          origin = "0 0 0"
          ;desc = "Ring of Turning (deflects attacks)"
        }
-       Ring_WaterBreathing:e = 
+       Ring_WaterBreathing:e =
        {
          origin = "0 0 0"
          ;desc = "Ring of Water Breathing"
        }
      }
      Weapons.qtxfolder = {
-       wp_weapon2:e = 
+       wp_weapon2:e =
        {
          origin = "0 0 0"
          ;desc = "In world weapon 2 pickup for single player mode"
        }
-       wp_weapon3:e = 
+       wp_weapon3:e =
        {
          origin = "0 0 0"
          ;desc = "In world weapon 3 pickup for single player mode"
        }
-       wp_weapon4_head:e = 
+       wp_weapon4_head:e =
        {
          origin = "0 0 0"
          ;desc = "In world weapon 4 pickup (staff head) for single player mode"
        }
-       wp_weapon4_staff:e = 
+       wp_weapon4_staff:e =
        {
          origin = "0 0 0"
          ;desc = "In world weapon 4 pickup (staff) for single player mode"
        }
      }
      Active Brushes.qtxfolder = {
-       breakable_brush:b = 
+       breakable_brush:b =
        {
          ;desc = "Breakable window or wall"
          ;incl = "defpoly"
        }
-       brush_pushable:b = 
+       brush_pushable:b =
        {
          ;desc = "A brush the player can push"
          ;incl = "defpoly"
        }
-       func_crusher:b = 
+       func_crusher:b =
        {
          ;desc = "Makes hamburger."
          angle = "360"
          ;incl = "defpoly"
        }
-       func_door:b = 
+       func_door:b =
        {
          ;desc = "Your basic sliding door."
          angle = "360"
          ;incl = "defpoly"
        }
-       func_door_rotating:b = 
+       func_door_rotating:b =
        {
          ;desc = "Rotating door, including trapdoors."
          flags = "90"
@@ -449,29 +426,29 @@ QQRKSRC1
         }
          ;incl = "defpoly"
        }
-       func_door_secret:b = 
+       func_door_secret:b =
        {
          ;desc = "Basic secret door. Slides back, then to the side."
          angle = "360"
          ;incl = "defpoly"
        }
-       func_illusionary:b = 
+       func_illusionary:b =
        {
          ;desc = "A simple entity that looks solid but lets you walk through it."
          ;incl = "defpoly"
        }
-       func_newplat:b = 
+       func_newplat:b =
        {
          ;desc = "Two-way platform."
          height = ""
          ;incl = "defpoly"
        }
-       func_plat:b = 
+       func_plat:b =
        {
          ;desc = "Elevator"
          ;incl = "defpoly"
        }
-       func_rotating:b = 
+       func_rotating:b =
        {
          ;desc = "Stuff that spins."
         origin:p =
@@ -512,79 +489,79 @@ QQRKSRC1
         }
          ;incl = "defpoly"
        }
-       func_train:b = 
+       func_train:b =
        {
          ;desc = "Trains are moving platforms that players can ride."
          target = ""
          targetname = ""
          ;incl = "defpoly"
        }
-       func_wall:b = 
+       func_wall:b =
        {
          ;desc = "Wall that can glow or be translucent.  Not used in the maps."
          ;incl = "defpoly"
        }
-       plaque:b = 
+       plaque:b =
        {
          ;desc = "A plaque that a player can read"
          #message = ""
          ;incl = "defpoly"
        }
-       obj_ice:b = 
+       obj_ice:b =
        {
          ;desc = "Slippery, slidey ice"
          ;incl = "defpoly"
        }
      }
      Lights.qtxfolder = {
-       light:e = 
+       light:e =
        {
          origin = "0 0 0"
          ;desc = "Non-displayed fading light."
        }
-       light_flame_large_yellow:e = 
+       light_flame_large_yellow:e =
        {
          origin = "0 0 0"
          ;desc = "Large yellow flame"
          angle = "360"
        }
-       light_flame_small_yellow:e = 
+       light_flame_small_yellow:e =
        {
          origin = "0 0 0"
          ;desc = "Small yellow flame ball"
          angle = "360"
        }
-       light_gem:e = 
+       light_gem:e =
        {
          origin = "0 0 0"
          ;desc = "A gem that displays light."
          angle = "360"
        }
-       light_torch_castle:e = 
+       light_torch_castle:e =
        {
          origin = "0 0 0"
          ;desc = "The Castle style torch that displays light"
          angle = "360"
        }
-       light_torch_eqypt:e = 
+       light_torch_eqypt:e =
        {
          origin = "0 0 0"
          ;desc = "An Egyptian style torch that displays light"
          angle = "360"
        }
-       light_torch_meso:e = 
+       light_torch_meso:e =
        {
          origin = "0 0 0"
          ;desc = "The Meso style torch that displays light"
          angle = "360"
        }
-       light_torch_rome:e = 
+       light_torch_rome:e =
        {
          origin = "0 0 0"
          ;desc = "The Roman style torch that displays light"
          angle = "360"
        }
-       light_torch_small_walltorch:e = 
+       light_torch_small_walltorch:e =
        {
          origin = "0 0 0"
          ;desc = "Short wall torch"
@@ -592,12 +569,12 @@ QQRKSRC1
        }
      }
      Sounds & Environment.qtxfolder = {
-       fx_smoke_generator:e = 
+       fx_smoke_generator:e =
        {
          origin = "0 0 0"
          ;desc = "Generates smoke puffs, in various styles"
        }
-       misc_fountain:e = 
+       misc_fountain:e =
        {
          origin = "0 0 0"
          ;desc = "Generates a water-spray"
@@ -605,44 +582,44 @@ QQRKSRC1
          movedir = "1 1 1"
          angles = "0 0 0"
        }
-       monster_rat:e = 
+       monster_rat:e =
        {
          origin = "0 0 0"
          ;desc = "One rat, appears and flees when triggered"
          targetname = ""
        }
-       monster_ratnest:e = 
+       monster_ratnest:e =
        {
          origin = "0 0 0"
          ;desc = "A group of 3 to 6 rats that appear and flee when triggered"
          targetname = ""
        }
-       monster_fish:e = 
+       monster_fish:e =
        {
          origin = "0 0 0"
          ;desc = "Ambient Fish"
          angle = "360"
        }
-       player_sheep:e = 
+       player_sheep:e =
        {
          origin = "0 0 0"
          ;desc = "A sheep player model"
          angle = "360"
        }
-       sound_ambient:e = 
+       sound_ambient:e =
        {
          origin = "0 0 0"
          ;desc = "Creates an ambient sound in the world."
          soundtype = ""
        }
-       sound_maker:e = 
+       sound_maker:e =
        {
          origin = "0 0 0"
          ;desc = "Makes sounds that can be triggered (not many in the game)."
          soundtype = ""
          targetname = ""
        }
-       weather_rain:b = 
+       weather_rain:b =
        {
          ;desc = "Nice rainstorm, looks cool"
          counter = ""
@@ -650,30 +627,30 @@ QQRKSRC1
        }
      }
      Traps & Gadgets.qtxfolder = {
-       light_thunderstorm:e = 
+       light_thunderstorm:e =
        {
          origin = "0 0 0"
          ;desc = "Thunder & lightning effects."
          targetname = ""
        }
-       misc_fireball:e = 
+       misc_fireball:e =
        {
          origin = "0 0 0"
          ;desc = "Lava Balls, Unfinished"
        }
-       obj_ballista:e = 
+       obj_ballista:e =
        {
          origin = "0 0 0"
          ;desc = "A ballista which is animated to shoot an arrow"
          angle = "360"
        }
-       obj_bell:e = 
+       obj_bell:e =
        {
          origin = "0 0 0"
          ;desc = "A big bell that rings when hit. "
          angle = "360"
        }
-       obj_catapult2:e = 
+       obj_catapult2:e =
        {
          origin = "0 0 0"
          ;desc = "Sheep were meant to fly."
@@ -681,56 +658,56 @@ QQRKSRC1
          health = ""
          speed = ""
        }
-       trap_fireball:e = 
+       trap_fireball:e =
        {
          origin = "0 0 0"
          ;desc = "Fireball shooter"
          angle = "360"
          targetname = ""
        }
-       trap_lightning:e = 
+       trap_lightning:e =
        {
          origin = "0 0 0"
          ;desc = "Generates a bolt of lightning which ends at the weather_lightning_end that is the target"
          targetname = ""
        }
-       trap_shooter:e = 
+       trap_shooter:e =
        {
          origin = "0 0 0"
          ;desc = "Continuously fires spikes."
          angle = "360"
        }
-       trap_spikeshooter:e = 
+       trap_spikeshooter:e =
        {
          origin = "0 0 0"
          ;desc = "When triggered, fires a spike in the direction set in QuakeEd."
          angle = "360"
          targetname = ""
        }
-       trap_spikeshooter_spray:e = 
+       trap_spikeshooter_spray:e =
        {
          origin = "0 0 0"
          ;desc = "Fires spikes somewhat randomly, seems unfinished"
        }
-       weather_lightning_end:e = 
+       weather_lightning_end:e =
        {
          origin = "0 0 0"
          ;desc = "Where the spark from weather_lightning_start will hit."
          targetname = ""
        }
-       weather_lightning_start:e = 
+       weather_lightning_start:e =
        {
          origin = "0 0 0"
          ;desc = "Generates a spark which ends at the weather_lightning_end that is the target"
          target = ""
        }
-       weather_sunbeam_end:e = 
+       weather_sunbeam_end:e =
        {
          origin = "0 0 0"
          ;desc = "Where sunbeam from weather_sunbeam_start will hit."
          targetname = ""
        }
-       weather_sunbeam_start:e = 
+       weather_sunbeam_start:e =
        {
          origin = "0 0 0"
          ;desc = "Generates a ray of sunlight which ends at the weather_sunbeam_end that is the target"
@@ -741,14 +718,14 @@ QQRKSRC1
        }
      }
      Triggers & Buttons.qtxfolder = {
-       func_button:b = 
+       func_button:b =
        {
          ;desc = "Upon touch, it moves & activates something, then returns."
          angle = "360"
          target = ""
          ;incl = "defpoly"
        }
-       func_pressure:b = 
+       func_pressure:b =
        {
          ;desc = "Like a button, but fires when enough mass is on it."
          angle = "360"
@@ -756,7 +733,7 @@ QQRKSRC1
          target = ""
          ;incl = "defpoly"
        }
-       func_angletrigger:b = 
+       func_angletrigger:b =
        {
          ;desc = "Rotates at certain intervals, and fires off when a set angle is met"
          abslight = ""
@@ -802,44 +779,44 @@ QQRKSRC1
          target = ""
          ;incl = "defpoly"
        }
-       info_teleport_destination:e = 
+       info_teleport_destination:e =
        {
          origin = "0 0 0"
          ;desc = "Teleport destination"
          targetname = ""
        }
-       puzzle_piece:e = 
+       puzzle_piece:e =
        {
          origin = "0 0 0"
          ;desc = "Puzzle Piece"
          netname = ""
          puzzle_id = ""
        }
-       puzzle_static_piece:e = 
+       puzzle_static_piece:e =
        {
          origin = "0 0 0"
          ;desc = "Object for used puzzle-pieces, in final display position."
          puzzle_id = ""
          targetname = ""
        }
-       trigger_activate:b = 
+       trigger_activate:b =
        {
          ;desc = "When used, toggles its target between on and off"
          target = ""
          ;incl = "defpoly"
        }
-       trigger_attack:b = 
+       trigger_attack:b =
        {
          ;desc = "Checks to see if a player touching it has tried to fire."
          target = ""
          ;incl = "defpoly"
        }
-       trigger_changelevel:b = 
+       trigger_changelevel:b =
        {
          ;desc = "When the player touches this, he gets sent to the map listed in the `map' variable."
          ;incl = "defpoly"
        }
-       trigger_check:b = 
+       trigger_check:b =
        {
          ;desc = "Checks to see if its child entities are active, and if they are, it triggers"
          netname = ""
@@ -847,7 +824,7 @@ QQRKSRC1
          targetname = ""
          ;incl = "defpoly"
        }
-       trigger_combination_assign:b = 
+       trigger_combination_assign:b =
        {
          ;desc = "For assigning a triggering sequence to an ordered trigger_counter."
          mangle = ""
@@ -856,58 +833,58 @@ QQRKSRC1
          wait = ""
          ;incl = "defpoly"
        }
-       trigger_control:b = 
+       trigger_control:b =
        {
          ;desc = "Takes over a ballista when the player is inside of it"
          target = ""
          ;incl = "defpoly"
        }
-       trigger_counter:b = 
+       trigger_counter:b =
        {
          ;desc = "Acts as an intermediary for an action that takes multiple inputs."
          target = ""
          targetname = ""
          ;incl = "defpoly"
        }
-       trigger_counter_reset:b = 
+       trigger_counter_reset:b =
        {
          ;desc = "This will reset a trigger_counter to start counting again as if it hasn't been used yet.  Useful for when you want a counter to count more than once but the counting can be interrupted."
          target = ""
          targetname = ""
          ;incl = "defpoly"
        }
-       trigger_crosslevel:b = 
+       trigger_crosslevel:b =
        {
          ;desc = "Fires triggers on other levels, via matching spawnflags"
          map = ""
          ;incl = "defpoly"
        }
-       trigger_crosslevel_target:b = 
+       trigger_crosslevel_target:b =
        {
          ;desc = "Triggered by a trigger_crosslevel elsewhere within a unit."
          target = ""
          ;incl = "defpoly"
        }
-       trigger_deactivate:b = 
+       trigger_deactivate:b =
        {
          ;desc = "When used, toggles its target between on and off"
          target = ""
          ;incl = "defpoly"
        }
-       trigger_hurt:b = 
+       trigger_hurt:b =
        {
          ;desc = "Any object touching this will be hurt"
          dmg = ""
          ;incl = "defpoly"
        }
-       trigger_interval:e = 
+       trigger_interval:e =
        {
          origin = "0 0 0"
          ;desc = "Triggers its targets at regular intervals"
          target = ""
          wait = ""
        }
-       trigger_message_transfer:b = 
+       trigger_message_transfer:b =
        {
          ;desc = "Shows player it's message, and transfers its own target-value to become the target-value of whatever triggered it."
          #message = ""
@@ -915,37 +892,37 @@ QQRKSRC1
          targetname = ""
          ;incl = "defpoly"
        }
-       trigger_monsterjump:b = 
+       trigger_monsterjump:b =
        {
          ;desc = "Some monsters that touch this will jump in the direction of the trigger's angle"
          ;incl = "defpoly"
        }
-       trigger_multiple:b = 
+       trigger_multiple:b =
        {
          ;desc = "Variable sized repeatable trigger.  Must be targeted at one or more entities."
          target = ""
          ;incl = "defpoly"
        }
-       trigger_once:b = 
+       trigger_once:b =
        {
          ;desc = "Variable sized trigger. Triggers once, then removes itself."
          target = ""
          ;incl = "defpoly"
        }
-       trigger_push:b = 
+       trigger_push:b =
        {
          ;desc = "Pushes the player in the direction set by angles"
          angle = "360"
          targetname = ""
          ;incl = "defpoly"
        }
-       trigger_quake:e = 
+       trigger_quake:e =
        {
          origin = "0 0 0"
          ;desc = "Earthquake effect"
          targetname = ""
        }
-       trigger_relay:b = 
+       trigger_relay:b =
        {
          ;desc = "This fixed size trigger cannot be touched, it can only be fired by other triggers"
         origin:p =
@@ -988,7 +965,7 @@ QQRKSRC1
          targetname = ""
          ;incl = "defpoly"
        }
-       trigger_teleport:b = 
+       trigger_teleport:b =
        {
          ;desc = "Any object touching this will be transported to the corresponding info_teleport_destination entity. "
          target = ""
@@ -996,58 +973,58 @@ QQRKSRC1
        }
      }
      Monsters.qtxfolder = {
-       func_monsterspawner:e = 
+       func_monsterspawner:e =
        {
          origin = "0 0 0"
          ;desc = "Spawns monsters, telefragging living occupants."
          angle = "360"
          targetname = ""
        }
-       func_monsterspawn_spot:e = 
+       func_monsterspawn_spot:e =
        {
          origin = "0 0 0"
          ;desc = "Spawnspot for func_monsterspawner.  Needs cnt field."
          aflag = ""
          spawnername = ""
        }
-       monster_archer:e = 
+       monster_archer:e =
        {
          origin = "0 0 0"
          ;desc = "The Archer Knight monster"
          angle = "360"
        }
-       monster_archer_lord:e = 
+       monster_archer_lord:e =
        {
          origin = "0 0 0"
          ;desc = "The Archer Lord monster"
          angle = "360"
        }
-       monster_eidolon:e = 
+       monster_eidolon:e =
        {
          origin = "0 0 0"
          angle = "360"
          target = ""
          targetname = ""
        }
-       monster_fallen_angel:e = 
+       monster_fallen_angel:e =
        {
          origin = "0 0 0"
          ;desc = "Fallen angel monster"
          angle = "360"
        }
-       monster_fallen_angel_lord:e = 
+       monster_fallen_angel_lord:e =
        {
          origin = "0 0 0"
          ;desc = "Fallen angel lord (translucent, powerful)"
          angle = "360"
        }
-       monster_golem_bronze:e = 
+       monster_golem_bronze:e =
        {
          origin = "0 0 0"
          ;desc = "Bronze Golem."
          angle = "360"
        }
-       monster_golem_crystal:e = 
+       monster_golem_crystal:e =
        {
          origin = "0 0 0"
          ;desc = "Crystal Golem."
@@ -1055,79 +1032,79 @@ QQRKSRC1
          target = ""
          targetname = ""
        }
-       monster_golem_iron:e = 
+       monster_golem_iron:e =
        {
          origin = "0 0 0"
          ;desc = "Iron Golem."
          angle = "360"
        }
-       monster_golem_stone:e = 
+       monster_golem_stone:e =
        {
          origin = "0 0 0"
          ;desc = "Stone Golem."
          angle = "360"
        }
-       monster_hydra:e = 
+       monster_hydra:e =
        {
          origin = "0 0 0"
          ;desc = "Hydra monster"
          angle = "360"
        }
-       monster_imp_fire:e = 
+       monster_imp_fire:e =
        {
          origin = "0 0 0"
          ;desc = "Grunt monster - common.  Shoots a fireball. "
          angle = "360"
        }
-       monster_imp_ice:e = 
+       monster_imp_ice:e =
        {
          origin = "0 0 0"
          ;desc = "Grunt monster - common.  Shoots multiple ice shards. "
          angle = "360"
        }
-       monster_medusa_green:e = 
+       monster_medusa_green:e =
        {
          origin = "0 0 0"
          ;desc = "The medusa monster with its nasty sharp pointy teeth"
          angle = "360"
        }
-       monster_mummy:e = 
+       monster_mummy:e =
        {
          origin = "0 0 0"
          ;desc = "No, it's not Keith Richards or Bob Dylan."
          angle = "360"
        }
-       monster_mummy_lord:e = 
+       monster_mummy_lord:e =
        {
          origin = "0 0 0"
          ;desc = "He's big, he's bad, he's wrapped in moldy bandages - he's the mummy."
          angle = "360"
        }
-       monster_scorpion_black:e = 
+       monster_scorpion_black:e =
        {
          origin = "0 0 0"
          ;desc = "Black scorpion."
          angle = "360"
        }
-       monster_scorpion_yellow:e = 
+       monster_scorpion_yellow:e =
        {
          origin = "0 0 0"
          ;desc = "Yellow scorpion."
          angle = "360"
        }
-       monster_skull_wizard:e = 
+       monster_skull_wizard:e =
        {
          origin = "0 0 0"
          ;desc = "A skull wizard"
          angle = "360"
        }
-       monster_skull_wizard_lord:e = 
+       monster_skull_wizard_lord:e =
        {
          origin = "0 0 0"
          ;desc = "A skull wizard lord"
          angle = "360"
        }
-       monster_snake:e = 
+       monster_snake:e =
        {
          origin = "0 0 0"
          ;desc = "Monster snake that comes to life and attacks"
@@ -1137,37 +1114,37 @@ QQRKSRC1
          target = ""
          targetname = ""
        }
-       monster_spider_red_large:e = 
+       monster_spider_red_large:e =
        {
          origin = "0 0 0"
          ;desc = "Large red spider."
          angle = "360"
        }
-       monster_spider_red_small:e = 
+       monster_spider_red_small:e =
        {
          origin = "0 0 0"
          ;desc = "Small red spider."
          angle = "360"
        }
-       monster_spider_yellow_large:e = 
+       monster_spider_yellow_large:e =
        {
          origin = "0 0 0"
          ;desc = "Large yellow spider."
          angle = "360"
        }
-       monster_spider_yellow_small:e = 
+       monster_spider_yellow_small:e =
        {
          origin = "0 0 0"
          ;desc = "Small yellow spider."
          angle = "360"
        }
-       monster_werejaguar:e = 
+       monster_werejaguar:e =
        {
          origin = "0 0 0"
          ;desc = "WereCat with jaguar skin"
          angle = "360"
        }
-       monster_werepanther:e = 
+       monster_werepanther:e =
        {
          origin = "0 0 0"
          ;desc = "WereCat with panther skin"
@@ -1175,79 +1152,79 @@ QQRKSRC1
        }
      }
      Moveable Objects.qtxfolder = {
-       obj_barrel:e = 
+       obj_barrel:e =
        {
          origin = "0 0 0"
          ;desc = "A barrel, just a plain old barrel"
          angle = "360"
        }
-       obj_barrel_exploding:e = 
+       obj_barrel_exploding:e =
        {
          origin = "0 0 0"
          ;desc = "An exploding barrel with red XXX on the side"
          angle = "360"
        }
-       obj_barrel_indestructible:e = 
+       obj_barrel_indestructible:e =
        {
          origin = "0 0 0"
          ;desc = "A barrel you just can't break"
          angle = "360"
        }
-       obj_barstool:e = 
+       obj_barstool:e =
        {
          origin = "0 0 0"
          ;desc = "A bar stool - Drinks on the house!"
          angle = "360"
        }
-       obj_cart:e = 
+       obj_cart:e =
        {
          origin = "0 0 0"
          ;desc = "A cart "
          angle = "360"
        }
-       obj_cauldron:e = 
+       obj_cauldron:e =
        {
          origin = "0 0 0"
          ;desc = "A cauldron"
          angle = "360"
        }
-       obj_chair:e = 
+       obj_chair:e =
        {
          origin = "0 0 0"
          ;desc = "A wooden chair. "
          angle = "360"
        }
-       obj_chest1:e = 
+       obj_chest1:e =
        {
          origin = "0 0 0"
          ;desc = "A treasure chest (2 skins)"
          angle = "360"
        }
-       obj_chest2:e = 
+       obj_chest2:e =
        {
          origin = "0 0 0"
          ;desc = "A treasure chest on legs (2 skins)"
          angle = "360"
        }
-       obj_chest3:e = 
+       obj_chest3:e =
        {
          origin = "0 0 0"
          ;desc = "A treasure chest on legs"
          angle = "360"
        }
-       obj_pot1:e = 
+       obj_pot1:e =
        {
          origin = "0 0 0"
          ;desc = "A clay pot with handles"
          angle = "360"
        }
-       obj_pot2:e = 
+       obj_pot2:e =
        {
          origin = "0 0 0"
          ;desc = "A pot with gently curved sides"
          angle = "360"
        }
-       obj_pot3:e = 
+       obj_pot3:e =
        {
          origin = "0 0 0"
          ;desc = "A pot with a sharply curved sides"
@@ -1255,61 +1232,61 @@ QQRKSRC1
        }
      }
      Grisly Stuff.qtxfolder = {
-       obj_bonepile:e = 
+       obj_bonepile:e =
        {
          origin = "0 0 0"
          ;desc = "A pile of bones."
          angle = "360"
        }
-       obj_corpse1:e = 
+       obj_corpse1:e =
        {
          origin = "0 0 0"
          ;desc = "A nude male body laying face down"
          angle = "360"
        }
-       obj_corpse2:e = 
+       obj_corpse2:e =
        {
          origin = "0 0 0"
          ;desc = "A male body with pants on laying face up"
          angle = "360"
        }
-       obj_playerhead_assassin:e = 
+       obj_playerhead_assassin:e =
        {
          origin = "0 0 0"
          ;desc = "The head of the assassin."
          angle = "360"
        }
-       obj_playerhead_crusader:e = 
+       obj_playerhead_crusader:e =
        {
          origin = "0 0 0"
          ;desc = "The head of the crusader."
          angle = "360"
        }
-       obj_playerhead_necromancer:e = 
+       obj_playerhead_necromancer:e =
        {
          origin = "0 0 0"
          ;desc = "The head of the necromancer."
          angle = "360"
        }
-       obj_playerhead_paladin:e = 
+       obj_playerhead_paladin:e =
        {
          origin = "0 0 0"
          ;desc = "The head of the paladin."
          angle = "360"
        }
-       obj_skull:e = 
+       obj_skull:e =
        {
          origin = "0 0 0"
          ;desc = "A skull, suitable for over the fireplace or perhaps a colorful holiday display"
          angle = "360"
        }
-       obj_skull_stick2:e = 
+       obj_skull_stick2:e =
        {
          origin = "0 0 0"
          ;desc = "Two skulls on a stick"
          angle = "360"
        }
-       obj_skullstick:e = 
+       obj_skullstick:e =
        {
          origin = "0 0 0"
          ;desc = "A skull on a stick - mmm,mmm, good"
@@ -1317,73 +1294,73 @@ QQRKSRC1
        }
      }
      Outdoor Stuff.qtxfolder = {
-       obj_bush1:e = 
+       obj_bush1:e =
        {
          origin = "0 0 0"
          ;desc = "A small round bush"
          angle = "360"
        }
-       obj_fence:e = 
+       obj_fence:e =
        {
          origin = "0 0 0"
          ;desc = "A section of fence"
          angle = "360"
        }
-       obj_flag:e = 
+       obj_flag:e =
        {
          origin = "0 0 0"
          ;desc = "A flag that wave in the breeze"
          angle = "360"
        }
-       obj_fountain:e = 
+       obj_fountain:e =
        {
          origin = "0 0 0"
          ;desc = "A water fountain"
          angle = "360"
        }
-       obj_hedge1:e = 
+       obj_hedge1:e =
        {
          origin = "0 0 0"
          ;desc = "A hedge that looks like an X-mas tree"
          angle = "360"
        }
-       obj_hedge2:e = 
+       obj_hedge2:e =
        {
          origin = "0 0 0"
          ;desc = "A hedge that is square and of medium height"
          angle = "360"
        }
-       obj_hedge3:e = 
+       obj_hedge3:e =
        {
          origin = "0 0 0"
          ;desc = "A hedge that is tall and thin"
          angle = "360"
        }
-       obj_seaweed:e = 
+       obj_seaweed:e =
        {
          origin = "0 0 0"
          ;desc = "An animate seaweed that sways from side to side."
          angle = "360"
        }
-       obj_tombstone1:e = 
+       obj_tombstone1:e =
        {
          origin = "0 0 0"
          ;desc = "A tombstone in the shape of a cross"
          angle = "360"
        }
-       obj_tombstone2:e = 
+       obj_tombstone2:e =
        {
          origin = "0 0 0"
          ;desc = "A tombstone with a rounded top"
          angle = "360"
        }
-       obj_tree:e = 
+       obj_tree:e =
        {
          origin = "0 0 0"
          ;desc = "A tree that has no leaves"
          angle = "360"
        }
-       obj_tree2:e = 
+       obj_tree2:e =
        {
          origin = "0 0 0"
          ;desc = "A tree with a round top of leaves "
@@ -1391,140 +1368,140 @@ QQRKSRC1
        }
      }
      Misc Stuff.qtxfolder = {
-       obj_beefslab:e = 
+       obj_beefslab:e =
        {
          origin = "0 0 0"
          ;desc = "A slab of beef."
          angle = "360"
        }
-       obj_bench:e = 
+       obj_bench:e =
        {
          origin = "0 0 0"
          ;desc = "A wooden bench "
          angle = "360"
        }
-       obj_book_closed:e = 
+       obj_book_closed:e =
        {
          origin = "0 0 0"
          ;desc = "A book that is closed"
          angle = "360"
        }
-       obj_book_open:e = 
+       obj_book_open:e =
        {
          origin = "0 0 0"
          ;desc = "A book that is open"
          angle = "360"
        }
-       obj_pew:e = 
+       obj_pew:e =
        {
          origin = "0 0 0"
          ;desc = "A church pew - like you might find in a church."
          angle = "360"
        }
-       obj_plant_generic:e = 
+       obj_plant_generic:e =
        {
          origin = "0 0 0"
          ;desc = "A generic plant that should have some kind of pot placed below it."
          angle = "360"
        }
-       obj_plant_meso:e = 
+       obj_plant_meso:e =
        {
          origin = "0 0 0"
          ;desc = "A plant for the Mesoamerican level (has little pot)."
          angle = "360"
        }
-       obj_plant_rome:e = 
+       obj_plant_rome:e =
        {
          origin = "0 0 0"
          ;desc = "A plant for the Rome area (has tall pot)."
          angle = "360"
        }
-       obj_sword:e = 
+       obj_sword:e =
        {
          origin = "0 0 0"
          ;desc = "A sword "
          angle = "360"
        }
-       obj_webs:e = 
+       obj_webs:e =
        {
          origin = "0 0 0"
          ;desc = "Big webby stuff."
        }
      }
      Statues.qtxfolder = {
-       obj_statue_angel:e = 
+       obj_statue_angel:e =
        {
          origin = "0 0 0"
          ;desc = "A statue of an angle praying."
          angle = "360"
        }
-       obj_statue_athena:e = 
+       obj_statue_athena:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of a Athena"
          angle = "360"
        }
-       obj_statue_caesar:e = 
+       obj_statue_caesar:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of a Caesar Romero"
          angle = "360"
        }
-       obj_statue_king:e = 
+       obj_statue_king:e =
        {
          origin = "0 0 0"
          ;desc = "A statue of a king holding a sword in front of him."
          angle = "360"
        }
-       obj_statue_lion:e = 
+       obj_statue_lion:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of a lion."
          angle = "360"
        }
-       obj_statue_mars:e = 
+       obj_statue_mars:e =
        {
          origin = "0 0 0"
          ;desc = "A statue of Mars."
          angle = "360"
        }
-       obj_statue_mummy:e = 
+       obj_statue_mummy:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of the mummy monster"
          angle = "360"
        }
-       obj_statue_mummy_head:e = 
+       obj_statue_mummy_head:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of the nubis head"
          angle = "360"
        }
-       obj_statue_neptune:e = 
+       obj_statue_neptune:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of Neptune (I think)"
          angle = "360"
        }
-       obj_statue_olmec:e = 
+       obj_statue_olmec:e =
        {
          origin = "0 0 0"
          ;desc = "A olmec statue, of course. What the heck is an olmec?"
          angle = "360"
        }
-       obj_statue_snake:e = 
+       obj_statue_snake:e =
        {
          origin = "0 0 0"
          ;desc = "The front of a snake"
          angle = "360"
        }
-       obj_statue_snake_coil:e = 
+       obj_statue_snake_coil:e =
        {
          origin = "0 0 0"
          ;desc = "Statue of a coiled snake (just like the one that comes to life) but this one doesn't come to life."
          angle = "360"
        }
-       obj_statue_tut:e = 
+       obj_statue_tut:e =
        {
          origin = "0 0 0"
          ;desc = "An Egyptian statue of a guy with a flat head hat"
@@ -1532,30 +1509,30 @@ QQRKSRC1
        }
      }
      Riders & stuff.qtxfolder = {
-       obj_chaos_orb:e = 
+       obj_chaos_orb:e =
        {
          origin = "0 0 0"
          netname = ""
        }
-       rider_death:e = 
+       rider_death:e =
        {
          origin = "0 0 0"
          angle = "360"
          map = ""
          target = ""
        }
-       rider_famine:e = 
+       rider_famine:e =
        {
          origin = "0 0 0"
          angle = "360"
          map = ""
          target = ""
        }
-       rider_path:e = 
+       rider_path:e =
        {
          origin = "0 0 0"
        }
-       rider_pestilence:e = 
+       rider_pestilence:e =
        {
          origin = "0 0 0"
          angle = "360"
@@ -1563,7 +1540,7 @@ QQRKSRC1
          target = ""
          targetname = ""
        }
-       rider_quake:b = 
+       rider_quake:b =
        {
          abslight = ""
         origin:p =
@@ -1605,25 +1582,25 @@ QQRKSRC1
          rt_chance = ""
          ;incl = "defpoly"
        }
-       rider_quake_center:e = 
+       rider_quake_center:e =
        {
          origin = "0 0 0"
          rt_chance = ""
          targetname = ""
        }
-       rider_trigger_multiple:e = 
+       rider_trigger_multiple:e =
        {
          origin = "0 0 0"
          rt_chance = ""
          target = ""
        }
-       rider_trigger_once:b = 
+       rider_trigger_once:b =
        {
          rt_chance = ""
          target = ""
          ;incl = "defpoly"
        }
-       rider_war:e = 
+       rider_war:e =
        {
          origin = "0 0 0"
          map = ""
@@ -1632,32 +1609,32 @@ QQRKSRC1
        }
      }
      Misc.qtxfolder = {
-       camera_remote:e = 
+       camera_remote:e =
        {
          origin = "0 0 0"
          ;desc = "A camera which the player sees through when triggered. "
          target = ""
          targetname = ""
        }
-       info_null:e = 
+       info_null:e =
        {
          origin = "0 0 0"
          ;desc = "Used as a positional target for spotlights, etc."
          targetname = ""
        }
-       path_corner:e = 
+       path_corner:e =
        {
          origin = "0 0 0"
          ;desc = "Destination point for monsters and trains; can specify next" $0D "destination as its target-value"
          targetname = ""
        }
-       target_null:e = 
+       target_null:e =
        {
          origin = "0 0 0"
          ;desc = "Something to aim the camera at. "
          targetname = ""
        }
-       worldspawn:e = 
+       worldspawn:e =
        {
          origin = "0 0 0"
          ;desc = "Only used for the world entity, specifies various useful things."
@@ -1710,7 +1687,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1728,7 +1705,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1746,7 +1723,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1764,7 +1741,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1782,7 +1759,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1800,7 +1777,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1818,7 +1795,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1836,7 +1813,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1854,7 +1831,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1872,7 +1849,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1890,7 +1867,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1908,7 +1885,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1926,7 +1903,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1944,7 +1921,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1962,7 +1939,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1980,7 +1957,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -1998,7 +1975,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -2034,17 +2011,17 @@ QQRKSRC1
       Cap="Push"
       Form="containment:form"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="TRANSLUCENT"
         Hint="brush is translucent"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="INVINCIBLE"
         Hint="brush breaks from targetting, but not bashing"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="INVISIBLE"
@@ -2225,17 +2202,17 @@ QQRKSRC1
      #msg2: =
         {Txt = "&" Hint = "message displayed when pushed but not activated"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="DEACTIVATED"
         Hint="must be activated by trigger_activate"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="FIRE_ONLY"
         Hint="must be shot or bashed, not just pushed"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="FIRE_MULTIPLE"
@@ -2268,22 +2245,22 @@ QQRKSRC1
      lip: =
         {Txt = "&" Hint = "amount left over after movement along some dimension of object, default = 4"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="MULTIPLE"
         Hint="set: each triggering makes one movement; unset: toggles"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="SLIDE"
         Hint="door-style accelerating movement"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="START_OPEN"
         Hint="starts in post-movement position"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="STOP_OPEN"
@@ -2342,42 +2319,42 @@ QQRKSRC1
      level: =
         {Txt = "&" Hint = "distance door moves; default=size in dir. of move. - lip"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_OPEN"
         Hint="starts in post-movement position, & operates in reverse"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="REVERSE"
         Hint="offsets angle by 180 deg. (for linked doors)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="DOOR_DONT_LINK"
         Hint="don't link to any other touching door"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="TOGGLE"
         Hint="needs trigger for closing as well as opening"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="SLIDE"
         Hint="? prolly obsolete"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="NORMAL_MOVE"
         Hint="constant rather than accelerating movement"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="REMOVE_PP"
         Hint="for puzzle_doors, takes puzzle_piece off player"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="NO_PP"
@@ -2433,42 +2410,42 @@ QQRKSRC1
      flags2: =
         {Txt = "&" Hint = "damage when touched"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_OPEN"
         Hint="starts in post-movement position, & operates in reverse"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="REVERSE"
         Hint="offsets angle by 180 deg. (for linked doors)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="DOOR_DONT_LINK"
         Hint="don't link to any other touching door"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="REMOVE_PP"
         Hint="for puzzle_doors, takes puzzle_piece off player"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="NO_PP"
         Hint="won't open if player has puzzle_pieces."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="TOGGLE"
         Hint="needs trigger for closing as well as opening"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="X_AXIS"
         Hint="door revolves around X_AXIS (trapdoor; can appear with angle key)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="Y_AXIS"
@@ -2504,22 +2481,22 @@ QQRKSRC1
      t_length: =
         {Txt = "&" Hint = "size of second move, overriding door length"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="OPEN_ONCE"
         Hint="doesn't shut"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="1ST_LEFT"
         Hint="first move is 90 deg counterclockwise w.r.t. angle"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="1ST_DOWN"
         Hint="first move is down"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="ALWAYS_SHOOT"
@@ -2531,12 +2508,12 @@ QQRKSRC1
      abslight: =
         {Txt = "&" Hint = "inherent glow, value between 0 and 1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="TRANSLUCENT"
         Hint="brush is translucent"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="LIGHT"
@@ -2552,42 +2529,42 @@ QQRKSRC1
      spawnername: =
         {Txt = "&" Hint = "shared with func_monsterspawner"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="IMP"
         Hint="alternate fire & ice imps spawn"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="ARCHER"
         Hint="an archer spawns"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="WIZARD"
         Hint="a wizard spawns"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="SCORPION"
         Hint="alternate brown and black scorpions spawn"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="SPIDER"
         Hint="alternate red and yellow spiders spawn"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONDEATH"
         Hint="doesn't spawn until current dies."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="QUIET"
         Hint="no spawnsound is made"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="TRIGGERONLY"
@@ -2609,42 +2586,42 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "monster spawns when triggered (otherwise at start of level)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="IMP"
         Hint="alternate fire & ice imps spawn"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="ARCHER"
         Hint="an archer spawns"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="WIZARD"
         Hint="a wizard spawns"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="SCORPION"
         Hint="alternate brown and black scorpions spawn"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="SPIDER"
         Hint="alternate red and yellow spiders spawn"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONDEATH"
         Hint="doesn't spawn until current dies."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="QUIET"
         Hint="no spawnsound is made"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="TRIGGERONLY"
@@ -2677,17 +2654,17 @@ QQRKSRC1
       Items="1) pulley" $0D "2) chain"
       values="1" $0D "2"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_BOTTOM"
         Hint="initially drawn at bottom of movement, then rises on use"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="RETURN"
         Hint="returns to start after use (use wait to specify after how long)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="CONTINOUS"
@@ -2758,42 +2735,42 @@ QQRKSRC1
      thingtype: =
         {Txt = "&" Hint = "hit sound and deathstyle; requires BREAK spawnflag"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_ON"
         Hint="entity rotates on spawning; required unless rotator is targetted"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="REVERSE"
         Hint="reverses direction of rotation"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="X_AXIS"
         Hint="rotates around x axis instead of default z. can be used with angle"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="Y_AXIS"
         Hint="rotates around y axis instead of default z. can be used with angle"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="BREAK"
         Hint="brush is breakable"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="GRADUAL"
         Hint="accelerates & decelerates as specified by anglespeed field"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="TOGGLE_REVERSE"
         Hint="switches direction on triggering"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="KEEP_START"
@@ -2835,17 +2812,17 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "use unknown"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="GLOW"
         Hint="makes train a light "}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="TOGGLE"
         Hint="makes train restartable (see Eutectic for the detail)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="TRANSLUCENT"
@@ -2857,7 +2834,7 @@ QQRKSRC1
      abslight: =
         {Txt = "&" Hint = "inherent glow, value between 0 and 1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="TRANSLUCENT"
@@ -2926,7 +2903,7 @@ QQRKSRC1
      Help = "The normal starting point for a level."
      bbox = '-16 -16 -24 16 16 24'
      mdl = "models/crusader.mdl"
-     mdlframe = "SunStn1"       
+     mdlframe = "SunStn1"
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing"
        }
@@ -2947,7 +2924,7 @@ QQRKSRC1
      avelocity_y: =
         {Txt = "&" Hint = "doesn't seem to do anything (2/74 in Raven maps)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NO_THROW"
@@ -2965,7 +2942,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -2983,7 +2960,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3001,7 +2978,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3019,7 +2996,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3037,7 +3014,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3055,7 +3032,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3073,7 +3050,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3091,7 +3068,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -3186,7 +3163,7 @@ QQRKSRC1
      target: =
         {Txt = "&" Hint = "for aiming at an info_null for spotlight effect"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3212,7 +3189,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3238,7 +3215,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3267,7 +3244,7 @@ QQRKSRC1
      angles_x: =
         {Txt = "&" Hint = "postive value rotates face upward"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3295,7 +3272,7 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "frequency of flashes, max 100, default 33"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="HUH"
@@ -3321,7 +3298,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3347,7 +3324,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3373,7 +3350,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3399,7 +3376,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3425,7 +3402,7 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicker" $0D " 32-63 for linking banks of lights.  Trigger should share style-value."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STARTLOW"
@@ -3461,12 +3438,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3494,12 +3471,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3540,12 +3517,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3571,16 +3548,16 @@ QQRKSRC1
      bbox = '-14 -14 -41 14 14 23'
      mdl = "models/fangel.mdl"
      mdlskin = '1'
-     mdlopacity = '0.5' 
+     mdlopacity = '0.5'
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3608,12 +3585,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3641,12 +3618,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3689,12 +3666,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3722,12 +3699,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3755,12 +3732,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3788,7 +3765,7 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="GARGOYLE"
@@ -3807,7 +3784,7 @@ QQRKSRC1
       Form="monster_triggers:form"
       Hint="specs for monsters to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="GARGOYLE"
@@ -3822,7 +3799,7 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="GARGOYLE"
@@ -3844,7 +3821,7 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "-1 makes it indestructible decoration."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="GARGOYLE"
@@ -3858,12 +3835,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3891,12 +3868,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3925,12 +3902,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -3982,12 +3959,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -4015,12 +3992,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -4048,12 +4025,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -4082,12 +4059,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -4136,7 +4113,7 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4155,7 +4132,7 @@ QQRKSRC1
       Form="monster_triggers:form"
       Hint="specs for monsters to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4169,7 +4146,7 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4188,7 +4165,7 @@ QQRKSRC1
       Form="monster_triggers:form"
       Hint="specs for monsters to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4203,7 +4180,7 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4222,7 +4199,7 @@ QQRKSRC1
       Form="monster_triggers:form"
       Hint="specs for monsters to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4237,7 +4214,7 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4256,7 +4233,7 @@ QQRKSRC1
       Form="monster_triggers:form"
       Hint="specs for monsters to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="ONWALL"
@@ -4287,12 +4264,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -4321,12 +4298,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "direction monster starts out facing"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="AMBUSH"
         Hint="supposedly, monster only wakes up on sight of player, not other aroused monster " $0D " sometimes seems to work for me, sometimes not."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="STUCK"
@@ -4369,7 +4346,7 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "name of trigger_control entity to give player control"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="TRACK_PLAYER"
@@ -4403,12 +4380,12 @@ QQRKSRC1
       Form="object_triggers:form"
       Hint="specifics for objects to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="ON_SIDE"
         Hint="spawns on side, rolls in a cool manner"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="SINK"
@@ -4443,12 +4420,12 @@ QQRKSRC1
       Form="object_triggers:form"
       Hint="specifics for objects to trigger and be triggered"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="ON_SIDE"
         Hint="spawns on side, rolls in a cool manner"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="SINK"
@@ -4471,12 +4448,12 @@ QQRKSRC1
      scale: =
         {Txt = "&" Hint = "multiplier for size; values between .5 and 2.5 seem to work."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="ON_SIDE"
         Hint="spawns on side, rolls in a cool manner"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="SINK"
@@ -5419,7 +5396,7 @@ QQRKSRC1
      health: =
         {Txt = "&" Hint = "how much damage needed to kill."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="INVINCIBLE"
@@ -5568,32 +5545,32 @@ QQRKSRC1
       Items="0) littlies" $0D "1) corner" $0D "2) cobwebs" $0D "3) giant" $0D "4) 15x normal!"
       values="0" $0D "1" $0D "2" $0D "3" $0D "4"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="Xcobwebs"
         Cap="and"
         Hint="corner web.  1&2 make it break apart upon touch."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="SOLID"
         Hint="Make it so you can walk on it and not pass though it."}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="ANIMATE"
         Hint="give it a slight constant animation.  Looks best on"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="TOUCHMOVE"
         Hint="Will cycle through it's animation once only when touched, not meant to be used with any other spawnflag"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="FLAT"
         Hint="Use with SOLID, adjust bb-size for walkability"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="NO_TRANSLUCENCY"
@@ -5637,7 +5614,7 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "pause time before proceeding, I guess"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="SYNCH"
@@ -5655,12 +5632,12 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "targetted by trigger_activate to make readable if DEACTIVATED spawnflag is set"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="INVISIBLE"
         Hint="brush can't be seen"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="DEACTIVATED"
@@ -5680,7 +5657,7 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "sheep awakes when trigggered"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STATIONARY"
@@ -5708,12 +5685,12 @@ QQRKSRC1
      target: =
         {Txt = "&" Hint = "target is triggered when piece is taken by player"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="SPAWN"
         Hint="piece doesn't appear until targetted"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="FLOAT"
@@ -5954,7 +5931,7 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "inter-fire interval, default = 0.5."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="TRIGGERONLY"
@@ -5976,12 +5953,12 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "inter-fire interval, default 1"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="TRACK"
         Hint="tracks player"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="ONCE"
@@ -6035,17 +6012,17 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="ONCE"
         Hint="works once and disappears"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="RELAY"
         Hint="dunno"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="DEACTIVATED"
@@ -6070,7 +6047,7 @@ QQRKSRC1
      target: =
         {Txt = "&" Hint = "destination info_(coop-)player_start entity"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NO_INTERMISSION"
@@ -6136,17 +6113,17 @@ QQRKSRC1
      puzzle_id: =
         {Txt = "&" Hint = "name targetted when you get the sequence wrong (!!)"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NO_MESSAGES"
         Hint="suppresses progress msg's & sounds (not goof messageO"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="ORDERED"
         Hint="makes it an ordered trigger (set count to #-1)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="DEACTIVATED"
@@ -6168,42 +6145,42 @@ QQRKSRC1
      map: =
         {Txt = "&" Hint = "always used in Raven maps, but seems to do nothing.  Documentation?"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X6"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel_target"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="MATCHES"
@@ -6233,42 +6210,42 @@ QQRKSRC1
      delay: =
         {Txt = "&" Hint = "wait till triggered event happens"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X6"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X64"
         Cap="MATCHES"
         Hint="same spawnflag in trigger_crosslevel"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X128"
         Cap="MATCHES"
@@ -6283,17 +6260,17 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="ONCE"
         Hint="works once and disappears"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="RELAY"
         Hint="dunno"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="DEACTIVATED"
@@ -6374,27 +6351,27 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is activated with trigger_activate with matching targetname fires" $0D "requires DEACTIVATED spawnflag"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOTOUCH"
         Hint="only triggered by targetting not touch (obsolete?)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="MONSTERTOUCH"
         Hint="only triggered by monsters (untested)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="DEACTIVATED"
         Hint="must be actived by a trigger_activate, via targetname"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="REMOVE_PP"
         Hint="takes puzzle_piece off player when fires"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="LIGHTTOGGLE"
@@ -6425,27 +6402,27 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is activated with trigger_activate with matching targetname fires" $0D "requires DEACTIVATED spawnflag"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOTOUCH"
         Hint="only triggered by targetting not touch (obsolete?)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="MONSTERTOUCH"
         Hint="only triggered by monsters (untested)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X8"
         Cap="DEACTIVATED"
         Hint="must be actived by a trigger_activate, via targetname"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X16"
         Cap="REMOVE_PP"
         Hint="takes puzzle_piece off player when fires"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X32"
         Cap="LIGHTTOGGLE"
@@ -6523,17 +6500,17 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "targetted by trigger_activate to activate," $0D "requires DEACTIVATED spawnflag"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="PLAYER_ONLY"
         Hint="won't shift monsters"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="SILENT"
         Hint="no hum (movement sound still produced)"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X4"
         Cap="DEACTIVATED"
@@ -6566,12 +6543,12 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "-1 default means fire only when triggered, otherwise repeat interval"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="NOISE"
         Hint="check both 1 and 2 to get noise on first triggering"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NOISE"
@@ -6596,12 +6573,12 @@ QQRKSRC1
      wait: =
         {Txt = "&" Hint = "how often to generate particles, default .1 sec"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="STRAIGHT"
         Hint="falls straight down rather than at angle"}
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="NO_SPLAT"
@@ -6640,7 +6617,7 @@ QQRKSRC1
       Items="1) silent" $0D "2) buzz (default)"
       values="1" $0D "2"
        }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="START_OFF"
@@ -6680,7 +6657,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -6716,7 +6693,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -6734,7 +6711,7 @@ QQRKSRC1
       Form="item_triggers:form"
       Hint="specifics for triggering when item is taken"
     }
-     spawnflags: = 
+     spawnflags: =
        {Txt="&"
         Typ="X1"
         Cap="FLOAT"
@@ -6754,7 +6731,7 @@ QQRKSRC1
     Root = "Raven Software Textures.qtxfolder"
     Raven Software Textures.qtxfolder =
     {
-      Missing.wad =   
+      Missing.wad =
       {
         rtex094.wl =
         {

@@ -1,4 +1,9 @@
 QQRKSRC1
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+
 {
   Description = "Custom configuration file for Quake 1."
   MapObjPanel.qrk =

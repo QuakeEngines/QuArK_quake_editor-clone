@@ -1,33 +1,9 @@
 QQRKSRC1
-//**************************************************************************
-//QuArK -- Quake Army Knife -- 3D game editor
-//Copyright (C) 1996-99 Armin Rigo
-//
-//This program is free software; you can redistribute it and/or
-//modify it under the terms of the GNU General Public License
-//as published by the Free Software Foundation; either version 2
-//of the License, or (at your option) any later version.
-//
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
-//
-//You should have received a copy of the GNU General Public License
-//along with this program; if not, write to the Free Software
-//Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-//Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-//or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-//See also http://www.planetquake.com/quark
-//**************************************************************************
-
 // Configuration file for Heretic II
 
-
-//    Version 5.11
-//
-//    See comments in file Defaults.qrk.
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
 
 // 2DO list: models, subsorting of obj's.
 
@@ -54,7 +30,7 @@ QQRKSRC1
 //  Jan 8, added origin brushes to entities that want them, other minor
 //   updates.
 
-//  March 18, assorted omitted keys added (egged on by Wankeroo) 
+//  March 18, assorted omitted keys added (egged on by Wankeroo)
 
 //  April 6, material type surface flags
 
@@ -97,7 +73,7 @@ QQRKSRC1
      $6B00D35700C74700B73B00AB2B009B1F008F17007F0F007307005F00004700002F00001B
      $0000EF00003737FFFF00000000FF2B2B231B1B1713130FEB977FC373539F57337B3F1BEB
      $D3C7C7AB9BA78B77876B579F5B53
-     
+
     TexFlagsTransparent = '16 0.6667 32 0.3333'   // bit of value 16 (resp 32) means "66% transparent" (resp 33%)
     TextureFlags:form =     // a form for setting Hr2 texture flags on polyhedron faces
     {

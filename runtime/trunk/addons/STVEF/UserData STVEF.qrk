@@ -2,6 +2,10 @@ QQRKSRC1
 // This file has been written by QuArK quarksnapshot_20001015
 // It's the text version of file: UserData StarTrekEF.qrk
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+
 {
   Description = "Custom configuration file for StarTrekEF."
   MapObjPanel.qrk =
