@@ -273,6 +273,11 @@ Strings = {
     812: "Tribes 2 CS-script Files (*.cs)|*.cs",
 
     813: "Doom 3 Pak Files (*.pk4)|*.pk4",
+    814: "Valve Texture File  (*.vtf)|*.vtf",
+    815: "Valve Material File  (*.vmt)|*.vmt",
+    816: "Steam Container File  (*.gcf)|*.gcf",
+    817: "Valve Map File  (*.vmf)|*.vmf",
+
 
     2368: "Skins",
     2369: "Frames",
@@ -906,7 +911,9 @@ Strings = {
     5706: "gcfwrap.dll not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "%s not found in %s",
-    5709: "ValveTextureFile  (*.vtf)|*.vtf",
+    5709: "VTF file",
+    5710: "GCF file",
+    5711: "GCF folder",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
 
@@ -949,6 +956,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.59  2004/12/02 18:55:15  alexander
+#added vtf format name
+#
 #Revision 1.58  2004/11/23 10:52:45  rowdy
 #added a few messages for Doom 3 (more to come), replaced non-ASCIi character in item 5387
 #
