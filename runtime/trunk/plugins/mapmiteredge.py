@@ -437,10 +437,7 @@ def buildwallmakerimages(self, singleimage=None):
                         poly = polys[j].copy()
                         for face in poly.faces:
                             if abs(inner.normal-face.normal)<SMALL and math.fabs((face.dist*face.normal-innerp)*inner.normal)<SMALL:
-                                #
-                                # slight optimization, since face nonvisible
-                                #
-                                face.swapsides_leavetex()
+                                face.swapsides()
                                 brush=makePrism(face,poly,self.depth)
                                 for bface in brush.subitems[:2]:
                                     bface.translate(10*bface.normal)
@@ -548,6 +545,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.9  2003/01/03 07:50:42  tiglari
+# transfer texture-mirror, swapsides_leavetex from rel-63a brancy
+#
 # Revision 1.6.6.2  2003/01/01 05:09:14  tiglari
 # reinstate swapsides_leavetex as an optimization
 #
