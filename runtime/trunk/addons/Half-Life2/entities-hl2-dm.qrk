@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2005/01/11 02:28:14  alexander
+//improved model selection form
+//
 //Revision 1.3  2005/01/02 16:31:22  alexander
 //specifics for broken glass added
 //
@@ -3393,27 +3396,27 @@ QQRKSRC1
         weapon_pistol:e =
         {
           origin = "0 0 0"
-          ;desc = "Pistol"
+          ;desc = "9mm Pistol"
         }
         weapon_ar2:e =
         {
           origin = "0 0 0"
-          ;desc = "Assault Rifle 2"
+          ;desc = "Pulse Rifle"
         }
         weapon_rpg:e =
         {
           origin = "0 0 0"
-          ;desc = "Missile Launcher"
+          ;desc = "RPG"
         }
         weapon_smg1:e =
         {
           origin = "0 0 0"
-          ;desc = "SMG1"
+          ;desc = "Submachine Gun"
         }
         weapon_357:e =
         {
           origin = "0 0 0"
-          ;desc = "357"
+          ;desc = "357 Magnum"
         }
         weapon_crossbow:e =
         {
@@ -3428,43 +3431,48 @@ QQRKSRC1
         weapon_frag:e =
         {
           origin = "0 0 0"
-          ;desc = "Frag Grenade"
+          ;desc = "Grenade"
         }
         weapon_physgun:e =
         {
           origin = "0 0 0"
-          ;desc = "Physics Gun"
+          ;desc = "Physics Gun (UNKNOWN)"
         }
         weapon_physcannon:e =
         {
           origin = "0 0 0"
-          ;desc = "Physics Cannon"
+          ;desc = "Gravity Gun"
         }
         weapon_extinguisher:e =
         {
           origin = "0 0 0"
-          ;desc = "Fire Extinguisher"
+          ;desc = "Fire Extinguisher (UNKNOWN)"
         }
         weapon_bugbait:e =
         {
           origin = "0 0 0"
-          ;desc = "Bug bait"
+          ;desc = "Bug bait (UNUSED in DM)"
         }
         weapon_alyxgun:e =
         {
           origin = "0 0 0"
-          ;desc = "Alyx Gun"
+          ;desc = "Alyx Gun (UNUSED in DM)"
         }
         weapon_annabelle:e =
         {
           origin = "0 0 0"
-          ;desc = "Annabelle (Grigori)"
+          ;desc = "Annabelle (Grigori ; UNUSED in DM)"
         }
         weapon_brickbat:e =
         {
           origin = "0 0 0"
-          ;desc = "Brickbat"
+          ;desc = "Brickbat (UNKNOWN)"
           BrickbatType = "Rock"
+        }
+        weapon_slam:e =
+        {
+          origin = "0 0 0"
+          ;desc = "S.L.A.M."
         }
       }
       player_* entities.qtxfolder =
@@ -21962,6 +21970,97 @@ QQRKSRC1
         typ = "C"
         items = "Rock"$0D"Beer Bottle"$0D"Headcrab"$0D"Cremator Head"
         values = "0"$0D"1"$0D"2"$0D"3"
+      }
+    }
+    weapon_slam:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = "Name"
+      }
+      input#Kill: =
+      {
+        txt = "&"
+        hint = "Removes this entity from the world."
+      }
+      input#KillHierarchy: =
+      {
+        txt = "&"
+        hint = "Removes this entity and all its children from the world."
+      }
+      input#AddOutput: =
+      {
+        txt = "&"
+        hint = "Adds an entity I/O connection to this entity. Format: <output "
+         "name> <targetname>:<inputname>:<parameter>:<delay>:<max times to fir"
+         "e (-1 == infinite)>. Very dangerous, use with care."
+      }
+      input#FireUser1: =
+      {
+        txt = "&"
+        hint = "Causes this entity's OnUser1 output to be fired."
+      }
+      input#FireUser2: =
+      {
+        txt = "&"
+        hint = "Causes this entity's OnUser2 output to be fired."
+      }
+      input#FireUser3: =
+      {
+        txt = "&"
+        hint = "Causes this entity's OnUser3 output to be fired."
+      }
+      input#FireUser4: =
+      {
+        txt = "&"
+        hint = "Causes this entity's OnUser4 output to be fired."
+      }
+      output#OnUser1: =
+      {
+        txt = "&"
+        hint = "Fired in response to FireUser1 input."
+      }
+      output#OnUser2: =
+      {
+        txt = "&"
+        hint = "Fired in response to FireUser2 input."
+      }
+      output#OnUser3: =
+      {
+        txt = "&"
+        hint = "Fired in response to FireUser3 input."
+      }
+      output#OnUser4: =
+      {
+        txt = "&"
+        hint = "Fired in response to FireUser4 input."
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "Pitch Yaw Roll (Y Z X)"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "Start constrained"
+      }
+      output#OnPlayerUse: =
+      {
+        txt = "&"
+        hint = "Fires when the player +uses this weapon"
+      }
+      output#OnPlayerPickup: =
+      {
+        txt = "&"
+        hint = "Fires when the player picks up this weapon"
+      }
+      output#OnNPCPickup: =
+      {
+        txt = "&"
+        hint = "Fires when an NPC picks up this weapon"
       }
     }
     path_corner:form =
