@@ -94,7 +94,7 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
         
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -265,6 +265,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|This identifies brushes that are suspiciously small, at least in one dimension."))
 
 #$Log$
+#Revision 1.4  2001/06/16 03:19:05  tiglari
+#add Txt="" to separators that need it
+#
 #Revision 1.3  2001/05/21 11:56:51  tiglari
 #a bit of cleaning
 #

@@ -12,7 +12,7 @@ Info = {
    "desc":          "Path Duplicator",
    "date":          "3 feb 01",
    "author":        "Decker, also tiglari",
-   "author e-mail": "decker@planetquake.com, tiglari@hexenworld.net",
+   "author e-mail": "decker@planetquake.com, tiglari@planetquake.com",
    "quark":         "Version 6.2"
 }
 
@@ -178,7 +178,7 @@ class PositionFollowingDlg (quarkpy.dlgclasses.LiveEditDlg):
 
          sep: = {Typ="S" Txt=" "} 
 
-         exit:py = { }
+         exit:py = { Txt=""}
     }
     """
 
@@ -745,6 +745,7 @@ class InstanceDuplicator(PathDuplicator):
         templatebbox = quarkx.boundingboxof([templategroup])
         templatesize = templatebbox[1] - templatebbox[0]
 
+        newobjs = []
         if (singleimage is None and self.speed != 1):
            viewabletemplategroup = templategroup.copy()
            viewabletemplategroup[";view"] = str(VF_IGNORETOBUILDMAP)  # Do not send this to .MAP file
@@ -755,6 +756,8 @@ class InstanceDuplicator(PathDuplicator):
 #        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
         if self.dup["usercenter"] is not None:
             templategroup.translate(-GetUserCenter(self.dup), 0)    # Move it to (0,0,0)
+        elif self.dup["elbow"] is not None:
+            templategroup.translate(-pathlist[1].origin, 0)
         else:
             templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
         for item in templategroup.subitems[:]:
@@ -763,23 +766,33 @@ class InstanceDuplicator(PathDuplicator):
 
         count = len(pathlist)
         prevaxes = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
+        if self.dup["elbow"] == 1:
+            retromat = ~(matrix_rot_u2v(prevaxes[0],(pathdist[1]-pathdist[0]).normalized))
+            prevaxes = retromat*prevaxes[0],retromat*prevaxes[2],retromat*prevaxes[2],
+            
+            
+#        debug('count '+`count`+' image '+`singleimage`)
         for i in range(count):
+
             if (singleimage is not None): # Speed up Dissociate images processing
                if (singleimage >= count):
                   return [] # Nothing more to send back!
                else:
                   i = singleimage
-
-            list = templategroup.subitems[0].copy()
-            thisorigin = pathlist[i].origin
             
-            if self.dup["track"] and count>1:
+            thisorigin = pathlist[i].origin
+
+            if (self.dup["track"] or self.dup["elbow"]) and count>1:
                 if i<count-1:           
                     nextorigin = pathlist[i+1].origin
-                    pathdist = nextorigin - thisorigin
+                    pathdist = thisorigin-nextorigin
                     #
                     # otherwise just use last pathdist
                     #
+                if self.dup["elbow"] and i==count-1:
+                   pathdist=pathlist[count-2].origin-pathlist[count-1].origin
+                if singleimage:
+                   pathdist=-pathdist
                 if pathlist[i]["level"]:
                    prevaxes = MakeLevelAxes(pathdist.normalized)
                 else:
@@ -793,15 +806,26 @@ class InstanceDuplicator(PathDuplicator):
             else:
                 matrix=quarkx.matrix('1 0 0 0 1 0 0 0 1')
                 
-            if not pathlist[i]["no instance"]:
+#                debug("  image %d; i %d"%(singleimage, i))
+
+            list = templategroup.subitems[0].copy()
+            if not (pathlist[i]["no instance"] or (self.dup["elbow"] and (i==0 or i==count-1))):
                 list.translate(thisorigin)
                 list.linear(thisorigin,matrix)
                 if (singleimage is None) or (i==singleimage):
                     newobjs = newobjs + [list]
-
+            else:
+                #
+                # This cruft is necessary because dissociate1click
+                #  stops the image-generation process when an empty
+                #  image is returned
+                #
+                dummy = quarkx.newobj('dummy:g')
+                newobjs = newobjs + [dummy]
             del list
             if (i==singleimage): # Speed up Dissociate images processing
                 break
+
         return newobjs
 
 
@@ -812,19 +836,15 @@ def macro_instances(self):
     if dup is None: return
     undo = quarkx.action()
     new=dup.copy()
-    new.shortname = 'Instance duplicator'
+    new.shortname = 'Elbow duplicator'
     new["macro"] = 'dup instance'
+    new["elbow"] = 1
     for item in new.subitems[:]:
         new.removeitem(item)
     new.translate(quarkx.vect(64, -64, 0))
     undo.put(dup.parent, new, dup)
-    editor.ok(undo,"add instance duplicator")
+    editor.ok(undo,"add elbows")
     editor.layout.explorer.uniquesel=new
-
-    
-
-
-
 
 quarkpy.qmacro.MACRO_instances = macro_instances
     
@@ -839,6 +859,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.42  2001/06/13 22:27:19  tiglari
+#fix instance dup bug
+#
 #Revision 1.41  2001/06/09 01:21:17  tiglari
 #fix due north bug (noted by greeze)
 #

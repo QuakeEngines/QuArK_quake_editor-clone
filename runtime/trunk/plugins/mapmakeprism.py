@@ -136,9 +136,9 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
 
             sep: = { Typ = "S" }
 
-            MakePrism:py = { }
+            MakePrism:py = {Txt="" }
 
-            close:py = { }
+            close:py = {Txt="" }
         }
     """
 
@@ -431,6 +431,9 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClic
 #----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2001/03/07 20:16:16  tiglari
+# removed ramp checkbox (for now, till it works)
+#
 # Revision 1.6  2001/02/28 09:45:18  tiglari
 # fixed `stairs' option bug (ramp still has problems)
 #

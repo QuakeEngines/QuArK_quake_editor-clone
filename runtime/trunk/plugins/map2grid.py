@@ -41,29 +41,29 @@ class TFTGDlg (quarkpy.qmacro.dialogbox):
     dlgdef = """
         {
             Style = "15"
-	    Caption = "Tricky Force to Grid"
-	    sep: = {Typ="S" Txt=" "}
+        Caption = "Tricky Force to Grid"
+        sep: = {Typ="S" Txt=" "}
             info: = {Typ="S" Bold="0" Txt="Use this to detect and repair slightly off-the-grid polyhedrons."}
             info: = {Typ="S" Bold="0" Txt="Warning ! This is a bad trick and should only be used to repair"}
             info: = {Typ="S" Bold="0" Txt="maps that are really messed up ! You should make a backup copy"}
             info: = {Typ="S" Bold="0" Txt="of your map before proceeding..."}
-	    sep: = {Typ="S" Txt=" "}
-	    epsilon: =
-	    {
-		Txt = "Move not more than"
-		Typ = "EF1"
-		SelectMe = "1"
-	    }
+        sep: = {Typ="S" Txt=" "}
+        epsilon: =
+        {
+        Txt = "Move not more than"
+        Typ = "EF1"
+        SelectMe = "1"
+        }
             nepsilon: =
             {
                 Txt = "Normal at least"
                 Typ = "EF1"
             }
-	    sep: = { Typ = "S" }
-	    ok1:py = { }
-	    //ok2:py = { }
-            cancel:py = { }
-	}
+        sep: = { Typ = "S" }
+        ok1:py = {Txt="" }
+        //ok2:py = {Txt="" }
+            cancel:py = {Txt="" }
+    }
     """
 
     def __init__(self, form, editor):
@@ -72,21 +72,21 @@ class TFTGDlg (quarkpy.qmacro.dialogbox):
         src["epsilon"] = 0.01,
         src["nepsilon"] = 0.99,
         quarkpy.qmacro.dialogbox.__init__(self, form, src,
-	    ok1 = quarkpy.qtoolbar.button(
+        ok1 = quarkpy.qtoolbar.button(
                 self.TFTG,
                 "force all faces to match the grid",
                 ico_editor, 2,
                 "Force Faces"),
-	    #ok2 = quarkpy.qtoolbar.button(
+        #ok2 = quarkpy.qtoolbar.button(
             #    self.TFTG,
             #    "do it",
             #    ico_editor, 2,
             #    "Force Faces"),
-	    cancel = quarkpy.qtoolbar.button(
-	        self.close,
-	        "close this box",
-	        ico_editor, 0,
-	        "Cancel"))
+        cancel = quarkpy.qtoolbar.button(
+            self.close,
+            "close this box",
+            ico_editor, 0,
+            "Cancel"))
 
     def TFTG(self, btn):
         editor = self.editor
@@ -185,6 +185,9 @@ quarkpy.mapcommands.items.append(
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #

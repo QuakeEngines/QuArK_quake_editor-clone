@@ -96,8 +96,8 @@ class VtxPinDlg(quarkpy.dlgclasses.placepersistent_dialogbox):
 
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
-        cancel:py = { }
+        exit:py = {Txt="" }
+        cancel:py = {Txt="" }
     }"""
 
     def __init__(self,form,editor,label,msg,pos,face,facepins, repin):

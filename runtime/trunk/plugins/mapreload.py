@@ -39,8 +39,8 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
 
         sep: = { Typ="S" Txt=" " }
 
-        close:py = { }
-        cancel:py = { }
+        close:py = {Txt="" }
+        cancel:py = {Txt="" }
     }
     """
 
@@ -119,6 +119,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.3  2001/03/20 08:02:16  tiglari
+# customizable hot key support
+#
 # Revision 1.2.4.1  2001/03/11 22:10:42  tiglari
 # customizable hotkeys
 #

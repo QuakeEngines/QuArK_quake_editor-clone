@@ -143,8 +143,8 @@ class SearchByName(SearchDlg):
         }
         sep: = {Typ="S" Txt=" "}
         sep: = {Typ="S" Txt=""}
-        ok:py = { }
-        cancel:py = { }
+        ok:py = {Txt="" }
+        cancel:py = {Txt="" }
       }
     """
 
@@ -195,8 +195,8 @@ class SearchBySpec(SearchDlg):
         }
         sep: = {Typ="S" Txt=" "}
         sep: = {Typ="S" Txt=""}
-        ok:py = { }
-        cancel:py = { }
+        ok:py = {Txt="" }
+        cancel:py = {Txt="" }
       }
     """
 
@@ -239,6 +239,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
+# Revision 1.4  2001/06/16 06:33:30  tiglari
+# fix indent problem (prolly from tabs discrepancy)
+#
 # Revision 1.3  2001/06/16 03:19:05  tiglari
 # add Txt="" to separators that need it
 #

@@ -170,7 +170,7 @@ class VtxDragDlg(quarkpy.dlgclasses.LiveEditDlg):
 
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -858,6 +858,9 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.3  2001/06/16 03:19:05  tiglari
+# add Txt="" to separators that need it
+#
 # Revision 1.2  2001/05/24 22:28:05  tiglari
 # fix tuple bug, improved anti-drift
 #

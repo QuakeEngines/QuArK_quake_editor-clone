@@ -87,7 +87,7 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
         
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -279,6 +279,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|This identifies brushes with faces that are suspiciously thin."))
 
 #$Log$
+#Revision 1.2  2001/06/16 03:19:47  tiglari
+#add Txt="" to separators that need it
+#
 #Revision 1.1  2001/05/21 11:58:26  tiglari
 #kickoff
 #

@@ -101,7 +101,7 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
 
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
 
     }
     """
@@ -284,6 +284,9 @@ quarkpy.mapentities.BrushEntityType.menu = newbrushmenu
 #
 #
 # $Log$
+# Revision 1.3  2001/06/16 03:19:05  tiglari
+# add Txt="" to separators that need it
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

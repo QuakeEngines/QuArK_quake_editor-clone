@@ -91,7 +91,7 @@ class TexPosDlg (quarkpy.dlgclasses.LiveEditDlg):
       
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -176,6 +176,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.4  2001/06/16 03:19:47  tiglari
+# add Txt="" to separators that need it
+#
 # Revision 1.3  2000/07/24 09:18:11  tiglari
 # Put texture-position dialog into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
 #

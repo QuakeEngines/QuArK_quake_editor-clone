@@ -73,7 +73,7 @@ class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
       
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -182,6 +182,9 @@ def macro_linedit(self):
 quarkpy.qmacro.MACRO_linedit = macro_linedit
 
 #$Log$
+#Revision 1.4  2001/06/16 03:29:36  tiglari
+#add Txt="" to separators that need it
+#
 #Revision 1.3  2001/05/12 18:57:36  tiglari
 #add Mirror checkbox
 #

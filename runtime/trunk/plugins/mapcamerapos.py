@@ -181,7 +181,7 @@ class NameDialog(SimpleCancelDlgBox):
         local: = {Typ="X" Hint="Put camera in currently selected group, if possible" $0D " (sister to selected non-group)"}
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
-        cancel:py = { }
+        cancel:py = {Txt="" }
       }
     """
 
@@ -452,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.6  2001/06/17 04:46:11  tiglari
+# local camera positioning, and auto 3d view opening where appropriate
+#
 # Revision 1.5  2001/06/16 21:55:46  tiglari
 # dialog npw stays open when something else is selected,add position
 # on map background menu

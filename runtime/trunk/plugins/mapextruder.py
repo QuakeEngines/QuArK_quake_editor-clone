@@ -157,7 +157,7 @@ class TextureDlg (placepersistent_dialogbox):
         Caption = "Texturing"
 
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
     def __init__(self, form, label, editor, dup):
@@ -634,7 +634,7 @@ class SegmentDlg (quarkpy.dlgclasses.LiveEditDlg):
  
          sep: = {Typ="S" Txt=" "} 
 
-         exit:py = { }
+         exit:py = { Txt=""}
     }
     """
 
@@ -705,7 +705,7 @@ class KinkDlg (quarkpy.dlgclasses.LiveEditDlg):
          
         sep: = {Typ="S" Txt=" "} 
 
-        exit:py = { }
+        exit:py = { Txt=""}
     }
     """
 
@@ -1551,7 +1551,7 @@ class CoordDlg (quarkpy.dlgclasses.LiveEditDlg):
         sep: = {Typ="S" Txt=" "} 
 
  
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -1743,7 +1743,7 @@ class TexDlg (quarkpy.dlgclasses.LiveEditDlg):
 
          sep: = {Typ="S" Txt=" "} 
 
-         exit:py = { }
+         exit:py = {Txt="" }
     }
     """
 
@@ -2888,6 +2888,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.10  2001/06/17 02:25:39  tiglari
+#revert to dup change
+#
 #Revision 1.9  2001/05/22 22:14:38  tiglari
 #texture info built on reversion to dup from dissociated group.  Alignment still wonky
 #

@@ -94,7 +94,7 @@ class MakeTexMultDlg (quarkpy.qmacro .dialogbox):
         Typ = "EF1"
         Hint = "Needn't be an integer; if it's 0, no multiplier is set"
         }
-        close:py = { }
+        close:py = {Txt="" }
     }
     """
 
@@ -1808,6 +1808,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2001/05/25 12:26:01  tiglari
+#tagged plane support
+#
 #Revision 1.15  2001/05/03 06:47:06  tiglari
 #Fixed no wrap to paralell faces and failure of wrap hotkey bugs
 #

@@ -86,7 +86,7 @@ class Orientation(quarkpy.qmacro.dialogbox):
         }
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
-        cancel:py = { }
+        cancel:py = {Txt="" }
       }
     """
 
@@ -295,6 +295,9 @@ quarkpy.mapentities.FaceType.menu = newmenu
 #
 #
 # $Log$
+# Revision 1.4  2001/06/16 03:29:36  tiglari
+# add Txt="" to separators that need it
+#
 # Revision 1.3  2001/02/20 21:30:20  tiglari
 # LookAt added
 #
