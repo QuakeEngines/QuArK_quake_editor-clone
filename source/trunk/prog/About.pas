@@ -25,6 +25,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/01/07 13:20:46  decker_dk
+Made the dialog somewhat match the one in the REL6_1-branch.
+
 Revision 1.6  2000/12/30 15:24:55  decker_dk
 - The .MAP exporting entity-numbering, didn't take into account Treeview-
 groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
@@ -173,7 +176,7 @@ begin
 
   Contributors.Text :=
                'Armin Rigo (arigo@planetquake.com)'
-    + #13#10 + 'Avery Andrews (tiglari@hexenworld.com)'
+    + #13#10 + 'tiglari (tiglari@planetquake.com)'
     + #13#10 + 'Decker (decker@planetquake.com)'
     + #13#10 + 'Andy Vincent (andyvinc@hotmail.com)'
     + #13#10 + 'Alexander Haarer (mac.@gmx.net)'
