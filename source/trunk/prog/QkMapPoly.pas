@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2002/04/27 10:33:03  tiglari
+SetThreePointsT now erases 'm' specific (now-unneeded mirrror bit)
+
 Revision 1.51  2002/04/26 12:52:40  tiglari
 removed wrong Mirror-flipping in GetPYPY (this is already done in
  GetThreePointsUserTex before GetPXPY is called)
@@ -4322,15 +4325,15 @@ begin
      Pt[I]:=VecSum(Pt[I],InfoClic);
      PTex[I]:=VecSum(PTex[I],InfoClic);
     end;
-{ Shouldn't be needed because we're already
-   adjusting the texture 
+ {Shouldn't be needed because we're already
+   adjusting the texture }
    if InverseOrientation then
     begin
      SetThreePoints(Pt[1], Pt[3], Pt[2]);
      TextureMirror:=not TextureMirror;
     end
    else
-}
+
     SetThreePoints(Pt[1], Pt[2], Pt[3]);
    { adjust texture }
    SetThreePointsT(PTex[1], PTex[2], PTex[3]);
