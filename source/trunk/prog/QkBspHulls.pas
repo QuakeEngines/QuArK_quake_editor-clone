@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/07/21 01:48:07  tiglari
+add/use functions & values defining classes of games
+
 Revision 1.17  2001/07/19 22:54:46  tiglari
 STVEF bsp's now showing
 
@@ -126,6 +129,20 @@ type
               LightStyles: array[0..3] of Char;
               LightMap: LongInt;
              end;
+
+ PbSOFSurface = ^TbSOFSurface;
+ TbSOFSurface = record
+              Plane_id, Side: Word;
+              LEdge_id: LongInt;
+              LEdge_num, TexInfo_id: Word;
+              LightStyles: array[0..3] of Char;
+              LightMap: LongInt;
+              Unknown: array [0..23] of Byte { actually nothing after
+                TexInfo_id is known }
+             end;
+
+
+
 
  PbQ3Surface = ^TbQ3Surface;
  TbQ3Surface = record
@@ -370,7 +387,11 @@ begin
    end;
   if q12surf then
   begin
-    SurfaceSize:=SizeOf(TbSurface);
+    if Fbsp.NeedObjectGameCode=mjSOF then
+      SurfaceSize:=SizeOf(TbSOFSurface)
+    else
+      SurfaceSize:=SizeOf(TbSurface);
+    {J:=  FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));}
     if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
        Raise EErrorFmt(5635, [2]);
     Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
@@ -705,6 +726,13 @@ var
  PV0, PV1: PPointProj;
 begin
  if (FBsp=Nil) or (SurfaceList=Nil) then Exit;
+ { optimized versions don't work for SOF, even with correct
+   surfacesize }
+ if FBsp.NeedObjectGameCode=mjSOF then
+ begin
+   inherited;
+   Exit
+ end;
 
  if BspSurfaceType(FBsp.NeedObjectGameCode)=bspSurfQ12 then
  begin
@@ -795,8 +823,8 @@ begin
            CCoord.Line95f(PV0^, PV1^);
           end;
        end;
-      Inc(PChar(Faces), SizeOf(TbSurface));
-     end;
+       Inc(PChar(Faces), SizeOf(TbSurface));
+     end
    end
   else
    for I:=1 to NbFaces do   { slow version }
@@ -843,7 +871,7 @@ begin
           CCoord.Line95f(ProjSommets[0], ProjSommets[1]);
          end;
       end;
-     Inc(PChar(Faces), SizeOf(TbSurface));
+      Inc(PChar(Faces), SizeOf(TbSurface));
     end;
  finally
  {OutOfView.Free;}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2001/07/21 03:49:23  tiglari
+Q3A bsp's now writing (but some attempted SOF reading code not yet functional)
+
 Revision 1.38  2001/07/21 01:48:07  tiglari
 add/use functions & values defining classes of games
 
@@ -815,11 +818,20 @@ begin
 
             cVersionBspQ3: { Quake-3 }
             begin
-              LoadBsp3(F, StreamSize);
-              if CharModeJeu<mjQ3A then
-                ObjectGameCode := mjQ3A
+              { Somebody should be shot ... }
+              if CharModejeu=mjSOF then
+              begin
+                ObjectGameCode := mjSOF;
+                LoadBsp2(F, StreamSize);
+              end
               else
-                ObjectGameCode := CharModeJeu;
+              begin
+                LoadBsp3(F, StreamSize);
+                if CharModeJeu<mjQ3A then
+                  ObjectGameCode := mjQ3A
+                else
+                  ObjectGameCode := CharModeJeu;
+              end;
             end;
 
             else {version unknown}
