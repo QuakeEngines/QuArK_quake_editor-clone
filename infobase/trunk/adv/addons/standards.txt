@@ -49,8 +49,7 @@ nice layout in the add-on file.
 
 <p>By this, I mean you should keep the indent-levels and try to place the
 information into columns. Take for instance this structure:<br>
-<blockquote>
-<font color=#000088>
+<blockquote class="doccode">
 <pre>
 Valve Textures.qtxfolder =
 {
@@ -78,7 +77,6 @@ Valve Textures.qtxfolder =
   }
 }
 </pre>
-</font>
 </blockquote>
 
 <p>It can be made much more readable and smaller, if you put one texture-link
@@ -86,8 +84,7 @@ on one line, and also use the ':incl' feature. Notice also that I've put some
 of the information into columns, so it will be easier to sort or block-mark if
 you have a text-editor thats capable of block-column-marking:
 
-<blockquote>
-<font color=#000088>
+<blockquote class="doccode">
 <pre>
 t_spraypaint:incl = { s = "valve" d = "spraypaint" h = "C" }
 
@@ -102,5 +99,4 @@ Valve Textures.qtxfolder =
   }
 }
 </pre>
-</font>
 </blockquote>

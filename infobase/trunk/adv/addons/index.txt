@@ -1,4 +1,5 @@
 title: Add-Ons
+desc: addonelements
 desc: standards
 
 There is old but still up-to-date information about this topic at
