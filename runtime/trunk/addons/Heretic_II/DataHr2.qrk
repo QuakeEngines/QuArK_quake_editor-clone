@@ -4,6 +4,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//
+//Revision 1.3  2002/04/17 12:45:08  decker_dk
+//Purified texture-flags, and alot of EOL-whitespaces removed due to my use and settings of editor (MultiEdit)
+//
 //Revision 1.2  2001/03/20 21:58:00  decker_dk
 //Added log-header / misc.
 //
@@ -6243,6 +6247,11 @@ QQRKSRC1
          origin = "0 0 0"
          ;desc = "Pickup for the Teleport defensive spell."
        }
+       item_defense_tornado:e =
+       {
+         origin = "0 0 0"
+         ;desc = "Pickup for the Whirlwind defensive spell."
+       }
        item_health_full:e =
        {
          origin = "0 0 0"
@@ -9937,6 +9946,13 @@ QQRKSRC1
      HTML = "help/hr2/g_items.htm#item_defense_teleport"
      mdl = "models/items/Defense/Teleport/tris.fm"
     }
+    item_defense_tornado:form =
+    {
+     Help = "Pickup for the Whirlwind defensive spell."
+     bbox = '-16 -16 -16 16 16 16 1'
+     HTML = "help/hr2/g_items.htm"
+     mdl = "models/items/Defense/Tornado/tris.fm"
+    }
     item_health_full:form =
     {
      Help = "Pickup health (30 points)"
@@ -10690,6 +10706,11 @@ QQRKSRC1
         Typ="X1"
         Cap="INVULNERABLE"
         Hint="N/"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X2"
+        Cap="ANIMATE"
+        Hint="Add animated flame"}
      spawnflags: =
        {Txt="&"
         Typ="X8"
@@ -18224,6 +18245,11 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the angle to push the player along the X,Y axes"
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="FORCE_ONCE"
+        Hint="Push once then remove"}
     }
     trigger_puzzle:form =
     {
