@@ -695,11 +695,7 @@ def ClearTagClick (m):
     "clears tag on menu-click"
     editor = mapeditor()
     if editor is None: return
-    if gettaggedlist(editor) is None and gettagged(editor) is None:
-        quarkx.msgbox("No Tagged items exist.\n\nNothing done.", MT_ERROR, MB_OK)
-        return
-    else:
-        cleartag(editor)
+    cleartag(editor)
 
 
 #
@@ -1923,6 +1919,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2003/05/09 01:01:08  cdunde
+#Added function buttons for tagtoolbar
+#
 #Revision 1.29  2003/03/28 02:54:40  cdunde
 #To update info and add infobase links.
 #
