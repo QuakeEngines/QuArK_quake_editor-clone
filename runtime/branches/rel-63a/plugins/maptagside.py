@@ -854,12 +854,17 @@ def MirrorFlipTexClick(m):
     side = editor.layout.explorer.uniquesel
     if side is None:
         return
+    #
+    # this seems like an awkward technique, & I'd sort of
+    #  like to dispense with the swapsides_leavetex() method,
+    #  but I can't get anything else to work, and maybe
+    #  this method is a slight speed optimization anyway,
+    #  for invisible walls of some of the duplicators.
+    #
     newside=side.copy()
     newside.swapsides_leavetex()
-    debug('yo')
     newside=projecttexfrom(side,newside)
     newside.swapsides_leavetex()
-    debug('dude')
     undo=quarkx.action()
     undo.exchange(side, newside)
     editor.ok(undo,"mirror flip texture")
@@ -1867,6 +1872,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20.2.3  2002/12/30 05:04:13  tiglari
+#remove 'to mirror' option - doesn't seem to be necessary
+#
 #Revision 1.20.2.2  2002/05/19 05:06:12  tiglari
 #Put Select tagged faces command on selection menu
 #
