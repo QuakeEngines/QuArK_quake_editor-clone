@@ -1,4 +1,14 @@
 
+                 QuArK 6.3 Release Candiate 1 Patche 2
+                 
+ * [tiglari] fix selection dialog problems for mapthinfaces.py, mapmicrobrush.py,
+      mapbadtexscale.py, bspstudy.py
+ 
+                 QuArK 6.3 Release Candiate 1 Patches 1
+
+ * [tiglari] remove debug statements from various files
+
+
                  QuArK 6.3 Release Candidate 1
 
  * [tiglari] Replace texture dialog: if just a face is selected,
