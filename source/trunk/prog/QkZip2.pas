@@ -5,6 +5,9 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/01/21 15:50:28  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.16  2001/01/15 19:22:20  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -226,7 +229,7 @@ var
   TempStream,T2:TMemoryStream;
   tInfo: TInfoEnreg1;
   LFS: TLocalFileHeader;
-  crc,OrgSize,Size,pos: Longint;
+  crc, OrgSize,Size,pos: Longint;
   cdir:TFileHeader;
   sig:Longint;
 begin
@@ -258,7 +261,7 @@ begin
         tInfo.F:=TempStream;
         Q.SaveFile1(tInfo);   { save in non-QuArK file format }
         tInfo.Free;
-        crc:=$FFFFFFFF;
+        crc:=LongInt($FFFFFFFF);
         CalcCRC32(TempStream.Memory, TempStream.Size, crc);
         crc:=not crc;
         TempStream.Seek(0,soFromBeginning);
