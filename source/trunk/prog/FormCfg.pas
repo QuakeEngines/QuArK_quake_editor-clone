@@ -28,7 +28,7 @@ interface
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
      Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
-     CursorScrollBox, Erombbtn, Spin;
+     CursorScrollBox, Spin;
 
 const
  wp_InternalEdit = 96;
@@ -1487,7 +1487,7 @@ var
  Txt, Ctrl, ResultCtrl, SelectMe: TControl;
  Edit: TCustomEdit;
  UpDown: TSpinButton;
- Quad: TEnhRombButtons;
+{Quad: TEnhRombButtons;}
  ComboBox: TEnterComboBox;
  Notify: TNotifyEvent;
 {Cb: TCheckBox;}
@@ -2136,7 +2136,7 @@ begin
                     UpDown.Tag := I+1;
                     Notify:=AcceptEdit;
                    end;
-                  'Q':
+                (*'Q':
                    begin
                     Dec(J, 20);
                     Quad := TEnhRombButtons.Create(Self);
@@ -2154,7 +2154,7 @@ begin
                     Quad.Hint := '5408';
                     Quad.Tag := I+1;
                     Notify:=AcceptEdit;
-                   end;
+                   end;*)
                  end;
                  Edit.SetBounds(X,Y,J,LineHeight);
                  Edit.Parent:=SB;
