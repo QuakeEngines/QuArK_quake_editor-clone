@@ -335,7 +335,7 @@ def getotherfixed(v, vtxes, axis):
 class EdgeHandle(qhandles.GenericHandle):
     undomsg = "drag edge"
     hint = "tag this edge for lining up objects, etc."
-    
+
     def __init__(self, face, vtx1, vtx2):
         pos = (vtx2+vtx1)/2
         qhandles.GenericHandle.__init__(self, pos)
@@ -345,7 +345,7 @@ class EdgeHandle(qhandles.GenericHandle):
         cur.pos = pos
         cur.face = face
         self.cursor = cur.getcursor
- 
+
     def menu(self, editor, view):
         self.click(editor)
         editor.layout.clickedview = view
@@ -467,7 +467,7 @@ class VertexHandle(qhandles.GenericHandle):
             for face in poly.faces:
                 face.enhrevert()
         editor.layout.explorer.sellist=new
-   
+
     def drag(self, v1, v2, flags, view):
 
         #### Vertex Dragging Code by Tim Smith ####
@@ -681,7 +681,7 @@ class VertexHandle(qhandles.GenericHandle):
                             rotationaxis = mvlist [0] - mvlist [1]
                             otherfixed =getotherfixed(vmax, mvlist, rotationaxis)
                             fixedpoints = vmax, otherfixed
-                  
+
                         #
                         # otherwise, we are draging one
                         #
@@ -726,7 +726,7 @@ class VertexHandle(qhandles.GenericHandle):
                         #
                         newpoint = self.pos+delta
                         nf = new.subitem(orgfaces.index(f))
-                        
+
                         def pointsok(new,fixed):
                             #
                             # coincident not OK
@@ -740,7 +740,7 @@ class VertexHandle(qhandles.GenericHandle):
                                return 0
                             return 1
 
-                        if pointsok(newpoint,fixedpoints): 
+                        if pointsok(newpoint,fixedpoints):
                             tp = nf.threepoints(2)
                             x,y = nf.axisbase()
                             def proj1(p, x=x,y=y,v=vmax):
@@ -766,8 +766,8 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             nf.setthreepoints(tp ,2)
 
- 
- 
+
+
                 # if the face is not part of the original group
                 #
 
@@ -834,7 +834,7 @@ class CyanLHandle(qhandles.GenericHandle):
         def toAxisBase(p,org,x=x,y=y,z=norm):
             diff = p-org
             return quarkx.vect(diff*x, diff*y, diff*z)
-            
+
         #
         # Also projects onto plane
         #
@@ -848,17 +848,17 @@ class CyanLHandle(qhandles.GenericHandle):
                 return 0
 
         def toFace(p,norm=norm, facepoint=facepoint):
-            return projectpointtoplane(p,norm,facepoint,norm) 
-       
+            return projectpointtoplane(p,norm,facepoint,norm)
+
         #
         # Glue to tagged point
         #
         tagged=gettaggedpt(editor)
-        if tagged is not None:       
+        if tagged is not None:
             taggedonface = onFace(tagged)
         else:
             taggedonface=0
-            
+
         def glueClick(m,tagged=tagged,self=self,editor=editor,toFace=toFace):
             #
             # We only want to glue to points on the plane of theface, so
@@ -895,18 +895,18 @@ class CyanLHandle(qhandles.GenericHandle):
             undo=quarkx.action()
             undo.exchange(self.face,newface)
             editor.ok(undo,'Glue to Tagged')
-            
-            
+
+
         glueitem = qmenu.item('Glue to tagged',glueClick)
         if not taggedonface or self.n==3:
             glueitem.state=qmenu.disabled
-            
+
         #
         # Align to tagged edge (by rotation, to the one
         #   that's closest to being aligned)
         #
         edge = gettaggededge(editor)
-        
+
         def alignClick(m,self=self,edge=edge,editor=editor,
                        toAxisBase=toAxisBase,fromAxisBase=fromAxisBase):
             p1, p2, p3, p4 = self.tp4
@@ -999,9 +999,21 @@ class CyanLHandle(qhandles.GenericHandle):
             self.draghint = "%d degrees" % (math.acos(m[0,0])*180.0/math.pi)
             # ---- texture rotation end ----
 
-        l = max((abs(p2), abs(p3)))
-        if abs(p2^p3) < l*l*0.1:
-            return None, None    # degenerate
+#DECKER - 2001.08.13 - The 'if abs(p2^p3) < l*l*0.1:' makes it impossible to have a _huge_ first texture-axis and a _small_ second texture-axis
+#        l = max((abs(p2), abs(p3)))
+#        if abs(p2^p3) < l*l*0.1:
+#            return None, None    # degenerate
+
+        try:
+            # Calculate the "angle" between the two texture-axes
+            v = p2.normalized - p3.normalized
+            len = abs(v)
+            # Make sure that the "angle" isn't near "360-degrees" nor "0-degrees", else the texture would look rather weird!
+            if len < 0.01 or len > 1.999:
+                return None, None    # degenerate
+        except:
+            return None, None    # math error
+#/DECKER - 2001.08.13
 
         self.dynp4 = (p1,p1+p2,p1+p3,p1+p2+p3)
         r = self.face.copy()
@@ -1593,7 +1605,7 @@ def singlebezierzoom(view):
     sc = view.screencenter
     view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
     view.screencenter = sc
-    
+
 def GetUserCenter(obj):
 #    debug('type: '+`type(obj)`)
     if type(obj) is type([]):  # obj is list
@@ -1624,7 +1636,7 @@ def macro_usercenter(self):
     undo.setspec(dup,'usercenter',tup)
     editor.ok(undo,'add usercenter')
     editor.invalidateviews()
-    
+
 qmacro.MACRO_usercenter = macro_usercenter
 class UserCenterHandle(CenterHandle):
 
@@ -1638,11 +1650,14 @@ class UserCenterHandle(CenterHandle):
         dup = self.centerof.copy()
         SetUserCenter(dup, GetUserCenter(dup)+delta)
         return [self.centerof], [dup]
-    
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.27  2001/07/27 11:35:49  tiglari
+#revert code 4 setthreepoints to code 2
+#
 #Revision 1.26  2001/07/24 00:04:48  tiglari
 #more comments for texture-L RMB menu items
 #
