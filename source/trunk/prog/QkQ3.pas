@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 Revision 1.9  2000/05/14 15:06:56  decker_dk
 Charger(F,Taille) -> LoadFile(F,FSize)
 ToutCharger -> LoadAll
@@ -88,6 +91,7 @@ type
   QShaderStage = class(QPixelSet)
                  public
                    class function TypeInfo: String; override;
+                   function ContainsImageReference : Boolean;
                    function ProvidesSomeImage : QPixelSet;
                    function LoadPixelSet : QPixelSet; override;
                    function Description : TPixelSetDescription; override;
@@ -172,43 +176,53 @@ var
  Q: QObject;
  I: Integer;
  S: String;
+ ValidStage: QPixelSet;
 begin
  Acces;
-  { looks for 'qer_editorimage' }
+ Result:=Nil;
+ { looks for 'qer_editorimage' }
  S:=Specifics.Values[EditorImageSpec];
  if S<>'' then
+ begin
+  if (ExtractFileExt(S)='') then
   begin
-   if (ExtractFileExt(S)='') then
-   begin
-    try
-     Result:=NeedGameFile(S+'.tga') as QPixelSet;
-    except
-     Result:=NeedGameFile(S+'.jpg') as QPixelSet;
-    end;
-   end
-   else
-    Result:=NeedGameFile(S) as QPixelSet;
-   if (Result<>nil) then
-    Exit;
-  end;
-  { returns the first valid stage image }
- for I:=0 to SousElements.Count-1 do
-  begin
-   Q:=SousElements[I];
-   if Q is QShaderStage then
-    begin
-     Result:=QShaderStage(Q).ProvidesSomeImage;
-     if Result<>Nil then Exit;  { got it }
-    end;
-  end;
-{DECKER-begin}
- try
-  Result:=NeedGameFile(Name+'.tga') as QPixelSet;
- except
-  Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+   try
+    Result:=NeedGameFile(S+'.tga') as QPixelSet;
+   except
+    Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+   end;
+  end
+  else
+   Result:=NeedGameFile(S) as QPixelSet;
  end;
-(* Result:=Nil;  { nothing found } *)
-{DECKER-end}
+ { examines all shaderstages for existing images }
+ for I:=0 to SousElements.Count-1 do
+ begin
+  Q:=SousElements[I];
+  if Q is QShaderStage then
+  begin
+   { Skip over $lightmap and those not containing images }
+   if QShaderStage(Q).ContainsImageReference then
+   begin
+    ValidStage:=QShaderStage(Q).ProvidesSomeImage;
+    { Missing a texture, shader invalid? Return NIL }
+    if ValidStage=Nil then
+     Exit;
+    { Set to first valid stage, so something is displayed in the texture-browser }
+    if Result=Nil then
+     Result:=ValidStage;
+   end;
+  end;
+ end;
+ if Result=Nil then
+ begin
+  { If no image could be found, try the shader-name itself }
+  try
+   Result:=NeedGameFile(Name+'.tga') as QPixelSet;
+  except
+   Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+  end;
+ end;
 end;
 
 (*procedure QShader.DataUpdate;
@@ -254,9 +268,11 @@ begin
    Q.Acces;
     { stage intro }
    Result:=Result + chr(vk_Tab) + '{'#13#10;
-    { include 'map' attribute from the name of the stage }
+(* DECKER
+   { include 'map' attribute from the name of the stage }
    if Q.Name <> LoadStr1(5699) then
     Result:=Result + chr(vk_Tab) + chr(vk_Tab) + 'map ' + Q.Name + #13#10;
+*)
    for I:=0 to Q.Specifics.Count-1 do  { stage attributes }
     DumpSpec(Q.Specifics[I], chr(vk_Tab) + chr(vk_Tab));
     { stage end }
@@ -330,15 +346,24 @@ begin
  Result:=':shstg';
 end;
 
-function QShaderStage.ProvidesSomeImage : QPixelSet;
+function QShaderStage.ContainsImageReference : Boolean;
 begin
  if (Name='') or (Name[1]='$') then
-  Result:=Nil
+  Result:=False
  else
+  Result:=True;
+end;
+
+function QShaderStage.ProvidesSomeImage : QPixelSet;
+begin
+ Result:=Nil;
+ if ContainsImageReference then
+ begin
   if Name=LoadStr1(5699) then   { complex stage }
    Result:=Nil   { to do: check for animated stages }
   else
    Result:=NeedGameFile(Name) as QPixelSet;
+ end;
 end;
 
 function QShaderStage.LoadPixelSet : QPixelSet;
@@ -386,7 +411,7 @@ procedure QShaderFile.LoadFile(F: TStream; FSize: Integer);
 const
  ProgressStep = 4096;
 var
- ComplexStage, S, Data: String;
+ ComplexStage, Data: String;
  Source, NextStep: PChar;
  Shader: QShader;
  Stage: QShaderStage;
@@ -504,13 +529,27 @@ begin
           until False;
           Inc(Source);   { skip the closing brace }
 
-           { remove the 'map' attribute and use it to set the name of the stage }
-          S:=Stage.Specifics.Values['map'];
-          if S<>'' then
-           begin
-            Stage.Specifics.Values['map']:='';
-            Stage.Name:=S;
-           end;
+          { remove the 'map' attribute and use it to set the name of the stage }
+          if Stage.Specifics.Values['map']<>'' then
+          begin
+           Stage.Name:=Stage.Specifics.Values['map'];
+(* DECKER
+           Stage.Specifics.Values['map']:='';
+*)
+          end
+          else
+          {DECKER - try 'clampmap' instead }
+          if Stage.Specifics.Values['clampmap']<>'' then
+           Stage.Name:=Stage.Specifics.Values['clampmap']
+          else
+          {DECKER - try 'animmap' instead }
+          if Stage.Specifics.Values['animmap']<>'' then
+          begin
+           Stage.Name:=Stage.Specifics.Values['animmap'];
+           { jump over the number and take the first filename in the 'animmap' list }
+           Stage.Name:=Copy(Stage.Name, Pos(' ', Stage.Name)+1, 999);
+           SetLength(Stage.Name, Pos(' ', Stage.Name)-1);
+          end;
          end
         else   { shader attribute }
          ReadAttribute(Shader);
