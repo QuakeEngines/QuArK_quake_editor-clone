@@ -11,6 +11,22 @@ the current version of QuArK, possibly before some of the things on this
 list are done.
 
 <UL>
+<LI>Leak line simplification:
+<br> information from Bengt Jardrup:
+<br>Tiglari, if you take a look at the Q1 compilers at my site 
+<code>
+> http://user.tninet.se/~xir870k , you'll find that both of them 
+> already have a leak line "simplification" algorithm default active 
+> that significantly reduces the leak trail length and complexity. As a 
+> result, the .pts file size shrinks significantly. For large leaky 
+> maps, this is an enormous advantage.
+> 
+> This algorithm was originally designed by Greg 'Tree' Lewis and 
+> fixed/improved by Tyrann and me. The algorithm can be found in source 
+> file outside.c and is called SimplifyLeakline.
+> 
+</code>
+
 <li>Flexible vertex movement: (tiglari)
 <br>status: some ideas about how to do it.
 
