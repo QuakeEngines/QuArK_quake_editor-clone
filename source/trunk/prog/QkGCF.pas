@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2004/12/27 11:00:39  alexander
+gcf access working
+added versioning in dll interface (QuArKSteamFS.dll)
+major cleanup
+
 Revision 1.4  2004/12/21 09:03:47  alexander
 changed gcfwrap dll location to be in dlls directory
 
@@ -312,16 +317,16 @@ function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
 begin
    result:= GetProcAddress(DLLHandle, APIFuncname);
    if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKSteamFS.dll');
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
 end;
 
 initialization
-  Hgcfwrap := LoadLibrary('dlls/QuArKSteamFS.dll');
+  Hgcfwrap := LoadLibrary('dlls/QuArKGCF.dll');
   if Hgcfwrap >= 32 then { success }
   begin
     APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
     if APIVersion<>RequiredGCFAPI then
-      Fatal('dlls/QuArKSteamFS.dll API version mismatch');
+      Fatal('dlls/QuArKGCF.dll API version mismatch');
     GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
     GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
     GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
