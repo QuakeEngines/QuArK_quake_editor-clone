@@ -27,6 +27,8 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-01-16   [HL] Changed 'monster_satchelcharge' entity name to 'monster_satchel'
+//
 // 2000-01-02	[CS] Updated texture-links for Counter-Strike beta5
 //		[CS] Added 'func_hostage_rescue' brush-entity
 //		[CS] Added 'func_bomb_target' brush-entity
@@ -443,7 +445,7 @@ QQRKSRC1
 		monster_miniturret:e		= { origin = "0 0 0" angle="360" ;desc = "Mini Auto Turret" }
 		monster_sentry:e		= { origin = "0 0 0" angle="360" ;desc = "Sentry Turret Gun" }
 		monster_turret:e		= { origin = "0 0 0" angle="360" ;desc = "Auto Turret" }
-		monster_satchelcharge:e		= { origin = "0 0 0" angle="360" ;desc = "Live Satchel Charge" }
+                monster_satchel:e               = { origin = "0 0 0" angle="360" ;desc = "Live Satchel Charge" }
 		monster_tripmine:e		= { origin = "0 0 0" angle="360" ;desc = "Active Tripmine" }
 		monster_handgrenade:e		= { origin = "0 0 0" angle="360" ;desc = "Live Handgrenade" }
 	}
@@ -1675,6 +1677,32 @@ QQRKSRC1
 		t_rendermode = !
 	}
 
+        f_op4_scientist_settings:form = {
+		body: = { Typ="C" Txt="&"
+			Items = "Random"$0D
+				"Glasses"$0D
+				"Einstein"$0D
+				"Luther"$0D
+                                "Slick"$0D
+                                "Einstein w/Clipboard"$0D
+                                "Slick w/Stick"
+                        Values ="-1"$0D"0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"
+		}
+		suspicious: = { Typ="C" Hint="(Opposing Force)" Txt="&"
+			items = "No"$0D
+				"Yes"
+			values = "0"$0D"1"
+		}
+	}
+        t_op4_scientist_settings:incl = {
+                op4: = {
+			Typ = "B"
+			Txt = "(OpposingForce)"
+			Cap = "Push..."
+                        form = "f_op4_scientist_settings:form"
+			Hint = "Opposing Force settings"
+		}
+	}
 	f_op4_suspicious_settings:form = {
 		suspicious: = { Typ="C" Hint="(Opposing Force)" Txt="&"
 			items = "No"$0D
@@ -1820,14 +1848,17 @@ QQRKSRC1
 				"Take Damage"$0D
 				"50% Health Remaining"$0D
 				"Death"$0D
-				"(N/A) Squad Member Dead"$0D
-				"(N/A) Squad Leader Dead"$0D
+//                                "(N/A) Squad Member Dead"$0D
+//                                "(N/A) Squad Leader Dead"$0D
 				"Hear World"$0D
 				"Hear Player"$0D
 				"Hear Combat"$0D
 				"See Player Unconditional"$0D
 				"See Player, Not In Combat"
-			Values ="0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D"11"
+                        Values ="0"$0D"1"$0D"2"$0D"3"$0D"4"$0D
+//                                "5"$0D
+//                                "6"$0D
+                                "7"$0D"8"$0D"9"$0D"10"$0D"11"
 		}
 		spawnflags: = { Typ="X1" Cap="WaitTillSeen" Txt="&" }
 		spawnflags: = { Typ="X2" Cap="Gag" Txt="&" }
@@ -2222,7 +2253,7 @@ QQRKSRC1
 		netname: = { Txt="&" Hint="Target Path" }
 		t_master = !
 		t_message = !
-		style: = { Txt="&" Hint="Style" }
+//                style: = { Txt="&" Hint="Style" }
 		sounds:	= { Typ="C" Txt="&" Hint="Sound style"
 			Items = "No Sound"$0D
 				"1"$0D
@@ -9993,7 +10024,7 @@ QQRKSRC1
 	env_glow:form = {
 		bbox = '-4 -4 -4 4 4 4'
 		t_targetname = !
-		model: = { Typ="C" Txt="&"  Hint="Model (Typically 'sprites/flare1.spr')"
+                model: = { Typ="C" Txt="&"  Hint="path/filename of sprite (Typically 'sprites/flare1.spr')"
 			Items = "flare1"$0D
 				"flare2"$0D
 				"flare3"$0D
@@ -10072,7 +10103,7 @@ QQRKSRC1
 		}
 		spawnflags: = { Typ="X1" Cap="Play Once" Txt="&" }
 		spawnflags: = { Typ="X2" Cap="All Clients" Txt="&" }
-		messagesound: = { Txt="&"  Hint="Sound effect" }
+                messagesound: = { Txt="&"  Hint="path/filename of WAV" }
 		messagevolume: = { Txt="&" Hint="Volume 0-10" }
 		messageattenuation: = { Typ="C" Txt="&"
 			Items = "Small Radius"$0D
@@ -10110,7 +10141,7 @@ QQRKSRC1
 	}
 	env_shooter:form = {
 		t_gibshooter = !
-		shootmodel: = { Typ="C" Txt="&" Hint="Gib Model (models/?????.mdl)"
+                shootmodel: = { Typ="C" Txt="&" Hint="Gib Model or Sprite (models/?????.mdl, sprites/?????.spr)"
 			Items =
 "agibs"$0D
 "big_momgibs"$0D
@@ -10211,7 +10242,7 @@ QQRKSRC1
 				"Concrete"
 			Values = "-1"$0D"0"$0D"1"$0D"2"$0D"3"$0D"4"
 		}
-		scale: = { Txt="&" Hint="Gib Scale" }
+                scale: = { Txt="&" Hint="Gib Sprite Scale" }
 		skin: = { Txt="&" Hint="Gib Skin" }
 		t_rendermode = !
 	}
@@ -10264,7 +10295,7 @@ QQRKSRC1
 	env_sprite:form = {
 		t_targetname = !
 		framerate: = { Txt="&" Hint="Framerate" }
-		model: = { Typ="C" Txt="&" Hint="Sprite Name (sprites/?????.spr)"
+                model: = { Typ="C" Txt="&" Hint="Sprite path/filename (sprites/?????.spr)"
 			Items =
 "320_logo"$0D
 "320_pain"$0D
@@ -10591,9 +10622,9 @@ QQRKSRC1
 	}
 	func_button:form = {
 		t_targetname = !
-		speed: = { Txt="&" Hint="Speed" }
 		t_target = !
-		netname: = { Txt="&"  Hint="Target Path" }
+		speed: = { Txt="&" Hint="Speed" }
+//                netname: = { Txt="&"  Hint="Target Path" }
 		health: = { Txt="&"  Hint="Health (shootable if > 0)" }
 		lip: = { Txt="&"  Hint="Lip" }
 		t_master = !
@@ -10988,30 +11019,30 @@ QQRKSRC1
 	{
 		Help = "AI node"
 		bbox = '-24 -24 -4 24 24 4'
-		hinttype: = { Typ="C" Txt="&"
-			Items = "(none)"$0D
-				"World:Door"$0D
-				"World:Window"$0D
-				"World:Button"$0D
-				"World:Machinery"$0D
-				"World:Ledge"$0D
-				"World:Light Source"$0D
-				"World:Heat Source"$0D
-				"World:Blinking Light"$0D
-				"World:Bright Colors"$0D
-				"World:Human Blood Decal"$0D
-				"World:Alien Blood Decal"$0D
-				"Stuka:Ceiling Perch"$0D
-				"Stuka:Landing spot"
-			Values = ""$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D"11"$0D"300"$0D"301"
-		}
-		activity: = { Typ="C" Txt="&"
-			Items = "(none)"$0D
-				"Eat"$0D
-				"Inspect Ground"$0D
-				"Inspect Wall"
-			Values = ""$0D"35"$0D"45"$0D"46"
-		}
+//                hinttype: = { Typ="C" Txt="&"
+//                        Items = "(none)"$0D
+//                                "World:Door"$0D
+//                                "World:Window"$0D
+//                                "World:Button"$0D
+//                                "World:Machinery"$0D
+//                                "World:Ledge"$0D
+//                                "World:Light Source"$0D
+//                                "World:Heat Source"$0D
+//                                "World:Blinking Light"$0D
+//                                "World:Bright Colors"$0D
+//                                "World:Human Blood Decal"$0D
+//                                "World:Alien Blood Decal"$0D
+//                                "Stuka:Ceiling Perch"$0D
+//                                "Stuka:Landing spot"
+//                        Values = ""$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D"11"$0D"300"$0D"301"
+//                }
+//                activity: = { Typ="C" Txt="&"
+//                        Items = "(none)"$0D
+//                                "Eat"$0D
+//                                "Inspect Ground"$0D
+//                                "Inspect Wall"
+//                        Values = ""$0D"35"$0D"45"$0D"46"
+//                }
 	}
 	info_node_air:form =
 	{
@@ -11167,7 +11198,7 @@ QQRKSRC1
 		}
 		netname: = { Txt="&"  Hint="Children's Name" }
 		spawnflags: = { Typ="X1" Cap="Start ON" Txt="&" }
-		spawnflags: = { Typ="X2" Cap="PVS On/Off" Txt="&" }
+//                spawnflags: = { Typ="X2" Cap="PVS On/Off" Txt="&" }
 		spawnflags: = { Typ="X4" Cap="Cyclic" Txt="&" }
 		spawnflags: = { Typ="X8" Cap="MonsterClip" Txt="&" }
 		monstercount: = { Txt="&" Hint="How many monsters the monstermaker can create ( -1 = unlimited )" }
@@ -11211,12 +11242,14 @@ QQRKSRC1
 	}
 	monster_barney_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
+                t_targetname = !
 		pose: = { Typ="C" Txt="&" Hint="Pose"
 			Items =	 "On back"$0D
 				 "On side"$0D
 				 "On stomach"
 			Values = "0"$0D"1"$0D"2"
 		}
+                t_rendermode = !
 	}
 	monster_bigmomma:form = {
 		t_monster = !
@@ -11256,6 +11289,7 @@ QQRKSRC1
 	monster_headcrab:form = { t_monster = ! bbox = '-16 -16 0 16 16 36' }
 	monster_hevsuit_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
+                t_targetname = !
 		pose: = { Typ="C" Txt="&" Hint="Pose"
 			Items =	 "On back"$0D
 				 "Seated"$0D
@@ -11263,9 +11297,11 @@ QQRKSRC1
 				 "On Table"
 			Values = "0"$0D"1"$0D"2"$0D"3"
 		}
+                t_rendermode = !
 	}
 	monster_hgrunt_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
+                t_targetname = !
 		pose: = { Typ="C" Txt="&" Hint="Pose"
 			Items =  "On stomach"$0D
 				 "On side"$0D
@@ -11279,6 +11315,7 @@ QQRKSRC1
 				 "Commander no Gun"
 			Values = "0"$0D"1"$0D"2"$0D"3"
 		}
+                t_rendermode = !
 	}
 	monster_houndeye:form = {
 		t_monster = !
@@ -11326,8 +11363,9 @@ QQRKSRC1
 		Help = "This monster does not have any AI"
 		bbox = '-6 -6 0 6 6 6'
 	}
-	monster_satchelcharge:form = { t_weapon = ! }
+        monster_satchel:form = { t_weapon = ! }
 	monster_scientist:form = {
+		bbox = '-16 -16 0 16 16 72'
 		t_monster = !
 		t_talkmonster = !
 		Scientist: = {
@@ -11337,12 +11375,12 @@ QQRKSRC1
 			Form = "qrk_use_sentence_scientist:form"
 			Hint = "List of use/unuse sentences for Scientist"
 		}
-		t_op4_suspicious = !
-		bbox = '-16 -16 0 16 16 72'
 		t_scientistbody = !
+                t_op4_scientist_settings = !
 	}
 	monster_scientist_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
+                t_targetname = !
 		t_scientistbody = !
 		pose: = { Typ="C" Txt="&" Hint="Pose"
 			Items = "On back"$0D
@@ -11354,6 +11392,7 @@ QQRKSRC1
 				"Table3"
 			Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
 		}
+                t_rendermode = !
 	}
 	monster_sentry:form = {
 		t_monster = !
@@ -12762,8 +12801,8 @@ QQRKSRC1
 	}
 	monster_cleansuit_scientist_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
-		t_rendermode = !
-		t_scientistbody = !
+                t_targetname = !
+                t_scientistbody = !
 		pose: = { Typ="C" Hint="Pose" Txt="&"
 			items = "On back"$0D
     				"On Stomach"$0D
@@ -12776,6 +12815,7 @@ QQRKSRC1
     				"Dead Against Wall"
 			values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"
 		}
+		t_rendermode = !
 	}
 	monster_sitting_cleansuit_scientist:form = {
 		bbox = '-14 -14 22 14 14 72'
@@ -12791,13 +12831,14 @@ QQRKSRC1
 	monster_gonome:form = { t_monster = ! bbox = '-16 -16 0 16 16 72' }
 	monster_gonome_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
-		t_rendermode = !
+                t_targetname = !
       		pose:form = { Typ="C" Hint="Pose" Txt="&"
 			items = "On Stomach"$0D
     				"On Back"$0D
     				"On Side"
 			values = "0"$0D"1"$0D"2"
 		}
+		t_rendermode = !
 	}
 	monster_houndeye_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
@@ -12859,7 +12900,7 @@ QQRKSRC1
 		}
 	}
 	monster_human_grunt_ally_dead:form = {
-		t_rendermode = !
+                t_targetname = !
       		pose: = { Typ="C" Hint="Pose" Txt="&"
 			items = "On stomach"$0D
 				"On side"$0D
@@ -12885,6 +12926,7 @@ QQRKSRC1
          			"MP"
 			values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"
 		}
+		t_rendermode = !
 	}
 	monster_human_medic_ally:form = {
 		bbox = '-16 -16 0 16 16 72'
@@ -12962,6 +13004,7 @@ QQRKSRC1
 	}
 	monster_otis_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
+                t_targetname = !
     		pose: = { Typ="C" Hint="Pose" Txt="&"
         		items = "On back"$0D
         			"On side"$0D
@@ -12970,6 +13013,7 @@ QQRKSRC1
 				"Dead Sitting"
 			values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
 		}
+		t_rendermode = !
 	}
 	monster_pitdrone:form = {
 		bbox = '-24 -24 0 24 24 32'
@@ -12994,6 +13038,7 @@ QQRKSRC1
 	monster_recruit:form = { t_monster = ! t_talkmonster = ! bbox = '-16 -16 0 16 16 72' }
 	monster_skeleton_dead:form = {
 		bbox = '-16 -16 0 16 16 72'
+                t_targetname = !
     		pose: = { Typ="C" Hint="Pose" Txt="&"
         		items = "On back"$0D
         			"Seated"$0D
