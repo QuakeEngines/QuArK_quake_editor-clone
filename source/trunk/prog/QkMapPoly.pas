@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2002/03/30 02:48:35  tiglari
+When a texture is dragged, its position&scale are now encoded by a 'tv'
+  specific.  So .qrk's will now be in a mixture of the old enhanced texture
+  positioning scheme and this new one.  Earlier stages of this code are
+  in the nutex and nutex2 branches for this file.
+
 Revision 1.48  2002/03/27 00:24:49  tiglari
 delete/write mapversion 220 specific as needed (removed when map
  read, added back in if written out in V220 format).
@@ -2248,19 +2254,15 @@ var
 begin
     S:=PChar(SetupGameSet.Specifics.Values['OutputMapFormat']);
    { ShowMessage(S); }
-    if StrComp(S, 'Classic Quake')=0 then Result:=CQType
-    else
-    if StrComp(S,'Quark etp')=0 then Result:=QetpType
-    else
-    if StrComp(S,'Valve 220')=0 then Result:=V220Type
-    else
-    if StrComp(S,'Brush Primitives')=0 then Result:=BPType
+    if      StrComp(S, 'Classic Quake')    = 0 then Result := CQType
+    else if StrComp(S, 'Quark etp')        = 0 then Result := QetpType
+    else if StrComp(S, 'Valve 220')        = 0 then Result := V220Type
+    else if StrComp(S, 'Brush Primitives') = 0 then Result := BPType
     else
     begin
      { Raise EErrorFmt(5702, [S]); }
       Result:=CQType
     end;
-
 end;
 
 procedure TPolyhedron.SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
@@ -2555,6 +2557,7 @@ var
         else
          S:=S+FloatToStrF(Z, ffFixed, 20, 5)+' ) ';
        end;
+
      if MapFormat=BPType then
       with F do
        begin
@@ -2565,6 +2568,7 @@ var
         write3vect(PY,S);
         S:=S+') ';
        end;
+
      with F do
       begin
        {$IFDEF TexUpperCase}
@@ -2594,8 +2598,9 @@ var
          end;
        end;
      end;
+
      if MJ=mjHexen then
-      S:=S+' -1'
+       S:=S+' -1'
      else
      if MJ=mjSin then
      { tiglari: Sin/KP/SOF/Q2 code below manages the content/
@@ -2603,8 +2608,7 @@ var
         because there is in general default info in the textures
         which can be overridden in the faces, Sin is the most
         complex. }
-
-      begin
+     begin
         Q := GlobalFindTexture(F.NomTex,Nil);
         if Q<>Nil then
         begin { see comments to QkMap on what's going on here }
@@ -2612,8 +2616,10 @@ var
          if not (Q is QTextureSin) then
            Q:=Nil;
         end;
-        if Q=Nil then Q:=QTextureSin.Create('', Nil);
-        Q.AddRef(+1); try
+        if Q=Nil then
+          Q:=QTextureSin.Create('', Nil);
+        Q.AddRef(+1);
+        try
          { these function below updates S }
          StashFloatFlag('friction',2);     { for flags stored as floats }
          StashFloatFlag('restitution',2);
@@ -2637,26 +2643,28 @@ var
          rval:=F.GetFloatSpec('nonlit', -1);
          if rval >= 0 then
            if Q.GetFloatSpec('nonlit', -1)<>rval then
-           S:=S+' nonlitvalue '+FloatToStrF(rval, ffFixed, 7, 2);
-        finally Q.AddRef(-1); end;
-        end
+             S:=S+' nonlitvalue '+FloatToStrF(rval, ffFixed, 7, 2);
+        finally
+          Q.AddRef(-1);
+        end;
+     end
      else  { kp seems to need field values
                written into the map.  Alex write code to
                put the c, f, v flags into the texture link }
-      if (MJ=mjKingPin) then
-      begin
+     if (MJ=mjKingPin) then
+     begin
        Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
        if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
        S1:=CheckFieldDefault('Contents','c', Q);
        S2:=CheckFieldDefault('Flags','f', Q);
        S3:=CheckFieldDefault('Value','v', Q);
        S:=S+' '+S1+' '+S2+' '+S3;
-       end
-      else {for me, SOF seems to behave like Q2, but for other
+     end
+     else {for me, SOF seems to behave like Q2, but for other
         people, default flags seem to be written into the map
         to work, so that's what happens here }
-      if (MJ=mjSOF) then
-       begin
+     if (MJ=mjSOF) then
+     begin
         Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
         if Q<>Nil then Q:=Q.LoadPixelSet;      { load it, since the default flags
                 are in the actual texture, not the link.) }
@@ -2664,26 +2672,31 @@ var
         S2:=CheckFieldDefault('Flags','Flags', Q);
         S3:=CheckFieldDefault('Value','Value', Q);
         S:=S+' '+S1+' '+S2+' '+S3;
-       end
+     end
      else
       { and in Q2, default flags get written into the map
         automatically, no wuccaz (<- wuccin furries) }
       {\tiglari}
-       begin
+      {Decker - Until we figure out how to clearly handle MOHAA's
+       face-flags, we now just write them to the .MAP so the
+       MOHAA-Q3MAP.EXE will be happy.}
+     begin
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
         S3:=F.Specifics.Values['Value'];
-        if (S1<>'') or (S2<>'') or (S3<>'') then
-         begin
+        if (S1<>'') or (S2<>'') or (S3<>'')
+        or (MJ=mjMOHAA) then {Decker - write face-flags when MOHAA}
+        begin
           if S1='' then S1:='0';
           if S2='' then S2:='0';
           if S3='' then S3:='0';
           S:=S+' '+S1+' '+S2+' '+S3;
-         end;
-       end;
+        end;
+     end;
 
      if (MapFormat=QetpType) then
-      S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
+       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
+
      Brush.Add(S);
     end;
   end;
