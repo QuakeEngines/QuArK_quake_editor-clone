@@ -168,23 +168,26 @@ def MACRO_OpenGL(minx, miny):
 
 qeditor_loaded=0
 def MACRO_shutdown(text):
-#    quitfile=open(quarkx.exepath+'quit.txt','w')
-#    quitfile.write('quitting\n')
+    quitfile=open(quarkx.exepath+'quit.txt','w')
+    quitfile.write('quitting\n')
     import qutils
+    import icons
 
-    del qutils.ico_objects
-    del qutils.ico_editor
-
+    del icons.ico_objects
+    del icons.ico_editor
+    del icons.ico_maped
+    
     if qeditor_loaded:       
        del quarkx.redlinesicons
 
-    for key in qutils.ico_dict.keys():
-        del qutils.ico_dict[key]
-#        quitfile.write('zapping '+key+'\n')
-    del qutils.ico_dict
+    for key in icons.ico_dict.keys():
+        del icons.ico_dict[key]
+        quitfile.write('zapping '+key+'\n')
+    del icons.ico_dict
 
-#    quitfile.write('done\n')
-#    quitfile.close()
+
+    quitfile.write('done\n')
+    quitfile.close()
     
 #
 #    ---- Dialog Boxes ----
@@ -318,6 +321,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.15.2.1  2001/11/10 21:30:10  tiglari
+#del redlinesicons, note qeditor loaded
+#
 #Revision 1.15  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #

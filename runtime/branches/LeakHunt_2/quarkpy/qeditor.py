@@ -417,8 +417,9 @@ class SimpleCancelDlgBox(qmacro.dialogbox):
     "A simple dialog box with only a Cancel button."
 
     def __init__(self, form, src):
+        import icons
         qmacro.dialogbox.__init__(self, form, src,
-          cancel = qtoolbar.button(self.cancel, "close this box", ico_editor, 0, "Cancel"))
+          cancel = qtoolbar.button(self.cancel, "close this box", icons.ico_editor, 0, "Cancel"))
 
     def cancel(self, m):
         self.src = None
@@ -1317,19 +1318,19 @@ def ToolsMenu(editor, toolbars):
 #
 # Icons for the layout of the Map/Model Editor
 #
-ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
-ico_dict['ico_mdled'] = LoadIconSet1("mdled", 1.0)
-ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
-ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
+#ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
+#ico_dict['ico_mdled'] = LoadIconSet1("mdled", 1.0)
+#ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
+ico_maped_y = icons.ico_maped[0][0].size[1] + 7
 
 
 #
 # Set the "Red lines" icons
 #
-quarkx.redlinesicons = (ico_dict['ico_maped'][0][5],
-  ico_dict['ico_maped'][1][5], ico_dict['ico_maped'][2][5],
-   ico_dict['ico_maped'][0][4], ico_dict['ico_maped'][1][4],
-   ico_dict['ico_maped'][2][4])
+#quarkx.redlinesicons = (ico_dict['ico_maped'][0][5],
+#  ico_dict['ico_maped'][1][5], ico_dict['ico_maped'][2][5],
+#   ico_dict['ico_maped'][0][4], ico_dict['ico_maped'][1][4],
+#   ico_dict['ico_maped'][2][4])
 
 
 #
@@ -1478,6 +1479,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.10.2.1  2001/11/10 21:30:39  tiglari
+#note qeditor loaded
+#
 #Revision 1.10  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #

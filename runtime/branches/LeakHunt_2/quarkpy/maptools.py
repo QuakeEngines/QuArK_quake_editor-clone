@@ -27,7 +27,7 @@ class DisplayBar(ToolBar):
     DefaultPos = ((0,0,0,0), "topdock", 0, 0, 1)
 
     def buildbuttons(self, layout):
-        ico_maped=ico_dict['ico_maped']
+        ico_maped=icons.ico_maped
         gridbtn = qtoolbar.doublebutton(layout.editor.togglegrid, layout.getgridmenu, "grid||The grid is the pattern of dots on the map that 'snaps' mouse moves. It helps you align polyhedrons and entities. You should always keep it active; otherwise, you could create slightly misaligned polyhedrons with small gaps between them, which is very bad for the game.\n\nThis 'grid' button has two parts : you can click either on the icon and get a menu that lets you select the grid size you like, or you can click on the text itself, which toggles the grid on/off without hiding it. As noted above, be careful when the grid is off.", ico_maped, 7)
         gridbtn.caption = "128"  # to determine the button width
         zoombtn = qtoolbar.doublebutton(layout.autozoom1click, getzoommenu, "choose zoom factor / zoom to fit the level or the selection||This button lets you zoom in or out. This button has two parts.\n\nClick on the icon to get a list of common zoom factors, or to enter a custom factor with the keyboard.\n\nClick on the text ('zoom') besides the icon to 'auto-zoom' in and out : the first time you click, the scale is choosen so that you can see the whole level at a glance; the second time you click, the views zoom in on the selected objects.", ico_maped, 14)
@@ -57,6 +57,9 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.3  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

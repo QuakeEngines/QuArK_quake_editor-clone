@@ -12,6 +12,7 @@ Various constants and routines
 #$Header$
 
 import quarkx
+import icons
 
 # a few colors
 BLACK     = 0x000000
@@ -279,17 +280,17 @@ def loadmdleditor():
 #   is cleaned up in qmacro.MACRO_shutdown to avoid
 #   live pointer memory leaks.
 #
-ico_dict = {}
+#ico_dict = {}
 
 #
 # Putting these two in the ico_dict doesn't achieve
 #  any purpose (lots of code gets clunkier, no benefit)
 #
 # Default icons for the objects
-ico_objects = LoadIconSet("images\\objects", 16)
+#ico_objects = LoadIconSet("images\\objects", 16)
 
 # Generic editor icons
-ico_editor = LoadIconSet("images\\editor", 16)
+#ico_editor = LoadIconSet("images\\editor", 16)
 
 #
 # Variable icons handlers for Quake entities
@@ -299,9 +300,10 @@ def EntityIcon(entity, iconset):
     #
     # Load the Variable icons for Quake Entity objects
     #
-    if not ico_dict.has_key('ico_mapents'):
-        ico_dict['ico_mapents'] = LoadIconSet("images\\mapents", 16)
-    icons = ico_dict['ico_mapents'][iconset]
+    import icons
+    if not icons.ico_dict.has_key('ico_mapents'):
+        icons.ico_dict['ico_mapents'] = LoadIconSet("images\\mapents", 16)
+    icons = icons.ico_dict['ico_mapents'][iconset]
     #
     # Read the classname of the entity
     #
@@ -347,38 +349,37 @@ def DuplicatorIconSel(dup):
 # Variable icons handlers for groups
 #
 
-ico_objects_group_set1={
-  (0,0):ico_objects[0][32],
-  (0,1):ico_objects[0][13],
-  (4,0):ico_objects[0][33],
-  (4,1):ico_objects[0][31]}
-
 def GroupIconUnsel(grp):
+    ico_objects=icons.ico_objects
+    ico_objects_group_set={
+      (0,0):ico_objects[0][32],
+      (0,1):ico_objects[0][13],
+      (4,0):ico_objects[0][33],
+      (4,1):ico_objects[0][31]}
+
     if grp[";view"]:
         try:
             view = int(grp[";view"])
-            return ico_objects_group_set1[view&4, not (view&~4)]
+            return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
     return ico_objects[0][13]
 
-ico_objects_group_set2={
-  (0,0):ico_objects[1][32],
-  (0,1):ico_objects[1][13],
-  (4,0):ico_objects[1][33],
-  (4,1):ico_objects[1][31]}
-  
 def GroupIconSel(grp):
+    ico_objects=icons.ico_objects
+    ico_objects_group_set={
+      (0,0):ico_objects[1][32],
+      (0,1):ico_objects[1][13],
+      (4,0):ico_objects[1][33],
+      (4,1):ico_objects[1][31]}
+  
     if grp[";view"]:
         try:
             view = int(grp[";view"])
-            return ico_objects_group_set2[view&4, not (view&~4)]
+            return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
     return ico_objects[1][13]
-
-del ico_objects_group_set1
-del ico_objects_group_set2
 
 #
 # Variable icons handlers for Model objects
@@ -508,6 +509,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2001/10/22 11:27:26  tiglari
+#clean up some leak tracking stuff
+#
 #Revision 1.16  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #

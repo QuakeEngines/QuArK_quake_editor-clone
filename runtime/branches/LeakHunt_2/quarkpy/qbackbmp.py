@@ -14,6 +14,7 @@
 
 import quarkx
 import qmacro
+import icons
 import qtoolbar
 from qeditor import *
 
@@ -64,12 +65,12 @@ class BackBmpDlg(qmacro.dialogbox):
            ok = qtoolbar.button(
               self.ok,
               "display the image file",
-              ico_editor, 3,
+              icons.ico_editor, 3,
               "Ok"),
            no = qtoolbar.button(
               self.no,
               "cancel background image",
-              ico_editor, 0,
+              icons.ico_editor, 0,
               "No image"))
 
     def ok(self, m):
@@ -94,6 +95,9 @@ class BackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.4  2001/06/17 21:05:27  tiglari
+#fix button captions
+#
 #Revision 1.3  2001/06/16 03:20:48  tiglari
 #add Txt="" to separators that need it
 #

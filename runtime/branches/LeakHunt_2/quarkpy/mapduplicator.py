@@ -19,18 +19,19 @@ Map Duplicator abstract classes.
 
 
 from maputils import *
+import icons
 import maphandles
 import mapentities
 
 
 # Variable icons for Duplicator objects
-ico_dict['ico_mapdups'] = LoadIconSet("images\\mapdups", 16)
+icons.ico_dict['ico_mapdups'] = LoadIconSet("images\\mapdups", 16)
 
 
 class DuplicatorManager:
     "Abstract base class for Duplicators."
 
-    Icon = (ico_objects, iiDuplicator)    # defaults
+    Icon = (icons.ico_objects, iiDuplicator)    # defaults
 
     def buildimages(self, singleimage=None):
         s = self.dup["macro"]
@@ -103,7 +104,7 @@ Dup_Tex_Dicts={}
 class StandardDuplicator(DuplicatorManager):
     "Base for Duplicators that applies on each item one by one."
 
-    Icon = (ico_dict['ico_mapdups'], 0)
+    Icon = (icons.ico_dict['ico_mapdups'], 0)
 
     def readvalues(self):
         self.origin = self.dup.origin
@@ -352,7 +353,7 @@ class StandardDuplicator(DuplicatorManager):
 class OriginDuplicator(DuplicatorManager):
     "Origin for centering of groups"
     
-    Icon = (ico_dict['ico_mapdups'], 0)
+    Icon = (icons.ico_dict['ico_mapdups'], 0)
 
     def buildimages(self, singleimage=None):
         return []
@@ -447,6 +448,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.21  2001/08/06 00:16:43  tiglari
 #texture-cycling for duplicators
 #

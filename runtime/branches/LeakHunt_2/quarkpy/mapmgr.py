@@ -53,6 +53,7 @@ Map editor Layout managers.
 
 import math
 import quarkx
+import icons
 import string
 import qtoolbar
 import qmenu
@@ -91,7 +92,7 @@ class MapLayout(BaseLayout):
 
 
     def bs_dataform(self, panel):
-        ico_maped=ico_dict['ico_maped']
+        ico_maped=icons.ico_maped
         fp = panel.newpanel()
         sfskills = (256,512,1024,2048)   # default
         for q in quarkx.getqctxlist():
@@ -128,12 +129,12 @@ class MapLayout(BaseLayout):
 
     def texflags(self, txt):
         if self.editor.texflags:
-            return [qtoolbar.button(self.flagsclick, "flags for this "+txt, ico_dict['ico_maped'], 22)]
+            return [qtoolbar.button(self.flagsclick, "flags for this "+txt, icons.ico_maped, 22)]
         else:
             return []    # Quake1, Hexen II
 
     def bs_polyform(self, panel):
-        ico_maped=ico_dict['ico_maped']
+        ico_maped=icons.ico_maped
         fp = panel.newpanel()
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 0)
         NegBtn = qtoolbar.button(self.neg1click, "negative poly||When a polyhedron is marked as negative, it behaves like a hole : every polyhedron in the same group as this one is 'digged' by the overlapping part.\n\nUsing 'Brush subtraction' in the 'Commands' menu is the same as marking the polyhedron negative, except that digging is not performed immediately. This helps keep the map clear.\n\nNegative polyhedrons appear in pink on the map.", ico_maped, 23)
@@ -153,7 +154,7 @@ class MapLayout(BaseLayout):
         return fp
 
     def bs_faceform(self, panel):
-        ico_maped=ico_dict['ico_maped']
+        ico_maped=icons.ico_maped
         fp = panel.newpanel()
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
         ts1Btn = qtoolbar.button(self.resettexscale, "reset 1:1 texture scale|resets 'scales' and 'angles'", ico_maped, 17)
@@ -162,9 +163,9 @@ class MapLayout(BaseLayout):
         ts2Btn.adjust = 1
         ts3Btn = qtoolbar.button(self.resettexscale, "adjust texture on face but keep scaling to a minimum|adjust texture with minimum scaling", ico_maped, 24)
         ts3Btn.adjust = 2
-        prevface = qtoolbar.button(self.nextface, "previous face of poly.", ico_dict['ico_mapedsm'], 0)
+        prevface = qtoolbar.button(self.nextface, "previous face of poly.", icons.ico_dict['ico_mapedsm'], 0)
         prevface.delta = -1
-        nextface = qtoolbar.button(self.nextface, "next face of poly.", ico_dict['ico_mapedsm'], 1)
+        nextface = qtoolbar.button(self.nextface, "next face of poly.", icons.ico_dict['ico_mapedsm'], 1)
         nextface.delta = 1
         #facezoombtn = qtoolbar.doublebutton(self.zoomface1click, getzoommenu, "choose zoom factor / zoom to 1:1 and back", ico_maped, 14)
         #facezoombtn.caption = "zoom"
@@ -184,7 +185,7 @@ class MapLayout(BaseLayout):
         return fp
 
     def bs_bezierform(self, panel):
-        ico_maped=ico_dict['ico_maped']
+        ico_maped=icons.ico_maped
         fp = panel.newpanel()
         bezierzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         bezierzoombtn.near = 1
@@ -208,6 +209,7 @@ class MapLayout(BaseLayout):
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
         thesepages = []
+        ico_objects=icons.ico_objects
         page1 = qtoolbar.button(self.filldataform, "General parameters about the selected object(s)|Specifics/Arg", ico_objects, iiEntity)
         page1.pc = [self.bs_dataform(panel)]
         thesepages.append(page1)
@@ -248,6 +250,7 @@ class MapLayout(BaseLayout):
 
     def filldataform(self, reserved):
         import mapentities
+        ico_objects=icons.ico_objects
         sl = self.explorer.sellist
         formobj = mapentities.LoadEntityForm(sl)
         self.dataform.setdata(sl, formobj)
@@ -818,6 +821,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.7  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.6  2001/03/01 19:14:40  decker_dk
 #changed bs_additionalpages() so it checks 'BezierPatchSupport' for the bezier-page.
 #
