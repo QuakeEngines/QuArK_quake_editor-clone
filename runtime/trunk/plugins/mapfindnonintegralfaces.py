@@ -173,7 +173,7 @@ def integralizeFaces(m):
 
 
 quarkpy.mapsearch.items.append(qmenu.item('Find &Non-integral Faces', findNonIntegralFaces,
- "|Find &Non-integral Faces:\n\nThis finds faces that don't have integral threepoints.\n\nUse integralize Selected Faces on the command menu to try to automatically fix them.\n\nIf you want a particular group to be allowed to contain faces with non-integral threepoints, give it a nonintegral specific with a value such as 1.|intro.mapeditor.menu.html#searchmenu"))
+ "|Find Non-integral Faces:\n\nThis finds faces that don't have integral threepoints.\n\nUse integralize Selected Faces on the command menu to try to automatically fix them.\n\nIf you want a particular group to be allowed to contain faces with non-integral threepoints, give it a nonintegral specific with a value such as 1.|intro.mapeditor.menu.html#searchmenu"))
 
 quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integralizeFaces,
  "|If faces without integral threepoints have enough integral vertices to be used as threepoints, changes the face to use them (also forces nearly integral ones).\n\nSelects the ones it changes, for checking.\n\nUse Find Non-integral Faces on the search menu to find suitable victims.\n\nResearch and fix the remaining ones by hand."))
