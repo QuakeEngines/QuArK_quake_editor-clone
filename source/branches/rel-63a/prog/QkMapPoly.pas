@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.3  2002/12/21 04:14:21  tiglari
+yet another attempt at v220 map writing
+
 Revision 1.56.2.2  2002/12/15 08:39:26  tiglari
 fix valve mapversion220 writing bug (it turns out that the texture-vectors do
  *not* have to be confined to the closest plane!!(
@@ -1165,7 +1168,7 @@ begin
      GetThreePointsT are the same as getting the
      simulated 3points, and swapping P2 and P1 when
      the mirror bit is set
-*)
+
   F.SimulateEnhTex(V0, V1, V2, Mirror);
   if Mirror then
   begin
@@ -1187,6 +1190,7 @@ begin
     ShowMessage('P2 discrepancy');
   end;
 
+ *)
 
   // D1|D2 = Zoner's TexPt[0|1]
   D1:= VecScale(1.0/128.0, VecDiff(P1, P0));
@@ -1243,8 +1247,8 @@ begin
   Normalise(QV0, S1);
   Normalise(QV1, S2);
 
-  if (veclength(qv0)>1) or (veclength(qv1)>1) then
-    ShowMessage('oops');
+//  if (veclength(qv0)>1) or (veclength(qv1)>1) then
+//    ShowMessage('oops');
   write4vect(QV0, UOff, S);
   write4vect(QV1, VOff, S);
 
