@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.236  2004/12/27 06:27:00  rowdy
+//minor enhancements to Doom 3 support - fixed the ceiling texture in the default room, re-added textures/common/* (to make some activities slightly easier), improved Doom3 menu to allow exporting .map files
+//
 //Revision 1.235  2004/12/27 00:38:38  cdunde
 //To remove dupe entry for GameHalfLife2:form and put in alphabetical 
 //order.
@@ -1273,7 +1276,7 @@ QQRKSRC1
         WateryTex = "!"
         TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
-        //TexturesPath = "root/hl2/materials/"
+        TexturesPath = "hl2/materials/"
 
 
         MapHoles = ".pts"
@@ -3083,7 +3086,7 @@ QQRKSRC1
       }
       tmpQuArK: =
       {
-        Txt = ""
+        Txt = "Game Directory"
         Typ = "C"   // combo box    
         Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
         Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
