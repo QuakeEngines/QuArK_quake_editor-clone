@@ -4,6 +4,9 @@ QQRKSRC1
 // Please see file TECHINFO.TXT for more information
 // about this file format.
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
 
 {
   Description = "Custom configuration file."
