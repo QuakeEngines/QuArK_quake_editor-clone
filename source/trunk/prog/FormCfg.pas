@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -112,7 +115,7 @@ type
               function FindUpDownEdit(Tag: Integer) : TCustomEdit;
               procedure BrowseButtonClick(Sender: TObject);
               procedure AcceptDirectory(Sender: TObject);
-              procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+              procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
              {procedure cmMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
               procedure cmMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;}
               procedure Resize; override;
@@ -205,13 +208,13 @@ type
                  FormCfg: TFormCfg;
                  L: TQList;
                  HasSource: Boolean;
-                 procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                 procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure CreateParams(var Params: TCreateParams); override;
                public
                  procedure Init(Q: QFormCfg; FixedSource: TQList);
                end;
 
-procedure TFormCfgDlg.wmMessageInterne(var Msg: TMessage);
+procedure TFormCfgDlg.wmInternalMessage(var Msg: TMessage);
 var
  S: String;
  Source: QObject;
@@ -222,7 +225,7 @@ begin
    FSrcObj:=Nil;
    FSrcObj:=QObject(Msg.lParam) as QFormCfg;
    FSrcObj.AddRef(+1);
-   PostMessage(Handle, wm_MessageInterne, wp_UpdateInternals, ui_FormCfg);
+   PostMessage(Handle, wm_InternalMessage, wp_UpdateInternals, ui_FormCfg);
   end
  else
   if (Msg.wParam=wp_UpdateInternals) and (Msg.lParam=ui_FormCfg) then
@@ -241,10 +244,10 @@ begin
       else
        Source:=FindIncludeData1(FSrcObj, S);
       Source.AddRef(+1); try
-      if (Source=Nil) or (Source.SousElements.Count=0) then
+      if (Source=Nil) or (Source.SubElements.Count=0) then
        L.Add(QInternal.Create('', Nil))
       else
-       L.Add(Source.SousElements[0]);
+       L.Add(Source.SubElements[0]);
       finally Source.AddRef(-1); end;
       L.Add(Nil);
      end
@@ -299,7 +302,7 @@ begin
  FSrcObj.AddRef(-1);
  FSrcObj:=Q;
  FSrcObj.AddRef(+1);
- Perform(wm_MessageInterne, wp_UpdateInternals, ui_FormCfg);
+ Perform(wm_InternalMessage, wp_UpdateInternals, ui_FormCfg);
 end;
 
 procedure TFormCfgDlg.CreateParams(var Params: TCreateParams);
@@ -566,7 +569,7 @@ end;
 
 procedure TFormCfg.SetArg(Sender: TObject; const nArg: String);
 begin
- SetSpecArg(Form.SousElements[(Sender as TControl).Tag-1].Name,  { Spec to modify }
+ SetSpecArg(Form.SubElements[(Sender as TControl).Tag-1].Name,  { Spec to modify }
             nArg, sp_Auto);
 end;
 
@@ -608,7 +611,7 @@ begin
  nSpec:=(Sender as TCustomEdit).Text;
  CheckValidSpec(nSpec);
  Row:=(Sender as TControl).Tag-1;
- oSpec:=Form.SousElements[Row].Name;  { old Spec name }
+ oSpec:=Form.SubElements[Row].Name;  { old Spec name }
  if oSpec=nSpec then Exit;
  if ActionChanging<>0 then
   DebutAction;
@@ -631,7 +634,7 @@ begin
       Q.Specifics[J]:=nSpec+'='+Arg;
     end;
   end;
- Form.SousElements[Row].Name:=nSpec;
+ Form.SubElements[Row].Name:=nSpec;
  SelectRow(Row, False);
  if ActionChanging<>0 then
   FinActionEx(ActionNiveau, Links[0], LoadStr1(ActionChanging));
@@ -646,12 +649,12 @@ begin
  Arg:=(Sender as TEnterComboBox).Text;
  if Arg=LoadStr1(Differs) then Exit;
  MatchSpecItem(Sender, Arg, False);
- with Form.SousElements[(Sender as TControl).Tag-1].Specifics do
+ with Form.SubElements[(Sender as TControl).Tag-1].Specifics do
   J:=StrToIntDef(Copy(Values['Typ'],3,MaxInt), 0);  { test if CL### }
  if J=0 then
   SetArg(Sender, Arg)
  else
-  SetBitSpec(Form.SousElements[(Sender as TControl).Tag-1].Name,
+  SetBitSpec(Form.SubElements[(Sender as TControl).Tag-1].Name,
    StrToIntDef(Arg, 0), J, False);
 end;
 
@@ -676,7 +679,7 @@ var
 begin
  Arg:=(Sender as TCustomEdit).Text;
  if Arg=LoadStr1(Differs) then Exit;
- with Form.SousElements[(Sender as TControl).Tag-1] do
+ with Form.SubElements[(Sender as TControl).Tag-1] do
   begin
    LimitMin:=GetFloatSpec('Min', None);
    LimitMax:=GetFloatSpec('Max', None);
@@ -777,7 +780,7 @@ begin
  if ChooseColor(Self, Color) then
   begin
    V:=coltov(Color);
-   with Form.SousElements[(Sender as TControl).Tag-1] do
+   with Form.SubElements[(Sender as TControl).Tag-1] do
     begin
      Spec:=Name;
      S:=Specifics.Values['Typ'];
@@ -838,7 +841,7 @@ begin
  if not Assigned(OnNeedGameInfo) then
   Raise EError(5583);
  GameInfo:=OnNeedGameInfo(Self);
- PopupFormSpec:=Form.SousElements[(Sender as TControl).Tag-1].Name;  { Spec to modify }
+ PopupFormSpec:=Form.SubElements[(Sender as TControl).Tag-1].Name;  { Spec to modify }
  Pal:=MakePaletteToolbar(ValidParentForm(Self));
  GetSingleSpec(PopupFormSpec, Arg);
  Index:=StrToIntDef(Arg, -1);
@@ -866,8 +869,8 @@ var
  J: Integer;
 begin
  AnyControlEnter(Sender);
- Spec:=Form.SousElements[(Sender as TControl).Tag-1].Name;
- with Form.SousElements[(Sender as TControl).Tag-1].Specifics do
+ Spec:=Form.SubElements[(Sender as TControl).Tag-1].Name;
+ with Form.SubElements[(Sender as TControl).Tag-1].Specifics do
   Arg:=Copy(Values['Typ'],2,MaxInt);
  J:=StrToIntDef(Arg, 0);  { test if X### }
  if J=0 then
@@ -896,7 +899,7 @@ var
  FontDialog1: TFontDialog;
 begin
  AnyControlEnter(Sender);
- Spec:=Form.SousElements[(Sender as TControl).Tag-1].Name;
+ Spec:=Form.SubElements[(Sender as TControl).Tag-1].Name;
  FontDialog1:=TFontDialog.Create(Self); try
  FontDialog1.Options:=[fdEffects, fdFixedPitchOnly];
  FontDialog1.Font.Assign((Sender as TToolbarButton97).Font);
@@ -922,7 +925,7 @@ var
  KeyListener: TCursorScrollBox;
 begin
  AnyControlEnter(Sender);
- Spec:=Form.SousElements[(Sender as TControl).Tag-1].Name;
+ Spec:=Form.SubElements[(Sender as TControl).Tag-1].Name;
  Dialog1:=CreateMessageDialog(LoadStr1(5645), mtConfirmation, [mbCancel]); try
  KeyListener:=TCursorScrollBox.Create(Dialog1);
  KeyListener.Top:=Dialog1.Height;
@@ -1032,7 +1035,7 @@ var
   end;}
 
 begin
- FormObj:=Form.SousElements[(Sender as TControl).Tag-1];
+ FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
 {FormObj.AddRef(+1); try}
  with FormObj do
   begin
@@ -1041,7 +1044,7 @@ begin
     begin
      Q:=FindIncludeData1(FOriginalForm, '('+S+')');
      Q.AddRef(+1); try
-     if (Q=Nil) or (Q.SousElements.Count=0) or not (Q.SousElements[0] is QFormCfg) then
+     if (Q=Nil) or (Q.SubElements.Count=0) or not (Q.SubElements[0] is QFormCfg) then
       Raise Exception.CreateResFmt(5631, [S]);
 
      if (PopupForm<>Nil) and not (PopupForm is TFormCfgDlg) then
@@ -1053,7 +1056,7 @@ begin
      Pt:=ClientToScreen(Point(0,0));
      with PopupForm as TFormCfgDlg do
       begin
-       Init(QFormCfg(Q.SousElements[0]), Links);
+       Init(QFormCfg(Q.SubElements[0]), Links);
        FormCfg.ActionChanging:=Self.ActionChanging;
        FormCfg.ActionDeleting:=Self.ActionDeleting;
        FormCfg.ActionRenaming:=Self.ActionRenaming;
@@ -1082,7 +1085,7 @@ begin
   {Msg:=wp_FormButton;}
    if ActionChanging<>0 then
     DebutAction;
-   Q:=SousElements.FindShortName('Data');
+   Q:=SubElements.FindShortName('Data');
    if Q<>Nil then
     for I:=0 to Q.Specifics.Count-1 do
      begin
@@ -1090,7 +1093,7 @@ begin
       P:=Pos('=',S);
       {loc}SetSpecArg1(Copy(S,1,P-1), Copy(S,P+1,MaxInt), sp_Auto);
      end;
-   Q:=SousElements.FindShortName('Delete');
+   Q:=SubElements.FindShortName('Delete');
    if Q<>Nil then
     for I:=0 to Q.Specifics.Count-1 do
      begin
@@ -1105,7 +1108,7 @@ begin
      Changed;
    {end;}
 
-   PostMessage(ValidParentForm(Self).Handle, wm_MessageInterne, wp_FormButton, 0);
+   PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage, wp_FormButton, 0);
   end;
 {finally FormObj.AddRef(-1); end;}
 end;
@@ -1116,7 +1119,7 @@ var
  S, C, Caption: String;
  I, Index: Integer;
 begin
- FormObj:=Form.SousElements[(Sender as TControl).Tag-1];
+ FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
  Caption:=TToolbarButton97(Sender).Caption;
  with FormObj do
   begin
@@ -1143,7 +1146,7 @@ var
  FormObj: QObject;
  S: String;
 begin
- FormObj:=Form.SousElements[(Sender as TControl).Tag-1];
+ FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
  with FormObj do
   begin
    S:=Specifics.Values['Macro'];
@@ -1287,7 +1290,7 @@ begin
    Exit;
   end;
  PathEdit.SetFocus;
- FormObj:=Form.SousElements[(Sender as TControl).Tag-1];
+ FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
  with FormObj do
   begin
    Path:='';
@@ -1355,7 +1358,7 @@ var
 begin
  Arg:=(Sender as TCustomEdit).Text;
  if Arg=LoadStr1(Differs) then Exit;
- with Form.SousElements[(Sender as TControl).Tag-1] do
+ with Form.SubElements[(Sender as TControl).Tag-1] do
   begin
    CheckFile:=Specifics.Values['CheckFile'];
    if not CheckFileExists(Arg, CheckFile) then
@@ -1372,7 +1375,7 @@ begin
  if Form<>Nil then
   begin
    NeedInitControls:=True;
-   PostMessage(Handle, wm_MessageInterne, wp_InitControls, 0);
+   PostMessage(Handle, wm_InternalMessage, wp_InitControls, 0);
   end
  else
   begin
@@ -1497,7 +1500,7 @@ begin
   end;
 end;
 
-procedure TFormCfg.wmMessageInterne(var Msg: TMessage);
+procedure TFormCfg.wmInternalMessage(var Msg: TMessage);
 const
  TopMargin    = 1;
  BottomMargin = 4;
@@ -1621,10 +1624,10 @@ begin
     ReclickPopupForm:=Nil;
     PythonCode:=False; try
    {XMax:=LeftMargin+MiddleMargin;}
-    for I:=0 to Form.SousElements.Count-1 do
+    for I:=0 to Form.SubElements.Count-1 do
      begin
-      Spec:=Form.SousElements[I].Name;
-      with Form.SousElements[I].Specifics do
+      Spec:=Form.SubElements[I].Name;
+      with Form.SubElements[I].Specifics do
        begin
        {X:=LeftMargin;}
         HintMsg:=Values['Hint'];
@@ -1664,10 +1667,10 @@ begin
         ExtraVertSpace:=0;
         Icone:=-1;
         Found:=csNowhere;
-        if Form.SousElements[I] is QPyMacro then
+        if Form.SubElements[I] is QPyMacro then
          begin
           PythonCode:=True;
-          obj:=QPyMacro(Form.SousElements[I]).RunMacro1('pybutton');
+          obj:=QPyMacro(Form.SubElements[I]).RunMacro1('pybutton');
           if obj<>Nil then
            try
             if obj<>Py_None then
@@ -1684,8 +1687,8 @@ begin
             Py_DECREF(obj);
            end;
          end
-        else if Form.SousElements[I] is QToolbarButton then
-         with QToolbarButton(Form.SousElements[I]).CreateButton(Self, SB, Nil) do
+        else if Form.SubElements[I] is QToolbarButton then
+         with QToolbarButton(Form.SubElements[I]).CreateButton(Self, SB, Nil) do
           begin
            SetBounds(MiddleX,Y+2,NormalW,Height);
            if Height+3>LineHeight then
@@ -1983,13 +1986,13 @@ begin
                  Spec:=Values['Image'];
                  if Spec<>'' then
                   begin
-                   Q:=FindIncludeData1(Form.SousElements[I], Spec);
+                   Q:=FindIncludeData1(Form.SubElements[I], Spec);
                    Q.AddRef(+1); try
                    if Q<>Nil then
-                    if (Q.SousElements.Count>0) and (Q.SousElements[0] is QImages) then
+                    if (Q.SubElements.Count>0) and (Q.SubElements[0] is QImages) then
                      begin
                       Ctrl:=TImageDisplayer.Create(Self);
-                      TImageDisplayer(Ctrl).Source:=QImages(Q.SousElements[0]);
+                      TImageDisplayer(Ctrl).Source:=QImages(Q.SubElements[0]);
                       Ctrl.Parent:=SB;
                       TImageDisplayer(Ctrl).AutoSize;
                      end;
@@ -2000,7 +2003,7 @@ begin
                    Spec:=Values['Icon'];
                    if Spec<>'' then
                     begin
-                     J:=Round(Form.SousElements[I].GetFloatSpec('IconW', 16));
+                     J:=Round(Form.SubElements[I].GetFloatSpec('IconW', 16));
                      BmpHandle:=DataToBmp16(Spec, J);
                      if BmpHandle<>0 then
                       begin
@@ -2378,11 +2381,11 @@ begin
        Q:=QInternal.Create('', Form);
        Q.Specifics.Add('Txt='+EditNames);
        Q.Specifics.Add('Typ=EN');
-       Form.SousElements.Insert(0, Q);
+       Form.SubElements.Insert(0, Q);
       end;
      if AddRemaining then
       begin  { figures out whether the object(s) has (have) more Specs than the Form }
-       NeedSep:=Form.SousElements.Count>0;
+       NeedSep:=Form.SubElements.Count>0;
        for J:=0 to Links.Count div 2 - 1 do
         for I:=0 to Links[J*2].Specifics.Count-1 do
          begin
@@ -2391,14 +2394,14 @@ begin
           IsFloat:=(S<>'') and (Ord(S[1])>=chrFloatSpec);
           if IsFloat then
            S[1]:=Chr(Ord(S[1])-chrFloatSpec);
-          Q:=Form.SousElements.FindShortName(S);
+          Q:=Form.SubElements.FindShortName(S);
           if Q=Nil then
            begin   { found an extra Spec }
             if NeedSep then
              begin    { makes a separator }
               Q:=QInternal.Create('', Form);
               Q.Specifics.Add('Typ=S');
-              Form.SousElements.Add(Q);
+              Form.SubElements.Add(Q);
               NeedSep:=False;
              end;
             { adds the new Spec to the Form }
@@ -2409,15 +2412,15 @@ begin
              Q.Specifics.Add('Txt='+S);
             if IsFloat then
              Q.Specifics.Add('Typ=EF');
-            Form.SousElements.Add(Q);
+            Form.SubElements.Add(Q);
            end;
          end;
       end;
-     for I:=0 to Form.SousElements.Count-1 do
-      Form.SousElements[I].Acces;
+     for I:=0 to Form.SubElements.Count-1 do
+      Form.SubElements[I].Acces;
      I:=0;
-     while I<Form.SousElements.Count do
-      with Form.SousElements[I] do
+     while I<Form.SubElements.Count do
+      with Form.SubElements[I] do
        begin
         S:=Specifics.Values['Typ'];
         if S='' then
@@ -2429,8 +2432,8 @@ begin
            S[1]:='x';
            MyName:=Name;
            NeedEdit:=True;
-           for J:=0 to Form.SousElements.Count-1 do
-            with Form.SousElements[J] do
+           for J:=0 to Form.SubElements.Count-1 do
+            with Form.SubElements[J] do
              if CompareText(Name, MyName) = 0 then
               if Copy(Specifics.Values['Typ'],1,1)<>'X' then
                begin
@@ -2442,14 +2445,14 @@ begin
              Q:=QInternal.Create(MyName, Form);
              Q.Specifics.Add('Txt=&');
              Q.Specifics.Add('Typ=E');
-             Form.SousElements.Insert(I, Q);
+             Form.SubElements.Insert(I, Q);
              Inc(I);
             end
            else
             begin
              DuplicateValue:=False;
              for J:=0 to I-1 do
-              with Form.SousElements[J] do
+              with Form.SubElements[J] do
                if CompareText(Name, MyName) = 0 then
                 if Specifics.Values['Typ'] = S then
                  begin
@@ -2458,7 +2461,7 @@ begin
                  end;
              if DuplicateValue then
               begin
-               Form.SousElements.Delete(I);
+               Form.SubElements.Delete(I);
                Continue;
               end;
             end;  
@@ -2543,11 +2546,11 @@ begin
      Inc(Y, SB.VertScrollBar.Position);
      repeat
       Inc(I);
-     until (I=Form.SousElements.Count)
-        or (Y<StrToIntDef(Form.SousElements[I].Specifics.Values['@end'], 0));
+     until (I=Form.SubElements.Count)
+        or (Y<StrToIntDef(Form.SubElements[I].Specifics.Values['@end'], 0));
     end;
   end;
- Result:=(I>=0) and (I<Form.SousElements.Count);
+ Result:=(I>=0) and (I<Form.SubElements.Count);
 end;
 
 (*procedure TFormCfg.InPlaceSpecEdit(Sender: TObject);
@@ -2596,12 +2599,12 @@ begin
   ImageList:=ImageList_LoadImage(HInstance, MakeIntResource(102),
    16, 1, clAqua, IMAGE_BITMAP, 0);
  DC:=(Sender as TPaintBox).Canvas.Handle;
- for I:=0 to Form.SousElements.Count-1 do
+ for I:=0 to Form.SubElements.Count-1 do
   begin
-   S:=Form.SousElements[I].Specifics.Values['@icon'];
+   S:=Form.SubElements[I].Specifics.Values['@icon'];
    if S<>'' then
     ImageList_Draw(ImageList, StrToInt(S), DC, LeftMargin,
-     StrToInt(Form.SousElements[I].Specifics.Values['@end'])-17,
+     StrToInt(Form.SubElements[I].Specifics.Values['@end'])-17,
      ILD_NORMAL);
   end;
 end;
@@ -2629,11 +2632,11 @@ var
  Test: TComponent;
 begin
  Result:=Nil;
- if (Form=Nil) or (Form.SousElements.Count=0) then Exit;
+ if (Form=Nil) or (Form.SubElements.Count=0) then Exit;
  if Row<0 then
   Row:=0;
- if Row>=Form.SousElements.Count then
-  Row:=Form.SousElements.Count-1;
+ if Row>=Form.SubElements.Count then
+  Row:=Form.SubElements.Count-1;
  for I:=ComponentCount-1 downto 0 do
   begin
    if Spec then
@@ -2677,7 +2680,7 @@ begin
   VK_NEXT: Sens:=+VisibleRowCount;
  else Exit;
  end;
- PostMessage(Handle, wm_MessageInterne,
+ PostMessage(Handle, wm_InternalMessage,
   wp_LineStep + Ord(Sender=Nil), Sens);
  Key:=0;
 end;
@@ -2696,7 +2699,7 @@ end;
 
 procedure TFormCfg.EnterEditChange(Sender: TObject);
 begin
- PostMessage(Handle, wm_MessageInterne, wp_InternalEdit,
+ PostMessage(Handle, wm_InternalMessage, wp_InternalEdit,
   LongInt(Sender));
 end;
 
@@ -2716,7 +2719,7 @@ begin
       Q.Specifics.Add('Txt=&');
       Q.Specifics.Add('Typ=ES');   { Edit w/ Specific }
       Q.Specifics.Add('+~=!');
-      Form.SousElements.Add(Q);
+      Form.SubElements.Add(Q);
       ScrollPos:=-1;
       PreSel:=0;
       for I:=0 to SB.ControlCount-1 do
@@ -2730,8 +2733,8 @@ begin
     begin
      GlobalDoCancel{(Self)};
      Row:=(Sender as TMenuItem).Tag;
-     if (Form<>Nil) and (Row>=0) and (Row<Form.SousElements.Count) then
-      with Form.SousElements[Row] do
+     if (Form<>Nil) and (Row>=0) and (Row<Form.SubElements.Count) then
+      with Form.SubElements[Row] do
        if Specifics.IndexOf('+~=!')<0 then
         begin
          S:=Name;
@@ -2741,7 +2744,7 @@ begin
         end
        else
         begin
-         Form.SousElements.Delete(Row);
+         Form.SubElements.Delete(Row);
          InitControls;
         end
      else
@@ -2791,7 +2794,7 @@ var
  SL: TStringList;
 begin
  Result:=-1;
- Frm:=Form.SousElements[(Sender as TControl).Tag-1];
+ Frm:=Form.SubElements[(Sender as TControl).Tag-1];
  SL:=TStringList.Create; try
  try
   SL.Text:=ReadValues(SpecToItem);

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -260,7 +263,7 @@ end;
 
 function GetUndoRoot(Q: QObject) : PUndoRoot;
 begin  { searches the root object over Q }
- while Q.Flags and (ofFileLink or ofTvSousElement) <> ofFileLink do
+ while Q.Flags and (ofFileLink or ofTreeViewSubElement) <> ofFileLink do
   begin
    Q:=Q.FParent;
    if Q=Nil then
@@ -298,7 +301,7 @@ begin
        Abort;
       Q.Flags:=Q.Flags and not ofWarnBeforeChange;
      end;
-    if Q.Flags and (ofFileLink or ofTvSousElement) = ofFileLink then
+    if Q.Flags and (ofFileLink or ofTreeViewSubElement) = ofFileLink then
      Break;  { found the needed root }
     Q:=Q.FParent;
    until False;
@@ -341,7 +344,7 @@ begin
   begin
    F:=Screen.Forms[I];
    if F.Visible then
-    F.Perform(wm_MessageInterne, wp_FileMenu, fm_SaveTagOnly);
+    F.Perform(wm_InternalMessage, wp_FileMenu, fm_SaveTagOnly);
   end;
  R:=UndoRoots;
  while R<>Nil do
@@ -631,7 +634,7 @@ begin
         Form4.FSelection1:=Nil;
        Form4.TestsDUsage(Form4.FSelection1, NouveauNumero);
        if AncienControl<>Nil then
-        PostMessage(Form4.Handle, wm_MessageInterne, wp_RestaureFocus,
+        PostMessage(Form4.Handle, wm_InternalMessage, wp_RestoreFocus,
          LongInt(AncienControl));
       end;}
      R^.UndoList.Add(UndoObject);
@@ -890,8 +893,8 @@ begin
  if Nouveau<>Nil then
   begin
    Nouveau.AddRef(+1);
-   if (Ancien=Nil) or (Ancien.Flags or ofTvSousElement <> 0) then
-    Nouveau.Flags:=Nouveau.Flags or ofTvSousElement;
+   if (Ancien=Nil) or (Ancien.Flags or ofTreeViewSubElement <> 0) then
+    Nouveau.Flags:=Nouveau.Flags or ofTreeViewSubElement;
   end;
  if (Ancien<>Nil) and (Nouveau<>Nil) and (Ancien.FParent<>Nil)
  and (Ancien.FParent=Nouveau.FParent) then
@@ -964,18 +967,18 @@ begin
     with Ancien.FParent do
      begin
       Modified;
-      I:=SousElements.IndexOf(Ancien);
+      I:=SubElements.IndexOf(Ancien);
       if I>=0 then
        begin
         AncienParent:=Ancien.TvParent;
-        SousElements.Delete(I);
-        if I<SousElements.Count then
-         AncienSuivant:=SousElements[I];
+        SubElements.Delete(I);
+        if I<SubElements.Count then
+         AncienSuivant:=SubElements[I];
         if AncienParent<>Nil then
          try
           OperationDansScene(AncienParent, asRetireEnfant, TopLevelExplorer);
          except
-          SousElements.Insert(I, Ancien);
+          SubElements.Insert(I, Ancien);
           Raise;
          end;
        end
@@ -1003,7 +1006,7 @@ begin
   {if Nouveau.FParent<>CommonParent then Raise DebugError;}
    {$ENDIF}
    if Nouveau.FParent<>Nil then
-    with Nouveau.FParent.SousElements do
+    with Nouveau.FParent.SubElements do
      begin
       if InsererAvant=Nil then
        I:=-1
@@ -1263,7 +1266,7 @@ begin
  AncienSuivant:=Nil;
  AncienParent:=Element.TvParent;
  AncienParent.Modified;
- with AncienParent.SousElements do
+ with AncienParent.SubElements do
   begin
    DestIndex:=IndexOf(Element);
    if DestIndex>=0 then
@@ -1284,7 +1287,7 @@ begin
   end;
  Destination.Modified;
  Element.TvParent:=Destination;
- with Destination.SousElements do
+ with Destination.SubElements do
   begin
    if InsererAvant=Nil then
     DestIndex:=-1
@@ -1410,8 +1413,8 @@ var
  I: Integer;
 begin
  with Group do
-  for I:=0 to SousElements.Count-1 do
-   ListeActions.Add(TMoveUndo.Create('', SousElements[I], TvParent, Group));
+  for I:=0 to SubElements.Count-1 do
+   ListeActions.Add(TMoveUndo.Create('', SubElements[I], TvParent, Group));
  ListeActions.Add(TQObjectUndo.Create('', Group, Nil));
 end;
 
@@ -1442,16 +1445,16 @@ begin
     P:=Pos('=', SpecArg);
     ListeActions.Add(TSpecificUndo.Create('', Copy(SpecArg,1,P-1), Copy(SpecArg,P+1,MaxInt), sp_Auto, Dest));
    end;
- for I:=0 to Dest.SousElements.Count-1 do
+ for I:=0 to Dest.SubElements.Count-1 do
   begin
-   Q:=Dest.SousElements[I];
-   if Source.SousElements.IndexOf(Q)<0 then
+   Q:=Dest.SubElements[I];
+   if Source.SubElements.IndexOf(Q)<0 then
     ListeActions.Add(TQObjectUndo.Create('', Q, Nil));
   end;
- for I:=0 to Source.SousElements.Count-1 do
+ for I:=0 to Source.SubElements.Count-1 do
   begin
-   Q:=Source.SousElements[I];
-   if Dest.SousElements.IndexOf(Q)<0 then
+   Q:=Source.SubElements[I];
+   if Dest.SubElements.IndexOf(Q)<0 then
     ListeActions.Add(TQObjectUndo.Create('', Nil, Q.Clone(Dest, False)));
   end;
 end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/04/20 10:43:33  arigo
+JPeg writing fixes
+
 }
 
 unit QkImages;
@@ -95,7 +98,7 @@ type
     procedure Format24bitsClick(Sender: TObject);
     procedure AlphaCBClick(Sender: TObject);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr: String; override;
@@ -185,7 +188,7 @@ end;
 
  {------------------------}
 
-function QImages.OuvrirFenetre;
+function QImages.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQImages.Create(nOwner);
 end;
@@ -816,7 +819,7 @@ end;
 
  {------------------------}
 
-procedure TFQImages.wmMessageInterne(var Msg: TMessage);
+procedure TFQImages.wmInternalMessage(var Msg: TMessage);
 var
  Pal: TToolbar97;
  PSD: TPixelSetDescription;
@@ -909,7 +912,7 @@ begin
   try
    (FileObj as QImages).ImageConvertTo(NewPSD);
   except
-   PostMessage(Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+   PostMessage(Handle, wm_InternalMessage, wp_AfficherObjet, 0);
    Raise;
   end;
  finally

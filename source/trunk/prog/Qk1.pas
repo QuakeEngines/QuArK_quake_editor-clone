@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -203,7 +206,7 @@ type
    {function AppHelp(Command: Word; Data: LongInt; var CallHelp: Boolean) : Boolean;}
     function WindowHook(var Msg: TMessage) : Boolean;
     procedure cmSysColorChange(var Msg: TWMSysCommand); message cm_SysColorChange;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmDropFiles(var Msg: TMessage); message wm_DropFiles;
     procedure wmCompacting(var Msg: TMessage); message wm_Compacting;
     procedure wmRenderFormat(var Msg: TMessage); message wm_RenderFormat;
@@ -258,7 +261,7 @@ begin
    begin
     P:=BuildFileRoot('Bonjour !.qrk', Nil);
     SetExplorerRoot(P as QFileObject);
-    {VolatileData.SousElements.Add(P);}
+    {VolatileData.SubElements.Add(P);}
    end
   else
    P:=Explorer.Roots[0];
@@ -376,13 +379,13 @@ begin
 
  J:=0;
  with SetupSet[ssGames] do
-  for I:=0 to SousElements.Count-1 do
+  for I:=0 to SubElements.Count-1 do
    begin
-    S:=SousElements[I].Specifics.Values['Code'];
+    S:=SubElements[I].Specifics.Values['Code'];
     if S<>'' then
      begin
       Item:=TMenuItem.Create(Self);
-      Item.Caption:=SousElements[I].Name;
+      Item.Caption:=SubElements[I].Name;
       Item.OnClick:=GameSwitch1Click;
       Item.Tag:=Ord(S[1]);
       Item.RadioItem:=True;
@@ -551,14 +554,14 @@ end;
 procedure TForm1.AppActivate(Sender: TObject);
 begin
  if Screen.ActiveForm<>Nil then
-  PostMessage(Screen.ActiveForm.Handle, wm_MessageInterne,
+  PostMessage(Screen.ActiveForm.Handle, wm_InternalMessage,
    wp_AppActivate, 1);
 end;
 
 procedure TForm1.AppDeactivate(Sender: TObject);
 begin
  if Screen.ActiveForm<>Nil then
-  PostMessage(Screen.ActiveForm.Handle, wm_MessageInterne,
+  PostMessage(Screen.ActiveForm.Handle, wm_InternalMessage,
    wp_AppActivate, 0);
 end;
 
@@ -568,7 +571,7 @@ end;
 begin
  if {((Parent=Nil) or (Parent is QExplorerGroup))
  and} (Enfant is QFileObject) then
-  Result:=ofTvSousElement
+  Result:=ofTreeViewSubElement
  else
   Result:=0;
 end;*)
@@ -577,7 +580,7 @@ end;*)
 begin
 {case Op of
   muOneEnd: if Form1.Fiche<>Nil then
-             PostMessage(Form1.Fiche.Handle, wm_MessageInterne, wp_AfficherInfos, 0);
+             PostMessage(Form1.Fiche.Handle, wm_InternalMessage, wp_AfficherInfos, 0);
  end;}
  Result:=inherited MsgUndo(Op, Data);
 end;*)
@@ -597,7 +600,7 @@ begin
       MAJAffichage(Nil);
       with Q as QFileObject do
        OuvrirMaximum;
-     {PostMessage(Handle, wm_MessageInterne, wp_AfficherObjet, 0);}
+     {PostMessage(Handle, wm_InternalMessage, wp_AfficherObjet, 0);}
      end;
   end;
 end;*)
@@ -609,12 +612,12 @@ begin
  case Aj of
   asModifie: begin
               if (Q=Form1.ElSousFiche) and (Form1.Fiche<>Nil) then
-               PostMessage(Form1.Fiche.Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+               PostMessage(Form1.Fiche.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
               if Q is QFileObject then
                begin
                 F:=QFileObject(Q).FindObjectWindow;
                 if F<>Nil then
-                 PostMessage(F.Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+                 PostMessage(F.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
                end;
               end;
   asRetire: begin
@@ -717,7 +720,7 @@ begin
   MacroCommand((Sender as TMenuItem).Tag);
 end;
 
-procedure TForm1.wmMessageInterne(var Msg: TMessage);
+procedure TForm1.wmInternalMessage(var Msg: TMessage);
 begin
  if (Explorer<>Nil) and not Explorer.ProcessMessage(Self, Msg) then
   case Msg.wParam of
@@ -1122,9 +1125,9 @@ begin
      if DoIncludeData(Gr1, Nil, NewObj) then
       begin
        Gr:=CopyToOutside(Gr1);
-       if Gr.SousElements.Count>0 then
+       if Gr.SubElements.Count>0 then
         begin
-         FileObject:=Gr.SousElements[0] as QFileObject;
+         FileObject:=Gr.SubElements[0] as QFileObject;
          FileObject.ReadFormat:=rf_Default;
          FileObject.Flags:=(FileObject.Flags or ofFileLink) and not ofModified;
         end;
@@ -1221,7 +1224,7 @@ var
  F: TCustomForm;
 begin
  F:=ValidParentForm(FileMenu.PopupComponent as TControl);
- PostMessage(F.Handle, wm_MessageInterne, wp_FileMenu,
+ PostMessage(F.Handle, wm_InternalMessage, wp_FileMenu,
   (Sender as TMenuItem).Tag);
 end;
 
@@ -1238,7 +1241,7 @@ begin
  Dup:=SaveObject(Explorer.Roots[0] as QFileObject, AskName, 0, Self);
  if Dup<>Nil then
   Dup.AddRef(-1);
- Perform(wm_MessageInterne, wp_AfficherInfos, 0);
+ Perform(wm_InternalMessage, wp_AfficherInfos, 0);
 end;
 
 (*function TForm1.GetGlobalModified : Boolean;
@@ -1378,7 +1381,7 @@ begin
   begin
    F:=Screen.Forms[I];
    if F.Visible then
-    F.Perform(wm_MessageInterne, wp_FileMenu, fm_SaveIfModif);
+    F.Perform(wm_InternalMessage, wp_FileMenu, fm_SaveIfModif);
   end;
  SavePendingFiles(False);
 end;
@@ -1475,7 +1478,7 @@ begin
   Gr:=QExplorerGroup.Create('(temp)', Nil);
   Gr.AddRef(+1); try
   F.FileObject.Flags:=F.FileObject.Flags and not ofFileLink;
-  Gr.SousElements.Add(F.FileObject);
+  Gr.SubElements.Add(F.FileObject);
   Source:=F.TmpSwapFileObject(Nil); try
   if not Explorer.DropObjectsNow(Gr, LoadStr1(593), False) then
    Raise EError(5526);   { failed }
@@ -1483,13 +1486,13 @@ begin
   Dest:=Explorer.TMSelUnique;
   Explorer.TMSelUnique:=Nil;
   F.Attach(Panel2);
- {SendMessage(F.Handle, wm_MessageInterne, wp_SetModify, 0);}
+ {SendMessage(F.Handle, wm_InternalMessage, wp_SetModify, 0);}
   F.CloseNow;  { closes so that the user sees the new relationship }
   finally Gr.AddRef(-1); end;
 
  except
   if Reopen<>0 then
-   PostMessage(Reopen, wm_MessageInterne, wp_AfficherObjet, 0);
+   PostMessage(Reopen, wm_InternalMessage, wp_AfficherObjet, 0);
   Raise;
  end;
 
@@ -1595,7 +1598,7 @@ begin
          Dup.AddRef(+1); try
          if Dup.ConversionFrom(QFileObject(Q)) then
           begin
-           Gr.SousElements.Add(Dup);
+           Gr.SubElements.Add(Dup);
            Break;   { ok }
           end;
          finally Dup.AddRef(-1); end;
@@ -1606,7 +1609,7 @@ begin
     else
      MessageBeep(0);  { error }
    end;
-  if Gr.SousElements.Count>0 then
+  if Gr.SubElements.Count>0 then
    Gr.CopierObjets(False);
  finally
   Gr.AddRef(-1);
@@ -1830,14 +1833,14 @@ begin
  Gr:=ClipboardGroup;
  Gr.AddRef(+1); try
  if ClipboardChain(Gr) then
- {if (Gr.SousElements.Count<=1)
-  or (MessageDlg(FmtLoadStr1(5562, [Gr.SousElements.Count]),
+ {if (Gr.SubElements.Count<=1)
+  or (MessageDlg(FmtLoadStr1(5562, [Gr.SubElements.Count]),
    mtWarning, [mbYes, mbNo], 0) = mrYes) then
-    for I:=0 to Gr.SousElements.Count-1 do
-     ObjectProperties(Gr.SousElements[I],
+    for I:=0 to Gr.SubElements.Count-1 do
+     ObjectProperties(Gr.SubElements[I],
       ValidParentForm(EditMenu.PopupComponent as TControl) as TQkForm);}
-  if Gr.SousElements.Count>0 then
-   ObjectProperties(Gr.SousElements,
+  if Gr.SubElements.Count>0 then
+   ObjectProperties(Gr.SubElements,
     ValidParentForm(EditMenu.PopupComponent as TControl) as TQkForm);
  finally Gr.AddRef(-1); end;
 end;
@@ -1989,7 +1992,7 @@ var
  Target: TQkExplorer;
 begin
  with ValidParentForm(EditMenu.PopupComponent as TControl) do
-  Target:=TQkExplorer(Perform(wm_MessageInterne, wp_TargetExplorer, 0));
+  Target:=TQkExplorer(Perform(wm_InternalMessage, wp_TargetExplorer, 0));
  if Target=Nil then Exit;
  OpenDialog1:=TOpenDialog.Create(Self); try
  OpenDialog1.Title:=LoadStr1(5591+Ord(Sender=Importfiles1));
@@ -2011,7 +2014,7 @@ begin
      FileObject:=ExactFileLink(OpenDialog1.Files[I], Nil, False);
      if Sender=Importfiles1 then
       FileObject.Flags:=FileObject.Flags and not ofFileLink;
-     Gr.SousElements.Add(FileObject);
+     Gr.SubElements.Add(FileObject);
     end;
    Target.DropObjectsNow(Gr, LoadStr1(604+Ord(Sender=Importfiles1)), True);
    finally Gr.AddRef(-1); end;
@@ -2023,7 +2026,7 @@ end;
 (*procedure TForm1.Timer1Timer(Sender: TObject);
 begin
  if Timer1<>Nil then
-  PostMessage(Handle, wm_MessageInterne, wp_UpdateInternals, ui_Logo);
+  PostMessage(Handle, wm_InternalMessage, wp_UpdateInternals, ui_Logo);
 end;*)
 
 procedure TForm1.Importfromfile1Click(Sender: TObject);
@@ -2031,7 +2034,7 @@ var
  Target: TQkExplorer;
 begin
  with ValidParentForm(EditMenu.PopupComponent as TControl) do
-  Target:=TQkExplorer(Perform(wm_MessageInterne, wp_TargetExplorer, 0));
+  Target:=TQkExplorer(Perform(wm_InternalMessage, wp_TargetExplorer, 0));
  Importfiles1.Enabled:=Target<>Nil;
  Makefilelinks1.Enabled:=Target<>Nil;
 end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 Revision 1.6  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -197,8 +200,8 @@ begin
  if Q is QFileObject then
   begin
    Q.Acces;
-   for I:=0 to Q.SousElements.Count-1 do
-    BrowsePath(Q.SousElements[I]);
+   for I:=0 to Q.SubElements.Count-1 do
+    BrowsePath(Q.SubElements[I]);
   end
  else
   if Q is QConfig then
@@ -248,17 +251,17 @@ end;*)
 
 function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObject;
 begin
- Result:=SetupSet[Root].SousElements.FindName(SubSet+':config');
+ Result:=SetupSet[Root].SubElements.FindName(SubSet+':config');
  if (Result=Nil) and Create then
   begin
    Result:=QConfig.Create(SubSet, SetupSet[Root]);
-   SetupSet[Root].SousElements.Add(Result);
+   SetupSet[Root].SubElements.Add(Result);
   end;
 end;
 
 function SetupSubSet(Root: TSetupSet; SubSet: String) : QObject;
 begin
- Result:=SetupSet[Root].SousElements.FindName(SubSet+':config');
+ Result:=SetupSet[Root].SubElements.FindName(SubSet+':config');
  if Result=Nil then
   Raise EErrorFmt(5205, [SetupSetName[Root]+':'+SubSet]);
 end;
@@ -293,7 +296,7 @@ begin
   System.Delete(Path, 1, P);
   P:=Pos(':', Path);
   if P=0 then Break;
-  Q:=Q.SousElements.FindName(Copy(Path,1,P-1)+':config');
+  Q:=Q.SubElements.FindName(Copy(Path,1,P-1)+':config');
   if Q=Nil then Exit;
  until False;
  Spec:=Path;
@@ -319,16 +322,16 @@ begin
    if Arg='' then
     Target.Specifics.Add(Spec+'=');
   end;
- for I:=0 to Q.SousElements.Count-1 do
+ for I:=0 to Q.SubElements.Count-1 do
   begin
-   Test:=Q.SousElements[I];
+   Test:=Q.SubElements[I];
   {if Test is QConfig then}
     begin
-     NewTarget:=Target.SousElements.FindName(Test.Name+Test.TypeInfo);
+     NewTarget:=Target.SubElements.FindName(Test.Name+Test.TypeInfo);
      if NewTarget=Nil then
       begin
-       NewTarget:=ConstruireQObject(Test.Name+Test.TypeInfo, Target);
-       Target.SousElements.Add(NewTarget);
+       NewTarget:=ConstructQObject(Test.Name+Test.TypeInfo, Target);
+       Target.SubElements.Add(NewTarget);
       end;
      Mix(NewTarget, Test);
     end;
@@ -343,10 +346,10 @@ begin
  if Q is QFileObject then
   begin       
    Q.Acces;
-   DebutTravail(5445, Q.SousElements.Count); try
-   for I:=0 to Q.SousElements.Count-1 do
+   DebutTravail(5445, Q.SubElements.Count); try
+   for I:=0 to Q.SubElements.Count-1 do
     begin
-     BrowseConfig(Q.SousElements[I]);
+     BrowseConfig(Q.SubElements[I]);
      ProgresTravail;
     end; 
    finally FinTravail; end;
@@ -517,8 +520,8 @@ var
  S: String;
  Cfg, New1, Old1: QObject;
 begin
- Cfg:=ConstruireQObject(New.Name+New.TypeInfo, Root);
- Root.SousElements.Add(Cfg);
+ Cfg:=ConstructQObject(New.Name+New.TypeInfo, Root);
+ Root.SubElements.Add(Cfg);
  for I:=0 to New.Specifics.Count-1 do
   begin
    S:=New.Specifics[I];
@@ -533,26 +536,26 @@ begin
    if (P<Length(S)) and (New.Specifics.IndexOfName(Copy(S,1,P-1))<0) then
     Cfg.Specifics.Add(Copy(S,1,P));  { this Specifics has been removed }
   end;
- for I:=0 to New.SousElements.Count-1 do
+ for I:=0 to New.SubElements.Count-1 do
   begin
-   New1:=New.SousElements[I];
-   Old1:=Old.SousElements.FindName(New1.Name+New1.TypeInfo);
+   New1:=New.SubElements[I];
+   Old1:=Old.SubElements.FindName(New1.Name+New1.TypeInfo);
    if Old1=Nil then
-    Cfg.SousElements.Add(New1)   { it's a new sub-item }
+    Cfg.SubElements.Add(New1)   { it's a new sub-item }
    else
     StoreDiff(Cfg, New1, Old1);  { store only differences }
   end;
- for I:=0 to Old.SousElements.Count-1 do
+ for I:=0 to Old.SubElements.Count-1 do
   begin
-   Old1:=Old.SousElements[I];
-   if New.SousElements.FindName(Old1.Name+Old1.TypeInfo) = Nil then
+   Old1:=Old.SubElements[I];
+   if New.SubElements.FindName(Old1.Name+Old1.TypeInfo) = Nil then
     begin  { "Old1" has been deleted from the new version }
-     New1:=ConstruireQObject(Old1.Name+Old1.TypeInfo, Cfg);
-     Cfg.SousElements.Add(New1);  { adds an empty object to mean this }
+     New1:=ConstructQObject(Old1.Name+Old1.TypeInfo, Cfg);
+     Cfg.SubElements.Add(New1);  { adds an empty object to mean this }
     end;
   end;
- if (Cfg.Specifics.Count=0) and (Cfg.SousElements.Count=0) then
-  Root.SousElements.Remove(Cfg);
+ if (Cfg.Specifics.Count=0) and (Cfg.SubElements.Count=0) then
+  Root.SubElements.Remove(Cfg);
 end;
 
 procedure SaveSetup(Format: Integer; AppPath: String);
@@ -588,9 +591,9 @@ begin
     SetupQrk.Acces;
     for T:=Low(T) to {Pred}(High(T)) do  (*{ ignore ssTempData }*)
      begin
-      Q:=SetupQrk.SousElements.FindName(SetupSetName[T]+':config');
+      Q:=SetupQrk.SubElements.FindName(SetupSetName[T]+':config');
       if Q<>Nil then
-       SetupQrk.SousElements.Remove(Q);  { remove old setup info }
+       SetupQrk.SubElements.Remove(Q);  { remove old setup info }
       { stores only the setup data that really changed }
       StoreDiff(SetupQrk, SetupSet2[T], SetupSet[T]);
      end;
@@ -646,13 +649,13 @@ begin
  if AddOns=Nil then Exit;
  if AddOns.Specifics.Values['f1r']<>'' then
   begin
-   AddOns.SousElements.Delete(AddOns.SousElements.Count-1);
+   AddOns.SubElements.Delete(AddOns.SubElements.Count-1);
    AddOns.Specifics.Values['f1r']:='';
    CloseToolBoxes;
   end;
  if Form1.Explorer.Roots.Count>0 then
   begin
-   AddOns.SousElements.Add(Form1.Explorer.Roots[0]);
+   AddOns.SubElements.Add(Form1.Explorer.Roots[0]);
    AddOns.Specifics.Values['f1r']:='1';
   end;
  UpdateAddOnsContent;
@@ -671,9 +674,9 @@ begin
  SetupGameSet.Specifics.Values['AddOns']:=S;
  if AddOns=Nil then Exit;
  if AddOns.Specifics.Values['f1r']<>'' then
-  AddOns.SousElements.Insert(AddOns.SousElements.Count-1, NewAddOn)
+  AddOns.SubElements.Insert(AddOns.SubElements.Count-1, NewAddOn)
  else
-  AddOns.SousElements.Add(NewAddOn);
+  AddOns.SubElements.Add(NewAddOn);
 end;
 
 function MakeAddOnsList : QFileObject;
@@ -690,14 +693,14 @@ begin
    try
     Result.Flags:=Result.Flags or ofFileLink;
     Result.NomFichier:=DefaultsFileName1;
-    Result.SousElements.Add(ExactFileLink(DefaultsFileName1, Result, False));
-  (*Result.SousElements.Add(LienFichierQObject(
+    Result.SubElements.Add(ExactFileLink(DefaultsFileName1, Result, False));
+  (*Result.SubElements.Add(LienFichierQObject(
      SetupGameSet.Specifics.Values['Base'], Result));*)
     L:=TStringList.Create; try
     L.Text:=SetupGameSet.Specifics.Values['AddOns'];
     for I:=0 to L.Count-1 do
      try
-      Result.SousElements.Add(LienFichierQObject(L[I], Result, False));
+      Result.SubElements.Add(LienFichierQObject(L[I], Result, False));
      except
       on EQObjectFileNotFound do
        if I=0 then
@@ -706,8 +709,8 @@ begin
         GlobalWarning(FmtLoadStr1(5557, [L[I]]));
      end;
     finally L.Free; end;
-    for I:=0 to Result.SousElements.Count-1 do
-     with Result.SousElements[I] do
+    for I:=0 to Result.SubElements.Count-1 do
+     with Result.SubElements[I] do
       Flags:=Flags or ofWarnBeforeChange;
    except
     Result.AddRef(-1);
@@ -816,7 +819,7 @@ begin
    end
   else
    begin
-    if SetupSet[ssGames].SousElements.FindName(nMode+':config')=Nil then
+    if SetupSet[ssGames].SubElements.FindName(nMode+':config')=Nil then
      Raise EErrorFmt(5547, [nMode]);
     if Screen.ActiveForm is TToolBoxForm then
      Raise EErrorFmt(5599, [nMode]);
@@ -838,7 +841,7 @@ begin
   GetGameCode:=mjAny
  else
   begin
-   Q:=SetupSet[ssGames].SousElements.FindName(nMode+':config');
+   Q:=SetupSet[ssGames].SubElements.FindName(nMode+':config');
    if Q=Nil then
     Raise EErrorFmt(5547, [nMode]);
    S:=Q.Specifics.Values['Code'];
@@ -889,14 +892,14 @@ var
  S: String;
 begin
  with SetupSet[ssGames] do
-  for I:=0 to SousElements.Count-1 do
+  for I:=0 to SubElements.Count-1 do
    begin
-    S:=SousElements[I].Specifics.Values['Code'];
+    S:=SubElements[I].Specifics.Values['Code'];
     if S='' then
      S:=mjQuake;
     if S[1]=nMode then
      begin  { found game config. }
-      Result:=SousElements[I].Name;
+      Result:=SubElements[I].Name;
       Exit;
      end;
    end;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -629,9 +632,9 @@ begin
           Moitie2.AddRef(+1);
           try
            K:=PolyedreSel.Faces.Count+1;
-           Moitie2.SousElements.Capacity:=K;
+           Moitie2.SubElements.Capacity:=K;
            if not SoustraitPolyMax then
-            Moitie1.SousElements.Capacity:=K;
+            Moitie1.SubElements.Capacity:=K;
            for K:=0 to PolyedreSel.Faces.Count-1 do
             begin
              F:=PSurface(PolyedreSel.Faces[K]);
@@ -776,9 +779,9 @@ var
  Q1: QObject;
 begin
  Q.Acces;
- for I:=0 to Q.SousElements.Count-1 do
+ for I:=0 to Q.SubElements.Count-1 do
   begin
-   Q1:=Q.SousElements[I];
+   Q1:=Q.SubElements[I];
    if Q1 is TFace then
     begin
      if CompareText(TFace(Q1).NomTex, Tex) = 0 then
@@ -800,11 +803,11 @@ begin
     Inc(InvPoly);
     Exit;
    end;
- for I:=0 to Racine.SousElements.Count-1 do
-  BuildPolyhedronsNow(Racine.SousElements[I], InvPoly, InvFaces);
- for I:=0 to Racine.SousElements.Count-1 do
+ for I:=0 to Racine.SubElements.Count-1 do
+  BuildPolyhedronsNow(Racine.SubElements[I], InvPoly, InvFaces);
+ for I:=0 to Racine.SubElements.Count-1 do
   begin
-   Q:=Racine.SousElements[I];
+   Q:=Racine.SubElements[I];
    if Q is TFace then
     if (TFace(Q).FFaceOfPoly=Nil) or (TFace(Q).FFaceOfPoly^.Source=Q) then
      if InvFaces=-1 then
@@ -824,8 +827,8 @@ begin
  if Q is TPolyedre then
   TPolyedre(Q).InvalidatePolyhedron(asModifie)
  else
-  for I:=0 to Q.SousElements.Count-1 do
-   InvalidatePolyhedronTree(Q.SousElements[I]);
+  for I:=0 to Q.SubElements.Count-1 do
+   InvalidatePolyhedronTree(Q.SubElements[I]);
 end;
 
 function AnalyseClicFace(S: PSurface; var nP: TPointProj; Arriere: Boolean) : Boolean;
@@ -1000,7 +1003,7 @@ var
       end;
     end
    else
-    with T.SousElements do
+    with T.SubElements do
      for I:=0 to Count-1 do
       Parcourir(TTreeMap(Items[I]));
   end;
@@ -1092,15 +1095,15 @@ begin
  if F=Nil then
   I:=-1
  else
-  I:=SousElements.IndexOf(F);
+  I:=SubElements.IndexOf(F);
  repeat
   Inc(I);
-  if (I>=SousElements.Count) then
+  if (I>=SubElements.Count) then
    begin
     Result:=False;
     Exit;
    end;
-  Test:=SousElements[I];
+  Test:=SubElements[I];
  until (Test is TFace) and (TFace(Test).prvNbS>0);
  F:=TFace(Test);
  Result:=True;
@@ -1290,9 +1293,9 @@ begin
  FaceList:=TList.Create; try
  T:=Self;
  repeat
-  for I:=T.SousElements.Count-1 downto 0 do
+  for I:=T.SubElements.Count-1 downto 0 do
    begin
-    Q:=T.SousElements[I];
+    Q:=T.SubElements[I];
     if Q is TFace then
      if TFace(Q).LoadData then
       FaceList.Add(Q);
@@ -1760,9 +1763,9 @@ var
  Q: QObject;
 begin
  ConstruireSommets;
- for I:=SousElements.Count-1 downto 0 do
+ for I:=SubElements.Count-1 downto 0 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is TFace then
     begin
      for J:=0 to Faces.Count-1 do
@@ -1772,7 +1775,7 @@ begin
         Break;
        end;
      if Q<>Nil then
-      SousElements.Delete(I);
+      SubElements.Delete(I);
     end;
   end;
 end;
@@ -1783,9 +1786,9 @@ var
  FI: QObject;
 begin
  if not FJ.LoadData then Exit;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   FI:=SousElements[I];
+   FI:=SubElements[I];
    if FI is TFace then
     with TFace(FI) do
      if LoadData
@@ -1799,9 +1802,9 @@ begin
       end;
   end;
  if Copie then
-  SousElements.Add(FJ.Clone(Self, False))
+  SubElements.Add(FJ.Clone(Self, False))
  else
-  SousElements.Add(FJ);
+  SubElements.Add(FJ);
 end;
 
 (*procedure TPolyedre.AjouteCopieFace(FI: TFace);
@@ -1814,9 +1817,9 @@ begin
  Org.X:=FI.Normale.X*FI.Dist;
  Org.Y:=FI.Normale.Y*FI.Dist;
  Org.Z:=FI.Normale.Z*FI.Dist;
- for J:=0 to SousElements.Count-1 do
+ for J:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[J];
+   Q:=SubElements[J];
    if Q is TFace then
     begin
      FJ:=TFace(Q);
@@ -1828,7 +1831,7 @@ begin
       end;
     end;
   end;
- SousElements.Add(FI.Clone);
+ SubElements.Add(FI.Clone);
  FI.UpdateSpecifics;
 end;*)
 
@@ -2152,9 +2155,9 @@ begin
   for J:=0 to Faces.Count-1 do
    WriteFace(PSurface(Faces[J])^.F)
  else
-  for J:=0 to SousElements.Count-1 do
+  for J:=0 to SubElements.Count-1 do
    begin
-    Q:=SousElements[J];
+    Q:=SubElements[J];
     if Q is TFace then
      WriteFace(TFace(Q));
    end;
@@ -2181,9 +2184,9 @@ var
  Prof: Reel;
 begin
  CheckPolyhedron;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Faces<>Nil then
     for J:=0 to Faces.Count-1 do
      if PSurface(Faces[J]).F=Q then
@@ -2423,8 +2426,8 @@ var
 begin
  Result:=Odd(SelMult);
  if not Result then
-  for I:=0 to SousElements.Count-1 do
-   if Odd(SousElements[I].SelMult) then
+  for I:=0 to SubElements.Count-1 do
+   if Odd(SubElements[I].SelMult) then
     begin
      Result:=True;
      Exit;
@@ -3154,11 +3157,11 @@ end;
 {var
  Tx: QObject;
 begin
- Tx:=SousElements.FindName(':t');
+ Tx:=SubElements.FindName(':t');
  if Tx=Nil then
   begin
-   Tx:=ConstruireQObject(':t', Self);
-   SousElements.Add(Tx);
+   Tx:=ConstructQObject(':t', Self);
+   SubElements.Add(Tx);
   end;
  Tx.Specifics.Values['tex']:=nTex;
 end;}

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 Revision 1.16  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -182,7 +185,7 @@ type
              protected
                procedure ChargerFin(F: TStream; TailleRestante: Integer); virtual;
               {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
-               procedure Enregistrer(Info: TInfoEnreg1); override;
+               procedure SaveFile(Info: TInfoEnreg1); override;
                procedure LoadFile(F: TStream; FSize: Integer); override;
              public
                class function TypeInfo: String; override;
@@ -197,7 +200,7 @@ type
                procedure Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt;
                           NomTex, AnimTex: PChar);
               {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
-               procedure Enregistrer(Info: TInfoEnreg1); override;
+               procedure SaveFile(Info: TInfoEnreg1); override;
                procedure LoadFile(F: TStream; FSize: Integer); override;
              public
                function BuildWalFileHeader : TQ2Miptex;
@@ -246,7 +249,7 @@ type
     Info: PGameBuffer;
     procedure SetInfo(nInfo: PGameBuffer);
     procedure DynamicTextureTb(Tex: TWinControl);
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr: String; override;
@@ -531,7 +534,7 @@ begin
    if AltSrc<>Nil then
     begin
      AltSrc.Acces;
-     Q:=AltSrc.SousElements.FindShortName(TexName);
+     Q:=AltSrc.SubElements.FindShortName(TexName);
      if (Q<>Nil) and (Q is QPixelSet) then
       begin
        Result:=QPixelSet(Q);
@@ -693,7 +696,7 @@ begin
          begin
           Q:=NeedGameFile(WriteTo);
           Q.AddRef(+1); try
-          Q.EnregistrerDansFichier(rf_Default, OutputFile(WriteTo));
+          Q.SaveInFile(rf_Default, OutputFile(WriteTo));
           finally Q.AddRef(-1); end;
          end;
        end;
@@ -713,8 +716,8 @@ begin
            Q:=QWad.Create('tmpQuArK', Nil);
            Q.AddRef(+1); try
            for I:=0 to TexList.Count-1 do
-            Q.SousElements.Add(TexList[I]);
-           Q.EnregistrerDansFichier(rf_Default, WriteTo);
+            Q.SubElements.Add(TexList[I]);
+           Q.SaveInFile(rf_Default, WriteTo);
            finally Q.AddRef(-1); end;
           end;
         end;
@@ -734,7 +737,7 @@ begin
              ShaderFile:=QShaderFile.Create('tmpQuArK', Nil);
              ShaderFile.AddRef(+1);
             end;
-           ShaderFile.SousElements.Add(Tex);
+           ShaderFile.SubElements.Add(Tex);
           end
          else  { write non-shader textures directly to the disk }
           begin
@@ -753,7 +756,7 @@ begin
               S:=Tex.Name;
              S:=Q2TexPath+S+Tex.TypeInfo;
             end;
-           Tex.EnregistrerDansFichier(rf_Default, OutputFile(S));
+           Tex.SaveInFile(rf_Default, OutputFile(S));
            {/mac: the waltrick is also needed for kingpin
             which uses qpixelset and not qtexturefile}
            if walTrick {and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0)} then
@@ -762,7 +765,7 @@ begin
              Tex:=QTexture2.Create(Tex.Name, Nil);
              Tex.AddRef(+1); try
              Tex.ConvertFrom(Tex1, ccAuto);   { conversion to .wal format }
-             Tex.EnregistrerDansFichier(rf_Default, OutputFile(ChangeFileExt(S, '.wal')));
+             Tex.SaveInFile(rf_Default, OutputFile(ChangeFileExt(S, '.wal')));
              finally Tex.AddRef(-1); end;
              needColormap:=True;
             end;
@@ -775,7 +778,7 @@ begin
          if ShaderFile<>Nil then
           begin  { write the shaders file }
            if S='' then Raise InternalE('"TextureShaders" expected in Defaults.qrk');
-           ShaderFile.EnregistrerDansFichier(rf_Default, OutputFile(S));
+           ShaderFile.SaveInFile(rf_Default, OutputFile(S));
           end;
          if S<>'' then   { if the current game supports shaders, write the shaderlist.txt }
           begin
@@ -783,12 +786,12 @@ begin
            for I:=0 to ShaderListFiles.Count-1 do
             begin
              ShaderListFiles[I].Acces;
-             if (ShaderFile=Nil) and (ShaderListFiles[I].SousElements.Count>1) then
+             if (ShaderFile=Nil) and (ShaderListFiles[I].SubElements.Count>1) then
               J:=1
              else
               J:=0;
-             Q:=ShaderListFiles[I].SousElements[J] as QFileObject;
-             Q.EnregistrerDansFichier(rf_Default, OutputFile(Q.Name+Q.TypeInfo));
+             Q:=ShaderListFiles[I].SubElements[J] as QFileObject;
+             Q.SaveInFile(rf_Default, OutputFile(Q.Name+Q.TypeInfo));
             end;
            finally ShaderListFiles.Free; end;
           end;
@@ -807,7 +810,7 @@ begin
            Q.Specifics.Add(S);
            Q.SetFloatsSpec('Size', DummySize);
            Q.Specifics.Values['Image1']:=#0#0#0#0;
-           Q.EnregistrerDansFichier(rf_Default, OutputFile(Copy(WriteTo, 2, MaxInt)));
+           Q.SaveInFile(rf_Default, OutputFile(Copy(WriteTo, 2, MaxInt)));
            finally Q.AddRef(-1); end;
           end;
         end;
@@ -910,7 +913,7 @@ begin
   Result:=TestConversionImages(I);
 end;
 
-function QTexture.OuvrirFenetre;
+function QTexture.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQTexture.Create(nOwner);
 end;
@@ -1028,7 +1031,7 @@ begin
         begin { shader }
          ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
          ShaderFile.Acces;  { load the .shader file (if not already loaded) }
-         Link:=ShaderFile.SousElements.FindShortName(Q2TexPath+TexName) as QPixelSet;
+         Link:=ShaderFile.SubElements.FindShortName(Q2TexPath+TexName) as QPixelSet;
          if Link=Nil then Raise EErrorFmt(5698, [TexName, Arg]);
         end
        else  { direct (non-shader) }
@@ -1058,7 +1061,7 @@ begin
          TexList:=NeedGameFileBase(Arg, Q2TexPath+S+'.wad') as QWad;
          TexList.AddRef(+1); try
          TexList.Acces;
-         Link:=TexList.SousElements.FindName(TexName+Ext) as QPixelSet;
+         Link:=TexList.SubElements.FindName(TexName+Ext) as QPixelSet;
          if Link=Nil then
           Raise EErrorFmt(5524, [TexName, S]);
          Link.AddRef(+1);
@@ -1077,7 +1080,7 @@ begin
          TexList:=Bsp.BspEntry[eMipTex, NoBsp2] as QTextureList;
          TexList.AddRef(+1); try
          TexList.Acces;
-         Link:=TexList.SousElements.FindName(TexName+'.wad_D') as QPixelSet;
+         Link:=TexList.SubElements.FindName(TexName+'.wad_D') as QPixelSet;
          if Link=Nil then
           Raise EErrorFmt(5524, [TexName, S]);
          Link.AddRef(+1);
@@ -1793,7 +1796,7 @@ begin
  end;
 end;
 
-procedure QTexture1.Enregistrer(Info: TInfoEnreg1);
+procedure QTexture1.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: SaveAsQuake1(F);  { as stand-alone file }
@@ -1973,7 +1976,7 @@ begin
  end;
 end;
 
-procedure QTexture2.Enregistrer(Info: TInfoEnreg1);
+procedure QTexture2.SaveFile(Info: TInfoEnreg1);
 var
  S: String;
  Header: TQ2Miptex;
@@ -2050,7 +2053,7 @@ end;
 
  {------------------------}
 
-procedure TFQTexture.wmMessageInterne(var Msg: TMessage);
+procedure TFQTexture.wmInternalMessage(var Msg: TMessage);
 var
  GNG: Char;
  Tex: TWinControl;

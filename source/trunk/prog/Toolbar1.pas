@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -132,9 +135,9 @@ var
 begin
  if Obj=Nil then Exit;
  Obj.Acces;
- for I:=0 to Obj.SousElements.Count-1 do
+ for I:=0 to Obj.SubElements.Count-1 do
   begin
-   Q:=Obj.SousElements[I];
+   Q:=Obj.SubElements[I];
    if Q.ClassType = QMacro then
     QMacro(Q).Click(Sender)
    else
@@ -431,9 +434,9 @@ begin
     Tb.CloseButton:={True}False;
     Tb.Hint:=Specifics.Values['Hint'];
     Inc(Tb.DisableArrangeControls);
-    for I:=0 to SousElements.Count-1 do
-     if SousElements[I] is QToolbarButton then
-      QToolbarButton(SousElements[I]).CreateButton(nOwner, Tb, ShortCuts);
+    for I:=0 to SubElements.Count-1 do
+     if SubElements[I] is QToolbarButton then
+      QToolbarButton(SubElements[I]).CreateButton(nOwner, Tb, ShortCuts);
     TextsToMenuShortCuts(ShortCuts); 
     Dec(Tb.DisableArrangeControls);
     Tb.AutoArrangeControls;
@@ -476,7 +479,7 @@ var
  S: String;
  Gr: QExplorerGroup;
 begin
-{Result:=SousElements.FindName('New.qrk') as QExplorerGroup;
+{Result:=SubElements.FindName('New.qrk') as QExplorerGroup;
  if Result=Nil then
   Result:=QExplorerGroup.Create('New', Nil)
  else
@@ -520,7 +523,7 @@ begin
  case GetTyp of
   typCreation:
     begin
-     E:=TQkExplorer(ValidParentForm(Sender as TControl).Perform(wm_MessageInterne, wp_TargetExplorer, 0));
+     E:=TQkExplorer(ValidParentForm(Sender as TControl).Perform(wm_InternalMessage, wp_TargetExplorer, 0));
      if E<>Nil then
       begin
        Gr:=GetNewGroup;
@@ -554,7 +557,7 @@ begin
      end;
   typMessage:
     begin
-     ValidParentForm(Sender as TControl).Perform(wm_MessageInterne, wp_ToolbarButton1,
+     ValidParentForm(Sender as TControl).Perform(wm_InternalMessage, wp_ToolbarButton1,
       IntSpec['Msg']);
      Exit;
     end;
@@ -579,9 +582,9 @@ begin
     begin
      Gr:=GetNewGroup;
      Gr.AddRef(+1); try
-     for I:=0 to Gr.SousElements.Count-1 do
+     for I:=0 to Gr.SubElements.Count-1 do
       begin
-       Q:=Gr.SousElements[I];
+       Q:=Gr.SubElements[I];
        if Q is QFileObject then
         with QFileObject(Q) do
          begin
@@ -599,7 +602,7 @@ begin
    (*Q:=Clone(FParent);
      Q.AddRef(+1); try
      with ValidParentForm(Sender as TControl) do
-      Source:=HasGotObject(Perform(wm_MessageInterne, wp_EditMsg, edGetMacroObject));
+      Source:=HasGotObject(Perform(wm_InternalMessage, wp_EditMsg, edGetMacroObject));
      if Source=Nil then
       ProcessMacros(Q, Q)
      else
@@ -640,7 +643,7 @@ begin
       case MessageDlg(LoadStr1(5620), mtConfirmation, mbYesNoCancel, 0) of
        mrYes: begin
                with ValidParentForm(Sender as TControl) do
-                Perform(wm_MessageInterne, wp_LoadLinFile, LongInt(PChar(LinFile)));
+                Perform(wm_InternalMessage, wp_LoadLinFile, LongInt(PChar(LinFile)));
                Raise EError(5621);
               end;
        mrNo: ;
@@ -652,13 +655,13 @@ begin
     begin
      Q:=FindIncludeData1(Self, Specifics.Values['Page']);
      Q.AddRef(+1); try
-     if (Q<>Nil) and (Q.SousElements.Count>0) then
+     if (Q<>Nil) and (Q.SubElements.Count>0) then
       begin
-       Q:=Q.SousElements[0];
+       Q:=Q.SubElements[0];
        if Q is QFormCfg then
         begin
          Q.Acces;
-         ValidParentForm(Sender as TControl).Perform(wm_MessageInterne,
+         ValidParentForm(Sender as TControl).Perform(wm_InternalMessage,
           wp_SetFormCfg, LongInt(Q));
          Exit;
         end;
@@ -784,9 +787,9 @@ begin
      if ChrTyp=typMenu then
       begin
        Popup:=TPopupMenu.Create(nOwner);
-       for I:=0 to SousElements.Count-1 do
+       for I:=0 to SubElements.Count-1 do
         begin
-         Q:=SousElements[I];
+         Q:=SubElements[I];
          if Q is QToolbarButton then
           QToolbarButton(Q).CreateMenuItem(nOwner, Popup.Items, ShortCuts);
         end;
@@ -823,9 +826,9 @@ begin
      Caption:=Specifics.Values['Cap'];
      Hint:=Specifics.Values['Hint'];
      if ChrTyp=typMenu then
-      for I:=0 to SousElements.Count-1 do
+      for I:=0 to SubElements.Count-1 do
        begin
-        Q:=SousElements[I];
+        Q:=SubElements[I];
         if Q is QToolbarButton then
          QToolbarButton(Q).CreateMenuItem(nOwner, Item, ShortCuts);
        end

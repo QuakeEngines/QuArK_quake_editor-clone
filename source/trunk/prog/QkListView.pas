@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 }
 
 unit QkListView;
@@ -55,7 +58,7 @@ type
     procedure ListView1KeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmDropFiles(var Msg: TMessage); message wm_DropFiles;
     function Populate(Counter: Integer) : Integer;
     function GetSelUnique : QObject;
@@ -95,7 +98,7 @@ const
 
  {------------------------}
 
-procedure TQForm2.wmMessageInterne(var Msg: TMessage);
+procedure TQForm2.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_AfficherObjet:
@@ -130,7 +133,7 @@ begin
     end;*)
    if Counter=-1 then
     begin
-     I:=FileObject.SousElements.Count;
+     I:=FileObject.SubElements.Count;
      if I<4 then I:=4 else I:=(I+3) and not 3;
      ListView1.AllocBy:=I;
     end;
@@ -161,9 +164,9 @@ begin
    GlobalImages:=True;
    OpenGlobalImageList(ListView1);
   end;
- for I:=0 to FileObject.SousElements.Count-1 do
+ for I:=0 to FileObject.SubElements.Count-1 do
   begin
-   Q:=FileObject.SousElements[I];
+   Q:=FileObject.SubElements[I];
    Item:=ListView1.Items.Add;
    with Item do
     begin
@@ -196,7 +199,7 @@ begin
   begin
    Form:=GetParentForm(Self);
    if (Form<>Nil) and (Form<>Self) then
-    FindExplorer:=TQkExplorer(Form.Perform(wm_MessageInterne, wp_TargetExplorer, 0))
+    FindExplorer:=TQkExplorer(Form.Perform(wm_InternalMessage, wp_TargetExplorer, 0))
   end;
 end;
 
@@ -228,7 +231,7 @@ begin
  else
   begin
    Result.TMFocus:=DernierSel;
-   PostMessage(ValidParentForm(Self).Handle, wm_MessageInterne,
+   PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage,
     wp_AfficherObjet, 0);
   end;
 end;
@@ -248,7 +251,7 @@ begin
      begin  { select in Explorer the selected items }
       Q:=Nil;
       while EnumObjs(Item, Q) do
-       Result.SousElements.Add(Q);
+       Result.SubElements.Add(Q);
      end;
    end;
  except
@@ -267,8 +270,8 @@ begin
   begin
    Gr:=GroupeSelection;
    Gr.AddRef(+1); try
-   if AlwaysOpenExplorer and (Gr.SousElements.Count=1) then
-    Exp.SelectOneChild(Gr.SousElements[0])
+   if AlwaysOpenExplorer and (Gr.SubElements.Count=1) then
+    Exp.SelectOneChild(Gr.SubElements[0])
    else
     Exp.DoubleClic(Gr);
    finally Gr.AddRef(-1); end;
@@ -326,7 +329,7 @@ begin
     end;
   end;
  if (Result=Nil) and Populating and (SelectThis<>Nil)
- and (FileObject.SousElements.IndexOf(SelectThis)>=0) then
+ and (FileObject.SubElements.IndexOf(SelectThis)>=0) then
   Result:=SelectThis;
 end;
 
@@ -387,7 +390,7 @@ begin
     begin
      G:=GroupeSelection;
      G.AddRef(+1); try
-     Result:=GetObjectsResult(G.SousElements);
+     Result:=GetObjectsResult(G.SubElements);
      finally G.AddRef(-1); end;
     end;
   edOpen:
@@ -441,7 +444,7 @@ begin
    begin
     Gr:=GroupeSelection;
     Gr.AddRef(+1); try
-    if Gr.SousElements.Count=0 then
+    if Gr.SubElements.Count=0 then
      begin
       MessageBeep(0);
       Exit;
@@ -449,8 +452,8 @@ begin
     if NoTexte=0 then
      NoTexte:=579;
     DebutAction;
-    for I:=0 to Gr.SousElements.Count-1 do
-     ListeActions.Add(TQObjectUndo.Create('', Gr.SousElements[I], Nil));
+    for I:=0 to Gr.SubElements.Count-1 do
+     ListeActions.Add(TQObjectUndo.Create('', Gr.SubElements[I], Nil));
     finally Gr.AddRef(-1); end;
     NiveauAction:=NiveauAction or LocalActionFlags;
     FinAction(FileObject, LoadStr1(NoTexte));
@@ -473,9 +476,9 @@ begin
   if not EnumObjs(ListView1.Selected, nInsererAvant) then
    nInsererAvant:=Nil;
  DebutAction;
- for I:=0 to Gr.SousElements.Count-1 do
+ for I:=0 to Gr.SubElements.Count-1 do
   begin
-   Q:=Gr.SousElements[I];
+   Q:=Gr.SubElements[I];
    if ieCanDrop in FileObject.IsExplorerItem(Q) then
     begin
      Q.FParent:=FileObject;
@@ -502,7 +505,7 @@ end;
 procedure TQForm2.ActionRefresh;
 begin
  NiveauAction:=NiveauAction and not LocalActionFlags;
- Perform(wm_MessageInterne, wp_AfficherObjet, 0);
+ Perform(wm_InternalMessage, wp_AfficherObjet, 0);
 end;
 
 procedure TQForm2.CreateWnd;
@@ -531,7 +534,7 @@ begin
      Q.AddRef(+1); try
      Q1:=Q.Clone(Gr, False);
      Q1.Flags:=Q1.Flags and not (ofFileLink or ofModified);
-     Gr.SousElements.Add(Q1);
+     Gr.SubElements.Add(Q1);
      finally Q.AddRef(-1); end;
     end;
   if not DropObjectsNow(Gr, LoadStr1(594), True) then
@@ -545,12 +548,12 @@ end;
 procedure TQForm2.ListView1StartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
- PostMessage(Handle, wm_MessageInterne, tm_BeginDrag, 0);
+ PostMessage(Handle, wm_InternalMessage, tm_BeginDrag, 0);
 end;
 
 procedure TQForm2.ListView1EndDrag(Sender, Target: TObject; X, Y: Integer);
 begin
- PostMessage(ValidParentForm(Self).Handle, wm_MessageInterne, wp_EndDrag, 0);
+ PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage, wp_EndDrag, 0);
 end;
 
 procedure TQForm2.ListView1DragOver(Sender, Source: TObject; X, Y: Integer;
@@ -584,7 +587,7 @@ begin
  T:=FDropTarget;
  while T<>Nil do
   begin
-   if SourceQ.SousElements.IndexOf(T)>=0 then
+   if SourceQ.SubElements.IndexOf(T)>=0 then
     begin
      MessageBeep(0);  { déplacement sur un élément lui-même sélectionné }
      Exit;
@@ -633,7 +636,7 @@ begin
   with ClientToScreen(Point(X,Y)) do
    Popup.Popup(X,Y);
  finally
-  PostMessage(Handle, wm_MessageInterne, tm_FreeMenu, LongInt(Popup));
+  PostMessage(Handle, wm_InternalMessage, tm_FreeMenu, LongInt(Popup));
  end; *)
 end;
 

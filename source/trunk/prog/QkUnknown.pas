@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -48,7 +51,7 @@ type
             protected
               function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
              {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
-             {procedure Enregistrer(Format: Integer; F: TStream); override;}
+             {procedure SaveFile(Format: Integer; F: TStream); override;}
              {procedure LoadFile(F: TStream; FSize: Integer); override;}
             public
               class function TypeInfo: String; override;
@@ -68,7 +71,7 @@ type
     LabelType: TLabel;
     LabelSize: TLabel;
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
   public
@@ -96,7 +99,7 @@ begin
  Result:='';
 end;
 
-function QUnknown.OuvrirFenetre;
+function QUnknown.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQUnknown.Create(nOwner);
 end;
@@ -148,7 +151,7 @@ end;
 
  {------------------------}
 
-procedure TFQUnknown.wmMessageInterne(var Msg: TMessage);
+procedure TFQUnknown.wmInternalMessage(var Msg: TMessage);
 var
  Info: TFileObjectClassInfo;
 begin

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -205,9 +208,9 @@ begin
   for I:=0 to L.Count-1 do
    begin
     Q:=L[I];
-    for J:=0 to Q.SousElements.Count-1 do
+    for J:=0 to Q.SubElements.Count-1 do
      begin
-      Q1:=Q.SousElements[J];
+      Q1:=Q.SubElements[J];
       if (Q1 is nClass)
       and ((nName='') or (CompareText(Q1.Name, nName) = 0)) then
        begin

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -214,17 +217,17 @@ begin
      if ConvertClass=Nil then
       MessageBeep(0)
      else
-      if not QFileObject(Gr.SousElements[Gr.SousElements.Add(ConvertClass.Create(List[I].Name, Gr))])
+      if not QFileObject(Gr.SubElements[Gr.SubElements.Add(ConvertClass.Create(List[I].Name, Gr))])
              .ConversionFrom(QFileObject(List[I])) then
        Raise EError(5538);
      ProgresTravail;
     end;
    finally FinTravail; end;
-   if Gr.SousElements.Count=0 then Exit;
+   if Gr.SubElements.Count=0 then Exit;
   end
  else
   for I:=0 to List.Count-1 do
-   Gr.SousElements.Add(List[I]);
+   Gr.SubElements.Add(List[I]);
 
   { copy to clipboard }
  Gr.CopierObjets(False);

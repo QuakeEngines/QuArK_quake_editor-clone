@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -53,7 +56,7 @@ type
                   procedure ObjectRemoved(Q: QObject);
                 protected
                  {procedure OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer); override;}
-                  procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                   procedure wmDropFiles(var Msg: TMessage); message wm_DropFiles;
                   function ReopensWindow(Q: QFileObject) : Boolean;
                  {function VisibleInExplorer(Q: QObject) : Boolean;}
@@ -102,12 +105,12 @@ begin
  case Aj of
   asModifie: begin
               if (Q=ElSousFiche) and (Fiche<>Nil) then
-               PostMessage(Fiche.Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+               PostMessage(Fiche.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
               if Q is QFileObject then
                begin
                 F:=Nil;
                 while QFileObject(Q).EnumObjectWindow(F) do
-                 PostMessage(F.Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+                 PostMessage(F.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
                end;
               end;
   asRetire: begin
@@ -130,7 +133,7 @@ end;*)
 procedure TQkExplorer2.ObjectModified(Q: QObject);
 begin
  if (Q=ElSousFiche) and (Fiche<>Nil) then
-  PostMessage(Fiche.Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+  PostMessage(Fiche.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
 end;
 
 procedure TQkExplorer2.ObjectRemoved(Q: QObject);
@@ -161,8 +164,8 @@ var
  Q: QObject;
  Info: TFileObjectClassInfo;
 begin
- if Gr.SousElements.Count<>1 then Exit;
- Q:=Gr.SousElements[0];
+ if Gr.SubElements.Count<>1 then Exit;
+ Q:=Gr.SubElements[0];
  if (Q is QFileObject) and not ReopensWindow(QFileObject(Q)) then
   begin
    QFileObject(Q).FileObjectClassInfo(Info);
@@ -203,7 +206,7 @@ begin
    try
     Fiche.CloseNow;
    except       { close was cancelled }
-    PostMessage(Handle, wm_MessageInterne, tm_CloseCancelled, 0);
+    PostMessage(Handle, wm_InternalMessage, tm_CloseCancelled, 0);
     Raise;
    end;
    FFiche:=Nil;
@@ -257,7 +260,7 @@ begin
  CancelMouseClicking(True);
 end;*)
 
-procedure TQkExplorer2.wmMessageInterne;
+procedure TQkExplorer2.wmInternalMessage;
 begin
  case Msg.wParam of
   tm_CloseCancelled:
@@ -336,7 +339,7 @@ begin
         end;
       edOpen:
         if (ElSousFiche<>Nil) and (Fiche<>Nil) then
-         Msg.Result:=Fiche.Perform(wm_MessageInterne, wp_EditMsg, edOpen);
+         Msg.Result:=Fiche.Perform(wm_InternalMessage, wp_EditMsg, edOpen);
      end;
      if Msg.Result=0 then
       Msg.Result:=EditMenuCommand(Msg.lParam);
@@ -514,7 +517,7 @@ begin
       end
      else
       Q1.Flags:=Q1.Flags or ofWarnBeforeChange;
-     Gr.SousElements.Add(Q1);
+     Gr.SubElements.Add(Q1);
      finally Q1.AddRef(-1); Q.AddRef(-1); end;
     end;
   if not DropObjectsNow(Gr, LoadStr1(594), True) then

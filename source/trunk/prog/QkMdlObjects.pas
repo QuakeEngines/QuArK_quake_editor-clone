@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -354,9 +357,9 @@ var
  I: Integer;
  Q: QObject;
 begin
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QMdlObject then
     QMdlObject(Q).AddTo3DScene;
   end;
@@ -367,9 +370,9 @@ var
  I: Integer;
  Q: QObject;
 begin
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QMdlObject then
     QMdlObject(Q).BuildRefList(L);
   end;
@@ -380,9 +383,9 @@ var
  I: Integer;
  Q: QObject;
 begin
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QMdlObject then
     QMdlObject(Q).ChercheExtremites(Min, Max);
   end;
@@ -393,9 +396,9 @@ var
  I: Integer;
  Q: QObject;
 begin
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QMdlObject then
     QMdlObject(Q).Dessiner;
   end;
@@ -406,9 +409,9 @@ var
  I: Integer;
  Q: QObject;
 begin
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QMdlObject then
     QMdlObject(Q).AnalyseClic(Liste);
   end;

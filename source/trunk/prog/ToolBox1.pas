@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -62,7 +65,7 @@ type
    {function GroupeSelection : QExplorerGroup; override;}
    {function DoQueryEditing(Root: QObject) : Boolean; override;}
    {function CopyToOutside(Gr: QExplorerGroup) : QExplorerGroup; override;}
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   public
    {constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;}
@@ -104,7 +107,7 @@ type
     procedure FormDeactivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmSysCommand(var Msg: TWMSysCommand); message wm_SysCommand;
     procedure cmSysColorChange(var Msg: TWMSysCommand); message cm_SysColorChange;
     procedure ReloadToolbox(Sender: TObject);
@@ -197,7 +200,7 @@ begin
  Result:=OpenTextureBrowser;
  Result.SelectTbObject(GlobalFindTexture(TexName, Nil));
  Result.SelectEventWnd:=SelectEventWnd;
- PostMessage(Result.Handle, wm_MessageInterne, wp_ShowWindow, 0);
+ PostMessage(Result.Handle, wm_InternalMessage, wp_ShowWindow, 0);
 end;
 
 procedure CloseToolBoxes;
@@ -266,7 +269,7 @@ end;
 {function TTbExplorer.AfficherObjet;
 begin
  if (Parent=Nil) or (Parent is QToolBoxGroup) or (Parent is QWad) then
-  Result:=ofTvSousElement
+  Result:=ofTreeViewSubElement
  else
   Result:=0;
 end;}
@@ -281,18 +284,18 @@ var
  Gr1: QExplorerGroup;
  Form: TCustomForm;
 begin
- if (Gr.SousElements.Count=1) and (Gr.SousElements[0] is QToolBoxGroup) then
+ if (Gr.SubElements.Count=1) and (Gr.SubElements[0] is QToolBoxGroup) then
   begin
-   ToggleExpanding(Gr.SousElements[0]);
+   ToggleExpanding(Gr.SubElements[0]);
    Exit;
   end;
  with ToolBoxForm do
   begin
    if SelectEventWnd<>0 then
     begin
-     if Gr.SousElements.Count>=1 then
-      PostMessage(SelectEventWnd, wm_MessageInterne, wp_TbSelectEvent,
-       LongInt(Gr.SousElements[0]));
+     if Gr.SubElements.Count>=1 then
+      PostMessage(SelectEventWnd, wm_InternalMessage, wp_TbSelectEvent,
+       LongInt(Gr.SubElements[0]));
      Exit;
     end;
    Targ:=DefaultTarget;
@@ -339,14 +342,14 @@ var
 begin
  Result:=inherited GroupeSelection;
  K:=0;
- for I:=0 to Result.SousElements.Count-1 do
+ for I:=0 to Result.SubElements.Count-1 do
   begin  { replace the QToolBoxEntry objects with their sub-items }
-   if Result.SousElements[K] is QToolBoxEntry then
+   if Result.SubElements[K] is QToolBoxEntry then
     begin
-     with Result.SousElements[K] do
-      for J:=0 to SousElements.Count-1 do
-       Result.SousElements.Add(SousElements[J]);
-     Result.SousElements.Delete(K);
+     with Result.SubElements[K] do
+      for J:=0 to SubElements.Count-1 do
+       Result.SubElements.Add(SubElements[J]);
+     Result.SubElements.Delete(K);
     end
    else
     Inc(K);
@@ -359,9 +362,9 @@ var
  Q1: QObject;
 begin
  Q.Acces;
- for I:=0 to Q.SousElements.Count-1 do
+ for I:=0 to Q.SubElements.Count-1 do
   begin
-   Q1:=Q.SousElements[I];
+   Q1:=Q.SubElements[I];
    if Q1 is TFace then
     begin
      if CompareText(TFace(Q1).NomTex, Tex) = 0 then
@@ -381,9 +384,9 @@ var
 begin
  Result:=inherited CopyToOutside(Gr);
  Result.Acces;
- for I:=0 to Result.SousElements.Count-1 do
+ for I:=0 to Result.SubElements.Count-1 do
   begin
-   Q:=Result.SousElements[I];
+   Q:=Result.SubElements[I];
    Q.Acces;
    Q.Specifics.Values[SpecDesc]:='';
    S:=Q.Specifics.Values[SpecIncl];
@@ -393,7 +396,7 @@ begin
      L:=TStringList.Create; try
      L.Text:=S;
      for J:=0 to L.Count-1 do
-      DoIncludeData(Q, Gr.SousElements[I], L[J]);
+      DoIncludeData(Q, Gr.SubElements[I], L[J]);
      finally L.Free; end;
     end;
    S:=Q.Specifics.Values[SpecTexture];
@@ -405,7 +408,7 @@ begin
   end;
 end;*)
 
-procedure TTbExplorer.wmMessageInterne(var Msg: TMessage);
+procedure TTbExplorer.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   tm_BeginDrag: SetDragSource(dfOk or dfCopyToOutside, GroupeSelection);
@@ -470,10 +473,10 @@ begin
     if source.name='Tool bars' then
      source.name:='Tool bars';
     {$ENDIF}*)
-    DebutTravail(5444, Source.SousElements.Count); try
-    for I:=0 to Source.SousElements.Count-1 do
+    DebutTravail(5444, Source.SubElements.Count); try
+    for I:=0 to Source.SubElements.Count-1 do
      begin
-      BrowseToolBoxes(Source.SousElements[I], SingleName, Roots);
+      BrowseToolBoxes(Source.SubElements[I], SingleName, Roots);
       ProgresTravail;
      end;
     finally FinTravail; end;
@@ -602,7 +605,7 @@ begin
  if S<>'' then
   for I:=0 to Screen.FormCount-1 do
    begin
-    L:=Screen.Forms[I].Perform(wm_MessageInterne, wp_TargetExplorer, 0);
+    L:=Screen.Forms[I].Perform(wm_InternalMessage, wp_TargetExplorer, 0);
     if L<>0 then
      begin
       DefaultTarget:=TQkExplorer(L);
@@ -623,7 +626,7 @@ begin
   end;
 end;
 
-procedure TToolBoxForm.wmMessageInterne;
+procedure TToolBoxForm.wmInternalMessage;
 var
  L: TList;
 begin
@@ -658,7 +661,7 @@ begin
                 Application.Minimize;
                 Exit;
                end;
-  sc_Maximize, sc_Restore: PostMessage(Handle, wm_MessageInterne, wp_AfficherInfos, 0);
+  sc_Maximize, sc_Restore: PostMessage(Handle, wm_InternalMessage, wp_AfficherInfos, 0);
  end;
  inherited;
 end;
@@ -824,7 +827,7 @@ end;
 procedure TToolBoxForm.FormDeactivate(Sender: TObject);
 begin
  if SelectEventWnd<>0 then
-  PostMessage(SelectEventWnd, wm_MessageInterne, wp_TbSelectEvent, 0);
+  PostMessage(SelectEventWnd, wm_InternalMessage, wp_TbSelectEvent, 0);
 end;
 
 procedure TToolBoxForm.CancelSelectEvent;

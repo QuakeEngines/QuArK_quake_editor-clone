@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 Revision 1.5  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -86,7 +89,7 @@ begin
   ResultFolder:=QTextureList.Create(Copy(FolderName, 1, Length(FolderName)-1), Nil);
  Result:=QTextureLnk.Create(FolderName+Name, ResultFolder);
  Result.Specifics.Values[Spec]:=Arg;
- ResultFolder.SousElements.Add(Result);
+ ResultFolder.SubElements.Add(Result);
 end;
 
 procedure LinkFolder(Q: QObject; var ToolBoxFolder: QObject; const FolderName: String);
@@ -96,7 +99,7 @@ begin
    if ToolBoxFolder=Nil then
     ToolBoxFolder:=QToolBoxGroup.Create(FolderName, Nil);
    Q.FParent:=ToolBoxFolder;
-   ToolBoxFolder.SousElements.Add(Q);
+   ToolBoxFolder.SubElements.Add(Q);
   end;
 end;
 
@@ -123,9 +126,9 @@ begin
     end;
    Loaded.Acces;
    Folder:=Nil;
-   for I:=0 to Loaded.SousElements.Count-1 do
+   for I:=0 to Loaded.SubElements.Count-1 do
     begin
-     Tex:=Loaded.SousElements[I];
+     Tex:=Loaded.SubElements[I];
      if Tex is QTextureFile then
       begin
        Q:=Link1(Folder, Loaded.Name+'/', Tex.Name, 's', Base);
@@ -153,9 +156,9 @@ begin
     end;
    Loaded.Acces;
    Folder:=Nil;
-   for I:=0 to Loaded.SousElements.Count-1 do
+   for I:=0 to Loaded.SubElements.Count-1 do
     begin
-     Tex:=Loaded.SousElements[I];
+     Tex:=Loaded.SubElements[I];
      if Tex is QShader then
       begin
        Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
@@ -174,9 +177,9 @@ var
 begin
  Result:=DestFolder;
  Pak.Acces;
- for I:=0 to Pak.SousElements.Count-1 do
+ for I:=0 to Pak.SubElements.Count-1 do
   begin
-   Q:=Pak.SousElements[I];
+   Q:=Pak.SubElements[I];
    if Q is QPakFolder then
     LinkFolder(ParseRecPak(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName)
    else
@@ -239,7 +242,7 @@ begin
  DebutTravail(0,0);
  try
   Base:=ListBox1.Items[ListBox1.ItemIndex];
-  E:=TQkExplorer(Toolbox.Perform(wm_MessageInterne, wp_TargetExplorer, 0));
+  E:=TQkExplorer(Toolbox.Perform(wm_InternalMessage, wp_TargetExplorer, 0));
   if E<>Nil then
    begin
     Path:=PathAndFile(QuakeDir, Base);
@@ -304,8 +307,8 @@ begin
      Gr:=ClipboardGroup;
      Gr.AddRef(+1);
      try
-      for J:=0 to Q.SousElements.Count-1 do
-       Gr.SousElements.Add(Q.SousElements[J]);
+      for J:=0 to Q.SubElements.Count-1 do
+       Gr.SubElements.Add(Q.SubElements[J]);
       if E.DropObjectsNow(Gr, LoadStr1(623), False) then
        begin
         Close;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -75,7 +78,7 @@ type
     MAJ, Compiled: Boolean;
     FCommentsOk: TBits;
     LastCompileCfgFile: String;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
@@ -227,7 +230,7 @@ begin
  Result:='.qc';
 end;
 
-function QQuakeC.OuvrirFenetre;
+function QQuakeC.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQQuakeC.Create(nOwner);
 end;
@@ -359,7 +362,7 @@ end;
 
  {------------------------}
 
-procedure TFQQuakeC.wmMessageInterne(var Msg: TMessage);
+procedure TFQQuakeC.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_AfficherObjet:

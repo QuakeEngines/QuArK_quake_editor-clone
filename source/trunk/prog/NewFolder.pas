@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -113,7 +116,7 @@ begin
      Exit;
     end;
    AddOns:=MakeAddonsList; try
-   Target:=AddOns.SousElements.FindName(ListView1.Selected.Caption);
+   Target:=AddOns.SubElements.FindName(ListView1.Selected.Caption);
    Target.AddRef(+1);
    finally AddOns.AddRef(-1); end;
    if Target=Nil then
@@ -136,12 +139,12 @@ begin
  ToolBox.AddRef(+1); try
  ToolBox.Specifics.Values['ToolBox']:=Source.GetToolBoxSingleName;
  Folder:=QToolBoxGroup.Create(LoadStr1(5259), ToolBox);
- ToolBox.SousElements.Add(Folder);
+ ToolBox.SubElements.Add(Folder);
  ToolBox.Specifics.Values['Root']:=Folder.Name+Folder.TypeInfo;
 
  if RadioButton3.Checked then
   begin
-   Target.SousElements.Add(ToolBox);
+   Target.SubElements.Add(ToolBox);
    (Target as QFileObject).TrySavingNow;
    AddAddOn(Target);
   end
@@ -153,7 +156,7 @@ begin
    begin
     Gr:=ClipboardGroup;
     Gr.AddRef(+1); try
-    Gr.SousElements.Add(ToolBox);
+    Gr.SubElements.Add(ToolBox);
     Form1.Explorer.DropObjectsNow(Gr, LoadStr1(606), True);
     finally Gr.AddRef(-1); end;
    end;

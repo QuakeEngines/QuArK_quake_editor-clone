@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/07/03 23:17:15  alexander
+set snapshot version
+
 Revision 1.13  2000/06/09 23:30:36  aiv
 Added Image Constants (iiMD3Tag & iiMD3Bone)
 
@@ -98,7 +101,7 @@ const
  ModeFichier    = fmOpenRead      or fmShareDenyWrite;
  ModeFichierEcr = fmOpenReadWrite or fmShareDenyWrite;
 
- ofTvSousElement     = $01;   { all objects in a tree-view except top-level (don't change value, must be 1) }
+ ofTreeViewSubElement     = $01;   { all objects in a tree-view except top-level (don't change value, must be 1) }
  ofTvInvisible       = $02;   { present but invisible in the tree-view }
  ofTvAlreadyExpanded = $04;   { node has been expanded once }
  ofTvExpanded        = $08;   { node is expanded }
@@ -178,10 +181,10 @@ type
  QObject = class
            private
              FSpecifics: TStringList;
-             FSousElements: TQList;
+             FSubElements: TQList;
           {$IFDEF Debug}
              function GetSpecifics : TStringList;
-             function GetSousElements : TQList;
+             function GetSubElements : TQList;
           {$ENDIF}
              function GetTvParent : QObject;
                { Tv for `tree-view; Nil if obj is root in a tree
@@ -205,7 +208,7 @@ type
              FLoading: Boolean; { true while object is being loaded }
              FPyNoParent: Boolean;  { used by polyhedrons }
             {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); dynamic;}
-             procedure Enregistrer(Info: TInfoEnreg1); virtual;
+             procedure SaveFile(Info: TInfoEnreg1); virtual;
                { core function for writing to file, normally overridden,
                  nature of Info varies per file format unit (e.g. QkSin) }
              procedure LoadFile(F: TStream; FSize: Integer); virtual;
@@ -216,7 +219,7 @@ type
              procedure ReadUnformatted(F: TStream; Size: Integer);
              procedure SaveUnformatted(F: TStream);
                { for reading/writing raw data to/from a Data specific,
-                 used in overrides for Load/Enregistrer }
+                 used in overrides for Load/SaveFile }
              procedure FileCrashRecoverHack;
            public
               { propriétés commune aux QObjects }
@@ -231,13 +234,13 @@ type
              procedure LoadAll;
              procedure AccesRec;
              procedure Open(F: TQStream; Taille: Integer);
-             procedure Enregistrer1(Info: TInfoEnreg1);
+             procedure SaveFile1(Info: TInfoEnreg1);
              destructor Destroy; override;
              procedure FixupAllReferences;
              property Specifics: TStringList read {$IFDEF Debug} GetSpecifics; {$ELSE} FSpecifics; {$ENDIF}
              property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
-             property SousElements: TQList read {$IFDEF Debug} GetSousElements; {$ELSE} FSousElements; {$ENDIF}
-             property SousElementsC: TQList read FSousElements;
+             property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
+             property SubElementsC: TQList read FSubElements;
              procedure AddRef(Delta: Integer);
                { incr/decr Py reference count, frees if 0 }
              procedure Acces;
@@ -368,7 +371,7 @@ var
 
 procedure RegisterQObject(Q: QObjectClass; Prior: Char);
 function GetRegisteredQObject(const Ext: String) : QObjectClass;
-function ConstruireQObject(const Name: String; nParent: QObject) : QObject;
+function ConstructQObject(const Name: String; nParent: QObject) : QObject;
 function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
@@ -620,7 +623,7 @@ begin
  Result:=False;
 end;
 
-function ConstruireQObject(const Name: String; nParent: QObject) : QObject;
+function ConstructQObject(const Name: String; nParent: QObject) : QObject;
 var
  I: Integer;
  S: String;
@@ -1145,7 +1148,7 @@ begin
  else*)
   PythonObj.ob_type:=@TyObject_Type;
  FSpecifics:=TStringList.Create;
- FSousElements:=TQList.Create;
+ FSubElements:=TQList.Create;
 end;
 
 destructor QObject.Destroy;
@@ -1159,11 +1162,11 @@ begin
  {$ENDIF}
 {if FFlags and ofTvNode = 0 then}
   QStreamRelease(FNode);
- for I:=0 to FSousElements.Count-1 do
-  with FSousElements[I] do
+ for I:=0 to FSubElements.Count-1 do
+  with FSubElements[I] do
    if FParent=Self then
     FParent:=Nil;
- FSousElements.Free;
+ FSubElements.Free;
  FSpecifics.Free;
  {$IFDEF Debug}
 (*if FFlags and ofFileLink <> 0 then
@@ -1239,8 +1242,8 @@ var
  I: Integer;
 begin
  AccesRec;
- for I:=0 to SousElements.Count-1 do
-  SousElements[I].LoadAll;
+ for I:=0 to SubElements.Count-1 do
+  SubElements[I].LoadAll;
 end;
 
 {procedure QObject.LireEnteteFichier;
@@ -1310,11 +1313,11 @@ begin
  Result:=FSpecifics;
 end;
 
-function QObject.GetSousElements : TQList;
+function QObject.GetSubElements : TQList;
 begin
  if (FFlags and ofSurDisque <> 0) and not FLoading then
   Raise InternalE('GetSousElements');
- Result:=FSousElements;
+ Result:=FSubElements;
 end;
 {$ENDIF}
 
@@ -1343,8 +1346,8 @@ begin
   { adds the size of the loaded data }
  for I:=0 to Specifics.Count-1 do
   Inc(Result, Length(Specifics[I])+SpecSize);
- for I:=0 to SousElements.Count-1 do
-  Inc(Result, SousElements[I].GetObjectSize(Loaded, LoadNow));
+ for I:=0 to SubElements.Count-1 do
+  Inc(Result, SubElements[I].GetObjectSize(Loaded, LoadNow));
 (*if (FFlags and ofSurDisque <> 0) and Loaded then
   if FNode=Nil then  { add the size of the not already loaded data }
    begin     { from a not yet opened file }
@@ -1392,7 +1395,7 @@ begin
    Source.Release;
  end;
  BuildReferences;
- DebutTravail(5442, SousElements.Count);
+ DebutTravail(5442, SubElements.Count);
 end;
 
 procedure QObject.CloseCopying;
@@ -1406,7 +1409,7 @@ begin
   if StreamSize=-1 then
    StreamSize:=Self.Position - Position;  { update the size info }
  FFlags:=FFlags or ofSurDisque;
- SousElements.Clear;
+ SubElements.Clear;
  Specifics.Clear;
 end;*)
 
@@ -1519,9 +1522,9 @@ var
  Q: QObject;
 begin
      { no call to Acces }
- for I:=0 to Parent.SousElementsC.Count-1 do
+ for I:=0 to Parent.SubElementsC.Count-1 do
   begin
-   Q:=Parent.SousElementsC[I];
+   Q:=Parent.SubElementsC[I];
    Q.FixupReference;
    BrowseFixupRef(Q);
   end;
@@ -1696,8 +1699,8 @@ begin
    else
     if Info^.Code <> qsCodeFileLink then
      begin  { a sub-objects }
-      Q:=ConstruireQObject(Name, Self);
-      FSousElements.Add(Q);
+      Q:=ConstructQObject(Name, Self);
+      FSubElements.Add(Q);
       LoadedItem(rf_Private, F, Q, Size);
      end
     else
@@ -1798,7 +1801,7 @@ begin
   else
    begin
     Q.Flags:=Q.Flags or ofWarnBeforeChange;
-    SousElements.Add(Q);
+    SubElements.Add(Q);
    end;
   finally Q.AddRef(-1); end; 
  except
@@ -1882,7 +1885,7 @@ begin
   end;
 end;
 
-procedure QObject.Enregistrer1(Info: TInfoEnreg1);
+procedure QObject.SaveFile1(Info: TInfoEnreg1);
 var
  CheckFormat: Integer;
 begin
@@ -1896,10 +1899,10 @@ begin
     Exit;  { directly copied }
    Acces;
   end;
- Enregistrer(Info);  { otherwise, save normally }
+ SaveFile(Info);  { otherwise, save normally }
 end;
 
-procedure QObject.Enregistrer(Info: TInfoEnreg1);
+procedure QObject.SaveFile(Info: TInfoEnreg1);
 var
  Origin, I, J, FileItemCount, Size, Size2: Integer;
  FileItemInfo, ItemInfo: PFileItemInfo;
@@ -1913,8 +1916,8 @@ begin
     Raise InternalE('Enregistrer '+GetFullName+' '+IntToStr(Format));
    end; 
  {BuildReferences;}
-  DebutTravail(5442, SousElements.Count+1); try
-  FileItemCount:=Specifics.Count + SousElements.Count;
+  DebutTravail(5442, SubElements.Count+1); try
+  FileItemCount:=Specifics.Count + SubElements.Count;
   if FileItemCount > qsShortSizeMax then
    begin
     Size:=RequiredBytesToContainValue(FileItemCount);
@@ -1947,9 +1950,9 @@ begin
     Names:=Names + Copy(S, 1, J);
     Inc(ItemInfo);
    end;
-  for I:=0 to SousElements.Count-1 do
+  for I:=0 to SubElements.Count-1 do
    begin
-    Q:=SousElements[I];
+    Q:=SubElements[I];
     S:=Q.GetFullName;
     J:=Length(S);
     ItemInfo^.NameSize:=J;
@@ -1979,9 +1982,9 @@ begin
     Inc(ItemInfo);
    end;
   ProgresTravail;
-  for I:=0 to SousElements.Count-1 do
+  for I:=0 to SubElements.Count-1 do
    begin
-    Q:=SousElements[I];
+    Q:=SubElements[I];
     if Q.Flags and ofFileLink <> 0 then
      begin
       if Q.Flags and ofModified <> 0 then
@@ -1991,7 +1994,7 @@ begin
     else
      begin
       Size:=F.Position;
-      Q.Enregistrer1(Info);
+      Q.SaveFile1(Info);
       Size:=F.Position - Size;
       if Size > qsShortSizeMax then
        begin
@@ -2104,8 +2107,8 @@ begin
  if FFlags and ofSurDisque <> 0 then Raise InternalE('SetNode');
  {$ENDIF}
  FNode:=nNode;
- FFlags:=(FFlags or (ofTvSousElement or ofTvNode)) xor Ord(ParentNode=Nil);
- if FFlags and (ofFileLink or ofTvSousElement) = ofFileLink or ofTvSousElement then
+ FFlags:=(FFlags or (ofTreeViewSubElement or ofTvNode)) xor Ord(ParentNode=Nil);
+ if FFlags and (ofFileLink or ofTreeViewSubElement) = ofFileLink or ofTreeViewSubElement then
   FNode.OverlayIndex:=0;
 end;
 
@@ -2117,7 +2120,7 @@ end;*)
 
 function QObject.GetTvParent : QObject;
 begin
-{if FFlags and (ofTvSousElement or ofTvNode) = ofTvNode then}
+{if FFlags and (ofTreeViewSubElement or ofTvNode) = ofTvNode then}
  if not Odd(FFlags) then
   Result:=Nil    { because it is a root in an Explorer }
  else
@@ -2127,9 +2130,9 @@ end;
 procedure QObject.SetTvParent(nParent: QObject);
 begin
  if nParent=Nil then
-  FFlags:=FFlags and not ofTvSousElement
+  FFlags:=FFlags and not ofTreeViewSubElement
  else
-  FFlags:=FFlags or ofTvSousElement;
+  FFlags:=FFlags or ofTreeViewSubElement;
  FParent:=nParent;
 end;
 
@@ -2197,7 +2200,7 @@ function QObject.SuivantDansGroupe: QObject;
 var
  I: Integer;
 begin
- with FParent.SousElements do
+ with FParent.SubElements do
   begin
    I:=IndexOf(Self);
    if (I>=0) and (I+1<Count) then
@@ -2212,12 +2215,12 @@ var
  I: Integer;
 begin
  Specifics.Clear;
- SousElements.Clear;
+ SubElements.Clear;
  for I:=0 to Source.Specifics.Count-1 do
   Specifics.Add(Source.Specifics[I]);
- SousElements.Capacity:=Source.SousElements.Count;
- for I:=0 to Source.SousElements.Count-1 do
-  SousElements.Add(Source.SousElements[I].Clone(Self, CopySel));
+ SubElements.Capacity:=Source.SubElements.Count;
+ for I:=0 to Source.SubElements.Count-1 do
+  SubElements.Add(Source.SubElements[I].Clone(Self, CopySel));
 end;
 
 function QObject.Clone(nParent: QObject; CopySel: Boolean) : QObject;
@@ -2463,9 +2466,9 @@ var
  Browse: Boolean;
 begin
  Acces;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Result:=QObject(SousElements[I]);
+   Result:=QObject(SubElements[I]);
    if (Result is WantClass) and (CompareText(Result.Name, nName) = 0) then
     Exit;  { found it }
    if BrowseClass=Nil then
@@ -2488,9 +2491,9 @@ var
  Result: QObject;
 begin
  Acces;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Result:=QObject(SousElements[I]);
+   Result:=QObject(SubElements[I]);
    if (Result is WantClass) and ((nName='') or (CompareText(Result.Name, nName) = 0)) then
     L.Add(Result);  { found it }
    if BrowseClass=Nil then
@@ -2504,7 +2507,7 @@ end;
 
 function QObject.TopLevel : Boolean;
 begin
-{TopLevel:=FFlags and (ofTvSousElement or ofTvNode) = ofTvNode;}
+{TopLevel:=FFlags and (ofTreeViewSubElement or ofTvNode) = ofTvNode;}
  TopLevel:=not Odd(FFlags);
 end;
 
@@ -2516,8 +2519,8 @@ var
 begin
  case Aj of
   asRetire:
-    for I:=0 to SousElementsC.Count-1 do
-     SousElementsC[I].OpDansScene(Aj, PosRel+1);
+    for I:=0 to SubElementsC.Count-1 do
+     SubElementsC[I].OpDansScene(Aj, PosRel+1);
  end;
  if PosRel=0 then
   case Aj of
@@ -2527,13 +2530,13 @@ begin
   end;
  case Aj of
   asAjoute, asDeplace2:
-    for I:=0 to SousElementsC.Count-1 do
-     SousElementsC[I].OpDansScene(Aj, PosRel+1);
+    for I:=0 to SubElementsC.Count-1 do
+     SubElementsC[I].OpDansScene(Aj, PosRel+1);
   asModifieParent:
    if WorkingExplorer<>Nil then
     begin
-     for I:=0 to SousElementsC.Count-1 do
-      SousElementsC[I].OpDansScene(asModifieFrere, MaxInt);
+     for I:=0 to SubElementsC.Count-1 do
+      SubElementsC[I].OpDansScene(asModifieFrere, MaxInt);
      if PosRel = -1 then
       WorkingExplorer.ControlerEtatNoeud(Self);
     end;
@@ -2553,7 +2556,7 @@ begin
      end;
    asAjoute, asDeplace2:
      if WorkingExplorer<>Nil then
-      if Flags and ofTvSousElement = 0 then
+      if Flags and ofTreeViewSubElement = 0 then
        begin  { a root was deleted and a new version was reinserted }
         WorkingExplorer.AjouterElement(Self{, Nil, Nil});
        {if Flags and ofTvNode<>0 then
@@ -2579,15 +2582,15 @@ procedure QObject.ClearAllSelection;
 var
  I: Integer;
 begin
- for I:=0 to SousElementsC.Count-1 do
-  SousElementsC[I].ClearAllSelection;
+ for I:=0 to SubElementsC.Count-1 do
+  SubElementsC[I].ClearAllSelection;
  FSelMult:=smSousSelVide;
 end;
 
 function QObject.IsClosed: Boolean;
 begin
  Result:=Flags and ofTvExpanded = 0;
- if Result and (SousElementsC.Count=0) then
+ if Result and (SubElementsC.Count=0) then
   begin
    Flags:=Flags or ofTvExpanded;
    Result:=False;
@@ -2650,12 +2653,12 @@ begin
   'd': if StrComp(attr, 'dictitems') = 0 then
         begin
          Acces;
-         N:=SousElements.Count;
+         N:=SubElements.Count;
          Result:=PyDict_New;
          for I:=N-1 downto 0 do
           begin
-           o:=@SousElements[I].PythonObj;
-           PyDict_SetItemString(Result, PChar(SousElements[I].GetFullName), o);
+           o:=@SubElements[I].PythonObj;
+           PyDict_SetItemString(Result, PChar(SubElements[I].GetFullName), o);
           end;
          Exit;
         end
@@ -2698,7 +2701,7 @@ begin
   'i': if StrComp(attr, 'itemcount') = 0 then
         begin
          Acces;
-         Result:=PyInt_FromLong(SousElements.Count);
+         Result:=PyInt_FromLong(SubElements.Count);
          Exit;
         end;
   'n': if StrComp(attr, 'name') = 0 then
@@ -2724,11 +2727,11 @@ begin
        else if StrComp(attr, 'subitems') = 0 then
         begin
          Acces;
-         N:=SousElements.Count;
+         N:=SubElements.Count;
          Result:=PyList_New(N);
          for I:=0 to N-1 do
           begin
-           o:=@SousElements[I].PythonObj;
+           o:=@SubElements[I].PythonObj;
            Py_INCREF(o);
            PyList_SetItem(Result, I, o);
           end;

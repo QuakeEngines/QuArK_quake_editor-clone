@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -194,8 +197,8 @@ begin
    if (J>3) and (S[J-2]='[') and (S[J-1]=']') then   { process macro }
     Q.Specifics[I]:=Copy(S, 1, J-3)+'='+Process1(Q, Source, Copy(S, J+1, MaxInt));
   end;
- for I:=0 to Q.SousElements.Count-1 do
-  ProcessBrackets(Q.SousElements[I], Source);
+ for I:=0 to Q.SubElements.Count-1 do
+  ProcessBrackets(Q.SubElements[I], Source);
 end;*)
 
 procedure ProcessMacros(Q, Source: QObject);
@@ -214,8 +217,8 @@ begin
     if (J>3) and (S[J-2]='[') and (S[J-1]=']') then   { process macro }
      Q.Specifics[I]:=Copy(S, 1, J-3)+'='+Process1(Q, Source, Copy(S, J+1, MaxInt));
    end;
-  for I:=0 to Q.SousElements.Count-1 do
-   ProcessMacros(Q.SousElements[I], Source);
+  for I:=0 to Q.SubElements.Count-1 do
+   ProcessMacros(Q.SubElements[I], Source);
 
   S:=Q.Specifics.Values[SpecIncl];
   if S='' then Break;
@@ -247,7 +250,7 @@ begin
    L:=TStringList.Create; try
    L.Text:=S;
    for J:=0 to L.Count-1 do
-    DoIncludeData(Q, Gr.SousElements[I], L[J]);
+    DoIncludeData(Q, Gr.SubElements[I], L[J]);
    finally L.Free; end;
   end;
  S:=Q.Specifics.Values[SpecTexture];
@@ -301,9 +304,9 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
       if ((Arg='') and (Entity.Specifics.IndexOfName(S)>=0))
       or ((Arg<>'') and (CompareText(Entity.Specifics.Values[S],Arg)=0)) then
        begin  { "Entity" has the matching Specific }
-        for J:=0 to Q.SousElements.Count-1 do
+        for J:=0 to Q.SubElements.Count-1 do
          begin
-          Macro:=Q.SousElements[J].Clone(Nil, False); try
+          Macro:=Q.SubElements[J].Clone(Nil, False); try
           ProcessMacros(Macro, Entity);
           MapMacros(Macro);
           finally Macro.Free; end;
@@ -322,9 +325,9 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
         if ((Arg='') and (Test.Specifics.IndexOfName(S)>=0))
         or ((Arg<>'') and (CompareText(Test.Specifics.Values[S],Arg)=0)) then
          begin  { found an entity }
-          for J:=0 to Q.SousElements.Count-1 do
+          for J:=0 to Q.SubElements.Count-1 do
            begin
-            Macro:=Q.SousElements[J].Clone(Nil, False); try
+            Macro:=Q.SubElements[J].Clone(Nil, False); try
             ProcessMacros(Macro, Test);
             MapMacros(Macro);
             finally Macro.Free; end;

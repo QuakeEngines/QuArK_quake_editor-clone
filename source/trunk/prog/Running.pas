@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -56,7 +59,7 @@ type
     Waiter: TThread;
     Directory, FileCfg: String;
     ClearList: TStringList;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure EndOfJob;
   public
   end;
@@ -221,7 +224,7 @@ begin
   SaveFormat:=rf_Default;
  EditorFileName:=MakeEditorFileName(EditObj, TempPath);
  try
-  EditObj.EnregistrerDansFichier(SaveFormat, EditorFileName);
+  EditObj.SaveInFile(SaveFormat, EditorFileName);
   S:=Cmd+' '+EditorFileName;
 
   L:=TStringList.Create; try
@@ -284,10 +287,10 @@ procedure TRunForm.FormActivate(Sender: TObject);
 begin
  OnActivate:=Nil;
  Update;
- PostMessage(Handle, wm_MessageInterne, wp_TriggerFormMessage, 0);
+ PostMessage(Handle, wm_InternalMessage, wp_TriggerFormMessage, 0);
 end;
 
-procedure TRunForm.wmMessageInterne(var Msg: TMessage);
+procedure TRunForm.wmInternalMessage(var Msg: TMessage);
 var
  SI: TStartupInfo;
  PI: TProcessInformation;

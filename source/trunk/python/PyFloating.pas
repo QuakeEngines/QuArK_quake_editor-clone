@@ -41,7 +41,7 @@ type
                    private
                      WndObject: PyControlF;
                      FOnMove, FOnClose: PyObject;
-                     procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                     {procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);}
                     {procedure FormKeyPress(Sender: TObject; var Key: Char);}
                      procedure CloseMe(Sender: TObject);
@@ -139,7 +139,7 @@ begin
  CallNotifyEvent(WndObject, FOnMove, False);
 end;
 
-procedure TPyFloatingWnd.wmMessageInterne(var Msg: TMessage);
+procedure TPyFloatingWnd.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_GetPyControl: Msg.Result:=LongInt(WndObject);

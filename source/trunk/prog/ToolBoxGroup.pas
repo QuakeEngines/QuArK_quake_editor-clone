@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -58,7 +61,7 @@ type
   TFQToolBoxGroup = class(TQForm2)
     procedure FormCreate(Sender: TObject);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr: String; override;
@@ -75,7 +78,7 @@ uses Quarkx;
 
  {------------------------}
 
-function QToolBoxGroup.OuvrirFenetre;
+function QToolBoxGroup.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQToolBoxGroup.Create(nOwner);
 end;
@@ -128,9 +131,9 @@ begin
  if S<>'' then
   begin
    if FDescriptionLeft=0 then
-    for I:=0 to SousElements.Count-1 do
+    for I:=0 to SubElements.Count-1 do
      begin
-      S1:=SousElements[I].Name;
+      S1:=SubElements[I].Name;
       Size.cx:=0;
       GetTextExtentPoint32(DC, PChar(S1), Length(S1), Size);
       Inc(Size.cx, Margin);
@@ -150,7 +153,7 @@ begin
  Result:=(Q is QToolBoxGroup) and inherited AssignObject(Q, State);
 end;
 
-procedure TFQToolBoxGroup.wmMessageInterne(var Msg: TMessage);
+procedure TFQToolBoxGroup.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_EditMsg:

@@ -53,7 +53,7 @@ type
                      FOnClick, FOnDraw: PyObject;
                      FImage1: PyObject;
                      procedure SetImage1(value: PyObject);
-                     procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                      procedure MouseMoveEvt(Sender: TObject; Shift: TShiftState; X, Y: Integer);
                    protected
                      procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -697,7 +697,7 @@ begin
  CallNotifyEvent(ImageObject, FOnDraw, False);
 end;
 
-procedure TPyImageControl.wmMessageInterne(var Msg: TMessage);
+procedure TPyImageControl.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_GetPyControl: Msg.Result:=LongInt(ImageObject);

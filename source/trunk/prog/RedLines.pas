@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -231,7 +234,7 @@ begin
     LineY1:=-LineY1
    else
     Dec(LineY1);
-   PostMessage((Owner as TWinControl).Handle, wm_MessageInterne, wp_MoveRedLine, LineY1);
+   PostMessage((Owner as TWinControl).Handle, wm_InternalMessage, wp_MoveRedLine, LineY1);
    LineY1:=0;
    Repaint;
   end;

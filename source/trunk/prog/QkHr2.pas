@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -40,7 +43,7 @@ uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
 type
  QM8  = class(QTexture2)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function CustomParams : Integer; override;
@@ -51,7 +54,7 @@ type
  QHr2Model = class(QMd2File)
              protected
                procedure LoadFile(F: TStream; FSize: Integer); override;
-               procedure Enregistrer(Info: TInfoEnreg1); override;
+               procedure SaveFile(Info: TInfoEnreg1); override;
              public
                class function TypeInfo: String; override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -151,7 +154,7 @@ begin
  end;
 end;
 
-procedure QM8.Enregistrer(Info: TInfoEnreg1);
+procedure QM8.SaveFile(Info: TInfoEnreg1);
 var
  Header: TM8Header;
  Q2: TQ2MipTex;
@@ -294,17 +297,17 @@ begin
  end;
 end;
 
-procedure QHr2Model.Enregistrer(Info: TInfoEnreg1);
+procedure QHr2Model.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   rf_Siblings: begin  { write the skin files }
      {if Flags and ofSurDisque <> 0 then Exit;
       Root:=Saving_Root;
       Info.TempObject:=Root;
-      for I:=0 to Root.SousElements.Count-1 do
-       if Root.SousElements[I] is QImage then
+      for I:=0 to Root.SubElements.Count-1 do
+       if Root.SubElements[I] is QImage then
         begin
-         SkinObj:=QImage(Root.SousElements[I]);
+         SkinObj:=QImage(Root.SubElements[I]);
          Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
         end;}
      end;

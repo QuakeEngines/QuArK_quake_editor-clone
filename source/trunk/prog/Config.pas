@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -80,7 +83,7 @@ type
     procedure CancelNow;
     procedure InsertNewObj(Sender: TObject);
   protected
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   public
     Explorer: TConfigExplorer;
     FormCfg1: TFormCfg;
@@ -171,7 +174,7 @@ begin
  Gr:=ClipboardGroup;
  Gr.AddRef(+1); try
  Q:=Q.Clone(Nil, False);
- Gr.SousElements.Add(Q);
+ Gr.SubElements.Add(Q);
  Q.Specifics.Values[';desc']:='';
  Explorer.DropObjectsNow(Gr, '', True);
  finally Gr.AddRef(-1); end;
@@ -182,7 +185,7 @@ end;
 (*function TConfigExplorer.AfficherObjet(Parent, Enfant: QObject) : Integer;
 begin
  if Enfant is QConfig then
-  Result:=ofTvSousElement
+  Result:=ofTreeViewSubElement
  else
   Result:=0;
 end;*)
@@ -252,7 +255,7 @@ begin
    Q:=DestSel.FindName(Copy(Source, 1, I-1)+':config');
    if Q=Nil then Break;
    SourceSel:=Q;
-   DestSel:=SourceSel.SousElements;
+   DestSel:=SourceSel.SubElements;
    Delete(Source, 1, I);
   end;
  Explorer.TMSelUnique:=SourceSel; 
@@ -321,7 +324,7 @@ end;
 
 procedure TConfigDlg.FormCfg1Change(Sender: TObject);
 begin
-{PostMessage(Handle, wm_MessageInterne, wp_AfficherInfos, 0);}
+{PostMessage(Handle, wm_InternalMessage, wp_AfficherInfos, 0);}
 {Timer1.Enabled:=False;
  Timer1.Enabled:=True;}
  if FormCfg1.Modified or FormCfg1.InternalEditing then
@@ -330,7 +333,7 @@ begin
   CancelOff;
 end;
 
-procedure TConfigDlg.wmMessageInterne(var Msg: TMessage);
+procedure TConfigDlg.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
  {wp_AfficherInfos: Timer1Timer(Nil);}

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/05/14 20:26:48  alexander
+ToutCharger -> LoadAll
+
 }
 unit Quarkx;
 
@@ -609,7 +612,7 @@ begin
   nName:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@nName]) then
    Exit;
-  with ConstruireQObject(nName, Nil) do
+  with ConstructQObject(nName, Nil) do
    begin
     Result:=@PythonObj;
     Py_INCREF(Result);
@@ -1150,7 +1153,7 @@ begin
     Gr:=ClipboardGroup;
     Gr.AddRef(+1); try
     ClipboardChain(Gr);
-    Result:=QListToPyList(Gr.SousElements);
+    Result:=QListToPyList(Gr.SubElements);
     finally Gr.AddRef(-1); end;
    end
   else
@@ -1172,7 +1175,7 @@ begin
    Exit;
   Gr:=ClipboardGroup;
   Gr.AddRef(+1); try
-  PyListToQList(nList, Gr.SousElements, QObject);
+  PyListToQList(nList, Gr.SubElements, QObject);
   Gr.CopierObjets(False);
   finally Gr.AddRef(-1); end;
   Result:=PyNoResult;
@@ -2198,7 +2201,7 @@ begin
     Q:=L[I];
     S:=Q.Specifics.Values['Root'];
     if S='' then Continue;   { no data }
-    T:=Q.SousElements.FindName(S);
+    T:=Q.SubElements.FindName(S);
     if T=Nil then Continue;   { no data }
     S:=Q.Specifics.Values['ToolBox'];
     obj:=Py_BuildValueX('sO', [PChar(S), @T.PythonObj]);

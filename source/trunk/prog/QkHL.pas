@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -40,7 +43,7 @@ uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
 type
  QTextureHL = class(QTexture1)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure ChargerFin(F: TStream; TailleRestante: Integer); override;
         public
           class function CustomParams : Integer; override;
@@ -118,7 +121,7 @@ begin
  SpecificsAdd(Data);  { "Pal=xxxxx" }
 end;
 
-procedure QTextureHL.Enregistrer(Info: TInfoEnreg1);
+procedure QTextureHL.SaveFile(Info: TInfoEnreg1);
 var
  S: String;
  PalSize: SmallInt;

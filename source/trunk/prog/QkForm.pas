@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -41,17 +44,17 @@ uses Windows, Messages, Classes, SysUtils, Controls, Forms,
      {$IFNDEF NoMarsCaption} marsCap, {$ENDIF} Graphics;
 
 const
- wm_MessageInterne = {wm_User + $73}  $68FF;
+ wm_InternalMessage = {wm_User + $73}  $68FF;
  wp_FormActivate         = 101;
  wp_AfficherInfos        = 102;
- wp_RestaureFocus        = 103;
+ wp_RestoreFocus        = 103;
  wp_AfficherObjet        = 104;
 {wp_SetSelection1        = 105;}
  wp_EditMsg              = 106;
  wp_ObjectModified       = 107;
  wp_ObjectRemoved        = 108;
  wp_SetupChanged         = 109;
- wp_TailleScrollBox      = 110;
+ wp_SizeScrollBox      = 110;
  wp_FormButton           = 111;
  wp_Notebook1Enter       = 112;
  wp_Notebook1Leave       = 113;
@@ -78,7 +81,7 @@ const
  wp_ClickItem            = 136;
  wp_OpenGL               = 137;
 
- tm_DoubleClic           = 91;
+ tm_DoubleClick           = 91;
  tm_BeginDrag            = 92;
  wp_EndDrag              = 93;
  tm_FreeMenu             = 94;
@@ -142,7 +145,7 @@ type
    {procedure wmNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure wmNCActivate(var Msg: TMessage); message WM_NCACTIVATE;
     procedure DefaultHandler(var Msg); override;}   { MARSCAPFIX }
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
    {procedure HideToolbars;
     procedure ShowToolbars;}
     procedure UpdateToolbarSetup;
@@ -271,7 +274,7 @@ var
  I: Integer;
 begin
  for I:=0 to Screen.FormCount-1 do
-  PostMessage(Screen.Forms[I].Handle, wm_MessageInterne, wParam, lParam);
+  PostMessage(Screen.Forms[I].Handle, wm_InternalMessage, wParam, lParam);
 end;
 
 procedure EnvoieMessageFiches(wParam, lParam: Integer);
@@ -279,7 +282,7 @@ var
  I: Integer;
 begin
  for I:=0 to Screen.FormCount-1 do
-  Screen.Forms[I].Perform(wm_MessageInterne, wParam, lParam);
+  Screen.Forms[I].Perform(wm_InternalMessage, wParam, lParam);
 end;
 
 procedure SetMarsCapActive(nActive: Boolean);
@@ -394,7 +397,7 @@ begin
  inherited;
 end;
 
-procedure TQkForm.wmMessageInterne(var Msg: TMessage);
+procedure TQkForm.wmInternalMessage(var Msg: TMessage);
 var
  Control: TWinControl;
  Brush: HBrush;
@@ -404,7 +407,7 @@ var
 {$ENDIF} 
 begin
  case Msg.wParam of
-  wp_RestaureFocus:
+  wp_RestoreFocus:
     begin
      Control:=TWinControl(Msg.lParam);
      if Control.CanFocus then
@@ -722,14 +725,14 @@ begin
     Ac:=Ac.Parent;
    if (Ac<>Nil) and (Ac<>Self) then
     begin  { the form Ac is included in the current form }
-     Result:=Ac.Perform(wm_MessageInterne, wp_EditMsg, lParam);
+     Result:=Ac.Perform(wm_InternalMessage, wp_EditMsg, lParam);
      if Result<>0 then
       Exit;  { perform done }
     end;
   end;
 
   { not processed yet }
- Result:=Perform(wm_MessageInterne, wp_EditMsg, lParam);
+ Result:=Perform(wm_InternalMessage, wp_EditMsg, lParam);
 end;
 
  {---------------------}
@@ -752,7 +755,7 @@ begin
     begin
      if Setup<>Nil then
       begin
-       Result:=Setup.SousElements.FindName(Toolbar.Caption+':config');
+       Result:=Setup.SubElements.FindName(Toolbar.Caption+':config');
        if (Result<>Nil) and (Result.Specifics.IndexOfName(Value)>=0) then
         Exit;  { found it }
       end;
@@ -799,11 +802,11 @@ function tbWriteAny(Toolbar: TToolbar97; const ExtraData: Pointer) : QObject;
 begin
  with PTbInfo(ExtraData)^ do
   begin
-   Result:=Setup.SousElements.FindName(Toolbar.Caption+':config');
+   Result:=Setup.SubElements.FindName(Toolbar.Caption+':config');
    if Result=Nil then
     begin
      Result:=QConfig.Create(Toolbar.Caption, Setup);
-     Setup.SousElements.Add(Result);
+     Setup.SubElements.Add(Result);
     end;
   end;
 end;
@@ -1056,7 +1059,7 @@ begin
      end;
 
   { FSAV } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('V'):
-     Perform(wm_MessageInterne, wp_FileMenu, fm_Save);
+     Perform(wm_InternalMessage, wp_FileMenu, fm_Save);
 
   { FSAN } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('N'):
      begin
@@ -1065,7 +1068,7 @@ begin
      end;
 
   { FSAA } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('A'):
-     Perform(wm_MessageInterne, wp_FileMenu, fm_SaveAsFile);
+     Perform(wm_InternalMessage, wp_FileMenu, fm_SaveAsFile);
 
   { FSAL } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('L'):
      Form1.Saveall1Click(Nil);
@@ -1144,7 +1147,7 @@ begin
            begin
             NomFichier:='';
             ReadFormat:=rf_Default;
-            Flags:=(Flags or ofFileLink) and not (ofModified or ofTvSousElement);
+            Flags:=(Flags or ofFileLink) and not (ofModified or ofTreeViewSubElement);
             OpenStandAloneWindow(Nil, False);
            end;
           finally Q2.AddRef(-1); end;
@@ -1163,7 +1166,7 @@ begin
      OutputDirDlg;
 
   { EXIT } Ord('E')+256*Ord('X')+65536*Ord('I')+16777216*Ord('T'):
-     PostMessage(Handle, wm_MessageInterne, wp_CloseWindow, 0);
+     PostMessage(Handle, wm_InternalMessage, wp_CloseWindow, 0);
 
   { FREE } Ord('F')+256*Ord('R')+65536*Ord('E')+16777216*Ord('E'):
      Form1.LibererMaxMemoire;
@@ -1174,7 +1177,7 @@ begin
   { ASSO } Ord('A')+256*Ord('S')+65536*Ord('S')+16777216*Ord('O'):
      begin
       Q:=LatestConfigInfo(ssGeneral);
-      Q:=Q.SousElements.FindName('File Associations:config');
+      Q:=Q.SubElements.FindName('File Associations:config');
       if Q<>Nil then
        begin
         MakeAssociations(Q);

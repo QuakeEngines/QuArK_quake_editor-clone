@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/05/21 13:11:51  decker_dk
+Find new shaders and misc.
+
 }
 
 unit QkFileObjects;
@@ -88,7 +91,7 @@ type
    {FModified: Boolean;}
     FAttachPanel: TWinControl;
     DefPosition: TRect;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmSysCommand(var Msg: TWMSysCommand); message wm_SysCommand;
     procedure cmSysColorChange(var Msg: TWMSysCommand); message cm_SysColorChange;
   protected
@@ -144,9 +147,9 @@ type
                   function LireEnteteFichierStd(Source: TStream; var SourceTaille: Integer) : Integer;
                   procedure EcrireEnteteFichierStd(TotalSize: Integer; F: TStream);
                   procedure LoadFile(F: TStream; FSize: Integer); override;
-                  procedure Enregistrer(Info: TInfoEnreg1); override;
+                  procedure SaveFile(Info: TInfoEnreg1); override;
                  {function ChargerQuArK(F: TStream; Taille: Integer) : Boolean;
-                  function EnregistrerQuArK(Format: Integer; F: TStream) : Boolean;}
+                  function SaveQuArK(Format: Integer; F: TStream) : Boolean;}
                   function LoadName: String;
                   procedure WriteSiblingsTo(Info1: TInfoEnreg1);
                 public
@@ -173,7 +176,7 @@ type
                   procedure ChangeToObjectGameMode;
                   property ObjectGameCode: Char read GetObjectGameCode write SetObjectGameCode;
                   function NeedObjectGameCode: Char;
-                  procedure EnregistrerDansFichier(Format: Integer; AlternateFile: String);
+                  procedure SaveInFile(Format: Integer; AlternateFile: String);
                   procedure LoadFromStream(F: TStream);
                   function PyGetAttr(attr: PChar) : PyObject; override;
                   function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
@@ -182,7 +185,7 @@ type
  {QQuArKFileObject = class(QFileObject)
                      protected
                        procedure LoadFile(F: TStream; FSize: Integer); override;
-                       procedure Enregistrer(Format: Integer; F: TStream); override;
+                       procedure SaveFile(Format: Integer; F: TStream); override;
                      end;}
   EQObjectFileNotFound = class(Exception);
 
@@ -212,7 +215,7 @@ function SortedFindName(Q: TQList; const nName: String) : QObject;
 function SortedFindFileName(Q: TQList; const nFileName: String) : QFileObject;
 
 procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
-procedure EcrireObjTexte(Self: QObject; L: TStringList; Comment: Boolean);
+procedure ConvertObjsToText(Self: QObject; L: TStringList; Comment: Boolean);
 function EnteteObjTexte(var P: PChar) : Boolean;
 function MakeTempFileName(const Tag: String) : String;
 
@@ -300,7 +303,7 @@ end;
 
 function BuildFileRoot(const theFilename: String; nParent: QObject) : QFileObject;
 begin
- Result:=ConstruireQObject(ExtractFileName(theFilename), nParent) as QFileObject;
+ Result:=ConstructQObject(ExtractFileName(theFilename), nParent) as QFileObject;
  Result.NomFichier:=theFilename;
 (*  { set ReadFormat according to the file extension }
  Result.ReadFormat:=Ord(CodeConstruction)-(Ord('A')-rf_Default); *)
@@ -312,7 +315,7 @@ function OpenFileObjectData(F: TStream; const FullName: String; var Size: LongIn
 var
  Q: QObject;
 begin
- Q:=ConstruireQObject(FullName, nParent);
+ Q:=ConstructQObject(FullName, nParent);
  if not (Q is QFileObject) then
   begin   { error }
    {$IFDEF Debug} Raise InternalE('OpenFileObjectData'); {$ENDIF}
@@ -327,7 +330,7 @@ var
  Origin, Size1: Integer;
 begin
  Origin:=F.Position;
- Q:=ConstruireQObject(FullName, nParent);
+ Q:=ConstructQObject(FullName, nParent);
  try
   Size1:=Size;
   with Q as QFileObject do
@@ -413,7 +416,7 @@ begin
  if GlobalWarnings=Nil then
   begin
    GlobalWarnings:=TStringList.Create;
-  {PostMessage(Form1.Handle, wm_MessageInterne, wp_Warning, 0);}
+  {PostMessage(Form1.Handle, wm_InternalMessage, wp_Warning, 0);}
   end;
  if GlobalWarnings.IndexOf(Texte)<0 then
   GlobalWarnings.Add(Texte);
@@ -764,14 +767,14 @@ begin
    '{': begin
          Lu(1);
          {if IgnoreLevel=0 then}
-          Q:=ConstruireQObject(NameSpec, Level)
+          Q:=ConstructQObject(NameSpec, Level)
          {else
           Q:=Nil};
          {if Q=Nil then
           Inc(IgnoreLevel)
          else
           begin}
-           Level.SousElements.Add(Q);
+           Level.SubElements.Add(Q);
            Level:=Q;
           {end;}
         end;
@@ -845,7 +848,7 @@ begin
  finally FinTravail; end;
 end;
 
-procedure QFileObject.EcrireEnteteFichierStd;
+procedure QFileObject.EcrireEnteteFichierStd(TotalSize: Integer; F: TStream);
 var
  Entete: TEnteteFichierQ;
 begin
@@ -933,11 +936,11 @@ var
 begin
  Info1.Format:=rf_Siblings;
  L:=TQList.Create; try
- L.Capacity:=SousElements.Count;
- for I:=0 to SousElements.Count-1 do
-  L.Add(SousElements[I]);
+ L.Capacity:=SubElements.Count;
+ for I:=0 to SubElements.Count-1 do
+  L.Add(SubElements[I]);
  for I:=0 to L.Count-1 do
-  L[I].Enregistrer1(Info1);
+  L[I].SaveFile1(Info1);
  finally L.Free; end;
 end;
 
@@ -958,13 +961,13 @@ begin
    I:=Length(Path);
    while (I>0) and (Path[I]<>'/') do
     Dec(I);
-   QFileObject(Obj).EnregistrerDansFichier(rf_Default, PathAndFile(BasePath, Copy(Path, I+1, MaxInt)));
+   QFileObject(Obj).SaveInFile(rf_Default, PathAndFile(BasePath, Copy(Path, I+1, MaxInt)));
   end
  else
   inherited;
 end;
 
-procedure QFileObject.EnregistrerDansFichier;
+procedure QFileObject.SaveInFile;
 const
  Granularite = 16384;
 var
@@ -984,7 +987,7 @@ begin
    Info1.BasePath:=ExtractFilePath(NomFichier)
   else
    Info1.BasePath:=ExtractFilePath(AlternateFile);
-  Enregistrer1(Info1);
+  SaveFile1(Info1);
 
   TempFile:=MakeTempFileName(TagToDelete2);
   F:=FileAccessQ(TempFile, [maUnique]);
@@ -993,7 +996,7 @@ begin
   Info1.Format:=Format;
   Info1.F:=F;
   Info1.TransfertSource:=Update;
-  Enregistrer1(Info1);  { write the actual data }
+  SaveFile1(Info1);  { write the actual data }
 
   if Update then
    begin
@@ -1085,11 +1088,11 @@ procedure QFileObject.TrySavingNow;
 begin
  if FFlags and ofFileLink = 0 then
   Raise EErrorFmt(5531, [NomFichier]);
- EnregistrerDansFichier(RecommendFormat, '');
+ SaveInFile(RecommendFormat, '');
 {while EnumObjectWindow(F) do
-  SendMessage(F.Handle, wm_MessageInterne, wp_SetModify, 0);
+  SendMessage(F.Handle, wm_InternalMessage, wp_SetModify, 0);
  if Form1.Explorer.Roots.IndexOf(Self)>=0 then
-  SendMessage(Form1.Handle, wm_MessageInterne, wp_SetModify, 0);}
+  SendMessage(Form1.Handle, wm_InternalMessage, wp_SetModify, 0);}
 end;
 
 procedure QFileObject.TryRenamingNow(const nName: String);
@@ -1101,7 +1104,7 @@ begin
    Name:=nName;
    F:=Nil;
    while EnumObjectWindow(F) do
-    PostMessage(F.Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+    PostMessage(F.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
   end;
 end;
 
@@ -1112,7 +1115,7 @@ begin
   Result:=rf_Default;
 end;
 
-procedure EnregistrerCommeTexte(Level: QObject; L: TStringList; const Indent: String);
+procedure ConvertObjsToTextWithComment(Level: QObject; L: TStringList; const Indent: String);
 const
  Imprimable = [' '..#126] - ['"'];
  NonBinaire = [#13, #10, #9, ' '..#126];
@@ -1130,7 +1133,7 @@ var
 begin
  Level.Acces;
 {Level.BuildReferences;}
- DebutTravail(5443, Level.SousElements.Count+1); try
+ DebutTravail(5443, Level.SubElements.Count+1); try
  for J:=0 to Level.Specifics.Count-1 do
   begin
    S:=Level.Specifics[J];
@@ -1246,16 +1249,16 @@ begin
    L.Add(Arg);
   end;
  ProgresTravail;
- for J:=0 to Level.SousElements.Count-1 do
+ for J:=0 to Level.SubElements.Count-1 do
   begin
-   Q:=Level.SousElements[J];
+   Q:=Level.SubElements[J];
    if Q.Flags and ofFileLink <> 0 then
     L.Add(Indent + Q.Name + Q.TypeInfo + ' = @')
    else
     begin
      L.Add(Indent + Q.Name + Q.TypeInfo +' =');
      L.Add(Indent + '{');
-     EnregistrerCommeTexte(Q, L, Indent+'  ');
+     ConvertObjsToTextWithComment(Q, L, Indent+'  ');
      L.Add(Indent + '}');
     end;
    ProgresTravail;
@@ -1263,7 +1266,7 @@ begin
  finally FinTravail; end;
 end;
 
-procedure EcrireObjTexte(Self: QObject; L: TStringList; Comment: Boolean);
+procedure ConvertObjsToText(Self: QObject; L: TStringList; Comment: Boolean);
 var
  S: String;
 begin
@@ -1277,7 +1280,7 @@ begin
    L.Text:=L.Text;   { #13 --> #13#10 }
   end; 
  L.Add('{');
- EnregistrerCommeTexte(Self, L, '  ');
+ ConvertObjsToTextWithComment(Self, L, '  ');
  L.Add('}');
 end;
 
@@ -1287,7 +1290,7 @@ begin
  Inc(P, 2*SizeOf(LongInt));
 end;
 
-procedure QFileObject.Enregistrer(Info: TInfoEnreg1);
+procedure QFileObject.SaveFile(Info: TInfoEnreg1);
 var
  L: TStringList;
  Origin, Eof: Integer;
@@ -1302,7 +1305,7 @@ begin
        Origin:=F.Position;
        EcrireEnteteFichierStd(0, F);
        Format:=rf_Private;
-       inherited Enregistrer(Info);
+       inherited SaveFile(Info);
        Format:=rf_Default;
        Eof:=F.Position;
        F.Position:=Origin;
@@ -1319,7 +1322,7 @@ begin
      if not Info1.QuArKFileObject then Raise InternalE('rf_AsText without QuArKFileObject');
      { $ENDIF}
      L:=TStringList.Create; try
-     EcrireObjTexte(Self, L, True);
+     ConvertObjsToText(Self, L, True);
      L.SaveToStream(F);
      finally L.Free; end;
     end;
@@ -1328,7 +1331,7 @@ begin
  end;
 end;
 
-(*procedure QQuArKFileObject.Enregistrer;
+(*procedure QQuArKFileObject.SaveFile;
 var
  L: TStringList;
  S: String;
@@ -1339,7 +1342,7 @@ begin
     begin
      Origin:=F.Position;
      EcrireEnteteFichierStd(0, F);
-     inherited Enregistrer(rf_Private, F);
+     inherited SaveFile(rf_Private, F);
      Eof:=F.Position;
      F.Position:=Origin;
      EcrireEnteteFichierStd(Eof-Origin, F);
@@ -1355,7 +1358,7 @@ begin
      L.Add(FmtLoadStr1(5200, [QuarkVersion, Name+TypeInfo]));
      L.Text:=L.Text;   { #13 --> #13#10 }
      L.Add('{');
-     EnregistrerCommeTexte(Self, L, '  ');
+     ConvertObjsToTextWithComment(Self, L, '  ');
      L.Add('}');
      L.SaveToStream(F);
      finally L.Free; end;
@@ -1365,7 +1368,7 @@ begin
  end;
 end;*)
 
-(*function EnregistrerQuArK(Format: Integer; F: TStream) : Boolean;
+(*function SaveQuArK(Format: Integer; F: TStream) : Boolean;
 var
  L: TStringList;
  S: String;
@@ -1377,7 +1380,7 @@ begin
     begin
      Origin:=F.Position;
      EcrireEnteteFichierStd(0, F);
-     Enregistrer(rf_Private, F);
+     SaveFile(rf_Private, F);
      Eof:=F.Position;
      F.Position:=Origin;
      EcrireEnteteFichierStd(Eof-Origin, F);
@@ -1393,7 +1396,7 @@ begin
      L.Add(FmtLoadStr1(5200, [QuarkVersion, Name+TypeInfo]));
      L.Text:=L.Text;   { #13 --> #13#10 }
      L.Add('{');
-     EnregistrerCommeTexte(Self, L, '  ');
+     ConvertObjsToTextWithComment(Self, L, '  ');
      L.Add('}');
      L.SaveToStream(F);
      finally L.Free; end;
@@ -1433,7 +1436,7 @@ procedure QFileObject.Go1(maplist, extracted: PyObject; var FirstMap: String; QC
 begin
 end;
 
-function QFileObject.ObtenirFenetre;
+function QFileObject.ObtenirFenetre(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
 var
  I: Integer;
  Obj: TComponent;
@@ -1475,7 +1478,7 @@ begin
  Result.UpdateMarsCap;
 end;
 
-function QFileObject.OuvrirFenetre;
+function QFileObject.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=Nil;
 end;
@@ -1497,7 +1500,7 @@ begin
  Result.Left:=nParent.Width;
  Result.Align:=alClient;
  Result.Attach(nParent);
- PostMessage(Result.Handle, wm_MessageInterne, wp_FormActivate, 0);
+ PostMessage(Result.Handle, wm_InternalMessage, wp_FormActivate, 0);
 end;
 
 procedure QFileObject.OpenStandAloneWindow(ParentPanel: TWinControl; FullParentPanel: Boolean);
@@ -1547,7 +1550,7 @@ begin
        {Maximize:=False;}
        end;*)
      end;
-    PostMessage(F.Handle, wm_MessageInterne, wp_FormActivate, 0);
+    PostMessage(F.Handle, wm_InternalMessage, wp_FormActivate, 0);
     F.Show;
     if Maximize then
      F.WindowState:=wsMaximized;
@@ -1603,7 +1606,7 @@ var
 begin
  Gr:=ClipboardGroup;
  Gr.AddRef(+1); try
- Gr.SousElements.Add(Self);
+ Gr.SubElements.Add(Self);
  Gr.CopierObjets(False);
  finally Gr.AddRef(-1); end;
 end;
@@ -1757,16 +1760,16 @@ begin
       end;
     end;
    if (SavingTo<>rf_AsText) or Info.QuArKFileObject then
-    FFileObject.EnregistrerDansFichier(SavingTo, '')
+    FFileObject.SaveInFile(SavingTo, '')
    else
     begin  { must wrap into a .qrk to save as text }
      S:=ChangeFileExt(FFileObject.NomFichier, '.qrk');
      Dup:=BuildFileRoot(S, Nil);
      Dup.AddRef(+1); try
-     Dup.SousElements.Add(FFileObject);
+     Dup.SubElements.Add(FFileObject);
      I:=FFileObject.FFlags and ofFileLink; try
      Dec(FFileObject.FFlags, I);  { remove ofFileLink temporarily }
-     Dup.EnregistrerDansFichier(rf_AsText, '');
+     Dup.SaveInFile(rf_AsText, '');
      finally FFileObject.FFlags:=FFileObject.FFlags or I; end;
      finally Dup.AddRef(-1); end;
     end;
@@ -1778,7 +1781,7 @@ begin
   FFileObject.AddRef(-1);
  end;
 {if ParentForm<>Nil then
-  SendMessage(ParentForm.Handle, wm_MessageInterne, wp_SetModify, 0);}
+  SendMessage(ParentForm.Handle, wm_InternalMessage, wp_SetModify, 0);}
  if AddToRecents<>'' then
   AddToRecentFiles(AddToRecents);
 end;
@@ -1895,7 +1898,7 @@ begin
    else
     begin
      Extra:=ValidParentForm(WorkingExplorer);
-     Extra.Perform(wm_MessageInterne, SendMsg, LongInt(Self));
+     Extra.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
     end;
    Q:=Self;
    repeat
@@ -1904,9 +1907,9 @@ begin
       F:=Nil;
       while EnumObjectWindow(F) do
        if F<>Extra then
-        F.Perform(wm_MessageInterne, SendMsg, LongInt(Self));
+        F.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
       if (Form1.Explorer.Roots.Count>0) and (Q=Form1.Explorer.Roots[0]) then
-       Form1.Perform(wm_MessageInterne, SendMsg, LongInt(Self));
+       Form1.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
      end;
     Q:=Q.FParent;
    until Q=Nil;
@@ -1918,7 +1921,7 @@ function QFileObject.FindFile(const nName: String) : QFileObject;
 var
  Q: QObject;
 begin
- Q:=SousElements.FindName(nName);
+ Q:=SubElements.FindName(nName);
  if (Q<>Nil) and (Q is QFileObject) then
   Result:=QFileObject(Q)
  else
@@ -1992,7 +1995,7 @@ begin
       Format:=rf_AsText
      else
       Format:=rf_Default;
-    EnregistrerDansFichier(Format, alt);
+    SaveInFile(Format, alt);
    end;
   Result:=PyNoResult;
  except
@@ -2189,7 +2192,7 @@ begin
    if not (F is TQkForm) then Exit;
    DockForm:=TQkForm(F);
    DockForm.SavePositionTb(S, DockForm<>Self,
-    TControl(DockForm.Perform(wm_MessageInterne, wp_TargetExplorer, 0)));
+    TControl(DockForm.Perform(wm_InternalMessage, wp_TargetExplorer, 0)));
    if Remove and (DockForm<>Self) then
     DockForm.RemoveSubTbs;
   end;
@@ -2205,7 +2208,7 @@ begin
   begin
    DockForm:=ValidParentForm(Self) as TQkForm;
    DockForm.RestorePositionTb(S, DockForm<>Self,
-    TControl(DockForm.Perform(wm_MessageInterne, wp_TargetExplorer, 0)));
+    TControl(DockForm.Perform(wm_InternalMessage, wp_TargetExplorer, 0)));
   end;
 end;
 
@@ -2254,7 +2257,7 @@ begin
     {MainMenu1.UnMerge(MainObjMenu);}
      CopyToolbar(Nil, MenuToolbar);
      if FAttachPanel<>Nil then
-      PostMessage(GetViewForm.Handle, wm_MessageInterne, wp_AfficherObjet, LongInt(FFileObject));
+      PostMessage(GetViewForm.Handle, wm_InternalMessage, wp_AfficherObjet, LongInt(FFileObject));
     end
    else
    {Form1.Menu.UnMerge(MainObjMenu)};
@@ -2280,7 +2283,7 @@ begin
    Menu <> nil, GetWindowLong(Handle, GWL_EXSTYLE));
 end;
 
-procedure TQForm1.wmMessageInterne(var Msg: TMessage);
+procedure TQForm1.wmInternalMessage(var Msg: TMessage);
 var
  Info: TFileObjectClassInfo;
 {S: String;}
@@ -2314,7 +2317,7 @@ begin
         FDisabledAlign:=False;
        end;
       LoadToolbars;
-      PostMessage(Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+      PostMessage(Handle, wm_InternalMessage, wp_AfficherObjet, 0);
      end;
   wp_AfficherInfos, wp_AfficherObjet:
     if FileObject<>Nil then
@@ -2336,7 +2339,7 @@ begin
     Msg.Result:=EditMenuCommand(Msg.lParam);
   wp_ObjectModified:
     if QObject(Msg.lParam)=FileObject then
-     PostMessage(Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+     PostMessage(Handle, wm_InternalMessage, wp_AfficherObjet, 0);
   wp_ObjectRemoved:
     if QObject(Msg.lParam)=FileObject then
      CloseNow;
@@ -2392,7 +2395,7 @@ begin
                 Application.Minimize;
                 Exit;
                end;
-  sc_Maximize, sc_Restore: PostMessage(Handle, wm_MessageInterne, wp_AfficherInfos, 0);
+  sc_Maximize, sc_Restore: PostMessage(Handle, wm_InternalMessage, wp_AfficherInfos, 0);
  end;
  inherited;
 end;
@@ -2410,7 +2413,7 @@ begin
   end;
  if (AskName<>fm_SaveAsFile) and (FAttachPanel<>Nil) then
   begin  { non stand-alone object : saved with parent }
-   GetViewForm.Perform(wm_MessageInterne, wp_FileMenu, AskName);
+   GetViewForm.Perform(wm_InternalMessage, wp_FileMenu, AskName);
    Exit;
   end;
  if (AskName=fm_Save) and (FFileObject.NomFichier='') then
@@ -2443,7 +2446,7 @@ begin
    case MessageDlg(LoadStr1(5211), mtConfirmation, mbYesNoCancel, 0) of
     mrYes: begin
             Explorer:=TQkExplorer(
-             Perform(wm_MessageInterne, wp_TargetExplorer, 0));
+             Perform(wm_InternalMessage, wp_TargetExplorer, 0));
             if Explorer<>Nil then
              Explorer.CloseUndoObjects;
             Save(fm_Save);
@@ -2494,13 +2497,13 @@ begin
  try
   if FAttachPanel<>Nil then
    begin
-    PostMessage(GetViewForm.Handle, wm_MessageInterne, wp_AfficherObjet, LongInt(OldObj));
+    PostMessage(GetViewForm.Handle, wm_InternalMessage, wp_AfficherObjet, LongInt(OldObj));
     FAttachPanel:=Nil;
    end;
   FFileObject.AddRef(-1);
   FFileObject:=Nil;
   if AssignObject(New, WndState) then
-   PostMessage(Handle, wm_MessageInterne, wp_FormActivate, 0)
+   PostMessage(Handle, wm_InternalMessage, wp_FormActivate, 0)
   else
    begin  { must open in another window }
     CloseNow;

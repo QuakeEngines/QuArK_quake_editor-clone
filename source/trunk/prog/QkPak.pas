@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -46,7 +49,7 @@ type
               protected
                 procedure EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream);
                 function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
-                procedure Enregistrer(Info: TInfoEnreg1); override;
+                procedure SaveFile(Info: TInfoEnreg1); override;
                 procedure LoadFile(F: TStream; FSize: Integer); override;
                 procedure SortPakFolder;
               public
@@ -84,7 +87,7 @@ type
 type
   TFQPak = class(TQForm2)
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr: String; override;
@@ -144,7 +147,7 @@ begin
  Result:='.pakfolder';
 end;
 
-function QPakFolder.OuvrirFenetre;
+function QPakFolder.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQPak.Create(nOwner);
 end;
@@ -250,15 +253,15 @@ begin
         repeat
          J:=Pos('/', Chemin);
          if J=0 then Break;
-         nDossier:=Dossier.SousElements.FindName(
+         nDossier:=Dossier.SubElements.FindName(
           Copy(Chemin, 1, J-1) + '.pakfolder');
          if nDossier=Nil then
           begin
            nDossier:=QPakFolder.Create(Copy(Chemin, 1, J-1), Dossier);
           {K:=0;
-           while (K<Dossier.SousElements.Count) and (Dossier.SousElements[K] is QPakFolder) do
+           while (K<Dossier.SubElements.Count) and (Dossier.SubElements[K] is QPakFolder) do
             Inc(K);}
-           Dossier.SousElements.{Insert(K,} Add(nDossier);
+           Dossier.SubElements.{Insert(K,} Add(nDossier);
           end;
          CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
          Delete(Chemin, 1, J);
@@ -266,7 +269,7 @@ begin
         until False;
         F.Position:=PFinEntreePak(P1)^.Position;
         Q:=OpenFileObjectData(F, Chemin, PFinEntreePak(P1)^.Taille, Dossier);
-        Dossier.SousElements.Add(Q);
+        Dossier.SubElements.Add(Q);
         LoadedItem(rf_Default, F, Q, PFinEntreePak(P1)^.Taille);
         Inc(P1, SizeOf(TFinEntreePak));
        end;
@@ -303,10 +306,10 @@ var
  Q: QObject;
  I: Integer;
 begin
- SousElements.Sort(ByPakOrder);
- for I:=0 to SousElements.Count-1 do
+ SubElements.Sort(ByPakOrder);
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if not (Q is QPakFolder) then Break;
    QPakFolder(Q).SortPakFolder;
   end;
@@ -350,7 +353,7 @@ var
  Info1: TPakSibling;
 begin
  Acces;
- DebutTravail(5442, SousElements.Count); try
+ DebutTravail(5442, SubElements.Count); try
  Info1:=TPakSibling.Create; try
  Info1.BaseFolder:=Chemin;
  Info1.Folder:=Self;
@@ -359,9 +362,9 @@ begin
  Info.TempObject:=Info1.TempObject;
  Info.TempObject.AddRef(+1);
  finally Info1.Free; end;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QPakFolder then   { save as folder in the .pak }
     QPakFolder(Q).EcrireEntreesPak(Info, Origine, Chemin+Q.Name+'/', TailleNom, Repertoire)
    else
@@ -370,7 +373,7 @@ begin
      if Length(S)>=TailleNom then  { name too long }
       Raise EErrorFmt(5508, [TailleNom-1, S]);
      Entree.Position:=Info.F.Position-Origine;
-     Q.Enregistrer1(Info);   { save in non-QuArK file format }
+     Q.SaveFile1(Info);   { save in non-QuArK file format }
      Entree.Taille:=Info.F.Position-Origine-Entree.Position;
      Zero:=0;
      Info.F.WriteBuffer(Zero, (-Entree.Taille) and 3);  { align to 4 bytes }
@@ -385,7 +388,7 @@ begin
  finally FinTravail; end;
 end;
 
-procedure QPakFolder.Enregistrer(Info: TInfoEnreg1);
+procedure QPakFolder.SaveFile(Info: TInfoEnreg1);
 var
  Entete: TIntroPakEx;
  Repertoire: TMemoryStream;
@@ -452,14 +455,14 @@ begin
  for I:=1 to Length(PakPath) do
   if PakPath[I] in ['/','\'] then
    begin
-    Folder:=SousElements.FindName(Copy(PakPath, 1, I-1) + '.pakfolder');
+    Folder:=SubElements.FindName(Copy(PakPath, 1, I-1) + '.pakfolder');
     if (Folder=Nil) or not (Folder is QPakFolder) then
      Result:=Nil
     else
      Result:=QPakFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
     Exit;
    end;
- Result:=SousElements.FindName(PakPath) as QFileObject;
+ Result:=SubElements.FindName(PakPath) as QFileObject;
 end;
 
 function QPakFolder.GetFolder(Path: String) : QPakFolder;
@@ -480,11 +483,11 @@ begin
    I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
    J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
    if I>J then I:=J;
-   Folder:=Result.SousElements.FindName(Copy(Path, 1, I-1) + FolderType); {DECKER}
+   Folder:=Result.SubElements.FindName(Copy(Path, 1, I-1) + FolderType); {DECKER}
    if Folder=Nil then
     begin
      Folder:=QPakFolder.Create(Copy(Path, 1, I-1), Result);
-     Result.SousElements.Add(Folder);
+     Result.SubElements.Add(Folder);
     end;
    Result:=Folder as QPakFolder;
    System.Delete(Path, 1, I);
@@ -506,14 +509,14 @@ begin
  PathAndShortName:=Copy(PathAndShortName, I+1, MaxInt);
  if SetName then
   Q.Name:=PathAndShortName;
- Q1:=Folder.SousElements.FindName(PathAndShortName);
+ Q1:=Folder.SubElements.FindName(PathAndShortName);
  if Q1<>Nil then
   begin
-   I:=Folder.SousElements.IndexOf(Q1);
-   Folder.SousElements[I]:=Q;
+   I:=Folder.SubElements.IndexOf(Q1);
+   Folder.SubElements[I]:=Q;
   end
  else
-  Folder.SousElements.Add(Q);
+  Folder.SubElements.Add(Q);
  finally Q.AddRef(-1); end;
 end;
 
@@ -533,15 +536,15 @@ begin
     PathBase[I]:='\';
    end;
  Acces;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QPakFolder then
     Inc(Result, QPakFolder(Q).ExtractTo(PathBase+Q.Name))
    else
     if Q is QFileObject then
      begin
-      QFileObject(Q).EnregistrerDansFichier(rf_Default, PathBase+Q.Name+Q.TypeInfo);
+      QFileObject(Q).SaveInFile(rf_Default, PathBase+Q.Name+Q.TypeInfo);
       Inc(Result);
      end;
   end;
@@ -555,10 +558,10 @@ var
  v: PyObject;
 begin
  Acces;
- DebutTravail(175, SousElements.Count); try
- for I:=0 to SousElements.Count-1 do
+ DebutTravail(175, SubElements.Count); try
+ for I:=0 to SubElements.Count-1 do
   begin
-   Q:=SousElements[I];
+   Q:=SubElements[I];
    if Q is QPakFolder then
     QPakFolder(Q).RecGO1(SubPath+Q.Name+'/', extracted)
    else
@@ -569,7 +572,7 @@ begin
       PyList_Append(extracted, v);
       Py_DECREF(v);
       S:=OutputFile(S);
-      QFileObject(Q).EnregistrerDansFichier(rf_Default, S);
+      QFileObject(Q).SaveInFile(rf_Default, S);
      end;
    ProgresTravail;
   end;
@@ -679,9 +682,9 @@ end;
 var
  Q: QObject;
 begin
- if Gr.SousElements.Count=1 then
+ if Gr.SubElements.Count=1 then
   begin
-   Q:=Gr.SousElements[0];
+   Q:=Gr.SubElements[0];
    if (Q<>Nil) and (Q is QPakFolder) then
     begin
      TMSelUnique:=Q;
@@ -695,7 +698,7 @@ end;*)
 (*function TPakExplorer.AfficherObjet(Parent, Enfant: QObject) : Integer;
 begin
  if Enfant is QPakFolder then
-  Result:=ofTvSousElement
+  Result:=ofTreeViewSubElement
  else
   Result:=0;
 end;*)
@@ -707,7 +710,7 @@ begin
  Result:=(Q is QPakFolder) and inherited AssignObject(Q, State);
 end;
 
-procedure TFQPak.wmMessageInterne(var Msg: TMessage);
+procedure TFQPak.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_EditMsg:

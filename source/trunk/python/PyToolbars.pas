@@ -42,7 +42,7 @@ type
 
   TQkToolbar = class(TToolbar97)
   protected
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   public
     TbObject: PyToolbar;
     constructor Create(AOwner: TComponent); override;
@@ -55,7 +55,7 @@ type
     FPageTabs: Byte;
     procedure SetPageTabs(nPageTabs: Byte);
   protected
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean); override;
     procedure PaintWindow(DC: HDC); override;
@@ -294,7 +294,7 @@ begin
 {Show;}
 end;
 
-procedure TQkToolbar.wmMessageInterne(var Msg: TMessage);
+procedure TQkToolbar.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_UpdateButtons: UpdateButtons;
@@ -341,7 +341,7 @@ begin
  try
   with PyToolbar(self)^ do
    if QkToolbar<>Nil then
-    PostMessage(QkToolbar.Handle, wm_MessageInterne, wp_UpdateButtons, 0);
+    PostMessage(QkToolbar.Handle, wm_InternalMessage, wp_UpdateButtons, 0);
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -1102,7 +1102,7 @@ begin
     Perform(WM_LBUTTONUP, 0, 0);
     UpdateMousePos;
     CurrentMenuButton:=Self;  { to disable immediate re-click on the button }
-    PostMessage(F.Handle, wm_MessageInterne, wp_MenuBtnEnd, Ord(drag));
+    PostMessage(F.Handle, wm_InternalMessage, wp_MenuBtnEnd, Ord(drag));
     Exit;
    end
   else
@@ -1238,12 +1238,12 @@ begin
  if obj=Nil then Exit;
  try
   if obj^.ob_type = PyList_Type then
-   PyListToQList(obj, Result.SousElements, QObject)
+   PyListToQList(obj, Result.SubElements, QObject)
   else
    begin
     Q:=QkObjFromPyObj(obj);
     if Q<>Nil then
-     Result.SousElements.Add(Q);
+     Result.SubElements.Add(Q);
    end;
  finally
   Py_DECREF(obj);
@@ -1254,7 +1254,7 @@ procedure TQkToolbarButton.DoEndDrag;
 var
  callback: PyObject;
 begin
- PostMessage(ValidParentForm(Self).Handle, wm_MessageInterne, wp_EndDrag, 0);
+ PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage, wp_EndDrag, 0);
  UpdateBtn;  { reset Selected }
  if PyObject_HasAttrString(BtnObject, 'onenddrag') then
   begin
@@ -1363,7 +1363,7 @@ begin
  inherited;
 end;
 
-procedure TQkBtnPanel.wmMessageInterne(var Msg: TMessage);
+procedure TQkBtnPanel.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_GetPyControl: Msg.Result:=LongInt(BtnPanelObject);
@@ -1543,7 +1543,7 @@ begin
  try
   with PyControlF(self)^ do
    if QkControl<>Nil then
-    PostMessage((QkControl as TQkBtnPanel).Handle, wm_MessageInterne, wp_UpdateButtons, 0);
+    PostMessage((QkControl as TQkBtnPanel).Handle, wm_InternalMessage, wp_UpdateButtons, 0);
   Result:=PyNoResult;
  except
   EBackToPython;

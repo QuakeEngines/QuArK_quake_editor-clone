@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.6  2000/05/14 20:35:07  alexander
 Tim Smith's fix for compressed TGA's
 
@@ -54,7 +57,7 @@ const
 type
  QTga = class(QImages)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
@@ -276,7 +279,7 @@ begin
  end;
 end;
 
-(*procedure QTga.Enregistrer(Info: TInfoEnreg1);
+(*procedure QTga.SaveFile(Info: TInfoEnreg1);
 var
  Header: TTgaHeader;
  Data: String;
@@ -321,7 +324,7 @@ begin
  end;
 end;*)
 
-procedure QTga.Enregistrer(Info: TInfoEnreg1);
+procedure QTga.SaveFile(Info: TInfoEnreg1);
 type
  PRGB = ^TRGB;
  TRGB = array[0..2] of Byte;

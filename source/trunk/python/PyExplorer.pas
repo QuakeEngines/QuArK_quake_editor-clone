@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/05/14 20:27:53  alexander
+ToutChargerAuto -> LoadAllAuto
+
 }
 unit PyExplorer;
 
@@ -41,7 +44,7 @@ type
                     private
                       FOnSelChange, FOnRootChange, FOnMenu, FOnInsert: PyObject;
                       Flags: Integer;
-                      procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                      procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                       procedure DisplayMenu(DoubleClick: Boolean);
                       procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
                     protected
@@ -184,11 +187,11 @@ begin
   end;
 end;
 
-procedure TPythonExplorer.wmMessageInterne(var Msg: TMessage);
+procedure TPythonExplorer.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_GetPyControl: Msg.Result:=LongInt(ExplorerObject);
-  tm_DoubleClic: DisplayMenu(True);
+  tm_DoubleClick: DisplayMenu(True);
  else
   if not DefControlMessage(Msg) then
    inherited;
@@ -240,7 +243,7 @@ function TPythonExplorer.DropObjectsNow(Gr: QExplorerGroup; const Texte: String;
 var
  callresult, obj: PyObject;
 begin
- obj:=QListToPyList(Gr.SousElements); try
+ obj:=QListToPyList(Gr.SubElements); try
  callresult:=GetPythonValue(ExplorerObject^.FOnDrop, Py_BuildValueX('OOs', [ExplorerObject, obj, PChar(Texte)]), True);
  finally Py_DECREF(obj); end;
  Result:=(callresult<>Nil) and PyObject_IsTrue(callresult);
@@ -258,14 +261,14 @@ begin
    Result:=True;
    Exit;
   end; 
- obj:=QListToPyList(SourceQ.SousElements); try
+ obj:=QListToPyList(SourceQ.SubElements); try
  callresult:=GetPythonValue(FOnInsert, Py_BuildValueX('OO', [ExplorerObject, obj]), True);
  Result:=(callresult<>Nil) and ((callresult=Py_None) or PyObject_IsTrue(callresult));
  Py_XDECREF(callresult);
  if Result then
   begin
-   SourceQ.SousElements.Clear;
-   PyListToQList(obj, SourceQ.SousElements, QObject);
+   SourceQ.SubElements.Clear;
+   PyListToQList(obj, SourceQ.SubElements, QObject);
   end;
  finally Py_DECREF(obj); end;
 end;

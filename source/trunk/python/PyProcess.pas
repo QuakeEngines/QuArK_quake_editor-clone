@@ -98,7 +98,7 @@ type
 function WaiterProc(var Info: TWaiterInfo) : LongInt; stdcall;
 begin
  WaitForSingleObject(Info.self^.Process, INFINITE);
- PostMessage(Form1Handle, wm_MessageInterne, wppn_EndOfProcess, LongInt(@Info));
+ PostMessage(Form1Handle, wm_InternalMessage, wppn_EndOfProcess, LongInt(@Info));
  Result:=0;
 end;
 
@@ -119,7 +119,7 @@ begin
  repeat
 (*if not ReadFile(Pipe, Buffer^.Data[Buffer^.InQueue], 1, Count, Nil) then
    begin  { broken pipe (end of process) }
-    PostMessage(Form1Handle, wm_MessageInterne, wppn_EndOfData, LongInt(@Info));
+    PostMessage(Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
     Result:=0;
     Exit;
    end;
@@ -127,7 +127,7 @@ begin
 
   if not ReadFile(Pipe, InputMsg, SizeOf(InputMsg), DWORD(Count), Nil) then
    begin
-    PostMessage(Form1Handle, wm_MessageInterne, wppn_EndOfData, LongInt(@Info));
+    PostMessage(Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
     Result:=0;
     Exit;
    end;
@@ -144,7 +144,7 @@ begin
     if not Buffer^.Pending then
      begin
       Buffer^.Pending:=True;
-      PostMessage(Form1Handle, wm_MessageInterne, wppn_DataWrite, LongInt(@Info));
+      PostMessage(Form1Handle, wm_InternalMessage, wppn_DataWrite, LongInt(@Info));
      end;
    end;
  until False;

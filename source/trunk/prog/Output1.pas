@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.4  2000/05/07 09:33:02  decker_dk
 Fixed a problem with TGetPakNames
 
@@ -369,12 +372,12 @@ begin
    Q1.AddRef(+1); try
    {Q1.Acces;}
    ProcessMacros(Q1, InternalSpecs);
-   for J:=0 to Q1.SousElements.Count-1 do
+   for J:=0 to Q1.SubElements.Count-1 do
     begin
-     Q:=Q1.SousElements[J];
+     Q:=Q1.SubElements[J];
      if not (Q is QFileObject) then Continue;
      if PakFile=Nil then
-      QFileObject(Q).EnregistrerDansFichier(rf_Default,
+      QFileObject(Q).SaveInFile(rf_Default,
        OutputFile(Q.Name+Q.TypeInfo))
      else
       PakFile.AddFileWithPath(Q.Name, QFileObject(Q.Clone(Nil)), True);
@@ -399,7 +402,7 @@ begin
       end;
     end;
    ProgresTravail;
-   PakFile.EnregistrerDansFichier(rf_Default, PakFileName);
+   PakFile.SaveInFile(rf_Default, PakFileName);
    finally FinTravail; end;
    finally FileList.Free; end;
   end;

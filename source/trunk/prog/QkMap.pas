@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -63,7 +66,7 @@ type
  QMapFile = class(QMap)
             protected
               procedure LoadFile(F: TStream; FSize: Integer); override;
-              procedure Enregistrer(Info: TInfoEnreg1); override;
+              procedure SaveFile(Info: TInfoEnreg1); override;
             public
               class function TypeInfo: String; override;
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -89,7 +92,7 @@ type
     procedure ReadSetupInformation(Level: Integer); override;
   public
     ScrollBox1: TPyMapView;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   end;
 
  {------------------------}
@@ -107,7 +110,7 @@ uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
 
  {------------------------}
 
-function QMap.OuvrirFenetre;
+function QMap.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
   Result:=NewPyForm(Self)
@@ -625,14 +628,14 @@ begin
  try   { L and HullList get freed by finally, regardless of exceptions }
   WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
   Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
-  Racine.SousElements.Add(Entities);
+  Racine.SubElements.Add(Entities);
   MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
-  Racine.SousElements.Add(MapStructure);
+  Racine.SubElements.Add(MapStructure);
   {Rowdy}
   MapStructureB:=Nil;
   (*** commented out by Armin : only create the group if actually needed
    *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
-   *  Racine.SousElements.Add(MapStructureB);
+   *  Racine.SubElements.Add(MapStructureB);
    *)
   {/Rowdy}
   Lire(sEOF);
@@ -697,7 +700,7 @@ begin
        Entite:=TTreeMapEntity.Create(Classname, Entities)
       else
        Entite:=TTreeMapBrush.Create(Classname, Entities);
-      Entities.SousElements.Add(Entite);
+      Entities.SubElements.Add(Entite);
       EntitePoly:=Entite;
       {Rowdy}
       EntiteBezier:=Entite;
@@ -731,7 +734,7 @@ begin
           if EntiteBezier=Nil then
            begin
             MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
-            Racine.SousElements.Add(MapStructureB);
+            Racine.SubElements.Add(MapStructureB);
             EntiteBezier:=MapStructureB;
            end;
           
@@ -754,7 +757,7 @@ begin
           // Y tells us how many control points on each line (width)
 
           B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
-          EntiteBezier.SousElements.Add(B); //&&&
+          EntiteBezier.SubElements.Add(B); //&&&
           B.NomTex:=S;   { here we get the texture-name }
 
           MeshBuf1.W := Round(V5.X);
@@ -794,7 +797,7 @@ begin
         begin
         {/Rowdy}
        P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
-       EntitePoly.SousElements.Add(P);
+       EntitePoly.SubElements.Add(P);
        ContentsFlags:=0;
        while Symbole <> sAccolade2 do  { read the faces }
         begin
@@ -803,7 +806,7 @@ begin
          V[2]:=LireVect(False);
          V[3]:=LireVect(True);
          Surface:=TFace.Create(LoadStr1(139), P);
-         P.SousElements.Add(Surface);
+         P.SubElements.Add(Surface);
          Surface.SetThreePoints(V[1], V[3], V[2]);
          {$IFDEF TexUpperCase}
          S:=LowerCase(S);
@@ -979,10 +982,10 @@ begin
         Delta.X:=0.5*(V[1].X+V[2].X);
         Delta.Y:=0.5*(V[1].Y+V[2].Y);      { center of the 'origin brush' }
         Delta.Z:=0.5*(V[1].Z+V[2].Z);
-        for I:=0 to EntitePoly.SousElements.Count-1 do
-         with EntitePoly.SousElements[I] do
-          for J:=0 to SousElements.Count-1 do
-           with SousElements[J] as TFace do
+        for I:=0 to EntitePoly.SubElements.Count-1 do
+         with EntitePoly.SubElements[I] do
+          for J:=0 to SubElements.Count-1 do
+           with SubElements[J] as TFace do
             if GetThreePoints(V[1], V[2], V[3]) and LoadData then
              begin
               Facteur:=Dot(Normale, Delta);
@@ -1009,7 +1012,7 @@ begin
     begin
      EntitePoly:=TTreeMapSpec(HullList[I]);
      if EntitePoly<>Nil then
-      EntitePoly.SousElements.Add(
+      EntitePoly.SubElements.Add(
        TBSPHull.CreateHull(BSP, I, EntitePoly as TTreeMapGroup));
     end;
   if not WorldSpawn then
@@ -1063,7 +1066,7 @@ begin
       Racine:=TTreeMapBrush.Create('', Self);
       Racine.AddRef(+1); try
       ModeJeu:=OuvrirListeEntites(Racine, Source, Nil);
-      SousElements.Add(Racine);
+      SubElements.Add(Racine);
       Specifics.Values['Root']:=Racine.Name+Racine.TypeInfo;
       ObjectGameCode:=ModeJeu;
       finally Racine.AddRef(-1); end;
@@ -1072,7 +1075,7 @@ begin
  end;
 end;
 
-procedure QMapFile.Enregistrer(Info: TInfoEnreg1);
+procedure QMapFile.SaveFile(Info: TInfoEnreg1);
 var
  Dest, HxStrings: TStringList;
  Racine: QObject;
@@ -1080,7 +1083,7 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      Racine:=SousElements.FindName(Specifics.Values['Root']);
+      Racine:=SubElements.FindName(Specifics.Values['Root']);
       if (Racine=Nil) or not (Racine is TTreeMapBrush) then
        Raise EError(5558);
       Racine.LoadAll;
@@ -1129,7 +1132,7 @@ begin
   ProcessEditMsg(edOpen);
 end;
 
-procedure TFQMap.wmMessageInterne(var Msg: TMessage);
+procedure TFQMap.wmInternalMessage(var Msg: TMessage);
 var
  S: String;
  Min, Max, D: TVect;
@@ -1156,7 +1159,7 @@ begin
    if FileObject=Nil then Exit;
    S:=FileObject.Specifics.Values['Root'];
    if S='' then Exit;  { no data }
-   Racine:=FileObject.SousElements.FindName(S);
+   Racine:=FileObject.SubElements.FindName(S);
    if (Racine=Nil) or not (Racine is TTreeMap) then Exit;  { no data }
    CheckTreeMap(TTreeMap(Racine));
    Racine.ClearAllSelection;

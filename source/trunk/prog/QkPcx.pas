@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -39,7 +42,7 @@ uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages;
 type
  QPcx = class(QImages)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
@@ -210,7 +213,7 @@ begin
  end;
 end;
 
-procedure QPcx.Enregistrer(Info: TInfoEnreg1);
+procedure QPcx.SaveFile(Info: TInfoEnreg1);
 var
  Header: TPcxHeader;
  Size: TPoint;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -281,7 +284,7 @@ begin
   GetMem(SurfaceList, Size1);
   PChar(Surface1):=SurfaceList;
 
-  SousElements.Capacity:=NbFaces;
+  SubElements.Capacity:=NbFaces;
 
   for I:=1 to NbFaces do
    begin
@@ -364,11 +367,11 @@ begin
      with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
       begin
        BspVecs:=@vecs;
-       if miptex>=TextureList.SousElements.Count then
+       if miptex>=TextureList.SubElements.Count then
         begin
          Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
         end;
-       S:=TextureList.SousElements[miptex].Name;
+       S:=TextureList.SubElements[miptex].Name;
       end;
 
         (** Equations to solve :     with (s,s0)=vecs[0] and (t,t0)=vecs[1]
@@ -407,7 +410,7 @@ begin
     TransformationLineaire(P3);
 
     Face:=TFace.Create(IntToStr(I), Self);
-    SousElements.Add(Face);
+    SubElements.Add(Face);
     if Faces^.side<>0 then
      with Face do
       begin
@@ -424,7 +427,7 @@ begin
        end;
     if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
      begin
-      SousElements.Remove(Face);
+      SubElements.Remove(Face);
       Inc(InvFaces); LastError:='Err degenerate'; Continue;
      end;
     Face.Specifics.Add(CannotEditFaceYet+'=1'); 

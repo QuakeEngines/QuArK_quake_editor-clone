@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -60,7 +63,7 @@ type
                 end;
  QRawFileObject = class(QFileObject)
                   protected
-                    procedure Enregistrer(Info: TInfoEnreg1); override;
+                    procedure SaveFile(Info: TInfoEnreg1); override;
                     procedure LoadFile(F: TStream; FSize: Integer); override;
                     procedure SetWriteString(const WriteString: String);
                     function GetDataInfo : TRawDataInfo; virtual; abstract;
@@ -102,7 +105,7 @@ type
     ReadThread, DisplayThread: TRFThread;
     PositionReset: Boolean;
     ThreadErrorMsg: String;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     function GetPlayPosition : Integer;
     procedure SetPlayPosition(nPos: Integer);
     procedure StoppingThreads;
@@ -174,7 +177,7 @@ end;
 
  {------------------------}
 
-function QRawFileObject.OuvrirFenetre;
+function QRawFileObject.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQRawFile.Create(nOwner);
 end;
@@ -186,14 +189,14 @@ begin
  case ReadFormat of
   1: begin  { as stand-alone file }
       Q:=QUnknown.Create('Data', Self);
-      SousElements.Add(Q);
+      SubElements.Add(Q);
       LoadedItem(rf_Default, F, Q, FSize);  { delayed read }
      end;
  else inherited;
  end;
 end;
 
-procedure QRawFileObject.Enregistrer;
+procedure QRawFileObject.SaveFile;
 var
  Src: TStream;
  Taille: Integer;
@@ -215,11 +218,11 @@ var
  Q: QObject;
  I: Integer;
 begin
- Q:=SousElements.FindName('Data');
+ Q:=SubElements.FindName('Data');
  if Q=Nil then
   begin
    Q:=QUnknown.Create('Data', Self);
-   SousElements.Add(Q);
+   SubElements.Add(Q);
   end
  else
   begin
@@ -239,7 +242,7 @@ var
  I: Integer;
 begin
  Data:='';
- Q:=SousElements.FindName('Data');
+ Q:=SubElements.FindName('Data');
  if Q<>Nil then
   begin
    if Q.Flags and ofSurDisque <> 0 then
@@ -264,7 +267,7 @@ end;
 
  {------------------------}
 
-procedure TFQRawFile.wmMessageInterne(var Msg: TMessage);
+procedure TFQRawFile.wmInternalMessage(var Msg: TMessage);
 var
  I: Integer;
 begin

@@ -62,7 +62,7 @@ type
   protected
     FLayoutMgr: TLayoutMgr;
     procedure Resize; override;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -177,13 +177,13 @@ end;
 procedure TQkMainPanel.AlignmentChanged;
 begin
  FRealignPending:=FRealignPending
-  or PostMessage(Handle, wm_MessageInterne, wp_RealignControls, 0);
+  or PostMessage(Handle, wm_InternalMessage, wp_RealignControls, 0);
 end;
 
 procedure TQkMainPanel.MapViewResized;
 begin
  FReorderMapViewsPending:=FReorderMapViewsPending
-  or PostMessage(Handle, wm_MessageInterne, wp_ReorderMapViews, 0);
+  or PostMessage(Handle, wm_InternalMessage, wp_ReorderMapViews, 0);
 end;
 
 function CompareSurface(Item1, Item2: Pointer) : Integer;
@@ -195,7 +195,7 @@ begin
  Result:=S1-S2;
 end;
 
-procedure TQkMainPanel.wmMessageInterne(var Msg: TMessage);
+procedure TQkMainPanel.wmInternalMessage(var Msg: TMessage);
 var
  I: Integer;
  C: TControl;
@@ -342,7 +342,7 @@ begin
      cmdUpdate: Update;
      cmdInternalInvalidate: begin
        Invalidate;
-       Perform(wm_MessageInterne, wp_PyInvalidate, 0);
+       Perform(wm_InternalMessage, wp_PyInvalidate, 0);
       end;
     end;
 end;
@@ -782,7 +782,7 @@ begin
       end
     else
      begin
-      obj:=PyControl(C.Perform(wm_MessageInterne, wp_GetPyControl, 0));
+      obj:=PyControl(C.Perform(wm_InternalMessage, wp_GetPyControl, 0));
       if obj<>Nil then
        begin
         J:=PyObject_Length(Sections[soVertical]);

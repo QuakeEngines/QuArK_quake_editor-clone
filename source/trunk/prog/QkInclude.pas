@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -71,9 +74,9 @@ var
    I: Integer;
    Q, N: QObject;
   begin
-   for I:=0 to Parent.SousElements.Count-1 do
+   for I:=0 to Parent.SubElements.Count-1 do
     begin
-     Q:=Parent.SousElements[I];
+     Q:=Parent.SubElements[I];
      if (FullMatch and (CompareText(Q.Name+Q.TypeInfo, Match) = 0))
      or (not FullMatch and (Q is QIncluded) and (CompareText(Q.Name, InclName) = 0)) then
       begin
@@ -81,7 +84,7 @@ var
        if FullMatch then
         begin
          N:=QIncluded.Create('', Nil);
-         N.SousElements.Add(Q);
+         N.SubElements.Add(Q);
          FindIncludeData1:=N;
         end
        else
@@ -132,14 +135,14 @@ begin
     { copy all data from Q into Target }
    for J:=0 to Q.Specifics.Count-1 do
     Target.Specifics.Add(Q.Specifics[J]);
-   for J:=0 to Q.SousElements.Count-1 do
+   for J:=0 to Q.SubElements.Count-1 do
     begin
-     N:=Q.SousElements[J].Clone(Target, False);
-    {if (IncludePos<0) or (IncludePos>=Target.SousElements.Count) then}
-      Target.SousElements.Add(N)
+     N:=Q.SubElements[J].Clone(Target, False);
+    {if (IncludePos<0) or (IncludePos>=Target.SubElements.Count) then}
+      Target.SubElements.Add(N)
     {else
       begin
-       Target.SousElements.Insert(IncludePos, N);
+       Target.SubElements.Insert(IncludePos, N);
        Inc(IncludePos);
       end};
     end;
@@ -161,7 +164,7 @@ begin
 {if FParent=Nil then
   IncludePos:=-1
  else
-  IncludePos:=FParent.SousElements.IndexOf(Self);}
+  IncludePos:=FParent.SubElements.IndexOf(Self);}
  { this object is immediately removed if DoIncludeData succeeded }
  RemoveReference:=DoIncludeData(FParent, FParent, Name);
 end;*)

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/07/06 02:47:58  alexander
+attempt to improve shader handling
+
 Revision 1.12  2000/06/24 02:50:35  tiglari
 bad solution for adjust w. min. distortion for shaders
 
@@ -106,7 +109,7 @@ type
                  end;
   QShaderFile = class(QWad)
                 protected
-                  procedure Enregistrer(Info: TInfoEnreg1); override;
+                  procedure SaveFile(Info: TInfoEnreg1); override;
                   procedure LoadFile(F: TStream; FSize: Integer); override;
                 public
                   class function TypeInfo: String; override;
@@ -234,9 +237,9 @@ begin
  { examines all shaderstages for existing images }
  if Result=Nil then
  begin
-   for I:=0 to SousElements.Count-1 do
+   for I:=0 to SubElements.Count-1 do
    begin
-     Q:=SousElements[I];
+     Q:=SubElements[I];
      if Q is QShaderStage then
      begin
        { Skip over $lightmap and those not containing images }
@@ -263,7 +266,8 @@ begin
  if Result<>Nil then
  begin
    Size:=Result.GetSize;
-   V[1]:=Size.X; V[2]:=Size.Y;
+   V[1]:=Size.X;
+   V[2]:=Size.Y;
    SetFloatsSpec('Size',V);
  end
  {/tiglari}
@@ -306,9 +310,9 @@ begin
  Acces;
  for I:=0 to Specifics.Count-1 do  { attributes }
   DumpSpec(Specifics[I], chr(vk_Tab));
- for K:=0 to SousElements.Count-1 do  { stages }
+ for K:=0 to SubElements.Count-1 do  { stages }
   begin
-   Q:=SousElements[K];
+   Q:=SubElements[K];
    Q.Acces;
     { stage intro }
    Result:=Result + chr(vk_Tab) + '{'#13#10;
@@ -374,9 +378,9 @@ var
 begin
  Acces;
  SpecialStage:=LoadStr1(5699);
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   S:=SousElements[I].Name;
+   S:=SubElements[I].Name;
     { to do: check for animated stages }
    if (S<>'') and (S[1]<>'$') and (S<>SpecialStage) then
     L.Add(#255+S);   { #255 means it is not a texture name but directly a file name }
@@ -553,7 +557,7 @@ begin
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
        Shader:=QShader.Create(ReadLine, Self);    { new shader object }
-       SousElements.Add(Shader);
+       SubElements.Add(Shader);
        SkipSpaces;
        if Source^<>'{' then SyntaxError;
        Inc(Source);
@@ -565,7 +569,7 @@ begin
          begin   { shader stage }
           Inc(Source);
           Stage:=QShaderStage.Create(ComplexStage, Shader);
-          Shader.SousElements.Add(Stage);
+          Shader.SubElements.Add(Stage);
           repeat
             { read one stage attribute per loop }
            SkipSpaces;
@@ -604,7 +608,8 @@ begin
        { tiglari:  tried to give it a real
          size here but failed.  Now in DefaultImage }
 
-        V[1]:=128; V[2]:=128;
+        V[1]:=128;
+        V[2]:=128;
         SetFloatsSpec('Size',V);
         {/tiglari}
 
@@ -621,7 +626,7 @@ begin
  end;
 end;
 
-procedure QShaderFile.Enregistrer(Info: TInfoEnreg1);
+procedure QShaderFile.SaveFile(Info: TInfoEnreg1);
 var
  I: Integer;
  Q: QObject;
@@ -629,9 +634,9 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      for I:=0 to SousElements.Count-1 do
+      for I:=0 to SubElements.Count-1 do
        begin
-        Q:=SousElements[I];
+        Q:=SubElements[I];
         if Q is QShader then
          begin
            { write this shader definition into the string Data }

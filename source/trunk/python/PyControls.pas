@@ -117,16 +117,16 @@ begin
  else
   if Source is TWinControl then
    begin
-    src:=PyObject(SendMessage(TWinControl(Source).Handle, wm_MessageInterne, wp_GetPyControl, 0));
+    src:=PyObject(SendMessage(TWinControl(Source).Handle, wm_InternalMessage, wp_GetPyControl, 0));
     if src=Nil then
      src:=Py_None;
    end
   else
    src:=Py_None;
- lst:=QListToPyList(DragObject.SousElements);
+ lst:=QListToPyList(DragObject.SubElements);
  args:=Py_BuildValueX('OOiiO', [self, lst, X, Y, src]);
  Py_DECREF(lst);
- if (args<>Nil) and not PostMessage(ValidParentForm(Target).Handle, wm_MessageInterne, wParam, LongInt(args)) then
+ if (args<>Nil) and not PostMessage(ValidParentForm(Target).Handle, wm_InternalMessage, wParam, LongInt(args)) then
   Py_DECREF(args);
 end;
 

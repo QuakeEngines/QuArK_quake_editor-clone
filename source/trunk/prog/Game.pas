@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/06/17 11:21:59  arigo
+minor fix for Decker's hack
+
 Revision 1.11  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -1041,7 +1044,7 @@ begin
   with ListView1.Items.Add do
    begin
     Caption:=L[I];
-    Q:=AddOns.SousElements.FindName(L[I]);
+    Q:=AddOns.SubElements.FindName(L[I]);
     ImageIndex:=LoadGlobalImageList(Q);
     if Q<>Nil then
      begin

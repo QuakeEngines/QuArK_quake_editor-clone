@@ -55,7 +55,7 @@ type
     procedure wmMenuSelect(var Msg: TMessage); message wm_MenuSelect;
     procedure wmInitMenuPopup(var Msg: TMessage); message wm_InitMenuPopup;
     procedure wmCommand(var Msg: TMessage); message wm_Command;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmHelp(var Msg: TMessage); message wm_Help;
     procedure FreeCallbacks;
    {function CreateQkPanel(nParent: TWinControl; nAlign: TAlign; nSize: Integer) : PyControl;}
@@ -180,7 +180,7 @@ begin
     H:=Form1.Handle
    else
     H:=nForm.Handle;
-   PostMessage(H, wm_MessageInterne, wp_ClickItem, Options);
+   PostMessage(H, wm_InternalMessage, wp_ClickItem, Options);
   end;
 end;
 
@@ -608,7 +608,7 @@ begin
           else
            ac:=Nil;
           if ac<>Nil then
-           Result:=PyObject(ac.Perform(wm_MessageInterne, wp_GetPyControl, 0))
+           Result:=PyObject(ac.Perform(wm_InternalMessage, wp_GetPyControl, 0))
           else
            Result:=Nil;
           if Result=Nil then
@@ -1086,7 +1086,7 @@ begin
     end;
    end;
  finally
-  PostMessage(Handle, wm_MessageInterne, wp_FreeMenuHandle, Mnu);
+  PostMessage(Handle, wm_InternalMessage, wp_FreeMenuHandle, Mnu);
  end;
 end;
 
@@ -1184,7 +1184,7 @@ begin
 
 end;*)
 
-procedure TPyForm.wmMessageInterne(var Msg: TMessage);
+procedure TPyForm.wmInternalMessage(var Msg: TMessage);
 var
  I: Integer;
 begin
@@ -1305,7 +1305,7 @@ end;
 begin
  if not DSorting then
   begin
-   PostMessage(Handle, wm_MessageInterne, wp_SortMapViews, 0);
+   PostMessage(Handle, wm_InternalMessage, wp_SortMapViews, 0);
    DSorting:=True;
   end;
 end;}

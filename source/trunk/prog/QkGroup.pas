@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -68,7 +71,7 @@ type
     procedure GoBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
   public
@@ -115,8 +118,8 @@ function CopyToOutside(Gr: QExplorerGroup) : QExplorerGroup;
 begin
  Gr.Acces;
  Result:=Gr.Clone(Nil, False) as QExplorerGroup;
-{for I:=0 to Result.SousElements.Count-1 do
-  ProcessMacros(Result.SousElements[I], Gr.SousElements[I]);}
+{for I:=0 to Result.SubElements.Count-1 do
+  ProcessMacros(Result.SubElements[I], Gr.SubElements[I]);}
  ProcessMacros(Result, Gr);
 end;
 
@@ -200,11 +203,11 @@ var
 begin
  Target.Acces;
  Obj.Name:=Path;
- Q1:=Target.SousElements.FindName(Path);
+ Q1:=Target.SubElements.FindName(Path);
  if Q1=Nil then
-  Target.SousElements.Add(Obj)
+  Target.SubElements.Add(Obj)
  else
-  Target.SousElements[Target.SousElements.IndexOf(Q1)]:=Obj;
+  Target.SubElements[Target.SubElements.IndexOf(Q1)]:=Obj;
 end;*)
 
  {------------------------}
@@ -214,7 +217,7 @@ begin
  Result:='.qrk';
 end;
 
-function QExplorerGroup.OuvrirFenetre;
+function QExplorerGroup.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQGroup.Create(nOwner);
 end;
@@ -253,8 +256,8 @@ begin
  EmptyClipboard;
  SetClipboardData(CF_QObjects, H);
  HasText:=False;
- if SousElements.Count=1 then
-  SousElements[0].CopyExtraData(HasText);
+ if SubElements.Count=1 then
+  SubElements[0].CopyExtraData(HasText);
  if not HasText then
   if Complet or (GetObjectSize(Nil, False) < 16*1024) then
    RenderAsText
@@ -278,7 +281,7 @@ begin
  DelayedClipboardGroup.AddRef(-1);
  DelayedClipboardGroup:=Nil;
  L:=TStringList.Create; try
- EcrireObjTexte(Self, L, False);
+ ConvertObjsToText(Self, L, False);
  Data:=L.Text;
  finally L.Free; end;
  H:=GlobalAlloc(gmem_Moveable or gmem_DDEShare, Length(Data)+1);
@@ -318,28 +321,28 @@ begin
   Links:=Nil;
   Modif:=Nil;
   try
-   for I:=0 to SousElements.Count-1 do
-    with SousElements[I] do
+   for I:=0 to SubElements.Count-1 do
+    with SubElements[I] do
      begin
       Acces;
       if Flags and ofFileLink <> 0 then
        begin
         if Links=Nil then
          Links:=TQList.Create;
-        Links.Add(Self.SousElements[I]);
+        Links.Add(Self.SubElements[I]);
         Flags:=Flags and not ofFileLink;
        end;
       if Flags and ofModified <> 0 then
        begin
         if Modif=Nil then
          Modif:=TQList.Create;
-        Modif.Add(Self.SousElements[I]);
+        Modif.Add(Self.SubElements[I]);
        end;
      end;
    Info1:=TInfoEnreg1.Create; try
    Info1.Format:=rf_Default;
    Info1.F:=F;
-   Enregistrer1(Info1);
+   SaveFile1(Info1);
    finally Info1.Free; end;
   finally
    if Links<>Nil then
@@ -375,8 +378,8 @@ begin
  Result:=False;
  if Q=Nil then
   Exit;
- for I:=0 to SousElements.Count-1 do
-  if ieCanDrop in Q.IsExplorerItem(SousElements[I]) then
+ for I:=0 to SubElements.Count-1 do
+  if ieCanDrop in Q.IsExplorerItem(SubElements[I]) then
    begin
     Result:=True;
     Exit;
@@ -418,11 +421,11 @@ var
  I: Integer;
 begin
  Acces;
- DebutTravail(175, SousElements.Count); try
- for I:=0 to SousElements.Count-1 do
+ DebutTravail(175, SubElements.Count); try
+ for I:=0 to SubElements.Count-1 do
   begin
-   if SousElements[I] is QFileObject then
-    QFileObject(SousElements[I]).Go1(maplist, extracted, FirstMap, QCList);
+   if SubElements[I] is QFileObject then
+    QFileObject(SubElements[I]).Go1(maplist, extracted, FirstMap, QCList);
    ProgresTravail;
   end;
  finally FinTravail; end;
@@ -430,7 +433,7 @@ end;
 
  {------------------------}
 
-procedure TFQGroup.wmMessageInterne(var Msg: TMessage);
+procedure TFQGroup.wmInternalMessage(var Msg: TMessage);
 var
  Q: QObject;
  I, HiddenCount, HiddenSize: Integer;
@@ -442,9 +445,9 @@ begin
       Panel2.Caption:=FmtLoadStr1(5401, [FileObject.Name]);
       HiddenCount:=0;
       HiddenSize:=0;
-      for I:=0 to FileObject.SousElements.Count-1 do
+      for I:=0 to FileObject.SubElements.Count-1 do
        begin
-        Q:=FileObject.SousElements[I];
+        Q:=FileObject.SubElements[I];
         if not (Q is QFileObject) then
          begin
           Inc(HiddenCount);

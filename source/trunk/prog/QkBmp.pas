@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -40,7 +43,7 @@ uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
 type
  QBmp = class(QImages)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
           function ReadDIBData(F: TStream; Taille: Integer) : Boolean;
         public
@@ -114,7 +117,7 @@ begin
      Image:=QBmp.Create(LoadStr1(5138), PasteNow);
      Image.AddRef(+1);
      Image.ReadDIBData(Source, SourceTaille);
-     PasteNow.SousElements.Add(Image);
+     PasteNow.SubElements.Add(Image);
     end;
    finally Source.Free; Image.AddRef(-1); end;
   end;
@@ -232,7 +235,7 @@ begin
  end;
 end;
 
-procedure QBmp.Enregistrer(Info: TInfoEnreg1);
+procedure QBmp.SaveFile(Info: TInfoEnreg1);
 var
  Header: TBitmapFileHeader;
  BmpInfo: TBitmapInfo256;

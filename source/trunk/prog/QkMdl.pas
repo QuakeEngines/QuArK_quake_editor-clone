@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -67,7 +70,7 @@ type
  QMdlFile = class(QModelFile)
             protected
               procedure LoadFile(F: TStream; FSize: Integer); override;
-              procedure Enregistrer(Info: TInfoEnreg1); override;
+              procedure SaveFile(Info: TInfoEnreg1); override;
             public
               class function TypeInfo: String; override;
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -75,7 +78,7 @@ type
  QMd2File = class(QModelFile)
             protected
               procedure LoadFile(F: TStream; FSize: Integer); override;
-              procedure Enregistrer(Info: TInfoEnreg1); override;
+              procedure SaveFile(Info: TInfoEnreg1); override;
               function ReadMd2File(F: TStream; Origine: Integer; const mdl: dmdl_t) : QPackedModel;
             public
               class function TypeInfo: String; override;
@@ -95,7 +98,7 @@ type
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
   public
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   end;
 
  {------------------------}
@@ -108,7 +111,7 @@ uses Setup, Quarkx, PyForms, qmath, QkPcx, Undo, Travail, QkTextures;
 
  {------------------------}
 
-function QModel.OuvrirFenetre;
+function QModel.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
   Result:=NewPyForm(Self)
@@ -159,7 +162,7 @@ begin
  S:=Specifics.Values['Root'];
  if S<>'' then
   begin
-   Q:=SousElements.FindName(S);
+   Q:=SubElements.FindName(S);
    if (Q<>Nil) and (Q is QModelGroup) then
     Result:=QModelGroup(Q);
   end;
@@ -176,7 +179,7 @@ begin
   S:=Name;
  BuildCorrectFileName(S);
  S:=GameModelPath+S+TypeInfo;
- EnregistrerDansFichier(rf_Default, OutputFile(S));
+ SaveInFile(rf_Default, OutputFile(S));
  filename:=PyString_FromString(PChar(S));
  PyList_Append(extracted, filename);
  Py_DECREF(filename);
@@ -203,7 +206,7 @@ function QModelFile.Loaded_Root : QPackedModel;
 begin
  Specifics.Values['FileName']:=ExtractFileName(LoadName);
  Result:=QPackedModel.Create(LoadStr1(2371), Self);
- SousElements.Add(Result);
+ SubElements.Add(Result);
  Specifics.Values['Root']:=Result.Name+Result.TypeInfo;
 end;
 
@@ -215,7 +218,7 @@ var
  S: String;
 begin
  Result:=QPcx.Create(Name, Root);
- Root.SousElements.Add(Result);
+ Root.SubElements.Add(Result);
  Result.SetFloatsSpec('Size', Size);
  S:=Spec1;
  SetLength(S, Length(Spec1) + SizeOf(TPaletteLmp));
@@ -231,7 +234,7 @@ end;
 function QModelFile.Loaded_Frame(Root: QPackedModel; const Name: String) : QFrame;
 begin
  Result:=QFrame.Create(Name, Root);
- Root.SousElements.Add(Result);
+ Root.SubElements.Add(Result);
 end;
 
 function QModelFile.Loaded_SkinFile(Root: QPackedModel; const Name: String) : QImages;
@@ -266,7 +269,7 @@ begin
       Result:=nImage as QImages;
       Result:=Result.Clone(Root, False) as QImages;
      end;
-    Root.SousElements.Add(Result);
+    Root.SubElements.Add(Result);
     Result.Name:=Copy(Name, 1, Length(Name)-Length(nImage.TypeInfo));
     {Result.Flags:=Result.Flags or ofFileLink;}
     Exit;
@@ -535,7 +538,7 @@ begin
  end;
 end;
 
-procedure QMdlFile.Enregistrer(Info: TInfoEnreg1);
+procedure QMdlFile.SaveFile(Info: TInfoEnreg1);
 type
  PVertxArray = ^TVertxArray;
  TVertxArray = array[0..99] of stvert_t;
@@ -596,7 +599,7 @@ begin
  with Info do case Format of
   1: begin  { as stand-alone file }
       Root:=Saving_Root; try
-      DebutTravail(502, Root.SousElements.Count); try
+      DebutTravail(502, Root.SubElements.Count); try
 
       Position0:=F.Position;
       FillChar(mdl, SizeOf(mdl), 0);
@@ -612,10 +615,10 @@ begin
 
         { save skins }
       L:=TList.Create; try
-      for I:=0 to Root.SousElements.Count-1 do
-       if Root.SousElements[I] is QImage then
+      for I:=0 to Root.SubElements.Count-1 do
+       if Root.SubElements[I] is QImage then
         begin
-         SkinObj:=QImage(Root.SousElements[I]);
+         SkinObj:=QImage(Root.SubElements[I]);
          SkinSize:=SkinObj.GetSize;
          if mdl.skinwidth=0 then
           begin
@@ -684,10 +687,10 @@ begin
       Max.Y:=-MaxInt;
       Max.Z:=-MaxInt;
       InputVertexCount:=0;
-      for I:=0 to Root.SousElements.Count-1 do
-       if Root.SousElements[I] is QFrame then
+      for I:=0 to Root.SubElements.Count-1 do
+       if Root.SubElements[I] is QFrame then
         begin
-         FrameObj:=QFrame(Root.SousElements[I]);
+         FrameObj:=QFrame(Root.SubElements[I]);
          J:=FrameObj.GetVertices(CVert);
          if J>0 then
           begin
@@ -1323,7 +1326,7 @@ end;
 
  { --- end of id Software's source code --- }
 
-procedure QMd2File.Enregistrer(Info: TInfoEnreg1);
+procedure QMd2File.SaveFile(Info: TInfoEnreg1);
 type
  TVect_array = array[0..99] of TVect;
  vec3_array_t = array[0..99] of vec3_t;
@@ -1356,10 +1359,10 @@ begin
       if Flags and ofSurDisque <> 0 then Exit;
       Root:=Saving_Root;
       Info.TempObject:=Root;
-      for I:=0 to Root.SousElements.Count-1 do
-       if Root.SousElements[I] is QImage then
+      for I:=0 to Root.SubElements.Count-1 do
+       if Root.SubElements[I] is QImage then
         begin
-         SkinObj:=QImage(Root.SousElements[I]);
+         SkinObj:=QImage(Root.SubElements[I]);
          Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
         end;
      end;
@@ -1379,7 +1382,7 @@ begin
        end;
 
       try
-       DebutTravail(502, Root.SousElements.Count); try
+       DebutTravail(502, Root.SubElements.Count); try
        Position0:=F.Position;
        FillChar(mdl, SizeOf(mdl), 0);
        F.WriteBuffer(mdl, SizeOf(mdl));
@@ -1389,10 +1392,10 @@ begin
 
          { save skins }
        mdl.ofs_skins:=SizeOf(mdl)  {F.Position-Position0};
-       for I:=0 to Root.SousElements.Count-1 do
-        if Root.SousElements[I] is QImage then
+       for I:=0 to Root.SubElements.Count-1 do
+        if Root.SubElements[I] is QImage then
          begin
-          SkinObj:=QImage(Root.SousElements[I]);
+          SkinObj:=QImage(Root.SubElements[I]);
           SkinSize:=SkinObj.GetSize;
           if mdl.skinwidth=0 then
            begin
@@ -1464,10 +1467,10 @@ begin
        FrameData:=Nil;
        NormalesSommets:=Nil;
        try
-        for I:=0 to Root.SousElements.Count-1 do
-         if Root.SousElements[I] is QFrame then
+        for I:=0 to Root.SubElements.Count-1 do
+         if Root.SubElements[I] is QFrame then
           begin
-           FrameObj:=QFrame(Root.SousElements[I]);
+           FrameObj:=QFrame(Root.SubElements[I]);
            K:=FrameObj.GetVertices(CVert);
            vec3_p(CVertArray):=CVert;
            if FrameData=Nil then
@@ -1594,7 +1597,7 @@ begin
  Result:=(Q is QModel) and (State<>cmWindow) and inherited AssignObject(Q, State);
 end;
 
-procedure TFQMdl.wmMessageInterne(var Msg: TMessage);
+procedure TFQMdl.wmInternalMessage(var Msg: TMessage);
 var
  S: String;
 begin

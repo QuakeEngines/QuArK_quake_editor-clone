@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -83,7 +86,7 @@ type
     procedure WMKillFocus(var Message: TMessage); message WM_KILLFOCUS;
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
   (*procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;*)
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     EditInfo: PTVEditing;
     procedure WMPaint(var Message: TMessage); message WM_PAINT;
@@ -242,11 +245,11 @@ var
  J: Integer;
 begin
  if Item.Flags and ofSurDisque = 0 then
-  with Item.SousElements do
+  with Item.SubElements do
    for J:=0 to Count-1 do
     begin
-     Result:=QObject(Item.SousElements[J]);
-     if Result.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+     Result:=QObject(Item.SubElements[J]);
+     if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
       Exit;
     end;
  Result:=Nil;
@@ -265,7 +268,7 @@ begin
  else
   if Source.Flags and ofSurDisque = 0 then
    begin
-    L:=Source.SousElements;
+    L:=Source.SubElements;
     if Source.Flags and ofTvExpanded <> 0 then
      I:=0
     else
@@ -281,7 +284,7 @@ begin
    for J:=I to L.Count-1 do
     begin
      Result:=QObject(L[J]);
-     if Result.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+     if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
       Exit;
     end;
    Result:=Source;
@@ -291,7 +294,7 @@ begin
    if Source=Nil then
     L:=Roots
    else
-    L:=Source.SousElements;
+    L:=Source.SubElements;
    I:=L.IndexOf(Result)+1;
   end;
  if I<L.Count then
@@ -312,23 +315,23 @@ begin
  if Source=Nil then
   L:=Roots
  else
-  L:=Source.SousElements;
+  L:=Source.SubElements;
  I:=L.IndexOf(Result)-1;
  if (Source=Nil) and (I>=0) then
   begin
    Source:=QObject(L[I]);
-   L:=Source.SousElementsC;
+   L:=Source.SubElementsC;
    I:=L.Count-1;
   end;
  while I>=0 do
   begin
    Result:=QObject(L[I]);
-   if Result.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+   if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
     begin
      if Result.Flags and ofTvExpanded = 0 then
       Exit;
      Source:=Result;
-     L:=Result.SousElementsC;
+     L:=Result.SubElementsC;
      I:=L.Count;
     end;
    Dec(I);
@@ -395,7 +398,7 @@ var
    for J:=0 to List.Count-1 do
     begin
      Item:=QObject(List[J]);
-     if Item.Flags and (ofTvSousElement or ofTvInvisible) = Expected then
+     if Item.Flags and (ofTreeViewSubElement or ofTvInvisible) = Expected then
       begin
        Result:=True;
        R.Top:=Y;
@@ -480,7 +483,7 @@ var
             FillRect(DC, R, Brush);
            end;
          Py_XDECREF(Etat.Icon);
-         if (Item.Flags and (ofFileLink or ofTvSousElement) = ofFileLink or ofTvSousElement)
+         if (Item.Flags and (ofFileLink or ofTreeViewSubElement) = ofFileLink or ofTreeViewSubElement)
          and (InternalImages[iiLinkOverlay,0]<>Nil) and (InternalImages[iiLinkOverlay,0]^.ob_type = @TyImage1_Type) then
           with PyImage1(InternalImages[iiLinkOverlay,0])^ do
            ImageList_DrawEx(ImageList^.Handle, Index, DC, X,Y, 16,16, CLR_NONE, CLR_DEFAULT, ILD_TRANSPARENT);
@@ -557,7 +560,7 @@ var
        if Expected=0 then
         SelectObject(DC, Font);
        if (Item.Flags and ofTvExpanded <> 0)
-       and DisplayItems(X+MyTVIndent, Item.SousElements, ofTvSousElement, Etat.Flags) then
+       and DisplayItems(X+MyTVIndent, Item.SubElements, ofTreeViewSubElement, Etat.Flags) then
         Sign:=MinusDC
        else
         if GetFirstTvChild(Item)<>Nil then
@@ -677,7 +680,7 @@ begin
  SelChanged:=True;
  if not SelChangedMsg then
   begin
-   PostMessage(Handle, wm_MessageInterne, wp_SelectionChanged, 0);
+   PostMessage(Handle, wm_InternalMessage, wp_SelectionChanged, 0);
    SelChangedMsg:=True;
    Q:=TMFocus;
    if (Q<>Nil) and (Q.Flags and ofSurDisque <> 0) then
@@ -690,7 +693,7 @@ begin
  SelChanged:=SelChanged or Full;
  if not Inv1 and (Parent<>Nil) then
   begin
-   PostMessage(Handle, wm_MessageInterne, wp_ContentsChanged, 0);
+   PostMessage(Handle, wm_InternalMessage, wp_ContentsChanged, 0);
    Inv1:=True;
   end;
 end;
@@ -727,7 +730,7 @@ begin
    Result:=QObject(Test);
    if NoExpand and (Result.Flags and ofTvExpanded = 0) then Exit;
    Result.Acces;
-   L:=Result.SousElements;
+   L:=Result.SubElements;
   end;
 end;
 
@@ -746,7 +749,7 @@ begin
   begin
    nParent:=nFocused.TvParent;
    if nParent<>Nil then
-    L:=nParent.SousElements
+    L:=nParent.SubElements
    else
     L:=Roots;
    FFocusList.Add(TObject(L.IndexOf(nFocused)));
@@ -805,7 +808,7 @@ function TMyTreeView.EffacerSelection;
    Result:=Odd(Sm);
    T.SelMult:=smNonSel or smSousSelVide;
    if Sm and smSousSelVide = 0 then
-    with T.SousElementsC do
+    with T.SubElementsC do
      for I:=0 to Count-1 do
       begin
        Q:=Items[I];
@@ -864,8 +867,8 @@ var
      end;
     if Test.SelMult=smSpecial then
      begin
-      if (TTreeMapGroup(Test).SelectedIndex<Test.SousElementsC.Count)
-      and (Test.SousElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
+      if (TTreeMapGroup(Test).SelectedIndex<Test.SubElementsC.Count)
+      and (Test.SubElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
        Test:=TTreeMapGroup(Test).SelectedObject
       else
        begin
@@ -877,9 +880,9 @@ var
      Break;
    until False;
    Result:=ssiNoSelection;
-   for I:=0 to Test.SousElementsC.Count-1 do
+   for I:=0 to Test.SubElementsC.Count-1 do
     begin
-     Q:=Test.SousElementsC[I];
+     Q:=Test.SubElementsC[I];
      if Q.SelMult<>smSousSelVide then
       case Enum(Q) of
        -1: ;
@@ -897,7 +900,7 @@ var
     if (Result>0) and (Test is TTreeMapGroup) then
      begin
       TTreeMapGroup(Test).SelectedIndex:=Result-1;
-      TTreeMapGroup(Test).SelectedObject:=Test.SousElementsC[Result-1];
+      TTreeMapGroup(Test).SelectedObject:=Test.SubElementsC[Result-1];
       Test.SelMult:=smSpecial;
      end;
   end;
@@ -932,7 +935,7 @@ procedure TMyTreeView.CheckInternalState;
        Err('V')
       else
        Err('S');
-     RecEmptyCheck(Test.SousElementsC, Nil);
+     RecEmptyCheck(Test.SubElementsC, Nil);
     end;
   end;
   procedure RecCheck(L: TQList; TopLevel: Boolean);
@@ -953,19 +956,19 @@ procedure TMyTreeView.CheckInternalState;
      while Test.SelMult = smSpecial do
       begin
        if not (Test is TTreeMapGroup) then Err('G');
-       if (TTreeMapGroup(Test).SelectedIndex<Test.SousElementsC.Count)
-       and (Test.SousElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
+       if (TTreeMapGroup(Test).SelectedIndex<Test.SubElementsC.Count)
+       and (Test.SubElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
         begin
-         RecEmptyCheck(Test.SousElementsC, TTreeMapGroup(Test).SelectedObject);
+         RecEmptyCheck(Test.SubElementsC, TTreeMapGroup(Test).SelectedObject);
          Test:=TTreeMapGroup(Test).SelectedObject;
         end
        else
         Break;
       end;
      if Test.SelMult and smSousSelVide <> 0 then
-      RecEmptyCheck(Test.SousElementsC, Nil)
+      RecEmptyCheck(Test.SubElementsC, Nil)
      else
-      RecCheck(Test.SousElementsC, False);
+      RecCheck(Test.SubElementsC, False);
     end;
   end;
 begin
@@ -1001,8 +1004,8 @@ begin
       I:=-1
      else
       if (Test.SelMult=smSpecial)
-      and (TTreeMapGroup(Test).SelectedIndex<Test.SousElementsC.Count)
-      and (Test.SousElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
+      and (TTreeMapGroup(Test).SelectedIndex<Test.SubElementsC.Count)
+      and (Test.SubElementsC[TTreeMapGroup(Test).SelectedIndex]=TTreeMapGroup(Test).SelectedObject) then
        if I>=TTreeMapGroup(Test).SelectedIndex then
         I:=-1
        else
@@ -1013,18 +1016,18 @@ begin
       else
        begin
         Test2:=Nil;
-        for J:=I+1 to Test.SousElementsC.Count-1 do
-         if Odd(Test.SousElementsC[J].SelMult) then
+        for J:=I+1 to Test.SubElementsC.Count-1 do
+         if Odd(Test.SubElementsC[J].SelMult) then
           if Test2=Nil then
            begin
             if I>=0 then   { another item was previously selected }
              begin
-              Q:=Test.SousElementsC[J];
+              Q:=Test.SubElementsC[J];
               Test.SelMult:=0;
               EnumSel:=True;
               Exit;
              end;
-            Test2:=Test.SousElementsC[J];
+            Test2:=Test.SubElementsC[J];
             TTreeMapGroup(Test).SelectedIndex:=J;
            end
           else
@@ -1050,13 +1053,13 @@ begin
      if Test.SelMult=0 then   { if neither smSel nor smSousElVide are set }
       repeat   { looking for an item in this group }
        Inc(I);
-       if I>=Test.SousElementsC.Count then
+       if I>=Test.SubElementsC.Count then
         begin
          I:=-1;
          Break;
         end;
-       Test2:=Test.SousElementsC[I];
-      until Odd(Test2.Flags)   { ofTvSousElement must be set }
+       Test2:=Test.SubElementsC[I];
+      until Odd(Test2.Flags)   { ofTreeViewSubElement must be set }
      else
       I:=-1;   { we know there is no selected item in this group }
    if I>=0 then
@@ -1074,7 +1077,7 @@ begin
    if Test=Nil then  { Test was top-level }
     TestList:=Roots
    else
-    TestList:=Test.SousElementsC;
+    TestList:=Test.SubElementsC;
    I:=TestList.IndexOf(Ancien);
   until False;
   Inc(Niveau);   { we entered a new subgroup }
@@ -1092,7 +1095,7 @@ begin
   begin
    if Q.Flags and ofTvInvisible <> 0 then Exit;
    Test:=Q.FParent;
-   if (Test=Nil) or (Test.SousElements.IndexOf(Q)<0) then Exit;
+   if (Test=Nil) or (Test.SubElements.IndexOf(Q)<0) then Exit;
    Q:=Test;
   end;
  Result:=Roots.IndexOf(Q)>=0;
@@ -1107,18 +1110,18 @@ begin
  for I:=0 to L.Count-1 do
   begin
    Q:=QObject(L[I]);
-   case (Q.Flags and (ofTvExpanded or ofTvSousElement or ofTvInvisible)) or Ignore of
-    ofTvSousElement: Inc(Result);
-    ofTvSousElement or ofTvExpanded:
+   case (Q.Flags and (ofTvExpanded or ofTreeViewSubElement or ofTvInvisible)) or Ignore of
+    ofTreeViewSubElement: Inc(Result);
+    ofTreeViewSubElement or ofTvExpanded:
       begin
        Q.Acces;
-       Inc(Result, 1+CountVisibleItems(Q.SousElements, 0));
+       Inc(Result, 1+CountVisibleItems(Q.SubElements, 0));
       end; 
    end;
   end;
 end;
 
-procedure TMyTreeView.wmMessageInterne(var Msg: TMessage);
+procedure TMyTreeView.wmInternalMessage(var Msg: TMessage);
 var
  Item: QObject;
  S: String;
@@ -1129,7 +1132,7 @@ begin
     begin
      CancelMouseClicking(True);
      Inv1:=False;
-     VertScrollBar.Range:=CountVisibleItems(Roots, ofTvSousElement)*MyTVLineStep;
+     VertScrollBar.Range:=CountVisibleItems(Roots, ofTreeViewSubElement)*MyTVLineStep;
      Repaint;
     end;
   wp_InPlaceEditClose:
@@ -1173,7 +1176,7 @@ end;
 
 procedure TMyTreeView.EndEdit(Accept: Boolean);
 begin
- Perform(wm_MessageInterne, wp_InPlaceEditClose, Ord(Accept));
+ Perform(wm_InternalMessage, wp_InPlaceEditClose, Ord(Accept));
 end;
 
 procedure TMyTreeView.SelectOneChild(Q: QObject);
@@ -1385,7 +1388,7 @@ begin
    if (ssDouble in Shift) and Odd(Q.SelMult) then
     begin
      CancelMouseClicking(False);
-     PostMessage(Handle, wm_MessageInterne, tm_DoubleClic, 0);
+     PostMessage(Handle, wm_InternalMessage, tm_DoubleClick, 0);
      Exit;
     end;
    ChangingStart(Q, Shift);
@@ -1513,10 +1516,10 @@ begin
  if Q.Flags and ofTvExpanded <> 0 then
   begin
    Expanding(Q);
-   for I:=0 to Q.SousElements.Count-1 do
+   for I:=0 to Q.SubElements.Count-1 do
     begin
-     Test:=QObject(Q.SousElements[I]);
-     if Test.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+     Test:=QObject(Q.SubElements[I]);
+     if Test.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
       begin
        Test.Flags:=Test.Flags and not ofTvExpanded;
        Last:=Test;
@@ -1534,7 +1537,7 @@ begin
    if Q.SelMult=smNonSel then
     Q.SetSelMult;  { sub-items were selected }*)
   end;
- Perform(wm_MessageInterne, wp_ContentsChanged, 0);
+ Perform(wm_InternalMessage, wp_ContentsChanged, 0);
  MakeVisible(Q, Last);
 end;
 
@@ -1551,9 +1554,9 @@ begin
     begin
      Test.Acces;
      Inc(Level);
-     for I:=0 to Test.SousElements.Count-1 do
+     for I:=0 to Test.SubElements.Count-1 do
       begin
-       Q:=QObject(Test.SousElements[I]);
+       Q:=QObject(Test.SubElements[I]);
        if Odd(Q.Flags) and SearchNode1(Q, LookFor, Index, Level) then
         begin
          Result:=True;
@@ -1630,7 +1633,7 @@ begin
     begin
      Q.SelMult:=smSousSelVide;
      if Q.Flags and ofSurDisque = 0 then
-      ClearSelection1(Q.SousElements);
+      ClearSelection1(Q.SubElements);
     end;
   end;
 end;
@@ -1639,7 +1642,7 @@ procedure TMyTreeView.ClearSelection;
 begin
  ClearSelection1(Roots);
  Invalidate;
- PostMessage(Handle, wm_MessageInterne, wp_SelectionChanged, 0);
+ PostMessage(Handle, wm_InternalMessage, wp_SelectionChanged, 0);
 end;*)
 
 procedure TMyTreeView.SetFocused(nFocused: QObject);
@@ -1768,10 +1771,10 @@ procedure TMyTreeView.KeyDown(var Key: Word; Shift: TShiftState);
    if GetFirstTvChild(Q)=Nil then Exit;
    Q.Flags:=Q.Flags or ofTvExpanded;
    Expanding(Q);
-   for I:=0 to Q.SousElements.Count-1 do
+   for I:=0 to Q.SubElements.Count-1 do
     begin
-     Test:=QObject(Q.SousElements[I]);
-     if Test.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+     Test:=QObject(Q.SubElements[I]);
+     if Test.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
       ExpandAllRec(Test);
     end;
   end;
@@ -1810,7 +1813,7 @@ begin
   vk_Add: Right(False);
   vk_Multiply: ExpandAll;
   vk_Return: begin
-              PostMessage(Handle, wm_MessageInterne, tm_DoubleClic, 0);
+              PostMessage(Handle, wm_InternalMessage, tm_DoubleClick, 0);
               Key:=0;
              end;
  end;
@@ -1827,7 +1830,7 @@ end;
 function TMyTVEnterEdit.Cancel : Boolean;
 begin
  inherited Cancel;
- PostMessage(Parent.Handle, wm_MessageInterne, wp_InPlaceEditClose, 0);
+ PostMessage(Parent.Handle, wm_InternalMessage, wp_InPlaceEditClose, 0);
  Cancel:=True;
 end;
 
@@ -1837,7 +1840,7 @@ var
 begin
  HadColor2:=Editing;
  inherited;
- PostMessage(Parent.Handle, wm_MessageInterne, wp_InPlaceEditClose, Ord(HadColor2));
+ PostMessage(Parent.Handle, wm_InternalMessage, wp_InPlaceEditClose, Ord(HadColor2));
 end;
 
  {------------------------}

@@ -216,7 +216,7 @@ begin
     if Components[J] is TPyMapView then
      with TPyMapView(Components[J]) do
       if Scene is TGLSceneProxy then
-       Perform(wm_MessageInterne, wp_PyInvalidate, 0);
+       Perform(wm_InternalMessage, wp_PyInvalidate, 0);
 
  with TTextureManager.GetInstance do
   begin
@@ -347,7 +347,7 @@ begin
 {Inc(VersionGLSceneObject);}
  CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
  if not Ready then
-  PostMessage(Wnd, wm_MessageInterne, wp_OpenGL, 0);
+  PostMessage(Wnd, wm_InternalMessage, wp_OpenGL, 0);
 
   { set up fog }
  if Fog then

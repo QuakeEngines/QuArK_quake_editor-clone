@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -50,7 +53,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
    {ObjectChanged: Boolean;}
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
@@ -68,7 +71,7 @@ uses QkQuakeCtx;
 
  {------------------------}
 
-function QFormObject.OuvrirFenetre;
+function QFormObject.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQFormVw.Create(nOwner);
 end;
@@ -90,7 +93,7 @@ begin
   Result:=(FileObject as QFormObject).GetConfigStr1;
 end;
 
-procedure TFQFormVw.wmMessageInterne(var Msg: TMessage);
+procedure TFQFormVw.wmInternalMessage(var Msg: TMessage);
 var
  Q: QObject;
  L, List: TQList;

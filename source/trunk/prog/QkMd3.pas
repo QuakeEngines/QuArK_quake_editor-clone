@@ -1,7 +1,32 @@
+(**************************************************************************
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) 1996-99 Armin Rigo
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Contact the author Armin Rigo by e-mail: arigo@planetquake.com
+or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
+See also http://www.planetquake.com/quark
+**************************************************************************)
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/10 09:17:53  alexander
+added cvs header
+
 
 }
 unit QkMd3;
@@ -19,15 +44,10 @@ type
     BoneFrame_num: Longint;        //number of BoneFrames
     Tag_num: Longint;              //number of 'tags' per BoneFrame
     Mesh_num: Longint;             //number of meshes/skins
-    MaxSkin_num: Longint;          //maximum number of unique skins
-                                   //used in md3 file
-    HeaderLength: Longint;         //always equal to the length of
-                                   //this header
-    Tag_Start: Longint;            //starting position of
-                                   //tag-structures
-    Tag_End: Longint;              //ending position of
-                                   //tag-structures/starting
-                                   //position of mesh-structures
+    MaxSkin_num: Longint;          //maximum number of unique skins used in md3 file
+    HeaderLength: Longint;         //always equal to the length of this header
+    Tag_Start: Longint;            //starting position of tag-structures
+    Tag_End: Longint;              //ending position of tag-structures/starting position of mesh-structures
     FileSize: Longint;             //size of file
   end;
   {
@@ -90,21 +110,14 @@ type
   TMD3Mesh = packed record
     ID: array[1..4] of char;          //id, must be IDP3
     Name: array[1..68] of char;       //name of mesh
-    MeshFrame_num: Longint;           //number of meshframes
-                                      //in mesh
+    MeshFrame_num: Longint;           //number of meshframes in mesh
     Skin_num: Longint;                //number of skins in mesh
     Vertex_num: Longint;              //number of vertices
     Triangle_num: Longint;            //number of Triangles
-    Triangle_Start: Longint;          //starting position of
-                                      //Triangle data, relative
-                                      //to start of Mesh_Header
+    Triangle_Start: Longint;          //starting position of Triangle data, relative to start of Mesh_Header
     HeaderSize: Longint;              //size of header
-    TexVec_Start: Longint;            //starting position of
-                                      //texvector data, relative
-                                      //to start of Mesh_Header
-    Vertex_Start: Longint;            //starting position of
-                                      //vertex data,relative
-                                      //to start of Mesh_Header
+    TexVec_Start: Longint;            //starting position of texvector data, relative to start of Mesh_Header
+    Vertex_Start: Longint;            //starting position of vertex data, relative to start of Mesh_Header
     MeshSize: Longint;                //size of mesh
   end;
   {
@@ -177,7 +190,7 @@ type
  QMd3File = class(QModelFile)
             protected
               procedure LoadFile(F: TStream; Taille: Integer); override;
-              procedure Enregistrer(Info: TInfoEnreg1); override;
+              procedure SaveFile(Info: TInfoEnreg1); override;
               Procedure ReadMesh(fs: TStream; Root: QPackedModel);
             public
               class function TypeInfo: String; override;
@@ -274,7 +287,7 @@ begin
         Result:=nImage as QImages;
         Result:=Result.Clone(Root, False) as QImages;
       end;
-      Root.SousElements.Add(Result);
+      Root.SubElements.Add(Result);
       Result.Name:=Copy(Name, 1, Length(Name)-Length(nImage.TypeInfo));
       Exit;
     finally
@@ -320,14 +333,16 @@ begin
   sizeset:=false;
   size.x:=0;
   size.y:=0;
-  for i:=1 to mhead.skin_Num do begin
+  for i:=1 to mhead.skin_Num do
+  begin
     fs.readbuffer(tex, sizeof(tex));
     Skin:=Loaded_MD3SkinFile(root, string(tex.Name));
     if skin=nil then
       skin:=Loaded_MD3SkinFile(root, ChangeFileExt(string(tex.Name),'.jpg'));
     if skin=nil then
       GlobalWarning(FmtLoadStr1(5575, [string(tex.Name)+' or '+ChangeFileExt(tex.Name,'.jpg'), LoadName]));
-    if (not sizeset)and(skin<>nil) then begin
+    if (not sizeset) and (skin<>nil) then
+    begin
       Size:=Skin.GetSize;
       Sizeset:=true;
     end;
@@ -357,11 +372,15 @@ begin
     SetLength(S, Length(Spec1)+mhead.Triangle_num*SizeOf(TComponentTris));
     Tris2:=Tris;
     PChar(CTris):=PChar(S)+Length(Spec1);
-    for I:=1 to mhead.Triangle_num do begin
-      for J:=0 to 2 do begin
-        with CTris^[J] do begin
+    for I:=1 to mhead.Triangle_num do
+    begin
+      for J:=0 to 2 do
+      begin
+        with CTris^[J] do
+        begin
           VertexNo:=Tris2^.triangle[J+1];
-          with texCoord^[Tris2^.triangle[J+1]] do begin
+          with texCoord^[Tris2^.triangle[J+1]] do
+          begin
             S:=round(vec[1]*Size.X);
             T:=round(vec[2]*Size.Y);
           end;
@@ -379,7 +398,8 @@ begin
   //-- LOAD FRAMES + VERTEXES
   //-----------------------------------------------------------
   fs.seek(org+mhead.Vertex_Start, sofrombeginning);
-  for i:=1 to mhead.MeshFrame_num do begin
+  for i:=1 to mhead.MeshFrame_num do
+  begin
     Frame:=Loaded_Frame(Root, format('%s: %d',[trim(mhead.Name),i]));
     GetMem(Vertexes, mhead.vertex_Num * Sizeof(TMD3Vertex));
     try
@@ -391,8 +411,10 @@ begin
       SetLength(S, Length(Spec2)+mhead.Vertex_num*SizeOf(vec3_t));
       PChar(CVert):=PChar(S)+Length(Spec2);
       Vertexes2:=Vertexes;
-      for J:=0 to mhead.vertex_Num-1 do begin
-        with Vertexes2^ do begin
+      for J:=0 to mhead.vertex_Num-1 do
+      begin
+        with Vertexes2^ do
+        begin
           CVert^[0]:=Vec[1] / 64;
           CVert^[1]:=Vec[2] / 64;
           CVert^[2]:=Vec[3] / 64;
@@ -431,55 +453,62 @@ begin
       Root:=Loaded_Root;
       ObjectGameCode:=mjQ3A;
 
-      if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then begin
+      if not((head.Tag_num=0) or (head.Tag_Start=head.Tag_End)) then
+      begin
         f.seek(head.Tag_Start + org,soFromBeginning);
-        for i:=1 to head.tag_num do begin
+        for i:=1 to head.tag_num do
+        begin
           f.readbuffer(tag,sizeof(tag));
           OTag:=QMD3Tag.Create(trim(tag.name), Root);
-          Root.SousElements.Add(OTag);
+          Root.SubElements.Add(OTag);
         end;
         f.seek(org2, sofrombeginning);
       end;
-    if head.BoneFrame_num<>0 then begin
-      for i:=1 to head.boneframe_num do begin
-        f.readbuffer(boneframe,sizeof(boneframe));
-        OBoneFrame:=QMD3BoneFrame.Create(Trim(boneframe.creator), Root);
-        Root.SousElements.Add(OBoneFrame);
+      if head.BoneFrame_num<>0 then
+      begin
+        for i:=1 to head.boneframe_num do
+        begin
+          f.readbuffer(boneframe,sizeof(boneframe));
+          OBoneFrame:=QMD3BoneFrame.Create(Trim(boneframe.creator), Root);
+          Root.SubElements.Add(OBoneFrame);
+        end;
       end;
-    end;
-    if head.Mesh_num<>0 then begin
-      f.seek(org + head.tag_end, sofrombeginning);
-      for i:=1 to head.Mesh_num do begin
-        ReadMesh(f, Root);
+      if head.Mesh_num<>0 then
+      begin
+        f.seek(org + head.tag_end, sofrombeginning);
+        for i:=1 to head.Mesh_num do
+        begin
+          ReadMesh(f, Root);
+        end;
       end;
-    end;
-   end;
+     end;
  else inherited;
  end;
 end;
 
-procedure QMd3File.Enregistrer(Info: TInfoEnreg1);
+procedure QMd3File.SaveFile(Info: TInfoEnreg1);
 var
  Root: QPackedModel;
  SkinObj: QImage;
  I: Longint;
 begin
  with Info do case Format of
-  rf_Siblings: begin  { write the skin files }
+  rf_Siblings: { write the skin files }
+    begin
       if Flags and ofSurDisque <> 0 then Exit;
       Root:=Saving_Root;
       Info.TempObject:=Root;
-      for I:=0 to Root.SousElements.Count-1 do
-       if Root.SousElements[I] is QImage then
+      for I:=0 to Root.SubElements.Count-1 do
+        if Root.SubElements[I] is QImage then
         begin
-         SkinObj:=QImage(Root.SousElements[I]);
-         Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
+          SkinObj:=QImage(Root.SubElements[I]);
+          Info.WriteSibling(SkinObj.Name+SkinObj.TypeInfo, SkinObj);
         end;
-     end;
+    end;
 
   1: begin  { write the .md3 file }
-    raise exception.create('Unsupported!');
-    end
+      raise exception.create('Unsupported!');
+     end
  else inherited;
  end;
 end;

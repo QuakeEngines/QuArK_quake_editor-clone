@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -40,7 +43,7 @@ uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
 type
  QTextureSin = class(QTexture2)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
@@ -191,7 +194,7 @@ end;
 
 { tiglari:  Not sure what this is actually for, tho it seems to write
    info in the object-specific format to the header format. }
-procedure QTextureSin.Enregistrer;
+procedure QTextureSin.SaveFile;
 var
  Header: TSinHeader;
  I, Taille: Integer;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -44,7 +47,7 @@ type
         private
         protected
           function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
@@ -57,7 +60,7 @@ type
 type
   TFQQme = class(TQForm1)
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
   end;
@@ -65,15 +68,15 @@ type
  {------------------------}
 
 type
- QQme0  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme1  = class(QMap       ) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme2  = class(QQuakeC    ) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme3  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme4  = class(QTextureList)public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme5  = class(QImport)     public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme6  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme7  = class(QExplorerGroup)public class function TypeInfo: String;override;protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme8  = class(QMdlFile)    public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme0  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme1  = class(QMap       ) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme2  = class(QQuakeC    ) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme3  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme4  = class(QTextureList)public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme5  = class(QImport)     public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme6  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme7  = class(QExplorerGroup)public class function TypeInfo: String;override;protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
+ QQme8  = class(QMdlFile)    public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure SaveFile(Info: TInfoEnreg1); override; end;
 
  {------------------------}
 
@@ -204,7 +207,7 @@ begin
   inherited;
 end;
 
-procedure QQme0. Enregistrer;
+procedure QQme0. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -288,7 +291,7 @@ var
 begin
  Result:=TPolyedre.Create(LoadStr1(138), nParent);
  S.ReadBuffer(NbFaces, SizeOf(NbFaces));
- Result.SousElements.Capacity:=NbFaces;
+ Result.SubElements.Capacity:=NbFaces;
  SetLength(Codes, NbFaces);
  S.ReadBuffer(Pointer(Codes)^, NbFaces);
  GetMem(OldFArray, SizeOf(TSurface)*NbFaces); try
@@ -335,7 +338,7 @@ begin
      S.ReadBuffer(OldF^.Dist, SizeOf(Reel));
     end;
    F:=TFace.Create(LoadStr1(139), Result);
-   Result.SousElements.Add(F);
+   Result.SubElements.Add(F);
    F.NomTex:=OldF^.NomTex;
    F.SetFaceFromParams(OldF^.Normale, OldF^.Dist, OldF^.Params);
    if (OldF^.Q2Contents<>0)
@@ -367,7 +370,7 @@ begin
     begin
      if Ord(InfoTypes[I]) > High(TreeMapObj) then
       Raise EErrorFmt(5509, [9000+Ord(InfoTypes[I])]);
-     Result.SousElements.Add(TreeMapObj[Ord(InfoTypes[I])](S, T, Result));
+     Result.SubElements.Add(TreeMapObj[Ord(InfoTypes[I])](S, T, Result));
     end;
   end;
 end;
@@ -446,7 +449,7 @@ begin
    if S='' then Raise EErrorFmt(5509, [811]);
    M:=SpecAsMemStream(S); try
    Q:=TTreeMapBrushCharger(M, @T, Self);
-   SousElements.Add(Q);
+   SubElements.Add(Q);
    finally M.Free; end;
    Specifics.Values['Root']:=Q.Name+Q.TypeInfo;
    Specifics.Values['Map']:='';
@@ -462,7 +465,7 @@ begin
   inherited;
 end;
 
-procedure QQme1. Enregistrer;
+procedure QQme1. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -477,7 +480,7 @@ begin
   inherited;
 end;
 
-procedure QQme2. Enregistrer;
+procedure QQme2. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -490,7 +493,7 @@ begin
   inherited;
 end;
 
-procedure QQme3. Enregistrer;
+procedure QQme3. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -511,7 +514,7 @@ begin
   inherited;
 end;
 
-procedure QQme4. Enregistrer;
+procedure QQme4. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -535,7 +538,7 @@ begin
       begin
        J:=Pos('=',S);
        nFile:=BuildFileRoot(Copy(S, 2, J-2), Folder);
-       Folder.SousElements.Insert(0, nFile);
+       Folder.SubElements.Insert(0, nFile);
        nFile.Flags:=nFile.Flags and not ofFileLink;
        M:=TMemoryStream.Create; try
        M.Write(PChar(S)[J], Length(S)-J);
@@ -550,7 +553,7 @@ begin
   inherited;
 end;
 
-procedure QQme5. Enregistrer;
+procedure QQme5. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -563,7 +566,7 @@ begin
   inherited;
 end;
 
-procedure QQme6. Enregistrer;
+procedure QQme6. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -583,7 +586,7 @@ begin
   inherited;
 end;
 
-procedure QQme7. Enregistrer;
+procedure QQme7. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -604,7 +607,7 @@ begin
   inherited;
 end;
 
-procedure QQme8. Enregistrer;
+procedure QQme8. SaveFile;
 begin
  with Info do if not SaveAsQmeEntry(Self, Format, F) then
   inherited;
@@ -617,7 +620,7 @@ begin
  Result:='.qme';
 end;
 
-function QQme.OuvrirFenetre;
+function QQme.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQQme.Create(nOwner);
 end;
@@ -672,7 +675,7 @@ begin
         F.Position:=Origine + Entree.Position;
         Q:=OpenFileObjectData(F, CharToPas(Entree.Nom)+'.qme'+IntToStr(Entree.InfoType),
             Entree.Taille, Self);
-        SousElements.Add(Q);
+        SubElements.Add(Q);
         LoadedItem(rf_Default, F, Q, Entree.Taille);
        end;
      end;
@@ -680,7 +683,7 @@ begin
  end;
 end;
 
-procedure QQme.Enregistrer(Info: TInfoEnreg1);
+procedure QQme.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -695,11 +698,11 @@ var
  I: Integer;
 begin
  Acces;
- DebutTravail(175, SousElements.Count); try
- for I:=0 to SousElements.Count-1 do
+ DebutTravail(175, SubElements.Count); try
+ for I:=0 to SubElements.Count-1 do
   begin
-   if SousElements[I] is QFileObject then
-    QFileObject(SousElements[I]).Go1(maplist, extracted, FirstMap, QCList);
+   if SubElements[I] is QFileObject then
+    QFileObject(SubElements[I]).Go1(maplist, extracted, FirstMap, QCList);
    ProgresTravail;
   end;
  finally FinTravail; end;
@@ -707,7 +710,7 @@ end;
 
  {------------------------}
 
-procedure TFQQme.wmMessageInterne(var Msg: TMessage);
+procedure TFQQme.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_AfficherObjet:

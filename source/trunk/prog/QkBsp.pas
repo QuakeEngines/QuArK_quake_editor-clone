@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/05/21 18:58:55  decker_dk
+A little more englishification
+
 Revision 1.3  2000/05/21 13:11:51  decker_dk
 Find new shaders and misc.
 
@@ -102,7 +105,7 @@ type
           procedure EnregistrerBsp2(Info: TInfoEnreg1);
         protected
           function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
          {FSurfaces: PSurfaceList;}
@@ -128,7 +131,7 @@ type
     Button1: TButton;
     procedure Button1Click(Sender: TObject);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr: String; override;
@@ -234,7 +237,7 @@ begin
  Result:='.bsp';
 end;
 
-function QBsp.OuvrirFenetre;
+function QBsp.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
   Result:=NewPyForm(Self)
@@ -285,7 +288,7 @@ begin
    S:=Bsp2EntryNames[E2]
   else
    S:=Bsp1EntryNames[E1];
- Q:=SousElements.FindName(S);
+ Q:=SubElements.FindName(S);
  if (Q=Nil) or not (Q is QFileObject) then
   Raise EError(5521);
  Result:=QFileObject(Q);
@@ -345,7 +348,7 @@ begin
    Q:=OpenFileObjectData(F, Bsp1EntryNames[E], Entete.Entrees[E].Taille, Self);
   {if (E=eMipTex) and (Entete.Signature = SignatureBSPHL) then
     Q.SetSpecificsList.Values['TextureType']:='.wad3_C';}
-   SousElements.Add(Q);
+   SubElements.Add(Q);
    LoadedItem(rf_Default, F, Q, Entete.Entrees[E].Taille);
   end;
 
@@ -405,7 +408,7 @@ begin
     end;
    F.Position:=Origine + Entete.Entrees[E].Position;
    Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Entete.Entrees[E].Taille, Self);
-   SousElements.Add(Q);
+   SubElements.Add(Q);
    LoadedItem(rf_Default, F, Q, Entete.Entrees[E].Taille);
   end;
  ObjectGameCode:=CurrentQuake2Mode;
@@ -450,7 +453,7 @@ begin
    begin
     Q:=BspEntry[E, NoBsp2];
     Entete.Entrees[E].Position:=F.Position;
-    Q.Enregistrer1(Info);   { save in non-QuArK file format }
+    Q.SaveFile1(Info);   { save in non-QuArK file format }
     Entete.Entrees[E].Taille:=F.Position-Entete.Entrees[E].Position;
     Dec(Entete.Entrees[E].Position, Origine);
     Zero:=0;
@@ -486,7 +489,7 @@ begin
    begin
     Q:=BspEntry[NoBsp1, E];
     Entete.Entrees[E].Position:=F.Position;
-    Q.Enregistrer1(Info);   { save in non-QuArK file format }
+    Q.SaveFile1(Info);   { save in non-QuArK file format }
     Entete.Entrees[E].Taille:=F.Position-Entete.Entrees[E].Position;
     Dec(Entete.Entrees[E].Position, Origine);
     Zero:=0;
@@ -505,7 +508,7 @@ begin
  end;
 end;
 
-procedure QBsp.Enregistrer(Info: TInfoEnreg1);
+procedure QBsp.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -624,7 +627,7 @@ begin
  if FirstMap='' then
   FirstMap:=S;
  S:='maps/'+S+TypeInfo;
- EnregistrerDansFichier(rf_Default, OutputFile(S));
+ SaveInFile(rf_Default, OutputFile(S));
  mapname:=PyString_FromString(PChar(S));
  PyList_Append(extracted, mapname);
  Py_DECREF(mapname);
@@ -689,7 +692,7 @@ end;
 
  {------------------------}
 
-procedure TFQBsp.wmMessageInterne(var Msg: TMessage);
+procedure TFQBsp.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_AfficherObjet:

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/05/14 20:33:45  alexander
+header
+
 }
 unit PyObjects;
 
@@ -203,12 +206,12 @@ begin
   with QkObjFromPyObj(self) do
    begin
     Acces;
-    if (Index<0) or (Index>=SousElements.Count) then
+    if (Index<0) or (Index>=SubElements.Count) then
      begin
       PyErr_SetString(QuarkxError, PChar(LoadStr1(4420)));
       Exit;
      end;
-    Result:=@SousElements[Index].PythonObj;
+    Result:=@SubElements[Index].PythonObj;
     Py_INCREF(Result);
    end;
  except
@@ -230,7 +233,7 @@ begin
   nParent:=QkObjFromPyObj(self);
   nParent.Acces;
   nChild.PySetParent(nParent);
-  nParent.SousElements.Add(nChild);
+  nParent.SubElements.Add(nChild);
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -256,13 +259,13 @@ begin
    end;
   nParent:=QkObjFromPyObj(self);
   nParent.Acces;
-  if (Index<0) or (Index>nParent.SousElements.Count) then
+  if (Index<0) or (Index>nParent.SubElements.Count) then
    begin
     PyErr_SetString(QuarkxError, PChar(LoadStr1(4423)));
     Exit;
    end;
   nChild.PySetParent(nParent);
-  nParent.SousElements.Insert(Index, nChild);
+  nParent.SubElements.Insert(Index, nChild);
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -285,17 +288,17 @@ begin
   if Obj1.ob_type <> @TyObject_Type then
    begin
     Index:=PyInt_AsLong(Obj1);
-    if (Index<0) or (Index>=nParent.SousElements.Count) then
+    if (Index<0) or (Index>=nParent.SubElements.Count) then
      begin
       PyErr_SetString(QuarkxError, PChar(LoadStr1(4424)));
       Exit;
      end;
-    nChild:=nParent.SousElements[Index];
+    nChild:=nParent.SubElements[Index];
    end
   else
    begin
     nChild:=QkObjFromPyObj(Obj1);
-    Index:=nParent.SousElements.IndexOf(nChild);
+    Index:=nParent.SubElements.IndexOf(nChild);
     if Index<0 then
      begin
       PyErr_SetString(QuarkxError, PChar(LoadStr1(4425)));
@@ -303,7 +306,7 @@ begin
      end;
    end;
   nChild.PySetParent(Nil);
-  nParent.SousElements.Delete(Index);
+  nParent.SubElements.Delete(Index);
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -322,7 +325,7 @@ begin
    Exit;
   nParent:=QkObjFromPyObj(self);
   nParent.Acces;
-  Result:=GetPyObj(nParent.SousElements.FindName(nName));
+  Result:=GetPyObj(nParent.SubElements.FindName(nName));
  except
   EBackToPython;
   Result:=Nil;
@@ -340,7 +343,7 @@ begin
    Exit;
   nParent:=QkObjFromPyObj(self);
   nParent.Acces;
-  Result:=GetPyObj(nParent.SousElements.FindShortName(nName));
+  Result:=GetPyObj(nParent.SubElements.FindShortName(nName));
  except
   EBackToPython;
   Result:=Nil;
@@ -574,12 +577,12 @@ begin
          with QkObjFromPyObj(self) do
           begin
            Acces;
-           N:=SousElements.Count;
+           N:=SubElements.Count;
            Result:=PyDict_New;
            for I:=N-1 downto 0 do
             begin
-             o:=@SousElements[I].PythonObj;
-             PyDict_SetItemString(Result, PChar(SousElements[I].GetFullName), o);
+             o:=@SubElements[I].PythonObj;
+             PyDict_SetItemString(Result, PChar(SubElements[I].GetFullName), o);
             end;
            Exit;
           end;
@@ -587,7 +590,7 @@ begin
          with QkObjFromPyObj(self) do
           begin
            Acces;
-           Result:=PyInt_FromLong(SousElements.Count);
+           Result:=PyInt_FromLong(SubElements.Count);
            Exit;
           end;
    'n': if StrComp(attr, 'name') = 0 then
@@ -624,11 +627,11 @@ begin
          with QkObjFromPyObj(self) do
           begin
            Acces;
-           N:=SousElements.Count;
+           N:=SubElements.Count;
            Result:=PyList_New(N);
            for I:=0 to N-1 do
             begin
-             o:=@SousElements[I].PythonObj;
+             o:=@SubElements[I].PythonObj;
              Py_INCREF(o);
              PyList_SetItem(Result, I, o);
             end;

@@ -5,6 +5,9 @@ unit QkSpr;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -60,7 +63,7 @@ type
          Procedure WriteQ1Spr(F:TStream);
          Procedure WriteQ2Spr(F:TStream);
          Procedure WriteHLSpr(F:TStream);
-         procedure Enregistrer(Info: TInfoEnreg1); override;
+         procedure SaveFile(Info: TInfoEnreg1); override;
          function Loaded_Frame(Root: QSprFile; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
          function Loaded_FrameFile(Root: QSprFile; const Name: String) : QImages;
          procedure GetWidthHeight(var size:TPoint);
@@ -103,7 +106,7 @@ type
   public
     ImageDisplayer: TImageDisplayer;
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
-    procedure wmMessageInterne(var Msg: TMessage); override;
+    procedure wmInternalMessage(var Msg: TMessage); override;
     { Public declarations }
   end;
 
@@ -331,12 +334,12 @@ rad:=Sqrt(Sqr(w/2)+Sqr(h/2));
 f.Writebuffer(rad,4);
 f.WriteBuffer(w,4);
 f.WriteBuffer(h,4);
-cnt:=Souselements.count;
+cnt:=SubElements.count;
 f.Writebuffer(cnt,4);
 f.WriteBuffer(z,4);
 f.WriteBuffer(z,4);
 for i:=1 to cnt do begin
- SkinObj:=QImage(SousElements[i-1]);
+ SkinObj:=QImage(SubElements[i-1]);
  SkinObj.NotTrueColor;
  pt:=SkinObj.GetSize;
  f.WriteBuffer(z,4);
@@ -366,9 +369,9 @@ var
  WTemp,HTemp,i:Longint;
 begin
  WTemp:=0;HTemp:=0;
- for i:=0 to  SousElements.Count-1 do
+ for i:=0 to  SubElements.Count-1 do
   begin
-    SizeTemp:=QPcx(SousElements.Items[i]).GetSize;
+    SizeTemp:=QPcx(SubElements.Items[i]).GetSize;
     WTemp:=Max(SizeTemp.X,WTemp);
     HTemp:=Max(SizeTemp.X,HTemp);
   end;
@@ -405,13 +408,13 @@ rad:=Sqrt(Sqr(w/2)+Sqr(h/2));
 f.Writebuffer(rad,4);
 f.WriteBuffer(w,4);
 f.WriteBuffer(h,4);
-cnt:=souselements.count;
+cnt:=SubElements.count;
 f.Writebuffer(cnt,4);
 f.WriteBuffer(z,4);
 f.WriteBuffer(z,4);
 typ:=256;
 f.WriteBuffer(typ,2);
-SkinObj:=QImage(SousElements[0]); // use palette of first image for sprite.
+SkinObj:=QImage(SubElements[0]); // use palette of first image for sprite.
 SkinObj.NotTrueColor;
 skinobj.GetPalette1(pal);
 for i:=0 to 255 do begin
@@ -422,7 +425,7 @@ for i:=0 to 255 do begin
   end;
 
 for i:=1 to cnt do begin
- SkinObj:=QImage(SousElements[i-1]);
+ SkinObj:=QImage(SubElements[i-1]);
  SkinObj.NotTrueColor;
  pt:=SkinObj.GetSize;
  f.WriteBuffer(z,4);
@@ -467,7 +470,7 @@ for i:=1 to cnt do begin
  end;
 end;
 
-procedure QSprFile.Enregistrer(Info: TInfoEnreg1);
+procedure QSprFile.SaveFile(Info: TInfoEnreg1);
 var
 fg:Char;
 begin
@@ -485,7 +488,7 @@ begin
  end;
 end;
 
-function QSprFile.OuvrirFenetre;
+function QSprFile.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TQSprForm.Create(nOwner);
 end;
@@ -517,7 +520,7 @@ var
  S: String;
 begin
  Result:=QPcx.Create(Name, Root);
- Root.SousElements.Add(Result);
+ Root.SubElements.Add(Result);
  Result.SetFloatsSpec('Size', Size);
  S:=Spec1;
  SetLength(S, Length(Spec1) + SizeOf(TPaletteLmp));
@@ -561,7 +564,7 @@ begin
       Result:=nImage as QImages;
       Result:=Result.Clone(Root, False) as QImages;
      end;
-    Root.SousElements.Add(Result);
+    Root.SubElements.Add(Result);
     Result.Name:=Copy(Name, 1, Length(Name)-Length(nImage.TypeInfo));
     {Result.Flags:=Result.Flags or ofFileLink;}
     Exit;
@@ -599,7 +602,7 @@ begin
   Panel2.Height:=nPosition;
 end;
 
-procedure TQSprForm.wmMessageInterne(var Msg: TMessage);
+procedure TQSprForm.wmInternalMessage(var Msg: TMessage);
 var
 s:QSprFile;
 fg:char;
@@ -764,17 +767,17 @@ begin
 s:=QSprFile(FileObject);
 case TComponent(Sender).Tag of
   -100: index:=0;
-   100: index:=s.SousElements.count-1;
-     1: if index+1>s.souselements.count-1 then index:=s.SousElements.count-1 else index:=index+1;
+   100: index:=s.SubElements.count-1;
+     1: if index+1>s.SubElements.count-1 then index:=s.SubElements.count-1 else index:=index+1;
     -1: if index-1<0 then index:=0 else index:=index-1;
   else raise Exception.Create('Invalid Tag!');
 end;
 
-if index>s.souselements.count-1 then index:=s.Souselements.count-1;
+if index>s.SubElements.count-1 then index:=s.SubElements.count-1;
 
 if index<>-1 then
-  if s.souselements[index]<>nil then begin
-   ps:=QPcx(s.Souselements[index]);
+  if s.SubElements[index]<>nil then begin
+   ps:=QPcx(s.SubElements[index]);
    ImageDisplayer.Source:=ps;
    ImageDisplayer.AutoSize;
    end;

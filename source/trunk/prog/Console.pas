@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -232,7 +235,7 @@ begin
       end;
      end;
     finally LeaveCriticalSection(CriticalSection); end;
-   {PostMessage(Form1Handle, wm_MessageInterne, wp_ConsoleWrite, 0);}
+   {PostMessage(Form1Handle, wm_InternalMessage, wp_ConsoleWrite, 0);}
     if ConsoleWnd<>0 then
      InvalidateRect(ConsoleWnd, Nil, False);
    end;

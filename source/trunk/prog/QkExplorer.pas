@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -84,7 +87,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;*)
    {procedure DblClick; override;}
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
    {function AfficherObjet(Parent, Enfant: QObject) : Integer; virtual;}
    {procedure PreSelection(Spec: Integer); virtual;
     procedure PostSelection(Spec: Integer); virtual;}
@@ -403,7 +406,7 @@ begin
   Q.Acces;
  Roots.Add(Q);
  Q.SelMult:=smNonSel;
- Q.Flags:=Q.Flags and not (ofTvSousElement or ofTvInvisible) or ofTvExpanded;
+ Q.Flags:=Q.Flags and not (ofTreeViewSubElement or ofTvInvisible) or ofTvExpanded;
  ControlerEtatNoeud(Q);
  ContentsChanged(True);
 end;
@@ -416,15 +419,15 @@ end;
    Q: QObject;
   begin
    T.Acces;
-   DebutTravail(5446, T.SousElements.Count); try
+   DebutTravail(5446, T.SubElements.Count); try
    T.SelMult:=smSousSelVide;
    T.Flags:=T.Flags and not ofTvExpanded;
    ControlerEtatNoeud(T);
-   with T.SousElements do
+   with T.SubElements do
     for I:=0 to Count-1 do
      begin
       Q:=Items[I];
-      if Odd(Q.Flags) then   { if ofTvSousElement is set }
+      if Odd(Q.Flags) then   { if ofTreeViewSubElement is set }
        Parcourir(Q);
       ProgresTravail;
      end;
@@ -437,7 +440,7 @@ begin
  Q.Acces;
  Roots.Add(Q);
  Q.SelMult:=smNonSel;
- Q.Flags:=Q.Flags and not (ofTvSousElement or ofTvInvisible) or ofTvExpanded;
+ Q.Flags:=Q.Flags and not (ofTreeViewSubElement or ofTvInvisible) or ofTvExpanded;
  Result:=Q.AjouterElement(Items, Nil, Nil);
  SetItemBold(Result);
  ControlerEtatNoeud(Q);
@@ -488,7 +491,7 @@ begin
    Result:=Nil;
    Exit;  { no data }
   end;
- Result:=Q.SousElements.FindName(S);
+ Result:=Q.SubElements.FindName(S);
 end;
 
 (*procedure TQkExplorer.DispInfo(Sender: TObject; Node: TTreeNode;
@@ -548,9 +551,9 @@ var
  Info: TIsExplorerItem;
 begin
 {C:=False;}
- for I:=0 to El.SousElements.Count-1 do
+ for I:=0 to El.SubElements.Count-1 do
   begin
-   Q:=El.SousElements[I];
+   Q:=El.SubElements[I];
    with Q do
     begin
      Info:=El.IsExplorerItem(Q);
@@ -558,11 +561,11 @@ begin
      if (ieDisplay in Info) and (FParent<>El) then
       Raise InternalE('FParent<>El');
      {$ENDIF}
-     Flags:=Flags and not (ofTvSousElement or ofTvInvisible)
+     Flags:=Flags and not (ofTreeViewSubElement or ofTvInvisible)
       or Ord(ieDisplay in Info);
      if ieInvisible in Info then
       Flags:=Flags or ofTvInvisible;
-    {C:=C or (Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement);}
+    {C:=C or (Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement);}
     end;
   end;
 (*if El.Flags and ofTvNode <> 0 then
@@ -587,10 +590,10 @@ begin
  else
   if El.Flags and ofSurDisque <> 0 then
    Exit;
- DebutTravail(5446, El.SousElements.Count); try
- for I:=0 to El.SousElements.Count-1 do
+ DebutTravail(5446, El.SubElements.Count); try
+ for I:=0 to El.SubElements.Count-1 do
   begin
-   Q:=El.SousElements[I];
+   Q:=El.SubElements[I];
    InitEl(Q, Charger);
    with Q do
     begin
@@ -649,10 +652,10 @@ begin
    if G=Nil then Raise InternalE('NodeParent.Data=Nil');
    DebutTravail(0,0); try
    BrowseNode:=NodeParent.GetFirstChild;
-   for I:=0 to G.SousElements.Count-1 do
+   for I:=0 to G.SubElements.Count-1 do
     begin
-     Result:=G.SousElements[I];
-     if Result.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+     Result:=G.SubElements[I];
+     if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
       begin
        if (BrowseNode=Node) and (Node.Text=Result.Name) then
         Break;
@@ -685,7 +688,7 @@ begin
  if Result=FTopObject then
   Exit;  { Ok }
  Parent:=ValidObject(Node.Parent);
- if Parent.SousElements.IndexOf(Result)<0 then
+ if Parent.SubElements.IndexOf(Result)<0 then
   Abort;  { Erreur }
 end;*)
 
@@ -699,11 +702,11 @@ begin
   El.AccesRec
  else
   El.Acces;
- DebutTravail(5446, El.SousElements.Count); try
- for I:=0 to El.SousElements.Count-1 do
+ DebutTravail(5446, El.SubElements.Count); try
+ for I:=0 to El.SubElements.Count-1 do
   begin
-   Q:=El.SousElements[I];
-   if Q.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+   Q:=El.SubElements[I];
+   if Q.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
     begin
      if (Q.Flags and ofSurDisque <> 0)
      and (ieListView in El.IsExplorerItem(Q)) and not LoadAllAuto then
@@ -762,11 +765,11 @@ begin
    and (State and TVIS_EXPANDEDONCE <> 0) then
     Exit;   { item has already been opened once }
   end;
- DebutTravail(5446, El.SousElements.Count); try
- for I:=0 to El.SousElements.Count-1 do
+ DebutTravail(5446, El.SubElements.Count); try
+ for I:=0 to El.SubElements.Count-1 do
   begin
-   Q:=El.SousElements[I];
-   if Q.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
+   Q:=El.SubElements[I];
+   if Q.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
     begin
      if Q.Flags and ofTvNode <> 0 then
       Q.GetNode.Delete;
@@ -832,13 +835,13 @@ begin
     if Test.SelMult=0 then   { if smSousElVide is not set }
      repeat   { looking for an item in this group }
       Inc(I);
-      if I>=Test.SousElements.Count then
+      if I>=Test.SubElements.Count then
        begin
         I:=-1;
         Break;
        end;
-      Test2:=Test.SousElements[I];
-     until Odd(Test2.Flags)   { ofTvSousElement must be set }
+      Test2:=Test.SubElements[I];
+     until Odd(Test2.Flags)   { ofTreeViewSubElement must be set }
     else
      I:=-1;   { we know there is no selected item in this group }
    if I>=0 then
@@ -856,7 +859,7 @@ begin
    if Test=Nil then  { Test was top-level }
     TestList:=Roots
    else
-    TestList:=Test.SousElements;
+    TestList:=Test.SubElements;
    I:=TestList.IndexOf(Ancien);
   until False;
   Inc(Niveau);   { we entered a new subgroup }
@@ -957,7 +960,7 @@ function TQkExplorer.EffacerSelection;
    Result:=Odd(Sm);
    T.SelMult:=smNonSel or smSousSelVide;
    if Sm and smSousSelVide = 0 then
-    with T.SousElementsC do
+    with T.SubElementsC do
      for I:=0 to Count-1 do
       begin
        Q:=Items[I];
@@ -1030,7 +1033,7 @@ end;
 
 (*function TQkExplorer.AfficherObjet(Parent, Enfant: QObject) : Integer;
 begin
- Result:=ofTvSousElement;   { display all items by default }
+ Result:=ofTreeViewSubElement;   { display all items by default }
 end;*)
 
 (*procedure TQkExplorer.TVSelectionMultiple(Node: TTreeNode; Focus: Boolean);
@@ -1152,22 +1155,22 @@ begin
 {if Key=vk_Return then
   begin
    Key:=0;
-   PostMessage(Handle, wm_MessageInterne, tm_DoubleClic, 0);
+   PostMessage(Handle, wm_InternalMessage, tm_DoubleClick, 0);
   end;}
 end;*)
 
 (*procedure TQkExplorer.DblClick;
 begin
  inherited;
- PostMessage(Handle, wm_MessageInterne, tm_DoubleClic, 0);
+ PostMessage(Handle, wm_InternalMessage, tm_DoubleClick, 0);
 end;*)
 
-procedure TQkExplorer.wmMessageInterne(var Msg: TMessage);
+procedure TQkExplorer.wmInternalMessage(var Msg: TMessage);
 var
  Gr: QExplorerGroup;
 begin
  case Msg.wParam of
-  tm_DoubleClic:
+  tm_DoubleClick:
     begin
      EndDrag(False);
      Gr:=GroupeSelection;
@@ -1262,7 +1265,7 @@ begin
             FSelection1:=Nil;
            TestsDUsage(FSelection1, NouveauNumero);
            if AncienControl<>Nil then
-            MessageInterne(wp_RestaureFocus, LongInt(AncienControl));
+            MessageInterne(wp_RestoreFocus, LongInt(AncienControl));
           end;
  {muExceptBegin: FSelection1:=Nil;
   muExceptEnd: begin
@@ -1300,8 +1303,8 @@ begin
  end;**
  case Aj of
   asRetire:
-    for I:=0 to Q.SousElements.Count-1 do
-     OpDansScene(Q.SousElements[I], Aj, PosRel+1);
+    for I:=0 to Q.SubElements.Count-1 do
+     OpDansScene(Q.SubElements[I], Aj, PosRel+1);
  end;
  if PosRel=0 then
   case Aj of
@@ -1318,12 +1321,12 @@ begin
      else
       begin
        nInsert:=Nil;
-       I:=Q.TvParent.SousElements.IndexOf(Q);
+       I:=Q.TvParent.SubElements.IndexOf(Q);
        repeat
         Inc(I);
-        if I>=Q.TvParent.SousElements.Count then
+        if I>=Q.TvParent.SubElements.Count then
          Break;
-        T:=Q.TvParent.SousElements[I];
+        T:=Q.TvParent.SubElements[I];
         if T.Flags and ofTvNode <> 0 then
          begin
           nInsert:=T.GetNode;
@@ -1342,12 +1345,12 @@ begin
   end;
  case Aj of
   asAjoute, asDeplace2:
-    for I:=0 to Q.SousElements.Count-1 do
-     OpDansScene(Q.SousElements[I], Aj, PosRel+1);
+    for I:=0 to Q.SubElements.Count-1 do
+     OpDansScene(Q.SubElements[I], Aj, PosRel+1);
   asModifieParent:
    begin
-    for I:=0 to Q.SousElements.Count-1 do
-     OpDansScene(Q.SousElements[I], asModifieFrere, MaxInt);
+    for I:=0 to Q.SubElements.Count-1 do
+     OpDansScene(Q.SubElements[I], asModifieFrere, MaxInt);
     if PosRel = -1 then
      ControlerEtatNoeud(Q);
    end;
@@ -1385,20 +1388,20 @@ var
 begin
  Result:=ClipboardGroup;
  L:=ListSel(MaxInt); try
- Result.SousElements.Capacity:=L.Count;
+ Result.SubElements.Capacity:=L.Count;
  for I:=0 to L.Count-1 do
-  Result.SousElements.Add(QObject(L[I]));
+  Result.SubElements.Add(QObject(L[I]));
  finally L.Free; end;
 end;
 
 procedure TQkExplorer.StartDragEvt;
 begin
- PostMessage(Handle, wm_MessageInterne, tm_BeginDrag, 0);
+ PostMessage(Handle, wm_InternalMessage, tm_BeginDrag, 0);
 end;
 
 procedure TQkExplorer.EndDragEvt;
 begin
- PostMessage(ValidParentForm(Self).Handle, wm_MessageInterne, wp_EndDrag, 0);
+ PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage, wp_EndDrag, 0);
 end;
 
 procedure TQkExplorer.DragOverEvt;
@@ -1439,7 +1442,7 @@ begin
  T:={F}DropTarget;
  while T<>Nil do
   begin
-   if SourceQ.SousElements.IndexOf(T)>=0 then
+   if SourceQ.SubElements.IndexOf(T)>=0 then
     begin
      MessageBeep(0);  { déplacement sur un élément lui-même sélectionné }
      Exit;
@@ -1497,7 +1500,7 @@ begin
   with ClientToScreen(Point(X,Y)) do
    Popup.Popup(X,Y);
  finally
-  PostMessage(Handle, wm_MessageInterne, tm_FreeMenu, LongInt(Popup));
+  PostMessage(Handle, wm_InternalMessage, tm_FreeMenu, LongInt(Popup));
  end;
 end;
 
@@ -1508,7 +1511,7 @@ begin
   Result:=dfInsertGr;
  if DragObject.AccepteDestination(DropTarget.TvParent) then
   Result:=Result or dfMoveHere;
- if DragObject.SousElements.Count>1 then
+ if DragObject.SubElements.Count>1 then
   Result:=Result or dfMultiple;
 end;
 
@@ -1536,9 +1539,9 @@ begin
  if not Interne and not CopyFromOutside(SourceQ) then
   Exit;
  DebutAction;
- for I:=0 to SourceQ.SousElements.Count-1 do
+ for I:=0 to SourceQ.SubElements.Count-1 do
   begin
-   El:=SourceQ.SousElements[I];
+   El:=SourceQ.SubElements[I];
    if ieCanDrop in DropTarget.IsExplorerItem(El) then
     if Copier or not Interne then
      begin
@@ -1584,7 +1587,7 @@ begin
     begin
      El:=QObject(L[J]);
      if (El.TvParent=DropTarget.TvParent)
-     and (El.TvParent.SousElements.IndexOf(El) < El.TvParent.SousElements.IndexOf(DropTarget)) then
+     and (El.TvParent.SubElements.IndexOf(El) < El.TvParent.SubElements.IndexOf(DropTarget)) then
       begin
        InsererAvant:=InsererAvant.SuivantDansGroupe;
        Break;
@@ -1592,9 +1595,9 @@ begin
     end;
    finally L.Free; end;
   end;
- for I:=0 to SourceQ.SousElements.Count-1 do
+ for I:=0 to SourceQ.SubElements.Count-1 do
   begin
-   El:=SourceQ.SousElements[I];
+   El:=SourceQ.SubElements[I];
    if ieCanDrop in DropTarget.TvParent.IsExplorerItem(El) then
     if Copier or not Interne then
      begin
@@ -1641,12 +1644,12 @@ var
 begin
  F:=GetParentForm(Self);
  if F<>Nil then
-  PostMessage(F.Handle, wm_MessageInterne, wParam, lParam);
+  PostMessage(F.Handle, wm_InternalMessage, wParam, lParam);
 end;
 
 {procedure TQkExplorer.Modified;
 begin
- SendMessage(ValidParentForm(Self).Handle, wm_MessageInterne,
+ SendMessage(ValidParentForm(Self).Handle, wm_InternalMessage,
   wp_SetModify, 1);
 end;}
 
@@ -1663,13 +1666,13 @@ begin
   begin
    GetnParent:=T;
    repeat
-    if not Odd(T.Flags) then   { root item, ofTvSousElement not set }
+    if not Odd(T.Flags) then   { root item, ofTreeViewSubElement not set }
      Exit;
     if FitIntoGroup<>Nil then
      begin
       I:=0;
-      while I<FitIntoGroup.SousElements.Count do
-       if ([ieCanDrop, ieNoAutoDrop]*T.IsExplorerItem(FitIntoGroup.SousElements[I])) <> [ieCanDrop] then
+      while I<FitIntoGroup.SubElements.Count do
+       if ([ieCanDrop, ieNoAutoDrop]*T.IsExplorerItem(FitIntoGroup.SubElements[I])) <> [ieCanDrop] then
         I:=MaxInt
        else
         Inc(I);
@@ -1708,12 +1711,12 @@ begin
  nParent:=GetnParent(nInsererAvant, Gr);
  if (nParent=Nil) or (AllowEditing=aeNo) then Exit;
  nParent.Acces;
- if nParent.SousElements.Count=0 then
+ if nParent.SubElements.Count=0 then
   nParent.Flags:=nParent.Flags or ofTvExpanded;
  DebutAction;
- for I:=0 to Gr.SousElements.Count-1 do
+ for I:=0 to Gr.SubElements.Count-1 do
   begin
-   Q:=Gr.SousElements[I];
+   Q:=Gr.SubElements[I];
    if ieCanDrop in nParent.IsExplorerItem(Q) then
     begin
      Q.FParent:=nParent;
@@ -1758,7 +1761,7 @@ begin
   begin
    if AllowEditing=aeNo then Exit;
    T:=QObject(L[0]);
-   if not Odd(T.Flags) then   { if ofTvSousElement is not set }
+   if not Odd(T.Flags) then   { if ofTreeViewSubElement is not set }
     begin
      MessageBeep(0);   { cannot delete a root }
      Exit;
@@ -1781,7 +1784,7 @@ begin
     begin
      if AllowEditing=aeNo then Exit;
      T:=QObject(L[I]);
-     if Odd(T.Flags) then   { if ofTvSousElement is set }
+     if Odd(T.Flags) then   { if ofTreeViewSubElement is set }
       begin
        AnyObj:=T.TvParent;
        ListeActions.Add(TQObjectUndo.Create('', T, Nil));
@@ -1824,7 +1827,7 @@ begin
       Result:=Result or edPasteObj;
     end;
   edOpen:
-    Perform(wm_MessageInterne, tm_DoubleClic, 0);
+    Perform(wm_InternalMessage, tm_DoubleClick, 0);
   edCut:                    { cut }
     begin
      CopyToClipboard;

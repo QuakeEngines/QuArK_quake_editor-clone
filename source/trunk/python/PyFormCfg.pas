@@ -36,7 +36,7 @@ type
   TPyFormCfg = class(TFormCfg)
                private
                  FOnChange: PyObject;
-                 procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                 procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure Change(Sender: TObject);
                  procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
                protected
@@ -87,7 +87,7 @@ begin
  inherited;
 end;
 
-procedure TPyFormCfg.wmMessageInterne(var Msg: TMessage);
+procedure TPyFormCfg.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_GetPyControl: Msg.Result:=LongInt(FormCfgObject);
@@ -101,7 +101,7 @@ end;
 procedure TPyFormCfg.Change;
 begin
  if not InternalEditing then
-  PostMessage(Handle, wm_MessageInterne, wp_Changed, 0);
+  PostMessage(Handle, wm_InternalMessage, wp_Changed, 0);
 end;
 
 procedure TPyFormCfg.DragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);

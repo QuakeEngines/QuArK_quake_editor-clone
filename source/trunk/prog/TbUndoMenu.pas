@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -64,7 +67,7 @@ type
     function CurrentUndoRoot: PUndoRoot;
   protected
     Updating: Boolean;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   public
     procedure OpenUndoRoot(Q: QObject);
   end;
@@ -90,14 +93,14 @@ procedure UndoDlgOp1;
 begin
  if (UndoDlg<>Nil) and not UndoDlg.Updating then
   begin
-   PostMessage(UndoDlg.Handle, wm_MessageInterne, wp_UpdateInternals, ui_Undo);
+   PostMessage(UndoDlg.Handle, wm_InternalMessage, wp_UpdateInternals, ui_Undo);
    UndoDlg.Updating:=True;
   end;
 end;
 
  {------------------------}
 
-procedure TUndoDlg.wmMessageInterne(var Msg: TMessage);
+procedure TUndoDlg.wmInternalMessage(var Msg: TMessage);
 begin
  if (Msg.wParam=wp_UpdateInternals) and (Msg.lParam=ui_Undo) then
   begin

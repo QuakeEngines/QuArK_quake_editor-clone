@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -45,7 +48,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
   public
@@ -69,7 +72,7 @@ begin
   ForcedAssignObject(Q, cmOwnExplorer);
 end;
 
-procedure TQFormExplorer.wmMessageInterne(var Msg: TMessage);
+procedure TQFormExplorer.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_AfficherObjet:

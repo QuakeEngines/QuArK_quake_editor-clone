@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.6  2000/05/14 15:06:56  decker_dk
 Charger(F,Taille) -> LoadFile(F,FSize)
 ToutCharger -> LoadAll
@@ -23,7 +26,7 @@ uses Windows,SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Graphics, Ga
 type
  QJPeg = class(QImages)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           function BaseGame : Char;
@@ -50,7 +53,7 @@ begin
  Result:=mjQ3A;
 end;
 
-procedure QJpeg.Enregistrer(Info: TInfoEnreg1);
+procedure QJpeg.SaveFile(Info: TInfoEnreg1);
 const
  bmpSignature = $4D42;
 var

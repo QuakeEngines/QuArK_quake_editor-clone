@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -299,9 +302,9 @@ procedure CheckTreeMap(Racine: TTreeMap);
    else
     begin
      Q.Acces;
-     Q.Flags:=Q.Flags or ofTvSousElement;
-     for I:=0 to Q.SousElements.Count-1 do
-      Check1(Q.SousElements[I]);
+     Q.Flags:=Q.Flags or ofTreeViewSubElement;
+     for I:=0 to Q.SubElements.Count-1 do
+      Check1(Q.SubElements[I]);
     end;
   end;
 
@@ -310,8 +313,8 @@ var
 begin
  Racine.Acces;
  DebutAction;
- for I:=0 to Racine.SousElements.Count-1 do
-  Check1(Racine.SousElements[I]);
+ for I:=0 to Racine.SubElements.Count-1 do
+  Check1(Racine.SubElements[I]);
  if ListeActions.Count=0 then
   AnnuleAction
  else
@@ -354,12 +357,12 @@ begin
  repeat
   if Result.GetOrigin(Pt) then
    Exit;
-  if Result.SousElements.Count=0 then
+  if Result.SubElements.Count=0 then
    begin
     Result:=Nil;
     Exit;
    end;
-  Result:=TTreeMap(Result.SousElements.Last);
+  Result:=TTreeMap(Result.SubElements.Last);
  until False;
 end;
 
@@ -367,8 +370,8 @@ procedure TTreeMap.Deplacement(const PasGrille: Reel);
 var
  I: Integer;
 begin
- for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).Deplacement(PasGrille);
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).Deplacement(PasGrille);
 end;
 
 (*function TTreeMap.AjouterRef(Liste: TList; Niveau: Integer) : Integer;
@@ -376,8 +379,8 @@ var
  I: Integer;
 begin
  Result:=0;
- for I:=0 to SousElements.Count-1 do
-  Inc(Result, TTreeMap(SousElements[I]).AjouterRef(Liste, Niveau+1));
+ for I:=0 to SubElements.Count-1 do
+  Inc(Result, TTreeMap(SubElements[I]).AjouterRef(Liste, Niveau+1));
 end;*)
 
 procedure TTreeMap.AddTo3DScene;
@@ -385,9 +388,9 @@ var
  I: Integer;
  T: TTreeMap;
 begin
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   T:=TTreeMap(SousElements[I]);
+   T:=TTreeMap(SubElements[I]);
    if not Odd(T.SelMult) or (mdParcourirSel in Info.ModeDessin) then
     T.AddTo3DScene;
   end;
@@ -397,16 +400,16 @@ procedure TTreeMap.ChercheExtremites(var Min, Max: TVect);
 var
  I: Integer;
 begin
- for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).ChercheExtremites(Min, Max);
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).ChercheExtremites(Min, Max);
 end;
 
 procedure TTreeMap.AnalyseClic;
 var
  I: Integer;
 begin
- for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).AnalyseClic(Liste);
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).AnalyseClic(Liste);
 end;
 
 (*function TTreeMap.GetOrigin1: TVect;
@@ -467,8 +470,8 @@ procedure TTreeMap.FindTextures(SortedList: TStringList);
 var
  I: Integer;
 begin
- for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).FindTextures(SortedList);
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).FindTextures(SortedList);
 end;
 
 function TTreeMap.ReplaceTexture;
@@ -476,8 +479,8 @@ var
  I: Integer;
 begin
  Result:=0;
- for I:=0 to SousElements.Count-1 do
-  Inc(Result, TTreeMap(SousElements[I]).ReplaceTexture(Source, Dest, U));
+ for I:=0 to SubElements.Count-1 do
+  Inc(Result, TTreeMap(SubElements[I]).ReplaceTexture(Source, Dest, U));
 end;
 
 (*function TTreeMap.GetTreeView(var M: TMapExplorer) : Boolean;
@@ -866,9 +869,9 @@ var
    O2Pt, Demi: TPoint;
    SelPen: HPen;
   begin
-   for I:=0 to T.SousElements.Count-1 do
+   for I:=0 to T.SubElements.Count-1 do
     begin
-     T1:=TTreeMap(T.SousElements[I]);
+     T1:=TTreeMap(T.SubElements[I]);
      if T1 is TTreeMapSpec then
       begin
        if (CompareText(TTreeMapSpec(T1).Specifics.Values[Spec], Arg) = 0)
@@ -1920,9 +1923,9 @@ begin
   OldPen:=0;
  IsRestrictor:=Info.Restrictor=Self;
  if IsRestrictor then Info.Restrictor:=Nil;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   T:=TTreeMap(SousElements[I]);
+   T:=TTreeMap(SubElements[I]);
    if not Odd(T.SelMult) or (mdParcourirSel in Info.ModeDessin) then
     T.Dessiner;
   end;
@@ -1993,7 +1996,7 @@ begin
  if not Odd(T.SelMult) then
   begin
    if (T.SelMult and smSousSelVide = 0) and (T is TTreeMapGroup) then
-    with TTreeMapGroup(T).SousElements do
+    with TTreeMapGroup(T).SubElements do
      for I:=0 to Count-1 do
       if ControleSelection(TTreeMap(Items[I])) then
        Exit;
@@ -2028,13 +2031,13 @@ begin
   and (ViewFlags and vfHideOn3DView <> 0)) then
    Exit;
  Pile:=Negatif.Count;
- for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).ListePolyedres(Polyedres, Negatif, 0, -1);
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).ListePolyedres(Polyedres, Negatif, 0, -1);
  if Odd(SelMult) or Neg then
   Flags:=Flags and not soSelOnly;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   T:=TTreeMap(SousElements[I]);
+   T:=TTreeMap(SubElements[I]);
    if ((Flags and soSelOnly = 0) or ControleSelection(T))
    and (not Odd(T.SelMult) or (Flags and soNonParcourirSel = 0)) then
     T.ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, Brushes);
@@ -2047,8 +2050,8 @@ procedure TTreeMapGroup.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 var
  I: Integer;
 begin
- for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).ListeEntites(Entites, Cat);
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).ListeEntites(Entites, Cat);
 end;
 
 procedure TTreeMapGroup.SauverTexte;
@@ -2061,9 +2064,9 @@ begin
   Exit;
  if Odd(SelMult) then
   Flags:=Flags and not soSelOnly;
- for I:=0 to SousElements.Count-1 do
+ for I:=0 to SubElements.Count-1 do
   begin
-   T:=TTreeMap(SousElements[I]);
+   T:=TTreeMap(SubElements[I]);
    if (Flags and soSelOnly = 0) or ControleSelection(T) then
     T.SauverTexte(Negatif, Texte, Flags, HxStrings);
   end;

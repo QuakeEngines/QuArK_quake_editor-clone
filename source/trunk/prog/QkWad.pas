@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/06/09 00:31:06  tiglari
+Commented out unneeded imglist uses.
+
 Revision 1.6  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -42,7 +45,7 @@ type
  QWad = class(QLvFileObject)
         protected
           function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
@@ -55,7 +58,7 @@ type
  QTextureList = class(QWad)
                 protected
                  {function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;}
-                  procedure Enregistrer(Info: TInfoEnreg1); override;
+                  procedure SaveFile(Info: TInfoEnreg1); override;
                   procedure LoadFile(F: TStream; FSize: Integer); override;
                 public
                   class function TypeInfo: String; override;
@@ -74,7 +77,7 @@ type
     ImageTextures: TQList;
    {GameInfo: PGameBuffer;
     procedure SetInfo(nInfo: PGameBuffer);
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;}
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;}
     function PopulateListView(Counter: Integer) : Integer; override;
     function AnimationNextStep(Q: QPixelSet; Seq: Integer) : QPixelSet;
   protected
@@ -118,7 +121,7 @@ begin
  Result:='.wad';
 end;
 
-function QWad.OuvrirFenetre;
+function QWad.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQWad.Create(nOwner);
 end;
@@ -208,7 +211,7 @@ begin
          Raise EErrorFmt(5509, [72]);
         F.Position:=P^.Position;
         Q:=OpenFileObjectData(F, CharToPas(P^.Nom)+Prefix+P^.InfoType, P^.Taille, Self);
-        SousElements.Add(Q);
+        SubElements.Add(Q);
         LoadedItem(rf_Default, F, Q, P^.Taille);
         Inc(P);
        end;
@@ -218,7 +221,7 @@ begin
  end;
 end;
 
-procedure QWad.Enregistrer(Info: TInfoEnreg1);
+procedure QWad.SaveFile(Info: TInfoEnreg1);
 var
  Entete: TEnteteWad;
  Entree: TEntreeRep;
@@ -240,10 +243,10 @@ begin
        { write .wad entries }
       Repertoire:=TMemoryStream.Create; try
       Entete.NbEntrees:=0;
-      for I:=0 to SousElements.Count-1 do
+      for I:=0 to SubElements.Count-1 do
        begin
         FillChar(Entree, SizeOf(Entree), 0);
-        Q:=SousElements[I];
+        Q:=SubElements[I];
         S:=Q.Name+Q.TypeInfo;
 
         Wad3:=Copy(S, Length(S)-6, 6) = '.wad3_';
@@ -271,7 +274,7 @@ begin
           finally TexFile.AddRef(-1); end;
          end
         else
-         Q.Enregistrer1(Info);   { default saving method }
+         Q.SaveFile1(Info);   { default saving method }
         Entree.Taille:=F.Position-Entree.Position;
         Entree.Idem:=Entree.Taille;
         Dec(Entree.Position, Origine);
@@ -323,7 +326,7 @@ begin
  Result:='.txlist';
 end;
 
-{function QTextureList.OuvrirFenetre;
+{function QTextureList.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQWad.Create(nOwner);
 end;}
@@ -417,7 +420,7 @@ begin
          Q:=OpenFileObjectData(F, S, Size, Self)
         else
          Q:=OpenFileObjectData(F, S+'.wad_D', Size, Self);
-        SousElements.Add(Q);
+        SubElements.Add(Q);
         LoadedItem(rf_Default, F, Q, Size);
         Inc(P);
        end;
@@ -427,7 +430,7 @@ begin
  end;
 end;
 
-procedure QTextureList.Enregistrer(Info: TInfoEnreg1);
+procedure QTextureList.SaveFile(Info: TInfoEnreg1);
 var
  Count: LongInt;
  I: Integer;
@@ -439,7 +442,7 @@ begin
  with Info do case Format of
   1: begin  { as stand-alone file }
       Origine:=F.Position;
-      Count:=SousElements.Count;
+      Count:=SubElements.Count;
       F.WriteBuffer(Count, SizeOf(Count));
 
        { write dummy positions to be updated later }
@@ -450,15 +453,15 @@ begin
 
        { write textures }
       P:=Positions;
-      for I:=0 to SousElements.Count-1 do
+      for I:=0 to SubElements.Count-1 do
        begin
-        Q:=SousElements[I];
+        Q:=SubElements[I];
         if Q is QPixelSet then
          begin
           P1:=F.Position;
           try
            if Q is QTexture1 then
-            Q.Enregistrer1(Info)   { default saving method }
+            Q.SaveFile1(Info)   { default saving method }
            else
             begin
              TexFile:=CreateCopyTexture(QPixelSet(Q)); try
@@ -543,7 +546,7 @@ begin
    L.Text:=S;
    for I:=0 to L.Count-1 do
     begin
-     QObj:=FileObject.SousElements.FindShortName(L[I]);
+     QObj:=FileObject.SubElements.FindShortName(L[I]);
      if (QObj<>Nil) and (QObj is QPixelSet) then
       begin
        Result:=QPixelSet(QObj);
@@ -554,7 +557,7 @@ begin
   end;
 end;
 
-(*procedure TFQWad.wmMessageInterne(var Msg: TMessage);
+(*procedure TFQWad.wmInternalMessage(var Msg: TMessage);
 var
  Q: QObject;
  Modes: set of Boolean;
@@ -565,9 +568,9 @@ begin
     begin
      Modes:=[];
      if FileObject<>Nil then
-      for I:=0 to FileObject.SousElements.Count-1 do
+      for I:=0 to FileObject.SubElements.Count-1 do
        begin
-        Q:=FileObject.SousElements[I];
+        Q:=FileObject.SubElements[I];
         if Q is QTexture then
          case QTexture(Q).NeededGame of       
           mjNotQuake2: Include(Modes, False);
@@ -659,7 +662,7 @@ begin
      ImageList1.Clear;
      ImageList1.AllocBy:=ListView1.AllocBy;
    {end;}
-   if FileObject.SousElements.Count=0 then
+   if FileObject.SubElements.Count=0 then
     Result:=-1
    else
     begin
@@ -673,9 +676,9 @@ begin
   end;
  NewPSD.Init;
  PSD.Init;
- while Counter < FileObject.SousElements.Count do
+ while Counter < FileObject.SubElements.Count do
   begin
-   Q:=FileObject.SousElements[Counter];
+   Q:=FileObject.SubElements[Counter];
    Inc(Counter);
    if not (Q is QPixelSet)   { ignore the non-images }
    or (ImageTextures.IndexOf(Q)>=0) then      { already loaded }
@@ -869,9 +872,9 @@ begin
  PositionTexture:=Nil;
 
  L:=TStringList.Create; try
- for I:=0 to FileObject.SousElements.Count-1 do
+ for I:=0 to FileObject.SubElements.Count-1 do
   begin
-   Q:=FileObject.SousElements[I];
+   Q:=FileObject.SubElements[I];
    if Q is QTexture then
     L.Add(Q);
   end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/03 14:10:04  alexander
+fixed: hang when extract textures
+
 Revision 1.7  2000/06/24 16:40:14  alexander
 cosmetic fixes
 
@@ -57,7 +60,7 @@ uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Dialogs;
 type
  QM32 = class(QImages)
         protected
-          procedure Enregistrer(Info: TInfoEnreg1); override;
+          procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
@@ -68,18 +71,22 @@ implementation
 
 uses Windows, Travail, Quarkx, QkPixelSet;
 
-var InitialStreamPos : longint;
+type
+ TM32Header = packed record                     // offset
+                Id: LongInt;                    // $0   - $4 bytes of id
+                Name: array[0..$1FF] of Char;   // $4   - $200 bytes of path+filename (zero-terminated)
+                Width: Word;                    // $204 - $2 bytes of width
+                _filler1: array[0..$3D] of Byte;// $206 - $3E bytes of unknown data
+                Height: Word;                   // $244 - $2 bytes of height
+                _filler2: array[0..$7D] of Byte;// $246 - $7E bytes of unknown data
+                Flags: LongInt;                 // $2C4 - $4 bytes of flag-bits
+                Contents: LongInt;              // $2C8 - $4 bytes of contents-bits
+                Value: LongInt;                 // $2CC - $4 bytes of value
+                _filler3: array[0..$F7] of Byte;// $2D0 - $F8 bytes of unknown data
+                                                // $3C8 - beginning of RGBA data
+              end;
 
-Procedure WriteZeros(F: TStream; tilloffset: longint);
-Var
-  zero : byte;
-begin
-  zero:=0;
-  while tilloffset > F.position - InitialStreamPos do
-    F.WriteBuffer(zero, 1);
-end;
-
-Procedure QM32.Enregistrer(Info: TInfoEnreg1);
+Procedure QM32.SaveFile(Info: TInfoEnreg1);
 type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
@@ -95,6 +102,17 @@ var
   PSD,OldPSD: TPixelSetDescription;
   PBaseLineBuffer,PLineBuffer: PChar;
   SourceRGB: PRGB;
+  InitialStreamPos : longint;
+
+  Procedure WriteZerosTillFileOffset(F: TStream; tilloffset: longint);
+  Var
+    zero : byte;
+  begin
+    zero:=0;
+    while tilloffset > F.position - InitialStreamPos do
+      F.WriteBuffer(zero, 1);
+  end;
+
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -107,7 +125,7 @@ begin
      { use PSD here, it is guaranteed to be 24bpp + 8bpp alpha }
 
       InitialStreamPos:=F.Position; {save where we are (needed pak file)}
-      
+
       Contents:=StrToIntDef(Specifics.Values['Contents'], 0);
       Flags   :=StrToIntDef(Specifics.Values['Flags'], 0);
       Value   :=StrToIntDef(Specifics.Values['Value'], 0);
@@ -116,39 +134,41 @@ begin
       F.WriteBuffer(sig,4);
       AName:=Name;
       F.WriteBuffer(AName[1], length(aname));
-      WriteZeros(F, $204);
+      WriteZerosTillFileOffset(F, $204);
       with PSD.Size do begin
         W:=X;
         H:=Y;
       end;
       F.WriteBuffer(W, 2);
-      WriteZeros(F, $244);
+      WriteZerosTillFileOffset(F, $244);
       F.WriteBuffer(H, 2);
-      WriteZeros(F, $2c4);
+      WriteZerosTillFileOffset(F, $2C4);
       F.WriteBuffer(flags, 4);
       F.WriteBuffer(contents , 4);
       F.WriteBuffer(value, 4);
-      WriteZeros(F, $3C8);
+      WriteZerosTillFileOffset(F, $3C8);
       LineWidth:= W * 4;  { 4 bytes per line (32 bit)}
       ScanLine:=PSD.StartPointer;
       AlphaScanLine:=PSD.AlphaStartPointer;
-      GetMem(PBaseLineBuffer, LineWidth); try
-      for J:=1 to h do {iterate lines}
-      begin
-        PLineBuffer:=PBaseLineBuffer;
-        SourceRGB:=PRGB(ScanLine);
-        SourceRGB[2]:=PRGB(ScanLine)^[0];  {rgb -> bgr  }
-        SourceRGB[1]:=PRGB(ScanLine)^[1];  {rgb -> bgr  }
-        SourceRGB[0]:=PRGB(ScanLine)^[2];  {rgb -> bgr  }
-        for K:=0 to W-1 do begin  { mix color and alpha line-by-line }
-          PRGB(PLineBuffer)^:=SourceRGB^; Inc(SourceRGB);
-          PLineBuffer[3]:=AlphaScanLine[K]; {inject alpha after RGB}
-          Inc(PLineBuffer, 4);
+      GetMem(PBaseLineBuffer, LineWidth);
+      try
+        for J:=1 to h do {iterate lines}
+        begin
+          PLineBuffer:=PBaseLineBuffer;
+          SourceRGB:=PRGB(ScanLine);
+          SourceRGB[2]:=PRGB(ScanLine)^[0];  {rgb -> bgr  }
+          SourceRGB[1]:=PRGB(ScanLine)^[1];  {rgb -> bgr  }
+          SourceRGB[0]:=PRGB(ScanLine)^[2];  {rgb -> bgr  }
+          for K:=0 to W-1 do begin  { mix color and alpha line-by-line }
+            PRGB(PLineBuffer)^:=SourceRGB^;
+            Inc(SourceRGB);
+            PLineBuffer[3]:=AlphaScanLine[K]; {inject alpha after RGB}
+            Inc(PLineBuffer, 4);
+          end;
+          F.WriteBuffer(PBaseLineBuffer^, LineWidth);
+          Inc(ScanLine, PSD.ScanLine);
+          Inc(AlphaScanLine, PSD.AlphaScanLine);
         end;
-        F.WriteBuffer(PBaseLineBuffer^, LineWidth);
-        Inc(ScanLine, PSD.ScanLine);
-        Inc(AlphaScanLine, PSD.AlphaScanLine);
-      end;
       finally
         FreeMem(PBaseLineBuffer);
       end;
@@ -159,9 +179,8 @@ begin
   end;
  end;
 end;
+
 {
-
-
 header hex : 04 00 00 00
 then the pak path where the file is place .. eg pics/menus/
 then 00 to offset 204 (hex not byte) then hi lo byte height of image
@@ -177,6 +196,7 @@ read in 4 byte blocks
 
 in some files (shapes) the 4 byte is a alpha value
 }
+
 function ReadPath(F: TStream): string;
 var
   ch: char;
@@ -211,7 +231,8 @@ begin
   SetLength(RawData, Length(Spec1)+J);
   ScanLine:=PChar(RawData)+Length(RawData)-ScanW;
   sScanW:=-ScanW;
-  for J:=1 to Height do begin
+  for J:=1 to Height do
+  begin
     F.ReadBuffer(ScanLine^, I);
     if I<ScanW then
       FillChar(ScanLine[I], ScanW-I, 0);  { pad with zeroes }
@@ -223,30 +244,30 @@ begin
    It was loaded together with the image data into 'RawData',
    but 'RawData' must now be split into two buffers : one for the image colors
    and one for the alpha channel.}
-   alpha_buffer:=Spec2;
-   J:=Width*Height;       { pixel count }
-   Setlength(alpha_buffer,Length(Spec2)+ J);
+  alpha_buffer:=Spec2;
+  J:=Width*Height;       { pixel count }
+  Setlength(alpha_buffer,Length(Spec2)+ J);
 
-   {prepare image buffer}
-   Image_Buffer:=Spec1;
-   SetLength(Image_Buffer, Length(Spec1)+ 3*J);
+  {prepare image buffer}
+  Image_Buffer:=Spec1;
+  SetLength(Image_Buffer, Length(Spec1)+ 3*J);
 
-   {split ABGR into RGB and Alpha}
-   Source:=PChar(RawData)+Length(Spec1);
-   Dest:=PChar(Image_Buffer)+Length(Spec1);
-   AlphaBuf:=PChar(alpha_buffer)+Length(Spec2);
-   for I:=1 to J do
-   begin
-     PRGB(Dest)^[2]:=PRGB(Source)^[0];  {bgr -> rgb  }
-     PRGB(Dest)^[1]:=PRGB(Source)^[1];  {bgr -> rgb  }
-     PRGB(Dest)^[0]:=PRGB(Source)^[2];  {bgr -> rgb  }
-     AlphaBuf^:=Source[3];      { alpha }
-     Inc(Dest, 3);
-     Inc(Source, 4);
-     Inc(AlphaBuf);
-   end;
-   a:=Alpha_Buffer;
-   rgb:=Image_Buffer;
+  {split ABGR into RGB and Alpha}
+  Source:=PChar(RawData)+Length(Spec1);
+  Dest:=PChar(Image_Buffer)+Length(Spec1);
+  AlphaBuf:=PChar(alpha_buffer)+Length(Spec2);
+  for I:=1 to J do
+  begin
+    PRGB(Dest)^[2]:=PRGB(Source)^[0];  {bgr -> rgb  }
+    PRGB(Dest)^[1]:=PRGB(Source)^[1];  {bgr -> rgb  }
+    PRGB(Dest)^[0]:=PRGB(Source)^[2];  {bgr -> rgb  }
+    AlphaBuf^:=Source[3];      { alpha }
+    Inc(Dest, 3);
+    Inc(Source, 4);
+    Inc(AlphaBuf);
+  end;
+  a:=Alpha_Buffer;
+  rgb:=Image_Buffer;
 end;
 
 Procedure QM32.LoadFile(F: TStream; FSize: Integer);
@@ -299,10 +320,10 @@ end;
 
 class Procedure QM32.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
- inherited;
- Info.NomClasseEnClair:=LoadStr1(5177);
- Info.FileExt:=806;
- Info.WndInfo:=[wiWindow];
+  inherited;
+  Info.NomClasseEnClair:=LoadStr1(5177);
+  Info.FileExt:=806;
+  Info.WndInfo:=[wiWindow];
 end;
 
 initialization

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -58,7 +61,7 @@ type
             end;
  QZText   = class(QText)
             protected
-              procedure Enregistrer(Info: TInfoEnreg1); override;
+              procedure SaveFile(Info: TInfoEnreg1); override;
             end;
 
 type
@@ -67,7 +70,7 @@ type
     procedure Memo1Change(Sender: TObject);
   private
     MAJ: Boolean;
-    procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+    procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
@@ -126,7 +129,7 @@ begin
  Result:='.txt';
 end;
 
-function QText.OuvrirFenetre;
+function QText.OuvrirFenetre(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQText.Create(nOwner);
 end;
@@ -184,7 +187,7 @@ end;
 
  {------------------------}
 
-procedure QZText.Enregistrer(Info: TInfoEnreg1);
+procedure QZText.SaveFile(Info: TInfoEnreg1);
 const
  Start = Length('Data=X');
 var
@@ -227,7 +230,7 @@ end;
 
  {------------------------}
 
-procedure TFQText.wmMessageInterne(var Msg: TMessage);
+procedure TFQText.wmInternalMessage(var Msg: TMessage);
 begin
  case Msg.wParam of
   wp_AfficherObjet:

@@ -124,7 +124,7 @@ type
                  FRAMETIME: Reel;
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
-                 procedure wmMessageInterne(var Msg: TMessage); message wm_MessageInterne;
+                 procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                  procedure Paint(Sender: TObject; DC: {HDC}Integer; const rcPaint: TRect);
                  procedure Render;
                  procedure NeedScene(NeedSetup: Boolean);
@@ -375,7 +375,7 @@ begin
   end;
 end;
 
-procedure TPyMapView.wmMessageInterne(var Msg: TMessage);
+procedure TPyMapView.wmInternalMessage(var Msg: TMessage);
 var
  Y, Limite: Integer;
 begin
@@ -386,7 +386,7 @@ begin
                     if FullScreen and (Drawing and dfFull3DFX = 0) then
                      begin
                       Inc(Drawing, dfFull3DFX);
-                      PostMessage(Handle, wm_MessageInterne, wp_PaintFull3DFX, 0);
+                      PostMessage(Handle, wm_InternalMessage, wp_PaintFull3DFX, 0);
                      end;
                    end;
   wp_PaintFull3DFX: begin
@@ -509,7 +509,7 @@ begin
        else
         SetScreenSize(ScreenSizeX, ScreenSizeY);*)
        GammaCorrection(GetFloatSpec('FullScreenGamma', 1));
-       Perform(wm_MessageInterne, wp_PyInvalidate, 0); 
+       Perform(wm_InternalMessage, wp_PyInvalidate, 0); 
       end;
      SetScreenSize(ClientWidth, ClientHeight);
     end;
@@ -2609,7 +2609,7 @@ begin
     if Scene is TGLSceneObject then
      begin
       TGLSceneObject(Scene).Ready:=False;
-      PostMessage(Handle, wm_MessageInterne, wp_OpenGL, 0);
+      PostMessage(Handle, wm_InternalMessage, wp_OpenGL, 0);
      end;
   Result:=PyNoResult;
  except
