@@ -13,8 +13,8 @@ Red means stuff that should defintely be done for release.
 <br>status: basically done.
             editing of folder properties not yet implemented, maybe delay til 6.3
 
-<li><font color=#FF0000>Bezier Page:</font> (Andy)
-<br>status: texture itself isn't being shown, starting scale too big.
+<li>Bezier Page: (tiglari)
+<br>status: basically done, linear mapping handles non-functional
 
 <li>Read/Write Brush Primitives: (tiglari)
 <br>status: done. There's a potential for imprecisions to accumulate if
