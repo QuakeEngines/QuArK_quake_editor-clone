@@ -65,21 +65,11 @@ and matrix sytems) we don't have to worry about this kind
 of thing, since we're taking the standard basis as the
 fundamental one.
 
-
-
-of
-the result
-of applying the mapping designated by M to the vector v
-(the vectors are treated as 1-column matrices).  Furthermore,
-if M and N are matrices, then M*N is the matrix for
-the mapping derived by first applying N's mapping, then
-M's.
-
 Most of the time the basis we're most interested in is
 the standard one, which I'll repeat here:
 <code>
-xa = &lt;1, 0, 0>
-ya = &lt;0, 1, 0>
-za = &lt;0, 0, 1>
+xa = &lt;1, 0, 0&gt;
+ya = &lt;0, 1, 0&gt;
+za = &lt;0, 0, 1&gt;
 </code>
 
