@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2001/07/22 09:57:29  tiglari
+SOF bsp viewing (non-optimized, most of face record unknown)
+
 Revision 1.39  2001/07/21 03:49:23  tiglari
 Q3A bsp's now writing (but some attempted SOF reading code not yet functional)
 
@@ -373,8 +376,9 @@ type
 
 const
  cSignatureBspQ2DKQ3  = $50534249; {"IBSP" 4-letter header, which Quake-2, Daikatana and Quake-3:Arena contains}
-
+ cSignatureSin        = 1347633746;
  cVersionBspQ2        = $00000026; {Quake-2 .BSP}
+ cVersionSin          = 1;
  cVersionBspDK        = $00000029; {Daikatana .BSP}
 
 const
@@ -811,7 +815,8 @@ begin
           case Version of
             cVersionBspQ2: { Quake-2 }
             begin
-              ChangeGameMode(mjQuake2,true);
+              if BspType(CharModeJeu)<>bspTypeQ2 then
+                ChangeGameMode(mjQuake2,true);
               LoadBsp2(F, StreamSize);
               ObjectGameCode := CurrentQuake2Mode;
             end;
