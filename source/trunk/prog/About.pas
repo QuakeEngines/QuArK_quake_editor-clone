@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/06/05 18:38:06  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.10  2001/03/20 21:48:43  decker_dk
 Updated copyright-header
 
@@ -97,7 +100,7 @@ type
   public
   end;
 
-function ReminderThread(F: TForm): THandle;
+function DisclaimerThread(F: TForm): THandle;
 
 implementation
 
@@ -222,8 +225,8 @@ const
   MIN_DELAY = 4;
 
 type
-  PReminderInfo = ^TReminderInfo;
-  TReminderInfo = record
+  PDisclaimerInfo = ^TDisclaimerInfo;
+  TDisclaimerInfo = record
     H: HWnd;
     R: TRect;
     Delay: Integer;
@@ -232,7 +235,7 @@ type
     Event: THandle;
   end;
 
-function ReminderProc(Info: PReminderInfo): LongInt; stdcall;
+function DisclaimerProc(Info: PDisclaimerInfo): LongInt; stdcall;
 var
   DC: HDC;
   I, C: Integer;
@@ -279,57 +282,38 @@ begin
   Result := 0;
 end;
 
-function GetReminder(Info: PReminderInfo): THandle;
+function GetDisclaimer(Info: PDisclaimerInfo): THandle;
 var
   Dummy: DWORD;
   S: string;
-  Reg: TRegistry2;
 begin
-  Reg := TRegistry2.Create;
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Info^.TextSize := 10;
-    Info^.Delay := MAX_DELAY;
-    S := 'QuArK comes with ABSOLUTELY NO WARRANTY; this is free software, and you are welcome '
+  Info^.TextSize := 10;
+  Info^.Delay := MAX_DELAY; // MIN_DELAY would also be a possibility
+  S := 'QuArK comes with ABSOLUTELY NO WARRANTY; this is free software, and you are welcome '
        + 'to redistribute it under certain conditions. For details, see ''?'', ''About''.';
-    if Reg.ReadOpenKey('\Software\Armin Rigo\QuakeMap')
-    and Reg.ReadString('Registered', S) then
-    begin
-      if DecodeEnregistrement(S) then
-      begin
-        S := 'Registered to ' + S;
-        Info^.TextSize := 18;
-        Info^.Delay := MIN_DELAY;
-      end;
-    end;
-  finally
-    Reg.Free;
-  end;
   {$IFDEF Debug}
-  if S <> 'Registered to -- NOT REGISTERED !' then
-    Info^.Delay := MAX_DELAY;
   S := 'BETA ' + QuArKVersion;
   Info^.TextSize := 22;
   {$ENDIF}
   StrPCopy(Info^.Text, S);
-  Result := CreateThread(nil, 0, @ReminderProc, Info, 0, Dummy);
+  Result := CreateThread(nil, 0, @DisclaimerProc, Info, 0, Dummy);
   SetThreadPriority(Result, THREAD_PRIORITY_ABOVE_NORMAL);
 end;
 
-function ReminderThread(F: TForm): THandle;
+function DisclaimerThread(F: TForm): THandle;
 var
-  Info: PReminderInfo;
+  Info: PDisclaimerInfo;
 begin
   New(Info);
   Info^.H := F.Handle;
   Info^.R := F.ClientRect;
   Info^.Event := 0;
-  Result := GetReminder(Info);
+  Result := GetDisclaimer(Info);
 end;
 
 procedure TAboutBox.FormActivate(Sender: TObject);
 var
-  Info: PReminderInfo;
+  Info: PDisclaimerInfo;
 begin
   OnActivate := nil;
   Event := CreateEvent(nil, False, False, nil);
@@ -338,7 +322,7 @@ begin
   Info^.R := Image1.BoundsRect;
   Info^.Event := 0;
   DuplicateHandle(GetCurrentProcess, Event, GetCurrentProcess, @Info^.Event, 0, False, DUPLICATE_SAME_ACCESS);
-  CloseHandle(GetReminder(Info));
+  CloseHandle(GetDisclaimer(Info));
 end;
 
 procedure TAboutBox.FormClose(Sender: TObject; var Action: TCloseAction);
