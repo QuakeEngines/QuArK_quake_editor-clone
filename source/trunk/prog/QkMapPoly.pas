@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2002/12/21 09:28:41  tiglari
+update genesis3d map writing
+
 Revision 1.58  2002/12/15 14:06:05  tiglari
 fix bug in writing valve 220 map format
 
@@ -1129,9 +1132,14 @@ end;
 procedure Valve220MapParams(const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
-  Axis, P0, P1, P2, D1, D2, Shift : TVect;
+  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2,
+   V0, V1, V2, V2b : TVect;
+
   Mat: TMatrixTransformation;
-  S1, S2 : Double;
+  S1, S2, UOff, VOff : Double;
+  Mirror : boolean;
+  Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
+  QV0, QV1, UAxis, VAxis : TVect; // from Zoners
 
   procedure write4vect(const V: TVect; D : Double; var S: String);
   begin
@@ -1144,31 +1152,120 @@ var
   end;
 
 begin
+(*
+  Plan:=PointsToPlane(Normale);
+  case Plan of
+   'X' : Axis := MakeVect(1, 0, 0);
+   'Y' : Axis := MakeVect(0, 1, 0);
+   'Z' : Axis := MakeVect(0, 0, 1);
+  end;
+ *)
 
   F.GetThreePointsT(P0, P1, P2);
-  D1:= VecDiff(P1, P0);
-  D2:= VecDiff(P2, P0);
-  Normalise(D1, S1);
-  Normalise(D2, S2);
+(*
+   this code seems to show that the results of
+     GetThreePointsT are the same as getting the
+     simulated 3points, and swapping P2 and P1 when
+     the mirror bit is set
 
-  S1:=S1/128;
-  S2:=S2/128;
-  { probably can be optimized }
+  F.SimulateEnhTex(V0, V1, V2, Mirror);
+  if Mirror then
+  begin
+   // ShowMessage('Mirror');
+    V2b:=V2;
+    V2:=V1;
+    V1:=V2b;
+  end;
+  if VecLength(VecDiff(V0,P0))>rien then
+  begin
+    ShowMessage('P0 discrepancy');
+  end;
+   if VecLength(VecDiff(V1,P1))>rien then
+  begin
+    ShowMessage('P1 discrepancy');
+  end;
+   if VecLength(VecDiff(V2,P2))>rien then
+  begin
+    ShowMessage('P2 discrepancy');
+  end;
 
-  Mat:= MatriceInverse(MatrixFromCols(D1, D2,Cross(D1,D2)));
-  Shift:= MatrixMultByVect(Mat,P0);
+ *)
+
+  // D1|D2 = Zoner's TexPt[0|1]
+  D1:= VecScale(1.0/128.0, VecDiff(P1, P0));
+  D2:= VecScale(1.0/128.0, VecDiff(P2, P0));
+ {
+        dot22 = DotProduct(TexPt[0], TexPt[0]);
+        dot23 = DotProduct(TexPt[0], TexPt[1]);
+        dot33 = DotProduct(TexPt[1], TexPt[1]);
+        mdet = dot22 * dot33 - dot23 * dot23;
+ }
+
+  Dot22:=Dot(D1, D1);
+  Dot23:=Dot(D1, D2);
+  Dot33:=Dot(D2, D2);
+  Mdet:= Dot22*Dot33 - Dot23*Dot23;
+
+ {
+         mdet = 1.0 / mdet;
+         aa = dot33 * mdet;
+         bb = -dot23 * mdet;
+         dd = dot22 * mdet;
+  }
+
+  Mdet := 1.0/MDet;
+  aa:=Dot33*MDet;
+  bb:=-Dot23*Mdet;
+  dd:= Dot22*Mdet;
+
+(*
+     for (j = 0; j < 3; j++)
+     {
+       side->td.vects.quark.vects[0][j] = aa * TexPt[0][j] + bb * TexPt[1][j];
+       side->td.vects.quark.vects[1][j] = -( /*cc */ bb * TexPt[0][j] + dd * TexPt[1][j]);
+     }
+*)
+  QV0:=VecSum(VecScale(aa, D1), VecScale(bb, D2));
+  QV1:=VecSum(VecScale(-bb, D1), VecScale(-dd, D2));
+
+  {
+    side->td.vects.quark.vects[0][3] = -DotProduct(side->td.vects.quark.vects[0], side->planepts[0]);
+    side->td.vects.quark.vects[1][3] = -DotProduct(side->td.vects.quark.vects[1], side->planepts[0]);
+  }
+
+  UOff:=-Dot(QV0,P0);
+  VOff:=-Dot(QV1,P0);
+
+  { up do this point, QV0,UOff and QV1,VOff seem to be identical to the
+     quark.vects structure in zoner's }
+
+  UAxis:=QV0;
+  VAxis:=QV1;
 
 
-  write4vect(D1, -Shift.X/S1, S);
-  write4vect(D2, Shift.Y/S2, S);
+  Normalise(QV0, S1);
+  Normalise(QV1, S2);
+
+//  if (veclength(qv0)>1) or (veclength(qv1)>1) then
+//    ShowMessage('oops');
+  write4vect(QV0, UOff, S);
+  write4vect(QV1, VOff, S);
+
+(*
+  write4vect(D1, -PP0.X/S1, S);
+  write4vect(D2, PP0.Y/S2, S);
+*)
+
+  S1:=1.0/S1;
+  S2:=1.0/S2;
 
   S:=S+' 0 ';
   S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5);
   { sign flip engineered into Scale }
-  S:=S+' '+FloatToStrF(-S2, ffFixed, 20, 5);
+  S:=S+' '+FloatToStrF(S2, ffFixed, 20, 5);
+
 
 end;
-
 
 procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
@@ -2472,7 +2569,7 @@ var
 }
     begin
 
-     if MapFormat=QetpType then
+     if (MapFormat=QetpType) or (MapFormat=V220Type) then
      begin
        F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
 
