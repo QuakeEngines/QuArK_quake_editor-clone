@@ -29,6 +29,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.25  2000/11/19 15:34:08  decker_dk
+//Uncommented some conflicting equal texture-names
+//
 //Revision 1.24  2000/11/11 17:54:31  decker_dk
 //Misc.TFC spec/args updates.
 //
@@ -7370,6 +7373,7 @@ $0D"sprites/zerogxplode.spr"
                 t_globalname = !
                 dmdelay: = { Txt="&" Hint="Deathmatch recharge delay" }
                 t__minlight = !
+                t_rendermode = !
                 t_brushentity = !
         }
         func_illusionary:form = {
@@ -7471,6 +7475,7 @@ $0D"sprites/zerogxplode.spr"
                 buoyancy: = { Txt="&" Hint="Buoyancy" }
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_recharge:form = {
                 t_globalname = !
@@ -7506,6 +7511,7 @@ $0D"sprites/zerogxplode.spr"
                 spawnflags: = { Typ="X256" Cap="Touch Activates" Txt="&" }
                 t__minlight = !
                 t_angles = !
+                t_rendermode = !
                 t_tfc_settings = !
                 t_brushentity = !
         }
