@@ -1046,6 +1046,41 @@ class SideStepDragObject(AnimatedDragObject):
         self.view.animation = 1
         self.view.cameraposition = pos + self.vleft*x + self.vtop*y, roll, pitch
 
+#
+# circlestafe utilities
+#
+def vec2rads(v):
+    "returns pitch, yaw, in radians"
+    v = v.normalized
+    import math
+    pitch = -math.sin(v.z)
+    yaw = math.atan2(v.y, v.x)
+    return pitch, yaw
+
+
+class CircleStrafeDragObject(SideStepDragObject):
+
+    def __init__(self, editor, view, x, y):
+        self.editor=editor
+        SideStepDragObject.__init__(self, editor, view, x, y)
+        
+    def dragto(self, x, y, flags):
+        sel = self.editor.layout.explorer.sellist
+        if sel:
+            min, max = quarkx.boundingboxof(sel)
+            center = .5*(max+min)
+            pos, yaw, pitch = self.camerapos0
+            dist = abs(pos-center)
+            x = self.x0-x
+            y = self.y0-y
+            newdir = (pos + self.vleft*x + self.vtop*y - center).normalized
+            newpos = center+dist*newdir
+            pitch, yaw = vec2rads(-newdir)
+            self.view.animation = 1
+            self.view.cameraposition = newpos, yaw, pitch
+        else:
+            SideStepDragObject.dragto(self, x, y, flags)
+    
 
 #
 # Displays a red rectangle created by the mouse movement.
@@ -1181,7 +1216,12 @@ def MouseDragging(editor, view, x, y, s, handle, redcolor):
     "Called when the user drags the mouse on a map view."
 
     if handle is None:
-        if "R" in s:     # display a rectangle
+        if "C" in s:
+            if view.info["type"]=="3D":
+                return CircleStrafeDragObject(editor, view, x, y) 
+            else:
+                return SideStepDragObject(editor, view, x, y)           
+        elif "R" in s:     # display a rectangle
             if ("+" in s) or ("-" in s):
                 if view.info["type"]=="3D":
                     return SideStepDragObject(editor, view, x, y)
@@ -1469,5 +1509,8 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
