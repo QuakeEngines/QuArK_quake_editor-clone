@@ -70,4 +70,6 @@ added.  `thick' to be delayed to 6.3.
 3d view to look head on at the face (ctrl to view from backside)
 <br>status: done
 
+<li>`radial' duplicator: (tiglari) makes copies of things
+radially around a tiltable axis, with `spiral' attributes.
 </ul>
