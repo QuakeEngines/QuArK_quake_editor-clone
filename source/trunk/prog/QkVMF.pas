@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2005/01/27 00:16:13  alexander
+added vmf file loading (brushes only)
+
 
 }
 
@@ -85,51 +88,30 @@ type
  t_vectarray= array[1..3] of TVect;
 var
  SymbolType: TSymbols;
- S, S1, Classname: String;
- StringValue: String;
+ S, S1: String;
  NumericValue: Double;
- V: t_vectarray;
  P: TPolyhedron;
  Surface: TFace;
- I, J, K, NumericValue1, ContentsFlags: Integer;
+ I, ContentsFlags: Integer;
  WorldSpawn: Boolean;
  Entite, EntitePoly: TTreeMapSpec;
  L: TStringList;
  LineNoBeingParsed: Integer;
- Juste13{, FinDeLigne}, Q2Tex, ReadSymbolForceToText: Boolean;
+ Juste13,  ReadSymbolForceToText: Boolean;
  HullNum, BrushNum, FaceNum: Integer;
  HullList: TList;
  Source, Prochain: PChar;
- Entities, MapStructure {Rowdy}, MapStructureB {/Rowdy}: TTreeMapGroup;
+ Entities, MapStructure : TTreeMapGroup;
  Params: TFaceParams;
  InvPoly, InvFaces: Integer;
  TxCommand: Char;
- OriginBrush: TPolyhedron;
- Facteur: TDouble;
- Delta, Delta1: TVect;
- {Rowdy}
- V5: TVect5;
- EntiteBezier: TTreeMapSpec;
- pCP1: vec5_p;
- {/Rowdy}
- WC33map: Boolean; {Decker}
- SpecIndex: integer; {Decker}
- UAxis, VAxis : TVect;  {wc3.3 stuff/tiglari}
+ SpecIndex: integer;
+ UAxis, VAxis : TVect;
  UShift, VShift: Double;
 
 
- Flags, Contents : LongInt;
-// Header : TQ2MipTex;
 
- MapVersion: double;
 
- function ReadInt(str : string) : LongInt;
- begin
-   if str = '' then
-     Result:=0
-   else
-     Result:=StrToInt(str)
- end;
 
 
  procedure ReadSymbol(PrevSymbolMustBe: TSymbols);
@@ -370,11 +352,6 @@ procedure WC33Params;
   end;
  end;
 
- procedure ReadHL2Entity;
- begin
-   // tbd
- end;
-
  procedure ReadHL2Solid;
  // tbd , visgroups, entities, groups
  type
@@ -570,14 +547,160 @@ procedure WC33Params;
  end;
 
 
+ procedure ReadHL2Entity;
+ begin
+   ReadSymbol(sStringToken);
+   ReadSymbol(sCurlyBracketLeft);
+
+   // read attributes of entity
+   while SymbolType<>sCurlyBracketRight do
+   begin
+
+     if SymbolType = sStringQuotedToken then
+     begin
+       S1:=S;
+       ReadSymbol(sStringQuotedToken);
+       if (S1='classname') and (S='worldspawn') then
+       begin
+
+       end;
+       ReadSymbol(sStringQuotedToken);
+     end
+     else
+       if (SymbolType = sStringToken) and (LowerCase(s)='connections') then
+       begin
+         ReadSymbol(sStringToken);
+         ReadSymbol(sCurlyBracketLeft);
+         while SymbolType=sStringQuotedToken do
+         begin
+           S1:=S;
+           ReadSymbol(sStringQuotedToken);
+           S1:=S;
+           ReadSymbol(sStringQuotedToken);
+         end;
+         ReadSymbol(sCurlyBracketRight);
+       end
+       else
+         if (SymbolType = sStringToken) and (LowerCase(s)='editor') then
+         begin
+           ReadSymbol(sStringToken);
+           ReadSymbol(sCurlyBracketLeft);
+           while SymbolType=sStringQuotedToken do
+           begin
+             S1:=S;
+             ReadSymbol(sStringQuotedToken);
+             S1:=S;
+             ReadSymbol(sStringQuotedToken);
+           end;
+           ReadSymbol(sCurlyBracketRight);
+         end
+         else
+           if (SymbolType = sStringToken) and (LowerCase(s)='solid') then
+             ReadHL2Solid
+           else
+             raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
+
+   end; //while SymbolType<>sCurlyBracketRight
+   ReadSymbol(sCurlyBracketRight);
+
+ end;
+
+
+
+ // we use this for all hierachic info that we
+ // just want to read and skip. It allows
+ // mixed quoted string pairs "a" "b"
+ // and named objects   name { }
+ // example
+ // a { "b" "c" sub { "sa" "sb" } "d" "e" } 
+ procedure ReadHL2GenericHierarchy;
+ begin
+   ReadSymbol(sStringToken);
+   ReadSymbol(sCurlyBracketLeft);
+   // read attributes
+   while SymbolType<>sCurlyBracketRight do
+   begin
+     if SymbolType=sStringQuotedToken then
+     begin
+       S1:=S;
+       ReadSymbol(sStringQuotedToken);
+       S1:=S;
+       ReadSymbol(sStringQuotedToken);
+     end
+     else
+       if SymbolType=sStringToken then
+         ReadHL2GenericHierarchy; //descend
+   end;
+   ReadSymbol(sCurlyBracketRight);
+ end;
+
+
+
+
+ // read the world hierarchy
+ procedure ReadWorld;
+ begin
+   ReadSymbol(sStringToken);
+   ReadSymbol(sCurlyBracketLeft);
+
+   // read attributes of world
+   while SymbolType=sStringQuotedToken do
+   begin
+     S1:=S;
+     ReadSymbol(sStringQuotedToken);
+     if (S1='classname') and (S='worldspawn') then
+     begin
+       Entite:=Racine;
+       EntitePoly:=MapStructure;
+       WorldSpawn:=True;
+       HullNum:=0;
+       Racine.Name:=ClassnameWorldspawn;
+     end;
+     ReadSymbol(sStringQuotedToken);
+
+
+   end;
+   if (SymbolType=sCurlyBracketRight) then
+     ReadSymbol(sCurlyBracketRight);
+
+     while SymbolType = sStringToken do  {read a brush}
+       if LowerCase(s)='solid' then
+         ReadHL2Solid
+       else
+         if LowerCase(s)='group' then
+           ReadHL2GenericHierarchy
+         else
+           raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
+   ReadSymbol(sCurlyBracketRight);
+
+ end;
+
+ procedure ReadVersionInfo;
+ begin
+   ReadSymbol(sStringToken);
+   ReadSymbol(sCurlyBracketLeft);
+   // read attributes of versioninfo
+   while SymbolType=sStringQuotedToken do
+   begin
+     S1:=S;
+     ReadSymbol(sStringQuotedToken);
+
+//tbd : what versions to allow ?
+//           if (S1='mapversion') and (S<>'1') then
+//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
+//           if (S1='formatversion') and (S<>'100') then
+//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
+     ReadSymbol(sStringQuotedToken);
+   end;
+   ReadSymbol(sCurlyBracketRight);
+ end;
+
 begin
   ProgressIndicatorStart(5451, Length(SourceFile) div Granularite);
   try
     Source:=PChar(SourceFile);
     Prochain:=Source+Granularite;   { point at which progress marker will be ticked}
     Result:=mjQuake;     { Into Result is but info about what game the map is for }
-    Q2Tex:=False;
-    WC33map:=False; {Decker}
     g_MapError.Clear;
     ReadSymbolForceToText:=False;    { ReadSymbol is not to expect text}
     LineNoBeingParsed:=1;
@@ -594,12 +717,6 @@ begin
      MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
      Racine.SubElements.Add(MapStructure);
      {Rowdy}
-     MapStructureB:=Nil;
-     (*** commented out by Armin : only create the group if actually needed
-      *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
-      *  Racine.SubElements.Add(MapStructureB);
-      *)
-     {/Rowdy}
      ReadSymbol(sEOF);
      while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
                    The first real char ought to be {.  If it is, it
@@ -609,153 +726,62 @@ begin
         Otherwise, it will pull in the next chunk (which ought to be
         a quoted string), and set SymbolType to the type of what it got. }
 
-       // ... except for Doom 3, where we might have a "version 1" or "version 2" line BEFORE
-       // the first "}" ...
-       if (SymbolType=sStringToken) and (CompareText(S,'Version')=0) then
-       begin
-         ReadSymbol(sStringToken); // get the map version number // NumValueToken);
-         if SymbolType<>sNumValueToken then
-           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
-         MapVersion := NumericValue;
-         if MapVersion <> 1 then
-           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
-         Result:=mjDoom3;
-         ReadSymbol(sNumValueToken);
-       end;
 
        // this is for hl2
        //found string versionsinfo
-       if (SymbolType=sStringToken) and (CompareText(S,'versioninfo')=0) then
-       begin
-         ReadSymbol(sStringToken);
-         ReadSymbol(sCurlyBracketLeft);
-         // read attributes of versioninfo
-         while SymbolType=sStringQuotedToken do
-         begin
-           S1:=S;
-           ReadSymbol(sStringQuotedToken);
-
-//tbd : what versions to allow ?            
-//           if (S1='mapversion') and (S<>'1') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
-//           if (S1='formatversion') and (S<>'100') then
-//             raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(270)]);
-           ReadSymbol(sStringQuotedToken);
-         end;
-         if (SymbolType=sCurlyBracketRight) then
-           ReadSymbol(sCurlyBracketRight);
-
-         //found string viewsettings
-         if (SymbolType=sStringToken) and (CompareText(S,'viewsettings')=0) then
-         begin
-           ReadSymbol(sStringToken);
-           ReadSymbol(sCurlyBracketLeft);
-           // read attributes of viewsettings
-           while SymbolType=sStringQuotedToken do
-           begin
-             S1:=S;
-             ReadSymbol(sStringQuotedToken);
-             S1:=S;
-             ReadSymbol(sStringQuotedToken);
-           end;
-           if (SymbolType=sCurlyBracketRight) then
-             ReadSymbol(sCurlyBracketRight);
-
-           Result:=mjHl2;
-
-           //found string world
-           if (SymbolType=sStringToken) and (CompareText(S,'world')=0) then
-           begin
-             ReadSymbol(sStringToken);
-             ReadSymbol(sCurlyBracketLeft);
-
-             // read attributes of world
-             while SymbolType=sStringQuotedToken do
+       while SymbolType=sStringToken do
+       if CompareText(S,'versioninfo')=0 then
+         ReadVersionInfo
+       else
+         //found string visgroups
+         if CompareText(S,'visgroups')=0 then
+           ReadHL2GenericHierarchy
+         else
+           //found string viewsettings
+           if CompareText(S,'viewsettings')=0 then
+               ReadHL2GenericHierarchy
+           else
+             //found string world
+             if CompareText(S,'world')=0 then
              begin
-               S1:=S;
-               ReadSymbol(sStringQuotedToken);
-               if (S1='classname') and (S='worldspawn') then
-               begin
-                 Entite:=Racine;
-                 EntitePoly:=MapStructure;
-                 EntiteBezier:=MapStructureB;
-                 WorldSpawn:=True;
-                 HullNum:=0;
-                 Racine.Name:=ClassnameWorldspawn;
-               end;
-               ReadSymbol(sStringQuotedToken);
-
-
-             end;
-             if (SymbolType=sCurlyBracketRight) then
-               ReadSymbol(sCurlyBracketRight);
-
-             while SymbolType = sStringToken do  {read a brush}
-               if LowerCase(s)='solid' then
-                 ReadHL2Solid()
+               ReadWorld;
+               Result:=mjHl2;
+             end
+             else
+               //found string cameras
+               if CompareText(S,'cameras')=0 then
+                 ReadHL2GenericHierarchy
                else
-                 if LowerCase(s)='entity' then
-                   ReadHL2Entity()
+                 //found string cordon
+                 if CompareText(S,'cordon')=0 then
+                   ReadHL2GenericHierarchy
                  else
-                   raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
-           end;
-         end;
+                   //found string entity
+                   if CompareText(S,'entity')=0 then
+                     ReadHL2Entity
+                   else
+                     //found string hidden
+                     if CompareText(S,'hidden')=0 then
+                       ReadHL2GenericHierarchy
+                     else
+                       raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
 
-         exit;
-       end; // if versionsinfo
+     end;
 
 
 
-       if (OriginBrush<>Nil) and (EntitePoly<>MapStructure) then
-       begin
-         V[1].X:=MaxInt;
-         V[1].Y:=MaxInt;
-         V[1].Z:=MaxInt;
-         V[2].X:=-MaxInt;
-         V[2].Y:=-MaxInt;
-         V[2].Z:=-MaxInt;
-         OriginBrush.ChercheExtremites(V[1], V[2]);
-         if V[1].X<V[2].X then
-         begin
-           Delta.X:=0.5*(V[1].X+V[2].X);
-           Delta.Y:=0.5*(V[1].Y+V[2].Y);      { center of the 'origin brush' }
-           Delta.Z:=0.5*(V[1].Z+V[2].Z);
-           for I:=0 to EntitePoly.SubElements.Count-1 do
-            with EntitePoly.SubElements[I] do
-             for J:=0 to SubElements.Count-1 do
-              with SubElements[J] as TFace do
-               if GetThreePoints(V[1], V[2], V[3]) and LoadData then
-               begin
-                 Facteur:=Dot(Normale, Delta);
-                 Delta1.X:=Delta.X - Normale.X*Facteur;
-                 Delta1.Y:=Delta.Y - Normale.Y*Facteur;    { Delta1 is Delta forced in the plane of the face }
-                 Delta1.Z:=Delta.Z - Normale.Z*Facteur;
-                 for K:=1 to 3 do
-                 begin
-                   V[K].X:=V[K].X + Delta1.X;
-                   V[K].Y:=V[K].Y + Delta1.Y;
-                   V[K].Z:=V[K].Z + Delta1.Z;
-                 end;
-                 SetThreePoints(V[1], V[2], V[3]);
-               end;
-          end;
-        end;
 
-       if (WC33map) then
-       begin
-         { Remove the spec/arg "mapversion" from worldspawn,
-           since QuArK will write it depending on whether the
-           game config is set to write this format }
-         SpecIndex := L.IndexOfName('mapversion');
-         if (SpecIndex >= 0) then
-           L.Delete(SpecIndex);
-       end;
+      { Remove the spec/arg "mapversion" from worldspawn,
+      since QuArK will write it depending on whether the
+      game config is set to write this format }
+      SpecIndex := L.IndexOfName('mapversion');
+      if (SpecIndex >= 0) then
+        L.Delete(SpecIndex);
 
       {Entite.Item.Text:=Classname;}
        Entite.Specifics.Assign(L);
       {Entite.SpecificsChange;}
-       ReadSymbol(sCurlyBracketRight);
-      end;
+
 
      if HullList<>Nil then
       for I:=0 to HullList.Count-1 do
