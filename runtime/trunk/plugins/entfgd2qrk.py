@@ -576,7 +576,6 @@ def makeqrk(root, filename, gamename):
         state = newstate
     CloseClass("--EndByEOF--")
     indent = 2
-    quarkpy.qutils.debug("Here")
     r_tbx = quarkx.newobj("Toolbox Folders.qtx")
     r_tbx["Toolbox"] = "New map items..."
     r_tbx.flags = r_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
@@ -606,6 +605,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.4  2001/12/02 09:57:45  decker_dk
+#Removing 'os' from the import list, and some other minor fixes.
+#
 #Revision 1.3  2001/10/21 08:34:42  decker_dk
 #Print out debug-information, in case of parse-error.
 #

@@ -435,7 +435,11 @@ statediagram =                                                                  
  'STATE_UNKNOWN'        :[(TYPE_FORWARD_SLASH      ,'STATE_COMMENTBEGIN'   ,None)               \
                          ,(TYPE_NEWLINE            ,'STATE_UNKNOWN'        ,None)             ] \
                                                                                                 \
-,'STATE_COMMENTBEGIN'   :[(TYPE_ASTERISK           ,'STATE_QUAKEEDBEGIN'   ,None)             ] \
+,'STATE_COMMENTBEGIN'   :[(TYPE_ASTERISK           ,'STATE_QUAKEEDBEGIN'   ,None)               \
+                         ,(TYPE_FORWARD_SLASH      ,'STATE_EOL_COMMENT'    ,None)             ] \
+                                                                                                \
+,'STATE_EOL_COMMENT'    :[(TYPE_NEWLINE            ,'STATE_UNKNOWN'        ,None)               \
+                         ,(TYPE_ANY                ,'STATE_EOL_COMMENT'    ,None)             ] \
                                                                                                 \
 ,'STATE_QUAKEEDBEGIN'   :[(TYPE_ALFABETIC          ,'STATE_CLASSNAME'      ,CheckQUAKED)      ] \
                                                                                                 \
@@ -495,8 +499,9 @@ def makeqrk(root, filename, gamename):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-            quarkpy.qutils.debug("Parse error: Got type", token_is, "but expected type(s);", expectedtypes)
-            quarkpy.qutils.debug( "Debug: Last classname was =", currentclassname )
+            print "Parse error: Got type", token_is, "but expected type(s);", expectedtypes
+            print "Debug: Last classname was =", currentclassname
+            print "Debug:", srcstring[:64]
             raise "Parse error!"
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
@@ -505,7 +510,6 @@ def makeqrk(root, filename, gamename):
         state = newstate
     CloseClass("--EndByEOF--")
     indent = 2
-    quarkpy.qutils.debug("Here")
     r_tbx = quarkx.newobj("Toolbox Folders.qtx")
     r_tbx["Toolbox"] = "New map items..."
     r_tbx.flags = r_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
@@ -535,6 +539,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.2  2001/12/02 09:57:45  decker_dk
+#Removing 'os' from the import list, and some other minor fixes.
+#
 #Revision 1.1  2001/10/05 17:56:42  decker_dk
 #Created QERadiant .DEF file to .QRK file converter.
 #
