@@ -1,5 +1,6 @@
 title: Quake-3:Arena
 desc: mustread
+desc: brush_primitives
 
 If you have any questions, problems or find solutions regarding this topic, please post them in the
 <a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum/mailing-list</a>.
