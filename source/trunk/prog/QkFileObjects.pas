@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/01/30 19:11:34  decker_dk
+Changed to GetApplicationPath().
+Changed LienFichierQObject() so it now uses an QApplPaths-object, to ask for sub-directories to search in.
+
 Revision 1.21  2001/01/23 08:06:54  tiglari
 Infrastructure for OsFolders (read their contents from folders on disk,
  don't write them when writing the .qrk).
@@ -1383,7 +1387,7 @@ begin
   begin
    L.Add(FmtLoadStr1(5200, [QuarkVersion, Self.Name+Self.TypeInfo]));
    L.Text:=L.Text;   { #13 --> #13#10 }
-  end; 
+  end;
  L.Add('{');
  ConvertObjsToTextWithComment(Self, L, '  ');
  L.Add('}');
@@ -1840,7 +1844,7 @@ begin
             ConvertClass.FileObjectClassInfo(Info1);
             if Info1.FileExt<>0 then
              Dec(SavingTo);
-           end;  
+           end;
           Inc(I);
          until SavingTo=0;
          Result:=ConvertClass.Create(FFileObject.Name, Nil);
@@ -1914,7 +1918,7 @@ begin   { adds the file to the list of recently opened files }
  L.Insert(0, FileName);
  while L.Count>MaxRecentFiles do
   L.Delete(MaxRecentFiles);
- SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=TrimStringList(L, $0D);
+ SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=StringListConcatWithSeparator(L, $0D);
  UpdateSetup(scMinimal);
  finally L.Free; end;
 end;
@@ -2418,7 +2422,7 @@ begin
          begin
           CopyToolbar(Form1.ToolbarMenu1, MenuToolbar);
           MenuToolbar.Visible:=True;
-         end; 
+         end;
         Show;
        end;
       if not FInitialized then

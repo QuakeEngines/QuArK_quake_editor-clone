@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/01/30 19:11:10  decker_dk
+Changed to GetApplicationPath().
+
 Revision 1.16  2001/01/21 15:48:01  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -807,7 +810,7 @@ begin
         RedrawWindow(Handle, Nil, 0, rdw_Invalidate or rdw_Frame);
        {if Flags and ofTvNode <> 0 then
          GetNode.Text:=Name;}
-        Explorer.Invalidate; 
+        Explorer.Invalidate;
        end;
    wp_SetupChanged:
      ReadSetupInformation(Msg.lParam);
@@ -1278,10 +1281,13 @@ var
 begin
  if CompareText(ExtractFileExt(FileName), '.py') = 0 then
   begin
-   L:=TStringList.Create; try
-   L.LoadFromFile(FileName);
-   S:=TrimStringList(L, $0A);
-   finally L.Free; end;
+   L:=TStringList.Create;
+   try
+    L.LoadFromFile(FileName);
+    S:=StringListConcatWithSeparator(L, $0A);
+   finally
+    L.Free;
+   end;
    PyRun_SimpleString(PChar(S));
    PythonCodeEnd;
    Exit;
@@ -1796,7 +1802,7 @@ begin
  for I:=0 to GameSep1.MenuIndex-1 do
   with GamesMenu.Items[I] do
    Checked:=Chr(Tag)=C;
- Go1.Enabled:=Explorer.Roots.Count>0;  
+ Go1.Enabled:=Explorer.Roots.Count>0;
 end;
 
 procedure TForm1.Go1Click(Sender: TObject);
@@ -1826,7 +1832,7 @@ begin
   begin
    Result:=mrNone;
    Exit;   { silent exception }
-  end; 
+  end;
  MessageBeep(MB_ICONSTOP);
  Include(Buttons, mbIgnore);
  if E.HelpContext<>0 then Include(Buttons, mbHelp);

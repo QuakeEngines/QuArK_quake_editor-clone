@@ -5,6 +5,9 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/01/28 17:23:12  decker_dk
+Removed 'Constant expression violates subrange bounds' compiler warnings for 'crc:=$FFFFFFFF', by forcing it to 'crc:=LongInt($FFFFFFFF)'.
+
 Revision 1.17  2001/01/21 15:50:28  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -41,8 +44,7 @@ uses
   QkObjects, QkFileObjects, TB97, QkFileExplorer, QkListView, BrowseForFolder,
   ComCtrls, QkForm, QkGroup, Python, QkPak;
 
-type
-  {
+{
   Zip File Structure is as follows:
 
   +============================+
@@ -68,8 +70,9 @@ type
   +============================+
   |     End Of Central Dir     |
   +============================+
+}
 
-  }
+type
   TLocalfileheader = packed record
     version_needed       : SmallInt;
     bit_flag             : SmallInt;
@@ -81,6 +84,7 @@ type
     filename_len         : SmallInt;
     extrafield_len       : SmallInt;
   end;
+
   TFileHeader = packed record
     version_by            : smallint;
     version_needed        : smallint;
@@ -98,6 +102,7 @@ type
     external_attrs        : longint;
     local_header_offset   : longint;    //  42
   end;
+
   TEndOfCentralDir = packed record
     disk_no             : smallint;
     start_of_cd         : smallint;
@@ -107,7 +112,9 @@ type
     offset_CD           : longint;   //  16
     zipfilecomment_len  : smallint;  //  18
   end;
+
   PEndOfCentralDir = ^TEndOfCentralDir;
+
   QZipFolder = class(QPakFolder)
   private
 //    procedure RecGO1(const SubPath: String; extracted: PyObject);
@@ -130,6 +137,7 @@ type
 //    function ExtractTo(PathBase: String) : Integer;
 //    procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
   end;
+
   QZipPak = class(QZipFolder)
   public
     class function TypeInfo: String; override;
@@ -138,61 +146,61 @@ type
   end;
 
 const
-  ZIP_HEADER = $04034B50;
-  CFILE_HEADER = $02014B50;
-  EOCD_HEADER = $06054B50;
+  cZIP_HEADER   = $04034B50;
+  cCFILE_HEADER = $02014B50;
+  cEOCD_HEADER  = $06054B50;
 
 implementation
 
 uses Travail, QkExplorer, Quarkx, PyObjects, Game, crc32, UNZIP, ZIP, QkObjectClassList;
 
-function BuildLFH(ver,bit,com,las,crc,cmp,unc,fil,ext:longint):TLocalFileHeader;
+function BuildLFH(ver, bit, com, las, crc, cmp, unc, fil, ext:longint) : TLocalFileHeader;
 begin
-  result.version_needed:=ver;
-  result.bit_flag:=bit;
-  result.compression_method:=com;
-  result.last_mod_datetime:=las;
-  result.crc_32:=crc;
-  result.compressed:=cmp;
-  result.uncompressed:=unc;
-  result.filename_len:=fil;
-  result.extrafield_len:=ext;
+  Result.version_needed     := ver;
+  Result.bit_flag           := bit;
+  Result.compression_method := com;
+  Result.last_mod_datetime  := las;
+  Result.crc_32             := crc;
+  Result.compressed         := cmp;
+  Result.uncompressed       := unc;
+  Result.filename_len       := fil;
+  Result.extrafield_len     := ext;
 end;
 
-function BuildFH(ver,vby,bit,com,las,crc,cmp,unc,fil,ext,fcm,ita,exa,lho,dsn:longint):TFileHeader;
+function BuildFH(ver, vby, bit, com, las, crc, cmp, unc, fil, ext, fcm, ita, exa, lho, dsn:longint) : TFileHeader;
 begin
-  result.version_by:=vby;
-  result.version_needed:=ver;
-  result.bit_flag:=bit;
-  result.compression_method:=com;
-  result.last_mod_datetime:=las;
-  result.crc_32:=crc;
-  result.compressed:=cmp;
-  result.uncompressed:=unc;
-  result.filename_len:=fil;
-  result.extrafield_len:=ext;
-  result.filecomment_len:=fcm;
-  result.internal_attrs:=ita;
-  result.external_attrs:=exa;
-  result.local_header_offset:=lho;
-  result.disk_start_no:=dsn;
+  Result.version_by          := vby;
+  Result.version_needed      := ver;
+  Result.bit_flag            := bit;
+  Result.compression_method  := com;
+  Result.last_mod_datetime   := las;
+  Result.crc_32              := crc;
+  Result.compressed          := cmp;
+  Result.uncompressed        := unc;
+  Result.filename_len        := fil;
+  Result.extrafield_len      := ext;
+  Result.filecomment_len     := fcm;
+  Result.internal_attrs      := ita;
+  Result.external_attrs      := exa;
+  Result.local_header_offset := lho;
+  Result.disk_start_no       := dsn;
 end;
 
-function BuildEOCD(dn,sod,nod,ent,siz,off,zfn:Longint):TEndOfCentralDir;
+function BuildEOCD(dn, sod, nod, ent, siz, off, zfn:Longint) : TEndOfCentralDir;
 begin
-  result.disk_no:=dn;
-  result.start_of_cd:=sod;
-  result.no_entries_disk:=nod;
-  result.no_entries:=ent;
-  result.size_cd:=siz;
-  result.offset_CD:=off;
-  result.zipfilecomment_len:=zfn;
+  Result.disk_no            := dn;
+  Result.start_of_cd        := sod;
+  Result.no_entries_disk    := nod;
+  Result.no_entries         := ent;
+  Result.size_cd            := siz;
+  Result.offset_CD          := off;
+  Result.zipfilecomment_len := zfn;
 end;
 
-procedure ReadaString(F:TStream; var s:String; Size: Integer);
+procedure ReadaString(f:TStream; var s:String; size:Integer);
 begin
-  SetLength(S, Size);   { reserve space for the string }
-  f.readbuffer(PChar(S)^, Size);  { read it in a single operation }
+  SetLength(s, size);   { reserve space for the string }
+  f.readbuffer(PChar(s)^, size);  { read it in a single operation }
 end;
 
 type
@@ -208,15 +216,18 @@ procedure TPakSibling.WriteSibling(const Path: String; Obj: QObject);
 var
   I: Integer;
 begin
-  if Obj is QFileObject then begin
+  if Obj is QFileObject then
+  begin
     if CompareText(BaseFolder, Copy(Path, 1, Length(BaseFolder))) = 0 then
       I:=Length(BaseFolder)+1
-    else begin
+    else
+    begin
       GlobalWarning(FmtLoadStr1(5666, [Path, BaseFolder]));
       I:=1;
     end;
     Folder.AddFileWithPath(Copy(Path, I, MaxInt), QFileObject(Obj), True);
-  end else
+  end
+  else
     inherited;
 end;
 
@@ -247,11 +258,14 @@ begin
     finally
       Info1.Free;
     end;
-    for I:=0 to SubElements.Count-1 do begin
+
+    for I:=0 to SubElements.Count-1 do
+    begin
       Q:=SubElements[I];
       if Q is QPakFolder then   { save as folder in the .pak }
         QZipFolder(Q).WritePakEntries(Info, Origine, Chemin+Q.Name+'/', TailleNom, Repertoire, eocd)
-      else begin
+      else
+      begin
         S:=Chemin+Q.Name+Q.TypeInfo;
         TempStream:=TMemoryStream.Create;
         tInfo:=TInfoEnreg1.Create;
@@ -264,40 +278,40 @@ begin
         crc:=LongInt($FFFFFFFF);
         CalcCRC32(TempStream.Memory, TempStream.Size, crc);
         crc:=not crc;
-        TempStream.Seek(0,soFromBeginning);
+        TempStream.Seek(0, soFromBeginning);
         OrgSize:=TempStream.Size;
        { Compress Data From TempStream To T2}
         T2:=TMemoryStream.Create;
 
         CompressStream(TempStream, T2);
 
-        T2.Seek(0,soFromBeginning);
+        T2.Seek(0, soFromBeginning);
 
         Size:=T2.Size;
 
        {Dont Need TempStream Any More...}
         TempStream.Free;
 
-        LFS:=BuildLFH(10,0,8,DateTimeToFileDate(now),crc,Size,OrgSize,length(s),0);
-       {Write File Entry}
-        sig:=ZIP_HEADER;
         pos:=Info.F.Position; // Save Local Header Offset
-        Info.F.WriteBuffer(sig,4);
-        Info.F.WriteBuffer(LFS,Sizeof(TLocalFileHeader));
-        Info.F.WriteBuffer(PChar(S)^,Length(S));
+       {Write File Entry}
+        LFS:=BuildLFH(10, 0, 8, DateTimeToFileDate(now), crc, Size, OrgSize, length(s), 0);
+        sig:=cZIP_HEADER;
+        Info.F.WriteBuffer(sig, 4);
+        Info.F.WriteBuffer(LFS, Sizeof(TLocalFileHeader));
+        Info.F.WriteBuffer(PChar(S)^, Length(S));
        {/Write File Entry}
-        cdir:=BuildFH(10,20,0,8,DateTimeToFileDate(now),crc,
-              Size,OrgSize,length(s),0,0,0,-2118778880,pos,0);
 
-        inc(eocd^.no_entries_disk,1);
-        inc(eocd^.no_entries,1);
-        eocd^.size_cd:=eocd^.size_cd+46+Length(s);
-        sig:=CFILE_HEADER;
-        Repertoire.WriteBuffer(sig,4);
-        Repertoire.WriteBuffer(cdir,sizeof(TFileHeader));
-        Repertoire.WriteBuffer(PChar(S)^,Length(S));
+        cdir:=BuildFH(10, 20, 0, 8, DateTimeToFileDate(Now()), crc, Size, OrgSize, length(s), 0, 0, 0, {-2118778880} LongInt($81B60000), pos, 0);
+        sig:=cCFILE_HEADER;
+        Repertoire.WriteBuffer(sig, 4);
+        Repertoire.WriteBuffer(cdir, sizeof(TFileHeader));
+        Repertoire.WriteBuffer(PChar(S)^, Length(S));
 
-        Info.F.CopyFrom(T2,T2.Size);       {Write Actual File Date ( Compressed ) }
+        inc(eocd^.no_entries_disk);
+        inc(eocd^.no_entries);
+        inc(eocd^.size_cd, (4 + sizeof(TFileHeader) + Length(S)));
+
+        Info.F.CopyFrom(T2, T2.Size);       {Write Actual File Date ( Compressed ) }
         T2.Free;
       end;
       ProgressIndicatorIncrement;
@@ -311,8 +325,8 @@ procedure QZipFolder.SaveFile(Info: TInfoEnreg1);
 var
   Repertoire: TMemoryStream;
   Origine, Fin, sig: LongInt;
-  eHeader: TEndOfCentralDir;
-  quark_zip_id: string;
+  EOCDHeader: TEndOfCentralDir;
+  quark_zip_comment: string;
 begin
   with Info do begin
     case Format of
@@ -322,16 +336,20 @@ begin
         { write .pak entries }
         Repertoire:=TMemoryStream.Create;
         try
-          eHeader:=BuildEOCD(0,0,0,0,0,0,8);
-          WritePakEntries(Info, Origine, '', Fin, Repertoire, @eHeader);
-          eHeader.offset_CD:=F.Position;
-          Repertoire.Seek(0,soFromBeginning);
-          F.CopyFrom(Repertoire,0);
-          sig:=EOCD_HEADER;
-          F.WriteBuffer(sig,4);
-          F.WriteBuffer(eHeader,sizeof(TEndOfCentralDir));
-          quark_zip_id:='by QuArK';
-          F.WriteBuffer(quark_zip_id[1], 8);
+          quark_zip_comment:='by QuArK';
+          EOCDHeader:=BuildEOCD(0, 0, 0, 0, 0, 0, Length(quark_zip_comment));
+
+          WritePakEntries(Info, Origine, '', Fin, Repertoire, @EOCDHeader);
+
+          EOCDHeader.offset_CD:=F.Position;
+
+          Repertoire.Seek(0, soFromBeginning);
+          F.CopyFrom(Repertoire, 0);
+
+          sig:=cEOCD_HEADER;
+          F.WriteBuffer(sig, 4);
+          F.WriteBuffer(EOCDHeader, sizeof(TEndOfCentralDir));
+          F.WriteBuffer(quark_zip_comment[1], Length(quark_zip_comment));
         finally
           Repertoire.Free;
         end;
@@ -344,26 +362,25 @@ end;
 
 Function ZipAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 var
-  mem:TMemoryStream;
+  mem: TMemoryStream;
   err: integer;
 begin
-  with Ref^ do begin
-    Self.Position:=Position;
-    mem:=TMemoryStream.Create;
-    err:=UnZipFile(Self,mem,Position);
-    if err<>0 then
-      raise exception.createfmt('Error decompressing file (%d)',[err]);
-    Result:=Mem.Size;
-    Mem.Position:=0;
-    S:=Mem;
-  end;
+  Ref^.Self.Position:=Ref^.Position;
+  mem:=TMemoryStream.Create;
+  err:=UnZipFile(Ref^.Self, mem, Ref^.Position);
+  if err<>0 then
+    raise Exception.CreateFmt('Error decompressing file (%d)', [err]);
+  Result:=mem.Size;
+  mem.Position:=0;
+  S:=mem;
 end;
 
 procedure QZipFolder.LoadFile(F: TStream; FSize: Integer);
 var
   J: Integer;
   Dossier, nDossier: QObject;
-  ex,Chemin, CheminPrec,fn: String;
+  Chemin, CheminPrec,fn: String;
+  dummystring: String;
   Q: QObject;
   FH: TFileHeader;
   org,Size:Longint;
@@ -378,82 +395,114 @@ begin
       Dossier:=Self;
       CheminPrec:='';
       org:=f.position;
-      f.seek(FSize,soFromBeginning); {end of 'file'}
-      f.seek(-sizeof(TEndOfCentralDIR),soFromCurrent); // EOCD is stored at least -Sizeof(endofcentradir) header
+
+      if (FSize < sizeof(TEndOfCentralDIR)) then
+        raise Exception.CreateFmt('File "%s" is corrupt, please correct or remove it.\nFilesize less than minimum required size (%d < %d).', [LoadName, FSize, sizeof(TEndOfCentralDIR)]);
+
+      f.seek(FSize, soFromBeginning); {end of 'file'}
+      f.seek(-sizeof(TEndOfCentralDIR), soFromCurrent); // EOCD is stored at least -Sizeof(endofcentradir) header
       eocd_found:=false;
       try // catch stream read errors
-        while true do begin
-          f.ReadBuffer(eosig,4);                         // check for EOCD_HEADER signiture
-          eocd_found:=eosig=EOCD_HEADER;
-          if eosig<>EOCD_HEADER then
-            f.seek(-5,soFromCurrent)                     // Skip back 1 byte, and recheck
+        while (f.position > org) do
+        begin
+          f.ReadBuffer(eosig, 4);                         // check for cEOCD_HEADER signiture
+          eocd_found := (eosig = cEOCD_HEADER);
+          if not eocd_found then
+            f.seek(-5, soFromCurrent)                     // Skip back 1 byte, and recheck
           else
             break;
         end;
       finally
         if not eocd_found then
-          raise Exception.CreateFmt('File "%s" is Corrupt (eocd_found=false)',[LoadName]);
+          raise Exception.CreateFmt('File "%s" is corrupt. cEOCD_HEADER(%d) not found', [LoadName, cEOCD_HEADER]);
       end;
-      f.readbuffer(eocd,sizeof(eocd));
+
+      f.readbuffer(eocd, sizeof(eocd));
       if eocd.disk_no<>0 then
-        raise Exception.CreateFmt('File "%s" cannot be loaded: it is spanned across sereral disks',[LoadName]);
+        raise Exception.CreateFmt('File "%s" cannot be loaded: it is spanned across several disks', [LoadName]);
+
       f.seek(org, soFromBeginning); {beginning of 'file'}
-      f.seek(eocd.offset_cd,soFromCurrent);
+      f.seek(eocd.offset_cd, soFromCurrent);
       files:=TMemoryStream.Create;    {ms for central directory}
-      files.CopyFrom(f,eocd.size_cd); {read in central dir}
-      files.seek(0,sofrombeginning);
+      files.CopyFrom(f, eocd.size_cd); {read in central dir}
+      files.seek(0, sofrombeginning);
+
       ProgressIndicatorStart(5450, eocd.no_entries);
-      for i:=1 to eocd.no_entries do begin
-        files.readbuffer(s,4); // Signiture
-        if s<>CFILE_HEADER then
-          raise Exception.CreateFmt('Central directory is Corrupt: %d<>CFILE_HEADER(%d) File: "%s"',[s,CFILE_HEADER, LoadName]);
-        files.ReadBuffer(fh,sizeof(TFileHeader));
-        ReadaString(files,chemin,FH.filename_len);
-        ReadaString(files,ex,FH.extrafield_len);
-        ReadaString(files,ex,FH.filecomment_len);
-        fn:=Chemin;
-        if (FH.compression_method<>0)and(FH.compression_method<>1) and(FH.compression_method<>6)and(FH.compression_method<>8) then
-          Raise EErrorFmt(5692, [LoadName,FH.compression_method]);
-        if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
-          Delete(Chemin, 1, Length(CheminPrec))
-        else begin
-          Dossier:=Self;
-          CheminPrec:='';
-        end;
-        repeat
-          J:=Pos('/', Chemin);
-          if J=0 then
-            Break;
-          nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.zipfolder');
-          if (nDossier=Nil) then begin
-            nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
-            Dossier.SubElements.Add(nDossier);
-          end;
-          CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
-          Delete(Chemin, 1, J);
-          Dossier:=nDossier;
-        until False;
-        Size:=FH.compressed;
-        if fn[length(fn)]<>'/' then begin
-          Size:=Size+(FH.extrafield_len+FH.filename_len+4+sizeof(FH)+FH.filecomment_len);
-          Q:=OpenFileObjectData(nil, Chemin, Size, Dossier);
-          Dossier.SubElements.Add(Q);
-          F.Seek(Org+fh.local_header_offset,soFromBeginning);
-          {Copied From LoadedItem & Modified}
-          if Q is QFileObject then
-            QFileObject(Q).ReadFormat:=rf_default
+      try
+        for i:=1 to eocd.no_entries do
+        begin
+          files.readbuffer(s, 4); // Signiture
+          if s<>cCFILE_HEADER then
+            raise Exception.CreateFmt('Central directory for file "%s" is corrupt: %d<>%d(cCFILE_HEADER)', [LoadName, s, cCFILE_HEADER]);
+
+          files.ReadBuffer(FH, sizeof(TFileHeader));
+
+          ReadaString(files, chemin,      FH.filename_len);
+          ReadaString(files, dummystring, FH.extrafield_len);
+          ReadaString(files, dummystring, FH.filecomment_len);
+
+          { store original filename for later check }
+          fn:=Chemin;
+
+          { check compression method, that it is one we can decompress }
+          if  (FH.compression_method<>0)
+          and (FH.compression_method<>1)
+          and (FH.compression_method<>6)
+          and (FH.compression_method<>8) then
+            Raise EErrorFmt(5692, [LoadName, FH.compression_method]);
+
+          { if previous file's path, is the same as this file's path, then reuse the Dossier-pointer.
+            Else reset the Dossier-pointer to self. }
+          if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
+            Delete(Chemin, 1, Length(CheminPrec))
           else
-            Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
-          nEnd:=F.Position+Size;
-          Q.Open(TQStream(F), Size);
-          F.Position:=nEnd;
-          {/Copied From LoadedItem & Modified}
-          Q.FNode^.OnAccess:=ZipAddRef;
+          begin
+            Dossier:=Self;
+            CheminPrec:='';
+          end;
+
+          { Find the correct .zipfolder, or create a new one for this file. }
+          repeat
+            J:=Pos('/', Chemin);
+            if J=0 then
+              Break;
+            nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.zipfolder');
+            if (nDossier=Nil) then
+            begin
+              nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
+              Dossier.SubElements.Add(nDossier);
+            end;
+            CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
+            Delete(Chemin, 1, J);
+            Dossier:=nDossier;
+          until False;
+
+          Size:=FH.compressed;
+
+          { if this file, really is a file and not just a path, then add it as a sub-element }
+          if fn[length(fn)]<>'/' then
+          begin
+            Size:=Size + (FH.extrafield_len + FH.filename_len + 4 + sizeof(FH) + FH.filecomment_len);
+            Q:=OpenFileObjectData(nil, Chemin, Size, Dossier);
+            Dossier.SubElements.Add(Q);
+            F.Seek(Org + fh.local_header_offset, soFromBeginning);
+            {Copied From LoadedItem & Modified}
+            if Q is QFileObject then
+              QFileObject(Q).ReadFormat:=rf_default
+            else
+              Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
+            nEnd:=F.Position+Size;
+            Q.Open(TQStream(F), Size);
+            F.Position:=nEnd;
+            {/Copied From LoadedItem & Modified}
+            Q.FNode^.OnAccess:=ZipAddRef;
+          end;
+          ProgressIndicatorIncrement;
         end;
-        ProgressIndicatorIncrement;
+        SortPakFolder;
+      finally
+        ProgressIndicatorStop;
       end;
-      SortPakFolder;
-      ProgressIndicatorStop;
     end;
     else
       inherited;
@@ -479,7 +528,9 @@ var
 begin
   Acces;
   for I:=1 to Length(PakPath) do
-    if PakPath[I] in ['/','\'] then begin
+  begin
+    if PakPath[I] in ['/','\'] then
+    begin
       Folder:=SubElements.FindName(Copy(PakPath, 1, I-1) + '.zipfolder');
       if (Folder=Nil) or not (Folder is QZipFolder) then
         Result:=Nil
@@ -487,6 +538,7 @@ begin
         Result:=QZipFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
       Exit;
     end;
+  end;
   Result:=SubElements.FindName(PakPath) as QFileObject;
 end;
 
@@ -496,13 +548,15 @@ var
   Folder: QObject;
 begin
   Result:=Self;
-  while Path<>'' do begin
+  while Path<>'' do
+  begin
     I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
     J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
     if I>J then
       I:=J;
     Folder:=Result.SubElements.FindName(Copy(Path, 1, I-1) + '.zipfolder');
-    if Folder=Nil then begin
+    if Folder=Nil then
+    begin
       Folder:=QZipFolder.Create(Copy(Path, 1, I-1), Result);
       Result.SubElements.Add(Folder);
     end;

@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/11/19 15:31:50  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.8  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -46,7 +60,7 @@ unit QkForm;
 
 interface
 
-{ $DEFINE NoMarsCaption}
+{$DEFINE NoMarsCaption}
 
 uses Windows, Messages, Classes, SysUtils, Controls, Forms,
      QkObjects, Menus, TB97, StdCtrls, ComCtrls, CommCtrl,
@@ -456,7 +470,7 @@ begin
       else
        ShowWindow(Handle, sw_Hide);  { a bug of MarsCaption }
      end;
-{$ENDIF}     
+{$ENDIF}
   wp_AppActivate:
     if Msg.lParam=0 then
      begin

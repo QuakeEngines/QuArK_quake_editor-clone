@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/02/03 06:09:57  tiglari
+reverse order of disk and pak search in GetGameFileBase,
+since disk should be consulted first (`missing shader' problem).
+What about order of paks?
+
 Revision 1.20  2001/01/30 19:11:10  decker_dk
 Changed to GetApplicationPath().
 
@@ -1120,7 +1125,7 @@ begin
 end;
 
 const
- cDOSFilenameValidChars = ['a'..'z', 'A'..'Z', '0'..'9',       '.',
+ cDOSFilenameValidChars = ['a'..'z', 'A'..'Z', '0'..'9', '.',
   '$', '%', '''', '-', '_', '@', '{', '}', '~', '`', '!', '#', '(', ')'];
 
 procedure BuildCorrectFileName(var S: String);
@@ -1244,22 +1249,25 @@ var
   ResultButton: TModalResult;
 begin
   with TGameCfgDlg.Create(Application) do
-  try
-    ResultButton:=ShowModal;
-  finally
-    Free;
+  begin
+    try
+      ResultButton:=ShowModal;
+    finally
+      Free;
+    end;
   end;
+
   if ResultButton=mrOk then
     UpdateSetup(scAddOns);
 end;
 
 procedure TGameCfgDlg.FormCreate(Sender: TObject);
 begin
- MarsCap.ActiveBeginColor:=clMaroon;
- UpdateMarsCap;
- OpenGlobalImageList(ListView1);
- Label1.Caption:=Format(Label1.Caption, [SetupGameSet.Name]);
- DisplayAddOnsList(ListView1);
+  MarsCap.ActiveBeginColor:=clMaroon;
+  UpdateMarsCap;
+  OpenGlobalImageList(ListView1);
+  Label1.Caption:=Format(Label1.Caption, [SetupGameSet.Name]);
+  DisplayAddOnsList(ListView1);
 end;
 
 procedure TGameCfgDlg.ListView1Change(Sender: TObject; Item: TListItem;
@@ -1281,41 +1289,41 @@ end;
 
 procedure TGameCfgDlg.BtnRemoveClick(Sender: TObject);
 begin
- ListView1.Selected.Delete;
- ListView1.Tag:=1;
+  ListView1.Selected.Delete;
+  ListView1.Tag:=1;
 end;
 
 procedure TGameCfgDlg.CancelBtnClick(Sender: TObject);
 begin
- Close;
+  Close;
 end;
 
 procedure TGameCfgDlg.OkBtnClick(Sender: TObject);
 var
- I: Integer;
- L: TStringList;
- S: String;
+  I: Integer;
+  L: TStringList;
+  S: String;
 begin
- if ListView1.Tag<>0 then
+  if ListView1.Tag<>0 then
   begin
-   L:=TStringList.Create;
-   try
-     for I:=0 to ListView1.Items.Count-1 do
-      L.Add(ListView1.Items[I].Caption);
-     S:=TrimStringList(L, $0D);
-   finally
-     L.Free;
-   end;
-   SetupGameSet.Specifics.Values['AddOns']:=S;
-   ModalResult:=mrOk;
+    L:=TStringList.Create;
+    try
+      for I:=0 to ListView1.Items.Count-1 do
+        L.Add(ListView1.Items[I].Caption);
+      S:=StringListConcatWithSeparator(L, $0D);
+    finally
+      L.Free;
+    end;
+    SetupGameSet.Specifics.Values['AddOns']:=S;
+    ModalResult:=mrOk;
   end
- else
-  ModalResult:=mrCancel;
+  else
+    ModalResult:=mrCancel;
 end;
 
 procedure TGameCfgDlg.FormDestroy(Sender: TObject);
 begin
- CloseGlobalImageList(ListView1);
+  CloseGlobalImageList(ListView1);
 end;
 
 end.

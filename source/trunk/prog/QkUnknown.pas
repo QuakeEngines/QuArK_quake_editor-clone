@@ -22,10 +22,12 @@ See also http://www.planetquake.com/quark
 **************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/01/21 15:50:28  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.7  2001/01/15 19:22:01  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -37,8 +39,6 @@ Englishification and a little layout
 
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 
@@ -98,19 +98,19 @@ uses Quarkx, QkObjectClassList;
 
 class function QInternal.TypeInfo;
 begin
- Result:=':';
+  Result:=':';
 end;
 
  {------------------------}
 
 class function QUnknown.TypeInfo;
 begin
- Result:='';
+  Result:='';
 end;
 
 function QUnknown.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
- Result:=TFQUnknown.Create(nOwner);
+  Result:=TFQUnknown.Create(nOwner);
 end;
 
 (*procedure QUnknown.LireEnteteFichier;
@@ -121,64 +121,64 @@ end;*)
 
 class procedure QUnknown.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5121);
-{Info.FileExtCount:=1;
- Info.FileExt[0]:=774;}
- Info.FileExt:=774;
- Info.Unformatted:=True;
+  inherited;
+  Info.FileObjectDescriptionText:=LoadStr1(5121);
+ {Info.FileExtCount:=1;
+  Info.FileExt[0]:=774;}
+  Info.FileExt:=774;
+  Info.Unformatted:=True;
 end;
 
 function QUnknown.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
- Result:=ieResult[True];
+  Result:=ieResult[True];
 end;
 
 procedure QUnknown.ReadData(var Buf; BufSize: Integer);
 const
- Start = Length('Data=');
+  cStart = Length('Data=');
 var
- S: String;
+  S: String;
 begin
- Acces;
- S:=GetSpecArg('Data');
- if Length(S)-Start <> BufSize then
-  Raise EErrorFmt(5220, [Name, Length(S)-Start, BufSize]);
- Move(PChar(S)[Start], Buf, BufSize);
+  Acces;
+  S:=GetSpecArg('Data');
+  if Length(S)-cStart <> BufSize then
+    Raise EErrorFmt(5220, [Name, Length(S)-cStart, BufSize]);
+  Move(PChar(S)[cStart], Buf, BufSize);
 end;
 
 function QUnknown.ReadDataSize : Integer;
 const
- Start = Length('Data=');
+  cStart = Length('Data=');
 var
- S: String;
+  S: String;
 begin
- Acces;
- S:=GetSpecArg('Data');
- Result:=Length(S)-Start;
+  Acces;
+  S:=GetSpecArg('Data');
+  Result:=Length(S)-cStart;
 end;
 
  {------------------------}
 
 procedure TFQUnknown.wmInternalMessage(var Msg: TMessage);
 var
- Info: TFileObjectClassInfo;
+  Info: TFileObjectClassInfo;
 begin
- case Msg.wParam of
+  case Msg.wParam of
   wp_AfficherObjet:
     begin
-     LabelName.Caption:=FileObject.Name+FileObject.TypeInfo;
-     FileObject.FileObjectClassInfo(Info);
-     LabelType.Caption:=Info.FileObjectDescriptionText;
-     LabelSize.Caption:=FmtLoadStr1(5392, [(FileObject.GetObjectSize(Nil, False)+512) div 1024]);
+      LabelName.Caption:=FileObject.Name+FileObject.TypeInfo;
+      FileObject.FileObjectClassInfo(Info);
+      LabelType.Caption:=Info.FileObjectDescriptionText;
+      LabelSize.Caption:=FmtLoadStr1(5392, [FileObject.GetObjectSize(Nil, False)]);
     end;
- end;
- inherited;
+  end;
+  inherited;
 end;
 
 function TFQUnknown.AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean;
 begin
- Result:=(Q is QUnknown) and inherited AssignObject(Q, State);
+  Result:=(Q is QUnknown) and inherited AssignObject(Q, State);
 end;
 
  {------------------------}

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/01/21 15:51:46  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.5  2000/07/16 16:33:39  decker_dk
 Englishification
 
@@ -42,7 +45,7 @@ uses SysUtils, Classes, Python, QkObjects;
 
  {-------------------}
 
-function QkObjFromPyObj(o: PyObject) : QObject; 
+function QkObjFromPyObj(o: PyObject) : QObject;
 function GetPyObj(Q: QObject) : PyObject;
 function QListToPyList(L: TList) : PyObject;
 procedure PyListToQList(list: PyObject; L: TQList; Cls: QObjectClass);
@@ -194,7 +197,7 @@ begin
    begin
     PyErr_SetString(QuarkxError, PChar(LoadStr1(4429)));
     Result:=-1;
-   end; 
+   end;
  except
   EBackToPython;
   Result:=-1;
@@ -450,7 +453,7 @@ end;
 function qNextInGroup(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Result:=GetPyObj(QkObjFromPyObj(self).SuivantDansGroupe);
+  Result:=GetPyObj(QkObjFromPyObj(self).NextInGroup);
  except
   EBackToPython;
   Result:=Nil;
@@ -470,7 +473,7 @@ begin
   bc:=Nil;
   if not PyArg_ParseTupleX(args, 'ss|s', [@name, @wc, @bc]) then
    Exit;
-  nName:=name; 
+  nName:=name;
   WantClass:=NeedClassOfType(wc);
   if bc=Nil then
    Browse:=Nil

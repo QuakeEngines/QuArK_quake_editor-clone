@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/01/23 08:08:21  tiglari
+Remove PrepareForExpand stuff
+
 Revision 1.10  2001/01/21 06:38:45  tiglari
 PrepareForExpand on viewed QObject before expansion
 
@@ -615,7 +618,7 @@ begin
      Expand(False);
    end;*)
  if El.Flags and ofTreeViewExpanded <> 0 then
-  Expanding(El);  
+  Expanding(El);
 end;
 
 procedure TQkExplorer.InitEl(El: QObject; Charger: Boolean);
@@ -1183,7 +1186,7 @@ end;
 
 procedure TQkExplorer.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
- Node: TTreeNode;  
+ Node: TTreeNode;
 begin
  if FDragTag=2 then
   begin
@@ -1652,7 +1655,7 @@ begin
        if (El.TvParent=DropTarget.TvParent)
        and (El.TvParent.SubElements.IndexOf(El) < El.TvParent.SubElements.IndexOf(DropTarget)) then
         begin
-         InsererAvant:=InsererAvant.SuivantDansGroupe;
+         InsererAvant:=InsererAvant.NextInGroup;
          Break;
         end;
       end;
@@ -1746,7 +1749,7 @@ begin
       if I<MaxInt then   { can drop all items into T }
        Exit;
      end;
-    nInsererAvant:=T.SuivantDansGroupe;
+    nInsererAvant:=T.NextInGroup;
     T:=T.TvParent;
     GetnParent:=T;
    until FitIntoGroup=Nil;  { if <>Nil, try forever until we found an acceptable target }
@@ -1895,7 +1898,7 @@ begin
          Dec(I);
          if Odd(Roots[I].SelMult) then  { cannot remove root objects }
           CanEdit:=False
-        end;  
+        end;
        if CanEdit then
         Result:=edOk or edCut or edCopy or edDelete
        else

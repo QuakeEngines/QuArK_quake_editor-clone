@@ -20,12 +20,13 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/01/21 15:48:25  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.5  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -37,8 +38,6 @@ Englishification and a little layout
 
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 
@@ -274,11 +273,11 @@ begin
   if FBsp.GetBspEntryData(eSurfaces, lump_faces, PChar(Faces)) < (FirstFace+NbFaces)*SizeOf(TbSurface) then
    Raise EErrorFmt(5635, [2]);
   Inc(PChar(Faces), Pred(FirstFace) * SizeOf(TbSurface));
-  cLEdges:=FBsp.GetBspEntryData(eListEdges, lump_surfedges, LEdges) div SizeOf(TLEdge);
-  cEdges:=FBsp.GetBspEntryData(eEdges, lump_edges, Edges) div SizeOf(TEdge);
-  cTexInfo:=FBsp.GetBspEntryData(eTexInfo, lump_texinfo, TexInfo) div cTexInfo;
-  cPlanes:=FBsp.GetBspEntryData(ePlanes, lump_planes, Planes) div SizeOf(TbPlane);
-  cVertices:=FBsp.GetBspEntryData(eVertices, lump_vertexes, Vertices) div SizeOf(vec3_t);
+  cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, LEdges)   div SizeOf(TLEdge);
+  cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     Edges)    div SizeOf(TEdge);
+  cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   TexInfo)  div cTexInfo;
+  cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    Planes)   div SizeOf(TbPlane);
+  cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  Vertices) div SizeOf(vec3_t);
   Vertices:=PChar(FBsp.FVertices);
 
   Faces2:=Faces;

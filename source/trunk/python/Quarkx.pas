@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/02/12 03:25:10  tiglari
+PyLogging -> Logging in implementation uses
+
 Revision 1.14  2001/02/11 22:38:24  aiv
 Removed PyLogging.pas - use Quarkx.log(...) to log stuff.
 
@@ -899,7 +902,7 @@ begin
        if Text=Nil then Exit;
        L.Add(Text);
       end;
-     Result:=PyString_FromString(PChar(TrimStringList(L, $0A)));
+     Result:=PyString_FromString(PChar(StringListConcatWithSeparator(L, $0A)));
     finally
      L.Free;
     end;

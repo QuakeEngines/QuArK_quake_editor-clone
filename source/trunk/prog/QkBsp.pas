@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/02/01 20:46:42  decker_dk
+Can read a Quake-3/STVEF .BSP file, but only the entity-list can be displayed for now.
+
 Revision 1.12  2001/01/21 15:47:04  decker_dk
 updated with misc. comments and cleaned up code
 
@@ -71,7 +74,6 @@ A little more englishification
 
 Revision 1.3  2000/05/21 13:11:51  decker_dk
 Find new shaders and misc.
-
 }
 
 unit QkBsp;
@@ -182,7 +184,7 @@ type
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
           property BspEntry[E1: TBsp1EntryTypes; E2: TBsp2EntryTypes] : QFileObject read GetBspEntry;
           function GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; var P: PChar) : Integer;
-          procedure ReLoadStr1ucture;
+          procedure ReLoadStructure;
           procedure CloseStructure;
           procedure VerticesAddRef(Delta: Integer);
           function GetAltTextureSrc : QObject;
@@ -225,7 +227,7 @@ const
 
 const
  Bsp1EntryNames : array[TBsp1EntryTypes] of String =
-   (              {Actuall a 'FilenameExtension' - See TypeInfo()}
+   (              {Actually a 'FilenameExtension' - See TypeInfo()}
     'Entities'    + '.a.bsp1'   // eEntities
    ,'Planes'      + '.b.bsp1'   // ePlanes
    ,'MipTex'      + '.c.bsp1'   // eMipTex
@@ -260,7 +262,7 @@ const
 
 const
  Bsp2EntryNames : array[TBsp2EntryTypes] of String =
-   (              {Actuall a 'FilenameExtension' - See TypeInfo()}
+   (              {Actually a 'FilenameExtension' - See TypeInfo()}
     'entities'    + '.a.bsp2'   // lump_entities
    ,'planes'      + '.b.bsp2'   // lump_planes
    ,'vertexes'    + '.c.bsp2'   // lump_vertexes
@@ -292,13 +294,13 @@ type
 (***********  Quake-3 .bsp format  ***********)
 
 const
- // Quake-3 .BSPs, uses the same signature as Quake-2 .BSPs!
+ // Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
 
- cVersionBspQ3        = $0000002E; {Quake-3 .BSP}
+ cVersionBspQ3        = $0000002E; {Quake-3 or STVEF .BSP}
 
 const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
-   (              {Actuall a 'FilenameExtension' - See TypeInfo()}
+   (              {Actually a 'FilenameExtension' - See TypeInfo()}
     'entities'    + '.a.bsp3'   // eBsp3_entities
    ,'unknown01'   + '.b.bsp3'   // eBsp3_unknown01
    ,'unknown02'   + '.c.bsp3'   // eBsp3_unknown02
@@ -641,7 +643,6 @@ begin
             end;
 
             cVersionBspQ3: { Quake-3 }
-//              Raise EErrorFmt(5602, [LoadName, Version]);
             begin
               LoadBsp3(F, StreamSize);
               ObjectGameCode := mjQ3A
@@ -830,7 +831,7 @@ begin
  GetStructure:=FStructure;
 end;
 
-procedure QBsp.ReLoadStr1ucture;
+procedure QBsp.ReLoadStructure;
 var
  Dest: TStringList;
  Q: QObject;
@@ -879,7 +880,7 @@ function qReloadStructure(self, args: PyObject) : PyObject; cdecl;
 begin
  try
   with QkObjFromPyObj(self) as QBsp do
-   ReLoadStr1ucture;
+   ReLoadStructure;
   Result:=PyNoResult;
  except
   EBackToPython;

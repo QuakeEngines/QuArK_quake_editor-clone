@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/01/30 19:11:11  decker_dk
+Changed to GetApplicationPath().
+
 Revision 1.20  2001/01/21 15:50:28  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -217,11 +220,11 @@ function GetGameName(nMode: Char) : String;
 procedure ChangeGameMode(nMode: Char; Confirm: Boolean);
 procedure ChangeGameModeStr(const nMode: String; Confirm: Boolean);
 function GetGameCode(const nMode: String) : Char;
+function GameModeOk(nMode: Char) : Boolean;
+
 function MapColors(L: TListeCouleurs) : TColor;
 function ModelColors(L: TModelColors) : TColor;
-{function GetIncludePath: String;}
 function InternalVersion : Single;
-function GameModeOk(nMode: Char) : Boolean;
 
  {------------------------}
 
@@ -265,63 +268,6 @@ begin
  if Q.Specifics.Values['Form']='' then
   Exclude(Result, ieDisplay);
 end;
-
- {------------------------}
-
-(*procedure BrowsePath(Q: QObject);
-var
- I: Integer;
- S: String;
-begin
- if Q is QFileObject then
-  begin
-   Q.Acces;
-   for I:=0 to Q.SubElements.Count-1 do
-    BrowsePath(Q.SubElements[I]);
-  end
- else
-  if Q is QConfig then
-   begin
-    Q.Acces;
-    for I:=0 to Q.Specifics.Count-1 do
-     begin
-      S:=Q.Specifics[I];
-      if Copy(S,1,12) = 'IncludePath=' then
-       begin
-        S:=Copy(S,13,MaxInt);
-        if S='' then Continue;
-        if (S[1]<>'\') and (Pos(':',S)=0) then
-         S:=GetApplicationPath()+S;
-        CurrentIncludePath:=CurrentIncludePath + ';' + S;
-       end;
-     end;
-   end;
-end;*)
-
-(*function GetIncludePath: String;
-begin
- if CurrentIncludePath<>'' then  { are we already in a call to GetIncludePath ? }
-  GetIncludePath:=CurrentIncludePath
- else
-  try
-   CurrentIncludePath:=GetApplicationPath();
-   BrowsePath(SetupQrk);
-   Result:=CurrentIncludePath;
-  finally
-   CurrentIncludePath:='';
-  end;
-end;*)
-
-(*function OfficialPath(const S: String) : String;
-var
- I: Integer;
-begin
- Result:=ExpandFileName(S);
- if (Result<>'') and (Result[Length(Result)]='\') then
-  SetLength(Result, Length(Result)-1);
- if (Result<>'') and (Result[Length(Result)]=':') then
-  Result:=Result+'\';
-end;*)
 
  {------------------------}
 
@@ -774,13 +720,17 @@ var
  L: TStringList;
  S: String;
 begin
- L:=TStringList.Create; try
- L.Text:=SetupGameSet.Specifics.Values['AddOns'];
- L.Add(NewAddOn.Name+NewAddOn.TypeInfo);
- S:=TrimStringList(L, $0D);
- finally L.Free; end;
+ L:=TStringList.Create;
+ try
+  L.Text:=SetupGameSet.Specifics.Values['AddOns'];
+  L.Add(NewAddOn.Name+NewAddOn.TypeInfo);
+  S:=StringListConcatWithSeparator(L, $0D);
+ finally
+  L.Free;
+ end;
  SetupGameSet.Specifics.Values['AddOns']:=S;
- if AddOns=Nil then Exit;
+ if AddOns=Nil then
+  Exit;
  if AddOns.Specifics.Values['f1r']<>'' then
   AddOns.SubElements.Insert(AddOns.SubElements.Count-1, NewAddOn)
  else

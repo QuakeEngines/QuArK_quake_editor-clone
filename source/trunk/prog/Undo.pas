@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.4  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -65,6 +68,7 @@ type
                 constructor Create(nText: String);
                 property Text: String read FText;
                end;
+
  TAtomicUndo = class(TUndoObject)
                protected
                 procedure DoOp1; virtual; abstract;
@@ -72,9 +76,12 @@ type
                 procedure DoOp2; virtual; abstract;
                 procedure DoUndo; override;
                end;
+
  TQObjectUndo = class(TAtomicUndo)
                 private
-                 Ancien, Nouveau{, CommonParent}: QObject;
+                 Ancien: QObject;
+                 Nouveau: QObject;
+                 {CommonParent: QObject;}
                  TopLevelExplorer: TQkExplorer;
                 protected
                  procedure DoOp1; override;
@@ -88,6 +95,7 @@ type
                  constructor Create(nText: String; nAncien, nNouveau: QObject);
                  destructor Destroy; override;
                 end;
+
  TObjPropUndo = class(TAtomicUndo)
                 protected
                  AppliqueA: QObject;
@@ -99,16 +107,21 @@ type
                  constructor Create(nText: String; nAppliqueA: QObject);
                  destructor Destroy; override;
                 end;
+
  TSpecificUndo = class(TObjPropUndo)
                  private
-                  Spec, Arg: String;
-                  Position, SubStrStart, SubStrEnd: Integer;
+                  Spec: String;
+                  Arg: String;
+                  Position: Integer;
+                  SubStrStart: Integer;
+                  SubStrEnd: Integer;
                  protected
                   procedure DoAtom; override;
                   function MemorySize(Loaded: TQStream; LoadNow: Boolean) : Integer; override;
                  public
                   constructor Create(nText, nSpec, nArg: String; nPosition: Integer; nAppliqueA: QObject);
                  end;
+
  TSetSpecificsUndo = class(TObjPropUndo)
                      private
                       OldSpec: TStringList;
@@ -119,6 +132,7 @@ type
                       constructor Create(nText: String; nSpec: TStringList; nAppliqueA: QObject);
                       destructor Destroy; override;
                      end;
+
  TNameUndo = class(TObjPropUndo)
              private
               Name: String;
@@ -127,6 +141,7 @@ type
              public
               constructor Create(nText, nName: String; nAppliqueA: QObject);
              end;
+
  TMoveUndo = class(TAtomicUndo)
              private
               FElement: QObject;
@@ -143,6 +158,7 @@ type
               destructor Destroy; override;
               property Element: QObject read FElement;
              end;
+
  TMultipleUndo = class(TUndoObject)
                  private
                   FToDo: TList;
@@ -158,10 +174,10 @@ type
                  end;
 
 const
- sp_Supprime = -1;
- sp_Auto     = -2;
- sp_AutoSuppr= -3;
- sp_Fin      = MaxInt;
+ sp_Supprime  = -1;
+ sp_Auto      = -2;
+ sp_AutoSuppr = -3;
+ sp_Fin       = MaxInt;
 
  na_Select   = 1;
  na_Action   = 2;
@@ -222,22 +238,21 @@ var
 
 function MaxUndoLevel: Integer;
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').
-  GetFloatSpec('MaxUndo', 50));
- if Result<=0 then Result:=1;
+  Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('MaxUndo', 50));
+  if Result<=0 then
+    Result:=1;
 end;
 
 function MinUndoLevel: Integer;
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').
-  GetFloatSpec('MinUndo', 10));
- if Result<=0 then Result:=1;
+  Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('MinUndo', 10));
+  if Result<=0 then
+    Result:=1;
 end;
 
 function UndoBufferSize: Integer;
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').
-  GetFloatSpec('UndoBufferSize', 2) * (1024*1024));
+  Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('UndoBufferSize', 2) * (1024*1024));
 end;
 
  {------------------------}
@@ -302,7 +317,7 @@ begin
       else
        S:=FmtLoadStr1(5529, [S]);
       if Q.Specifics.Values['QuArKProtected']<>'' then
-       S:=S+LoadStr1(5553); 
+       S:=S+LoadStr1(5553);
       if MessageDlg(S, mtWarning, mbOkCancel, 0) <> mrOk then
        Abort;
       Q.Flags:=Q.Flags and not ofWarnBeforeChange;
@@ -678,16 +693,22 @@ end;
 
 procedure ActionEx(nNiveau: Integer; Q: QObject; UndoObject: TUndoObject);
 begin
- NiveauAction:=nNiveau; try
- Action(Q, UndoObject);
- finally NiveauAction:=0; end;
+  NiveauAction:=nNiveau;
+  try
+    Action(Q, UndoObject);
+  finally
+    NiveauAction:=0;
+  end;
 end;
 
 procedure FinActionEx(nNiveau: Integer; Q: QObject; const Texte: String);
 begin
- NiveauAction:=nNiveau; try
- FinAction(Q, Texte);
- finally NiveauAction:=0; end;
+  NiveauAction:=nNiveau;
+  try
+    FinAction(Q, Texte);
+  finally
+    NiveauAction:=0;
+  end;
 end;
 
 procedure AccepteAction(Q: QObject; UndoObject: TUndoObject);
@@ -864,9 +885,12 @@ begin
    Raise;
   end;
  except     { if DoOp2 or DoAtom failed }
-  NiveauAction:=NiveauAction or na_Cancel; try
-  DoOp2;    { reattach to the original relationships }
-  finally NiveauAction:=NiveauAction and not na_Cancel; end;
+  NiveauAction:=NiveauAction or na_Cancel;
+  try
+   DoOp2;    { reattach to the original relationships }
+  finally
+   NiveauAction:=NiveauAction and not na_Cancel;
+  end;
   Raise;
  end;
 {$IFDEF Debug}
@@ -904,7 +928,7 @@ begin
   end;
  if (Ancien<>Nil) and (Nouveau<>Nil) and (Ancien.FParent<>Nil)
  and (Ancien.FParent=Nouveau.FParent) then
-  InsererAvant:=Ancien.SuivantDansGroupe
+  InsererAvant:=Ancien.NextInGroup
  else
   InsererAvant:=Nil;
 end;
@@ -1382,31 +1406,34 @@ procedure TMultipleUndo.DoUndo;
 var
  I: Integer;
 begin
- ProgressIndicatorStart(509, ToDo.Count); try
- I:=0;
+ ProgressIndicatorStart(509, ToDo.Count);
  try
-  while I<ToDo.Count do
-   begin
-    if ToDo[I]=Nil then
-     ToDo.Delete(I)
-    else
-     begin
-      TUndoObject(ToDo[I]).DoUndo;
-      Inc(I);
-     end;
-    ProgressIndicatorIncrement;
-   end;
- except
-  while I>0 do
-   begin  { annule les opérations effectuées avant l'exception }
-    Dec(I);
-    TUndoObject(ToDo[I]).DoUndo;
-   end;
-  Raise;
+  I:=0;
+  try
+   while I<ToDo.Count do
+    begin
+     if ToDo[I]=Nil then
+      ToDo.Delete(I)
+     else
+      begin
+       TUndoObject(ToDo[I]).DoUndo;
+       Inc(I);
+      end;
+     ProgressIndicatorIncrement;
+    end;
+  except
+   while I>0 do
+    begin  { annule les opérations effectuées avant l'exception }
+     Dec(I);
+     TUndoObject(ToDo[I]).DoUndo;
+    end;
+   Raise;
+  end;
+  for I:=0 to ToDo.Count div 2 - 1 do
+   ToDo.Exchange(I, ToDo.Count-1-I);
+ finally
+  ProgressIndicatorStop;
  end;
- for I:=0 to ToDo.Count div 2 - 1 do
-  ToDo.Exchange(I, ToDo.Count-1-I);
- finally ProgressIndicatorStop; end;
 {$IFDEF Debug}
  DebugCheck;
 {$ENDIF}
@@ -1419,8 +1446,10 @@ var
  I: Integer;
 begin
  with Group do
+ begin
   for I:=0 to SubElements.Count-1 do
    ListeActions.Add(TMoveUndo.Create('', SubElements[I], TvParent, Group));
+ end;
  ListeActions.Add(TQObjectUndo.Create('', Group, Nil));
 end;
 

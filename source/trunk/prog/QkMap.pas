@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/02/17 09:15:20  tiglari
+brush primitives texture reading working (at least sort of ...)
+
 Revision 1.26  2001/02/17 06:10:12  tiglari
 nonfunctional brush primitives reading (syntax OK, but brushes broken)
 
@@ -1260,7 +1263,7 @@ begin
        begin
          { Remove the spec/arg "mapversion=220" from worldspawn,
            since QuArK does not write version 220 of the .MAP format }
-         SpecIndex := L.IndexOf('mapversion=220');
+         SpecIndex := L.IndexOfName('mapversion');
          if (SpecIndex >= 0) then
            L.Delete(SpecIndex);
        end;
