@@ -322,10 +322,21 @@ def buildLinearMatrix(dup):
         matrix = matrix_rot_y(angles[0])*matrix_rot_x(angles[1])*matrix_rot_z(angles[2])*matrix
     return matrix
 
+def CaulkTexture():
+    tex = quarkx.setupsubset()["DefaultTextureCaulk"]
+    if tex is not None:
+        return tex
+    else:
+        return quarkx.setupsubset()["DefaultTexture"]
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.17  2001/05/12 18:59:56  tiglari
+#remove buildLinearMatrix
+#
 #Revision 1.16  2001/05/06 10:15:32  tiglari
 #readNvec function, for arbitrary lenth string to tuple
 #
