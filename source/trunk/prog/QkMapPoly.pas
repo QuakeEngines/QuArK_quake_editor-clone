@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.11  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -1873,7 +1876,8 @@ var
   procedure WriteFace(F: TFace);
   const
    TxField: array[Boolean, Boolean] of String =
-    ((' //TX1', ' //TX2'), (' ;TX1', ' ;TX2'));
+    ((' //TX1', ' //TX2'),
+     (' ;TX1',  ' ;TX2' ));
   var
    S, S1, S2, S3: String;
    I, R: Integer;
@@ -1885,6 +1889,7 @@ var
    { tiglari }
    rval : Single; { for Value/lightvalue }
    Q: QPixelSet;
+
    type
      FlagDef = record
       name: Pchar;
@@ -1892,7 +1897,6 @@ var
      end;
 
    const
-
      FlagsTable : array[0..30] of FlagDef =
       ((name: 'light'; pos: 0),
        (name: 'masked'; pos: 1),
@@ -2015,8 +2019,6 @@ var
     { /tiglari }
 
 
-
-
   begin
    if F.GetThreePoints(P[1], P[3], P[2]) and F.LoadData then
     begin
@@ -2079,7 +2081,8 @@ var
       end;
      if MJ=mjHexen then
       S:=S+' -1'
-     else if MJ=mjSin then
+     else
+     if MJ=mjSin then
       { tiglari: in Sin, we write to the map individual
          flag positions that are different from the default..
          messy! }

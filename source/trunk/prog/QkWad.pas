@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.9  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -205,25 +208,29 @@ begin
       if Header.PosRep + I > FSize then
        Raise EErrorFmt(5186, [LoadName]);
 
-      GetMem(Entrees, I); try
-      F.Position:=Origine + Header.PosRep;
-      F.ReadBuffer(Entrees^, I);
-      P:=Entrees;
-      for I:=1 to Header.NoOfFileEntries do
-       begin
-        if (P^.Position+P^.Taille > FSize)
-        or (P^.Position<SizeOf(Header))
-        or (P^.Taille<0) then
-         Raise EErrorFmt(5509, [72]);
-        F.Position:=P^.Position;
-        Q:=OpenFileObjectData(F, CharToPas(P^.Nom)+Prefix+P^.InfoType, P^.Taille, Self);
-        SubElements.Add(Q);
-        LoadedItem(rf_Default, F, Q, P^.Taille);
-        Inc(P);
-       end;
-      finally FreeMem(Entrees); end;
+      GetMem(Entrees, I);
+      try
+        F.Position:=Origine + Header.PosRep;
+        F.ReadBuffer(Entrees^, I);
+        P:=Entrees;
+        for I:=1 to Header.NoOfFileEntries do
+         begin
+          if (P^.Position+P^.Taille > FSize)
+          or (P^.Position<SizeOf(Header))
+          or (P^.Taille<0) then
+           Raise EErrorFmt(5509, [72]);
+          F.Position:=P^.Position;
+          Q:=OpenFileObjectData(F, CharToPas(P^.Nom)+Prefix+P^.InfoType, P^.Taille, Self);
+          SubElements.Add(Q);
+          LoadedItem(rf_Default, F, Q, P^.Taille);
+          Inc(P);
+         end;
+      finally
+        FreeMem(Entrees);
+      end;
      end;
- else inherited;
+ else
+   inherited;
  end;
 end;
 
@@ -238,7 +245,7 @@ var
  Tex: QPixelSet;
  TexFile: QTextureFile;
  S: String;
- Wad3: Boolean;
+ Wad3, HalfLifeWad3: Boolean;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -247,54 +254,72 @@ begin
       Header.Signature:=SignatureWad2;
 
        { write .wad entries }
-      Repertoire:=TMemoryStream.Create; try
-      Header.NoOfFileEntries:=0;
-      for I:=0 to SubElements.Count-1 do
-       begin
-        FillChar(Entree, SizeOf(Entree), 0);
-        Q:=SubElements[I];
-        S:=Q.Name+Q.TypeInfo;
-
-        Wad3:=Copy(S, Length(S)-6, 6) = '.wad3_';
-        if Wad3 then
-         Header.Signature:=SignatureWad3;
-        if Wad3 or (Copy(S, Length(S)-5, 5) = '.wad_') then
-         begin
-          Entree.InfoType:=S[Length(S)];
-          Tex:=Nil;   { can store directly }
-          PasToChar(Entree.Nom, Copy(S, 1, Length(S)-6-Ord(Wad3)));
-         end
+      Repertoire:=TMemoryStream.Create;
+      try
+        Header.NoOfFileEntries:=0;
+        if CharModeJeu=mjHalfLife then
+          HalfLifeWad3:=True {If selected gamemode is HalfLife, the user is most likely to save it as WAD3 format}
         else
+          HalfLifeWad3:=False;
+        for I:=0 to SubElements.Count-1 do
          begin
-          if not (Q is QPixelSet) then
-           Raise EErrorFmt(5511, [Q.Name+Q.TypeInfo]);
-          Entree.InfoType:='D';
-          Tex:=QPixelSet(Q);  { must convert to Quake 1 texture }
-          PasToChar(Entree.Nom, Q.Name);
+          FillChar(Entree, SizeOf(Entree), 0);
+          Q:=SubElements[I];
+          S:=Q.Name+Q.TypeInfo;
+
+          Wad3:=Copy(S, Length(S)-6, 6) = '.wad3_';
+          if Wad3 or HalfLifeWad3 then
+           Header.Signature:=SignatureWad3;
+          if Wad3 or (Copy(S, Length(S)-5, 5) = '.wad_') then
+           begin
+            Entree.InfoType:=S[Length(S)];
+            Tex:=Nil;   { can store directly }
+            PasToChar(Entree.Nom, Copy(S, 1, Length(S)-6-Ord(Wad3)));
+           end
+          else
+           begin
+            if not (Q is QPixelSet) then
+             Raise EErrorFmt(5511, [Q.Name+Q.TypeInfo]);
+            if HalfLifeWad3 then
+              Entree.InfoType:='C'
+            else
+              Entree.InfoType:='D';
+            Tex:=QPixelSet(Q);  { must convert to Quake 1 texture }
+            PasToChar(Entree.Nom, Q.Name);
+           end;
+          Entree.Position:=F.Position;
+          if Tex<>Nil then
+           begin
+            TexFile:=CreateCopyTexture(Tex);
+            try
+              if HalfLifeWad3 then
+                TexFile.SaveAsHalfLife(F)
+              else
+                TexFile.SaveAsQuake1(F);  { we turn the texure into Quake 1 format }
+            finally
+              TexFile.AddRef(-1);
+            end;
+           end
+          else
+           Q.SaveFile1(Info);   { default saving method }
+          Entree.Taille:=F.Position-Entree.Position;
+          if HalfLifeWad3 then
+            Entree.Taille:=Entree.Taille+((-Entree.Taille) and 3); {Some weird fix to get the HalfLife colors right in Wally}
+          Entree.Idem:=Entree.Taille;
+          Dec(Entree.Position, Origine);
+          Zero:=0;
+          F.WriteBuffer(Zero, (-Entree.Taille) and 3);  { align to 4 bytes }
+          Repertoire.WriteBuffer(Entree, SizeOf(Entree));
+          Inc(Header.NoOfFileEntries);
+          ProgressIndicatorIncrement;
          end;
-        Entree.Position:=F.Position;
-        if Tex<>Nil then
-         begin
-          TexFile:=CreateCopyTexture(Tex); try
-          TexFile.SaveAsQuake1(F)  { we turn the texure into Quake 1 format }
-          finally TexFile.AddRef(-1); end;
-         end
-        else
-         Q.SaveFile1(Info);   { default saving method }
-        Entree.Taille:=F.Position-Entree.Position;
-        Entree.Idem:=Entree.Taille;
-        Dec(Entree.Position, Origine);
-        Zero:=0;
-        F.WriteBuffer(Zero, (-Entree.Taille) and 3);  { align to 4 bytes }
-        Repertoire.WriteBuffer(Entree, SizeOf(Entree));
-        Inc(Header.NoOfFileEntries);
-        ProgressIndicatorIncrement;
-       end;
 
-       { write directory }
-      Header.PosRep:=F.Position-Origine;
-      F.CopyFrom(Repertoire, 0);
-      finally Repertoire.Free; end;
+         { write directory }
+        Header.PosRep:=F.Position-Origine;
+        F.CopyFrom(Repertoire, 0);
+      finally
+        Repertoire.Free;
+      end;
 
        { update header }
       Fin:=F.Position;
@@ -302,7 +327,8 @@ begin
       F.WriteBuffer(Header, SizeOf(Header));
       F.Position:=Fin;
      end;
- else inherited;
+ else
+   inherited;
  end;
 end;
 
@@ -453,44 +479,51 @@ begin
 
        { write dummy positions to be updated later }
       I:=Count*SizeOf(LongInt);
-      GetMem(Positions, I); try
-      FillChar(Positions^, I, $FF);
-      F.WriteBuffer(Positions^, I);
+      GetMem(Positions, I);
+      try
+        FillChar(Positions^, I, $FF);
+        F.WriteBuffer(Positions^, I);
 
-       { write textures }
-      P:=Positions;
-      for I:=0 to SubElements.Count-1 do
-       begin
-        Q:=SubElements[I];
-        if Q is QPixelSet then
+         { write textures }
+        P:=Positions;
+        for I:=0 to SubElements.Count-1 do
          begin
-          P1:=F.Position;
-          try
-           if Q is QTexture1 then
-            Q.SaveFile1(Info)   { default saving method }
-           else
-            begin
-             TexFile:=CreateCopyTexture(QPixelSet(Q)); try
-             TexFile.SaveAsQuake1(F);  { convert to Quake 1 format }
-             finally TexFile.AddRef(-1); end;
+          Q:=SubElements[I];
+          if Q is QPixelSet then
+           begin
+            P1:=F.Position;
+            try
+             if Q is QTexture1 then
+              Q.SaveFile1(Info)   { default saving method }
+             else
+              begin
+               TexFile:=CreateCopyTexture(QPixelSet(Q));
+               try
+                 TexFile.SaveAsQuake1(F);  { convert to Quake 1 format }
+               finally
+                 TexFile.AddRef(-1);
+               end;
+              end;
+             P^:=P1-Origine;  { ok }
+            except
+             F.Position:=P1;   { could not store texture }
             end;
-           P^:=P1-Origine;  { ok }
-          except
-           F.Position:=P1;   { could not store texture }
-          end;
-         end; 
-        Inc(P);
-        ProgressIndicatorIncrement;
-       end;
+           end;
+          Inc(P);
+          ProgressIndicatorIncrement;
+         end;
 
-       { update directory }
-      Fin:=F.Position;
-      F.Position:=Origine + SizeOf(Count);
-      F.WriteBuffer(Positions^, Count*SizeOf(LongInt));
-      F.Position:=Fin;
-      finally FreeMem(Positions); end;
+         { update directory }
+        Fin:=F.Position;
+        F.Position:=Origine + SizeOf(Count);
+        F.WriteBuffer(Positions^, Count*SizeOf(LongInt));
+        F.Position:=Fin;
+      finally
+        FreeMem(Positions);
+      end;
      end;
- else inherited;
+ else
+   inherited;
  end;
 end;
 

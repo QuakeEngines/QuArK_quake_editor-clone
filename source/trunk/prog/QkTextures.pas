@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.19  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -169,6 +172,7 @@ type
                   function GetTexImage(I: Integer) : String;
                   function ScaledDownDescription(I: Integer) : TPixelSetDescription;
                   procedure SaveAsQuake1(F: TStream);
+                  procedure SaveAsHalfLife(F: TStream);
                   function GetTexName : String; dynamic;
                   function GetTexOpacity : Integer; virtual; abstract;  { 0-255 }
                   procedure SetTexOpacity(Alpha: Integer); dynamic;
@@ -883,7 +887,7 @@ begin
  Info.WndInfo:=[wiWindow];
 end;
 
-procedure QTextureFile.SaveAsQuake1;
+procedure QTextureFile.SaveAsQuake1(F: TStream);
 var
  S: String;
  Header: TQ1Miptex;
@@ -910,6 +914,22 @@ begin
    S:=GetTexImage(I);
    F.WriteBuffer(Pointer(S)^, Length(S));
   end;
+end;
+
+procedure QTextureFile.SaveAsHalfLife(F: TStream);
+var
+ S: String;
+ PalSize: SmallInt;
+begin
+  SaveAsQuake1(F);
+  S:=GetSpecArg('Pal');
+  if S='' then
+   PalSize:=0
+  else
+   PalSize:=(Length(S)-Length('Pal=')) div SizeOf(TPaletteLmp1);
+  F.WriteBuffer(PalSize, SizeOf(PalSize));
+  if PalSize>0 then
+   F.WriteBuffer((PChar(S)+Length('Pal='))^, PalSize*SizeOf(TPaletteLmp1));
 end;
 
 function QTexture.TestConversionType(I: Integer) : QFileObjectClass;

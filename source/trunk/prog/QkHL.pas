@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -112,10 +115,12 @@ begin
   begin
    TailleRestante:=(TailleRestante-SizeOf(PalSize)) div SizeOf(TPaletteLmp1);
    F.ReadBuffer(PalSize, SizeOf(PalSize));
-   if PalSize>MAXPAL then PalSize:=MAXPAL;
-   if PalSize>TailleRestante then PalSize:=TailleRestante;
+   if PalSize>MAXPAL then
+     PalSize:=MAXPAL;
+   if PalSize>TailleRestante then
+     PalSize:=TailleRestante;
    if PalSize>0 then
-    F.ReadBuffer(P^, PalSize*SizeOf(TPaletteLmp1));
+     F.ReadBuffer(P^, PalSize*SizeOf(TPaletteLmp1));
   end;
 
  SpecificsAdd(Data);  { "Pal=xxxxx" }
@@ -128,6 +133,8 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
+      SaveAsHalfLife(F);
+(*
       SaveAsQuake1(F);
        { writes the palette }
       S:=GetSpecArg('Pal');
@@ -137,9 +144,11 @@ begin
        PalSize:=(Length(S)-Length('Pal=')) div SizeOf(TPaletteLmp1);
       F.WriteBuffer(PalSize, SizeOf(PalSize));
       if PalSize>0 then
-       F.WriteBuffer((PChar(S)+Length('Pal='))^, PalSize*SizeOf(TPaletteLmp1)); 
+       F.WriteBuffer((PChar(S)+Length('Pal='))^, PalSize*SizeOf(TPaletteLmp1));
+*)
      end;
- else inherited;
+ else
+   inherited;
  end;
 end;
 
