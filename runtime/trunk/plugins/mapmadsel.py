@@ -858,6 +858,29 @@ def browseMulClick(m):
 #
 ########################################
 
+
+def invertFaceSelClick(m):
+    editor=mapeditor()
+    if editor is None: return
+    faces = filter(lambda x:x.type==':f', editor.layout.explorer.sellist)
+    polys = []
+    debug('filtered')
+    for face in faces:
+        for poly in face.faceof:
+            if not poly in polys:
+                polys.append(poly)
+    debug('polys')
+    newfaces=[]
+    for poly in polys:
+        for face in poly.faces:
+            if not (face in newfaces or face in faces):
+                newfaces.append(face)
+    debug('faces')
+    editor.layout.explorer.sellist=newfaces
+    editor.invalidateviews()
+    
+
+meninvertfacesel = quarkpy.qmenu.item("&Invert Face Selection", invertFaceSelClick, "For polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces")
 menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
 menrestsel.state=quarkpy.qmenu.disabled
 
@@ -879,7 +902,8 @@ def menunrestrictenable(editor):
 for menitem, keytag in [(menextsel, "Extend Selection"),
                         (menunrestrict, "Unrestrict Selection"),
                         (menrestsel, "Restrict to Selection"),
-                        (browseItem, "Browse Multiple Selection")]:
+                        (browseItem, "Browse Multiple Selection"),
+                        (meninvertfacesel, "Invert Face Selection")]:
 
     MapHotKey(keytag,menitem,quarkpy.mapselection)
 
@@ -935,6 +959,7 @@ quarkpy.mapselection.items.append(qmenu.sep)
 #
 #quarkpy.mapselection.items.append(parentSelPop)
 #quarkpy.mapselection.items.append(reorganizePop)
+quarkpy.mapselection.items.append(meninvertfacesel)
 quarkpy.mapselection.items.append(menextsel)
 quarkpy.mapselection.items.append(browseItem)
 quarkpy.mapselection.items.append(menunrestrict)
@@ -955,6 +980,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.16  2001/08/05 08:03:07  tiglari
+# ListerDlg->LiveBrowserDlg
+#
 # Revision 1.15  2001/08/03 11:50:15  tiglari
 # facilities for putting tree nav item on selection menu was causing free-ing
 #  errors, so disabled it.  Reorganized & renamed a bit to provide an
