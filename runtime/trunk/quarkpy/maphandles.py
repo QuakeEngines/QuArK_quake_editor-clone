@@ -27,7 +27,7 @@ from qdictionnary import Strings
 import qhandles
 from maputils import *
 import mapentities
-
+import qmacro
 
 #
 # The handle classes.
@@ -1330,11 +1330,52 @@ def singlebezierzoom(view):
     view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
     view.screencenter = sc
     
+def GetUserCenter(obj):
+    uc = obj["usercenter"]
+    if uc is None:
+        uc = mapentities.ObjectOrigin(obj).tuple
+    return quarkx.vect(uc)
+
+def SetUserCenter(obj, v):
+    obj["usercenter"] = v.tuple
+
+def macro_usercenter(self):
+    from qeditor import mapeditor
+    editor=mapeditor()
+    if editor is None: return
+    dup = editor.layout.explorer.uniquesel
+    if not dup: return
+    undo = quarkx.action()
+    from mapentities import ObjectOrigin
+    tup = ObjectOrigin(dup).tuple
+    debug('tup '+`tup`)
+    undo.setspec(dup,'usercenter',tup)
+    debug('set')
+    editor.ok(undo,'add usercenter')
+    debug('ok')
+    editor.invalidateviews()
+    
+qmacro.MACRO_usercenter = macro_usercenter
+class UserCenterHandle(CenterHandle):
+
+    def __init__(self, dup):
+        pos = GetUserCenter(dup)
+        CenterHandle.__init__(self, pos, dup, MapColor("Axis"))
+
+
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        dup = self.centerof.copy()
+        SetUserCenter(dup, GetUserCenter(dup)+delta)
+        return [self.centerof], [dup]
     
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.11  2001/03/01 19:14:58  decker_dk
+#Fix for CyanBezier2Handle.drag 'if new:'. Now testing for 'if new is not None:'.
+#
 #Revision 1.10  2001/02/28 09:46:43  tiglari
 #linear mapping handles removed from bez page
 #
