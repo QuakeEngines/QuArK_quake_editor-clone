@@ -3,12 +3,12 @@ author: tiglari
 
 A basic patch has nine control points, arranged in 3 rows of 3
 elements each.  Given essential limitations on what these
-(`quadratic bezier') patches can do, to make a full range of
+('quadratic bezier') patches can do, to make a full range of
 shapes, you need multiple 3x3 patches.  A semi-decent approximation
 to a circle for example needs at least four (although it's noticeably
 squarish, and to make it rounder you'd need more).  Typically
 lots of these patches will share edges, so it's natural to think
-of `quilts' of 3x3 patches, sharing edges.
+of 'quilts' of 3x3 patches, sharing edges.
 
 The Q3A engine provides direct support for such quilts, as long
 as they are rectangular.  If you think about the math you'll
@@ -21,7 +21,7 @@ will lie on (basic) patch edges, and if the point is in an
 odd-numbered row <strong>and</strong> column it will be a patch
 corner.
 
-In Q3Radiant documentation, quilts are called `meshes', but there
+In Q3Radiant documentation, quilts are called 'meshes', but there
 are lots of different kinds of meshes, and these quilts, or
 more precisely, quadratic quilts, have special properties,
 so we'll call them quilts to distinguish them from whatever

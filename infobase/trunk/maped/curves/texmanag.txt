@@ -5,12 +5,12 @@ There are currently three basic ways of manipulating textures
 on patches, dragging, a dialog box, and projection.  For
 dragging, drag on a point with the S key depressed.  Not
 much will seem to happen, but when you stop dragging,
-the texture will be `pulled' in the direction you dragged.
+the texture will be 'pulled' in the direction you dragged.
 
 If you drag again and look closely in the message window at
 the bottom left of the screen while dragging, you'll see
 numbers, these are the texture coordinates of the point.
-In patches & quilts, texture coordinates are `OpenGL style';
+In patches & quilts, texture coordinates are 'OpenGL style';
 one corner of the basic texture tile is (0,0), the opposite
 (1,1).  Note that a patch where the far corner is (2,2), and the
 other coordinates correspondingly doubled, will have the texture
@@ -27,7 +27,7 @@ to extend the resulting change to the row, column or whole
 patch/quilt.  This is functionally the same as dragging.
 
 Then finally, if a face is tagged, you can project the texture
-of the patch from or to the tagged face.  This is a `flat'
+of the patch from or to the tagged face.  This is a 'flat'
 projection, so it won't look too good on seriously curved patches
 (but would work fine for something like a buckled or warped
 plate on a floor or wall).

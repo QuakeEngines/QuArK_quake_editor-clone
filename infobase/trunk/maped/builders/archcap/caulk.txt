@@ -6,11 +6,11 @@ The arch now looks OK, but we've left out an important step,
 caulking.  The problem with it now is that the engine will
 actually draw the brush-faces that are concealed by the curves,
 which is a waste, because they can't be seen.  The solution
-is to attach a the `special/caulk' shader to the hidden faces.
+is to attach a the 'special/caulk' shader to the hidden faces.
 For the top slab that sits over the arch, we can easily just
 do this, but for the sides it's a bit more of a chore, because
 part of the inside faces of the walls are exposed, and others
-aren't (this is also a `t-junct', which is Evil.<BR><BR>
+aren't (this is also a 't-junct', which is Evil.<BR><BR>
 
 So there's a little trick to speed up caulking.  Tag say the
 left face of the guide-brush of the arch, then select the
