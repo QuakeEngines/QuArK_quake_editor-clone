@@ -193,7 +193,7 @@ def LoadIconSet1(filename, width, transparencypt=(0,0)):
 #
 # Map modules loader (map*.py modules require a special load order)
 #
-def loadmapeditor():
+def loadmapeditor(what=None):
     global loadmapeditor
     import maputils
     import mapeditor
@@ -201,8 +201,10 @@ def loadmapeditor():
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MAP")
+    if what=='bsp':
+        plugins.LoadPlugins("BSP")
 
-    def patchLoad():
+    def patchLoad(what=None):
         #---- import the bezier plug-ins if so stated in Defaults.QRK ----
         import quarkx
         beziersupport = quarkx.setupsubset()["BezierPatchSupport"]
@@ -453,6 +455,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2001/03/29 04:42:11  tiglari
+#reinstate MapHotKey & MapHotKeyList
+#
 #Revision 1.11  2001/03/29 01:25:53  aiv
 #modifable :form objects!
 #

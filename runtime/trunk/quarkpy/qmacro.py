@@ -24,18 +24,17 @@ import qutils
 # Macros called when there is an object to display in a window.
 #
 
-def MACRO_displaymap(self):
+def MACRO_displaymap(self, what=None):
     "Called when there is a map to display."
-    qutils.loadmapeditor()
+    qutils.loadmapeditor(what)
     import mapeditor
     if isinstance(self.info, mapeditor.MapEditor):
         self.info.ReopenRoot(self)
     else:
         mapeditor.MapEditor(self)   # new map editor
 
-MACRO_displaybsp = MACRO_displaymap
-    # Called when there is a BSP file to display.
-    # (redirected to MACRO_displaymap)
+def MACRO_displaybsp(self):
+    MACRO_displaymap(self,'bsp')
 
 
 def MACRO_displaymdl(self):
@@ -299,6 +298,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.12  2001/06/18 20:30:12  decker_dk
+#Replace all '&'-characters with nothing, for menuitem-captions used as indexes into python-style dictionaries.
+#
 #Revision 1.11  2001/06/13 23:01:13  aiv
 #Moved 'Convert From' stuff to python code (plugin type)
 #
