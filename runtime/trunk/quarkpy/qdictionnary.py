@@ -745,7 +745,7 @@ Strings = {
 	5587: "Impossible to create the directory '%s'. Be sure you entered the path to %s correctly in the configuration dialog box//Error code %d",
 	5588: "Texture '%s' not found.",
 	5589: "%d textures written to '%s'.",
-	5590: "%d textures written to '%s', including %d animated textures.",
+	5590: "%d textures written to '%s'.\n%d textures came from animations or from shaders.",
 	5591: "Choose the file(s) to link to",
 	5592: "Choose the file(s) to import",
 	5593: "'%s' is not a Quake1 MDL file//%d-%d should be %d-%d",
