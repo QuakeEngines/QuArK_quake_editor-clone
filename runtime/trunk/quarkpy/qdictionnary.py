@@ -896,6 +896,9 @@ Strings = {
     5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
     5702: "Files in this directory wont work. Select a file in a subdirectory please.",
+    5703: "%s contains an unsupported format (width %d, height %d, format %d)",
+    5704: "no vtf file",
+    5705: "dxtdecode.dll not found",
     
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -915,6 +918,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.55  2003/07/21 04:50:02  nerdiii
+#Linux compatibility ( '/' '\' )
+#
 #Revision 1.54  2003/04/29 14:31:12  nerdiii
 #no message
 #
