@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10.4.4  2001/07/15 06:17:42  tiglari
+oops wrong version committed previously
+
 Revision 1.10.4.3  2001/07/15 05:57:46  tiglari
 now draws the 2d views! (many safeguards missing, no texture unfo)
 
@@ -201,8 +204,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 
 implementation
 
-uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList;
-
+uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList, Dialogs;
  {------------------------}
 
 function CheckQ1Hulls(Hulls: PHull; Size, FaceCount: Integer) : Boolean;
@@ -285,6 +287,7 @@ var
  PlaneDist: TDouble;
  dist: vec3_t;
  TextureList: QTextureList;
+ NonFaces: Integer;
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
  HullNum:=Index;
@@ -384,9 +387,12 @@ begin
       Inc(PChar(Q3Faces2), SurfaceSize);
       if Q3Faces2^.Face_Type=1 then
       begin
-        {FIXME : check for face additions }
+        {FIXME : check for face additions as above}
         Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PSommet));
-      end;
+      end
+      else
+        Inc(NonFaces);
+        { we'll be wanting to do something smarter with patches etc }
     end;
   end;
   GetMem(SurfaceList, Size1);
@@ -404,6 +410,8 @@ begin
     else
     begin
       Inc(PChar(Q3Faces), SurfaceSize);
+      if Q3Faces^.Face_Type<>1 then
+        Continue;
     end;
     Surface1^.Source:=Self;
     Surface1^.NextF:=Nil;
@@ -597,6 +605,11 @@ begin
     PChar(Surface1):=PChar(Dest);
    end;
 
+ { FIXME : This is a stopgap, when it is improved, Dialogs should
+   be removed from the implementation uses statement }
+
+ if NonFaces>0 then
+    ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
   if InvFaces>0 then
    GlobalWarning(FmtLoadStr1(5638, [Index, InvFaces, LastError]));
  except
