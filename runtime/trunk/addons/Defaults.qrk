@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.160  2001/08/02 02:47:06  tiglari
+//browse group hotkey support
+//
 //Revision 1.159  2001/07/26 09:19:15  tiglari
 //Crystal Space bezier support, 2nd build prgm
 //
@@ -3491,10 +3494,21 @@ QQRKSRC1
       centering: =
        {Txt= "&" Typ="P" Macro="usercenter" Cap="push" Hint="Push to add a user center"}
     }
+    notexsubform:incl = {
+       notexsub: = {Txt="&" Typ="X" Hint="Texture substitution in duplicators won't happen on this surface"}
+    }
     dup plane:form = {
       P1:= {Txt="&" Typ="EF03"}
       P2:= {Txt="&" Typ="EF03"}
       P3:= {Txt="&" Typ="EF03"}
+    }
+    Default:f:form =
+    {
+      notexsubform=!
+    }
+    Default:b2:form =
+    {
+      notexsubform=!
     }
     Default:g:form =      // form that applies when editing groups
     {
@@ -3531,6 +3545,7 @@ QQRKSRC1
       final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics"$0D"for different final values associated with different bases,"$0D"list them base1:val base2:val2"}
       increment by = {Txt="&" Typ="E" Hint="size of increment" }
       incre_lip = {Txt="&" Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
+      tex_sub = {Txt="&" Typ="E" Hint="Name of texture substitution file, which has a list of texturenames on each line, to be cycled thru" $0D " To block substitution on a face or patch, check the 'notexsub' specific."}
     }
     Default:d:form =    // form that applies when editing duplicators
     {

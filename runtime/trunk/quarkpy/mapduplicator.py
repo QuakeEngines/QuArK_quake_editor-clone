@@ -96,6 +96,11 @@ def pool_specs(list):
                     specs[key]="1"
     return specs.keys()
 
+#
+# This is a cache for texture-substitution lists
+#
+Dup_Tex_Dicts={}
+
 class StandardDuplicator(DuplicatorManager):
     "Base for Duplicators that applies on each item one by one."
 
@@ -105,6 +110,23 @@ class StandardDuplicator(DuplicatorManager):
         self.origin = self.dup.origin
         if self.origin is None:
             self.origin = quarkx.vect(0,0,0)
+        tex_sub=self.dup["tex_sub"]
+        #
+        # try to cache the texsub info in a dictionary
+        #   attached to the DuplicatorManager class
+        #
+        if tex_sub:
+            if not Dup_Tex_Dicts.has_key(tex_sub):
+                tex_dict=Dup_Tex_Dicts[tex_sub]={}
+                try:
+                    texfile=open(quarkx.exepath+tex_sub,'r')
+                    line=texfile.readline()
+                    while line:
+                        line = string.split(line)
+                        tex_dict[line[0]]=line[:]
+                        line=texfile.readline()
+                except:
+                     quarkx.msgbox("didn't find texture substition file "+tex_sub,2,4)
         sourcelist = self.sourcelist()
         #
         # fancy linear mappings stuff
@@ -228,6 +250,13 @@ class StandardDuplicator(DuplicatorManager):
             offset = quarkx.vect(self.dup["offset"])
         else:
             offset = cumoffset
+        tex_sub=self.dup["tex_sub"]
+        tex_dict = None
+        if tex_sub:
+            try:
+                tex_dict=Dup_Tex_Dicts[tex_sub]
+            except:
+                quarkx.msgbox('no tex_dict found',2,4)
         if self.dup["item center"]:
             try:
                 if self.matrix is not None:
@@ -237,6 +266,7 @@ class StandardDuplicator(DuplicatorManager):
             except (AttributeError):
                 pass
         for i in range(count):
+#            debug('i = %d'%i)
             cumoffset = offset+cumoffset
             self.imagenumber = i
             # the following line :
@@ -259,6 +289,27 @@ class StandardDuplicator(DuplicatorManager):
             #
             # Set final spec values for incrementable suffixes
             #
+            if tex_dict:
+                for item in list:
+                    #
+                    # not using replacetex on item so that there can be a flag
+                    #   to inhibit texture replacement
+                    #
+                    surfs=item.findallsubitems("",":f")+item.findallsubitems("",":b2")
+                    for surf in surfs:
+                        if not surf["notexsub"]:
+                            try:
+                                if i==0:
+                                    orig_tex=surf["orig_tex"]=surf.texturename
+                                else:
+                                    orig_tex=surf["orig_tex"]
+                                texlist=tex_dict[orig_tex]
+#                                debug(' i: '+`i`)
+                                surf.texturename = texlist[(i+1)%len(texlist)]
+#                                debug('   '+surf.texturename)
+                            except:
+                                pass
+                
             if self.dup["increment suffix"]:
                 if i==count-1:
                     for item in list:
@@ -397,6 +448,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20  2001/06/09 01:23:49  tiglari
+#bugfix (subnoodle), extend to duplicators
+#
 #Revision 1.19  2001/06/05 21:11:35  tiglari
 #final values now work on things embedded in groups
 #
