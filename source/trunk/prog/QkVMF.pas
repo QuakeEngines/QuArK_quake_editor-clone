@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/02/06 21:39:26  alexander
+dont break on hidden solids
+
 Revision 1.5  2005/02/06 21:29:15  alexander
 dont ignore hammers special groups but import them into quark under misc
 import worldspawn attributes
@@ -602,10 +605,10 @@ procedure WC33Params;
        S1:=S;
        ReadSymbol(sStringQuotedToken);
        if (S1='classname')  then
-       begin
-          classname:=S;
-       end;
-       SpecificList.Add(S1+'='+S);
+          classname:=S
+       else
+         SpecificList.Add(S1+'='+S);
+
        ReadSymbol(sStringQuotedToken);
      end
      else
