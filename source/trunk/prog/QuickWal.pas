@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/02/02 08:13:08  tiglari
+fixed pak reading order
+
 Revision 1.13  2001/01/29 19:23:11  tiglari
 fixed texture folder building but (texture directories not processed right)
 
@@ -368,33 +371,81 @@ begin
   end;
 end;
 
-function LinkShaderFolder(var ResultFolder: QObject; const Name, FolderName, Base: String; Loaded: QObject) : Boolean;
-var
- I: Integer;
- Folder, Q, Tex: QObject;
+{Makes a folder and inserts into position specified by index }
+function InsertNewTxList(Parental: QObject; Name: String; Index: Integer) : QTextureList;
 begin
- Result:=False;
- if CompareText(ExtractFileExt(Name), '.shader') = 0 then
+  Result:=QTextureList.Create(Name, Nil);
+  Result.FParent:=Parental;
+  Parental.SubElements.Insert(Index,Result);
+end;
+
+{ parses file name into Path=TStrings, NameOnly=String }
+procedure AnalyseFileName(FileName: String; var Path: TStringList; var NameOnly: String);
+var
+  P : Integer;
+begin
+  Path:=TStringList.Create;
+  P:=Pos('/', FileName);
+  while P>0 do
   begin
-   if Loaded=Nil then
+    Path.Add(Copy(FileName,1,P-1));
+    FileName:=Copy(FileName,P+1,Length(FileName));
+    P:=Pos('/', FileName);
+  end;
+  NameOnly:=FileName;
+end;
+
+{ locates folder by given pathname, creating QTextureLists
+  when nothing exists }
+function LocateTxListFromPath(Folder: QObject; Path : TStrings) : QObject;
+var
+  Index, I: Integer;
+  SubFolder: QObject;
+begin
+  for I:=0 to Path.Count-1 do
+  begin
+    Index:=0;
+    SubFolder:=Folder.LocateSubElement(Path[I],Index);
+    if SubFolder=Nil then
+      SubFolder:=InsertNewTextureList(Folder,Path[I],Index);
+    Folder:=SubFolder;
+  end;
+  Result:=Folder;
+end;
+
+
+function LinkShaderFolder(var DestFolder: QObject; const Name, FolderName, Base: String; Loaded: QObject) : Boolean;
+var
+  I, P, Index: Integer;
+  Folder, Q, Tex: QObject;
+  ShortName: String;
+  Path: TStringList;
+begin
+  Result:=False;
+  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
+  begin
+    if Loaded=Nil then
     begin
-     Result:=True; { load the file }
-     Exit;
-    end;
+      Result:=True; { load the file }
+      Exit;
+   end;
    Loaded.Acces;
-   Folder:=Nil;
+{   Folder:=Nil; }
    for I:=0 to Loaded.SubElements.Count-1 do
-    begin
+   begin
      Tex:=Loaded.SubElements[I];
      if Tex is QShader then
-      begin
+     begin
+       if Copy(Tex.Name,1,9)<>'textures/' then
+         continue;
+       AnalyseFileName(Copy(Tex.Name,10,999),Path,ShortName);
+       Folder:=LocateTxListFromPath(DestFolder, Path);
        Q:=Link1(Folder, FileNameOnly(Name)+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
        Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
        Q.Specifics.Values['b']:=Name;
        Q.Specifics.Values['shader']:='1';
-      end;
+     end;
     end;
-    OrderedLinkFolder(Folder, ResultFolder, FolderName);
   end;
 end;
 
@@ -755,8 +806,6 @@ procedure MergeTextureFolders(Base : String; var Q:QObject);
 var
   S, Path: String;
   SearchFolder : QObject;
-  FindError: Integer;
-  F: TSearchRec;
   Pak: QPakFolder;
   PakList: TStringList;
   I: Integer;
