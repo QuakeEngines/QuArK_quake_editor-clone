@@ -111,6 +111,7 @@ type
 
              function GetOrigin(var Pt: TVect) : Boolean; override;
              procedure AnalyseClic(Liste: PyObject); override;
+             procedure SwapSides; { tiglari }
              function PyGetAttr(attr: PChar) : PyObject; override;
              function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
            end;
@@ -123,7 +124,7 @@ function TriangleSTCoordinates(const cp: TBezierMeshBuf5; I, J: Integer) : vec_s
 
 implementation
 
-uses PyMapView;
+uses PyMapView, PyObjects;
 
  (*    QUADRATIC BEZIER PATCHES
   *
@@ -1114,6 +1115,36 @@ begin
  finally FreeMem(Triangles); end;
 end;
 
+{ tiglari: cribbed off TBezier.Deplacement }
+procedure TBezier.SwapSides;
+var
+ cp, ncp: TBezierMeshBuf5;
+ I, J, K: Integer;
+ F: Reel;
+ Source, Dest, P1, P2: vec5_p;
+begin
+ cp:=ControlPoints;
+ ncp.H:=cp.W;
+ ncp.W:=cp.H;
+ GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t)); try
+ Source:=cp.CP;
+ Dest:=ncp.CP;
+ for J:=0 to cp.H-1 do
+  begin
+   Dest:=ncp.CP;
+   Inc(Dest, J);
+   for I:=0 to cp.W-1 do
+    begin
+     for K:=0 to 4 do
+      Dest^[K]:=Source^[K];
+     Inc(Source);
+     Inc(Dest, ncp.W)
+    end;
+  end;
+ ControlPoints:=ncp;
+ finally FreeMem(ncp.CP); end;
+end;
+
  { guess the 'smooth' specific based on current control points }
 procedure TBezier.AutoSetSmooth;
 var
@@ -1249,9 +1280,36 @@ begin
   end;
 end;
 
+{tiglari}
+ {------------------------}
+
+ { Python methods }
+
+function fSwapSides(self, args: PyObject) : PyObject; cdecl;
+var
+ Buf, cp : TBezierMeshBuf5;
+ I, J : Integer;
+begin
+ try
+  with QkObjFromPyObj(self) as TBezier do
+    SwapSides;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+const
+ FaceMethodTable: array[0..0] of TyMethodDef =
+  ((ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS));
+
+ {/tiglari}
+
  {------------------------}
 
  { Python attribute reading }
+
 function TBezier.PyGetAttr(attr: PChar) : PyObject;
 var
  cp: TBezierMeshBuf5;
@@ -1260,15 +1318,23 @@ var
 begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
+ {tiglari: cribbed from QkMapPoly:TFace}
+ for I:=Low(FaceMethodTable) to High(FaceMethodTable) do
+  if StrComp(attr, FaceMethodTable[I].ml_name) = 0 then
+   begin
+    Result:=PyCFunction_New(FaceMethodTable[I], @PythonObj);
+    Exit;
+   end;
+ {/tiglari}
  case attr[0] of
   'H': if Length(attr) = 1 then
         begin
-          Result := PyInt_FromLong(ControlPoints.H-1);
+          Result := PyInt_FromLong(ControlPoints.H);
           Exit;
         end;
   'W': if Length(attr) = 1 then
         begin
-          Result := PyInt_FromLong(ControlPoints.W-1);
+          Result := PyInt_FromLong(ControlPoints.W);
           Exit;
         end;
   'c': if StrComp(attr, 'cp') = 0 then
