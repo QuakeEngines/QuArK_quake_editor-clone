@@ -10,5 +10,6 @@ subdir: kingpin
 subdir: quake3
 subdir: sof
 subdir: stvef
+subdir: crystalspace
 
 Here you will find information and frequently asked questions about the QuArK-supported games.
