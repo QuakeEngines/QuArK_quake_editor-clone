@@ -214,7 +214,8 @@ QQRKSRC1
     SFSkills = '256 512 1024 2048'   // must be 4 to 6 values : easy/medium/hard/deathm.[/coop/single]
     CreateFiles: =
     {
-      liblist.gam = {
+      // the prefix '*' indicates that this file must never be packed into a .PAK file
+      *liblist.gam = {
         Data =
             "game "$22"tmpQuArK"$220D0A
             "gamedll "$22"..\valve\dlls\hl.dll"$220D0A

@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.22  2000/05/05 00:01:07  alexander
+//added: game forms and defaults for Soldier of Fortune
+//
 //Revision 1.21  2000/04/29 15:13:52  decker_dk
 //Allow other than PAK#.PAK files
 //
@@ -384,7 +387,8 @@ QQRKSRC1
         Palette = "gfx/palette.lmp"
         Gradient = "gfx/colormap.lmp"
         //ExtractFiles = "liblist.gam" $0D "cl_dlls/*.*"
-        ExtractFiles = "cl_dlls/*.*"
+        //DECKER - 'ExtractFiles' just creates troubles, if another mod-directory is choosen....
+        //ExtractFiles = "cl_dlls/*.*"
         ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataHL.qrk"
