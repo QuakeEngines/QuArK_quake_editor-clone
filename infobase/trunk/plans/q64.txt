@@ -1,0 +1,71 @@
+title: QuArK 6.4
+author: tiglari, etc.
+
+Current plans for 6.4.  Some of the python-based facilities might become
+available as experimental addons to 6.3
+
+<UL>
+<li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
+<br>Actually, totally reorganize bsp reading code
+
+<li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
+<br>an as-yet-unimplemented 4.7 feature.
+
+<li>FAKK2 support: (?)
+<br>And what about Daikatana, Alice, & Gunman
+<br>status: Gunman seems supportable as an add-on
+
+<li>OsFolders: (tiglari)
+<br>edit the properties of pre-existing OsFolders
+
+<li>L-square menu enhancements: (tiglari, ?)
+<br>status: started, align & glue to tagged done.  I intend
+to leave further enhancements as an exercise for someone who
+wants to learn more about QuArK-Python programming.
+Suggested additions are:
+<UL>
+<LI> checkbox for relative to tagged/join of L
+<LI> end position
+<LI> arm length
+<LI> arm angle
+</UL>
+What about L-join options?
+
+<li>Brush-based shape-builders: (tiglari, Decker)
+<br>'inner boxes' (two independently manipulable boxes, one inside
+   the other, giving more control over arch shapes).
+<br> redo prism-builder as shape-builder.
+<br> more fancy options for stair-builder
+
+<li>Patch-based shape-builders: (tiglari)
+<br> sphere, 'inner boxes', 'square cylinders' (s/b easy, but no
+requests for it
+
+<li>Patch bend mode: (tiglari)
+<br>Or something like it.
+
+<li>full equivalence to GtkR patch texturing: (tiglari)
+<br>If we're actually behind 
+
+<li>Expand/Contract faces: (tiglari)
+<br>As enhancement to experimental mapmovevertex plugin
+<br>Plus extension of vertex locks to ordinary vertex dragging.
+
+<li>CTF duplicator: (tiglari)
+<br>status: started, nothing committed.
+
+<li>Model Editor: (Andy)
+<br>more progress
+
+<li>Ripoff of WC `arch maker': (tiglari)
+<br>would be called something like`arc builder', probably
+basically a duplicator, emulating the wc thing's functionality.
+
+<li>3point cutting plane: (tiglari)
+
+<li>Incorporate 'entity info files' into toolboxes: (tiglari)
+<br>tiglari has PERL scripts that generate various kinds of info (hints, bounding
+bpxes etc) from Radiant .def files and other sources, the idea being to
+let these be automatically integrated into the toolboxes generated
+by Andy's addon-builder.
+</UL>

@@ -3,15 +3,14 @@ author: tiglari, etc.
 
 This is stuff that tiglari and anyone else who updates this
 file currently envisions for the next release of
-QuArK. There's a good chance that this will split into 6.3
-and 6.4
+QuArK.  Considerable material has just been put off from 6.3 to 6.4
 
 <ul>
 <li>Linear Matrix editor: (tiglari)
 <br>crank out matrices for rotation, scaling
 etc. from intelligible parameters (from pushbutton in duplicator
 forms).
-<br>status: sort of done by adding scale and rotation.
+<br>status: done, by adding scale and rotation.
 specifics.
 <br>Note: linear mapping buttons on duplicators with a linear specific
 sort of do this, but scale/rot/shear components aren't isolated for
@@ -19,7 +18,8 @@ independent manipulation.
 
 <li>Extruder: (tiglari)
 <br>generate brushes etc. from 2d outlines.
-<br>status: done (integrates with path duplicator).
+<br>status: done (integrates with path duplicator); some extensions
+currently being added.
 
 <li>'Instance' duplicator: (tiglari)
 <br> put copies of a structure where you want it.  Inspired
@@ -43,7 +43,7 @@ in some duplicators.
 <br>status: done
 
 <li>Form-editing: (Andy)
-<br>status: needs create capacity
+<br>status: create capacity done.
 
 <li> Entity Extractor: (Andy)
 <br> Entities extracted from .bsp's in many formats
@@ -56,21 +56,18 @@ files.
 <br>status: done, as 'F' during RMB click.
 
 <li>L-square enhancements: (tiglari, ax2grind)
-<br>status: RMB menus started.  Want more positioning
-options for the arms, such as:
-<UL>
-<LI> checkbox for relative to tagged/join of L
-<LI> end position
-<LI> arm length
-<LI> arm angle
-</UL>
-What about L-join options?
+<br>status: started, align & glue to tagged done.  I intend
+to leave further enhancements as an exercise for someone who
+wants to learn more about QuArK-Python programming.
+
 
 <LI>Tree navigation: (tiglari, design from Decker, realdespair)
 <br> home, pg up, pg down for parent, next prev in group, cycling.
 Plus some kind of option for getting next-of-same-type in group.
-<br>status: basic stuff done, same type stuff not done (code needs
-to be rewritten at a higher level of abstraction).
+<br>status: basic stuff done.  Perhaps add more refined same-type
+option (=classname for point entities, brush entities, =macro
+for duplicators)
+
 
 <li> Entity Lump Extractor: (tiglari)
 <br> extracts entity lumps from .bsp's in a .pak to independent files.
@@ -78,44 +75,9 @@ to be rewritten at a higher level of abstraction).
 begin with underscore.  More thought about easy preparation of
 entity addons is needed.
 
-<li>FAKK2 support: (?)
-<br>And what about Daikatana, Alice, & Gunman
-<br>status: Gunman seems supportable as an add-on
-
-<li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
-<br>Actually, totally reorganize bsp reading code
-
-<li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
-<br>an as-yet-unimplemented 4.7 feature.
-
-<li>Model Editor: (Andy)
-<br>more progress
-
-<li>OsFolders: (tiglari)
-<br>edit the properties of pre-existing OsFolders
-
-<li>Brush-based shape-builders: (tiglari, Decker)
-<br> force-to-grid option: done.
-<br>'inner boxes' (two independently manipulable boxes, one inside
-   the other, giving more control over arch shapes).
-<br> redo prism-builder as shape-builder.
-<br> more fancy options for stair-builder
-
-<li>Patch-based shape-builders: (tiglari)
-<br> sphere, 'inner boxes'
-
-<li>Expand/Contract faces: (tiglari)
-<br>As enhancement to experimental mapmovevertex plugin
-
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
+<br>status: the only thing on this list which isn't reasonably far
+along or just plain done.
 
-<li>Ripoff of WC `arch maker': (tiglari)
-<br>would be called something like`arc builder', probably
-basically a duplicator, emulating the wc thing's functionality.
-
-<li>3point cutting plane: (tiglari)
-
-<li>CTF duplicator: (tiglari)
-<br>status: started, nothing committed.
 </ul>
