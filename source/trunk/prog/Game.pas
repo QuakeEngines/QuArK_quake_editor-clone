@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.10  2000/05/07 09:33:02  decker_dk
 Fixed a problem with TGetPakNames
 
@@ -508,7 +511,7 @@ var
  TempResult: QFileObject;
 
 {DECKER-begin}
- FoundIt: Boolean;
+{FoundIt: Boolean; removed by Armin}
  GetPakNames: TGetPakNames;
 {DECKER-end}
 
@@ -538,8 +541,8 @@ begin
   NomComplet:=GetPakZero(NomChemin, True);
   while GetNextPakName(True, NomComplet, True) do
 }
-  FoundIt := FALSE;
-  GetPakNames:=TGetPakNames.Create;
+ {FoundIt := FALSE;}
+  GetPakNames:=TGetPakNames.Create; try
   GetPakNames.CreatePakList(NomChemin, True);
   while GetPakNames.GetPakName(True, NomComplet, True) do
 {DECKER-end}
@@ -558,11 +561,11 @@ begin
       begin
        Result:=TempResult;
 {DECKER-begin}
-(*
        Exit;   { found it }
-*)
+(*
        FoundIt:=TRUE;
        break;
+*)
 {DECKER-end}
       end;
      if Alias<>'' then
@@ -572,18 +575,17 @@ begin
         begin
          Result:=TempResult;
 {DECKER-begin}
-(*
          Exit;   { found it as alias }
-*)
+(*
          FoundIt:=TRUE;
          break;
+*)
 {DECKER-end}
         end;
       end;
     end;
 {DECKER-begin}
-  GetPakNames.Destroy;
-  If FoundIt then Exit;
+  finally GetPakNames.Destroy; end;
 {DECKER-end}
 
   NoMoreAlias:=Alias='';
