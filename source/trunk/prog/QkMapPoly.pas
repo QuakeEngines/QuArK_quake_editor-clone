@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2002/05/23 09:02:10  tiglari
+fix texture positioning problems with Classic Quake and Quark etp
+
 Revision 1.56  2002/05/07 23:22:51  tiglari
 fix bugs in Mohaa surface property writing
 
@@ -1123,7 +1126,7 @@ end;
 procedure Valve220MapParams(const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
-  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2 : TVect;
+  Axis, P0, P1, P2, D1, D2, Shift : TVect;
   Mat: TMatrixTransformation;
   S1, S2 : Double;
 
@@ -1138,38 +1141,28 @@ var
   end;
 
 begin
-  Plan:=PointsToPlane(Normale);
-  case Plan of
-   'X' : Axis := MakeVect(1, 0, 0);
-   'Y' : Axis := MakeVect(0, 1, 0);
-   'Z' : Axis := MakeVect(0, 0, 1);
-  end;
 
   F.GetThreePointsT(P0, P1, P2);
-  Origin:=MakeVect(0,0,0);
-  PP0:=ProjectPointToPlane(P0, Axis, Origin, Axis);
-  PP1:=ProjectPointToPlane(P1, Axis, Origin, Axis);
-  PP2:=ProjectPointToPlane(P2, Axis, Origin, Axis);
-  D1:= VecDiff(PP1, PP0);
-  D2:= VecDiff(PP2, PP0);
+  D1:= VecDiff(P1, P0);
+  D2:= VecDiff(P2, P0);
   Normalise(D1, S1);
   Normalise(D2, S2);
+
   S1:=S1/128;
   S2:=S2/128;
   { probably can be optimized }
 
   Mat:= MatriceInverse(MatrixFromCols(D1, D2,Cross(D1,D2)));
-  PP0:= MatrixMultByVect(Mat,PP0);
+  Shift:= MatrixMultByVect(Mat,P0);
 
 
-  write4vect(D1, -PP0.X/S1, S);
-  write4vect(D2, PP0.Y/S2, S);
+  write4vect(D1, -Shift.X/S1, S);
+  write4vect(D2, Shift.Y/S2, S);
 
   S:=S+' 0 ';
   S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5);
   { sign flip engineered into Scale }
   S:=S+' '+FloatToStrF(-S2, ffFixed, 20, 5);
-
 
 end;
 
@@ -1229,6 +1222,12 @@ begin
  Params[1]:=-PX[1]*A;
  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
  Params[2]:=PY[1]*A;
+
+
+ if (Plan='X') and (CharModeJeu=mjGenesis3D) then
+   Params[4]:=-Params[4];
+
+
 end;
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
