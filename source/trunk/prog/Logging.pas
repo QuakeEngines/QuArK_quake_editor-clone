@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:47:44  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/03/02 19:35:36  decker_dk
 Spell QuArK with the proper capital-letters.
 
@@ -65,7 +68,7 @@ const
   LOG_PASCALSOURCE = 0;
   LOG_PYTHONSOURCE = 1;
   LOG_FILENAME = 'QUARK.LOG';
-
+  LOG_PATCHFILE = 'PATCH.TXT';
 implementation
 
 uses QkObjects, Setup, QkApplPaths, SystemDetails;
@@ -73,6 +76,30 @@ uses QkObjects, Setup, QkApplPaths, SystemDetails;
 var
   LogFile: TextFile;
   LogOpened: boolean;
+
+function GetPatchVersion: String;
+var
+  PF: TextFile;
+  filename: string;
+begin
+  SetApplicationPath(ExtractFilePath(Application.Exename));
+  filename:=GetApplicationPath()+LOG_PATCHFILE;
+  if fileexists(filename) then
+  begin
+  {$I-}
+    AssignFile(PF, filename);
+    Reset(PF);
+    ReadLn(PF, result);
+    CloseFile(PF);
+  {$I+}
+    result:=' '+result;
+  end
+  else
+  begin
+    result:='';
+  end;
+
+end;
 
 Procedure OpenLogFile;
 begin
@@ -84,7 +111,7 @@ begin
   rewrite(LogFile);
   LogOpened:=true;
   LogEx('QuArK started at %s',[DateTimeToStr(now)]);
-  LogEx('QuArK version is %s',[QuarkVersion]);
+  LogEx('QuArK version is %s',[QuarkVersion+GetPatchVersion]);
   LogSystemDetails;
   {$I+}
 end;
