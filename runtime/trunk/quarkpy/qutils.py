@@ -495,6 +495,36 @@ def clearimagelist(list):
         del im1
         del im2
 
+
+
+#
+# Utilities for accessing attributes of objects
+#  (class instances) that might not be defined
+#
+def getAttr(object, attr, default=None):
+    if hasattr(object, attr):
+        return getattr(object,attr)
+    else:
+        return default
+
+def delAttr(object, attr):
+    if hasattr(object, attr):
+         delattr(object, attr)
+
+def appendToAttr(object, attr, thing):
+    if hasattr(object, attr):
+        getattr(object,attr).append(thing)
+    else:
+        setattr(object,attr,[thing])
+
+def removeFromAttr(object, attr, thing):
+    getattr(object,attr).remove(thing)
+    if getattr(object,attr)==[]:
+        delattr(object,attr)
+
+
+
+
 #---- import the plug-ins ----
 import plugins
 plugins.LoadPlugins("Q_")
@@ -503,6 +533,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20  2002/04/12 11:25:30  tiglari
+#revert loadimages2 to loadimages  (a less well-thought-out leak hunt move ...)
+#
 #Revision 1.19  2002/03/26 22:19:20  tiglari
 #support UseIntegralVertexes flag
 #
