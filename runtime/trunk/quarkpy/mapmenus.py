@@ -146,7 +146,6 @@ def BuildMenuBar(editor):
     sc1.update(sc2)   # merge shortcuts
     l1 = plugins.map1addonsamendmenu.AmendMenuCmds
     l2 = [qmenu.sep]
-
     if len(l1):
         Addons1.items = l1 + l2 + Addons1.items
         sc1.update(sc2)   # merge shortcuts
@@ -162,6 +161,11 @@ def BuildMenuBar(editor):
 
     Options1, sc2 = mapoptions.OptionsMenu()
     sc1.update(sc2)   # merge shortcuts
+    l1 = plugins.mapgridscale.GridMenuCmds
+    l2 = [qmenu.sep]
+    if len(l1):
+        Options1.items = l1 + l2 + Options1.items
+        sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu,
      Search1, Commands1, Addons1, Selection1, Quake1, Tools1, Options1], sc1
@@ -430,6 +434,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.11  2003/07/04 19:59:57  cdunde
+#To add new Addons main menu item and sub-menus
+#
 #Revision 1.10  2003/03/21 05:57:05  cdunde
 #Update infobase and add links
 #
