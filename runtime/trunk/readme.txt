@@ -1,5 +1,6 @@
 
-
+ *beziers & new build tool for Crystal Space support
+ *Blue Shift pak's now open
  *add align to marked option, clear mark command.
  *threepoint plane can now glue to tagged plane
 
