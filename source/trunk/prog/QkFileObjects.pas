@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/01/23 08:06:54  tiglari
+Infrastructure for OsFolders (read their contents from folders on disk,
+ don't write them when writing the .qrk).
+
 Revision 1.20  2001/01/21 15:48:25  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -273,7 +277,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkInclude, PyObjects,
-  PyForms, QkTreeView, Game, QkObjectClassList;
+  PyForms, QkTreeView, Game, QkObjectClassList, QkApplPaths;
 
 {$R *.DFM}
 
@@ -322,35 +326,45 @@ end;
 
 function LienFichierQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 var
- NomComplet, {IncludePath,} CurDir: String;
+ pathAndFileName, {IncludePath,} CurDir: String;
  Q: QFileObject;
  NoPath: Boolean;
+ searchPaths: QApplPaths;
+ somePath: String;
 begin
- NomComplet:=theFilename;
- NoPath:=ExtractFilePath(theFilename)='';
- if NoPath and (nParent<>Nil) then
+  pathAndFileName:=theFilename;
+  NoPath:=ExtractFilePath(theFilename) = '';
+
+  if NoPath and (nParent<>Nil) then
   begin  { try to complete the file path }
-   Q:=GetFileRoot(nParent);
-   if (Q<>Nil) and (Q.Filename<>'') then
+    Q:=GetFileRoot(nParent);
+    if (Q<>Nil) and (Q.Filename<>'') then
     begin
-     CurDir:=ExtractFilePath(Q.Filename);
-     {IncludePath:=CurDir+';';}
-     if FileExists(CurDir+theFilename) then
-      NomComplet:=CurDir+theFilename;
+      CurDir:=ExtractFilePath(Q.Filename);
+      if FileExists(CurDir+theFilename) then
+        pathAndFileName:=CurDir+theFilename;
     end;
   end;
- if not FileExists(NomComplet) then
-  if NoPath and FileExists(ApplicationPath+theFilename) then
-   NomComplet:=ApplicationPath+theFilename
-  else
-   if NoPath and FileExists(ApplicationPath+AddonsPath+theFilename) then
-    NomComplet:=ApplicationPath+AddonsPath+theFilename
-   else
+
+  { search through the defined QuArK path-structure, until either
+    the file is found, or there are no further defined QuArK paths to search. }
+  searchPaths:=QApplPaths.Create;
+  try
+    while (not FileExists(pathAndFileName)) do
     begin
-     GetDir(0, CurDir);
-     Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [theFilename, CurDir]));
+      if (searchPaths.GetNextPath(somePath) = False) then
+      begin
+        GetDir(0, CurDir);
+        Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [theFilename, CurDir]));
+      end;
+
+      pathAndFileName := somePath + theFilename;
     end;
- Result:=ExactFileLink(ExpandFileName(NomComplet), nParent, CheckParent);
+  finally
+    searchPaths.Free;
+  end;
+
+  Result:=ExactFileLink(ExpandFileName(pathAndFileName), nParent, CheckParent);
 end;
 
 function BuildFileRoot(const theFilename: String; nParent: QObject) : QFileObject;
@@ -723,7 +737,7 @@ begin
  F.ReadBuffer(S[1], Taille);
  ConstructObjsFromText(Self, PChar(S), Taille);
   { when loading from the Addons path, try to build a cached (compiled) version }
-(* if (ExtractFilePath(Filename)=ApplicationPath+AddonsPath)
+(* if (ExtractFilePath(Filename)=GetApplicationAddonsPath())
  and (ExtractFileExt(Filename)=TypeInfo)... *)
 end;
 
