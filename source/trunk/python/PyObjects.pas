@@ -504,7 +504,7 @@ begin
    Exit;
   Q:=QkObjFromPyObj(self);
   Q.Acces;
-  ChargerObjTexte(Q, src, count);
+  ConstructObjsFromText(Q, src, count);
   Result:=PyNoResult;
  except
   EBackToPython;
