@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14.2.2  2000/10/31 07:41:37  tiglari
+DisableFPCoord buglet fixed
+
 Revision 1.14.2.1  2000/09/21 08:31:12  tiglari
 fixed patch-reading texture problem
 
@@ -207,6 +210,7 @@ end;
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 const
  cSeperators = [' ', #13, #10, Chr(vk_Tab)];
+ cExponentChars = ['E', 'e'];
  Granularite = 8192;
  FinDeLigne = False;
 type
@@ -567,6 +571,20 @@ expected one.
                      if C=#0 then Break;
                      Inc(Source);
                     until not (C in ['0'..'9','.']);
+
+                    { Did we encounter a exponent-value? Something like: "1.322e-12"
+                      Then continue to read the characters }
+                    if (C in cExponentChars) then
+                    begin
+                      repeat
+                        S:=S+C;
+                        C:=Source^;
+                        if C=#0 then
+                          Break;
+                        Inc(Source);
+                      until not (C in ['0'..'9','-','+']);
+                    end;
+
                     if (C=#0) or (C in cSeperators) then
                      begin
                       if (C=#13) or ((C=#10) {and not Juste13}) then

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.8  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -152,7 +155,6 @@ type
     Viewconsole1: TMenuItem;
     N13: TMenuItem;
     Go1: TMenuItem;
-    Registering1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Close1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);

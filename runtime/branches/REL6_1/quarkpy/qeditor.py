@@ -1418,7 +1418,7 @@ def Help2():
     htmldoc(None)
 
 def Help3():
-    htmldoc("help\\faq.html")
+    htmldoc("help\\faq\\index.html")
 
 
 #
@@ -1449,5 +1449,8 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
