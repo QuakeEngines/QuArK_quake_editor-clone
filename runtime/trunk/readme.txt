@@ -1,7 +1,15 @@
- * [cdunde]: Creation of new Selection toolbar and expansion of the          Tagside toolbar. Both with new icons, active
-      function hints and Infobase links.
+ * [peter-b]: New executable installer and release policy
 
- * [cdunde, Decker and others]: Addons menu creation for adding 3rd          party programs to various sub-menus categories. To run and import       their map output shapes. Also import any out side map to editor.
+ * [peter-b, marco leise]: Fix for lambda bug
+
+ * [cdunde]: Creation of new Selection toolbar and expansion of the
+      Tagside toolbar. Both with new icons, active function hints and
+      Infobase links.
+
+ * [cdunde, Decker and others]: Addons menu creation for adding 3rd
+      party programs to various sub-menus categories. To run and
+      import their map output shapes. Also import any out side map to
+      editor.
 
  * [peter-b]: Build Infobase on case-sensitive operating systems
       (such as Linux)
