@@ -424,10 +424,19 @@ def LoadPoolObj(tag, loadfn, *loadargs):
         quarkx.setpoolobj(tag, obj)
     return obj
 
-
 def debug(text):
     import sys
     sys.stderr.write(text+"\n")
+
+def MapHotKey(keytag, keyfunc, menu):
+    key = quarkx.setupsubset(SS_MAP,"HotKeys")[keytag]
+    if key:
+        menu.shortcuts[key] = keyfunc
+
+def MapHotKeyList(keytag, keyfunc, list):
+    key = quarkx.setupsubset(SS_MAP,"HotKeys")[keytag]
+    if key:
+        list[key] = keyfunc
 
 
 
@@ -439,6 +448,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2001/03/01 19:15:14  decker_dk
+#changed loadmapeditor() so it reads the 'BezierPatchSupport' and 'BezierPatchPluginPrefixes' instead.
+#
 #Revision 1.7  2000/11/19 15:33:02  decker_dk
 #Comment about keeping the constants equal with the .PAS source
 #

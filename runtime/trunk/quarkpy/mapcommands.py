@@ -28,7 +28,7 @@ NewItem1 = qmenu.item("&Insert map item...", newitem1click, "opens the 'New Map 
 #
 
 items = [NewItem1]
-shortcuts = {"Ins": NewItem1}
+shortcuts = {}
 
 def onclick(menu):
     pass
@@ -42,5 +42,8 @@ def CommandsMenu():
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

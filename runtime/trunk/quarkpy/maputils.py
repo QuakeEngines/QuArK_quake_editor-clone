@@ -11,8 +11,6 @@ Various Map editor utilities.
 #$Header$
 
 
-
-
 import quarkx
 from qeditor import *
 from qdictionnary import Strings
@@ -294,6 +292,9 @@ def read2vec(vals):
 #
 #
 #$Log$
+#Revision 1.10  2001/03/18 23:59:44  tiglari
+#experimental merge
+#
 #
 #Revision 1.9  2001/03/12 23:08:57  tiglari
 #read2vec for path dup enhancements

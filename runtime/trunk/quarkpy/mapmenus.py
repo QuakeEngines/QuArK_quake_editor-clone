@@ -39,7 +39,8 @@ def EscClick(m):
 EditMenuCmds = [qmenu.item("Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected."),
                 qmenu.sep,
                 qmenu.popup("View Group", [], ViewGroup1click, "options for groups")]
-EditMenuShortcuts = {"Esc": EditMenuCmds[0]}
+EditMenuShortcuts = {}
+MapHotKeyList("Remove",  EditMenuCmds[0], EditMenuShortcuts)
 
 
 #
@@ -407,6 +408,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.5  2001/01/26 19:07:04  decker_dk
+#Clamped the scalefactors for keyboard zoom-modification to in:100 and out:0.01.
+#
 #Revision 1.4  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

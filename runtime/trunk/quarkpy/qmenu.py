@@ -12,7 +12,7 @@ Menu Bars and Popup Menus code
 
 import quarkx
 from qdictionnary import Strings
-
+from qutils import MapHotKeyList
 
 # menu state
 normal     = 0
@@ -98,9 +98,10 @@ def DefaultFileMenu():
     Close1 = macroitem("&Close", "EXIT", "close the map editor")
     File1 = popup("&File", [Open1, Save1, SaveQE1,
      SaveAs1, sep, SaveAll1, sep, Close1])
-    sc = {"Ctrl+O": Open1,
-          "Ctrl+S": Save1,
-          "Ctrl+Q": Close1}
+    sc = {}
+    MapHotKeyList("Open", Open1, sc)
+    MapHotKeyList("Save", Save1, sc)
+    MapHotKeyList("Close", Close1, sc)
     return File1, sc
 
 
@@ -111,8 +112,9 @@ def DefaultFileMenuBsp():
     Open1 = macroitem("&Open...", "FOPN", "open a file of ANY type")
     Close1 = macroitem("&Close BSP editor", "EXIT", "close the BSP editor")
     File1 = popup("&File", [Open1, sep, Close1])
-    sc = {"Ctrl+O": Open1,
-          "Ctrl+Q": Close1}
+    sc = {}
+    MapHotKeyList("Open", Open1, sc)
+    MapHotKeyList("Close", Close1, sc)
     return File1, sc
 
 
@@ -137,6 +139,7 @@ def Edit1Click(Edit1):
     Edit1.Paste1.state = not quarkx.pasteobj() and disabled
 
 
+editmenu = {}
 
 def DefaultEditMenu(editor):
     "The standard Edit menu, with its shortcuts."
@@ -165,18 +168,22 @@ def DefaultEditMenu(editor):
     Edit1.Duplicate1 = Duplicate1
     Edit1.Delete1 = Delete1
     Edit1.editcmdgray = editor.editcmdgray
-    sc = {"Ctrl+X": Cut1,
-          "Ctrl+C": Copy1,
-          "Ctrl+V": Paste1,
-          "Del":    Delete1,
-          "Ctrl+Z": Undo1,
-          "Shift+Ctrl+Z": Redo1,
-          "Ctrl+D": Duplicate1 }
+    sc = {}
+    MapHotKeyList("Cut", Cut1, sc)
+    MapHotKeyList("Copy", Copy1, sc)
+    MapHotKeyList("Paste", Paste1, sc)
+    MapHotKeyList("Delete", Delete1, sc)
+    MapHotKeyList("Undo", Undo1, sc)
+    MapHotKeyList("Redo", Redo1, sc)
+    MapHotKeyList("Duplicate", Duplicate1, sc)
     return Edit1, sc
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

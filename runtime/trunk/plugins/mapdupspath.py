@@ -6,7 +6,6 @@
 #
 #$Header$
 
-
 Info = {
    "plug-in":       "Path Duplicator",
    "desc":          "BETA! Path Duplicator",

@@ -290,8 +290,7 @@ quarkpy.mapcommands.items.append(FaceSub1)
 quarkpy.mapcommands.items.append(ExtWall1) #DECKER Code by tiglari
 quarkpy.mapcommands.items.append(Hollow1)
 quarkpy.mapcommands.items.append(Intersect1)
-quarkpy.mapcommands.shortcuts["Ctrl+B"] = CSG1
-
+MapHotKey("Brush Subtraction", CSG1, quarkpy.mapcommands)
 
 #--- add a few items to the polyhedrons pop-up menus ---
 
@@ -303,8 +302,10 @@ quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 
 # ----------- REVISION HISTORY ------------
 #
-#
 # $Log$
+# Revision 1.3.4.1  2001/03/11 22:08:15  tiglari
+# customizable hot keys
 #
-#
+# Revision 1.3  2000/06/03 10:25:30  alexander
+# added cvs headers
 #
