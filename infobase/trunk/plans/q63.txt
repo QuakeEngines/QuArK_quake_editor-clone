@@ -95,26 +95,42 @@ entity addons is needed.
 <li>incrementable specifics in duplicators: (subnoodle, tiglari)
 <br>status: done except for radial duplicator.
 
+<li>texture-replacement specifics for duplicators: (tiglari)
+<br>status: done except for radial.
+
 <li>promotion/demotion of submenus: (tiglari)
 <br>status: done for texture & tagging (not intended
 for all submenus, just some of the more useful ones)
-
-<li>Support for pythonified entity converters: (Andy)
-<br>status: done for fgd2qrk
 
 <li>Code specifics for toolbar buttons: (Andy)
 <br>status: done
 
 <li>Support for Gunman, Blue Shift & other HL derivatives: (Decker)
-<br>status: done, except for BS problems.
+<br>status: done.
 
 <li>Arg Replacer: (decker)
 <br>status: done & documented
+
+<li>Show/edit entities for supported games bsp's: (tiglari)
+<br>status: done except for Sin (a fourth bsp structure
+probably over-strains the present code structure).
+
+<li>Inspect nodes & planes in bsps: (tiglari)
+<br> status: done
+
+<li>Object snapper: (tiglari, idea from quantum red)
+<br> align/move object w.r.t. face so that face and
+a face of the object are paralell.
+<br>status: started, planned to finish for 6.3
+
+<li>Map reconstructor for Q3: (tiglari)
+<br>This might be easier to do well for Q3 engine
+games because the model structure seems to include
+brush info as well as face info.
+<br>status: envisioned, maybe do, maybe defer.
+
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
 <br>status: envisioned, maybe defer to 6.4
-
-<li>Show/edit Q3A, SOF, Hr2, KinPin bsp's (entities only): tiglari
-<br>status: done
 
 </ul>

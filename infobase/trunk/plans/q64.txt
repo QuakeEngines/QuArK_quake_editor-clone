@@ -5,12 +5,6 @@ Current plans for 6.4.  Some of the python-based facilities might become
 available as experimental addons to 6.3
 
 <UL>
-
-<li>Move object to tagged: (tiglari, idea by quantum_red)
-<br>select a face in an object, move object to tagged
-face so that selected faced is coplanar with tagged one.
-<br>status: envisioned, maybe defer to 6.4
-
 <li>L-square menu enhancements: (tiglari, ax2grind)
 <br>status: started, align & glue to tagged done.  I intend
 to leave further enhancements as an exercise for someone who
