@@ -470,6 +470,12 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.5  2000/06/05 00:09:49  alexander
+#added: kludge for stupid tools (like those of SoF) that require to run in the games base dir)
+#
+#Revision 1.4  2000/06/04 21:41:29  alexander
+#added: bspc console class, support for running the bsp to aas converter for bots in q3
+#
 #Revision 1.3  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
