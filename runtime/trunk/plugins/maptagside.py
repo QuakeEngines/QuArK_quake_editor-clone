@@ -47,6 +47,7 @@ import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.qhandles
 import quarkpy.mapbtns
+import mergepolys
 from quarkpy.maputils import *
 from tagging import *
 from faceutils import *
@@ -171,113 +172,6 @@ def SnapClick(m):
    (vmin,vmax)=quarkx.boundingboxof([m.o])
    squawk("min: "+`vmin`+"  max: "+`vmax`)
    
-
-
-#
-#  Brush merger: brush with a face kissing the tagged side
-#  is merged with that side's brush, if this is workable.   
-#  This stuff doesn't work yet, so it's menu item is commented out
-#
-
-def closenough(vtx,vtx1):
-  if abs(vtx-vtx1) < 1:
-    return 1
-  else: return 0
-
-
-def same_vertices(face,tagged):
-  "face and tagged must have one vtx set which must be the same"
-  facevtx = face.vertices[0]
-  tagvtx = tagged.vertices[0]
-  length = len(facevtx)
-  if length!=len(tagvtx):
-    return 0
-  for fvtx in facevtx:
-    for tvtx in tagvtx:
-      if closenough(fvtx,tvtx):
-        break
-    else: return 0
-  return 1
-  
-def useableby(face, poly):
-   newface=face.copy()
-#
-#  wtf doesn't this work?
-#
-#  newpoly=poly.copy()
-#  newpoly.appenditem(newface)
-#  newpoly.rebuildall()
-#  squawk(`len(newpoly.faces)`)
-   newpoly = quarkx.newobj("test:p")
-   for face2 in poly.faces:
-     newpoly.appenditem(face2.copy())
-   newpoly.appenditem(newface)
-   for face2 in newpoly.faces:
-#     squawk("checking")
-     if newface==face2:
-       return 1
-   return 0
-
-
-def mergepoly(editor,o):
-
-  def noncoplanar(poly, face):
-    for f in poly.faces:
-      if coplanar(f, face):
-        return 0
-    return 1
-
-  item = qmenu.item("Merge Polys",MergePolyClick,"|This command can merge two brushes which `kiss' at a face, meaning that the faces have the same location, orientation, size and shape, but are oriented in opposite directions.\n\nTo use it, tag one of the kissing faces, then select the brush that contains the other.  If this menu item becomes enabled, the operation is then supposed to be able to combine the two brushes into one.  The selected brush will be `dominant', in that the resulting brush will be in its position of the group structure, and its textures and higher shared faces will be retained where relevant.\n\nIf the operation will change the overall shape, or create an invalid brush, this menu item is supposed to remain disabled.")
-  item.state=qmenu.disabled
-  tagged=gettagged(editor)
-  if tagged is None or len(tagged.faceof)!=1:
-    return item
-  #
-  # find a kissing face, if there is one.
-  #
-  for face in o.faces:
-    if len(face.faceof)!=1 or not coplanar(face,tagged): continue
-    if face.normal*tagged.normal>0: continue
-    if same_vertices(face,tagged): 
-      item.tagged=tagged
-      item.face=face
-      new = quarkx.newobj(o.name)
-      for oldface in o.subitems: # not faces, we don't mess with shared faces
-        if oldface==face or oldface.type!=":f": continue
-        new.appenditem(oldface.copy())
-      #
-      # the merged poly will be in o's group, so we need to copy
-      # all the faces.  any facees used by the tagged faces's
-      # poly that are actually used by o will not be ok.
-      #
-      for tagface in tagged.faceof[0].faces:
-        if noncoplanar(o,tagface): # ys
-          new.appenditem(tagface.copy())
-          #
-          # If it can be added to o and still be used by
-          # o, then it changes the shape of o and merger 
-          # should not be enabled
-          #
-          editor.layout.explorer.sellist=[tagface]
-#          squawk("testing useability")
-          if useableby(tagface, o):  # if it can be added to
-#             squawk("passed")
-             return item
-      item.state=qmenu.normal
-      item.result = new
-      item.o = o
-      item.tagged = tagged
-#      squawk("dunda crap")
-  return item
-  
-def MergePolyClick(m):
- editor=mapeditor()
- if editor is None: return
- undo = quarkx.action()
- undo.exchange(m.o, m.result)
- undo.exchange(m.tagged.faceof[0], None)
- editor.ok(undo,"merge polys")
-
 
 #
 # projecting textures onto faces
@@ -1781,7 +1675,7 @@ def tagpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
   menu = oldmenu(o, editor)
   menu[:0] = [gluepoly(editor,o),
               projecttex(editor,o),
-              mergepoly(editor,o), # now in maptagsidemerge
+              mergepolys.mergepoly(editor,o), # now in mapmergepoly
               cutpoly(editor,o),
               qmenu.sep]
   return menu
@@ -1792,6 +1686,7 @@ def taggroupmenu(o, editor,oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   "the new right-mouse menu for groups"
   menu = oldmenu(o, editor)
   menu[:0] = [gluepoly(editor,o),
+              mergepolys.groupmergepoly(editor,o),
               projecttex(editor,o),
               qmenu.sep]
   return menu
@@ -1903,6 +1798,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2001/04/15 06:08:47  tiglari
+#merge polys improved (new coplanar from faceutils)
+#
 #Revision 1.12  2001/03/20 08:02:16  tiglari
 #customizable hot key support
 #
