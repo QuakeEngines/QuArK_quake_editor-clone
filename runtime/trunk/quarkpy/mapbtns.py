@@ -388,29 +388,29 @@ def resettexscale(editor, flist, adjust):
                             texobj = texobj .disktexture
                         except quarkx.error:
                             texobj = None
-            size = (128.0,128.0)
-            #print size
-            if texobj is not None:
-                size = texobj ["size"]
+                    size = (128.0,128.0)
+                    #print size
+                    if texobj is not None:
+                        size = texobj ["size"]
 
-            tpn0 = tp0 + min(s)*tp1 + min(t)*tp2
-            tpn1 = tp0 + max(s)*tp1 + min(t)*tp2
-            tpn2 = tp0 + min(s)*tp1 + max(t)*tp2
-            l = abs (tpn1 - tpn0)
-            s1 = round (l / size [0])
-            if s1 == 0:
-                s1 = 1
-            s1 = l / s1
-            l = abs (tpn2 - tpn0)
-            s2 = round (l / size [1])
-            if s2 == 0:
-                s2 = 1
-            s2 = l / s2
-            tp = (
-               (tpn0,
-                tpn0 + s1 * (tpn1 - tpn0) .normalized,
-                tpn0 + s2 * (tpn2 - tpn0) .normalized),
-               2, editor.TexSource)
+                    tpn0 = tp0 + min(s)*tp1 + min(t)*tp2
+                    tpn1 = tp0 + max(s)*tp1 + min(t)*tp2
+                    tpn2 = tp0 + min(s)*tp1 + max(t)*tp2
+                    l = abs (tpn1 - tpn0)
+                    s1 = round (l / size [0])
+                    if s1 == 0:
+                        s1 = 1
+                    s1 = l / s1
+                    l = abs (tpn2 - tpn0)
+                    s2 = round (l / size [1])
+                    if s2 == 0:
+                        s2 = 1
+                    s2 = l / s2
+                    tp = (
+                       (tpn0,
+                        tpn0 + s1 * (tpn1 - tpn0) .normalized,
+                        tpn0 + s2 * (tpn2 - tpn0) .normalized),
+                       2, editor.TexSource)
 
         else:
             #
@@ -634,6 +634,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.6  2000/12/30 05:29:37  tiglari
+#moveselection acts on picked cp's of bezier patches if any are picked
+#
 #Revision 1.5  2000/12/29 08:10:42  tiglari
 #extirpated tabs, hopefully without introducing errors...
 #
