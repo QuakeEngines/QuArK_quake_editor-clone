@@ -14,6 +14,15 @@ UNIT crc32;
   This CRC algorithm emphasizes speed at the expense of the 512 element
   lookup table.}
 
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
+
+
 INTERFACE
 
 Uses Sysutils,Classes, Dialogs;

@@ -1,5 +1,14 @@
 unit QkSpr;
 
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
+
+
 interface
 
 uses

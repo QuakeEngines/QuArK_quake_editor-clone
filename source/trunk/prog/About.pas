@@ -21,6 +21,14 @@ or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
 
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
+
 unit About;
 
 interface

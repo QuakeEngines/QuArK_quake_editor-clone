@@ -6,6 +6,15 @@ allowed - that should be enough for PK3 support) from one stream to another.
 
 }
 
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
+
+
 unit UNZIP;
 
 interface

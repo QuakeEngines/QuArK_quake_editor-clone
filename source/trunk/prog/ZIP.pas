@@ -8,6 +8,15 @@
 ************
 }
 
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
+
+
 unit ZIP;
 
 interface

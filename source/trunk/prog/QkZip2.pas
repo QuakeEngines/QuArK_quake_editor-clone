@@ -1,5 +1,14 @@
 unit QkZip2;
 
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
+
+
 interface
 
 uses
