@@ -112,14 +112,42 @@ def RestrictByMe(m):
   editor.invalidateviews()
   menrestsel.state = qmenu.checked
 
+def vec2rads(v):
+    "returns pitch, yaw, in radians"
+    v = v.normalized
+    import math
+    pitch = -math.sin(v.z)
+    yaw = math.atan2(v.y, v.x)
+    return pitch, yaw
+
 def ZoomToMe(m):
-  editor = mapeditor()
-  if editor is None:
-    maptagside.squawk("no editor")
-  layout = editor.layout
-  scale1, center1 = AutoZoom(layout.views, quarkx.boundingboxof([m.object]), scale1=layout.MAXAUTOZOOM)
-  if scale1 is not None:
-    layout.editor.setscaleandcenter(scale1, center1)
+    editor = mapeditor()
+    if editor is None:
+        maptagside.squawk("no editor")
+    #
+    #  regular views
+    #
+    layout = editor.layout
+    scale1, center1 = AutoZoom(layout.views, quarkx.boundingboxof([m.object]), scale1=layout.MAXAUTOZOOM)
+    if scale1 is not None:
+        layout.editor.setscaleandcenter(scale1, center1)
+    #
+    # 3d views
+    #
+    debug('3d')
+    views = filter(lambda v:v.info["type"]=="3D", editor.layout.views)
+    for view in views:
+        debug(' view')
+        pos, yaw, pitch = view.cameraposition
+        def between(pair):
+            return (pair[0]+pair[1])/2
+        center = between(quarkx.boundingboxof([m.object]))
+        dir = (center-pos).normalized
+        pitch, yaw = vec2rads(dir)
+        view.cameraposition = pos, yaw, pitch
+        debug('   cam')
+    editor.invalidateviews()
+
 
 def SelectMe(m):
   import quarkpy.mapmenus
@@ -679,6 +707,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #
