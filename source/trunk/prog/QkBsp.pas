@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2001/07/28 05:30:05  tiglari
+load nodes
+
 Revision 1.42  2001/07/27 11:30:26  tiglari
 bsp study: plane viewing, some prep for node-viewing
 
@@ -291,10 +294,20 @@ type
  TQ3Leaf = record
             cluster: Integer; { cluster index }
             area: Integer; { areaportal area }
-            bound: TBoundBox;
+            mins: array [0..2] of integer; {bbox}
+            maxs: array [0..2] of integer;
             first_leafface, num_leaffaces: Integer;
             first_leafbrush, num_leafbrushes: Integer;
            end;
+
+ TNodeStats = record
+               faces : Integer; { total # faces contaied }
+               children : Integer; { total children, inc. empty }
+               empty:  Integer; { total empty children }
+               leafs : Integer;  { total leafs, inc. empty }
+               emptyleafs: Integer;
+              end;
+
 
  TTreeBspPlane = class(TTreeMapGroup)
   public
@@ -306,8 +319,10 @@ type
 
  TTreeBspNode = class(TTreeMapGroup)
   public
+   Source: PChar;
    constructor Create(const nName: String; nParent: QObject); overload;
-   constructor Create(const nName: String; nParent: QObject; Source: PQ3Node); overload;
+   constructor Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats); overload;
+   constructor Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats); overload;
 
    class function TypeInfo: String; override;
   end;
@@ -332,9 +347,9 @@ type
         public
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
-          Q3Vertices, Planes, FirstNode: PChar;
-          VertexCount, PlaneCount: Integer;
-          PlaneSize: Integer;
+          Q3Vertices, Planes, FirstNode, FirstLeaf: PChar;
+          VertexCount, PlaneCount, LeafCount: Integer;
+          PlaneSize, LeafSize: Integer;
           NonFaces: Integer;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
@@ -355,7 +370,7 @@ type
           function GetEntityLump : String;
           procedure GetPlanes(var L: TQList);
           procedure GetNodes(L: TQList);
-          function GetQ3Node(Node: PQ3Node; const Name: String; Parent: QObject) : TTreeBspNode;
+          function GetQ3Node(Node: PQ3Node; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
         end;
 
 type
@@ -1589,12 +1604,15 @@ procedure QBsp.GetNodes(L:TQList);
 var
   NodeCount: Integer;
   Nodes: PChar;
+  Stats: TNodeStats;
 begin
   if bspSurfaceType(NeedObjectGameCode)=bspTypeQ3 then
   begin
       NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     FirstNode)   div SizeOf(TQ3Node);
-      ShowMessage('Nodes: '+IntToStr(NodeCount));
-      L.Add(GetQ3Node(PQ3Node(FirstNode), 'Root Node', Nil));
+      LeafSize:=SizeOf(TQ3Leaf);
+      LeafCount:= GetBspEntryData(eLeaves,    lump_leafs,    eBsp3_leafs,     FirstLeaf)   div LeafSize;
+     { ShowMessage('Nodes: '+IntToStr(NodeCount)); }
+      L.Add(GetQ3Node(PQ3Node(FirstNode), 'Root Node', Nil, Stats));
   end else
   begin
     ShowMessage('Node viewing not yet supported for this game');
@@ -1602,26 +1620,51 @@ begin
   end;
 end;
 
-function QBsp.GetQ3Node(Node: PQ3Node; const Name:String; Parent: QObject) : TTreeBspNode;
+function QBsp.GetQ3Node(Node: PQ3Node; const Name:String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
 var
   First, Second: TTreeBspNode;
   TreePlane: TTreeBspPlane;
+  FirstStats, SecStats: TNodeStats; { stats from children }
+  procedure AddChild(Parent: TTreeBspNode; child: Integer; const Name: String; var Stats: TNodeStats);
+  var
+    TreeNode: TTreeBspNode;
+    PLeaf: PChar;
+  begin
+    if child>0 then
+      TreeNode:=GetQ3Node( PQ3Node(FirstNode+child*SizeOf(TQ3Node)),Name, Parent, Stats)
+    else
+    begin
+      PLeaf:=FirstLeaf-child*LeafSize;
+      TreeNode:=TTreeBspNode.Create(Name, Parent, PQ3Leaf(PLeaf), Stats);
+      TreeNode.Source:=PLeaf;
+    end;
+    if Copy(Name,1,5)='First' then
+      TreeNode.Specifics.Values['first']:='1';
+    Parent.SubElements.Add(TreeNode);
+  end;
+
 begin
-  Result:=TTreeBspNode.Create(Name, Parent, Node);
+  Result:=TTreeBspNode.Create(Name, Parent, Node, Stats);
+
+  Result.Source := PChar(Node);
   with Node^ do
   begin
     TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PbPlane(Planes+plane*Planesize));
     Result.SubElements.Add(TreePlane);
-    if firstchild>0 then
-      First:=GetQ3Node( PQ3Node(FirstNode+firstchild*SizeOf(TQ3Node)),'First', Result)
-    else
-      First:=TTreeBspNode.Create('Leaf', Result);
-    Result.SubElements.Add(First);
-    if secondchild>0 then
-      Second:=GetQ3Node( PQ3Node(FirstNode+secondchild*SizeOf(TQ3Node)),'Second', Result)
-    else
-      Second:=TTreeBspNode.Create('Leaf', Result);
-    Result.SubElements.Add(Second);
+    AddChild(Result, firstchild, 'First', FirstStats);
+    AddChild(Result, secondchild, 'Second', SecStats);
+    with Stats do
+    begin
+      children:=FirstStats.children+SecStats.children;
+      Result.Specifics.Values['children']:=IntToStr(children);
+      empty:=FirstStats.empty+SecStats.empty;
+      Result.Specifics.Values['emptychildren']:=IntToStr(empty);
+      if children=empty then
+      begin
+        Result.Specifics.Values['empty']:='1';
+        Result.Name:=Result.Name+' (empty)';
+      end;
+    end;
   end;
 end;
 
@@ -1715,13 +1758,36 @@ begin
   inherited;
 end;
 
-constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Node);
+constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats);
 begin
   Create(nName, nParent);
   with Source^ do
   begin
     VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
     VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
+  end;
+end;
+
+constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats);
+begin
+  with Source^ do
+  begin
+    if num_leaffaces=0 then
+      Create(nName+' (empty leaf)', nParent)
+    else
+      Create(nName+' (leaf)', nParent);
+    VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
+    VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
+    Specifics.Values['leaf']:='1';
+    Specifics.Values['num faces']:=IntToStr(num_leaffaces);
+    with Stats do
+    begin
+      children:=1;
+      if num_leaffaces=0 then
+        empty:=1
+      else
+        empty:=0;
+    end;
   end;
 end;
 
