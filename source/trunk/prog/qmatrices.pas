@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/02/17 01:29:01  tiglari
+transpose function added
+
 Revision 1.4  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -66,6 +69,8 @@ function mxtos(const M: TMatrixTransformation) : String;
 function stomx(const S: String) : TMatrixTransformation;
 function MatriceInverse(const M: TMatrixTransformation) : TMatrixTransformation;
 function MatriceTranspose(const M: TMatrixTransformation) : TMatrixTransformation;
+function MatrixMultByVect(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
+function MatrixFromCols(const V1, V2, V3 : TVect) : TMatrixTransformation;
 function Determinant(const Matrice: TMatrixTransformation) : TDouble;
 
  {------------------------}
@@ -193,6 +198,27 @@ begin
  for I:=1 to 3 do
    for J:=1 to 3 do
       Result[J][I]:=M[I][J]
+end;
+
+function MatrixMultByVect(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
+begin
+   Result.X:=Matrice[1,1]*V.X+Matrice[1,2]*V.Y+Matrice[1,3]*V.Z{+Matrice[1,4]};
+   Result.Y:=Matrice[2,1]*V.X+Matrice[2,2]*V.Y+Matrice[2,3]*V.Z{+Matrice[2,4]};
+   Result.Z:=Matrice[3,1]*V.X+Matrice[3,2]*V.Y+Matrice[3,3]*V.Z{+Matrice[3,4]};
+end;
+
+procedure MatrixFillCol(var M: TMatrixTransformation; const J : Integer; const V: TVect);
+begin
+  M[1][J]:=V.X;
+  M[2][J]:=V.Y;
+  M[3][J]:=V.Z
+end;
+
+function MatrixFromCols(const V1, V2, V3 : TVect) : TMatrixTransformation;
+begin
+  MatrixFillCol(Result,1,V1);
+  MatrixFillCol(Result,2,V2);
+  MatrixFillCol(Result,3,V3);
 end;
 
 function mxtos(const M: TMatrixTransformation) : String;
