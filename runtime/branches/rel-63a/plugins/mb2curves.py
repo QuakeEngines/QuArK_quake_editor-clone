@@ -192,11 +192,6 @@ def capImages(o, editor, inverse=0, lower=0, onside=0, open=0, thick=0, faceonly
           #   taken from)
           #
           newside = texface.copy()
-          newside['_fix']='1' # prevents recentering of tex coords on face
-          #
-          # FIXED?: setting the 3points doesn't seem to be needed anymore
-          #
-#          newside.setthreepoints(texface.threepoints(2),2)
           #
           # rotate around the front side corner, so that it is coincident
           #  with the side
@@ -340,11 +335,6 @@ def bevelImages(o, editor, inverse=0, lower=0, left=0, standup=0, open=0, thick=
   cp = texcpFromFace(cp, fdict["b"], editor)
   if not stretchtex:
       newside = fdict["b"].copy()
-      newside['_fix']='1' # prevents recentering of tex coords on face
-      #
-      # FIXED? resetting the threepoints now seems to be unncessary
-      #
-      newside.setthreepoints(fdict["b"].threepoints(2),2)
       #
       # fdict has not been flipped for left brushes
       #
@@ -814,6 +804,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29.14.1  2002/12/28 23:52:18  tiglari
+#add _fixed flag to inhibit L-square recentering of tex alignment faces
+#
 #Revision 1.29  2001/03/01 19:14:16  decker_dk
 #changed newpolymenu() so it checks 'BezierPatchSupport' to see if it should allow the Curves-menu.
 #
