@@ -24,6 +24,23 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.4  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -49,17 +66,13 @@ type
     ListView1: TListView;
     procedure ListView1DblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure ListView1StartDrag(Sender: TObject;
-      var DragObject: TDragObject);
+    procedure ListView1StartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure ListView1EndDrag(Sender, Target: TObject; X, Y: Integer);
-    procedure ListView1DragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
+    procedure ListView1DragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure ListView1DragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure ListView1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure ListView1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormDestroy(Sender: TObject);
-    procedure ListView1KeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure ListView1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     procedure wmDropFiles(var Msg: TMessage); message wm_DropFiles;
@@ -239,8 +252,7 @@ begin
  else
   begin
    Result.TMFocus:=DernierSel;
-   PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage,
-    wp_AfficherObjet, 0);
+   PostMessage(ValidParentForm(Self).Handle, wm_InternalMessage, wp_AfficherObjet, 0);
   end;
 end;
 
@@ -277,12 +289,15 @@ begin
  if Exp<>Nil then
   begin
    Gr:=GroupeSelection;
-   Gr.AddRef(+1); try
-   if AlwaysOpenExplorer and (Gr.SubElements.Count=1) then
-    Exp.SelectOneChild(Gr.SubElements[0])
-   else
-    Exp.DoubleClic(Gr);
-   finally Gr.AddRef(-1); end;
+   Gr.AddRef(+1);
+   try
+    if AlwaysOpenExplorer and (Gr.SubElements.Count=1) then
+     Exp.SelectOneChild(Gr.SubElements[0])
+    else
+     Exp.DoubleClic(Gr);
+   finally
+    Gr.AddRef(-1);
+   end;
   end;
 {ProcessEditMsg(ValidParentForm(Self), edOpen);}
 end;
@@ -319,7 +334,8 @@ var
  Item: TListItem;
 begin
  Result:=Nil;
- if FileObject=Nil then Exit;
+ if FileObject=Nil then
+  Exit;
  for I:=0 to ListView1.Items.Count-1 do
   begin
    Item:=ListView1.Items[I];
@@ -397,9 +413,12 @@ begin
   edGetObject:
     begin
      G:=GroupeSelection;
-     G.AddRef(+1); try
-     Result:=GetObjectsResult(G.SubElements);
-     finally G.AddRef(-1); end;
+     G.AddRef(+1);
+     try
+      Result:=GetObjectsResult(G.SubElements);
+     finally
+      G.AddRef(-1);
+     end;
     end;
   edOpen:
     if ListView1.Focused then
@@ -414,9 +433,12 @@ var
  Gr: QExplorerGroup;
 begin
  Gr:=GroupeSelection;
- Gr.AddRef(+1); try
- Gr.CopierObjets(False);
- finally Gr.AddRef(-1); end;
+ Gr.AddRef(+1);
+ try
+  Gr.CopierObjets(False);
+ finally
+  Gr.AddRef(-1);
+ end;
 end;
 
 procedure TQForm2.PasteFromClipboard;
@@ -424,10 +446,13 @@ var
  Gr: QExplorerGroup;
 begin
  Gr:=ClipboardGroup;
- Gr.AddRef(+1); try
- if ClipboardChain(Gr) then
-  DropObjectsNow(Gr, LoadStr1(543), True);
- finally Gr.AddRef(-1); end;
+ Gr.AddRef(+1);
+ try
+  if ClipboardChain(Gr) then
+   DropObjectsNow(Gr, LoadStr1(543), True);
+ finally
+  Gr.AddRef(-1);
+ end;
 end;
 
 procedure TQForm2.DeleteSelection(NoTexte: Integer);
@@ -451,18 +476,21 @@ begin
   else
    begin
     Gr:=GroupeSelection;
-    Gr.AddRef(+1); try
-    if Gr.SubElements.Count=0 then
-     begin
-      MessageBeep(0);
-      Exit;
-     end;
-    if NoTexte=0 then
-     NoTexte:=579;
-    DebutAction;
-    for I:=0 to Gr.SubElements.Count-1 do
-     ListeActions.Add(TQObjectUndo.Create('', Gr.SubElements[I], Nil));
-    finally Gr.AddRef(-1); end;
+    Gr.AddRef(+1);
+    try
+     if Gr.SubElements.Count=0 then
+      begin
+       MessageBeep(0);
+       Exit;
+      end;
+     if NoTexte=0 then
+      NoTexte:=579;
+     DebutAction;
+     for I:=0 to Gr.SubElements.Count-1 do
+      ListeActions.Add(TQObjectUndo.Create('', Gr.SubElements[I], Nil));
+    finally
+     Gr.AddRef(-1);
+    end;
     NiveauAction:=NiveauAction or LocalActionFlags;
     FinAction(FileObject, LoadStr1(NoTexte));
    end;
@@ -531,23 +559,30 @@ var
  Gr: QExplorerGroup;
 begin
  try
-  if FileObject=Nil then Exit;
+  if FileObject=Nil then
+   Exit;
   SetForegroundWindow(ValidParentForm(Self).Handle);
   Gr:=QExplorerGroup.Create('', Nil);
-  Gr.AddRef(+1); try
-  for I:=0 to DragQueryFile(Msg.wParam, DWORD(-1), Nil, 0) - 1 do
-   if DragQueryFile(Msg.wParam, I, Z, SizeOf(Z))>0 then
-    begin
-     Q:=ExactFileLink(StrPas(Z), Nil, False);
-     Q.AddRef(+1); try
-     Q1:=Q.Clone(Gr, False);
-     Q1.Flags:=Q1.Flags and not (ofFileLink or ofModified);
-     Gr.SubElements.Add(Q1);
-     finally Q.AddRef(-1); end;
-    end;
-  if not DropObjectsNow(Gr, LoadStr1(594), True) then
-   MessageDlg(LoadStr1(5545), mtInformation, [mbOk], 0);
-  finally Gr.AddRef(-1); end;
+  Gr.AddRef(+1);
+  try
+   for I:=0 to DragQueryFile(Msg.wParam, DWORD(-1), Nil, 0) - 1 do
+    if DragQueryFile(Msg.wParam, I, Z, SizeOf(Z))>0 then
+     begin
+      Q:=ExactFileLink(StrPas(Z), Nil, False);
+      Q.AddRef(+1);
+      try
+       Q1:=Q.Clone(Gr, False);
+       Q1.Flags:=Q1.Flags and not (ofFileLink or ofModified);
+       Gr.SubElements.Add(Q1);
+      finally
+       Q.AddRef(-1);
+      end;
+     end;
+   if not DropObjectsNow(Gr, LoadStr1(594), True) then
+    MessageDlg(LoadStr1(5545), mtInformation, [mbOk], 0);
+  finally
+   Gr.AddRef(-1);
+  end;
  finally
   DragFinish(Msg.wParam);
  end;
@@ -634,7 +669,7 @@ begin
       Item.Tag:=B;
       Popup.Items.Add(Item);
      end;
-   end;  
+   end;
   Item:=TMenuItem.Create(Self);
   Item.Caption:='-';
   Popup.Items.Add(Item);

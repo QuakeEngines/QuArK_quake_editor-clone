@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2000/11/04 04:14:50  tiglari
+replaced ArcTan2 with locally defined ATan2
+
 Revision 1.20  2000/10/27 10:11:16  tiglari
 oops failed to actuall reinstate the ancestry comment line last time!
 
@@ -135,7 +138,7 @@ type
                procedure ObjectState(var E: TEtatObjet); override;
                function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
               {function EnumFaces(var F: TFace) : Boolean;}
-               procedure SauverTextePolyedre(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
+               procedure SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
                procedure Dessiner; override;
                procedure PreDessinerSel; override;
               {procedure PostDessinerSel; override;}
@@ -1169,7 +1172,7 @@ begin
    L.Add(LoadStr1(4618));
    CP:=Info.ConstruirePolyedres; try
    Info.ConstruirePolyedres:=False;
-   SauverTextePolyedre(L, Nil, soErrorMessageFlags);
+   SaveAsTextPolygon(L, Nil, soErrorMessageFlags);
    finally Info.ConstruirePolyedres:=CP; end;
    if Extra<>'' then
     L.Add(Extra);
@@ -1880,7 +1883,7 @@ begin
   L.Add(LoadStr1(4618));
   CP:=Info.ConstruirePolyedres; try
   Info.ConstruirePolyedres:=False;
-  SauverTextePolyedre(L, Nil);
+  SaveAsTextPolygon(L, Nil);
   finally Info.ConstruirePolyedres:=CP; end;
   if Extra<>'' then
    L.Add(Extra);
@@ -1999,7 +2002,7 @@ begin
 end;
 
 
-procedure TPolyedre.SauverTextePolyedre(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
+procedure TPolyedre.SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
 var
  MJ: Char;
  J: Integer;

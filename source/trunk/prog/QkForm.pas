@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.7  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -53,14 +56,14 @@ const
  wm_InternalMessage = {wm_User + $73}  $68FF;
  wp_FormActivate         = 101;
  wp_AfficherInfos        = 102;
- wp_RestoreFocus        = 103;
+ wp_RestoreFocus         = 103;
  wp_AfficherObjet        = 104;
 {wp_SetSelection1        = 105;}
  wp_EditMsg              = 106;
  wp_ObjectModified       = 107;
  wp_ObjectRemoved        = 108;
  wp_SetupChanged         = 109;
- wp_SizeScrollBox      = 110;
+ wp_SizeScrollBox        = 110;
  wp_FormButton           = 111;
  wp_Notebook1Enter       = 112;
  wp_Notebook1Leave       = 113;
@@ -87,7 +90,7 @@ const
  wp_ClickItem            = 136;
  wp_OpenGL               = 137;
 
- tm_DoubleClick           = 91;
+ tm_DoubleClick          = 91;
  tm_BeginDrag            = 92;
  wp_EndDrag              = 93;
  tm_FreeMenu             = 94;
@@ -107,19 +110,19 @@ const
  wp_ProcessNotifyLast    = 299;
 
 const  { for wp_EditMsg }
- edEditMsg   = $1000;
- edOk        = $0001;
- edCut       = $0002 or edEditMsg;
- edCopy      = $0004 or edEditMsg;
- edPasteTxt  = $0008 or edEditMsg;
- edDelete    = $0010 or edEditMsg;
- edOpen      = $0020;
- edPasteObj  = $0040;
- edDelKey    = $0100 or edEditMsg;
- edEdEnable  = $0200 or edEditMsg;
- edObjEnable = $0200;
- edGetObject = $0300;
- edGetRoot   = $0400;
+ edEditMsg        = $1000;
+ edOk             = $0001;
+ edCut            = $0002 or edEditMsg;
+ edCopy           = $0004 or edEditMsg;
+ edPasteTxt       = $0008 or edEditMsg;
+ edDelete         = $0010 or edEditMsg;
+ edOpen           = $0020;
+ edPasteObj       = $0040;
+ edDelKey         = $0100 or edEditMsg;
+ edEdEnable       = $0200 or edEditMsg;
+ edObjEnable      = $0200;
+ edGetObject      = $0300;
+ edGetRoot        = $0400;
  edGetMacroObject = $0500;
 
 const  { for wp_UpdateInternals }

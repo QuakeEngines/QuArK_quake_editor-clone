@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2000/10/26 18:12:40  tiglari
+fixed bug with a build flag (disableFP vs. Enhanced Tex mixup)
+
 Revision 1.18  2000/10/26 17:09:52  tiglari
 read soEnableBrushPrim
 
@@ -1235,8 +1238,8 @@ begin
          saveflags:=saveflags or soEnableBrushPrim;
       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-     { TTreeMap(Racine).SauverTexte(List, Dest, IntSpec['saveflags'], HxStrings); }
-       TTreeMap(Racine).SauverTexte(List, Dest, saveflags, HxStrings);
+     { TTreeMap(Racine).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
+       TTreeMap(Racine).SaveAsText(List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;

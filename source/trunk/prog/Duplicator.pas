@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.4  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -62,7 +65,7 @@ type
                  function GetFormName : String; override;
                  procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                  procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
-                 procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
+                 procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                  procedure AddTo3DScene; override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
                 {function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;}
@@ -285,7 +288,7 @@ begin
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites, Cat);
 end;
 
-procedure TDuplicator.SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+procedure TDuplicator.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 var
  I: Integer;
 begin
@@ -293,7 +296,7 @@ begin
  and (FParent<>Nil) and (TvParent.TvParent=Nil) then
   GlobalWarning(LoadStr1(230));}  { FIXME: do various map tests globally }
  for I:=0 to PyObject_Length(BuildImages)-1 do
-  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).SauverTexte(Negatif, Texte, Flags, HxStrings);
+  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).SaveAsText(Negatif, Texte, Flags, HxStrings);
 end;
 
 procedure TDuplicator.AddTo3DScene;

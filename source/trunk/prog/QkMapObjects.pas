@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/10/26 17:05:46  tiglari
+soEnableBrushPrim flag added
+
 Revision 1.12  2000/10/17 20:31:19  tiglari
 ancestry & brush-number writing
 
@@ -65,11 +68,12 @@ const
  vfHideOn3Dview     = 8;
  vfCantSelect       = 16;
 
- soSelOnly        = 1;
- soIgnoreToBuild  = 2;
- soDisableEnhTex  = 4;
- soDisableFPCoord = 8;
- soEnableBrushPrim = 16;
+ soSelOnly           = $00000001;
+ soIgnoreToBuild     = $00000002;
+ soDisableEnhTex     = $00000004;
+ soDisableFPCoord    = $00000008;
+ soEnableBrushPrim   = $00000010;
+
  soDirectDup         = $04000000;
  soBSP               = $08000000;
  soOutsideWorldspawn = $10000000;
@@ -115,7 +119,7 @@ type
              {function VisuallySelected : Boolean; virtual;}
               procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); virtual;
               procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); virtual;
-              procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); virtual;
+              procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); virtual;
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
              {procedure RefreshColor(Plan: Pointer); virtual;}
@@ -129,7 +133,7 @@ type
             end;
  TTreeMapSpec = class(TTreeMap)
                 protected
-                  procedure SauverSpec(Dest, HxStrings: TStrings; Flags: Integer);
+                  procedure SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer);
                  {procedure DessinePoignee(const Pts0: TPoint); virtual;}
                   procedure CouleurDessin(var C: TColor); virtual;
                 public
@@ -166,7 +170,7 @@ type
                     procedure Dessiner; override;
                     procedure Deplacement(const PasGrille: TDouble); override;
                     procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
-                    procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
+                    procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                     function GetFormName : String; override;
                    {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
                     procedure AddTo3DScene; override;
@@ -186,7 +190,7 @@ type
                    property ViewFlags: Integer read GetViewFlags write SetViewFlags;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
-                   procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
+                   procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    procedure AddTo3DScene; override;
                    procedure AnalyseClic(Liste: PyObject); override;
                   {function SingleLevel: Boolean; virtual;}
@@ -202,7 +206,7 @@ type
                    procedure ObjectState(var E: TEtatObjet); override;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
-                   procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
+                   procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    function GetFormName : String; override;
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                    function PyGetAttr(attr: PChar) : PyObject; override;
@@ -238,7 +242,7 @@ procedure CheckTreeMap(Racine: TTreeMap);
 
 const
    Comment: array[Boolean] of String =
-    ('//',';');
+    ('//', ';');
  {------------------------}
 
 implementation
@@ -248,6 +252,23 @@ uses Setup, QkMapPoly, Undo, FormCfg,
      PyMapView, PyObjects, QkImages, Bezier;
 
  {------------------------}
+
+var
+ EntityNoCounting: Integer;
+
+function GetFirstEntityNo: Integer;
+begin
+ { Exporting .MAP entity numbering scheme. Resets to zero }
+ EntityNoCounting := 0;
+ Result := EntityNoCounting;
+end;
+
+function GetNextEntityNo: Integer;
+begin
+ { Exporting .MAP entity numbering scheme. Increment by one }
+ Inc(EntityNoCounting);
+ Result := EntityNoCounting;
+end;
 
 (*procedure PoigneeRouge(const Pts0: TPoint);
 var
@@ -521,7 +542,7 @@ procedure TTreeMap.ListeEntites;
 begin
 end;
 
-procedure TTreeMap.SauverTexte;
+procedure TTreeMap.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 begin
 end;
 
@@ -1031,7 +1052,7 @@ begin
   PoigneeRouge(CCoord.Proj(Pt));
 end;*)
 
-procedure TTreeMapSpec.SauverSpec;
+procedure TTreeMapSpec.SaveAsTextSpecArgs;
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
@@ -1190,9 +1211,9 @@ begin
   Entites.Add(Self);
 end;
 
-procedure TTreeMapEntity.SauverTexte;
+procedure TTreeMapEntity.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 begin
- SauverSpec(Texte, HxStrings, Flags);
+ SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  Texte.Add('}');
 end;
 
@@ -2076,9 +2097,9 @@ begin
   TTreeMap(SubElements[I]).ListeEntites(Entites, Cat);
 end;
 
-procedure TTreeMapGroup.SauverTexte;
+procedure TTreeMapGroup.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 var
- I,J: Integer;
+ I: Integer;
  T: TTreeMap;
  MJ: Char;
 begin
@@ -2087,7 +2108,6 @@ begin
   Exit;
  if Odd(SelMult) then
   Flags:=Flags and not soSelOnly;
- J:=0;
  MJ:=CharModeJeu;
  for I:=0 to SubElements.Count-1 do
   begin
@@ -2096,10 +2116,9 @@ begin
    begin
     if (T is TTreeMapEntity) or (T is TTreeMapBrush) then
      begin
-      Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(J));
-      J:=J+1;
+      Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(GetNextEntityNo));
      end;
-    T.SauverTexte(Negatif, Texte, Flags, HxStrings);
+    T.SaveAsText(Negatif, Texte, Flags, HxStrings);
    end;
   end;
 end;
@@ -2168,8 +2187,7 @@ begin
  inherited;
 end;
 
-procedure TTreeMapBrush.SauverTexte;
-
+procedure TTreeMapBrush.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 var
  Polyedres: TQList;
  I: Integer;
@@ -2178,50 +2196,58 @@ var
  MJ : Char;
  S : String;
 begin
- SauverSpec(Texte, HxStrings, Flags);
+ MJ:=CharModeJeu;
+ { If this is the first time we're called, soOutsideWorldspawn is not set,
+   and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
+ if (Flags and soOutsideWorldspawn = 0) then
+  Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(GetFirstEntityNo));
+
+ SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  if Flags and soBSP = 0 then
   begin
-   Polyedres:=TQList.Create; try
-   ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, 1);
-   OriginBrush:=Nil;
-   if (Flags and soOutsideWorldspawn <> 0) and (CharModeJeu>=mjQuake2) then
-    for I:=Polyedres.Count-1 downto 0 do
-     with TPolyedre(Polyedres[I]) do
-      if CheckPolyhedron and (Faces.Count>0)
-      and (StrToIntDef(PSurface(Faces[0]).F.Specifics.Values['Contents'], 0) and ContentsOrigin <> 0) then
-       begin
-        V1.X:=MaxInt;
-        V1.Y:=MaxInt;
-        V1.Z:=MaxInt;
-        V2.X:=-MaxInt;
-        V2.Y:=-MaxInt;
-        V2.Z:=-MaxInt;
-        ChercheExtremites(V1, V2);
-        if V1.X<V2.X then
-         begin
-          V1.X:=0.5*(V1.X+V2.X);
-          V1.Y:=0.5*(V1.Y+V2.Y);      { center of the 'origin brush' }
-          V1.Z:=0.5*(V1.Z+V2.Z);
-          OriginBrush:=@V1;
-         end;
-        Break;
-       end;
-   MJ:=CharModeJeu;
-   for I:=0 to Polyedres.Count-1 do
-    begin
-     S:= Comment[(MJ>='A') and (MJ<='Z')]+' Brush '+IntToStr(I);
-     Texte.Add(S);
-     TPolyedre(Polyedres[I]).SauverTextePolyedre(Texte, OriginBrush, Flags);
-    end;
-   { proceed with Bezier patches }
-   Polyedres.Clear;
-   ListeEntites(Polyedres, [ecBezier]);
-   for I:=0 to Polyedres.Count-1 do
-    TBezier(Polyedres[I]).SauverTexteBezier(Texte);
-   finally Polyedres.Free; end;
+   Polyedres:=TQList.Create;
+   try
+    ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, 1);
+    OriginBrush:=Nil;
+    if (Flags and soOutsideWorldspawn <> 0) and (CharModeJeu>=mjQuake2) then
+     for I:=Polyedres.Count-1 downto 0 do
+      with TPolyedre(Polyedres[I]) do
+       if CheckPolyhedron and (Faces.Count>0)
+       and (StrToIntDef(PSurface(Faces[0]).F.Specifics.Values['Contents'], 0) and ContentsOrigin <> 0) then
+        begin
+         V1.X:=MaxInt;
+         V1.Y:=MaxInt;
+         V1.Z:=MaxInt;
+         V2.X:=-MaxInt;
+         V2.Y:=-MaxInt;
+         V2.Z:=-MaxInt;
+         ChercheExtremites(V1, V2);
+         if V1.X<V2.X then
+          begin
+           V1.X:=0.5*(V1.X+V2.X);
+           V1.Y:=0.5*(V1.Y+V2.Y);      { center of the 'origin brush' }
+           V1.Z:=0.5*(V1.Z+V2.Z);
+           OriginBrush:=@V1;
+          end;
+         Break;
+        end;
+    for I:=0 to Polyedres.Count-1 do
+     begin
+      S:= Comment[(MJ>='A') and (MJ<='Z')]+' Brush '+IntToStr(I);
+      Texte.Add(S);
+      TPolyedre(Polyedres[I]).SaveAsTextPolygon(Texte, OriginBrush, Flags);
+     end;
+    { proceed with Bezier patches }
+    Polyedres.Clear;
+    ListeEntites(Polyedres, [ecBezier]);
+    for I:=0 to Polyedres.Count-1 do
+     TBezier(Polyedres[I]).SaveAsTextBezier(Texte);
+   finally
+    Polyedres.Free;
+   end;
   end;
  Texte.Add('}');
- inherited SauverTexte(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+ inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
 end;
 
 (*procedure TTreeMapBrush.AddTo3DScene;

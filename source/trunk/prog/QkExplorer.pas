@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -1177,13 +1180,19 @@ begin
     begin
      EndDrag(False);
      Gr:=GroupeSelection;
-     Gr.AddRef(+1); try
-     DoubleClic(Gr);
-     finally Gr.AddRef(-1); end;
+     Gr.AddRef(+1);
+     try
+      DoubleClic(Gr);
+     finally
+      Gr.AddRef(-1);
+     end;
     end;
-  tm_BeginDrag: SetDragSource(dfOk, GroupeSelection);
- {tm_EndDrag: SetDragSource(0, Nil);} 
-  tm_FreeMenu: TObject(Msg.lParam).Free;
+  tm_BeginDrag:
+   SetDragSource(dfOk, GroupeSelection);
+ {tm_EndDrag:
+   SetDragSource(0, Nil);}
+  tm_FreeMenu:
+   TObject(Msg.lParam).Free;
  else
   inherited;
  end;

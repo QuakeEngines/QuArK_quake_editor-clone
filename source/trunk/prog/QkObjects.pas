@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2000/11/04 04:18:22  tiglari
+Put in proper declaration (protected) for QObject.Pedigree
+
 Revision 1.29  2000/10/27 10:13:41  tiglari
 reformatted Ancestry value in accord with suggestions by decker
 
@@ -1359,8 +1362,8 @@ var
   I: Integer;
   Ind: String;
   Sue: TQlist;
-label bail;
- begin
+{label bail;}
+begin
   Parent:= GetTvParent;
   if Parent<>Nil then
   begin
@@ -1370,15 +1373,16 @@ label bail;
       if Sue[I]=self then
       begin
         Ind:=IntToStr(I);
-        goto bail;
+        break; {goto bail;} {DECKER - Use break instead of goto, in this case. Goto's are generally evil!!}
       end;
     end;
-    bail:
+    {bail:}
     if Parent.GetTvParent<>Nil then {don't bother with worldspawn }
       Result:=Parent.Pedigree+'|'+Name+'.'+Ind
     else
-    Result:=Name+'.'+Ind;
-  end else
+      Result:=Name+'.'+Ind;
+  end
+  else
     Result:=Name;
 end;
 
@@ -2243,8 +2247,8 @@ var
   I: Integer;
   Ind: String;
   Sue: TQlist;
-label bail;
- begin
+{label bail;}
+begin
   Parent:= GetTvParent;
   if Parent<>Nil then
   begin
@@ -2254,15 +2258,16 @@ label bail;
       if Sue[I]=self then
       begin
         Ind:=IntToStr(I+1);
-        goto bail;
+        break; {goto bail;} {DECKER - Use break instead of goto, in this case. Goto's are generally evil!!}
       end;
     end;
-    bail:
+    {bail:}
     if Parent.GetTvParent<>Nil then {don't bother with worldspawn }
-      Result:=Parent.Ancestry+' | '+Name+TypeInfo+'['+Ind+']'
+      Result:=Parent.Ancestry+' -> '+Name+TypeInfo+'['+Ind+']'
     else
-    Result:=Name+TypeInfo+'['+Ind+']';
-  end else
+      Result:=Name+TypeInfo+'['+Ind+']';
+  end
+  else
     Result:=Name;
 end;
 

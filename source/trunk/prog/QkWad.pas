@@ -24,6 +24,23 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.14  2000/09/14 18:00:21  decker_dk
 Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
 
@@ -103,12 +120,13 @@ type
   private
     Tex: TBitmap;
     ImageTextures: TQList;
+    LoadNoOfTexAtEachCall: Integer;
    {GameInfo: PGameBuffer;
     procedure SetInfo(nInfo: PGameBuffer);
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;}
-    function PopulateListView(Counter: Integer) : Integer; override;
     function AnimationNextStep(Q: QPixelSet; Seq: Integer) : QPixelSet;
   protected
+    function PopulateListView(Counter: Integer) : Integer; override;
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
     function EnumObjs(Item: TListItem; var Q: QObject) : Boolean; override;
@@ -675,7 +693,7 @@ end;
 
 function TFQWad.PopulateListView(Counter: Integer) : Integer;
 var
- NomTexture{, Image}, ErrorMsg: String;
+ TextureTitle{, Image}, ErrorMsg: String;
  I, J, Reduction, Gauche{, Source}: Integer;
 {P: PChar;
  Header: TQ1Miptex;}
@@ -690,6 +708,8 @@ var
 {GameInfo: PGameBuffer;}
  PSD, NewPSD: TPixelSetDescription;
 {Pal1: HPalette;}
+ TexDimension: Integer;
+ CurrentTexLoadNo: Integer;
 
 (*procedure AjouterEl(Q: QObject; Nom: String; Numero: Integer; Compter: Boolean);
   var
@@ -721,19 +741,28 @@ var
   end;*)
 
 begin
+  { First call to this function, to determine if it should be added to the IdleJobs-chain }
   if Counter<0 then
   begin
     TimerAnimation.Enabled:=False;
     TimerAnimation.Tag:=-1;
-   {if ScreenColors<>0 then
-     ImageList1.Handle:=ImageList_Create(64,64, ILC_COLOR24, ListView1.AllocBy, 4)
-    else
-     begin}
-      ImageList1.Clear;
-      ImageList1.Width:=64;  {DECKER - Ahh! So this is the place to change the scale of }
-      ImageList1.Height:=64; {         the textures to 32x32, 128x128, 256x256, ... }
-      ImageList1.AllocBy:=ListView1.AllocBy;
-    {end;}
+
+    LoadNoOfTexAtEachCall := StrToInt(SetupSubSet(ssToolbars, 'Texture Browser').Specifics.Values['ImageListLoadNoOfTexAtEachCall']);
+    if (LoadNoOfTexAtEachCall < 1) then
+      LoadNoOfTexAtEachCall := 1; { Load atleast one texture for each call to this function }
+
+    TexDimension := StrToInt(SetupSubSet(ssToolbars, 'Texture Browser').Specifics.Values['ImageListTextureDimension']);
+    TexDimension := 16 * (TexDimension div 16); { Allow only steps of 16 }
+    if (TexDimension < 32) then
+      TexDimension := 32; { Minimum dimension is 32x32 }
+    if (TexDimension > 128) then
+      TexDimension := 128; { Maximum dimension is 128x128 - so memory consumption is kept low }
+
+    ImageList1.Clear;
+    ImageList1.Width:=TexDimension;  {DECKER - Ahh! So this is the place to change the scale of }
+    ImageList1.Height:=TexDimension; {         the textures to 32x32, 128x128, 256x256, ... }
+    ImageList1.AllocBy:=ListView1.AllocBy;
+
     if FileObject.SubElements.Count=0 then
       Result:=-1
     else
@@ -744,18 +773,24 @@ begin
         ImageTextures.Clear;
       Result:=0;
     end;
+
     Exit;  { quit here - we are in an idle job }
   end;
 
   NewPSD.Init;
   PSD.Init;
-  while Counter < FileObject.SubElements.Count do
+
+  CurrentTexLoadNo := LoadNoOfTexAtEachCall;
+  while (Counter < FileObject.SubElements.Count) and (CurrentTexLoadNo > 0) do
   begin
     Q:=FileObject.SubElements[Counter];
     Inc(Counter);
+
     if not (Q is QPixelSet)   { ignore the non-images }
     or (ImageTextures.IndexOf(Q)>=0) then      { already loaded }
       Continue;
+
+    Dec(CurrentTexLoadNo);
 
      { build the animation loop }
     TexLoop:=TList.Create;
@@ -781,7 +816,7 @@ begin
 
        { read all textures from the loop }
       BaseImage:=ImageList1.Count;
-      NomTexture:=QTexture(TexLoop[0]).Name;
+      TextureTitle:=QTexture(TexLoop[0]).Name;
       SelectNow:=False;
       for J:=0 to TexLoop.Count-1 do
       begin
@@ -796,7 +831,7 @@ begin
           Q:=QPixelSet(TexLoop[J]).LoadPixelSet;
           PSD.Size:=QPixelSet(Q).GetSize;
           Reduction:=0;
-          while (PSD.Size.X>(*64*)Tex.Width) or (PSD.Size.Y>(*64*)Tex.Height) do
+          while (PSD.Size.X > Tex.Width) or (PSD.Size.Y > Tex.Height) do
           begin
             PSD.Size.X:=PSD.Size.X div 2;
             PSD.Size.Y:=PSD.Size.Y div 2;
@@ -806,10 +841,10 @@ begin
           begin
             case Reduction of
              0: ;
-             1: NomTexture:=NomTexture + '  (½)';
-             2: NomTexture:=NomTexture + '  (¼)';
+             1: TextureTitle:=TextureTitle + '  (½)';
+             2: TextureTitle:=TextureTitle + '  (¼)';
             else
-                NomTexture:=NomTexture + Format('  (1/%d)', [1 shl Reduction]);
+                TextureTitle:=TextureTitle + Format('  (1/%d)', [1 shl Reduction]);
             end;
           end;
 
@@ -829,9 +864,9 @@ begin
               end;
             end;
             DC:=Tex.Canvas.Handle;
-            PatBlt(DC, 0, 0, (*64*)Tex.Width, (*64*)Tex.Height, Blackness);
-            Gauche:=((*64*)Tex.Width-NewPSD.Size.X) div 2;
-            NewPSD.Paint(DC, Gauche, (*64*)Tex.Height-NewPSD.Size.Y);
+            PatBlt(DC, 0, 0, Tex.Width, Tex.Height, Blackness);
+            Gauche:=(Tex.Width - NewPSD.Size.X) div 2;
+            NewPSD.Paint(DC, Gauche, Tex.Height - NewPSD.Size.Y);
           finally
             NewPSD.Done;
             PSD.Done;
@@ -840,19 +875,19 @@ begin
         on E: Exception do
           with Tex.Canvas do
           begin
-            PatBlt(Handle, 0,0,(*64*)Tex.Width,(*64*)Tex.Height, Whiteness);
+            PatBlt(Handle, 0,0,Tex.Width,Tex.Height, Whiteness);
             Font.Name:='Small fonts';
             Font.Size:=6;
             ErrorMsg:=GetExceptionMessage(E);
-            R.Left:=(*3*)1;
-            R.Top:=(*5*)1;
-            R.Right:=(*62*)Tex.Width-2;
-            R.Bottom:=(*64*)Tex.Height-2;
+            R.Left:=1;
+            R.Top:=1;
+            R.Right:=Tex.Width-2;
+            R.Bottom:=Tex.Height-2;
             DrawText(Handle, PChar(ErrorMsg), Length(ErrorMsg), R,
              DT_NOCLIP or DT_NOPREFIX or DT_WORDBREAK);
    (*DECKER - don't change the displayed texture-name to "texture/....."
             if J=0 then
-             NomTexture:=Q.Name;
+             TextureTitle:=Q.Name;
    DECKER*)
           end;
         end;
@@ -878,11 +913,11 @@ begin
 
        { add the list view item }
       if TexLoop.Count>1 then
-        NomTexture:=NomTexture+' × '+IntToStr(TexLoop.Count);
+        TextureTitle:=TextureTitle+' × '+IntToStr(TexLoop.Count);
    (*
    {DECKER-begin - How can we detect that this "texture" is a shader?}
       if Q is QShader then
-       NomTexture:=NomTexture+Chr(13)+'Shader';
+       TextureTitle:=TextureTitle+Chr(13)+'Shader';
    {DECKER-end}
    *)
       Q:=QObject(TexLoop[0]);
@@ -895,7 +930,7 @@ begin
       begin
         Data:=Q;
         ImageIndex:=BaseImage;
-        Caption:=NomTexture;
+        Caption:=TextureTitle;
       end;
       if TexLoop.Count>1 then
         TimerAnimation.Tag:=0;  { there are textures to animate }
@@ -908,8 +943,13 @@ begin
       SelectListItem(Item);
       SelectThis:=Nil;
     end;
+  end;
+
+  { Are there still more textures to load to page? }
+  if (Counter < FileObject.SubElements.Count) then
+  begin
     Result:=Counter;
-    Exit;  { quit here - we are in an idle job }
+    Exit; { quit here - we are in an idle job, so we return to this function again }
   end;
 
    { texture page completely loaded }
@@ -1050,7 +1090,8 @@ var
 
 begin
  F:=GetParentForm(ListView1);
- if (F=Nil) or not F.Visible then Exit;
+ if (F=Nil) or not F.Visible then
+  Exit;
  Anime:=False;
  ListView1.Update;
  for P:=0 to ListView1.Items.Count-1 do

@@ -30,6 +30,23 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.69  2000/11/16 19:42:44  decker_dk
+//- Modified Convex's texture-fileextension alias code, so it won't conflict
+//with the rest of the existing code.
+//- Introduced a 'TextureFileExtensions' specific, which will contain the
+//texture-fileextension aliases, for COnvex's code.
+//- Implemented solution for extracting texture-links from .PK3 files
+//('.pakfolder' vs '.zipfolder' problem)
+//- Replaced the function-names:
+//  = Q2TexPath    -> GameTexturesPath
+//  = Q3ShaderPath -> GameShadersPath
+//- Cleaned up some code here and there.
+//- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+//PGameBuffer totally. Hmm? May have introduced problem with color-palette
+//in other windows than the texture-browser-detail.
+//- Found the place in QkWAD.PAS where the common size of the textures, in the
+//texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+//
 //Revision 1.68  2000/11/11 17:58:20  decker_dk
 //Compressed some text into an existing :incl, for BuildToolControllers
 //
@@ -1055,6 +1072,12 @@ QQRKSRC1
     }
     Toolbars and Menus:config =
     {
+      Texture Browser:config =
+      {
+        ImageListTextureDimension = "64"
+        ImageListLoadNoOfTexAtEachCall = "3"
+        Form = "Toolbars_TextureBrowser"
+      }
     }
   }
   ConfigForms.qrk =
@@ -2705,6 +2728,38 @@ QQRKSRC1
         Typ = "EF1"
         Min = '1'
         Max = '90'
+      }
+    }
+    Toolbars_TextureBrowser:form =
+    {
+      Style = "7"
+      ImageListTextureDimension: = {
+        Txt="Dimension of textures in texture-list"
+        Hint="The bigger the dimension, more memory is needed, so make sure you don't overdo it."
+          $0D"Only dimensions 32 to 128 in steps of 16 are allowed: 32, 48, 64, 80, 96, 112, 128."
+        Typ="C"
+        items  = "32  (32x32)"
+              $0D"48  (48x48)"
+              $0D"64  (64x64)"
+              $0D"80  (80x80)"
+              $0D"96  (96x96)"
+              $0D"112  (112x112)"
+              $0D"128  (128x128)"
+        values = "32"
+              $0D"48"
+              $0D"64"
+              $0D"80"
+              $0D"96"
+              $0D"112"
+              $0D"128"
+      }
+      ImageListLoadNoOfTexAtEachCall: = {
+        Txt="No. of textures to load per update"
+        Hint="How many textures at a time QuArK should load, before updating the texture-browser screen."
+          $0D"The higher the number, the less responsive QuArK will be, as it will not give control back"
+          $0D"to the user, until the amount of textures have been loaded."$0D
+          $0D"The best values are: 1 to 5"
+        Typ="E"
       }
     }
   }

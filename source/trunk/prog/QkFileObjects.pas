@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/09/01 00:11:18  alexander
+merged in tiglaris .map extension fix from rel6_1 branch
+
 Revision 1.14  2000/08/25 17:59:18  decker_dk
 Ready for C/C++ escape-chars, though uncommented for the moment. This does cause slower loading of text-QRK files.
 
@@ -1535,7 +1538,8 @@ begin
    Exit;
   end;
  Result:=ObtainWindow(nParent, cmNone);
- if Result=Nil then Exit;
+ if Result=Nil then
+  Exit;
  Result.BorderStyle:=bsNone;
  Result.Parent:=nParent;
  Result.Left:=nParent.Width;
@@ -1551,59 +1555,65 @@ var
  WndState: TFileObjectWndState;
  Maximize: Boolean;
 begin
- AddRef(+1); try
- ProgressIndicatorStart(5452, 0); try
- FileObjectClassInfo(Info);
- if wiForm1 in Info.WndInfo then
-  begin
-   Form1.SetExplorerRoot(Self);   { display in the main window }
-   ActivateNow(Form1);
-  end
- else
-  if (wiWindow in Info.WndInfo)
-  or ((wiOwnExplorer in Info.WndInfo) and (ParentPanel=Nil)) then
-   begin   { display in a stand-alone window }
-    Acces;
-    Maximize:=(ParentPanel<>Nil) and FullParentPanel;
-    if Maximize or not (wiOwnExplorer in Info.WndInfo) then
-     WndState:=cmWindow
-    else
-     WndState:=cmOwnExplorer;
-    Maximize:=Maximize or (wiMaximize in Info.WndInfo);
-    F:=ObtainWindow(Application, WndState);
-    if F=Nil then Exit;
-   {WindowPlacement.ShowCmd:=sw_ShowNormal;}
-    F.Attach(ParentPanel);
-   {WindowPlacement.Length := SizeOf(WindowPlacement);
-    GetWindowPlacement(F.Handle, @WindowPlacement);}
-    if ParentPanel<>Nil then
-     F.RestoredRect := F.GetSmallPosition
-    else
-     begin
-      if Maximize then
-       F.WindowState:=wsMaximized
-      else
-       F.WindowState:=wsNormal;
-      F.RestoredRect := F.DefPosition;
-    (*if Maximize then
-       begin
-        WindowPlacement.ShowCmd:=sw_ShowMaximized;
-       {Maximize:=False;}
-       end;*)
-     end;
-    PostMessage(F.Handle, wm_InternalMessage, wp_FormActivate, 0);
-    F.Show;
-    if Maximize then
-     F.WindowState:=wsMaximized;
-   {SetWindowPlacement(F.Handle, @WindowPlacement);}
-   end
-  else
-   if Self is QUnknown then
-    Raise EErrorFmt(5201, [Name+TypeInfo])
+ AddRef(+1);
+ try
+  ProgressIndicatorStart(5452, 0);
+  try
+   FileObjectClassInfo(Info);
+   if wiForm1 in Info.WndInfo then
+    begin
+     Form1.SetExplorerRoot(Self);   { display in the main window }
+     ActivateNow(Form1);
+    end
    else
-    Raise EErrorFmt(5202, [Name+TypeInfo]);
- finally ProgressIndicatorStop; end;
- finally AddRef(-1); end;
+    if (wiWindow in Info.WndInfo)
+    or ((wiOwnExplorer in Info.WndInfo) and (ParentPanel=Nil)) then
+     begin   { display in a stand-alone window }
+      Acces;
+      Maximize:=(ParentPanel<>Nil) and FullParentPanel;
+      if Maximize or not (wiOwnExplorer in Info.WndInfo) then
+       WndState:=cmWindow
+      else
+       WndState:=cmOwnExplorer;
+      Maximize:=Maximize or (wiMaximize in Info.WndInfo);
+      F:=ObtainWindow(Application, WndState);
+      if F=Nil then Exit;
+     {WindowPlacement.ShowCmd:=sw_ShowNormal;}
+      F.Attach(ParentPanel);
+     {WindowPlacement.Length := SizeOf(WindowPlacement);
+      GetWindowPlacement(F.Handle, @WindowPlacement);}
+      if ParentPanel<>Nil then
+       F.RestoredRect := F.GetSmallPosition
+      else
+       begin
+        if Maximize then
+         F.WindowState:=wsMaximized
+        else
+         F.WindowState:=wsNormal;
+        F.RestoredRect := F.DefPosition;
+      (*if Maximize then
+         begin
+          WindowPlacement.ShowCmd:=sw_ShowMaximized;
+         {Maximize:=False;}
+         end;*)
+       end;
+      PostMessage(F.Handle, wm_InternalMessage, wp_FormActivate, 0);
+      F.Show;
+      if Maximize then
+       F.WindowState:=wsMaximized;
+     {SetWindowPlacement(F.Handle, @WindowPlacement);}
+     end
+    else
+     if Self is QUnknown then
+      Raise EErrorFmt(5201, [Name+TypeInfo])
+     else
+      Raise EErrorFmt(5202, [Name+TypeInfo]);
+  finally
+   ProgressIndicatorStop;
+  end;
+ finally
+  AddRef(-1);
+ end;
 end;
 
 {procedure QFileObject.Modif;
@@ -2435,11 +2445,13 @@ end;
 procedure TQForm1.wmSysCommand;
 begin
  case Msg.CmdType of
-  sc_Minimize: begin
-                Application.Minimize;
-                Exit;
-               end;
-  sc_Maximize, sc_Restore: PostMessage(Handle, wm_InternalMessage, wp_AfficherInfos, 0);
+  sc_Minimize:
+   begin
+    Application.Minimize;
+    Exit;
+   end;
+  sc_Maximize, sc_Restore:
+   PostMessage(Handle, wm_InternalMessage, wp_AfficherInfos, 0);
  end;
  inherited;
 end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/10/15 15:58:44  alexander
+correct error message for v46 bsp files
+
 Revision 1.7  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -621,7 +624,7 @@ begin
    FStructure.LoadAll;
    Dest:=TStringList.Create;
    try
-    FStructure.SauverTexte(Nil, Dest, soBSP, Nil);
+    FStructure.SaveAsText(Nil, Dest, soBSP, Nil);
     S:=Dest.Text;
    finally
     Dest.Free;
