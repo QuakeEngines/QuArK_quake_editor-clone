@@ -362,10 +362,14 @@ def codrag(editor,undo,old,new):
   return 1
 
   
-menlinkonglue=toggleitem("Link on Glue","|When this option is checked, the `Glue-to-tagged' command links the glued side to the tagged one, making it easy to keep then copanar.")
-menmultisellinkdrag=toggleitem("MultiSelect on Linked Drag","|When this option is checked, when a face is dragged that is linked to others, they all become the multi-selection after the drag.\n\nWhen it is unchecked, the selection remains unchanged.")
+menlinkonglue=toggleitem("Link on Glue","|Link on Glue:\n\nWhen this option is checked, the `Glue-to-tagged' command links the glued side to the tagged one, making it easy to keep them copanar.|intro.mapeditor.menu.html#optionsmenu")
+
+menmultisellinkdrag=toggleitem("MultiSelect on Linked Drag","|MultiSelect on Linked Drag:\n\nWhen this option is checked, when a face is dragged that is linked to others, they all become the multi-selection after the drag.\n\nWhen it is unchecked, the selection remains unchanged.|intro.mapeditor.menu.html#optionsmenu")
+
 #menmultisellinkdrag.state=qmenu.checked
-mengluelinkedondrag=toggleitem("Silent Glue Linked on Drag","|When this option is checked, when something is dragged, faces linked to its faces will be dragged along too.")
+
+mengluelinkedondrag=toggleitem("Silent Glue Linked on Drag","|Silent Glue Linked on Drag:\n\nWhen this option is checked, when something is dragged, faces linked to its faces will be dragged along too.|intro.mapeditor.menu.html#optionsmenu")
+
 #mengluelinkedondrag.state=qmenu.checked
 
 quarkpy.mapoptions.items.append(qmenu.sep)
@@ -1890,6 +1894,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28  2003/03/26 03:31:43  cdunde
+#To update info and make infobase link
+#
 #Revision 1.27  2003/03/25 08:30:56  tiglari
 #more fix of select tagged logic (the de-tagging effect is for now taken to
 # be the intended behavior)

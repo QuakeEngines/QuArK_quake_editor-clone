@@ -107,7 +107,7 @@ def ReloadClick(m):
   if editor is None: return
   ReloadDlg(quarkx.clickform,editor,action)
 
-quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Developer Mode","Developer", hint = "|In this mode, some extra items appear on the menu, to help with debugging, etc."))
+quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Developer Mode","Developer", hint = "|Developer Mode:\n\nIn this mode, some extra items appear on the menu, to help with debugging, etc.|intro.mapeditor.menu.html#optionsmenu"))
 
 menreload = qmenu.item("Reload",ReloadClick,"Reload module")
 
@@ -119,6 +119,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.4  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.3  2001/03/20 08:02:16  tiglari
 # customizable hot key support
 #

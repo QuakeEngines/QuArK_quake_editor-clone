@@ -85,7 +85,7 @@ def TasOption(item):
     quarkx.setupsubset(SS_MAP, "Options").setint("TexAntiScroll", item.tas)
     quarkx.reloadsetup(1)
 
-def texantiscroll(txt, mode, hint="|In QuArK, the textures are attached to polyhedrons in such a way that they follow all its movements. However, for easier texture alignment, you can set these options that only apply when scrolling polyhedrons (not rotating nor zooming) :\n\nSTICKY : the textures don't move when you look at it standing in front of the face.\nAXIS-STICKY : the textures don't move when you look at it from the nearest axis direction.\n\nTo mimic the way QuArK 4.07 and most other Quake editors work, choose AXIS-STICKY."):
+def texantiscroll(txt, mode, hint="|Default/Sticky/Axis-sticky texture:\n\nIn QuArK, the textures are attached to polyhedrons in such a way that they follow all its movements. However, for easier texture alignment, you can set these options that only apply when scrolling polyhedrons (not rotating nor zooming).\n\nSTICKY : the textures don't move when you look at it standing in front of the face.\n\nAXIS-STICKY : the textures don't move when you look at it from the nearest axis direction.\n\nTo mimic the way QuArK and most other Quake editors work, choose AXIS-STICKY.|intro.mapeditor.menu.html#optionsmenu"):
     item = qmenu.item(txt, TasOption, hint)
     item.tas = mode
     return item
@@ -154,7 +154,7 @@ def setLineThick(m):
         return
     LineThickDlg(quarkx.clickform, editor, m)
     
-lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.")
+lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set Line Thickness:\n\nThis lets you set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.|intro.mapeditor.menu.html#optionsmenu")
 
 
 #
@@ -162,26 +162,34 @@ lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set the t
 #
 
 items = [
+
     toggleitem("&Delete unused faces && polys", "DeleteFaces", (0,0),
-      hint="|When you distort polyhedrons, some faces might become no longer used by the polyhedron, or the whole polyhedron could maybe become invalid (e.g. if it has no interior any more). When the option 'Delete unused faces & polys' is checked, QuArK will tell you about this and ask you if it should delete the no-longer-used objects."),
+      hint="|Delete unused faces & polys:\n\nWhen you distort polyhedrons, some faces might become no longer used by the polyhedron, or the whole polyhedron could maybe become invalid (e.g. if it has no interior any more). When the option 'Delete unused faces & polys' is checked, QuArK will tell you about this and ask you if it should delete the no-longer-used objects.|intro.mapeditor.menu.html#optionsmenu"),
+
     toggleitem("&Secondary red lines", "RedLines2", (1,1),
-      hint="|Display two red lines per view instead of just one. These red lines let you select which part of the map is to be considered 'visible' on the other view. Invisible parts are grayed out and not selectable with the mouse."),
+      hint="|Secondary red lines:\n\nDisplay two red lines per view instead of just one. These red lines let you select which part of the map is to be considered 'visible' on the other view. Invisible parts are grayed out and not selectable with the mouse.|intro.mapeditor.menu.html#optionsmenu"),
+
     toggleitem("3D &Models in textured views", "Entities", (1,1), (SS_GENERAL,"3D view"),
-      hint="|Display actual models in solid and textured views.\n\nNote that this is not implemented for all the supported games yet. If you want to help about this, you are welcome !"),
+      hint="|3D Models in textured views:\n\nDisplay actual models in solid and textured views.\n\nNote that this is not implemented for all the supported games yet. If you want to help about this, you are welcome !|intro.mapeditor.menu.html#optionsmenu"),
+
     toggleitem("&Quantize angles", "AutoAdjustNormal", (0,0),
-      hint="|If 'Quantize angles' is checked, you cannot set any angle for faces and entities : you can only set 'round' values. This command works like a grid for angles. You can set the step of this grid in the Configuration dialog box, Map, Building, 'Force angle to'."),
+      hint="|Quantize angles:\n\nIf 'Quantize angles' is checked, you cannot set any angle for faces and entities : you can only set 'round' values. This command works like a grid for angles. You can set the step of this grid in the Configuration dialog box, Map, Building, 'Force angle to'.|intro.mapeditor.menu.html#optionsmenu"),
+
     toggleitem("&Paste objects at screen center", "Recenter", (0,0),
-      hint="|If 'Paste objects at screen center' is checked, polyhedrons and entities are pasted from the clipboard near the screen center. If this option is not checked, they are pasted exactly where they were when you copied them to the clipboard. The latter option is useful to make several copies with a fixed step between them, but can be confusing because the pasted objects may be completely off the screen."),
+      hint="|Paste objects at screen center:\n\nIf 'Paste objects at screen center' is checked, polyhedrons and entities are pasted from the clipboard near the screen center. If this option is not checked, they are pasted exactly where they were when you copied them to the clipboard. The latter option is useful to make several copies with a fixed step between them, but can be confusing because the pasted objects may be completely off the screen.|intro.mapeditor.menu.html#optionsmenu"),
+
     toggleitem("&Ignore groups marked so when building map", "IgnoreToBuild", (0,0),
-      hint="|To check complex maps with the game, you can choose not to include some parts of it in the test play. Do to so, you mark some groups as 'Ignore to build map' (right-click on a group for this command).\n\nMarked groups are actually ignored only if this option 'Ignore groups marked so when building map' is checked. You can uncheck it to play the whole map again without unmarking all groups one by one."),
+      hint="|Ignore groups marked so when building map:\n\nTo check complex maps with the game, you can choose not to include some parts of it in the test play. Do to so, you mark some groups as 'Ignore to build map' (right-click on a group for this command).\n\nMarked groups are actually ignored only if this option 'Ignore groups marked so when building map' is checked. You can uncheck it to play the whole map again without unmarking all groups one by one.|intro.mapeditor.menu.html#optionsmenu"),
+
     toggleitem("&Negative polys really dig in 3D views", "ComputePolys", (1,1),
-      hint="|If this option is off, negative polyhedrons are shown as normal polyhedrons in textured view so that you can easily edit them. When this option is on, digging is performed and you don't see the negative polyhedron at all, but only the hole it made.\n\nIn non-software modes, in a future version of QuArK, the negative polyhedron itself should not be completely invisible, but transparent."),
+      hint="|Negative polys really dig in 3D views:\n\nIf this option is off, negative polyhedrons are shown as normal polyhedrons in textured view so that you can easily edit them. When this option is on, digging is performed and you don't see the negative polyhedron at all, but only the hole it made.\n\nIn non-software modes, in a future version of QuArK, the negative polyhedron itself should not be completely invisible, but transparent.|intro.mapeditor.menu.html#optionsmenu"),
+
     qmenu.sep,
     texantiscroll("Default texture movement", 0),
     texantiscroll("Sticky textures", 1),
     texantiscroll("Axis-sticky textures", 2),
     toggleitem("&Don't center L-square","DontCenterThreePoints", (0,0),
-      hint="|If this item is on, threepoints aren't re-centered on face in texture positioning."),
+      hint="|Don't center L-square:\n\nIf this item is on, threepoints aren't re-centered on face in texture positioning.|intro.mapeditor.menu.html#optionsmenu"),
     lineThicknessItem
     ]
 shortcuts = { }
@@ -199,6 +207,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.8  2003/03/24 10:36:57  tiglari
+#remove debug statement
+#
 #Revision 1.7  2003/03/23 07:30:13  tiglari
 #add getThinLineThickness function (1 unit less that ordinary line)
 #

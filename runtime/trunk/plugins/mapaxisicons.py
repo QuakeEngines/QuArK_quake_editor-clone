@@ -41,7 +41,7 @@ from quarkpy.qhandles import *
 #
 
 quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("&Axis XYZ letter indicator in view windows", "AxisXYZ", (1,1),
-      hint="|Display the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse."))
+      hint="|Axis XYZ letter indicator in view windows:\n\nThis display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.|intro.mapeditor.menu.html#optionsmenu"))
 
 #
 # Get the actual icons, no reason to do this more than once.

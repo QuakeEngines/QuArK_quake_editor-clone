@@ -887,7 +887,7 @@ menrestsel.state=quarkpy.qmenu.disabled
 
 menextsel = quarkpy.qmenu.item("&Extend Selection from Face", ExtendSelClick, exttext)
  
-mennosel = quarkpy.qmenu.item("No Selection in Map Views", NoSelClick, "|When this menu item is checked, selection in the map views is prevented.\n\nI find this useful when touring with the 3d viewer, since I tend to accidentally select things and create messes.");
+mennosel = quarkpy.qmenu.item("No Selection in Map Views", NoSelClick, "|No Selection in Map Views:\n\nWhen this menu item is checked, selection in the map views is prevented.\n\nThis is useful when touring with the 3d viewer, to prevent selecting things accidentally.|intro.mapeditor.menu.html#optionsmenu");
 
 menunrestrict = quarkpy.qmenu.item("&Unrestrict Selection",UnrestrictClick,"|Unrestrict Selection:\n\nWhen selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.|intro.mapeditor.menu.html#invertface")
 
@@ -989,6 +989,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.23  2003/03/25 09:41:46  tiglari
+# fix enablement bugs
+#
 # Revision 1.22  2003/03/25 08:29:36  cdunde
 # To update info and make infobase links
 #
