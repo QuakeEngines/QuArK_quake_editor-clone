@@ -70,6 +70,27 @@ class DuplicatorManager:
         return maphandles.CenterEntityHandle(self.dup, view, CenterDupHandle)
 
 
+def is_digit(s):
+    if len(s)==1:
+        if string.find('012345679',s)>=0:
+            return 1
+    return 0
+
+def get_suffix(s):
+    l = len(s)
+    for i in range(l):
+        j=i
+        if not is_digit(s[l-i-1]):
+            break
+    return s[:l-j], s[l-j:l]
+
+def pool_specs(list):
+    specs = {}
+    for item in list:
+        for key in item.dictspec.keys():
+            if not specs.has_key(key):
+                specs[key]="1"
+    return specs.keys()
 
 class StandardDuplicator(DuplicatorManager):
     "Base for Duplicators that applies on each item one by one."
@@ -80,8 +101,12 @@ class StandardDuplicator(DuplicatorManager):
         self.origin = self.dup.origin
         if self.origin is None:
             self.origin = quarkx.vect(0,0,0)
+        sourcelist = self.sourcelist()
+        #
+        # fancy linear mappings stuff
+        #
         if self.dup["offset dup"]=="1":
-           box=quarkx.boundingboxof(self.sourcelist())
+           box=quarkx.boundingboxof(sourcelist)
            if box is not None:
                self.sourcecenter = 0.5*(box[0]+box[1])
            else:
@@ -93,6 +118,32 @@ class StandardDuplicator(DuplicatorManager):
         else:
             self.offset = None
         self.matrix = None
+        #
+        # serializing specifics stuff
+        #
+        if self.dup["serialize"]=="1":
+            #
+            # Final values
+            #
+            self.final_specs={}
+            for spec in self.dup.dictspec.keys():
+                if string.find(spec,'final_')==0:
+                    self.final_specs[spec[6:]]=self.dup[spec]
+            #
+            # Deciding which get serialized
+            #
+            if self.dup["all target serial"] is not None:
+                specs = pool_specs(sourcelist)
+                serializable = []
+                for spec in specs:
+                    if string.find(spec,"target")>=0:
+                        serializable.append(spec)
+            else:
+                serializable = ["target", "targetname", "killtarget"]
+            moreserial = self.dup["serial specific"]
+            if moreserial is not None:
+                serializable=serializable+string.split(moreserial)
+            self.serializable=serializable
 
     def applylinear(self, matrix, direct=0):
         s = self.dup["offset"]
@@ -108,6 +159,15 @@ class StandardDuplicator(DuplicatorManager):
             item.translate(self.offset)
         if self.matrix and not self.dup["item center"]:
             item.linear(self.origin, self.matrix)
+        if self.dup["serialize"]=="1":
+            for spec in self.serializable:
+                val = item[spec]   
+                if val is not None:
+                    if is_digit(val[len(val)-1]):
+                        base, index = get_suffix(val)
+                        width = len(index)
+                        index = string.zfill("%d"%(eval(index)+1),width)
+                        item[spec]=base+index
         return [item]
 
     def buildimages(self, singleimage=None):
@@ -156,6 +216,14 @@ class StandardDuplicator(DuplicatorManager):
                             item.linear(center, self.matrix)
                 except (AttributeError):
                     pass
+            #
+            # Set final spec values for serializers
+            #
+            if self.dup["serialize"]:
+                if i==count-1:
+                    for item in list:
+                        for spec in self.final_specs.keys():
+                            item[spec]=self.final_specs[spec]
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -276,6 +344,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2001/05/12 23:04:07  tiglari
+#make new linear fixpoint behavior contingent on 'item center' flag
+#
 #Revision 1.11  2001/05/12 18:58:54  tiglari
 #drop matrix2/buildLinearMatrix support
 #

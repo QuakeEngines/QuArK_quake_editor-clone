@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.137  2001/05/25 12:37:18  tiglari
+//tagged plane support
+//
 //Revision 1.136  2001/05/21 12:06:32  tiglari
 //update version
 //
@@ -3316,6 +3319,13 @@ QQRKSRC1
     {
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
     }
+    serialform:incl = // include for dups that serialize target etc.
+    {
+      serialize: = {Txt="&" Typ="X" Hint="If this is checked, target, targetname, killtarget values are serialized"}
+      all target serial: ={Txt="&" Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are serialized"}
+      serial specifics: = {Txt="&" Typ="E" Hint="List here additional specifics to be serialized"}
+      final target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " Additional specifics of this form can be added for targetname, etc." }
+    }
     Default:d:form =    // form that applies when editing duplicators
     {
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
@@ -3342,6 +3352,7 @@ QQRKSRC1
       offset dup: = {Txt="&" Typ="X" Hint="If this is checked, image is located at dup.origin-images center+offset" $0D " It's meant for New Copy One duplicator"}
       item center: = {Txt="&" Typ="X" Hint="If this is checked, if there is a 'linear' specific, each item in the" $0D " group is rotated around its own center (can be" $0D " usercenter) rather than the duplicator."}
       linearform = !
+      serialform = !
     }
   
     dup basic:form =
@@ -3350,6 +3361,7 @@ QQRKSRC1
       offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
       count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
       angle: = {Txt="&" Typ="E" Hint="Not sure how this one works ..."}
+      serialform = !
     }
   
     dup radial:form =
