@@ -216,12 +216,12 @@ def qmenuitem1click(m):
     if m.info["SelOnly"] and not len(editor.layout.explorer.sellist):
         quarkx.msgbox(Strings[223], MT_ERROR, MB_OK)
         return
-    if MapOption("AutoCheckMap", SS_MAP):
-        setup = quarkx.setupsubset()
-        if setup["NoMapChecks"]!="1":
-            import mapsearch
-            if mapsearch.CheckMap() == 0:
-                return
+#    if MapOption("AutoCheckMap", SS_MAP):
+#        setup = quarkx.setupsubset()
+#        if setup["NoMapChecks"]!="1":
+#            import mapsearch
+#            if mapsearch.CheckMap() == 0:
+#                return
     if m.info["RunGame"]:
         editor.layout.closeOpenGL()
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
@@ -251,7 +251,17 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     texwarninglist = ""
     gameneedwad = setup["GameNeedWad"]
 
+    
     for mapfileobject, root, buildmode in maplist:
+
+        if buildmode["ExportMapFile"]:
+            if MapOption("AutoCheckMap", SS_MAP):
+                setup = quarkx.setupsubset()
+                if setup["NoMapChecks"]!="1":
+                    import mapsearch
+                    if mapsearch.CheckMap() == 0:
+                        return
+
         map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
         mapinfo = {"map": map}
         if buildmode["ExportMapFile"] \
@@ -569,6 +579,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.21  2001/07/24 02:42:40  tiglari
+#.hmf extension when 6dx maps committed
+#
 #Revision 1.20  2001/07/19 12:00:17  tiglari
 #support disabling mapchecks in game config files
 #
