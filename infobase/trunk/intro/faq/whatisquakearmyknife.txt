@@ -1,4 +1,7 @@
 title: What IS Quake Army Knife?
 author: Gryphon
 
-Quake Army Knife (QuArK) is a multi-purpose tool for the games generally based on the Quake engine by id software. QuArK has the ability to directly edit maps, models, and QuakeC, plus easily allows importing and exporting of graphics, sounds, and QuakeC patches. It is also able to modify .PAK files, as well as importing compiled BSP's in order to study the entities as well as add/change/delete entities from these files. No other Quake tool available has the ability to do all of these things.
+Quake Army Knife (QuArK) is a multi-purpose tool for the games generally based on the Quake engine by id software. QuArK has
+the ability to directly edit maps, models, and QuakeC, plus easily allows importing and exporting of graphics, sounds, and
+QuakeC patches. It is also able to modify .PAK files, as well as importing compiled BSP's in order to study the entities as
+well as add/change/delete entities from these files. No other Quake tool available has the ability to do all of these things.

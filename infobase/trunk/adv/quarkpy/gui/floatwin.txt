@@ -1,6 +1,6 @@
 title: Floating Windows
 author: Tiglari
-          
+
 A Quark dialog box is just a restricted kind of floating
 window; so now it's time to look into the code that
 defines them and see how floating windows work in general.
@@ -8,7 +8,7 @@ defines them and see how floating windows work in general.
 dialog boxes are defined as a class in quarkpy.qmacro;
 the definition starts out like this:
 
-<html><pre>
+<code>
 class dialogbox:
 
     dlgdef = ""
@@ -18,7 +18,7 @@ class dialogbox:
     name = None
     dfsep = 0.6
     dlgflags = qutils.FWF_KEEPFOCUS | qutils.FWF_POPUPCLOSE
-<html></pre>
+</code>
 
 Here we're just providing default values for the various
 things that can be defined when a more specific type of
@@ -28,13 +28,13 @@ Now comes the most important method of this class, its
 constructor (which we have already invoked as part of the
 constructor of the texture multiplier dialag):
 
-<html><pre>
+<code>
     def __init__(self, form, src, **buttons):
         name = self.name or self.__class__.__name__
         closedialogbox(name)
         f = quarkx.newobj("Dlg:form")
         f.loadtext(self.dlgdef)
-<html></pre>
+</code>
 
 The first three parameters are self-explanatory (if you've
 read through dialogs.txt), the last is the magic for dealing
@@ -49,13 +49,13 @@ it would not be amiss to look it up in Quarkx.rtf.
 
 And so here's our next chunk of code:
 
-<html><pre> 
+<code>
         self.f = f
         for pybtn in f.findallsubitems("", ':py'):
             pybtn["sendto"] = name
         self.buttons = buttons
         dlg = form.newfloating(self.dlgflags, f["Caption"])
-<html></pre>
+</code>
 
 The first line simply stores the form we've made as a data
 member of the dialog, the next three are button-processing
@@ -72,7 +72,7 @@ passed to the new floating window as its caption.
 
 Next comes assorted housekeeping.
 
-<html><pre>
+<code>
         dialogboxes[name] = dlg
         dlg.windowrect = self.windowrect()
         if self.begincolor is not None: dlg.begincolor = self.begincolor
@@ -81,7 +81,7 @@ Next comes assorted housekeeping.
         dlg.info = self
         self.dlg = dlg
         self.src = src
-<html></pre>
+</code>
 
 dialogboxes is a global variable of quarkpy.qmacros, so this
 registers our current dialog box as one that is open.
@@ -98,12 +98,12 @@ different!
 
 And now some more interesting stuff:
 
-<html><pre>
+<code>
         df = dlg.mainpanel.newdataform()
         self.df = df
         df.header = 0
         df.sep = self.dfsep
-<html></pre>
+</code>
 
  When floating windows are created, they automatically
  get a panel, which is accessed as `mainpanel'.  And
@@ -118,12 +118,12 @@ And now some more interesting stuff:
  the multi-page panel, then the dfsep attribute of the
  dialog object is applied to the dataform, where it does
  its real work.
- 
+
  And finally comes the essential setdata method:
 
-<html><pre>
+<code>
         df.setdata(src, f)
-<html></pre>
+</code>
 
 This establishes the connection between the screen and the
 src object we created earlier.  The contents of src are
@@ -131,11 +131,11 @@ displayed in the dataform df, in accordance with the layout
 specified in the form f.  And we conclude with a few more
 details:
 
-<html><pre>
+<code>
         df.onchange = self.datachange
         df.flags = 8   # DF_AUTOFOCUS
         dlg.show()
-<html></pre>
+</code>
 
 The onchange method of a dataform is a method that gets
 executed when the data is changed.  So if you want something
@@ -145,11 +145,11 @@ organize this, for a dialog box, by providing a datachange
 method.  The flags determine aspects of the presentation
 of the dataform, the available ones are:
 
-<html><pre>
+<code>
 # dataform flags
 DF_LOCAL        = 1    # prevents screen flashes if changes in this box don't affect anything else
 DF_AUTOFOCUS    = 8    # gets focus when mouse cursor enters
-<html></pre>
+</code>
 
 And finally, the last line makes it show up on the screen;
 in GUI programming, things are normally kept hidden until
@@ -157,7 +157,7 @@ their finished being built, to make things look polished.
 
 So here are the remaining methods:
 
-<html><pre>
+<code>
     def datachange(self, df):
         pass   # abstract
 
@@ -172,7 +172,7 @@ So here are the remaining methods:
 
     def close(self, reserved=None):
         self.dlg.close()
-<html></pre>
+</code>
 
 datachange is defined here in a content-free manner so that
 there's something to be assigned as the df's onchange method,
@@ -218,9 +218,9 @@ being 0).
 
 Things should look routine until:
 
-<html><pre>
+<code>
             df.actionchanging = 596
-<html></pre>
+</code>
 
 Part of the df magic is that if a dataform changes
 any QObject that comes from a file, this change is
@@ -230,10 +230,10 @@ quarkpy.qdictionnary.
 
 So things burble along thru:
 
-<html><pre>
+<code>
         self.loadfaceflags(form)
         ff.show()
-<html></pre>
+</code>
 
 ff.show()?  Well remember that ff is a floating window, not
 a dialog object, and windows are shown.  ff probably for
@@ -246,9 +246,9 @@ dataform, under the control of the TextureFlags form.
 And if you look at its definition, it's clear that it does
 this, except there's a bit of a surprise at the end:
 
-<html><pre>
+<code>
         df.setdata(self.loadtfflist(), form)
-<html></pre>
+</code>
 
 When you look at loadtfflist(), you find a rather
 complicated function!  Which, in brief, is doing this:
@@ -265,13 +265,14 @@ suggested so far: it can operate on many objects at once,
 and display in the form default information provided from
 a default object rather than the thing being edited itself.
 
-Here's what it says in 
+Here's what it says in
 <ref> src/quarkx
  :
 
-<html><pre>
+<code>
 setdata(objs) setdata(objs, formobj):
-<html></pre>
+</code>
+<html><ul><li>
   Select the object(s) whose Specifics/Args are to be
   displayed in the data form. objs can be either a single
   " objspec " or a list of " objspecs ". An " objspec " i
@@ -280,7 +281,8 @@ setdata(objs) setdata(objs, formobj):
   If a Specific is not found in the object, the data
   form displays the one from its default value. The
   optional argument formobj gives a :form Internal object
-  to use. 
+  to use.
+<html></li></ul>
 
 So for example for a face, if the face doesn't have
 some property but the face's texture specifies a default
@@ -293,12 +295,12 @@ So, finally, how does the form load with data for a new
 face when the selection changes?  Via this method
 of MapLayout:
 
-<html><pre>
+<code>
     def selchange(self):
         if self.faceflags is not None:
             self.loadfaceflags()
         self.mpp.resetpage()
-<html></pre>
+</code>
 
 To finish off, a bit more about panels.  Panels can contain
 more than one control, by being divided into sections.
@@ -307,17 +309,17 @@ look at plugins/map3viewslayout.py, which is quite well
 commented.  The basic idea is to divide panels into sectons
 with statements like:
 
-<html><pre>
+<code>
         self.mainpanel.sections = ((), (0.4,))
-<html></pre>
+</code>
 
 Which says one column, two rows with the top taking up
 40% of the space, and:
 
-<html><pre>
+<code>
         self.ViewXY = self.mainpanel.newmapview()
         self.ViewXY.section = (0,1)
-<html></pre>
+</code>
 
 Which creates a map view (another kind of control) in the
 main panel, and then puts it in the first column (there's

@@ -1,0 +1,7 @@
+title: Map compiling errors
+subdir: csg
+subdir: bsp
+subdir: vis
+subdir: rad
+
+Here you will find information, gathered from various places, about map compiling errors.

@@ -2,7 +2,7 @@ title: Add-on standards for new supported games
 author: Decker
 format: html
 
-If you create a new add-on for a new game that is going to be supported by
+<p>If you create a new add-on for a new game that is going to be supported by
 QuArK, there are some basic standards you must include in the add-on:
 <ul>
 <li>The Default Room
@@ -10,47 +10,57 @@ QuArK, there are some basic standards you must include in the add-on:
 <li>Grouping of Textures
 <li>A Nice Layout in the Add-on Data*.QRK File
 </ul>
+</p>
 
 <p><u>The Default Room</u><br>
 Make sure the add-on contains a default room. You know, the one that appears
 when the user wants to create a new map. The default room must be made of 4
 walls, one floor and one sky/ceiling. It must also have a one spawn-point
 for the player and a single white light in the center of the room.
+</p>
 
 <p>It is utterly important that you remember to place the player spawn-point
 correctly. Its bounding-box must not intersect any of the brushes that the
 room is made of. Else when the user tries to play the default room, he will be
 stuck to the floor upon spawning, and we don't want that.
+</p>
 
 <p><u>Grouping of Entities</u><br>
 Try to place the game's entities, into folders of identical behaviour. For
 instance, place weapons and ammo into an <i>Weapons & Ammo Entities</i>
 folder, and trigger entities into an <i>Trigger_ Entities</i> folder.
+</p>
 
 <p>Take a look at the existing add-ons for the other supported games, and get
 inspired.
+</p>
 
 <p><u>Grouping of Textures</u><br>
 Placing textures into sub-folders in the texture-browser, is something that
 takes lot of time, and you won't always create a perfect grouping of textures.
+</p>
 
 <p>A good suggestion would be, that if the game itself already have placed
 its textures into sub-directories (in a PAK file or similar), then try to
 follow that structure too.
+</p>
 
 <p>You may need to sort and group the textures, directly in the add-on .QRK
 text-file, this will usually be a little bit faster, if you have all the
 texture filenames ready at hand.
+</p>
 
 <p><u>A Nice Layout in the Add-on Data*.QRK File</u><br>
 Since add-on .QRK files need to be modified now and then, when bug-fixes and
 other relevant information about the game becomes available, you should keep a
 nice layout in the add-on file.
+</p>
 
 <p>By this, I mean you should keep the indent-levels and try to place the
-information into columns. Take for instance this structure:<br>
-<blockquote class="doccode">
-<pre>
+information into columns. Take for instance this structure:
+</p>
+
+<div class="doccode"><pre>
 Valve Textures.qtxfolder =
 {
   Spraypaing.txlist =
@@ -76,16 +86,15 @@ Valve Textures.qtxfolder =
 <i>..etc..</i>
   }
 }
-</pre>
-</blockquote>
+</pre></div>
 
 <p>It can be made much more readable and smaller, if you put one texture-link
 on one line, and also use the ':incl' feature. Notice also that I've put some
 of the information into columns, so it will be easier to sort or block-mark if
 you have a text-editor thats capable of block-column-marking:
+</p>
 
-<blockquote class="doccode">
-<pre>
+<div class="doccode"><pre>
 t_spraypaint:incl = { s = "valve" d = "spraypaint" h = "C" }
 
 Valve Textures.qtxfolder =
@@ -98,5 +107,4 @@ Valve Textures.qtxfolder =
 <i>..etc..</i>
   }
 }
-</pre>
-</blockquote>
+</pre></div>

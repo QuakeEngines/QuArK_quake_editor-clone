@@ -9,5 +9,6 @@ subdir: sin
 subdir: kingpin
 subdir: quake3
 subdir: sof
+subdir: stvef
 
 Here you will find information and frequently asked questions about the QuArK-supported games.
