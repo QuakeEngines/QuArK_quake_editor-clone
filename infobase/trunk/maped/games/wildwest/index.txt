@@ -10,4 +10,4 @@ The WildWest is a Multiplayer modification of Return to Castle Wolfenstein (whic
 If you have any questions, problems or find solutions regarding this topic, please post them in the <a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum/mailing-list</a>.
 
 
-Please note: This version of the WildWest is intended for use with the 1.4 Beta version and newer.  There are Entities that are referenced in the menu structure that may not exist in ealier versions.
+Please note: This version of the WildWest is intended for use with the 1.5 Beta version and newer.  There are Entities that are referenced in the menu structure that may not exist in earlier versions.
