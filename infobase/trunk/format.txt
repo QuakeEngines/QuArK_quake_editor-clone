@@ -1,5 +1,5 @@
 #
-# Document formatting
+# Document formatting -this is actually a script (!!)
 #
 
 HEADER = """<html>
@@ -25,7 +25,7 @@ HEADER = """<html>
 <table width=100%% border=0 cellspacing=0>
   <tr bgcolor="#E0E0E0"><td width=100%%>
     <p class="headline">&nbsp;%(classif)s%(title)s</p>
-  </td></tr>
+  </td>
 </table>
 """
 
@@ -95,7 +95,11 @@ FILE_END = """
 FILES_END = """
 </dl>
 <table width=100%% border=0 cellspacing=0>
-  <tr bgcolor="#E0E0E0"><td align=right><a href="#__top__">top</a>&nbsp;</td></tr>
+  <tr bgcolor="#E0E0E0">
+   <td width=45%%></td>
+   <td width=10%% align=center><a href="#__top__">top</a></td>
+   <td width=45%% align=right>&nbsp;&nbsp;%(nextfooter)s</td>
+  </tr>
 </table>
 """
 
@@ -124,3 +128,4 @@ SUBFILES_END = """
 #
 REFFILE = """<a href="%(htmlfile)s#%(hrefaname)s"><i>%(title)s</i></a>"""
 REFDIR  = """<a href="%(htmlfile)s"><i>%(title)s</i></a>"""
+REFPIC = """<img src="%(imgfile)s>"""
