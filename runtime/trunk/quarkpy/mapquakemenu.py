@@ -408,7 +408,10 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
                 # Check first Default build-tool directory
                 try:
-                    cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
+                    if setup["BuildPgmsDir"] is None:
+                       cmdline2 = cmdline
+                    else:
+                       cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
                     if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
                         # Success, use this build-tool!
                         cmdline = cmdline2
@@ -444,7 +447,8 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     newcmdline = string.replace(newcmdline, "%file%",     argument_file)
                     newcmdline = string.replace(newcmdline, "%basepath%", setup["Directory"])
                     newcmdline = string.replace(newcmdline, "%quarkpath%", quarkx.exepath)
-                    newcmdline = string.replace(newcmdline, "%buildpgmsdir%", setup["BuildPgmsDir"])
+                    if setup["BuildPgmsDir"] is not None:
+                       newcmdline = string.replace(newcmdline, "%buildpgmsdir%", setup["BuildPgmsDir"])
                     newcmdline = string.replace(newcmdline, "%output%", quarkx.outputfile())
 
 #                    debug('mappath: '+argument_mappath)
@@ -592,6 +596,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.25  2002/04/28 11:41:32  tiglari
+#New command line argument substitutions (for RTCW)
+#
 #Revision 1.24  2002/03/26 22:19:20  tiglari
 #support UseIntegralVertexes flag
 #
