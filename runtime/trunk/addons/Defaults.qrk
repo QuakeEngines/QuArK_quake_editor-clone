@@ -30,6 +30,11 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.74  2001/01/28 17:26:10  decker_dk
+//Set 'Hide scrollbars in map-editor' to enabled as default. (Due to the Q3A huge-maps problem, which is easily solved by hiding the scrollbars!)
+//Added 'DisableMapComments' option to 'Map:config'.
+//Added a 'MapCommentsPrefix' to all games ':config' settings.
+//
 //Revision 1.73  2001/01/27 18:24:17  decker_dk
 //Removed the key 'Q3ShaderPath', as it is replaced with 'ShadersPath'.
 //Renamed the key 'Q2TexPath' to 'TexturesPath'.
@@ -924,7 +929,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
       }
-      CrystalSpace:config =
+      Crystal Space:config =
       {
         Game = "Crystal Space"
         Code = "c" // Hardcoded value in Setup.PAS
