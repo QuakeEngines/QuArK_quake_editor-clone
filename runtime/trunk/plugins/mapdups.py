@@ -27,6 +27,7 @@ Info = {
 
 from quarkpy.maputils import *
 import quarkpy.mapduplicator
+import quarkpy.maphandles
 StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 
 
@@ -57,9 +58,15 @@ class LinearDuplicator(StandardDuplicator):
 
     def readvalues(self):
         StandardDuplicator.readvalues(self)
+        #
+        # old matrix for backward compatibility
+        #
         s = self.dup["linear"]
         if s:
             self.matrix = quarkx.matrix(s)
+        #
+        # New matrix for use with rot/scale buttons.
+        #
         self.matrix2 = buildLinearMatrix(self.dup)
 
     def applylinear(self, matrix, direct=0):
@@ -264,6 +271,9 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 #
 # $Log$
+# Revision 1.4  2001/04/06 06:00:35  tiglari
+# fixed a messed up change to Linear Duplicator readavalues
+#
 # Revision 1.3  2001/03/29 09:28:55  tiglari
 # scale and rotate specifics for duplicators
 #
