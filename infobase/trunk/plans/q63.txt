@@ -10,7 +10,8 @@ name on more than I can get around to doing for a timely release.
 <br>crank out matrices for rotation, scaling
 etc. from intelligible parameters (from pushbutton in duplicator
 forms).
-<br>status: done; forms with scale & angles added
+<br>status: sort of done by adding scale and rotation\
+specifics.
 
 <li>Extruder: (tiglari)
 <br>generate brushes etc. from 2d outlines.
@@ -25,13 +26,15 @@ by a suggestion by Meatball402 on Quake3World editing forum.
 <br>status: current ones all done.  What additional ones
 should be added?
 
+<li> Write WC3.3 map format: (tiglari)
+<br> status: done, not fully tested (superficially OK)
+
 <li>User-specifible rotation/linear mapping origin: (tiglari)
 <br>Do they really need to be persistent properties of groups?
 (as opposed say to a tagged point)
-<br>what about axis?
-<br>status: an origin duplicator done, used in instance
-duplicator, no axis.  NYI for rotation buttons. Is
-this a good way to do it?
+<br>what about axis? No, wouldn't integrate with the buttons.
+<br>status: redone as handle (old origin duplicator removed
+from interface). NYI as fixpoint for linear mapping in duplicators.
 
 <li>Form-editing: (Andy)
 <br>status: editing only - no create
@@ -44,17 +47,10 @@ this a good way to do it?
 <br>Actually, totally reorganize bsp reading code
 
 <li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
-<br>an as-yet-unimplemenated 4.7 feature.
-
-<li> Write WC3.3 map format: (tiglari)
+<br>an as-yet-unimplemented 4.7 feature.
 
 <li>Model Editor: (Andy)
 <br>more progress
-
-<li>Linear Matrix editor: (tiglari)
-<br>crank out matrices for rotation, scaling
-etc. from intelligible parameters (from pushbutton in duplicator
-forms).
 
 <li>OsFolders: (tiglari)
 <br>edit the properties of pre-existing OsFolders
@@ -66,7 +62,6 @@ forms).
 
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes'
-
 
 <li>Optional plugins: (tiglari)
 <br>Some plugins wouldn't load unless they were 'registered'
