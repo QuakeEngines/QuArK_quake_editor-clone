@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2001/07/19 22:54:46  tiglari
+STVEF bsp's now showing
+
 Revision 1.36  2001/07/19 11:12:47  tiglari
 fixed bugs i previous updates
 
@@ -217,6 +220,12 @@ type
   NoBsp2 = TBsp2EntryTypes(-1);
   NoBsp3 = TBsp3EntryTypes(-1);
 
+  { these are the game codes for the default games
+     with these surface types (organization of face
+     lump }
+  bspSurfQ12 = '1'; { surface type for Q1/2 engine games }
+  bspSurfQ3 = 'a';  { surface/type for Q3 engine games }
+
 type
 (*SurfaceList = ^TSurfaceList;
  TSurfaceList = record
@@ -251,7 +260,7 @@ type
  QBsp = class(QFileObject)
         private
           FStructure: TTreeMapBrush;
-          FVerticesRefCount, FTexCoordsRefCount: Integer;
+          FVerticesRefCount: Integer;
           function GetStructure : TTreeMapBrush;
           function GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes) : QFileObject;
           procedure LoadBsp1(F: TStream; StreamSize: Integer);
@@ -304,6 +313,7 @@ type
  {------------------------}
 
 Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
+function BspSurfaceType(const bspType : Char) : Char;
 
 implementation
 
@@ -510,6 +520,7 @@ function QBsp.GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3Ent
 var
  Q: QObject;
  S: String;
+ C: Char;
 begin
   Acces;
 
@@ -531,7 +542,7 @@ begin
 
 
   (* this is set when the .bsp is opened, from the version,
-      why isn't it just used below? *)
+      why isn't it just used below?
   if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjStarTrekEF) then
     S:=Bsp3EntryNames[E3]
   else
@@ -545,6 +556,28 @@ begin
     S:=Bsp2EntryNames[E2]
   else
     S:=Bsp1EntryNames[E1];
+
+  *)
+
+  C := BspType(ObjectGameCode);
+  case C of
+    bspTypeQ1, bspTypeHx: S:= Bsp1EntryNames[E1];
+    bspTypeQ2: S:= Bsp2EntryNames[E2];
+    bspTypeQ3: S:= Bsp3EntryNames[E3];
+  else
+    { these are for when the bsp type isn't known yet,
+       such as when if the signature is for Q1, it could
+       be Q1 or Hexen II.  This is just copied from
+       above, I don't understand what all the cases do }
+    if E2=NoBsp2 then
+      S:=Bsp1EntryNames[E1]
+    else
+    if (E1=NoBsp1) or (BspType(NeedObjectGameCode)=bspTypeQ2) then
+      S:=Bsp2EntryNames[E2]
+    else
+      S:=Bsp1EntryNames[E1];
+
+  end;
 
 
   Q := SubElements.FindName(S);
@@ -761,6 +794,13 @@ begin
         cSignatureBspQ2DKQ3:
         begin
           { Check version of a cSignatureBspQ2DKQ3 file type }
+{ FIXME: SOF don't load, got same Sig/Vers as Q3 (!!)
+          if CharModeJeu=mjSOF then
+          begin
+              LoadBsp2(F, StreamSize);
+              ObjectGameCode := mjSOF;
+          end else
+}
           case Version of
             cVersionBspQ2: { Quake-2 }
             begin
@@ -937,14 +977,14 @@ var
  HullType: Char;
  Pozzie: vec3_t;
 begin
- HullType:=NeedObjectGameCode;
+ HullType:=BspType(NeedObjectGameCode);
  if FStructure=Nil then
   begin
    if FVertices<>Nil then
     Raise EError(5637);
    FVerticesRefCount:=0;
    ProgressIndicatorStart(0,0); try
-   if HullType<mjQ3A then
+   if BspSurfaceType(HullType)=bspSurfQ12 then
    begin
       VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
       ReallocMem(FVertices, VertexCount*SizeOf(TVect));
@@ -958,7 +998,7 @@ begin
       PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
    end;
    Dest:=PVect(FVertices);
-   if HullType<mjQ3A then
+   if BspSurfaceType(HullType)=bspSurfQ12 then
    for I:=1 to VertexCount do
    begin
      with Dest^ do
@@ -1371,6 +1411,14 @@ begin
       inc(result);
     end;
   end;
+end;
+
+function bspSurfaceType(const BspType : Char) : Char;
+begin
+  if BspType=BspTypeQ3 then
+    Result:=BspTypeQ3
+  else
+    Result:=BspTypeQ1
 end;
 
 Function QBsp.CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;

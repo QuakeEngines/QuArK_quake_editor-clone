@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/07/19 22:54:46  tiglari
+STVEF bsp's now showing
+
 Revision 1.16  2001/07/19 11:12:47  tiglari
 fixed bugs i previous updates
 
@@ -299,6 +302,7 @@ var
  Q3Vertex: TQ3Vertex;
  Q3VertexP: PQ3Vertex;
  TextureList: QTextureList;
+ miptex, q12surf: boolean;
 
  function AdjustTexScale(const V: TVect5) : TVect5;
  begin
@@ -316,12 +320,14 @@ begin
  try
   InvFaces:=0;
   cTexInfo:=0;
-  HullType:=FBsp.NeedObjectGameCode;
+  HullType:=BspType(FBsp.NeedObjectGameCode);
+  q12surf:=BspSurfaceType(HullType)=bspSurfQ12;
+  miptex:=UsesMipTex(FBsp.NeedObjectGameCode);
   case HullType of
-   mjQuake, mjHalfLife:  Size1:=SizeOf(THull);
-   mjHexen:              Size1:=SizeOf(THullH2);
-   mjQuake2, mjHeretic2: Size1:=SizeOf(THullQ2);
-   mjQ3A, mjStarTrekEF:   Size1:=SizeOf(THullQ3);
+   BspTypeQ1:  Size1:=SizeOf(THull);
+   BspTypeHx:  Size1:=SizeOf(THullH2);
+   BspTypeQ2:  Size1:=SizeOf(THullQ2);
+   BspTypeQ3:   Size1:=SizeOf(THullQ3);
   else Exit;
   end;
   I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
@@ -330,39 +336,39 @@ begin
    Raise EErrorFmt(5635, [1]);
   Inc(P, Delta-Size1);
   case HullType of
-   mjQuake, mjHalfLife: with PHull(P)^ do
+   BspTypeQ1: with PHull(P)^ do
              begin
               NbFaces:=Face_num;
               FirstFace:=Face_id;
               cTexInfo:=SizeOf(TTexInfo);
              end;
-   mjHexen: with PHullH2(P)^ do
+   BspTypeHx: with PHullH2(P)^ do
              begin
               NbFaces:=Face_num;
               FirstFace:=Face_id;
               cTexInfo:=SizeOf(TTexInfo);
              end;
-   mjQuake2, mjHeretic2: with PHullQ2(P)^ do
+   BspTypeQ2: with PHullQ2(P)^ do
               begin
                NbFaces:=Face_num;
                FirstFace:=Face_id;
                cTexInfo:=SizeOf(TTexInfoQ2);
               end;
-   mjQ3A, mjStarTrekEF: with PHullQ3(P)^ do
+   BspTypeQ3: with PHullQ3(P)^ do
               begin
                NbFaces:=Face_num;
                FirstFace:=Face_id;
                cTexInfo:=SizeOf(TTexInfoQ3);
               end;
    end;
-  if HullType>=mjQuake2 then
+  if not miptex then
    TextureList:=Nil
   else
    begin
     TextureList:=FBsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
     TextureList.Acces;
    end;
-  if HullType<mjQ3A then
+  if q12surf then
   begin
     SurfaceSize:=SizeOf(TbSurface);
     if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
@@ -390,7 +396,7 @@ begin
 
   Size1:=0;
   { for each face in the brush, reserve space for a Surface }
-  if HullType<mjQ3A then
+  if q12surf then
   begin
     Faces2:=Faces;
     for I:=1 to NbFaces do
@@ -424,7 +430,7 @@ begin
 
   for I:=1 to NbFaces do
    begin
-    if HullType<mjQ3A then
+    if q12surf then
     begin
       Inc(PChar(Faces), SurfaceSize);
       PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge)
@@ -437,7 +443,7 @@ begin
     end;
     Surface1^.Source:=Self;
     Surface1^.NextF:=Nil;
-    if HullType<mjQ3A then
+    if q12surf then
     begin
       Surface1^.prvNbS:=Faces^.ledge_num;
       if Faces^.Plane_id >= cPlanes then
@@ -466,7 +472,7 @@ begin
     {TexInfo_id:=Faces^.TexInfo_id;}
 
     PChar(Dest):=PChar(Surface1)+TailleBaseSurface;
-    if HullType<mjQ3A then
+    if q12surf then
     for J:=1 to Faces^.ledge_num do
     begin
       NoEdge:=LEdge^;
@@ -532,39 +538,41 @@ begin
      Raise EErrorFmt(5635, [6]);
 
      { load texture infos }
-    if HullType<mjQ3A then
+    if q12surf then
     begin
       if Faces^.TexInfo_id >= cTexInfo then
-       begin
+      begin
         Inc(InvFaces);
        {if TexInfo_id = MaxInt then
          LastError:='Err Point Off Plane'
         else}
          LastError:='Err TexInfo_id';
         Continue;
-       end;
-      if HullType>=mjQ3A then
+      end;
+(*
+      if not q12surf then
         with PTexInfoQ3(TexInfo+Q3Faces^.TexInfo_id*SizeOf(TTexInfoQ3))^ do
         begin
           S:=CharToPas(texture);
           { get flags & contents }
         end
       else
-      if HullType>=mjQuake2 then
-       with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
+*)
+      if HullType=BspTypeQ2 then
+        with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
         begin
-         S:=CharToPas(texture);
-         BspVecs:=@vecs;
+          S:=CharToPas(texture);
+          BspVecs:=@vecs;
         end
       else
-       with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
+        with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
         begin
-         BspVecs:=@vecs;
-         if miptex>=TextureList.SubElements.Count then
+          BspVecs:=@vecs;
+          if miptex>=TextureList.SubElements.Count then
           begin
-           Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
+            Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
           end;
-         S:=TextureList.SubElements[miptex].Name;
+          S:=TextureList.SubElements[miptex].Name;
         end;
 
           (** Equations to solve :     with (s,s0)=vecs[0] and (t,t0)=vecs[1]
@@ -619,7 +627,7 @@ begin
 
     Face:=TFace.Create(IntToStr(I), Self);
     SubElements.Add(Face);
-    if HullType<mjQ3A then
+    if q12surf then
     begin
       if Faces^.side<>0 then
          with Face do
@@ -698,7 +706,7 @@ var
 begin
  if (FBsp=Nil) or (SurfaceList=Nil) then Exit;
 
- if FBsp.NeedObjectGameCode<mjQ3A then
+ if BspSurfaceType(FBsp.NeedObjectGameCode)=bspSurfQ12 then
  begin
    FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
    Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
