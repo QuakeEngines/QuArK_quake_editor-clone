@@ -2,7 +2,7 @@ title: Delphi coding
 author: tiglari
 
 At the minimum, there will have to be a gamecode for the game, defined
-in the file prog/setup.qrk.  Presently these are single-character alphanumerics
+in the source file prog/Setup.pas.  Presently these are single-character alphanumerics
 assigned on the basis of what kind of engine is used:
 <UL>
 <LI>1-9: Quake 1/HL</LI>
