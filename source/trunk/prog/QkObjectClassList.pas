@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/03/20 21:45:22  decker_dk
+Updated copyright-header
+
 Revision 1.1  2001/01/21 15:49:30  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 }
@@ -40,6 +43,9 @@ function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
 procedure ListFileExt(L: TStrings);
 procedure BuildFileExt(L: TStrings);
 
+var
+ QObjectClassList: TStringList = Nil;
+
  {------------------------}
 
 implementation
@@ -49,8 +55,6 @@ uses
  {$IFDEF Debug} MemTester, {$ENDIF}
  QkFileObjects, Quarkx;
 
-var
- QObjectClassList: TStringList = Nil;
 
  {------------------------}
 
