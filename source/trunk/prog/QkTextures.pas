@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/04/22 08:56:48  arigo
+Problems with texture sizes fixed
+
 Revision 1.9  2000/04/20 10:43:33  arigo
 JPeg writing fixes
 
@@ -662,118 +665,119 @@ begin
       finally Anim.Free; end;
      end;
     ProgresTravail;
-    if TexWad<>'' then
-     begin   { write a .wad file }
-      if TexWad<>'?' then  { Half-Life trick (related to 'GameNeedWad') }
-       begin
-        WriteTo:=OutputFile(TexWad);
-        if TexList.Count=0 then
-         {DeleteFile(WriteTo)}
-        else
-         begin
-          Q:=QWad.Create('tmpQuArK', Nil);
-          Q.AddRef(+1); try
-          for I:=0 to TexList.Count-1 do
-           Q.SousElements.Add(TexList[I]);
-          Q.EnregistrerDansFichier(rf_Default, WriteTo);
-          finally Q.AddRef(-1); end;
-         end;
-       end;
-     end
-    else
-     begin   { write several texture files (.wal, .m8, .swl, .tga...) }
-      DebutTravail(5453, TexList.Count); try
-      ShaderFile:=Nil; try
-      WriteTo:=OutputFile(Q2TexPath);
-      for I:=0 to TexList.Count-1 do
-       begin
-        Tex:=QPixelSet(TexList[I]);
-        if Tex is QShader then
-         begin  { group all shaders into a single file }
-          if ShaderFile=Nil then
-           begin
-            ShaderFile:=QShaderFile.Create('tmpQuArK', Nil);
-            ShaderFile.AddRef(+1);
-           end;
-          ShaderFile.SousElements.Add(Tex);
-         end
-        else  { write non-shader textures directly to the disk }
-         begin
-          if Copy(Tex.Name,1,1)=#255 then
-           begin
-            S:=Copy(Tex.Name,2,MaxInt);  { direct from disk }
-            { change the file extension if necessary, to match the actual file format }
-            if CompareText(Copy(S, Length(S)-Length(Tex.TypeInfo)+1, MaxInt), Tex.TypeInfo)<>0 then
-             S:=ChangeFileExt(S, Tex.TypeInfo);
-           end
-          else
-           begin
-            if Tex is QTextureFile then
-             S:=QTextureFile(Tex).GetTexName
-            else
-             S:=Tex.Name;
-            S:=Q2TexPath+S+Tex.TypeInfo;
-           end;
-          Tex.EnregistrerDansFichier(rf_Default, OutputFile(S));
-          {/mac: the waltrick is also needed for kingpin
-           which uses qpixelset and not qtexturefile}
-          if walTrick {and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0)} then
-           begin
-            Tex1:=Tex;
-            Tex:=QTexture2.Create(Tex.Name, Nil);
-            Tex.AddRef(+1); try
-            Tex.ConvertFrom(Tex1, ccAuto);   { conversion to .wal format }
-            Tex.EnregistrerDansFichier(rf_Default, OutputFile(ChangeFileExt(S, '.wal')));
-            finally Tex.AddRef(-1); end;
-            needColormap:=True;
-           end;
-         end;
-        ProgresTravail;
-       end;
-      with SetupGameSet.Specifics do
-       begin   { shaders stuff }
-        S:=Values['TextureShaders'];
-        if ShaderFile<>Nil then
-         begin  { write the shaders file }
-          if S='' then Raise InternalE('"TextureShaders" expected in Defaults.qrk');
-          ShaderFile.EnregistrerDansFichier(rf_Default, OutputFile(S));
-         end;
-        if S<>'' then   { if the current game supports shaders, write the shaderlist.txt }
-         begin
-          ShaderListFiles:=BuildQuakeCtxObjects(QInternal, 'ShaderFiles'); try
-          for I:=0 to ShaderListFiles.Count-1 do
-           begin
-            ShaderListFiles[I].Acces;
-            if (ShaderFile=Nil) and (ShaderListFiles[I].SousElements.Count>1) then
-             J:=1
-            else
-             J:=0;
-            Q:=ShaderListFiles[I].SousElements[J] as QFileObject;
-            Q.EnregistrerDansFichier(rf_Default, OutputFile(Q.Name+Q.TypeInfo));
-           end;
-          finally ShaderListFiles.Free; end; 
-         end;
-       end;
-      finally ShaderFile.AddRef(-1); end;
-      if needColormap then
-       begin
-        WriteTo:=SetupGameSet.Specifics.Values['Palette'];
-        if (Length(WriteTo)>1) and (WriteTo[1]=':') then
-         begin
-          Q:=QPcx.Create('', Nil);
-          Q.AddRef(+1); try
-          S:='Pal=';
-          SetLength(S, Length('Pal=')+SizeOf(TPaletteLmp));
-          Move(GameBuffer(mjAny)^.PaletteLmp, PChar(S)[Length('Pal=')], SizeOf(TPaletteLmp));
-          Q.Specifics.Add(S);
-          Q.SetFloatsSpec('Size', DummySize);
-          Q.Specifics.Values['Image1']:=#0#0#0#0;
-          Q.EnregistrerDansFichier(rf_Default, OutputFile(Copy(WriteTo, 2, MaxInt)));
-          finally Q.AddRef(-1); end;
-         end;
-       end;
-      finally FinTravail; end;
-     end;
+    if L.Count>0 then    { do not attempt to write any texture-related file if no texture is to be written }
+     if TexWad<>'' then
+      begin   { write a .wad file }
+       if TexWad<>'?' then  { Half-Life trick (related to 'GameNeedWad') }
+        begin
+         WriteTo:=OutputFile(TexWad);
+         if TexList.Count=0 then
+          {DeleteFile(WriteTo)}
+         else
+          begin
+           Q:=QWad.Create('tmpQuArK', Nil);
+           Q.AddRef(+1); try
+           for I:=0 to TexList.Count-1 do
+            Q.SousElements.Add(TexList[I]);
+           Q.EnregistrerDansFichier(rf_Default, WriteTo);
+           finally Q.AddRef(-1); end;
+          end;
+        end;
+      end
+     else
+      begin   { write several texture files (.wal, .m8, .swl, .tga...) }
+       DebutTravail(5453, TexList.Count); try
+       ShaderFile:=Nil; try
+       WriteTo:=OutputFile(Q2TexPath);
+       for I:=0 to TexList.Count-1 do
+        begin
+         Tex:=QPixelSet(TexList[I]);
+         if Tex is QShader then
+          begin  { group all shaders into a single file }
+           if ShaderFile=Nil then
+            begin
+             ShaderFile:=QShaderFile.Create('tmpQuArK', Nil);
+             ShaderFile.AddRef(+1);
+            end;
+           ShaderFile.SousElements.Add(Tex);
+          end
+         else  { write non-shader textures directly to the disk }
+          begin
+           if Copy(Tex.Name,1,1)=#255 then
+            begin
+             S:=Copy(Tex.Name,2,MaxInt);  { direct from disk }
+             { change the file extension if necessary, to match the actual file format }
+             if CompareText(Copy(S, Length(S)-Length(Tex.TypeInfo)+1, MaxInt), Tex.TypeInfo)<>0 then
+              S:=ChangeFileExt(S, Tex.TypeInfo);
+            end
+           else
+            begin
+             if Tex is QTextureFile then
+              S:=QTextureFile(Tex).GetTexName
+             else
+              S:=Tex.Name;
+             S:=Q2TexPath+S+Tex.TypeInfo;
+            end;
+           Tex.EnregistrerDansFichier(rf_Default, OutputFile(S));
+           {/mac: the waltrick is also needed for kingpin
+            which uses qpixelset and not qtexturefile}
+           if walTrick {and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0)} then
+            begin
+             Tex1:=Tex;
+             Tex:=QTexture2.Create(Tex.Name, Nil);
+             Tex.AddRef(+1); try
+             Tex.ConvertFrom(Tex1, ccAuto);   { conversion to .wal format }
+             Tex.EnregistrerDansFichier(rf_Default, OutputFile(ChangeFileExt(S, '.wal')));
+             finally Tex.AddRef(-1); end;
+             needColormap:=True;
+            end;
+          end;
+         ProgresTravail;
+        end;
+       with SetupGameSet.Specifics do
+        begin   { shaders stuff }
+         S:=Values['TextureShaders'];
+         if ShaderFile<>Nil then
+          begin  { write the shaders file }
+           if S='' then Raise InternalE('"TextureShaders" expected in Defaults.qrk');
+           ShaderFile.EnregistrerDansFichier(rf_Default, OutputFile(S));
+          end;
+         if S<>'' then   { if the current game supports shaders, write the shaderlist.txt }
+          begin
+           ShaderListFiles:=BuildQuakeCtxObjects(QInternal, 'ShaderFiles'); try
+           for I:=0 to ShaderListFiles.Count-1 do
+            begin
+             ShaderListFiles[I].Acces;
+             if (ShaderFile=Nil) and (ShaderListFiles[I].SousElements.Count>1) then
+              J:=1
+             else
+              J:=0;
+             Q:=ShaderListFiles[I].SousElements[J] as QFileObject;
+             Q.EnregistrerDansFichier(rf_Default, OutputFile(Q.Name+Q.TypeInfo));
+            end;
+           finally ShaderListFiles.Free; end;
+          end;
+        end;
+       finally ShaderFile.AddRef(-1); end;
+       if needColormap then
+        begin
+         WriteTo:=SetupGameSet.Specifics.Values['Palette'];
+         if (Length(WriteTo)>1) and (WriteTo[1]=':') then
+          begin
+           Q:=QPcx.Create('', Nil);
+           Q.AddRef(+1); try
+           S:='Pal=';
+           SetLength(S, Length('Pal=')+SizeOf(TPaletteLmp));
+           Move(GameBuffer(mjAny)^.PaletteLmp, PChar(S)[Length('Pal=')], SizeOf(TPaletteLmp));
+           Q.Specifics.Add(S);
+           Q.SetFloatsSpec('Size', DummySize);
+           Q.Specifics.Values['Image1']:=#0#0#0#0;
+           Q.EnregistrerDansFichier(rf_Default, OutputFile(Copy(WriteTo, 2, MaxInt)));
+           finally Q.AddRef(-1); end;
+          end;
+        end;
+       finally FinTravail; end;
+      end;
    end;
   finally FinTravail; end;
  except

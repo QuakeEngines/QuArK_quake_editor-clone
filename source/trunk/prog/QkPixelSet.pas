@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/04/22 08:56:48  arigo
+Problems with texture sizes fixed
+
 Revision 1.5  2000/04/18 18:47:57  arigo
 Quake 3 : auto export shaders
 
@@ -39,7 +42,7 @@ unit QkPixelSet;
 
 interface
 
-uses SysUtils, Windows, Classes, Game, Python, QkObjects, PyObjects,
+uses SysUtils, Windows, Classes, Graphics, Game, Python, QkObjects, PyObjects,
      Setup, QkFileObjects;
 
 type
@@ -76,6 +79,7 @@ type
                          procedure AllocPalette;
                          procedure FlipBottomUp;
                          function IsGamePalette(Game: Char) : Boolean;
+                         function GetBitmapImage : TBitmap;
                         end;
 
 const
@@ -447,6 +451,26 @@ begin
   if Pal1<>0 then
    SelectPalette(DC, Pal1, False);
   NewPSD.ReleasePalette(Pal0);
+  NewPSD.Done;
+ end;
+end;
+
+function TPixelSetDescription.GetBitmapImage : TBitmap;
+var
+ BmpInfo: TBitmapInfo256;
+ BitmapInfo: PBitmapInfo;
+ NewPSD: TPixelSetDescription;
+ DC: HDC;
+begin
+ NewPSD:=PSDToDIB(Self, True);
+ DC:=GetDC(GetDesktopWindow);
+ try
+  BitmapInfo:=PBitmapInfo(NewPSD.GetBitmapInfo(BmpInfo, Nil));
+  Result:=TBitmap.Create;
+  Result.Handle:=CreateDIBitmap(DC, BitmapInfo^.bmiHeader, CBM_INIT, NewPSD.Data,
+                                BitmapInfo^, dib_RGB_Colors);
+ finally
+  ReleaseDC(GetDesktopWindow, DC);
   NewPSD.Done;
  end;
 end;

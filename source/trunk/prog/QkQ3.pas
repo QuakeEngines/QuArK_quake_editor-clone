@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/04/22 08:54:23  arigo
+Shader stage attributes were not written correctly
+
 Revision 1.5  2000/04/18 18:47:57  arigo
 Quake 3 : auto export shaders
 
@@ -151,12 +154,22 @@ begin
 end;
 
 function QShader.DefaultImage : QPixelSet;
+const
+ EditorImageSpec = 'qer_editorimage';
 var
  Q: QObject;
  I: Integer;
+ S: String;
 begin
-  { returns the first valid stage image }
  Acces;
+  { looks for 'qer_editorimage' }
+ S:=Specifics.Values[EditorImageSpec];
+ if S<>'' then
+  begin
+   Result:=NeedGameFile(S) as QPixelSet;
+   Exit;
+  end;
+  { returns the first valid stage image }
  for I:=0 to SousElements.Count-1 do
   begin
    Q:=SousElements[I];
@@ -187,21 +200,25 @@ end;*)
 
 function QShader.DumpString : String;
 var
- I, J, K: Integer;
- Spec: String;
+ I, K: Integer;
  Q: QObject;
+
+  procedure DumpSpec(const Spec, Indent: String);
+  var
+   J: Integer;
+  begin
+   J:=Pos('=', Spec);
+     { ignore specifics that cannot be written as text }
+   if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
+    Result:=Result + Indent + Copy(Spec,1,J-1) + TrimRight(' ' + Copy(Spec,J+1,MaxInt)) + #13#10;
+      { dump the specific as a shader or stage attribute }
+  end;
+
 begin
  Result:=Name + #13#10'{'#13#10;
  Acces;
  for I:=0 to Specifics.Count-1 do  { attributes }
-  begin
-   Spec:=Specifics[I];
-   J:=Pos('=', Spec);
-     { ignore specifics that cannot be written as text }
-   if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
-    { dump the specific as a shader attribute }
-    Result:=Result + chr(vk_Tab) + Copy(Spec,1,J-1) + ' ' + Copy(Spec,J+1,MaxInt) + #13#10;
-  end;
+  DumpSpec(Specifics[I], chr(vk_Tab));
  for K:=0 to SousElements.Count-1 do  { stages }
   begin
    Q:=SousElements[K];
@@ -212,14 +229,7 @@ begin
    if Q.Name <> LoadStr1(5699) then
     Result:=Result + chr(vk_Tab) + chr(vk_Tab) + 'map ' + Q.Name + #13#10;
    for I:=0 to Q.Specifics.Count-1 do  { stage attributes }
-    begin
-     Spec:=Q.Specifics[I];
-     J:=Pos('=', Spec);
-       { ignore specifics that cannot be written as text }
-     if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
-      { dump the specific as a stage attribute }
-      Result:=Result + chr(vk_Tab) + chr(vk_Tab) + Copy(Spec,1,J-1) + ' ' + Copy(Spec,J+1,MaxInt) + #13#10;
-    end;
+    DumpSpec(Q.Specifics[I], chr(vk_Tab) + chr(vk_Tab));
     { stage end }
    Result:=Result + chr(vk_Tab) + '}'#13#10;
   end;
@@ -405,10 +415,14 @@ var
    SetString(Spec, P1, Source-P1);
    while Source^ in [' ', Chr(vk_Tab)] do
     Inc(Source);
-   if Source^ in [#13, #10, #0] then
-    Target.Specifics.Values[Spec]:=' '   { no value explicitely set }
-   else
-    Target.Specifics.Values[Spec]:=ReadLine;
+
+    { FIXME: we insert the attribute directly into the object's specifics/args list.
+      It will create duplicated specifics and specifics with no corresponding argument.
+      In any of these two situations, code that edit the object might mess things up.
+      TO DO: when shaders editing is implemented, ensure all the way that we can edit
+      a "raw" specifics/args list, without disturbing the order of the specifics,
+      without removing empty ones, and supporting duplicated specifics. }
+   Target.Specifics.Add(Spec+'='+ReadLine);
   end;
 
 begin
