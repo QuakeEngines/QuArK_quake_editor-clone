@@ -24,6 +24,7 @@ import quarkx
 import quarkpy.mapmenus
 import quarkpy.mapcommands
 import quarkpy.maphandles
+import mapmadsel
 
 from quarkpy.maputils import *
 
@@ -46,7 +47,11 @@ def AlignClick(m):
     editor=mapeditor()
     if editor is None: return
     sel=editor.layout.explorer.sellist
-    box = quarkx.boundingboxof(sel)
+    marked = mapmadsel.getstashed(editor)
+    if marked is None:
+       box = quarkx.boundingboxof(sel)
+    else:
+       box = quarkx.boundingboxof([marked])
     def shift(item,box=box,mode=m.mode):
         ibox=quarkx.boundingboxof([item])
         if mode in ["up","east","north"]:
@@ -94,12 +99,19 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
         menswap.state=qmenu.normal
     menswap.state=qmenu.normal
 
-    alignhint = "|Align items in selection along their bounding box edges"
+    alignhint = "|Align items in selection along their bounding box edges, or along the edges of a marked object (RMB|Navigate Tree|<item>\Mark)."
+    menalign.state=qmenu.normal
     if len(sel)<2:
-        alignhint=alignhint+"\n\n This menu item requires that twoor more items be selected; you don't have enough."
-        menalign.state=qmenu.disabled
-    else:
-        menalign.state=qmenu.normal
+        marked=mapmadsel.getstashed(editor)
+        if marked is None:
+            alignhint=alignhint+"\n\nThis menu item requires that two or more items be selected, or that something be marked; neither of these are true."
+            menalign.state=qmenu.disabled
+        elif len(sel)<1:
+            alignhhint=alignhint+"\n\nNothing to align."
+            menaligned.state=qmenu.disabled
+        elif sel[0] is marked:
+            alignhint=alignhint+"\n\nNo point in aligning something to itself (the selected item is also the marked one)."
+            menalign.state=qmenu.disabled
     menalign.hint=alignhint
 
 quarkpy.mapcommands.onclick = commandsclick
@@ -110,4 +122,7 @@ quarkpy.mapcommands.items.append(menswap)
 quarkpy.mapcommands.items.append(menalign)
 
 # $Log$
+# Revision 1.1  2001/06/07 21:30:15  tiglari
+# swap & align (suggestions by Alan Donald (swap) & quantum_red (align)
+#
 #
