@@ -1,8 +1,9 @@
 title: Information Base Syntax
 author: Armin Rigo / tiglari / Decker
 
-All <tt>.txt</tt> files in the infobase are formatted as follow: First, a list of keyword-value pairs, ended with a blank line, and
-followed by the text itself. For example:
+All <tt>.txt</tt> files in the infobase are formatted as follow: First, a list
+of keyword-value pairs, ended with a blank line, and followed by the text
+itself. For example:
 
 <code>
 <b>title:</b> <i>This is the title of what this file contains.</i>
@@ -15,16 +16,19 @@ followed by the text itself. For example:
 <i>The text follows the blank line.</i>
 </code>
 
-The most common keywords are given in this example. Notice that <tt>subdir</tt> and <tt>desc</tt> only make sense in the file
-<tt>index.txt</tt>, while <tt>author</tt> is only used in the opposite case. Other keywords might be parsed in the future. Also
-note that all file names should be lowercase.
+The most common keywords are given in this example. Notice that <tt>subdir</tt>
+and <tt>desc</tt> only make sense in the file <tt>index.txt</tt>, while
+<tt>author</tt> is only used in the opposite case. Other keywords might be
+parsed in the future. Also note that all file names should be lowercase.
 
-The text itself is formatted paragraph-by-paragraph, with at least one blank line between paragraphs (a single end-of-line is
-not considered as separating two paragraphs). Do not use &lt;P&gt; and &lt;/P&gt; tags, as these will be automatically applied.
-If <tt>build.py</tt> finds any, it will complain.
+The text itself is formatted paragraph-by-paragraph, with at least one blank
+line between paragraphs (a single end-of-line is not considered as separating
+two paragraphs). Do not use &lt;P&gt; and &lt;/P&gt; tags, as these will be
+automatically applied. If <tt>build.py</tt> finds any, it will complain.
 
-You are able to use basic HTML tags within the text (except the previously mentioned), but you must ensure that tags are not
-split between 2 or more lines, as <tt>build.py</tt> then can't find the end of the tag.
+You are able to use basic HTML tags within the text (except the previously
+mentioned), but you must ensure that tags are not split between 2 or more
+lines, as <tt>build.py</tt> then can't find the end of the tag.
 
 For instance this is illegal:
 
@@ -45,32 +49,46 @@ Some special tags, that <tt>build.py</tt> checks for:
 <dt>&lt;code&gt;<br>
     <i>text to appear in code-format</i><br>
     &lt;/code&gt;
-  <dd>To format code examples, put it within these tags. Notice that the &lt; (less than) character must be written with the
-      HTML-code <tt>&<!-- -->lt;</tt> else <tt>build.py</tt> might complain about not finding the ending &gt; (greater than)
-      character.
+  <dd>To format code examples, put it within these tags. Notice that the &lt;
+      (less than) character must be written with the HTML-code <tt>&<!--
+      -->lt;</tt> else <tt>build.py</tt> might complain about not finding the
+      ending &gt; (greater than) character.
 <dt>&lt;ref&gt; <i>link</i> &lt;/ref&gt;<br>
     &lt;ref&gt; <i>link</i> \ <i>link_text</i> &lt;/ref&gt;
-  <dd>The <i>link</i> is supposed to be a path & filename to another file of the InfoBase directory, relative to the root.
-      If you want something other than the section title to appear in the text, separate it from the filename with '\'.
-  <br>Notice that the ending &lt;/ref&gt;-tag must be on the same line as the start-tag!
+  <dd>The <i>link</i> is supposed to be a path & filename to another file of
+      the InfoBase directory, relative to the root. If you want something other
+      than the section title to appear in the text, separate it from the
+      filename with '\'.
+  <br>Notice that the ending &lt;/ref&gt;-tag must be on the same line as the
+      start-tag!
 <dt>&lt;img <i>arg=value</i>&gt; <i>image</i> &lt;/img&gt;
-  <dd>You can have additional arguments in the &lt;img&gt;-tag, just as in normal HTML. The <i>image</i> must point to a
-      <tt>.GIF</tt>, <tt>.JPG</tt> or <tt>.PNG</tt> image-file within the same directory of the <tt>.txt</tt> file.
-  <br>Notice that the ending &lt;/img&gt;-tag must be on the same line as the start-tag!
+  <dd>You can have additional arguments in the &lt;img&gt;-tag, just as in
+      normal HTML. The <i>image</i> must point to a <tt>.GIF</tt>,
+      <tt>.JPG</tt> or <tt>.PNG</tt> image-file within the same directory of
+      the <tt>.txt</tt> file.
+  <br>Notice that the ending &lt;/img&gt;-tag must be on the same line as the
+      start-tag!
 <dt>&lt;zip&gt; <i>file</i> &lt;/zip&gt;
-  <dd>The <i>file</i> is taken as the name of an `archive'.  Archives are treated in a special way due to
-      the disinclination of web-hosting to allow direct downloading of .zip
-      files from ordinary web-pages. Archives are expected to appear in the
-      subfolder <tt>zips</tt>.  How they are processed depends on whether
-      <TT>build.py</TT> is launched with the command-line argument
-      <tt>-local</tt> or not.  If it is, then the archive file is copied
-      into the a subfolder <tt>zips</tt> in <tt>output</tt>, and a suitable
-      link generated.  If it isn't (the default), then no copying happens,
-      and the link is prefixed by the value of the string <tt>ZIPLOC</tt>
-      specified at the top of <tt>format.txt</tt>.  The archives are then
-      to be uploaded to the appropriate server independently of the operations
-      of this script (but they should all be sitting in the <tt>zips</tt> folder).
-  <br>Notice that the ending &lt;/zip&gt;-tag must be on the same line as the start-tag!
+  <dd>The <i>file</i> is taken as the name of an `archive'.  Archives are
+      treated in a special way due to the disinclination of web-hosting to
+      allow direct downloading of .zip files from ordinary web-pages. Archives
+      are expected to appear in the subfolder <tt>zips</tt>.  How they are
+      processed depends on whether <TT>build.py</TT> is launched with the
+      command-line argument <tt>-local</tt> or not.  If it is, then the archive
+      file is copied into the a subfolder <tt>zips</tt> in <tt>output</tt>, and
+      a suitable link generated.  If it isn't (the default), then no copying
+      happens, and the link is prefixed by the value of the string
+      <tt>ZIPLOC</tt> specified at the top of <tt>format.txt</tt>.  The
+      archives are then to be uploaded to the appropriate server independently
+      of the operations of this script (but they should all be sitting in the
+      <tt>zips</tt> folder).
+  <br>Notice that the ending &lt;/zip&gt;-tag must be on the same line as the
+      start-tag!
+<dt>&lt;act&gt; <i>1st menuaction</i> | <i>2nd menuaction</i> | <i>etc.</i> &lt;/act&gt;
+  <dd>To indicate a series of menu-actions, the user should perform to activate
+      or execute something, you can use these tags.
+  <br>Notice that the ending &lt;/act&gt;-tag must be on the same line as the
+      start-tag!
 </dl>
 
 List of examples:
@@ -132,6 +150,14 @@ for i in range(0,9):
 &lt;img align=right border=2&gt; quark.gif &lt;/img&gt;
 </td><td>
 <img align=right border=2> quark.gif </img>
+</td></tr>
+
+<tr><td nowrap>
+To set the texture-flags for a brush, mark that brush in the<br>
+2D-view and &lt;act&gt; RMB|Texture flags | Flags... &lt;/act&gt;.
+</td><td>
+To set the texture-flags for a brush, mark that brush in the
+2D-view and <act> RMB|Texture flags | Flags... </act>.
 </td></tr>
 
 </table>
