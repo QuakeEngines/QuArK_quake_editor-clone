@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2005/03/14 22:43:33  alexander
+textures with alpha channel are rendered transparent in open gl
+
 Revision 1.25  2005/01/11 01:58:56  alexander
 some indentation to assist when debugging, no semantic change
 
@@ -1670,7 +1673,11 @@ begin
   try
     if B>0 then
     begin
-      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
+
+      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_BGR, GL_UNSIGNED_BYTE, Bits^);
+
+// not needed ! we live in BGR capable open gl driver times       
+(*      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
       {$IFDEF DebugGLErr} DebugOpenGL(999, '', []); {$ENDIF}
 
       { we have to swap the bytes (RGB --> BGR)...}
@@ -1706,8 +1713,8 @@ begin
        pop edi
        pop esi
       end;
+*)
     end;
-
     L:=(SX-bmiHeader.biWidth) div 2;
     T:=(SY-bmiHeader.biHeight) div 2;
     R:=L+bmiHeader.biWidth;
