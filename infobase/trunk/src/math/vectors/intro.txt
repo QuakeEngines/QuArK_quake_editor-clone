@@ -10,21 +10,21 @@ such as 2 units forward, 3 to the left and 1 up, giving
 the vector <2,3,1>, or quarkx.vect(2,4,1) in QuArK
 Python programming.  We'll call the relationships between
 points 'geometric' vectors, the sequences of numbers
-'algebraic' ones (this isn't standard terminology, but I
+'sequence' vectors (this isn't standard terminology, but I
 find it useful).
-Since only the algebraic vectors can be manipulated
+Since only the sequence vectors can be manipulated
 by computer programs, in a sense they are the only ones
 that are relevant, but on the other hand what the programs
 are doing is helping people to build their spatial
 imaginings, so I personally think it's helpful to have
-a solid grasp of the relationship between the algebraic
+a solid grasp of the relationship between the sequence
 vectors and the geometrical ideas they represent.
 
 Geometrical vectors can be 'added'
 in the sense of performing one displacement after another,
 and also multiplied by numbers, in the sense of performing
 the displacement a (possibly fractional or irrational)
-number of times.  Similarly, the algebraic
+number of times.  Similarly, the sequence
 vectors can be added by adding the numbers in the
 corresponding positions, or multiplying all the numbers
 by the same number:
@@ -32,7 +32,7 @@ by the same number:
 <<>x, y, z> + <<>u, v, w> = <<>x+u, y+v, z+w>
 a*<<>x, y, z> = <a*x, a*y, a*z>
 </code>
-In jargon, for algebraic vectors, addition of vectors and
+In jargon, for sequence vectors, addition of vectors and
 multiplication of a
 vector by a 'scalar' (an ordinary number, in context where
 vectors are the focus of attention) are defined
@@ -50,7 +50,7 @@ agrees with our intuitive conceptions of how addition of
 displacements and the multiplication of a displacement
 by a number should work, and if you crank through the
 algebra you should be able to see that all of the standard
-algebraic laws such as commutative and associative
+sequence laws such as commutative and associative
 work, for those combinations to which they are applicable.
 For example:
 <code>
@@ -85,17 +85,17 @@ floating around:
 of any representation, by number-sequences or otherwise, with the conceptions
 of addition and multiplication.
 
-<LI> 'Algebraic vectors':  sequences of numbers (in this case sequences
+<LI> 'Sequence vectors':  sequences of numbers (in this case sequences
 of length 3, tho there are other possibilities), with the componentwise
 addition and scalar multiplication.
 
 <LI> Geometric points in space: relationships between these give geometric
-vectors, which can be represented by algebraic ones given some further
+vectors, which can be represented by sequence vectors given some further
 arrangements, which we'll be looking ito shortly.
 </UL>
 
 To get a geometric vector from a point, we need an origin
-point; how do we get an algebraic vector from a geometric one?
+point; how do we get an sequence vector from a geometric one?
 What we need is three vectors of length one, all perpendicular
 to each other, taken in a definite order.  This is called
 an 'orthormal basis', 'ortho-' meaning perpendicular, 'normal'
@@ -109,19 +109,19 @@ of numbers indicating how far you go in the direction of each
 vector of the basis, taken in order.
 
 It's an essential point that the representation of geometrical
-vectors by algebraic ones has an arbitrary aspect: given a
+vectors by sequence vectors has an arbitrary aspect: given a
 different choice of basis, there will be different numbers.
 Suppose for example we have an orthonormal basis
 <b>i</b>, <b>j</b> and <b>k</b>, and replace <b>j</b> with
--<b>j</b>.  What will happen to the algebraic vector
+-<b>j</b>.  What will happen to the sequence vector
 representing a given geometric one?
 
-To represent a geometric vector with an algebraic one (in
+To represent a geometric vector with an sequence vector(in
 the standard way; there are some other possibilities), we
 need an orthonormal basis, but we don't need an origin.
-But to represent a point as an algebraic vector, both an
+But to represent a point as an sequence vector, both an
 origin and an orthonormal basis is required: the origin lets
 us represent a point with a (geometric) vector, and the
-basis lets us represent the geometric vector with an algebraic
+basis lets us represent the geometric vector with an sequence
 one.  We find out more about this in the next section.
 an origin with an orthonormal basis is a 'coordinate system'.
