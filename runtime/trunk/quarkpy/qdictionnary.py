@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.3snap 2002feb24",
+    0: "QuArK 6.3snap 2002feb28",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -909,6 +909,12 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.47  2002/02/24 13:45:29  decker_dk
+#Update version to "QuArK 6.3snap 2002feb24"
+#Added #5181 and #810 for .PNG-images support.
+#Added #5182 and #811 for Tribes 2 .VL2-files support.
+#Added #5183 and #812 for Tribes 2 .CS-files support.
+#
 #Revision 1.46  2002/01/06 10:37:04  decker_dk
 #update version to "QuArK 6.3snap 2002jan06"
 #

@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.173  2002/02/24 13:44:24  decker_dk
+//Update version to "QuArK 6.3snap 2002feb24"
+//Added MOHAA (Medal Of Honor:Allied Assault)
+//
 //Revision 1.172  2002/02/05 18:33:48  decker_dk
 //Updated the RTCW config, so it works with GTKRadiant's Q3MAP.EXE program.
 //
@@ -563,7 +567,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap 2002feb24"
+      Version = "QuArK 6.3snap 2002feb28"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
