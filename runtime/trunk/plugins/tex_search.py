@@ -60,6 +60,7 @@ class TextureSearchDlg(quarkpy.qmacro.dialogbox):
                      {
                          Txt = "Search for:"
                          Typ = "E"
+                         Hint= "Enter full or partial texture name" $0D " Results appear in 'searched textures' folder at top of toolbox"}
                      }
                      Sep: = { Typ = "S" Txt = ""}
                      Search:py = { Txt = "" }
