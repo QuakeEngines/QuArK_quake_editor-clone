@@ -1,17 +1,19 @@
 QQRKSRC1
-// This file has been written by QuArK Version 5.10
+// This file has been written by QuArK quarksnapshot_20000704
 // It's the text version of file: UserData SOF.qrk
 
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2000/06/05 00:16:31  alexander
+//removed qcsg entries from SoF
+//
 //Revision 1.1  2000/05/04 23:59:57  alexander
 //added: preliminary game files for Soldier of Fortune
 //
-
+ 
 {
   Description = "Custom configuration file for SOF"
-
   MapObjPanel.qrk =
   {
     cube: =
@@ -59,14 +61,12 @@ QQRKSRC1
       }
     }
   }
-
   Menu.qrk =
   {
     item: =
     {
-      Txt = "&GO ! (textures+build+SOF)"
+      Txt = "&GO ! (build+SOF)"
       Shortcut = "Ctrl+R"
-      Textures = "1"
       QBSP1 = "1"
       VIS1 = "1"
       LIGHT1 = "1"
@@ -77,7 +77,6 @@ QQRKSRC1
     {
       Txt = "Quic&kGO ! (no VIS, fast LIGHT)"
       Shortcut = "Ctrl+K"
-      Textures = "1"
       QBSP1 = "1"
       LIGHT1 = "1"
       RunGame = "1"
@@ -87,7 +86,6 @@ QQRKSRC1
       Txt = "QuickGO on &selection only"
       Shortcut = "Ctrl+P"
       SelOnly = "1"
-      Textures = "1"
       QBSP1 = "1"
       LIGHT1 = "1"
       RunGame = "1"
@@ -95,11 +93,6 @@ QQRKSRC1
     item: =
     {
       Txt = "-"
-    }
-    item: =
-    {
-      Txt = "&Prepare used textures"
-      Textures = "1"
     }
     item: =
     {
