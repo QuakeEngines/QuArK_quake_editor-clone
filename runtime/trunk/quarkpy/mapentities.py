@@ -47,9 +47,9 @@ def ObjectOrigin(o):
 
 
 def ObjectCustomOrigin(o):
-    if o.type=="g":
+    if o.type==":g":
         for item in o.subitems:
-            if item["macro"]=="dup origin":
+            if item.type==":d" and item["macro"]=="dup origin":
                 return item.origin
     return ObjectOrigin(o)
 
@@ -628,6 +628,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.24  2001/03/21 21:19:08  tiglari
+#custom origin (center for groups) duplicator support
+#
 #Revision 1.23  2001/02/07 18:40:47  aiv
 #bezier texture vertice page started.
 #
