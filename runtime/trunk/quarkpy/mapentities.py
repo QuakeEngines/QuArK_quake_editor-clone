@@ -363,7 +363,7 @@ class BezierType(EntityManager):
     "Bezier Patches"
 
     # tiglari
-    def menu(o, editor):
+    def menubegin(o, editor):
         import mapmenus
         import mapbtns
 
@@ -580,6 +580,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2000/06/04 03:22:28  tiglari
+#texture choice item for b2 menu
+#
 #Revision 1.14  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
