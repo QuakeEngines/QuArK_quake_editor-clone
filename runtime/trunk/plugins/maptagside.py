@@ -951,6 +951,11 @@ def AlignTexClick(m):
   if editor is None: return
   side = sideof(m, editor)
   tagged = gettagged(editor)
+  try:
+      if m.mirror:
+          tagged=tagged.copy()
+          tagged.swapsides()
+  except:  pass
   editor.invalidateviews()
   ActionString = "wrap texture from tagged"
   undo = quarkx.action()
@@ -1336,6 +1341,7 @@ gluetext = "Moves & aligns this side to the tagged one"
 gluepttext = "Moves this side to the tagged point"
 
 aligntext = "|Copies the texture from the tagged face to this one, wrapping around a shared edge with proper alignment.\n\nThis is only really supposed work when the faces abutt at an edge, although it sometimes works more generally."
+mirroraligntext = "|Like aligntex, but wraps from a mirror-image of the face.\n\nUseful for aligning textures with bezier curves from the shape-generators"
 wraptext = "|Wraps from tagged, around pillar in direction of selected, scaling to eliminate seams.\n\nWon't work if the edges to be wrapped around aren't all paralell, and scales texture minimally to fit.  `preserve aspect ration' option controls whether one or both texture dimensions are scaled.\n\n  Beta Version"
 
 aspecttext = "|If checked, aspect ratio of textures is preserved when texture is scaled wrapping around multiple sides (pillar and multi-wrap).\n\n Click to toggle check."
@@ -1372,6 +1378,7 @@ wraptaggedtext = "|Wraps texture from selected side, which is in a chain of tagg
 def wrappopup(o, tagged):
   editor = mapeditor()
   aligntex = gluemenuitem("&From tagged", AlignTexClick, o, aligntext)
+  mirrortex = gluemenuitem("From tagged &mirror", AlignTexClick, o, mirroraligntext)
   pillarwrap = gluemenuitem("&Around pillar", PillarWrapClick, o, wraptext)
   wraptagged = gluemenuitem("A&cross tagged", TaggedWrapClick, o, wraptaggedtext)
   if tagged != None:
@@ -1379,10 +1386,14 @@ def wrappopup(o, tagged):
   else:
     pillarwrap.state = qmenu.disabled
   aligntexstate(aligntex, tagged, o)
+  aligntexstate(mirrortex, tagged, o)
   if aligntex.state == qmenu.normal:
     aligntex.state = qmenu.default
+  if mirrortex.state == qmenu.normal:
+    mirrortex.mirror=1
   wraptaggedstate(wraptagged, o)
   list = [aligntex,
+          mirrortex,
 #          projexttex(editor,o),
           pillarwrap,
           wraptagged,
@@ -1876,6 +1887,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2000/07/29 02:07:57  tiglari
+#minor internal fiddles
+#
 #Revision 1.8  2000/07/25 15:55:24  alexander
 #fixed: right clicking in the background python crash
 #
