@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/01/28 03:31:55  tiglari
+Shaders prefix with $ in display window
+
 Revision 1.18  2001/01/21 15:47:36  decker_dk
 Now possible to extract textures from Half-Life .BSP files, just make sure you've first selected Half-Life as
 gamemode in QuArK explorer, and likevise for Quake-1 if extracting from Quake-1 .BSP files.
@@ -842,9 +845,11 @@ begin
 
        { read all textures from the loop }
       BaseImage:=ImageList1.Count;
-      TextureTitle:=QTexture(TexLoop[0]).Name;
+      TextureTitle:=QTexture(TexLoop[0]).Name + #13 + ' ';
+
       if QTexture(TexLoop[0]).Specifics.Values['shader']='1' then
-        TextureTitle:='$'+TextureTitle;
+        TextureTitle:=TextureTitle + '(shader)';
+
       SelectNow:=False;
       for J:=0 to TexLoop.Count-1 do
       begin
@@ -869,10 +874,10 @@ begin
           begin
             case Reduction of
              0: ;
-             1: TextureTitle:=TextureTitle + '  (½)';
-             2: TextureTitle:=TextureTitle + '  (¼)';
+             1: TextureTitle:=TextureTitle + ' (½)';
+             2: TextureTitle:=TextureTitle + ' (¼)';
             else
-                TextureTitle:=TextureTitle + Format('  (1/%d)', [1 shl Reduction]);
+                TextureTitle:=TextureTitle + Format(' (1/%d)', [1 shl Reduction]);
             end;
           end;
 
@@ -939,15 +944,10 @@ begin
         SelectNow:=SelectNow or (Q=SelectThis);
       end;
 
-       { add the list view item }
       if TexLoop.Count>1 then
         TextureTitle:=TextureTitle+' × '+IntToStr(TexLoop.Count);
-   (*
-   {DECKER-begin - How can we detect that this "texture" is a shader?}
-      if Q is QShader then
-       TextureTitle:=TextureTitle+Chr(13)+'Shader';
-   {DECKER-end}
-   *)
+
+      { add the list view item }
       Q:=QObject(TexLoop[0]);
       Item:=ListView1.Items.Add;
       {$IFDEF Debug}
