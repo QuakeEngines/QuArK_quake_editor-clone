@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/03/20 21:34:49  decker_dk
+Updated copyright-header
 }
 
 unit PyMapView;
@@ -1067,24 +1069,24 @@ begin
  if MapViewProj=Nil then
   begin
    Result:=False;
-   Info.Clic:={Origine}OriginVectorZero;
-   Info.Clic2:={Origine}OriginVectorZero;
+   g_DrawInfo.Clic:={Origine}OriginVectorZero;
+   g_DrawInfo.Clic2:={Origine}OriginVectorZero;
   end
  else
   begin
    CCoord:=MapViewProj;
-   Pt.x:=Info.X;
-   Pt.y:=Info.Y;
+   Pt.x:=g_DrawInfo.X;
+   Pt.y:=g_DrawInfo.Y;
    Pt.oow:=CCoord.MinDistance;
-   Info.Clic:=CCoord.Espace(Pt);
+   g_DrawInfo.Clic:=CCoord.Espace(Pt);
    Pt.oow:=CCoord.MaxDistance;
    if CCoord.NearerThan(CCoord.MaxDistance, CCoord.MinDistance) then
     begin
-     Info.Clic2:=Info.Clic;
-     Info.Clic:=CCoord.Espace(Pt);
+     g_DrawInfo.Clic2:=g_DrawInfo.Clic;
+     g_DrawInfo.Clic:=CCoord.Espace(Pt);
     end
    else
-    Info.Clic2:=CCoord.Espace(Pt);
+    g_DrawInfo.Clic2:=CCoord.Espace(Pt);
    Result:=True;
   end;
 end;
@@ -1098,7 +1100,7 @@ end;
 
 function TPyMapView.MouseDown1(Button: TMouseButton; Shift: TShiftState; X, Y: Integer) : Boolean;
 begin
- Info.ShiftState:=Info.ShiftState + Shift;
+ g_DrawInfo.ShiftState:=g_DrawInfo.ShiftState + Shift;
  if PressingMouseButton<>mbNotPressing then
   begin
    Result:=False;
@@ -1109,9 +1111,9 @@ begin
  MouseTimer:=Nil;
  CorrectionX:=0;
  CorrectionY:=0;
- Info.X:=X;
- Info.Y:=Y;
- Info.ShiftState:=Shift;
+ g_DrawInfo.X:=X;
+ g_DrawInfo.Y:=Y;
+ g_DrawInfo.ShiftState:=Shift;
 {InitClicXY;}
  MouseTimer:=TTimer.Create(Self);
  MouseTimer.Interval:=GetDoubleClickTime;
@@ -1142,19 +1144,19 @@ begin
   begin
    if MouseTimer.Enabled then
     begin
-     if  (2*Abs(X-Info.X) <= GetSystemMetrics(sm_CxDoubleClk))
-     and (2*Abs(Y-Info.Y) <= GetSystemMetrics(sm_CyDoubleClk)) then
+     if  (2*Abs(X-g_DrawInfo.X) <= GetSystemMetrics(sm_CxDoubleClk))
+     and (2*Abs(Y-g_DrawInfo.Y) <= GetSystemMetrics(sm_CyDoubleClk)) then
       Exit;
      MouseTimerTimer(Nil);
     end;
-   Info.ShiftState:=Shift;
+   g_DrawInfo.ShiftState:=Shift;
    HiddenMouse:=CallMouseEvent(MapViewObject, FOnMouse, X+CorrectionX, Y+CorrectionY, mbDragging, Shift, CurrentHandle);
    if (HiddenMouse>=1) and GetCursorPos(P) then
     begin  { hide and recenter the mouse }
     (*if Screen.Cursor<>crNone then
       begin
-       Info.X:=P.X;
-       Info.Y:=P.Y;
+       g_DrawInfo.X:=P.X;
+       g_DrawInfo.Y:=P.Y;
        Screen.Cursor:=crNone;
       end;
      Dest.X:=GetSystemMetrics(sm_CxScreen) div 2;
@@ -1245,7 +1247,7 @@ begin
       end;
      MouseTimer.Free;
      MouseTimer:=Nil;
-     CallMouseEvent(MapViewObject, FOnMouse, X+CorrectionX, Y+CorrectionY, Event, Info.ShiftState, H);
+     CallMouseEvent(MapViewObject, FOnMouse, X+CorrectionX, Y+CorrectionY, Event, g_DrawInfo.ShiftState, H);
      Py_DECREF(CurrentHandle);
      CurrentHandle:=PyNoResult;
     end;
@@ -1258,11 +1260,11 @@ var
  H: PyObject;
 begin
  MouseTimer.Enabled:=False;
- H:=GetHandle(Info.X, Info.Y, Flags and vfCrossDrag <> 0, Nil);
+ H:=GetHandle(g_DrawInfo.X, g_DrawInfo.Y, Flags and vfCrossDrag <> 0, Nil);
  Py_DECREF(CurrentHandle);
  Py_INCREF(H);
  CurrentHandle:=H;
- CallMouseEvent(MapViewObject, FOnMouse, Info.X+CorrectionX, Info.Y+CorrectionY, mbDragStart, Info.ShiftState, CurrentHandle);
+ CallMouseEvent(MapViewObject, FOnMouse, g_DrawInfo.X+CorrectionX, g_DrawInfo.Y+CorrectionY, mbDragStart, g_DrawInfo.ShiftState, CurrentHandle);
 end;
 
 procedure TPyMapView.DragOver(Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
@@ -1870,14 +1872,14 @@ begin
   end
 {if DessineAxes then
   begin
-   Pen:=SelectObject(Info.DC, CreatePen(PS_SOLID, 0, MapColors[lcAxes]));
-   Line16(Info.DC,
+   Pen:=SelectObject(g_DrawInfo.DC, CreatePen(PS_SOLID, 0, MapColors[lcAxes]));
+   Line16(g_DrawInfo.DC,
     Point(Round(pX*Pred(R.Left) + pDeltaX), Round(pXJ + pX*R.Top + pY*Pred(R.Left))),
     Point(Round(pX*Succ(R.Right) + pDeltaX), Round(pXJ + pX*R.Top + pY*Succ(R.Right))));
-   Line16(Info.DC,
+   Line16(g_DrawInfo.DC,
     Point(Round(pYJ-pY), Round(pXJ+pX)),
     Point(Round(pY*Succ(R.Bottom) + pDeltaX), Round(pXJ + pX*(R.Top-R.Bottom-1))));
-   DeleteObject(SelectObject(Info.DC, Pen));
+   DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
   end;}
  else
   begin
@@ -2241,7 +2243,7 @@ begin
     end;
   { tiglari }
   Restr:=QkObjFromPyObj(restrobj);
-  Info.Restrictor:=Nil;
+  g_DrawInfo.Restrictor:=Nil;
   //Info.Greyout:=false;
   if Restr <> Nil then
    begin
@@ -2251,47 +2253,47 @@ begin
       Result:=PyNoResult;
       Exit;
      end;
-    Info.Restrictor:=Q3DObject(Restr);
-    //Info.Greyout:=true;
+    g_DrawInfo.Restrictor:=Q3DObject(Restr);
+    //g_DrawInfo.Greyout:=true;
    end;
   { \tiglari }
-  SetupWhiteOnBlack(Info.DefWhiteOnBlack or (CurrentMapView.ViewMode<>vmWireframe));
-  if Info.BasePen=White_pen then
+  SetupWhiteOnBlack(g_DrawInfo.DefWhiteOnBlack or (CurrentMapView.ViewMode<>vmWireframe));
+  if g_DrawInfo.BasePen=White_pen then
    C:=clWhite
   else
    C:=clBlack;
   CurrentMapView.Canvas.Brush.Color:=Integer(C) xor clWhite;
   CurrentMapView.MapViewProj.SetAsCCoord(CurrentMapView.Canvas.Handle);
-  Info.ModeAff:=flags and (dmGrayOov or dmHideOov);
+  g_DrawInfo.ModeAff:=flags and (dmGrayOov or dmHideOov);
 
-  Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
+  Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_Brush));
   if flags and dmOtherColor = 0 then
    begin
-    Info.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
+    g_DrawInfo.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
     Pen1:=GetStockObject(Null_Pen);
    end
   else
    begin
-    Info.GreyBrush:=0;
+    g_DrawInfo.GreyBrush:=0;
     Pen1:=CreatePen(ps_Solid, 0, OtherColor);
-    Info.BlackBrush:=Pen1;
+    g_DrawInfo.BlackBrush:=Pen1;
    end;
-  Pen:=SelectObject(Info.DC, Pen1);
+  Pen:=SelectObject(g_DrawInfo.DC, Pen1);
   if flags and dmSelected = 0 then
-   Info.SelectedBrush:=0
+   g_DrawInfo.SelectedBrush:=0
   else
-   Info.SelectedBrush:=CreatePen(ps_Dot, 0, C);
-  Info.ModeDessin:=[];
+   g_DrawInfo.SelectedBrush:=CreatePen(ps_Dot, 0, C);
+  g_DrawInfo.ModeDessin:=[];
   if flags and dmDontDrawSel = 0 then
-   Include(Info.ModeDessin, mdTraversalSelected);
+   Include(g_DrawInfo.ModeDessin, mdTraversalSelected);
   if flags and dmBBox <> 0 then
-   Info.DessinerBBox:=BBox_Actif or BBox_Cadre or BBox_Selection;
+   g_DrawInfo.DessinerBBox:=BBox_Actif or BBox_Cadre or BBox_Selection;
   if flags and dmOtherColor <> 0 then
-   Include(Info.ModeDessin, mdColorFixed);
+   Include(g_DrawInfo.ModeDessin, mdColorFixed);
   if flags and dmRedrawFaces <> 0 then
-   Include(Info.ModeDessin, mdRedrawFaces);
+   Include(g_DrawInfo.ModeDessin, mdRedrawFaces);
   if CurrentMapView.flags and vfskinview <> 0 then
-   Include(Info.ModeDessin, md2donly);
+   Include(g_DrawInfo.ModeDessin, md2donly);
   try
    if flags and ({dmForeground or} dmBackground) = 0 then
     if (CurrentMapView.ViewMode=vmWireframe)
@@ -2308,36 +2310,36 @@ begin
          OtherColor:=clWhite;
         CurrentMapView.Scene.SetColor(OtherColor);
         if Flags and dmComputePolys <> 0 then
-         Include(Info.ModeDessin, mdComputePolys);
+         Include(g_DrawInfo.ModeDessin, mdComputePolys);
         Q3DObject(Root).AddTo3DScene;
        end;
      end
    else
     if CurrentMapView.Drawing and dfNoGDI = 0 then
      begin
-      Brush1:=SelectObject(Info.DC, CreateSolidBrush(CurrentMapView.CouleurFoncee));
+      Brush1:=SelectObject(g_DrawInfo.DC, CreateSolidBrush(CurrentMapView.CouleurFoncee));
       try
      (*if flags and dmForeground <> 0 then
         begin
-         SelectObject(Info.DC, GetStockObject(Info.BasePen));
+         SelectObject(g_DrawInfo.DC, GetStockObject(g_DrawInfo.BasePen));
          Q3DObject(Root).PostDessinerSel;
         end
        else*)
         Q3DObject(Root).PreDessinerSel;
       finally
-       DeleteObject(SelectObject(Info.DC, Brush1));
+       DeleteObject(SelectObject(g_DrawInfo.DC, Brush1));
       end;
      end;
   finally
-   Info.ModeDessin:=[];
-   Info.DessinerBBox:=0;
+   g_DrawInfo.ModeDessin:=[];
+   g_DrawInfo.DessinerBBox:=0;
    { tiglari }
-   Info.Restrictor:=Nil;
+   g_DrawInfo.Restrictor:=Nil;
    { /tiglari }
-   SelectObject(Info.DC, Brush);
-   SelectObject(Info.DC, Pen);
-   DeleteObject(Info.SelectedBrush);
-   DeleteObject(Info.GreyBrush);
+   SelectObject(g_DrawInfo.DC, Brush);
+   SelectObject(g_DrawInfo.DC, Pen);
+   DeleteObject(g_DrawInfo.SelectedBrush);
+   DeleteObject(g_DrawInfo.GreyBrush);
    DeleteObject(Pen1);
   end;
 
@@ -2495,7 +2497,7 @@ var
 begin
  Result:=Nil;
  try
-  if not PyArg_ParseTupleX(args, 'Oii', [@rootobj, @Info.X, @Info.Y]) then
+  if not PyArg_ParseTupleX(args, 'Oii', [@rootobj, @g_DrawInfo.X, @g_DrawInfo.Y]) then
    Exit;
   Root:=QkObjFromPyObj(rootobj);
   if not (Root is Q3DObject) then
@@ -2522,7 +2524,7 @@ begin
     Result:=PyObject_NEW(@TyCanvas_Type);
     if (PyControlF(self)^.QkControl as TPyMapView).Drawing and dfNoGDI = 0 then
      begin
-      if Info.BasePen=White_pen then
+      if g_DrawInfo.BasePen=White_pen then
        C:=clWhite
       else
        C:=clBlack;

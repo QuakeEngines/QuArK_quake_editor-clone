@@ -23,9 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/29 01:20:34  aiv
+modifable :form objects!
+
 Revision 1.3  2001/03/20 21:35:21  decker_dk
 Updated copyright-header
-
 }
 
 unit PyFormCfg;

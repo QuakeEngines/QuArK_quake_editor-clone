@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:37:46  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -184,17 +187,17 @@ begin
  {FOldPaint(Sender, PaintInfo);}
   Canvas.Handle:=DC;
   try
-    SetupWhiteOnBlack(Info.DefWhiteOnBlack);
+    SetupWhiteOnBlack(g_DrawInfo.DefWhiteOnBlack);
     ScrollBox1.MapViewProj.SetAsCCoord(DC);
-    Pen:=SelectObject(Info.DC, GetStockObject(Null_Pen));
-    Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
-    Info.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
+    Pen:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_Pen));
+    Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_Brush));
+    g_DrawInfo.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
     try
       FRoot.Dessiner;
     finally
-      SelectObject(Info.DC, Brush);
-      SelectObject(Info.DC, Pen);
-      DeleteObject(Info.GreyBrush);
+      SelectObject(g_DrawInfo.DC, Brush);
+      SelectObject(g_DrawInfo.DC, Pen);
+      DeleteObject(g_DrawInfo.GreyBrush);
     end;
   finally
     Canvas.Handle:=0;

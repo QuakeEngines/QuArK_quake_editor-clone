@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:35:06  decker_dk
+Updated copyright-header
 }
 
 unit PyForms;
@@ -181,7 +183,7 @@ begin
    ci_obj:=obj;
    Py_INCREF(obj);
    if nForm=Nil then
-    H:=Form1.Handle
+    H:=g_Form1.Handle
    else
     H:=nForm.Handle;
    PostMessage(H, wm_InternalMessage, wp_ClickItem, Options);
@@ -476,7 +478,7 @@ begin
    with PyWindow(self)^.Form do
     begin
      {SendToBack;}
-     SetWindowPos(Handle, Form1.Handle, 0,0,0,0,
+     SetWindowPos(Handle, g_Form1.Handle, 0,0,0,0,
       swp_NoActivate or swp_NoMove or swp_NoSize or swp_ShowWindow);
      Visible:=True;
     end;
@@ -981,7 +983,7 @@ begin
           nHint:=PyString_AsString(s);
         end;
        finally Py_DECREF(obj); end;
-      end; 
+      end;
     end;
   end;
  if nHint=Nil then
@@ -993,7 +995,7 @@ procedure TPyForm.wmInitMenuPopup;
 var
  Info: TOldMenuItemInfo;
  obj, result: PyObject;
- Form1Menu: TPopupMenu;
+ g_Form1Menu: TPopupMenu;
  H: HMenu;
  I, IdBase: Integer;
  Z: array[0..255] of Char;
@@ -1008,19 +1010,19 @@ begin
   begin
    if CurrentPopupHandle<>0 then Exit;
    if Info.wID = wID_HelpMenu then
-    Form1Menu:=Form1.HelpMenu
+    g_Form1Menu:=g_Form1.HelpMenu
    else
     if Info.wID = wID_ToolboxMenu then
-     Form1Menu:=Form1.WindowMenu
+     g_Form1Menu:=g_Form1.WindowMenu
     else
      Exit;
    IdBase:=Info.wID;
-   Form1Menu.PopupComponent:=Self;
-   if Assigned(Form1Menu.OnPopup) then
-    Form1Menu.OnPopup(Form1Menu);
+   g_Form1Menu.PopupComponent:=Self;
+   if Assigned(g_Form1Menu.OnPopup) then
+    g_Form1Menu.OnPopup(g_Form1Menu);
    for I:=GetMenuItemCount(Msg.wParam)-1 downto 0 do
     RemoveMenu(Msg.wParam, I, MF_BYPOSITION);
-   H:=Form1Menu.Handle;
+   H:=g_Form1Menu.Handle;
    for I:=0 to GetMenuItemCount(H)-1 do
     begin
      FillChar(Info, SizeOf(Info), 0);
@@ -1110,14 +1112,14 @@ begin
      finally Py_DECREF(obj); end;
      Exit;
     end;
-   if (Msg.wParamLo>=wID_HelpMenu) and (Msg.wParamLo<wID_HelpMenu+Form1.HelpMenu.Items.Count) then
+   if (Msg.wParamLo>=wID_HelpMenu) and (Msg.wParamLo<wID_HelpMenu+g_Form1.HelpMenu.Items.Count) then
     begin
-     Form1.HelpMenu.Items[Msg.wParamLo-wID_HelpMenu].Click;
+     g_Form1.HelpMenu.Items[Msg.wParamLo-wID_HelpMenu].Click;
      Exit;
     end;
-   if (Msg.wParamLo>=wID_ToolboxMenu) and (Msg.wParamLo<wID_ToolboxMenu+Form1.WindowMenu.Items.Count) then
+   if (Msg.wParamLo>=wID_ToolboxMenu) and (Msg.wParamLo<wID_ToolboxMenu+g_Form1.WindowMenu.Items.Count) then
     begin
-     Form1.WindowMenu.Items[Msg.wParamLo-wID_ToolboxMenu].Click;
+     g_Form1.WindowMenu.Items[Msg.wParamLo-wID_ToolboxMenu].Click;
      Exit;
     end;
   end;

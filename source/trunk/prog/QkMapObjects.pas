@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/04/16 00:35:16  tiglari
+Worldcraft mapversion 220 misnomenclature fixed (mapversion 202->Valve220)
+
 Revision 1.28  2001/03/30 22:14:51  tiglari
 enabling for WC33 (mapversion 202) map format
 
@@ -371,14 +374,14 @@ begin
  if CCoord.CheckVisible(Pts0) then
   with Pts0 do
    begin
-    if Info.BasePen=White_pen then
+    if g_DrawInfo.BasePen=White_pen then
      Code:=Whiteness
     else
      Code:=Blackness;
-    PatBlt(Info.DC, X-3, Y-3, 7, 7, Code);
+    PatBlt(g_DrawInfo.DC, X-3, Y-3, 7, 7, Code);
     R:=Bounds(X-2, Y-2, 5, 5);
     Brush:=CreateSolidBrush(MapColors(lcTag));
-    FillRect(Info.DC, R, Brush);
+    FillRect(g_DrawInfo.DC, R, Brush);
     DeleteObject(Brush);
    end;
 end;*)
@@ -388,33 +391,33 @@ procedure SetupWhiteOnBlack(WhiteOnBlack: Boolean);
 begin
  if WhiteOnBlack then
   begin
-   Info.BasePen:=White_Pen;
-   Info.BaseR2:=R2_White;
-   Info.MaskR2:=R2_MergePen;
+   g_DrawInfo.BasePen:=White_Pen;
+   g_DrawInfo.BaseR2:=R2_White;
+   g_DrawInfo.MaskR2:=R2_MergePen;
   end
  else
   begin
-   Info.BasePen:=Black_Pen;
-   Info.BaseR2:=R2_Black;
-   Info.MaskR2:=R2_MaskPen;
+   g_DrawInfo.BasePen:=Black_Pen;
+   g_DrawInfo.BaseR2:=R2_Black;
+   g_DrawInfo.MaskR2:=R2_MaskPen;
   end;
 end;
 
 (*function GetMapIcons: HImageList;
 begin
- if Info.MapIcons=0 then
-  Info.MapIcons:=ImageList_LoadImage(HInstance,
-   MakeIntResource(105+Ord(Info.BasePen=White_Pen)),
+ if g_DrawInfo.MapIcons=0 then
+  g_DrawInfo.MapIcons:=ImageList_LoadImage(HInstance,
+   MakeIntResource(105+Ord(g_DrawInfo.BasePen=White_Pen)),
    16, 1, clAqua, IMAGE_BITMAP, 0);
- Result:=Info.MapIcons;
+ Result:=g_DrawInfo.MapIcons;
 end;
 
 procedure ReleaseMapIcons;
 begin
- if Info.MapIcons<>0 then
+ if g_DrawInfo.MapIcons<>0 then
   begin
-   ImageList_Destroy(Info.MapIcons);
-   Info.MapIcons:=0;
+   ImageList_Destroy(g_DrawInfo.MapIcons);
+   g_DrawInfo.MapIcons:=0;
   end;
 end;
 
@@ -431,7 +434,7 @@ procedure CheckTreeMap(Racine: TTreeMap);
    I: Integer;
   begin
    if not (Q is TTreeMap) then
-    ListeActions.Add(TQObjectUndo.Create('', Q, Nil))  { unsupported }
+    g_ListeActions.Add(TQObjectUndo.Create('', Q, Nil))  { unsupported }
    else
     begin
      Q.Acces;
@@ -448,11 +451,11 @@ begin
  DebutAction;
  for I:=0 to Racine.SubElements.Count-1 do
   Check1(Racine.SubElements[I]);
- if ListeActions.Count=0 then
+ if g_ListeActions.Count=0 then
   AnnuleAction
  else
   begin
-   GlobalWarning(FmtLoadStr1(5566, [ListeActions.Count]));
+   GlobalWarning(FmtLoadStr1(5566, [g_ListeActions.Count]));
    FinAction(Racine, LoadStr1(CannotUndo));
   end;
 end;
@@ -465,7 +468,7 @@ var
 begin
  if DernierOrigineSel(Pt)<>Nil then
   with CCoord.Proj(Pt) do
-   PatBlt(Info.DC, X-2, Y-2, 5, 5, Blackness);
+   PatBlt(g_DrawInfo.DC, X-2, Y-2, 5, 5, Blackness);
 end;}
 
 {function TTreeMap.GetOrigin(var Pt: TVect) : Boolean;
@@ -524,7 +527,7 @@ begin
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
-   if not Odd(T.SelMult) or (mdTraversalSelected in Info.ModeDessin) then
+   if not Odd(T.SelMult) or (mdTraversalSelected in g_DrawInfo.ModeDessin) then
     T.AddTo3DScene;
   end;
 end;
@@ -567,18 +570,18 @@ var
 begin
  if GetOrigin(Pt) then
   begin
-   if Info.ModeDeplacement > mdDisplacementGrid then
+   if g_DrawInfo.ModeDeplacement > mdDisplacementGrid then
     begin
-     Pt.X:=Pt.X-Info.Clic.X;
-     Pt.Y:=Pt.Y-Info.Clic.Y;
-     Pt.Z:=Pt.Z-Info.Clic.Z;
-     if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
+     Pt.X:=Pt.X-g_DrawInfo.Clic.X;
+     Pt.Y:=Pt.Y-g_DrawInfo.Clic.Y;
+     Pt.Z:=Pt.Z-g_DrawInfo.Clic.Z;
+     if g_DrawInfo.ModeDeplacement in [mdLinear, mdLineaireCompat] then
       TransformationLineaire(Pt);
     end;
-   Pt.X:=Pt.X+Info.Clic.X;
-   Pt.Y:=Pt.Y+Info.Clic.Y;
-   Pt.Z:=Pt.Z+Info.Clic.Z;
-   if Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
+   Pt.X:=Pt.X+g_DrawInfo.Clic.X;
+   Pt.Y:=Pt.Y+g_DrawInfo.Clic.Y;
+   Pt.Z:=Pt.Z+g_DrawInfo.Clic.Z;
+   if g_DrawInfo.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
     AjusteGrille1(Pt, PasGrille);
    Origin:=Pt;
   end;
@@ -594,7 +597,7 @@ begin
   begin
    if Aj=asAjoute then
     CheckTreeMap(Self);
-   Info.TreeMapStatus:=Info.TreeMapStatus or tms_TreeMapChanged;
+   g_DrawInfo.TreeMapStatus:=g_DrawInfo.TreeMapStatus or tms_TreeMapChanged;
   end;
  inherited;
 end;
@@ -707,7 +710,7 @@ begin
     N25.Visible:=osGr in Opt;
     if osGr in Opt then
      begin
-      B:=(Info.SelectionVisuelle<>Nil) and (Info.SelectionVisuelle=TMSelUnique);
+      B:=(g_DrawInfo.SelectionVisuelle<>Nil) and (g_DrawInfo.SelectionVisuelle=TMSelUnique);
       GriserGroupe2.Checked:=B and GriserGroupe1.Checked;
       CacherGroupe2.Checked:=B and CacherGroupe1.Checked;
      end;}
@@ -717,7 +720,7 @@ begin
     SupprElement2.Enabled:=B;
     CollerGroupe1.Visible:=osGr in Opt;
     if osGr in Opt then
-     CollerGroupe1.Enabled:=IsClipboardFormatAvailable(CF_QObjects);
+     CollerGroupe1.Enabled:=IsClipboardFormatAvailable(g_CF_QObjects);
 
     Result:=PopupTreeMap;
   (*for I:=0 to Result.Items.Count-1 do
@@ -942,9 +945,9 @@ var
  mx: PyObject;
 begin
  inherited;
- if Info.ModeDeplacement=mdLinear then
+ if g_DrawInfo.ModeDeplacement=mdLinear then
   begin
-   mx:=MakePyMatrix(Info.Matrice);
+   mx:=MakePyMatrix(g_DrawInfo.Matrice);
    try
     Py_XDECREF(CallMacroEx(Py_BuildValueX('OO', [@PythonObj, mx]), 'applylinear'));
    finally
@@ -956,7 +959,7 @@ end;
  V, Dest: TVect;
  AnglePlat: Integer;
  Spec, Chaine: String;}
-(* if (Info.ModeDeplacement=mdLinear)
+(* if (g_DrawInfo.ModeDeplacement=mdLinear)
  and VecteurNormalDirection(V) then
   begin
    TransformationLineaire(V);
@@ -1021,29 +1024,29 @@ var
           Pen[False]:=CreatePen(ps_Solid, 3, MapColors(lcAxes));
          if Pen[True]=0 then
           Pen[True]:=CreatePen(ps_Solid, 2, MapColors(lcAxes));
-         SelPen:=SelectObject(Info.DC, Pen[not Direct]);
+         SelPen:=SelectObject(g_DrawInfo.DC, Pen[not Direct]);
          if OriginPen=0 then
           OriginPen:=SelPen;
          Demi.X:=(OriginPt.X+O2Pt.X) div 2;
          Demi.Y:=(OriginPt.Y+O2Pt.Y) div 2;
-         Line16(Info.DC, OriginPt, Demi);
-         SelectObject(Info.DC, Pen[Direct]);
-         Line16(Info.DC, Demi, O2Pt);
+         Line16(g_DrawInfo.DC, OriginPt, Demi);
+         SelectObject(g_DrawInfo.DC, Pen[Direct]);
+         Line16(g_DrawInfo.DC, Demi, O2Pt);
 
         {if Pen=0 then
           begin
            Pen:=CreatePen(ps_Solid, 0, MapColors[lcAxes]);
-           OriginPen:=SelectObject(Info.DC, Pen);
+           OriginPen:=SelectObject(g_DrawInfo.DC, Pen);
           end
          else
-          SelectObject(Info.DC, Pen);
-         Line16(Info.DC, OriginPt, O2Pt);
+          SelectObject(g_DrawInfo.DC, Pen);
+         Line16(g_DrawInfo.DC, OriginPt, O2Pt);
          Demi.X:=(OriginPt.X+O2Pt.X) div 2;
          Demi.Y:=(OriginPt.Y+O2Pt.Y) div 2;
          if PointVisible16(Demi) then
           begin
-           MoveToEx(Info.DC, Demi.X, Demi.Y, Nil);
-           LineTo(Info.DC,
+           MoveToEx(g_DrawInfo.DC, Demi.X, Demi.Y, Nil);
+           LineTo(g_DrawInfo.DC,
           end;}
         end;
       {if T1 is TTreeMapGroup then}
@@ -1072,7 +1075,7 @@ begin
     if Arg<>'' then Parcourir(Racine);
    finally
     if OriginPen<>0 then
-     SelectObject(Info.DC, OriginPen);
+     SelectObject(g_DrawInfo.DC, OriginPen);
     if Pen[False]<>0 then
      DeleteObject(Pen[False]);
     if Pen[True]<>0 then
@@ -1113,8 +1116,8 @@ begin
  else
   begin
    case Vecteur of
-    -1: ImageList_Draw(GetMapIcons, 0, Info.DC, Pts[0].X-8, Pts[0].Y-24, ILD_NORMAL);
-    -2: ImageList_Draw(GetMapIcons, 1, Info.DC, Pts[0].X-8, Pts[0].Y+8,  ILD_NORMAL);
+    -1: ImageList_Draw(GetMapIcons, 0, g_DrawInfo.DC, Pts[0].X-8, Pts[0].Y-24, ILD_NORMAL);
+    -2: ImageList_Draw(GetMapIcons, 1, g_DrawInfo.DC, Pts[0].X-8, Pts[0].Y+8,  ILD_NORMAL);
    end;
    I:=0;
    J:=-1;
@@ -1123,8 +1126,8 @@ begin
   case I of
    0: DessinePoignee(Pts[0]);
    1: begin
-       MoveToEx(Info.DC, Pts[0].X, Pts[0].Y, Nil);
-       LineTo(Info.DC, Pts[1].X, Pts[1].Y);
+       MoveToEx(g_DrawInfo.DC, Pts[0].X, Pts[0].Y, Nil);
+       LineTo(g_DrawInfo.DC, Pts[1].X, Pts[1].Y);
       end;
    2: begin
        if Vecteur=1 then
@@ -1132,9 +1135,9 @@ begin
        else
         Brush:=CreateSolidBrush(clBlue);
        R:=Bounds(Pts[1].X-2, Pts[1].Y-1, 5, 3);
-       FillRect(Info.DC, R, Brush);
+       FillRect(g_DrawInfo.DC, R, Brush);
        R:=Bounds(Pts[1].X-1, Pts[1].Y-2, 3, 5);
-       FillRect(Info.DC, R, Brush);
+       FillRect(g_DrawInfo.DC, R, Brush);
        DeleteObject(Brush);
       end;
    else Break;
@@ -1198,7 +1201,7 @@ begin
  S:=Specifics.Values['_color'];
  if S<>'' then
   begin
-   if Info.BasePen=White_pen then
+   if g_DrawInfo.BasePen=White_pen then
     C:=clWhite
    else
     C:=clBlack;
@@ -1269,16 +1272,16 @@ procedure TTreeMapEntity.AnalyseClic;
 var
  Pts: TPointProj;
 begin
- if HasOrigin and (ModeProj < Vue3D) then
+ if HasOrigin and (g_ModeProj < Vue3D) then
   begin
    Pts:=CCoord.Proj(Origin);
    CCoord.CheckVisible(Pts);
-   if (Pts.OffScreen=0) and (Abs(Info.X-Pts.X) < 4) and (Abs(Info.Y-Pts.Y) < 4) then
+   if (Pts.OffScreen=0) and (Abs(g_DrawInfo.X-Pts.X) < 4) and (Abs(g_DrawInfo.Y-Pts.Y) < 4) then
     begin
    (*ModeProj:=TModeProj(1-Ord(ModeProj));
      Pts:=Proj(Origin);
      ModeProj:=TModeProj(1-Ord(ModeProj));
-     if not PtInRect(Info.VisibleRect, Pts) then Exit;
+     if not PtInRect(g_DrawInfo.VisibleRect, Pts) then Exit;
      if not CCoord.Visible(Origin) then Exit;*)
      ResultatAnalyseClic(Liste, Pts, Nil);
     end;
@@ -1342,18 +1345,18 @@ begin
  if HasOrigin then
   begin
    Pt:=Origin;
-   if Info.ModeDeplacement > mdDisplacementGrid then
+   if g_DrawInfo.ModeDeplacement > mdDisplacementGrid then
     begin
-     Pt.X:=Pt.X-Info.Clic.X;
-     Pt.Y:=Pt.Y-Info.Clic.Y;
-     Pt.Z:=Pt.Z-Info.Clic.Z;
-     if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
+     Pt.X:=Pt.X-g_DrawInfo.Clic.X;
+     Pt.Y:=Pt.Y-g_DrawInfo.Clic.Y;
+     Pt.Z:=Pt.Z-g_DrawInfo.Clic.Z;
+     if g_DrawInfo.ModeDeplacement in [mdLinear, mdLineaireCompat] then
       TransformationLineaire(Pt);
     end;
-   Pt.X:=Pt.X+Info.Clic.X;
-   Pt.Y:=Pt.Y+Info.Clic.Y;
-   Pt.Z:=Pt.Z+Info.Clic.Z;
-   if Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
+   Pt.X:=Pt.X+g_DrawInfo.Clic.X;
+   Pt.Y:=Pt.Y+g_DrawInfo.Clic.Y;
+   Pt.Z:=Pt.Z+g_DrawInfo.Clic.Z;
+   if g_DrawInfo.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
     AjusteGrille1(Pt, PasGrille);
    Origin:=Pt;
   end;
@@ -1418,57 +1421,57 @@ begin
    Pts:=CCoord.Proj(Origin);
    if not CCoord.CheckVisible(Pts) then
     Exit;
-   if Info.SelectedBrush<>0 then
+   if g_DrawInfo.SelectedBrush<>0 then
     begin
-     SelectObject(Info.DC, Info.SelectedBrush);
-     SetROP2(Info.DC, Info.BaseR2);
+     SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+     SetROP2(g_DrawInfo.DC, g_DrawInfo.BaseR2);
     end
    else
-    if (Info.Restrictor=Nil) or (Info.Restrictor=Self) then   { True if object is not to be greyed out }
-     if Info.ModeAff>0 then
+    if (g_DrawInfo.Restrictor=Nil) or (g_DrawInfo.Restrictor=Self) then   { True if object is not to be greyed out }
+     if g_DrawInfo.ModeAff>0 then
       begin
        if Pts.OffScreen=0 then
         begin
-         SelectObject(Info.DC, Info.BlackBrush);
-         SetROP2(Info.DC, R2_CopyPen);
+         SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+         SetROP2(g_DrawInfo.DC, R2_CopyPen);
         end
        else
         begin
-         if Info.ModeAff=2 then
+         if g_DrawInfo.ModeAff=2 then
           Exit;
-         SelectObject(Info.DC, Info.GreyBrush);
-         SetROP2(Info.DC, Info.MaskR2);
+         SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+         SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
         end;
       end
      else
-     {if Info.ModeAff=0 then}
+     {if g_DrawInfo.ModeAff=0 then}
        begin
-        SelectObject(Info.DC, Info.BlackBrush);
-        SetROP2(Info.DC, R2_CopyPen);
+        SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+        SetROP2(g_DrawInfo.DC, R2_CopyPen);
        end
     else
      begin   { Restricted }
-      SelectObject(Info.DC, Info.GreyBrush);
-      SetROP2(Info.DC, Info.MaskR2);
+      SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+      SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
      end;
    X1:=Round(Pts.x);
    Y1:=Round(Pts.y);
-   MoveToEx(Info.DC, X1-3, Y1, Nil);
-   LineTo  (Info.DC, X1+4, Y1);
-   MoveToEx(Info.DC, X1, Y1-2, Nil);
-   LineTo  (Info.DC, X1, Y1+3);
-   if Info.SelectedBrush<>0 then
+   MoveToEx(g_DrawInfo.DC, X1-3, Y1, Nil);
+   LineTo  (g_DrawInfo.DC, X1+4, Y1);
+   MoveToEx(g_DrawInfo.DC, X1, Y1-2, Nil);
+   LineTo  (g_DrawInfo.DC, X1, Y1+3);
+   if g_DrawInfo.SelectedBrush<>0 then
     begin
-     SelectObject(Info.DC, Info.SelectedBrush);
-     SetROP2(Info.DC, R2_CopyPen);
-     Ellipse(Info.DC, X1-7, Y1-7, X1+8, Y1+7);
+     SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+     SetROP2(g_DrawInfo.DC, R2_CopyPen);
+     Ellipse(g_DrawInfo.DC, X1-7, Y1-7, X1+8, Y1+7);
     end;
   {else}
-    if (Info.DessinerBBox and (BBox_Actif or BBox_Cadre)
-                            = (BBox_Actif or BBox_Cadre))
+    if (g_DrawInfo.DessinerBBox and (BBox_Actif or BBox_Cadre)
+                                  = (BBox_Actif or BBox_Cadre))
     or (Odd(SelMult) and
-       (Info.DessinerBBox and (BBox_Actif or BBox_Selection)
-                            = (BBox_Actif or BBox_Selection))) then
+       (g_DrawInfo.DessinerBBox and (BBox_Actif or BBox_Selection)
+                                  = (BBox_Actif or BBox_Selection))) then
      begin
       if not GetBBoxInfo(BBox) then
        Exit;
@@ -1493,18 +1496,18 @@ begin
          end;
         if X1>X2 then begin R:=X1; X1:=X2; X2:=R; end;
         if Y1>Y2 then begin R:=Y1; Y1:=Y2; Y2:=R; end;
-        MoveToEx(Info.DC, X1+3, Y1, Nil);
-        LineTo  (Info.DC, X1, Y1);
-        LineTo  (Info.DC, X1, Y1+3);
-        MoveToEx(Info.DC, X2-3, Y1, Nil);
-        LineTo  (Info.DC, X2, Y1);
-        LineTo  (Info.DC, X2, Y1+3);
-        MoveToEx(Info.DC, X1+3, Y2, Nil);
-        LineTo  (Info.DC, X1, Y2);
-        LineTo  (Info.DC, X1, Y2-3);
-        MoveToEx(Info.DC, X2-3, Y2, Nil);
-        LineTo  (Info.DC, X2, Y2);
-        LineTo  (Info.DC, X2, Y2-3);
+        MoveToEx(g_DrawInfo.DC, X1+3, Y1, Nil);
+        LineTo  (g_DrawInfo.DC, X1, Y1);
+        LineTo  (g_DrawInfo.DC, X1, Y1+3);
+        MoveToEx(g_DrawInfo.DC, X2-3, Y1, Nil);
+        LineTo  (g_DrawInfo.DC, X2, Y1);
+        LineTo  (g_DrawInfo.DC, X2, Y1+3);
+        MoveToEx(g_DrawInfo.DC, X1+3, Y2, Nil);
+        LineTo  (g_DrawInfo.DC, X1, Y2);
+        LineTo  (g_DrawInfo.DC, X1, Y2-3);
+        MoveToEx(g_DrawInfo.DC, X2-3, Y2, Nil);
+        LineTo  (g_DrawInfo.DC, X2, Y2);
+        LineTo  (g_DrawInfo.DC, X2, Y2-3);
        end
       else
        with Origin do
@@ -1530,7 +1533,7 @@ begin
          end;
         case ModeProj of
          VueXY: begin
-                 MoveToEx(Info.DC, Pts[0].X, Pts[0].Y, Nil);
+                 MoveToEx(g_DrawInfo.DC, Pts[0].X, Pts[0].Y, Nil);
                  for R:=0 to 3 do
                   with Pts[Succ(R) and 3] do
                    begin
@@ -1539,9 +1542,9 @@ begin
                     Facteur:=3.5/Sqrt(Facteur);
                     Trait.X:=Round(Facteur*(X-Pts[R].X));
                     Trait.Y:=Round(Facteur*(Y-Pts[R].Y));
-                    LineTo(Info.DC, Pts[R].X + Trait.X, Pts[R].Y + Trait.Y);
-                    MoveToEx(Info.DC, X - Trait.X, Y - Trait.Y, Nil);
-                    LineTo(Info.DC, X,Y);
+                    LineTo(g_DrawInfo.DC, Pts[R].X + Trait.X, Pts[R].Y + Trait.Y);
+                    MoveToEx(g_DrawInfo.DC, X - Trait.X, Y - Trait.Y, Nil);
+                    LineTo(g_DrawInfo.DC, X,Y);
                    end;
                  Exit;
                 end;
@@ -1590,18 +1593,18 @@ begin
      if (Rayon > 1.5) and (Rayon < 8192) then
       begin
        Pts[1].X:=Round(Rayon);
-       Brush:=SelectObject(Info.DC, GetStockObject(Null_brush));
-       Pen:=SelectObject(Info.DC, CreatePen(ps_Solid, 2, MapColors(lcAxes)));
-       Ellipse(Info.DC, OriginPt.X-Pts[1].X, OriginPt.Y-Pts[1].X,
+       Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_brush));
+       Pen:=SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 2, MapColors(lcAxes)));
+       Ellipse(g_DrawInfo.DC, OriginPt.X-Pts[1].X, OriginPt.Y-Pts[1].X,
                         OriginPt.X+Pts[1].X+1, OriginPt.Y+Pts[1].X+1);
-       DeleteObject(SelectObject(Info.DC, Pen));
-       SelectObject(Info.DC, Brush);
+       DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
+       SelectObject(g_DrawInfo.DC, Brush);
       end;
     except
      {rien}
     end;*)
-   if Info.DessinerBBox and (BBox_Actif or BBox_Selection)
-                          = (BBox_Actif or BBox_Selection) then
+   if g_DrawInfo.DessinerBBox and (BBox_Actif or BBox_Selection)
+                                = (BBox_Actif or BBox_Selection) then
     if GetBBoxInfo(BBox) then
      begin
         { object has a BBox }
@@ -1624,7 +1627,7 @@ begin
          end;
         if X1>X2 then begin R:=X1; X1:=X2; X2:=R; end;
         if Y1>Y2 then begin R:=Y1; Y1:=Y2; Y2:=R; end;
-        Rectangle95(Info.DC, X1,Y1, X2+2,Y2+2);
+        Rectangle95(g_DrawInfo.DC, X1,Y1, X2+2,Y2+2);
        end
       else
        with Origin do
@@ -1653,7 +1656,7 @@ begin
          end;
         if Pts[0].X>Pts[1].X then begin R:=Pts[0].X; Pts[0].X:=Pts[1].X; Pts[1].X:=R; end;
         if Pts[0].Y>Pts[1].Y then begin R:=Pts[0].Y; Pts[0].Y:=Pts[1].Y; Pts[1].Y:=R; end;
-        Rectangle16(Info.DC, Pts[0].X,Pts[0].Y, Pts[1].X+2,Pts[1].Y+2);
+        Rectangle16(g_DrawInfo.DC, Pts[0].X,Pts[0].Y, Pts[1].X+2,Pts[1].Y+2);
         Exit;
        end;
       with Origin do
@@ -1668,7 +1671,7 @@ begin
        end;
       case ModeProj of
        VueXY: begin
-               Polygon16(Info.DC, Pts, 4);
+               Polygon16(g_DrawInfo.DC, Pts, 4);
                Exit;
               end;
        VueXZ: begin
@@ -1681,7 +1684,7 @@ begin
                 end;
                V.Z:=Origin.Z+BBox[5];
                with CCoord.Proj(V) do
-                Rectangle16(Info.DC, Min,Y, Max+2,Pts[0].Y+2);
+                Rectangle16(g_DrawInfo.DC, Min,Y, Max+2,Pts[0].Y+2);
                Exit;
               end;
       end;*)
@@ -1690,14 +1693,14 @@ begin
     begin
      X1:=Round(OriginPt.x);
      Y1:=Round(OriginPt.y);
-     Ellipse(Info.DC, X1-7, Y1-7, X1+8, Y1+7);
+     Ellipse(g_DrawInfo.DC, X1-7, Y1-7, X1+8, Y1+7);
     end;
   end;
 end;
 
 (*procedure TTreeMapEntity.DessinePoignee(const Pts0: TPoint);
 begin
- ImageList_Draw(GetMapIcons, 10, Info.DC, Pts0.X-8, Pts0.Y-8,
+ ImageList_Draw(GetMapIcons, 10, g_DrawInfo.DC, Pts0.X-8, Pts0.Y-8,
   ILD_NORMAL);
 end;*)
 
@@ -2013,23 +2016,23 @@ begin
 
    { find frame & skin }
   Mdl.Acces;
-  Info.ModelRoot:=Mdl.GetRoot;
-  if Info.ModelRoot=Nil then Exit;
+  g_DrawInfo.ModelRoot:=Mdl.GetRoot;
+  if g_DrawInfo.ModelRoot=Nil then Exit;
   S:=Q.Specifics.Values['mdlframe'];
   if S<>'' then
-   Info.Frame:=Info.ModelRoot.GetFrameFromName(S)
+   g_DrawInfo.Frame:=g_DrawInfo.ModelRoot.GetFrameFromName(S)
   else
-   Info.Frame:=Info.ModelRoot.GetFrameFromN(Round(Q.GetFloatSpec('mdlframe', 0)));
-  if Info.Frame=Nil then Exit;
+   g_DrawInfo.Frame:=g_DrawInfo.ModelRoot.GetFrameFromN(Round(Q.GetFloatSpec('mdlframe', 0)));
+  if g_DrawInfo.Frame=Nil then Exit;
   S:=Q.Specifics.Values['mdlskin'];
   if S<>'' then
-   Skin1:=Info.ModelRoot.GetSkinFromName(S)
+   Skin1:=g_DrawInfo.ModelRoot.GetSkinFromName(S)
   else
-   Skin1:=Info.ModelRoot.GetSkinFromN(Round(Q.GetFloatSpec('mdlskin', 0)));
+   Skin1:=g_DrawInfo.ModelRoot.GetSkinFromN(Round(Q.GetFloatSpec('mdlskin', 0)));
   if Skin1=Nil then
    begin
-    Info.SkinImage:=Nil;
-    Info.SkinDescr:='';
+    g_DrawInfo.SkinImage:=Nil;
+    g_DrawInfo.SkinDescr:='';
     if (S<>'') and ModeJeuQuake2 then
      begin  { load skin from external file }
       if MdlBase='' then
@@ -2038,19 +2041,19 @@ begin
        FileObj1:=NeedGameFileBase(MdlBase, S);
       if FileObj1 is QImages then
        begin
-        Info.SkinImage:=QImages(FileObj1);
-        Info.SkinDescr:=':'+S;
+        g_DrawInfo.SkinImage:=QImages(FileObj1);
+        g_DrawInfo.SkinDescr:=':'+S;
        end;
      end;
    end
   else
    begin
-    Info.SkinImage:=Skin1.SourceImage;
-    Info.SkinDescr:=Skin1.BuildSkinDescr;  {':'+MdlPath+':'+Skin1.Name;}
+    g_DrawInfo.SkinImage:=Skin1.SourceImage;
+    g_DrawInfo.SkinDescr:=Skin1.BuildSkinDescr;  {':'+MdlPath+':'+Skin1.Name;}
    end;
 
    { find alpha }
-  Info.Alpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
+  g_DrawInfo.Alpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
   Result:=True;
  except
   {rien}
@@ -2105,18 +2108,18 @@ var
 begin
  NewPen:=0;
  DeletePen:=0;
- if Info.GreyBrush <> 0 then
+ if g_DrawInfo.GreyBrush <> 0 then
   begin    { if color changes must be made now }
    Flags:=ViewFlags;
    if Flags and vfHidden <> 0 then Exit;
    if Flags and vfGrayedout <> 0 then
-    NewPen:=Info.GreyBrush;
-  {if Self = Info.SelectionVisuelle then
+    NewPen:=g_DrawInfo.GreyBrush;
+  {if Self = g_DrawInfo.SelectionVisuelle then
     begin
-     Info.GroupeOuvert:=False;
-     NewPen:=GetStockObject(Info.BasePen);
+     g_DrawInfo.GroupeOuvert:=False;
+     NewPen:=GetStockObject(g_DrawInfo.BasePen);
     end;}
-   if {not Info.GroupeOuvert and} not Odd(SelMult) then
+   if {not g_DrawInfo.GroupeOuvert and} not Odd(SelMult) then
     begin
      C:=clNone;
      CouleurDessin(C);
@@ -2131,28 +2134,28 @@ begin
   end;
  if NewPen<>0 then
   begin
-   OldPen:=Info.BlackBrush;
-   Info.BlackBrush:=NewPen;
+   OldPen:=g_DrawInfo.BlackBrush;
+   g_DrawInfo.BlackBrush:=NewPen;
   end
  else
   OldPen:=0;
- IsRestrictor:=Info.Restrictor=Self;
- if IsRestrictor then Info.Restrictor:=Nil;
+ IsRestrictor:=g_DrawInfo.Restrictor=Self;
+ if IsRestrictor then g_DrawInfo.Restrictor:=Nil;
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
-   if not Odd(T.SelMult) or (mdTraversalSelected in Info.ModeDessin) then
+   if not Odd(T.SelMult) or (mdTraversalSelected in g_DrawInfo.ModeDessin) then
     T.Dessiner;
   end;
- if IsRestrictor then Info.Restrictor:=Self;
+ if IsRestrictor then g_DrawInfo.Restrictor:=Self;
  if OldPen<>0 then
   begin
-   SelectObject(Info.DC, OldPen);
-   Info.BlackBrush:=OldPen;
+   SelectObject(g_DrawInfo.DC, OldPen);
+   g_DrawInfo.BlackBrush:=OldPen;
    if DeletePen<>0 then
     DeleteObject(DeletePen);
   end;
-{if Self = Info.SelectionVisuelle then
+{if Self = g_DrawInfo.SelectionVisuelle then
   Info.GroupeOuvert:=True;}
 end;
 
@@ -2181,11 +2184,11 @@ begin
    mdComputingPolys means that subobjects must not add polyhedrons to the scene directly;
       instead, we will compute all these polyhedrons later, in Compute3DDiggers. }
  if ViewFlags and vfHideOn3Dview = 0 then
-  if Info.ModeDessin * [mdComputePolys, mdComputingPolys] = [mdComputePolys] then
+  if g_DrawInfo.ModeDessin * [mdComputePolys, mdComputingPolys] = [mdComputePolys] then
    begin
-    Include(Info.ModeDessin, mdComputingPolys);
+    Include(g_DrawInfo.ModeDessin, mdComputingPolys);
     inherited;
-    Exclude(Info.ModeDessin, mdComputingPolys);
+    Exclude(g_DrawInfo.ModeDessin, mdComputingPolys);
     Compute3DDiggers;
    end
   else
@@ -2317,7 +2320,7 @@ begin
  Polyedres:=TQList.Create;
  try
   I:=soAddTo3DScene;
-  if not (mdTraversalSelected in Info.ModeDessin) then
+  if not (mdTraversalSelected in g_DrawInfo.ModeDessin) then
    Inc(I, soNonParcourirSel);
   ListePolyedres(Polyedres, Negatifs, I, MaxInt);
   for I:=0 to Polyedres.Count-1 do
@@ -2446,11 +2449,11 @@ end;
 var
  MD: TModeDessin;
 begin
- MD:=Info.ModeDessin;
+ MD:=g_DrawInfo.ModeDessin;
  if mdComputePolys in MD then
-  Include(Info.ModeDessin, mdComputingPolys);
+  Include(g_DrawInfo.ModeDessin, mdComputingPolys);
  inherited;
- Info.ModeDessin:=MD;
+ g_DrawInfo.ModeDessin:=MD;
  if mdComputePolys in MD then
   Compute3DDiggers;
 end;*)
@@ -2510,5 +2513,5 @@ initialization
   RegisterQObject(TTreeMapEntity, 'a');
   RegisterQObject(TTreeMapGroup, 'a');
   RegisterQObject(TTreeMapBrush, 'a');
-  Info.ConstruirePolyedres:=True;
+  g_DrawInfo.ConstruirePolyedres:=True;
 end.

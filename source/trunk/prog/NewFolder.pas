@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:47:27  decker_dk
+Updated copyright-header
+
 Revision 1.4  2001/01/30 19:11:10  decker_dk
 Changed to GetApplicationPath().
 
@@ -158,7 +161,7 @@ begin
     Gr:=ClipboardGroup;
     Gr.AddRef(+1); try
     Gr.SubElements.Add(ToolBox);
-    Form1.Explorer.DropObjectsNow(Gr, LoadStr1(606), True);
+    g_Form1.Explorer.DropObjectsNow(Gr, LoadStr1(606), True);
     finally Gr.AddRef(-1); end;
    end;
 

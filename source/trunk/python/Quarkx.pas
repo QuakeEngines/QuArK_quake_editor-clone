@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/04/19 19:27:45  aiv
+better error messages
+
 Revision 1.17  2001/03/20 21:34:13  decker_dk
 Updated copyright-header
 
@@ -542,10 +545,10 @@ begin
   Temp:=TPyForm.Create(Application);
  {Temp.Show;}
   if s=Nil then
-   Form1.Enabled:=False   { special trick for the installer of QuArK }
+   g_Form1.Enabled:=False   { special trick for the installer of QuArK }
   else
    Temp.Caption:=s;
-     //DefWindowProc(Form1.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+     //DefWindowProc(g_Form1.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
   Result:=Temp.WindowObject;
   Py_INCREF(Result);
  except
@@ -630,7 +633,7 @@ end;
 function xExit(self, args: PyObject) : PyObject; cdecl;
 begin
  try
-  Form1.Close;
+  g_Form1.Close;
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -840,7 +843,7 @@ begin
    Result:=GetPyObj(SetupSubSet(TSetupSet(SetIndex), SubSet))
   else
    if SetIndex>=0 then
-    Result:=GetPyObj(SetupSet[TSetupSet(SetIndex)])
+    Result:=GetPyObj(g_SetupSet[TSetupSet(SetIndex)])
    else
     Result:=GetPyObj(SetupGameSet);
  except
@@ -1217,14 +1220,14 @@ begin
     Gr:=ClipboardGroup;
     Gr.AddRef(+1);
     try
-     ClipboardChain(Gr);
+     g_ClipboardChain(Gr);
      Result:=QListToPyList(Gr.SubElements);
     finally
      Gr.AddRef(-1);
     end;
    end
   else
-   Result:=PyInt_FromLong(Ord(ClipboardChain(Nil)));
+   Result:=PyInt_FromLong(Ord(g_ClipboardChain(Nil)));
  except
   EBackToPython;
   Result:=Nil;
@@ -2082,17 +2085,17 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@s]) then
    Exit;
-  if Form1.HelpMenu.Tag=0 then
+  if g_Form1.HelpMenu.Tag=0 then
    begin
-    Item:=TMenuItem.Create(Form1);
+    Item:=TMenuItem.Create(g_Form1);
     Item.Caption:='-';
-    Form1.HelpMenu.Items.Insert(0, Item);
+    g_Form1.HelpMenu.Items.Insert(0, Item);
    end;
-  Item:=TMenuItem.Create(Form1);
+  Item:=TMenuItem.Create(g_Form1);
   Item.Caption:=s;
-  Item.OnClick:=Form1.HelpMenuItemClick;
-  Form1.HelpMenu.Items.Insert(Form1.HelpMenu.Tag, Item);
-  Form1.HelpMenu.Tag:=Form1.HelpMenu.Tag+1;
+  Item.OnClick:=g_Form1.HelpMenuItemClick;
+  g_Form1.HelpMenu.Items.Insert(g_Form1.HelpMenu.Tag, Item);
+  g_Form1.HelpMenu.Tag:=g_Form1.HelpMenu.Tag+1;
   Result:=PyNoResult;
  except
   EBackToUser;
@@ -2684,7 +2687,7 @@ begin
   else
    begin
     S:=GetExceptionMessage(Exception(ExceptObject));
-    Form1.AppException(Nil, Exception(ExceptObject));
+    g_Form1.AppException(Nil, Exception(ExceptObject));
     PyErr_SetString(QuarkxAborted, PChar(S));
    end;
 end;
@@ -2752,7 +2755,7 @@ begin
   P:=PythonNotFound
  else
   begin
-   WriteConsole(@Ty_InternalConsole, 'Error code '+IntToStr(Err)+#10);
+   WriteConsole(@g_Ty_InternalConsole, 'Error code '+IntToStr(Err)+#10);
    if Err<0 then
     PythonCodeEnd;
    P:=FatalErrorText;

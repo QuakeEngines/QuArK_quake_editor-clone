@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/03/20 21:45:49  decker_dk
+Updated copyright-header
+
 Revision 1.5  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -285,7 +288,7 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
       Color:=MapColors(lcAxes)
      else
       Color:=vtocol(ReadVector(S));
-     SelectPen:=SelectObject(Info.DC,
+     SelectPen:=SelectObject(g_DrawInfo.DC,
       CreatePen(ps_Solid, Width, Color));
     end;
 
@@ -345,10 +348,10 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
       V1:=ReadVector(Q.Specifics.Values['center']);
       Pt1:=Proj(V1);
       R:=ReadNumValueEx(Q.Specifics.Values['radius']);
-      J:=Round(R*pProjZ);
+      J:=Round(R*g_pProjZ);
       Pen:=SelectPen;
-      Ellipse(Info.DC, Pt1.X-J, Pt1.Y-J, Pt1.X+J, Pt1.Y+J);
-      DeleteObject(SelectObject(Info.DC, Pen));
+      Ellipse(g_DrawInfo.DC, Pt1.X-J, Pt1.Y-J, Pt1.X+J, Pt1.Y+J);
+      DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
       Exit;
      end;
     if CompareText(Q.Name, 'Arrow')=0 then
@@ -372,12 +375,12 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
       Pt5.X:=Pt2.X-Round(R*(Pt3.X-Pt3.Y));
       Pt5.Y:=Pt2.Y-Round(R*(Pt3.Y+Pt3.X));
       Pen:=SelectPen;
-      MoveToEx(Info.DC, Pt1.X, Pt1.Y, Nil);
-      LineTo(Info.DC, Pt2.X, Pt2.Y);
-      LineTo(Info.DC, Pt4.X, Pt4.Y);
-      MoveToEx(Info.DC, Pt2.X, Pt2.Y, Nil);
-      LineTo(Info.DC, Pt5.X, Pt5.Y);
-      DeleteObject(SelectObject(Info.DC, Pen));
+      MoveToEx(g_DrawInfo.DC, Pt1.X, Pt1.Y, Nil);
+      LineTo(g_DrawInfo.DC, Pt2.X, Pt2.Y);
+      LineTo(g_DrawInfo.DC, Pt4.X, Pt4.Y);
+      MoveToEx(g_DrawInfo.DC, Pt2.X, Pt2.Y, Nil);
+      LineTo(g_DrawInfo.DC, Pt5.X, Pt5.Y);
+      DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
       Exit;
      end;
    except
@@ -389,10 +392,10 @@ var
  I: Integer;
  Brush: HBrush;
 begin
- Brush:=SelectObject(Info.DC, GetStockObject(Null_brush));
+ Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_brush));
  for I:=0 to Macros.Count-1 do
   MapMacros(Macros[I]);
- SelectObject(Info.DC, Brush);
+ SelectObject(g_DrawInfo.DC, Brush);
 end;
 
  {------------------------}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/03/20 21:48:43  decker_dk
+Updated copyright-header
+
 Revision 1.25  2001/02/07 18:38:42  aiv
 bezier texture vertice page started.
 
@@ -599,7 +602,7 @@ begin
  GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t)); try
  Source:=cp.CP;
  Dest:=ncp.CP;
- InfoClic:=Info.Clic;
+ InfoClic:=g_DrawInfo.Clic;
  for J:=0 to cp.H-1 do
   begin
    if Transpose then
@@ -612,7 +615,7 @@ begin
      V.X:=Source^[0];
      V.Y:=Source^[1];
      V.Z:=Source^[2];
-     if Info.ModeDeplacement=mdInflate then
+     if g_DrawInfo.ModeDeplacement=mdInflate then
       begin
        { "inflate" the patch by moving each control point by the specified
          number of pixels in a direction orthogonal to the surface. }
@@ -628,7 +631,7 @@ begin
        dgdv.Z:=P2^[2] - P1^[2];
        InfoClic:=Cross(dgdu, dgdv);
        try
-        F:=Info.ClicZ/Sqrt(Sqr(InfoClic.X)+Sqr(InfoClic.Y)+Sqr(InfoClic.Z));
+        F:=g_DrawInfo.ClicZ/Sqrt(Sqr(InfoClic.X)+Sqr(InfoClic.Y)+Sqr(InfoClic.Z));
         InfoClic.X:=InfoClic.X*F;
         InfoClic.Y:=InfoClic.Y*F;
         InfoClic.Z:=InfoClic.Z*F;
@@ -637,12 +640,12 @@ begin
        end;
       end
      else
-      if Info.ModeDeplacement > mdDisplacementGrid then
+      if g_DrawInfo.ModeDeplacement > mdDisplacementGrid then
        begin
         V.X:=V.X-InfoClic.X;
         V.Y:=V.Y-InfoClic.Y;
         V.Z:=V.Z-InfoClic.Z;
-        if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
+        if g_DrawInfo.ModeDeplacement in [mdLinear, mdLineaireCompat] then
          TransformationLineaire(V);  { linear mapping }
        end;
     { else
@@ -650,7 +653,7 @@ begin
      V.X:=V.X+InfoClic.X;
      V.Y:=V.Y+InfoClic.Y;
      V.Z:=V.Z+InfoClic.Z;
-     if Info.ModeDeplacement=mdStrongDisplacementGrid then
+     if g_DrawInfo.ModeDeplacement=mdStrongDisplacementGrid then
       AjusteGrille1(V, PasGrille);
      Dest^[0]:=V.X;
      Dest^[1]:=V.Y;
@@ -794,7 +797,7 @@ var
 begin
  if not Assigned(FMeshCache.CP) then
   BuildMeshCache;
- if (md2donly in Info.ModeDessin) then
+ if (md2donly in g_DrawInfo.ModeDessin) then
  begin
    DrawTexVertices;
    exit;
@@ -820,14 +823,14 @@ begin
 
  VisChecked:=False;
  NewPen:=False;
- if Info.SelectedBrush<>0 then
+ if g_DrawInfo.SelectedBrush<>0 then
   begin
-   {OldPen:=}SelectObject(Info.DC, Info.SelectedBrush);
-   {OldROP:=}SetROP2(Info.DC, R2_CopyPen);
+   {OldPen:=}SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+   {OldROP:=}SetROP2(g_DrawInfo.DC, R2_CopyPen);
   end
  else
-  if (Info.Restrictor=Nil) or (Info.Restrictor=Self) then   { True if object is not to be greyed out }
-   if Info.ModeAff>0 then
+  if (g_DrawInfo.Restrictor=Nil) or (g_DrawInfo.Restrictor=Self) then   { True if object is not to be greyed out }
+   if g_DrawInfo.ModeAff>0 then
     begin
      ScrAnd:=os_Back or os_Far;
      for I:=1 to FMeshCache.W*FMeshCache.H do
@@ -839,10 +842,10 @@ begin
      VisChecked:=True;
      if ScrAnd<>0 then
       begin
-       if (Info.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
+       if (g_DrawInfo.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
         Exit;
-       SelectObject(Info.DC, Info.GreyBrush);
-       SetROP2(Info.DC, Info.MaskR2);
+       SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+       SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
       end
      else
       NewPen:=True;
@@ -851,13 +854,13 @@ begin
     NewPen:=True
   else
    begin   { Restricted }
-    SelectObject(Info.DC, Info.GreyBrush);
-    SetROP2(Info.DC, Info.MaskR2);
+    SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+    SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
    end;
  if NewPen then
   begin
-   SelectObject(Info.DC, CreatePen(ps_Solid, 0, MapColors(lcBezier)));
-   SetROP2(Info.DC, R2_CopyPen);
+   SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 0, MapColors(lcBezier)));
+   SetROP2(g_DrawInfo.DC, R2_CopyPen);
   end;
 
  if CCoord.FastDisplay then
@@ -901,7 +904,7 @@ begin
     end;
 
     { draw it ! }
-   PolyPolyline(Info.DC, PointBuffer^, CountBuffer^, FMeshCache.H+FMeshCache.W);
+   PolyPolyline(g_DrawInfo.DC, PointBuffer^, CountBuffer^, FMeshCache.H+FMeshCache.W);
   end
  else
   begin  { "slow" drawing method, if visibility checking is required (e.g. 3D views) }
@@ -941,7 +944,7 @@ begin
 
  finally FreeMem(PP); end;
  if NewPen then
-  DeleteObject(SelectObject(Info.DC, Info.BlackBrush));
+  DeleteObject(SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush));
 end;
 
 { to sort triangles in Z order }
@@ -1205,9 +1208,9 @@ var
 begin
  Triangles:=Nil; try
  TriCount:=ListBezierTriangles(Triangles, Nil{, lbtmFast});
- W2.X:=Info.Clic2.X - Info.Clic.X;
- W2.Y:=Info.Clic2.Y - Info.Clic.Y;
- W2.Z:=Info.Clic2.Z - Info.Clic.Z;
+ W2.X:=g_DrawInfo.Clic2.X - g_DrawInfo.Clic.X;
+ W2.Y:=g_DrawInfo.Clic2.Y - g_DrawInfo.Clic.Y;
+ W2.Z:=g_DrawInfo.Clic2.Z - g_DrawInfo.Clic.Z;
  TriPtr:=Triangles;
  for I:=1 to TriCount do
   begin
@@ -1218,7 +1221,7 @@ begin
     W1.Y:=TriPtr^.PP[L].Y-TriPtr^.PP[PrevL].Y;
     W1.Z:=TriPtr^.PP[L].Z-TriPtr^.PP[PrevL].Z;
     Normale:=Cross(W1, W2);
-    if Dot(TriPtr^.PP[L], Normale) <= Dot(Info.Clic, Normale) then
+    if Dot(TriPtr^.PP[L], Normale) <= Dot(g_DrawInfo.Clic, Normale) then
      Break;
     PrevL:=L;
     Inc(L);
@@ -1229,15 +1232,15 @@ begin
      d1:=Dot(TriPtr^.PP[1], Normale);
      if Abs(d1-d0)>rien then
       begin
-       dv:=Dot(Info.Clic, Normale);
+       dv:=Dot(g_DrawInfo.Clic, Normale);
        f:=(d1-dv) / (d1-d0);
        W1:=W2;
        Normalise(W1);
        f:=Dot(TriPtr^.PP[1],W1) * (1-f) + Dot(TriPtr^.PP[0],W1) * f
-        - Dot(Info.Clic,W1);
-       W1.X:=Info.Clic.X + W1.X*f;
-       W1.Y:=Info.Clic.Y + W1.Y*f;
-       W1.Z:=Info.Clic.Z + W1.Z*f;
+        - Dot(g_DrawInfo.Clic,W1);
+       W1.X:=g_DrawInfo.Clic.X + W1.X*f;
+       W1.Y:=g_DrawInfo.Clic.Y + W1.Y*f;
+       W1.Z:=g_DrawInfo.Clic.Z + W1.Z*f;
 
         { the clic occurs on this patch }
        ResultatAnalyseClic(Liste, CCoord.Proj(W1), Nil);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:47:27  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/12/30 15:24:55  decker_dk
 - The .MAP exporting entity-numbering, didn't take into account Treeview-
 groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
@@ -58,11 +61,11 @@ const
  TrackMemorySize     = 644;
 
 var
-  GetMemCount: Integer;
-  FreeMemCount: Integer;
-  AllocatedMemSize: Integer;
-  OldMemMgr: TMemoryManager;
-  DataDumpProc: procedure;
+  g_GetMemCount: Integer;
+  g_FreeMemCount: Integer;
+  g_AllocatedMemSize: Integer;
+  g_OldMemMgr: TMemoryManager;
+  g_DataDumpProc: procedure;
 
 procedure MemTesting(H: HWnd);
 function HeavyMemDump: String;
@@ -89,8 +92,8 @@ var
 
 function NewGetMem(Size: Integer): Pointer;
 begin
-  Inc(GetMemCount);
-  Result := OldMemMgr.GetMem(Size+{$IFDEF MemHeavyListings} 20 {$ELSE} 16 {$ENDIF});
+  Inc(g_GetMemCount);
+  Result := g_OldMemMgr.GetMem(Size+{$IFDEF MemHeavyListings} 20 {$ELSE} 16 {$ENDIF});
   PInteger(Result)^:=Size;
   PInteger(PChar(Result)+4)^:=Signature1;
   Inc(PChar(Result), 8);
@@ -101,7 +104,7 @@ begin
   FullLinkedList:=Result;
   Inc(FullListSize);
   {$ENDIF}
-  Inc(AllocatedMemSize, Size);
+  Inc(g_AllocatedMemSize, Size);
   {$IFDEF MemTrackAddress}
   if (Size=TrackMemorySize) and (Integer(Result)>=TrackMemoryAddress1) and (Integer(Result)<TrackMemoryAddress2) then
    Result:=Nil;    { BREAKPOINT }
@@ -111,7 +114,7 @@ function NewFreeMem(P: Pointer): Integer;
 var
   OldSize: Integer;
 begin
-  Inc(FreeMemCount);
+  Inc(g_FreeMemCount);
   Dec(PChar(P), 8);
   OldSize:=PInteger(P)^;
   if (OldSize<=0) or (OldSize>=$2000000)
@@ -121,13 +124,13 @@ begin
    Raise Exception.CreateFmt('Very bad internal error [FreeMem %x]', [OldSize]);
   PInteger(PChar(P))^:=$12345678;
   PInteger(PChar(P)+12)^:=$BADF00D;
-  Dec(AllocatedMemSize, OldSize);
+  Dec(g_AllocatedMemSize, OldSize);
 {$IFDEF MemHeavyListings}
   PInteger(PChar(P)+4)^:=PInteger(PChar(P)+OldSize+16)^;
   Dec(FullListSize);
   Result := 0;
 {$ELSE}
-  Result := OldMemMgr.FreeMem(P);
+  Result := g_OldMemMgr.FreeMem(P);
 {$ENDIF}
 end;
 function NewReallocMem(P: Pointer; Size: Integer): Pointer;
@@ -158,8 +161,8 @@ begin
    end;
   NewFreeMem(P);
 {$ELSE}
-  Inc(AllocatedMemSize, Size-OldSize);
-  Result := OldMemMgr.ReallocMem(P, Size+16);
+  Inc(g_AllocatedMemSize, Size-OldSize);
+  Result := g_OldMemMgr.ReallocMem(P, Size+16);
   PInteger(Result)^:=Size;
   PInteger(PChar(Result)+4)^:=Signature1;
   Inc(PChar(Result), 8);
@@ -170,17 +173,17 @@ end;
 {$ELSE}
 function NewGetMem(Size: Integer): Pointer;
 begin
-  Inc(GetMemCount);
-  Result := OldMemMgr.GetMem(Size);
+  Inc(g_GetMemCount);
+  Result := g_OldMemMgr.GetMem(Size);
 end;
 function NewFreeMem(P: Pointer): Integer;
 begin
-  Inc(FreeMemCount);
-  Result := OldMemMgr.FreeMem(P);
+  Inc(g_FreeMemCount);
+  Result := g_OldMemMgr.FreeMem(P);
 end;
 function NewReallocMem(P: Pointer; Size: Integer): Pointer;
 begin
-  Result := OldMemMgr.ReallocMem(P, Size);
+  Result := g_OldMemMgr.ReallocMem(P, Size);
 end;
 {$ENDIF}
 
@@ -233,7 +236,7 @@ var
  R: TRect;
 begin
  GetWindowRect(H, R);
- S:=Format('<%d blocks, %.2f Kb>', [GetMemCount-FreeMemCount, AllocatedMemSize/1024]);
+ S:=Format('<%d blocks, %.2f Kb>', [g_GetMemCount-g_FreeMemCount, g_AllocatedMemSize/1024]);
  DC:=GetWindowDC(H);
  OldMode:=SetTextAlign(DC, TA_TOP or TA_RIGHT);
  TextOut(DC, R.Right-R.Left-60,5, PChar(S), Length(S));
@@ -248,7 +251,7 @@ var
  Diff: Boolean;
  Src: PChar;
 begin
- S:=Format(' <%d blocks, %.2f Kb>', [GetMemCount-FreeMemCount, AllocatedMemSize/1024]);
+ S:=Format(' <%d blocks, %.2f Kb>', [g_GetMemCount-g_FreeMemCount, g_AllocatedMemSize/1024]);
  I:=GetWindowText(H, Buffer, SizeOf(Buffer));
  if (I>0) and (Buffer[I-1]='>') then
   begin
@@ -289,9 +292,9 @@ var
  Z: Array[0..127] of Char;
 {I: Integer;}
 begin
- StrPCopy(Z, Format('This is a bug ! Please report : %d # %d.', [GetMemCount-FreeMemCount, DifferenceAttendue]));
+ StrPCopy(Z, Format('This is a bug ! Please report : %d # %d.', [g_GetMemCount-g_FreeMemCount, DifferenceAttendue]));
  MessageBox(0, Z, 'MemTester', mb_Ok);
-{if Assigned(DataDumpProc) then
+{if Assigned(g_DataDumpProc) then
   begin
    StrCat(Z, #13#13'Write a data report (DATADUMP.TXT) ?');
    I:=mb_YesNo;
@@ -299,20 +302,20 @@ begin
  else
   I:=mb_Ok;
  if MessageBox(0, Z, 'MemTester', I) = idYes then
-  DataDumpProc;}
+  g_DataDumpProc;}
 end;
 
 initialization
-  GetMemoryManager(OldMemMgr);
+  GetMemoryManager(g_OldMemMgr);
   SetMemoryManager(NewMemMgr);
 finalization
-  if Assigned(DataDumpProc) then
-   DataDumpProc;
+  if Assigned(g_DataDumpProc) then
+   g_DataDumpProc;
 {$IFDEF MemTesterDiff}
-  if GetMemCount-FreeMemCount <> DifferenceAttendue then
+  if g_GetMemCount-g_FreeMemCount <> DifferenceAttendue then
    Resultat;
 {$ENDIF}
 {$IFNDEF VER90}
-  SetMemoryManager(OldMemMgr);
+  SetMemoryManager(g_OldMemMgr);
 {$ENDIF}
 end.

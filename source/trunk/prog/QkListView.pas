@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
 Revision 1.6  2000/11/19 15:31:50  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -132,10 +135,10 @@ begin
   wp_AfficherObjet:
     begin
      Populating:=True;
-     Form1.AbortIdleJob(ListView1);
+     g_Form1.AbortIdleJob(ListView1);
      ListView1.Hide;
      ListView1.Items.Clear;
-     Form1.StartIdleJob(Populate, ListView1);
+     g_Form1.StartIdleJob(Populate, ListView1);
     end;
   wp_EditMsg:
     Msg.Result:=EditMenuCommandLv(Msg.lParam);
@@ -393,7 +396,7 @@ begin
  inherited;
  SelectThis:=Nil;
  Populating:=False;
- Form1.AbortIdleJob(ListView1);
+ g_Form1.AbortIdleJob(ListView1);
  ListView1.Hide;
  ListView1.Items.Clear;
 end;
@@ -460,7 +463,7 @@ begin
  Gr:=ClipboardGroup;
  Gr.AddRef(+1);
  try
-  if ClipboardChain(Gr) then
+  if g_ClipboardChain(Gr) then
    DropObjectsNow(Gr, LoadStr1(543), True);
  finally
   Gr.AddRef(-1);
@@ -482,7 +485,7 @@ begin
      S:=FmtLoadStr1(582, [T.Name])
     else
      S:=LoadStr1(NoTexte);
-    NiveauAction:=NiveauAction or LocalActionFlags;
+    g_NiveauAction:=g_NiveauAction or LocalActionFlags;
     Undo.Action(FileObject, TQObjectUndo.Create(S, T, Nil));
    end
   else
@@ -499,11 +502,11 @@ begin
       NoTexte:=579;
      DebutAction;
      for I:=0 to Gr.SubElements.Count-1 do
-      ListeActions.Add(TQObjectUndo.Create('', Gr.SubElements[I], Nil));
+      g_ListeActions.Add(TQObjectUndo.Create('', Gr.SubElements[I], Nil));
     finally
      Gr.AddRef(-1);
     end;
-    NiveauAction:=NiveauAction or LocalActionFlags;
+    g_NiveauAction:=g_NiveauAction or LocalActionFlags;
     FinAction(FileObject, LoadStr1(NoTexte));
    end;
  finally
@@ -532,16 +535,16 @@ begin
      Q.FParent:=FileObject;
      U:=TQObjectUndo.Create('', Nil, Q);
      U.InsererAvant:=nInsererAvant;
-     ListeActions.Add(U);
+     g_ListeActions.Add(U);
     end;
   end;
- if ListeActions.Count=0 then
+ if g_ListeActions.Count=0 then
   begin   { items were not accepted by FileObject }
    if Beep then
     MessageBeep(0);
    Exit;
   end;
- NiveauAction:=NiveauAction or LocalActionFlags;
+ g_NiveauAction:=g_NiveauAction or LocalActionFlags;
  try
   FinAction(FileObject, Texte);
  finally
@@ -552,7 +555,7 @@ end;
 
 procedure TQForm2.ActionRefresh;
 begin
- NiveauAction:=NiveauAction and not LocalActionFlags;
+ g_NiveauAction:=g_NiveauAction and not LocalActionFlags;
  Perform(wm_InternalMessage, wp_AfficherObjet, 0);
 end;
 

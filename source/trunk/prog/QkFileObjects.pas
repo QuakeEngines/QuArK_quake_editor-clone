@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/03/20 21:49:18  decker_dk
+Updated copyright-header
+
 Revision 1.26  2001/03/18 14:03:02  aiv
 remove ! fix
 
@@ -134,7 +137,7 @@ type
                          wiOwnExplorer,   { when opening a file, adds its own Explorer }
                          wiWindow,        { can show in a stand-alone window }
                          wiMaximize,      { opens a window in maximized state by default }
-                         wiForm1,         { when opening a file, opens it in Form1 }
+                         wiForm1,         { when opening a file, opens it in g_Form1 }
                          wiNeverOpen,     { contains no interesting data (e.g. groups) }
                          wiSameExplorer); { opens in its parent's explorer (e.g. PAK folders) }
 
@@ -498,7 +501,7 @@ begin
  if GlobalWarnings=Nil then
   begin
    GlobalWarnings:=TStringList.Create;
-  {PostMessage(Form1.Handle, wm_InternalMessage, wp_Warning, 0);}
+  {PostMessage(g_Form1.Handle, wm_InternalMessage, wp_Warning, 0);}
   end;
  if GlobalWarnings.IndexOf(Texte)<0 then
   GlobalWarnings.Add(Texte);
@@ -1149,7 +1152,7 @@ begin
      DeleteFile(AlternateFile);
      if not MoveFile(PChar(TempFile), PChar(AlternateFile)) then
       begin
-       Form1.NoTempDelete:=True;
+       g_Form1.NoTempDelete:=True;
        Raise EErrorFmt(5516, [AlternateFile, S, ExtractFileName(AlternateFile)]);
       end;
      S:=AlternateFile;
@@ -1159,7 +1162,7 @@ begin
        if not F.ReopenAs(S) then
         Abort;  { throw an exception }
       except { bad error if we couldn't reopen the file }
-       Form1.NoTempDelete:=True;
+       g_Form1.NoTempDelete:=True;
        Raise EErrorFmt(5515, [S, ExtractFileName(AlternateFile)]);
       end;
     end;
@@ -1180,7 +1183,7 @@ begin
      end;
     finally TargetFile.Free; end;
     finally ProgressIndicatorStop; end;
-  (*FileOp.Wnd:=Form1.Handle;
+  (*FileOp.Wnd:=g_Form1.Handle;
     FileOp.wFunc:=FO_COPY;
     FileOp.pFrom:=PChar(TempFile);
     FileOp.pTo:=PChar(AlternateFile);
@@ -1211,8 +1214,8 @@ begin
  SaveInFile(RecommendFormat, '');
 {while EnumObjectWindow(F) do
   SendMessage(F.Handle, wm_InternalMessage, wp_SetModify, 0);
- if Form1.Explorer.Roots.IndexOf(Self)>=0 then
-  SendMessage(Form1.Handle, wm_InternalMessage, wp_SetModify, 0);}
+ if g_Form1.Explorer.Roots.IndexOf(Self)>=0 then
+  SendMessage(g_Form1.Handle, wm_InternalMessage, wp_SetModify, 0);}
 end;
 
 procedure QFileObject.TryRenamingNow(const nName: String);
@@ -1641,8 +1644,8 @@ begin
    FileObjectClassInfo(Info);
    if wiForm1 in Info.WndInfo then
     begin
-     Form1.SetExplorerRoot(Self);   { display in the main window }
-     ActivateNow(Form1);
+     g_Form1.SetExplorerRoot(Self);   { display in the main window }
+     ActivateNow(g_Form1);
     end
    else
     if (wiWindow in Info.WndInfo)
@@ -1925,14 +1928,14 @@ var
  J: Integer;
 begin   { adds the file to the list of recently opened files }
  L:=TStringList.Create; try
- L.Text:=SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+ L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
  J:=L.IndexOf(FileName);
  if J>=0 then
   L.Delete(J);
  L.Insert(0, FileName);
  while L.Count>MaxRecentFiles do
   L.Delete(MaxRecentFiles);
- SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=StringListConcatWithSeparator(L, $0D);
+ g_SetupSet[ssGeneral].Specifics.Values['RecentFiles']:=StringListConcatWithSeparator(L, $0D);
  UpdateSetup(scMinimal);
  finally L.Free; end;
 end;
@@ -2026,11 +2029,11 @@ begin
  end;
  if SendMsg<>0 then
   begin
-   if WorkingExplorer=Nil then
+   if g_WorkingExplorer=Nil then
     Extra:=Nil
    else
     begin
-     Extra:=ValidParentForm(WorkingExplorer);
+     Extra:=ValidParentForm(g_WorkingExplorer);
      Extra.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
     end;
    Q:=Self;
@@ -2041,8 +2044,8 @@ begin
       while EnumObjectWindow(F) do
        if F<>Extra then
         F.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
-      if (Form1.Explorer.Roots.Count>0) and (Q=Form1.Explorer.Roots[0]) then
-       Form1.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
+      if (g_Form1.Explorer.Roots.Count>0) and (Q=g_Form1.Explorer.Roots[0]) then
+       g_Form1.Perform(wm_InternalMessage, SendMsg, LongInt(Self));
      end;
     Q:=Q.FParent;
    until Q=Nil;
@@ -2410,7 +2413,7 @@ begin
       PostMessage(GetViewForm.Handle, wm_InternalMessage, wp_AfficherObjet, LongInt(FFileObject));
     end
    else
-   {Form1.Menu.UnMerge(MainObjMenu)};
+   {g_Form1.Menu.UnMerge(MainObjMenu)};
    FFileObject.AddRef(-1);
    FFileObject:=Nil;
   end;
@@ -2451,7 +2454,7 @@ begin
          end;
         if not (Self is TPyForm) then
          begin
-          CopyToolbar(Form1.ToolbarMenu1, MenuToolbar);
+          CopyToolbar(g_Form1.ToolbarMenu1, MenuToolbar);
           MenuToolbar.Visible:=True;
          end;
         Show;
@@ -2572,8 +2575,8 @@ begin
   begin  { stand-alone newly created object : ask if we must save in QuArK Explorer }
    case MessageDlg(LoadStr1(5601), mtConfirmation, mbYesNoCancel, 0) of
     mrYes: begin
-            Form1.FileMenu.PopupComponent:=Self;
-            Form1.Saveinnewentry1Click(Nil);
+            g_Form1.FileMenu.PopupComponent:=Self;
+            g_Form1.Saveinnewentry1Click(Nil);
             Exit;
            end;
     mrNo: ;

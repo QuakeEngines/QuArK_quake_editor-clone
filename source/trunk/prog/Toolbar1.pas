@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.9  2001/03/20 21:41:41  decker_dk
 Updated copyright-header
 
@@ -47,7 +50,6 @@ Englishification and a little layout
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit Toolbar1;
 

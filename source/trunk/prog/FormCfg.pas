@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.14  2001/03/28 19:24:17  decker_dk
 Checks for Txt="&", Txt="&E" (editable) and Txt="&R" (readonly) types.
 
@@ -519,7 +522,7 @@ begin
        Test:=Links[I*2+1].Specifics.Values[EditTogether[K]];
        if Test<>'' then
         if ActionChanging<>0 then
-         ListeActions.Add(TSpecificUndo.Create('', EditTogether[K], Test, sp_Auto, Links[I*2]))
+         g_ListeActions.Add(TSpecificUndo.Create('', EditTogether[K], Test, sp_Auto, Links[I*2]))
         else
          Links[I*2].Specifics.Values[EditTogether[K]]:=Test;
       end;
@@ -557,7 +560,7 @@ begin
       sp_Auto: if Links[I*2].Specifics.Values[Spec]=S then Continue;
       sp_Supprime: if Links[I*2].Specifics.IndexOfName(Spec)<0 then Continue;
      end;
-     ListeActions.Add(TSpecificUndo.Create('', Spec, S, nPosition, Links[I*2]));
+     g_ListeActions.Add(TSpecificUndo.Create('', Spec, S, nPosition, Links[I*2]));
     end
    else
     Links[I*2].Specifics.Values[Spec]:=nArg;  { changes the Args directly }
@@ -596,7 +599,7 @@ begin
   begin
    DebutAction;
    for I:=0 to Links.Count div 2 - 1 do
-    ListeActions.Add(TNameUndo.Create('', nName, Links[I*2]));
+    g_ListeActions.Add(TNameUndo.Create('', nName, Links[I*2]));
    I:=ActionRenaming;
    if I=0 then
     I:=ActionChanging;
@@ -642,8 +645,8 @@ begin
      Arg:=Copy(S, Pos('=',S)+1, MaxInt);
      if ActionChanging<>0 then
       begin
-       ListeActions.Add(TSpecificUndo.Create('', oSpec, '', sp_Supprime, Q));
-       ListeActions.Add(TSpecificUndo.Create('', nSpec, Arg, J, Q));
+       g_ListeActions.Add(TSpecificUndo.Create('', oSpec, '', sp_Supprime, Q));
+       g_ListeActions.Add(TSpecificUndo.Create('', nSpec, Arg, J, Q));
       end
      else    { changes the Spec directly }
       Q.Specifics[J]:=nSpec+'='+Arg;
@@ -1002,9 +1005,9 @@ begin
      if K<>nK then
       begin
        if ClearZero and (nK=0) then
-        ListeActions.Add(TSpecificUndo.Create('', Spec, '', sp_Supprime, Links[I*2]))
+        g_ListeActions.Add(TSpecificUndo.Create('', Spec, '', sp_Supprime, Links[I*2]))
        else
-        ListeActions.Add(TSpecificUndo.Create('', Spec, IntToStr(nK), sp_Auto, Links[I*2]));
+        g_ListeActions.Add(TSpecificUndo.Create('', Spec, IntToStr(nK), sp_Auto, Links[I*2]));
       end;
     end;
   {try}

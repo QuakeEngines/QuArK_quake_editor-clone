@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/30 22:11:37  tiglari
+makevect & 2-place normalize (puts scaling factor into var par)
+
 Revision 1.8  2001/03/20 21:43:04  decker_dk
 Updated copyright-header
 
@@ -111,12 +114,10 @@ type
  TProfondeurEventEx = function (const P: TVect) : TDouble of object;
 
 var
- pDeltaX, pDeltaY, pDeltaZ: Integer;
- pProjX, pProjY, pProjZ: TDouble;
- ModeProj: TModeProj;
- CalculeProj3D: TProjEventEx;
- CalculeProfondeur3D: TProfondeurEventEx;
-{PointVisible16: function (const P: TPoint) : Boolean;
+ g_pProjZ: TDouble;
+ g_ModeProj: TModeProj;
+{
+ PointVisible16: function (const P: TPoint) : Boolean;
  Polygon16: function (DC: HDC; var Pts; NbPts: Integer) : Bool; stdcall;
  PolyPolyline16: function (DC: HDC; var Pts, Cnt; NbPolylines: Integer) : Bool; stdcall;
  Rectangle16: function (DC: HDC; X1,Y1,X2,Y2: Integer) : Bool; stdcall;
@@ -143,6 +144,11 @@ implementation
 
 uses Quarkx;
 
+var
+ pDeltaX, pDeltaY, pDeltaZ: Integer;
+ pProjX, pProjY: TDouble;
+ CalculeProj3D: TProjEventEx;
+ CalculeProfondeur3D: TProfondeurEventEx;
 var
  Facteur: TDouble;
 
@@ -181,14 +187,14 @@ end;
 
 function Proj;
 begin
- case ModeProj of
+ case g_ModeProj of
   VueXY: begin
           Proj.X:=Round(P.X*pProjX+P.Y*pProjY)+pDeltaX;
           Proj.Y:=pDeltaY-Round(P.Y*pProjX-P.X*pProjY);
          end;
   VueXZ: begin
           Proj.X:=Round(P.X*pProjX+P.Y*pProjY)+pDeltaX;
-          Proj.Y:=pDeltaZ-Round(P.Z*pProjZ);
+          Proj.Y:=pDeltaZ-Round(P.Z*g_pProjZ);
          end;
   else   if not CalculeProj3D(P, Result) then
           Raise EErrorFmt(167, [vtos(P)]);
@@ -201,7 +207,7 @@ end;
 
 function ProjEx(const P: TVect; var Dest: TPoint) : Boolean;
 begin
- if ModeProj=Vue3D then
+ if g_ModeProj=Vue3D then
   Result:=CalculeProj3D(P, Dest)
  else
   begin
@@ -216,7 +222,7 @@ begin
  Y:=pDeltaY-Y;
  Espace.X:=(X*pProjX - Y*pProjY) * Facteur;
  Espace.Y:=(Y*pProjX + X*pProjY) * Facteur;
- Espace.Z:=(pDeltaZ-Z) / pProjZ;
+ Espace.Z:=(pDeltaZ-Z) / g_pProjZ;
 end;
 
 procedure InitProjVar;
@@ -226,7 +232,7 @@ end;
 
 function Profondeur(const V: TVect) : TDouble;
 begin
- case ModeProj of
+ case g_ModeProj of
   VueXY: Profondeur:=-V.Z;
   VueXZ: Profondeur:=V.Y*pProjX-V.X*pProjY;
   else Profondeur:=CalculeProfondeur3D(V);

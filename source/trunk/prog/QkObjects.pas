@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2001/05/21 12:04:46  tiglari
+update version
+
 Revision 1.52  2001/05/07 08:57:22  tiglari
 update version
 
@@ -525,9 +528,9 @@ type
 function EndOfClipboardChain(PasteNow: QObject) : Boolean;
 
 var
-  CF_QObjects: Integer;
-  ClipboardChain: TClipboardHandler = EndOfClipboardChain;
-  PopupMenuObject: QObject;
+  g_CF_QObjects: Integer;
+  g_ClipboardChain: TClipboardHandler = EndOfClipboardChain;
+  g_PopupMenuObject: QObject;
 (*CodeConstruction: Char;*)
 
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
@@ -551,7 +554,7 @@ procedure ReleaseStream(S: TStream);
 procedure ClearObjectManager;
 
 {$IFDEF Debug}
-var MemQObject: TList;
+var g_MemQObject: TList;
 procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
@@ -718,7 +721,7 @@ begin
       Specifics.Add(Source^[J]);
      {Inc(_cs_count);
       Inc(_cs_size, Length(S)+9);
-      Form1.Caption:=Format('%d  (%d bytes)', [_cs_count, _cs_size]);}
+      g_Form1.Caption:=Format('%d  (%d bytes)', [_cs_count, _cs_size]);}
       Exit;
     end;
   end;
@@ -1169,7 +1172,7 @@ begin
   {$IFDEF Debug}
 (*if QObjectClassList.IndexOfObject(TObject(ClassType))<0 then
     Raise InternalE('Unregistered QObjectClass');*)
-  MemQObject.Add(Self);
+  g_MemQObject.Add(Self);
   {$ENDIF}
 
   Name:=nName;
@@ -1188,10 +1191,10 @@ var
   I: Integer;
 begin
   {$IFDEF Debug}
-  I:=MemQObject.IndexOf(Self);
+  I:=g_MemQObject.IndexOf(Self);
   if I<0 then
     Raise InternalE('QObject.Destroy');
-  MemQObject.Delete(I);
+  g_MemQObject.Delete(I);
   {$ENDIF}
 
  {if FFlags and ofTvNode = 0 then}
@@ -2823,8 +2826,8 @@ begin
     case Aj of
     asDeplace1,
     asRetire:
-      if WorkingExplorer<>Nil then
-        WorkingExplorer.ContentsChanged(True);
+      if g_WorkingExplorer<>Nil then
+        g_WorkingExplorer.ContentsChanged(True);
     end;
   end;
 
@@ -2835,47 +2838,47 @@ begin
       SubElementsC[I].OperationInScene(Aj, PosRel+1);
 
   asModifieParent:
-    if WorkingExplorer<>Nil then
+    if g_WorkingExplorer<>Nil then
     begin
       for I:=0 to SubElementsC.Count-1 do
         SubElementsC[I].OperationInScene(asModifieFrere, MaxInt);
       if PosRel = -1 then
-        WorkingExplorer.ControlerEtatNoeud(Self);
+        g_WorkingExplorer.ControlerEtatNoeud(Self);
     end;
 
   asRetireEnfant:
-    if WorkingExplorer<>Nil then
-      WorkingExplorer.ControlerEtatNoeud(Self);
+    if g_WorkingExplorer<>Nil then
+      g_WorkingExplorer.ControlerEtatNoeud(Self);
   end;
 
-  if (PosRel=0) and (WorkingExplorer<>Nil) then
+  if (PosRel=0) and (g_WorkingExplorer<>Nil) then
   begin
     case Aj of
     asModifie:
       begin
         if TopLevel then  { the Root changed }
-          WorkingExplorer.RootChanging(Self);
+          g_WorkingExplorer.RootChanging(Self);
        {if Flags and ofTvNode <> 0 then
           GetNode.Text:=Name;}
-        WorkingExplorer.ContentsChanged(True);
+        g_WorkingExplorer.ContentsChanged(True);
       end;
 
     asAjoute,
     asDeplace2:
-      if WorkingExplorer<>Nil then
+      if g_WorkingExplorer<>Nil then
       begin
         if Flags and ofTreeViewSubElement = 0 then
         begin  { a root was deleted and a new version was reinserted }
-          WorkingExplorer.AjouterElement(Self{, Nil, Nil});
+          g_WorkingExplorer.AjouterElement(Self{, Nil, Nil});
          {if Flags and ofTvNode<>0 then
-            WorkingExplorer.SetItemBold(GetNode);}
+            g_WorkingExplorer.SetItemBold(GetNode);}
         end
         else
         begin
           T:=TvParent;
           if (T<>Nil) {and (T.Flags and ofTvNode<>0)}
           and (ieDisplay in T.IsExplorerItem(Self)) then
-            WorkingExplorer.AjouterElement(Self{, T.GetNode, nInsert});
+            g_WorkingExplorer.AjouterElement(Self{, T.GetNode, nInsert});
         end;
       end;
     end;
@@ -2884,7 +2887,7 @@ end;
 
 function QObject.GetObjectMenu(Control: TControl) : TPopupMenu;
 begin
-  Result:=Form1.GetObjMenu(Control, False);
+  Result:=g_Form1.GetObjMenu(Control, False);
 end;
 
 procedure QObject.ClearAllSelection;
@@ -2917,8 +2920,8 @@ begin
  Menu:=CreatePopupMenu; try
  if PopulateMenu(Menu) then
   begin
-   PopupMenuObject:=Self;
-   TrackPopupMenu(Menu, 0, ScreenPoint.X, ScreenPoint.Y, 0, Form1.Handle, Nil)
+   g_PopupMenuObject:=Self;
+   TrackPopupMenu(Menu, 0, ScreenPoint.X, ScreenPoint.Y, 0, g_Form1.Handle, Nil)
   end
  else
   MessageBeep(0);
@@ -3179,9 +3182,9 @@ begin
   Text.Add('-----');
 
   Text.Add(Format('%5.5s  %2.2s  %s', ['RefCnt', 'Flags', 'Object']));
-  for I:=0 to MemQObject.Count-1 do
+  for I:=0 to g_MemQObject.Count-1 do
   begin
-    SomeQObject := QObject(MemQObject[I]);
+    SomeQObject := QObject(g_MemQObject[I]);
     if SomeQObject.PythonObj.ob_refcnt<>1 then
       Text.Add(Format('%5d  %2x  %s', [SomeQObject.PythonObj.ob_refcnt, SomeQObject.Flags, SomeQObject.GetFullName]))
     else
@@ -3194,7 +3197,7 @@ end;
 
 procedure TestDataDump;
 begin
-  if (QFileList.Count>0) or (MemQObject.Count>0) then
+  if (QFileList.Count>0) or (g_MemQObject.Count>0) then
     if MessageBox(0, 'Some objects were not correctly freed. This is a bug. Do you want to write a data report (DATADUMP.TXT) ?', 'DEBUGGING - BETA VERSION', mb_YesNo) = idYes then
       DataDump;
 end;
@@ -3205,9 +3208,9 @@ end;
 initialization
   QFileList:=TStringList.Create;
   QFileList.Sorted:=True;
-  CF_QObjects:=RegisterClipboardFormat('QuArK Object');
+  g_CF_QObjects:=RegisterClipboardFormat('QuArK Object');
   {$IFDEF Debug}
-  DataDumpProc:=@TestDataDump;
-  MemQObject:=TList.Create;
+  g_DataDumpProc:=@TestDataDump;
+  g_MemQObject:=TList.Create;
   {$ENDIF}
 end.

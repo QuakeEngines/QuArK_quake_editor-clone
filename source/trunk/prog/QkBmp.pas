@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/03/20 21:46:48  decker_dk
+Updated copyright-header
+
 Revision 1.10  2001/01/21 15:48:01  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -103,7 +106,7 @@ begin
   begin
    Image:=Nil;
    Source:=Nil; try
-   OpenClipboard(Form1.Handle); try
+   OpenClipboard(g_Form1.Handle); try
    H:=GetClipboardData(CF_DIB);
    if H=0 then
     begin
@@ -280,6 +283,6 @@ end;
 
 initialization
   RegisterQObject(QBmp, 'k');
-  Chain1:=ClipboardChain;
-  ClipboardChain:=CollerImage;
+  Chain1:=g_ClipboardChain;
+  g_ClipboardChain:=CollerImage;
 end.

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/03/20 21:42:24  decker_dk
+Updated copyright-header
+
 Revision 1.22  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -176,9 +179,9 @@ type
 
 var
 {DECKER ApplicationPath: String;}
- SetupSet: TSetupSetArray;
+ g_SetupSet: TSetupSetArray;
 {--CONVEX-- support for multiple texture formats}
- TexExtensions : TStringList = NIL;
+ g_TexExtensions : TStringList = NIL;
 
 const  { for SetupChanged }
  scInit      = 0;
@@ -201,7 +204,7 @@ function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObje
 function SetupGameSet : QObject;
 procedure UpdateSetup(Level: Integer);
 procedure SaveSetupNow;
-function MakeAddOnsList : QFileObject;  { includes the file loaded in Form1 }
+function MakeAddOnsList : QFileObject;  { includes the file loaded in g_Form1 }
 procedure UpdateForm1Root;
 procedure UpdateAddOnsContent;
 procedure CloseAddonsList;  { don't call this when toolboxes are open }
@@ -277,17 +280,17 @@ end;
 
 function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObject;
 begin
- Result:=SetupSet[Root].SubElements.FindName(SubSet+':config');
+ Result:=g_SetupSet[Root].SubElements.FindName(SubSet+':config');
  if (Result=Nil) and Create then
   begin
-   Result:=QConfig.Create(SubSet, SetupSet[Root]);
-   SetupSet[Root].SubElements.Add(Result);
+   Result:=QConfig.Create(SubSet, g_SetupSet[Root]);
+   g_SetupSet[Root].SubElements.Add(Result);
   end;
 end;
 
 function SetupSubSet(Root: TSetupSet; SubSet: String) : QObject;
 begin
- Result:=SetupSet[Root].SubElements.FindName(SubSet+':config');
+ Result:=g_SetupSet[Root].SubElements.FindName(SubSet+':config');
  if Result=Nil then
   Raise EErrorFmt(5205, [SetupSetName[Root]+':'+SubSet]);
 end;
@@ -299,9 +302,9 @@ var
  Idx : Byte;
  S, SubStr : String;
 begin
-  if TexExtensions<>NIL then
-   TexExtensions.Free;
-  TexExtensions := TStringList.Create;
+  if g_TexExtensions<>NIL then
+   g_TexExtensions.Free;
+  g_TexExtensions := TStringList.Create;
   try
   {DECKER - changed key from 'TextureFormat', due to possible conflicts with
    TGameBuffer(...)TextureExt in QkTextures.PAS}
@@ -321,14 +324,14 @@ begin
         SubStr := SubStr + C;
       Inc(Idx);
     end;
-    TexExtensions.Add(SubStr);
+    g_TexExtensions.Add(SubStr);
   end;
 end;
 {--CONVEX-end--}
 
 function SetupGameSet : QObject;
 begin
- SetupGameSet:=SetupSubSet(ssGames, SetupSet[ssGames].Specifics.Values['GameCfg']);
+ SetupGameSet:=SetupSubSet(ssGames, g_SetupSet[ssGames].Specifics.Values['GameCfg']);
 end;
 
 function GetSetupPath(Path: String; var Spec: String; var Q: QObject) : Boolean;
@@ -347,7 +350,7 @@ begin
    for S:=Low(S) to High(S) do
     if CompareText(SetupSetName[S], Copy(Path,1,P-1)) = 0 then
      begin
-      Q:=SetupSet[S];
+      Q:=g_SetupSet[S];
       Break;
      end;
    if Q=Nil then Exit;
@@ -419,13 +422,13 @@ begin
    for T:=Low(T) to High(T) do
     if CompareText(Q.Name, SetupSetName[T]) = 0 then
      begin
-      if SetupSet[T]=Nil then
+      if g_SetupSet[T]=Nil then
        begin
-        SetupSet[T]:=QConfig.Create(Q.Name, Nil);
-        SetupSet[T].AddRef(+1);
+        g_SetupSet[T]:=QConfig.Create(Q.Name, Nil);
+        g_SetupSet[T].AddRef(+1);
        end;
-       { mix Q into this SetupSet }
-      Mix(SetupSet[T], Q);
+       { mix Q into this g_SetupSet }
+      Mix(g_SetupSet[T], Q);
      end;
 end;
 
@@ -455,13 +458,13 @@ var
  Version: TDouble;
 begin
  for T:=High(T) downto Low(T) do
-  if SetupSet[T]<>Nil then
+  if g_SetupSet[T]<>Nil then
    begin
-    SetupSet[T].AddRef(-1);
-    SetupSet[T]:=Nil;
+    g_SetupSet[T].AddRef(-1);
+    g_SetupSet[T]:=Nil;
    end;
-{SetupSet[ssTempData]:=QConfig.Create(SetupSetName[ssTempData], Nil);
- SetupSet[ssTempData].AddRef(+1);}
+{g_SetupSet[ssTempData]:=QConfig.Create(SetupSetName[ssTempData], Nil);
+ g_SetupSet[ssTempData].AddRef(+1);}
  DefaultsFileName1:='';
 { SetupFileName1:=GetApplicationPath()+SetupFileName;  { default }
 
@@ -478,17 +481,17 @@ begin
  except
   on E: Exception do
    begin
-    Form1.MessageException(E, LoadStr1(5204), [mbOk]);
+    g_Form1.MessageException(E, LoadStr1(5204), [mbOk]);
     Halt(1);   { cannot load Defaults.qrk - fatal error }
     Exit;
    end;
  end;
 
   { checks loaded data }
- if SetupSet[ssGeneral]<>Nil then
+ if g_SetupSet[ssGeneral]<>Nil then
   begin   { checks version }
    V1:=QuarkVersion;
-   V2:=SetupSet[ssGeneral].Specifics.Values['Version'];
+   V2:=g_SetupSet[ssGeneral].Specifics.Values['Version'];
    if V1 <> V2 then
     begin
      MessageDlg(FmtLoadStr1(5206, [V1, V2]), mtError, [mbOk], 0);
@@ -496,7 +499,7 @@ begin
     end;
   end;
  for T:=Low(T) to High(T) do
-  if SetupSet[T]=Nil then  { checks ":config" objects }
+  if g_SetupSet[T]=Nil then  { checks ":config" objects }
    begin
     MessageDlg(FmtLoadStr1(5205, [SetupSetName[T]]), mtError, [mbOk], 0);
     Halt(1);   { missing ":config" object }
@@ -517,10 +520,10 @@ begin
   { could not load Setup.qrk - this is not an error, continue execution }
  end;
 
- if SetupSet[ssGeneral].GetFloatSpec('RunVersion', 5.901)<5.9005 then
+ if g_SetupSet[ssGeneral].GetFloatSpec('RunVersion', 5.901)<5.9005 then
   RefreshAssociations(True);
- SetupSet[ssGeneral].SetFloatSpec('RunVersion', Version);
- SetupSet[ssGeneral].Specifics.Values['Date']:=DateToStr(Date);
+ g_SetupSet[ssGeneral].SetFloatSpec('RunVersion', Version);
+ g_SetupSet[ssGeneral].Specifics.Values['Date']:=DateToStr(Date);
  SetupChanged({scMaximal} {scMinimal} scInit);
 end;
 
@@ -538,11 +541,11 @@ begin
   TTextureManager.FreeNonVisibleTextures;
 
   { initializes QuArK depending on the setup information }
- Info.DefWhiteOnBlack:=SetupSubSet(ssMap, 'Colors').Specifics.Values['InvertedColors']<>'';
+ g_DrawInfo.DefWhiteOnBlack:=SetupSubSet(ssMap, 'Colors').Specifics.Values['InvertedColors']<>'';
  with SetupSubSet(ssMap, 'Options') do
   begin
-   Info.CacherFaces:=Specifics.Values['HideFaces']<>'';
-   Info.TexAntiScroll:=IntSpec['TexAntiScroll'];
+   g_DrawInfo.CacherFaces:=Specifics.Values['HideFaces']<>'';
+   g_DrawInfo.TexAntiScroll:=IntSpec['TexAntiScroll'];
   end;
  S:=SetupSubSet(ssGeneral, 'Display').Specifics.Values['MarsCaption'];
  if S='?' then
@@ -558,7 +561,7 @@ begin
   { stores the setup infos into the Quarkx Python module }
 (*SetupInfo:=PyList_New(Ord(High(T))+1); try
  for T:=Low(T) to High(T) do
-  PyList_SetItem(SetupInfo, Ord(T), GetPyObj(SetupSet[T]));
+  PyList_SetItem(SetupInfo, Ord(T), GetPyObj(g_SetupSet[T]));
  PyDict_SetItemString(QuarkxDict, 'setupset', SetupInfo);
  finally Py_DECREF(SetupInfo); end;*)
 
@@ -624,9 +627,9 @@ var
  SetupSet2: TSetupSetArray;
 begin
  if DefaultsFileName1='' then Exit;
- SetupSet2:=SetupSet;
+ SetupSet2:=g_SetupSet;
  try
-  FillChar(SetupSet, SizeOf(SetupSet), 0);  { reset SetupSet }
+  FillChar(g_SetupSet, SizeOf(g_SetupSet), 0);  { reset g_SetupSet }
   try
    SetupQrk:=ExactFileLink(DefaultsFileName1, Nil, False);
    SetupQrk.AddRef(+1);
@@ -653,7 +656,7 @@ begin
       if Q<>Nil then
        SetupQrk.SubElements.Remove(Q);  { remove old setup info }
       { stores only the setup data that really changed }
-      StoreDiff(SetupQrk, SetupSet2[T], SetupSet[T]);
+      StoreDiff(SetupQrk, SetupSet2[T], g_SetupSet[T]);
      end;
     SetupQrk.ReadFormat:=Format;
     SetupQrk.Specifics.Values['Description']:=LoadStr1(5394);
@@ -662,13 +665,13 @@ begin
     SetupQrk.AddRef(-1);
    end;
 
-  finally  { frees the temporary loaded SetupSet }
+  finally  { frees the temporary loaded g_SetupSet }
    for T:=High(T) downto Low(T) do
-    if SetupSet[T]<>Nil then
-     SetupSet[T].AddRef(-1);
+    if g_SetupSet[T]<>Nil then
+     g_SetupSet[T].AddRef(-1);
   end;
- finally  { restores the saved SetupSet }
-  SetupSet:=SetupSet2;
+ finally  { restores the saved g_SetupSet }
+  g_SetupSet:=SetupSet2;
  end;
 end;
 
@@ -711,9 +714,9 @@ begin
    AddOns.Specifics.Values['f1r']:='';
    CloseToolBoxes;
   end;
- if Form1.Explorer.Roots.Count>0 then
+ if g_Form1.Explorer.Roots.Count>0 then
   begin
-   AddOns.SubElements.Add(Form1.Explorer.Roots[0]);
+   AddOns.SubElements.Add(g_Form1.Explorer.Roots[0]);
    AddOns.Specifics.Values['f1r']:='1';
   end;
  UpdateAddOnsContent;
@@ -905,14 +908,14 @@ begin
    end
   else
    begin
-    if SetupSet[ssGames].SubElements.FindName(nMode+':config')=Nil then
+    if g_SetupSet[ssGames].SubElements.FindName(nMode+':config')=Nil then
      Raise EErrorFmt(5547, [nMode]);
     if Screen.ActiveForm is TToolBoxForm then
      Raise EErrorFmt(5599, [nMode]);
     if Confirm and (MessageDlg(FmtLoadStr1(5543, [nMode]), mtWarning, mbOkCancel, 0) <> mrOk) then
      Abort;
     ClearGameBuffers(True);
-    SetupSet[ssGames].Specifics.Values['GameCfg']:=nMode;
+    g_SetupSet[ssGames].Specifics.Values['GameCfg']:=nMode;
    {SetupModified:=True;}
     PosteMessageFiches(wp_SetupChanged, scGame);
    end;
@@ -927,7 +930,7 @@ begin
   GetGameCode:=mjAny
  else
   begin
-   Q:=SetupSet[ssGames].SubElements.FindName(nMode+':config');
+   Q:=g_SetupSet[ssGames].SubElements.FindName(nMode+':config');
    if Q=Nil then
     Raise EErrorFmt(5547, [nMode]);
    S:=Q.Specifics.Values['Code'];
@@ -982,7 +985,7 @@ var
  I: Integer;
  S: String;
 begin
- with SetupSet[ssGames] do
+ with g_SetupSet[ssGames] do
   for I:=0 to SubElements.Count-1 do
    begin
     S:=SubElements[I].Specifics.Values['Code'];
@@ -999,16 +1002,16 @@ end;
 
 {function GetIncludePath: String;
 begin
- if SetupSet[ssGeneral]=Nil then
+ if g_SetupSet[ssGeneral]=Nil then
   Result:=GetApplicationPath()
  else
-  Result:=SetupSet[ssGeneral].Specifics.Values['IncludePath+']
+  Result:=g_SetupSet[ssGeneral].Specifics.Values['IncludePath+']
    + GetApplicationPath();
 end;}
 
 function InternalVersion : Single;
 begin
- Result:=SetupSet[ssGeneral].GetFloatSpec('InternalVersion', 0);
+ Result:=g_SetupSet[ssGeneral].GetFloatSpec('InternalVersion', 0);
 end;
 
 const
@@ -1190,8 +1193,8 @@ procedure CloseSetupSet;
 var
  T: TSetupSet;
 begin
- for T:=Low(SetupSet) to High(SetupSet) do
-  SetupSet[T].AddRef(-1);
+ for T:=Low(g_SetupSet) to High(g_SetupSet) do
+  g_SetupSet[T].AddRef(-1);
  PyDict_SetItemString(QuarkxDict, 'setupset', Py_None);
 end;
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/20 21:48:43  decker_dk
+Updated copyright-header
+
 Revision 1.9  2001/03/09 21:11:56  aiv
 Misc. Bug fixes
 
@@ -197,7 +200,7 @@ begin
   S := Edit1.Text;
   if DecodeEnregistrement(S) then
   begin
-    {with Form1 do
+    {with g_Form1 do
       begin
        PanelQM1.Free;
        PanelQM1:=Nil;

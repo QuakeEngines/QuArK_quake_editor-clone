@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.4  2001/03/20 21:48:43  decker_dk
 Updated copyright-header
 
@@ -93,7 +96,7 @@ type
  {------------------------}
 
 var
-  ConfigDlg: TConfigDlg;
+  g_ConfigDlg: TConfigDlg;
 
 procedure ShowConfigDlg(const Source: String);
 function LatestConfigInfo(T: TSetupSet): QObject;
@@ -111,19 +114,19 @@ uses Qk1, Game, Quarkx, QkGroup, QkTreeView, QkFormCfg;
 
 procedure ShowConfigDlg;
 begin
- if ConfigDlg=Nil then
-  ConfigDlg:=TConfigDlg.Create(Application);
+ if g_ConfigDlg=Nil then
+  g_ConfigDlg:=TConfigDlg.Create(Application);
  if Source<>'' then
   begin
-   ConfigDlg.Explorer.TMSelUnique:=Nil;
+   g_ConfigDlg.Explorer.TMSelUnique:=Nil;
    if Source[1]=':' then
-    ConfigDlg.AncienSel:=SetupSet[ssGames].Name+':'+SetupGameSet.Name+Source
+    g_ConfigDlg.AncienSel:=g_SetupSet[ssGames].Name+':'+SetupGameSet.Name+Source
    else
-    ConfigDlg.AncienSel:=Source;
+    g_ConfigDlg.AncienSel:=Source;
   end;
- ConfigDlg.FillExplorer(False);
- ActivateNow(ConfigDlg);
- ConfigDlg.Timer1Timer(Nil);
+ g_ConfigDlg.FillExplorer(False);
+ ActivateNow(g_ConfigDlg);
+ g_ConfigDlg.Timer1Timer(Nil);
 end;
 
 function ShowAltConfigDlg(Racine: QObject; const Titre: String; NewObjList: TQList) : Boolean;
@@ -243,10 +246,10 @@ begin
  if IsModal then
   Exit;
  for T:=Low(T) to High(T) do
-  Explorer.AddRoot(SetupSet[T].Clone(Nil, False));
+  Explorer.AddRoot(g_SetupSet[T].Clone(Nil, False));
  Source:=AncienSel;
  if Source='' then
-  Source:=SetupSet[Low(SetupSet)].Name;
+  Source:=g_SetupSet[Low(g_SetupSet)].Name;
  SourceSel:=Nil;
  DestSel:=Explorer.Roots;
  while Source<>'' do
@@ -318,7 +321,7 @@ begin
  SetupQrk:=Nil;
  if not IsModal then
   begin
-   ConfigDlg:=Nil;
+   g_ConfigDlg:=Nil;
    SavePositionTb('Config', False, Explorer);
   end;
 end;
@@ -368,9 +371,9 @@ begin
      for T:=Low(T) to High(T) do
       begin
        Q:=Explorer.Roots[Ord(T)].Clone(Nil, False);
-       SetupSet[T].AddRef(-1);
-       SetupSet[T]:=Q;
-       SetupSet[T].AddRef(+1);
+       g_SetupSet[T].AddRef(-1);
+       g_SetupSet[T]:=Q;
+       g_SetupSet[T].AddRef(+1);
       end;
     {InternalOnly:=True;}
      UpdateSetup(scConfigDlg);
@@ -382,10 +385,10 @@ end;
 
 function LatestConfigInfo(T: TSetupSet): QObject;
 begin
- if (ConfigDlg=Nil) or not ConfigDlg.ApplyBtn.Enabled then
-  Result:=SetupSet[T]
+ if (g_ConfigDlg=Nil) or not g_ConfigDlg.ApplyBtn.Enabled then
+  Result:=g_SetupSet[T]
  else
-  Result:=ConfigDlg.Explorer.Roots[Ord(T)];
+  Result:=g_ConfigDlg.Explorer.Roots[Ord(T)];
 end;
 
 procedure TConfigDlg.CancelOff;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2001/05/21 21:27:22  tiglari
+fixed expandthreepoints/no tex comments code again
+
 Revision 1.37  2001/05/21 21:24:48  tiglari
 fixed expandthreepoints/no tex comments code
 
@@ -462,7 +465,7 @@ var
  Sommets, P, PTest: ^TVect;
  NbSommets: Integer;
 begin
- if not Info.ConstruirePolyedres then
+ if not g_DrawInfo.ConstruirePolyedres then
   begin
    TroisPointsDansFaceAncienStyle(S, Pt,Pt2,Pt3);
    Exit;
@@ -923,7 +926,7 @@ begin
    if Q is TFace then
     if (TFace(Q).FFaceOfPoly=Nil) or (TFace(Q).FFaceOfPoly^.Source=Q) then
      if InvFaces=-1 then
-      ListeActions.Add(TQObjectUndo.Create('', Q, Nil))
+      g_ListeActions.Add(TQObjectUndo.Create('', Q, Nil))
      else
       begin
        Inc(InvFaces);
@@ -955,9 +958,9 @@ begin
  with S^ do
   begin
    { on va déterminer si le segment 'Clic-Clic2' coupe la face 'F' }
-   D2:=F.Dist - Dot(Info.Clic2, F.Normale);
+   D2:=F.Dist - Dot(g_DrawInfo.Clic2, F.Normale);
    if not Arriere and (D2<rien) then Exit; { si Clic2 est à l'extérieur de la face }
-   D1:=Dot(Info.Clic, F.Normale) - F.Dist;
+   D1:=Dot(g_DrawInfo.Clic, F.Normale) - F.Dist;
    if Arriere then
     begin
      if (D2<rien) xor (D1<0) then Exit;  { si Clic et Clic2 sont du même côté de la face }
@@ -968,9 +971,9 @@ begin
 
    D1:=D1/(D1+D2);
     { PI est le point d'intersection }
-   PI.X:=Info.Clic.X + (Info.Clic2.X-Info.Clic.X)*D1;
-   PI.Y:=Info.Clic.Y + (Info.Clic2.Y-Info.Clic.Y)*D1;
-   PI.Z:=Info.Clic.Z + (Info.Clic2.Z-Info.Clic.Z)*D1;
+   PI.X:=g_DrawInfo.Clic.X + (g_DrawInfo.Clic2.X - g_DrawInfo.Clic.X) * D1;
+   PI.Y:=g_DrawInfo.Clic.Y + (g_DrawInfo.Clic2.Y - g_DrawInfo.Clic.Y) * D1;
+   PI.Z:=g_DrawInfo.Clic.Z + (g_DrawInfo.Clic2.Z - g_DrawInfo.Clic.Z) * D1;
 
    P2:=prvDescS[0]^.P;
    while NbPts>0 do
@@ -1009,7 +1012,7 @@ begin
       Pts[J].X:=Round(x);
       Pts[J].Y:=Round(y);
      end;
-   Polygon(Info.DC, Pts, NbPts);
+   Polygon(g_DrawInfo.DC, Pts, NbPts);
   end
  else
   begin
@@ -1252,7 +1255,7 @@ end;
 function TPolyedre.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
  Result:=ieResult[Q is TFace];
- if Info.CacherFaces then
+ if g_DrawInfo.CacherFaces then
   Include(Result, ieInvisible);
 end;
 
@@ -1304,17 +1307,23 @@ begin
  if not ConstruireSommets1(rien2, Err1, Extra)
  and not ConstruireSommets1(rien, Err1, Extra) then
   begin
-   L:=TStringList.Create; try
-   L.Add(LoadStr1(4618));
-   CP:=Info.ConstruirePolyedres; try
-   Info.ConstruirePolyedres:=False;
-   SaveAsTextPolygon(L, Nil, soErrorMessageFlags);
-   finally Info.ConstruirePolyedres:=CP; end;
-   if Extra<>'' then
-    L.Add(Extra);
-  {E.Message:=E.Message+L.Text;}
-   Err1:=Err1+L.Text;
-   finally L.Free; end;
+   L:=TStringList.Create;
+   try
+    L.Add(LoadStr1(4618));
+    CP:=g_DrawInfo.ConstruirePolyedres;
+    try
+     g_DrawInfo.ConstruirePolyedres:=False;
+     SaveAsTextPolygon(L, Nil, soErrorMessageFlags);
+    finally
+     g_DrawInfo.ConstruirePolyedres:=CP;
+    end;
+    if Extra<>'' then
+     L.Add(Extra);
+   {E.Message:=E.Message+L.Text;}
+    Err1:=Err1+L.Text;
+   finally
+    L.Free;
+   end;
   {E.HelpContext:=520;}
 
    Raise EPolyedreInvalide.Create(Err1);
@@ -1460,7 +1469,7 @@ var
 begin
  Result:=False;
  {$IFDEF Debug}
- if not Info.ConstruirePolyedres then
+ if not g_DrawInfo.ConstruirePolyedres then
   Raise InternalE('Infinite polyhedron build loop');
  {$ENDIF}
  DetruireSommets;
@@ -2017,10 +2026,10 @@ begin
  try
   L:=TStringList.Create; try
   L.Add(LoadStr1(4618));
-  CP:=Info.ConstruirePolyedres; try
-  Info.ConstruirePolyedres:=False;
+  CP:=g_DrawInfo.ConstruirePolyedres; try
+  g_DrawInfo.ConstruirePolyedres:=False;
   SaveAsTextPolygon(L, Nil);
-  finally Info.ConstruirePolyedres:=CP; end;
+  finally g_DrawInfo.ConstruirePolyedres:=CP; end;
   if Extra<>'' then
    L.Add(Extra);
   E.Message:=E.Message+L.Text;
@@ -2585,7 +2594,7 @@ var
   end;
 
 begin
- if Info.ConstruirePolyedres and not CheckPolyhedron then Exit;
+ if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  Valve220Map:=Flags and soWriteValve220<>0;
@@ -2598,7 +2607,7 @@ begin
   Brush.Add('brushDef');
   Brush.Add(' {');
  end;
- if Info.ConstruirePolyedres then
+ if g_DrawInfo.ConstruirePolyedres then
   for J:=0 to Faces.Count-1 do
    WriteFace(PSurface(Faces[J])^.F)
  else
@@ -2656,14 +2665,14 @@ begin
   with S^[I] do
    Pt:=CCoord.Proj(PSommet(Sommets[I])^.P);
  NewPen:=False;
- if Info.SelectedBrush<>0 then
+ if g_DrawInfo.SelectedBrush<>0 then
   begin
-   {OldPen:=}SelectObject(Info.DC, Info.SelectedBrush);
-   {OldROP:=}SetROP2(Info.DC, R2_CopyPen);
+   {OldPen:=}SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+   {OldROP:=}SetROP2(g_DrawInfo.DC, R2_CopyPen);
   end
  else
-  if (Info.Restrictor=Nil) or (Info.Restrictor=Self) then   { True if object is not to be greyed out }
-   if Info.ModeAff>0 then
+  if (g_DrawInfo.Restrictor=Nil) or (g_DrawInfo.Restrictor=Self) then   { True if object is not to be greyed out }
+   if g_DrawInfo.ModeAff>0 then
     begin
      J:=Sommets.Count;
      ScrAnd:=os_Back or os_Far;
@@ -2678,10 +2687,10 @@ begin
          BasVide:=BasVide and (Pt.OffScreen and os_Back <> 0);}
      if ScrAnd<>0 then
       begin
-       if (Info.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
+       if (g_DrawInfo.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
         Exit;
-       SelectObject(Info.DC, Info.GreyBrush);
-       SetROP2(Info.DC, Info.MaskR2);
+       SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+       SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
       end
      else
       NewPen:=True;
@@ -2690,19 +2699,19 @@ begin
     NewPen:=True
   else
    begin   { Restricted }
-    SelectObject(Info.DC, Info.GreyBrush);
-    SetROP2(Info.DC, Info.MaskR2);
+    SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+    SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
    end;
  if NewPen then
   begin
    if Negative<>'' then
-    SelectObject(Info.DC, CreatePen(ps_Solid, 0, MapColors(lcDigger)))
+    SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 0, MapColors(lcDigger)))
    else
     begin
      NewPen:=False;
-     SelectObject(Info.DC, Info.BlackBrush);
+     SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
     end;
-   SetROP2(Info.DC, R2_CopyPen);
+   SetROP2(g_DrawInfo.DC, R2_CopyPen);
   end;
  PChar(Dessin):=PChar(S)+Base;
  PChar(TamponAretes):=PChar(DescFaces)+NbAretes2*SizeOf(PSommet);
@@ -2734,7 +2743,7 @@ begin
      Inc(Nombres);
     end;
    PChar(Dessin):=PChar(S)+BaseNombre;
-   PolyPolyline(Info.DC, PPoint(PChar(S)+Base)^, PInteger(Dessin)^,
+   PolyPolyline(g_DrawInfo.DC, PPoint(PChar(S)+Base)^, PInteger(Dessin)^,
     (PChar(Nombres)-PChar(Dessin)) div SizeOf(Integer));
   end
  else
@@ -2758,7 +2767,7 @@ begin
   end;
  finally FreeMem(S); end;
  if NewPen then
-  DeleteObject(SelectObject(Info.DC, Info.BlackBrush));
+  DeleteObject(SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush));
 end;
 
 procedure TPolyedre.PreDessinerSel{1};
@@ -2770,21 +2779,21 @@ begin
  if not CheckPolyhedron then Exit;
  for I:=0 to Faces.Count-1 do
   DessinPolygoneFace(PSurface(Faces[I]));
-(*if Info.BasePen=White_pen then
+(*if g_DrawInfo.BasePen=White_pen then
   J:=Whiteness
  else
   J:=Blackness;
  Pts[0]:=CCoord.Proj(CentrePolyedre);
  if PointVisible16(Pts[0]) then
   with Pts[0] do
-   PatBlt(Info.DC, X-2, Y-2, 5, 5, J);
+   PatBlt(g_DrawInfo.DC, X-2, Y-2, 5, 5, J);
  if FaceHandles then
   begin
-   Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
-   Pen:=SelectObject(Info.DC, Info.BlackBrush);
+   Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_Brush));
+   Pen:=SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
    PostDessinerSel1;                      { poignées noires creuses }
-   SelectObject(Info.DC, Pen);
-   SelectObject(Info.DC, Brush);
+   SelectObject(g_DrawInfo.DC, Pen);
+   SelectObject(g_DrawInfo.DC, Brush);
   end;*)
 end;
 
@@ -2811,7 +2820,7 @@ begin
     Pts:=CCoord.Proj(CentreSurface(PSurface(Faces[I])));
     if PointVisible16(Pts) then
      with Pts do
-      Rectangle(Info.DC, X-3, Y-3, X+4, Y+4);        { dessine les poignées }
+      Rectangle(g_DrawInfo.DC, X-3, Y-3, X+4, Y+4);        { dessine les poignées }
    end;
 end;
 
@@ -2820,14 +2829,14 @@ var
  J: Integer;
  Pts: TPoint;
 begin
- if Info.BasePen=White_pen then
+ if g_DrawInfo.BasePen=White_pen then
   J:=Whiteness
  else
   J:=Blackness;
  Pts:=CCoord.Proj(CentrePolyedre);
  if PointVisible16(Pts) then      { dessine la poignée centrale }
   with Pts do
-   PatBlt(Info.DC, X-2, Y-2, 5, 5, J);
+   PatBlt(g_DrawInfo.DC, X-2, Y-2, 5, 5, J);
 end;*)
 
 (*procedure TPolyedre.PostDessinerSel1;
@@ -2890,7 +2899,7 @@ var
 begin
  if CheckPolyhedron then
   begin
-  {if (Info.Clic.X<>1E10) and PointInterieur(Info.Clic) then
+  {if (g_DrawInfo.Clic.X<>1E10) and PointInterieur(g_DrawInfo.Clic) then
     AnalyseClic:=Self
    else
     AnalyseClic:=Nil;}
@@ -2899,14 +2908,14 @@ begin
      J:=0;
      for I:=0 to Faces.Count-1 do
       with PSurface(Faces[I])^.F do
-       if Dot(Info.Clic, Normale) > Dist then
+       if Dot(g_DrawInfo.Clic, Normale) > Dist then
         begin
          J:=1;
          Break;
         end;
      if J=0 then
       begin  { point 'Clic' à l'intérieur }
-       ResultatAnalyseClic(Liste, CCoord.Proj(Info.Clic), Nil);
+       ResultatAnalyseClic(Liste, CCoord.Proj(g_DrawInfo.Clic), Nil);
        Exit;
       end;
     end;
@@ -3004,7 +3013,7 @@ begin
     begin
      S:=PSurface(Faces[I]);
      S^.F.AjouterSurfaceRef(Liste, S, Vertices, Sommets.Count, ZMax1, Odd(S^.F.SelMult));
-      {Info.ColorTraits[esNormal]);}
+      {g_DrawInfo.ColorTraits[esNormal]);}
     end;
    finally FreeMem(Vertices); end;
    Result:=1;
@@ -3023,8 +3032,8 @@ begin
     with PPlan(Plan)^ do
      begin
       DrawFlags:=df_HasBackColor;
-      LineColor:=Info.ColorTraits[esSelection];
-      LineBackColor:=Info.ColorTraits[esSel2];
+      LineColor:=g_DrawInfo.ColorTraits[esSelection];
+      LineBackColor:=g_DrawInfo.ColorTraits[esSel2];
       Exit;
      end;
  inherited;
@@ -3058,7 +3067,7 @@ begin
  Result.Flags:=FFlags and ofCloneFlags;
 {for I:=0 to Specifics.Count-1 do
   Result.Specifics.Add(Specifics[I]);}
- Result.Specifics.AddStrings(Specifics); 
+ Result.Specifics.AddStrings(Specifics);
 end;
 
 function TPolyedre.EnumAretes(Sommet: PSommet; var nSommets: TTableauFSommets) : Integer;
@@ -3098,7 +3107,7 @@ var
  Info1: TVect;
  OldOrg, NewOrg: TVect;
 begin
- if (Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid])
+ if (g_DrawInfo.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid])
  and (PasGrille>0) and CheckPolyhedron then
   begin
    try
@@ -3106,19 +3115,19 @@ begin
    finally
     DetruireSommets;
    end;
-   Info1:=Info.Clic;
+   Info1:=g_DrawInfo.Clic;
    try
     OldOrg.X:=OldOrg.X + Info1.X;
     OldOrg.Y:=OldOrg.Y + Info1.Y;
     OldOrg.Z:=OldOrg.Z + Info1.Z;
     NewOrg:=OldOrg;
     AjusteGrille1(NewOrg, PasGrille);
-    Info.Clic.X:=Info1.X + NewOrg.X - OldOrg.X;
-    Info.Clic.Y:=Info1.Y + NewOrg.Y - OldOrg.Y;
-    Info.Clic.Z:=Info1.Z + NewOrg.Z - OldOrg.Z;
+    g_DrawInfo.Clic.X:=Info1.X + NewOrg.X - OldOrg.X;
+    g_DrawInfo.Clic.Y:=Info1.Y + NewOrg.Y - OldOrg.Y;
+    g_DrawInfo.Clic.Z:=Info1.Z + NewOrg.Z - OldOrg.Z;
     inherited Deplacement(0);
    finally
-    Info.Clic:=Info1;
+    g_DrawInfo.Clic:=Info1;
    end;
   end
  else
@@ -3268,7 +3277,7 @@ begin
           Result:=@FParent.PythonObj
          else
           Result:=Py_None;
-         Py_INCREF(Result); 
+         Py_INCREF(Result);
          Exit;
         end;
   'v': if StrComp(attr, 'vertices') = 0 then
@@ -3657,15 +3666,15 @@ var
  Pen: HPen;
  Rop1: Integer;
 begin
- if not (mdColorFixed in Info.ModeDessin) then
-  Pen:=SelectObject(Info.DC, CreatePen(ps_Solid, 0, MapColors(Col)))
+ if not (mdColorFixed in g_DrawInfo.ModeDessin) then
+  Pen:=SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 0, MapColors(Col)))
  else
   Pen:=0;
- Rop1:=SetROP2(Info.DC, R2_CopyPen);
+ Rop1:=SetROP2(g_DrawInfo.DC, R2_CopyPen);
  DessinPolygoneFace(S);
- SetROP2(Info.DC, Rop1);
+ SetROP2(g_DrawInfo.DC, Rop1);
  if Pen<>0 then
-  DeleteObject(SelectObject(Info.DC, Pen));
+  DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
 end;
 
 procedure TFace.PreDessinerSel;
@@ -3702,44 +3711,44 @@ begin
  P:=FaceOfPoly;
  while P<>Nil do
   begin
-   if (P^.Source is TPolyedre) and not (mdRedrawFaces in Info.ModeDessin) then
+   if (P^.Source is TPolyedre) and not (mdRedrawFaces in g_DrawInfo.ModeDessin) then
     begin
-     if Info.SelectedBrush<>0 then    { si selection multiple }
+     if g_DrawInfo.SelectedBrush<>0 then    { si selection multiple }
       begin
        Pts:=CCoord.Proj(CentreSurface(P));
-       Pen:=SelectObject(Info.DC, Info.SelectedBrush);
-       Rop1:=SetROP2(Info.DC, R2_CopyPen);
+       Pen:=SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+       Rop1:=SetROP2(g_DrawInfo.DC, R2_CopyPen);
        J:=P^.prvNbS;
        while J>0 do
         begin
          Dec(J);     { croix en traitillés }
          CCoord.Line95(CCoord.Proj(P^.prvDescS[J]^.P), Pts);
         end;
-       SetROP2(Info.DC, Rop1);
+       SetROP2(g_DrawInfo.DC, Rop1);
      (*if FirstPoly then
         begin
          FirstPoly:=False;
-         SelectObject(Info.DC, Pen);
+         SelectObject(g_DrawInfo.DC, Pen);
          TPolyedre(P^.Source).PostDessinerSel1;     { dessine les poignées creuses sur le 1er polyèdre }
         end;*)
-     (*SelectObject(Info.DC, Info.BlackBrush);
-       if Info.BasePen=White_pen then
+     (*SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+       if g_DrawInfo.BasePen=White_pen then
         J:=GetStockObject(Black_brush)
        else
         J:=GetStockObject(White_brush);
-       J:=SelectObject(Info.DC, J);
+       J:=SelectObject(g_DrawInfo.DC, J);
        if PointVisible16(Pts) then
         with Pts do
-         Rectangle(Info.DC, X-3, Y-3, X+4, Y+4);        { poignée en blanc }
-       SelectObject(Info.DC, J);*)
-       SelectObject(Info.DC, Pen);
+         Rectangle(g_DrawInfo.DC, X-3, Y-3, X+4, Y+4);        { poignée en blanc }
+       SelectObject(g_DrawInfo.DC, J);*)
+       SelectObject(g_DrawInfo.DC, Pen);
       end;
     end
    else
     begin
-     J:=SelectObject(Info.DC, GetStockObject(Null_brush));
+     J:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_brush));
      DrawSquare(P, lcBSP);
-     SelectObject(Info.DC, J);
+     SelectObject(g_DrawInfo.DC, J);
     end;
    P:=P^.NextF;
   end;
@@ -3813,43 +3822,43 @@ begin
           case I of
            0: begin
                NbPts:=P^.prvNbS;
-               Pen:=SelectObject(Info.DC, CreatePen(ps_Solid, 0, clYellow));
+               Pen:=SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 0, clYellow));
                while NbPts>0 do
                 begin
                  Dec(NbPts);
-                 Line16(Info.DC, CCoord.Proj(P^.prvDescS[NbPts]^.P), Pts[0]);
+                 Line16(g_DrawInfo.DC, CCoord.Proj(P^.prvDescS[NbPts]^.P), Pts[0]);
                 end;
-               DeleteObject(SelectObject(Info.DC, Pen));
+               DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
               end;
            1: begin
-               if Info.BasePen=White_pen then
+               if g_DrawInfo.BasePen=White_pen then
                 Brush:=Black_brush
                else
                 Brush:=White_brush;
-               Brush:=SelectObject(Info.DC, GetStockObject(Brush));
+               Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Brush));
                if J=-1 then
                 begin
                  GetObject(Brush, SizeOf(LogBrush), @LogBrush);
-                 Pen:=SelectObject(Info.DC, CreatePen(ps_Solid, 0, LogBrush.lbColor));
+                 Pen:=SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 0, LogBrush.lbColor));
                  if PointVisible16(Pts[0]) then
                   with Pts[0] do
-                   Rectangle(Info.DC, X-3, Y-3, X+4, Y+4);
-                 DeleteObject(SelectObject(Info.DC, Pen));
+                   Rectangle(g_DrawInfo.DC, X-3, Y-3, X+4, Y+4);
+                 DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
                 end
                else
                 if PointVisible16(Pts[0]) then
                  with Pts[0] do
-                  Rectangle(Info.DC, X-3, Y-3, X+4, Y+4);
-               SelectObject(Info.DC, Brush);
+                  Rectangle(g_DrawInfo.DC, X-3, Y-3, X+4, Y+4);
+               SelectObject(g_DrawInfo.DC, Brush);
               end;
-           2: Line16(Info.DC, Pts[0], Pts[1]);
+           2: Line16(g_DrawInfo.DC, Pts[0], Pts[1]);
            3: if PointVisible16(Pts[1]) then
                begin
                 Brush:=GetStockObject(Gray_brush);
                 R:=Bounds(Pts[1].X-2, Pts[1].Y-1, 5, 3);
-                FillRect(Info.DC, R, Brush);
+                FillRect(g_DrawInfo.DC, R, Brush);
                 R:=Bounds(Pts[1].X-1, Pts[1].Y-2, 3, 5);
-                FillRect(Info.DC, R, Brush);
+                FillRect(g_DrawInfo.DC, R, Brush);
                end;
            else Break;
           end;
@@ -3861,9 +3870,9 @@ begin
     end
    else
     begin
-     Brush:=SelectObject(Info.DC, GetStockObject(Null_brush));
+     Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_brush));
      DrawSquare(P, lcTag);
-     SelectObject(Info.DC, Brush);
+     SelectObject(g_DrawInfo.DC, Brush);
     end;
    P:=P^.NextF;
   end;
@@ -3968,16 +3977,16 @@ var
 begin
  if GetThreePoints(Pt[1], Pt[2], Pt[3]) then
   begin
-   if Info.ModeDeplacement=mdInflate then
+   if g_DrawInfo.ModeDeplacement=mdInflate then
     begin
      if not LoadData then Exit;
-     InfoClic.X:=Normale.X*Info.ClicZ;
-     InfoClic.Y:=Normale.Y*Info.ClicZ;
-     InfoClic.Z:=Normale.Z*Info.ClicZ;
+     InfoClic.X:=Normale.X * g_DrawInfo.ClicZ;
+     InfoClic.Y:=Normale.Y * g_DrawInfo.ClicZ;
+     InfoClic.Z:=Normale.Z * g_DrawInfo.ClicZ;
     end
    else
-    InfoClic:=Info.Clic;
-   if Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
+    InfoClic:=g_DrawInfo.Clic;
+   if g_DrawInfo.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
     begin
      OldOrg:=CentreFace;
      NewOrg:=OldOrg;
@@ -3996,8 +4005,8 @@ begin
      end
     else
      AjusteGrille1(InfoClic, PasGrille);*)
-   if Info.ModeDeplacement <= mdDisplacementGrid then
-    case Info.TexAntiScroll of
+   if g_DrawInfo.ModeDeplacement <= mdDisplacementGrid then
+    case g_DrawInfo.TexAntiScroll of
      tas_Perpendicular:
        if LoadData then
         begin
@@ -4020,13 +4029,13 @@ begin
     end;
    for I:=1 to 3 do
     begin
-     if (Info.ModeDeplacement > mdDisplacementGrid)
-     and (Info.ModeDeplacement <> mdInflate) then
+     if (g_DrawInfo.ModeDeplacement > mdDisplacementGrid)
+     and (g_DrawInfo.ModeDeplacement <> mdInflate) then
       begin
        Pt[I].X:=Pt[I].X-InfoClic.X;
        Pt[I].Y:=Pt[I].Y-InfoClic.Y;
        Pt[I].Z:=Pt[I].Z-InfoClic.Z;
-       if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
+       if g_DrawInfo.ModeDeplacement in [mdLinear, mdLineaireCompat] then
         TransformationLineaire(Pt[I]);
       end;
      Pt[I].X:=Pt[I].X+InfoClic.X;
@@ -4062,7 +4071,7 @@ begin
    if U then
     begin
      Dup:=Clone(FParent, False) as TTexturedTreeMap;
-     ListeActions.Add(TQObjectUndo.Create('', Self, Dup));
+     g_ListeActions.Add(TQObjectUndo.Create('', Self, Dup));
     end
    else
     Dup:=Self;
@@ -4084,17 +4093,17 @@ var
  M, Base: TMatrixTransformation;
 begin
  if not LoadData then Exit;
- Info.Clic:=FixPoint;
- Info.ModeDeplacement:=mdLinear;
+ g_DrawInfo.Clic:=FixPoint;
+ g_DrawInfo.ModeDeplacement:=mdLinear;
  Axe:=Cross(Normale, nNormal);
  L:=Sqr(Axe.X)+Sqr(Axe.Y)+Sqr(Axe.Z);
  if L<={rien}0 then
   begin
    if Dot(Normale, nNormal)>0 then
     Exit;  { Normale = nNormal }
-   FillChar(Info.Matrice, SizeOf(Info.Matrice), 0);
+   FillChar(g_DrawInfo.Matrice, SizeOf(g_DrawInfo.Matrice), 0);
    for I:=1 to 3 do
-    Info.Matrice[I,I]:=-1;   { central symmetry }
+    g_DrawInfo.Matrice[I,I]:=-1;   { central symmetry }
   end
  else
   begin  { L = sqr(sin(angle between Normale and nNormal)) }
@@ -4123,7 +4132,7 @@ begin
      Base[2,2]:=Y;
      Base[3,2]:=Z;
     end;
-   Info.Matrice:=MultiplieMatrices(MultiplieMatrices(
+   g_DrawInfo.Matrice:=MultiplieMatrices(MultiplieMatrices(
     Base, M), MatriceInverse(Base));
   end;
  Deplacement(0);
@@ -4151,8 +4160,8 @@ begin
      Base[2,3]:=Y;
      Base[3,3]:=Z;
     end;
-   Info.ModeDeplacement:=mdLinear;
-   Info.Matrice:=MatriceInverse(Base);
+   g_DrawInfo.ModeDeplacement:=mdLinear;
+   g_DrawInfo.Matrice:=MatriceInverse(Base);
    V2.X:=Dest.X-Src.X;
    V2.Y:=Dest.Y-Src.Y;
    V2.Z:=Dest.Z-Src.Z;
@@ -4611,9 +4620,9 @@ begin
      Plan.ObjetTreeMap:=S^.Source;
      Plan.Centre.Z:=ZMax;
      if Sel then
-      Plan.LineColor:=Info.ColorTraits[esSelection]
+      Plan.LineColor:=g_DrawInfo.ColorTraits[esSelection]
      else
-      Plan.LineColor:=Info.ColorTraits[esNormal];
+      Plan.LineColor:=g_DrawInfo.ColorTraits[esNormal];
      Liste.Add(Plan);
     end
    {$IFDEF Debug}
@@ -4632,7 +4641,7 @@ begin
    while P<>Nil do
     begin
      AjouterSurfaceRef(Liste, P, Nil, 0, -MaxInt, False);
-     {Info.ColorTraits[esNormal]);}
+     {g_DrawInfo.ColorTraits[esNormal]);}
      P:=P^.NextF;
     end;
    Result:=1;
@@ -4650,7 +4659,7 @@ begin
     P:=FaceOfPoly;
     while Assigned(P) do
     begin
-      if not ((mdComputingPolys in Info.ModeDessin) and (P^.Source is TPolyedre)) then
+      if not ((mdComputingPolys in g_DrawInfo.ModeDessin) and (P^.Source is TPolyedre)) then
         CurrentMapView.Scene.AddPolyFace(P);
       P:=P^.NextF;
     end;

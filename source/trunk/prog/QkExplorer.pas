@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/03/20 21:46:29  decker_dk
+Updated copyright-header
+
 Revision 1.12  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -200,7 +203,7 @@ type
  TGetDragSource = function : QExplorerGroup of object;
 
 var
- WorkingExplorer: TQkExplorer;
+ g_WorkingExplorer: TQkExplorer;
 
 function DragObject: QExplorerGroup;
 procedure SetDragSource(Flags: Integer; GetFunc: TGetDragSource);
@@ -310,12 +313,12 @@ procedure OperationDansScene(Q: QObject; Aj: TAjScene; CurrentExplorer: TQkExplo
 var
  I: Integer;
 begin
- if NiveauAction and na_Local <> 0 then Exit;
+ if g_NiveauAction and na_Local <> 0 then Exit;
  if CurrentExplorer=Nil then
   CurrentExplorer:=ExplorerFromObject(Q);
- WorkingExplorer:=CurrentExplorer;
- if WorkingExplorer<>Nil then
-  if NiveauAction and na_Action = 0 then
+ g_WorkingExplorer:=CurrentExplorer;
+ if g_WorkingExplorer<>Nil then
+  if g_NiveauAction and na_Action = 0 then
    begin
     if FUndoExplorers=Nil then
      FUndoExplorers:=TList.Create;
@@ -331,7 +334,7 @@ begin
  I:=0;
  repeat
   if not Odd(Q.Flags) then
-   WorkingExplorer:=Nil;  { moved up past the root of WorkingExplorer }
+   g_WorkingExplorer:=Nil;  { moved up past the root of g_WorkingExplorer }
   Q:=Q.FParent;
   if Q=Nil then Break;
   Dec(I);
@@ -342,7 +345,7 @@ end;
  I: Integer;
  ParentOnly: Boolean;
 begin
- if NiveauAction and na_Local <> 0 then Exit;
+ if g_NiveauAction and na_Local <> 0 then Exit;
  if CurrentExplorer=Nil then
   CurrentExplorer:=ExplorerFromObject(Q);
  ParentOnly:=(CurrentExplorer=Nil) and (Q.FParent<>Nil);
@@ -353,7 +356,7 @@ begin
   end;
  if CurrentExplorer<>Nil then
   begin
-   if NiveauAction and na_Action = 0 then
+   if g_NiveauAction and na_Action = 0 then
     begin
      if FUndoExplorers=Nil then
       FUndoExplorers:=TList.Create;
@@ -398,7 +401,7 @@ constructor TQkExplorer.Create(AOwner: TComponent);
 begin
  inherited;
 {FRoots:=TQList.Create;
- Images:=Form1.ImageList1;
+ Images:=g_Form1.ImageList1;
  OnDispInfo:=DispInfo;
  OnExpanding:=Expanding;
  OnCollapsed:=Collapsed;
@@ -950,10 +953,10 @@ var
 begin
  GlobalDoAccept(Self);
  T:=SetSelection1(nSelection, -2);
- N0:=NiveauAction; try
- NiveauAction:=NiveauAction or na_Select;
+ N0:=g_NiveauAction; try
+ g_NiveauAction:=g_NiveauAction or na_Select;
  SelectionnerInterne(T);
- finally NiveauAction:=N0; end;
+ finally g_NiveauAction:=N0; end;
 end;
 
 procedure TQkExplorer.SelectionnerInterne(Q: QObject);
@@ -1106,7 +1109,7 @@ var
  Compte: Integer;
  T, nDropTarget: QObject;
 begin
- if NiveauAction and na_Select <> 0 then
+ if g_NiveauAction and na_Select <> 0 then
   Exit;  { already while selecting, it's the the user that selects this }
 {Changing:=Node;}
  FDragTag:=1;
@@ -1249,14 +1252,14 @@ var
  N0: Integer;
 begin
  Ok:=(Node<>Nil) and Node.Selected;
- N0:=NiveauAction; try
+ N0:=g_NiveauAction; try
  if Ok then
-  NiveauAction:=NiveauAction or na_Select;
+  g_NiveauAction:=g_NiveauAction or na_Select;
  Selected:=Node;
  finally
-  NiveauAction:=N0;
+  g_NiveauAction:=N0;
  end;
-(*Info.Clic.X:=1E10;
+(*g_DrawInfo.Clic.X:=1E10;
  Ok:=False;
  T:=Nil;
  if EnumSel(T) then
@@ -1283,10 +1286,10 @@ var
  ParentForm: TCustomForm;
 begin
  Result:=Nil;
- if NiveauAction and na_Local <> 0 then
+ if g_NiveauAction and na_Local <> 0 then
   Exit;
  case Op of
-  muBegin: if NiveauAction and na_Select = 0 then
+  muBegin: if g_NiveauAction and na_Select = 0 then
             begin
              ParentForm:=ValidParentForm(Self);
              New(PUndoData(Result));
@@ -1310,7 +1313,7 @@ begin
                Focus:=TMSelFocus;
               end;
              EffacerSelection;
-             NiveauAction:=NiveauAction or na_Select;
+             g_NiveauAction:=g_NiveauAction or na_Select;
             end;
   muOk: if Data<>Nil then
          with PUndoData(Data)^ do
@@ -1329,7 +1332,7 @@ begin
                end;}
   muEnd: if Data<>Nil then
           begin
-           NiveauAction:=NiveauAction and not na_Select;
+           g_NiveauAction:=g_NiveauAction and not na_Select;
            Dispose(PUndoData(Data));
           end;
   muOneBegin: begin
@@ -1350,10 +1353,10 @@ begin
   asRetire: if Q=FSelection1 then
              begin
               FSelection1:=Nil;
-             {NiveauAction:=NiveauAction and not na_NoResel;}
+             {g_NiveauAction:=g_NiveauAction and not na_NoResel;}
              end;
  {asAjoute: if (FSelection1=Nil)
-            and (NiveauAction and (na_Resel or na_NoResel) = na_Reset) then
+            and (g_NiveauAction and (na_Resel or na_NoResel) = na_Reset) then
              FSelection1:=Q;}
  end;**
  case Aj of
@@ -1424,7 +1427,7 @@ end;*)
 procedure TQkExplorer.Edited(Item: QObject; const Text: String);
 begin
  DebutAction;
- ListeActions.Add(TNameUndo.Create('', Text, Item));
+ g_ListeActions.Add(TNameUndo.Create('', Text, Item));
  case AllowEditing of
   aeUndo: FinAction(Item, LoadStr1(566));
   aeFree: FreeAction(Item);
@@ -1608,10 +1611,10 @@ begin
      if Copier or not Interne then
       begin
        El.FParent:=DropTarget;
-       ListeActions.Add(TQObjectUndo.Create('', Nil, El));
+       g_ListeActions.Add(TQObjectUndo.Create('', Nil, El));
       end
      else
-      ListeActions.Add(TMoveUndo.Create('', El, DropTarget, Nil));
+      g_ListeActions.Add(TMoveUndo.Create('', El, DropTarget, Nil));
    end;
  finally
   SourceQ.AddRef(-1);
@@ -1671,11 +1674,11 @@ begin
       begin
        El.FParent:=DropTarget.TvParent;
        U:=TQObjectUndo.Create('', Nil, El);
-       ListeActions.Add(U);
+       g_ListeActions.Add(U);
        U.InsererAvant:=InsererAvant;
       end
      else
-      ListeActions.Add(TMoveUndo.Create('', El, DropTarget.TvParent, InsererAvant));
+      g_ListeActions.Add(TMoveUndo.Create('', El, DropTarget.TvParent, InsererAvant));
    end;
  finally
   SourceQ.AddRef(-1);
@@ -1795,10 +1798,10 @@ begin
      Q.FParent:=nParent;
      U:=TQObjectUndo.Create('', Nil, Q);
      U.InsererAvant:=nInsererAvant;
-     ListeActions.Add(U);
+     g_ListeActions.Add(U);
     end;
   end;
- if ListeActions.Count=0 then
+ if g_ListeActions.Count=0 then
   begin   { items were not accepted by the target group }
    if Beep then
     MessageBeep(0);
@@ -1818,7 +1821,7 @@ begin
  Gr:=ClipboardGroup;
  Gr.AddRef(+1);
  try
-  if ClipboardChain(Gr) then
+  if g_ClipboardChain(Gr) then
    DropObjectsNow(Gr, LoadStr1(543), True);
  finally
   Gr.AddRef(-1);
@@ -1849,7 +1852,7 @@ begin
     else
      S:=LoadStr1(NoTexte);
     DebutAction;
-    ListeActions.Add(TQObjectUndo.Create('', T, Nil));
+    g_ListeActions.Add(TQObjectUndo.Create('', T, Nil));
     AnyObj:=T.TvParent;
    end
   else
@@ -1866,7 +1869,7 @@ begin
       if Odd(T.Flags) then   { if ofTreeViewSubElement is set }
        begin
         AnyObj:=T.TvParent;
-        ListeActions.Add(TQObjectUndo.Create('', T, Nil));
+        g_ListeActions.Add(TQObjectUndo.Create('', T, Nil));
        end;
      end;
     S:=LoadStr1(NoTexte);
@@ -1959,11 +1962,11 @@ end;*)
 var
  na0: Integer;
 begin
- na0:=NiveauAction; try
+ na0:=g_NiveauAction; try
  if (Node<>Nil) and Node.Selected then
-  NiveauAction:=NiveauAction or na_Select;
+  g_NiveauAction:=g_NiveauAction or na_Select;
  Selected:=Node;
- finally NiveauAction:=na0; end;
+ finally g_NiveauAction:=na0; end;
  PopupMenu:=GetExplorerMenu;
 end;*)
 

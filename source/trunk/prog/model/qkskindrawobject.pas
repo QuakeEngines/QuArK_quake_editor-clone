@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:36:53  decker_dk
+Updated copyright-header
+
 Revision 1.4  2001/02/05 20:03:52  aiv
 Fixed stupid bug when displaying texture vertices
 
@@ -119,7 +122,7 @@ var
   pa, pa_o: PPointProj;
 begin
   if not(CCoord is T2DCoordinates) then exit;
-  if not (md2dOnly in Info.ModeDessin) then exit;
+  if not (md2dOnly in g_DrawInfo.ModeDessin) then exit;
   c:=QComponent(Self.FParent);
   if (c = nil) or not(c is QComponent) then
     Raise Exception.Create('QSkinDrawObject.Dessiner - Internal Error: C');

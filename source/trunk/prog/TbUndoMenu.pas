@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:41:41  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -73,7 +76,7 @@ type
  {------------------------}
 
 var
-  UndoDlg: TUndoDlg;
+  g_UndoDlg: TUndoDlg;
 
 procedure UndoDlgOp1;
 
@@ -89,10 +92,10 @@ uses Quarkx;
 
 procedure UndoDlgOp1;
 begin
- if (UndoDlg<>Nil) and not UndoDlg.Updating then
+ if (g_UndoDlg<>Nil) and not g_UndoDlg.Updating then
   begin
-   PostMessage(UndoDlg.Handle, wm_InternalMessage, wp_UpdateInternals, ui_Undo);
-   UndoDlg.Updating:=True;
+   PostMessage(g_UndoDlg.Handle, wm_InternalMessage, wp_UpdateInternals, ui_Undo);
+   g_UndoDlg.Updating:=True;
   end;
 end;
 
@@ -102,7 +105,7 @@ procedure TUndoDlg.wmInternalMessage(var Msg: TMessage);
 begin
  if (Msg.wParam=wp_UpdateInternals) and (Msg.lParam=ui_Undo) then
   begin
-   UndoDlg.Updating:=False;
+   g_UndoDlg.Updating:=False;
    MAJListes;
   end
  else
@@ -324,7 +327,7 @@ end;
 procedure TUndoDlg.FormDestroy(Sender: TObject);
 begin
  UndoRoots.Free;
- UndoDlg:=Nil;
+ g_UndoDlg:=Nil;
  SavePositionTb('UndoMenu', False, Nil);
 end;
 

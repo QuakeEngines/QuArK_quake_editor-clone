@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/03/20 21:41:11  decker_dk
+Updated copyright-header
+
 Revision 1.6  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -40,7 +43,6 @@ Englishification and a little layout
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit Undo;
 
@@ -198,9 +200,9 @@ type
 
 var
 {Modified: Boolean;}
- ListeActions: TList = Nil;
+ g_ListeActions: TList = Nil;
 {ExplorersActifs: TList;}
- NiveauAction: Integer = 0;
+ g_NiveauAction: Integer = 0;
 
 procedure ClearUndo(Reste: Integer; Charge: TQStream);
 procedure Action(Q: QObject; UndoObject: TUndoObject);
@@ -297,7 +299,7 @@ end;
 
 procedure RootChanges(R: PUndoRoot);
 begin
- if Form1.Explorer.Roots.IndexOf(R^.Root)>=0 then
+ if g_Form1.Explorer.Roots.IndexOf(R^.Root)>=0 then
   UpdateAddOnsContent;
 end;
 
@@ -410,7 +412,7 @@ procedure InitUndo;
 begin
  UndoList:=TList.Create;
  Undone:=0;
- ListeActions:=Nil;
+ g_ListeActions:=Nil;
 {ExplorersActifs:=TList.Create;}
 {AddExitProc(DoneUndo);}
 end;*)
@@ -419,12 +421,12 @@ procedure AnnuleAction;
 var
  I: Integer;
 begin
- if ListeActions<>Nil then
+ if g_ListeActions<>Nil then
   begin
-   for I:=ListeActions.Count-1 downto 0 do
-    TUndoObject(ListeActions[I]).Free;
-   ListeActions.Free;
-   ListeActions:=Nil;
+   for I:=g_ListeActions.Count-1 downto 0 do
+    TUndoObject(g_ListeActions[I]).Free;
+   g_ListeActions.Free;
+   g_ListeActions:=Nil;
   end;
 end;
 
@@ -511,28 +513,28 @@ end;
 procedure DebutAction;
 begin
  AnnuleAction;
- ListeActions:=TList.Create;
+ g_ListeActions:=TList.Create;
 end;
 
 procedure FinAction(Q: QObject; const Texte: String);
 var
  U: TUndoObject;
 begin
- if ListeActions=Nil then Exit;
- if ListeActions.Count > 1 then
-  U:=TMultipleUndo.CreateList(Texte, ListeActions)
+ if g_ListeActions=Nil then Exit;
+ if g_ListeActions.Count > 1 then
+  U:=TMultipleUndo.CreateList(Texte, g_ListeActions)
  else
   begin
-   if ListeActions.Count = 1 then
+   if g_ListeActions.Count = 1 then
     begin
-     U:=TUndoObject(ListeActions.First);
+     U:=TUndoObject(g_ListeActions.First);
      U.FText:=Texte;
     end
    else
     U:=Nil;
-   ListeActions.Free;
+   g_ListeActions.Free;
   end;
- ListeActions:=Nil;
+ g_ListeActions:=Nil;
  Action(Q, U);
 end;
 
@@ -541,10 +543,10 @@ var
  Effectue, I: Integer;
  CurrentExplorer: TQkExplorer;
 begin
- if ListeActions=Nil then Exit;
+ if g_ListeActions=Nil then Exit;
  try
   try
-   NiveauAction:=NiveauAction or na_Action;
+   g_NiveauAction:=g_NiveauAction or na_Action;
    CurrentExplorer:=ExplorerFromObject(Q);
    if CurrentExplorer<>Nil then
     begin
@@ -558,17 +560,17 @@ begin
   {try}
     Effectue:=-1;
     try
-     for I:=0 to ListeActions.Count-1 do
+     for I:=0 to g_ListeActions.Count-1 do
       begin
-       TUndoObject(ListeActions[I]).Faire;
+       TUndoObject(g_ListeActions[I]).Faire;
        Effectue:=I;
       end;
     {if CurrentExplorer<>Nil then
       CurrentExplorer.MsgUndo(muOk, Data);}
     except
-     NiveauAction:=NiveauAction and not na_Action;
+     g_NiveauAction:=g_NiveauAction and not na_Action;
      for I:=Effectue downto 0 do
-      TUndoObject(ListeActions[I]).DoUndo;
+      TUndoObject(g_ListeActions[I]).DoUndo;
      FinOpDansScene;
      Raise;
     end;
@@ -577,7 +579,7 @@ begin
      CurrentExplorer.MsgUndo(muEnd, Data);
    end;}
   finally
-   NiveauAction:=NiveauAction and not na_Action;
+   g_NiveauAction:=g_NiveauAction and not na_Action;
   {UndoObject.Free;}
   end;
  except
@@ -601,7 +603,7 @@ begin
    if UndoObject=Nil then Exit;
    ClearUndo(MaxUndoLevel-1, Nil);
    R:=NeedUndoRoot(Q);
-   NiveauAction:=NiveauAction or na_Action;
+   g_NiveauAction:=g_NiveauAction or na_Action;
    CurrentExplorer:=ExplorerFromObject(Q);
   {Modified:=True;}
   {ModificationScene;}
@@ -665,7 +667,7 @@ begin
     {CurrentExplorer.MsgUndo(muExceptBegin, Data);}
     {if Form4Actif then
       Form4.FSelection1:=Nil;}
-     NiveauAction:=NiveauAction and not na_Action;
+     g_NiveauAction:=g_NiveauAction and not na_Action;
      if Effectue then
       UndoObject.DoUndo;
      FinOpDansScene;
@@ -682,7 +684,7 @@ begin
      CurrentExplorer.MsgUndo(muEnd, Data);
    end;
   finally
-   NiveauAction:=NiveauAction and not na_Action;
+   g_NiveauAction:=g_NiveauAction and not na_Action;
    UndoObject.Free;
   end;
  except
@@ -693,21 +695,21 @@ end;
 
 procedure ActionEx(nNiveau: Integer; Q: QObject; UndoObject: TUndoObject);
 begin
-  NiveauAction:=nNiveau;
+  g_NiveauAction:=nNiveau;
   try
     Action(Q, UndoObject);
   finally
-    NiveauAction:=0;
+    g_NiveauAction:=0;
   end;
 end;
 
 procedure FinActionEx(nNiveau: Integer; Q: QObject; const Texte: String);
 begin
-  NiveauAction:=nNiveau;
+  g_NiveauAction:=nNiveau;
   try
     FinAction(Q, Texte);
   finally
-    NiveauAction:=0;
+    g_NiveauAction:=0;
   end;
 end;
 
@@ -885,11 +887,11 @@ begin
    Raise;
   end;
  except     { if DoOp2 or DoAtom failed }
-  NiveauAction:=NiveauAction or na_Cancel;
+  g_NiveauAction:=g_NiveauAction or na_Cancel;
   try
    DoOp2;    { reattach to the original relationships }
   finally
-   NiveauAction:=NiveauAction and not na_Cancel;
+   g_NiveauAction:=g_NiveauAction and not na_Cancel;
   end;
   Raise;
  end;
@@ -957,8 +959,8 @@ end;
 
 procedure TQObjectUndo.DoOp1;
 begin
-{N0:=NiveauAction;
- NiveauAction:=NiveauAction or na_Select;}
+{N0:=g_NiveauAction;
+ g_NiveauAction:=g_NiveauAction or na_Select;}
  TopLevelExplorer:=Nil;
  if Ancien<>Nil then
   begin
@@ -974,11 +976,11 @@ begin
   if Ancien<>Nil then
    begin
     OperationDansScene(Ancien, asAjoute, TopLevelExplorer);   { (re)attach }
-    if NiveauAction and na_Local = 0 then
+    if g_NiveauAction and na_Local = 0 then
      Ancien.SetSelMult;
    end;
 {finally
-  NiveauAction:=N0;
+  g_NiveauAction:=N0;
  end;}
 end;
 
@@ -1025,8 +1027,8 @@ begin
     end;
   {if Nouveau<>Nil then
     ReplaceUndoRoot(Ancien, Nouveau);}
-  {if Info.SelectionVisuelle=Ancien then
-    Info.SelectionVisuelle:=Nouveau;}
+  {if g_DrawInfo.SelectionVisuelle=Ancien then
+    g_DrawInfo.SelectionVisuelle:=Nouveau;}
   end;
 {CurrentExplorer.MsgUndo(muQObjectUndo, Self);}
  if Nouveau<>Nil then
@@ -1089,7 +1091,7 @@ end;
 procedure TObjPropUndo.DoOp2;
 begin
  OperationDansScene(AppliqueA, asModifie, Nil);
- if NiveauAction and na_Local = 0 then
+ if g_NiveauAction and na_Local = 0 then
   begin
    AppliqueA.SetSelMult;
    AppliqueA.FixupAllReferences;
@@ -1260,8 +1262,8 @@ end;
 
 procedure TMoveUndo.DoOp1;
 begin
-{N0:=NiveauAction;
- NiveauAction:=NiveauAction or na_Select;}
+{N0:=g_NiveauAction;
+ g_NiveauAction:=g_NiveauAction or na_Select;}
  OperationDansScene(Element, asDeplace1, Nil);    { deatch }
 end;
 
@@ -1269,10 +1271,10 @@ procedure TMoveUndo.DoOp2;
 begin
 {try}
   OperationDansScene(Element, asDeplace2, Nil);   { reattach }
-  if NiveauAction and na_Local = 0 then
+  if g_NiveauAction and na_Local = 0 then
    Element.SetSelMult;
 {finally
-  NiveauAction:=N0;
+  g_NiveauAction:=N0;
  end;}
 end;
 
@@ -1448,15 +1450,15 @@ begin
  with Group do
  begin
   for I:=0 to SubElements.Count-1 do
-   ListeActions.Add(TMoveUndo.Create('', SubElements[I], TvParent, Group));
+   g_ListeActions.Add(TMoveUndo.Create('', SubElements[I], TvParent, Group));
  end;
- ListeActions.Add(TQObjectUndo.Create('', Group, Nil));
+ g_ListeActions.Add(TQObjectUndo.Create('', Group, Nil));
 end;
 
 function ActionQObject(T: QObject) : QObject;
 begin
  Result:=T.Clone(T.FParent, False);
- ListeActions.Add(TQObjectUndo.Create('', T, Result));
+ g_ListeActions.Add(TQObjectUndo.Create('', T, Result));
 end;
 
 (*procedure ActionFace(Face: TFaceUndo);
@@ -1472,25 +1474,25 @@ var
  SpecArg: String;
 begin
  if Efface then
-  ListeActions.Add(TSetSpecificsUndo.Create('', Source.Specifics, Dest))
+  g_ListeActions.Add(TSetSpecificsUndo.Create('', Source.Specifics, Dest))
  else
   for I:=0 to Source.Specifics.Count-1 do
    begin
     SpecArg:=Source.Specifics[I];
     P:=Pos('=', SpecArg);
-    ListeActions.Add(TSpecificUndo.Create('', Copy(SpecArg,1,P-1), Copy(SpecArg,P+1,MaxInt), sp_Auto, Dest));
+    g_ListeActions.Add(TSpecificUndo.Create('', Copy(SpecArg,1,P-1), Copy(SpecArg,P+1,MaxInt), sp_Auto, Dest));
    end;
  for I:=0 to Dest.SubElements.Count-1 do
   begin
    Q:=Dest.SubElements[I];
    if Source.SubElements.IndexOf(Q)<0 then
-    ListeActions.Add(TQObjectUndo.Create('', Q, Nil));
+    g_ListeActions.Add(TQObjectUndo.Create('', Q, Nil));
   end;
  for I:=0 to Source.SubElements.Count-1 do
   begin
    Q:=Source.SubElements[I];
    if Dest.SubElements.IndexOf(Q)<0 then
-    ListeActions.Add(TQObjectUndo.Create('', Nil, Q.Clone(Dest, False)));
+    g_ListeActions.Add(TQObjectUndo.Create('', Nil, Q.Clone(Dest, False)));
   end;
 end;
 

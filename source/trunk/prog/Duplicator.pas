@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/29 22:49:38  tiglari
+tex replacement for duplicators
+
 Revision 1.9  2001/03/20 21:48:25  decker_dk
 Updated copyright-header
 
@@ -212,72 +215,72 @@ var
 begin
  BuildImages;
  OldPen:=0;
- if Info.GreyBrush <> 0 then
+ if g_DrawInfo.GreyBrush <> 0 then
   begin    { if color changes must be made now }
    C:=MapColors({DefaultColor}lcDuplicator);
    CouleurDessin(C);
-   OldPen:=Info.BlackBrush;
-   Info.BlackBrush:=CreatePen(ps_Solid, 0, C);
+   OldPen:=g_DrawInfo.BlackBrush;
+   g_DrawInfo.BlackBrush:=CreatePen(ps_Solid, 0, C);
   end;
- IsRestrictor:=Info.Restrictor=Self;
- if IsRestrictor then Info.Restrictor:=Nil;
+ IsRestrictor:=g_DrawInfo.Restrictor=Self;
+ if IsRestrictor then g_DrawInfo.Restrictor:=Nil;
  for I:=0 to PyObject_Length(FCache)-1 do
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).Dessiner;
  if IsRestrictor then
-  Info.Restrictor:=Self
+  g_DrawInfo.Restrictor:=Self
  else
-  IsRestrictor:=Info.Restrictor=Nil;   { True if object is not to be greyed out }
+  IsRestrictor:=g_DrawInfo.Restrictor=Nil;   { True if object is not to be greyed out }
  if OldPen<>0 then
   begin
-   SelectObject(Info.DC, OldPen);
-   DeleteObject(Info.BlackBrush);
-   Info.BlackBrush:=OldPen;
+   SelectObject(g_DrawInfo.DC, OldPen);
+   DeleteObject(g_DrawInfo.BlackBrush);
+   g_DrawInfo.BlackBrush:=OldPen;
   end;
  if HasOrigin then
   begin
    Pts:=CCoord.Proj(Origin);
    if not CCoord.CheckVisible(Pts) then Exit;
-   if Info.SelectedBrush<>0 then
-    SetROP2(Info.DC, Info.BaseR2)
+   if g_DrawInfo.SelectedBrush<>0 then
+    SetROP2(g_DrawInfo.DC, g_DrawInfo.BaseR2)
    else
     if IsRestrictor then
-     if Info.ModeAff>0 then
+     if g_DrawInfo.ModeAff>0 then
       begin
        if Pts.OffScreen = 0 then
         begin
-         SelectObject(Info.DC, Info.BlackBrush);
-         SetROP2(Info.DC, R2_CopyPen);
+         SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+         SetROP2(g_DrawInfo.DC, R2_CopyPen);
         end
        else
         begin
-         if Info.ModeAff=2 then
+         if g_DrawInfo.ModeAff=2 then
           Exit;
-         SelectObject(Info.DC, Info.GreyBrush);
-         SetROP2(Info.DC, Info.MaskR2);
+         SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+         SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
         end;
       end
      else
-     {if Info.ModeAff=0 then}
+     {if g_DrawInfo.ModeAff=0 then}
        begin
-        SelectObject(Info.DC, Info.BlackBrush);
-        SetROP2(Info.DC, R2_CopyPen);
+        SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+        SetROP2(g_DrawInfo.DC, R2_CopyPen);
        end
     else
      begin   { Restricted }
-      SelectObject(Info.DC, Info.GreyBrush);
-      SetROP2(Info.DC, Info.MaskR2);
+      SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+      SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
      end;
    X1:=Round(Pts.x);
    Y1:=Round(Pts.y);
-   MoveToEx(Info.DC, X1-4, Y1-4, Nil);
-   LineTo  (Info.DC, X1+5, Y1+5);
-   MoveToEx(Info.DC, X1-4, Y1+4, Nil);
-   LineTo  (Info.DC, X1+5, Y1-5);
-   if Info.SelectedBrush<>0 then
+   MoveToEx(g_DrawInfo.DC, X1-4, Y1-4, Nil);
+   LineTo  (g_DrawInfo.DC, X1+5, Y1+5);
+   MoveToEx(g_DrawInfo.DC, X1-4, Y1+4, Nil);
+   LineTo  (g_DrawInfo.DC, X1+5, Y1-5);
+   if g_DrawInfo.SelectedBrush<>0 then
     begin
-     SelectObject(Info.DC, Info.SelectedBrush);
-     SetROP2(Info.DC, R2_CopyPen);
-     Ellipse(Info.DC, X1-7, Y1-7, X1+8, Y1+7);
+     SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+     SetROP2(g_DrawInfo.DC, R2_CopyPen);
+     Ellipse(g_DrawInfo.DC, X1-7, Y1-7, X1+8, Y1+7);
     end;
   end;
 end;
@@ -334,8 +337,8 @@ var
  T: TTreeMap;
 {MD: TModeDessin;}
 begin
-{MD:=Info.ModeDessin;
- Exclude(Info.ModeDessin, mdComputingPolys);}
+{MD:=g_DrawInfo.ModeDessin;
+ Exclude(g_DrawInfo.ModeDessin, mdComputingPolys);}
  Color1:=CurrentMapView.Scene.BlendColor;
  CurrentMapView.Scene.SetColor(MiddleColor(Color1, MapColors(lcDuplicator), 0.5));
  InvPoly:=0;
@@ -347,7 +350,7 @@ begin
    T.AddTo3DScene;
   end;
  CurrentMapView.Scene.SetColor(Color1);
-{Include(Info.ModeDessin, mdComputingPolys);}
+{Include(g_DrawInfo.ModeDessin, mdComputingPolys);}
 end;
 
  {------------------------}
@@ -378,7 +381,7 @@ begin
    if U <> false then
     begin
      Dup:=Clone(FParent, False) as TDuplicator;
-     ListeActions.Add(TQObjectUndo.Create('', Self, Dup));
+     g_ListeActions.Add(TQObjectUndo.Create('', Self, Dup));
     end
    else
     Dup:=Self;

@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:35:06  decker_dk
+Updated copyright-header
 }
 
 unit PyImages;

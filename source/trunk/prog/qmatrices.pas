@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:43:03  decker_dk
+Updated copyright-header
+
 Revision 1.7  2001/02/18 20:06:45  aiv
 attaching models to tags almost finished
 
@@ -98,7 +101,7 @@ procedure TransformationLineaire(var Pt: TVect);
 var
  V: TVect;
 begin
- with Info do
+ with g_DrawInfo do
   begin
    V:=Pt;
    Pt.X:=Matrice[1,1]*V.X+Matrice[1,2]*V.Y+Matrice[1,3]*V.Z{+Matrice[1,4]};
@@ -109,7 +112,7 @@ end;
 
 function InverseOrientation : Boolean;
 begin
- with Info do
+ with g_DrawInfo do
   InverseOrientation:=(ModeDeplacement in [mdLinear, mdLineaireCompat])
    and (Determinant(Matrice) < 0);
 end;
@@ -130,17 +133,17 @@ var
  Angle: TDouble;
 begin
  Angle:=V * (pi/180);
- Info.Matrice:=MatriceIdentite;
- Info.Matrice[N1,N1]:=Cos(Angle);
- Info.Matrice[N2,N1]:=Sin(Angle);
- Info.Matrice[N1,N2]:=-Info.Matrice[N2,N1];
- Info.Matrice[N2,N2]:=Info.Matrice[N1,N1];
+ g_DrawInfo.Matrice:=MatriceIdentite;
+ g_DrawInfo.Matrice[N1,N1]:=Cos(Angle);
+ g_DrawInfo.Matrice[N2,N1]:=Sin(Angle);
+ g_DrawInfo.Matrice[N1,N2]:=-g_DrawInfo.Matrice[N2,N1];
+ g_DrawInfo.Matrice[N2,N2]:=g_DrawInfo.Matrice[N1,N1];
 end;
 
 procedure Info_mx_Symetrie(Coord: Integer);
 begin
- Info.Matrice:=MatriceIdentite;
- Info.Matrice[Coord,Coord]:=-1;
+ g_DrawInfo.Matrice:=MatriceIdentite;
+ g_DrawInfo.Matrice[Coord,Coord]:=-1;
 end;
 
 function MultiplieMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransformation;

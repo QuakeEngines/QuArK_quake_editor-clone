@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:46:07  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/01/21 15:48:25  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -97,8 +100,8 @@ type
  {------------------------}
 
 var
- DelayedClipboardGroup : QExplorerGroup = Nil;
- LargeDataInClipboard : Boolean = False;
+ g_DelayedClipboardGroup : QExplorerGroup = Nil;
+ g_LargeDataInClipboard : Boolean = False;
 
 function ClipboardGroup : QExplorerGroup;
 function CopyToOutside(Gr: QExplorerGroup) : QExplorerGroup;
@@ -140,12 +143,12 @@ var
  P: PChar;
  SourceTaille: Integer;
 begin
- Result:=IsClipboardFormatAvailable(CF_QObjects);
+ Result:=IsClipboardFormatAvailable(g_CF_QObjects);
  if Result and Assigned(PasteNow) then
   begin
    Source:=Nil; try
-   OpenClipboard(Form1.Handle); try
-   H:=GetClipboardData(CF_QObjects);
+   OpenClipboard(g_Form1.Handle); try
+   H:=GetClipboardData(g_CF_QObjects);
    if H=0 then
     Result:=False
    else
@@ -262,9 +265,9 @@ begin
  Move(M.Memory^, GlobalLock(H)^, M.Size);
  GlobalUnlock(H);
  finally M.Free; end;
- OpenClipboard(Form1.Handle); try
+ OpenClipboard(g_Form1.Handle); try
  EmptyClipboard;
- SetClipboardData(CF_QObjects, H);
+ SetClipboardData(g_CF_QObjects, H);
  HasText:=False;
  if SubElements.Count=1 then
   SubElements[0].CopyExtraData(HasText);
@@ -275,8 +278,8 @@ begin
    begin
     SetClipboardData(CF_TEXT, 0);
     AddRef(+1);
-    DelayedClipboardGroup:=Self;
-    LargeDataInClipboard:=True;
+    g_DelayedClipboardGroup:=Self;
+    g_LargeDataInClipboard:=True;
    end;
  finally CloseClipboard; end;
 end;
@@ -288,8 +291,8 @@ var
  P: PChar;
  H: THandle;
 begin
- DelayedClipboardGroup.AddRef(-1);
- DelayedClipboardGroup:=Nil;
+ g_DelayedClipboardGroup.AddRef(-1);
+ g_DelayedClipboardGroup:=Nil;
  L:=TStringList.Create; try
  ConvertObjsToText(Self, L, False);
  Data:=L.Text;
@@ -492,6 +495,6 @@ end;
 
 initialization
   RegisterQObject(QExplorerGroup, 'z');
-  Chain1:=ClipboardChain;
-  ClipboardChain:=CollerObjets;
+  Chain1:=g_ClipboardChain;
+  g_ClipboardChain:=CollerObjets;
 end.

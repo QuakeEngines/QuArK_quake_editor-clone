@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:34:49  decker_dk
+Updated copyright-header
 }
 
 unit PyMath;
@@ -438,8 +440,8 @@ begin
  CheckVisible(P2);
  if Ligne95(P1, P2, not FlatDisplay) then
   begin
-   Windows.MoveToEx(Info.DC, Round(P1.x), Round(P1.y), Nil);
-   Windows.LineTo(Info.DC, Round(P2.x), Round(P2.y));
+   Windows.MoveToEx(g_DrawInfo.DC, Round(P1.x), Round(P1.y), Nil);
+   Windows.LineTo(g_DrawInfo.DC, Round(P2.x), Round(P2.y));
   end;
 end;
 
@@ -447,14 +449,14 @@ procedure TCoordinates.Line95f(P1, P2: TPointProj);
 begin
  if Ligne95(P1, P2, not FlatDisplay) then
   begin
-   Windows.MoveToEx(Info.DC, Round(P1.x), Round(P1.y), Nil);
-   Windows.LineTo(Info.DC, Round(P2.x), Round(P2.y));
+   Windows.MoveToEx(g_DrawInfo.DC, Round(P1.x), Round(P1.y), Nil);
+   Windows.LineTo(g_DrawInfo.DC, Round(P2.x), Round(P2.y));
   end;
 end;
 
 procedure Rectangle95(DC: HDC; X1, Y1, X2, Y2: Integer);
 begin
- if not Info.WindowsNT then
+ if not g_DrawInfo.WindowsNT then
   begin
    if (X2<=-Max95) or (Y2<=-Max95) or (X1>=Max95) or (Y1>=Max95) then
     Exit;
@@ -468,7 +470,7 @@ end;
 
 procedure Ellipse95(DC: HDC; X1, Y1, X2, Y2: Integer);
 begin
- if not Info.WindowsNT then
+ if not g_DrawInfo.WindowsNT then
   begin
    if (X2<=-Max95) or (Y2<=-Max95) or (X1>=Max95) or (Y1>=Max95) then
     Exit;
@@ -898,7 +900,7 @@ begin
      until (PV1.y-PrevV1.y)*(aa-PrevV1.x)>(PV1.x-PrevV1.x)*(bb-PrevV1.y);
     end;
    if N>=3 then
-    Windows.Polygon(Info.DC, VList, N);
+    Windows.Polygon(g_DrawInfo.DC, VList, N);
   end;
 end;
 
@@ -946,7 +948,7 @@ begin
       CosAngleV:=Scale*R;
       pProjZ:=Scale;
       InitProjVar;
-     end; 
+     end;
    end;
 end;
 
@@ -1005,13 +1007,13 @@ end;
 
 procedure TCoordinates.SetAsCCoord(nDC: HDC);
 begin
- Info.DC:=nDC;
+ g_DrawInfo.DC:=nDC;
  CCoord:=Self;
 {CheckWindows16bits(ScalingFactor>2);}
- Info.ModeAff:=0;
- Info.BlackBrush:=GetStockObject(Info.BasePen);
- Info.SelectedBrush:=0;
- SetROP2(Info.DC, R2_CopyPen);
+ g_DrawInfo.ModeAff:=0;
+ g_DrawInfo.BlackBrush:=GetStockObject(g_DrawInfo.BasePen);
+ g_DrawInfo.SelectedBrush:=0;
+ SetROP2(g_DrawInfo.DC, R2_CopyPen);
 end;
 
 function TCoordinates.ScalingFactor(Pt: PVect) : TDouble;
@@ -1114,7 +1116,7 @@ begin
       end;
    (*for R:=0 to 3 do
       if not PointVisible16(Pts[R]) then Exit;
-     MoveToEx(Info.DC, Pts[0].X, Pts[0].Y, Nil);
+     MoveToEx(g_DrawInfo.DC, Pts[0].X, Pts[0].Y, Nil);
      for R:=0 to 3 do
       with Pts[Succ(R) and 3] do
        begin
@@ -1123,9 +1125,9 @@ begin
         Facteur:=3.5/Sqrt(Facteur);
         Trait.X:=Round(Facteur*(X-Pts[R].X));
         Trait.Y:=Round(Facteur*(Y-Pts[R].Y));
-        LineTo(Info.DC, Pts[R].X + Trait.X, Pts[R].Y + Trait.Y);
-        MoveToEx(Info.DC, X - Trait.X, Y - Trait.Y, Nil);
-        LineTo(Info.DC, X,Y);
+        LineTo(g_DrawInfo.DC, Pts[R].X + Trait.X, Pts[R].Y + Trait.Y);
+        MoveToEx(g_DrawInfo.DC, X - Trait.X, Y - Trait.Y, Nil);
+        LineTo(g_DrawInfo.DC, X,Y);
        end;*)
     end;
   end;
@@ -1171,8 +1173,8 @@ begin
      P2:=Pt^;
      if Ligne95(P1, P2, not FlatDisplay) then
       begin
-       Windows.MoveToEx(Info.DC, Round(P1.x), Round(P1.y), Nil);
-       Windows.LineTo(Info.DC, Round(P2.x), Round(P2.y));
+       Windows.MoveToEx(g_DrawInfo.DC, Round(P1.x), Round(P1.y), Nil);
+       Windows.LineTo(g_DrawInfo.DC, Round(P2.x), Round(P2.y));
       end;
     end;
   end
@@ -1190,7 +1192,7 @@ begin
      Inc(Pt);
      Inc(Dest);
     end;
-   Windows.Polyline(Info.DC, PtBuffer^, NbPts);
+   Windows.Polyline(g_DrawInfo.DC, PtBuffer^, NbPts);
    FreeMem(PtBuffer);
   end;
 end;
@@ -1219,7 +1221,7 @@ procedure T2DCoordinates.InitProjVar;
 begin
  inherited;
 {Facteur:=1/Sqr(pProjZ);}
- FastDisplay:=Info.WindowsNT or (pProjZ<=2);
+ FastDisplay:=g_DrawInfo.WindowsNT or (pProjZ<=2);
  FlatDisplay:=True;
  HiddenRegions:=os_Left or os_Right or os_Top or os_Bottom;
 end;
@@ -1498,7 +1500,7 @@ begin
   else     begin
             Result.X:=(V.X*pProjX+V.Y*pProjY)+pDeltaX;
             Result.oow:=V.Y*pProjX-V.X*pProjY;
-           end; 
+           end;
  end;
  Result.Y:=pDeltaY-(V.Z*pProjZ);
 end;
@@ -2141,7 +2143,7 @@ begin
  end;
 end;
 
-function VectorCoerce(var v1, v2: PyObject) : Integer; 
+function VectorCoerce(var v1, v2: PyObject) : Integer;
 var
  f: TDouble;
  v3: PyObject;
@@ -2547,7 +2549,7 @@ var
  OSVersion: TOSVersionInfo;
 begin
  OSVersion.dwOSVersionInfoSize:=SizeOf(OSVersion);
- Info.WindowsNT:=GetVersionEx(OSVersion) and (OSVersion.dwPlatformId=VER_PLATFORM_WIN32_NT);
+ g_DrawInfo.WindowsNT:=GetVersionEx(OSVersion) and (OSVersion.dwPlatformId=VER_PLATFORM_WIN32_NT);
 end;
 
 initialization

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/20 21:47:10  decker_dk
+Updated copyright-header
+
 Revision 1.9  2000/11/16 19:42:17  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -377,7 +380,7 @@ begin
  with TOutputDirDlg.Create(Application) do
   try
    if ShowModal = mrRetry then
-    Form1.OpenAFile(ListBox1.Items[ListBox1.ItemIndex], False);
+    g_Form1.OpenAFile(ListBox1.Items[ListBox1.ItemIndex], False);
   finally
    Free;
   end;

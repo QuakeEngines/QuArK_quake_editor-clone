@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:46:48  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/03/05 11:02:32  tiglari
 q3 bsp editing support, entities OK, map structure not there yet
 
@@ -401,16 +404,16 @@ begin
               t.x*p.x + t.y*p.y + t.z*p.z = t1
               n.x*p.x + n.y*p.y + n.z*p.z = d
         **)
-    Info.Matrice[1,1]:=bspvecs^[0,0];
-    Info.Matrice[1,2]:=bspvecs^[0,1];
-    Info.Matrice[1,3]:=bspvecs^[0,2];
-    Info.Matrice[2,1]:=bspvecs^[1,0];
-    Info.Matrice[2,2]:=bspvecs^[1,1];
-    Info.Matrice[2,3]:=bspvecs^[1,2];
-    Info.Matrice[3,1]:=NN.X;
-    Info.Matrice[3,2]:=NN.Y;
-    Info.Matrice[3,3]:=NN.Z;
-    Info.Matrice:=MatriceInverse(Info.Matrice);
+    g_DrawInfo.Matrice[1,1]:=bspvecs^[0,0];
+    g_DrawInfo.Matrice[1,2]:=bspvecs^[0,1];
+    g_DrawInfo.Matrice[1,3]:=bspvecs^[0,2];
+    g_DrawInfo.Matrice[2,1]:=bspvecs^[1,0];
+    g_DrawInfo.Matrice[2,2]:=bspvecs^[1,1];
+    g_DrawInfo.Matrice[2,3]:=bspvecs^[1,2];
+    g_DrawInfo.Matrice[3,1]:=NN.X;
+    g_DrawInfo.Matrice[3,2]:=NN.Y;
+    g_DrawInfo.Matrice[3,3]:=NN.Z;
+    g_DrawInfo.Matrice:=MatriceInverse(g_DrawInfo.Matrice);
     P1.X:=-bspvecs^[0,3];
     P1.Y:=-bspvecs^[1,3];
     P1.Z:=PlaneDist;
@@ -499,18 +502,18 @@ begin
  FBsp.GetBspEntryData(eEdges, lump_edges, eBsp3_edges, Edges);
  Vertices:=PChar(FBsp.FVertices);
 
- if Info.SelectedBrush<>0 then
+ if g_DrawInfo.SelectedBrush<>0 then
   begin
-   NewPen:=Info.SelectedBrush;
-  {OldROP:=SetROP2(Info.DC, R2_CopyPen);}
+   NewPen:=g_DrawInfo.SelectedBrush;
+  {OldROP:=SetROP2(g_DrawInfo.DC, R2_CopyPen);}
   end
  else
   if HullNum=0 then
    NewPen:=CreatePen(ps_Solid, 0, MapColors(lcBSP))
   else
-   NewPen:=GetStockObject(Info.BasePen);
- OldPen:=SelectObject(Info.DC, NewPen);
- SetROP2(Info.DC, R2_CopyPen);
+   NewPen:=GetStockObject(g_DrawInfo.BasePen);
+ OldPen:=SelectObject(g_DrawInfo.DC, NewPen);
+ SetROP2(g_DrawInfo.DC, R2_CopyPen);
  ProjVertices:=Nil;
 {OutOfView:=Nil;}
  try
@@ -528,8 +531,8 @@ begin
       Inc(Dest);
       Inc(Src);
      end;
-    OutOfViewChk:=(Info.ModeAff>0) and (Info.SelectedBrush=0);
-  (*if (Info.ModeAff>0) and (Info.SelectedBrush=0) then
+    OutOfViewChk:=(g_DrawInfo.ModeAff>0) and (g_DrawInfo.SelectedBrush=0);
+  (*if (g_DrawInfo.ModeAff>0) and (g_DrawInfo.SelectedBrush=0) then
      begin
       OutOfView:=TBits.Create;
       OutOfView.Size:=UsedVertex;
@@ -557,18 +560,18 @@ begin
             begin
              if not ((PV0^.OffScreen<>0) and (PV1^.OffScreen<>0)) then
               begin
-               if Info.ModeAff=1 then
+               if g_DrawInfo.ModeAff=1 then
                 begin
-                 SelectObject(Info.DC, NewPen);
-                 SetROP2(Info.DC, R2_CopyPen);
+                 SelectObject(g_DrawInfo.DC, NewPen);
+                 SetROP2(g_DrawInfo.DC, R2_CopyPen);
                 end;
               end
              else
               begin
-               if Info.ModeAff=2 then
+               if g_DrawInfo.ModeAff=2 then
                 Continue;
-               SetROP2(Info.DC, Info.MaskR2);
-               SelectObject(Info.DC, Info.GreyBrush);
+               SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
+               SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
               end;
             end;
            CCoord.Line95f(PV0^, PV1^);
@@ -594,29 +597,29 @@ begin
           ProjSommets[1]:=CCoord.Proj(Sommets[1]^);
           CCoord.CheckVisible(ProjSommets[0]);
           CCoord.CheckVisible(ProjSommets[1]);
-          if (Info.ModeAff>0) and (Info.SelectedBrush=0) then
+          if (g_DrawInfo.ModeAff>0) and (g_DrawInfo.SelectedBrush=0) then
            begin
           (*ModeProj:=TModeProj(1-Ord(ModeProj));
             Pts[0]:=Proj(Sommets[0]^);
             Pts[1]:=Proj(Sommets[1]^);
             ModeProj:=TModeProj(1-Ord(ModeProj));
-            if PtInRect(Info.VisibleRect, Pts[0])
-            or PtInRect(Info.VisibleRect, Pts[1]) then*)
+            if PtInRect(g_DrawInfo.VisibleRect, Pts[0])
+            or PtInRect(g_DrawInfo.VisibleRect, Pts[1]) then*)
             if (ProjSommets[0].OffScreen=0)
             or (ProjSommets[1].OffScreen=0) then
              begin
-              if Info.ModeAff=1 then
+              if g_DrawInfo.ModeAff=1 then
                begin
-                SelectObject(Info.DC, NewPen);
-                SetROP2(Info.DC, R2_CopyPen);
+                SelectObject(g_DrawInfo.DC, NewPen);
+                SetROP2(g_DrawInfo.DC, R2_CopyPen);
                end;
              end
             else
              begin
-              if Info.ModeAff=2 then
+              if g_DrawInfo.ModeAff=2 then
                Continue;
-              SetROP2(Info.DC, Info.MaskR2);
-              SelectObject(Info.DC, Info.GreyBrush);
+              SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
+              SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
              end;
            end;
           CCoord.Line95f(ProjSommets[0], ProjSommets[1]);
@@ -627,9 +630,9 @@ begin
  finally
  {OutOfView.Free;}
   FreeMem(ProjVertices);
-  SelectObject(Info.DC, OldPen);
-  if Info.SelectedBrush<>0 then
-  {SetROP2(Info.DC, OldROP)}
+  SelectObject(g_DrawInfo.DC, OldPen);
+  if g_DrawInfo.SelectedBrush<>0 then
+  {SetROP2(g_DrawInfo.DC, OldROP)}
   else
    DeleteObject(NewPen);
  end;
@@ -690,7 +693,7 @@ begin
       begin
        S:=PSurface(Faces[I]);
        S^.F.AjouterSurfaceRef(Liste, S, Vertices, Sommets.Count, ZMax1, Odd(S^.F.SelMult));
-        {Info.ColorTraits[esNormal]);}
+        {g_DrawInfo.ColorTraits[esNormal]);}
       end;
      finally FreeMem(Vertices); end;
     end

@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:35:21  decker_dk
+Updated copyright-header
 }
 
 unit PyCanvas;
@@ -69,7 +71,7 @@ begin
  try
   if Assigned(PyCanvasObj(self)^.Canvas) then
    begin
-    Info.DC:=PyCanvasObj(self)^.Canvas.Handle;
+    g_DrawInfo.DC:=PyCanvasObj(self)^.Canvas.Handle;
     Result:=Nil;
     if PyObject_Length(args)=2 then
      begin
@@ -83,8 +85,8 @@ begin
      begin
       if not PyArg_ParseTupleX(args, 'iiii', [@P1.X, @P1.Y, @P2.X, @P2.Y]) then
        Exit;
-      Windows.MoveToEx(Info.DC, P1.X, P1.Y, Nil);
-      Windows.LineTo(Info.DC, P2.X, P2.Y);
+      Windows.MoveToEx(g_DrawInfo.DC, P1.X, P1.Y, Nil);
+      Windows.LineTo(g_DrawInfo.DC, P2.X, P2.Y);
      end;
    end;
   Result:=PyNoResult;
@@ -355,7 +357,7 @@ begin
      Exit;
     obj:=PyList_GetItem(lst, 0);
     if obj=Nil then Exit;
-    Info.DC:=PyCanvasObj(self)^.Canvas.Handle;
+    g_DrawInfo.DC:=PyCanvasObj(self)^.Canvas.Handle;
     Count:=PyObject_Length(lst);
     if obj^.ob_type = @TyVect_Type then
      begin
@@ -394,7 +396,7 @@ begin
          end;
         Inc(Pt1);
        end;
-      Windows.Polygon(Info.DC, Pt^, Count);
+      Windows.Polygon(g_DrawInfo.DC, Pt^, Count);
       finally FreeMem(Pt); end;
      end;
    end;
@@ -455,7 +457,7 @@ var
  C: TColor;
 begin
  try
-  if Info.BasePen=White_pen then
+  if g_DrawInfo.BasePen=White_pen then
    C:=clWhite
   else
    C:=clBlack;

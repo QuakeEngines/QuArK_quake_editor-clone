@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:41:57  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/03/17 15:08:26  decker_dk
 We're not interested in Machine-/username.
 
@@ -310,15 +313,14 @@ type
     property Direct3D :TStrings read FDirect3D write FDirect3D stored false;
   end;
 
-var
-  IsNT,IS95,Is98,Is2000,IsOSR2: Boolean;
-  WindowsUser, MachineName: string;
-  Platform: TPlatformType;
-
 implementation
 
 uses ShlObj, Logging;
 
+var
+  IsNT,Is95,Is98,Is2000,IsOSR2: Boolean;
+  WindowsUser, MachineName: string;
+  Platform: TPlatformType;
 var
   VLevel, VFamily, VModel, VStepping, VTyp :Byte;
   VFeatures :LongInt;
@@ -1852,7 +1854,7 @@ end;
 
 initialization
   IsNT:=IsOSNT;
-  IS95:=IsOS95;
+  Is95:=IsOS95;
   Is98:=IsOS98;
   Is2000:=IsOS2000;
   IsOSR2:=IsOSOSR2;

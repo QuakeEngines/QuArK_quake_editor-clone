@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:46:29  decker_dk
+Updated copyright-header
+
 Revision 1.7  2000/11/25 20:51:33  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -552,7 +555,7 @@ end;}
 
 procedure TFileExplorer.RootChanging(Root: QObject);
 begin
- if NiveauAction and (na_Action or na_Cancel) = na_Action then
+ if g_NiveauAction and (na_Action or na_Cancel) = na_Action then
   with Root as QFileObject do
    if (Filename<>'')
    and (MessageDlg(LoadStr1(5210), mtConfirmation, mbOkCancel, 0) = mrCancel) then

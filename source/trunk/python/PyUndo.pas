@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/03/20 21:34:13  decker_dk
+Updated copyright-header
 }
 
 unit PyUndo;
@@ -52,7 +54,7 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!s', [@TyObject_Type, @obj1, @txt]) then
    Exit;
-  if ListeActions=Nil then
+  if g_ListeActions=Nil then
    Raise EError(4442);
   FinAction(QkObjFromPyObj(obj1), txt);
   Result:=PyNoResult;
@@ -84,14 +86,14 @@ begin
   obj3:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!|O', [@TyObject_Type, @obj1, @TyObject_Type, @obj2, @obj3]) then
    Exit;
-  if ListeActions=Nil then
+  if g_ListeActions=Nil then
    Raise EError(4442);
   Q1:=QkObjFromPyObj(obj1);
   Q1.Acces;
   Q2:=QkObjFromPyObj(obj2);
   Q2.PySetParent(Q1);
   U:=TQObjectUndo.Create('', Nil, Q2);
-  ListeActions.Add(U);
+  g_ListeActions.Add(U);
   if obj3<>Nil then
    U.InsererAvant:=QkObjFromPyObj(obj3);
   Result:=PyNoResult;
@@ -112,14 +114,14 @@ begin
   obj3:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O|O', [@TyObject_Type, @obj1, @obj2, @obj3]) then
    Exit;
-  if ListeActions=Nil then
+  if g_ListeActions=Nil then
    Raise EError(4442);
   Q1:=QkObjFromPyObj(obj1);
   Q2:=QkObjFromPyObj(obj2);
   if Q2<>Nil then
    Q2.PySetParent(Q1.FParent);
   U:=TQObjectUndo.Create('', Q1, Q2);
-  ListeActions.Add(U);
+  g_ListeActions.Add(U);
   if obj3<>Nil then
    U.InsererAvant:=QkObjFromPyObj(obj3);
   Result:=PyNoResult;
@@ -142,7 +144,7 @@ begin
   nPosition:=sp_Auto;
   if not PyArg_ParseTupleX(args, 'O!sO|i', [@TyObject_Type, @obj1, @P, @obj2, @nPosition]) then
    Exit;
-  if ListeActions=Nil then
+  if g_ListeActions=Nil then
    Raise EError(4442);
   nSpec:=P;
   Q:=QkObjFromPyObj(obj1);
@@ -156,7 +158,7 @@ begin
    end
   else
    nArg:=GetPySpecArg(nSpec, obj2);
-  ListeActions.Add(TSpecificUndo.Create('', nSpec, nArg, nPosition, Q));
+  g_ListeActions.Add(TSpecificUndo.Create('', nSpec, nArg, nPosition, Q));
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -173,9 +175,9 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!s', [@TyObject_Type, @obj1, @P]) then
    Exit;
-  if ListeActions=Nil then
+  if g_ListeActions=Nil then
    Raise EError(4442);
-  ListeActions.Add(TNameUndo.Create('', P, QkObjFromPyObj(obj1)));
+  g_ListeActions.Add(TNameUndo.Create('', P, QkObjFromPyObj(obj1)));
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -192,9 +194,9 @@ begin
   obj3:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!|O', [@TyObject_Type, @obj1, @TyObject_Type, @obj2, @obj3]) then
    Exit;
-  if ListeActions=Nil then
+  if g_ListeActions=Nil then
    Raise EError(4442);
-  ListeActions.Add(TMoveUndo.Create('', QkObjFromPyObj(obj1), QkObjFromPyObj(obj2), QkObjFromPyObj(obj3)));
+  g_ListeActions.Add(TMoveUndo.Create('', QkObjFromPyObj(obj1), QkObjFromPyObj(obj2), QkObjFromPyObj(obj3)));
   Result:=PyNoResult;
  except
   EBackToPython;

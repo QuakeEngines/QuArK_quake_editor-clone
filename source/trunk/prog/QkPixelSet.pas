@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:44:37  decker_dk
+Updated copyright-header
+
 Revision 1.8  2000/07/18 19:38:00  decker_dk
 Englishification - Big One This Time...
 
@@ -531,9 +534,9 @@ begin
    Lnk:=QTextureLnk(ReverseLink);
    while Lnk<>Nil do
     begin
-     WE:=WorkingExplorer; try
+     WE:=g_WorkingExplorer; try
      OperationDansScene(Lnk, asModifie, Nil);
-     finally WorkingExplorer:=WE; end;
+     finally g_WorkingExplorer:=WE; end;
      Lnk:=Lnk.Next;
     end;
   end;

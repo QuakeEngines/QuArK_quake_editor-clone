@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/03/20 21:41:41  decker_dk
+Updated copyright-header
+
 Revision 1.10  2001/01/21 15:50:45  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -58,7 +61,6 @@ Englishification and a little layout
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit ToolBox1;
 
@@ -219,7 +221,7 @@ end;
 
 function OpenTextureBrowser : TToolBoxForm;
 begin
- Result:=OpenToolBox(SetupSet[ssGeneral].Specifics.Values['TextureBrowser']);
+ Result:=OpenToolBox(g_SetupSet[ssGeneral].Specifics.Values['TextureBrowser']);
 end;
 
 function BrowseForTextureDlg(const TexName: String; SelectEventWnd: HWnd) : TToolBoxForm;
@@ -565,8 +567,8 @@ begin
 
  (*FirstPrivate:=ToolBoxList.Count;
    { looks for the same data in the currently loaded file }
-  if Form1.Explorer.Roots.Count>0 then
-   BrowseToolBoxes(Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
+  if g_Form1.Explorer.Roots.Count>0 then
+   BrowseToolBoxes(g_Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
 
    { adds the toolboxes found }
   ProgressIndicatorStart(5440, ToolBoxList.Count+1);
@@ -592,7 +594,7 @@ begin
       NodeToSelect:=Node;}
     except
      on E: Exception do
-      Form1.AppException(Self, E);
+      g_Form1.AppException(Self, E);
     end;
   finally
    ToolBoxList.Free;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.11  2001/03/20 21:46:29  decker_dk
 Updated copyright-header
 
@@ -1073,14 +1076,14 @@ begin
 
   { FNEW } Ord('F')+256*Ord('N')+65536*Ord('E')+16777216*Ord('W'):
      begin
-      Form1.FileMenu.PopupComponent:=Self;
-      Form1.News1Click(Nil);
+      g_Form1.FileMenu.PopupComponent:=Self;
+      g_Form1.News1Click(Nil);
      end;
 
   { FOPN } Ord('F')+256*Ord('O')+65536*Ord('P')+16777216*Ord('N'):
      begin
-      Form1.FileMenu.PopupComponent:=Self;
-      Form1.Open1Click(Nil);
+      g_Form1.FileMenu.PopupComponent:=Self;
+      g_Form1.Open1Click(Nil);
      end;
 
   { FSAV } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('V'):
@@ -1088,15 +1091,15 @@ begin
 
   { FSAN } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('N'):
      begin
-      Form1.FileMenu.PopupComponent:=Self;
-      Form1.Saveinnewentry1Click(Nil);
+      g_Form1.FileMenu.PopupComponent:=Self;
+      g_Form1.Saveinnewentry1Click(Nil);
      end;
 
   { FSAA } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('A'):
      Perform(wm_InternalMessage, wp_FileMenu, fm_SaveAsFile);
 
   { FSAL } Ord('F')+256*Ord('S')+65536*Ord('A')+16777216*Ord('L'):
-     Form1.Saveall1Click(Nil);
+     g_Form1.Saveall1Click(Nil);
 
   { UNDO } Ord('U')+256*Ord('N')+65536*Ord('D')+16777216*Ord('O'):
      begin
@@ -1122,9 +1125,9 @@ begin
 
   { MURD } Ord('M')+256*Ord('U')+65536*Ord('R')+16777216*Ord('D'):
      begin
-      if UndoDlg=Nil then
-       UndoDlg:=TUndoDlg.Create(Application);
-      UndoDlg.OpenUndoRoot(HasGotObject(ProcessEditMsg(edGetObject), True));
+      if g_UndoDlg=Nil then
+       g_UndoDlg:=TUndoDlg.Create(Application);
+      g_UndoDlg.OpenUndoRoot(HasGotObject(ProcessEditMsg(edGetObject), True));
      end;
 
   { CUT }  Ord('C')+256*Ord('U')+65536*Ord('T'):
@@ -1194,7 +1197,7 @@ begin
      PostMessage(Handle, wm_InternalMessage, wp_CloseWindow, 0);
 
   { FREE } Ord('F')+256*Ord('R')+65536*Ord('E')+16777216*Ord('E'):
-     Form1.FreeNonUsedObjects;
+     g_Form1.FreeNonUsedObjects;
 
   { 3DFR } Ord('3')+256*Ord('D')+65536*Ord('F')+16777216*Ord('R'):
      CloseAll3DView;
@@ -1267,7 +1270,7 @@ var
  R: TRect;
 begin
  GetWindowRect(Handle, R);
- if (Msg.wParam=HTCAPTION) 
+ if (Msg.wParam=HTCAPTION)
  and (Msg.lParamLo<R.Left+DeltaSmIconX) then
   Close;
 end;*)

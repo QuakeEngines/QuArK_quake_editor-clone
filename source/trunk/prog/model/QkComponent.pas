@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/03/20 21:37:46  decker_dk
+Updated copyright-header
+
 Revision 1.15  2001/03/16 21:46:09  aiv
 small updates - changes to addframe
 
@@ -886,7 +889,7 @@ begin
         L.Sort(ByOow);
         NewPen:=0;
         DeletePen:=0;
-        if Info.GreyBrush <> 0 then begin    { if color changes must be made now }
+        if g_DrawInfo.GreyBrush <> 0 then begin    { if color changes must be made now }
           if not Odd(SelMult) then begin
             C1:=clDefault;
             CouleurDessin(C1);
@@ -900,19 +903,19 @@ begin
           end;
         end;
         if NewPen<>0 then begin
-          OldPen:=Info.BlackBrush;
-          Info.BlackBrush:=NewPen;
+          OldPen:=g_DrawInfo.BlackBrush;
+          g_DrawInfo.BlackBrush:=NewPen;
         end else
           OldPen:=0;
         SetupComponentDC(CDC);
-        if Info.SelectedBrush<>0 then begin
-          SelectObject(Info.DC, Info.SelectedBrush);
-          SetROP2(Info.DC, R2_CopyPen);
+        if g_DrawInfo.SelectedBrush<>0 then begin
+          SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
+          SetROP2(g_DrawInfo.DC, R2_CopyPen);
           CurPenMode:=0;
           ScrAnd0:=0;
         end else begin
           CurPenMode:=-1;
-          if Info.ModeAff=0 then
+          if g_DrawInfo.ModeAff=0 then
             ScrAnd0:=0
           else
             ScrAnd0:=os_Back or os_Far;
@@ -956,8 +959,8 @@ begin
                   end else
                     if not PyArg_ParseTupleX(obj, 'ii;filltris format error', [@C1, @C2]) then
                       exit;//Goto PreExit;
-                  SetTextColor(Info.DC, C1);
-                  SetBkColor(Info.DC, C2);
+                  SetTextColor(g_DrawInfo.DC, C1);
+                  SetBkColor(g_DrawInfo.DC, C2);
                 end;
               end;
             end;
@@ -970,17 +973,17 @@ begin
             end;
             if ScrAnd<>0 then begin
               NewPenMode:=1;
-              if (Info.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
+              if (g_DrawInfo.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
                 Continue;
             end else
               NewPenMode:=0;
             if NewPenMode<>CurPenMode then begin
               if NewPenMode=0 then begin
-                SelectObject(Info.DC, Info.BlackBrush);
-                SetROP2(Info.DC, R2_CopyPen);
+                SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
+                SetROP2(g_DrawInfo.DC, R2_CopyPen);
               end else begin
-                SelectObject(Info.DC, Info.GreyBrush);
-                SetROP2(Info.DC, Info.MaskR2);
+                SelectObject(g_DrawInfo.DC, g_DrawInfo.GreyBrush);
+                SetROP2(g_DrawInfo.DC, g_DrawInfo.MaskR2);
               end;
               CurPenMode:=NewPenMode;
             end;
@@ -994,8 +997,8 @@ begin
         finally
           CloseComponentDC(CDC);
           if OldPen<>0 then begin
-            SelectObject(Info.DC, OldPen);
-            Info.BlackBrush:=OldPen;
+            SelectObject(g_DrawInfo.DC, OldPen);
+            g_DrawInfo.BlackBrush:=OldPen;
             if DeletePen<>0 then
               DeleteObject(DeletePen);
           end;
@@ -1012,7 +1015,7 @@ begin
 
 PreExit:
 //  inherited;
-  
+
 end;
 
 procedure QComponent.AnalyseClic(Liste: PyObject);
@@ -1031,9 +1034,9 @@ begin
   if CurrentFrame=Nil then
     Exit;
   Count:=CurrentFrame.GetVertices(vec3_p(CVertArray));
-  W2.X:=Info.Clic2.X - Info.Clic.X;
-  W2.Y:=Info.Clic2.Y - Info.Clic.Y;
-  W2.Z:=Info.Clic2.Z - Info.Clic.Z;
+  W2.X:=g_DrawInfo.Clic2.X - g_DrawInfo.Clic.X;
+  W2.Y:=g_DrawInfo.Clic2.Y - g_DrawInfo.Clic.Y;
+  W2.Z:=g_DrawInfo.Clic2.Z - g_DrawInfo.Clic.Z;
   for I:=0 to Triangles(CTris)-1 do begin
     if (CTris^[0].VertexNo < Count) and (CTris^[0].VertexNo < Count) and (CTris^[0].VertexNo < Count) then begin
       for L:=0 to 2 do
@@ -1049,7 +1052,7 @@ begin
         W1.Y:=V[L].Y-V[PrevL].Y;
         W1.Z:=V[L].Z-V[PrevL].Z;
         Normale:=Cross(W1, W2);
-        if Dot(V[L], Normale) <= Dot(Info.Clic, Normale) then
+        if Dot(V[L], Normale) <= Dot(g_DrawInfo.Clic, Normale) then
           Break;
         PrevL:=L;
         Inc(L);
@@ -1058,14 +1061,14 @@ begin
         d0:=Dot(V[0], Normale);
         d1:=Dot(V[1], Normale);
         if Abs(d1-d0)>rien then begin
-          dv:=Dot(Info.Clic, Normale);
+          dv:=Dot(g_DrawInfo.Clic, Normale);
           f:=(d1-dv) / (d1-d0);
           W1:=W2;
           Normalise(W1);
-          f:=Dot(V[1],W1) * (1-f) + Dot(V[0],W1) * f - Dot(Info.Clic,W1);
-          W1.X:=Info.Clic.X + W1.X*f;
-          W1.Y:=Info.Clic.Y + W1.Y*f;
-          W1.Z:=Info.Clic.Z + W1.Z*f;
+          f:=Dot(V[1],W1) * (1-f) + Dot(V[0],W1) * f - Dot(g_DrawInfo.Clic,W1);
+          W1.X:=g_DrawInfo.Clic.X + W1.X*f;
+          W1.Y:=g_DrawInfo.Clic.Y + W1.Y*f;
+          W1.Z:=g_DrawInfo.Clic.Z + W1.Z*f;
           obj:=PyInt_FromLong(I);
           try
             ResultatAnalyseClic(Liste, CCoord.Proj(W1), obj);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:47:44  decker_dk
+Updated copyright-header
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
@@ -383,7 +386,7 @@ begin
    if IconHandle<>0 then
     begin
     {Icon:=TIcon.Create;
-     Form1.ImageList1.GetIcon(IconIndex, Icon);}
+     g_Form1.ImageList1.GetIcon(IconIndex, Icon);}
      DrawIconEx(MemDC, 2, 1, IconHandle, IcoW, IcoH,
       0, 0, DI_NORMAL);     { icon }
     {Icon.Free;}

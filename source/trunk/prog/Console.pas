@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:48:25  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -77,8 +80,8 @@ type
   end;
 
 var
-  ConsoleForm: TConsoleForm;
-  Ty_InternalConsole: TyObject = (ob_refcnt: 1);
+  g_ConsoleForm: TConsoleForm;
+  g_Ty_InternalConsole: TyObject = (ob_refcnt: 1);
 
  {-------------------}
 
@@ -155,31 +158,31 @@ begin
      end;
     end;
   end;
- if ConsoleForm<>Nil then
-  InvalidateRect(ConsoleForm.Display.Handle, Nil, False);
+ if g_ConsoleForm<>Nil then
+  InvalidateRect(g_ConsoleForm.Display.Handle, Nil, False);
 end;
 
 procedure ShowConsole(Show: Boolean);
 begin
  if Show then
-  if ConsoleForm=Nil then
-   ConsoleForm:=TConsoleForm.Create(Application)
+  if g_ConsoleForm=Nil then
+   g_ConsoleForm:=TConsoleForm.Create(Application)
   else
    begin
-    InvalidateRect(ConsoleForm.Display.Handle, Nil, False);
-    ActivateNow(ConsoleForm);
+    InvalidateRect(g_ConsoleForm.Display.Handle, Nil, False);
+    ActivateNow(g_ConsoleForm);
    end
  else
   begin
-   ConsoleForm.Free;
-   ConsoleForm:=Nil;
+   g_ConsoleForm.Free;
+   g_ConsoleForm:=Nil;
   end;
 end;
 
 procedure UpdateRunningProcesses;
 begin
- if ConsoleForm<>Nil then
-  with ConsoleForm do
+ if g_ConsoleForm<>Nil then
+  with g_ConsoleForm do
    begin
     ComboBox1.Items:=RunningProcesses;
     ComboBox1.ItemIndex:=RunningProcesses.Count-1;
@@ -233,7 +236,7 @@ begin
       end;
      end;
     finally LeaveCriticalSection(CriticalSection); end;
-   {PostMessage(Form1Handle, wm_InternalMessage, wp_ConsoleWrite, 0);}
+   {PostMessage(g_Form1Handle, wm_InternalMessage, wp_ConsoleWrite, 0);}
     if ConsoleWnd<>0 then
      InvalidateRect(ConsoleWnd, Nil, False);
    end;
@@ -334,7 +337,7 @@ begin
      SetBkColor(DC, clBlack);
    if PipeBuffer[P].Src<>Nil then
     begin
-     if PipeBuffer[P].Src = @Ty_InternalConsole then
+     if PipeBuffer[P].Src = @g_Ty_InternalConsole then
       Color:=clLime
      else
       begin
@@ -363,7 +366,7 @@ end;
 procedure TConsoleForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
- ConsoleForm:=Nil;
+ g_ConsoleForm:=Nil;
  Action:=caFree;
 end;
 
@@ -427,7 +430,7 @@ var
  Count: Integer;
 begin
  S:=EnterComboBox1.Text;
- WriteConsole(@Ty_InternalConsole, '>>> ' + S + #10);
+ WriteConsole(@g_Ty_InternalConsole, '>>> ' + S + #10);
  Count:=EnterComboBox1.Items.Count;
  if (Count>0) and (EnterComboBox1.Items[Count-1]='') then
   Dec(Count)
@@ -460,7 +463,7 @@ begin
       if strobj<>Nil then
        try
         S:=PyString_AsString(strobj);
-        WriteConsole(@Ty_InternalConsole, S + #10);
+        WriteConsole(@g_Ty_InternalConsole, S + #10);
        finally
         Py_DECREF(strobj);
        end;
@@ -520,7 +523,7 @@ var
  I, J: Integer;
  H: HGlobal;
 begin
- if Clipboard1=Clipboard2 then Exit;           
+ if Clipboard1=Clipboard2 then Exit;
  if ((Integer(GetTickCount)<More) or (Integer(GetTickCount)>More+200))
  and (MessageDlg(LoadStr1(4456), mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
   begin

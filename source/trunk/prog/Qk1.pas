@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/03/20 21:47:10  decker_dk
+Updated copyright-header
+
 Revision 1.19  2001/03/15 20:52:18  aiv
 open .fgd from menu instead of game context form
 
@@ -303,8 +306,8 @@ type
   end;
 
 var
-  Form1: TForm1;
-  Form1Handle: HWnd;
+  g_Form1: TForm1;
+  g_Form1Handle: HWnd;
 
  {------------------------}
 
@@ -405,7 +408,7 @@ begin
  Application.OnException:=AppException;
  Application.UpdateFormatSettings:=False;
  DecimalSeparator:='.';
- Form1Handle:=Handle;
+ g_Form1Handle:=Handle;
 
  { comment by tiglari:
    in quarkx: splash & nag screens,
@@ -449,7 +452,7 @@ begin
 {Application.OnRestore:=AppRestore;}     { MARSCAPFIX }
 
  J:=0;
- with SetupSet[ssGames] do
+ with g_SetupSet[ssGames] do
   for I:=0 to SubElements.Count-1 do
    begin
     S:=SubElements[I].Specifics.Values['Code'];
@@ -667,8 +670,8 @@ end;*)
 (*function TQrkExplorer.MsgUndo(Op: TMsgUndo; Data: Pointer) : Pointer;
 begin
 {case Op of
-  muOneEnd: if Form1.Fiche<>Nil then
-             PostMessage(Form1.Fiche.Handle, wm_InternalMessage, wp_AfficherInfos, 0);
+  muOneEnd: if g_Form1.Fiche<>Nil then
+             PostMessage(g_Form1.Fiche.Handle, wm_InternalMessage, wp_AfficherInfos, 0);
  end;}
  Result:=inherited MsgUndo(Op, Data);
 end;*)
@@ -679,11 +682,11 @@ var
  Info: TFileObjectClassInfo;
 begin
  Q:=TMSelUnique;
- if (Q<>Nil) and not Form1.ReopensWindow(Q as QFileObject) then
+ if (Q<>Nil) and not g_Form1.ReopensWindow(Q as QFileObject) then
   begin
    (Q as QFileObject).FileObjectClassInfo(Info);
    if Info.CanMaximize in StandAloneWndState then
-   {with Form1 do}
+   {with g_Form1 do}
      begin
       MAJAffichage(Nil);
       with Q as QFileObject do
@@ -699,8 +702,8 @@ var
 begin
  case Aj of
   asModifie: begin
-              if (Q=Form1.ElSousFiche) and (Form1.Fiche<>Nil) then
-               PostMessage(Form1.Fiche.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
+              if (Q=g_Form1.ElSousFiche) and (g_Form1.Fiche<>Nil) then
+               PostMessage(g_Form1.Fiche.Handle, wm_InternalMessage, wp_AfficherObjet, 0);
               if Q is QFileObject then
                begin
                 F:=QFileObject(Q).FindObjectWindow;
@@ -709,8 +712,8 @@ begin
                end;
               end;
   asRetire: begin
-             if Q=Form1.ElSousFiche then
-              Form1.MAJAffichage(Nil);
+             if Q=g_Form1.ElSousFiche then
+              g_Form1.MAJAffichage(Nil);
              if Q is QFileObject then
               begin
                F:=QFileObject(Q).FindObjectWindow;
@@ -724,7 +727,7 @@ end;*)
 
 (*procedure TQrkExplorer.MAJAffichage(Q: QFileObject);
 begin
- if (Q<>Nil) and Form1.ReopensWindow(Q) then
+ if (Q<>Nil) and g_Form1.ReopensWindow(Q) then
   Q:=Nil;  { maximized window reopened, don't show anything right here }
  inherited MAJAffichage(Q);
 end;*)
@@ -739,7 +742,7 @@ begin
  Result:=inherited DropObjectsNow(Gr, Texte, False);
  if not Result then
   begin
-   TMSelUnique:=Form1.NeedExplorerRoot;
+   TMSelUnique:=g_Form1.NeedExplorerRoot;
    Result:=inherited DropObjectsNow(Gr, Texte, Beep);
   end;
 end;
@@ -786,7 +789,7 @@ begin
   Redo1.Caption:=FmtLoadStr1(45, [TUndoObject(R^.UndoList[R^.UndoList.Count-R^.Undone]).Text]);
 
  Flags:=Form.ProcessEditMsg(edEdEnable);
- PasteObjReady:=ClipboardChain(Nil);
+ PasteObjReady:=g_ClipboardChain(Nil);
  PasteObjOk:=(Flags and edPasteObj = edPasteObj)
   and PasteObjReady;
 
@@ -939,7 +942,7 @@ begin
  if FileMenu.Tag=0 then
   begin
    L:=TStringList.Create; try
-   L.Text:=SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+   L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
    FileSep1.Visible:=L.Count>0;
    for I:=0 to MaxRecentFiles-1 do
     with FileMenu.Items[FileSep1.MenuIndex+I+1] do
@@ -1373,7 +1376,7 @@ var
  F: TForm;
  CloseAction: TCloseAction;
 begin
- if LargeDataInClipboard
+ if g_LargeDataInClipboard
  and (MessageDlg(LoadStr1(5681), mtConfirmation, [mbYes, mbNo], 0) = mrNo) then
   begin
    OpenClipboard(0);
@@ -1754,7 +1757,7 @@ procedure TForm1.wmRenderFormat(var Msg: TMessage);
 var
  Gr: QExplorerGroup;
 begin
- Gr:=DelayedClipboardGroup;
+ Gr:=g_DelayedClipboardGroup;
  if Gr<>Nil then
   begin
    Gr.AddRef(+1); try
@@ -1767,7 +1770,7 @@ procedure TForm1.wmRenderAllFormats(var Msg: TMessage);
 var
  Gr: QExplorerGroup;
 begin
- Gr:=DelayedClipboardGroup;
+ Gr:=g_DelayedClipboardGroup;
  if Gr<>Nil then
   begin
    Gr.AddRef(+1); try
@@ -1778,9 +1781,9 @@ end;
 
 procedure TForm1.wmDestroyClipboard(var Msg: TMessage);
 begin
- DelayedClipboardGroup.AddRef(-1);
- DelayedClipboardGroup:=Nil;
- LargeDataInClipboard:=False;
+ g_DelayedClipboardGroup.AddRef(-1);
+ g_DelayedClipboardGroup:=Nil;
+ g_LargeDataInClipboard:=False;
 end;
 
 procedure TForm1.RecentFileClick(Sender: TObject);
@@ -1791,7 +1794,7 @@ var
 begin
  I:=(Sender as TMenuItem).MenuIndex - FileSep1.MenuIndex - 1;
  L:=TStringList.Create; try
- L.Text:=SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
+ L.Text:=g_SetupSet[ssGeneral].Specifics.Values['RecentFiles'];
  FileName:=L[I];
  finally L.Free; end;
 
@@ -1923,7 +1926,7 @@ var
 begin
  Gr:=ClipboardGroup;
  Gr.AddRef(+1); try
- if ClipboardChain(Gr) then
+ if g_ClipboardChain(Gr) then
  {if (Gr.SubElements.Count<=1)
   or (MessageDlg(FmtLoadStr1(5562, [Gr.SubElements.Count]),
    mtWarning, [mbYes, mbNo], 0) = mrYes) then
@@ -1944,7 +1947,7 @@ end;
 (*procedure TForm1.wmCommand(var Msg: TMessage);
 begin
  if (Msg.wParam>=cmObjFirst) and (Msg.wParam<=cmObjLast) then
-  PopupMenuObject.CallMenuCmd(Msg.wParam)
+  g_PopupMenuObject.CallMenuCmd(Msg.wParam)
  else
   inherited;
 end;*)

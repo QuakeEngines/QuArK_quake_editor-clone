@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:34:29  decker_dk
+Updated copyright-header
 }
 
 unit PyProcess;
@@ -102,7 +104,7 @@ type
 function WaiterProc(var Info: TWaiterInfo) : LongInt; stdcall;
 begin
  WaitForSingleObject(Info.self^.Process, INFINITE);
- PostMessage(Form1Handle, wm_InternalMessage, wppn_EndOfProcess, LongInt(@Info));
+ PostMessage(g_Form1Handle, wm_InternalMessage, wppn_EndOfProcess, LongInt(@Info));
  Result:=0;
 end;
 
@@ -123,7 +125,7 @@ begin
  repeat
 (*if not ReadFile(Pipe, Buffer^.Data[Buffer^.InQueue], 1, Count, Nil) then
    begin  { broken pipe (end of process) }
-    PostMessage(Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
+    PostMessage(g_Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
     Result:=0;
     Exit;
    end;
@@ -131,7 +133,7 @@ begin
 
   if not ReadFile(Pipe, InputMsg, SizeOf(InputMsg), DWORD(Count), Nil) then
    begin
-    PostMessage(Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
+    PostMessage(g_Form1Handle, wm_InternalMessage, wppn_EndOfData, LongInt(@Info));
     Result:=0;
     Exit;
    end;
@@ -148,7 +150,7 @@ begin
     if not Buffer^.Pending then
      begin
       Buffer^.Pending:=True;
-      PostMessage(Form1Handle, wm_InternalMessage, wppn_DataWrite, LongInt(@Info));
+      PostMessage(g_Form1Handle, wm_InternalMessage, wppn_DataWrite, LongInt(@Info));
      end;
    end;
  until False;
@@ -376,7 +378,7 @@ begin
   New(Info);
   Info^.self:=PyProcessObject(self);
   Info^.fnt:=fnt;
- {Info^.TargetWnd:=Form1.Handle;}
+ {Info^.TargetWnd:=g_Form1.Handle;}
   Waiter:=CreateThread(Nil, 512, @WaiterProc, Info, 0, Dummy);
   if Waiter=0 then
    begin

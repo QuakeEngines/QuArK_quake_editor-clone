@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:47:10  decker_dk
+Updated copyright-header
+
 Revision 1.7  2001/02/05 20:05:07  aiv
 Fixed stupid bug when displaying texture vertices
 
@@ -74,17 +77,17 @@ type
                function PyGetAttr(attr: PChar) : PyObject; override;
              end;
 
-const   { for Info.DessinerBBox }
+const   { for g_DrawInfo.DessinerBBox }
  BBox_Actif      = 1;
  BBox_Cadre      = 2;
  BBox_Selection  = 4;
 
-const   { for Info.TreeMapStatus }
+const   { for g_DrawInfo.TreeMapStatus }
  tms_TreeMapChanged     = 1;
 {tms_InvalidPolyhedrons = 2;
  tms_InvalidFaces       = 4;}
 
-const   { for Info.TexAntiScroll }
+const   { for g_DrawInfo.TexAntiScroll }
  tas_None          = 0;
  tas_Perpendicular = 1;
  tas_NearestAxis   = 2;
@@ -127,7 +130,7 @@ type
                  end;
 
 var
- Info: TDrawInfo;
+ g_DrawInfo: TDrawInfo;
 
  {------------------------}
 
@@ -221,8 +224,8 @@ begin
   if Odd(SelMult) then
    begin
     DrawFlags:=df_HasBackColor;
-    LineColor:=Info.ColorTraits[esSelection];
-    LineBackColor:=Info.ColorTraits[esSel2];
+    LineColor:=g_DrawInfo.ColorTraits[esSelection];
+    LineBackColor:=g_DrawInfo.ColorTraits[esSel2];
    end
   else
    begin
@@ -231,9 +234,9 @@ begin
     while (T<>Nil) and not Odd(T.SelMult) do
      T:=T.TvParent;
     if T=Nil then
-     LineColor:=Info.ColorTraits[esNormal]
+     LineColor:=g_DrawInfo.ColorTraits[esNormal]
     else
-     LineColor:=Info.ColorTraits[esSelectedGroup];
+     LineColor:=g_DrawInfo.ColorTraits[esSelectedGroup];
    end;
 end;
 
@@ -289,12 +292,12 @@ begin
   else
    begin
     AnalyserClic:=Liste^.T;
-    Info.ClicZ:=Liste^.H;
+    g_DrawInfo.ClicZ:=Liste^.H;
    end
  else
   begin
    AnalyserClic:=P^.T;
-   Info.ClicZ:=P^.H;
+   g_DrawInfo.ClicZ:=P^.H;
   end;
  while Liste<>Nil do
   begin
@@ -370,26 +373,26 @@ begin
    PatternBrush:=CreatePatternBrush(Bmp);
    DeleteObject(Bmp);
   end;
- CDC.B:=SelectObject(Info.DC, PatternBrush);
- CDC.TC:=SetTextColor(Info.DC, $000000);
- CDC.BC:=SetBkColor(Info.DC, $FFFFFF);
+ CDC.B:=SelectObject(g_DrawInfo.DC, PatternBrush);
+ CDC.TC:=SetTextColor(g_DrawInfo.DC, $000000);
+ CDC.BC:=SetBkColor(g_DrawInfo.DC, $FFFFFF);
 end;
 
 procedure CloseComponentDC(var CDC: TCDC);
 begin
- SelectObject(Info.DC, CDC.B);
- SetTextColor(Info.DC, CDC.TC);
- SetBkColor(Info.DC, CDC.BC);
+ SelectObject(g_DrawInfo.DC, CDC.B);
+ SetTextColor(g_DrawInfo.DC, CDC.TC);
+ SetBkColor(g_DrawInfo.DC, CDC.BC);
 end;
 
 procedure EnableComponentDC(var CDC: TCDC);
 begin
- SelectObject(Info.DC, PatternBrush);
+ SelectObject(g_DrawInfo.DC, PatternBrush);
 end;
 
 procedure DisableComponentDC(var CDC: TCDC);
 begin
- SelectObject(Info.DC, CDC.B);
+ SelectObject(g_DrawInfo.DC, CDC.B);
 end;
 
  {------------------------}
@@ -405,10 +408,10 @@ begin
   if not PyArg_ParseTupleX(args, 'O!|d', [@TyVect_Type, @V1, @nGrid]) then
    Exit;
   if nGrid>0 then
-   Info.ModeDeplacement:=mdDisplacementGrid
+   g_DrawInfo.ModeDeplacement:=mdDisplacementGrid
   else
-   Info.ModeDeplacement:=mdDisplacement;
-  Info.Clic:=V1^.V;
+   g_DrawInfo.ModeDeplacement:=mdDisplacement;
+  g_DrawInfo.Clic:=V1^.V;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
     LoadAll;
@@ -431,8 +434,8 @@ begin
    Exit;
   if nGrid>0 then
    begin
-    Info.ModeDeplacement:=mdStrongDisplacementGrid;
-    Info.Clic:={Origine}OriginVectorZero;
+    g_DrawInfo.ModeDeplacement:=mdStrongDisplacementGrid;
+    g_DrawInfo.Clic:={Origine}OriginVectorZero;
     with QkObjFromPyObj(self) as Q3DObject do
      begin
       LoadAll;
@@ -455,9 +458,9 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @V1, @TyMatrix_Type, @M1]) then
    Exit;
-  Info.ModeDeplacement:=mdLinear;
-  Info.Clic:=V1^.V;
-  Info.Matrice:=M1^.M;
+  g_DrawInfo.ModeDeplacement:=mdLinear;
+  g_DrawInfo.Clic:=V1^.V;
+  g_DrawInfo.Matrice:=M1^.M;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
     LoadAll;
@@ -474,10 +477,10 @@ function qInflate(self, args: PyObject) : PyObject; cdecl;
 begin
  try
   Result:=Nil;
-  if not PyArg_ParseTupleX(args, 'd', [@Info.ClicZ]) then
+  if not PyArg_ParseTupleX(args, 'd', [@g_DrawInfo.ClicZ]) then
    Exit;
-  Info.ModeDeplacement:=mdInflate;
-  Info.Clic:={Origine}OriginVectorZero;
+  g_DrawInfo.ModeDeplacement:=mdInflate;
+  g_DrawInfo.Clic:={Origine}OriginVectorZero;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
     LoadAll;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/05/09 18:53:29  aiv
+fix for retail cs.
+
 Revision 1.23  2001/03/20 21:48:05  decker_dk
 Updated copyright-header
 
@@ -223,7 +226,7 @@ function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : Q
 
 procedure DestroyGameBuffers;
 begin
- Form1.SavePendingFiles(True);
+ g_Form1.SavePendingFiles(True);
  GameFiles.Free;
  GameFiles:=Nil;
 end;
@@ -353,7 +356,7 @@ end;
 
 procedure ClearGameBuffers(CanCancel: Boolean);
 begin
- Form1.SavePendingFiles(CanCancel);
+ g_Form1.SavePendingFiles(CanCancel);
  CloseToolBoxes;
  ProgressIndicatorStart(0,0);
  try
@@ -546,11 +549,11 @@ var
   I : Byte;
 begin
   Result := False;
-  if TexExtensions.Count=0 then
+  if g_TexExtensions.Count=0 then
     Exit;
-  for I := 0 to TexExtensions.Count-1 do
+  for I := 0 to g_TexExtensions.Count-1 do
   begin
-    if (CompareText(ExtractFileExt(FileName), TexExtensions.Strings[i])=0) then
+    if (CompareText(ExtractFileExt(FileName), g_TexExtensions.Strings[i])=0) then
     begin { file is a texture if its extension is listed in GameBuffer }
       Result := True;
       Exit;
@@ -567,14 +570,14 @@ begin   { returns an alternate file name to lookup this file }
       LastAliasName := FileName;
       LastAliasIndex := 0;
     end;
-    if LastAliasIndex >= TexExtensions.Count then { no alias found }
+    if LastAliasIndex >= g_TexExtensions.Count then { no alias found }
     begin
       Result := '';
       LastAliasIndex := 0;
     end
     else
     begin
-      Result := ChangeFileExt(FileName, TexExtensions.Strings[LastAliasIndex]);
+      Result := ChangeFileExt(FileName, g_TexExtensions.Strings[LastAliasIndex]);
       Inc(LastAliasIndex);
     end;
   end

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/05/06 21:13:37  tiglari
+fix mode change to q3a mode when reading stvef maps
+
 Revision 1.32  2001/03/31 04:27:28  tiglari
 WC33 mapversion 220 flag now kept, map will be written in 220 if present
  (concurrent update to QkMapPoly.pas)
@@ -1596,17 +1599,17 @@ begin
 {FOldPaint(Sender, PaintInfo);}
  Canvas.Handle:=DC;
  try
-  SetupWhiteOnBlack(Info.DefWhiteOnBlack);
+  SetupWhiteOnBlack(g_DrawInfo.DefWhiteOnBlack);
   ScrollBox1.MapViewProj.SetAsCCoord(DC);
-  Pen:=SelectObject(Info.DC, GetStockObject(Null_Pen));
-  Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
-  Info.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
+  Pen:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_Pen));
+  Brush:=SelectObject(g_DrawInfo.DC, GetStockObject(Null_Brush));
+  g_DrawInfo.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
   try
    FRoot.Dessiner;
   finally
-   SelectObject(Info.DC, Brush);
-   SelectObject(Info.DC, Pen);
-   DeleteObject(Info.GreyBrush);
+   SelectObject(g_DrawInfo.DC, Brush);
+   SelectObject(g_DrawInfo.DC, Pen);
+   DeleteObject(g_DrawInfo.GreyBrush);
   end;
  finally
   Canvas.Handle:=0;

@@ -23,13 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:41:11  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
-
 
 unit Travail;
 
@@ -60,10 +62,6 @@ type
               Pos0, Position, IncrementStep, Max: Double;
              end;
 
-{$IFDEF DebugTTT}
-var ProgressIndicatorCount: Integer;
-{$ENDIF}
-
 procedure ProgressIndicatorStart(NoTexte, Total: Integer);
 procedure ProgressIndicatorChangeMax(nPosition, Total: Integer);
 procedure ProgressIndicatorIncrement;
@@ -79,6 +77,10 @@ uses QkObjects, Quarkx;
 
 const
  cBarMax = 100;
+
+{$IFDEF DebugTTT}
+var ProgressIndicatorCount: Integer;
+{$ENDIF}
 
 var
  FTravail: PProgressIndicator = Nil;

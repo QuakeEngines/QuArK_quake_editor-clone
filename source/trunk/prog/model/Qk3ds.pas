@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/04/15 14:03:30  aiv
+ifdef out 3d max code (need lots of work)
+
 Revision 1.4  2001/03/20 21:37:46  decker_dk
 Updated copyright-header
 
@@ -92,8 +95,8 @@ end;
 class procedure Q3DSFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.FileObjectDescriptionText:=LoadStr1(5178);
-  Info.FileExt:=807;
+  g_DrawInfo.FileObjectDescriptionText:=LoadStr1(5178);
+  g_DrawInfo.FileExt:=807;
 end;
 
 Procedure Q3dsFile.SkipChunk(var s: TStream; Chunk: TChunkHeader);

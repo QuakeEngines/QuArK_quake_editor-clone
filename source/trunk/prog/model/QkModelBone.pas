@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:37:04  decker_dk
+Updated copyright-header
+
 Revision 1.7  2001/02/28 19:03:25  aiv
 Fixed ref count prob.
 
@@ -318,17 +321,17 @@ begin
 
   DeletePen:=CreatePen(ps_Solid, 0, clWhite);
   NewPen:=DeletePen;
-  OldPen:=Info.BlackBrush;
-  Info.BlackBrush:=NewPen;
+  OldPen:=g_DrawInfo.BlackBrush;
+  g_DrawInfo.BlackBrush:=NewPen;
   SetupComponentDC(CDC);
-  SelectObject(Info.DC, Info.BlackBrush);
+  SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush);
 
   CCoord.Line95(pt_start, pt_end);
 
   CloseComponentDC(CDC);
   if OldPen<>0 then begin
-    SelectObject(Info.DC, OldPen);
-    Info.BlackBrush:=OldPen;
+    SelectObject(g_DrawInfo.DC, OldPen);
+    g_DrawInfo.BlackBrush:=OldPen;
     if DeletePen<>0 then
       DeleteObject(DeletePen);
   end;

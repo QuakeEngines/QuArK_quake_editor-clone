@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.33  2001/03/20 21:43:41  decker_dk
 Updated copyright-header
 
@@ -1614,12 +1617,12 @@ begin
     begin
       SetLength(Data, W*H);
       Resample(@Game^.PaletteLmp, PChar(BigData), @Game^.PaletteLmp, PChar(Data), OldSize.X, OldSize.Y, OldSize.X, W, H, W);
-      ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[I], Data, sp_Auto, Self));
+      g_ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[I], Data, sp_Auto, Self));
 
       if not ScaleDown(W,H) then
       begin
         for J:=I+1 to (CustomParams and cpIndexesMax)-1 do
-          ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[J], '', sp_Supprime, Self));
+          g_ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[J], '', sp_Supprime, Self));
 
         Break;
       end;
@@ -1627,7 +1630,7 @@ begin
 
     SetLength(Data, 2*4);   { SizeOf(Single) }
     Move(V, Data[1], 2*4);   { SizeOf(Single) }
-    ListeActions.Add(TSpecificUndo.Create('', FloatSpecNameOf('Size'), Data, sp_Auto, Self));
+    g_ListeActions.Add(TSpecificUndo.Create('', FloatSpecNameOf('Size'), Data, sp_Auto, Self));
     FinAction(Self, LoadStr1(625));
   finally
     DeleteGameBuffer(Game);

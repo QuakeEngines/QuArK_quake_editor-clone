@@ -23,6 +23,8 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:34:48  decker_dk
+Updated copyright-header
 }
 
 unit PyMenus;
@@ -148,7 +150,7 @@ begin
          nInfo.fState:=0;
          nInfo.fType:=MFT_STRING {or MFT_RIGHTJUSTIFY};
          nInfo.wID:=wID_HelpMenu;
-         {nInfo.hSubMenu:=Form1.HelpMenu.Handle;}
+         {nInfo.hSubMenu:=g_Form1.HelpMenu.Handle;}
          IsPopup:=True;
         end
        else
@@ -159,7 +161,7 @@ begin
           nInfo.fState:=0;
           nInfo.fType:=MFT_STRING;
           nInfo.wID:=wID_ToolboxMenu;
-          {nInfo.hSubMenu:=Form1.WindowMenu.Handle;}
+          {nInfo.hSubMenu:=g_Form1.WindowMenu.Handle;}
           IsPopup:=True;
          end
         else
