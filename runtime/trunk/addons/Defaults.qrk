@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.85  2001/02/23 03:42:24  tiglari
+//form for dup path, supporting square end and setback
+//
 //Revision 1.84  2001/02/22 19:19:29  decker_dk
 //Added three pathdup.points
 //
@@ -3159,6 +3162,53 @@ QQRKSRC1
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
+    dup brushcap:form =
+    {
+      inverse: = {Txt="&" Typ="X"
+               Hint = "if checked, concave surface of curve is outer and has texture"}
+      lower: = {Txt="&" Typ="X"
+               Hint = "if checked, the whole thing is upside-down"}
+      thick: = {Txt ="&" Typ="EF1"
+                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner: = {Txt="&" Typ="X"
+               Hint = "if checked, inner approximation is used; otherwise outer"}
+      subdivide: = {Txt ="&" Typ="EF1"
+                Hint = "integer value, generate n patches along each side of curve"}
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "This one is not for you, Saruman"}
+    }
+    dup brushbevel:form =
+    {
+      inverse: = {Txt="&" Typ="X"
+               Hint = "if checked, concave surface of curve is outer and has texture"}
+      left: = {Txt="&" Typ="X"
+               Hint = "if checked, curve goes from back to left side rather than back to right side"}
+      thick: = {Txt ="&" Typ="EF1"
+                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner: = {Txt="&" Typ="X"
+               Hint = "if checked, inner approximation is used; otherwise outer"}
+      subdivide: = {Txt ="&" Typ="EF1"
+                Hint = "integer value, generate n patches along curve"}
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "This one is not for you, Saruman"}
+    }
+    dup brushcolumn:form =
+    {
+      inverse: = {Txt="&" Typ="X"
+               Hint = "if checked, concave surface of curve is outer and has texture"}
+      subdivide: = {Txt ="&" Typ="EF1"
+                Hint = "integer value, generate n patches along curve"}
+      circle:= {Txt="&" Typ="X"
+               }
+      funnel:= {Txt="&" Typ="EF002"
+               Hint = "if specified, first number is expand factor for top, second for bottom."
+                       $0D " e.g. 0 1 for upward pointing cone"}
+      bulge:= {Txt="&" Typ="EF002"
+               Hint = "height, width of bulge, proportional, .5 1=straight"}
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "This one is not for you, Saruman"}
+    }
+
     dup hlinfodecal:form =
     {
       Help = "Type your word(s) into the 'text'-specific,"
