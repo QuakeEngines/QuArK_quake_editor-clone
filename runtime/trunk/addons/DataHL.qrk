@@ -29,6 +29,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.29  2001/01/14 15:42:36  decker_dk
+//Updated FLF stuff.
+//
 //Revision 1.28  2001/01/07 13:19:52  decker_dk
 //Added Front Line Force entities.
 //Removed War In Europe v0.5 entities, and creation of the '*liblist.gam' file, which caused problems.
@@ -58,6 +61,11 @@ QQRKSRC1
 //Added CVS revision-history
 //
 // ----------- MANUAL REVISION HISTORY ------------
+//
+// 2001-01-20   [DOD] Added Day of Defeat entities (thanks to Art Vandelay)
+//              [TBO] Added Turbo entities (thanks to Art Vandelay)
+//
+// 2001-01-19   [-] Uncommented some 'same named texturenames in different .WADs' (thanks to Gaidin)
 //
 // 2001-01-12   [FLF] Updated entities with correct settings (Thanks to "Ryan Gregg")
 //
@@ -1112,6 +1120,79 @@ QQRKSRC1
 		monster_miniturret:e	= {t_orig_ang=!	;desc="Mini Auto Turret (Most commonly used)" }
                 monster_turret:e        = {t_orig_ang=! ;desc="Auto Turret" }
 	}
+    }
+
+    Turbo Entities.qtxfolder =
+    {
+        TBO Entities.qtxfolder = {
+                dropship_message:e      = {t_orig_ang=! ;desc="Dropship Message" }
+                func_holoteleport:b     = {             ;desc="HoloTeleport"    ;incl="defpoly" }
+                info_checkpoint:b       = {             ;desc="Checkpoint"      ;incl="trigpoly"
+                        wait="1"
+                }
+        }
+    }
+
+    Day of Defeat Entities.qtxfolder =
+    {
+        DOD Entities.qtxfolder = {
+            info_player_allies:e = { angle="360" origin="0 0 0" ;desc="Allies team start" }
+            info_player_axis:e = { angle="360" origin="0 0 0" ;desc="Axis team start" }
+            info_player_observer:e = { angle="360" origin="0 0 0" ;desc="Observer start" }
+            info_initial_player_allies:e = { angle="360" origin="0 0 0" ;desc="Allies initial start" }
+            info_initial_player_axis:e = { angle="360" origin="0 0 0" ;desc="Allies initial start" }
+            dod_object:e = { angle="360" origin="0 0 0" ;desc="Object Objective"
+                object_name=""
+                object_owner="0"
+                object_group=""
+                object_carryspeed="0.5"
+                object_resetontouch="1"
+                object_resettime="60"
+                object_cappoints="10"
+                object_otherpoints="5"
+                object_donetarget=""
+            }
+            dod_object_goal:b = { angle="360" ;incl="defpoly" ;desc="Object Capturepoint"
+                capobj_group=""
+            }
+            dod_score_ent:e = { angle="360" origin="0 0 0" ;desc="Used for done sequences"
+                team="0"
+                score_points="10"
+                score_resetitemtime="3"
+                score_resetplayerstime="3"
+                noise=""
+                noise2="0"
+                message=""
+            }
+            dod_secondary:e = { angle="360" origin="0 0 0" ;desc="Secondary score entity - used for giving bonuses"
+                team="0"
+                secondary_giverespawn="0"
+                secondary_giveclips="0"
+                secondary_givegrens="0"
+                secondary_giveteampoints="0"
+                message=""
+            }
+            dod_control_point_master:e = { angle="360" origin="0 0 0" ;desc="Control Point Master"
+                point_give_delay_time="20"
+                allies_capture_target=""
+                axis_capture_target=""
+            }
+            dod_control_point:e = { angle="360" origin="0 0 0" ;desc="Territorial Control Point"
+                point_name="a control point"
+                point_pointvalue="1"
+                point_points_for_cap="1"
+                point_default_owner="0"
+                point_axis_capsound=""
+                point_allies_capsound=""
+                point_resetsound=""
+                point_allies_model="models/w_aflag.mdl"
+                point_axis_model="models/w_gflag.mdl"
+                point_reset_model="models/w_wflag.mdl"
+                point_allies_target=""
+                point_axis_target=""
+                point_reset_target=""
+            }
+        }
     }
    }
   }
@@ -2662,6 +2743,61 @@ $0D"models/wire_red32.mdl"
         }
 
 //
+// Turbo
+//
+        f_tbo_t_weapon:form = {
+                spawnflags: = { Typ="X1" Cap="Preserve" hint="" txt="&" }
+        }
+        t_tbo_t_weapon:incl = {
+                tbo: = {
+                    Typ = "B"
+                    Txt = "(Turbo)"
+                    Cap = "Push..."
+                    form = "f_tbo_t_weapon:form"
+                    Hint = "Turbo settings"
+                }
+        }
+
+//
+// Day of Defeat
+//
+        f_dod_t_door:form = {
+                TeamDoors: = { txt="&" typ="C" hint="Team Specific Door"
+                        items =    "Both Teams"
+                                $0D"Allies Only"
+                                $0D"Axis Only"
+                        value = "0"$0D"1"$0D"2"
+                }
+        }
+        t_dod_t_door:incl = {
+                dod: = {
+                    Typ = "B"
+                    Txt = "(DayOfDefeat)"
+                    Cap = "Push..."
+                    form = "f_dod_t_door:form"
+                    Hint = "Day of Defeat settings"
+                }
+        }
+
+        f_dod_trigger:form = {
+                teamonly: = { txt="&" typ="C" hint="Team Specific Door"
+                        items =    "Both Teams"
+                                $0D"Allies Only"
+                                $0D"Axis Only"
+                        value = "0"$0D"1"$0D"2"
+                }
+        }
+        t_dod_trigger:incl = {
+                dod: = {
+                    Typ = "B"
+                    Txt = "(DayOfDefeat)"
+                    Cap = "Push..."
+                    form = "f_dod_trigger:form"
+                    Hint = "Day of Defeat settings"
+                }
+        }
+
+//
 //
 //
         t_weapon:incl = {
@@ -2672,6 +2808,7 @@ $0D"models/wire_red32.mdl"
 		t_angles = !
                 t_tfc_settings = !
                 t_si_settings = !
+                t_tbo_t_weapon = !
         }
         t_ammo:incl = {
                 bbox = '-16 -16 0 16 16 32'
@@ -3001,6 +3138,7 @@ $0D"Hornet Gun"
                 t_rendermode = !
 		t_angles = !
                 t_tfc_settings = !
+                t_dod_t_door = !
                 t_brushentity = !
         }
         t_tank:incl = {
@@ -8708,8 +8846,12 @@ $0D"Slow freeze"
                 wait: = { Txt="&" Hint="Delay before reset" }
                 t_trigger = !
                 t_fa_trigger_multiple_settings = !
+                t_dod_trigger = !
         }
-        trigger_once:form = { t_trigger = ! }
+        trigger_once:form = {
+                t_trigger = !
+                t_dod_trigger = !
+        }
         trigger_push:form = {
                 t_trigger = !
                 spawnflags: = { Txt="&" Typ="X1" Cap="Once Only" }
@@ -8727,6 +8869,7 @@ $0D"Slow freeze"
                              $0D"Toggle"
                         Values ="0"$0D"1"$0D"2"
                 }
+                t_dod_trigger = !
         }
         trigger_teleport:form = {
                 t_trigger = !
@@ -10936,6 +11079,163 @@ $0D"weapon_smokegrenade"
                 pointname:      = {txt="&" hint="'West' will appear in game as 'Captureing West Point' 'Warehouse' will appear in game as 'Captureing Warehouse Point'" }
                 capturetime:    = {txt="&" hint="Time to Capture (Seconds) Min time is 5" }
         }
+
+//
+// Turbo
+//
+        t_tbo_html:incl = {
+                HTML = "http://www.halflife.net/randomnine/"
+        }
+
+        dropship_message:form =
+        {
+                t_tbo_html = !
+                t_targetname = !
+                t_target = !
+                message: = { txt="&" hint="Message Name" }
+        }
+        func_holoteleport:form =
+        {
+                t_tbo_html = !
+                t_globalname = !
+                t_targetname = !
+                t_target = !
+                t_rendermode = !
+
+                sounds: = { txt="&" typ="C" hint="Sounds"
+                        Items = "(none)"
+                             $0D"Big zap & Warmup"
+                             $0D"Access Denied"
+                             $0D"Access Granted"
+                             $0D"Quick Combolock"
+                             $0D"Power Deadbolt 1"
+                             $0D"Power Deadbolt 2"
+                             $0D"Plunger"
+                             $0D"Small zap"
+                             $0D"Keycard Sound"
+                             $0D"Buzz"
+                             $0D"Buzz Off"
+                             $0D"Light Switch"
+                        Values =""$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D"11"$0D"14"
+                }
+                spawnflags: = { typ="X256" cap="Touch Activates" txt="&" }
+                t__minlight = !
+        }
+        info_checkpoint:form =
+        {
+                t_tbo_html = !
+                t_target = !
+                wait: = { txt="&" hint="Number (0=F;1=S/F)" }
+        }
+
+//
+// Day of Defeat
+//
+        info_player_allies:form = {
+            bbox = '-16 -16 -36 16 16 36'
+        }
+        info_player_axis:form = {
+            bbox = '-16 -16 -36 16 16 36'
+        }
+        info_player_observer:form = {
+            bbox = '-16 -16 -36 16 16 36'
+        }
+        info_initial_player_allies:form = {
+            bbox = '-16 -16 -36 16 16 36'
+        }
+        info_initial_player_axis:form = {
+            bbox = '-16 -16 -36 16 16 36'
+        }
+        dod_object:form = {
+            t_targetname = !
+            t_target = !
+            model: = { txt="&" hint="Model" }
+            object_name: = { txt="&" hint="Objects Name" }
+            object_owner: = { txt="&" typ="C" hint="Owner"
+                items ="Both"$0D "Allies"$0D "Axis"
+                values=   "0"$0D      "1"$0D    "2"
+            }
+            object_group: = { txt="&" hint="Group Name" }
+            object_takesound: = { txt="&" hint="Sound when taken" }
+            object_capsound: = { txt="&" hint="Sound when captured" }
+            object_dropsound: = { txt="&" hint="Sound when dropped" }
+            object_returnsound: = { txt="&" hint="Sound when returned" }
+            object_carryspeed: = { txt="&" hint="Carry speed (this*speed)" }
+            object_resetontouch: = { txt="&" typ="C" hint="Reset on touch"
+                items ="No"$0D "Yes"
+                values= "0"$0D   "1"
+            }
+            object_resettime: = { txt="&" hint="Reset time (secs, max. 600)" }
+            object_cappoints: = { txt="&" hint="Points to capturer" }
+            object_otherpoints: = { txt="&" hint="Points for teammates" }
+            object_donetarget: = { txt="&" hint="Target When Complete" }
+        }
+        dod_object_goal:form = {
+            t_targetname = !
+            t_target = !
+            capobj_group: = { txt="&" hint="Group Name" }
+        }
+        dod_score_ent:form = {
+            t_targetname = !
+            t_target = !
+            team: = { txt="&" typ="C" hint="For Team"
+                items ="Both"$0D "Allies"$0D "Axis"
+                values=   "0"$0D      "1"$0D    "2"
+            }
+            score_points: = { txt="&" hint="Points" }
+            score_resetitemtime: = { txt="&" hint="Reset Items Time (0 = none)" }
+            score_resetplayerstime: = { txt="&" hint="Reset Players Time (0 = none)" }
+            noise: = { txt="&" hint="Reset Group (blank for all)" }
+            noise2: = { txt="&" typ="C" hint="End game?"
+                items ="No"$0D "Yes"
+                values= "0"$0D   "1"
+            }
+            message: = { txt="&" hint="Message" }
+        }
+        dod_secondary:form = {
+            t_targetname = !
+            t_target = !
+            team: = { txt="&" typ="C" hint="For Team"
+                items ="Both"$0D "Allies"$0D "Axis"
+                values=   "0"$0D      "1"$0D    "2"
+            }
+            secondary_giverespawn: = { txt="&" typ="C" hint="Respawn Dead Teammates?"
+                items ="No"$0D "Yes"
+                values= "0"$0D   "1"
+            }
+            secondary_giveclips: = { txt="&" hint="Clips to each player" }
+            secondary_givegrens: = { txt="&" hint="Grenades to each player" }
+            secondary_giveteampoints: = { txt="&" hint="Team Points" }
+            message: = { txt="&" hint="Message" }
+        }
+        dod_control_point_master:form = {
+            t_targetname = !
+            t_target = !
+            point_give_delay_time: = { txt="&" hint="Time between point gives ( seconds )" }
+            allies_capture_target: = { txt="&" hint="Target when allies capture" }
+            axis_capture_target: = { txt="&" hint="Target when axis capture" }
+        }
+        dod_control_point:form = {
+            t_targetname = !
+            t_target = !
+            point_name: = { txt="&" hint="Control Point Name" }
+            point_pointvalue: = { txt="&" hint="Time based points value" }
+            point_points_for_cap: = { txt="&" hint="Points given to capturer" }
+            point_default_owner: = { txt="&" typ="C" hint="Default Owner of the control point"
+                items ="Neither"$0D "Allies"$0D "Axis"
+                values=      "0"$0D      "1"$0D    "2"
+            }
+            point_axis_capsound: = { txt="&" hint="Sound Made when Axis captures" }
+            point_allies_capsound: = { txt="&" hint="Sound Made when Allies captures" }
+            point_resetsound: = { txt="&" hint="Sound Made when point resets" }
+            point_allies_model: = { txt="&" hint="Model when allies capture" }
+            point_axis_model: = { txt="&" hint="Model when axis capture" }
+            point_reset_model: = { txt="&" hint="Model when point reset" }
+            point_allies_target: = { txt="&" hint="Target when allies capture" }
+            point_axis_target: = { txt="&" hint="Target when axis capture" }
+            point_reset_target: = { txt="&" hint="Target when point reset" }
+        }
+
 
 /////////////////////
   }
@@ -15889,16 +16189,16 @@ $0D"weapon_smokegrenade"
         BRIDGE.wl = {t_tfc=!}
         BRIDGE_CAP.wl = {t_tfc=!}
         B_BLASTDOORS.wl = {t_tfc=!}
-        C1A0_LABFLRE.wl = {t_tfc=!}
+//        C1A0_LABFLRE.wl = {t_tfc=!}
         C1A1A_W4B.wl = {t_tfc=!}
         C1A1A_W4X.wl = {t_tfc=!}
-        C1A4_SILO4A.wl = {t_tfc=!}
-        C1A4_SILO5.wl = {t_tfc=!}
-        C2A4_H2E3.wl = {t_tfc=!}
+//        C1A4_SILO4A.wl = {t_tfc=!}
+//        C1A4_SILO5.wl = {t_tfc=!}
+//        C2A4_H2E3.wl = {t_tfc=!}
         C2A4_H2E3B.wl = {t_tfc=!}
         C2A4_H2EBLU.wl = {t_tfc=!}
         C2A4_H2ERED.wl = {t_tfc=!}
-        C2A4_H2F.wl = {t_tfc=!}
+//        C2A4_H2F.wl = {t_tfc=!}
         C2A4_H2FB.wl = {t_tfc=!}
         C3A1_CRATE1B.wl = {t_tfc=!}
         C3A1_CRATE2B.wl = {t_tfc=!}
@@ -17184,7 +17484,7 @@ $0D"weapon_smokegrenade"
         747wall_x4.wl = {t_cs_cs_747=!}
         aircarpet.wl = {t_cs_cs_747=!}
         aircarpet_256.wl = {t_cs_cs_747=!}
-        babtech_ceil01.wl = {t_cs_cs_747=!}
+//        babtech_ceil01.wl = {t_cs_cs_747=!}
         babtech_block4.wl = {t_cs_cs_747=!}
         blueback_x3.wl = {t_cs_cs_747=!}
         carpet.wl = {t_cs_cs_747=!}
@@ -17426,9 +17726,9 @@ $0D"weapon_smokegrenade"
       }
       n0th1ng.txlist =
       {
-        C3A1_CRATE1B.wl = {t_cs_n0th1ng=!}
-        C3A1_CRATE2B.wl = {t_cs_n0th1ng=!}
-        C3A1_CRATE3B.wl = {t_cs_n0th1ng=!}
+//        C3A1_CRATE1B.wl = {t_cs_n0th1ng=!}
+//        C3A1_CRATE2B.wl = {t_cs_n0th1ng=!}
+//        C3A1_CRATE3B.wl = {t_cs_n0th1ng=!}
         DOCKS_DPLANK.wl = {t_cs_n0th1ng=!}
         DOCKS_SLD2.wl = {t_cs_n0th1ng=!}
         DOCKS_YEL2.wl = {t_cs_n0th1ng=!}
