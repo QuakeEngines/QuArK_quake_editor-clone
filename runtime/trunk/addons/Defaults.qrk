@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.61  2000/10/15 16:49:12  alexander
+//rename StarTrek EF to STVEF
+//
 //Revision 1.60  2000/10/15 16:08:03  alexander
 //set name
 //
@@ -258,6 +261,8 @@ QQRKSRC1
         UndoBufferSize = '3.0'     // MB
         GameFiles = '30'
         GameBufferSize = '10.0'     // MB
+        CompressionBufferSize = '16' // KBytes
+        CompressionLevel = '9' // Where else to put this?
         Form = "GeneralMemory"
       }
       QuakeC:config =
@@ -2406,6 +2411,8 @@ QQRKSRC1
       MinUndo: = {Txt="Min. undo levels" Typ="EF1" Hint="Minimum number of consecutive undos allowed (warn if not enough memory for this number)"}
       UndoBufferSize: = {Txt="Size of undo buffer (MB)" Typ="EF1" Hint="Deletes older undo levels if it would take more memory than this"}
       GameBufferSize: = {Txt="Size of game buffer (MB)" Typ="EF1" Hint="Size of the memory buffer to allocate while loading files from Quake (e.g. textures)"}
+      CompressionLevel: = {Txt="Compression Level" Typ="EF1" Hint="Level of Compression to use for zip files (0 .. 9)"}
+      CompressionBufferSize: = {Txt="Size of compression buffer (KB)" Typ="EF1" Hint="Size of memory buffer to allocate when compressing files"}
     }
     externaledit:incl = {
       Typ = "EP"
