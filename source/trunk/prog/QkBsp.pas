@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2001/07/22 11:40:59  tiglari
+Heretic 2, KingPin bsp viewing
+
 Revision 1.40  2001/07/22 09:57:29  tiglari
 SOF bsp viewing (non-optimized, most of face record unknown)
 
@@ -266,6 +269,15 @@ type
             dist: scalar_t;
            end;
 
+ PQ3Node = ^TQ3Node;
+ TQ3Node = record
+            plane: Integer; { plane index }
+            firstchild: Integer; {child indices, neg if leaf }
+            secondchild: Integer;
+            mins: array [0..2] of integer; {bbox}
+            maxs: array [0..2] of integer;
+           end;
+
  QBsp = class(QFileObject)
         private
           FStructure: TTreeMapBrush;
@@ -306,6 +318,7 @@ type
           Function GetTextureFolder: QObject;
           Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
+          procedure GetPlanes(var L: TQList);
         end;
 
 type
@@ -320,6 +333,10 @@ type
   public
   end;
 
+ TTreeMapPlane = class(TTreeMapGroup)
+  public
+   class function TypeInfo: String; override;
+ end;
  {------------------------}
 
 Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
@@ -1054,6 +1071,8 @@ var
  Dest: PVect;
  HullType: Char;
  Pozzie: vec3_t;
+ Nodes: PChar;
+ NodeCount: Integer;
 begin
  HullType:=BspType(NeedObjectGameCode);
  if FStructure=Nil then
@@ -1074,7 +1093,11 @@ begin
       PQ3:=PQ3Vertex(Q3Vertices);
       ReallocMem(FVertices, VertexCount*SizeOf(TQ3Vertex));
       PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
-   end;
+   {
+      NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     Nodes)   div SizeOf(TQ3Node);
+      ShowMessage('Nodes: '+IntToStr(NodeCount));
+   }
+  end;
    Dest:=PVect(FVertices);
    if BspSurfaceType(HullType)=bspSurfQ12 then
    for I:=1 to VertexCount do
@@ -1163,7 +1186,6 @@ begin
 end;
 
 
-
 function qReloadStructure(self, args: PyObject) : PyObject; cdecl;
 begin
  try
@@ -1196,6 +1218,7 @@ const
 function QBsp.PyGetAttr(attr: PChar) : PyObject;
 var
  I: Integer;
+ L: TQlist;
 begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
@@ -1206,6 +1229,14 @@ begin
     Exit;
    end;
  case attr[0] of
+  'p': if StrComp(attr, 'planes') = 0 then
+       begin
+         L:=TQList.Create; try;
+         GetPlanes(L);
+         Result:=QListToPyList(L);
+         finally L.Free; end;
+         Exit;
+       end;
   't': if StrComp(attr, 'texsource') = 0 then
         begin
          Result:=GetPyObj(GetAltTextureSrc);
@@ -1491,6 +1522,38 @@ begin
   end;
 end;
 
+procedure Qbsp.GetPlanes(var L: TQList);
+var
+  p: QObject;
+  S: String;
+  I, PlaneSize: Integer;
+  Planes2: PChar;
+  norm: vec3_t;
+  dist: scalar_t;
+  Q: QObject;
+begin
+  if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
+    PlaneSize:=SizeOf(TbPlane)
+  else
+    PlaneSize:=SizeOf(TQ3Plane);
+  Planes2:=Planes;
+  For I:=1 to PlaneCount do
+  begin
+    with PbPlane(Planes2)^ do
+    begin
+      {if the plane is created with Self as parent, it
+        can't be stuck into a subitems list by Python
+        code }
+      Q:=TTreeMapPlane.Create('plane '+IntToStr(I), Nil);
+      Q.VectSpec['norm']:=MakeVect(normal);
+      Q.SetFloatSpec('dist',dist);
+      L.Add(Q);
+    end;
+    Inc(Planes2, PlaneSize);
+  end;
+  {ShowMessage('Planes: '+IntToStr(PlaneCount));}
+end;
+
 function bspSurfaceType(const BspType : Char) : Char;
 begin
   if BspType=BspTypeQ3 then
@@ -1554,6 +1617,10 @@ begin
   end;
   Result:=TexFolder;
 end;
+class function TTreeMapPlane.TypeInfo: String;
+begin
+ TypeInfo:=':pl';
+end;
 
 
 initialization
@@ -1568,4 +1635,5 @@ initialization
 
   RegisterQObject(QBsp3,  ' ');
   RegisterQObject(QBsp3a, 'a');
+  RegisterQObject(TTreeMapPlane, 'a');
 end.

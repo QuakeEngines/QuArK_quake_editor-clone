@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/07/22 09:57:29  tiglari
+SOF bsp viewing (non-optimized, most of face record unknown)
+
 Revision 1.18  2001/07/21 01:48:07  tiglari
 add/use functions & values defining classes of games
 
@@ -909,7 +912,7 @@ end;
 function TBSPHull.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
  if Q is TFace then
-  Result:=ieResult[True] + [ieInvisible]
+  Result:=ieResult[True]  + [ieInvisible]
  else
   Result:=[];
 end;
