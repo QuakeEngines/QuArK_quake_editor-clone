@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2002/01/07 08:31:20  tiglari
+Unhook the main window
+
 Revision 1.29  2001/12/05 20:39:52  decker_dk
 Ensure that TForm1.SavePendingFiles() isn't called endlessly, before the user
 have a change to answer the question.
@@ -1461,6 +1464,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  st:='hi';
  s:=PyString_FromString(PChar(st));
  CallMacro(s, 'shutdown');
+ Py_Finalize;
  Application.UnHookMainWindow(WindowHook);
  end;
 
