@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.94  2001/03/08 21:55:18  tiglari
+//first segment of path dup is now 'level' (won't twist)
+//
 //Revision 1.93  2001/03/07 20:01:36  tiglari
 //path_point specifics
 //
@@ -3260,6 +3263,17 @@ QQRKSRC1
         Typ = "EDL" // "EDL" = Editfield-Directorypath-Lastfolderonly
         Hint = "QuArK will run the game with this as '-game' or '+set game' command-line parameter"
       }
+      GetEntitiesBtn: =
+      {
+	Typ = "P"
+	Cap = "Get Entities for this game"
+	Macro = "makeaddon"
+      }
+    }
+    FormContext:form =
+    {
+      info: = {Typ="S" Txt=" ---- Entity forms ----"}
+      Style = "3"
     }
     ToolBox:form =      // form that applies when editing .qtx objects
     {
