@@ -4,7 +4,7 @@ Info = {
    "desc":          "Displays the axis icons in the viewing windows",
    "date":          "June 14 2002",
    "author":        "cdunde",
-   "author e-mail": "cdunde@attbi.com",
+   "author e-mail": "cdunde1@attbi.com",
    "quark":         "Version 6" }
 
 
@@ -13,16 +13,6 @@ import quarkpy.mapoptions
 from quarkpy.maputils import *
 from quarkpy.qhandles import *
 
-
-#
-# We'll leave these guys out until its clear that they're needed
-#
-# import quarkpy.mapmenus
-# import quarkpy.mapentities
-# import quarkpy.qmenu
-# import quarkpy.mapeditor
-# import quarkpy.mapcommands
-# import quarkpy.qmacro
 
 #
 # <tiglari>
@@ -42,7 +32,8 @@ from quarkpy.qhandles import *
 # The prolixity of `quarkpy.mapoptions' could be reduced by using
 #  `import X from mapoptions' statements (without ""'s & #)as follows:
 #""from quarkpy.mapoptions import *"" and
-#""items.append(toggleitem("&Axis XYZ letter indicator in view windows",        #"AxisXYZ", (1,1),
+#""items.append(toggleitem("&Axis XYZ letter indicator in view windows",
+#"AxisXYZ", (1,1),
 #      hint="|Display the X Y or Z indicator letter per view to associate #the rotation menu buttons. These are for reference only and are not #selectable with the mouse."))""
 
 # But I don't think that would be worthwhile, 
@@ -91,74 +82,57 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     #  in the Option menu.
     #
 
-    if not MapOption("AxisXYZ"):
-        import quarkpy.qhandles
-        def MyMakeScroller(layout, view):
-            sbviews = [None, None]
-            for ifrom, linkfrom, ito, linkto in layout.sblinks:
-                if linkto is view:
-                    sbviews[ito] = (ifrom, linkfrom)
-            def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
-                view.scrollto(x, y)
-                if hlink is not None:
-                    if hlink[0]:
-                        hlink[1].scrollto(None, x)
-                    else:
-                        hlink[1].scrollto(x, None)
-                if vlink is not None:
-                    if vlink[0]:
-                        vlink[1].scrollto(None, y)
-                    else:
-                        vlink[1].scrollto(y, None)
+    if not MapOption("AxisXYZ"):return
+
+    import quarkpy.qhandles
+    def MyMakeScroller(layout, view):
+        sbviews = [None, None]
+        for ifrom, linkfrom, ito, linkto in layout.sblinks:
+            if linkto is view:
+                sbviews[ito] = (ifrom, linkfrom)
+        def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
+            view.scrollto(x, y)
+            if hlink is not None:
+                if hlink[0]:
+                    hlink[1].scrollto(None, x)
+                else:
+                    hlink[1].scrollto(x, None)
+            if vlink is not None:
+                if vlink[0]:
+                    vlink[1].scrollto(None, y)
+                else:
+                    vlink[1].scrollto(y, None)
+            if not MapOption("AxisXYZ"):
                 view.update()
-            return scroller
-        quarkpy.qhandles.MakeScroller = MyMakeScroller
-
-    else:
-
-        import quarkpy.qhandles
-        def MyMakeScroller(layout, view):
-            sbviews = [None, None]
-            for ifrom, linkfrom, ito, linkto in layout.sblinks:
-                if linkto is view:
-                    sbviews[ito] = (ifrom, linkfrom)
-            def scroller(x, y, view=view, hlink=sbviews[0], vlink=sbviews[1]):
-                view.scrollto(x, y)
-                if hlink is not None:
-                    if hlink[0]:
-                        hlink[1].scrollto(None, x)
-                    else:
-                        hlink[1].scrollto(x, None)
-                if vlink is not None:
-                    if vlink[0]:
-                        vlink[1].scrollto(None, y)
-                    else:
-                        vlink[1].scrollto(y, None)
+            else:
                 view.repaint()
-            return scroller
-        quarkpy.qhandles.MakeScroller = MyMakeScroller
+        return scroller
+    quarkpy.qhandles.MakeScroller = MyMakeScroller
+
+
+
 
 
     # The following sets the canvas function to draw the images.
 
-        cv = view.canvas()
-        type = view.info["type"]  # These type values are set
-                                  #  in the layout-defining plugins.
-        if type == "YZ":
-           index = 0
-        elif type == "XZ":
-           index = 1
-        elif type == "XY":
-           index = 2
-        else:
-           return
+    cv = view.canvas()
+    type = view.info["type"]  # These type values are set
+                              #  in the layout-defining plugins.
+    if type == "YZ":
+       index = 0
+    elif type == "XZ":
+       index = 1
+    elif type == "XY":
+       index = 2
+    else:
+       return
 
     #
     # ahah, the canvas has absolute coordinates with relation
     #  to the window it appears in.
     #
 
-        cv.draw(axisicons[index],14,1)
+    cv.draw(axisicons[index],14,1)
 
 #
 # Now set our new function as the finishdrawing method.
