@@ -1,55 +1,62 @@
-          Patch 5, for QuArK Snapshot of 070901
+           QuArK Snapshot of 080601
 
- *enhanced BSP exploration for Q3A:
-    Best to use these in .bsp's extracted from .paks,
-    due to less memory use & chance of accidental
-    save.
-    
-    Command menu items for collecting nodes & planes;
-    these appear in the treeview.  Large maps can't show
-    all the planes in the treeview.
-    
-    When asked whether to save changes, don't.
-    
-    There are also some facilities for finding planes
-    that lie near others; this isn't ready for the bigtime.
-
-
-          Patch 3, for QuArK Snapshot of 070901
-            (072701)      
+Changes from 070901:
  
- *beziers & new build tool for Crystal Space support
- *Blue Shift pak's now open
- *add align to marked option, clear mark command.
+ *Multiple selection list browser:
+    when there is a multiple selection, menu-items and a hotkey
+    are activated to list the selected items in a dialog, from
+    which the members can be further selected.
+
+ *Texture substitution cycle for standard duplicators
+   (basic, linear): give the specific tex_sub the name
+   of a file such as texcycle.txt.  The file should
+   have a list of texture names on each line, whitespace-
+   separated, e.g.:
+    
+    gothic_block/block10d gothic_block/blocks10
+
+ *clear mark command.
+
  *threepoint plane can now glue to tagged plane
-
-
-        Patch 2, for QuArK Snaprot of 070901
-               (072201)
                
- *Read/write with entity-edits bsp's for:
-   Q3A, SOF, Heretic II, KingPin (every supported
-   Q-engine game except Sin).
- *Map comments automatically disabled when writing
-   bsp entities (should fix unplayble map-writing
-   problem)
- *Start room removed for 6DX
+ *BSP Support:
+    - all bsp's viewed except for Sin (patches omitted from Q3A/STVEF)
+
+    - entity lumps now edit correctly (comments no longer mis-written
+         into them)
+
+    - bsp exploration facilities:
+
+        due to less memory use & chance of accidental
+        save.
+
+        Command menu items for collecting nodes & planes;
+        these appear in the treeview.  Large maps can't show
+        all the planes in the treeview.
+
+        When asked whether to save changes, don't.
+
+        There are also some facilities for finding planes
+        that lie near others: first you get ones that have
+        close neighbors, then you can collect those neighbors,
+        then browse the group (including opening the nodes to
+        find the nodes split by a given plane).
+
+ *Blue Shift pak's now open
+
+ *Crystal Space Support:
+    beziers & new build tool for Crystal Space support
 
 
-        Patch 1, for QuArK Snapshot of 070901
-               (071701)
+ *6DX support:
+
+     -Start room removed for 6DX
                
- *.hmf file support added for 6dx, map checks disabled.
-    6dx default map needs textures added to it
-    (in data6dx.qrk)
- *basic viewing of Q3A .bsp files now works.  Writing
-    not yet supported
-  
-  Note: to edit entities and write the .bsp's for Q2 etc.
-    you need to turn off comment writing in the map-option
-    defaults, this might be made automatic in a later
-    version but requires a bit more thought.
-             
+     - *.hmf file support added for 6dx, map checks disabled.
+         6dx default map needs textures added to it
+         (in data6dx.qrk)
+
+
              QuArK Snapshot 070901
              
 Changes from 081801
