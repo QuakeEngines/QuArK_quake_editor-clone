@@ -1,4 +1,9 @@
-"""   QuArK  -  Quake Army Knife
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0060)http://groups.yahoo.com/group/quark/files/PATCHES/qeditor.py -->
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 5.50.4134.600" name=GENERATOR></HEAD>
+<BODY><XMP>"""   QuArK  -  Quake Army Knife
 
 Various constants and Screen Controls for editors.
 """
@@ -1318,7 +1323,7 @@ def ToolsMenu(editor, toolbars):
 # Icons for the layout of the Map/Model Editor
 #
 ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
-ico_dict['ico_mdled'] = LoadIconSet1("mdled", 1.0)
+ico_mdled = LoadIconSet1("mdled", 1.0)
 ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
 
@@ -1478,6 +1483,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.10  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.9  2001/08/07 23:37:09  tiglari
 #X_, Y_, Z_, axis constants added
 #
@@ -1504,3 +1512,4 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #
+</XMP></BODY></HTML>
