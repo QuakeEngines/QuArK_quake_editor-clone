@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.242  2005/01/05 12:18:34  alexander
+//introduced %gamedir% variable expansion for running tools and utilized for hl2 support
+//
 //Revision 1.241  2005/01/04 17:22:10  alexander
 //steam environment configuration added
 //
@@ -3096,9 +3099,10 @@ QQRKSRC1
       }
       SteamFSModule =
       {
+        DefExt="dll"
         Txt = "Steam Filesystem Dll"
-        Typ = "ED"      // Edit Directory
-        Hint = "use sourcesdk/bin/FileSystem_Steam.dll"
+        Typ = "EP"     
+        Hint = "chose FileSystem_Steam.dll from sourcesdk/bin directory"
       }
       SteamAppUser =
       {
@@ -3121,10 +3125,10 @@ QQRKSRC1
       {
         Txt = "Game Directory"
         Typ = "C"   // combo box    
-        Hint = "relative to steam install directory, e.g. SteamApps/<Steam Account Name>/counter-strike source/cstrike"
-        Items =    "SteamApps/<Steam Account Name>/half-life 2 deathmatch/hl2mp"
-                $0D"SteamApps/<Steam Account Name>/half-life 2/hl2"
-                $0D"SteamApps/<Steam Account Name>/counter-strike source/cstrike"
+        Hint = "relative to steam install directory, e.g. SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
+        Items =    "SteamApps/<insert your Steam Account Name here>/half-life 2 deathmatch/hl2mp"
+                $0D"SteamApps/<insert your Steam Account Name here>/half-life 2/hl2"
+                $0D"SteamApps/<insert your Steam Account Name here>/counter-strike source/cstrike"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
