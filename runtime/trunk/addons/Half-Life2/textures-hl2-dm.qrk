@@ -1,7 +1,7 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 DM Textures"
+  Description = "HL2 DM Textures from source materials.gcf"
 
 
 
@@ -11,8 +11,8 @@ QQRKSRC1
     ToolBox = "Texture Browser..."
     Root = "HL2 DM Textures.qtxfolder"
 
-    //t_hl2:incl =      {  v="source materials.gcf"}
-    t_hl2:incl =    {  v="tmpQuArK/materials_from_source_materials"}
+    t_hl2:incl =      {  v="source materials.gcf"}
+    //t_hl2:incl =    {  v="tmpQuArK/materials_from_source_materials"}
 
     HL2 DM Textures.qtxfolder =
     {

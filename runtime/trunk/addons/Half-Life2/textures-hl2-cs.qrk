@@ -1,7 +1,7 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 CS Textures"
+  Description = "HL2 CS Textures from counter-strike source shared.gcf"
 
 
 //
@@ -15,8 +15,8 @@ QQRKSRC1
     ToolBox = "Texture Browser..."
     Root = "HL2 CS.qtxfolder"
 
-    //t_hl2cs:incl =      {  v="counter-strike source shared.gcf"}
-    t_hl2cs:incl =    {  v="tmpQuArK/materials_from_cs_source_shared"}
+    t_hl2cs:incl =      {  v="counter-strike source shared.gcf"}
+    //t_hl2cs:incl =    {  v="tmpQuArK/materials_from_cs_source_shared"}
 
 
       HL2 CS.qtxfolder =
