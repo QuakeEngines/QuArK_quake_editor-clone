@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.36  2000/06/22 22:41:21  tiglari
+//added support for columns (and pipes)
+//
 //Revision 1.35  2000/06/17 07:28:10  tiglari
 //stretchtex flag for arch/cap and bevel
 //
@@ -546,10 +549,9 @@ QQRKSRC1
         LIGHTDesc = "QRAD3"
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
-//        Palette = "pics/colormap.pcx"
-//        Gradient = "pics/colormap.pcx"
-        UnifiedPalette = "1"
-//        ExtractFiles = "pics/colormap.pcx" FIXME: Are these needed ?
+        //Palette = "pics/colormap.pcx"
+        //Gradient = "pics/colormap.pcx"
+        //ExtractFiles = "pics/colormap.pcx" FIXME: Are these needed ?
         Q2TexPath = "textures/"
         Q2TexFlags = "1"
         ExtraCmdLine = "+set game %s"
