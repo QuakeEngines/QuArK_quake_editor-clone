@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.62  2000/10/16 22:32:58  aiv
+//added compression options to memory options (CompressionBufferSize and CompressionLevel)
+//
 //Revision 1.61  2000/10/15 16:49:12  alexander
 //rename StarTrek EF to STVEF
 //
@@ -2648,6 +2651,7 @@ QQRKSRC1
       IgnoreToBuild: = {Typ="X" Txt="   ``"                 Cap="Ignore groups marked so"}
       DisableEnhTex: = {Typ="X" Txt="   ``"                 Cap="Don't write //TX# in .map files"}
       DisableFPCoord: = {Typ="X" Txt="   ``"                 Cap="Don't write floating-point coords"}
+      EnableBrushBrim: = {Typ="X" Txt="   ``"                 Cap="Brush primitives in maps (Q3A only)"}
     }
     MapBuilding:form =
     {
