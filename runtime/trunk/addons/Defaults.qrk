@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.23  2000/05/06 15:21:01  decker_dk
+//Dont overwrite files that already exist. This fix may cause a problem elsewhere however...
+//
 //Revision 1.22  2000/05/05 00:01:07  alexander
 //added: game forms and defaults for Soldier of Fortune
 //
@@ -501,10 +504,10 @@ QQRKSRC1
         LIGHTDesc = "QRAD3"
         BaseDir = "main"
         tmpQuArK = "tmpQuArK"
-        Palette = "pics/colormap.pcx"
-        Gradient = "pics/colormap.pcx"
+//        Palette = "pics/colormap.pcx"
+//        Gradient = "pics/colormap.pcx"
         UnifiedPalette = "1"
-        ExtractFiles = "pics/colormap.pcx"
+//        ExtractFiles = "pics/colormap.pcx" FIXME: Are these needed ?
         Q2TexPath = "textures/"
         Q2TexFlags = "1"
         ExtraCmdLine = "+set game %s"
@@ -515,11 +518,11 @@ QQRKSRC1
         CheckDirectory = "sof.EXE"
         Console = "1"
         Form = "GameSOF"
-        TextureDef = "castle/1_tunnelfloor_1"
+        TextureDef = "castle/1_2_subfloor_1"
         TriggerTextureDef = "castle/1_tunnelfloor_1" //FIXME
         LightFactor = '0.90000'
         3DLight = '512'
-        walTrick = "1"
+        walTrick = "1"     // FIXME is that needed ? 
         TextureFormat = ".m32"
       }
       Quake 3:config =
