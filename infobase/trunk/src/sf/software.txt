@@ -1,0 +1,7 @@
+title: Required software
+author: Armin Rigo
+
+<html>The software you need is first a CVS client. For Windows the best one is <a href="http://www.wincvs.org">WinCVS</a>. Download it and install it.
+
+If you want to be able to contribute your own changes to the source into the repository, you will also need an SSH client. There is one you can download from
+<html><a href="http://asp.planetquake.com/dl/dl.asp?quark/source/ssh-pack.zip">this place</a>.

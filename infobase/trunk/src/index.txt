@@ -1,5 +1,5 @@
 title: The Source Code
-subdir: intro struct pas
+subdir: sf intro struct pas
 
 This section discusses QuArK programming.
 
