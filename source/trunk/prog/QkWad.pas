@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/01/15 19:22:01  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.16  2000/11/19 15:31:49  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -152,7 +155,7 @@ type
 implementation
 
 uses QkUnknown, Travail, Qk1, Setup, Quarkx, QkHL
-  ,QkQ1;
+  ,QkQ1, QkObjectClassList;
 
 {$R *.DFM}
 
@@ -507,7 +510,11 @@ begin
          if Size=0 then
           Q:=OpenFileObjectData(F, S, Size, Self)
          else
-          Q:=OpenFileObjectData(F, S+'.wad_D', Size, Self);
+          if (CharModeJeu = mjHalfLife) then
+           {Decker - If we're in Half-Life gamemode, then load as '.wad3_C' type}
+           Q:=OpenFileObjectData(F, S+'.wad3_C', Size, Self)
+          else
+           Q:=OpenFileObjectData(F, S+'.wad_D', Size, Self);
          SubElements.Add(Q);
          LoadedItem(rf_Default, F, Q, Size);
          Inc(P);
