@@ -632,7 +632,7 @@ Strings = {
     5389: "Groups",
     5390: "Flags",
     5391: "\267 differs \267",
-    5392: "%d KB",
+    5392: "%d bytes",
     5393: "  Paste",
     5394: "This stores your settings",
     5395: "view of textures is disabled - click here to enable",
@@ -889,6 +889,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.32  2001/02/14 23:34:59  alexander
+#set name
+#
 #Revision 1.31  2001/02/12 03:46:54  tiglari
 #reset snapshot #
 #
