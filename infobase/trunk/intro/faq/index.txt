@@ -7,3 +7,4 @@ desc: whatisthehistoryofquark
 desc: whousesquark
 desc: howisquarkdifferentfromothermapeditors
 desc: howdoesquarkstackuptoothermapeditors
+desc: whenwillquarksupportmyfavoritegame

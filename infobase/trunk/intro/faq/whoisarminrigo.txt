@@ -1,9 +1,10 @@
 title: Who is Armin Rigo?
-author: Gryphon
+author: Gryphon, tiglari
 
-QuArK is programmed by Armin Rigo, a mathematics student from Lausanne Switzerland. Armin has been programming Quake related
-utilities since Quake's release, and was the first one to release a program for de-compiling progs.dat files in order to study
-the structure. This program, called DEACC, was quickly followed by REACC (used to facilitate re-compiling) and Armin has just
-recently released a native 32bit version of DEACC called DEACC32. QuArK now incorporates parts of DEACC and REACC, into it's
-QuakeC abilities, and you can easily add specific sections to an existing progs.dat file with QuArK's QuakeC tools, making it
-extremely simple to add new functionality to your Quake maps.
+QuArK was programmed by Armin Rigo while he was a mathematics student in Lausanne
+Switzerland. Armin had been programming Quake related utilities since Quake's
+release, and was the first one to release a program (DEACC) for de-compiling
+Quake scripts in order to study their structure.  He later produced a map editor
+called QuakeMap, which was then combined with DEACC and other tools to become
+QuArK.  Armin has moved on from game-related programming and is now no longer
+involved in QuArK or any other game-related activities.
