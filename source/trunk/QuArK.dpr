@@ -125,7 +125,6 @@ uses
   ZIP in 'prog\ZIP.pas',
   QkZip2 in 'prog\QkZip2.pas',
   QkJpg in 'prog\QkJpg.pas',
-  crc32 in 'prog\crc32.pas',
   QkQ3 in 'prog\QkQ3.pas',
   QkText in 'prog\QkText.pas',
   QkSpr in 'prog\QkSpr.pas',
@@ -160,7 +159,9 @@ uses
   EdSceneObject in '3dfx\EdSceneObject.pas',
   OsFolder in 'prog\OsFolder.pas',
   QkObjectClassList in 'prog\QkObjectClassList.pas',
-  Sprite in 'prog\Sprite.pas';
+  Sprite in 'prog\Sprite.pas',
+  crc32 in 'prog\crc32.pas',
+  QkApplPaths in 'prog\QkApplPaths.pas';
 
 {$R *.RES}
 
