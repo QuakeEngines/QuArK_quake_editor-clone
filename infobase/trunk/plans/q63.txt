@@ -1,7 +1,11 @@
-title: QuArK 6.3 (release candidate)
+title: QuArK 6.3 (current)
 author: tiglari, etc.
 
-This is what has been implemented in QuArK 6.3, at least as much of it
+QuArK 6.3.0 has been released; there is also an update patch, and there
+will very likely be a 6.3.1 with some minor bugfixes and improvements.
+Probabl that will be that.
+
+First, what what has been implemented in QuArK 6.3.0, at least as much of it
 as we remembered to record!  The now uninformative 'status' info (e.g.
 'done') has been removed, but some of the more contentful ones have been
 left.  Feel free to add additional features to this list that QuArK actually
@@ -159,3 +163,18 @@ story might be a good QuArK-Python tutorial on handling mouse stuff.)
 
 <li>liner mappings work on path duplicator: (tiglari)
 </ul>
+
+And in future updates + 6.3.1.
+<UL>
+<LI> enhanced wallmaker: (tiglari)
+<br>status: done in current update patch
+<LI> target finder: (tiglari)
+<br> status: done in current update patch
+<LI> enhanced prism builder: (ax2grind, cdunde)
+<br>status: done in current update patch
+<LI> tagging commands toolbar: (cdunde)
+<status>done as plugin
+<LI> more flexible vertex movement: (milifaar)
+<status>done as plugin
+</ul>
+

@@ -1,4 +1,4 @@
-title: QuArK 6.2 (current)
+title: QuArK 6.2 (superceded)
 author: tiglari
 
 Stuff actually implemented in QuArK 6.2.  Perhaps

@@ -7,6 +7,11 @@ as Quarkplusplus features.
 
 <ul>
 
+<li> Auto-binary qrk:
+<br>When a text-based .qrk is loaded, write a binary format equivalent
+with extenion .brk; then next time load that unless the .qrk is newer
+(same logic as .py and .pyc).
+
 <li>Model editor: (Andy, tiglari)
 <br>  export closed mesh to brushset
 

@@ -1,16 +1,35 @@
-title: QuArK 6.4
+title: QuArK 6.4 (no release yet)
 author: tiglari, etc.
 
-These are what I (tiglari) judge to be serious ideas for QuArK 6.4,
-which have a good chance of appearing progressively in snapshots over
-the next year or so.  The stuff near the top of the list is more
-likely to be done soon or at all than the stuff further down.  Keep in mind
-that at some point the <a href=http://quarkplusplus.sourceforge.net/>
-QuArKplusplus project</a> will overtake and subsume the development of
-the current version of QuArK, possibly before some of the things on this
-list are done.
+The QuArK 6.x series is intended for incremental development.  The
+further down on the list something appears, the more likely it is
+to be delayed till 6.5, or never to happen at all.
 
 <UL>
+<LI>Transparency in OGL views: (Decker)
+<BR>status: done.
+
+<LI>Infobase link button in help popup: (cdunde et al)
+<BR>status: various implementations worked out, dithering
+between alternatives.
+
+<li>Toobar buttons: (cdunde, tiglari)
+<BR>status: implemented as plugin, wants further development
+and integration into quarkpy.
+
+<li>bot waypoint editor: (decker)
+<br>status: limited implementation as plugin.
+
+<li>Flexible vertex movement: (milifaar, tiglari)
+<br>status: a plugin by Milifaar.
+
+<li>Targetted and targetter finder: (tiglari)
+<br> suggestion by quantum_red.
+<br>status: done.
+
+<LI>Manual .lin and .prt file loading: (tiglari)
+<br>status: envisioned
+
 <LI>Leak line simplification:
 <br> information from Bengt Jardrup:
 <br>Tiglari, if you take a look at the Q1 compilers at my site 
@@ -26,16 +45,6 @@ list are done.
 > file outside.c and is called SimplifyLeakline.
 > 
 </code>
-
-<li>bot waypoint editor: (decker)
-<br>status: limited implementation as plugin.
-
-<li>Flexible vertex movement: (tiglari)
-<br>status: some ideas about how to do it.
-
-<li>Targetted and targetter finder: (tiglari)
-<br> suggestion by quantum_red.
-<br>status: preliminary plugin in quark groups files/Plugins area.
 
 <li>Mixed-face contents finder: (tiglari)
 <br> suggestion by funkiedamouse.
