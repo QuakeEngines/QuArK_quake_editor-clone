@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/01/30 19:12:14  decker_dk
+Changed to GetApplicationPath().
+
 Revision 1.12  2001/01/21 15:51:46  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -2307,16 +2310,22 @@ begin
 end;
 
 {AiV}
-function xLogging(self, args: PyObject) : PyObject; cdecl;
+Function xLog(self, args: PyObject) : PyObject; cdecl;
+var
+  P: PChar;
 begin
- try
-  Result:=GetLoggingModule;
- except
-  EBackToPython;
   Result:=Nil;
- end;
-end;
-{/AiV}
+  try
+    P:=PyString_AsString(Args);
+    if P=Nil then
+      Exit;
+    aLog(LOG_PYTHONSOURCE, P^);
+    Result:=PyNoResult;
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;{/AiV}
 
 const
  MethodTable: array[0..65] of TyMethodDef =
@@ -2385,7 +2394,7 @@ const
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
    (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
    (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
-   (ml_name: 'logging';         ml_meth: xLogging;        ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'log';             ml_meth: xLog;        ml_flags: METH_VARARGS),{AiV}
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}

@@ -151,7 +151,6 @@ uses
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   Qk3ds in 'prog\model\Qk3ds.pas',
   Logging in 'prog\Logging.pas',
-  PyLogging in 'python\PyLogging.pas',
   EdTListP2 in '3dfx\EdTListP2.pas',
   EdOpenGL in '3dfx\EdOpenGL.pas',
   EdDirect3D in '3dfx\EdDirect3D.pas',
