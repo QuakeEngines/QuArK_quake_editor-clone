@@ -129,6 +129,7 @@ class ToolMoveBar(ToolBar):
     "The Movement Tool Palette."
 
     Caption = "Movement Tool Palette"
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 0, 1, 1)
 
     def buildbuttons(self, layout):
         if not ico_dict.has_key('ico_movepal'):
@@ -209,6 +210,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.8  2003/03/15 20:41:07  cdunde
+#To update hints and add infobase links
+#
 #Revision 1.7  2003/02/14 04:23:11  cdunde
 #To add and update F1 popup info.
 #

@@ -298,6 +298,7 @@ class TagModesBar(ToolBar):
     "The Tag Commands Tool Palette."
 
     Caption = "Tag Tool Palette"
+    DefaultPos = ((102, 163, 570, 213), 'topdock', 335, 1, 1)
 
     def buildbuttons(self, layout):
         if not ico_dict.has_key('ico_tagside'):
@@ -397,6 +398,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.4  2003/07/15 07:51:38  cdunde
+# Remove unneeded seperators to shorten toolbar for screen size.
+#
 # Revision 1.3  2003/07/14 20:25:14  cdunde
 # To add selection toolbar and update tag toolbar
 #

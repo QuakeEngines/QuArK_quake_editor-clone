@@ -375,6 +375,7 @@ class DragModesBar(ToolBar):
     "The new toolbar with DragModes buttons."
 
     Caption = "Mouse modes"
+    DefaultPos = ((0, 0, 0, 0), 'topdock', 262, 0, 1)
 
     def buildbuttons(self, layout):
         btns = []
@@ -398,6 +399,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.7  2003/03/15 20:40:19  cdunde
+# To update hints and add infobase links
+#
 # Revision 1.6  2001/10/22 10:15:48  tiglari
 # live pointer hunt, revise icon loading
 #
