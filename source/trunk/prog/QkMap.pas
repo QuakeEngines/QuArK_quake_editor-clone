@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/09/24 23:45:16  alexander
+committed tiglaris .map loading and bezier texture missing fix
+
 Revision 1.16  2000/09/14 18:00:22  decker_dk
 Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
 
@@ -1225,7 +1228,9 @@ begin
          saveflags:=saveflags or soDisableEnhTex;
        if MapOptionSpecs.Values['DisableFPCoord']<>'' then
          saveflags:=saveflags or soDisableEnhTex;
-       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
+       if MapOptionSpecs.Values['EnableBrushBrim']<>'' then
+         saveflags:=saveflags or soEnableBrushPrim;
+      saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
      { TTreeMap(Racine).SauverTexte(List, Dest, IntSpec['saveflags'], HxStrings); }
        TTreeMap(Racine).SauverTexte(List, Dest, saveflags, HxStrings);
