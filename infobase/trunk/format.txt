@@ -45,7 +45,7 @@ HEADER_BEGIN = """
     </td>
   </tr>
 </table>
-<br><table border=0 width=100%%><tr><td>"""
+<table border=0 width=100%% cellspacing=10><tr><td>"""
 HEADER_END = """
 </td></tr></table>
 <br>
@@ -62,7 +62,7 @@ HEADERLVL     = """-&nbsp;<a href="%(htmlfile)s">%(classif)s%(htmltitleshort)s</
 FOOTER = """
 <table width=100%% border=0 cellspacing=0>
   <tr class="headline">
-    <td width=99%% align=middle nowrap>
+    <td width=99%% align=middle>
       <p class="sm">
         GNU General Public License by The QuArK (Quake Army Knife) Community - <a href="http://www.planetquake.com/quark">http://www.planetquake.com/quark</a>
       </p>
@@ -136,7 +136,7 @@ FILE_BEGIN = """
       </td>
     </tr>
   </table>
-  <br><table border=0 width=100%%><tr><td>
+  <table border=0 width=100%% cellspacing=10><tr><td>
 """
 FILE_END = """
   </td></tr></table>
@@ -194,3 +194,7 @@ NAVNOPREV = """[&nbsp;<span class="navdisable">Prev</span>&nbsp;"""
 NAVNOUP   = """-&nbsp;<span class="navdisable">Up</span>&nbsp;-"""
 NAVNONEXT = """&nbsp;<span class="navdisable">Next</span>&nbsp;]"""
 
+#
+# Misc.
+#
+ACT_HTML = """<span class="act">'%s'</span>"""

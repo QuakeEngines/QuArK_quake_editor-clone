@@ -126,6 +126,13 @@ def proczip(kw, path):  #tiglari
     else:
         return '<a href="%s%s">%s</a>' % (ZIPLOC, path, path)
 
+def procact(kw, actionstring):
+    # An 'action' is usually composed of a series of menu-actions the user
+    # has to drill into. An example: "<act> RMB | Curves|Arch </act>"
+    actionstring = string.replace(actionstring, " | ", " -&gt; ")
+    actionstring = string.replace(actionstring, "|",   " -&gt; ")
+    return ACT_HTML % actionstring
+
 
 def processtext(root, text, data, kw):
 
@@ -150,6 +157,10 @@ def processtext(root, text, data, kw):
 
         def perform_rsc_action(datastring, root, kw):
             return procrsc(kw, string.strip(datastring))
+
+        def perform_act_action(datastring, root, kw):
+            return procact(kw, string.strip(datastring))
+
 
         if (tag[:5] == "<code"):
             replacewith = "<div class=\"doccode\"><pre>"
@@ -197,6 +208,13 @@ def processtext(root, text, data, kw):
                 raise "<rsc>-tag without any </rsc>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
             replacewith = perform_rsc_action(line[:end_tag], root, kw)
             line = line[end_tag+len("</rsc>"):]
+        elif (tag[:4] == "<act"):
+            end_tag = string.find(line, "</act>")
+            if end_tag == -1:
+                # A <act>-tag must have a </act>-tag on the same line, else this code won't work.
+                raise "<act>-tag without any </act>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_act_action(line[:end_tag], root, kw)
+            line = line[end_tag+len("</act>"):]
         elif (tag[:4] == "</i>"):
             replacewith = tag
             if (line[:6] <> "&nbsp;"):
@@ -278,106 +296,6 @@ def processtext(root, text, data, kw):
 
     for ptags in range(paragraf_tags_added):
         data.append("</p>")
-
-def xprocesstext(root, text, data, kw):
-    currentpara = None
-    TEXT = 1
-    HTML = 2
-#+ Those lines with "#+" are included, so the proper </p> tag is added always,
-#+ else the formatting won't be proper... It will look bad actually :-/ So better
-#+ remember to add those </p> tags, when doing your own <html>!! /Decker
-    p_tag_added = 0 #+
-    variableformat = (string.lower(kw.get("format", "")) != "html")
-    for line in text:
-        test = string.lower(line)
-        if test[:6]=="<text>":
-            lineconvert = TEXT
-            line = line[6:]
-        elif test[:6]=="<html>":
-            lineconvert = HTML
-            line = line[6:]
-        else:
-            lineconvert = None
-
-        test = string.strip(test)
-        if not test:
-            # this line is empty
-            currentpara = None
-            if (p_tag_added > 0):               #+
-                line = "</p>"                   #+
-                p_tag_added = p_tag_added - 1   #+
-
-#! It would be great, if we could implement start _and_ end tags. Something like;
-#! "and if you look at <ref> ../dir/file </ref>, then it would" - having these
-#! tags directly _in_ the text. /Decker
-
-        elif test[:5]=="<ref>":
-            # this line is a reference
-            str = string.strip(string.strip(line)[5:])
-            try:
-                ind = string.index(str,'\\')
-                pathname = string.strip(str[:ind])
-                refname = string.strip(str[ind+1:])
-            except (ValueError):
-                pathname = str
-                refname="";
-            line = findref(root, pathname, refname,kw)
-        elif test[:5]=="<pic>": #tiglari
-            # this line is an image
-            line = procpic(kw, string.strip(string.strip(line)[5:]))
-        elif test[:5]=="<rsc>": #tiglari
-            # this line names a resource we want to
-            # be moved into output and renamed like a pic or ref
-            # function returns only the new name, double-quoted
-            line = procrsc(kw, string.strip(string.strip(line)[5:]))
-        elif test[:5]=="<zip>": # tiglari
-            # for things that are shifted into the output directory
-            #  under their name unchanged if there's a command-line
-            #  argument -local, or not shifted and referred to
-            #  with ZIPLOC prefix otherwise (for things like zip
-            #  files that web hosts like to stick on special
-            #  servers)
-            #
-            line = proczip(kw, string.strip(string.strip(line)[5:]))
-        # Tags to turn on/off html-conversion
-        elif test[:9]=="<html on>": # Decker
-            currentpara = HTML
-            variableformat = 0
-            line=line[10:]
-        elif test[:10]=="<html off>": # Decker
-            currentpara = None
-            variableformat = (string.lower(kw.get("format", "")) != "html")
-            line=line[11:]
-
-        # Tags to turn on/off code-text which is preformattet
-        elif test[:6]=="<code>": # Decker
-            currentpara = HTML
-            variableformat = 0
-            line="<div class=\"doccode\"><pre>"
-        elif test[:7]=="</code>": # Decker
-            currentpara = None
-            variableformat = (string.lower(kw.get("format", "")) != "html")
-            line="</pre></div>"
-
-        elif variableformat:
-            if test[:3]=="<p>" or currentpara==HTML:
-                # this line is direct HTML, no formatting
-                currentpara = HTML
-                if lineconvert == TEXT:
-                    line = text2html(line)
-            else:
-                # this line is text
-                if lineconvert != HTML:
-                    line = text2html(line)
-                if currentpara != TEXT:
-                    line = "<p>" + line
-                    p_tag_added = p_tag_added + 1   #+
-                    currentpara = TEXT
-
-        data.append(line)
-
-    for ptags in range(p_tag_added):    #+
-        data.append("</p>")             #+
 
 def parse(file):
     f = open(file, "r")
@@ -597,6 +515,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.13  2001/02/20 19:33:14  decker_dk
+# Changed to .PNG image-format, and a comment in BUILD.PY
+#
 # Revision 1.12  2001/02/15 19:43:16  decker_dk
 # Recoded the BUILD.PY to support somewhat basic-HTML.
 #
