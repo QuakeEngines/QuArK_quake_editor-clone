@@ -202,7 +202,7 @@ def LoadIconSet2(filename, width, transparencypt=(0,0)):
         try:
             return cache[ext]
         except:
-            img = quarkx.loadimages2(filename + ext, width, transparencypt)
+            img = quarkx.loadimages(filename + ext, width, transparencypt)
             cache[ext] = img
             return img
 
@@ -214,7 +214,7 @@ def LoadIconSet2(filename, width, transparencypt=(0,0)):
 
     # load xxx-2.bmp, the triggered version for on/off buttons
     try:
-        trig = quarkx.loadimages2(filename + "-2.bmp", width, transparencypt)
+        trig = quarkx.loadimages(filename + "-2.bmp", width, transparencypt)
         return (unsel, sel, trig)
     except quarkx.error:
         return (unsel, sel)
@@ -347,6 +347,8 @@ def DuplicatorIconSel(dup):
 #
 # Variable icons handlers for groups
 #
+
+#obj = quarkx.newobj("hello")
 
 def GroupIconUnsel(grp, ico_objects_group_set={
   (0,0):ico_objects[0][32],
@@ -501,6 +503,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2002/03/26 22:19:20  tiglari
+#support UseIntegralVertexes flag
+#
 #Revision 1.18  2002/03/05 11:03:50  tiglari
 #revert group icon selection code to older version to restore hidden/nonhidden
 # difference.
