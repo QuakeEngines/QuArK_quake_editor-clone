@@ -56,13 +56,19 @@ def ZoomIn(editor, view=None):
     scale = commonscale(editor.layout.views)
     if not scale:
         scale = 1.0
-    setviews(editor.layout.views, "scale", scale*qhandles.MOUSEZOOMFACTOR)
+    scale = scale*qhandles.MOUSEZOOMFACTOR
+    if scale>100:
+        scale=100 #DECKER clamp zoom-in
+    setviews(editor.layout.views, "scale", scale)
 
 def ZoomOut(editor, view=None):
     scale = commonscale(editor.layout.views)
     if not scale:
         scale = 1.0
-    setviews(editor.layout.views, "scale", scale/qhandles.MOUSEZOOMFACTOR)
+    scale = scale/qhandles.MOUSEZOOMFACTOR
+    if scale<0.01:
+        scale=0.01 #DECKER clamp zoom-out
+    setviews(editor.layout.views, "scale", scale)
 
 def MoveLeft(editor, view=None):
     editor.movekey(view, -1,0)
@@ -401,5 +407,8 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.4  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
