@@ -24,6 +24,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/11/19 15:31:50  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.15  2000/09/01 00:11:18  alexander
 merged in tiglaris .map extension fix from rel6_1 branch
 
@@ -496,7 +510,7 @@ begin
      while Liste.Count<=J do
       Liste.Add(Nil);
      Liste[J]:=DestCtrl;
-    end; 
+    end;
   end;
  for I:=Liste.Count-1 downto 0 do
   begin
@@ -821,7 +835,7 @@ begin
             case P^ of
              '"': Break;
              #13, #10, #0: SyntaxError(5198);
-(* 
+(*
 {decker - allow escape-characters like "\n", "\"" and "\\".
           This implementation is not exactly C-style, as only
           the mentioned three escape-characters are supported!}
@@ -929,13 +943,15 @@ var
   var
    F: TSearchRec;
   begin
-   List.Clear;
-   if (FindFirst(TempPath+Tag+'*.TMP', faAnyFile, F) = 0) or
-{AiV} (FindFirst(TempPath+Tag+'*.ZIP', faAnyFile, F) = 0) then
-    repeat
-     List.Add(F.Name);
-    until FindNext(F)<>0;
-   FindClose(F);
+    List.Clear;
+    { Find all files with the *.TMP extension }
+    if (FindFirst(TempPath+Tag+'*.TMP', faAnyFile, F) = 0) then
+    begin
+      repeat
+        List.Add(F.Name);
+      until FindNext(F)<>0;
+    end;
+    FindClose(F);
   end;
 
   procedure DeleteTheseFiles;
@@ -949,20 +965,24 @@ var
 begin
  GetTempPath(SizeOf(Z), Z);
  TempPath:=StrPas(Z);
- if TempPath='' then Exit;  { error }
+ if TempPath='' then
+  Exit;  { error }
  if TempPath[Length(TempPath)]<>'\' then
   TempPath:=TempPath+'\';
- List:=TStringList.Create; try
- ListFiles(TagToDelete);
- DeleteTheseFiles;
- ListFiles(TagToDelete2);
- if List.Count>0 then
-  begin
-   if MessageDlg(FmtLoadStr1(5216, [List.Count, TempPath]), mtConfirmation,
-    [mbYes,mbNo], 0) = mrYes then
-     DeleteTheseFiles;
-  end;
- finally List.Free; end;
+ List:=TStringList.Create;
+ try
+  ListFiles(TagToDelete);
+  DeleteTheseFiles;
+  ListFiles(TagToDelete2);
+  if List.Count>0 then
+   begin
+    if MessageDlg(FmtLoadStr1(5216, [List.Count, TempPath]), mtConfirmation,
+     [mbYes,mbNo], 0) = mrYes then
+      DeleteTheseFiles;
+   end;
+ finally
+  List.Free;
+ end;
 end;
 
 procedure QFileObject.LoadFromStream(F: TStream);
@@ -1101,7 +1121,7 @@ begin
       TargetFile.CopyFrom(F, J);
       ProgressIndicatorIncrement;
       Dec(I, J);
-     end; 
+     end;
     finally TargetFile.Free; end;
     finally ProgressIndicatorStop; end;
   (*FileOp.Wnd:=Form1.Handle;
