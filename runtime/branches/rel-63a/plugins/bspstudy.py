@@ -557,7 +557,6 @@ class NodeType(quarkpy.mapentities.GroupType):
 
         polyItem=qmenu.item("Add BBox poly", bboxPoly)
 
-
 #
 #  hmm this one doesn't actually seem to be so straightforward
 #
@@ -569,9 +568,9 @@ class NodeType(quarkpy.mapentities.GroupType):
 
         return [polyItem]
 
-quarkpy.mapentities.Mapping[":bspnode"] = NodeType
-quarkpy.mapentities.Mapping[":bspplane"] = PlaneType
-quarkpy.mapentities.Mapping[":bsphull"] = HullType
+quarkpy.mapentities.Mapping[":bspnode"] = NodeType()
+quarkpy.mapentities.Mapping[":bspplane"] = PlaneType()
+quarkpy.mapentities.Mapping[":bsphull"] = HullType()
 
 def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
 #    debug('start draw')

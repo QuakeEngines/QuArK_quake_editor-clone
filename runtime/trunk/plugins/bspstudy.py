@@ -569,9 +569,9 @@ class NodeType(quarkpy.mapentities.GroupType):
 
         return [polyItem]
 
-quarkpy.mapentities.Mapping[":bspnode"] = NodeType
-quarkpy.mapentities.Mapping[":bspplane"] = PlaneType
-quarkpy.mapentities.Mapping[":bsphull"] = HullType
+quarkpy.mapentities.Mapping[":bspnode"] = NodeType()
+quarkpy.mapentities.Mapping[":bspplane"] = PlaneType()
+quarkpy.mapentities.Mapping[":bsphull"] = HullType()
 
 def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
 #    debug('start draw')
