@@ -437,7 +437,10 @@ def buildwallmakerimages(self, singleimage=None):
                         poly = polys[j].copy()
                         for face in poly.faces:
                             if abs(inner.normal-face.normal)<SMALL and math.fabs((face.dist*face.normal-innerp)*inner.normal)<SMALL:
-                                face.swapsides()
+                                #
+                                # slight optimization, since face nonvisible
+                                #
+                                face.swapsides_leavetex()
                                 brush=makePrism(face,poly,self.depth)
                                 for bface in brush.subitems[:2]:
                                     bface.translate(10*bface.normal)
@@ -545,6 +548,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.6.6.1  2002/05/18 22:45:55  tiglari
+# remove debug statements
+#
 # Revision 1.6  2001/10/08 10:42:47  tiglari
 # solid mode added, group structure preserved when dissociated
 #
