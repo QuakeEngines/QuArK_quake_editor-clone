@@ -166,6 +166,8 @@ SUBFILES_TABLEEND = """
 #
 REFFILE = """<a href="%(htmlfile)s#%(hrefaname)s"><i>%(title)s</i></a>&nbsp;""" # DECKER - '&nbsp;' because of italic
 REFDIR  = """<a href="%(htmlfile)s"><i>%(title)s</i></a>&nbsp;"""               # DECKER - '&nbsp;' because of italic
+REFFILE_NAME = """<a href="%(htmlfile)s#%(hrefaname)s">%(refname)s</a>"""
+REFDIR_NAME  = """<a href="%(htmlfile)s">%(refname)s</a>"""
 REFPIC  = """<img src="%(imgfile)s">"""
 
 #

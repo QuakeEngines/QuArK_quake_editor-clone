@@ -56,10 +56,18 @@ def relpath(curpath, relpath):
        track = string.split(curpath,'/')
        return climbpath(track[:-2],relpath[2:])
 
-def findref(root, path, fkw):
+def findref(root, path, name, fkw):
 #    print 'FKW: '+`fkw["path"]`
+    def ref(REF, REF_NAME, kw,name=name):
+        if name=="":
+            return REF % kw
+        else:
+            kw['refname']=name
+            return REF_NAME % kw
+            
     path = relpath(fkw["path"], path)
     print 'PATH: '+`path`
+    print "name: "+name
     path0 = path
     path = string.split(path, "/")
     path1 = ""
@@ -74,10 +82,9 @@ def findref(root, path, fkw):
             if len(path) == 1:
                 for kw, text in root.files:
                     if kw["hrefaname"] == path[0]:
-                        return REFFILE % kw
+                        return ref(REFFILE,REFFILE_NAME,kw)
             raise "Reference not found : " + path0
-    return REFDIR % root.kw
-
+    return ref(REFDIR,REFDIR_NAME,root.kw)
 
 def procpic(kw, path):  #tiglari
     picrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
@@ -132,7 +139,15 @@ def processtext(root, text, data, kw):
 
         elif test[:5]=="<ref>":
             # this line is a reference
-            line = findref(root, string.strip(string.strip(line)[5:]), kw)
+            str = string.strip(string.strip(line)[5:])
+            try:
+                ind = string.index(str,'\\')
+                pathname = string.strip(str[:ind])
+                refname = string.strip(str[ind+1:])
+            except (ValueError):
+                pathname = str
+                refname="";
+            line = findref(root, pathname, refname,kw)
         elif test[:5]=="<pic>": #tiglari
             # this line is an image
             line = procpic(kw, string.strip(string.strip(line)[5:]))
@@ -390,6 +405,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.9  2000/11/01 21:15:23  decker_dk
+# Misc. updates.
+#
 # Revision 1.8  2000/10/29 03:04:04  tiglari
 # added <rsc> (resource) tag to get a resource renamed & shifted into the output
 # in the same style as <pic>, but only the quoted new name is returned into
