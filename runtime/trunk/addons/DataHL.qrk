@@ -27,6 +27,9 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-06-14   [OP4] Added OP4 CTF entities and textures
+//              [HL] Updated misc.
+//
 // 2000-05-23   [TSP] Added The Sherman Project entities
 //              [DC] Added Desert Crisis entities
 //
@@ -484,7 +487,7 @@ QQRKSRC1
                 xen_tree:e                      = { t_orig_ang=! ;desc = "Xen Tree"  }
         }
         Misc.qtxfolder = {
-                aiscripted_sequence:e           = { origin="0 0 0" ;desc = "AI Scripted Sequence" }
+                aiscripted_sequence:e           = { t_orig_ang=!   ;desc = "AI Scripted Sequence" }
                 ambient_generic:e               = { origin="0 0 0" ;desc = "Universal Ambient" health="5" }
                 button_target:b                 = {                ;desc = "Target Button" ;incl="defpoly" }
                 cycler:e                        = { origin="0 0 0" ;desc = "Monster Cycler"  }
@@ -498,7 +501,7 @@ QQRKSRC1
                 player_loadsaved:e              = { origin="0 0 0" ;desc = "Load Auto-Saved game" }
                 player_weaponstrip:e            = { origin="0 0 0" ;desc = "Strips player's weapons" }
                 scripted_sentence:e             = { origin="0 0 0" ;desc = "Scripted Sentence" listener = "player" }
-                scripted_sequence:e             = { origin="0 0 0" ;desc = "Scripted Sequence" }
+                scripted_sequence:e             = { t_orig_ang=!   ;desc = "Scripted Sequence" }
                 speaker:e                       = { origin="0 0 0" ;desc = "Announcement Speaker" }
                 target_cdaudio:e                = { origin="0 0 0" ;desc = "CD Audio Target" }
         }
@@ -540,6 +543,7 @@ QQRKSRC1
                 weapon_sniperrifle:e    = { t_orig_ang=! ;desc="Sniper Rifle" }
                 weapon_shockrifle:e     = { t_orig_ang=! ;desc="Shock Roach" }
                 weapon_sporelauncher:e  = { t_orig_ang=! ;desc="Spore Launcher" }
+                weapon_penguin:e        = { t_orig_ang=! ;desc="Killer Penguin" }
                 ammo_556:e              = { t_orig_ang=! ;desc="M249 Ammo" }
                 ammo_762:e              = { t_orig_ang=! ;desc="Sniper Ammo" }
                 ammo_spore:e            = { t_orig_ang=! ;desc="Spore Ammo" }
@@ -614,6 +618,20 @@ QQRKSRC1
                 trigger_geneworm_hit:b  = {                ;desc="Trigger GeneWorm Hit" ;incl="trigpoly" }
                 trigger_playerfreeze:e  = { origin="0 0 0" ;desc="Trigger Player Freeze" }
                 trigger_xen_return:b    = {                ;desc="Return To Earth (self-tele)" ;incl="trigpoly" }
+        }
+
+        OP4 CTF entities.qtxfolder = {
+                info_ctfdetect:e        = {              ;desc="CTF Detect" }
+                info_ctfspawn:e         = { t_orig_ang=! ;desc="Player CTF Start" }
+                item_ctfflag:e          = { t_orig_ang=! ;desc="CTF Flag" }
+                item_ctfbase:e          = { t_orig_ang=! ;desc="CTF Goal" }
+                item_ctflongjump:e      = { t_orig_ang=! ;desc="Longjump Module for CTF" }
+                item_ctfportablehev:e   = { t_orig_ang=! ;desc="Portable HEV charger for CTF" }
+                item_ctfregeneration:e  = { t_orig_ang=! ;desc="Health regeneration for CTF" }
+                item_ctfaccelerator:e   = { t_orig_ang=! ;desc="Double Weapon Damage for CTF" }
+                item_ctfbackpack:e      = { t_orig_ang=! ;desc="Backpack Powerup for CTF" }
+                info_ctfspawn_powerup:e = { t_orig_ang=! ;desc="CTF Powerup Spawn Spot" }
+                trigger_ctfgeneric:b    = {              ;desc="Trigger CTF Generic" ;incl="trigpoly" }
         }
     }
 
@@ -972,6 +990,7 @@ QQRKSRC1
         t_killtarget:incl       = { killtarget: = { Txt="&" Hint="Kill target(s), when this object is triggered" } }
         t_message:incl          = { message:    = { Txt="&" } }
         t_globalname:incl       = { globalname: = { Txt="&" Hint="Global Entity Name" } }
+        t_angles:incl           = { angles:     = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" } }
         t_targetx:incl = {
                 t_target = !
                 t_killtarget = !
@@ -1747,6 +1766,21 @@ QQRKSRC1
                 t_rendermode = !
         }
 
+        f_op4_worldspawn_settings:form = {
+                defaultctf: = { Typ="C" Hint="Default CTF"
+                        items = "Not CTF map"$0D"CTF map"
+                        values = "0"$0D"1"
+                }
+        }
+        t_op4_worldspawn_settings:incl = {
+                op4: = {
+                        Typ = "B"
+                        Txt = "(OpposingForce)"
+                        Cap = "Push..."
+                        form = "f_op4_worldspawn_settings:form"
+                        Hint = "Opposing Force settings"
+                }
+        }
         f_op4_scientist_settings:form = {
                 body: = { Typ="C" Txt="&"
                         Items = "Random"$0D
@@ -1881,7 +1915,18 @@ QQRKSRC1
                         "models/wire_red24.mdl"$0D
                         "models/wire_red32.mdl"
         }
-
+        f_op4_teleport_settings:form = {
+                telesound: = { txt="&" Hint="Teleport Sound" }
+        }
+        t_op4_teleport_settings:incl = {
+                op4: = {
+                        Typ = "B"
+                        Txt = "(OpposingForce)"
+                        Cap = "Push..."
+                        form = "f_op4_teleport_settings:form"
+                        Hint = "Opposing Force settings"
+                }
+        }
 
 //
 // FireArms
@@ -1937,6 +1982,7 @@ QQRKSRC1
                 t_targetname = !
                 t_targetx = !
                 t_rendermode = !
+		t_angles = !
                 t_tfc_settings = !
                 t_si_settings = !
         }
@@ -1954,7 +2000,10 @@ QQRKSRC1
                 t_targetx = !
                 t_tfc_settings = !
         }
-        t_player:incl = { bbox = '-16 -16 -36 16 16 36' }
+        t_player:incl = {
+		bbox = '-16 -16 -36 16 16 36'
+		t_angles = !
+	}
         t_monster:incl = {
                 t_targetname = !
                 t_target = !
@@ -1985,6 +2034,7 @@ QQRKSRC1
                 spawnflags: = { Typ="X256" Cap="Pre-Disaster" Txt="&" }
                 spawnflags: = { Typ="X512" Cap="Fade Corpse" Txt="&" }
                 t_rendermode = !
+		t_angles = !
         }
         t_talkmonster:incl = {
                 UseSentence: = { Txt="&" }
@@ -2262,6 +2312,7 @@ QQRKSRC1
                 t_buttondoorsnds = !
                 t__minlight = !
                 t_rendermode = !
+		t_angles = !
                 t_tfc_settings = !
         }
         t_tank:incl = {
@@ -2313,6 +2364,7 @@ QQRKSRC1
                 maxRange: = { Txt="&" Hint="Maximum target range" }
                 t__minlight = !
                 t_rendermode = !
+		t_angles = !
                 t_tfc_settings = !
         }
         t_platsound:incl = {
@@ -2401,6 +2453,7 @@ QQRKSRC1
                 m_flVariance: = { Txt="&" Hint="Course Variance" }
                 m_flGibLife: = { Txt="&" Hint="Time in seconds for gibs to live +/- 5%" }
                 spawnflags: = { Typ="X1" Cap="Repeatable" Txt="&" }
+		t_angles = !
         }
 //
 // Forms
@@ -9848,6 +9901,7 @@ QQRKSRC1
                 }
 //              wad: = { Txt="&" }
                 t_wie_settings = !
+                t_op4_worldspawn_settings = !
         }
         ambient_generic:form = {
                 Help =  "To play a wav through the streaming code (for very large, one-shot wavs)"$0D
@@ -10395,6 +10449,7 @@ values=
                 spawnflags: = { Typ="X256" Cap="Shade End" Txt="&" }
         }
         env_beverage:form = {
+                bbox = '-4 -4 -4 4 4 4'
                 t_targetname = !
                 health: = { Txt="&" Hint="Capacity" }
                 skin: = { Typ="C" Txt="&" Hint="Beverage Type"
@@ -10407,6 +10462,7 @@ values=
                                 "Random"
                         Values ="0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
                 }
+                t_angles = !
         }
         env_blood:form = {
                 t_targetname = !
@@ -10419,6 +10475,7 @@ values=
                 spawnflags: = { Typ="X2" Cap="Blood Stream" Txt="&" }
                 spawnflags: = { Typ="X4" Cap="On Player" Txt="&" }
                 spawnflags: = { Typ="X8" Cap="Spray decals" Txt="&" }
+                t_angles = !
         }
         env_bubbles:form = {
                 t_targetname = !
@@ -10444,6 +10501,7 @@ values=
                 t_targetname = !
                 spawnflags: = { Typ="X1" Cap="Fade From" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Modulate" Txt="&" }
+                spawnflags: = { Typ="X4" Cap="Activator Only" Txt="&" }
                 duration: = { Txt="&" Hint="Duration (seconds)" }
                 holdtime: = { Txt="&" Hint="Hold Fade (seconds)" }
                 renderamt: = { Txt="&" Hint="Fade Alpha" }
@@ -10555,6 +10613,7 @@ values=
                 spawnflags: = { Typ="X32" Cap="EndSparks" Txt="&" }
                 spawnflags: = { Typ="X64" Cap="Decal End" Txt="&" }
                 t_renderfx = !
+                t_angles = !
         }
         env_message:form = {
                 Help = "HUD text message"
@@ -10758,6 +10817,7 @@ values=
                 targetname: = { Txt="&"  Hint="Name" }
                 spawnflags: = { Typ="X32" Cap="Toggle" Txt="&" }
                 spawnflags: = { Typ="X64" Cap="Start ON" Txt="&" }
+                t_angles = !
         }
         env_sprite:form = {
                 t_targetname = !
@@ -11076,6 +11136,7 @@ values=
                 spawnflags: = { Typ="X1" Cap="Start on" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Play Once" Txt="&" }
                 t_rendermode = !
+                t_angles = !
         }
 
         func_breakable:form = {
@@ -11086,10 +11147,12 @@ values=
                 spawnflags: = { Typ="X4" Cap="Pressure" Txt="&" }
                 spawnflags: = { Typ="X256" Cap="Instant Crowbar" Txt="&" }
                 t_rendermode = !
+                t_angles = !
         }
         func_button:form = {
                 t_targetname = !
                 t_target = !
+                t_globalname = !
                 speed: = { Txt="&" Hint="Speed" }
 //                netname: = { Txt="&"  Hint="Target Path" }
                 health: = { Txt="&"  Hint="Health (shootable if > 0)" }
@@ -11120,6 +11183,7 @@ values=
                 t_buttondoorsnds = !
                 t__minlight = !
                 t_rendermode = !
+                t_angles = !
                 t_tfc_settings = !
         }
         func_conveyor:form = {
@@ -11127,11 +11191,13 @@ values=
                         "not the way the texture moves. It should be"$0D
                         "controlled in the polys face-properties."
                 t_targetname = !
+                t_globalname = !
                 spawnflags: = { Typ="X1" Cap="No Push" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Not Solid" Txt="&" }
                 speed: = { Txt="&" Hint="Conveyor Speed" }
                 t__minlight = !
                 t_rendermode = !
+                t_angles = !
         }
         func_door:form = { t_door = ! }
         func_door_rotating:form =
@@ -11141,7 +11207,6 @@ values=
                 spawnflags: = { Typ="X16" Cap="One-Way" Txt="&" }
                 spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
                 spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
-                angles: = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" }
                 t_door = !
         }
         func_friction:form = {
@@ -11199,6 +11264,7 @@ values=
         }
         func_pendulum:form = {
                 t_targetname = !
+                t_globalname = !
                 speed: = { Txt="&" Hint="Speed" }
                 distance: = { Txt="&" Hint="Distance (deg)" }
                 damp: = { Txt="&" Hint="Damping (0-1000)" }
@@ -11208,12 +11274,13 @@ values=
                 spawnflags: = { Typ="X16" Cap="Auto-return" Txt="&" }
                 spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
                 spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
-                angles: = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" }
                 t__minlight = !
                 t_rendermode = !
+                t_angles = !
         }
         func_plat:form = {
                 t_targetname = !
+                t_globalname = !
                 spawnflags: = { Typ="X1" Cap="Toggle" Txt="&" }
                 height: = { Txt="&" Hint="Travel altitude (can be negative)" }
                 speed: = { Txt="&" Hint="Travel speed" }
@@ -11224,6 +11291,7 @@ values=
         }
         func_platrot:form = {
                 t_targetname = !
+                t_globalname = !
                 speed: = { Txt="&" Hint="Speed of rotation" }
                 height: = { Txt="&" Hint="Travel altitude (can be negative)" }
 //              sounds: = {Typ="C" Txt="&" Hint="Sound group"
@@ -11236,10 +11304,10 @@ values=
                 spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
                 spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
                 rotation: = { Txt="&" Hint="Spin amount" }
-                angles: = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" }
                 t_platsound = !
                 t__minlight = !
                 t_rendermode = !
+                t_angles = !
         }
         func_pushable:form = {
                 t_targetname = !
@@ -11258,8 +11326,10 @@ values=
                 t_rendermode = !
         }
         func_recharge:form = {
+                t_globalname = !
                 dmdelay: = { txt="&" Hint="Deathmatch recharge delay" }
                 t__minlight = !
+                t_rendermode = !
         }
         func_rot_button:form = {
                 t_globalname = !
@@ -11287,11 +11357,12 @@ values=
                 spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
                 spawnflags: = { Typ="X256" Cap="Touch Activates" Txt="&" }
                 t__minlight = !
-                angles: = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" }
+                t_angles = !
                 t_tfc_settings = !
         }
         func_rotating:form = {
-                targetname: = { Txt="&"  Hint="Name" }
+                t_targetname = !
+                t_globalname = !
                 speed: = { Txt="&" Hint="Rotation Speed" }
                 volume: = { Txt="&" Hint="Volume (10 = loudest)" }
                 fanfriction: = { Txt="&" Hint="Friction percentage (0 - 100)" }
@@ -11304,7 +11375,6 @@ values=
                                 "Slow Smooth"
                         Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"
                 }
-
                 message: = { Txt="&"  Hint="Path/filename.wav of WAV" }
                 spawnflags: = { Typ="X1" Cap="Start ON" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Reverse Direction" Txt="&" }
@@ -11316,11 +11386,11 @@ values=
                 spawnflags: = { Typ="X128" Cap="Small Radius" Txt="&" }
                 spawnflags: = { Typ="X256" Cap="Medium Radius" Txt="&" }
                 spawnflags: = { Typ="X512" Cap="Large Radius" Txt="&" }
-                angles: = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" }
                 spawnorigin: = { Txt="&" Hint="X Y Z - Move here after lighting" }
                 dmg: = { Txt="&" Hint="Damage inflicted when blocked" }
                 t__minlight = !
                 t_rendermode = !
+                t_angles = !
         }
         func_tank:form = {
                 bullet: = { Typ="C" Txt="&" Hint="Bullets"
@@ -11539,6 +11609,7 @@ values=
         info_intermission:form = {
                 Help = "Intermission Spot"
                 target: = { Txt="&" Hint="Points to a info_target entity" }
+                t_angles = !
         }
         info_landmark:form = {
                 Help =  "Transition Landmark"$0D$0D
@@ -11567,6 +11638,7 @@ values=
                 pitch: = { Txt="&" Hint="Pitch" }
                 _light: = { Txt="&" Hint="Brightness (R G B intensity)" }
                 _light: = { Typ="L 4" Txt="&" Hint="Click here to pick the color" }
+                t_angles = !
         }
         light_spot:form = {
                 t_targetname = !
@@ -11581,6 +11653,7 @@ values=
                 }
                 spawnflags: = { Typ="X1" Cap="Initially dark" Txt="&" }
                 t_light = !
+                t_angles = !
         }
 
         monstermaker:form = {
@@ -11673,6 +11746,7 @@ values=
                                         "else, delay is how often ( seconds ) a new monster will be dookied out." }
                 m_imaxlivechildren: = { Txt="&" Hint="Maximum number of live children allowed at one time. (New ones will not be made until one dies)"$0D
                                                 "-1 no limit" }
+                t_angles = !
         }
         monster_alien_controller:form = { t_monster = ! bbox = '-16 -16 0 16 16 72' }
         monster_alien_grunt:form = {
@@ -11717,6 +11791,7 @@ values=
                         Values = "0"$0D"1"$0D"2"
                 }
                 t_rendermode = !
+                t_angles = !
         }
         monster_bigmomma:form = {
                 t_monster = !
@@ -11765,6 +11840,7 @@ values=
                         Values = "0"$0D"1"$0D"2"$0D"3"
                 }
                 t_rendermode = !
+                t_angles = !
         }
         monster_hgrunt_dead:form = {
                 bbox = '-16 -16 0 16 16 72'
@@ -11783,6 +11859,7 @@ values=
                         Values = "0"$0D"1"$0D"2"$0D"3"
                 }
                 t_rendermode = !
+                t_angles = !
         }
         monster_houndeye:form = {
                 t_monster = !
@@ -11860,6 +11937,7 @@ values=
                         Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
                 }
                 t_rendermode = !
+                t_angles = !
         }
         monster_sentry:form = {
                 t_monster = !
@@ -11917,6 +11995,7 @@ values=
                 spawnflags: = { Typ="X1" Cap="Wait for retrigger" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Teleport" Txt="&" }
                 spawnflags: = { Typ="X4" Cap="Fire once" Txt="&" }
+                t_angles = !
         }
         path_track:form = {
                 Help = "When a path_track is triggered, it swaps its 'target' and 'altpath' values"
@@ -11930,6 +12009,7 @@ values=
                 spawnflags: = { Typ="X2" Cap="Fire once" Txt="&" }
                 spawnflags: = { Typ="X4" Cap="Branch Reverse" Txt="&" }
                 spawnflags: = { Typ="X8" Cap="Disable train" Txt="&" }
+                t_angles = !
         }
 
 
@@ -12074,6 +12154,7 @@ values=
                 t_master = !
                 speed: = { Txt="&" Hint="Jump Speed" }
                 height: = { Txt="&" Hint="Jump Height" }
+                t_angles = !
         }
         trigger_multiple:form = {
                 wait: = { Txt="&" Hint="Delay before reset" }
@@ -12086,6 +12167,7 @@ values=
                 spawnflags: = { Typ="X1" Cap="Once Only" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Start Off" Txt="&" }
                 speed: = { Txt="&" Hint="Speed of push" }
+                t_angles = !
         }
         trigger_relay:form = {
                 t_targetname = !
@@ -12100,43 +12182,43 @@ values=
         }
         trigger_teleport:form = {
                 t_trigger = !
+                t_op4_teleport_settings = !
         }
         trigger_transition:form = {
                 targetname: = { Txt="&" Hint="Landmark Name" }
         }
 
-
-        xen_hair:form = {
+        // XEN includer
+        xen_plants:incl = {
                 t_targetname = !
                 t_rendermode = !
-                spawnflags: = { Typ="X1" Cap="Sync Movement" Txt="&" }
+                t_angles = !
+        }
+        xen_hair:form = {
                 bbox = '-8 -8 0 8 8 32'
+                spawnflags: = { Typ="X1" Cap="Sync Movement" Txt="&" }
+                xen_plants = !
         }
         xen_plantlight:form = {
-                t_target = !
-                t_targetname = !
-                t_rendermode = !
                 bbox = '-48 -48 0 48 48 32'
+                t_target = !
+                xen_plants = !
         }
         xen_spore_large:form = {
-                t_targetname = !
-                t_rendermode = !
                 bbox = '-90 -90 0 90 90 220'
+                xen_plants = !
         }
         xen_spore_medium:form = {
-                t_targetname = !
-                t_rendermode = !
                 bbox = '-40 -40 0 40 40 120'
+                xen_plants = !
         }
         xen_spore_small:form = {
-                t_targetname = !
-                t_rendermode = !
                 bbox = '-16 -16 0 16 16 64'
+                xen_plants = !
         }
         xen_tree:form = {
-                t_targetname = !
-                t_rendermode = !
                 bbox = '-24 -24 0 24 24 188'
+                xen_plants = !
         }
 
         button_target:form = {
@@ -12145,6 +12227,7 @@ values=
                 spawnflags: = { Typ="X1" Cap="Use Activates" Txt="&" }
                 spawnflags: = { Typ="X2" Cap="Start On" Txt="&" }
                 t_rendermode = !
+                t_angles = !
         }
         cycler:form = {
                 bbox = '-16 -16 0 16 16 72'
@@ -12152,6 +12235,7 @@ values=
                 model: = { Txt="&"  Hint="Model" }
                 t_rendermode = !
                 bodygroup: = { Txt="&" Hint="Body Group" }
+                t_angles = !
         }
         cycler_sprite:form = {
                 bbox = '-8 -8 -8 8 8 8'
@@ -12159,6 +12243,7 @@ values=
                 model: = { Txt="&"  Hint="Sprite" }
                 framerate: = { Txt="&"  Hint="Frames per second" }
                 t_rendermode = !
+                t_angles = !
         }
         cycler_weapon:form = {
                 t_monster = !
@@ -12200,9 +12285,9 @@ values=
                 spawnflags: = { Typ="X16" Cap="Auto Return" Txt="&" }
                 spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
                 spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
-                angles: = { Txt="&" Hint="Pitch Yaw Roll (Y Z X)" }
                 t__minlight = !
                 t_rendermode = !
+                t_angles = !
                 t_tfc_settings = !
         }
         multi_manager:form = {
@@ -12351,7 +12436,7 @@ values=
                 spawnflags: = { Typ="X8" Cap="Leave Corpse" Txt="&"
                         Hint="If a character dies in a script with this flag set, it's animation is frozen in the"$0D
                              "last position, and a 'corpse' is left. Otherwise, dead characters will fade out." }
-                angle: = { Txt="&" }
+		t_angles = !
         }
         scripted_sequence:form = {
                 t_targetname = !
@@ -12396,9 +12481,10 @@ values=
                              "the end of a script so the AI can properly take over. Only turn this on"$0D
                              "if the character jumps to a new position after playing the script." }
                 t_op4_noresetentity_settings = !
-                angle: = { Txt="&" }
+                t_angles = !
         }
         speaker:form = {
+                t_targetname = !
                 preset: = { Typ="C" Txt="&" Hint="Announcement Presets"
                         Items = "(none)"$0D
                                 "C1A0 Announcer"$0D
@@ -12423,7 +12509,6 @@ values=
                         form = "qrk_speaker_message:form"
                         Hint = "Lists of sentence-groups from SENTENCES.TXT"
                 }
-                t_targetname = !
                 health: = { Txt="&" Hint="Volume (10 = loudest)" }
                 spawnflags: = { Typ="X1" Cap="Start Silent" Txt="&" }
         }
@@ -13104,7 +13189,10 @@ values=
 //
         ammo_556:form = { t_op4_ammo = ! }
         ammo_762:form = { t_op4_ammo = ! }
-        ammo_spore:form = { t_op4_ammo = ! }
+        ammo_spore:form = {
+                bbox = '-16 -16 -16 16 16 16'
+                t_op4_ammo = !
+        }
 
         env_blowercannon:form = {
                 t_targetname = !
@@ -13615,6 +13703,90 @@ values=
         weapon_shockrifle:form = { t_op4_weapon = ! }
         weapon_sniperrifle:form = { t_op4_weapon = ! }
         weapon_sporelauncher:form = { t_op4_weapon = ! }
+        weapon_penguin:form = { t_op4_weapon = ! }
+
+// Opposing Force CTF
+
+        t_op4_ctfattr:incl = {
+                goal_no: = { Typ="C" Hint="Team"
+                        items = "Black Mesa"$0D"Opposing Force"
+                        values = "1"$0D"2"
+                }
+                goal_min: = { txt="&" Hint="Min bounds" }
+                goal_max: = { txt="&" Hint="Max bounds" }
+                bbox = '-16 -16 0 16 16 72'
+        }
+        t_op4_ctfitem:incl = {
+                spawnflags: = { typ="X4" Cap="Random Spawn" }
+                team: = { Typ="C" Hint="Team"
+                        items = "Random"$0D"Black Mesa"$0D"Opposing Force"
+                        values = "0"$0D"1"$0D"2"
+                }
+                bbox = '-16 -16 0 16 16 36'
+        }
+
+        item_ctfflag:form = {
+                t_op4_ctfattr = !
+                skin: = { Typ="C" Hint="Skin"
+                        items = "Black Mesa"$0D"Opposing Force"
+                        values = "1"$0D"2"
+                }
+                model: = { txt="&" hint="models/flag.mdl" }
+        }
+        item_ctfbase:form = {
+                t_op4_ctfattr = !
+                skin: = { Typ="C" Hint="Skin"
+                        items = "Default"
+                        values = "0"
+                }
+                model: = { txt="&" hint="models/civ_stand.mdl" }
+        }
+        info_ctfspawn:form = {
+                t_player=!
+                team_no: = { Typ="C" Hint="Team"
+                        items = "Random"$0D"Black Mesa"$0D"Opposing Force"
+                        values = "0"$0D"1"$0D"2"
+                }
+        }
+        info_ctfdetect:form = {
+                flagreturntime:         = { txt="&" hint="Flag Return Time" }
+                basedefenddist:         = { txt="&" hint="Base Defend Distance" }
+                defendcarriertime:      = { txt="&" hint="Defend Carrier Time" }
+                captureassisttime:      = { txt="&" hint="Capture Assist Time" }
+                poweruprespawntime:     = { txt="&" hint="Powerup Respawn Time" }
+                score_icon_namebm:      = { txt="&" hint="Non-Flag Black Mesa icon" }
+                score_icon_nameof:      = { txt="&" hint="Non-Flag Opposing Force icon" }
+                map_score_max:          = { txt="&" hint="Maximum Map Team Score" }
+        }
+
+        item_ctflongjump:form = { t_op4_ctfitem = ! }
+        item_ctfportablehev:form = { t_op4_ctfitem = ! }
+        item_ctfregeneration:form = { t_op4_ctfitem = ! }
+        item_ctfaccelerator:form = { t_op4_ctfitem = ! }
+        item_ctfbackpack:form = { t_op4_ctfitem = ! }
+
+        info_ctfspawn_powerup:form = {
+                bbox = '-16 -16 0 16 16 36'
+                team_no: = { Typ="C" Hint="Team"
+                        items = "Random"$0D"Black Mesa"$0D"Opposing Force"
+                        values = "0"$0D"1"$0D"2"
+                }
+        }
+        trigger_ctfgeneric:form = {
+                t_targetname = !
+                t_target = !
+                team_no: = { Typ="C" Hint="Team"
+                        items = "Both Teams"$0D"Black Mesa Only"$0D"Opposing Force Only"
+                        values = "0"$0D"1"$0D"2"
+                }
+                trigger_delay: = { txt="&" hint="Re-activate delay" }
+                score: = { txt="&" hint="Player Score" }
+                team_score: = { txt="&" hint="Team Score" }
+                triggerstate: = { typ="C" hint="Trigger State"
+                        items = "Off"$0D"On"$0D"Toggle"
+                        values = "0"$0D"1"$0D"2"
+                }
+        }
 
 //
 // The Assignment
@@ -17951,6 +18123,7 @@ values=
         // Raw definition of WAD3 files
         t_op4_DECALS:incl = { s = "gearbox" d = "DECALS" h = "C" }
         t_op4_OPFOR:incl = { s = "gearbox" d = "OPFOR" h = "C" }
+        t_op4_OP4CTF:incl = { s = "gearbox" d = "OP4CTF" h = "C" }
 
     Opposing Force Textures.qtxfolder =
     {
@@ -18605,6 +18778,170 @@ values=
           WIRE_RED.wl = { t_op4_OPFOR = ! }
           {SPORESPLAT_01.wl = { t_op4_OPFOR = ! }
         }
+      }
+      OP4CTF.txlist =
+      {
+        !C2A54C.wl = { t_op4_OP4CTF = ! }
+        +0pcv_unit.wl = { t_op4_OP4CTF = ! }
+        +apcv_unit.wl = { t_op4_OP4CTF = ! }
+        0button1.wl = { t_op4_OP4CTF = ! }
+        0genpipe1.wl = { t_op4_OP4CTF = ! }
+        1out_w3.wl = { t_op4_OP4CTF = ! }
+        3light1.wl = { t_op4_OP4CTF = ! }
+        aelev_up.wl = { t_op4_OP4CTF = ! }
+        border_grn_01.wl = { t_op4_OP4CTF = ! }
+        border_org_01.wl = { t_op4_OP4CTF = ! }
+        box_snw_01.wl = { t_op4_OP4CTF = ! }
+        box_snw_02.wl = { t_op4_OP4CTF = ! }
+        box_snw_03.wl = { t_op4_OP4CTF = ! }
+        box_snw_04.wl = { t_op4_OP4CTF = ! }
+        box_snw_05.wl = { t_op4_OP4CTF = ! }
+        caution_grn_01.wl = { t_op4_OP4CTF = ! }
+        caution_grn_02.wl = { t_op4_OP4CTF = ! }
+        caution_org_01.wl = { t_op4_OP4CTF = ! }
+        caution_org_02.wl = { t_op4_OP4CTF = ! }
+        conc_strp_03.wl = { t_op4_OP4CTF = ! }
+        conc_strp_04.wl = { t_op4_OP4CTF = ! }
+        conc_strp_05.wl = { t_op4_OP4CTF = ! }
+        conc_strp_01.wl = { t_op4_OP4CTF = ! }
+        conc_strp_02.wl = { t_op4_OP4CTF = ! }
+        concrete_01.wl = { t_op4_OP4CTF = ! }
+        concrete_02.wl = { t_op4_OP4CTF = ! }
+        concrete_gen_01.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_11.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_12.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_10.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_03.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_04.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_01.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_02.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_05.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_08.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_09.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_06.wl = { t_op4_OP4CTF = ! }
+        concrete_grn_07.wl = { t_op4_OP4CTF = ! }
+        concrete_org_11.wl = { t_op4_OP4CTF = ! }
+        concrete_org_12.wl = { t_op4_OP4CTF = ! }
+        concrete_org_10.wl = { t_op4_OP4CTF = ! }
+        concrete_org_03.wl = { t_op4_OP4CTF = ! }
+        concrete_org_04.wl = { t_op4_OP4CTF = ! }
+        concrete_org_01.wl = { t_op4_OP4CTF = ! }
+        concrete_org_02.wl = { t_op4_OP4CTF = ! }
+        concrete_org_05.wl = { t_op4_OP4CTF = ! }
+        concrete_org_08.wl = { t_op4_OP4CTF = ! }
+        concrete_org_09.wl = { t_op4_OP4CTF = ! }
+        concrete_org_06.wl = { t_op4_OP4CTF = ! }
+        concrete_org_07.wl = { t_op4_OP4CTF = ! }
+        crate_grn_04.wl = { t_op4_OP4CTF = ! }
+        crate_grn_01.wl = { t_op4_OP4CTF = ! }
+        crate_grn_02.wl = { t_op4_OP4CTF = ! }
+        crate_grn_03.wl = { t_op4_OP4CTF = ! }
+        crate_org_04.wl = { t_op4_OP4CTF = ! }
+        crate_org_01.wl = { t_op4_OP4CTF = ! }
+        crate_org_02.wl = { t_op4_OP4CTF = ! }
+        crate_org_03.wl = { t_op4_OP4CTF = ! }
+        door_grn_01.wl = { t_op4_OP4CTF = ! }
+        door_grn_02.wl = { t_op4_OP4CTF = ! }
+        door_grn_03.wl = { t_op4_OP4CTF = ! }
+        door_grn_04.wl = { t_op4_OP4CTF = ! }
+        door_grn_05.wl = { t_op4_OP4CTF = ! }
+        door_grn_06.wl = { t_op4_OP4CTF = ! }
+        door_grn_07.wl = { t_op4_OP4CTF = ! }
+        door_grn_08.wl = { t_op4_OP4CTF = ! }
+        door_org_01.wl = { t_op4_OP4CTF = ! }
+        door_org_02.wl = { t_op4_OP4CTF = ! }
+        door_org_03.wl = { t_op4_OP4CTF = ! }
+        door_org_04.wl = { t_op4_OP4CTF = ! }
+        door_org_05.wl = { t_op4_OP4CTF = ! }
+        door_org_06.wl = { t_op4_OP4CTF = ! }
+        door_org_07.wl = { t_op4_OP4CTF = ! }
+        door_org_08.wl = { t_op4_OP4CTF = ! }
+        lgeneric86.wl = { t_op4_OP4CTF = ! }
+        lgeneric86r.wl = { t_op4_OP4CTF = ! }
+        light2a.wl = { t_op4_OP4CTF = ! }
+        light4a.wl = { t_op4_OP4CTF = ! }
+        light6a.wl = { t_op4_OP4CTF = ! }
+        light_green.wl = { t_op4_OP4CTF = ! }
+        light_orange.wl = { t_op4_OP4CTF = ! }
+        mtl_snw_a_01.wl = { t_op4_OP4CTF = ! }
+        mtlwall_brn_01.wl = { t_op4_OP4CTF = ! }
+        mtlwall_grn_02.wl = { t_op4_OP4CTF = ! }
+        mtlwall_grn_01.wl = { t_op4_OP4CTF = ! }
+        mtlwall_gry_01.wl = { t_op4_OP4CTF = ! }
+        mtlwall_org_02.wl = { t_op4_OP4CTF = ! }
+        mtlwall_org_01.wl = { t_op4_OP4CTF = ! }
+        pcv_edge_01.wl = { t_op4_OP4CTF = ! }
+        pillar_concrete.wl = { t_op4_OP4CTF = ! }
+        pillar_ladder.wl = { t_op4_OP4CTF = ! }
+        pipe_grn_01.wl = { t_op4_OP4CTF = ! }
+        pipe_grn_02.wl = { t_op4_OP4CTF = ! }
+        pipe_org_01.wl = { t_op4_OP4CTF = ! }
+        pipe_org_02.wl = { t_op4_OP4CTF = ! }
+        rock_brn_01.wl = { t_op4_OP4CTF = ! }
+        rock_brn_01a.wl = { t_op4_OP4CTF = ! }
+        rock_snowy_02.wl = { t_op4_OP4CTF = ! }
+        rock_snowy_01.wl = { t_op4_OP4CTF = ! }
+        rock_unwtr_02.wl = { t_op4_OP4CTF = ! }
+        rock_unwtr_01.wl = { t_op4_OP4CTF = ! }
+        sign_arrow_05.wl = { t_op4_OP4CTF = ! }
+        sign_arrow_02.wl = { t_op4_OP4CTF = ! }
+        sign_arrow_01.wl = { t_op4_OP4CTF = ! }
+        sign_arrow_03.wl = { t_op4_OP4CTF = ! }
+        sign_arrow_04.wl = { t_op4_OP4CTF = ! }
+        sign_bd_grn.wl = { t_op4_OP4CTF = ! }
+        sign_bd_orng.wl = { t_op4_OP4CTF = ! }
+        sign_biodrn_orn.wl = { t_op4_OP4CTF = ! }
+        sign_biodrn_grn.wl = { t_op4_OP4CTF = ! }
+        sign_crate_01.wl = { t_op4_OP4CTF = ! }
+        sign_grn_01.wl = { t_op4_OP4CTF = ! }
+        sign_grn_02.wl = { t_op4_OP4CTF = ! }
+        sign_grn_03.wl = { t_op4_OP4CTF = ! }
+        sign_grn_lft_01.wl = { t_op4_OP4CTF = ! }
+        sign_grn_lft_02.wl = { t_op4_OP4CTF = ! }
+        sign_grn_lft_03.wl = { t_op4_OP4CTF = ! }
+        sign_grn_rt_01.wl = { t_op4_OP4CTF = ! }
+        sign_grn_rt_03.wl = { t_op4_OP4CTF = ! }
+        sign_grn_rt_02.wl = { t_op4_OP4CTF = ! }
+        sign_mortar_org.wl = { t_op4_OP4CTF = ! }
+        sign_mortar_grn.wl = { t_op4_OP4CTF = ! }
+        sign_obs_grn.wl = { t_op4_OP4CTF = ! }
+        sign_obs_orng.wl = { t_op4_OP4CTF = ! }
+        sign_org_01.wl = { t_op4_OP4CTF = ! }
+        sign_org_02.wl = { t_op4_OP4CTF = ! }
+        sign_org_03.wl = { t_op4_OP4CTF = ! }
+        sign_org_lft_02.wl = { t_op4_OP4CTF = ! }
+        sign_org_lft_01.wl = { t_op4_OP4CTF = ! }
+        sign_org_lft_03.wl = { t_op4_OP4CTF = ! }
+        sign_org_rt_01.wl = { t_op4_OP4CTF = ! }
+        sign_org_rt_02.wl = { t_op4_OP4CTF = ! }
+        sign_org_rt_03.wl = { t_op4_OP4CTF = ! }
+        sign_pipe_01.wl = { t_op4_OP4CTF = ! }
+        sign_vent_grn.wl = { t_op4_OP4CTF = ! }
+        sign_vent_org.wl = { t_op4_OP4CTF = ! }
+        snow_01.wl = { t_op4_OP4CTF = ! }
+        snow_02.wl = { t_op4_OP4CTF = ! }
+        snow_03.wl = { t_op4_OP4CTF = ! }
+        snow_flr_01.wl = { t_op4_OP4CTF = ! }
+        snow_flr_02.wl = { t_op4_OP4CTF = ! }
+        snow_wall_01.wl = { t_op4_OP4CTF = ! }
+        snow_wall_02.wl = { t_op4_OP4CTF = ! }
+        snow_wall_03.wl = { t_op4_OP4CTF = ! }
+        snow_wall_04.wl = { t_op4_OP4CTF = ! }
+        snow_wall_gn_02.wl = { t_op4_OP4CTF = ! }
+        snow_wall_og_02.wl = { t_op4_OP4CTF = ! }
+        trrm_wood2a.wl = { t_op4_OP4CTF = ! }
+        wall_grn_end.wl = { t_op4_OP4CTF = ! }
+        wall_grn_end_02.wl = { t_op4_OP4CTF = ! }
+        wall_grn_end_01.wl = { t_op4_OP4CTF = ! }
+        wall_org_end_01.wl = { t_op4_OP4CTF = ! }
+        wall_org_end_02.wl = { t_op4_OP4CTF = ! }
+        wall_org_end_03.wl = { t_op4_OP4CTF = ! }
+        wall_pipe_g_01.wl = { t_op4_OP4CTF = ! }
+        wall_pipe_g_02.wl = { t_op4_OP4CTF = ! }
+        wall_pipe_g_03.wl = { t_op4_OP4CTF = ! }
+        wall_pipe_o_01.wl = { t_op4_OP4CTF = ! }
+        wall_pipe_o_02.wl = { t_op4_OP4CTF = ! }
+        wall_pipe_o_03.wl = { t_op4_OP4CTF = ! }
       }
     }
   }
