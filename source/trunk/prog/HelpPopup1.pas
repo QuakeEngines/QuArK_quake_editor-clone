@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2003/03/12 21:35:12  tiglari
+press F1 in snippet window calls up infobase page
+
 Revision 1.7  2003/03/12 20:30:07  tiglari
 [oops forgot to save, vacuous commit] Pressing F1 in help snippet window calls up infobase help
 
@@ -77,7 +80,7 @@ procedure HelpPopup(const HelpText: String; const InfoBaseLink: String = ''); {A
 
 implementation
 
-uses Quarkx, TB97;
+uses Quarkx, TB97, QkApplPaths;
 
 {$R *.DFM}
 
@@ -188,7 +191,7 @@ end;
 {AiV/}
 procedure THelpPopup.SetInfoBaseLink(Link: String);
 begin
-  InfoBaseLink := Link;
+  InfoBaseLink := GetApplicationPath+'help\'+Link;  // tiglari
   Button1.Visible := (InfoBaseLink <> '');
 end;
 {/AiV}
