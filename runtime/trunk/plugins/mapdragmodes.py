@@ -74,6 +74,12 @@ class EverythingRectSelDragObject(parent):
         everythinglist = FindSelectable(editor.Root, None, [":e", ":p", ":d", ":b2"])
         lastsel = None
 
+#needed these next 2 lines because
+#Shape Builders were not being selected--cdunde
+
+        polylist = FindSelectable(editor.Root, ":p")
+        everythinglist = everythinglist + polylist
+
         for o in everythinglist:
             if o.type == ":p":
                 if rectangle.intersects(o):
@@ -399,6 +405,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2004/01/24 16:28:34  cdunde
+# To reset defaults for toolbars
+#
 # Revision 1.7  2003/03/15 20:40:19  cdunde
 # To update hints and add infobase links
 #
