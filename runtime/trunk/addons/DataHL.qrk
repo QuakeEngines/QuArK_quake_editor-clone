@@ -27,6 +27,8 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-07-08   [TFC] Updated texture links
+//
 // 2000-06-14   [OP4] Added OP4 CTF entities and textures
 //              [HL] Updated misc.
 //
@@ -14458,625 +14460,1159 @@ values=
       }
      HalfLife Folder.qtxfolder =
      {
-      C0A0.txlist =
+      Misc Equipment Folder.qtxfolder =
       {
-        C0A0YELLOW.wl = { t_hl = ! }
-        C0A0_TRACK.wl = { t_hl = ! }
+       Crates Wood.txlist =
+       {
+         BCRATE02.wl = { t_hl = ! }
+         BCRATE03.wl = { t_hl = ! }
+         BCRATE04.wl = { t_hl = ! }
+         BCRATE05.wl = { t_hl = ! }
+         BCRATE06.wl = { t_hl = ! }
+         BCRATE07.wl = { t_hl = ! }
+         BCRATE08.wl = { t_hl = ! }
+         BCRATE09A.wl = { t_hl = ! }
+         BCRATE09B.wl = { t_hl = ! }
+         BCRATE09C.wl = { t_hl = ! }
+         BCRATE12.wl = { t_hl = ! }
+         BCRATE14.wl = { t_hl = ! }
+         BCRATE15.wl = { t_hl = ! }
+         BCRATE16.wl = { t_hl = ! }
+         BCRATE17.wl = { t_hl = ! }
+         BCRATE18.wl = { t_hl = ! }
+         BCRATE25.wl = { t_hl = ! }
+         BCRATE26.wl = { t_hl = ! }
+         CRATE01.wl = { t_hl = ! }
+         CRATE02.wl = { t_hl = ! }
+         CRATE02B.wl = { t_hl = ! }
+         CRATE03.wl = { t_hl = ! }
+         CRATE04.wl = { t_hl = ! }
+         CRATE05.wl = { t_hl = ! }
+         CRATE06.wl = { t_hl = ! }
+         CRATE07.wl = { t_hl = ! }
+         CRATE08.wl = { t_hl = ! }
+         CRATE08B.wl = { t_hl = ! }
+         CRATE09.wl = { t_hl = ! }
+         CRATE09B.wl = { t_hl = ! }
+         CRATE09C.wl = { t_hl = ! }
+         CRATE10.wl = { t_hl = ! }
+         CRATE11.wl = { t_hl = ! }
+         CRATE12.wl = { t_hl = ! }
+         CRATE13.wl = { t_hl = ! }
+         CRATE19.wl = { t_hl = ! }
+         CRATE20.wl = { t_hl = ! }
+         CRATE21.wl = { t_hl = ! }
+         CRATE22.wl = { t_hl = ! }
+         CRATE23.wl = { t_hl = ! }
+         CRATE24.wl = { t_hl = ! }
+         CRATE25.wl = { t_hl = ! }
+         CRATE27.wl = { t_hl = ! }
+       }
+       Crates.txlist =
+       {
+         BARREL2.wl = { t_hl = ! }
+         BARREL2A.wl = { t_hl = ! }
+         BARREL2B.wl = { t_hl = ! }
+         BARREL3.wl = { t_hl = ! }
+         BARREL4.wl = { t_hl = ! }
+         NWBARREL.wl = { t_hl = ! }
+         BARRELTOP.wl = { t_hl = ! }
+         AMMO01.wl = { t_hl = ! }
+         AMMO02.wl = { t_hl = ! }
+         AMMO03.wl = { t_hl = ! }
+         AMMO04.wl = { t_hl = ! }
+         C1A1_CRATE1.wl = { t_hl = ! }
+         C1A1_CRATE2.wl = { t_hl = ! }
+         C3A1_CRATE1.wl = { t_hl = ! }
+         C3A1_CRATE2.wl = { t_hl = ! }
+         C3A1_CRATE3.wl = { t_hl = ! }
+         GENERIC034.wl = { t_hl = ! }
+         GENERIC034A.wl = { t_hl = ! }
+         XCRATE10A.wl = { t_hl = ! }
+         XCRATE10B.wl = { t_hl = ! }
+         XCRATE10C.wl = { t_hl = ! }
+         XCRATE10D.wl = { t_hl = ! }
+         XCRATE10E.wl = { t_hl = ! }
+         XCRATE11A.wl = { t_hl = ! }
+         XCRATE11B.wl = { t_hl = ! }
+         XCRATE11C.wl = { t_hl = ! }
+         XCRATE11D.wl = { t_hl = ! }
+         XCRATE11E.wl = { t_hl = ! }
+         XCRATE12A.wl = { t_hl = ! }
+         XCRATE12B.wl = { t_hl = ! }
+         XCRATE1A.wl = { t_hl = ! }
+         XCRATE1B.wl = { t_hl = ! }
+         XCRATE1C.wl = { t_hl = ! }
+         XCRATE1D.wl = { t_hl = ! }
+         XCRATE2A.wl = { t_hl = ! }
+         XCRATE2C.wl = { t_hl = ! }
+         XCRATE2E.wl = { t_hl = ! }
+         XCRATE2F.wl = { t_hl = ! }
+         XCRATE3A.wl = { t_hl = ! }
+         XCRATE3C.wl = { t_hl = ! }
+         XCRATE3F.wl = { t_hl = ! }
+         XCRATE4A.wl = { t_hl = ! }
+         XCRATE4B.wl = { t_hl = ! }
+         XCRATE5A.wl = { t_hl = ! }
+         XCRATE5B.wl = { t_hl = ! }
+         XCRATE6.wl = { t_hl = ! }
+         XCRATE6B.wl = { t_hl = ! }
+         XCRATE6C.wl = { t_hl = ! }
+         XCRATE7A.wl = { t_hl = ! }
+         XCRATE7B.wl = { t_hl = ! }
+         XCRATE7C.wl = { t_hl = ! }
+         XCRATE8.wl = { t_hl = ! }
+         XCRATE8B.wl = { t_hl = ! }
+         XCRATE8C.wl = { t_hl = ! }
+         XCRATE9A.wl = { t_hl = ! }
+         XCRATE9B.wl = { t_hl = ! }
+         XCRATE9C.wl = { t_hl = ! }
+         XCRATE9D.wl = { t_hl = ! }
+       }
+       Sandbags.txlist =
+       {
+        OUT_SNBAG.wl = { t_hl = ! }
+        OUT_SNBAG2.wl = { t_hl = ! }
+        OUT_SNBAGB.wl = { t_hl = ! }
+        OUT_SNBAGC.wl = { t_hl = ! }
+        OUT_SNDBAG4.wl = { t_hl = ! }
+        OUT_SNDBG5.wl = { t_hl = ! }
+       }
+       Retina Scanner.txlist =
+       {
+      +0GENERIC_113.wl = { t_hl = ! }
+      +1GENERIC_113.wl = { t_hl = ! }
+      +AGENERIC_113.wl = { t_hl = ! }
+       }
+       Tent.txlist =
+       {
+        OUT_TNT1.wl = { t_hl = ! }
+        OUT_TNT1B.wl = { t_hl = ! }
+        OUT_TNT1C.wl = { t_hl = ! }
+        OUT_TNT2.wl = { t_hl = ! }
+        OUT_TNT3.wl = { t_hl = ! }
+        OUT_TNT3B.wl = { t_hl = ! }
+       }
+       Dumpsters.txlist =
+       {
+        OUT_DMP1A.wl = { t_hl = ! }
+        OUT_DMP1B.wl = { t_hl = ! }
+        OUT_DMP1C.wl = { t_hl = ! }
+        OUT_DMP2A.wl = { t_hl = ! }
+        OUT_DMP2B.wl = { t_hl = ! }
+        OUT_DMP2C.wl = { t_hl = ! }
+        OUT_DMP3A.wl = { t_hl = ! }
+        OUT_DMP3C.wl = { t_hl = ! }
+        OUT_DMP4A.wl = { t_hl = ! }
+        OUT_DMP4B.wl = { t_hl = ! }
+        OUT_DMP4C.wl = { t_hl = ! }
+        OUT_DMPLID.wl = { t_hl = ! }
+       }
+       Rechargers.txlist =
+       {
+      +0RECHARGE.wl = { t_hl = ! }
+      +ARECHARGE.wl = { t_hl = ! }
+        RECHARGEA.wl = { t_hl = ! }
+        RECHARGEB.wl = { t_hl = ! }
+        RECHARGEC.wl = { t_hl = ! }
+        RECHARGED.wl = { t_hl = ! }
+        RECHARGEEDGE1.wl = { t_hl = ! }
+       }
+       Medikits.txlist =
+       {
+      +0MEDKIT.wl = { t_hl = ! }
+      +AMEDKIT.wl = { t_hl = ! }
+        GENERIC98.wl = { t_hl = ! }
+        GENERIC98A.wl = { t_hl = ! }
+        GENERIC98B.wl = { t_hl = ! }
+        GENERIC98C.wl = { t_hl = ! }
+        GENERIC98D.wl = { t_hl = ! }
+        GENERIC98E.wl = { t_hl = ! }
+        GENERIC98F.wl = { t_hl = ! }
+        GENERIC98G.wl = { t_hl = ! }
+        MEDKITEDGE1.wl = { t_hl = ! }
+       }
+       Convoyerbelt.txlist =
+       {
+        SCROLL_CONV3.wl = { t_hl = ! }
+        C2A4_CONV1.wl = { t_hl = ! }
+        C2A4_CONV2.wl = { t_hl = ! }
+       }
+       Airduct.txlist =
+       {
+        AIR_C1.wl = { t_hl = ! }
+        DUCT_BREAK.wl = { t_hl = ! }
+        DUCT_FLR01.wl = { t_hl = ! }
+        DUCT_FLR01A.wl = { t_hl = ! }
+        DUCT_FLR02.wl = { t_hl = ! }
+        DUCT_FLR02A.wl = { t_hl = ! }
+        DUCT_VNT.wl = { t_hl = ! }
+        DUCT_VNT2.wl = { t_hl = ! }
+        DUCT_WALL01.wl = { t_hl = ! }
+        DUCT_WALL02.wl = { t_hl = ! }
+        DUCT_WALL03.wl = { t_hl = ! }
+        DUCT_WALL04.wl = { t_hl = ! }
+        GRATE_RUST.wl = { t_hl = ! }
+        PFAB_VENT1.wl = { t_hl = ! }
+        PFAB_VENT2.wl = { t_hl = ! }
+        PFAB_VENT3.wl = { t_hl = ! }
+       }
+       Elevator.txlist =
+       {
+        ELEV1.wl = { t_hl = ! }
+        ELEV1_CIEL.wl = { t_hl = ! }
+        ELEV1_DR.wl = { t_hl = ! }
+        ELEV1_FLR.wl = { t_hl = ! }
+     +0~ELEV1_PAN.wl = { t_hl = ! }
+     +1~ELEV1_PAN.wl = { t_hl = ! }
+     +2~ELEV1_PAN.wl = { t_hl = ! }
+     +3~ELEV1_PAN.wl = { t_hl = ! }
+     +4~ELEV1_PAN.wl = { t_hl = ! }
+     +A~ELEV1_PAN.wl = { t_hl = ! }
+        ELEV1_TRIM.wl = { t_hl = ! }
+        ELEV2.wl = { t_hl = ! }
+        ELEV2_CIEL.wl = { t_hl = ! }
+        ELEV2_CIEL2.wl = { t_hl = ! }
+        ELEV2_DR.wl = { t_hl = ! }
+        ELEV2_FLR.wl = { t_hl = ! }
+     +0~ELEV2_PAN.wl = { t_hl = ! }
+     +1~ELEV2_PAN.wl = { t_hl = ! }
+     +2~ELEV2_PAN.wl = { t_hl = ! }
+     +A~ELEV2_PAN.wl = { t_hl = ! }
+      +0ELEV_DOWN.wl = { t_hl = ! }
+      +AELEV_DOWN.wl = { t_hl = ! }
+      +0ELEV_DOWN2.wl = { t_hl = ! }
+      +AELEV_DOWN2.wl = { t_hl = ! }
+      +0ELEV_UP.wl = { t_hl = ! }
+      +AELEV_UP.wl = { t_hl = ! }
+      +0ELEV_UP2.wl = { t_hl = ! }
+      +AELEV_UP2.wl = { t_hl = ! }
+       }
+       Lockers.txlist =
+       {
+        GENLOCKER.wl = { t_hl = ! }
+        C1A1_LAIDLAW1.wl = { t_hl = ! }
+        C1A1_LAIDLAW2.wl = { t_hl = ! }
+        C1A1_LAIDLAW3.wl = { t_hl = ! }
+        C1A1_LOCKER.wl = { t_hl = ! }
+        C1A1_NAMES1.wl = { t_hl = ! }
+        C1A1_NAMES10.wl = { t_hl = ! }
+        C1A1_NAMES11.wl = { t_hl = ! }
+        C1A1_NAMES12.wl = { t_hl = ! }
+        C1A1_NAMES13.wl = { t_hl = ! }
+        C1A1_NAMES14.wl = { t_hl = ! }
+        C1A1_NAMES15.wl = { t_hl = ! }
+        C1A1_NAMES16.wl = { t_hl = ! }
+        C1A1_NAMES17.wl = { t_hl = ! }
+        C1A1_NAMES18.wl = { t_hl = ! }
+        C1A1_NAMES19.wl = { t_hl = ! }
+        C1A1_NAMES2.wl = { t_hl = ! }
+        C1A1_NAMES20.wl = { t_hl = ! }
+        C1A1_NAMES21.wl = { t_hl = ! }
+        C1A1_NAMES22.wl = { t_hl = ! }
+        C1A1_NAMES23.wl = { t_hl = ! }
+        C1A1_NAMES24.wl = { t_hl = ! }
+        C1A1_NAMES25.wl = { t_hl = ! }
+        C1A1_NAMES26.wl = { t_hl = ! }
+        C1A1_NAMES3.wl = { t_hl = ! }
+        C1A1_NAMES4.wl = { t_hl = ! }
+        C1A1_NAMES5.wl = { t_hl = ! }
+        C1A1_NAMES6.wl = { t_hl = ! }
+        C1A1_NAMES7.wl = { t_hl = ! }
+        C1A1_NAMES8.wl = { t_hl = ! }
+        C1A1_NAMES9.wl = { t_hl = ! }
+       }
+       Clocks.txlist =
+       {
+        CLOCK1.wl = { t_hl = ! }
+        CLOCK2A.wl = { t_hl = ! }
+        CLOCK2B.wl = { t_hl = ! }
+        CLOCK2C.wl = { t_hl = ! }
+        CLOCK3.wl = { t_hl = ! }
+       }
+       Vendor Machines.txlist =
+       {
+        GEN_VEND1.wl = { t_hl = ! }
+        GEN_VEND1A.wl = { t_hl = ! }
+        GEN_VEND1B.wl = { t_hl = ! }
+        PEPSI_FT.wl = { t_hl = ! }
+        PEPSI_SD.wl = { t_hl = ! }
+        GENERIC87A.wl = { t_hl = ! }
+        GENERIC87B.wl = { t_hl = ! }
+        GENERIC87C.wl = { t_hl = ! }
+        GENERIC88A.wl = { t_hl = ! }
+        GENERIC88B.wl = { t_hl = ! }
+        GENERIC89A.wl = { t_hl = ! }
+        GENERIC89B.wl = { t_hl = ! }
+        GENERIC105.wl = { t_hl = ! }
+        GENERIC105A.wl = { t_hl = ! }
+        GENERIC105B.wl = { t_hl = ! }
+        GENERIC105C.wl = { t_hl = ! }
+        GENERIC106.wl = { t_hl = ! }
+        GENERIC106A.wl = { t_hl = ! }
+        GENERIC106B.wl = { t_hl = ! }
+        GENERIC107.wl = { t_hl = ! }
+        GENERIC107A.wl = { t_hl = ! }
+        GENERIC107B.wl = { t_hl = ! }
+        GENERIC102.wl = { t_hl = ! }
+        GENERIC102B.wl = { t_hl = ! }
+        GENERIC103.wl = { t_hl = ! }
+        GENERIC103B.wl = { t_hl = ! }
+        GENERIC103C.wl = { t_hl = ! }
+       }
+       Fire Extinguisher.txlist =
+       {
+        GENERIC44.wl = { t_hl = ! }
+        GENERIC45.wl = { t_hl = ! }
+        GENERIC46.wl = { t_hl = ! }
+        GENERIC47.wl = { t_hl = ! }
+       }
+       Trashcan.txlist =
+       {
+        PFAB_TRSH1A.wl = { t_hl = ! }
+        PFAB_TRSH1B.wl = { t_hl = ! }
+        PFAB_TRSH1C.wl = { t_hl = ! }
+        PFAB_TRSH1D.wl = { t_hl = ! }
+       }
+       Papers and Books.txlist =
+       {
+        PAPER1.wl = { t_hl = ! }
+        PAPER2.wl = { t_hl = ! }
+        PAPER3.wl = { t_hl = ! }
+        PAPER4.wl = { t_hl = ! }
+        PAPER5.wl = { t_hl = ! }
+        PAPER6.wl = { t_hl = ! }
+        PAPER7.wl = { t_hl = ! }
+        PAPER8.wl = { t_hl = ! }
+        PFAB_BKS1A.wl = { t_hl = ! }
+        PFAB_BKS1B.wl = { t_hl = ! }
+        PFAB_BKS2A.wl = { t_hl = ! }
+        PFAB_BKS2B.wl = { t_hl = ! }
+        PFAB_BKS2C.wl = { t_hl = ! }
+        PFAB_BKS3A.wl = { t_hl = ! }
+        PFAB_BKS3B.wl = { t_hl = ! }
+        PFAB_BKS3C.wl = { t_hl = ! }
+        PREFABBOOK1.wl = { t_hl = ! }
+        PREFABBOOK2.wl = { t_hl = ! }
+        PREFABBOOK3.wl = { t_hl = ! }
+       }
+       Garage Tool Kit.txlist =
+       {
+        GENERIC104.wl = { t_hl = ! }
+        GENERIC104A.wl = { t_hl = ! }
+        GENERIC104B.wl = { t_hl = ! }
+       }
+       Microwave Oven.txlist =
+       {
+        GENERIC108.wl = { t_hl = ! }
+        GENERIC108A.wl = { t_hl = ! }
+       }
+       Outside Boxes.txlist =
+       {
+        OUT_BOX2.wl = { t_hl = ! }
+        OUT_BOX2B.wl = { t_hl = ! }
+        OUT_BOX2C.wl = { t_hl = ! }
+        OUT_BOX2D.wl = { t_hl = ! }
+        OUT_BOXA.wl = { t_hl = ! }
+        OUT_BOXB.wl = { t_hl = ! }
+        OUT_BOXC.wl = { t_hl = ! }
+        OUT_BOXD.wl = { t_hl = ! }
+        OUT_WALL3A.wl = { t_hl = ! }
+        OUT_WALL3B.wl = { t_hl = ! }
+        OUT_WALL3C.wl = { t_hl = ! }
+        OUT_WALL3D.wl = { t_hl = ! }
+        GENERIC_110A.wl = { t_hl = ! }
+        GENERIC_110B.wl = { t_hl = ! }
+       }
+       Furniture.txlist =
+       {
+        FIFTIES_CCH1.wl = { t_hl = ! }
+        FIFTIES_CCH1B.wl = { t_hl = ! }
+        FIFTIES_CCH2.wl = { t_hl = ! }
+        FIFTIES_CCH2B.wl = { t_hl = ! }
+        FIFTIES_CCH3.wl = { t_hl = ! }
+        FIFTIES_CCH3B.wl = { t_hl = ! }
+        FIFTIES_CCH4.wl = { t_hl = ! }
+        FIFTIES_CCH4B.wl = { t_hl = ! }
+        FIFTIES_DSK1.wl = { t_hl = ! }
+        FIFTIES_DSK2.wl = { t_hl = ! }
+        FIFTIES_DSK3.wl = { t_hl = ! }
+        FIFTIES_DSK4.wl = { t_hl = ! }
+        FIFTIES_DSK5A.wl = { t_hl = ! }
+        FIFTIES_DSK5B.wl = { t_hl = ! }
+        FIFTIES_DSK5C.wl = { t_hl = ! }
+        FIFTIES_DSK5D.wl = { t_hl = ! }
+        FIFTIES_DSK5DX.wl = { t_hl = ! }
+        FIFTIES_DSK5E.wl = { t_hl = ! }
+        FIFTIES_DSK5F.wl = { t_hl = ! }
+        FIFTSFILE1.wl = { t_hl = ! }
+        FIFTSFILE1B.wl = { t_hl = ! }
+        FIFTSFILE2.wl = { t_hl = ! }
+        FIFTSFILE2B.wl = { t_hl = ! }
+        FIFTSFILE3.wl = { t_hl = ! }
+        FIFTSFILE3B.wl = { t_hl = ! }
+        TABLE.wl = { t_hl = ! }
+        TABLE2.wl = { t_hl = ! }
+        PFAB_DSKDRWR.wl = { t_hl = ! }
+       }
+       Cardbox.txlist =
+       {
+        CARDBOX1.wl = { t_hl = ! }
+        CARDBOX2.wl = { t_hl = ! }
+        CARDBOX3.wl = { t_hl = ! }
+        CARDBOX4.wl = { t_hl = ! }
+        CARDBOXBOT1.wl = { t_hl = ! }
+        CARDBOXTOP1.wl = { t_hl = ! }
+        CARDBOXTOP2.wl = { t_hl = ! }
+       }
       }
-      C1A0.txlist =
+      Vehicles Folder.qtxfolder =
       {
-        C1A0A_W3SIGN.wl = { t_hl = ! }
-        C1A0_FLIPSIGN1.wl = { t_hl = ! }
-        C1A0_FLIPSIGN2.wl = { t_hl = ! }
-        C1A0_FLIPSIGN3.wl = { t_hl = ! }
-        C1A0_FLIPSIGN4.wl = { t_hl = ! }
-        C1A0_FLIPSIGN5.wl = { t_hl = ! }
-        C1A0_FLIPSIGN6.wl = { t_hl = ! }
-        C1A0_FLIPSIGN7.wl = { t_hl = ! }
-        C1A0_FLIPSIGN8.wl = { t_hl = ! }
-        C1A0_WDSIGN.wl = { t_hl = ! }
-        C1A0A_W3.wl = { t_hl = ! }
-        C1A0A_W3A.wl = { t_hl = ! }
-        C1A0A_W3B.wl = { t_hl = ! }
-        C1A0A_W3C.wl = { t_hl = ! }
-        C1A0A_W5A.wl = { t_hl = ! }
-        C1A0A_W5B.wl = { t_hl = ! }
-        C1A0B_DR1.wl = { t_hl = ! }
-        C1A0B_DR1A.wl = { t_hl = ! }
-        C1A0B_DR2.wl = { t_hl = ! }
-        C1A0B_DR2A.wl = { t_hl = ! }
-        C1A0B_DR3.wl = { t_hl = ! }
-        C1A0B_DR3A.wl = { t_hl = ! }
-        C1A0B_DR3B.wl = { t_hl = ! }
-        C1A0B_DR4.wl = { t_hl = ! }
-        C1A0B_DR4A.wl = { t_hl = ! }
-        C1A0B_DR4B.wl = { t_hl = ! }
-        C1A0B_PAN1.wl = { t_hl = ! }
-        C1A0B_PAN2.wl = { t_hl = ! }
-        C1A0B_PAN3.wl = { t_hl = ! }
-        C1A0DR1.wl = { t_hl = ! }
-        C1A0DR2.wl = { t_hl = ! }
-        C1A0_C1.wl = { t_hl = ! }
-        C1A0_LABFLR.wl = { t_hl = ! }
-        C1A0_LABFLRB.wl = { t_hl = ! }
-        C1A0_LABFLRC.wl = { t_hl = ! }
-        C1A0_LABFLRD.wl = { t_hl = ! }
-        C1A0_LABFLRE.wl = { t_hl = ! }
-        C1A0_LABGLU.wl = { t_hl = ! }
-        C1A0_LABW1.wl = { t_hl = ! }
-        C1A0_LABW2.wl = { t_hl = ! }
-        C1A0_LABW3.wl = { t_hl = ! }
-        C1A0_LABW4.wl = { t_hl = ! }
-        C1A0_LABW5.wl = { t_hl = ! }
-        C1A0_LABW6.wl = { t_hl = ! }
-        C1A0_LABW7.wl = { t_hl = ! }
-        C1A0_LABW7B.wl = { t_hl = ! }
-        C1A0_LABW7C.wl = { t_hl = ! }
-        C1A0_LABW8.wl = { t_hl = ! }
-        C1A0_W1.wl = { t_hl = ! }
-        C1A0_W1D1.wl = { t_hl = ! }
-        C1A0_W1D2.wl = { t_hl = ! }
-        C1A0_W1D3.wl = { t_hl = ! }
-        C1A0_W1D4.wl = { t_hl = ! }
-        C1A0_W1D5.wl = { t_hl = ! }
-        C1A0_W2.wl = { t_hl = ! }
-        C1A0_W3.wl = { t_hl = ! }
-        C1A0_W4.wl = { t_hl = ! }
-        C1A0_WX.wl = { t_hl = ! }
+       Cannon.txlist = {
+        H_FRONT.wl = { t_hl = ! }
+        H_SIDE2.wl = { t_hl = ! }
+        H_SIDE3.wl = { t_hl = ! }
+       }
+       Brdly.txlist =
+       {
+        BRDLY_BACK1.wl = { t_hl = ! }
+        BRDLY_BTILE1.wl = { t_hl = ! }
+        BRDLY_FRNT1.wl = { t_hl = ! }
+        BRDLY_SIDE1.wl = { t_hl = ! }
+        BRDLY_TOP1.wl = { t_hl = ! }
+       }
+       Brdly2.txlist =
+       {
+        BRDLY2_BACK1.wl = { t_hl = ! }
+        BRDLY2_BTILE1.wl = { t_hl = ! }
+        BRDLY2_FRNT1.wl = { t_hl = ! }
+        BRDLY2_SIDE1.wl = { t_hl = ! }
+        BRDLY2_TOP1.wl = { t_hl = ! }
+       }
+       Tank.txlist =
+       {
+        TANKREAR.wl = { t_hl = ! }
+        TANKSIDE.wl = { t_hl = ! }
+        TANKTOP.wl = { t_hl = ! }
+        TANKTRAK.wl = { t_hl = ! }
+        TANKTUR.wl = { t_hl = ! }
+       }
+       Truck.txlist =
+       {
+        TRK_AXLE.wl = { t_hl = ! }
+        TRK_BED.wl = { t_hl = ! }
+        TRK_BUMPER.wl = { t_hl = ! }
+        TRK_CABACK.wl = { t_hl = ! }
+        TRK_CANVAS.wl = { t_hl = ! }
+        TRK_DASH.wl = { t_hl = ! }
+        TRK_DOOR.wl = { t_hl = ! }
+        TRK_FENDER.wl = { t_hl = ! }
+        TRK_GRILLE.wl = { t_hl = ! }
+        TRK_HOOD.wl = { t_hl = ! }
+        TRK_INDOOR.wl = { t_hl = ! }
+        TRK_PIPE.wl = { t_hl = ! }
+        TRK_RIM.wl = { t_hl = ! }
+        TRK_SEAT.wl = { t_hl = ! }
+        TRK_SHOCKS.wl = { t_hl = ! }
+        TRK_SIDE.wl = { t_hl = ! }
+        TRK_TIRE.wl = { t_hl = ! }
+        TRK_TREAD.wl = { t_hl = ! }
+        TIRES.wl = { t_hl = ! }
+       }
+       Truck2.txlist =
+       {
+        TRK2_BACK.wl = { t_hl = ! }
+        TRK2_FRONT.wl = { t_hl = ! }
+        TRK2_HOOD.wl = { t_hl = ! }
+        TRK2_ROOF.wl = { t_hl = ! }
+        TRK2_SIDE.wl = { t_hl = ! }
+       }
+       Train.txlist =
+       {
+        TRAIN1.wl = { t_hl = ! }
+        TRAIN2.wl = { t_hl = ! }
+        TRAIN3.wl = { t_hl = ! }
+        TRAIN4.wl = { t_hl = ! }
+        TRAIN_UND2.wl = { t_hl = ! }
+       }
+       Train2.txlist =
+       {
+        NGIN_CABFR.wl = { t_hl = ! }
+        NGIN_CABREAR.wl = { t_hl = ! }
+        NGIN_DOOR.wl = { t_hl = ! }
+        NGIN_FRONT.wl = { t_hl = ! }
+        NGIN_GLUE.wl = { t_hl = ! }
+        NGIN_ROOF.wl = { t_hl = ! }
+        NGIN_SIDE.wl = { t_hl = ! }
+        NGIN_TOP.wl = { t_hl = ! }
+        NGIN_WINCH.wl = { t_hl = ! }
+       }
+       Subway.txlist =
+       {
+        SUBWAYFLOOR2.wl = { t_hl = ! }
+        SUBWAY_CEILING.wl = { t_hl = ! }
+        SUBWAY_DOOR.wl = { t_hl = ! }
+        SUBWAY_FLOOR1.wl = { t_hl = ! }
+        SUBWAY_INEND.wl = { t_hl = ! }
+        SUBWAY_INPANEL.wl = { t_hl = ! }
+        SUBWAY_LIGHTS.wl = { t_hl = ! }
+        SUBWAY_OUTEND.wl = { t_hl = ! }
+        SUBWAY_OUTSIDE.wl = { t_hl = ! }
+        SUBWAY_SEAT.wl = { t_hl = ! }
+        SUBWAY_SEAT2.wl = { t_hl = ! }
+       }
+       UC.txlist =
+       {
+        UC_BOGIETOP.wl = { t_hl = ! }
+        UC_SIDE.wl = { t_hl = ! }
+        UC_TOP.wl = { t_hl = ! }
+       }
+       Fladbed.txlist =
+       {
+        FLATBED_BUMPER.wl = { t_hl = ! }
+        FLATBED_ENGINE.wl = { t_hl = ! }
+        FLATBED_POD.wl = { t_hl = ! }
+        FLATBED_HLITE2.wl = { t_hl = ! }
+        FLATBED_LITE1.wl = { t_hl = ! }
+        FLATBED_LITE2.wl = { t_hl = ! }
+        FLATBED_TLITE1.wl = { t_hl = ! }
+        FLATBED_TLITE2.wl = { t_hl = ! }
+        FLATBED_TOP.wl = { t_hl = ! }
+       }
+       Rocket.txlist =
+       {
+        ROCKETBOTTOM.wl = { t_hl = ! }
+        ROCKETCHROME.wl = { t_hl = ! }
+        ROCKETENDET.wl = { t_hl = ! }
+        ROCKETENNOZ.wl = { t_hl = ! }
+        ROCKETMAIN.wl = { t_hl = ! }
+        ROCKETNOSE.wl = { t_hl = ! }
+        ROCKETPAYLOAD.wl = { t_hl = ! }
+        ROCKETSEP.wl = { t_hl = ! }
+        ROCKETSTAGE1.wl = { t_hl = ! }
+       }
       }
-      C1A1.txlist =
+      Level Specific Folder.qtxfolder =
       {
-        C1A1A_SIGN1.wl = { t_hl = ! }
-        C1A1A_W3.wl = { t_hl = ! }
-        C1A1A_W3A.wl = { t_hl = ! }
-        C1A1A_W3B.wl = { t_hl = ! }
-        C1A1A_W3C.wl = { t_hl = ! }
-        C1A1A_W4.wl = { t_hl = ! }
-        C1A1A_W4A.wl = { t_hl = ! }
-        C1A1C_W1.wl = { t_hl = ! }
-        C1A1C_W1B.wl = { t_hl = ! }
-        C1A1C_W1C.wl = { t_hl = ! }
-        C1A1C_W2.wl = { t_hl = ! }
-        C1A1C_W2B.wl = { t_hl = ! }
-        C1A1DOOR1.wl = { t_hl = ! }
-        C1A1DOOR2.wl = { t_hl = ! }
-        C1A1DOOREDGE.wl = { t_hl = ! }
-        C1A1DR3.wl = { t_hl = ! }
-        C1A1DR4.wl = { t_hl = ! }
-        C1A1W1C.wl = { t_hl = ! }
-        C1A1W1D.wl = { t_hl = ! }
-        C1A1W1E.wl = { t_hl = ! }
-        C1A1W1F.wl = { t_hl = ! }
-        C1A1W1G.wl = { t_hl = ! }
-        C1A1W1I.wl = { t_hl = ! }
-        C1A1W1J.wl = { t_hl = ! }
-        C1A1W1K.wl = { t_hl = ! }
-        C1A1W1L.wl = { t_hl = ! }
-        C1A1W1M.wl = { t_hl = ! }
-        C1A1W1N.wl = { t_hl = ! }
-        C1A1W1O.wl = { t_hl = ! }
-        C1A1_BKT.wl = { t_hl = ! }
-        C1A1_BKTB.wl = { t_hl = ! }
-        C1A1_C1.wl = { t_hl = ! }
-        C1A1_C1A.wl = { t_hl = ! }
-        C1A1_C1B.wl = { t_hl = ! }
-        C1A1_DR1.wl = { t_hl = ! }
-        C1A1_DR1B.wl = { t_hl = ! }
-        C1A1_DR2.wl = { t_hl = ! }
-        C1A1_DR3.wl = { t_hl = ! }
-        C1A1_DR3B.wl = { t_hl = ! }
-        C1A1_FLR1.wl = { t_hl = ! }
-        C1A1_FLR2A.wl = { t_hl = ! }
-        C1A1_FLR2B.wl = { t_hl = ! }
-        C1A1_FLR2C.wl = { t_hl = ! }
-        C1A1_LASER.wl = { t_hl = ! }
-        C1A1_LINO.wl = { t_hl = ! }
-        C1A1_SWTCH1.wl = { t_hl = ! }
-        C1A1_TNK1.wl = { t_hl = ! }
-        C1A1_TRIM1.wl = { t_hl = ! }
-        C1A1_TRIM2.wl = { t_hl = ! }
-        C1A1_W1.wl = { t_hl = ! }
-        C1A1_W1B.wl = { t_hl = ! }
-        C1A1_W1B1.wl = { t_hl = ! }
-        C1A1_W1B2.wl = { t_hl = ! }
-        C1A1_W1B3.wl = { t_hl = ! }
-        C1A1_W1B4.wl = { t_hl = ! }
-        C1A1_W1B5.wl = { t_hl = ! }
-        C1A1_W1H.wl = { t_hl = ! }
-        C1A1_W1I.wl = { t_hl = ! }
-        C1A1_WINDOW.wl = { t_hl = ! }
-      }
-      C1A2.txlist =
-      {
-        C1A2_C1.wl = { t_hl = ! }
-        C1A2_FLR1.wl = { t_hl = ! }
-        C1A2_FLR2.wl = { t_hl = ! }
-        C1A2_W1.wl = { t_hl = ! }
-      }
-      C1A3.txlist =
-      {
-        C1A3FIREDR01.wl = { t_hl = ! }
-        C1A3FLOOR02.wl = { t_hl = ! }
-        C1A3SECDR02.wl = { t_hl = ! }
-        C1A3VENTDR01.wl = { t_hl = ! }
-        C1A3VENTDR02.wl = { t_hl = ! }
-        C1A3WALL01.wl = { t_hl = ! }
-        C1A3WALL02.wl = { t_hl = ! }
-        C1A3WALL03.wl = { t_hl = ! }
-        C1A3WALL04.wl = { t_hl = ! }
-        C1A3WALL05.wl = { t_hl = ! }
-        C1A3WALL06.wl = { t_hl = ! }
-        C1A3WALL07.wl = { t_hl = ! }
-        C1A3WALL08.wl = { t_hl = ! }
-        C1A3WALL09.wl = { t_hl = ! }
-        C1A3WALL10.wl = { t_hl = ! }
-        C1A3YELLOW.wl = { t_hl = ! }
-        C1A3_DR1.wl = { t_hl = ! }
-        C1A3_DR1A.wl = { t_hl = ! }
-        C1A3_W1A.wl = { t_hl = ! }
-        C1A3_W1B.wl = { t_hl = ! }
-        C1A3_W1B2.wl = { t_hl = ! }
-        C1A3_W1B3.wl = { t_hl = ! }
-        C1A3_W1B4.wl = { t_hl = ! }
-        C1A3_W1C.wl = { t_hl = ! }
-        C1A3_W1D.wl = { t_hl = ! }
-        C1A3_W1D2.wl = { t_hl = ! }
-        C1A3_W1E.wl = { t_hl = ! }
-        C1A3_W1E2.wl = { t_hl = ! }
-        C1A3_W1F.wl = { t_hl = ! }
-        C1A3_W2A.wl = { t_hl = ! }
-        C1A3_W2B.wl = { t_hl = ! }
-        C1A3_W2C.wl = { t_hl = ! }
-        C1A3_W2D.wl = { t_hl = ! }
-      }
-      C1A4.txlist =
-      {
-        C1A4B_W1.wl = { t_hl = ! }
-        C1A4B_W2.wl = { t_hl = ! }
-        C1A4B_W3.wl = { t_hl = ! }
-        C1A4B_W3B.wl = { t_hl = ! }
-        C1A4F_W1.wl = { t_hl = ! }
-        C1A4F_W1A.wl = { t_hl = ! }
-        C1A4F_W2.wl = { t_hl = ! }
-        C1A4F_W2A.wl = { t_hl = ! }
-        C1A4I_C1A.wl = { t_hl = ! }
-        C1A4I_W1A.wl = { t_hl = ! }
-        C1A4I_W1B.wl = { t_hl = ! }
-        C1A4I_W1C.wl = { t_hl = ! }
-        C1A4TNNL1.wl = { t_hl = ! }
-        C1A4TNNL1B.wl = { t_hl = ! }
-        C1A4TNNL1C.wl = { t_hl = ! }
-        C1A4TNNL1C2.wl = { t_hl = ! }
-        C1A4TNNL1C3.wl = { t_hl = ! }
-        C1A4TNNL1C4.wl = { t_hl = ! }
-        C1A4TNNL1C5.wl = { t_hl = ! }
-        C1A4TNNL1D.wl = { t_hl = ! }
-        C1A4TNNL1E.wl = { t_hl = ! }
-        C1A4_C1C.wl = { t_hl = ! }
-        C1A4_C1D.wl = { t_hl = ! }
-        C1A4_CANIS.wl = { t_hl = ! }
-        C1A4_DOME.wl = { t_hl = ! }
-        C1A4_DOME2.wl = { t_hl = ! }
-        C1A4_DOME3.wl = { t_hl = ! }
-        C1A4_DR4A.wl = { t_hl = ! }
-        C1A4_DR4B.wl = { t_hl = ! }
-        C1A4_DR4C.wl = { t_hl = ! }
-        C1A4_FAN.wl = { t_hl = ! }
-        C1A4_FUEL.wl = { t_hl = ! }
-      -0C1A4_FUEL.wl = { t_hl = ! }
-      -1C1A4_FUEL.wl = { t_hl = ! }
-      -2C1A4_FUEL.wl = { t_hl = ! }
-        C1A4_FUEL2.wl = { t_hl = ! }
-        C1A4_FUEL3.wl = { t_hl = ! }
-        C1A4_OXY.wl = { t_hl = ! }
-      -0C1A4_OXY.wl = { t_hl = ! }
-      -1C1A4_OXY.wl = { t_hl = ! }
-      -2C1A4_OXY.wl = { t_hl = ! }
-        C1A4_OXY2.wl = { t_hl = ! }
-        C1A4_OXY3.wl = { t_hl = ! }
-        C1A4_PAN1A.wl = { t_hl = ! }
-        C1A4_PAN1B.wl = { t_hl = ! }
-        C1A4_PAN2A.wl = { t_hl = ! }
-        C1A4_PAN3A.wl = { t_hl = ! }
-        C1A4_POW.wl = { t_hl = ! }
-      -0C1A4_POW.wl = { t_hl = ! }
-      -1C1A4_POW.wl = { t_hl = ! }
-      -2C1A4_POW.wl = { t_hl = ! }
-        C1A4_SILO1.wl = { t_hl = ! }
-        C1A4_SILO2.wl = { t_hl = ! }
-        C1A4_SILO2B.wl = { t_hl = ! }
-        C1A4_SILO3.wl = { t_hl = ! }
-        C1A4_SILO4A.wl = { t_hl = ! }
-        C1A4_SILO4B.wl = { t_hl = ! }
-        C1A4_SILO4C.wl = { t_hl = ! }
-        C1A4_SILO5.wl = { t_hl = ! }
-        C1A4_TENT.wl = { t_hl = ! }
-        C1A4_W4.wl = { t_hl = ! }
-        C1A4_W5.wl = { t_hl = ! }
-      -0C1A4_W5.wl = { t_hl = ! }
-      -1C1A4_W5.wl = { t_hl = ! }
-      -2C1A4_W5.wl = { t_hl = ! }
-      -3C1A4_W5.wl = { t_hl = ! }
-        C1A4_W6.wl = { t_hl = ! }
-      -0C1A4_W6.wl = { t_hl = ! }
-      -1C1A4_W6.wl = { t_hl = ! }
-      -2C1A4_W6.wl = { t_hl = ! }
-      -3C1A4_W6.wl = { t_hl = ! }
-      }
-      C2A1.txlist =
-      {
-        C2A1_W1.wl = { t_hl = ! }
-        C2A1_W1A.wl = { t_hl = ! }
-        C2A1_W2.wl = { t_hl = ! }
-        C2A1_W3.wl = { t_hl = ! }
-        C2A1_W4.wl = { t_hl = ! }
-      }
-      C2A2.txlist =
-      {
-        C2A2A_SIGN5A.wl = { t_hl = ! }
-        C2A2A_SIGN5B.wl = { t_hl = ! }
-        C2A2A_SIGN5C.wl = { t_hl = ! }
-      +0C2A2_SIG1.wl = { t_hl = ! }
-        C2A2_SIG1A.wl = { t_hl = ! }
-        C2A2_SIG1B.wl = { t_hl = ! }
-        C2A2_SIG1C.wl = { t_hl = ! }
-        C2A2A_LIFT1.wl = { t_hl = ! }
-        C2A2A_LIFT2.wl = { t_hl = ! }
-        C2A2_DR.wl = { t_hl = ! }
-        C2A2_LAUNCH.wl = { t_hl = ! }
-        C2A2_LAUNCH1.wl = { t_hl = ! }
-        C2A2_LAUNCH2.wl = { t_hl = ! }
-        C2A2_SATORB.wl = { t_hl = ! }
-      }
-      C2A3.txlist =
-      {
-        C2A3COMPACTOR1.wl = { t_hl = ! }
-        C2A3ICKY.wl = { t_hl = ! }
-        C2A3RUSTDOOR1.wl = { t_hl = ! }
-        C2A3TURBINE1.wl = { t_hl = ! }
-        C2A3TURBINE2.wl = { t_hl = ! }
-        C2A3TURBINE3.wl = { t_hl = ! }
-        C2A3TURBINE4.wl = { t_hl = ! }
-        C2A3_CRANE1.wl = { t_hl = ! }
-        C2A3_CRANE2.wl = { t_hl = ! }
-        C2A3_CRANE3.wl = { t_hl = ! }
-        C2A3_DOOR.wl = { t_hl = ! }
-        C2A3_GAR1.wl = { t_hl = ! }
-        C2A3_GAR2.wl = { t_hl = ! }
-        C2A3_GAR3.wl = { t_hl = ! }
-        C2A3_GAR4.wl = { t_hl = ! }
-      }
-      C2A4.txlist =
-      {
-      -0C2A4C1.wl = { t_hl = ! }
-      -1C2A4C1.wl = { t_hl = ! }
-      -2C2A4C1.wl = { t_hl = ! }
-        C2A4C2.wl = { t_hl = ! }
-        C2A4C3.wl = { t_hl = ! }
-        C2A4D_PANEL.wl = { t_hl = ! }
-      -0C2A4D_PANEL.wl = { t_hl = ! }
-      -1C2A4D_PANEL.wl = { t_hl = ! }
-      -2C2A4D_PANEL.wl = { t_hl = ! }
-        C2A4E_W1.wl = { t_hl = ! }
-      -0C2A4E_W1.wl = { t_hl = ! }
-      -1C2A4E_W1.wl = { t_hl = ! }
-        C2A4E_W1B.wl = { t_hl = ! }
-        C2A4E_W1C.wl = { t_hl = ! }
-        C2A4W1C.wl = { t_hl = ! }
-        C2A4XC2.wl = { t_hl = ! }
-        C2A4XC3.wl = { t_hl = ! }
-        C2A4X_BRD2A.wl = { t_hl = ! }
-        C2A4X_BRD2B.wl = { t_hl = ! }
-        C2A4X_C1.wl = { t_hl = ! }
-        C2A4X_C2.wl = { t_hl = ! }
-        C2A4X_C3.wl = { t_hl = ! }
-        C2A4X_DR4.wl = { t_hl = ! }
-        C2A4X_DR5.wl = { t_hl = ! }
-        C2A4X_GLU.wl = { t_hl = ! }
-        C2A4X_H2E.wl = { t_hl = ! }
-        C2A4X_H2E2.wl = { t_hl = ! }
-        C2A4X_H2E3.wl = { t_hl = ! }
-        C2A4X_H2E4.wl = { t_hl = ! }
-        C2A4X_PAN3.wl = { t_hl = ! }
-        C2A4_BRD1.wl = { t_hl = ! }
-        C2A4_BRD1R.wl = { t_hl = ! }
-        C2A4_BRD1Y3.wl = { t_hl = ! }
-        C2A4_BRD2A.wl = { t_hl = ! }
-        C2A4_BRD2B.wl = { t_hl = ! }
-        C2A4_BRD4B.wl = { t_hl = ! }
-        C2A4_BRD4R.wl = { t_hl = ! }
-        C2A4_BRD4Y.wl = { t_hl = ! }
-        C2A4_C1.wl = { t_hl = ! }
-        C2A4_C2.wl = { t_hl = ! }
-        C2A4_CMP1.wl = { t_hl = ! }
-      -0C2A4_COR2.wl = { t_hl = ! }
-      -1C2A4_COR2.wl = { t_hl = ! }
-      -2C2A4_COR2.wl = { t_hl = ! }
-        C2A4_DR1.wl = { t_hl = ! }
-        C2A4_DR3A.wl = { t_hl = ! }
-        C2A4_DR3B.wl = { t_hl = ! }
-        C2A4_FLR1.wl = { t_hl = ! }
-        C2A4_FLR1B.wl = { t_hl = ! }
-        C2A4_FLR2.wl = { t_hl = ! }
-        C2A4_FLR3.wl = { t_hl = ! }
-        C2A4_FLR3B.wl = { t_hl = ! }
-        C2A4_FLR4.wl = { t_hl = ! }
-        C2A4_FLR5A.wl = { t_hl = ! }
-        C2A4_FLR5B.wl = { t_hl = ! }
-        C2A4_FLR6.wl = { t_hl = ! }
-      -0C2A4_FLR6.wl = { t_hl = ! }
-      -1C2A4_FLR6.wl = { t_hl = ! }
-      -2C2A4_FLR6.wl = { t_hl = ! }
-      -0C2A4_FLR6B.wl = { t_hl = ! }
-      -1C2A4_FLR6B.wl = { t_hl = ! }
-      -2C2A4_FLR6B.wl = { t_hl = ! }
-        C2A4_GIB1.wl = { t_hl = ! }
-        C2A4_GIB2.wl = { t_hl = ! }
-        C2A4_GIB3.wl = { t_hl = ! }
-        C2A4_H2A.wl = { t_hl = ! }
-        C2A4_H2B.wl = { t_hl = ! }
-        C2A4_H2C.wl = { t_hl = ! }
-        C2A4_H2E.wl = { t_hl = ! }
-        C2A4_H2E2.wl = { t_hl = ! }
-        C2A4_H2E3.wl = { t_hl = ! }
-        C2A4_H2E4.wl = { t_hl = ! }
-        C2A4_H2F.wl = { t_hl = ! }
-        C2A4_H2F2.wl = { t_hl = ! }
-        C2A4_H2G.wl = { t_hl = ! }
-        C2A4_LAS.wl = { t_hl = ! }
-        C2A4_LAS2.wl = { t_hl = ! }
-        C2A4_LASGUN.wl = { t_hl = ! }
-      -0C2A4_PAN1.wl = { t_hl = ! }
-      -1C2A4_PAN1.wl = { t_hl = ! }
-        C2A4_PAN2.wl = { t_hl = ! }
-      -0C2A4_PAN2.wl = { t_hl = ! }
-      -1C2A4_PAN2.wl = { t_hl = ! }
-      -2C2A4_PAN2.wl = { t_hl = ! }
-      -3C2A4_PAN2.wl = { t_hl = ! }
-        C2A4_PAN3.wl = { t_hl = ! }
-        C2A4_PAN4.wl = { t_hl = ! }
-        C2A4_SGN1A.wl = { t_hl = ! }
-        C2A4_SHIELD.wl = { t_hl = ! }
-        C2A4_STASIS.wl = { t_hl = ! }
-        C2A4_SWTCH1.wl = { t_hl = ! }
-        C2A4_TRIM1.wl = { t_hl = ! }
-        C2A4_TRIM2.wl = { t_hl = ! }
-        C2A4_TRIM3.wl = { t_hl = ! }
-        C2A4_VAT1.wl = { t_hl = ! }
-      -0C2A4_VAT1.wl = { t_hl = ! }
-      -1C2A4_VAT1.wl = { t_hl = ! }
-      -2C2A4_VAT1.wl = { t_hl = ! }
-        C2A4_VAT1BRD.wl = { t_hl = ! }
-        C2A4_VAT2.wl = { t_hl = ! }
-        C2A4_VAT3.wl = { t_hl = ! }
-        C2A4_VAT4.wl = { t_hl = ! }
-        C2A4_VAT5.wl = { t_hl = ! }
-        C2A4_VAT6.wl = { t_hl = ! }
-        C2A4_VAT7.wl = { t_hl = ! }
-      -0C2A4_W1.wl = { t_hl = ! }
-      -1C2A4_W1.wl = { t_hl = ! }
-      -2C2A4_W1.wl = { t_hl = ! }
-        C2A4_W1A.wl = { t_hl = ! }
-        C2A4_W1H.wl = { t_hl = ! }
-      -0C2A4_W2.wl = { t_hl = ! }
-      -1C2A4_W2.wl = { t_hl = ! }
-        C2A4_W2DR.wl = { t_hl = ! }
-      }
-      C2A5.txlist =
-      {
-        C2A5C_PIPE1.wl = { t_hl = ! }
-        C2A5DEADCOMP1.wl = { t_hl = ! }
-        C2A5HELPAD.wl = { t_hl = ! }
-        C2A5MOUND.wl = { t_hl = ! }
-        C2A5MOUND2.wl = { t_hl = ! }
-        C2A5MOUND3.wl = { t_hl = ! }
-        C2A5_DEST1.wl = { t_hl = ! }
-        C2A5_DR.wl = { t_hl = ! }
-        C2A5_GUN1.wl = { t_hl = ! }
-        C2A5_INTK.wl = { t_hl = ! }
-        C2A5_INTK2.wl = { t_hl = ! }
-        C2A5_INTK3.wl = { t_hl = ! }
-      }
-      C3A1.txlist =
-      {
-        C3A1B_W1.wl = { t_hl = ! }
-        C3A1B_W1A.wl = { t_hl = ! }
-        C3A1B_W1B.wl = { t_hl = ! }
-        C3A1B_W1C.wl = { t_hl = ! }
-        C3A1B_W2.wl = { t_hl = ! }
-        C3A1B_W3.wl = { t_hl = ! }
-        C3A1B_W4.wl = { t_hl = ! }
-        C3A1B_W5.wl = { t_hl = ! }
-        C3A1B_W6.wl = { t_hl = ! }
-        C3A1B_W7.wl = { t_hl = ! }
-        C3A1B_W8.wl = { t_hl = ! }
-        C3A1_GEAR1.wl = { t_hl = ! }
-        C3A1_GEAR1B.wl = { t_hl = ! }
-        C3A1_GEAR2.wl = { t_hl = ! }
-        C3A1_GEAR3.wl = { t_hl = ! }
-        C3A1_NRC2.wl = { t_hl = ! }
-        C3A1_NRC2B.wl = { t_hl = ! }
-        C3A1_SPHINC.wl = { t_hl = ! }
-        C3A1_W1.wl = { t_hl = ! }
-        C3A1_W2.wl = { t_hl = ! }
-        C3A1_W2A.wl = { t_hl = ! }
-        C3A1_W3A.wl = { t_hl = ! }
-        C3A1_W3B.wl = { t_hl = ! }
-        C3A1_W3C.wl = { t_hl = ! }
-        C3A1_W5A.wl = { t_hl = ! }
-        C3A1_W5B.wl = { t_hl = ! }
-        C3A1_W5D.wl = { t_hl = ! }
-      }
-      C3A2.txlist =
-      {
-        C3A2A_BRD1.wl = { t_hl = ! }
-        C3A2A_BRD1A.wl = { t_hl = ! }
-        C3A2A_BRD1B.wl = { t_hl = ! }
-        C3A2A_PIPE1.wl = { t_hl = ! }
-        C3A2A_PIPE2.wl = { t_hl = ! }
-        C3A2A_TELBLU1.wl = { t_hl = ! }
-        C3A2A_TELBLU2.wl = { t_hl = ! }
-        C3A2A_TELBLU3.wl = { t_hl = ! }
-        C3A2A_TELRED1A.wl = { t_hl = ! }
-        C3A2A_TELRED1B.wl = { t_hl = ! }
-        C3A2A_TELRED1C.wl = { t_hl = ! }
-        C3A2A_TELRED1D.wl = { t_hl = ! }
-        C3A2A_TNK1.wl = { t_hl = ! }
-        C3A2A_TNK1B.wl = { t_hl = ! }
-        C3A2A_TNK2.wl = { t_hl = ! }
-        C3A2A_TNK2B.wl = { t_hl = ! }
-        C3A2A_TNK3.wl = { t_hl = ! }
-        C3A2A_TNK3B.wl = { t_hl = ! }
-        C3A2A_TNK3C.wl = { t_hl = ! }
-        C3A2A_TNK4.wl = { t_hl = ! }
-        C3A2A_TRANS1.wl = { t_hl = ! }
-        C3A2A_W1.wl = { t_hl = ! }
-        C3A2A_W1A.wl = { t_hl = ! }
-        C3A2A_W1B.wl = { t_hl = ! }
-        C3A2A_W1C.wl = { t_hl = ! }
-        C3A2A_W1D.wl = { t_hl = ! }
-        C3A2A_W1E.wl = { t_hl = ! }
-        C3A2A_W1F.wl = { t_hl = ! }
-        C3A2A_W1G.wl = { t_hl = ! }
-        C3A2A_W1H.wl = { t_hl = ! }
-        C3A2A_W1I.wl = { t_hl = ! }
-        C3A2A_W1J.wl = { t_hl = ! }
-        C3A2A_W1K.wl = { t_hl = ! }
-        C3A2A_W1L.wl = { t_hl = ! }
-        C3A2A_W1M.wl = { t_hl = ! }
-        C3A2A_W2A.wl = { t_hl = ! }
-        C3A2A_W2B.wl = { t_hl = ! }
-        C3A2A_W2C.wl = { t_hl = ! }
-        C3A2A_W2D.wl = { t_hl = ! }
-        C3A2A_W2E.wl = { t_hl = ! }
-        C3A2A_W2F.wl = { t_hl = ! }
-        C3A2A_W3.wl = { t_hl = ! }
-        C3A2B_REAC.wl = { t_hl = ! }
-        C3A2B_REAC1.wl = { t_hl = ! }
-        C3A2B_REAC1B.wl = { t_hl = ! }
-        C3A2B_REAC1C.wl = { t_hl = ! }
-        C3A2B_REAC1D.wl = { t_hl = ! }
-        C3A2B_REAC1E.wl = { t_hl = ! }
-        C3A2B_REAC2.wl = { t_hl = ! }
-        C3A2B_REAC2B.wl = { t_hl = ! }
-        C3A2B_REAC2C.wl = { t_hl = ! }
-        C3A2B_REAC2D.wl = { t_hl = ! }
-        C3A2B_REAC2E1.wl = { t_hl = ! }
-        C3A2B_REAC2E2.wl = { t_hl = ! }
-        C3A2B_REAC2E3.wl = { t_hl = ! }
-        C3A2B_REAC2E4.wl = { t_hl = ! }
-        C3A2B_REAC3.wl = { t_hl = ! }
-        C3A2B_REAC3B.wl = { t_hl = ! }
-        C3A2B_REAC4.wl = { t_hl = ! }
-        C3A2B_REAC5.wl = { t_hl = ! }
-        C3A2B_REAC5B.wl = { t_hl = ! }
-        C3A2SIGN00.wl = { t_hl = ! }
-        C3A2SIGN01.wl = { t_hl = ! }
-        C3A2SIGN02.wl = { t_hl = ! }
-        C3A2SIGN03.wl = { t_hl = ! }
-        C3A2SIGN04.wl = { t_hl = ! }
-        C3A2SIGN05.wl = { t_hl = ! }
-        C3A2SIGN06.wl = { t_hl = ! }
-        C3A2SIGN07.wl = { t_hl = ! }
-        C3A2SIGN08.wl = { t_hl = ! }
-        C3A2SIGN10.wl = { t_hl = ! }
-        C3A2SIGN11.wl = { t_hl = ! }
-        C3A2SIGN12.wl = { t_hl = ! }
-        C3A2SIGN13.wl = { t_hl = ! }
-        C3A2SIGN14.wl = { t_hl = ! }
-        C3A2SIGN15.wl = { t_hl = ! }
-        C3A2SIGN16.wl = { t_hl = ! }
-        C3A2SIGN17.wl = { t_hl = ! }
-        C3A2SIGN18.wl = { t_hl = ! }
-        C3A2SIGN19.wl = { t_hl = ! }
-        C3A2SIGN20.wl = { t_hl = ! }
-        C3A2SIGN21.wl = { t_hl = ! }
-        C3A2SIGN22.wl = { t_hl = ! }
-        C3A2SIGN23.wl = { t_hl = ! }
-        C3A2SIGN24.wl = { t_hl = ! }
-        C3A2SIGN25.wl = { t_hl = ! }
-        C3A2SIGN26.wl = { t_hl = ! }
-        C3A2SIGN28.wl = { t_hl = ! }
-        C3A2SIGN29.wl = { t_hl = ! }
-        C3A2SIGN30.wl = { t_hl = ! }
-        C3A2SIGN31.wl = { t_hl = ! }
-        C3A2SIGN32.wl = { t_hl = ! }
-        C3A2SIGN33.wl = { t_hl = ! }
-        C3A2SIGN34.wl = { t_hl = ! }
-        C3A2SIGN35.wl = { t_hl = ! }
-        C3A2SIGN36.wl = { t_hl = ! }
-        C3A2SIGN37.wl = { t_hl = ! }
-        C3A2SIGN38.wl = { t_hl = ! }
-        C3A2SIGN39.wl = { t_hl = ! }
-        C3A2SIGN40.wl = { t_hl = ! }
-        C3A2SIGN41.wl = { t_hl = ! }
-        C3A2SIGN42.wl = { t_hl = ! }
-        C3A2SIGN44.wl = { t_hl = ! }
-        C3A2SIGN45.wl = { t_hl = ! }
-        C3A2SIGN46.wl = { t_hl = ! }
-        C3A2SIGN47.wl = { t_hl = ! }
-        C3A2SIGN48.wl = { t_hl = ! }
-        C3A2SIGN49.wl = { t_hl = ! }
-        C3A2SIGN50.wl = { t_hl = ! }
-        C3A2SIGN51.wl = { t_hl = ! }
-        C3A2SIGN52.wl = { t_hl = ! }
-        C3A2SIGN53.wl = { t_hl = ! }
-        C3A2SIGN54.wl = { t_hl = ! }
-        C3A2SIGN55.wl = { t_hl = ! }
-        C3A2SIGN56.wl = { t_hl = ! }
-        C3A2_BTH1.wl = { t_hl = ! }
-        C3A2_BTH2A.wl = { t_hl = ! }
-        C3A2_BTH2B.wl = { t_hl = ! }
-        C3A2_BTH2C.wl = { t_hl = ! }
-        C3A2_CEIL.wl = { t_hl = ! }
-        C3A2_DR1.wl = { t_hl = ! }
-        C3A2_LIGHT.wl = { t_hl = ! }
-        C3A2_LIGHT2.wl = { t_hl = ! }
-        C3A2_TELEPAD.wl = { t_hl = ! }
-        C3A2_TNK4A.wl = { t_hl = ! }
-        C3A2_TNK4B.wl = { t_hl = ! }
-        C3A2_TNK4C.wl = { t_hl = ! }
-        C3A2_TNK5A.wl = { t_hl = ! }
-        C3A2_TNK5B.wl = { t_hl = ! }
-        C3A2_TNK5C.wl = { t_hl = ! }
-      }
-      CA1X.txlist =
-      {
-      -0CA1X_C1.wl = { t_hl = ! }
-      -1CA1X_C1.wl = { t_hl = ! }
-        CA1X2.wl = { t_hl = ! }
-        CA1X2B.wl = { t_hl = ! }
-        CA1X_BRD2.wl = { t_hl = ! }
-        CA1X_C1A.wl = { t_hl = ! }
-        CA1X_C1B.wl = { t_hl = ! }
-        CA1X_C1C.wl = { t_hl = ! }
-        CA1X_C1D.wl = { t_hl = ! }
-        CA1X_C2A.wl = { t_hl = ! }
-        CA1X_C2B.wl = { t_hl = ! }
-        CA1X_C2C.wl = { t_hl = ! }
-        CA1X_C2D.wl = { t_hl = ! }
-        CA1X_CON.wl = { t_hl = ! }
-        CA1X_CON1A.wl = { t_hl = ! }
-        CA1X_CON1B.wl = { t_hl = ! }
-        CA1X_CON2.wl = { t_hl = ! }
-        CA1X_MONSIDE.wl = { t_hl = ! }
-        CA1X_PCFRONT.wl = { t_hl = ! }
-        CA1X_PIPE.wl = { t_hl = ! }
-        CA1X_SUP1A.wl = { t_hl = ! }
-        CA1X_SUP2.wl = { t_hl = ! }
-        CA1X_SUP3.wl = { t_hl = ! }
-        CA1X_SUP5.wl = { t_hl = ! }
-        CA1X_SUP5B.wl = { t_hl = ! }
-        CA1X_SUP5C.wl = { t_hl = ! }
-        CA1X_SUP6.wl = { t_hl = ! }
-        CA1X_SUP6B.wl = { t_hl = ! }
-        CA1X_W1.wl = { t_hl = ! }
-        CA1X_W1B.wl = { t_hl = ! }
-        CA1X_W1C.wl = { t_hl = ! }
-        CA1X_W1D.wl = { t_hl = ! }
-        CA1X_W1E.wl = { t_hl = ! }
-        CA1X_W1F.wl = { t_hl = ! }
-        CA1X_W2.wl = { t_hl = ! }
+       C0A0.txlist =
+       {
+         C0A0_TRACK.wl = { t_hl = ! }
+       }
+       C1A0.txlist =
+       {
+         C1A0A_W3SIGN.wl = { t_hl = ! }
+         C1A0_FLIPSIGN1.wl = { t_hl = ! }
+         C1A0_FLIPSIGN2.wl = { t_hl = ! }
+         C1A0_FLIPSIGN3.wl = { t_hl = ! }
+         C1A0_FLIPSIGN4.wl = { t_hl = ! }
+         C1A0_FLIPSIGN5.wl = { t_hl = ! }
+         C1A0_FLIPSIGN6.wl = { t_hl = ! }
+         C1A0_FLIPSIGN7.wl = { t_hl = ! }
+         C1A0_FLIPSIGN8.wl = { t_hl = ! }
+         C1A0_WDSIGN.wl = { t_hl = ! }
+         C1A0A_W3.wl = { t_hl = ! }
+         C1A0A_W3A.wl = { t_hl = ! }
+         C1A0A_W3B.wl = { t_hl = ! }
+         C1A0A_W3C.wl = { t_hl = ! }
+         C1A0A_W5A.wl = { t_hl = ! }
+         C1A0A_W5B.wl = { t_hl = ! }
+         C1A0B_DR1.wl = { t_hl = ! }
+         C1A0B_DR1A.wl = { t_hl = ! }
+         C1A0B_DR2.wl = { t_hl = ! }
+         C1A0B_DR2A.wl = { t_hl = ! }
+         C1A0B_DR3.wl = { t_hl = ! }
+         C1A0B_DR3A.wl = { t_hl = ! }
+         C1A0B_DR3B.wl = { t_hl = ! }
+         C1A0B_DR4.wl = { t_hl = ! }
+         C1A0B_DR4A.wl = { t_hl = ! }
+         C1A0B_DR4B.wl = { t_hl = ! }
+         C1A0B_PAN1.wl = { t_hl = ! }
+         C1A0B_PAN2.wl = { t_hl = ! }
+         C1A0B_PAN3.wl = { t_hl = ! }
+         C1A0DR1.wl = { t_hl = ! }
+         C1A0DR2.wl = { t_hl = ! }
+         C1A0_C1.wl = { t_hl = ! }
+         C1A0_LABFLR.wl = { t_hl = ! }
+         C1A0_LABFLRB.wl = { t_hl = ! }
+         C1A0_LABFLRC.wl = { t_hl = ! }
+         C1A0_LABFLRD.wl = { t_hl = ! }
+         C1A0_LABFLRE.wl = { t_hl = ! }
+         C1A0_LABGLU.wl = { t_hl = ! }
+         C1A0_LABW1.wl = { t_hl = ! }
+         C1A0_LABW2.wl = { t_hl = ! }
+         C1A0_LABW3.wl = { t_hl = ! }
+         C1A0_LABW4.wl = { t_hl = ! }
+         C1A0_LABW5.wl = { t_hl = ! }
+         C1A0_LABW6.wl = { t_hl = ! }
+         C1A0_LABW7.wl = { t_hl = ! }
+         C1A0_LABW7B.wl = { t_hl = ! }
+         C1A0_LABW7C.wl = { t_hl = ! }
+         C1A0_LABW8.wl = { t_hl = ! }
+         C1A0_W1.wl = { t_hl = ! }
+         C1A0_W1D1.wl = { t_hl = ! }
+         C1A0_W1D2.wl = { t_hl = ! }
+         C1A0_W1D3.wl = { t_hl = ! }
+         C1A0_W1D4.wl = { t_hl = ! }
+         C1A0_W1D5.wl = { t_hl = ! }
+         C1A0_W2.wl = { t_hl = ! }
+         C1A0_W3.wl = { t_hl = ! }
+         C1A0_W4.wl = { t_hl = ! }
+         C1A0_WX.wl = { t_hl = ! }
+       }
+       C1A1.txlist =
+       {
+         C1A1A_SIGN1.wl = { t_hl = ! }
+         C1A1A_W3.wl = { t_hl = ! }
+         C1A1A_W3A.wl = { t_hl = ! }
+         C1A1A_W3B.wl = { t_hl = ! }
+         C1A1A_W3C.wl = { t_hl = ! }
+         C1A1A_W4.wl = { t_hl = ! }
+         C1A1A_W4A.wl = { t_hl = ! }
+         C1A1C_W1.wl = { t_hl = ! }
+         C1A1C_W1B.wl = { t_hl = ! }
+         C1A1C_W1C.wl = { t_hl = ! }
+         C1A1C_W2.wl = { t_hl = ! }
+         C1A1C_W2B.wl = { t_hl = ! }
+         C1A1DOOR1.wl = { t_hl = ! }
+         C1A1DOOR2.wl = { t_hl = ! }
+         C1A1DOOREDGE.wl = { t_hl = ! }
+         C1A1DR3.wl = { t_hl = ! }
+         C1A1DR4.wl = { t_hl = ! }
+         C1A1W1C.wl = { t_hl = ! }
+         C1A1W1D.wl = { t_hl = ! }
+         C1A1W1E.wl = { t_hl = ! }
+         C1A1W1F.wl = { t_hl = ! }
+         C1A1W1G.wl = { t_hl = ! }
+         C1A1W1I.wl = { t_hl = ! }
+         C1A1W1J.wl = { t_hl = ! }
+         C1A1W1K.wl = { t_hl = ! }
+         C1A1W1L.wl = { t_hl = ! }
+         C1A1W1M.wl = { t_hl = ! }
+         C1A1W1N.wl = { t_hl = ! }
+         C1A1W1O.wl = { t_hl = ! }
+         C1A1_BKT.wl = { t_hl = ! }
+         C1A1_BKTB.wl = { t_hl = ! }
+         C1A1_C1.wl = { t_hl = ! }
+         C1A1_C1A.wl = { t_hl = ! }
+         C1A1_C1B.wl = { t_hl = ! }
+         C1A1_DR1.wl = { t_hl = ! }
+         C1A1_DR1B.wl = { t_hl = ! }
+         C1A1_DR2.wl = { t_hl = ! }
+         C1A1_DR3.wl = { t_hl = ! }
+         C1A1_DR3B.wl = { t_hl = ! }
+         C1A1_FLR1.wl = { t_hl = ! }
+         C1A1_FLR2A.wl = { t_hl = ! }
+         C1A1_FLR2B.wl = { t_hl = ! }
+         C1A1_FLR2C.wl = { t_hl = ! }
+         C1A1_LASER.wl = { t_hl = ! }
+         C1A1_LINO.wl = { t_hl = ! }
+         C1A1_SWTCH1.wl = { t_hl = ! }
+         C1A1_TNK1.wl = { t_hl = ! }
+         C1A1_TRIM1.wl = { t_hl = ! }
+         C1A1_TRIM2.wl = { t_hl = ! }
+         C1A1_W1.wl = { t_hl = ! }
+         C1A1_W1B.wl = { t_hl = ! }
+         C1A1_W1B1.wl = { t_hl = ! }
+         C1A1_W1B2.wl = { t_hl = ! }
+         C1A1_W1B3.wl = { t_hl = ! }
+         C1A1_W1B4.wl = { t_hl = ! }
+         C1A1_W1B5.wl = { t_hl = ! }
+         C1A1_W1H.wl = { t_hl = ! }
+         C1A1_W1I.wl = { t_hl = ! }
+         C1A1_WINDOW.wl = { t_hl = ! }
+       }
+       C1A2.txlist =
+       {
+         C1A2_C1.wl = { t_hl = ! }
+         C1A2_FLR1.wl = { t_hl = ! }
+         C1A2_FLR2.wl = { t_hl = ! }
+         C1A2_W1.wl = { t_hl = ! }
+       }
+       C1A3.txlist =
+       {
+         C1A3FIREDR01.wl = { t_hl = ! }
+         C1A3FLOOR02.wl = { t_hl = ! }
+         C1A3SECDR02.wl = { t_hl = ! }
+         C1A3VENTDR01.wl = { t_hl = ! }
+         C1A3VENTDR02.wl = { t_hl = ! }
+         C1A3WALL01.wl = { t_hl = ! }
+         C1A3WALL02.wl = { t_hl = ! }
+         C1A3WALL03.wl = { t_hl = ! }
+         C1A3WALL04.wl = { t_hl = ! }
+         C1A3WALL05.wl = { t_hl = ! }
+         C1A3WALL06.wl = { t_hl = ! }
+         C1A3WALL07.wl = { t_hl = ! }
+         C1A3WALL08.wl = { t_hl = ! }
+         C1A3WALL09.wl = { t_hl = ! }
+         C1A3WALL10.wl = { t_hl = ! }
+         C1A3YELLOW.wl = { t_hl = ! }
+         C1A3_DR1.wl = { t_hl = ! }
+         C1A3_DR1A.wl = { t_hl = ! }
+         C1A3_W1A.wl = { t_hl = ! }
+         C1A3_W1B.wl = { t_hl = ! }
+         C1A3_W1B2.wl = { t_hl = ! }
+         C1A3_W1B3.wl = { t_hl = ! }
+         C1A3_W1B4.wl = { t_hl = ! }
+         C1A3_W1C.wl = { t_hl = ! }
+         C1A3_W1D.wl = { t_hl = ! }
+         C1A3_W1D2.wl = { t_hl = ! }
+         C1A3_W1E.wl = { t_hl = ! }
+         C1A3_W1E2.wl = { t_hl = ! }
+         C1A3_W1F.wl = { t_hl = ! }
+         C1A3_W2A.wl = { t_hl = ! }
+         C1A3_W2B.wl = { t_hl = ! }
+         C1A3_W2C.wl = { t_hl = ! }
+         C1A3_W2D.wl = { t_hl = ! }
+       }
+       C1A4.txlist =
+       {
+         C1A4B_W1.wl = { t_hl = ! }
+         C1A4B_W2.wl = { t_hl = ! }
+         C1A4B_W3.wl = { t_hl = ! }
+         C1A4B_W3B.wl = { t_hl = ! }
+         C1A4F_W1.wl = { t_hl = ! }
+         C1A4F_W1A.wl = { t_hl = ! }
+         C1A4F_W2.wl = { t_hl = ! }
+         C1A4F_W2A.wl = { t_hl = ! }
+         C1A4I_C1A.wl = { t_hl = ! }
+         C1A4I_W1A.wl = { t_hl = ! }
+         C1A4I_W1B.wl = { t_hl = ! }
+         C1A4I_W1C.wl = { t_hl = ! }
+         C1A4TNNL1.wl = { t_hl = ! }
+         C1A4TNNL1B.wl = { t_hl = ! }
+         C1A4TNNL1C.wl = { t_hl = ! }
+         C1A4TNNL1C2.wl = { t_hl = ! }
+         C1A4TNNL1C3.wl = { t_hl = ! }
+         C1A4TNNL1C4.wl = { t_hl = ! }
+         C1A4TNNL1C5.wl = { t_hl = ! }
+         C1A4TNNL1D.wl = { t_hl = ! }
+         C1A4TNNL1E.wl = { t_hl = ! }
+         C1A4_C1C.wl = { t_hl = ! }
+         C1A4_C1D.wl = { t_hl = ! }
+         C1A4_CANIS.wl = { t_hl = ! }
+         C1A4_DOME.wl = { t_hl = ! }
+         C1A4_DOME2.wl = { t_hl = ! }
+         C1A4_DOME3.wl = { t_hl = ! }
+         C1A4_DR4A.wl = { t_hl = ! }
+         C1A4_DR4B.wl = { t_hl = ! }
+         C1A4_DR4C.wl = { t_hl = ! }
+         C1A4_FAN.wl = { t_hl = ! }
+         C1A4_FUEL.wl = { t_hl = ! }
+       -0C1A4_FUEL.wl = { t_hl = ! }
+       -1C1A4_FUEL.wl = { t_hl = ! }
+       -2C1A4_FUEL.wl = { t_hl = ! }
+         C1A4_FUEL2.wl = { t_hl = ! }
+         C1A4_FUEL3.wl = { t_hl = ! }
+         C1A4_OXY.wl = { t_hl = ! }
+       -0C1A4_OXY.wl = { t_hl = ! }
+       -1C1A4_OXY.wl = { t_hl = ! }
+       -2C1A4_OXY.wl = { t_hl = ! }
+         C1A4_OXY2.wl = { t_hl = ! }
+         C1A4_OXY3.wl = { t_hl = ! }
+         C1A4_PAN1A.wl = { t_hl = ! }
+         C1A4_PAN1B.wl = { t_hl = ! }
+         C1A4_PAN2A.wl = { t_hl = ! }
+         C1A4_PAN3A.wl = { t_hl = ! }
+         C1A4_POW.wl = { t_hl = ! }
+       -0C1A4_POW.wl = { t_hl = ! }
+       -1C1A4_POW.wl = { t_hl = ! }
+       -2C1A4_POW.wl = { t_hl = ! }
+         C1A4_SILO1.wl = { t_hl = ! }
+         C1A4_SILO2.wl = { t_hl = ! }
+         C1A4_SILO2B.wl = { t_hl = ! }
+         C1A4_SILO3.wl = { t_hl = ! }
+         C1A4_SILO4A.wl = { t_hl = ! }
+         C1A4_SILO4B.wl = { t_hl = ! }
+         C1A4_SILO4C.wl = { t_hl = ! }
+         C1A4_SILO5.wl = { t_hl = ! }
+         C1A4_TENT.wl = { t_hl = ! }
+         C1A4_W4.wl = { t_hl = ! }
+         C1A4_W5.wl = { t_hl = ! }
+       -0C1A4_W5.wl = { t_hl = ! }
+       -1C1A4_W5.wl = { t_hl = ! }
+       -2C1A4_W5.wl = { t_hl = ! }
+       -3C1A4_W5.wl = { t_hl = ! }
+         C1A4_W6.wl = { t_hl = ! }
+       -0C1A4_W6.wl = { t_hl = ! }
+       -1C1A4_W6.wl = { t_hl = ! }
+       -2C1A4_W6.wl = { t_hl = ! }
+       -3C1A4_W6.wl = { t_hl = ! }
+       }
+       C2A1.txlist =
+       {
+         C2A1_W1.wl = { t_hl = ! }
+         C2A1_W1A.wl = { t_hl = ! }
+         C2A1_W2.wl = { t_hl = ! }
+         C2A1_W3.wl = { t_hl = ! }
+         C2A1_W4.wl = { t_hl = ! }
+       }
+       C2A2.txlist =
+       {
+         C2A2A_SIGN5A.wl = { t_hl = ! }
+         C2A2A_SIGN5B.wl = { t_hl = ! }
+         C2A2A_SIGN5C.wl = { t_hl = ! }
+       +0C2A2_SIG1.wl = { t_hl = ! }
+         C2A2_SIG1A.wl = { t_hl = ! }
+         C2A2_SIG1B.wl = { t_hl = ! }
+         C2A2_SIG1C.wl = { t_hl = ! }
+         C2A2A_LIFT1.wl = { t_hl = ! }
+         C2A2A_LIFT2.wl = { t_hl = ! }
+         C2A2_DR.wl = { t_hl = ! }
+         C2A2_LAUNCH.wl = { t_hl = ! }
+         C2A2_LAUNCH1.wl = { t_hl = ! }
+         C2A2_LAUNCH2.wl = { t_hl = ! }
+         C2A2_SATORB.wl = { t_hl = ! }
+       }
+       C2A3.txlist =
+       {
+         C2A3COMPACTOR1.wl = { t_hl = ! }
+         C2A3ICKY.wl = { t_hl = ! }
+         C2A3RUSTDOOR1.wl = { t_hl = ! }
+         C2A3TURBINE1.wl = { t_hl = ! }
+         C2A3TURBINE2.wl = { t_hl = ! }
+         C2A3TURBINE3.wl = { t_hl = ! }
+         C2A3TURBINE4.wl = { t_hl = ! }
+         C2A3_CRANE1.wl = { t_hl = ! }
+         C2A3_CRANE2.wl = { t_hl = ! }
+         C2A3_CRANE3.wl = { t_hl = ! }
+         C2A3_DOOR.wl = { t_hl = ! }
+         C2A3_GAR1.wl = { t_hl = ! }
+         C2A3_GAR2.wl = { t_hl = ! }
+         C2A3_GAR3.wl = { t_hl = ! }
+         C2A3_GAR4.wl = { t_hl = ! }
+       }
+       C2A4.txlist =
+       {
+       -0C2A4C1.wl = { t_hl = ! }
+       -1C2A4C1.wl = { t_hl = ! }
+       -2C2A4C1.wl = { t_hl = ! }
+         C2A4C2.wl = { t_hl = ! }
+         C2A4C3.wl = { t_hl = ! }
+         C2A4D_PANEL.wl = { t_hl = ! }
+       -0C2A4D_PANEL.wl = { t_hl = ! }
+       -1C2A4D_PANEL.wl = { t_hl = ! }
+       -2C2A4D_PANEL.wl = { t_hl = ! }
+         C2A4E_W1.wl = { t_hl = ! }
+       -0C2A4E_W1.wl = { t_hl = ! }
+       -1C2A4E_W1.wl = { t_hl = ! }
+         C2A4E_W1B.wl = { t_hl = ! }
+         C2A4E_W1C.wl = { t_hl = ! }
+         C2A4W1C.wl = { t_hl = ! }
+         C2A4XC2.wl = { t_hl = ! }
+         C2A4XC3.wl = { t_hl = ! }
+         C2A4X_BRD2A.wl = { t_hl = ! }
+         C2A4X_BRD2B.wl = { t_hl = ! }
+         C2A4X_C1.wl = { t_hl = ! }
+         C2A4X_C2.wl = { t_hl = ! }
+         C2A4X_C3.wl = { t_hl = ! }
+         C2A4X_DR4.wl = { t_hl = ! }
+         C2A4X_DR5.wl = { t_hl = ! }
+         C2A4X_GLU.wl = { t_hl = ! }
+         C2A4X_H2E.wl = { t_hl = ! }
+         C2A4X_H2E2.wl = { t_hl = ! }
+         C2A4X_H2E3.wl = { t_hl = ! }
+         C2A4X_H2E4.wl = { t_hl = ! }
+         C2A4X_PAN3.wl = { t_hl = ! }
+         C2A4_BRD1.wl = { t_hl = ! }
+         C2A4_BRD1R.wl = { t_hl = ! }
+         C2A4_BRD1Y3.wl = { t_hl = ! }
+         C2A4_BRD2A.wl = { t_hl = ! }
+         C2A4_BRD2B.wl = { t_hl = ! }
+         C2A4_BRD4B.wl = { t_hl = ! }
+         C2A4_BRD4R.wl = { t_hl = ! }
+         C2A4_BRD4Y.wl = { t_hl = ! }
+         C2A4_C1.wl = { t_hl = ! }
+         C2A4_C2.wl = { t_hl = ! }
+         C2A4_CMP1.wl = { t_hl = ! }
+       -0C2A4_COR2.wl = { t_hl = ! }
+       -1C2A4_COR2.wl = { t_hl = ! }
+       -2C2A4_COR2.wl = { t_hl = ! }
+         C2A4_DR1.wl = { t_hl = ! }
+         C2A4_DR3A.wl = { t_hl = ! }
+         C2A4_DR3B.wl = { t_hl = ! }
+         C2A4_FLR1.wl = { t_hl = ! }
+         C2A4_FLR1B.wl = { t_hl = ! }
+         C2A4_FLR2.wl = { t_hl = ! }
+         C2A4_FLR3.wl = { t_hl = ! }
+         C2A4_FLR3B.wl = { t_hl = ! }
+         C2A4_FLR4.wl = { t_hl = ! }
+         C2A4_FLR5A.wl = { t_hl = ! }
+         C2A4_FLR5B.wl = { t_hl = ! }
+         C2A4_FLR6.wl = { t_hl = ! }
+       -0C2A4_FLR6.wl = { t_hl = ! }
+       -1C2A4_FLR6.wl = { t_hl = ! }
+       -2C2A4_FLR6.wl = { t_hl = ! }
+       -0C2A4_FLR6B.wl = { t_hl = ! }
+       -1C2A4_FLR6B.wl = { t_hl = ! }
+       -2C2A4_FLR6B.wl = { t_hl = ! }
+         C2A4_GIB1.wl = { t_hl = ! }
+         C2A4_GIB2.wl = { t_hl = ! }
+         C2A4_GIB3.wl = { t_hl = ! }
+         C2A4_H2A.wl = { t_hl = ! }
+         C2A4_H2B.wl = { t_hl = ! }
+         C2A4_H2C.wl = { t_hl = ! }
+         C2A4_H2E.wl = { t_hl = ! }
+         C2A4_H2E2.wl = { t_hl = ! }
+         C2A4_H2E3.wl = { t_hl = ! }
+         C2A4_H2E4.wl = { t_hl = ! }
+         C2A4_H2F.wl = { t_hl = ! }
+         C2A4_H2F2.wl = { t_hl = ! }
+         C2A4_H2G.wl = { t_hl = ! }
+         C2A4_LAS.wl = { t_hl = ! }
+         C2A4_LAS2.wl = { t_hl = ! }
+         C2A4_LASGUN.wl = { t_hl = ! }
+       -0C2A4_PAN1.wl = { t_hl = ! }
+       -1C2A4_PAN1.wl = { t_hl = ! }
+         C2A4_PAN2.wl = { t_hl = ! }
+       -0C2A4_PAN2.wl = { t_hl = ! }
+       -1C2A4_PAN2.wl = { t_hl = ! }
+       -2C2A4_PAN2.wl = { t_hl = ! }
+       -3C2A4_PAN2.wl = { t_hl = ! }
+         C2A4_PAN3.wl = { t_hl = ! }
+         C2A4_PAN4.wl = { t_hl = ! }
+         C2A4_SGN1A.wl = { t_hl = ! }
+         C2A4_SHIELD.wl = { t_hl = ! }
+         C2A4_STASIS.wl = { t_hl = ! }
+         C2A4_SWTCH1.wl = { t_hl = ! }
+         C2A4_TRIM1.wl = { t_hl = ! }
+         C2A4_TRIM2.wl = { t_hl = ! }
+         C2A4_TRIM3.wl = { t_hl = ! }
+         C2A4_VAT1.wl = { t_hl = ! }
+       -0C2A4_VAT1.wl = { t_hl = ! }
+       -1C2A4_VAT1.wl = { t_hl = ! }
+       -2C2A4_VAT1.wl = { t_hl = ! }
+         C2A4_VAT1BRD.wl = { t_hl = ! }
+         C2A4_VAT2.wl = { t_hl = ! }
+         C2A4_VAT3.wl = { t_hl = ! }
+         C2A4_VAT4.wl = { t_hl = ! }
+         C2A4_VAT5.wl = { t_hl = ! }
+         C2A4_VAT6.wl = { t_hl = ! }
+         C2A4_VAT7.wl = { t_hl = ! }
+       -0C2A4_W1.wl = { t_hl = ! }
+       -1C2A4_W1.wl = { t_hl = ! }
+       -2C2A4_W1.wl = { t_hl = ! }
+         C2A4_W1A.wl = { t_hl = ! }
+         C2A4_W1H.wl = { t_hl = ! }
+       -0C2A4_W2.wl = { t_hl = ! }
+       -1C2A4_W2.wl = { t_hl = ! }
+         C2A4_W2DR.wl = { t_hl = ! }
+       }
+       C2A5.txlist =
+       {
+         C2A5C_PIPE1.wl = { t_hl = ! }
+         C2A5DEADCOMP1.wl = { t_hl = ! }
+         C2A5HELPAD.wl = { t_hl = ! }
+         C2A5MOUND.wl = { t_hl = ! }
+         C2A5MOUND2.wl = { t_hl = ! }
+         C2A5MOUND3.wl = { t_hl = ! }
+         C2A5_DEST1.wl = { t_hl = ! }
+         C2A5_DR.wl = { t_hl = ! }
+         C2A5_GUN1.wl = { t_hl = ! }
+         C2A5_INTK.wl = { t_hl = ! }
+         C2A5_INTK2.wl = { t_hl = ! }
+         C2A5_INTK3.wl = { t_hl = ! }
+       }
+       C3A1.txlist =
+       {
+         C3A1B_W1.wl = { t_hl = ! }
+         C3A1B_W1A.wl = { t_hl = ! }
+         C3A1B_W1B.wl = { t_hl = ! }
+         C3A1B_W1C.wl = { t_hl = ! }
+         C3A1B_W2.wl = { t_hl = ! }
+         C3A1B_W3.wl = { t_hl = ! }
+         C3A1B_W4.wl = { t_hl = ! }
+         C3A1B_W5.wl = { t_hl = ! }
+         C3A1B_W6.wl = { t_hl = ! }
+         C3A1B_W7.wl = { t_hl = ! }
+         C3A1B_W8.wl = { t_hl = ! }
+         C3A1_GEAR1.wl = { t_hl = ! }
+         C3A1_GEAR1B.wl = { t_hl = ! }
+         C3A1_GEAR2.wl = { t_hl = ! }
+         C3A1_GEAR3.wl = { t_hl = ! }
+         C3A1_NRC2.wl = { t_hl = ! }
+         C3A1_NRC2B.wl = { t_hl = ! }
+         C3A1_SPHINC.wl = { t_hl = ! }
+         C3A1_W1.wl = { t_hl = ! }
+         C3A1_W2.wl = { t_hl = ! }
+         C3A1_W2A.wl = { t_hl = ! }
+         C3A1_W3A.wl = { t_hl = ! }
+         C3A1_W3B.wl = { t_hl = ! }
+         C3A1_W3C.wl = { t_hl = ! }
+         C3A1_W5A.wl = { t_hl = ! }
+         C3A1_W5B.wl = { t_hl = ! }
+         C3A1_W5D.wl = { t_hl = ! }
+       }
+       C3A2.txlist =
+       {
+         C3A2A_BRD1.wl = { t_hl = ! }
+         C3A2A_BRD1A.wl = { t_hl = ! }
+         C3A2A_BRD1B.wl = { t_hl = ! }
+         C3A2A_PIPE1.wl = { t_hl = ! }
+         C3A2A_PIPE2.wl = { t_hl = ! }
+         C3A2A_TELBLU1.wl = { t_hl = ! }
+         C3A2A_TELBLU2.wl = { t_hl = ! }
+         C3A2A_TELBLU3.wl = { t_hl = ! }
+         C3A2A_TELRED1A.wl = { t_hl = ! }
+         C3A2A_TELRED1B.wl = { t_hl = ! }
+         C3A2A_TELRED1C.wl = { t_hl = ! }
+         C3A2A_TELRED1D.wl = { t_hl = ! }
+         C3A2A_TNK1.wl = { t_hl = ! }
+         C3A2A_TNK1B.wl = { t_hl = ! }
+         C3A2A_TNK2.wl = { t_hl = ! }
+         C3A2A_TNK2B.wl = { t_hl = ! }
+         C3A2A_TNK3.wl = { t_hl = ! }
+         C3A2A_TNK3B.wl = { t_hl = ! }
+         C3A2A_TNK3C.wl = { t_hl = ! }
+         C3A2A_TNK4.wl = { t_hl = ! }
+         C3A2A_TRANS1.wl = { t_hl = ! }
+         C3A2A_W1.wl = { t_hl = ! }
+         C3A2A_W1A.wl = { t_hl = ! }
+         C3A2A_W1B.wl = { t_hl = ! }
+         C3A2A_W1C.wl = { t_hl = ! }
+         C3A2A_W1D.wl = { t_hl = ! }
+         C3A2A_W1E.wl = { t_hl = ! }
+         C3A2A_W1F.wl = { t_hl = ! }
+         C3A2A_W1G.wl = { t_hl = ! }
+         C3A2A_W1H.wl = { t_hl = ! }
+         C3A2A_W1I.wl = { t_hl = ! }
+         C3A2A_W1J.wl = { t_hl = ! }
+         C3A2A_W1K.wl = { t_hl = ! }
+         C3A2A_W1L.wl = { t_hl = ! }
+         C3A2A_W1M.wl = { t_hl = ! }
+         C3A2A_W2A.wl = { t_hl = ! }
+         C3A2A_W2B.wl = { t_hl = ! }
+         C3A2A_W2C.wl = { t_hl = ! }
+         C3A2A_W2D.wl = { t_hl = ! }
+         C3A2A_W2E.wl = { t_hl = ! }
+         C3A2A_W2F.wl = { t_hl = ! }
+         C3A2A_W3.wl = { t_hl = ! }
+         C3A2B_REAC.wl = { t_hl = ! }
+         C3A2B_REAC1.wl = { t_hl = ! }
+         C3A2B_REAC1B.wl = { t_hl = ! }
+         C3A2B_REAC1C.wl = { t_hl = ! }
+         C3A2B_REAC1D.wl = { t_hl = ! }
+         C3A2B_REAC1E.wl = { t_hl = ! }
+         C3A2B_REAC2.wl = { t_hl = ! }
+         C3A2B_REAC2B.wl = { t_hl = ! }
+         C3A2B_REAC2C.wl = { t_hl = ! }
+         C3A2B_REAC2D.wl = { t_hl = ! }
+         C3A2B_REAC2E1.wl = { t_hl = ! }
+         C3A2B_REAC2E2.wl = { t_hl = ! }
+         C3A2B_REAC2E3.wl = { t_hl = ! }
+         C3A2B_REAC2E4.wl = { t_hl = ! }
+         C3A2B_REAC3.wl = { t_hl = ! }
+         C3A2B_REAC3B.wl = { t_hl = ! }
+         C3A2B_REAC4.wl = { t_hl = ! }
+         C3A2B_REAC5.wl = { t_hl = ! }
+         C3A2B_REAC5B.wl = { t_hl = ! }
+         C3A2SIGN00.wl = { t_hl = ! }
+         C3A2SIGN01.wl = { t_hl = ! }
+         C3A2SIGN02.wl = { t_hl = ! }
+         C3A2SIGN03.wl = { t_hl = ! }
+         C3A2SIGN04.wl = { t_hl = ! }
+         C3A2SIGN05.wl = { t_hl = ! }
+         C3A2SIGN06.wl = { t_hl = ! }
+         C3A2SIGN07.wl = { t_hl = ! }
+         C3A2SIGN08.wl = { t_hl = ! }
+         C3A2SIGN10.wl = { t_hl = ! }
+         C3A2SIGN11.wl = { t_hl = ! }
+         C3A2SIGN12.wl = { t_hl = ! }
+         C3A2SIGN13.wl = { t_hl = ! }
+         C3A2SIGN14.wl = { t_hl = ! }
+         C3A2SIGN15.wl = { t_hl = ! }
+         C3A2SIGN16.wl = { t_hl = ! }
+         C3A2SIGN17.wl = { t_hl = ! }
+         C3A2SIGN18.wl = { t_hl = ! }
+         C3A2SIGN19.wl = { t_hl = ! }
+         C3A2SIGN20.wl = { t_hl = ! }
+         C3A2SIGN21.wl = { t_hl = ! }
+         C3A2SIGN22.wl = { t_hl = ! }
+         C3A2SIGN23.wl = { t_hl = ! }
+         C3A2SIGN24.wl = { t_hl = ! }
+         C3A2SIGN25.wl = { t_hl = ! }
+         C3A2SIGN26.wl = { t_hl = ! }
+         C3A2SIGN28.wl = { t_hl = ! }
+         C3A2SIGN29.wl = { t_hl = ! }
+         C3A2SIGN30.wl = { t_hl = ! }
+         C3A2SIGN31.wl = { t_hl = ! }
+         C3A2SIGN32.wl = { t_hl = ! }
+         C3A2SIGN33.wl = { t_hl = ! }
+         C3A2SIGN34.wl = { t_hl = ! }
+         C3A2SIGN35.wl = { t_hl = ! }
+         C3A2SIGN36.wl = { t_hl = ! }
+         C3A2SIGN37.wl = { t_hl = ! }
+         C3A2SIGN38.wl = { t_hl = ! }
+         C3A2SIGN39.wl = { t_hl = ! }
+         C3A2SIGN40.wl = { t_hl = ! }
+         C3A2SIGN41.wl = { t_hl = ! }
+         C3A2SIGN42.wl = { t_hl = ! }
+         C3A2SIGN44.wl = { t_hl = ! }
+         C3A2SIGN45.wl = { t_hl = ! }
+         C3A2SIGN46.wl = { t_hl = ! }
+         C3A2SIGN47.wl = { t_hl = ! }
+         C3A2SIGN48.wl = { t_hl = ! }
+         C3A2SIGN49.wl = { t_hl = ! }
+         C3A2SIGN50.wl = { t_hl = ! }
+         C3A2SIGN51.wl = { t_hl = ! }
+         C3A2SIGN52.wl = { t_hl = ! }
+         C3A2SIGN53.wl = { t_hl = ! }
+         C3A2SIGN54.wl = { t_hl = ! }
+         C3A2SIGN55.wl = { t_hl = ! }
+         C3A2SIGN56.wl = { t_hl = ! }
+         C3A2_BTH1.wl = { t_hl = ! }
+         C3A2_BTH2A.wl = { t_hl = ! }
+         C3A2_BTH2B.wl = { t_hl = ! }
+         C3A2_BTH2C.wl = { t_hl = ! }
+         C3A2_CEIL.wl = { t_hl = ! }
+         C3A2_DR1.wl = { t_hl = ! }
+         C3A2_LIGHT.wl = { t_hl = ! }
+         C3A2_LIGHT2.wl = { t_hl = ! }
+         C3A2_TELEPAD.wl = { t_hl = ! }
+         C3A2_TNK4A.wl = { t_hl = ! }
+         C3A2_TNK4B.wl = { t_hl = ! }
+         C3A2_TNK4C.wl = { t_hl = ! }
+         C3A2_TNK5A.wl = { t_hl = ! }
+         C3A2_TNK5B.wl = { t_hl = ! }
+         C3A2_TNK5C.wl = { t_hl = ! }
+       }
+       CA1X.txlist =
+       {
+       -0CA1X_C1.wl = { t_hl = ! }
+       -1CA1X_C1.wl = { t_hl = ! }
+         CA1X2.wl = { t_hl = ! }
+         CA1X2B.wl = { t_hl = ! }
+         CA1X_BRD2.wl = { t_hl = ! }
+         CA1X_C1A.wl = { t_hl = ! }
+         CA1X_C1B.wl = { t_hl = ! }
+         CA1X_C1C.wl = { t_hl = ! }
+         CA1X_C1D.wl = { t_hl = ! }
+         CA1X_C2A.wl = { t_hl = ! }
+         CA1X_C2B.wl = { t_hl = ! }
+         CA1X_C2C.wl = { t_hl = ! }
+         CA1X_C2D.wl = { t_hl = ! }
+         CA1X_CON.wl = { t_hl = ! }
+         CA1X_CON1A.wl = { t_hl = ! }
+         CA1X_CON1B.wl = { t_hl = ! }
+         CA1X_CON2.wl = { t_hl = ! }
+         CA1X_MONSIDE.wl = { t_hl = ! }
+         CA1X_PCFRONT.wl = { t_hl = ! }
+         CA1X_PIPE.wl = { t_hl = ! }
+         CA1X_SUP1A.wl = { t_hl = ! }
+         CA1X_SUP2.wl = { t_hl = ! }
+         CA1X_SUP3.wl = { t_hl = ! }
+         CA1X_SUP5.wl = { t_hl = ! }
+         CA1X_SUP5B.wl = { t_hl = ! }
+         CA1X_SUP5C.wl = { t_hl = ! }
+         CA1X_SUP6.wl = { t_hl = ! }
+         CA1X_SUP6B.wl = { t_hl = ! }
+         CA1X_W1.wl = { t_hl = ! }
+         CA1X_W1B.wl = { t_hl = ! }
+         CA1X_W1C.wl = { t_hl = ! }
+         CA1X_W1D.wl = { t_hl = ! }
+         CA1X_W1E.wl = { t_hl = ! }
+         CA1X_W1F.wl = { t_hl = ! }
+         CA1X_W2.wl = { t_hl = ! }
+       }
       }
       Dark.txlist =
       {
@@ -15283,8 +15819,6 @@ values=
         GENERIC030.wl = { t_hl = ! }
         GENERIC031.wl = { t_hl = ! }
         GENERIC031B.wl = { t_hl = ! }
-        GENERIC034.wl = { t_hl = ! }
-        GENERIC034A.wl = { t_hl = ! }
         GENERIC035.wl = { t_hl = ! }
         GENERIC036.wl = { t_hl = ! }
         GENERIC037.wl = { t_hl = ! }
@@ -15326,13 +15860,7 @@ values=
         GENERIC95.wl = { t_hl = ! }
         GENERIC95C.wl = { t_hl = ! }
         GENERIC96.wl = { t_hl = ! }
-        GENERIC99.wl = { t_hl = ! }
-        GENERIC99B.wl = { t_hl = ! }
-        GENERIC99C.wl = { t_hl = ! }
-        GENERIC99D.wl = { t_hl = ! }
         GENERIC_109.wl = { t_hl = ! }
-        GENERIC_110A.wl = { t_hl = ! }
-        GENERIC_110B.wl = { t_hl = ! }
         GENERIC_110C.wl = { t_hl = ! }
         GENERIC_111A.wl = { t_hl = ! }
         GENERIC_111B.wl = { t_hl = ! }
@@ -16152,134 +16680,10 @@ values=
        ~TRN_LT1B.wl = { t_hl = ! }
         PANELLITE1.wl = { t_hl = ! }
       }
-      Vehicles Folder.qtxfolder =
-      {
-       Brdly.txlist =
-       {
-        BRDLY_BACK1.wl = { t_hl = ! }
-        BRDLY_BTILE1.wl = { t_hl = ! }
-        BRDLY_FRNT1.wl = { t_hl = ! }
-        BRDLY_SIDE1.wl = { t_hl = ! }
-        BRDLY_TOP1.wl = { t_hl = ! }
-       }
-       Brdly2.txlist =
-       {
-        BRDLY2_BACK1.wl = { t_hl = ! }
-        BRDLY2_BTILE1.wl = { t_hl = ! }
-        BRDLY2_FRNT1.wl = { t_hl = ! }
-        BRDLY2_SIDE1.wl = { t_hl = ! }
-        BRDLY2_TOP1.wl = { t_hl = ! }
-       }
-       Tank.txlist =
-       {
-        TANKREAR.wl = { t_hl = ! }
-        TANKSIDE.wl = { t_hl = ! }
-        TANKTOP.wl = { t_hl = ! }
-        TANKTRAK.wl = { t_hl = ! }
-        TANKTUR.wl = { t_hl = ! }
-       }
-       Truck.txlist =
-       {
-        TRK_AXLE.wl = { t_hl = ! }
-        TRK_BED.wl = { t_hl = ! }
-        TRK_BUMPER.wl = { t_hl = ! }
-        TRK_CABACK.wl = { t_hl = ! }
-        TRK_CANVAS.wl = { t_hl = ! }
-        TRK_DASH.wl = { t_hl = ! }
-        TRK_DOOR.wl = { t_hl = ! }
-        TRK_FENDER.wl = { t_hl = ! }
-        TRK_GRILLE.wl = { t_hl = ! }
-        TRK_HOOD.wl = { t_hl = ! }
-        TRK_INDOOR.wl = { t_hl = ! }
-        TRK_PIPE.wl = { t_hl = ! }
-        TRK_RIM.wl = { t_hl = ! }
-        TRK_SEAT.wl = { t_hl = ! }
-        TRK_SHOCKS.wl = { t_hl = ! }
-        TRK_SIDE.wl = { t_hl = ! }
-        TRK_TIRE.wl = { t_hl = ! }
-        TRK_TREAD.wl = { t_hl = ! }
-        TIRES.wl = { t_hl = ! }
-       }
-       Truck2.txlist =
-       {
-        TRK2_BACK.wl = { t_hl = ! }
-        TRK2_FRONT.wl = { t_hl = ! }
-        TRK2_HOOD.wl = { t_hl = ! }
-        TRK2_ROOF.wl = { t_hl = ! }
-        TRK2_SIDE.wl = { t_hl = ! }
-       }
-       Train.txlist =
-       {
-        TRAIN1.wl = { t_hl = ! }
-        TRAIN2.wl = { t_hl = ! }
-        TRAIN3.wl = { t_hl = ! }
-        TRAIN4.wl = { t_hl = ! }
-        TRAIN_UND2.wl = { t_hl = ! }
-       }
-       Train2.txlist =
-       {
-        NGIN_CABFR.wl = { t_hl = ! }
-        NGIN_CABREAR.wl = { t_hl = ! }
-        NGIN_DOOR.wl = { t_hl = ! }
-        NGIN_FRONT.wl = { t_hl = ! }
-        NGIN_GLUE.wl = { t_hl = ! }
-        NGIN_ROOF.wl = { t_hl = ! }
-        NGIN_SIDE.wl = { t_hl = ! }
-        NGIN_TOP.wl = { t_hl = ! }
-        NGIN_WINCH.wl = { t_hl = ! }
-       }
-       Subway.txlist =
-       {
-        SUBWAYFLOOR2.wl = { t_hl = ! }
-        SUBWAY_CEILING.wl = { t_hl = ! }
-        SUBWAY_DOOR.wl = { t_hl = ! }
-        SUBWAY_FLOOR1.wl = { t_hl = ! }
-        SUBWAY_INEND.wl = { t_hl = ! }
-        SUBWAY_INPANEL.wl = { t_hl = ! }
-        SUBWAY_LIGHTS.wl = { t_hl = ! }
-        SUBWAY_OUTEND.wl = { t_hl = ! }
-        SUBWAY_OUTSIDE.wl = { t_hl = ! }
-        SUBWAY_SEAT.wl = { t_hl = ! }
-        SUBWAY_SEAT2.wl = { t_hl = ! }
-       }
-       UC.txlist =
-       {
-        UC_BOGIETOP.wl = { t_hl = ! }
-        UC_SIDE.wl = { t_hl = ! }
-        UC_TOP.wl = { t_hl = ! }
-       }
-       Fladbed.txlist =
-       {
-        FLATBED_BUMPER.wl = { t_hl = ! }
-        FLATBED_ENGINE.wl = { t_hl = ! }
-        FLATBED_POD.wl = { t_hl = ! }
-        FLATBED_HLITE2.wl = { t_hl = ! }
-        FLATBED_LITE1.wl = { t_hl = ! }
-        FLATBED_LITE2.wl = { t_hl = ! }
-        FLATBED_TLITE1.wl = { t_hl = ! }
-        FLATBED_TLITE2.wl = { t_hl = ! }
-        FLATBED_TOP.wl = { t_hl = ! }
-       }
-       Rocket.txlist =
-       {
-        ROCKETBOTTOM.wl = { t_hl = ! }
-        ROCKETCHROME.wl = { t_hl = ! }
-        ROCKETENDET.wl = { t_hl = ! }
-        ROCKETENNOZ.wl = { t_hl = ! }
-        ROCKETMAIN.wl = { t_hl = ! }
-        ROCKETNOSE.wl = { t_hl = ! }
-        ROCKETPAYLOAD.wl = { t_hl = ! }
-        ROCKETSEP.wl = { t_hl = ! }
-        ROCKETSTAGE1.wl = { t_hl = ! }
-       }
-      }
       Gadgets.txlist =
       {
         ARMSIDES.wl = { t_hl = ! }
         HANDLESIDE.wl = { t_hl = ! }
-        H_FRONT.wl = { t_hl = ! }
-        H_SIDE2.wl = { t_hl = ! }
-        H_SIDE3.wl = { t_hl = ! }
         C1A1_GAD1.wl = { t_hl = ! }
         C1A1_GAD2.wl = { t_hl = ! }
         C1A1_GAD3.wl = { t_hl = ! }
@@ -16368,111 +16772,18 @@ values=
         ORIGIN.wl = { t_hl = ! }
         GRAYSCALE.wl = { t_hl = ! }
         CLIP.wl = { t_hl = ! }
-      }
-      Crates Wood.txlist =
-      {
-        BCRATE02.wl = { t_hl = ! }
-        BCRATE03.wl = { t_hl = ! }
-        BCRATE04.wl = { t_hl = ! }
-        BCRATE05.wl = { t_hl = ! }
-        BCRATE06.wl = { t_hl = ! }
-        BCRATE07.wl = { t_hl = ! }
-        BCRATE08.wl = { t_hl = ! }
-        BCRATE09A.wl = { t_hl = ! }
-        BCRATE09B.wl = { t_hl = ! }
-        BCRATE09C.wl = { t_hl = ! }
-        BCRATE12.wl = { t_hl = ! }
-        BCRATE14.wl = { t_hl = ! }
-        BCRATE15.wl = { t_hl = ! }
-        BCRATE16.wl = { t_hl = ! }
-        BCRATE17.wl = { t_hl = ! }
-        BCRATE18.wl = { t_hl = ! }
-        BCRATE25.wl = { t_hl = ! }
-        BCRATE26.wl = { t_hl = ! }
-        CRATE01.wl = { t_hl = ! }
-        CRATE02.wl = { t_hl = ! }
-        CRATE02B.wl = { t_hl = ! }
-        CRATE03.wl = { t_hl = ! }
-        CRATE04.wl = { t_hl = ! }
-        CRATE05.wl = { t_hl = ! }
-        CRATE06.wl = { t_hl = ! }
-        CRATE07.wl = { t_hl = ! }
-        CRATE08.wl = { t_hl = ! }
-        CRATE08B.wl = { t_hl = ! }
-        CRATE09.wl = { t_hl = ! }
-        CRATE09B.wl = { t_hl = ! }
-        CRATE09C.wl = { t_hl = ! }
-        CRATE10.wl = { t_hl = ! }
-        CRATE11.wl = { t_hl = ! }
-        CRATE12.wl = { t_hl = ! }
-        CRATE13.wl = { t_hl = ! }
-        CRATE19.wl = { t_hl = ! }
-        CRATE20.wl = { t_hl = ! }
-        CRATE21.wl = { t_hl = ! }
-        CRATE22.wl = { t_hl = ! }
-        CRATE23.wl = { t_hl = ! }
-        CRATE24.wl = { t_hl = ! }
-        CRATE25.wl = { t_hl = ! }
-        CRATE27.wl = { t_hl = ! }
-      }
-      Crates.txlist =
-      {
-        BARREL2.wl = { t_hl = ! }
-        BARREL2A.wl = { t_hl = ! }
-        BARREL2B.wl = { t_hl = ! }
-        BARREL3.wl = { t_hl = ! }
-        BARREL4.wl = { t_hl = ! }
-        NWBARREL.wl = { t_hl = ! }
-        BARRELTOP.wl = { t_hl = ! }
-        AMMO01.wl = { t_hl = ! }
-        AMMO02.wl = { t_hl = ! }
-        AMMO03.wl = { t_hl = ! }
-        AMMO04.wl = { t_hl = ! }
-        C1A1_CRATE1.wl = { t_hl = ! }
-        C1A1_CRATE2.wl = { t_hl = ! }
-        C3A1_CRATE1.wl = { t_hl = ! }
-        C3A1_CRATE2.wl = { t_hl = ! }
-        C3A1_CRATE3.wl = { t_hl = ! }
-        XCRATE10A.wl = { t_hl = ! }
-        XCRATE10B.wl = { t_hl = ! }
-        XCRATE10C.wl = { t_hl = ! }
-        XCRATE10D.wl = { t_hl = ! }
-        XCRATE10E.wl = { t_hl = ! }
-        XCRATE11A.wl = { t_hl = ! }
-        XCRATE11B.wl = { t_hl = ! }
-        XCRATE11C.wl = { t_hl = ! }
-        XCRATE11D.wl = { t_hl = ! }
-        XCRATE11E.wl = { t_hl = ! }
-        XCRATE12A.wl = { t_hl = ! }
-        XCRATE12B.wl = { t_hl = ! }
-        XCRATE1A.wl = { t_hl = ! }
-        XCRATE1B.wl = { t_hl = ! }
-        XCRATE1C.wl = { t_hl = ! }
-        XCRATE1D.wl = { t_hl = ! }
-        XCRATE2A.wl = { t_hl = ! }
-        XCRATE2C.wl = { t_hl = ! }
-        XCRATE2E.wl = { t_hl = ! }
-        XCRATE2F.wl = { t_hl = ! }
-        XCRATE3A.wl = { t_hl = ! }
-        XCRATE3C.wl = { t_hl = ! }
-        XCRATE3F.wl = { t_hl = ! }
-        XCRATE4A.wl = { t_hl = ! }
-        XCRATE4B.wl = { t_hl = ! }
-        XCRATE5A.wl = { t_hl = ! }
-        XCRATE5B.wl = { t_hl = ! }
-        XCRATE6.wl = { t_hl = ! }
-        XCRATE6B.wl = { t_hl = ! }
-        XCRATE6C.wl = { t_hl = ! }
-        XCRATE7A.wl = { t_hl = ! }
-        XCRATE7B.wl = { t_hl = ! }
-        XCRATE7C.wl = { t_hl = ! }
-        XCRATE8.wl = { t_hl = ! }
-        XCRATE8B.wl = { t_hl = ! }
-        XCRATE8C.wl = { t_hl = ! }
-        XCRATE9A.wl = { t_hl = ! }
-        XCRATE9B.wl = { t_hl = ! }
-        XCRATE9C.wl = { t_hl = ! }
-        XCRATE9D.wl = { t_hl = ! }
+        FADE.wl = { t_hl = ! }
+        FADE2.wl = { t_hl = ! }
+        FILL1.wl = { t_hl = ! }
+        FILL2.wl = { t_hl = ! }
+        FILL3.wl = { t_hl = ! }
+        RED.wl = { t_hl = ! }
+        YELLOW.wl = { t_hl = ! }
+        C0A0YELLOW.wl = { t_hl = ! }
+        GENERIC99.wl = { t_hl = ! }
+        GENERIC99B.wl = { t_hl = ! }
+        GENERIC99C.wl = { t_hl = ! }
+        GENERIC99D.wl = { t_hl = ! }
       }
       Freezer.txlist =
       {
@@ -17265,290 +17576,6 @@ values=
         GLASS_DARK.wl = { t_hl = ! }
         GLASS_MED.wl = { t_hl = ! }
       }
-      Misc Equipment Folder.qtxfolder =
-      {
-       Retina Scanner.txlist =
-       {
-      +0GENERIC_113.wl = { t_hl = ! }
-      +1GENERIC_113.wl = { t_hl = ! }
-      +AGENERIC_113.wl = { t_hl = ! }
-       }
-       Tent.txlist =
-       {
-        OUT_TNT1.wl = { t_hl = ! }
-        OUT_TNT1B.wl = { t_hl = ! }
-        OUT_TNT1C.wl = { t_hl = ! }
-        OUT_TNT2.wl = { t_hl = ! }
-        OUT_TNT3.wl = { t_hl = ! }
-        OUT_TNT3B.wl = { t_hl = ! }
-       }
-       Dumpsters.txlist =
-       {
-        OUT_DMP1A.wl = { t_hl = ! }
-        OUT_DMP1B.wl = { t_hl = ! }
-        OUT_DMP1C.wl = { t_hl = ! }
-        OUT_DMP2A.wl = { t_hl = ! }
-        OUT_DMP2B.wl = { t_hl = ! }
-        OUT_DMP2C.wl = { t_hl = ! }
-        OUT_DMP3A.wl = { t_hl = ! }
-        OUT_DMP3C.wl = { t_hl = ! }
-        OUT_DMP4A.wl = { t_hl = ! }
-        OUT_DMP4B.wl = { t_hl = ! }
-        OUT_DMP4C.wl = { t_hl = ! }
-        OUT_DMPLID.wl = { t_hl = ! }
-       }
-       Rechargers.txlist =
-       {
-      +0RECHARGE.wl = { t_hl = ! }
-      +ARECHARGE.wl = { t_hl = ! }
-        RECHARGEA.wl = { t_hl = ! }
-        RECHARGEB.wl = { t_hl = ! }
-        RECHARGEC.wl = { t_hl = ! }
-        RECHARGED.wl = { t_hl = ! }
-        RECHARGEEDGE1.wl = { t_hl = ! }
-       }
-       Medikits.txlist =
-       {
-      +0MEDKIT.wl = { t_hl = ! }
-      +AMEDKIT.wl = { t_hl = ! }
-        GENERIC98.wl = { t_hl = ! }
-        GENERIC98A.wl = { t_hl = ! }
-        GENERIC98B.wl = { t_hl = ! }
-        GENERIC98C.wl = { t_hl = ! }
-        GENERIC98D.wl = { t_hl = ! }
-        GENERIC98E.wl = { t_hl = ! }
-        GENERIC98F.wl = { t_hl = ! }
-        GENERIC98G.wl = { t_hl = ! }
-        MEDKITEDGE1.wl = { t_hl = ! }
-       }
-       Convoyerbelt.txlist =
-       {
-        SCROLL_CONV3.wl = { t_hl = ! }
-        C2A4_CONV1.wl = { t_hl = ! }
-        C2A4_CONV2.wl = { t_hl = ! }
-       }
-       Airduct.txlist =
-       {
-        AIR_C1.wl = { t_hl = ! }
-        DUCT_BREAK.wl = { t_hl = ! }
-        DUCT_FLR01.wl = { t_hl = ! }
-        DUCT_FLR01A.wl = { t_hl = ! }
-        DUCT_FLR02.wl = { t_hl = ! }
-        DUCT_FLR02A.wl = { t_hl = ! }
-        DUCT_VNT.wl = { t_hl = ! }
-        DUCT_VNT2.wl = { t_hl = ! }
-        DUCT_WALL01.wl = { t_hl = ! }
-        DUCT_WALL02.wl = { t_hl = ! }
-        DUCT_WALL03.wl = { t_hl = ! }
-        DUCT_WALL04.wl = { t_hl = ! }
-        GRATE_RUST.wl = { t_hl = ! }
-        PFAB_VENT1.wl = { t_hl = ! }
-        PFAB_VENT2.wl = { t_hl = ! }
-        PFAB_VENT3.wl = { t_hl = ! }
-       }
-       Elevator.txlist =
-       {
-        ELEV1.wl = { t_hl = ! }
-        ELEV1_CIEL.wl = { t_hl = ! }
-        ELEV1_DR.wl = { t_hl = ! }
-        ELEV1_FLR.wl = { t_hl = ! }
-     +0~ELEV1_PAN.wl = { t_hl = ! }
-     +1~ELEV1_PAN.wl = { t_hl = ! }
-     +2~ELEV1_PAN.wl = { t_hl = ! }
-     +3~ELEV1_PAN.wl = { t_hl = ! }
-     +4~ELEV1_PAN.wl = { t_hl = ! }
-     +A~ELEV1_PAN.wl = { t_hl = ! }
-        ELEV1_TRIM.wl = { t_hl = ! }
-        ELEV2.wl = { t_hl = ! }
-        ELEV2_CIEL.wl = { t_hl = ! }
-        ELEV2_CIEL2.wl = { t_hl = ! }
-        ELEV2_DR.wl = { t_hl = ! }
-        ELEV2_FLR.wl = { t_hl = ! }
-     +0~ELEV2_PAN.wl = { t_hl = ! }
-     +1~ELEV2_PAN.wl = { t_hl = ! }
-     +2~ELEV2_PAN.wl = { t_hl = ! }
-     +A~ELEV2_PAN.wl = { t_hl = ! }
-      +0ELEV_DOWN.wl = { t_hl = ! }
-      +AELEV_DOWN.wl = { t_hl = ! }
-      +0ELEV_DOWN2.wl = { t_hl = ! }
-      +AELEV_DOWN2.wl = { t_hl = ! }
-      +0ELEV_UP.wl = { t_hl = ! }
-      +AELEV_UP.wl = { t_hl = ! }
-      +0ELEV_UP2.wl = { t_hl = ! }
-      +AELEV_UP2.wl = { t_hl = ! }
-       }
-       Lockers.txlist =
-       {
-        GENLOCKER.wl = { t_hl = ! }
-        C1A1_LAIDLAW1.wl = { t_hl = ! }
-        C1A1_LAIDLAW2.wl = { t_hl = ! }
-        C1A1_LAIDLAW3.wl = { t_hl = ! }
-        C1A1_LOCKER.wl = { t_hl = ! }
-        C1A1_NAMES1.wl = { t_hl = ! }
-        C1A1_NAMES10.wl = { t_hl = ! }
-        C1A1_NAMES11.wl = { t_hl = ! }
-        C1A1_NAMES12.wl = { t_hl = ! }
-        C1A1_NAMES13.wl = { t_hl = ! }
-        C1A1_NAMES14.wl = { t_hl = ! }
-        C1A1_NAMES15.wl = { t_hl = ! }
-        C1A1_NAMES16.wl = { t_hl = ! }
-        C1A1_NAMES17.wl = { t_hl = ! }
-        C1A1_NAMES18.wl = { t_hl = ! }
-        C1A1_NAMES19.wl = { t_hl = ! }
-        C1A1_NAMES2.wl = { t_hl = ! }
-        C1A1_NAMES20.wl = { t_hl = ! }
-        C1A1_NAMES21.wl = { t_hl = ! }
-        C1A1_NAMES22.wl = { t_hl = ! }
-        C1A1_NAMES23.wl = { t_hl = ! }
-        C1A1_NAMES24.wl = { t_hl = ! }
-        C1A1_NAMES25.wl = { t_hl = ! }
-        C1A1_NAMES26.wl = { t_hl = ! }
-        C1A1_NAMES3.wl = { t_hl = ! }
-        C1A1_NAMES4.wl = { t_hl = ! }
-        C1A1_NAMES5.wl = { t_hl = ! }
-        C1A1_NAMES6.wl = { t_hl = ! }
-        C1A1_NAMES7.wl = { t_hl = ! }
-        C1A1_NAMES8.wl = { t_hl = ! }
-        C1A1_NAMES9.wl = { t_hl = ! }
-       }
-       Clocks.txlist =
-       {
-        CLOCK1.wl = { t_hl = ! }
-        CLOCK2A.wl = { t_hl = ! }
-        CLOCK2B.wl = { t_hl = ! }
-        CLOCK2C.wl = { t_hl = ! }
-        CLOCK3.wl = { t_hl = ! }
-       }
-       Vendor Machines.txlist =
-       {
-        GEN_VEND1.wl = { t_hl = ! }
-        GEN_VEND1A.wl = { t_hl = ! }
-        GEN_VEND1B.wl = { t_hl = ! }
-        PEPSI_FT.wl = { t_hl = ! }
-        PEPSI_SD.wl = { t_hl = ! }
-        GENERIC87A.wl = { t_hl = ! }
-        GENERIC87B.wl = { t_hl = ! }
-        GENERIC87C.wl = { t_hl = ! }
-        GENERIC88A.wl = { t_hl = ! }
-        GENERIC88B.wl = { t_hl = ! }
-        GENERIC89A.wl = { t_hl = ! }
-        GENERIC89B.wl = { t_hl = ! }
-        GENERIC105.wl = { t_hl = ! }
-        GENERIC105A.wl = { t_hl = ! }
-        GENERIC105B.wl = { t_hl = ! }
-        GENERIC105C.wl = { t_hl = ! }
-        GENERIC106.wl = { t_hl = ! }
-        GENERIC106A.wl = { t_hl = ! }
-        GENERIC106B.wl = { t_hl = ! }
-        GENERIC107.wl = { t_hl = ! }
-        GENERIC107A.wl = { t_hl = ! }
-        GENERIC107B.wl = { t_hl = ! }
-        GENERIC102.wl = { t_hl = ! }
-        GENERIC102B.wl = { t_hl = ! }
-        GENERIC103.wl = { t_hl = ! }
-        GENERIC103B.wl = { t_hl = ! }
-        GENERIC103C.wl = { t_hl = ! }
-       }
-       Fire Extinguisher.txlist =
-       {
-        GENERIC44.wl = { t_hl = ! }
-        GENERIC45.wl = { t_hl = ! }
-        GENERIC46.wl = { t_hl = ! }
-        GENERIC47.wl = { t_hl = ! }
-       }
-       Trashcan.txlist =
-       {
-        PFAB_TRSH1A.wl = { t_hl = ! }
-        PFAB_TRSH1B.wl = { t_hl = ! }
-        PFAB_TRSH1C.wl = { t_hl = ! }
-        PFAB_TRSH1D.wl = { t_hl = ! }
-       }
-       Papers and Books.txlist =
-       {
-        PAPER1.wl = { t_hl = ! }
-        PAPER2.wl = { t_hl = ! }
-        PAPER3.wl = { t_hl = ! }
-        PAPER4.wl = { t_hl = ! }
-        PAPER5.wl = { t_hl = ! }
-        PAPER6.wl = { t_hl = ! }
-        PAPER7.wl = { t_hl = ! }
-        PAPER8.wl = { t_hl = ! }
-        PFAB_BKS1A.wl = { t_hl = ! }
-        PFAB_BKS1B.wl = { t_hl = ! }
-        PFAB_BKS2A.wl = { t_hl = ! }
-        PFAB_BKS2B.wl = { t_hl = ! }
-        PFAB_BKS2C.wl = { t_hl = ! }
-        PFAB_BKS3A.wl = { t_hl = ! }
-        PFAB_BKS3B.wl = { t_hl = ! }
-        PFAB_BKS3C.wl = { t_hl = ! }
-        PREFABBOOK1.wl = { t_hl = ! }
-        PREFABBOOK2.wl = { t_hl = ! }
-        PREFABBOOK3.wl = { t_hl = ! }
-       }
-       Tool kit.txlist =
-       {
-        GENERIC104.wl = { t_hl = ! }
-        GENERIC104A.wl = { t_hl = ! }
-        GENERIC104B.wl = { t_hl = ! }
-       }
-       Microwave Oven.txlist =
-       {
-        GENERIC108.wl = { t_hl = ! }
-        GENERIC108A.wl = { t_hl = ! }
-       }
-       Outside Boxes.txlist =
-       {
-        OUT_BOX2.wl = { t_hl = ! }
-        OUT_BOX2B.wl = { t_hl = ! }
-        OUT_BOX2C.wl = { t_hl = ! }
-        OUT_BOX2D.wl = { t_hl = ! }
-        OUT_BOXA.wl = { t_hl = ! }
-        OUT_BOXB.wl = { t_hl = ! }
-        OUT_BOXC.wl = { t_hl = ! }
-        OUT_BOXD.wl = { t_hl = ! }
-       }
-       Furniture.txlist =
-       {
-        FIFTIES_CCH1.wl = { t_hl = ! }
-        FIFTIES_CCH1B.wl = { t_hl = ! }
-        FIFTIES_CCH2.wl = { t_hl = ! }
-        FIFTIES_CCH2B.wl = { t_hl = ! }
-        FIFTIES_CCH3.wl = { t_hl = ! }
-        FIFTIES_CCH3B.wl = { t_hl = ! }
-        FIFTIES_CCH4.wl = { t_hl = ! }
-        FIFTIES_CCH4B.wl = { t_hl = ! }
-        FIFTIES_DSK1.wl = { t_hl = ! }
-        FIFTIES_DSK2.wl = { t_hl = ! }
-        FIFTIES_DSK3.wl = { t_hl = ! }
-        FIFTIES_DSK4.wl = { t_hl = ! }
-        FIFTIES_DSK5A.wl = { t_hl = ! }
-        FIFTIES_DSK5B.wl = { t_hl = ! }
-        FIFTIES_DSK5C.wl = { t_hl = ! }
-        FIFTIES_DSK5D.wl = { t_hl = ! }
-        FIFTIES_DSK5DX.wl = { t_hl = ! }
-        FIFTIES_DSK5E.wl = { t_hl = ! }
-        FIFTIES_DSK5F.wl = { t_hl = ! }
-        FIFTSFILE1.wl = { t_hl = ! }
-        FIFTSFILE1B.wl = { t_hl = ! }
-        FIFTSFILE2.wl = { t_hl = ! }
-        FIFTSFILE2B.wl = { t_hl = ! }
-        FIFTSFILE3.wl = { t_hl = ! }
-        FIFTSFILE3B.wl = { t_hl = ! }
-        TABLE.wl = { t_hl = ! }
-        TABLE2.wl = { t_hl = ! }
-        PFAB_DSKDRWR.wl = { t_hl = ! }
-       }
-       Cardbox.txlist =
-       {
-        CARDBOX1.wl = { t_hl = ! }
-        CARDBOX2.wl = { t_hl = ! }
-        CARDBOX3.wl = { t_hl = ! }
-        CARDBOX4.wl = { t_hl = ! }
-        CARDBOXBOT1.wl = { t_hl = ! }
-        CARDBOXTOP1.wl = { t_hl = ! }
-        CARDBOXTOP2.wl = { t_hl = ! }
-       }
-      }
       Outside 1.txlist =
       {
         OUT_C1.wl = { t_hl = ! }
@@ -17644,16 +17671,10 @@ values=
         OUT_ROOF4.wl = { t_hl = ! }
         OUT_SHRB1.wl = { t_hl = ! }
         OUT_SLAT01.wl = { t_hl = ! }
-        OUT_SNBAG.wl = { t_hl = ! }
-        OUT_SNBAG2.wl = { t_hl = ! }
-        OUT_SNBAGB.wl = { t_hl = ! }
-        OUT_SNBAGC.wl = { t_hl = ! }
         OUT_SND1.wl = { t_hl = ! }
         OUT_SND2.wl = { t_hl = ! }
         OUT_SND2B.wl = { t_hl = ! }
         OUT_SND2C.wl = { t_hl = ! }
-        OUT_SNDBAG4.wl = { t_hl = ! }
-        OUT_SNDBG5.wl = { t_hl = ! }
         OUT_TNK1.wl = { t_hl = ! }
         OUT_VNT.wl = { t_hl = ! }
         OUT_W1A.wl = { t_hl = ! }
@@ -17699,10 +17720,6 @@ values=
       -2OUT_WALL3.wl = { t_hl = ! }
       -3OUT_WALL3.wl = { t_hl = ! }
       -4OUT_WALL3.wl = { t_hl = ! }
-        OUT_WALL3A.wl = { t_hl = ! }
-        OUT_WALL3B.wl = { t_hl = ! }
-        OUT_WALL3C.wl = { t_hl = ! }
-        OUT_WALL3D.wl = { t_hl = ! }
         OUT_WALL4A.wl = { t_hl = ! }
         OUT_WALL4B.wl = { t_hl = ! }
         OUT_WALL5.wl = { t_hl = ! }
@@ -17763,11 +17780,6 @@ values=
         CON1_BORD03.wl = { t_hl = ! }
         CON1_BORD04.wl = { t_hl = ! }
         CON1_WALL01P.wl = { t_hl = ! }
-        FADE.wl = { t_hl = ! }
-        FADE2.wl = { t_hl = ! }
-        FILL1.wl = { t_hl = ! }
-        FILL2.wl = { t_hl = ! }
-        FILL3.wl = { t_hl = ! }
       -0GENPIPE1.wl = { t_hl = ! }
       -1GENPIPE1.wl = { t_hl = ! }
       -2GENPIPE1.wl = { t_hl = ! }
@@ -17799,7 +17811,6 @@ values=
         PILLARHEADSIDE.wl = { t_hl = ! }
         PILLARSIDE.wl = { t_hl = ! }
         PILLARTOP.wl = { t_hl = ! }
-        RED.wl = { t_hl = ! }
         ROPE.wl = { t_hl = ! }
         STAIN_FLR02.wl = { t_hl = ! }
         STAIN_FLR03B.wl = { t_hl = ! }
@@ -17812,7 +17823,6 @@ values=
         STRIPES3.wl = { t_hl = ! }
         STRIPES4.wl = { t_hl = ! }
         STRIPES5.wl = { t_hl = ! }
-        YELLOW.wl = { t_hl = ! }
       }
      }
       Xeno Folder.qtxfolder =
@@ -18961,14 +18971,16 @@ values=
     {
       TFC.txlist =
       {
-        -0BLUEBASE.wl = { t_tfc = ! }
-        -0REDBASE.wl = { t_tfc = ! }
-        -1BLUEBASE.wl = { t_tfc = ! }
-        -1REDBASE.wl = { t_tfc = ! }
-        -2BLUEBASE.wl = { t_tfc = ! }
-        -2REDBASE.wl = { t_tfc = ! }
-        -3BLUEBASE.wl = { t_tfc = ! }
-        -3REDBASE.wl = { t_tfc = ! }
+        AD_TF2.wl = { t_tfc = ! }
+      -2BLUEBASE.wl = { t_tfc = ! }
+      -3BLUEBASE.wl = { t_tfc = ! }
+      -1BLUEBASE.wl = { t_tfc = ! }
+      -0BLUEBASE.wl = { t_tfc = ! }
+        BRICK2.wl = { t_tfc = ! }
+        BRICK6.wl = { t_tfc = ! }
+        BRIDGE.wl = { t_tfc = ! }
+        BRIDGE_CAP.wl = { t_tfc = ! }
+        B_BLASTDOORS.wl = { t_tfc = ! }
         C1A0_LABFLRE.wl = { t_tfc = ! }
         C1A1A_W4B.wl = { t_tfc = ! }
         C1A1A_W4X.wl = { t_tfc = ! }
@@ -18994,7 +19006,20 @@ values=
         CABLEWALL4RED.wl = { t_tfc = ! }
         CABLEWALL5BLUE.wl = { t_tfc = ! }
         CABLEWALL5RED.wl = { t_tfc = ! }
+        CANALMAP.wl = { t_tfc = ! }
         CANAL_WALL2A.wl = { t_tfc = ! }
+        CANYONSASPHALT.wl = { t_tfc = ! }
+        CANYONSBBASE.wl = { t_tfc = ! }
+        CANYONSCLIFF.wl = { t_tfc = ! }
+        CANYONSCLIFF2.wl = { t_tfc = ! }
+        CANYONSCRETE1.wl = { t_tfc = ! }
+        CANYONSMUD1.wl = { t_tfc = ! }
+        CANYONSRBASE.wl = { t_tfc = ! }
+        CANYONSSAND3.wl = { t_tfc = ! }
+        CANYONSSAND4.wl = { t_tfc = ! }
+        CANYONSSAND1.wl = { t_tfc = ! }
+        CANYONSSAND2.wl = { t_tfc = ! }
+        CLIP.wl = { t_tfc = ! }
         COMP9ABLU.wl = { t_tfc = ! }
         COMP9ARED.wl = { t_tfc = ! }
         COMP9BBLU.wl = { t_tfc = ! }
@@ -19008,7 +19033,57 @@ values=
         CRETE4_BLUE.wl = { t_tfc = ! }
         CRETE4_RED.wl = { t_tfc = ! }
         CRETE4_REDB.wl = { t_tfc = ! }
+        CRETE_WALL1.wl = { t_tfc = ! }
+        CRETE_WALLBLUE1.wl = { t_tfc = ! }
+        CRETE_WALLRED1.wl = { t_tfc = ! }
+        CROSSOVER01.wl = { t_tfc = ! }
+        CROSSOVER02.wl = { t_tfc = ! }
+        CROSSOVER03.wl = { t_tfc = ! }
+        CROSSOVER04.wl = { t_tfc = ! }
+        CROSSOVER04B.wl = { t_tfc = ! }
+        CROSSOVER05.wl = { t_tfc = ! }
+        DOOR_BLUE1.wl = { t_tfc = ! }
+        DOOR_BLUE2.wl = { t_tfc = ! }
+        DOOR_RED1.wl = { t_tfc = ! }
+        DOOR_RED2.wl = { t_tfc = ! }
+        DOUBLE_ASPHALT.wl = { t_tfc = ! }
+        DOUBLE_ASPHALT2.wl = { t_tfc = ! }
+        DOUBLE_BLUE2.wl = { t_tfc = ! }
+        DOUBLE_BLUE1.wl = { t_tfc = ! }
+        DOUBLE_CEIL1.wl = { t_tfc = ! }
+        DOUBLE_RED1.wl = { t_tfc = ! }
+        DOUBLE_RED2.wl = { t_tfc = ! }
+        DOUBLE_TRIM1.wl = { t_tfc = ! }
+        DUSTBOWL1.wl = { t_tfc = ! }
+        DUSTBOWL2.wl = { t_tfc = ! }
+      +AELEV1.wl = { t_tfc = ! }
+      +0ELEV1.wl = { t_tfc = ! }
+      +0ELEV2.wl = { t_tfc = ! }
+      +AELEV2.wl = { t_tfc = ! }
+      +AELEV3.wl = { t_tfc = ! }
+      +0ELEV3.wl = { t_tfc = ! }
+        GATE01.wl = { t_tfc = ! }
+        GATE02.wl = { t_tfc = ! }
+        GATE03.wl = { t_tfc = ! }
+        GATEBLUEFLR.wl = { t_tfc = ! }
+        GATEBLUEMETAL.wl = { t_tfc = ! }
+        GATEREDFLR.wl = { t_tfc = ! }
+        GATEREDMETAL.wl = { t_tfc = ! }
+        HINT.wl = { t_tfc = ! }
         KAMI_WALL1.wl = { t_tfc = ! }
+        KCHOLDER.wl = { t_tfc = ! }
+        KEEP01.wl = { t_tfc = ! }
+        KEEP05.wl = { t_tfc = ! }
+        KEEP07.wl = { t_tfc = ! }
+        KEEP09.wl = { t_tfc = ! }
+        KEEP09A.wl = { t_tfc = ! }
+        KEEP09_BLUE.wl = { t_tfc = ! }
+        KEEP09_RED.wl = { t_tfc = ! }
+        KEEP10.wl = { t_tfc = ! }
+        KEEP11.wl = { t_tfc = ! }
+        KEEP12.wl = { t_tfc = ! }
+        KEEP13.wl = { t_tfc = ! }
+        MAP.wl = { t_tfc = ! }
         OFF_DR1.wl = { t_tfc = ! }
         OFF_DR2.wl = { t_tfc = ! }
         OFF_DR3.wl = { t_tfc = ! }
@@ -19031,14 +19106,149 @@ values=
         OUT_WALL6C2A.wl = { t_tfc = ! }
         OUT_WALL6C3.wl = { t_tfc = ! }
         OUT_WALL6C4.wl = { t_tfc = ! }
+        PGTOWERSIGN.wl = { t_tfc = ! }
+        POPDOG_FRONT_RE.wl = { t_tfc = ! }
+        POPDOG_FRONT_GR.wl = { t_tfc = ! }
+        POPDOG_LEFT_GR.wl = { t_tfc = ! }
+        POPDOG_LEFT_RED.wl = { t_tfc = ! }
+        POPDOG_RIGHT_RE.wl = { t_tfc = ! }
+        POPDOG_RIGHT_GR.wl = { t_tfc = ! }
+        POPDOG_TOP_B.wl = { t_tfc = ! }
+        POPDOG_TOP_RED.wl = { t_tfc = ! }
+        POPDOG_TOP_GREE.wl = { t_tfc = ! }
+        POWERUP_BLUE.wl = { t_tfc = ! }
+        POWERUP_BLUE2.wl = { t_tfc = ! }
+        POWERUP_FLOOR1.wl = { t_tfc = ! }
+        POWERUP_PLASTER.wl = { t_tfc = ! }
+        POWERUP_RED.wl = { t_tfc = ! }
+        POWERUP_RED2.wl = { t_tfc = ! }
+        POWERUP_STUCCO2.wl = { t_tfc = ! }
+        POWERUP_STUCCO1.wl = { t_tfc = ! }
+        POWERUP_WALL3.wl = { t_tfc = ! }
+        POWERUP_WALL2.wl = { t_tfc = ! }
+        POWERUP_WALL1.wl = { t_tfc = ! }
+        POWER_CEILING1.wl = { t_tfc = ! }
+        RADSIGN.wl = { t_tfc = ! }
+      -3REDBASE.wl = { t_tfc = ! }
+      -0REDBASE.wl = { t_tfc = ! }
+      -1REDBASE.wl = { t_tfc = ! }
+      -2REDBASE.wl = { t_tfc = ! }
+        ROAD1.wl = { t_tfc = ! }
+        ROAD1_LOWCAP.wl = { t_tfc = ! }
+        ROAD1_TOPCAP.wl = { t_tfc = ! }
         ROCK1A.wl = { t_tfc = ! }
         ROCK1B.wl = { t_tfc = ! }
         ROCK2A.wl = { t_tfc = ! }
         ROCK2B.wl = { t_tfc = ! }
+        ROCK_SIGN1.wl = { t_tfc = ! }
+        ROCK_SIGN2.wl = { t_tfc = ! }
+        ROCK_SIGN3.wl = { t_tfc = ! }
+        ROCK_SIGN4.wl = { t_tfc = ! }
+        ROCK_SIGN5.wl = { t_tfc = ! }
+        ROCK_SIGN6.wl = { t_tfc = ! }
+        ROCK_SIGN7.wl = { t_tfc = ! }
+        ROCK_SIGN8.wl = { t_tfc = ! }
+        RUBBLE1.wl = { t_tfc = ! }
+        RUBBLE_WALK.wl = { t_tfc = ! }
+        SIDEWALK1.wl = { t_tfc = ! }
+        SIGN_ARW1.wl = { t_tfc = ! }
+        SIGN_ARW2.wl = { t_tfc = ! }
+        SIGN_ARW3.wl = { t_tfc = ! }
+        SIGN_ARW4.wl = { t_tfc = ! }
+        SIGN_ARW5.wl = { t_tfc = ! }
+        SIGN_ARW6.wl = { t_tfc = ! }
+        SIGN_ARW7.wl = { t_tfc = ! }
+        SIGN_ARW8.wl = { t_tfc = ! }
+        SIGN_BASE.wl = { t_tfc = ! }
+        SIGN_BAT.wl = { t_tfc = ! }
+        SIGN_BLUEARW3.wl = { t_tfc = ! }
+        SIGN_BLUEARW2.wl = { t_tfc = ! }
+        SIGN_BLUEARW1.wl = { t_tfc = ! }
+        SIGN_BLUEBASE.wl = { t_tfc = ! }
+        SIGN_BLUECAP.wl = { t_tfc = ! }
+        SIGN_CAPT.wl = { t_tfc = ! }
+        SIGN_CMD1.wl = { t_tfc = ! }
+        SIGN_CMD2.wl = { t_tfc = ! }
+        SIGN_CMD3.wl = { t_tfc = ! }
+        SIGN_CMD4.wl = { t_tfc = ! }
+        SIGN_CMD5.wl = { t_tfc = ! }
+        SIGN_CMD6.wl = { t_tfc = ! }
+        SIGN_CMD7.wl = { t_tfc = ! }
+        SIGN_CMD8.wl = { t_tfc = ! }
+        SIGN_CONT.wl = { t_tfc = ! }
+        SIGN_ELEV.wl = { t_tfc = ! }
+        SIGN_ENT.wl = { t_tfc = ! }
+        SIGN_FLAG.wl = { t_tfc = ! }
+        SIGN_FLAG2.wl = { t_tfc = ! }
+        SIGN_HELP.wl = { t_tfc = ! }
+        SIGN_LOW.wl = { t_tfc = ! }
+        SIGN_RAMP1.wl = { t_tfc = ! }
+        SIGN_RAMP2.wl = { t_tfc = ! }
+        SIGN_REDARW3.wl = { t_tfc = ! }
+        SIGN_REDARW2.wl = { t_tfc = ! }
+        SIGN_REDARW1.wl = { t_tfc = ! }
+        SIGN_REDBASE.wl = { t_tfc = ! }
+        SIGN_REDCAP.wl = { t_tfc = ! }
+        SIGN_RESUP1.wl = { t_tfc = ! }
+        SIGN_SNIPE.wl = { t_tfc = ! }
+        SIGN_TEAM1.wl = { t_tfc = ! }
+        SIGN_TEAM2.wl = { t_tfc = ! }
+        SIGN_UP.wl = { t_tfc = ! }
+        SIGN_WATER1.wl = { t_tfc = ! }
         SILO_BLUE.wl = { t_tfc = ! }
         SILO_BLUE2.wl = { t_tfc = ! }
         SILO_RED.wl = { t_tfc = ! }
         SILO_RED2.wl = { t_tfc = ! }
+        STEAL01.wl = { t_tfc = ! }
+        STEAL02.wl = { t_tfc = ! }
+        STEAL03.wl = { t_tfc = ! }
+        STEAL05A.wl = { t_tfc = ! }
+        STEAL05B.wl = { t_tfc = ! }
+        STEAL06.wl = { t_tfc = ! }
+        STEAL07.wl = { t_tfc = ! }
+        STEAL07A.wl = { t_tfc = ! }
+        STEAL08.wl = { t_tfc = ! }
+        S_ALLEYWAY.wl = { t_tfc = ! }
+        S_B_DOO1.wl = { t_tfc = ! }
+        S_B_DOOR2.wl = { t_tfc = ! }
+        S_B_QUARTERS.wl = { t_tfc = ! }
+        S_B_SECURITYCON.wl = { t_tfc = ! }
+        S_ELEVATOR.wl = { t_tfc = ! }
+        S_GREENARROW.wl = { t_tfc = ! }
+        S_KEYCARD_B.wl = { t_tfc = ! }
+        S_KEYCARD_G.wl = { t_tfc = ! }
+        S_KEYCARD_R.wl = { t_tfc = ! }
+        S_R_DOOR1.wl = { t_tfc = ! }
+        S_R_DOOR2.wl = { t_tfc = ! }
+        S_R_QUARTERS.wl = { t_tfc = ! }
+        S_R_SECURITYCON.wl = { t_tfc = ! }
+        S_STAIRS.wl = { t_tfc = ! }
+        S_STORAGEAREA2.wl = { t_tfc = ! }
+        S_STORAGEAREA1.wl = { t_tfc = ! }
+        S_STREET.wl = { t_tfc = ! }
+        S_STREETACCESS.wl = { t_tfc = ! }
+        TEAM1A.wl = { t_tfc = ! }
+        TEAM2A.wl = { t_tfc = ! }
+        TEAM3A.wl = { t_tfc = ! }
+        TEAM4A.wl = { t_tfc = ! }
+     +0~TNNL_LGT5.wl = { t_tfc = ! }
+        TRAIN_BED1.wl = { t_tfc = ! }
+        TRAIN_TRACK3.wl = { t_tfc = ! }
+        TRAIN_TRACK2.wl = { t_tfc = ! }
+        TRAIN_TRACK1.wl = { t_tfc = ! }
+        UNDERWATERROCK.wl = { t_tfc = ! }
+        WAR01.wl = { t_tfc = ! }
+        WARPATH_SCORE.wl = { t_tfc = ! }
+        WAR_BLUEDOOR.wl = { t_tfc = ! }
+      +AWAR_FLAG.wl = { t_tfc = ! }
+      +0WAR_FLAG.wl = { t_tfc = ! }
+        WAR_REDDOOR.wl = { t_tfc = ! }
+        W_WINDOW1.wl = { t_tfc = ! }
+        W_WINDOW3.wl = { t_tfc = ! }
+      +0_CLOSED.wl = { t_tfc = ! }
+      +A_CLOSED.wl = { t_tfc = ! }
+      +0_OPEN.wl = { t_tfc = ! }
+      +A_OPEN.wl = { t_tfc = ! }
       }
       Signs.txlist =
       {
