@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/07/14 06:17:46  tiglari
+vec2_t added for Q3A bsp reading suppport
+
 Revision 1.10  2001/06/05 18:41:26  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -76,7 +79,18 @@ type
  scalar_t = Single;
  vec3_p = ^vec3_t;
  vec3_t = packed array[0..2] of scalar_t;
+
  vec2_t = packed array[0..1] of scalar_t;
+
+  vec5_p = ^vec5_t;
+ vec5_t = array[0..4] of scalar_t;
+ vec_st_p = ^vec_st_t;
+ vec_st_t = record
+             s,t: TDouble;
+            end;
+ TVect5 = record
+           X, Y, Z, S, T: TDouble;
+          end;
 
 function Cross(const V1, V2: TVect) : TVect;
 function Dot(const V1, V2: TVect) : TDouble;
@@ -101,7 +115,9 @@ function vtocol255(const R,G,B: TDouble) : TColor;
 procedure NormaliseCol1(var V: TVect);
 {function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
 function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
-function MakeVect(X, Y, Z : Double) : TVect;
+function MakeVect(X, Y, Z : Double) : TVect; overload;
+function MakeVect(V: vec3_t) : TVect; overload;
+function MakeVect5(V: vec5_t) : TVect5;
 function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
@@ -788,11 +804,27 @@ begin
   end;
 end;
 
-function MakeVect(X, Y, Z : Double) : TVect;
+function MakeVect(X, Y, Z : Double) : TVect; overload;
 begin
   Result.X:=X;
   Result.Y:=Y;
   Result.Z:=Z;
+end;
+
+function MakeVect(V: vec3_t) : TVect; overload;
+begin
+  Result.X:=V[0];
+  Result.Y:=V[1];
+  Result.Z:=V[2];
+end;
+
+function MakeVect5(V: vec5_t) : TVect5;
+begin
+  Result.X:=V[0];
+  Result.Y:=V[1];
+  Result.Z:=V[2];
+  Result.S:=V[3];
+  Result.T:=V[4];
 end;
 
 function VecDiff(const V, W : TVect) : TVect;
