@@ -635,10 +635,8 @@ quarkpy.qbaseeditor.drawview = maddrawview
 def RestSelClick(m):
   editor=mapeditor()
   if editor==None: return
-  if menrestsel.state == qmenu.checked:
-    menrestsel.state = qmenu.normal
-  else:
-    menrestsel.state = qmenu.checked
+  editor.restrictor = editor.layout.explorer.uniquesel
+  menrestsel.state = qmenu.checked
   editor.invalidateviews()
     
 def NoSelClick(m):
@@ -654,12 +652,12 @@ def UnrestrictClick(m):
   if editor is None: return
 #    maptagside.squawk("no editor")
   del editor.restrictor
-  menrestsel.state = qmenu.disabled
+  menrestsel.state = qmenu.normal
   editor.invalidateviews()
   return
 
 
-menrestsel = quarkpy.qmenu.item("&Restrict Selections", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
+menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
 menrestsel.state=quarkpy.qmenu.disabled
 
 menextsel = quarkpy.qmenu.item("&Extend Selection from Face", ExtendSelClick, exttext)
@@ -679,6 +677,8 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
   editor = mapeditor()
   if editor is None: return
   selection = editor.layout.explorer.sellist
+  if len(selection)==1 and menrestsel.state != qmenu.checked:
+     menrestsel.state=qmenu.normal
   if len(selection) == 1 and selection[0].type == ':f':
     menextsel.state = quarkpy.qmenu.normal
   else:
@@ -688,12 +688,30 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(menextsel)
 quarkpy.mapcommands.items.append(menunrestrict)
+quarkpy.mapcommands.items.append(menrestsel)
+
 quarkpy.mapcommands.shortcuts["Ctrl+U"] = menunrestrict
 
-quarkpy.mapcommands.shortcuts["Ctrl+E"] = menextsel
-quarkpy.mapcommands.shortcuts["Alt+R"] = menrestsel
+#quarkpy.mapcommands.shortcuts["Ctrl+E"] = menextsel
+#quarkpy.mapcommands.shortcuts["Alt+R"] = menrestsel
 
 quarkpy.mapcommands.onclick = commandsclick
+
+HotKeys = quarkx.setupsubset(SS_MAP,"HotKeys")
+
+for menitem, keytag in [(menextsel, "Extend Selection"),
+                        (menunrestrict, "Unrestrict Selection"),
+                        (menrestsel, "Restrict to Selection")]:
+
+    hotkey = HotKeys[keytag]
+    if hotkey:
+        quarkpy.mapcommands.shortcuts[hotkey] = menitem
+ 
+#
+# needed to prevent mem leak
+#
+del HotKeys
+
 
 #
 #  -- options menu items
@@ -707,6 +725,13 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.3.2.1  2001/03/11 22:08:15  tiglari
+# customizable hot keys
+#
+# Revision 1.3  2001/03/06 09:52:27  tiglari
+# ZoomTo aims 3d view cameras (no pos change yet, so not true zooming
+#  in 3d views)
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #
