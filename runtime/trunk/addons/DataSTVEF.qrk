@@ -1,8 +1,11 @@
 QQRKSRC1
-// StarTrekEF definition file for Quark
+// STVEF definition file for Quark
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2000/09/18 01:42:12  alexander
+//fixed typo
+//
 //Revision 1.1  2000/09/18 01:34:00  alexander
 //new: StarTrek Voyager Elite Force Support file
 //
@@ -41,9 +44,9 @@ QQRKSRC1
       }
     }
   }
-  StarTrekEF setup.qctx =
+  STVEF setup.qctx =
   {
-    Game = "StarTrekEF"
+    Game = "STVEF"
     HTML = "help/index.html"
     Palette = $0000000F0F0F1F1F1F2F2F2F3F3F3F4B4B4B5B5B5B6B6B6B7B7B7B8B8B8B9B9B
      $9BABABABBBBBBBCBCBCBDBDBDBEBEBEB634B235B431F533F1F4F3B1B47371B3F2F173B2B
@@ -105,8 +108,8 @@ QQRKSRC1
   NewFiles.qtx =
   {
     ToolBox = "New files..."
-    Root = "StarTrekEF file types.qtxfolder"
-    StarTrekEF file types.qtxfolder =
+    Root = "STVEF file types.qtxfolder"
+    STVEF file types.qtxfolder =
     {
       Pk3.pk3 =
       {
@@ -115,19 +118,19 @@ QQRKSRC1
   }
   walltex:incl =
   {
-    tex = "base_wall/basewall03"
+    tex = "cargo/walllow"
   }
   floortex:incl =
   {
-    tex = "base_floor/clangdark"
+    tex = "cargo/tile"
   }
   ceiltex:incl =
   {
-    tex = "skies/toxicskytim_dm8"
+    tex = "cargo/cargotop"
   }
   NewMap:incl =
   {
-    Game = "StarTrekEF"
+    Game = "STVEF"
     Root = "worldspawn:b"
   worldspawn:b =
   {
@@ -19046,8 +19049,8 @@ QQRKSRC1
   NewEntities.qtx =
   {
     ToolBox = "New map items..."
-    Root = "StarTrekEF Entities.qtxfolder"
-    StarTrekEF Entities.qtxfolder =
+    Root = "STVEF Entities.qtxfolder"
+    STVEF Entities.qtxfolder =
     {
       ambient.qtxfolder =
       {

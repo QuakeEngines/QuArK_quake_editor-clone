@@ -1,4 +1,5 @@
 QQRKSRC1
+// This file has been written by QuArK quarksnapshot_20001015
 // It's the text version of file: UserData StarTrekEF.qrk
 
 {
@@ -57,14 +58,15 @@ QQRKSRC1
         v = '0 0 0 0 0 64 0 0 0.50000 0 128 0 0 1 0 0 64 0 0 0.50000 64 64 0 0.50000
           0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
           1'
-        tex = "base_wall/basewall03"
+        tex = "cargo/walllow"
       }
     }
     ArenaFileMaker: =
     {
       ArenaFileMaker:d =
       {
-        ;desc = "Put one in your map and an arena script will be created automagically"
+        ;desc = "Put one in your map and an arena script will be created autom"
+         "agically"
         origin = "0 0 0"
         bots = "ranger bones"
         longname = "my very cool map"
@@ -87,17 +89,24 @@ QQRKSRC1
       RunGame = "1"
       BSPCCmd = "-bsp2aas"
       Textures = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
     }
     item: =
     {
       Txt = "Quic&kGO ! (fast -vis)"
       Shortcut = "Ctrl+K"
-      Textures = "1"
       QBSP1 = "1"
       VIS1 = "1"
       VISCmd = "-fast"
       LIGHT1 = "1"
       RunGame = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
     }
     item: =
     {
@@ -106,6 +115,7 @@ QQRKSRC1
       Textures = "1"
       QBSP1 = "1"
       RunGame = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -115,6 +125,7 @@ QQRKSRC1
       Textures = "1"
       QBSP1 = "1"
       RunGame = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -135,6 +146,11 @@ QQRKSRC1
       BSPC1 = "1"
       BSPCCmd = "-bsp2aas"
       Pause = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
+      BuildPgm2 = "1"
+      BuildPgm3 = "1"
+      Textures = "1"
     }
     item: =
     {
@@ -150,6 +166,7 @@ QQRKSRC1
       Txt = "&Q3MAP (.bsp file creation)"
       QBSP1 = "1"
       Pause = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
@@ -157,6 +174,7 @@ QQRKSRC1
       VIS1 = "1"
       VISCmd = ""
       Pause = "1"
+      BuildPgm2 = "1"
     }
     item: =
     {
@@ -164,6 +182,7 @@ QQRKSRC1
       LIGHT1 = "1"
       LIGHTCmd = ""
       Pause = "1"
+      BuildPgm3 = "1"
     }
     item: =
     {
@@ -171,6 +190,7 @@ QQRKSRC1
       BSPC1 = "1"
       BSPCCmd = "-bsp2aas"
       Pause = "1"
+      BuildPgm4 = "1"
     }
     item: =
     {
@@ -182,6 +202,8 @@ QQRKSRC1
       QBSP1 = "1"
       QBSPCmd = "-onlyents"
       Pause = "1"
+      BuildPgm1 = "1"
+      BuildArgs1 = "-onlyents"
     }
     item: =
     {
@@ -189,6 +211,8 @@ QQRKSRC1
       BSPCCmd = "-reach"
       Pause = "1"
       BSPC1 = "1"
+      BuildPgm4 = "1"
+      BuildArgs4 = "-reach"
     }
   }
 }

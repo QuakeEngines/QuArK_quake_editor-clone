@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.60  2000/10/15 16:08:03  alexander
+//set name
+//
 //Revision 1.59  2000/10/10 07:46:17  tiglari
 //"C" code for circle-strafe selection added to map and model mouse modes
 //
@@ -724,9 +727,9 @@ QQRKSRC1
         TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
       }
-      StarTrekEF:config =
+      STVEF:config =
       {
-        Game = "StarTrekEF"
+        Game = "STVEF"
         Code = "b"
         Directory = ""
         CD = ""
@@ -756,13 +759,13 @@ QQRKSRC1
         ShadersPath = "scripts/"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +map %s"
-        AddOns = "DataStarTrekEF.qrk"
+        AddOns = "DataSTVEF.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
         CheckDirectory = "stvoy.exe"
         Console = "1"
-        Form = "GameStartrekEF"
+        Form = "GameSTVEF"
 //        SpecialCustomQuakeMenu = "CustomQuakeMenuBSPC"           //enable special form
         TextureDef = "base_wall/basewall03"
         TriggerTextureDef = "common/trigger"
@@ -1960,13 +1963,13 @@ QQRKSRC1
       BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
-    GameStarTrekEF:form =
+    GameSTVEF:form =
     {
       Style = "3"
       sep: = {Typ="S" Txt="---- Game Settings ----"}
       Program: = {
         Typ = "C"     // combo box
-        Txt = "StarTrek command-line"
+        Txt = "StarTrek Voyager Elite Force command-line"
         Items = "StarTrek"
       }
       Directory: =
@@ -1978,7 +1981,7 @@ QQRKSRC1
       }
       CD: =
       {
-        Txt = "StarTrek CD-ROM drive"
+        Txt = "StarTrek Voyager Elite Force CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed StarTrek minimally, this is the drive of the CD-ROM."
         CheckFile = "Setup\BASEEF\PAK0.PAK"
@@ -2014,21 +2017,21 @@ QQRKSRC1
         Txt = "Default texture"
         Typ = "ET"      // Edit Texture
         Hint = "Default texture when inserting polyhedrons in maps"
-        GameCfg = "StarTrekEF"
+        GameCfg = "STVEF"
       }
       TriggerTextureDef: =
       {
         Txt = "Default trigger texture"
         Typ = "ET"      // Edit Texture
         Hint = "Default trigger texture when new brush-entities request it"
-        GameCfg = "StarTrekEF"
+        GameCfg = "STVEF"
       }
       ClipTextureDef: =
       {
         Txt = "Default clip texture"
         Typ = "ET"      // Edit Texture
         Hint = "Default clip texture when new brush-entities request it"
-        GameCfg = "StarTrekEF"
+        GameCfg = "STVEF"
       }
       3DLight: =
       {
