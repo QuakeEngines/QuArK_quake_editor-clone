@@ -1,11 +1,18 @@
-           Patch 1 to QuArK Snapshot of 2002feb28
+
+                Quark Snapshot of 2002mar27
            
  * [tiglari]
     fix groups hidden/greyed icon change (report by off_by_two)
 
+ * [tiglari]
+    change map-writing system so that format is specified in game
+    config rather than Map|Option flags.
 
+  This snapshot is distributed also as a patch that can be overwritten
+  on the 2002feb28 snapshot.
+  
 
-           QuArK Snapshot of 2002feb28
+               QuArK Snapshot of 2002feb28
            
  * [Andy]
     .md3 skins can hopefully be loaded from paths with
