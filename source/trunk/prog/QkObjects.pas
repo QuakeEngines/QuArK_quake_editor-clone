@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2001/01/07 13:21:25  decker_dk
+Remember to put argument-list on procedure/function-definitions, and not only on declarations.
+Set Versionname.
+
 Revision 1.33  2000/11/26 19:08:32  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -301,6 +305,7 @@ type
                { for reading/writing raw data to/from a Data specific,
                  used in overrides for Load/SaveFile }
              procedure FileCrashRecoverHack;
+             procedure ExpandPrep; virtual;
            public
               { propriétés commune aux QObjects }
              PythonObj: TPythonObj;
@@ -311,6 +316,8 @@ type
              FParent: QObject;
              Name: String;
              constructor Create(const nName: String; nParent: QObject);
+             { prep for expansion in a treeview }
+             procedure PrepareForExpand;
              procedure LoadAll;
              procedure AccesRec;
              procedure Open(F: TQStream; Taille: Integer);
@@ -1925,6 +1932,15 @@ begin
  finally
   ReleaseStream(F);
  end;
+end;
+
+procedure QObject.PrepareForExpand;
+begin
+  ExpandPrep;
+end;
+
+procedure QObject.ExpandPrep;
+begin
 end;
 
 procedure QObject.LoadedFileLink(const nName: String; ErrorMsg: Integer);
