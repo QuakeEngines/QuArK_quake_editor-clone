@@ -173,7 +173,7 @@ class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
     undomsg = Strings[627]
-    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Alt key: move points in row/column going away from you in view.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
+    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Ctrl/Shift key: move whole row (same hue)/column.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
     def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
@@ -330,8 +330,8 @@ class CPHandle(qhandles.GenericHandle):
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
                 cp[n][m] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
-            if 0:
-#            if self.b2["smooth"]:
+#            if 0:
+            if self.b2["smooth"]:
                 # keep the patch smoothness
                 def makesmooth(di,dj,i=i,j=j,cp=cp):
                     p = 2*cp[j+dj][i+di] - cp[j][i]
