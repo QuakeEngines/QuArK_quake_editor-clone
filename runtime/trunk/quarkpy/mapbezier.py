@@ -115,7 +115,7 @@ def texcpclick(m):
 #  be added.
 #
 def quilt_addrow(cp,(i,j)):
-  "returns a new quit with two patch-rows replacing the ith one"
+  "alters cp so that two patch-rows replace the ith one"
   md, q1, q3 = [], [], []
   #
   # Should try to do this with maplist ...
@@ -123,18 +123,18 @@ def quilt_addrow(cp,(i,j)):
   # & We'll probably want a variant to do this to a whole list
   #
   for c in range(len(cp[0])):
-     arc = cp[i-1][c],cp[i][c],cp[i+1][c]
-     mid = apply(b2midpoint, arc)
-     md.append(mid)
-     qt1 = apply(b2qtpoint, arc)
-     qt3 = apply(b2qt3point, arc)
-     q1.append(b2midcp(cp[i-1][c],qt1, mid))
-     q3.append(b2midcp(mid,qt3,cp[i+1][c]))
+      arc = cp[i-1][c],cp[i][c],cp[i+1][c]
+      mid = apply(b2midpoint, arc)
+      md.append(mid)
+      qt1 = apply(b2qtpoint, arc)
+      qt3 = apply(b2qt3point, arc)
+      q1.append(b2midcp(cp[i-1][c],qt1, mid))
+      q3.append(b2midcp(mid,qt3,cp[i+1][c]))
   cp[i:i+1] = [q1, md, q3]
 
 
 def quilt_addcol(cp,(i,j)):
-  "returns a new quit with two patch-rows replacing the ith one"
+  "alters cp so that two patch-rows replace the ith one"
   for row in cp:
      arc = row[j-1],row[j],row[j+1]
      mid = apply(b2midpoint, arc)
@@ -144,7 +144,22 @@ def quilt_addcol(cp,(i,j)):
           mid,b2midcp(mid,qt3,arc[2])]
 
 
+def quilt_delrow(cp,(i,j)):
+    md = []
+    for c in range(len(cp[0])):
+        arc = cp[i-2][c],cp[i][c],cp[i+2][c]
+        mid = apply(b2midcp,arc)
+        md.append(mid)
+    cp[i-1:i+2]=[md]
     
+    
+def quilt_delcol(cp, (i,j)):
+    for row in cp:
+        arc=row[j-2],row[j],row[j+2]
+        mid = apply(b2midcp,arc)
+        row[j-1:j+2]=[mid]
+        
+
 #
 # Handles for control points.
 #
@@ -222,6 +237,23 @@ class CPHandle(qhandles.GenericHandle):
           undo.exchange(self.b2, new)
           editor.ok(undo,"thicken mesh")
 
+        def thinclick(m,self=self,editor=editor):
+          new = self.b2.copy()
+          #
+          # Operating on cp's `in situ' doesn't seem to work.
+          #
+
+          ncp = copyCp(new.cp)
+          m.thin(ncp, self.ij)
+          #
+          # this setting of the cp attribute triggers a lot of stuff
+          #   in the delphi
+          #
+          new.cp = ncp
+          undo = quarkx.action()
+          undo.exchange(self.b2, new)
+          editor.ok(undo,"thin mesh")
+
 
         #
         # We have both add row & column because sometimes an edge
@@ -229,18 +261,28 @@ class CPHandle(qhandles.GenericHandle):
         #  would be possible
         #
         addrow = qmenu.item("Add Row",thickenclick,"|Adds a row to the mesh")
+        delrow = qmenu.item("Delete Row", thinclick,"|Removes a row from the mesh")
         if iseven(i):
           addrow.state=qmenu.disabled
+          delrow.thin=quilt_delrow
         else:
           addrow.thicken=quilt_addrow
+          delrow.state=qmenu.disabled
+        if len(cp)<4:
+          delrow.state=qmenu.disabled
           
         addcol = qmenu.item("Add Column",thickenclick,"|Adds a column to the mesh")
+        delcol = qmenu.item("Delete Column",thinclick,"|Removes a column from the mesh")
         if iseven(j):
           addcol.state=qmenu.disabled
+          delcol.thin=quilt_delcol
         else:
           addcol.thicken=quilt_addcol
+          delcol.state=qmenu.disabled
+        if len(cp[0])<4:
+          delcol.state=qmenu.disabled
           
-        thicken = qmenu.popup("Thicken",[addrow, addcol])
+        mesh = qmenu.popup("Mesh",[addrow, addcol, delrow, delcol])
         
         def projtexclick(m, self=self, editor=editor):
           new = faceTexFromCph(self,m.tagged,editor)
@@ -287,7 +329,7 @@ class CPHandle(qhandles.GenericHandle):
     
 
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [texcp, thicken, projtex, glue] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp, mesh, projtex, glue] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -384,7 +426,7 @@ class CPHandle(qhandles.GenericHandle):
 #
 # Stuff that's meaningful for the whole patch should go here
 #
-def newb2menu(o, editor, oldmenu=mapentities.BezierType.menu.im_func):
+def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
     "update for RMB menu for beziers"
 
     def projtexclick(m, o=o, editor=editor):
@@ -406,7 +448,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menu.im_func):
 
     return  [projtex]+oldmenu(o, editor)
 
-mapentities.BezierType.menu = newb2menu
+mapentities.BezierType.menubegin = newb2menu
 
 #
 # Handle for the center of a Bezier patch.
@@ -431,6 +473,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2000/07/04 11:04:23  tiglari
+#fixed patch thicken bug (copycp->copyCp)
+#
 #Revision 1.22  2000/06/26 22:51:55  tiglari
 #renaming: antidistort_rows/columns->undistortRows/Colunmns,
 #tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
