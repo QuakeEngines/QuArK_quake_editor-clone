@@ -20,6 +20,12 @@ $Id$
       from 1 to 40.
 
  * [alexander]: HL2 Releated Enhancements
+      - can set lightmapscale for face in face specific page
+      - vmf file loader imports worldspawn attributes, dumps everything
+        it doesnt understant into a misc folder of the map structure
+      - vmf loader does no longer break on hidden entities and brushes
+
+ * [alexander]: HL2 Releated Enhancements
       - loading of .vmf (hammer map files) is available
       - CS-Source textures complete
       - QuArK Loads HL2 models and render yellow transparent boxes with the
