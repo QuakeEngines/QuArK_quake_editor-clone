@@ -98,8 +98,8 @@ items = [
       hint="|Display two red lines per view instead of just one. These red lines let you select which part of the map is to be considered 'visible' on the other view. Invisible parts are grayed out and not selectable with the mouse."),
     toggleitem("3D &Models in textured views", "Entities", (1,1), (SS_GENERAL,"3D view"),
       hint="|Display actual models in solid and textured views.\n\nNote that this is not implemented for all the supported games yet. If you want to help about this, you are welcome !"),
-    toggleitem("&Adjust angles automatically", "AutoAdjustNormal", (0,0),
-      hint="|If 'Adjust angles automatically' is checked, you cannot set any angle for faces and entities : you can only set 'round' values. This command works like a grid for angles. You can set the step of this grid in the Configuration dialog box, Map, Building, 'Force angle to'."),
+    toggleitem("&Quantize angles", "AutoAdjustNormal", (0,0),
+      hint="|If 'Quantize angles' is checked, you cannot set any angle for faces and entities : you can only set 'round' values. This command works like a grid for angles. You can set the step of this grid in the Configuration dialog box, Map, Building, 'Force angle to'."),
     toggleitem("&Paste objects at screen center", "Recenter", (0,0),
       hint="|If 'Paste objects at screen center' is checked, polyhedrons and entities are pasted from the clipboard near the screen center. If this option is not checked, they are pasted exactly where they were when you copied them to the clipboard. The latter option is useful to make several copies with a fixed step between them, but can be confusing because the pasted objects may be completely off the screen."),
     toggleitem("&Ignore groups marked so when building map", "IgnoreToBuild", (0,0),
@@ -128,6 +128,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.3  2001/04/01 06:50:33  tiglari
+#don't recenter threepoints option added
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
