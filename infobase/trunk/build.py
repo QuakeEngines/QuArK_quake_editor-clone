@@ -32,7 +32,32 @@ def text2html(text):
 def text2html_nbsp(text):
     return string.join(map(TEXT_TO_HTML_NBSP.get, text), "")
 
-def findref(root, path):
+def path2html(path):
+    return string.join(filter(None, string.split(path, "/"))+["html"], ".")
+
+def climbpath(curpath, relpath):
+    if relpath[:3] == "../" :
+       return climbpath(curpath[:-1],relpath[3:])
+    else:
+#       print 'CURPATH '+`curpath`
+       newpath = string.join(curpath,'/')+relpath
+#       print 'NEWPATH '+`newpath`
+       return newpath
+  
+
+def relpath(curpath, relpath):
+    if relpath[0]!='.':
+       return relpath
+    elif relpath[1]=='/':
+       return curpath+relpath[2:]
+    elif relpath[1:3]=='./':
+       track = string.split(curpath,'/')
+       return climbpath(track[:-2],relpath[2:])
+       
+def findref(root, path, fkw):
+#    print 'FKW: '+`fkw["path"]`
+    path = relpath(fkw["path"], path)
+    print 'PATH: '+`path`
     path0 = path
     path = string.split(path, "/")
     path1 = ""
@@ -83,7 +108,7 @@ def processtext(root, text, data, kw):
             currentpara = None
         elif test[:5]=="<ref>":
             # this line is a reference
-            line = findref(root, string.strip(string.strip(line)[5:]))
+            line = findref(root, string.strip(string.strip(line)[5:]), kw)
         elif test[:5]=="<pic>": #tiglari
             # this line is an image
             line = procpic(kw, string.strip(string.strip(line)[5:]))
@@ -122,7 +147,7 @@ def parse(file):
 
 class Folder:
 
-    def __init__(self, path, classif, parents):
+    def __init__(self, path, classif, parents, prev=None):
         self.path = path
 #        print 'Path: '+self.path
         self.classif = classif
@@ -140,7 +165,8 @@ class Folder:
         if not classif:
             shortname = "index.html"
         else:
-            shortname = string.join(filter(None, string.split(self.path, "/"))+["html"], ".")
+#            shortname = string.join(filter(None, string.split(self.path, "/"))+["html"], ".")
+            shortname = path2html(path)
         self.kw["htmlfile"] = shortname
         if parents:
             self.kw["parenthtmlfile"] = parents[-1].kw["htmlfile"]
@@ -148,12 +174,22 @@ class Folder:
         self.forgotten = map(string.lower, os.listdir("./"+self.path))
         self.forgotten.remove("index"+EXTENSION)
         self.kw["forgotten"] = self.forgotten
+        self.kw["next"]=""
+        self.kw["nextfooter"] = ""
+        htmlpath = path2html(path)
+        previous = None
+        if prev:
+            nextref = 'Next:&nbsp;<a href="%s">%s</a>'%(htmlpath,self.kw['title'])
+            prev.kw["headerlvl"] = prev.kw["headerlvl"]+'<br>'+nextref
+#            prev.kw["nextfooter"] = '<a href="%s">next</a>'%htmlpath
+            prev.kw["nextfooter"] = nextref
         for foldername in string.split(self.kw.get("subdir", "")):
-            folder = Folder(path+foldername+"/", classif+(str(len(self.folders)+1),), parents+(self,))
+            folder = Folder(path+foldername+"/", classif+(str(len(self.folders)+1),), parents+(self,), previous)
             if folder.ctime > ctime:
                 ctime = folder.ctime
             self.folders.append(folder)
             self.forgotten.remove(foldername)
+            previous = folder
         self.files = []
         for filename in string.split(self.kw.get("desc", "")):
             kw, text, ctime1 = parse(self.path+filename+EXTENSION)
@@ -173,6 +209,9 @@ class Folder:
             lvl = SUBHEADERLVL
             for folder in parents:
                 lvl = lvl + HEADERLVL % folder.kw
+#        if self.kw["next"]:
+#                print 'NEXT'
+#                lvl = lvl + 'Next: <a href="%s">%s</a>'%(path2html(self.kw["next"]),self.kw["next"])
         self.kw["headerlvl"] = lvl
 
     def writefiles(self, root, filewriter):
@@ -246,4 +285,7 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.5  2000/10/18 16:39:34  tiglari
+# added image-handling facility, preliminary
+#
 #
