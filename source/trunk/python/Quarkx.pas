@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2003/11/10 19:12:40  silverpaladin
+Eliminated platform dependant warning
+
 Revision 1.35  2003/08/21 14:27:40  peter-b
 Revised fix for module search path bug.  Now appends when using separate Python, overrides with bundled Python.
 
@@ -2836,7 +2839,7 @@ begin
    PyErr_SetString(QuarkxAborted, PChar(LoadStr1(4452)))
   else
    begin
-    S:=Format('%s [%p]', [GetExceptionMessage(Exception(ExceptObject)), @Tg_Form1.AppException]);
+    S:=Format('%s [%p]', [GetExceptionMessage(Exception(ExceptObject)), @TForm1.AppException]);
     PyErr_SetString(QuarkxError, PChar(S));
    end;
 end;
