@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2002/12/22 01:13:40  tiglari
+TTreeMap.Deplacement now ignores sub-elements marked 'nollinear 1'.
+This is to allow the path duplicator to work with linear mappings.
+
 Revision 1.37  2002/03/27 00:24:49  tiglari
 delete/write mapversion 220 specific as needed (removed when map
  read, added back in if written out in V220 format).
@@ -1199,6 +1203,11 @@ begin
  MJ:=CharModeJeu;
  if Flags and soBsp=0 then
    Dest.Add(CommentMapLine(Ancestry));
+ if (GetMapFormatType=HL2Type) then
+   if (Name = 'worldspawn') then
+     Dest.Add(LineStart+'world')
+   else
+     Dest.Add(LineStart+'entity');
  Dest.Add('{');
  LineStart:=LineStarts[Flags and soBSP <> 0];
  Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
@@ -2428,7 +2437,8 @@ begin
   { this is nuked, maps will now be written based on OutputMapFormat
   if Specifics.Values['mapversion']='220' then
     Flags:=Flags + soWriteValve220, except we'll leave 6dx the same for now 
-  else }if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
+  else }
+  if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
     Flags:=Flags + soWrite6DXHierarky;
 
   if GetMapFormatType=V220Type then

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2003/09/06 00:57:48  silverpaladin
+Fixed an index out of bounds error during leak search
+
 Revision 1.72  2003/03/21 00:12:43  nerdiii
 tweaked OpenGL mode to render additive and texture modes as in Half-Life
 
@@ -292,7 +295,8 @@ type
      CQType, { Classic Quake1/2/3 }
      QetpType,  { Quark Enhanced Texture Positioning }
      V220Type,  { Valve Mapformat 220 }
-     BPType     { Brush Primitives }
+     BPType,     { Brush Primitives }
+     HL2Type     {that one used in hl2 tools}
   );
 
  TTexOpacityInfo = record
@@ -1189,7 +1193,7 @@ end;
   with the closest normal to the face, then normalize &
   pull out the scale & shift info }
 
-procedure Valve220MapParams(const Normale: TVect; const F: TFace; var S: String);
+procedure Valve220MapParams( HL2: bool; const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
   Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2:TVect;
@@ -1206,6 +1210,16 @@ var
      S:=S+FloatToStrF(V.Z, ffFixed, 20, 5)+' ';
      S:=S+FloatToStrF(D, ffFixed, 20, 5)+' ';
      S:=S+'] ';
+  end;
+
+  procedure write4vectHL2(const V: TVect; D : Double; var S: String);
+  begin
+     S:=S+'[';
+     S:=S+FloatToStrF(V.X, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(V.Y, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(V.Z, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(D, ffFixed, 20, 5);
+     S:=S+']';
   end;
 
 begin
@@ -1309,6 +1323,18 @@ begin
   Normalise(QV0, S1);
   Normalise(QV1, S2);
 
+
+  if HL2 then
+  begin
+    S:=S+#13#10'  "uaxis" "';
+    write4vectHL2(QV0, UOff, S);
+    S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5)+'"';
+    S:=S+#13#10'  "vaxis" "';
+    write4vectHL2(QV1, VOff, S);
+    S:=S+' '+FloatToStrF(S2, ffFixed, 20, 5)+'"';
+  end
+  else
+  begin
 //  if (veclength(qv0)>1) or (veclength(qv1)>1) then
 //    ShowMessage('oops');
   write4vect(QV0, UOff, S);
@@ -1326,7 +1352,7 @@ begin
   S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5);
   { sign flip engineered into Scale }
   S:=S+' '+FloatToStrF(S2, ffFixed, 20, 5);
-
+  end;
 
 end;
 
@@ -2438,6 +2464,7 @@ begin
     else if StrComp(S, 'Quark etp')        = 0 then Result := QetpType
     else if StrComp(S, 'Valve 220')        = 0 then Result := V220Type
     else if StrComp(S, 'Brush Primitives') = 0 then Result := BPType
+    else if StrComp(S, 'HL2') = 0 then Result := HL2Type
     else
     begin
      { Raise EErrorFmt(5702, [S]); }
@@ -2622,7 +2649,7 @@ var
     end;
     { /tiglari }
 
-
+  {writeface}
   begin
    if F.GetThreePoints(P[1], P[3], P[2]) and F.LoadData then
 {
@@ -2735,27 +2762,48 @@ var
      end
      end;
 
+     {start writing out a face}
+
+     if MapFormat=HL2Type then
+       S:= S+ '"plane" "';
+
      for I:=1 to 3 do
       with P[I] do
        begin
-        S:=S+'( ';
+        if MapFormat=HL2Type then
+          S:=S+'('
+        else
+          S:=S+'( ';
         R:=Round(X);
+
         if WriteIntegers or (Abs(X-R) < rien) then
          S:=S+IntToStr(R)+' '
         else
          S:=S+FloatToStrF(X, ffFixed, 20, 5)+' ';
         R:=Round(Y);
+
         if WriteIntegers or (Abs(Y-R) < rien) then
          S:=S+IntToStr(R)+' '
         else
          S:=S+FloatToStrF(Y, ffFixed, 20, 5)+' ';
         R:=Round(Z);
+
         if WriteIntegers or (Abs(Z-R) < rien) then
-         S:=S+IntToStr(R)+' ) '
+         S:=S+IntToStr(R)
         else
-         S:=S+FloatToStrF(Z, ffFixed, 20, 5)+' ) ';
+         S:=S+FloatToStrF(Z, ffFixed, 20, 5);
+
+        if MapFormat=HL2Type then
+          S:=S+')'
+        else
+          S:=S+' ) ';
+
        end;
 
+     if MapFormat=HL2Type then
+       S:= S+'"';
+
+     {start writing out a texture name and  coordinates}
      if MapFormat=BPType then
       with F do
        begin
@@ -2767,8 +2815,15 @@ var
         S:=S+') ';
        end;
 
+
+     {start writing out a texture name and tx coordinates}
      with F do
       begin
+
+       {texture name}
+       if MapFormat=HL2Type then
+         S:= S+#13#10'  "material" "';
+
        {$IFDEF TexUpperCase}
        S:=S+UpperCase(NomTex);
        {$ELSE}
@@ -2777,26 +2832,36 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if MapFormat=V220Type then
-       begin
-        Valve220MapParams(Normale, F, S);
-       end else if not (MapFormat=BPType) then
-       begin
-         SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
 
-         ApproximateParams(Normale, PT, Params, Mirror, MJ); {does scale}
-         for I:=1 to 2 do
-           S:=S+' '+IntToStr(Round(Params[I]));
-         for I:=3 to 5 do
-         begin
-           R:=Round(Params[I]);
-           if Abs(R-Params[I])<rien then
-             S:=S+' '+IntToStr(R)
-           else
-             S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
-         end;
-       end;
-     end;
+       if MapFormat=HL2Type then
+         S:= S+'"';
+
+       {texture coordinates}
+       case MapFormat of
+        V220Type:
+          Valve220MapParams(False,Normale, F, S);
+        HL2Type:
+          Valve220MapParams(True,Normale, F, S);
+
+        else {case}
+          if not (MapFormat=BPType) then
+          begin
+            SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
+
+            ApproximateParams(Normale, PT, Params, Mirror, MJ); {does scale}
+            for I:=1 to 2 do
+              S:=S+' '+IntToStr(Round(Params[I]));
+            for I:=3 to 5 do
+            begin
+              R:=Round(Params[I]);
+              if Abs(R-Params[I])<rien then
+                S:=S+' '+IntToStr(R)
+              else
+                S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
+            end;
+        end;
+       end;{case MapFormat}
+     end; {with f}
 
      if MJ=mjHexen then
        S:=S+' -1'
@@ -2960,7 +3025,12 @@ begin
    of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
+
+ if MapFormat=HL2Type then
+  Brush.Add('solid');
+
  Brush.Add(' {');
+
  if MapFormat=BPType then
  begin
   Brush.Add('brushDef');
@@ -2968,7 +3038,13 @@ begin
  end;
  if g_DrawInfo.ConstruirePolyedres then
   for J:=0 to Faces.Count-1 do
-   WriteFace(PSurface(Faces[J])^.F)
+  begin
+   if MapFormat=HL2Type then
+     Brush.Add(' side {');
+   WriteFace(PSurface(Faces[J])^.F);
+   if MapFormat=HL2Type then
+     Brush.Add(' }');
+  end
  else
   for J:=0 to SubElements.Count-1 do
    begin
