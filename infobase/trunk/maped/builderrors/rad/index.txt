@@ -50,15 +50,15 @@ KPRAD.EXE
 </td></tr>
 
 <tr><td>
-Quake-3:Arena
-</td><td>
-"Q3MAP.EXE -light"
-</td></tr>
-
-<tr><td>
 Soldier of Fortune
 </td><td>
 SOFARGHRAD.EXE
+</td></tr>
+
+<tr><td>
+Quake-3:Arena
+</td><td>
+"Q3MAP.EXE -light"
 </td></tr>
 
 <tr><td>

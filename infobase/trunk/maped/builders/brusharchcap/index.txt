@@ -1,5 +1,5 @@
 title: Caps and Arches (Brushes)
-desc: makearch specifics 
+desc: makearch texturing specifics
 
 Brush-based `Caps' and arches are made by the same
 shape-builder, and

@@ -6,7 +6,3 @@ subdir: plugins
 subdir: games
 subdir: builderrors
 
-Sorry, under construction.
-
-Please refer to Decker's
-<a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.

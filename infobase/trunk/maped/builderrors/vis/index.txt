@@ -50,15 +50,15 @@ KPVIS.EXE
 </td></tr>
 
 <tr><td>
-Quake-3:Arena
-</td><td>
-"Q3MAP.EXE -vis"
-</td></tr>
-
-<tr><td>
 Soldier of Fortune
 </td><td>
 SOFVIS.EXE
+</td></tr>
+
+<tr><td>
+Quake-3:Arena
+</td><td>
+"Q3MAP.EXE -vis"
 </td></tr>
 
 <tr><td>

@@ -51,15 +51,15 @@ KPBSP.EXE
 </td></tr>
 
 <tr><td>
-Quake-3:Arena
-</td><td>
-Q3MAP.EXE
-</td></tr>
-
-<tr><td>
 Soldier of Fortune
 </td><td>
 SOFBSP.EXE
+</td></tr>
+
+<tr><td>
+Quake-3:Arena
+</td><td>
+Q3MAP.EXE
 </td></tr>
 
 <tr><td>

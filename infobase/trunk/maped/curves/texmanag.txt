@@ -3,7 +3,7 @@ author: tiglari
 
 There are currently three basic ways of manipulating textures
 on patches, dragging, a dialog box, and projection.  For
-dragging, drag on a point with the S key depressed.  Not
+dragging, drag on a point with the 'S' key depressed.  Not
 much will seem to happen, but when you stop dragging,
 the texture will be 'pulled' in the direction you dragged.
 
@@ -31,6 +31,4 @@ of the patch from or to the tagged face.  This is a 'flat'
 projection, so it won't look too good on seriously curved patches
 (but would work fine for something like a buckled or warped
 plate on a floor or wall).
-
-
 

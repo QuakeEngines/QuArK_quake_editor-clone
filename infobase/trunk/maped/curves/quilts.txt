@@ -25,10 +25,10 @@ In Q3Radiant documentation, quilts are called 'meshes', but there
 are lots of different kinds of meshes, and these quilts, or
 more precisely, quadratic quilts, have special properties,
 so we'll call them quilts to distinguish them from whatever
-amazing stuff might comen next.
+amazing stuff might come next.
 
 Currently you can make quilts by RMB on a patch control point,
-then Thicken|Add Row/Column.  This has the effect of replacing
+then <act>Thicken|Add Row/Column</act>.  This has the effect of replacing
 one row or column of patches with two (and so adding two additional
 strips of control points).  Another way to make quilts is to dissociate
 the images from one of the shapebuilders, such as column.  Playing
@@ -39,7 +39,7 @@ middle of the sides and the evens at the corners; if this were
 reversed the shape would be a rectangular rather than a rounded
 column.
 
-Quark definitely needs more elaborate facilities for creating and
+QuArK definitely needs more elaborate facilities for creating and
 shaping quilts, hopefully these will develop over time.
 
 
