@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.5  2002/12/22 05:33:57  tiglari
+restoring projecting points to planes, to make lighting work out
+
 Revision 1.56.2.4  2002/12/21 06:22:45  tiglari
 remove some unneeded stuff from v220-writing
 
@@ -410,6 +413,7 @@ type
                procedure LinkSurface(S: PSurface);
                procedure UnlinkSurface(S: PSurface);
                function Retourner : Boolean;
+               function Retourner_leavetex : Boolean;
                procedure AddTo3DScene; override;
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
@@ -4926,13 +4930,26 @@ end;
 
 function TFace.Retourner : Boolean;
 var
- V1, V2, V3: TVect;
+ V1, V2, V3, T1, T2, T3: TVect;
+begin
+ Result:=GetThreePoints(V1, V2, V3);
+ if Result then
+  begin
+   GetThreePointsT(T1, T2, T3);
+   SetThreePoints(V1, V3, V2);
+{   TextureMirror:=not TextureMirror; }
+   SetThreePointsT(T1, T2, T3);
+  end;
+end;
+
+function TFace.Retourner_leavetex : Boolean;
+var
+ V1, V2, V3 : TVect;
 begin
  Result:=GetThreePoints(V1, V2, V3);
  if Result then
   begin
    SetThreePoints(V1, V3, V2);
-   TextureMirror:=not TextureMirror;
   end;
 end;
 
@@ -5360,6 +5377,21 @@ begin
  end;
 end;
 
+function fSwapSides_leavetex(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  with QkObjFromPyObj(self) as TFace do
+   begin
+    Acces;
+    Retourner_leavetex;
+   end;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 function fExtrudePrism(self, args: PyObject) : PyObject; cdecl;
 var
  nobj: PyObject;
@@ -5392,12 +5424,13 @@ begin
 end;
 
 const
- FaceMethodTable: array[0..7] of TyMethodDef =
+ FaceMethodTable: array[0..8] of TyMethodDef =
   ((ml_name: 'verticesof';    ml_meth: fVerticesOf;    ml_flags: METH_VARARGS),
    (ml_name: 'distortion';    ml_meth: fDistortion;    ml_flags: METH_VARARGS),
    (ml_name: 'threepoints';   ml_meth: fThreePoints;   ml_flags: METH_VARARGS),
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
+   (ml_name: 'swapsides_leavetex';     ml_meth: fSwapSides_leavetex;     ml_flags: METH_VARARGS),
    (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
    (ml_name: 'enhrevert';     ml_meth: fRevertToEnhTex;  ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));
