@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2002/05/09 07:54:12  tiglari
+//corrected light paths from nurail
+//
 //Revision 1.4  2002/05/07 09:20:24  tiglari
 //Updates from nurail
 //
@@ -3108,6 +3111,7 @@ QQRKSRC1
         {
           ;desc = ""
           ;incl = "defpoly"
+          Angle = "360"
         }
         func_static:b =
         {
@@ -3734,211 +3738,253 @@ QQRKSRC1
         {
           ;desc = "Trandoshan"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_BespinCop:e =
         {
           ;desc = "Bespin Cop"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Ugnaught:e =
         {
           ;desc = "Ugnaught"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Mark2:e =
         {
           ;desc = "Droid (Mk2)"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Seeker:e =
         {
           ;desc = "Droid (Seeker)"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Tie_Pilot:e =
         {
           ;desc = "Tie Pilot"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Mark1:e =
         {
           ;desc = "Droid (Mk1)"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Prisoner:e =
         {
           ;desc = "Prisoner"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Interrogator:e =
         {
           ;desc = "Interrogator Droid"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Galak:e =
         {
           ;desc = "Galek"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Sentry:e =
         {
           ;desc = "Senry Droid"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_MonMothma:e =
         {
           ;desc = "Mon Mothma"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Mouse:e =
         {
           ;desc = "Mouse"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Imperial:e =
         {
           ;desc = "Imperial"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Reelo:e =
         {
           ;desc = "Reelo Baruk"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Lando:e =
         {
           ;desc = "Lando Calrissian"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_MineMonster:e =
         {
           ;desc = "Mine Monster"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Bartender:e =
         {
           ;desc = "Bartender"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Gran:e =
         {
           ;desc = "Gran"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Rodian:e =
         {
           ;desc = "Rodian"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Weequay:e =
         {
           ;desc = "Weequay"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Tavion:e =
         {
           ;desc = "Tavion"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_MorganKatarn:e =
         {
           ;desc = "Morgan Katarn"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_ImpWorker:e =
         {
           ;desc = "Imperial Worker"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Reborn:e =
         {
           ;desc = "Reborn Jedi"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Desann:e =
         {
           ;desc = "Desann"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_ATST:e =
         {
           ;desc = "ATST - AI Controlled"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Probe:e =
         {
           ;desc = "Probe Driod"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_ShadowTrooper:e =
         {
           ;desc = "Shadow Trooper"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Rebel:e =
         {
           ;desc = "Rebel"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Jan:e =
         {
           ;desc = "Jan Ors"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Stormtrooper:e =
         {
           ;desc = "Storm Trooper"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_SwampTrooper:e =
         {
           ;desc = "Swamp Trooper"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Protocol:e =
         {
           ;desc = "Protocol Droid"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Remote:e =
         {
           ;desc = "Remove Droid"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_Gonk:e =
         {
           ;desc = "Gonk"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_spawner:e =
         {
           ;desc = ""
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_R2D2:e =
         {
           ;desc = "R2D2"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Droid_R5D2:e =
         {
           ;desc = "R5D2"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Jedi:e =
         {
           ;desc = "Jedi"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Luke:e =
         {
           ;desc = "Luke Skywalker"
           Origin = "0 0 0"
+          Angle = "360"
         }
         NPC_Kyle:e =
         {
           ;desc = "Kyle Katarn"
           Origin = "0 0 0"
+          Angle = "360"
         }
       }
     }
@@ -4020,6 +4066,7 @@ QQRKSRC1
     misc_ion_cannon:form =
     {
       bbox = '-140 -140 0 140 140 320'
+      mdl = "models/map_objects/imp_mine/ioncannon.md3"
       wait: =
       {
         txt = "&"
@@ -5080,6 +5127,7 @@ QQRKSRC1
     misc_atst_drivable:form =
     {
       bbox = '-40 -40 -24 40 40 248'
+      mdl = "models/map_objects/imp_detention/atst.md3"
       health: =
       {
         txt = "&"
@@ -5096,6 +5144,7 @@ QQRKSRC1
     object_cargo_barrel1:form =
     {
       bbox = '-16 -16 -16 16 16 29'
+      mdl = "models/map_objects/cairn/barrels.md3"
       health: =
       {
         txt = "&"
@@ -5150,16 +5199,18 @@ QQRKSRC1
       }
     }
     misc_model:form =
-    {
+    { 
+      mdl = "[model]"
       model: =
       {
         txt = "&"
         hint = "arbitrary .md3 or .ase file to display"
         typ = "E"
-      }
+      }      
     }
     misc_model_breakable:form =
-    {
+    { 
+      mdl = "[model]"
       model: =
       {
         txt = "&"
