@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/11/19 15:31:51  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.5  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -65,6 +79,7 @@ type
                  function GetFormName : String; override;
                  procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                  procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+                 procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
                  procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                  procedure AddTo3DScene; override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
@@ -286,6 +301,14 @@ var
 begin
  for I:=0 to PyObject_Length(BuildImages)-1 do
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites, Cat);
+end;
+
+procedure TDuplicator.ListeBeziers(Entites: TQList; Flags: Integer);
+var
+ I: Integer;
+begin
+ for I:=0 to PyObject_Length(BuildImages)-1 do
+  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeBeziers(Entites, Flags);
 end;
 
 procedure TDuplicator.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);

@@ -26,6 +26,15 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
 Revision 1.16  2000/12/11 21:36:36  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -147,6 +156,7 @@ type
              {function VisuallySelected : Boolean; virtual;}
               procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); virtual;
               procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); virtual;
+              procedure ListeBeziers(Entites: TQList; Flags: Integer); virtual;
               procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); virtual;
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
@@ -218,6 +228,7 @@ type
                    property ViewFlags: Integer read GetViewFlags write SetViewFlags;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+                   procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
                    procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    procedure AddTo3DScene; override;
                    procedure AnalyseClic(Liste: PyObject); override;
@@ -568,6 +579,10 @@ begin
 end;
 
 procedure TTreeMap.ListeEntites;
+begin
+end;
+
+procedure TTreeMap.ListeBeziers;
 begin
 end;
 
@@ -2162,6 +2177,19 @@ begin
   TTreeMap(SubElements[I]).ListeEntites(Entites, Cat);
 end;
 
+procedure TTreeMapGroup.ListeBeziers(Entites: TQList; Flags: Integer);
+var
+ I: Integer;
+begin
+ if (Flags and soIgnoreToBuild <> 0)
+ and (ViewFlags and vfIgnoreToBuildMap <> 0) then
+  Exit;
+ if Odd(SelMult) then
+  Flags:=Flags and not soSelOnly;
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).ListeBeziers(Entites, Flags);
+end;
+
 procedure TTreeMapGroup.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 var
  I: Integer;
@@ -2309,7 +2337,7 @@ begin
      end;
     { proceed with Bezier patches }
     Polyedres.Clear;
-    ListeEntites(Polyedres, [ecBezier]);
+    ListeBeziers(Polyedres, Flags);
     for I:=0 to Polyedres.Count-1 do
      TBezier(Polyedres[I]).SaveAsTextBezier(Texte);
    finally

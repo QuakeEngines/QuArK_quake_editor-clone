@@ -26,6 +26,15 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
 Revision 1.20  2000/12/11 21:36:36  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -153,6 +162,7 @@ type
              procedure ChercheExtremites(var Min, Max: TVect); override;
 
              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+             procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
              procedure SaveAsTextBezier(Target: TStrings);
 
              {function CountBezierTriangles(var Cache: TBezierMeshBuf3) : Integer;}
@@ -1263,6 +1273,11 @@ end;
 procedure TBezier.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 begin
  if ecBezier in Cat then
+  Entites.Add(Self);
+end;
+
+procedure TBezier.ListeBeziers(Entites: TQList; Flags: Integer);
+begin
   Entites.Add(Self);
 end;
 
