@@ -1636,7 +1636,23 @@ begin
            Result:=PyInt_FromLong(OffScreen);
           Exit;
          end;
-   't': if StrComp(attr, 'tuple')=0 then
+   's': if attr[1]=#0 then
+         begin
+          Result:=PyFloat_FromDouble(PyVectST(self)^.TexS);
+          Exit;
+         end
+         else if (attr[1]='t') and (attr[2]=#0) then
+         begin
+           with PyVectST(self)^ do
+            Result:=Py_BuildValueDD(TexS, TexT);
+           Exit;
+         end;
+   't':  if attr[1]=#0 then
+         begin
+          Result:=PyFloat_FromDouble(PyVectST(self)^.TexT);
+          Exit;
+         end
+         else if StrComp(attr, 'tuple')=0 then
          begin
           with PyVect(self)^.V do
            Result:=Py_BuildValueDDD(X, Y, Z);
@@ -1674,7 +1690,20 @@ begin
          begin
           Result:=PyFloat_FromDouble(PyVect(self)^.V.X);
           Exit;
-         end;
+         end
+         else if StrComp(attr,'xyz')=0 then
+          begin
+           with PyVect(self)^.V do
+           Result:=Py_BuildValueDDD(X, Y, Z);
+           Exit;
+         end
+         else if StrComp(attr,'xyzst')=0 then
+          begin
+           with PyVect(self)^.V do
+            with PyVectST(self)^ do
+             Result:=Py_BuildValueD5(X, Y, Z, TexS, TexT);
+           Exit;
+          end;
    'y': if attr[1]=#0 then
          begin
           Result:=PyFloat_FromDouble(PyVect(self)^.V.Y);
