@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/10/21 10:23:38  decker_dk
+Replaced multiple calls to GetDC() with only one, and remembered to call ReleaseDC() afterwards.
+
 Revision 1.10  2001/06/05 18:41:51  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -58,6 +61,9 @@ interface
 uses
   SysUtils, Windows, Classes, Registry;
 
+{$IFDEF VER140}
+  {$DEFINE D4PLUS} // Rowdy for Delphi 6
+{$ENDIF}
 {$IFDEF VER130}
   {$DEFINE D4PLUS}
 {$ENDIF}
