@@ -1,7 +1,7 @@
 title: GUI Window Basics
 author: Tiglari
 
-Since one reason for getting involved in Quark development
+Since one reason for getting involved in QuArK development
 is to learn something about GUI (Graphical User Interface)
 programming, I thought I'd start at the beginning - if you want
 to learn it, you probably don't know it already.  People with

@@ -4,7 +4,7 @@ author: tiglari
 What we'll be doing is making a replacement maptagside plugin.
 The real one is interconnected with some other plugins
 which we'll have to disable, & it would not be a good
-idea to mess with your regular quark installation, so
+idea to mess with your regular QuArK installation, so
 you should make a second one, and in that installation,
 remove the files `plugins\mb2caulk' and `plugins\maptagside'.
 

@@ -3,7 +3,7 @@ author: tiglari
 
 Map saving is done by the calling TTMapBrush.SaveAsText
 in QkMapObjects.  This is triggered in slightly different
-ways by the regular build menu (qSaveFile), and the File|SaveAs|*.map
+ways by the regular build menu (qSaveFile), and the <act>File|SaveAs|*.map</act>
 menu item/dialog (TQForm1.Save), both in QkMapObjects. there
 is duplication of the code involved in reading the map
 saving config options; the build menu code does it in
@@ -15,7 +15,7 @@ code in delphi (QMap/QMapFile.SaveFile).
 The relevant object hierarchy is:
 
 <code>
-TTreeMap 
+TTreeMap
   TTreeMapSpec (can have writeable specifics)
      TTreeMapGroup (can have sub-polys/beziers)
         TTreeMapBrush (brush entity)

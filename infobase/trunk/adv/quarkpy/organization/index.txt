@@ -1,7 +1,7 @@
 title: Organization
 format: html
 
-Quark was originally envisaged as having a map editor and
+QuArK was originally envisaged as having a map editor and
 a model editor.  The latter hasn't been finished, but Andy
 Vincent is working hard on it.
 

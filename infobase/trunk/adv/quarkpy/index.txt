@@ -8,7 +8,7 @@ facilities that plugins depend on and add to.
 
 It can be thought of as a big and as yet poorly documented API;
 learning your way around it is imo the biggest obstacle to getting
-good at Quark Python coding.
+good at QuArK Python coding.
 
 Hopefully the rather paltry info here will be augmented
 before too long.

@@ -12,17 +12,17 @@ two kinds of .qrk files, text and binary (both unfortunately with
 the extension .qrk).  The text files can be read an edited with
 a text-editor (although the format is initially forbidding), whereas
 the binaries are much more compact, and allow `delay loading'
-which helps Quark manage big ones with less chugging.
+which helps QuArK manage big ones with less chugging.
 
 To get a text version of a binary *.qrk, just open it, and save then save
 it (as `structured text', with the extension .txt to keep the file system
-happy).  The `technical info' zips for the older quark versions,
+happy).  The `technical info' zips for the older QuArK versions,
 and the current development snapshots, contain the
 text versions of the *.qrk files, which furthermore tend to contain useful
 information such as comments on the syntax, etc.
 
 A (text format) .Qrk begins with the line `QQRKSRC1', which says
-that it's a Quark text format file.  Then there can be comment
+that it's a QuArK text format file.  Then there can be comment
 lines beginning with `//' (everything after `//' on a line is
 igored), whitespace and blank lines etc. until we get down to
 business with a line whose first nonblack character is:

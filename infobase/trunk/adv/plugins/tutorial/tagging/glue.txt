@@ -150,7 +150,7 @@ too many entanglements.
 
 Returning to the mere functioning of our plugin, another problem is
 that when we do tag a side, we see no indication of what we
-have done, in unfavorable contrast to actual Quark, where the tagged side
+have done, in unfavorable contrast to actual QuArK, where the tagged side
 gets outlined in red, with a red square in the center.
 And also the interface invites us to
 perform actions that then produce error messages, such as trying to

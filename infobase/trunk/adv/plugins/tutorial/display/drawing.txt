@@ -25,7 +25,7 @@ various finishing touches.
 While writing the tutorial, I noticed that tagging.py was actually
 redefining fininishdrawing of BaseEditor in quarkpy.qbaseeditor;
 this is actually not fully correct (tho it's been working fine in
-Quark for a long time), since qbaseeditor is supposed to be the
+QuArK for a long time), since qbaseeditor is supposed to be the
 base class for both map and model editors, and face-tagging is clearly
 relevant only to the former.
 
@@ -33,7 +33,7 @@ Anyway here's the code for the new procedure:
 <code>
 def tagfinishdrawing(editor, view, oldfinish=quarkpy.mapeditor.MapEditor.finishdrawing):
     "the new finishdrawing routine"
-    
+
     oldfinish(editor, view)
     tagged = gettagged(editor)
     if tagged is None: return
@@ -72,7 +72,7 @@ quarkpy.mapeditor.MapEditor.finishdrawing = tagfinishdrawing
 </code>
 Now when we tag a side, at first nothing happens, but then if
 we click in the map area, it gets drawn in blue, so at we
-can see that our new finishdrawing is doing something. 
+can see that our new finishdrawing is doing something.
 
 What we want is to get the map redrawn right after we have tagged
 the face, and the way to do it is to add:

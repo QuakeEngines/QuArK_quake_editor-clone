@@ -11,7 +11,7 @@ For tagging, What we need to do is:
 
 The last step involves some subleties, so we'll leave it out for now.
 
-When you start editing a map with Quark, it creates an instance
+When you start editing a map with QuArK, it creates an instance
 of the class mapeditor (defined in quarkpy.mapeditor), which then
 looks after the editing of that map.  Since we want to keep track
 of what's been tagged in this particular editing session, but

@@ -2,10 +2,10 @@ title: Python
 desc: learning notes gotchas
 
 Python is a very flexible, interpreted language that much of
-Quark is written in.  The `minipy' that you had to download and
-compile to run Quark at all includes a Python compiler, so
+QuArK is written in.  The `minipy' that you had to download and
+compile to run QuArK at all includes a Python compiler, so
 all you have to do to change to the python code is edit
-a *.py file in a text editor, save it, and run Quark:
+a *.py file in a text editor, save it, and run QuArK:
 compilation of changed .py files into .pyc files is automatic.
 
 If you want to develop in Python however, you will probably

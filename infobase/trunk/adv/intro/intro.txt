@@ -1,7 +1,7 @@
 title: Introduction
 author: Tiglari
 
-Quark development can be carried out at three levels:
+QuArK development can be carried out at three levels:
 
   the *.qrk configuration files
 
@@ -30,10 +30,10 @@ to support a new `specific type' in a form (if you have a bright idea
 and think you need a new specific type, some delphi coder might
 well be able to provide it).
 
-Central to eveything is the concept of `QObject', Quark's universal
+Central to eveything is the concept of `QObject', QuArK's universal
 format for the storage and management of structured information.
 Maps, game information supplied in add-ons, and the descriptions of
-most of the dialog boxes and other data-entry windows in Quark are
+most of the dialog boxes and other data-entry windows in QuArK are
 all described as QOjects.  The .Qrk files are just QObjects presented
 in a written format for QObjects, and understanding
 them is essential for following the Python and Delphi as well.
@@ -75,7 +75,7 @@ Here are some of the more important extensions:
 <li>.qtx - Toolbox.  Collection of objects that can be chosen from and inserted into something.
 <li>.qtxfolder - folder in .qtx
 <li>:form - specifies a format for a window whereby info about something
-    is entered into Quark.  To support a mod, you'll have to
+    is entered into QuArK.  To support a mod, you'll have to
     get familiar with the :form object associated with each
     entity, these are found in the entity forms.qctx of the .qrk
 <li>:f - face

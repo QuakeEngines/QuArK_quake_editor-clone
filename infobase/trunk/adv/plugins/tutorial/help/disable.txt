@@ -69,7 +69,7 @@ only for `read' access, but also for `write' access
 (redefinition).  This makes plugins extremely powerful,
 and is described in the Python documentation as a rather
 dangerous practice, but it seems to work out OK, the way
-it's managed in Quark.
+it's managed in QuArK.
 
 But now what we want to do of course is check for the preconditions of our two
 menu items.  For side-tagging, we want the selection to consist of

@@ -10,7 +10,7 @@ resized.  A floating window contains a further kind of
 window, called a 'panel', whose purpose is to contain
 and control the positioning of the windows that do the real
 work, which are called '(screen) controls' (in jargon,
-a Quark panel is a sort of 'geometry manager').  Dialog
+a QuArK panel is a sort of 'geometry manager').  Dialog
 boxes put one screen control into their panel, an
 extremely powerful creature called a 'dataform', which
 makes automagical links between QObjects and areas of
@@ -245,7 +245,7 @@ this line elsewhere in maptagside:
 
 Note the comma again, for pulling the solo value out of a
 singleton tuple (actually if you're looking at maptagside from
-quark511 or earlier, there's something a bit different done, since
+QuArK511 or earlier, there's something a bit different done, since
 this was my first dialog box and I knew less about what I was
 doing).  editor.texmult.src["mult"] returns the value of the
 specific "mult" for the src QObject of the editor, and by the

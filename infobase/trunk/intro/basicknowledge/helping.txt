@@ -3,7 +3,7 @@ author: Armin Rigo / Decker
 
 If you want to help with QuArK's development, here is how you can do various things. You don't have to be a programmer to
 give some help! If you need help about these ways of helping, see the
-<a href="http://www.planetquake.com/quark/forums.shtml">"quark-python" forum</a> on the web site.
+<a href="http://www.planetquake.com/quark/forums.shtml">"QuArK-Python" forum</a> on the web site.
 
 <ul>
 <li><strong>Support for a mod</strong>:<br>
@@ -37,4 +37,4 @@ give some help! If you need help about these ways of helping, see the
 </ul>
 
 As stated above, you can find more help about this subject in the
-<a href="http://www.planetquake.com/quark/forums.shtml">"quark-python" forum</a> on the web site.
+<a href="http://www.planetquake.com/quark/forums.shtml">"QuArK-Python" forum</a> on the web site.

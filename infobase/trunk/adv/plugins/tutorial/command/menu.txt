@@ -55,14 +55,14 @@ to use clumsy prefixing conventions, etc. to prevent name
 collisions.
 
 So when this is all typed out and saved into a file `maptagside.py' in
-in the plugins directory, you should be able to start up quark, fire
+in the plugins directory, you should be able to start up QuArK, fire
 up the map editor, find the `Do Nothing' command on the command menu,
 click on it, and see the resulting message box.
 
 If it doesn't work, possible explanations are:
 <UL>
 <LI> A syntax error in the program, in which case you'll be looking
-at the Quark console, which will have some kind of error message.
+at the QuArK console, which will have some kind of error message.
 <LI> Your module-file's name doesn't start with `map', in which case
 QuArK will work but your new command won't appear on the menu.
 <LI> Something else, tell me when you manage to figure out it.

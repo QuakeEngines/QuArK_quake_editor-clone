@@ -1,3 +1,2 @@
 title: Structure of the program
 desc: objects fileobjects loading saving display
-desc: classhierarchy

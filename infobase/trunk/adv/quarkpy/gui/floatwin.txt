@@ -1,7 +1,7 @@
 title: Floating Windows
 author: Tiglari
 
-A Quark dialog box is just a restricted kind of floating
+A QuArK dialog box is just a restricted kind of floating
 window; so now it's time to look into the code that
 defines them and see how floating windows work in general.
 
@@ -44,7 +44,7 @@ same name (closedialogbox() is defined elsewhere in
 quarkpy.qmacro).  And now something interesting happens;
 we create an actual form object, and then load in whatever
 text has wound up assigned to dlgdef.  loadtext is actually
-one of the methods of QObjects (Quark internal objects);
+one of the methods of QObjects (QuArK internal objects);
 it would not be amiss to look it up in Quarkx.rtf.
 
 And so here's our next chunk of code:
