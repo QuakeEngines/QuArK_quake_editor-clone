@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.22  2000/08/22 11:41:18  tiglari
 transfer of 'q' specific from QTextureLnk to Shader, for supporting image
 specification in .qrk files
@@ -631,7 +634,7 @@ begin
   Anim:=TStringList.Create;
   try
    ProgressIndicatorStart(5453, L.Count); try
-   TexFormat1:=GetRegisteredQObject(SetupGameSet.Specifics.Values['TextureFormat']);
+   TexFormat1:=GetRegisteredQObject(SetupGameSet.Specifics.Values['TextureWriteFormat']);
    if (TexFormat1=Nil) or not TexFormat1.InheritsFrom(QPixelSet) then
     raise EError(5688);
    TexFormat:=QPixelSetClass(TexFormat1);
