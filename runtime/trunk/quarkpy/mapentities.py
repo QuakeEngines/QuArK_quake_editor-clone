@@ -174,6 +174,15 @@ class DuplicatorType(EntityType):
 class GroupType(EntityManager):
     "QuArK groups"
 
+    def handles(o, editor, view):
+        pos = ObjectOrigin(o)
+        if pos is None:
+            return []
+        h = [maphandles.CenterHandle(pos, o, MapColor("Tag"))]
+        if o["usercenter"] is not None:
+            h.append(maphandles.UserCenterHandle(o))
+        return h
+        
     def drawsel(o, view, mode):
         # draw group selected
         view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelGroupColor"))
@@ -628,6 +637,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.25  2001/03/22 08:14:31  tiglari
+#origin duplicator bugfix
+#
 #Revision 1.24  2001/03/21 21:19:08  tiglari
 #custom origin (center for groups) duplicator support
 #
