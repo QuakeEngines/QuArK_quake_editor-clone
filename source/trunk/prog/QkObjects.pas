@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2000/09/09 14:30:32  alexander
+fixed GetSousElements bug when acessing a subobject of an object whose file is not yet loaded
+
 Revision 1.22  2000/09/01 00:50:22  alexander
 set name
 
@@ -70,7 +73,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'quarksnapshot_20000901';
+ QuArKVersion            = 'quarksnapshot_20000910';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;

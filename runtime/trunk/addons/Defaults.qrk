@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.53  2000/09/04 21:20:28  tiglari
+//additions to dup column specifics, for more options
+//
 //Revision 1.52  2000/09/02 11:19:11  tiglari
 //added subdivide specific for arch/cap
 //
@@ -145,7 +148,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000901"
+      Version = "quarksnapshot_20000910"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-        0: "quarksnapshot_20000901",
+        0: "quarksnapshot_20000910",
 	1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
 	2: "&New %s",
@@ -878,6 +878,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.20  2000/09/01 00:49:52  alexander
+#set name
+#
 #Revision 1.19  2000/08/20 11:08:22  aiv
 #Added Error Code 5503
 #
