@@ -2,9 +2,15 @@
 
 Python macros available for direct call by QuArK
 """
-
+#
+#tbd: concat strings, readonly attribute, forms for specific data types
 #
 #$Header$
+#
+#
+#
+#$Log$
+#
 #
 
 import time, sys
@@ -309,7 +315,7 @@ def AddKeyType(token):
     global currentkeyname, theKey
     # Determine what type this key is, so the correct object can be created
     token = token.lower()
-    if (token == "integer"):
+    if (token == "integer" or token =='float' or token == 'node_dest'):
         theKey = KeyNumeric()
     elif (token == "string" \
        or token == "target_source" \
@@ -319,12 +325,27 @@ def AddKeyType(token):
        or token == "studio" \
        or token == "sound" \
        or token == "sprite" \
+       or token == "angle" \
+       or token == "origin" \
+       or token == "input" \
+       or token == "output" \
+       or token == "filterclass" \
        or token == "decal"):
         theKey = KeyString()
     elif (token == "flags"):
         theKey = KeyFlags()
     elif (token == "choices"):
         theKey = KeyChoices()
+    elif (token == "void"):
+        theKey = KeyString()
+    elif (token == "vector"):
+        theKey = KeyString()
+    elif (token == "vecline"):
+        theKey = KeyString()
+    elif (token == "sidelist"):
+        theKey = KeyString()
+    elif (token == "material"):
+        theKey = KeyString()
     else:
         raise "Unknown KeyType-token:", token
     theKey.SetKeyname(currentkeyname)
@@ -338,6 +359,11 @@ def AddKeyDefa(token):
     theKey.SetDefaultValue(token)
 
 def AddKeyFlagNum(token):
+    global currentkeyflag
+    EndKeyFlag("--EndByAddKeyFlagNum--")
+    currentkeyflag = token
+
+def AddKeyFlagStr(token):
     global currentkeyflag
     EndKeyFlag("--EndByAddKeyFlagNum--")
     currentkeyflag = token
@@ -361,6 +387,11 @@ def EndKeyFlag(token):
     currentkeyflag = None
 
 def AddKeyChoiceNum(token):
+    global currentkeychoice
+    EndKeyChoice("--EndByAddKeyChoiceNum--")
+    currentkeychoice = token
+
+def AddKeyChoiceStr(token):
     global currentkeychoice
     EndKeyChoice("--EndByAddKeyChoiceNum--")
     currentkeychoice = token
@@ -423,6 +454,25 @@ TYPE_SPLITTER_SQUARE_E  = 14    # ']'
 TYPE_SPLITTER_PRNTSHS_B = 15    # '('
 TYPE_SPLITTER_PRNTSHS_E = 16    # ')'
 TYPE_SPLITTER_COMMA     = 17    # ','
+TYPE_INPUT     = 18    # 'input'
+TYPE_OUTPUT     = 19    # 'input'
+
+toktypes={
+0  :'TYPE_UNKNOWN',        
+1  :'TYPE_NUMERIC',        
+2  :'TYPE_STRING',        
+3  :'TYPE_SYMBOL',        
+10 :'TYPE_SPLITTER_AT',
+11 :'TYPE_SPLITTER_COLON',
+12 :'TYPE_SPLITTER_EQUAL',
+13 :'TYPE_SPLITTER_SQUARE_B',
+14 :'TYPE_SPLITTER_SQUARE_E',
+15 :'TYPE_SPLITTER_PRNTSHS_B',
+16 :'TYPE_SPLITTER_PRNTSHS_E',
+17 :'TYPE_SPLITTER_COMMA',
+18 :'TYPE_INPUT',
+19 :'TYPE_OUTPUT'}
+
 
 CHARS_NUMERIC  = "-0123456789."
 CHARS_STRING   = "\""
@@ -480,8 +530,13 @@ def getnexttoken(srcstring):
         elif (token == ","):
             token_is = TYPE_SPLITTER_COMMA
     else:
-        token_is = TYPE_SYMBOL
         token, srcstring = gettoken(srcstring)
+        if (token == 'input'):
+          token_is = TYPE_INPUT
+        elif (token == 'output'):
+          token_is = TYPE_OUTPUT
+        else:
+          token_is = TYPE_SYMBOL
     return token, token_is, srcstring
 
 
@@ -495,6 +550,7 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CLASSNAME'      ,None)             ] \
                                                                                                 \
 ,'STATE_INHERITBEGIN'   :[(TYPE_SPLITTER_PRNTSHS_B ,'STATE_INHERITMEDIUM'  ,None)             ] \
+                                                                                                \
 ,'STATE_INHERITMEDIUM'  :[(TYPE_SYMBOL             ,'STATE_INHERITMEDIUM'  ,AddInherit)         \
                          ,(TYPE_NUMERIC            ,'STATE_INHERITMEDIUM'  ,AddInherit)         \
                          ,(TYPE_STRING             ,'STATE_INHERITMEDIUM'  ,AddInherit)         \
@@ -502,16 +558,26 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_PRNTSHS_E ,'STATE_CLASSINHERIT'   ,EndInherit)       ] \
                                                                                                 \
 ,'STATE_CLASSNAME'      :[(TYPE_SYMBOL             ,'STATE_CLASSNAME2'     ,BeginClassname)   ] \
+                                                                                                \
 ,'STATE_CLASSNAME2'     :[(TYPE_SPLITTER_COLON     ,'STATE_CLASSNAME3'     ,None)               \
                          ,(TYPE_SPLITTER_SQUARE_B  ,'STATE_KEYSBEGIN'      ,None)             ] \
 ,'STATE_CLASSNAME3'     :[(TYPE_STRING             ,'STATE_CLASSNAME4'     ,AddClassnameDesc) ] \
+                                                                                                \
 ,'STATE_CLASSNAME4'     :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_KEYSBEGIN'      ,None)             ] \
                                                                                                 \
 ,'STATE_KEYSBEGIN'      :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
-                         ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)         ] \
+                         ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                                                                                                \
+,'STATE_INPUTBEGIN'     :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)         ] \
+                                                                                                \
+,'STATE_OUTPUTBEGIN'    :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)         ] \
                                                                                                 \
 ,'STATE_KEYBEGIN'       :[(TYPE_SPLITTER_PRNTSHS_B ,'STATE_KEYTYPE'        ,None)             ] \
+                                                                                                \
 ,'STATE_KEYTYPE'        :[(TYPE_SYMBOL             ,'STATE_KEYTYPE2'       ,AddKeyType)       ] \
+                                                                                                \
 ,'STATE_KEYTYPE2'       :[(TYPE_SPLITTER_PRNTSHS_E ,'STATE_KEYTYPE3'       ,None)             ] \
 ,'STATE_KEYTYPE3'       :[(TYPE_SPLITTER_EQUAL     ,'STATE_VALUEFLAGS'     ,None)               \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE'          ,None)               \
@@ -519,28 +585,52 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)     ] \
                                                                                                 \
 ,'STATE_VALUEFLAGS'     :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_VALUEFLAGS2'    ,None)             ] \
+                                                                                                \
 ,'STATE_VALUEFLAGS2'    :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_KEYSBEGIN'      ,EndKeyFlags)        \
                          ,(TYPE_NUMERIC            ,'STATE_VALUEFLAG'      ,AddKeyFlagNum)    ] \
+                                                                                                \
 ,'STATE_VALUEFLAG'      :[(TYPE_SPLITTER_COLON     ,'STATE_VALUEFLAG2'     ,None)             ] \
+                                                                                                \
 ,'STATE_VALUEFLAG2'     :[(TYPE_STRING             ,'STATE_VALUEFLAG3'     ,AddKeyFlagDesc)   ] \
+                                                                                                \
 ,'STATE_VALUEFLAG3'     :[(TYPE_SPLITTER_COLON     ,'STATE_VALUEFLAG4'     ,None)             ] \
+                                                                                                \
 ,'STATE_VALUEFLAG4'     :[(TYPE_NUMERIC            ,'STATE_VALUEFLAGS2'    ,AddKeyFlagDefa)   ] \
                                                                                                 \
 ,'STATE_VALUE'          :[(TYPE_STRING             ,'STATE_VALUE2'         ,AddKeyDesc)       ] \
+                                                                                                \
 ,'STATE_VALUE2'         :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE3'         ,None)               \
-                         ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)             ] \
+                         ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                                                                                                \
 ,'STATE_VALUE3'         :[(TYPE_NUMERIC            ,'STATE_VALUE4'         ,AddKeyDefa)         \
-                         ,(TYPE_STRING             ,'STATE_VALUE4'         ,AddKeyDefa)       ] \
+                         ,(TYPE_STRING             ,'STATE_VALUE4'         ,AddKeyDefa)         \
+                         ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE5'         ,None)             ] \
+                                                                                                \
 ,'STATE_VALUE4'         :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
-                         ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)             ] \
+                         ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE5'         ,None)               \
+                         ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                                                                                                \
+,'STATE_VALUE5'         :[(TYPE_STRING             ,'STATE_VALUE6'         ,None)             ] \
+,'STATE_VALUE6'         :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
+                         ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
+                         ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
                                                                                                 \
 ,'STATE_CHOICES'        :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_CHOICES2'       ,None)             ] \
 ,'STATE_CHOICES2'       :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_KEYSBEGIN'      ,EndKeyChoices)      \
+                         ,(TYPE_STRING             ,'STATE_CHOICES3'       ,AddKeyChoiceStr)    \
                          ,(TYPE_NUMERIC            ,'STATE_CHOICES3'       ,AddKeyChoiceNum)  ] \
+                                                                                                \
 ,'STATE_CHOICES3'       :[(TYPE_SPLITTER_COLON     ,'STATE_CHOICES4'       ,None)             ] \
+                                                                                                \
 ,'STATE_CHOICES4'       :[(TYPE_STRING             ,'STATE_CHOICES2'       ,AddKeyChoiceDesc) ] \
 }
 
@@ -554,6 +644,9 @@ def makeqrk(root, filename, gamename):
     state = 'STATE_UNKNOWN'
     while (len(srcstring) > 1):
         token, token_is, srcstring = getnexttoken(srcstring)
+        print "\ntoken:",token
+        print "token_is:",toktypes[token_is]
+        print "nextstring:",srcstring[:64]
         # Figure out, if the token_is type is expected or not
         expectedtypes = []
         newstate = None
@@ -565,7 +658,7 @@ def makeqrk(root, filename, gamename):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-            print "Parse error: Got type", token_is, "but expected type(s);", expectedtypes
+            print "Parse error: Got type", toktypes[token_is], "but expected type(s);", [toktypes[i] for i in expectedtypes]
             print "Debug: Last classname was =", currentclassname
             print "Debug:", srcstring[:64]
             raise "Parse error!"
@@ -605,6 +698,11 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.6  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
 #Revision 1.5  2002/02/05 18:32:58  decker_dk
 #Corrected a problem with debug() calls
 #
