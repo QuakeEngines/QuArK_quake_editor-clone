@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2002/03/23 09:41:42  tiglari
+refer to SupportsBrushPrim rather mjQ3A for brush primitive activation
+
 Revision 1.44  2001/07/18 03:50:31  tiglari
 Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
  PSommet, TTableauFSommets, PTableauFSommets
@@ -256,6 +259,8 @@ type
                function PyGetAttr(attr: PChar) : PyObject; override;
                procedure Deplacement(const PasGrille: TDouble); override;
              end;
+
+ {Fixme: Polyedre must die!}
  TPolyedre = TPolyhedron;
 
  TTexturedTreeMap = class(TTreeMap)   { for faces and Bezier patches }
@@ -371,6 +376,13 @@ const
 
 type
  TThreePoints = array[1..3] of TVect;
+
+ MapFormatTypes = (
+     CQType, { Classic Quake1/2/3 }
+     QetpType,  { Quark Enhanced Texture Positioning }
+     V220Type,  { Valve Mapformat 220 }
+     BPType     { Brush Primitives }
+  );
 
  {------------------------}
 
@@ -1248,7 +1260,7 @@ end;
 
  {------------------------}
 
-destructor TPolyedre.Destroy;
+destructor TPolyhedron.Destroy;
 begin
  DetruireSommets;
  Sommets.Free;
@@ -1256,12 +1268,12 @@ begin
  inherited;
 end;
 
-class function TPolyedre.TypeInfo: String;
+class function TPolyhedron.TypeInfo: String;
 begin
  TypeInfo:=':p';
 end;
 
-procedure TPolyedre.ObjectState;
+procedure TPolyhedron.ObjectState;
 begin
  inherited;
 {if (FFlags and ofNotLoadedToMemory <> 0) or CheckPolyhedron then}
@@ -1271,7 +1283,7 @@ begin
   E.IndexImage:=iiInvalidPolyhedron
 end;
 
-function TPolyedre.IsExplorerItem(Q: QObject) : TIsExplorerItem;
+function TPolyhedron.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
  Result:=ieResult[Q is TFace];
  if g_DrawInfo.CacherFaces then
@@ -1305,7 +1317,7 @@ begin
  Result:=True;
 end;*)
 
-function TPolyedre.CheckPolyhedron: Boolean;
+function TPolyhedron.CheckPolyhedron: Boolean;
 begin
  if PolyhedronState=psUnknown then
   try
@@ -1317,7 +1329,7 @@ begin
  CheckPolyhedron:=PolyhedronState=psOk;
 end;
 
-procedure TPolyedre.ConstruireSommets;
+procedure TPolyhedron.ConstruireSommets;
 var
  Err1, Extra: String;
  L: TStringList;
@@ -1349,7 +1361,7 @@ begin
   end;
 end;
 
-function TPolyedre.GetPolyhedronError : String;
+function TPolyhedron.GetPolyhedronError : String;
 begin
  Result:='';
  if PolyhedronState=psOk then
@@ -1365,7 +1377,7 @@ begin
  end;
 end;
 
-procedure TPolyedre.DetruireSommets;
+procedure TPolyhedron.DetruireSommets;
 var
  I: Integer;
  S: PSurface;
@@ -1394,7 +1406,7 @@ begin
  PolyhedronState:=psUnknown;
 end;
 
-procedure TPolyedre.InvalidatePolyhedron(Aj: TAjScene);
+procedure TPolyhedron.InvalidatePolyhedron(Aj: TAjScene);
 begin
  if Aj in [asRetire, asDeplace1, asModifie, asAjoute, asDeplace2] then
   begin
@@ -1442,7 +1454,7 @@ begin
  Result:=Max > Min+rien;
 end;
 
-function TPolyedre.ConstruireSommets1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
+function TPolyhedron.ConstruireSommets1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
 type
  TUnSommet = record Ar: Integer; end;
  TableauSommets = array[0..99] of TUnSommet;
@@ -1959,7 +1971,7 @@ begin
  Result:=PolyedreNonVide1(nFaces, ReloadData, rien2) or PolyedreNonVide1(nFaces, ReloadData, rien);
 end;
 
-procedure TPolyedre.ConstruireReduire;
+procedure TPolyhedron.ConstruireReduire;
 var
  I, J: Integer;
  Q: QObject;
@@ -1982,7 +1994,7 @@ begin
   end;
 end;
 
-procedure TPolyedre.AjouteFace(FJ: TFace; Copie: Boolean);
+procedure TPolyhedron.AjouteFace(FJ: TFace; Copie: Boolean);
 var
  I: Integer;
  FI: QObject;
@@ -2201,12 +2213,35 @@ begin
   Result:=(SetupGameSet.Specifics.Values['SupportsBrushPrim']<>'');
 end;
 
-procedure TPolyedre.SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
+function GetMapFormatType : MapFormatTypes;
+var
+  S : PChar;
+begin
+    S:=PChar(SetupGameSet.Specifics.Values['OutputMapFormat']);
+   { ShowMessage(S); }
+    if StrComp(S, 'Classic Quake')=0 then Result:=CQType
+    else
+    if StrComp(S,'Quark etp')=0 then Result:=QetpType
+    else
+    if StrComp(S,'Valve 220')=0 then Result:=V220Type
+    else
+    if StrComp(S,'Brush Primitives')=0 then Result:=BPType
+    else
+    begin
+     { Raise EErrorFmt(5702, [S]); }
+      Result:=CQType
+    end;
+
+end;
+
+procedure TPolyhedron.SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
 var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers, BrushPrim, Valve220Map, UseIntegralVertices, ExpandThreePoints : Boolean;
+ { BrushPrim, Valve220Map : Boolean }
+ WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
+ MapFormat: MapFormatTypes;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2491,7 +2526,7 @@ var
         else
          S:=S+FloatToStrF(Z, ffFixed, 20, 5)+' ) ';
        end;
-     if GameSupportsBrushPrim and BrushPrim then
+     if MapFormat=BPType then
       with F do
        begin
         GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
@@ -2511,10 +2546,10 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if Valve220Map then
+       if MapFormat=V220Type then
        begin
         Valve220MapParams(Normale, F, S);
-       end else if not (GameSupportsBrushPrim and BrushPrim) then
+       end else if not (MapFormat=BPType) then
        begin
          ApproximateParams(Normale, P, Params, TextureMirror);
          for I:=1 to 2 do
@@ -2617,7 +2652,7 @@ var
          end;
        end;
 
-     if (Flags and soDisableEnhTex = 0) and (not (Valve220Map or BrushPrim)) then
+     if (MapFormat=QetpType) then
       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
@@ -2626,14 +2661,17 @@ var
 begin
  if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
- BrushPrim:=Flags and soEnableBrushPrim<>0;
- Valve220Map:=Flags and soWriteValve220<>0;
- UseIntegralVertices:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex<>0);
+ MapFormat:=GetMapFormatType;
+{
+ UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
  ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
+ }
+ UseIntegralVertices:=false;
+ ExpandThreePoints:=false;
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
- if (GameSupportsBrushPrim) and BrushPrim then
+ if MapFormat=BPType then
  begin
   Brush.Add('brushDef');
   Brush.Add(' {');
@@ -2648,12 +2686,12 @@ begin
     if Q is TFace then
      WriteFace(TFace(Q));
    end;
- if (GameSupportsBrushPrim) and BrushPrim then
+ if MapFormat=BPType then
    Brush.Add(' }');
  Brush.Add(' }');
 end;
 
-procedure TPolyedre.Dessiner;
+procedure TPolyhedron.Dessiner;
 type
  TUnSommet = record
               Pt: TPointProj;
@@ -2801,7 +2839,7 @@ begin
   DeleteObject(SelectObject(g_DrawInfo.DC, g_DrawInfo.BlackBrush));
 end;
 
-procedure TPolyedre.PreDessinerSel{1};
+procedure TPolyhedron.PreDessinerSel{1};
 var
  I: Integer;
 {Brush: HBrush;
@@ -2874,7 +2912,7 @@ end;*)
 begin
 end;*)
 
-function TPolyedre.CentrePolyedre : TVect;
+function TPolyhedron.CentrePolyedre : TVect;
 var
  J, NbPts: Integer;
 begin
@@ -2897,7 +2935,7 @@ begin
  Result.Z:=Result.Z / NbPts;
 end;
 
-function TPolyedre.GetOrigin;
+function TPolyhedron.GetOrigin;
 begin
  CheckPolyhedron;
  if (Sommets=Nil) or (Sommets.Count=0) then
@@ -2923,7 +2961,7 @@ begin
     end;
 end;*)
 
-procedure TPolyedre.AnalyseClic;
+procedure TPolyhedron.AnalyseClic;
 var
  I, J: Integer;
  nP: TPointProj;
@@ -2960,13 +2998,13 @@ begin
  inherited;
 end;
 
-procedure TPolyedre.OperationInScene(Aj: TAjScene; PosRel: Integer);
+procedure TPolyhedron.OperationInScene(Aj: TAjScene; PosRel: Integer);
 begin
  inherited;
  InvalidatePolyhedron(Aj);
 end;
 
-procedure TPolyedre.ChercheExtremites(var Min, Max: TVect);
+procedure TPolyhedron.ChercheExtremites(var Min, Max: TVect);
 var
  I: Integer;
 begin
@@ -2983,7 +3021,7 @@ begin
     end;
 end;
 
-procedure TPolyedre.ListePolyedres;
+procedure TPolyhedron.ListePolyedres;
 var
  I, J: Integer;
  Anciens, Nouveaux, L: TQList;
@@ -3070,7 +3108,7 @@ begin
  inherited;
 end;*)
 
-procedure TPolyedre.SetSelFocus;
+procedure TPolyhedron.SetSelFocus;
 var
  I: Integer;
  S: PSurface;
@@ -3084,7 +3122,7 @@ begin
    end;
 end;
 
-function TPolyedre.PyCloneEmpty : TPolyedre;
+function TPolyhedron.PyCloneEmpty : TPolyedre;
 var
 {I: Integer;}
  CreatedBy: QObject;
@@ -3093,7 +3131,7 @@ begin
   CreatedBy:=FParent
  else
   CreatedBy:=Self;
- Result:=TPolyedre.Create(Name, {FParent}CreatedBy);
+ Result:=TPolyhedron.Create(Name, {FParent}CreatedBy);
  Result.PyNoParent:=True;
  Result.Flags:=FFlags and ofCloneFlags;
 {for I:=0 to Specifics.Count-1 do
@@ -3101,7 +3139,7 @@ begin
  Result.Specifics.AddStrings(Specifics);
 end;
 
-function TPolyedre.EnumAretes(Sommet: PVertex; var nVertices: TFVertexTable) : Integer;
+function TPolyhedron.EnumAretes(Sommet: PVertex; var nVertices: TFVertexTable) : Integer;
 var
  I, J, K: Integer;
  Prec, S: PVertex;
@@ -3133,7 +3171,7 @@ begin
     end;
 end;
 
-procedure TPolyedre.Deplacement(const PasGrille: TDouble);
+procedure TPolyhedron.Deplacement(const PasGrille: TDouble);
 var
  Info1: TVect;
  OldOrg, NewOrg: TVect;
@@ -3267,7 +3305,7 @@ const
   ((ml_name: 'subtractfrom';   ml_meth: pSubtractFrom;   ml_flags: METH_VARARGS),
    (ml_name: 'intersects';     ml_meth: pIntersects;     ml_flags: METH_VARARGS));
 
-function TPolyedre.PyGetAttr(attr: PChar) : PyObject;
+function TPolyhedron.PyGetAttr(attr: PChar) : PyObject;
 var
  I: Integer;
 begin
