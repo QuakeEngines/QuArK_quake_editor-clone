@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.135  2001/05/12 23:06:05  tiglari
+//add  'item center' flag to linear duplicator for new linear fixpoint behavior
+//
 //Revision 1.134  2001/05/12 19:01:23  tiglari
 //remove scale & rotate buttons from linearform
 //
@@ -443,7 +446,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap050701"
+      Version = "QuArK 6.3snap052101"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
