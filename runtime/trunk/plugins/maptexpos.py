@@ -164,9 +164,10 @@ def PosTexClick(m):
 def texmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
   "the new right-mouse for sides"
   menu = oldmenu(o, editor)
+  texpop = findlabelled(menu, 'texpop')
   texitem = qmenu.item("Position Texture",PosTexClick)
   texitem.o = o
-  menu[:0] = [texitem]
+  texpop.items[1:1] = [texitem]
   return menu
   
 quarkpy.mapentities.FaceType.menu = texmenu
@@ -175,6 +176,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #
