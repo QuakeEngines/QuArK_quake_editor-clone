@@ -44,6 +44,11 @@ from interface). NYI as fixpoint for linear mapping in duplicators.
 <li>Form-editing: (Andy)
 <br>status: editing only - no create
 
+<li> Entity Extractor: (Andy)
+<br> Entities extracted from .bsp's in many formats
+    (including Q3(T)A).
+<br> Status: basically done but some apparent issues.    
+
 <li>FAKK2 support: (?)
 <br>And what about Daikatana, Alice, & Gunman
 <br>status: Gunman seems supportable as an add-on
@@ -69,20 +74,11 @@ Also should have a 'force-to-grid' option.
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes'
 
-<li>Optional plugins: (tiglari)
-<br>Some plugins wouldn't load unless they were 'registered'
-like addons; this would make it easier to try things out
-
 <li>Expand/Contract faces: (tiglari)
 <br>As enhancement to experimental mapmovevertex plugin
 
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
-<br>project from nearest plane', emulating classic qe texture
-alignment: the projection
-of the texture scale on the closest axis plane to the tagged
-face normal is found, then that is projected onto the tagged
-face.
 
 <li>Ripoff of WC `arch maker': (tiglari)
 <br>would be called something like`arc builder', probably
@@ -92,13 +88,10 @@ basically a duplicator, emulating the wc thing's functionality.
 
 <li>Face-selection modes: (tiglari)
 
-<li>Patch-based terrain builder: (tiglari, Seth?)
 
 <li>L-square enhancements: (tiglari, ax2grind)
 
-<li>Adquedit-equivalent resource display: (Andy, ?)
 
 <li>CTF duplicator: (tiglari)
-<br>Maybe too complicated?
-
+<br>status: started, nothing committed.
 </ul>

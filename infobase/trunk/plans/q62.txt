@@ -77,10 +77,6 @@ yet there.
 <br>Makes copies of things
 radially around a tiltable axis, with 'spiral' attributes.
 
-<li> Entity Extractor: (Andy)
-<br> Entities extracted from .bsp's in many formats
-    (including Q3(T)A).
-    
 <li> fgd converter: (Andy, Decker)
 
 <li> tag side plugin: (tiglari)

@@ -1,0 +1,27 @@
+title: Suggestions
+author: tiglari, etc.
+
+Ideas might or might not get implemented (proposer parenthesized).
+<UL>
+
+<LI>Selected groups colored rather than dotted outline (option perhaps?). (rd)
+
+<LI>Texture rescale on vertex drag to preserve alignment (rd)
+
+<li>Patch-based terrain builder: (tiglari)
+
+<li>Adquedit-equivalent resource display: (Seth)
+
+<li> new projection option, 
+'project from nearest plane', emulating classic qe texture
+alignment: the projection
+of the texture scale on the closest axis plane to the tagged
+face normal is found, then that is projected onto the tagged
+face. (tiglari)
+
+<li>Optional plugins:
+<br>Some plugins wouldn't load unless they were 'registered'
+like addons; this would make it easier to try things out
+(tiglari)
+
+</UL>
