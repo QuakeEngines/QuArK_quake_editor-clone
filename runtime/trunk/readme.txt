@@ -1,6 +1,7 @@
 
 
  *add align to marked option, clear mark command.
+ *threepoint plane can now glue to tagged plane
 
 
         Patch 2, for QuArK Snaprot of 070901
