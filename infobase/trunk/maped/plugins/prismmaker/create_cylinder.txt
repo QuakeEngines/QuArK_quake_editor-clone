@@ -1,0 +1,44 @@
+title: How to create a cylinder/pipe
+author: Decker
+
+The fastest way to create a cylinder/pipe, is to use the '<b>Make Prism</b>' which is located in the '<b>Commands</b>' menu.
+
+<table border=0 align=center>
+  <tr>
+    <td valign=top>
+      <img>make_prism_2.png</img>
+    </td>
+    <td>&nbsp;=>&nbsp;</td>
+    <td valign=top>
+      <img>make_prism_1.png</img>
+    </td>
+    <td>&nbsp;=>&nbsp;</td>
+    <td valign=center>
+      <img>make_prism_3.png</img>
+    </td>
+  </tr>
+</table>
+
+<b>Prism texture</b>, is pretty self explanatory.
+
+<b>Start prism on a vertex</b>, well... experiment with it. I always keep it marked.
+
+<b>Number of sides</b>, should also be pretty self explanatory, since its how 'round' you want the cylinder to be. The larger
+the number, the more sides/faces there will be, and 'rounder' it will look.
+
+<b>Radius of prism</b>, is half its diameter. To get a larger cylinder/pipe increase this value. I tend to keep it a value
+which aligns to my current grid (32, 48, 64, 192, 256, etc.)
+
+<b>Height of prism</b>, is how tall the cylinder should be. However I rarely change it, because its much easier to do it in
+the map-views, when the cylinder have been created.
+
+<b>Vertex on grid</b>, is if you want all edges to be aligned to the grid. If you create a very 'round' cylinder in a rough
+grid 32, and this is marked, it will not look good. It is however better to keep edges on a grid-vertex.
+
+<b>Size of grid</b>, if the above is checked, this is the 'local grid' the cylinder will be created in.
+
+<b>Pie-slices</b>, mark this if you want to 'explode' the cylinder, or make a hollow one. More about that later.
+
+<b>Share faces</b>, if the pie-slices is marked, you can choose to use the face-sharing ability of QuArK, on the top and
+bottom faces of the cylinder.
+
