@@ -41,6 +41,7 @@ ones? Mail the<br>
 
 <b>Quake 1</b><br>
 - <a href=\"http://www.planetquake.com/quakelab\">QuakeLab</a><br>
+- <a href=\"http://tenebrae.sourceforge.net\">Tenebrae</a><br>
 
 <br>
 <b>Hexen 2</b><br>
