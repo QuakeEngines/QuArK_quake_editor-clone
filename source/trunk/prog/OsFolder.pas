@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/01 20:46:26  decker_dk
+added revision history
+
 }
 
 unit OsFolder;
@@ -35,12 +38,11 @@ uses
 
 type
   QOsFolder = class(QTextureList)
-    private
-      procedure ReadFolder;
     protected
       procedure LoadFile(F: TStream; FSize: Integer); override;
     public
       procedure FinalizeFromText; override;
+      procedure ReadFolder;
       function WriteSubElements : Boolean; override;
       class function TypeInfo: String; override;
  end;
