@@ -5,6 +5,9 @@ unit QkSpr;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/15 19:21:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.9  2000/08/20 10:45:48  aiv
 Updated and layed out code
 
@@ -123,7 +126,7 @@ Function MyIntSpec(s:QSprFile; ident:String):INteger;
 
 implementation
 
-uses QkPcx, QkTextures;
+uses QkPcx, QkTextures, QkObjectClassList;
 
 {$R *.DFM}
 

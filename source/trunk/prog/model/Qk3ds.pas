@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/01/15 19:23:05  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.1  2000/10/11 18:58:21  aiv
 Initial Release
 
@@ -52,7 +55,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, Travail;
+uses QuarkX, Setup, Travail, QkObjectClassList;
 
 class function Q3DSFile.TypeInfo;
 begin

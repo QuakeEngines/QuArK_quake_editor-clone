@@ -26,6 +26,14 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2000/12/11 21:36:36  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
 Revision 1.24  2000/11/26 19:08:32  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -298,7 +306,7 @@ procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean
 implementation
 
 uses QkFileObjects, Undo, PyMapView, QkPixelSet,
-     Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx;
+     Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';

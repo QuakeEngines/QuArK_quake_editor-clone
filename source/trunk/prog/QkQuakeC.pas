@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/01/15 19:21:27  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.4  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -104,7 +107,7 @@ procedure CompilerPatches(L: TQList; var CfgFile: String);
 implementation
 
 uses Undo, Qk1, Setup, FormCfg, Quarkx, QPAcc, Game,
-     QkUnknown, Keys, Travail;
+     QkUnknown, Keys, Travail, QkObjectClassList;
 
 {$R *.DFM}
 

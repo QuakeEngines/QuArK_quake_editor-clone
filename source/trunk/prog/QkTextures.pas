@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/01/15 19:22:01  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.27  2000/11/25 20:51:32  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -309,7 +312,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkUnknown
-  ,QkQ1 ,QkQ2;
+  ,QkQ1 ,QkQ2, QkObjectClassList;
 
 {$R *.DFM}
 

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/08/25 18:00:02  decker_dk
+Added Typ='EDL' functionality specialy for QuakeCtx:form
+
 Revision 1.9  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -189,7 +192,7 @@ implementation
 
 uses QkUnknown, Undo, TbPalette, QkFileObjects, Toolbar1, ToolBox1,
      Setup, QkInclude, QkMacro, QkImages, QkTextures,
-     Python, Quarkx, PyMacros, PyToolbars, PyForms, QkPixelSet;
+     Python, Quarkx, PyMacros, PyToolbars, PyForms, QkPixelSet, QkObjectClassList;
 
 const
  Differs = 5391;

@@ -38,6 +38,8 @@ type
 
 implementation
 
+uses QkObjectClassList;
+
 class function QOsFolder.TypeInfo;
 begin
  TypeInfo:='.osfolder';

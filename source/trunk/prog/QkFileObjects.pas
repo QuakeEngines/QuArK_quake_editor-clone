@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/01/15 19:19:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.18  2000/11/25 20:51:33  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -267,7 +270,7 @@ implementation
 
 uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
   QkFileExplorer, QkUnknown, Toolbar1, Quarkx, QkInclude, PyObjects,
-  PyForms, QkTreeView, Game;
+  PyForms, QkTreeView, Game, QkObjectClassList;
 
 {$R *.DFM}
 

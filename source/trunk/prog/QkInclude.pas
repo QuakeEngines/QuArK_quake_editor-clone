@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -60,7 +63,7 @@ function FindIncludeData1(LookFrom: QObject; const InclName: String) : QObject;
 
 implementation
 
-uses QkGroup, Setup;
+uses QkGroup, Setup, QkObjectClassList;
 
  {------------------------}
 

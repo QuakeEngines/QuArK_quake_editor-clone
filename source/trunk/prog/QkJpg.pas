@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/01/15 19:20:19  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.11  2000/08/23 20:59:24  aiv
 Added exception messages for debugging purposes
 
@@ -49,6 +52,8 @@ type
         end;
 
 implementation
+
+uses QkObjectClassList;
 
 const
   EINCLASS  = 'Exception "%s" in %s.%s ';

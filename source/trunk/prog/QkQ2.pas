@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/01/15 19:21:04  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.1  2000/09/14 18:00:22  decker_dk
 Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
 
@@ -77,7 +80,8 @@ uses
   SysUtils,
   Quarkx,
   QkQuakeCtx,
-  Setup;
+  Setup,
+  QkObjectClassList;
 
  { --------------- }
 

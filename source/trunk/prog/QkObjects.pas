@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2001/01/21 07:09:07  tiglari
+Fixed OsFolders goofs (wrong version...)
+
 Revision 1.35  2001/01/21 06:18:36  tiglari
 support for doing stuff to QObjects before expanding them in treeviews
 
@@ -184,7 +187,7 @@ const
 
  InternalImagesCount     = 48;
 
- fmOpenReadOnly_ShareDenyWrite    = fmOpenRead      or fmShareDenyWrite;
+ fmOpenReadOnly_ShareDenyWrite  = fmOpenRead      or fmShareDenyWrite;
  fmOpenReadWrite_ShareDenyWrite = fmOpenReadWrite or fmShareDenyWrite;
 
  ofTreeViewSubElement      = $01;   { all objects in a tree-view except top-level (don't change value, must be 1) }
@@ -454,10 +457,6 @@ var
  PopupMenuObject: QObject;
 (*CodeConstruction: Char;*)
 
-procedure RegisterQObject(Q: QObjectClass; Prior: Char);
-function GetRegisteredQObject(const Ext: String) : QObjectClass;
-function ConstructQObject(const Name: String; nParent: QObject) : QObject;
-function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
 function FloatSpecNameOf(const Name: String) : String;
@@ -474,8 +473,6 @@ function IntToPackedStr(Value: Integer) : String;
 function PackedStrToInt(const S: String) : Integer;
 function CompareMem(P1, P2: Pointer; Length: Integer): Boolean;
 
-procedure BuildFileExt(L: TStrings);
-procedure ListFileExt(L: TStrings);
 function InternalE(const Hint: String) : Exception;
 
 procedure ReleaseStream(S: TStream);
@@ -495,7 +492,7 @@ implementation
 
 uses
  {$IFDEF Debug} MemTester, {$ENDIF}
- QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1;
+ QkObjectClassList, QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1;
 
  {------------------------}
 
@@ -505,7 +502,6 @@ type
 
 var
  QFileList: TStringList;
- QObjectClassList: TStringList = Nil;
 {$IFDEF ShareSpecMem}
  CommonSpecifics: TList = Nil;
 {$ENDIF}
@@ -663,83 +659,9 @@ end;
 
  {------------------------}
 
-procedure RegisterQObject(Q: QObjectClass; Prior: Char);
-(*var
- Info: TFileObjectClassInfo;
- I: Integer;
- C: Char;*)
-begin
- if QObjectClassList=Nil then
-  begin
-   QObjectClassList:=TStringList.Create;
-   QObjectClassList.Sorted:=True;
-  end;
-(*if Q.InheritsFrom(QFileObject) then
-  C:='A'
- else
-  C:=' ';*)
- QObjectClassList.AddObject(Prior+(*C+*)Q.TypeInfo, TObject(Q));
-(*if C='A' then
-  begin
-   QFileObjectClass(Q).FileObjectClassInfo(Info);
-   for I:=1 to Info.FileExtCount-1 do
-    begin        { additionnal file extensions }
-     Inc(C);
-     QObjectClassList.AddObject(Prior+C+'.'+Info.DefaultExt[I], TObject(Q));
-    end;
-  end;*)
-end;
-
-function GetRegisteredQObject(const Ext: String) : QObjectClass;
-var
- J: Integer;
-begin
- for J:=0 to QObjectClassList.Count-1 do
-  if CompareText(Copy(QObjectClassList[J], 2, MaxInt), Ext) = 0 then
-   begin
-    Result:=QObjectClass(QObjectClassList.Objects[J]);
-    Exit;
-   end;
- Result:=Nil;
-end;
-
 function EndOfClipboardChain(PasteNow: QObject) : Boolean;
 begin
  Result:=False;
-end;
-
-function ConstructQObject(const Name: String; nParent: QObject) : QObject;
-var
- I: Integer;
- S: String;
-begin
- I:=QObjectClassList.Count;
- repeat
-  Dec(I);
-  S:=QObjectClassList[I];
- until (Length(S)-1<=Length(Name))
-   and (StrIComp(@Name[Length(Name)-Length(S)+2], PChar(S)+1) = 0);
-{until CompareText(Copy(Name, Length(Name)-Length(S)+1, MaxInt), S) = 0;}
-  {and (not FileOnly or (QObjectClass(QObjectClassList.Objects[I]) is QFileObject));}
-(*CodeConstruction:=S[2];*)
- Result:=QObjectClass(QObjectClassList.Objects[I]).Create(Copy(Name, 1, Length(Name)-Length(S)+1), nParent);
-end;
-
-function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
-var
- I: Integer;
- S: String;
-begin
- for I:=0 to QObjectClassList.Count-1 do
-  begin
-   S:=QObjectClassList[I];
-   if StrIComp(PChar(nTypeInfo), PChar(S)+1) = 0 then
-    begin
-     Result:=QObjectClass(QObjectClassList.Objects[I]);
-     Exit;
-    end;
-  end;
- Raise EErrorFmt(5644, [nTypeInfo]);
 end;
 
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
@@ -792,68 +714,6 @@ begin
    QFileList.AddObject(FullName, Result);
   end;
 {Result.AddRef;}
-end;
-
-procedure ListFileExt(L: TStrings);
-var
- I: Integer;
- C: QObjectClass;
- Info: TFileObjectClassInfo;
- S: String;
-begin
- for I:=QObjectClassList.Count-1 downto 0 do
-  begin
-   S:=QObjectClassList[I];
-   if S[1]='a' then
-    Continue;
-   C:=QObjectClass(QObjectClassList.Objects[I]);
-   if C.InheritsFrom(QFileObject) then
-    begin
-     QFileObjectClass(C).FileObjectClassInfo(Info);
-     if Info.FileExt<>0 then
-      begin
-       L.Add(Info.DefaultExt);
-       L.Add(LoadStr1(Info.FileExt));
-      end;
-    end;
-  end;
-end;
-
-procedure BuildFileExt(L: TStrings);
-var
- I{, J}: Integer;
- C: QObjectClass;
- Info: TFileObjectClassInfo;
- AllTypes1, AllTypes2, S: String;
-begin
- AllTypes1:='';
- AllTypes2:='';
- for I:=QObjectClassList.Count-1 downto 0 do
-  begin
-   S:=QObjectClassList[I];
-   if S[1]='a' then
-    Continue;
-   C:=QObjectClass(QObjectClassList.Objects[I]);
-   if C.InheritsFrom(QFileObject) then
-    begin
-     QFileObjectClass(C).FileObjectClassInfo(Info);
-     if Info.FileExt<>0 then
-      begin
-       L.Add(LoadStr1(Info.FileExt));
-       if Info.DefaultExt<>'' then
-        begin
-         if AllTypes1<>'' then
-          begin
-           AllTypes1:=AllTypes1+' ';
-           AllTypes2:=AllTypes2+';';
-          end;
-         AllTypes1:=AllTypes1+Info.DefaultExt{[J]};
-         AllTypes2:=AllTypes2+'*.'+Info.DefaultExt{[J]};
-        end;
-      end;
-    end;
-  end;
- L.Insert(0, FmtLoadStr1(768, [AllTypes1, AllTypes2]));
 end;
 
  {------------------------}

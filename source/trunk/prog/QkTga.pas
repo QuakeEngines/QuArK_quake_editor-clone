@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/15 19:22:01  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.9  2000/09/01 00:13:44  alexander
 merged in my kingpin texture flip fix from rel6_1 branch
 
@@ -75,7 +78,7 @@ type
 
 implementation
 
-uses Windows, Quarkx, Game, QkPixelSet;
+uses Windows, Quarkx, Game, QkPixelSet, QkObjectClassList;
 
 const
  tgaAlphaBits = $1F;

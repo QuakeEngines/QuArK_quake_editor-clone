@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.4  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -137,7 +140,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 
 implementation
 
-uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D;
+uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList;
 
  {------------------------}
 

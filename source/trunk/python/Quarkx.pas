@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/12/07 19:47:30  decker_dk
+Some layout changes. I like columns, specially when there is lots of data.
+
 Revision 1.10  2000/11/11 17:55:56  decker_dk
 Rearranged try-finally statements, so the code will be more readable
 
@@ -114,7 +117,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF VER90} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
-     PyForms, QkPixelSet, Bezier, PyLogging;
+     PyForms, QkPixelSet, Bezier, PyLogging, QkObjectClassList;
 
  {-------------------}
 

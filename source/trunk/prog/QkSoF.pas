@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/15 19:21:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.9  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -72,7 +75,7 @@ type
 
 implementation
 
-uses Windows, Travail, Quarkx, QkPixelSet;
+uses Windows, Travail, Quarkx, QkPixelSet, QkObjectClassList;
 
 type
  TM32Header = packed record                     // offset

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/01/15 19:20:37  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.11  2000/11/16 19:42:16  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -150,7 +153,7 @@ type
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin, Qkzip2, qkq3;
+uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin, Qkzip2, qkq3, QkObjectClassList;
 
 {$R *.DFM}
 

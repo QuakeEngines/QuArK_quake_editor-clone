@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/01/15 19:20:19  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.21  2000/12/10 21:38:36  decker_dk
 Able to read exponent-values from .MAP files
 
@@ -154,7 +157,7 @@ implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
   Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy}
-  ,QkQ2;
+  ,QkQ2, QkObjectClassList;
 
 {$R *.DFM}
 

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/01/15 19:22:20  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.18  2000/12/30 15:24:55  decker_dk
 - The .MAP exporting entity-numbering, didn't take into account Treeview-
 groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
@@ -224,7 +227,7 @@ implementation
 
 uses QkMapObjects, Travail, Game, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python,
-     PyObjects, PyForms, Qk3D, EdSceneObject;
+     PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList;
 
 const
  SetupFileName    = 'Setup.qrk';

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/01/15 19:19:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.5  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -87,7 +90,7 @@ type
 
 implementation
 
-uses Quarkx;
+uses Quarkx, QkObjectClassList;
 
 const
  EstimatedFrameSize = 20173;   { rough estimate based on Quake 2's "end.cin" }

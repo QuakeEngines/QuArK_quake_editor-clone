@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/12/30 15:25:28  decker_dk
+- Due to changes in 3D-render source-files
+
 Revision 1.5  2000/12/11 21:36:59  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -85,7 +88,7 @@ type
 implementation
 
 uses PyMapView, quarkx, travail, pyobjects, QkModelRoot,
-     EdSceneObject;
+     EdSceneObject, QkObjectClassList;
 
 var
   GlobalSkinCounter: Integer;

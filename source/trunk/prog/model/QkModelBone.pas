@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/10/12 20:07:32  aiv
+Fixed PyGetAttr 'bone_length'
+
 Revision 1.2  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -66,7 +69,7 @@ type
 
 implementation
 
-uses qk3d, pymath, quarkx;
+uses qk3d, pymath, quarkx, QkObjectClassList;
 
 class function QModelBone.TypeInfo;
 begin

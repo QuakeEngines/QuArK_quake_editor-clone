@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/01/15 19:22:20  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.6  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -82,7 +85,7 @@ type
 
 implementation
 
-uses Quarkx;
+uses Quarkx, QkObjectClassList;
 
 const
  SignatureRIFF = $46464952;

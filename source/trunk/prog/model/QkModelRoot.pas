@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkModelRoot;
@@ -34,7 +37,7 @@ type
 
 implementation
 
-uses quarkx, pyobjects, travail;
+uses quarkx, pyobjects, travail, QkObjectClassList;
 
 function qSetComponent(self, args: PyObject) : PyObject; cdecl;
 var

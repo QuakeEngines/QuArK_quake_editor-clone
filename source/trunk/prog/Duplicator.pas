@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/01/07 21:35:06  tiglari
+ListeBeziers for support of ignoretobuild flag
+
 Revision 1.6  2000/11/19 15:31:51  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -90,7 +93,7 @@ type
 
 implementation
 
-uses QkFileObjects, PyMapView, QkMapPoly, Qk3D;
+uses QkFileObjects, PyMapView, QkMapPoly, Qk3D, QkObjectClassList;
 
  {------------------------}
 

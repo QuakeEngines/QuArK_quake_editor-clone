@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/10/11 18:58:21  aiv
+Initial Release
+
 }
 
 unit qkskindrawobject;
@@ -21,7 +24,7 @@ type
 
 implementation
 
-uses Ed3dfx, PyMapView, quarkx, travail, pyobjects, QkModelRoot, qkComponent, setup;
+uses Ed3dfx, PyMapView, quarkx, travail, pyobjects, QkModelRoot, qkComponent, setup, QkObjectClassList;
 
 procedure QSkinDrawObject.CouleurDessin;
 var

@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/01/15 19:23:05  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.3  2000/11/25 20:50:53  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -189,7 +192,7 @@ type
 
 implementation
 
-uses QuarkX, Setup;
+uses QuarkX, Setup, QkObjectClassList;
 
 class function QMd3File.TypeInfo;
 begin

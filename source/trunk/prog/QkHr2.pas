@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/01/15 19:19:58  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.10  2001/01/07 18:39:21  aiv
 Added 'ObjectGameCode:=mjHeretic2;'
 
@@ -104,7 +107,7 @@ type
 
 implementation
 
-uses Game, Setup, Quarkx, QkMdlObject;
+uses Game, Setup, Quarkx, QkMdlObject, QkObjectClassList;
 
 const
  MIP_VERSION = 2;

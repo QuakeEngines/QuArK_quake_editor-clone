@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/01/15 19:21:42  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.4  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -93,7 +96,7 @@ function TestConversionText(var I: Integer) : QFileObjectClass;
 
 implementation
 
-uses QkQuakeC, Undo, Quarkx;
+uses QkQuakeC, Undo, Quarkx, QkObjectClassList;
 
 {$R *.DFM}
 

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:33:39  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:19:28  decker_dk
 Englishification and a little layout
 
@@ -110,7 +113,7 @@ const
 
 implementation
 
-uses Quarkx, QkFileObjects;
+uses Quarkx, QkFileObjects, QkObjectClassList;
 
  {-------------------}
 

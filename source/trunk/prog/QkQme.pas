@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/01/15 19:21:27  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.7  2000/11/26 19:08:32  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -97,7 +100,7 @@ type
 
 implementation
 
-uses QkMapObjects, QkMapPoly, qmath, Setup, Duplicator, Quarkx, Travail;
+uses QkMapObjects, QkMapPoly, qmath, Setup, Duplicator, Quarkx, Travail, QkObjectClassList;
 
 {$R *.DFM}
 

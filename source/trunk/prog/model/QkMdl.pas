@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/01/15 19:23:18  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.5  2001/01/08 23:04:59  aiv
 Possible fix again...?
 
@@ -88,7 +91,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, Travail;
+uses QuarkX, Setup, Travail, QkObjectClassList;
 
 class function QMdlFile.TypeInfo;
 begin

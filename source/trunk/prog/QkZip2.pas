@@ -5,6 +5,9 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/01/15 19:22:20  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.15  2000/10/16 22:14:39  aiv
 zip files now handled entirely in pascal (no dlls!)
 
@@ -138,7 +141,7 @@ const
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, crc32, UNZIP, ZIP;
+uses Travail, QkExplorer, Quarkx, PyObjects, Game, crc32, UNZIP, ZIP, QkObjectClassList;
 
 function BuildLFH(ver,bit,com,las,crc,cmp,unc,fil,ext:longint):TLocalFileHeader;
 begin

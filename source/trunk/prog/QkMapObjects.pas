@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/01/07 21:37:47  tiglari
+ListeBeziers for support of ignoretobuild flag
+
 Revision 1.17  2000/12/30 15:24:55  decker_dk
 - The .MAP exporting entity-numbering, didn't take into account Treeview-
 groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
@@ -289,7 +292,7 @@ implementation
 uses Setup, QkMapPoly, Undo, FormCfg,
      Game, QkMacro, Quarkx, PyMath,
      PyMapView, PyObjects, QkImages, Bezier,
-     EdSceneObject;
+     EdSceneObject, QkObjectClassList;
 
  {------------------------}
 

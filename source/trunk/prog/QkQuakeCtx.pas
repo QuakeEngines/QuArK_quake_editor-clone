@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/01/15 19:21:27  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.7  2000/08/25 17:57:24  decker_dk
 Layout indenting
 
@@ -76,7 +79,7 @@ function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
 
 implementation
 
-uses Setup, QkGroup, Quarkx;
+uses Setup, QkGroup, Quarkx, QkObjectClassList;
 
  {------------------------}
 

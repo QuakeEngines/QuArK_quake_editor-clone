@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/01/15 19:22:36  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.8  2000/11/16 19:42:16  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -170,7 +173,7 @@ function BrowseForTextureDlg(const TexName: String; SelectEventWnd: HWnd) : TToo
 implementation
 
 uses Qk1, Travail, Setup, qmath, QkWad, QkInclude, QkMapPoly, QkMacro,
-  NewFolder, Undo, QkTextures, Quarkx, QuickWal, ToolBoxGroup;
+  NewFolder, Undo, QkTextures, Quarkx, QuickWal, ToolBoxGroup, QkObjectClassList;
 
 {$R *.DFM}
 

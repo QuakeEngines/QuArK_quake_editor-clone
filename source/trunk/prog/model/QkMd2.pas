@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/01/15 19:23:05  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.2  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -72,7 +75,7 @@ const
 
 implementation
 
-uses QuarkX, Setup, Travail;
+uses QuarkX, Setup, Travail, QkObjectClassList;
 
 class function QMd2File.TypeInfo;
 begin

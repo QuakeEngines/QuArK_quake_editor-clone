@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/01/15 19:23:18  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.2  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -23,7 +26,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, PyForms, Undo;
+uses QuarkX, Setup, PyForms, Undo, QkObjectClassList;
 
 class function QQkl.TypeInfo;
 begin

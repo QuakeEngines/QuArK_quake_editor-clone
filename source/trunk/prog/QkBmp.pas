@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/01/15 19:19:21  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.8  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -64,7 +67,7 @@ procedure BmpInfoToPaletteLmp(const BmpInfo: TBitmapInfo256;
 
 implementation
 
-uses Setup, Quarkx, Qk1;
+uses Setup, Quarkx, Qk1, QkObjectClassList;
 
 const
  bmpSignature = $4D42;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/01/15 19:21:04  decker_dk
+Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
+
 Revision 1.18  2000/09/10 12:57:06  alexander
 disabled defaultimage caching (cache is not easily initialized)
 
@@ -136,7 +139,7 @@ type
 
 implementation
 
-uses Game, Travail;
+uses Game, Travail, QkObjectClassList;
 
 procedure Q_HFile.ObjectState(var E: TEtatObjet);
 begin

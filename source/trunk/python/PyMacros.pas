@@ -40,7 +40,7 @@ type
 
 implementation
 
-uses Travail;
+uses Travail, QkObjectClassList;
 
  {------------------------}
 
