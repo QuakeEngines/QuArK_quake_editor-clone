@@ -5,11 +5,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2000/07/06 01:55:50  alexander
+//newly added (library of archs)
 //
-// 
 
 {
-  Description = "Custom Add-on"
+  Description = "Arch Library for Quake-3 engines"
   Toolbox Folders.qtx =
   {
     ToolBox = "New map items..."
