@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.4  2002/05/28 10:12:35  tiglari
+//Mohaa removed due to too many issues (esp. terrain system)
+//
 //Revision 1.192.2.3  2002/05/24 22:17:35  tiglari
 //update version
 //
@@ -641,7 +644,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3 rc2"
+      Version = "QuArK 6.3"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

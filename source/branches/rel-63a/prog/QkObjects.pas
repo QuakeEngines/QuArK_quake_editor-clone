@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69.2.1  2002/05/24 22:19:03  tiglari
+update version
+
 Revision 1.69  2002/05/13 11:31:17  tiglari
 update version
 
@@ -231,7 +234,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$ENDIF}
 
 const
-  QuArKVersion            = 'QuArK 6.3 rc2';
+  QuArKVersion            = 'QuArK 6.3';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
