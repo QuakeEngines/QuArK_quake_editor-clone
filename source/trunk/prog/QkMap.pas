@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2002/05/14 21:24:50  tiglari
+comment on bad texture scale while reading valve 220 maps
+
 Revision 1.44  2002/05/07 23:23:46  tiglari
 Mohaa map reading
 
@@ -159,6 +162,7 @@ uses
 { $DEFINE ClassnameLowerCase}
 
 type
+
  QMap = class(QFileObject)
         protected
           function OpenWindow(nOwner: TComponent) : TQForm1; override;
@@ -226,7 +230,7 @@ implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
   Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy}
-  ,QkQ2, QkObjectClassList;
+  ,QkQ2, QkObjectClassList, MapError;
 
 {$R *.DFM}
 
@@ -340,7 +344,7 @@ var
  L: TStringList;
  LineNoBeingParsed: Integer;
  Juste13{, FinDeLigne}, Q2Tex, ReadSymbolForceToText: Boolean;
- HullNum: Integer;
+ HullNum, BrushNum, FaceNum: Integer;
  HullList: TList;
  Source, Prochain: PChar;
  Entities, MapStructure {Rowdy}, MapStructureB {/Rowdy}: TTreeMapGroup;
@@ -859,6 +863,7 @@ expected one.
   while SymbolType <> sCurlyBracketRight do  { read the faces }
   begin
     TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+    Inc(FaceNum);
     V[1]:=ReadVect(False);
     V[2]:=ReadVect(False);
     V[3]:=ReadVect(False);
@@ -1148,7 +1153,7 @@ expected one.
        NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
        SetThreePointsEx(NP0,NP1,NP2,Normale);
      except
-       ShowMessage('Problem with texture scale in Brush '+IntToStr(Entite.SubElements.Count)+' in entity '+IntToStr(HullNum+1));
+       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
      end;
   end;
  end;
@@ -1169,6 +1174,7 @@ begin
    {FinDeLigne:=False;}
     HullList:=Nil;
     L:=TStringList.Create;
+    g_MapError:=TMapError.Create;
     try   { L and HullList get freed by finally, regardless of exceptions }
      WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
      Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
@@ -1240,6 +1246,7 @@ begin
         end
        else
         begin
+         BrushNum:=-1;
          if (SymbolType<>sCurlyBracketLeft) and (HullNum=-1) then
           Entite:=TTreeMapEntity.Create(Classname, Entities)
          else
@@ -1266,6 +1273,8 @@ begin
        else
         while SymbolType = sCurlyBracketLeft do  {read a brush}
          begin
+          Inc(BrushNum);
+          FaceNum:=-1;
           ReadSymbol(sCurlyBracketLeft);
           {Rowdy}
           // Q3A might have 'patchDef2'
@@ -1307,6 +1316,7 @@ begin
             while SymbolType <> sCurlyBracketRight do  { read the faces }
              begin
               TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+              Inc(FaceNum);
               V[1]:=ReadVect(False);
               V[2]:=ReadVect(False);
               V[3]:=ReadVect(True);
