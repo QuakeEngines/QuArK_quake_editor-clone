@@ -1,7 +1,13 @@
+
+                Patch 2  to QuArK Snapshot of 2002ap20
+                
+ * [tiglari] mirror duplicators are supposed to work now.
+
+
                 Pattch 1 to QuArK Snapshot of 2002ap20
                 
  * [tiglari] fix errors on opening map editor (for some people,
-      not me, for reasons which are completely unkown to me)
+      not me, for reasons which I don't understand at all)
       
  * [tiglari] basic Mohaa maps now compile and run.  Texture
       flags don't work yet but.  Another peculiar feature of
