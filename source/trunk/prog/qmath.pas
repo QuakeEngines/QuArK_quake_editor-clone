@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.3  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -80,6 +83,9 @@ function vtocol255(const R,G,B: TDouble) : TColor;
 procedure NormaliseCol1(var V: TVect);
 {function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
 function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
+function VecDiff(const V, W : TVect) : TVect;
+function VecSum(const V, W : TVect) : TVect;
+function VecScale(const R: Double; const V: TVect) : TVect;
 
 const
  Origine: TVect = (X:0; Y:0; Z:0);
@@ -748,4 +754,26 @@ begin
   end;
 end;
 
+function VecDiff(const V, W : TVect) : TVect;
+begin
+ Result.X:=V.X-W.X;
+ Result.Y:=V.Y-W.Y;
+ Result.Z:=V.Z-W.Z;
+end;
+
+function VecSum(const V, W : TVect) : TVect;
+begin
+ Result.X:=V.X+W.X;
+ Result.Y:=V.Y+W.Y;
+ Result.Z:=V.Z+W.Z;
+end;
+
+function VecScale(const R: Double; const V: TVect) : TVect;
+begin
+ Result.X:=R*V.X;
+ Result.Y:=R*V.Y;
+ Result.Z:=R*V.Z;
+end;
+
 end.
+
