@@ -1,5 +1,4 @@
 
-
 # QTexture1 QTexture_Q1
 # QTexture2 QTexture_Q2
 # QM8 QTexture_HR2
@@ -11,23 +10,12 @@
 # QBmp QImage_BMP
 # QTga QImage_TGA
 # QJpeg QImage_JPG
-#
-# ofTvInvisible ofTreeViewInvisible
-# ofTvAlreadyExpanded ofTreeViewAlreadyExpanded
-# ofTvExpanded ofTreeViewExpanded
-# ofSurDisque ofOnDisk
-# ModeFichier fmOpenReadOnly_ShareDenyWrite
-# ModeFichierEcr fmOpenReadWrite_ShareDenyWrite
 
 #       #Done up to QkMdl and including
 #       Enregistrer Save
 #       TInfoEnreg1 TSaveInfo
 #       GetTvParent GetTreeViewParent
 #       SetTvParent SetTreeViewParent
-#       ofTvInvisible ofTreeViewInvisible
-#       ofTvAlreadyExpanded ofTreeViewAlreadyExpanded
-#       ofTvExpanded ofTreeViewExpanded
-#       ofSurDisque ofOnDisk
 #       TEtatObjet TObjectState
 #       EtatObjet ObjectState
 #       TvParent TreeViewParent
@@ -41,7 +29,6 @@
 #       ElSousFiche TheSubFile
 #       Fiche AFile
 #       Dessiner Draw
-#       SauverTexte SaveText
 #       Negatif NegativeSet
 #       #NB Negative Conflicted with a property in map objects
 #       PinceauNoir BlackBrush
@@ -463,3 +450,11 @@
 #SauverTextePolyedre SaveAsTextPolygon
 #SauverTexteBezier SaveAsTextBezier
 #SauverSpec SaveAsTextSpecArgs
+
+#ofTvInvisible ofTreeViewInvisible
+#ofTvAlreadyExpanded ofTreeViewAlreadyExpanded
+#ofTvExpanded ofTreeViewExpanded
+#ofSurDisque ofNotLoadedToMemory
+#ModeFichier fmOpenReadOnly_ShareDenyWrite
+#ModeFichierEcr fmOpenReadWrite_ShareDenyWrite
+
