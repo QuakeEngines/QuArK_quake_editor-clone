@@ -28,10 +28,12 @@ import quarkx
 from quarkpy import mapentities
 from quarkpy import mapduplicator
 from quarkpy import qhandles
+from quarkpy import qutils
 from quarkpy import mapsearch
 from quarkpy import dlgclasses
 from quarkpy import qmacro
 from quarkpy import mapselection
+from quarkpy import mapmenus
 
 import mapmadsel
 
@@ -193,14 +195,11 @@ class NameDialog(SimpleCancelDlgBox):
             name="Camera Position"
         self.action(name)
 
-
 #
-# And more menu redefinition, this time for the
-#  EyePositionMap handle defined in maphandles.py.
+# This is called by two interface items, so pulled
+#  out of both of them
 #
-def newEyePosMenu(self, editor, view):
-    
-    def addClick(m,self=self,editor=editor):
+def addPosition(view3D, editor):
         #
         # Dialogs run 'asynchronously', which means
         #  that the after the creation of the dialog just
@@ -210,8 +209,7 @@ def newEyePosMenu(self, editor, view):
         #  function that gets passed to the dialog as
         #  a parameter, which is what this is.
         #
-        def action(name,self=self,editor=editor):
-            view = self.view3D
+        def action(name,view3D=view3D,editor=editor):
             #
             # NB: elsewhere in the code, 'yaw' tends to
             # be misnamed as 'roll'
@@ -220,7 +218,7 @@ def newEyePosMenu(self, editor, view):
             #  yaw = left/right angle (relative to x axis)
             #  roll = turn around long axis (relative to y)
             #
-            pos, yaw, pitch = self.view3D.cameraposition
+            pos, yaw, pitch = view3D.cameraposition
             camdup = quarkx.newobj(name+":d")
             camdup["macro"] = "cameraposition"
             pozzies = editor.Root.findname("Camera Positions:g")
@@ -237,11 +235,35 @@ def newEyePosMenu(self, editor, view):
         # Now execute the dialog
         #
         NameDialog(quarkx.clickform,action,"Camera Position")
-         
+
+
+
+#
+# And more menu redefinition, this time for the
+#  EyePositionMap handle defined in maphandles.py.
+#
+def newEyePosMenu(self, editor, view):
+    
+    def addClick(m,self=self,editor=editor):
+        addPosition(self.view3D,editor)
+        
     item = qmenu.item('Add position',addClick)
     return [item]
 
 EyePositionMap.menu = newEyePosMenu
+
+def backmenu(editor, view=None, origin=None, oldbackmenu = mapmenus.BackgroundMenu):
+  menu = oldbackmenu(editor, view, origin)
+
+  def addClick(m,view=view,editor=editor):
+      addPosition(view,editor)
+      
+  if view.info["type"]=="3D":
+      menu.append(qmenu.item("Add Camera Position",addClick))
+  return menu
+
+mapmenus.BackgroundMenu = backmenu
+
 
 
 #
@@ -256,7 +278,8 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
     endcolor = AQUA
     size = (220,160)
     dfsep = 0.35
-
+    dlgflags = qutils.FWF_KEEPFOCUS 
+    
     dlgdef = """
         {
         Style = "9"
@@ -291,7 +314,7 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
 
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -398,7 +421,11 @@ mapselection.nextItem.onclick=camnextClick
 mapselection.prevItem.onclick=camnextClick
 
 
+
 # $Log$
+# Revision 1.4  2001/06/16 03:19:05  tiglari
+# add Txt="" to separators that need it
+#
 # Revision 1.3  2001/06/16 02:44:09  tiglari
 # Camera Position finder dialog, cycle-in group with PgUp/Down+'C'
 #
