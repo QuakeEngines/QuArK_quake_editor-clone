@@ -386,11 +386,11 @@ begin
   if not dest^.grayscale then begin
     BGR := BGRptr(image_ptr^[0]);
     for col := pred(cinfo^.output_width) downto 0 do begin
-      BGR^.r := inptr^;
+      BGR^.b := inptr^;
       Inc(inptr);
       BGR^.g := inptr^;
       Inc(inptr);
-      BGR^.b := inptr^;
+      BGR^.r := inptr^;
       Inc(inptr);
       Inc(BGR);
     end;
