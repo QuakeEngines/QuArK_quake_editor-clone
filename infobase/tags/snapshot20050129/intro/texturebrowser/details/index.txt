@@ -1,0 +1,6 @@
+title: Texture details
+desc: texturedetails
+desc: toolbaricons
+desc: details
+desc: textureflags
+

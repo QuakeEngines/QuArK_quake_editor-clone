@@ -1,0 +1,34 @@
+title: Loading files
+author: Armin Rigo
+
+Here are comments that will help you in writing support for a new file type.
+
+QuArK has got a complex file management structure, but you need not be aware of it as long as you use the "official" way of
+loading and saving files. Doing so will let QuArK handle things such as loading or saving directly inside a .pak file, and
+load-on-demand.
+
+To support a new file type, a class inherits from QFileObject and overrides some key methods. The first one is TypeInfo, which
+should return the file extension. QuArK recognize files based on their extension only, and then invokes the correct class'
+<tt>LoadFile</tt> method. This method must process the file it receive in a parameter and turn *all* information it contains
+into Specific/Args and subobjects.
+
+For example, the method <tt>LoadFile</tt> of QMapFile parses the map file and creates the whole hierarchy of groups,
+polyhedrons and entities.
+
+Some file types are suitable for load-on-demand, which is implemented through subobjects whose class also has a
+<tt>LoadFile</tt> method.
+For example, when loading a .PAK file, it is of course not completely loaded into memory : the directory of the file is
+processed, and folders and subfolders are created accordingly. The files inside the folders are also created but this time
+through the method <tt>LoadedItem</tt>, which may be called from a <tt>LoadFile</tt> method only. It creates a subobject which
+is marked as "not loaded yet"; this subobject's own <tt>LoadFile</tt> method will be called when necessary to actually load the
+(sub-)file.
+
+In summary, the method <tt>LoadFile</tt> must :
+
+<ul>
+<li>load every information contained in the file and store it all as Specific/Args and subobjects, with one exception : calls
+    to <tt>LoadedItem</tt>, which does not immediately load the data;
+<li>don't do anything else (no direct disk access, no display, etc.), with one exception : calls to LoadSibling, to access
+    files besides the one currently loading (typically, Quake 2's models and sprites refer to .pcx files for the model skin and
+    sprite images).
+</ul>

@@ -1,0 +1,22 @@
+title: Using the bot waypointer add-on
+author: Fredrick
+
+After you have activated the add-on, as shown above, you have a new function in the QuArK tool menu. First open the map or .BSP-file you want
+to edit, then push the new button that have arrived at the left side (default layout) then open the waypoint that have the same
+name as the map and that ends with <tt>*.wpt</tt>
+
+If you want to make a completly new waypoint, you have to import another waypoint file, and then delete all of them, except one
+last waypoint (this will change in later versions.)
+
+You can now use the copy/paste functions to add new waypoints. If you see
+the <tt>target1</tt> flag at the top of a waypoint, this is where you can target the waypoint to another waypoint, making more ways for
+a bot to go. Use the usual + and - icons to add and delete spec/arg-pairs.
+
+Here you can se an overview of the waypoints in the map.
+
+<center><img>overview.jpg</img></center>
+
+Here you can see the node in the middle with 6 links, which means that a bot can go 6 different ways from that waypoint. If you
+select one waypoint, you can also see different flag settings, weither this is a camping-, sniper-waypoint etc.
+
+<center><img>links.jpg</img></center>
