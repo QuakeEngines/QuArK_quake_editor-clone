@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.76  2001/02/02 08:21:00  tiglari
+//updated version #
+//
 //Revision 1.75  2001/01/30 19:09:48  decker_dk
 //Renamed to 'Crystal Space:config'.
 //
@@ -874,6 +877,7 @@ QQRKSRC1
         Form = "GameQuake3"
         LightFactor = '0.9'
         3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
       STVEF:config =
       {

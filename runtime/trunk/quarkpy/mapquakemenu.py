@@ -149,7 +149,11 @@ def filesformap(map):
     mapholes = setup["MapHoles"]
     if not mapholes:
         mapholes = ".lin"
-    return [map+".bsp", map+mapholes]
+    normal_files = [map+".bsp", map+mapholes]
+    e1 = setup["PakExtra1"]
+    if e1:
+      normal_files = normal_files + [ map + e1 ]
+    return normal_files
 
 
 #def FirstBuildCmd():
@@ -517,6 +521,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.14  2001/01/27 18:24:39  decker_dk
+#Renamed the key 'Q2TexPath' to 'TexturesPath'.
+#
 #Revision 1.13  2000/10/28 19:29:38  decker_dk
 #Correctly export .MAP file, even if no build-tool is marked for execution
 #
