@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.46.2.3  2000/09/10 14:38:30  alexander
+//set name
+//
 //Revision 1.46.2.2  2000/09/01 01:47:27  alexander
 //set name
 //
@@ -129,7 +132,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "REL6_1-pre-2"
+      Version = "REL6_1-pre-3"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

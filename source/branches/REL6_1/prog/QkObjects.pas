@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20.2.2  2000/09/10 14:37:33  alexander
+fixed getsubelements bug
+
 Revision 1.20.2.1  2000/09/01 01:46:03  alexander
 set name
 
@@ -66,7 +69,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'REL6_1-pre-2';
+ QuArKVersion            = 'REL6_1-pre-3';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
