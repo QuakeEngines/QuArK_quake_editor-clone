@@ -307,6 +307,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0):
   # Now we smooth it out
   #
   cp = antidistort_columns(cp)
+  cp = antidistort_rows(cp)
   inner = quarkx.newobj('inner:b2')
   inner.cp = cp
   inner["tex"] = fdict["d"]["tex"]
@@ -593,6 +594,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2000/06/14 04:41:18  tiglari
+#Added `faceonly' specific for arches & bevels.
+#
 #Revision 1.7  2000/06/13 12:52:40  tiglari
 #Supported all the current arch/cap and bevel specifics
 #
