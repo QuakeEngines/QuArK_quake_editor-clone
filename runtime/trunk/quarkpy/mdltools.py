@@ -24,6 +24,7 @@ class DisplayBar(ToolBar):
     DefaultPos = ((0,0,0,0), "topdock", 0, 0, 1)
 
     def buildbuttons(self, layout):
+        ico_maped=ico_dict['ico_maped']
         gridbtn = qtoolbar.doublebutton(layout.editor.togglegrid, layout.getgridmenu, "grid", ico_maped, 7)
         gridbtn.caption = "128"  # to determine the button width
         zoombtn = qtoolbar.doublebutton(layout.autozoom1click, getzoommenu, "choose zoom factor / zoom to fit the level or the selection", ico_maped, 14)
@@ -51,5 +52,8 @@ toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

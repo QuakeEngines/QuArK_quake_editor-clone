@@ -13,7 +13,6 @@ Various constants and routines
 
 import quarkx
 
-
 # a few colors
 BLACK     = 0x000000
 MAROON    = 0x000080
@@ -157,6 +156,7 @@ iiFormContext           = 50
 iiTotalImageCount       = 51
 
 
+
 def LoadIconSet(filename, width, transparencypt=(0,0)):
     "Load a set of bitmap files and returns a tuple of image lists."
 
@@ -181,6 +181,35 @@ def LoadIconSet(filename, width, transparencypt=(0,0)):
     # load xxx-2.bmp, the triggered version for on/off buttons
     try:
         trig = quarkx.loadimages(filename + "-2.bmp", width, transparencypt)
+        return (unsel, sel, trig)
+    except quarkx.error:
+        return (unsel, sel)
+
+
+def LoadIconSet2(filename, width, transparencypt=(0,0)):
+    "Load a set of bitmap files and returns a tuple of image lists."
+
+    def loadset(tag, filename=filename, width=width, transparencypt=transparencypt, setup=quarkx.setupsubset(SS_GENERAL, "Display"), cache={}):
+        if setup[tag]:
+            ext = "-1.bmp"
+        else:
+            ext = "-0.bmp"
+        try:
+            return cache[ext]
+        except:
+            img = quarkx.loadimages2(filename + ext, width, transparencypt)
+            cache[ext] = img
+            return img
+
+    # load the unselected version of the icons
+    unsel = loadset("Unsel")
+
+    # load the selected version of the icons
+    sel = loadset("Sel")
+
+    # load xxx-2.bmp, the triggered version for on/off buttons
+    try:
+        trig = quarkx.loadimages2(filename + "-2.bmp", width, transparencypt)
         return (unsel, sel, trig)
     except quarkx.error:
         return (unsel, sel)
@@ -239,11 +268,24 @@ def loadmdleditor():
     import plugins
     plugins.LoadPlugins("MDL")
 
+
+#
+# Icon sets that aren't always loaded should go into this
+#   dictionary, indexed by their names.  The dictionary
+#   is cleaned up in qmacro.MACRO_shutdown to avoid
+#   live pointer memory leaks.
+#
+ico_dict = {}
+
+#
+# Putting these two in the ico_dict doesn't achieve
+#  any purpose (lots of code gets clunkier, no benefit)
+#
 # Default icons for the objects
-ico_objects = LoadIconSet("images\\objects", 16)
+ico_objects = LoadIconSet2("images\\objects", 16)
 
 # Generic editor icons
-ico_editor = LoadIconSet("images\\editor", 16)
+ico_editor = LoadIconSet2("images\\editor", 16)
 
 #
 # Variable icons handlers for Quake entities
@@ -253,12 +295,9 @@ def EntityIcon(entity, iconset):
     #
     # Load the Variable icons for Quake Entity objects
     #
-    global ico_mapents
-    try:
-        icons = ico_mapents[iconset]
-    except NameError:
-        ico_mapents = LoadIconSet("images\\mapents", 16)
-        icons = ico_mapents[iconset]
+    if not ico_dict.has_key('ico_mapents'):
+        ico_dict['ico_mapents'] = LoadIconSet("images\\mapents", 16)
+    icons = ico_dict['ico_mapents'][iconset]
     #
     # Read the classname of the entity
     #
@@ -304,7 +343,7 @@ def DuplicatorIconSel(dup):
 # Variable icons handlers for groups
 #
 
-ico_objects_group_set={
+ico_objects_group_set1={
   (0,0):ico_objects[0][32],
   (0,1):ico_objects[0][13],
   (4,0):ico_objects[0][33],
@@ -314,13 +353,12 @@ def GroupIconUnsel(grp):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
-            return ico_objects_group_set[view&4, not (view&~4)]
+            return ico_objects_group_set1[view&4, not (view&~4)]
         except:
             pass
     return ico_objects[0][13]
 
-
-ico_objects_group_set={
+ico_objects_group_set2={
   (0,0):ico_objects[1][32],
   (0,1):ico_objects[1][13],
   (4,0):ico_objects[1][33],
@@ -330,12 +368,13 @@ def GroupIconSel(grp):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
-            return ico_objects_group_set[view&4, not (view&~4)]
+            return ico_objects_group_set2[view&4, not (view&~4)]
         except:
             pass
     return ico_objects[1][13]
 
-del ico_objects_group_set
+del ico_objects_group_set1
+del ico_objects_group_set2
 
 #
 # Variable icons handlers for Model objects
@@ -345,12 +384,15 @@ def ModelIcon(modelobj, iconset):
     #
     # Load the Variable icons for Quake Entity objects
     #
-    global ico_mdlobjs
-    try:
-        icons = ico_mdlobjs[iconset]
-    except NameError:
-        ico_mdlobjs = LoadIconSet("images\\mdlobjs", 16)
-        icons = ico_mdlobjs[iconset]
+    if not ico_dict.has_key('mdlobjs'):
+        ico_dict['mdlobjs'] = LoadIconSet("images\\mdlobjs", 16)
+    icons = ico_dict['mdlobjs']
+#    global ico_mdlobjs
+#    try:
+#        icons = ico_mdlobjs[iconset]
+#    except NameError:
+#        ico_mdlobjs = LoadIconSet("images\\mdlobjs", 16)
+#        icons = ico_mdlobjs[iconset]
     #
     # Read the type tag of the model
     #
@@ -449,7 +491,10 @@ def MapHotKeyList(keytag, keyfunc, list):
     if key:
         list[key] = keyfunc
 
-
+def clearimagelist(list):
+    for (im1, im2) in list:
+        del im1
+        del im2
 
 #---- import the plug-ins ----
 import plugins
@@ -459,6 +504,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2001/10/16 11:40:34  tiglari
+#live pointer hunt, delete some stuff after use, very provisional
+#
 #Revision 1.14  2001/07/28 05:29:19  tiglari
 #fix loading of bsp support so that it works after a map has been edited.
 #rename patchLoad to reLoad

@@ -837,10 +837,14 @@ class BaseEditor:
 
 NeedViewError = "this key only applies to a 2D map view"
 
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.14  2001/05/08 11:07:57  tiglari
+#remove debug
+#
 #Revision 1.13  2001/05/07 06:58:51  tiglari
 #redo disable of object dragging with left mousebutton
 #

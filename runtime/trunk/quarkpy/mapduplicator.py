@@ -24,8 +24,7 @@ import mapentities
 
 
 # Variable icons for Duplicator objects
-ico_mapdups = LoadIconSet("images\\mapdups", 16)
-
+ico_dict['ico_mapdups'] = LoadIconSet("images\\mapdups", 16)
 
 
 class DuplicatorManager:
@@ -104,7 +103,7 @@ Dup_Tex_Dicts={}
 class StandardDuplicator(DuplicatorManager):
     "Base for Duplicators that applies on each item one by one."
 
-    Icon = (ico_mapdups, 0)
+    Icon = (ico_dict['ico_mapdups'], 0)
 
     def readvalues(self):
         self.origin = self.dup.origin
@@ -353,7 +352,7 @@ class StandardDuplicator(DuplicatorManager):
 class OriginDuplicator(DuplicatorManager):
     "Origin for centering of groups"
     
-    Icon = (ico_mapdups, 0)
+    Icon = (ico_dict['ico_mapdups'], 0)
 
     def buildimages(self, singleimage=None):
         return []
@@ -448,6 +447,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.21  2001/08/06 00:16:43  tiglari
+#texture-cycling for duplicators
+#
 #Revision 1.20  2001/06/09 01:23:49  tiglari
 #bugfix (subnoodle), extend to duplicators
 #

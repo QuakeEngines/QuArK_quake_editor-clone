@@ -131,7 +131,10 @@ class ToolMoveBar(ToolBar):
     Caption = "Movement Tool Palette"
 
     def buildbuttons(self, layout):
-        icons = LoadPoolObj("ico_movepal", LoadIconSet1, "movepal", 1.0)
+        if not ico_dict.has_key('ico_movepal'):
+            ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
+#        icons = LoadPoolObj("ico_movepal", LoadIconSet1, "movepal", 1.0)
+        icons = ico_dict['ico_movepal']
         btn1 = qtoolbar.button(btnclick, "move selection||Offsets the selected objects by the distance specified in the toolbar settings (last button of this toolbar).", icons, 1)
         btn1.text = Strings[552]
         btn1.spec = "mpOffset"
@@ -199,6 +202,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.4  2001/06/17 21:05:27  tiglari
+#fix button captions
+#
 #Revision 1.3  2001/06/16 03:20:48  tiglari
 #add Txt="" to separators that need it
 #

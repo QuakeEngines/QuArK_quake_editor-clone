@@ -18,6 +18,9 @@ import qmenu
 from qutils import *
 import math
 import string
+
+#qmacro.qeditor_loaded=1
+
 pi2 = 2.0 * math.pi
 epsilon = 0.00001
 deg2rad = math.pi / 180.0
@@ -1314,15 +1317,19 @@ def ToolsMenu(editor, toolbars):
 #
 # Icons for the layout of the Map/Model Editor
 #
-ico_maped = LoadIconSet1("maped", 1.0)
-ico_mdled = LoadIconSet1("mdled", 1.0)
-ico_mapedsm = LoadIconSet1("mapedsm", 0.5)    # small
-ico_maped_y = ico_maped[0][0].size[1] + 7
+ico_dict['ico_maped'] = LoadIconSet1("maped", 1.0)
+ico_dict['ico_mdled'] = LoadIconSet1("mdled", 1.0)
+ico_dict['ico_mapedsm'] = LoadIconSet1("mapedsm", 0.5)    # small
+ico_maped_y = ico_dict['ico_maped'][0][0].size[1] + 7
+
 
 #
 # Set the "Red lines" icons
 #
-quarkx.redlinesicons = (ico_maped[0][5], ico_maped[1][5], ico_maped[2][5], ico_maped[0][4], ico_maped[1][4], ico_maped[2][4])
+quarkx.redlinesicons = (ico_dict['ico_maped'][0][5],
+  ico_dict['ico_maped'][1][5], ico_dict['ico_maped'][2][5],
+   ico_dict['ico_maped'][0][4], ico_dict['ico_maped'][1][4],
+   ico_dict['ico_maped'][2][4])
 
 
 #
@@ -1471,6 +1478,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.9  2001/08/07 23:37:09  tiglari
+#X_, Y_, Z_, axis constants added
+#
 #Revision 1.8  2001/06/17 21:05:27  tiglari
 #fix button captions
 #

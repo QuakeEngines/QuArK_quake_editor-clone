@@ -363,6 +363,7 @@ class BaseLayout:
 
     def bs_multipagespanel(self, panel):
         "Builds the multi-pages panel (usually bottom left)."
+        ico_maped=ico_dict['ico_maped']
         self.explorer = panel.newexplorer()
         self.explorer.flags = EF_AUTOFOCUS
         self.explorer.hint = "||This is the list of everything in your map : entities, polyhedrons, groups, etc. You should consider it as the best way to organize your map so that you can later easily find what you are looking for. Use groups (the button above) to organize your map.\n\nFor more information about the available object types, see the tutorials."
@@ -400,7 +401,7 @@ class BaseLayout:
 
     def bs_leftpanel(self, form, right=0):
         "Default-looking panel at the left or right of the screen."
-
+        ico_maped=ico_dict['ico_maped']
         if right:
             LeftPanel = form.mainpanel.newrightpanel(180)
         else:
@@ -606,6 +607,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.6  2001/01/26 19:07:26  decker_dk
+#bs_multipagespanel. Better indication of keys '1'-'5', which are actually shortcut-keys to the tree-view and  alike panels.
+#
 #Revision 1.5  2000/12/17 09:43:41  decker_dk
 #Some comments about menu settings, as the indexes are hardcoded!
 #

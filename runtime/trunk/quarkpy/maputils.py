@@ -76,6 +76,7 @@ class MapUserDataPanel(UserDataPanel):
 
     def buildbuttons(self, btnpanel):
         Btns = []
+        ico_maped=ico_dict['ico_maped']
         for tb, icon in (("New map items...", 25), ("Texture Browser...", 26)):
             icons =  (ico_maped[0][icon], ico_maped[1][icon])
             toolboxes = quarkx.findtoolboxes(tb)
@@ -376,28 +377,6 @@ def warpedCircleFrom4Points(n, points):
         circle.append(corner[0]+mat*point)
     return circle    
     
-
-SMALL = .1
-SMALLER = .001
-
-def colinear(list):
-    "first 2 should not be coincident"
-    if len(list) < 3:
-       return 1
-    norm = (list[1]-list[0]).normalized
-    v0 = list[0]
-    for v in list[2:]:
-        if abs(v0 - v)>SMALL:
-            norm2 = (v-v0).normalized
-            if abs(norm-norm2)<SMALLER:
-                return 1
-            if abs(norm+norm2)<SMALLER:
-                return 1
-        else:
-            return 1
-    return 0
-    
-
 # ----------- REVISION HISTORY ------------
 #
 #

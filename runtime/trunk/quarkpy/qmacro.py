@@ -166,18 +166,21 @@ def MACRO_OpenGL(minx, miny):
     import qopengl, qeditor
     qopengl.open(qeditor.mapeditor(), minx, miny, bkgnd=1)  #, force=1)
 
-
-def cleardefs():
-    pass
-
 def MACRO_shutdown(text):
-    quitfile=open(quarkx.exepath+'quit.txt','w')
-    quitfile.write('quitting\n')
+#    quitfile=open(quarkx.exepath+'quit.txt','w')
+#    quitfile.write('quitting\n')
+    import qutils
+
     del qutils.ico_objects
     del qutils.ico_editor
-    cleardefs(quitfile)
-    quitfile.write('done\n')
-    quitfile.close()
+    
+    for key in qutils.ico_dict.keys():
+        del qutils.ico_dict[key]
+#        quitfile.write('zapping '+key+'\n')
+    del qutils.ico_dict
+
+#    quitfile.write('done\n')
+#    quitfile.close()
     
 #
 #    ---- Dialog Boxes ----
@@ -311,6 +314,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.14  2001/10/20 02:13:18  tiglari
+#live pointer hunt: redo shutdown macro
+#
 #Revision 1.13  2001/07/27 11:31:47  tiglari
 #bsp study: plane viewing, faces in treeview
 #
