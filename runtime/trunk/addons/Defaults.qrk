@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.67  2000/11/04 20:14:55  decker_dk
+//+devmap for Quake-3
+//
 //Revision 1.66  2000/10/29 16:12:43  decker_dk
 //Q3A and STVEF 'CheckFile' modifications
 //
@@ -1177,6 +1180,8 @@ QQRKSRC1
                   $0D"A prefixed '-' means 'must not exist'"
         }
         GameBuildPgms:incl = {
+                Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
+                BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
                 sep:        = {Typ="S" Txt="1st program"}
                 BuildPgm1:  = {GameBuildPgm=!}
                 BuildArgs1: = {GameBuildArgs=!}
@@ -1291,8 +1296,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameHexenII:form =
@@ -1378,8 +1381,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameQuake2:form =
@@ -1467,8 +1468,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameHeretic2:form =
@@ -1549,8 +1548,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameHalfLife:form =
@@ -1632,8 +1629,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameSin:form =
@@ -1714,8 +1709,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameKingPin:form =
@@ -1798,8 +1791,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       walTrick: = {
         Typ = "X"
         Txt = "This version of qbsp3 wants"
@@ -1888,8 +1879,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       walTrick: = { //FIXME ! is this needed ?
         Typ = "X"
         Txt = "This version of qbsp wants"
@@ -1983,8 +1972,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameSTVEF:form =
@@ -2065,8 +2052,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
     GameCrystalSpace:form =
@@ -2127,8 +2112,6 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       GameBuildPgms=!
     }
 
