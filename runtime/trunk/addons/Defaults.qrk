@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.21  2000/04/29 15:13:52  decker_dk
+//Allow other than PAK#.PAK files
+//
 //Revision 1.20  2000/04/26 02:01:30  alexander
 //fixed default trigger texture for kingpin
 //
@@ -474,6 +477,46 @@ QQRKSRC1
         3DLight = '512'
         walTrick = "1"
         TextureFormat = ".tga"
+      }
+      SOF:config =
+      {
+        Game = "SOF"
+        Code = "E"
+        Directory = "\SOF"
+        CD = ""
+        CDDir = "Install\Data"
+        Program = "sof"
+        QBSP1 = "sofbsp.EXE"
+        QBSPCmd = ""
+        VIS1 = "sofvis.EXE"
+        VISCmd = ""
+        LIGHT1 = "sofarghrad.EXE"
+        LIGHTCmd = "-gamedir .. -moddir ."
+        QBSPDesc = "QBSP3"
+        VISDesc = "QVIS3"
+        LIGHTDesc = "QRAD3"
+        BaseDir = "main"
+        tmpQuArK = "tmpQuArK"
+        Palette = "pics/colormap.pcx"
+        Gradient = "pics/colormap.pcx"
+        UnifiedPalette = "1"
+        ExtractFiles = "pics/colormap.pcx"
+        Q2TexPath = "textures/"
+        Q2TexFlags = "1"
+        ExtraCmdLine = "+set game %s"
+        RunMapCmdLine = " +map %s"
+        AddOns = "DataSOF.qrk"
+        AlwaysPak = ""
+        PakExt = ".pak"
+        CheckDirectory = "sof.EXE"
+        Console = "1"
+        Form = "GameSOF"
+        TextureDef = "castle/1_tunnelfloor_1"
+        TriggerTextureDef = "castle/1_tunnelfloor_1" //FIXME
+        LightFactor = '0.90000'
+        3DLight = '512'
+        walTrick = "1"
+        TextureFormat = ".m32"
       }
       Quake 3:config =
       {
@@ -1548,6 +1591,115 @@ QQRKSRC1
          "r scenes."
       }
     }
+    GameSOF:form =
+    {
+      Style = "3"
+      Directory: =
+      {
+        Txt = "Directory of SOF"
+        Typ = "ED"
+        Hint = "Path to the game executable"
+        CheckFile = "sof.EXE"
+      }
+      AddOns:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC11011111166602444045555
+         $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
+         $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
+         $77CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to SOF
+        cmd:macro = { Typ = "M" Msg = "ADDO" }
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0FA
+         $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
+         $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
+         $AAA20006666666002A200666666666660006666666
+        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin
+        cmd:macro = { Typ = "M" Msg = "OUTP" }
+      }
+      Sep1: = {Typ = "S"} // separator
+      Program: =
+      {
+        Typ = "C"
+        Txt = "SOF command-line"
+        Items = "SOF"$0D"SOF  +set developer 1"
+      }
+      QBSP1: =
+      {
+        Typ = "EP"
+        Txt = "Path to QBSP2"
+        DefExt = "exe"
+      }
+      QBSPCmd: =
+      {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      walTrick: = { //FIXME ! is this needed ? 
+        Typ = "X"
+        Txt = "This version of qbsp3 wants"
+        Cap = ".WAL texture files"
+        Hint = "check this to have QuArK write both .WAL and .TGA textures (kpBSP can't read .TGA textures)"
+      }
+      VIS1: =
+      {
+        Typ = "EP"
+        Txt = "Path to VIS"
+        DefExt = "exe"
+      }
+      VISCmd: =
+      {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      LIGHT1: =
+      {
+        Typ = "EP"
+        Txt = "Path to QRAD"
+        DefExt = "exe"
+      }
+      LIGHTCmd: =
+      {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      Console: =
+      {
+        Typ = "X"
+        Txt = "Run these programs..."
+        Cap = "in QuArK's console"
+      }
+      Sep2: = {Typ = "S"} // separator
+      TextureDef: =
+      {
+        Txt = "Default texture"
+        Typ = "ET"
+        Hint = "Default texture when inserting polyhedrons in maps"
+        GameCfg = "SOF"
+      }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "SOF"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darke"
+         "r scenes."
+      }
+    }
     GameQuake3:form =
     {
       Style = "3"
@@ -2335,7 +2487,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"Quake 3"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
