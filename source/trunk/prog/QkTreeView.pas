@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/12/30 08:57:23  tiglari
+delete bitmap handles
+
 Revision 1.8  2001/03/20 21:43:41  decker_dk
 Updated copyright-header
 
@@ -655,8 +658,6 @@ begin
  PlusBmp1:=SelectObject(PlusDC, MyTVPlusSign);
  MinusDC:=CreateCompatibleDC(DC);
  MinusBmp1:=SelectObject(MinusDC, MyTVMinusSign);
- DeleteObject(MyTVPlusSign);
- DeleteObject(MyTVMinusSign);
  try
   SetWindowOrgEx(DC, HorzScrollBar.Position, VertScrollBar.Position, Nil);
   GetClipBox(DC, VisibleRect);
@@ -1871,4 +1872,14 @@ end;
 
  {------------------------}
 
+initialization
+  {Decker - no initialization needed}
+finalization
+  {Decker - if MyTVPlusSign or MyTVMinusSign were build, then make sure to
+   delete them here again. Note: The deletion can't be elsewhere, as the bitmaps
+   then would not show in tree-views.}
+  if MyTVPlusSign<>0 then
+    DeleteObject(MyTVPlusSign);
+  if MyTVMinusSign<>0 then
+    DeleteObject(MyTVMinusSign);
 end.
