@@ -13,10 +13,10 @@ from quarkpy.maputils import *
 def PlanesClick(m):
     editor=mapeditor()
     root = editor.Root
-    undo=quarkx.action()
-    planegroup = quarkx.newobj("Planes:g")
-    undo.put(root,planegroup)
     planes = editor.Root.parent.planes
+    planegroup = quarkx.newobj("Planes (%d):g"%len(planes))
+    undo=quarkx.action()
+    undo.put(root,planegroup)
     for plane in planes:
 #       debug('plane '+plane.shortname+': '+`plane['norm']`)
 #       debug('  dist: '+"%2f"%plane['dist'])
@@ -27,11 +27,12 @@ def PlanesClick(m):
 def NodesClick(m):
     editor=mapeditor()
     root = editor.Root
-    nodelist = root.parent.nodes
+    nodes = root.parent.nodes
+    nodes.shortname='Nodes (%s)'%nodes['children']
     undo=quarkx.action()
-    undo.put(root,nodelist[0])
+    undo.put(root,nodes)
     editor.ok(undo, 'get nodes')
-    editor.layout.explorer.uniquesel=nodelist[0]
+    editor.layout.explorer.uniquesel=nodes
    
 planesitem=qmenu.item('Get Planes',PlanesClick)
 nodesitem=qmenu.item('Get Nodes',NodesClick)
@@ -130,26 +131,31 @@ class NodeType(quarkpy.mapentities.GroupType):
 
     def menu(o, editor):
          
+        #
+        # For debugging
+        #
         def bboxPoly(m, o=o, editor=editor):
             poly = nodePoly(o)
             undo=quarkx.action()
             undo.put(o,poly)
             editor.ok(undo,"Add bbox Poly")
 
-        #
-        # For debugging
-        #
         polyItem=qmenu.item("Add BBox poly", bboxPoly)
+
         planeItem=qmenu.item("Show Plane",None)
-         
-        return [planeItem, polyItem]
+
+        def showFaceClick(m,o=o,editor=editor):
+            faces=o.faces
+            
+        faceItem=qmenu.item("Show Faces",showFaceClick)
+        return [planeItem, polyItem, faceItem]
 
 quarkpy.mapentities.Mapping[":bspnode"] = NodeType
 quarkpy.mapentities.Mapping[":bspplane"] = PlaneType
 quarkpy.mapentities.Mapping[":bsphull"] = HullType
 
 def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
-    debug('start draw')
+#    debug('start draw')
     from plugins.tagging import drawsquare
     oldmore(editor, view)
     sel = editor.layout.explorer.uniquesel
@@ -158,7 +164,7 @@ def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     cv = view.canvas()
     cv.pencolor = MapColor("Duplicator")
     if sel.type==":bspplane":
-        debug('plane')
+#        debug('plane')
         dist, = sel["dist"]
         norm = quarkx.vect(sel["norm"])
         pos = dist*norm         

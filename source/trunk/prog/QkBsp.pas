@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2001/07/29 05:22:00  tiglari
+more bsp study stuff
+
 Revision 1.43  2001/07/28 05:30:05  tiglari
 load nodes
 
@@ -325,7 +328,8 @@ type
    constructor Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats); overload;
 
    class function TypeInfo: String; override;
-  end;
+   function PyGetAttr(attr: PChar) : PyObject; override;
+ end;
 
  QBsp = class(QFileObject)
         private
@@ -369,7 +373,7 @@ type
           Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
           procedure GetPlanes(var L: TQList);
-          procedure GetNodes(L: TQList);
+          function GetNodes: QObject;
           function GetQ3Node(Node: PQ3Node; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
         end;
 
@@ -1275,10 +1279,7 @@ begin
  case attr[0] of
   'n': if StrComp(attr, 'nodes') = 0 then
        begin
-         L:=TQList.Create; try;
-         GetNodes(L);
-         Result:=QListToPyList(L);
-         finally L.Free; end;
+         Result:=GetPyObj(GetNodes);
          Exit;
        end;
   'p': if StrComp(attr, 'planes') = 0 then
@@ -1589,7 +1590,7 @@ begin
   else
     PlaneSize:=SizeOf(TQ3Plane);
   Planes2:=Planes;
-  For I:=1 to PlaneCount do
+  For I:=0 to PlaneCount-1 do
   begin
     {if the plane is created with Self as parent, it can't
       be stuck into a subitems list by Python code }
@@ -1600,19 +1601,20 @@ begin
   {ShowMessage('Planes: '+IntToStr(PlaneCount));}
 end;
 
-procedure QBsp.GetNodes(L:TQList);
+function QBsp.GetNodes : QObject;
 var
   NodeCount: Integer;
   Nodes: PChar;
   Stats: TNodeStats;
 begin
+  Result:=Nil;
   if bspSurfaceType(NeedObjectGameCode)=bspTypeQ3 then
   begin
       NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     FirstNode)   div SizeOf(TQ3Node);
       LeafSize:=SizeOf(TQ3Leaf);
       LeafCount:= GetBspEntryData(eLeaves,    lump_leafs,    eBsp3_leafs,     FirstLeaf)   div LeafSize;
      { ShowMessage('Nodes: '+IntToStr(NodeCount)); }
-      L.Add(GetQ3Node(PQ3Node(FirstNode), 'Root Node', Nil, Stats));
+      Result:=GetQ3Node(PQ3Node(FirstNode), 'Root Node', Nil, Stats);
   end else
   begin
     ShowMessage('Node viewing not yet supported for this game');
@@ -1634,7 +1636,7 @@ var
       TreeNode:=GetQ3Node( PQ3Node(FirstNode+child*SizeOf(TQ3Node)),Name, Parent, Stats)
     else
     begin
-      PLeaf:=FirstLeaf-child*LeafSize;
+      PLeaf:=FirstLeaf-(child+1)*LeafSize;
       TreeNode:=TTreeBspNode.Create(Name, Parent, PQ3Leaf(PLeaf), Stats);
       TreeNode.Source:=PLeaf;
     end;
@@ -1796,6 +1798,22 @@ begin
  TypeInfo:=':bspnode';
 end;
 
+function TTreeBspNode.PyGetAttr(attr: PChar) : PyObject;
+var
+  I: Integer;
+begin
+  Result:=inherited PyGetAttr(attr);
+  if Result<>Nil then Exit;
+    { No method table, so that part omitted }
+  case attr[0] of
+    'f': if StrComp(attr, 'faces') = 0 then
+       begin
+         ShowMessage('faces');
+         Result:=PyNoResult;
+         Exit;
+       end;
+  end;
+end;
 
 initialization
   RegisterQObject(QBsp, 's');
