@@ -203,7 +203,29 @@ def dpdv(cp, i, j):
 def tanaxes(cp, i, j):
   return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
   
-  
+#
+#  Derivative matrixes for parameter->space mappings and
+#    paramater->plane mappings, at corners.
+#
+#  Not defined at non-corners due to greater complexity and/or
+#    iff-definition (crinkles=no deriv at even-indexed cp's)
+
+#
+# parameter to 5 space
+#
+def d5(cp, i, j):
+    squawk('uereg')
+    dSdu = dSdv = None
+    if i==0:
+        dSdu = 2.0*(cp[1][j]-cp[0][j])
+    elif i==len(cp)-1:
+        dSdu = 2.0*(cp[i][j]-cp[i-1][j])
+    if j==0:
+        dSdv = 2.0*(cp[i][1]-cp[i][0])
+    elif j==len(cp[0])-1:
+        dSdv = 2.0*(cp[i][j]-cp[i-1][j])
+    return dSdu, dSdv  
+    
 
 
 #
@@ -215,7 +237,7 @@ class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
     undomsg = Strings[627]
-    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Ctrl/Shift key: move whole row (same hue)/column.\n  Z key: move everything.  \n Alt: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
+    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Alt/Shift key: move whole row (same hue)/column.\n  Shift+Alt key: move everything.  \n S: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
     def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
@@ -243,12 +265,31 @@ class CPHandle(qhandles.GenericHandle):
 
  
     def menu(self, editor, view):
-
+        from plugins.tagging import *
 
         texcp = qmenu.item("Texture Coordinates",texcpclick)
         texcp.h, texcp.editor = self, editor
         i, j = self.ij
         
+        def wraptexclick(m, self=self, editor=editor):
+            p0, p1, p2 = m.tagged.threepoints(2,editor.TexSource)
+            dmds, dmdt = (p1-p0)/128.0, (p2-p0)/128.0  # div to shift to patch scale
+            dM = quarkx.matrix((dmds.x, dmds.y, 0),
+                               (dmdt.x, dmdt.y, 0),
+                               (0,      0,      1))
+            b2, (i, j) = self.b2, self.ij
+            squawk('oik')
+            squawk(`d5(b2.cp, i, j)[0]`)
+                              
+        
+        wraptex = qmenu.item("Wrap Texture", wraptexclick)
+        tagged = gettaggedface(editor)
+        if tagged is None:
+          wraptex.state=qmenu.disabled
+        else:
+          wraptex.tagged = tagged
+
+
         def thickenclick(m,self=self,editor=editor):
           new = self.b2.copy()
           #
@@ -286,7 +327,7 @@ class CPHandle(qhandles.GenericHandle):
         thicken = qmenu.popup("Thicken",[addrow, addcol])
         
         
-        return [texcp,thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp,wraptex,thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -361,14 +402,14 @@ class CPHandle(qhandles.GenericHandle):
                     return 1
                 return 0
             
-            if quarkx.keydown('\020')==1: #SHIFT
-                return map(lambda i,j=j:(i, j),range(self.h))
-            if quarkx.keydown('\021')==1: #CTRL
-                return map(lambda j,i=i:(i, j), range(self.w))
-            if quarkx.keydown('Z'):
+            if quarkx.keydown('\020')==1 and quarkx.keydown('\022')==1: #SHIFT and ALT
                 def row(i,self=self):
                     return map(lambda j,i=i:(i,j),range(self.w))
                 return reduce(lambda x,y:x+y, map(row,range(self.h))) 
+            if quarkx.keydown('\020')==1: #SHIFT
+                return map(lambda i,j=j:(i, j),range(self.h))
+            if quarkx.keydown('\022')==1: #ALT
+                return map(lambda j,i=i:(i, j), range(self.w))
             return (i, j),
         # /tiglari
 
@@ -387,7 +428,7 @@ class CPHandle(qhandles.GenericHandle):
                 p = cp[m][n] + delta
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
-                if quarkx.keydown('\022'): # RMB
+                if quarkx.keydown('S'): # RMB
                     xaxis, yaxis = tanaxes(cp,i,j)
                     xaxis, yaxis = -xaxis, -yaxis
                     q = cp[m][n]
@@ -434,3 +475,11 @@ class CenterHandle(maphandles.CenterHandle):
 
         return mapentities.CallManager("menu", self.centerof, editor)
     # /tiglari
+    
+    
+
+
+#$Header$
+# ----------- REVISION HISTORY ------------
+#$Log$
+
