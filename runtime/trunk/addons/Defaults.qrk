@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.224  2004/02/12 06:52:27  cdunde
+//To add hotkey to axisicons function for speedy use to try and clear 3D software mode view lockup problem
+//
 //Revision 1.223  2004/01/16 21:41:46  cdunde
 //To standardize all Basic Polyhedrons and add a new one
 //
@@ -918,6 +921,7 @@ QQRKSRC1
         Unfreeze Selection = "Alt+U"
         Make Detail = "Alt+D"
         AxisXYZ = "Alt+A"
+        Rebuild3D = "Tab"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -4161,6 +4165,7 @@ QQRKSRC1
        Invert Face Selection: = {HotKeyForm = !}
        Make Detail: = {HotKeyForm = !}
        AxisXYZ: = {HotKeyForm = !}
+       Rebuild3D: = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
