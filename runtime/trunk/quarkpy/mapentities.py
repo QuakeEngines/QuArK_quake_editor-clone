@@ -559,6 +559,17 @@ def drawentitylines(editor, processentities, view):
 # Function to load the form corresponding to an entity list.
 #
 
+formdict = {}
+
+def lookupPyForm(f1):
+    if formdict.has_key(f1):
+        return formdict[f1]
+
+def registerPyForm(name, formstring):
+    f = quarkx.newobj(name+":form")
+    f.loadtext(formstringstring)
+    formdict[name] = f
+
 def LoadEntityForm(sl):
     formobj = None
     if len(sl):
@@ -576,11 +587,16 @@ def LoadEntityForm(sl):
             flist = quarkx.getqctxlist(':form', f1)
             if len(flist):
                 formobj = flist[-1]
+        if formobj is None:
+            formobj = lookupPyForm(f1)
     return formobj
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20  2000/07/29 02:06:35  tiglari
+#my idea of how to do `hardcore' color coding
+#
 #Revision 1.19  2000/07/26 11:34:02  tiglari
 #changes for bezier menu reorganizations
 #
