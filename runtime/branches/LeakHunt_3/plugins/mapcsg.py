@@ -106,7 +106,8 @@ def polyintersects(p1, p2):
             p.appenditem(face.copy())
     return len(p.faces)
 
-mat_shrink=quarkx.matrix((0.99,0,0), (0,0.99,0), (0,0,0.99))
+def mat_shrink():
+    return quarkx.matrix((0.99,0,0), (0,0.99,0), (0,0,0.99))
 
 #
 # CSG for non-map stuff
@@ -120,7 +121,7 @@ def CSGlist(plist, sublist):
     try:
         for p in sublist:
             tp = p.copy()
-            tp.linear(tp.origin, mat_shrink)
+            tp.linear(tp.origin, mat_shrink())
  #           tp.shortname="shrunk"
  #           undo = quarkx.action()
  #           undo.put(p.parent,tp,p)
@@ -360,6 +361,9 @@ quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2001/03/29 20:57:45  tiglari
+# added 2nd subtraction routime, some tests
+#
 # Revision 1.4  2001/03/20 08:02:16  tiglari
 # customizable hot key support
 #

@@ -173,9 +173,14 @@ def MiddleDepth(view):
 # The coordinate axes
 #
 
-X_axis = quarkx.vect(1,0,0)
-Y_axis = quarkx.vect(0,1,0)
-Z_axis = quarkx.vect(0,0,1)
+def X_axis():
+    return quarkx.vect(1,0,0)
+
+def Y_axis():
+    return quarkx.vect(0,1,0)
+
+def Z_axis():
+    return quarkx.vect(0,0,1)
 
 
 #
@@ -1479,6 +1484,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.10.4.1  2001/11/11 01:10:20  tiglari
+#icon leak fixes
+#
 #Revision 1.10.2.2  2001/11/11 00:25:59  tiglari
 #icon leaks
 #

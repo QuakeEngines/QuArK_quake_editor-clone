@@ -94,7 +94,7 @@ def snapObjectToPlane(face, object, tagged, separation, doswivel=1, dotilt=1, do
         doswivel=0
     
     face2, object2 = face.copy(), object.copy()
-    idmat = quarkx.matrix(X_axis, Y_axis, Z_axis)
+    idmat = quarkx.matrix(X_axis(), Y_axis(), Z_axis())
     if doswivel:
         #
         # think of the taggedhoriz as the x axis, facehoriz
