@@ -32,10 +32,10 @@
 Info = {
    "plug-in":       "Mad Selector",
    "desc":          "Manipulating selection in various ways",
-   "date":          "10 June 1999",
+   "date":          "10 June 1999, rev 15 April 2001",
    "author":        "tiglari",
-   "author e-mail": "tiglari@hexenworld.com",
-   "quark":         "Version 5.11" }
+   "author e-mail": "tiglari@planetquake.com",
+   "quark":         "Version 6.3" }
 
 
 import quarkx
@@ -47,7 +47,9 @@ import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.maphandles
 import maptagside
+import faceutils
 from quarkpy.maputils import *
+
 
 
 types = {
@@ -287,29 +289,23 @@ def InsertMeInto(m):
 
 
 def facelift(o):
-  "returns a menu item for lifting face into marked group"
-  editor = mapeditor()
-  marked = getstashed(editor)
-  help = "|Lifts face to marked group, removing coplanar\nfaces within that group."
-  if marked is None:
-    item = qmenu.item("&Lift to marked group",None,help)
-    item.state = qmenu.disabled
+    "returns a menu item for lifting face into marked group"
+    editor = mapeditor()
+    marked = getstashed(editor)
+    help = "|Lifts face to marked group, removing coplanar faces within that group."
+    item = qmenu.item("&Lift to marked group",LiftMe,help)  
+    if marked is None:
+        item.state = qmenu.disabled
+        item.hint = item.hint+"\n\nFor this item to be enabled, there must be a marked group containing the face (Navigate tree|<some containing group>|Mark)."
+        return item
+    if not checktree(marked,o):
+        item.state = qmenu.disabled
+        item.hint = item.hint+"\n\nFor this item to be enabled, the marked group must contain the face"
+        return item
+    item.marked = marked
+    item.object=o
     return item
-  item = qmenu.item("&Lift to marked group",LiftMe,help)
-  item.marked = marked
-  item.text = "Lift face to marked group"
-  item.object=o
-  return(item)
 
-
-def coplanar(f1, f2):
-  (p1, p2, p3) = f1.threepoints(0)
-  (q1, q2, q3) = f2.threepoints(0)
-  n = f1.normal
-  if n*(q1-p1) == 0:
-    return 1
-  return 0
-  
 
 def LiftMe(m):
    o=m.object
@@ -317,7 +313,7 @@ def LiftMe(m):
    undo = quarkx.action()
    undo.move(m.object, m.marked)
    for face in list:
-     if coplanar(o, face) and o != face:
+     if faceutils.coplanar(o, face) and o != face:
        undo.exchange(face,None)
    mapeditor().ok(undo, m.text)
   
@@ -723,6 +719,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.5  2001/03/29 21:04:59  tiglari
+# split UnrestrictClick into interface & exective functions
+#
 # Revision 1.4  2001/03/20 08:02:16  tiglari
 # customizable hot key support
 #
