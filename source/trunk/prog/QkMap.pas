@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2002/05/15 22:04:51  tiglari
+fixes to map reading error recording (so that new maps can be created ..)
+
 Revision 1.46  2002/05/15 00:08:38  tiglari
 Record Map Errors for possible write to console or elsewhere
 
@@ -1129,6 +1132,10 @@ expected one.
   (Max McGuire's Quake2 BSP file format tutorial on
    www.flipcode.com)
 
+  However wc3.3 does *not* seem to require the texture-vectors
+  to lie in an axis plane, and if you write with that assumption
+  (projecting the points), things get distorted.
+
   U/V Axis/Shift are straight from the 4-vectors, param[3]
   is rot which is ignored (implicit from the axes), while
   param[4,5] are UV scales. (Zoner's HL tools source,
@@ -1151,10 +1158,12 @@ expected one.
      PlanePoint:=VecScale(Dist, Normale);
      (* could perhaps be optimized by 'partial evaluation' *)
      try
+     (*
        NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
        NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
        NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-       SetThreePointsEx(NP0,NP1,NP2,Normale);
+     *)
+       SetThreePointsEx(PP0,PP1,PP2,Normale);
      except
        g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
      end;
@@ -1351,11 +1360,18 @@ begin
                  end;
               end
               else
+              begin
                 for I:=1 to 5 do
                  begin
                   Params[I]:=NumericValue;
                   ReadSymbol(sNumValueToken);
                  end;
+              if charmodejeu=mjGenesis3D then
+              begin
+                if PointsToPlane(Surface.Normale)='X' then
+                   Params[4]:=-Params[4];
+              end;
+              end;
               {/DECKER}
               if SymbolType=sNumValueToken then
                begin
