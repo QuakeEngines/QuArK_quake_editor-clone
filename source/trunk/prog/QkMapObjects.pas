@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/01/21 15:49:03  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.18  2001/01/07 21:37:47  tiglari
 ListeBeziers for support of ignoretobuild flag
 
@@ -281,10 +284,8 @@ procedure SetupWhiteOnBlack(WhiteOnBlack: Boolean);
 procedure ReleaseMapIcons;
 function LongueurVectNormal : Single;}
 procedure CheckTreeMap(Racine: TTreeMap);
+function CommentMapLine(const a_Comment:String) : String;
 
-const
-   Comment: array[Boolean] of String =
-    ('//', ';');
  {------------------------}
 
 implementation
@@ -293,6 +294,29 @@ uses Setup, QkMapPoly, Undo, FormCfg,
      Game, QkMacro, Quarkx, PyMath,
      PyMapView, PyObjects, QkImages, Bezier,
      EdSceneObject, QkObjectClassList;
+
+ {------------------------}
+
+function CommentMapLine(const a_Comment:String) : String;
+var
+  l_MapCommentsPrefix: String;
+begin
+  { If user has choosen to disable .MAP comments, then return an empty string. }
+  if (SetupSubSet(ssMap,'Options').Specifics.Values['DisableMapComments'] = '1') then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  { Read the comments-prefix from the games' configuration, and make sure it is not empty }
+  l_MapCommentsPrefix := Trim(SetupGameSet.Specifics.Values['MapCommentsPrefix']);
+  if (l_MapCommentsPrefix = '') then
+  begin
+    Raise EErrorFmt(5701, [SetupGameSet.Name]);
+  end;
+
+  Result := l_MapCommentsPrefix + ' ' + a_Comment;
+end;
 
  {------------------------}
 
@@ -1110,7 +1134,7 @@ var
  P1, I, J, P: Integer;
 begin
  MJ:=CharModeJeu;
- Dest.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry);
+ Dest.Add(CommentMapLine(Ancestry));
  Dest.Add('{');
  LineStart:=LineStarts[Flags and soBSP <> 0];
  Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
@@ -1263,7 +1287,7 @@ end;
 
 procedure TTreeMapEntity.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 begin
- Texte.Add(Comment[(CharModeJeu>='A') and (CharModeJeu<='Z')]+' Entity '+IntToStr(GetNextEntityNo));
+ Texte.Add(CommentMapLine('Entity '+IntToStr(GetNextEntityNo)));
 
  SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  Texte.Add('}');
@@ -2197,25 +2221,17 @@ procedure TTreeMapGroup.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Inte
 var
  I: Integer;
  T: TTreeMap;
- MJ: Char;
 begin
  if (Flags and soIgnoreToBuild <> 0)
  and (ViewFlags and vfIgnoreToBuildMap <> 0) then
   Exit;
  if Odd(SelMult) then
   Flags:=Flags and not soSelOnly;
- MJ:=CharModeJeu;
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
    if (Flags and soSelOnly = 0) or ControleSelection(T) then
    begin
-(*
-    if (T is TTreeMapEntity) then
-     begin
-      Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' EntityA '+IntToStr(GetNextEntityNo));
-     end;
-*)
     T.SaveAsText(Negatif, Texte, Flags, HxStrings);
    end;
   end;
@@ -2288,20 +2304,17 @@ end;
 procedure TTreeMapBrush.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 var
  Polyedres: TQList;
- I: Integer;
+ I, J: Integer;
  V1, V2: TVect;
  OriginBrush: PVect;
- MJ : Char;
- S : String;
 begin
- MJ:=CharModeJeu;
  { If this is the first time we're called, soOutsideWorldspawn is not set,
    and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
  if (Flags and soOutsideWorldspawn = 0) then
   I := GetFirstEntityNo
  else
   I := GetNextEntityNo;
- Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(I));
+ Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
 
  SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  if Flags and soBSP = 0 then
@@ -2334,15 +2347,19 @@ begin
         end;
     for I:=0 to Polyedres.Count-1 do
      begin
-      S:= Comment[(MJ>='A') and (MJ<='Z')]+' Brush '+IntToStr(I);
-      Texte.Add(S);
+      Texte.Add(CommentMapLine('Brush '+IntToStr(I)));
       TPolyedre(Polyedres[I]).SaveAsTextPolygon(Texte, OriginBrush, Flags);
      end;
     { proceed with Bezier patches }
+    I:=Polyedres.Count-1;
     Polyedres.Clear;
     ListeBeziers(Polyedres, Flags);
-    for I:=0 to Polyedres.Count-1 do
-     TBezier(Polyedres[I]).SaveAsTextBezier(Texte);
+    for J:=0 to Polyedres.Count-1 do
+    begin
+     I:=I+1;
+     Texte.Add(CommentMapLine('Bezier '+IntToStr(J)+' (Brush '+IntToStr(I)+')'));
+     TBezier(Polyedres[J]).SaveAsTextBezier(Texte);
+    end;
    finally
     Polyedres.Free;
    end;
