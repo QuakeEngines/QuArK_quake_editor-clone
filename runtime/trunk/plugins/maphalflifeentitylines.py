@@ -84,12 +84,12 @@ class HalfLifeDrawEntityLines(DefaultDrawEntityLines):
                         radius = float(R2) * view.scale(org)
                     else:
                         radius = float(R3) * view.scale(org)
-                        cv = view.canvas()
-                        cv.pencolor = axiscolor
-                        cv.brushcolor = axiscolor
-                        cv.penwidth = 1
-                        cv.brushstyle = BS_BDIAGONAL
-                        cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
+                    cv = view.canvas()
+                    cv.pencolor = axiscolor
+                    cv.brushcolor = axiscolor
+                    cv.penwidth = 1
+                    cv.brushstyle = BS_BDIAGONAL
+                    cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
                 except:
                     pass
             if entity.name in ["func_door_rotating:b","func_platrot:b","func_rotating:b","func_rot_button:b","func_pendulum:b","func_trackautochange:b","func_trackchange:b","momentary_rot_button:b"]:
@@ -299,6 +299,9 @@ quarkpy.mapentities.EntityLinesMapping.update({
 #
 #
 # $Log$
+# Revision 1.3  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #
