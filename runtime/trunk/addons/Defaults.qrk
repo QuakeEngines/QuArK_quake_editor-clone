@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.103  2001/03/16 16:01:18  maleficus
+//q3(T)a map limits now set to the limits of q3map
+//
 //Revision 1.102  2001/03/16 00:28:50  aiv
 //made customizable maplimits for games
 //
@@ -918,7 +921,7 @@ QQRKSRC1
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-vis"
+        BuildArgs2 = "-vis -saveprt"
         BuildPgm3  = "Q3MAP.EXE"
         BuildArgs3 = "-light"
         BuildPgm4  = "BSPC.EXE"
