@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2000/05/04 23:59:57  alexander
+//added: preliminary game files for Soldier of Fortune
+//
 
 {
   Description = "Custom configuration file for SOF"
@@ -64,7 +67,6 @@ QQRKSRC1
       Txt = "&GO ! (textures+build+SOF)"
       Shortcut = "Ctrl+R"
       Textures = "1"
-      QCSG1 = "0"
       QBSP1 = "1"
       VIS1 = "1"
       LIGHT1 = "1"
@@ -76,7 +78,6 @@ QQRKSRC1
       Txt = "Quic&kGO ! (no VIS, fast LIGHT)"
       Shortcut = "Ctrl+K"
       Textures = "1"
-      QCSG1 = "0"
       QBSP1 = "1"
       LIGHT1 = "1"
       RunGame = "1"
@@ -87,7 +88,6 @@ QQRKSRC1
       Shortcut = "Ctrl+P"
       SelOnly = "1"
       Textures = "1"
-      QCSG1 = "0"
       QBSP1 = "1"
       LIGHT1 = "1"
       RunGame = "1"
@@ -104,7 +104,6 @@ QQRKSRC1
     item: =
     {
       Txt = "&Complete rebuild"
-      QCSG1 = "0"
       QBSP1 = "1"
       VIS1 = "1"
       LIGHT1 = "1"
@@ -122,8 +121,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&QBSP (.bsp file creation)"
-      QCSG1 = "1"
+      Txt = "&SOFBSP (.bsp file creation)"
       QBSP1 = "1"
       Pause = "1"
     }
@@ -146,9 +144,9 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "QBSO - only &entities"
-      QCSG1 = "1"
-      QCSGCmd = "-onlyents"
+      Txt = "SOFBSP - only &entities"
+      QBSP1 = "1"
+      QBSPCmd = "-onlyents"
       Pause = "1"
     }
   }
