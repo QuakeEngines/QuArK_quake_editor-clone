@@ -13,6 +13,9 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
+ * [Rowdy/cdunde]: Corrected handling of comments for shaders to
+      fix problem of them not showing up in the Texture Browser.
+
  * [cdunde]: New HotKey (Tab) and Options menu function,
       Rebuild 3D views (actually all views) in case of a lockup.
       This clears up all textured views, may need multiple attempts.
