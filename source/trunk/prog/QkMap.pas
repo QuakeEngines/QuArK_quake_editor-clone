@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/01/21 15:49:03  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.22  2001/01/15 19:20:19  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -1260,8 +1263,15 @@ begin
          HxStrings:=TStringList.Create;
          HxStrings.Text:=Specifics.Values['hxstrings'];
         end;
-       Dest.Text:=FmtLoadStr1(176, [QuarkVersion, SetupGameSet.Name]);
+
+       { .MAP comment header, which explains that this .MAP has been written
+         by QuArK, for this game, and then QuArK's webpage. }
+       Dest.Add(CommentMapLine(FmtLoadStr1(176, [QuarkVersion])));
+       Dest.Add(CommentMapLine(FmtLoadStr1(177, [SetupGameSet.Name])));
+       Dest.Add(CommentMapLine(FmtLoadStr1(178, [])));
+       Dest.Add('');
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
+
        saveflags:=0;
        MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
        if MapOptionSpecs.Values['IgnoreToBuild']<>'' then
