@@ -26,29 +26,55 @@ unit OsFolder;
 interface
 
 uses
-  ToolBoxGroup, QkObjects, Dialogs, Classes, QkFileObjects;
+  ToolBoxGroup, QkObjects, Dialogs, Classes, QkFileObjects, QuickWal;
 
 type
   QOsFolder = class(QToolBoxGroup)
+    private
+      procedure ReadFolder;
+    protected
+      procedure LoadFile(F: TStream; FSize: Integer); override;
     public
-      procedure PrepareForExpand; override;
+      procedure FinalizeFromText; override;
+      function WriteSubElements : Boolean; override;
       class function TypeInfo: String; override;
  end;
 
 
 implementation
 
-uses QkObjectClassList;
+uses QkObjectClassList, Toolbox1, Game, QkTextures,
+  SysUtils;
 
 class function QOsFolder.TypeInfo;
 begin
  TypeInfo:='.osfolder';
 end;
 
-procedure QOsFolder.PrepareForExpand;
-begin
-  ShowMessage('If OsFolders were finished, something useful would have happenned');
+procedure QOsFolder.FinalizeFromText;
+begin;
+  ReadFolder;
 end;
+
+procedure QOsFolder.LoadFile(F: TStream; FSize: Integer);
+begin
+  inherited;
+  ReadFolder;
+end;
+
+procedure QOsFolder.ReadFolder;
+var
+ Base : String;
+begin
+  Base:=Specifics.Values['path'];
+  BuildFolders(Base, QObject(Self));
+end;
+
+function QOsFolder.WriteSubElements;
+begin
+  Result:=False;
+end;
+
 
 initialization
   RegisterQObject(QOsFolder, 'a');
