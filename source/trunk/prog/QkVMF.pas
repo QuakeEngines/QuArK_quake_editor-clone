@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2005/01/28 18:48:53  alexander
+entities are processed, not yet the connections
+
 Revision 1.2  2005/01/27 21:05:22  alexander
 we can load a vmf map now, ignoring the entities
 
@@ -395,6 +398,8 @@ procedure WC33Params;
     ReadValues(s,result);
   end;
 
+
+
  begin
 
 
@@ -544,9 +549,35 @@ procedure WC33Params;
 
  procedure ReadHL2Entity(parentgroup: TTreeMapSpec);
  var
+
    Entity : TTreeMapSpec;
    SpecificList: TStringList;
    classname: String;
+
+
+   procedure AddConnection(var List: TStringlist;outputname,value:string);
+   var
+     i,num,lastfound : integer;
+
+   begin
+     num:=0;
+     lastfound:=0;
+     for i:=0 to list.count-1 do
+     begin
+       // count occurances
+       if pos(outputname,list[i])<>0 then
+       begin
+         num:=num+1;
+         lastfound:=i;
+       end;
+     end;
+
+     if num>1 then
+       List.Add(outputname + '#'+IntToStr(num)+'=' + value)
+     else
+       List.Add(outputname + '=' + value)
+   end;
+
  begin
    entity := nil;
    ReadSymbol(sStringToken);
@@ -579,7 +610,9 @@ procedure WC33Params;
          begin
            S1:=S;
            ReadSymbol(sStringQuotedToken);
-           S1:=S;
+           //check if connection for this output is already there and
+           //adds with same name and #<n>
+           AddConnection(SpecificList, 'output#'+S1, S);
            ReadSymbol(sStringQuotedToken);
          end;
          ReadSymbol(sCurlyBracketRight);
@@ -713,16 +746,15 @@ begin
   try
     Source:=PChar(SourceFile);
     Prochain:=Source+Granularite;   { point at which progress marker will be ticked}
-    Result:=mjQuake;     { Into Result is but info about what game the map is for }
+    Result:=mjHl2;
     g_MapError.Clear;
     ReadSymbolForceToText:=False;    { ReadSymbol is not to expect text}
     LineNoBeingParsed:=1;
     InvPoly:=0;
     InvFaces:=0;
     Juste13:=False;
-    {FinDeLigne:=False;}
-//    L:=TStringList.Create;
-    try   { L and HullList get freed by finally, regardless of exceptions }
+
+    try
      WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
      Entities:=TTreeMapGroup.Create(LoadStr1(136), Root);
      Root.SubElements.Add(Entities);
@@ -739,7 +771,6 @@ begin
         a quoted string), and set SymbolType to the type of what it got. }
 
 
-       // this is for hl2
        //found string versionsinfo
        while SymbolType=sStringToken do
        if CompareText(S,'versioninfo')=0 then
@@ -757,7 +788,6 @@ begin
              if CompareText(S,'world')=0 then
              begin
                ReadWorld;
-               Result:=mjHl2;
              end
              else
                //found string cameras
