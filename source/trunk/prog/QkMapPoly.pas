@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.75  2004/11/30 00:14:57  alexander
+fixed texture scaling problem for HL2
+
 Revision 1.74  2004/11/25 01:25:24  alexander
 save in HL2 map format when MapFormat is configured to HL2
 
@@ -3049,7 +3052,10 @@ begin
      Brush.Add(' side {');
    WriteFace(PSurface(Faces[J])^.F);
    if MapFormat=HL2Type then
+   begin
+     Brush.Add('  "lightmapscale" "16"');
      Brush.Add(' }');
+   end
   end
  else
   for J:=0 to SubElements.Count-1 do
