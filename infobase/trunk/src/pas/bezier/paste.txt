@@ -19,14 +19,15 @@ QQRKSRC1
 The 'v' specific contains 5 values (x,y,z,s,t coordinates) for each
 control point, that is, 45 values in total.
 
-This specific can either be directly manipulated by Python code,
+This specific can be directly manipulated by Python code,
 but it's generally simpler to read and write the Python attribute
 "cp" (Control Points), which returns (resp. must be set to) a 3-tuple
-of 3-tuples of vectors.
+of 3-tuples of vectors (note: QuArK now supports "quilts", which mean
+that the dimension of the "cp" rectangular matrix can actually be any
+odd number.)
 
 Vectors have been enhanced in this version of QuArK to allow them to
 hold all 5 coordinates of the control points. You create such a vector
 by passing 5 arguments to the function "quarkx.vect". The extra coordinates
 can be readen through the vector's "tex_s" and "tex_t" attributes, as well
 as through "tex" which directly returns a 2-tuple (tex_s, tex_t).
-

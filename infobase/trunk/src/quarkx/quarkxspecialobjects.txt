@@ -20,10 +20,12 @@ Loads a list of textures given by name. If the list contains animated textures, 
 
 <tr><td class="doccode">
 vect(x,y,z)<br>
+vect(x,y,z,s,t)<br>
 vect((x,y,z))<br>
+vect((x,y,z,s,t))<br>
 vect(string)
 </td><td>
-Returns a 3D vector object with coordinates x,y,z specified either as three parameters, as a single tuple parameter, or textually in a string as three numbers separated with whitespaces.
+Returns a 3D (resp. 5D) vector object with coordinates x,y,z (resp. x,y,z,s,t) specified either as three (resp. five) parameters, as a single tuple parameter, or textually in a string as three (not 5, not supported, sorry) numbers separated with whitespaces.
 </td></tr>
 
 <tr><td class="doccode">

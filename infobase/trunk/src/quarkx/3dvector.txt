@@ -107,3 +107,32 @@ v.offscreen
 </td></tr>
 
 </table>
+
+<p>The control points of Bezier patches use an extension of the 3D vectors: 5D vectors. These vectors have two additionnal coordinates, representing the texture coordinates. 5D vectors have the same Python type as 3D vectors, and all operations you can do with 3D vectors can be done with 5D vectors too; here is the new stuff:</p>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+v+w<br>
+v-w<br>
+v*float<br>
+float*v<br>
+v/float
+</td><td>
+These operations apply on all 5 coordinates. Note that adding or subtracting a 3D and a 5D vector together will produce a 5D vector as expected.
+</td></tr>
+
+<tr><td class="doccode">
+v.tex_s<br>
+v.tex_t
+</td><td>
+The two additional coordinates of 5D vectors.
+</td></tr>
+
+<tr><td class="doccode">
+v.tex
+</td><td>
+The tuple <span class="doccode">(v.tex_s, v.tex_t)</span>.
+</td></tr>
+
+</table>

@@ -19,6 +19,12 @@ List of all entities and brush entities within this brush entity, including the 
 </td></tr>
 
 <tr><td class="doccode">
+listbeziers
+</td><td>
+List of all bezier patches within this brush entity, including the ones created by Duplicators, if any.
+</td></tr>
+
+<tr><td class="doccode">
 Q2offset
 </td><td>
 Relevant only in Quake 2 mode, and if the given entity is not worldspawn. Returns the texture offset computed from the "origin" brush in the entity, as with rotating doors. (Not implemented yet, ask me if you need this)
