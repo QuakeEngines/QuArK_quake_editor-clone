@@ -159,8 +159,9 @@ def CheckPlanesClick(m):
         #
         # Names and list-indexes of close planes
         #
-        pack.slist = map(lambda obj:obj.shortname, pack.closeones)
-        pack.klist = map(lambda d:`d`, range(len(pack.closeones)))
+        ran = range(len(pack.closeones))
+        pack.slist = map(lambda obj,num:"%d) %s"(num,obj.shortname), pack.closeones, ran)
+        pack.klist = map(lambda d:`d`, ran)
         self.src["closeplanes$Items"] = string.join(pack.slist, "\015")
         self.src["closeplanes$Values"] = string.join(pack.klist, "\015")
         #
@@ -312,7 +313,7 @@ class NearPlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
 
     def findsplit(self):
         editor=self.editor
-        debug('PLANE '+`self.pack.plane.num`)
+#        debug('PLANE '+`self.pack.plane.num`)
         findSplitNodes(self.editor,self.pack.plane)
 
 def macro_nearplanes(self, index=0):
@@ -387,8 +388,9 @@ def nearPlanesClickFunc(m,o,editor):
                 #
                 # Names and list-indexes of close planes
                 #
-                pack.slist = map(lambda obj:obj.shortname, pack.nearones)
-                pack.klist = map(lambda d:`d`, range(len(pack.nearones)))
+                ran = range(len(pack.nearones))
+                pack.slist = map(lambda obj, num:"%d) %s"%(num, obj.shortname, pack.nearones, ran)
+                pack.klist = map(lambda d:`d`, ran)
                 self.src["nearplanes$Items"] = string.join(pack.slist, "\015")
                 self.src["nearplanes$Values"] = string.join(pack.klist, "\015")
                 #
@@ -405,7 +407,7 @@ def nearPlanesClickFunc(m,o,editor):
                 self.chosen = src["nearplanes"]
                 plane = self.pack.nearones[eval(self.chosen)]
                 self.pack.plane=plane
-                debug('norm '+`plane.normal`+' dist '+`plane.dist`)
+#                debug('norm '+`plane.normal`+' dist '+`plane.dist`)
                 src["normal"]=plane.normal.tuple
                 src["dist"]=plane.dist,
                 #

@@ -174,6 +174,7 @@ def badClick(m):
     pack.baddies=baddies
     pack.badangle=badangle
     pack.badtexaxis=badtexaxis
+    pack.seen = 0
       
     #
     # This loads the relevant data into the dialog, gets
@@ -191,21 +192,28 @@ def badClick(m):
         #
         # Names and list-indexes of thin brushes
         #
-        pack.slist = map(lambda obj:"%s:%s"%(obj.parent.shortname,obj.shortname), pack.baddies)
-        pack.klist = map(lambda d:`d`, range(len(pack.baddies)))
+        ran = range(len(pack.baddies))
+        pack.slist = map(lambda obj,num:"%d) %s:%s"%(num,obj.parent.shortname,obj.shortname), pack.baddies, ran)
+        pack.klist = map(lambda d:`d`, ran)
 
-        #
-        #  wtf doesn't this work, item loads but function is trashed
-        #
-#        self.src["micros"] = pack.klist[0]
         self.src["micros$Items"] = string.join(pack.slist, "\015")
         self.src["micros$Values"] = string.join(pack.klist, "\015")
+        if not pack.seen and len(ran)>0:
+            self.src["micros"] = '0'
+            self.chosen = '0'
+            pack.seen = '0'
+        elif len(ran)==0:
+            self.chosen = ''
+            pack.seen = ''
+            
         #
         # Note the commas, EF..1 controls take 1-tuples as data
         #
         self.src["num"]=len(pack.klist),
         self.src["badangle"]=eval(pack.badangle),
         self.src["badtexaxis"]=eval(pack.badtexaxis),
+
+        
 
     #
     # When data is entered, this gets executed.
@@ -242,6 +250,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|This finds faces whose texture axes are almost parallel"))
 
 #$Log$
+#Revision 1.4  2002/05/12 08:00:15  tiglari
+#minor corrections
+#
 #Revision 1.3  2002/04/30 22:55:33  tiglari
 #add import quarkpy.mapsearch  statement
 #
