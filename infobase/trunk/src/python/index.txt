@@ -1,20 +1,6 @@
 title: Python Coding
-subdir: duplicators
 
-To code the Python, all you need is a decent text-editor (Textpad, UltraEdit,
-etc) and QuArK; an altered Python file is recompiled automatically the
-next time your run QuArK.  If you tick the Developer Mode option and
-restart QuArK, a somewhat limited 'reload' command will also appear on
-the command menu, which reloads modules.  The
-<ref>src/quarkx</ref> section of this document describes the Delphi
-facilities you can call from Python; unfortuately there is no similar
-account of the facilities that the Python modules provide for each other,
-so that figuring out how to do things in QuArK Python is not always so
-easy.  As far as learning Python itself is concerned, SAMS publications
-<I>Teach Yourself Python in 24 Hours</I> (Ivan van Lanigham) is one that
-people have had good experiences with.
 
-Note that QuArK uses python 1.5.1 or .2; the Minipy is a 1.5.1 .dll,
-and if it is present QuArK will use it, but will also work if 1.5.2 is
-installed, but <i>not</i> Python 2.  The Minipy is however perfectly
-happy to coexist with a Python 2 installation.
+Python coding is covered in <ref>adv</ref> (maybe not the best organization, but
+the original idea was that Armin would maintain the Delphi and others
+would only mess with the Python).
