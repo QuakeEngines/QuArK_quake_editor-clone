@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/03/09 01:50:56  aiv
+fixed treeview updating bug
+
 Revision 1.11  2001/03/09 00:01:31  aiv
 added texture linking to entity tool.
 
@@ -99,7 +102,7 @@ implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
      ToolBoxGroup, ExtraFunctionality, Game, QkMapObjects, FormCfg, QkExplorer,
-     QkForm;
+     QkForm, Travail;
 
  {------------------------}
 
@@ -364,8 +367,6 @@ var
   entityForms:QFormContext;
   OldForm, Form: QFormCfg;
   OldFormEl, FormEl, TexFolders: QObject;
-  // updating tree view at end
-  F, FF: TQForm1;
   (*
     Get all .bsp files in & out of pak's
   *)
@@ -377,18 +378,25 @@ var
     dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
     paks:=OpenFiles(dir, ListPakFiles(dir));
     bsps:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
+    ProgressIndicatorStart(5458,paks.count);
     for i:=0 to paks.count-1 do
     begin
+      ProgressIndicatorIncrement;
       pak:=QFileObject(paks[i]);
-      pak.acces;
+      try
+        pak.acces;
+      except
+        continue;
+      end;
       p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
       if p_f=nil then continue;
       for j:=0 to p_f.subelements.count-1 do
       begin
         if p_f.subelements[j] is QBsp then
-          bsps.add(p_f.subelements[i]);
+          bsps.add(p_f.subelements[j]);
       end;
     end;
+    ProgressIndicatorStop;
   end;
   (*
     Go through list of .bsps and create addon based on each
@@ -398,14 +406,42 @@ var
     i: integer;
   begin
     ExistingAddons:=MakeAddonsList;
+    ProgressIndicatorStart(5458,bsps.count);
     for i:=0 to bsps.count-1 do
     begin
       if not (bsps[i] is QBsp) then
         raise exception.create('Error: bsp list contains non QBSP object!');
       bsp := QBsp(bsps[i]);
       NewAddonsList.Add(bsp.CreateAddonFromEntities(ExistingAddons));
+      ProgressIndicatorIncrement;
+      Application.ProcessMessages;
     end;
+    ProgressIndicatorStop;
     ExistingAddons.AddRef(-1);
+  end;
+  Function GetObject(nname, ntypeinfo, s: String): QObject;
+  var
+    i: Integer;
+  begin
+    Result:=nil;
+    for i:=0 to FParent.SubElements.Count-1 do
+    begin
+      if FParent.SubElements[i].typeinfo = ntypeinfo then
+      begin
+        if FParent.Subelements[i].GetArg('ToolBox')=s then
+        begin
+          result:=FParent.SubElements[i];
+          break;
+        end;
+      end;
+    end;
+    if Result=nil then
+    begin
+      Result:=ConstructQObject(nname+ntypeinfo, FParent);
+      if s<>'' then
+        Result.Specifics.Add('ToolBox='+s);
+      FParent.SubElements.Add(Result);
+    end;
   end;
 begin
   NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
@@ -417,108 +453,113 @@ begin
   begin
     raise Exception.Create('addonRoot = nil');
   end;
-
-  TBX:=QToolBox.Create('Toolbox Folders', addonRoot);
-  addonRoot.Subelements.Add(TBX);
-  TBX.Specifics.Add('ToolBox=New map items...');
-  EntityTBX:=QToolBoxGroup.Create(Format('%s', [Specifics.Values['GameDir']]), TBX);
+  if addonRoot.specifics.IndexOfName('Description')=-1 then
+    addonRoot.specifics.Add(format('Description=Addon for %s',[Specifics.Values['GameDir']]));
+  TBX:=QToolBox(GetObject('Toolbox Folders', QToolbox.TypeInfo, 'New map items...'));
+  EntityTBX:=QToolBoxGroup.Create(Format('%s Entities', [Specifics.Values['GameDir']]), TBX);
   TBX.Subelements.Add(EntityTBX);
   TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
-  EntityTBX_2:=QToolBoxGroup.Create(Format('%s entities',[Specifics.Values['GameDir']]), EntityTBX);
-  EntityTBX_2.SpecificsAdd(format(';desc=Created for %s',[Specifics.Values['GameDir']]));
-  EntityTBX.Subelements.Add(EntityTBX_2);
-  entityForms:=QFormContext.Create('Entity forms', addonRoot);
-  addonRoot.SubElements.Add(entityForms);
-
-  for i:=0 to NewAddonsList.Count-1 do
-  begin
-    Entities:=TQList.Create;
-    NewAddonsList.Items1[i].FindAllSubObjects('', TTreeMapSpec, QObject, Entities);
-    for j:=0 to Entities.Count-1 do
+  EntityTBX_2:=EntityTBX;
+  entityForms:=QFormContext(GetObject('Entity forms', QFormContext.Typeinfo, ''));
+  ProgressIndicatorStart(5458,NewAddonsList.Count);
+  try
+    for i:=0 to NewAddonsList.Count-1 do
     begin
-      OldEntity:=TTreeMapSpec(Entities.Items1[j]);
-      Entity:=TTreeMapSpec(EntityTBX_2.FindSubObject(OldEntity.Name, TTreeMapSpec, QObject));
-      if (Entity = nil) then
+      ProgressIndicatorIncrement;
+      Entities:=TQList.Create;
+      NewAddonsList.Items1[i].FindAllSubObjects('', TTreeMapSpec, QObject, Entities);
+      for j:=0 to Entities.Count-1 do
       begin
-        if pos('_',OldEntity.name)<>0 then
+        OldEntity:=TTreeMapSpec(Entities.Items1[j]);
+        Entity:=TTreeMapSpec(EntityTBX_2.FindSubObject(OldEntity.Name, TTreeMapSpec, QObject));
+        if (Entity = nil) then
         begin
-          tb:=copy(OldEntity.name, 1,pos('_', OldEntity.Name))+'* entities';
-          Group:=QToolboxGroup(EntityTBX_2.SubElements.FindName(tb+EntityTBX_2.typeinfo));
-          if (Group = nil) then
+          if pos('_',OldEntity.name)<>0 then
           begin
-            Group:=QToolBoxGroup.Create(tb, EntityTBX_2);
-            EntityTBX_2.Subelements.add(Group);
+            tb:=copy(OldEntity.name, 1,pos('_', OldEntity.Name))+'* entities';
+            Group:=QToolboxGroup(EntityTBX_2.SubElements.FindName(tb+EntityTBX_2.typeinfo));
+            if (Group = nil) then
+            begin
+              Group:=QToolBoxGroup.Create(tb, EntityTBX_2);
+              EntityTBX_2.Subelements.add(Group);
+            end
           end
-        end
-        else
-        begin
-          Group:=EntityTBX_2;
-        end;
-        Entity:=TTreeMapSpec(ConstructQObject(OldEntity.GetFullName, Group));
-        Group.SubElements.Add(Entity);
-      end;
-      for k:=0 to OldEntity.Specifics.Count-1 do
-      begin
-        if Entity.Specifics.IndexOfName(OldEntity.Specifics.Names[k])=-1 then
-        begin
-          Entity.Specifics.Add(OldEntity.Specifics[k]);
-        end;
-      end;
-    end;
-    Entities.Free;
-    Forms:=TQList.Create;
-    NewAddonsList.Items1[i].FindAllSubObjects('', QFormCfg, QObject, Forms);
-    for j:=0 to Forms.Count-1 do
-    begin
-      OldForm:=QFormCfg(Forms.Items1[j]);
-      Form:=QFormCfg(entityForms.FindSubObject(OldForm.Name, QFormCfg, QObject));
-      if (Form = nil) then
-      begin
-        Form:=QFormCfg(ConstructQObject(OldForm.GetFullName, entityForms));
-        entityForms.SubElements.Add(Form);
-      end;
-      for k:=0 to OldForm.Subelements.Count-1 do
-      begin
-        OldFormEl:=OldForm.Subelements[k];
-        FormEl:=Form.FindSubObject(OldFormEl.Name, QObject, QObject);
-        if FormEl=nil then
-        begin
-          FormEl:=ConstructQObject(OldFormEl.GetFullName, Form);
-          Form.Subelements.Add(FormEl);
-        end;
-        for l:=0 to OldFormEl.Specifics.Count-1 do
-        begin
-          if FormEl.Specifics.IndexOfName(OldFormEl.Specifics.Names[l])=-1 then
+          else
           begin
-            FormEl.Specifics.Add(OldFormEl.Specifics[l]);
+            Group:=EntityTBX_2;
+          end;
+          Entity:=TTreeMapSpec(ConstructQObject(OldEntity.GetFullName, Group));
+          Group.SubElements.Add(Entity);
+        end;
+        for k:=0 to OldEntity.Specifics.Count-1 do
+        begin
+          if Entity.Specifics.IndexOfName(OldEntity.Specifics.Names[k])=-1 then
+          begin
+            Entity.Specifics.Add(OldEntity.Specifics[k]);
           end;
         end;
       end;
+      Entities.Free;
+      Forms:=TQList.Create;
+      NewAddonsList.Items1[i].FindAllSubObjects('', QFormCfg, QObject, Forms);
+      for j:=0 to Forms.Count-1 do
+      begin
+        OldForm:=QFormCfg(Forms.Items1[j]);
+        Form:=QFormCfg(entityForms.FindSubObject(OldForm.Name, QFormCfg, QObject));
+        if (Form = nil) then
+        begin
+          Form:=QFormCfg(ConstructQObject(OldForm.GetFullName, entityForms));
+          entityForms.SubElements.Add(Form);
+        end;
+        for k:=0 to OldForm.Subelements.Count-1 do
+        begin
+          OldFormEl:=OldForm.Subelements[k];
+          FormEl:=Form.FindSubObject(OldFormEl.Name, QObject, QObject);
+          if FormEl=nil then
+          begin
+            FormEl:=ConstructQObject(OldFormEl.GetFullName, Form);
+            Form.Subelements.Add(FormEl);
+          end;
+          for l:=0 to OldFormEl.Specifics.Count-1 do
+          begin
+            if FormEl.Specifics.IndexOfName(OldFormEl.Specifics.Names[l])=-1 then
+            begin
+              FormEl.Specifics.Add(OldFormEl.Specifics[l]);
+            end;
+          end;
+        end;
+      end;
+      Forms.Free;
     end;
-    Forms.Free;
+
+    TexFolders:=nil;
+    if Specifics.Values['GameDir'] <> '' then
+      BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
+
+    if TexFolders<>nil then
+    begin
+      TexFolders.Name:=Specifics.Values['GameDir']+' textures';
+      TexRoot:=QToolBox(GetObject('Textures', QToolbox.TypeInfo, 'Texture Browser...'));
+      TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
+      if TexRoot.Specifics.IndexOfName('Root')=-1 then
+        TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
+      if TexRoot.SubElements.FindShortName(TexFolders.Name)=nil then
+        TexRoot.SubElements.Add(TexFolders)
+      else
+        TexFolders.free;
+      TexFolders.FParent:=TexRoot;
+    end;
+
+    NewAddonsList.free;
+    bsps.free;
+    paks.free;
+
+    TBX.Flags := TBX.flags or ofTreeViewSubElement;
+    entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
+    ExplorerFromObject(FParent).Refresh;
+  finally
+    ProgressIndicatorStop;
   end;
-  TexFolders:=nil;
-  BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
-
-  if TexFolders<>nil then
-  begin
-    TexFolders.Name:=Specifics.Values['GameDir']+' textures';
-    TexRoot:=QToolBox.Create('Textures', addonRoot);
-    AddonRoot.Subelements.Add(TexRoot);
-    TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
-    TexRoot.SpecificsAdd('ToolBox=Texture Browser...');
-    TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
-    TexRoot.SubElements.Add(TexFolders);
-    TexFolders.FParent:=TexRoot;
-  end;
-
-  NewAddonsList.free;
-  bsps.free;
-  paks.free;
-
-  TBX.Flags := TBX.flags or ofTreeViewSubElement;
-  entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
-  ExplorerFromObject(FParent).Refresh;
 end;
 
  {------------------------}

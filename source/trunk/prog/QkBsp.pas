@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/03/08 23:22:53  aiv
+entity tool finished completly i think.
+
 Revision 1.21  2001/03/08 21:57:42  tiglari
 switch to Q2 from Q3A mode when loading Q2 .bsp
 
@@ -1214,10 +1217,13 @@ begin
   (*
     Convert {...} entites to :e entities
   *)
+//  Showmessage('Processing Entities');
   specList:=EntityTextToStringList(S);
   Addons:=ExistingAddons;
+//  Showmessage('Creating Entities & Forms');
   for i:=0 to specList.count-1 do
   begin
+    Application.ProcessMessages;
     e_sl:=TStringList(SpecList.Objects[i]);
     if uppercase(e_sl.Values['classname']) = 'WORLDSPAWN' then
       continue;

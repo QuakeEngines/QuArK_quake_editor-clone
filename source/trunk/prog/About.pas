@@ -25,6 +25,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/09 09:29:47  tiglari
+change credits
+
 Revision 1.7  2001/01/07 13:20:46  decker_dk
 Made the dialog somewhat match the one in the REL6_1-branch.
 
@@ -337,6 +340,7 @@ begin
   begin
     SetEvent(Event);
     CloseHandle(Event);
+    Event:=0; // Strange error under Win2K (others?) if 'event' isn't set to 0 after call to CloseHandle(..) 
   end;
 end;
 
