@@ -23,6 +23,14 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.69  2003/01/29 10:02:45  tiglari
+Englishification:
+  TFace.prvNbs -> prvVertexCount
+  TFace.PrvDescS -> prvVertexTable
+  TFace.ConstruireSommets -> ConstructVertices
+
+Reformat ConstructVertices
+
 Revision 1.65  2003/01/05 02:07:55  tiglari
 make threepoints in CylindreDeFace method more symmetrical, to prevent
  problems with texture scales (detected by quantum_red)
@@ -5229,12 +5237,54 @@ end;
 function TTexturedTreeMap.GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;
 var
  S: String;
+ Parent: ^Q3DObject;
 begin
- S:=Specifics.Values['Flags'];
- if S='' then
-  Result:=Default
+{DECKER 2003.03.12}
+ if CharModeJeu = mjHalfLife then
+ begin
+   Result := Default;
+
+   // OMG! This is so slow, but hopefully a little faster than the below
+   // while-loop, if the end-user don't want to see transparency in the OpenGL window.
+   if SetupGameSet.GetArg('EnableTransparency') <> '1' then
+     exit;
+
+   // Traverse backwards the tree-view, in search of an Q3DObject that has
+   // the 'rendermode' specific. (This is a very very slow method, considering
+   // that GetFaceOpacity() is called many many times!!)
+   Parent := @Self;
+   while (Parent^.FParent is Q3DObject) do
+   begin
+     Parent := @(Parent^.FParent);
+     if (Parent = nil) then
+       exit;
+
+     S:=Parent^.Specifics.Values['rendermode'];
+     if S<>'' then
+     begin
+       case StrToIntDef(S,0) of
+        1, // Rendermode = COLOR
+        2, // Rendermode = TEXTURE
+        5: // Rendermode = ADDITIVE
+          begin
+            S:=Parent^.Specifics.Values['renderamt'];
+            if S<>'' then
+              Result:=StrToIntDef(S,255) // If conversion to integer fails, make sure "no transparency" is the default (100% opaque = 255)
+          end;
+       end;
+       exit;
+     end;
+   end;
+ end
  else
-  Result:=OpacityFromFlags(StrToIntDef(S,0){, Info});
+{/DECKER}
+ begin
+   S:=Specifics.Values['Flags'];
+   if S='' then
+     Result:=Default
+   else
+     Result:=OpacityFromFlags(StrToIntDef(S,0){, Info});
+ end;
 end;
 
 procedure TFace.AnalyseClic(Liste: PyObject);
