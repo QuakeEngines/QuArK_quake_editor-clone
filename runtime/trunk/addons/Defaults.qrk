@@ -30,6 +30,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.56  2000/09/18 01:28:03  alexander
+//added Texture Write Format setup entries (needed because texture aliasing)
+//added StarTrek EF support
+//
 //Revision 1.55  2000/09/17 14:59:29  alexander
 //committed convex' generalization of texture format aliasing
 //
@@ -154,7 +158,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000910"
+      Version = "quarksnapshot_20000925"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
