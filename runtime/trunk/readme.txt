@@ -1,12 +1,30 @@
 
                              6.4
 
- * [decker] bot waypoint editor
+ * [tiglari] writes genesis3d maps in map format, with texture coordinates
+     diddled so that they will hopefully be correct when imported into
+     Genesis3d editors.
+ 
+ * [decker] transparency
+ 
+ * [dannj] updates to Heretic II entities
+ 
+ * [cdunde] tagging toolbar
+ 
+ * [cdunde, Andy, tiglari] F1 help can now load a page from the
+      infobase, which must be in help/ subfolder of QuArK directory
+      
+ * [tiglari] enhancements to wall maker
+
+ * [decker] bot waypoint editor, preliminary
  
  * [decker] scrollbars on plugin list
  
  * [rowdy] changes for compilation under D7
  
+ * [tiglari] to compile an .exe to use Python 2.2, add
+    PYTHON22_OR_BETTER to the Project Conditional Defines.
+    
                           QuArK 6.3
 
  * [tiglari] bugs with bsp-viewing fixed
