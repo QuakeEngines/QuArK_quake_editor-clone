@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2005/01/11 02:33:09  alexander
+removed obsoloet line
+
 Revision 1.12  2005/01/11 02:06:20  alexander
 detect hl2 model format, load header and generate a box with the model dimensions
 
@@ -67,7 +70,7 @@ type
   private
 //    procedure LoadHLModel(F: TStream; FSize: Integer);
       Procedure ReadHL2Model(F: TStream; FileSize: Integer);
-      function Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
+//      function Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
   protected
     procedure LoadFile(F: TStream; FSize: Integer); override;
     procedure SaveFile(Info: TInfoEnreg1); override;
@@ -318,7 +321,7 @@ begin
 end;
     }
 
-function QMdlFile.Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
+function Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
 var
   tex: QFileObject;
 begin
@@ -340,6 +343,137 @@ begin
     exit;
   finally
   end;
+end;
+
+
+Procedure LoadHL2VTX(Fname: string);
+const
+  SpecTris = 'Tris=';
+  SpecVtx = 'Vertices=';
+type
+  hl2_vtx_fileHeader_t = record
+	// file version as defined by OPTIMIZED_MODEL_FILE_VERSION
+	version: Longint;
+
+	// hardware params that affect how the model is to be optimized.
+	vertCacheSize: Longint;
+	maxBonesPerStrip: word;
+	maxBonesPerTri: word;
+	maxBonesPerVert: Longint;
+
+	// must match checkSum in the .mdl
+	checkSum: longword;
+
+	numLODs: Longint; // garymcthack - this is also specified in ModelHeader_t and should match
+
+	// one of these for each LOD
+	materialReplacementListOffset: Longint;
+
+	numBodyParts: Longint;
+	bodyPartOffset: Longint;
+  end;
+
+  hl2_vtx_BodyPartHeader_t = record
+	numModels: Longint;
+	modelOffset: Longint;
+  end;
+
+
+  hl2_vtx_ModelHeader_t  = record
+	numLODs: Longint;
+	lodOffset: Longint;
+  end;
+
+
+  hl2_vtx_ModelLODHeader_t  = record
+	numMeshes: Longint;
+	meshOffset: Longint;
+	switchPoint: Single;
+  end;
+
+  hl2_vtx_MeshHeader_t  = record
+	numStripGroups: Longint;
+	stripGroupHeaderOffset: Longint;
+	flags: byte;
+  end;
+
+  hl2_vtx_StripGroupHeader_t  = record
+	// These are the arrays of all verts and indices for this mesh.  strips index into this.
+	numVerts: Longint;
+	vertOffset: Longint;
+
+	numIndices: Longint;
+	indexOffset: Longint;
+
+	numStrips: Longint;
+	stripOffset: Longint;
+
+	flags: byte;
+  end;
+
+  hl2_vtx_Vertex_t  = record
+	// these index into the mesh's vert[origMeshVertID]'s bones
+	boneWeightIndex:array[1..3]of Byte;
+	numBones: byte;
+
+	origMeshVertID : word;
+
+	// for sw skinned verts, these are indices into the global list of bones
+	// for hw skinned verts, these are hardware bone indices
+	boneID:array[1..3]of Byte;
+  end;
+
+  hl2_vtx_BoneStateChangeHeader_t   = record
+	hardwareID: Longint;
+	newBoneID: Longint;
+  end;
+
+  hl2_vtx_StripHeader_t   = record
+	// indexOffset offsets into the mesh's index array.
+	numIndices: Longint;
+	indexOffset: Longint;
+
+	// vertexOffset offsets into the mesh's vert array.
+	numVerts: Longint;
+	vertOffset: Longint;
+
+	// use this to enable/disable skinning.
+	// May decide (in optimize.cpp) to put all with 1 bone in a different strip
+	// than those that need skinning.
+	numBones: word;
+
+	flags: byte;
+
+	numBoneStateChanges: Longint;
+	boneStateChangeOffset: Longint;
+  end;
+
+
+
+  // to be changed
+  PMD3Triangle = ^TMD3Triangle;
+  TMD3Triangle = packed record
+    Triangle: array[1..3] of longint; //vertex 1,2,3 of triangle
+  end;
+
+  PMD3Vertex = ^TMD3Vertex;
+  TMD3Vertex = packed record
+    Vec: array[1..3]of smallint; //vertex X/Y/Z coordinate
+    envtex: array[1..2]of byte;
+  end;
+
+  PMD3TexVec = ^TMD3TexVec;
+  TMD3TexVec = packed record
+    Vec: array[1..2] of single;
+  end;
+
+  PVertxArray = ^TVertxArray;
+  TVertxArray = array[0..0] of TMD3TexVec;
+
+var
+  F:TStream;
+begin
+  //F := TFileStream.Create(FName , fmOpenRead);
 end;
 
 Procedure QMdlFile.ReadHL2Model(F: TStream; FileSize: Integer);
@@ -508,6 +642,7 @@ var
   Root := Loaded_Root;
 
   Comp := Loaded_Component(Root, LoadName);
+  LoadHL2VTX(Loadname);
 
   // generate a model that is a box with the model dimensions
   xbounds[0]:=mdl.hull_min[0];
