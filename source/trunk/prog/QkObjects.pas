@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2001/02/23 19:25:35  decker_dk
+Proper indenting, and other small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.44  2001/02/14 23:35:57  alexander
 set name
 
@@ -159,7 +164,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'quarksnapshot_20010215';
+  QuArKVersion            = 'quarksnapshot_20010225';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;

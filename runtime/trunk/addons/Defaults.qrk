@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.87  2001/02/25 04:44:57  tiglari
+//new specifics for brush&patch arch&bevel
+//
 //Revision 1.86  2001/02/25 02:01:57  tiglari
 //brush curve forms added
 //
@@ -286,7 +289,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20010215"
+      Version = "quarksnapshot_20010225"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
