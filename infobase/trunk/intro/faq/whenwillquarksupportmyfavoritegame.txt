@@ -11,7 +11,7 @@ a nice package, that would improve the chances (there's also the issue of
 whether the game developers themselves impose restrictions on editing
 their content).
 
-If it's a landscape-based game such as Giants, the answer is probably know
+If it's a landscape-based game such as Giants, the answer is probably Wno
 (nullpointer at  <a href=http://www.planetcitizenkabuto.com>
 http://www.planetcitizenkabuto.com</a> is planning to extend his
 GiantsEdit to cover more games of that nature).

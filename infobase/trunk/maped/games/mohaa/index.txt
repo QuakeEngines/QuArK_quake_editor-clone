@@ -1,0 +1,7 @@
+title: Medal of Honor: Allied Assault
+author: tiglari
+
+The Mohaa support is limited, due to the fact that much important information about
+entities, such as about their models, is unavailable, and most importanly,
+lod terrain is not supported.  Hopefully these issues will be overcome
+before too long.

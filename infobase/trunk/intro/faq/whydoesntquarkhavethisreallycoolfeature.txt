@@ -1,0 +1,8 @@
+title: Why doesn't QuArK have this really cool feature?
+author: tiglari
+
+Very likely some combination of laziness, stupidity, or pressure; or
+perhaps nobody has asked for it.  So if you think it would be cool,
+ask for it.  If nothing happens after six months or so, bring it up
+again; the coders do learn new things occasionally and gradually become
+able to do more.
