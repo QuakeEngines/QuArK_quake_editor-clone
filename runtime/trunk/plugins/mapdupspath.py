@@ -357,25 +357,29 @@ class PathDuplicator(StandardDuplicator):
             neworigin = pathdist.normalized*0.5*templatesize.z + thisorigin
 
             prevaxes = xax, yax, zax = NewAxes(prevaxes,pathdist.normalized)
-
-
             #
-            # mebbe quarkx.colmat command would be good
+            # N.B. when the three args are vectors they are indeed
+            #  input as columns.  Tuples otoh will go in as rows.
             #
-            mat=quarkx.matrix((xax.x,yax.x,zax.x),
-                              (xax.y,yax.y,zax.y),
-                              (xax.z,yax.z,zax.z))
-
+            mat = quarkx.matrix(xax,yax,zax)
             list.translate(neworigin, 0)
             list.linear(neworigin, mat)
             front, back = getends(list,xax)
-            debug(`len(front)`)
+            startseg = 0
+            endseg = pathdist
+            
             for face in front:
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
                face.translate(thisorigin-center,0)
                if i>0:
                    face.distortion(-joinnorm,thisorigin)
-                   pass
+                   #
+                   # calculates where `straight' segment would begin
+                   #   (for elbows and tiling)
+                   #
+                   for vtxes in face.vertices:
+                       for vtx in vtxes:
+                           startseg=max(startseg,-xax*(vtx-thisorigin))
             for face in back:
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
                face.translate(nextorigin-center,0)
@@ -383,6 +387,14 @@ class PathDuplicator(StandardDuplicator):
                    nextx=(pathlist[i+2].origin-nextorigin).normalized
                    joinnorm=((xax+nextx)/2).normalized
                    face.distortion(joinnorm,nextorigin)
+#
+#  If we make elbows, this kind of code will position the faces
+#
+#            nustart=thisorigin+xax*startseg
+#            if startseg:
+#                for face in front:
+#                    face.translate(xax*startseg)
+#                    face.distortion(-xax,nustart)
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + [list]
             del list
@@ -713,6 +725,10 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2001/02/20 21:31:38  tiglari
+#textures tile from start of path (still messes at elbows, this probably
+# needs fullon elbow segments to deal with)
+#
 #Revision 1.8  2001/02/19 19:15:57  decker_dk
 #Insert before/after actions now places new 'handle' at more intutive position, and aligned-to-grid.
 #
