@@ -47,15 +47,20 @@ from quarkpy.maphandles import *
 #
 # Tries to find the last 3D view clicked on
 #
-def get3DView(editor):
+def get3DView(editor,makeone=0):
     #
     # A bit of showoff coding, see the onlne Python tutorial,
     #   functional programming techiques
     #
     views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
     if len(views)==0:
-        quarkx.msgbox("Open a 3D view",2,4)
-        return
+        if makeone:
+            editor.layout.new3Dwindow(None)
+            views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
+            return views[0]
+        else:
+            quarkx.msgbox("Open a 3D view",2,4)
+            return
     elif len(views)==1:
         return views[0]
     for view in views:
@@ -79,7 +84,7 @@ def get3DView(editor):
 #  independently of the UI elements that call them.
 #
 def setView(o,editor):
-    view = get3DView(editor)
+    view = get3DView(editor,makeone=1)
     if view is None:
         return
     view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]          
@@ -162,7 +167,7 @@ class NameDialog(SimpleCancelDlgBox):
     "A simple dialog box to enter a name."
 
     endcolor = AQUA
-    size = (330,120)
+    size = (330,135)
     dfsep = 0.45
     dlgdef = """
       {
@@ -173,6 +178,7 @@ class NameDialog(SimpleCancelDlgBox):
           Txt=" Enter the name :"
           Typ="E"
         }
+        local: = {Typ="X" Hint="Put camera in currently selected group, if possible" $0D " (sister to selected non-group)"}
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = { }
@@ -183,17 +189,31 @@ class NameDialog(SimpleCancelDlgBox):
         src = quarkx.newobj(":")
         if initialvalue is not None:
            src["name"]=initialvalue
+        self.initialvalue=initialvalue
         self.action=action
         SimpleCancelDlgBox.__init__(self, form, src)
 
     #
-    # This is exectued when the OK button is pressed
+    # This is executed when the data changes, close when a new
+    #   name is provided
+    #
+    def datachange(self, df):
+        if self.src["name"]!=self.initialvalue:
+            self.close()
+ 
+
+    #
+    # This is executed when the OK button is pressed
+    #   FIXME: 'local' code doesn't work right, dialog
+    #   would need some redesign
     #
     def ok(self):
         name = self.src["name"]
         if name is None:
             name="Camera Position"
-        self.action(name)
+        self.name=name
+        self.local = self.src["local"]
+        self.action(self)
 
 #
 # This is called by two interface items, so pulled
@@ -209,7 +229,7 @@ def addPosition(view3D, editor):
         #  function that gets passed to the dialog as
         #  a parameter, which is what this is.
         #
-        def action(name,view3D=view3D,editor=editor):
+        def action(self, view3D=view3D,editor=editor):
             #
             # NB: elsewhere in the code, 'yaw' tends to
             # be misnamed as 'roll'
@@ -219,9 +239,18 @@ def addPosition(view3D, editor):
             #  roll = turn around long axis (relative to y)
             #
             pos, yaw, pitch = view3D.cameraposition
-            camdup = quarkx.newobj(name+":d")
+            camdup = quarkx.newobj(self.name+":d")
             camdup["macro"] = "cameraposition"
-            pozzies = editor.Root.findname("Camera Positions:g")
+            pozzies=None
+            if self.src["local"]:
+                sel = editor.layout.explorer.uniquesel
+                if sel is not None:
+                    if sel.type==":g":
+                        pozzies = sel
+                    else:
+                       pozzies=sel.treeparent # returns None if parent outside of tree                   
+            if pozzies is None:    
+                pozzies = editor.Root.findname("Camera Positions:g")
             undo=quarkx.action()
             if pozzies is None:
                 pozzies = quarkx.newobj("Camera Positions:g")
@@ -423,6 +452,10 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.5  2001/06/16 21:55:46  tiglari
+# dialog npw stays open when something else is selected,add position
+# on map background menu
+#
 # Revision 1.4  2001/06/16 03:19:05  tiglari
 # add Txt="" to separators that need it
 #
