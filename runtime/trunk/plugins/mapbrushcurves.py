@@ -236,10 +236,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         if grid:
             for i in range(len(curve)):
                 curve[i]=quarkpy.qhandles.aligntogrid(curve[i],1)
-    #    squawk(`curve`)
-    #    compression = arcLength((curve[0],pd["trb"],curve[len(curve)-1]))/arcLength(curve)
         cornerlength=arcLength((curve[0],pd["trb"],curve[len(curve)-1]))
-    #    squawk('compression: '+`compression`)
         #
         # get line of equal length of curve, in back face plane
         #
@@ -258,10 +255,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         return curve, texface
 
     pd = pointdict(vtxlistdict(fdict,o))
-#    pd2 = smallerbevelbox(pd, thick)
-        
     curve, texface = makestuff(pd, fdict)
-#    curve2, texface2 = makestuff(pd2, fdict)
     
     brushes = []
     #
@@ -269,34 +263,146 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
     #
     def makeFace(tag,fdict=fdict):
         return fdict[tag].copy()
+    depth = pd["tlb"]-pd["blb"]
     bottom, top = map(makeFace, ("d","u"))
     bottom.shortname, top.shortname = "bottom", "top"
     final = subdivide-1
-    if inverse:
-        base, side = map(makeFace, ("b","r"))
-    else:
-        base, side = map(makeFace, ("l","f"))
-    base.shortname, side.shortname = "base", "side"
-    if inverse:
-        pivot=pd["trb"]
-    else:
-        pivot=pd["tlf"]
-    depth = pd["tlb"]-pd["blb"]
     if left:
         texface.swapsides()
     if not inverse:
         texface.swapsides()
     if lower:
         texface.swapsides()
+    
+    def transfertex(face,texface, pivot):
+        texface.distortion(face.normal,pivot)
+        face.setthreepoints(texface.threepoints(2),2)
+        return texface.copy()
+
+    if thick:
+        pd2 = smallerbevelbox(pd, thick)
+        curve2, texface2 = makestuff(pd2, fdict)
+        base=quarkx.newobj('front:f')
+        base.setthreepoints((curve[0],curve2[0],curve[0]+depth),0)
+        if not inner:
+            brush=quarkx.newobj('brush:p')
+            capper=texface.copy()
+            if lower:
+                capper.swapsides()
+            if not left:
+                capper.swapsides()
+            brush.appenditem(capper)
+            capperbot=capper.copy()
+            capperbot.translate(curve2[0]-curve[0])
+            capperbot.swapsides()
+            brush.appenditem(capperbot)
+            base0=base.copy()
+            if not left:
+               base0.swapsides()
+            if lower:
+               base0.swapsides()
+            brush.appenditem(base0)
+            brush.appenditem(bottom.copy())
+            brush.appenditem(top.copy())
+            end = fdict['l'].copy()
+            end.shortname = "end"
+            brush.appenditem(end)
+            brushes.append(brush)
+     
+        side=quarkx.newobj('side:f')
+        side.setthreepoints((curve[subdivide],curve[subdivide]+depth,curve2[subdivide]),0)
+        if left:
+            base.swapsides()
+            side.swapsides()
+        if lower:
+            base.swapsides()
+            side.swapsides()
+        for i in range(subdivide):
+            brush = quarkx.newobj('brush'+`i`+':p')
+            brush.appenditem(base)
+            face=quarkx.newobj('face'+`i`+':f')
+            face.setthreepoints((curve[i],curve[i+1],curve[i]+depth),0)
+            face = transfertex(face, texface,curve[i])
+            face.swapsides()
+            def gettex(v, texp=face.threepoints(2)):
+                return texCoords(v, texp)
+            texpoints = map(gettex, (curve[i], curve[i+1], curve[i]+depth))
+            face2=quarkx.newobj('face2'+`i`+':f')
+            face2.setthreepoints((curve2[i],curve2[i+1],curve2[i]+depth),0)
+            face2["tex"]=face["tex"]
+            texp2 = solveForThreepoints((curve2[i],texpoints[0]),
+              (curve2[i+1],texpoints[1]), (curve2[i]+depth, texpoints[2]))
+            face2.setthreepoints(texp2,2)
+            if left:
+                face.swapsides()
+                face2.swapsides()
+            if not inverse:
+                face.swapsides()
+                face2.swapsides()
+            if lower:
+                face.swapsides()
+                face2.swapsides()
+            brush.appenditem(face)
+            brush.appenditem(face2)
+            brush.appenditem(bottom.copy())
+            brush.appenditem(top.copy())
+            if i<final:
+                div=quarkx.newobj('div'+`i`+':f')
+                div["tex"]=fdict["b"]["tex"]
+                div.setthreepoints((curve[i+1], curve2[i+1], curve[i+1]+depth),0)
+                div.swapsides()
+                if left:
+                    div.swapsides()
+                if not inverse:
+                    div.swapsides()
+                if lower:
+                    div.swapsides()
+                brush.appenditem(div)
+                base=div.copy()
+                base.swapsides()
+            else:
+                brush.appenditem(side)
+            brushes.append(brush)
+        
+        #
+        # make the 'legs'
+        #
+        if not inner:
+            brush = quarkx.newobj('brush'+':p')
+            brush.appenditem(bottom.copy())
+            brush.appenditem(top.copy())
+            base=side.copy()
+            base.swapsides()
+            brush.appenditem(base)        
+            brush.appenditem(fdict['f'].copy())
+            brushes.append(brush)
+            out = fdict['b'].copy()
+            out.distortion(fdict['r'].normal,pd["trb"])
+ #           out = fdict['r'].copy()
+            brush.appenditem(out)
+            innit = out.copy()
+            innit.translate(pd2["trf"]-pd["trf"])
+            innit.swapsides()
+            brush.appenditem(innit)
+        
+        return brushes
+
+    if inverse:
+        pivot=pd["trb"]
+    else:
+        pivot=pd["tlf"]
+
+    if inverse:
+        base, side = map(makeFace, ("b","r"))
+    else:
+        base, side = map(makeFace, ("l","f"))
+    base.shortname, side.shortname = "base", "side"
     for i in range(subdivide):
         brush = quarkx.newobj('brush'+`i`+':p')
         brush.appenditem(base)
         face=quarkx.newobj('face'+`i`+':f')
         face.setthreepoints((curve[i],curve[i+1],curve[i]+depth),0)
-        face["tex"]=fdict["b"]["tex"]
-        texface.distortion(face.normal,curve[i])
-        face.setthreepoints(texface.threepoints(2),2)
-        face = texface.copy()
+        face = transfertex(face, texface, curve[i])
         if left:
             face.swapsides()
         if not inverse:
@@ -380,6 +486,13 @@ class BrushCapDuplicator(StandardDuplicator):
            im1 = images(bevelImages, (o1, editor, inverse, 0, lower, standup, grid, thick, inner, subdivide))
            im2 = images(bevelImages, (o2, editor, inverse, 1, lower, standup, grid, thick, inner, subdivide))
 
+           if thick and not inner:
+               end1 = (im1[0].findallsubitems("end",":f"))[0]
+               end2 = (im2[0].findallsubitems("front",":f"))[0]
+               im1[0].removeitem(end1)
+               im1[0].appenditem(end2.copy())
+               im2 = im2[1:]
+               pass
            return im1+im2
 
 class BrushBevelDuplicator(StandardDuplicator):
@@ -541,6 +654,10 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2001/04/10 08:56:25  tiglari
+#add force vertexes to grid (grid specific); some preliminary steps towards
+# implementing 'thick'
+#
 #Revision 1.9  2001/03/29 09:28:55  tiglari
 #scale and rotate specifics for duplicators
 #
