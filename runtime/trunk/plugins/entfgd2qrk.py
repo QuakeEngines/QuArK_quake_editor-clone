@@ -13,6 +13,12 @@ Python macros available for direct call by QuArK
 #
 #
 #$Log$
+#Revision 1.8  2004/12/07 17:59:52  alexander
+#parse almost all of hammers fgd file except
+#- readonly
+#- halfgridsnap
+#- include directives
+#
 #Revision 1.7  2004/12/01 21:48:29  alexander
 #preliminary hammer files parsed
 #
@@ -288,6 +294,8 @@ def CreateClass(token):
         theEntity = PointEntity()
     elif (token.lower() == "filterclass"):
         theEntity = PointEntity()
+    elif (token.lower() == "npcclass"):
+        theEntity = PointEntity()
     else:
         raise "Unknown @-token:", token
 
@@ -361,6 +369,10 @@ def AddKeyType(token):
        or token == "input" \
        or token == "output" \
        or token == "filterclass" \
+       or token == "npcclass" \
+       or token == "target_name_or_class" \
+       or token == "pointentityclass" \
+       or token == "scene" \
        or token == "decal"):
         theKey = KeyString()
     elif (token == "flags"):
@@ -622,7 +634,9 @@ statediagram =                                                                  
 ,'STATE_KEYTYPE3'       :[(TYPE_SPLITTER_EQUAL     ,'STATE_VALUEFLAGS'     ,None)               \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE'          ,None)               \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
-                         ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)     ] \
+                         ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,BeginKey)           \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,BeginKey)         ] \
                                                                                                 \
 ,'STATE_VALUEFLAGS'     :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_VALUEFLAGS2'    ,None)             ] \
                                                                                                 \
@@ -679,7 +693,20 @@ import quarkpy.qutils
 import quarkx
 
 def makeqrk(root, filename, gamename):
-    quarkx.msgbox("Please note, this is not always 100% accurate and will duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages\n", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+    quarkx.msgbox(
+    """
+    Please note, this is not always 100% accurate may duplicate
+    existing entities and possibly miss some out.
+    for conversion of hammer fgd files:
+      - remove include directives
+      - remove readonly statements
+      - remove halfgridsnap statements
+    before converting !
+    
+    You may need to handedit the .qrk file. For help with this,
+    feel free to ask questions at the QuArK forum:
+    
+    http://groups.yahoo.com/group/quark/messages""", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
     global currentclassname
     srcstring = readentirefile(filename)
     state = 'STATE_UNKNOWN'
@@ -740,6 +767,12 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.8  2004/12/07 17:59:52  alexander
+#parse almost all of hammers fgd file except
+#- readonly
+#- halfgridsnap
+#- include directives
+#
 #Revision 1.7  2004/12/01 21:48:29  alexander
 #preliminary hammer files parsed
 #
