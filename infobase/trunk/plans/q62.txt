@@ -16,8 +16,8 @@ Red means stuff that should defintely be done for release.
 <br>status: texture itself isn't being shown,
 starting scale too big.
 <LI>
-  Write Brush Primitives: (tiglari)
-    <BR>status: done 
+  Read/Write Brush Primitives: (tiglari)
+    <BR>status: done (wants testing)
 <LI>
   <FONT color=red> Path duplicator</FONT>: (decker, tiglari)
    <BR>status: orientation bug fixed by math remake, texture

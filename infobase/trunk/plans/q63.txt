@@ -3,7 +3,6 @@ author: tiglari, etc.
 format: html
 
 <UL>
-<LI>  Read Brush Primitives: (tiglari)
 
 <LI>  Path Duplicator: (decker, tiglari)
     tiling of substructures, curved & triangular elbows, possibly
