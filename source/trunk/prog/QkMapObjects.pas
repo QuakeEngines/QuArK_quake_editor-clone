@@ -26,6 +26,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/01/28 17:24:49  decker_dk
+Removed the 'Comment' array, and replaced it with a function 'CommentMapLine(string)', which is much more controllable (but may slow down the 'exporting .MAP file' from QuArK).
+Checking for 'DisableMapComments' option in the CommentMapLine() function.
+Added 'brush'-numbering for beziers, when exporting .MAP file.
+
 Revision 1.19  2001/01/21 15:49:03  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -2207,14 +2212,19 @@ end;
 procedure TTreeMapGroup.ListeBeziers(Entites: TQList; Flags: Integer);
 var
  I: Integer;
+ Element: QObject;
 begin
- if (Flags and soIgnoreToBuild <> 0)
- and (ViewFlags and vfIgnoreToBuildMap <> 0) then
-  Exit;
- if Odd(SelMult) then
-  Flags:=Flags and not soSelOnly;
- for I:=0 to SubElements.Count-1 do
-  TTreeMap(SubElements[I]).ListeBeziers(Entites, Flags);
+  if (Flags and soIgnoreToBuild <> 0)
+       and (ViewFlags and vfIgnoreToBuildMap <> 0) then
+    Exit;
+  if Odd(SelMult) then
+    Flags:=Flags and not soSelOnly;
+  for I:=0 to SubElements.Count-1 do
+  begin
+    Element:=SubElements[I];
+    if not (Element is TTreeMapBrush) then
+      TTreeMap(Element).ListeBeziers(Entites, Flags);
+  end;
 end;
 
 procedure TTreeMapGroup.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
