@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/03/20 21:55:32  decker_dk
+//Added log-header / misc.
+//
 //Revision 1.1  2001/02/11 11:31:42  decker_dk
 //Moved from addons directory
 //
@@ -248,100 +251,60 @@ QQRKSRC1
         }
       }
 
-      Sep: = {Typ = "S"}  // separator
+      Sep:     ={Txt="" Typ="S"}  // separator
 
-     // Contents:={                 // "Contents" is the Specific that this checkbox edit
-     //            Txt="Brush"      // The text displayed at the left of the checkbox
-     //            Cap="water"      // The checkbox caption
-     //            Typ="X32"        // "X" means "checkboX" and "32" is the value of the bit it edits
-     //            Hint="water"     // Appears when you leave the mouse over the checkbox
-     //           }
-      Contents:={Cap="solid"          Typ="X1"         Hint=""}
-      Contents:={Cap="window"         Typ="X2"         Hint="translucent (the opposite face of windows are not drawn)"}
-      Contents:={Cap="push/pull"      Typ="X4"         Hint=""}
-      Contents:={Cap="lava"           Typ="X8"         Hint="very damaging"}
+      Contents:={Txt="Brush" Cap="solid"          Typ="X1"           Hint=""}
+      Contents:={Txt=""      Cap="window"         Typ="X2"           Hint="translucent (the opposite face of windows are not drawn)"}
+      Contents:={Txt=""      Cap="push/pull"      Typ="X4"           Hint=""}
+      Contents:={Txt=""      Cap="lava"           Typ="X8"           Hint="very damaging"}
+      Contents:={Txt=""      Cap="slime"          Typ="X16"          Hint="mildly damaging"}
+      Contents:={Txt=""      Cap="water"          Typ="X32"          Hint=""}
+      Contents:={Txt=""      Cap="mist"           Typ="X64"          Hint="non-solid window (Player can walk through it)"}
+      Contents:={Txt=""      Cap="shot"           Typ="X128"         Hint=""}
+      Contents:={Txt=""      Cap="fog"            Typ="X256"         Hint=""}
+      Contents:={Txt=""      Cap="playerclip"     Typ="X65536"       Hint=""}
+      Contents:={Txt=""      Cap="monsterclip"    Typ="X131072"      Hint="Stops monsters passing through"}
+      Contents:={Txt=""      Cap="origin"         Typ="X16777216"    Hint="use ascenter of a rotating entity"}
+      Contents:={Txt=""      Cap="monster"        Typ="X33554432"    Hint=""}
+      Contents:={Txt=""      Cap="corpse"         Typ="X67108864"    Hint=""}
+      Contents:={Txt=""      Cap="detail"         Typ="X134217728"   Hint="for small, detail brushes that QVIS3 can ignore"}
+      Contents:={Txt=""      Cap="translucent"    Typ="X268435456"   Hint=""}
+      Contents:={Txt=""      Cap="ladder"         Typ="X536870912"   Hint="Player can climb up this"}
+      Contents:={Txt=""      Cap="camnoblck"      Typ="X1073741824"  Hint=""}
 
-      Contents:={Cap="slime"          Typ="X16"        Hint="mildly damaging"}
-      Contents:={Cap="water"          Typ="X32"        Hint=""}
-      Contents:={Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
-      Contents:={Cap="shot"           Typ="X128"       Hint=""}
+      Sep:     ={Txt="" Typ="S"}  // separator
 
-      Contents:={Cap="fog"            Typ="X256"       Hint=""}
-//      Contents:={Cap="0x200"          Typ="X512"       Hint=""}
-//      Contents:={Cap="0x400"          Typ="X1024"      Hint=""}
-//      Contents:={Cap="0x800"          Typ="X2048"      Hint=""}
+      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"      Hint="Flowing water pushes to 0 west"}
+      Contents:={Txt=""        Cap="current_90"     Typ="X524288"      Hint="Flowing water pushes to 90 north"}
+      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"     Hint="Flowing water pushes to 180 east"}
+      Contents:={Txt=""        Cap="current_270"    Typ="X2097152"     Hint="Flowing water pushes to 270 south"}
+      Contents:={Txt=""        Cap="current_up"     Typ="X4194304"     Hint="Flowing water pushes Upwards"}
+      Contents:={Txt=""        Cap="current_dn"     Typ="X8388608"     Hint="Flowing water pushes Down"}
 
-//      Contents:={Cap="0x1000"         Typ="X4096"      Hint=""}
-//      Contents:={Cap="0x2000"         Typ="X8192"      Hint=""}
-//      Contents:={Cap="0x4000"         Typ="X16384"     Hint=""}
-//      Contents:={Cap="0x8000"         Typ="X32768"     Hint=""}
+      Sep:     ={Txt="" Typ="S"}  // separator
 
-      Contents:={Cap="playerclip"     Typ="X65536"     Hint=""}
-      Contents:={Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
-      Contents:={Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
-      Contents:={Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
+      Flags:   ={Txt="Face" Cap="light"             Typ="X1"         Hint="'value' is the light quantity"}
+      Flags:   ={Txt=""     Cap="slick"             Typ="X2"         Hint="slidy surface"}
+      Flags:   ={Txt=""     Cap="sky"               Typ="X4"         Hint="sky -can be used with 'light'"}
+      Flags:   ={Txt=""     Cap="warping"           Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
+      Flags:   ={Txt=""     Cap="trans33"           Typ="X16"        Hint="translucent, 33% (more see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="trans66"           Typ="X32"        Hint="translucent, 66% (less see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="flowing"           Typ="X64"        Hint="flow direction towards angle 0"}
+      Flags:   ={Txt=""     Cap="nodraw"            Typ="X128"       Hint="for clip textures and trigger textures"}
+      Flags:   ={Txt=""     Cap="hint"              Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
+      Flags:   ={Txt=""     Cap="skip"              Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
+      Flags:   ={Txt=""     Cap="no Detail"         Typ="X1024"      Hint=""}
+      Flags:   ={Txt=""     Cap="Alpha Tex"         Typ="X2048"      Hint=""}
+      Flags:   ={Txt=""     Cap="Anim Speed"        Typ="X4096"      Hint=""}
+      Flags:   ={Txt=""     Cap="Undulate"          Typ="X8192"      Hint=""}
+      Flags:   ={Txt=""     Cap="Sky Reflect"       Typ="X16384"     Hint=""}
+      Flags:   ={Txt=""     Cap="Map"               Typ="X32768"     Hint=""}
+      Flags:   ={Txt=""     Cap="Region"            Typ="X65536"     Hint=""}
+      Flags:   ={Txt=""     Cap="Simple Spherical"  Typ="X131072"    Hint=""}
 
-      Contents:={Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
-      Contents:={Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
-      Contents:={Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
-      Contents:={Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
+      Sep:     ={Txt="" Typ="S"}  // separator
 
-      Contents:={Cap="origin"         Typ="X16777216"  Hint="use ascenter of a rotating entity"}
-      Contents:={Cap="monster"        Typ="X33554432"  Hint=""}
-      Contents:={Cap="corpse"         Typ="X67108864"  Hint=""}
-      Contents:={Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
-
-      Contents:={Cap="translucent"    Typ="X268435456" Hint=""}
-      Contents:={Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
-      Contents:={Cap="camnoblck"      Typ="X1073741824" Hint=""}
-//      Contents:={Cap=""             Typ="X2147483648" Hint=""}
-
-      Sep: = {Typ = "S"}  // separator
-
-      Flags:   ={Txt="Face"
-                 Cap="light"          Typ="X1"         Hint="'value' is the light quantity"}
-      Flags:   ={Cap="slick"          Typ="X2"         Hint="slidy surface"}
-      Flags:   ={Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
-      Flags:   ={Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
-
-      Flags:   ={Cap="trans33"        Typ="X16"        Hint="translucent, 33% (more see-through than 50%)"}
-      Flags:   ={Cap="trans66"        Typ="X32"        Hint="translucent, 66% (less see-through than 50%)"}
-      Flags:   ={Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
-      Flags:   ={Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
-
-      Flags:   ={Cap="hint"           Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
-      Flags:   ={Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
-      Flags:   ={Cap="no Detail"      Typ="X1024"       Hint=""}
-      Flags:   ={Cap="Alpha Tex"      Typ="X2048"       Hint=""}
-
-      Flags:   ={Cap="Anim Speed"     Typ="X4096"       Hint=""}
-      Flags:   ={Cap="Undulate"       Typ="X8192"       Hint=""}
-      Flags:   ={Cap="Sky Reflect"    Typ="X16384"       Hint=""}
-      Flags:   ={Cap="Map"            Typ="X32768"       Hint=""}
-
-      Flags:   ={Cap="Region"            Typ="X65536"       Hint=""}
-      Flags:   ={Cap="Simple Spherical"  Typ="X131072"      Hint=""}
-//      Flags:   ={Cap=""               Typ="X262144"      Hint=""}
-//      Flags:   ={Cap=""               Typ="X524288"      Hint=""}
-
-//      Flags:   ={Cap=""               Typ="X1048576"     Hint=""}
-//      Flags:   ={Cap=""               Typ="X2097152"     Hint=""}
-//      Flags:   ={Cap=""               Typ="X4194304"     Hint=""}
-//      Flags:   ={Cap=""               Typ="X8388608"     Hint=""}
-
-//      Flags:   ={Cap=""               Typ="X16777216"    Hint=""}
-//      Flags:   ={Cap=""               Typ="X33554432"    Hint=""}
-//      Flags:   ={Cap=""               Typ="X67108864"    Hint=""}
-//      Flags:   ={Cap=""               Typ="X134217728"   Hint=""}
-
-//      Flags:   ={Cap=""               Typ="X268435456"   Hint=""}
-//      Flags:   ={Cap=""               Typ="X536870912"   Hint=""}
-//      Flags:   ={Cap=""               Typ="X1073741824" Hint=""}
-//      Flags:   ={Cap=""               Typ="X2147483648" Hint=""}
-
-      Sep: = {Typ = "S"}  // separator
-
-      Value:  = {Txt="Value"          Typ="E"          Hint="The meaning of this depends on the other flags"}
+      Value:   ={Txt="Value" Typ="E" Hint="The meaning of this depends on the other flags"}
     }
   }
 

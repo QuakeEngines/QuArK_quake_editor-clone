@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/03/20 21:57:21  decker_dk
+//Added log-header / misc.
+//
 //Revision 1.1  2001/02/11 11:33:02  decker_dk
 //Moved from addons directory
 //
@@ -161,15 +164,15 @@ QQRKSRC1
     Game = "KingPin"
     HTML = "help\index.html"
     SFSkills = '256 512 1024 2048'
-    CreateFiles: =
-    {
-      liblist.gam =
-      {
-        Data = "game "$22"tmpQuArK"$220D0A"gamedll "$22"..\main\gamex86.dll"$22
-         $0D0A".\main\gamex86.dll"$0D0A
-      }
-    }
-
+//Decker 2002-04-07: Say what? Does KingPin use the same liblist.gam file as Half-Life does? I think not.
+//  CreateFiles: =
+//  {
+//    liblist.gam =
+//    {
+//      Data = "game "$22"tmpQuArK"$220D0A"gamedll "$22"..\main\gamex86.dll"$22
+//       $0D0A".\main\gamex86.dll"$0D0A
+//    }
+//  }
 
     TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
     {
@@ -188,89 +191,71 @@ QQRKSRC1
         }
       }
 
-      Sep: = {Typ = "S"}  // separator
+      Sep: = {Txt="" Typ="S"}  // separator
 
-      Contents:={                 // "Contents" is the Specific that this checkbox edit
-                 Txt="Brush"      // The text displayed at the left of the checkbox
-                 Cap="water"      // The checkbox caption
-                 Typ="X32"        // "X" means "checkboX" and "32" is the value of the bit it edits
-                 Hint="water"     // Appears when you leave the mouse over the checkbox
-                }
-      Contents:={Cap="solid"          Typ="X1"         Hint=""}
-      Contents:={Cap="window"         Typ="X2"         Hint="translucent (the opposite face of windows are not drawn)"}
-      Contents:={Cap="aux"            Typ="X4"         Hint=""}
-      Contents:={Cap="lava"           Typ="X8"         Hint="very damaging"}
-      Contents:={Cap="slime"          Typ="X16"        Hint="mildly damaging"}
-      Contents:={Cap="water"          Typ="X32"        Hint=""}
-      Contents:={Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
-      Contents:={Cap="fence"          Typ="X128"       Hint="used together with alpha for fences"}
-      Contents:={Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
-      Contents:={Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
-      Contents:={Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
-      Contents:={Cap="monster"        Typ="X33554432"  Hint=""}
-      Contents:={Cap="corpse"         Typ="X67108864"  Hint=""}
-      Contents:={Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that VIS can ignore"}
-      Contents:={Cap="translucent"    Typ="X268435456" Hint=""}
-      Contents:={Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
+      Contents:={Txt="Brush" Cap="solid"          Typ="X1"         Hint=""}
+      Contents:={Txt=""      Cap="window"         Typ="X2"         Hint="translucent (the opposite face of windows are not drawn)"}
+      Contents:={Txt=""      Cap="aux"            Typ="X4"         Hint=""}
+      Contents:={Txt=""      Cap="lava"           Typ="X8"         Hint="very damaging"}
+      Contents:={Txt=""      Cap="slime"          Typ="X16"        Hint="mildly damaging"}
+      Contents:={Txt=""      Cap="water"          Typ="X32"        Hint=""}
+      Contents:={Txt=""      Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
+      Contents:={Txt=""      Cap="fence"          Typ="X128"       Hint="used together with alpha for fences"}
+      Contents:={Txt=""      Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
+      Contents:={Txt=""      Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
+      Contents:={Txt=""      Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
+      Contents:={Txt=""      Cap="monster"        Typ="X33554432"  Hint=""}
+      Contents:={Txt=""      Cap="corpse"         Typ="X67108864"  Hint=""}
+      Contents:={Txt=""      Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that VIS can ignore"}
+      Contents:={Txt=""      Cap="translucent"    Typ="X268435456" Hint=""}
+      Contents:={Txt=""      Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
 
-      Sep: = {Typ = "S"}  // separator
+      Sep: = {Txt="" Typ="S"}  // separator
 
-      Contents:={Txt="Flowing"
-                 Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
-      Contents:={Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
-      Contents:={Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
-      Contents:={Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
-      Contents:={Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
-      Contents:={Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
+      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
+      Contents:={Txt=""        Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
+      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
+      Contents:={Txt=""        Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
+      Contents:={Txt=""        Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
+      Contents:={Txt=""        Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
 
-      Sep: = {Typ = "S"}  // separator
+      Sep: = {Txt="" Typ="S"}  // separator
 
-      Flags:   ={Txt="Face"
-                 Cap="light"          Typ="X1"         Hint="'value' is the light quantity"}
-      Flags:   ={Cap="slick"          Typ="X2"         Hint="slidy surface"}
-      Flags:   ={Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
-      Flags:   ={Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
-      Flags:   ={Cap="trans33"        Typ="X16"        Hint="translucent, 33% (more see-through than 50%)"}
-      Flags:   ={Cap="trans66"        Typ="X32"        Hint="translucent, 66% (less see-through than 50%)"}
-      Flags:   ={Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
-      Flags:   ={Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
-      Flags:   ={Cap="hint"           Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
-      Flags:   ={Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
-      Flags:   ={Cap="specular"       Typ="X1024"       Hint=""}
-      Flags:   ={Cap="diffuse"        Typ="X2048"       Hint=""}
-      Flags:   ={Cap="alpha"          Typ="X4096"       Hint="used for textures with alpha channel (e.g. fences)"}
-      Flags:   ={Cap="mirror"         Typ="X8192"       Hint=""}
-      Flags:   ={Cap="wndw33"         Typ="X16384"       Hint=""}
-      Flags:   ={Cap="wndw66"         Typ="X32768"       Hint=""}
-//      Flags:   ={Cap=""               Typ="X65536"       Hint=""}
-//      Flags:   ={Cap=""               Typ="X131072"      Hint=""}
-//      Flags:   ={Cap=""               Typ="X262144"      Hint=""}
-      Flags:   ={Cap="water"          Typ="X524288"      Hint="sound property for footsteps in water"}
-      Flags:   ={Cap="concrete"       Typ="X1048576"     Hint="sound property for footsteps on concrete floor, default anyway"}
-      Flags:   ={Cap="fabric"         Typ="X2097152"     Hint="sound property for footsteps on fabric"}
-      Flags:   ={Cap="gravel"         Typ="X4194304"     Hint="sound property for footsteps on gravel"}
-      Flags:   ={Cap="metal"          Typ="X8388608"     Hint="sound property for footsteps on metal"}
-      Flags:   ={Cap="metal lite"     Typ="X16777216"    Hint="sound property for footsteps on metal, lighter sound"}
-      Flags:   ={Cap="tin"            Typ="X33554432"    Hint="sound property for footsteps on tin, e.g. tin roof"}
-      Flags:   ={Cap="tile"           Typ="X67108864"    Hint="sound property for footsteps on stone tiles"}
-      Flags:   ={Cap="wood"           Typ="X134217728"   Hint="sound property for footsteps on wood"}
-      Flags:   ={Cap="reflect fake"   Typ="X268435456"   Hint=""}
-      Flags:   ={Cap="reflect light"  Typ="X536870912"   Hint=""}
+      Flags:   ={Txt="Face" Cap="light"          Typ="X1"         Hint="'value' is the light quantity"}
+      Flags:   ={Txt=""     Cap="slick"          Typ="X2"         Hint="slidy surface"}
+      Flags:   ={Txt=""     Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
+      Flags:   ={Txt=""     Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
+      Flags:   ={Txt=""     Cap="trans33"        Typ="X16"        Hint="translucent, 33% (more see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="trans66"        Typ="X32"        Hint="translucent, 66% (less see-through than 50%)"}
+      Flags:   ={Txt=""     Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
+      Flags:   ={Txt=""     Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
+      Flags:   ={Txt=""     Cap="hint"           Typ="X256"       Hint="tell QBSP3 to cut along this plane first"}
+      Flags:   ={Txt=""     Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
+      Flags:   ={Txt=""     Cap="specular"       Typ="X1024"      Hint=""}
+      Flags:   ={Txt=""     Cap="diffuse"        Typ="X2048"      Hint=""}
+      Flags:   ={Txt=""     Cap="alpha"          Typ="X4096"      Hint="used for textures with alpha channel (e.g. fences)"}
+      Flags:   ={Txt=""     Cap="mirror"         Typ="X8192"      Hint=""}
+      Flags:   ={Txt=""     Cap="wndw33"         Typ="X16384"     Hint=""}
+      Flags:   ={Txt=""     Cap="wndw66"         Typ="X32768"     Hint=""}
+      Flags:   ={Txt=""     Cap="water"          Typ="X524288"    Hint="sound property for footsteps in water"}
+      Flags:   ={Txt=""     Cap="concrete"       Typ="X1048576"   Hint="sound property for footsteps on concrete floor, default anyway"}
+      Flags:   ={Txt=""     Cap="fabric"         Typ="X2097152"   Hint="sound property for footsteps on fabric"}
+      Flags:   ={Txt=""     Cap="gravel"         Typ="X4194304"   Hint="sound property for footsteps on gravel"}
+      Flags:   ={Txt=""     Cap="metal"          Typ="X8388608"   Hint="sound property for footsteps on metal"}
+      Flags:   ={Txt=""     Cap="metal lite"     Typ="X16777216"  Hint="sound property for footsteps on metal, lighter sound"}
+      Flags:   ={Txt=""     Cap="tin"            Typ="X33554432"  Hint="sound property for footsteps on tin, e.g. tin roof"}
+      Flags:   ={Txt=""     Cap="tile"           Typ="X67108864"  Hint="sound property for footsteps on stone tiles"}
+      Flags:   ={Txt=""     Cap="wood"           Typ="X134217728" Hint="sound property for footsteps on wood"}
+      Flags:   ={Txt=""     Cap="reflect fake"   Typ="X268435456" Hint=""}
+      Flags:   ={Txt=""     Cap="reflect light"  Typ="X536870912" Hint=""}
 
-      Sep: = {Typ = "S"}  // separator
+      Sep: = {Txt="" Typ="S"}  // separator
 
-      Value:  = {Txt="Value"          Typ="E"          Hint="The meaning of this depends on the other flags"}
+      Value:  = {Txt="Value" Typ="E" Hint="The meaning of this depends on the other flags"}
     }
   }
 
-
-
-
-
-
-  
-// File written by perlkp.pl 0.3 2000-06-04 
-
+// File written by perlkp.pl 0.3 2000-06-04
 
   NewEntities.qtx =
   {
