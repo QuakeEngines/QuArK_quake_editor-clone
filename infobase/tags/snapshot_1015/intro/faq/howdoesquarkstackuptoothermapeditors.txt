@@ -1,0 +1,16 @@
+title: How does QuArK stack up to other map editors?
+author: Gryphon
+
+Aside from the map-editor called BSP, QuArK is one of the most feature-rich editors in the community today. Rumours say, that
+BSP's author has been hired by a gaming company, and development on this editor has been discontinued.
+
+Worldcraft and QERadiant remain two of QuArK's other "rivals" in the area of level editing. As different people work
+in different ways, it's not a "given" that any editor is immediately inferior to another based solely on features,
+but on the whole, QuArK remains one of the easiest, and most powerful editor's out there. Part of QuArK's appeal (and sometimes
+unappeal), is it's ability to do so many things, without needing to jump from one program to the next, or struggle to manage
+your different media for a given project.
+
+QuArK can read and play audio files, view models, display a variety of image and video formats.
+
+In terms of raw feature comparisons, since many of these programs (including QuArK) are continually being updated, and nobody
+has had time to make a least of all their "features", a clear comparison chart would be hard to compile.

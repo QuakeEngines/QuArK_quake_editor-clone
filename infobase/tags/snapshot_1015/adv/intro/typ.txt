@@ -1,0 +1,138 @@
+title: Guide to Typ's
+author: Decker
+format: html
+
+<p>Here is a list of the most common used Typ's in .QRK :form definitions.</p>
+
+<table border=1 cellpadding=2 cellspacing=0>
+<tr><th width=10%>Typ's</th><th width=40%>Description</th><th width=50%>Example</th></tr>
+
+<tr><td align=center>
+E[-R]
+</td><td valign=top>
+<b>Entry field</b>.<br>
+This is the default type, if Typ="..." is not given.<br>
+The last "R" (at third position) means Read/Only<br>
+</td><td>
+targetname: = { Typ="E" Txt="&" }<br>
+target: = { Txt="&" }
+</td></tr>
+
+<tr><td align=center>
+EF[R]<br>
+EF[999]
+</td><td valign=top>
+<b>Entry field containing Float(s)</b>.<br>
+The last "R" (at third position) means Read/Only<br>
+</td><td>
+&nbsp;
+</td></tr>
+
+<tr><td align=center>
+ED[L]<br>
+</td><td valign=top>
+<b>Entry field containing Directory-path (with browse button)</b>.<br>
+The last "L" (at third position) means only the last foldername of the path is to be used.<br>
+</td><td>
+SourceDir: = { Typ="ED" Hint="Full directory-path" }<br>
+GameMod: = { Typ="EDL" Hint="Modification folder" }<br>
+</td></tr>
+
+<tr><td align=center>
+ET<br>
+</td><td valign=top>
+<b>Entry field containing Texture-name (with browse button)</b>.<br>
+Opens the texture-browser, if the browse button is pressed.<br>
+</td><td>
+Texture: = { Typ="ET" Hint="Choose texture" }
+</td></tr>
+
+<tr><td align=center>
+EP<br>
+</td><td valign=top>
+<b>Entry field containing Path and File-name (with browse button)</b>.<br>
+Opens a file-dialog, so the user can choose a filename.
+</td><td>
+QBSP1: = { Typ="EP" Txt="Path to QBSP" DefExt="exe" }<br>
+LIGHT1: = { Typ="EP" Txt="Path to QRAD3" DefExt="exe" }<br>
+</td></tr>
+
+<tr><td align=center>
+X&lt;value&gt;
+</td><td valign=top>
+<b>Checkbox</b>, which sets the bits according to &lt;value&gt;.<br>
+The same specificname may appear, with different &lt;values&gt;, so each bit in the specific can be controlled individually.<br>
+Usually used together with a Cap="...", to tell what the bit controls.
+</td><td>
+spawnflags: = { Typ="X1" Cap="Ambush" Txt="&" }<br>
+spawnflags: = { Typ="X2" Cap="On Trigger" Txt="&" }<br>
+spawnflags: = { Typ="X128" Cap="X Axis" Txt="&" }
+</td></tr>
+
+<tr><td align=center>
+C
+</td><td valign=top>
+<b>Combo box</b>.<br>
+A predefined list of choices and their values. To use this type, the <i>items</i> and <i>values</i> must also be set, as can be seen in the example.<br>
+Each choice in the list will be indicated by a newline ($0D), except for the last choice!
+</td><td>
+mylist: = { Typ="C" Txt="&"<br>
+&nbsp;&nbsp;items =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Choice 1" $0D<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Choice 2" $0D<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Choice 3"<br>
+&nbsp;&nbsp;values =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"1" $0D<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"2" $0D<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"3"<br>
+}
+</td></tr>
+
+<tr><td align=center>
+B
+</td><td valign=top>
+<b>Pushbutton</b>.<br>
+Usually used to activate a second spec/arg view (a :form), which contains other spec/args thats more specialized for some purpose.<br>
+The Cap="..." controls the text in the pushbutton.
+</td><td>
+more: = { Typ="B" Txt="Specialize"<br>
+&nbsp;&nbsp;Cap = "Push..."<br>
+&nbsp;&nbsp;Form = "specialize_this:form"<br>
+}
+</td></tr>
+
+<tr><td align=center>
+L[N[4]]
+</td><td valign=top>
+<b>Color-picker pushbutton</b>.<br>
+A pushbutton which shows the choosen color, and when activated, will bring up a color dialog.<br>
+If only Typ="L" is given, the resulting RGB values, will be in range 0 - 255.<br>
+If Typ="LN" is given, the RGB values will be normalized to range 0.0 - 1.0.<br>
+If Typ="LN4" or Typ="L 4" is given, there will be created a fourth value, which controls the brightness of the light. This however, must be changed using a second spec/arg pair, with Typ="E".
+</td><td>
+_color: = { Typ="L" Txt="&" }<br>
+_light: = { Typ="LN" Txt="&" }<br>
+light: = { Typ="L 4" Txt="&" }<br>
+_lightbright: = { Typ="LN4" Txt="&" }<br>
+<br>
+//To view the exact values, create a second spec/arg pair<br>
+color: = { Txt="&" Typ="L" } //Pushbutton<br>
+color: = { Txt="&" } //Entryfield
+</td></tr>
+
+<tr><td align=center>
+S
+</td><td valign=top>
+<b>Seperator</b>.
+</td><td>
+sep: = { Typ="S" }
+</td></tr>
+
+<!--
+<tr><td align=center>
+</td><td valign=top>
+</td><td>
+</td></tr>
+-->
+
+</table>
