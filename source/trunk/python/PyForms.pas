@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/06/05 18:43:13  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.8  2001/03/20 21:35:06  decker_dk
 Updated copyright-header
 }
@@ -847,6 +850,7 @@ end;
 
 procedure TPyForm.FormDestroy(Sender: TObject);
 begin
+ DestroyMenu(MenuBarHandle);
  WndObject^.Form:=Nil;
  Py_DECREF(WndObject);
  Py_XDECREF(NumShortCuts);
