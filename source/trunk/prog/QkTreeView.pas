@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:43:41  decker_dk
+Updated copyright-header
+
 Revision 1.7  2000/11/26 19:08:32  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -652,6 +655,8 @@ begin
  PlusBmp1:=SelectObject(PlusDC, MyTVPlusSign);
  MinusDC:=CreateCompatibleDC(DC);
  MinusBmp1:=SelectObject(MinusDC, MyTVMinusSign);
+ DeleteObject(MyTVPlusSign);
+ DeleteObject(MyTVMinusSign);
  try
   SetWindowOrgEx(DC, HorzScrollBar.Position, VertScrollBar.Position, Nil);
   GetClipBox(DC, VisibleRect);
