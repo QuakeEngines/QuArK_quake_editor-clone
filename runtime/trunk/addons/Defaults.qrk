@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.144  2001/06/17 02:37:39  aiv
+//imported texture search plugin
+//
 //Revision 1.143  2001/06/17 02:05:48  tiglari
 //incremetable specifics for symx/y/z (but not symxy, different 'dp'
 // method makes this complex)
@@ -37,7 +40,6 @@ QQRKSRC1
 //but if you don't want a caption-text to appear, you must explicitly write TXT="".
 //See [FormCfg.PAS] TFormCfg.wmInternalMessage() comments for reason.
 //
->>>>>>> 1.143
 //Revision 1.141  2001/06/05 12:38:44  tiglari
 //final value elaborations
 //
