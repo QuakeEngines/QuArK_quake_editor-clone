@@ -17,10 +17,10 @@ forms).
 <br>status: done (integrates with path duplicator); some extensions
 currently being added.
 
-<li>'Instance' duplicator: (tiglari)
+<li>'New Copy One' duplicator: (tiglari)
 <br> put copies of a structure where you want it.  Inspired
 by a suggestion by Meatball402 on Quake3World editing forum.
-<br>status: done.
+<br>status: done, replaces previous 'instance duplicator' idea.
 
 <li>User-configurable hot keys: (tiglari)
 <br>status: current ones all done.
@@ -56,7 +56,6 @@ files.
 to leave further enhancements as an exercise for someone who
 wants to learn more about QuArK-Python programming.
 
-
 <LI>Tree navigation: (tiglari, design from Decker, realdespair)
 <br> home, pg up, pg down for parent, next prev in group, cycling.
 Plus some kind of option for getting next-of-same-type in group.
@@ -64,12 +63,43 @@ Plus some kind of option for getting next-of-same-type in group.
 option (=classname for point entities, brush entities, =macro
 for duplicators)
 
-
 <li> Entity Lump Extractor: (tiglari)
 <br> extracts entity lumps from .bsp's in a .pak to independent files.
 <br> status: done but seems to fail with STVEF .bsp's whose names
 begin with underscore.  More thought about easy preparation of
 entity addons is needed.
+
+<li>3point cutting plane: (tiglari)
+<br>status: done
+
+<li>Pythonify entity def converters: (Andy)
+<br>status: done
+
+<li>texture search facility: (Andy, suggestions from quantum_red)
+<br>status: done
+
+<li>storable camera positions: (tiglari, design from quantum_red)
+<br>status: done
+
+<li>group selection movement commands: (tiglari, design from Alan Donald and quantum_red)
+<br>exchange position & align (WC-style)
+<br>status:done
+
+<li>incrementable specifics in duplicators: (subnoodle, tiglari)
+<br>status: done except for radial duplicator.
+
+<li>promotion/demotion of submenus: (tiglari)
+<br>status: done for texture & tagging (not intended
+for all submenus, just some of the more useful ones)
+
+<li>Support for pythonified entity converters: (Andy)
+<br>status: done for fgd2qrk
+
+<li>Code specifics for toolbar buttons: (Andy)
+<br>status: done
+
+<li>Support for Gunman, Blue Shift & other HL derivatives: (Decker)
+<br>status: done
 
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
@@ -77,3 +107,4 @@ entity addons is needed.
 along or just plain done.
 
 </ul>
+

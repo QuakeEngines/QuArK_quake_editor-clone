@@ -11,9 +11,9 @@ available as experimental addons to 6.3
 <li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
 <br>an as-yet-unimplemented 4.7 feature.
 
+
 <li>FAKK2 support: (?)
-<br>And what about Daikatana, Alice, & Gunman
-<br>status: Gunman seems supportable as an add-on
+<br>And what about Daikatana?
 
 <li>OsFolders: (tiglari)
 <br>edit the properties of pre-existing OsFolders
@@ -60,8 +60,6 @@ requests for it
 <li>Ripoff of WC `arch maker': (tiglari)
 <br>would be called something like`arc builder', probably
 basically a duplicator, emulating the wc thing's functionality.
-
-<li>3point cutting plane: (tiglari)
 
 <li>Incorporate 'entity info files' into toolboxes: (tiglari)
 <br>tiglari has PERL scripts that generate various kinds of info (hints, bounding
