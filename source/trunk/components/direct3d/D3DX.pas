@@ -27,7 +27,7 @@ unit D3DX;
 interface
 uses Windows, SysUtils, Direct3D, DirectDraw;
 
-const D3DXDLL = {$IFDEF DEBUG} 'd3dxasd.dll'; {$ELSE} 'dlls/d3dxas.dll'; {$ENDIF} {QuArK - 'dlls' path}
+const D3DXDLL = {$IFDEF DEBUG} (*'d3dxasd.dll'*) 'dlls/d3dxas.dll'; {$ELSE} 'dlls/d3dxas.dll'; {$ENDIF} {QuArK - 'dlls' path}
 
 type PFloat = ^Float;
 
