@@ -226,11 +226,52 @@ def intersectionPoint2d(p0, d0, p1, d1):
     s = (p0.y*d1.x - p1.y*d1.x - d1.y*p0.x +d1.y*p1.x)/det
     return p0+s*d0
         
+#
+# The two monstrosities below were derived from solving
+#   systems of equations in Maple V.  The idea is to think
+#   of the texture plane as being a plane in a 3d texture
+#   space, so the texture space<->map space mappings are
+#   invertible.  For the cases we're intererested in, the
+#   third texture coordinate is always zero, and drops out
+#   of the equations.
+#
+# Gets the s, t (texture) coordinates of a space point
+#  from the threepoints info and the point location(v)
+#
+def texCoords(v, texp, coeff=1):
+    p0 = texp[0]
+    d1 = texp[1]-p0
+    d2 = texp[2]-p0
+    c = d1^d2
+    denom = d1.x*c.z*d2.y-d1.x*d2.z*c.y-c.x*d1.z*d2.y-d2.x*d1.y*c.z+d1.z*d2.x*c.y+c.x*d1.y*d2.z
+    s = (-c.z*d2.y*p0.x+c.z*p0.y*d2.x-c.z*d2.x*v.y+c.z*v.x*d2.y+d2.y*c.x*p0.z-d2.y*c.x*v.z-c.y*p0.z*d2.x+c.y*v.z*d2.x+c.y*d2.z*p0.x-c.y*d2.z*v.x+v.y*c.x*d2.z-p0.y*c.x*d2.z)/denom
+    t = -(-d1.x*c.y*p0.z+d1.x*c.y*v.z+d1.x*c.z*p0.y-d1.x*c.z*v.y-d1.z*c.x*p0.y+d1.z*c.x*v.y+c.x*p0.z*d1.y-c.x*v.z*d1.y-p0.x*c.z*d1.y+p0.x*c.y*d1.z+v.x*c.z*d1.y-v.x*c.y*d1.z)/denom
+    return s*coeff, t*coeff
+
+def solveForThreepoints((v1, (s1, t1)), (v2, (s2, t2)), (v3, (s3, t3))):
+    denom = s1*t2-s1*t3-t1*s2+t1*s3-s3*t2+t3*s2
+    p0x = -t2*v1.x*s3+v2.x*t1*s3-t3*s1*v2.x+t3*v1.x*s2+t2*s1*v3.x-v3.x*t1*s2
+    p0y = -t2*v1.y*s3+v2.y*t1*s3-t3*s1*v2.y+t3*v1.y*s2+t2*s1*v3.y-v3.y*t1*s2
+    p0z = -(t2*v1.z*s3-v2.z*t1*s3+t3*s1*v2.z-t3*v1.z*s2-t2*s1*v3.z+v3.z*t1*s2)
+    p0 = quarkx.vect(p0x, p0y, p0z)/denom
+    d1x = -(t2*v3.x-t2*v1.x+t3*v1.x-v3.x*t1+v2.x*t1-v2.x*t3)
+    d1y = -(t2*v3.y-t2*v1.y+t3*v1.y-v3.y*t1+v2.y*t1-v2.y*t3)
+    d1z = -(t2*v3.z-t2*v1.z+t3*v1.z-v3.z*t1+v2.z*t1-v2.z*t3)
+    d1 = quarkx.vect(d1x, d1y, d1z)/denom
+    d2x = -s1*v3.x+s1*v2.x-s3*v2.x+v3.x*s2-v1.x*s2+v1.x*s3
+    d2y = -s1*v3.y+s1*v2.y-s3*v2.y+v3.y*s2-v1.y*s2+v1.y*s3
+    d2z = -s1*v3.z+s1*v2.z-s3*v2.z+v3.z*s2-v1.z*s2+v1.z*s3
+    d2 = quarkx.vect(d2x, d2y, d2z)/denom
+    return p0, d1+p0, d2+p0
+    
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.6  2000/09/04 21:27:56  tiglari
+#added 2d line intersection finder, vectors->matrix utility
+#
 #Revision 1.5  2000/08/21 11:25:16  tiglari
 #added projectpointtoplane (from plugins.maptagside)
 #
