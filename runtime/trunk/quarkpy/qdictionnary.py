@@ -261,6 +261,7 @@ Strings = {
     805: "Quake 3 .md3 file (*.md3)|*.md3",
     806: "SoF Texture (*.m32)|*.m32",
     807: "3d studio file (*.3ds)|*.3ds",
+    808: "Hmf (6DX) map format (*.hmf)|*.hmf",
 
     809: "Invalid version number in Quake's original Progs.dat",
 
@@ -900,6 +901,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.42  2001/07/09 09:53:11  tiglari
+#update version #
+#
 #Revision 1.41  2001/06/18 02:36:19  tiglari
 #update version
 #

@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.156  2001/07/14 01:56:27  tiglari
+//change Crystal Space pak extension to .zip
+//
 //Revision 1.155  2001/07/09 09:52:32  tiglari
 //update version #
 //
@@ -1142,6 +1145,7 @@ QQRKSRC1
         AlwaysPak = ""
         PakExt = ".pak"
         PakFormat = "HTIC2-#.PAK"
+        MapFilter = "808"     // filter in quarkpy.qdictionnary.py
         Console = "1"
         Form = "Game6DX"
         LightFactor = '0.9'
