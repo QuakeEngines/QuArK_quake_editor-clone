@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.89  2001/03/01 19:13:14  decker_dk
+//added 'BezierPatchSupport' and 'BezierPatchPluginPrefixes' to Quake-3 and STVEF.
+//
 //Revision 1.88  2001/02/25 11:21:28  tiglari
 //reset snapshot #
 //
@@ -1336,137 +1339,136 @@ QQRKSRC1
       }
     }
 
-        t_ProgramHint:incl = {
-                Hint="Specify the game's executable (.EXE) and additional command-line arguments."
-                  $0D
-                  $0D"QuArK will automatically append arguments to start the .BSP-file in the game,"
-                  $0D"and arguments to tell the game to use a different startup base-directory."
-        }
-        GameBuildPgm:incl = {
-                DefExt="exe"
-                Typ="EP"
-                Txt="...program-executable (path optional)"
-                Hint="Specify the build-tool executable (.EXE) for this step."
-                  $0D
-                  $0D"The absolute-path is optional, and if not given, you must"
-                  $0D"specify it in the 'Default directory of build-programs'."
-        }
-        GameBuildArgs:incl = {
-                Typ="E"
-                Txt="...fixed command-line arguments"
-                Hint="Specify the additional command-line arguments for the build-tool."
-                  $0D
-                  $0D"You can use the following user-variables, which automatically will"
-                  $0D"be replaced at run-time. If at least one of these are used, QuArK"
-                  $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
-                  $0D"so you better remember to do this yourself."
-                  $0D
-                  $0D"%file%    - Gives the map's path and filename without extension"
-                  $0D"%mappath% - Gives the map's path with ending backslash"
-                  $0D"%mapfile% - Gives the map's path and filename with .MAP extension"
-                  $0D
-                  $0D"Examples:"
-                  $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
-                  $0D"  VIS.EXE -fast %file%"
-                  $0D"  QRAD3.EXE -threads 4 %file%"
-                // These 'user-variables' are replaced in MapQuakeMenu.PY
-        }
-        GameBuildCheck:incl = {
-                Typ="C"
-                Txt="...at program end, check these file-extensions:"
-                Items = ""
-                     $0D"+BSP"
-                     $0D"+BSP,+PRT"
-                     $0D"+BSP,-LIN"
-                     $0D"+AAS"
-                Hint="Here you list which file-extensions that should exist or not exist,"
-                  $0D"after the build-program have ended."
-                  $0D
-                  $0D"Example; to make sure that a .BSP file have been created, and"
-                  $0D"_no_ .LIN file exists, this field should contain:     +BSP,-LIN"
-                  $0D
-                  $0D"A prefixed '+' means 'must exist'"
-                  $0D"A prefixed '-' means 'must not exist'"
-        }
-        GameBuildPgms:incl = {
-                Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
-                BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
-                sep:        = {Typ="S" Txt="1st program"}
-                BuildPgm1:  = {GameBuildPgm=!}
-                BuildArgs1: = {GameBuildArgs=!}
-                BuildCheck1:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="2nd program"}
-                BuildPgm2:  = {GameBuildPgm=!}
-                BuildArgs2: = {GameBuildArgs=!}
-                BuildCheck2:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="3rd program"}
-                BuildPgm3:  = {GameBuildPgm=!}
-                BuildArgs3: = {GameBuildArgs=!}
-                BuildCheck3:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="4th program"}
-                BuildPgm4:  = {GameBuildPgm=!}
-                BuildArgs4: = {GameBuildArgs=!}
-                BuildCheck4:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="5th program"}
-                BuildPgm5:  = {GameBuildPgm=!}
-                BuildArgs5: = {GameBuildArgs=!}
-                BuildCheck5:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="6th program"}
-                BuildPgm6:  = {GameBuildPgm=!}
-                BuildArgs6: = {GameBuildArgs=!}
-                BuildCheck6:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="7th program"}
-                BuildPgm7:  = {GameBuildPgm=!}
-                BuildArgs7: = {GameBuildArgs=!}
-                BuildCheck7:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="8th program"}
-                BuildPgm8:  = {GameBuildPgm=!}
-                BuildArgs8: = {GameBuildArgs=!}
-                BuildCheck8:= {GameBuildCheck=!}
-                sep:        = {Typ="S" Txt="9th program"}
-                BuildPgm9:  = {GameBuildPgm=!}
-                BuildArgs9: = {GameBuildArgs=!}
-                BuildCheck9:= {GameBuildCheck=!}
-                sep:        = {Typ="S"}
-                MapCommentsPrefix: = {
-                        Typ="E"
-                        Txt=".MAP comments prefix"
-                        Hint="Specify the character(s) that instruct the build-tools,"
-                          $0D"which lines in the .MAP file, are end-of-line comments,"
-                          $0D"and will be ignored."
-                }
-        }
-        t_DefaultTexture:incl = {
-                Txt = "Default texture"
-                Typ = "ET"      // Edit Texture
-                Hint = "Default texture when inserting polyhedrons in maps."
-                    $0D"An '[auto]' texture."
-        }
-        t_DefaultTextureTrigger:incl = {
-                Txt = "Default trigger texture"
-                Typ = "ET"      // Edit Texture
-                Hint = "Default trigger texture when new brush-entities request it."
-                    $0D"An '[trigger]' texture."
-        }
-        t_DefaultTextureClip:incl = {
-                Txt = "Default clip texture"
-                Typ = "ET"      // Edit Texture
-                Hint = "Default clip texture when new brush-entities request it."
-                    $0D"An '[clip]' texture."
-        }
-        t_DefaultTextureOrigin:incl = {
-                Txt = "Default origin texture"
-                Typ = "ET"      // Edit Texture
-                Hint = "Default origin texture when new brush-entities request it."
-                    $0D"An '[origin]' texture."
-        }
-        t_DefaultTextureCaulk:incl = {
-                Txt = "Default caulk texture"
-                Typ = "ET"      // Edit Texture
-                Hint = "Default caulk texture when new brush-entities request it."
-                    $0D"An '[caulk]' texture."
-        }
-
+    t_ProgramHint:incl = {
+      Hint="Specify the game's executable (.EXE) and additional command-line arguments."
+        $0D
+        $0D"QuArK will automatically append arguments to start the .BSP-file in the game,"
+        $0D"and arguments to tell the game to use a different startup base-directory."
+    }
+    t_GameBuildPgm:incl = {
+      DefExt="exe"
+      Typ="EP"
+      Txt="...program-executable (path optional)"
+      Hint="Specify the build-tool executable (.EXE) for this step."
+        $0D
+        $0D"The absolute-path is optional, and if not given, you must"
+        $0D"specify it in the 'Default directory of build-programs'."
+    }
+    t_GameBuildArgs:incl = {
+      Typ="E"
+      Txt="...fixed command-line arguments"
+      Hint="Specify the additional command-line arguments for the build-tool."
+        $0D
+        $0D"You can use the following user-variables, which automatically will"
+        $0D"be replaced at run-time. If at least one of these are used, QuArK"
+        $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
+        $0D"so you better remember to do this yourself."
+        $0D
+        $0D"%file%    - Gives the map's path and filename without extension"
+        $0D"%mappath% - Gives the map's path with ending backslash"
+        $0D"%mapfile% - Gives the map's path and filename with .MAP extension"
+        $0D
+        $0D"Examples:"
+        $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
+        $0D"  VIS.EXE -fast %file%"
+        $0D"  QRAD3.EXE -threads 4 %file%"
+      // These 'user-variables' are replaced in MapQuakeMenu.PY
+    }
+    t_GameBuildCheck:incl = {
+      Typ="C"
+      Txt="...at program end, check these file-extensions:"
+      Items= ""
+          $0D"+BSP"
+          $0D"+BSP,+PRT"
+          $0D"+BSP,-LIN"
+          $0D"+AAS"
+      Hint="Here you list which file-extensions that should exist or not exist,"
+        $0D"after the build-program have ended."
+        $0D
+        $0D"Example; to make sure that a .BSP file have been created, and"
+        $0D"_no_ .LIN file exists, this field should contain:     +BSP,-LIN"
+        $0D
+        $0D"A prefixed '+' means 'must exist'"
+        $0D"A prefixed '-' means 'must not exist'"
+    }
+    t_GameBuildPgms:incl = {
+      Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
+      BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
+      sep:        = {Typ="S" Txt="1st program"}
+      BuildPgm1:  = {t_GameBuildPgm=!}
+      BuildArgs1: = {t_GameBuildArgs=!}
+      BuildCheck1:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="2nd program"}
+      BuildPgm2:  = {t_GameBuildPgm=!}
+      BuildArgs2: = {t_GameBuildArgs=!}
+      BuildCheck2:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="3rd program"}
+      BuildPgm3:  = {t_GameBuildPgm=!}
+      BuildArgs3: = {t_GameBuildArgs=!}
+      BuildCheck3:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="4th program"}
+      BuildPgm4:  = {t_GameBuildPgm=!}
+      BuildArgs4: = {t_GameBuildArgs=!}
+      BuildCheck4:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="5th program"}
+      BuildPgm5:  = {t_GameBuildPgm=!}
+      BuildArgs5: = {t_GameBuildArgs=!}
+      BuildCheck5:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="6th program"}
+      BuildPgm6:  = {t_GameBuildPgm=!}
+      BuildArgs6: = {t_GameBuildArgs=!}
+      BuildCheck6:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="7th program"}
+      BuildPgm7:  = {t_GameBuildPgm=!}
+      BuildArgs7: = {t_GameBuildArgs=!}
+      BuildCheck7:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="8th program"}
+      BuildPgm8:  = {t_GameBuildPgm=!}
+      BuildArgs8: = {t_GameBuildArgs=!}
+      BuildCheck8:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S" Txt="9th program"}
+      BuildPgm9:  = {t_GameBuildPgm=!}
+      BuildArgs9: = {t_GameBuildArgs=!}
+      BuildCheck9:= {t_GameBuildCheck=!}
+      sep:        = {Typ="S"}
+      MapCommentsPrefix: = {
+        Typ="E"
+        Txt=".MAP comments prefix"
+        Hint="Specify the character(s) that instruct the build-tools,"
+          $0D"which lines in the .MAP file, are end-of-line comments,"
+          $0D"and will be ignored."
+      }
+    }
+    t_DefaultTexture:incl = {
+      Txt = "Default texture"
+      Typ = "ET"      // Edit Texture
+      Hint = "Default texture when inserting polyhedrons in maps."
+          $0D"An '[auto]' texture."
+    }
+    t_DefaultTextureTrigger:incl = {
+      Txt = "Default trigger texture"
+      Typ = "ET"      // Edit Texture
+      Hint = "Default trigger texture when new brush-entities request it."
+          $0D"An '[trigger]' texture."
+    }
+    t_DefaultTextureClip:incl = {
+      Txt = "Default clip texture"
+      Typ = "ET"      // Edit Texture
+      Hint = "Default clip texture when new brush-entities request it."
+          $0D"An '[clip]' texture."
+    }
+    t_DefaultTextureOrigin:incl = {
+      Txt = "Default origin texture"
+      Typ = "ET"      // Edit Texture
+      Hint = "Default origin texture when new brush-entities request it."
+          $0D"An '[origin]' texture."
+    }
+    t_DefaultTextureCaulk:incl = {
+      Txt = "Default caulk texture"
+      Typ = "ET"      // Edit Texture
+      Hint = "Default caulk texture when new brush-entities request it."
+          $0D"An '[caulk]' texture."
+    }
 
     GameQuake1:form =
     {
@@ -1540,7 +1542,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameHexenII:form =
     {
@@ -1620,7 +1622,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameQuake2:form =
     {
@@ -1700,7 +1702,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameHeretic2:form =
     {
@@ -1775,7 +1777,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameHalfLife:form =
     {
@@ -1849,7 +1851,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameSin:form =
     {
@@ -1924,7 +1926,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameKingPin:form =
     {
@@ -2005,7 +2007,7 @@ QQRKSRC1
         Cap = ".WAL texture files"
         Hint = "check this to have QuArK write both .WAL and .TGA textures (kpBSP can't read .TGA textures)"
       }
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameSOF:form =
     {
@@ -2086,7 +2088,7 @@ QQRKSRC1
         Cap = ".WAL texture files"
         Hint = "check this to have QuArK write both .WAL and .TGA textures (kpBSP can't read .TGA textures)"
       }
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameQuake3:form =
     {
@@ -2171,7 +2173,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameSTVEF:form =
     {
@@ -2257,7 +2259,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
     GameCrystalSpace:form =
     {
@@ -2316,7 +2318,7 @@ QQRKSRC1
       }
       sep:        = {Typ="S"}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      GameBuildPgms=!
+      t_GameBuildPgms=!
     }
 
 
@@ -2444,23 +2446,23 @@ QQRKSRC1
         Typ = "X"     // checkboX
         Cap = "white on black"
       }
-      ViewXZ:     = { Txt = "Side map view (XZ)" Typ = "LI" } // coLor selection, Integer
-      ViewXY:     = { Txt = "Top map view (XY)" Typ = "LI" }
-      SelXZ:      = { Txt = "Selected brushes, side view" Typ = "LI" }
-      SelXY:      = { Txt = "Selected brushes, top view" Typ = "LI" }
-      Gray:       = { Txt = "Out-of-view grayed parts" Typ = "LI" }
-      Axis:       = { Txt = "Axis" Typ = "LI" }
-      GridXZ:     = { Txt = "Grid dots, side view" Typ = "LI" }
-      GridXY:     = { Txt = "Grid dots, top view" Typ = "LI" }
-      GridLines:  = { Txt = "Grid lines" Typ = "LI" }
-      BrEnt:      = { Txt = "Brush entities (doors,...)" Typ = "LI" }
-      Duplicator: = { Txt = "Duplicator images" Typ = "LI" }
-      Tag:        = { Txt = "Tagged point / group handle" Typ = "LI" }
-      GrayImage:  = { Txt = "While dragging" Typ = "LI" }
-      BSP:        = { Txt = "BSP map" Typ = "LI" }
-      Digger:     = { Txt = "Digging polyhedrons" Typ = "LI" }
-      Bezier:     = { Txt = "Bezier patches" Typ = "LI" }
-      Linear:     = { Txt = "Linear Mapping box" Typ = "LI" }
+      ViewXZ:     = { Txt="Side map view (XZ)"          Typ="LI" } // coLor selection, Integer
+      ViewXY:     = { Txt="Top map view (XY)"           Typ="LI" }
+      SelXZ:      = { Txt="Selected brushes, side view" Typ="LI" }
+      SelXY:      = { Txt="Selected brushes, top view"  Typ="LI" }
+      Gray:       = { Txt="Out-of-view grayed parts"    Typ="LI" }
+      Axis:       = { Txt="Axis"                        Typ="LI" }
+      GridXZ:     = { Txt="Grid dots, side view"        Typ="LI" }
+      GridXY:     = { Txt="Grid dots, top view"         Typ="LI" }
+      GridLines:  = { Txt="Grid lines"                  Typ="LI" }
+      BrEnt:      = { Txt="Brush entities (doors,...)"  Typ="LI" }
+      Duplicator: = { Txt="Duplicator images"           Typ="LI" }
+      Tag:        = { Txt="Tagged point / group handle" Typ="LI" }
+      GrayImage:  = { Txt="While dragging"              Typ="LI" }
+      BSP:        = { Txt="BSP map"                     Typ="LI" }
+      Digger:     = { Txt="Digging polyhedrons"         Typ="LI" }
+      Bezier:     = { Txt="Bezier patches"              Typ="LI" }
+      Linear:     = { Txt="Linear Mapping box"          Typ="LI" }
     }
     MdlColors:form =
     {
@@ -2633,7 +2635,7 @@ QQRKSRC1
       .pcx: = { Txt="PCX images" externaledit = ! }
       .tga: = { Txt="TGA images" externaledit = ! }
       .bmp: = { Txt="BMP images" externaledit = ! }
-      .jpg: = { Txt="JPG images" externaledit = ! } //DECKER
+      .jpg: = { Txt="JPG images" externaledit = ! }
       .wav: = { Txt="WAV sounds" externaledit = ! }
       .cin: = { Txt="CIN videos" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
@@ -2643,7 +2645,7 @@ QQRKSRC1
       .swl: = { Txt="SWL Sin textures" externaledit = ! }
       .m8:  = { Txt="M8 textures" externaledit = ! }
       .pak: = { Txt="PAK archives" externaledit = ! }
-      .pk3: = { Txt="PK3 archives" externaledit = ! } //DECKER
+      .pk3: = { Txt="PK3 archives" externaledit = ! }
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
       .wad: = { Txt="WAD texture lists" externaledit = ! }
@@ -3040,6 +3042,7 @@ QQRKSRC1
         Hint = "%s||This box lets you see and change the name of the texture used on this or these faces. Wait with the mouse over the box to see the texture images."
       }
     }
+
     Default:g:form =      // form that applies when editing groups
     {
       Style = "2"
@@ -3054,207 +3057,147 @@ QQRKSRC1
         }
       }
       sep1:  = {Typ="S"}
-      neg: = {Txt="Neg. polys" Cap="Negative" Typ="X" Hint="polyhedrons in negative groups dig the map"}
+      neg:   = {Txt="Neg. polys" Cap="Negative" Typ="X" Hint="polyhedrons in negative groups dig the map"}
       sep1:  = {Typ="S"}
-      ;view: = {Txt="&" Typ="X01" Cap="Grayed out" Hint="the whole group is displayed grayed out"}
-      ;view: = {Txt="&" Typ="X02" Cap="Hidden" Hint="the group is hidden from map views"}
-      ;view: = {Txt="&" Typ="X08" Cap="Hidden on textured" Hint="the group is hidden from textured views"}
-      ;view: = {Txt="&" Typ="X016" Cap="Can't select" Hint="can't select objects in this group with mouse clicks"}
-      ;view: = {Txt="&" Typ="X04" Cap="Ignore to build" Hint="ignored while building the map"}
+      ;view: = {Txt="&" Typ="X01"  Cap="Grayed out"         Hint="the whole group is displayed grayed out"}
+      ;view: = {Txt="&" Typ="X02"  Cap="Hidden"             Hint="the group is hidden from map views"}
+      ;view: = {Txt="&" Typ="X08"  Cap="Hidden on textured" Hint="the group is hidden from textured views"}
+      ;view: = {Txt="&" Typ="X016" Cap="Can't select"       Hint="can't select objects in this group with mouse clicks"}
+      ;view: = {Txt="&" Typ="X04"  Cap="Ignore to build"    Hint="ignored while building the map"}
     }
     Default:d:form =    // form that applies when editing duplicators
     {
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
     }
+
     capdetails:form =
     {
-      faceonly: = {Txt="&" Typ="X"
-               Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
-      nofront = {Txt="&" Typ="X"
-               Hint = "if checked, front face is not produced"}
-      noback: = {Txt="&" Typ="X"
-               Hint = "if checked, back face is not produced"}
-      noinner = {Txt="&" Typ="X"
-               Hint = "if checked, inner face is not produced (thick bevels only)"}
-      noouter: = {Txt="&" Typ="X"
-               Hint = "if checked, outer face is not produced (thick bevels only)"}
-      leftside: = {Txt="&" Typ="X"
-               Hint = "if checked, left side is produced"}
-      rightside: = {Txt="&" Typ="X"
-               Hint = "if checked, right side is produced"}
+      faceonly:  = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
+      nofront    = {Txt="&" Typ="X" Hint="if checked, front face is not produced"}
+      noback:    = {Txt="&" Typ="X" Hint="if checked, back face is not produced"}
+      noinner    = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
+      noouter:   = {Txt="&" Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
+      leftside:  = {Txt="&" Typ="X" Hint="if checked, left side is produced"}
+      rightside: = {Txt="&" Typ="X" Hint="if checked, right side is produced"}
     }
     dup cap:form =
     {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      lower: = {Txt="&" Typ="X"
-               Hint = "if checked, the whole thing is upside-down"}
-      onside: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes front-to-back instead of top-to-bottom "}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along each side of curve"}
-      stretchtex: = {Txt="&" Typ="X"
-               Hint = "if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
-      open: = {Txt="&" Typ="X"
-               Hint = "if checked, front and back are open"}
+      inverse:    = {Txt="&" Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
+      lower:      = {Txt="&" Typ="X"    Hint="if checked, the whole thing is upside-down"}
+      onside:     = {Txt="&" Typ="X"    Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
+      thick:      = {Txt="&" Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate n patches along each side of curve"}
+      stretchtex: = {Txt="&" Typ="X"    Hint="if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
+      open:       = {Txt="&" Typ="X"    Hint="if checked, front and back are open"}
       more: = {
-       Typ="B"
-       Txt="details"
-       Cap="Push"
-       Form="capdetails:form"
-       Hint="specifics for more detailed control over generation of patches"
+        Typ="B"
+        Txt="details"
+        Cap="Push"
+        Form="capdetails:form"
+        Hint="specifics for more detailed control over generation of patches"
       }
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
+      macro: = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     beveldetails:form =
     {
-      faceonly: = {Txt="&" Typ="X"
-               Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
-      notop = {Txt="&" Typ="X"
-               Hint = "if checked, top face is not produced"}
-      nobottom: = {Txt="&" Typ="X"
-               Hint = "if checked, bottom face is not produced"}
-      noinner = {Txt="&" Typ="X"
-               Hint = "if checked, inner face is not produced (thick bevels only)"}
-      noouter: = {Txt="&" Typ="X"
-               Hint = "if checked, outer face is not produced (thick bevels only)"}
-      leftend: = {Txt="&" Typ="X"
-               Hint = "if checked, left end is produced"}
-      rightend: = {Txt="&" Typ="X"
-               Hint = "if checked, right end is produced"}
+      faceonly: = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
+      notop     = {Txt="&" Typ="X" Hint="if checked, top face is not produced"}
+      nobottom: = {Txt="&" Typ="X" Hint="if checked, bottom face is not produced"}
+      noinner   = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
+      noouter:  = {Txt="&" Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
+      leftend:  = {Txt="&" Typ="X" Hint="if checked, left end is produced"}
+      rightend: = {Txt="&" Typ="X" Hint="if checked, right end is produced"}
     }
     dup bevel:form =
     {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      lower: = {Txt="&" Typ="X"
-               Hint = "if checked, the whole thing is upside-down"}
-      standup: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes top-to-bottom instead of front-to-back"}
-      left: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes from back to left side rather than back to right side"}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along curve"}
-      stretchtex: = {Txt="&" Typ="X"
-               Hint = "if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
-      open: = {Txt="&" Typ="X"
-               Hint = "if checked, top and bottom are open"}
+      inverse:    = {Txt="&" Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
+      lower:      = {Txt="&" Typ="X"    Hint="if checked, the whole thing is upside-down"}
+      standup:    = {Txt="&" Typ="X"    Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
+      left:       = {Txt="&" Typ="X"    Hint="if checked, curve goes from back to left side rather than back to right side"}
+      thick:      = {Txt="&" Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate n patches along curve"}
+      stretchtex: = {Txt="&" Typ="X"    Hint="if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
+      open:       = {Txt="&" Typ="X"    Hint="if checked, top and bottom are open"}
       more: = {
-       Typ="B"
-       Txt="details"
-       Cap="Push"
-       Form="beveldetails:form"
-       Hint="specifics for more detailed control over generation of patches"
+        Typ="B"
+        Txt="details"
+        Cap="Push"
+        Form="beveldetails:form"
+        Hint="specifics for more detailed control over generation of patches"
       }
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
+      macro: = {Txt="&" Typ="ESR" Hint = "This one is not for you, Saruman"}
     }
     dup column:form =
     {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along curve"}
-      circle:= {Txt="&" Typ="X"
-               }
-      stretchtex: = {Txt="&" Typ="X"
-               Hint = "if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
-      open: = {Txt="&" Typ="X"
-               Hint = "if checked, top and bottom are open"}
-      funnel:= {Txt="&" Typ="EF002"
-               Hint = "if specified, first number is expand factor for top, second for bottom."
-                       $0D " e.g. 0 1 for upward pointing cone"}
-      bulge:= {Txt="&" Typ="EF002"
-               Hint = "height, width of bulge, proportional, .5 1=straight"}
+      inverse:    = {Txt="&" Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
+      thick:      = {Txt="&" Typ="EF1"   Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      subdivide:  = {Txt="&" Typ="EF1"   Hint="integer value, generate n patches along curve"}
+      circle:     = {Txt="&" Typ="X" }
+      stretchtex: = {Txt="&" Typ="X"     Hint="if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
+      open:       = {Txt="&" Typ="X"     Hint="if checked, top and bottom are open"}
+      funnel:     = {Txt="&" Typ="EF002" Hint="if specified, first number is expand factor for top, second for bottom."$0D"e.g. 0 1 for upward pointing cone"}
+      bulge:      = {Txt="&" Typ="EF002" Hint="height, width of bulge, proportional, .5 1=straight"}
       more: = {
-       Typ="B"
-       Txt="details"
-       Cap="Push"
-       Form="beveldetails:form"
-       Hint="specifics for more detailed control over generation of patches"
+        Typ="B"
+        Txt="details"
+        Cap="Push"
+        Form="beveldetails:form"
+        Hint="specifics for more detailed control over generation of patches"
       }
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
+      macro: = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushcap:form =
     {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      lower: = {Txt="&" Typ="X"
-               Hint = "if checked, the whole thing is upside-down"}
-      onside: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes front-to-back instead of top-to-bottom "}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      inner: = {Txt="&" Typ="X"
-               Hint = "if checked, inner approximation is used; otherwise outer"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along each side of curve"}
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
+      inverse:   = {Txt="&" Typ="X"   Hint="if checked, concave surface of curve is outer and has texture"}
+      lower:     = {Txt="&" Typ="X"   Hint="if checked, the whole thing is upside-down"}
+      onside:    = {Txt="&" Typ="X"   Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
+      thick:     = {Txt="&" Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner:     = {Txt="&" Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
+      subdivide: = {Txt="&" Typ="EF1" Hint="integer value, generate n patches along each side of curve"}
+      macro:     = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushbevel:form =
     {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      left: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes from back to left side rather than back to right side"}
-      lower: = {Txt="&" Typ="X"
-               Hint = "if checked, the whole thing is upside-down"}
-      standup: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes top-to-bottom instead of front-to-back"}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      inner: = {Txt="&" Typ="X"
-               Hint = "if checked, inner approximation is used; otherwise outer"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along curve"}
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
+      inverse:   = {Txt="&" Typ="X"   Hint="if checked, concave surface of curve is outer and has texture"}
+      left:      = {Txt="&" Typ="X"   Hint="if checked, curve goes from back to left side rather than back to right side"}
+      lower:     = {Txt="&" Typ="X"   Hint="if checked, the whole thing is upside-down"}
+      standup:   = {Txt="&" Typ="X"   Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
+      thick:     = {Txt="&" Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner:     = {Txt="&" Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
+      subdivide: = {Txt="&" Typ="EF1" Hint="integer value, generate n patches along curve"}
+      macro:     = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushcolumn:form =
     {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along curve"}
-      circle:= {Txt="&" Typ="X"
-               }
-      funnel:= {Txt="&" Typ="EF002"
-               Hint = "if specified, first number is expand factor for top, second for bottom."
-                       $0D " e.g. 0 1 for upward pointing cone"}
-      bulge:= {Txt="&" Typ="EF002"
-               Hint = "height, width of bulge, proportional, .5 1=straight"}
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
+      inverse:   = {Txt="&" Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
+      subdivide: = {Txt="&" Typ="EF1"   Hint="integer value, generate n patches along curve"}
+      circle:    = {Txt="&" Typ="X" }
+      funnel:    = {Txt="&" Typ="EF002" Hint="if specified, first number is expand factor for top, second for bottom."$0D"e.g. 0 1 for upward pointing cone"}
+      bulge:     = {Txt="&" Typ="EF002" Hint="height, width of bulge, proportional, .5 1=straight"}
+      macro:     = {Txt="&" Typ="ESR"   Hint="This one is not for you, Saruman"}
     }
-
-    dup hlinfodecal:form =
-    {
-      Help = "Type your word(s) into the 'text'-specific,"
-          $0D"check that the texture-names exist."
-      text:         = {          Txt="&" Hint="The text to be converted into infodecals" }
-      wildchar:     = {          Txt="&" Hint="A single character in the texture-names, thats replaced by a character from the text-string" }
-      tex_upper:    = { Typ="ET" Txt="&" Hint="Texture-name of uppercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
-      tex_lower:    = { Typ="ET" Txt="&" Hint="Texture-name of lowercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
-      tex_numeric:  = { Typ="ET" Txt="&" Hint="Texture-name of numeric characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
-      macro:        = { Typ="ESR" Txt="&" }
-    }
-
     dup path:form =
     {
-      squarend: = {Txt="&" Typ="X"
-               Hint = "if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
-      setback: = {Txt="&" Typ="EF001"
-               Hint = "if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
+      squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
+      setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
     }
+    dup stair:form =
+    {
+      steps:      = {Txt="&"            Hint="number of steps in the staircase"}
+      sameheight: = {Txt="&" Typ="X"    Hint="if all steps should have the same height"$0D"or all aligned to the bottom"}
+      macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
+    }
+    dup hlinfodecal:form =
+    {
+      Help = "Type your word(s) into the 'text'-specific,"$0D"check that the texture-names exist."
+      text:        = {Txt="&"           Hint="The text to be converted into infodecals" }
+      wildchar:    = {Txt="&"           Hint="A single character in the texture-names, thats replaced by a character from the text-string" }
+      tex_upper:   = {Txt="&" Typ="ET"  Hint="Texture-name of uppercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
+      tex_lower:   = {Txt="&" Typ="ET"  Hint="Texture-name of lowercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
+      tex_numeric: = {Txt="&" Typ="ET"  Hint="Texture-name of numeric characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
+      macro:       = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+    }
+
     QuakeCtx:form =     // form that applies when editing .qctx objects
     {
       Style = "3"
@@ -3486,6 +3429,7 @@ QQRKSRC1
     }
   }
 
+
   NewMapItems.qtx =
   {
     ToolBox = "New map items..."
@@ -3493,6 +3437,21 @@ QQRKSRC1
     Color = $80FF80
     Target = ".qkm"                 // ".qkm" : QuArK Map
     Root = "New Polyhedrons.qtxfolder"   // needed only in ".qtx" objects when you actually want it to add a root in the toolbox (i.e. almost always)
+
+    t_shapebuilder_cube:incl =
+    {
+      cube:p =
+      {
+        ;desc = "cube to put in the map and then resize and reshape"
+        right:f = { v = '64 0 0 64 128 0 64 0 128' tex = "[auto]" }
+        left:f  = { v = '-64 0 0 -64 0 128 -64 128 0' tex = "[auto]" m = "1" }
+        back:f  = { v = '0 64 0 0 64 128 128 64 0' tex = "[auto]" m = "1" }
+        front:f = { v = '0 -64 0 128 -64 0 0 -64 128' tex = "[auto]" }
+        up:f    = { v = '0 0 64 128 0 64 0 128 64' tex = "[auto]" }
+        down:f  = { v = '0 0 -64 0 128 -64 128 0 -64' tex = "[auto]" m = "1" }
+      }
+    }
+
     New Polyhedrons.qtxfolder =
     {
       Basic polyhedrons.qtxfolder =
@@ -3723,27 +3682,10 @@ QQRKSRC1
           macro = "wall maker"
           depth = "8"
         }
-        Stair Maker:d =
-        {
-          ;desc = "build a stair from a cubic polyhedron shape"
-          macro       = "dup stair"
-          steps       = "8"
-          sameheight  = "0"
-          cube:p =
-          {
-            ;desc = "cube to put in the map and then resize and reshape"
-            right:f  = { v = '64 0 0 64 128 0 64 0 128' tex = "[auto]" }
-            left:f  = { v = '-64 0 0 -64 0 128 -64 128 0' tex = "[auto]" m = "1" }
-            back:f = { v = '0 64 0 0 64 128 128 64 0' tex = "[auto]" m = "1" }
-            front:f = { v = '0 -64 0 128 -64 0 0 -64 128' tex = "[auto]" }
-            up:f    = { v = '0 0 64 128 0 64 0 128 64' tex = "[auto]" }
-            down:f  = { v = '0 0 -64 0 128 -64 128 0 -64' tex = "[auto]" m = "1" }
-          }
-        }
-        Path Duplicator (experimental):g =
+        Path Duplicator:g =
         {
           ;desc = "corridor maker, easy creation of connected corridors"
-          Duplicator:d =
+          Path Duplicator:d =
           {
             origin        = "0 0 0"
             macro         = "dup path"
@@ -3794,6 +3736,42 @@ QQRKSRC1
             targetname  = "dpath3"
             target      = "dpathX"
           }
+        }
+      }
+      Shape Builders.qtxfolder =
+      {
+        Brush Arch/Cap Maker:d =
+        {
+          ;desc = "build a brush-based arch or cap from a cubic polyhedron shape"
+          macro = "dup brushcap"
+          inverse = "1"
+          subdivide = '2'
+          t_shapebuilder_cube = !
+        }
+        Brush Bevel Maker:d =
+        {
+          ;desc = "build brush-based bevel-corner from a cubic polyhedron shape"
+          macro = "dup brushbevel"
+          inverse = "1"
+          subdivide = '2'
+          left = "1"
+          open = "1"
+          t_shapebuilder_cube = !
+        }
+      //Brush Column Maker:d =
+      //{
+      //  ;desc = "build brush-based column from a cubic polyhedron shape"
+      //  macro = "dup brushcolumn"
+      //  open = "1"
+      //  t_shapebuilder_cube = !
+      //}
+        Staircase Maker:d =
+        {
+          ;desc = "build a staircase from a cubic polyhedron shape"
+          macro = "dup stair"
+          steps = "8"
+          sameheight = "0"
+          t_shapebuilder_cube = !
         }
       }
       Game specific.qtxfolder =
