@@ -124,9 +124,6 @@ class Folder:
         self.folders = []
         self.forgotten = map(string.lower, os.listdir("./"+self.path))
         self.forgotten.remove("index"+EXTENSION)
-        for filename in self.forgotten[:]:
-            if filename[-1:]=="~":
-                self.forgotten.remove(filename)
         for foldername in string.split(self.kw.get("subdir", "")):
             folder = Folder(path+foldername+"/", classif+(str(len(self.folders)+1),), parents+(self,))
             if folder.ctime > ctime:
@@ -191,7 +188,8 @@ class Folder:
 
     def viewforgotten(self):
         for s in self.forgotten:
-            print "*** NOTE: file '%s' not found in index" % (self.path+s)
+            if s[-1:]!="~" and s!="cvs":
+                print "*** NOTE: file '%s' not found in index" % (self.path+s)
         for folder in self.folders:
             folder.viewforgotten()
 

@@ -13,6 +13,6 @@ Some file types are suitable for load-on-demand, which is implemented through su
 
 In summary, the method Charger must :
 
-<p><li>load every information contained in the file and store it all as Specific/Args and subobjects, with one exception : calls to LoadedItem, which does not immediately load the data;
+<p><ul><li>load every information contained in the file and store it all as Specific/Args and subobjects, with one exception : calls to LoadedItem, which does not immediately load the data;
 <li>don't do anything else (no direct disk access, no display, etc.), with one exception : calls to LoadSibling, to access files besides the one currently loading (typically, Quake 2's models and sprites refer to .pcx files for the model skin and sprite images).
 </ul>
