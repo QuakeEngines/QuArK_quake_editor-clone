@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2002/05/13 10:18:45  tiglari
+Add Bilinear filtering option for textures in OGL view
+
 Revision 1.18  2001/03/20 21:38:21  decker_dk
 Updated copyright-header
 
@@ -1219,7 +1222,7 @@ begin
     begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    end
+    end;
     {$IFDEF DebugGLErr} Err(107); {$ENDIF}
   end;
 end;
