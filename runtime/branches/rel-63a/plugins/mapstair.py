@@ -14,7 +14,7 @@ Info = {
    "date":          "2001-02-20",
    "author":        "decker",
    "author e-mail": "decker@planetquake.com",
-   "quark":         "Version 6.2"
+   "quark":         "Version 6.3"
 }
 
 
@@ -40,10 +40,11 @@ from quarkpy.perspective import *
 
 class StairDuplicator(StandardDuplicator):
 
-  def makeStairs(self, o, steps=8, sameheight=""):
+  def makeStairs(self, o, steps=8, sameheight="", oldstyle=""):
     result = []
     faces = faceDict(o)
     if len(faces)==6:
+      points = pointdict(vtxlistdict(faces,o))
       frontnormal = faces['f'].normal
       backnormal = faces['b'].normal
       frontdist = faces['f'].dist
@@ -74,6 +75,7 @@ class StairDuplicator(StandardDuplicator):
         if sameheight != "":
           face.translate(-downnormal * (updowninterval * step))
         poly.appenditem(face)
+        down = face
 
         face = faces['f'].copy()
         face.translate(-frontnormal * (frontbackinterval * step))
@@ -82,20 +84,37 @@ class StairDuplicator(StandardDuplicator):
         face = faces['b'].copy()
         face.translate(-backnormal * (frontbackinterval * (steps - step - 1)))
         poly.appenditem(face)
+        back = face
 
         result.append(poly)
+        debug('oldstyle: %s'%oldstyle)
+
+        if sameheight!="1" and oldstyle!="1":
+            #
+            # the 'back' goes from the upper back of the stairstep to the
+            #   lower back of the whole thing.
+            # the 'down' goes from the the bottom of the visible front of the
+            #   stairstep to the lower back of the whole thing
+            #
+            debug('here')
+            upperback = points["trb"] - backnormal * frontbackinterval * (steps - step - 1) - upnormal * (updowninterval * (steps - step - 1))
+            back.setthreepoints((upperback, points["brb"], points["blb"]),0)
+            lowerfront = points["trb"] - backnormal * frontbackinterval * (steps-step) - upnormal*updowninterval*(steps-step)
+            down.setthreepoints((lowerfront, points["blb"], points["brb"]),0)
+        
+        
     return result
 
   def buildimages(self, singleimage=None):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    steps,   sameheight, = map(lambda spec, self=self: self.dup[spec],
-     ("steps", "sameheight"))
+    steps,   sameheight, oldstyle = map(lambda spec, self=self: self.dup[spec],
+     ("steps", "sameheight", "oldstyle"))
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return self.makeStairs(o, int(steps), sameheight)
+        return self.makeStairs(o, int(steps), sameheight, oldstyle)
 
 
 quarkpy.mapduplicator.DupCodes.update({
@@ -172,6 +191,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2001/03/03 19:26:59  decker_dk
+#Minor problem fixed.
+#
 #Revision 1.2  2001/02/14 10:08:58  tiglari
 #extract perspective stuff to quarkpy.perspective.py
 #
