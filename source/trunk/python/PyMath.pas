@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2002/06/06 22:46:30  tiglari
+use set g_CxScreen, g_CyScreen insrad of sm_C... for dual monitor problems
+ (info from quantum_red and Decker)
+
 Revision 1.10  2001/07/18 03:51:23  tiglari
 Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
  PSommet, TTableauFSommets, PTableauFSommets
@@ -1841,17 +1845,21 @@ end;
 
 function MakePyVect5(const nX, nY, nZ, nS, nT: Double) : PyVectST;
 begin
- GetMem(Result, SizeOf(TyVectST));
- Result:=PyVectST(_PyObject_New(@TyVect_Type ,Result));
- with PyVectST(Result)^ do
+  GetMem(Result, SizeOf(TyVectST));
+{$IFDEF PYTHON20_OR_HIGHER}
+  Result:=PyVectST(PyObject_Init(Result, @TyVect_Type));
+{$ELSE}
+  Result:=PyVectST(_PyObject_New(@TyVect_Type ,Result));
+{$ENDIF}
+  with PyVectST(Result)^ do
   begin
-   V.X:=nX;
-   V.Y:=nY;
-   V.Z:=nZ;
-   Source3D:=Nil;
-   ST:=True;
-   TexS:=nS;
-   TexT:=nT;
+    V.X:=nX;
+    V.Y:=nY;
+    V.Z:=nZ;
+    Source3D:=Nil;
+    ST:=True;
+    TexS:=nS;
+    TexT:=nT;
   end;
 end;
 
