@@ -392,6 +392,1154 @@ QQRKSRC1
     Root = "SoF2 Entities.qtxfolder"
     SoF2 Entities.qtxfolder =
     {
+      ;desc = "Created from entities.def"
+      func_* entities.qtxfolder =
+      {
+        func_bobbing:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_button:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_door:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_glass:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_group:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_pendulum:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_plat:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_static:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        func_timer:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        func_train:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      fx_* entities.qtxfolder =
+      {
+        fx_play_effect:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      gametype_* entities.qtxfolder =
+      {
+        gametype_item:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        gametype_player:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        gametype_trigger:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
+      info_* entities.qtxfolder =
+      {
+        info_notnull:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_deathmatch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        info_player_intermission:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      item_* entities.qtxfolder =
+      {
+        item_*****:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      misc_* entities.qtxfolder =
+      {
+        misc_bsp:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_G2model:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_model:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_portal_camera:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_portal_surface:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        misc_teleporter_dest:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      model_* entities.qtxfolder =
+      {
+        model_static:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      other entities.qtxfolder =
+      {
+        terrain:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        worldspawn:b =
+        {
+        }
+      }
+      path_* entities.qtxfolder =
+      {
+        path_corner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      pickup_* entities.qtxfolder =
+      {
+        pickup_ammo_12gauge:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_ammo_40mm:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_ammo_45:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_ammo_556:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_ammo_762:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_ammo_9mm:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_ammo_rpg7:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_armor_big:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_armor_medium:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_armor_small:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_backpack:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_health_big:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_health_small:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_AK_74:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_AN_M14:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_F1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_L2A2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M15:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M19:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M3A1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M4:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M590:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M60:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M67:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_M84:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_MDN11:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_microuzi:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_MM_1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_MSG90A1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_RPG_7:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_SMOHG92:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_US_SOCOM:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        pickup_weapon_USAS_12:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      target_* entities.qtxfolder =
+      {
+        target_delay:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_give:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_kill:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_laser:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_location:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_position:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_print:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_push:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_relay:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_score:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_speaker:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        target_teleporter:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+      }
+      trigger_* entities.qtxfolder =
+      {
+        trigger_always:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+        }
+        trigger_hurt:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_ladder:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_multiple:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_push:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+        trigger_teleport:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+        }
+      }
     }
+  }
+  Entity Forms.fctx =
+  {
+    item_*****:form =
+    {
+      help = "DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION."$0D"Th"
+       "e suspended flag will allow items to hang in the air, otherwise they a"
+       "re dropped to the next surface."$0D"If an item is the target of anothe"
+       "r entity, it will not spawn in until fired."$0D"An item fires all of i"
+       "ts targets when it is picked up.  If the toucher can't carry it, the t"
+       "argets won't be fired."$0D22"notfree"$22" if set to 1, don't spawn in "
+       "free for all games"$0D22"notteam"$22" if set to 1, don't spawn in team"
+       " games"$0D22"notsingle"$22" if set to 1, don't spawn in single player "
+       "games"$0D22"wait"$22"    override the default wait before respawning. "
+       " -1 = never respawn automatically, which can be used with targeted spa"
+       "wning."$0D22"random"$22" random number of plus or minus seconds varied"
+       " from the respawn time"$0D22"count"$22" override quantity or duration "
+       "on most items."
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "suspended"
+      }
+    }
+    pickup_armor_big:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_armor_medium:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_armor_small:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_health_big:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_health_small:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_US_SOCOM:form =
+    {
+      help = "Pistol, uses 45 rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M19:form =
+    {
+      help = "Pistol, uses 45 rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_microuzi:form =
+    {
+      help = "Sub-Machinegun, uses 9mm rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M3A1:form =
+    {
+      help = "Sub-Machinegun, uses 45 rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_USAS_12:form =
+    {
+      help = "Shotgun, uses 12-gauge rounds"$0D"ammo ---------- amount of ammo"
+       " (defaults to 10)"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M590:form =
+    {
+      help = "Shotgun, uses 12-gauge rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_MSG90A1:form =
+    {
+      help = "Sniper Rifle, uses 7.62 rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M4:form =
+    {
+      help = "Assault Rifle, uses 5.56 rounds and 40mm grenades"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_AK_74:form =
+    {
+      help = "Assault Rifle, uses 5.56 rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M60:form =
+    {
+      help = "Machinegun, uses 7.62 rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_RPG_7:form =
+    {
+      help = "RPG, uses 40mm rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_MM_1:form =
+    {
+      help = "Grenade Launcher, uses 40mm rounds"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M67:form =
+    {
+      help = "Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M84:form =
+    {
+      help = "Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_F1:form =
+    {
+      help = "Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_L2A2:form =
+    {
+      help = "Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_MDN11:form =
+    {
+      help = "Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_SMOHG92:form =
+    {
+      help = "Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_AN_M14:form =
+    {
+      help = "Incendiary Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_weapon_M15:form =
+    {
+      help = "White Phosphorus Grenade"
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_45:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_9mm:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_12gauge:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_762:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_556:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_40mm:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_ammo_rpg7:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    pickup_backpack:form =
+    {
+      bbox = '-15 -15 -15 15 15 15'
+    }
+    info_player_deathmatch:form =
+    {
+      help = "potential spawning position for deathmatch games."$0D"The first "
+       "time a player enters the game, they will be at an 'initial' spot."$0D"T"
+       "argets will be fired when someone spawns in on them."
+      bbox = '-16 -16 -46 16 16 48'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "initial"
+      }
+    }
+    info_player_intermission:form =
+    {
+      help = "The intermission will be viewed from this point.  Target an info"
+       "_notnull for the view direction."
+      bbox = '-16 -16 -46 16 16 48'
+    }
+    gametype_player:form =
+    {
+      help = "Potential spawning position for red or blue team in custom gamet"
+       "ype games."
+      bbox = '-16 -16 -46 16 16 48'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "REDTEAM"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "BLUETEAM"
+      }
+    }
+    gametype_trigger:form =
+    {
+    }
+    gametype_item:form =
+    {
+      help = $22"name"$22"            name of the item to spawn (defined in ga"
+       "metype script)"
+      bbox = '-16 -16 -16 16 16 16'
+    }
+    func_group:form =
+    {
+      help = "Used to group brushes together just for editor convenience.  The"
+       "y are turned into normal brushes by the utilities."
+    }
+    info_notnull:form =
+    {
+      help = "Used as a positional target for in-game calculation, like jumppa"
+       "d targets."$0D"target_position does the same thing"
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    misc_teleporter_dest:form =
+    {
+      help = "Point teleporters at these."$0D"Now that we don't have teleport "
+       "destination pads, this is just"$0D"an info_notnull"
+      bbox = '-32 -32 -24 32 32 -16'
+    }
+    misc_model:form =
+    {
+      help = "this model is inserted into the bsp file"$0D22"model"$22"       "
+       " arbitrary .md3 file to display"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "RMG"
+      }
+    }
+    misc_G2model:form =
+    {
+      help = $22"model"$22"        arbitrary .glm file to display"
+      bbox = '-16 -16 -16 16 16 16'
+    }
+    misc_portal_surface:form =
+    {
+      help = "The portal surface nearest this entity will show a view from the"
+       " targeted misc_portal_camera, or a mirror view if untargeted."$0D"This"
+       " must be within 64 world units of the surface!"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    misc_portal_camera:form =
+    {
+      help = "The target for a misc_portal_director.  You can set either angle"
+       "s or target another entity to determine the direction of view."$0D22"r"
+       "oll"$22" an angle modifier to orient the camera around the target vect"
+       "or;"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "slowrotate"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "fastrotate"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "noswing"
+      }
+    }
+    misc_bsp:form =
+    {
+      help = $22"bspmodel"$22"        arbitrary .bsp file to display"
+      bbox = '-16 -16 -16 16 16 16'
+    }
+    terrain:form =
+    {
+      help = "Terrain entity"$0D"It will stretch to the full height of the bru"
+       "sh"$0D"numPatches - integer number of patches to split the terrain bru"
+       "sh into (default 200)"$0D"terxels - integer number of terxels on a pat"
+       "ch side (default 4) (2 <= count <= 8)"$0D"seed - integer seed for rand"
+       "om terrain generation (default 0)"$0D"textureScale - float scale of te"
+       "xture (default 0.005)"$0D"heightMap - name of heightmap data image to "
+       "use"$0D"terrainDef - defines how the game textures the terrain (file i"
+       "s base/ext_data/*.terrain - default is grassyhills)"$0D"instanceDef - "
+       "defines which bsp instances appear"$0D"miscentDef - defines which clie"
+       "nt models spawn on the terrain (file is base/ext_data/*.miscents)"$0D"d"
+       "ensityMap - how dense the client models are packed"
+    }
+    fx_play_effect:form =
+    {
+      help = "Plays specified effect file"$0D22"effect"$22"    name of .efx fi"
+       "le"$0D22"wait"$22"      seconds between triggerings, default 0.3"$0D22
+       "random"$22"    wait variance in seconds, default 0"$0D22"target"$22"  "
+       "  direction of effect, default up"$0D22"count"$22"     plays effect th"
+       "is many times then deletes itself, default -1 = infinite"$0D"START_OFF"
+       "    fx starts off"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_OFF"
+      }
+    }
+    func_door:form =
+    {
+      help = "TOGGLE        wait in both the start and end states for a trigge"
+       "r event."$0D"START_OPEN    the door to moves to its destination when s"
+       "pawned, and operate in reverse.  It is used to temporarily or permanen"
+       "tly close off an area when triggered (not useful for touch or takedama"
+       "ge doors)."$0D"NOMONSTER    monsters will not trigger this door"$0D22"m"
+       "odel2"$22"    .md3 model to also draw"$0D22"angle"$22"        determin"
+       "es the opening direction"$0D22"targetname"$22" if set, no touch field "
+       "will be spawned and a remote button or trigger field activates the doo"
+       "r."$0D22"speed"$22"        movement speed (100 default)"$0D22"wait"$22
+       "        wait before returning (3 default, -1 = never return)"$0D22"lip"
+       $22"        lip remaining at end of move (8 default)"$0D22"dmg"$22"    "
+       "    damage to inflict when blocked (2 default)"$0D22"health"$22"    if"
+       " set, the door must be shot open"
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_OPEN"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "CRUSHER"
+      }
+    }
+    func_plat:form =
+    {
+      help = "Plats are always drawn in the extended position so they will lig"
+       "ht correctly."$0D22"lip"$22"        default 8, protrusion above rest p"
+       "osition"$0D22"height"$22"    total height of movement, defaults to mod"
+       "el height"$0D22"speed"$22"        overrides default 200."$0D22"dmg"$22
+       "        overrides default 2"$0D22"model2"$22"    .md3 model to also dr"
+       "aw"
+    }
+    func_button:form =
+    {
+      help = "When a button is touched, it moves some distance in the directio"
+       "n of it's angle, triggers all of it's targets, waits some time, then r"
+       "eturns to it's original position where it can be triggered again."$0D22
+       "model2"$22"    .md3 model to also draw"$0D22"angle"$22"        determi"
+       "nes the opening direction"$0D22"target"$22"    all entities with a mat"
+       "ching targetname will be used"$0D22"speed"$22"        override the def"
+       "ault 40 speed"$0D22"wait"$22"        override the default 1 second wai"
+       "t (-1 = never return)"$0D22"lip"$22"        override the default 4 pix"
+       "el lip remaining at end of move"$0D22"health"$22"    if set, the butto"
+       "n must be killed instead of touched"
+    }
+    path_corner:form =
+    {
+      help = "Train path corners."$0D"Target: next path corner and other targe"
+       "ts to fire"$0D22"speed"$22" speed to move to the next corner"$0D22"wai"
+       "t"$22" seconds to wait before behining move to next corner"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    func_train:form =
+    {
+      help = "A train is a mover that moves between path_corner target points."
+       $0D"Trains MUST HAVE AN ORIGIN BRUSH."$0D"The train spawns at the first"
+       " target it is pointing at."$0D22"model2"$22"    .md3 model to also dra"
+       "w"$0D22"speed"$22"        default 100"$0D22"dmg"$22"        default   "
+       " 2"$0D22"noise"$22"        looping sound to play when the train is in "
+       "motion"$0D22"target"$22"    next path corner"
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_ON"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "TOGGLE"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "BLOCK_STOPS"
+      }
+    }
+    func_static:form =
+    {
+      help = "A bmodel that just sits there, doing nothing.  Can be used for c"
+       "onditional walls and models."$0D22"model2"$22"    .md3 model to also d"
+       "raw"
+    }
+    func_rotating:form =
+    {
+      help = "You need to have an origin brush as part of this entity.  The ce"
+       "nter of that brush will be"$0D"the point around which it is rotated. I"
+       "t will rotate around the Z axis by default.  You can"$0D"check either "
+       "the X_AXIS or Y_AXIS box to change that."$0D22"model2"$22"    .md3 mod"
+       "el to also draw"$0D22"speed"$22"        determines how fast it moves; "
+       "default value is 100."$0D22"dmg"$22"        damage to inflict when blo"
+       "cked (2 default)"
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_ON"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "Y_AXIS"
+      }
+    }
+    func_bobbing:form =
+    {
+      help = "Normally bobs on the Z axis"$0D22"model2"$22"    .md3 model to a"
+       "lso draw"$0D22"height"$22"    amplitude of bob (32 default)"$0D22"spee"
+       "d"$22"        seconds to complete a bob cycle (4 default)"$0D22"phase"$22
+       "        the 0.0 to 1.0 offset in the cycle to start at"$0D22"dmg"$22" "
+       "       damage to inflict when blocked (2 default)"
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "X_AXIS"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "Y_AXIS"
+      }
+    }
+    func_pendulum:form =
+    {
+      help = "You need to have an origin brush as part of this entity."$0D"Pen"
+       "dulums always swing north / south on unrotated models.  Add an angles "
+       "field to the model to allow rotation in other directions."$0D"Pendulum"
+       " frequency is a physical constant based on the length of the beam and "
+       "gravity."$0D22"model2"$22"    .md3 model to also draw"$0D22"speed"$22" "
+       "       the number of degrees each way the pendulum swings, (30 default"
+       ")"$0D22"phase"$22"        the 0.0 to 1.0 offset in the cycle to start "
+       "at"$0D22"dmg"$22"        damage to inflict when blocked (2 default)"
+    }
+    func_glass:form =
+    {
+      help = "Breakable glass"
+    }
+    worldspawn:form =
+    {
+      help = "Every map should have exactly one worldspawn."$0D22"music"$22"  "
+       "          music wav file"$0D22"soundSet"$22"        soundset name to u"
+       "se (do not combine with 'noise', ignores all other flags)"$0D22"gravit"
+       "y"$22"        800 is default gravity"$0D22"message"$22"        Text to"
+       " print during connection process"$0D22"mission"$22"        Indicates w"
+       "hich mission script file should be used to find the scripts for missio"
+       "n mode"
+    }
+    model_static:form =
+    {
+      help = $22"model"$22"        arbitrary .md3 file to display"
+      bbox = '-16 -16 -16 16 16 16'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "NO_MP"
+      }
+    }
+    target_give:form =
+    {
+      help = "Gives the activator all the items pointed to."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    target_delay:form =
+    {
+      help = $22"wait"$22" seconds to pause before firing targets."$0D22"rando"
+       "m"$22" delay variance, total delay = delay +/- random seconds"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    target_score:form =
+    {
+      help = $22"count"$22" number of points to add, default 1"$0D"The activat"
+       "or is given this many points."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    target_print:form =
+    {
+      help = $22"message"$22"    text to print"$0D"If "$22"private"$22", only "
+       "the activator gets the message.  If no checks, all clients get the mes"
+       "sage."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "redteam"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "blueteam"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "private"
+      }
+    }
+    target_speaker:form =
+    {
+      help = $22"noise"$22"        wav file to play"$0D22"soundSet"$22"    sou"
+       "ndset name to use (do not combine with 'noise', ignores all other flag"
+       "s)"$0D"A global sound will play full volume throughout the level."$0D"A"
+       "ctivator sounds will play on the player that activated the target."$0D
+       "Global and activator sounds can't be combined with looping."$0D"Normal"
+       " sounds play each time the target is used."$0D"Looped sounds will be t"
+       "oggled by use functions."$0D"Multiple identical looping sounds will ju"
+       "st increase volume without any speed cost."$0D22"wait"$22" : Seconds b"
+       "etween auto triggerings, 0 = don't auto trigger"$0D22"random"$22"    w"
+       "ait variance, default is 0"$0D22"radius"$22"    radius of attenuation"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "looped"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "on"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "looped"
+      }
+      spawnflags: =
+      {
+        typ = "X32"
+        cap = "off"
+      }
+      spawnflags: =
+      {
+        typ = "X64"
+        cap = "global"
+      }
+      spawnflags: =
+      {
+        typ = "X128"
+        cap = "activator"
+      }
+    }
+    target_laser:form =
+    {
+      help = "When triggered, fires a laser.  You can either set a target or a"
+       " direction."
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_ON"
+      }
+    }
+    target_teleporter:form =
+    {
+      help = "The activator will be teleported away."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    target_relay:form =
+    {
+      help = "This doesn't perform any actions except fire its targets."$0D"Th"
+       "e activator can be forced to be from a certain team."$0D"if RANDOM is "
+       "checked, only one of the targets will be fired, not all of them"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "RED_ONLY"
+      }
+      spawnflags: =
+      {
+        typ = "X2"
+        cap = "BLUE_ONLY"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "RANDOM"
+      }
+    }
+    target_kill:form =
+    {
+      help = "Kills the activator."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    target_position:form =
+    {
+      help = "Used as a positional target for in-game calculation, like jumppa"
+       "d targets."
+      bbox = '-4 -4 -4 4 4 4'
+    }
+    target_location:form =
+    {
+      help = "Set "$22"message"$22" to the name of this location."$0D"Closest "
+       "target_location in sight used for the location, if none"$0D"in site, c"
+       "losest in distance"
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    trigger_multiple:form =
+    {
+      help = $22"wait"$22" : Seconds between triggerings, 0.5 default, -1 = on"
+       "e time only."$0D22"random"$22"    wait variance, default is 0"$0D"Vari"
+       "able sized repeatable trigger.  Must be targeted at one or more entiti"
+       "es."$0D"so, the basic time between firing is a random time between"$0D
+       "(wait - random) and (wait + random)"
+    }
+    trigger_always:form =
+    {
+      help = "This trigger will always fire.  It is activated by the world."
+      bbox = '-8 -8 -8 8 8 8'
+    }
+    trigger_push:form =
+    {
+      help = "Must point at a target_position, which will be the apex of the l"
+       "eap."$0D"This will be client side predicted, unlike target_push"
+    }
+    target_push:form =
+    {
+      help = "Pushes the activator in the direction.of angle, or towards a tar"
+       "get apex."$0D22"speed"$22"        defaults to 1000"$0D"if "$22"bouncep"
+       "ad"$22", play bounce noise instead of windfly"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "bouncepad"
+      }
+    }
+    trigger_teleport:form =
+    {
+      help = "Allows client side prediction of teleportation events."$0D"Must "
+       "point at a target_position, which will be the teleport destination."$0D
+       "If spectator is set, only spectators can use this teleport"$0D"Spectat"
+       "or teleporters are not normally placed in the editor, but are created"$0D
+       "automatically near doors to allow spectators to move through them"
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "SPECTATOR"
+      }
+    }
+    trigger_hurt:form =
+    {
+      help = "Any entity that touches this will be hurt."$0D"It does dmg point"
+       "s of damage each server frame"$0D"Targeting the trigger will toggle it"
+       "s on / off state."$0D"SILENT            supresses playing the sound"$0D
+       "SLOW            changes the damage rate to once per second"$0D"NO_PROT"
+       "ECTION    *nothing* stops the damage"$0D22"dmg"$22"            default"
+       " 5 (whole numbers only)"
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_OFF"
+      }
+      spawnflags: =
+      {
+        typ = "X4"
+        cap = "SILENT"
+      }
+      spawnflags: =
+      {
+        typ = "X8"
+        cap = "NO_PROTECTION"
+      }
+      spawnflags: =
+      {
+        typ = "X16"
+        cap = "SLOW"
+      }
+    }
+    trigger_ladder:form =
+    {
+      help = "Indicates a ladder and its normal"$0D22"angles"$22"        angle"
+       " ladder faces"
+    }
+    func_timer:form =
+    {
+      help = "This should be renamed trigger_timer..."$0D"Repeatedly fires its"
+       " targets."$0D"Can be turned on or off by using."$0D22"wait"$22"       "
+       "     base time between triggering all targets, default is 1"$0D22"rand"
+       "om"$22"        wait variance, default is 0"$0D"so, the basic time betw"
+       "een firing is a random time between"$0D"(wait - random) and (wait + ra"
+       "ndom)"
+      bbox = '-8 -8 -8 8 8 8'
+      spawnflags: =
+      {
+        typ = "X1"
+        cap = "START_ON"
+      }
+    }
+
   }
 }
