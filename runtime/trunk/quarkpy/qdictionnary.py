@@ -559,6 +559,7 @@ Strings = {
     5177: "M32 Texture (SoF)",
     5178: "3d studio file",
     5179: "Form Context",
+    5180: ".hmf (6DX) file",
 
     5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     5184: "'%s' is not a QuArK-5 file",
@@ -901,6 +902,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.43  2001/07/19 02:23:47  tiglari
+#.hmf extension support for 6dx
+#
 #Revision 1.42  2001/07/09 09:53:11  tiglari
 #update version #
 #
