@@ -87,6 +87,7 @@ class BSPC_Console(qquake.BatchConsole):
             pass
         self.bspfile = bspfile
         #### FIXME: we want to check if the aas file is created at all
+
     def close(self):
         attr = quarkx.getfileattr(self.bspfile)
         if (attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE):
@@ -146,8 +147,9 @@ def filesformap(map):
 
 
 def FirstBuildCmd():
-    if quarkx.setupsubset()["NeedQCSG"]:
-        return "QCSG1"
+    setup = quarkx.setupsubset()
+    if setup["FirstBuildCmd"]:
+        return setup["FirstBuildCmd"]
     else:
         return "QBSP1"
 
@@ -301,21 +303,40 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         mapcmd = "./maps/" + map
         bspfile = quarkx.outputfile("maps/%s.bsp" % map)
 
-        for pgrm, console in (("BSPC", BSPC_Console), ("LIGHT", BspConsole), ("VIS", BspConsole), ("QBSP", QBSPConsole), ("QCSG", BspConsole)):
+        for pgrm, console in (("BSPC", BSPC_Console),\
+                              ("LIGHT", BspConsole),\
+                              ("VIS", BspConsole),\
+                              ("QBSP", QBSPConsole),\
+                              ("QCSG", BspConsole)):
             pgrm1 = pgrm+"1"
+
             if buildmode[pgrm1]:    # prepare to run this program
+
                 cmdline = setup[pgrm1]
+
                 if (not cmdline) or (quarkx.getfileattr(cmdline)==FA_FILENOTFOUND):
                     desc = setup[pgrm+"Desc"] or pgrm
                     missing = "     %s\n%s" % (desc, missing)
                 else:
-                    cmdline = '"%s"' % cmdline
-                    pgrmcmd = pgrm+"Cmd"
-                    p1 = setup[pgrmcmd]
-                    if p1: cmdline = cmdline + " " + p1
-                    p1 = buildmode[pgrmcmd]
-                    if p1: cmdline = cmdline + " " + p1
-                    next = console(cmdline + " " + mapcmd, tmpquark, bspfile, editor, next)
+                    if setup["StupidBuildToolKludge"]:
+                        # stupid tool that wants to run in the base dir
+                        toolworkdir = setup["Directory"] + "\\" + setup["BaseDir"]
+                        cmdline = '"%s"' % cmdline
+                        pgrmcmd = pgrm+"Cmd"
+                        p1 = setup[pgrmcmd]
+                        if p1: cmdline = cmdline + " " + p1
+                        p1 = buildmode[pgrmcmd]
+                        if p1: cmdline = cmdline + " " + p1
+                        next = console(cmdline + " ..\\tmpquark" + mapcmd, toolworkdir, bspfile, editor, next)
+                    else:
+                        # clever tool that can run anywhere
+                        cmdline = '"%s"' % cmdline
+                        pgrmcmd = pgrm+"Cmd"
+                        p1 = setup[pgrmcmd]
+                        if p1: cmdline = cmdline + " " + p1
+                        p1 = buildmode[pgrmcmd]
+                        if p1: cmdline = cmdline + " " + p1
+                        next = console(cmdline + " " + mapcmd, tmpquark, bspfile, editor, next)
             if pgrm1 == firstcmd:
                 break
 
