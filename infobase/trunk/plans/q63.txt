@@ -6,6 +6,12 @@ file currently envisions for the next release of
 QuArK.  Considerable material has just been put off from 6.3 to 6.4
 
 <ul>
+<li>6DX Engine Support: (decker, Jacob Marner)
+<br>status: done (untested, may need more work)
+
+<li>Crystal Space Support: (tiglari, funkiedamouse)
+<br>status: a cleanup done (untested, may need more work)
+
 <li>Linear Matrix editor: (tiglari, lots of design from Rolf Hulsbergen)
 <br>crank out matrices for rotation, scaling
 etc. from intelligible parameters (from pushbutton in duplicator
@@ -103,8 +109,11 @@ for all submenus, just some of the more useful ones)
 
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
-<br>status: the only thing on this list which isn't reasonably far
-along or just plain done.
+<br>status: envisioned, maybe defer to 6.4
 
+<li>Move object to tagged: (tiglari, idea by quantum_red)
+<br>select a face in an object, move object to tagged
+face so that selected faced is coplanar with tagged one.
+<br>status: envisioned, maybe defer to 6.4
 </ul>
 
