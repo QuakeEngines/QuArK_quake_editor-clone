@@ -141,6 +141,12 @@ def texcpFromCp(cp, cp2):
     return map(maprow, cp, cp2)
 
     
+def listCp(cp):
+    cp2 = []
+    for row in cp:
+        cp2.append(list(row))
+    return cp2
+
 #
 # The basic idea here is that if the patch is sitting right over
 #  the face, the three points p0, p1, p2 should get the patch .st
@@ -331,11 +337,67 @@ def texPlaneFromCph(cph, editor):
     new.setthreepoints(texp,2,editor.TexSource)
     return new
 
+#
+#   The counterclockwise traversal of the edges
+#     supports using arithmetic to figure out how
+#     to `rotate' things for patch-merger
+#
+P_FRONT = 0   # first column of patch
+P_TOP = 1     # last row of patch 
+P_BACK = 2    # last column of patch
+P_BOTTOM = 3  # row 0 of patch
+
+
+def RotateCpCounter1(cp):
+    "returns a cp net where the old P_BACK is now P_TOP"
+    ncp = []
+    h = len(cp)
+    w = len(cp[0])
+    for j in range(w):
+        ncp.append(map(lambda i,cp=cp,k=w-j-1:cp[i][k],range(h)))
+    return ncp
+
+def RotateCpCounter2(cp):
+    ncp = []
+    h = len(cp)
+    for i in range(h):
+      row = cp[h-i-1]
+      row = list(row)
+      row.reverse()
+      ncp.append(row)
+    return ncp
+
+def RotateCpCounter(i, cp):
+    if i==0:
+        return copyCp(cp)
+    i=i%4
+    if i==0:
+        return copyCp(cp)
+    if i==1:
+        return RotateCpCounter1(cp)
+    if i==2:
+        return RotateCpCounter2(cp)
+    if i==3:
+        return RotateCpCounter1(RotateCpCounter2(cp))
+        
+def joinCp((tp1,X), cp1, (tp2,Y), cp2):
+    "returns cp1 extended to include cp2, assumes preconditions"
+#    squawk(`tp1-P_BACK`)
+    cp1 = RotateCpCounter(P_BACK-tp1, cp1)
+    cp2 = RotateCpCounter(P_FRONT-tp2, cp2)
+#    squawk(`cp1`)
+#    squawk(`cp2`)
+    ncp = map(lambda row1, row2,cp1=cp1,cp2=cp2:row1+row2[1:], cp1, cp2)
+    return RotateCpCounter(tp1-P_BACK, ncp)
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.11  2000/07/23 08:40:44  tiglari
+#faceTexFromCph removed; texPlaneFromCph added
+#
 #Revision 1.10  2000/06/26 22:51:55  tiglari
 #renaming: antidistort_rows/columns->undistortRows/Colunmns,
 #tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
