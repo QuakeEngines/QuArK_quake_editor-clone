@@ -422,12 +422,62 @@ def knitCp((tp1,X), cp1, (tp2,Y), cp2):
       cp1.reverse()
     squawk('done')
     return RotateCpCounter(tp1-P_BACK, cp1)
+    
+def b2Point(u, p0, p1, p2):
+    return u*u*(p0-2*p1+p2)+u*(-2*p0+2*p1)+p0
+#    return (1-u)*(1-u)*p0 + 2*u*(1-u)*p1 + p2*u*u
+    
+#
+# This does 1 seg with 3 cp's
+#
+def subdivideLine(n, p0, p1, p2):
+    "for n>=1, return 1+2n-tuple defining bezier quilt mesh line"
+#    squawk('subdiv '+`n`)
+    if n < 1: return
+    if n==1: return [p0, p1, p2]
+    retval = [p0]
+    last = p0
+    for i in range(n):
+        q = b2Point((i+.5)/n, p0, p1, p2)
+        p = b2Point((i+1.0)/n, p0, p1,p2)
+        m = b2midcp(last,q,p)
+        retval.append(m)
+        retval.append(p)
+        last = p
+    return retval
+
+#
+# This is supposed to do a whole 1+2*n line
+#
+def subdivideRow(n, row):
+    length = len(row)
+    result = [row[0]]
+    for i in range(0,length-1,2):
+#       squawk(`i`)
+#       squawk(`result`)
+       line = subdivideLine(n, row[i], row[i+1], row[i+2])
+#       squawk(`line`)
+       result = result + subdivideLine(n, row[i], row[i+1], row[i+2])[1:]
+#    squawk(`result`)
+    return  result
+    
+
+def subdivideRows(n, cp):
+    return map(lambda row,n=n:subdivideRow(n, row),cp)
+
+
+def subdivideColumns(n, cp):
+    return transposeCp(subdivideRows(n,transposeCp(cp)))
+    
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.13  2000/08/23 12:12:34  tiglari
+#Added support for edge knitting; fixed join bug
+#
 #Revision 1.12  2000/07/24 12:47:40  tiglari
 #listCP function added
 #
