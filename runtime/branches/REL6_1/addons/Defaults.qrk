@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.46  2000/07/28 15:09:48  alexander
+//set snapshot name
+//
 //Revision 1.45  2000/07/25 16:03:04  alexander
 //set snapshot name
 //
@@ -591,7 +594,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameSOF"
         SpecialCustomQuakeMenu = "CustomQuakeMenuSOF"  //enable special form
-        TextureDef = "armory/1_2_subfloor_1"
+        TextureDef = "armory/1_2_subfloor1"
         TriggerTextureDef = "armory/trigger"
         OriginTextureDef = "armory/origin"
         LightFactor = '0.90000'
