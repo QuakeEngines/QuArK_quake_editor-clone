@@ -26,6 +26,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/07/30 11:21:03  tiglari
+put in pascal version of map saving flag code from mapquakemenu.py
+to make save flags apply when map is saved from  File menu.  Question:
+why did Armin put it in the Python in the first place?
+
 Revision 1.13  2000/07/19 18:23:26  decker_dk
 Read mapversion 220 maps (WC33 format)
 
@@ -641,6 +646,10 @@ expected one.
   {$ENDIF}
   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
+  B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
+  EntiteBezier.SubElements.Add(B); //&&&
+  B.NomTex:=S;   { here we get the texture-name }
+
   ReadSymbol(sStringToken); // lparen follows texture
 
   // now comes 5 numbers which tell how many control points there are
@@ -650,9 +659,6 @@ expected one.
   // X tells us how many lines of control points there are (height)
   // Y tells us how many control points on each line (width)
 
-  B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
-  EntiteBezier.SubElements.Add(B); //&&&
-  B.NomTex:=S;   { here we get the texture-name }
 
   MeshBuf1.W := Round(V5.X);
   MeshBuf1.H := Round(V5.Y);
