@@ -987,6 +987,22 @@ QQRKSRC1
 //
 // Form-Template definitions
 //
+        f_zhlt:form = {
+                zhlt_lightflags: = { typ="X1" txt="&" cap="Embedded Fix" hint="" }
+                zhlt_lightflags: = { typ="X2" txt="&" cap="Opaque" hint="" }
+        }
+
+        t_pointentity:incl = {}
+        t_brushentity:incl = {
+                zhlt: = {
+                        Typ = "B"
+                        Txt = "(ZHLT)"
+                        Cap = "Settings..."
+                        form = "f_zhlt:form"
+                        Hint = "Settings for Zoner's Half-Life Tools"
+                }
+        }
+
         t_targetname:incl       = { targetname: = { Txt="&" Hint="The name of this object, so others can 'target' it." } }
         t_target:incl           = { target:     = { Txt="&" Hint="Target(s) to activate, when this object is triggered" } }
         t_killtarget:incl       = { killtarget: = { Txt="&" Hint="Kill target(s), when this object is triggered" } }
@@ -2316,6 +2332,7 @@ QQRKSRC1
                 t_rendermode = !
 		t_angles = !
                 t_tfc_settings = !
+                t_brushentity = !
         }
         t_tank:incl = {
                 Help =  "A little hint:"$0D
@@ -10485,6 +10502,7 @@ values=
                 frequency: = { Txt="&" Hint="Bubble frequency" }
                 current: = { Txt="&" Hint="Speed of Current" }
                 spawnflags: = { Typ="X1" Cap="Start Off" Txt="&" }
+                t_brushentity = !
         }
         env_explosion:form = {
                 t_targetname = !
@@ -11150,6 +11168,7 @@ values=
                 spawnflags: = { Typ="X256" Cap="Instant Crowbar" Txt="&" }
                 t_rendermode = !
                 t_angles = !
+                t_brushentity = !
         }
         func_button:form = {
                 t_targetname = !
@@ -11187,6 +11206,7 @@ values=
                 t_rendermode = !
                 t_angles = !
                 t_tfc_settings = !
+                t_brushentity = !
         }
         func_conveyor:form = {
                 Help =  "The angle only specifies which way to push,"$0D
@@ -11200,6 +11220,7 @@ values=
                 t__minlight = !
                 t_rendermode = !
                 t_angles = !
+                t_brushentity = !
         }
         func_door:form = { t_door = ! }
         func_door_rotating:form =
@@ -11214,6 +11235,7 @@ values=
         func_friction:form = {
                 modifier: = { Txt="&" Hint="Percentage of standard (0 - 100)" }
                 t_rendermode = !
+                t_brushentity = !
         }
         func_guntarget:form = {
                 t_targetname = !
@@ -11225,11 +11247,13 @@ values=
                 spawnflags: = { Typ="X1" Cap="Start On" Txt="&" }
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_healthcharger:form = {
                 t_globalname = !
                 dmdelay: = { Txt="&" Hint="Deathmatch recharge delay" }
                 t__minlight = !
+                t_brushentity = !
         }
         func_illusionary:form = {
                 t_targetname = !
@@ -11240,6 +11264,7 @@ values=
                 }
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_ladder:form = {
                 Help =  "Use a func_illusionary to put the textures on."$0D
@@ -11279,6 +11304,7 @@ values=
                 t__minlight = !
                 t_rendermode = !
                 t_angles = !
+                t_brushentity = !
         }
         func_plat:form = {
                 t_targetname = !
@@ -11290,6 +11316,7 @@ values=
                 t_globalname = !
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_platrot:form = {
                 t_targetname = !
@@ -11310,6 +11337,7 @@ values=
                 t__minlight = !
                 t_rendermode = !
                 t_angles = !
+                t_brushentity = !
         }
         func_pushable:form = {
                 t_targetname = !
@@ -11332,6 +11360,7 @@ values=
                 dmdelay: = { txt="&" Hint="Deathmatch recharge delay" }
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_rot_button:form = {
                 t_globalname = !
@@ -11361,6 +11390,7 @@ values=
                 t__minlight = !
                 t_angles = !
                 t_tfc_settings = !
+                t_brushentity = !
         }
         func_rotating:form = {
                 t_targetname = !
@@ -11393,6 +11423,7 @@ values=
                 t__minlight = !
                 t_rendermode = !
                 t_angles = !
+                t_brushentity = !
         }
         func_tank:form = {
                 bullet: = { Typ="C" Txt="&" Hint="Bullets"
@@ -11507,6 +11538,7 @@ values=
                 t_globalname = !
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_wall_toggle:form = {
                 t_targetname = !
@@ -11514,6 +11546,7 @@ values=
                 spawnflags: = { Typ="X1" Cap="Starts Invisible" Txt="&" }
                 t__minlight = !
                 t_rendermode = !
+                t_brushentity = !
         }
         func_water:form = {
                 spawnflags: = { Typ="X1" Cap="Starts Open" Txt="&" }
@@ -12291,6 +12324,7 @@ values=
                 t_rendermode = !
                 t_angles = !
                 t_tfc_settings = !
+                t_brushentity = !
         }
         multi_manager:form = {
                 Help =  "Controls and coordinates up to 16 indvidual targets."$0D$0D
