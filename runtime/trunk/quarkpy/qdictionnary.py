@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.3snap070901",
+    0: "QuArK 6.3snap080601",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -902,6 +902,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.44  2001/07/19 12:01:39  tiglari
+#add 5180 string for 6dx map format
+#
 #Revision 1.43  2001/07/19 02:23:47  tiglari
 #.hmf extension support for 6dx
 #

@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.161  2001/08/06 00:15:51  tiglari
+//texture-cycling for duplicators
+//
 //Revision 1.160  2001/08/02 02:47:06  tiglari
 //browse group hotkey support
 //
@@ -525,7 +528,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap070901"
+      Version = "QuArK 6.3snap080601"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
