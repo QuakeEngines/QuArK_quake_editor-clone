@@ -273,7 +273,7 @@ begin
    if Taille<=SizeOf(Entete)+SizeOf(Typ) then Raise EErrorFmt(5186, [LoadName]);
    Position0:=S.Position;
    S.ReadBuffer(Entete, SizeOf(Entete));
-   if Entete.Signature<>SignatureRIFF then Raise EErrorFmt(5605, [Entete.Signature, SignatureRIFF]);
+   if Entete.Signature<>SignatureRIFF then Raise EErrorFmt(5605, [LoadName, Entete.Signature, SignatureRIFF]);
    if Taille<SizeOf(Entete)+Entete.Taille then Raise EErrorFmt(5186, [LoadName]);
    S.Readbuffer(Typ, SizeOf(Typ));
    if Typ<>SignatureWAVE then Raise EErrorFmt(5605, [Typ, SignatureWAVE]);
