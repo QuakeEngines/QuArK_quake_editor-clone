@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/03/20 21:44:19  decker_dk
+Updated copyright-header
+
 Revision 1.20  2001/01/21 15:49:48  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -508,6 +511,12 @@ var
  I, LineNumber: Integer;
  Comment: Boolean;
  V: array[1..2] of Single;
+ masked: boolean; { Mohaa (tiglari): I'm guessing that this means that some
+                    of the surfaceparms should be loaded into the editor as
+                    flags.  'surfaceparm' appears an various other contexts
+                    where it doesn't seem to set checks in the Mohraidant
+                    surf inspector }
+ EditableSurfaceParms : boolean;
 
   procedure SyntaxError;
   begin
@@ -561,16 +570,39 @@ var
    while Source^ in [' ', Chr(vk_Tab)] do
     Inc(Source);
 
-    { FIXME: we insert the attribute directly into the object's specifics/args list.
+    { decker:
+      FIXME: we insert the attribute directly into the object's specifics/args list.
       It will create duplicated specifics and specifics with no corresponding argument.
       In any of these two situations, code that edit the object might mess things up.
       TO DO: when shaders editing is implemented, ensure all the way that we can edit
       a "raw" specifics/args list, without disturbing the order of the specifics,
-      without removing empty ones, and supporting duplicated specifics. }
+      without removing empty ones, and supporting duplicated specifics.
+    }
+
+   {tiglari: this solution may seem horrible, but it involves less special-game
+    coding and attendant mess than the others I can come up with.  It is a
+    basic design defect of QuArK that the face-specifics used by QuArK
+    specifically (v, tv etc) aren't systematically separated from the ones
+    associated with particular games, so here we're using an '_esp_' prefix
+    to achieve this effect.  Requires some corresponding footwork in mapmgr.py
+    and mapmenus.py. }
+
+   if EditableSurfaceParms then
+ //   if CharModeJeu=mjMohaa then
+   begin
+     if (Spec='qer_keyword') and (ReadLine='masked')then
+       masked:=true
+     else
+     if (masked and (Spec='surfaceparm')) then
+       Target.Specifics.Add('_esp_'+Readline+'='+'1');
+   end;
    Target.Specifics.Add(Spec+'='+ReadLine);
   end;
 
 begin
+
+ EditableSurfaceParms:=SetupGameSet.Specifics.Values['EditableSurfaceParms']<>'';
+
  case ReadFormat of
   1: begin  { as stand-alone file }
       ProgressIndicatorStart(5453, FSize div ProgressStep); try
@@ -596,6 +628,7 @@ begin
       ComplexStage:=LoadStr1(5699);
       repeat
         { read one shader definition per loop }
+       masked:= false;   // mohaa
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
        Shader:=QShader.Create(ReadLine, Self);    { new shader object }
