@@ -5,6 +5,10 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/09/03 11:20:31  aiv
+archive conversion
+minor bug fixes to zip stuff
+
 Revision 1.12  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -255,7 +259,8 @@ begin
         OrgSize:=TempStream.Size;
        { Compress Data From TempStream To T2}
         T2:=TMemoryStream.Create;
-        CompressStream(TempStream,T2);
+
+        CompressStream(TempStream, T2);
 
         T2.Seek(0,soFromBeginning);
 
@@ -283,7 +288,7 @@ begin
         Repertoire.WriteBuffer(cdir,sizeof(TFileHeader));
         Repertoire.WriteBuffer(PChar(S)^,Length(S));
 
-        Info.F.CopyFrom(T2,0);       {Write Actual File Date ( Compressed ) }
+        Info.F.CopyFrom(T2,T2.Size);       {Write Actual File Date ( Compressed ) }
         T2.Free;
       end;
       ProgressIndicatorIncrement;
@@ -331,11 +336,14 @@ end;
 Function ZipAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 var
   mem:TMemoryStream;
+  err: integer;
 begin
   with Ref^ do begin
     Self.Position:=Position;
     mem:=TMemoryStream.Create;
-    UnZipFile(Self,mem,Self.Position);
+    err:=UnZipFile(Self,mem,Position);
+    if err<>0 then
+      raise exception.createfmt('Error decompressing file (%d)',[err]);
     Result:=Mem.Size;
     Mem.Position:=0;
     S:=Mem;
