@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkModelBone;
@@ -198,7 +201,6 @@ end;
 function QModelBone.PyGetAttr(attr: PChar) : PyObject;
 var
   P: vec3_p;
-  s: Double;
   R: Boolean;
 begin
   Result:=inherited PyGetAttr(attr);
@@ -228,8 +230,7 @@ begin
       Exit;
     end;
     'b': if StrComp(attr, 'bone_length')=0 then begin
-      s:=GetLength;
-      Result:=Py_BuildValueX('d', [s]);
+      Result:=PyFloat_FromDouble(GetLength);
       Exit;
     end;
   end;
