@@ -1429,10 +1429,10 @@ def Help1():
         editor.layout.helpbtnclick(None)
 
 def Help2():
-    htmldoc(None)
+    htmldoc("help/index.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help3():
-    htmldoc("help\\faq\\index.html")
+    htmldoc("help/intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
 
 #
@@ -1463,6 +1463,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.5  2001/01/26 19:06:35  decker_dk
+#Better layout of zoom-list texts.
+#
 #Revision 1.4  2000/12/17 12:35:02  decker_dk
 #- Changed [Quarkpy\qeditor] help3() to "help\\faq\\index.html", and some stuff to quarkx.htmldoc()
 #
