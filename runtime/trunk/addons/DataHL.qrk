@@ -27,6 +27,9 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-08-25   [TFC] Misc. changes
+//              [CS] Updated a little, but it does not seem to be beta7.0 entities...?
+//
 // 2000-08-15   [-] Texture conflict were not completly resolved. Now I've removed references to CLIP/HINT in all
 //                   .WAD files except HALFLIFE.WAD.
 //
@@ -1466,10 +1469,10 @@ QQRKSRC1
         f_info_activation_criteria:form = {
                 t_team_no = !
                 t_playerclass = !
+                t_activation_criteria = !
                 goal_activation: = { Typ="X1" Cap="Player touch" Txt="Activated by" }
                 goal_activation: = { Typ="X2" Cap="Detpack explosion" Txt="Activated by" }
                 goal_activation: = { Typ="X4" Cap="Yes, activator must NOT match criteria" Txt="Invert Activation Criteria" }
-                t_activation_criteria = !
         }
         f_info_activation_effects:form = {
                 t_owned_by = !
@@ -1499,11 +1502,13 @@ QQRKSRC1
                 goal_effects: = { Typ="X64" Cap="Yes, check each ply" Txt="Individual ply affect-check" }
         }
         f_info_activation_result:form = {
-                goal_result: = { Typ="X2" Cap="Yes, apply to Activator" Txt="Apply modif. of affected goals" }
                 t_activation_result = !
+                goal_result: = { Typ="X2" Cap="Yes, apply to Activator" Txt="Apply modif. of affected goals" }
+                goal_result: = { Typ="X64" Cap="Yes, remove SG & dispensers"   Txt="Removes all SentryGuns and Dispensers in map" }
         }
         f_timer_activation_result:form = {
                 t_activation_result = !
+                goal_result: = { Typ="X64" Cap="Yes" Txt="If individually in group fails criteria" }
         }
         f_item_activation_criteria:form = {
                 t_playerclass = !
@@ -1511,6 +1516,7 @@ QQRKSRC1
                 t_activation_criteria = !
         }
         f_item_activation_effects:form = {
+                t_activation_effects = !
                 goal_activation: = { Typ="X512" Cap="Yes, glow when not carried" Txt="Glow not carried" }
                 goal_activation: = { Typ="X1024" Cap="Yes, keep effects" Txt="If item gets taken..." }
                 items: = { Typ="X131072" Txt="Carried item light up..." Cap="'Blue' icon" Hint="Affects 'items' specific" }
@@ -1521,10 +1527,11 @@ QQRKSRC1
                 items: = { Typ="X1048576" Txt="Carried item light up..." Cap="'Invulnerability' icon" Hint="Affects 'items' specific" }
                 items: = { Typ="X2097152" Txt="Carried item light up..." Cap="'Radsuit' icon" Hint="Affects 'items' specific" }
                 items: = { Typ="X4194304" Txt="Carried item light up..." Cap="'Quad' icon" Hint="Affects 'items' specific" }
-                t_activation_effects = !
         }
         f_item_activation_result:form = {
+                t_activation_result = !
                 goal_result: = { Typ="X2" Cap="Yes, don't apply bonuses to Activator" Txt="Don't apply bonuses of activated goals" }
+                goal_result: = { Typ="X64" Cap="Yes, remove SG & dispensers"   Txt="Removes all SentryGuns and Dispensers in map" }
                 goal_activation: = { Typ="X1" Cap="Yes, make player glow" Txt="Glow carrier" }
                 goal_activation: = { Typ="X2" Cap="Yes, half-speed" Txt="Slowdown carrier" }
                 goal_activation: = { Typ="X4" Cap="Yes, drop item" Txt="Drop item when carrier killed" }
@@ -1539,7 +1546,6 @@ QQRKSRC1
                 pain_finished: = { Txt="...then activate Goal No" }
                 speed: = { Txt="If all items in Group No carried by one player..." }
                 attack_finished: = { Txt="...then activate Goal No" }
-                t_activation_result = !
         }
         f_ammo_armor_health_powerups:form = {
                 t_ammo_armor = !
@@ -1565,13 +1571,10 @@ QQRKSRC1
                 noise1: = { Txt="Team 1 classmenu String" Hint="" }
                 ammo_shells: = { Txt="Limit lives to" Hint="0 = Unlimited" }
                 ammo_medikit: = { Txt="Limit no of players to" Hint="0 = Unlimited" }
-                team1_allies: = { Typ="C" Txt="Team 1 are allied with" Hint=""
-                        items = "(none)"$0D
-                                "Team 2 (Red)"$0D
-                                "Team 3 (Yellow)"$0D
-                                "Team 4 (Green)"
-                        values = ""$0D"2"$0D"3"$0D"4"
-                }
+//              team1_allies: = { Typ="X1" Cap="Blue"   Txt="Team 1 allied with Blue" }
+                team1_allies: = { Typ="X2" Cap="Red"    Txt="Team 1 allied with Red" }
+                team1_allies: = { Typ="X4" Cap="Yellow" Txt="Team 1 allied with Yellow" }
+                team1_allies: = { Typ="X8" Cap="Green"  Txt="Team 1 allied with Green" }
         }
         f_team2:form = {
                 maxammo_nails: = { Typ="C" Txt="Team 2 consists of" Hint=""
@@ -1593,13 +1596,10 @@ QQRKSRC1
                 noise2: = { Txt="Team 2 classmenu String" Hint="" }
                 ammo_nails: = { Txt="Limit lives to" Hint="0 = Unlimited" }
                 ammo_detpack: = { Txt="Limit no of players to" Hint="0 = Unlimited" }
-                team2_allies: = { Typ="C" Txt="Team 2 are allied with" Hint=""
-                        items = "(none)"$0D
-                                "Team 1 (Blue)"$0D
-                                "Team 3 (Yellow)"$0D
-                                "Team 4 (Green)"
-                        values = ""$0D"1"$0D"3"$0D"4"
-                }
+                team2_allies: = { Typ="X1" Cap="Blue"   Txt="Team 2 allied with Blue" }
+//              team2_allies: = { Typ="X2" Cap="Red"    Txt="Team 2 allied with Red" }
+                team2_allies: = { Typ="X4" Cap="Yellow" Txt="Team 2 allied with Yellow" }
+                team2_allies: = { Typ="X8" Cap="Green"  Txt="Team 2 allied with Green" }
         }
         f_team3:form = {
                 maxammo_rockets: = { Typ="C" Txt="Team 3 consists of" Hint=""
@@ -1621,13 +1621,10 @@ QQRKSRC1
                 noise3: = { Txt="Team 3 classmenu String" Hint="" }
                 ammo_rockets: = { Txt="Limit lives to" Hint="0 = Unlimited" }
                 maxammo_medikit: = { Txt="Limit no of players to" Hint="0 = Unlimited" }
-                team3_allies: = { Typ="C" Txt="Team 3 are allied with" Hint=""
-                        items = "(none)"$0D
-                                "Team 1 (Blue)"$0D
-                                "Team 2 (Red)"$0D
-                                "Team 4 (Green)"
-                        values = ""$0D"1"$0D"2"$0D"4"
-                }
+                team3_allies: = { Typ="X1" Cap="Blue"   Txt="Team 3 allied with Blue" }
+                team3_allies: = { Typ="X2" Cap="Red"    Txt="Team 3 allied with Red" }
+//              team3_allies: = { Typ="X4" Cap="Yellow" Txt="Team 3 allied with Yellow" }
+                team3_allies: = { Typ="X8" Cap="Green"  Txt="Team 3 allied with Green" }
         }
         f_team4:form = {
                 maxammo_cells: = { Typ="C" Txt="Team 4 consists of" Hint=""
@@ -1649,13 +1646,10 @@ QQRKSRC1
                 noise4: = { Txt="Team 4 classmenu String" Hint="" }
                 ammo_cells: = { Txt="Limit lives to" Hint="0 = Unlimited" }
                 maxammo_detpack: = { Txt="Limit no of players to" Hint="0 = Unlimited" }
-                team4_allies: = { Typ="C" Txt="Team 4 are allied with" Hint=""
-                        items = "(none)"$0D
-                                "Team 1 (Blue)"$0D
-                                "Team 2 (Red)"$0D
-                                "Team 3 (Yellow)"
-                        values = ""$0D"1"$0D"2"$0D"3"
-                }
+                team4_allies: = { Typ="X1" Cap="Blue"   Txt="Team 4 allied with Blue" }
+                team4_allies: = { Typ="X2" Cap="Red"    Txt="Team 4 allied with Red" }
+                team4_allies: = { Typ="X4" Cap="Yellow" Txt="Team 4 allied with Yellow" }
+//              team4_allies: = { Typ="X8" Cap="Green"  Txt="Team 4 allied with Green" }
         }
         f_infogoal_messages:form = {
                 t_goal_messages = !
@@ -1667,10 +1661,11 @@ QQRKSRC1
         f_tfc_trigger_activation_criteria:form = {
                 t_team_no = !
                 t_playerclass = !
+                t_activation_criteria = !
 //              goal_activation: = { Typ="X1" Cap="Player touch" Txt="Activated by" }
 //              goal_activation: = { Typ="X2" Cap="Detpack explosion" Txt="Activated by" }
                 goal_activation: = { Typ="X4" Cap="Yes, activator must NOT match criteria" Txt="Invert Activation Criteria" }
-                t_activation_criteria = !
+                goal_activation: = { Typ="X8" Cap="Activate if Engineer Spanner" Txt="Activate if hit by Engineer Spanner" }
         }
         f_tfc_trigger_activation_effects:form = {
                 t_owned_by = !
@@ -13061,20 +13056,18 @@ values=
         }
         hostage_entity:form = {
                 t_cs_html = !
-                bbox = '-16 -16 0 16 16 72'
+                t_player = !
                 model: = { txt="&" Hint="" }
                 gravity: = { txt="&" Hint="" }
         }
         info_hostage_rescue:form = {
                 t_cs_html = !
-                bbox = '-8 -8 -8 8 8 8'
         }
         func_hostage_rescue:form = {
                 t_cs_html = !
         }
         info_bomb_target:form = {
                 t_cs_html = !
-                bbox = '-8 -8 -8 8 8 8'
         }
         func_bomb_target:form = {
                 t_cs_html = !
@@ -13111,9 +13104,10 @@ values=
                               "weapon_flashbang"$0D
                               "weapon_hegrenade"$0D
                               "item_kevlar"$0D
-                              "item_assaultsuit"
+                              "item_assaultsuit"$0D
+                              "weapon_smokegrenade"
                         values= "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
-                               "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"
+                               "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"
                 }
                 count: = { txt="&" Hint="Count" }
         }
