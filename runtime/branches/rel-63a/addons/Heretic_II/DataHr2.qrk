@@ -4,12 +4,16 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
-//Revision 1.4  2003/03/16 01:29:19  tiglari
-//committed by tiglari for dannj; original changes dated 2003/03/9
+//
+//Revision 1.41 2003/04/3 16:37:00 dannj
+//Fixed 'current_0' and 'current_180' direction descriptions
+//Added ANIMATE flag to floor torch
+//Fixed material types for exploding trains
+//
+//Revision 1.4  2003/03/9 21:51:00  dannj
 //Added Whirlwind defensive spell (for Heretic II update version 1.06)
 //Added ANIMATE flag to wall torch
 //Added FORCE_ONCE flag to trigger_push
-//
 //
 //Revision 1.3  2002/04/17 12:45:08  decker_dk
 //Purified texture-flags, and alot of EOL-whitespaces removed due to my use and settings of editor (MultiEdit)
@@ -131,9 +135,9 @@ QQRKSRC1
 
       Sep: = {Txt="" Typ="S"}  // separator
 
-      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 west"}
+      Contents:={Txt="Flowing" Cap="current_0"      Typ="X262144"    Hint="Flowing water pushes to 0 east"}
       Contents:={Txt=""        Cap="current_90"     Typ="X524288"    Hint="Flowing water pushes to 90 north"}
-      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 east"}
+      Contents:={Txt=""        Cap="current_180"    Typ="X1048576"   Hint="Flowing water pushes to 180 west"}
       Contents:={Txt=""        Cap="current_270"    Typ="X2097152"   Hint="Flowing water pushes to 270 south"}
       Contents:={Txt=""        Cap="current_up"     Typ="X4194304"   Hint="Flowing water pushes Upwards"}
       Contents:={Txt=""        Cap="current_dn"     Typ="X8388608"   Hint="Flowing water pushes Down"}
@@ -9615,8 +9619,8 @@ QQRKSRC1
      materialtype: =
         {Txt = "&" Hint = "no hint yet1"
       Typ="C"
-      Items="0) MAT_WOOD" $0D "1) MAT_GREYSTONE (default)" $0D "2) MAT_CLOTH" $0D "3) MAT_METAL" $0D "9) MAT_BROWNSTONE" $0D "10) MAT_NONE - just makes smoke"
-      values="0" $0D "1" $0D "2" $0D "3" $0D "9" $0D "10"
+      Items="0) STONE" $0D "1) GREYSTONE (default)map" $0D "2) CLOTH" $0D "3) METAL" $0D "4) FLESH" $0D "5) POTTERY" $0D "6) GLASS" $0D "7) LEAF" $0D "8) WOOD" $0D "9) BROWNSTONE" $0D "10) NONE - just makes smoke"
+      values="0" $0D "1" $0D "2" $0D "3" $0D "4" $0D "5" $0D "6" $0D "7" $0D "8" $0D "9" $0D "10"
        }
      noise: =
         {Txt = "&" Hint = "looping file to play when the train is in motion"
@@ -10474,6 +10478,11 @@ QQRKSRC1
         Typ="X1"
         Cap="INVULNERABLE"
         Hint="N/"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X2"
+        Cap="ANIMATE"
+        Hint="Add animated flame"}
      spawnflags: =
        {Txt="&"
         Typ="X8"
@@ -17615,6 +17624,12 @@ QQRKSRC1
        }
      count: =
         {Txt = "&" Hint = "how many pixels in the splash"
+       }
+     sounds: =
+        {Txt = "&" Hint = "the sound it makes"
+      Typ="C"
+      Items="0) blue water" $0D "1) brown water" $0D "2) slime" $0D "3) lava" $0D "4) blood"
+      values="0" $0D "1" $0D "2" $0D "3" $0D "4"
        }
     }
     target_temp_entity:form =
