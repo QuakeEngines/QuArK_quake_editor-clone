@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/11/11 01:28:49  tiglari
+icon leak fixes
+
 Revision 1.21  2001/07/18 03:51:23  tiglari
 Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
  PSommet, TTableauFSommets, PTableauFSommets
@@ -2390,8 +2393,48 @@ begin
   end;
 end;{/AiV}
 
+function xHeapStatus(self, args: PyObject) : PyObject; cdecl;
+var
+  S: String;
+begin
+ try
+  with GetHeapStatus do
+    with ConstructQObject('heapstatus', Nil) do
+    begin
+      Result:=@PythonObj;
+      SpecificsAdd('TotalAddrSpace='+IntToStr(TotalAddrSpace));
+      SpecificsAdd('TotalUncommitted='+IntToStr(TotalUncommitted));
+      SpecificsAdd('TotalCommitted='+IntToStr(TotalCommitted));
+      SpecificsAdd('TotalAllocated='+IntToStr(TotalAllocated));
+      SpecificsAdd('TotalFree='+IntToStr(TotalFree));
+      SpecificsAdd('FreeSmall='+IntToStr(FreeSmall));
+      SpecificsAdd('FreeBig='+IntToStr(FreeBig));
+      SpecificsAdd('Unused='+IntToStr(Unused));
+      SpecificsAdd('Overhead='+IntToStr(Overhead));
+      SpecificsAdd('HeapErrorCode='+IntToStr(HeapErrorCode));
+      Py_INCREF(Result);
+    end;
+(*
+     TotalAddrSpace,
+     TotalUncommitted,
+     TotalCommitted,
+     TotalAllocated,
+     TotalFree,
+     FreeSmall,
+     FreeBig,
+     Unused,
+     Overhead,
+     HeapErrorCode);
+*)
+
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 const
- MethodTable: array[0..69] of TyMethodDef =
+ MethodTable: array[0..70] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2462,6 +2505,7 @@ const
    (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
    (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
    (ml_name: 'log';             ml_meth: xLog;            ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'heapstatus';      ml_meth: xHeapStatus;     ml_flags: METH_VARARGS),{AiV}
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}
