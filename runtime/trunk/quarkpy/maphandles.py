@@ -29,6 +29,8 @@ from maputils import *
 import mapentities
 import qmacro
 
+
+
 #
 # The handle classes.
 #
@@ -871,7 +873,7 @@ class CyanLHandle(qhandles.GenericHandle):
          "||Use the 4 handles at the corners of this 'L' to scroll or rotate the texture on the face.\n\nThe center of the 'L' lets you scroll the texture; the two ends lets you enlarge and distort the texture in the corresponding directions; the 4th point lets you rotate the texture."
 
     def menu(self,editor,view):
-        from plugins.tagging import *
+        import plugins.tagging
 
         norm=self.face.normal
         facepoint=self.face.dist*norm
@@ -915,7 +917,7 @@ class CyanLHandle(qhandles.GenericHandle):
         #
         # Glue to tagged point
         #
-        tagged=gettaggedpt(editor)
+        tagged=plugins.tagging.gettaggedpt(editor)
         if tagged is not None:
             taggedonface = onFace(tagged)
         else:
@@ -1804,6 +1806,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.35  2002/05/18 22:30:42  tiglari
+#remove debug statement
+#
 #Revision 1.34  2002/05/13 10:36:58  tiglari
 #support frozen selections (don't change until another frozen selection is made,
 #or they are cancelled with ESC or unfreeze selection)
