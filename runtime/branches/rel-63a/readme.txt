@@ -1,5 +1,8 @@
                          QuArK 6.3
 
+
+ * [quantum_red,Decker,tiglari] fix dual screen monitor problem
+
  * [Decker/Raybot] resource leak fix
 
  * [tiglari] remove partial Mohaa support (lod terrain can't be supported
