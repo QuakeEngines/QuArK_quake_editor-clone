@@ -941,19 +941,55 @@ end;
 
 procedure MergeTextureFolders(Base : String; var Q:QObject; allshaders: boolean; Filter: String);
 var
-  S, Path: String;
+  S, Path, PakExt, ShaderExt, TexturesPath: String;
   SearchFolder : QObject;
   Pak: QPakFolder;
   PakList, ShaderList, FoundShaders: TStringList;
   I: Integer;
+  PakFilter, ShaderFilter, FolderFilter: boolean;
 begin
   Path:=PathAndFile(QuakeDir, Base);
-  FoundShaders:=TStringList.Create;
-  if not allshaders then
-    GetShaderList(Base,ShaderList)
+
+  PakFilter:=false;
+  ShaderFilter:=false;
+  FolderFilter:=false;
+  {identify filter as pak name, shaderfile name or texture sub
+    (sub)* folder }
+  if Filter<>'' then
+  begin
+    PakExt:=SetupGameSet.Specifics.Values['PakExt'];
+    ShaderExt:='.shader';
+    if Copy(Filter,Length(Filter)-Length(PakExt)+1,Length(PakExt))=PakExt then
+    { it's a pak }
+      PakFilter:=true
+    else
+    if Copy(Filter,Length(Filter)-Length(ShaderExt)+1,Length(ShaderExt))=ShaderExt then
+      ShaderFilter:=true
+    else
+      FolderFilter:=true;
+  end;
+
+  if PakFilter then
+  begin
+    PakList:=TStringList.Create;
+    PakList.Add(Filter)
+  end
   else
-    ShaderList:=TStringList.Create; { empty one ignored }
-    
+    PakList:=ListPakFiles(Path);
+
+  FoundShaders:=TStringList.Create;
+  ShaderList:=TStringList.Create;
+  if ShaderFilter then
+    ShaderList.Add(Copy(Filter,1,Length(Filter)-Length(ShaderExt)))
+  else
+  if not allshaders then
+    GetShaderList(Base,ShaderList);
+
+  TexturesPath:=GameTexturesPath;
+  if FolderFilter then
+    TexturesPath:=PathAndFile(GameTexturesPath,Filter);
+
+  if not (PakFilter or FolderFilter) then
   { Get Shaders }
   try
      { Find Quake-3:Arena .shader files in directory }
@@ -963,7 +999,7 @@ begin
      (*do nothing*)
   end;
 
-  PakList:=ListPakFiles(Path);
+  if not FolderFilter then
   for I:=PakList.Count-1 downto 0 do
   begin
        Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
@@ -994,14 +1030,18 @@ begin
 
   { Get Textures (don't list ones with same name as
      shader) }
+  if not (PakFilter or ShaderFilter) then
   try
      { Find 'game' textures in directory }
      S:=PathAndFile(Path, GameTexturesPath);
-     Q:=ParseTextureFolders(S, Base, '', Q);
+     if FolderFilter then
+       S:=PathAndFile(S,Filter);
+     Q:=ParseTextureFolders(S, Base, Filter+'/', Q);
   except
      (*do nothing*)
   end;
 
+  if not (ShaderFilter or FolderFilter) then
   for I:=PakList.Count-1 downto 0 do
   begin
        Pak:=ExactFileLink(PathAndFile(Path, PakList[I]), Nil, False) as QPakFolder;
