@@ -424,12 +424,13 @@ class PathDuplicator(StandardDuplicator):
                     endseg=min(endseg,(backproj-nextorigin)*xax)
             if tile is not None:
                 tileableLength=abs(pathdist)-startseg+endseg
+                tileOffset = (tileableLength%templatesize.x)/2
                 tileTimes=int(tileableLength/templatesize.x)
                 for i in range(tileTimes):
                     if i==0:
                         newTile=tile.copy()
                         newTile.linear(quarkx.vect(0,0,0),mat)
-                        newTile.translate(thisorigin+(startseg+templatesize.x*0.5)*xax)
+                        newTile.translate(thisorigin+(startseg+templatesize.x*0.5+tileOffset)*xax)
                     else:
                         newTile=newTile.copy()
                         newTile.translate(xax*templatesize.x)
@@ -796,6 +797,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2001/02/27 05:33:07  tiglari
+#fixed storage problem (map object created in class definition)
+#
 #Revision 1.17  2001/02/26 03:26:40  tiglari
 #handle ok method fix
 #
