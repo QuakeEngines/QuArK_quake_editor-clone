@@ -246,7 +246,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:			# today
                Xviewcenter = 48		# today
        else:
-           if not MapOption("All2DviewsScale") and not MapOption("XviewScale"):
+           if not MapOption("All2DviewsScale") and not MapOption("YviewScale"):
                Xviewcenter = (Xpixels/2)+4
            else:
                Xviewcenter = 0
@@ -367,7 +367,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            else:			# today
                Xviewcenter = 48		# today
        else:
-           if not MapOption("All2DviewsScale") and not MapOption("XviewScale"):
+           if not MapOption("All2DviewsScale") and not MapOption("ZviewScale"):
                Xviewcenter = (Xpixels/2)+4
            else:
                Xviewcenter = 0
@@ -662,6 +662,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.6  2004/11/18 20:56:40  cdunde
+#To add all 2D view grid scale settings function.
+#
 #Revision 1.5  2004/11/17 06:33:44  cdunde
 #To add more flexible grid scale placement features and marker lines for accuracy.
 #
