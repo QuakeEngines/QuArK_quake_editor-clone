@@ -75,7 +75,6 @@ def LoadLinFile(editor, filename):
     f = open(filename, "r")
     data = f.readlines()
     f.close()
-    debug('read '+filename)
     pts = []
     for txt in data:
         try:
@@ -173,6 +172,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 #
 #
 #$Log$
+#Revision 1.4  2003/03/19 22:23:35  tiglari
+#fix bug in parsing
+#
 #Revision 1.3  2001/06/17 21:05:27  tiglari
 #fix button captions
 #
