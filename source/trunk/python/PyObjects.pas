@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/13 01:43:35  aiv
+new fgd->qrk converter inbuilt
+
 Revision 1.7  2001/02/23 19:27:37  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -98,9 +101,10 @@ function qCopyAllData(self, args: PyObject) : PyObject; cdecl;
 function qLoadText(self, args: PyObject) : PyObject; cdecl;
 function qGetIcon(self, args: PyObject) : PyObject; cdecl;
 function qRefreshTV(self, args: PyObject) : PyObject; cdecl;
+function qSpecAdd(self, args: PyObject) : PyObject; cdecl;
 
 const
- PyObjMethodTable: array[0..16] of TyMethodDef =
+ PyObjMethodTable: array[0..17] of TyMethodDef =
   ((ml_name: 'subitem';         ml_meth: qSubItem;         ml_flags: METH_VARARGS),
    (ml_name: 'findname';        ml_meth: qFindName;        ml_flags: METH_VARARGS),
    (ml_name: 'findshortname';   ml_meth: qFindShortName;   ml_flags: METH_VARARGS),
@@ -117,7 +121,8 @@ const
    (ml_name: 'copyalldata';     ml_meth: qCopyAllData;     ml_flags: METH_VARARGS),
    (ml_name: 'loadtext';        ml_meth: qLoadText;        ml_flags: METH_VARARGS),
    (ml_name: 'geticon';         ml_meth: qGetIcon;         ml_flags: METH_VARARGS),
-   (ml_name: 'refreshtv';       ml_meth: qRefreshTV;       ml_flags: METH_VARARGS));
+   (ml_name: 'refreshtv';       ml_meth: qRefreshTV;       ml_flags: METH_VARARGS),
+   (ml_name: 'specificadd';     ml_meth: qspecadd;         ml_flags: METH_VARARGS));
 
  {-------------------}
 
@@ -874,6 +879,26 @@ begin
   Result:=Nil;
  end;
 end;
+
+function qspecadd(self, args: PyObject) : PyObject; cdecl;
+var
+ Q: QObject;
+ nSpec: PChar;
+begin
+ try
+  Result:=PyNoResult;
+  if not PyArg_ParseTupleX(args, 's', [@nSpec]) then
+    Exit;
+  Q:=QkObjFromPyObj(self);
+  if Q=nil then
+    exit;
+  Q.SpecificsAdd(nSpec);
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
  {-------------------}
 
 end.
