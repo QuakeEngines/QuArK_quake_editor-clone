@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.88  2001/02/25 11:21:28  tiglari
+//reset snapshot #
+//
 //Revision 1.87  2001/02/25 04:44:57  tiglari
 //new specifics for brush&patch arch&bevel
 //
@@ -885,6 +888,9 @@ QQRKSRC1
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
 
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
         DefaultTexture = "base_wall/basewall03"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureOrigin = "common/origin"
@@ -944,6 +950,9 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
         DefaultTexture = "base_wall/basewall03"
         DefaultTextureTrigger = "common/trigger"
