@@ -1,0 +1,87 @@
+title: Attributes of Internal objects of class "Face"
+author: Armin Rigo
+format: html
+
+<p>These objects are polyhedron faces. They are often found within Polyhedron objects, but use the polyhedron’s <span class="doccode">faces</span> attribute instead of its <span class="doccode">subitem</span> method to find them, because:</p>
+<ol>
+<li>Polyhedrons don’t always use all their faces
+<li>Faces may lie outside polyhedrons, in which case they could be part of all polyhedrons within the group
+<li>In some cases, faces may be used in other contexts, e.g. as BSP faces.
+</ol>
+</p>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+faceof
+</td><td>
+List of all objects that this is a face of. Usually contains a single polyhedron. This list is never empty: if the face is not used at all, <span class="doccode">faceof</span> will contain the face itself.
+</td></tr>
+
+<tr><td class="doccode">
+vertices
+</td><td>
+Vertices for each object that this is a face of. This is a list of lists of points. It is not simply a list of points! (You should generally use <span class="doccode">verticesof</span> instead of <span class="doccode">vertices</span>)
+</td></tr>
+
+<tr><td class="doccode">
+normal<br>
+dist
+</td><td>
+Plane containing the face, defined by a <span class="doccode">normal</span> vector and its <span class="doccode">dist</span>ance to origin. The plane contains all points <span class="doccode">p</span> for which we have <span class="doccode">p*normal==dist</span>. These attributes are read-only; to move the plane, either use the <span class="doccode">translate</span> method common to all "3DObject", or set the face’s "<span class="doccode">v</span>" Specific, or call <span class="doccode">distortion</span> below.
+</td></tr>
+
+<tr><td class="doccode">
+texturename
+</td><td>
+The name of the texture.
+</td></tr>
+
+<tr><td class="doccode">
+verticesof(obj)
+</td><td>
+List of vertices of this face, as used by the object <span class="doccode">obj</span>, which must be in the <span class="doccode">faceof</span> list.
+</td></tr>
+
+<tr><td class="doccode">
+threepoints(tex)<br>
+threepoints(2,texsrc)
+</td><td>
+Returns the three points defining the plane that contains the face. <span class="doccode">tex</span> can be <span class="doccode">0</span>, <span class="doccode">1</span> or <span class="doccode">2</span>. If <span class="doccode">tex</span> is <span class="doccode">0</span>, the points <span class="doccode">p1,p2,p3</span> are set so that the cross product <span class="doccode">(p2-p1)^(p3-p1)</span> points towards the outside of the polyhedron.
+If <span class="doccode">tex</span> is <span class="doccode">1</span> or <span class="doccode">3</span>, <span class="doccode">p2</span> and <span class="doccode">p3</span> may be exchanged to reflect the texture mapping, i.e. <span class="doccode">p1</span> maps to texture coordinates (0,0), <span class="doccode">p2</span> maps to texture coordinates (128,0), and <span class="doccode">p3</span> maps to (0,128).
+If <span class="doccode">tex</span> is <span class="doccode">2</span>, the points are moved to reflect the real texture size (if it can be loaded; otherwise a 64x64 texture is assumed) and so that they lie near the center of the face. <span class="doccode">texsrc</span> tells where to load the texture from (see <span class="doccode">quarkx.loadtexture</span>).
+</td></tr>
+
+<tr><td class="doccode">
+setthreepoints((p1,p2,p3), tex)<br>
+setthreepoints((p1,p2,p3), 2, texsrc)
+</td><td>
+Sets the three points defining the plane that contains the face. The position of the points also determines how the texture is mapped on the face. The second argument <span class="doccode">tex</span> and the optional third argument <span class="doccode">texsrc</span> are the same as for the method <span class="doccode">threepoints</span> above.
+<p><span class="doccode">setthreepoints</span> must not be called with <span class="doccode">tex&gt;=2</span> to change the plane containing the face, but only to move the texture on the face. This is the difference between <span class="doccode">tex==1</span> and <span class="doccode">tex==3</span>.
+</td></tr>
+
+<tr><td class="doccode">
+distortion(newnormal, fixpt)
+</td><td>
+Distort the face (actually it just rotates it) so that <span class="doccode">normal</span> becomes <span class="doccode">newnormal</span>. The rotation is done around the fixed point <span class="doccode">fixpt</span>.
+</td></tr>
+
+<tr><td class="doccode">
+broken
+</td><td>
+<span class="doccode">True</span> or <span class="doccode">False</span> depending on whether the face is broken or not.
+</td></tr>
+
+<tr><td class="doccode">
+swapsides()
+</td><td>
+Exchanges the inner and outer sides of the face (<span class="doccode">normal = -normal</span>).
+</td></tr>
+
+<tr><td class="doccode">
+extrudeprism(obj)
+</td><td>
+Returns a list of faces that make an infinite prism over the given face. <span class="doccode">obj</span> has the same meaning as in the <span class="doccode">verticesof</span> method.
+</td></tr>
+
+</table>

@@ -1,0 +1,2 @@
+title: Documenting QuArK
+desc: infobase infobase-format
