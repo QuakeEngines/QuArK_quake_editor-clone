@@ -25,10 +25,9 @@ QQRKSRC1
                 info_player_observer:e  = {t_orig_ang=! ;desc="Observer team start" }
         }
         Objectives.qtxfolder = {
-                info_objective:e        = {t_orig_ang=! ;desc="Object Objective" model="models/flag.mdl" }
-                trigger_objective_goal:b= {;desc="Objective Goal" ;incl="defpoly" }
-                trigger_control:b       = {;desc="Control Objective" controltouch="1" controltime="10" ;incl="defpoly" }
-                func_destroy_objective:b= {;desc="Destroy Objective" ;incl="defpoly" }
+                dod_object:e            = {t_orig_ang=! ;desc="Object Objective" }
+                dod_object_goal:b       = {angle="360" ;desc="Object Capturepoint" ;incl="defpoly" }
+                dod_score_ent:e         = {t_orig_ang=! ;desc="Used for done sequences" }
         }
     }
   }
@@ -37,119 +36,6 @@ QQRKSRC1
   {
         t_targetname:incl       = { targetname: = { Txt="&" Hint="The name of this object, so others can 'target' it." } }
         t_target:incl           = { target:     = { Txt="&" Hint="Target(s) to activate, when this object is triggered" } }
-        t_globalname:incl       = { globalname: = { Txt="&" Hint="Global Entity Name" } }
-        t__minlight:incl = { txt="&" Hint="Minimum light level" }
-        t_renderfx:incl = {
-                renderfx: = { Typ="C" Txt="&"
-                        Items = "Normal"$0D
-                                "Slow pulse"$0D
-                                "Fast pulse"$0D
-                                "Slow Wide Pulse"$0D
-                                "Fast Wide Pulse"$0D
-                                "Slow Fade Away"$0D
-                                "Fast Fade Away"$0D
-                                "Slow Become Solid"$0D
-                                "Fast Become Solid"$0D
-                                "Slow Strobe"$0D
-                                "Fast Strobe"$0D
-                                "Faster Strobe"$0D
-                                "Slow Flicker"$0D
-                                "Fast Flicker"$0D
-                                "Constant Glow"$0D
-                                "Distort"$0D
-                                "Hologram (Distort + fade)"
-                        Values ="0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"
-                }
-        }
-        t_rendermode:incl = {
-                t_renderfx = !
-                rendermode: = { Typ="C" Txt="&" Hint="See 'renderamt' for details"
-                        Items = "Normal"$0D
-                                "Color"$0D
-                                "Texture"$0D
-                                "Glow"$0D
-                                "Solid"$0D
-                                "Additive"
-                        Values ="0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"
-                }
-                renderamt: = { Txt="&" Hint="FX Amount (0 - 255)"$0D$0D
-                        "The renderamt value is depended on what rendermode is set to:"$0D
-                        "NORMAL -> As it says."$0D
-                        "COLOR -> The lower the value, the more clear(transparent) the color will be. 'Rendercolor' must be specified. Brush-texture is irrelevant."$0D
-                        "TEXTURE -> The lower the value, the more transparent the texture will be. 'Rendercolor' seems irrelevant."$0D
-                        "GLOW -> Not for brushes, only env_ entities! The lower the value, the less glow the sprite will show."$0D
-                        "SOLID -> For see-through textures (Rails). Value 0 is invisible, other values gives visibility."$0D
-                        "ADDITIVE -> Like COLOR, but 'add' the colors behind it, so it gives a special neat effect."
-                }
-                rendercolor: = { Txt="&" Hint="FX Color (R G B)" }
-        }
-        t_breakable:incl = {
-                t_target = !
-                t_globalname = !
-                delay: = { Txt="&" Hint="Delay before break" }
-                health: = { Txt="&" Hint="Strength" }
-                explosion: = { Typ="C" Txt="&"
-                        Items = "Random"$0D
-                                "Relative to Attack"
-                        Values = "0"$0D"1"
-                }
-                explodemagnitude: = { Txt="&" Hint="Explode Magnitude (0=none)" }
-                material: = { Typ="C" Txt="&"
-                        Items = "Glass"$0D
-                                "Wood"$0D
-                                "Metal"$0D
-                                "Flesh"$0D
-                                "Cinder Block"$0D
-                                "Ceiling Tile"$0D
-                                "Computer"$0D
-                                "Unbreakable Glass"$0D
-                                "Rocks"
-                        Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"
-                }
-                gibmodel: = { Txt="&" Hint="Gib model (models/?????.mdl)" }
-                spawnobject: = { Typ="C" Txt="&"
-                        Items = "Nothing"$0D
-                                "Battery"$0D
-                                "Healthkit"$0D
-                                "9mm Handgun"$0D
-                                "9mm Clip"$0D
-                                "Machine Gun"$0D
-                                "Machine Gun Clip"$0D
-                                "Machine Gun Grenades"$0D
-                                "Shotgun"$0D
-                                "Shotgun Shells"$0D
-                                "Crossbow"$0D
-                                "Crossbow Bolts"$0D
-                                "357"$0D
-                                "357 clip"$0D
-                                "RPG"$0D
-                                "RPG Clip"$0D
-                                "Gauss clip"$0D
-                                "Hand grenade"$0D
-                                "Tripmine"$0D
-                                "Satchel Charge"$0D
-                                "Snark"$0D
-                                "Hornet Gun"
-                        Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D"20"$0D"21"
-                }
-                t__minlight = !
-        }
-        t_objective:incl = {
-                t_targetname = !
-                t_globalname = !
-                target:         = { txt="&" hint="Target when done" }
-                groupname:      = { txt="&" hint="Group" }
-                objectivename:  = { txt="&" hint="Objective Name" }
-                teamowner:      = { typ="C" txt="&" hint="For team"
-                        items = "Allies"$0D"Axis"
-                        values= "1"$0D"2"
-                }
-                main:           = { typ="C" txt="&" hint="Is it main objective?"
-                        items = "No"$0D"Yes"
-                        values= "0"$0D"1"
-                }
-        }
-
 //
 // Forms
 //
@@ -157,42 +43,53 @@ QQRKSRC1
         info_player_axis:form = { bbox = '-16 -16 -36 16 16 36' }
         info_player_observer:form = { bbox = '-16 -16 -36 16 16 36' }
 
-        info_objective:form = {
-                t_objective = !
-                model: = { txt="&" hint="Model Path" }
+        dod_object:form = {
+                t_targetname = !
+                t_target = !
+                model: = { txt="&" hint="Model" }
+                object_name: = { txt="&" hint="Objects Name" }
+                object_owner: = { typ="C" txt="&" hint="Owner"
+                        items = "Both"$0D"Allies"$0D"Axis"
+                        values = "0"$0D"1"$0D"2"
+                }
+                object_group: = { txt="&" hint="Group Name" }
+                object_takesound: = { txt="&" hint="Sound when taken" }
+                object_capsound: = { txt="&" hint="Sound when captured" }
+                object_dropsound: = { txt="&" hint="Sound when dropped" }
+                object_returnsound: = { txt="&" hint="Sound when returned" }
+                object_carryspeed: = { txt="&" hint="Carry speed (this*speed)" }
+                object_resetontouch: = { typ="C" txt="&" hint="Reset on touch"
+                        items = "No"$0D"Yes"
+                        values = "0"$0D"1"
+                }
+                object_resettime: = { txt="&" hint="Reset time (secs, max. 600)" }
+                object_cappoints: = { txt="&" hint="Points to capturer" }
+                object_otherpoints: = { txt="&" hint="Points for teammates" }
+                object_donetarget: = { txt="&" hint="Target When Complete" }
         }
 
-        trigger_objective_goal:form = {
-                target:         = { txt="&" hint="Target when done" }
-                groupname:      = { txt="&" hint="Group" }
+        dod_object_goal:form = {
+                t_targetname = !
+                t_target = !
+                capobj_group: = { txt="&" hint="Group Name" }
         }
 
-        trigger_control:form = {
-                t_objective = !
-                controltouch: = { typ="C" txt="&" hint="Only Touch?"
+        dod_score_ent:form = {
+                t_targetname = !
+                t_target = !
+                team: = { typ="C" txt="&" hint="For Team"
+                        items = "Both"$0D"Allies"$0D"Axis"
+                        values = "0"$0D"1"$0D"2"
+                }
+                score_points: = { txt="&" hint="Points" }
+                score_resetitemtime: = { txt="&" hint="Reset Items Time (0 = none)" }
+                score_resetplayerstime: = { txt="&" hint="Reset Players Time (0 = none)" }
+                noise: = { txt="&" hint="Reset Group (blank for all)" }
+                noise2: = { typ="C" txt="&" hint="End game?"
                         items = "No"$0D"Yes"
-                        values= "0"$0D"1"
+                        values = "0"$0D"1"
                 }
-                controltime: = { txt="&" hint="Control Time (secs.)" }
-        }
-
-        func_destroy_objective:form = {
-                objectivename:  = { txt="&" hint="Objective Name" }
-                teamowner:      = { typ="C" txt="&" hint="For team"
-                        items = "Allies"$0D"Axis"
-                        values= "1"$0D"2"
-                }
-                main:           = { typ="C" txt="&" hint="Main Objective"
-                        items = "No"$0D"Yes"
-                        values= "0"$0D"1"
-                }
-                destroybomb:    = { typ="C" txt="&" hint="Bomb Only"
-                        items = "No"$0D"Yes"
-                        values= "0"$0D"1"
-                }
-                groupname:      = { txt="&" hint="Group" }
-                t_breakable = !
-                t_rendermode = !
+                message: = { txt="&" hint="Message" }
         }
   }
 }
