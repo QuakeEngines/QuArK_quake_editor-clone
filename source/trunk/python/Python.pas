@@ -29,6 +29,20 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2003/06/17 22:46:31  tiglari
+Python bundling by Peter Brett:
+ - If PYTHON_BUNDLED is set, look for python.dll in the dlls directory,
+   otherwise old behaviour.
+ - Register function Py_GetVersion from Python DLL.
+ - Log Python version on loading Python.
+
+ To try this out, make sure python.dll and string.py are present in
+ your dlls and lib directories respectively (you'll probably need to
+ create the lib directory).  Make sure the versions match (see above).
+
+ Compile QuArK with PYTHON_BUNDLED (if you're using Python 2.2+).
+ Otherwise add PYTHON15 or PYTHON2n_OR_HIGHER to taste.
+
 Revision 1.10  2003/03/16 01:18:48  tiglari
 higher python version defs now in Python/PyVersions.inc
 
@@ -491,10 +505,11 @@ const
 (* hoping to retire this one, see IFDEFs in InitializePython
   below  *)
 function try_alternative_python_version: string;
-var
+(* var      // SilverPaladin - Commented this out too in order to remove hints
   R: TRegistry;
   v: string;
   installed: boolean;
+*)
 begin
   result:='';
   (*
@@ -526,7 +541,7 @@ var
   I: Integer;
   Lib: THandle;
   P: Pointer;
-  dll: string;
+//  dll: string;  // SilverPaladin - Commented out to clear hint
   s: string;
 begin
   Result:=3;
