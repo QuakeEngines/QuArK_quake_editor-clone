@@ -1,4 +1,8 @@
 
+
+ *add align to marked option, clear mark command.
+
+
         Patch 2, for QuArK Snaprot of 070901
                (072201)
                

@@ -11,6 +11,27 @@ available as experimental addons to 6.3
 face so that selected faced is coplanar with tagged one.
 <br>status: envisioned, maybe defer to 6.4
 
+<li>L-square menu enhancements: (tiglari, ax2grind)
+<br>status: started, align & glue to tagged done.  I intend
+to leave further enhancements as an exercise for someone who
+wants to learn more about QuArK-Python programming.
+Suggested additions are:
+<UL>
+<LI> checkbox for relative to tagged/join of L
+(better to just tag the join, I think now)
+<LI> move to fraction of distance to tagged (arm only)
+<LI> end position
+<LI> arm length
+<LI> arm angle
+</UL>
+What about L-join options?
+
+<li>Radiant-style Regioning: (?)
+<br>Hide and don't save everything not in the rectangle.
+
+<li> Don't draw restricted out stuff: (tiglari)
+<br>Should key with grey/hide out of view
+
 <li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
 <br>an as-yet-unimplemented 4.7 feature.
 
@@ -19,19 +40,6 @@ face so that selected faced is coplanar with tagged one.
 
 <li>OsFolders: (tiglari)
 <br>edit the properties of pre-existing OsFolders
-
-<li>L-square menu enhancements: (tiglari, ?)
-<br>status: started, align & glue to tagged done.  I intend
-to leave further enhancements as an exercise for someone who
-wants to learn more about QuArK-Python programming.
-Suggested additions are:
-<UL>
-<LI> checkbox for relative to tagged/join of L
-<LI> end position
-<LI> arm length
-<LI> arm angle
-</UL>
-What about L-join options?
 
 <li>Brush-based shape-builders: (tiglari, Decker)
 <br>'inner boxes' (two independently manipulable boxes, one inside
