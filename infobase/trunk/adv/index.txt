@@ -4,6 +4,7 @@ subdir: addons
 subdir: python
 subdir: plugins
 subdir: quarkpy
+subdir: duplicators
 subdir: doc
 
 This section discusses the features of QuArK that can be customized without modifying the source code.
