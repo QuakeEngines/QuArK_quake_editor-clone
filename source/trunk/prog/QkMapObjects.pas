@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/08/20 10:50:45  aiv
+Fixed 'Uses' clause for new model files
+
 Revision 1.10  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -229,6 +232,9 @@ procedure ReleaseMapIcons;
 function LongueurVectNormal : Single;}
 procedure CheckTreeMap(Racine: TTreeMap);
 
+const
+   Comment: array[Boolean] of String =
+    ('//',';');
  {------------------------}
 
 implementation
@@ -259,6 +265,7 @@ begin
     DeleteObject(Brush);
    end;
 end;*)
+
 
 procedure SetupWhiteOnBlack(WhiteOnBlack: Boolean);
 begin
@@ -1024,9 +1031,11 @@ procedure TTreeMapSpec.SauverSpec;
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
- S, Msg, LineStart: String;
+ MJ, S, Msg, LineStart: String;
  P1, I, J, P: Integer;
 begin
+ MJ:=CharModeJeu;
+ Dest.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry);
  Dest.Add('{');
  LineStart:=LineStarts[Flags and soBSP <> 0];
  Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
@@ -2065,19 +2074,29 @@ end;
 
 procedure TTreeMapGroup.SauverTexte;
 var
- I: Integer;
+ I,J: Integer;
  T: TTreeMap;
+ MJ: Char;
 begin
  if (Flags and soIgnoreToBuild <> 0)
  and (ViewFlags and vfIgnoreToBuildMap <> 0) then
   Exit;
  if Odd(SelMult) then
   Flags:=Flags and not soSelOnly;
+ J:=0;
+ MJ:=CharModeJeu;
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
    if (Flags and soSelOnly = 0) or ControleSelection(T) then
+   begin
+    if (T is TTreeMapEntity) or (T is TTreeMapBrush) then
+     begin
+      Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(J));
+      J:=J+1;
+     end;
     T.SauverTexte(Negatif, Texte, Flags, HxStrings);
+   end;
   end;
 end;
 
@@ -2146,11 +2165,14 @@ begin
 end;
 
 procedure TTreeMapBrush.SauverTexte;
+
 var
  Polyedres: TQList;
  I: Integer;
  V1, V2: TVect;
  OriginBrush: PVect;
+ MJ : Char;
+ S : String;
 begin
  SauverSpec(Texte, HxStrings, Flags);
  if Flags and soBSP = 0 then
@@ -2180,8 +2202,13 @@ begin
          end;
         Break;
        end;
+   MJ:=CharModeJeu;
    for I:=0 to Polyedres.Count-1 do
-    TPolyedre(Polyedres[I]).SauverTextePolyedre(Texte, OriginBrush, Flags);
+    begin
+     S:= Comment[(MJ>='A') and (MJ<='Z')]+' Brush '+IntToStr(I);
+     Texte.Add(S);
+     TPolyedre(Polyedres[I]).SauverTextePolyedre(Texte, OriginBrush, Flags);
+    end;
    { proceed with Bezier patches }
    Polyedres.Clear;
    ListeEntites(Polyedres, [ecBezier]);
