@@ -1,5 +1,8 @@
                          QuArK 6.3
-
+ 
+ * [decker] add simple search to texture replace dlg
+ 
+ * [cdunde] Meaningful movepal icons
  
  * [tiglari] fix RTCW misc_model models, many skins still AWOL dunno why
 
