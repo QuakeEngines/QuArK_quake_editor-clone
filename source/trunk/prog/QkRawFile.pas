@@ -26,6 +26,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.7  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -111,6 +121,7 @@ type
     ReadThread, DisplayThread: TRFThread;
     PositionReset: Boolean;
     ThreadErrorMsg: String;
+    KeepPlaying: boolean; // Rowdy
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
     function GetPlayPosition : Integer;
     procedure SetPlayPosition(nPos: Integer);
@@ -346,7 +357,14 @@ end;
 
 procedure TFQRawFile.TrackBar1Change(Sender: TObject);
 begin
- PlayPosition:=TrackBar1.Position;
+ // This is called when the trackbar position changes, whether the user dragged
+ // the pointer or the timer's event updates the position.  If this is called
+ // from the timer, we don't want to change the PlayPosition because that would
+ // stop the sound playing.
+ // PlayPosition is a property, when we write to it the SetPlayPosition event is
+ // called, and the first thing that does is stop the read/play threads - bad.
+ if not(KeepPlaying) then // Rowdy
+  PlayPosition:=TrackBar1.Position;
 end;
 
 procedure TFQRawFile.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -398,6 +416,7 @@ begin
  StartPos:=PlayPosition;
  if StartPos=Info.Length-1 then
   StartPos:=0;
+ KeepPlaying:=True; // Rowdy
  Info.InitDC(Box1.Handle);
  Info.StreamSize:=(FileObject as QRawFileObject).GetReadStream(Info.Stream);
  Info.StreamSource:=Info.Stream.Position;
@@ -441,7 +460,12 @@ begin
   if Info.Length>0 then
    begin
     TrackBar1.Max:=Info.Length-1;
+    // keep playing the sound, the Trackbar1 OnChange event will update the PlayPosition
+    // based on TrackBar1.Position, but this would stop the sound playing, so set the
+    // KeepPlaying flag so that the PlayPosition does not get updated
+    KeepPlaying:=True; // Rowdy
     TrackBar1.Position:=DisplayThread.Position;
+    KeepPlaying:=False; // Rowdy
    end;
 end;
 
