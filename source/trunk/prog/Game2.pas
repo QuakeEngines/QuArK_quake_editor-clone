@@ -20,21 +20,19 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/01/07 13:21:05  decker_dk
+Resized the dialog.
+
 Revision 1.4  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
-
 
 unit Game2;
 
@@ -58,13 +56,14 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ListView1Change(Sender: TObject; Item: TListItem; Change: TItemChange);
   private
+    procedure FindAndAddFilesOfMask(const a_Path:String; const a_FileMask:String);
   public
     SrcListView: TListView;
   end;
 
 implementation
 
-uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail;
+uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths;
 
 {$R *.DFM}
 
@@ -99,36 +98,49 @@ begin
  UpdateMarsCap;
 end;
 
+procedure TAddOnsAddDlg.FindAndAddFilesOfMask(const a_Path:String; const a_FileMask:String);
+var
+  rc: Integer;
+  searchRec: TSearchRec;
+begin
+  rc:=FindFirst(IncludeTrailingBackslash(a_Path)+a_FileMask, faAnyFile, searchRec);
+  try
+    while rc=0 do
+    begin
+      if ListView1.FindCaption(0, searchRec.Name, False, True, False) = Nil then
+        with ListView1.Items.Add do
+        begin
+          Caption:=searchRec.Name;
+          if SrcListView.FindCaption(0, Caption, False, True, False) <> Nil then
+            Cut:=True;
+        end;
+      rc:=FindNext(searchRec);
+    end;
+  finally
+    FindClose(searchRec);
+  end;
+end;
+
 procedure TAddOnsAddDlg.FormActivate(Sender: TObject);
 var
- S: TSearchRec;
  I: Integer;
  Q: QFileObject;
- Pass2: Boolean;
 begin
  OnActivate:=Nil;
- for Pass2:=False to True do
-  begin
-   if Pass2 then
-    I:=FindFirst(ApplicationPath+AddonsPath+'*.qrk', faAnyFile, S)
-   else
-    I:=FindFirst(ApplicationPath+'*.qrk', faAnyFile, S);
-   try
-    while I=0 do
-     begin
-      if ListView1.FindCaption(0, S.Name, False, True, False) = Nil then
-       with ListView1.Items.Add do
-        begin
-         Caption:=S.Name;
-         if SrcListView.FindCaption(0, Caption, False, True, False) <> Nil then
-          Cut:=True;
-        end;
-      I:=FindNext(S);
-     end;
-   finally
-    FindClose(S);
-   end;
-  end;
+
+ { search root-directory of QuArK "<appl.path>\" }
+ FindAndAddFilesOfMask(GetApplicationPath(), '*.qrk');
+(* possibility of an "<appl.path\UserData\<gamename>" directory?
+ { search QuArK sub-directory for User Data. E.q. "<appl.path>\UserData" }
+ FindAndAddFilesOfMask(GetApplicationUserdataPath(), '*.qrk');
+ { search QuArK sub-directory named as the selected game. E.q. "<appl.path>\UserData\Quake_2" }
+ FindAndAddFilesOfMask(GetApplicationUserdataGamePath(), '*.qrk');
+*)
+ { search QuArK addons sub-directory. E.q. "<appl.path>\addons" }
+ FindAndAddFilesOfMask(GetApplicationAddonsPath(), '*.qrk');
+ { search QuArK addons sub-sub-directory named as the selected game. E.q. "<appl.path>\addons\Quake_2" }
+ FindAndAddFilesOfMask(GetApplicationAddonsGamePath(), '*.qrk');
+
  Update;
 
  ProgressIndicatorStart(5458, ListView1.Items.Count);
