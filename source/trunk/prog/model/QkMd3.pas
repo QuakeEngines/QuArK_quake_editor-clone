@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.16  2002/06/19 19:43:52  decker_dk
 Don't re-raise exception in Loaded_ShaderFile, but only return NIL.
 (Also made some layout re-arrangements in the code)
@@ -83,7 +86,7 @@ unit QkMd3;
 
 interface
 
-uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
+uses Windows, SysUtils, ExtraFunctionality, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, qmath, QkTextures, PyMath, Python, QkFileObjects, Dialogs, QkPcx,
      QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag, QkModelBone,
      QkMiscGroup, QkFrameGRoup, qmatrices;
