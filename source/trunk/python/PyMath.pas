@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2003/03/06 08:17:49  tiglari
+MakePyVect5 needs to work slightly differently when Python 20 or above is used
+
 Revision 1.11  2002/06/06 22:46:30  tiglari
 use set g_CxScreen, g_CyScreen insrad of sm_C... for dual monitor problems
  (info from quantum_red and Decker)
@@ -37,6 +40,9 @@ Prefixed interface global-variables with 'g_', so its clearer that one should no
 Revision 1.8  2001/03/20 21:34:49  decker_dk
 Updated copyright-header
 }
+
+
+{$INCLUDE PYVERSIONS.INC}
 
 unit PyMath;
 

@@ -29,6 +29,11 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2003/03/06 22:23:46  tiglari
+Py 2.x compatibility: to compile for Py2.2 set flag PYTHON22_OR_HIGHER
+in projects options;  this flag is also utilized in Python/Pymath.pas so shouldn't
+be set just in this file.
+
 Revision 1.8  2002/04/12 11:43:18  tiglari
 add Py_Finalize
 
@@ -54,16 +59,7 @@ interface
 
  {-------------------}
 
-{$IFDEF PYTHON22_OR_HIGHER}
-{$DEFINE PYTHON21_OR_HIGHER}
-{$ENDIF}
-{$IFDEF PYTHON21_OR_HIGHER}
-{$DEFINE PYTHON20_OR_HIGHER}
-{$DEFINE PYTHON20}
-{$ENDIF}
-{$IFNDEF PYTHON20_OR_HIGHER}
-{$DEFINE PYTHON15}
-{$ENDIF}
+{$INCLUDE PYVERSiONS.INC}
 
 type
  PyObjectPtr = ^PyObject;
