@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.63  2000/10/26 16:53:03  tiglari
+//enable brush primitives item added
+//
 //Revision 1.62  2000/10/16 22:32:58  aiv
 //added compression options to memory options (CompressionBufferSize and CompressionLevel)
 //
@@ -784,38 +787,37 @@ QQRKSRC1
         TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
       }
-//Decker - ready for Crystal Space
-//    //pm CrystalSpace *******************************************
-//    CrystalSpace:config =
-//    {
-//      Game = "Crystal Space"
-//      Code = "c"
-//      Directory = "/quark2cs_511/"
-//      Program = "walktest.exe"
-//
-//      BuildPgm1 = "MAP2CS.EXE"
-//
-//      TextureDef = "intro/wl_outbrick1a"
-//      BaseDir = "data"
-//      tmpQuArK = "data"
-//      TextureWad = "?"  // variable (the map name is used)
-//      Palette = ":pics/colormap.pcx"
-//      Q2TexPath = "textures/"
-//      Q2TexFlags = "1"
-//      ExtraCmdLine = ""
-//      RunMapCmdLine = " %s"
-//      AddOns = "DataCS.qrk"
-//      AlwaysPak = ""
-//      PakExt = ".csz"
-//      LightFactor = '0.90000'
-//      3DLight = '512'
-//      CheckDirectory = "WALKTEST.EXE"
-//      Console = "1"
-//      Form = "GameCrystalSpace"
-//      PlayerClass = "X"
-//      TextureFormat = ".wad3_C"
-//    }
-//    //pm CrystalSpace *******************************************
+    //pm CrystalSpace *******************************************
+    CrystalSpace:config =
+    {
+      Game = "Crystal Space"
+      Code = "c"
+      Directory = "/quark2cs_511/"
+      Program = "walktest.exe"
+
+      BuildPgm1 = "MAP2CS.EXE"
+
+      TextureDef = "intro/wl_outbrick1a"
+      BaseDir = "data"
+      tmpQuArK = "data"
+      TextureWad = "?"  // variable (the map name is used)
+      Palette = ":pics/colormap.pcx"
+      Q2TexPath = "textures/"
+      Q2TexFlags = "1"
+      ExtraCmdLine = ""
+      RunMapCmdLine = " %s"
+      AddOns = "DataCS.qrk"
+      AlwaysPak = ""
+      PakExt = ".csz"
+      LightFactor = '0.90000'
+      3DLight = '512'
+      CheckDirectory = "WALKTEST.EXE"
+      Console = "1"
+      Form = "GameCrystalSpace"
+      PlayerClass = "X"
+      TextureFormat = ".wad3_C"
+    }
+    //pm CrystalSpace *******************************************
     }
 
     Map:config =
