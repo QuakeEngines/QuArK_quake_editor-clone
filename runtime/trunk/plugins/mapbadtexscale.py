@@ -1,6 +1,6 @@
 """   QuArK  -  Quake Army Knife
 
-Python code to implement the various Duplicator styles.
+Python code to find faces with bad texture scales
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -10,15 +10,9 @@ Python code to implement the various Duplicator styles.
 
 #$Header$
 
-
-#
-# Feel free to add your own styles here, or better
-# in a new plug-in that looks like this one.
-#
-
 Info = {
    "plug-in":       "Bad Texture Scale Finder",
-   "desc":          "Standard Duplicator styles.",
+   "desc":          "Finds brush faces with bad texture scales",
    "date":          "1 April 2002",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.com",
@@ -29,7 +23,6 @@ from quarkpy.maputils import *
 import quarkpy.mapmenus
 import quarkpy.mapcommands
 import quarkpy.dlgclasses
-from quarkpy import guiutils
 from quarkpy import guiutils
 import quarkpy.mapsearch
 
@@ -108,7 +101,6 @@ class BadTexScaleDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
     def inspect(self):
-        debug('hello')
         index = eval(self.chosen)
         #
         # FIXME: dumb hack, revise mapmadsel
@@ -250,6 +242,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|This finds faces whose texture axes are almost parallel"))
 
 #$Log$
+#Revision 1.3  2002/04/30 22:55:33  tiglari
+#add import quarkpy.mapsearch  statement
+#
 #Revision 1.2  2002/04/27 23:00:13  tiglari
 #add import statement
 #
