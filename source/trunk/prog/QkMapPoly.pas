@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2002/04/17 12:54:08  decker_dk
+TPolyhedron.SaveAsTextPolygon(): If MJ=mjMOHAA, then write face-flags, until we figure out how to do it properly.
+Also made some layout/indenting.
+
 Revision 1.49  2002/03/30 02:48:35  tiglari
 When a texture is dragged, its position&scale are now encoded by a 'tv'
   specific.  So .qrk's will now be in a mixture of the old enhanced texture
@@ -2158,7 +2162,7 @@ end;
 
 { based on information about Q3R brush primitives format
   provided by Timothee Besset }
-procedure GetPXPY(const Normal: TVect; const V: TThreePoints; Mirror: boolean; var PX, PY: array of Double; const Dist : Double);
+procedure GetPXPY(const Normal: TVect; const V: TThreePoints; var PX, PY: array of Double; const Dist : Double);
 var
   texS, texT, texO, P0, P1, P2: TVect;
   D : Double;
@@ -2172,15 +2176,10 @@ begin
      is 1:1, (P1-P0) will be texture width, P2-P0
      texture height.  In written out map, for 1:1
      texture scale these #'s will be 128 }
-  P0:=V[1];
-  if Mirror then
-   begin
-    P2:=V[2]; P1:=V[3];
-   end
-  else
-   begin
+
+    P0:=V[1];
     P2:=V[3]; P1:=V[2];
-   end;
+
    { redo threepoints in plane coordinate system }
    P0:=CoordShift(P0, texO, texS, texT);
    P1:=CoordShift(P1, texO, texS, texT);
@@ -2562,7 +2561,7 @@ var
       with F do
        begin
         GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
-        GetPXPY(Normale, PT, TextureMirror, PX, PY, Dist);
+        GetPXPY(Normale, PT, PX, PY, Dist);
         S:=S+'( ';
         write3vect(PX,S);
         write3vect(PY,S);
