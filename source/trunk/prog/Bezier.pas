@@ -983,13 +983,13 @@ begin
    {$ELSE}
    Target.Add('   ' + NomTex);
    {$ENDIF}
-   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.H, cp.W]));
+   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.W, cp.H]));
    Target.Add('(');
-   Value:=@cp.CP^[0];
-   for J:=1 to cp.H do
+   for J:=0 to cp.W-1 do
     begin
+     Value:=@cp.CP^[5*J];
      S:='( ';
-     for I:=1 to cp.W do
+     for I:=1 to cp.H do
       begin
        S:=S+'( ';
        for K:=1 to 5 do
@@ -1002,6 +1002,7 @@ begin
          Inc(Value);
         end;
        S:=S+') ';
+       Inc(Value, 5*(cp.W-1));
       end;
      Target.Add(S+')');
     end;

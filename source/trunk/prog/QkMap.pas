@@ -748,17 +748,18 @@ begin
           EntiteBezier.SousElements.Add(B); //&&&
           B.NomTex:=S;   { here we get the texture-name }
 
-          MeshBuf1.W := Trunc(V5.Y);
-          MeshBuf1.H := Trunc(V5.X);
+          MeshBuf1.W := Round(V5.X);
+          MeshBuf1.H := Round(V5.Y);
 
           GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
-          pCP1:=MeshBuf1.CP;
           try
             Lire(sParenthese1); // lparen follows vect5
-            for I:=1 to MeshBuf1.H do
+            for I:=0 to MeshBuf1.W-1 do
               begin
+                pCP1:=MeshBuf1.CP;
+                Inc(pCP1, I);
                 Lire(sParenthese1); // read the leading lparen for the line
-                for J:=1 to MeshBuf1.W do
+                for J:=1 to MeshBuf1.H do
                   begin
                     V5:=LireVect5(False);
                     pCP1^[0]:=V5.X;
@@ -766,7 +767,7 @@ begin
                     pCP1^[2]:=V5.Z;
                     pCP1^[3]:=V5.S;
                     pCP1^[4]:=V5.T;
-                    Inc(pCP1);
+                    Inc(pCP1, MeshBuf1.W);
                   end;
                 Lire(sParenthese2); // read the trailing rparen for the line
               end;
