@@ -187,10 +187,23 @@ def squawk(text):
   if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
     quarkx.msgbox(text, MT_INFORMATION, MB_OK)
 
+def findlabelled(list,label):
+  for item in list:
+    try:
+      if item.label==label:
+        return item
+    except (AttributeError):
+      pass
+
+
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
