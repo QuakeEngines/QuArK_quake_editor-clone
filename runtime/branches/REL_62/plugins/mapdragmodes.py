@@ -101,6 +101,20 @@ class EverythingRectSelDragObject(parent):
                 else: # the point is inside the polyhedron
                     o.selected = 1
                     lastsel = o
+
+        #
+        # add groups & brush entities whose selectable
+        #  subitems are all selected
+        #
+        brushentitylist = FindSelectable(editor.Root, None, [":g", ":b"])
+        for b in brushentitylist:
+            subitems = FindSelectable(b,None,[":e", ":p", ":d", ":b2"])
+            for e in subitems:
+                if not e.selected:
+                    break
+            else:
+                b.selected = 1
+
         if lastsel is not None:
             editor.layout.explorer.focus = lastsel
             editor.layout.explorer.selchanged()
@@ -397,6 +411,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4.6.1  2001/04/15 22:47:21  tiglari
+# groups & brush entity selection in select everything mode (will be selected
+#  if all of their subitems are)
+#
 # Revision 1.4  2001/02/19 19:15:40  decker_dk
 # Added 'Select-everything'; entities, brushes, duplicators and beziers.
 #
