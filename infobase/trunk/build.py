@@ -88,7 +88,16 @@ def procpic(kw, path):  #tiglari
     f.close()
     kw["forgotten"].remove(path)
     return img
-
+    
+def procrsc(kw, path):  #tiglari
+    rscrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
+    data = open(kw["path"]+path,"rb").read()
+    f = open("output/"+rscrl, "wb")
+    f.write(data)
+    f.close()
+    kw["forgotten"].remove(path)
+    return '"%s"'%rscrl
+    
 def processtext(root, text, data, kw):
     currentpara = None
     TEXT = 1
@@ -127,7 +136,11 @@ def processtext(root, text, data, kw):
         elif test[:5]=="<pic>": #tiglari
             # this line is an image
             line = procpic(kw, string.strip(string.strip(line)[5:]))
-
+        elif test[:5]=="<rsc>": #tiglari
+            # this line names a resource we want to
+            # be moved into output and renamed like a pic or ref
+            # function returns only the new name, double-quoted
+            line = procrsc(kw, string.strip(string.strip(line)[5:]))
         # Tags to turn on/off html-conversion
         elif test[:9]=="<html on>": # Decker
             currentpara = HTML
@@ -345,6 +358,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.7  2000/10/24 19:43:13  decker_dk
+# Prev/Up/Next navigation, new CSS and misc. changes.
+#
 # Revision 1.6  2000/10/19 20:06:39  tiglari
 # relative paths (./,../) for <pic> and <ref>
 # cross-links to next added to output
