@@ -1,0 +1,90 @@
+title: Releasing a Snapshot
+author: Peter Brett
+
+Here's the process you might follow to prepare and release a snapshot.
+I'm going to assume you've followed the SourceForge guidelines for
+setting up SSH access to the shell server and you're using PuTTY on
+Microsoft Windows.  I'm also going to assume that the date is 31st
+August 2007.
+
+<ol>
+<li>Build a QuArK binary with <tt>PYTHON_BUNDLED</tt> and compress it
+using UPX (available from 
+<a href="http://upx.sourceforge.net/">http://upx.sourceforge.net/</a>).
+You should use:
+<code>&gt; upx -9 --compress-icons=0 QuArK.exe</code>
+</li>
+<li>Use PSFTP to upload it to your user account on the shell server.
+Also upload the latest micro-Python files.
+<code>&gt; psftp shell.sourceforge.net
+psftp&gt; put QuArK.exe
+psftp&gt; put micro-python22.zip
+psftp&gt; quit</code></li>
+<li>PuTTY to the shell server and change to the QuArK directory.
+<code>&gt; putty shell.sourceforge.net
+$ cd /home/groups/q/qu/quark</code></li>
+<li>Do a CVS export of the <tt>infobase</tt>, <tt>runtime</tt> and <tt>source</tt> modules.
+<code>$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -Dnow infobase
+$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -Dnow runtime
+$ cvs -z3 -Q -d:pserver:anonymous@cvs1:/cvsroot/quark export -Dnow source
+</code>
+We use the CVS export command because that way we get a clean copy of
+the files without the CVS folders.</li>
+<li>Extract the micro-Python files.
+<code>$ unzip -q ~/micro-python22.zip</code></li>
+<li>Create folders for each of the three files you're
+going to need in the end.
+<code>$ mkdir quark-help-20070831
+$ mkdir quark-src-20070831
+$ mkdir quark-win32-20070831</code></li>
+<li>Build the Infobase, and copy the output to where it's needed.
+<code>$ mkdir quark-win32-20070831/help
+$ cd infobase
+$ python ./build.py -local
+$ cp -r output/* ../quark-help-20070831/
+$ cp -r output/* ../quark-win32-20070831/help
+$ rm -rf output
+$ cd ..</code></li>
+<li>Put together the files for the source snapshot.
+<code>$ cp -r infobase/ quark-src-20070831/
+$ cp -r source/ quark-src-20070831/
+$ cp -r runtime/ quark-src-20070831/
+$ cp -r micro-python22/ quark-src-20070831/</code></li>
+<li>Put together the files for the Windows binary snapshot.
+<code>$ cp ~/QuArK.exe quark-win32-20070831
+$ cp source/COPYING>txt quark-win32-20070831/
+$ cp runtime/* quark-win32-20070831/
+$ rm -f quark-win32-20070831/dlls/d3dxas.dll
+$ rm -f quark-win32-20070831/dlls/readme.txt
+$ cp micro-python22/dlls/python.dll quark-win32-20070821/dlls/
+$ cp -r micro-python22/lib/ quark-win32-20070831/
+</code></li>
+<li>Zip up the files.
+<code>$ zip -9rq quark-help-20070831.zip quark-help-20070831/
+$ zip -9rq quark-src-20070831.zip quark-src-20070831/
+$ zip -9rq quark-win32-20070831.zip quark-win32-20070831/</code></li>
+<li>Remove working directories.
+<code>$ rm -rf source/ infobase/ runtime/ quark-src-20070831/
+$ rm -rf quark-help-20070831/ quark-win32-20070831/</code></li>
+<li>Move our snapshot files into the website's download directory and
+generate MD5 checksums.
+<code>$ mv quark*.zip htdocs/download/
+$ cd htdocs/download/
+$ md5sum quark-help-20070831.zip > quark-help-20070831.zip.md5
+$ md5sum quark-src-20070831.zip > quark-src-20070831.zip.md5
+$ md5sum quark-win32-20070831.zip > quark-win32-20070831.zip.md5
+</code></li>
+<li>You now need to edit the <tt>/home/q/qu/quark/htdocs/index.html</tt> file
+to add the new snapshot.  Use the text editor of your choice - I
+generally use Emacs.
+
+It's also a good idea only to have four snapshots on the site at a
+time, so as to be sure not to exceed the storage quota.  So delete the
+oldest snapshots if you need to.
+</ol>
+
+Ideally, snapshots would eventually have an NSIS installer for the
+binary release.
+
+TODO: write a script to automate the above process fully and upload it to
+the shell server.  Make it a cron job?
