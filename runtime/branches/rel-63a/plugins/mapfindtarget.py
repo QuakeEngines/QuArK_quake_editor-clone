@@ -263,6 +263,9 @@ quarkpy.mapentities.BrushEntityType.menu = brushmenu
 
 
 #$Log$
+#Revision 1.3  2002/05/21 07:06:10  tiglari
+#fix problems with selection dialog (loadiing first selection when appropriate)
+#
 #Revision 1.2  2002/05/20 11:07:54  tiglari
 #fix bug whereby if all targetted items had the same name, the first one
 #  of that name would be selected.  Also now preloading with first element works
