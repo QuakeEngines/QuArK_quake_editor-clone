@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/04/07 20:17:57  aiv
+fix save as HL .bsp bug
+
 Revision 1.29  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -240,6 +243,7 @@ type
           procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
           function PyGetAttr(attr: PChar) : PyObject; override;
           Function CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
+          function GetEntityLump : String;
         end;
 
 type
@@ -1244,6 +1248,29 @@ begin
    if not (Q is QTextureList) then Break;
    SortTexFolder(Q);
   end;
+end;
+
+Function QBsp.GetEntityLump: String;
+var
+  e: QObject;
+  S: String;
+  I: Integer;
+begin
+  Acces;
+  e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
+  if e=nil then
+  begin
+    raise Exception.Create('No Entities in BSP');
+  end;
+  e.acces;
+  S:=e.Specifics.Values['Data'];
+  for I:=Length(S) downto 1 do
+  begin
+     if S[I]='}' then
+        Break;
+     S[I]:=' ';
+  end;
+  Result:=S;
 end;
 
 Function QBsp.CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;

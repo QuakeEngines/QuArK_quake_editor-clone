@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/03/20 21:44:37  decker_dk
+Updated copyright-header
+
 Revision 1.13  2001/01/21 15:49:30  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -93,6 +96,7 @@ type
                 function GetFolder(Path: String) : QPakFolder;
                 procedure AddFileWithPath(PathAndShortName: String; Q: QFileObject; SetName: Boolean);
                 function ExtractTo(PathBase: String) : Integer;
+                function ExtractEntitiesTo(PathBase: String) : Integer;
                 procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
                 function PyGetAttr(attr: PChar) : PyObject; override;
                 function TestConversionType(I: Integer) : QFileObjectClass; override;
@@ -151,7 +155,8 @@ type
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin, Qkzip2, qkq3, QkObjectClassList;
+uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin,
+ Qkzip2, qkq3, QkObjectClassList, QkBsp;
 
 {$R *.DFM}
 
@@ -580,6 +585,43 @@ begin
   end;
 end;
 
+function QPakFolder.ExtractEntitiesTo(PathBase: String) : Integer;
+var
+ I: Integer;
+ Q: QObject;
+ S: String;
+ EntityFile: TextFile;
+begin
+ Result:=0;
+
+ if (PathBase<>'') and (PathBase[Length(PathBase)]<>'\') then
+  PathBase:=PathBase+'\';
+ for I:=1 to Length(PathBase) do
+  if PathBase[I]='\' then
+   begin
+    PathBase[I]:=#0;
+    CreateDirectory(PChar(PathBase), Nil);
+    PathBase[I]:='\';
+   end;
+ Acces;
+ for I:=0 to SubElements.Count-1 do
+  begin
+   Q:=SubElements[I];
+   if Q is QPakFolder then
+    Inc(Result, QPakFolder(Q).ExtractEntitiesTo(PathBase))
+   else
+    if (Q is QFileObject) and (Q.Typeinfo='.bsp') then
+     begin
+      S:= QBsp(Q).GetEntityLump;
+      AssignFile(EntityFile, PathBase+Q.Name+'.ent');
+      rewrite(Entityfile);
+      Writeln(EntityFile,S);
+      CloseFile(EntityFile);
+      Inc(Result);
+     end;
+  end;
+end;
+
 procedure QPakFolder.RecGO1(const SubPath: String; extracted: PyObject);
 var
  I: Integer;
@@ -782,18 +824,31 @@ begin
   case Cmd of
   { PAKX } Ord('P')+256*Ord('A')+65536*Ord('K')+16777216*Ord('X'):
      if FileObject is QPakFolder then
-      begin
+     begin
        GetDir(0, Path);
        Result:=BrowseForFolderDlg(Handle, Path, LoadStr1(5662), '');
        if Result then
-        begin
+       begin
          Update;
          ProgressIndicatorStart(0,0); try
          Count:=QPakFolder(FileObject).ExtractTo(Path);
          finally ProgressIndicatorStop; end;
          MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
-        end;
-      end;
+       end;
+     end;
+
+  { PAKE } Ord('P')+256*Ord('A')+65536*Ord('K')+16777216*Ord('E'):
+     if FileObject is QPakFolder then
+     begin
+       GetDir(0, Path);
+       Result:=BrowseForFolderDlg(Handle, Path, LoadStr1(5662), '');
+       if Result then
+         Update;
+         ProgressIndicatorStart(0,0); try
+         Count:=QPakFolder(FileObject).ExtractEntitiesTo(Path);
+         finally ProgressIndicatorStop; end;
+         MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
+     end;
   end;
 end;
 
