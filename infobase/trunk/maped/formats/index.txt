@@ -1,32 +1,14 @@
 title: Supported Map Formats
+desc: floating
+desc: formats
+desc: q62conv
 
-QuArK writes maps in a considerable range of formats, some aspects of which
-are selected in the `Output Map Format' dropdown box in the configuration
-section for each game, while others are hard-coded to the specific game
-(because they reflect specific features of the engine itself rather than
-more mutable properties of the build-tools).
+QuArK writes maps in a considerable range of formats, but also has
+the peculiarity of allowing (and indeed in certain ways promoting) the writing of
+faces with non-integer coordinates.  This is considered to be profoundly
+evil by some people, and can certainly cause problems, although I don't
+think it's always so bad (especially for example with non-structural brushes).
+At the least, it can create problems in using QuArK together with map
+editors that don't tolerate floating point coordinates well.
 
-The currently supported main types, choosable in the Output Map Format box,
-are:
-<UL>
-<LI>Classic Quake: the original, with hardcoded variants for Quake1/2/3,
-Hexen II, Sin.  Limited in the range of texture positioning and scaling
-it can code.
-<LI>Quark etp: a variant of Classic Quake in which the texture position and
-scaling is given by the face threepoints, with a `TX' code 1 or 2 to indicate
-whether the texture should be mirror-imaged or not.  This gives full
-flexibility in positioning textures, but <I>may</I> be associated with
-some small errors in vertex positioning (it's not certain that this is
-really a problem in output maps).
-<LI>Valve 220: Valve's enhancement of Classic Quake.
-<LI>Brush Primitives: Id's enhancement of Classic Quake, for Q3 and RCTW
-(will probably be supported for any games that GtkRadiant comes to support).
-</UL>
-Quark etp only works with custom build tools that support it (including
-Zoner's HL tools).  You shouldn't change the Map Output Format for a game
-unless you know what you're doing.
 
-Two other format options you can teak in the Map|Options section of the
-config screen are whether or not to write comments, and whether or not
-to write floating-point coordinates in the map files; the latter box in
-particular should be left alone unless you know what you're doing.
