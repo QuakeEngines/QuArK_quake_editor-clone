@@ -8,6 +8,8 @@
 
 #$Header$
 
+from quarkpy.qutils import *
+
 def cyclenext(i, len):
   j = i+1
   if j == len:
@@ -64,4 +66,20 @@ def shares_edge(face, poly, vtx1, vtx2):
    list = intersection_vect([vtx1, vtx2], vtxes)
    return len(list)==2
 
-#$Log$       
+
+def coplanar(f1, f2, opp=1):
+    "if opp==0, face normals must point in same direction"
+    o1 = f1.dist*f1.normal
+    o2 = f2.dist*f2.normal
+    if not f1.normal*(o2-o1):
+        if not f1.normal-f2.normal:
+            return 1
+        if opp and not f1.normal+f2.normal:
+            return 1
+    return 0
+    
+
+#$Log$
+#Revision 1.1  2001/04/01 04:43:48  tiglari
+#initial commit
+#       
