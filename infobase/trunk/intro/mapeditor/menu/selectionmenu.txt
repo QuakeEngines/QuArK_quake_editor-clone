@@ -3,7 +3,9 @@ author: tiglari
 
 <img border=0 align=right>selection.png</img>
 
-<i>Cancel Selections.</i> 'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.
+<i>Cancel Selections.</i> (or by pressing its HotKey) Will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.
+
+<i>Make Detail.</i> (or by pressing its HotKeys) Will set the texture flag for the selected items to 'detail' so as to be ignored during the bsp file build to reduce the size of that game file. You can select any poly, face, side or combinaition. Once you have selected them hold the Alt key and press the D key to set all of their detail flags to active. If you still have them selected and press the Alt+D keys a second time, it will deactivate their detail flags, making it a toggle switch type function. Also, if you have a brush with just one or two faces already set for detail then by selecting the brush and using the Alt+D hot key, it will invert their settings. The detail face(s) will become inactive and all the others will be set to detail. 
 
 <i>Select parent.</i> If something is selected, switches the selection to
 that thing's parent in the map structure.  For example if a face is selected,

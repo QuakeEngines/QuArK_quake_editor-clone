@@ -177,6 +177,8 @@ def zoomToMeFunc(editor,object):
     #
     # 3d views with zoom feature
     #
+
+
     views = filter(lambda v:v.info["type"]=="3D", editor.layout.views)
     for view in views:
         pos, yaw, pitch = view.cameraposition
@@ -1037,8 +1039,8 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     if filter(lambda x:x.type==':f', sellist):
         meninvertfacesel.state=qmenu.normal
     if len(sellist)>1:
-#cdunde-to keep Cancel Selection active
-        browseItem.state=quarkpy.mapselection.removeItem.state=qmenu.normal
+#cdunde-to keep Cancel Selection and Make Detail functions active
+        browseItem.state=quarkpy.mapselection.removeItem.state=quarkpy.mapselection.makedetail.state=qmenu.normal
     else:
         browseItem.state=qmenu.disabled
     if len(sellist)==1:
@@ -1100,6 +1102,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.28  2003/11/27 08:17:22  cdunde
+# To update 3D Zoom to selection feature for faces
+#
 # Revision 1.27  2003/11/22 08:13:57  cdunde
 # To update plugin and infobase for final version of 3D views Zoom feature
 #

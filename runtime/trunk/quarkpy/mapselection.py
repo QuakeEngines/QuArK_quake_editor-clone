@@ -11,11 +11,11 @@ The map editor's "Selection" menu (to be extended by plug-ins)
 #$Header$
 
 
-
 import quarkx
 import qmenu
 import mapmenus
 from maputils import *
+
 
 def getEditorSelection(editor=None):
     if editor is None:
@@ -36,6 +36,40 @@ def EscClick(m):
         editor.layout.explorer.uniquesel = None
     delAttr(editor,'frozenselection')
 
+
+def DetailClick(m):
+    editor = mapeditor(SS_MAP)
+    if editor is not None:
+        undo = quarkx.action()
+        items = editor.layout.explorer.sellist
+
+        # Quickly defined function within function.
+        def SwapFlag(ContentsString, flagvalue=134217728):
+            if (ContentsString == None):
+                contents_integer = 0
+            else:
+                contents_integer = int(ContentsString)
+
+            if ((contents_integer & flagvalue) == flagvalue):
+                contents_integer = (contents_integer - flagvalue)
+            else:
+                contents_integer = (contents_integer | flagvalue)
+            return str(contents_integer)
+
+        # Loop through all items, one by one
+        for item in items:
+            if item.type == ":f":
+                # The item is a single face, so swap its flag
+                undo.setspec(item, 'Contents', SwapFlag(item['Contents']))
+            elif item.type == ":p":
+                # The item is a polyhedron, which may consist of several faces (or other stuff)
+                for subitem in item.faces:
+                    if subitem.type == ":f":
+                        undo.setspec(subitem, 'Contents', SwapFlag(subitem['Contents']))
+
+        undo.ok(editor.Root, "swap detail flag")
+        editor.layout.explorer.sellist = items
+    
 def UnfreezeClick(m):
     editor = mapeditor(SS_MAP)
     delAttr(editor, 'frozenselection')
@@ -43,7 +77,7 @@ def UnfreezeClick(m):
 def FreezeClick(m):
     editor = mapeditor(SS_MAP)
     editor.frozenselection = 1
-    
+
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
@@ -115,8 +149,12 @@ def nextClick(m,editor=None):
 
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
+
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
+
 removeItem = qmenu.item("&Cancel Selections", EscClick, "|Cancel Selections:\n\n'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.|intro.mapeditor.menu.html#selectionmenu")
+
+makedetail = qmenu.item("Make &Detail", DetailClick, "|Make Detail:\n\n'Make Detail', or by pressing its HotKey, will set the texture flag for the selected items to 'detail' so as to be ignored during the bsp file build to reduce the size of that game file.\n\nYou can select any poly, face, side or combinaition.Once you have selected them hold the Alt key and press the D key to set all of their detail flags to active. If you still have them selected and press the Alt+D keys a second time, it will deactivate their detail flags, making it a toggle switch type function. Also, if you have a brush with just one or two faces already set for detail then by selecting the brush and using the Alt+D hot key, it will invert their settings. The detail face(s) will become inactive and all the others will be set to detail.|intro.mapeditor.menu.html#selectionmenu")
 
 parentItem = qmenu.item("Select &Parent", parentClick, "|Select Parent:\n\n  The Parent is collapsed in the treeview unless '%s' is depressed.|intro.mapeditor.menu.html#selectionmenu"%collapse)
 
@@ -138,17 +176,17 @@ freezeItem = qmenu.item("Freeze Selection", FreezeClick, freezetext)
 # Global variables to update from plug-ins.
 #
 
-items = [removeItem, parentItem, childItem, nextItem, prevItem, freezeItem, unfreezeItem]
+items = [removeItem, makedetail, parentItem, childItem, nextItem, prevItem, freezeItem, unfreezeItem]
 shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    removeItem.state=parentItem.state=childItem.state=qmenu.disabled
+    removeItem.state=makedetail.state=parentItem.state=childItem.state=qmenu.disabled
     nextItem.state=prevItem.state=freezeItem.state=unfreezeItem.state=qmenu.disabled
     if editor is not None:
         uniquesel = editor.layout.explorer.uniquesel 
         if uniquesel is not None:
-            removeItem.state=nextItem.state=prevItem.state=qmenu.normal
+            removeItem.state=makedetail.state=nextItem.state=prevItem.state=qmenu.normal
             if len(uniquesel.subitems)>0:
                 childItem.state = qmenu.normal
             if uniquesel.treeparent is not None:
@@ -157,6 +195,11 @@ def onclick(menu):
                 freezeItem.state=qmenu.normal
             else:
                 unfreezeItem.state=qmenu.normal
+#        sellist = editor.layout.explorer.sellist
+#        if sellist is not None:
+#            makedetail.state=qmenu.normal
+#        else:
+#            makedetail.state=qmenu.disabled
 
 def SelectionMenu():
     "The Selection menu, with its shortcuts."
@@ -168,11 +211,15 @@ def SelectionMenu():
     MapHotKeyList("Select Previous", prevItem, shortcuts)
     MapHotKeyList("Freeze Selection", freezeItem, shortcuts)
     MapHotKeyList("Unfreeze Selection", unfreezeItem, shortcuts)
+    MapHotKeyList("Make Detail", makedetail, shortcuts)
 
     return qmenu.popup("Selectio&n", items, onclick), shortcuts
 
 
 # $Log$
+# Revision 1.13  2003/03/27 08:56:28  cdunde
+# Update by tiglari to fix runtime and other errors.
+#
 # Revision 1.12  2003/03/26 03:21:31  cdunde
 # To fix runtime error and gray out all menu items if no selection is made.
 #
