@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.9  2002/12/31 01:25:17  tiglari
+Get/SetThreePointsT so that they don't use LoadData and thereby cause
+ exceptions with invalid poly's
+
 Revision 1.56.2.8  2002/12/29 04:15:55  tiglari
 declaration for gethreepointsusertexnorecenter
 
@@ -5008,15 +5012,7 @@ begin
  Result:=GetThreePoints(V1, V2, V3);
  if Result then
   begin
-
-   if GetFloatsSpec('tv',TexV) then
-     Tv:=true;
-
    SetThreePoints(V1, V3, V2);
-
-   if TV then
-     SetFlipTex(TexV);
-
   end;
 end;
 
