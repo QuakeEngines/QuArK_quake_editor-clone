@@ -876,7 +876,7 @@ begin
      S:=Specifics.Values['a'];
      if S<>'' then
       begin   { Quake 3 }
-        { no support for shaders or JPEG files currently }
+        { no support for shaders currently }
        Link:=NeedGameFileBase(S, Q2TexPath+TexName+'.tga') as QPixelSet;
        Link.AddRef(+1);
        Link.Acces;  { we found the linked texture }
