@@ -11,6 +11,10 @@ from the relatively straightforward to crazed dreams.
 <li>Model editor: (Andy, tiglari)
 <br>  export closed mesh to brushset
 
+<li> NetQuark: (???)
+Multi-user editing over the net.  Would need somebody who
+really knows what they're doing, imo.
+
 <li>persistent edits: (?)
 <br> undo/redo info written to files/saved with maps,
 supporting playable entity demos (Ax2grind idea),

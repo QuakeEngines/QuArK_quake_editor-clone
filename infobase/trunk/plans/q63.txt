@@ -10,15 +10,13 @@ around to doing for a timely release.
 <li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
 <br>Actually, totally reorganize bsp reading code
 
+<li> Write WC3.3 map format: (tiglari)
+
 <li>Model Editor: (Andy)
-<br>More games supported better
+<br>more progress
 
 <li>MipTex Extraction: (tiglari,Andy)
 <br>Get the add-on builder to handle Q1, Hx2 properly
-
-<li>Path Duplicator: (Decker, tiglari)
-<br>Dialogs for making arcs etc. (basically done)
-<br>More amelioration for roll problems
 
 <li>Linear Matrix editor: (tiglari)
 <br>crank out matrices for rotation, scaling

@@ -18,27 +18,34 @@ Editing of folder properties not yet implemented, maybe delay til 6.3
 <br>No 'cp picking' or linear mapping handles.
 
 <li>Bezier CP Picking: (tiglari)
-<br>Select certain cp's & operate on them only.
+<br>Select certain cp's & operate on them only. (in map views, not
+bezier page)
 
 <li>Read/Write Brush Primitives: (tiglari)
 <br>There's a potential for imprecisions to accumulate if
 stuff is imported & exported multiple times/
+
+
+<li>Read Worlcraft 3.3 Map format: (tiglari)
+<br>No writing yet.  So Quark is now among other things a
+WC3.3->standard format map converter.
 
 <li>DefaultTextureScale: (tiglari)
 <br>Only for the buttons, don't yet understand how
 to do it for direct insert from toolbox menu.
 
 <li>Path duplicator: (Decker, tiglari)
-<br>With tiling substructures, 'elbow spaces'.
-
-<li>Brush-based shape builders: (tiglari)
-<br>No 'thick' yet.
+<br>With tiling substructures, 'elbow spaces', point position/creation
+dialogs, `roll control'.
 
 <li>Patch-based shape builders: (tiglari)
 <br>New orientations.
 
+<li>Brush-based shape builders: (tiglari)
+<br>No 'thick' yet.  Same orientations as patch-based ones.
+
 <li>Stairway duplicator: (Decker)
-<br>Stairs in abox
+<br>Stairs in a box
 
 <li>Microbrush H/K: (tiglari)
 <br> Find and destroy.
@@ -46,7 +53,8 @@ to do it for direct insert from toolbox menu.
 <li>New Games/Addons Supported:
 <br>STVEF (Alex)
 <br>Q3TA (Maleficus, Andy)
-<br>Crystal Space (Desmond Fletcher, et. al.)
+<br>Crystal Space (Desmond Fletcher, et. al.)  This one probably
+needs more work from somebody knowledgeable about CS.
 
 <li>Drag & Drop imprecision bug: (tiglari)
 <br>squashed.
@@ -73,6 +81,8 @@ radially around a tiltable axis, with 'spiral' attributes.
 <br> Entities extracted from .bsp's in many formats
     (including Q3(T)A).
     
+<li> fgd converter: (Andy, Decker)
+
 <li> tag side plugin: (tiglari)
 <br> Wrap texture across tagged might be less fussy
     
