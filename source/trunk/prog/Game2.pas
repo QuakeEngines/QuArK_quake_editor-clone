@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.8  2001/03/20 21:48:05  decker_dk
 Updated copyright-header
 
@@ -114,7 +117,7 @@ var
   rc: Integer;
   searchRec: TSearchRec;
 begin
-  rc:=FindFirst(IncludeTrailingBackslash(a_Path)+a_FileMask, faAnyFile, searchRec);
+  rc:=FindFirst(IncludeTrailingPathDelimiter(a_Path)+a_FileMask, faAnyFile, searchRec);
   try
     while rc=0 do
     begin

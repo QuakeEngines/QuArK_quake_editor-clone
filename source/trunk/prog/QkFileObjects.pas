@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.36  2003/08/12 15:49:53  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -1276,8 +1279,16 @@ procedure QFileObject.TrySavingNow;
  F: TQForm1;}
 begin
  if FFlags and ofFileLink = 0 then
-  Raise EErrorFmt(5531, [Filename]);
- SaveInFile(RecommendFormat, '');
+   Raise EErrorFmt(5531, [Filename]);
+
+ // SilverPaladin - 12/1/03 - Changed the error messages to a warning so that
+ // the save of multiple files is not interupted for one file that is not yet
+ // supported. 
+ try
+   SaveInFile(RecommendFormat, '');
+ except
+   ShowMessage('The file ' + Filename + '''s "save" support has not yet been added.  File ignored.".')
+ end;
 {while EnumObjectWindow(F) do
   SendMessage(F.Handle, wm_InternalMessage, wp_SetModify, 0);
  if g_Form1.Explorer.Roots.IndexOf(Self)>=0 then
