@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.190  2002/05/13 10:24:06  tiglari
+//support bilinear filtering in OGL views
+//
 //Revision 1.189  2002/05/07 09:30:46  tiglari
 //JKII Updates from nurail
 //
@@ -815,6 +818,8 @@ QQRKSRC1
         Brush Subtraction =  "Ctrl+B"
         Browse Multiple Selection = "Alt+B"
         Invert Face Selection = "Ctrl+I"
+        Freeze Selection = "Alt+F"
+        Unfreeze Selection = "Alt+U"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -1715,7 +1720,7 @@ QQRKSRC1
       Mouse:config =
       {
         Left        = "S"
-        LeftShift   = ""
+        LeftShift   = "FS"
         LeftCtrl    = "ST"
         Right       = "SM"
         RightShift  = "M"
@@ -3609,6 +3614,7 @@ QQRKSRC1
       Typ = "CL"      // Combobox List
       Items = "Ignored"
            $0D"Select object"
+           $0D"Frozen selection"
            $0D"Select multiple"
            $0D"Select and Menu"
            $0D"Multiselect and Menu"
@@ -3617,6 +3623,7 @@ QQRKSRC1
            $0D"Zoom Out"
       Values = ""
             $0D"S"
+            $0D"FS"
             $0D"ST"
             $0D"SM"
             $0D"STM"
@@ -3683,6 +3690,8 @@ QQRKSRC1
        Restrict to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
        Browse Multiple Selection = {HotKeyForm = !}
+       Freeze Selection: = {HotKeyForm = !}
+       Unfreeze Selection: = {HotKeyForm = !}
        Invert Face Selection = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}

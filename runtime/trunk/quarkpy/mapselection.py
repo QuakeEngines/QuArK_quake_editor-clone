@@ -3,7 +3,7 @@
 The map editor's "Selection" menu (to be extended by plug-ins)
 """
 #
-# Copyright (C) 1996-99 Armin Rigo
+# Copyright (C) 1996-99 Armin Rigo and the QuArK community
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
@@ -33,7 +33,17 @@ def EscClick(m):
         editor.layout.mpp.viewpage(0)
     else:
         editor.layout.explorer.uniquesel = None
+    delAttr(editor,'frozenselection')
 
+
+def UnfreezeClick(m):
+    editor = mapeditor(SS_MAP)
+    delAttr(editor, 'frozenselection')
+
+def FreezeClick(m):
+    editor = mapeditor(SS_MAP)
+    editor.frozenselection = 1
+    
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
@@ -114,11 +124,16 @@ prevItem = qmenu.item("Select Pre&vious", nextClick, "|Selects previous item in 
 nextItem.succ = getNext
 prevItem.succ = getPrevious
 
+freezetext = "|If the selection is 'frozen', then clicking in the map view won't change it unless the ALT key depressed, which also freezes to the new selection.\n\nOther methods of of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC will unfreeze as well as clear it."
+
+unfreezeItem = qmenu.item("Unfreeze Selection", UnfreezeClick, freezetext)
+freezeItem = qmenu.item("Freeze Selection", FreezeClick, freezetext)
+
 #
 # Global variables to update from plug-ins.
 #
 
-items = [removeItem, parentItem, childItem, nextItem, prevItem]
+items = [removeItem, parentItem, childItem, nextItem, prevItem, freezeItem, unfreezeItem]
 shortcuts = {}
 
 def onclick(menu):
@@ -129,6 +144,12 @@ def onclick(menu):
         if editor.layout.explorer.uniquesel is not None:
             prevItem.state=nextItem.state=parentItem.state=qmenu.normal
             removeItem.state=qmenu.normal
+        if getAttr(editor,'frozenselection') is None:
+            freezeItem.state=qmenu.normal
+            unfreezeItem.state=qmenu.disabled
+        else:
+            freezeItem.state=qmenu.disabled
+            unfreezeItem.state=qmenu.normal
 
 
 def SelectionMenu():
@@ -139,11 +160,16 @@ def SelectionMenu():
     MapHotKeyList("Select Child", childItem, shortcuts)
     MapHotKeyList("Select Next", nextItem, shortcuts)
     MapHotKeyList("Select Previous", prevItem, shortcuts)
+    MapHotKeyList("Freeze Selection", freezeItem, shortcuts)
+    MapHotKeyList("Unfreeze Selection", unfreezeItem, shortcuts)
 
     return qmenu.popup("Selectio&n", items, onclick), shortcuts
 
 
 # $Log$
+# Revision 1.4  2001/05/04 06:36:53  tiglari
+# Accelerators added to selection menu
+#
 # Revision 1.3  2001/05/03 05:35:17  tiglari
 # fixed selection menu crash bug (failure to test for 'is not None')
 #

@@ -1387,7 +1387,7 @@ def MouseDragging(self, view, x, y, s, handle):
     #
     # qhandles.MouseDragging builds the DragObject.
     #
-
+    debug('dragg: '+s)
     if handle is not None:
         s = handle.click(self)
         if s and ("S" in s):
@@ -1397,14 +1397,26 @@ def MouseDragging(self, view, x, y, s, handle):
 
 
 def ClickOnView(editor, view, x, y):
+    #
+    # defined in QkPyMapview.pas
+    #
     return view.clicktarget(editor.Root, x, y)
 
 
+def MapAuxKey(keytag):
+    return quarkx.setupsubset(SS_GENERAL,"AuxKeys")[keytag]
+
 def wantPoly():
-    return quarkx.keydown('P')==1
+    return quarkx.keydown(MapAuxKey('Select Brushes'))==1
 
 def wantFace():
-    return quarkx.keydown('F')==1
+    return quarkx.keydown(MapAuxKey('Select Faces'))==1
+    
+def wantCurve():
+     return quarkx.keydown(MapAuxKey('Select Curves'))==1    
+
+def wantEntity():
+    return quarkx.keydown(MapAuxKey('Select Entities'))==1
 
 def MouseClicked(self, view, x, y, s, handle):
     "Mouse Click on a Map view."
@@ -1414,11 +1426,10 @@ def MouseClicked(self, view, x, y, s, handle):
     #
 
     flags = qhandles.MouseClicked(self, view, x, y, s, handle)
-
+#    debug('flagz: '+s)
     if view.info["type"]=="3D":
         self.last3DView = view
     if "1" in flags:
-
         #
         # This mouse click must select something.
         #
@@ -1426,6 +1437,30 @@ def MouseClicked(self, view, x, y, s, handle):
         self.layout.setupdepth(view)
         choice = ClickOnView(self, view, x, y)
          # this is the list of polys & entities we clicked on
+         # the members of the choice list are pairs, for polys,
+         #   the first is the poly, the second the face
+         #
+        if wantCurve():
+            choice=filter(lambda obj:obj[1].type==':b2', choice)
+        elif wantFace() or wantPoly():
+            choice=filter(lambda obj:obj[1].type==':p', choice)
+        elif wantEntity():
+
+            def getentities(choice):
+                result=[]
+                for item in choice:
+                    if item[1].type==':e':
+                        result.append(item)
+                    else:
+                        parent=item[1].treeparent   
+                        while parent.name!='worldspawn:b':
+                            if parent.type==':b':    # eventually it will hit worldspawn
+                                result.append((choice[0], parent, parent))
+                                break
+                            parent=parent.treeparent
+                return result
+                
+            choice=getentities(choice)
         if len(choice):
             wantpoly = wantPoly()
             wantface = wantFace()
@@ -1439,6 +1474,11 @@ def MouseClicked(self, view, x, y, s, handle):
             if ("M" in s):    # if Menu, we try to keep the currently selected objects
                 return flags
             if "T" in s:    # if Multiple selection request
+                #
+                # if selection is frozen, ignore request
+                #
+                if getAttr(self, 'frozenselection') is not None:
+                    return flags
                 obj = qhandles.findnextobject(choice)
                 obj.togglesel()
                 if obj.selected:
@@ -1451,6 +1491,18 @@ def MouseClicked(self, view, x, y, s, handle):
                     keep=0
                 last = qhandles.findlastsel(choice,keep)
                 if last:  last = last - len(choice)
+                #
+                #  if the selection is 'frozen', it can only be changed
+                #    by another SHIFT-selection, or the ESC key
+                #
+                # if the selection if frozen and this isn't a change
+                #    frozen selection request, ignore it
+                #
+                if not "F" in s:
+                    if getAttr(self,'frozenselection') is not None:
+                       return flags
+                if "F" in s:
+                    self.frozenselection = 1
                 if wantface:
                     self.layout.explorer.uniquesel = choice[last][2]
                 else:
@@ -1458,7 +1510,14 @@ def MouseClicked(self, view, x, y, s, handle):
 
         else:
             if not ("T" in s):    # clear current selection
-                self.layout.explorer.uniquesel = None
+                #
+                # if the selection is 'frozen', we don't want to be
+                #   able to clear it with a mouseclick, only ESC
+                #
+                if getAttr(self,'frozenselection') is not None:
+                      pass
+                else:
+                   self.layout.explorer.uniquesel = None
         return flags+"S"
     return flags
 
@@ -1746,6 +1805,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.33  2001/09/26 22:37:24  tiglari
+#change close button to cancel in proportional glue dialog
+#
 #Revision 1.32  2001/09/24 23:56:42  tiglari
 #store cyanlhandle glue proportion in setup, fix some issues
 #
