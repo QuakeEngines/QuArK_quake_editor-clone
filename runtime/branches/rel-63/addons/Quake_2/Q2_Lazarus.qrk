@@ -1,0 +1,8466 @@
+QQRKSRC1
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2001/04/14 19:30:42  decker_dk
+//Added Lazarus data addon.
+//
+{
+  Game Directories.qctx =
+  {
+  }
+  Toolbox Folders.qtx =
+  {
+    Toolbox = "New map items..."
+    Root = "Entities for Lazarus.qtxfolder"
+    Entities for Lazarus.qtxfolder =
+    {
+      ;desc = "Created from quake2_lazarus.fgd"
+      other entities.qtxfolder =
+      {
+        worldspawn:b =
+        {
+          ;desc = "World entity"
+          fogclip = "0"
+          attenuation = "1.0"
+          shift = "1.0"
+          gravity = "800"
+        }
+        light:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Light"
+          light = "250"
+          _falloff = "0"
+          _fade = "1"
+          _angfade = "1"
+          style = "0"
+          _cone = "10"
+          _focus = "1"
+        }
+        viewthing:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Just for debugging level - dont use"
+        }
+      }
+      null_* entities.qtxfolder =
+      {
+        null_entity:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Phony entity placeholder to be used as default entity class"
+          comment = "Not an valid entity!"
+        }
+      }
+      ammo_* entities.qtxfolder =
+      {
+        ammo_shells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Shotgun ammo"
+        }
+        ammo_bullets:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Machine/Chain gun ammo"
+        }
+        ammo_cells:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Blaster/BFG ammo"
+        }
+        ammo_fuel:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Jetpack fuel"
+        }
+        ammo_grenades:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Grenades"
+        }
+        ammo_rockets:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rockets"
+        }
+        ammo_slugs:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rail gun ammo"
+        }
+      }
+      crane_* entities.qtxfolder =
+      {
+        crane_beam:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Crane body"
+        }
+        crane_control:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Crane control panel"
+        }
+        crane_hoist:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Crane hoist"
+        }
+        crane_hook:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Crane hook"
+        }
+        crane_reset:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Crane_reset"
+        }
+      }
+      func_* entities.qtxfolder =
+      {
+        func_areaportal:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Area portal (Vis blocker)"
+        }
+        func_bobbingwater:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Moveable, bobbing water"
+        }
+        func_button:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Button"
+        }
+        func_clock:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Clock"
+          style = "0"
+        }
+        func_conveyor:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Conveyor belt"
+        }
+        func_door:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Door"
+        }
+        func_door_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Rotating Door"
+        }
+        func_door_rot_dh:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Rotating Door"
+        }
+        func_door_secret:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Secret Door"
+        }
+        func_door_swinging:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "2-way Rotating Door"
+        }
+        func_explosive:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Exploding/Breakable brush"
+        }
+        func_force_wall:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Force field"
+          style = "208"
+          dmg = "0"
+        }
+        func_group:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Non-Entity Grouping"
+        }
+        func_killbox:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Instant death"
+        }
+        func_monitor:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Security camera monitor"
+        }
+        func_object:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Solid bmodel, will fall if its support is removed"
+        }
+        func_pendulum:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Pendulum"
+          distance = "90"
+          mass = "100"
+          move_origin = "0 0 0"
+          radius = "100"
+          dmg = "5"
+        }
+        func_plat:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Platform"
+        }
+        func_pushable:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Pushable Object"
+        }
+        func_rotating:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Rotating brush"
+        }
+        func_rotating_dh:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Rotating brush"
+        }
+        func_timer:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Timer"
+          wait = "1"
+        }
+        func_trackchange:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Train track changing platform"
+        }
+        func_tracktrain:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Track Train"
+        }
+        func_train:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Moving platform"
+        }
+        func_trainbutton:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Button on a train"
+        }
+        func_vehicle:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Controllable vehicle"
+        }
+        func_wall:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Solid Wall"
+        }
+        func_water:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Moveable water"
+        }
+      }
+      hint_* entities.qtxfolder =
+      {
+        hint_path:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Monster hint path"
+          wait = "0"
+        }
+      }
+      info_* entities.qtxfolder =
+      {
+        info_null:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Spotlight target"
+        }
+        info_notnull:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Lightning target"
+        }
+        info_player_start:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Player 1 start"
+        }
+        info_player_deathmatch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Player deathmatch start"
+        }
+        info_player_coop:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Player cooperative start"
+        }
+        info_player_intermission:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Deathmatch intermission point"
+        }
+      }
+      item_* entities.qtxfolder =
+      {
+        item_adrenaline:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "+1 to max health"
+        }
+        item_ancient_head:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "+2 to max health"
+        }
+        item_armor_body:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Body armor"
+        }
+        item_armor_combat:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Combat armor"
+        }
+        item_armor_jacket:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Jacket armor"
+        }
+        item_armor_shard:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Armor shard"
+        }
+        item_bandolier:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Equipment belt"
+        }
+        item_breather:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Underwater breather"
+        }
+        item_enviro:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Enviro-Suit"
+        }
+        item_flashlight:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Flashlight"
+          count = "0"
+        }
+        item_health:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "+10 health"
+        }
+        item_health_small:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "+2 health"
+        }
+        item_health_large:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "+25 health"
+        }
+        item_health_mega:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "+100 health"
+        }
+        item_invulnerability:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Invulnerability"
+        }
+        item_jetpack:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Jetpack"
+          count = "500"
+        }
+        item_pack:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Heavy backpack"
+        }
+        item_power_screen:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Power screen"
+        }
+        item_power_shield:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Power shield"
+        }
+        item_quad:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Quad damage"
+        }
+        item_silencer:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Silencer"
+        }
+      }
+      key_* entities.qtxfolder =
+      {
+        key_airstrike_target:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tank commander's head"
+        }
+        key_blue_key:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Normal door key - blue"
+        }
+        key_commander_head:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tank commander's head"
+        }
+        key_data_cd:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Key for computer centers"
+        }
+        key_data_spinner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Key for city computer"
+        }
+        key_pass:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Security pass for secret level"
+        }
+        key_power_cube:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Warehouse circuits"
+        }
+        key_pyramid:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Key for entrance to jail3"
+        }
+        key_red_key:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "normal door key - red"
+        }
+      }
+      light_* entities.qtxfolder =
+      {
+        light_mine1:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Dusty fluorescent light fixture"
+        }
+        light_mine2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Clean fluorescent light fixture"
+        }
+      }
+      misc_* entities.qtxfolder =
+      {
+        misc_actor:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Actor"
+          sounds = "0"
+          style = "0"
+          health = "100"
+          gib_health = "-40"
+          mass = "200"
+          powerarmor = "0"
+          flies = "0"
+        }
+        misc_banner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Flowing banner"
+        }
+        misc_blackhole:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Blackhole"
+        }
+        misc_deadsoldier:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Dead guys"
+          style = "0"
+        }
+        misc_eastertank:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tank Pimp"
+        }
+        misc_easterchick:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Chick #1"
+        }
+        misc_easterchick2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Chick #2"
+        }
+        misc_explobox:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Large exploding box"
+          mass = "100"
+          health = "80"
+          dmg = "150"
+        }
+        misc_gib_arm:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "arm gib, use with target_spawner"
+        }
+        misc_gib_head:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "head gib, use with target_spawner"
+        }
+        misc_gib_leg:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "leg gib, use with target_spawner"
+        }
+        misc_insane:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Insane Soldiers"
+          health = "100"
+          gib_health = "-50"
+          mass = "300"
+          flies = ".30"
+        }
+        misc_satellite_dish:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Satellite Dish"
+        }
+        misc_strogg_ship:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Strogg ship for flybys"
+          health = "0"
+          mass = "1200"
+          dmg = "200"
+        }
+        misc_teleporter:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Teleporter"
+        }
+        misc_teleporter_dest:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Teleport Destination"
+        }
+        misc_bigviper:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Large stationary Viper"
+        }
+        misc_viper:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Viper for flybys"
+          health = "0"
+          mass = "1200"
+          dmg = "200"
+        }
+        misc_viper_bomb:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Viper Bomb"
+          dmg = "1000"
+        }
+      }
+      model_* entities.qtxfolder =
+      {
+        model_spawn:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "User models"
+          framenumbers = "1"
+          solidstate = "1"
+          style = "0"
+          health = "0"
+        }
+        model_train:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Moving model"
+        }
+      }
+      monster_* entities.qtxfolder =
+      {
+        monster_berserk:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Berserker"
+          health = "240"
+          gib_health = "-60"
+          mass = "250"
+          powerarmor = "0"
+          flies = ".20"
+        }
+        monster_boss2:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Boss2"
+          health = "2000"
+          powerarmor = "0"
+        }
+        monster_boss3_stand:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Stationary Makron"
+        }
+        monster_brain:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Brains"
+          health = "300"
+          gib_health = "-150"
+          mass = "400"
+          flies = ".10"
+        }
+        monster_chick:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Iron Maiden"
+          health = "175"
+          gib_health = "-70"
+          mass = "200"
+          powerarmor = "0"
+          flies = ".40"
+        }
+        monster_commander_body:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tank commander's decapitated body"
+        }
+        monster_flipper:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Barracuda shark"
+          health = "50"
+          gib_health = "-30"
+          mass = "100"
+          flies = ".90"
+        }
+        monster_floater:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Technician"
+          health = "200"
+          powerarmor = "0"
+        }
+        monster_flyer:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Flyer"
+          health = "50"
+          powerarmor = "0"
+        }
+        monster_gladiator:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Gladiator"
+          health = "400"
+          gib_health = "-175"
+          mass = "400"
+          powerarmor = "0"
+          flies = ".05"
+        }
+        monster_gunner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Gunner"
+          health = "175"
+          gib_health = "-70"
+          mass = "200"
+          powerarmor = "0"
+          flies = ".30"
+        }
+        monster_hover:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Icarus"
+          health = "240"
+          powerarmor = "0"
+        }
+        monster_infantry:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Infantry"
+          health = "100"
+          gib_health = "-40"
+          mass = "200"
+          powerarmor = "0"
+          flies = ".40"
+        }
+        monster_jorg:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Jorg"
+          health = "3000"
+          mass = "1000"
+          gib_health = "-900"
+          health2 = "3000"
+          mass2 = "500"
+          powerarmor = "0"
+          flies = "0"
+        }
+        monster_makron:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Makron"
+        }
+        monster_medic:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Medic"
+          health = "300"
+          gib_health = "-130"
+          mass = "400"
+          powerarmor = "0"
+          flies = ".15"
+        }
+        monster_mutant:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Mutant"
+          health = "300"
+          gib_health = "-120"
+          mass = "300"
+          flies = ".90"
+        }
+        monster_parasite:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Parasite"
+          health = "175"
+          gib_health = "-50"
+          mass = "250"
+          powerarmor = "0"
+          flies = ".35"
+        }
+        monster_soldier:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Soldier"
+          health = "30"
+          gib_health = "-30"
+          mass = "100"
+          powerarmor = "0"
+          flies = ".40"
+        }
+        monster_soldier_light:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Light Soldier"
+          health = "20"
+          gib_health = "-30"
+          mass = "100"
+          powerarmor = "0"
+          flies = ".40"
+        }
+        monster_soldier_ss:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "SS Soldier"
+          health = "40"
+          gib_health = "-30"
+          mass = "100"
+          powerarmor = "0"
+          flies = ".40"
+        }
+        monster_supertank:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Super tank"
+          health = "1500"
+          mass = "800"
+          powerarmor = "0"
+        }
+        monster_tank:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tank"
+          health = "750"
+          gib_health = "-200"
+          mass = "500"
+          powerarmor = "0"
+          flies = ".05"
+        }
+        monster_tank_commander:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tank commander"
+          health = "1000"
+          gib_health = "-225"
+          mass = "500"
+          powerarmor = "0"
+          flies = ".05"
+        }
+      }
+      path_* entities.qtxfolder =
+      {
+        path_corner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Path marker"
+          wait = "0"
+        }
+        path_track:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Tracktrain Path"
+          speed = "0"
+        }
+      }
+      point_* entities.qtxfolder =
+      {
+        point_combat:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "1st point of combat"
+        }
+      }
+      target_* entities.qtxfolder =
+      {
+        target_actor:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Actor path"
+          speed = "200"
+          height = "200"
+        }
+        target_anger:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Make someone mad"
+        }
+        target_animation:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Entity animator"
+          sounds = "0"
+          framenumbers = "1"
+        }
+        target_attractor:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Entity magnet"
+          sounds = "0"
+        }
+        target_blaster:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Blaster"
+          sounds = "0"
+          dmg = "15"
+          speed = "1000"
+          wait = "0"
+        }
+        target_bmodel_spawner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Clones brush entities"
+        }
+        target_cd:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "CD track player"
+          sounds = "2"
+          dmg = "1"
+        }
+        target_change:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Entity changer"
+        }
+        target_changelevel:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Change level"
+        }
+        target_character:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Use with target_string and func_clock"
+        }
+        target_crosslevel_trigger:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Cross-level trigger"
+        }
+        target_crosslevel_target:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Cross-level trigger"
+        }
+        target_earthquake:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Level wide earthquake"
+          speed = "200"
+          count = "5"
+        }
+        target_effect:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Calls an effect when used"
+          style = "0"
+        }
+        target_explosion:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Explosion"
+          dmg = "0"
+        }
+        target_fade:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Fade the screen"
+          color = "0 0 0"
+          alpha = "0"
+          fadein = "0"
+          holdtime = "0"
+          fadeout = "0"
+        }
+        target_failure:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Mission failure"
+        }
+        target_fog:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Fog maker"
+          fog_color = "0.5 0.5 0.5"
+          fog_model = "1"
+          fog_near = "64"
+          fog_far = "1024"
+          fog_density = "20"
+          density = "0"
+        }
+        target_fountain:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Model fountain"
+          bleft = "0 0 0"
+          count = "1"
+          mass = "0"
+          mass2 = "8"
+          sounds = "183"
+          speed = "300"
+          tright = "0 0 0"
+        }
+        target_goal:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Counts a goal completed"
+        }
+        target_help:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Computer help message"
+        }
+        target_laser:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Laser"
+          dmg = "100"
+          style = "0"
+          mass = "0"
+          wait = "0"
+          delay = "0"
+        }
+        target_lightramp:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Light ramp"
+        }
+        target_lightswitch:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Light switch"
+          message = "a"
+        }
+        target_locator:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Entity mover"
+        }
+        target_lock:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Combination lock"
+        }
+        target_lock_code:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Reveals lock combination"
+        }
+        target_lock_clue:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Use with target lock"
+        }
+        target_lock_digit:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Use with target_lock"
+        }
+        target_monitor:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Temporary viewpoint"
+          wait = "3"
+          distance = "128"
+          height = "16"
+        }
+        target_monsterbattle:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Make monster teams fight"
+        }
+        target_movewith:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Adds/removes movewith association"
+        }
+        target_playback:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Music player"
+          volume = "1"
+          fadein = "0"
+          fadeout = "0"
+        }
+        target_precipitation:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rain/snow"
+          style = "0"
+          bleft = "0 0 0"
+          count = "1"
+          mass = "0"
+          mass2 = "8"
+          sounds = "183"
+          speed = "300"
+          tright = "0 0 0"
+        }
+        target_rocks:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rock slide"
+          mass = "500"
+          speed = "400"
+        }
+        target_rotation:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Target cycler"
+        }
+        target_secret:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Counts a secret found"
+        }
+        target_set_effect:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Add eyecandy to other entities"
+        }
+        target_sky:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Change env sky"
+        }
+        target_spawner:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Monster/Item spawner"
+        }
+        target_speaker:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Sound player"
+          attenuation = "1"
+          volume = "1"
+        }
+        target_splash:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Creates a splash when used"
+          sounds = "2"
+        }
+        target_string:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "String"
+        }
+        target_temp_entity:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Temp entity"
+          style = "22"
+        }
+        target_text:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "General text display"
+        }
+      }
+      trigger_* entities.qtxfolder =
+      {
+        trigger_always:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Always triggers"
+        }
+        trigger_bbox:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Multiple fire trigger"
+          wait = "0"
+          bleft = "-16 -16 -16"
+          tright = "16 16 16"
+        }
+        trigger_counter:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Counter"
+          count = "2"
+        }
+        trigger_disguise:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Notarget"
+        }
+        trigger_elevator:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Elevator trigger"
+        }
+        trigger_fog:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Fog field"
+          fog_color = "0.5 0.5 0.5"
+          fog_model = "1"
+          fog_near = "64"
+          fog_far = "1024"
+          fog_density = "20"
+          density = "0"
+        }
+        trigger_gravity:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Change gravity"
+          gravity = "1"
+        }
+        trigger_hurt:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Hurts on touch"
+          dmg = "5"
+        }
+        trigger_inside:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Multiple fire trigger"
+          wait = "0"
+        }
+        trigger_key:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Triggers with key"
+          item = "key_blue_key"
+        }
+        trigger_look:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Viewpoint trigger"
+          wait = "0"
+          bleft = "-16 -16 -16"
+          tright = "16 16 16"
+        }
+        trigger_relay:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Relay trigger"
+        }
+        trigger_once:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Single fire trigger"
+        }
+        trigger_mass:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Weight limit trigger"
+          wait = "0"
+          mass = "100"
+        }
+        trigger_monsterjump:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Makes monsters jump"
+          speed = "200"
+          height = "200"
+        }
+        trigger_multiple:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Multiple fire trigger"
+          wait = "0"
+        }
+        trigger_push:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Push trigger"
+          speed = "100"
+        }
+        trigger_scales:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Scales"
+        }
+        trigger_teleporter:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Teleporter field"
+        }
+        trigger_transition:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Level changer"
+        }
+      }
+      tremor_* entities.qtxfolder =
+      {
+        tremor_trigger_multiple:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Multiple fire toggling trigger"
+        }
+      }
+      turret_* entities.qtxfolder =
+      {
+        turret_breach:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Turret breach"
+        }
+        turret_base:b =
+        {
+          angle = "360"
+          ;incl = "defpoly"
+          ;desc = "Turret base"
+        }
+        turret_driver:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Turret driver"
+        }
+      }
+      weapon_* entities.qtxfolder =
+      {
+        weapon_blaster:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Blaster"
+        }
+        weapon_shotgun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Shotgun"
+        }
+        weapon_supershotgun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Super shotgun"
+        }
+        weapon_machinegun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Machinegun"
+        }
+        weapon_chaingun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Chain gun"
+        }
+        weapon_grenadelauncher:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Grenade launcher"
+        }
+        weapon_rocketlauncher:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rocket launcher"
+        }
+        weapon_hyperblaster:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Hyperblaster"
+        }
+        weapon_railgun:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rail gun"
+        }
+        weapon_bfg:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Big Freakin Gun!"
+        }
+      }
+    }
+  }
+  Entity Forms.fctx =
+  {
+    t_Appearflags:incl =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "256>Not Easy"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X512"
+        cap = "512>Not Normal"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1024"
+        cap = "1024>Not Hard"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2048"
+        cap = "2048>Not DM"
+      }
+    }
+    t_Appearflags1:incl =
+    {
+      t_Appearflags = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2048"
+      }
+    }
+    t_Angles:incl =
+    {
+      angles: =
+      {
+        txt = "&"
+        hint = "Angles>pitch yaw roll"
+      }
+    }
+    t_Angles1:incl =
+    {
+      angles: =
+      {
+        txt = "&"
+        hint = "Angles>pitch yaw 0"
+      }
+    }
+    t_Count:incl =
+    {
+      count: =
+      {
+        txt = "&"
+        hint = "Count>kill at # uses"
+      }
+    }
+    t_Count1:incl =
+    {
+      count: =
+      {
+        txt = "&"
+        hint = "Count>kill at # deactivations"
+      }
+    }
+    t_Delay:incl =
+    {
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay>trigger in x seconds"
+      }
+    }
+    t_Health:incl =
+    {
+      health: =
+      {
+        txt = "&"
+        hint = "Health>dmg before trigger"
+      }
+    }
+    t_Killtarget:incl =
+    {
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>remove ent from map"
+      }
+    }
+    t_Message:incl =
+    {
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+    }
+    t_Movewith:incl =
+    {
+      movewith: =
+      {
+        txt = "&"
+        hint = "Movewith>ent to move with"
+      }
+    }
+    t_Pathtarget:incl =
+    {
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>ent to trigger"
+      }
+    }
+    t_Pathtarget1:incl =
+    {
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>elevator level target"
+      }
+    }
+    t_Speed0:incl =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+    }
+    t_Speed25:incl =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+    }
+    t_Speed40:incl =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+    }
+    t_Speed100:incl =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+    }
+    t_SpeedDeg100:incl =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>deg/sec"
+      }
+    }
+    t_StyleWeap:incl =
+    {
+      style: =
+      {
+        txt = "&"
+        hint = "Style>default weapon"
+        typ = "C"
+        items = "-10>BFG (no blaster)"$0D"-9>RG (no blaster)"$0D"-8>HB (no bla"
+         "ster)"$0D"-7>RL (no blaster)"$0D"-6>GL (no blaster)"$0D"-5>CG (no bl"
+         "aster)"$0D"-4>MG (no blaster)"$0D"-3>SSG (no blaster)"$0D"-2>SG (no "
+         "blaster)"$0D"-1>None"$0D"0>Don't specify"$0D"1>Blaster"$0D"2>SG w/bl"
+         "aster"$0D"3>SSG w/blaster"$0D"4>MG w/blaster"$0D"5>CG w/blaster"$0D"6"
+         ">GL w/blaster"$0D"7>RL w/blaster"$0D"8>HB w/blaster"$0D"9>RG w/blast"
+         "er"$0D"10>BFG w/blaster"
+        values = "-10"$0D"-9"$0D"-8"$0D"-7"$0D"-6"$0D"-5"$0D"-4"$0D"-3"$0D"-2"$0D
+         "-1"$0D"0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
+         "0"
+      }
+    }
+    t_Targetname:incl =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = "Targetname>name"
+      }
+    }
+    t_Target:incl =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent to trigger"
+      }
+    }
+    t_TeamDM:incl =
+    {
+      team: =
+      {
+        txt = "&"
+        hint = "Team>DM respawn assoc"
+      }
+    }
+    t_ArghBmodel:incl =
+    {
+      _minlight: =
+      {
+        txt = "&"
+        hint = "_minlight>mottled glow 0.0-2.0"
+      }
+      _ambient: =
+      {
+        txt = "&"
+        hint = "_ambient>minlight-RGB or absolute"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "Light>tex light value"
+      }
+      _lightmin: =
+      {
+        txt = "&"
+        hint = "_lightmin>min tex light value"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>type tex light"
+        typ = "C"
+        items = "0>Normal"$0D"1>Flicker #1"$0D"6>Flicker #2"$0D"2>Slow Strong "
+         "Pulse"$0D"3>Candle #1"$0D"7>Candle #2"$0D"8>Candle #3"$0D"4>Fast Str"
+         "obe"$0D"5>Gentle Pulse #1"$0D"9>Slow Strobe"$0D"10>Fluorescent Flick"
+         "er"$0D"11>Slow pulse, no black"
+        values = "0"$0D"1"$0D"6"$0D"2"$0D"3"$0D"7"$0D"8"$0D"4"$0D"5"$0D"9"$0D"1"
+         "0"$0D"11"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "_color>tex light RGB color"
+      }
+      _focus: =
+      {
+        txt = "&"
+        hint = "_focus>fade tex light edges"
+      }
+      _minlighta: =
+      {
+        txt = "&"
+        hint = "_minlighta>abs scale minlite"
+      }
+    }
+    t_TremorEffects:incl =
+    {
+      effects: =
+      {
+        txt = "&"
+        hint = "Effects>geewhiz"
+        typ = "C"
+        items = "0>combine:add values"$0D"1>rotate"$0D"2>gib"$0D"8>blaster"$0D
+         "16>rocket"$0D"32>grenade"$0D"64>hyperblaster"$0D"128>bfg"$0D"256>col"
+         "or_shell"$0D"512>powerscreen"$0D"16384>flies"$0D"32768>quad"$0D"6553"
+         "6>pent"$0D"131072>teleporter"$0D"262144>flag1"$0D"524288>flag2"$0D"1"
+         "048576>ionripper"$0D"2097152>greengib"$0D"4194304>blue_hb"$0D"838860"
+         "8>spinning_lights"$0D"16777216>plasma"$0D"33554432>trap"$0D"67108864"
+         ">tracker"$0D"134217728>double"$0D"268435456>spheretrans"$0D"53687091"
+         "2>tagtrail"$0D"1073741824>half_damage"$0D"2147483648>tracker_trail"
+        values = "0"$0D"1"$0D"2"$0D"8"$0D"16"$0D"32"$0D"64"$0D"128"$0D"256"$0D
+         "512"$0D"16384"$0D"32768"$0D"65536"$0D"131072"$0D"262144"$0D"524288"$0D
+         "1048576"$0D"2097152"$0D"4194304"$0D"8388608"$0D"16777216"$0D"3355443"
+         "2"$0D"67108864"$0D"134217728"$0D"268435456"$0D"536870912"$0D"1073741"
+         "824"$0D"2147483648"
+      }
+      renderfx: =
+      {
+        txt = "&"
+        hint = "RenderFX>eyecandy"
+        typ = "C"
+        items = "0>combine:add values"$0D"1>minlight"$0D"2>viewermodel"$0D"4>w"
+         "eaponmodel"$0D"8>fullbright"$0D"16>depthhack"$0D"32>translucent"$0D"6"
+         "4>framelerp"$0D"128>beam"$0D"512>glow"$0D"1024>shell_red"$0D"2048>sh"
+         "ell_green"$0D"4096>shell_blue"$0D"32768>ir_visible"$0D"65536>shell_d"
+         "ouble"$0D"131072>shell_half_damage"$0D"262144>use_disguise"
+        values = "0"$0D"1"$0D"2"$0D"4"$0D"8"$0D"16"$0D"32"$0D"64"$0D"128"$0D"5"
+         "12"$0D"1024"$0D"2048"$0D"4096"$0D"32768"$0D"65536"$0D"131072"$0D"262"
+         "144"
+      }
+    }
+    worldspawn:form =
+    {
+      t_StyleWeap = !
+      fogclip: =
+      {
+        txt = "&"
+        hint = "Fogclip>modify gl_clear"
+        typ = "C"
+        items = "0>leave gl_clear alone"$0D"1>use for fog clipping"
+        values = "0"$0D"1"
+      }
+      attenuation: =
+      {
+        txt = "&"
+        hint = "Attenuation>FMOD 3D attenuation"
+      }
+      shift: =
+      {
+        txt = "&"
+        hint = "Shift>FMOD 3D Doppler shift"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>level name"
+      }
+      nextmap: =
+      {
+        txt = "&"
+        hint = "Nextmap>next level in DM"
+      }
+      sky: =
+      {
+        txt = "&"
+        hint = "Sky>env map name"
+      }
+      skyaxis: =
+      {
+        txt = "&"
+        hint = "Skyaxis>rotating sky XYZ"
+      }
+      skyrotate: =
+      {
+        txt = "&"
+        hint = "Skyrotate>speed deg/sec"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>CD track number"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "Gravity>default map gravity"
+      }
+      _ambient: =
+      {
+        txt = "&"
+        hint = "_ambient>global light-RGB or level"
+      }
+      _sun_light: =
+      {
+        txt = "&"
+        hint = "_sun_light>s1 brightness"
+      }
+      _sun_color: =
+      {
+        txt = "&"
+        hint = "_sun_color>s1 RGB color"
+      }
+      _sun_target: =
+      {
+        txt = "&"
+        hint = "_sun_target>s1 spot info_null"
+      }
+      _sun_angle: =
+      {
+        txt = "&"
+        hint = "_sun_angle>s1 yaw/pitch"
+      }
+      _sun_vector: =
+      {
+        txt = "&"
+        hint = "_sun_vector>s1 spot XYZ vector"
+      }
+      _sun_diffuse: =
+      {
+        txt = "&"
+        hint = "_sun_diffuse>s1 shadow edges"
+      }
+      _sun_diffade: =
+      {
+        txt = "&"
+        hint = "_sun_diffade>s1 diffuse fade dist"
+      }
+      _sun_ambient: =
+      {
+        txt = "&"
+        hint = "_sun_ambient>all minlite-RGB or level"
+      }
+      _sun_surface: =
+      {
+        txt = "&"
+        hint = "_sun_surface>all minsurf-RGB or level"
+      }
+      _sun2_light: =
+      {
+        txt = "&"
+        hint = "_sun2_light>s2 brightness"
+      }
+      _sun2_color: =
+      {
+        txt = "&"
+        hint = "_sun2_color>s2 RGB color"
+      }
+      _sun2_target: =
+      {
+        txt = "&"
+        hint = "_sun2_target>s2 spot info_null"
+      }
+      _sun2_angle: =
+      {
+        txt = "&"
+        hint = "_sun2_angle>s2 yaw/pitch"
+      }
+      _sun2_vector: =
+      {
+        txt = "&"
+        hint = "_sun2_vector>s2 spot XYZ target"
+      }
+      _sun2_diffuse: =
+      {
+        txt = "&"
+        hint = "_sun2_diffuse>s2 shadow edges"
+      }
+      _sun2_diffade: =
+      {
+        txt = "&"
+        hint = "_sun2_diffade>s2 diffuse fade dist"
+      }
+      _sun3_light: =
+      {
+        txt = "&"
+        hint = "_sun3_light>s3 brightness"
+      }
+      _sun3_color: =
+      {
+        txt = "&"
+        hint = "_sun3_color>s3 RGB color"
+      }
+      _sun3_target: =
+      {
+        txt = "&"
+        hint = "_sun3_target>s3 spot info_null"
+      }
+      _sun3_angle: =
+      {
+        txt = "&"
+        hint = "_sun3_angle>s3 yaw/pitch"
+      }
+      _sun3_vector: =
+      {
+        txt = "&"
+        hint = "_sun3_vector>s3 spot XYZ target"
+      }
+      _sun3_diffuse: =
+      {
+        txt = "&"
+        hint = "_sun3_diffuse>s3 shadow edges"
+      }
+      _sun3_diffade: =
+      {
+        txt = "&"
+        hint = "_sun3_diffade>s3 diffuse fade dist"
+      }
+      _sun4_light: =
+      {
+        txt = "&"
+        hint = "_sun4_light>s4 brightness"
+      }
+      _sun4_color: =
+      {
+        txt = "&"
+        hint = "_sun4_color>s4 RGB color"
+      }
+      _sun4_target: =
+      {
+        txt = "&"
+        hint = "_sun4_target>s4 spot info_null"
+      }
+      _sun4_angle: =
+      {
+        txt = "&"
+        hint = "_sun4_angle>s4 yaw/pitch"
+      }
+      _sun4_vector: =
+      {
+        txt = "&"
+        hint = "_sun4_vector>s4 spot XYZ target"
+      }
+      _sun4_diffuse: =
+      {
+        txt = "&"
+        hint = "_sun4_diffuse>s4 shadow edges"
+      }
+      _sun4_diffade: =
+      {
+        txt = "&"
+        hint = "_sun4_diffade>s4 diffuse fade dist"
+      }
+    }
+    null_entity:form =
+    {
+      comment: =
+      {
+        txt = "&"
+        hint = "Default PointEntity"
+      }
+    }
+    t_Ammo:incl =
+    {
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
+      t_TeamDM = !
+      t_Target = !
+      t_Targetname = !
+      t_Killtarget = !
+      t_Delay = !
+      t_Message = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Drop"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Shootable"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+    }
+    ammo_shells:form =
+    {
+      t_Ammo = !
+    }
+    ammo_bullets:form =
+    {
+      t_Ammo = !
+    }
+    ammo_cells:form =
+    {
+      t_Ammo = !
+    }
+    ammo_fuel:form =
+    {
+      t_Ammo = !
+    }
+    ammo_grenades:form =
+    {
+      t_Ammo = !
+    }
+    ammo_rockets:form =
+    {
+      t_Ammo = !
+    }
+    ammo_slugs:form =
+    {
+      t_Ammo = !
+    }
+    t_CraneBeam:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>crane_hoist targetname"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>w/crane_control"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>path_corner waypoints"
+      }
+    }
+    crane_beam:form =
+    {
+      t_CraneBeam = !
+      t_ArghBmodel = !
+    }
+    t_CranePanel:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>crane_beam targetname"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>w/crane_beam"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>orient: 0>E,1>N,2>W,3>S"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start on"
+      }
+    }
+    crane_control:form =
+    {
+      t_CranePanel = !
+      t_ArghBmodel = !
+    }
+    t_CraneHoist:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>crane_hook"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>path_corner waypoints"
+      }
+    }
+    crane_hoist:form =
+    {
+      t_CraneHoist = !
+      t_ArghBmodel = !
+    }
+    t_CraneHook:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>path_corner waypoints"
+      }
+      move_origin: =
+      {
+        txt = "&"
+        hint = "Move_origin>Offset to cable XYZ"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Spotlight"
+      }
+    }
+    crane_hook:form =
+    {
+      t_CraneHook = !
+      t_ArghBmodel = !
+    }
+    crane_reset:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>name of crane_beam"
+      }
+    }
+    func_areaportal:form =
+    {
+      t_Targetname = !
+    }
+    t_FBobbingwater:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Speed25 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Open"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Mud"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+        typ = "C"
+        items = "-1>Toggle"
+        values = "-1"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "Lip>units visible after move"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>No Sounds"$0D"1>Water"$0D"2>Lava"
+        values = "0"$0D"1"$0D"2"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>bobbingwater or similar"
+      }
+      bob: =
+      {
+        txt = "&"
+        hint = "Bob>amplitude of motion"
+      }
+      duration: =
+      {
+        txt = "&"
+        hint = "Duration>time between bob cycles"
+      }
+    }
+    func_bobbingwater:form =
+    {
+      t_FBobbingwater = !
+      t_ArghBmodel = !
+    }
+    t_FButton:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      t_Health = !
+      t_Angles1 = !
+      t_Pathtarget1 = !
+      t_Movewith = !
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "Lip>units visible after move"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>Audible"$0D"1>Silent"
+        values = "0"$0D"1"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+    }
+    func_button:form =
+    {
+      t_FButton = !
+      t_ArghBmodel = !
+    }
+    func_clock:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Pathtarget = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Timer Up"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Timer Down"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Start Off"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Multi Use"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>target_string"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>clock tics in secs"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>display type"
+        typ = "C"
+        items = "0>xx"$0D"1>xx:xx"$0D"2>xx:xx:xx"
+        values = "0"$0D"1"$0D"2"
+      }
+    }
+    func_conveyor:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Speed100 = !
+      t_ArghBmodel = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+    }
+    t_FDoor:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Angles1 = !
+      t_Killtarget = !
+      t_Speed100 = !
+      t_Health = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Open"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Crusher"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Monsters"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Ani Fast"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_door/func_door_rotating"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when trig inactive"
+      }
+      accel: =
+      {
+        txt = "&"
+        hint = "Accel>acceleration"
+      }
+      decel: =
+      {
+        txt = "&"
+        hint = "Decel>deceleration"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "Lip>units visible after move"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>Audible"$0D"1>Silent"
+        values = "0"$0D"1"
+      }
+    }
+    func_door:form =
+    {
+      t_FDoor = !
+      t_ArghBmodel = !
+    }
+    t_FDoorRot:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_SpeedDeg100 = !
+      t_Health = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Open"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Reverse"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Crusher"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Monsters"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>X Axis"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Y Axis"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_door or func_door_rotating"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>deg/rotation"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when trig inactive"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>Audible"$0D"1>Silent"
+        values = "0"$0D"1"
+      }
+      turn_rider: =
+      {
+        txt = "&"
+        hint = "Turn_rider>rotate player"
+        typ = "C"
+        items = "0>Don't turn rider"$0D"1>Turn rider w/model"
+        values = "0"$0D"1"
+      }
+    }
+    func_door_rotating:form =
+    {
+      t_FDoorRot = !
+      t_ArghBmodel = !
+    }
+    t_FDoorRotDH:incl =
+    {
+      t_FDoorRot = !
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>origin at runtime"
+      }
+    }
+    func_door_rot_dh:form =
+    {
+      t_FDoorRotDH = !
+      t_ArghBmodel = !
+    }
+    t_FDoorSecret:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Always shoot"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>1st Left"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>1st Down"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+    }
+    func_door_secret:form =
+    {
+      t_FDoorSecret = !
+      t_ArghBmodel = !
+    }
+    t_FDoorSwing:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_SpeedDeg100 = !
+      t_Health = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Ignore Activator"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Revolving"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Crusher"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Monsters"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>X Axis"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Y Axis"
+      }
+      followtarget: =
+      {
+        txt = "&"
+        hint = "Followtarget>info_notnull"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_door or similar"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>deg/rotation"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when trig inactive"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>Audible"$0D"1>Silent"
+        values = "0"$0D"1"
+      }
+      turn_rider: =
+      {
+        txt = "&"
+        hint = "Turn_rider>rotate player"
+        typ = "C"
+        items = "0>Don't turn rider"$0D"1>Turn rider w/model"
+        values = "0"$0D"1"
+      }
+    }
+    func_door_swinging:form =
+    {
+      t_FDoorSwing = !
+      t_ArghBmodel = !
+    }
+    t_FExplosive:incl =
+    {
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Ani Fast"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>dmg before trigger"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+    }
+    func_explosive:form =
+    {
+      t_FExplosive = !
+      t_ArghBmodel = !
+    }
+    func_force_wall:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start on"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>color"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when touched"
+      }
+    }
+    func_group:form =
+    {
+    }
+    func_killbox:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+    }
+    t_FMonitor:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Ani Fast"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>entity with viewpoint"
+      }
+    }
+    func_monitor:form =
+    {
+      t_FMonitor = !
+      t_ArghBmodel = !
+    }
+    t_FObject:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Ani Fast"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+    }
+    func_object:form =
+    {
+      t_FObject = !
+      t_ArghBmodel = !
+    }
+    func_pendulum:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_ArghBmodel = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start on"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Stop at top"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>Rotation (complete arc)"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>Weight of pendulum"
+      }
+      move_origin: =
+      {
+        txt = "&"
+        hint = "Move_origin>Vector to mass"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Radius>Length of pendulum"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>blocking damage / 100 units/sec"
+      }
+      phase: =
+      {
+        txt = "&"
+        hint = "Phase>Rotation offset (0-1)"
+      }
+    }
+    t_FPlat:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Speed100 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Plat Low Trig"
+      }
+      accel: =
+      {
+        txt = "&"
+        hint = "Accel>acceleration"
+      }
+      decel: =
+      {
+        txt = "&"
+        hint = "Decel>deceleration"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "Lip>units visible after move"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>movement distance"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+    }
+    func_plat:form =
+    {
+      t_FPlat = !
+      t_ArghBmodel = !
+    }
+    t_FPushable:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "Trig spawn"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>Silent"$0D"1>Tank thud"$0D"2>Rail gun hum"$0D"3>Rocket fly"
+        values = "0"$0D"1"$0D"2"$0D"3"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight/debris amt"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trig ent when destroyed"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>remove ent from map"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when destroyed"
+      }
+    }
+    func_pushable:form =
+    {
+      t_FPushable = !
+      t_ArghBmodel = !
+    }
+    t_FRot:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_SpeedDeg100 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Reverse"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>X Axis"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Y Axis"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Pain Touch"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Block Stops"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Ani Fast"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_train or func_rotating"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      turn_rider: =
+      {
+        txt = "&"
+        hint = "Turn_rider>rotate player"
+        typ = "C"
+        items = "0>Don't turn rider"$0D"1>Turn rider w/model"
+        values = "0"$0D"1"
+      }
+    }
+    func_rotating:form =
+    {
+      t_FRot = !
+      t_ArghBmodel = !
+    }
+    t_FRotDH:incl =
+    {
+      t_FRot = !
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>origin at runtime"
+      }
+    }
+    func_rotating_dh:form =
+    {
+      t_FRotDH = !
+      t_ArghBmodel = !
+    }
+    func_timer:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Count1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until repeat"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "Random>wait variance +/-"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay>first trigger in x sec"
+      }
+      pausetime: =
+      {
+        txt = "&"
+        hint = "Pausetime>initial delay"
+      }
+    }
+    t_FTrackchange:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Activatetrain"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Startbottom"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>X Axis"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Y Axis"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>travel (units)"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>spin amt (deg)"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>train to switch"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>top track"
+      }
+      combattarget: =
+      {
+        txt = "&"
+        hint = "Combattarget>bottom track"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>time to dest"
+      }
+    }
+    func_trackchange:form =
+    {
+      t_FTrackchange = !
+      t_ArghBmodel = !
+    }
+    t_FTracktrain:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>NoPitch"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>NoControl"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>OneWay"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>OtherMap"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No HUD"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Anim Indicator"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Animate"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>first path_track"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>train sound"
+        typ = "C"
+        items = "None"$0D"Nada 1"$0D"Nada 2"$0D"Nada 3"$0D"Nada 4"$0D"Nada 5"$0D
+         "Nada 6"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>wheelbase"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>units above track"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/second"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage on crush"
+      }
+      roll: =
+      {
+        txt = "&"
+        hint = "Roll>turn bank angle"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>min driver bbox"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>max driver bbox"
+      }
+    }
+    func_tracktrain:form =
+    {
+      t_FTracktrain = !
+      t_ArghBmodel = !
+    }
+    t_FTrain:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Speed100 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Block Stops"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Rotate"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Rot Const"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Ani Fast"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Smooth"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>first path_corner"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_train or func_rotating"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+      turn_rider: =
+      {
+        txt = "&"
+        hint = "Turn_rider>rotate player"
+        typ = "C"
+        items = "0>Don't turn rider"$0D"1>Turn rider w/model"
+        values = "0"$0D"1"
+      }
+    }
+    func_train:form =
+    {
+      t_FTrain = !
+      t_ArghBmodel = !
+    }
+    t_FTrainButton:incl =
+    {
+      t_FButton = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>+Attack"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>No touch"
+      }
+      movewith: =
+      {
+        txt = "&"
+        hint = "Movewith>train name"
+      }
+    }
+    func_trainbutton:form =
+    {
+      t_FTrainButton = !
+      t_ArghBmodel = !
+    }
+    t_FVehicle:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Block Stops"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No HUD"
+      }
+      turn_rider: =
+      {
+        txt = "&"
+        hint = "Turn_rider>rotate movewith children"
+        typ = "C"
+        items = "0>Don't turn children"$0D"1>Turn children w/vehicle"
+        values = "0"$0D"1"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+      move_origin: =
+      {
+        txt = "&"
+        hint = "Move_origin>XYZ driver offset"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger ent at death"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = "Radius>turning radius"
+      }
+    }
+    func_vehicle:form =
+    {
+      t_FVehicle = !
+      t_ArghBmodel = !
+    }
+    func_wall:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      t_Count1 = !
+      t_ArghBmodel = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Animated"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Ani Fast"
+      }
+    }
+    t_FWater:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Speed25 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Open"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Mud"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until reset"
+        typ = "C"
+        items = "-1>Toggle"
+        values = "-1"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = "Lip>units visible after move"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>noise when moving"
+        typ = "C"
+        items = "0>No Sounds"$0D"1>Water"$0D"2>Lava"
+        values = "0"$0D"1"$0D"2"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_water or similar"
+      }
+    }
+    func_water:form =
+    {
+      t_FWater = !
+      t_ArghBmodel = !
+    }
+    hint_path:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>End"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>next hint_path"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>Monster pause time"
+      }
+    }
+    info_null:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+      t_Appearflags = !
+      t_Targetname = !
+    }
+    info_notnull:form =
+    {
+      bbox = '-4 -4 -4 4 4 4'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+    }
+    t_PlayerClass:incl =
+    {
+      bbox = '-16 -16 -24 16 16 32'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    info_player_start:form =
+    {
+      t_PlayerClass = !
+      t_StyleWeap = !
+      t_Count = !
+    }
+    info_player_deathmatch:form =
+    {
+      t_PlayerClass = !
+      t_StyleWeap = !
+    }
+    info_player_coop:form =
+    {
+      t_PlayerClass = !
+      t_StyleWeap = !
+    }
+    info_player_intermission:form =
+    {
+      t_PlayerClass = !
+    }
+    t_Items:incl =
+    {
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
+      t_TeamDM = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      t_Message = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>No Spin"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Drop"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Shootable"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+    }
+    item_adrenaline:form =
+    {
+      t_Items = !
+    }
+    item_ancient_head:form =
+    {
+      t_Items = !
+    }
+    item_armor_body:form =
+    {
+      t_Items = !
+    }
+    item_armor_combat:form =
+    {
+      t_Items = !
+    }
+    item_armor_jacket:form =
+    {
+      t_Items = !
+    }
+    item_armor_shard:form =
+    {
+      t_Items = !
+    }
+    item_bandolier:form =
+    {
+      t_Items = !
+    }
+    item_breather:form =
+    {
+      t_Items = !
+    }
+    item_enviro:form =
+    {
+      t_Items = !
+    }
+    item_flashlight:form =
+    {
+      t_Items = !
+      count: =
+      {
+        txt = "&"
+        hint = "Count>cell cost/minute"
+      }
+    }
+    item_health:form =
+    {
+      t_Items = !
+    }
+    item_health_small:form =
+    {
+      t_Items = !
+    }
+    item_health_large:form =
+    {
+      t_Items = !
+    }
+    item_health_mega:form =
+    {
+      t_Items = !
+    }
+    item_invulnerability:form =
+    {
+      t_Items = !
+    }
+    item_jetpack:form =
+    {
+      t_Items = !
+      count: =
+      {
+        txt = "&"
+        hint = "Count>fuel level"
+      }
+    }
+    item_pack:form =
+    {
+      t_Items = !
+    }
+    item_power_screen:form =
+    {
+      t_Items = !
+    }
+    item_power_shield:form =
+    {
+      t_Items = !
+    }
+    item_quad:form =
+    {
+      t_Items = !
+    }
+    item_silencer:form =
+    {
+      t_Items = !
+    }
+    t_Keys:incl =
+    {
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      t_Message = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>No Touch"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>No Spin"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Drop"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Shootable"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+    }
+    key_airstrike_target:form =
+    {
+      t_Keys = !
+    }
+    key_blue_key:form =
+    {
+      t_Keys = !
+    }
+    key_commander_head:form =
+    {
+      t_Keys = !
+    }
+    key_data_cd:form =
+    {
+      t_Keys = !
+    }
+    key_data_spinner:form =
+    {
+      t_Keys = !
+    }
+    key_pass:form =
+    {
+      t_Keys = !
+    }
+    key_power_cube:form =
+    {
+      t_Keys = !
+    }
+    key_pyramid:form =
+    {
+      t_Keys = !
+    }
+    key_red_key:form =
+    {
+      t_Keys = !
+    }
+    light:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Off"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>spot aims at ent"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "Light>brightness"
+      }
+      _falloff: =
+      {
+        txt = "&"
+        hint = "_falloff>falloff ratio"
+        typ = "C"
+        items = "0>Linear"$0D"1>Inverse"$0D"2>Inverse-square"
+        values = "0"$0D"1"$0D"2"
+      }
+      _fade: =
+      {
+        txt = "&"
+        hint = "_fade>fade dist (less=further)"
+      }
+      _angfade: =
+      {
+        txt = "&"
+        hint = "_angfade>fade on angled surfaces"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "_color>RGB color"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>light type"
+        typ = "C"
+        items = "0>Normal (switchable)"$0D"1>Flicker #1"$0D"6>Flicker #2"$0D"2"
+         ">Slow Strong Pulse"$0D"3>Candle #1"$0D"7>Candle #2"$0D"8>Candle #3"$0D
+         "4>Fast Strobe"$0D"5>Gentle Pulse #1"$0D"9>Slow Strobe"$0D"10>Fluores"
+         "cent Flicker"$0D"11>Slow pulse, no black"
+        values = "0"$0D"1"$0D"6"$0D"2"$0D"3"$0D"7"$0D"8"$0D"4"$0D"5"$0D"9"$0D"1"
+         "0"$0D"11"
+      }
+      _cone: =
+      {
+        txt = "&"
+        hint = "_cone>spot size (max=90)"
+      }
+      _focus: =
+      {
+        txt = "&"
+        hint = "_focus>fade cone edge"
+      }
+      _spotangle: =
+      {
+        txt = "&"
+        hint = "_spotangle>aim yaw(0-360)/pitch(-90-90)"
+      }
+      _spotvector: =
+      {
+        txt = "&"
+        hint = "_spotvector>spot XYZ vector"
+      }
+      _spotpoint: =
+      {
+        txt = "&"
+        hint = "_spotpoint>spot XYZ point"
+      }
+    }
+    light_mine1:form =
+    {
+      bbox = '-2 -2 -12 2 2 12'
+      t_Angles1 = !
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Off"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>spot aims at ent"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "Light>brightness"
+      }
+      _falloff: =
+      {
+        txt = "&"
+        hint = "_falloff>falloff ratio"
+        typ = "C"
+        items = "0>Linear"$0D"1>Inverse"$0D"2>Inverse-square"
+        values = "0"$0D"1"$0D"2"
+      }
+      _fade: =
+      {
+        txt = "&"
+        hint = "_fade>fade dist (less=further)"
+      }
+      _angfade: =
+      {
+        txt = "&"
+        hint = "_angfade>fade on angled surfaces"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "_color>RGB color"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>light type"
+        typ = "C"
+        items = "0>Normal (switchable)"$0D"1>Flicker #1"$0D"6>Flicker #2"$0D"2"
+         ">Slow Strong Pulse"$0D"3>Candle #1"$0D"7>Candle #2"$0D"8>Candle #3"$0D
+         "4>Fast Strobe"$0D"5>Gentle Pulse #1"$0D"9>Slow Strobe"$0D"10>Fluores"
+         "cent Flicker"$0D"11>Slow pulse, no black"
+        values = "0"$0D"1"$0D"6"$0D"2"$0D"3"$0D"7"$0D"8"$0D"4"$0D"5"$0D"9"$0D"1"
+         "0"$0D"11"
+      }
+      _cone: =
+      {
+        txt = "&"
+        hint = "_cone>spot size (max=90)"
+      }
+      _focus: =
+      {
+        txt = "&"
+        hint = "_focus>fade cone edge"
+      }
+      _spotangle: =
+      {
+        txt = "&"
+        hint = "_spotangle>aim yaw(0-360)/pitch(-90-90)"
+      }
+      _spotvector: =
+      {
+        txt = "&"
+        hint = "_spotvector>spot XYZ vector"
+      }
+      _spotpoint: =
+      {
+        txt = "&"
+        hint = "_spotpoint>spot XYZ point"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+      }
+    }
+    light_mine2:form =
+    {
+      bbox = '-2 -2 -12 2 2 12'
+      t_Angles1 = !
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Off"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>spot aims at ent"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = "Light>brightness"
+      }
+      _falloff: =
+      {
+        txt = "&"
+        hint = "_falloff>falloff ratio"
+        typ = "C"
+        items = "0>Linear"$0D"1>Inverse"$0D"2>Inverse-square"
+        values = "0"$0D"1"$0D"2"
+      }
+      _fade: =
+      {
+        txt = "&"
+        hint = "_fade>fade dist (less=further)"
+      }
+      _angfade: =
+      {
+        txt = "&"
+        hint = "_angfade>fade on angled surfaces"
+      }
+      _color: =
+      {
+        txt = "&"
+        hint = "_color>RGB color"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>light type"
+        typ = "C"
+        items = "0>Normal (switchable)"$0D"1>Flicker #1"$0D"6>Flicker #2"$0D"2"
+         ">Slow Strong Pulse"$0D"3>Candle #1"$0D"7>Candle #2"$0D"8>Candle #3"$0D
+         "4>Fast Strobe"$0D"5>Gentle Pulse #1"$0D"9>Slow Strobe"$0D"10>Fluores"
+         "cent Flicker"$0D"11>Slow pulse, no black"
+        values = "0"$0D"1"$0D"6"$0D"2"$0D"3"$0D"7"$0D"8"$0D"4"$0D"5"$0D"9"$0D"1"
+         "0"$0D"11"
+      }
+      _cone: =
+      {
+        txt = "&"
+        hint = "_cone>spot size (max=90)"
+      }
+      _focus: =
+      {
+        txt = "&"
+        hint = "_focus>fade cone edge"
+      }
+      _spotangle: =
+      {
+        txt = "&"
+        hint = "_spotangle>aim yaw(0-360)/pitch(-90-90)"
+      }
+      _spotvector: =
+      {
+        txt = "&"
+        hint = "_spotvector>spot XYZ vector"
+      }
+      _spotpoint: =
+      {
+        txt = "&"
+        hint = "_spotpoint>spot XYZ point"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+      }
+    }
+    misc_actor:form =
+    {
+      bbox = '-16 -16 -24 16 16 32'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Ambush"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Sight"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Good Guy"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No Gib"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Homing"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Be Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Ignore Fire"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sound>weapon to use"
+        typ = "C"
+        items = "0000>None/None"$0D"0100>Blaster"$0D"0200>Shotgun"$0D"0300>Sup"
+         "er Shotgun"$0D"0400>Machinegun"$0D"0500>Chaingun"$0D"0603>GL/SSG"$0D
+         "0703>RL/SSG"$0D"0800>Hyperblaster"$0D"0900>Railgun"$0D"1003>BFG/SSG"
+        values = "0"$0D"100"$0D"200"$0D"300"$0D"400"$0D"500"$0D"603"$0D"703"$0D
+         "800"$0D"900"$0D"1003"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>skin number"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>player model"
+      }
+      dmgteam: =
+      {
+        txt = "&"
+        hint = "DmgTeam>teammates"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>path_corner/killtarget"
+      }
+      combattarget: =
+      {
+        txt = "&"
+        hint = "Combattarget>first point_combat"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger ent at death"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>at death rem ent from map"
+      }
+      item: =
+      {
+        txt = "&"
+        hint = "Item>spawn item at death"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>min b-box coords XYZ"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>max b-box coords XYZ"
+      }
+      muzzle: =
+      {
+        txt = "&"
+        hint = "Muzzle>gun1 firing origin"
+      }
+      muzzle2: =
+      {
+        txt = "&"
+        hint = "Muzzle2>gun2 firing origin"
+      }
+    }
+    misc_banner:form =
+    {
+      bbox = '-4 -4 0 4 4 246'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_blackhole:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_deadsoldier:form =
+    {
+      bbox = '-16 -16 0 16 16 16'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>On Back"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>On Stomach"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Back,Decap"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Fetal Pos"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Sit,Decap"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Impaled"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Flies"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>skin"
+        typ = "C"
+        items = "0>Default"$0D"1>Cipher"$0D"2>Claymore"$0D"3>Flak"$0D"4>Grunt"$0D
+         "5>Howitzer"$0D"6>Major"$0D"7>Nightops"$0D"8>Pointman"$0D"9>Psycho"$0D
+         "10>Rampage"$0D"11>Razor"$0D"12>Recon"$0D"13>Scout"$0D"14>Sniper"$0D"1"
+         "5>Viper"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
+         "0"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"
+      }
+    }
+    misc_eastertank:form =
+    {
+      bbox = '-32 -32 -16 32 32 32'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Not solid"
+      }
+    }
+    misc_easterchick:form =
+    {
+      bbox = '-32 -32 0 32 32 32'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Not solid"
+      }
+    }
+    misc_easterchick2:form =
+    {
+      bbox = '-32 -32 0 32 32 32'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Not solid"
+      }
+    }
+    misc_explobox:form =
+    {
+      bbox = '-16 -16 0 16 16 40'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Angles = !
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+    }
+    misc_gib_arm:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_gib_head:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_gib_leg:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_insane:form =
+    {
+      bbox = '-16 -16 -24 16 16 32'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Ambush"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Crawl"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Crucified"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Stand Ground"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Always Stand"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>path_corner/killtarget"
+      }
+      combattarget: =
+      {
+        txt = "&"
+        hint = "Combattarget>first point_combat"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger ent at death"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>at death rem ent from map"
+      }
+      item: =
+      {
+        txt = "&"
+        hint = "Item>spawn item at death"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    misc_satellite_dish:form =
+    {
+      bbox = '-64 -64 0 64 64 128'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_strogg_ship:form =
+    {
+      bbox = '-16 -16 0 16 16 32'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Speed100 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Rotate"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Smooth"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>first path_corner"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris mass"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>explosion damage"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger ent at destruction"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+    }
+    misc_teleporter:form =
+    {
+      bbox = '-32 -32 -24 32 32 -16'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start off"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>No model"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Landmark"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>destination"
+      }
+    }
+    misc_teleporter_dest:form =
+    {
+      bbox = '-32 -32 -24 32 32 -16'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+    }
+    misc_bigviper:form =
+    {
+      bbox = '-176 -120 -24 176 120 72'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+    }
+    misc_viper:form =
+    {
+      bbox = '-16 -16 0 16 16 32'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Speed100 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Rotate"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Smooth"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>first path_corner"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris mass"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>explosion damage"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger ent at destruction"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+    }
+    misc_viper_bomb:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      t_Speed0 = !
+      t_Angles1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Multi-use"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>speed/trajectory reference"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>trigger on impact"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>remove ent on impact"
+      }
+    }
+    model_spawn:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+      t_TremorEffects = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No Model"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Anim Once"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>model (path/file.md2)"
+      }
+      startframe: =
+      {
+        txt = "&"
+        hint = "Startframe>first frame #"
+      }
+      framenumbers: =
+      {
+        txt = "&"
+        hint = "Framenumbers># add'l frames"
+      }
+      solidstate: =
+      {
+        txt = "&"
+        hint = "Solidstate>clipping"
+        typ = "C"
+        items = "1>unsolid, nodrop"$0D"2>solid, drop"$0D"3>solid, nodrop"$0D"4"
+         ">unsolid, drop"
+        values = "1"$0D"2"$0D"3"$0D"4"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>Ani Type"
+        typ = "C"
+        items = "0>None(use framenumbers)"$0D"1>Anim01"$0D"2>Anim23"$0D"3>Anim"
+         " All"$0D"4>Anim AllFast"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min b-box coords XYZ"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max b-box coords XYZ"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>Sustainable damage"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+    }
+    t_MTrain:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles = !
+      t_Speed100 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Block Stops"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No Model"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Rotate"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Rotate Constant"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Smooth Move"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>first path_corner"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>func_train or func_rotating"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>model (path/file.md2)"
+      }
+      startframe: =
+      {
+        txt = "&"
+        hint = "Startframe>first frame #"
+      }
+      solidstate: =
+      {
+        txt = "&"
+        hint = "Solidstate>clipping"
+        typ = "C"
+        items = "1>Not solid"$0D"2>Bounding box"
+        values = "1"$0D"2"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>Ani Type"
+        typ = "C"
+        items = "0>None"$0D"3>Anim All"$0D"4>Anim AllFast"
+        values = "0"$0D"3"$0D"4"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min b-box coords XYZ"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max b-box coords XYZ"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>Sustainable damage"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+    }
+    model_train:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_MTrain = !
+      t_TremorEffects = !
+    }
+    t_Monsters:incl =
+    {
+      bbox = '-16 -16 -24 16 16 32'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Ambush"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Sight"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Good Guy"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No Gib"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Ignore Fire"
+      }
+      blood_type: =
+      {
+        txt = "&"
+        hint = "Blood_type"
+        typ = "C"
+        items = "0>Default"$0D"1>Green (gekk)"$0D"2>Robot sparks"
+        values = "0"$0D"1"$0D"2"
+      }
+      dmgteam: =
+      {
+        txt = "&"
+        hint = "DmgTeam>teammates"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>path_corner/killtarget"
+      }
+      combattarget: =
+      {
+        txt = "&"
+        hint = "Combattarget>first point_combat"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger ent at death"
+      }
+      gib_type: =
+      {
+        txt = "&"
+        hint = "Gib_type>models/objects/gibX"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>at death rem ent from map"
+      }
+      item: =
+      {
+        txt = "&"
+        hint = "Item>spawn item at death"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>skin used"
+        typ = "C"
+        items = "0>Standard skin"$0D"1>custom1"$0D"2>custom2"$0D"3>custom3"
+        values = "0"$0D"1"$0D"2"$0D"3"
+      }
+    }
+    t_Monsters1:incl =
+    {
+      t_Monsters = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Special"
+      }
+    }
+    monster_berserk:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_boss2:form =
+    {
+      bbox = '-56 -56 0 56 56 80'
+      t_Monsters1 = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+    }
+    monster_boss3_stand:form =
+    {
+      bbox = '-32 -32 0 32 32 90'
+      t_Appearflags = !
+      t_Targetname = !
+    }
+    monster_brain:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_chick:form =
+    {
+      t_Monsters1 = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_commander_body:form =
+    {
+      bbox = '-32 -32 0 32 32 48'
+      t_Appearflags = !
+      t_Targetname = !
+    }
+    monster_flipper:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_floater:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+    }
+    monster_flyer:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+    }
+    monster_gladiator:form =
+    {
+      bbox = '-32 -32 -24 32 32 48'
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_gunner:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_hover:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+    }
+    monster_infantry:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_jorg:form =
+    {
+      bbox = '-80 -80 0 90 90 140'
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      health2: =
+      {
+        txt = "&"
+        hint = "Health2>Makron health"
+      }
+      mass2: =
+      {
+        txt = "&"
+        hint = "Mass2>Makron weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_makron:form =
+    {
+      bbox = '-30 -30 0 30 30 90'
+      t_Monsters = !
+    }
+    monster_medic:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_mutant:form =
+    {
+      bbox = '-32 -32 -24 32 32 32'
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_parasite:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_soldier:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_soldier_light:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_soldier_ss:form =
+    {
+      t_Monsters = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_supertank:form =
+    {
+      bbox = '-64 -64 0 64 64 72'
+      t_Monsters1 = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+    }
+    monster_tank:form =
+    {
+      bbox = '-32 -32 -16 32 32 72'
+      t_Monsters1 = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    monster_tank_commander:form =
+    {
+      bbox = '-32 -32 -16 32 32 72'
+      t_Monsters1 = !
+      health: =
+      {
+        txt = "&"
+        hint = "Health>hit points"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>weight"
+      }
+      powerarmor: =
+      {
+        txt = "&"
+        hint = "Powerarmor>armor value"
+      }
+      flies: =
+      {
+        txt = "&"
+        hint = "Flies>% chance/flies"
+      }
+    }
+    path_corner:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Pathtarget = !
+      t_Count = !
+      t_Angles = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Teleport"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>No Rotate"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>next path_corner"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec until continuing"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>train speed"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_speed>deg/sec"
+      }
+      roll: =
+      {
+        txt = "&"
+        hint = "Roll>train roll angle"
+      }
+    }
+    path_track:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Altpath"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Disabled"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>FireOnce"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>DisableTrain"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>next1 path_track"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = "Target2>next2 path_track"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>fire on pass"
+      }
+      combattarget: =
+      {
+        txt = "&"
+        hint = "Combattarget>fire on deadend"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>new train speed"
+      }
+    }
+    point_combat:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Pathtarget = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Hold"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>next point_combat"
+      }
+    }
+    target_actor:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Jump"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Shoot"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Attack"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Hold"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Brutal"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>next path target"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>action target"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>pause time"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>horiz jump velocity"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>vert jump velocity"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when touched"
+      }
+    }
+    target_anger:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Hold"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Brutal"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>monster angered"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>entity to attack"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>move to"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>horiz jump velocity"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>vert jump velocity"
+      }
+    }
+    target_animation:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>Actor animation"
+        typ = "C"
+        items = "0>Specify frames"$0D"1>Jump"$0D"2>Flipoff"$0D"3>Salute"$0D"4>"
+         "Taunt"$0D"5>Wave"$0D"6>Point"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent to animate"
+      }
+      startframe: =
+      {
+        txt = "&"
+        hint = "Startframe>first frame #"
+      }
+      framenumbers: =
+      {
+        txt = "&"
+        hint = "Framenumbers># add'l frames"
+      }
+    }
+    target_attractor:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Pathtarget = !
+      t_Speed0 = !
+      t_Count1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start on"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>No gravity"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Sight"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Single"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent to attract"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>effect to use"
+        typ = "C"
+        items = "0>None"$0D"1>Medic cable"$0D"2>BFG laser"
+        values = "0"$0D"1"$0D"2"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>max range"
+      }
+      accel: =
+      {
+        txt = "&"
+        hint = "Accel>acceleration"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+    }
+    target_blaster:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Angles1 = !
+      t_Count1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>No Trail"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>No Effects"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>If Visible"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Seek Player"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>weapon used"
+        typ = "C"
+        items = "0>Blaster"$0D"1>Railgun"$0D"2>Rocket"$0D"3>BFG"$0D"4>Homing r"
+         "ockets"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage per hit"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>unit/sec"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>fire rate/sec"
+      }
+    }
+    target_bmodel_spawner:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "Start On"
+      }
+      source: =
+      {
+        txt = "&"
+        hint = "Source>bmodel reference"
+      }
+      newtargetname: =
+      {
+        txt = "&"
+        hint = "Newtargetname>clone's name"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>clone's target"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>clones's team"
+      }
+    }
+    target_cd:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>CD track number"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>times to loop"
+      }
+    }
+    target_change:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "Spawnflags=1"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "Spawnflags=2"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "Spawnflags=4"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "Spawnflags=8"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "Spawnflags=16"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "Spawnflags=32"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "Spawnflags=64"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "Spawnflags=128"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>targeted ent, new target"
+      }
+      newtargetname: =
+      {
+        txt = "&"
+        hint = "Newtargetname>new name"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = "Angles>new angles"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>new deathtarget"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay>new delay"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>new distance"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>new dmg"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>new health"
+      }
+      item: =
+      {
+        txt = "&"
+        hint = "Item>new item"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>new killtarget"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>new mass"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>new message"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>new noise"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>new pathtarget"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "Random>new random"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>new speed"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>new style"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>new team"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>new wait"
+      }
+    }
+    target_changelevel:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Clear Inven"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Landmark"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>No Gun"
+      }
+      map: =
+      {
+        txt = "&"
+        hint = "Map>next level"
+      }
+    }
+    t_TCharacter:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      team: =
+      {
+        txt = "&"
+        hint = "Team>target_string"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>pos in string (L>R)"
+      }
+    }
+    target_character:form =
+    {
+      t_TCharacter = !
+      t_ArghBmodel = !
+    }
+    target_crosslevel_trigger:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Trigger 1"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trigger 2"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Trigger 3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Trigger 4"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Trigger 5"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Trigger 6"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Trigger 7"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Trigger 8"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+    }
+    target_crosslevel_target:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Trigger 1"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trigger 2"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Trigger 3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Trigger 4"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Trigger 5"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Trigger 6"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Trigger 7"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Trigger 8"
+      }
+    }
+    target_earthquake:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>quake severity"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>sec of duration"
+      }
+    }
+    target_effect:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Looped On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Looped Off"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>effect type"
+        typ = "C"
+        items = "0>Gunshot"$0D"1>Blood"$0D"2>Blaster"$0D"3>Railtrail"$0D"4>Sho"
+         "tgun"$0D"5>Explosion1"$0D"6>Explosion2"$0D"7>Rocket explosion"$0D"8>"
+         "Grenade explosion"$0D"9>Sparks"$0D"10>Splash"$0D"11>Bubbletrail"$0D"1"
+         "2>Screen sparks"$0D"13>Shield sparks"$0D"14>Bullet sparks"$0D"15>Las"
+         "er sparks"$0D"16>Parasite attack"$0D"17>Rocket expl (water)"$0D"18>G"
+         "renade expl (water)"$0D"19>Medic cable attack"$0D"20>BFG explosion"$0D
+         "21>BFG big explosion"$0D"22>BossTport"$0D"23>BFG laser"$0D"24>Grappl"
+         "e cable"$0D"25>Welding sparks"$0D"26>GreenBlood"$0D"28>Plasma explos"
+         "ion"$0D"29>Tunnel sparks"$0D"30>Blaster2"$0D"33>Lightning"$0D"34>Deb"
+         "ugtrail"$0D"35>Plain explosion"$0D"36>Flashlight"$0D"38>Heatbeam"$0D
+         "39>Monster heatbeam"$0D"40>Steam"$0D"41>Bubbletrail2"$0D"42>MoreBloo"
+         "d"$0D"43>Heatbeam sparks"$0D"44>Heatbeam steam"$0D"45>Chainfist smok"
+         "e"$0D"46>Electric sparks"$0D"47>Tracker explosion"$0D"48>Teleport ef"
+         "fect"$0D"49>DBall goal"$0D"50>WidowBeamOut"$0D"51>NukeBlast"$0D"52>W"
+         "idowSplash"$0D"53>Explosion1 Big"$0D"54>Explosion1 NP"$0D"55>Flechet"
+         "te"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
+         "0"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"$0D"18"$0D"19"$0D
+         "20"$0D"21"$0D"22"$0D"23"$0D"24"$0D"25"$0D"26"$0D"28"$0D"29"$0D"30"$0D
+         "33"$0D"34"$0D"35"$0D"36"$0D"38"$0D"39"$0D"40"$0D"41"$0D"42"$0D"43"$0D
+         "44"$0D"45"$0D"46"$0D"47"$0D"48"$0D"49"$0D"50"$0D"51"$0D"52"$0D"53"$0D
+         "54"$0D"55"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent aimed at"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>splash or pallete index"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>pixels/splash (1-255)"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>steam duration"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>steam speed"
+      }
+    }
+    target_explosion:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Delay = !
+      t_Killtarget = !
+      t_Count = !
+      t_Movewith = !
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+    }
+    target_fade:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      color: =
+      {
+        txt = "&"
+        hint = "color>fade color"
+      }
+      alpha: =
+      {
+        txt = "&"
+        hint = "alpha>obscuration (0-1)"
+      }
+      fadein: =
+      {
+        txt = "&"
+        hint = "fadein>fade-in time (sec)"
+      }
+      holdtime: =
+      {
+        txt = "&"
+        hint = "holdtime>time to hold fade (sec)"
+      }
+      fadeout: =
+      {
+        txt = "&"
+        hint = "fadeout>fade-out time (sec)"
+      }
+    }
+    target_failure:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>File"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>No background"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>string or path/file.txt"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound to play"
+      }
+    }
+    target_fog:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      t_Angles1 = !
+      fog_color: =
+      {
+        txt = "&"
+        hint = "Fog_color>RGB color"
+      }
+      fog_model: =
+      {
+        txt = "&"
+        hint = "Fog_model>fog model"
+        typ = "C"
+        items = "0>Linear"$0D"1>Exp"$0D"2>Exp2"
+        values = "0"$0D"1"$0D"2"
+      }
+      fog_near: =
+      {
+        txt = "&"
+        hint = "Fog_near>start dist(linear)"
+      }
+      fog_far: =
+      {
+        txt = "&"
+        hint = "Fog_far>0 visibility dist (linear)"
+      }
+      fog_density: =
+      {
+        txt = "&"
+        hint = "Fog_density>dens*10K (exp&exp2)"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay>ramp time (sec)"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Turn Off"
+      }
+      density: =
+      {
+        txt = "&"
+        hint = "Density>Density at 180 deg."
+      }
+    }
+    target_fountain:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_TremorEffects = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Splash"
+      }
+      attenuation: =
+      {
+        txt = "&"
+        hint = "Attenuation>Rebound"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min extent"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>Number/frame"
+      }
+      fadeout: =
+      {
+        txt = "&"
+        hint = "Fadeout>Leaf life"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "Gravity>sv_gravity ratio"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>Weight of model"
+      }
+      mass2: =
+      {
+        txt = "&"
+        hint = "Mass2>Num. splash particles"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "Random>Count variance"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>color index"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>Falling speed"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max extent"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>model name"
+      }
+    }
+    target_goal:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+    }
+    target_help:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Main Objective"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>update computer"
+      }
+    }
+    target_laser:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Count1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Red"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Green"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Blue"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Yellow"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Orange"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Fat"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X128"
+        cap = "128>Seek Player"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent aimed at"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage/.1 sec"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>behavior"
+        typ = "C"
+        items = "0>Normal dmg"$0D"1>Dmg=0"$0D"2>1 + monster ignore"$0D"3>2 + n"
+         "o spark"
+        values = "0"$0D"1"$0D"2"$0D"3"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>beam width"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between pulses"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay>pulse duration (sec)"
+      }
+    }
+    target_lightramp:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Target = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Custom"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Loop"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>sec to cover range"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>range or sequence(a-z)"
+      }
+    }
+    target_lightswitch:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      message: =
+      {
+        txt = "&"
+        hint = "Message>min light level (a-m)"
+      }
+    }
+    target_locator:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>entity randomized"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>1st path_corner"
+      }
+    }
+    target_lock:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Crosslevel"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>HUD"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>success target"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>failure target"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>target_lock_digit"
+      }
+      key_message: =
+      {
+        txt = "&"
+        hint = "Key_message>initial digits shown"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>failure message"
+      }
+    }
+    target_lock_code:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Crosslevel"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>target_lock"
+      }
+    }
+    target_lock_clue:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Crosslevel"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>target_lock"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>target_characters"
+      }
+    }
+    t_LockDigit:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      team: =
+      {
+        txt = "&"
+        hint = "Team>target_lock"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>pos in string (R>L)"
+      }
+    }
+    target_lock_digit:form =
+    {
+      t_LockDigit = !
+      t_ArghBmodel = !
+    }
+    target_monitor:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      t_Angles = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Chase Cam"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec at monitor"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent to view"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound to play"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>chasecam distance"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>chasecam height"
+      }
+    }
+    target_monsterbattle:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>monster angered"
+      }
+      killtarget: =
+      {
+        txt = "&"
+        hint = "Killtarget>entity to attack"
+      }
+    }
+    target_movewith:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>movewith child"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>movewith parent"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Detach"
+      }
+    }
+    target_playback:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Loop"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Music"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>3D"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>full volume range (3D only)"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Sound (path/file.wav)"
+      }
+      volume: =
+      {
+        txt = "&"
+        hint = "Volume>loudness (0.0-1.0)"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>Ent to fire at end of sound"
+      }
+      fadein: =
+      {
+        txt = "&"
+        hint = "fadein>fade-in time (sec)"
+      }
+      fadeout: =
+      {
+        txt = "&"
+        hint = "fadeout>fade-out time (sec)"
+      }
+    }
+    target_precipitation:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_TremorEffects = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Splash"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>effect"
+        typ = "C"
+        items = "0>Single raindrop"$0D"1>10 raindrops"$0D"2>10 snowflakes"$0D"3"
+         ">Leaves"$0D"4>User-defined"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
+      attenuation: =
+      {
+        txt = "&"
+        hint = "Attenuation>Rebound"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min extent"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>Number/frame"
+      }
+      fadeout: =
+      {
+        txt = "&"
+        hint = "Fadeout>Leaf life"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "Gravity>sv_gravity ratio"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>Weight of model"
+      }
+      mass2: =
+      {
+        txt = "&"
+        hint = "Mass2>Num. splash particles"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "Random>Count variance"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>color index"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>Falling speed"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max extent"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>model name"
+      }
+    }
+    target_rocks:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Count = !
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>units/sec"
+      }
+    }
+    target_rotation:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>No Loop"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Random"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent(s) to trigger"
+      }
+    }
+    target_secret:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+    }
+    target_set_effect:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_TremorEffects = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>ent to enhance"
+      }
+    }
+    target_sky:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      sky: =
+      {
+        txt = "&"
+        hint = "Sky>env map name"
+      }
+    }
+    target_spawner:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Speed0 = !
+      t_Count = !
+      t_Movewith = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target>monster/item spawned"
+      }
+    }
+    target_speaker:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Looped On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Looped Off"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Reliable"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Sound (path/file.wav)"
+      }
+      attenuation: =
+      {
+        txt = "&"
+        hint = "Attenuation"
+        typ = "C"
+        items = "-2>Activator only"$0D"-1>None, send to whole level"$0D"1>Norm"
+         "al fighting sounds"$0D"2>Idle sound level"$0D"3>Ambient sound level"
+        values = "-2"$0D"-1"$0D"1"$0D"2"$0D"3"
+      }
+      volume: =
+      {
+        txt = "&"
+        hint = "Volume>loudness (0.0-1.0)"
+      }
+    }
+    target_splash:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Movewith = !
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>splash type"
+        typ = "C"
+        items = "1>Sparks w/sound"$0D"2>Blue water (silent)"$0D"3>Brown water "
+         "(silent)"$0D"4>Slime (silent)"$0D"5>Lava (silent)"$0D"6>Blood (silen"
+         "t)"
+        values = "1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>pixels/splash (1-255)"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage at origin"
+      }
+    }
+    target_string:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      team: =
+      {
+        txt = "&"
+        hint = "Team>target_characters"
+      }
+    }
+    target_temp_entity:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Count = !
+      t_Movewith = !
+      style: =
+      {
+        txt = "&"
+        hint = "Style>effect type"
+        typ = "C"
+        items = "20>Green Fireball"$0D"21>Particles #1"$0D"22>Particles #2"
+        values = "20"$0D"21"$0D"22"
+      }
+    }
+    target_text:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      message: =
+      {
+        txt = "&"
+        hint = "Message>string or path/file.txt"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>File"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>No background"
+      }
+    }
+    t_Trigger:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds"
+        typ = "C"
+        items = "0>Beep beep"$0D"1>Secret"$0D"2>F1 prompt"$0D"3>Silent"
+        values = "0"$0D"1"$0D"2"$0D"3"
+      }
+    }
+    trigger_always:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Target = !
+      t_Delay = !
+      t_Killtarget = !
+    }
+    trigger_bbox:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Count1 = !
+      t_Health = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Not Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Turret"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between triggers"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min b-box coords XYZ"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max b-box coords XYZ"
+      }
+    }
+    trigger_counter:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>No Message"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>triggers before firing"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when activated"
+      }
+    }
+    trigger_disguise:form =
+    {
+      t_Appearflags1 = !
+      t_Targetname = !
+      t_Count = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Remove"
+      }
+    }
+    trigger_elevator:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+    }
+    trigger_fog:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Count1 = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Start Off"
+      }
+      fog_color: =
+      {
+        txt = "&"
+        hint = "Fog_color>RGB color"
+      }
+      fog_model: =
+      {
+        txt = "&"
+        hint = "Fog_model>fog model"
+        typ = "C"
+        items = "0>Linear"$0D"1>Exp"$0D"2>Exp2"
+        values = "0"$0D"1"$0D"2"
+      }
+      fog_near: =
+      {
+        txt = "&"
+        hint = "Fog_near>start dist (linear)"
+      }
+      fog_far: =
+      {
+        txt = "&"
+        hint = "Fog_far>0 visibility dist (linear)"
+      }
+      fog_density: =
+      {
+        txt = "&"
+        hint = "Fog_density>dens*10K (exp&exp2)"
+      }
+      density: =
+      {
+        txt = "&"
+        hint = "Density>Density at 180 deg."
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = "Delay>ramp time (sec)"
+      }
+    }
+    trigger_gravity:form =
+    {
+      t_Appearflags = !
+      gravity: =
+      {
+        txt = "&"
+        hint = "Gravity>normal=1.0"
+      }
+    }
+    trigger_hurt:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start Off"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Toggle"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Silent"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Protect"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Slow Hurt"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>No Gib"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Environment"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage/.1 sec"
+      }
+    }
+    trigger_inside:form =
+    {
+      t_Trigger = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between triggers"
+      }
+      pathtarget: =
+      {
+        txt = "&"
+        hint = "Pathtarget>name of activator"
+      }
+    }
+    trigger_key:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Multi-use"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Keep key"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Silent"
+      }
+      item: =
+      {
+        txt = "&"
+        hint = "Item>needed to activate"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = "Message>print when successful"
+      }
+      key_message: =
+      {
+        txt = "&"
+        hint = "Key_message>print when no item"
+      }
+    }
+    trigger_look:form =
+    {
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Count1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>+Use required"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Turret"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Look Target"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between triggers"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min b-box coords XYZ"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max b-box coords XYZ"
+      }
+    }
+    trigger_relay:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Count = !
+      dmgteam: =
+      {
+        txt = "&"
+        hint = "DmgTeam>monster dmgteam"
+      }
+    }
+    trigger_once:form =
+    {
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Turret"
+      }
+    }
+    trigger_mass:form =
+    {
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between triggers"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>min mass to activate"
+      }
+    }
+    trigger_monsterjump:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>horizontal velocity"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = "Height>vertical velocity"
+      }
+    }
+    trigger_multiple:form =
+    {
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Not Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Turret"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between triggers"
+      }
+    }
+    tremor_trigger_multiple:form =
+    {
+      t_Trigger = !
+      t_Pathtarget1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Not Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Triggered"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Turret"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>sec between triggers"
+      }
+      t_Count1 = !
+      t_Movewith = !
+    }
+    trigger_push:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Push Once"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Custom Sound"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>velocity 10*units/sec"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>custom sound"
+      }
+    }
+    trigger_scales:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "1>Triggered"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>target characters"
+      }
+    }
+    trigger_teleporter:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Triggered"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>Monster"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>No effects"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Custom Sound"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X64"
+        cap = "64>Landmark"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = "Noise>sound (path/file.wav)"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>destination"
+      }
+    }
+    trigger_transition:form =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+    }
+    t_TurretBreach:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Player"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trig Spawn"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>Track"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>info_notnull (rocket origin)"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>weapon used"
+        typ = "C"
+        items = "-1>No fire"$0D"1>Railgun"$0D"2>Rocket"$0D"3>BFG"$0D"4>Homing "
+         "rockets"$0D"5>Machinegun"$0D"6>Hyperblaster"$0D"7>Grenade"
+        values = "-1"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = "Wait>rate of fire (sec)"
+      }
+      distance: =
+      {
+        txt = "&"
+        hint = "Distance>grenade velocity"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>rotation deg/sec"
+      }
+      minpitch: =
+      {
+        txt = "&"
+        hint = "Minpitch>min pitch angle"
+      }
+      maxpitch: =
+      {
+        txt = "&"
+        hint = "Maxpitch>max pitch angle"
+      }
+      minyaw: =
+      {
+        txt = "&"
+        hint = "Minyaw>min yaw angle"
+      }
+      maxyaw: =
+      {
+        txt = "&"
+        hint = "Maxyaw>max yaw angle"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>turret_base"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = "Dmg>damage when blocked"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+      gib_health: =
+      {
+        txt = "&"
+        hint = "Gib_health>gib level"
+      }
+      deathtarget: =
+      {
+        txt = "&"
+        hint = "Deathtarget>trigger at death"
+      }
+      destroytarget: =
+      {
+        txt = "&"
+        hint = "Destroytarget>trigger at gib"
+      }
+      followtarget: =
+      {
+        txt = "&"
+        hint = "Followtarget>fallback view target"
+      }
+      viewmessage: =
+      {
+        txt = "&"
+        hint = "Viewmessage>monitor message"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>Camera number"
+      }
+    }
+    turret_breach:form =
+    {
+      t_TurretBreach = !
+      t_ArghBmodel = !
+    }
+    t_TurretBase:incl =
+    {
+      t_Appearflags = !
+      t_Targetname = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Trig Spawn"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = "Team>turret_breach"
+      }
+    }
+    turret_base:form =
+    {
+      t_TurretBase = !
+      t_ArghBmodel = !
+    }
+    turret_driver:form =
+    {
+      bbox = '-16 -16 -24 16 16 32'
+      t_Appearflags1 = !
+      t_Angles = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Remote"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target>turret_breach"
+      }
+    }
+    viewthing:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+    }
+    t_Weapons:incl =
+    {
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
+      t_TeamDM = !
+      t_Targetname = !
+      t_Target = !
+      t_Killtarget = !
+      t_Delay = !
+      t_Message = !
+      t_Angles = !
+      t_Movewith = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "4>No Spin"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X8"
+        cap = "8>No Drop"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X16"
+        cap = "16>Shootable"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = "Health>sustainable damage"
+      }
+    }
+    weapon_blaster:form =
+    {
+      t_Weapons = !
+    }
+    weapon_shotgun:form =
+    {
+      t_Weapons = !
+    }
+    weapon_supershotgun:form =
+    {
+      t_Weapons = !
+    }
+    weapon_machinegun:form =
+    {
+      t_Weapons = !
+    }
+    weapon_chaingun:form =
+    {
+      t_Weapons = !
+    }
+    weapon_grenadelauncher:form =
+    {
+      t_Weapons = !
+    }
+    weapon_rocketlauncher:form =
+    {
+      t_Weapons = !
+    }
+    weapon_hyperblaster:form =
+    {
+      t_Weapons = !
+    }
+    weapon_railgun:form =
+    {
+      t_Weapons = !
+    }
+    weapon_bfg:form =
+    {
+      t_Weapons = !
+    }
+  }
+}
