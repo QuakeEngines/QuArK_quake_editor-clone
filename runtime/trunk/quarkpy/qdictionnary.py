@@ -453,6 +453,7 @@ Strings = {
         4457: "Are you sure you want to delete this item(s) ?",
         4458: "Invalid arguments to 'extendcoplanar'",
         4459: "positive integer expected",
+        4460: "Invalid value assigned to 'cp'",
 
 	4614: "&More >>",
 	4616: "                     *** EXCEPTION REPORT ***\n\n%s       Address in the program : %p (%p)\n",
