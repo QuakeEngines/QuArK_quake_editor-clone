@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.80  2001/02/12 03:47:17  tiglari
+//reset snapshot #
+//
 //Revision 1.79  2001/02/08 11:08:22  tiglari
 //removed path points from path duplicator toolbox item
 //
@@ -265,7 +268,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20010213"
+      Version = "quarksnapshot_20010215"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

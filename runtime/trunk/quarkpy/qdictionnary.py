@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "quarksnapshot_20010213",
+    0: "quarksnapshot_20010215",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -889,6 +889,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.31  2001/02/12 03:46:54  tiglari
+#reset snapshot #
+#
 #Revision 1.30  2001/02/02 08:24:24  tiglari
 #updated version #
 #
