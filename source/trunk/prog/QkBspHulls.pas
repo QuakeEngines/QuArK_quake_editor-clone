@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/07/28 05:30:49  tiglari
+shift some decs to QkBsp.pas
+
 Revision 1.20  2001/07/27 11:30:26  tiglari
 bsp study: plane viewing, some prep for node-viewing
 
@@ -89,6 +92,13 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, QkMapObjects, QkBsp,
      qmath, QkFileObjects;
+
+const
+  hullQ1 =     '1';
+  hullHx =     '2';
+  hullQ2 =     'A';
+  hullQ3 =     'a';
+
 
 type
  PHull = ^THull;
@@ -235,6 +245,15 @@ implementation
 uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList, Dialogs;
  {------------------------}
 
+
+function GetHullType(Game: Char) : Char;
+begin
+   if Game=mjHexen then
+       Result:=mjHexen
+   else
+       Result:=bspType(Game)
+end;
+
 function CheckQ1Hulls(Hulls: PHull; Size, FaceCount: Integer) : Boolean;
 var
  P, Q: PHull;
@@ -337,14 +356,14 @@ begin
  try
   InvFaces:=0;
   cTexInfo:=0;
-  HullType:=BspType(FBsp.NeedObjectGameCode);
+  HullType:=GetHullType(FBsp.NeedObjectGameCode);
   q12surf:=BspSurfaceType(HullType)=bspSurfQ12;
   miptex:=UsesMipTex(FBsp.NeedObjectGameCode);
   case HullType of
-   BspTypeQ1:  Size1:=SizeOf(THull);
-   BspTypeHx:  Size1:=SizeOf(THullH2);
-   BspTypeQ2:  Size1:=SizeOf(THullQ2);
-   BspTypeQ3:   Size1:=SizeOf(THullQ3);
+   HullQ1:  Size1:=SizeOf(THull);
+   HullHx:  Size1:=SizeOf(THullH2);
+   HullQ2:  Size1:=SizeOf(THullQ2);
+   HullQ3:   Size1:=SizeOf(THullQ3);
   else Exit;
   end;
   I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
@@ -353,25 +372,25 @@ begin
    Raise EErrorFmt(5635, [1]);
   Inc(P, Delta-Size1);
   case HullType of
-   BspTypeQ1: with PHull(P)^ do
+   HullQ1: with PHull(P)^ do
              begin
               NbFaces:=Face_num;
               FirstFace:=Face_id;
               cTexInfo:=SizeOf(TTexInfo);
              end;
-   BspTypeHx: with PHullH2(P)^ do
+  HullHx: with PHullH2(P)^ do
              begin
               NbFaces:=Face_num;
               FirstFace:=Face_id;
               cTexInfo:=SizeOf(TTexInfo);
              end;
-   BspTypeQ2: with PHullQ2(P)^ do
+  HullQ2: with PHullQ2(P)^ do
               begin
                NbFaces:=Face_num;
                FirstFace:=Face_id;
                cTexInfo:=SizeOf(TTexInfoQ2);
               end;
-   BspTypeQ3: with PHullQ3(P)^ do
+  HullQ3: with PHullQ3(P)^ do
               begin
                NbFaces:=Face_num;
                FirstFace:=Face_id;

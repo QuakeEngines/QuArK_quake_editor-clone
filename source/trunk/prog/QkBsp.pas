@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2001/07/31 10:59:25  tiglari
+speed up close plane finding, a lot (needobjectgamecode is very slow,
+ since it accesses object specifics)
+
 Revision 1.47  2001/07/30 12:10:22  tiglari
 close plane finder methods
 
@@ -253,6 +257,12 @@ type
   { these are the game codes for the default games
      with these surface types (organization of face
      lump }
+
+  bspTypeQ1 =     '1';
+  bspTypeQ2 =     'A';
+  bspTypeQ3 =     'a';
+
+
   bspSurfQ12 = '1'; { surface type for Q1/2 engine games }
   bspSurfQ3 = 'a';  { surface/type for Q3 engine games }
 
@@ -293,6 +303,18 @@ type
             dist: scalar_t;
            end;
 
+
+ PQ12Node = ^TQ12Node;
+ TQ12Node = record
+             plane: LongWord; { plane index (uint32) }
+             firstchild: Integer; {child indices, neg if leaf }
+             secondchild: Integer;
+             mins: array [0..2] of Integer; {bbox}
+             maxs: array [0..2] of Integer;
+             first_face, num_faces: WORD;
+           end;
+
+
  PQ3Node = ^TQ3Node;
  TQ3Node = record
             plane: Integer; { plane index }
@@ -300,6 +322,27 @@ type
             secondchild: Integer;
             mins: array [0..2] of integer; {bbox}
             maxs: array [0..2] of integer;
+           end;
+
+  PQ1Leaf = ^TQ1Leaf;
+  TQ1Leaf = record
+            contents: Integer; { or of all brush info }
+            visofs: Integer; { cluster index (?) }
+            mins: array [0..2] of Single; {bbox}
+            maxs: array [0..2] of Single;
+            first_leafface, num_leaffaces: WORD;
+            first_leafbrush, num_leafbrushes: WORD;
+           end;
+
+ PQ2Leaf = ^TQ2Leaf;
+ TQ2Leaf = record
+            contents: LongWord; { or of all brush info }
+            cluster: Integer; { cluster index }
+            area: Integer; { areaportal area }
+            mins: array [0..2] of Single; {bbox}
+            maxs: array [0..2] of Single;
+            first_leafface, num_leaffaces: WORD;
+            first_leafbrush, num_leafbrushes: WORD;
            end;
 
  PQ3Leaf = ^TQ3Leaf;
@@ -328,7 +371,8 @@ type
    Normal: TVect;
    Dist: TDouble;
    Source: PChar;
-   constructor Create(const nName: String; nParent: QObject; Source: PbPlane); overload;
+   Number: Integer;
+   constructor Create(const nName: String; nParent: QObject; Source: PbPlane; Index: Integer); overload;
 
    class function TypeInfo: String; override;
    function GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
@@ -339,12 +383,17 @@ type
   public
    Source: PChar;
    Bsp: QBsp;
+   Plane: TTreeBspPlane;
+   Leaf: boolean;
    constructor Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats); overload;
    constructor Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats); overload;
 
    class function TypeInfo: String; override;
    procedure GetFaces(var L: PyObject);
+   function PyGetAttr(attr: PChar) : PyObject; override;
  end;
+
+
 
  QBsp = class(QFileObject)
         private
@@ -370,6 +419,8 @@ type
           VertexCount, PlaneCount, LeafCount: Integer;
           PlaneSize, LeafSize: Integer;
           NonFaces: Integer;
+          GameCode: Char;
+          constructor Create(const nName: String; nParent: QObject); overload;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
           class function TypeInfo: String; override;
@@ -409,6 +460,8 @@ type
 
 Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
 function BspSurfaceType(const bspType : Char) : Char;
+function BspType(mj : Char) : Char; overload;
+function BspType : Char; overload;
 
 implementation
 
@@ -573,6 +626,12 @@ begin
  Result:='.bsp';
 end;
 
+constructor Qbsp.Create(const nName: String; nParent: QObject);
+begin
+  inherited Create(nName, nParent);
+  GameCode:=mjAny;
+end;
+
 function QBsp.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
@@ -657,7 +716,7 @@ begin
 
   C := BspType(ObjectGameCode);
   case C of
-    bspTypeQ1, bspTypeHx: S:= Bsp1EntryNames[E1];
+    bspTypeQ1: S:= Bsp1EntryNames[E1];
     bspTypeQ2: S:= Bsp2EntryNames[E2];
     bspTypeQ3: S:= Bsp3EntryNames[E3];
   else
@@ -1089,7 +1148,7 @@ begin
     begin
       C := BspType(NeedObjectGameCode);
       case C of
-        bspTypeQ1, bspTypeHx: SaveBsp1(Info);
+        bspTypeQ1: SaveBsp1(Info);
         bspTypeQ2: SaveBsp2(Info);
         bspTypeQ3: SaveBsp3(Info);
       end;
@@ -1137,17 +1196,18 @@ var
  PQ3: PQ3Vertex;
  I : Integer;
  Dest: PVect;
- HullType: Char;
+ SurfType: Char;
  Pozzie: vec3_t;
 begin
- HullType:=BspType(NeedObjectGameCode);
+ GameCode:=NeedObjectGameCode;
+ SurfType:=BspSurfaceType(GameCode);
  if FStructure=Nil then
   begin
    if FVertices<>Nil then
     Raise EError(5637);
    FVerticesRefCount:=0;
    ProgressIndicatorStart(0,0); try
-   if BspSurfaceType(HullType)=bspSurfQ12 then
+   if SurfType=bspSurfQ12 then
    begin
       VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
       ReallocMem(FVertices, VertexCount*SizeOf(TVect));
@@ -1163,7 +1223,7 @@ begin
       PlaneSize:=Sizeof(TQ3Plane);
   end;
    Dest:=PVect(FVertices);
-   if BspSurfaceType(HullType)=bspSurfQ12 then
+   if SurfType=bspSurfQ12 then
    for I:=1 to VertexCount do
    begin
      with Dest^ do
@@ -1294,7 +1354,7 @@ end;
 
 
 const
- MethodTable: array[0..2] of TyMethodDef =
+ BspMethodTable: array[0..2] of TyMethodDef =
   ((ml_name: 'reloadstructure';  ml_meth: qReloadStructure;  ml_flags: METH_VARARGS),
    (ml_name: 'closestructure';   ml_meth: qCloseStructure;   ml_flags: METH_VARARGS),
    (ml_name: 'closeplanes';   ml_meth: qGetClosePlanes;   ml_flags: METH_VARARGS));
@@ -1306,10 +1366,10 @@ var
 begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
- for I:=Low(MethodTable) to High(MethodTable) do
-  if StrComp(attr, MethodTable[I].ml_name) = 0 then
+ for I:=Low(BspMethodTable) to High(BspMethodTable) do
+  if StrComp(attr, BspMethodTable[I].ml_name) = 0 then
    begin
-    Result:=PyCFunction_New(MethodTable[I], @PythonObj);
+    Result:=PyCFunction_New(BspMethodTable[I], @PythonObj);
     Exit;
    end;
  case attr[0] of
@@ -1630,7 +1690,7 @@ begin
   begin
     {if the plane is created with Self as parent, it can't
       be stuck into a subitems list by Python code }
-    Q:=TTreeBspPlane.Create('plane '+IntToStr(I), Nil,PbPlane(Planes2));
+    Q:=TTreeBspPlane.Create('plane '+IntToStr(I), Nil,PbPlane(Planes2), I);
     L.Add(Q);
     Inc(Planes2, PlaneSize);
   end;
@@ -1691,8 +1751,9 @@ begin
   Result.Source := PChar(Node);
   with Node^ do
   begin
-    TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PbPlane(Planes+plane*Planesize));
+    TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PbPlane(Planes+plane*Planesize), plane);
     Result.SubElements.Add(TreePlane);
+    Result.Plane:=TreePlane;
     AddChild(Result, firstchild, 'First', FirstStats);
     AddChild(Result, secondchild, 'Second', SecStats);
     with Stats do
@@ -1770,6 +1831,24 @@ begin
 end;
 
 
+function BspType : Char; overload;
+begin
+  Result:=BspType(CharModeJeu);
+end;
+
+function BspType(mj : Char) : Char;
+begin
+ if (mj>='1') and (mj<='9') then
+   Result:=bspTypeQ1
+ else if (mj>='A') and (mj<='E') then
+   Result:=bspTypeQ2
+ else if (mj>'a') and (mj<='z') then
+   Result:=bspTypeQ3
+ {FIXME: a dubious step for dealing with the 'any' codes}
+ else
+   Result:=mj
+end;
+
 function bspSurfaceType(const BspType : Char) : Char;
 begin
   if BspType=BspTypeQ3 then
@@ -1834,11 +1913,12 @@ begin
   Result:=TexFolder;
 end;
 
-constructor TTreeBspPlane.Create(const nName: String; nParent: QObject; Source: PbPlane);
+constructor TTreeBspPlane.Create(const nName: String; nParent: QObject; Source: PbPlane; Index: Integer);
 begin
   inherited Create(nName, nParent);
   Dist:=Source^.dist;
   Normal:=MakeVect(Source^.normal);
+  Number:=Index;
   with Source^ do
   begin
     VectSpec['norm']:=MakeVect(normal);
@@ -1861,6 +1941,7 @@ begin
     VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
     VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
   end;
+  Leaf:=false
 end;
 
 function TTreeBspPlane.GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
@@ -1938,6 +2019,11 @@ begin
        begin
          Result:=MakePyVect(Normal);
          Exit;
+       end
+       else if StrComp(attr, 'num') = 0 then
+       begin
+         Result:=PyInt_FromLong(Number);
+         Exit;
        end;
   end;
 end;
@@ -1954,6 +2040,7 @@ begin
     VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
     Specifics.Values['leaf']:='1';
     Specifics.Values['num faces']:=IntToStr(num_leaffaces);
+    Leaf:=true;
     with Stats do
     begin
       children:=1;
@@ -1989,6 +2076,39 @@ begin
         PyList_Append(L,PyInt_FromLong(LFaceIndex));
      end;
    end;
+end;
+
+function TTreeBspNode.PyGetAttr(attr: PChar) : PyObject;
+var
+  I: Integer;
+  L: PyObject;
+begin
+  Result:=inherited PyGetAttr(attr);
+  if Result<>Nil then Exit;
+{ No node methods yet, so we don' need this
+  for I:=Low(NodeMethodTable) to High(NodeMethodTable) do
+    if StrComp(attr, NodeMethodTable[I].ml_name) = 0 then
+    begin
+      Result:=PyCFunction_New(NodeMethodTable[I], @PythonObj);
+      Exit;
+     end;
+}
+
+  case attr[0] of
+  'l': if StrComp(attr, 'leaf') = 0 then
+       begin
+         if Leaf then
+            Result:=PyInt_FromLong(1)
+         else
+            Result:=PyInt_FromLong(0);
+         Exit;
+       end;
+  'p': if StrComp(attr, 'plane') = 0 then
+       begin
+         Result:=GetPyObj(Plane);
+         Exit;
+       end;
+  end;
 end;
 
 
