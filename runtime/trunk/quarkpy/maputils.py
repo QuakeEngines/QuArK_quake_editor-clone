@@ -288,10 +288,27 @@ def read2vec(vals):
     return eval(strings[0]), eval(strings[1])
 
 
+def buildLinearMatrix(dup):
+    linear = dup["linear"]
+    matrix = quarkx.matrix('1 0 0 0 1 0 0 0 1')
+    if linear:
+        matrix = quarkx.matrix(linear)*matrix
+    scale = dup["scale"]
+    if scale is not None:
+        matrix = quarkx.matrix('%.2f 0 0 0 %.2f 0 0 0 %.2f'%scale)*matrix
+    angles = dup["angles"]
+    if angles is not None:
+        angles = map(lambda a:a*deg2rad, angles)
+        matrix = matrix_rot_y(angles[0])*matrix_rot_x(angles[1])*matrix_rot_z(angles[2])*matrix
+    return matrix
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.11  2001/03/20 07:58:40  tiglari
+#customizable hot key support
+#
 #Revision 1.10  2001/03/18 23:59:44  tiglari
 #experimental merge
 #
