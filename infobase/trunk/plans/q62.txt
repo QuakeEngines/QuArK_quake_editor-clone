@@ -6,14 +6,14 @@ Red means stuff that should defintely be done for release.
 
 
 <UL>
-<LI><font color=#ff0000>Q3(T)A Model display:</font> (Andy/Maleficus)
-<br>basically done, except that textures aren't being shown.
+<LI>Q3(T)A Model display: (Andy/Maleficus)
+<br> status: done.
 <LI>OsFolders: (tiglari) load up resources from disk by specified paths 
      etc.
 <BR>status:  basically done.  editing of folder properties not yet
    implemented, maybe delay til 6.3
 <LI><font color=#FF0000>Bezier Page:</font> (Andy)
-<br>status: bug with undo; texture itself isn't being shown,
+<br>status: texture itself isn't being shown,
 starting scale too big.
 <LI>
   Write Brush Primitives: (tiglari)
@@ -27,7 +27,7 @@ starting scale too big.
 <BR>   status: envisioned, seems like it might be easy
 
 <LI> <FONT color=#FF0000>  Brush curve duplicator:</FONT> (tiglari)
-<BR>   status: partially done; texture positioning needed.
+<BR>   status: partially done; texture positioning needed (being difficult).
 `thick' to be delayed to 6.3.
 
 <LI>  Stairway duplicator: (decker)
