@@ -13,6 +13,12 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
  * [alexander]:
+    allow individual texture paths for hl2
+    vtf dll api changed , can select mip level now
+    preparations for this splitting access via steam and via hllib
+    gcf dll has now static linkage against hllib
+ 
+ * [alexander]:
        runtime/addons/Defaults.qrk: set textures path for hl2 to "hl2/materials" 
        runtime/addons/Half-Life2/textures-*.qrk: use gcf files instead of extracted files
        source/prog/Game.pas:   load gcf only once and reuse data 
