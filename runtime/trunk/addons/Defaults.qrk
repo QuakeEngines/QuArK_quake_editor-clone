@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.213  2003/04/24 23:42:22  tiglari
+//|| to make mapstair hint appear in window
+//
 //Revision 1.212  2003/04/23 06:52:33  cdunde
 //To add  stair maker hint changes by tiglari
 //
@@ -5440,6 +5443,53 @@ QQRKSRC1
           face:f = { v = '0 128 0 0 128 128 128 128 0' tex = "[auto]" m = "1" }
           face:f = { v = '0 0 -128 0 128 -128 128 0 -128' tex = "[auto]" m = "1" }
           face:f = { v = '0 0 128 128 0 128 0 128 128' tex = "[auto]" }
+        }
+        wedge:p =
+        {
+          fixedscale = "1"
+          face:f =
+          {
+            v = '-5.63757 -26.12108 32 -5.63757 -154.12110 32 124.89730 -26.12108 32'
+            tex = "e1u1/grass1_4"
+            Contents = "0"
+            Flags = "0"
+            Value = "0"
+          }
+          face:f =
+          {
+            v = '-0.32341 -64.52548 -32 -0.32341 63.47453 -32 127.67660 -64.52548 -32'
+            tex = "e1u1/grass1_4"
+            Contents = "0"
+            Flags = "0"
+            Value = "0"
+            m = "1"
+          }
+          face:f =
+          {
+            v = '63.57658 -64.00017 -64.39999 63.57658 -63.99950 63.60001 -64.42342 -64.00051 -64.39999'
+            tex = "e1u1/grass1_4"
+            Contents = "0"
+            Flags = "0"
+            Value = "0"
+            m = "1"
+          }
+          face:f =
+          {
+            v = '86.17815 -86.22846 -0.00002 18.29591 -18.34623 -0.00002 86.07752 -86.32910 127.99990'
+            tex = "e1u1/grass1_4"
+            Contents = "0"
+            Flags = "0"
+            Value = "0"
+          }
+          face:f =
+          {
+            v = '-64 -63.57516 0 -64 -63.57516 128 -64 64.42484 0'
+            tex = "e1u1/grass1_4"
+            Contents = "0"
+            Flags = "0"
+            Value = "0"
+            m = "1"
+          }
         }
       }
       Complex polyhedrons.qtxfolder =
