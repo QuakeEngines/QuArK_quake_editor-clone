@@ -1,5 +1,5 @@
 title: Shape Builders
-subdir: introduction 
+subdir: introduction archcap
 
 Shape-builders are a method for building complex objects,
 such as arches, stairways and more, on the basis

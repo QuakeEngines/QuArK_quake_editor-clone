@@ -1,0 +1,8 @@
+title: Caps and Arches (Patches)
+desc: makearch  caulk specifics trouble techniques
+format: html
+
+Patch-based `Caps' and arches are made by the same
+shape-builder, and
+arches are probably its most important function, so
+that's what gets discussed most below.
