@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2003/08/12 16:00:56  silverpaladin
+Modified Normalise so that zero length vectors are returned unmodified rather than just blowing up.
+
 Revision 1.15  2001/07/31 11:00:35  tiglari
 add Deg2Rad as const
 
@@ -300,16 +303,16 @@ end;
 
 function ftos(const F: TDouble) : String;
 var
- R: Integer;
+ i: Integer;
+ FP: TDouble;
 begin
- R:=Round(F);
- if Abs(F-R) <= rien then
-  Result:=IntToStr(R)
+ i:=0; FP:=F;
+ //how many digits are neccesary? (stop at 2)
+ while (i<>2) and (Abs(FP-Round(FP))>rien) do begin FP:=FP*10; inc(i); end;
+ if i=0 then
+  Result:=IntToStr(Round(F))
  else
-  begin
-  {DecimalSeparator:='.';}
-   Result:=FloatToStrF(F, ffFixed, 7, 1);
-  end;
+  Result:=FloatToStrF(F, ffFixed, 7, i);
 end;
 
 function ftos0(const F: TDouble) : String;
