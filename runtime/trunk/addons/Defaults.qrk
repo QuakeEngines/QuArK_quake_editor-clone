@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.72  2001/01/07 13:21:48  decker_dk
+//Set Versionname.
+//
 //Revision 1.71  2000/12/30 15:28:53  decker_dk
 //Path Duplicator
 //
@@ -399,9 +402,12 @@ QQRKSRC1
       Quake 1:config =
       {
         Game = "Quake 1"
-        Code = "1"
+        Code = "1" // Hardcoded value in Setup.PAS
+
+        Program = "Quake.EXE"
+
         Directory = "\Quake"
-        Program = "Quake"
+        CheckDirectory = "QUAKE.EXE"
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
@@ -411,13 +417,18 @@ QQRKSRC1
         BuildPgm3  = "LIGHT.EXE"
         BuildArgs3 = ""
 
-        TextureDef = "bricka2_2"
-        TriggerTextureDef = "trigger"
-        ClipTextureDef = "clip"
+        DefaultTexture = "bricka2_2"
+        DefaultTextureTrigger = "trigger"
+        DefaultTextureClip = "clip"
+
+        WateryTex = "*"
+        TextureFormat = ".wad_D"
+        TextureWriteFormat = ".wad_D"
+        TextureWad = "gfx/QuArK.wad"
+
         BaseDir = "id1"
         tmpQuArK = "tmpQuArK"
-        TextureWad = "gfx/QuArK.wad"
-        WateryTex = "*"
+
         MapHoles = ".pts"
         Palette = "gfx/palette.lmp"
         Gradient = "gfx/colormap.lmp"
@@ -429,19 +440,19 @@ QQRKSRC1
         PakExt = ".pak"
         LightFactor = '0.9'
         3DLight = '512'
-        CheckDirectory = "QUAKE.EXE"
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
-        TextureFormat = ".wad_D"
-        TextureWriteFormat = ".wad_D"
       }
       Hexen II:config =
       {
         Game = "Hexen II"
-        Code = "2"
+        Code = "2" // Hardcoded value in Setup.PAS
+
+        Program = "H2.EXE"
+
         Directory = "\Hexen II"
-        Program = "H2"
+        CheckDirectory = "H2.EXE"
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
@@ -451,13 +462,18 @@ QQRKSRC1
         BuildPgm3  = "LIGHT.EXE"
         BuildArgs3 = ""
 
-        TextureDef = "rtex215"
-        TriggerTextureDef = "rtex215" //FIXME
-        ClipTextureDef = "clip" //FIXME
+        DefaultTexture = "rtex215"
+        DefaultTextureTrigger = "rtex215" //FIXME
+        DefaultTextureClip = "clip" //FIXME
+
+        WateryTex = "*"
+        TextureFormat = ".wad_D"
+        TextureWriteFormat = ".wad_D"
+        TextureWad = "gfx/QuArK.wad"
+
         BaseDir = "data1"
         tmpQuArK = "tmpQuArK"
-        TextureWad = "gfx/QuArK.wad"
-        WateryTex = "*"
+
         MapHoles = ".pts"
         Palette = "gfx/palette.lmp"
         Gradient = "gfx/colormap.lmp"
@@ -467,7 +483,6 @@ QQRKSRC1
         AddOns = "DataH2.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
-        CheckDirectory = "H2.EXE"
         Console = "1"
         Form = "GameHexenII"
         QuakeC = "HexenC"
@@ -476,17 +491,19 @@ QQRKSRC1
         3DLight = '640'
         HxStrings = "strings.txt"
         PlayerClass = "1"
-        TextureFormat = ".wad_D"
-        TextureWriteFormat = ".wad_D"
       }
       Quake 2:config =
       {
         Game = "Quake 2"
-        Code = "A"
+        Code = "A" // Hardcoded value in Setup.PAS
+
+        Program = "Quake2.EXE"
+
         Directory = "\Quake2"
+        CheckDirectory = "QUAKE2.EXE"
+
         CD = ""
         CDDir = "Install\Data"
-        Program = "Quake2"
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
@@ -496,39 +513,43 @@ QQRKSRC1
         BuildPgm3  = "ARGHRAD.EXE"
         BuildArgs3 = "-gamedir .. -moddir ."
 
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "e1u1/damage1_1"
+        DefaultTextureTrigger = "e1u1/trigger"
+        DefaultTextureOrigin = "e1u1/origin"
+        DefaultTextureClip = "e1u1/clip"
+
+        TextureFormat = ".wal"
+        TextureWriteFormat = ".wal"
+
         BaseDir = "baseq2"
         tmpQuArK = "tmpQuArK"
+
         Palette = "pics/colormap.pcx"
         Gradient = "pics/colormap.pcx"
         UnifiedPalette = "1"
         ExtractFiles = "pics/colormap.pcx"
-        Q2TexPath = "textures/"
-        Q2TexFlags = "1"
         ExtraCmdLine = "+set game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataQ2.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
-        CheckDirectory = "QUAKE2.EXE"
         Console = "1"
         Form = "GameQuake2"
-        TextureDef = "e1u1/damage1_1"
-        TriggerTextureDef = "e1u1/trigger"
-        OriginTextureDef = "e1u1/origin"
-        ClipTextureDef = "e1u1/clip"
         LightFactor = '0.9'
         3DLight = '512'
-        TextureFormat = ".wal"
-        TextureWriteFormat = ".wal"
       }
       Heretic II:config =
       {
         Game = "Heretic II"
-        Code = "B"
+        Code = "B" // Hardcoded value in Setup.PAS
+
+        Program = "Heretic2.EXE"
+
         Directory = "\Heretic II"
-        //CD = ""
-        //CDDir = "Install\Data"
-        Program = "Heretic2"
+        CheckDirectory = "HERETIC2.EXE"
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
@@ -538,36 +559,42 @@ QQRKSRC1
         BuildPgm3  = "ARGHRAD.EXE"
         BuildArgs3 = "-gamedir .. -moddir ."
 
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "andoria/sstone"
+        DefaultTextureTrigger = "andoria/sstone" //FIXME
+        DefaultTextureClip = "andoria/clip" //FIXME
+
+        walTrick = "1"
+        TextureFormat = ".m8"
+        TextureWriteFormat = ".m8"
+
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
+
         Palette = ":pics/colormap.pcx"    //  ":" means that the palette is stored in DataHr2.qrk
         //Gradient = "gfx/colormap.lmp"
-        Q2TexPath = "textures/"
-        Q2TexFlags = "1"
         ExtraCmdLine = "+set game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataHr2.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
         PakFormat = "HTIC2-#.PAK"
-        CheckDirectory = "HERETIC2.EXE"
         Console = "1"
         Form = "GameHeretic2"
-        TextureDef = "andoria/sstone"
-        TriggerTextureDef = "andoria/sstone" //FIXME
-        ClipTextureDef = "andoria/clip" //FIXME
         LightFactor = '0.9'
         3DLight = '512'
-        walTrick = "1"
-        TextureFormat = ".m8"
-        TextureWriteFormat = ".m8"
       }
       Half-Life:config =
       {
         Game = "Half-Life"
-        Code = "3"
+        Code = "3" // Hardcoded value in Setup.PAS
+
+        Program = "HL.EXE -console -dev -zone 1024 +set sv_cheats 1"
+
         Directory = "\Sierra\Half-Life"
-        Program = "HL -console -dev -zone 1024 +set sv_cheats 1"
+        CheckDirectory = "HL.EXE"
 
         BuildPgm1  = "HLCSG.EXE"
         BuildArgs1 = ""
@@ -580,18 +607,22 @@ QQRKSRC1
         BuildPgm4  = "HLRAD.EXE"
         BuildArgs4 = ""
 
-        TextureDef = "FIFTIES_WALL14Y"
-        TriggerTextureDef = "AAATRIGGER"
-        OriginTextureDef = "ORIGIN"
-        ClipTextureDef = "CLIP"
-        BaseDir = "valve"
-        tmpQuArK = "tmpQuArK"
+        DefaultTexture = "FIFTIES_WALL14Y"
+        DefaultTextureTrigger = "AAATRIGGER"
+        DefaultTextureOrigin = "ORIGIN"
+        DefaultTextureClip = "CLIP"
+
         TextureWad = "?"     // variable (the map name is used)
         GameNeedWad = "1"
         WateryTex = "!"
+        TextureFormat = ".wad3_C"
+        TextureWriteFormat = ".wad3_C"
+
+        BaseDir = "valve"
+        tmpQuArK = "tmpQuArK"
+
         Palette = "gfx/palette.lmp"
         Gradient = "gfx/colormap.lmp"
-        //ExtractFiles = "liblist.gam" $0D "cl_dlls/*.*"
         //DECKER - 'ExtractFiles' just creates troubles, if another mod-directory is choosen....
         //ExtractFiles = "cl_dlls/*.*"
         ExtraCmdLine = "-game %s"
@@ -601,22 +632,22 @@ QQRKSRC1
         PakExt = ".pak"
         LightFactor = '0.9'
         3DLight = '512'
-        CheckDirectory = "HL.EXE"
         Console = "1"
-//        FirstBuildCmd  = "QCSG1" //command that must be run first
         Form = "GameHalfLife"
         PlayerClass = "X"
-        TextureFormat = ".wad3_C"
-        TextureWriteFormat = ".wad3_C"
       }
       Sin:config =
       {
         Game = "Sin"
-        Code = "C"
+        Code = "C" // Hardcoded value in Setup.PAS
+
+        Program = "Sin.EXE"
+
         Directory = "\Sin"
+        CheckDirectory = "SIN.EXE"
+
         CD = ""
         CDDir = "Setup\Data"
-        Program = "Sin"
 
         BuildPgm1  = "QBSP3.EXE"
         BuildArgs1 = ""
@@ -626,126 +657,143 @@ QQRKSRC1
         BuildPgm3  = "QRAD3.EXE"
         BuildArgs3 = ""
 
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "intro/wl_outbrick1a"
+        DefaultTextureTrigger = "intro/wl_outbrick1a" //FIXME
+        DefaultTextureClip = "intro/clip" //FIXME
+
+        TextureFormat = ".swl"
+        TextureWriteFormat = ".swl"
+
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
+
         Palette = ":pics/colormap.pcx"
         //Gradient = "pics/colormap.pcx"
-        //ExtractFiles = "pics/colormap.pcx"
-        Q2TexPath = "textures/"
-        Q2TexFlags = "1"
         ExtraCmdLine = "+set game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataSin.qrk"
         AlwaysPak = ""
         PakExt = ".sin"
         PakFormat = "PAK#.SIN"
-        CheckDirectory = "SIN.EXE"
         Console = "1"
         Form = "GameSin"
-        TextureDef = "intro/wl_outbrick1a"
-        TriggerTextureDef = "intro/wl_outbrick1a" //FIXME
-        ClipTextureDef = "intro/clip" //FIXME
         LightFactor = '0.9'
         3DLight = '512'
-        TextureFormat = ".swl"
-        TextureWriteFormat = ".swl"
       }
       KingPin:config =
       {
         Game = "KingPin"
-        Code = "D"
+        Code = "D" // Hardcoded value in Setup.PAS
+
+        Program = "KingPin.EXE"
+
         Directory = "\KingPin"
+        CheckDirectory = "KINGPIN.EXE"
+
         CD = ""
         CDDir = "Install\Data"
-        Program = "KingPin"
 
-        BuildPgm1  = "kpbsp.EXE"
+        BuildPgm1  = "KPBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
-        BuildPgm2  = "kpvis.EXE"
+        BuildPgm2  = "KPVIS.EXE"
         BuildArgs2 = ""
-        BuildPgm3  = "kprad.EXE"
+        BuildPgm3  = "KPRAD.EXE"
         BuildArgs3 = "-gamedir .. -moddir ."
+
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "bricks/b_cp_v10x"
+        DefaultTextureTrigger = "common/0_trigger"
+        DefaultTextureOrigin = "common/0_origin"
+        DefaultTextureClip = "common/0_clip"
+
+        walTrick = "1"
+        TextureFormat = ".tga"
+        TextureWriteFormat = ".tga"
 
         BaseDir = "main"
         tmpQuArK = "tmpQuArK"
+
         Palette = "pics/colormap.pcx"
         Gradient = "pics/colormap.pcx"
         UnifiedPalette = "1"
         ExtractFiles = "pics/colormap.pcx"
-        Q2TexPath = "textures/"
-        Q2TexFlags = "1"
         ExtraCmdLine = "+set game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataKP.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
-        CheckDirectory = "kingpin.EXE"
         Console = "1"
         Form = "GameKingPin"
-        TextureDef = "bricks/b_cp_v10x"
-        TriggerTextureDef = "common/0_trigger"
-        OriginTextureDef = "common/0_origin"
-        ClipTextureDef = "common/0_clip"
         LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
         3DLight = '512'
-        walTrick = "1"
-        TextureFormat = ".tga"
-        TextureWriteFormat = ".tga"
       }
       SOF:config =
       {
         Game = "SOF"
-        Code = "E"
+        Code = "E" // Hardcoded value in Setup.PAS
+
+        Program = "sof.EXE"
+
         Directory = "\SOF"
+        CheckDirectory = "SOF.EXE"
+
         CD = ""
         CDDir = "Install\Data"
-        Program = "sof"
-        StupidBuildToolKludge = "1" //those guys should get shot for that
 
-        BuildPgm1  = "sofbsp.EXE"
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        BuildPgm1  = "SOFBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
-        BuildPgm2  = "sofvis.EXE"
+        BuildPgm2  = "SOFVIS.EXE"
         BuildArgs2 = ""
-        BuildPgm3  = "sofarghrad.EXE"
+        BuildPgm3  = "SOFARGHRAD.EXE"
         BuildArgs3 = "-gamedir .. -moddir ."
+
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "armory/1_2_subfloor1"
+        DefaultTextureTrigger = "armory/trigger"
+        DefaultTextureOrigin = "armory/origin"
+        DefaultTextureClip = "armory/clip"
+
+        walTrick = "1"     // FIXME is that needed ?
+        TextureFormat = ".m32"
+        TextureWriteFormat = ".m32"
 
         BaseDir = "base"
         tmpQuArK = "tmpQuArK"
-        //Palette = "pics/colormap.pcx"
-        //Gradient = "pics/colormap.pcx"
-        //ExtractFiles = "pics/colormap.pcx" FIXME: Are these needed ?
-        Q2TexPath = "textures/"
-        Q2TexFlags = "1"
+
         ExtraCmdLine = "+set game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataSOF.qrk"
         AlwaysPak = ""
         PakExt = ".pak"
-        CheckDirectory = "sof.EXE"
         Console = "1"
         Form = "GameSOF"
-        TextureDef = "armory/1_2_subfloor1"
-        TriggerTextureDef = "armory/trigger"
-        OriginTextureDef = "armory/origin"
-        ClipTextureDef = "armory/clip"
         LightFactor = '0.90000'
         3DLight = '512'
-        walTrick = "1"     // FIXME is that needed ?
-        TextureFormat = ".m32"
-        TextureWriteFormat = ".m32"
       }
       Quake 3:config =
       {
         Game = "Quake 3"
-        Code = "a"
+        Code = "a" // Hardcoded value in Setup.PAS
+
+        Program = "Quake3.EXE +set sv_pure 0"
+
         Directory = "\Quake3"
+        CheckDirectory = "QUAKE3.EXE"
+
         CD = ""
         CDDir = "Install\Data"
-        Program = "Quake3 +set sv_pure 0"
-        StupidBuildToolKludge = "1" //those guys should get shot for that
 
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
@@ -754,48 +802,53 @@ QQRKSRC1
         BuildPgm3  = "Q3MAP.EXE"
         BuildArgs3 = "-light"
         BuildPgm4  = "BSPC.EXE"
-        BuildArgs4 = "-bsp2aas %file%.BSP  -output %mappath%"
+        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
         BuildCheck4= "+AAS"
+
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "base_wall/basewall03"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "scripts/quark.shader"
 
         BaseDir = "baseq3"
         tmpQuArK = "tmpQuArK"
+
         Palette = ":pics/colormap.pcx"
-        //Gradient = "pics/colormap.pcx"
-        //ExtractFiles = "pics/colormap.pcx"
-        Q2TexPath = "textures/"
-        Q3ShaderPath = "scripts/" //DECKER
-        Q2TexFlags = "1"
-        ShadersPath = "scripts/"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
         AddOns = "DataQ3.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
-        CheckDirectory = "QUAKE3.EXE"
         Console = "1"
         Form = "GameQuake3"
-        TextureDef = "base_wall/basewall03"
-        TriggerTextureDef = "common/trigger"
-        OriginTextureDef = "common/origin"
-        ClipTextureDef = "common/clip"
         LightFactor = '0.9'
         3DLight = '512'
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
-        TextureShaders = "scripts/quark.shader"
       }
       STVEF:config =
       {
         Game = "STVEF"
-        Code = "b"
+        Code = "b" // Hardcoded value in Setup.PAS
+
+        Program = "STVoy.EXE +set sv_pure 0"
+
         Directory = ""
+        CheckDirectory = "STVOY.EXE"
+
         CD = ""
         CDDir = "Setup\BaseEF"
-        Program = "stvoy +set sv_pure 0"
-        StupidBuildToolKludge = "1" //those guys should get shot for that
 
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
@@ -807,65 +860,71 @@ QQRKSRC1
         BuildArgs4 = "-bsp2aas"
         BuildCheck4= "+AAS"
 
-        BaseDir = "baseEF"
-        tmpQuArK = "tmpQuArK"
-        Palette = ":pics/colormap.pcx"
-        //Gradient = "pics/colormap.pcx"
-        //ExtractFiles = "pics/colormap.pcx"
-        Q2TexPath = "textures/"
-        Q3ShaderPath = "scripts/" //DECKER
-        Q2TexFlags = "1"
+        TexturesPath = "textures/"
         ShadersPath = "scripts/"
-        ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +map %s"
-        AddOns = "DataSTVEF.qrk"
-        AlwaysPak = ""
-        PakExt = ".pk3"
-        PakFormat = "*.PK3"
-        CheckDirectory = "stvoy.exe"
-        Console = "1"
-        Form = "GameSTVEF"
-        TextureDef = "base_wall/basewall03"
-        TriggerTextureDef = "common/trigger"
-        ClipTextureDef = "common/clip"
-        LightFactor = '0.9'
-        3DLight = '512'
+        Q2TexFlags = "1"
+
+        DefaultTexture = "base_wall/basewall03"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureCaulk = "common/caulk"
+
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "baseEF"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        AddOns = "DataSTVEF.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        Console = "1"
+        Form = "GameSTVEF"
+        LightFactor = '0.9'
+        3DLight = '512'
       }
-    //pm CrystalSpace *******************************************
-    CrystalSpace:config =
-    {
-      Game = "Crystal Space"
-      Code = "c"
-      Directory = "/quark2cs_511/"
-      Program = "walktest.exe"
+      CrystalSpace:config =
+      {
+        Game = "Crystal Space"
+        Code = "c" // Hardcoded value in Setup.PAS
 
-      BuildPgm1 = "MAP2CS.EXE"
+        Program = "WalkTest.EXE"
 
-      TextureDef = "intro/wl_outbrick1a"
-      BaseDir = "data"
-      tmpQuArK = "data"
-      TextureWad = "?"  // variable (the map name is used)
-      Palette = ":pics/colormap.pcx"
-      Q2TexPath = "textures/"
-      Q2TexFlags = "1"
-      ExtraCmdLine = ""
-      RunMapCmdLine = " %s"
-      AddOns = "DataCS.qrk"
-      AlwaysPak = ""
-      PakExt = ".csz"
-      LightFactor = '0.90000'
-      3DLight = '512'
-      CheckDirectory = "WALKTEST.EXE"
-      Console = "1"
-      Form = "GameCrystalSpace"
-      PlayerClass = "X"
-      TextureFormat = ".wad3_C"
-    }
-    //pm CrystalSpace *******************************************
+        Directory = "/quark2cs_511/"
+        CheckDirectory = "WALKTEST.EXE"
+
+        BuildPgm1 = "MAP2CS.EXE"
+
+        TexturesPath = "textures/"
+        Q2TexFlags = "1"
+
+        DefaultTexture = "intro/wl_outbrick1a"
+
+        TextureWad = "?"  // variable (the map name is used)
+        TextureFormat = ".wad3_C"
+
+        BaseDir = "data"
+        tmpQuArK = "data"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = ""
+        RunMapCmdLine = " %s"
+        AddOns = "DataCS.qrk"
+        AlwaysPak = ""
+        PakExt = ".csz"
+        LightFactor = '0.90000'
+        3DLight = '512'
+        Console = "1"
+        Form = "GameCrystalSpace"
+        PlayerClass = "X"
+      }
     }
 
     Map:config =
@@ -945,7 +1004,7 @@ QQRKSRC1
       }
       Building:config =
       {
-        DefPoly = "poly128"
+        DefPoly = "128x128x128"
         WallWidth = '-8'
         mpOffset = '0 0 64'
         mpZoom = '2'
@@ -1184,16 +1243,28 @@ QQRKSRC1
       }
     }
 
+        t_ProgramHint:incl = {
+                Hint="Specify the game's executable (.EXE) and additional command-line arguments."
+                  $0D
+                  $0D"QuArK will automatically append arguments to start the .BSP-file in the game,"
+                  $0D"and arguments to tell the game to use a different startup base-directory."
+        }
         GameBuildPgm:incl = {
+                DefExt="exe"
                 Typ="EP"
                 Txt="...program-executable (path optional)"
-                DefExt="exe"
+                Hint="Specify the build-tool executable (.EXE) for this step."
+                  $0D
+                  $0D"The absolute-path is optional, and if not given, you must"
+                  $0D"specify it in the 'Default directory of build-programs'."
         }
         GameBuildArgs:incl = {
                 Typ="E"
                 Txt="...fixed command-line arguments"
-                Hint="Use the following user-variables, which will be automatically"
-                  $0D"replaced at run-time. If at least one of these are used, QuArK"
+                Hint="Specify the additional command-line arguments for the build-tool."
+                  $0D
+                  $0D"You can use the following user-variables, which automatically will"
+                  $0D"be replaced at run-time. If at least one of these are used, QuArK"
                   $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
                   $0D"so you better remember to do this yourself."
                   $0D
@@ -1205,6 +1276,7 @@ QQRKSRC1
                   $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
                   $0D"  VIS.EXE -fast %file%"
                   $0D"  QRAD3.EXE -threads 4 %file%"
+                // These 'user-variables' are replaced in MapQuakeMenu.PY
         }
         GameBuildCheck:incl = {
                 Typ="C"
@@ -1215,9 +1287,11 @@ QQRKSRC1
                      $0D"+BSP,-LIN"
                      $0D"+AAS"
                 Hint="Here you list which file-extensions that should exist or not exist,"
-                  $0D"after the build-program have ended."$0D
-                  $0D"Example; to make sure that a .BSP file have been created, and _no_"
-                  $0D".LIN file exists, this field should contain:     +BSP,-LIN"$0D
+                  $0D"after the build-program have ended."
+                  $0D
+                  $0D"Example; to make sure that a .BSP file have been created, and"
+                  $0D"_no_ .LIN file exists, this field should contain:     +BSP,-LIN"
+                  $0D
                   $0D"A prefixed '+' means 'must exist'"
                   $0D"A prefixed '-' means 'must not exist'"
         }
@@ -1261,6 +1335,38 @@ QQRKSRC1
                 BuildArgs9: = {GameBuildArgs=!}
                 BuildCheck9:= {GameBuildCheck=!}
         }
+        t_DefaultTexture:incl = {
+                Txt = "Default texture"
+                Typ = "ET"      // Edit Texture
+                Hint = "Default texture when inserting polyhedrons in maps."
+                    $0D"An '[auto]' texture."
+        }
+        t_DefaultTextureTrigger:incl = {
+                Txt = "Default trigger texture"
+                Typ = "ET"      // Edit Texture
+                Hint = "Default trigger texture when new brush-entities request it."
+                    $0D"An '[trigger]' texture."
+        }
+        t_DefaultTextureClip:incl = {
+                Txt = "Default clip texture"
+                Typ = "ET"      // Edit Texture
+                Hint = "Default clip texture when new brush-entities request it."
+                    $0D"An '[clip]' texture."
+        }
+        t_DefaultTextureOrigin:incl = {
+                Txt = "Default origin texture"
+                Typ = "ET"      // Edit Texture
+                Hint = "Default origin texture when new brush-entities request it."
+                    $0D"An '[origin]' texture."
+        }
+        t_DefaultTextureCaulk:incl = {
+                Txt = "Default caulk texture"
+                Typ = "ET"      // Edit Texture
+                Hint = "Default caulk texture when new brush-entities request it."
+                    $0D"An '[caulk]' texture."
+        }
+
+
     GameQuake1:form =
     {
       Style = "3"
@@ -1268,13 +1374,14 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Quake command-line"
-        Items = "Quake"
-             $0D"Quake -listen 4"
-             $0D"GLQuake"
-             $0D"GLQuake -listen 4"
-             $0D"WinQuake"
-             $0D"WinQuake -listen 4"
-             $0D"WinDed"
+        Items = "Quake.EXE"
+             $0D"Quake.EXE -listen 4"
+             $0D"GLQuake.EXE"
+             $0D"GLQuake.EXE -listen 4"
+             $0D"WinQuake.EXE"
+             $0D"WinQuake.EXE -listen 4"
+             $0D"WinDed.EXE"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1309,25 +1416,19 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Quake 1"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Quake 1"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Quake 1"
       }
       3DLight: =
@@ -1347,10 +1448,11 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Hexen II command-line"
-        Items = "H2"
-             $0D"H2 -listen 8"
-             $0D"GLH2"
-             $0D"GLH2 -listen 8"
+        Items = "H2.EXE"
+             $0D"H2.EXE -listen 8"
+             $0D"GLH2.EXE"
+             $0D"GLH2.EXE -listen 8"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1394,25 +1496,19 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Hexen II"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Hexen II"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Hexen II"
       }
       3DLight: =
@@ -1432,7 +1528,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Quake 2 command-line"
-        Items = "Quake2"
+        Items = "Quake2.EXE"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1474,32 +1571,24 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Quake 2"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Quake 2"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Quake 2"
       }
-      OriginTextureDef: =
+      DefaultTextureOrigin: =
       {
-        Txt = "Default origin texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default origin texture when new brush-entities request it"
+        t_DefaultTextureOrigin = !
         GameCfg = "Quake 2"
       }
       3DLight: =
@@ -1519,7 +1608,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Heretic II command-line"
-        Items = "Heretic2"
+        Items = "Heretic2.EXE"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1561,25 +1651,19 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Heretic II"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Heretic II"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Heretic II"
       }
       3DLight: =
@@ -1599,8 +1683,9 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Half-Life command-line"
-        Items = "HL"
-             $0D"HL -console -dev -zone 1024 +set sv_cheats 1"
+        Items = "HL.EXE"
+             $0D"HL.EXE -console -dev -zone 1024 +set sv_cheats 1"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1635,32 +1720,24 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Half-Life"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Half-Life"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Half-Life"
       }
-      OriginTextureDef: =
+      DefaultTextureOrigin: =
       {
-        Txt = "Default origin texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default origin texture when new brush-entities request it"
+        t_DefaultTextureOrigin = !
         GameCfg = "Half-Life"
       }
       3DLight: =
@@ -1680,7 +1757,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Sin command-line"
-        Items = "Sin"
+        Items = "Sin.EXE"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1722,25 +1800,19 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Sin"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Sin"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Sin"
       }
       3DLight: =
@@ -1761,8 +1833,9 @@ QQRKSRC1
       {
         Typ = "C"
         Txt = "KingPin command-line"
-        Items = "KingPin"
-             $0D"KingPin +set developer 1"
+        Items = "KingPin.EXE"
+             $0D"KingPin.EXE +set developer 1"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1797,32 +1870,24 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "KingPin"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "KingPin"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "KingPin"
       }
-      OriginTextureDef: =
+      DefaultTextureOrigin: =
       {
-        Txt = "Default origin texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default origin texture when new brush-entities request it"
+        t_DefaultTextureOrigin = !
         GameCfg = "KingPin"
       }
       3DLight: =
@@ -1849,8 +1914,9 @@ QQRKSRC1
       {
         Typ = "C"
         Txt = "SOF command-line"
-        Items = "SOF"
-             $0D"SOF +set console 1"
+        Items = "SOF.EXE"
+             $0D"SOF.EXE +set console 1"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1885,32 +1951,24 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "SOF"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "SOF"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "SOF"
       }
-      OriginTextureDef: =
+      DefaultTextureOrigin: =
       {
-        Txt = "Default origin texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default origin texture when new brush-entities request it"
+        t_DefaultTextureOrigin = !
         GameCfg = "SOF"
       }
       3DLight: =
@@ -1936,7 +1994,8 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Quake 3 command-line"
-        Items = "Quake3"
+        Items = "Quake3.EXE +set sv_pure 0"
+        t_ProgramHint=!
       }
       Directory: =
       {
@@ -1978,32 +2037,29 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Quake 3"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "Quake 3"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
         GameCfg = "Quake 3"
       }
-      OriginTextureDef: =
+      DefaultTextureOrigin: =
       {
-        Txt = "Default origin texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default origin texture when new brush-entities request it"
+        t_DefaultTextureOrigin = !
+        GameCfg = "Quake 3"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
         GameCfg = "Quake 3"
       }
       3DLight: =
@@ -2023,14 +2079,16 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "StarTrek Voyager Elite Force command-line"
-        Items = "StarTrek"
+        Items = "STVoy.EXE +set sv_pure 0"
+             $0D"STVoyHM.EXE +set sv_pure 0"
+        t_ProgramHint=!
       }
       Directory: =
       {
         Txt = "Directory of StarTrek Voyager Elite Force"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-        CheckFile = "stvoy.EXE"
+        CheckFile = "STVOY.EXE"
       }
       CD: =
       {
@@ -2065,25 +2123,29 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "STVEF"
       }
-      TriggerTextureDef: =
+      DefaultTextureTrigger: =
       {
-        Txt = "Default trigger texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default trigger texture when new brush-entities request it"
+        t_DefaultTextureTrigger = !
         GameCfg = "STVEF"
       }
-      ClipTextureDef: =
+      DefaultTextureClip: =
       {
-        Txt = "Default clip texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default clip texture when new brush-entities request it"
+        t_DefaultTextureClip = !
+        GameCfg = "STVEF"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "STVEF"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
         GameCfg = "STVEF"
       }
       3DLight: =
@@ -2104,14 +2166,15 @@ QQRKSRC1
       {
         Typ = "C"
         Txt = "CrystalSpace command-line"
-        Items = "Walktest"
+        Items = "WalkTest.EXE"
+        t_ProgramHint=!
       }
       Directory: =
       {
         Txt = "Directory of CrystalSpace"
         Typ = "ED"
         Hint = "Path to the game executable"
-        CheckFile = "WALKTEST.EXE"
+        CheckFile = ""
       }
       AddOns:tbbtn =
       {
@@ -2139,11 +2202,9 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      TextureDef: =
+      DefaultTexture: =
       {
-        Txt = "Default texture"
-        Typ = "ET"      // Edit Texture
-        Hint = "Default texture when inserting polyhedrons in maps"
+        t_DefaultTexture = !
         GameCfg = "Crystal Space"
       }
       3DLight: =
@@ -2714,10 +2775,17 @@ QQRKSRC1
       }
       sep: = {Typ="S"}
       DefPoly: = {
-        Typ     = "CL"
-        Txt     = "Def. brush with entities"
-        Items   = "None" $0D "128x128x128" $0D "64x64x64"
-        Values  = "none" $0D "poly128"     $0D "poly64"
+        Typ     = "C"
+        Txt     = "Default brush-entity size"
+        Items   = ""
+               $0D"128x128x128"
+               $0D"96x96x96"
+               $0D"64x64x64"
+               $0D"48x48x48"
+               $0D"32x32x32"
+        Hint    = "Specify the X, Y and Z size of a cube, that will be used for"
+               $0D"brush-entities. The format is '9999x9999x9999', and minimum size"
+               $0D"is '8x8x8'."
       }
       WallWidth: = {
         Txt = "Wall width (for Make Hollow)"
@@ -3100,31 +3168,31 @@ QQRKSRC1
       RunGame:       = {Typ="X" Txt="After successful build..." Cap[]="Run [::Game] with map" Hint="Run the game when the map has been rebuilt"}
       sep:           = {Typ="S"}
       sep:           = {Typ="S" Txt="---- Build Programs Enable/Disable Sequence ----"}
-      sep:           = {Typ="S" Txt[]="1st program '[::BuildPgm1]'"}
+      sep:           = {Typ="S" Txt[]="1st program '[::BuildPgm1] [::BuildArgs1]'"}
       BuildPgm1:     = {CustomBuildPgm=!}
       BuildArgs1:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="2nd program '[::BuildPgm2]'"}
+      sep:           = {Typ="S" Txt[]="2nd program '[::BuildPgm2] [::BuildArgs2]'"}
       BuildPgm2:     = {CustomBuildPgm=!}
       BuildArgs2:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="3rd program '[::BuildPgm3]'"}
+      sep:           = {Typ="S" Txt[]="3rd program '[::BuildPgm3] [::BuildArgs3]'"}
       BuildPgm3:     = {CustomBuildPgm=!}
       BuildArgs3:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="4th program '[::BuildPgm4]'"}
+      sep:           = {Typ="S" Txt[]="4th program '[::BuildPgm4] [::BuildArgs4]'"}
       BuildPgm4:     = {CustomBuildPgm=!}
       BuildArgs4:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="5th program '[::BuildPgm5]'"}
+      sep:           = {Typ="S" Txt[]="5th program '[::BuildPgm5] [::BuildArgs5]'"}
       BuildPgm5:     = {CustomBuildPgm=!}
       BuildArgs5:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="6th program '[::BuildPgm6]'"}
+      sep:           = {Typ="S" Txt[]="6th program '[::BuildPgm6] [::BuildArgs6]'"}
       BuildPgm6:     = {CustomBuildPgm=!}
       BuildArgs6:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="7th program '[::BuildPgm7]'"}
+      sep:           = {Typ="S" Txt[]="7th program '[::BuildPgm7] [::BuildArgs7]'"}
       BuildPgm7:     = {CustomBuildPgm=!}
       BuildArgs7:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="8th program '[::BuildPgm8]'"}
+      sep:           = {Typ="S" Txt[]="8th program '[::BuildPgm8] [::BuildArgs8]'"}
       BuildPgm8:     = {CustomBuildPgm=!}
       BuildArgs8:    = {CustomBuildArgs=!}
-      sep:           = {Typ="S" Txt[]="9th program '[::BuildPgm9]'"}
+      sep:           = {Typ="S" Txt[]="9th program '[::BuildPgm9] [::BuildArgs9]'"}
       BuildPgm9:     = {CustomBuildPgm=!}
       BuildArgs9:    = {CustomBuildArgs=!}
     }
@@ -4015,12 +4083,12 @@ QQRKSRC1
        // {              // the button creates a copy of this
        //   poly:p =
        //   {
-       //     east:f   = {v= '64 0 0 64 128 0 64 0 128'   tex[][]="[<[::TextureDef]>]"}
-       //     west:f   = {v='-64 0 0 -64 0 128 -64 128 0' tex[][]="[<[::TextureDef]>]" m="1"}
-       //     north:f  = {v= '0 64 0 0 64 128 128 64 0'   tex[][]="[<[::TextureDef]>]" m="1"}
-       //     south:f  = {v='0 -64 0 128 -64 0 0 -64 128' tex[][]="[<[::TextureDef]>]"}
-       //     up:f     = {v= '0 0 64 128 0 64 0 128 64'   tex[][]="[<[::TextureDef]>]"}
-       //     down:f   = {v='0 0 -64 0 128 -64 128 0 -64' tex[][]="[<[::TextureDef]>]" m="1"}
+       //     east:f   = {v= '64 0 0 64 128 0 64 0 128'   tex[][]="[<[::DefaultTexture]>]"}
+       //     west:f   = {v='-64 0 0 -64 0 128 -64 128 0' tex[][]="[<[::DefaultTexture]>]" m="1"}
+       //     north:f  = {v= '0 64 0 0 64 128 128 64 0'   tex[][]="[<[::DefaultTexture]>]" m="1"}
+       //     south:f  = {v='0 -64 0 128 -64 0 0 -64 128' tex[][]="[<[::DefaultTexture]>]"}
+       //     up:f     = {v= '0 0 64 128 0 64 0 128 64'   tex[][]="[<[::DefaultTexture]>]"}
+       //     down:f   = {v='0 0 -64 0 128 -64 128 0 -64' tex[][]="[<[::DefaultTexture]>]" m="1"}
        //   }
        // }
       }
