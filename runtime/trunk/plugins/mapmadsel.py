@@ -923,12 +923,14 @@ clearItem = qmenu.item("Clear Mark", ClearMarkClick, "|Clear Mark:\n\nThis cance
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
 #    reorganizePop.state = parentSelPop.state=qmenu.disabled
     menrestsel.state=menextsel.state=qmenu.disabled
-    stashItem.state = zoomItem.state = qmenu.disabled
+    meninvertfacesel.state = stashItem.state = zoomItem.state = qmenu.disabled
     oldcommand(menu)
     editor = mapeditor()
     if editor is None: return
     menunrestrictenable(editor)
     sellist = editor.layout.explorer.sellist
+    if filter(lambda x:x.type==':f', sellist):
+        meninvertfacesel.state=qmenu.normal
     if len(sellist)>1:
         browseItem.state=qmenu.normal
     else:
@@ -987,6 +989,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.22  2003/03/25 08:29:36  cdunde
+# To update info and make infobase links
+#
 # Revision 1.21  2003/03/17 01:48:49  cdunde
 # Update hints and add infobase links where needed
 #
