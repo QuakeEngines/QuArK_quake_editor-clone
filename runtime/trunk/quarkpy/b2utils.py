@@ -10,6 +10,9 @@ Various quadratic bezier utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 import math
 import quarkx
 from maputils import *
@@ -132,6 +135,9 @@ def colmat_uv1(u,v):
 #
 #
 #$Log$
+#Revision 1.3  2000/06/03 12:59:33  tiglari
+#fixed arch duplicator maploading problem, hopefully
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

@@ -8,6 +8,9 @@
 #
 ######################################
 
+#$Header$
+
+
 import qmacro
 from maputils import *
 
@@ -139,5 +142,8 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

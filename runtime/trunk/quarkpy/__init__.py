@@ -8,6 +8,9 @@ Start-up code launched by QuArK to initialize the package "quarkpy"
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 # Warning, "import" order is important because we need to
 # set up the console as soon as possible, so that syntax
@@ -90,5 +93,8 @@ def RunQuArK():
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
