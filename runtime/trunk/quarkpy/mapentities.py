@@ -173,7 +173,7 @@ class GroupType(EntityManager):
         if o["usercenter"] is not None:
             h.append(maphandles.UserCenterHandle(o))
         return h
-        
+
     def drawsel(o, view, mode):
         # draw group selected
         view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelGroupColor"))
@@ -188,13 +188,15 @@ class GroupType(EntityManager):
         Spec1 = qmenu.item("Common &specifics...", subspecs, "Specifics/Args of sub-items")
         Spec1.state = qmenu.default
         edit1 = qmenu.popup("Edit", EntityManager.menu.im_func(o, editor), hint="general editing functions")
+        usercenter1 = qmenu.item("Add user center", qmacro.MACRO_usercenter, "User controlled pivot point for the group")
+        usercenter1.state = (o["usercenter"] is not None) and qmenu.disabled
         GroupCol1 = qmenu.item("Group &color...", mapbtns.groupcolor, "the color to draw the group")
         GroupCol1.rev = 0
         RevertCol1 = qmenu.item("Back to &default color", mapbtns.groupcolor, "removes the special color")
         RevertCol1.rev = 1
         RevertCol1.state = not o["_color"] and qmenu.disabled
         import mapmenus
-        return [Spec1, edit1, qmenu.sep, GroupCol1, RevertCol1, qmenu.sep] + mapmenus.ViewGroupMenu(editor)
+        return [Spec1, edit1, usercenter1, qmenu.sep, GroupCol1, RevertCol1, qmenu.sep] + mapmenus.ViewGroupMenu(editor)
 
     def menubegin(o, editor):
         import mapmenus
@@ -389,7 +391,7 @@ class BezierType(EntityManager):
         swap = qmenu.item("&Swap sides",swapclick,"Flip visible side of patch")
 
         return [texpop, swap]
-        
+
     # /tiglari
 
     def tex_handles(o, editor, view):
@@ -419,8 +421,8 @@ class BezierType(EntityManager):
             coli = (coli+1)%6
 
         return h
-    
-    
+
+
     def handles(o, editor, view):
         import mapbezier
         #
@@ -628,6 +630,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.27  2001/04/10 08:52:57  tiglari
+#remove CustomObjectOrigin
+#
 #Revision 1.26  2001/03/31 13:01:35  tiglari
 #usercenter for groups (for rotation)
 #
