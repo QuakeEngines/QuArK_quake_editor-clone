@@ -57,9 +57,10 @@ class LinearDuplicator(StandardDuplicator):
 
     def readvalues(self):
         StandardDuplicator.readvalues(self)
-        s = self.dup["linear"]
-        if s:
-            self.matrix = quarkx.matrix(s)
+#        s = self.dup["linear"]
+#        if s:
+#            self.matrix = quarkx.matrix(s)
+        self.matrix = buildLinearMatrix(self.dup)
 
     def applylinear(self, matrix, direct=0):
         s = self.dup["linear"]
@@ -263,6 +264,9 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #

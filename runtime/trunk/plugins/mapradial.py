@@ -94,11 +94,14 @@ class RadialDuplicator(StandardDuplicator):
             count = int(self.dup["count"])
         except:
             count = 1
+        dupmat = buildLinearMatrix(self.dup)
+        cummat = dupmat
         for i in range(0, count):
             group=quarkx.newobj('radial %d:g'%i)
             result.append(group)
             angle = i*around*deg2rad
-            matrix = tiltmat*matrix_rot_z(angle)
+            matrix = cummat*tiltmat*matrix_rot_z(angle)
+            cummat = dupmat*cummat
             shift = upward*axis*i
             for object in list:
                 new = object.copy()

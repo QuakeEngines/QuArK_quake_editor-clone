@@ -222,32 +222,39 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
         fdict = facedict_rflip(fdict)
     if lower:
        fdict = facedict_fflip(fdict)
-    pd = pointdict(vtxlistdict(fdict,o))
     subdivide = int(subdivide)
-    if inner:
-        curve = innerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
-    else:
-        curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
-#    squawk(`curve`)
-#    compression = arcLength((curve[0],pd["trb"],curve[len(curve)-1]))/arcLength(curve)
-    cornerlength=arcLength((curve[0],pd["trb"],curve[len(curve)-1]))
-#    squawk('compression: '+`compression`)
-    #
-    # get line of equal length of curve, in back face plane
-    #
-    span = (pd["trb"]-pd["tlb"]).normalized
-    depth = (pd["tlb"]-pd["blb"]).normalized
-    cross = (span^depth).normalized
-    texmat = matrixFromMap(depth,cross,span*cornerlength,depth,cross,span*arcLength(curve)) 
+    def makestuff(pd, fdict, subdivide=subdivide, inner=inner): 
+        if inner:
+            curve = innerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+        else:
+            curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+    #    squawk(`curve`)
+    #    compression = arcLength((curve[0],pd["trb"],curve[len(curve)-1]))/arcLength(curve)
+        cornerlength=arcLength((curve[0],pd["trb"],curve[len(curve)-1]))
+    #    squawk('compression: '+`compression`)
+        #
+        # get line of equal length of curve, in back face plane
+        #
+        span = (pd["trb"]-pd["tlb"]).normalized
+        depth = (pd["tlb"]-pd["blb"]).normalized
+        cross = (span^depth).normalized
+        texmat = matrixFromMap(depth,cross,span*cornerlength,depth,cross,span*arcLength(curve)) 
 
-    debug(`texmat`)
-    #
-    # make texture source face
-    #
-    texface = fdict["b"].copy()
-    texface.linear(curve[0],texmat)
+        #
+        # make texture source face
+        #
+        texface = fdict["b"].copy()
+        texface.linear(curve[0],texmat)
 
-    texface.swapsides()
+        texface.swapsides()
+        return curve, texface
+
+    pd = pointdict(vtxlistdict(fdict,o))
+    pd2 = smallerbevelbox(pd, thick)
+        
+    curve, texface = makestuff(pd, fdict)
+    curve2, texface2 = makestuff(pd2, fdict)
+    
     brushes = []
     #
     #  Generate the brushes
@@ -309,153 +316,6 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
         brushes.append(brush)
     return brushes
   
-
-
-def circleLine(p0, p1, p2, p3):
-    return [(p0+p1)/2, p1, (p1+p2)/2, p2, (p2+p3)/2, p3,
-            (p3+p0)/2, p0, (p0+p1)/2]
-
-def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,1),
-      funnel=None, faceonly=0, notop=0, nobottom=0, noinner=0, noouter=0, circle=0, (subdivide,)=1):
-    "makes a column on the basis of brush o"
-    if circle:
-        subfunc=arcSubdivideLine
-    else:
-        subfunc=None
-    o.rebuildall()
-    fdict = faceDict(o)
-    if fdict is None:
-        return
-    pdo = pointdict(vtxlistdict(fdict,o))
-    
-    if funnel is not None:
-
-        def warpbox(pd, pdo=pdo,funnel=funnel):
-            pd2 = {}
-            for (i, p0, p1, p2, p3) in ((0, "tlf", "tlb", "trb", "trf"),
-                                        (1, "blf", "blb", "brb", "brf")):
-                c = (pd[p0]+pd[p1]+pd[p2]+pd[p3])/4.0
-                for p in (p0, p1, p2, p3):
-                    pd2[p] = c+funnel[i]*(pd[p]-c)
-            return pd2
-            
-        pd = warpbox(pdo)
-    else:
-        pd = pdo
-                                       
-
-    def curveCp(pd, bulge=bulge):
-        cp = cpFrom2Rows(circleLine(pd["trf"], pd["tlf"], pd["tlb"], pd["trb"]),
-                        circleLine(pd["brf"], pd["blf"], pd["blb"], pd["brb"]),bulge)
-        return cp
-        
-    cp = curveCp(pd)
-
-    def makeTube (cp, pd, oldface, pdo=pdo, fdict=fdict, stretchtex=stretchtex, subfunc=subfunc, subdivide=subdivide,editor=editor):
-        cp2 = interpolateGrid(pdo["tlb"], pdo["trb"], pdo["blb"], pdo["brb"], 3, 9)
-        cp2 = texcpFromFace(cp2, oldface, editor)
-        cp = texcpFromCp(cp, cp2)
-        if subdivide>1:
-            cp = subdivideRows(subdivide,cp,subfunc)
-        if not stretchtex:
-            for (facekey, corner) in (("r", "trb"),("f", "trf"),("l","tlf")):
-                newface=oldface.copy()
-                newface.setthreepoints(oldface.threepoints(2),2)
-                newface.distortion(fdict[facekey].normal,pdo[corner])
-                oldface = newface
-            cp3 = interpolateGrid(pdo["tlf"], pdo["tlb"], pdo["blf"], pdo["blb"])
-            cp3 = texcpFromFace(cp3, oldface, editor)
-            for i in range(3):
-                cp[i][8] = quarkx.vect(cp[i][8].xyz+cp3[i][2].st)
-#    squawk(`cp`)
-        cp = undistortRows(cp)
-        inner = quarkx.newobj("inner:b2")
-        inner.cp = cp
-        inner["tex"]=oldface["tex"]
-        return inner
-
-    inner = makeTube(cp, pd, fdict["b"])
-    if thick:
-        pd2 = smallercolumnbox(pd, thick)
-        cp2 = curveCp(pd2)
-        inner2 = makeTube(cp2, pd2, fdict["f"])
-        inner2.shortname="inner"
-        inner.shortname="outer"
-        tcp = cpFrom2Rows(cp[0],cp2[0])
-        bcp = cpFrom2Rows(cp[2], cp2[2])
-        if subdivide>1:
-            tcp = subdivideRows(subdivide,tcp, subfunc)
-            bcp = subdivideRows(subdivide,bcp, subfunc)
-        top = b2FromCpFace(tcp,"top",fdict["u"],editor)
-        top.swapsides()
-        bottom = b2FromCpFace(bcp,"bottom",fdict["d"],editor)
-        inner2.swapsides()
-        seams = [top, bottom]
-        if notop:
-            seams.remove(top)
-        if nobottom:
-            seams.remove(bottom)
-        if faceonly:
-           return seams
-        inners = [inner, inner2]
-        if noinner:
-            inners.remove(inner2)
-        if noouter:
-            inners.remove(inner)
-        return inners+seams
-        
-    if open:
-       if inverse:
-          inner.swapsides()
-       return [inner]
-        
-
-    if inverse:
-
-        def squareFromCircle(row): # row = 9 pts, cp's for circle
-            # first not used, passed to reduce index confusion
-            def halfSquare(hr): # hr=half-row excluding center
-                return [hr[1], hr[1], hr[2], hr[3], hr[3]]
-             
-            return halfSquare(row[:4]), halfSquare(row[4:8])
-            
-        def faces(circline, borderfunc, name, texface, subdivide=subdivide,subfunc=subfunc):
-            out0, out1 = borderfunc(circline)
-            b2a = b2From2Rows(out0, circline[0:5],texface,name+'0',subdivide=subdivide,subfunc=subfunc)
-            b2b = b2From2Rows(out1, circline[4:9],texface,name+'1',subdivide=subdivide,subfunc=subfunc)
-            return b2a, b2b
-
-        topa, topb = faces(cp[0],squareFromCircle,'top',fdict['u'])
-        inner.swapsides()
-        topa.swapsides()
-        topb.swapsides()
-        bottoma, bottomb = faces(cp[2],squareFromCircle,'bottom',fdict['d'])
-        result = [inner, topa, topb, bottoma, bottomb]
-        if faceonly:
-            result.remove(inner)
-        if notop:
-            result.remove(topa)
-            result.remove(topb)
-        if nobottom:
-            result.remove(bottoma)
-            result.remove(bottomb)
-    else:
-        def center(v):
-            c = (v[1]+v[3]+v[5]+v[7])/4.0
-            return map(lambda x,c=c:c,range(9))
-
-        top = b2From2Rows(center(cp[0]),cp[0],fdict['u'],'top',subdivide=subdivide,subfunc=subfunc)
-        bottom = b2From2Rows(cp[2], center(cp[2]),fdict['d'],'bottom',subdivide=subdivide,subfunc=subfunc)
-        result = [inner, top, bottom]
-        if faceonly:
-            result.remove(inner)
-        if notop:
-            result.remove(top)
-        if nobottom:
-            result.remove(bottom)
-
-    return result
-
 
 def images(buildfn, args):
     if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
@@ -531,28 +391,10 @@ class BrushBevelDuplicator(StandardDuplicator):
         if o.type==":p": # just grab the first one, who cares
             return images(bevelImages, (o, editor, inverse, left, lower, standup, thick, inner, subdivide))
 
-class BrushColumnDuplicator(StandardDuplicator):
-
-  def buildimages(self, singleimage=None):
-    if singleimage is not None and singleimage>0:
-      return []
-    editor = mapeditor()
-    inverse, open, thick, stretchtex, bulge, funnel, faceonly,notop,nobottom, noinner, noouter, circle, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "open", "thick", "stretchtex", "bulge", "funnel", "faceonly", "notop", "nobottom", "noinner","noouter",  "circle", "subdivide"))
-    if thick:
-      thick, = thick
-    list = self.sourcelist()
-    if subdivide is None:
-        subdivide=1,
-    for o in list:
-       if o.type==":p": # just grab the first one, who cares
-           return images(columnImages, (o, editor, inverse, open, thick, stretchtex, bulge,funnel,
-             faceonly,notop,nobottom, noinner, noouter, circle,subdivide))
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup brushcap":     BrushCapDuplicator,
   "dup brushbevel":   BrushBevelDuplicator,
-  "dup brushcolumn":  BrushColumnDuplicator
 })
 
 #
@@ -593,14 +435,6 @@ def curvemenu(o, editor, view):
       else:
         editor.ok(undo, "make right corner")
       
-  def makecolumn(m, o=o, editor=editor):
-      dup = quarkx.newobj("column:d")
-      dup["macro"]="dup brushcolumn"
-      dup["open"]=1  # since this is normally rounding a corner with wall & ceiling"
-      dup.appenditem(m.newpoly)
-      undo=quarkx.action()
-      undo.exchange(o, dup)
-      editor.ok(undo, "make column")
       
   disable = (len(o.subitems)!=6)
 
@@ -645,10 +479,6 @@ If the textures on the two adjoining walls of the room are properly aligned, the
     item.hint = hint
     finishitem(item)
     list.append(item)
-
-#  colitem = qmenu.item("C&olumn", makecolumn, "Make a column")
-#  finishitem(colitem)
-#  list.append(colitem)
 
   curvehint = """|Commands for making curves out of brushes.
 
@@ -703,6 +533,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2001/02/25 08:40:01  tiglari
+#`curve' faces now copy all specifics from guidebrush (esp.lightvalue for arghrad)
+#
 #Revision 1.7  2001/02/25 04:46:49  tiglari
 #new specifics for brush&patch arch&bevel
 #

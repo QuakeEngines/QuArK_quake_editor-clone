@@ -774,17 +774,8 @@ class InstanceDuplicator(PathDuplicator):
                 matrix=quarkx.matrix('1 0 0 0 1 0 0 0 1')
                 
             if not pathlist[i]["no instance"]:
-                linear = pathlist[i]["linear"]
-                if linear:
-                    matrix = quarkx.matrix(linear)*matrix
+                matrix = buildLinearMatrix(pathlist[i])*matrix              
                 list.translate(thisorigin)
-                scale = pathlist[i]["scale"]
-                if scale is not None:
-                    matrix = quarkx.matrix('%.2f 0 0 0 %.2f 0 0 0 %.2f'%scale)*matrix
-                angles = pathlist[i]["angles"]
-                if angles is not None:
-                    angles = map(lambda a:a*deg2rad, angles)
-                    matrix = matrix_rot_y(angles[0])*matrix_rot_x(angles[1])*matrix_rot_z(angles[2])*matrix
                 list.linear(thisorigin, matrix)
 
                 if (singleimage is None) or (i==singleimage):
@@ -829,6 +820,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.33  2001/03/28 23:21:03  tiglari
+#re-integrate instance dup stuff from  1.31, which somehow got dropped
+#
 #Revision 1.32  2001/03/28 12:22:49  tiglari
 #fix square end problem (vertex shift function wrong)
 #
