@@ -284,7 +284,8 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         curve2, texface2 = makestuff(pd2, fdict)
         base=quarkx.newobj('front:f')
         base.setthreepoints((curve[0],curve2[0],curve[0]+depth),0)
-        base["tex"]=fdict["r"]["tex"]
+#        base["tex"]=fdict["r"]["tex"]
+        base["tex"]=CaulkTexture()
         if not inner:
             brush=quarkx.newobj('brush:p')
             capper=texface.copy()
@@ -311,7 +312,8 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             brushes.append(brush)
      
         side=quarkx.newobj('side:f')
-        side["tex"]=fdict["b"]["tex"]
+#        side["tex"]=fdict["b"]["tex"]
+        side["tex"]=CaulkTexture()
         side.setthreepoints((curve[subdivide],curve[subdivide]+depth,curve2[subdivide]),0)
         if left:
             base.swapsides()
@@ -350,7 +352,8 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             brush.appenditem(top.copy())
             if i<final:
                 div=quarkx.newobj('div'+`i`+':f')
-                div["tex"]=fdict["b"]["tex"]
+#                div["tex"]=fdict["b"]["tex"]
+                div["tex"]=CaulkTexture()
                 div.setthreepoints((curve[i+1], curve2[i+1], curve[i+1]+depth),0)
                 div.swapsides()
                 if left:
@@ -402,6 +405,8 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
     for i in range(subdivide):
         brush = quarkx.newobj('brush'+`i`+':p')
         brush.appenditem(base)
+        if i==0 and not inverse and not inner:
+            brush.appenditem(fdict["b"].copy())
         face=quarkx.newobj('face'+`i`+':f')
         face.setthreepoints((curve[i],curve[i+1],curve[i]+depth),0)
         face = transfertex(face, texface, curve[i])
@@ -416,7 +421,8 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         brush.appenditem(top.copy())
         if i<final:
             div=quarkx.newobj('div'+`i`+':f')
-            div["tex"]=fdict["b"]["tex"]
+#            div["tex"]=fdict["b"]["tex"]
+            div["tex"]=CaulkTexture()
             div.setthreepoints((pivot, pivot+depth, curve[i+1]),0)
             if left:
                 div.swapsides()
@@ -429,6 +435,8 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             base.swapsides()
         else:
             brush.appenditem(side)
+            if not inverse and not inner:
+                brush.appenditem(fdict["r"].copy())
         brushes.append(brush)
     return brushes
   
@@ -656,6 +664,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2001/04/29 21:00:09  tiglari
+#add missing textures to thick curves
+#
 #Revision 1.11  2001/04/16 12:32:39  tiglari
 #thick supported for arches and bevels
 #
