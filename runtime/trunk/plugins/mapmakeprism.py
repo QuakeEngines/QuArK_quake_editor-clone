@@ -133,12 +133,6 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
                 Cap = "Yes, make me some stairs."
             }
 
-            ramp: =
-            {
-                Typ = "X"
-                Txt = "Ramp:"
-                Cap = "Yes, make me a ramp."
-            }
 
             sep: = { Typ = "S" }
 
@@ -437,6 +431,9 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClic
 #----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2001/02/28 09:45:18  tiglari
+# fixed `stairs' option bug (ramp still has problems)
+#
 # Revision 1.5  2001/01/27 18:25:29  decker_dk
 # Renamed 'TextureDef' -> 'DefaultTexture'
 #
