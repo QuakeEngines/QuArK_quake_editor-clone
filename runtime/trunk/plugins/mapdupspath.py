@@ -788,11 +788,12 @@ class InstanceDuplicator(PathDuplicator):
                 matrix=quarkx.matrix('1 0 0 0 1 0 0 0 1')
                 
             if not pathlist[i]["no instance"]:
-                matrix = buildLinearMatrix(pathlist[i])*matrix              
                 list.translate(thisorigin)
-                listorigin = quarkpy.maphandles.GetUserCenter(list.copy())
-                list.linear(listorigin, matrix)
-#                list.linear(thisorigin, matrix)
+                list.linear(thisorigin,matrix)
+                matrix2=buildLinearMatrix(pathlist[i])
+                for item in templategroup.subitems:
+                    center=GetUserCenter(item)
+                    item.linear(thisorigin+center,matrix2)
                 
                 if (singleimage is None) or (i==singleimage):
                     newobjs = newobjs + [list]
@@ -836,6 +837,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.37  2001/04/02 21:11:27  tiglari
+#added is None to conditional
+#
 #Revision 1.36  2001/04/01 00:09:36  tiglari
 #usercenter for matrices on path points for instance duplicator
 #
