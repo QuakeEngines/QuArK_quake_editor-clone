@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/06/13 22:58:25  aiv
+Moved 'Convert From' stuff to python code (plugin type)
+
 Revision 1.19  2001/06/05 18:44:01  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -2242,7 +2245,7 @@ var
  Face: TFace;
  S: PSurface;
  I, Count: Integer;
- nSommet: PSommet;
+ nVertex: PVertex;
  V: array[0..2] of TVect;
 begin
  try
@@ -2252,19 +2255,19 @@ begin
   Count:=PyObject_Length(vtx);
   if Count<0 then Exit;
   FillChar(V, SizeOf(V), 0);
-  GetMem(S, TailleBaseSurface + Count*(SizeOf(PSommet)+SizeOf(TSommet)));
+  GetMem(S, TailleBaseSurface + Count*(SizeOf(PVertex)+SizeOf(TVertex)));
   try
-   nSommet:=PSommet(@S^.prvDescS[Count]);
+   nVertex:=PVertex(@S^.prvDescS[Count]);
    for I:=0 to Count-1 do
     begin
-     S^.prvDescS[I]:=nSommet;
+     S^.prvDescS[I]:=nVertex;
      obj:=PyList_GetItem(vtx, I);
      if obj=Nil then Exit;
      if obj^.ob_type <> @TyVect_Type then
       Raise EError(4441);
-     nSommet^.P:=PyVect(obj)^.V;
-     if I<3 then V[I]:=nSommet^.P else V[2]:=nSommet^.P;
-     Inc(nSommet);
+     nVertex^.P:=PyVect(obj)^.V;
+     if I<3 then V[I]:=nVertex^.P else V[2]:=nVertex^.P;
+     Inc(nVertex);
     end;
    Face:=TFace.Create('tmp', Nil);
    Face.SetThreePoints(V[0], V[2], V[1]);

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/03/20 21:42:24  decker_dk
+Updated copyright-header
+
 Revision 1.5  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -153,13 +156,13 @@ var
      IF I<Droite THEN TrierTampon(I,Droite);
     END;
 
-    procedure DiviserX(const Sommets: TTableauFSommets; NbS, J0: Integer);
+    procedure DiviserX(const Sommets: TFVertexTable; NbS, J0: Integer);
     var
      J, K, L, S: Integer;
      FK: PSurface;
      Centre: TInfoSource;
      P1, P2: TVect;
-     Norm2: array[0..MaxFSommets-1] of record Y,Z,Dist: TDouble end;
+     Norm2: array[0..MaxFVertices-1] of record Y,Z,Dist: TDouble end;
      Min, Max, D1, D2: TDouble;
     begin
      P1:=Sommets[0]^.P;
@@ -234,13 +237,13 @@ var
         end;
     end;
 
-    procedure DiviserY(const Sommets: TTableauFSommets; NbS, J0: Integer);
+    procedure DiviserY(const Sommets: TFVertexTable; NbS, J0: Integer);
     var
      J, K, L, S: Integer;
      FK: PSurface;
      Centre: TInfoSource;
      P1, P2: TVect;
-     Norm2: array[0..MaxFSommets-1] of record X,Z,Dist: TDouble end;
+     Norm2: array[0..MaxFVertices-1] of record X,Z,Dist: TDouble end;
      Min, Max, D1, D2: TDouble;
     begin
      P1:=Sommets[0]^.P;
@@ -315,13 +318,13 @@ var
         end;
     end;
 
-    procedure DiviserZ(const Sommets: TTableauFSommets; NbS, J0: Integer);
+    procedure DiviserZ(const Sommets: TFVertexTable; NbS, J0: Integer);
     var
      J, K, L, S: Integer;
      FK: PSurface;
      Centre: TInfoSource;
      P1, P2: TVect;
-     Norm2: array[0..MaxFSommets-1] of record X,Y,Dist: TDouble end;
+     Norm2: array[0..MaxFVertices-1] of record X,Y,Dist: TDouble end;
      Min, Max, D1, D2: TDouble;
     begin
      P1:=Sommets[0]^.P;

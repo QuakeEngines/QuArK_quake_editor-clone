@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/03/20 21:38:37  decker_dk
+Updated copyright-header
+
 Revision 1.22  2001/01/30 19:11:56  decker_dk
 Changed to GetApplicationDllPath().
 
@@ -1147,7 +1150,7 @@ procedure T3DFXSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boole
 type
  TBBox = (bbX, bbY, bbW);
 const
- MAX_VERTICES = 4*MaxFSommets;
+ MAX_VERTICES = 4*MaxFVertices;
  oe_Left   = 1;
  oe_Top    = 2;
  oe_Right  = 3;

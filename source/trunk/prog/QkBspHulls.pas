@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/07/18 02:17:30  tiglari
+Oops missing paren
+
 Revision 1.12  2001/07/17 22:40:46  tiglari
 q3a bsp texture scale fixed
 
@@ -282,7 +285,7 @@ var
  NoEdge: LongInt;
  Face: TFace;
  Surface1: PSurface;
- Dest: ^PSommet;
+ Dest: ^PVertex;
  BspVecs: PTexInfoVecs;
  InvFaces: Integer;
  LastError: String;
@@ -391,7 +394,7 @@ begin
       Inc(PChar(Faces2), SurfaceSize);
       if Faces2^.ledge_id + Faces2^.ledge_num > cLEdges then
         Raise EErrorFmt(5635, [3]);
-      Inc(Size1, TailleBaseSurface+Faces2^.ledge_num*SizeOf(PSommet));
+      Inc(Size1, TailleBaseSurface+Faces2^.ledge_num*SizeOf(PVertex));
     end;
   end
   else
@@ -403,7 +406,7 @@ begin
       if Q3Faces2^.Face_Type=1 then
       begin
         {FIXME : check for face additions as above}
-        Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PSommet));
+        Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PVertex));
       end
       else
         Inc(NonFaces);
@@ -488,7 +491,7 @@ begin
        UsedVertex:=NoVert2+1;
       if NoVert>=UsedVertex then
        UsedVertex:=NoVert+1;
-      Dest^:=PSommet(Vertices + NoVert * SizeOf(TVect));
+      Dest^:=PVertex(Vertices + NoVert * SizeOf(TVect));
       Inc(Dest);
     end
     else
@@ -501,7 +504,7 @@ begin
        structure for the texture position information }
       for J:=1 to Vertex_num do
       begin
-        Dest^:=PSommet(Vertices+(Vertex_id+J-1)*SizeOf(TVect));
+        Dest^:=PVertex(Vertices+(Vertex_id+J-1)*SizeOf(TVect));
         Q3VertexP:=PQ3Vertex(FBsp.Q3Vertices+(Vertex_id+J-1)*SizeOf(TQ3Vertex));
         dist:=Q3VertexP^.Normal;
         if J=1 then
@@ -892,7 +895,7 @@ begin
      for I:=0 to Sommets.Count-1 do
       with Vertices^[I] do
        begin
-        Src:=PSommet(Sommets[I]);
+        Src:=PVertex(Sommets[I]);
         Pt3D:=SceneCourante.Proj(Src^.P);
         if Pt3D.Z > ZMax1 then
          ZMax1:=Pt3D.Z;

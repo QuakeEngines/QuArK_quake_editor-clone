@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/06/05 18:43:29  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.8  2001/03/20 21:34:49  decker_dk
 Updated copyright-header
 }
@@ -502,7 +505,7 @@ type
  TV1 = TPointProj;
  TBBox = (bbX, bbY, bbW);
 const
- MAX_VERTICES = 4*MaxFSommets;
+ MAX_VERTICES = 4*MaxFVertices;
  oe_Left   = 1;
  oe_Top    = 2;
  oe_Right  = 3;

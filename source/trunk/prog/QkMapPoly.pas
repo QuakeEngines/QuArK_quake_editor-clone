@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2001/07/10 01:40:06  tiglari
+unwind of bungled branch (reversion to 1.41 is what's intended here)
+
 Revision 1.41  2001/07/08 02:25:22  tiglari
 change map writing so that integral vertices are used as threepoints in
  bp, valve220 and disabledenhtex mode, forcing with explansion when
@@ -172,18 +175,18 @@ uses SysUtils, Windows, Classes, Graphics,
 { $DEFINE TexUpperCase}
 
 const
- MaxFSommets  = 64;   { sommets par face, maximum }
+ MaxFVertices  = 64;   { sommets par face, maximum }
  EchelleTexture = 128;
  CannotEditFaceYet = '!';
 
 type
- PSommet = ^TSommet;
- TSommet = record
+ PVertex = ^TVertex;
+ TVertex = record
             P: TVect;
            end;
 
- PTableauFSommets = ^TTableauFSommets;
- TTableauFSommets = array[0..MaxFSommets-1] of PSommet;
+ PFVertexTable = ^TFVertexTable;
+ TFVertexTable = array[0..MaxFVertices-1] of PVertex;
 
  PTamponAretes = ^TTamponAretes;
  TTamponAretes = array[0..99] of Word;
@@ -201,7 +204,7 @@ type
              F: TFace;
              NextF: PSurface;   { linked list of PSurfaces for a given face }
              prvNbS: Integer;
-             prvDescS: TTableauFSommets;
+             prvDescS: TFVertexTable;
             end;
 
  TPolyhedron = class(TTreeMap)
@@ -245,7 +248,7 @@ type
                procedure RefreshColor(Plan: Pointer); override;}
                procedure SetSelFocus; override;
                procedure AjouteFace(FJ: TFace; Copie: Boolean);
-               function EnumAretes(Sommet: PSommet; var nSommets: TTableauFSommets) : Integer;
+               function EnumAretes(Sommet: PVertex; var nVertices: TFVertexTable) : Integer;
                function PyGetAttr(attr: PChar) : PyObject; override;
                procedure Deplacement(const PasGrille: TDouble); override;
              end;
@@ -273,7 +276,7 @@ type
              private
               { données internes pour gestion polyèdre }
                FFaceOfPoly: PSurface;
-              {prvDescS: PTableauFSommets;
+              {prvDescS: PFVertexTable;
                prvNbS: Integer;}
               {function GetFaceCenter : TVect;}
               {function GetVertexCount(Cmpo: Integer) : Integer;
@@ -328,14 +331,14 @@ type
              end;
 
 const
- TailleBaseSurface = SizeOf(TSurface)-SizeOf(TTableauFSommets);
+ TailleBaseSurface = SizeOf(TSurface)-SizeOf(TFVertexTable);
 
  StandardFaceParams: TFaceParams = (0,0,0,1,1);
 
  {------------------------}
 
 function CentreSurface(P: PSurface) : TVect;
-function SommetDeFace(Surface: PSurface; Sommet: PSommet) : Boolean;
+function SommetDeFace(Surface: PSurface; Sommet: PVertex) : Boolean;
 
 function PolyedreRencontrePolyedre(P1, P2: TPolyedre) : Boolean;
 function FaceRencontrePolyedre(F: PSurface; P: TPolyedre) : Boolean;
@@ -854,23 +857,23 @@ begin
 end;
 
 type
- PSommetEx = ^TSommetEx;
- TSommetEx = record
+ PVertexEx = ^TVertexEx;
+ TVertexEx = record
               V: TVect;
               RefCount: Integer;
-              Created: PSommet;
+              Created: PVertex;
              end;
 
 function AjouteSommet(const Pt: TVect; DistMin: TDouble; Sommets: TList) : Integer;
 var
  I: Integer;
  Dist: TDouble;
- Test, Old: PSommetEx;
+ Test, Old: PVertexEx;
 begin
  Result:=-1;
  for I:=Sommets.Count-1 downto 0 do
   begin
-   Test:=PSommetEx(Sommets[I]);
+   Test:=PVertexEx(Sommets[I]);
    Dist:=Abs(Test^.V.X-Pt.X)
        + Abs(Test^.V.Y-Pt.Y)
        + Abs(Test^.V.Z-Pt.Z);
@@ -880,7 +883,7 @@ begin
     else
      begin   { almost same vertex as TWO previous vertices - merge them }
       Test^.V:=Pt;
-      Old:=PSommetEx(Sommets[Result]);
+      Old:=PVertexEx(Sommets[Result]);
       Sommets[Result]:=Test;
       Inc(Test^.RefCount);
       if Old^.RefCount=1 then
@@ -1011,8 +1014,8 @@ end;
 
 procedure DessinPolygoneFace(S: PSurface);
 var
- Pts: array[0..MaxFSommets-1] of TPoint;
- Pts2: array[0..MaxFSommets-1] of TPointProj;
+ Pts: array[0..MaxFVertices-1] of TPoint;
+ Pts2: array[0..MaxFVertices-1] of TPointProj;
  J, NbPts: Integer;
 begin
  NbPts:=S^.prvNbS;
@@ -1381,7 +1384,7 @@ begin
  if Sommets<>Nil then
   begin
    for I:=Sommets.Count-1 downto 0 do
-    Dispose(PSommet(Sommets[I]));
+    Dispose(PVertex(Sommets[I]));
    Sommets.Clear;
   end;
  PolyhedronState:=psUnknown;
@@ -1448,9 +1451,9 @@ var
  Pt: TVect;
  Aretes, FaceList: TList;
 {FacesVCount: ^TableauEntiers;}
- S, Prec, Source, Suivant: PSommet;
+ S, Prec, Source, Suivant: PVertex;
  S1, S2, S3, S4: Integer;
- nSommets: PTableauFSommets;
+ nVertices: PFVertexTable;
  Surface: PSurface;
  Base: ^TableauSommets;
  NoSommet: Integer;
@@ -1459,7 +1462,7 @@ var
  T, Q: QObject;
  Opposite: Boolean;
  ListeSommets: TList;
- SommetEx: PSommetEx;
+ SommetEx: PVertexEx;
  NoAretes: array[1..2] of Integer;
 
    procedure RemoveFace(FI: TFace; I: Integer);
@@ -1573,11 +1576,11 @@ begin
     Sommets:=TList.Create;
    for J:=0 to I-1 do
     begin
-     SommetEx:=PSommetEx(ListeSommets[J]);
+     SommetEx:=PVertexEx(ListeSommets[J]);
      S:=SommetEx^.Created;
      if S=Nil then
       begin
-       S:=New(PSommet);
+       S:=New(PVertex);
        S^.P:=SommetEx^.V;
        Sommets.Add(S);
        SommetEx^.Created:=S;
@@ -1621,8 +1624,8 @@ begin
     end
    else
     begin
-     Prec:=PSommetEx(ListeSommets[S1])^.Created;
-     Suivant:=PSommetEx(ListeSommets[S2])^.Created;
+     Prec:=PVertexEx(ListeSommets[S1])^.Created;
+     Suivant:=PVertexEx(ListeSommets[S2])^.Created;
      Aretes[I-2]:=Prec;
      Aretes[I]:=Suivant;
     end;
@@ -1632,7 +1635,7 @@ begin
  finally
   for I:=0 to ListeSommets.Count-1 do
    begin
-    SommetEx:=PSommetEx(ListeSommets[I]);
+    SommetEx:=PVertexEx(ListeSommets[I]);
     if SommetEx^.RefCount=1 then
      Dispose(SommetEx)
     else
@@ -1697,17 +1700,17 @@ begin
   for J:=0 to FaceList.Count-1 do
    begin
     FJ:=TFace(FaceList[J]);
-    nSommets:=@Surface^.prvDescS;
+    nVertices:=@Surface^.prvDescS;
     I:=0;
     while Aretes[I]<>FJ do
      Inc(I,2);
-    S:=PSommet(Aretes[I xor 3]);
-    Prec:=PSommet(Aretes[I xor 1]);
+    S:=PVertex(Aretes[I xor 3]);
+    Prec:=PVertex(Aretes[I xor 1]);
     K:=1;
     repeat
-     if K=MaxFSommets then
+     if K=MaxFVertices then
       begin
-       Err1:=FmtLoadStr1(250, [MaxFSommets]);
+       Err1:=FmtLoadStr1(250, [MaxFVertices]);
        Err2:=IntToStr(J);
        Exit;
       end;
@@ -1715,7 +1718,7 @@ begin
      while (Aretes[I xor 1]<>S) or (Aretes[I xor 3]=Prec)
       or ((Aretes[I]<>FJ) and (Aretes[I xor 2]<>FJ)) do
        Inc(I,2);
-     Suivant:=PSommet(Aretes[I xor 3]);
+     Suivant:=PVertex(Aretes[I xor 3]);
      if K=1 then
       begin
         { contrôle l'orientation du polygone }
@@ -1740,20 +1743,20 @@ begin
          Suivant:=Prec;
          Prec:=Source;
         end;
-       nSommets^[0]:=Prec;
+       nVertices^[0]:=Prec;
       end;
-     nSommets^[K]:=S;
+     nVertices^[K]:=S;
      Inc(K);
      Prec:=S;
      S:=Suivant;
-    until S=nSommets^[0];
-   {FJ^.prvPremierS:=(PChar(nSommets)-PChar(DescFaces)) div SizeOf(PSommet);}
+    until S=nVertices^[0];
+   {FJ^.prvPremierS:=(PChar(nVertices)-PChar(DescFaces)) div SizeOf(PVertex);}
     Surface^.Source:=Self;
     Surface^.F:=FJ;
     Surface^.prvNbS:=K;
     Faces.Add(Surface);
     FJ.LinkSurface(Surface);
-    Inc(PChar(Surface), TailleBaseSurface+K*SizeOf(PSommet));
+    Inc(PChar(Surface), TailleBaseSurface+K*SizeOf(PVertex));
    end;
  except
   on E:EListError do
@@ -1769,13 +1772,13 @@ begin
  for I:=0 to Sommets.Count-1 do
   with Base^[I] do
    begin
-   {Pt:=Coord.Proj(PSommet(Sommets[I])^.P);}
+   {Pt:=Coord.Proj(PVertex(Sommets[I])^.P);}
     Ar:=J;
    end;
  NoSommet:=0;
  J:=0;
  repeat
-  Source:=PSommet(Sommets[NoSommet]);
+  Source:=PVertex(Sommets[NoSommet]);
   TamponArete^:=not NoSommet;
   repeat
    with Base^[NoSommet] do
@@ -1785,7 +1788,7 @@ begin
      until (Ar<0) or (Aretes[Ar]=Source);
      if Ar<0 then
       Break;
-     Source:=PSommet(Aretes[Ar+2]);
+     Source:=PVertex(Aretes[Ar+2]);
      NoSommet:=Sommets.IndexOf(Source);
     end;
    J:=-1;
@@ -1806,7 +1809,7 @@ begin
  {$IFDEF Debug}
  if Pointer(Source)<>DescFaces then Raise InternalE('ReallocMem modified DescFaces');
  {$ENDIF}
- NbAretes2:=(PChar(Surface)-PChar(DescFaces)) div SizeOf(PSommet);
+ NbAretes2:=(PChar(Surface)-PChar(DescFaces)) div SizeOf(PVertex);
  finally Aretes.Free; end;
  finally FaceList.Free; end;
  PolyhedronState:=psOk;
@@ -1815,7 +1818,7 @@ end;
 
 function PolyedreNonVide1(nFaces: TList; ReloadData : Boolean; const DistMin: TDouble) : Boolean;
 const
- PlaceHolder = PSommet(1);
+ PlaceHolder = PVertex(1);
 type
  TUnSommet = record Ar: Integer; end;
  TableauSommets = array[0..99] of TUnSommet;
@@ -1831,7 +1834,7 @@ var
  Q: QObject;
  Opposite: Boolean;
  ListeSommets: TList;
- SommetEx: PSommetEx;
+ SommetEx: PVertexEx;
 begin
  Result:=False;
  ListeSommets:=TList.Create;
@@ -1904,7 +1907,7 @@ begin
     I:=0;
     for J:=0 to ListeSommets.Count-1 do
      begin
-      SommetEx:=PSommetEx(ListeSommets[J]);
+      SommetEx:=PVertexEx(ListeSommets[J]);
       if SommetEx^.Created=Nil then
        begin
         Inc(I);
@@ -1936,7 +1939,7 @@ begin
   FaceList.Free;
   for I:=0 to ListeSommets.Count-1 do
    begin
-    SommetEx:=PSommetEx(ListeSommets[I]);
+    SommetEx:=PVertexEx(ListeSommets[I]);
     if SommetEx^.RefCount=1 then
      Dispose(SommetEx)
     else
@@ -2653,7 +2656,7 @@ var
  S: ^TableauSommets;
  Dessin: PPointProj;
  Dessin1: PPoint absolute Dessin;
-{Source: PSommet;}
+{Source: PVertex;}
  Nombres: PInteger;
  TamponAretes: ^Word;
  Q: QObject;
@@ -2681,7 +2684,7 @@ begin
  GetMem(S, BaseNombre + J*(SizeOf(Integer) div 2)); try
  for I:=0 to Sommets.Count-1 do
   with S^[I] do
-   Pt:=CCoord.Proj(PSommet(Sommets[I])^.P);
+   Pt:=CCoord.Proj(PVertex(Sommets[I])^.P);
  NewPen:=False;
  if g_DrawInfo.SelectedBrush<>0 then
   begin
@@ -2732,7 +2735,7 @@ begin
    SetROP2(g_DrawInfo.DC, R2_CopyPen);
   end;
  PChar(Dessin):=PChar(S)+Base;
- PChar(TamponAretes):=PChar(DescFaces)+NbAretes2*SizeOf(PSommet);
+ PChar(TamponAretes):=PChar(DescFaces)+NbAretes2*SizeOf(PVertex);
  if CCoord.FastDisplay then
   begin
    PChar(Nombres):=PChar(S)+BaseNombre;
@@ -2873,7 +2876,7 @@ begin
  NbPts:=Sommets.Count;
  if NbPts=0 then Exit;
  for J:=0 to NbPts-1 do
-  with PSommet(Sommets[J])^.P do
+  with PVertex(Sommets[J])^.P do
    begin
     Result.X:=Result.X + X;
     Result.Y:=Result.Y + Y;
@@ -2959,7 +2962,7 @@ var
 begin
  if CheckPolyhedron then
   for I:=0 to Sommets.Count-1 do
-   with PSommet(Sommets[I]).P do
+   with PVertex(Sommets[I]).P do
     begin
      if Min.X > X then Min.X:=X;
      if Min.Y > Y then Min.Y:=Y;
@@ -3022,7 +3025,7 @@ begin
    for I:=0 to Sommets.Count-1 do
     with Vertices^[I] do
      begin
-      Src:=PSommet(Sommets[I]);
+      Src:=PVertex(Sommets[I]);
       Pt3D:=SceneCourante.Proj(Src^.P);
       if Pt3D.Z > ZMax1 then
        ZMax1:=Pt3D.Z;
@@ -3088,10 +3091,10 @@ begin
  Result.Specifics.AddStrings(Specifics);
 end;
 
-function TPolyedre.EnumAretes(Sommet: PSommet; var nSommets: TTableauFSommets) : Integer;
+function TPolyedre.EnumAretes(Sommet: PVertex; var nVertices: TFVertexTable) : Integer;
 var
  I, J, K: Integer;
- Prec, S: PSommet;
+ Prec, S: PVertex;
 begin
  Result:=0;
  if CheckPolyhedron then
@@ -3107,12 +3110,12 @@ begin
          K:=Result;
          repeat
           Dec(K);
-         until (K<0) or (nSommets[K]=Prec);
+         until (K<0) or (nVertices[K]=Prec);
          if K<0 then
           begin
-           nSommets[Result]:=Prec;
+           nVertices[Result]:=Prec;
            Inc(Result);
-           if Result=MaxFSommets then Exit;
+           if Result=MaxFVertices then Exit;
           end;
         end;
        Prec:=S;
@@ -3306,7 +3309,7 @@ begin
           begin
            Result:=PyList_New(Sommets.Count);
            for I:=0 to Sommets.Count-1 do
-            PyList_SetItem(Result, I, MakePyVect(PSommet(Sommets[I])^.P));
+            PyList_SetItem(Result, I, MakePyVect(PVertex(Sommets[I])^.P));
           end;
          Exit;
         end;
@@ -3560,17 +3563,17 @@ end;
 function TFace.GetFaceOfPoly;
 var
  P1, P2, P3: TVect;
- nSommet: PSommet;
+ nSommet: PVertex;
  I: Integer;
 begin
  if (FFaceOfPoly=Nil) and GetThreePoints(P1, P2, P3) then
   begin
-   GetMem(FFaceOfPoly, TailleBaseSurface + 4*(SizeOf(PSommet)+SizeOf(TSommet)));
+   GetMem(FFaceOfPoly, TailleBaseSurface + 4*(SizeOf(PVertex)+SizeOf(TVertex)));
    FFaceOfPoly^.Source:=Self;
    FFaceOfPoly^.F:=Self;
    FFaceOfPoly^.NextF:=Nil;
    FFaceOfPoly^.prvNbS:=4;
-   nSommet:=PSommet(@FFaceOfPoly^.prvDescS[4]);
+   nSommet:=PVertex(@FFaceOfPoly^.prvDescS[4]);
    for I:=0 to 3 do
     begin
      FFaceOfPoly^.prvDescS[I]:=nSommet;
@@ -3901,7 +3904,7 @@ begin
  VecteurNormal:=VecteurNormalDe(CentreFace, Normale);
 end;}
 
-function {TFace.}SommetDeFace(Surface: PSurface; Sommet: PSommet) : Boolean;
+function {TFace.}SommetDeFace(Surface: PSurface; Sommet: PVertex) : Boolean;
 var
  I: Integer;
 {P: PSurface;}
@@ -4486,13 +4489,13 @@ end;
 (*procedure TFace.AjouterSurfaceRef(Liste: TList; S: PSurface; Vertices: Pointer; VertexCount: Integer; ZMax: LongInt; Sel: Boolean);
 type
  TIdxSommet = 0..127;
- TSommet = record
+ TVertex = record
             Pt: TPoint3D;
            end;
 var
  I, J, NbSommets: Integer;
- Src1: PSommet;
- Sommets: array[TIdxSommet] of TSommet;
+ Src1: PVertex;
+ Sommets: array[TIdxSommet] of TVertex;
 {BordD: Integer;}
 {Pente1, Pente1R, PenteMax, PenteMaxR: Integer;}
  NormaleX{, P1}: TVect;
