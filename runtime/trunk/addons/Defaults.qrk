@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.59  2000/10/10 07:46:17  tiglari
+//"C" code for circle-strafe selection added to map and model mouse modes
+//
 //Revision 1.58  2000/10/09 18:16:11  decker_dk
 //Build-Tool Controllers (and commented CrystalSpace)
 //
@@ -164,7 +167,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000925"
+      Version = "quarksnapshot_20001015"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
