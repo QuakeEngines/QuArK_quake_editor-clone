@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/02/03 06:54:37  tiglari
+animationTest problem fixed
+
 Revision 1.21  2001/02/03 06:19:46  tiglari
 shaders now block textures in .pak.  There's still a problem with
  animationTest
@@ -113,6 +116,8 @@ type
     Label3: TLabel;
     OkBtn: TToolbarButton97;
     CancelBtn: TToolbarButton97;
+    DynamicCheckBox: TCheckBox;
+    MergeCheckBox: TCheckBox;
     procedure CancelBtnClick(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
@@ -125,13 +130,15 @@ type
 
 function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 procedure BuildTextureFolders(Base: String; var Q: QObject);
+procedure BuildDynamicFolders(Base: String; var Q: QObject; merged: boolean);
+procedure BuildStaticFolders(Base: String; var Q: QObject; merged: boolean);
 procedure MergeTextureFolders(Base: String; var Q: QObject);
 
 implementation
 
 uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
   Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
-  Setup, QkQ3;
+  Setup, QkQ3, OsFolder;
 
 {$R *.DFM}
 
@@ -741,7 +748,7 @@ var
  E : TQkExplorer;
  Q : QObject;
  J : Integer;
-
+ merged : Boolean;
 begin
  ProgressIndicatorStart(0,0);
  try
@@ -750,10 +757,14 @@ begin
   if E<>Nil then
   begin
     Q:=nil;
-    BuildTextureFolders(Base, Q);
+    merged:=MergeCheckBox.state=cbChecked;
+    if DynamicCheckBox.State=cbChecked then
+      BuildDynamicFolders(Base, Q, merged)
+    else
+      BuildStaticFolders(Base, Q, merged);
     if Q=Nil then
      Raise EErrorFmt(5660, [S]);
-    try
+     try
      Gr:=ClipboardGroup;
      Gr.AddRef(+1);
      try
@@ -784,6 +795,34 @@ begin
     Parental.SubElements.Add(Folder);
 end;
 
+procedure BuildDynamicFolders(Base : String; var Q:QObject; merged: Boolean);
+var
+  OsF : QObject;
+begin
+  Q:=QToolboxGroup.Create('New Folder',Nil);
+  OsF:=QOSFolder.Create(Base, Q);
+  Q.SubElements.Add(OsF);
+  OsF.Specifics.Values['path']:=Base;
+  if not merged then
+    OsF.Specifics.Values['build']:='1';
+  ShowMessage('To see the contents of the new dynamic folder, restart Quark')
+  {MergeTextureFolders(Base, OsF)}
+end;
+
+procedure BuildStaticFolders(Base : String; var Q:QObject; merged: Boolean);
+var
+  TxF : QObject;
+begin
+  Q:=QToolBoxGroup.Create('New Folder',Nil);
+  TxF:=QTextureList.Create(Base, Q);
+  Q.SubElements.Add(TxF);
+  TxF.Specifics.Values['path']:=Base;
+  if merged then
+    MergeTextureFolders(Base, QObject(TxF))
+  else
+    BuildTextureFolders(Base, TxF)
+end;
+
 procedure BuildTextureFolders(Base : String; var Q:QObject);
 var
  S, Path: String;
@@ -791,23 +830,31 @@ var
  FindError: Integer;
  F: TSearchRec;
  Pak: QPakFolder;
+ DiskFolder: QObject;
 begin
     Path:=PathAndFile(QuakeDir, Base);
+    DiskFolder:=QTextureList.Create('Directories',Nil);
     try
      { Find Quake-3:Arena .shader files in directory }
      S:=PathAndFile(Path, GameShadersPath);
-     Q:=ParseRec(S, Base, '', Q);
+     DiskFolder:=ParseRec(S, Base, '', DiskFolder);
     except
      (*do nothing*)
     end;
     try
      { Find 'game' textures in directory }
      S:=PathAndFile(Path, GameTexturesPath);
-     Q:=ParseRec(S, Base, '', Q);
+     DiskFolder:=ParseRec(S, Base, '', DiskFolder);
     except
      (*do nothing*)
     end;
 
+    if DiskFolder.SubElements.Count>0 then
+    begin
+      DiskFolder.Fparent:=Q;
+      Q.SubElements.Add(DiskFolder);
+    end;
+    
     FindError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
     try
      while FindError=0 do
@@ -966,6 +1013,8 @@ begin
  MarsCap.ActiveBeginColor:=clGreen;
  MarsCap.ActiveEndColor:=clYellow;
  UpdateMarsCap;
+ DynamicCheckBox.State:=cbChecked;
+ MergeCheckBox.State:=cbChecked;
 end;
 
 end.
