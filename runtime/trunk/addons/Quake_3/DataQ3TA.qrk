@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2001/03/17 15:08:49  decker_dk
+//Added CVS-headers.
+//
 // This is the first release of the Team Arena Data file. v1.0
 // By Maleficus.
 // 26*1*00, 9.46
@@ -4080,7 +4083,7 @@ weapon_chaingun:form =
       Help = "Make your enemys do the chaingun cha-cha! NOTE: About the gametype key -"
        "  Once a value for this key is set, it will ONLY appear in the listed "
        "gametype(s). For Multiple gametypes, separate gametypes by commas."
-      mdl = "models/powerups/weapons/vulcan/vulcan.md3"
+      mdl = "models/weapons/vulcan/vulcan.md3"
       wait: =
       {
         Txt = "&"
@@ -4155,7 +4158,7 @@ weapon_nailgun:form =
       Help = "Pump them full of nails! Fun for the whole family. NOTE: About the gametype key -"
        "  Once a value for this key is set, it will ONLY appear in the listed "
        "gametype(s). For Multiple gametypes, separate gametypes by commas."
-      mdl = "models/powerups/weapons/nailgun/nailgun.md3"
+      mdl = "models/weapons/nailgun/nailgun.md3"
       wait: =
       {
         Txt = "&"
@@ -4230,7 +4233,7 @@ weapon_prox_launcher:form =
       Help = "Shoots a prox mine that sticks to anything. NOTE: About the gametype key -"
        "  Once a value for this key is set, it will ONLY appear in the listed "
        "gametype(s). For Multiple gametypes, separate gametypes by commas."
-      mdl = "models/powerups/weapons/proxmine/proxmine.md3"
+      mdl = "models/weapons/proxmine/proxmine.md3"
       wait: =
       {
         Txt = "&"
