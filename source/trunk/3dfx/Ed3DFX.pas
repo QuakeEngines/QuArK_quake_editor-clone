@@ -3466,7 +3466,10 @@ begin
           PSDConvert(PSD2, PSD, ccTemporary);
          end;
      end;    
-    finally PSD.Done; PSD2.Done; end;
+    finally
+     PSD.Done;
+     PSD2.Done;
+    end;
    end;
 end;
 
