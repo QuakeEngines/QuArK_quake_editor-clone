@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/01/11 02:06:20  alexander
+detect hl2 model format, load header and generate a box with the model dimensions
+
 Revision 1.11  2002/03/07 19:17:48  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -606,7 +609,6 @@ var
   fSize[1]:=size.x;
   fSize[2]:=size.y;
   Comp.SetFloatsSpec('skinsize', fSize);
-  Root.Specifics.Values['rendermode']:='3';
 
 
 
