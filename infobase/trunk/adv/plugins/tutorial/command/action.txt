@@ -7,8 +7,7 @@ def tagSideClick(m):
     quarkx.msgbox("This command does nothing", MT_INFORMATION, MB_OK)
 </code>
 
-This defines a function `tagSideClick', which gets a parameter `m', which
-which is the actual menu item that invoked the action.  We don't use this
+This defines a function `tagSideClick', which gets a parameter `m', which is the actual menu item that invoked the action.  We don't use this
 here, but we will later on.
 The body of the function calls the `msgbox' function from the module
 `quarkx', which is imported in the first import statement.  Note
