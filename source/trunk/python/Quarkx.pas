@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2003/08/21 14:01:49  peter-b
+Fix for module search path bug.
+
 Revision 1.33  2003/08/13 04:17:32  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -125,7 +128,11 @@ uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
 const
+{$IFDEF PYTHON_BUNDLED}
  PythonSetupString = 'import sys'#10'sys.path = ["%s", "%s\\lib"]'#10'import quarkpy';
+{$ELSE}
+ PythonSetupString = 'import sys'#10'sys.path[:0] = ["%s", "%s\\lib"]'#10'import quarkpy';
+{$ENDIF}
  PythonRunPackage  = 'quarkpy.RunQuArK()';
  FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure Python and QuArK are correctly installed; reinstall them if required.';
  FatalErrorCaption = 'QuArK Python';
