@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/01/21 15:50:08  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.28  2001/01/15 19:22:01  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -145,7 +148,6 @@ const
 {CouleurGrise  = 3;}
  CouleurNoire  = 0;
  CouleurGrille = 0;
-{DefQ2TexPath  = 'textures/';}
 
 const
  cp4MipIndexes  = 4;    { 4 images scaled down. 1/1, 1/2, 1/4 and 1/8 }
@@ -351,14 +353,12 @@ const
 
 function GameTexturesPath : String;
 begin
- Result:=SetupGameSet.Specifics.Values['Q2TexPath'];
-{if Result='' then
-  Result:=DefQ2TexPath;}
+ Result:=SetupGameSet.Specifics.Values['TexturesPath'];
 end;
 
 function GameShadersPath : String;
 begin
- Result:=SetupGameSet.Specifics.Values['Q3ShaderPath'];
+ Result:=SetupGameSet.Specifics.Values['ShadersPath'];
  if Result='' then
   Raise EError(4429);
 end;
