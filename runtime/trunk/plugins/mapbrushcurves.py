@@ -300,15 +300,17 @@ def facedict_vflip(fd):
 
 #
 # a variant of arcSubdivideLine from quarkpy.b2utils.py.
-#   doesn't generate the `mid' control points, just the
-#   passthru points
 #
 # n line-segments are generated, approximating an ellipse
-#   nested in the corner formed by (p1, p0) and (p2, p0)
-def arcLine(n, p0, p1, p2):
+#   nested in the corner formed by (p1, p0) and (p2, p0),
+#   lines inside, touchning at corners.
+#
+# derived from a suggestion by Alex Haarer.
+#
+def innerArcLine(n, p0, p1, p2):
     mat = matrix_u_v(p0-p1, p2-p1)
     halfpi = math.pi/2.0
-    points = []
+    points = [quarkx.vect(1,0,0)]
     for i in range(n):
         a = halfpi*(i+1)/n
         next = quarkx.vect(1.0-math.sin(a), 1.0-math.cos(a), 0)
@@ -316,21 +318,32 @@ def arcLine(n, p0, p1, p2):
     points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
     return points
     
-def makearchfacecp(bl, tl, tr, br):
-    mid = (tl+tr)/2.0
-    cp = [[bl, tl, mid, tr, br],
-          [(bl+tl)/2.0, tl, mid, tr, (br+tr)/2.0],
-          [tl, (tl+mid)/2.0, mid, (mid+tr)/2.0, tr]]
-    return cp
-
-def makecapfacecp(bl, tl, tr, br):
-    bm = (bl+br)/2.0
-    tm = (tl+tr)/2.0
-    cp = [[bl, (bl+bm)/2.0, bm, (bm+br)/2.0, br],
-          [bl, (bl+bm)/2.0, (tm+bm)/2.0, (bm+br)/2.0, br],
-          [bl, tl, tm, tr, br]]
-    return cp
-
+#
+# Approximates quarter-circle with lines outside,
+#  touching as tangent
+#
+def outerArcLine(n, p0, p1, p2):
+    mat = matrix_u_v(p0-p1, p2-p1)
+    halfpi = math.pi/2.0
+    points = []
+    prev = quarkx.vect(1,0,0)
+    prevdir = quarkx.vect(-1,0,0)
+    for i in range(n+1):
+        if i==n:
+            current = quarkx.vect(0,1,0)
+            currdir = quarkx.vect(0,-1,0)
+        else:
+            a = halfpi*(i+1)/(n+1)
+            current = quarkx.vect(1.0-math.sin(a), 1.0-math.cos(a), 0)
+            currdir = quarkx.vect(-math.cos(a), math.sin(a), 0)
+        mid = intersectionPoint2d(prev,prevdir, current, currdir)
+#        squawk(`mid`)
+        points.append(mid)
+        prev = current
+        prevdir = currdir
+    points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
+    return points
+    
 
 def smallerarchbox(box, thick):
     "returns a box for arch, thick smaller than input box"
@@ -378,7 +391,7 @@ def smallercolumnbox(box, thick):
     return box2
 
 
-def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, (subdivide,)=1):
+def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=0, (subdivide,)=1):
     "makes a bevel/inverse bevel on the basis of brush o"
     #
     #  Set stuff up
@@ -395,7 +408,10 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, (subdi
        fdict = facedict_fflip(fdict)
     pd = pointdict(vtxlistdict(fdict,o))
     subdivide = int(subdivide)
-    curve = arcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+    if inner:
+        curve = innerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+    else:
+        curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
 #    squawk(`curve`)
     brushes = []
     #
@@ -404,22 +420,23 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, (subdi
     def makeFace(tag,fdict=fdict):
         return fdict[tag].copy()
     bottom, top = map(makeFace, ("d","u"))
+    bottom.shortname, top.shortname = "bottom", "top"
     final = subdivide-1
     if inverse:
         base, side = map(makeFace, ("b","r"))
     else:
         base, side = map(makeFace, ("l","f"))
-    anchor=pd["tlb"]
+    base.shortname, side.shortname = "base", "side"
     if inverse:
         pivot=pd["trb"]
     else:
         pivot=pd["tlf"]
-    depth = anchor-pd["blb"]
+    depth = pd["tlb"]-pd["blb"]
     for i in range(subdivide):
         brush = quarkx.newobj('brush'+`i`+':p')
         brush.appenditem(base)
         face=quarkx.newobj('face'+`i`+':f')
-        face.setthreepoints((anchor,curve[i],anchor+depth),0)
+        face.setthreepoints((curve[i],curve[i+1],curve[i]+depth),0)
         face["tex"]=fdict["b"]["tex"]
         if left:
             face.swapsides()
@@ -432,7 +449,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, (subdi
         brush.appenditem(top.copy())
         if i<final:
             div=quarkx.newobj('div'+`i`+':f')
-            div.setthreepoints((pivot, pivot+depth, curve[i]),0)
+            div.setthreepoints((pivot, pivot+depth, curve[i+1]),0)
             if left:
                 div.swapsides()
             if not inverse:
@@ -442,7 +459,6 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, (subdi
             brush.appenditem(div)
             base=div.copy()
             base.swapsides()
-            anchor=curve[i]
         else:
             brush.appenditem(side)
         brushes.append(brush)
@@ -615,9 +631,8 @@ class BrushCapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, open, thick, faceonly, stretchtex, nofront, noback, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "lower", "open", "thick", "faceonly", "stretchtex",
-         "nofront", "noback", "noinner", "noouter", "subdivide"))
+    inverse, lower, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "thick", "inner", "subdivide"))
     if thick:
       thick, = thick
     if subdivide is None:
@@ -629,8 +644,6 @@ class BrushCapDuplicator(StandardDuplicator):
            fdict = faceDict(o)
            if fdict is None:
                return
-#           if lower:
-#               fdict = facedict_spin(fdict)
            pd = pointdict(vtxlistdict(fdict,o))
            mtf = (pd["trf"]+pd["tlf"])/2
            mtb = (pd["trb"]+pd["tlb"])/2
@@ -641,21 +654,14 @@ class BrushCapDuplicator(StandardDuplicator):
   
            face2.swapsides()
            face2.shortname = "right"
-#           if lower:
-#               face.swapsides()
-#               face2.swapsides()
 
            o1, o2 = o.copy(), o.copy()
            o1.removeitem(o1.findallsubitems('left',':f')[0])
            o2.removeitem(o2.findallsubitems('right',':f')[0])
            o1.appenditem(face), o2.appenditem(face2)
            
-#           return [o1, o2]
-#           if lower:
-#              o1, o2 = o2, o1
-
-           im1 = images(bevelImages, (o1, editor, inverse, 0, lower, 1, thick, subdivide))
-           im2 = images(bevelImages, (o2, editor, inverse, 1, lower, 1, thick, subdivide))
+           im1 = images(bevelImages, (o1, editor, inverse, 0, lower, 1, thick, inner, subdivide))
+           im2 = images(bevelImages, (o2, editor, inverse, 1, lower, 1, thick, inner, subdivide))
 
            return im1+im2
 
@@ -665,8 +671,8 @@ class BrushBevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, left, thick,  subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "left", "thick", "subdivide"))
+    inverse, left, thick,  inner, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "left", "thick", "inner", "subdivide"))
     if thick:
         thick, = thick
     list = self.sourcelist()
@@ -674,7 +680,7 @@ class BrushBevelDuplicator(StandardDuplicator):
         subdivide=1,
     for o in list:
         if o.type==":p": # just grab the first one, who cares
-            return images(bevelImages, (o, editor, inverse, left, 0, 0, thick, subdivide))
+            return images(bevelImages, (o, editor, inverse, left, 0, 0, thick, inner, subdivide))
 
 class BrushColumnDuplicator(StandardDuplicator):
 
@@ -853,6 +859,8 @@ brushcapstring = """
                Hint = "if checked, the whole thing is upside-down"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner: = {Txt="&" Typ="X"
+               Hint = "if checked, inner approximation is used; otherwise outer"}
       subdivide: = {Txt ="&" Typ="EF1"
                 Hint = "integer value, generate n patches along each side of curve"}
       macro: = {Txt = "&" Typ = "ESR"
@@ -866,6 +874,10 @@ brushbevelstring = """
                Hint = "if checked, concave surface of curve is outer and has texture"}
       left: = {Txt="&" Typ="X"
                Hint = "if checked, curve goes from back to left side rather than back to right side"}
+      thick: = {Txt ="&" Typ="EF1"
+                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner: = {Txt="&" Typ="X"
+               Hint = "if checked, inner approximation is used; otherwise outer"}
       subdivide: = {Txt ="&" Typ="EF1"
                 Hint = "integer value, generate n patches along curve"}
       macro: = {Txt = "&" Typ = "ESR"
@@ -896,6 +908,10 @@ quarkpy.mapentities.registerPyForm("dup brushcolumn", brushcolumnstring)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2001/01/02 07:56:49  tiglari
+#brush curves, adapted from mb2curves.py.  Columns still produces patches,
+#only provides `inner' approximation to arcs,  'outer' prolly better, coming next,
+#
 #Revision 1.26  2000/09/04 21:29:03  tiglari
 #added lots of specifics to column generator, fixed column & arch bugs
 #
