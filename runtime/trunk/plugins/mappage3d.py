@@ -44,7 +44,7 @@ class Page3D(MPPage):
         quarkpy.qhandles.z_recenter(self.mppview3d, list)
 
     def button(self):
-        pagebtn = qtoolbar.button(self.fill3dview, "3D view|3D view", ico_maped, 21)
+        pagebtn = qtoolbar.button(self.fill3dview, "3D view|3D view", ico_dict['ico_maped'], 21)
         pagebtn.pc = [self.bs_3Dview(self.panel)]
         return pagebtn
 
@@ -58,6 +58,9 @@ mppages.append(Page3D)
 #
 #
 # $Log$
+# Revision 1.3  2001/01/26 19:08:02  decker_dk
+# Fix hint-problem introduced by change in [QBaseMgr.PY] bs_multipagespanel
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

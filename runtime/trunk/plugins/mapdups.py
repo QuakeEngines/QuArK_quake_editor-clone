@@ -140,7 +140,7 @@ class SymXYZDuplicator(StandardDuplicator):
 class DiggingDuplicator(StandardDuplicator):
     "For what is a Digger rather than a Duplicator. (abstract)"
 
-    Icon = (quarkpy.mapduplicator.ico_mapdups, 1)
+    Icon = (ico_dict['ico_mapdups'], 1)
 
     def readvalues(self):
         pass
@@ -307,6 +307,9 @@ quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCy
 #
 #
 # $Log$
+# Revision 1.10  2001/09/23 07:00:34  tiglari
+# mitered edges for wall maker duplicator
+#
 # Revision 1.9  2001/08/15 17:49:55  decker_dk
 # Added a 'dup symxyz' with toggleable axes.
 #

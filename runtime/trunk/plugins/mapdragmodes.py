@@ -30,7 +30,7 @@ import quarkpy.maphandles
 import quarkpy.mapbtns
 
 
-ico_dragmodes = LoadIconSet1("mapdrm", 1.0)
+ico_dict['ico_dragmodes'] = LoadIconSet1("mapdrm", 1.0)
 
 
 #
@@ -380,7 +380,7 @@ class DragModesBar(ToolBar):
         btns = []
         for i in range(len(DragModes)):
             obj, icon = DragModes[i]
-            btn = qtoolbar.button(selectmode, obj.Hint, ico_dragmodes, icon)
+            btn = qtoolbar.button(selectmode, obj.Hint, ico_dict['ico_dragmodes'], icon)
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MAP, "Building").getint("DragMode")
@@ -398,6 +398,10 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2001/04/15 22:48:17  tiglari
+# groups & brush entity selection in select everything mode (will be selected
+#  if all of their subitems are)
+#
 # Revision 1.4  2001/02/19 19:15:40  decker_dk
 # Added 'Select-everything'; entities, brushes, duplicators and beziers.
 #

@@ -469,7 +469,7 @@ class PathPointHandle(PathDuplicatorPointHandle):
 
 class PathDuplicatorPoint(DuplicatorManager):
 
-    Icon = (quarkpy.mapduplicator.ico_mapdups, 2)
+    Icon = (ico_dict['ico_mapdups'], 2)
 
     def buildimages(self, singleimage=None):
         pass
@@ -853,6 +853,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.45  2001/07/08 20:57:56  tiglari
+#change treatment of vertical 'level' segments
+#
 #Revision 1.44  2001/07/08 08:34:31  tiglari
 #reinstated elbow button for path dup; added 'level' spec for path dup and
 #  instance (elbow) dup, fixed orientation bugs
