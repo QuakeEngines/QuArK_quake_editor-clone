@@ -1365,7 +1365,7 @@ def singlebezierzoom(view):
     view.screencenter = sc
     
 def GetUserCenter(obj):
-    debug('type: '+`type(obj)`)
+#    debug('type: '+`type(obj)`)
     if type(obj) is type([]):  # obj is list
         if len(obj)==1 and obj[0]["usercenter"] is not None:
             uc = obj[0]["usercenter"]
@@ -1376,6 +1376,7 @@ def GetUserCenter(obj):
         uc = obj["usercenter"]
     if uc is None:
         uc = mapentities.ObjectOrigin(obj).tuple
+#        debug(' oo '+`uc`)
     return quarkx.vect(uc)
 
 def SetUserCenter(obj, v):
@@ -1415,6 +1416,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.17  2001/04/05 12:36:13  tiglari
+#revise vertex move code to try to reduce drift of non-drug vertexes
+#
 #Revision 1.13.2.3  2001/04/04 10:30:17  tiglari
 #find more fixed points, clean up code
 #
