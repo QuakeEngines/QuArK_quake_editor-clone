@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2003/08/12 15:57:01  silverpaladin
+Added support for block comments in shader files
+
 Revision 1.23  2002/06/18 00:55:51  tiglari
 add .png to .jpg texture support.  If any more image formats start being used
   for textures, the strategy for doing this will need to be rethought
@@ -240,6 +243,7 @@ begin
   2. a texture named as the shader name itself
   3. any "suitable" image from one of the shader stages
   Note, that it is first tried to load as tga, then as jpeg
+  4. Shader Missing Texture texture
   }
 
   if Specifics.Values['q']<>'' then
@@ -318,6 +322,18 @@ begin
  DefaultImageCache:=Result;
  /alex}
  { /tiglari }
+
+ end;
+
+ // SilverPaladin - 10/25/03 - Added Missing Shader Texture texture
+ // To try to prevent Access Violations in 3d views
+ if (Result = NIL)
+ then begin
+   try
+     Result := NeedGameFile('radiant/shadernotex') as QPixelSet;
+   except
+     Result:=NIL
+   end;
  end;
 
  {tiglari: giving shaders a size.  a presumably
