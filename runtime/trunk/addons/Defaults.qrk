@@ -175,6 +175,7 @@ QQRKSRC1
         .pcx = ""
         .tga = ""
         .bmp = "<open>"
+        .jpg = "" //DECKER
         .wav = "<edit>"
         .cin = "<open>"
         .mdl = "<open>"
@@ -184,6 +185,7 @@ QQRKSRC1
         .swl = ""
         .m8  = ""
         .pak = "<open>"
+        .pk3 = "<open>" //DECKER
         .sin = ""
         .bsp = "<open>"
         .wad = "<open>"
@@ -207,6 +209,7 @@ QQRKSRC1
         LIGHT1 = "LIGHT.EXE"
         LIGHTCmd = ""
         TextureDef = "bricka2_2"
+        TriggerTextureDef = "trigger"
         BaseDir = "id1"
         tmpQuArK = "tmpQuArK"
         TextureWad = "gfx/QuArK.wad"
@@ -241,6 +244,7 @@ QQRKSRC1
         LIGHT1 = "LIGHT.EXE"
         LIGHTCmd = ""
         TextureDef = "rtex215"
+        TriggerTextureDef = "rtex215" //FIXME
         BaseDir = "data1"
         tmpQuArK = "tmpQuArK"
         TextureWad = "gfx/QuArK.wad"
@@ -299,6 +303,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake2"
         TextureDef = "e1u1/damage1_1"
+        TriggerTextureDef = "e1u1/trigger"
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".wal"
@@ -336,6 +341,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHeretic2"
         TextureDef = "andoria/sstone"
+        TriggerTextureDef = "andoria/sstone" //FIXME
         LightFactor = '0.9'
         3DLight = '512'
         walTrick = "1"
@@ -356,6 +362,7 @@ QQRKSRC1
         LIGHT1 = "QRAD.EXE"
         LIGHTCmd = ""
         TextureDef = "FIFTIES_WALL14Y"
+        TriggerTextureDef = "AAATRIGGER"
         BaseDir = "valve"
         tmpQuArK = "tmpQuArK"
         TextureWad = "?"     // variable (the map name is used)
@@ -413,6 +420,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameSin"
         TextureDef = "intro/wl_outbrick1a"
+        TriggerTextureDef = "intro/wl_outbrick1a" //FIXME
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".swl"
@@ -451,6 +459,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameKingPin"
         TextureDef = "bricks/b_cp_v10x"
+        TriggerTextureDef = "bricks/b_cp_v10x" //FIXME
         LightFactor = '0.90000'
         3DLight = '512'
         walTrick = "1"
@@ -489,6 +498,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake3"
         TextureDef = "base_wall/basewall03"
+        TriggerTextureDef = "common/trigger"
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".tga"
@@ -884,6 +894,13 @@ QQRKSRC1
         Hint = "Default texture when inserting polyhedrons in maps"
         GameCfg = "Quake 1"
       }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "Quake 1"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -981,6 +998,13 @@ QQRKSRC1
         Hint = "Default texture when inserting polyhedrons in maps"
         GameCfg = "Hexen II"
       }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "Hexen II"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -1075,6 +1099,13 @@ QQRKSRC1
         Hint = "Default texture when inserting polyhedrons in maps"
         GameCfg = "Quake 2"
       }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "Quake 2"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -1141,8 +1172,8 @@ QQRKSRC1
       walTrick: = {
         Typ = "X"
         Txt = "This version of qbsp3 wants"
-        Cap = ".wal texture files"
-        Hint = "check this to have QuArK write both .wal and .m8 textures (most versions of QBSP3 can't read .m8 textures)"
+        Cap = ".WAL texture files"
+        Hint = "check this to have QuArK write both .WAL and .M8 textures (most versions of QBSP3 can't read .M8 textures)"
       }
       VIS1: = {
         Typ = "EP"    // edit path to file
@@ -1173,6 +1204,13 @@ QQRKSRC1
         Txt = "Default texture"
         Typ = "ET"      // Edit Texture
         Hint = "Default texture when inserting polyhedrons in maps"
+        GameCfg = "Heretic II"
+      }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
         GameCfg = "Heretic II"
       }
       3DLight: =
@@ -1271,6 +1309,13 @@ QQRKSRC1
         Hint = "Default texture when inserting polyhedrons in maps"
         GameCfg = "Half-Life"
       }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "Half-Life"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -1365,6 +1410,13 @@ QQRKSRC1
         Hint = "Default texture when inserting polyhedrons in maps"
         GameCfg = "Sin"
       }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "Sin"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -1391,16 +1443,8 @@ QQRKSRC1
          $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
          $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
          $77CC488880055555555548870666608888888800666666666666666666
-        cmd:macro =
-        {
-          Typ = "M"
-          Msg = "GAMD"
-        }
-        cmd:macro =
-        {
-          Typ = "M"
-          Msg = "ADDO"
-        }
+        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin
+        cmd:macro = { Typ = "M" Msg = "ADDO" }
       }
       Outp:tbbtn =
       {
@@ -1411,21 +1455,10 @@ QQRKSRC1
          $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
          $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
          $AAA20006666666002A200666666666660006666666
-        cmd:macro =
-        {
-          Typ = "M"
-          Msg = "GAMD"
-        }
-        cmd:macro =
-        {
-          Typ = "M"
-          Msg = "OUTP"
-        }
+        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin
+        cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
-      Sep1: =
-      {
-        Typ = "S"
-      }
+      Sep1: = {Typ = "S"} // separator
       Program: =
       {
         Typ = "C"
@@ -1442,6 +1475,12 @@ QQRKSRC1
       {
         Typ = "E"
         Txt = "...command-line parameters"
+      }
+      walTrick: = {
+        Typ = "X"
+        Txt = "This version of qbsp3 wants"
+        Cap = ".WAL texture files"
+        Hint = "check this to have QuArK write both .WAL and .TGA textures (kpBSP can't read .TGA textures)"
       }
       VIS1: =
       {
@@ -1465,27 +1504,25 @@ QQRKSRC1
         Typ = "E"
         Txt = "...command-line parameters"
       }
-      walTrick: = {
-        Typ = "X"
-        Txt = "This version of qbsp3 wants"
-        Cap = ".wal texture files"
-        Hint = "check this to have QuArK write both .wal and .tga textures ( kpBSP can't read tga textures)"
-      }
       Console: =
       {
         Typ = "X"
         Txt = "Run these programs..."
         Cap = "in QuArK's console"
       }
-      Sep2: =
-      {
-        Typ = "S"
-      }
+      Sep2: = {Typ = "S"} // separator
       TextureDef: =
       {
         Txt = "Default texture"
         Typ = "ET"
         Hint = "Default texture when inserting polyhedrons in maps"
+        GameCfg = "KingPin"
+      }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
         GameCfg = "KingPin"
       }
       3DLight: =
@@ -1581,6 +1618,13 @@ QQRKSRC1
         Txt = "Default texture"
         Typ = "ET"      // Edit Texture
         Hint = "Default texture when inserting polyhedrons in maps"
+        GameCfg = "Quake 3"
+      }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
         GameCfg = "Quake 3"
       }
       3DLight: =
@@ -1897,6 +1941,7 @@ QQRKSRC1
       .pcx: = { Txt="PCX images" externaledit = ! }
       .tga: = { Txt="TGA images" externaledit = ! }
       .bmp: = { Txt="BMP images" externaledit = ! }
+      .jpg: = { Txt="JPG images" externaledit = ! } //DECKER
       .wav: = { Txt="WAV sounds" externaledit = ! }
       .cin: = { Txt="CIN videos" externaledit = ! }
       .mdl: = { Txt="MDL models" externaledit = ! }
@@ -1906,6 +1951,7 @@ QQRKSRC1
       .swl: = { Txt="SWL Sin textures" externaledit = ! }
       .m8:  = { Txt="M8 textures" externaledit = ! }
       .pak: = { Txt="PAK archives" externaledit = ! }
+      .pk3: = { Txt="PK3 archives" externaledit = ! } //DECKER
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
       .wad: = { Txt="WAD texture lists" externaledit = ! }
@@ -2303,7 +2349,7 @@ QQRKSRC1
     {
       Style = "7"
       Textures: = {Typ="X" Txt="first..." Cap="Prepare used textures" Hint="prepare all textures used in map and write them to a place where QBSP will find them"}
-      RunGame: = {Typ="X" Txt="finally..." Cap="Run Quake" Hint="run Quake (or Hexen II or Quake 2) when the map has been rebuilt"}
+      RunGame: = {Typ="X" Txt="finally..." Cap="Run the game" Hint="run the game when the map has been rebuilt"}
       Pause: = {Typ="X" Cap="Console stay open" Hint="don't automatically close the console where all QBSP/VIS/LIGHT output has been written"}
       sep: = {Typ="S"}
       QBSP1: = {Typ="X" Txt="Rebuild the map" Cap="QBSP" Hint="this program builds the .bsp file from your map"}
@@ -2336,7 +2382,7 @@ QQRKSRC1
     {
       Style = "7"
       Textures: = {Typ="X" Txt="first..." Cap="Prepare used textures" Hint="prepare all textures used in map and write them to a place where QBSP will find them"}
-      RunGame: = {Typ="X" Txt="finally..." Cap="Run Quake" Hint="run Quake (or Hexen II or Quake 2) when the map has been rebuilt"}
+      RunGame: = {Typ="X" Txt="finally..." Cap="Run the game" Hint="run the game when the map has been rebuilt"}
       Pause: = {Typ="X" Cap="Console stay open" Hint="don't automatically close the console where all QBSP/VIS/LIGHT output has been written"}
       sep: = {Typ="S"}
       QCSG1: = {Typ="X" Txt="Rebuild the map (1)" Cap="QCSG" Hint="this program prepares the build of the .bsp file from your map"}
