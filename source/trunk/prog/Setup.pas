@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.5  2000/05/11 22:10:17  alexander
 added comment
 
@@ -42,6 +45,20 @@ uses Windows, SysUtils, Classes, Graphics, Forms, Dialogs, Controls, Reg2,
 const
 {FIXME: This should not be constants, but read from
  the games config: entry }
+{DECKER: These should be made into bit-values instead. Something like:
+  mjQuake     = $00000001;
+  mjHexen     = $00000002;
+  mjQuake2    = $00000004;
+  ...
+  mjSOF       = $00000080;
+  mjQ3A       = $00000100;
+  mjAny       = $FFFFFFFF;
+  mjNotQuake1 = (mjAny - mjQuake1);
+  mjNotQuake2 = (mjAny - mjQuake2);
+ This so it will be easier to implement support for games, which could for
+ instance have a mixture of file-formats like .WADs _and_ .SHADERS.
+ Of cause this will only allow up to 32 different games, but shouldn't that
+ be enough? }
  mjQuake    = '1';
  mjHexen    = '2';
  mjHalfLife = '3';

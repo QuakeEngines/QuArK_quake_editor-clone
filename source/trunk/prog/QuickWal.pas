@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.4  2000/05/12 17:43:34  decker_dk
 Auto-create Texture-links to .tga/.jpg files - .shaders still missing
 
@@ -63,7 +66,7 @@ implementation
 
 uses QkGroup, Game, QkTextures, QkObjects, QkWad, QkExplorer, 
   Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
-  Setup;
+  Setup, QkQ3;
 
 {$R *.DFM}
 
@@ -86,14 +89,14 @@ begin
  ResultFolder.SousElements.Add(Result);
 end;
 
-procedure LinkFolder(Q: QObject; var Result: QObject; const FolderName: String);
+procedure LinkFolder(Q: QObject; var ToolBoxFolder: QObject; const FolderName: String);
 begin
  if Q<>Nil then
   begin
-   if Result=Nil then
-    Result:=QToolBoxGroup.Create(FolderName, Nil);
-   Q.FParent:=Result;
-   Result.SousElements.Add(Q);
+   if ToolBoxFolder=Nil then
+    ToolBoxFolder:=QToolBoxGroup.Create(FolderName, Nil);
+   Q.FParent:=ToolBoxFolder;
+   ToolBoxFolder.SousElements.Add(Q);
   end;
 end;
 
@@ -115,7 +118,7 @@ begin
   begin
    if Loaded=Nil then
     begin
-     Result:=True;   { load the file }
+     Result:=True; { load the file }
      Exit;
     end;
    Loaded.Acces;
@@ -134,7 +137,6 @@ begin
     end;
    LinkFolder(Folder, ResultFolder, FolderName);
   end
-{DECKER}
  else
  if CompareText(ExtractFileExt(Name), '.tga') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
@@ -144,64 +146,84 @@ begin
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
   begin
-   (*Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-7), 'a', Base)*)
+   if Loaded=Nil then
+    begin
+     Result:=True; { load the file }
+     Exit;
+    end;
+   Loaded.Acces;
+   Folder:=Nil;
+   for I:=0 to Loaded.SousElements.Count-1 do
+    begin
+     Tex:=Loaded.SousElements[I];
+     if Tex is QShader then
+      begin
+       Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Specifics.Values['b']:=Name;
+      end;
+    end;
+   LinkFolder(Folder, ResultFolder, FolderName);
   end;
-{DECKER}
 end;
 
-function ParseRecPak(Pak: QPakFolder; const Base, FolderName: String) : QObject;
+function ParseRecPak(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
 var
  I: Integer;
  Q: QObject;
 begin
- Result:=Nil;
+ Result:=DestFolder;
  Pak.Acces;
  for I:=0 to Pak.SousElements.Count-1 do
   begin
    Q:=Pak.SousElements[I];
    if Q is QPakFolder then
-    LinkFolder(ParseRecPak(QPakFolder(Q), Base, FolderName+Q.Name+'/'),
-     Result, FolderName)
+    LinkFolder(ParseRecPak(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName)
    else
     TryToLink1(Result, Q.Name+Q.TypeInfo, FolderName, Base, Q);
   end;
 end;
 
-function ParseRec(const Path, Base, FolderName: String) : QObject;
+function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 var
  F: TSearchRec;
  I, DosError: Integer;
  L: TStringList;
  Loaded: QObject;
 begin
- Result:=Nil;
- L:=TStringList.Create; try
- DosError:=FindFirst(PathAndFile(Path, '*.*'), faAnyFile, F);
+ Result:=DestFolder;
+ L:=TStringList.Create;
  try
-  while DosError=0 do
-   begin
-    if F.Attr and faDirectory = 0 then
-     begin
-      Loaded:=Nil; try
-      while TryToLink1(Result, F.Name, FolderName, Base, Loaded) do
-       begin
-        Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
-        Loaded.AddRef(+1);
+  DosError:=FindFirst(PathAndFile(Path, '*.*'), faAnyFile, F);
+  try
+   while DosError=0 do
+    begin
+     if F.Attr and faDirectory = 0 then
+      begin
+       Loaded:=Nil;
+       try
+        while TryToLink1(Result, F.Name, FolderName, Base, Loaded) do
+         begin
+          Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
+          Loaded.AddRef(+1);
+         end;
+       finally
+        Loaded.AddRef(-1);
        end;
-      finally Loaded.AddRef(-1); end;
-     end
-    else
-     if (F.Name<>'.') and (F.Name<>'..') then
-      L.Add(F.Name);
-    DosError:=FindNext(F);
-   end;
+      end
+     else
+      if (F.Name<>'.') and (F.Name<>'..') then
+       L.Add(F.Name);
+     DosError:=FindNext(F);
+    end;
+  finally
+   FindClose(F);
+  end;
+  for I:=0 to L.Count-1 do
+   LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
  finally
-  FindClose(F);
+  L.Free;
  end;
- for I:=0 to L.Count-1 do
-  LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/'),
-   Result, FolderName);
- finally L.Free; end;
 end;
 
 procedure TQuickWalParser.OkBtnClick(Sender: TObject);
@@ -209,78 +231,96 @@ var
  Gr: QExplorerGroup;
  E: TQkExplorer;
  S, Base, Path: String;
- Q, Q1: QObject;
+ Q, SearchFolder, SearchResultList: QObject;
  J, DosError: Integer;
  F: TSearchRec;
  Pak: QPakFolder;
 begin
- DebutTravail(0,0); try
- Base:=ListBox1.Items[ListBox1.ItemIndex];
- E:=TQkExplorer(Toolbox.Perform(wm_MessageInterne, wp_TargetExplorer, 0));
- if E<>Nil then
-  begin
-   Path:=PathAndFile(QuakeDir, Base);
-   S:=PathAndFile(Path, Q2TexPath);
-   Q:=ParseRec(S, Base, '');
+ DebutTravail(0,0);
+ try
+  Base:=ListBox1.Items[ListBox1.ItemIndex];
+  E:=TQkExplorer(Toolbox.Perform(wm_MessageInterne, wp_TargetExplorer, 0));
+  if E<>Nil then
+   begin
+    Path:=PathAndFile(QuakeDir, Base);
+    Q:=nil;
+    try
+     { Find Quake-3:Arena .shader files in directory }
+     S:=PathAndFile(Path, Q3ShaderPath);
+     Q:=ParseRec(S, Base, '', Q);
+    except
+     (*do nothing*)
+    end;
+    try
+     { Find 'game' textures in directory }
+     S:=PathAndFile(Path, Q2TexPath);
+     Q:=ParseRec(S, Base, '', Q);
+    except
+     (*do nothing*)
+    end;
 
-   DosError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
-   try
-    while DosError=0 do
-     begin
-      Pak:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
-      Pak.AddRef(+1); try
-      Pak.Acces;
-      Q1:=Pak.GetFolder(Q2TexPath);
-      if Q1<>Nil then
-       begin
-        Q1:=ParseRecPak(Q1 as QPakFolder, Base, '');
-        if Q1<>Nil then
+    DosError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
+    try
+     while DosError=0 do
+      begin
+       Pak:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
+       Pak.AddRef(+1);
+       try
+        Pak.Acces;
+        SearchResultList:=Nil;
+        try
+         { Find Quake-3:Arena .shader files in PK3's }
+         SearchFolder:=Pak.GetFolder(Q3ShaderPath);
+         if SearchFolder<>Nil then
+          SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
+        except
+         (*do nothing*)
+        end;
+        try
+         { Find 'game' textures in package-files }
+         SearchFolder:=Pak.GetFolder(Q2TexPath);
+         if SearchFolder<>Nil then
+          SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
+        except
+         (*do nothing*)
+        end;
+        if SearchResultList<>Nil then
          begin
-          Q1.Name:=F.Name;
-          LinkFolder(Q1, Q, '');
+          SearchResultList.Name:=F.Name;
+          LinkFolder(SearchResultList, Q, '');
          end;
+       finally
+        Pak.AddRef(-1);
        end;
-{DECKER}
-      try
-        Q1:=Pak.GetFolder(Q3ShaderPath);
-        if Q1<>Nil then
-         begin
-          Q1:=ParseRecPak(Q1 as QPakFolder, Base, '');
-          if Q1<>Nil then
-           begin
-            Q1.Name:=F.Name;
-            LinkFolder(Q1, Q, '');
-           end;
-         end;
-      except
-       (*do nothing*)
+       DosError:=FindNext(F);
       end;
-{DECKER}
-      finally Pak.AddRef(-1); end;
-      DosError:=FindNext(F);
-     end;
-   finally
-    FindClose(F);
-   end;
+    finally
+     FindClose(F);
+    end;
 
-   if Q=Nil then
-    Raise EErrorFmt(5660, [S]);
-   try
-    Gr:=ClipboardGroup;
-    Gr.AddRef(+1); try
-    for J:=0 to Q.SousElements.Count-1 do
-     Gr.SousElements.Add(Q.SousElements[J]);
-    if E.DropObjectsNow(Gr, LoadStr1(623), False) then
-     begin
-      Close;
-      Exit;
+    if Q=Nil then
+     Raise EErrorFmt(5660, [S]);
+    try
+     Gr:=ClipboardGroup;
+     Gr.AddRef(+1);
+     try
+      for J:=0 to Q.SousElements.Count-1 do
+       Gr.SousElements.Add(Q.SousElements[J]);
+      if E.DropObjectsNow(Gr, LoadStr1(623), False) then
+       begin
+        Close;
+        Exit;
+       end;
+     finally
+      Gr.AddRef(-1);
      end;
-    finally Gr.AddRef(-1); end;
-   finally
-    Q.Free;
+    finally
+     Q.Free;
+    end;
    end;
-  end;
- finally FinTravail; end; 
+ finally
+  FinTravail;
+ end;
  MessageBeep(0);
 end;
 

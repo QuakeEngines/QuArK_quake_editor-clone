@@ -24,6 +24,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
 Revision 1.8  2000/04/29 15:13:30  decker_dk
 Allow other than PAK#.PAK files
 
@@ -172,8 +178,18 @@ begin
  S:=Specifics.Values[EditorImageSpec];
  if S<>'' then
   begin
-   Result:=NeedGameFile(S) as QPixelSet;
-   Exit;
+   if (ExtractFileExt(S)='') then
+   begin
+    try
+     Result:=NeedGameFile(S+'.tga') as QPixelSet;
+    except
+     Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+    end;
+   end
+   else
+    Result:=NeedGameFile(S) as QPixelSet;
+   if (Result<>nil) then
+    Exit;
   end;
   { returns the first valid stage image }
  for I:=0 to SousElements.Count-1 do
@@ -186,7 +202,11 @@ begin
     end;
   end;
 {DECKER-begin}
- Result:=NeedGameFile(Name+'.tga') as QPixelSet;
+ try
+  Result:=NeedGameFile(Name+'.tga') as QPixelSet;
+ except
+  Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+ end;
 (* Result:=Nil;  { nothing found } *)
 {DECKER-end}
 end;

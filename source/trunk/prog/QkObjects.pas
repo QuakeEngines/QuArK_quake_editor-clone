@@ -20,7 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 unit QkObjects;
 
 interface
@@ -1252,18 +1256,22 @@ begin
 
  if FNode=Nil then
   Raise InternalE('Acces:FNode=Nil');
- SourceTaille:=QStreamAddRef(FNode, Source); try
- FLoading:=True; try
- LoadFile(Source, SourceTaille);
- finally FLoading:=False; end;
- FFlags:=FFlags and not ofSurDisque;
- QStreamRelease(FNode);
-{AiV} finally
+ SourceTaille:=QStreamAddRef(FNode, Source);
+ try
+  FLoading:=True;
+  try
+   LoadFile(Source, SourceTaille);
+  finally
+   FLoading:=False;
+  end;
+  FFlags:=FFlags and not ofSurDisque;
+  QStreamRelease(FNode);
+ finally {AiV}
   if Source is TQStream then
    TQStream(Source).Release
   else
    Source.Free;
-  end;
+ end;
 
 (*Source:=Nil;
  try

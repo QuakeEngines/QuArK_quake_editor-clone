@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/05/20 14:10:25  decker_dk
+Some more englishification
+
 Revision 1.15  2000/05/14 15:06:56  decker_dk
 Charger(F,Taille) -> LoadFile(F,FSize)
 ToutCharger -> LoadAll
@@ -328,6 +331,8 @@ end;
 function Q3ShaderPath : String;
 begin
  Result:=SetupGameSet.Specifics.Values['Q3ShaderPath'];
+ if Result='' then
+  Raise EError(4429);
 end;
 {DECKER}
 

@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit QkBsp;
 
@@ -31,16 +36,43 @@ uses
   StdCtrls, Python, PyObjects, Game;
 
 type
- TEntreesBsp1 = (eEntities, ePlanes, eMipTex, eVertices,
-                 eVisiList, eNodes, eTexInfo, eSurfaces,
-                 eLightmaps, eBoundNodes, eLeaves, eListSurf,
-                 eEdges, eListEdges, eHulls);
+ TEntreesBsp1 =
+   (eEntities
+   ,ePlanes
+   ,eMipTex
+   ,eVertices
+   ,eVisiList
+   ,eNodes
+   ,eTexInfo
+   ,eSurfaces
+   ,eLightmaps
+   ,eBoundNodes
+   ,eLeaves
+   ,eListSurf
+   ,eEdges
+   ,eListEdges
+   ,eHulls);
+
  TEntreesBsp2 =
-   (lump_entities,    lump_planes,      lump_vertexes,    lump_visibility,
-    lump_nodes,       lump_texinfo,     lump_faces,       lump_lighting,
-    lump_leafs,       lump_leaffaces,   lump_leafbrushes, lump_edges,
-    lump_surfedges,   lump_models,      lump_brushes,     lump_brushsides,
-    lump_pop,         lump_areas,       lump_areaportals);
+   (lump_entities
+   ,lump_planes
+   ,lump_vertexes
+   ,lump_visibility
+   ,lump_nodes
+   ,lump_texinfo
+   ,lump_faces
+   ,lump_lighting
+   ,lump_leafs
+   ,lump_leaffaces
+   ,lump_leafbrushes
+   ,lump_edges
+   ,lump_surfedges
+   ,lump_models
+   ,lump_brushes
+   ,lump_brushsides
+   ,lump_pop
+   ,lump_areas
+   ,lump_areaportals);
 
 const
   NoBsp1 = TEntreesBsp1(-1);
@@ -112,15 +144,26 @@ uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
 (***********  Quake 1, Hexen II and Half-Life .bsp format  ***********)
 
 const
- SignatureBSP = $1D;
+ SignatureBSP   = $1D;
  SignatureBSPHL = $1E;
 
 const
  NomEntreesBsp : array[TEntreesBsp1] of String =
-  ('Entities.a.bsp1', 'Planes.b.bsp1', 'MipTex.c.bsp1', 'Vertices.d.bsp1',
-   'VisiList.e.bsp1', 'Nodes.f.bsp1', 'TexInfo.g.bsp1', 'Surfaces.h.bsp1',
-   'Lightmaps.i.bsp1', 'BoundNodes.j.bsp1', 'Leaves.k.bsp1', 'ListSurf.l.bsp1',
-   'Edges.m.bsp1', 'ListEdges.n.bsp1', 'Hulls.o.bsp1');
+   ('Entities.a.bsp1'
+   ,'Planes.b.bsp1'
+   ,'MipTex.c.bsp1'
+   ,'Vertices.d.bsp1'
+   ,'VisiList.e.bsp1'
+   ,'Nodes.f.bsp1'
+   ,'TexInfo.g.bsp1'
+   ,'Surfaces.h.bsp1'
+   ,'Lightmaps.i.bsp1'
+   ,'BoundNodes.j.bsp1'
+   ,'Leaves.k.bsp1'
+   ,'ListSurf.l.bsp1'
+   ,'Edges.m.bsp1'
+   ,'ListEdges.n.bsp1'
+   ,'Hulls.o.bsp1');
 
 type
  TEntreeBsp = record
@@ -140,25 +183,25 @@ const
 
 const
  NomEntreesBsp2 : array[TEntreesBsp2] of String =
-   ('entities.a.bsp2',
-    'planes.b.bsp2',
-    'vertexes.c.bsp2',
-    'visibility.d.bsp2',
-    'nodes.e.zbsp2',
-    'texinfo.f.bsp2',
-    'faces.g.bsp2',
-    'lighting.h.bsp2',
-    'leafs.i.bsp2',
-    'leaffaces.j.bsp2',
-    'leafbrushes.k.bsp2',
-    'edges.l.bsp2',
-    'surfedges.m.bsp2',
-    'models.n.bsp2',
-    'brushes.o.bsp2',
-    'brushsides.p.bsp2',
-    'pop.q.bsp2',
-    'areas.r.bsp2',
-    'areaportals.s.bsp2');
+   ('entities.a.bsp2'
+   ,'planes.b.bsp2'
+   ,'vertexes.c.bsp2'
+   ,'visibility.d.bsp2'
+   ,'nodes.e.zbsp2'
+   ,'texinfo.f.bsp2'
+   ,'faces.g.bsp2'
+   ,'lighting.h.bsp2'
+   ,'leafs.i.bsp2'
+   ,'leaffaces.j.bsp2'
+   ,'leafbrushes.k.bsp2'
+   ,'edges.l.bsp2'
+   ,'surfedges.m.bsp2'
+   ,'models.n.bsp2'
+   ,'brushes.o.bsp2'
+   ,'brushsides.p.bsp2'
+   ,'pop.q.bsp2'
+   ,'areas.r.bsp2'
+   ,'areaportals.s.bsp2');
 
 type
  TQ2BSP = record
@@ -175,11 +218,11 @@ type
  QBsp2   = class(QFileObject)  protected class function TypeInfo: String; override; end;
  QBsp2a  = class(QZText)       protected class function TypeInfo: String; override; end;
 
-class function QBsp1 .TypeInfo; begin TypeInfo:='.bsp1';  end;
-class function QBsp1a.TypeInfo; begin TypeInfo:='.a.bsp1';  end;
-class function QBsp1c.TypeInfo; begin TypeInfo:='.c.bsp1';  end;
-class function QBsp2 .TypeInfo; begin TypeInfo:='.bsp2';  end;
-class function QBsp2a.TypeInfo; begin TypeInfo:='.a.bsp2';  end;
+class function QBsp1 .TypeInfo; begin TypeInfo:='.bsp1';   end;
+class function QBsp1a.TypeInfo; begin TypeInfo:='.a.bsp1'; end;
+class function QBsp1c.TypeInfo; begin TypeInfo:='.c.bsp1'; end;
+class function QBsp2 .TypeInfo; begin TypeInfo:='.bsp2';   end;
+class function QBsp2a.TypeInfo; begin TypeInfo:='.a.bsp2'; end;
 
  {------------------------}
 
