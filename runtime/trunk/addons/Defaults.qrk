@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.90  2001/03/02 19:34:18  decker_dk
+//Made a 'Shape Builders' folder.
+//
 //Revision 1.89  2001/03/01 19:13:14  decker_dk
 //added 'BezierPatchSupport' and 'BezierPatchPluginPrefixes' to Quake-3 and STVEF.
 //
@@ -3070,6 +3073,30 @@ QQRKSRC1
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
     }
 
+    dup radial:form =
+    { 
+      Help = "Brushes placed inside this will be replicated around the axis," $0D " which can be tilted."
+      count: = {Txt = "&" Hint = "Number of copies"}
+      around: = {Txt = "&" Typ = "EF1"
+                 Hint = "Degrees around axis for each copy"}
+      spiral: = {Txt = "&" Typ = "EF2"
+                 Hint = "displacement along and out from axis, per copy"}
+      axis: = {Txt = "&" Typ = "EF3"
+                Hint = "axis for copies"}
+//      buttons: = {
+//        Txt = "align"
+//        Typ = "PM"
+//        Num = "3"
+//        Macro = "dup_radial_align"
+//        Caps = "XYZ"
+//        Hint1 = "Align to X Axis"
+//        Hint2 = "Align to Y Axis"
+//        Hint3 = "Align to Z Axis"
+//      }
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "Don't you worry about this"}
+    }
+
     capdetails:form =
     {
       faceonly:  = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
@@ -3661,6 +3688,50 @@ QQRKSRC1
           out = "1"
           origin = "0 0 0"
           macro = "dup symxy"
+        }
+        Radial:d =
+        {
+          ;desc = "Copies around an axis"
+          origin = "0 0 0"
+          count = "2"
+          around = '180'
+          spiral = '0 0'
+          axis = '0 0 1'
+          macro = "dup radial"
+  new cube:p =
+  {
+    east:f =
+    {
+      v = '192 0 0 192 128 0 192 0 128'
+      tex = "[auto]"
+    }
+    west:f =
+    {
+      v = '64 0 0 64 -128 0 64 0 128'
+      tex = "[auto]"
+    }
+    north:f =
+    {
+      v = '128 64 0 0 64 0 128 64 128'
+      tex = "[auto]"
+    }
+    south:f =
+    {
+      v = '128 -64 0 256 -64 0 128 -64 128'
+      tex = "[auto]"
+    }
+    up:f =
+    {
+      v = '128 0 64 256 0 64 128 128 64'
+      tex = "[auto]"
+    }
+    down:f =
+    {
+      v = '128 0 -64 256 0 -64 128 -128 -64'
+      tex = "[auto]"
+    }
+  }
+          
         }
         Digger:d =
         {
