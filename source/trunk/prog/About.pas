@@ -22,10 +22,18 @@ See also http://www.planetquake.com/quark
 **************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
 Revision 1.5  2000/12/11 21:36:36  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -39,8 +47,6 @@ Code Formatted
 
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 unit About;
@@ -56,10 +62,9 @@ type
     ProgramIcon: TImage;
     ProductName: TLabel;
     Version: TLabel;
-    Copyright: TLabel;
+    ContributorsLabel: TLabel;
     OKButton: TButton;
     Edit1: TEdit;
-    Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -68,10 +73,11 @@ type
     Image1: TImage;
     Bevel1: TBevel;
     Label7: TLabel;
-    Label8: TLabel;
+    WebsiteAddress: TLabel;
     Label10: TLabel;
     Memo1: TMemo;
-    Label9: TLabel;
+    UsedCompilerLabel: TLabel;
+    Contributors: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -121,7 +127,7 @@ begin
   Version.Caption := Version.Caption + '  DEBUG - BETA VERSION ONLY';
   {$ENDIF}
   {$IFNDEF VER90}
-  Label9.Free;
+//  Label9.Free;
   {$ENDIF}
   ProgramIcon.Picture.Icon.Handle := LoadImage(HInstance, 'MAINICON', image_Icon, 0, 0, 0);
   Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
@@ -164,6 +170,13 @@ begin
     + #13#10#13#10
     + 'You may charge a fee for the physical act of transferring a copy, and '
     + 'you may at your option offer warranty protection in exchange for a fee.';
+
+  Contributors.Text :=
+               'Armin Rigo (arigo@planetquake.com)'
+    + #13#10 + 'Avery Andrews (tiglari@hexenworld.com)'
+    + #13#10 + 'Decker (decker@planetquake.com)'
+    + #13#10 + 'Andy Vincent (andyvinc@hotmail.com)'
+    + #13#10 + 'Alexander Haarer (mac.@gmx.net)'
 end;
 
 procedure TAboutBox.OKButtonClick(Sender: TObject);
