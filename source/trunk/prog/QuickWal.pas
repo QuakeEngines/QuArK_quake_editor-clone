@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/02/04 01:43:14  tiglari
+dynamic/static; merge/non merge flags for texture-list building
+
 Revision 1.22  2001/02/03 06:54:37  tiglari
 animationTest problem fixed
 
@@ -149,6 +152,8 @@ function FileNameOnly(Name: String) : String;
 begin
   Result:=Copy(Name,0,Length(Name)-Length(ExtractFileExt(Name)))
 end;
+
+
 
 function ListPakFiles(const Path: String) : TStringList;
 var
@@ -539,39 +544,23 @@ begin
 end;
 
 
-function ParsePakShaderFiles(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
+function ParsePakShaderFiles(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject; ShaderFiles: TStringList) : QObject;
 var
  I, Index: Integer;
  Q, Loaded: QObject;
 begin
- Result:=DestFolder;
- Pak.Acces;
- Index:=0;
- for I:=0 to Pak.SubElements.Count-1 do
+  Result:=DestFolder;
+  Pak.Acces;
+  Index:=0;
+  for I:=0 to Pak.SubElements.Count-1 do
   begin
-   Q:=Pak.SubElements[I];
-   Index:=0;
-   if Result.LocateSubElement(Q.Name,Index)<>Nil then
-      continue;
-   if Q is QPakFolder then
-    OrderedLinkFolder(ParseRecPak(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName)
-   else
-  (*
-        begin
-          Loaded:=Nil;
-          try
-            while LinkShaderFolder(Result, Q.Name, FolderName, Base, Loaded) do
-            begin
-              Loaded:=ExactFileLink(PathAndFile(Path, Q.Name), Nil, False);
-              Loaded.AddRef(+1);
-            end;
-          finally
-            Loaded.AddRef(-1);
-          end;
-        end
-    *)
-
-    LinkShaderFolder(Result, Q.Name+'.shader', FolderName, Base, Q);
+    Q:=Pak.SubElements[I];
+    Index:=0;
+    if ShaderFiles.IndexOf(Q.Name)<0 then
+    begin
+      LinkShaderFolder(Result, Q.Name+'.shader', FolderName, Base, Q);
+      ShaderFiles.Add(Q.Name);
+    end
   end;
 end;
 
@@ -682,16 +671,14 @@ begin
 end;
 
 
-function ParseShaderFiles(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
+function ParseShaderFiles(const Path, Base, FolderName: String; DestFolder:QObject; ShaderList: TStringList) : QObject;
 var
  F: TSearchRec;
  I, FindError: Integer;
- L: TStringList;
  Loaded: QObject;
  ShortName : String;
 begin
   Result:=DestFolder;
-  L:=TStringList.Create;
   try
     FindError:=FindFirst(PathAndFile(Path, '*.shader'), faAnyFile, F);
     try
@@ -702,6 +689,8 @@ begin
           Loaded:=Nil;
           try
             ShortName:=FileNameOnly(F.Name);
+            if CompareText(ExtractFileExt(F.Name), '.shader') = 0 then
+              ShaderList.Add(ShortName);
             while LinkShaderFolder(Result, F.Name, FolderName, Base, Loaded) do
             begin
               Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
@@ -710,23 +699,14 @@ begin
           finally
             Loaded.AddRef(-1);
           end;
-        end
-        else
-        begin
-          {add to sub-folder list}
-          if (F.Name<>'.') and (F.Name<>'..') then
-            L.Add(F.Name);
         end;
         FindError:=FindNext(F);
       end;
     finally
       FindClose(F);
     end;
-    {parse found sub-folders}
-    for I:=0 to L.Count-1 do
-      LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
   finally
-    L.Free;
+    { do nothing }
   end;
 end;
 
@@ -906,16 +886,17 @@ var
   S, Path: String;
   SearchFolder : QObject;
   Pak: QPakFolder;
-  PakList: TStringList;
+  PakList, ShaderList: TStringList;
   I: Integer;
 begin
   Path:=PathAndFile(QuakeDir, Base);
+  ShaderList:=TStringList.Create;
 
   { Get Shaders }
   try
      { Find Quake-3:Arena .shader files in directory }
      S:=PathAndFile(Path, GameShadersPath);
-     Q:=ParseShaderFiles(S, Base, '', Q);
+     Q:=ParseShaderFiles(S, Base, '', Q, ShaderList);
   except
      (*do nothing*)
   end;
@@ -939,7 +920,7 @@ begin
            SearchFolder:=Pak.GetFolder(GameShadersPath);
          if SearchFolder<>Nil then
          begin
-           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q);
+           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList);
          end;
         except
          (*do nothing*)
