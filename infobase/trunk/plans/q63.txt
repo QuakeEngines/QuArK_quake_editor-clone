@@ -30,6 +30,10 @@ forms).
 <br> redo prism-builder as shape-builder.
 <br> more fancy options for stair-builder
 
+<li>'Instance' duplicator: (tiglari)
+<br> put copies of a structure where you want it.  Inspired
+by a suggestion by Meatball402 on Quake3World editing forum.
+
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes'
 
