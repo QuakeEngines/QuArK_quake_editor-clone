@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/10/10 21:28:42  tiglari
+Live Pointer Cleanup: free g_TexExtensions in finalization
+
 Revision 1.27  2001/08/05 05:39:38  tiglari
 move the bsptype stuff into qkbsp
 
@@ -1241,6 +1244,7 @@ initialization
 {$IFDEF Debug}
 finalization
   CloseSetupSet;
+  Clear_g_MemQObject;
 {$ENDIF}
 
   if g_TexExtensions<>NIL then

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.59  2001/10/11 11:34:57  tiglari
+Live Pointer Cleanup. (g_MemQObject)
+
 Revision 1.58  2001/10/10 11:59:29  tiglari
 Add finalization section to free QFileList
 
@@ -568,15 +571,17 @@ function InternalE(const Hint: String) : Exception;
 procedure ReleaseStream(S: TStream);
 procedure ClearObjectManager;
 
+var QFileList: TStringList;
+
 {$IFDEF Debug}
 var g_MemQObject: TList;
-    QFileList: TStringList;
+
 procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
-{$ENDIF}
 procedure Clear_g_MemQObject;
 
+{$ENDIF}
  {------------------------}
 
 implementation
@@ -3217,7 +3222,6 @@ begin
     if MessageBox(0, 'Some objects were not correctly freed. This is a bug. Do you want to write a data report (DATADUMP.TXT) ?', 'DEBUGGING - BETA VERSION', mb_YesNo) = idYes then
       DataDump;
 end;
-{$ENDIF}
 
 procedure Clear_g_MemQObject;
 begin
@@ -3225,6 +3229,8 @@ begin
     g_MemQObject.Destroy;
   g_MemQObject.Free;
 end;
+
+{$ENDIF}
 
  {------------------------}
 
@@ -3238,6 +3244,6 @@ initialization
   {$ENDIF}
 
 finalization
-   QFileList.Free;
+  { QFileList.Free;}
 
 end.
