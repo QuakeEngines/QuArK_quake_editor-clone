@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2003/03/13 20:20:32  decker_dk
+Modified so much to support transparency.
+
 Revision 1.20  2002/05/25 18:29:21  decker_dk
 Missed a semicolon.
 
@@ -71,10 +74,10 @@ uses Windows, Classes,
      GL1,
      EdSceneObject;
 
-{$IFDEF Debug}
+{x $ IFDEF Debug}
  {---$OPTIMIZATION OFF}
- {$DEFINE DebugGLErr}
-{$ENDIF}
+ {x $ DEFINE DebugGLErr}
+{x $ ENDIF}
 
 const
  kDistFarToShort = MinW/65536; { 0.0009765625 }
@@ -178,46 +181,51 @@ implementation
 uses SysUtils, Forms,
      Quarkx, Setup,
      Python, PyMapView,
+     Logging,
      QkObjects, QkMapPoly, QkPixelSet, QkForm;
 
  {------------------------}
 
 var
- HackIgnoreErrors: Boolean = False;
+  HackIgnoreErrors: Boolean = False;
 
-procedure Err(Pos: Integer);  { OpenGL error check }
+procedure DebugOpenGL(Pos: Integer; Text: string; Args: array of const);  { OpenGL error check }
 var
- I, J: Integer;
- S: String;
+  I, J: Integer;
+  S: String;
 begin
- if HackIgnoreErrors then
-  Exit;
- S:='';
- for I:=1 to 25 do
+  //LogEx('EdOpenGL #%d %s', [Pos, Format(Text, Args)]); //Decker 2003.03.14
+  if HackIgnoreErrors then
+    Exit;
+  S:='';
+  for I:=1 to 25 do
   begin
-   J:=glGetError;
-   if J = GL_NO_ERROR then
-    Break;
-   S:=S+' '+IntToStr(J);
+    J:=glGetError;
+    if J = GL_NO_ERROR then
+      Break;
+    S:=S+' '+IntToStr(J);
   end;
- if S<>'' then
-  Raise EErrorFmt(4870, [S, Pos]);
+  if S<>'' then
+  begin
+    //Log(S);
+    Raise EErrorFmt(4870, [S, Pos]);
+  end
 end;
 
  {------------------------}
 
 var
- CurrentGLSceneObject: TGLSceneObject = Nil;
-{VersionGLSceneObject: Integer;}
+  CurrentGLSceneObject: TGLSceneObject = Nil;
+ {VersionGLSceneObject: Integer;}
 
 procedure NeedGLSceneObject(MinX, MinY: Integer);
 begin
-{if CurrentGLSceneObject=Nil then
+ {if CurrentGLSceneObject=Nil then
   begin}
-   Py_XDECREF(CallMacroEx(Py_BuildValueX('ii', [MinX, MinY]), 'OpenGL'));
-   PythonCodeEnd;
-   if CurrentGLSceneObject=Nil then
-     Raise EAbort.Create('Python failure in OpenGL view creation');
+    Py_XDECREF(CallMacroEx(Py_BuildValueX('ii', [MinX, MinY]), 'OpenGL'));
+    PythonCodeEnd;
+    if CurrentGLSceneObject=Nil then
+      Raise EAbort.Create('Python failure in OpenGL view creation');
  {end;}
 end;
 
@@ -237,18 +245,18 @@ procedure FreeOpenGLTexture(Tex: PTexture3);
 begin
   if (Tex^.OpenGLName<>0) and OpenGlLoaded then
   begin
-    {$IFDEF DebugGLErr} Err(-101); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(-101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
     glDeleteTextures(1, Tex^.OpenGLName);
-    {$IFDEF DebugGLErr} Err(101); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(101, 'glDeleteTextures(1, <%d>)', [Tex^.OpenGLName]); {$ENDIF}
   end;
 end;
 
 procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
 begin
-  v[0]:=((Color       ) and $FF) {* (1}/255.0{)};
-  v[1]:=((Color shr  8) and $FF) {* (1}/255.0{)};
-  v[2]:=((Color shr 16) and $FF) {* (1}/255.0{)};
-  v[3]:=((Color shr 24) and $FF) {* (1}/255.0{)};
+  v[0]:=((Color       ) and $FF) * (1/255.0);
+  v[1]:=((Color shr  8) and $FF) * (1/255.0);
+  v[2]:=((Color shr 16) and $FF) * (1/255.0);
+  v[3]:=((Color shr 24) and $FF) * (1/255.0);
 end;
 
  {------------------------}
@@ -422,176 +430,187 @@ var
  DistToSource, Dist1: TDouble;
  light: array[0..3] of GLfloat;
 begin
- SubList:=Nil;
- LPP:=@SubList;
- while Assigned(LP) do
+  SubList:=Nil;
+  LPP:=@SubList;
+
+  while Assigned(LP) do
   begin
-   with LP^ do
-    if Position[0]*NormalePlan[0] + Position[1]*NormalePlan[1] + Position[2]*NormalePlan[2] > Dist then
-     if ((PV1^.xyz[0]>Min[0]) and (PV1^.xyz[0]<Max[0])
-     and (PV1^.xyz[1]>Min[1]) and (PV1^.xyz[1]<Max[1])
-     and (PV1^.xyz[2]>Min[2]) and (PV1^.xyz[2]<Max[2]))
-     or ((PV2^.xyz[0]>Min[0]) and (PV2^.xyz[0]<Max[0])
-     and (PV2^.xyz[1]>Min[1]) and (PV2^.xyz[1]<Max[1])
-     and (PV2^.xyz[2]>Min[2]) and (PV2^.xyz[2]<Max[2]))
-     or ((PV3^.xyz[0]>Min[0]) and (PV3^.xyz[0]<Max[0])
-     and (PV3^.xyz[1]>Min[1]) and (PV3^.xyz[1]<Max[1])
-     and (PV3^.xyz[2]>Min[2]) and (PV3^.xyz[2]<Max[2]))
-     or ((PV4^.xyz[0]>Min[0]) and (PV4^.xyz[0]<Max[0])
-     and (PV4^.xyz[1]>Min[1]) and (PV4^.xyz[1]<Max[1])
-     and (PV4^.xyz[2]>Min[2]) and (PV4^.xyz[2]<Max[2])) then
+    with LP^ do
+    begin
+      if Position[0]*NormalePlan[0] + Position[1]*NormalePlan[1] + Position[2]*NormalePlan[2] > Dist then
       begin
-       LPP^:=LP;
-       LP^.SubLightList:=Nil;
-       LPP:=@LP^.SubLightList;
+        if ((PV1^.xyz[0]>Min[0]) and (PV1^.xyz[0]<Max[0])
+        and (PV1^.xyz[1]>Min[1]) and (PV1^.xyz[1]<Max[1])
+        and (PV1^.xyz[2]>Min[2]) and (PV1^.xyz[2]<Max[2]))
+        or ((PV2^.xyz[0]>Min[0]) and (PV2^.xyz[0]<Max[0])
+        and (PV2^.xyz[1]>Min[1]) and (PV2^.xyz[1]<Max[1])
+        and (PV2^.xyz[2]>Min[2]) and (PV2^.xyz[2]<Max[2]))
+        or ((PV3^.xyz[0]>Min[0]) and (PV3^.xyz[0]<Max[0])
+        and (PV3^.xyz[1]>Min[1]) and (PV3^.xyz[1]<Max[1])
+        and (PV3^.xyz[2]>Min[2]) and (PV3^.xyz[2]<Max[2]))
+        or ((PV4^.xyz[0]>Min[0]) and (PV4^.xyz[0]<Max[0])
+        and (PV4^.xyz[1]>Min[1]) and (PV4^.xyz[1]<Max[1])
+        and (PV4^.xyz[2]>Min[2]) and (PV4^.xyz[2]<Max[2])) then
+        begin
+          LPP^:=LP;
+          LP^.SubLightList:=Nil;
+          LPP:=@LP^.SubLightList;
+        end;
       end;
-   LP:=LP^.Next;
+    end;
+    LP:=LP^.Next;
   end;
- if SubList=Nil then
+
+  if SubList=Nil then
   begin
-   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-121); {$ENDIF}
-   light[0]:=LightParams.ZeroLight * Currentf[0];
-   light[1]:=LightParams.ZeroLight * Currentf[1];
-   light[2]:=LightParams.ZeroLight * Currentf[2];
-{DECKER 2003.03.13}
-   light[3]:=Currentf[3];
-   //glColor3fv(light);
-   glColor4fv(light);
-{/DECKER}
-   {$IFDEF DebugGLErr} Err(121); {$ENDIF}
-   glBegin(GL_QUADS);
-   //with PV1^ do
+    {$IFDEF DebugGLErr} DebugOpenGL(-121, '', []); {$ENDIF}
+    light[0]:=LightParams.ZeroLight * Currentf[0];
+    light[1]:=LightParams.ZeroLight * Currentf[1];
+    light[2]:=LightParams.ZeroLight * Currentf[2];
+    light[3]:=Currentf[3];
+    glColor4fv(light);
+    {$IFDEF DebugGLErr} DebugOpenGL(-121, 'glBegin(GL_QUADS)', []); {$ENDIF}
+    glBegin(GL_QUADS);
+    //with PV1^ do
     begin
-     glTexCoord2fv(PV1^.st);
-     glVertex3fv(PV1^.xyz);
+      glTexCoord2fv(PV1^.st);
+      glVertex3fv(PV1^.xyz);
     end;
-   //with PV2^ do
+    //with PV2^ do
     begin
-     glTexCoord2fv(PV2^.st);
-     glVertex3fv(PV2^.xyz);
+      glTexCoord2fv(PV2^.st);
+      glVertex3fv(PV2^.xyz);
     end;
-   //with PV3^ do
+    //with PV3^ do
     begin
-     glTexCoord2fv(PV3^.st);
-     glVertex3fv(PV3^.xyz);
+      glTexCoord2fv(PV3^.st);
+      glVertex3fv(PV3^.xyz);
     end;
-   //with PV4^ do
+    //with PV4^ do
     begin
-     glTexCoord2fv(PV4^.st);
-     glVertex3fv(PV4^.xyz);
+      glTexCoord2fv(PV4^.st);
+      glVertex3fv(PV4^.xyz);
     end;
-   glEnd;
-   {$IFDEF DebugGLErr} Err(122); {$ENDIF}
+    glEnd;
+    {$IFDEF DebugGLErr} DebugOpenGL(121, 'glEnd', []); {$ENDIF}
   end
- else
+  else
   begin
-   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-109); {$ENDIF}
-   Points[0,        0        ].v:=PV1^;
-   Points[0,        SectionsI].v:=PV2^;
-   Points[SectionsJ,SectionsI].v:=PV3^;
-   Points[SectionsJ,0        ].v:=PV4^;
+    {$IFDEF DebugGLErr} DebugOpenGL(-109, '', []); {$ENDIF}
+    Points[0,        0        ].v:=PV1^;
+    Points[0,        SectionsI].v:=PV2^;
+    Points[SectionsJ,SectionsI].v:=PV3^;
+    Points[SectionsJ,0        ].v:=PV4^;
 
-   DistToSource:=Abs(Points[0,        SectionsI].v.xyz[0]-Points[0,        0].v.xyz[0]);
-   Dist1:=       Abs(Points[0,        SectionsI].v.xyz[1]-Points[0,        0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[0,        SectionsI].v.xyz[2]-Points[0,        0].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[SectionsJ,0].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[SectionsJ,0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[SectionsJ,0].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-   if DistToSource>2*StandardSectionSize then
-    if DistToSource>4*StandardSectionSize then
-     StepI:=1
-    else
-     StepI:=2
-   else
-    if DistToSource>StandardSectionSize then
-     StepI:=4
-    else
-     StepI:=8;
-
-   DistToSource:=Abs(Points[SectionsJ,0        ].v.xyz[0]-Points[0,0        ].v.xyz[0]);
-   Dist1:=       Abs(Points[SectionsJ,0        ].v.xyz[1]-Points[0,0        ].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,0        ].v.xyz[2]-Points[0,0        ].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[0,SectionsI].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[0,SectionsI].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
-   Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[0,SectionsI].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
-   if DistToSource>2*StandardSectionSize then
-    if DistToSource>4*StandardSectionSize then
-     StepJ:=1
-    else
-     StepJ:=2
-   else
-    if DistToSource>StandardSectionSize then
-     StepJ:=4
-    else
-     StepJ:=8;
-
-   f:=0;
-   fstep:=StepI*(1/SectionsI);
-   I:=StepI;
-   while I<SectionsI do
+    DistToSource:=Abs(Points[0,        SectionsI].v.xyz[0]-Points[0,        0].v.xyz[0]);
+    Dist1:=       Abs(Points[0,        SectionsI].v.xyz[1]-Points[0,        0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[0,        SectionsI].v.xyz[2]-Points[0,        0].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[SectionsJ,0].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[SectionsJ,0].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[SectionsJ,0].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
+    if DistToSource>2*StandardSectionSize then
     begin
-     f:=f+fstep;
-     Interpole(Points[0,        I], Points[0,        0], Points[0,        SectionsI], f);
-     Interpole(Points[SectionsJ,I], Points[SectionsJ,0], Points[SectionsJ,SectionsI], f);
-     Inc(I, StepI);
+      if DistToSource>4*StandardSectionSize then
+        StepI:=1
+      else
+        StepI:=2;
+    end
+    else
+    begin
+      if DistToSource>StandardSectionSize then
+        StepI:=4
+      else
+        StepI:=8;
     end;
 
-   f:=0;
-   fstep:=StepJ*(1/SectionsJ);
-   J:=StepJ;
-   while J<SectionsJ do
+    DistToSource:=Abs(Points[SectionsJ,0        ].v.xyz[0]-Points[0,0        ].v.xyz[0]);
+    Dist1:=       Abs(Points[SectionsJ,0        ].v.xyz[1]-Points[0,0        ].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,0        ].v.xyz[2]-Points[0,0        ].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[0]-Points[0,SectionsI].v.xyz[0]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[1]-Points[0,SectionsI].v.xyz[1]); if Dist1>DistToSource then DistToSource:=Dist1;
+    Dist1:=       Abs(Points[SectionsJ,SectionsI].v.xyz[2]-Points[0,SectionsI].v.xyz[2]); if Dist1>DistToSource then DistToSource:=Dist1;
+    if DistToSource>2*StandardSectionSize then
     begin
-     f:=f+fstep;
-     I:=0;
-     while I<=SectionsI do
+      if DistToSource>4*StandardSectionSize then
+        StepJ:=1
+      else
+        StepJ:=2;
+    end
+    else
+    begin
+      if DistToSource>StandardSectionSize then
+        StepJ:=4
+      else
+        StepJ:=8;
+    end;
+
+    f:=0;
+    fstep:=StepI*(1/SectionsI);
+    I:=StepI;
+    while I<SectionsI do
+    begin
+      f:=f+fstep;
+      Interpole(Points[0,        I], Points[0,        0], Points[0,        SectionsI], f);
+      Interpole(Points[SectionsJ,I], Points[SectionsJ,0], Points[SectionsJ,SectionsI], f);
+      Inc(I, StepI);
+    end;
+
+    f:=0;
+    fstep:=StepJ*(1/SectionsJ);
+    J:=StepJ;
+    while J<SectionsJ do
+    begin
+      f:=f+fstep;
+      I:=0;
+      while I<=SectionsI do
       begin
-       Interpole(Points[J,I], Points[0,I], Points[SectionsJ,I], f);
-       Inc(I, StepI);
+        Interpole(Points[J,I], Points[0,I], Points[SectionsJ,I], f);
+        Inc(I, StepI);
       end;
-     Inc(J, StepJ);
+      Inc(J, StepJ);
     end;
 
-   J:=0;
-   while J<=SectionsJ do
+    J:=0;
+    while J<=SectionsJ do
     begin
-     I:=0;
-     while I<=SectionsI do
+      I:=0;
+      while I<=SectionsI do
       begin
-       LightAtPoint(Points[J,I], SubList, Currentf, LightParams, NormalePlan);
-       Inc(I, StepI);
+        LightAtPoint(Points[J,I], SubList, Currentf, LightParams, NormalePlan);
+        Inc(I, StepI);
       end;
-     Inc(J, StepJ);
+      Inc(J, StepJ);
     end;
 
-   J:=0;
-   while J<SectionsJ do
+    J:=0;
+    while J<SectionsJ do
     begin
-     glBegin(GL_QUAD_STRIP);
+      {$IFDEF DebugGLErr} DebugOpenGL(-122, 'glBegin(GL_QUAD_STRIP)', []); {$ENDIF}
+      glBegin(GL_QUAD_STRIP);
 
-     I:=0;
-     while I<=SectionsI do
+      I:=0;
+      while I<=SectionsI do
       begin
-       //with Points[J,I] do
+        //with Points[J,I] do
         begin
-         //glColor3fv(light_rgb);
-         glColor4fv(Points[J,I].light_rgb);
-         glTexCoord2fv(Points[J,I].v.st);
-         glVertex3fv(Points[J,I].v.xyz);
+          glColor4fv(Points[J,I].light_rgb);
+          glTexCoord2fv(Points[J,I].v.st);
+          glVertex3fv(Points[J,I].v.xyz);
         end;
-       //with Points[J+StepJ,I] do
+        //with Points[J+StepJ,I] do
         begin
-         //glColor3fv(light_rgb);
-         glColor4fv(Points[J+StepJ,I].light_rgb);
-         glTexCoord2fv(Points[J+StepJ,I].v.st);
-         glVertex3fv(Points[J+StepJ,I].v.xyz);
+          glColor4fv(Points[J+StepJ,I].light_rgb);
+          glTexCoord2fv(Points[J+StepJ,I].v.st);
+          glVertex3fv(Points[J+StepJ,I].v.xyz);
         end;
-       Inc(I, StepI);
+        Inc(I, StepI);
       end;
 
-     glEnd;
-     Inc(J, StepJ);
+      glEnd;
+      {$IFDEF DebugGLErr} DebugOpenGL(122, 'glEnd', []); {$ENDIF}
+      Inc(J, StepJ);
     end;
-   {$IFDEF DebugGLErr} Err(109); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(109, '', []); {$ENDIF}
   end;
 end;
 
@@ -605,25 +624,24 @@ var
  I: Integer;
  Point: TP3D;
 begin
- LP1:=LP;
- while Assigned(LP1) do
+  LP1:=LP;
+  while Assigned(LP1) do
   begin
-   LP1^.SubLightList:=LP1^.Next;
-   LP1:=LP1^.SubLightList;
+    LP1^.SubLightList:=LP1^.Next;
+    LP1:=LP1^.SubLightList;
   end;
- glBegin(GL_TRIANGLE_STRIP);
- for I:=1 to VertexCount do
+  glBegin(GL_TRIANGLE_STRIP);
+  for I:=1 to VertexCount do
   begin
-   Point.v:=PV^;
-   Inc(PV);
-   LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
-   Inc(vec3_p(PV));
-   //glColor3fv(Point.light_rgb);
-   glColor4fv(Point.light_rgb);
-   glTexCoord2fv(Point.v.st);
-   glVertex3fv(Point.v.xyz);
+    Point.v:=PV^;
+    Inc(PV);
+    LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
+    Inc(vec3_p(PV));
+    glColor4fv(Point.light_rgb);
+    glTexCoord2fv(Point.v.st);
+    glVertex3fv(Point.v.xyz);
   end;
- glEnd;
+  glEnd;
 end;
 
  {------------------------}
@@ -683,7 +701,9 @@ begin
       end;
     end
     else
+    begin
       xyz:=vec3_p(Source)^;
+    end;
 
     st[0]:=ns;
     st[1]:=nt;
@@ -703,12 +723,22 @@ begin
 
   { mark proxy GL views as needing a complete rebuild }
   for I:=0 to Screen.FormCount-1 do
+  begin
     with Screen.Forms[I] do
+    begin
       for J:=0 to ComponentCount-1 do
+      begin
         if Components[J] is TPyMapView then
+        begin
           with TPyMapView(Components[J]) do
+          begin
             if Scene is TGLSceneProxy then
               Perform(wm_InternalMessage, wp_PyInvalidate, 0);
+          end;
+        end;
+      end;
+    end;
+  end;
 
   with TTextureManager.GetInstance do
   begin
@@ -719,18 +749,21 @@ begin
       for I:=0 to Textures.Count-1 do
       begin
         with PTexture3(Textures.Objects[I])^ do
+        begin
           if OpenGLName<>0 then
           begin
             NameAreaWalker^:=OpenGLName;
             Inc(NameAreaWalker);
             OpenGLName:=0;
           end;
+        end;
       end;
 
       if OpenGlLoaded and (NameAreaWalker<>NameArray) then
       begin
+        {$IFDEF DebugGLErr} DebugOpenGL(-102, 'glDeleteTextures(<%d>, <%d>)', [(PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^]); {$ENDIF}
         glDeleteTextures((PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
-        {$IFDEF DebugGLErr} Err(102); {$ENDIF}
+        {$IFDEF DebugGLErr} DebugOpenGL(102, 'glDeleteTextures(<%d>, <%d>)', [(PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^]); {$ENDIF}
       end;
     finally
       FreeMem(NameArray);
@@ -841,18 +874,16 @@ begin
 
   { set up OpenGL }
   wglMakeCurrent(GLDC,RC);
-  Err(0);
+  {$IFDEF DebugGLErr} DebugOpenGL(0, '', []); {$ENDIF}
   UnpackColor(FogColor, nFogColor);
   glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
- // glClearDepth(1);
+ {glClearDepth(1);}
   glEnable(GL_DEPTH_TEST);
  {glDepthFunc(GL_LEQUAL);}
- // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-{DECKER 2003.03.12}
+ {glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);}
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
-{/DECKER}
   glEdgeFlag(0);
-  Err(1);
+  {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
   { set up texture parameters }
  (* glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -863,11 +894,11 @@ begin
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
  {glShadeModel(GL_FLAT);} *)
   if SetupSubSet(ssGeneral,'OpenGL').Specifics.Values['Bilinear']<>'' then
-     Bilinear:=true
+    Bilinear:=true
   else
-     Bilinear:=false;
+    Bilinear:=false;
   glEnable(GL_TEXTURE_2D);
-  Err(2);
+  {$IFDEF DebugGLErr} DebugOpenGL(2, '', []); {$ENDIF}
 
  {Inc(VersionGLSceneObject);}
   CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
@@ -883,7 +914,7 @@ begin
     glFogf(GL_FOG_DENSITY, FogDensity/FarDistance * 100000);
     glFogfv(GL_FOG_COLOR, nFogColor);
     glEnable(GL_FOG);
-    Err(3);
+    {$IFDEF DebugGLErr} DebugOpenGL(3, '', []); {$ENDIF}
   end;
 end;
 
@@ -910,9 +941,9 @@ begin
   begin
     if OpenGlLoaded then
     begin
-      {$IFDEF DebugGLErr} Err(-172); {$ENDIF}
+      {$IFDEF DebugGLErr} DebugOpenGL(-172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
       glDeleteLists(1, DisplayLists);
-      {$IFDEF DebugGLErr} Err(172); {$ENDIF}
+      {$IFDEF DebugGLErr} DebugOpenGL(172, 'glDeleteLists(1, <%d>', [DisplayLists]); {$ENDIF}
     end;
     DisplayLists:=0;
   end;
@@ -967,9 +998,6 @@ var
  Buffer, BufEnd: ^GLuint;
  BufResident: ^GLboolean;
 begin
-  {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-103); {$ENDIF}
-
-{DECKER 2003.03.12}
   // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
   if Transparent=true then
   begin
@@ -979,7 +1007,6 @@ begin
   begin
     glDisable(GL_BLEND);
   end;
-{/DECKER}
 
   {DECKER 2003-03-12 if not SolidColors then}
   begin
@@ -1009,9 +1036,11 @@ begin
           PList:=PList^.Next;
         end;
         PChar(BufResident):=PChar(BufEnd);
-        glAreTexturesResident(Count, Buffer^, BufResident^);
 
-        {$IFDEF DebugGLErr} Err(103); {$ENDIF}
+        {$IFDEF DebugGLErr} DebugOpenGL(-103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
+        glAreTexturesResident(Count, Buffer^, BufResident^);
+        {$IFDEF DebugGLErr} DebugOpenGL(103, 'glAreTexturesResident(<%d>, <%d>, <%d>)', [Count, Buffer^, BufResident^]); {$ENDIF}
+
         PList:=ListSurfaces;
         while Assigned(PList) do
         begin
@@ -1053,15 +1082,17 @@ var
 begin
   if not OpenGlLoaded then
     Exit;
-  {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
- {wglMakeCurrent(DC,RC);
-  Err(49);}
+  {$IFDEF DebugGLErr} DebugOpenGL(-50, '', []); {$ENDIF}
+(*
+  wglMakeCurrent(DC,RC);
+  {$IFDEF DebugGLErr} DebugOpenGL(49); {$ENDIF}
+*)
   SX:=Source.ScreenX;
   SY:=Source.ScreenY;
   if SX>ScreenX then SX:=ScreenX;
   if SY>ScreenY then SY:=ScreenY;
   glViewport(0, 0, SX, SY);
-  {$IFDEF DebugGLErr} Err(50); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(50, '', []); {$ENDIF}
   with TCameraCoordinates(Source.Coord) do
   begin
     glMatrixMode(GL_PROJECTION);
@@ -1076,17 +1107,17 @@ begin
     with Camera do
       glTranslatef(-X, -Y, -Z);
   end;
-  {$IFDEF DebugGLErr} Err(51); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(51, 'glClear', []); {$ENDIF}
   glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
-  {$IFDEF DebugGLErr} Err(52); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(52, 'RenderTransparentGL(...False...)', []); {$ENDIF}
   CurrentAlpha:=0;
   FillChar(Currentf, SizeOf(Currentf), 0);
   RenderTransparentGL(Source.FListSurfaces, False, DisplayLights, Source.Coord);
-  {$IFDEF DebugGLErr} Err(53); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(53, 'RenderTransparentGL(...True...)', []); {$ENDIF}
   RenderTransparentGL(Source.FListSurfaces, True,  DisplayLights, Source.Coord);
-  {$IFDEF DebugGLErr} Err(54); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(54, 'glFlush', []); {$ENDIF}
   glFlush;
-  {$IFDEF DebugGLErr} Err(55); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(55, '', []); {$ENDIF}
  {wglMakeCurrent(0,0);}
 end;
 
@@ -1103,8 +1134,10 @@ begin
   if Texture^.OpenGLName=0 then
   begin
     {$IFDEF DebugGLErr}
-    if OpenGlLoaded then
-      Err(-104);
+    if (Texture^.SourceTexture <> nil) then
+      DebugOpenGL(-104, 'BuildTexture(<%s>)', [Texture^.SourceTexture.Name])
+    else
+      DebugOpenGL(-104, 'BuildTexture(<Nil>)', []);
     {$ENDIF}
 
     GetwhForTexture(Texture^.info, W, H);
@@ -1239,13 +1272,13 @@ begin
 
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
-    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
     if Texture^.OpenGLName=0 then
       Raise InternalE('out of texture numbers');
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
-    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
     glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
-    {$IFDEF DebugGLErr} Err(106); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(106, '', []); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     if Bilinear then
@@ -1258,7 +1291,7 @@ begin
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     end;
-    {$IFDEF DebugGLErr} Err(107); {$ENDIF}
+    {$IFDEF DebugGLErr} DebugOpenGL(107, '', []); {$ENDIF}
   end;
 end;
 
@@ -1268,9 +1301,9 @@ begin
   if Tex^.OpenGLName=0 then
     Raise InternalE('LoadCurrentTexture: texture not loaded');
   {$ENDIF}
-  {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-108); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(-108, '', []); {$ENDIF}
   glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
-  {$IFDEF DebugGLErr} Err(108); {$ENDIF}
+  {$IFDEF DebugGLErr} DebugOpenGL(108, '', []); {$ENDIF}
 end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
@@ -1281,166 +1314,167 @@ var
  NeedTex, NeedColor: Boolean;
  I, Sz: Integer;
 begin
- NeedTex:=True;
- Surf:=PList^.Surf;
- SurfEnd:=PChar(Surf)+PList^.SurfSize;
+  NeedTex:=True;
+  Surf:=PList^.Surf;
+  SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
- while Surf<SurfEnd do
- begin
-   with Surf^ do
-   begin
-     Inc(Surf);
-     if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-     and ((VertexCount<0) or SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
-     begin
-       if AlphaColor<>CurrentAlpha then
-       begin
-         CurrentAlpha:=AlphaColor;
-         NeedColor:=True;
-       end
-       else
-         NeedColor:=False;
+  while Surf<SurfEnd do
+  begin
+    with Surf^ do
+    begin
+      Inc(Surf);
+      if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
+      and ((VertexCount<0) or SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
+      begin
+        if AlphaColor<>CurrentAlpha then
+        begin
+          CurrentAlpha:=AlphaColor;
+          NeedColor:=True;
+        end
+        else
+          NeedColor:=False;
 
-       if NeedTex then
-       begin
-         LoadCurrentTexture(PList^.Texture);
-         NeedTex:=False;
-       end;
+        if NeedTex then
+        begin
+          LoadCurrentTexture(PList^.Texture);
+          NeedTex:=False;
+        end;
 
-       PV:=PVertex3D(Surf);
-//DisplayLights:=false;{}{}{}
-       if DisplayLights then
-       begin
-         if AnyInfo.DisplayList=0 then
-         begin
-           UnpackColor(AlphaColor, Currentf);
-
-           if DisplayLists<>-1 then
-           begin
-             Inc(DisplayLists);
-             AnyInfo.DisplayList:=DisplayLists;
-             {$IFDEF DebugGLErr} Err(-110); {$ENDIF}
-             glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
-             if glGetError <> GL_NO_ERROR then  { out of display list resources }
-               raise EError(5693);
-             glColor4fv(Currentf);
-             {$IFDEF DebugGLErr} Err(111); {$ENDIF}
-           end
-           else
-           begin
-             if NeedColor then
-             begin
-               {$IFDEF DebugGLErr} Err(-112); {$ENDIF}
-               glColor4fv(Currentf);
-               {$IFDEF DebugGLErr} Err(112); {$ENDIF}
-             end;
-           end;
-
-           if VertexCount>=0 then
-           begin  { normal polygon }
-             PVBase:=PV;
-             if not Odd(VertexCount) then
-               Inc(PV);
-             for I:=0 to (VertexCount-3) div 2 do
-             begin
-               PV2:=PV;
-               Inc(PV);
-               PV3:=PV;
-               Inc(PV);
-               RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
-             end;
-           end
-           else
-           begin { strip }
-             RenderQuadStrip(PV, -VertexCount, Currentf, Lights, LightParams);
-           end;
-
-           if DisplayLists<>-1 then
-           begin
-             {$IFDEF DebugGLErr} Err(-113); {$ENDIF}
-             glEndList;
-             {$IFDEF DebugGLErr} Err(113); {$ENDIF}
-           end;
-         end
-         else
-         begin
-           {$IFDEF DebugGLErr} Err(-114); {$ENDIF}
-           glCallList(AnyInfo.DisplayList);
-           {$IFDEF DebugGLErr} Err(114); {$ENDIF}
-         end
-       (*for I:=1 to VertexCount do
+        PV:=PVertex3D(Surf);
+        if DisplayLights then
+        begin
+          if AnyInfo.DisplayList=0 then
           begin
-           Light:=0;
-           PL:=Lights;
-           with PV^ do
-            while Assigned(PL) do
-             with PL^ do
-              begin
-               if  (xyz[0]>Min[0]) and (xyz[0]<Max[0])
-               and (xyz[1]>Min[1]) and (xyz[1]<Max[1])
-               and (xyz[2]>Min[2]) and (xyz[2]<Max[2]) then
-                begin
-                 DistToSource:=Sqr(xyz[0]-Position[0])+Sqr(xyz[1]-Position[1])+Sqr(xyz[2]-Position[2]);
-                 if DistToSource<Brightness2 then
-                  Light:=Light + Brightness-Sqrt(DistToSource);
-                end;
-               PL:=Next;
-              end;
-           if Light>=kBrightnessSaturation then
-            glColor3f(Currentf[0], Currentf[1], Currentf[2])
-           else
+            UnpackColor(AlphaColor, Currentf);
+
+            if DisplayLists<>-1 then
             begin
-             Light:=Light * (1.0/kBrightnessSaturation);
-             glColor3f(Light*Currentf[0], Light*Currentf[1], Light*Currentf[2]);
+              Inc(DisplayLists);
+              AnyInfo.DisplayList:=DisplayLists;
+              {$IFDEF DebugGLErr} DebugOpenGL(-110, 'glNewList(<%d>, <%d>)', [AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+              glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
+              {$IFDEF DebugGLErr} DebugOpenGL(110, 'glNewList(<%d>, <%d>)', [AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE]); {$ENDIF}
+              if glGetError <> GL_NO_ERROR then  { out of display list resources }
+                raise EError(5693);
+              glColor4fv(Currentf);
+              {$IFDEF DebugGLErr} DebugOpenGL(111, '', []); {$ENDIF}
+            end
+            else
+            begin
+              if NeedColor then
+              begin
+                {$IFDEF DebugGLErr} DebugOpenGL(-112, '', []); {$ENDIF}
+                glColor4fv(Currentf);
+                {$IFDEF DebugGLErr} DebugOpenGL(112, '', []); {$ENDIF}
+              end;
             end;
-           glTexCoord2fv(PV^.st);
-           glVertex3fv(PV^.xyz);
-           Inc(PV);
+
+            if VertexCount>=0 then
+            begin  { normal polygon }
+              PVBase:=PV;
+              if not Odd(VertexCount) then
+                Inc(PV);
+              for I:=0 to (VertexCount-3) div 2 do
+              begin
+                PV2:=PV;
+                Inc(PV);
+                PV3:=PV;
+                Inc(PV);
+                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+              end;
+            end
+            else
+            begin { strip }
+              RenderQuadStrip(PV, -VertexCount, Currentf, Lights, LightParams);
+            end;
+
+            if DisplayLists<>-1 then
+            begin
+              {$IFDEF DebugGLErr} DebugOpenGL(-113, 'glEndList', []); {$ENDIF}
+              glEndList;
+              {$IFDEF DebugGLErr} DebugOpenGL(113, 'glEndList', []); {$ENDIF}
+            end;
+          end
+          else
+          begin
+            {$IFDEF DebugGLErr} DebugOpenGL(-114, 'glCallList(<%d>)', [AnyInfo.DisplayList]); {$ENDIF}
+            glCallList(AnyInfo.DisplayList);
+            {$IFDEF DebugGLErr} DebugOpenGL(114, 'glCallList(<%d>)', [AnyInfo.DisplayList]); {$ENDIF}
+          end
+        (*for I:=1 to VertexCount do
+           begin
+            Light:=0;
+            PL:=Lights;
+            with PV^ do
+             while Assigned(PL) do
+              with PL^ do
+               begin
+                if  (xyz[0]>Min[0]) and (xyz[0]<Max[0])
+                and (xyz[1]>Min[1]) and (xyz[1]<Max[1])
+                and (xyz[2]>Min[2]) and (xyz[2]<Max[2]) then
+                 begin
+                  DistToSource:=Sqr(xyz[0]-Position[0])+Sqr(xyz[1]-Position[1])+Sqr(xyz[2]-Position[2]);
+                  if DistToSource<Brightness2 then
+                   Light:=Light + Brightness-Sqrt(DistToSource);
+                 end;
+                PL:=Next;
+               end;
+            if Light>=kBrightnessSaturation then
+             glColor3f(Currentf[0], Currentf[1], Currentf[2])
+            else
+             begin
+              Light:=Light * (1.0/kBrightnessSaturation);
+              glColor3f(Light*Currentf[0], Light*Currentf[1], Light*Currentf[2]);
+             end;
+            glTexCoord2fv(PV^.st);
+            glVertex3fv(PV^.xyz);
+            Inc(PV);
+           end;
+         end*)
+        end
+        else
+        begin
+          if NeedColor then
+          begin
+            UnpackColor(AlphaColor, Currentf);
+            {$IFDEF DebugGLErr} DebugOpenGL(-115, '', []); {$ENDIF}
+            glColor4fv(Currentf);
+            {$IFDEF DebugGLErr} DebugOpenGL(115, '', []); {$ENDIF}
           end;
-        end*)
-       end
-       else
-       begin
-         if NeedColor then
-         begin
-           UnpackColor(AlphaColor, Currentf);
-           {$IFDEF DebugGLErr} Err(-115); {$ENDIF}
-           glColor4fv(Currentf);
-           {$IFDEF DebugGLErr} Err(115); {$ENDIF}
-         end;
-         {$IFDEF DebugGLErr} Err(-116); {$ENDIF}
 
-         if VertexCount>=0 then
-         begin
-           glBegin(GL_POLYGON);
-           Sz:=SizeOf(TVertex3D);
-         end
-         else
-         begin
-           glBegin(GL_TRIANGLE_STRIP);
-           Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
-         end;
+          if VertexCount>=0 then
+          begin
+          {$IFDEF DebugGLErr} DebugOpenGL(-116, 'glBegin(GL_POLYGON)', []); {$ENDIF}
+            glBegin(GL_POLYGON);
+            Sz:=SizeOf(TVertex3D);
+          end
+          else
+          begin
+          {$IFDEF DebugGLErr} DebugOpenGL(-116, 'glBegin(GL_TRIANGLE_STRIP)', []); {$ENDIF}
+            glBegin(GL_TRIANGLE_STRIP);
+            Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
+          end;
 
-         for I:=1 to Abs(VertexCount) do
-         begin
-           glTexCoord2fv(PV^.st);
-           glVertex3fv(PV^.xyz);
-           Inc(PChar(PV), Sz);
-         end;
+          for I:=1 to Abs(VertexCount) do
+          begin
+            glTexCoord2fv(PV^.st);
+            glVertex3fv(PV^.xyz);
+            Inc(PChar(PV), Sz);
+          end;
 
-         glEnd;
-         {$IFDEF DebugGLErr} Err(116); {$ENDIF}
-       end;
-     end;
+          glEnd;
+          {$IFDEF DebugGLErr} DebugOpenGL(116, 'glEnd', []); {$ENDIF}
+        end;
+      end;
 
-     if VertexCount>=0 then
-       Inc(PVertex3D(Surf), VertexCount)
-     else
-       Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
-   end;
- end;
+      if VertexCount>=0 then
+        Inc(PVertex3D(Surf), VertexCount)
+      else
+        Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
+    end;
+  end;
 
- PList^.ok:=True;
+  PList^.ok:=True;
 end;
 
  {------------------------}
@@ -1453,7 +1487,8 @@ procedure TGLSceneProxy.Init(Wnd: HWnd;
                              FogColor, FrameColor: TColorRef);
 begin
  {MasterVersion:=VersionGLSceneObject-1;
-  MasterUpdate;} NeedGLSceneObject(0,0);
+  MasterUpdate;}
+  NeedGLSceneObject(0,0);
   if not (nCoord is TCameraCoordinates) then
     Raise InternalE('OpenGL does not support non-perspective views (yet)');
   ProxyWnd:=Wnd;
@@ -1511,7 +1546,7 @@ begin
     if B>0 then
     begin
       glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
-      Err(999);
+      {$IFDEF DebugGLErr} DebugOpenGL(999, '', []); {$ENDIF}
 
       { we have to swap the bytes (RGB --> BGR)...}
       asm
