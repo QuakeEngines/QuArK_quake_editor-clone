@@ -1,0 +1,68 @@
+$Id$
+
+   ########                    ####                  ####    ####
+  ####  ####                 ########                ####   ####
+ ####    #### ####    #### ####    #### ####    #### ####  ####
+ ####    #### ####    #### ####    #### #### ####### #### ####
+ ####    #### ####    #### ####    #### #######      ######
+ ####    #### ####    #### ############ ####         #### ####
+ ####    #### ####    #### ####    #### ####         ####  ####
+  ####  ####   ####   #### ####    #### ####         ####   ####
+   ########     ########## ####    #### ####         ####    ####
+       #####
+        #####    Quake Army Knife 6.4 Developers
+
+
+The original author of QuArK
+----------------------------
+
+- Armin Rigo
+        e-mail:         arigo@planetquake.com
+        snail mail:     Armin Rigo
+                        c/o Bernard Rigo
+                        Chemin du Chatelard 3
+                        CH-1860 Aigle
+                        Switzerland
+
+
+The contributing developers of QuArK
+------------------------------------
+
+- Avery "tiglari" Andrews
+        e-mail:         tiglari@planetquake.com
+
+- Andy Vincent
+        e-mail:         andyvinc@hotmail.com
+
+- Alexander Haarer
+        e-mail:         mac.@gmx.net
+
+- Bent "Decker" Svendsen
+        e-mail:         decker@planetquake.com
+
+- Marco Leise
+        e-mail:         Marco.Leise@gmx.de
+
+- Bob "cdunde" Jarrett
+        e-mail:         cdunde1@comcast.net
+
+- "DG"
+        e-mail:         david@fielden.com.au
+
+- "Rowdy"
+        e-mail:         rowdy@netspace.net.au
+
+- Peter Brett
+        e-mail:         peter@peter-b.co.uk
+
+- "milifaar"
+        e-mail:         martin@abhoth.demon.nl
+
+- "ax2grind"
+        e-mail:         ax2grind@altavista.com
+
+- "nurail"
+        e-mail:         nurail@yahoo.com
+
+- Brian "silverpaladin" Layman
+        e-mail:         SilverPaladin@neo.rr.com
