@@ -18,6 +18,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/03/20 21:57:04  decker_dk
+//Added log-header / misc.
+//
 //Revision 1.1  2001/02/11 11:07:05  decker_dk
 //Moved from addons directory
 //
@@ -852,7 +855,7 @@ QQRKSRC1
    	Hint="If set to greater than zero must be shot to be triggered."
    	}
   	}
-   
+
 	func_train:form =
 	{
 	Help = "Trains are moving platforms that players can ride." $0D "The targets origin specifies the min point of the train at each corner." $0D "The train spawns at the first target it is positing at." $0D "if the train is the target of a button or trigger, it will not begin moving until triggered."
@@ -883,7 +886,7 @@ QQRKSRC1
    	Hint="Message displayed when triggered"
    	}
    	dmg:=
-   	{Txt="E"
+    {Txt="&"
    	Typ="E"
    	Hint="Amount of damage inflicted when player gets in way of the train."
    	}
