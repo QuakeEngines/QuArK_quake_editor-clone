@@ -31,7 +31,7 @@ DuplicatorManager = quarkpy.mapduplicator.DuplicatorManager
 DupOffsetHandle = quarkpy.mapduplicator.DupOffsetHandle
 
 from quarkpy.mapentities import ObjectOrigin
-from quarkpy.maphandles import GetUserCenter  
+from quarkpy.maphandles import GetUserCenter
 from quarkpy.maphandles import UserCenterHandle
 
 
@@ -76,14 +76,14 @@ def MakeAxes2(x):
 def Vertical(x):
     x=x.normalized
     return abs(x*quarkx.vect(0,0,1))>.99999
-    
+
 def MakeLevelAxes(x):
     x=x.normalized
     mapx, mapy, mapz = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
     dot = x*mapz
     #
     # project onto the xy plane
-    # 
+    #
     xp = quarkx.vect(x*mapx,x*mapy,0).normalized
     y = matrix_rot_z(math.pi/2)*xp
     return x, y, (x^y).normalized
@@ -128,7 +128,7 @@ class PositionFollowingDlg (quarkpy.dlgclasses.LiveEditDlg):
         Style = "9"
         Caption = "Position Following"
 
-        sep: = {Typ="S" Txt=" "} 
+        sep: = {Typ="S" Txt=" "}
 
         number: =
         {
@@ -137,44 +137,44 @@ class PositionFollowingDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "How many of the following path points to position" $0D " (new ones will be made if needed)"
         }
 
-        sep: = {Typ="S" Txt=" "} 
+        sep: = {Typ="S" Txt=" "}
 
-        angles: = 
+        angles: =
         {
         Txt = "First Pitch Yaw"
         Typ = "EQ"
         Hint = "Pitch Yaw angles to next, in degrees, map space"
         }
-        
-        sep: = {Typ="S" Txt=" "} 
 
-        more_angles: = 
+        sep: = {Typ="S" Txt=" "}
+
+        more_angles: =
         {
         Txt = "More Pitch Yaw"
         Typ = "EQ"
         Hint = "Pitch Yaw angles for remaining, in degrees, relative to previous"
         }
 
-        sep: = {Typ="S" Txt=" "} 
+        sep: = {Typ="S" Txt=" "}
 
-        distance: = 
+        distance: =
          {
          Txt = "Distance"
          Typ = "EU"
          Hint = "Distance to next, in units"
          }
 
- 
-         sep: = {Typ="S" Txt=" "} 
 
-        shifttail: = 
+         sep: = {Typ="S" Txt=" "}
+
+        shifttail: =
          {
          Txt = "Shift Tail"
          Typ = "X"
          Hint = "If checked, remaining points are moved to retain distance w.r.t last in moved series"
          }
 
-         sep: = {Typ="S" Txt=" "} 
+         sep: = {Typ="S" Txt=" "}
 
          exit:py = { Txt=""}
     }
@@ -187,7 +187,7 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
         quarkpy.qhandles.IconHandle.__init__(self, origin, centerof)
         self.pathdupmaster = pathdupmaster
         self.mainpathdup=self.centerof.parent.findname("Path Duplicator:d")
-        
+
 
     def findpathdupcornerwith(self, list, entitykey, entitykeydata):
         for e in list:
@@ -304,12 +304,12 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                 else:
                     walker["speeddraw"] = "1"
             #FIXME - How to redraw the duplicator, to reflect the change?!?
-            
- 
+
+
         def selectdup1click(m, self=self, editor=editor):
             editor.layout.explorer.uniquesel = self.mainpathdup
             editor.invalidateviews()
-            
+
         def selecttail1click(m, self=self, editor=editor):
             center = self.centerof
             list = self.sourcelist2()
@@ -333,11 +333,11 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
             editor.ok(undo, 'retarget path corners')
             editor.layout.explorer.uniquesel=self.centerof
             editor.invalidateviews()
-    
+
         def positionfollowing1click(m, self=self, editor=editor):
             class pack:
                   "stick stuff here"
-            
+
             def setup(self,handle=self, pack=pack):
                 list = handle.sourcelist2()
                 if self.src["number"] is None:
@@ -352,12 +352,12 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                     xax, yax, zax = (quarkx.vect(1,0,0),
                                     quarkx.vect(0,1,0),
                                     quarkx.vect(0,0,1))
-                    pitch = "%.1f"%(math.asin(normdist*zax)/deg2rad) 
+                    pitch = "%.1f"%(math.asin(normdist*zax)/deg2rad)
                     yaw = "%.1f"%(math.atan2(normdist*yax, normdist*xax)/deg2rad)
                     self.src["angles"] = pitch+' '+yaw
-                pack.list=pathlist    
+                pack.list=pathlist
                 pack.thisorigin=thisorigin
-            
+
             def action(self, handle=self, editor=editor, pack=pack):
                 if self.src["distance"]:
                     distance = eval(self.src["distance"])
@@ -407,7 +407,7 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                     if i>=len(list):
                         list.append(new2)
                         undo.put(new.parent, new2)
-                    else:                    
+                    else:
                         undo.exchange(list[i],new2)
                     new = new2
 
@@ -416,14 +416,14 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                        new = list[i].copy()
                        new.translate(shift)
                        undo.exchange(list[i], new)
-                       
+
 
                 editor.ok(undo, "Move following path point(s)")
-                editor.layout.explorer.uniquesel=handle.centerof 
-       
+                editor.layout.explorer.uniquesel=handle.centerof
+
             PositionFollowingDlg(quarkx.clickform, 'positionfollowing', editor, setup, action)
-                  
-             
+
+
 
         menulist = [qmenu.item("Insert after",  after1click)]
         if (self.pathdupmaster == 0):
@@ -434,7 +434,7 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
             menulist.append(qmenu.item("Select main dup",   selectdup1click, "|Select main duplicator (making all path points visible)"))
             menulist.append(qmenu.item("Select tail", selecttail1click, "Multi-select this & the following path points"))
             menulist.append(qmenu.item("Position following", positionfollowing1click, "|Position following path points relative to this one, making new ones if necessary"))
-        
+
         else:
             menulist.append(qmenu.item("Retarget Path", retarget1click, "Set target/targetname specifics, following subitem order"))
         menulist.append(qmenu.item("Toggle speeddraw",  speeddraw1click))
@@ -448,7 +448,7 @@ class PathPointHandle(PathDuplicatorPointHandle):
         quarkpy.qhandles.IconHandle.__init__(self, origin, centerof)
         self.pathdupmaster = 0
         self.mainpathdup = mainpathdup
-        
+
 
     #
     # called at end of drag, resets selection
@@ -456,10 +456,10 @@ class PathPointHandle(PathDuplicatorPointHandle):
     def ok(self, editor, undo, old, new):
         PathDuplicatorPointHandle.ok(self,editor,undo,old,new)
         editor.layout.explorer.sellist=[self.mainpathdup.dup]
-        
+
     def menu(self, editor, view):
         return PathDuplicatorPointHandle.menu(self, editor, view)
-        
+
         def seldup1click(m,self=self,editor=editor):
             editor.layout.explorer.uniqusel=self.mainpathdup
 
@@ -581,13 +581,18 @@ class PathDuplicator(StandardDuplicator):
 #              f.translate(quarkx.vect(2048 - f.dist,0,0) * f.normal.x)
 
         count = len(pathlist)-1
+        if (singleimage is not None) and (singleimage >= count): # Speed up Dissociate images processing
+            return [] # Nothing more to send back!
         prevaxes = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
         for i in range(count):
-            if (singleimage is not None): # Speed up Dissociate images processing
-               if (singleimage >= count):
-                  return [] # Nothing more to send back!
-               else:
-                  i = singleimage
+            #DECKER 2002-08-04 part-2: Moved this if-structure above the for-loop
+            #if (singleimage is not None): # Speed up Dissociate images processing
+            #   if (singleimage >= count):
+            #      return [] # Nothing more to send back!
+            #   #DECKER 2002-08-04: Removed this else, as it would cause dissociate images to produce an incorrect result.
+            #   #                   Found by quantum_red in QuArK forum date: 2002-07-30 subject: "Texture Alignment Problem".
+            #   #else:
+            #   #   i = singleimage
             thisorigin = pathlist[i].origin
             nextorigin = pathlist[i+1].origin
             #print "Image#", i, "this", thisorigin, "next", nextorigin
@@ -703,7 +708,7 @@ class PathDuplicator(StandardDuplicator):
         def makehandle(item,self=self):
             return PathPointHandle(item.origin, item, self)
         pathHandles=map(makehandle,plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2()))
-       
+
         return DuplicatorManager.handles(self, editor, view) + [PathDuplicatorPointHandle(self.dup.origin, self.dup, 1)]+pathHandles
 
 
@@ -734,7 +739,7 @@ class InstanceDuplicator(PathDuplicator):
         pathlist = plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2())
         #pathlist.insert(0, self.dup)
 
-            
+
         templategroup = self.sourcelist()
         templatebbox = quarkx.boundingboxof([templategroup])
         templatesize = templatebbox[1] - templatebbox[0]
@@ -763,8 +768,8 @@ class InstanceDuplicator(PathDuplicator):
         if self.dup["elbow"] == 1:
             retromat = ~(matrix_rot_u2v(prevaxes[0],(pathdist[1]-pathdist[0]).normalized))
             prevaxes = retromat*prevaxes[0],retromat*prevaxes[2],retromat*prevaxes[2],
-            
-            
+
+
 #        debug('count '+`count`+' image '+`singleimage`)
         for i in range(count):
 
@@ -773,11 +778,11 @@ class InstanceDuplicator(PathDuplicator):
                   return [] # Nothing more to send back!
                else:
                   i = singleimage
-            
+
             thisorigin = pathlist[i].origin
 
             if (self.dup["track"] or self.dup["elbow"]) and count>1:
-                if i<count-1:           
+                if i<count-1:
                     nextorigin = pathlist[i+1].origin
                     pathdist = nextorigin-thisorigin
                     #
@@ -799,7 +804,7 @@ class InstanceDuplicator(PathDuplicator):
                 matrix = quarkx.matrix(xax,yax,zax)
             else:
                 matrix=quarkx.matrix('1 0 0 0 1 0 0 0 1')
-                
+
 #                debug("  image %d; i %d"%(singleimage, i))
 
             list = templategroup.subitems[0].copy()
@@ -841,7 +846,7 @@ def macro_instances(self):
     editor.layout.explorer.uniquesel=new
 
 quarkpy.qmacro.MACRO_instances = macro_instances
-    
+
 
 
 quarkpy.mapduplicator.DupCodes.update({
@@ -853,6 +858,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.46  2001/10/22 10:15:48  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.45  2001/07/08 20:57:56  tiglari
 #change treatment of vertical 'level' segments
 #
