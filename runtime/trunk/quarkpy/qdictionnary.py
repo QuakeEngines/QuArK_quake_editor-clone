@@ -660,6 +660,7 @@ Strings = {
         5457: "Pasting...",
         5458: "Searching add-ons...",
 
+        5503: "'%s' is a Half-Life Model which cannot be read (yet)",
 	5504: "No texture image//Missing or invalid %s",
 	5505: "'%s' is not a WAD file//%d should be %d",
 	5506: "'%s' is not a PACK file//%d should be %d",
@@ -877,6 +878,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.18  2000/07/28 15:10:58  alexander
+#set snapshot name
+#
 #Revision 1.17  2000/07/25 16:01:41  alexander
 #set snapshot name
 #
