@@ -1020,9 +1020,20 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#
+#Revision 1.24  2001/03/17 22:04:53  tiglari
+#dissociate images fix
+#
 #Revision 1.23  2001/03/12 23:10:27  tiglari
 #path dup adding/positioning enhancements (does the work of the
 # 'torus generator' suggested plugin, inter alia)
+#
+#Revision 1.22.2.2  2001/03/12 09:21:23  tiglari
+#retarget of path points (basically for if a duplicator is used to produce
+#a complex pattern such as a spiral))
+#
+#Revision 1.22.2.1  2001/03/11 22:09:48  tiglari
+#position/add path points with set angles
 #
 #Revision 1.22  2001/03/08 06:23:26  tiglari
 #menu item to select duplicator on path point handles
