@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:48:25  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/01/21 15:48:01  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -84,6 +87,7 @@ type
                  procedure SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                  procedure AddTo3DScene; override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
+                 function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; override;
                 {function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;}
                end;
 
@@ -91,7 +95,7 @@ type
 
 implementation
 
-uses QkFileObjects, PyMapView, QkMapPoly, Qk3D, QkObjectClassList;
+uses QkFileObjects, PyMapView, QkMapPoly, Qk3D, QkObjectClassList, Undo;
 
  {------------------------}
 
@@ -360,6 +364,27 @@ begin
          Exit;
         end;
  end;
+end;
+
+function TDuplicator.ReplaceTexture(const Source, Dest: String; U: boolean) : Integer;
+var
+ Dup: TDuplicator;
+ S: String;
+begin
+ Result:=inherited ReplaceTexture(Source, Dest, U);
+ S:=Specifics.Values['tex'];
+ if (S<>'') and ({(Flags and rtAll<>0) or }(CompareText(Source, S) = 0)) and (S<>Dest) then
+  begin
+   if U <> false then
+    begin
+     Dup:=Clone(FParent, False) as TDuplicator;
+     ListeActions.Add(TQObjectUndo.Create('', Self, Dup));
+    end
+   else
+    Dup:=Self;
+   Dup.Specifics.Values['tex']:=Dest;
+   Inc(Result);
+  end;
 end;
 
 (*function TDuplicator.PySetAttr(attr: PChar; value: PyObject) : Boolean;
