@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.28  2001/03/20 21:46:48  decker_dk
 Updated copyright-header
 
@@ -772,7 +775,10 @@ begin
     { update header }
     Fin := Info.F.Position;
     Info.F.Position := Origine;
-    Header.Signature := cSignatureBspQ1H2;
+    if NeedObjectGameCode =mjHalfLife then
+      Header.Signature := cSignatureBspHL
+    else
+      Header.Signature := cSignatureBspQ1H2;
     Info.F.WriteBuffer(Header, SizeOf(Header));
 
     Info.F.Position := Fin;
