@@ -100,7 +100,8 @@ def texcp_from_b2(cp, cp2):
 #
 def texcp_from_face(cp, face, editor):
     "returns a copy of cp with the texture-scale of the face projected"
-    p0, p1, p2 = face.threepoints(2,editor.TexSource)
+#    p0, p1, p2 = face.threepoints(2,editor.TexSource)
+    p0, p1, p2 = face.threepoints(2)
     
     def axis(p, p0=p0):
         "turns a texp point into axis for computing b2 texcp's"
@@ -131,5 +132,8 @@ def colmat_uv1(u,v):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
