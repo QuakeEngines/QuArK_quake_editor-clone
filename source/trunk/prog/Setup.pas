@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/10/12 09:11:19  tiglari
+Live Pointer Hunt
+
 Revision 1.28  2001/10/10 21:28:42  tiglari
 Live Pointer Cleanup: free g_TexExtensions in finalization
 
@@ -1241,9 +1244,9 @@ end;
 
 initialization
   RegisterQObject(QConfig, 'a');
-{$IFDEF Debug}
 finalization
   CloseSetupSet;
+{$IFDEF Debug}
   Clear_g_MemQObject;
 {$ENDIF}
 
