@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
 Revision 1.4  2001/01/28 17:22:38  decker_dk
 Removed some 'Decker-Todo', which would never be done anyway.
 
@@ -41,25 +44,31 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, QkForm, ExtCtrls;
+  StdCtrls, QkForm, ExtCtrls, ActnList;
 
 type
   PHelpPopup = ^THelpPopup;
   THelpPopup = class(TQkForm)
     Memo1: TMemo;
+    ActionList1: TActionList;
+    Button1: TButton;
     procedure FormDeactivate(Sender: TObject);
+    procedure OkBtnClick(Sender: TObject);
+    procedure FormClicked(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Déclarations privées }
+    InfoBaseLink: String; {AiV}
   public
+    procedure SetInfoBaseLink(Link: String); {AiV}
     { Déclarations publiques }
   end;
 
  {-------------------}
 
-procedure HelpPopup(const HelpText: String);
+procedure HelpPopup(const HelpText: String; const InfoBaseLink: String = ''); {AiV}
 
  {-------------------}
 
@@ -70,51 +79,65 @@ uses Quarkx, TB97;
 {$R *.DFM}
 
 const
- BlueColor = $D0A000;
+  BlueColor = $D0A000;
 
-procedure HelpPopup(const HelpText: String);
+procedure HelpPopup(const HelpText: String; const InfoBaseLink: String = ''); {AiV}
 var
- P: TPoint;
- F: THelpPopup;
- L: TStringList;
- R: TRect;
+  P: TPoint;
+  F: THelpPopup;
+  L: TStringList;
+  R: TRect;
 begin
- Application.Hint:='';
- F:=THelpPopup.Create(Application);
- with F do
-  begin
-   Caption:=LoadStr1(288);
-   MarsCap.ActiveBeginColor:=BlueColor;
-   MarsCap.ActiveEndColor:=clWhite;
-   UpdateMarsCap;
-   L:=TStringList.Create;
-   try
+  Application.Hint:='';
+
+  F:=THelpPopup.Create(Application);
+  F.Caption:=LoadStr1(288);
+  F.MarsCap.ActiveBeginColor:=BlueColor;
+  F.MarsCap.ActiveEndColor:=clWhite;
+  F.UpdateMarsCap;
+
+  L:=TStringList.Create;
+  try
     L.Text:=HelpText;
-    Memo1.Lines.Assign(L);
-    Memo1.SelStart:=0; { Set caret position to top-most, so the user can use the arrow-keys to scroll down/up with. }
-    Memo1.SelLength:=0;
-   finally
+    F.Memo1.Lines.Assign(L);
+    F.Memo1.SelStart:=0; { Set caret position to top-most, so the user can use the arrow-keys to scroll down/up with. }
+    F.Memo1.SelLength:=0;
+  finally
     L.Free;
-   end;
-   if GetCursorPos(P) then
-    begin
-     Dec(P.X, Width div 2);
-     Dec(P.Y, GetSystemMetrics(sm_CySizeFrame)+1);
-     R:=GetDesktopArea;
-     if P.X+Width > R.Right then
-      P.X:=R.Right - Width;
-     if P.Y+Height > R.Bottom then
-      P.Y:=R.Bottom - Height;
-     if P.X<R.Left then
-      P.X:=R.Left;
-     if P.Y<R.Top then
-      P.Y:=R.Top;
-     Left:=P.X;
-     Top:=P.Y;
-    end;
-//   Color:=MiddleColor(BlueColor, ColorToRGB(clWindow), 0.25);
-   Show;
   end;
+
+  F.SetInfoBaseLink(InfoBaseLink); {AiV}
+
+  if GetCursorPos(P) then
+  begin
+    Dec(P.X, F.Width div 2);
+    Dec(P.Y, GetSystemMetrics(sm_CySizeFrame)+1);
+    R:=GetDesktopArea;
+    if P.X + F.Width > R.Right then
+    begin
+      P.X:=R.Right - F.Width;
+    end;
+
+    if P.Y + F.Height > R.Bottom then
+    begin
+      P.Y:=R.Bottom - F.Height;
+    end;
+
+    if P.X<R.Left then
+    begin
+      P.X:=R.Left;
+    end;
+
+    if P.Y<R.Top then
+    begin
+      P.Y:=R.Top;
+    end;
+
+    F.Left:=P.X;
+    F.Top:=P.Y;
+  end;
+//  F.Color:=MiddleColor(BlueColor, ColorToRGB(clWindow), 0.25);
+  F.Show;
 end;
 
  {-------------------}
@@ -124,24 +147,44 @@ begin
  Close; {DECKER-todo}
 end;
 
+procedure THelpPopup.OkBtnClick(Sender: TObject);
+begin
+  HTMLDoc(InfoBaseLink);
+
+  Close; {CDUNDE-todo-py link input for infobase page desired}
+end;
+
+procedure THelpPopup.FormClicked(Sender: TObject);
+begin
+  Close; {CDUNDE-to close popup help window by clicking in it}
+end;
+
 procedure THelpPopup.FormResize(Sender: TObject);
 begin
- Invalidate;
- Memo1.SetBounds(0,0, ClientWidth, ClientHeight);
+  Invalidate;
+  Memo1.SetBounds(0,0, ClientWidth, ClientHeight);
 end;
 
 procedure THelpPopup.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- Action:=caFree;
+  Action:=caFree;
 end;
 
 procedure THelpPopup.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
- if Key = vk_Escape then
+  if Key = vk_Escape then
   begin
-   Key:=0;
-   Close;
+    Key:=0;
+    Close;
   end;
 end;
+
+{AiV/}
+procedure THelpPopup.SetInfoBaseLink(Link: String);
+begin
+  InfoBaseLink := Link;
+  Button1.Visible := (InfoBaseLink <> '');
+end;
+{/AiV}
 
 end.
