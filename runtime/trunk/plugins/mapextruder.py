@@ -758,68 +758,67 @@ class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
 
     def ang1click(m, dup=self.centerof, j=self.k, editor=editor):
 
-      #
-      # Interestingly, it appears that the data object
-      #  can do the work of the usual `pack' object for
-      #  LiveEditDialogs.
-      #
-      
-      data = ExtruderDupData(dup)
-      data.j = j
-      
-      def setup(self, data=data):
-        src = self.src
-        self.data=data
-        dup, j = data.dup, data.j
-        world = src["world"] = quarkx.setupsubset(SS_MAP, "Options")["WorldSegCoords"]
-        if world:
-          xaxis = quarkx.vect(0,-1,0)
-          zaxis = quarkx.vect(1,0,0)
-          yaxis = quarkx.vect(0,0,1)
-        else:          
-          xaxis, yaxis, zaxis = data.Axes(j-1)
-        curr = data.PathPos(j)
-        next = data.PathPos(j+1)
-        diff = next-curr
-        src["length"] = "%.2f"%abs(diff)
-        dir = diff.normalized
-        src["pitch"] = "%.2f"%-(math.acos(dir*yaxis)/deg2rad-90)
-        src["yaw"] =  "%.2f"%(math.atan2(dir*zaxis, dir*xaxis)/deg2rad-90)
-        data.world = world
-        
-      def action(self, data=data, editor=editor):
-        src = self.src
-        pitch = eval(src["pitch"])*deg2rad
-        yaw = eval(src["yaw"])*deg2rad
-        length = eval(src["length"])
-        dup, j = data.dup, data.j
-        data.dup = dup.copy()
-        loc = data.PathLoc(j)
-        world = src["world"]
-        if data.world != world:
-           quarkx.setupsubset(SS_MAP, "Options")["WorldSegCoords"] = world       
-           data.world=world
-           self.setup(self)
-           return
-        if world:
-          xaxis = quarkx.vect(0,1,0)
-          zaxis = quarkx.vect(1,0,0)
-          yaxis = quarkx.vect(0,0,1)
-        else:
-          xaxis, yaxis, zaxis = data.Axes(j-1)
-        loc = data.PathLoc(j)
-        point = data.PathPoint(j+1)
-        diff = math.sin(pitch)*yaxis+math.cos(pitch)*zaxis
-#        diff = quarkx.vect(0, math.cos(pitch), math.sin(pitch))
-        mat = RotMat(yaxis, yaw)
-        diff = length*(mat*diff)
-        point["location"] = (loc+diff).tuple
-        undo = quarkx.action()
-        undo.exchange(dup, data.dup)
-        editor.ok(undo, "Move path point")
-        editor.layout.explorer.sellist = [data.dup]
-                
-      SegmentDlg(quarkx.clickform, 'extruderpath', editor, setup, action)
+        #
+        # Interestingly, it appears that the data object
+        #  can do the work of the usual `pack' object for
+        #  LiveEditDialogs.
+        #
+
+        data = ExtruderDupData(dup)
+        data.j = j
+
+        def setup(self, data=data):
+            src = self.src
+            self.data=data
+            dup, j = data.dup, data.j
+            world = src["world"] = quarkx.setupsubset(SS_MAP, "Options")["WorldSegCoords"]
+            if world:
+                xaxis = quarkx.vect(0,-1,0)
+                zaxis = quarkx.vect(1,0,0)
+                yaxis = quarkx.vect(0,0,1)
+            else:          
+                xaxis, yaxis, zaxis = data.Axes(j-1)
+            curr = data.PathPos(j)
+            next = data.PathPos(j+1)
+            diff = next-curr
+            src["length"] = "%.2f"%abs(diff)
+            dir = diff.normalized
+            src["pitch"] = "%.2f"%-(math.acos(dir*yaxis)/deg2rad-90)
+            src["yaw"] =  "%.2f"%(math.atan2(dir*zaxis, dir*xaxis)/deg2rad-90)
+            data.world = world
+
+        def action(self, data=data, editor=editor):
+            src = self.src
+            pitch = eval(src["pitch"])*deg2rad
+            yaw = eval(src["yaw"])*deg2rad
+            length = eval(src["length"])
+            dup, j = data.dup, data.j
+            loc = data.PathLoc(j)
+            world = src["world"]
+            if data.world != world:
+                quarkx.setupsubset(SS_MAP, "Options")["WorldSegCoords"] = world       
+                data.world=world
+                self.setup(self)
+                return
+            if world:
+                xaxis = quarkx.vect(0,1,0)
+                zaxis = quarkx.vect(1,0,0)
+                yaxis = quarkx.vect(0,0,1)
+            else:
+               xaxis, yaxis, zaxis = data.Axes(j-1)
+            loc = data.PathLoc(j)
+            point = data.PathPoint(j+1)
+            diff = math.sin(pitch)*yaxis+math.cos(pitch)*zaxis
+    #        diff = quarkx.vect(0, math.cos(pitch), math.sin(pitch))
+            mat = RotMat(yaxis, yaw)
+            diff = length*(mat*diff)
+            newloc = (loc+diff).tuple
+            undo = quarkx.action()
+            undo.setspec(point, "location", newloc)
+            editor.ok(undo, "Move path point")
+            editor.layout.explorer.sellist = [data.dup]
+
+        SegmentDlg(quarkx.clickform, 'extruderpath', editor, setup, action)
 
 
     def kink1click(m, dup=self.centerof, j=self.k, editor=editor):
@@ -828,6 +827,7 @@ class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
           
       data = ExtruderDupData(dup)
       data.j = j
+
           
       def setup(self, data=data):
         src = self.src
@@ -840,7 +840,7 @@ class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
         if coords=="o":
           pos = pos-dup.origin
         elif coords=="p":
-          pos = data.PathPos(j-1)
+          pos = pos-data.PathPos(j-1)
         src["position"] = pos.tuple
         src["scale"] = get_path_scale(dup, j),
         src["bevel"] = get_path_bevel(dup, j),
@@ -851,10 +851,14 @@ class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
         src = self.src
         dup, j = data.dup, data.j
         coords = src["coords"]
+        #
+        # Change the coordinate system, no map effect
+        #
         if coords != data.coords:
-          quarkx.setupsubset(SS_MAP, "Options")["KinkCoords"] = coords              
-          data.coords = coords
-          self.setup(self)
+            quarkx.setupsubset(SS_MAP, "Options")["KinkCoords"] = coords              
+            data.coords = coords
+            self.setup(self)
+            return
 
         pos = data.PathPos(j)
         newpos = quarkx.vect(src["position"])
@@ -2036,6 +2040,8 @@ class ExtruderDuplicator(StandardDuplicator):
     if aux is not None and aux & 1:
 #      squawk("short")
       limit=2
+    if dup["short"]:
+      limit=2
     #
     # For making a brush
     #
@@ -2888,6 +2894,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.11  2001/06/17 21:10:57  tiglari
+#fix button captions
+#
 #Revision 1.10  2001/06/17 02:25:39  tiglari
 #revert to dup change
 #
