@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/10/26 17:09:52  tiglari
+read soEnableBrushPrim
+
 Revision 1.17  2000/09/24 23:45:16  alexander
 committed tiglaris .map loading and bezier texture missing fix
 
@@ -1227,7 +1230,7 @@ begin
        if MapOptionSpecs.Values['DisableEnhTex']<>'' then
          saveflags:=saveflags or soDisableEnhTex;
        if MapOptionSpecs.Values['DisableFPCoord']<>'' then
-         saveflags:=saveflags or soDisableEnhTex;
+         saveflags:=saveflags or soDisableFPCoord;
        if MapOptionSpecs.Values['EnableBrushBrim']<>'' then
          saveflags:=saveflags or soEnableBrushPrim;
       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
