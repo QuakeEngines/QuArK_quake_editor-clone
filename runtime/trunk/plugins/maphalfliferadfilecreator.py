@@ -70,6 +70,8 @@ class HalfLifeRADFileMaker(StandardDuplicator):
         if (filename is None or filename == ""):
             # build .RAD filename
             editor = mapeditor(SS_MAP)
+            if (editor is None):    # Make sure there IS a editor available
+                return []
             filename = string.lower(checkfilename(editor.fileobject.shortname or editor.fileobject["FileName"])) + ".RAD"
 
         radfilename = quarkx.outputfile("maps/"+filename)
@@ -77,11 +79,11 @@ class HalfLifeRADFileMaker(StandardDuplicator):
         try:
             f = open(radfilename, "w+")
 
-            print self.dup.dictspec.keys()
+            # print self.dup.dictspec.keys()
 
             for texturename in self.dup.dictspec.keys():
                 if (not texturename in ("macro", "filename", "texture", "lighting")):
-                    print texturename, self.dup[texturename]
+                    # print texturename, self.dup[texturename]
                     f.write("%s\t%s\n" % (texturename, self.dup[texturename]))
 
             f.close
@@ -97,3 +99,6 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2001/08/16 20:08:21  decker_dk
+#A plugin which stores the texture lighting values, and exports to a LIGHTS.RAD or <mapname>.RAD file.
+#
