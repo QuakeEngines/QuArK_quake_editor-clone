@@ -4,6 +4,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2002/05/01 00:16:41  tiglari
+//change deathmatch to start in default map; add texture flag info.
+// The delphi needs to be changed to write them as text
+//
 //Revision 1.3  2002/04/17 12:35:18  decker_dk
 //Added entities, converted from MOHAATools's entdefs.pk3(code/) files.
 //
@@ -80,42 +84,50 @@ QQRKSRC1
 
       Sep:     ={Txt="" Typ="S"}  // separator
 
-      Contents:={Txt="Brush" Cap="lava"           Typ="X8"         Hint="lava-rafting is a minimal safety factor sport"}
-      Contents:={Txt=""      Cap="slime"          Typ="X16"        Hint="mildly damaging"}
-      Contents:={Txt=""      Cap="water"          Typ="X32"        Hint="water"}
-      Contents:={Txt=""      Cap="fog"            Typ="X64"        Hint="non-solid window (Player can walk through it)"}
-      Contents:={Txt=""      Cap="fence"          Typ="X8192"      Hint=""}
-      Contents:={Txt=""      Cap="areaportal"     Typ="X32678"     Hint=""}
-      Contents:={Txt=""      Cap="playerclip"     Typ="X65536"     Hint="Stops player passing through"}
-      Contents:={Txt=""      Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
-      Contents:={Txt=""      Cap="weaponclip"     Typ="X262144"    Hint=""}
-      Contents:={Txt=""      Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
-      Contents:={Txt=""      Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
-      Contents:={Txt=""      Cap="structural"     Typ="X268435456" Hint=""}
-      Contents:={Txt=""      Cap="translucent"    Typ="X268435456" Hint=""}
-      Contents:={Txt=""      Cap="translucent"    Typ="X532870912" Hint=""}
-      Contents: ={Txt=""     Cap="nodrop"          Typ="X2147483648"Hint=""}
+      // Typ="X1" and the Default let the '?' in the texflag form work right
+      // The _esp_ prefix is a trick to support editable (or editor-overrideable
+      //   sufaceparms, see QkQ3.pas.
+
+      surfaceLight:={Txt="surf Light" Typ="E" Hint="single integer: Light intensity emitted from surface"}
+      surfaceAngle:={Txt="surf Angle" Typ="E" Hint="single integer: Not sure what this one does"}
+      surfaceColor:={Txt="surf Color" Typ="EF0003" Hint="real triple; Color of light emitted from surface"}
+      tesselation:= {Txt="tesselation" Typ="EF" Hint="real value; not sure"}
 
       Sep:     ={Txt="" Typ="S"}  // separator
 
-      Flags:   ={Txt="Face" Cap="nodamage"       Typ="X1"         Hint=""}
-      Flags:   ={Txt=""     Cap="slick"          Typ="X2"         Hint="slidy surface"}
-      Flags:   ={Txt=""     Cap="sky"            Typ="X4"         Hint=""}
-      Flags:   ={Txt=""     Cap="ladder "        Typ="X8"         Hint=""}
-      Flags:   ={Txt=""     Cap="noimpact"       Typ="X16"        Hint=""}
-      Flags:   ={Txt=""     Cap="nomarks"        Typ="X32"        Hint=""}
-      Flags:   ={Txt=""     Cap="castshadow"     Typ="X64"        Hint=""}
-      Flags:   ={Txt=""     Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
-      Flags:   ={Txt=""     Cap="nolightmap"     Typ="X256"       Hint=""}
-      Flags:   ={Txt=""     Cap="alphashadow"    Typ="X512"       Hint=""}
-      Flags:   ={Txt=""     Cap="nosteps"        Typ="X1024"      Hint=""}
-      Flags:   ={Txt=""     Cap="nosolid"        Typ="X2048"      Hint=""}
-      Flags:   ={Txt=""     Cap="overbright"     Typ="X4096"      Hint=""}
-      Flags:   ={Txt=""     Cap="patch"          Typ="X2147483648"Hint=""}
+      _esp_nodamage:={Txt="Face" Cap="nodamage" Typ="X1" Default="0" Hint=""}
+      _esp_slick:   ={Txt="" Cap="slick"    Typ="X1" Default="0" Hint="slidy surface"}
+      _esp_sky:     ={Txt="" Cap="sky"      Typ="X1" Default="0" Hint=""}
+      _esp_ladder:  ={Txt="" Cap="ladder"   Typ="X1" Default="0" Hint=""}
+      _esp_noimpact:={Txt="" Cap="noimpact" Typ="X1" Default="0" Hint=""}
+      _esp_nomark:  ={Txt="" Cap="nomarks"  Typ="X1" Default="0" Hint=""}
+      _esp_castshadow:={Txt="" Cap="castshadow" Typ="X1" Default="0" Hint=""}
+      _esp_nodraw:  ={Txt="" Cap="nodraw"   Typ="X1" Default="0" Hint="for clip textures and trigger textures"}
+      _esp_nolightmap:={Txt="" Cap="nolightmap" Typ="X1" Default="0" Hint=""}
+      _esp_alphashadow:={Txt="" Cap="alphashadow" Typ="X1"  Default="0"  Hint=""}
+      _esp_nosteps: ={Txt="" Cap="nosteps"  Typ="X1" Default="0" Hint=""}
+      _esp_nosolid: ={Txt="" Cap="nosolid"  Typ="X1" Default="0" Hint=""}
+      _esp_overbright:={Txt="" Cap="overbright" Typ="X1" Default="0" Hint=""}
+      _esp_patch: ={Txt=""     Cap="patch"  Typ="X1" Default="0" Hint=""}
 
       Sep:     ={Txt="" Typ="S"}  // separator
 
-      Value:   ={Txt="Value" Typ="E" Hint="The meaning of this depends on the other flags"}
+      _esp_lava:  ={Txt="Brush" Cap="lava"    Typ="X1" Default="0" Hint="lava-rafting is a minimal safety factor sport"}
+      _esp_slime: ={Txt="" Cap="slime"   Typ="X1" Default="0" Hint="mildly damaging"}
+      _esp_water: ={Txt="" Cap="water"   Typ="X1" Default="0" Hint="water"}
+      _esp_fog:   ={Txt="" Cap="fog"     Typ="X1" Default="0" Hint="non-solid window (Player can walk through it)"}
+      _esp_fence: ={Txt="" Cap="fence"   Typ="X1" Default="0" Hint=""}
+      _esp_areaportal:={Txt="" Cap="areaportal" Typ="X1" Default="0" Hint=""}
+      _esp_playerclip:={Txt="" Cap="playerclip" Typ="X1" Default="0" Hint="Stops player passing through"}
+      _esp_monsterclip:={Txt="" Cap="monsterclip" Typ="X1" Default="0" Hint="Stops monsters passing through"}
+      _esp_weaponclip: ={Txt="" Cap="weaponclip" Typ="X1" Default="0"  Hint=""}
+      _esp_origin:={Txt="" Cap="origin" Typ="X1" Default="0"  Hint="use as centrepoint, for rotating objects only"}
+      _esp_detail:={Txt="" Cap="detail" Typ="X1" Default="0"  Hint="for small, detail brushes that QVIS3 can ignore"}
+      _esp_structural:={Txt="" Cap="structural"  Typ="X1" Default="0" Hint=""}
+      _esp_translucent:={Txt=""Cap="translucent" Typ="X1" Default="0" Hint=""}
+      _esp_nodrop: ={Txt="" Cap="nodrop"   Typ="X1" Default="0" Hint=""}
+
+
     }
 
   }
