@@ -1548,4 +1548,5 @@ begin
   end;
 end;
 
-end. { QUANT_2PASS_SUPPORTED }
+{ QUANT_2PASS_SUPPORTED }
+end.
