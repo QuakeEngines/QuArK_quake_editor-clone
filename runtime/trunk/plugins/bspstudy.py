@@ -312,7 +312,7 @@ class NearPlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
 
     def findsplit(self):
         editor=self.editor
-        debug('PLANE '+`self.pack.plane.num`)
+#        debug('PLANE '+`self.pack.plane.num`)
         findSplitNodes(self.editor,self.pack.plane)
 
 def macro_nearplanes(self, index=0):
@@ -405,7 +405,7 @@ def nearPlanesClickFunc(m,o,editor):
                 self.chosen = src["nearplanes"]
                 plane = self.pack.nearones[eval(self.chosen)]
                 self.pack.plane=plane
-                debug('norm '+`plane.normal`+' dist '+`plane.dist`)
+#                debug('norm '+`plane.normal`+' dist '+`plane.dist`)
                 src["normal"]=plane.normal.tuple
                 src["dist"]=plane.dist,
                 #

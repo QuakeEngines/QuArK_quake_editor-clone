@@ -204,7 +204,7 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
     face1 = findAdjoiningFace(poly1, f1, i1)
     face2 = findAdjoiningFace(poly2, f2, i2) 
     if face1 is None or face2 is None:
-        debug('no adjoining')
+#        debug('no adjoining')
         return
     #
     # We're looking for paralell faces on the opposite side to
@@ -244,7 +244,7 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
                 newface=face.copy()
                 newface.setthreepoints((vtx, vtx2, point),0)
                 if colinear([vtx, vtx2, point]):
-                   debug('colinear: '+`vtx`+' '+`vtx2`+' '+`point`)
+#                   debug('colinear: '+`vtx`+' '+`vtx2`+' '+`point`)
                 newface['tex']=CaulkTexture()
                 newlist.append(newface)
             matched=1
@@ -528,7 +528,7 @@ def buildwallmakerimages(self, singleimage=None):
                             newface.swapsides()
                         poly.rebuildall()
                         if poly.broken:
-                            debug('fuck, still busted')
+#                            debug('fuck, still busted')
         list = []
         for item in wallgroup.subitems:
             list.append(item)
@@ -545,6 +545,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.6  2001/10/08 10:42:47  tiglari
+# solid mode added, group structure preserved when dissociated
+#
 # Revision 1.5  2001/10/07 22:34:53  tiglari
 # negative polys dig hole in walls, extrude mode, colinear to maputils
 #

@@ -176,7 +176,7 @@ def make3points(m):
     plane = quarkx.newobj("plane duplicator:d")
     plane["macro"]="dup plane"
     for (spec,val) in (("P1", p1), ("P2",p2), ("P3",p3)):
-         debug('spec '+spec+'; val: '+`val`)
+#         debug('spec '+spec+'; val: '+`val`)
          plane[spec]=val.tuple
     undo=quarkx.action()
     sel = editor.layout.explorer.uniquesel
@@ -204,6 +204,9 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
 
 
 #$Log$
+#Revision 1.2  2001/07/24 02:37:11  tiglari
+#glue plane to tagged plane
+#
 #Revision 1.1  2001/05/25 12:27:15  tiglari
 #tagged plane support
 #

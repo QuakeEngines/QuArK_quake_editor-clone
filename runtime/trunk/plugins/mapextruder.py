@@ -2150,14 +2150,14 @@ def getTexInfo(dup, object):
         side = quarkx.newobj("%s:g"%key)
         side["tex"], threepoints = dict[key]
         p0, p1, p2 = threepoints
-        debug('three')
+#        debug('three')
         side["p0"] = (data.ProjPos2Tuple(p0,axes))
-        debug('proj')
+#        debug('proj')
         side["p1"] = (data.ProjPos2Tuple(p1,axes))
         side["p2"] = (data.ProjPos2Tuple(p2,axes))
         texinfo.appenditem(side)
     dup.appenditem(texinfo)
-    debug('append')
+#    debug('append')
     
 def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   menu = oldmenu(o, editor)
@@ -2896,6 +2896,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.13  2001/07/09 09:49:41  tiglari
+#eliminate sidehandle in favor of using qedtor.orthogonalvect()
+#
 #Revision 1.12  2001/07/08 00:27:35  tiglari
 #'short' specific; fix angle-to-next and path-point dialog bugs
 #
