@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.184  2002/04/28 21:27:40  tiglari
+//update version
+//
 //Revision 1.183  2002/04/28 11:39:05  tiglari
 //Modifications to get RTCW support working better
 //
@@ -1329,16 +1332,16 @@ QQRKSRC1
         CDDir = "Setup\BaseEF"
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat="Brush Primitives"
 
-        StupidBuildToolKludge = "1" //those guys should get shot for that
+//        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = ""
+        BuildArgs1 = "-qdir stvef"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-vis"
+        BuildArgs2 = "-vis -qdir stvef"
         BuildPgm3  = "Q3MAP.EXE"
-        BuildArgs3 = "-light"
+        BuildArgs3 = "-light -qdir stvef"
         BuildPgm4  = "BSPC.EXE"
         BuildArgs4 = "-bsp2aas"
         BuildCheck4= "+AAS"
@@ -1362,8 +1365,8 @@ QQRKSRC1
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "baseEF"
-        tmpQuArK = "tmpQuArK"
-
+        tmpQuArK = "tmpquark"
+//        tmpQuArK = "BaseEF"
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
@@ -1554,7 +1557,9 @@ QQRKSRC1
       {
         Game = "MOHAA"
         Code = "e" // Hardcoded value in Setup.PAS
-        Program = "MOHAA.EXE +set sv_pure 0"
+//        Program = "MOHAA.EXE +set sv_pure 0"
+        Program = "mohaa +set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1"
+
 
         Directory = "\MOHAA"
         CheckDirectory = "MOHAA.EXE"
@@ -1572,7 +1577,7 @@ QQRKSRC1
         BuildArgs1 = "-gamedir "$22"%basepath%"$22" "$22"%file%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-gamedir "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
+        BuildArgs2 = "-vis -gamedir "$22"%basepath%"$22" "$22"%file%"$22
         BuildPgm3  = "MOHLIGHT.EXE"
         BuildArgs3 = "-gamedir "$22"%basepath%"$22" "$22"%file%"$22
       //BuildPgm4  = "BSPC.EXE"
@@ -1599,11 +1604,11 @@ QQRKSRC1
         TextureShaders = "scripts/quark.shader"
 
         BaseDir = "main"
-        tmpQuArK = "tmpQuArK"
+        tmpQuArK = "main"
 
         Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +devmap %s"
+        ExtraCmdLine = "+set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1 +set fs_game %s"
+        RunMapCmdLine = " +map %s"
         AddOns = "DataMOHAA.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
