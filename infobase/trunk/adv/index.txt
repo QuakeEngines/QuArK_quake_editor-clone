@@ -1,8 +1,9 @@
 title: Advanced customization
 subdir: intro
 subdir: addons
-subdir: plugins
+subdir: python
 subdir: quarkpy
+subdir: plugins
 subdir: doc
 format: html
 
@@ -13,8 +14,11 @@ format: html
 new Mods of the game or new games altogether.
 </p>
 
-<p><strong>Plug-Ins</strong>: scripts programmed in Python that modify existing features or add new features to QuArK. They are
-mainly related to the map editor, which is itself programmed mostly in Python.
+<p><strong>Quarkpy</strong>: The basic map-editing facilities
+provided by Python.
+
+<p><strong>Plug-Ins</strong>: More Python providing a wide range of
+specific facilities and enhancements.
 </p>
 
 <p>See section
