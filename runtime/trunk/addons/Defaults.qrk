@@ -30,6 +30,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//
+//Revision 1.46.2.1  2000/08/26 09:44:48  tiglari
+//fixed default texture for SoF
+//
+//Revision 1.48  2000/08/25 18:01:06  decker_dk
+//Added Typ='EDL' functionality specialy for QuakeCtx:form
+//
 //Revision 1.47  2000/08/21 20:58:21  aiv
 //Added Skin form for model editor
 //
@@ -126,7 +133,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000728"
+      Version = "quarksnapshot_20000901"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
@@ -597,7 +604,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameSOF"
         SpecialCustomQuakeMenu = "CustomQuakeMenuSOF"  //enable special form
-        TextureDef = "armory/1_2_subfloor_1"
+        TextureDef = "armory/1_2_subfloor1"
         TriggerTextureDef = "armory/trigger"
         OriginTextureDef = "armory/origin"
         LightFactor = '0.90000'
