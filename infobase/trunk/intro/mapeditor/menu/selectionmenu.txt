@@ -1,0 +1,61 @@
+title: Selection menu
+author: tiglari
+
+<img border=0 align=right>selection.png</img>
+
+<i>Remove selection.</i> Deselects whatever is selected.
+
+<i>Select parent.</i> If something is selected, switches the selection to
+that thing's parent in the map structure.  For example if a face is selected,
+the selection will change to the face's parent brush (or group, if the face
+is shared between the brushes of a group).
+
+<i>Select child.</i> If something is selected, switches the selection to that
+thing's first child.
+
+<i>Select next/previous.</i> If something is selected, these commands
+switch the selection to the next or previous sibling of that thing
+in the tree-view.
+
+<i>Freeze selection.</i>  Sometimes, when you are working on a brush
+or a patch, it is annoyingly easy to loose the selection by accidently
+clicking in the wrong place in the map.  This command 'freezes' the selection
+so that that can't happen.  You can also freeze the selection by left-clicking
+with the <Shift> key down.  Frozen selections can be changed in the treeview,
+or by <Shift>-left-clicking, and can be removed & unfrozen with <ESC>,
+or just unfrozen with Unfreeze selection below.
+
+<i>Unfreeze selection.</i>  If the selection is frozen, this command
+unfreezes it, so that selection works by simple left-clicking again.
+
+<i>Select tagged.</i>  If there are multiple tagged faces, this command
+turns them into a multiple selection of those faces (which can be dragged
+together, or manipulated in other ways).
+
+<i>Invert face selection.</i> If a face or faces are selected, this changes
+the selection to the currently non-selected faces in the same brush(es).
+
+<i>Extend selection from face.</i> If a face is selected, this extends
+the selection to all faces (of other brushes) that adjoin this face and
+occupy the same plane.  Useful for moving large collection of faces
+together.
+
+<i>Browse multiple selection.</i> If you have a multiple selection, this
+creates a dialog from which you can choose individual elements of the
+multiple selection to select and work on in turn.
+
+<i>Restrict to selection.</i> This 'restricts' the map editor to working
+only on what is selected (when the command is given).  Other material
+will either disappear or be greyed out (depending on the grey/hide out
+of view setting, or disappear entirely in the textured 3d views), and
+can't be selected.
+
+<i>Unrestrict selection.</i> Reverses the effect of Restrict to Selection,
+allowing editing of the whole map again.
+
+<i>Zoom to selection.</i> Zooms the map views in to the selection.
+
+<i>Mark selection/clear mark</i> These commands designate/undesignate the
+selection as a special element for other (mostly somewhat advanced)
+commands, such as 'Lift face to marked group' on the face RMB, or the
+Reorganize Tree commands on various map object RMB's.

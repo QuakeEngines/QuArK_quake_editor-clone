@@ -6,9 +6,19 @@ desc: editmenu
 desc: toolboxesmenu
 desc: searchmenu
 desc: commandsmenu
+desc: selectionmenu
 desc: gamemenu
 desc: toolbarsmenu
 desc: optionsmenu
 desc: helpmenu
 
 <img>menu.png</img>
+
+New commands are constantly being added to the main menus; if there is
+no F1 help for some command not listed here, or you can't understand
+what it says, post to the <a href=groups.yahoo.com/group/quark>QuArK
+messageboard</a> for help (and a heads-up to the docco writers).
+
+Most of the commands on the menus also have hot keys (accelerators), which
+you can customize from Configuration at the bottom of the
+<ref>intro/mapeditor/menu/optionsmenu</ref>.
