@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/01/28 03:33:40  tiglari
+`Merge' mode added (textures & shaders merged into a single list, shader
+get marked for QkWal display)
+
 Revision 1.11  2001/01/23 08:02:55  tiglari
 Redo BuildFolders - OkBtnClick split
 
@@ -521,7 +525,10 @@ begin
     begin
       SubFolder:=DestFolder.LocateSubElement(L[I],Index);
       if SubFolder=Nil then
-        LinkFolder(ParseRecTexture(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName,Index)
+      begin
+        SubFolder:= ParseRecTexture(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder);
+        LinkFolder(SubFolder, Result, FolderName,Index)
+      end
       else
         ParseRecTexture(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder)
     end;
