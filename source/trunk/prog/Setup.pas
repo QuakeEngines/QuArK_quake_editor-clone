@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/08/21 20:45:13  aiv
+Added ModelColor
+
 Revision 1.10  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -321,7 +324,7 @@ var
  I, P: Integer;
  S, Spec, Arg: String;
  Test, NewTarget: QObject;
-begin 
+begin
  Q.Acces;
  for I:=0 to Q.Specifics.Count-1 do
   begin
@@ -357,14 +360,14 @@ var
  T: TSetupSet;
 begin
  if Q is QFileObject then
-  begin       
+  begin
    Q.Acces;
    ProgressIndicatorStart(5445, Q.SubElements.Count); try
    for I:=0 to Q.SubElements.Count-1 do
     begin
      BrowseConfig(Q.SubElements[I]);
      ProgressIndicatorIncrement;
-    end; 
+    end;
    finally ProgressIndicatorStop; end;
   end
  else
@@ -430,7 +433,7 @@ begin
    BrowseConfig(SetupQrk);  { copies this setup data into memory }
   finally
    SetupQrk.AddRef(-1);
-  end;                                     
+  end;
  except
   on E: Exception do
    begin
@@ -709,19 +712,22 @@ begin
     Result.SubElements.Add(ExactFileLink(DefaultsFileName1, Result, False));
   (*Result.SubElements.Add(LienFichierQObject(
      SetupGameSet.Specifics.Values['Base'], Result));*)
-    L:=TStringList.Create; try
-    L.Text:=SetupGameSet.Specifics.Values['AddOns'];
-    for I:=0 to L.Count-1 do
-     try
-      Result.SubElements.Add(LienFichierQObject(L[I], Result, False));
-     except
-      on EQObjectFileNotFound do
-       if I=0 then
-        GlobalWarning(FmtLoadStr1(5549, [SetupGameSet.Name, L[I]]))
-       else
-        GlobalWarning(FmtLoadStr1(5557, [L[I]]));
-     end;
-    finally L.Free; end;
+    L:=TStringList.Create;
+    try
+     L.Text:=SetupGameSet.Specifics.Values['AddOns'];
+     for I:=0 to L.Count-1 do
+      try
+       Result.SubElements.Add(LienFichierQObject(L[I], Result, False));
+      except
+       on EQObjectFileNotFound do
+        if I=0 then
+         GlobalWarning(FmtLoadStr1(5549, [SetupGameSet.Name, L[I]]))
+        else
+         GlobalWarning(FmtLoadStr1(5557, [L[I]]));
+      end;
+    finally
+     L.Free;
+    end;
     for I:=0 to Result.SubElements.Count-1 do
      with Result.SubElements[I] do
       Flags:=Flags or ofWarnBeforeChange;
@@ -734,7 +740,7 @@ begin
   end
  else
   Result:={Info^.}AddOns;
- Result.AddRef(+1);
+ Result.AddRef(+1); {DECKER - FIXME - Possible cause of "double Result.AddRef(+1)" here?}
 end;
 
 procedure CloseAddonsList;
@@ -899,7 +905,7 @@ begin
   mjNotQuake1: if not ModeJeuQuake2 then
                 nMode:=mjQuake2
                else
-                Exit; 
+                Exit;
  else
    if CharModeJeu=nMode then Exit;
  end;
@@ -937,7 +943,7 @@ begin
       Exit;
      end;
    end;
- Result:='';  
+ Result:='';
 end;
 
 {function GetIncludePath: String;
