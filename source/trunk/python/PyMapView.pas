@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2002/03/30 00:51:56  tiglari
+Map outside of restriction (if there is one) now not drawn or drawn grey
+depending on setting of hide-/grey- out of view flag.
+
 Revision 1.14  2001/06/05 18:43:13  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -2344,8 +2348,10 @@ begin
    { /tiglari }
    SelectObject(g_DrawInfo.DC, Brush);
    SelectObject(g_DrawInfo.DC, Pen);
-   DeleteObject(g_DrawInfo.SelectedBrush);
-   DeleteObject(g_DrawInfo.GreyBrush);
+   if g_DrawInfo.SelectedBrush<>0 then
+     DeleteObject(g_DrawInfo.SelectedBrush);
+   if g_DrawInfo.GreyBrush<>0 then
+     DeleteObject(g_DrawInfo.GreyBrush);
    DeleteObject(Pen1);
   end;
 
