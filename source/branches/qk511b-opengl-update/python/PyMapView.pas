@@ -611,7 +611,11 @@ begin
    if ViewMode = vmOpenGL then
     FScene:=TGLSceneObject.Create
    else
-    FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
+    if (MapViewProj is TCameraCoordinates)
+    and (SetupSubSet(ssGeneral, 'OpenGL').Specifics.Values['Mode']<>'') then
+     FScene:=TGLSceneProxy.Create
+    else
+     FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
    ReadSetupInformation(NeedSetup);
    Drawing:=Drawing or dfRebuildScene;
   end

@@ -153,7 +153,7 @@ type
    procedure BuildScene(DC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
    procedure SwapBuffers(Synch: Boolean; DC: HDC); virtual;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual;
+   procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
@@ -1208,10 +1208,6 @@ begin
 end;
 
 procedure TSceneObject.SwapBuffers;
-begin
-end;
-
-procedure TSceneObject.Copy3DView;
 begin
 end;
 
