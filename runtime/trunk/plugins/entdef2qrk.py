@@ -7,7 +7,7 @@ Python macros available for direct call by QuArK
 #$Header$
 #
 
-import string, time, os, sys
+import string, time, sys
 
 class Key:
     def __init__(self):
@@ -495,8 +495,8 @@ def makeqrk(root, filename, gamename):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-            qutils.debug("Parse error: Got type", token_is, "but expected type(s);", expectedtypes)
-            qutils.debug( "Debug: Last classname was =", currentclassname )
+            quarkpy.qutils.debug("Parse error: Got type", token_is, "but expected type(s);", expectedtypes)
+            quarkpy.qutils.debug( "Debug: Last classname was =", currentclassname )
             raise "Parse error!"
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
@@ -535,4 +535,6 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.1  2001/10/05 17:56:42  decker_dk
+#Created QERadiant .DEF file to .QRK file converter.
 #

@@ -7,7 +7,7 @@ Python macros available for direct call by QuArK
 #$Header$
 #
 
-import string, time, os, sys
+import string, time, sys
 
 class Key:
     def __init__(self):
@@ -606,6 +606,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.3  2001/10/21 08:34:42  decker_dk
+#Print out debug-information, in case of parse-error.
+#
 #Revision 1.2  2001/08/13 17:45:30  decker_dk
 #Problem with "<keyword>=!" placements in ":form" definitions. Hard to solve correctly, as its deep within QuArK's Delphi-code!
 #
