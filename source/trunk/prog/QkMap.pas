@@ -235,7 +235,7 @@ var
     end
    else
     begin
-      Flags:=Flags and (0 shl shift)
+      Flags:=Flags and not (1 shl shift)
     end
  end;
 
