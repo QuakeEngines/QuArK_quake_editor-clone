@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/01/23 23:38:27  aiv
+Minor Update
+
 Revision 1.7  2001/01/21 15:51:16  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -343,7 +346,7 @@ begin
         { setup Root }
         Root := Loaded_Root;
         C := Loaded_Component(Root, '');
-        ObjectGameCode := mjQuake;
+        ObjectGameCode := mjNotQuake2;
         Root.Specifics.Values['seamtrick'] := '1';
         Size[1] := mdl.synctype;
         Size[2] := mdl.flags;
