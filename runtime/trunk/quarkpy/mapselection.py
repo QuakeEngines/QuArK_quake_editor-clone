@@ -126,7 +126,7 @@ def onclick(menu):
     prevItem.state=nextItem.state=parentItem.state=qmenu.disabled
     removeItem.state=qmenu.disabled
     if editor is not None:
-        if editor.layout.explorer.uniquesel:
+        if editor.layout.explorer.uniquesel is not None:
             prevItem.state=nextItem.state=parentItem.state=qmenu.normal
             removeItem.state=qmenu.normal
 
@@ -144,6 +144,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.2  2001/04/30 10:57:42  tiglari
+# added child, key mods for next/prev of same type, treeview control
+#
 # Revision 1.1  2001/04/28 02:23:12  tiglari
 # initial commit
 #
