@@ -423,6 +423,7 @@ asm
         XOR     EAX,EAX
         AND     EDX,3
         SHR     ECX,2
+        cld
         REPE    CMPSD
         JNE     @@2
         MOV     ECX,EDX
@@ -476,6 +477,7 @@ begin
     push edi
     mov edx, [J]
     mov esi, [Source]
+    cld
     mov [Source1], esi
 
     @Loop:
