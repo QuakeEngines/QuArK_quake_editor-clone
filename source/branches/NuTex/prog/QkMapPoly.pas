@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32.2.1  2001/04/01 11:59:16  tiglari
+attempt to read/write texture scale from tv attribute (seems to work,
+ is slow, does not solve fp errors in vertex dragging)
+
 Revision 1.32  2001/04/01 06:52:07  tiglari
 don't recenter threepoints option added
 
@@ -3177,10 +3181,20 @@ end;
 function TFace.GetThreePointsT(var V1, V2, V3: TVect) : boolean;
 var
   TexV: array[1..6] of Single;
+  TexV9: array[1..9] of Single;
   P0, P1, P2, T1, T2, T3, TexS, TexT, V : TVect;
 begin
-  if LoadData and GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
-  begin
+  if LoadData then
+    if GetFloatsSpec('tv9',TexV9) then
+    begin
+      V1:=MakeVect(TexV9[1], TexV9[2], TexV9[3]);
+      V2:=MakeVect(TexV9[4], TexV9[5], TexV9[6]);
+      V3:=MakeVect(TexV9[7], TexV9[8], TexV9[9]);
+      Result:=true;
+      Exit;
+    end;
+    if GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
+    begin
       GetAxisBase(Normale, TexS, TexT);
       T1:=MakeVect(TexV[1], TexV[2], 0);
       T2:=MakeVect(TexV[3], TexV[4], 0);
@@ -3190,7 +3204,7 @@ begin
       V3:=Tex2FaceCoords(T3, P0, TexS, TexT);
       Result:=true;
       Exit;
-  end;
+    end;
   if TextureMirror then
     Result:=GetThreePoints(V1, V3, V2)
   else
@@ -3200,7 +3214,7 @@ end;
 procedure TFace.SetThreePointsT(const V1, V2, V3: TVect);
 var
   TexS, TexT, P0, P1, P2, T1, T2, T3, T : TVect;
-  V: array[1..6] of Single;
+  V: array[1..9] of Single;
 begin
 (*
  if TextureMirror then
@@ -3208,6 +3222,7 @@ begin
  else
   SetThreePoints(V1, V2, V3);
 *)
+(*
   if Loaddata and GetThreePoints(P0, P1, P2) then
   begin
     GetAxisBase(Normale,TexS,TexT);
@@ -3219,6 +3234,11 @@ begin
     V[5]:=T3.X; V[6]:=T3.Y;
     SetFloatsSpec('tv', V);
   end;
+ *)
+  V[1]:=V1.X; V[2]:=V1.Y; V[3]:=V1.Z;
+  V[4]:=V2.X; V[5]:=V2.Y; V[6]:=V2.Z;
+  V[7]:=V3.X; V[8]:=V3.Y; V[9]:=V3.Z;
+  SetFloatsSpec('tv9', V);
 end;
 
 function TFace.SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
