@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.8  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -1868,7 +1871,7 @@ procedure TForm1.AppShowHint(var HintStr: string; var CanShow: Boolean; var Hint
 var
  I, Code: Integer;
 begin
- Application.HintHidePause:=4000;
+ Application.HintHidePause:=(15 * 1000); {4000;}
  if HintStr<>'' then
   begin
   {if (Form4<>Nil) and (ModeEcran3D<>0) and Form3D.DessinEnCours then
