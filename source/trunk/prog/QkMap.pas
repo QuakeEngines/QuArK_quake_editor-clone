@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2004/11/06 08:18:38  cdunde
+Reversed last change to end statement due to compiling problem
+
 Revision 1.52  2004/10/30 14:06:39  alexander
 made it compileable
 
@@ -955,14 +958,13 @@ expected one.
          pCP1^[4]:=V5.T;
          Inc(pCP1, MeshBuf1.W);
        end;
-       ReadSymbol(sBracketRight); // read the trailing rparen for the line
-     end;
-     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
-     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line end
+       ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+       ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+       ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
 
-     B.ControlPoints:=MeshBuf1;
-     B.AutoSetSmooth;
+       B.ControlPoints:=MeshBuf1;
+       B.AutoSetSmooth;
      end;     
    finally
      FreeMem(MeshBuf1.CP);
