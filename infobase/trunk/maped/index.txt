@@ -6,4 +6,4 @@ subdir: builders
 subdir: plugins
 subdir: games
 subdir: builderrors
-
+subdir: formats
