@@ -767,7 +767,7 @@ Strings = {
     5587: "Impossible to create the directory '%s'. Be sure you entered the path to %s correctly in the configuration dialog box//Error code %d",
     5588: "Texture '%s' not found.",
     5589: "%d textures written to '%s'.",
-    5590: "%d textures written to '%s', including %d animated textures.",
+    5590: "%d textures written to '%s'. Of this %d were animated textures and/or shaders.",
     5591: "Choose the file(s) to link to",
     5592: "Choose the file(s) to import",
     5593: "'%s' is not a Quake1 MDL file//%d-%d should be %d-%d",
@@ -899,6 +899,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.34  2001/02/25 11:22:51  tiglari
+#bezier page support, transplanted with permission from CryEd (CryTek)
+#
 #Revision 1.33  2001/02/23 19:28:30  decker_dk
 #KB to bytes, due to change in QkUnknown.PAS
 #
