@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.37  2000/06/24 16:49:06  alexander
+//removed from SoF config : UnifiedPalette = "1" (fix for no textures in sofware mode)
+//
 //Revision 1.36  2000/06/22 22:41:21  tiglari
 //added support for columns (and pipes)
 //
@@ -2604,6 +2607,11 @@ QQRKSRC1
                Hint = "if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
       open: = {Txt="&" Typ="X"
                Hint = "if checked, top and bottom are open"}
+      funnel:= {Txt="&" Typ="EF002"
+               Hint = "if specified, first number is expand factor for top, second for bottom."
+                       $0D " e.g. 0 1 for upward pointing cone"}
+      bulge:= {Txt="&" Typ="EF002"
+               Hint = "height, width of bulge, proportional, .5 1=straight"}
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
