@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.45  2001/07/29 08:03:09  tiglari
+bugfixes, cleanup
+
 Revision 1.44  2001/07/29 05:22:00  tiglari
 more bsp study stuff
 
@@ -175,7 +178,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, ComCtrls, QkForm, QkMapObjects, qmath,
-  StdCtrls, Python, PyObjects, Game, QkUnknown;
+  StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown;
 
 type
  TBsp1EntryTypes =
@@ -314,21 +317,25 @@ type
 
  TTreeBspPlane = class(TTreeMapGroup)
   public
-   constructor Create(const nName: String; nParent: QObject); overload;
+   Normal: TVect;
+   Dist: TDouble;
    constructor Create(const nName: String; nParent: QObject; Source: PbPlane); overload;
 
    class function TypeInfo: String; override;
+   function PyGetAttr(attr: PChar) : PyObject; override;
  end;
+
+ QBsp = class;
 
  TTreeBspNode = class(TTreeMapGroup)
   public
    Source: PChar;
-   constructor Create(const nName: String; nParent: QObject); overload;
+   Bsp: QBsp;
    constructor Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats); overload;
    constructor Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats); overload;
 
    class function TypeInfo: String; override;
-   function PyGetAttr(attr: PChar) : PyObject; override;
+   procedure GetFaces(var L: PyObject);
  end;
 
  QBsp = class(QFileObject)
@@ -1627,6 +1634,7 @@ var
   First, Second: TTreeBspNode;
   TreePlane: TTreeBspPlane;
   FirstStats, SecStats: TNodeStats; { stats from children }
+
   procedure AddChild(Parent: TTreeBspNode; child: Integer; const Name: String; var Stats: TNodeStats);
   var
     TreeNode: TTreeBspNode;
@@ -1636,6 +1644,8 @@ var
       TreeNode:=GetQ3Node( PQ3Node(FirstNode+child*SizeOf(TQ3Node)),Name, Parent, Stats)
     else
     begin
+      { add 1, so that first child index is 0 (Max McQuires
+        Q2 Bsp Format description on www.flipcode.com) }
       PLeaf:=FirstLeaf-(child+1)*LeafSize;
       TreeNode:=TTreeBspNode.Create(Name, Parent, PQ3Leaf(PLeaf), Stats);
       TreeNode.Source:=PLeaf;
@@ -1643,6 +1653,7 @@ var
     if Copy(Name,1,5)='First' then
       TreeNode.Specifics.Values['first']:='1';
     Parent.SubElements.Add(TreeNode);
+    TreeNode.Bsp:=Self;
   end;
 
 begin
@@ -1734,14 +1745,11 @@ begin
   Result:=TexFolder;
 end;
 
-constructor TTreeBspPlane.Create(const nName: String; nParent: QObject);
-begin
-  inherited;
-end;
-
 constructor TTreeBspPlane.Create(const nName: String; nParent: QObject; Source: PbPlane);
 begin
-  Create(nName, nParent);
+  inherited Create(nName, nParent);
+  Dist:=Source^.dist;
+  Normal:=MakeVect(Source^.normal);
   with Source^ do
   begin
     VectSpec['norm']:=MakeVect(normal);
@@ -1755,18 +1763,35 @@ begin
  TypeInfo:=':bspplane';
 end;
 
-constructor TTreeBspNode.Create(const nName: String; nParent: QObject);
-begin
-  inherited;
-end;
-
 constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats);
 begin
-  Create(nName, nParent);
+  inherited Create(nName, nParent);
   with Source^ do
   begin
     VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
     VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
+  end;
+end;
+
+function TTreeBspPlane.PyGetAttr(attr: PChar) : PyObject;
+var
+  I: Integer;
+  L: PyObject;
+begin
+  Result:=inherited PyGetAttr(attr);
+  if Result<>Nil then Exit;
+    { No method table, so that part omitted }
+  case attr[0] of
+   'd': if StrComp(attr, 'dist') = 0 then
+       begin
+         Result:=PyFloat_FromDouble(Dist);
+         Exit;
+       end;
+  'n': if StrComp(attr, 'normal') = 0 then
+       begin
+         Result:=MakePyVect(Normal);
+         Exit;
+       end;
   end;
 end;
 
@@ -1775,9 +1800,9 @@ begin
   with Source^ do
   begin
     if num_leaffaces=0 then
-      Create(nName+' (empty leaf)', nParent)
+      inherited Create(nName+' (empty leaf)', nParent)
     else
-      Create(nName+' (leaf)', nParent);
+      inherited Create(nName+' (leaf)', nParent);
     VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
     VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
     Specifics.Values['leaf']:='1';
@@ -1798,22 +1823,27 @@ begin
  TypeInfo:=':bspnode';
 end;
 
-function TTreeBspNode.PyGetAttr(attr: PChar) : PyObject;
+procedure TTreeBspNode.GetFaces(var L : PyObject);
 var
-  I: Integer;
+  FirstLFace: PChar;
+  LFaceCount, LFaceIndex: Integer;
 begin
-  Result:=inherited PyGetAttr(attr);
-  if Result<>Nil then Exit;
-    { No method table, so that part omitted }
-  case attr[0] of
-    'f': if StrComp(attr, 'faces') = 0 then
-       begin
-         ShowMessage('faces');
-         Result:=PyNoResult;
-         Exit;
-       end;
-  end;
+   if Specifics.Values['leaf']='' then
+   begin
+     ShowMessage('Faces only for leaves');
+     Exit;
+   end;
+   with PQ3Leaf(Source)^ do
+   begin
+     { leaffaces are integer sized in both Q2/Q3 }
+     LFaceCount:=Bsp.GetBspEntryData(NoBsp1,lump_leaffaces,eBsp3_leaffaces, FirstLFace)   div SizeOf(Integer);
+     for LFaceIndex:=first_leafface to first_leafface+num_leaffaces do
+     begin
+        PyList_Append(L,PyInt_FromLong(LFaceIndex));
+     end;
+   end;
 end;
+
 
 initialization
   RegisterQObject(QBsp, 's');
