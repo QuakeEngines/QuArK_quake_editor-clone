@@ -17,6 +17,7 @@ import quarkx
 import qtoolbar
 from qdictionnary import Strings
 from maputils import *
+from b2utils import *
 
 
 
@@ -453,7 +454,6 @@ def resettexscale(editor, flist, adjust):
     editor.ok(undo, Strings[619+(not adjust)])
 
 
-
 def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=None):
     "Move the selection and/or apply a linear mapping on it."
 
@@ -476,7 +476,14 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
 
         direct = (len(items)==1) and (items[0].type == ':d')    # Duplicators
         undo = quarkx.action()
+        #
+        # patches with picked control points
+        #
+        pickedObjects=[]
         for obj in items:
+            if obj.type==":b2" and obj["picked"] is not None:
+                pickedObjects.append(obj)
+                continue
             new = obj.copy()
             if offset:
                 new.translate(offset)     # offset the objects
@@ -489,6 +496,34 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
             if inflate:
                 new.inflate(inflate)    # inflate / deflate
             undo.exchange(obj, new)
+        if pickedObjects:
+            list = []
+            for obj in pickedObjects:
+                cp = obj.cp
+                for p in obj["picked"]:
+                    i, j = cpPos(p, obj)
+                    list.append(quarkx.vect(cp[i][j].xyz))
+            center = reduce(lambda x, y:x+y,list)/len(list)
+            for obj in pickedObjects:
+                new = obj.copy() 
+                cp=copyCp(obj.cp)
+                for p in obj["picked"]:
+                    i, j = cpPos(p, obj)
+                    st = cp[i][j].st
+                    pos = quarkx.vect(cp[i][j].xyz)
+                    if offset:
+                        cp[i][j]=quarkx.vect((pos+offset).tuple+st)
+                    if inflate:
+                        v = inflate*((pos-center).normalized)
+                        cp[i][j]=quarkx.vect((pos+v).tuple+st)
+                    if matrix:
+                        p2 = pos-center
+                        p3 = matrix*p2
+                        p4 = p3+center
+                        cp[i][j]=quarkx.vect(p4.tuple+st)
+                new.cp = cp
+                undo.exchange(obj, new)
+
         editor.ok(undo, text)
 
     else:
@@ -599,6 +634,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.5  2000/12/29 08:10:42  tiglari
+#extirpated tabs, hopefully without introducing errors...
+#
 #Revision 1.4  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
