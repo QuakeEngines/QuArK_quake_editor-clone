@@ -96,7 +96,13 @@ class RadialDuplicator(StandardDuplicator):
         #
         # A linear matrix can apply cumulatively to the images
         #
-        dupmat = buildLinearMatrix(self.dup)
+#        dupmat = buildLinearMatrix(self.dup)
+        
+        if self.dup["linear"] is not None:
+            dupmat = self.dup["linear"]
+        else:
+           dupmat = '1 0 0 0 1 0 0 0 1'
+        dupmat = quarkx.matrix(dupmat)
         cummat = quarkx.matrix('1 0 0 0 1 0 0 0 1')
         for i in range(0, count):
             group=quarkx.newobj('radial %d:g'%i)
