@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2002/04/08 18:40:38  decker_dk
+//Texture-names and a few other changes.
+//
 //Revision 1.1  2002/04/04 17:52:09  decker_dk
 //Preliminary Jedi Knight II QuArK data-files
 //
@@ -356,10 +359,7750 @@ QQRKSRC1
 
     JK2 Entities.qtxfolder =
     {
+      misc_* entities.qtxfolder =
+      {
+        misc_crystal_crate:e =
+        {
+          ;desc = "Crystal Crate"
+          Origin = "0 0 0"
+        }
+        misc_spotlight:e =
+        {
+          ;desc = "Spotlight"
+          Origin = "0 0 0"
+        }
+        misc_ion_cannon:e =
+        {
+          ;desc = "Ion Cannon"
+          Origin = "0 0 0"
+        }
+        misc_model_welder:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_holocron:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_model_ghoul:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_portal_camera:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_security_panel:e =
+        {
+          ;desc = "Security Panel"
+          Origin = "0 0 0"
+        }
+        misc_exploding_crate:e =
+        {
+          ;desc = "Exploding Crate"
+          Origin = "0 0 0"
+        }
+        misc_model_gun_rack:e =
+        {
+          ;desc = "Gun Rack"
+          Origin = "0 0 0"
+        }
+        misc_trip_mine:e =
+        {
+          ;desc = "Trip Mine"
+          Origin = "0 0 0"
+        }
+        misc_model_cargo_small:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_model_ammo_rack:e =
+        {
+          ;desc = "Ammo Rack"
+          Origin = "0 0 0"
+        }
+        misc_model_jabba_cam:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_camera:e =
+        {
+          ;desc = "Security Camera"
+          Origin = "0 0 0"
+        }
+        misc_ns_turret:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_panel_turret:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_turret:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_sentry_turret:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_gas_tank:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_portal_surface:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_ammo_floor_unit:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_shield_floor_unit:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_atst_drivable:e =
+        {
+          ;desc = "ATST - Drivable"
+          Origin = "0 0 0"
+        }
+        misc_maglock:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_model:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        misc_model_breakable:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      NPC_* entities.qtxfolder =
+      {
+        NPC_Trandoshan:e =
+        {
+          ;desc = "Trandoshan"
+          Origin = "0 0 0"
+        }
+        NPC_BespinCop:e =
+        {
+          ;desc = "Bespin Cop"
+          Origin = "0 0 0"
+        }
+        NPC_Ugnaught:e =
+        {
+          ;desc = "Ugnaught"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Mark2:e =
+        {
+          ;desc = "Droid (Mk2)"
+          Origin = "0 0 0"
+        }
+        NPC_Tie_Pilot:e =
+        {
+          ;desc = "Tie Pilot"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Mark1:e =
+        {
+          ;desc = "Droid (Mk1)"
+          Origin = "0 0 0"
+        }
+        NPC_Prisoner:e =
+        {
+          ;desc = "Prisoner"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Interrogator:e =
+        {
+          ;desc = "Interrogator Droid"
+          Origin = "0 0 0"
+        }
+        NPC_Galak:e =
+        {
+          ;desc = "Galek"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Sentry:e =
+        {
+          ;desc = "Senry Droid"
+          Origin = "0 0 0"
+        }
+        NPC_MonMothma:e =
+        {
+          ;desc = "Mon Mothma"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Mouse:e =
+        {
+          ;desc = "Mouse"
+          Origin = "0 0 0"
+        }
+        NPC_Imperial:e =
+        {
+          ;desc = "Imperial"
+          Origin = "0 0 0"
+        }
+        NPC_Reelo:e =
+        {
+          ;desc = "Reelo Baruk"
+          Origin = "0 0 0"
+        }
+        NPC_Lando:e =
+        {
+          ;desc = "Lando Calrissian"
+          Origin = "0 0 0"
+        }
+        NPC_MineMonster:e =
+        {
+          ;desc = "Mine Monster"
+          Origin = "0 0 0"
+        }
+        NPC_Bartender:e =
+        {
+          ;desc = "Bartender"
+          Origin = "0 0 0"
+        }
+        NPC_Gran:e =
+        {
+          ;desc = "Gran"
+          Origin = "0 0 0"
+        }
+        NPC_Rodian:e =
+        {
+          ;desc = "Rodian"
+          Origin = "0 0 0"
+        }
+        NPC_Weequay:e =
+        {
+          ;desc = "Weequay"
+          Origin = "0 0 0"
+        }
+        NPC_Tavion:e =
+        {
+          ;desc = "Tavion"
+          Origin = "0 0 0"
+        }
+        NPC_MorganKatarn:e =
+        {
+          ;desc = "Morgan Katarn"
+          Origin = "0 0 0"
+        }
+        NPC_ImpWorker:e =
+        {
+          ;desc = "Imperial Worker"
+          Origin = "0 0 0"
+        }
+        NPC_Reborn:e =
+        {
+          ;desc = "Reborn Jedi"
+          Origin = "0 0 0"
+        }
+        NPC_Desann:e =
+        {
+          ;desc = "Desann"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_ATST:e =
+        {
+          ;desc = "ATST - AI Controlled"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Probe:e =
+        {
+          ;desc = "Probe Driod"
+          Origin = "0 0 0"
+        }
+        NPC_ShadowTrooper:e =
+        {
+          ;desc = "Shadow Trooper"
+          Origin = "0 0 0"
+        }
+        NPC_Rebel:e =
+        {
+          ;desc = "Rebel"
+          Origin = "0 0 0"
+        }
+        NPC_Jan:e =
+        {
+          ;desc = "Jan Ors"
+          Origin = "0 0 0"
+        }
+        NPC_Stormtrooper:e =
+        {
+          ;desc = "Storm Trooper"
+          Origin = "0 0 0"
+        }
+        NPC_SwampTrooper:e =
+        {
+          ;desc = "Swamp Trooper"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Protocol:e =
+        {
+          ;desc = "Protocol Droid"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Remote:e =
+        {
+          ;desc = "Remove Droid"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_Gonk:e =
+        {
+          ;desc = "Gonk"
+          Origin = "0 0 0"
+        }
+        NPC_spawner:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        NPC_Droid_R2D2:e =
+        {
+          ;desc = "R2D2"
+          Origin = "0 0 0"
+        }
+        NPC_Droid_R5D2:e =
+        {
+          ;desc = "R5D2"
+          Origin = "0 0 0"
+        }
+        NPC_Jedi:e =
+        {
+          ;desc = "Jedi"
+          Origin = "0 0 0"
+        }
+        NPC_Luke:e =
+        {
+          ;desc = "Luke Skywalker"
+          Origin = "0 0 0"
+        }
+        NPC_Kyle:e =
+        {
+          ;desc = "Kyle Katarn"
+          Origin = "0 0 0"
+        }
+      }
+      fx_* entities.qtxfolder =
+      {
+        fx_cloudlayer:e =
+        {
+          ;desc = "Cloud Layer"
+          Origin = "0 0 0"
+        }
+        fx_target_beam:e =
+        {
+          ;desc = "Beam Target"
+          Origin = "0 0 0"
+        }
+        fx_explosion_trail:e =
+        {
+          ;desc = "Explosion Trail"
+          Origin = "0 0 0"
+        }
+        fx_rain:e =
+        {
+          ;desc = "Rain Effect"
+          Origin = "0 0 0"
+        }
+        fx_runner:e =
+        {
+          ;desc = "Runner"
+          Origin = "0 0 0"
+        }
+      }
+      target_* entities.qtxfolder =
+      {
+        target_push:e =
+        {
+          ;desc = "Pushable item"
+          Origin = "0 0 0"
+        }
+        target_random:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_interest:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_gravity_change:e =
+        {
+          ;desc = "changes level gravity"
+          Origin = "0 0 0"
+        }
+        target_laser:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_autosave:e =
+        {
+          ;desc = "autosave"
+          Origin = "0 0 0"
+        }
+        target_kill:e =
+        {
+          ;desc = "kill"
+          Origin = "0 0 0"
+        }
+        target_delay:e =
+        {
+          ;desc = "delay"
+          Origin = "0 0 0"
+        }
+        target_play_music:e =
+        {
+          ;desc = "play/change music"
+          Origin = "0 0 0"
+        }
+        target_position:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_secret:e =
+        {
+          ;desc = "secret"
+          Origin = "0 0 0"
+        }
+        target_level_change:e =
+        {
+          ;desc = "level change"
+          Origin = "0 0 0"
+        }
+        target_counter:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_activate:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_relay:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_scriptrunner:e =
+        {
+          ;desc = "runs a script"
+          Origin = "0 0 0"
+        }
+        target_deactivate:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        target_speaker:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      waypoint_* entities.qtxfolder =
+      {
+        waypoint:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+	}
+        waypoint_small:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        waypoint_navgoal_1:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        waypoint_navgoal_8:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        waypoint_navgoal_4:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        waypoint_navgoal:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        waypoint_navgoal_2:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      item_* entities.qtxfolder =
+      {
+        item_security_key:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_force_enlighten:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_health:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_force_boon:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_force_enlighten_light:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_force_enlighten_dark:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_ysalimari:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_shield:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_medpac:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_la_goggles:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_shield_lrg_instant:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_sentry_gun:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_medpak_instant:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_shield_sm_instant:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_seeker:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_battery:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        item_bacta:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      team_* entities.qtxfolder =
+      {
+        team_CTF_redflag:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        team_CTF_blueflag:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        team_CTF_bluespawn:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        team_CTF_redspawn:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        team_CTF_redplayer:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        team_CTF_blueplayer:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      weapon_* entities.qtxfolder =
+      {
+        weapon_demp2:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_flechette:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_thermal:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_repeater:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_trip_mine:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_det_pack:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_bowcaster:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_blaster:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_bryar_pistol:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_disruptor:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_rocket_launcher:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        weapon_saber:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      info_* entities.qtxfolder =
+      {
+        info_jedimaster_start:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        info_player_intermission:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        info_player_start:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        info_notnull:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        info_null:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      func_* entities.qtxfolder =
+      {
+        func_rotating:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_plat:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_wall:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_timer:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        func_train:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_glass:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_usable:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_button:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_breakable:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_door:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        func_static:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+      }
+      emplaced_* entities.qtxfolder =
+      {
+        emplaced_gun:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      trigger_* entities.qtxfolder =
+      {
+        trigger_push:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        trigger_visible:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        trigger_hurt:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        trigger_location:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        trigger_once:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+        trigger_multiple:b =
+        {
+          ;desc = ""
+          ;incl = "defpoly"
+        }
+      }
+      ammo_* entities.qtxfolder =
+      {
+        ammo_detpack:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        ammo_metallic_bolts:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        ammo_rockets:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        ammo_blaster:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        ammo_powercell:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        ammo_tripmine:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        ammo_thermal:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      point_* entities.qtxfolder =
+      {
+        point_combat:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      holocron_* entities.qtxfolder =
+      {
+        holocron_force_push:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        holocron_force_levitation:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        holocron_force_speed:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+        holocron_force_pull:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      path_* entities.qtxfolder =
+      {
+        path_corner:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
+      ref_* entities.qtxfolder =
+      {
+        ref_tag:e =
+        {
+          ;desc = ""
+          Origin = "0 0 0"
+        }
+      }
     }
   }
-
-  Entity forms.qctx =
+  Entity forms.fctx =
   {
+    misc_crystal_crate:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_spotlight:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_ion_cannon:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_model_welder:form =
+    {
+      linear: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_holocron:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_model_ghoul:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_portal_camera:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_security_panel:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_exploding_crate:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_model_gun_rack:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_trip_mine:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_model_cargo_small:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_model_ammo_rack:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_model_jabba_cam:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_camera:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      closetarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_ns_turret:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_panel_turret:form =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      damage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_turret:form =
+    {
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_sentry_turret:form =
+    {
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashRadius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashDamage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_gas_tank:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      splashDamage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashRadius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_portal_surface:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_ammo_floor_unit:form =
+    {
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_shield_floor_unit:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_atst_drivable:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    misc_maglock:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    misc_model:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    misc_model_breakable:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      endFrame: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashRadius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashdamage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      damage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      material: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      maxs: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mins: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      model: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Trandoshan:form =
+    {
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_BespinCop:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Ugnaught:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      mindtrickscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Mark2:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Tie_Pilot:form =
+    {
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Mark1:form =
+    {
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_type: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Prisoner:form =
+    {
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Droid_Interrogator:form =
+    {
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Galak:form =
+    {
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Droid_Sentry:form =
+    {
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_MonMothma:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Mouse:form =
+    {
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Imperial:form =
+    {
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm7: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm6: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm8: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      mindtrickscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm5: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Reelo:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Lando:form =
+    {
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_MineMonster:form =
+    {
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Bartender:form =
+    {
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Gran:form =
+    {
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      npc_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Rodian:form =
+    {
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Weequay:form =
+    {
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Tavion:form =
+    {
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_MorganKatarn:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_ImpWorker:form =
+    {
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm8: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm7: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm6: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm5: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Reborn:form =
+    {
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm5: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Desann:form =
+    {
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_ATST:form =
+    {
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Probe:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_ShadowTrooper:form =
+    {
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Rebel:form =
+    {
+      NPC_target4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Jan:form =
+    {
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Stormtrooper:form =
+    {
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm8: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm7: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm6: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      painscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angerscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm5: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_SwampTrooper:form =
+    {
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Protocol:form =
+    {
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Remote:form =
+    {
+      team: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    NPC_Droid_Gonk:form =
+    {
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_spawner:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      npc_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_type: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Droid_R2D2:form =
+    {
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Droid_R5D2:form =
+    {
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Jedi:form =
+    {
+      NPC_target4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    NPC_Luke:form =
+    {
+      deathscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    NPC_Kyle:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    fx_cloudlayer:form =
+    {
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    fx_target_beam:form =
+    {
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      damage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      duration: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    fx_explosion_trail:form =
+    {
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      fxFile: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    fx_rain:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    fx_runner:form =
+    {
+      splashDamage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashRadius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      fxFile: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_push:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    target_random:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    target_interest:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    target_gravity_change:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    target_laser:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_autosave:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_kill:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_delay:form =
+    {
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_play_music:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      music: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_position:form =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_secret:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_level_change:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      mapname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_counter:form =
+    {
+      bounceCount: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      Usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_activate:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_relay:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_scriptrunner:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm9: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm8: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm7: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm6: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm5: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_deactivate:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    target_speaker:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    waypoint_small:form =
+    {
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    waypoint_navgoal_1:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    waypoint_navgoal_8:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    waypoint_navgoal_4:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    waypoint_navgoal:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetnane: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    waypoint_navgoal_2:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    item_security_key:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    item_force_enlighten:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_health:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_force_boon:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_force_enlighten_light:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_force_enlighten_dark:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_ysalimari:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_shield:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_medpac:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_la_goggles:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_shield_lrg_instant:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_sentry_gun:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_medpak_instant:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_shield_sm_instant:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_seeker:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_battery:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    item_bacta:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    team_CTF_redflag:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    team_CTF_blueflag:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    team_CTF_bluespawn:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    team_CTF_redspawn:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    team_CTF_redplayer:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    team_CTF_blueplayer:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    weapon_demp2:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_flechette:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_thermal:form =
+    {
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_repeater:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_trip_mine:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_det_pack:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_bowcaster:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_blaster:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_bryar_pistol:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_disruptor:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_rocket_launcher:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    weapon_saber:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    info_jedimaster_start:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    info_player_intermission:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    info_player_start:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    info_notnull:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    info_null:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    func_rotating:form =
+    {
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      light: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    func_plat:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      height: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    func_wall:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    func_timer:form =
+    {
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    func_train:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      linear: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      endframe: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      startframe: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      model2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    func_glass:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    func_usable:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      Usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      endframe: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    func_button:form =
+    {
+      sound: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    func_breakable:form =
+    {
+      chunks: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      paintarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      splashradius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      splashDamage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      health: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      linear: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      scale: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      material: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    func_door:form =
+    {
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      endFrame: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundstart: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      soundstop: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      soundmove: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      sound: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      Usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      linear: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      damage: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      team: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      opentarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      closetarget: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      lip: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    func_static:form =
+    {
+      spawnscript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawn_script: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      endFrame: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      model2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      linear: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    emplaced_gun:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    trigger_push:form =
+    {
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    trigger_visible:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      FOV: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      radius: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    trigger_hurt:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      dmg: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    trigger_location:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      message: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    trigger_once:form =
+    {
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      parm1: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      Usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    trigger_multiple:form =
+    {
+      NPC_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      noise: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      delay: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      Usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      soundSet: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    ammo_detpack:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    ammo_metallic_bolts:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    ammo_rockets:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    ammo_blaster:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    ammo_powercell:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    ammo_tripmine:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    ammo_thermal:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    point_combat:form =
+    {
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    waypoint:form =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      target4: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target3: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target2: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      usescript: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    holocron_force_push:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    holocron_force_levitation:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+    }
+    holocron_force_speed:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    holocron_force_pull:form =
+    {
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+    }
+    path_corner:form =
+    {
+      speed: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      wait: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
+    ref_tag:form =
+    {
+      angle: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      script_targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      angles: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      fov: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF"
+      }
+      origin: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "EF3"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+      targetname: =
+      {
+        txt = "&"
+        hint = ""
+        typ = "E"
+      }
+    }
   }
 }
