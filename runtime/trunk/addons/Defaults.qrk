@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.235  2004/12/27 00:38:38  cdunde
+//To remove dupe entry for GameHalfLife2:form and put in alphabetical 
+//order.
+//
 //Revision 1.234  2004/12/26 23:54:25  cdunde
 //To put Doom 3 in proper game order on Games menu and config section.
 //
@@ -1111,7 +1115,7 @@ QQRKSRC1
         TextureShaders = "materials/quark.mtr"  // TextureMaterials?
 
         BaseDir = "base"
-        tmpQuArK = "tmpQuArK"
+        tmpQuArK = "base" // base instead of tmpQuArK (for now, at least)
 
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
@@ -8123,4 +8127,5 @@ QQRKSRC1
   }
 
 }
+
 
