@@ -317,10 +317,15 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
           newside.distortion(side.normal, pd[fulcrum])
           cp2 = texcp_from_face(cp, newside, editor)
           for index in range(3):
-#              if lower:
+              if lower:
                   cp[index][edge]=cp2[index][edge]
-#              else:
-#                  cp[edge][index]=cp2[edge][index]
+              else:
+#                  squawk(`cp`)
+#                  squawk(`cp2`)                  
+#                  squawk("index: %s, edge: %s"%(index, edge))
+                  if edge==0: edge=4
+                  else: edge=0
+                  cp[index][edge]=cp2[index][edge]
   #
   # Now we smooth it out
   #
@@ -620,6 +625,11 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2000/06/17 07:35:12  tiglari
+#arch/cap texture now projected off top or bottom for normal
+#and lower, respectively; stretchtex option added vs. complex
+#alignment.
+#
 #Revision 1.11  2000/06/16 10:48:26  tiglari
 #Fixed perspective-driven builder problems
 #
