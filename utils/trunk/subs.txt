@@ -1,14 +1,5 @@
 
 
-#GetSousElements GetSubElements
-#SousElements SubElements
-#Souselements SubElements
-#souselements SubElements
-#SousElementsC SubElementsC
-#FSousElements FSubElements
-#ofTvSousElement ofTreeViewSubElement
-
-
 #       #Done up to QkMdl and including
 #       Enregistrer Save
 #       TInfoEnreg1 TSaveInfo
@@ -20,7 +11,6 @@
 #       ofSurDisque ofOnDisk
 #       TEtatObjet TObjectState
 #       EtatObjet ObjectState
-#       Enregistrer1 Save1
 #       TvParent TreeViewParent
 #       SuivantDansGroupe FollowingInGroup
 #       LibererMemoireFiches FreeMemoryFiles
@@ -294,6 +284,28 @@
 #       #SoustractionPolyedre PolyhedralSubtraction ???
 
 #---DONE---
+#wmMessageInterne wmInternalMessage
+#wm_MessageInterne wm_InternalMessage
+#wp_RestaureFocus wp_RestoreFocus
+#wp_TailleScrollBox wp_SizeScrollBox
+#tm_DoubleClic tm_DoubleClick
+
+#Enregistrer SaveFile
+#Enregistrer1 SaveFile1
+#EnregistrerDansFichier SaveInFile
+#EnregistrerCommeTexte ConvertObjsToTextWithComment
+#EnregistrerQuArK SaveQuArK
+#EcrireObjTexte ConvertObjsToText
+#ConstruireQObject ConstructQObject
+
+#GetSousElements GetSubElements
+#SousElements SubElements
+#Souselements SubElements
+#souselements SubElements
+#SousElementsC SubElementsC
+#FSousElements FSubElements
+#ofTvSousElement ofTreeViewSubElement
+
 #Charger LoadFile
 #NomFich theFilename
 #LienFichierExact ExactFileLink
