@@ -77,7 +77,7 @@ types = {
 def navTreePopupItems(current, editor, restricted):
     name = current.shortname
     select = qmenu.item("&Select",SelectMe,"Select")
-    stash = qmenu.item("&Mark", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
+    stash = qmenu.item("&Mark", StashMe, "Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
     restrict = qmenu.item("&Restrict", RestrictByMe, "|Restricts selections to being within this.\n\nGood if for example you want to work on the details of a desk or staircase for a while.")
     zoom = qmenu.item("&Zoom", ZoomToMe, "Fill the views with selected.")
     if restricted:
@@ -367,7 +367,7 @@ def LiftMe(m):
 #
 ###################################
 
-exttext = "|Extends the selection from this face to all the faces that make a single unbroken sheet with this one.\n\nSo you can for example move the bottom of a ceiling brush, and have the tops of the wall brushes follow, if they're on the same plane as the bottom of the ceiling.\n\nYou can also Link the selected faces, so that all of them can be snapped to the position of one of them with one click."
+exttext = "|Extends the selection from this face to all the faces that make a single unbroken sheet with this one.\n\nSo you can for example move the bottom of a ceiling brush, and have the tops of the wall brushes follow, if they're on the same plane as the bottom of the ceiling.\n\nYou can also Link the selected faces, so that all of them can be snapped to the position of one of them with one click.|intro.mapeditor.menu.html#invertface"
 
 def extendtolinked(editor,o):
   "extend the selection to the linked faces"
@@ -823,7 +823,7 @@ def browseListFunc(editor, list):
     
     BrowseListDlg('browselist', editor, pack, None, action)
 
-browseHelpString="|Makes a dialog for browsing the selected elements."
+browseHelpString="|Browse Multiple Selection:\n\nMakes a dialog for browsing the selected elements.|intro.mapeditor.menu.html#invertface"
 
 
 def linredmenu(self, editor, view):
@@ -880,19 +880,20 @@ def invertFaceSelClick(m):
     editor.invalidateviews()
     
 
-meninvertfacesel = quarkpy.qmenu.item("&Invert Face Selection", invertFaceSelClick, "|For polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces")
-menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
+meninvertfacesel = quarkpy.qmenu.item("&Invert Face Selection", invertFaceSelClick, "|Invert Face Selection:\n\nThis is for polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces.|intro.mapeditor.menu.html#invertface")
+
+menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict to Selection:\n\nRestrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups I Some Item I Restrict' on the right mouse menu for polys, etc.|intro.mapeditor.menu.html#invertface")
 menrestsel.state=quarkpy.qmenu.disabled
 
 menextsel = quarkpy.qmenu.item("&Extend Selection from Face", ExtendSelClick, exttext)
  
 mennosel = quarkpy.qmenu.item("No Selection in Map Views", NoSelClick, "|When this menu item is checked, selection in the map views is prevented.\n\nI find this useful when touring with the 3d viewer, since I tend to accidentally select things and create messes.");
 
-menunrestrict = quarkpy.qmenu.item("&Unrestrict Selection",UnrestrictClick,"|When selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.")
+menunrestrict = quarkpy.qmenu.item("&Unrestrict Selection",UnrestrictClick,"|Unrestrict Selection:\n\nWhen selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.|intro.mapeditor.menu.html#invertface")
 
 browseItem = qmenu.item("Browse Multiple Selection",browseMulClick,browseHelpString)
 
-zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "Fill the views with selected.")
+zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "|Zoom to selection:\n\nZooms the map views in to the selection.|intro.mapeditor.menu.html#invertface")
 
 def menunrestrictenable(editor):
   if getrestrictor(editor) is None:
@@ -915,8 +916,9 @@ for menitem, keytag in [(menextsel, "Extend Selection"),
 # -- selection menu items
 #
 
-stashItem = qmenu.item("&Mark selection", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
-clearItem = qmenu.item("Clear Mark", ClearMarkClick, "Unset Mark")
+stashItem = qmenu.item("&Mark selection", StashMe, "|Mark selection:\n\nThis command designates the selection as a special element for other (mostly somewhat advanced) commands, such as 'Lift face to marked group' on the face RMB, or the 'Reorganize Tree' commands on various map object RMB's.|intro.mapeditor.menu.html#invertface")
+
+clearItem = qmenu.item("Clear Mark", ClearMarkClick, "|Clear Mark:\n\nThis cancels the Mark selection.|intro.mapeditor.menu.html#invertface")
 
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
 #    reorganizePop.state = parentSelPop.state=qmenu.disabled
@@ -985,6 +987,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.21  2003/03/17 01:48:49  cdunde
+# Update hints and add infobase links where needed
+#
 # Revision 1.20  2002/05/19 04:42:55  tiglari
 # Hot key for Zoom to Selection
 #
