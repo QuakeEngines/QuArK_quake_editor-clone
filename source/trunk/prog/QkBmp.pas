@@ -26,7 +26,7 @@ unit QkBmp;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkImages;
+     QkObjects, QkFileObjects, QkImages, Game;
 
 type
  QBmp = class(QImages)
@@ -41,9 +41,12 @@ type
 
  {------------------------}
 
+procedure BmpInfoToPaletteLmp(const BmpInfo: TBitmapInfo256;
+           Lmp: PPaletteLmp);
+
 implementation
 
-uses Game, Setup, Quarkx, Qk1;
+uses Setup, Quarkx, Qk1;
 
 const
  bmpSignature = $4D42;
