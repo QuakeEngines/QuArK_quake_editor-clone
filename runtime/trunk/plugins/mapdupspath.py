@@ -87,8 +87,8 @@ def MakeLevelAxes(x):
     # project onto the xy plane
     #
     xp = quarkx.vect(x*mapx,x*mapy,0).normalized
-    y = matrix_rot_z(-math.pi/2)*xp
-    return x, y, (y^x).normalized
+    y = matrix_rot_z(math.pi/2)*xp
+    return x, y, (x^y).normalized
 
 def NewAxes(prevaxes, newx):
     try:
@@ -606,7 +606,7 @@ class PathDuplicator(StandardDuplicator):
             #
             neworigin = pathdist.normalized*0.5*templatesize.z + thisorigin
 
-            if pathlist[i]["level"]:
+            if pathlist[i]["level"] or self.dup["level"]:
                prevaxes = MakeLevelAxes(pathdist.normalized)
             else:
                prevaxes = NewAxes(prevaxes,pathdist.normalized)
@@ -710,10 +710,6 @@ class PathDuplicator(StandardDuplicator):
 
 
 
-#
-# Inspired by a suggestion by Meatball402 on the the
-#  Quake3World forum (for gtkradiant).
-#
 
 class InstanceDuplicator(PathDuplicator):
 
@@ -785,15 +781,15 @@ class InstanceDuplicator(PathDuplicator):
             if (self.dup["track"] or self.dup["elbow"]) and count>1:
                 if i<count-1:           
                     nextorigin = pathlist[i+1].origin
-                    pathdist = thisorigin-nextorigin
+                    pathdist = nextorigin-thisorigin
                     #
                     # otherwise just use last pathdist
                     #
-                if self.dup["elbow"] and i==count-1:
-                   pathdist=pathlist[count-2].origin-pathlist[count-1].origin
-                if singleimage:
-                   pathdist=-pathdist
-                if pathlist[i]["level"]:
+#                if self.dup["elbow"] and i==count-1:
+#                   pathdist=pathlist[count-2].origin-pathlist[count-1].origin
+                if self.dup["elbow"]:
+                   pathdist = thisorigin-pathlist[i-1].origin
+                if pathlist[i]["level"] or self.dup["level"]:
                    prevaxes = MakeLevelAxes(pathdist.normalized)
                 else:
                    prevaxes = NewAxes(prevaxes,pathdist.normalized)
@@ -838,7 +834,7 @@ def macro_instances(self):
     new=dup.copy()
     new.shortname = 'Elbow duplicator'
     new["macro"] = 'dup instance'
-    new["elbow"] = 1
+    new["elbow"] = "1"
     for item in new.subitems[:]:
         new.removeitem(item)
     new.translate(quarkx.vect(64, -64, 0))
@@ -859,6 +855,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.43  2001/06/17 21:10:57  tiglari
+#fix button captions
+#
 #Revision 1.42  2001/06/13 22:27:19  tiglari
 #fix instance dup bug
 #
