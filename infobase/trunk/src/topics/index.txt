@@ -1,5 +1,4 @@
 title: Specific Topics
-subdir: face beziers
-desc: mapsave
+subdir: face beziers mapsave mapread
 
 Here are discussions of various specific topics.
