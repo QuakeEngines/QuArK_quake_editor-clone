@@ -15,10 +15,11 @@
 #                    by tiglari@hexenworld.net
 #
 #   You may freely distribute modified & extended versions of
-#   this plugin as long as you give due credit to tiglari &
-#   Armin Rigo. (It's free software, just like Quark itself.)
+#   this plugin as long as you give due credit to the QuArK
+#   Community. (It's free software, just like Quark itself.)
 #
-#   Please notify bugs & improvements to tiglari@hexenworld.com
+#   Please notify bugs & improvements to tiglari@planetquake.com
+#   or http://groups.yahoo.com/group/quark-python
 #
 ###
 ##########################################################
@@ -26,12 +27,12 @@
 #$Header$
 
 Info = {
-   "plug-in":       "Caulk shader plugin",
+   "plug-in":       "Caulk plugin",
    "desc":          "Pasting caulk shader on stuff",
-   "date":          "20 Aug 2000",
+   "date":          "20 Aug 2000->Jan 26 2003",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.com",
-   "quark":         "Version 6.0b2" 
+   "quark":         "Version 6.3" 
 }
 
 
@@ -148,4 +149,7 @@ quarkpy.mapentities.FaceType.menu = tagmenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2001/03/01 19:13:54  decker_dk
+#Corrected CVS log and header tags.
+#
 #
