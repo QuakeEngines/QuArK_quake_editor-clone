@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/04/18 18:47:57  arigo
+Quake 3 : auto export shaders
+
 }
 
 unit QkQ3;
@@ -208,9 +211,9 @@ begin
     { include 'map' attribute from the name of the stage }
    if Q.Name <> LoadStr1(5699) then
     Result:=Result + chr(vk_Tab) + chr(vk_Tab) + 'map ' + Q.Name + #13#10;
-   for I:=0 to Specifics.Count-1 do  { stage attributes }
+   for I:=0 to Q.Specifics.Count-1 do  { stage attributes }
     begin
-     Spec:=Specifics[I];
+     Spec:=Q.Specifics[I];
      J:=Pos('=', Spec);
        { ignore specifics that cannot be written as text }
      if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
