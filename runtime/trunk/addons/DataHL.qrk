@@ -27,7 +27,9 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
-// 2000-05-01   [KB] Added Kanon Ball entities
+// 2000-05-07   [FA] Added FireArms 1.1 entities and texture-links
+//
+// 2000-05-01   [KB] Added Kanonball entities
 //
 // 2000-03-14   [CS] Updated texture-links for Counter-Strike beta6
 //
@@ -825,7 +827,7 @@ QQRKSRC1
 
     Sabaneta 2050 Entities.qtxfolder =
     {
-      ;desc = "Send additions/corrections to decker@post1.tele.dk"
+        ;desc = "Send additions/corrections to decker@post1.tele.dk"
 
         SB Required Entities.qtxfolder = {
                 info_game_sabaneta:e    = {              ;desc = "Sabaneta 2050 Game Entity" }
@@ -842,15 +844,32 @@ QQRKSRC1
         }
     }
 
-    Kanon Ball Entities.qtxfolder =
+    Kanonball Entities.qtxfolder =
     {
-      ;desc = "Send additions/corrections to decker@post1.tele.dk"
+        ;desc = "Send additions/corrections to decker@post1.tele.dk"
 
         KB Entities.qtxfolder = {
-                info_kb_deathmatch:e    = { t_orig_ang=!   ;desc="Kanon Ball Player Start" }
+                info_kb_deathmatch:e    = { t_orig_ang=!   ;desc="Kanonball Player Start" }
                 team_goal:b             = {                ;desc="Team Goal" ;incl="trigpoly" }
                 ball_launcher:e         = { t_orig_ang=!   ;desc="Ball launcher" launchspeed="100" launchangle="0" }
                 crowd:e                 = { origin="0 0 0" ;desc="Crowd cheer sound effect" }
+        }
+    }
+
+    FireArms Entities.qtxfolder =
+    {
+        ;desc = "Send additions/corrections to decker@post1.tele.dk"
+
+        FA Entities.qtxfolder = {
+                info_playerstart_blue:e = {t_orig_ang=! ;desc="Blue Force teamplay start" }
+                info_playerstart_red:e  = {t_orig_ang=! ;desc="Red Force teamplay start" }
+                trigger_multiple:b      = {             ;desc="Trigger: Activate multiple" ;incl="trigpoly" }
+                fa_team_goal:e          = {t_orig_ang=! ;desc="Used for doing team goal operations" }
+                fa_team_item:e          = {t_orig_ang=! ;desc="Used team items" }
+                fa_parachute:e          = {t_orig_ang=! ;desc="Parachute" }
+                info_firearms_detect:e  = {t_orig_ang=! ;desc="Firearms Detection Entity" }
+                fa_push_point:b         = {             ;desc="Push Point" ;incl="trigpoly" }
+                fa_push_flag:e          = {t_orig_ang=! ;desc="Push Flag" }
         }
     }
 
@@ -1776,6 +1795,41 @@ QQRKSRC1
                         "models/wire_red16.mdl"$0D
                         "models/wire_red24.mdl"$0D
                         "models/wire_red32.mdl"
+        }
+
+
+//
+// FireArms
+//
+        t_fa_trigger_multiple:form = {
+            wait: = { txt="&" hint="Delay before reset" }
+            impulse: = { txt="&" typ="C" hint="Team Trigger"
+                items="Either team"$0D
+                      "Red Force only"$0D
+                      "Blue Force only"
+                values="0"$0D"1"$0D"2"
+            }
+            team: = {txt="&" typ="C" hint="Team Item Required"
+                items="No Item Required"$0D
+                      "Neutral Item"$0D
+                      "Red Force Item"$0D
+                      "Blue Force Item"
+                values="0"$0D"-1"$0D"1"$0D"2"
+            }
+            dmg: = { txt="&" typ="C" hint="Capture Item?"
+                items="No"$0D
+                      "Yes"
+                values="0"$0D"1"
+            }
+        }
+        t_fa_trigger_multiple_settings:incl = {
+            fa: = {
+                    Typ = "B"
+                    Txt = "(FireArms)"
+                    Cap = "Push..."
+                    form = "t_fa_trigger_multiple:form"
+                    Hint = "FireArms settings"
+            }
         }
 
 //
@@ -11927,6 +11981,7 @@ values=
         trigger_multiple:form = {
                 wait: = { Txt="&" Hint="Delay before reset" }
                 t_trigger = !
+                t_fa_trigger_multiple_settings = !
         }
         trigger_once:form = { t_trigger = ! }
         trigger_push:form = {
@@ -13496,7 +13551,7 @@ values=
         presidente_dos:form = { t_player = ! }
 
 //
-// Kanon Ball
+// Kanonball
 //
         info_kb_deathmatch:form =
         {
@@ -13529,6 +13584,85 @@ values=
             }
             volume: = { txt="&" hint="Cheer volume (0-100)" }
         }
+
+//
+// FireArms
+//
+        fa_team_goal:form = {
+                t_targetname=!
+                t_target=!
+                spawnflags: = { Typ="X1" Cap="Once Only" }
+                team: = { txt="&" typ="C" hint="Team/Item Applies To"
+                        items="Either Team"$0D
+                              "Red Force"$0D
+                              "Blue Force"
+                        values="-1"$0D"1"$0D"2"
+                }
+                message: = { Txt="&" hint="Activation Message" }
+                dmg: = { txt="&" typ="C" hint="Goal Effect"
+                        items="Nothing"$0D
+                              "Respawn Team"
+                        values="0"$0D"1"
+                }
+                frags: = { txt="&" hint="Team Point Gain (+/-)" }
+                impulse: = {txt="&" typ="C" hint="Point Gain Given To"
+                        items="All Team Members"$0D
+                              "Just Activator"
+                        values="0"$0D"1"
+                }
+                health: = { txt="&" typ="C" hint="Reset Team Items?"
+                        items="No"$0D
+                              "Yes"
+                        values="0"$0D"1"
+                }
+                speed = {txt="&" hint="Reinforcement Gain (+/-)" }
+        }
+        fa_team_item:form = {
+                t_targetname=!
+                t_target=!
+                team: = {txt="&" typ="C" hint="Owner"
+                        items="Either team"$0D
+                              "Red Force"$0D
+                              "Blue Force"
+                        values="-1"$0D"1"$0D"2"
+                }
+                impulse: = {txt="&" typ="C" hint="Carrier Death Placement"
+                        items="At Item Spawn Point"
+                              "Where Carrier Dies"
+                        values="0"$0D"1"
+                }
+                message: = {txt="&" hint="Item Name" }
+                model: = {txt="&" hint="Item Model to Use"}
+                noise3: = {txt="&" hint="Carrier Killed Target" }
+                noise: = {txt="&" hint="Pickup Sound" }
+                noise1: = {txt="&" hint="Drop Sound" }
+                noise2: = {txt="&" hint="Capture Sound" }
+        }
+        fa_parachute:form = {
+                t_targetname=!
+                t_target=!
+                bbox = '-8 -8 -8 8 8 8'
+        }
+        info_firearms_detect:form = {
+                title: = {txt="&" hint="Map Title" }
+                impulse: = {txt="&" hint="Red maxplayer Factor" }
+                dmg: = {txt="&" hint="Blue maxplayer Factor" }
+        }
+        fa_push_point:form = {
+                t_targetname=!
+                t_target=!
+                message: = {txt="&" hint="Point Description" }
+                noise: = {txt="&" hint="This Flag" }
+                noise1: = {txt="&" hint="Next Flag" }
+                noise2: = {txt="&" hint="Previous Flag" }
+                noise3: = {txt="&" hint="Win Target" }
+        }
+        fa_push_flag:form = {
+                t_targetname=!
+                t_target=!
+                bbox = '-8 -8 -16 8 8 16'
+        }
+
 /////////////////////
   }
 
@@ -19600,6 +19734,9 @@ values=
     }
   }
 
+//
+// Sabaneta 2050
+//
   SBTextures.qtx =
   {
     ToolBox = "Texture Browser..."
@@ -19644,6 +19781,321 @@ values=
         sb_crane_usg.wl = { t_sb_misc = ! }
         Foto01.wl = { t_sb_misc = ! }
         Foto11.wl = { t_sb_misc = ! }
+      }
+    }
+  }
+
+//
+// FireArms
+//
+  FATextures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "FireArms Textures.qtxfolder"
+
+    t_fa_push:incl = {s = "firearms" d = "push" h = "C"}
+    t_fa_decals:incl = {s = "firearms" d = "decals" h = "C"}
+    t_fa_firearms:incl = {s = "firearms" d = "firearms" h = "C"}
+
+    FireArms Textures.qtxfolder =
+    {
+      push.txlist =
+      {
+        hedge1.wl = { t_fa_push=! }
+        bark5.wl = { t_fa_push=! }
+        {forest4.wl = { t_fa_push=! }
+        {hedge5.wl = { t_fa_push=! }
+        dirt1.wl = { t_fa_push=! }
+      }
+      decals.txlist =
+      {
+        {BLOOD1.wl = { t_fa_decals=! }
+        {BLOOD2.wl = { t_fa_decals=! }
+        {BLOOD3.wl = { t_fa_decals=! }
+        {BLOOD4.wl = { t_fa_decals=! }
+        {BLOOD5.wl = { t_fa_decals=! }
+        {BLOOD6.wl = { t_fa_decals=! }
+        {BPROOF1.wl = { t_fa_decals=! }
+        {BREAK1.wl = { t_fa_decals=! }
+        {BREAK2.wl = { t_fa_decals=! }
+        {BREAK3.wl = { t_fa_decals=! }
+      }
+      firearms.txlist =
+      {
+        !POOLWATER.wl = { t_fa_firearms=! }
+        ARCTIC.wl = { t_fa_firearms=! }
+        ARCTIC1.wl = { t_fa_firearms=! }
+        ARCTIC2.wl = { t_fa_firearms=! }
+        ARCTIC3.wl = { t_fa_firearms=! }
+        ARCTIC4.wl = { t_fa_firearms=! }
+        BARK3.wl = { t_fa_firearms=! }
+        BARK4.wl = { t_fa_firearms=! }
+        BARK5.wl = { t_fa_firearms=! }
+        BARREL1.wl = { t_fa_firearms=! }
+        BARREL2.wl = { t_fa_firearms=! }
+        BERSERKER.wl = { t_fa_firearms=! }
+        BRICKWORK.wl = { t_fa_firearms=! }
+        BRICKWORK2A.wl = { t_fa_firearms=! }
+        BRICKWORK2B.wl = { t_fa_firearms=! }
+        BRICKWORK3.wl = { t_fa_firearms=! }
+        BRICKWORK4.wl = { t_fa_firearms=! }
+        BRICKWORK5.wl = { t_fa_firearms=! }
+        BRICKWORK6.wl = { t_fa_firearms=! }
+        BRICKWORK7.wl = { t_fa_firearms=! }
+        CARPET.wl = { t_fa_firearms=! }
+        CLAY.wl = { t_fa_firearms=! }
+        COM_LOGO.wl = { t_fa_firearms=! }
+        CONT_BLU_END1.wl = { t_fa_firearms=! }
+        CONT_BLU_SID1.wl = { t_fa_firearms=! }
+        CONT_GRN_END1.wl = { t_fa_firearms=! }
+        CONT_GRN_SID1.wl = { t_fa_firearms=! }
+        CONT_YEL_END1.wl = { t_fa_firearms=! }
+        CONT_YEL_SID1.wl = { t_fa_firearms=! }
+        CRATE1A.wl = { t_fa_firearms=! }
+        CRATE1B.wl = { t_fa_firearms=! }
+        CRATE1C.wl = { t_fa_firearms=! }
+        CRATE1D.wl = { t_fa_firearms=! }
+        CRATEBULLETS.wl = { t_fa_firearms=! }
+        CRATEHEALTH.wl = { t_fa_firearms=! }
+        CRATESIDECLEAR.wl = { t_fa_firearms=! }
+        CRATESIDEMISSIL.wl = { t_fa_firearms=! }
+        DIRT06.wl = { t_fa_firearms=! }
+        DIRT1.wl = { t_fa_firearms=! }
+        DOOR1.wl = { t_fa_firearms=! }
+        DOOR_WOODEN.wl = { t_fa_firearms=! }
+        DOOR_WOODEN2.wl = { t_fa_firearms=! }
+        DOOR_WOODEN3.wl = { t_fa_firearms=! }
+        DOOR_WOODEN4.wl = { t_fa_firearms=! }
+        DOOR_WOODEN5.wl = { t_fa_firearms=! }
+        EMBLEM_BLUE.wl = { t_fa_firearms=! }
+        EMBLEM_RED.wl = { t_fa_firearms=! }
+        FA_CRATE1.wl = { t_fa_firearms=! }
+        FA_CRATE2.wl = { t_fa_firearms=! }
+        FA_CRATE3.wl = { t_fa_firearms=! }
+        FA_CRATE4.wl = { t_fa_firearms=! }
+        FA_CRATE_BLUE.wl = { t_fa_firearms=! }
+        FA_CRATE_LOGO.wl = { t_fa_firearms=! }
+        FA_CRATE_RED.wl = { t_fa_firearms=! }
+        FA_LOGO.wl = { t_fa_firearms=! }
+        GATEWAY1.wl = { t_fa_firearms=! }
+        GOTHIC1.wl = { t_fa_firearms=! }
+        GWA_SIGN.wl = { t_fa_firearms=! }
+        HEADUP_MAP.wl = { t_fa_firearms=! }
+        HEDGE1.wl = { t_fa_firearms=! }
+        ICE1.wl = { t_fa_firearms=! }
+        ICE2.wl = { t_fa_firearms=! }
+        ICE3.wl = { t_fa_firearms=! }
+        ICE4.wl = { t_fa_firearms=! }
+        JOLLYROGER.wl = { t_fa_firearms=! }
+        METAL1.wl = { t_fa_firearms=! }
+        METAL_BLU.wl = { t_fa_firearms=! }
+        METAL_BLU2.wl = { t_fa_firearms=! }
+        METAL_DARK.wl = { t_fa_firearms=! }
+        METAL_OLD.wl = { t_fa_firearms=! }
+        METAL_RUST.wl = { t_fa_firearms=! }
+        METAL_RUST2.wl = { t_fa_firearms=! }
+        PEBBLES.wl = { t_fa_firearms=! }
+        PEBBLES2.wl = { t_fa_firearms=! }
+        PEBBLES3.wl = { t_fa_firearms=! }
+        PEBBLES4.wl = { t_fa_firearms=! }
+        PEBBLES5.wl = { t_fa_firearms=! }
+        PROP1.wl = { t_fa_firearms=! }
+        PROP2.wl = { t_fa_firearms=! }
+        PROP6.wl = { t_fa_firearms=! }
+        RCK_HOLZ2.wl = { t_fa_firearms=! }
+        RCK_HOLZ3.wl = { t_fa_firearms=! }
+        ROCKS1.wl = { t_fa_firearms=! }
+        ROCKS2.wl = { t_fa_firearms=! }
+        ROCKS3.wl = { t_fa_firearms=! }
+        ROCKS4.wl = { t_fa_firearms=! }
+        ROCK_CEMENT2.wl = { t_fa_firearms=! }
+        ROCK_CEMENT6.wl = { t_fa_firearms=! }
+        ROCK_CEMENT7.wl = { t_fa_firearms=! }
+        ROCK_FIFTSFIL1B.wl = { t_fa_firearms=! }
+        ROCK_FIFTSFIL2B.wl = { t_fa_firearms=! }
+        ROCK_FIFTSFILE1.wl = { t_fa_firearms=! }
+        ROCK_FIFTSFILE2.wl = { t_fa_firearms=! }
+        ROCK_SNOW4.wl = { t_fa_firearms=! }
+        ROOF1_A1.wl = { t_fa_firearms=! }
+        RUSSIAN1.wl = { t_fa_firearms=! }
+        RUSSIAN2.wl = { t_fa_firearms=! }
+        RUSSIAN3.wl = { t_fa_firearms=! }
+        RUS_AD2.wl = { t_fa_firearms=! }
+        RUS_BULG1.wl = { t_fa_firearms=! }
+        RUS_FELIX.wl = { t_fa_firearms=! }
+        RUS_GERASIM.wl = { t_fa_firearms=! }
+        RUS_LEF6.wl = { t_fa_firearms=! }
+        RUS_REICH.wl = { t_fa_firearms=! }
+        RUS_SEROV.wl = { t_fa_firearms=! }
+        RUS_SEROV1.wl = { t_fa_firearms=! }
+        RUS_VOIN7.wl = { t_fa_firearms=! }
+        RUS_WINDOW1.wl = { t_fa_firearms=! }
+        SAND1.wl = { t_fa_firearms=! }
+        SAND2.wl = { t_fa_firearms=! }
+        SAND3.wl = { t_fa_firearms=! }
+        SCANIA_FRONT.wl = { t_fa_firearms=! }
+        SCANIA_SIDE.wl = { t_fa_firearms=! }
+        SCANIA_TOP.wl = { t_fa_firearms=! }
+        SCANIA_WHEEL.wl = { t_fa_firearms=! }
+        SNOW1.wl = { t_fa_firearms=! }
+        SNOW2.wl = { t_fa_firearms=! }
+        SNOW3.wl = { t_fa_firearms=! }
+        SNOW_CAMO1.wl = { t_fa_firearms=! }
+        SNOW_CAMO2.wl = { t_fa_firearms=! }
+        SNOW_CAMO3.wl = { t_fa_firearms=! }
+        SNOW_CAMO4.wl = { t_fa_firearms=! }
+        SNOW_CAMO5.wl = { t_fa_firearms=! }
+        SNOW_GROUND.wl = { t_fa_firearms=! }
+        SNOW_TRK_FRT.wl = { t_fa_firearms=! }
+        SNO_SND_SID1.wl = { t_fa_firearms=! }
+        SNO_SND_SID2.wl = { t_fa_firearms=! }
+        SNO_SND_TOP1.wl = { t_fa_firearms=! }
+        SNO_TRK_DR.wl = { t_fa_firearms=! }
+        SNO_TRK_IN.wl = { t_fa_firearms=! }
+        SNO_TRK_MISC1.wl = { t_fa_firearms=! }
+        SNO_TRK_MISC2.wl = { t_fa_firearms=! }
+        SNO_TRK_MISC3.wl = { t_fa_firearms=! }
+        SNO_TRK_SD.wl = { t_fa_firearms=! }
+        SNO_TRK_SD2.wl = { t_fa_firearms=! }
+        SNO_TRK_TOP.wl = { t_fa_firearms=! }
+        STONE.wl = { t_fa_firearms=! }
+        STONE_SNOW.wl = { t_fa_firearms=! }
+        STONE_SNOW2.wl = { t_fa_firearms=! }
+        STONE_SNOW3.wl = { t_fa_firearms=! }
+        STONE_SNOW4.wl = { t_fa_firearms=! }
+        TAPESTRY.wl = { t_fa_firearms=! }
+        TAPESTRY2.wl = { t_fa_firearms=! }
+        TEMPLE41.wl = { t_fa_firearms=! }
+        WALL10A.wl = { t_fa_firearms=! }
+        WALL11A.wl = { t_fa_firearms=! }
+        WALL12A.wl = { t_fa_firearms=! }
+        WALL12B.wl = { t_fa_firearms=! }
+        WALL12C.wl = { t_fa_firearms=! }
+        WALL13A.wl = { t_fa_firearms=! }
+        WALL14A.wl = { t_fa_firearms=! }
+        WALL14F.wl = { t_fa_firearms=! }
+        WALL15A.wl = { t_fa_firearms=! }
+        WALL15B.wl = { t_fa_firearms=! }
+        WALL15C.wl = { t_fa_firearms=! }
+        WALL15D.wl = { t_fa_firearms=! }
+        WALL15E.wl = { t_fa_firearms=! }
+        WALL16A.wl = { t_fa_firearms=! }
+        WALL17A.wl = { t_fa_firearms=! }
+        WALL18A.wl = { t_fa_firearms=! }
+        WALL19A.wl = { t_fa_firearms=! }
+        WALL1A.wl = { t_fa_firearms=! }
+        WALL20A.wl = { t_fa_firearms=! }
+        WALL20B.wl = { t_fa_firearms=! }
+        WALL20C.wl = { t_fa_firearms=! }
+        WALL20D.wl = { t_fa_firearms=! }
+        WALL20E.wl = { t_fa_firearms=! }
+        WALL20F.wl = { t_fa_firearms=! }
+        WALL20G.wl = { t_fa_firearms=! }
+        WALL21A.wl = { t_fa_firearms=! }
+        WALL21B.wl = { t_fa_firearms=! }
+        WALL21C.wl = { t_fa_firearms=! }
+        WALL22A.wl = { t_fa_firearms=! }
+        WALL22B.wl = { t_fa_firearms=! }
+        WALL23A.wl = { t_fa_firearms=! }
+        WALL24A.wl = { t_fa_firearms=! }
+        WALL25A.wl = { t_fa_firearms=! }
+        WALL26A.wl = { t_fa_firearms=! }
+        WALL27A.wl = { t_fa_firearms=! }
+        WALL28A.wl = { t_fa_firearms=! }
+        WALL29A.wl = { t_fa_firearms=! }
+        WALL2A.wl = { t_fa_firearms=! }
+        WALL30A.wl = { t_fa_firearms=! }
+        WALL3A.wl = { t_fa_firearms=! }
+        WALL3B.wl = { t_fa_firearms=! }
+        WALL4A.wl = { t_fa_firearms=! }
+        WALL4B.wl = { t_fa_firearms=! }
+        WALL5A.wl = { t_fa_firearms=! }
+        WALL5B.wl = { t_fa_firearms=! }
+        WALL6A.wl = { t_fa_firearms=! }
+        WALL6B.wl = { t_fa_firearms=! }
+        WALL7A.wl = { t_fa_firearms=! }
+        WALL8A.wl = { t_fa_firearms=! }
+        WALL9A.wl = { t_fa_firearms=! }
+        WALL_BLUE.wl = { t_fa_firearms=! }
+        WALL_RED.wl = { t_fa_firearms=! }
+        WALL_STONE1.wl = { t_fa_firearms=! }
+        WALL_STONE10.wl = { t_fa_firearms=! }
+        WALL_STONE11.wl = { t_fa_firearms=! }
+        WALL_STONE2.wl = { t_fa_firearms=! }
+        WALL_STONE3.wl = { t_fa_firearms=! }
+        WALL_STONE4.wl = { t_fa_firearms=! }
+        WALL_STONE5.wl = { t_fa_firearms=! }
+        WALL_STONE6.wl = { t_fa_firearms=! }
+        WALL_STONE7.wl = { t_fa_firearms=! }
+        WALL_STONE8.wl = { t_fa_firearms=! }
+        WALL_STONE9.wl = { t_fa_firearms=! }
+        WHITEBOAT.wl = { t_fa_firearms=! }
+        WOOD1.wl = { t_fa_firearms=! }
+        WOOD10.wl = { t_fa_firearms=! }
+        WOOD11.wl = { t_fa_firearms=! }
+        WOOD12.wl = { t_fa_firearms=! }
+        WOOD13.wl = { t_fa_firearms=! }
+        WOOD14.wl = { t_fa_firearms=! }
+        WOOD15.wl = { t_fa_firearms=! }
+        WOOD16.wl = { t_fa_firearms=! }
+        WOOD17.wl = { t_fa_firearms=! }
+        WOOD18.wl = { t_fa_firearms=! }
+        WOOD19.wl = { t_fa_firearms=! }
+        WOOD2.wl = { t_fa_firearms=! }
+        WOOD20.wl = { t_fa_firearms=! }
+        WOOD21.wl = { t_fa_firearms=! }
+        WOOD22.wl = { t_fa_firearms=! }
+        WOOD23.wl = { t_fa_firearms=! }
+        WOOD24.wl = { t_fa_firearms=! }
+        WOOD25.wl = { t_fa_firearms=! }
+        WOOD26.wl = { t_fa_firearms=! }
+        WOOD27.wl = { t_fa_firearms=! }
+        WOOD28.wl = { t_fa_firearms=! }
+        WOOD29.wl = { t_fa_firearms=! }
+        WOOD3.wl = { t_fa_firearms=! }
+        WOOD30.wl = { t_fa_firearms=! }
+        WOOD31.wl = { t_fa_firearms=! }
+        WOOD32.wl = { t_fa_firearms=! }
+        WOOD33.wl = { t_fa_firearms=! }
+        WOOD34.wl = { t_fa_firearms=! }
+        WOOD35.wl = { t_fa_firearms=! }
+        WOOD36.wl = { t_fa_firearms=! }
+        WOOD37.wl = { t_fa_firearms=! }
+        WOOD38.wl = { t_fa_firearms=! }
+        WOOD39.wl = { t_fa_firearms=! }
+        WOOD4.wl = { t_fa_firearms=! }
+        WOOD40.wl = { t_fa_firearms=! }
+        WOOD41.wl = { t_fa_firearms=! }
+        WOOD42.wl = { t_fa_firearms=! }
+        WOOD43.wl = { t_fa_firearms=! }
+        WOOD44.wl = { t_fa_firearms=! }
+        WOOD45.wl = { t_fa_firearms=! }
+        WOOD46.wl = { t_fa_firearms=! }
+        WOOD47.wl = { t_fa_firearms=! }
+        WOOD48.wl = { t_fa_firearms=! }
+        WOOD49.wl = { t_fa_firearms=! }
+        WOOD5.wl = { t_fa_firearms=! }
+        WOOD6.wl = { t_fa_firearms=! }
+        WOOD7.wl = { t_fa_firearms=! }
+        WOOD8.wl = { t_fa_firearms=! }
+        WOOD9.wl = { t_fa_firearms=! }
+        WOOD_ROOF.wl = { t_fa_firearms=! }
+        {BARRIER1.wl = { t_fa_firearms=! }
+        {BARRIER2.wl = { t_fa_firearms=! }
+        {FENCE1.wl = { t_fa_firearms=! }
+        {FENCE2.wl = { t_fa_firearms=! }
+        {FOREST4.wl = { t_fa_firearms=! }
+        {HEDGE5.wl = { t_fa_firearms=! }
+        {LADDER_BLUE.wl = { t_fa_firearms=! }
+        {LADDER_RED.wl = { t_fa_firearms=! }
+        {LADDER_SILVER.wl = { t_fa_firearms=! }
+        {RAIL4.wl = { t_fa_firearms=! }
+        {RAIL5.wl = { t_fa_firearms=! }
+        {SNOW_FENCE.wl = { t_fa_firearms=! }
+        {SNOW_NET.wl = { t_fa_firearms=! }
+        {SNOW_NET2.wl = { t_fa_firearms=! }
+        {SNOW_WIRE.wl = { t_fa_firearms=! }
+        {SNOW_WIRE2.wl = { t_fa_firearms=! }
       }
     }
   }
