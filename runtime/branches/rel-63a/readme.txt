@@ -1,5 +1,7 @@
+                         QuArK 6.3
 
-                 QuArK 6.3 Release Candidate 2
+ * [tiglari] remove partial Mohaa support (lod terrain can't be supported
+     without more info) to a Mohaa support addon.
 
  * [tiglari] Fix problems with texture positioning in Classic Quake
      and Quark etp mode (reported on the rust QuArK forum, argggh
@@ -10,8 +12,6 @@
       for Browse Multiple Selection)
 
  * [tiglari] remove debug statements from various files
-
-                 QuArK 6.3 Release Candidate 1
 
  * [tiglari] Replace texture dialog: if just a face is selected,
     its texture is now loaded into dialog (bug report from fpbrowser)
