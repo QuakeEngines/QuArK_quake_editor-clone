@@ -1,3 +1,11 @@
+                       QuArK 6.3e update 3
+
+    * [tiglari] fix problem with HL .pts-file loading (with some tools,
+         a possibly empty pts file is always written, so .pts file must
+         be checked for content)
+         
+    * [tiglari] fix problem with compilation of maps with extruded wallmakers,
+         due to bad texture scales on edges.
 
                        QuArK 6.3e update 2
 
