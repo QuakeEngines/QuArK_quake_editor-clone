@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.83  2001/02/20 08:07:41  tiglari
+//DefaultTextureScale added for Q3A
+//
 //Revision 1.82  2001/02/18 20:21:37  decker_dk
 //Added 'Half-Life info_decal Helper:d' to a new group 'Game specific'.
 //
@@ -876,7 +879,7 @@ QQRKSRC1
         DefaultTextureClip = "common/clip"
         DefaultTextureCaulk = "common/caulk"
         DefaultTextureScale = "0.5"
-     
+
 
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
@@ -3657,7 +3660,7 @@ QQRKSRC1
           {
             origin        = "0 0 0"
             macro         = "dup path"
-            target        = "p1"
+            target        = "dpath1"
             speeddraw     = "0"
             scaletexture  = "0"
             Template:g =
@@ -3682,6 +3685,27 @@ QQRKSRC1
                 down:f  = { v = '  0   0 -32    0 128 -32  128   0 -32' tex = "[auto]" m = "1" }
               }
             }
+          }
+          PathDup.Point:d =
+          {
+            macro       = "dup path_point"
+            origin      = "96 96 0"
+            targetname  = "dpath1"
+            target      = "dpath2"
+          }
+          PathDup.Point:d =
+          {
+            macro       = "dup path_point"
+            origin      = "192 96 0"
+            targetname  = "dpath2"
+            target      = "dpath3"
+          }
+          PathDup.Point:d =
+          {
+            macro       = "dup path_point"
+            origin      = "192 192 0"
+            targetname  = "dpath3"
+            target      = "dpathX"
           }
         }
       }
