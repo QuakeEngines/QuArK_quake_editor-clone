@@ -379,7 +379,7 @@ class TagModesBar(ToolBar):
         btn19 = qtoolbar.button(texflagsClick, "Texture flag settings||Texture flag settings:\n\nThis will open the texture flag settings window. The setting of these flags, or a combination of them, gives the selected brush unique characteristics. Each setting has a 'fly over hint' to help tell you what it does.", ico_dict['ico_maped'], 22, infobaselink="intro.texturebrowser.details.html#textureflags")
 
 
-        return [btn0, btn2, btn3, btn4, btn5, btn1, qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, qtoolbar.sep, btn11, btn12, btn13, btn14, qtoolbar.sep, btn15, btn16, qtoolbar.sep, btn17, btn18, btn19]
+        return [btn0, btn2, btn3, btn4, btn5, btn1, qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, qtoolbar.sep, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19]
 
 
 # Now we add this toolbar, to the list of other toolbars,
@@ -397,6 +397,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.3  2003/07/14 20:25:14  cdunde
+# To add selection toolbar and update tag toolbar
+#
 # Revision 1.2  2003/05/09 01:01:08  cdunde
 # Added function buttons for tagtoolbar
 #
