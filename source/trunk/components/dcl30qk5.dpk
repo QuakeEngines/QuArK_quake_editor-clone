@@ -41,11 +41,7 @@ contains
   SmArrowBtn,
   SyntaxMemo,
   TB97,
-  ZipMstr,
-  UnzDll,
-  ZCallBck,
-  ZipDll,
-  ZipMsg,
-  JpegFileWrapper;
+  JpegFileWrapper,
+  Pasjpeg;
 
 end.
