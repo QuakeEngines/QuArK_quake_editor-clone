@@ -3,8 +3,7 @@ author: tiglari, etc.
 
 <ul>
 <li>Path Duplicator: (decker, tiglari)
-    tiling of substructures, curved & triangular elbows, possibly
-    rework handle code (all path handles to be visible when dup selected)
+different kinds of elbows?
 
 <li>OsFolders: (tiglari)
     edit the properties of pre-existing OsFolders

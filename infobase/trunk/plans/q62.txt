@@ -28,11 +28,13 @@ to do it for direct insert from toolbox menu.
 
 <li>Path duplicator: (decker, tiglari)
 <br>status: orientation bug fixed by math remake, basic texture
-positioning done.
+positioning done, repeating substructures (tiles) done but still
+terminology issues ("Tile", or "Repeater", or ???).  Needs serious
+docco, methinks.
 
 <li>Brush curve duplicator: (tiglari)
-<br>status: texture positioning done;
-            `thick' to be delayed to 6.3.
+<br>status: texture positioning done, more orientation specifics
+added.  `thick' to be delayed to 6.3.
 
 <li>Stairway duplicator: (decker)
 <br>status: done, further developments envisioned.
