@@ -1,3 +1,9 @@
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
 unit QkMd3;
 
 interface
