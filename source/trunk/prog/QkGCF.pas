@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2004/12/17 14:29:02  alexander
+fixed crash
+
 Revision 1.2  2004/12/02 20:53:06  alexander
 added format names for hl2
 use vtf textures in original size again
@@ -615,7 +618,7 @@ end;
 
 
 initialization
-  Hgcfwrap := LoadLibrary('gcfwrap.dll');
+  Hgcfwrap := LoadLibrary('dlls/gcfwrap.dll');
   if Hgcfwrap >= 32 then { success }
   begin
     GCFOpen         := GetProcAddress(Hgcfwrap, 'GCFOpen');
