@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2002/12/18 00:49:17  tiglari
+Add Genesis3D code
+
 Revision 1.36  2002/06/09 02:17:31  tiglari
 add SoF2 gamecode
 
@@ -1097,7 +1100,7 @@ var
  QClassInfo: TFileObjectClassInfo;
  Description: String;
 begin
- QClassPtr:=GetRegisteredQObject('.'+Ext);
+ QClassPtr:=RequestClassOfType('.'+Ext);
  Description:=Ext;
  if (QClassPtr<>Nil) and (QClassPtr.InheritsFrom(QFileObject)) then
   begin
