@@ -27,11 +27,15 @@ of editing sessions
 
 <li>Qrk editor: (?)
 <br>Edit .qrk's in the style of a decent XML editor
+<br>Andy's form-editing extension to the explorer are basically
+implementing this.
 
 <li>Brush primitives: (?)
 <br>Some internal use (suggestion: use
 axis base coord system with threepoints[0] as
 origin; should speed up writing to bp format)
+<br>steps towards this in the NuTex branch.  Probably Not a
+Good Idea.
 
 <li>Big XY view: (?)
 <br> whole-screen XY view, with other stuff on RMB's
@@ -44,5 +48,8 @@ ur head...
 <br>Laid out more like in Radiant, which I like
 better than Quark's long list.
 
+<li>More Game Formats: (?)
+<br>Unreal engine, Serious Sam, Heroes of Might and Magic (Quark was
+used some internally for either the one coming out now or the one
+before it, so maybe this one has a chance).
 </ul>
-
