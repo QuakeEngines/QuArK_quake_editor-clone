@@ -1269,7 +1269,7 @@ def attach_sides(data, j, brush, bottom, cycle, names, texpos):
   #          squawk(name)
             side = texpos.findname(name)
             def mappoint(p, axes=axes,org=org,new=new):
-                return restore(p,axes,org,new)
+                return restore(p,axes,org)
             if side is not None:
                 p0, p1, p2 = tuple(map(mappoint,(side["p0"],side["p1"],side["p2"])))
                 new.setthreepoints((p0, p1, p2),2)
@@ -1334,7 +1334,10 @@ def make_brushes(dup, cycles, names, limit=0):
   
 
 #
-# Used by make_patches below, rethink prolly called for
+# Used by make_patches, attach_sides below, rethink prolly called for
+#   the idea is to express the threepoints in the local coord
+#   system for the segment, then project onto the face if there
+#   is one (in case there's been scaling).
 #
 def restore(postuple, axes, org, face=None):
     x, y, z = postuple
@@ -2885,6 +2888,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.9  2001/05/22 22:14:38  tiglari
+#texture info built on reversion to dup from dissociated group.  Alignment still wonky
+#
 #Revision 1.8  2001/05/13 02:59:48  tiglari
 #caulk hidden joins
 #
