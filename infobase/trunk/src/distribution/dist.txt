@@ -10,12 +10,12 @@ In preparation for creating a distribution, you'll need to carry out a
 couple of preliminary steps.
 
 <ol><li>Download and install Nullsoft Scriptable Install System (NSIS)
-2.0 beta 3 or higher from 
+2.0 beta 4 or higher from 
 <a href="http://nsis.sourceforge.net">http://nsis.sourceforge.net</a>.
 </li>
-<li>Checkout the <tt>utils</tt> module from QuArK CVS on SourceForge.  This
-module contains the scripts and other files you'll need to be able to
-create the distribution.</li>
+<li>Checkout the <tt>utils</tt> module from QuArK CVS on SourceForge.
+This module contains the scripts and other files you'll need to be
+able to create the distribution.</li>
 <li>Make sure you have access permissions to work with the SourceForge
 release system.</li>
 </ol>
@@ -67,7 +67,7 @@ Use your favourite archiving program to extract the files from your
 applicable.  In this case, you'd want it to look something like this:
 <code>!define QRK_MAJOR_VER 6.4
 !define QRK_MINOR_VER 1
-!define QRK_STATE "alpha"
+!define QRK_STATE "beta"
 !define QRK_RELEASE 3
 </code>
 Save and close.
@@ -83,10 +83,10 @@ ftp&gt; binary
 ftp&gt; put quark-win32-6.4.1beta3.exe
 ftp&gt; quit</code></li>
 <li>All the distribution files (<tt>quark-src-6.4.1beta3.zip</tt>,
-<tt>quark-help-6.4.1beta3</tt>, and <tt>quark-win32-6.4.1beta3</tt>) are now ready for
-you to process them through the SourceForge release system.  Don't
-forget that the release system upload directory is flushed every 24
-hours.</li>
+<tt>quark-help-6.4.1beta3</tt>, and <tt>quark-win32-6.4.1beta3</tt>)
+are now ready for you to process them through the SourceForge release
+system.  Don't forget that the release system upload directory is
+flushed every 24 hours.</li>
 </ol>
 
 Once you've finished doing the release, it would probably be a good
