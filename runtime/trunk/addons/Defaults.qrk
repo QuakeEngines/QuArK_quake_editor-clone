@@ -28,6 +28,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.165  2001/08/28 22:39:06  tiglari
+//fix Q3A CD-ROM config
+//'auto adjust normals' renamed to 'Quantize angles'
+//add Hotkey for Invert Face Selection
+//
 //Revision 1.164  2001/08/16 20:08:50  decker_dk
 //Added support for 'dup hlradfilemaker' plugin.
 //
@@ -3814,6 +3819,20 @@ QQRKSRC1
       apply:    = {Typ="P" Cap="Apply" Txt=" " Macro="hlradfilemaker_apply" Hint="Push to apply the 'texture' and 'lighting' values to the list."}
     }
 
+    wall maker:form = {
+      bevel: =
+      {
+         Txt="&"
+         Typ="X"
+         Hint="If this is checked, corners will be mitered" $0D " outsides of shapes may need touching up"
+      }
+      depth: =
+      {
+         Txt="thickness"
+         Typ="E"
+         Hint="thickness of walls"
+      }
+    }
     dup extruder:form = {
       type: =
       {

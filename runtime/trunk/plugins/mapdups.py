@@ -188,6 +188,10 @@ class HollowMaker(DepthDuplicator):
 
 
 
+#
+# a buildimages method for this is supplied in
+#  mapmiteredges.py, for mitered edges.
+#
 class WallMaker(DepthDuplicator):
     "Extrude the polyhedrons in the group."
 
@@ -303,6 +307,9 @@ quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCy
 #
 #
 # $Log$
+# Revision 1.9  2001/08/15 17:49:55  decker_dk
+# Added a 'dup symxyz' with toggleable axes.
+#
 # Revision 1.8  2001/08/07 23:33:43  tiglari
 # reset texture cycle command
 #
