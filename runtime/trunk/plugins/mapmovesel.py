@@ -101,8 +101,12 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
 
     alignhint = "|Align items in selection along their bounding box edges, or along the edges of a marked object (RMB|Navigate Tree|<item>\Mark)."
     menalign.state=qmenu.normal
+    marked=mapmadsel.getstashed(editor)
+    if marked is None:
+        menalign.text = "Align selected (to bbox edge)"
+    else:
+        menalign.text = "Align selected (to marked)"
     if len(sel)<2:
-        marked=mapmadsel.getstashed(editor)
         if marked is None:
             alignhint=alignhint+"\n\nThis menu item requires that two or more items be selected, or that something be marked; neither of these are true."
             menalign.state=qmenu.disabled
@@ -122,6 +126,9 @@ quarkpy.mapcommands.items.append(menswap)
 quarkpy.mapcommands.items.append(menalign)
 
 # $Log$
+# Revision 1.2  2001/07/23 23:41:13  tiglari
+# Now aligns to marked, if anything is marked
+#
 # Revision 1.1  2001/06/07 21:30:15  tiglari
 # swap & align (suggestions by Alan Donald (swap) & quantum_red (align)
 #
