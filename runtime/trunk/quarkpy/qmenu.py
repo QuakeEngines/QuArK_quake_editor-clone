@@ -12,7 +12,8 @@ Menu Bars and Popup Menus code
 
 import quarkx
 from qdictionnary import Strings
-from qutils import MapHotKeyList
+from qutils import *
+
 
 # menu state
 normal     = 0
@@ -31,24 +32,26 @@ class item:
     # It will be called with the menu item object itself as parameter.
     #
 
-    def __init__(self, text, onclick=None, hint=None):
+    def __init__(self, text, onclick=None, hint=None, infobaselink=""):
         self.text = text
         self.onclick = onclick
         self.state = normal
         if hint:
             self.hint = hint
+            self.hint = hintPlusInfobaselink(hint,infobaselink)
 
 
 class popup:
     "A pop-up menu item."
 
-    def __init__(self, text, items=[], onclick=None, hint=None):
+    def __init__(self, text, items=[], onclick=None, hint=None, infobaselink=""):
         self.text = text
         self.onclick = onclick   # called when the popup menu is opened;
         self.items = items       # this lets you modify 'items' to reflect the current menu state
         self.state = normal
         if hint:
             self.hint = hint
+            self.hint = hintPlusInfobaselink(hint,infobaselink)
 
 
 #
@@ -60,8 +63,10 @@ sep = None
 
 
 
-def macroitem(text, macro, hint=None):
+def macroitem(text, macro, hint=None, infobaselink=""):
     "A menu item that executes a single macro command."
+    if hint:
+        hint = hintPlusInfobaselink(hint,infobaselink)
     m = item(text, macroclick, hint)
     m.macro = macro
     return m
@@ -182,6 +187,9 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.3  2001/03/20 07:59:40  tiglari
+#customizable hot key support
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

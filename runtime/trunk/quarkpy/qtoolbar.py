@@ -10,7 +10,7 @@ Tool Bars and Buttons
 #$Header$
 #
 import quarkx
-
+from qutils import *
 
 # button state
 normal     = 0
@@ -28,11 +28,12 @@ class button:
     # It will be called with the button object itself as parameter.
     #
 
-    def __init__(self, onclick, hint, iconlist, iconindex, caption=None, capalways=0):
+    def __init__(self, onclick, hint, iconlist, iconindex, caption=None, capalways=0, infobaselink=''):
         self.onclick = onclick
         self.hint = hint
         self.state = normal
         self.caption = caption
+        self.hint = hintPlusInfobaselink(hint, infobaselink)
         if capalways:
             self.capalways = 1
         if iconindex is None:
@@ -75,6 +76,22 @@ class button:
         except:
             return s
 
+#
+# not needed
+#
+# To try and add the InfoBaseLink attribute.
+#
+#    
+#    quarkx.helppopup(s, quarkx.exepath + doc)
+#
+#
+#def InfoLinkButton(onclick, hint, iconlist, iconindex, InfoBaseLink):
+#    "A button with and Infobase link page"
+#
+#    m = button(onclick, hint, iconlist, iconindex, InfoBaseLink)
+#
+#    return m
+
 
 def menubutton(menu, hint, iconlist, iconindex):
     "A button that drops down a menu."
@@ -84,9 +101,10 @@ def menubutton(menu, hint, iconlist, iconindex):
     return m
 
 
-def doublebutton(onclick, menu, hint, iconlist, iconindex):
+def doublebutton(onclick, menu, hint, iconlist, iconindex, infobaselink=''):
     "A button with both a menu and direct clicks (e.g. the grid and zoom buttons)."
 
+    hint = hintPlusInfobaselink(hint, infobaselink)
     m = button(onclick, hint, iconlist, iconindex)
     m.menu = menu
     return m
@@ -149,5 +167,8 @@ BtnText = quarkx.setupsubset(qutils.SS_GENERAL, "Display")["BtnText"]
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

@@ -43,7 +43,7 @@ parent = quarkpy.qhandles.RectangleDragObject
 class EntRectSelDragObject(parent):
     "A red rectangle that selects the entities it touches."
 
-    Hint = "rectangular selection of entities||This works like 'rectangular selection of polyhedron' (just on the left), but selects entities instead of polyhedrons."
+    Hint = hintPlusInfobaselink("Rectangular selection of ENTITIES||Rectangular selection of ENTITIES:\n\nThis works like 'rectangular selection of polyhedron' (just on the left), but selects entities instead of polyhedrons.", "intro.mapeditor.toolpalettes.mousemodes.html#selectentity")
 
     def rectanglesel(self, editor, x,y, rectangle):
         if not ("T" in self.todo):
@@ -66,7 +66,7 @@ class EntRectSelDragObject(parent):
 class EverythingRectSelDragObject(parent):
     "A red rectangle that selects the entities it touches."
 
-    Hint = "rectangular selection of everything||This works like 'rectangular selection of polyhedron' (just on the left), but selects everything including duplicators and beziers."
+    Hint = hintPlusInfobaselink("Rectangular selection of EVERYTHING||Rectangular selection of EVERYTHING:\n\nThis works like 'rectangular selection of polyhedron' (just on the left), but selects everything including duplicators and beziers.", "intro.mapeditor.toolpalettes.mousemodes.html#selecteverything")
 
     def rectanglesel(self, editor, x,y, rectangle):
         if not ("T" in self.todo):
@@ -110,7 +110,7 @@ class EverythingRectSelDragObject(parent):
 class CubeMakerDragObject(parent):
     "A cube maker."
 
-    Hint = "quick cube maker||After you click this button, you can draw rectangles on the map with the mouse button and these rectangles will be turned into actual cubes. This is a quick way to make a lot of cubes all around."
+    Hint = hintPlusInfobaselink("Quick cube maker||Quick cube maker:\n\nAfter you click this button, you can draw rectangles on the map with the mouse button and these rectangles will be turned into actual cubes. This is a quick way to make a lot of cubes all around.", "intro.mapeditor.toolpalettes.mousemodes.html#createcube")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -301,7 +301,7 @@ def CubeCut(editor, face, choicefn=lambda face,n1: -abs(face.normal*n1)):
 class CubeCutter(parent):
     "Cuts polyhedrons in two parts along the line drawn."
 
-    Hint = "cut faces, polyhedrons and groups in two||After you click this button, you can draw lines on the map with the mouse, and any polyhedron touching this line will be cut in two parts along it. This is a quick way to make complex shapes out of a single polyhedron. You can for example draw 3 lines in a wall to make the contour of a passage, and then just delete the middle polyhedron to actually make the hole.\n\nAdvanced features : if you select a face, it will be cut in two but not the other faces of the polyhedron (using \"face sharing\" techniques); and if you select a group, instead of cutting each polyhedron in two individually, QuArK will give you the option of making two copies of the whole group with the cutting plane as a shared face in each group. This lets you consider the cutting plane as a unique face and later move or rotate it to reshape all polyhedrons in the group at once."
+    Hint = hintPlusInfobaselink("Cut faces, polyhedrons and groups in two||Cut faces, polyhedrons and groups in two:\n\nAfter you click this button, you can draw lines on the map with the mouse, and any polyhedron touching this line will be cut in two parts along it. This is a quick way to make complex shapes out of a single polyhedron. You can for example draw 3 lines in a wall to make the contour of a passage, and then just delete the middle polyhedron to actually make the hole.\n\nAdvanced features : if you select a face, it will be cut in two but not the other faces of the polyhedron (using \"face sharing\" techniques); and if you select a group, instead of cutting each polyhedron in two individually, QuArK will give you the option of making two copies of the whole group with the cutting plane as a shared face in each group. This lets you consider the cutting plane as a unique face and later move or rotate it to reshape all polyhedrons in the group at once.", "intro.mapeditor.toolpalettes.mousemodes.html#polycutter")
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
@@ -398,6 +398,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2001/10/22 10:15:48  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.5  2001/04/15 22:48:17  tiglari
 # groups & brush entity selection in select everything mode (will be selected
 #  if all of their subitems are)
