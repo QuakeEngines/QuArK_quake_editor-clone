@@ -390,7 +390,12 @@ class BezierType(EntityManager):
         #
         # Add a center handle
         #
-        pos = o.origin
+        try:
+            # put the handle in the middle of the first square of control points
+            pos = 0.25 * (cp[0][0]+cp[0][1]+cp[1][0]+cp[1][1])
+        except IndexError:
+            # there are not enough control points
+            pos = o.origin
         if pos is not None:
             h.append(mapbezier.CenterHandle(pos, o))
 

@@ -31,6 +31,7 @@ class CPHandle(qhandles.GenericHandle):
         self.b2 = b2
         self.ij = ij
         self.color = color #DECKER
+        self.cursor = CR_CROSSH 
 
     def draw(self, view, cv, draghandle=None):
         if self.ij == (0,0):
@@ -126,8 +127,8 @@ class CenterHandle(maphandles.CenterHandle):
     "Bezier center."
 
     def __init__(self, pos, centerof):
-	c_x = quarkx.setupsubset(SS_MAP, "Building")["BezierCenterX"][0]
-	c_y = quarkx.setupsubset(SS_MAP, "Building")["BezierCenterY"][0]
-	p = quarkx.vect(pos.x + c_x, pos.y+c_y, pos.z)
-        maphandles.CenterHandle.__init__(self, p, centerof, 0x202020, 1)
+	##c_x = quarkx.setupsubset(SS_MAP, "Building")["BezierCenterX"][0]
+	##c_y = quarkx.setupsubset(SS_MAP, "Building")["BezierCenterY"][0]
+	##pos = quarkx.vect(pos.x + c_x, pos.y+c_y, pos.z)
+        maphandles.CenterHandle.__init__(self, pos, centerof, 0x202020, 1)
 
