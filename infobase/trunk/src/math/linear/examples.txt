@@ -1,0 +1,86 @@
+title: Examples
+author: tiglari
+
+For one example, consider rotations.  Suppose we want to rotate by a degrees
+around the z axis. from elementry trig and some visualization
+you can see that the result of this will be to transform
+the x, y and z axes as follows:
+<code>
+xa = <1, 0, 0>  -> <<a>cos(a), sin(a), 0>
+ya = <0, 1, 0>  -> <-sin(a), cos(a), 0>
+za = <0, 0, 1>  -> <0, 0, 1> (no change)
+</code>
+So in quarkpy.qeditor.py, we find this function to
+define the matrix for rotation by an angle rad (specified
+in radians):
+<code>
+def matrix_rot_z(rad):
+    sin, cos = math.sin(rad), math.cos(rad)
+    return quarkx.matrix(
+       (cos, -sin, 0),
+       (sin,  cos, 0),
+       ( 0 ,   0,  1))
+</code>
+(Remember that when the input to quark.matrix is specified
+as three tuples, they are rows.)  There are similar formulas
+for rotations around other axes.
+
+'Scaling' is linear transformations that make things bigger
+or smaller by proportional amounts.  To scale something
+by the factors x, y and z along the respective axes, this
+matrix would be used:
+<code>
+x   0   0
+0   y   0
+0   0   z
+</code>
+As usual, each column represents what the mapping does to
+the corresponding coordinate vector.
+
+For most uses of linear mappings, we don't want to use them
+on their own, but need to combine them with another kind
+of mapping, 'translations'.  Linear mappings always leave
+the origin <0, 0, 0> untouched; a translation adds the same
+amount to everything, thereby shifting the whole space by
+a certain amount in a certain direction.  Now suppose we
+have an object sitting in our map, centered say at the
+point <100, 250, 920>.  If we just applied a rotation to it,
+it would rotate around the map origin, which is probably not
+what we want.  What we probably want to do is first apply
+a translation so that the point we want it to rotate around
+is now the map origin, then apply the rotation, and then
+apply the reverse of the translation.  QuArK Python
+provides a quick way of doing this with the 'linear' method:
+if say we have a group grp, grp.linear(v, m) will apply the
+linear mapping represented by the matrix m to the group, using
+the point represented by v as the origin).  This will also work
+for duplicators if their 'applylinear' method is properly
+defined (which, for certain of the more recent and complex
+ones, it isn't).
+
+In many applications what we want is not exactly a
+linear mapping, but an 'affine mapping'; which is a linear
+mapping followed by a translation (the offset).  For example\
+texturing a face.  Conceptually, this is a mapping from the
+two-dimenensional texture plane, tiled with the texture
+image, onto some face.  We can make it three-dimensional
+(and thereby get to use QuArK's matrix facility, by adding
+a z-dimension, which does nothing, to the substantively useful
+s and t dimensions (conventionally used instead of x and y for
+textures).  The texture threepoints for
+a face (face.threepoints(2)), (p0, p1, p2) are the images of the
+texture origin, s axis and t axis under an affine map.
+The translation component of the map is represented by
+the vector p0, while the linear component has the matrix:
+<code>
+quarkx.matrix(p1-p0,p1-p0,quarkx.vect(0, 0, 1))
+</code>
+(It's best to make no change for the formally necessary
+but substantively useless z component).
+
+The matrix for the texture scale can be used for complicated
+things such as aligning textures on faces and bezier patches,
+or converting texture positioning information between
+different formats.
+
+
