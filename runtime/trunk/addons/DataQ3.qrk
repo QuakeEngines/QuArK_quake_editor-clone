@@ -1356,95 +1356,105 @@ QQRKSRC1
     {
       Base.txlist =
       {
-        base/q1met_redpad.wl   = { t_q3shader_base=! }
         base/bluegoal.wl       = { t_q3shader_base=! }
-        base/redgoal.wl        = { t_q3shader_base=! }
-        base/comp_panel.wl     = { t_q3shader_base=! }
-        base/ceil1_8.wl        = { t_q3shader_base=! }
+        base/border11light.wl  = { t_q3shader_base=! }
         base/ceil1_3.wl        = { t_q3shader_base=! }
         base/ceil1_4.wl        = { t_q3shader_base=! }
-        base/border11light.wl  = { t_q3shader_base=! }
+        base/ceil1_8.wl        = { t_q3shader_base=! }
+        base/comp_panel.wl     = { t_q3shader_base=! }
         base/electricwall.wl   = { t_q3shader_base=! }
+        base/q1met_redpad.wl   = { t_q3shader_base=! }
+        base/redgoal.wl        = { t_q3shader_base=! }
       }
       Base_Button.txlist =
       {
-        base_light/btactmach0.wl   = { t_q3shader_base_button=! }
         base_button/shootme2.wl    = { t_q3shader_base_button=! }
+        base_light/btactmach0.wl   = { t_q3shader_base_button=! }
       }
       Base_Floor.txlist =
       {
-        base_floor/techfloor2.wl                  = { t_q3shader_base_floor=! }
-        base_floor/techfloor.wl                   = { t_q3shader_base_floor=! }
-        base_floor/metalbridge04dbroke.wl         = { t_q3shader_base_floor=! }
-        base_floor/clang_floor_ow3.wl             = { t_q3shader_base_floor=! }
-        base_floor/floor3_3dark_ow.wl             = { t_q3shader_base_floor=! }
-        base_floor/proto_rustygrate2.wl           = { t_q3shader_base_floor=! }
-        base_floor/cybergrate3.wl                 = { t_q3shader_base_floor=! }
-        base_floor/cybergrate2.wl                 = { t_q3shader_base_floor=! }
-        base_floor/clang_floor_ow.wl              = { t_q3shader_base_floor=! }
-        base_floor/clangdark_ow3.wl               = { t_q3shader_base_floor=! }
-        base_floor/cybergrate.wl                  = { t_q3shader_base_floor=! }
-        base_floor/diamond2c_ow.wl                = { t_q3shader_base_floor=! }
-        base_floor/diamond2cspot.wl               = { t_q3shader_base_floor=! }
         base_floor/clang_floor3blava.wl           = { t_q3shader_base_floor=! }
-        base_floor/pool_side2.wl                  = { t_q3shader_base_floor=! }
-        base_floor/pool_side3.wl                  = { t_q3shader_base_floor=! }
-        base_floor/pool_floor2.wl                 = { t_q3shader_base_floor=! }
-        base_floor/pool_floor3.wl                 = { t_q3shader_base_floor=! }
-        base_floor/hfloor3.wl                     = { t_q3shader_base_floor=! }
-        base_floor/clangspot.wl                   = { t_q3shader_base_floor=! }
-        base_floor/clangspot2.wl                  = { t_q3shader_base_floor=! }
-        base_floor/clangdarkspot.wl               = { t_q3shader_base_floor=! }
-        base_floor/tilefloor5.wl                  = { t_q3shader_base_floor=! }
-        base_floor/tile5_plain.wl                 = { t_q3shader_base_floor=! }
-        base_floor/concretefloor1.wl              = { t_q3shader_base_floor=! }
-        base_floor/pjgrate1kc.wl                  = { t_q3shader_base_floor=! }
-        base_floor/clangfloor_noisy.wl            = { t_q3shader_base_floor=! }
+        base_floor/clang_floor_ow.wl              = { t_q3shader_base_floor=! }
+        base_floor/clang_floor_ow3.wl             = { t_q3shader_base_floor=! }
+        base_floor/clang_floorshiny.wl            = { t_q3shader_base_floor=! }
         base_floor/clang_floorshiny2.wl           = { t_q3shader_base_floor=! }
         base_floor/clang_floorwet.wl              = { t_q3shader_base_floor=! }
-        base_floor/clang_floorshiny.wl            = { t_q3shader_base_floor=! }
-        base_floor/tilefloor7_ow.wl               = { t_q3shader_base_floor=! }
-        base_floor/skylight1.wl                   = { t_q3shader_base_floor=! }
-        base_floor/skylight_spec.wl               = { t_q3shader_base_floor=! }
-        base_floor/diamond_dirty.wl               = { t_q3shader_base_floor=! }
         base_floor/clangdark.wl                   = { t_q3shader_base_floor=! }
         base_floor/clangdark_ow.wl                = { t_q3shader_base_floor=! }
+        base_floor/clangdark_ow3.wl               = { t_q3shader_base_floor=! }
+        base_floor/clangdarkspot.wl               = { t_q3shader_base_floor=! }
+        base_floor/clangfloor_noisy.wl            = { t_q3shader_base_floor=! }
+        base_floor/clangspot.wl                   = { t_q3shader_base_floor=! }
+        base_floor/clangspot2.wl                  = { t_q3shader_base_floor=! }
+        base_floor/concretefloor1.wl              = { t_q3shader_base_floor=! }
+        base_floor/cybergrate.wl                  = { t_q3shader_base_floor=! }
+        base_floor/cybergrate2.wl                 = { t_q3shader_base_floor=! }
+        base_floor/cybergrate3.wl                 = { t_q3shader_base_floor=! }
+        base_floor/diamond2c_ow.wl                = { t_q3shader_base_floor=! }
+        base_floor/diamond2cspot.wl               = { t_q3shader_base_floor=! }
+        base_floor/diamond_dirty.wl               = { t_q3shader_base_floor=! }
         base_floor/diamond_noisy.wl               = { t_q3shader_base_floor=! }
+        base_floor/floor3_3dark_ow.wl             = { t_q3shader_base_floor=! }
+        base_floor/glowfloor2.wl                  = { t_q3shader_base_floor=! }
+        base_floor/glowfloor3.wl                  = { t_q3shader_base_floor=! }
+        base_floor/hfloor3.wl                     = { t_q3shader_base_floor=! }
+        base_floor/kc_grate4b.wl                  = { t_q3shader_base_floor=! }
+        base_floor/metalbridge04dbroke.wl         = { t_q3shader_base_floor=! }
+        base_floor/nomarkstone_1.wl               = { t_q3shader_base_floor=! }
+        base_floor/pjgrate1.wl                    = { t_q3shader_base_floor=! }
+        base_floor/pjgrate1kc.wl                  = { t_q3shader_base_floor=! }
+        base_floor/pjgrate2.wl                    = { t_q3shader_base_floor=! }
+        base_floor/pool_floor2.wl                 = { t_q3shader_base_floor=! }
+        base_floor/pool_floor3.wl                 = { t_q3shader_base_floor=! }
+        base_floor/pool_side2.wl                  = { t_q3shader_base_floor=! }
+        base_floor/pool_side3.wl                  = { t_q3shader_base_floor=! }
         base_floor/proto_grate.wl                 = { t_q3shader_base_floor=! }
         base_floor/proto_grate2.wl                = { t_q3shader_base_floor=! }
         base_floor/proto_grate3.wl                = { t_q3shader_base_floor=! }
         base_floor/proto_grate4.wl                = { t_q3shader_base_floor=! }
-        base_floor/kc_grate4b.wl                  = { t_q3shader_base_floor=! }
         base_floor/proto_grate5.wl                = { t_q3shader_base_floor=! }
-        base_floor/proto_skullgrate.wl            = { t_q3shader_base_floor=! }
         base_floor/proto_rustygrate.wl            = { t_q3shader_base_floor=! }
-        base_floor/rusty_pentagrate.wl            = { t_q3shader_base_floor=! }
+        base_floor/proto_rustygrate2.wl           = { t_q3shader_base_floor=! }
+        base_floor/proto_skullgrate.wl            = { t_q3shader_base_floor=! }
         base_floor/rusty_baphograte.wl            = { t_q3shader_base_floor=! }
-        base_floor/pjgrate1.wl                    = { t_q3shader_base_floor=! }
-        base_floor/pjgrate2.wl                    = { t_q3shader_base_floor=! }
-        base_floor/glowfloor2.wl                  = { t_q3shader_base_floor=! }
-        base_floor/glowfloor3.wl                  = { t_q3shader_base_floor=! }
-        base_floor/nomarkstone_1.wl               = { t_q3shader_base_floor=! }
+        base_floor/rusty_pentagrate.wl            = { t_q3shader_base_floor=! }
+        base_floor/skylight1.wl                   = { t_q3shader_base_floor=! }
+        base_floor/skylight_spec.wl               = { t_q3shader_base_floor=! }
+        base_floor/techfloor.wl                   = { t_q3shader_base_floor=! }
+        base_floor/techfloor2.wl                  = { t_q3shader_base_floor=! }
+        base_floor/tile5_plain.wl                 = { t_q3shader_base_floor=! }
+        base_floor/tilefloor5.wl                  = { t_q3shader_base_floor=! }
+        base_floor/tilefloor7_ow.wl               = { t_q3shader_base_floor=! }
       }
       Base_Light.txlist =
       {
-        base_light/runway.wl                      = { t_q3shader_base_light=! }
-        base_light/geolight.wl                    = { t_q3shader_base_light=! }
-        base_light/dm18twr.wl                     = { t_q3shader_base_light=! }
-        base_light/proto_lightgreen.wl            = { t_q3shader_base_light=! }
-        base_light/cornerlight.wl                 = { t_q3shader_base_light=! }
-        base_light/trianglelight.wl               = { t_q3shader_base_light=! }
-        base_light/proto_bulb.wl                  = { t_q3shader_base_light=! }
-        base_light/shi.wl                         = { t_q3shader_base_light=! }
-        base_light/proto_light.wl                 = { t_q3shader_base_light=! }
-        base_light/proto_lightred.wl              = { t_q3shader_base_light=! }
-        base_light/proto_lightred2.wl             = { t_q3shader_base_light=! }
-        base_light/proto_light_2k.wl              = { t_q3shader_base_light=! }
-        base_light/s_proto_light.wl               = { t_q3shader_base_light=! }
-        base_light/scrolllight.wl                 = { t_q3shader_base_light=! }
-        base_light/lightflare_wht500.wl           = { t_q3shader_base_light=! }
-        base_light/lightflare_500.wl              = { t_q3shader_base_light=! }
+        base_light/baslt3_1_2K.wl                 = { t_q3shader_base_light=! }
+        base_light/baslt4_1_2k.wl                 = { t_q3shader_base_light=! }
+        base_light/baslt4_1_4k.wl                 = { t_q3shader_base_light=! }
+        base_light/border11light.wl               = { t_q3shader_base_light=! }
+        base_light/border11light_300.wl           = { t_q3shader_base_light=! }
         base_light/border7_ceil50.wl              = { t_q3shader_base_light=! }
+        base_light/ceil1_2.wl                     = { t_q3shader_base_light=! }
+        base_light/ceil1_22a.wl                   = { t_q3shader_base_light=! }
+        base_light/ceil1_22a_8k.wl                = { t_q3shader_base_light=! }
+        base_light/ceil1_22a_trans.wl             = { t_q3shader_base_light=! }
+        base_light/ceil1_26.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_28.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_3.wl                     = { t_q3shader_base_light=! }
+        base_light/ceil1_30.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_30_8k.wl                 = { t_q3shader_base_light=! }
+        base_light/ceil1_30_trans.wl              = { t_q3shader_base_light=! }
+        base_light/ceil1_31.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_32.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_33.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_34.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_34_10k.wl                = { t_q3shader_base_light=! }
+        base_light/ceil1_34_1k.wl                 = { t_q3shader_base_light=! }
+        base_light/ceil1_34_2k.wl                 = { t_q3shader_base_light=! }
+        base_light/ceil1_34_5k.wl                 = { t_q3shader_base_light=! }
+        base_light/ceil1_35.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_37.wl                    = { t_q3shader_base_light=! }
+        base_light/ceil1_38.wl                    = { t_q3shader_base_light=! }
         base_light/ceil1_38_10k.wl                = { t_q3shader_base_light=! }
         base_light/ceil1_38_20k.wl                = { t_q3shader_base_light=! }
         base_light/ceil1_38_30k.wl                = { t_q3shader_base_light=! }
@@ -1452,347 +1462,337 @@ QQRKSRC1
         base_light/ceil1_38_50k.wl                = { t_q3shader_base_light=! }
         base_light/ceil1_38_70k.wl                = { t_q3shader_base_light=! }
         base_light/ceil1_38_90k.wl                = { t_q3shader_base_light=! }
-        base_light/light1dark.wl                  = { t_q3shader_base_light=! }
-        base_light/light1red_2000.wl              = { t_q3shader_base_light=! }
-        base_light/light1red_5000.wl              = { t_q3shader_base_light=! }
-        base_light/light1blue_5000.wl             = { t_q3shader_base_light=! }
-        base_light/light1blue_2000.wl             = { t_q3shader_base_light=! }
-        base_light/light2blue_2500.wl             = { t_q3shader_base_light=! }
-        base_light/light1blue_800.wl              = { t_q3shader_base_light=! }
-        base_light/light1blue_1500.wl             = { t_q3shader_base_light=! }
-        base_light/light1_5000.wl                 = { t_q3shader_base_light=! }
-        base_light/light1_3000.wl                 = { t_q3shader_base_light=! }
-        base_light/light1_1500.wl                 = { t_q3shader_base_light=! }
-        base_light/lt2_8000.wl                    = { t_q3shader_base_light=! }
-        base_light/lt2_4000.wl                    = { t_q3shader_base_light=! }
-        base_light/lt2_2000.wl                    = { t_q3shader_base_light=! }
-        base_light/light3b_2500.wl                = { t_q3shader_base_light=! }
-        base_light/light4_2500.wl                 = { t_q3shader_base_light=! }
-        base_light/light5_3000.wl                 = { t_q3shader_base_light=! }
-        base_light/light5_5k.wl                   = { t_q3shader_base_light=! }
-        base_light/light5_10k.wl                  = { t_q3shader_base_light=! }
-        base_light/light5_15k.wl                  = { t_q3shader_base_light=! }
-        base_light/light5_20k.wl                  = { t_q3shader_base_light=! }
-        base_light/lt6_2500.wl                    = { t_q3shader_base_light=! }
-        base_light/light6_2500.wl                 = { t_q3shader_base_light=! }
-        base_light/lt6_2p5k.wl                    = { t_q3shader_base_light=! }
-        base_light/patch10_pj_lite.wl             = { t_q3shader_base_light=! }
-        base_light/patch10_pj_lite2.wl            = { t_q3shader_base_light=! }
-        base_light/patch10_pj_lite2_1000.wl       = { t_q3shader_base_light=! }
-        base_light/steedmetallight.wl             = { t_q3shader_base_light=! }
-        base_light/border11light.wl               = { t_q3shader_base_light=! }
-        base_light/border11light_300.wl           = { t_q3shader_base_light=! }
-        base_light/sm_light1red.wl                = { t_q3shader_base_light=! }
-        base_light/sm_light1blue.wl               = { t_q3shader_base_light=! }
-        base_light/wstlt1_5.wl                    = { t_q3shader_base_light=! }
-        base_light/pj_wstlt1_3k.wl                = { t_q3shader_base_light=! }
-        base_light/baslt3_1_2K.wl                 = { t_q3shader_base_light=! }
-        base_light/baslt4_1_2k.wl                 = { t_q3shader_base_light=! }
-        base_light/baslt4_1_4k.wl                 = { t_q3shader_base_light=! }
-        base_light/ceil1_37.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_2.wl                     = { t_q3shader_base_light=! }
-        base_light/ceil1_22a.wl                   = { t_q3shader_base_light=! }
-        base_light/ceil1_22a_trans.wl             = { t_q3shader_base_light=! }
-        base_light/ceil1_22a_8k.wl                = { t_q3shader_base_light=! }
-        base_light/ceil1_4.wl                     = { t_q3shader_base_light=! }
-        base_light/ceil1_3.wl                     = { t_q3shader_base_light=! }
-        base_light/ceil1_35.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_30.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_30_trans.wl              = { t_q3shader_base_light=! }
-        base_light/ceil1_30_8k.wl                 = { t_q3shader_base_light=! }
-        base_light/ceil1_31.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_32.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_33.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_34.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_34_5k.wl                 = { t_q3shader_base_light=! }
-        base_light/ceil1_34_10k.wl                = { t_q3shader_base_light=! }
-        base_light/ceil1_34_2k.wl                 = { t_q3shader_base_light=! }
-        base_light/ceil1_34_1k.wl                 = { t_q3shader_base_light=! }
-        base_light/ceil_white5k.wl                = { t_q3shader_base_light=! }
-        base_light/ceil1_38.wl                    = { t_q3shader_base_light=! }
-        base_light/pjceil1_39_1K.wl               = { t_q3shader_base_light=! }
         base_light/ceil1_39.wl                    = { t_q3shader_base_light=! }
-        base_light/pjceil1_39_1p5k.wl             = { t_q3shader_base_light=! }
-        base_light/xceil1_39_2k.wl                = { t_q3shader_base_light=! }
-        base_light/xceil1_39_5k.wl                = { t_q3shader_base_light=! }
-        base_light/xceil1_39_10k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_15k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_20k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_30k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_50k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_70k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_90k.wl               = { t_q3shader_base_light=! }
-        base_light/xceil1_39_110k.wl              = { t_q3shader_base_light=! }
-        base_light/xceil1_39_500k.wl              = { t_q3shader_base_light=! }
-        base_light/xceil1_39_1.wl                 = { t_q3shader_base_light=! }
-        base_light/xceil1_39.wl                   = { t_q3shader_base_light=! }
-        base_light/xceil1_39_a.wl                 = { t_q3shader_base_light=! }
-        base_light/xceil1_39_b.wl                 = { t_q3shader_base_light=! }
+        base_light/ceil1_4.wl                     = { t_q3shader_base_light=! }
+        base_light/ceil1_6.wl                     = { t_q3shader_base_light=! }
+        base_light/ceil_white5k.wl                = { t_q3shader_base_light=! }
+        base_light/cornerlight.wl                 = { t_q3shader_base_light=! }
+        base_light/dm18twr.wl                     = { t_q3shader_base_light=! }
+        base_light/geolight.wl                    = { t_q3shader_base_light=! }
+        base_light/invisi_light1.wl               = { t_q3shader_base_light=! }
         base_light/jaildr01_3.wl                  = { t_q3shader_base_light=! }
         base_light/jaildr02_3.wl                  = { t_q3shader_base_light=! }
         base_light/jaildr03_1.wl                  = { t_q3shader_base_light=! }
         base_light/jaildr03_2.wl                  = { t_q3shader_base_light=! }
         base_light/jaildr1_3.wl                   = { t_q3shader_base_light=! }
         base_light/jaildr2_3.wl                   = { t_q3shader_base_light=! }
+        base_light/light1_1500.wl                 = { t_q3shader_base_light=! }
+        base_light/light1_3000.wl                 = { t_q3shader_base_light=! }
+        base_light/light1_5000.wl                 = { t_q3shader_base_light=! }
+        base_light/light1blue_1500.wl             = { t_q3shader_base_light=! }
+        base_light/light1blue_2000.wl             = { t_q3shader_base_light=! }
+        base_light/light1blue_5000.wl             = { t_q3shader_base_light=! }
+        base_light/light1blue_800.wl              = { t_q3shader_base_light=! }
+        base_light/light1dark.wl                  = { t_q3shader_base_light=! }
+        base_light/light1red_2000.wl              = { t_q3shader_base_light=! }
+        base_light/light1red_5000.wl              = { t_q3shader_base_light=! }
+        base_light/light2blue_2500.wl             = { t_q3shader_base_light=! }
+        base_light/light3b_2500.wl                = { t_q3shader_base_light=! }
+        base_light/light4_2500.wl                 = { t_q3shader_base_light=! }
+        base_light/light5_10k.wl                  = { t_q3shader_base_light=! }
+        base_light/light5_15k.wl                  = { t_q3shader_base_light=! }
+        base_light/light5_20k.wl                  = { t_q3shader_base_light=! }
+        base_light/light5_3000.wl                 = { t_q3shader_base_light=! }
+        base_light/light5_5k.wl                   = { t_q3shader_base_light=! }
+        base_light/light6_2500.wl                 = { t_q3shader_base_light=! }
+        base_light/lightflare_500.wl              = { t_q3shader_base_light=! }
+        base_light/lightflare_wht500.wl           = { t_q3shader_base_light=! }
+        base_light/lt2_2000.wl                    = { t_q3shader_base_light=! }
+        base_light/lt2_4000.wl                    = { t_q3shader_base_light=! }
+        base_light/lt2_8000.wl                    = { t_q3shader_base_light=! }
+        base_light/lt6_2500.wl                    = { t_q3shader_base_light=! }
+        base_light/lt6_2p5k.wl                    = { t_q3shader_base_light=! }
+        base_light/patch10_pj_lite.wl             = { t_q3shader_base_light=! }
+        base_light/patch10_pj_lite2.wl            = { t_q3shader_base_light=! }
+        base_light/patch10_pj_lite2_1000.wl       = { t_q3shader_base_light=! }
+        base_light/pj_wstlt1_3k.wl                = { t_q3shader_base_light=! }
+        base_light/pjceil1_39_1K.wl               = { t_q3shader_base_light=! }
+        base_light/pjceil1_39_1p5k.wl             = { t_q3shader_base_light=! }
+        base_light/proto_bulb.wl                  = { t_q3shader_base_light=! }
+        base_light/proto_light.wl                 = { t_q3shader_base_light=! }
+        base_light/proto_light_2k.wl              = { t_q3shader_base_light=! }
+        base_light/proto_lightgreen.wl            = { t_q3shader_base_light=! }
+        base_light/proto_lightred.wl              = { t_q3shader_base_light=! }
+        base_light/proto_lightred2.wl             = { t_q3shader_base_light=! }
+        base_light/runway.wl                      = { t_q3shader_base_light=! }
+        base_light/s_proto_light.wl               = { t_q3shader_base_light=! }
+        base_light/scrolllight.wl                 = { t_q3shader_base_light=! }
+        base_light/shi.wl                         = { t_q3shader_base_light=! }
+        base_light/sm_light1blue.wl               = { t_q3shader_base_light=! }
+        base_light/sm_light1red.wl                = { t_q3shader_base_light=! }
+        base_light/steedmetallight.wl             = { t_q3shader_base_light=! }
+        base_light/tlight05.wl                    = { t_q3shader_base_light=! }
+        base_light/trianglelight.wl               = { t_q3shader_base_light=! }
+        base_light/wstlt1_5.wl                    = { t_q3shader_base_light=! }
         base_light/wsupprt1_12.wl                 = { t_q3shader_base_light=! }
         base_light/wsupprt1_12h.wl                = { t_q3shader_base_light=! }
-        base_light/ceil1_26.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_28.wl                    = { t_q3shader_base_light=! }
-        base_light/ceil1_6.wl                     = { t_q3shader_base_light=! }
-        base_light/tlight05.wl                    = { t_q3shader_base_light=! }
-        base_light/invisi_light1.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39.wl                   = { t_q3shader_base_light=! }
+        base_light/xceil1_39_1.wl                 = { t_q3shader_base_light=! }
+        base_light/xceil1_39_10k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_110k.wl              = { t_q3shader_base_light=! }
+        base_light/xceil1_39_15k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_20k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_2k.wl                = { t_q3shader_base_light=! }
+        base_light/xceil1_39_30k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_500k.wl              = { t_q3shader_base_light=! }
+        base_light/xceil1_39_50k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_5k.wl                = { t_q3shader_base_light=! }
+        base_light/xceil1_39_70k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_90k.wl               = { t_q3shader_base_light=! }
+        base_light/xceil1_39_a.wl                 = { t_q3shader_base_light=! }
+        base_light/xceil1_39_b.wl                 = { t_q3shader_base_light=! }
       }
       Base_Object.txlist =
       {
-        base_object/plasmalogo_1.wl               = { t_q3shader_base_object=! }
-        base_object/quadsign_1.wl                 = { t_q3shader_base_object=! }
-        base_object/hastesign_1.wl                = { t_q3shader_base_object=! }
         base_object/boxQ3_1.wl                    = { t_q3shader_base_object=! }
         base_object/boxQ3_2.wl                    = { t_q3shader_base_object=! }
         base_object/boxQ3_3.wl                    = { t_q3shader_base_object=! }
         base_object/boxq3_4.wl                    = { t_q3shader_base_object=! }
+        base_object/hastesign_1.wl                = { t_q3shader_base_object=! }
+        base_object/plasmalogo_1.wl               = { t_q3shader_base_object=! }
+        base_object/quadsign_1.wl                 = { t_q3shader_base_object=! }
       }
       Base_Support.txlist =
       {
-        base_support/x_support4.wl                = { t_q3shader_base_support=! }
-        base_support/x_support3.wl                = { t_q3shader_base_support=! }
-        base_support/support1shiny.wl             = { t_q3shader_base_support=! }
-        base_support/support1rust.wl              = { t_q3shader_base_support=! }
-        base_support/support2rust.wl              = { t_q3shader_base_support=! }
+        base_support/cable_trans.wl               = { t_q3shader_base_support=! }
         base_support/grate1_3.wl                  = { t_q3shader_base_support=! }
-        base_support/shinysupport2.wl             = { t_q3shader_base_support=! }
-        base_support/shinysupport1.wl             = { t_q3shader_base_support=! }
-        base_support/x_support.wl                 = { t_q3shader_base_support=! }
-        base_support/z_support.wl                 = { t_q3shader_base_support=! }
-        base_support/x_support2.wl                = { t_q3shader_base_support=! }
         base_support/metal1_5.wl                  = { t_q3shader_base_support=! }
         base_support/pj_metal14_1.wl              = { t_q3shader_base_support=! }
-        base_support/cable_trans.wl               = { t_q3shader_base_support=! }
+        base_support/shinysupport1.wl             = { t_q3shader_base_support=! }
+        base_support/shinysupport2.wl             = { t_q3shader_base_support=! }
+        base_support/support1rust.wl              = { t_q3shader_base_support=! }
+        base_support/support1shiny.wl             = { t_q3shader_base_support=! }
+        base_support/support2rust.wl              = { t_q3shader_base_support=! }
+        base_support/x_support.wl                 = { t_q3shader_base_support=! }
+        base_support/x_support2.wl                = { t_q3shader_base_support=! }
+        base_support/x_support3.wl                = { t_q3shader_base_support=! }
+        base_support/x_support4.wl                = { t_q3shader_base_support=! }
+        base_support/z_support.wl                 = { t_q3shader_base_support=! }
       }
       Base_Trim.txlist =
       {
-        base_trim/pj_launcher.wl                  = { t_q3shader_base_trim=! }
-        base_trim/pewter_nonsolid.wl              = { t_q3shader_base_trim=! }
-        base_trim/proto_comp.wl                   = { t_q3shader_base_trim=! }
-        base_trim/pewter_shiney.wl                = { t_q3shader_base_trim=! }
-        base_trim/panel_glo.wl                    = { t_q3shader_base_trim=! }
-        base_trim/spidertrim4.wl                  = { t_q3shader_base_trim=! }
-        base_trim/panel_shiny.wl                  = { t_q3shader_base_trim=! }
-        base_trim/spidertrim3.wl                  = { t_q3shader_base_trim=! }
-        base_trim/wires02.wl                      = { t_q3shader_base_trim=! }
-        base_trim/wires01.wl                      = { t_q3shader_base_trim=! }
-        base_trim/wires01_ass.wl                  = { t_q3shader_base_trim=! }
-        base_trim/spiderbite.wl                   = { t_q3shader_base_trim=! }
-        base_trim/dark_tin2.wl                    = { t_q3shader_base_trim=! }
-        base_trim/dark_tin2_trans.wl              = { t_q3shader_base_trim=! }
-        base_trim/skull_monitor.wl                = { t_q3shader_base_trim=! }
-        base_trim/deeprust_trans.wl               = { t_q3shader_base_trim=! }
-        base_trim/yellow_rustc.wl                 = { t_q3shader_base_trim=! }
-        base_trim/panelbrn010w.wl                 = { t_q3shader_base_trim=! }
-        base_trim/pewter_spec.wl                  = { t_q3shader_base_trim=! }
-        base_trim/tin.wl                          = { t_q3shader_base_trim=! }
-        base_trim/dark_tin.wl                     = { t_q3shader_base_trim=! }
-        base_trim/techborder.wl                   = { t_q3shader_base_trim=! }
-        base_trim/spiderbit.wl                    = { t_q3shader_base_trim=! }
-        base_trim/proto_fence.wl                  = { t_q3shader_base_trim=! }
-        base_trim/border11light.wl                = { t_q3shader_base_trim=! }
         base_trim/border11_250.wl                 = { t_q3shader_base_trim=! }
+        base_trim/border11light.wl                = { t_q3shader_base_trim=! }
         base_trim/border12b.wl                    = { t_q3shader_base_trim=! }
         base_trim/border12b_pj.wl                 = { t_q3shader_base_trim=! }
-        base_trim/xborder12b.wl                   = { t_q3shader_base_trim=! }
+        base_trim/dark_tin.wl                     = { t_q3shader_base_trim=! }
+        base_trim/dark_tin2.wl                    = { t_q3shader_base_trim=! }
+        base_trim/dark_tin2_trans.wl              = { t_q3shader_base_trim=! }
+        base_trim/deeprust_trans.wl               = { t_q3shader_base_trim=! }
         base_trim/drag_glass1.wl                  = { t_q3shader_base_trim=! }
-        base_trim/electricwall.wl                 = { t_q3shader_base_trim=! }
         base_trim/electric_blue.wl                = { t_q3shader_base_trim=! }
+        base_trim/electricwall.wl                 = { t_q3shader_base_trim=! }
+        base_trim/panel_glo.wl                    = { t_q3shader_base_trim=! }
+        base_trim/panel_shiny.wl                  = { t_q3shader_base_trim=! }
+        base_trim/panelbrn010w.wl                 = { t_q3shader_base_trim=! }
+        base_trim/pewter_nonsolid.wl              = { t_q3shader_base_trim=! }
+        base_trim/pewter_shiney.wl                = { t_q3shader_base_trim=! }
+        base_trim/pewter_spec.wl                  = { t_q3shader_base_trim=! }
+        base_trim/pj_launcher.wl                  = { t_q3shader_base_trim=! }
+        base_trim/proto_comp.wl                   = { t_q3shader_base_trim=! }
+        base_trim/proto_fence.wl                  = { t_q3shader_base_trim=! }
+        base_trim/skull_monitor.wl                = { t_q3shader_base_trim=! }
+        base_trim/spiderbit.wl                    = { t_q3shader_base_trim=! }
+        base_trim/spiderbite.wl                   = { t_q3shader_base_trim=! }
+        base_trim/spidertrim3.wl                  = { t_q3shader_base_trim=! }
+        base_trim/spidertrim4.wl                  = { t_q3shader_base_trim=! }
+        base_trim/techborder.wl                   = { t_q3shader_base_trim=! }
+        base_trim/tin.wl                          = { t_q3shader_base_trim=! }
+        base_trim/wires01.wl                      = { t_q3shader_base_trim=! }
+        base_trim/wires01_ass.wl                  = { t_q3shader_base_trim=! }
+        base_trim/wires02.wl                      = { t_q3shader_base_trim=! }
+        base_trim/xborder12b.wl                   = { t_q3shader_base_trim=! }
+        base_trim/yellow_rustc.wl                 = { t_q3shader_base_trim=! }
       }
       Base_Wall.txlist =
       {
-        base_wall/bluemetalsupport2eye.wl         = { t_q3shader_base_wall=! }
-        base_wall/atechengine_ax.wl               = { t_q3shader_base_wall=! }
-        base_wall/concrete_ow.wl                  = { t_q3shader_base_wall=! }
-        base_wall/symbol_bluelt1.wl               = { t_q3shader_base_wall=! }
-        base_wall/metaltechgeomtrn.wl             = { t_q3shader_base_wall=! }
-        base_wall/green_con04.wl                  = { t_q3shader_base_wall=! }
-        base_wall/glass_frame.wl                  = { t_q3shader_base_wall=! }
-        base_wall/metalfloor_wall_15ow.wl         = { t_q3shader_base_wall=! }
-        base_wall/atech1_alpha.wl                 = { t_q3shader_base_wall=! }
-        base_wall/concrete4.wl                    = { t_q3shader_base_wall=! }
-        base_wall/protobanner_ow.wl               = { t_q3shader_base_wall=! }
-        base_wall/girders1i_yellofin.wl           = { t_q3shader_base_wall=! }
-        base_wall/protobanner.wl                  = { t_q3shader_base_wall=! }
-        base_wall/protobanner_still.wl            = { t_q3shader_base_wall=! }
-        base_wall/medal_impressive.wl             = { t_q3shader_base_wall=! }
-        base_wall/q3tourneyscreen.wl              = { t_q3shader_base_wall=! }
-        base_wall/main_q3abanner.wl               = { t_q3shader_base_wall=! }
-        base_wall/metalfloor_wall_14_specular.wl  = { t_q3shader_base_wall=! }
-        base_wall/shinygrate1_4_glow.wl           = { t_q3shader_base_wall=! }
-        base_wall/bluemetal1b_chrome.wl           = { t_q3shader_base_wall=! }
-        base_wall/bluemetal1c.wl                  = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport_shiny.wl       = { t_q3shader_base_wall=! }
-        base_wall/grill.wl                        = { t_q3shader_base_wall=! }
-        base_wall/grill2.wl                       = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2.wl            = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2c_1.wl         = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2c_1vent.wl     = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2c.wl           = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2clight.wl      = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2f.wl           = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2e.wl           = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2e2.wl          = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2fline.wl       = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2ftv.wl         = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2d_1.wl         = { t_q3shader_base_wall=! }
-        base_door/shinymetaldoor_outside3a2.wl    = { t_q3shader_base_wall=! }
-        base_door/shinymetaldoor_outside3a.wl     = { t_q3shader_base_wall=! }
-        base_door/shinymetaldoor_outside3b.wl     = { t_q3shader_base_wall=! }
+        base_door/shinymetaldoor.wl               = { t_q3shader_base_wall=! }
         base_door/shinymetaldoor_outside.wl       = { t_q3shader_base_wall=! }
-        base_wall/steedmetal2.wl                  = { t_q3shader_base_wall=! }
-        base_wall/steed1gf.wl                     = { t_q3shader_base_wall=! }
-        base_wall/steed1gd.wl                     = { t_q3shader_base_wall=! }
+        base_door/shinymetaldoor_outside3a.wl     = { t_q3shader_base_wall=! }
+        base_door/shinymetaldoor_outside3a2.wl    = { t_q3shader_base_wall=! }
+        base_door/shinymetaldoor_outside3b.wl     = { t_q3shader_base_wall=! }
+        base_wall/atech1_alpha.wl                 = { t_q3shader_base_wall=! }
+        base_wall/atechengine_ax.wl               = { t_q3shader_base_wall=! }
+        base_wall/basewall01_ow.wl                = { t_q3shader_base_wall=! }
+        base_wall/basewall01bit.wl                = { t_q3shader_base_wall=! }
+        base_wall/bloodstain.wl                   = { t_q3shader_base_wall=! }
+        base_wall/bluecover.wl                    = { t_q3shader_base_wall=! }
+        base_wall/bluemetal1b_chrome.wl           = { t_q3shader_base_wall=! }
         base_wall/bluemetal1b_shiny.wl            = { t_q3shader_base_wall=! }
+        base_wall/bluemetal1c.wl                  = { t_q3shader_base_wall=! }
+        base_wall/bluemetal1light.wl              = { t_q3shader_base_wall=! }
+        base_wall/bluemetal2_noisy.wl             = { t_q3shader_base_wall=! }
         base_wall/bluemetal2_shiny.wl             = { t_q3shader_base_wall=! }
         base_wall/bluemetal2_shiny_trans.wl       = { t_q3shader_base_wall=! }
-        base_wall/bluemetal2_noisy.wl             = { t_q3shader_base_wall=! }
-        base_wall/train1.wl                       = { t_q3shader_base_wall=! }
-        base_wall/bloodstain.wl                   = { t_q3shader_base_wall=! }
-        base_door/shinymetaldoor.wl               = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2.wl            = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2b.wl           = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2c.wl           = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2c_1.wl         = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2c_1vent.wl     = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2clight.wl      = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2d_1.wl         = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2e.wl           = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2e2.wl          = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2eye.wl         = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2f.wl           = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2fline.wl       = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport2ftv.wl         = { t_q3shader_base_wall=! }
+        base_wall/bluemetalsupport_shiny.wl       = { t_q3shader_base_wall=! }
+        base_wall/blumtlspt2b.wl                  = { t_q3shader_base_wall=! }
+        base_wall/blupaintedmetal.wl              = { t_q3shader_base_wall=! }
+        base_wall/blupaintedmetalcomp.wl          = { t_q3shader_base_wall=! }
+        base_wall/chrome_metal.wl                 = { t_q3shader_base_wall=! }
+        base_wall/comp3.wl                        = { t_q3shader_base_wall=! }
+        base_wall/comp3b.wl                       = { t_q3shader_base_wall=! }
+        base_wall/comp3b_dark.wl                  = { t_q3shader_base_wall=! }
+        base_wall/comp3c.wl                       = { t_q3shader_base_wall=! }
+        base_wall/concrete4.wl                    = { t_q3shader_base_wall=! }
+        base_wall/concrete_ow.wl                  = { t_q3shader_base_wall=! }
         base_wall/dooreye.wl                      = { t_q3shader_base_wall=! }
         base_wall/dooreye2.wl                     = { t_q3shader_base_wall=! }
         base_wall/dooreye3.wl                     = { t_q3shader_base_wall=! }
+        base_wall/future9light.wl                 = { t_q3shader_base_wall=! }
+        base_wall/girders1i_yellofin.wl           = { t_q3shader_base_wall=! }
         base_wall/glass01.wl                      = { t_q3shader_base_wall=! }
+        base_wall/glass_frame.wl                  = { t_q3shader_base_wall=! }
+        base_wall/green_con04.wl                  = { t_q3shader_base_wall=! }
+        base_wall/green_contrim_noisey.wl         = { t_q3shader_base_wall=! }
+        base_wall/grill.wl                        = { t_q3shader_base_wall=! }
+        base_wall/grill2.wl                       = { t_q3shader_base_wall=! }
+        base_wall/kcgrate1.wl                     = { t_q3shader_base_wall=! }
+        base_wall/main_q3abanner.wl               = { t_q3shader_base_wall=! }
+        base_wall/medal_impressive.wl             = { t_q3shader_base_wall=! }
+        base_wall/metalfloor_wall_14_specular.wl  = { t_q3shader_base_wall=! }
+        base_wall/metalfloor_wall_15ow.wl         = { t_q3shader_base_wall=! }
+        base_wall/metaltechgeomtrn.wl             = { t_q3shader_base_wall=! }
         base_wall/patch10_beat4_drip.wl           = { t_q3shader_base_wall=! }
         base_wall/patch10_beatup4_shiny2.wl       = { t_q3shader_base_wall=! }
         base_wall/patch10shiny.wl                 = { t_q3shader_base_wall=! }
         base_wall/patch10shiny_trans.wl           = { t_q3shader_base_wall=! }
         base_wall/patch11_shiny.wl                = { t_q3shader_base_wall=! }
-        base_wall/bluecover.wl                    = { t_q3shader_base_wall=! }
-        base_wall/shinybluemetal1b.wl             = { t_q3shader_base_wall=! }
         base_wall/pjrock18.wl                     = { t_q3shader_base_wall=! }
+        base_wall/protobanner.wl                  = { t_q3shader_base_wall=! }
+        base_wall/protobanner_ow.wl               = { t_q3shader_base_wall=! }
+        base_wall/protobanner_still.wl            = { t_q3shader_base_wall=! }
+        base_wall/q3tourneyscreen.wl              = { t_q3shader_base_wall=! }
         base_wall/shinybluemetal1.wl              = { t_q3shader_base_wall=! }
+        base_wall/shinybluemetal1b.wl             = { t_q3shader_base_wall=! }
         base_wall/shinygrate1_4.wl                = { t_q3shader_base_wall=! }
-        base_wall/chrome_metal.wl                 = { t_q3shader_base_wall=! }
-        base_wall/blupaintedmetalcomp.wl          = { t_q3shader_base_wall=! }
-        base_wall/blupaintedmetal.wl              = { t_q3shader_base_wall=! }
+        base_wall/shinygrate1_4_glow.wl           = { t_q3shader_base_wall=! }
         base_wall/shinymetal2.wl                  = { t_q3shader_base_wall=! }
-        base_wall/comp3c.wl                       = { t_q3shader_base_wall=! }
-        base_wall/comp3b.wl                       = { t_q3shader_base_wall=! }
-        base_wall/comp3b_dark.wl                  = { t_q3shader_base_wall=! }
-        base_wall/comp3.wl                        = { t_q3shader_base_wall=! }
-        base_wall/basewall01bit.wl                = { t_q3shader_base_wall=! }
-        base_wall/basewall01_ow.wl                = { t_q3shader_base_wall=! }
-        base_wall/blumtlspt2b.wl                  = { t_q3shader_base_wall=! }
-        base_wall/bluemetalsupport2b.wl           = { t_q3shader_base_wall=! }
-        base_wall/kcgrate1.wl                     = { t_q3shader_base_wall=! }
-        base_wall/future9light.wl                 = { t_q3shader_base_wall=! }
-        base_wall/bluemetal1light.wl              = { t_q3shader_base_wall=! }
-        base_wall/green_contrim_noisey.wl         = { t_q3shader_base_wall=! }
+        base_wall/steed1gd.wl                     = { t_q3shader_base_wall=! }
+        base_wall/steed1gf.wl                     = { t_q3shader_base_wall=! }
+        base_wall/steedmetal2.wl                  = { t_q3shader_base_wall=! }
+        base_wall/symbol_bluelt1.wl               = { t_q3shader_base_wall=! }
+        base_wall/train1.wl                       = { t_q3shader_base_wall=! }
       }
       Common.txlist =
       {
-        common/nolightmap.wl                      = { t_q3shader_common=! }
-        common/nodrawnonsolid.wl                  = { t_q3shader_common=! }
-        common/invisible.wl                       = { t_q3shader_common=! }
-        common/teleporter.wl                      = { t_q3shader_common=! }
-        common/nodrop.wl                          = { t_q3shader_common=! }
-        common/weapclip.wl                        = { t_q3shader_common=! }
-        common/clip.wl                            = { t_q3shader_common=! }
-        common/full_clip.wl                       = { t_q3shader_common=! }
-        common/missileclip.wl                     = { t_q3shader_common=! }
-        common/cushion.wl                         = { t_q3shader_common=! }
-        common/hint.wl                            = { t_q3shader_common=! }
-        common/skip.wl                            = { t_q3shader_common=! }
-        common/slick.wl                           = { t_q3shader_common=! }
-        common/origin.wl                          = { t_q3shader_common=! }
-        common/noimpact.wl                        = { t_q3shader_common=! }
         common/areaportal.wl                      = { t_q3shader_common=! }
-        common/clusterportal.wl                   = { t_q3shader_common=! }
-        common/donotenter.wl                      = { t_q3shader_common=! }
-        common/trigger.wl                         = { t_q3shader_common=! }
         common/caulk.wl                           = { t_q3shader_common=! }
-        common/nodraw.wl                          = { t_q3shader_common=! }
+        common/clip.wl                            = { t_q3shader_common=! }
+        common/clusterportal.wl                   = { t_q3shader_common=! }
+        common/cushion.wl                         = { t_q3shader_common=! }
+        common/donotenter.wl                      = { t_q3shader_common=! }
+        common/energypad.wl                       = { t_q3shader_common=! }
+        common/full_clip.wl                       = { t_q3shader_common=! }
+        common/hint.wl                            = { t_q3shader_common=! }
+        common/invisible.wl                       = { t_q3shader_common=! }
         common/mirror1.wl                         = { t_q3shader_common=! }
         common/mirror2.wl                         = { t_q3shader_common=! }
-        common/energypad.wl                       = { t_q3shader_common=! }
+        common/missileclip.wl                     = { t_q3shader_common=! }
+        common/nodraw.wl                          = { t_q3shader_common=! }
+        common/nodrawnonsolid.wl                  = { t_q3shader_common=! }
+        common/nodrop.wl                          = { t_q3shader_common=! }
+        common/noimpact.wl                        = { t_q3shader_common=! }
+        common/nolightmap.wl                      = { t_q3shader_common=! }
+        common/origin.wl                          = { t_q3shader_common=! }
         common/portal.wl                          = { t_q3shader_common=! }
+        common/skip.wl                            = { t_q3shader_common=! }
+        common/slick.wl                           = { t_q3shader_common=! }
+        common/teleporter.wl                      = { t_q3shader_common=! }
         common/timportal.wl                       = { t_q3shader_common=! }
-        sfx/portal_sfx.wl                         = { t_q3shader_common=! }
+        common/trigger.wl                         = { t_q3shader_common=! }
+        common/weapclip.wl                        = { t_q3shader_common=! }
         sfx/portal2_sfx.wl                        = { t_q3shader_common=! }
+        sfx/portal_sfx.wl                         = { t_q3shader_common=! }
       }
       Ctf.txlist =
       {
         ctf/blue_telep.wl                         = { t_q3shader_ctf=! }
-        ctf/red_telep.wl                          = { t_q3shader_ctf=! }
-        ctf/test2_trans.wl                        = { t_q3shader_ctf=! }
-        ctf/test2_r_trans.wl                      = { t_q3shader_ctf=! }
-        ctf/killblockctf_r.wl                     = { t_q3shader_ctf=! }
-        ctf/killblockctf_b.wl                     = { t_q3shader_ctf=! }
         ctf/ctf_arch_b_shiny.wl                   = { t_q3shader_ctf=! }
         ctf/ctf_arch_r_shiny.wl                   = { t_q3shader_ctf=! }
-        gothic_door/door02_bred2_shiny.wl         = { t_q3shader_ctf=! }
-        gothic_door/door02_eblue2_shiny.wl        = { t_q3shader_ctf=! }
-        ctf/red_scary4_d3fin.wl                   = { t_q3shader_ctf=! }
+        ctf/ctf_blueflag.wl                       = { t_q3shader_ctf=! }
+        ctf/ctf_redflag.wl                        = { t_q3shader_ctf=! }
         ctf/ctf_tower_bluefin_shiny.wl            = { t_q3shader_ctf=! }
         ctf/ctf_tower_redfin_shiny.wl             = { t_q3shader_ctf=! }
+        ctf/killblockctf_b.wl                     = { t_q3shader_ctf=! }
+        ctf/killblockctf_r.wl                     = { t_q3shader_ctf=! }
         ctf/metalbase09_bluekillblock_shiny.wl    = { t_q3shader_ctf=! }
         ctf/red_scary4_cfin.wl                    = { t_q3shader_ctf=! }
         ctf/red_scary4_csansfacefin.wl            = { t_q3shader_ctf=! }
-        ctf/tallblue_2_fin.wl                     = { t_q3shader_ctf=! }
+        ctf/red_scary4_d3fin.wl                   = { t_q3shader_ctf=! }
+        ctf/red_telep.wl                          = { t_q3shader_ctf=! }
         ctf/tallblue_1L_fin_shiny.wl              = { t_q3shader_ctf=! }
         ctf/tallblue_1R_fin_shiny.wl              = { t_q3shader_ctf=! }
+        ctf/tallblue_2_fin.wl                     = { t_q3shader_ctf=! }
         ctf/tallblue_2b_fin.wl                    = { t_q3shader_ctf=! }
-        ctf/tallblue_4c_fin_shiny.wl              = { t_q3shader_ctf=! }
         ctf/tallblue_4bsmall_fin.wl               = { t_q3shader_ctf=! }
+        ctf/tallblue_4c_fin_shiny.wl              = { t_q3shader_ctf=! }
         ctf/tallblue_5esmallb_fin.wl              = { t_q3shader_ctf=! }
-        ctf/ctf_blueflag.wl                       = { t_q3shader_ctf=! }
-        ctf/ctf_redflag.wl                        = { t_q3shader_ctf=! }
+        ctf/test2_r_trans.wl                      = { t_q3shader_ctf=! }
+        ctf/test2_trans.wl                        = { t_q3shader_ctf=! }
+        gothic_door/door02_bred2_shiny.wl         = { t_q3shader_ctf=! }
+        gothic_door/door02_eblue2_shiny.wl        = { t_q3shader_ctf=! }
       }
       Eerie.txlist =
       {
-        eerie/floor3_3dark.wl                     = { t_q3shader_eerie=! }
-        eerie/xblocks11be.wl                      = { t_q3shader_eerie=! }
         eerie/blackness.wl                        = { t_q3shader_eerie=! }
-        eerie/surface6jumppad.wl                  = { t_q3shader_eerie=! }
-        eerie/xgoopjumpypad.wl                    = { t_q3shader_eerie=! }
-        eerie/xgoopy_pentagram.wl                 = { t_q3shader_eerie=! }
+        eerie/blocks11b_jumppad.wl                = { t_q3shader_eerie=! }
+        eerie/blocks11b_jumppad_smaller.wl        = { t_q3shader_eerie=! }
+        eerie/blocks15b_jumppad.wl                = { t_q3shader_eerie=! }
+        eerie/bluegoal.wl                         = { t_q3shader_eerie=! }
+        eerie/border11light.wl                    = { t_q3shader_eerie=! }
+        eerie/borderlight_500.wl                  = { t_q3shader_eerie=! }
+        eerie/cross_1000.wl                       = { t_q3shader_eerie=! }
+        eerie/cross_2500.wl                       = { t_q3shader_eerie=! }
+        eerie/darkness.wl                         = { t_q3shader_eerie=! }
+        eerie/firewall.wl                         = { t_q3shader_eerie=! }
+        eerie/floor3_3dark.wl                     = { t_q3shader_eerie=! }
         eerie/gkcspine.wl                         = { t_q3shader_eerie=! }
+        eerie/iron01_d_flicker.wl                 = { t_q3shader_eerie=! }
+        eerie/iron01_e_flicker.wl                 = { t_q3shader_eerie=! }
+        eerie/iron01_g_flicker.wl                 = { t_q3shader_eerie=! }
+        eerie/jesus.wl                            = { t_q3shader_eerie=! }
         eerie/lavafogshader.wl                    = { t_q3shader_eerie=! }
         eerie/lavahell.wl                         = { t_q3shader_eerie=! }
         eerie/lavahell2.wl                        = { t_q3shader_eerie=! }
         eerie/lavahell_goddamnbright.wl           = { t_q3shader_eerie=! }
-        eerie/uberiron.wl                         = { t_q3shader_eerie=! }
-        eerie/iron01_e_flicker.wl                 = { t_q3shader_eerie=! }
-        eerie/q1metal7_98d_flicker.wl             = { t_q3shader_eerie=! }
-        eerie/iron01_d_flicker.wl                 = { t_q3shader_eerie=! }
-        eerie/iron01_g_flicker.wl                 = { t_q3shader_eerie=! }
-        eerie/firewall.wl                         = { t_q3shader_eerie=! }
-        eerie/xq1metalbig_nojumppad.wl            = { t_q3shader_eerie=! }
-        eerie/metal3_3.wl                         = { t_q3shader_eerie=! }
-        eerie/teslacoil.wl                        = { t_q3shader_eerie=! }
-        eerie/tesla_cable.wl                      = { t_q3shader_eerie=! }
-        eerie/jesus.wl                            = { t_q3shader_eerie=! }
-        eerie/xq1metalbig_jumppad.wl              = { t_q3shader_eerie=! }
-        eerie/blocks15b_jumppad.wl                = { t_q3shader_eerie=! }
-        eerie/blocks11b_jumppad.wl                = { t_q3shader_eerie=! }
-        eerie/blocks11b_jumppad_smaller.wl        = { t_q3shader_eerie=! }
-        eerie/pentagramfloor.wl                   = { t_q3shader_eerie=! }
-        eerie/pentagramfloor_rotating.wl          = { t_q3shader_eerie=! }
-        eerie/q1metal7_98d_pent_256.wl            = { t_q3shader_eerie=! }
-        eerie/border11light.wl                    = { t_q3shader_eerie=! }
-        eerie/borderlight_500.wl                  = { t_q3shader_eerie=! }
-        eerie/darkness.wl                         = { t_q3shader_eerie=! }
-        eerie/redgoal.wl                          = { t_q3shader_eerie=! }
-        eerie/bluegoal.wl                         = { t_q3shader_eerie=! }
-        eerie/powerupshit.wl                      = { t_q3shader_eerie=! }
-        eerie/xian_rune11.wl                      = { t_q3shader_eerie=! }
-        eerie/xian_rune21.wl                      = { t_q3shader_eerie=! }
-        eerie/lightcone.wl                        = { t_q3shader_eerie=! }
-        eerie/q1metal7_97b_mirror.wl              = { t_q3shader_eerie=! }
-        eerie/cross_1000.wl                       = { t_q3shader_eerie=! }
-        eerie/cross_2500.wl                       = { t_q3shader_eerie=! }
         eerie/light1.wl                           = { t_q3shader_eerie=! }
         eerie/light1_5000.wl                      = { t_q3shader_eerie=! }
         eerie/light2.wl                           = { t_q3shader_eerie=! }
         eerie/light3_8.wl                         = { t_q3shader_eerie=! }
+        eerie/lightcone.wl                        = { t_q3shader_eerie=! }
+        eerie/metal3_3.wl                         = { t_q3shader_eerie=! }
+        eerie/pentagramfloor.wl                   = { t_q3shader_eerie=! }
+        eerie/pentagramfloor_rotating.wl          = { t_q3shader_eerie=! }
+        eerie/powerupshit.wl                      = { t_q3shader_eerie=! }
+        eerie/q1metal7_97b_mirror.wl              = { t_q3shader_eerie=! }
+        eerie/q1metal7_98d_flicker.wl             = { t_q3shader_eerie=! }
+        eerie/q1metal7_98d_pent_256.wl            = { t_q3shader_eerie=! }
+        eerie/redgoal.wl                          = { t_q3shader_eerie=! }
+        eerie/surface6jumppad.wl                  = { t_q3shader_eerie=! }
+        eerie/tesla_cable.wl                      = { t_q3shader_eerie=! }
+        eerie/teslacoil.wl                        = { t_q3shader_eerie=! }
+        eerie/uberiron.wl                         = { t_q3shader_eerie=! }
+        eerie/xblocks11be.wl                      = { t_q3shader_eerie=! }
+        eerie/xgoopjumpypad.wl                    = { t_q3shader_eerie=! }
+        eerie/xgoopy_pentagram.wl                 = { t_q3shader_eerie=! }
         eerie/xian_light3_7.wl                    = { t_q3shader_eerie=! }
+        eerie/xian_rune11.wl                      = { t_q3shader_eerie=! }
+        eerie/xian_rune21.wl                      = { t_q3shader_eerie=! }
+        eerie/xq1metalbig_jumppad.wl              = { t_q3shader_eerie=! }
+        eerie/xq1metalbig_nojumppad.wl            = { t_q3shader_eerie=! }
       }
       Gfx.txlist =
       {
@@ -1801,167 +1801,168 @@ QQRKSRC1
       }
       Gothic_Block.txlist =
       {
-        gothic_block/largerblock3blood.wl         = { t_q3shader_gothic_block=! }
+        gothic_block/blocks11ct.wl                = { t_q3shader_gothic_block=! }
+        gothic_block/blocks15_ow.wl               = { t_q3shader_gothic_block=! }
+        gothic_block/blocks15_sandy.wl            = { t_q3shader_gothic_block=! }
+        gothic_block/blocks15cgeomtrn.wl          = { t_q3shader_gothic_block=! }
+        gothic_block/blocks17_ow.wl               = { t_q3shader_gothic_block=! }
+        gothic_block/blocks17_sandy.wl            = { t_q3shader_gothic_block=! }
         gothic_block/blocks17bloody.wl            = { t_q3shader_gothic_block=! }
         gothic_block/blocks17g_ow.wl              = { t_q3shader_gothic_block=! }
+        gothic_block/blocks17gwater.wl            = { t_q3shader_gothic_block=! }
         gothic_block/blocks18b_ow.wl              = { t_q3shader_gothic_block=! }
-        gothic_door/skullarch_b.wl                = { t_q3shader_gothic_block=! }
-        gothic_block/blocks17_ow.wl               = { t_q3shader_gothic_block=! }
-        gothic_block/blocks15cgeomtrn.wl          = { t_q3shader_gothic_block=! }
-        gothic_block/killblockgeomtrn.wl          = { t_q3shader_gothic_block=! }
-        gothic_block/blocks18cgeomtrn2.wl         = { t_q3shader_gothic_block=! }
         gothic_block/blocks18cgeomtrn.wl          = { t_q3shader_gothic_block=! }
+        gothic_block/blocks18cgeomtrn2.wl         = { t_q3shader_gothic_block=! }
         gothic_block/blocks18cgeomtrnx.wl         = { t_q3shader_gothic_block=! }
+        gothic_block/blocks18d_trans.wl           = { t_q3shader_gothic_block=! }
         gothic_block/demon_block15fx.wl           = { t_q3shader_gothic_block=! }
-        gothic_block/blocks15_ow.wl               = { t_q3shader_gothic_block=! }
-        gothic_block/xblocks17i_shiney.wl         = { t_q3shader_gothic_block=! }
-        gothic_block/blocks17_sandy.wl            = { t_q3shader_gothic_block=! }
-        gothic_block/wetwall.wl                   = { t_q3shader_gothic_block=! }
-        gothic_block/blocks15_sandy.wl            = { t_q3shader_gothic_block=! }
+        gothic_block/electrohell.wl               = { t_q3shader_gothic_block=! }
         gothic_block/evil_e3bwindow.wl            = { t_q3shader_gothic_block=! }
         gothic_block/evil_e3window.wl             = { t_q3shader_gothic_block=! }
         gothic_block/evil_e3window_dark.wl        = { t_q3shader_gothic_block=! }
-        gothic_block/blocks17gwater.wl            = { t_q3shader_gothic_block=! }
-        gothic_light/flicker_light15k.wl          = { t_q3shader_gothic_block=! }
         gothic_block/flicker_blocks10.wl          = { t_q3shader_gothic_block=! }
         gothic_block/gkc17d.wl                    = { t_q3shader_gothic_block=! }
-        gothic_block/blocks11ct.wl                = { t_q3shader_gothic_block=! }
         gothic_block/gkcspinemove.wl              = { t_q3shader_gothic_block=! }
-        gothic_block/electrohell.wl               = { t_q3shader_gothic_block=! }
+        gothic_block/killblockgeomtrn.wl          = { t_q3shader_gothic_block=! }
+        gothic_block/largerblock3blood.wl         = { t_q3shader_gothic_block=! }
         gothic_block/mkc_evil_e3window.wl         = { t_q3shader_gothic_block=! }
-        gothic_block/blocks18d_trans.wl           = { t_q3shader_gothic_block=! }
+        gothic_block/wetwall.wl                   = { t_q3shader_gothic_block=! }
+        gothic_block/xblocks17i_shiney.wl         = { t_q3shader_gothic_block=! }
+        gothic_door/skullarch_b.wl                = { t_q3shader_gothic_block=! }
+        gothic_light/flicker_light15k.wl          = { t_q3shader_gothic_block=! }
       }
       Gothic_Floor.txlist =
       {
-        gothic_floor/q1metal7_99spot.wl                = { t_q3shader_gothic_floor=! }
-        gothic_floor/xq1metalbig_ow.wl                 = { t_q3shader_gothic_floor=! }
-        gothic_floor/q1metal7_98blueow.wl              = { t_q3shader_gothic_floor=! }
-        gothic_floor/q1metal7_97redow.wl               = { t_q3shader_gothic_floor=! }
-        gothic_floor/fireblocks17floor3.wl             = { t_q3shader_gothic_floor=! }
         gothic_floor/center2trn.wl                     = { t_q3shader_gothic_floor=! }
+        gothic_floor/fireblocks17floor3.wl             = { t_q3shader_gothic_floor=! }
+        gothic_floor/glowfloor1.wl                     = { t_q3shader_gothic_floor=! }
         gothic_floor/largerblock3b_ow.wl               = { t_q3shader_gothic_floor=! }
         gothic_floor/metalbridge06brokeb.wl            = { t_q3shader_gothic_floor=! }
-        gothic_floor/xstepborder3_shiney.wl            = { t_q3shader_gothic_floor=! }
-        gothic_floor/xlargeblockfloor5_pent.wl         = { t_q3shader_gothic_floor=! }
-        gothic_floor/xlargeblockfloor5_pent_offset.wl  = { t_q3shader_gothic_floor=! }
-        gothic_floor/glowfloor1.wl                     = { t_q3shader_gothic_floor=! }
         gothic_floor/pent_metalbridge02.wl             = { t_q3shader_gothic_floor=! }
         gothic_floor/pent_metalbridge06.wl             = { t_q3shader_gothic_floor=! }
         gothic_floor/pent_metalbridge06b.wl            = { t_q3shader_gothic_floor=! }
+        gothic_floor/q1metal7_97redow.wl               = { t_q3shader_gothic_floor=! }
+        gothic_floor/q1metal7_98blueow.wl              = { t_q3shader_gothic_floor=! }
+        gothic_floor/q1metal7_99spot.wl                = { t_q3shader_gothic_floor=! }
+        gothic_floor/xlargeblockfloor5_pent.wl         = { t_q3shader_gothic_floor=! }
+        gothic_floor/xlargeblockfloor5_pent_offset.wl  = { t_q3shader_gothic_floor=! }
+        gothic_floor/xq1metalbig_ow.wl                 = { t_q3shader_gothic_floor=! }
+        gothic_floor/xstepborder3_shiney.wl            = { t_q3shader_gothic_floor=! }
       }
       Gothic_Light.txlist =
       {
-        gothic_light/border7_ceil39b_10k.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/border7_ceil39_6k.wl         = { t_q3shader_gothic_light=! }
         gothic_light/border7_ceil22a.wl           = { t_q3shader_gothic_light=! }
         gothic_light/border7_ceil30.wl            = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light2_lrg_2k.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/border7_ceil39_6k.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/border7_ceil39b_10k.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/crosslt1.wl                  = { t_q3shader_gothic_light=! }
+        gothic_light/goth_lt2_lrg2k.wl            = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light2_1k.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light2_2K.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light2_4K.wl          = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_lrg_1k.wl      = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_lrg_200.wl     = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light2_lrg_2k.wl      = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_lrg_500.wl     = { t_q3shader_gothic_light=! }
-        gothic_light/goth_lt2_lrg2k.wl            = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_15K.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_20K.wl         = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light3_10K.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_15K.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_1K.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_20K.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_2K.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_3k.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_4K.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/gothic_light3_5K.wl          = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light3_6K.wl          = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light3_7K.wl          = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light3_8K.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_5K.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_4K.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_3k.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_2K.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light3_1K.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light2_4K.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light2_1k.wl          = { t_q3shader_gothic_light=! }
-        gothic_light/gothic_light2_2K.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_1000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_10000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_120000.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_2000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_20000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_2500.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_3000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_30000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_4000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_40000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_5000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt1_500000.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_1000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_10000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_2000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_20000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_2500.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_3000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_30000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_4000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_40000.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrosslt2_5000.wl         = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_10000.wl     = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_2000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_20000.wl     = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_3000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_30000.wl     = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_4000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltblue_5000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_10000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_2000.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_20000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_3000.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_30000.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_4000.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/ironcrossltred_5000.wl       = { t_q3shader_gothic_light=! }
+        gothic_light/light1_4Kgothic.wl           = { t_q3shader_gothic_light=! }
+        gothic_light/light1_6Kgothic.wl           = { t_q3shader_gothic_light=! }
+        gothic_light/light1_6Kgothicred.wl        = { t_q3shader_gothic_light=! }
+        gothic_light/pentagram_light1_10K.wl      = { t_q3shader_gothic_light=! }
+        gothic_light/pentagram_light1_15K.wl      = { t_q3shader_gothic_light=! }
         gothic_light/pentagram_light1_1K.wl       = { t_q3shader_gothic_light=! }
         gothic_light/pentagram_light1_2K.wl       = { t_q3shader_gothic_light=! }
         gothic_light/pentagram_light1_3K.wl       = { t_q3shader_gothic_light=! }
         gothic_light/pentagram_light1_4K.wl       = { t_q3shader_gothic_light=! }
         gothic_light/pentagram_light1_5K.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/pentagram_light1_10K.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/pentagram_light1_15K.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_2000.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_3000.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_4000.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_5000.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_10000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_20000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltred_30000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_2000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_3000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_4000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_5000.wl      = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_10000.wl     = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_20000.wl     = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrossltblue_30000.wl     = { t_q3shader_gothic_light=! }
-        gothic_light/crosslt1.wl                  = { t_q3shader_gothic_light=! }
-        gothic_light/light1_6Kgothicred.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/light1_4Kgothic.wl           = { t_q3shader_gothic_light=! }
-        gothic_light/light1_6Kgothic.wl           = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_2500.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_1000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_2000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_120000.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_500000.wl       = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_3000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_4000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_5000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_10000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_20000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_30000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt1_40000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_2000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_2500.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_3000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_4000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_5000.wl         = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_10000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_20000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_30000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_40000.wl        = { t_q3shader_gothic_light=! }
-        gothic_light/ironcrosslt2_1000.wl         = { t_q3shader_gothic_light=! }
       }
       Gothic_Trim.txlist =
       {
-        gothic_trim/x_noblight.wl                 = { t_q3shader_gothic_trim=! }
-        gothic_trim/zinc_shiny.wl                 = { t_q3shader_gothic_trim=! }
+        gothic_block/killtrim_trans.wl            = { t_q3shader_gothic_trim=! }
+        gothic_button/timbutton.wl                = { t_q3shader_gothic_trim=! }
+        gothic_trim/barbedwire.wl                 = { t_q3shader_gothic_trim=! }
+        gothic_trim/baseboard09_p_shiny.wl        = { t_q3shader_gothic_trim=! }
+        gothic_trim/border6_trans.wl              = { t_q3shader_gothic_trim=! }
         gothic_trim/chrome_rivet.wl               = { t_q3shader_gothic_trim=! }
+        gothic_trim/column2c_trans.wl             = { t_q3shader_gothic_trim=! }
+        gothic_trim/gothgrate2.wl                 = { t_q3shader_gothic_trim=! }
+        gothic_trim/gothgrate3.wl                 = { t_q3shader_gothic_trim=! }
+        gothic_trim/km_arena1tower4_shiny.wl      = { t_q3shader_gothic_trim=! }
         gothic_trim/km_arena1tower4fx.wl          = { t_q3shader_gothic_trim=! }
         gothic_trim/km_arena1towerblue.wl         = { t_q3shader_gothic_trim=! }
-        gothic_trim/column2c_trans.wl             = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalsupport4b_trans.wl       = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalsupport4j_trans.wl       = { t_q3shader_gothic_trim=! }
-        gothic_trim/border6_trans.wl              = { t_q3shader_gothic_trim=! }
-        gothic_trim/pitted_rust2_trans.wl         = { t_q3shader_gothic_trim=! }
-        gothic_trim/pitted_rust3_trans.wl         = { t_q3shader_gothic_trim=! }
-        gothic_block/killtrim_trans.wl            = { t_q3shader_gothic_trim=! }
-        gothic_trim/baseboard09_p_shiny.wl        = { t_q3shader_gothic_trim=! }
-        gothic_trim/km_arena1tower4_shiny.wl      = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalsupport4h_shiny.wl       = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalsupport4h_trans.wl       = { t_q3shader_gothic_trim=! }
-        gothic_trim/supportborderside_shiney.wl   = { t_q3shader_gothic_trim=! }
-        gothic_trim/metlsupport4i_shiney.wl       = { t_q3shader_gothic_trim=! }
-        gothic_trim/barbedwire.wl                 = { t_q3shader_gothic_trim=! }
-        gothic_button/timbutton.wl                = { t_q3shader_gothic_trim=! }
-        gothic_wall/window_evil6a.wl              = { t_q3shader_gothic_trim=! }
-        gothic_wall/window_evil7.wl               = { t_q3shader_gothic_trim=! }
-        gothic_wall/glass_stained1.wl             = { t_q3shader_gothic_trim=! }
-        gothic_trim/gothgrate3.wl                 = { t_q3shader_gothic_trim=! }
-        gothic_trim/gothgrate2.wl                 = { t_q3shader_gothic_trim=! }
-        gothic_trim/tongue_bone.wl                = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase02b_iron.wl          = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase02c_iron.wl          = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase03a_brick.wl         = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase03b_iron.wl          = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase03c_iron.wl          = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase03d_iron.wl          = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalbase09b_iron.wl          = { t_q3shader_gothic_trim=! }
         gothic_trim/metalbase09d_iron.wl          = { t_q3shader_gothic_trim=! }
         gothic_trim/metalbase09e_iron.wl          = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase02b_iron.wl          = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase03c_iron.wl          = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase02c_iron.wl          = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase03b_iron.wl          = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase09b_iron.wl          = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase03a_brick.wl         = { t_q3shader_gothic_trim=! }
-        gothic_trim/metalbase03d_iron.wl          = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalsupport4b_trans.wl       = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalsupport4h_shiny.wl       = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalsupport4h_trans.wl       = { t_q3shader_gothic_trim=! }
+        gothic_trim/metalsupport4j_trans.wl       = { t_q3shader_gothic_trim=! }
+        gothic_trim/metlsupport4i_shiney.wl       = { t_q3shader_gothic_trim=! }
+        gothic_trim/pitted_rust2_trans.wl         = { t_q3shader_gothic_trim=! }
+        gothic_trim/pitted_rust3_trans.wl         = { t_q3shader_gothic_trim=! }
+        gothic_trim/supportborderside_shiney.wl   = { t_q3shader_gothic_trim=! }
+        gothic_trim/tongue_bone.wl                = { t_q3shader_gothic_trim=! }
+        gothic_trim/x_noblight.wl                 = { t_q3shader_gothic_trim=! }
+        gothic_trim/zinc_shiny.wl                 = { t_q3shader_gothic_trim=! }
+        gothic_wall/glass_stained1.wl             = { t_q3shader_gothic_trim=! }
+        gothic_wall/window_evil6a.wl              = { t_q3shader_gothic_trim=! }
+        gothic_wall/window_evil7.wl               = { t_q3shader_gothic_trim=! }
       }
       Gothic_Wall.txlist =
       {
+        gothic_door/door02_i_ornate5_fin.wl       = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_f.wl                   = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_f2.wl                  = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_k.wl                   = { t_q3shader_gothic_wall=! }
@@ -1969,9 +1970,9 @@ QQRKSRC1
         gothic_wall/iron01_l2.wl                  = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_l4.wl                  = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_m.wl                   = { t_q3shader_gothic_wall=! }
-        gothic_wall/iron01_m_circles.wl           = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_m2.wl                  = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_m3.wl                  = { t_q3shader_gothic_wall=! }
+        gothic_wall/iron01_m_circles.wl           = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_mtech2.wl              = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_mthin.wl               = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_n.wl                   = { t_q3shader_gothic_wall=! }
@@ -1980,72 +1981,71 @@ QQRKSRC1
         gothic_wall/iron01_ndark_circles.wl       = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_ntech.wl               = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_ntech2.wl              = { t_q3shader_gothic_wall=! }
-        gothic_door/door02_i_ornate5_fin.wl       = { t_q3shader_gothic_wall=! }
-        gothic_wall/xpipecolumn_gray_shiny.wl     = { t_q3shader_gothic_wall=! }
         gothic_wall/streetbricks10_shiny.wl       = { t_q3shader_gothic_wall=! }
         gothic_wall/xoct20c_shiney.wl             = { t_q3shader_gothic_wall=! }
+        gothic_wall/xpipecolumn_gray_shiny.wl     = { t_q3shader_gothic_wall=! }
       }
       Hell.txlist =
       {
-        hell/ironcrosslt1_5000.wl                 = { t_q3shader_hell=! }
-        hell/skin7_teeth2.wl                      = { t_q3shader_hell=! }
-        hell/hellredclouds.wl                     = { t_q3shader_hell=! }
+        hell/bluepad.wl                           = { t_q3shader_hell=! }
+        hell/darkness.wl                          = { t_q3shader_hell=! }
         hell/hellbutt01.wl                        = { t_q3shader_hell=! }
-        hell/xfiretest1.wl                        = { t_q3shader_hell=! }
-        hell/xfiretest2.wl                        = { t_q3shader_hell=! }
-        hell/metal2_2.wl                          = { t_q3shader_hell=! }
+        hell/hellredclouds.wl                     = { t_q3shader_hell=! }
         hell/ironcrosslt1.wl                      = { t_q3shader_hell=! }
+        hell/ironcrosslt1_5000.wl                 = { t_q3shader_hell=! }
         hell/killblock_b.wl                       = { t_q3shader_hell=! }
         hell/killblock_c.wl                       = { t_q3shader_hell=! }
-        hell/bluepad.wl                           = { t_q3shader_hell=! }
+        hell/lava2z.wl                            = { t_q3shader_hell=! }
+        hell/light1blue.wl                        = { t_q3shader_hell=! }
         hell/light1dark.wl                        = { t_q3shader_hell=! }
         hell/light1red.wl                         = { t_q3shader_hell=! }
-        hell/light1blue.wl                        = { t_q3shader_hell=! }
-        hell/lava2z.wl                            = { t_q3shader_hell=! }
-        hell/darkness.wl                          = { t_q3shader_hell=! }
+        hell/metal2_2.wl                          = { t_q3shader_hell=! }
+        hell/skin7_teeth2.wl                      = { t_q3shader_hell=! }
+        hell/xfiretest1.wl                        = { t_q3shader_hell=! }
+        hell/xfiretest2.wl                        = { t_q3shader_hell=! }
       }
       Liquid.txlist =
       {
-        liquids/protolava.wl                      = { t_q3shader_liquid=! }
-        liquids/slime2.wl                         = { t_q3shader_liquid=! }
-        liquids/watertest.wl                      = { t_q3shader_liquid=! }
-        liquids/flatripplewater_1500.wl           = { t_q3shader_liquid=! }
-        liquids/xctf_painwater.wl                 = { t_q3shader_liquid=! }
+        hell/lavasolid.wl                         = { t_q3shader_liquid=! }
+        liquids/bloodwater.wl                     = { t_q3shader_liquid=! }
+        liquids/bloodwater_pj.wl                  = { t_q3shader_liquid=! }
+        liquids/calm_pool.wl                      = { t_q3shader_liquid=! }
+        liquids/calm_pool2.wl                     = { t_q3shader_liquid=! }
+        liquids/calm_pool_bgtess.wl               = { t_q3shader_liquid=! }
+        liquids/calm_poollight.wl                 = { t_q3shader_liquid=! }
         liquids/clear_calm1.wl                    = { t_q3shader_liquid=! }
-        liquids/clear_ripple3.wl                  = { t_q3shader_liquid=! }
-        liquids/clear_ripple2.wl                  = { t_q3shader_liquid=! }
         liquids/clear_ripple1.wl                  = { t_q3shader_liquid=! }
         liquids/clear_ripple1_q3dm1.wl            = { t_q3shader_liquid=! }
-        liquids/mercury.wl                        = { t_q3shader_liquid=! }
-        liquids/proto_spec.wl                     = { t_q3shader_liquid=! }
+        liquids/clear_ripple2.wl                  = { t_q3shader_liquid=! }
+        liquids/clear_ripple3.wl                  = { t_q3shader_liquid=! }
+        liquids/flatlavahell_1500.wl              = { t_q3shader_liquid=! }
+        liquids/flatripplewater_1500.wl           = { t_q3shader_liquid=! }
+        liquids/jello.wl                          = { t_q3shader_liquid=! }
+        liquids/lavacrust.wl                      = { t_q3shader_liquid=! }
         liquids/lavahell.wl                       = { t_q3shader_liquid=! }
-        liquids/lavahell_xdm1.wl                  = { t_q3shader_liquid=! }
+        liquids/lavahell2.wl                      = { t_q3shader_liquid=! }
         liquids/lavahell_1000.wl                  = { t_q3shader_liquid=! }
         liquids/lavahell_2000.wl                  = { t_q3shader_liquid=! }
-        liquids/lavahell_750.wl                   = { t_q3shader_liquid=! }
-        liquids/flatlavahell_1500.wl              = { t_q3shader_liquid=! }
         liquids/lavahell_2500.wl                  = { t_q3shader_liquid=! }
+        liquids/lavahell_750.wl                   = { t_q3shader_liquid=! }
+        liquids/lavahell_xdm1.wl                  = { t_q3shader_liquid=! }
         liquids/lavahelldark.wl                   = { t_q3shader_liquid=! }
         liquids/lavahellflat_400.wl               = { t_q3shader_liquid=! }
-        liquids/lavahell2.wl                      = { t_q3shader_liquid=! }
-        liquids/calm_pool.wl                      = { t_q3shader_liquid=! }
-        liquids/ps_bloodwater1.wl                 = { t_q3shader_liquid=! }
-        liquids/calm_poollight.wl                 = { t_q3shader_liquid=! }
-        liquids/calm_pool2.wl                     = { t_q3shader_liquid=! }
+        liquids/mercury.wl                        = { t_q3shader_liquid=! }
         liquids/pool.wl                           = { t_q3shader_liquid=! }
-        liquids/calm_pool_bgtess.wl               = { t_q3shader_liquid=! }
-        liquids/ripplewater2.wl                   = { t_q3shader_liquid=! }
-        liquids/proto_pool3.wl                    = { t_q3shader_liquid=! }
-        liquids/jello.wl                          = { t_q3shader_liquid=! }
         liquids/proto_gruel.wl                    = { t_q3shader_liquid=! }
-        liquids/xripplewater2.wl                  = { t_q3shader_liquid=! }
+        liquids/proto_pool3.wl                    = { t_q3shader_liquid=! }
+        liquids/proto_spec.wl                     = { t_q3shader_liquid=! }
+        liquids/protolava.wl                      = { t_q3shader_liquid=! }
+        liquids/ps_bloodwater1.wl                 = { t_q3shader_liquid=! }
+        liquids/ripplewater2.wl                   = { t_q3shader_liquid=! }
         liquids/ripplewater2a.wl                  = { t_q3shader_liquid=! }
         liquids/slime1.wl                         = { t_q3shader_liquid=! }
         liquids/slime1_2000.wl                    = { t_q3shader_liquid=! }
-        liquids/lavacrust.wl                      = { t_q3shader_liquid=! }
-        liquids/bloodwater_pj.wl                  = { t_q3shader_liquid=! }
-        liquids/bloodwater.wl                     = { t_q3shader_liquid=! }
-        hell/lavasolid.wl                         = { t_q3shader_liquid=! }
+        liquids/slime2.wl                         = { t_q3shader_liquid=! }
+        liquids/watertest.wl                      = { t_q3shader_liquid=! }
+        liquids/xctf_painwater.wl                 = { t_q3shader_liquid=! }
+        liquids/xripplewater2.wl                  = { t_q3shader_liquid=! }
       }
       Menu.txlist =
       {
@@ -2055,144 +2055,13 @@ QQRKSRC1
       }
       Organics.txlist =
       {
-        organics/wire02a_f.wl                     = { t_q3shader_organics=! }
         organics/wire02_f2.wl                     = { t_q3shader_organics=! }
+        organics/wire02a_f.wl                     = { t_q3shader_organics=! }
       }
       Sfx.txlist =
       {
-        sfx/blocks17g_jumpad.wl                   = { t_q3shader_sfx=! }
-        sfx/bullseye.wl                           = { t_q3shader_sfx=! }
-        sfx/omm.wl                                = { t_q3shader_sfx=! }
-        sfx/dust_puppy2.wl                        = { t_q3shader_sfx=! }
-        sfx/spawn_floord2c.wl                     = { t_q3shader_sfx=! }
-        sfx/spawn_floor.wl                        = { t_q3shader_sfx=! }
-        sfx/fan3blade.wl                          = { t_q3shader_sfx=! }
-        sfx/fan3bladeb.wl                         = { t_q3shader_sfx=! }
-        sfx/fan3.wl                               = { t_q3shader_sfx=! }
-        sfx/lavabeam.wl                           = { t_q3shader_sfx=! }
-        sfx/healthfloor.wl                        = { t_q3shader_sfx=! }
-        sfx/proto_zzztblu3.wl                     = { t_q3shader_sfx=! }
-        sfx/flametest.wl                          = { t_q3shader_sfx=! }
-        sfx/bouncepad01_xarch.wl                  = { t_q3shader_sfx=! }
-        sfx/rain.wl                               = { t_q3shader_sfx=! }
-        sfx/largerblock3b3x128_pentred.wl         = { t_q3shader_sfx=! }
-        sfx/largerblock3b3x128_pent.wl            = { t_q3shader_sfx=! }
-        sfx/smallerblock3b3dim_pent.wl            = { t_q3shader_sfx=! }
-        sfx/fishy.wl                              = { t_q3shader_sfx=! }
-        sfx/lightmap.wl                           = { t_q3shader_sfx=! }
-        sfx/hellfog_pj_dm10.wl                    = { t_q3shader_sfx=! }
-        sfx/hellfog_mini_dm10.wl                  = { t_q3shader_sfx=! }
-        sfx/metalfloor_wall_14b_glow.wl           = { t_q3shader_sfx=! }
-        sfx/metalfloor_wall_15b_glow.wl           = { t_q3shader_sfx=! }
-        sfx/xblackfog.wl                          = { t_q3shader_sfx=! }
-        sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
-        sfx/xfinalfoginvert.wl                    = { t_q3shader_sfx=! }
-        sfx/xbluefog.wl                           = { t_q3shader_sfx=! }
-        sfx/xredfog.wl                            = { t_q3shader_sfx=! }
-        sfx/xbluefogx128.wl                       = { t_q3shader_sfx=! }
-        sfx/beam.wl                               = { t_q3shader_sfx=! }
-        sfx/beam_dusty2.wl                        = { t_q3shader_sfx=! }
-        sfx/beam_red.wl                           = { t_q3shader_sfx=! }
-        sfx/beam_blue.wl                          = { t_q3shader_sfx=! }
-        sfx/beam_waterlight1.wl                   = { t_q3shader_sfx=! }
-        sfx/beam_waterlight1.wl                   = { t_q3shader_sfx=! }
-        sfx/beam_waterlight2.wl                   = { t_q3shader_sfx=! }
-        sfx/beam_dusty.wl                         = { t_q3shader_sfx=! }
-        sfx/beam_water.wl                         = { t_q3shader_sfx=! }
-        sfx/beam_water2.wl                        = { t_q3shader_sfx=! }
-        sfx/console01.wl                          = { t_q3shader_sfx=! }
-        sfx/console03.wl                          = { t_q3shader_sfx=! }
-        sfx/glass.wl                              = { t_q3shader_sfx=! }
-        sfx/fan.wl                                = { t_q3shader_sfx=! }
-        sfx/fan2.wl                               = { t_q3shader_sfx=! }
-        sfx/fan_grate.wl                          = { t_q3shader_sfx=! }
-        sfx/fan_grate2.wl                         = { t_q3shader_sfx=! }
-        sfx/fanfx.wl                              = { t_q3shader_sfx=! }
-        sfx/metalfloor_wall_5_glow.wl             = { t_q3shader_sfx=! }
-        sfx/metaltech12darkfinal_blueglow.wl      = { t_q3shader_sfx=! }
-        sfx/zap_scroll1000.wl                     = { t_q3shader_sfx=! }
-        gothic_block/killblock_i4b.wl             = { t_q3shader_sfx=! }
-        sfx/donna.wl                              = { t_q3shader_sfx=! }
-        sfx/xian_dm3padwall.wl                    = { t_q3shader_sfx=! }
-        sfx/xmetalfloor_wall_5b.wl                = { t_q3shader_sfx=! }
-        sfx/border11c.wl                          = { t_q3shader_sfx=! }
-        sfx/zap_scroll.wl                         = { t_q3shader_sfx=! }
-        sfx/x_conduit.wl                          = { t_q3shader_sfx=! }
-        sfx/swirl_r1.wl                           = { t_q3shader_sfx=! }
-        sfx/swirl_b1.wl                           = { t_q3shader_sfx=! }
-        sfx/steam_01.wl                           = { t_q3shader_sfx=! }
-        sfx/zap_ball.wl                           = { t_q3shader_sfx=! }
-        sfx/jacobs_x.wl                           = { t_q3shader_sfx=! }
-        sfx/xlargeblockfloor3_pent.wl             = { t_q3shader_sfx=! }
-        sfx/xclang_floor2_bouncy.wl               = { t_q3shader_sfx=! }
-        sfx/clangdark_bounce.wl                   = { t_q3shader_sfx=! }
-        sfx/metalbridge06_bounce.wl               = { t_q3shader_sfx=! }
-        sfx/metaltechfloor02final_bounce.wl       = { t_q3shader_sfx=! }
-        sfx/metaltech12final_bounce.wl            = { t_q3shader_sfx=! }
-        sfx/metaltech12darkfinal_bounce.wl        = { t_q3shader_sfx=! }
-        sfx/metaltechfloor01final_bounce.wl       = { t_q3shader_sfx=! }
-        sfx/demonltblackfinal.wl                  = { t_q3shader_sfx=! }
         base_wall/c_met5_2_trans.wl               = { t_q3shader_sfx=! }
-        sfx/metalfloor_glass.wl                   = { t_q3shader_sfx=! }
-        sfx/xmetalfloor_wall_14b.wl               = { t_q3shader_sfx=! }
-        sfx/xmetalfloor_wall_9b.wl                = { t_q3shader_sfx=! }
-        sfx/portal_sfx_ring.wl                    = { t_q3shader_sfx=! }
-        sfx/small_smoke1_1.wl                     = { t_q3shader_sfx=! }
-        sfx/xflame2.wl                            = { t_q3shader_sfx=! }
-        sfx/xflame2_2250.wl                       = { t_q3shader_sfx=! }
-        sfx/xflame2_1800.wl                       = { t_q3shader_sfx=! }
-        sfx/grid.wl                               = { t_q3shader_sfx=! }
-        sfx/launchpad_diamond.wl                  = { t_q3shader_sfx=! }
-        sfx/launchpad_blocks18d.wl                = { t_q3shader_sfx=! }
-        sfx/launchpad_blocks17.wl                 = { t_q3shader_sfx=! }
-        sfx/launchpad_metalbridge04d.wl           = { t_q3shader_sfx=! }
-        sfx/flame1km.wl                           = { t_q3shader_sfx=! }
-        sfx/flame1.wl                             = { t_q3shader_sfx=! }
-        sfx/flameanim_dimmer.wl                   = { t_q3shader_sfx=! }
-        sfx/flameanim_blue.wl                     = { t_q3shader_sfx=! }
-        sfx/flameanim_blue_pj.wl                  = { t_q3shader_sfx=! }
-        sfx/flameanim_blue_nolight.wl             = { t_q3shader_sfx=! }
-        sfx/flameanim_red.wl                      = { t_q3shader_sfx=! }
-        sfx/flameanim_red_pj.wl                   = { t_q3shader_sfx=! }
-        sfx/flameanim_red_nolight.wl              = { t_q3shader_sfx=! }
-        sfx/flameanim_green_pj.wl                 = { t_q3shader_sfx=! }
-        sfx/xflame1side.wl                        = { t_q3shader_sfx=! }
-        sfx/flame1side.wl                         = { t_q3shader_sfx=! }
-        sfx/flame2.wl                             = { t_q3shader_sfx=! }
-        sfx/xflame1.wl                            = { t_q3shader_sfx=! }
-        sfx/xflamebright.wl                       = { t_q3shader_sfx=! }
-        sfx/flame1dark.wl                         = { t_q3shader_sfx=! }
-        sfx/flame1_hell.wl                        = { t_q3shader_sfx=! }
-        sfx/pentagramfloor_red3test.wl            = { t_q3shader_sfx=! }
-        sfx/goopq1metal7_98dhuge_pent.wl          = { t_q3shader_sfx=! }
-        sfx/metaltechfloor02final_pent.wl         = { t_q3shader_sfx=! }
-        sfx/blocks17final_pent.wl                 = { t_q3shader_sfx=! }
-        sfx/pentfloor_diamond2c.wl                = { t_q3shader_sfx=! }
-        sfx/metalbridge06c_big_pentagram.wl       = { t_q3shader_sfx=! }
-        sfx/largerblock3_pent.wl                  = { t_q3shader_sfx=! }
-        sfx/largerblock3b3_pent.wl                = { t_q3shader_sfx=! }
-        sfx/gothgrate1.wl                         = { t_q3shader_sfx=! }
-        sfx/blocks18ccomputer_offset.wl           = { t_q3shader_sfx=! }
-        sfx/computerblocks11b.wl                  = { t_q3shader_sfx=! }
-        sfx/blocks18ccomputer.wl                  = { t_q3shader_sfx=! }
-        sfx/computerblocks15.wl                   = { t_q3shader_sfx=! }
-        sfx/computer_blocks17.wl                  = { t_q3shader_sfx=! }
-        sfx/computerpurptileb.wl                  = { t_q3shader_sfx=! }
-        sfx/diamond2cjumppad.wl                   = { t_q3shader_sfx=! }
-        sfx/blocks11bjumppad.wl                   = { t_q3shader_sfx=! }
-        sfx/bounce_metalbridge04.wl               = { t_q3shader_sfx=! }
-        sfx/bounce_largeblock3.wl                 = { t_q3shader_sfx=! }
-        sfx/bounce_largeblock3b.wl                = { t_q3shader_sfx=! }
-        sfx/bounce_dirt.wl                        = { t_q3shader_sfx=! }
-        sfx/bounce_concrete.wl                    = { t_q3shader_sfx=! }
-        sfx/bouncepad01_metalbridge06b.wl         = { t_q3shader_sfx=! }
-        sfx/bouncepad01bgoopy7_98d.wl             = { t_q3shader_sfx=! }
-        sfx/bouncepad01b_metalbridge06c.wl        = { t_q3shader_sfx=! }
-        sfx/bounce_xq1metalbig.wl                 = { t_q3shader_sfx=! }
-        sfx/bouncepad01block18b.wl                = { t_q3shader_sfx=! }
-        sfx/bouncepad01_block17.wl                = { t_q3shader_sfx=! }
-        sfx/bouncepad1q1metal7_99.wl              = { t_q3shader_sfx=! }
-        sfx/redpadblocks17.wl                     = { t_q3shader_sfx=! }
+        gothic_block/killblock_i4b.wl             = { t_q3shader_sfx=! }
         sfx/0.wl                                  = { t_q3shader_sfx=! }
         sfx/1.wl                                  = { t_q3shader_sfx=! }
         sfx/2.wl                                  = { t_q3shader_sfx=! }
@@ -2203,195 +2072,326 @@ QQRKSRC1
         sfx/7.wl                                  = { t_q3shader_sfx=! }
         sfx/8.wl                                  = { t_q3shader_sfx=! }
         sfx/9.wl                                  = { t_q3shader_sfx=! }
-        sfx/goopq1metal7_98d_pent_256.wl          = { t_q3shader_sfx=! }
-        sfx/pentagramfloor_red.wl                 = { t_q3shader_sfx=! }
-        sfx/goopq1metal7_98dnodamage.wl           = { t_q3shader_sfx=! }
-        sfx/gimmickdiamondarrow.wl                = { t_q3shader_sfx=! }
-        sfx/goopq1metal7_98darrow.wl              = { t_q3shader_sfx=! }
+        sfx/beam.wl                               = { t_q3shader_sfx=! }
+        sfx/beam_blue.wl                          = { t_q3shader_sfx=! }
+        sfx/beam_dusty.wl                         = { t_q3shader_sfx=! }
+        sfx/beam_dusty2.wl                        = { t_q3shader_sfx=! }
+        sfx/beam_red.wl                           = { t_q3shader_sfx=! }
+        sfx/beam_water.wl                         = { t_q3shader_sfx=! }
+        sfx/beam_water2.wl                        = { t_q3shader_sfx=! }
+        sfx/beam_waterlight1.wl                   = { t_q3shader_sfx=! }
+        sfx/beam_waterlight1.wl                   = { t_q3shader_sfx=! }
+        sfx/beam_waterlight2.wl                   = { t_q3shader_sfx=! }
+        sfx/blackness.wl                          = { t_q3shader_sfx=! }
         sfx/blocks11b_himom.wl                    = { t_q3shader_sfx=! }
-        sfx/pittedrust3stripes.wl                 = { t_q3shader_sfx=! }
-        sfx/q1metal7_98dstripe.wl                 = { t_q3shader_sfx=! }
+        sfx/blocks11b_jumppad.wl                  = { t_q3shader_sfx=! }
+        sfx/blocks11bjumppad.wl                   = { t_q3shader_sfx=! }
+        sfx/blocks17final_pent.wl                 = { t_q3shader_sfx=! }
+        sfx/blocks17g_jumpad.wl                   = { t_q3shader_sfx=! }
+        sfx/blocks18ccomputer.wl                  = { t_q3shader_sfx=! }
+        sfx/blocks18ccomputer_offset.wl           = { t_q3shader_sfx=! }
+        sfx/bluegoal.wl                           = { t_q3shader_sfx=! }
+        sfx/bluestripe.wl                         = { t_q3shader_sfx=! }
+        sfx/border11c.wl                          = { t_q3shader_sfx=! }
+        sfx/bounce_concrete.wl                    = { t_q3shader_sfx=! }
+        sfx/bounce_dirt.wl                        = { t_q3shader_sfx=! }
+        sfx/bounce_largeblock3.wl                 = { t_q3shader_sfx=! }
+        sfx/bounce_largeblock3b.wl                = { t_q3shader_sfx=! }
+        sfx/bounce_metalbridge04.wl               = { t_q3shader_sfx=! }
+        sfx/bounce_xq1metalbig.wl                 = { t_q3shader_sfx=! }
+        sfx/bouncepad01_block17.wl                = { t_q3shader_sfx=! }
+        sfx/bouncepad01_metalbridge06b.wl         = { t_q3shader_sfx=! }
+        sfx/bouncepad01_xarch.wl                  = { t_q3shader_sfx=! }
+        sfx/bouncepad01b_metalbridge06c.wl        = { t_q3shader_sfx=! }
+        sfx/bouncepad01bgoopy7_98d.wl             = { t_q3shader_sfx=! }
+        sfx/bouncepad01block18b.wl                = { t_q3shader_sfx=! }
+        sfx/bouncepad1q1metal7_99.wl              = { t_q3shader_sfx=! }
+        sfx/bugmirror.wl                          = { t_q3shader_sfx=! }
+        sfx/bullseye.wl                           = { t_q3shader_sfx=! }
+        sfx/clangdark_bounce.wl                   = { t_q3shader_sfx=! }
+        sfx/computer_blocks17.wl                  = { t_q3shader_sfx=! }
+        sfx/computerblocks11b.wl                  = { t_q3shader_sfx=! }
+        sfx/computerblocks15.wl                   = { t_q3shader_sfx=! }
+        sfx/computerpurptileb.wl                  = { t_q3shader_sfx=! }
+        sfx/console01.wl                          = { t_q3shader_sfx=! }
+        sfx/console03.wl                          = { t_q3shader_sfx=! }
+        sfx/constfog.wl                           = { t_q3shader_sfx=! }
+        sfx/demonltblackfinal.wl                  = { t_q3shader_sfx=! }
+        sfx/diamond2cjumppad.wl                   = { t_q3shader_sfx=! }
+        sfx/diamondredpad.wl                      = { t_q3shader_sfx=! }
+        sfx/donna.wl                              = { t_q3shader_sfx=! }
+        sfx/dust_puppy2.wl                        = { t_q3shader_sfx=! }
+        sfx/fan.wl                                = { t_q3shader_sfx=! }
+        sfx/fan2.wl                               = { t_q3shader_sfx=! }
+        sfx/fan3.wl                               = { t_q3shader_sfx=! }
+        sfx/fan3blade.wl                          = { t_q3shader_sfx=! }
+        sfx/fan3bladeb.wl                         = { t_q3shader_sfx=! }
+        sfx/fan_grate.wl                          = { t_q3shader_sfx=! }
+        sfx/fan_grate2.wl                         = { t_q3shader_sfx=! }
+        sfx/fanfx.wl                              = { t_q3shader_sfx=! }
+        sfx/firetest2.wl                          = { t_q3shader_sfx=! }
+        sfx/firetestnolight.wl                    = { t_q3shader_sfx=! }
+        sfx/firewall.wl                           = { t_q3shader_sfx=! }
+        sfx/fishy.wl                              = { t_q3shader_sfx=! }
+        sfx/flame1.wl                             = { t_q3shader_sfx=! }
+        sfx/flame1_hell.wl                        = { t_q3shader_sfx=! }
+        sfx/flame1dark.wl                         = { t_q3shader_sfx=! }
+        sfx/flame1km.wl                           = { t_q3shader_sfx=! }
+        sfx/flame1side.wl                         = { t_q3shader_sfx=! }
+        sfx/flame2.wl                             = { t_q3shader_sfx=! }
+        sfx/flameanim_blue.wl                     = { t_q3shader_sfx=! }
+        sfx/flameanim_blue_nolight.wl             = { t_q3shader_sfx=! }
+        sfx/flameanim_blue_pj.wl                  = { t_q3shader_sfx=! }
+        sfx/flameanim_dimmer.wl                   = { t_q3shader_sfx=! }
+        sfx/flameanim_green_pj.wl                 = { t_q3shader_sfx=! }
+        sfx/flameanim_red.wl                      = { t_q3shader_sfx=! }
+        sfx/flameanim_red_nolight.wl              = { t_q3shader_sfx=! }
+        sfx/flameanim_red_pj.wl                   = { t_q3shader_sfx=! }
+        sfx/flametest.wl                          = { t_q3shader_sfx=! }
+        sfx/fog_intel.wl                          = { t_q3shader_sfx=! }
+        sfx/fog_mkcdm4.wl                         = { t_q3shader_sfx=! }
+        sfx/fog_pjdm1.wl                          = { t_q3shader_sfx=! }
+        sfx/fog_q3dm10.wl                         = { t_q3shader_sfx=! }
+        sfx/fog_timctf1.wl                        = { t_q3shader_sfx=! }
+        sfx/fog_timdm1.wl                         = { t_q3shader_sfx=! }
+        sfx/fog_timdm2.wl                         = { t_q3shader_sfx=! }
+        sfx/fog_timdm8.wl                         = { t_q3shader_sfx=! }
+        sfx/gimmickdiamondarrow.wl                = { t_q3shader_sfx=! }
+        sfx/glass.wl                              = { t_q3shader_sfx=! }
+        sfx/goopq1metal7_98d_pent_256.wl          = { t_q3shader_sfx=! }
+        sfx/goopq1metal7_98darrow.wl              = { t_q3shader_sfx=! }
+        sfx/goopq1metal7_98dhuge_pent.wl          = { t_q3shader_sfx=! }
+        sfx/goopq1metal7_98dnodamage.wl           = { t_q3shader_sfx=! }
         sfx/goopq1metal7_98dstripe.wl             = { t_q3shader_sfx=! }
+        sfx/gothgrate1.wl                         = { t_q3shader_sfx=! }
+        sfx/grid.wl                               = { t_q3shader_sfx=! }
+        sfx/healthfloor.wl                        = { t_q3shader_sfx=! }
+        sfx/hellfog.wl                            = { t_q3shader_sfx=! }
+        sfx/hellfog_1k.wl                         = { t_q3shader_sfx=! }
+        sfx/hellfog_mini_dm10.wl                  = { t_q3shader_sfx=! }
+        sfx/hellfog_pj_dm10.wl                    = { t_q3shader_sfx=! }
+        sfx/hellfog_tim_dm14.wl                   = { t_q3shader_sfx=! }
+        sfx/hellfogdense.wl                       = { t_q3shader_sfx=! }
+        sfx/jacobs_x.wl                           = { t_q3shader_sfx=! }
+        sfx/kc_hellfog_1k.wl                      = { t_q3shader_sfx=! }
+        sfx/largerblock3_pent.wl                  = { t_q3shader_sfx=! }
+        sfx/largerblock3b3_pent.wl                = { t_q3shader_sfx=! }
+        sfx/largerblock3b3x128_pent.wl            = { t_q3shader_sfx=! }
+        sfx/largerblock3b3x128_pentred.wl         = { t_q3shader_sfx=! }
+        sfx/launchpad_blocks17.wl                 = { t_q3shader_sfx=! }
+        sfx/launchpad_blocks18d.wl                = { t_q3shader_sfx=! }
+        sfx/launchpad_diamond.wl                  = { t_q3shader_sfx=! }
+        sfx/launchpad_metalbridge04d.wl           = { t_q3shader_sfx=! }
+        sfx/lavabeam.wl                           = { t_q3shader_sfx=! }
+        sfx/lightmap.wl                           = { t_q3shader_sfx=! }
+        sfx/metalbridge06_bounce.wl               = { t_q3shader_sfx=! }
+        sfx/metalbridge06c_big_pentagram.wl       = { t_q3shader_sfx=! }
+        sfx/metalfloor_glass.wl                   = { t_q3shader_sfx=! }
+        sfx/metalfloor_wall_14b_glow.wl           = { t_q3shader_sfx=! }
+        sfx/metalfloor_wall_15b_glow.wl           = { t_q3shader_sfx=! }
+        sfx/metalfloor_wall_5_glow.wl             = { t_q3shader_sfx=! }
+        sfx/metaltech12darkfinal_blueglow.wl      = { t_q3shader_sfx=! }
+        sfx/metaltech12darkfinal_bounce.wl        = { t_q3shader_sfx=! }
+        sfx/metaltech12final_bounce.wl            = { t_q3shader_sfx=! }
+        sfx/metaltechfloor01final_bounce.wl       = { t_q3shader_sfx=! }
+        sfx/metaltechfloor02final_bounce.wl       = { t_q3shader_sfx=! }
+        sfx/metaltechfloor02final_pent.wl         = { t_q3shader_sfx=! }
+        sfx/mkc_bigflame.wl                       = { t_q3shader_sfx=! }
+        sfx/mkc_fog_ctfblue.wl                    = { t_q3shader_sfx=! }
+        sfx/mkc_fog_ctfblue2.wl                   = { t_q3shader_sfx=! }
+        sfx/mkc_fog_ctfred.wl                     = { t_q3shader_sfx=! }
+        sfx/mkc_fog_tdm3.wl                       = { t_q3shader_sfx=! }
+        sfx/omm.wl                                = { t_q3shader_sfx=! }
+        sfx/pentagramfloor.wl                     = { t_q3shader_sfx=! }
+        sfx/pentagramfloor.wl                     = { t_q3shader_sfx=! }
+        sfx/pentagramfloor_q1metal7_99.wl         = { t_q3shader_sfx=! }
+        sfx/pentagramfloor_red.wl                 = { t_q3shader_sfx=! }
+        sfx/pentagramfloor_red3test.wl            = { t_q3shader_sfx=! }
         sfx/pentagramfloor_rotating.wl            = { t_q3shader_sfx=! }
         sfx/pentagramfloor_rotating2.wl           = { t_q3shader_sfx=! }
-        sfx/pentagramfloor_q1metal7_99.wl         = { t_q3shader_sfx=! }
-        sfx/pentagramfloor.wl                     = { t_q3shader_sfx=! }
-        sfx/q1met_redpad.wl                       = { t_q3shader_sfx=! }
-        sfx/redgoal.wl                            = { t_q3shader_sfx=! }
-        sfx/bluegoal.wl                           = { t_q3shader_sfx=! }
-        sfx/xdensegreyfog.wl                      = { t_q3shader_sfx=! }
-        sfx/xlightgreyfog.wl                      = { t_q3shader_sfx=! }
-        sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
-        sfx/xfiretest1.wl                         = { t_q3shader_sfx=! }
-        sfx/xfiretest2.wl                         = { t_q3shader_sfx=! }
-        sfx/blackness.wl                          = { t_q3shader_sfx=! }
-        sfx/surface6jumppad.wl                    = { t_q3shader_sfx=! }
+        sfx/pentfloor_diamond2c.wl                = { t_q3shader_sfx=! }
+        sfx/pitted_rust3arrowbase.wl              = { t_q3shader_sfx=! }
+        sfx/pitted_rust3arrowblocks.wl            = { t_q3shader_sfx=! }
+        sfx/pittedrust3stripes.wl                 = { t_q3shader_sfx=! }
+        sfx/pj_a1_fog1.wl                         = { t_q3shader_sfx=! }
+        sfx/portal_sfx_ring.wl                    = { t_q3shader_sfx=! }
         sfx/powerupshit.wl                        = { t_q3shader_sfx=! }
+        sfx/proto_hellfog.wl                      = { t_q3shader_sfx=! }
+        sfx/proto_zzztblu3.wl                     = { t_q3shader_sfx=! }
+        sfx/pureblack.wl                          = { t_q3shader_sfx=! }
+        sfx/q1met_redpad.wl                       = { t_q3shader_sfx=! }
+        sfx/q1metal7_98d_pent_256.wl              = { t_q3shader_sfx=! }
+        sfx/q1metal7_98dstripe.wl                 = { t_q3shader_sfx=! }
+        sfx/q1teleporter.wl                       = { t_q3shader_sfx=! }
+        sfx/q3dm14fog.wl                          = { t_q3shader_sfx=! }
+        sfx/q3dm9fog.wl                           = { t_q3shader_sfx=! }
+        sfx/q3tourney3fog.wl                      = { t_q3shader_sfx=! }
+        sfx/rain.wl                               = { t_q3shader_sfx=! }
+        sfx/redgoal.wl                            = { t_q3shader_sfx=! }
+        sfx/redpadblocks17.wl                     = { t_q3shader_sfx=! }
         sfx/redstripe.wl                          = { t_q3shader_sfx=! }
-        sfx/yellowstripe.wl                       = { t_q3shader_sfx=! }
-        sfx/bluestripe.wl                         = { t_q3shader_sfx=! }
-        sfx/xgoopjumpypad.wl                      = { t_q3shader_sfx=! }
-        sfx/xgoopy_pentagram.wl                   = { t_q3shader_sfx=! }
-        sfx/firetestnolight.wl                    = { t_q3shader_sfx=! }
-        sfx/firetest2.wl                          = { t_q3shader_sfx=! }
-        sfx/firewall.wl                           = { t_q3shader_sfx=! }
-        sfx/xq1metalbig_jumppad.wl                = { t_q3shader_sfx=! }
-        sfx/blocks11b_jumppad.wl                  = { t_q3shader_sfx=! }
+        sfx/small_smoke1_1.wl                     = { t_q3shader_sfx=! }
+        sfx/smallerblock3b3dim_pent.wl            = { t_q3shader_sfx=! }
+        sfx/spawn_floor.wl                        = { t_q3shader_sfx=! }
+        sfx/spawn_floord2c.wl                     = { t_q3shader_sfx=! }
+        sfx/spawnpad.wl                           = { t_q3shader_sfx=! }
+        sfx/steam_01.wl                           = { t_q3shader_sfx=! }
+        sfx/surface6jumppad.wl                    = { t_q3shader_sfx=! }
+        sfx/swirl_b1.wl                           = { t_q3shader_sfx=! }
+        sfx/swirl_r1.wl                           = { t_q3shader_sfx=! }
         sfx/teslacoil.wl                          = { t_q3shader_sfx=! }
         sfx/teslacoil2.wl                         = { t_q3shader_sfx=! }
         sfx/teslacoil3.wl                         = { t_q3shader_sfx=! }
         sfx/teslacoiltrans.wl                     = { t_q3shader_sfx=! }
-        sfx/pentagramfloor.wl                     = { t_q3shader_sfx=! }
-        sfx/spawnpad.wl                           = { t_q3shader_sfx=! }
-        sfx/q1metal7_98d_pent_256.wl              = { t_q3shader_sfx=! }
-        sfx/fog_timdm1.wl                         = { t_q3shader_sfx=! }
-        sfx/fog_timdm8.wl                         = { t_q3shader_sfx=! }
-        sfx/fog_timdm2.wl                         = { t_q3shader_sfx=! }
-        sfx/fog_timctf1.wl                        = { t_q3shader_sfx=! }
-        sfx/fog_pjdm1.wl                          = { t_q3shader_sfx=! }
-        sfx/proto_hellfog.wl                      = { t_q3shader_sfx=! }
-        sfx/fog_intel.wl                          = { t_q3shader_sfx=! }
-        sfx/fog_q3dm10.wl                         = { t_q3shader_sfx=! }
-        sfx/diamondredpad.wl                      = { t_q3shader_sfx=! }
-        sfx/hellfog_tim_dm14.wl                   = { t_q3shader_sfx=! }
-        sfx/kc_hellfog_1k.wl                      = { t_q3shader_sfx=! }
-        sfx/hellfog_1k.wl                         = { t_q3shader_sfx=! }
-        sfx/hellfog.wl                            = { t_q3shader_sfx=! }
-        sfx/constfog.wl                           = { t_q3shader_sfx=! }
         sfx/testconstantfog.wl                    = { t_q3shader_sfx=! }
-        sfx/q3tourney3fog.wl                      = { t_q3shader_sfx=! }
-        sfx/q3dm14fog.wl                          = { t_q3shader_sfx=! }
-        sfx/q3dm9fog.wl                           = { t_q3shader_sfx=! }
-        sfx/hellfogdense.wl                       = { t_q3shader_sfx=! }
-        sfx/pj_a1_fog1.wl                         = { t_q3shader_sfx=! }
-        sfx/pitted_rust3arrowbase.wl              = { t_q3shader_sfx=! }
-        sfx/pitted_rust3arrowblocks.wl            = { t_q3shader_sfx=! }
-        sfx/q1teleporter.wl                       = { t_q3shader_sfx=! }
-        sfx/fog_mkcdm4.wl                         = { t_q3shader_sfx=! }
-        sfx/mkc_bigflame.wl                       = { t_q3shader_sfx=! }
-        sfx/mkc_fog_tdm3.wl                       = { t_q3shader_sfx=! }
-        sfx/mkc_fog_ctfred.wl                     = { t_q3shader_sfx=! }
-        sfx/mkc_fog_ctfblue.wl                    = { t_q3shader_sfx=! }
-        sfx/mkc_fog_ctfblue2.wl                   = { t_q3shader_sfx=! }
-        sfx/bugmirror.wl                          = { t_q3shader_sfx=! }
-        sfx/pureblack.wl                          = { t_q3shader_sfx=! }
+        sfx/x_conduit.wl                          = { t_q3shader_sfx=! }
+        sfx/xblackfog.wl                          = { t_q3shader_sfx=! }
+        sfx/xbluefog.wl                           = { t_q3shader_sfx=! }
+        sfx/xbluefogx128.wl                       = { t_q3shader_sfx=! }
+        sfx/xclang_floor2_bouncy.wl               = { t_q3shader_sfx=! }
+        sfx/xdensegreyfog.wl                      = { t_q3shader_sfx=! }
+        sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
+        sfx/xfinalfog.wl                          = { t_q3shader_sfx=! }
+        sfx/xfinalfoginvert.wl                    = { t_q3shader_sfx=! }
+        sfx/xfiretest1.wl                         = { t_q3shader_sfx=! }
+        sfx/xfiretest2.wl                         = { t_q3shader_sfx=! }
+        sfx/xflame1.wl                            = { t_q3shader_sfx=! }
+        sfx/xflame1side.wl                        = { t_q3shader_sfx=! }
+        sfx/xflame2.wl                            = { t_q3shader_sfx=! }
+        sfx/xflame2_1800.wl                       = { t_q3shader_sfx=! }
+        sfx/xflame2_2250.wl                       = { t_q3shader_sfx=! }
+        sfx/xflamebright.wl                       = { t_q3shader_sfx=! }
+        sfx/xgoopjumpypad.wl                      = { t_q3shader_sfx=! }
+        sfx/xgoopy_pentagram.wl                   = { t_q3shader_sfx=! }
+        sfx/xian_dm3padwall.wl                    = { t_q3shader_sfx=! }
+        sfx/xlargeblockfloor3_pent.wl             = { t_q3shader_sfx=! }
+        sfx/xlightgreyfog.wl                      = { t_q3shader_sfx=! }
+        sfx/xmetalfloor_wall_14b.wl               = { t_q3shader_sfx=! }
+        sfx/xmetalfloor_wall_5b.wl                = { t_q3shader_sfx=! }
+        sfx/xmetalfloor_wall_9b.wl                = { t_q3shader_sfx=! }
+        sfx/xq1metalbig_jumppad.wl                = { t_q3shader_sfx=! }
+        sfx/xredfog.wl                            = { t_q3shader_sfx=! }
+        sfx/yellowstripe.wl                       = { t_q3shader_sfx=! }
+        sfx/zap_ball.wl                           = { t_q3shader_sfx=! }
+        sfx/zap_scroll.wl                         = { t_q3shader_sfx=! }
+        sfx/zap_scroll1000.wl                     = { t_q3shader_sfx=! }
       }
       Shrine.txlist =
       {
-        shrine/stained15d.wl                      = { t_q3shader_shrine=! }
         shrine/ceil1_6.wl                         = { t_q3shader_shrine=! }
-        shrine/reflt3_9.wl                        = { t_q3shader_shrine=! }
         shrine/core1_1.wl                         = { t_q3shader_shrine=! }
         shrine/reflt3_10.wl                       = { t_q3shader_shrine=! }
         shrine/reflt3_5.wl                        = { t_q3shader_shrine=! }
+        shrine/reflt3_9.wl                        = { t_q3shader_shrine=! }
         shrine/rlight1_2.wl                       = { t_q3shader_shrine=! }
+        shrine/stained15d.wl                      = { t_q3shader_shrine=! }
       }
       Skin.txlist =
       {
-        skin/teeth.wl                             = { t_q3shader_skin=! }
-        skin/chapthroatooz.wl                     = { t_q3shader_skin=! }
         organics/dirt_trans.wl                    = { t_q3shader_skin=! }
         skin/chapthroat2.wl                       = { t_q3shader_skin=! }
-        skin/skin6_trans.wl                       = { t_q3shader_skin=! }
-        skin/skin5_trans.wl                       = { t_q3shader_skin=! }
-        skin/skin1_trans.wl                       = { t_q3shader_skin=! }
-        skin/surface8_trans.wl                    = { t_q3shader_skin=! }
-        skin/tongue_trans.wl                      = { t_q3shader_skin=! }
+        skin/chapthroatooz.wl                     = { t_q3shader_skin=! }
         skin/nibbles.wl                           = { t_q3shader_skin=! }
-        skin/soylent.wl                           = { t_q3shader_skin=! }
-        skin/snake.wl                             = { t_q3shader_skin=! }
+        skin/pjwal2f.wl                           = { t_q3shader_skin=! }
+        skin/proto_skin.wl                        = { t_q3shader_skin=! }
         skin/proto_skin2.wl                       = { t_q3shader_skin=! }
         skin/proto_skin2b.wl                      = { t_q3shader_skin=! }
-        skin/skin6move.wl                         = { t_q3shader_skin=! }
-        skin/proto_skin.wl                        = { t_q3shader_skin=! }
+        skin/skin1_trans.wl                       = { t_q3shader_skin=! }
         skin/skin1move.wl                         = { t_q3shader_skin=! }
         skin/skin4_side.wl                        = { t_q3shader_skin=! }
+        skin/skin5_trans.wl                       = { t_q3shader_skin=! }
+        skin/skin6_trans.wl                       = { t_q3shader_skin=! }
+        skin/skin6move.wl                         = { t_q3shader_skin=! }
+        skin/snake.wl                             = { t_q3shader_skin=! }
+        skin/soylent.wl                           = { t_q3shader_skin=! }
         skin/spikemove.wl                         = { t_q3shader_skin=! }
-        skin/pjwal2f.wl                           = { t_q3shader_skin=! }
+        skin/surface8_trans.wl                    = { t_q3shader_skin=! }
+        skin/teeth.wl                             = { t_q3shader_skin=! }
+        skin/tongue_trans.wl                      = { t_q3shader_skin=! }
       }
       Sky.txlist =
       {
-        skies/xtoxicsky_q3ctf3.wl                 = { t_q3shader_sky=! }
-        skies/skybox.wl                           = { t_q3shader_sky=! }
-        skies/xtoxicskytim_q3dm5.wl               = { t_q3shader_sky=! }
-        skies/blacksky.wl                         = { t_q3shader_sky=! }
-        skies/xblacksky.wl                        = { t_q3shader_sky=! }
-        skies/xblacksky_dm7.wl                    = { t_q3shader_sky=! }
-        skies/stars_arena7.wl                     = { t_q3shader_sky=! }
-        skies/killsky.wl                          = { t_q3shader_sky=! }
-        skies/tim_km2.wl                          = { t_q3shader_sky=! }
-        skies/tim_hell.wl                         = { t_q3shader_sky=! }
-        skies/tim_dm3_red.wl                      = { t_q3shader_sky=! }
-        skies/tim_dm14.wl                         = { t_q3shader_sky=! }
-        skies/tim_dm14red.wl                      = { t_q3shader_sky=! }
-        skies/hellsky.wl                          = { t_q3shader_sky=! }
-        skies/toxicsky.wl                         = { t_q3shader_sky=! }
-        skies/xtoxicsky_dm3.wl                    = { t_q3shader_sky=! }
-        skies/xtoxicsky_dm9.wl                    = { t_q3shader_sky=! }
-        skies/xtoxicsky_ctf.wl                    = { t_q3shader_sky=! }
-        skies/xtoxicsky_tourney.wl                = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm1.wl                = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm2.wl                = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm3.wl                = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm15.wl               = { t_q3shader_sky=! }
-        skies/xblacksky.wl                        = { t_q3shader_sky=! }
-        skies/xtoxicsky_dm4.wl                    = { t_q3shader_sky=! }
-        skies/xtoxicsky_dm14.wl                   = { t_q3shader_sky=! }
-        skies/xtoxicsky_90_60.wl                  = { t_q3shader_sky=! }
-        skies/space_holder.wl                     = { t_q3shader_sky=! }
-        skies/nightsky_nocloud_600.wl             = { t_q3shader_sky=! }
-        skies/nightsky_nocloud_100.wl             = { t_q3shader_sky=! }
-        skies/nightsky_nocloud_200.wl             = { t_q3shader_sky=! }
-        skies/nightsky_nocloud_1000.wl            = { t_q3shader_sky=! }
-        skies/nightsky_nocloud_500.wl             = { t_q3shader_sky=! }
-        skies/nightsky_nocloud_400.wl             = { t_q3shader_sky=! }
-        skies/nightsky_nocloud.wl                 = { t_q3shader_sky=! }
-        skies/hellredclouds.wl                    = { t_q3shader_sky=! }
-        skies/hellskybright.wl                    = { t_q3shader_sky=! }
-        skies/hellsky2.wl                         = { t_q3shader_sky=! }
-        skies/hellsky2bright.wl                   = { t_q3shader_sky=! }
-        skies/hellsky.wl                          = { t_q3shader_sky=! }
-        hell/newhell.wl                           = { t_q3shader_sky=! }
-        skies/pj_dm10sky.wl                       = { t_q3shader_sky=! }
-        skies/kc_dm10sky.wl                       = { t_q3shader_sky=! }
-        skies/kcbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
-        skies/pjbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
-        skies/pj_ctf2_sky.wl                      = { t_q3shader_sky=! }
-        skies/pj_arena4_sky.wl                    = { t_q3shader_sky=! }
-        skies/pj_ctf1sky.wl                       = { t_q3shader_sky=! }
-        skies/pj_arena2sky.wl                     = { t_q3shader_sky=! }
-        skies/pj_dm9sky.wl                        = { t_q3shader_sky=! }
+        castle/sky_castle1.wl                     = { t_q3shader_sky=! }
         common/nightsky.wl                        = { t_q3shader_sky=! }
         common/nightsky2.wl                       = { t_q3shader_sky=! }
-        skies/nightsky_xian_dm4.wl                = { t_q3shader_sky=! }
-        skies/xnightsky.wl                        = { t_q3shader_sky=! }
-        skies/xnightsky_600.wl                    = { t_q3shader_sky=! }
-        skies/hellskyteam.wl                      = { t_q3shader_sky=! }
-        skies/toxicskydim.wl                      = { t_q3shader_sky=! }
-        skies/toxicskytim_dm4.wl                  = { t_q3shader_sky=! }
-        skies/toxicskytim_ctf1.wl                 = { t_q3shader_sky=! }
-        skies/toxicskytim_blue.wl                 = { t_q3shader_sky=! }
-        skies/toxicskytim_dm5.wl                  = { t_q3shader_sky=! }
-        skies/toxicskytim_dm3.wl                  = { t_q3shader_sky=! }
-        skies/toxicskytim_dm8.wl                  = { t_q3shader_sky=! }
-        skies/toxicskytim_dm9.wl                  = { t_q3shader_sky=! }
-        skies/toxicskytim_dm2.wl                  = { t_q3shader_sky=! }
-        skies/q3dm0.wl                            = { t_q3shader_sky=! }
-        skies/toxicskytim_dm7.wl                  = { t_q3shader_sky=! }
-        hell/hellsky2goo.wl                       = { t_q3shader_sky=! }
-        castle/sky_castle1.wl                     = { t_q3shader_sky=! }
-        common/sky_30.wl                          = { t_q3shader_sky=! }
+        common/sky1.wl                            = { t_q3shader_sky=! }
         common/sky_100.wl                         = { t_q3shader_sky=! }
         common/sky_1000.wl                        = { t_q3shader_sky=! }
         common/sky_150.wl                         = { t_q3shader_sky=! }
+        common/sky_30.wl                          = { t_q3shader_sky=! }
         common/sky_300.wl                         = { t_q3shader_sky=! }
         common/sky_500.wl                         = { t_q3shader_sky=! }
         common/sky_space.wl                       = { t_q3shader_sky=! }
         common/sky_u2.wl                          = { t_q3shader_sky=! }
-        common/sky1.wl                            = { t_q3shader_sky=! }
-        skies/mkc_dm4sky.wl                       = { t_q3shader_sky=! }
+        hell/hellsky2goo.wl                       = { t_q3shader_sky=! }
+        hell/newhell.wl                           = { t_q3shader_sky=! }
+        skies/blacksky.wl                         = { t_q3shader_sky=! }
+        skies/hellredclouds.wl                    = { t_q3shader_sky=! }
+        skies/hellsky.wl                          = { t_q3shader_sky=! }
+        skies/hellsky.wl                          = { t_q3shader_sky=! }
+        skies/hellsky2.wl                         = { t_q3shader_sky=! }
+        skies/hellsky2bright.wl                   = { t_q3shader_sky=! }
+        skies/hellskybright.wl                    = { t_q3shader_sky=! }
+        skies/hellskyteam.wl                      = { t_q3shader_sky=! }
+        skies/kc_dm10sky.wl                       = { t_q3shader_sky=! }
+        skies/kcbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
+        skies/killsky.wl                          = { t_q3shader_sky=! }
         skies/mkc_ctf5sky.wl                      = { t_q3shader_sky=! }
+        skies/mkc_dm4sky.wl                       = { t_q3shader_sky=! }
+        skies/nightsky_nocloud.wl                 = { t_q3shader_sky=! }
+        skies/nightsky_nocloud_100.wl             = { t_q3shader_sky=! }
+        skies/nightsky_nocloud_1000.wl            = { t_q3shader_sky=! }
+        skies/nightsky_nocloud_200.wl             = { t_q3shader_sky=! }
+        skies/nightsky_nocloud_400.wl             = { t_q3shader_sky=! }
+        skies/nightsky_nocloud_500.wl             = { t_q3shader_sky=! }
+        skies/nightsky_nocloud_600.wl             = { t_q3shader_sky=! }
+        skies/nightsky_xian_dm1.wl                = { t_q3shader_sky=! }
+        skies/nightsky_xian_dm15.wl               = { t_q3shader_sky=! }
+        skies/nightsky_xian_dm2.wl                = { t_q3shader_sky=! }
+        skies/nightsky_xian_dm3.wl                = { t_q3shader_sky=! }
+        skies/nightsky_xian_dm4.wl                = { t_q3shader_sky=! }
+        skies/pj_arena2sky.wl                     = { t_q3shader_sky=! }
+        skies/pj_arena4_sky.wl                    = { t_q3shader_sky=! }
+        skies/pj_ctf1sky.wl                       = { t_q3shader_sky=! }
+        skies/pj_ctf2_sky.wl                      = { t_q3shader_sky=! }
+        skies/pj_dm10sky.wl                       = { t_q3shader_sky=! }
+        skies/pj_dm9sky.wl                        = { t_q3shader_sky=! }
+        skies/pjbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
         skies/proto_sky.wl                        = { t_q3shader_sky=! }
+        skies/q3dm0.wl                            = { t_q3shader_sky=! }
+        skies/skybox.wl                           = { t_q3shader_sky=! }
+        skies/space_holder.wl                     = { t_q3shader_sky=! }
+        skies/stars_arena7.wl                     = { t_q3shader_sky=! }
+        skies/tim_dm14.wl                         = { t_q3shader_sky=! }
+        skies/tim_dm14red.wl                      = { t_q3shader_sky=! }
+        skies/tim_dm3_red.wl                      = { t_q3shader_sky=! }
+        skies/tim_hell.wl                         = { t_q3shader_sky=! }
+        skies/tim_km2.wl                          = { t_q3shader_sky=! }
+        skies/toxicsky.wl                         = { t_q3shader_sky=! }
+        skies/toxicskydim.wl                      = { t_q3shader_sky=! }
+        skies/toxicskytim_blue.wl                 = { t_q3shader_sky=! }
+        skies/toxicskytim_ctf1.wl                 = { t_q3shader_sky=! }
+        skies/toxicskytim_dm2.wl                  = { t_q3shader_sky=! }
+        skies/toxicskytim_dm3.wl                  = { t_q3shader_sky=! }
+        skies/toxicskytim_dm4.wl                  = { t_q3shader_sky=! }
+        skies/toxicskytim_dm5.wl                  = { t_q3shader_sky=! }
+        skies/toxicskytim_dm7.wl                  = { t_q3shader_sky=! }
+        skies/toxicskytim_dm8.wl                  = { t_q3shader_sky=! }
+        skies/toxicskytim_dm9.wl                  = { t_q3shader_sky=! }
+        skies/xblacksky.wl                        = { t_q3shader_sky=! }
+        skies/xblacksky.wl                        = { t_q3shader_sky=! }
+        skies/xblacksky_dm7.wl                    = { t_q3shader_sky=! }
+        skies/xnightsky.wl                        = { t_q3shader_sky=! }
+        skies/xnightsky_600.wl                    = { t_q3shader_sky=! }
+        skies/xtoxicsky_90_60.wl                  = { t_q3shader_sky=! }
+        skies/xtoxicsky_ctf.wl                    = { t_q3shader_sky=! }
+        skies/xtoxicsky_dm14.wl                   = { t_q3shader_sky=! }
+        skies/xtoxicsky_dm3.wl                    = { t_q3shader_sky=! }
+        skies/xtoxicsky_dm4.wl                    = { t_q3shader_sky=! }
+        skies/xtoxicsky_dm9.wl                    = { t_q3shader_sky=! }
+        skies/xtoxicsky_q3ctf3.wl                 = { t_q3shader_sky=! }
+        skies/xtoxicsky_tourney.wl                = { t_q3shader_sky=! }
+        skies/xtoxicskytim_q3dm5.wl               = { t_q3shader_sky=! }
       }
     }
   }
@@ -2889,6 +2889,770 @@ QQRKSRC1
     t_weapon_size:incl = { bbox = '-16 -16 -16 16 16 16' }
     t_teleport_size:incl = { bbox = '-32 -32 -4 32 32 4' }
     t_item_size:incl = { bbox = '-16 -16 -16 16 16 16' }
+
+    t_model:incl = {
+      model: = { Txt = " "
+        Typ = "B"
+        Cap = "models..."
+        form ="t_models_form:form"
+        hint ="Available .MD3 files"
+      }
+    }
+    t_models_form:form =
+    {
+      model: = { typ="C" txt="Ammo"
+      items=
+        "grenade1.md3"$0D
+        "rocket/rocket.md3"
+      values=
+        "/models/ammo/grenade1.md3"$0D
+        "/models/ammo/rocket/rocket.md3"
+      }
+
+      model: = { typ="C" txt="Flags"
+      items=
+        "b_flag.md3"$0D
+        "r_flag.md3"
+      values=
+        "/models/flags/b_flag.md3"$0D
+        "/models/flags/r_flag.md3"
+      }
+
+      model: = { typ="C" txt="Gibs"
+      items=
+        "abdomen.md3"$0D
+        "arm.md3"$0D
+        "brain.md3"$0D
+        "chest.md3"$0D
+        "fist.md3"$0D
+        "foot.md3"$0D
+        "forearm.md3"$0D
+        "intestine.md3"$0D
+        "leg.md3"$0D
+        "skull.md3"
+      values=
+        "/models/gibs/abdomen.md3"$0D
+        "/models/gibs/arm.md3"$0D
+        "/models/gibs/brain.md3"$0D
+        "/models/gibs/chest.md3"$0D
+        "/models/gibs/fist.md3"$0D
+        "/models/gibs/foot.md3"$0D
+        "/models/gibs/forearm.md3"$0D
+        "/models/gibs/intestine.md3"$0D
+        "/models/gibs/leg.md3"$0D
+        "/models/gibs/skull.md3"
+      }
+
+      model: = { typ="C" txt="MapObjects"
+      items=
+        "banner/banner5.md3"$0D
+        "bitch/fembotbig.md3"$0D
+        "jets/jets01.md3"$0D
+        "pipe/pipe02.md3"$0D
+        "pipe/pipe02b.md3"$0D
+        "podium/podium4.md3"$0D
+        "skel/xray.md3"$0D
+        "skel/xraybig.md3"
+      values=
+        "/models/mapobjects/banner/banner5.md3"$0D
+        "/models/mapobjects/bitch/fembotbig.md3"$0D
+        "/models/mapobjects/jets/jets01.md3"$0D
+        "/models/mapobjects/pipe/pipe02.md3"$0D
+        "/models/mapobjects/pipe/pipe02b.md3"$0D
+        "/models/mapobjects/podium/podium4.md3"$0D
+        "/models/mapobjects/skel/xray.md3"$0D
+        "/models/mapobjects/skel/xraybig.md3"
+      }
+
+      model: = { typ="C" txt="Misc"
+      items=
+        "telep.md3"
+      values=
+        "/models/misc/telep.md3"
+      }
+
+      model: = { typ="C" txt="Players"
+      items=
+        "anarki/head.md3"$0D
+        "anarki/head_1.md3"$0D
+        "anarki/head_2.md3"$0D
+        "anarki/lower.md3"$0D
+        "anarki/lower_1.md3"$0D
+        "anarki/lower_2.md3"$0D
+        "anarki/upper.md3"$0D
+        "anarki/upper_1.md3"$0D
+        "anarki/upper_2.md3"$0D
+        "biker/head.md3"$0D
+        "biker/head_1.md3"$0D
+        "biker/head_2.md3"$0D
+        "biker/lower.md3"$0D
+        "biker/lower_1.md3"$0D
+        "biker/lower_2.md3"$0D
+        "biker/upper.md3"$0D
+        "biker/upper_1.md3"$0D
+        "biker/upper_2.md3"$0D
+        "bitterman/head.md3"$0D
+        "bitterman/head_1.md3"$0D
+        "bitterman/head_2.md3"$0D
+        "bitterman/lower.md3"$0D
+        "bitterman/lower_1.md3"$0D
+        "bitterman/lower_2.md3"$0D
+        "bitterman/upper.md3"$0D
+        "bitterman/upper_1.md3"$0D
+        "bitterman/upper_2.md3"$0D
+        "bones/head.md3"$0D
+        "bones/head_1.md3"$0D
+        "bones/lower.md3"$0D
+        "bones/lower_1.md3"$0D
+        "bones/upper.md3"$0D
+        "bones/upper_1.md3"$0D
+        "crash/head.md3"$0D
+        "crash/head_1.md3"$0D
+        "crash/head_2.md3"$0D
+        "crash/lower.md3"$0D
+        "crash/lower_1.md3"$0D
+        "crash/lower_2.md3"$0D
+        "crash/upper.md3"$0D
+        "crash/upper_1.md3"$0D
+        "crash/upper_2.md3"$0D
+        "doom/head.md3"$0D
+        "doom/head_1.md3"$0D
+        "doom/head_2.md3"$0D
+        "doom/lower.md3"$0D
+        "doom/lower_1.md3"$0D
+        "doom/lower_2.md3"$0D
+        "doom/upper.md3"$0D
+        "doom/upper_1.md3"$0D
+        "doom/upper_2.md3"$0D
+        "grunt/head.md3"$0D
+        "grunt/head_1.md3"$0D
+        "grunt/head_2.md3"$0D
+        "grunt/lower.md3"$0D
+        "grunt/lower_1.md3"$0D
+        "grunt/lower_2.md3"$0D
+        "grunt/upper.md3"$0D
+        "grunt/upper_1.md3"$0D
+        "grunt/upper_2.md3"$0D
+        "hunter/head.md3"$0D
+        "hunter/head_1.md3"$0D
+        "hunter/head_2.md3"$0D
+        "hunter/lower.md3"$0D
+        "hunter/lower_1.md3"$0D
+        "hunter/lower_2.md3"$0D
+        "hunter/upper.md3"$0D
+        "hunter/upper_1.md3"$0D
+        "hunter/upper_2.md3"$0D
+        "keel/head.md3"$0D
+        "keel/head_1.md3"$0D
+        "keel/head_2.md3"$0D
+        "keel/lower.md3"$0D
+        "keel/lower_1.md3"$0D
+        "keel/lower_2.md3"$0D
+        "keel/upper.md3"$0D
+        "keel/upper_1.md3"$0D
+        "keel/upper_2.md3"$0D
+        "klesk/head.md3"$0D
+        "klesk/head_1.md3"$0D
+        "klesk/head_2.md3"$0D
+        "klesk/lower.md3"$0D
+        "klesk/lower_1.md3"$0D
+        "klesk/lower_2.md3"$0D
+        "klesk/upper.md3"$0D
+        "klesk/upper_1.md3"$0D
+        "klesk/upper_2.md3"$0D
+        "lucy/head.md3"$0D
+        "lucy/head_1.md3"$0D
+        "lucy/head_2.md3"$0D
+        "lucy/lower.md3"$0D
+        "lucy/lower_1.md3"$0D
+        "lucy/lower_2.md3"$0D
+        "lucy/upper.md3"$0D
+        "lucy/upper_1.md3"$0D
+        "lucy/upper_2.md3"$0D
+        "major/head.md3"$0D
+        "major/head_1.md3"$0D
+        "major/head_2.md3"$0D
+        "major/lower.md3"$0D
+        "major/lower_1.md3"$0D
+        "major/lower_2.md3"$0D
+        "major/upper.md3"$0D
+        "major/upper_1.md3"$0D
+        "major/upper_2.md3"$0D
+        "mynx/head.md3"$0D
+        "mynx/head_1.md3"$0D
+        "mynx/head_2.md3"$0D
+        "mynx/lower.md3"$0D
+        "mynx/lower_1.md3"$0D
+        "mynx/lower_2.md3"$0D
+        "mynx/upper.md3"$0D
+        "mynx/upper_1.md3"$0D
+        "mynx/upper_2.md3"$0D
+        "orbb/head.md3"$0D
+        "orbb/head_1.md3"$0D
+        "orbb/head_2.md3"$0D
+        "orbb/lower.md3"$0D
+        "orbb/lower_1.md3"$0D
+        "orbb/lower_2.md3"$0D
+        "orbb/upper.md3"$0D
+        "orbb/upper_1.md3"$0D
+        "orbb/upper_2.md3"$0D
+        "ranger/head.md3"$0D
+        "ranger/head_1.md3"$0D
+        "ranger/head_2.md3"$0D
+        "ranger/lower.md3"$0D
+        "ranger/lower_1.md3"$0D
+        "ranger/lower_2.md3"$0D
+        "ranger/upper.md3"$0D
+        "ranger/upper_1.md3"$0D
+        "ranger/upper_2.md3"$0D
+        "razor/head.md3"$0D
+        "razor/head_1.md3"$0D
+        "razor/head_2.md3"$0D
+        "razor/lower.md3"$0D
+        "razor/lower_1.md3"$0D
+        "razor/lower_2.md3"$0D
+        "razor/upper.md3"$0D
+        "razor/upper_1.md3"$0D
+        "razor/upper_2.md3"$0D
+        "sarge/head.md3"$0D
+        "sarge/head_1.md3"$0D
+        "sarge/head_2.md3"$0D
+        "sarge/lower.md3"$0D
+        "sarge/lower_1.md3"$0D
+        "sarge/lower_2.md3"$0D
+        "sarge/upper.md3"$0D
+        "sarge/upper_1.md3"$0D
+        "sarge/upper_2.md3"$0D
+        "slash/head.md3"$0D
+        "slash/head_1.md3"$0D
+        "slash/head_2.md3"$0D
+        "slash/lower.md3"$0D
+        "slash/lower_1.md3"$0D
+        "slash/lower_2.md3"$0D
+        "slash/upper.md3"$0D
+        "slash/upper_1.md3"$0D
+        "slash/upper_2.md3"$0D
+        "sorlag/head.md3"$0D
+        "sorlag/head_1.md3"$0D
+        "sorlag/head_2.md3"$0D
+        "sorlag/lower.md3"$0D
+        "sorlag/lower_1.md3"$0D
+        "sorlag/lower_2.md3"$0D
+        "sorlag/upper.md3"$0D
+        "sorlag/upper_1.md3"$0D
+        "sorlag/upper_2.md3"$0D
+        "tankjr/head.md3"$0D
+        "tankjr/head_1.md3"$0D
+        "tankjr/head_2.md3"$0D
+        "tankjr/lower.md3"$0D
+        "tankjr/lower_1.md3"$0D
+        "tankjr/lower_2.md3"$0D
+        "tankjr/upper.md3"$0D
+        "tankjr/upper_1.md3"$0D
+        "tankjr/upper_2.md3"$0D
+        "uriel/head.md3"$0D
+        "uriel/head_1.md3"$0D
+        "uriel/head_2.md3"$0D
+        "uriel/lower.md3"$0D
+        "uriel/lower_1.md3"$0D
+        "uriel/lower_2.md3"$0D
+        "uriel/upper.md3"$0D
+        "uriel/upper_1.md3"$0D
+        "uriel/upper_2.md3"$0D
+        "visor/head.md3"$0D
+        "visor/head_1.md3"$0D
+        "visor/head_2.md3"$0D
+        "visor/lower.md3"$0D
+        "visor/lower_1.md3"$0D
+        "visor/lower_2.md3"$0D
+        "visor/upper.md3"$0D
+        "visor/upper_1.md3"$0D
+        "visor/upper_2.md3"$0D
+        "xaero/head.md3"$0D
+        "xaero/head_1.md3"$0D
+        "xaero/head_2.md3"$0D
+        "xaero/lower.md3"$0D
+        "xaero/lower_1.md3"$0D
+        "xaero/lower_2.md3"$0D
+        "xaero/upper.md3"$0D
+        "xaero/upper_1.md3"$0D
+        "xaero/upper_2.md3"
+      values=
+        "/models/players/anarki/head.md3"$0D
+        "/models/players/anarki/head_1.md3"$0D
+        "/models/players/anarki/head_2.md3"$0D
+        "/models/players/anarki/lower.md3"$0D
+        "/models/players/anarki/lower_1.md3"$0D
+        "/models/players/anarki/lower_2.md3"$0D
+        "/models/players/anarki/upper.md3"$0D
+        "/models/players/anarki/upper_1.md3"$0D
+        "/models/players/anarki/upper_2.md3"$0D
+        "/models/players/biker/head.md3"$0D
+        "/models/players/biker/head_1.md3"$0D
+        "/models/players/biker/head_2.md3"$0D
+        "/models/players/biker/lower.md3"$0D
+        "/models/players/biker/lower_1.md3"$0D
+        "/models/players/biker/lower_2.md3"$0D
+        "/models/players/biker/upper.md3"$0D
+        "/models/players/biker/upper_1.md3"$0D
+        "/models/players/biker/upper_2.md3"$0D
+        "/models/players/bitterman/head.md3"$0D
+        "/models/players/bitterman/head_1.md3"$0D
+        "/models/players/bitterman/head_2.md3"$0D
+        "/models/players/bitterman/lower.md3"$0D
+        "/models/players/bitterman/lower_1.md3"$0D
+        "/models/players/bitterman/lower_2.md3"$0D
+        "/models/players/bitterman/upper.md3"$0D
+        "/models/players/bitterman/upper_1.md3"$0D
+        "/models/players/bitterman/upper_2.md3"$0D
+        "/models/players/bones/head.md3"$0D
+        "/models/players/bones/head_1.md3"$0D
+        "/models/players/bones/lower.md3"$0D
+        "/models/players/bones/lower_1.md3"$0D
+        "/models/players/bones/upper.md3"$0D
+        "/models/players/bones/upper_1.md3"$0D
+        "/models/players/crash/head.md3"$0D
+        "/models/players/crash/head_1.md3"$0D
+        "/models/players/crash/head_2.md3"$0D
+        "/models/players/crash/lower.md3"$0D
+        "/models/players/crash/lower_1.md3"$0D
+        "/models/players/crash/lower_2.md3"$0D
+        "/models/players/crash/upper.md3"$0D
+        "/models/players/crash/upper_1.md3"$0D
+        "/models/players/crash/upper_2.md3"$0D
+        "/models/players/doom/head.md3"$0D
+        "/models/players/doom/head_1.md3"$0D
+        "/models/players/doom/head_2.md3"$0D
+        "/models/players/doom/lower.md3"$0D
+        "/models/players/doom/lower_1.md3"$0D
+        "/models/players/doom/lower_2.md3"$0D
+        "/models/players/doom/upper.md3"$0D
+        "/models/players/doom/upper_1.md3"$0D
+        "/models/players/doom/upper_2.md3"$0D
+        "/models/players/grunt/head.md3"$0D
+        "/models/players/grunt/head_1.md3"$0D
+        "/models/players/grunt/head_2.md3"$0D
+        "/models/players/grunt/lower.md3"$0D
+        "/models/players/grunt/lower_1.md3"$0D
+        "/models/players/grunt/lower_2.md3"$0D
+        "/models/players/grunt/upper.md3"$0D
+        "/models/players/grunt/upper_1.md3"$0D
+        "/models/players/grunt/upper_2.md3"$0D
+        "/models/players/hunter/head.md3"$0D
+        "/models/players/hunter/head_1.md3"$0D
+        "/models/players/hunter/head_2.md3"$0D
+        "/models/players/hunter/lower.md3"$0D
+        "/models/players/hunter/lower_1.md3"$0D
+        "/models/players/hunter/lower_2.md3"$0D
+        "/models/players/hunter/upper.md3"$0D
+        "/models/players/hunter/upper_1.md3"$0D
+        "/models/players/hunter/upper_2.md3"$0D
+        "/models/players/keel/head.md3"$0D
+        "/models/players/keel/head_1.md3"$0D
+        "/models/players/keel/head_2.md3"$0D
+        "/models/players/keel/lower.md3"$0D
+        "/models/players/keel/lower_1.md3"$0D
+        "/models/players/keel/lower_2.md3"$0D
+        "/models/players/keel/upper.md3"$0D
+        "/models/players/keel/upper_1.md3"$0D
+        "/models/players/keel/upper_2.md3"$0D
+        "/models/players/klesk/head.md3"$0D
+        "/models/players/klesk/head_1.md3"$0D
+        "/models/players/klesk/head_2.md3"$0D
+        "/models/players/klesk/lower.md3"$0D
+        "/models/players/klesk/lower_1.md3"$0D
+        "/models/players/klesk/lower_2.md3"$0D
+        "/models/players/klesk/upper.md3"$0D
+        "/models/players/klesk/upper_1.md3"$0D
+        "/models/players/klesk/upper_2.md3"$0D
+        "/models/players/lucy/head.md3"$0D
+        "/models/players/lucy/head_1.md3"$0D
+        "/models/players/lucy/head_2.md3"$0D
+        "/models/players/lucy/lower.md3"$0D
+        "/models/players/lucy/lower_1.md3"$0D
+        "/models/players/lucy/lower_2.md3"$0D
+        "/models/players/lucy/upper.md3"$0D
+        "/models/players/lucy/upper_1.md3"$0D
+        "/models/players/lucy/upper_2.md3"$0D
+        "/models/players/major/head.md3"$0D
+        "/models/players/major/head_1.md3"$0D
+        "/models/players/major/head_2.md3"$0D
+        "/models/players/major/lower.md3"$0D
+        "/models/players/major/lower_1.md3"$0D
+        "/models/players/major/lower_2.md3"$0D
+        "/models/players/major/upper.md3"$0D
+        "/models/players/major/upper_1.md3"$0D
+        "/models/players/major/upper_2.md3"$0D
+        "/models/players/mynx/head.md3"$0D
+        "/models/players/mynx/head_1.md3"$0D
+        "/models/players/mynx/head_2.md3"$0D
+        "/models/players/mynx/lower.md3"$0D
+        "/models/players/mynx/lower_1.md3"$0D
+        "/models/players/mynx/lower_2.md3"$0D
+        "/models/players/mynx/upper.md3"$0D
+        "/models/players/mynx/upper_1.md3"$0D
+        "/models/players/mynx/upper_2.md3"$0D
+        "/models/players/orbb/head.md3"$0D
+        "/models/players/orbb/head_1.md3"$0D
+        "/models/players/orbb/head_2.md3"$0D
+        "/models/players/orbb/lower.md3"$0D
+        "/models/players/orbb/lower_1.md3"$0D
+        "/models/players/orbb/lower_2.md3"$0D
+        "/models/players/orbb/upper.md3"$0D
+        "/models/players/orbb/upper_1.md3"$0D
+        "/models/players/orbb/upper_2.md3"$0D
+        "/models/players/ranger/head.md3"$0D
+        "/models/players/ranger/head_1.md3"$0D
+        "/models/players/ranger/head_2.md3"$0D
+        "/models/players/ranger/lower.md3"$0D
+        "/models/players/ranger/lower_1.md3"$0D
+        "/models/players/ranger/lower_2.md3"$0D
+        "/models/players/ranger/upper.md3"$0D
+        "/models/players/ranger/upper_1.md3"$0D
+        "/models/players/ranger/upper_2.md3"$0D
+        "/models/players/razor/head.md3"$0D
+        "/models/players/razor/head_1.md3"$0D
+        "/models/players/razor/head_2.md3"$0D
+        "/models/players/razor/lower.md3"$0D
+        "/models/players/razor/lower_1.md3"$0D
+        "/models/players/razor/lower_2.md3"$0D
+        "/models/players/razor/upper.md3"$0D
+        "/models/players/razor/upper_1.md3"$0D
+        "/models/players/razor/upper_2.md3"$0D
+        "/models/players/sarge/head.md3"$0D
+        "/models/players/sarge/head_1.md3"$0D
+        "/models/players/sarge/head_2.md3"$0D
+        "/models/players/sarge/lower.md3"$0D
+        "/models/players/sarge/lower_1.md3"$0D
+        "/models/players/sarge/lower_2.md3"$0D
+        "/models/players/sarge/upper.md3"$0D
+        "/models/players/sarge/upper_1.md3"$0D
+        "/models/players/sarge/upper_2.md3"$0D
+        "/models/players/slash/head.md3"$0D
+        "/models/players/slash/head_1.md3"$0D
+        "/models/players/slash/head_2.md3"$0D
+        "/models/players/slash/lower.md3"$0D
+        "/models/players/slash/lower_1.md3"$0D
+        "/models/players/slash/lower_2.md3"$0D
+        "/models/players/slash/upper.md3"$0D
+        "/models/players/slash/upper_1.md3"$0D
+        "/models/players/slash/upper_2.md3"$0D
+        "/models/players/sorlag/head.md3"$0D
+        "/models/players/sorlag/head_1.md3"$0D
+        "/models/players/sorlag/head_2.md3"$0D
+        "/models/players/sorlag/lower.md3"$0D
+        "/models/players/sorlag/lower_1.md3"$0D
+        "/models/players/sorlag/lower_2.md3"$0D
+        "/models/players/sorlag/upper.md3"$0D
+        "/models/players/sorlag/upper_1.md3"$0D
+        "/models/players/sorlag/upper_2.md3"$0D
+        "/models/players/tankjr/head.md3"$0D
+        "/models/players/tankjr/head_1.md3"$0D
+        "/models/players/tankjr/head_2.md3"$0D
+        "/models/players/tankjr/lower.md3"$0D
+        "/models/players/tankjr/lower_1.md3"$0D
+        "/models/players/tankjr/lower_2.md3"$0D
+        "/models/players/tankjr/upper.md3"$0D
+        "/models/players/tankjr/upper_1.md3"$0D
+        "/models/players/tankjr/upper_2.md3"$0D
+        "/models/players/uriel/head.md3"$0D
+        "/models/players/uriel/head_1.md3"$0D
+        "/models/players/uriel/head_2.md3"$0D
+        "/models/players/uriel/lower.md3"$0D
+        "/models/players/uriel/lower_1.md3"$0D
+        "/models/players/uriel/lower_2.md3"$0D
+        "/models/players/uriel/upper.md3"$0D
+        "/models/players/uriel/upper_1.md3"$0D
+        "/models/players/uriel/upper_2.md3"$0D
+        "/models/players/visor/head.md3"$0D
+        "/models/players/visor/head_1.md3"$0D
+        "/models/players/visor/head_2.md3"$0D
+        "/models/players/visor/lower.md3"$0D
+        "/models/players/visor/lower_1.md3"$0D
+        "/models/players/visor/lower_2.md3"$0D
+        "/models/players/visor/upper.md3"$0D
+        "/models/players/visor/upper_1.md3"$0D
+        "/models/players/visor/upper_2.md3"$0D
+        "/models/players/xaero/head.md3"$0D
+        "/models/players/xaero/head_1.md3"$0D
+        "/models/players/xaero/head_2.md3"$0D
+        "/models/players/xaero/lower.md3"$0D
+        "/models/players/xaero/lower_1.md3"$0D
+        "/models/players/xaero/lower_2.md3"$0D
+        "/models/players/xaero/upper.md3"$0D
+        "/models/players/xaero/upper_1.md3"$0D
+        "/models/players/xaero/upper_2.md3"
+      }
+
+      model: = { typ="C" txt="Powerups"
+      items=
+        "ammo/bfgam.md3"$0D
+        "ammo/bfgam_1.md3"$0D
+        "ammo/grenadeam.md3"$0D
+        "ammo/grenadeam_1.md3"$0D
+        "ammo/lightningam.md3"$0D
+        "ammo/lightningam_1.md3"$0D
+        "ammo/machinegunam.md3"$0D
+        "ammo/machinegunam_1.md3"$0D
+        "ammo/plasmaam.md3"$0D
+        "ammo/plasmaam_1.md3"$0D
+        "ammo/railgunam.md3"$0D
+        "ammo/railgunam_1.md3"$0D
+        "ammo/rocketam.md3"$0D
+        "ammo/rocketam_1.md3"$0D
+        "ammo/shotgunam.md3"$0D
+        "ammo/shotgunam_1.md3"$0D
+        "armor/armor_red.md3"$0D
+        "armor/armor_red_1.md3"$0D
+        "armor/armor_red_2.md3"$0D
+        "armor/armor_yel.md3"$0D
+        "armor/armor_yel_1.md3"$0D
+        "armor/armor_yel_2.md3"$0D
+        "armor/shard.md3"$0D
+        "armor/shard_sphere.md3"$0D
+        "health/large_cross.md3"$0D
+        "health/large_sphere.md3"$0D
+        "health/large_sphere_1.md3"$0D
+        "health/large_sphere_2.md3"$0D
+        "health/medium_cross.md3"$0D
+        "health/medium_sphere.md3"$0D
+        "health/medium_sphere_1.md3"$0D
+        "health/medium_sphere_2.md3"$0D
+        "health/mega_cross.md3"$0D
+        "health/mega_sphere.md3"$0D
+        "health/mega_sphere_1.md3"$0D
+        "health/mega_sphere_2.md3"$0D
+        "health/small_cross.md3"$0D
+        "health/small_sphere.md3"$0D
+        "health/small_sphere_1.md3"$0D
+        "health/small_sphere_2.md3"$0D
+        "holdable/medkit.md3"$0D
+        "holdable/medkit_1.md3"$0D
+        "holdable/teleporter.md3"$0D
+        "holdable/teleporter_1.md3"$0D
+        "instant/enviro.md3"$0D
+        "instant/enviro_1.md3"$0D
+        "instant/enviro_ring.md3"$0D
+        "instant/enviro_ring_1.md3"$0D
+        "instant/flight.md3"$0D
+        "instant/flight_1.md3"$0D
+        "instant/flight_ring.md3"$0D
+        "instant/flight_ring_1.md3"$0D
+        "instant/haste.md3"$0D
+        "instant/haste_1.md3"$0D
+        "instant/haste_ring.md3"$0D
+        "instant/haste_ring_1.md3"$0D
+        "instant/invis.md3"$0D
+        "instant/invis_1.md3"$0D
+        "instant/invis_ring.md3"$0D
+        "instant/invis_ring_1.md3"$0D
+        "instant/quad.md3"$0D
+        "instant/quad_1.md3"$0D
+        "instant/quad_ring.md3"$0D
+        "instant/quad_ring_1.md3"$0D
+        "instant/regen.md3"$0D
+        "instant/regen_1.md3"$0D
+        "instant/regen_ring.md3"$0D
+        "instant/regen_ring_1.md3"
+      values=
+        "/models/powerups/ammo/bfgam.md3"$0D
+        "/models/powerups/ammo/bfgam_1.md3"$0D
+        "/models/powerups/ammo/grenadeam.md3"$0D
+        "/models/powerups/ammo/grenadeam_1.md3"$0D
+        "/models/powerups/ammo/lightningam.md3"$0D
+        "/models/powerups/ammo/lightningam_1.md3"$0D
+        "/models/powerups/ammo/machinegunam.md3"$0D
+        "/models/powerups/ammo/machinegunam_1.md3"$0D
+        "/models/powerups/ammo/plasmaam.md3"$0D
+        "/models/powerups/ammo/plasmaam_1.md3"$0D
+        "/models/powerups/ammo/railgunam.md3"$0D
+        "/models/powerups/ammo/railgunam_1.md3"$0D
+        "/models/powerups/ammo/rocketam.md3"$0D
+        "/models/powerups/ammo/rocketam_1.md3"$0D
+        "/models/powerups/ammo/shotgunam.md3"$0D
+        "/models/powerups/ammo/shotgunam_1.md3"$0D
+        "/models/powerups/armor/armor_red.md3"$0D
+        "/models/powerups/armor/armor_red_1.md3"$0D
+        "/models/powerups/armor/armor_red_2.md3"$0D
+        "/models/powerups/armor/armor_yel.md3"$0D
+        "/models/powerups/armor/armor_yel_1.md3"$0D
+        "/models/powerups/armor/armor_yel_2.md3"$0D
+        "/models/powerups/armor/shard.md3"$0D
+        "/models/powerups/armor/shard_sphere.md3"$0D
+        "/models/powerups/health/large_cross.md3"$0D
+        "/models/powerups/health/large_sphere.md3"$0D
+        "/models/powerups/health/large_sphere_1.md3"$0D
+        "/models/powerups/health/large_sphere_2.md3"$0D
+        "/models/powerups/health/medium_cross.md3"$0D
+        "/models/powerups/health/medium_sphere.md3"$0D
+        "/models/powerups/health/medium_sphere_1.md3"$0D
+        "/models/powerups/health/medium_sphere_2.md3"$0D
+        "/models/powerups/health/mega_cross.md3"$0D
+        "/models/powerups/health/mega_sphere.md3"$0D
+        "/models/powerups/health/mega_sphere_1.md3"$0D
+        "/models/powerups/health/mega_sphere_2.md3"$0D
+        "/models/powerups/health/small_cross.md3"$0D
+        "/models/powerups/health/small_sphere.md3"$0D
+        "/models/powerups/health/small_sphere_1.md3"$0D
+        "/models/powerups/health/small_sphere_2.md3"$0D
+        "/models/powerups/holdable/medkit.md3"$0D
+        "/models/powerups/holdable/medkit_1.md3"$0D
+        "/models/powerups/holdable/teleporter.md3"$0D
+        "/models/powerups/holdable/teleporter_1.md3"$0D
+        "/models/powerups/instant/enviro.md3"$0D
+        "/models/powerups/instant/enviro_1.md3"$0D
+        "/models/powerups/instant/enviro_ring.md3"$0D
+        "/models/powerups/instant/enviro_ring_1.md3"$0D
+        "/models/powerups/instant/flight.md3"$0D
+        "/models/powerups/instant/flight_1.md3"$0D
+        "/models/powerups/instant/flight_ring.md3"$0D
+        "/models/powerups/instant/flight_ring_1.md3"$0D
+        "/models/powerups/instant/haste.md3"$0D
+        "/models/powerups/instant/haste_1.md3"$0D
+        "/models/powerups/instant/haste_ring.md3"$0D
+        "/models/powerups/instant/haste_ring_1.md3"$0D
+        "/models/powerups/instant/invis.md3"$0D
+        "/models/powerups/instant/invis_1.md3"$0D
+        "/models/powerups/instant/invis_ring.md3"$0D
+        "/models/powerups/instant/invis_ring_1.md3"$0D
+        "/models/powerups/instant/quad.md3"$0D
+        "/models/powerups/instant/quad_1.md3"$0D
+        "/models/powerups/instant/quad_ring.md3"$0D
+        "/models/powerups/instant/quad_ring_1.md3"$0D
+        "/models/powerups/instant/regen.md3"$0D
+        "/models/powerups/instant/regen_1.md3"$0D
+        "/models/powerups/instant/regen_ring.md3"$0D
+        "/models/powerups/instant/regen_ring_1.md3"
+      }
+
+      model: = { typ="C" txt="WeapHits"
+      items=
+        "bfg.md3"$0D
+        "boom01.md3"$0D
+        "bullet.md3"$0D
+        "crackle.md3"$0D
+        "ring02.md3"
+      values=
+        "/models/weaphits/bfg.md3"$0D
+        "/models/weaphits/boom01.md3"$0D
+        "/models/weaphits/bullet.md3"$0D
+        "/models/weaphits/crackle.md3"$0D
+        "/models/weaphits/ring02.md3"
+      }
+
+      model: = { typ="C" txt="Weapons2"
+      items=
+        "bfg/bfg.md3"$0D
+        "bfg/bfg_1.md3"$0D
+        "bfg/bfg_2.md3"$0D
+        "bfg/bfg_barrel.md3"$0D
+        "bfg/bfg_flash.md3"$0D
+        "bfg/bfg_hand.md3"$0D
+        "gauntlet/gauntlet.md3"$0D
+        "gauntlet/gauntlet_barrel.md3"$0D
+        "gauntlet/gauntlet_flash.md3"$0D
+        "gauntlet/gauntlet_hand.md3"$0D
+        "grapple/grapple.md3"$0D
+        "grapple/grapple_1.md3"$0D
+        "grapple/grapple_2.md3"$0D
+        "grapple/grapple_flash.md3"$0D
+        "grapple/grapple_hand.md3"$0D
+        "grenadel/grenadel.md3"$0D
+        "grenadel/grenadel_1.md3"$0D
+        "grenadel/grenadel_2.md3"$0D
+        "grenadel/grenadel_flash.md3"$0D
+        "grenadel/grenadel_hand.md3"$0D
+        "lightning/lightning.md3"$0D
+        "lightning/lightning_1.md3"$0D
+        "lightning/lightning_2.md3"$0D
+        "lightning/lightning_flash.md3"$0D
+        "lightning/lightning_hand.md3"$0D
+        "machinegun/machinegun.md3"$0D
+        "machinegun/machinegun_1.md3"$0D
+        "machinegun/machinegun_2.md3"$0D
+        "machinegun/machinegun_barrel.md3"$0D
+        "machinegun/machinegun_barrel_1.md3"$0D
+        "machinegun/machinegun_barrel_2.md3"$0D
+        "machinegun/machinegun_flash.md3"$0D
+        "machinegun/machinegun_hand.md3"$0D
+        "plasma/plasma.md3"$0D
+        "plasma/plasma_1.md3"$0D
+        "plasma/plasma_2.md3"$0D
+        "plasma/plasma_flash.md3"$0D
+        "plasma/plasma_hand.md3"$0D
+        "railgun/railgun.md3"$0D
+        "railgun/railgun_flash.md3"$0D
+        "railgun/railgun_hand.md3"$0D
+        "rocketl/rocketl.md3"$0D
+        "rocketl/rocketl_1.md3"$0D
+        "rocketl/rocketl_2.md3"$0D
+        "rocketl/rocketl_flash.md3"$0D
+        "rocketl/rocketl_hand.md3"$0D
+        "shells/m_shell.md3"$0D
+        "shells/m_shell_1.md3"$0D
+        "shells/s_shell.md3"$0D
+        "shotgun/shotgun.md3"$0D
+        "shotgun/shotgun_1.md3"$0D
+        "shotgun/shotgun_2.md3"$0D
+        "shotgun/shotgun_flash.md3"$0D
+        "shotgun/shotgun_hand.md3"
+      values=
+        "/models/weapons2/bfg/bfg.md3"$0D
+        "/models/weapons2/bfg/bfg_1.md3"$0D
+        "/models/weapons2/bfg/bfg_2.md3"$0D
+        "/models/weapons2/bfg/bfg_barrel.md3"$0D
+        "/models/weapons2/bfg/bfg_flash.md3"$0D
+        "/models/weapons2/bfg/bfg_hand.md3"$0D
+        "/models/weapons2/gauntlet/gauntlet.md3"$0D
+        "/models/weapons2/gauntlet/gauntlet_barrel.md3"$0D
+        "/models/weapons2/gauntlet/gauntlet_flash.md3"$0D
+        "/models/weapons2/gauntlet/gauntlet_hand.md3"$0D
+        "/models/weapons2/grapple/grapple.md3"$0D
+        "/models/weapons2/grapple/grapple_1.md3"$0D
+        "/models/weapons2/grapple/grapple_2.md3"$0D
+        "/models/weapons2/grapple/grapple_flash.md3"$0D
+        "/models/weapons2/grapple/grapple_hand.md3"$0D
+        "/models/weapons2/grenadel/grenadel.md3"$0D
+        "/models/weapons2/grenadel/grenadel_1.md3"$0D
+        "/models/weapons2/grenadel/grenadel_2.md3"$0D
+        "/models/weapons2/grenadel/grenadel_flash.md3"$0D
+        "/models/weapons2/grenadel/grenadel_hand.md3"$0D
+        "/models/weapons2/lightning/lightning.md3"$0D
+        "/models/weapons2/lightning/lightning_1.md3"$0D
+        "/models/weapons2/lightning/lightning_2.md3"$0D
+        "/models/weapons2/lightning/lightning_flash.md3"$0D
+        "/models/weapons2/lightning/lightning_hand.md3"$0D
+        "/models/weapons2/machinegun/machinegun.md3"$0D
+        "/models/weapons2/machinegun/machinegun_1.md3"$0D
+        "/models/weapons2/machinegun/machinegun_2.md3"$0D
+        "/models/weapons2/machinegun/machinegun_barrel.md3"$0D
+        "/models/weapons2/machinegun/machinegun_barrel_1.md3"$0D
+        "/models/weapons2/machinegun/machinegun_barrel_2.md3"$0D
+        "/models/weapons2/machinegun/machinegun_flash.md3"$0D
+        "/models/weapons2/machinegun/machinegun_hand.md3"$0D
+        "/models/weapons2/plasma/plasma.md3"$0D
+        "/models/weapons2/plasma/plasma_1.md3"$0D
+        "/models/weapons2/plasma/plasma_2.md3"$0D
+        "/models/weapons2/plasma/plasma_flash.md3"$0D
+        "/models/weapons2/plasma/plasma_hand.md3"$0D
+        "/models/weapons2/railgun/railgun.md3"$0D
+        "/models/weapons2/railgun/railgun_flash.md3"$0D
+        "/models/weapons2/railgun/railgun_hand.md3"$0D
+        "/models/weapons2/rocketl/rocketl.md3"$0D
+        "/models/weapons2/rocketl/rocketl_1.md3"$0D
+        "/models/weapons2/rocketl/rocketl_2.md3"$0D
+        "/models/weapons2/rocketl/rocketl_flash.md3"$0D
+        "/models/weapons2/rocketl/rocketl_hand.md3"$0D
+        "/models/weapons2/shells/m_shell.md3"$0D
+        "/models/weapons2/shells/m_shell_1.md3"$0D
+        "/models/weapons2/shells/s_shell.md3"$0D
+        "/models/weapons2/shotgun/shotgun.md3"$0D
+        "/models/weapons2/shotgun/shotgun_1.md3"$0D
+        "/models/weapons2/shotgun/shotgun_2.md3"$0D
+        "/models/weapons2/shotgun/shotgun_flash.md3"$0D
+        "/models/weapons2/shotgun/shotgun_hand.md3"
+      }
+    }
 
     ammo_bfg:form =
     {
@@ -4471,6 +5235,7 @@ QQRKSRC1
         Txt = "&"
         Hint = "Path and name of a model to use."
       }
+      t_model = !
     }
     misc_portal_camera:form =
     {
