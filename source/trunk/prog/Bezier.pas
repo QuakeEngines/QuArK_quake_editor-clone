@@ -1261,6 +1261,16 @@ begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
  case attr[0] of
+  'H': if Length(attr) = 1 then
+        begin
+          Result := PyInt_FromLong(ControlPoints.H-1);
+          Exit;
+        end;
+  'W': if Length(attr) = 1 then
+        begin
+          Result := PyInt_FromLong(ControlPoints.W-1);
+          Exit;
+        end;
   'c': if StrComp(attr, 'cp') = 0 then
         begin  { get control points }
          cp:=ControlPoints;
