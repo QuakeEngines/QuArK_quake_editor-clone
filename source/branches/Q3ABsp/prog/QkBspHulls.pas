@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10.4.2  2001/07/14 06:19:06  tiglari
+modified for Q3A down to reading in the vertexes, noninclusive
+
 Revision 1.10.4.1  2001/07/14 01:52:24  tiglari
 start adapting TBSPHull.CreateHull for Q3A hull creation
 
@@ -151,7 +154,6 @@ type
  TEdge = record
           Vertex0, Vertex1: Word;
          end;
-
  PTexInfoVecs = ^TTexInfoVecs;
  TTexInfoVecs = array[0..1, 0..3] of scalar_t;
  PTexInfo = ^TTexInfo;
@@ -278,6 +280,7 @@ var
  LastError: String;
  P1, P2, P3, NN: TVect;
  PlaneDist: TDouble;
+ dist: vec3_t;
  TextureList: QTextureList;
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
@@ -352,8 +355,10 @@ begin
     Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
   end;
   cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
-  cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  eBsp3_vertexes,   Vertices) div SizeOf(vec3_t);
+  { FBsp.FVertices, VertexCount are previously computed
+    by FBsp.GetStructure }
   Vertices:=PChar(FBsp.FVertices);
+  cVertices:=FBsp.VertexCount;
 
   Size1:=0;
   { for each face in the brush, reserve space for a Surface }
@@ -422,13 +427,15 @@ begin
         NN.X:=Normal[0];
         NN.Y:=Normal[1];
         NN.Z:=Normal[2];
+        { fill in PlaneDist later }
       end
     end;
     {TexInfo_id:=Faces^.TexInfo_id;}
 
     PChar(Dest):=PChar(Surface1)+TailleBaseSurface;
+    if HullType<mjQ3A then
     for J:=1 to Faces^.ledge_num do
-     begin
+    begin
       NoEdge:=LEdge^;
       Inc(PChar(LEdge), SizeOf(TLEdge));
       if NoEdge < 0 then
@@ -456,95 +463,126 @@ begin
       if NoVert>=UsedVertex then
        UsedVertex:=NoVert+1;
       Dest^:=PSommet(Vertices + NoVert * SizeOf(TVect));
-     {if Abs(Dot(Dest^^.P, NN) - Planedist) > rien then
-       begin
-        TexInfo_id:=MaxInt;
-        Break;
-       end;}
       Inc(Dest);
-     end;
+    end
+    else
+    with Q3Faces^ do
+    begin
+     { P:=PChar(Vertices+Vertex_id*SizeOf(TVect)); }
+     { the vertexes are stored in the vertex lump in consecutive
+       order as they are used by each face }
+      Dest^:=PSommet(Vertices+Vertex_id*SizeOf(TVect));
+      for J:=1 to Vertex_num do
+      begin
+        if J=1 then
+        begin
+          P1:=Dest^.P;
+         PlaneDist:=Dot(NN,P1)
+        end
+        else if J=2 then
+          P2:=Dest^.P
+        else
+          P3:=Dest^.P;
+        Inc(Dest);
+      end;
+    end;
     if UsedVertex>cVertices then
      Raise EErrorFmt(5635, [6]);
 
      { load texture infos }
-    if Faces^.TexInfo_id >= cTexInfo then
-     begin
-      Inc(InvFaces);
-     {if TexInfo_id = MaxInt then
-       LastError:='Err Point Off Plane'
-      else}
-       LastError:='Err TexInfo_id';
-      Continue;
-     end;
-    if HullType>=mjQuake2 then
-     with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
-      begin
-       S:=CharToPas(texture);
-       BspVecs:=@vecs;
-      end
-    else
-     with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
-      begin
-       BspVecs:=@vecs;
-       if miptex>=TextureList.SubElements.Count then
+    if HullType<mjQ3A then
+    begin
+      if Faces^.TexInfo_id >= cTexInfo then
+       begin
+        Inc(InvFaces);
+       {if TexInfo_id = MaxInt then
+         LastError:='Err Point Off Plane'
+        else}
+         LastError:='Err TexInfo_id';
+        Continue;
+       end;
+      if HullType>=mjQuake2 then
+       with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
         begin
-         Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
+         S:=CharToPas(texture);
+         BspVecs:=@vecs;
+        end
+      else
+       with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
+        begin
+         BspVecs:=@vecs;
+         if miptex>=TextureList.SubElements.Count then
+          begin
+           Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
+          end;
+         S:=TextureList.SubElements[miptex].Name;
         end;
-       S:=TextureList.SubElements[miptex].Name;
-      end;
 
-        (** Equations to solve :     with (s,s0)=vecs[0] and (t,t0)=vecs[1]
+          (** Equations to solve :     with (s,s0)=vecs[0] and (t,t0)=vecs[1]
 
-              s*P1 + s0 = 0       s*P2 + s0 = 128     s*P3 + s0 = 0
-              t*P1 + t0 = 0       t*P2 + t0 = 0       t*P3 + t0 = -128
+                s*P1 + s0 = 0       s*P2 + s0 = 128     s*P3 + s0 = 0
+                t*P1 + t0 = 0       t*P2 + t0 = 0       t*P3 + t0 = -128
 
-            with P1, P2, P3 in the plane PlaneInfo = (n,d).
-            We must solve (s*p,t*p) = (s1,t1).
+              with P1, P2, P3 in the plane PlaneInfo = (n,d).
+              We must solve (s*p,t*p) = (s1,t1).
 
-              s.x*p.x + s.y*p.y + s.z*p.z = s1
-              t.x*p.x + t.y*p.y + t.z*p.z = t1
-              n.x*p.x + n.y*p.y + n.z*p.z = d
-        **)
-    g_DrawInfo.Matrice[1,1]:=bspvecs^[0,0];
-    g_DrawInfo.Matrice[1,2]:=bspvecs^[0,1];
-    g_DrawInfo.Matrice[1,3]:=bspvecs^[0,2];
-    g_DrawInfo.Matrice[2,1]:=bspvecs^[1,0];
-    g_DrawInfo.Matrice[2,2]:=bspvecs^[1,1];
-    g_DrawInfo.Matrice[2,3]:=bspvecs^[1,2];
-    g_DrawInfo.Matrice[3,1]:=NN.X;
-    g_DrawInfo.Matrice[3,2]:=NN.Y;
-    g_DrawInfo.Matrice[3,3]:=NN.Z;
-    g_DrawInfo.Matrice:=MatriceInverse(g_DrawInfo.Matrice);
-    P1.X:=-bspvecs^[0,3];
-    P1.Y:=-bspvecs^[1,3];
-    P1.Z:=PlaneDist;
-    TransformationLineaire(P1);
-    P2.X:=EchelleTexture-bspvecs^[0,3];
-    P2.Y:=-bspvecs^[1,3];
-    P2.Z:=PlaneDist;
-    TransformationLineaire(P2);
-    P3.X:=-bspvecs^[0,3];
-    P3.Y:=-EchelleTexture-bspvecs^[1,3];
-    P3.Z:=PlaneDist;
-    TransformationLineaire(P3);
+                s.x*p.x + s.y*p.y + s.z*p.z = s1
+                t.x*p.x + t.y*p.y + t.z*p.z = t1
+                n.x*p.x + n.y*p.y + n.z*p.z = d
+          **)
+      g_DrawInfo.Matrice[1,1]:=bspvecs^[0,0];
+      g_DrawInfo.Matrice[1,2]:=bspvecs^[0,1];
+      g_DrawInfo.Matrice[1,3]:=bspvecs^[0,2];
+      g_DrawInfo.Matrice[2,1]:=bspvecs^[1,0];
+      g_DrawInfo.Matrice[2,2]:=bspvecs^[1,1];
+      g_DrawInfo.Matrice[2,3]:=bspvecs^[1,2];
+      g_DrawInfo.Matrice[3,1]:=NN.X;
+      g_DrawInfo.Matrice[3,2]:=NN.Y;
+      g_DrawInfo.Matrice[3,3]:=NN.Z;
+      g_DrawInfo.Matrice:=MatriceInverse(g_DrawInfo.Matrice);
+      P1.X:=-bspvecs^[0,3];
+      P1.Y:=-bspvecs^[1,3];
+      P1.Z:=PlaneDist;
+      TransformationLineaire(P1);
+      P2.X:=EchelleTexture-bspvecs^[0,3];
+      P2.Y:=-bspvecs^[1,3];
+      P2.Z:=PlaneDist;
+      TransformationLineaire(P2);
+      P3.X:=-bspvecs^[0,3];
+      P3.Y:=-EchelleTexture-bspvecs^[1,3];
+      P3.Z:=PlaneDist;
+      TransformationLineaire(P3);
+    end;
 
     Face:=TFace.Create(IntToStr(I), Self);
     SubElements.Add(Face);
-    if Faces^.side<>0 then
-     with Face do
-      begin
-       Normale.X:=-NN.X;
-       Normale.Y:=-NN.Y;
-       Normale.Z:=-NN.Z;
-       Dist:=-PlaneDist;
-      end
-     else
-      with Face do
-       begin
-        Normale:=NN;
-        Dist:=PlaneDist;
-       end;
-    if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
+    if HullType<mjQ3A then
+    begin
+      if Faces^.side<>0 then
+         with Face do
+         begin
+           Normale.X:=-NN.X;
+           Normale.Y:=-NN.Y;
+           Normale.Z:=-NN.Z;
+           Dist:=-PlaneDist;
+         end
+      else
+        with Face do
+        begin
+          Normale:=NN;
+          Dist:=PlaneDist;
+        end;
+    end else
+    begin
+        with Face do
+        begin
+          Normale:=NN;
+          Dist:=PlaneDist;
+        end;
+    end;
+    { NuTex format doesn't work here, not sure why.
+      To compile with normal main branch, use SetThreePointsEx }
+    if not Face.SetThreePointsEnhEx(P1, P2, P3, Face.Normale) then
      begin
       SubElements.Remove(Face);
       Inc(InvFaces); LastError:='Err degenerate'; Continue;
@@ -608,6 +646,8 @@ begin
  else
  begin
    { Whatever Happens to draw Q3A bsp's ... }
+   inherited;
+   Exit;
  end;
  if g_DrawInfo.SelectedBrush<>0 then
   begin

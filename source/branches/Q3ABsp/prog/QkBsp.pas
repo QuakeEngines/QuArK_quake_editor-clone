@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.4.1  2001/07/14 01:50:16  tiglari
+Fix totally wrong Q3A lump names
+
 Revision 1.33  2001/04/24 23:59:44  aiv
 re-implementated again (hopefully less memory req'd)
 
@@ -219,6 +222,14 @@ type
  PVertexList = ^TVertexList;
  TVertexList = array[0..0] of TVect;
 
+ PQ3Vertex = ^TQ3Vertex;
+ TQ3Vertex = record
+              Position : vec3_t;
+              SurfCoord, LightCoord : vec2_t;
+              Normal : vec3_t;
+              Color : array[0..3] of Byte;
+             end;
+
  QBsp = class(QFileObject)
         private
           FStructure: TTreeMapBrush;
@@ -232,6 +243,7 @@ type
           procedure SaveBsp1(Info: TInfoEnreg1);
           procedure SaveBsp2(Info: TInfoEnreg1);
         protected
+          _VertexCount: Integer;
           function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; StreamSize: Integer); override;
@@ -255,6 +267,7 @@ type
           Function GetTextureFolder: QObject;
           Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
+          function VertexCount : Integer;
         end;
 
 type
@@ -896,29 +909,51 @@ function QBsp.GetStructure;
 var
  Q: QObject;
  P: vec3_p;
+ PQ3: PQ3Vertex;
  I, Count: Integer;
  Dest: PVect;
+ HullType: Char;
+ Pozzie: vec3_t;
 begin
+ HullType:=NeedObjectGameCode;
  if FStructure=Nil then
   begin
    if FVertices<>Nil then
     Raise EError(5637);
    FVerticesRefCount:=0;
    ProgressIndicatorStart(0,0); try
-   Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
+   if HullType<mjQ3A then
+      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t)
+   else
+      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(PQ3)) div SizeOf(TQ3Vertex);
+   _VertexCount:=Count;
    ReallocMem(FVertices, Count*SizeOf(TVect));
    Dest:=PVect(FVertices);
+   if HullType<mjQ3A then
    for I:=1 to Count do
-    begin
+   begin
      with Dest^ do
-      begin
+     begin
        X:=P^[0];
        Y:=P^[1];
        Z:=P^[2];
-      end;
+     end;
      Inc(P);
      Inc(Dest);
-    end;
+   end
+   else
+   for I:=1 to Count do
+   begin
+     with Dest^ do
+     begin
+       Pozzie:=PQ3^.Position;
+       X:=Pozzie[0];
+       Y:=Pozzie[1];
+       Z:=Pozzie[2];
+     end;
+     Inc(PQ3);
+     Inc(Dest);
+   end;
    FStructure:=TTreeMapBrush.Create('', Self);
    FStructure.AddRef(+1);
    Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
@@ -974,6 +1009,14 @@ begin
  mapname:=PyString_FromString(PChar(S));
  PyList_Append(extracted, mapname);
  Py_DECREF(mapname);
+end;
+
+
+ {------------------------}
+
+function QBsp.VertexCount : Integer;
+begin
+  Result:=_VertexCount;
 end;
 
  {------------------------}
