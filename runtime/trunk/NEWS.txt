@@ -29,6 +29,9 @@ $Id$
  * [Rowdy/cdunde]: Corrected handling of comments for shaders to fix
       problem of them not showing up in the Texture Browser.
 
+ * [Rowdy]: Initial support for the editing of Doom 3 maps.  See
+      readme_doom3.txt for more information.
+
 
 6.4.0 beta 1
 ============
