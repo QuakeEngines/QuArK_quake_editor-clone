@@ -1,39 +1,56 @@
-title: Python Versions
-author: tiglari
+title: Python Interpreters & Versions
+author: tiglari, Peter Brett
 
-QuArK uses the ancient and honorable Python 1.5 (the 'minipy' is a minimal
-installation of 1.5.1, although 1.5.2 also works).  Why so old?
-Two reasons:
-<UL>
-<LI> It's a very small download (the .exe for Py2.x is about twice as big)
-<LI> There are incompatiblities between Py1.5 and Py2.x that would require
-      all users to upgrade their Python; this shouldn't be done without
-      a strong immediate benefit.
-</UL>
+Python support and versioning is implemented in
+'source/python/Python.pas', 'source/python/PyMath.pas' and
+'source/python/PyVersions.inc'.
 
-Nonetheless, in the longer term it will probably be a good idea to upgrade
-the Python, possible reasons being:
+There are two behaviours - bundled Python and standard Python.
+
+If a version of Python is defined, QuArK looks for the appropriate DLL
+in the Windows system directory ('system' for Win95/98/Me and 'system32'
+for WinNT/2K/XP).  The following versions are supported with the
+appropriate defines set.
+<ul>
+<li>Python 2.2: 'PYTHON22_OR_HIGHER' (python22.dll)</li>
+<li>Python 2.1: 'PYTHON21_OR_HIGHER' (python21.dll)</li>
+<li>Python 2.0: 'PYTHON20_OR_HIGHER' (python20.dll)</li>
+<li>Python 1.5.x: 'PYTHON15' (python15.dll or python151.dll)</li>
+</ul>
+
+If 'PYTHON_BUNDLED' is defined, QuArK looks for a DLL called
+'python.dll' in QuArK's 'dlls' directory, and uses that.  Unless it's
+overridden by one of the above defines, QuArK will assume the highest
+supported version of Python.
+
+If no Python version is defined, and 'PYTHON_BUNDLED' is not set,
+'PYTHON15' is set (this is for backward compatibility).
+
+The bundled Python support is to get around the fact that the version
+of Python supported can only be set at compile time.  It substantially
+simplifies the installation process for the end user, and makes only
+one download necessary.  It also ensures that all end users are
+running the same version of Python, removing a possible source of bugs
+(people using the wrong version of Python for the QuArK binary they
+have).  It also allows us to go ahead with writing code that requires
+features only available in Python 2.x.
+
+N.B. There are incompatiblities between Py1.5 and Py2.x that would
+require all users to upgrade their Python; the bundled Python is a
+step in that direction.
+
+Possible advantages of moving to a recent version of Python:
 <UL>
 <LI> using tools like Psyco (Armin Rigo) and Pyrex (Greg Ewing) to
-produce hi-performance plugins.
-<LI> accessing libraries that have been linked to Python.
+produce hi-performance plugins.</LI>
+<LI> accessing libraries that have been linked to Python.</LI>
 <LI> writing plugins in languages that can be linked to Python (this
-in principle could be done for Py1.5, but some of the knowledge required
-to write C extensions of Py1.5 appear to have been lost from the net).
-<LI> Long Term Pipedream: rewriting much more of QuArK in Python, using
-Psyco/PyPython tech to make it go fast enough (long-term as it is, this
-might even be the best bet for making QuArK cross-platform).
+in principle could be done for Py1.5, but some of the knowledge
+required to write C extensions of Py1.5 appear to have been lost from
+the net).</LI>
+<LI> Long Term Pipedream: rewriting much more of QuArK in Python,
+using Psyco/PyPython tech to make it go fast enough (long-term as it
+is, this might even be the best bet for making QuArK
+cross-platform).</LI>
 </UL>
-So, it is now possible to compile a QuArK .exe which will use Python 2.x;
-to do this compile with the Conditional Define PYTHON22_OR_HIGHER set in
-the Project|Options|Directories/Conditionals|Conditional Defines box.
-The Conditional Define affects compilation of the files
-<UL>
-<LI>source/Python/Python.pas
-<LI>source/Python/Pymath.pas
-</UL>
-Things are set up so that you could also compile for PYTHON21_OR_HIGHER
-or PYTHON20_OR_HIGHER, although I think this would actually be pointless.
 
-So-compiled versions won't work unless the specified Python or higher is
-installed.
