@@ -224,10 +224,10 @@ def set_mpp_page(btn):
     editor.layout.mpp.viewpage(btn.page)
 
 
-def NoTexFlags():
-    "true when the current game doesn't use Texture Flags"
-    game = quarkx.setupsubset().shortname
-    return game=="Quake 3"
+#def NoTexFlags():
+#    "true when the current game doesn't use Texture Flags"
+#    game = quarkx.setupsubset().shortname
+#    return game=="Quake 3"
 
 #
 # Texture Flags pop-up menu.
@@ -238,8 +238,8 @@ def MenuTexFlags(editor):
 
         def tfclick(m, editor=editor):
 
-            if NoTexFlags(): return None
-            
+            #if NoTexFlags(): return None
+
             def checklist(flist, items):
                for p in items:
                   if p is not qmenu.sep:
@@ -343,9 +343,9 @@ def MenuTexFlags(editor):
             else:
                checklist(flist, m.items[2:])
         texpop = qmenu.popup("Texture Flags", [], tfclick, "surface property flags")
-        if NoTexFlags():
-           texpop.state = qmenu.disabled
-           texpop.hint = "|No Texture Flags for Quake 3; their function is performed by shaders."
+        #if NoTexFlags():
+        #   texpop.state = qmenu.disabled
+        #   texpop.hint = "|No Texture Flags for Quake 3; their function is performed by shaders."
         return [texpop]
     else:
         return []
