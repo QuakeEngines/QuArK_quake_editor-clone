@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2000/09/01 00:50:22  alexander
+set name
+
 Revision 1.21  2000/08/20 10:48:11  aiv
 iiMD3Bone -> iiModelBone
 iiMD3Tag -> iiModelTag
@@ -1330,16 +1333,30 @@ end;
 {$IFDEF Debug}
 function QObject.GetSpecifics : TStringList;
 begin
- if (FFlags and ofSurDisque <> 0) and not FLoading then
-  Raise InternalE('GetSpecifics');
- Result:=FSpecifics;
+  {alex}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  begin
+     AccesRec;
+  end;
+  {/alex ######### FIXME ! i think this is needed , and thus it should be
+   enabled always !!!!!}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+    Raise InternalE('GetSpecifics');
+  Result:=FSpecifics;
 end;
 
 function QObject.GetSubElements : TQList;
 begin
- if (FFlags and ofSurDisque <> 0) and not FLoading then
-  Raise InternalE('GetSousElements');
- Result:=FSubElements;
+  {alex}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  begin
+     AccesRec;
+  end;
+  {/alex ######### FIXME ! i think this is needed , and thus it should be
+   enabled always !!!!!}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+    Raise InternalE('GetSubElements');
+  Result:=FSubElements;
 end;
 {$ENDIF}
 
