@@ -76,27 +76,11 @@ class button:
         except:
             return s
 
-#
-# not needed
-#
-# To try and add the InfoBaseLink attribute.
-#
-#    
-#    quarkx.helppopup(s, quarkx.exepath + doc)
-#
-#
-#def InfoLinkButton(onclick, hint, iconlist, iconindex, InfoBaseLink):
-#    "A button with and Infobase link page"
-#
-#    m = button(onclick, hint, iconlist, iconindex, InfoBaseLink)
-#
-#    return m
 
-
-def menubutton(menu, hint, iconlist, iconindex):
+def menubutton(menu, hint, iconlist, iconindex, infobaselink=''):
     "A button that drops down a menu."
 
-    m = button(None, hint, iconlist, iconindex)
+    m = button(None, hint, iconlist, iconindex, infobaselink)
     m.menu = menu
     return m
 
@@ -116,9 +100,9 @@ def toggle(btn):
     quarkx.update()
 
 
-def macrobtn(macro, hint, iconlist, iconindex, caption=None):
+def macrobtn(macro, hint, iconlist, iconindex, caption=None, infobaselink=""):
     "A button that executes a single macro command."
-    b = button(macroclick, hint, iconlist, iconindex, caption)
+    b = button(macroclick, hint, iconlist, iconindex, caption, infobaselink)
     b.macro = macro
     return b
 
@@ -167,6 +151,9 @@ BtnText = quarkx.setupsubset(qutils.SS_GENERAL, "Display")["BtnText"]
 #
 #
 #$Log$
+#Revision 1.3  2003/03/15 20:40:50  cdunde
+#To update hints and add infobase links
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
