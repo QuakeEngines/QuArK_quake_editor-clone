@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
 Revision 1.13  2001/01/21 15:49:03  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -62,7 +65,7 @@ uses Windows,SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Graphics, Ga
      Quarkx, JpegFileWrapper, Travail, QkTextures, Setup;
 
 type
- QJPeg = class(QImages)
+ QJPeg = class(QImage)
         protected
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;

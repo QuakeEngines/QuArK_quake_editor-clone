@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2002/02/26 23:16:11  tiglari
+support for forward slash in path to skin of md2, by Andy Vincent,
+committed by tiglari
+
 Revision 1.11  2001/03/20 21:37:18  decker_dk
 Updated copyright-header
 
@@ -320,7 +324,7 @@ var
   mhead: TMD3Mesh;
   tex: TMD3Skin;
   i, j, k: Integer;
-  Skin: QImages;
+  Skin: QImage;
   Frame: QFrame;
   s: String;
   size: TPoint;

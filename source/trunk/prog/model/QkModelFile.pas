@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2002/02/26 23:16:10  tiglari
+support for forward slash in path to skin of md2, by Andy Vincent,
+committed by tiglari
+
 Revision 1.5  2001/03/20 21:37:04  decker_dk
 Updated copyright-header
 
@@ -50,12 +54,12 @@ type
   protected
     function Loaded_Root : QModelRoot;
     function Saving_Root : QModelRoot;
-    function Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QImages;
+    function Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QImage;
     function Loaded_Frame(Component: QComponent; const Name: String) : QFrame;
-    function Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImages;
+    function Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImage;
     function Loaded_Component(Root: QModelRoot; cname: string): QComponent;
     function Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
-    function CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImages;
+    function CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImage;
   end;
 
 implementation
@@ -86,7 +90,7 @@ begin
   end;
 end;
 
-function QModelFile.Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QImages;
+function QModelFile.Loaded_Skin(Component: QComponent; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer) : QImage;
 const
   Spec1 = 'Pal=';
   Spec2 = 'Image1=';
@@ -135,7 +139,7 @@ begin
   Bones.SubElements.Add(Result);
 end;
 
-function QModelFile.Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImages;
+function QModelFile.Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImage;
 var
   Path: String;
   J: Integer;
@@ -157,8 +161,8 @@ begin
             Raise;
           end;
         end else begin
-          Result:=nImage as QImages;
-          Result:=Result.Clone(Skins, False) as QImages;
+          Result:=nImage as QImage;
+          Result:=Result.Clone(Skins, False) as QImage;
         end;
         Skins.SubElements.Add(Result);
         Result.Name:=Copy(Name, 1, Length(Name)-Length(nImage.TypeInfo));
@@ -214,9 +218,9 @@ begin
   result.Canvas.Rectangle(5,5, 9,9);
 end;
 
-// Create a QImages object of size 'SZ' containing black and white squares,
+// Create a QImage object of size 'SZ' containing black and white squares,
 // if a texture can't be found...
-function QModelFile.CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImages;
+function QModelFile.CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImage;
 var
   bmp: TBitmap;
   Skins: QSkinGroup;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/06/21 17:34:50  decker_dk
+If no value in CheckDirectory, then accept any directory.
+
 Revision 1.25  2001/06/05 18:38:28  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -908,10 +911,10 @@ begin
        PaletteFile.AddRef(+1);
        try
          PaletteFile.Acces;
-         if PaletteFile is QImages then
+         if PaletteFile is QImage then
          begin
-           QImages(PaletteFile).NotTrueColor;
-           QImages(PaletteFile).GetPalette1(Lmp);
+           QImage(PaletteFile).NotTrueColor;
+           QImage(PaletteFile).GetPalette1(Lmp);
          end
          else
          begin

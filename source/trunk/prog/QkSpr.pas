@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/03/20 21:44:00  decker_dk
+Updated copyright-header
+
 Revision 1.12  2001/01/22 00:12:50  aiv
 Beginning of support for sprites in 3d view
 
@@ -101,8 +104,8 @@ type
     Procedure WriteQ1Spr(F:TStream);
     Procedure WriteHLSpr(F:TStream);
     procedure SaveFile(Info: TInfoEnreg1); override;
-    function Loaded_Frame(Root: QObject; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
-    function Loaded_FrameFile(Root: QObject; const Name: String) : QImages;
+    function Loaded_Frame(Root: QObject; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImage;
+    function Loaded_FrameFile(Root: QObject; const Name: String) : QImage;
     procedure GetWidthHeight(var size:TPoint);
     function GetSprite: QSprite;
     Function CreateSpriteObject: QSprite;
@@ -584,7 +587,7 @@ begin
   Info.WndInfo:=[];
 end;
 
-function QSprFile.Loaded_Frame(Root: QObject; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
+function QSprFile.Loaded_Frame(Root: QObject; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImage;
 const
   Spec1 = 'Pal=';
   Spec2 = 'Image1=';
@@ -609,7 +612,7 @@ begin
   Result.Specifics.Add(S);
 end;
 
-function QSprFile.Loaded_FrameFile(Root: QObject; const Name: String) : QImages;
+function QSprFile.Loaded_FrameFile(Root: QObject; const Name: String) : QImage;
 var
  Path: String;
  J: Integer;
@@ -631,8 +634,8 @@ begin
           end;
         end
       else begin
-        Result:=nImage as QImages;
-        Result:=Result.Clone(Root, False) as QImages;
+        Result:=nImage as QImage;
+        Result:=Result.Clone(Root, False) as QImage;
       end;
       Root.SubElements.Add(Result);
       Result.Name:=Copy(Name, 1, Length(Name)-Length(nImage.TypeInfo));

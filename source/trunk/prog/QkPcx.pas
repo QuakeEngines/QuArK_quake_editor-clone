@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:44:37  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/01/21 15:49:30  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -47,7 +50,7 @@ interface
 uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages;
 
 type
- QPcx = class(QImages)
+ QPcx = class(QImage)
         protected
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;

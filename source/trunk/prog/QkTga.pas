@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/03/20 21:43:41  decker_dk
+Updated copyright-header
+
 Revision 1.11  2001/01/21 15:50:28  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -68,7 +71,7 @@ const
  GamesWithTopDownTgaFiles = [];{no game seem to need this}
 
 type
- QTga = class(QImages)
+ QTga = class(QImage)
         protected
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
@@ -298,7 +301,7 @@ var
  Data: String;
  ScanW, J, I: Integer;
  ScanLine: PChar;
- Tga: QImages;
+ Tga: QImage;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }

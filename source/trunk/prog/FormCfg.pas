@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/06/18 18:33:26  decker_dk
+Don't use my new TXT-check, if its a QPyMacro or QToolButton.
+
 Revision 1.18  2001/06/17 00:01:59  aiv
 'Code' specific in toolbarbuttons and python buttons will be executed when clicked.
 
@@ -2090,10 +2093,10 @@ begin
                    Q:=FindIncludeData1(Form.SubElements[I], Spec, False);
                    Q.AddRef(+1); try
                    if Q<>Nil then
-                    if (Q.SubElements.Count>0) and (Q.SubElements[0] is QImages) then
+                    if (Q.SubElements.Count>0) and (Q.SubElements[0] is QImage) then
                      begin
                       Ctrl:=TImageDisplayer.Create(Self);
-                      TImageDisplayer(Ctrl).Source:=QImages(Q.SubElements[0]);
+                      TImageDisplayer(Ctrl).Source:=QImage(Q.SubElements[0]);
                       Ctrl.Parent:=SB;
                       TImageDisplayer(Ctrl).AutoSize;
                      end;

@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2002/02/24 13:46:32  decker_dk
+Moved here from Andy's QkTribes2.PAS code, and altered slightly.
+Currently any non-8-bits PNG images will be converted to 8-bits/paletted-image somewhere else in QuArK's code. This is considered a bug which must be solved somehow.
+
 }
 
 unit QkPNG;
@@ -32,7 +36,7 @@ interface
 uses Classes, QkImages, QkObjects, QkFileObjects;
 
 type
-  QPng = class(QImages)
+  QPng = class(QImage)
         protected
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/11/11 01:28:49  tiglari
+icon leak fixes
+
 Revision 1.17  2001/06/05 18:42:41  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -101,11 +104,11 @@ type
   QComponent = class(QMdlObject)
   private
     FCurrentFrameObj: QFrame;
-    FCurrentSkin: QImages;
+    FCurrentSkin: QImage;
     FSelTris: PyObject;    { List of integers }
     FInfo: PyObject;
     FSkinCounter: Integer;
-    procedure SetCurrentSkin(nSkin: QImages);
+    procedure SetCurrentSkin(nSkin: QImage);
     procedure SetCurrentFrame(nFrame: QFrame);
   protected
     procedure CouleurDessin(var C: TColor);
@@ -116,17 +119,17 @@ type
     function Triangles(var P: PComponentTris) : Integer;
     function VertexLinks(var P: PBoneVertexLink) : Integer;
     function GetSkinDescr(Static: Boolean) : String;
-    property CurrentSkin : QImages read FCurrentSkin write SetCurrentSkin;
+    property CurrentSkin : QImage read FCurrentSkin write SetCurrentSkin;
     property CurrentFrame : QFrame read FCurrentFrameObj write SetCurrentFrame;
     procedure AddTo3DScene; override;
     procedure BuildRefList(L: TQList); override;
     function GetFrameFromIndex(N: Integer) : QFrame;
     function GetFrameFromName(const nName: String) : QFrame;
-    function GetSkinFromIndex(N: Integer): QImages;
-    function GetSkinFromName(const nName: String) : QImages;
+    function GetSkinFromIndex(N: Integer): QImage;
+    function GetSkinFromName(const nName: String) : QImage;
     function BuildFrameList : TQList;
     function BuildSkinList : TQList;
-    function QuickSetSkin(nSkin: QImages; const StaticBase: String) : QComponent;
+    function QuickSetSkin(nSkin: QImage; const StaticBase: String) : QComponent;
     procedure ChercheExtremites(var Min, Max: TVect); override;
     function MergeVertices(Frames: TQList) : Boolean;
     procedure Dessiner; override;
@@ -382,7 +385,7 @@ begin
   QModelRoot(FindRoot).SetFrames(index);
 end;
 
-procedure QComponent.SetCurrentSkin(nSkin: QImages);
+procedure QComponent.SetCurrentSkin(nSkin: QImage);
 begin
   FCurrentSkin.AddRef(-1);
   FCurrentSkin:=nSkin;
@@ -468,7 +471,7 @@ begin
     FCurrentFrameObj.ChercheExtremites(Min, Max);
 end;
 
-function QComponent.QuickSetSkin(nSkin: QImages; const StaticBase: String) : QComponent;
+function QComponent.QuickSetSkin(nSkin: QImage; const StaticBase: String) : QComponent;
 begin
   if nSkin = FCurrentSkin then
     Result:=Self
@@ -489,7 +492,7 @@ function QComponent.BuildSkinList : TQList;
 begin
   Result:=TQList.Create;
   try
-    FindAllSubObjects('', QImages, Nil, Result);
+    FindAllSubObjects('', QImage, Nil, Result);
   except
     Result.Free;
     Raise;
@@ -532,12 +535,12 @@ begin
   end;
 end;
 
-function QComponent.GetSkinFromName(const nName: String) : QImages;
+function QComponent.GetSkinFromName(const nName: String) : QImage;
 begin
-  Result:=QImages(FindSubObject(nName, QImages, Nil));
+  Result:=QImage(FindSubObject(nName, QImage, Nil));
 end;
 
-function QComponent.GetSkinFromIndex(N: Integer) : QImages;
+function QComponent.GetSkinFromIndex(N: Integer) : QImage;
 var
   L: TQList;
 begin
@@ -546,11 +549,11 @@ begin
     Exit;
   end;
   L:=TQList.Create; try
-  FindAllSubObjects('', QImages, Nil, L);
+  FindAllSubObjects('', QImage, Nil, L);
   if N>=L.Count then
     Result:=Nil
   else
-    Result:=L[N] as QImages;
+    Result:=L[N] as QImage;
   finally
     L.Clear;
     L.Free;
@@ -1209,9 +1212,9 @@ begin
       Exit;
     end else if StrComp(attr, 'currentskin') = 0 then begin
       Q:=QkObjFromPyObj(value);
-      if not (Q is QImages) then
+      if not (Q is QImage) then
         Q:=Nil;
-      CurrentSkin:=QImages(Q);
+      CurrentSkin:=QImage(Q);
       Result:=True;
       Exit;
     end else if StrComp(attr, 'currentframeindex') = 0 then begin

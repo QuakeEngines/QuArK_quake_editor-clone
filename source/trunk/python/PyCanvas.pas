@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2002/02/25 19:16:44  decker_dk
+A possible memory leak solved? I'll wait for tiglari to hear what he finds out.
+See also QuArK-Python forum date 2002.02.19 and 2002.02.25 subject "Leak hunt report".
+
 Revision 1.5  2001/06/05 18:42:56  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -254,7 +258,7 @@ begin
         begin
          ColorMap:=NeedGameFile(SetupGameSet.Specifics.Values['Gradient']);
          ColorMap.Acces;
-         if ColorMap is QImages then
+         if ColorMap is QImage then
           begin
            ColorMapData:=ColorMap.GetSpecArg('Image1');
            IgnoreData:=Length(ColorMapData)-Q2ColorMapCount*SizeOf(TColorMapQ);

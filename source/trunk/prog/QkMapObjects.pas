@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/07/23 12:08:04  tiglari
+now hopefully map comments really aren't written in .bsp's!
+
 Revision 1.32  2001/07/21 04:27:24  tiglari
 map comments now not written when writing bsp's
 
@@ -1741,7 +1744,7 @@ var
  Q, FileObj1: QObject;
  Mdl: QModel;
  Frame1: QFrame;
- Skin1: QImages;
+ Skin1: QImage;
  Root: QMdlObject;
  Component: QComponent;
  L: TQList;
@@ -1888,8 +1891,8 @@ begin
            FileObj1:=NeedGameFileBase(MdlBase, S);
            SkinDescr:=MdlBase+':'+S;
          end;
-         if FileObj1 is QImages then
-           Skin1:=QImages(FileObj1);
+         if FileObj1 is QImage then
+           Skin1:=QImage(FileObj1);
        end
        else
        begin
@@ -2051,9 +2054,9 @@ begin
        FileObj1:=NeedGameFile(S)
       else
        FileObj1:=NeedGameFileBase(MdlBase, S);
-      if FileObj1 is QImages then
+      if FileObj1 is QImage then
        begin
-        g_DrawInfo.SkinImage:=QImages(FileObj1);
+        g_DrawInfo.SkinImage:=QImage(FileObj1);
         g_DrawInfo.SkinDescr:=':'+S;
        end;
      end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2001/06/05 18:41:26  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.34  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -1441,7 +1444,7 @@ end;
 
 (*function QTextureFile.ConversionFrom(Source: QFileObject) : Boolean;
 var
- TempImage: QImages;
+ TempImage: QImage;
  Tex: QTextureFile;
  Game: PGameBuffer;
  J: Integer;
@@ -1477,11 +1480,11 @@ begin
    CopyAllData(Tex, False);
   end
  else
-  if Source is QImages then
+  if Source is QImage then
    begin
-    { QImages(Source).NotTrueColor; }
+    { QImage(Source).NotTrueColor; }
     Game:=LoadPaletteInfo; try
-    ConversionFromImage(Source, Game, QImages(Source).GetSize, QImages(Source).GetImagePtr1,
+    ConversionFromImage(Source, Game, QImage(Source).GetSize, QImage(Source).GetImagePtr1,
      Source.Name<>#1);   { Name=#1 if source is the TempImage from above }
     finally DeleteGameBuffer(Game); end;
    end
@@ -1532,7 +1535,7 @@ begin
   if MessageDlg(FmtLoadStr1(SizeError, [Size.X, Size.Y, W, H]), mtConfirmation, mbOkCancel, 0) <> mrOk then
    Abort;
 
- if QImages(Source).IsTrueColor then   { true-color source image }
+ if QImage(Source).IsTrueColor then   { true-color source image }
   begin
    if cp and cpPalette <> 0 then
     begin  { this kind of texture can have a palette, so explicitely put the default palette }
@@ -1547,7 +1550,7 @@ begin
   end
  else
   begin    { 8-bit source image }
-   QImages(Source).GetPalette1(Lmp);
+   QImage(Source).GetPalette1(Lmp);
    if cp and cpPalette <> 0 then  { palettized texture }
     begin
      Specifics.Add(Source.GetSpecArg('Pal'));

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/20 21:37:18  decker_dk
+Updated copyright-header
+
 Revision 1.9  2001/03/08 23:14:25  aiv
 hopefully fixed h2 / bsp loading bug
 
@@ -159,7 +162,7 @@ var
   Root: QModelRoot;
   Comp: QComponent;
   DFrame: QFrame;
-  Skin: QImages;
+  Skin: QImage;
   f_origin, i, ii, jj, j, k, z: Integer;
   cmd, aa, bb: smallint;
   CTris: PComponentTris;
@@ -316,7 +319,7 @@ var
   SkinGroup: skingroup_t;
   P: PChar;
   S: string;
-  SkinObj: QImages;
+  SkinObj: QImage;
   STData: PVertxArray;
   Triangles, Tris: ^itriangle_t;
   CTris: PComponentTris;
@@ -550,7 +553,7 @@ var
   FrameGroup: framegroup_t;
   P: PChar;
   S: string;
-  SkinObj: QImages;
+  SkinObj: QImage;
   SkinSize: TPoint;
   STData: PVertxArray;
   Triangles, Tris: ^itriangle_t;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/06/05 18:38:47  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.11  2001/03/20 21:46:48  decker_dk
 Updated copyright-header
 
@@ -51,7 +54,7 @@ uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
      QkObjects, QkFileObjects, QkImages, Game;
 
 type
- QBmp = class(QImages)
+ QBmp = class(QImage)
         protected
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
