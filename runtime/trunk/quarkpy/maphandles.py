@@ -1273,6 +1273,8 @@ def MouseClicked(self, view, x, y, s, handle):
 
     flags = qhandles.MouseClicked(self, view, x, y, s, handle)
 
+    if view.info["type"]=="3D":
+        self.last3DView = view
     if "1" in flags:
 
         #
@@ -1595,6 +1597,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.24  2001/06/13 20:58:44  tiglari
+#Add map-specific EyePosition handle
+#
 #Revision 1.23  2001/05/12 10:12:22  tiglari
 #fix usercenter button macro bug (add 'is None' ...)
 #
