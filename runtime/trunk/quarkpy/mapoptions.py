@@ -152,7 +152,6 @@ def setLineThick(m):
     editor = mapeditor()
     if editor is None:
         return
-    debug('set')
     LineThickDlg(quarkx.clickform, editor, m)
     
 lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.")
@@ -200,6 +199,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.7  2003/03/23 07:30:13  tiglari
+#add getThinLineThickness function (1 unit less that ordinary line)
+#
 #Revision 1.6  2003/03/23 06:30:19  tiglari
 #change close to cancel button in linethickness dlg to fix error
 # noted by cdunde
