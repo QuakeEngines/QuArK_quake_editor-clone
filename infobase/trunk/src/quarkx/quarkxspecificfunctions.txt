@@ -1,0 +1,94 @@
+title: QuArK-specific functions of the module quarkx
+author: Armin Rigo
+format: html
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+Setup1(...)
+</td><td>
+Must be called at start-up for initialization only. See quark.py.
+</td></tr>
+
+<tr><td class="doccode">
+action()
+</td><td>
+Starts an undoable user action. Returns a copy of the undo module described below.
+</td></tr>
+
+<tr><td class="doccode">
+undostate(obj)
+</td><td>
+Returns a tuple (undostr, redostr) with two strings that give the next operation that can be undone (resp. redone) on the object obj. undostr and redostr are set to None if there is no operation to undo (resp. redo).
+</td></tr>
+
+<tr><td class="doccode">
+boundingboxof(list)
+</td><td>
+Returns a bounding box (vmin, vmax) for the given list of map objects, or None. vmin and vmax are 3D vector objects. The list may also contain (non-projected) 3D vector objects that will be included in the returned bounding box.
+</td></tr>
+
+<tr><td class="doccode">
+texturesof(list)
+</td><td>
+Returns a sorted list of all texture names used in the given list of map objects.
+</td></tr>
+
+<tr><td class="doccode">
+extendcoplanar(list, lookin)<br>
+extendcoplanar(list, lookin, side)
+</td><td>
+list should be a list of polyhedron faces. This routine searches for faces in the objects in the list lookin that are coplanar and adjacent to the given faces, and appends them to list. All given faces must already be coplanar. side controls whether two faces of opposite normal vector match: 1, must be the same direction; -1, must be opposite; 0 (default), both. Note that the resulting list may contain a face more than once if it is shared by several polyhedron or if it was originally both in list and lookin.
+</td></tr>
+
+<tr><td class="doccode">
+forms()<br>
+forms(1)<br>
+forms(2)
+</td><td>
+Returns a list of all opened windows. Note that this is currently not very useful, because only Python-controlled windows are included. In the second form of the call, Floating windows are included as well. In the 3rd form of the call, non-Python windows are included as None in the list, and the order is such as the first item in the list represents the active window.
+</td></tr>
+
+<tr><td class="doccode">
+newform()
+</td><td>
+Opens a new window. Don’t use this. To create floating toolbox windows, see newfloating().
+</td></tr>
+
+<tr><td class="doccode">
+update()<br>
+update(form)
+</td><td>
+Updates the window form, or all windows if not specified. Menu bars, toolbars, and buttons are updated. See below for more information.
+</td></tr>
+
+<tr><td class="doccode">
+opentoolbox(toolbox)<br>
+opentoolbox(toolbox, select)
+</td><td>
+Opens the toolbox given by name. If toolbox is empty, this function opens the texture browser. If select is specified, attempts to find and select this Internal object in the toolbox. If select is None, and if some objects were previously selected in the toolbox, they are unselected.
+</td></tr>
+
+<tr><td class="doccode">
+findtoolboxes()<br>
+findtoolboxes(tb)
+</td><td>
+Find all toolbox data objects. Returns a list of couples ("toolbox name", rootofdata). If tb is specified, it must be a string and findtoolboxes will only return data for this toolbox.
+</td></tr>
+
+<tr><td class="doccode">
+openconfigdlg()<br>
+openconfigdlg(path)<br>
+openconfigdlg(caption, obj, newobjlist)
+</td><td>
+Opens the Configuration dialog box. If path is given, the corresponding folder or subfolder is opened, e.g. "Map:Options", or ":" for the current game’s configuration page. In the third form, obj is a :config object that gives alternate configuration data to display, and caption is the window caption. In this case, the dialog box is modal and openconfigdlg returns 1 or 0 to let you know if the user clicked on Ok or Cancel. newobjlist is a list of objects that the user can insert from buttons, or None if no editing of the object hierarchy is allowed.
+</td></tr>
+
+<tr><td class="doccode">
+globalaccept()<br>
+globalaccept(ok)
+</td><td>
+Ends pending user editing (e.g. in yellow edit boxes). If ok is True or omitted, the changes are accepted; otherwise, they are cancelled.
+</td></tr>
+
+</table>
