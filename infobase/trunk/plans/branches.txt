@@ -24,4 +24,6 @@ reading.  Now s/b closed, it's stuff is on the main branch.
 <LI> <B>Leakhunt 3</B> for runtime: leak hunting modifications
 <LI> <B>Leakhunt 3</B> for source: more bungling, needed
   stuff in main branch
+<LI> <B>pre-635c1</B> a tag before adding a bunch of stuff just prior
+to the intended rc1 (frozen selection, bilinear filtering in OBL)
 </B>
