@@ -1,8 +1,9 @@
 
-                 QuArK 6.3 Release Candiate 1 Patche 2
+                 QuArK 6.3 Release Candiate 1 Patch 2
                  
  * [tiglari] fix selection dialog problems for mapthinfaces.py, mapmicrobrush.py,
-      mapbadtexscale.py, bspstudy.py
+      mapbadtexscale.py, bspstudy.py, quarkpy\dlgclasses.py (used in mapmadsel,
+      for Browse Multiple Selection)
  
                  QuArK 6.3 Release Candiate 1 Patches 1
 

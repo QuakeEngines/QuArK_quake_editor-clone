@@ -1,6 +1,11 @@
 
                    QuArK 6.4 Snapshot 1
 
+ * [tiglari] Improve many of the search dialogs (thin faces, microbrushes,
+     bad texture scales, targetting/ed, bsp study, browse multiple selection)
+     so that they start with the first item on the list loaded and ready to
+     go, and don't chose the first of two items with identical names.
+
  * [tiglari] Radiant-style dragging for frozen selections (if
      drag starts inside brush/patch but not on a handle, the
      whole thing is drug, if drag starts outside of brush,
