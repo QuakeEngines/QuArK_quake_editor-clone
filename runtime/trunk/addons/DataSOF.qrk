@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2000/06/08 19:33:47  alexander
+//added ainame tag to worldspawn
+//
 //Revision 1.7  2000/06/04 16:07:44  alexander
 //cvs header added
 //
@@ -27407,7 +27410,10 @@ QQRKSRC1
       sky: =
       {
         Txt = "&"
-        Hint = " map name"
+        Hint = "sky name"
+        Typ = "C"
+        Items = "bos2"$0D"irq"$0D"irq1"$0D"irq2"$0D"ny"$0D"sib"$0D"tok1"$0D"tok2"$0D"train"$0D"tut"$0D"ugan"
+        values = "bos2"$0D"irq"$0D"irq1"$0D"irq2"$0D"ny"$0D"sib"$0D"tok1"$0D"tok2"$0D"train"$0D"tut"$0D"ugan"
       }
       skyaxis: =
       {
