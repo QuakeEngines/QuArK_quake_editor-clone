@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.106  2001/03/20 08:04:09  tiglari
+//customizable hot key support
+//
 //
 //Revision 1.97.2.1  2001/03/11 22:06:08  tiglari
 //hot key defaults
@@ -510,6 +513,32 @@ QQRKSRC1
         .wad = "<open>"
         .qc  = "Notepad.exe"
         .qrk = "Notepad.exe"
+      }
+      HotKeys:config =
+      {
+        Open = "Ctrl+O"
+        Save = "Ctrl+S"
+        Close = "Ctrl+Q"
+        Cut = "Ctrl+X"
+        Copy = "Ctrl+C"
+        Paste ="Ctrl+V"
+        Delete="Del"
+        Undo = "Undo1"
+        Redo = "Shift+Ctrl+Z"
+        Duplicate= "Ctrl+D"
+        Remove= "Esc"
+        Insert = "Ins"
+        Tag Side = "Ctrl+T"
+        Clear Tags = "Alt+C"
+        Add to Tagged = "Ctrl+A"
+        Glue Side = "Ctrl+G"
+        Align Texture = "Ctrl+W"
+        Link Selection = "Ctrl+L"
+        Extend Selection = "Ctrl+E"
+        Unrestrict Selection = "Ctrl+U"
+        Restrict to Selection = "Alt+R"
+        Brush Subtraction =  "Ctrl+B"
+        Form = "MapHotKeys"
       }
     }
     Games:config =
@@ -1301,32 +1330,6 @@ QQRKSRC1
         ImageListTextureDimension = "64"
         ImageListLoadNoOfTexAtEachCall = "3"
         Form = "Toolbars_TextureBrowser"
-      }
-      HotKeys:config =
-      {
-        Open = "Ctrl+O"
-        Save = "Ctrl+S"
-        Close = "Ctrl+Q"
-        Cut = "Ctrl+X"
-        Copy = "Ctrl+C"
-        Paste ="Ctrl+V"
-        Delete="Del"
-        Undo = "Undo1"
-        Redo = "Shift+Ctrl+Z"
-        Duplicate= "Ctrl+D"
-        Remove= "Esc"
-        Insert = "Ins"
-        Tag Side = "Ctrl+T"
-        Clear Tags = "Alt+C"
-        Add to Tagged = "Ctrl+A"
-        Glue Side = "Ctrl+G"
-        Align Texture = "Ctrl+W"
-        Link Selection = "Ctrl+L"
-        Extend Selection = "Ctrl+E"
-        Unrestrict Selection = "Ctrl+U"
-        Restrict to Selection = "Alt+R"
-        Brush Subtraction =  "Ctrl+B"
-        Form = "MapHotKeys"
       }
     }
   }
