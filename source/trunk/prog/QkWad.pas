@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/07/21 20:01:33  decker_dk
+Correctly Save HalfLife WAD3s
+
 Revision 1.10  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -40,15 +43,22 @@ Revision 1.6  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
 }
-
 unit QkWad;
 
 interface
 
+{$IFNDEF VER90} // D2
+  {$DEFINE DontNeedImgListDCU}
+{$ENDIF}
+{$IFNDEF VER100} // D3
+  {$DEFINE DontNeedImgListDCU}
+{$ENDIF}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkFileObjects, TB97, QkObjects, StdCtrls, ExtCtrls, ComCtrls, CommCtrl,
-  QkListView, QkTextures, Game, QkForm, QkPixelSet, ImgList{, ImgList};
+  QkListView, QkTextures, Game, QkForm, QkPixelSet
+  {$IFNDEF DontNeedImgListDCU}, ImgList{$ENDIF};
 
 type
  QWad = class(QLvFileObject)
