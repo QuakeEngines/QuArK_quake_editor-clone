@@ -1,3 +1,8 @@
+
+ * [peter-b]: Reorganised documentation to conform more closely to the
+      norm for GPL projects.
+
+
 6.4.0 alpha 2
 =============
 
