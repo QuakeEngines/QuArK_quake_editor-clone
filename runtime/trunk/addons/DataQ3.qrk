@@ -26,6 +26,16 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.17  2000/10/15 16:04:57  alexander
+//committed changes from Maleficus666@yahoo.com:
+// - Added noise menu for target_speaker
+// - added more help, specifics
+// - comment cleanup for all entites
+// - more bug fixes
+// - removed broken shaders
+// - made basic map have all unseen faces be caulk
+//   as an example to newbie mappers.
+//
 //Revision 1.16  2000/09/24 23:59:24  alexander
 //committed tiglaris texture name fix
 //
@@ -134,11 +144,11 @@ QQRKSRC1
             "// No shader in this map"$0D0A
       }
     }
-    
+
         TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
         {
           Style = "5"
-    
+
           Reset: =       // Reset button
           {
             Cap = "Reset to default"      // button caption
@@ -151,10 +161,10 @@ QQRKSRC1
               Value = ""
             }
           }
-    
+
           Contents:={Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
         }
-    
+
   }
 
   NewFiles.qtx =
@@ -1611,12 +1621,12 @@ QQRKSRC1
       Base_Button.txlist =
       {
         base_button/shootme2.wl    = { t_q3shader_base_button=! }
-	}
+      }
       Base_Door.txlist =
-	{
-	base_door/shinymetaldoor.wl               = { t_q3shader_base_door=! }
-	base_door/shinymetaldoor_outside.wl       = { t_q3shader_base_door=! }
-	base_door/shinymetaldoor_outside3a2.wl    = { t_q3shader_base_door=! }
+      {
+        base_door/shinymetaldoor.wl               = { t_q3shader_base_door=! }
+        base_door/shinymetaldoor_outside.wl       = { t_q3shader_base_door=! }
+        base_door/shinymetaldoor_outside3a2.wl    = { t_q3shader_base_door=! }
       }
       Base_Floor.txlist =
       {
@@ -1815,7 +1825,7 @@ QQRKSRC1
         base_wall/comp3b_dark.wl                  = { t_q3shader_base_wall=! }
         base_wall/comp3c.wl                       = { t_q3shader_base_wall=! }
         base_wall/concrete_ow.wl                  = { t_q3shader_base_wall=! }
-	base_wall/c_met5_2_trans.wl               = { t_q3shader_base_wall=! }
+        base_wall/c_met5_2_trans.wl               = { t_q3shader_base_wall=! }
         base_wall/dooreye.wl                      = { t_q3shader_base_wall=! }
         base_wall/dooreye2.wl                     = { t_q3shader_base_wall=! }
         base_wall/dooreye3.wl                     = { t_q3shader_base_wall=! }
@@ -1916,23 +1926,23 @@ QQRKSRC1
         gothic_block/flicker_blocks10.wl          = { t_q3shader_gothic_block=! }
         gothic_block/gkc17d.wl                    = { t_q3shader_gothic_block=! }
         gothic_block/gkcspinemove.wl              = { t_q3shader_gothic_block=! }
-	gothic_block/killblock_i4b.wl             = { t_q3shader_gothic_block=! }	
+        gothic_block/killblock_i4b.wl             = { t_q3shader_gothic_block=! }
         gothic_block/killblockgeomtrn.wl          = { t_q3shader_gothic_block=! }
-	gothic_block/killtrim_trans.wl            = { t_q3shader_gothic_block=! }
+        gothic_block/killtrim_trans.wl            = { t_q3shader_gothic_block=! }
         gothic_block/largerblock3blood.wl         = { t_q3shader_gothic_block=! }
         gothic_block/mkc_evil_e3window.wl         = { t_q3shader_gothic_block=! }
         gothic_block/wetwall.wl                   = { t_q3shader_gothic_block=! }
-	}
+      }
       Gothic_Button.txlist =
-	{
-	gothic_button/timbutton.wl                = { t_q3shader_gothic_button=! }
-	}
-	Gothic_Door.txlist =
-	{
-	gothic_door/door02_bred2_shiny.wl         = { t_q3shader_gothic_door=! }
-	gothic_door/door02_eblue2_shiny.wl        = { t_q3shader_gothic_door=! }
-	gothic_door/door02_i_ornate5_fin.wl       = { t_q3shader_gothic_door=! }
-	gothic_door/skullarch_b.wl                = { t_q3shader_gothic_door=! }
+      {
+        gothic_button/timbutton.wl                = { t_q3shader_gothic_button=! }
+      }
+      Gothic_Door.txlist =
+      {
+        gothic_door/door02_bred2_shiny.wl         = { t_q3shader_gothic_door=! }
+        gothic_door/door02_eblue2_shiny.wl        = { t_q3shader_gothic_door=! }
+        gothic_door/door02_i_ornate5_fin.wl       = { t_q3shader_gothic_door=! }
+        gothic_door/skullarch_b.wl                = { t_q3shader_gothic_door=! }
       }
       Gothic_Floor.txlist =
       {
@@ -1950,7 +1960,7 @@ QQRKSRC1
       {
         gothic_light/border7_ceil39_6k.wl         = { t_q3shader_gothic_light=! }
         gothic_light/border7_ceil39b_10k.wl       = { t_q3shader_gothic_light=! }
-	gothic_light/flicker_light15k.wl          = { t_q3shader_gothic_light=! }
+        gothic_light/flicker_light15k.wl          = { t_q3shader_gothic_light=! }
         gothic_light/goth_lt2_lrg2k.wl            = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_1k.wl          = { t_q3shader_gothic_light=! }
         gothic_light/gothic_light2_2K.wl          = { t_q3shader_gothic_light=! }
@@ -2040,7 +2050,7 @@ QQRKSRC1
         gothic_wall/iron01_m.wl                   = { t_q3shader_gothic_wall=! }
         gothic_wall/iron01_ndark.wl               = { t_q3shader_gothic_wall=! }
         gothic_wall/streetbricks10_shiny.wl       = { t_q3shader_gothic_wall=! }
-	gothic_wall/window_evil6a.wl              = { t_q3shader_gothic_wall=! }
+        gothic_wall/window_evil6a.wl              = { t_q3shader_gothic_wall=! }
         gothic_wall/xoct20c_shiney.wl             = { t_q3shader_gothic_wall=! }
         gothic_wall/xpipecolumn_gray_shiny.wl     = { t_q3shader_gothic_wall=! }
       }
@@ -2069,7 +2079,7 @@ QQRKSRC1
       }
       Organics.txlist =
       {
-	organics/dirt_trans.wl                    = { t_q3shader_organics=! }
+        organics/dirt_trans.wl                    = { t_q3shader_organics=! }
         organics/wire02a_f.wl                     = { t_q3shader_organics=! }
       }
       Sfx.txlist =
@@ -2162,8 +2172,8 @@ QQRKSRC1
         sfx/pentagramfloor_red3test.wl            = { t_q3shader_sfx=! }
         sfx/pentfloor_diamond2c.wl                = { t_q3shader_sfx=! }
         sfx/pj_a1_fog1.wl                         = { t_q3shader_sfx=! }
-	sfx/portal2_sfx.wl                        = { t_q3shader_sfx=! }
-	sfx/portal_sfx.wl                         = { t_q3shader_sfx=! }
+        sfx/portal2_sfx.wl                        = { t_q3shader_sfx=! }
+        sfx/portal_sfx.wl                         = { t_q3shader_sfx=! }
         sfx/portal_sfx_ring.wl                    = { t_q3shader_sfx=! }
         sfx/proto_hellfog.wl                      = { t_q3shader_sfx=! }
         sfx/proto_zzztblu3.wl                     = { t_q3shader_sfx=! }
@@ -2222,7 +2232,7 @@ QQRKSRC1
         skies/kc_dm10sky.wl                       = { t_q3shader_sky=! }
         skies/kcbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
         skies/killsky.wl                          = { t_q3shader_sky=! }
-	skies/mkc_sky.wl					= { t_q3shader_sky=! }
+        skies/mkc_sky.wl          = { t_q3shader_sky=! }
         skies/nightsky_xian_dm1.wl                = { t_q3shader_sky=! }
         skies/nightsky_xian_dm15.wl               = { t_q3shader_sky=! }
         skies/nightsky_xian_dm4.wl                = { t_q3shader_sky=! }
@@ -2264,6 +2274,27 @@ QQRKSRC1
     }
   }
 
+  t_originpoly:incl = {
+    ORIGIN:p =
+    {
+      east:f = { v = '8 0 0 8 64 0 8 0 64' tex = "common/origin" }
+      west:f = { v = '-8 0 0 -8 -64 0 -8 0 64' tex = "common/origin" }
+      north:f = { v = '0 8 0 -64 8 0 0 8 64' tex = "common/origin" }
+      south:f = { v = '0 -8 0 64 -8 0 0 -8 64' tex = "common/origin" }
+      up:f = { v = '0 0 24 64 0 24 0 64 24' tex = "common/origin" }
+      down:f = { v = '0 0 -24 64 0 -24 0 -64 -24' tex = "common/origin" }
+    }
+    poly:p =
+    {
+      east:f = { v = '32 -32 -32 32 96 -32 32 -32 96' tex = "[auto]" }
+      west:f = { v = '-32 -32 -32 -32 -32 96 -32 96 -32' tex = "[auto]" m = "1" }
+      north:f = { v = '-32 32 -32 -32 32 96 96 32 -32' tex = "[auto]" m = "1" }
+      south:f = { v = '-32 -32 -32 96 -32 -32 -32 -32 96' tex = "[auto]" }
+      up:f = { v = '-32 -32 32 96 -32 32 -32 96 32' tex = "[auto]" }
+      down:f = { v = '-32 -32 -32 -32 96 -32 96 -32 -32' tex = "[auto]" m = "1" }
+    }
+  }
+
   Q3Entities.qtx =
   {
     ToolBox = "New map items..."
@@ -2298,8 +2329,8 @@ QQRKSRC1
         info_notnull:e =
         {
           origin = "0 0 0"
-	  // Maleficus: Comment fixed
-	  ;desc = "Used as a positional target for entities that use directional pointing. Can also use target_position"
+          // Maleficus: Comment fixed
+          ;desc = "Used as a positional target for entities that use directional pointing. Can also use target_position"
         }
       }
       Weapons & Ammo.qtxfolder =
@@ -2314,7 +2345,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           wait = "10"
-	  ;desc = "A weak multiple rounds fired weapon. Uses ammo_bullets. Model is broken, don't use."
+          ;desc = "A weak multiple rounds fired weapon. Uses ammo_bullets. Model is broken, don't use."
         }
         weapon_shotgun:e =
         {
@@ -2362,7 +2393,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           wait = "10"
-	  ;desc = "Pully and wire used for propelling oneself to higher elevation. Not used in game."
+          ;desc = "Pully and wire used for propelling oneself to higher elevation. Not used in game."
         }
         ammo_bullets:e =
         {
@@ -2405,19 +2436,19 @@ QQRKSRC1
           ;desc = "Ammo used with weapon_bfg."
         }
       }
-// Maleficus: A new folder for the missing Q3 Bot entities.     
-	Bot Entites.qtxfolder =
+      // Maleficus: A new folder for the missing Q3 Bot entities.
+      Bot Entites.qtxfolder =
       {
         info_camp:e =
-	{
-	origin = "0 0 0"
-	;desc = "This atttracts bots which have a camping preference in their AI characteristics. It should be placed at least 32 units away from any brush surface."
-	}
-	item_botroam:e =
-	{
-	origin = "0 0 0"
-	;desc = "An invisible entity which attracts a bot to it. Good for making bots visit a part of a map."  
-	}
+        {
+          origin = "0 0 0"
+          ;desc = "This atttracts bots which have a camping preference in their AI characteristics. It should be placed at least 32 units away from any brush surface."
+        }
+        item_botroam:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An invisible entity which attracts a bot to it. Good for making bots visit a part of a map."
+        }
       }
 
       Misc Entities.qtxfolder =
@@ -2438,12 +2469,12 @@ QQRKSRC1
           targetname = "[auto]"
           ;desc = "Point of teleportation. Is targeted by a trigger_teleporter."
         }
-	// Maleficus: This is more logical in "Misc" Folder
-	misc_model:e =
-	{
-	  origin = "0 0 0"
-	  ;desc = "This can be used to place models in a map."
-	}
+        // Maleficus: This is more logical in "Misc" Folder
+        misc_model:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This can be used to place models in a map."
+        }
       }
       Func Entities.qtxfolder =
       {
@@ -2478,12 +2509,12 @@ QQRKSRC1
         func_plat:b =
         {
           ;incl = "defpoly"
-	  ;desc = "Used to lift the player in the air with a brush. Bots don't use well!"
+          ;desc = "Used to lift the player in the air with a brush. Bots don't use well!"
         }
         func_static:b =
         {
           ;incl = "defpoly"
-	  ;desc = "Static non-solid bspmodel. Can be used for conditional walls and models."
+          ;desc = "Static non-solid bspmodel. Can be used for conditional walls and models."
         }
         func_timer:e =
         {
@@ -2492,7 +2523,7 @@ QQRKSRC1
         }
         func_train:b =
         {
-          ;incl = "defpoly"
+          t_originpoly = !
           ;desc = "Used with path_corner to move a brush in a given path of direction."
         }
         func_pendulum:b =
@@ -2544,12 +2575,12 @@ QQRKSRC1
         item_enviro:e =
         {
           origin = "0 0 0"
-	  ;desc = "Battle Suit power-up."
+          ;desc = "Battle Suit power-up."
         }
         item_flight:e =
         {
           origin = "0 0 0"
-	  ;desc = "Flight power-up. Bots can't use this."
+          ;desc = "Flight power-up. Bots can't use this."
         }
         item_haste:e =
         {
@@ -2630,18 +2661,18 @@ QQRKSRC1
         target_give:e =
         {
           origin = "0 0 0"
-	  ;desc = "This gives automatically a player an item."
-	}
-//Maleficus: for some reason this was missing.
-	target_kill:e =
-	{
-	  origin = "0 0 0"
-	  ;desc = "This kills the player that activates this."
+          ;desc = "This gives automatically a player an item."
+        }
+      //Maleficus: for some reason this was missing.
+        target_kill:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This kills the player that activates this."
         }
         target_location:e =
         {
           origin = "0 0 0"
-	  ;desc = "Location markers used by teammates."
+          ;desc = "Location markers used by teammates."
         }
         target_position:e =
         {
@@ -2653,12 +2684,12 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Prints a message to the players screen."
         }
-//Maleficus: though its kinda broke, no reason to leave it out.	
-	target_push:e =
-	{
-	  origin = "0 0 0"
-	  ;desc = "Can be used to make launch ramps. Not recommended: is not client-side predicted."
-	}
+      //Maleficus: though its kinda broke, no reason to leave it out.
+        target_push:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Can be used to make launch ramps. Not recommended: is not client-side predicted."
+        }
         target_relay:e =
         {
           origin = "0 0 0"
@@ -2669,21 +2700,21 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Removes all player items from the player."
         }
-	target_score:e =
-	{
-	  origin = "0 0 0"
-	  ;desc = "This is used to automatically give frag points to the player who activates this."
-	}
+        target_score:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This is used to automatically give frag points to the player who activates this."
+        }
         target_speaker:e =
         {
           origin = "0 0 0"
           ;desc = "Plays a wav file in the map."
         }
-	target_teleporter:e =
-	{
-	  origin = "0 0 0"
-	  ;desc = "Activating this will teleport players to the location of the targeted misc_teleporter_dest entity. Unlike trigger_teleport, this entity must be activated by a trigger and does NOT allow client prediction of events."
-	}
+        target_teleporter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Activating this will teleport players to the location of the targeted misc_teleporter_dest entity. Unlike trigger_teleport, this entity must be activated by a trigger and does NOT allow client prediction of events."
+        }
       }
       Team Entities.qtxfolder =
       {
@@ -2782,13 +2813,13 @@ QQRKSRC1
 // please let me know.
     t_model2:incl = {
       model2: = { Txt = " "
-	Typ = "B"
-	Cap = "models..."
-	form ="t_models2_form:form"
-	hint ="Available .MD3 files"
+        Typ = "B"
+        Cap = "models..."
+        form ="t_models2_form:form"
+        hint ="Available .MD3 files"
       }
-}
-	t_noise:incl =
+    }
+    t_noise:incl =
     {
       noise: =
       {
@@ -2800,7 +2831,7 @@ QQRKSRC1
       }
     }
 // a cool sound menu for all of the default Q3 sounds!!!-Maleficus
-	t_noise_form:form =
+    t_noise_form:form =
     {
       noise: =
       {
@@ -2830,7 +2861,7 @@ QQRKSRC1
 		    "Intro_09"$0D
 		    "Intro_10"$0D
 		    "Intro_11"$0D
-	          "Lostlead"$0D
+        "Lostlead"$0D
 		    "One"$0D
 		    "Perfect"$0D
 		    "Prepare"$0D
@@ -2841,7 +2872,7 @@ QQRKSRC1
 		    "Three"$0D
 		    "Tiedlead"$0D
 		    "Two"
-	         values = 
+	         values =
 		    "/sound/feedback/1_frag.wav"$0D
 		    "/sound/feedback/1_minute.wav"$0D
 		    "/sound/feedback/2_frags.wav"$0D
@@ -2882,7 +2913,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Items"
-		items = 
+		items =
 		"Airout"$0D
 		"Armourfield"$0D
 		"Damage2"$0D
@@ -2905,7 +2936,7 @@ QQRKSRC1
 		"Use_medkit"$0D
 		"Use_nothing"$0D
 		"Wearoff"
-		values = 
+		values =
 		"/sound/items/airout.wav"$0D
 		"/sound/items/armourfield.wav"$0D
 		"/sound/items/damage2.wav"$0D
@@ -2933,7 +2964,7 @@ QQRKSRC1
          {
 		typ = "C"
 		txt = "Misc"
-		items = 
+		items =
 		"Am_pkup"$0D
 		"Ar1_pkup"$0D
 		"Ar2_pkup"$0D
@@ -2945,7 +2976,7 @@ QQRKSRC1
 		"Nightmare"$0D
 		"Silence"$0D
 		"W_pkup"
-        values = 
+        values =
 		"/sound/misc/am_pkup.wav"$0D
 		"/sound/misc/ar1_pkup.wav"$0D
 		"/sound/misc/ar2_pkup.wav"$0D
@@ -2962,11 +2993,11 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Movers"
-        items = 
+        items =
 		"Doors: Dr1_end"$0D
 		"Doors: Dr1_strt"$0D
 		"Switches: Butn2"
-        values = 
+        values =
 		"/sound/movers/doors/dr1_end.wav"$0D
 		"/sound/movers/doors/dr1_strt.wav"$0D
 		"/sound/movers/switches/butn2.wav"
@@ -2975,7 +3006,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Players"
-        items = 
+        items =
 		"Anarki: Death1"$0D
 		"Anarki: Death2"$0D
 		"Anarki: Death3"$0D
@@ -3604,7 +3635,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Announcer"
-        items = 
+        items =
 		"Announce: Anarki"$0D
 		"Announce: Anarki Wins"$0D
 		"Announce: Angel"$0D
@@ -3670,8 +3701,8 @@ QQRKSRC1
 		"Announce: Xaero Wins"$0D
 		"Announce: Xray Wins"$0D
 		"Announce: You Win"
-		
-        values = 
+
+        values =
 		"/sound/player/announce/anarki.wav"$0D
 		"/sound/player/announce/anarki_wins.wav"$0D
 		"/sound/player/announce/angel.wav"$0D
@@ -3743,7 +3774,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Footsteps"
-        items = 
+        items =
 		"Footsteps: Boot1"$0D
 		"Footsteps: Boot2"$0D
 		"Footsteps: Boot3"$0D
@@ -3773,7 +3804,7 @@ QQRKSRC1
 		"Footsteps: Step3"$0D
 		"Footsteps: Step4"
 
-        values = 
+        values =
 		"/sound/player/footsteps/boot1.wav"$0D
 		"/sound/player/footsteps/boot2.wav"$0D
 		"/sound/player/footsteps/boot3.wav"$0D
@@ -3808,7 +3839,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Teamplay"
-        items = 
+        items =
 		"Flagcap Blue"$0D
 		"Flagcap Red"$0D
 		"Flagret Blue"$0D
@@ -3816,7 +3847,7 @@ QQRKSRC1
 		"Flagtk Blue"$0D
 		"Flagtk Red"
 
-        values = 
+        values =
 		"/sound/teamplay/flagcap_blu.wav"$0D
 		"/sound/teamplay/flagcap_red.wav"$0D
 		"/sound/teamplay/flagret_blu.wav"$0D
@@ -3830,7 +3861,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "Weapons"
-        items = 
+        items =
 		"BFG: Fire"$0D
 		"BFG: Hum"$0D
 		"Grenade: Fire"$0D
@@ -3864,7 +3895,7 @@ QQRKSRC1
 		"Universal: Switch"$0D
 		"Universal: No Ammo"
 
-        values = 
+        values =
 		"/sound/weapons/bfg/bfg_fire.wav"$0D
 		"/sound/weapons/bfg/bfg_hum.wav"$0D
 		"/sound/weapons/grenade/grenlf1a.wav"$0D
@@ -3903,7 +3934,7 @@ QQRKSRC1
       {
 		typ = "C"
 		txt = "World"
-        items = 
+        items =
 		"Drone Boys"$0D
 		"Drone Fem"$0D
 		"Gong"$0D
@@ -3970,7 +4001,7 @@ QQRKSRC1
 		"Drones: Amb1"
 
 
-        values = 
+        values =
 		"/sound/world/1shot_droneboys_01.wav"$0D
 		"/sound/world/1shot_femdrone_01.wav"$0D
 		"/sound/world/1shot_gong.wav"$0D
@@ -6225,7 +6256,7 @@ QQRKSRC1
         Txt = "&"
         Hint = "This item will not spawn in a Teamplay or CTF game.(Default value is 0)"
       }
-// Maleficus: the missing entities of the func_* group. Now in ALL func_*.	
+// Maleficus: the missing entities of the func_* group. Now in ALL func_*.
 	light: =
 	{
 	Txt = "&"
@@ -6234,7 +6265,7 @@ QQRKSRC1
 	color: =
 	{
 	Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
 	}
 	notsingle: =
 	{
@@ -6323,7 +6354,7 @@ QQRKSRC1
 	color: =
       {
         Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
       }
 	notsingle: =
       {
@@ -6409,7 +6440,7 @@ QQRKSRC1
 	color: =
       {
         Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
       }
 	notsingle: =
       {
@@ -6448,7 +6479,7 @@ QQRKSRC1
       {
 	Txt = "&"
 	Hint = "name of looping .wav file to play."
-      }      
+      }
       speed: =
       {
         Txt = "&"
@@ -6493,7 +6524,7 @@ QQRKSRC1
 	color: =
 	{
 	Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
 	}
 	notsingle: =
 	{
@@ -6563,7 +6594,7 @@ QQRKSRC1
 	color: =
 	{
 	Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
 	}
 	notsingle: =
 	{
@@ -6594,7 +6625,7 @@ QQRKSRC1
         Txt = "&"
         Hint = "This is the path and name of a model to use with this func."
       }
- 	t_model2 = !     
+ 	t_model2 = !
       origin: =
       {
         Txt = "&"
@@ -6613,7 +6644,7 @@ QQRKSRC1
 	color: =
 	{
 	Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
 	}
 	notsingle: =
 	{
@@ -6735,7 +6766,7 @@ QQRKSRC1
 	Txt = "&"
 	Hint = "This is the path and name of a model to use with this func."
       }
- 	t_model2 = !     
+ 	t_model2 = !
 	origin: =
       {
 	Txt = "&"
@@ -6749,7 +6780,7 @@ QQRKSRC1
 	color: =
 	{
 	Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
 	}
 	notsingle: =
 	{
@@ -6760,7 +6791,7 @@ QQRKSRC1
 	{
 	Txt = "&"
 	Hint = "If set to 1, bots will ignore this."
-	}      
+	}
       spawnflags: =
       {
         Txt = "&"
@@ -6791,7 +6822,7 @@ QQRKSRC1
 	Txt = "&"
 	Hint = "This is the path and name of a model to use with this func."
       }
- 	t_model2 = !     
+ 	t_model2 = !
 	origin: =
       {
 	Txt = "&"
@@ -6805,7 +6836,7 @@ QQRKSRC1
 	color: =
 	{
 	Txt = "&"
-	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."  
+	Hint = "constantLight color of .md3 model included with entity. Has no effect on the entity's brushes (default 1 1 1)."
 	}
       targetname: =
       {
@@ -6857,7 +6888,7 @@ QQRKSRC1
       {
 	Txt = "&"
 	Hint = "a target_give entity can point to this for respawn freebies."
-      }      
+      }
       team: =
       {
         Txt = "&"
@@ -6915,7 +6946,7 @@ QQRKSRC1
       {
 	Txt = "&"
 	Hint = "a target_give entity can point to this for respawn freebies."
-      }      
+      }
       team: =
       {
         Txt = "&"
@@ -6961,7 +6992,7 @@ QQRKSRC1
 	weight: =
 	{
 	Txt = "&"
-	Hint = "number that is compared against the weight assigned to all the other camp spots in the map to determine if a bot chooses to camp there."		
+	Hint = "number that is compared against the weight assigned to all the other camp spots in the map to determine if a bot chooses to camp there."
 	}
     }
 	item_botroam:form =
@@ -7084,7 +7115,7 @@ QQRKSRC1
 	Typ = "X1"
 	Cap = "INTIAL"
 	Hint = "makes the spawnpoint the initial place for the player to spawn at the beginning of the game."
-      }	
+      }
     }
     info_player_intermission:form =
     {
@@ -8755,7 +8786,7 @@ QQRKSRC1
 	{
 	Txt = "&"
 	Hint = "This item will not spawn in a single player game."
-	}	
+	}
       notteam: =
       {
         Txt = "&"
