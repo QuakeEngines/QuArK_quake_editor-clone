@@ -1395,7 +1395,7 @@ def wrappopup(o, tagged):
           requestmultiplier,
           checkshifttagged
          ]
-  popup = qmenu.popup("&Wrap texture", list, None, wrappoptext)
+  popup = qmenu.popup("&Wrapping", list, None, wrappoptext)
   popup.label = 'wrappopup'
   return popup
 
@@ -1623,14 +1623,19 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
 #      if not gettaggedlist(editor):
 #        wrappop.state = qmenu.disabled
 #        tagpop.state = qmenu.disabled
+  
+  texpop = findlabelled(menu,'texpop')
+  projtex = projecttex(editor,o)
+  projtex.text = "Project from tagged"
+  texpop.items = texpop.items + [projtex,wrappop]
   menu[:0] = [#extendtolinked(editor, o),
               gluemenuitem("Tag &side",TagSideClick,o,tagtext),
 #              addtotagged,
               glueitem,
               tagpop,
               linkpopup,
-              projecttex(editor,o),
-              wrappop,
+#              projecttex(editor,o),
+#              wrappop,
               breaksharedface(editor,o),
               qmenu.sep]
   return menu
@@ -1875,6 +1880,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2000/07/23 08:35:12  tiglari
+#tag point functions removed, projection of texture from tagged corner bezier point added (to projecttex(editor, o))
+#
 #Revision 1.5  2000/06/12 11:22:48  tiglari
 #fixed problem with texture-wrapping from paralell faces (WrapTexClick)
 #
