@@ -33,8 +33,8 @@
 
 !define QRK_MAJOR_VER 6.4
 !define QRK_MINOR_VER 0
-!define QRK_STATE "alpha"
-!define QRK_RELEASE 3
+!define QRK_STATE "beta"
+!define QRK_RELEASE 1
 
 #-----------------------------#
 # Setup the installer GUI etc #
@@ -53,6 +53,7 @@ OutFile ${QRK_OUTFILE}
 InstallDir "$PROGRAMFILES\QuArK"
 InstallDirRegKey HKLM "SOFTWARE\${MUI_PRODUCT}" "INSTDIR"
 
+!define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "install_header.bmp"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
 !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of the Quake Army Knife (QuArK), an editor for games with a Quake-like engine.\r\n\r\n"
@@ -123,7 +124,6 @@ Section "QuArK" SectionQuArK
   File /r "quark\plugins"
   File /r "quark\quarkpy"
   File /r "quark\dlls"
-  File /r "quark\lib"
   File /r "quark\images"
   File /r "quark\lgicons"
   File /r "quark\addons"
