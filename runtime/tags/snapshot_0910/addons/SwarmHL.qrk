@@ -1,0 +1,151 @@
+QQRKSRC1
+{
+  // QuArK data add-on, made by decker@planetquake.com
+  //
+  // http://www.planethalflife.com/swarm
+
+  Description = "Swarm - Half-Life"
+
+  SWM Entities.qtx =
+  {
+    ToolBox = "New map items..."
+    Root = "Swarm Entities.qtxfolder"
+
+    // "<name>:incl" is templates (@baseclass)
+    t_orig_ang:incl = {origin="0 0 0" angle="360"}
+
+    Swarm Entities.qtxfolder =
+    {
+      	// "<classname>:e" is point-entities (@Pointclass)
+      	// "<classname>:b" is brush-entities (@Solidclass)
+
+      	Human Team.qtxfolder =
+      	{
+		swarm_team_human:e = {t_orig_ang=! ;desc="Swarm Human Team"
+    			limit_hgrunt="32"
+    			limit_hscientist="32"
+    			limit_hcommander="32"
+    			limit_hassassin="32"
+    			limit_hengineer="32"
+		}
+
+		swarm_spawnpt_human:e		= {t_orig_ang=! ;desc="Generic Human Spawn" }
+		swarm_spawnpt_hgrunt:e		= {t_orig_ang=! ;desc="Grunt Spawn" }
+		swarm_spawnpt_hassassin:e	= {t_orig_ang=! ;desc="Assassin Spawn" }
+		swarm_spawnpt_hscientist:e	= {t_orig_ang=! ;desc="Scientist Spawn" }
+		swarm_spawnpt_hcommander:e	= {t_orig_ang=! ;desc="Commander Spawn" }
+		swarm_spawnpt_hengineer:e	= {t_orig_ang=! ;desc="Engineer Spawn" }
+
+		ammo_swarmprimary:e		= {t_orig_ang=! ;desc="Human Primary Ammo" }
+		ammo_swarmsecondary:e		= {t_orig_ang=! ;desc="Human Secondary Ammo" }
+	}
+      	Alien Team.qtxfolder =
+      	{
+		swarm_team_alien:e = {t_orig_ang=! ;desc="Swarm Alien Team"
+    			limit_agrunt="32"
+    			limit_acontroller="32"
+    			limit_agarg="1"
+    			limit_aheadcrab="32"
+    			limit_aslave="32"
+		}
+		swarm_spawnpt_atripod:e		= {t_orig_ang=! ;desc="Tripod Spawn" }
+		swarm_spawnpt_aheadcrab:e	= {t_orig_ang=! ;desc="Headcrab Spawn" }
+		swarm_spawnpt_agarg:e		= {t_orig_ang=! ;desc="Gargantua Spawn" }
+		swarm_spawnpt_aslave:e		= {t_orig_ang=! ;desc="Slave Spawn" }
+		swarm_spawnpt_acontroller:e	= {t_orig_ang=! ;desc="Controller Spawn" }
+	}
+      	Misc.qtxfolder =
+      	{
+		trigger_regen:b		= { ;desc="Trigger regeneration" ;incl="defpoly" dmg="-10" damagetype="8388608" }
+		swarm_dd_goal:e		= { ;desc="swarm_dd_goal" }
+		info_tfgoal_timer:e	= { ;desc="Goal Timer" }
+	}
+    }
+  }
+
+  Entity forms.qctx =
+  {
+	t_spawnpt:incl = {
+    		teamname:	= { txt="&" hint="Owning team" }
+    		spawnflags:	= { txt="&" typ="X1" hint="Allowed allied teams" }
+	}
+	t_humanpt:incl = {
+		t_spawnpt=!
+		bbox = '-16 -16 -36 16 16 36'
+	}
+	t_alienpt:incl = {
+		t_spawnpt=!
+	}
+        t_targetname:incl       = { targetname: = { Txt="&" Hint="The name of this object, so others can 'target' it." } }
+        t_target:incl           = { target:     = { Txt="&" Hint="Target(s) to activate, when this object is triggered" } }
+        t_targetx:incl = {
+                t_target = !
+                delay: = { Txt="&" Hint="Delay before activating target(s)" }
+        }
+        t_weapon:incl = {
+                bbox = '-16 -16 0 16 16 32'
+                t_targetname = !
+                t_targetx = !
+	}
+
+//
+// Forms
+//
+	swarm_team_human:form = {
+		bbox = '-32 -32 -32 32 32 32'
+    		targetname:		= { txt="&" hint="Name (internal)" }
+    		fullname:		= { txt="&" hint="Name of Team (descriptive)" }
+    		limit_hgrunt:		= { txt="&" hint="Military Grunt limit (0 = banned)" }
+    		limit_hscientist:	= { txt="&" hint="Scientist limit" }
+    		limit_hcommander:	= { txt="&" hint="Commander limit" }
+    		limit_hassassin:	= { txt="&" hint="Assassin limit" }
+    		limit_hengineer:	= { txt="&" hint="Engineer limit" }
+	}
+	swarm_team_alien:form = {
+		bbox = '-32 -32 -32 32 32 32'
+    		targetname:		= { txt="&" hint="Name (internal)" }
+    		fullname:		= { txt="&" hint="Name of Team (descriptive)" }
+    		limit_agrunt:		= { txt="&" hint="Alien Grunt/Tripod limit (0 = banned)" }
+    		limit_acontroller:	= { txt="&" hint="Controller limit" }
+    		limit_agarg:		= { txt="&" hint="Garg limit (max = 3)" }
+    		limit_aheadcrab:	= { txt="&" hint="Headcrab limit" }
+    		limit_aslave:		= { txt="&" hint="Slave limit" }
+	}
+	trigger_regen:form = {
+    		targetname:		= { txt="&" hint="" }
+    		target:			= { txt="&" hint="" }
+		spawnflags:		= { txt="&" typ="X1"  cap="Target Once" }
+		spawnflags:		= { txt="&" typ="X2"  cap="Start Off" }
+		spawnflags:		= { txt="&" typ="X8"  cap="No clients" }
+		spawnflags:		= { txt="&" typ="X16" cap="FireClientOnly" }
+		spawnflags:		= { txt="&" typ="X32" cap="TouchClientOnly" }
+		master:			= { txt="&" hint="Master" }
+		dmg:			= { txt="&" hint="Damage" }
+		delay:			= { txt="&" hint="Delay before trigger" }
+		damagetype: 		= { txt="&" hint="Damage Type" }
+	}
+	ammo_swarmprimary:form = {
+		t_weapon=!
+	}
+	ammo_swarmsecondary:form = {
+		t_weapon=!
+	}
+	swarm_spawnpt_human:form	= { t_humanpt=! }
+	swarm_spawnpt_hgrunt:form	= { t_humanpt=! }
+	swarm_spawnpt_hassassin:form	= { t_humanpt=! }
+	swarm_spawnpt_hscientist:form	= { t_humanpt=! }
+	swarm_spawnpt_hcommander:form	= { t_humanpt=! }
+	swarm_spawnpt_hengineer:form	= { t_humanpt=! }
+
+	swarm_spawnpt_atripod:form	= { t_alienpt=! bbox='-32 -32 -32 32 32 32' }
+	swarm_spawnpt_aheadcrab:form	= { t_alienpt=! bbox='-16 -16 -18 16 16 18' }
+	swarm_spawnpt_agarg:form	= { t_alienpt=! bbox='-32 -32 -64 32 32 64' }
+	swarm_spawnpt_aslave:form	= { t_alienpt=! bbox='-16 -16 -36 16 16 36' }
+	swarm_spawnpt_acontroller:form	= { t_alienpt=! bbox='-32 -32 -32 32 32 32' }
+
+	swarm_dd_goal:form = { bbox='-32 -32 -32 32 32 32' }
+	info_tfgoal_timer:form = {
+    		targetname:		= { txt="&" hint="" }
+	}
+  }
+}
