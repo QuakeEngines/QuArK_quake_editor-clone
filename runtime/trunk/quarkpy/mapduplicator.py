@@ -224,12 +224,13 @@ class StandardDuplicator(DuplicatorManager):
                     debug('final '+`self.final_specs.keys()`)
                     for item in list:
                         for spec in self.final_specs.keys():
-                            val = self.final_specs[spec]
-                            if val=="None":
-                                item[spec]=""
-                                debug('nuke')
-                            else:
-                                item[spec]=self.final_specs[spec]
+                            if item[spec]!="":
+                                val = self.final_specs[spec]
+                                if val=="None":
+                                    item[spec]=""
+                                    debug('nuke')
+                                else:
+                                    item[spec]=self.final_specs[spec]
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -350,6 +351,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2001/05/27 10:59:07  tiglari
+#fixed final target bug
+#
 #Revision 1.14  2001/05/27 01:08:47  tiglari
 #change 'serialize' to 'increment' for the duplicators as suggested by Decker
 #
