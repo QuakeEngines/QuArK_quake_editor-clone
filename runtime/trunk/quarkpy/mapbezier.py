@@ -362,6 +362,11 @@ class CPHandle(qhandles.GenericHandle):
         
         tagpt = gettaggedpt(editor)
 
+        #
+        # This should be slated for removal because `glue to tagged'
+        # defined in plugins.maptagpoint already does the job (a bit
+        # of that ol' Armin magic...
+        #
         def glueclick(m, editor=editor,tagpt=tagpt,b2=self.b2,(i,j)=self.ij):
             cp=copyCp(b2.cp)
             if quarkx.keydown('S'):
@@ -406,8 +411,45 @@ class CPHandle(qhandles.GenericHandle):
         if joinitem.state==qmenu.disabled:
              joinitem.hint=joinitem.hint+"\n\nTo enable this menu item, tag a non-corner edge point of one patch, and RMB on a non-corner edge point of another"
 
+        tagged = gettaggededge(editor)
+        
+        def alignclick(m,self=self,tagged=tagged,editor=editor):
+            b2 = self.b2.copy()
+            cp = b2.cp
+            i, j = self.ij
+            norm = (tagged[1]-tagged[0]).normalized
+            p = cp[i][j]
+            #
+            # operating on cp's of b2's tends not to work; make a copy
+            #
+            cp2 = copyCp(cp)
+            if m.col:
+                for k in range(len(cp)):
+                    delta = perptonormthru(cp[k][j], p, norm)
+                    delta = quarkx.vect(delta.xyz+(0.0, 0.0))
+                    cp2[k][j] = cp2[k][j]-delta
+                    mess = "align column"
+            else:
+                for k in range(len(cp[0])):
+                    delta = perptonormthru(cp[i][k], p, norm)
+                    delta = quarkx.vect(delta.xyz+(0.0, 0.0))
+                    cp2[i][k] = cp2[i][k]-delta
+                    mess = "align row"
+            b2.cp = cp2
+            undo_exchange(editor,self.b2,b2,mess)
+
+        alignrow = qmenu.item('Align Row to tagged edge',alignclick,"|Aligns the row to paralell to tagged edge, passing thru this point")
+        aligncol = qmenu.item('Align Col to tagged edge',alignclick,"|Aligns the column to paralell to tagged edge, passing thru this point")
+        if tagged is None:
+            alignrow.state=qmenu.disabled
+            aligncol.state=qmenu.disabled
+        else:
+            alignrow.col=0
+            aligncol.col=1
+
+
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [mesh, joinitem, glue] + patchmenu
+        return [mesh, joinitem, alignrow, aligncol] + patchmenu
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -667,6 +709,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29  2000/07/29 01:12:14  alexander
+#fixed: copycp ->copyCp (texture coordinate pyton crash AGAIN :)
+#
 #Revision 1.28  2000/07/26 11:36:01  tiglari
 #menu reorganization (one texture popup)
 #
