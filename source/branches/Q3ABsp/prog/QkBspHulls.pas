@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10.4.3  2001/07/15 05:57:46  tiglari
+now draws the 2d views! (many safeguards missing, no texture unfo)
+
 Revision 1.10.4.2  2001/07/14 06:19:06  tiglari
 modified for Q3A down to reading in the vertexes, noninclusive
 
@@ -471,13 +474,13 @@ begin
      { P:=PChar(Vertices+Vertex_id*SizeOf(TVect)); }
      { the vertexes are stored in the vertex lump in consecutive
        order as they are used by each face }
-      Dest^:=PSommet(Vertices+Vertex_id*SizeOf(TVect));
       for J:=1 to Vertex_num do
       begin
+        Dest^:=PSommet(Vertices+(Vertex_id+J-1)*SizeOf(TVect));
         if J=1 then
         begin
           P1:=Dest^.P;
-         PlaneDist:=Dot(NN,P1)
+          PlaneDist:=Dot(NN,P1)
         end
         else if J=2 then
           P2:=Dest^.P
