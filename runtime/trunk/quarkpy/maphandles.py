@@ -36,6 +36,13 @@ import mapentities
 class CenterHandle(qhandles.CenterHandle):
     "Like qhandles.CenterHandle, but specifically for the map editor."
     def menu(self, editor, view):
+        #
+        # FIXME: this is a pretty clunky way of making the
+        #  clicked on view available to entity menus, mebbe
+        #  should be cleaned up (view as 3rd parameter to entity
+        #  menus, perhaps?)
+        #
+        editor.layout.clickedview = view
         return mapentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
 
 class IconHandle(qhandles.IconHandle):
@@ -1074,5 +1081,8 @@ def singlefacezoom(view, center=None):
 #
 #
 #$Log$
+#Revision 1.5  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
