@@ -1864,7 +1864,7 @@ for menitem, keytag in [(mentagside, "Tag Side"),
     MapHotKey(keytag,menitem,quarkpy.mapcommands)
 
 
-menselecttagged = quarkpy.qmenu.item("Select Tagged Face(s)",SelectTaggedClick,"|The things now tagged will become a multiple selection")
+menselecttagged = quarkpy.qmenu.item("Select Tagged Face(s)",SelectTaggedClick,"|Select Tagged Face(s):\n\nThe things now tagged will become a multiple selection.|intro.mapeditor.menu.html#selectionmenu")
 
 def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     oldselect(menu)
@@ -1890,6 +1890,10 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.27  2003/03/25 08:30:56  tiglari
+#more fix of select tagged logic (the de-tagging effect is for now taken to
+# be the intended behavior)
+#
 #Revision 1.26  2003/03/24 22:58:08  tiglari
 #fix selected tag faces enable bug (noted by cdunde)
 #
