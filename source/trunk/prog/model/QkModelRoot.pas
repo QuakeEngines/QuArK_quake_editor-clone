@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/01/21 15:51:31  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.3  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -119,6 +122,8 @@ begin
   end;
   for i:=0 to l.count-1 do begin
     c:=QComponent(l.Items1[i]);
+    if c.IntSpec['includeincheck']=0 then // skip coomponent.
+      continue;
     f:=c.BuildFrameList;
     cnt:=f.count;
     if cnt-1 < needed_framecount then begin

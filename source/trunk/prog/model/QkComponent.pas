@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/01/23 23:38:27  aiv
+Minor Update
+
 Revision 1.7  2001/01/21 15:51:01  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -194,88 +197,6 @@ begin
   end;
 end;
 
-function qRemoveVertex(self, args: PyObject) : PyObject; cdecl;
-const
-  Spec1 = 'Tris';
-  BaseSize = Length('Tris=');
-var
-  index, cnt, i, j, realno: Integer;
-  tris, tris2, dest: PComponentTris;
-  S: String;
-  found: boolean;
-  L: TQList;
-begin
-  try
-    result:=nil;
-    if not PyArg_ParseTupleX(args, 'i', [@Index]) then
-      exit;
-    with QkObjFromPyObj(self) as QComponent do begin
-      ////////////////
-      // The hard bit: find all triangle associated with the vertex
-      // and delete them.
-      ////////////////
-      cnt:=Triangles(tris2);
-      tris:=tris2;
-      realno:=cnt;
-      // Find number of triangles not containing vertex 'index'
-      for i:=1 to cnt do begin
-        found:=false;
-        for j:=0 to 2 do
-          if tris^[j].vertexno = index then begin
-            found:=true;
-//            break;  // it shouldn't be here again so exit this loop.
-          end;
-        if found then
-          dec(realno);
-        inc(tris);
-      end;
-      S:=Spec1+'=';
-      // Recompute size of specific.
-      SetLength(S, BaseSize+SizeOf(TComponentTris)*realno);
-      PChar(Dest):=PChar(S)+BaseSize;
-
-      // Recreate triangles array specific.
-      tris:=tris2;
-      for i:=1 to cnt do begin
-        found:=false;
-        // first loop to check if triangle contains 'vertexno'
-        for j:=0 to 2 do begin
-          if tris^[j].vertexno = index then begin
-            found:=true;
-            break;
-          end;
-        end;
-        // only create triangle if triangle doesn't contain 'vertexno'
-        if not found then begin
-          for j:=0 to 2 do begin
-            Dest^[j].VertexNo:= tris^[j].VertexNo;
-            if Dest^[j].VertexNo>index then
-              Dest^[j].VertexNo:= Dest^[j].VertexNo-1;
-            Dest^[j].S:= tris^[j].S;
-            Dest^[j].T:= tris^[j].T;
-          end;
-          Inc(Dest);
-        end;
-        inc(tris);
-      end;
-      // add triangles spec to component.
-      Specifics.Delete(Specifics.IndexofName(Spec1));
-      Specifics.Add(S);
-      ////////////////
-      // The Easy bit: go through all frames and delete the vertex.
-      ////////////////
-      L:=BuildFrameList;
-      for i:=0 to l.count-1 do
-        QFrame(L.Items1[i]).RemoveVertex(index);
-      L.free;
-    end;
-    Result:=PyNoResult;
-  except
-    EBackToPython;
-    Result:=Nil;
-  end;
-end;
-
 function qShowHideComp(self, args: PyObject) : PyObject; cdecl;
 var
   index: Integer;
@@ -361,11 +282,11 @@ begin
 end;
 
 const
-  MethodTable: array[0..6] of TyMethodDef =
+  MethodTable: array[0..5] of TyMethodDef =
    ((ml_name: 'setframe';      ml_meth: qSetFrame;      ml_flags: METH_VARARGS),
     (ml_name: 'mergevertices'; ml_meth: qMergeVertices; ml_flags: METH_VARARGS),
     (ml_name: 'showhide';      ml_meth: qShowHideComp;  ml_flags: METH_VARARGS),
-    (ml_name: 'removevertex';  ml_meth: qRemoveVertex;  ml_flags: METH_VARARGS),
+//    (ml_name: 'removevertex';  ml_meth: qRemoveVertex;  ml_flags: METH_VARARGS), now done in py code
     (ml_name: 'removetriangle';ml_meth: qRemoveTriangle;ml_flags: METH_VARARGS),
     (ml_name: 'addframe';      ml_meth: qAddFrame;      ml_flags: METH_VARARGS),
     (ml_name: 'setparentframes';ml_meth: qSetParentFrames; ml_flags: METH_VARARGS));
