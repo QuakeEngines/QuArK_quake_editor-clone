@@ -1,3 +1,5 @@
+ * [nerdiii]: Edited default.qrk so texture origin and size are displayed with two decimals
+
  * [dannsdinosaurs]:  Heretic II Add-on Data, Added DEATHMATCH spawnflag to all weapons & ammo. Added
       NOT DEATHMATCH to doors, levers, buttons, puzzle pieces.
 

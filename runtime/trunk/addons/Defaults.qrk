@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.214  2003/07/04 19:58:21  cdunde
+//To add new wedge shape builder
+//
 //Revision 1.213  2003/04/24 23:42:22  tiglari
 //|| to make mapstair hint appear in window
 //
@@ -4487,12 +4490,12 @@ QQRKSRC1
         Hint = "%s||This box lets you see and change the name of the texture used on this or these faces. Wait with the mouse over the box to see the texture images."
       }
       origin: = {
-        Typ = "EF03"     // Edit Float, 3 values, Short (max. 2 decimals)
+        Typ = "EF003"     // Edit Float, 3 values, Short (max. 2 decimals)
         Txt = "Tex. origin:"
         Hint = "Texture origin point||This is the starting point of the texture mapping. Editing this will move the texture, but may also move the face if you enter a point outside the current plane."$0D$0D"Usually, you will use the mouse to move the cyan 'L' below instead."
       }
       scales: = {
-        Typ = "EF02"     // Edit Float, 2 values, Short (max. 2 decimals)
+        Typ = "EF002"     // Edit Float, 2 values, Short (max. 2 decimals)
         Txt = "Tex. scale:"
         Hint = "Scaling factors of the texture||The two scaling factors of the texture. They define how large the texture is, horizontally and vertically."$0D$0D"Usually, you will use the mouse to enlarge or shrink the cyan 'L' below instead."
       }
