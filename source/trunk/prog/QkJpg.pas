@@ -1,3 +1,9 @@
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkJpg;
 
 interface
@@ -47,8 +53,8 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-    FileWrap:=TJpegFileWrapper.Create(nil);
-    bmp:=TMemoryStream.Create;
+    FileWrap:=TJpegFileWrapper.Create(nil); try
+    bmp:=TMemoryStream.Create; try
     FillChar(Header, SizeOf(Header), 0);
     try
       Header.bfOffBits:=SizeOf(TBitmapFileHeader)+GetBitmapInfo1(BmpInfo);
@@ -56,10 +62,9 @@ begin
       if Specifics.Values['Data']='' then
         Raise;
       SaveUnformatted(bmp);
-      DebutTravail(5450,100);
+      DebutTravail(5450,100); try
       FileWrap.Save(bmp, f,90, progress);
-      FinTravail;
-      filewrap.free;
+      finally FinTravail; end;
       exit;
     end;
     Header.bfType:=bmpSignature;
@@ -71,11 +76,11 @@ begin
       Raise EErrorFmt(5534, ['Image1']);
     bmp.WriteBuffer(PChar(Data)[Length('Image1=')], BmpInfo.bmiHeader.biSizeImage);
     bmp.seek(0,soFromBeginning);
-    DebutTravail(5450,100);
+    DebutTravail(5450,100); try
     FileWrap.Save(bmp, f,90, progress);
-    bmp.free;
-    filewrap.free;
-    FinTravail;
+    finally FinTravail; end;
+    finally bmp.free; end;
+    finally filewrap.free; end;
     end;
  else inherited;
  end;
@@ -129,14 +134,14 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      DebutTravail(5452,100);
-      bmp:=TMemoryStream.Create;
-      FileWrap:=TJpegFileWrapper.Create(nil);
+      DebutTravail(5452,100); try
+      bmp:=TMemoryStream.Create; try
+      FileWrap:=TJpegFileWrapper.Create(nil); try
       FileWrap.Load(F, bmp, 0, progress);
       GetPaletteAndDataFromBmp(bmp);
-      FileWrap.Free;
-      bmp.free;
-      FinTravail;
+      finally FileWrap.Free; end;
+      finally bmp.free; end;
+      finally FinTravail; end;
      end;
  else inherited;
  end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/04/19 01:29:16  tiglari
+removed kp flag stuff due to suckage
+
 Revision 1.7  2000/04/19 01:22:14  tiglari
 put kingpin texture flag management backin
 
@@ -692,7 +695,12 @@ begin
         else  { write non-shader textures directly to the disk }
          begin
           if Copy(Tex.Name,1,1)=#255 then
-           S:=Copy(Tex.Name,2,MaxInt)  { direct from disk }
+           begin
+            S:=Copy(Tex.Name,2,MaxInt);  { direct from disk }
+            { change the file extension if necessary, to match the actual file format }
+            if CompareText(Copy(S, Length(S)-Length(Tex.TypeInfo)+1, MaxInt), Tex.TypeInfo)<>0 then
+             S:=ChangeFileExt(S, Tex.TypeInfo);
+           end
           else
            begin
             if Tex is QTextureFile then

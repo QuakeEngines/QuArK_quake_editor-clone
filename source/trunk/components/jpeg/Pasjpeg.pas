@@ -709,22 +709,22 @@ begin
           for col := pred(cinfo^.image_width) downto 0 do begin
             t := GETJSAMPLE(inptr^);
             Inc(inptr);
-            outptr^ := source^.colormap^[0]^[t];
+            outptr^ := source^.colormap^[2]^[t];   { Armin's fix: swapped color components }
             Inc(outptr);
             outptr^ := source^.colormap^[1]^[t];
             Inc(outptr);
-            outptr^ := source^.colormap^[2]^[t];
+            outptr^ := source^.colormap^[0]^[t];
             Inc(outptr);
           end;
         end;
     24: begin
           outptr24 := source^.buffer^[0];
           for col := pred(cinfo^.image_width) downto 0 do begin
-            outptr24^[2] := inptr^;
-            Inc(inptr);
-            outptr24^[1] := inptr^;
-            Inc(inptr);
             outptr24^[0] := inptr^;
+            Inc(inptr);
+            outptr24^[1] := inptr^;    { Armin's fix: swapped color components }
+            Inc(inptr);
+            outptr24^[2] := inptr^;
             Inc(inptr);
             Inc(JSAMPLE_PTR(outptr24), 3);
           end;

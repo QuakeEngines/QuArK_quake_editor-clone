@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit QkImages;
 
@@ -97,6 +102,7 @@ type
   public
     ImageDisplayer: TImageDisplayer;
     function MacroCommand(Cmd: Integer) : Boolean; override;
+    procedure UserConversion(var NewPSD: TPixelSetDescription);
   end;
 
  {------------------------}
@@ -107,7 +113,7 @@ function TestConversionImages(var I: Integer{; Exclude: QImages}) : QImagesClass
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
+uses QkPcx, QkBmp, QkTga, QkJpg, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
 
 {$R *.DFM}
 
@@ -132,7 +138,7 @@ end;*)
 
 function TestConversionImages(var I: Integer) : QImagesClass;
 const
- IntlImages: array[1..3] of QImagesClass = (QPcx, QTga, QBmp);
+ IntlImages: array[1..4] of QImagesClass = (QPcx, QTga, QBmp, QJPeg);
 begin
  if I>High(IntlImages) then
   begin
@@ -731,7 +737,7 @@ var
 begin
  DebutTravail(0,0); try
  PSD:=Description; try
- PSDConvert(NewPSD, PSD, ccConfirm);
+ if not PSDConvert(NewPSD, PSD, ccConfirm) then Abort;
  Temp:=QBmp.Create('', Nil); try
  Temp.SetDescription(NewPSD, ccAuto);
  Undo.Action(Self, TSetSpecificsUndo.Create(LoadStr1(626), Temp.Specifics, Self));
@@ -830,6 +836,7 @@ begin
      PSD:=QImages(FileObject).Description;
      FFileObject:=Nil;
      try
+      EditSize.SetFocus;
       EditSize.Text:=Format('%d %d', [PSD.Size.X, PSD.Size.Y]);
       Format8bits.Checked:=PSD.Format=psf8bpp;
       Format24bits.Checked:=PSD.Format=psf24bpp;
@@ -891,37 +898,53 @@ begin
  ImageDisplayer.Align:=alClient;
 end;
 
+procedure TFQImages.UserConversion(var NewPSD: TPixelSetDescription);
+var
+ FileObj: QFileObject;
+begin
+ FileObj:=FFileObject;
+ if not Assigned(FileObj) then Exit;
+ try
+  FFileObject:=Nil;
+  try
+   (FileObj as QImages).ImageConvertTo(NewPSD);
+  except
+   PostMessage(Handle, wm_MessageInterne, wp_AfficherObjet, 0);
+   Raise;
+  end;
+ finally
+  FFileObject:=FileObj;
+ end;
+end;
+
 procedure TFQImages.EditSizeAccept(Sender: TObject);
 var
  NewPSD: TPixelSetDescription;
  Size: array[1..2] of Reel;
 begin
- if not Assigned(FileObject) then Exit;
  LireValeurs(EditSize.Text, Size);
  NewPSD.Init;
  NewPSD.Size.X:=Round(Size[1]);
  NewPSD.Size.Y:=Round(Size[2]);
- (FileObject as QImages).ImageConvertTo(NewPSD);
+ UserConversion(NewPSD);
 end;
 
 procedure TFQImages.Format8bitsClick(Sender: TObject);
 var
  NewPSD: TPixelSetDescription;
 begin
- if not Assigned(FileObject) then Exit;
  NewPSD.Init;
  NewPSD.Format:=psf8bpp;
- (FileObject as QImages).ImageConvertTo(NewPSD);
+ UserConversion(NewPSD);
 end;
 
 procedure TFQImages.Format24bitsClick(Sender: TObject);
 var
  NewPSD: TPixelSetDescription;
 begin
- if not Assigned(FileObject) then Exit;
  NewPSD.Init;
  NewPSD.Format:=psf24bpp;
- (FileObject as QImages).ImageConvertTo(NewPSD);
+ UserConversion(NewPSD);
 end;
 
 procedure TFQImages.AlphaCBClick(Sender: TObject);
@@ -930,10 +953,9 @@ const
 var
  NewPSD: TPixelSetDescription;
 begin
- if not Assigned(FileObject) then Exit;
  NewPSD.Init;
  NewPSD.AlphaBits:=NewAlphaBits[AlphaCB.Checked];
- (FileObject as QImages).ImageConvertTo(NewPSD);
+ UserConversion(NewPSD);
 end;
 
 end.
