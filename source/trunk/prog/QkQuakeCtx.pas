@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/04/24 23:59:44  aiv
+re-implementated again (hopefully less memory req'd)
+
 Revision 1.20  2001/04/23 23:14:03  aiv
 pretty much changed all entity maker code
 
@@ -123,40 +126,48 @@ uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1
 type
  TTexOpacityInfo = record
                     Loaded: Boolean;
+{DECKER 2003-03-12. These seems unused:
                     Count: Byte;
                     Reserved1, Reserved2: Byte;
+/DECKER 2003-03-12}
                     Opacity: array[0..31] of Byte;
                    end;
 
 var
- TInfo: TTexOpacityInfo;
+ gTexFlagsTransparentInfo: TTexOpacityInfo;
 
-procedure LoadTInfo;
+procedure LoadTexFlagsTransparentInfo;
 var
- I, J, K, L, M: Integer;
+ I, J: Integer;
+ NoOfOpacityFlags: Integer;
+ BitValue: Integer;
+ BitIndex: Integer;
+ OpacityPercentage: Integer;
  Li: TQList;
  Val32: array[0..63] of Single;
 begin
- FillChar(TInfo.Opacity, SizeOf(TInfo.Opacity), 255);
- TInfo.Loaded:=True;
+ FillChar(gTexFlagsTransparentInfo.Opacity, SizeOf(gTexFlagsTransparentInfo.Opacity), 255);
+ gTexFlagsTransparentInfo.Loaded:=True;
  Li:=GetQuakeContext;
  for J:=0 to Li.Count-1 do
   begin
-   K:=Li[J].GetFloatsSpecPartial('TexFlagsTransparent', Val32);
-   for I:=0 to K div 2 - 1 do
+   // Get the list of "<bit-value> <opacity-%> [<bit-value> <opacity-%> ...]" from the .QRK
+   NoOfOpacityFlags := Li[J].GetFloatsSpecPartial('TexFlagsTransparent', Val32);
+   for I:=0 to NoOfOpacityFlags div 2 - 1 do
     begin
-     M:=Round(Val32[I*2]);
-     L:=0;
-     while not Odd(M) and (M<>0) do
+     BitValue:=Round(Val32[I*2]);
+     BitIndex:=0;
+     while not Odd(BitValue) and (BitValue<>0) do
       begin
-       Inc(L);
-       M:=M shr 1;
+       Inc(BitIndex);
+       BitValue:=BitValue shr 1;
       end;
-     if M=1 then
+     if BitValue=1 then
       begin
-       M:=Round((1-Val32[I*2+1])*255);
-       if M<0 then M:=0 else if M>255 then M:=255;
-       TInfo.Opacity[L]:=M;
+       OpacityPercentage:=Round((1-Val32[I*2+1])*255);
+       if OpacityPercentage<0 then OpacityPercentage:=0;
+       if OpacityPercentage>255 then OpacityPercentage:=255;
+       gTexFlagsTransparentInfo.Opacity[BitIndex]:=OpacityPercentage;
       end;
     end;
   end;
@@ -169,13 +180,13 @@ begin
  Result:=255;
  if Flags=0 then Exit;
 
- if not TInfo.Loaded then
-  LoadTInfo;
+ if not gTexFlagsTransparentInfo.Loaded then
+  LoadTexFlagsTransparentInfo;
 
  L:=0;
  repeat
-  if Odd(Flags) and (TInfo.Opacity[L]<Result) then
-   Result:=TInfo.Opacity[L];
+  if Odd(Flags) and (gTexFlagsTransparentInfo.Opacity[L]<Result) then
+   Result:=gTexFlagsTransparentInfo.Opacity[L];
   Flags:=Flags shr 1;
   Inc(L);
  until Flags=0;
@@ -185,14 +196,15 @@ function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
 var
  L, Best, DistMin, Dist: Integer;
 begin
- if not TInfo.Loaded then
-  LoadTInfo;
+ if not gTexFlagsTransparentInfo.Loaded then
+  LoadTexFlagsTransparentInfo;
+
  Best:=0;
  DistMin:=255-Alpha;
- for L:=Low(TInfo.Opacity) to High(TInfo.Opacity) do
-  if TInfo.Opacity[L]<255 then
+ for L:=Low(gTexFlagsTransparentInfo.Opacity) to High(gTexFlagsTransparentInfo.Opacity) do
+  if gTexFlagsTransparentInfo.Opacity[L]<255 then
    begin
-    Dist:=Abs(Alpha-Integer(TInfo.Opacity[L]));
+    Dist:=Abs(Alpha-Integer(gTexFlagsTransparentInfo.Opacity[L]));
     if Dist<DistMin then
      begin
       DistMin:=Dist;
@@ -212,7 +224,7 @@ procedure ClearQuakeContext;
 begin
  QuakeContext.Free;
  QuakeContext:=Nil;
- TInfo.Loaded:=False;
+ gTexFlagsTransparentInfo.Loaded:=False;
 end;
 
 function GetQuakeContext: TQList;
