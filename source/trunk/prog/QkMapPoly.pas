@@ -26,6 +26,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2000/10/27 10:06:48  tiglari
+comments and cleanup to brush prim support;
+ancestry comments reinstated
+
 Revision 1.18  2000/10/26 18:10:17  tiglari
 fixed problems blocking non-brush prim format for Q3A
 
@@ -2329,7 +2333,7 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  MJ:=CharModeJeu;
- { Brush.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry); }
+ Brush.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry);
  Brush.Add(' {');
  if (MJ=mjQ3A) and BrushPrim then
  begin
