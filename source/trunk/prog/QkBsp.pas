@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2001/07/27 11:30:26  tiglari
+bsp study: plane viewing, some prep for node-viewing
+
 Revision 1.41  2001/07/22 11:40:59  tiglari
 Heretic 2, KingPin bsp viewing
 
@@ -239,6 +242,12 @@ type
   bspSurfQ3 = 'a';  { surface/type for Q3 engine games }
 
 type
+ TIntegerPair = record
+                 first, second : Integer;
+                end;
+ TBoundBox = record
+              Min, Max: vec3_t;
+             end;
 (*SurfaceList = ^TSurfaceList;
  TSurfaceList = record
                  Next: PSurfaceList;
@@ -278,6 +287,31 @@ type
             maxs: array [0..2] of integer;
            end;
 
+ PQ3Leaf = ^TQ3Leaf;
+ TQ3Leaf = record
+            cluster: Integer; { cluster index }
+            area: Integer; { areaportal area }
+            bound: TBoundBox;
+            first_leafface, num_leaffaces: Integer;
+            first_leafbrush, num_leafbrushes: Integer;
+           end;
+
+ TTreeBspPlane = class(TTreeMapGroup)
+  public
+   constructor Create(const nName: String; nParent: QObject); overload;
+   constructor Create(const nName: String; nParent: QObject; Source: PbPlane); overload;
+
+   class function TypeInfo: String; override;
+ end;
+
+ TTreeBspNode = class(TTreeMapGroup)
+  public
+   constructor Create(const nName: String; nParent: QObject); overload;
+   constructor Create(const nName: String; nParent: QObject; Source: PQ3Node); overload;
+
+   class function TypeInfo: String; override;
+  end;
+
  QBsp = class(QFileObject)
         private
           FStructure: TTreeMapBrush;
@@ -298,8 +332,9 @@ type
         public
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
-          Q3Vertices, Planes: PChar;
+          Q3Vertices, Planes, FirstNode: PChar;
           VertexCount, PlaneCount: Integer;
+          PlaneSize: Integer;
           NonFaces: Integer;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
@@ -319,6 +354,8 @@ type
           Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
           procedure GetPlanes(var L: TQList);
+          procedure GetNodes(L: TQList);
+          function GetQ3Node(Node: PQ3Node; const Name: String; Parent: QObject) : TTreeBspNode;
         end;
 
 type
@@ -333,10 +370,6 @@ type
   public
   end;
 
- TTreeMapPlane = class(TTreeMapGroup)
-  public
-   class function TypeInfo: String; override;
- end;
  {------------------------}
 
 Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
@@ -1071,8 +1104,6 @@ var
  Dest: PVect;
  HullType: Char;
  Pozzie: vec3_t;
- Nodes: PChar;
- NodeCount: Integer;
 begin
  HullType:=BspType(NeedObjectGameCode);
  if FStructure=Nil then
@@ -1086,6 +1117,7 @@ begin
       VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
       ReallocMem(FVertices, VertexCount*SizeOf(TVect));
       PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
+      PlaneSize:=SizeOf(TbPlane);
    end
    else
    begin
@@ -1093,10 +1125,7 @@ begin
       PQ3:=PQ3Vertex(Q3Vertices);
       ReallocMem(FVertices, VertexCount*SizeOf(TQ3Vertex));
       PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
-   {
-      NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     Nodes)   div SizeOf(TQ3Node);
-      ShowMessage('Nodes: '+IntToStr(NodeCount));
-   }
+      PlaneSize:=Sizeof(TQ3Plane);
   end;
    Dest:=PVect(FVertices);
    if BspSurfaceType(HullType)=bspSurfQ12 then
@@ -1229,6 +1258,14 @@ begin
     Exit;
    end;
  case attr[0] of
+  'n': if StrComp(attr, 'nodes') = 0 then
+       begin
+         L:=TQList.Create; try;
+         GetNodes(L);
+         Result:=QListToPyList(L);
+         finally L.Free; end;
+         Exit;
+       end;
   'p': if StrComp(attr, 'planes') = 0 then
        begin
          L:=TQList.Create; try;
@@ -1539,19 +1576,53 @@ begin
   Planes2:=Planes;
   For I:=1 to PlaneCount do
   begin
-    with PbPlane(Planes2)^ do
-    begin
-      {if the plane is created with Self as parent, it
-        can't be stuck into a subitems list by Python
-        code }
-      Q:=TTreeMapPlane.Create('plane '+IntToStr(I), Nil);
-      Q.VectSpec['norm']:=MakeVect(normal);
-      Q.SetFloatSpec('dist',dist);
-      L.Add(Q);
-    end;
+    {if the plane is created with Self as parent, it can't
+      be stuck into a subitems list by Python code }
+    Q:=TTreeBspPlane.Create('plane '+IntToStr(I), Nil,PbPlane(Planes2));
+    L.Add(Q);
     Inc(Planes2, PlaneSize);
   end;
   {ShowMessage('Planes: '+IntToStr(PlaneCount));}
+end;
+
+procedure QBsp.GetNodes(L:TQList);
+var
+  NodeCount: Integer;
+  Nodes: PChar;
+begin
+  if bspSurfaceType(NeedObjectGameCode)=bspTypeQ3 then
+  begin
+      NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     FirstNode)   div SizeOf(TQ3Node);
+      ShowMessage('Nodes: '+IntToStr(NodeCount));
+      L.Add(GetQ3Node(PQ3Node(FirstNode), 'Root Node', Nil));
+  end else
+  begin
+    ShowMessage('Node viewing not yet supported for this game');
+    Exit;
+  end;
+end;
+
+function QBsp.GetQ3Node(Node: PQ3Node; const Name:String; Parent: QObject) : TTreeBspNode;
+var
+  First, Second: TTreeBspNode;
+  TreePlane: TTreeBspPlane;
+begin
+  Result:=TTreeBspNode.Create(Name, Parent, Node);
+  with Node^ do
+  begin
+    TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PbPlane(Planes+plane*Planesize));
+    Result.SubElements.Add(TreePlane);
+    if firstchild>0 then
+      First:=GetQ3Node( PQ3Node(FirstNode+firstchild*SizeOf(TQ3Node)),'First', Result)
+    else
+      First:=TTreeBspNode.Create('Leaf', Result);
+    Result.SubElements.Add(First);
+    if secondchild>0 then
+      Second:=GetQ3Node( PQ3Node(FirstNode+secondchild*SizeOf(TQ3Node)),'Second', Result)
+    else
+      Second:=TTreeBspNode.Create('Leaf', Result);
+    Result.SubElements.Add(Second);
+  end;
 end;
 
 function bspSurfaceType(const BspType : Char) : Char;
@@ -1617,9 +1688,46 @@ begin
   end;
   Result:=TexFolder;
 end;
-class function TTreeMapPlane.TypeInfo: String;
+
+constructor TTreeBspPlane.Create(const nName: String; nParent: QObject);
 begin
- TypeInfo:=':pl';
+  inherited;
+end;
+
+constructor TTreeBspPlane.Create(const nName: String; nParent: QObject; Source: PbPlane);
+begin
+  Create(nName, nParent);
+  with Source^ do
+  begin
+    VectSpec['norm']:=MakeVect(normal);
+    SetFloatSpec('dist',dist);
+  end;
+end;
+
+
+class function TTreeBspPlane.TypeInfo: String;
+begin
+ TypeInfo:=':bspplane';
+end;
+
+constructor TTreeBspNode.Create(const nName: String; nParent: QObject);
+begin
+  inherited;
+end;
+
+constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Node);
+begin
+  Create(nName, nParent);
+  with Source^ do
+  begin
+    VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
+    VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
+  end;
+end;
+
+class function TTreeBspNode.TypeInfo: String;
+begin
+ TypeInfo:=':bspnode';
 end;
 
 
@@ -1635,5 +1743,6 @@ initialization
 
   RegisterQObject(QBsp3,  ' ');
   RegisterQObject(QBsp3a, 'a');
-  RegisterQObject(TTreeMapPlane, 'a');
+  RegisterQObject(TTreeBspPlane, 'a');
+  RegisterQObject(TTreeBspNode, 'a');
 end.
