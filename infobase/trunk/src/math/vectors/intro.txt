@@ -7,7 +7,7 @@ a relationship between two points, namely, the
 displacement that would carry one into the other, and
 also a sequence of numbers representing that displacement,
 such as 2 units forward, 3 to the left and 1 up, giving
-the vector <2,3,1>, or quarkx.vect(2,4,1) in QuArK
+the vector &lt;2,3,1&gt;, or quarkx.vect(2,4,1) in QuArK
 Python programming.  We'll call the relationships between
 points 'geometric' vectors, the sequences of numbers
 'sequence' vectors (this isn't standard terminology, but I
@@ -29,8 +29,8 @@ vectors can be added by adding the numbers in the
 corresponding positions, or multiplying all the numbers
 by the same number:
 <code>
-<<>x, y, z> + <<>u, v, w> = <<>x+u, y+v, z+w>
-a*<<>x, y, z> = <a*x, a*y, a*z>
+&lt;x, y, z&gt; + &lt;u, v, w&gt; = &lt;x+u, y+v, z+w&gt;
+a*&lt;x, y, z&gt; = &lt;a*x, a*y, a*z&gt;
 </code>
 In jargon, for sequence vectors, addition of vectors and
 multiplication of a

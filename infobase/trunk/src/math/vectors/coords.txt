@@ -7,7 +7,7 @@ vector operation, since its definition is simple and
 its results extremely useful.  For sequence vectors,
 we can define it like this:
 <code>
-<<a>x,y,z>*<<a>p,s,t>> = x*p + y*s + z*t
+&lt;x,y,z&gt;*&lt;p,s,t&gt; = x*p + y*s + z*t
 </code>
 In other words, to compute the dot product of
 two vectors, multiply their corresponding components,
@@ -82,9 +82,9 @@ conventional direction).  The plane will then be
 defined as all points v such that the vector from v
 to p is perpendicular to n.  And given a point v, we
 can test it for lying on the plane by seeing if
-n*(p-v) equals the 0 vector <0,0,0>.
+n*(p-v) equals the 0 vector &lt;0,0,0&gt;.
 
-The <0,0,0> vector evaluates to 'false' in a QuArK
+The &lt;0,0,0&gt; vector evaluates to 'false' in a QuArK
 Python conditional, so a piece of code might be:
 <code>
 if not n*(p-v):  # if v lies on the plane defined by p, n
