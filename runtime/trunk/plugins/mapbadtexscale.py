@@ -193,7 +193,7 @@ def badClick(m):
         # Names and list-indexes of thin brushes
         #
         ran = range(len(pack.baddies))
-        pack.slist = map(lambda obj,num:"%d) %s:%s"%(num,obj.parent.shortname,obj.shortname), pack.baddies, ran)
+        pack.slist = map(lambda obj,num:"%d) %s:%s"%(num+1,obj.parent.shortname,obj.shortname), pack.baddies, ran)
         pack.klist = map(lambda d:`d`, ran)
 
         self.src["micros$Items"] = string.join(pack.slist, "\015")
@@ -250,6 +250,10 @@ quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|This finds faces whose texture axes are almost parallel"))
 
 #$Log$
+#Revision 1.5  2002/05/21 09:16:16  tiglari
+#fix problems with selection dialog: the first of two with identical names was
+# always being chosen, and first item on list wouldn't load
+#
 #Revision 1.4  2002/05/12 08:00:15  tiglari
 #minor corrections
 #

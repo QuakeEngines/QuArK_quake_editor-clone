@@ -213,7 +213,7 @@ def thinClick(m):
         # Names and list-indexes of thin brushes
         #
         ran = range(len(pack.thinnies))
-        pack.slist = map(lambda obj,num :"%d) %s"%(num,obj.shortname), pack.thinnies, ran)
+        pack.slist = map(lambda obj,num :"%d) %s"%(num+1,obj.shortname), pack.thinnies, ran)
         pack.klist = map(lambda d:`d`, ran)
 
         #
@@ -275,6 +275,10 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|This identifies brushes that are suspiciously small, at least in one dimension."))
 
 #$Log$
+#Revision 1.5.4.1  2002/05/21 09:15:35  tiglari
+#fix problems with selection dialog: the first of two with identical names was
+# always being chosen, and first item on list wouldn't load
+#
 #Revision 1.5  2001/06/17 21:10:57  tiglari
 #fix button captions
 #
