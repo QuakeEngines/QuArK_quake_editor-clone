@@ -1,3 +1,18 @@
+ * [SilverPaladin]: Changed model handling so that QIII/RtCW/WW models can be loaded.
+
+ * [SilverPaladin]: Fixed the error that caused all 3d Windows to fail when one is closed.
+
+ * [SilverPaladin]: General Clean Up
+      Eliminated all Delphi 5 Hints and Warnings
+      Eliminated all Delphi 6 Hints and all but 2 Delphi Warnings
+      Fixed Index out of bounds error producing false positives during leak search...
+      Improved platform independance for future porting to linux
+      Modified Normalise so that zero length vectors are returned unmodified 
+      Cleaned up Direct3d hints and warninds
+      Eliminated an access violation in the 3d views
+
+ * [SilverPaladin]: Added support for Return to Castle Wolfenstein: The WildWest (1.4).	
+
  * [nerdiii]: Edited default.qrk so texture origin and size are displayed with two decimals
 
  * [dannsdinosaurs]:  Heretic II Add-on Data, Added DEATHMATCH spawnflag to all weapons & ammo. Added
