@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/09/17 15:00:17  alexander
+committed convex' generalization of texture format aliasing
+
 Revision 1.15  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -585,7 +588,7 @@ begin
   begin
     if (not CDSearch) then
       NomChemin:=PathAndFile(QuakeDir, BaseDir)
-   else
+    else
     begin
       NomChemin:=SetupGameSet.Specifics.Values['CDDir'];
       if (NomChemin='') then
@@ -598,11 +601,11 @@ begin
     RestartAliasing;
     NoMoreAlias := false;
     while (not NoMoreAlias) do
-begin
+    begin
       { Buffer search }
       Result := SortedFindFileName (GameFiles, NomComplet);
       if (Result <> NIL) then Exit; // found it
- Alias:=FileAlias(FileName);
+      Alias:=FileAlias(FileName);
       NoMoreAlias := Alias = '';
       NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
     end;
@@ -617,52 +620,52 @@ begin
       NoMoreAlias := Alias = '';
       GetPakNames:=TGetPakNames.Create;
       try
-  GetPakNames.CreatePakList(NomChemin, True);
-  while GetPakNames.GetPakName(True, NomComplet, True) do
-   if not IsPakTemp(NomComplet) then  { ignores QuArK's own temporary .pak's }
-    begin
-     Result:=SortedFindFileName(GameFiles, NomComplet);
-     if Result=Nil then
-      begin  { open the .pak file if not already opened }
-       Result:=ExactFileLink(NomComplet, Nil, True);
-       Result.Flags:=Result.Flags or ofWarnBeforeChange;
-       GameFiles.Add(Result);
-       GameFiles.Sort(ByFileName);
-      end;
-       TempResult:=Result.FindFile(Alias);
-       if TempResult<>Nil then
+        GetPakNames.CreatePakList(NomChemin, True);
+        while GetPakNames.GetPakName(True, NomComplet, True) do
+        if not IsPakTemp(NomComplet) then  { ignores QuArK's own temporary .pak's }
         begin
-         Result:=TempResult;
+          Result:=SortedFindFileName(GameFiles, NomComplet);
+          if Result=Nil then
+          begin  { open the .pak file if not already opened }
+            Result:=ExactFileLink(NomComplet, Nil, True);
+            Result.Flags:=Result.Flags or ofWarnBeforeChange;
+            GameFiles.Add(Result);
+            GameFiles.Sort(ByFileName);
+          end;
+          TempResult:=Result.FindFile(Alias);
+          if TempResult<>Nil then
+          begin
+            Result:=TempResult;
             Exit;   { found it }
+          end;
+        end;
+      finally
+        GetPakNames.Destroy;
       end;
-    end;
-  finally
-    GetPakNames.Destroy;
-  end;
       Alias := FileAlias (FileName);
       NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
     end;
 
-  NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
+    NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
     RestartAliasing;
     NoMoreAlias := false;
     while (not NoMoreAlias) do
     begin
       { Disk search }
-   if FileExists(NomComplet) then
+      if FileExists(NomComplet) then
       begin
-     Result:=ExactFileLink(NomComplet, Nil, True);
-     Result.Flags:=Result.Flags or ofWarnBeforeChange;
-     GameFiles.Add(Result);
-     GameFiles.Sort(ByFileName);
-     Exit;
-    end;
+        Result:=ExactFileLink(NomComplet, Nil, True);
+        Result.Flags:=Result.Flags or ofWarnBeforeChange;
+        GameFiles.Add(Result);
+        GameFiles.Sort(ByFileName);
+        Exit;
+      end;
       Alias := FileAlias (FileName);
       NoMoreAlias := Alias = '';
-   NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+      NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
     end;
 
-  if not LookInCD then
+    if not LookInCD then
       Exit;
 
     { CD search }
@@ -672,7 +675,7 @@ begin
 end;
 {--Convex-end--}
 
- {------------------------}
+{------------------------}
 
 type
  TGammaBuffer = record
