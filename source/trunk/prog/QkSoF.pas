@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/06/10 15:20:14  alexander
+added: texture flag loading and saving for SoF
+
 Revision 1.4  2000/05/21 20:43:19  alexander
 fixed: that R and B colors were xchanged
 fixed: distorted loading of some textures (H and W xchanged)
@@ -58,12 +61,14 @@ implementation
 
 uses Windows, Travail, Quarkx, QkPixelSet;
 
+var InitialStreamPos : longint;
+
 Procedure WriteZeros(F: TStream; tilloffset: longint);
 Var
   zero : byte;
 begin
   zero:=0;
-  while tilloffset>F.position do
+  while tilloffset > InitialStreamPos - F.position do
     F.WriteBuffer(zero, 1);
 end;
 
@@ -80,19 +85,22 @@ var
   contents,flags,value:longint;
   Aname: string;
   ScanLine, AlphaScanLine: PChar;
-  PSD: TPixelSetDescription;
+  PSD,OldPSD: TPixelSetDescription;
   PBaseLineBuffer,PLineBuffer: PChar;
   SourceRGB: PRGB;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-    PSD:=Description;
+    PSD.Init;
+    OldPSD:=Description;
     try
-      if PSD.Format<>psf24bpp then
-        Raise Exception.Create('.M32 Files must be 24 bit!');
-      if PSD.AlphaBits<>psa8bpp then
-        Raise Exception.Create('.M32 Files must have 8 bit Alpha!');
+      PSD.Format:=psf24bpp;  { force to 24bpp }
+      PSD.AlphaBits:=psa8bpp;  { force to 8bpp alpha }
+      PSDConvert(PSD, OldPSD, ccTemporary);
+     { use PSD here, it is guaranteed to be 24bpp + 8bpp alpha }
 
+      InitialStreamPos:=F.Position; {save where we are (needed pak file)}
+      
       Contents:=StrToIntDef(Specifics.Values['Contents'], 0);
       Flags   :=StrToIntDef(Specifics.Values['Flags'], 0);
       Value   :=StrToIntDef(Specifics.Values['Value'], 0);
@@ -138,6 +146,7 @@ begin
         FreeMem(PBaseLineBuffer);
       end;
     finally
+      OldPSD.Done;
       PSD.Done;
     end;
   end;
@@ -183,16 +192,17 @@ const
   spec1='Image1=';
   spec2='Alpha=';
 var
-  Data, Buffer, Alpha_Buffer: String;
+  RawData, Image_Buffer, Alpha_Buffer: String;
   ScanLine, Dest, Source, AlphaBuf: PChar;
   I, J, ScanW, sScanW: Integer;
 begin
-  I:=Width*(32 div 8);  { bytes per line in the .tga file }
-  ScanW:=(I+3) and not 3;       { the same but rounded up, for storing the data }
-  Data:=Spec1;
+  {read into rawdata string}
+  I:=Width*(32 div 8);    { bytes per line in the .m32 file }
+  ScanW:=(I+3) and not 3; { the same but rounded up, for storing the data }
+  RawData:=Spec1;
   J:=ScanW*Height;       { total byte count for storage }
-  SetLength(Data, Length(Spec1)+J);
-  ScanLine:=PChar(Data)+Length(Data)-ScanW;
+  SetLength(RawData, Length(Spec1)+J);
+  ScanLine:=PChar(RawData)+Length(RawData)-ScanW;
   sScanW:=-ScanW;
   for J:=1 to Height do begin
     F.ReadBuffer(ScanLine^, I);
@@ -200,18 +210,23 @@ begin
       FillChar(ScanLine[I], ScanW-I, 0);  { pad with zeroes }
     Inc(ScanLine, sScanW);
   end;
-  {alpha channel is assumed to be one byte per pixel if available.
-   It was loaded together with the image data into 'Data',
-   but 'Data' must now be split into two buffers : one for the image colors
+
+  {prepare alpha buffer
+   It is assumed to be one byte per pixel if available.
+   It was loaded together with the image data into 'RawData',
+   but 'RawData' must now be split into two buffers : one for the image colors
    and one for the alpha channel.}
    alpha_buffer:=Spec2;
    J:=Width*Height;       { pixel count }
-   Setlength(alpha_buffer,Length(Spec2)+ J); { new alpha buffer }
-   Buffer:=Data;
-   Data:=Spec1;
-   SetLength(Data, Length(Spec1)+ 4*J); { new, fixed data buffer }
-   Source:=PChar(Buffer)+Length(Spec1);
-   Dest:=PChar(Data)+Length(Spec1);
+   Setlength(alpha_buffer,Length(Spec2)+ J);
+
+   {prepare image buffer}
+   Image_Buffer:=Spec1;
+   SetLength(Image_Buffer, Length(Spec1)+ 3*J);
+
+   {split ABGR into RGB and Alpha}
+   Source:=PChar(RawData)+Length(Spec1);
+   Dest:=PChar(Image_Buffer)+Length(Spec1);
    AlphaBuf:=PChar(alpha_buffer)+Length(Spec2);
    for I:=1 to J do
    begin
@@ -223,14 +238,11 @@ begin
      Inc(Source, 4);
      Inc(AlphaBuf);
    end;
-   a:=alpha_buffer;
-   rgb:=Data;
+   a:=Alpha_Buffer;
+   rgb:=Image_Buffer;
 end;
 
 Procedure QM32.LoadFile(F: TStream; FSize: Integer);
-const
-  spec1='Image1=';
-  spec2='Alpha=';
 var
   sig, org: Longint;
   tex: string;
