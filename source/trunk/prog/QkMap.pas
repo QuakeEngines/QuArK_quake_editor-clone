@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2001/06/05 18:39:33  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.33  2001/05/06 21:13:37  tiglari
 fix mode change to q3a mode when reading stvef maps
 
@@ -155,6 +158,12 @@ type
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
             end;
 
+  QHmfFile = class (QMapFile)
+            public
+              class function TypeInfo: String; override;
+              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+            end;
+
   TFQMap = class(TQForm1)
     Panel2: TPanel;
     Panel1: TPanel;
@@ -221,7 +230,7 @@ begin
  case I of
   1: Result:=QQkm;
   2: Result:=QMapFile;
-//  3: Result:=QQme1;
+  3: Result:=QHmfFile;
  else Result:=Nil;
  end;
 end;
@@ -1385,6 +1394,23 @@ begin
     GlobalWarning(FmtLoadStr1(256, [InvPoly]));
 end;
 
+
+  {------------------------}
+
+class function QHmfFile.TypeInfo;
+begin
+ Result:='.hmf';
+end;
+
+class procedure QHmfFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+begin
+ inherited;
+ Info.FileObjectDescriptionText:=LoadStr1(5180);
+ Info.FileExt:=808;
+end;
+
+
+
  {------------------------}
 
 class function QMapFile.TypeInfo;
@@ -1396,7 +1422,7 @@ class procedure QMapFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5142);
- Info.FileExt:=784;
+ Info.FileExt:=784
 end;
 
 procedure QMapFile.LoadFile(F: TStream; FSize: Integer);
@@ -1625,4 +1651,5 @@ end;
 initialization
   RegisterQObject(QQkm, 'y');
   RegisterQObject(QMapFile, 'x');
+  RegisterQObject(QHmfFile, 'x');
 end.
