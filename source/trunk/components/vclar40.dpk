@@ -1,7 +1,7 @@
 package VCLAR40;
-{$R *.RES}
+{$R *.res}
 {$R 'Tb97.dcr'}
-{$ALIGN ON}
+{$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -26,7 +26,7 @@ package VCLAR40;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl50;
+  vcl;
 
 contains
   TB97 in 'Tb97.pas',

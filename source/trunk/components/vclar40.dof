@@ -1,5 +1,7 @@
+[FileVersion]
+Version=6.0
 [Compiler]
-A=1
+A=8
 B=0
 C=1
 D=1
@@ -51,10 +53,9 @@ UsePackages=0
 [Parameters]
 RunParams=
 HostApplication=
-[Language]
-ActiveLang=
-ProjectLang=$00000409
-RootDir=
+Launcher=
+UseLauncher=0
+DebugCWD=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
@@ -70,7 +71,7 @@ DLL=0
 Locale=1033
 CodePage=1252
 [Version Info Keys]
-CompanyName=http://www.planetquake.com/quark 
+CompanyName=http://www.planetquake.com/quark
 FileDescription=QuArK 3rd Party Components
 FileVersion=6.4.0.0
 InternalName=VCLAr40
@@ -80,23 +81,33 @@ OriginalFilename=vclar40
 ProductName=QuArK -- Quake Army Knife -- 3D game editor
 ProductVersion=6.4
 Comments=QuArK Original Author: Armin Rigo
-[Excluded Packages]
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlConditionals]
-Count=2
+Count=3
 Item0=PYTHON_BUNDLED;
-Item1=PYTHON_BUNDLED;QUARK_DIRECT3D
+Item1=PYTHON22_OR_HIGHER
+Item2=PYTHON_BUNDLED;QUARK_DIRECT3D
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=1
-Item0=$(DELPHI)\Lib\Debug;.;c:\MyFiles\Quark\Source\components\jpeg;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
+Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=.\rubbish
+Count=6
+Item0=d:\QuArK
+Item1=.\rubbish
+Item2=C:\rubbish
+Item3=D:\rubbish
+Item4=%temp%
+Item5=C:\Recycled
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=d:\Quark
+Count=6
+Item0=d:\QuArK
+Item1=c:\progra~1\QuArK
+Item2=..\Runtime
+Item3=c:\QuArK
+Item4=c:\progra~1\GNU\QuArK
+Item5=c:\Quake\QuArK
