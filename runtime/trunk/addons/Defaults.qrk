@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.196  2002/06/16 10:01:46  tiglari
+//restore StupidBuildToolKludge for STVEF
+//
 //Revision 1.195  2002/06/09 02:33:01  tiglari
 //add SoF2 :form and :config
 //
@@ -1735,7 +1738,7 @@ QQRKSRC1
       SoF2:config =
       {
         Game = "SoF2"
-        Code = "H" // Hardcoded value in Setup.PAS
+        Code = "h" // Hardcoded value in Setup.PAS
         Program = "SoF2MP.EXE +set sv_pure 0"
 
         Directory = "\SoF2"
