@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.11  2003/01/05 02:05:10  tiglari
+make threepoints in CylendreDeFace method more symmetrical, to prevent
+ problems with texture scales (detected by quantum_red)
+
 Revision 1.56.2.10  2003/01/01 05:09:59  tiglari
 fix Retourner_leavetex
 
@@ -2850,8 +2854,11 @@ var
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
         S3:=F.Specifics.Values['Value'];
-        if (S1<>'') or (S2<>'') or (S3<>'')
-        or (MJ=mjMOHAA) then {Decker - write face-flags when MOHAA}
+(*       Q3A tools now require them; why not write them all the time?
+        if (S1<>'') or (S2<>'') or (S3<>'' or)
+        or (MJ=mjMOHAA)or  then {Decker - write face-flags when MOHAA}
+*)
+        if true then
         begin
           if S1='' then S1:='0';
           if S2='' then S2:='0';

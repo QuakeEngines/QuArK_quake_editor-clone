@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.66  2003/01/05 03:36:17  tiglari
+Genesis3D support, with peculiar sign-flips and coordinate rounding
+
 Revision 1.65  2003/01/05 02:07:55  tiglari
 make threepoints in CylindreDeFace method more symmetrical, to prevent
  problems with texture scales (detected by quantum_red)
@@ -2868,8 +2871,12 @@ var
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
         S3:=F.Specifics.Values['Value'];
+(* Now we're gonna always write the zeros, because GtkRadiant wants
+   them there too, as well as the mohaoo tools
         if (S1<>'') or (S2<>'') or (S3<>'')
         or (MJ=mjMOHAA) then {Decker - write face-flags when MOHAA}
+*)
+        if true then
         begin
           if S1='' then S1:='0';
           if S2='' then S2:='0';
