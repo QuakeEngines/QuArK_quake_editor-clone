@@ -1612,8 +1612,11 @@ def GetUserCenter(obj):
         if len(obj)==1 and obj[0]["usercenter"] is not None:
             uc = obj[0]["usercenter"]
         else:
-            box=quarkx.boundingboxof(obj)
-            return (box[0]+box[1])/2
+            try:
+                box=quarkx.boundingboxof(obj)
+                return (box[0]+box[1])/2
+            except:
+                return quarkx.vect(0,0,0)
     else:
         uc = obj["usercenter"]
     if uc is None:
@@ -1655,6 +1658,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.28  2001/08/13 17:45:46  decker_dk
+#Fixed problem where a '<huge> <small>' texture-scale caused the code to ignore further changes to the texture on the face.
+#
 #Revision 1.27  2001/07/27 11:35:49  tiglari
 #revert code 4 setthreepoints to code 2
 #
