@@ -49,6 +49,8 @@ const
 
   MaxRecentFiles = 5;
 
+  AddonsPath = 'addons\';
+
 type
   TFileObjectWndState = (cmNone, cmWindow, cmOwnExplorer);
   TFileObjectWndInfo  = set of (
@@ -278,10 +280,13 @@ begin
   if NoPath and FileExists(ApplicationPath+NomFich) then
    NomComplet:=ApplicationPath+NomFich
   else
-   begin
-    GetDir(0, CurDir);
-    Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [NomFich, CurDir]));
-   end;
+   if NoPath and FileExists(ApplicationPath+AddonsPath+NomFich) then
+    NomComplet:=ApplicationPath+AddonsPath+NomFich
+   else
+    begin
+     GetDir(0, CurDir);
+     Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [NomFich, CurDir]));
+    end;
  Result:=LienFichierExact(ExpandFileName(NomComplet), nParent, CheckParent);
 end;
 
