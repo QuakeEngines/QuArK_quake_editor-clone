@@ -49,8 +49,8 @@ class EntityManager:
 
     def drawback(o, editor, view, mode):
         "Called to draw a background for the object 'o'."
-        #view.drawmap(o, mode)  # draw a dark background for "o"
-        pass
+        view.drawmap(o, mode)  # draw a dark background for "o"
+#        pass
 
     def drawsel(o, view, mode):
         "Called to draw the object 'o' selected."
@@ -145,7 +145,7 @@ class FrameType(EntityManager):
             item = h[i]
             item.frame = o
             item.index = i
-            item.editor = editor
+            item.hint = "Vertex %s"%item.index
         return h
 
 
@@ -157,6 +157,24 @@ class TagType(EntityManager):
 
 class BoneType(EntityManager):
     "Bone"
+
+    def handlesopt(o, editor):
+        start_p = o.start_point
+        end_p = o.end_point
+        h = []
+        if not o["start_point"] is None:
+          s = mdlhandles.BoneHandle(start_p)
+          s.hint = "Start of %s"%o.shortname
+	  s.bone = o
+	  s.s_or_e = 0
+	  h = h + [ s ]
+        e = mdlhandles.BoneHandle(end_p) 
+        e.hint = "End of %s"%o.shortname
+	e.bone = o
+	e.s_or_e = 1
+	h = h + [e]
+	return h
+    
 # /AiV
 
 #
@@ -215,6 +233,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.5  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

@@ -25,6 +25,7 @@ import qtoolbar
 import qmenu
 from mdlutils import *
 import mdltools
+import mdlhandles
 from qbasemgr import BaseLayout
 from qbasemgr import MPPage
 
@@ -50,21 +51,16 @@ class ModelLayout(BaseLayout):
 
     def bs_skinform(self, panel):
         fp = panel.newpanel()
-#        TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 0)
-#        NegBtn = qtoolbar.button(self.neg1click, "negative poly||When a polyhedron is marked as negative, it behaves like a hole : every polyhedron in the same group as this one is 'digged' by the overlapping part.\n\nUsing 'Brush subtraction' in the 'Commands' menu is the same as marking the polyhedron negative, except that digging is not performed immediately. This helps keep the map clear.\n\nNegative polyhedrons appear in pink on the map.", ico_maped, 23)
-#        self.buttons["negpoly"] = NegBtn
         tp = fp.newtoppanel(124)
-#        tp.newbottompanel(ico_maped_y,0).newbtnpanel([TexBtn, qtoolbar.widegap, NegBtn, qtoolbar.padright] + self.texflags("polyhedron"))
         self.skinform = tp.newdataform()
         self.skinform.header = 0
         self.skinform.sep = -79
         self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
 #        self.skinform.onchange = self.skinformchange
         self.skinview = fp.newmapview()
-        self.skinview.color = NOCOLOR
-        self.skinview.ondraw = self.skinviewdraw
+#        self.skinview.color = NOCOLOR
+#        self.skinview.ondraw = self.skinviewdraw
 #        self.skinview.onmouse = self.skinviewmouse
-#        self.skinview.hint = "|click to select texture"
         return fp
 
     def bs_additionalpages(self, panel):
@@ -107,24 +103,17 @@ class ModelLayout(BaseLayout):
                 return obj
 
     def fillskinform(self, reserved):
+        self.skinview.handles = []
+        self.skinview.ondraw = None
+        self.skinview.color = NOCOLOR
         self.skinview.invalidate(1)
+        mdlhandles.buildskinvertices(self.editor, self.skinview, self.editor.Root.currentcomponent)
         q = quarkx.newobj(':')   # internal object
         if self.editor.Root.currentcomponent is not None:
           q["header"] = "Selected Skin"
           q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
           q["ownedby"] = self.editor.Root.currentcomponent.shortname
         self.skinform.setdata(q, self.skinform.form)
-
-    def skinviewdraw(self, view):
-        tex = self.editor.Root.currentcomponent.currentskin
-        w,h = view.clientarea
-        cv = view.canvas()
-        cv.penstyle = PS_CLEAR
-        cv.brushcolor = GRAY
-        cv.rectangle(0,0,w,h)
-        if not (tex is None):
-          view.canvas().painttexture(tex, (0,0)+tex["Size"], BLACK)
-          return
 
     def selectcomponent(self, comp):
         self.editor.Root.setcomponent(comp)
@@ -195,6 +184,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.4  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

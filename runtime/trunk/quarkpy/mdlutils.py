@@ -14,6 +14,31 @@ Various Model editor utilities.
 
 import quarkx
 from qeditor import *
+from math import *
+
+#
+# Calculate Position of a Point along the vector AC, Keeping L (Length)
+#
+def ProjectKeepingLength(A,C,L):
+  def NormaliseVect(v1, v2):
+    le = sqrt( pow(v2.x - v1.x, 2) + 
+               pow(v2.y - v1.y, 2) +  
+               pow(v2.z - v1.z, 2) )
+    if (le <> 0): 
+      v = quarkx.vect( \
+        (v2.x - v1.x) / le, \
+        (v2.y - v1.y) / le, \
+        (v2.z - v1.z) / le  )
+    else:
+      v = quarkx.vect(0,0,0)
+    return v
+  n = NormaliseVect(A, C)
+  xxx = quarkx.vect(
+    A.x + (L * n.x),
+    A.y + (L * n.y),
+    A.z + (L * n.z)
+    )
+  return xxx
 
 #
 # Invalidate all views
@@ -36,11 +61,15 @@ def addframe(comp):
 #
 # Add a triangle to a given component
 #
-def addtriangle(comp,v1,v2,v3):
+def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
   if (comp is None) or (v1 is None) or (v2 is None) or (v3 is None):
     return
+  if (s1 is None) or (s2 is None) or (s3 is None):
+    return
+  if (t1 is None) or (t2 is None) or (t3 is None):
+    return
   tris = comp.triangles
-  tris = tris + [[v1,v2,v3]]
+  tris = tris + [[v1,s1,t1],[v2,s2,t2],[v3,s3,t3]]
   comp.triangle = tris
   invalidateviews()
 
@@ -109,6 +138,9 @@ class MdlUserDataPanel(UserDataPanel):
 #
 #
 #$Log$
+#Revision 1.4  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
