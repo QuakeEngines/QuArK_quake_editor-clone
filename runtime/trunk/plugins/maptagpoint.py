@@ -62,12 +62,28 @@ def makeedge(o, editor):
     item.o = o
   return item
 
+def makeplane(pos, editor):
+    item = quarkpy.qmenu.item("Tag Plane",MakePlaneClick,"|This command makes a tagged plane with the tagged edge and this point")
+    edge = gettaggededge(editor)
+    if edge is None:
+        item.state=qmenu.disabled
+    else:
+        item.pos = pos
+    return item
+
 def MakeEdgeClick(m):
   "assumes that a point is tagged"
   editor = mapeditor()
   if editor is None: return
   tagedge(m.tagged, m.o.pos, editor)
 
+def MakePlaneClick(m):
+    "assumes that an edge is tagged"
+    editor = mapeditor()
+    if editor is None: return
+    p1, p2 = gettaggededge(editor)
+    tagplane((m.pos,p1,p2), editor)
+    
 def tagpointitem(editor, origin):
   from maptagside import ClearTagClick
   oldtag = gettaggedpt(editor)
@@ -109,6 +125,7 @@ def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandl
 
   menu[1:1] = [tagpointitem(editor, self.pos),
                makeedge(self, editor),
+               makeplane(self.pos, editor),
                disttotagged(editor, self.pos)]
   return menu
 

@@ -41,11 +41,26 @@ class Tagging:
 #   in favor of gettaggedface below
 #
 def gettagged(editor):
-  " safe fetch of tagging.tagged attribute"
-  try:
-    return editor.tagging.tagged
-  except (AttributeError): return None
+    "safe fetch of tagging.tagged attribute"
+    try:
+        return editor.tagging.tagged
+    except (AttributeError):
+        pass
 
+
+def gettaggedplane(editor):
+    tagged = gettagged(editor)
+    if tagged is not None:
+        return tagged
+    try:
+        plane = editor.tagging.taggedplane
+        face = quarkx.newobj("tagged:f")
+        face.setthreepoints(plane,0)
+        return face
+    except (AttributeError):
+        pass
+  
+  
 def gettaggedpt(editor):
   "Returns the tagged point."
   try:
@@ -72,9 +87,9 @@ def gettaggedfaces(editor):
 # 2-point edges only
 #
 def gettaggedvtxedge(editor):
-  try:
-    return editor.tagging.taggededge
-  except (AttributeError): return None
+    try:
+        return editor.tagging.taggededge
+    except (AttributeError): return None
 
 #
 # face edges
@@ -101,12 +116,13 @@ def gettaggededge(editor):
 #  faces or faces tagged via tagging of edge-handles
 #
 def gettaggedface(editor):
-  tagged = gettagged(editor)
-  if tagged is not None:
-    return tagged
-  tagged = gettaggedfaceedge(editor)
-  if tagged is not None:
-    return tagged.face
+    tagged = gettagged(editor)
+    if tagged is not None:
+      return tagged
+    tagged = gettaggedfaceedge(editor)
+    if tagged is not None:
+      return tagged.face
+
 
 #
 # Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
@@ -129,8 +145,6 @@ def gettaggedtexplane(editor):
     b2cp = gettaggedb2cp(editor)
     if b2cp is not None:
         return quarkpy.b2utils.texPlaneFromCph(b2cp, editor)
-        
-    
     
 
 #
@@ -148,6 +162,11 @@ def tagface(face, editor):
   editor.tagging.tagged = face
   editor.invalidateviews()
   
+def tagplane(plane, editor):
+  editor.tagging = Tagging()
+  editor.tagging.taggedplane = plane
+  editor.invalidateviews()
+
 def tagpoint(point, editor):
   editor.tagging = Tagging()
   editor.tagging.tagpt = point
@@ -263,6 +282,15 @@ def tagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     p2 = view.proj(pt2)
     cv.line(p1,p2)
     drawsquare(cv, (p1+p2)/2, 8)
+    return
+  tagged=gettaggedplane(editor)
+  if tagged is not None:
+    p1, p2, p3 = editor.tagging.taggedplane
+    center = (p1+p2+p3)/3.0
+    center = view.proj(center)
+    for pt in (p1, p2, p3):
+        pt = view.proj(pt)
+        cv.line(center,pt)
     return
  
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = tagfinishdrawing

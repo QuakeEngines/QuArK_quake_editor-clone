@@ -687,58 +687,58 @@ def ClearTagClick (m):
 
 
 def GlueSideClick(m):
-  "glues selection or current side handle to tagged side or point"
-  editor = mapeditor()
-  if editor is None: return
-  try:
-    sides = [m.side]
-  except (AttributeError):
-    sides = editor.layout.explorer.sellist
-  if (len(sides) < 1):
-    quarkx.msgbox("Nothing to do", MT_WARNING, MB_OK)
-    return
-  for side in sides:
-    if (side.type != ":f"):
-      quarkx.msgbox("Some selected object is not a face", MT_ERROR, MB_OK)
-      return
-  tagged = gettagged(editor)
-  if tagged is None:
-    tagpt = gettaggedpt(editor)
-    if tagpt is None:
-      return
-  else:
-    tagpt = tagged.origin
-  editor.invalidateviews()
-  gluit = 1
-  ActionString = "glue to tagged"
-  undo = quarkx.action()
-  for side in sides:
-    fulcrum = side.origin
+    "glues selection or current side handle to tagged side or point"
+    editor = mapeditor()
+    if editor is None: return
     try:
-      fulcrum = m.fulcrum
-      gluit = 0
-      ActionString = "Align to tagged"
-    except (AttributeError) : pass
-    new=side.copy()
-    if tagged is not None:
-      #
-      # if necessary (it usually is), flip normal of new side
-      #
-      if new.normal*tagged.normal < 0:
-        new.distortion(-tagged.normal, fulcrum)
-      else: new.distortion(tagged.normal,side.origin)
-    if gluit:
-      #
-      # force the translation vector to be parallel to the normal vector to avoid texture translation
-      #
-      new.translate(new.normal * (new.normal*tagpt - new.dist))
-  undo.exchange(side, new)
-  editor.layout.explorer.sellist = []
-  editor.ok(undo, ActionString)
-  if gluit and menlinkonglue.state==qmenu.checked:
-    if quarkx.msgbox("Link glued face?",MT_CONFIRMATION,MB_YES|MB_NO)==MR_YES:
-      m.side=new
-      LinkFaceClick(m,0)
+        sides = [m.side]
+    except (AttributeError):
+        sides = editor.layout.explorer.sellist
+    if (len(sides) < 1):
+        quarkx.msgbox("Nothing to do", MT_WARNING, MB_OK)
+        return
+    for side in sides:
+        if (side.type != ":f"):
+            quarkx.msgbox("Some selected object is not a face", MT_ERROR, MB_OK)
+            return
+    tagged = gettaggedplane(editor)
+    if tagged is None:
+        tagpt = gettaggedpt(editor)
+        if tagpt is None:
+            return
+    else:
+        tagpt = tagged.origin
+    editor.invalidateviews()
+    gluit = 1
+    ActionString = "glue to tagged"
+    undo = quarkx.action()
+    for side in sides:
+        fulcrum = side.origin
+        try:
+            fulcrum = m.fulcrum
+            gluit = 0
+            ActionString = "Align to tagged"
+        except (AttributeError) : pass
+        new=side.copy()
+        if tagged is not None:
+            #
+            # if necessary (it usually is), flip normal of new side
+            #
+            if new.normal*tagged.normal < 0:
+              new.distortion(-tagged.normal, fulcrum)
+            else: new.distortion(tagged.normal,side.origin)
+        if gluit:
+            #
+            # force the translation vector to be parallel to the normal vector to avoid texture translation
+            #
+            new.translate(new.normal * (new.normal*tagpt - new.dist))
+    undo.exchange(side, new)
+    editor.layout.explorer.sellist = []
+    editor.ok(undo, ActionString)
+    if gluit and menlinkonglue.state==qmenu.checked:
+        if quarkx.msgbox("Link glued face?",MT_CONFIRMATION,MB_YES|MB_NO)==MR_YES:
+            m.side=new
+            LinkFaceClick(m,0)
 
 #
 # -------------- Managing Tagged List --------------
@@ -791,7 +791,7 @@ def SelectTaggedClick(m):
 
 def aligntexstate(aligntex, tagged, o):
   "sorts out what kind of abuttment, if any for tagged side and this one"
-  if tagged is None or o is tagged:
+  if tagged is None or o is tagged or tagged.treeparent is None:
      aligntex.state = qmenu.disabled
      return
 #  if coplanar_adjacent_sides(tagged, o):
@@ -1509,7 +1509,7 @@ linktext = "|Linking is a device for making it easier to keep certain sets of fa
 def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   "the new right-mouse for sides"
   menu = oldfacemenu(o, editor)
-  tagged = gettagged(editor)
+  tagged = gettaggedplane(editor)
   glueitem = gluemenuitem("&Glue to tagged", GlueSideClick, o, gluetext)
   glueitem.label = 'glue'
   linktotagged = gluemenuitem("&Link face to tagged", LinkFaceClick, o, "|Links face to tagged for the `glue to linked' command.\n\nNormally the `Glue to tagged' command with the `link on glue' option set should be used instead of this command, because this command doesn't move the face to what it gets linked to, and so doesn't test for broken polys.")
@@ -1620,7 +1620,7 @@ typenames = {
 def cutpoly(editor, o):
   item = qmenu.item("Cut poly &along tagged",CutPolyClick,"|Cuts this poly along the plane of the tagged face.")
   item.state = qmenu.disabled
-  tagged = gettagged(editor)
+  tagged = gettaggedplane(editor)
   if tagged is None:
     return item    
   cutter1 = tagged.copy()
@@ -1748,7 +1748,7 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
     face = None
     mentagside.state = qmenu.disabled
 #    mengluelinked.state = qmenu.disabled
-  tagged = gettagged(editor)
+  tagged = gettaggedplane(editor)
   if tagged is None:
     if gettaggedpt(editor):
       mencleartag.state = qmenu.normal
@@ -1808,6 +1808,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2001/05/03 06:47:06  tiglari
+#Fixed no wrap to paralell faces and failure of wrap hotkey bugs
+#
 #Revision 1.14  2001/04/15 08:53:44  tiglari
 #move merge poly code to mergepolys.py; add merge polys in group functionality
 #
