@@ -5,7 +5,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 #
-#  This plugin adapted from mapcorridor.py, with permission
+#  This plugin adapted from mapextruder.py, with permission
 #    of CryTek Studios.
 #
 #$Header$
@@ -73,41 +73,6 @@ from quarkpy.qhandles import aligntogrid
 #
 
 
-#
-# A handle for edges
-#
-class EdgeHandle(quarkpy.qhandles.GenericHandle):
-    undomsg = "drag edge"
-    hint = "tag this edge for lining up objects, etc."
-    
-    def __init__(self, face, vtx1, vtx2):
-        pos = (vtx2+vtx1)/2
-        qhandles.GenericHandle.__init__(self, pos)
-        self.face = face
-        self.vtx1, self.vtx2 = vtx1, vtx2
-        cur = FaceHandleCursor()
-        cur.pos = pos
-        cur.face = face
-        self.cursor = cur.getcursor
- 
-    def menu(self, editor, view):
-        self.click(editor)
-        editor.layout.clickedview = view
-        return self.OriginItems(editor, view)
-
-    def draw(self, view, cv, draghandle=None):
-        p = view.proj(self.pos)
-        oldcolor = cv.pencolor
-        p1 = view.proj(self.vtx1)
-        p2 = view.proj(self.vtx2)
-        cv.pencolor = oldcolor
-        if p.visible:
-            cv.reset()
-            cv.brushcolor = view.darkcolor
-            radius = 3
-            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
-#            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
-
 class AxisHandle(MapRotateHandle):
   "a rotating handle that controls a normalized vector spec"
   
@@ -123,8 +88,7 @@ class AxisHandle(MapRotateHandle):
             new = self.dup.copy()
             new[self.spec] = av.tuple
         return [self.dup], [new], av
-
-
+          
 def CopyDefaultSpec(source, target, spec, default):
   if source[spec] is not None:
     target[spec] = source[spec]
@@ -267,7 +231,7 @@ def tex_pos(self):
   if editor is None:
     quarkx.msgbox("Oops, no editor",MT_ERROR,MB_OK)
   dup = editor.layout.explorer.sellist[0]
-  if dup is None or dup["macro"] != "dup corridor":
+  if dup is None or dup["macro"] != "dup extruder":
     quarkx.msgbox("Oops, right kind of duplicator not selected",
        MT_ERROR,MB_OK)
   data = ExtruderDupData(dup)
@@ -298,7 +262,7 @@ quarkpy.qmacro.MACRO_tex_pos = tex_pos
 # -- ExtruderDupData class
 #
 # a class for defining methods to get at
-#   corridor duplicator data; half-assed OOP-ification
+#   extruder duplicator data; half-assed OOP-ification
 #
 
 
@@ -506,7 +470,7 @@ class ExtruderDupData:
            break
          z2 = self.Zaxis(i)
          if (zaxis-z2):
-           mat=matrix_rot_v2u(z2, zaxis)
+           mat=matrix_rot_u2v(zaxis, z2)
            xaxis, yaxis, zaxis = mat*xaxis, mat*yaxis, z2
      self.cachedj = j
      self.cachedax = xaxis, yaxis, zaxis
@@ -566,14 +530,11 @@ def get_path_scale(dup, j):
   else:
     return scale[0]
   
-#
-# ughh this needs redone right
-#
-def get_path_bevel(dup, j, attr="bevel"):
+def get_path_bevel(dup, j):
   if j==0:
     return 0.0
   data = ExtruderDupData(dup)
-  bevel = data.PathPoint(j)[attr]
+  bevel = data.PathPoint(j)["bevel"]
 #  squawk("scale: %s"%scale)
   if bevel is None:
     return 0.0
@@ -614,18 +575,359 @@ def set_path_pos(dup, k, pos):
        point=k
    point["location"] = (pos-dup.origin).tuple
 
+#
+#          ***** MAJOR SECTION *****
+#
+# -- Path Point control stuff.
+#     the path points control the path of the duplicator;
+#     their RMB commands summon up various dialogs
+#
+# A dialog for setting properties at a Path Point
+#   which control the position of the next one (probably
+#   a Bad Idea, but I'm leaving it in for now)
+#
+class SegmentDlg (quarkpy.dlgclasses.LiveEditDlg):
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (200,220)
+    dfsep = 0.50
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Angle to Next"
+
+        sep: = {Typ="S" Txt=" "} 
+
+        world: =
+        {
+        Txt = "Map Coords"
+        Typ = "X"
+        Hint = "If checked, coordinates are relative to world." $0D "  Otherwise to previous."
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+        pitch: = 
+        {
+        Txt = "Pitch"
+        Typ = "EU"
+        Hint = "Pitch angle to next, in degrees"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+        yaw: = 
+        {
+        Txt = "Yaw"
+        Typ = "EU"
+        Hint = "Yaw angle to next, in degrees"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+         length: = 
+         {
+         Txt = "Distance"
+         Typ = "EU"
+         Hint = "Distance to next, in units"
+         }
+
+ 
+         sep: = {Typ="S" Txt=" "} 
+
+         exit:py = { }
+    }
+    """
+
+#
+# A dialog for setting properties of a path point
+#
+class KinkDlg (quarkpy.dlgclasses.LiveEditDlg):
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (200,200)
+    dfsep = 0.55
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Path Point Properties"
+
+        coords: =
+        {
+        Txt = "Coords"
+        Typ = "CL"
+        Hint = "What the coords are relative to; world origin," $0D " origin of generator, or previous path-point."
+        items = "world" $0D "gen. origin" $0D "previous"
+        values = "w" $0D "o" $0D "p"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+        position: =
+        {
+        Txt = "Position"
+        Typ = "EF3"
+        Hint = "Position of point, coords relativized as specified above"
+        }
+        
+
+        scale: =
+        {
+        Txt = "Scale"
+        Typ = "EF1"
+        Hint = "Size scale at this point, w.r.t. beginning" $0D " Default=1.0"
+        }
+
+        bevel: =
+        {
+        Txt = "Bevel"
+        Typ = "EF1"
+        Hint = "Bevel (w.r.t. beginning, applied after scale)"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+        anchors: =
+        {
+        Txt = "Show anchors"
+        Typ = "X"
+        Hint = "If checked, non-draggable `anchor' handles are shown that you can tag for attaching things to"
+        }
+        
+         elbow: =
+         {
+         Txt = "&" Typ = "EF1"
+         Hint = "elbowing, mebbe not implemented"
+         }
+         
+        sep: = {Typ="S" Txt=" "} 
+
+        exit:py = { }
+    }
+    """
+
 
 #
 #  The handle
 #
 class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
-  "A pass-through point for the path of the corridor."
+  "A pass-through point for the path of the extruder."
 
   def __init__(self, dup, k):
     self.data = ExtruderDupData(dup)
     pos = self.data.PathPos(k)
     quarkpy.maphandles.CenterHandle.__init__(self, pos, dup, MapColor("Axis"))
     self.k = k
+
+  def menu(self, editor, view):
+
+    def ins1click(m, dup=self.centerof, k=self.k, editor=editor, data=self.data):
+      loc = data.PathLoc(k)
+#      squawk("k: %d, loc: %s"%(k,loc))
+      new = quarkx.newobj("rib:g")
+      spine = get_spine(dup)
+      ribs = data.PathPoints()
+      undo = quarkx.action()
+      if k == len(ribs)-1:
+        loc0 = data.PathLoc(k-1)
+#        squawk(`loc-loc0`)
+        newloc = loc+96.0*(loc-loc0).normalized
+        new["location"]=newloc.tuple
+        undo.put(spine, new)
+      else:
+        loc1 = data.PathLoc(k+1)
+#        squawk("loc1: %s"%loc1)
+        new["location"] = ((loc1+loc)/2).tuple
+        undo.put(spine, new, ribs[k+1])
+      editor.ok(undo,"Add section")
+      editor.layout.explorer.sellist=[dup]
+
+    def del1click(m, data=self.data, k=self.k, editor=editor):
+      ribs = data.PathPoints()
+      if len(ribs)<=2:
+        quarkx.msgbox("I'm sorry Dave, I can't let you do that",
+          MT_ERROR, MB_OK)
+        return
+      undo = quarkx.action()
+      undo.exchange(ribs[k], None)
+      editor.ok(undo, "Delete section")
+      editor.layout.explorer.sellist = [data.dup]
+
+    def ang1click(m, dup=self.centerof, j=self.k, editor=editor):
+
+      #
+      # Interestingly, it appears that the data object
+      #  can do the work of the usual `pack' object for
+      #  LiveEditDialogs.
+      #
+      
+      data = ExtruderDupData(dup)
+      data.j = j
+      
+      def setup(self, data=data):
+        src = self.src
+        self.data=data
+        dup, j = data.dup, data.j
+        world = src["world"] = quarkx.setupsubset(SS_MAP, "Options")["WorldSegCoords"]
+        if world:
+          xaxis = quarkx.vect(0,-1,0)
+          zaxis = quarkx.vect(1,0,0)
+          yaxis = quarkx.vect(0,0,1)
+        else:          
+          xaxis, yaxis, zaxis = data.Axes(j-1)
+        curr = data.PathPos(j)
+        next = data.PathPos(j+1)
+        diff = next-curr
+        src["length"] = "%.2f"%abs(diff)
+        dir = diff.normalized
+        src["pitch"] = "%.2f"%-(math.acos(dir*yaxis)/deg2rad-90)
+        src["yaw"] =  "%.2f"%(math.atan2(dir*zaxis, dir*xaxis)/deg2rad-90)
+        data.world = world
+        
+      def action(self, data=data, editor=editor):
+        src = self.src
+        pitch = eval(src["pitch"])*deg2rad
+        yaw = eval(src["yaw"])*deg2rad
+        length = eval(src["length"])
+        dup, j = data.dup, data.j
+        data.dup = dup.copy()
+        loc = data.PathLoc(j)
+        world = src["world"]
+        if data.world != world:
+           quarkx.setupsubset(SS_MAP, "Options")["WorldSegCoords"] = world       
+           data.world=world
+           self.setup(self)
+           return
+        if world:
+          xaxis = quarkx.vect(0,1,0)
+          zaxis = quarkx.vect(1,0,0)
+          yaxis = quarkx.vect(0,0,1)
+        else:
+          xaxis, yaxis, zaxis = data.Axes(j-1)
+        loc = data.PathLoc(j)
+        point = data.PathPoint(j+1)
+        diff = math.sin(pitch)*yaxis+math.cos(pitch)*zaxis
+#        diff = quarkx.vect(0, math.cos(pitch), math.sin(pitch))
+        mat = RotMat(yaxis, yaw)
+        diff = length*(mat*diff)
+        point["location"] = (loc+diff).tuple
+        undo = quarkx.action()
+        undo.exchange(dup, data.dup)
+        editor.ok(undo, "Move path point")
+        editor.layout.explorer.sellist = [data.dup]
+                
+      SegmentDlg(quarkx.clickform, 'extruderpath', editor, setup, action)
+
+
+    def kink1click(m, dup=self.centerof, j=self.k, editor=editor):
+      class pack:
+        "just a place to stick stuff"
+          
+      data = ExtruderDupData(dup)
+      data.j = j
+          
+      def setup(self, data=data):
+        src = self.src
+        self.data=data
+        dup, j = data.dup, data.j
+        coords = src["coords"] = quarkx.setupsubset(SS_MAP, "Options")["KinkCoords"]
+        if coords is None:
+          coords = src["coords"] = "w"
+        pos = data.PathPos(j)
+        if coords=="o":
+          pos = pos-dup.origin
+        elif coords=="p":
+          pos = data.PathPos(j-1)
+        src["position"] = pos.tuple
+        src["scale"] = get_path_scale(dup, j),
+        src["bevel"] = get_path_bevel(dup, j),
+        src["anchors"] = data.PathPoint(j)["anchors"]
+        data.coords = coords        
+        
+      def action(self, data=data, editor=editor):
+        src = self.src
+        dup, j = data.dup, data.j
+        coords = src["coords"]
+        if coords != data.coords:
+          quarkx.setupsubset(SS_MAP, "Options")["KinkCoords"] = coords              
+          data.coords = coords
+          self.setup(self)
+
+        pos = data.PathPos(j)
+        newpos = quarkx.vect(src["position"])
+        if coords=="o":
+          newpos = newpos+dup.origin
+        elif coords=="p":
+          newpos = newpos + data.PathPos(j-1)
+
+        point = data.PathPoint(j)
+        undo=quarkx.action()
+        if newpos-pos:
+          newloc = (newpos-dup.origin).tuple
+          undo.setspec(point, "location", newloc)
+          editor.ok(undo, "change position")
+        elif point["anchors"] != src["anchors"]:
+          undo.setspec(point, "anchors", src["anchors"])
+          editor.ok(undo, "toggle show anchors")
+        else:
+          scale, = src["scale"]
+          bevel, = src["bevel"]
+          point = data.PathPoint(j)
+          if scale == 1.0:
+            undo.setspec(point,"scale",None)
+          else:
+            undo.setspec(point, "scale", (scale,))
+          if bevel == 0.0:
+            undo.setspec(point,"bevel",None)
+          else:
+            undo.setspec(point, "bevel", (bevel,))
+          editor.ok(undo, "set pathpoint scale")
+
+        editor.layout.explorer.sellist = [data.dup]
+
+      KinkDlg(quarkx.clickform, 'extruderpathkink', editor, setup, action)
+
+    def ext1click(m, dup=self.centerof, j=self.k, editor=editor):
+      data=ExtruderDupData(dup)
+      tagged = m.tagged
+      dist = tagged.dist
+      norm = tagged.normal
+      zaxis = data.Zaxis(j-1)
+      pos = projectpointtoplane(data.PathPos(j), zaxis, dist*norm, norm)
+      point = data.PathPoint(j)
+      undo=quarkx.action()
+      undo.setspec(point, "location", (pos-dup.origin).tuple)
+      editor.ok(undo,"extend to tagged")
+      
+      
+
+    ang1 = qmenu.item("A&ngle to next", ang1click, "angle to next")
+    kink1 = qmenu.item("&Path point properties", kink1click, "scale, etc. of kink")
+    ins1 = qmenu.item("&Add a point", ins1click, "add a new control point")
+    del1 = qmenu.item("&Delete point", del1click, "remove this control point")
+    ext1 = qmenu.item("&Extend to tagged face", ext1click)
+    data = ExtruderDupData(self.centerof)
+    length = data.PathLen()
+    if length<=2:
+      del1.state = qmenu.disabled
+    if self.k == length-1:
+      ang1.state=qmenu.disabled
+    if self.k < 1:
+      kink1.state = qmenu.disabled
+    tagface = gettaggedface(editor)
+    if self.k < length-1 or tagface is None:
+      ext1.state=qmenu.disabled
+    else:
+      ext1.tagged = tagface
+    return [ins1, del1, ang1, kink1, ext1] + self.OriginItems(editor, view)
 
 
   def drag(self, v1, v2, flags, view):
@@ -636,7 +938,7 @@ class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
         if flags&MB_CTRL:
             newpos = aligntogrid(pos0+delta,1)
         else:
-            delta = quarkpy.qhandles.aligntogrid(delta, 1)
+            delta = quarkpy.qhandles.aligntogrid(delta,1)
             newpos = pos0+delta
         if delta or (flags&MB_REDIMAGE):
             new = self.centerof.copy()
@@ -996,246 +1298,151 @@ def attach_sides(data, j, brush, bottom, cycle, names, texpos):
       brush.appenditem(new)
       last = pos
 
-
-def make_shape(dup, init_seg, make_seg, limit=0):
-    data = ExtruderDupData(dup)
-    texpos = dup.findname("texinfo:g")
-    if dup["elbow"]:
-        global_elbow, = dup["elbow"]
-    else:
-        global_elbow = None
-    shapes = []
-    if limit:
-      pathlength=limit
-    else:
-      pathlength = len(data.PathPoints())
-    org = prev_org = data.Org()
-    xaxis, yaxis, prev_z = axes = data.Axes()
-    class pack:
-          "a place to stick stuff"
-    pack.axislist = range(pathlength)
-    shapes = init_seg(data, dup, org, axes, pack)
-    pack.axislist[0] = axes
-    for j in range(1, pathlength):
-        local_elbow = get_path_bevel(dup,j,"elbow")
-        if not local_elbow:
-            local_elbow = global_elbow
-        if j>1:
-            pack.front_elbow = prev_elbow
-        if j<pathlength-1:
-            pack.back_elbow = local_elbow
-        prev_elbow = local_elbow
-        curr_org = data.PathPos(j)
-        xaxis, yaxis, zaxis = pack.axislist[j] = data.Axes(j)
-        if j<pathlength-1:
-            mat=matrix_rot_v2u((zaxis+prev_z).normalized, prev_z)
-            norm = mat*prev_z
-        else:
-            zaxis = norm = prev_z
-        shapes=shapes+make_seg(data, j, pathlength,prev_org, curr_org,
-                          prev_z, norm, zaxis, pack)
-        prev_z = zaxis
-        prev_org = curr_org
-    return shapes
-
-
+#
+# makes the brushes
+#
 def make_brushes(dup, cycles, names, limit=0):
-
-    def init_seg(data, dup, org, (xaxis, yaxis, zaxis), pack):
-        pack.texpos = dup.findname("texinfo:g")
-        front = quarkx.newobj("front:f")
-        front.setthreepoints((org, org+xaxis, org+yaxis),0)
-        front["tex"] = dup["tex"]
-        front.setthreepoints((org, org+128*xaxis, org+128*yaxis), 2)
-        pack.front = front
-        return []
-
-    def make_seg(data, j, pathlength, prev_org, curr_org, prev_z, mid_z, zaxis, pack, cycles=cycles, names=names):
-        front = pack.front
-        texpos = pack.texpos
-        group = quarkx.newobj("cor_seg_%d:g"%j)
-        extension = abs(curr_org-prev_org)
-        zdir = curr_org-prev_org
-        zdirn = zdir.normalized
-        back = front.copy()
-        back.swapsides()
-        if j>1 and pack.front_elbow:
-            fchop = front.copy()
-            fchop.distortion(-prev_z, prev_org)
-            fchop.translate(pack.front_elbow*prev_z)
-        back.translate(zdir)
-        back.shortname = "back"
-        p0, p1, p2 = back.threepoints(0)
-        if j<pathlength-1:
-            back.distortion(mid_z, p0)
-            if pack.back_elbow:
-                bchop = back.copy()
-                bchop.distortion(zdirn,curr_org)
-                bchop.translate(-pack.back_elbow*zdirn)
-        else:
-            back.distortion(zaxis,p0)
-        for i in range(len(cycles)):
-            brush = quarkx.newobj("brush:p")
-            fside = front.copy()
-            bside = back.copy()
-            if j<pathlength-1 and pack.back_elbow:
-                  bside=bchop.copy()
-            if j>1 and pack.front_elbow:
-                  fside=fchop.copy()
-            brush.appenditem(fside), brush.appenditem(bside)
-            attach_sides(data, j, brush, front, cycles[i], names[i], texpos)
-            group.appenditem(brush)
-            #
-            # prepare the pack
-            #
-        front=back.copy()
-        front.shortname="front"
-        front.swapsides()
-        pack.front = front
-        return [group]
-
-    return make_shape(dup, init_seg, make_seg, limit)    
-
-
+  data = ExtruderDupData(dup)
+  texpos = dup.findname("texinfo:g")
+  brushes = []
+  if limit:
+    pathlength=limit
+  else:
+    pathlength = len(data.PathPoints())
+  org = prev_org = data.Org()
+  xaxis, yaxis, prev_z = axes = data.Axes()
+  front = quarkx.newobj("front:f")
+  front.setthreepoints((org, org+xaxis, org+yaxis),0)
+  front["tex"] = dup["tex"]
+  front.setthreepoints((org, org+128*xaxis, org+128*yaxis), 2)
+  for j in range(1, pathlength):
+      group = quarkx.newobj("cor_seg_%d:g"%j)
+      curr_org = data.PathPos(j)
+      extension = abs(curr_org-prev_org)
+      back = front.copy()
+      back.swapsides()
+      back.translate(data.PathPos(j)-org)
+      back.shortname = "back"
+      p0, p1, p2 = back.threepoints(0)
+      if j<pathlength-1:
+        zaxis = data.Zaxis(j)
+        mat=matrix_rot_u2v(prev_z, (zaxis+prev_z).normalized)
+        norm = mat*prev_z
+        back.distortion(norm, p0)
+        prev_z = zaxis
+      else:
+        back.distortion(prev_z,p0)
+      for i in range(len(cycles)):
+        brush = quarkx.newobj("brush:p")
+        brush.appenditem(back.copy()), brush.appenditem(front.copy())
+        attach_sides(data, j, brush, front, cycles[i], names[i], texpos)
+        group.appenditem(brush)
+      org = curr_org
+      front=back
+      front.swapsides()
+      brushes.append(group)
+  return brushes 
+  
 
 #
 # Used by make_patches below, rethink prolly called for
 #
 def restore(postuple, axes, org, face=None):
-    x, y, z = postuple
-    pos = x*axes[0]+y*axes[1]+z*axes[2]
-    if face is not None:
-      norm = face.normal
-      return projectpointtoplane(pos+org,norm,face.dist*norm,norm)
-    else:        
-      return pos+org
+      x, y, z = postuple
+      pos = x*axes[0]+y*axes[1]+z*axes[2]
+      if face is not None:
+        norm = face.normal
+        return projectpointtoplane(pos+org,norm,face.dist*norm,norm)
+      else:        
+        return pos+org
 
 def make_patches(dup, points, limit=0, editor=None):
+    #
+    # lots of recomputation here that could be meliorized
+    #
+#    squawk("making")
+    data = ExtruderDupData(dup)
+    prev_axes = axes = data.Axes()
+#    if editor is None:
+#      editor=mapeditor()
+#    if editor is None:
+#      return
+      
+    texpos = dup.findname("texinfo:g")
+    texface = quarkx.newobj(":f")
+    patches = []
+    inverse = dup["inverse"]
+    numpoints = len(points)
+    if limit:
+      pathlength=limit
+    else:
+      pathlength = len(data.PathPoints())
+    prev_org = dup.origin
+    if dup["open"]:
+      dopoints = numpoints-1
+    else:
+      dopoints = numpoints
+    prev_pos = range(numpoints)
+    xaxis, yaxis, prev_z = axes = data.Axes()
+    for k in range(numpoints):
+      prev_pos[k] = prev_org+xaxis*points[k].x+yaxis*points[k].y
+    prev_pos.append(prev_pos[0])
+    #
+    # we look at the end-point of the segment
+    #
+    for j in range(1,pathlength):
+      group = quarkx.newobj("cor_seg_%d:g"%j)
+      curr_org = data.PathPos(j)
+      extension = abs(curr_org-prev_org)
+#      squawk("j: %d; ext: %s"%(j, extension))
+      curr_pos = range(numpoints)
+      xaxis, yaxis, zaxis = axes = data.Axes(j)
+      if j<pathlength-1:
+        mat=matrix_rot_u2v(prev_z, (zaxis+prev_z).normalized)
+        planenorm = mat*prev_z
+      else:
+        planenorm=None
+      for k in range(numpoints):
+          curr_pos[k] = data.CircPos(k, j, planenorm)
+      curr_pos.append(curr_pos[0])
+      for k in range(0, dopoints):
+        pos0 = prev_pos[k]
+        pos1 = prev_pos[k+1]
+        pos0e, pos1e = curr_pos[k], curr_pos[k+1]
+        v = range(16)
+        v[0], v[3], v[12], v[15] = pos0, pos1, pos0e, pos1e
+        b3 = quarkx.newobj("side %d:b3"%k)
+        adjustinternals(v, 0, 1, 4)
+        SetBezierPointsVec(b3, v)
+        if texpos is not None:
+#          squawk(`k`)
+#          side = texpos.subitem[k]
+#          squawk(`side`)
+          side = texpos.findname("side %d:g"%k)
+          p0 = restore(side["p0"],prev_axes,prev_org)
+          p1 = restore(side["p1"],prev_axes,prev_org)
+          p2 = restore(side["p2"],prev_axes,prev_org)
+#          setthreepointspatch(b3, (p0, p1, p2))
+#          b3.texturename=side["tex"]
+          texface.setthreepoints((p0, p1, p2),1)
+          texface.texturename=side["tex"]
+          texface.setthreepoints((p0, p1, p2), 2)
+          tex_face2patch(editor,texface,b3)
 
-    def init_seg(data, dup, org, (xaxis, yaxis, zaxis), pack, points=points):
-        pack.texpos = dup.findname("texinfo:g")
-        pack.texface = quarkx.newobj(":f")
-        pack.inverse = dup["inverse"]
-        numpoints = len(points)
-        if dup["open"]:
-            pack.dopoints = numpoints-1
         else:
-            pack.dopoints = numpoints
-        prev_pos = range(numpoints)
-        for k in range(numpoints):
-            prev_pos[k] = org+xaxis*points[k].x+yaxis*points[k].y
-        prev_pos.append(prev_pos[0])
-        pack.prev_pos = prev_pos
-        pack.numpoints = numpoints
-        pack.texname = dup["tex"]
-        return []
-
-    def make_seg(data, j, pathlength, prev_org, curr_org, prev_z, mid_z, zaxis, pack):
-        numpoints = pack.numpoints
-        dopoints = pack.dopoints
-        texpos = pack.texpos
-        inverse = pack.inverse
-        prev_pos = pack.prev_pos
-        group = quarkx.newobj("cor_seg_%d:g"%j)
-        extension = abs(curr_org-prev_org)
-        curr_pos = range(numpoints)
-        for k in range(numpoints):
-            curr_pos[k] = data.CircPos(k, j, mid_z)
-  #      squawk(`numpoints`)
-  #      squawk(`dopoints`)
-        curr_pos.append(curr_pos[0])
-        for k in range(0, dopoints):
-            pos0 = prev_pos[k]
-            pos1 = prev_pos[k+1]
-            if j>1 and pack.front_elbow:
-                def mapfront(v, org=prev_org+pack.front_elbow*prev_z, along=prev_z):
-                    return projectpointtoplane(v, along, org, along)
-                pos0, pos1 = map(mapfront, (pos0, pos1))        
-            pos0e, pos1e = curr_pos[k], curr_pos[k+1]
-            if j<pathlength-1 and pack.back_elbow:
-                def mapback(v, org=curr_org-pack.back_elbow*prev_z, along=prev_z):
-                    return projectpointtoplane(v, along, org, along)
-                pos0e, pos1e = map(mapback, (pos0e, pos1e))
-            v = range(16)
-            v[0], v[3], v[12], v[15] = pos0, pos1, pos0e, pos1e
-            b3 = quarkx.newobj("side %d:b3"%k)
-            adjustinternals(v, 0, 1, 4)
-            SetBezierPointsVec(b3, v)
-            if texpos is not None:
-                side = texpos.findname("side %d:g"%k)
-                p0 = restore(side["p0"],prev_axes,prev_org)
-                p1 = restore(side["p1"],prev_axes,prev_org)
-                p2 = restore(side["p2"],prev_axes,prev_org)
-                texface.setthreepoints((p0, p1, p2),1)
-                texface.texturename=side["tex"]
-                texface.setthreepoints((p0, p1, p2), 2)
-                tex_face2patch(editor,texface,b3)
-            else:
-                b3["tex"] = pack.texname
-            if not inverse:
-                b3.swapsides()
-            b3["_ptype"] = 2
-            group.appenditem(b3)
-        pack.prev_pos = curr_pos
-        return [group]
-
-    return make_shape(dup, init_seg, make_seg, limit)    
-
-
-def make_elbows(dup, elbow, inverse, points, editor=None):
-
-    def init_seg(data, dup, org, (xaxis, yaxis, zaxis), pack, inverse=inverse, points=points):
-        pack.texpos = dup.findname("texinfo:g")
-        numpoints = len(points)
-        if dup["open"]:
-            pack.dopoints = numpoints-1
-        else:
-            pack.dopoints = numpoints
-        pack.numpoints = numpoints
-        pack.texname = dup["tex"]
-        return []
-
-    def make_seg(data, j, pathlength, prev_org, curr_org, prev_z, mid_z, next_z, pack, elbow=elbow, inverse=inverse):
-        if j==pathlength-1:
-            return []
-        numpoints = pack.numpoints
-        dopoints = pack.dopoints
-        texpos = pack.texpos
-        group = quarkx.newobj("cor_seg_%d:g"%j)
-        extension = abs(curr_org-prev_org)
-        zdirn = (curr_org-prev_org).normalized
-        def make_ring(zaxis, displacement,data=data,j=j,numpoints=numpoints):
-            possies= range(numpoints)
-            for k in range(numpoints):
-                possies[k] = data.CircPos(k, j, zaxis)+displacement*zaxis
-            possies.append(possies[0])
-            return possies
-        mid_pos = make_ring(mid_z, 0)
-        def mapfront(v, org=curr_org-pack.back_elbow*prev_z, along=prev_z):
-            return projectpointtoplane(v, along, org, along)
-        start_pos=map(mapfront, mid_pos)
-        def mapback(v, org=curr_org+pack.back_elbow*next_z, along=next_z):
-            return projectpointtoplane(v, along, org, along)
-        end_pos = map(mapback, mid_pos)
-        def make_row(start, end, tex):
-            def v5(v3, t2):
-                return quarkx.vect(v3.tuple+t2)
-            return [v5(start,(tex,0.0)),v5((start+end)/2.0,(tex,0.5)),v5(end,(tex,1.0))]
-            
-        for k in range(0, dopoints):
-            cp = [make_row(start_pos[k], start_pos[k+1], 0.0),
-                  make_row(mid_pos[k], mid_pos[k+1], 0.5),
-                  make_row(end_pos[k], end_pos[k+1], 1.0)]
-            b2 = quarkx.newobj("side %d:b2"%k)
-            b2.cp = cp
-            b2["tex"] = pack.texname
-            if not inverse:
-                b2.swapsides()
-            group.appenditem(b2)
-        return [group]
-
-    return make_shape(dup, init_seg, make_seg, 0)    
-
+          b3["tex"] = dup["tex"]
+#        b3.texturename = data.CircAttr(k, "tex")
+#        b3.texturename = texname
+        if not inverse:
+          b3.swapsides()
+        b3["_ptype"] = 2
+        group.appenditem(b3)
+      prev_org = curr_org
+      prev_axes = axes
+      prev_pos = curr_pos
+      prev_z = zaxis
+      patches.append(group)
+    return(patches)  
 
 #
 #          ***** MAJOR SECTION *****
@@ -1383,7 +1590,7 @@ class ExtruderAnchorHandle(quarkpy.maphandles.CenterHandle):
      return self.OriginItems(editor, view)[1:]
 
 class ExtruderCircHandle(quarkpy.maphandles.CenterHandle):
-  "A pass-through point for a corridor circumference"
+  "A pass-through point for a extruder circumference"
 
   def __init__(self, dup, k):
     data = ExtruderDupData(dup)
@@ -1553,7 +1760,7 @@ class TexDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
 
-class TweenHandle(EdgeHandle):
+class TweenHandle(quarkpy.maphandles.EdgeHandle):
     "handle between two passthru's, for adding a new one"
     undomsg = "add point"
     hint = "drag to add point"
@@ -1680,28 +1887,59 @@ def gettaggedcordup(editor):
     
   
 def extrudermenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_func):
-    "duplicator entity menu"
-    menu = oldmenu(o, editor)
-    if o["macro"] !="dup extruder":
-        return menu
-    testconc1 = qmenu.item("test brushes",testbrushes)
-    testpipe1 = qmenu.item("test pipe", testpipe)
-    testconc1.o = testpipe1.o = o
-
-    n2d = qmenu.item("&2d view", editor.layout.new2dclick)
-
-    n2d.o = o
-
-    numen = [n2d]
-
-    if MapOption("Developer"):
-        numen = numen + [testconc1,  testpipe1]
-    menu[:0] = numen + [qmenu.sep]
+  "duplicator entity menu"
+  menu = oldmenu(o, editor)
+  if o["macro"] !="dup extruder" and o["macro"]!="dup patchextruder":
     return menu
+
+  testconc1 = qmenu.item("test brushes",testbrushes)
+  testpatch1 = qmenu.item("test patches",testpatches)
+  testpipe1 = qmenu.item("test pipe", testpipe)
+  testconc1.o = testpatch1.o = testpipe1.o = o
+
+  pathextrude = qmenu.item("Path Extrusion", PathExtrudeClick)
+  radextrude = qmenu.item("Radial Extrusion", RadialExtrudeClick)
+  
+  for item in (pathextrude, radextrude):
+    item.data = ExtruderDupData(o)
+    item.editor = editor
+    item.window = quarkx.clickform
+
+  def tagclick1(m, editor=editor, o=o):
+    tagcordup(o, editor)
+    
+  def cloneclick1(m, editor=editor, o=o):
+    TagPathPoints = ExtruderDupData(gettaggedcordup(editor)).PathPoints()
+    olddata = ExtruderDupData(o)
+    OldPathPoints = olddata.PathPoints()
+    NewPath = quarkx.newobj("spine:g")
+    for point in [OldPathPoints[0]]+TagPathPoints[1:]:
+      NewPath.appenditem(point.copy())
+    undo = quarkx.action()
+    undo.exchange(olddata.Path(), NewPath)
+    editor.ok(undo,"clone path")
+    
+
+
+  n2d = qmenu.item("&2d view", editor.layout.new2dclick)
+  tag = qmenu.item("&Tag", tagclick1, "|Tag duplicator for `clone path' operation")
+  tex = qmenu.item("T&exturing", tex_pos)
+  clone = qmenu.item("&Clone path", cloneclick1, "|Copy path information from tagged.")
+  
+  if gettaggedcordup(editor) is None:
+    clone.state = qmenu.disabled
+  
+  n2d.o = o
+#  numen = [n2d, tex, tag, clone]
+  numen = [n2d, tag, clone, pathextrude, radextrude]
+  if MapOption("Developer"):
+    numen = numen + [testconc1, testpatch1, testpipe1]
+  menu[:0] = numen + [qmenu.sep]
+  return menu
 
 quarkpy.mapentities.DuplicatorType.menu = extrudermenu
 
-def corridorchandles(dup, editor, view):
+def extruderchandles(dup, editor, view):
       chandles = []
       data = ExtruderDupData(dup)
       length = len(data.CircPoints())
@@ -1746,7 +1984,7 @@ class ExtruderDuplicator(StandardDuplicator):
 
     h = axishandles + [sidehandle]
 
-    chandles = corridorchandles(dup,editor,view)
+    chandles = extruderchandles(dup,editor,view)
 
     return h + chandles + DuplicatorManager.handles(self, editor, view)
 
@@ -1766,22 +2004,14 @@ class ExtruderDuplicator(StandardDuplicator):
     #
     points = data.CircCoords()
     group = quarkx.newobj("content:g")
-    group["_corridor_content"] = "1"
-    if dup["elbow"] is not None:
-        elbow,=dup["elbow"]
-        elbow_inverse=dup["inverse"]
-    else:
-        elbow=0
+    group["_extruder_content"] = "1"
     if dup["type"]=="b":
       cycles, nums = convexify(points)
       stuff = make_brushes(dup, cycles, nums, limit)
     elif dup["type"]=="t":
-      elbow_inverse=1
       cycles, names = pipeify(points, data)
       stuff = make_brushes(dup, cycles, names, limit)
-      elbow_inverse=1
     elif dup["type"]=="ab":
-      elbow_inverse=1
       square = data.CircBox(dup["edge"])
       points = data.CircCoords()
       result, names = convexify(points)
@@ -1792,20 +2022,21 @@ class ExtruderDuplicator(StandardDuplicator):
         sublist = neggies[i].findallsubitems("",":p")
         plist = box[i].findallsubitems("",":p")
         CSGlist(plist, sublist)
+
+#      sublist = subitemsfromlist(neggies,":p")
+#      plist = subitemsfromlist(box,":p")
+#      CSGlist(plist, sublist)
       stuff = box
     #
     # otherwise ...
     #
     else:
       stuff = make_patches(dup, points, limit)
-    if elbow:
-        stuff = stuff+make_elbows(dup, elbow, elbow_inverse, points)
-    
     for thing in stuff:
         group.appenditem(thing)
     info = quarkx.newobj("data:g")
     info.copyalldata(dup)
-    info["_corridor_data"]="1"
+    info["_extruder_data"]="1"
     return [group, info]
 
 #
@@ -1858,7 +2089,7 @@ def settexoption(opt):
 def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   menu = oldmenu(o, editor)
   info = o.findname("data:g")
-  if info is not None and info["_corridor_data"]:
+  if info is not None and info["_extruder_data"]:
     from mapmadsel import getstashed
     data = ExtruderDupData(info)
 
@@ -1978,7 +2209,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
         tagged = None
     if tagged is None:
         fromtagged.state = qmenu.disabled
-        fromtagged.hint = fromtagged.hint+"\n\nFor this menu item to be enabled, you must tag some faces in the first segment of the corridor."
+        fromtagged.hint = fromtagged.hint+"\n\nFor this menu item to be enabled, you must tag some faces in the first segment of the extruder."
     else:
       fromtagged.sources = tagged
     fromfirst = qmenu.item("From &first",WrapClick,"|Wraps texture from each face of first segment.")
@@ -2000,7 +2231,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
     wrap_texture = qmenu.popup("&Wrap Texture",list) 
 
 
-    revert = qmenu.item("Revert",RevertClick,"|Convert corridor group back to duplicator.\n\nThe effects of retexturing, holes made etc will all be lost.")
+    revert = qmenu.item("Revert",RevertClick,"|Convert extruder group back to duplicator.\n\nThe effects of retexturing, holes made etc will all be lost.")
 
     itemlist = [punch_inner,punch_outer, wrap_texture]
     item = qmenu.popup("Extruder Stuff",itemlist)
@@ -2021,11 +2252,13 @@ def view2ddup(editor, view, dup):
     "Special code to draw only the circumference handles"
 
     def drawdup(view, dup=dup, editor=editor):
-       gs = editor.gridstep
-       view.drawgrid(quarkx.vect(gs,0,0),quarkx.vect(0,gs,0),
-#         MapColor("GridLines"), DG_LINES, 0, quarkx.vect(0,0,0))
-         MapColor("GridLines"))
-       editor.finishdrawing(view)
+        gs = editor.gridstep
+        nullvect = view.vector('0')
+        zero = view.proj(nullvect)
+        xy = [view.scale()*quarkx.vect(gs,0,0),
+              view.scale()*quarkx.vect(0,gs,0)]
+        view.drawgrid(xy[0],xy[1],  MAROON) #, DG_LINES, 0, quarkx.vect(0,0,0))
+        editor.finishdrawing(view)
         # end of drawsingleface
 
     data = ExtruderDupData(dup)
@@ -2036,7 +2269,7 @@ def view2ddup(editor, view, dup):
 
     h = []
      # add the circ. handles
-    h = corridorchandles(dup,editor,view)
+    h = extruderchandles(dup,editor,view)
     
     view.handles = quarkpy.qhandles.FilterHandles(h, SS_MAP)
 
@@ -2168,6 +2401,7 @@ def new2dclick(self, m):
         self.new2dwin = n2d
       n2d.show()
  
+ 
 def new2dclose(self, m):
       if self.new2dview in self.views:
         self.views.remove(self.new2dview)
@@ -2179,12 +2413,12 @@ def new2dclose(self, m):
         # Maybe Unrestrict should be moved to a non-plugin
         #
         from plugins.mapmadsel import Unrestrict
-        Unrestrict(self.editor)
         #
         # This is needed to prevent errors when editor
         #   is shut down with 2d window open1   
         #
         try:
+          Unrestrict(self.editor)
           self.editor.invalidateviews()
         except (AttributeError):
           pass
@@ -2434,5 +2668,6 @@ def RadialExtrudeClick(btn):
 def ExtrudeClick(btn):
   apply(btn.dlg, (btn.window, 'extrude', btn.editor, btn.olist))
   btn.editor.layout.new2dwin.close()
+
 
 #$Log $
