@@ -29,6 +29,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.24  2000/11/11 17:54:31  decker_dk
+//Misc.TFC spec/args updates.
+//
 //Revision 1.23  2000/11/04 20:16:40  decker_dk
 //TFC entities, and major re-arrangement
 //
@@ -42,6 +45,11 @@ QQRKSRC1
 //Added CVS revision-history
 //
 // ----------- MANUAL REVISION HISTORY ------------
+//
+// 2000-11-19   [-] Misc. uncommenting of texture-links for modifications, which conflicted with HalfLife.WAD
+//                   (Thanks to "Vlask")
+//
+// 2000-11-10   [TFC] Updated some specs/args (Credits to http://info.gamedesign.net)
 //
 // 2000-11-04   [-] Misc. re-arrangements in the QRK.
 //              [TFC] Updated TFC entities for patch 1.1.0.4 (Credits to http://info.gamedesign.net)
@@ -1546,6 +1554,10 @@ $0D"!WAR_YSEC_4"
                 endround_time:                  = { txt="EndRound fade"                 Hint="Number of seconds by which the screen is black, and players can't move."$0D"0 = disabled" }
                 endround_owned_by:              = { txt="Owners EndRound message"       Hint="Printed to owning team" }
                 endround_non_owned_by:          = { txt="Non-owners EndRound message"   Hint="Printed to non-owning team" }
+                endround_team1:                 = { txt="EndRound msg team 1"           Hint="" }
+                endround_team2:                 = { txt="EndRound msg team 2"           Hint="" }
+                endround_team3:                 = { txt="EndRound msg team 3"           Hint="" }
+                endround_team4:                 = { txt="EndRound msg team 4"           Hint="" }
                 sep: = { Typ="S" }
                 broadcast:                      = { Txt="AllMsg"                Hint="Printed to everyone, except the Activator" }
                 message:                        = { Txt="PlyMsg"                Hint="Printed to the Activator" }
@@ -1554,7 +1566,7 @@ $0D"!WAR_YSEC_4"
                 owners_team_broadcast:          = { Txt="OwnerMsg"              Hint="Printed to all team-members owning the goal" }
                 sep: = { Typ="S" }
                 netname_broadcast:              = { Txt="<plyname> AllMsg"      Hint="Gets printed to _all_ players, prepended by the Activator's name." }
-                netname_team_broadcast:         = { Txt="<plyname> TeamMsg"     Hint="Gets printed to all of the Activator's team, except the Activator, with the Activator's name prepending  it." }
+                netname_team_broadcast:         = { Txt="<plyname> TeamMsg"     Hint="Gets printed to all of the Activator's team, except the Activator, with the Activator's name prepending it." }
                 netname_non_team_broadcast:     = { Txt="<plyname> NonTeamMsg"  Hint="Gets printed to all non-Activator-teammembers, prepended by the Activator's name." }
                 netname_owners_team_broadcast:  = { Txt="<plyname> OwnerMsg"    Hint="Gets printed to all the members of the team that own the goal/item, prepended by the Activator's name." }
                 sep: = { Typ="S" }
@@ -1786,6 +1798,7 @@ $0D"!WAR_YSEC_4"
                 t_health_powerups = !
         }
         f_team1:form = {
+                team1_name: = { txt="Team 1 teamname" Hint="E.q. 'Attackers', 'Defenders' or whatever cool"$0D"teamname you can think of. Max 15 characters." }
                 maxammo_shells: = { Typ="C" Txt="Team 1 consists of" Hint=""
                         items = "All classes"
                              $0D"Civilians only"
@@ -1811,6 +1824,7 @@ $0D"!WAR_YSEC_4"
                 team1_allies: = { Typ="X8" Cap="Green"  Txt="Team 1 allied with Green" }
         }
         f_team2:form = {
+                team2_name: = { txt="Team 2 teamname" Hint="E.q. 'Attackers', 'Defenders' or whatever cool"$0D"teamname you can think of. Max 15 characters." }
                 maxammo_nails: = { Typ="C" Txt="Team 2 consists of" Hint=""
                         items = "All classes"
                              $0D"Civilians only"
@@ -1836,6 +1850,7 @@ $0D"!WAR_YSEC_4"
                 team2_allies: = { Typ="X8" Cap="Green"  Txt="Team 2 allied with Green" }
         }
         f_team3:form = {
+                team3_name: = { txt="Team 3 teamname" Hint="E.q. 'Attackers', 'Defenders' or whatever cool"$0D"teamname you can think of. Max 15 characters." }
                 maxammo_rockets: = { Typ="C" Txt="Team 3 consists of" Hint=""
                         items = "All classes"
                              $0D"Civilians only"
@@ -1861,6 +1876,7 @@ $0D"!WAR_YSEC_4"
                 team3_allies: = { Typ="X8" Cap="Green"  Txt="Team 3 allied with Green" }
         }
         f_team4:form = {
+                team4_name: = { txt="Team 4 teamname" Hint="E.q. 'Attackers', 'Defenders' or whatever cool"$0D"teamname you can think of. Max 15 characters." }
                 maxammo_cells: = { Typ="C" Txt="Team 4 consists of" Hint=""
                         items = "All classes"
                              $0D"Civilians only"
@@ -8821,7 +8837,7 @@ $0D"Track 30"
                 impulse: = { Txt="Respawn delay" Typ="X16" Cap="5,10,20 sec." Hint="_ _ = No respawn delay"$0D"X _ = 5 seconds"$0D"_ X = 10 seconds"$0D"X X = 20 seconds" }
                 impulse: = { Txt="(Respawn delay)" Typ="X32" Cap="5,10,20 sec." Hint="_ _ = No respawn delay"$0D"X _ = 5 seconds"$0D"_ X = 10 seconds"$0D"X X = 20 seconds" }
 //Not Implemented?      hook_out: = { Txt="Disallow hook" Cap="Yes, no hook" Typ="X1" Hint="" }
-                no_of_teams: = { txt="Number of teams" }
+                number_of_teams: = { txt="Number of teams" Hint="Specifies for the info_tf_teamcheck entity,"$0D"how many teams this map has." }
                 form1: = {
                         Typ = "B"
                         Txt = "Team 1"
@@ -17527,8 +17543,8 @@ $0D"weapon_smokegrenade"
         SANDBAGS1.wl = {t_wie_wie_wad=!}
         SHINGLE.wl = {t_wie_wie_wad=!}
         SIGN.wl = {t_wie_wie_wad=!}
-        SIGN2.wl = {t_wie_wie_wad=!}
-        SIGN3.wl = {t_wie_wie_wad=!}
+//      SIGN2.wl = {t_wie_wie_wad=!}
+//      SIGN3.wl = {t_wie_wie_wad=!}
         STONES.wl = {t_wie_wie_wad=!}
         STONEWALL2.wl = {t_wie_wie_wad=!}
         STONEWALL3.wl = {t_wie_wie_wad=!}
@@ -17978,7 +17994,7 @@ $0D"weapon_smokegrenade"
         {BARRIER1.wl = {t_fa_firearms=!}
         {BARRIER2.wl = {t_fa_firearms=!}
         {FENCE1.wl = {t_fa_firearms=!}
-        {FENCE2.wl = {t_fa_firearms=!}
+//      {FENCE2.wl = {t_fa_firearms=!}
         {FOREST4.wl = {t_fa_firearms=!}
         {HEDGE5.wl = {t_fa_firearms=!}
         {LADDER_BLUE.wl = {t_fa_firearms=!}

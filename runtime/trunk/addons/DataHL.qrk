@@ -29,6 +29,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.24  2000/11/11 17:54:31  decker_dk
+//Misc.TFC spec/args updates.
+//
 //Revision 1.23  2000/11/04 20:16:40  decker_dk
 //TFC entities, and major re-arrangement
 //
@@ -42,6 +45,9 @@ QQRKSRC1
 //Added CVS revision-history
 //
 // ----------- MANUAL REVISION HISTORY ------------
+//
+// 2000-11-19   [-] Misc. uncommenting of texture-links for modifications, which conflicted with HalfLife.WAD
+//                   (Thanks to "Vlask")
 //
 // 2000-11-10   [TFC] Updated some specs/args (Credits to http://info.gamedesign.net)
 //
@@ -17537,8 +17543,8 @@ $0D"weapon_smokegrenade"
         SANDBAGS1.wl = {t_wie_wie_wad=!}
         SHINGLE.wl = {t_wie_wie_wad=!}
         SIGN.wl = {t_wie_wie_wad=!}
-        SIGN2.wl = {t_wie_wie_wad=!}
-        SIGN3.wl = {t_wie_wie_wad=!}
+//      SIGN2.wl = {t_wie_wie_wad=!}
+//      SIGN3.wl = {t_wie_wie_wad=!}
         STONES.wl = {t_wie_wie_wad=!}
         STONEWALL2.wl = {t_wie_wie_wad=!}
         STONEWALL3.wl = {t_wie_wie_wad=!}
@@ -17988,7 +17994,7 @@ $0D"weapon_smokegrenade"
         {BARRIER1.wl = {t_fa_firearms=!}
         {BARRIER2.wl = {t_fa_firearms=!}
         {FENCE1.wl = {t_fa_firearms=!}
-        {FENCE2.wl = {t_fa_firearms=!}
+//      {FENCE2.wl = {t_fa_firearms=!}
         {FOREST4.wl = {t_fa_firearms=!}
         {HEDGE5.wl = {t_fa_firearms=!}
         {LADDER_BLUE.wl = {t_fa_firearms=!}
