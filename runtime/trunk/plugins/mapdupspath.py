@@ -718,6 +718,7 @@ class InstanceDuplicator(PathDuplicator):
             h.append(UserCenterHandle(self.dup))
         return h
 
+
     def buildimages(self, singleimage=None):
 
         if len(self.dup.subitems)==0:
@@ -763,7 +764,7 @@ class InstanceDuplicator(PathDuplicator):
                else:
                   i = singleimage
 
-            list = templategroup.copy()
+            list = templategroup.subitems[0].copy()
             thisorigin = pathlist[i].origin
             
             if self.dup["track"] and count>1:
@@ -789,8 +790,10 @@ class InstanceDuplicator(PathDuplicator):
             if not pathlist[i]["no instance"]:
                 matrix = buildLinearMatrix(pathlist[i])*matrix              
                 list.translate(thisorigin)
-                list.linear(thisorigin, matrix)
-
+                listorigin = quarkpy.maphandles.GetUserCenter(list.copy())
+                list.linear(listorigin, matrix)
+#                list.linear(thisorigin, matrix)
+                
                 if (singleimage is None) or (i==singleimage):
                     newobjs = newobjs + [list]
             del list
@@ -833,6 +836,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.35  2001/03/31 10:18:16  tiglari
+#revise instance duplicator to use usercenter specific
+#
 #Revision 1.34  2001/03/29 09:28:55  tiglari
 #scale and rotate specifics for duplicators
 #
