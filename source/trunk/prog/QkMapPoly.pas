@@ -2101,8 +2101,9 @@ var
           S:=S+' '+S1+' '+S2+' '+S3;
          end;
        end;
+
      if Flags and soDisableEnhTex = 0 then
-      S:=S+TxField[MJ>=mjQuake2, F.TextureMirror];
+      S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
   end;
