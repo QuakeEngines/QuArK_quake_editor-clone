@@ -4,6 +4,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2002/06/12 23:03:12  4days
+//corrected spawnflags for func_rotating and func_door
+//
+//Revision 1.7  2001/03/20 21:56:26  decker_dk
+//Added log-header / misc.
+//
 //Revision 1.6  2001/03/17 15:11:20  decker_dk
 //Removed bbox from misc_model, as that will give a wrong size-impression of the model
 //
@@ -6467,7 +6473,7 @@ QQRKSRC1
       spawnflags: =
       {
         Txt = "&"
-	Typ = "X2"
+	Typ = "X4"
 	Cap = "CRUSHER"
 	Hint = "This will crush the player."
       }
@@ -6674,14 +6680,14 @@ QQRKSRC1
       spawnflags: =
       {
         Txt = "&"
-        Typ = "X1"
+        Typ = "X4"
         Cap = "X_AXIS"
         Hint = "Door will rotate on this axis."
       }
       spawnflags: =
       {
         Txt = "&"
-        Typ = "X2"
+        Typ = "X8"
         Cap = "Y_AXIS"
         Hint = "Door will rotate on this axis."
       }
