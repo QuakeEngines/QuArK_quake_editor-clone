@@ -29,6 +29,7 @@ StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 DuplicatorManager = quarkpy.mapduplicator.DuplicatorManager
 DupOffsetHandle = quarkpy.mapduplicator.DupOffsetHandle
 ObjectOrigin = quarkpy.mapentities.ObjectOrigin
+ObjectCustomOrigin = quarkpy.mapentities.ObjectCustomOrigin
 
 
 #
@@ -552,7 +553,7 @@ class PathDuplicator(StandardDuplicator):
         else:
            newobjs = []
         templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
+        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
 
         tile = templategroup.findname("Tile:g")
         if tile is not None:
@@ -839,7 +840,7 @@ class InstanceDuplicator(PathDuplicator):
         else:
            newobjs = []
         templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
+        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
 
         count = len(pathlist)
         for i in range(count):
@@ -908,6 +909,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28  2001/03/20 22:46:37  tiglari
+#Meatball402's instance duplicator
+#
 #Revision 1.27  2001/03/20 09:19:23  tiglari
 #Nuke some old code
 #
