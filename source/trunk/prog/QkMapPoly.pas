@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2002/05/05 10:21:53  tiglari
+writing MOHAA maps
+
 Revision 1.54  2002/05/02 21:57:42  tiglari
 oops, didn't save before committing previous version
 
@@ -2735,17 +2738,16 @@ var
               S:=S+' surfaceLight '+S1;
             if F.GetFloatsSpec('surfaceColor',Single3) then
             begin
-              S:=S+' '+FloatToStrF(Single3[1], ffFixed, 20, 6);
+              S:=S+' surfaceColor '+FloatToStrF(Single3[1], ffFixed, 20, 6);
               S:=S+' '+FloatToStrF(Single3[2], ffFixed, 20, 6);
               S:=S+' '+FloatToStrF(Single3[3], ffFixed, 20, 6);
             end;
-            S1:=F.Specifics.Values['angleLight'];
+            S1:=F.Specifics.Values['surfaceAngle'];
             if (S1<>'') then
               S:=S+' surfaceAngle '+S1;
             rval:=F.GetFloatSpec('tesselation',0);
             if (rval<>0) then
               S:=S+' tesselation '+FloatToStrF(rval, ffFixed, 20, 6);
-
           end;
 
 //</mohaa>
