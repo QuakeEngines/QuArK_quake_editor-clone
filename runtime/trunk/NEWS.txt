@@ -12,6 +12,8 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [cdunde]: Fixed Select Everything function to include Shape Builders.
+
 6.4.1 alpha 2
 =============
 
