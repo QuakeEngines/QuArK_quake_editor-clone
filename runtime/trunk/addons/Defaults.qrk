@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.180  2002/04/08 21:07:14  tiglari
+//fixed torque gamecode
+//
 //Revision 1.179  2002/04/08 12:26:37  tiglari
 //support for Torque (from Desmond Fletcher)
 //
@@ -1253,7 +1256,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat = "Brush Primitivez"
+        OutputMapFormat = "Brush Primitives"
         StupidBuildToolKludge = "1" //those guys should get shot for that
         SupportsBrushPrim = "1"
         BuildPgm1  = "Q3MAP.EXE"
@@ -1441,7 +1444,7 @@ QQRKSRC1
         //
         // -p Include a preview bitmap in the interior file
         BuildPgm6 = "c:\torque\tmpquark\map2dif_DEBUG.exe"
-        BuildArgs6 = "-v -p -o ./maps -t ./textures %mapfile%"       
+        BuildArgs6 = "-v -p -o ./maps -t ./textures %mapfile%"
         //*****************************************************************************
         // USING LEWIS BRUCK'S -q 3 VERSION
         // -v verbose -h Process for final build (exhaustive BSP search)(q3 mapversion)
@@ -3322,7 +3325,7 @@ QQRKSRC1
          $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
          $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
          $77CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = { Typ = "M" Msg = "GAMd" } // switches to Torque (cmd=GAM, game=d)
+        cmd:macro = { Typ = "M" Msg = "GAMg" } // switches to Torque (cmd=GAM, game=g)
         cmd:macro = { Typ = "M" Msg = "ADDO" } // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -3334,7 +3337,7 @@ QQRKSRC1
          $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
          $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
          $AAA20006666666002A200666666666660006666666
-        cmd:macro = { Typ = "M" Msg = "GAMd" } // switches to Torque (cmd=GAM, game=d)
+        cmd:macro = { Typ = "M" Msg = "GAMg" } // switches to Torque (cmd=GAM, game=g)
         cmd:macro = { Typ = "M" Msg = "OUTP" } // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
