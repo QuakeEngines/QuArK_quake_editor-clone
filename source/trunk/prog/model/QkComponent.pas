@@ -2,6 +2,12 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/11/26 19:09:00  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.3  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -435,7 +441,7 @@ begin
   Info^.ModelAlpha:=255;
   Info^.VertexCount:=FCurrentFrameObj.GetVertices(Info^.Vertices);
   AddRef(+1);
-  CurrentMapView.Scene.ModelInfo.Add(Info);
+  CurrentMapView.Scene.AddModel(Info);
 end;
 
 procedure QComponent.BuildRefList(L: TQList);

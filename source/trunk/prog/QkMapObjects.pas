@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.14  2000/11/19 15:31:49  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -1658,127 +1664,152 @@ var
 begin
  Result:=False;
  try
-  S:=GetFormName;
-  if S='' then Exit;
-  Q:=CurrentMapView.EntityForms.FindLastShortName(S);
-  if Q=Nil then Exit;
-  Q.Acces;
-  MdlPath:=Q.Specifics.Values['mdl'];
-  if MdlPath='' then Exit;
+   S:=GetFormName;
+   if S='' then
+     Exit;
+
+   Q:=CurrentMapView.EntityForms.FindLastShortName(S);
+   if Q=Nil then
+     Exit;
+
+   Q.Acces;
+
+   MdlPath:=Q.Specifics.Values['mdl'];
+   if MdlPath='' then
+     Exit;
 
    { loads mdl }
-  MdlBase:=Q.Specifics.Values['mdlbase'];
-  if MdlBase='' then
-   FileObj1:=NeedGameFile(MdlPath)
-  else
-   FileObj1:=NeedGameFileBase(MdlBase, MdlPath);
-  if not (FileObj1 is QModel) then Exit;
-  Mdl:=QModel(FileObj1);
-  Mdl.Acces;
-  Root:=Mdl.GetRoot;
-  if Root=Nil then Exit;
+   MdlBase:=Q.Specifics.Values['mdlbase'];
+   if MdlBase='' then
+     FileObj1:=NeedGameFile(MdlPath)
+   else
+     FileObj1:=NeedGameFileBase(MdlBase, MdlPath);
+   if not (FileObj1 is QModel) then
+     Exit;
+
+   Mdl:=QModel(FileObj1);
+   Mdl.Acces;
+
+   Root:=Mdl.GetRoot;
+   if Root=Nil then
+     Exit;
 
    { prepare positionning }
-  with Origin do
+   with Origin do
    begin
-    ModelOrg[0]:=X;
-    ModelOrg[1]:=Y;
-    ModelOrg[2]:=Z;
+     ModelOrg[0]:=X;
+     ModelOrg[1]:=Y;
+     ModelOrg[2]:=Z;
    end;
-  S:=Specifics.Values['angle'];
-  if (S<>'') and (S<>'0') and (S<>'360') then
-   Angle:=Round(StrToFloatDef(S, 0)) mod 360
-  else
-   Angle:=0;
-  if Angle<>0 then
+
+   S:=Specifics.Values['angle'];
+   if (S<>'') and (S<>'0') and (S<>'360') then
+     Angle:=Round(StrToFloatDef(S, 0)) mod 360
+   else
+     Angle:=0;
+   if Angle<>0 then
    begin
-    ASin:=Angle*(pi/180);
-    ACos:=Cos(ASin);
-    ASin:=Sin(ASin);
+     ASin:=Angle*(pi/180);
+     ACos:=Cos(ASin);
+     ASin:=Sin(ASin);
    end
-  else
+   else
    begin
-    ACos:=0;
-    ASin:=0;
+     ACos:=0;
+     ASin:=0;
    end;
 
    { list components }
-  L:=TQList.Create; try
-  Root.BuildRefList(L);
-  for I:=0 to L.Count-1 do
-   begin
-     { find frame & skin }
-    Component:=QComponent(L[I]);
-    S:=Q.Specifics.Values['mdlframe'];
-    if S<>'' then
-     Frame1:=Component.GetFrameFromName(S)
-    else
-     Frame1:=Component.GetFrameFromIndex(Round(Q.GetFloatSpec('mdlframe', 0)));
-    if Frame1=Nil then Continue;
-    S:=Q.Specifics.Values['mdlskin'];
-    if S<>'' then
-     Skin1:=Component.GetSkinFromName(S)
-    else
-     Skin1:=Component.GetSkinFromIndex(Round(Q.GetFloatSpec('mdlskin', 0)));
-    if (Skin1=Nil) and (S<>'') and ModeJeuQuake2 then
-     begin  { load skin from external file }
-      if MdlBase='' then
-       begin
-        FileObj1:=NeedGameFile(S);
-        SkinDescr:=S;
-       end
-      else
-       begin
-        FileObj1:=NeedGameFileBase(MdlBase, S);
-        SkinDescr:=MdlBase+':'+S;
-       end;
-      if FileObj1 is QImages then
-       Skin1:=QImages(FileObj1);
-     end
-    else
-     if Skin1=Nil then
-      SkinDescr:='*'
-     else
-      SkinDescr:=Format('%s:%s:%s', [MdlBase, MdlPath, Skin1.Name]);
+   L:=TQList.Create;
+   try
+     Root.BuildRefList(L);
 
-    Count:=Frame1.GetVertices(VSrc);
-    GetMem(Model, SizeOf(TModel3DInfo)+Count*SizeOf(vec3_t));
-    try
-     Model^.VertexCount:=Count;
-     PChar(VDest):=PChar(Model)+SizeOf(TModel3DInfo);
-     Model^.Vertices:=VDest;
-     if Angle=0 then
-      for K:=0 to Count-1 do
-       begin
-        VDest^[0]:=VSrc^[0]+ModelOrg[0];
-        VDest^[1]:=VSrc^[1]+ModelOrg[1];
-        VDest^[2]:=VSrc^[2]+ModelOrg[2];
-        Inc(VSrc);
-        Inc(VDest);
-       end
-     else
-      for K:=0 to Count-1 do
-       begin
-        VDest^[0]:=VSrc^[0]*ACos - VSrc^[1]*ASin + ModelOrg[0];
-        VDest^[1]:=VSrc^[0]*ASin + VSrc^[1]*ACos + ModelOrg[1];
-        VDest^[2]:=VSrc^[2]+ModelOrg[2];
-        Inc(VSrc);
-        Inc(VDest);
-       end;
-      { find alpha }
-     Model^.ModelAlpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
-    except
-     FreeMem(Model);
-     Raise;
-    end;
+     for I:=0 to L.Count-1 do
+     begin
+       { find frame & skin }
+       Component:=QComponent(L[I]);
+       S:=Q.Specifics.Values['mdlframe'];
+       if S<>'' then
+         Frame1:=Component.GetFrameFromName(S)
+       else
+         Frame1:=Component.GetFrameFromIndex(Round(Q.GetFloatSpec('mdlframe', 0)));
+       if Frame1=Nil then
+         Continue;
 
-    Model^.Base:=Component.QuickSetSkin(Skin1, SkinDescr);
-    Model^.StaticSkin:=True;
-    CurrentMapView.Scene.ModelInfo.Add(Model);
-    Result:=True;
+       S:=Q.Specifics.Values['mdlskin'];
+       if S<>'' then
+         Skin1:=Component.GetSkinFromName(S)
+       else
+         Skin1:=Component.GetSkinFromIndex(Round(Q.GetFloatSpec('mdlskin', 0)));
+
+       if (Skin1=Nil) and (S<>'') and ModeJeuQuake2 then
+       begin
+         { load skin from external file }
+         if MdlBase='' then
+         begin
+           FileObj1:=NeedGameFile(S);
+           SkinDescr:=S;
+         end
+         else
+         begin
+           FileObj1:=NeedGameFileBase(MdlBase, S);
+           SkinDescr:=MdlBase+':'+S;
+         end;
+         if FileObj1 is QImages then
+           Skin1:=QImages(FileObj1);
+       end
+       else
+       begin
+         if Skin1=Nil then
+           SkinDescr:='*'
+         else
+           SkinDescr:=Format('%s:%s:%s', [MdlBase, MdlPath, Skin1.Name]);
+       end;
+
+       Count:=Frame1.GetVertices(VSrc);
+       GetMem(Model, SizeOf(TModel3DInfo)+Count*SizeOf(vec3_t));
+       try
+         Model^.VertexCount:=Count;
+         PChar(VDest):=PChar(Model)+SizeOf(TModel3DInfo);
+         Model^.Vertices:=VDest;
+         if Angle=0 then
+         begin
+           for K:=0 to Count-1 do
+           begin
+            VDest^[0]:=VSrc^[0]+ModelOrg[0];
+            VDest^[1]:=VSrc^[1]+ModelOrg[1];
+            VDest^[2]:=VSrc^[2]+ModelOrg[2];
+            Inc(VSrc);
+            Inc(VDest);
+           end;
+         end
+         else
+         begin
+           for K:=0 to Count-1 do
+           begin
+             VDest^[0]:=VSrc^[0]*ACos - VSrc^[1]*ASin + ModelOrg[0];
+             VDest^[1]:=VSrc^[0]*ASin + VSrc^[1]*ACos + ModelOrg[1];
+             VDest^[2]:=VSrc^[2]+ModelOrg[2];
+             Inc(VSrc);
+             Inc(VDest);
+           end;
+         end;
+
+         { find alpha }
+         Model^.ModelAlpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
+       except
+         FreeMem(Model);
+         Raise;
+       end;
+
+       Model^.Base:=Component.QuickSetSkin(Skin1, SkinDescr);
+       Model^.StaticSkin:=True;
+       CurrentMapView.Scene.AddModel(Model);
+       Result:=True;
+     end;
+   finally
+     L.Free;
    end;
-
-  finally L.Free; end;
  except
   {rien}
  end;
@@ -1792,44 +1823,46 @@ var
  S: String;
  Color: TColorRef;
 begin
- if HasOrigin then
+  if HasOrigin then
   begin
-   if (CurrentMapView.Scene.ViewEntities<>veNever) then
+    if (CurrentMapView.Scene.ViewEntities<>veNever) then
     begin
-     if (CurrentMapView.Scene.ViewEntities=veModels) and AddModelTo3DScene then
-      Exit;
+      if (CurrentMapView.Scene.ViewEntities=veModels) and AddModelTo3DScene then
+        Exit;
      {FIXME: bounding boxes in 3D view}
     end;
-   if CompareText(Copy(Name,1,5), 'light')=0 then
+
+    if CompareText(Copy(Name,1,5), 'light')=0 then
     begin
-     Light:=StrToIntDef(Specifics.Values['light'], 0);
-     if Light<=0 then
+      Light:=StrToIntDef(Specifics.Values['light'], 0);
+      if Light<=0 then
       begin
-       S:=Specifics.Values['_light'];
-       if S='' then Exit;
-       try
-        ReadValues(S, L4);
-       except
-        Exit;
-       end;
-       Light:=L4[4];
-       Color:=Round(L4[1]) or (Round(L4[2]) shl 8) or (Round(L4[3]) shl 16);
+        S:=Specifics.Values['_light'];
+        if S='' then
+          Exit;
+        try
+          ReadValues(S, L4);
+        except
+          Exit;
+        end;
+        Light:=L4[4];
+        Color:=Round(L4[1]) or (Round(L4[2]) shl 8) or (Round(L4[3]) shl 16);
       end
-     else
+      else
       begin
-       Color:=clWhite;
-       S:=Specifics.Values['_color'];
-       if S<>'' then
+        Color:=clWhite;
+        S:=Specifics.Values['_color'];
+        if S<>'' then
         begin
-         try
-          ReadValues(S, L3);
-          Color:=Round(255*L3[1]) or (Round(255*L3[2]) shl 8) or (Round(255*L3[3]) shl 16);
-         except
-          {rien}
-         end;
+          try
+            ReadValues(S, L3);
+            Color:=Round(255*L3[1]) or (Round(255*L3[2]) shl 8) or (Round(255*L3[3]) shl 16);
+          except
+            {rien}
+          end;
         end;
       end;
-     CurrentMapView.Scene.AddLight(Origin, Light, Color);
+      CurrentMapView.Scene.AddLight(Origin, Light, Color);
     end;
   end;
 end;
@@ -2165,7 +2198,7 @@ begin
       if P.PythonObj.ob_refcnt = 1 then
        CurrentMapView.Scene.TemporaryStuff.Add(P);
       for J:=0 to P.Faces.Count-1 do
-       CurrentMapView.Scene.PolyFaces.Add(P.Faces[J])
+       CurrentMapView.Scene.AddPolyFace(P.Faces[J])
      end;
    end;
  finally

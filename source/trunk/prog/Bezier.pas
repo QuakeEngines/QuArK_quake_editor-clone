@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2000/11/26 19:08:33  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.18  2000/11/25 20:51:33  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -1255,7 +1261,7 @@ end;
  { puts patches into textured views }
 procedure TBezier.AddTo3DScene;
 begin
- CurrentMapView.Scene.BezierInfo.Add(Self);
+  CurrentMapView.Scene.AddBezier(TBezier(Self));
 end;
 
  { bounding box }

@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.23  2000/11/25 20:51:32  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -4424,14 +4430,14 @@ procedure TFace.AddTo3DScene;
 var
  P: PSurface;
 begin
- if LoadData then
+  if LoadData then
   begin
-   P:=FaceOfPoly;
-   while Assigned(P) do
+    P:=FaceOfPoly;
+    while Assigned(P) do
     begin
-     if not ((mdComputingPolys in Info.ModeDessin) and (P^.Source is TPolyedre)) then
-      CurrentMapView.Scene.PolyFaces.Add(P);
-     P:=P^.NextF;
+      if not ((mdComputingPolys in Info.ModeDessin) and (P^.Source is TPolyedre)) then
+        CurrentMapView.Scene.AddPolyFace(P);
+      P:=P^.NextF;
     end;
   end;
 end;

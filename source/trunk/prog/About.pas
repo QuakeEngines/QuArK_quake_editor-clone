@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/11/27 22:11:26  aiv
+Code Formatted
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -168,11 +171,14 @@ begin
        PanelQM1:=Nil;
       end;}
     MessageDlg(FmtLoadStr1(226, [S]), mtInformation, [mbOk], 0);
-    Reg := TRegistry.Create; try
+    Reg := TRegistry.Create;
+    try
       Reg.RootKey := HKEY_CURRENT_USER;
       Reg.OpenKey('\Software\Armin Rigo\QuakeMap', True);
       Reg.WriteString('Registered', Edit1.Text);
-    finally Reg.Free; end;
+    finally
+      Reg.Free;
+    end;
   end;
 end;
 
@@ -214,7 +220,8 @@ begin
   I := Info^.Delay;
   repeat
     C := (I + 5) mod 10;
-    if C > 5 then C := 10 - C;
+    if C > 5 then
+      C := 10 - C;
     {SetTextColor(DC, clWhite - ($203333 * C));}
     SetTextColor(DC, clWhite - ($333300 * C));
     DrawText(DC, Info^.Text, -1, Info^.R, DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
@@ -226,7 +233,8 @@ begin
         Break;
     Dec(I);
   until I < 0;
-  if Info^.Delay > MIN_DELAY then Sleep(999);
+  if Info^.Delay > MIN_DELAY then
+    Sleep(999);
   SelectObject(DC, Font1);
   ReleaseDC(Info^.H, DC);
   DeleteObject(Font);

@@ -24,6 +24,13 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/12/07 19:48:00  decker_dk
+- Changed the code in Glide.PAS and GL1.PAS, to more understandable
+and readable code (as seen in Python.PAS), which isn't as subtle to
+function-pointer changes, as the old code was. This modification also
+had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
+prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
+
 Revision 1.17  2000/11/26 19:07:56  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -43,7 +50,7 @@ interface
 
 uses Windows, SysUtils, Classes, qmath, QkObjects, QkMapPoly, QkMdlObject, QkComponent,
      Glide, Game, QkTextures, QkImages, Setup, PyMath, PyMath3D,
-     Forms, Controls, QkPixelSet, EdTListP2;
+     Forms, Controls, QkPixelSet, EdTListP2, Bezier;
 
  {------------------------}
 
@@ -143,6 +150,7 @@ type
  protected
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
+   PolyFaces, ModelInfo, BezierInfo: TList;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
@@ -153,7 +161,6 @@ type
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
    procedure BuildTexture(Texture: PTexture3); virtual; abstract;
  public
-   PolyFaces, ModelInfo, BezierInfo: TList;
    BlendColor: TColorRef;
    ViewEntities: TViewEntities;
    TranspFactor: Single;
@@ -162,9 +169,12 @@ type
    TemporaryStuff: TQList;   { anything that should not be freed while the scene is alive }
    constructor Create;
    destructor Destroy; override;
-   procedure Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
-    var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single;
-    FOG_COLOR, FrameColor: TColorRef); virtual; abstract;
+   procedure Init(Wnd: HWnd;
+                  nCoord: TCoordinates;
+                  const LibName: String;
+                  var FullScreen, AllowsGDI: Boolean;
+                  FogDensity: Single;
+                  FogColor, FrameColor: TColorRef); virtual; abstract;
    procedure ClearScene; virtual;
    procedure ClearFrame; virtual;
    procedure SetViewRect(SX, SY: Integer); virtual; abstract;
@@ -174,6 +184,9 @@ type
    procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
+   procedure AddPolyFace(const a_PolyFace: PSurface);
+   procedure AddModel(const a_Model: PModel3DInfo);
+   procedure AddBezier(const a_Bezier: TBezier);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
    property ListSurfaces: PSurfaces read FListSurfaces;
  end;
@@ -201,9 +214,12 @@ type
    FogTableCache: ^GrFogTable_t;
    Hardware3DFX: Boolean;
    constructor Create(nSolidColors: Boolean);
-   procedure Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
-    var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single;
-    FOG_COLOR, FrameColor: TColorRef); override;
+   procedure Init(Wnd: HWnd;
+                  nCoord: TCoordinates;
+                  const LibName: String;
+                  var FullScreen, AllowsGDI: Boolean;
+                  FogDensity: Single;
+                  FogColor, FrameColor: TColorRef); override;
    destructor Destroy; override;
    procedure Render3DView; override;
    procedure ClearFrame; override;
@@ -230,22 +246,23 @@ type
   {procedure ScaleTexture(w1,h1: Integer; var info: GrTexInfo; Q: QPixelSet);}
    procedure Init(FullScreen: Boolean);
    procedure FreeTexture(Tex: PTexture3);
+ protected
+   constructor Create;
  public
    FFreeTexture: procedure (Tex: PTexture3);
    DummyGameInfo: PGameBuffer;
    DownloadedPalette: PGuPalette;
    GammaBuffer: TGeneralGammaBuffer;
-   constructor Create;
    destructor Destroy; override;
-   procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
-   procedure FreeTextures(ReallyAll: Boolean);
-   function CanFree: Boolean;
-   property Textures: TStringList read FTextures;
-   function UnifiedPalette: Boolean;
    class function GetInstance : TTextureManager;
    class procedure AddScene(Scene: TSceneObject; FullScreen: Boolean);
    class procedure RemoveScene(Scene: TSceneObject);
+   procedure GetTexture(P: PSurfaces; Load: Boolean; AltTexSrc: QObject{; PalWarning: TPaletteWarning});
+   procedure FreeTextures(ReallyAll: Boolean);
+   function CanFree: Boolean;
+   function UnifiedPalette: Boolean;
    function ComputeGuPalette(Lmp: PPaletteLmp) : PGuPalette;
+   property Textures: TStringList read FTextures;
  end;
 
 const
@@ -267,7 +284,7 @@ function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
 
 implementation
 
-uses QkFileObjects, Quarkx, CCode, FullScr1, Travail, Bezier;
+uses QkFileObjects, Quarkx, CCode, FullScr1, Travail;
 
  {------------------------}
 
@@ -397,7 +414,8 @@ var
  I: Integer;
 begin
  {$IFDEF Debug}
- if not CanFree then raise InternalE('texturemanager.destroy: still in use');
+ if not CanFree then
+  raise InternalE('texturemanager.destroy: still in use');
  {$ENDIF}
  for I:=Textures.Count-1 downto 0 do
   FreeTexture(PTexture3(Textures.Objects[I]));
@@ -522,7 +540,7 @@ begin
 end;
 
 const
- DummyTexture = 16;
+ cDummyTextureWHSize = 16;
 
 function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
 var
@@ -536,15 +554,16 @@ begin
    Result.Init;
    Result.Format:=psf8bpp;
    Result.Palette:=pspFixed;
-   Result.Size.X:=DummyTexture;
-   Result.Size.Y:=DummyTexture;
-   Result.ScanLine:=DummyTexture;
+   Result.Size.X:=cDummyTextureWHSize;
+   Result.Size.Y:=cDummyTextureWHSize;
+   Result.ScanLine:=cDummyTextureWHSize;
    Result.ColorPalette:=@(TTextureManager.GetInstance.DummyGameInfo^.PaletteLmp);
    Result.AllocData;
    Dest:=PChar(Result.Data);
-   for J:=0 to DummyTexture*DummyTexture-1 do
-    begin       { build a checkerboard texture image }
-     if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
+   { build a checkerboard texture image }
+   for J:=0 to cDummyTextureWHSize * cDummyTextureWHSize - 1 do
+    begin
+     if (J and (cDummyTextureWHSize div 2)) = ((J div cDummyTextureWHSize) and (cDummyTextureWHSize div 2)) then
       Dest^:=#0
      else
       Dest^:=#255;
@@ -613,10 +632,10 @@ begin
    Exit;
   end;
  end;
- Facteur:=4.0/(PSD.Size.X*PSD.Size.Y);
- Result:=Round(Sqrt(bl*Facteur))
-     or (Round(Sqrt(gr*Facteur)) shl 8)
-     or (Round(Sqrt(re*Facteur)) shl 16);
+ Facteur:=4.0 / (PSD.Size.X * PSD.Size.Y);
+ Result:=Round(Sqrt(bl * Facteur))
+     or (Round(Sqrt(gr * Facteur)) shl 8)
+     or (Round(Sqrt(re * Facteur)) shl 16);
 end;
 
 {$IFDEF xxxNeverxxx}
@@ -757,17 +776,19 @@ begin
  case info.largeLod of
   GR_LOD_256: w:=256;
   GR_LOD_128: w:=128;
-  GR_LOD_64: w:=64;
-  GR_LOD_32: w:=32;
-  GR_LOD_16: w:=16;
-  GR_LOD_8: w:=8;
-  GR_LOD_4: w:=4;
-  GR_LOD_2: w:=2;
-  GR_LOD_1: w:=1;
+  GR_LOD_64:  w:=64;
+  GR_LOD_32:  w:=32;
+  GR_LOD_16:  w:=16;
+  GR_LOD_8:   w:=8;
+  GR_LOD_4:   w:=4;
+  GR_LOD_2:   w:=2;
+  GR_LOD_1:   w:=1;
  else
   Raise InternalE('Bad reverse LOD');
  end;
+
  h:=w;
+
  case info.aspectratio of
   GR_ASPECT_8x1: h:=h div 8;
   GR_ASPECT_4x1: h:=h div 4;
@@ -829,8 +850,8 @@ begin
    if Q=Nil then
     begin
      {PSD.Format:=psf8bpp;}
-     Size.X:=DummyTexture;
-     Size.Y:=DummyTexture;
+     Size.X:=cDummyTextureWHSize;
+     Size.Y:=cDummyTextureWHSize;
     end
    else
     begin
@@ -842,9 +863,11 @@ begin
    PTex^.TexW:=Size.X;
    PTex^.TexH:=Size.Y;
    w:=8;
-   while (w<256) and (w<Size.X) do w:=w*2;
+   while (w<256) and (w<Size.X) do
+    w:=w*2;
    h:=8;
-   while (h<256) and (h<Size.Y) do h:=h*2;
+   while (h<256) and (h<Size.Y) do
+    h:=h*2;
    {Direct:=(w=Size.X) and (h=Size.Y);}
    if w=h then
     PTex^.info.aspectRatio:=GR_ASPECT_1x1
@@ -925,7 +948,7 @@ begin
         begin
          for J:=0 to MemSize-1 do
           begin       { build a checkerboard texture image
-           if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
+           if (J and (cDummyTextureWHSize div 2)) = ((J div cDummyTextureWHSize) and (cDummyTextureWHSize div 2)) then
             Dest^:=#0
            else
             Dest^:=#255;
@@ -964,7 +987,7 @@ begin
           Dest:=PChar(data);
           for J:=0 to MemSize-1 do
            begin       { build a checkerboard texture image
-            if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
+            if (J and (cDummyTextureWHSize div 2)) = ((J div cDummyTextureWHSize) and (cDummyTextureWHSize div 2)) then
              Dest^:=#0
             else
              Dest^:=#255;
@@ -1020,18 +1043,18 @@ end;
  {------------------------}
 
 type  { this is the data shared by all existing T3DFXSceneObjects }
- TGlideState = class
-               public
-                 FMinAddress, FLoopAddress, FMaxAddress: FxU32;
-                 PerspectiveMode: Byte;
-                 Accepts16bpp: Boolean;
-                {PalWarning: Boolean;}
-                 constructor Create;
-                 procedure NeedTex(PTex: PTexture3);
-                 function SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
-                {procedure PaletteWarning;}
-                 procedure Init;
-               end;
+  TGlideState = class
+  public
+    FMinAddress, FLoopAddress, FMaxAddress: FxU32;
+    PerspectiveMode: Byte;
+    Accepts16bpp: Boolean;
+   {PalWarning: Boolean;}
+    constructor Create;
+    procedure NeedTex(PTex: PTexture3);
+    function SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
+   {procedure PaletteWarning;}
+    procedure Init;
+  end;
 
 constructor TGlideState.Create;
 begin
@@ -1097,14 +1120,14 @@ begin
       startAddress:=GR_NULL_MIPMAP_HANDLE;
 
     { downloads the new texture }
-   grTexDownloadMipMap(GR_TMU0, nStartAddress,
-    GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
+   grTexDownloadMipMap(GR_TMU0, nStartAddress, GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
    PTex^.startAddress:=nStartAddress;
    PTex^.endAddress:=FLoopAddress;
    {$IFDEF DeXXXXbugLOG} LogS:='DL-'; {$ENDIF}
   end
  else
   TextureManager:=Nil;
+
  if PTex^.GuPalette<>Nil then
   begin
    if TextureManager=Nil then
@@ -1115,11 +1138,11 @@ begin
      grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
     end;
   end;
- grTexSource(GR_TMU0, PTex^.startAddress,
-  GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
+
+ grTexSource(GR_TMU0, PTex^.startAddress, GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
 end;
 
-function TGlideState.SetPerspectiveMode;
+function TGlideState.SetPerspectiveMode(nPerspectiveMode: Byte) : Boolean;
 {var
  I: Integer;
  FogTable2D: GrFogTable_t;}
@@ -1128,7 +1151,8 @@ begin
  if PerspectiveMode<>nPerspectiveMode then
   begin
    PerspectiveMode:=nPerspectiveMode;
-   if nPerspectiveMode=0 then Exit;
+   if nPerspectiveMode=0 then
+    Exit;
    if Assigned(grHints) then
     if nPerspectiveMode=2 then  { flat display }
      grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
@@ -1222,6 +1246,21 @@ begin
  Result:=False;
 end;
 
+procedure TSceneObject.AddPolyFace(const a_PolyFace: PSurface);
+begin
+  PolyFaces.Add(a_PolyFace);
+end;
+
+procedure TSceneObject.AddModel(const a_Model: PModel3DInfo);
+begin
+  ModelInfo.Add(a_Model);
+end;
+
+procedure TSceneObject.AddBezier(const a_Bezier: TBezier);
+begin
+  BezierInfo.Add(a_Bezier);
+end;
+
 procedure TSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
 begin
 end;
@@ -1252,7 +1291,7 @@ begin
 end;
 
 procedure T3DFXSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
-          var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single; FOG_COLOR, FrameColor: TColorRef);
+          var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
 var
  I: Integer;
  HiColor: Boolean;
@@ -1280,19 +1319,19 @@ begin
  if I<>0 then
   begin
    if nCoord.FlatDisplay then
-    FOG_DENSITY:=FOG_DENSITY*256;
-   guFogGenerateExp2(FogTableCache^, FOG_DENSITY);
+    FogDensity:=FogDensity*256;
+   guFogGenerateExp2(FogTableCache^, FogDensity);
   end;
 {if Assigned(guFogGenerateExp2)
  and Assigned(grFogTable) then
   begin
-   guFogGenerateExp2(FogTable, FOG_DENSITY);
+   guFogGenerateExp2(FogTable, FogDensity);
    grFogTable(FogTable);
   end;}
- FOG_COLOR:=SwapColor(FOG_COLOR);
+ FogColor:=SwapColor(FogColor);
  if Assigned(grFogColorValue) then
-  grFogColorValue(FOG_COLOR);
- VOID_COLOR:=FOG_COLOR;
+  grFogColorValue(FogColor);
+ VOID_COLOR:=FogColor;
  FRAME_COLOR:=SwapColor(FrameColor);
 end;
 
@@ -1312,17 +1351,6 @@ begin
  inherited;
 end;
 
-function PtrListSortR(Item1, Item2: Pointer): Integer;
-begin
- if PChar(Item1)<PChar(Item2) then
-  Result:=+1
- else
-  if Item1=Item2 then
-   Result:=0
-  else
-   Result:=-1;
-end;
-
 procedure T3DFXSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 var
  L, R, Test: Integer;
@@ -1331,24 +1359,32 @@ begin
  Base:=PVect3D(FVertexList.Memory);
  L:=0;
  R:=FVertexList.Size div SizeOf(TVect3D);
+
+ { this looks like some sort of binary-search }
  while R>L do
-  begin
+ begin
    Test:=(L+R) div 2;
    Found:=Base;
    Inc(Found, Test);
+
    if Found^.v = Source then
-    with PVertex3D(PV)^ do
+   begin
+     with PVertex3D(PV)^ do
      begin
-      v:=Found;
-      s:=ns;
-      t:=nt;
-      Exit;
+       v:=Found;
+       s:=ns;
+       t:=nt;
+
+       Exit;
      end;
+   end;
+
    if PChar(Found^.v) < PChar(Source) then
-    L:=Test+1
+     L:=Test+1
    else
-    R:=Test;
-  end;
+     R:=Test;
+ end;
+
  Raise InternalE('GetVertex');
 end;
 
@@ -1415,49 +1451,75 @@ procedure TSceneObject.PostBuild(nVertexList, nVertexList2: TList);
 begin
 end;
 
+function PtrListSortR(Item1, Item2: Pointer): Integer;
+begin
+ if PChar(Item1)<PChar(Item2) then
+  Result:=+1
+ else
+  if Item1=Item2 then
+   Result:=0
+  else
+   Result:=-1;
+end;
+
 procedure T3DFXSceneObject.PostBuild(nVertexList, nVertexList2: TList);
 var
- Vect: TVect3D;
- I, J, K: Integer;
- nv, nv2: Pointer;
+  Vect: TVect3D;
+  I, J, K: Integer;
+  nv, nv2: Pointer;
 begin
- FVertexList.Clear;
- nVertexList.Sort(PtrListSortR);
- nVertexList2.Sort(PtrListSortR);
- FillChar(Vect, SizeOf(Vect), 0);
- Vect.LowPrecision:=True;
- I:=nVertexList.Count-1;
- if I>=0 then nv:=nVertexList[I] else nv:=Nil;
- J:=nVertexList2.Count-1;
- if J>=0 then nv2:=nVertexList2[J] else nv2:=Nil;
- while (I>=0) and (J>=0) do
+  FVertexList.Clear;
+
+  nVertexList.Sort(PtrListSortR);
+  nVertexList2.Sort(PtrListSortR);
+
+  FillChar(Vect, SizeOf(Vect), 0);
+  Vect.LowPrecision:=True;
+
+  I:=nVertexList.Count-1;
+  if I>=0 then
+    nv:=nVertexList[I]
+  else
+    nv:=Nil;
+
+  J:=nVertexList2.Count-1;
+  if J>=0 then
+    nv2:=nVertexList2[J]
+  else
+    nv2:=Nil;
+
+  while (I>=0) and (J>=0) do
   begin
-   Vect.LowPrecision:=PChar(nv2)<PChar(nv);
-   if Vect.LowPrecision then
+    Vect.LowPrecision:=PChar(nv2)<PChar(nv);
+    if Vect.LowPrecision then
     begin
-     Vect.v:=nv2;
-     Dec(J);
-     if J>=0 then nv2:=nVertexList2[J];
+      Vect.v:=nv2;
+      Dec(J);
+      if J>=0 then
+        nv2:=nVertexList2[J];
     end
-   else
+    else
     begin
-     Vect.v:=nv;
-     Dec(I);
-     if I>=0 then nv:=nVertexList[I];
+      Vect.v:=nv;
+      Dec(I);
+      if I>=0 then
+        nv:=nVertexList[I];
     end;
-   FVertexList.Write(Vect, SizeOf(Vect));
+    FVertexList.Write(Vect, SizeOf(Vect));
   end;
- Vect.LowPrecision:=False;
- for K:=I downto 0 do
+
+  Vect.LowPrecision:=False;
+  for K:=I downto 0 do
   begin
-   Vect.v:=nVertexList[K];
-   FVertexList.Write(Vect, SizeOf(Vect));
+    Vect.v:=nVertexList[K];
+    FVertexList.Write(Vect, SizeOf(Vect));
   end;
- Vect.LowPrecision:=True;
- for K:=J downto 0 do
+
+  Vect.LowPrecision:=True;
+  for K:=J downto 0 do
   begin
-   Vect.v:=nVertexList2[K];
-   FVertexList.Write(Vect, SizeOf(Vect));
+    Vect.v:=nVertexList2[K];
+    FVertexList.Write(Vect, SizeOf(Vect));
   end;
 end;
 
@@ -1465,20 +1527,20 @@ procedure T3DFXSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: T
 var
  CorrW, CorrH: TDouble;
 begin
- CorrW:=1/(EchelleTexture*256);
- CorrH:=-1/(EchelleTexture*256);
- with Texture^ do
+  CorrW:= 1/(EchelleTexture*256);
+  CorrH:=-1/(EchelleTexture*256);
+  with Texture^ do
   begin
-   case info.aspectratio of
-    GR_ASPECT_8x1: CorrH:=-1/(EchelleTexture*32);
-    GR_ASPECT_4x1: CorrH:=-1/(EchelleTexture*64);
-    GR_ASPECT_2x1: CorrH:=-1/(EchelleTexture*128);
-    GR_ASPECT_1x2: CorrW:= 1/(EchelleTexture*128);
-    GR_ASPECT_1x4: CorrW:= 1/(EchelleTexture*64);
-    GR_ASPECT_1x8: CorrW:= 1/(EchelleTexture*32);
-   end;
-   ScaleS:=CorrW*TexW;
-   ScaleT:=CorrH*TexH;
+    case info.aspectratio of
+      GR_ASPECT_8x1: CorrH:=-1/(EchelleTexture*32);
+      GR_ASPECT_4x1: CorrH:=-1/(EchelleTexture*64);
+      GR_ASPECT_2x1: CorrH:=-1/(EchelleTexture*128);
+      GR_ASPECT_1x2: CorrW:= 1/(EchelleTexture*128);
+      GR_ASPECT_1x4: CorrW:= 1/(EchelleTexture*64);
+      GR_ASPECT_1x8: CorrW:= 1/(EchelleTexture*32);
+    end;
+    ScaleS:=CorrW*TexW;
+    ScaleT:=CorrH*TexH;
   end;
 end;
 
@@ -1486,20 +1548,20 @@ procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDo
 var
  w, h: Integer;
 begin
- with Skin^ do
+  with Skin^ do
   begin
-   w:=256;
-   h:=256;
-   case info.aspectratio of
-    GR_ASPECT_8x1: h:=32;
-    GR_ASPECT_4x1: h:=64;
-    GR_ASPECT_2x1: h:=128;
-    GR_ASPECT_1x2: w:=128;
-    GR_ASPECT_1x4: w:=64;
-    GR_ASPECT_1x8: w:=32;
-   end;
-   ScaleS:=w/TexW;
-   ScaleT:=h/TexH;
+    w:=256;
+    h:=256;
+    case info.aspectratio of
+      GR_ASPECT_8x1: h:=32;
+      GR_ASPECT_4x1: h:=64;
+      GR_ASPECT_2x1: h:=128;
+      GR_ASPECT_1x2: w:=128;
+      GR_ASPECT_1x4: w:=64;
+      GR_ASPECT_1x8: w:=32;
+    end;
+    ScaleS:=w/TexW;
+    ScaleT:=h/TexH;
   end;
 end;
 
@@ -1507,27 +1569,27 @@ procedure T3DFXSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT:
 var
  w, h: Integer;
 begin
- with Texture^ do
+  with Texture^ do
   begin
-   w:=256;
-   h:=256;
-   case info.aspectratio of
-    GR_ASPECT_8x1: h:=32;
-    GR_ASPECT_4x1: h:=64;
-    GR_ASPECT_2x1: h:=128;
-    GR_ASPECT_1x2: w:=128;
-    GR_ASPECT_1x4: w:=64;
-    GR_ASPECT_1x8: w:=32;
-   end;
-   ScaleS:=w;
-   ScaleT:=h;
+    w:=256;
+    h:=256;
+    case info.aspectratio of
+      GR_ASPECT_8x1: h:=32;
+      GR_ASPECT_4x1: h:=64;
+      GR_ASPECT_2x1: h:=128;
+      GR_ASPECT_1x2: w:=128;
+      GR_ASPECT_1x4: w:=64;
+      GR_ASPECT_1x8: w:=32;
+    end;
+    ScaleS:=w;
+    ScaleT:=h;
   end;
 end;
 
 procedure TSceneObject.BuildScene(DC: HDC; AltTexSrc: QObject);
 const
- LargeurBarre = 256;
- HauteurBarre = 20;
+ cProgressBarWidth = 256;
+ cProgressBarHeight = 20;
 var
  I, J, K, L: Integer;
  NewTextures, NewTexCount: Integer;
@@ -1558,74 +1620,105 @@ var
  BControlPoints: TBezierMeshBuf5;
  stBuffer, st: vec_st_p;
 {PalWarning: TPaletteWarning;}
+  PolySurface: PSurface;
+  Model3DInfo: PModel3DInfo;
+  OneBezier:   TBezier;
 
-  procedure AddSurfaceRef(const S: String; SurfSize: Integer; tmp: Pointer);
+  procedure AddSurfaceRef(const a_TexName: String; a_SurfSize: Integer; a_Tmp: Pointer);
   var
-   J: Integer;
-   PList: PSurfaces;
+    Idx: Integer;
+    SurfacesElement: PSurfaces;
   begin
-   if TexNames.Find(S, J) then
-    PList:=PSurfaces(TexNames.Objects[J])
-   else
+    { try finding if the texturename already have been added to the list }
+    if TexNames.Find(a_TexName, Idx) then
+      { it had, now get the associated Surfaces-element }
+      SurfacesElement:=PSurfaces(TexNames.Objects[Idx])
+    else
     begin
-     New(PList);
-     FillChar(PList^, SizeOf(TSurfaces), 0);
-     PList^.Next:=FListSurfaces;
-     FListSurfaces:=PList;
-     PList^.TexName:=S;
-     Pointer(PList^.tmp):=tmp;
-     TexNames.AddObject(S, TObject(PList));
+      { allocate memory for a TSurfaces-structure, and clear it }
+      New(SurfacesElement);
+      FillChar(SurfacesElement^, SizeOf(TSurfaces), 0);
+      { set the pointer-chain of ListSurfaces }
+      SurfacesElement^.Next:=FListSurfaces;
+      FListSurfaces:=SurfacesElement;
+      { assign the texturename, and some tmp value }
+      SurfacesElement^.TexName:=a_TexName;
+      Pointer(SurfacesElement^.tmp):=a_Tmp;
+      { add texturename to list, and associate it with the newly allocated Surfaces-element }
+      TexNames.AddObject(a_TexName, TObject(SurfacesElement));
     end;
-   Inc(PList^.SurfSize, SurfSize);
+    { increase the surfacesize of the found/new Surfaces-element }
+    Inc(SurfacesElement^.SurfSize, a_SurfSize);
   end;
 
-  procedure SmallBezierTriangle(i1,i2,i3: Integer);
+  procedure SmallBezierTriangle(i1, i2, i3: Integer);
   var
-   vp0, vp1, vp2: vec3_p;
-   stp: vec_st_p;
-   v2, v3, DeltaV: TVect;
-   dd, Radius2, nRadius2: TDouble;
+    vp0, vp1, vp2: vec3_p;
+    stp: vec_st_p;
+    v2, v3, DeltaV: TVect;
+    dd, Radius2, nRadius2: TDouble;
   begin
-   PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-   vp0:=BezierBuf.CP; Inc(vp0,i1); stp:=st; Inc(stp,i1);
-   WriteVertex(PV, vp0, stp^.s * CorrW, stp^.t * CorrH, False);
-   Inc(PV, VertexSize);
-   vp1:=BezierBuf.CP; Inc(vp1,i2); stp:=st; Inc(stp,i2);
-   WriteVertex(PV, vp1, stp^.s * CorrW, stp^.t * CorrH, False);
-   Inc(PV, VertexSize);
-   vp2:=BezierBuf.CP; Inc(vp2,i3); stp:=st; Inc(stp,i3);
-   WriteVertex(PV, vp2, stp^.s * CorrW, stp^.t * CorrH, False);
-   Inc(PV, VertexSize);
+    PV:=PChar(Surf3D)+SizeOf(TSurface3D);
 
-   v2.X:=vp1^[0] - vp0^[0];
-   v2.Y:=vp1^[1] - vp0^[1];
-   v2.Z:=vp1^[2] - vp0^[2];
-   v3.X:=vp2^[0] - vp0^[0];
-   v3.Y:=vp2^[1] - vp0^[1];
-   v3.Z:=vp2^[2] - vp0^[2];
-   DeltaV:=Cross(v3, v2);
-   dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
-   if dd<rien then
-    Dec(PList^.SurfSize, VertexSize3m)
-   else
+    vp0:=BezierBuf.CP;
+    Inc(vp0, i1);
+    stp:=st;
+    Inc(stp, i1);
+    WriteVertex(PV, vp0, stp^.s * CorrW, stp^.t * CorrH, False);
+    Inc(PV, VertexSize);
+
+    vp1:=BezierBuf.CP;
+    Inc(vp1, i2);
+    stp:=st;
+    Inc(stp, i2);
+    WriteVertex(PV, vp1, stp^.s * CorrW, stp^.t * CorrH, False);
+    Inc(PV, VertexSize);
+
+    vp2:=BezierBuf.CP;
+    Inc(vp2, i3);
+    stp:=st;
+    Inc(stp, i3);
+    WriteVertex(PV, vp2, stp^.s * CorrW, stp^.t * CorrH, False);
+    Inc(PV, VertexSize);
+
+    v2.X:=vp1^[0] - vp0^[0];
+    v2.Y:=vp1^[1] - vp0^[1];
+    v2.Z:=vp1^[2] - vp0^[2];
+
+    v3.X:=vp2^[0] - vp0^[0];
+    v3.Y:=vp2^[1] - vp0^[1];
+    v3.Z:=vp2^[2] - vp0^[2];
+
+    DeltaV:=Cross(v3, v2);
+
+    dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
+    if dd<rien then
+      Dec(PList^.SurfSize, VertexSize3m)
+    else
     begin
-     dd:=1/Sqrt(dd);
-     Radius2:=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
-     nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
-     with Surf3D^ do
+      dd:=1/Sqrt(dd);
+
+      Radius2 :=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
+      nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
+
+      with Surf3D^ do
       begin
-       Normale[0]:=DeltaV.X*dd;
-       Normale[1]:=DeltaV.Y*dd;
-       Normale[2]:=DeltaV.Z*dd;
-       Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
-       if nRadius2>Radius2 then
-        AnyInfo.Radius:=Sqrt(nRadius2)
-       else
-        AnyInfo.Radius:=Sqrt(Radius2);
-       VertexCount:=3;
-       AlphaColor:=ObjectColor;
+        Normale[0]:=DeltaV.X*dd;
+        Normale[1]:=DeltaV.Y*dd;
+        Normale[2]:=DeltaV.Z*dd;
+
+        Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
+
+        if nRadius2>Radius2 then
+          AnyInfo.Radius:=Sqrt(nRadius2)
+        else
+          AnyInfo.Radius:=Sqrt(Radius2);
+
+        VertexCount:=3;
+        AlphaColor:=ObjectColor;
       end;
-     Inc(PChar(Surf3D), VertexSize3m);
+
+      Inc(PChar(Surf3D), VertexSize3m);
     end;
   end;
 
@@ -1637,489 +1730,595 @@ begin
  VertexSize3m:=SizeOf(TSurface3D)+3*VertexSize;
  TexNames:=TStringList.Create;
  try
- {PList:=PSurfaces(FListSurfaces);
-  while Assigned(PList) do
-   begin
-    TexNames.AddObject(PList^.TexName, TObject(PList));
-    PList^.tmp:=Nil;
-    PList:=PList^.Next;
-   end;}
-  TexNames.Sorted:=True;
-  if Mode=bm3DFX then
-   nVertexList:=TListP2.Create
-  else
-   nVertexList:=Nil;
-  try
-   I:=0;
-   while I<PolyFaces.Count do
+  {PList:=PSurfaces(FListSurfaces);
+   while Assigned(PList) do
     begin
-     Dest:=PolyFaces[I];
-     if Dest=Nil then
-      Inc(I,2)
-     else
-      with PSurface(Dest)^ do
-       begin
-        AddSurfaceRef(F.NomTex, SizeOf(TSurface3D)+prvNbS*VertexSize, Nil);
-        if nVertexList<>Nil then
-         for J:=0 to prvNbS-1 do
-          nVertexList.Add(prvDescS[J]);
-        Inc(I);
-       end;
-    end;
-   if Mode=bm3DFX then
-    nVertexList2:=TListP2.Create
-   else
-    nVertexList2:=Nil;
-   try
-    I:=0;
-    while I<ModelInfo.Count do
-     begin
-      Dest:=ModelInfo[I];
-      if Dest=Nil then
-       Inc(I,2)
-      else
-       with PModel3DInfo(Dest)^ do
-        begin
-         Inc(I);
-         J:=Base.Triangles(CTris);
-         AddSurfaceRef(Base.GetSkinDescr(StaticSkin), J*VertexSize3m, Base.CurrentSkin);
-         if nVertexList2<>Nil then
-          begin
-           CVertex:=Vertices;
-           for J:=0 to VertexCount-1 do
-            begin
-             nVertexList2.Add(CVertex);
-             Inc(CVertex);
-            end;
-          end;
-        end;
-      end;
-    I:=0;
-    while I<BezierInfo.Count do
-     begin
-      Dest:=BezierInfo[I];
-      if Dest=Nil then
-       Inc(I,2)
-      else
-       with TBezier(Dest) do
-        begin
-         Inc(I);
-         if Mode<>bmOpenGL then
-          begin
-           BezierBuf:=GetMeshCache;
-           AddSurfaceRef(NomTex, ((BezierBuf.H-1)*(BezierBuf.W-1)*2)*VertexSize3m, Nil);
-           for J:=1 to BezierBuf.W*BezierBuf.H do
-            begin
-             nVertexList2.Add(BezierBuf.CP);
-             Inc(BezierBuf.CP);
-            end;
-          end
-         else   { bmOpenGL }
-          with GetMeshCache do
-           AddSurfaceRef(NomTex, (H-1)*(SizeOf(TSurface3D)+2*W*(VertexSize+SizeOf(vec3_t))), Nil);
-        end;
-      end;
-    NewTextures:=0;
-    PList:=FListSurfaces;
-    while Assigned(PList) do
-     begin
-      if PList^.Texture=Nil then
-       begin
-        TextureManager.GetTexture(PList, False, Nil{, PalWarning});
-        if PList^.Texture=Nil then
-         Inc(NewTextures)
-        else
-         BuildTexture(PList^.Texture);
-       end;
-      PList:=PList^.Next;
-     end;
-    TextureManager.FreeTextures(False);   { free unused textures }
+     TexNames.AddObject(PList^.TexName, TObject(PList));
+     PList^.tmp:=Nil;
+     PList:=PList^.Next;
+    end;}
+   TexNames.Sorted:=True;
 
-     { load new textures }
-    if NewTextures>0 then
+   if Mode=bm3DFX then
+     nVertexList:=TListP2.Create
+   else
+     nVertexList:=Nil;
+
+   try
+     I:=0;
+     while I<PolyFaces.Count do
      begin
-      Gauche:=0;
-      Brush:=0;
-      if DC=HDC(-1) then
-       ProgressIndicatorStart(5454, NewTextures)
-      else
-       if DC<>0 then
-        begin
-         GetClipBox(DC, R);
-         Gauche:=(R.Right+R.Left-LargeurBarre) div 2;
-         R.Left:=Gauche;
-         R.Right:=Gauche+LargeurBarre;
-         R.Top:=(R.Top+R.Bottom-HauteurBarre) div 2;
-         R.Bottom:=R.Top+HauteurBarre;
-         TextePreparation:=LoadStr1(5454);
-         SetBkColor(DC, $FFFFFF);
-         SetTextColor(DC, $000000);
-         ExtTextOut(DC, Gauche+38,R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
-         InflateRect(R, +1,+1);
-         FrameRect(DC, R, GetStockObject(Black_brush));
-         InflateRect(R, -1,-1);
-         GdiFlush;
-         R.Right:=R.Left;
-         Brush:=CreateSolidBrush($FF0000);
-        end;
-      try
-       NewTexCount:=0;
+       PolySurface:=PSurface(PolyFaces[I]);
+       if PolySurface=Nil then
+       begin
+         { If it points to a nil-pointer, then the next element is a color
+           element, which we have to ignore. Thats why we increment with 1 here }
+         Inc(I);
+       end
+       else
+       begin
+         AddSurfaceRef(PolySurface^.F.NomTex, SizeOf(TSurface3D) + PolySurface^.prvNbS * VertexSize, Nil);
+         if nVertexList<>Nil then
+           for J:=0 to PolySurface^.prvNbS-1 do
+             nVertexList.Add(PolySurface^.prvDescS[J]);
+       end;
+
+       Inc(I); { Increment to get the next element }
+     end;
+
+
+     if Mode=bm3DFX then
+       nVertexList2:=TListP2.Create
+     else
+       nVertexList2:=Nil;
+
+     try
+       I:=0;
+       while I<ModelInfo.Count do
+       begin
+         Model3DInfo:=PModel3DInfo(ModelInfo[I]);
+         if Model3DInfo=Nil then
+         begin
+           { If it points to a nil-pointer, then the next element is a color
+             element, which we have to ignore. Thats why we increment with 1 here }
+           Inc(I);
+         end
+         else
+         begin
+           J:=Model3DInfo^.Base.Triangles(CTris);
+           AddSurfaceRef(Model3DInfo^.Base.GetSkinDescr(Model3DInfo^.StaticSkin), J * VertexSize3m, Model3DInfo^.Base.CurrentSkin);
+           if nVertexList2<>Nil then
+           begin
+             CVertex:=Model3DInfo^.Vertices;
+             for J:=0 to Model3DInfo^.VertexCount-1 do
+             begin
+               nVertexList2.Add(CVertex);
+               Inc(CVertex);
+             end;
+           end;
+         end;
+
+         Inc(I); { Increment to get the next element }
+       end;
+
+       I:=0;
+       while I<BezierInfo.Count do
+       begin
+         OneBezier:=TBezier(BezierInfo[I]);
+         if OneBezier=Nil then
+         begin
+           { If it points to a nil-pointer, then the next element is a color
+             element, which we have to ignore. Thats why we increment with 1 }
+           Inc(I);
+         end
+         else
+         begin
+           with OneBezier do
+           begin
+             BezierBuf:=GetMeshCache;
+             if Mode<>bmOpenGL then
+             begin
+               AddSurfaceRef(NomTex, ((BezierBuf.H-1) * (BezierBuf.W-1) * 2) * VertexSize3m, Nil);
+               for J:=1 to BezierBuf.W*BezierBuf.H do
+               begin
+                 nVertexList2.Add(BezierBuf.CP);
+                 Inc(BezierBuf.CP);
+               end;
+             end
+             else
+             begin
+               { bmOpenGL }
+               AddSurfaceRef(NomTex, (BezierBuf.H-1) * (SizeOf(TSurface3D) + 2 * BezierBuf.W * (VertexSize + SizeOf(vec3_t))), Nil);
+             end;
+           end;
+         end;
+
+         Inc(I); { Increment to get the next element }
+       end;
+
+       NewTextures:=0;
        PList:=FListSurfaces;
        while Assigned(PList) do
-        begin
+       begin
          if PList^.Texture=Nil then
-          begin
-           TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
-           BuildTexture(PList^.Texture);
-           if DC=HDC(-1) then
-            begin
-             {Inc(NewTexCount);
-             if NewTexCount>NewTextures then Raise InternalE('NewTexCount>NewTextures');}
-             ProgressIndicatorIncrement;
-            end
+         begin
+           TextureManager.GetTexture(PList, False, Nil{, PalWarning});
+           if PList^.Texture=Nil then
+             Inc(NewTextures)
            else
-            if DC<>0 then
-             begin
-              Inc(NewTexCount);
-              R.Right:=Gauche + MulDiv(LargeurBarre, NewTexCount, NewTextures);
-              FillRect(DC, R, Brush);
-              R.Left:=R.Right;
-             end;
-          end;
+             BuildTexture(PList^.Texture);
+         end;
          PList:=PList^.Next;
-        end;
-      finally
-       if DC=HDC(-1) then
-        ProgressIndicatorStop;
-       if Brush<>0 then
-        DeleteObject(Brush);
-      end;
-     end;
-
-    PostBuild(nVertexList, nVertexList2);
-   finally
-    nVertexList2.Free;
-   end;
-  finally
-   nVertexList.Free;
-  end;
-
-  CurrentColor:=$FFFFFF;
-  I:=0;
-  while I<PolyFaces.Count do
-   begin
-    Dest:=PolyFaces[I];
-    if Dest=Nil then
-     begin
-      CurrentColor:=FxU32(PolyFaces[I+1]);
-      Inc(I,2);
-     end
-    else
-     with PSurface(Dest)^ do
-      begin
-       Inc(I);
-       S:=F.NomTex;
-       if not TexNames.Find(S, J) then
-        {$IFDEF Debug}Raise InternalE('TexNames.Find'){$ENDIF};
-       PList:=PSurfaces(TexNames.Objects[J]);
-       if PList^.Surf=Nil then
-        begin
-         GetMem(PList^.Surf, PList^.SurfSize);
-         Surf3D:=PList^.Surf;
-        end
-       else
-        Surf3D:=PList^.tmp;
-       with Surf3D^ do
-        begin
-         with F.Normale do
-          begin
-           Normale[0]:=X;
-           Normale[1]:=Y;
-           Normale[2]:=Z;
-          end;
-         Dist:=F.Dist;
-         VertexCount:=prvNbS;
-         AlphaColor:=CurrentColor or
-          (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
-         Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
-        end;
-       if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
-        Raise InternalE('BuildScene - empty face');
-
-     (*TexPt[2].X:=TexPt[2].X-TexPt[1].X;
-       TexPt[2].Y:=TexPt[2].Y-TexPt[1].Y;
-       TexPt[2].Z:=TexPt[2].Z-TexPt[1].Z;
-       TexPt[3].X:=TexPt[3].X-TexPt[1].X;
-       TexPt[3].Y:=TexPt[3].Y-TexPt[1].Y;
-       TexPt[3].Z:=TexPt[3].Z-TexPt[1].Z;
-
-       {...must inverse the equations...}
-
-       CorrW:=(EchelleTexture*256)/(PTex^.TexW*(Sqr(TexPt[2].X)+Sqr(TexPt[2].Y)+Sqr(TexPt[2].Z)));
-       CorrH:=(-EchelleTexture*256)/(PTex^.TexH*(Sqr(TexPt[3].X)+Sqr(TexPt[3].Y)+Sqr(TexPt[3].Z)));
-       TexPt[2].X:=TexPt[2].X*CorrW;
-       TexPt[2].Y:=TexPt[2].Y*CorrW;
-       TexPt[2].Z:=TexPt[2].Z*CorrW;
-       TexPt[3].X:=TexPt[3].X*CorrH;
-       TexPt[3].Y:=TexPt[3].Y*CorrH;
-       TexPt[3].Z:=TexPt[3].Z*CorrH;*)
-
-       stScalePoly(PList^.Texture, CorrW, CorrH);
-       TexPt[2].X:=(TexPt[2].X-TexPt[1].X)*CorrW;
-       TexPt[2].Y:=(TexPt[2].Y-TexPt[1].Y)*CorrW;
-       TexPt[2].Z:=(TexPt[2].Z-TexPt[1].Z)*CorrW;
-       TexPt[3].X:=(TexPt[3].X-TexPt[1].X)*CorrH;
-       TexPt[3].Y:=(TexPt[3].Y-TexPt[1].Y)*CorrH;
-       TexPt[3].Z:=(TexPt[3].Z-TexPt[1].Z)*CorrH;
-
-       { we must inverse the equations for X, Y, Z :
-          s*TexPt[2]+t*TexPt[3] = DeltaV
-
-          s = v2.DeltaV
-          t = v3.DeltaV
-
-          (v2.DeltaV)*TexPt[2]+(v3.DeltaV)*TexPt[3] = DeltaV
-
-          v2.TexPt[2] = 1    v3.TexPt[2] = 0
-          v2.TexPt[3] = 0    v3.TexPt[3] = 1
-
-          v2=a*TexPt[2]+b*TexPt[3]    v3=c*TexPt[2]+d*TexPt[3]
-
-          a*TexPt[2].TexPt[2] + b*TexPt[3].TexPt[2] = 1
-          a*TexPt[2].TexPt[3] + b*TexPt[3].TexPt[3] = 0
-          c*TexPt[2].TexPt[2] + d*TexPt[3].TexPt[2] = 0
-          c*TexPt[2].TexPt[3] + d*TexPt[3].TexPt[3] = 1
-       }
-       dot22:=Dot(TexPt[2], TexPt[2]);
-       dot23:=Dot(TexPt[2], TexPt[3]);
-       dot33:=Dot(TexPt[3], TexPt[3]);
-       mdet:=dot22*dot33-dot23*dot23;
-       if Abs(mdet)<1E-8 then
-        begin
-         aa:=0;
-         bb:=0;
-        {cc:=0;}
-         dd:=0;
-        end
-       else
-        begin
-         mdet:=1/mdet;
-         aa:= mdet*dot33;
-         bb:=-mdet*dot23;
-        {cc:=-mdet*dot23;}
-         dd:= mdet*dot22;
-        end;
-       v2.X:= aa   *TexPt[2].X + bb*TexPt[3].X;
-       v2.Y:= aa   *TexPt[2].Y + bb*TexPt[3].Y;
-       v2.Z:= aa   *TexPt[2].Z + bb*TexPt[3].Z;
-       v3.X:={cc}bb*TexPt[2].X + dd*TexPt[3].X;
-       v3.Y:={cc}bb*TexPt[2].Y + dd*TexPt[3].Y;
-       v3.Z:={cc}bb*TexPt[2].Z + dd*TexPt[3].Z;
-
-       Radius2:=0;
-       PV:=PChar(Surf3D) + SizeOf(TSurface3D);
-       for J:=0 to prvNbS-1 do
-        begin
-         with prvDescS[J]^.P do
-          begin
-           if J=0 then
-            begin
-             FirstPoint.X:=X;
-             FirstPoint.Y:=Y;
-             FirstPoint.Z:=Z;
-            end
-           else
-            begin
-             nRadius2:=Sqr(FirstPoint.X-X)+Sqr(FirstPoint.Y-Y)+Sqr(FirstPoint.Z-Z);
-             if nRadius2>Radius2 then
-              Radius2:=nRadius2;
-            end;
-           DeltaV.X:=X-TexPt[1].X;
-           DeltaV.Y:=Y-TexPt[1].Y;
-           DeltaV.Z:=Z-TexPt[1].Z;
-          end;
-         WriteVertex(PV, prvDescS[J], Dot(v2,DeltaV), Dot(v3,DeltaV), True);
-         Inc(PV, VertexSize);
-        end;
-       if Mode=bm3DFX then
-        Surf3D^.AnyInfo.Radius:=Sqrt(Radius2)
-       else
-        Surf3D^.AnyInfo.DisplayList:=0;
-       PList^.tmp:=PSurface3D(PV);
-      end;
-    end;
-
-  CurrentColor:=$FFFFFF;
-  I:=0;
-  while I<ModelInfo.Count do
-   begin
-    Dest:=ModelInfo[I];
-    if Dest=Nil then
-     begin
-      CurrentColor:=FxU32(ModelInfo[I+1]);
-      Inc(I,2);
-     end
-    else
-     with PModel3DInfo(Dest)^ do
-      begin
-       Inc(I);
-       if not TexNames.Find(Base.GetSkinDescr(StaticSkin), J) then
-        {$IFDEF Debug}Raise InternalE('TexNames.Find.2'){$ENDIF};
-       PList:=PSurfaces(TexNames.Objects[J]);
-       if PList^.Surf=Nil then
-        begin
-         GetMem(PList^.Surf, PList^.SurfSize);
-         Surf3D:=PList^.Surf;
-        end
-       else
-        Surf3D:=PList^.tmp;
-       Include(PList^.Transparent, ModelAlpha<>255);
-
-       stScaleModel(PList^.Texture, CorrW, CorrH);
-
-       for J:=1 to Base.Triangles(CTris) do
-        begin
-         PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-         for L:=0 to 2 do
-          with CTris^[L] do
-           begin
-            if VertexNo >= VertexCount then
-             Raise EError(5667);
-            v3p[L]:=Vertices;
-            Inc(v3p[L], VertexNo);
-            WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
-            Inc(PV, VertexSize);
-           end;
-         Inc(CTris);
-         v2.X:=v3p[1]^[0] - v3p[0]^[0];
-         v2.Y:=v3p[1]^[1] - v3p[0]^[1];
-         v2.Z:=v3p[1]^[2] - v3p[0]^[2];
-         v3.X:=v3p[2]^[0] - v3p[0]^[0];
-         v3.Y:=v3p[2]^[1] - v3p[0]^[1];
-         v3.Z:=v3p[2]^[2] - v3p[0]^[2];
-         DeltaV:=Cross(v3, v2);
-         dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
-         if dd<rien then
-          Dec(PList^.SurfSize, VertexSize3m)
-         else
-          begin
-           dd:=1/Sqrt(dd);
-           Radius2:=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
-           nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
-           with Surf3D^ do
-            begin
-             Normale[0]:=DeltaV.X*dd;
-             Normale[1]:=DeltaV.Y*dd;
-             Normale[2]:=DeltaV.Z*dd;
-             Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
-             if Mode=bm3DFX then
-              if nRadius2>Radius2 then
-               AnyInfo.Radius:=Sqrt(nRadius2)
-              else
-               AnyInfo.Radius:=Sqrt(Radius2)
-             else
-              AnyInfo.DisplayList:=0;
-             VertexCount:=3;
-             AlphaColor:=CurrentColor or (ModelAlpha shl 24);
-            end;
-           Inc(PChar(Surf3D), VertexSize3m);
-          end;
-        end;
-       PList^.tmp:=Surf3D;
-      end;
-    end;
-
-  CurrentColor:=$FFFFFF;
-  I:=0;
-  while I<BezierInfo.Count do
-   begin
-    Dest:=BezierInfo[I];
-    if Dest=Nil then
-     begin
-      CurrentColor:=FxU32(BezierInfo[I+1]);
-      Inc(I,2);
-     end
-    else
-     with TBezier(Dest) do
-      begin
-       Inc(I);
-       S:=NomTex;
-       if not TexNames.Find(S, J) then
-        {$IFDEF Debug}Raise InternalE('TexNames.Find.3'){$ENDIF};
-       PList:=PSurfaces(TexNames.Objects[J]);
-       if PList^.Surf=Nil then
-        begin
-         GetMem(PList^.Surf, PList^.SurfSize);
-         Surf3D:=PList^.Surf;
-        end
-       else
-        Surf3D:=PList^.tmp;
-       ObjectColor:=CurrentColor or
-          (GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
-       Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
-
-       stScaleBezier(PList^.Texture, CorrW, CorrH);
-       BezierBuf:=GetMeshCache;
-       BControlPoints:=ControlPoints;
-       GetMem(stBuffer, BezierBuf.W*BezierBuf.H*SizeOf(vec_st_t));
-       try
-        st:=stBuffer;
-        for L:=0 to BezierBuf.H-1 do
-         for K:=0 to BezierBuf.W-1 do
-          begin
-           st^:=TriangleSTCoordinates(BControlPoints, K, L);
-           Inc(st);
-          end;
-
-        st:=stBuffer;
-        if Mode=bm3DFX then
-         for L:=0 to BezierBuf.H-2 do
-          begin
-           for K:=0 to BezierBuf.W-2 do
-            begin
-             SmallBezierTriangle(0, BezierBuf.W, 1);
-             SmallBezierTriangle(BezierBuf.W, BezierBuf.W+1, 1);
-             Inc(BezierBuf.CP); Inc(st);
-            end;
-           Inc(BezierBuf.CP); Inc(st);
-          end
-        else   { bmOpenGL }
-         for L:=0 to BezierBuf.H-2 do
-          begin
-           with Surf3D^ do
-            begin
-             AnyInfo.DisplayList:=0;
-             VertexCount:=-(2*BezierBuf.W);
-             AlphaColor:=ObjectColor;
-            end;
-           PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-           bb:=L*(1/BezierMeshCnt);
-           for K:=0 to BezierBuf.W-1 do
-            begin
-             aa:=K*(1/BezierMeshCnt);
-             WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
-             Inc(PV, VertexSize);
-             vec3_p(PV)^:=OrthogonalVector(aa,bb);
-             Inc(vec3_p(PV));
-             Inc(BezierBuf.CP, BezierBuf.W); Inc(st, BezierBuf.W);
-             WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
-             Inc(PV, VertexSize);
-             vec3_p(PV)^:=OrthogonalVector(aa,bb+1/BezierMeshCnt);
-             Inc(vec3_p(PV));
-             Dec(BezierBuf.CP, BezierBuf.W-1); Dec(st, BezierBuf.W-1);
-            end;
-           PChar(Surf3D):=PChar(PV);
-          end;
-       finally
-        FreeMem(stBuffer);
        end;
-       PList^.tmp:=PSurface3D(Surf3D);
-      end;
-    end;
 
+       TextureManager.FreeTextures(False);   { free unused textures }
+
+       { load new textures }
+       if NewTextures>0 then
+       begin
+         Gauche:=0;
+         Brush:=0;
+
+         { Setup a progress-bar, depending on what type of device-context
+           thats been rendering to }
+         if DC=HDC(-1) then
+           ProgressIndicatorStart(5454, NewTextures)
+         else
+         begin
+           if DC<>0 then
+           begin
+             GetClipBox(DC, R);
+             Gauche:=(R.Right+R.Left-cProgressBarWidth) div 2;
+             R.Left:=Gauche;
+             R.Right:=Gauche+cProgressBarWidth;
+             R.Top:=(R.Top+R.Bottom-cProgressBarHeight) div 2;
+             R.Bottom:=R.Top+cProgressBarHeight;
+             SetBkColor(DC, $FFFFFF);
+             SetTextColor(DC, $000000);
+             TextePreparation:=LoadStr1(5454);
+             ExtTextOut(DC, Gauche+38, R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
+             InflateRect(R, +1, +1);
+             FrameRect(DC, R, GetStockObject(Black_brush));
+             InflateRect(R, -1, -1);
+             GdiFlush;
+             R.Right:=R.Left;
+             Brush:=CreateSolidBrush($FF0000);
+           end;
+         end;
+
+         { begin building the textures one by one, while updating the
+           progress-bar at the same time }
+         try
+           NewTexCount:=0;
+           PList:=FListSurfaces;
+           while Assigned(PList) do
+           begin
+             if PList^.Texture=Nil then
+             begin
+               { update progressbar }
+               if DC=HDC(-1) then
+               begin
+                 ProgressIndicatorIncrement;
+               end
+               else
+               begin
+                 if DC<>0 then
+                 begin
+                   Inc(NewTexCount);
+                   R.Right:=Gauche + MulDiv(cProgressBarWidth, NewTexCount, NewTextures);
+                   FillRect(DC, R, Brush);
+                   R.Left:=R.Right;
+                 end;
+               end;
+
+               TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
+               BuildTexture(PList^.Texture);
+             end;
+
+             PList:=PList^.Next;
+           end;
+
+         finally
+           { clean up the progress-bar }
+           if DC=HDC(-1) then
+             ProgressIndicatorStop;
+           if Brush<>0 then
+             DeleteObject(Brush);
+         end;
+       end;
+
+       PostBuild(nVertexList, nVertexList2);
+     finally
+       nVertexList2.Free;
+     end;
+   finally
+     nVertexList.Free;
+   end;
+
+   CurrentColor:=$FFFFFF;
+   I:=0;
+   while I<PolyFaces.Count do
+   begin
+     PolySurface:=PSurface(PolyFaces[I]);
+     if PolySurface=Nil then
+     begin
+       CurrentColor:=FxU32(PolyFaces[I+1]);
+       Inc(I,2);
+     end
+     else
+     begin
+       with PolySurface^ do
+       begin
+         { find the texturename again }
+         S:=F.NomTex;
+         if not TexNames.Find(S, J) then
+          {$IFDEF Debug}Raise InternalE('TexNames.Find'){$ENDIF};
+
+         { get the associated Surfaces-element for this texturename }
+         PList:=PSurfaces(TexNames.Objects[J]);
+
+         { setup the Surf3D to point to an area in the Surfaces-element }
+         if PList^.Surf=Nil then
+         begin
+           GetMem(PList^.Surf, PList^.SurfSize);
+           Surf3D:=PList^.Surf;
+         end
+         else
+           Surf3D:=PList^.tmp;
+
+         { initialize this Surf3D area }
+         with Surf3D^ do
+         begin
+           with F.Normale do
+           begin
+             Normale[0]:=X;
+             Normale[1]:=Y;
+             Normale[2]:=Z;
+           end;
+
+           Dist:=F.Dist;
+           VertexCount:=prvNbS;
+
+           AlphaColor:=CurrentColor or (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+           Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
+         end;
+
+         if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
+           Raise InternalE('BuildScene - empty face');
+
+       (*TexPt[2].X:=TexPt[2].X-TexPt[1].X;
+         TexPt[2].Y:=TexPt[2].Y-TexPt[1].Y;
+         TexPt[2].Z:=TexPt[2].Z-TexPt[1].Z;
+         TexPt[3].X:=TexPt[3].X-TexPt[1].X;
+         TexPt[3].Y:=TexPt[3].Y-TexPt[1].Y;
+         TexPt[3].Z:=TexPt[3].Z-TexPt[1].Z;
+
+         {...must inverse the equations...}
+
+         CorrW:=(EchelleTexture*256)/(PTex^.TexW*(Sqr(TexPt[2].X)+Sqr(TexPt[2].Y)+Sqr(TexPt[2].Z)));
+         CorrH:=(-EchelleTexture*256)/(PTex^.TexH*(Sqr(TexPt[3].X)+Sqr(TexPt[3].Y)+Sqr(TexPt[3].Z)));
+         TexPt[2].X:=TexPt[2].X*CorrW;
+         TexPt[2].Y:=TexPt[2].Y*CorrW;
+         TexPt[2].Z:=TexPt[2].Z*CorrW;
+         TexPt[3].X:=TexPt[3].X*CorrH;
+         TexPt[3].Y:=TexPt[3].Y*CorrH;
+         TexPt[3].Z:=TexPt[3].Z*CorrH;*)
+
+         stScalePoly(PList^.Texture, CorrW, CorrH);
+
+         TexPt[2].X:=(TexPt[2].X-TexPt[1].X)*CorrW;
+         TexPt[2].Y:=(TexPt[2].Y-TexPt[1].Y)*CorrW;
+         TexPt[2].Z:=(TexPt[2].Z-TexPt[1].Z)*CorrW;
+
+         TexPt[3].X:=(TexPt[3].X-TexPt[1].X)*CorrH;
+         TexPt[3].Y:=(TexPt[3].Y-TexPt[1].Y)*CorrH;
+         TexPt[3].Z:=(TexPt[3].Z-TexPt[1].Z)*CorrH;
+
+         { we must inverse the equations for X, Y, Z :
+            s*TexPt[2]+t*TexPt[3] = DeltaV
+
+            s = v2.DeltaV
+            t = v3.DeltaV
+
+            (v2.DeltaV)*TexPt[2]+(v3.DeltaV)*TexPt[3] = DeltaV
+
+            v2.TexPt[2] = 1    v3.TexPt[2] = 0
+            v2.TexPt[3] = 0    v3.TexPt[3] = 1
+
+            v2=a*TexPt[2]+b*TexPt[3]    v3=c*TexPt[2]+d*TexPt[3]
+
+            a*TexPt[2].TexPt[2] + b*TexPt[3].TexPt[2] = 1
+            a*TexPt[2].TexPt[3] + b*TexPt[3].TexPt[3] = 0
+            c*TexPt[2].TexPt[2] + d*TexPt[3].TexPt[2] = 0
+            c*TexPt[2].TexPt[3] + d*TexPt[3].TexPt[3] = 1
+         }
+
+         dot22:=Dot(TexPt[2], TexPt[2]);
+         dot23:=Dot(TexPt[2], TexPt[3]);
+         dot33:=Dot(TexPt[3], TexPt[3]);
+
+         mdet:=dot22*dot33-dot23*dot23;
+         if Abs(mdet)<1E-8 then
+         begin
+           aa:=0;
+           bb:=0;
+          {cc:=0;}
+           dd:=0;
+         end
+         else
+         begin
+           mdet:=1/mdet;
+           aa:= mdet*dot33;
+           bb:=-mdet*dot23;
+          {cc:=-mdet*dot23;}
+           dd:= mdet*dot22;
+         end;
+
+         v2.X:= aa   *TexPt[2].X + bb*TexPt[3].X;
+         v2.Y:= aa   *TexPt[2].Y + bb*TexPt[3].Y;
+         v2.Z:= aa   *TexPt[2].Z + bb*TexPt[3].Z;
+
+         v3.X:={cc}bb*TexPt[2].X + dd*TexPt[3].X;
+         v3.Y:={cc}bb*TexPt[2].Y + dd*TexPt[3].Y;
+         v3.Z:={cc}bb*TexPt[2].Z + dd*TexPt[3].Z;
+
+         Radius2:=0;
+         PV:=PChar(Surf3D) + SizeOf(TSurface3D);
+         for J:=0 to prvNbS-1 do
+         begin
+           with prvDescS[J]^.P do
+           begin
+             if J=0 then
+             begin
+               FirstPoint.X:=X;
+               FirstPoint.Y:=Y;
+               FirstPoint.Z:=Z;
+             end
+             else
+             begin
+               nRadius2:=Sqr(FirstPoint.X-X)+Sqr(FirstPoint.Y-Y)+Sqr(FirstPoint.Z-Z);
+               if nRadius2>Radius2 then
+                 Radius2:=nRadius2;
+             end;
+
+             DeltaV.X:=X-TexPt[1].X;
+             DeltaV.Y:=Y-TexPt[1].Y;
+             DeltaV.Z:=Z-TexPt[1].Z;
+           end;
+
+           WriteVertex(PV, prvDescS[J], Dot(v2, DeltaV), Dot(v3, DeltaV), True);
+
+           Inc(PV, VertexSize);
+         end;
+
+         if Mode=bm3DFX then
+           Surf3D^.AnyInfo.Radius:=Sqrt(Radius2)
+         else
+           Surf3D^.AnyInfo.DisplayList:=0;
+
+         PList^.tmp:=PSurface3D(PV);
+       end;
+
+       Inc(I);
+     end;
+   end;
+
+   CurrentColor:=$FFFFFF;
+   I:=0;
+   while I<ModelInfo.Count do
+   begin
+     Model3DInfo:=PModel3DInfo(ModelInfo[I]);
+     if Model3DInfo=Nil then
+     begin
+       CurrentColor:=FxU32(ModelInfo[I+1]);
+       Inc(I,2);
+     end
+     else
+     begin
+       with Model3DInfo^ do
+       begin
+         if not TexNames.Find(Base.GetSkinDescr(StaticSkin), J) then
+          {$IFDEF Debug}Raise InternalE('TexNames.Find.2'){$ENDIF};
+
+         PList:=PSurfaces(TexNames.Objects[J]);
+         if PList^.Surf=Nil then
+         begin
+           GetMem(PList^.Surf, PList^.SurfSize);
+           Surf3D:=PList^.Surf;
+         end
+         else
+           Surf3D:=PList^.tmp;
+
+         Include(PList^.Transparent, ModelAlpha<>255);
+
+         stScaleModel(PList^.Texture, CorrW, CorrH);
+
+         for J:=1 to Base.Triangles(CTris) do
+         begin
+           PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+           for L:=0 to 2 do
+           begin
+             with CTris^[L] do
+             begin
+               if VertexNo >= VertexCount then
+                 Raise EError(5667);
+
+               v3p[L]:=Vertices;
+               Inc(v3p[L], VertexNo);
+
+               WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
+
+               Inc(PV, VertexSize);
+             end;
+           end;
+
+           Inc(CTris);
+
+           v2.X:=v3p[1]^[0] - v3p[0]^[0];
+           v2.Y:=v3p[1]^[1] - v3p[0]^[1];
+           v2.Z:=v3p[1]^[2] - v3p[0]^[2];
+
+           v3.X:=v3p[2]^[0] - v3p[0]^[0];
+           v3.Y:=v3p[2]^[1] - v3p[0]^[1];
+           v3.Z:=v3p[2]^[2] - v3p[0]^[2];
+
+           DeltaV:=Cross(v3, v2);
+           dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
+           if dd<rien then
+             Dec(PList^.SurfSize, VertexSize3m)
+           else
+           begin
+             dd:=1/Sqrt(dd);
+
+             Radius2 :=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
+             nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
+
+             with Surf3D^ do
+             begin
+               Normale[0]:=DeltaV.X*dd;
+               Normale[1]:=DeltaV.Y*dd;
+               Normale[2]:=DeltaV.Z*dd;
+
+               Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+
+               if Mode=bm3DFX then
+               begin
+                 if nRadius2>Radius2 then
+                   AnyInfo.Radius:=Sqrt(nRadius2)
+                 else
+                   AnyInfo.Radius:=Sqrt(Radius2);
+               end
+               else
+                 AnyInfo.DisplayList:=0;
+
+               VertexCount:=3;
+               AlphaColor:=CurrentColor or (ModelAlpha shl 24);
+             end;
+
+             Inc(PChar(Surf3D), VertexSize3m);
+           end;
+         end;
+
+         PList^.tmp:=Surf3D;
+       end;
+
+       Inc(I);
+     end;
+   end;
+
+   CurrentColor:=$FFFFFF;
+   I:=0;
+   while I<BezierInfo.Count do
+   begin
+     OneBezier:=TBezier(BezierInfo[I]);
+     if OneBezier=Nil then
+     begin
+       CurrentColor:=FxU32(BezierInfo[I+1]);
+       Inc(I,2);
+     end
+     else
+     begin
+       with OneBezier do
+       begin
+         S:=NomTex;
+         if not TexNames.Find(S, J) then
+          {$IFDEF Debug}Raise InternalE('TexNames.Find.3'){$ENDIF};
+
+         PList:=PSurfaces(TexNames.Objects[J]);
+         if PList^.Surf=Nil then
+         begin
+           GetMem(PList^.Surf, PList^.SurfSize);
+           Surf3D:=PList^.Surf;
+         end
+         else
+           Surf3D:=PList^.tmp;
+
+         ObjectColor:=CurrentColor or (GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+         Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
+
+         stScaleBezier(PList^.Texture, CorrW, CorrH);
+         BezierBuf:=GetMeshCache;
+         BControlPoints:=ControlPoints;
+         GetMem(stBuffer, BezierBuf.W*BezierBuf.H*SizeOf(vec_st_t));
+         try
+           st:=stBuffer;
+           for L:=0 to BezierBuf.H-1 do
+           begin
+             for K:=0 to BezierBuf.W-1 do
+             begin
+               st^:=TriangleSTCoordinates(BControlPoints, K, L);
+               Inc(st);
+             end;
+           end;
+
+           st:=stBuffer;
+           if Mode=bm3DFX then
+           begin
+             for L:=0 to BezierBuf.H-2 do
+             begin
+               for K:=0 to BezierBuf.W-2 do
+               begin
+                 SmallBezierTriangle(0, BezierBuf.W, 1);
+                 SmallBezierTriangle(BezierBuf.W, BezierBuf.W+1, 1);
+                 Inc(BezierBuf.CP);
+                 Inc(st);
+               end;
+
+               Inc(BezierBuf.CP);
+               Inc(st);
+             end;
+           end
+           else
+           begin
+             { bmOpenGL }
+             for L:=0 to BezierBuf.H-2 do
+             begin
+               with Surf3D^ do
+               begin
+                 AnyInfo.DisplayList:=0;
+                 VertexCount:=-(2*BezierBuf.W);
+                 AlphaColor:=ObjectColor;
+               end;
+
+               PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+               bb:=L*(1/BezierMeshCnt);
+
+               for K:=0 to BezierBuf.W-1 do
+               begin
+                 aa:=K*(1/BezierMeshCnt);
+                 WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
+
+                 Inc(PV, VertexSize);
+                 vec3_p(PV)^:=OrthogonalVector(aa, bb);
+                 Inc(vec3_p(PV));
+                 Inc(BezierBuf.CP, BezierBuf.W);
+                 Inc(st, BezierBuf.W);
+                 WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
+
+                 Inc(PV, VertexSize);
+                 vec3_p(PV)^:=OrthogonalVector(aa, bb+1/BezierMeshCnt);
+                 Inc(vec3_p(PV));
+                 Dec(BezierBuf.CP, BezierBuf.W-1);
+                 Dec(st, BezierBuf.W-1);
+               end;
+
+               PChar(Surf3D):=PChar(PV);
+             end;
+           end;
+         finally
+           FreeMem(stBuffer);
+         end;
+
+         PList^.tmp:=PSurface3D(Surf3D);
+       end;
+
+       Inc(I);
+     end;
+   end;
  finally
-  TexNames.Free;
+   TexNames.Free;
  end;
+
  PolyFaces.Clear;
  EndBuildScene;
 end;
@@ -2185,11 +2384,11 @@ begin
      if Assigned(grSstSelect) then
       grSstSelect(0);
      if not grSstWinOpen(0,
-               GR_RESOLUTION_640x480,
-               GR_REFRESH_60HZ,
-               GR_COLORFORMAT_ARGB,
-               GR_ORIGIN_LOWER_LEFT,
-               2, 1) then
+                         GR_RESOLUTION_640x480,
+                         GR_REFRESH_60HZ,
+                         GR_COLORFORMAT_ARGB,
+                         GR_ORIGIN_LOWER_LEFT,
+                         2, 1) then
       Raise EErrorFmt(4866, ['grSstWinOpen']);
     finally
      RestoreIntelPrecision;
@@ -2324,7 +2523,8 @@ var
   end;
 
 begin
- if qrkGlideVersion<HardwareGlideVersion then Exit;
+ if qrkGlideVersion<HardwareGlideVersion then
+  Exit;
  L:=ViewRect.R.Left;
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
@@ -2345,27 +2545,30 @@ procedure T3DFXSceneObject.RenderTransparent(Transparent: Boolean);
 var
  PList: PSurfaces;
 begin
- if not SolidColors then
+  if not SolidColors then
   begin
-   PList:=FListSurfaces;
-   while Assigned(PList) do
+    PList:=FListSurfaces;
+    while Assigned(PList) do
     begin
-     if Transparent in PList^.Transparent then
+      if Transparent in PList^.Transparent then
       begin
-       PList^.ok:=False;
-       if PList^.Texture^.startAddress<>GR_NULL_MIPMAP_HANDLE then
-        RenderPList(PList, Transparent);
+        PList^.ok:=False;
+        if PList^.Texture^.startAddress<>GR_NULL_MIPMAP_HANDLE then
+          RenderPList(PList, Transparent);
       end;
-     PList:=PList^.Next;
+
+      PList:=PList^.Next;
     end;
   end;
- PList:=FListSurfaces;
- while Assigned(PList) do
+
+  PList:=FListSurfaces;
+  while Assigned(PList) do
   begin
-   if Transparent in PList^.Transparent then
-    if SolidColors or not PList^.ok then
-     RenderPList(PList, Transparent);
-   PList:=PList^.Next;
+    if Transparent in PList^.Transparent then
+      if SolidColors or not PList^.ok then
+        RenderPList(PList, Transparent);
+
+    PList:=PList^.Next;
   end;
 end;
 
@@ -2375,36 +2578,41 @@ var
 begin
  CCoord:=Coord;  { PyMath.CCoord }
  if CCoord.FlatDisplay then
-  begin
+ begin
    InitFlatZ;
    LoadV:=LoadVFlat;
-  end
+ end
  else
-  LoadV:=LoadV3D;
+   LoadV:=LoadV3D;
 
  if Assigned(guColorCombineFunction) then
-  if SolidColors then
-   guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
-  else
-   guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
+ begin
+   if SolidColors then
+     guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
+   else
+     guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
+ end;
+
  if TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1) then
-  grFogTable(FogTableCache^);
+   grFogTable(FogTableCache^);
+
  if qrkGlideVersion>=HardwareGlideVersion then
-  grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
+   grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
  else
-  grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
+   grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
 
  CurrentAlpha:=0;
  IteratedAlpha:=False;
 {if Assigned(grDepthMask) then
   grDepthMask(FXTRUE);}
+
  if Assigned(grAlphaBlendFunction) then
-  begin
+ begin
    if Assigned(grAlphaCombine) then
-    grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE,
-     GR_COMBINE_LOCAL_NONE, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
+     grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE, GR_COMBINE_LOCAL_NONE, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
    grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
-  end;
+ end;
+
  ClearBuffers(VOID_COLOR);
  Inc(FBuildNo);
 {GetProjInfo(ProjInfo, RFactor);
@@ -2414,39 +2622,36 @@ begin
 {if Assigned(grDepthMask) then
   grDepthMask(FXFALSE);}
  if Assigned(grAlphaBlendFunction) then
-  grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
+   grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
  RenderTransparent(True);
 
  if (qrkGlideVersion>=HardwareGlideVersion) and CCoord.FlatDisplay and (TranspFactor>0) then
-  begin
+ begin
    Inc(FBuildNo);
-   //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA,
-   // GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
-   grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
-    GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
+   //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA, GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
+   grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA, GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
    IteratedAlpha:=True;
-   //grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA,
-   // GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
+   //grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA, GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
    //grConstantColorValue($30FFFFFF);
    OldMinDist:=CCoord.MinDistance;
    OldMaxDist:=CCoord.MaxDistance;
    try
-    CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
-    CCoord.MaxDistance:=OldMinDist;
-    InitFlatZ;
-    grFogMode(GR_FOG_DISABLE);
-    grDepthMask(FXFALSE);
-    grDepthBufferFunction(GR_CMP_ALWAYS);
-    RenderTransparent(False);
-    RenderTransparent(True);
+     CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
+     CCoord.MaxDistance:=OldMinDist;
+     InitFlatZ;
+     grFogMode(GR_FOG_DISABLE);
+     grDepthMask(FXFALSE);
+     grDepthBufferFunction(GR_CMP_ALWAYS);
+     RenderTransparent(False);
+     RenderTransparent(True);
    finally
-    grDepthBufferFunction(GR_CMP_LESS);
-    grDepthMask(FXTRUE);
-    grFogMode(GR_FOG_WITH_TABLE);
-    CCoord.MinDistance:=OldMinDist;
-    CCoord.MaxDistance:=OldMaxDist;
+     grDepthBufferFunction(GR_CMP_LESS);
+     grDepthMask(FXTRUE);
+     grFogMode(GR_FOG_WITH_TABLE);
+     CCoord.MinDistance:=OldMinDist;
+     CCoord.MaxDistance:=OldMaxDist;
    end;
-  end;
+ end;
 end;
 
 procedure Proj(var Vect: TVect3D; const ViewRect: TViewRect; nBuildNo: Integer{; DistMin, DistMax: FxFloat}) {: Boolean};
@@ -2478,7 +2683,7 @@ begin
     begin
      oow:=PP.oow;
      if (oow>Maxoow) or (oow<0) then Inc(nOffScreen, os_Back) else
-     if oow<Minoow       then Inc(nOffScreen, os_Far);
+     if (oow<Minoow)            then Inc(nOffScreen, os_Far);
     end;
    if ViewRect.DoubleSize then
     begin
@@ -2490,10 +2695,13 @@ begin
      x:=PP.x + ViewRect.ProjDx;
      y:=ViewRect.ProjDy - PP.y;
     end;
+
    if x<ViewRect.Left   then Inc(nOffScreen, os_Left) else
    if x>ViewRect.Right  then Inc(nOffScreen, os_Right);
+
    if y<ViewRect.Top    then Inc(nOffScreen, os_Top) else
    if y>ViewRect.Bottom then Inc(nOffScreen, os_Bottom);
+
    OffScreen:=nOffScreen;
    BuildNo:=nBuildNo;
   end;
@@ -2554,29 +2762,29 @@ end;*)
 
 procedure LoadV3D(var PrevV1: TV1; PV: PVertex3D);
 begin
- with PV^.v^ do
+  with PV^.v^ do
   begin
-   PrevV1.x:=x;
-   PrevV1.y:=y;
-   PrevV1.oow:=oow;
-   PrevV1.sow:=PV^.s*oow;
-   PrevV1.tow:=PV^.t*oow;
-   PrevV1.Scr:=OffScreen;
-   PrevV1.OnEdge:=0;
+    PrevV1.x:=x;
+    PrevV1.y:=y;
+    PrevV1.oow:=oow;
+    PrevV1.sow:=PV^.s*oow;
+    PrevV1.tow:=PV^.t*oow;
+    PrevV1.Scr:=OffScreen;
+    PrevV1.OnEdge:=0;
   end;
 end;
 
 procedure LoadVFlat(var PrevV1: TV1; PV: PVertex3D);
 begin
- with PV^.v^ do
+  with PV^.v^ do
   begin
-   PrevV1.x:=x;
-   PrevV1.y:=y;
-   PrevV1.oow:=oow;
-   PrevV1.sow:=PV^.s;
-   PrevV1.tow:=PV^.t;
-   PrevV1.Scr:=OffScreen;
-   PrevV1.OnEdge:=0;
+    PrevV1.x:=x;
+    PrevV1.y:=y;
+    PrevV1.oow:=oow;
+    PrevV1.sow:=PV^.s;
+    PrevV1.tow:=PV^.t;
+    PrevV1.Scr:=OffScreen;
+    PrevV1.OnEdge:=0;
   end;
 end;
 
@@ -2869,53 +3077,65 @@ begin
  LocalViewRectTop   :=ViewRect.Top;
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
+
  if (qrkGlideVersion<HardwareGlideVersion)
  and (SoftBufferFormat = SoftBufferCoarse) then
   VertexSnapper1:=VertexSnapper+0.25
  else
   VertexSnapper1:=VertexSnapper;
+
  NeedTex:=not SolidColors;
+
  Surf:=PList^.Surf;
  SurfEnd:=PChar(Surf)+PList^.SurfSize;
+
  while Surf<SurfEnd do
-  with Surf^ do
+ begin
+   with Surf^ do
    begin
     Inc(Surf);
+
     if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
     and CCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
-     begin
+    begin
       nColor:=AlphaColor;
+
       if SolidColors then
-       with PList^.Texture^ do
+      begin
+        with PList^.Texture^ do
         begin
-         if MeanColor = MeanColorNotComputed then
+          if MeanColor = MeanColorNotComputed then
           begin
-           PSD:=GetTex3Description(PList^.Texture^);
-           try
-            MeanColor:=ComputeMeanColor(PSD);
-           finally
-            PSD.Done;
-           end;
+            PSD:=GetTex3Description(PList^.Texture^);
+            try
+              MeanColor:=ComputeMeanColor(PSD);
+            finally
+              PSD.Done;
+            end;
           end;
-         nColor:=(((nColor and $FF)*(MeanColor and $FF)) shr 8)
-              or ((((nColor shr 8) and $FF)*((MeanColor shr 8) and $FF)) and $00FF00)
-              or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
+          nColor:=  (((nColor         and $FF)* (MeanColor         and $FF))              shr 8)
+               or  ((((nColor shr 8)  and $FF)*((MeanColor shr 8)  and $FF)) and $00FF00)
+               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
         end;
+      end;
+
       if Assigned(grConstantColorValue) and (nColor<>CurrentAlpha) then
-       begin
+      begin
         grConstantColorValue(nColor);
         CurrentAlpha:=nColor;
-       end;
+      end;
+
       if CCoord.FlatDisplay then
-       begin
+      begin
         MinRadius:=CCoord.MinDistance-AnyInfo.Radius;
         MaxRadius:=CCoord.MaxDistance+AnyInfo.Radius;
-       end
+      end
       else
-       begin
+      begin
         MinRadius:=-AnyInfo.Radius;
         MaxRadius:=AnyInfo.Radius+T3DCoordinates(CCoord).FarDistance;
-       end;
+      end;
+
       PV:=PVertex3D(Surf);
       BaseV:=PV;
       Inc(PV, VertexCount);
@@ -2923,8 +3143,9 @@ begin
       SourceV:=BaseV;
       LoadedTarget:=Nil;
       FindVertexState:=0;
+
       if FindVertex then
-       begin
+      begin
         PrevV1:=PV1;
         N:=0;
         CopyV1Count:=0;
@@ -2932,105 +3153,122 @@ begin
         LastEdge:=0;
         Corners:=-1;
         ScrTotal:=PrevV1.Scr;
+
         while FindVertex do
-         begin
+        begin
           ScrTotal:=ScrTotal or PV1.Scr;
           Inc(CopyV1Count);
           CopyV1[CopyV1Count]:=PV1;
           if PrevV1.Scr and PV1.Scr <> 0 then
-           PrevV1:=PV1  { completely off-screen }
+            PrevV1:=PV1  { completely off-screen }
           else
-           if PrevV1.Scr or PV1.Scr = 0 then
-            begin  { completely on-screen }
-             Output(PV1);
-             PrevV1:=PV1;
-             LastEdge:=0;
+            if PrevV1.Scr or PV1.Scr = 0 then
+            begin
+              { completely on-screen }
+              Output(PV1);
+              PrevV1:=PV1;
+              LastEdge:=0;
             end
-           else
-            begin  { partially on-screen }
-             NewV1:=PV1;
-             PrevChanged:=False;
-             ScrDiff:=PrevV1.Scr xor PV1.Scr;
+            else
+            begin
+              { partially on-screen }
+              NewV1:=PV1;
+              PrevChanged:=False;
+              ScrDiff:=PrevV1.Scr xor PV1.Scr;
 
-            {if ScrDiff and os_Back <> 0 then
-              if PV1.Scr and os_Back = 0 then
-               ComingFrom((Maxoow-PrevV1.oow) / (PV1.oow-PrevV1.oow), bbW, Maxoow)
-              else
-               GoingInto((Maxoow-PV1.oow) / (PrevV1.oow-PV1.oow), bbW, Maxoow);
-             if ScrDiff and os_Far <> 0 then
-              if PV1.Scr and os_Far = 0 then
-               ComingFrom((Minoow-PrevV1.oow) / (PV1.oow-PrevV1.oow), bbW, Minoow)
-              else
-               GoingInto((Minoow-PV1.oow) / (PrevV1.oow-PV1.oow), bbW, Minoow);}
+             {if ScrDiff and os_Back <> 0 then
+               if PV1.Scr and os_Back = 0 then
+                ComingFrom((Maxoow-PrevV1.oow) / (PV1.oow-PrevV1.oow), bbW, Maxoow)
+               else
+                GoingInto((Maxoow-PV1.oow) / (PrevV1.oow-PV1.oow), bbW, Maxoow);
+              if ScrDiff and os_Far <> 0 then
+               if PV1.Scr and os_Far = 0 then
+                ComingFrom((Minoow-PrevV1.oow) / (PV1.oow-PrevV1.oow), bbW, Minoow)
+               else
+                GoingInto((Minoow-PV1.oow) / (PrevV1.oow-PV1.oow), bbW, Minoow);}
 
-             if ScrDiff and os_Left <> 0 then
-              if PV1.Scr and os_Left = 0 then
-               begin
-                ComingFrom((LocalViewRectLeft-PrevV1.x) / (PV1.x-PrevV1.x), bbX, LocalViewRectLeft);
-                PrevV1.OnEdge:=oe_Left;
-               end
-              else
-               begin
-                GoingInto((LocalViewRectLeft-PV1.x) / (PrevV1.x-PV1.x), bbX, LocalViewRectLeft);
-                PV1.OnEdge:=oe_Left;
-               end;
-             if ScrDiff and os_Right <> 0 then
-              if PV1.Scr and os_Right = 0 then
-               begin
-                ComingFrom((LocalViewRectRight-PrevV1.x) / (PV1.x-PrevV1.x), bbX, LocalViewRectRight);
-                PrevV1.OnEdge:=oe_Right;
-               end
-              else
-               begin
-                GoingInto((LocalViewRectRight-PV1.x) / (PrevV1.x-PV1.x), bbX, LocalViewRectRight);
-                PV1.OnEdge:=oe_Right;
-               end;
-
-             if ScrDiff and os_Top <> 0 then
-              if PV1.Scr and os_Top = 0 then
-               begin
-                ComingFrom((LocalViewRectTop-PrevV1.y) / (PV1.y-PrevV1.y), bbY, LocalViewRectTop);
-                PrevV1.OnEdge:=oe_Top;
-               end
-              else
-               begin
-                GoingInto((LocalViewRectTop-PV1.y) / (PrevV1.y-PV1.y), bbY, LocalViewRectTop);
-                PV1.OnEdge:=oe_Top;
-               end;
-             if ScrDiff and os_Bottom <> 0 then
-              if PV1.Scr and os_Bottom = 0 then
-               begin
-                ComingFrom((LocalViewRectBottom-PrevV1.y) / (PV1.y-PrevV1.y), bbY, LocalViewRectBottom);
-                PrevV1.OnEdge:=oe_Bottom;
-               end
-              else
-               begin
-                GoingInto((LocalViewRectBottom-PV1.y) / (PrevV1.y-PV1.y), bbY, LocalViewRectBottom);
-                PV1.OnEdge:=oe_Bottom;
-               end;
-
-             if PrevV1.Scr or PV1.Scr = 0 then
-              begin  { the resulting line is on-screen }
-               if PrevChanged then
+              if ScrDiff and os_Left <> 0 then
+              begin
+                if PV1.Scr and os_Left = 0 then
                 begin
-                 if (LastEdge<>0) and (PrevV1.OnEdge<>0) then
-                  AddCorners(PrevV1.OnEdge);
-                 if N=0 then SourceEdge:=PrevV1.OnEdge;
-                 Output(PrevV1);
+                  ComingFrom((LocalViewRectLeft-PrevV1.x) / (PV1.x-PrevV1.x), bbX, LocalViewRectLeft);
+                  PrevV1.OnEdge:=oe_Left;
+                end
+                else
+                begin
+                  GoingInto((LocalViewRectLeft-PV1.x) / (PrevV1.x-PV1.x), bbX, LocalViewRectLeft);
+                  PV1.OnEdge:=oe_Left;
                 end;
-               Output(PV1);
-               LastEdge:=PV1.OnEdge;
               end;
 
-             PrevV1:=NewV1;
-            end;
-         end;
-        if (LastEdge<>0) and (SourceEdge<>0) then
-         AddCorners(SourceEdge);
+              if ScrDiff and os_Right <> 0 then
+              begin
+                if PV1.Scr and os_Right = 0 then
+                begin
+                  ComingFrom((LocalViewRectRight-PrevV1.x) / (PV1.x-PrevV1.x), bbX, LocalViewRectRight);
+                  PrevV1.OnEdge:=oe_Right;
+                end
+                else
+                begin
+                  GoingInto((LocalViewRectRight-PV1.x) / (PrevV1.x-PV1.x), bbX, LocalViewRectRight);
+                  PV1.OnEdge:=oe_Right;
+                end;
+              end;
 
-        if (N=0) and (ScrTotal and (os_Top or os_Bottom or os_Left or os_Right)
-                                 = (os_Top or os_Bottom or os_Left or os_Right)) then
-         begin  { maybe we are in the case of a big, full-screen polygon }
+              if ScrDiff and os_Top <> 0 then
+              begin
+                if PV1.Scr and os_Top = 0 then
+                begin
+                  ComingFrom((LocalViewRectTop-PrevV1.y) / (PV1.y-PrevV1.y), bbY, LocalViewRectTop);
+                  PrevV1.OnEdge:=oe_Top;
+                end
+                else
+                begin
+                  GoingInto((LocalViewRectTop-PV1.y) / (PrevV1.y-PV1.y), bbY, LocalViewRectTop);
+                  PV1.OnEdge:=oe_Top;
+                end;
+              end;
+
+              if ScrDiff and os_Bottom <> 0 then
+              begin
+                if PV1.Scr and os_Bottom = 0 then
+                begin
+                  ComingFrom((LocalViewRectBottom-PrevV1.y) / (PV1.y-PrevV1.y), bbY, LocalViewRectBottom);
+                  PrevV1.OnEdge:=oe_Bottom;
+                end
+                else
+                begin
+                  GoingInto((LocalViewRectBottom-PV1.y) / (PrevV1.y-PV1.y), bbY, LocalViewRectBottom);
+                  PV1.OnEdge:=oe_Bottom;
+                end;
+              end;
+
+              if PrevV1.Scr or PV1.Scr = 0 then
+              begin
+                { the resulting line is on-screen }
+                if PrevChanged then
+                begin
+                  if (LastEdge<>0) and (PrevV1.OnEdge<>0) then
+                    AddCorners(PrevV1.OnEdge);
+                  if N=0 then
+                    SourceEdge:=PrevV1.OnEdge;
+                  Output(PrevV1);
+                end;
+                Output(PV1);
+                LastEdge:=PV1.OnEdge;
+              end;
+
+              PrevV1:=NewV1;
+            end;
+        end;
+
+        if (LastEdge<>0) and (SourceEdge<>0) then
+          AddCorners(SourceEdge);
+
+        if (N=0) and (ScrTotal
+        and (os_Top or os_Bottom or os_Left or os_Right)
+          = (os_Top or os_Bottom or os_Left or os_Right)) then
+        begin  { maybe we are in the case of a big, full-screen polygon }
           aa:=(LocalViewRectLeft+LocalViewRectRight)*0.5;
           bb:=(LocalViewRectTop+LocalViewRectBottom)*0.5;
           PV:=BaseMaxV;
@@ -3039,50 +3277,49 @@ begin
           FindVertexState:=0;
           FindVertex;
           repeat
-           PrevV1:=PV1;
-           if not FindVertex then
+            PrevV1:=PV1;
+            if not FindVertex then
             begin  { we are in this case }
-             LastEdge:=oe_Left;
-             AddCorners(oe_Right);
-             AddCorners(oe_Left);
-             Break;
+              LastEdge:=oe_Left;
+              AddCorners(oe_Right);
+              AddCorners(oe_Left);
+              Break;
             end;
-          until (PV1.y-PrevV1.y)*(aa-PrevV1.x)>(PV1.x-PrevV1.x)*(bb-PrevV1.y);
-         end;
+          until (PV1.y-PrevV1.y)*(aa-PrevV1.x) > (PV1.x-PrevV1.x)*(bb-PrevV1.y);
+        end;
 
         if N>=3 then
-         begin
+        begin
           if Corners>=0 then
-           begin
-              { keep only three of the points in CopyV1 :
-                 [1] the one with the largest absolute w
-                 [2] the fartest from [1] as seen on screen
-                 [3] to make the largest triangle on screen
-              }
+          begin
+            { keep only three of the points in CopyV1:
+               [1] the one with the largest absolute w
+               [2] the fartest from [1] as seen on screen
+               [3] to make the largest triangle on screen }
             aa:=abs(CopyV1[1].oow);
             I:=1;
             for J:=2 to CopyV1Count do
-             begin
+            begin
               bb:=abs(CopyV1[J].oow);
               if bb<aa then
-               begin
+              begin
                 aa:=bb;
                 I:=J;
-               end;
-             end;
+              end;
+            end;
             PV1:=CopyV1[I];
             CopyV1[I]:=CopyV1[1];
             CopyV1[1]:=PV1;
             aa:=-1;
             for J:=2 to CopyV1Count do
-             begin
+            begin
               bb:=Sqr(CopyV1[J].x - PV1.x) + Sqr(CopyV1[J].y - PV1.y);
               if bb>aa then
-               begin
+              begin
                 aa:=bb;
                 I:=J;
-               end;
-             end;
+              end;
+            end;
             PV1:=CopyV1[I];
             CopyV1[I]:=CopyV1[2];
             CopyV1[2]:=PV1;
@@ -3091,41 +3328,41 @@ begin
             aa:=CopyV1[2].x-CopyV1[1].x;
             cc:=CopyV1[2].y-CopyV1[1].y;
             for J:=3 to CopyV1Count do
-             begin
-              bb:=aa*(CopyV1[J].y-CopyV1[1].y)
-               - (CopyV1[J].x-CopyV1[1].x)*cc;
+            begin
+              bb:=aa*(CopyV1[J].y-CopyV1[1].y) - (CopyV1[J].x-CopyV1[1].x)*cc;
               if Abs(bb)>Abs(dd) then
-               begin
+              begin
                 dd:=bb;
                 I:=J;
-               end;
-             end;
+              end;
+            end;
 
-                { equations to solve :
-                   a*(CopyV1[2].x-CopyV1[1].x) + b*(CopyV1[3].x-CopyV1[1].x) = x-CopyV1[1].x
-                   a*(CopyV1[2].y-CopyV1[1].y) + b*(CopyV1[3].y-CopyV1[1].y) = y-CopyV1[1].y
-                }
+            { equations to solve :
+               a*(CopyV1[2].x-CopyV1[1].x) + b*(CopyV1[3].x-CopyV1[1].x) = x-CopyV1[1].x
+               a*(CopyV1[2].y-CopyV1[1].y) + b*(CopyV1[3].y-CopyV1[1].y) = y-CopyV1[1].y }
+
             if I=0 then
-             N:=1   { error, ignore polygon }
+              N:=1   { error, ignore polygon }
             else
-             begin
+            begin
               dd:=1/dd;
               repeat
-               with VList[Corners] do
+                with VList[Corners] do
                 begin
-                 aa:=((x-CopyV1[1].x)*(CopyV1[I].y-CopyV1[1].y)
-                    - (CopyV1[I].x-CopyV1[1].x)*(y-CopyV1[1].y)) * dd;
-                 bb:=((y-CopyV1[1].y)*(CopyV1[2].x-CopyV1[1].x)
-                    - (CopyV1[2].y-CopyV1[1].y)*(x-CopyV1[1].x)) * dd;
-                 oow:=CopyV1[1].oow + aa*(CopyV1[2].oow-CopyV1[1].oow) + bb*(CopyV1[I].oow-CopyV1[1].oow);
-                 tmuvtx[0].sow:=CopyV1[1].sow + aa*(CopyV1[2].sow-CopyV1[1].sow) + bb*(CopyV1[I].sow-CopyV1[1].sow);
-                 tmuvtx[0].tow:=CopyV1[1].tow + aa*(CopyV1[2].tow-CopyV1[1].tow) + bb*(CopyV1[I].tow-CopyV1[1].tow);
-                 Corners:=Round(z);
-                 z:=0;
+                  aa:=((x-CopyV1[1].x)*(CopyV1[I].y-CopyV1[1].y) - (CopyV1[I].x-CopyV1[1].x)*(y-CopyV1[1].y)) * dd;
+                  bb:=((y-CopyV1[1].y)*(CopyV1[2].x-CopyV1[1].x) - (CopyV1[2].y-CopyV1[1].y)*(x-CopyV1[1].x)) * dd;
+
+                  oow:=CopyV1[1].oow + aa*(CopyV1[2].oow-CopyV1[1].oow) + bb*(CopyV1[I].oow-CopyV1[1].oow);
+
+                  tmuvtx[0].sow:=CopyV1[1].sow + aa*(CopyV1[2].sow-CopyV1[1].sow) + bb*(CopyV1[I].sow-CopyV1[1].sow);
+                  tmuvtx[0].tow:=CopyV1[1].tow + aa*(CopyV1[2].tow-CopyV1[1].tow) + bb*(CopyV1[I].tow-CopyV1[1].tow);
+
+                  Corners:=Round(z);
+                  z:=0;
                 end;
               until Corners<0;
-             end;
-           end;
+            end;
+          end;
 
          {with VList[N-1] do
            if Abs(x-VList[0].x)+Abs(y-VList[0].y) < MinVertexDist1 then
@@ -3143,40 +3380,46 @@ begin
             end;*)
 
           if (N>=3) {and (bb-aa>MinVertexDist1) and (dd-cc>MinVertexDist1)} then
-           begin
+          begin
             {$IFDEF DebugLOG} LogS:=''; {$ENDIF}
             if NeedTex then
-             begin
+            begin
               TGlideState(qrkGlideState).NeedTex(PList^.Texture);
-            {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
+              {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
               NeedTex:=False;
-             end;
+            end;
 
             for I:=0 to N-1 do
-             with VList[I] do
+            begin
+              with VList[I] do
               begin
-           {$IFDEF DebugSOFTLIMITS}
-               if x<LocalViewRectLeft then Raise InternalE('N:LocalViewRectLeft');
-               if y<LocalViewRectTop then Raise InternalE('N:LocalViewRectTop');
-               if x>LocalViewRectRight then Raise InternalE('N:LocalViewRectRight');
-               if y>LocalViewRectBottom then Raise InternalE('N:LocalViewRectBottom');
-               if oow<Minoow-1E-8 then Raise InternalE('N:Minoow');
-               if oow>Maxoow+1E-8 then Raise InternalE('N:Maxoow');
-           {$ENDIF}
-               x:=x-VertexSnapper1;
-               y:=y-VertexSnapper1;
-               tmuvtx[0].oow:=1.0;
+                {$IFDEF DebugSOFTLIMITS}
+                if x<LocalViewRectLeft   then Raise InternalE('N:LocalViewRectLeft');
+                if y<LocalViewRectTop    then Raise InternalE('N:LocalViewRectTop');
+                if x>LocalViewRectRight  then Raise InternalE('N:LocalViewRectRight');
+                if y>LocalViewRectBottom then Raise InternalE('N:LocalViewRectBottom');
+                if oow<Minoow-1E-8 then Raise InternalE('N:Minoow');
+                if oow>Maxoow+1E-8 then Raise InternalE('N:Maxoow');
+                {$ENDIF}
+                x:=x-VertexSnapper1;
+                y:=y-VertexSnapper1;
+                tmuvtx[0].oow:=1.0;
               end;
+            end;
 
             if IteratedAlpha then
-             for I:=0 to N-1 do
-              with VList[I] do
-               a:=oow * (MinW*255.0);
+            begin
+              for I:=0 to N-1 do
+              begin
+                with VList[I] do
+                  a:=oow * (MinW*255.0);
+              end;
+            end;
 
            {grDrawPlanarPolygonVertexList(N, VList[0]);
            {grDrawPolygonVertexList(N, VList[0]);}
             for I:=1 to N-2 do
-             begin
+            begin
               {$IFDEF DebugLOG}
               LogTriangle(LogS, VList[0], VList[I], VList[I+1]);
               LogS:='..';
@@ -3184,18 +3427,21 @@ begin
               if {Abs((VList[I+1].x-VList[0].x)*(VList[I].y-VList[0].y)
                     -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
                > MinTriangleArea2} True then
-               grDrawTriangle(VList[0], VList[I], VList[I+1])
+                grDrawTriangle(VList[0], VList[I], VList[I+1])
               else
-               begin
+              begin
                 {$IFDEF DebugLOG} LogS:=LogS+' dropped'; {$ENDIF}
-               end;
-             end;
-           end;
-         end;
-       end;
-     end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+
     Inc(PVertex3D(Surf), VertexCount);
    end;
+ end;
+
  PList^.ok:=True;
 end;
 
@@ -3415,105 +3661,127 @@ var
  Source, Dest: PChar;
  GammaBuf: Pointer;
 begin
- with Texture^.info do
-  if data=Nil then
-   begin
-    GetwhForTexture(Texture^.info, w, h);
-    MemSize:=w*h;
-    PSD2.Init;
-    PSD2.AlphaBits:=psaNoAlpha;
-    PSD:=GetTex3Description(Texture^);
-    try
-     if (PSD.Format=psf24bpp) and TGlideState(qrkGlideState).Accepts16bpp then
-      begin
-       format:=GR_TEXFMT_RGB_565;
-       if smallLod<>largeLod then
-        raise InternalE('true-color+anti-aliasing');
-       MemSize:=MemSize*2;
-       GetMem(data, MemSize);
-       PSD2.Format:=psf24bpp;
-       PSD2.Size.X:=w;
-       PSD2.Size.Y:=h;
-       PSDConvert(PSD2, PSD, ccTemporary);
-       GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
-       Source:=PSD2.StartPointer;
-       Dest:=PChar(data);
-       for J:=1 to h do
+  with Texture^.info do
+  begin
+    if data=Nil then
+    begin
+      GetwhForTexture(Texture^.info, w, h);
+      MemSize:=w*h;
+
+      PSD2.Init;
+      PSD2.AlphaBits:=psaNoAlpha;
+      PSD:=GetTex3Description(Texture^);
+
+      try
+        if (PSD.Format=psf24bpp) and TGlideState(qrkGlideState).Accepts16bpp then
         begin
-         asm
-          push esi
-          push edi
-          push ebx
-          mov ecx, [w]
-          mov esi, [Source]
-          mov edi, [Dest]
-          mov ebx, [GammaBuf]
-          cld
-          xor edx, edx
+          format:=GR_TEXFMT_RGB_565;
+          if smallLod<>largeLod then
+            raise InternalE('true-color+anti-aliasing');
 
-          @xloop:
-           mov dl, [esi]
-           mov al, [ebx+edx]   {B}
-           mov dl, [esi+1]
-           mov ah, [ebx+edx]   {G}
-           mov dl, [esi+2]
-           shr ah, 2    {G}
-           mov dl, [ebx+edx]   {R}
+          MemSize:=MemSize*2;
+          GetMem(data, MemSize);
 
-           add esi, 3
-           shr ax, 3    {GB}
-           and dl, $F8  {R}
-           or ah, dl    {RGB}
-           stosw
-          loop @xloop
+          PSD2.Format:=psf24bpp;
+          PSD2.Size.X:=w;
+          PSD2.Size.Y:=h;
+          PSDConvert(PSD2, PSD, ccTemporary);
 
-          pop ebx
-          mov [Dest], edi
-          pop edi
-          pop esi
-         end;
-         Inc(Source, PSD2.ScanLine);
-        end;
-      end
-     else
-      begin
-       format:=GR_TEXFMT_P_8;
-       if smallLod<>largeLod then
-        MemSizeTotal:=(MemSize*(64+16+4+1)) div 64
-       else
-        MemSizeTotal:=MemSize;
-       GetMem(data, MemSizeTotal);
-       PSD2.Format:=psf8bpp;
-       PSD2.Size.X:=w;
-       PSD2.Size.Y:=h;
-       PSD2.ScanLine:=w;
-       PSD2.Data:=data;
-       PSD3:=PSD2;
-       PSDConvert(PSD2, PSD, ccTemporary);
-       { gamma correction included in ComputeGuPalette }
-       Texture^.GuPalette:=TTextureManager.GetInstance.ComputeGuPalette(PSD2.ColorPalette);
+          Source:=PSD2.StartPointer;
+          Dest:=PChar(data);
+          GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
 
-       if smallLod<>largeLod then
-         for J:=1 to 3 do
+          { Make a gamma-corrected copy of the 24-bits (RGB:888) texture to a
+            16-bits (RGB:565) data-buffer }
+          for J:=1 to h do
           begin
-           Dest:=PChar(PSD2.Data);
-           PSD.Done;
-           PSD:=(Texture^.SourceTexture as QTextureFile).ScaledDownDescription(J);
-           PSD3.Size.X:=PSD3.Size.X div 2;
-           PSD3.Size.Y:=PSD3.Size.Y div 2;
-           PSD3.ScanLine:=PSD3.Size.X;
-           Inc(PChar(PSD3.Data), MemSize);
-           MemSize:=MemSize div 4;
-           PSD2.Done;
-           PSD2:=PSD3;
-           PSDConvert(PSD2, PSD, ccTemporary);
+            asm
+             push esi
+             push edi
+             push ebx
+             mov ecx, [W]             { get the width, and put it into ecx-register, for the 'loop' to work with }
+             mov esi, [Source]        { get the Source-pointer, and put it into esi-register }
+             mov edi, [Dest]          { get the Dest-pointer, and put it into edi-register }
+             mov ebx, [GammaBuf]      { get the GammaBuf-pointer, and put it into ebx-register }
+             cld
+             xor edx, edx             { clear the edx-register value (edx-high-register must be zero!) }
+
+             @xloop:
+              mov dl, [esi]           { copy 'Blue' byte from source to edx-low-register }
+              mov al, [ebx+edx]   {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
+              mov dl, [esi+1]         { copy 'Green' byte from source to edx-low-register }
+              mov ah, [ebx+edx]   {G} { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
+              mov dl, [esi+2]         { copy 'Red' byte from source to edx-low-register }
+              mov dl, [ebx+edx]   {R} { copy the gamma-corrected 'Red'-byte from gammabuf to edx-low-register }
+              shr ah, 2         {G}   { shift the 'Green'-byte so only 6 bits are used for green }
+              shr ax, 3         {GB}  { shift the 'Blue'-byte so only 5 bits are used for blue, and shift the green-bits too to make place for red-bits }
+              and dl, $F8       {R}   { filter the 'Red'-byte so only the top 5 bits are used for red }
+              or ah, dl         {RGB} { merge the red-bits to the space, now shifted free from green-bits }
+              stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
+              add esi, 3              { increment source-pointer, the esi-register with 3 }
+             loop @xloop              { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
+
+             mov [Dest], edi          { put the now incremented edi-register value, back as the Dest-pointer }
+             pop ebx
+             pop edi
+             pop esi
+            end;
+
+            Inc(Source, PSD2.ScanLine);
           end;
+        end
+        else
+        begin
+          format:=GR_TEXFMT_P_8;
+
+          if smallLod<>largeLod then
+            MemSizeTotal:=(MemSize*(64+16+4+1)) div 64
+          else
+            MemSizeTotal:=MemSize;
+
+          GetMem(data, MemSizeTotal);
+
+          PSD2.Format:=psf8bpp;
+          PSD2.Size.X:=w;
+          PSD2.Size.Y:=h;
+          PSD2.ScanLine:=w;
+          PSD2.Data:=data;
+
+          PSD3:=PSD2;
+          PSDConvert(PSD2, PSD, ccTemporary);
+
+          { gamma correction included in ComputeGuPalette }
+          Texture^.GuPalette:=TTextureManager.GetInstance.ComputeGuPalette(PSD2.ColorPalette);
+
+          if smallLod<>largeLod then
+          begin
+            for J:=1 to 3 do
+            begin
+              Dest:=PChar(PSD2.Data);
+
+              PSD.Done;
+              PSD:=(Texture^.SourceTexture as QTextureFile).ScaledDownDescription(J);
+
+              PSD3.Size.X:=PSD3.Size.X div 2;
+              PSD3.Size.Y:=PSD3.Size.Y div 2;
+              PSD3.ScanLine:=PSD3.Size.X;
+              Inc(PChar(PSD3.Data), MemSize);
+
+              MemSize:=MemSize div 4;
+
+              PSD2.Done;
+              PSD2:=PSD3;
+
+              PSDConvert(PSD2, PSD, ccTemporary);
+            end;
+          end;
+        end;
+      finally
+       PSD.Done;
+       PSD2.Done;
       end;
-    finally
-     PSD.Done;
-     PSD2.Done;
     end;
-   end;
+  end;
 end;
 
  {------------------------}

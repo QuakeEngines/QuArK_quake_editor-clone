@@ -22,10 +22,19 @@ See also http://www.planetquake.com/quark
 **************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.11  2000/11/16 19:42:17  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -57,8 +66,6 @@ Englishification and a little layout
 
 Revision 1.6  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 

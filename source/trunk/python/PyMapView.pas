@@ -133,7 +133,7 @@ type
                  procedure SetCentreEcran(const Centre: TVect);
                  function InitClicXY : Boolean;
                  procedure MouseTimerTimer(Sender: TObject);
-                 function GetHandle(X,Y: Integer; Corrige: Boolean; MouseArea: PRect) : PyObject;   
+                 function GetHandle(X,Y: Integer; Corrige: Boolean; MouseArea: PRect) : PyObject;
                  function ConfigSrc : QObject;
                  procedure ReadSetupInformation(Inv: Boolean);
                  procedure SetScreenSize(SX, SY: Integer);
@@ -411,7 +411,7 @@ begin
                      if Y>Limite then Y:=Limite;
                     end;
                    if Y<0 then Y:=0
-                   else if Y>ClientHeight then Y:=ClientHeight; 
+                   else if Y>ClientHeight then Y:=ClientHeight;
                    RedLines[Ord(Msg.lParam<0)]:=Y/ClientHeight;
                    SetRedLines;
                   end;
@@ -509,7 +509,7 @@ begin
        else
         SetScreenSize(ScreenSizeX, ScreenSizeY);*)
        GammaCorrection(GetFloatSpec('FullScreenGamma', 1));
-       Perform(wm_InternalMessage, wp_PyInvalidate, 0); 
+       Perform(wm_InternalMessage, wp_PyInvalidate, 0);
       end;
      SetScreenSize(ClientWidth, ClientHeight);
     end;
