@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.17  2001/03/20 21:44:19  decker_dk
 Updated copyright-header
 
@@ -569,14 +572,15 @@ var
   begin
     ExistingAddons:=MakeAddonsList;
     ProgressIndicatorStart(5458,bsps.count);
-    for i:=0 to bsps.count-1 do
+    while bsps.count<>0 do
     begin
-      if not (bsps[i] is QBsp) then
+      if not (bsps[0] is QBsp) then
         raise exception.create('Error: bsp list contains non QBSP object!');
-      bsp := QBsp(bsps[i]);
+      bsp := QBsp(bsps[0]);
       NewAddonsList.Add(bsp.CreateAddonFromEntities(ExistingAddons));
       ProgressIndicatorIncrement;
       Application.ProcessMessages;
+      bsps.Delete(0);
     end;
     ProgressIndicatorStop;
     ExistingAddons.AddRef(-1);
@@ -609,6 +613,8 @@ begin
   NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
   GetBSPFiles;
   CreateAddons;
+  bsps.free;
+  paks.free;
 
   addonRoot:=QFileObject(FParent);
   if addonRoot = nil then
@@ -684,6 +690,7 @@ begin
           Form:=QFormCfg(ConstructQObject(OldForm.GetFullName, entityForms));
           entityForms.SubElements.Add(Form);
         end;
+        Form.Flags := Form.flags or ofTreeViewSubElement;
         for k:=0 to OldForm.Subelements.Count-1 do
         begin
           OldFormEl:=OldForm.Subelements[k];
@@ -693,6 +700,7 @@ begin
             FormEl:=ConstructQObject(OldFormEl.GetFullName, Form);
             Form.Subelements.Add(FormEl);
           end;
+          FormEl.Flags := FormEl.flags or ofTreeViewSubElement;
           for l:=0 to OldFormEl.Specifics.Count-1 do
           begin
             if FormEl.Specifics.IndexOfName(OldFormEl.Specifics.Names[l])=-1 then
@@ -713,8 +721,6 @@ begin
   end;
 
   NewAddonsList.free;
-  bsps.free;
-  paks.free;
   ExplorerFromObject(FParent).Refresh;
 end;
 
