@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/01/28 17:25:08  decker_dk
+Removed the 'Comment' array, and replaced it with a function-call to 'CommentMapLine(string)'.
+
 Revision 1.26  2001/01/21 15:49:03  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -303,7 +306,7 @@ function AnalyseClicFace(S: PSurface; var nP: TPointProj; Arriere: Boolean) : Bo
 procedure DessinPolygoneFace(S: PSurface);
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
-
+procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
  {------------------------}
 
 implementation
@@ -1935,16 +1938,6 @@ begin
   Raise E;
  end;
 end;*)
-
-(* don't actually need this right now
-   should to qo qmatrices.pas if it is needed
-function MatrixMult(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
-begin
-   Result.X:=Matrice[1,1]*V.X+Matrice[1,2]*V.Y+Matrice[1,3]*V.Z{+Matrice[1,4]};
-   Result.Y:=Matrice[2,1]*V.X+Matrice[2,2]*V.Y+Matrice[2,3]*V.Z{+Matrice[2,4]};
-   Result.Z:=Matrice[3,1]*V.X+Matrice[3,2]*V.Y+Matrice[3,3]*V.Z{+Matrice[3,4]};
-end;
-*)
 
 
 function CoordShift(P, texO, texS, texT : TVect) : TVect;
