@@ -6,6 +6,7 @@ desc: editmenu
 desc: toolboxesmenu
 desc: searchmenu
 desc: commandsmenu
+desc: addonsmenu
 desc: selectionmenu
 desc: gamemenu
 desc: toolbarsmenu

@@ -19,6 +19,8 @@ import qhandles
 from maputils import *
 import mapcommands
 import bspcommands
+import plugins.map1addonsamendmenu
+import plugins.map1addonsmenu
 import mapselection
 import mapbtns
 from mapentities import CallManager
@@ -140,6 +142,15 @@ def BuildMenuBar(editor):
         Commands1, sc2 = mapcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
 
+    Addons1, sc2 = plugins.map1addonsmenu.AddonsMenuCmds()
+    sc1.update(sc2)   # merge shortcuts
+    l1 = plugins.map1addonsamendmenu.AmendMenuCmds
+    l2 = [qmenu.sep]
+
+    if len(l1):
+        Addons1.items = l1 + l2 + Addons1.items
+        sc1.update(sc2)   # merge shortcuts
+
     Selection1, sc2 = mapselection.SelectionMenu()
     sc1.update(sc2)   # merge shortcuts
 
@@ -153,7 +164,7 @@ def BuildMenuBar(editor):
     sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu,
-     Search1, Commands1, Selection1, Quake1, Tools1, Options1], sc1
+     Search1, Commands1, Addons1, Selection1, Quake1, Tools1, Options1], sc1
 
 
 
@@ -419,6 +430,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.10  2003/03/21 05:57:05  cdunde
+#Update infobase and add links
+#
 #Revision 1.9  2003/02/01 07:37:50  cdunde
 #To add Cancel Selections to RMB menu
 #
