@@ -13,7 +13,7 @@
 #-------------------------------------------------------------------------------
 #
 #	$History: mapfindreptex $
-#       
+#
 #-------------------------------------------------------------------------------
 
 #$Header$
@@ -105,7 +105,7 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
 	else:
 	    texlist = quarkx .texturesof (self .sellist);
 	if len (texlist) == 0:
-	    texlist .append (quarkx .setupsubset () ["TextureDef"])
+	    texlist .append (quarkx .setupsubset () ["DefaultTexture"])
 	src ["fromtex"] = texlist [0]
 	src ["totex"] = texlist [0]
 
@@ -217,6 +217,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Replace textures", ReplaceTe
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #

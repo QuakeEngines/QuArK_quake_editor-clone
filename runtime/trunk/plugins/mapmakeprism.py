@@ -161,7 +161,7 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
         if len(texlist) == 1:
             src["tex"] = texlist[0]
         else:
-            src["tex"] = quarkx.setupsubset()["TextureDef"]
+            src["tex"] = quarkx.setupsubset()["DefaultTexture"]
 
         # Populate the other values
         if (quarkx.setupsubset(SS_MAP, "Options")["MakePrism_Sides"] is None):
@@ -430,6 +430,9 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClic
 #----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2000/12/19 21:07:42  decker_dk
+# Ax2Grind's MapMakePrism.py changes
+#
 # Revision 1.3  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

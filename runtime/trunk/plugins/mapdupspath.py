@@ -49,7 +49,7 @@ class PathDuplicator(StandardDuplicator):
 
     handleprefix = "horigin"
     cuberadius = 3096
-    tmpcube = quarkpy.mapbtns.newcube(cuberadius*2, quarkx.setupsubset()["TextureDef"])
+    tmpcube = quarkpy.mapbtns.newcube(cuberadius*2, quarkx.setupsubset()["DefaultTexture"])
 
     def readvalues(self):
         self.origin = self.dup.origin
@@ -177,7 +177,7 @@ class PathDuplicator(StandardDuplicator):
         if self.speed == 1:
            del templategroup
            templategroup = quarkx.newobj("group:g")
-           templategroup.appenditem(plugins.deckerutils.NewXYZCube(templatesize.x, templatesize.y, templatesize.z, quarkx.setupsubset()["TextureDef"]))
+           templategroup.appenditem(plugins.deckerutils.NewXYZCube(templatesize.x, templatesize.y, templatesize.z, quarkx.setupsubset()["DefaultTexture"]))
 
         if (singleimage is None and self.speed != 1):
            viewabletemplategroup = templategroup.copy()
@@ -463,6 +463,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2000/12/19 21:07:19  decker_dk
+#Still a buggy Path Duplicator
+#
 #2000-??-?? Using point-entities as path-handles
 #1999-02-10 First public beta.
 #1999-01-23 Created.
