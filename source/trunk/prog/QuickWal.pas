@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/02/08 21:53:49  tiglari
+exception catching around shaderlist.txt reading
+
 Revision 1.27  2001/02/06 09:22:19  tiglari
 filters working
 
@@ -134,7 +137,6 @@ type
     FilterEdit: TEdit;
     Label4: TLabel;
     Label5: TLabel;
-    Label6: TLabel;
     procedure CancelBtnClick(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
