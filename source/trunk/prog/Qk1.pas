@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2003/08/12 15:42:08  silverpaladin
+Changed form name to Tg_Form so that Delphi would not "fix" the variable name in the DPR when the DPR properties are edited.
+
 Revision 1.32  2002/12/30 18:07:36  decker_dk
 Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
 
@@ -364,7 +367,7 @@ uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
 
  {------------------------}
 
- (*procedure TForm1.Button1Click(Sender: TObject);
+ (*procedure Tg_Form1.Button1Click(Sender: TObject);
 var
  P,Q: QObject;
  U: TUndoObject;
@@ -552,7 +555,7 @@ begin
  bottomdock.Color:=C;
 end;
 
-(*procedure TForm1.AppRestore;
+(*procedure Tg_Form1.AppRestore;
 var
  F: TForm;
 begin
@@ -795,7 +798,7 @@ end;
 
  {------------------------}
 
-(*procedure TForm1.Timer1Timer(Sender: TObject);
+(*procedure Tg_Form1.Timer1Timer(Sender: TObject);
 begin
  MAJAffichage(Explorer.TMSelUnique as QFileObject);
 end;*)
@@ -893,7 +896,7 @@ begin
   end;
 end;
 
-(*function TForm1.ReopensWindow;
+(*function Tg_Form1.ReopensWindow;
 var
  F: TQForm1;
 begin
@@ -909,7 +912,7 @@ begin
   ReopensWindow:=False;
 end;*)
 
-(*procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+(*procedure Tg_Form1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
  I: Integer;
  F: TForm;
@@ -1129,7 +1132,7 @@ begin
    UpdateToolbarSetup;
 end;
 
-(*procedure TForm1.ReadSetupInformation;
+(*procedure Tg_Form1.ReadSetupInformation;
 {var
  SetupQrk: QFileObject;}
 begin
@@ -1141,7 +1144,7 @@ begin
  finally SetupQrk.AddRef(-1); end; * )
 end;                                *)
 
-(*function TForm1.LoadToolBoxInformation(SetupQrk: QObject) : Integer;
+(*function Tg_Form1.LoadToolBoxInformation(SetupQrk: QObject) : Integer;
 var
  Roots: TQList;
  I, J: Integer;
@@ -1379,7 +1382,7 @@ begin
  Perform(wm_InternalMessage, wp_AfficherInfos, 0);
 end;
 
-(*function TForm1.GetGlobalModified : Boolean;
+(*function Tg_Form1.GetGlobalModified : Boolean;
 var
  I: Integer;
  F: TForm;
@@ -1396,7 +1399,7 @@ begin
  Result:=False;
 end;
 
-procedure TForm1.SetGlobalModified(Value: Boolean);
+procedure Tg_Form1.SetGlobalModified(Value: Boolean);
 var
  I: Integer;
  F: TForm;
@@ -2004,7 +2007,7 @@ begin
  ShowConfigDlg('Games:'+SetupGameSet.Name);
 end;
 
-(*procedure TForm1.wmCommand(var Msg: TMessage);
+(*procedure Tg_Form1.wmCommand(var Msg: TMessage);
 begin
  if (Msg.wParam>=cmObjFirst) and (Msg.wParam<=cmObjLast) then
   g_PopupMenuObject.CallMenuCmd(Msg.wParam)
@@ -2083,7 +2086,7 @@ begin
  Py_XDECREF(CallMacroEx2(Py_BuildValueX('(Os)', [obj, PChar(S)]), 'hint', False));
 end;
 
-(*function TForm1.AppHelp(Command: Word; Data: LongInt; var CallHelp: Boolean) : Boolean;
+(*function Tg_Form1.AppHelp(Command: Word; Data: LongInt; var CallHelp: Boolean) : Boolean;
 begin
  CallHelp:=False;
  Result:=True;
@@ -2177,7 +2180,7 @@ begin
  finally OpenDialog1.Free; end;
 end;
 
-(*procedure TForm1.Timer1Timer(Sender: TObject);
+(*procedure Tg_Form1.Timer1Timer(Sender: TObject);
 begin
  if Timer1<>Nil then
   PostMessage(Handle, wm_InternalMessage, wp_UpdateInternals, ui_Logo);
