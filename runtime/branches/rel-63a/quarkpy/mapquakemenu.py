@@ -575,36 +575,44 @@ def Customize1Click(mnu):
 
 def loadLeakFile(m):
     import mapholes
-    mapholes.LoadLinFile(m.editor, m.holefilename)
+    mapholes.LoadLinFile(m.editor, m.auxfilename)
         
-
 leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
 
-def prepLeakMenuItem(m):
-    editor = m.editor
+
+def loadPortalFile(m):
+    import mapportals
+    mapportals.LoadPortalFile(m.editor, m.auxfilename)
+        
+portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on, and are up-to-date.")
+
+def prepAuxFileMenuItem(item,extkey,defext):
+    editor=item.editor
     mapfileobject = editor.fileobject
     map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
     mapfilename = quarkx.outputfile('')+'maps\\'+map
-    holeextension = quarkx.setupsubset()["MapHoles"]
-    if not holeextension:
-        holeextension='.lin'
-    holefilename = mapfilename+holeextension
-    if quarkx.getfileattr(holefilename)==FA_FILENOTFOUND:
-        m.state = qmenu.disabled
+    auxextension = quarkx.setupsubset()[extkey]
+    if not auxextension:
+        auxextension=defext
+    auxfilename = mapfilename+auxextension
+    if quarkx.getfileattr(auxfilename)==FA_FILENOTFOUND:
+        item.state = qmenu.disabled
     else:
-        m.state = qmenu.normal
-        m.editor = editor
-        m.holefilename = holefilename
-    return item
-    
+        item.state = qmenu.normal
+        item.editor = editor
+        item.auxfilename = auxfilename
+
+
 def onclick(m):
-    prepLeakMenuItem(leakMenuItem)
+    for args in ((leakMenuItem,"MapHoles",".lin"),
+                 (portalsMenuItem,"MapPortals",".prt")):
+      apply(prepAuxFileMenuItem,args)
 
 def QuakeMenu(editor):
     "The Quake menu, with its shortcuts."
 
      # this menu is read from UserData.qrk.
-    debug('Quake Menu')
+
     items = []
     sc = {}
     isbsp = "Bsp" in editor.fileobject.classes   # some items don't apply for BSP files
@@ -628,17 +636,23 @@ def QuakeMenu(editor):
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
-        leakMenuItem.editor=editor
-        items.append(leakMenuItem)
+        for item in (leakMenuItem, portalsMenuItem):
+            item.editor=editor
+            items.append(item)
         items.append(qmenu.sep)
         items.append(qmenu.item("&Customize menu...", Customize1Click, "customizes this menu"))
     Quake1 = qmenu.popup("&"+gamename, items, onclick)
     Quake1.state = not len(items) and qmenu.disabled
     return Quake1, sc
 
+
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.26.2.4  2003/03/18 10:27:25  tiglari
+#load leakfile menu item enables/disables as .pts/.lin file appears or
+#  disappears (had to add an onclick function to the Game menu. etc)
+#
 #Revision 1.26.2.3  2003/03/17 00:12:46  tiglari
 #Add manual leak file loading command
 #

@@ -139,6 +139,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.4  2003/03/19 22:24:10  tiglari
+#fix bug in parsing
+#
 #Revision 1.3  2003/03/19 11:27:47  tiglari
 #remove debug statement
 #
