@@ -3,12 +3,16 @@
 
  Patch 4 updates
  
+  *caulk of hidden faces added to brush curves
+    (default tex used for games w/o a caulk texture)
+  *wrong shape for non-inner non-inverse cap/bevels
+    fixed (missing faces added)
   *'linear' (matrix) specific editor.
     try out with New Copy One duplicator, push button
     to call up editing dialog.
   *matrix2 support changed to linear in radial dup.
   *rotate/scale specifics removed from linearform
-  *linear duplicators changed to so that linear
+  *linear duplicators changed to so that by default,
     mappings apply around 'usercenter' of each item
     in their group, rather than duplicator location
 
@@ -25,6 +29,8 @@
                   its own center, seems wierd but
                   features of the code make it tricky
                   to do otherwise).
+           
+    old behavior can be restored by unchecking 'item center'.
            
  Patch 3 updates
  
