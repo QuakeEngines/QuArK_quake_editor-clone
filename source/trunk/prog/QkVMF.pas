@@ -22,6 +22,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2005/02/06 21:29:15  alexander
+dont ignore hammers special groups but import them into quark under misc
+import worldspawn attributes
+
 Revision 1.4  2005/01/28 23:14:27  alexander
 connections completed
 
@@ -710,7 +714,10 @@ procedure WC33Params;
          if S='entity' then
            ReadHL2Entity(group)
          else
-           ReadHL2Group(group); //descend
+           if S='solid' then
+             ReadHL2Solid(group)
+           else
+             ReadHL2Group(group); //descend
    end;
    ReadSymbol(sCurlyBracketRight);
  end;
@@ -750,7 +757,10 @@ procedure WC33Params;
          if LowerCase(s)='group' then
            ReadHL2Group(MapStructure)
          else
-           raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
+           if LowerCase(s)='hidden' then
+             ReadHL2Group(MapStructure)
+           else
+             raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
    ReadSymbol(sCurlyBracketRight);
 
  end;
