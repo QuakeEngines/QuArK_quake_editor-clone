@@ -10,34 +10,28 @@ name on more than I can get around to doing for a timely release.
 <br>crank out matrices for rotation, scaling
 etc. from intelligible parameters (from pushbutton in duplicator
 forms).
-<br>status: sort of done by adding scale and rotation\
+<br>status: sort of done by adding scale and rotation.
 specifics.
+<br>Note: linear mapping buttons on duplicators with a linear specific
+sort of do this, but scale/rot/shear components aren't isolated for
+independent manipulation.
 
 <li>Extruder: (tiglari)
 <br>generate brushes etc. from 2d outlines.
-<br>status: done (integrates with path duplicator)
+<br>status: done (integrates with path duplicator).  In experimental
+update.
 
 <li>'Instance' duplicator: (tiglari)
 <br> put copies of a structure where you want it.  Inspired
 by a suggestion by Meatball402 on Quake3World editing forum.
-<br>status: done.
+<br>status: done.  in experimentgal update.
 
 <li>User-configurable hot keys: (tiglari)
-<br>status: current ones all done.  What additional ones
-should be added?
-
-<li> Write WC3.3 map format: (tiglari)
-<br> status: done, not fully tested (superficially OK)
+<br>status: current ones all done, in experimental update.
+<br>What additional ones should be added?
 
 <li>User-specifible rotation/linear mapping origin: (tiglari)
-<br>Do they really need to be persistent properties of groups?
-(as opposed say to a tagged point)
-<br>what about axis? No, wouldn't integrate with the buttons.
-<br>status: redone as handle (old origin duplicator removed
-from interface). NYI as fixpoint for linear mapping in duplicators.
-
-<li>Form-editing: (Andy)
-<br>status: editing only - no create
+<br>status: done, in experimental update.
 
 <li>FAKK2 support: (?)
 <br>And what about Daikatana, Alice, & Gunman
@@ -56,7 +50,8 @@ from interface). NYI as fixpoint for linear mapping in duplicators.
 <br>edit the properties of pre-existing OsFolders
 
 <li>Brush-based shape-builders: (tiglari, Decker)
-<br> 'thick', and 'inner boxes' (more control over arch shapes)
+<br> 'thick', and 'inner boxes' (more control over arch shapes).
+Also should have a 'force-to-grid' option.
 <br> redo prism-builder as shape-builder.
 <br> more fancy options for stair-builder
 

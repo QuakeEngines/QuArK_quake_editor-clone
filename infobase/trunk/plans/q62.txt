@@ -26,9 +26,9 @@ bezier page)
 stuff is imported & exported multiple times/
 
 
-<li>Read Worlcraft 3.3 Map format: (tiglari)
-<br>No writing yet.  So Quark is now among other things a
-WC3.3->standard format map converter.
+<li>Read/Write Worlcraft 3.3 Map format: (tiglari)
+<br>So Quark is now among other things a WC3.3<->standard format
+map converter.
 
 <li>DefaultTextureScale: (tiglari)
 <br>Only for the buttons, don't yet understand how
@@ -98,6 +98,12 @@ object.
 
 <li>MipTex Extraction: (tiglari,Andy)
 <br>Get the add-on builder to handle Q1, Hx2 properly
+
+<li>Vertex Movement: (tiglari)
+<br>less drifting of non-drug vertexes when a vertex is dragged.
+
+<li>Form-editing: (Andy)
+<br>status: editing only - no create
 
 </ul>
 
