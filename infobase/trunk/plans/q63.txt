@@ -9,6 +9,9 @@ name on more than I can get around to doing for a timely release.
 <li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
 <br>Actually, totally reorganize bsp reading code
 
+<li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
+<br>an as-yet-unimplemenated 4.7 feature.
+
 <li> Write WC3.3 map format: (tiglari)
 
 <li>Model Editor: (Andy)
@@ -33,6 +36,8 @@ forms).
 <li>'Instance' duplicator: (tiglari)
 <br> put copies of a structure where you want it.  Inspired
 by a suggestion by Meatball402 on Quake3World editing forum.
+<br>status: basic version committed.  Working on integration with
+path duplicator.
 
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes'

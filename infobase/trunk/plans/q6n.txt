@@ -13,7 +13,8 @@ from the relatively straightforward to crazed dreams.
 
 <li> NetQuark: (???)
 Multi-user editing over the net.  Would need somebody who
-really knows what they're doing, imo.
+really knows what they're doing.  Probably not a
+realistic target,
 
 <li>persistent edits: (?)
 <br> undo/redo info written to files/saved with maps,
