@@ -1,3 +1,30 @@
+
+
+
+           Patch2 to O80601 Snapshot
+           
+ * 'hlradfilemaker' duplicator plugin.
+
+ * 'symxyz' duplicator with toggleable axes.
+ 
+ * 'Adjust Angles Automatically' Menu Option and
+   'Auto-Adjust Normal' Map option renamed to
+   `Quantize angles'
+
+ * usercenters now transform with containing groups under
+     linear mapping
+ 
+ * Q3A CDROM config now works.
+
+ * fix bugs in snap object (separation, when selected or
+     tagged face is horizontal)
+     
+ * refurbish slide poly etc plugin; now works wrt tagged
+     plane as well as tagged edge
+
+ * Some Half-Life config fixes (see DataHL.qrk changelog)
+ 
+
            Patch1 to 080601 Snaphsot
 
  * reset texture cycle command, so that the texture
