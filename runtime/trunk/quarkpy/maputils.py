@@ -201,12 +201,23 @@ def cyclenext(i, len):
 def cycleprev(i, len):
     return (i-1)%len
 
+def projectpointtoplane(p,n1,o2,n2):
+  "project point to plane at o2 with normal n2 along normal n1"
+  v1 = o2-p
+  v2 = v1*n2
+  v3 = n1*n2
+  v4 = v2/v3
+  v5 = v4*n1
+  return p + v5
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.4  2000/07/29 02:04:54  tiglari
+#added cyclenext, cycleprev
+#
 #Revision 1.3  2000/07/24 09:06:56  tiglari
 #findlabelled added for finding items on menus (for face/texture revamp)
 #
