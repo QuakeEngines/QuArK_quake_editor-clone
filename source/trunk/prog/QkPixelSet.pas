@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/04/12 22:11:22  alexander
+fixed: flipped exported TGA textures
+
 }
 
 unit QkPixelSet;
@@ -65,6 +68,7 @@ type
                          procedure AllocData;
                          procedure AllocAlpha;
                          procedure AllocPalette;
+                         procedure FlipBottomUp;
                          function IsGamePalette(Game: Char) : Boolean;
                         end;
 
@@ -99,7 +103,7 @@ type
 
  {------------------------}
 
-function PSDToDIB(const Source: TPixelSetDescription) : TPixelSetDescription;
+function PSDToDIB(const Source: TPixelSetDescription; BottomUp: Boolean) : TPixelSetDescription;
 function PSDConvert(var Target: TPixelSetDescription;
                     const Source: TPixelSetDescription;
                     Flags: Integer) : Boolean;  { ccXXX }
@@ -159,6 +163,12 @@ procedure TPixelSetDescription.AllocPalette;
 begin
  New(ColorPalette);
  Include(Allocated, psaPalette);
+end;
+
+procedure TPixelSetDescription.FlipBottomUp;
+begin
+ ScanLine:=-ScanLine;
+ AlphaScanLine:=-AlphaScanLine; 
 end;
 
 function TPixelSetDescription.GetColors(var Buffer: TBitmapInfoColors) : PBitmapInfoColors;
@@ -393,7 +403,7 @@ begin
  Result:=True;
 end;
 
-function PSDToDIB(const Source: TPixelSetDescription) : TPixelSetDescription;
+function PSDToDIB(const Source: TPixelSetDescription; BottomUp: Boolean) : TPixelSetDescription;
 begin
  Result.Init;
  case Source.Format of
@@ -402,6 +412,8 @@ begin
  else
   raise InternalE('unknown PSD format');
  end;
+ if BottomUp then
+  Result.ScanLine:=-Result.ScanLine;
  PSDConvert(Result, Source, ccTemporary);
 end;
 
@@ -414,7 +426,7 @@ var
 begin
  Pal1:=0;
  Pal0:=0;
- NewPSD:=PSDToDIB(Self);
+ NewPSD:=PSDToDIB(Self, True);
  try
   BitmapInfo:=PBitmapInfo(NewPSD.GetBitmapInfo(BmpInfo, @Pal0));
   if Pal0<>0 then

@@ -855,6 +855,8 @@ Strings = {
         5696: "Shader images are read-only",
         5697: "Shader stage '%s' has no image to display",
  	5698: "Shader '%s' not found in %s",
+        5699: "(complex)",
+        5700: "%s or %s",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 

@@ -174,8 +174,11 @@ begin
   begin
    Q:=SousElements[K];
    Q.Acces;
-    { stage intro; include 'map' attribute from the name of the stage }
-   Result:=Result + chr(vk_Tab) + '{'#13#10 + chr(vk_Tab) + chr(vk_Tab) + 'map ' + Q.Name + #13#10;
+    { stage intro }
+   Result:=Result + chr(vk_Tab) + '{'#13#10;
+    { include 'map' attribute from the name of the stage }
+   if Q.Name <> LoadStr1(5699) then
+    Result:=Result + chr(vk_Tab) + chr(vk_Tab) + 'map ' + Q.Name + #13#10;
    for I:=0 to Specifics.Count-1 do  { stage attributes }
     begin
      Spec:=Specifics[I];
@@ -245,7 +248,10 @@ begin
  if (Name='') or (Name[1]='$') then
   Result:=Nil
  else
-  Result:=NeedGameFile(Name) as QPixelSet;
+  if Name=LoadStr1(5699) then   { complex stage }
+   Result:=Nil   { to do: check for animated stages }
+  else
+   Result:=NeedGameFile(Name) as QPixelSet;
 end;
 
 function QShaderStage.LoadPixelSet : QPixelSet;
@@ -293,7 +299,7 @@ procedure QShaderFile.Charger(F: TStream; Taille: Integer);
 const
  ProgressStep = 4096;
 var
- S, Data: String;
+ ComplexStage, S, Data: String;
  Source, NextStep: PChar;
  Shader: QShader;
  Stage: QShaderStage;
@@ -380,6 +386,7 @@ begin
 
       NextStep:=Source+ProgressStep;
       LineNumber:=1;
+      ComplexStage:=LoadStr1(5699);
       repeat
         { read one shader definition per loop }
        SkipSpaces;
@@ -396,7 +403,7 @@ begin
         if Source^='{' then
          begin   { shader stage }
           Inc(Source);
-          Stage:=QShaderStage.Create('?', Shader);
+          Stage:=QShaderStage.Create(ComplexStage, Shader);
           Shader.SousElements.Add(Stage);
           repeat
             { read one stage attribute per loop }

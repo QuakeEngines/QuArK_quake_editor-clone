@@ -239,7 +239,7 @@ begin
       Pal1:=0;
       Palette:=0;
       DC:=PyCanvasObj(self)^.Canvas.Handle;
-      LightPatch:=PSDToDIB(PSD);
+      LightPatch:=PSDToDIB(PSD, True);
       try
        if lgr<>0 then
         begin

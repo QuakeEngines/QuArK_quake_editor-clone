@@ -435,55 +435,63 @@ begin
  Dirs.Add(SetupGameSet.Specifics.Values['BaseDir']);
 end;
 
+function FileAlias(const FileName: String) : String;
+begin   { returns an alternate file name to lookup this file }
+  { Alternate Texture File Type (.jpg / .tga)...}
+ if (CharModeJeu>=mjQ3A) and (CompareText(ExtractFileExt(FileName), '.tga') = 0) then
+    { if its quake3 then a .tga file can exist as a .jpg file too }
+  Result:=ChangeFileExt(FileName,'.jpg')
+ else
+  Result:='';   { no other aliases }
+end;
+
+function DisplayAlias(const FileName: String) : String;
+begin
+ Result:=FileAlias(FileName);
+ if Result='' then
+  Result:=FileName
+ else
+  Result:=FmtLoadStr1(5700, [FileName, Result]);    { "<filename> or <alias>" }
+end;
+
 function NeedGameFile(const FileName: String) : QFileObject;
 var
  L: TQList;
  I: Integer;
  SourceDir: String;
 begin
- L:=GetQuakeContext;
- for I:=L.Count-1 downto 0 do
-  begin
-   SourceDir:=L[I].Specifics.Values['SourceDir'];
-   if SourceDir<>'' then
-    begin
-     Result:=GetGameFileBase(SourceDir, FileName, False);
-     if Result<>Nil then
-      Exit;   { found it }
-    end;
-  end;
  repeat
+  L:=GetQuakeContext;
+  for I:=L.Count-1 downto 0 do
+   begin
+    SourceDir:=L[I].Specifics.Values['SourceDir'];
+    if SourceDir<>'' then
+     begin
+      Result:=GetGameFileBase(SourceDir, FileName, False);
+      if Result<>Nil then
+       Exit;   { found it }
+     end;
+   end;
   Result:=GetGameFileBase(SetupGameSet.Specifics.Values['BaseDir'], FileName, True);
  until (Result<>Nil) or not CDRetry(FileName);
  if Result=Nil then
-  Raise EErrorFmt(5560, [SetupGameSet.Name, FileName]);
+  Raise EErrorFmt(5560, [SetupGameSet.Name, DisplayAlias(FileName)]);
 end;
 
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
-var
- other,filestr: string;
 begin
  repeat
   Result:=GetGameFileBase(BaseDir, FileName, True);
   if Result<>Nil then Exit;
  until not CDRetry(FileName);
- {AiV - Alternate Texture File Type (.jpg / .tga)...}
- filestr:=filename;
- if (CharModeJeu>=mjQ3A) and (CompareText(ExtractFileExt(FileName), '.tga') = 0) then begin // if its quake3 and we haven't found the .tga file then
-   other:=ChangeFileExt(FileName,'.jpg');
-   repeat
-     Result:=GetGameFileBase(BaseDir, other, True); //check for .jpg file instead
-     if Result<>Nil then Exit;
-   until not CDRetry(other);
-   filestr:=filestr+' or '+ other;
- end;
- {/AiV}
- Raise EErrorFmt(5561, [SetupGameSet.Name, Filestr, BaseDir]);
+ Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAlias(FileName), BaseDir]);
 end;
 
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 var
  NomChemin, NomComplet: String;
+ Alias: String;
+ NoMoreAlias: Boolean;
 
 (*procedure FoundInFile(Q: QObject);
   var
@@ -499,6 +507,7 @@ var
   end;*)
 
 begin
+ Alias:=FileAlias(FileName);
  NomChemin:=PathAndFile(QuakeDir, BaseDir);
  if GameFiles=Nil then
   GameFiles:=TQList.Create;
@@ -518,34 +527,42 @@ begin
        GameFiles.Add(Result);
        GameFiles.Sort(ByFileName);
       end;
-     {Pak:=Result as QPak;}
-     Result:={Pak}Result.FindFile(FileName);
+     Result:=Result.FindFile(FileName);
      if Result<>Nil then
-      begin
-      {FoundInFile(Pak);}
-       Exit;   { found it }
+      Exit;   { found it }
+     if Alias<>'' then
+      begin   { look for the alias }
+       Result:=Result.FindFile(Alias);
+       if Result<>Nil then
+        Exit;   { found it }
       end;
     end;
 
+  NoMoreAlias:=Alias='';
   NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
 
-   { looks for it from the buffer }
-  Result:=SortedFindFileName(GameFiles, NomComplet);
-  if Result<>Nil then
-   begin
-   {FoundInFile(Result);}
-    Exit;
-   end;
+  repeat
+    { looks for it from the buffer }
+   Result:=SortedFindFileName(GameFiles, NomComplet);
+   if Result<>Nil then
+    Exit;   { found it }
 
-   { looks for it on the disk }
-  if FileExists(NomComplet) then
-   begin    { found }
-    Result:=LienFichierExact(NomComplet, Nil, True);
-    Result.Flags:=Result.Flags or ofWarnBeforeChange;
-    GameFiles.Add(Result);
-    GameFiles.Sort(ByFileName);
-    Exit;
-   end;
+    { looks for it on the disk }
+   if FileExists(NomComplet) then
+    begin    { found it }
+     Result:=LienFichierExact(NomComplet, Nil, True);
+     Result.Flags:=Result.Flags or ofWarnBeforeChange;
+     GameFiles.Add(Result);
+     GameFiles.Sort(ByFileName);
+     Exit;
+    end;
+   if NoMoreAlias then
+    Break;   { no alias or alias already searched for }
+
+   NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+   NoMoreAlias:=True;
+  until False;   { try again with the alias }
+
   Result:=Nil;
   if not LookInCD then
    Exit;   { not found at all or don't look on the CD }

@@ -24,12 +24,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/04/12 22:10:47  alexander
+fixed: crash when exporting TGA Textures with alpha channel
+fixed: flipped exported TGA textures
+misc: improved readability of tga header initialization, added comments
+
 }
 unit QkTga;
 
 interface
 
-uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages;
+uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Setup;
+
+const
+ GamesWithTopDownTgaFiles = [mjKingPin];
 
 type
  QTga = class(QImages)
@@ -154,13 +162,13 @@ begin
       SetLength(Data, Length(Spec1)+J);
       if Header.Flags and tgaTopDown <> 0 then
        begin {picture origin is at top left}
-        ScanLine:=PChar(Data)+Length(Spec1);
-        sScanW:=ScanW;
-       end
-      else
-       begin {picture origin is at bottom left}
         ScanLine:=PChar(Data)+Length(Data)-ScanW;
         sScanW:=-ScanW;
+       end      { NOTE: all images in QuArK are stored bottom-up, a la Windows }
+      else
+       begin {picture origin is at bottom left}
+        ScanLine:=PChar(Data)+Length(Spec1);
+        sScanW:=ScanW;
        end;
       case Header.TypeCode of
        1,2: begin
@@ -324,13 +332,19 @@ begin
       Header.ColorMapBpp:=0;  { set to 0 when no color map }
       Header.XOrigin:=0;
       Header.YOrigin:=0;
+      if CharModeJeu in GamesWithTopDownTgaFiles then
+       Header.Flags:=tgaTopDown   { no alpha and top down start of image}
+      else
+       begin
+        Header.Flags:=0;   { no alpha and bottom left start of image}
+        PSD.FlipBottomUp;   { bottom-up format : flip the PSD data }
+       end;
       if PSD.Format=psf8bpp then
        begin
         {#####FIXME: this is not really supported since
         we never write a colormap (yet)! }
         Header.TypeCode:=1;
         Header.bpp:=8;
-        Header.Flags:=0; {no alpha and bottom left start of image}
        end
       else
        begin
@@ -338,7 +352,7 @@ begin
         if PSD.AlphaBits=psa8bpp then
          begin
           Header.bpp:=32;
-          Header.Flags:= 8; { 8 tgaAlphaBits and bottom left start of image}
+          Header.Flags:=Header.Flags or 8; { 8 tgaAlphaBits }
          end
         else
          Header.bpp:=24;
@@ -368,7 +382,7 @@ begin
             Inc(PLineBuffer, 4);
            end;
           F.WriteBuffer(PBaseLineBuffer^, LineWidth);
-          Inc(ScanLine, PSD.ScanLine);   { TGA format is bottom-up, and so is PSD }
+          Inc(ScanLine, PSD.ScanLine);
           Inc(AlphaScanLine, PSD.AlphaScanLine);
          end;
         finally FreeMem(PBaseLineBuffer); end;
@@ -377,7 +391,7 @@ begin
        for J:=1 to Header.Height do
         begin
          F.WriteBuffer(ScanLine^, LineWidth);
-         Inc(ScanLine, PSD.ScanLine);   { TGA format is bottom-up, and so is PSD }
+         Inc(ScanLine, PSD.ScanLine);
         end;
 
       finally PSD.Done; end;
