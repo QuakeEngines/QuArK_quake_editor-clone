@@ -543,11 +543,11 @@ statediagram =                                                                  
 ,'STATE_CHOICES4'       :[(TYPE_STRING             ,'STATE_CHOICES2'       ,AddKeyChoiceDesc) ] \
 }
 
-import qutils
+import quarkpy.qutils
 import quarkx
 
 def makeqrk(root, filename, gamename):
-    qutils.debug(filename)
+    quarkx.msgbox("Please note, this is not always 100% accurate and will duplicate\nexisting entities and possibly miss some out.\n\nYou may need to handedit the .qrk file. For help with this,\nfeel free to ask questions at the QuArK forum:\n\nhttp://groups.yahoo.com/group/quark/messages\n", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
     global currentclassname
     srcstring = readentirefile(filename)
     state = 'STATE_UNKNOWN'
@@ -574,36 +574,40 @@ def makeqrk(root, filename, gamename):
         state = newstate
     CloseClass("--EndByEOF--")
     indent = 2
-    qutils.debug("Here")
+    quarkpy.qutils.debug("Here")
     r_tbx = quarkx.newobj("Toolbox Folders.qtx")
     r_tbx["Toolbox"] = "New map items..."
-    r_tbx.flags = r_tbx.flags | qutils.OF_TVSUBITEM
+    r_tbx.flags = r_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
     root.appenditem(r_tbx)
-    qutils.debug("Here .")
 
     e_tbx = quarkx.newobj("Entities for "+gamename+".qtxfolder")
     e_tbx[";desc"] = "Created from "+filename
     r_tbx.appenditem(e_tbx)
 
     r_tbx["Root"] = e_tbx.name
-    qutils.debug("Here ..")
 
     for ent in theEntities:
         ent.GenerateFolder(e_tbx)
 
     f_tbx = quarkx.newobj("Entity Forms.fctx")
-    f_tbx.flags = f_tbx.flags | qutils.OF_TVSUBITEM
+    f_tbx.flags = f_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
     root.appenditem(f_tbx)
 
     for ent in theEntities:
         ent.GenerateForm(f_tbx)
-    qutils.debug("Here ...")
     root.refreshtv()
 
-    quarkx.msgbox("The .FGD file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file, then using a text-editor do a Search-Replace of   \"!\"   with   !\nE.g. replacing a double-quoted exclamation mark, with just a exclamation mark.\n\nIf you encounter any problems using this 'Convert from Worldcraft .FGD file' utility, please post a mail in the QuArK-forum.", qutils.MT_INFORMATION, qutils.MB_OK)
+    quarkx.msgbox("The .FGD file have now almost been converted to QuArK format.\n\nWhat remains is to save it as a 'Structured text for hand-editing (*.qrk)' file, then using a text-editor do a Search-Replace of   \"!\"   with   !\nE.g. replacing a double-quoted exclamation mark, with just a exclamation mark.\n\nIf you encounter any problems using this 'Convert from Worldcraft .FGD file' utility, please post a mail in the QuArK-forum.", quarkpy.qutils.MT_INFORMATION, quarkpy.qutils.MB_OK)
+
+import quarkpy.qentbase
+quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fgd file", "*.fgd", makeqrk)
 
 #
 #$Log$
+#Revision 1.4  2001/06/11 17:42:38  decker_dk
+#Fixed the BBOX problem, where it would think the value were a string (double-quotes), and not 6 numbers (single-quotes).
+#Also added a messagebox which states what should be manually done afterwards.
+#
 #Revision 1.3  2001/04/14 19:30:58  decker_dk
 #Handle 'color1' FGD-types too.
 #

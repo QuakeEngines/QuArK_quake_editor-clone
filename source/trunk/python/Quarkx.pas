@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/06/05 18:44:01  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.18  2001/04/19 19:27:45  aiv
 better error messages
 
@@ -2103,6 +2106,27 @@ begin
  end;
 end;
 
+function xEntityMenuItem(self, args: PyObject) : PyObject; cdecl;
+var
+ s: PChar;
+ Item: TMenuItem;
+begin
+  try
+    Result:=Nil;
+    if not PyArg_ParseTupleX(args, 's', [@s]) then
+      Exit;
+    Item:=TMenuItem.Create(g_Form1);
+    Item.Caption:=s;
+    Item.OnClick:=g_Form1.ConvertFrom1Item1Click;
+    g_Form1.ConvertFrom1.Add(Item);
+    g_Form1.empty1.visible:=false;
+    Result:=PyNoResult;
+  except
+    EBackToUser;
+    Result:=Nil;
+  end;
+end;
+
 function xGetShortHint(self, args: PyObject) : PyObject; cdecl;
 var
  s: PChar;
@@ -2345,7 +2369,7 @@ begin
 end;{/AiV}
 
 const
- MethodTable: array[0..65] of TyMethodDef =
+ MethodTable: array[0..66] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2407,6 +2431,7 @@ const
    (ml_name: 'sethint';         ml_meth: xSetHint;        ml_flags: METH_VARARGS),
    (ml_name: 'helppopup';       ml_meth: xHelpPopup;      ml_flags: METH_VARARGS),
    (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;   ml_flags: METH_VARARGS),
+   (ml_name: 'entitymenuitem';    ml_meth: xEntityMenuItem;   ml_flags: METH_VARARGS),
    (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;        ml_flags: METH_VARARGS),
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
    (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
@@ -2730,7 +2755,7 @@ end;
 
 var ProbableCauseOfFatalError: array[-9..3] of PChar = (
    {-9}    ' (Unable to initialise python module "Quarkx")',
-   {-8}    ' (Unable to find "quarkpy" directory)',
+   {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
    {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
    {-6}    '',
    {-5}    '',

@@ -269,23 +269,36 @@ def MACRO_makeaddon_tex(self):
         i = i + 1
     a[i].maketexturesfromqctx();
 
-def MACRO_makeaddonfromfgd(self):
-    import qfgd2qrk
+entfn = {}
+def MACRO_loadentityplugins(self):
+    import plugins
+    plugins.LoadPlugins("ENT")
+    global MACRO_loadentityplugins
+    MACRO_loadentityplugins = lambda: None    # next calls to loadmdleditor() do nothing
+    
+def MACRO_ent_convertfrom(text):
+    import qeditor
     import qutils
     a = quarkx.getqctxlist()
     a.reverse()
-    files = quarkx.filedialogbox("Select FGD File", "*.fgd", ["WorldCraft Data File (*.fgd)", "*.fgd"], 0)
-    file = files[0]
-    gn = a[0]["GameDir"]
-    if (gn is None) or (gn == ""):
-        gn = file
-    qfgd2qrk.makeqrk(a[0].parent, file, gn)
+    entf = entfn[text]
+    if entf is not None:
+        files = quarkx.filedialogbox("Select File", text, entf[0], 0)
+        if len(files) != 0:
+            file = files[0]
+            gn = a[0]["GameDir"]
+            if (gn is None) or (gn == ""):
+                gn = file
+            entf[1](a[0].parent, file, gn)
 
-
+    
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.10  2001/03/28 19:23:15  decker_dk
+#Added '(*.fgd)' to the filedialogbox-call.
+#
 #Revision 1.9  2001/03/15 21:09:01  aiv
 #moved .fgd reading to menu, sepearted texture & entity reading
 #

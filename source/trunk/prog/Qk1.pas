@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/06/05 18:38:46  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.20  2001/03/20 21:47:10  decker_dk
 Updated copyright-header
 
@@ -218,7 +221,7 @@ type
     N13: TMenuItem;
     Go1: TMenuItem;
     ConvertFrom1: TMenuItem;
-    Worldcraftfgdfile1: TMenuItem;
+    empty1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Close1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
@@ -253,7 +256,6 @@ type
     procedure Viewconsole1Click(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure Registering1Click(Sender: TObject);
-    procedure Worldcraftfgdfile1Click(Sender: TObject);
   private
     IdleJobs: PIdleJob;
     {DefaultTbCount,} OpenFilterIndex: Integer;
@@ -303,6 +305,7 @@ type
     function GetEmptyMenu : TPopupMenu;
     function GetObjMenu(Control: TControl; Extra: Boolean) : TPopupMenu;
     procedure FreeNonUsedObjects;
+    procedure ConvertFrom1Item1Click(Sender: TObject);
   end;
 
 var
@@ -954,6 +957,7 @@ begin
    finally L.Free; end;
    FileMenu.Tag:=1;
   end;
+  CallMacro(GetEmptyTuple,'loadentityplugins');
 end;
 
 procedure TForm1.WindowMenuPopup(Sender: TObject);
@@ -2179,21 +2183,25 @@ begin
  HTMLDoc(GetApplicationPath()+'help\register.html');
 end;
 
-procedure TForm1.Worldcraftfgdfile1Click(Sender: TObject);
+procedure TForm1.ConvertFrom1Item1Click(Sender: TObject);
 var
+  s: PyObject;
   Q: QObject;
 begin
-  Showmessage('                             !!!!    NOTE    !!!!               '#10#13+
-              '   This is not always 100% accurate and will duplicate  '#10#13+
-              '      existing entities and possibly miss some out.     '#10#13#10#13+
-              'You may need to handedit the .qrk file. For help with this,'#13#10+
-              '      feel free to ask questions at the QuArK forum:      '#10#13#10#13+
-              '   http://groups.yahoo.com/group/quark/messages    '#10#13);
+ s:=Nil;
+ try
+  with Sender as TMenuItem do
+   s:=PyString_FromString(PChar(Caption));
+  if s=Nil then Exit;
   News1Click(Sender);
   Q:=QQuakeCtx.Create('Game Directories', NeedExplorerRoot);
   Q.Flags := Q.Flags or ofTreeViewSubElement;
   NeedExplorerRoot.Subelements.Add(Q);
-  CallMacro(@NeedExplorerRoot.PythonObj, 'makeaddonfromfgd');
+  CallMacro(s, 'ent_convertfrom');
+ finally
+  Py_XDECREF(s);
+  PythonCodeEnd;
+ end;
 end;
 
 end.

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:44:37  decker_dk
+Updated copyright-header
+
 Revision 1.4  2001/01/21 15:49:30  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -58,7 +61,10 @@ uses
   Classes,
   QkObjects,
   QkFileObjects,
-  QkTextures;
+  QkTextures,
+  Sysutils,
+  Dialogs,
+  QkImages;
 
 type
  TQ1Miptex = packed record
@@ -80,6 +86,18 @@ type
                function GetTexOpacity : Integer; override;  { 0-255 }
                function BaseGame : Char; override;
                class function CustomParams : Integer; override;
+               Procedure SpecialCONCHARSHandling(F: TStream);
+             end;
+
+ QTexture1_B = class(QImage)
+             protected
+               procedure SaveFile(Info: TInfoEnreg1); override;
+               procedure LoadFile(F: TStream; FSize: Integer); override;
+             public
+               class function TypeInfo: String; override;
+               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+//               function BaseGame : Char; override;
+//               class function CustomParams : Integer; override;
              end;
 
 function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
@@ -154,6 +172,10 @@ procedure QTexture1.ChargerFin(F: TStream; TailleRestante: Integer);
 begin
 end;
 
+Procedure QTexture1.SpecialCONCHARSHandling(F: TStream);
+begin
+end;
+
 procedure QTexture1.LoadFile(F: TStream; FSize: Integer);
 const
   Spec1 = 'Image#=';
@@ -168,31 +190,35 @@ begin
   case ReadFormat of
   1:
     begin  { as stand-alone file }
-      if FSize<SizeOf(Header) then
-        Raise EError(5519);
-      Base:=F.Position;
-      F.ReadBuffer(Header, SizeOf(Header));
-      Max:=CheckQ1Miptex(Header, FSize);
-      if Max=0 then
-        Raise EErrorFmt(5514, [LoadName, 1]);
-      CheckTexName(CharToPas(Header.Nom));
-      V[1]:=Header.W;
-      V[2]:=Header.H;
-      SetFloatsSpec('Size', V);
-      Taille1:=Header.W*Header.H;
-      for I:=0 to 3 do
-      begin
-        S:=Spec1;
-        S[PosNb]:=Chr(49+I);  { '1' to '4' }
-        SetLength(S, Length(Spec1)+Taille1);
-        F.Position:=Base+Header.Indexes[I];
-        F.ReadBuffer(S[Length(Spec1)+1], Taille1);
-        Specifics.Add(S);
-        Taille1:=Taille1 div 4;  { next images are scaled-down }
+      if (Self.Name = 'CONCHARS') then begin
+        SpecialCONCHARSHandling(F);
+      end else begin
+        if FSize<SizeOf(Header) then
+          Raise EError(5519);
+        Base:=F.Position;
+        F.ReadBuffer(Header, SizeOf(Header));
+        Max:=CheckQ1Miptex(Header, FSize);
+        if Max=0 then
+          Raise EErrorFmt(5514, [LoadName, 1]);
+        CheckTexName(CharToPas(Header.Nom));
+        V[1]:=Header.W;
+        V[2]:=Header.H;
+        SetFloatsSpec('Size', V);
+        Taille1:=Header.W*Header.H;
+        for I:=0 to 3 do
+        begin
+          S:=Spec1;
+          S[PosNb]:=Chr(49+I);  { '1' to '4' }
+          SetLength(S, Length(Spec1)+Taille1);
+          F.Position:=Base+Header.Indexes[I];
+          F.ReadBuffer(S[Length(Spec1)+1], Taille1);
+          Specifics.Add(S);
+          Taille1:=Taille1 div 4;  { next images are scaled-down }
+        end;
+        F.Position:=Base+Max;
+        ChargerFin(F, FSize-Max);
+        F.Position:=Base+FSize;
       end;
-      F.Position:=Base+Max;
-      ChargerFin(F, FSize-Max);
-      F.Position:=Base+FSize;
     end;
   else
     inherited;
@@ -260,7 +286,92 @@ begin
   Result:=mjNotQuake2;
 end;
 
+ { --------------- }
+
+{class function QTexture1_B.CustomParams : Integer;
+begin
+  Result:=cp4MipIndexes or cpFixedOpacity;
+end;
+ }
+class function QTexture1_B.TypeInfo: String;
+begin
+  TypeInfo:='.wad_B';
+end;
+
+class procedure QTexture1_B.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+begin
+  inherited;
+  Info.FileObjectDescriptionText:=LoadStr1(5131);
+end;
+
+type
+  TQ1Lump = packed record
+    W: Longint;//Array[1..4] of Byte;
+    H: Longint;//Array[1..4] of Byte;
+    Data: Array[1..4] of Byte;
+  end;
+{
+function LongSwap (L: Longint): Longint;
+var
+  b1,b2,b3,b4: byte;
+begin
+  b1 := l and 255;
+  b2 := (l shr 8) and 255;
+  b3 := (l shr 16) and 255;
+  b4 := (l shr 26) and 255;
+  result:= b4 or (b3 shl 8) or (b2 shl 16) or (b1 shl 24)
+end;          }
+
+procedure QTexture1_B.LoadFile(F: TStream; FSize: Integer);
+const
+  Spec1 = 'Image=';
+var
+  S: String;
+  Header: TQ1Lump;
+  V: array[1..2] of Single;
+  I: Integer;
+  Taille1: LongInt;
+begin
+  case ReadFormat of
+  1:
+    begin  { as stand-alone file }
+      if FSize<SizeOf(Header) then
+        Raise EError(5519);
+      F.ReadBuffer(Header, SizeOf(Header));
+
+      V[1]:=Header.W;
+      V[2]:=Header.H;
+      SetFloatsSpec('Size', V);
+      Taille1:=FSize-SizeOf(Header);
+      S:=Spec1;
+      SetLength(S, Length(Spec1)+Taille1);
+      F.ReadBuffer(S[Length(Spec1)+1], Taille1);
+    end;
+  else
+    inherited;
+  end;
+end;
+
+procedure QTexture1_B.SaveFile(Info: TInfoEnreg1);
+begin
+  with Info do
+  begin
+    case Format of
+    1:
+      Raise Exception.Create('Not Implementated yet!');
+    else
+      inherited;
+    end;
+  end;
+end;
+
+{function QTexture1_B.BaseGame;
+begin
+  Result:=mjNotQuake2;
+end;
+ }
 initialization
   RegisterQObject(QTexture1, 'a');
+  RegisterQObject(QTexture1_B, 'a');
 end.
 
