@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/04/01 06:52:07  tiglari
+don't recenter threepoints option added
+
 Revision 1.31  2001/03/31 04:25:36  tiglari
 WC33 (mapversion 220) map writing
 
@@ -3166,23 +3169,63 @@ begin
   end;
 end;
 
-function TFace.GetThreePointsT;
+function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
 begin
- if TextureMirror then
-  Result:=GetThreePoints(V1, V3, V2)
- else
-  Result:=GetThreePoints(V1, V2, V3);
+  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
 end;
 
-procedure TFace.SetThreePointsT;
+function TFace.GetThreePointsT(var V1, V2, V3: TVect) : boolean;
+var
+  TexV: array[1..6] of Single;
+  P0, P1, P2, T1, T2, T3, TexS, TexT, V : TVect;
 begin
+  if LoadData and GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
+  begin
+      GetAxisBase(Normale, TexS, TexT);
+      T1:=MakeVect(TexV[1], TexV[2], 0);
+      T2:=MakeVect(TexV[3], TexV[4], 0);
+      T3:=MakeVect(TexV[5], TexV[6], 0);
+      V1:=Tex2FaceCoords(T1, P0, TexS, TexT);
+      V2:=Tex2FaceCoords(T2, P0, TexS, TexT);
+      V3:=Tex2FaceCoords(T3, P0, TexS, TexT);
+      Result:=true;
+      Exit;
+  end;
+  if TextureMirror then
+    Result:=GetThreePoints(V1, V3, V2)
+  else
+    Result:=GetThreePoints(V1, V2, V3);
+end;
+
+procedure TFace.SetThreePointsT(const V1, V2, V3: TVect);
+var
+  TexS, TexT, P0, P1, P2, T1, T2, T3, T : TVect;
+  V: array[1..6] of Single;
+begin
+(*
  if TextureMirror then
   SetThreePoints(V1, V3, V2)
  else
   SetThreePoints(V1, V2, V3);
+*)
+  if Loaddata and GetThreePoints(P0, P1, P2) then
+  begin
+    GetAxisBase(Normale,TexS,TexT);
+    T1:=CoordShift(V1, P0, texS, texT);
+    T2:=CoordShift(V2, P0, texS, texT);
+    T3:=CoordShift(V3, P0, texS, texT);
+    V[1]:=T1.X; V[2]:=T1.Y;
+    V[3]:=T2.X; V[4]:=T2.Y;
+    V[5]:=T3.X; V[6]:=T3.Y;
+    SetFloatsSpec('tv', V);
+  end;
 end;
 
 function TFace.SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+begin
+  SetThreePointsT(V1, V2, V3);
+end;
+(*
 var
  V1b, V2b: TVect;
  R: TDouble;
@@ -3209,6 +3252,7 @@ begin
   else
    Result:=False;
 end;
+*)
 
 procedure TTexturedTreeMap.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: TDouble);
 const
@@ -3289,6 +3333,7 @@ begin
  V3.Z:=TexP[3].Z+TexP[1].Z;
 end;
 
+
 procedure TFace.SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
 var
  CorrW, CorrH: TDouble;
@@ -3304,6 +3349,7 @@ begin
  P3.Z:=(V3.Z-V1.Z)/CorrH + V1.Z;
  SetThreePointsEx(V1, P2, P3, Normale);
 end;
+
 
 {function TFace.InitVect : Boolean;
 begin
