@@ -23,8 +23,8 @@ from b2utils import *
 
 class CPTexPos(dlgclasses.LiveEditDlg):
     endcolor = AQUA
-    size = (180,200)
-    dfsep = 0.35
+    size = (100,100)
+    dfsep = 0.50
 
     dlgdef = """
         {
@@ -35,19 +35,38 @@ class CPTexPos(dlgclasses.LiveEditDlg):
         {
         Txt = "&"
         Typ = "EF002"
-        Hint = "s t texture coordinates"
+        Hint = "s t texture coordinates.  Enter new ones here." $0D "The difference between new and old can be propagated to row, column or all with checkboxes below."
         }
 
         sep: = {Typ="S" Txt=" "} 
-
-        global: ={Txt="&" Typ="X"
-        Hint = "If this is checked, texture movements apply to all Control Points." $0D " (So texture is translated)."}
+        moverow: ={Txt="move row" Typ="X"
+                   Hint = "If this is checked, texture movement applies to whole row (same color)."}
+        movecol: ={Txt="move col" Typ="X"
+                   Hint = "If this is checked, texture movement applies to whole column (different colors)."}
+        moveall: ={Txt="move all" Typ="X"
+                   Hint = "If this is checked, whole texture is shifted"}
         
         sep: = { Typ="S"}
 
         exit:py = { }
     }
     """
+
+def pointsToMove(moverow, movecol, i, j, h, w):
+    "returns list of (i,j) indexes of points to move"
+    "if moverow==1 and movecol==1, move everything"
+    if moverow and movecol:
+        def row(i,w=w):
+             return map(lambda j,i=i:(i,j),range(w))
+        return reduce(lambda x,y:x+y, map(row,range(h))) 
+    if movecol:
+        return map(lambda i,j=j:(i, j),range(h))
+    if moverow:
+        return map(lambda j,i=i:(i, j), range(w))
+    return (i, j),  # Newbie Pythonistas: the comma is not a typo,
+                    # but means that the function returns a 
+                    # 1-element tuple whose sole element is a 2-tuple.
+
 
 def texcpclick(m):
     h, editor = m.h, m.editor
@@ -57,39 +76,28 @@ def texcpclick(m):
     pack.ij, pack.b2 = h.ij, h.b2
 
     def setup(self, pack=pack):
-        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
+        cp, (i, j), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
         src = self.src
-#        squawk("two")
-        p = cp[j][i]
-#        src["Coords"] = "%.2f %.2f"%(cp[j][i].s, cp[j][i].t)
-#        squawk("%.2f, %.2f"%(cp[j][i].s, cp[j][i].t))
-        src["Coords"] = cp[j][i].s, cp[j][i].t
+        p = cp[i][j]
+        src["Coords"] = cp[i][j].s, cp[i][j].t
 
-    #
-    # As yet unreconstructed j i reversal here (j=row, i=column,
-    #   nonstandardly
-    #
     def action(self, pack=pack):
-#        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
-        cp, (j, i), b2 = copycp(pack.b2.cp),   pack.ij, pack.b2
+        cp, (i, j), b2 = copycp(pack.b2.cp),   pack.ij, pack.b2
         s, t = self.src["Coords"]
-        cpji = cp[j][i]
-        if self.src["global"]:
-          os, ot = cpji.st
-          ds, dt = s-os, t-ot
-          diff = quarkx.vect(0, 0, 0, ds, dt)
-          for j0 in range(len(cp)):
-            for i0 in range (len(cp[j0])):
-              cp[j0][i0] = cp[j0][i0]+diff
-        else:
-          cp[j][i] = quarkx.vect(cpji.xyz + (s, t))
-        squawk(`cp`)
+        os, ot = cp[i][j].st
+        ds, dt = s-os, t-ot
+        delta = quarkx.vect(0, 0, 0, ds, dt)
+        moverow, movecol, moveall = self.src["moverow"], self.src["movecol"], self.src["moveall"]
+        if moveall:
+            moverow=movecol=1
+        for (m, n) in pointsToMove(moverow, movecol, i, j, b2.H, b2.W):
+            cp[m][n] = cp[m][n]+delta
         new = b2.copy()
         new.cp = cp
         undo=quarkx.action()
         undo.exchange(b2, new)
         self.editor.ok(undo,"move texture")
-        pack.b2 = b2
+        pack.b2 = new
         self.editor.invalidateviews()
  
     CPTexPos(quarkx.clickform, 'beztexpos', editor, setup, action)
@@ -168,9 +176,9 @@ def tanaxes(cp, i, j):
   
 #
 #  Derivative matrix for parameter->space mappings and
-#    paramater->plane mappings, at corners.
+#    parameter->plane mappings, at corners.
 #  Not defined at non-corners due to greater complexity and/or
-#    iff-definition (crinkles=no deriv at even-indexed cp's)
+#    ill-definition (crinkles=no deriv at even-indexed cp's)
 #
 def d5(cp, (i, j)):
     dSdu = dSdv = None
@@ -205,13 +213,13 @@ def projpatch2face(cph, face, editor):
         texoffset = quarkx.vect(offset.s, offset.t, 0)
         return Mat*(quarkx.vect(t3)-texoffset)+quarkx.vect(offset.xyz)
     #
-    # Apply the texture differential to orign & two axes of texture
+    # Apply the texture differential to origin & two axes of texture
     #   space.  Note wierdass sign-reversal (beaucoup de tah, Bill)
     #
     texp = map(mapping,((0,0,0),(1,0,0),(0,-1,0)))
     #
     # Now first project the texture onto a face tangent to the patch,
-    #   then project it onto the one we want.
+    #   then project it onto the face we want.
     #
     new = quarkx.newobj("face:f")
     new.setthreepoints(texp,1)
@@ -232,7 +240,7 @@ class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
     undomsg = Strings[627]
-    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Alt/Shift key: move whole row (same hue)/column.\n  Shift+Alt key: move everything.  \n S: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
+    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Alt: move whole row (same hue)\n  Shift: move whole column.\n  Shift+Alt key: move everything.  \n S: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
     def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
@@ -281,7 +289,7 @@ class CPHandle(qhandles.GenericHandle):
         texcp = qmenu.item("Texture Coordinates",texcpclick)
         texcp.h, texcp.editor = self, editor
         i, j = self.ij
-        
+        cp = self.b2.cp
 
         def thickenclick(m,self=self,editor=editor):
           new = self.b2.copy()
@@ -334,8 +342,37 @@ class CPHandle(qhandles.GenericHandle):
         else:
            projtex.tagged = tagged
         
+        tagpt = gettaggedpt(editor)
+
+        def glueclick(m, editor=editor,tagpt=tagpt,b2=self.b2,(i,j)=self.ij):
+            cp=copycp(b2.cp)
+            if quarkx.keydown('S'):
+              cp[i][j]=tagpt
+            else:
+              cp[i][j] = quarkx.vect(tagpt.xyz+(cp[i][j]).st)
+            new = b2.copy()
+            new.cp = cp
+            undo=quarkx.action()
+            undo.exchange(b2, new)
+            editor.ok(undo,"glue to tagged")
+            editor.invalidateviews()
+   
+        glue = qmenu.item("&Glue to tagged point", glueclick)
+        if tagpt is None:
+            glue.state=qmenu.disabled
+
+#        def lenclick(m, cp=cp, i=i, j=j):
+#            row = colofcp(cp, i)
+#            squawk(`row`)
+#            length = lengthof(row, 1)
+#            squawk(`length`)
+#        
+#        length = qmenu.item("Length", lenclick)
+
+    
+
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [texcp, thicken, projtex] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp, thicken, projtex, glue] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -382,70 +419,35 @@ class CPHandle(qhandles.GenericHandle):
 
     # converting to standard ij
     def drag(self, v1, v2, flags, view):
-
-        # tiglari 
-        def movepoints(b2, i, j, self=self, view=view):
-            #
-            #  movecol & moverow are part of what's probably
-            #   a bad  idea for moving columns or rows based on
-            #   whether they're going away from the viewer
-            #
-            def movecol(self=self, b2=b2, i=i, j=j, view=view):
-                if j==self.j-1:
-                    jp=j-2
-                else:
-                    jp=j+2
-                gap = b2.cp[i][self.w-1]-b2.cp[i][0]
-                if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
-                        return 1
-                return 0
-                
-            def moverow(self=self, b2=b2, i=i, j=j, view=view):
-                if i==self.h-1:
-                    ip=i-2
-                else:
-                    ip=i+2
-                gap = b2.cp[self.h-1][j]-b2.cp[0][j]
-                if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
-                    return 1
-                return 0
-            
-            if quarkx.keydown('\020')==1 and quarkx.keydown('\022')==1: #SHIFT and ALT
-                def row(i,self=self):
-                    return map(lambda j,i=i:(i,j),range(self.w))
-                return reduce(lambda x,y:x+y, map(row,range(self.h))) 
-            if quarkx.keydown('\020')==1: #SHIFT
-                return map(lambda i,j=j:(i, j),range(self.h))
-            if quarkx.keydown('\022')==1: #ALT
-                return map(lambda j,i=i:(i, j), range(self.w))
-            return (i, j),
-        # /tiglari
-
         delta = v2-v1
         if not (flags&MB_CTRL):
             delta = qhandles.aligntogrid(delta, 0)
-        self.draghint = vtohint(delta)
         if delta or (flags&MB_REDIMAGE):
             new = self.b2.copy()
             cp = map(list, self.b2.cp)
             i, j = self.ij
-            indexes = movepoints(self.b2, i, j)        # tiglari, need to unswap 
-#            squawk("%s:%s"%(self.b2.H, self.b2.W))
+            moverow = (quarkx.keydown('\022')==1)  # ALT
+            movecol = (quarkx.keydown('\020')==1)  # SHIFT
+            indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
 #            squawk(`indexes`)
+            td = (v2-v1)/128
             for m,n in indexes:
                 p = cp[m][n] + delta
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
-                if quarkx.keydown('S'): # RMB
+                if quarkx.keydown('S')==1: # RMB
                     xaxis, yaxis = tanaxes(cp,i,j)
                     xaxis, yaxis = -xaxis, -yaxis
                     q = cp[m][n]
-                    td = (v2-v1)/128
                     cp[m][n]=quarkx.vect(q.x, q.y, q.z,
                               q.s+td*yaxis, q.t+td*xaxis)
                 else:
                    cp[m][n] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
 #            if 0:
+            if quarkx.keydown('S')==1:
+                    self.draghint="tex coords: %.2f, %.2f"%(cp[i][j].s, cp[i][j].t)
+            else:
+                    self.draghint = vtohint(delta)
             if self.b2["smooth"]:
                 # keep the patch smoothness
                 def makesmooth(di,dj,i=i,j=j,cp=cp):
@@ -514,6 +516,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2000/05/29 21:43:08  tiglari
+#Project texture to tagged added
+#
 #Revision 1.18  2000/05/26 23:12:34  tiglari
 #More patch manipulation facilities
 #
