@@ -709,7 +709,7 @@ def NoSelClick(m):
 
 def Unrestrict(editor):
   del editor.restrictor
-  menrestsel.state = qmenu.disabled
+  menunrestsel.state = qmenu.disabled
   editor.invalidateviews()
 
 
@@ -917,7 +917,7 @@ zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "Fill the views with selec
 clearItem = qmenu.item("Clear Mark", ClearMarkClick, "Unset Mark")
 
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
-    reorganizePop.state = parentSelPop.state=qmenu.disabled
+#    reorganizePop.state = parentSelPop.state=qmenu.disabled
     menrestsel.state=menextsel.state=qmenu.disabled
     stashItem.state = zoomItem.state = qmenu.disabled
     oldcommand(menu)
@@ -929,6 +929,8 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
         browseItem.state=qmenu.normal
     else:
         browseItem.state=qmenu.disabled
+    if len(sellist)==1:
+        menrestsel.state=qmenu.normal
     sel = editor.layout.explorer.uniquesel
     marked = getstashed(editor)
     if marked is None:
@@ -945,8 +947,9 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
 #        popup.state=qmenu.normal
     stashItem.object = zoomItem.object = sel
     stashItem.state = zoomItem.state = qmenu.normal
-    if menrestsel.state != qmenu.checked:
-        menrestsel.state=qmenu.normal
+    debug('greetings mortals')
+#    if menrestsel.state != qmenu.checked:
+#        menrestsel.state=qmenu.normal
     if sel.type == ':f':
         menextsel.state = quarkpy.qmenu.normal
 
@@ -980,6 +983,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.17  2001/08/28 22:50:24  tiglari
+# 'Invert face selection command' added
+#
 # Revision 1.16  2001/08/05 08:03:07  tiglari
 # ListerDlg->LiveBrowserDlg
 #
