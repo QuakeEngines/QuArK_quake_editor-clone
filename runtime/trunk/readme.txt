@@ -1,36 +1,49 @@
 
+           QuArK Snapshot of 2002jan06
+
+ * [Decker]
+   Added Return to Castle Wolfenstein game-support, though
+   the buildtools-setup for RTCW isn't configured properly
+   yet.
+
+ * [Decker]
+   Maybe fixed the problem, of endlessly occuring dialog-
+   boxes, which asked if QuArK should save modified files
+   now. Usually this happened, when using the "Create new
+   texture-links" in the Texture Browser, and just continued
+   to work within QuArK. (See revision 1.29 of Qk1.PAS)
 
 
            Patch2 to O80601 Snapshot
-           
+
  * 'hlradfilemaker' duplicator plugin.
 
  * 'symxyz' duplicator with toggleable axes.
- 
+
  * 'Adjust Angles Automatically' Menu Option and
    'Auto-Adjust Normal' Map option renamed to
    `Quantize angles'
 
  * usercenters now transform with containing groups under
      linear mapping
- 
+
  * Q3A CDROM config now works.
 
  * fix bugs in snap object (separation, when selected or
      tagged face is horizontal)
-     
+
  * refurbish slide poly etc plugin; now works wrt tagged
      plane as well as tagged edge
 
  * Some Half-Life config fixes (see DataHL.qrk changelog)
- 
+
 
            Patch1 to 080601 Snaphsot
 
  * reset texture cycle command, so that the texture
    cycle files can be edited, and results seen in the
    same editing session
-   
+
  *'snap object to tagged' menu item: if a face is tagged,
    select a face, then a parental object from the menu,
    then 'snap object to tagged'.  Object will move and
@@ -41,7 +54,7 @@
            QuArK Snapshot of 080601
 
 Changes from 070901:
- 
+
  *Multiple selection list browser:
     when there is a multiple selection, menu-items and a hotkey
     are activated to list the selected items in a dialog, from
@@ -52,13 +65,13 @@ Changes from 070901:
    of a file such as texcycle.txt.  The file should
    have a list of texture names on each line, whitespace-
    separated, e.g.:
-    
+
     gothic_block/block10d gothic_block/blocks10
 
  *clear mark command.
 
  *threepoint plane can now glue to tagged plane
-               
+
  *BSP Support:
     - all bsp's viewed except for Sin (patches omitted from Q3A/STVEF)
 
@@ -91,14 +104,14 @@ Changes from 070901:
  *6DX support:
 
      -Start room removed for 6DX
-               
+
      - *.hmf file support added for 6dx, map checks disabled.
          6dx default map needs textures added to it
          (in data6dx.qrk)
 
 
              QuArK Snapshot 070901
-             
+
 Changes from 081801
 
  *Preliminary 6DX support
@@ -112,8 +125,8 @@ Changes from 081801
      copy into elbow template & glueing and pasting
      do dissociated path dup; didn't leak)
  *texture browser search bug fixed
- 
-             QuArK Snapshot 061801 
+
+             QuArK Snapshot 061801
 
 Changes from 052101
 
@@ -176,29 +189,29 @@ Changes from 052101
          the handles around and tag it, the glue, cut
          etc.
     b) use tag plane command after tagging an edge
-                
+
  Under the hood:
    *entity conversion (fgd->qrk) tools pythonified
-   *'Code Code' specific for toolbarbuttons (tbbtn) and 
+   *'Code Code' specific for toolbarbuttons (tbbtn) and
      the python buttons (Typ="P" only).
-   
+
     Example for tbbtn:
-   
+
      search1:tbbtn = {
        Typ = "P"
        Cap = "Search"
        Code = "import plugins.tex_search; plugins.tex_search.openbox()"
      }
-   
+
      GetEntitiesBtn: =
      {
        Typ = "P"
        Cap = "Get entities for this game"
        Code = "import quarkx; quarkx.beep()"
      }
-   
+
    will execute the python string in the Code specifics.
-   
+
 
                63 Snapshot 052101
 
@@ -237,21 +250,21 @@ Changes from 052101
           |        and the dup has a linear specific,
           |        the mapping will apply with the
           |        usercenter as fixed point
-          |        
+          |
           ------group: ditto for this one (each around
                   its own center, seems wierd but
                   features of the code make it tricky
                   to do otherwise).
-           
+
     old behavior can be restored by unchecking 'item center'.
   *support for the commercial counterstrike/hl
      expansion.
   *Hollowmaker/Wallmaker bug fixed
   *debug writing 'left' to console bug fixed
 
- 
+
  Changes from  Snapshot 042801
- 
+
   *Dragging on RMB blocked.  If anyone wants it back, an option
     could be provided.
   *instance duplicator removed from toolbox, pushing
@@ -288,7 +301,7 @@ Changes from 052101
   *Reimplementation of addon builder: (Andy) still crashes on
     missionpack, this can be avoided by extracting the .bsp's &
     temporarily giving the .pk3 a different extension.
-               
+
   *Selection menu: (tiglari, major Decker design input)
     change selection to Parent, Next, Previous in group.
       (no 'type' selections yet)
@@ -300,33 +313,30 @@ Changes from 052101
 
 
  Changes from 6.2:
- 
+
   *Customizable hot keys: (tiglari)
     Perhaps more hot  keys should be added.  Which ones?
-    
+
   *Custom Centers for groups: (tiglari)
     various linear matrix operations (rotations etc)
     will use these if present
-    
+
   *'scale' and 'rotation' specifics: (tiglari)
     for Linear & some other duplicators.  Does the
     work of 'linear' but more perspicuously.
-    
+
   *Extuder: (tiglari)
     Makes solid & hollow pipes from 2d outline.  Put
     into path duplicator to extrude along path.
-      
+
   *Instance Duplicator: (tiglari)
     For lots of copies in various places, idependent
     scale & rotation.
-    
+
   *Entity Extractor: (Andy)
     I see some problem, not sure if I'm using it right.
-    
+
   *Merge Polys in Group: (tiglari)
     Mergeable polys in a group are merged.  Not guaranteed
     optimal.
-    
-    
-    
-   
+
