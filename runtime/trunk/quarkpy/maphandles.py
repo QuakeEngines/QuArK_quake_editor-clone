@@ -678,10 +678,13 @@ class VertexHandle(qhandles.GenericHandle):
 
                         nf2 = nf.copy()
                         nf2.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+                        if nf2.normal*nf.normal<0.0:
+                           nf2.swapsides
                         def project(p,along=nf2.normal,at=newpoint):
                             return projectpointtoplane(p,along,at,along)
-                        ntp=tuple(map(project,nf.threepoints(0)))
-                        nf.setthreepoints(ntp,0)
+                        ntp=tuple(map(project,nf.threepoints(2)))
+                        nf2.setthreepoints(ntp,2)
+                        nf = nf2
 
                 #
                 # if the face is not part of the original group
@@ -1392,6 +1395,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.15  2001/04/02 21:09:44  tiglari
+#fixes to getusercenter, ntp tuple-hood
+#
 #Revision 1.14  2001/04/02 09:23:11  tiglari
 #stuck various things to try to nail down supposed fixpoint vertices in the
 #vtx movement code
