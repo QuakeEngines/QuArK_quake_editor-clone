@@ -17,7 +17,7 @@ HEADER = """<html>
   <tr><td width=213>
     <a href="http://www.planetquake.com/quark"><img src="quarkicon.gif" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
   </td><td width=75%% align=center>
-    <div class="topheadline">%(title)s</div><div class="sm">Updated %(updateday)s</div>
+    <div class="topheadline">%(title)s</div><div class="sm">Updated&nbsp;%(updateday)s</div>
   </td><td width=25%% valign=bottom>
     %(headerlvl)s
   </td></tr>
@@ -55,26 +55,26 @@ SUBDIR_BEGIN = """
 <table width=100%% border=0 cellspacing=0>
   <tr bgcolor="#E0E0E0"><td width=100%%>
     <p class="headline">&nbsp;Sections</p>
-  </td><!--<td align=right><a href="#__top__">top</a>&nbsp;</td>--></tr>
+  </td></tr>
 </table>"""
 SUBDIR_ITEM = """
-<p><b>%(classif)s <a href="%(htmlfile)s">%(title)s</a></b> <span class="added">(%(updateday)s)</span></p>"""
+<p><b>%(classif)s&nbsp;<a href="%(htmlfile)s">%(title)s</a></b>&nbsp;<span class="added">(%(updateday)s)</span></p>"""
 SUBDIR_END = """
 """
 
 #
-# Formatting: List of files (first an index with titles only, then with detailled answers
+# Formatting: List of files (first an index with titles only, then with detailed answers)
 #
 FILES_BEGIN = """
 <br><br>
 <table width=100%% border=0 cellspacing=0>
   <tr bgcolor="#E0E0E0"><td width=100%%>
     <p class="headline">&nbsp;Index</p>
-  </td><!--<td align=right><a href="#__top__">top</a>&nbsp;</td>--></tr>
+  </td></tr>
 </table>
 <ul>"""
 FILES_ITEM = """
-  <li><a href="#%(hrefaname)s">%(title)s</a> <span class="added">(%(updateday)s)</span>"""
+  <li><a href="#%(hrefaname)s">%(title)s</a>&nbsp;<span class="added">(%(updateday)s)</span>"""
 FILES_MIDDLE = """
 </ul><br>
 
@@ -84,13 +84,13 @@ FILE_BEGIN = """
 <a name="%(hrefaname)s"></a>
 <dt><table width=100%% border=0 cellspacing=0>
   <tr bgcolor="#E0E0E0"><td><p class="item">&nbsp;%(title)s</p></td>
-  <td align=right><i>%(author)s - %(updateday)s</i></td>
+  <td align=right><i>%(author)s&nbsp;-&nbsp;%(updateday)s</i></td>
   </td><td align=right><a href="#__top__">top</a>&nbsp;</td></tr>
 </table>
 <dd>
 <p>"""
 FILE_END = """
-<br><br>
+</p><br>
 """
 FILES_END = """
 </dl>
@@ -105,7 +105,7 @@ FILES_END = """
 SUBSUBDIR_BEGIN = """
     <ul>"""
 SUBSUBDIR_ITEM = """
-      <li>%(classif)s<a href="%(htmlfile)s">%(title)s</a> <span class="added">(%(updateday)s)</span>"""
+      <li>%(classif)s<a href="%(htmlfile)s">%(title)s</a>&nbsp;<span class="added">(%(updateday)s)</span>"""
 SUBSUBDIR_END = """
     </ul>"""
 
@@ -115,7 +115,7 @@ SUBSUBDIR_END = """
 SUBFILES_BEGIN = """
     <ul>"""
 SUBFILES_ITEM = """
-      <li><a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a> <span class="added">(%(updateday)s)</span>"""
+      <li><a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a>&nbsp;<span class="added">(%(updateday)s)</span>"""
 SUBFILES_END = """
     </ul>"""
 
