@@ -6,7 +6,7 @@
 
 import string, time, os, sys
 
-FGD_FILENAME = "halflife.fgd"
+FGD_FILENAME = sys.argv[1]
 
 
 
@@ -56,7 +56,7 @@ class KeyString(Key):
         Key.__init__(self)
 
     def GenerateForm(self, indent):
-        s = Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { txt=\"&\" hint=\"" + self.m_desc + "\" }"
+        s = Indents(indent) + self.m_keyname + ": = { txt=\"&\" hint=\"" + self.m_desc + "\" }"
         return s
 
 class KeyNumeric(Key):
@@ -64,7 +64,7 @@ class KeyNumeric(Key):
         Key.__init__(self)
 
     def GenerateForm(self, indent):
-        s = Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { txt=\"&\" hint=\"" + self.m_desc + "\" }"
+        s = Indents(indent) + self.m_keyname + ": = { txt=\"&\" hint=\"" + self.m_desc + "\" }"
         return s
 
 class KeyFlags(Key):
@@ -85,7 +85,7 @@ class KeyFlags(Key):
         s = ""
         nl = "" # no first newline
         for value, desc in self.m_flags:
-            s = s + nl + Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { txt=\"&\" typ=\"X" + value + "\" cap=\"" + desc +"\" hint=\"\" }"
+            s = s + nl + Indents(indent) + self.m_keyname + ": = { txt=\"&\" typ=\"X" + value + "\" cap=\"" + desc +"\" hint=\"\" }"
             nl = "\n" # newline for all others...
         return s
 
@@ -98,7 +98,7 @@ class KeyChoices(Key):
         self.m_choices = self.m_choices + [(value, desc)]
 
     def GenerateForm(self, indent):
-        s = Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { txt=\"&\" typ=\"C\" hint=\"" + self.m_desc + "\""
+        s = Indents(indent) + self.m_keyname + ": = { txt=\"&\" typ=\"C\" hint=\"" + self.m_desc + "\""
 
         if (len(self.m_choices) > 10):
             # Vertical list of choices (more than 10)
@@ -171,18 +171,18 @@ class Entity:
     def GenerateFolder(self, indent):
         s = Indents(indent) + self.m_classname + self.Type() + " = { "
         s = s + self.GetFolderStuff()
-        s = s + ";desc=\"" + self.m_desc + "\" "
+        s = s + " ;desc=\"" + self.m_desc + "\""
         # Get default values from the keys
         founddefaults = 0
         for key in self.m_keys:
             k = key.GenerateFolder(indent+1)
             if (k is not None):
                 founddefaults = 1
-                s = s + "\n" + Indents(indent) + k
+                s = s + "\n" + k
         if (founddefaults == 1):
             s = s + "\n" + Indents(indent) + "}"
         else:
-            s = s + "}"
+            s = s + " }"
         return s
 
     def GenerateForm(self, indent):
@@ -206,7 +206,7 @@ class BrushEntity(Entity):
     def GetFolderStuff(self):
         if (string.lower(self.m_classname) == "worldspawn"):
             return ""
-        return "angle=\"360\" ;incl=\"defpoly\" "
+        return "angle=\"360\" ;incl=\"defpoly\""
 
 class PointEntity(Entity):
     def __init__(self):
@@ -216,7 +216,7 @@ class PointEntity(Entity):
         return ":e"
 
     def GetFolderStuff(self):
-        return "angle=\"360\" origin=\"0 0 0\" "
+        return "angle=\"360\" origin=\"0 0 0\""
 
 class InheritEntity(Entity):
     def __init__(self):
@@ -595,6 +595,9 @@ run(FGD_FILENAME)
 
 #
 # $Log$
+# Revision 1.2  2000/12/22 22:59:54  decker_dk
+# Some small changes
+#
 # Revision 1.1  2000/12/15 21:56:58  decker_dk
 # First version
 #
