@@ -8,7 +8,7 @@ common center of your selected object(s), you must be able to see the
 
 The icons from left to right:
 <ul>
-<li><i>Z-symmetry</i>. Mirror around the selection's common Z-axis.
 <li><i>X-symmetry</i>. Mirror around the selection's common X-axis.
 <li><i>Y-symmetry</i>. Mirror around the selection's common Y-axis.
+<li><i>Z-symmetry</i>. Mirror around the selection's common Z-axis.
 </ul>
