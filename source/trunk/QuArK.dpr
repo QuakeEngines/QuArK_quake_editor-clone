@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2004/11/25 00:42:19  alexander
+first gcf access attempt
+
 Revision 1.21  2003/11/10 19:32:59  silverpaladin
 Fixed a problem with menus not showing up on the Toolbox menu.
 
@@ -191,7 +194,7 @@ uses
   JPEGLib in 'components\JPEG\jpeglib.pas',
   JmoreCfg in 'components\jpeg\JMORECFG.PAS',
   QkVTF in 'prog\QkVTF.pas',
-  QkGCF in 'prog\QkGCF.pas';
+  QkGCF in 'prog\QkGCF.pas' {FQGCF};
 
 {$R *.RES}
 
