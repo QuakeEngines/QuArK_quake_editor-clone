@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/03/30 22:17:36  tiglari
+some wc33(202) map writing, untested, tex offsets not yet handled
+
 Revision 1.29  2001/03/20 21:45:22  decker_dk
 Updated copyright-header
 
@@ -991,13 +994,19 @@ begin
   end;
 end;
 
-{ The idea here is to project the threepoints onto the plane
+{ The Quark 3points are the projection onto the face of the
+  image on the plane with the closest normal of the texture
+  origin, u and -v axes (yes, -v, friggin sign flip)
+
+  So the idea here is to project the threepoints onto the plane
   with the closest normal to the face, then normalize &
   pull out the scale & shift info }
-procedure WC202MapParams(const Normale: TVect; const V: TThreePoints; Mirror: Boolean; var S: String);
+
+procedure WC202MapParams(const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
   Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2 : TVect;
+  Mat: TMatrixTransformation;
   S1, S2 : Double;
 
   procedure write4vect(const V: TVect; D : Double; var S: String);
@@ -1018,15 +1027,7 @@ begin
    'Z' : Axis := MakeVect(0, 0, 1);
   end;
 
-  P0:=V[1];
-  if Mirror then
-  begin
-    P2:=V[2]; P1:=V[3]
-  end
-  else
-  begin
-    P2:=V[3]; P1:=V[2];
-  end;
+  F.GetThreePointsT(P0, P1, P2);
   Origin:=MakeVect(0,0,0);
   PP0:=ProjectPointToPlane(P0, Axis, Origin, Axis);
   PP1:=ProjectPointToPlane(P1, Axis, Origin, Axis);
@@ -1035,10 +1036,22 @@ begin
   D2:= VecDiff(PP2, PP0);
   Normalise(D1, S1);
   Normalise(D2, S2);
-  write4vect(D1, 0, S);
-  write4vect(D2, 0, S);
-  S:=S+' '+FloatToStrF(S1/128, ffFixed, 20, 5);
-  S:=S+' '+FloatToStrF(S2/128, ffFixed, 20, 5);
+  S1:=S1/128;
+  S2:=S2/128;
+  { probably can be optimized }
+
+  Mat:= MatriceInverse(MatrixFromCols(D1, D2,Cross(D1,D2)));
+  PP0:= MatrixMultByVect(Mat,PP0);
+
+
+  write4vect(D1, -PP0.X/S1, S);
+  write4vect(D2, PP0.Y/S2, S);
+
+  S:=S+' 0 ';
+  S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5);
+  { sign flip engineered into Scale }
+  S:=S+' '+FloatToStrF(-S2, ffFixed, 20, 5);
+
 
 end;
 
@@ -2324,7 +2337,7 @@ var
        {$ENDIF}
        if WC202Map then
        begin
-        WC202MapParams(Normale, P, TextureMirror,S);
+        WC202MapParams(Normale, F, S);
        end else if not ((MJ=mjQ3A) and BrushPrim) then
        begin
          ApproximateParams(Normale, P, Params, TextureMirror);
