@@ -137,6 +137,11 @@ by rd.
 
 <li>Support RTCW, JKII, Torque, partial support for Mohaa.
 
+<li>bilinear filtering option added to OGL view: (tiglari)
+<br>prodding from aguir_re, facilitated by a nice intro OGL
+tutorial from which some code could be cribbed, also I suspect
+some previous cleanup by Decker.
+
 <li>Fixed problem with 2-monitor usage of QuArK:
 <br>breakthru insights from quantum_red and Decker.
 

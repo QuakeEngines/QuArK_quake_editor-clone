@@ -11,22 +11,31 @@ the current version of QuArK, possibly before some of the things on this
 list are done.
 
 <UL>
+<li>Radiant-style dragging, with frozen selections: (tiglari)
+<br>The justification for this is that I think it might be fast
+and convenient in certain cirucmstances. (Also a 'how it was done'
+story might be a good QuArK-Python tutorial on handling mouse stuff.)
+<br>status: <strong>done</strong>
+
 <li>Targetted and targetter finder: (tiglari)
 <br> suggestion by quantum_red.
-<br>status: preliminary plugin in quark groups files/Plugins area
+<br>status: preliminary plugin in quark groups files/Plugins area.
 
 <li>Mixed-face contents finder: (tiglari)
 <br> suggestion by funkiedamouse.
+
+<li>Patch bend mode: (tiglari)
+<br>Or something like it, and other patch-handling extensions.
 
 <li>Ripoff of WC `arch maker': (tiglari)
 <br>would be called something like`arc builder', probably
 basically a duplicator, emulating the wc thing's functionality.
 
-<li>Support SOF2 when it appears.
+<Li>Finish spport for Mohaa: (tiglari)
+<br>Needs info about lod terrain format, model format and where
+the entity editing info is stored.
 
-<li>Radiant-style dragging, with frozen selectios: (tiglari)
-<br>The justification for this is that I think it might be fast
-and convenient in certain cirucmstances.
+<li>Support SOF2.
 
 <li>A Radiant-style XY view with vertical Z window: (tiglari)
 <br>The justification being that that gives maximal screen real estate
@@ -35,8 +44,6 @@ of the Classic QuArK view).
 
 <li>importable and exportable config info (some discussion of this
 in early May2002 on quark-python)
-
-<li>make dual monitors work
 
 <li>L-square menu enhancements: (tiglari, ax2grind)
 <br>status: started, align & glue to tagged done.  I intend
@@ -58,7 +65,6 @@ What about L-join options?
 
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
-<br>status: envisioned.
 
 <li>Brush-based shape-builders: (tiglari, Decker)
 <br>'inner boxes' (two independently manipulable boxes, one inside
@@ -68,10 +74,7 @@ What about L-join options?
 
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes', 'square cylinders' (s/b easy, but no
-requests for it
-
-<li>Patch bend mode: (tiglari)
-<br>Or something like it.
+requests for it)
 
 <li>full equivalence to GtkR patch texturing: (tiglari)
 
