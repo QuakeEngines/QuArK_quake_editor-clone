@@ -323,6 +323,7 @@ def AddKeyType(token):
     elif (token == "string" \
        or token == "target_source" \
        or token == "target_destination" \
+       or token == "color1" \
        or token == "color255" \
        or token == "studio" \
        or token == "sound" \
@@ -595,6 +596,9 @@ run(FGD_FILENAME)
 
 #
 # $Log$
+# Revision 1.3  2001/01/14 15:44:09  decker_dk
+# Will take command-line argument of .FGD filename, instead of hardcoded into .PY source
+#
 # Revision 1.2  2000/12/22 22:59:54  decker_dk
 # Some small changes
 #
