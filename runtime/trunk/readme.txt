@@ -18,6 +18,25 @@
  
  * [marco leise] more GL modes supported
 
+ * [tiglari, cdunde] various selection menu enabler logic bugs fixed
+
+ * [tiglari] select tagged faces menu item enable bug fixed (bug noted by cdunde)
+
+ * [tiglari] brush-from-number finder (on build menu)
+
+ * [nurail]  new layout for dual monitors
+
+ * [tiglari] manual loading of leak files.
+ 
+ * [cdunde] infobase links added to many hints
+ 
+ * [tiglari] loading of portal files
+ 
+ * [tiglari] option for specifying thickness of lines overdrawn
+      on map (holes and portals currently supported)
+ 
+ * [marco leise] more GL modes supported
+
  * [tiglari] writes genesis3d maps in map format, with texture coordinates
      diddled so that they will hopefully be correct when imported into
      Genesis3d editors.
@@ -36,6 +55,29 @@
  * [tiglari] enhancements to wall maker
 
  * [decker] bot waypoint editor, preliminary
+=======
+ * [decker] bot waypoint editor
+>>>>>>> 1.51
+=======
+ * [tiglari] writes genesis3d maps in map format, with texture coordinates
+     diddled so that they will hopefully be correct when imported into
+     Genesis3d editors.
+ 
+ * [decker] transparency
+ 
+ * [dannj] updates to Heretic II entities
+ 
+ * [cdunde] greatly improved Q2_Lazarus entities
+ 
+ * [cdunde] tagging toolbar
+ 
+ * [cdunde, Andy, tiglari] F1 help can now load a page from the
+      infobase, which must be in help/ subfolder of QuArK directory
+      
+ * [tiglari] enhancements to wall maker
+
+ * [decker] bot waypoint editor, preliminary
+>>>>>>> 1.52
  
  * [decker] scrollbars on plugin list
  
