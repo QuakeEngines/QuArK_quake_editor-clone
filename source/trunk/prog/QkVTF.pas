@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2004/12/21 09:03:03  alexander
+changed vtf loading to use QuArKVTF.dll
+
 Revision 1.3  2004/12/02 20:53:06  alexander
 added format names for hl2
 use vtf textures in original size again
@@ -59,14 +62,20 @@ type
 implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
+
+const RequiredVTFAPI=1;
+
 var
   HQuArKVTF   : HINST;
 
 
+// c signatures
+//DLL_EXPORT DWORD APIVersion(void)
 //DLL_IMPORT int vtf_to_mem(void* bufmem, long readlength, unsigned char *pDstImage);
 //DLL_IMPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
+  APIVersion : function    : Longword; stdcall;
   vtf_to_mem : function ( buf: PChar; length: Integer; outbuf: PChar): Integer; stdcall;
-  vtf_info : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger): Integer; stdcall;
+  vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger): Integer; stdcall;
 
 
 class function QVTF.TypeInfo: String;
@@ -213,17 +222,29 @@ end;
 
 {-------------------}
 
+procedure Fatal(x:string);
+begin
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);
+end;
+
+function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
+begin
+   result:= GetProcAddress(DLLHandle, APIFuncname);
+   if result=Nil then
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKVTF.dll');
+end;
+
+
 initialization
   HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
   if HQuArKVTF >= 32 then { success }
   begin
-    vtf_to_mem := GetProcAddress(HQuArKVTF, 'vtf_to_mem');
-    vtf_info := GetProcAddress(HQuArKVTF, 'vtf_info');
-  end
-  else
-  begin
-    vtf_to_mem:=nil;
-    vtf_info:=nil;
+    APIVersion      := InitDllPointer(HQuArKVTF, 'APIVersion');
+    if APIVersion<>RequiredVTFAPI then
+      Fatal('dlls/QuArKVTF.dll API version mismatch');
+    vtf_to_mem := InitDllPointer(HQuArKVTF, 'vtf_to_mem');
+    vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
   end;
 
 
