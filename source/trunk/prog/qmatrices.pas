@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.3  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -62,6 +65,7 @@ function MultiplieMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransfo
 function mxtos(const M: TMatrixTransformation) : String;
 function stomx(const S: String) : TMatrixTransformation;
 function MatriceInverse(const M: TMatrixTransformation) : TMatrixTransformation;
+function MatriceTranspose(const M: TMatrixTransformation) : TMatrixTransformation;
 function Determinant(const Matrice: TMatrixTransformation) : TDouble;
 
  {------------------------}
@@ -180,6 +184,15 @@ begin
    J1:=J2;
    J2:=J;
   end;}
+end;
+
+function MatriceTranspose(const M: TMatrixTransformation) : TMatrixTransformation;
+var
+ I,J: Integer;
+begin
+ for I:=1 to 3 do
+   for J:=1 to 3 do
+      Result[J][I]:=M[I][J]
 end;
 
 function mxtos(const M: TMatrixTransformation) : String;
