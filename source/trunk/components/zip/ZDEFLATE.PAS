@@ -1174,7 +1174,7 @@ end;
 {local}
 procedure lm_init (var s : deflate_state);
 begin
-  s.window_size := ulg( uLong(2)*s.w_size);
+  s.window_size := ulg( uLong(2)* uLong(s.w_size)); {Decker 2003-01-01}
 
   {macro CLEAR_HASH(s);}
   s.head^[s.hash_size-1] := ZNIL;
@@ -1757,7 +1757,7 @@ begin
     if (s.strstart = 0) or (ulg(s.strstart) >= max_start) then
     begin
       { strstart = 0 is possible when wraparound on 16-bit machine }
-      s.lookahead := uInt(s.strstart - max_start);
+      s.lookahead := uInt(s.strstart - uInt(max_start)); {Decker 2003-01-01}
       s.strstart := uInt(max_start);
       {FLUSH_BLOCK(s, FALSE);}
       FLUSH_BLOCK_ONLY(s, FALSE);

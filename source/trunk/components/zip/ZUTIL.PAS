@@ -456,7 +456,7 @@ var
   handle : THandle;
 {$endif}
 begin
-  memsize := uLong(items) * size;
+  memsize := uLong(items) * uLong(size); {Decker 2003-01-01}
   {$IFDEF DPMI}
   p := GlobalAllocPtr(gmem_moveable, memsize);
   {$ELSE}
@@ -483,9 +483,6 @@ begin
   {$ENDIF}
   zcalloc := p;
 end;
-
-end.
-
 
 { edited from a SWAG posting:
 
@@ -542,3 +539,6 @@ When 'HeapPtr' and 'FreeList' have the same value, the free list is empty.
 
 
 }
+
+end.
+
