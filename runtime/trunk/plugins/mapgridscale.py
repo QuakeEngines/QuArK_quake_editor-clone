@@ -379,7 +379,9 @@ quarkpy.mapeditor.MapEditor.finishdrawing = gridfinishdrawing
 def View2DgridMenu(editor):
 
     grouplist = filter(lambda o: o.type==':g', editor.layout.explorer.sellist)
-    onclick = quarkpy.mapbtns.groupview1click
+#    onclick = quarkpy.mapbtns.groupview1click
+#    onclick = quarkpy.mapoptions.Options1Click
+#    onclick = quarkpy.mapoptions.toggleitem
 
     X1 = quarkpy.mapoptions.toggleitem("X-Face 2D view", "XviewScale", (1,1),
       hint="|X-Face 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in only the ' X-Face ' 2D view.|intro.mapeditor.menu.html#optionsmenu")
@@ -391,10 +393,11 @@ def View2DgridMenu(editor):
       hint="|Z-Top 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in only the ' Z-Top ' 2D view.|intro.mapeditor.menu.html#optionsmenu")
 
     menulist = [X1, X2, X3]
+    for item in menulist:
+        item.state = quarkx.setupsubset(SS_MAP, "Options").getint(item.tog)
     return menulist
 
-
-shortcuts = {}
+shortcuts = { }
 
 
 # ************************************************************
@@ -413,4 +416,7 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.1  2003/12/13 22:12:42  cdunde
+#To add new Grid in 2D views feature
+#
 #
