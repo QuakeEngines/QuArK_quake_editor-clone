@@ -2,44 +2,51 @@
 
   Utility functions by Decker@post1.tele.dk
 """
+# Copyright (C) 1996-99 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+#$Header$
+# ----------- REVISION HISTORY ------------
+#$Log$
 
 import quarkx
 import quarkpy.mapentities
 ObjectOrigin = quarkpy.mapentities.ObjectOrigin
 
 def FindOriginTexPolyPos(entity):
-	"Find origin by searching for poly under entity which has the ORIGIN texture"
-	subpolys = entity.findallsubitems("", ":p", ":g")
-	for i in subpolys:
-		subfaces = i.findallsubitems("",":f",":g");
-		# Make sure that all faces on poly contains the ORIGIN texture
-		foundoriginpoly=1
-		for j in subfaces:
-			if not j["tex"]=="ORIGIN": # If just one face does not contain the ORIGIN texture, its not an origin-poly
-				foundoriginpoly=0
-				break
-		if foundoriginpoly==1:
-			return ObjectOrigin(i) # give me the origin of the poly
-	return None
+        "Find origin by searching for poly under entity which has the ORIGIN texture"
+        subpolys = entity.findallsubitems("", ":p", ":g")
+        for i in subpolys:
+                subfaces = i.findallsubitems("",":f",":g");
+                # Make sure that all faces on poly contains the ORIGIN texture
+                foundoriginpoly=1
+                for j in subfaces:
+                        if not j["tex"]=="ORIGIN": # If just one face does not contain the ORIGIN texture, its not an origin-poly
+                                foundoriginpoly=0
+                                break
+                if foundoriginpoly==1:
+                        return ObjectOrigin(i) # give me the origin of the poly
+        return None
 
 def FindOriginFlagPolyPos(entity):
-	"Find origin by searching for poly under entity which has the Origin-texture-flag set"
-	subpolys = entity.findallsubitems("", ":p", ":g")
-	for i in subpolys:
-		subfaces = i.findallsubitems("",":f",":g");
-		# Make sure that all faces on poly contains the Origin-texture-flag
-		foundoriginpoly, flags = 1, 0
-		for j in subfaces:
-			try:
-				flags = int(j["Contents"])
-			except:
-				flags = 0
-			if not (flags & 16777216): # If just one face does not contain the Origin-texture-flag, its not an origin-poly
-				foundoriginpoly=0
-				break
-		if foundoriginpoly==1:
-			return ObjectOrigin(i) # give me the origin of the poly
-	return None
+        "Find origin by searching for poly under entity which has the Origin-texture-flag set"
+        subpolys = entity.findallsubitems("", ":p", ":g")
+        for i in subpolys:
+                subfaces = i.findallsubitems("",":f",":g");
+                # Make sure that all faces on poly contains the Origin-texture-flag
+                foundoriginpoly, flags = 1, 0
+                for j in subfaces:
+                        try:
+                                flags = int(j["Contents"])
+                        except:
+                                flags = 0
+                        if not (flags & 16777216): # If just one face does not contain the Origin-texture-flag, its not an origin-poly
+                                foundoriginpoly=0
+                                break
+                if foundoriginpoly==1:
+                        return ObjectOrigin(i) # give me the origin of the poly
+        return None
 
 def NewXYZCube(x,y,z,tex):
     p = quarkx.newobj("poly:p")
