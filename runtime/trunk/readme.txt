@@ -1,5 +1,26 @@
 
-                Quark Snapshot of 2002mar27
+                QuArK Snapshot of ????
+
+   MAJOR ANNOUNCEMENT:  maps (in .qrk's) operated on by this snapshot will not
+     be readable by older versions of QuArK !!!  Make a copy of your
+     project before using this snapshot (making squillions of copies of
+     your project is of course an Excellent Idea anyay).
+
+ * [tiglari]
+    implement new texture positioning representation (should be transparent
+     to users, except for making vertex-off-grid situations easier to fix).
+     Maps operated upon by this snapshot will not be readable by
+     older versions.  Writeout formats for the build tools are not
+     affected.
+
+ * [tiglari]
+    When the view is restricted to the selection, the rest of the map
+     greys out or disappears depending no how the hide-/grey-out of view
+     flag is set (Layout menu; middle).  Also a bug in the behavior of
+     the selection menu has been fixed, so that things grey/ungrey
+     [more?] correctly.
+
+                QuArK Snapshot of 2002mar27
            
  * [tiglari]
     fix groups hidden/greyed icon change (report by off_by_two)
