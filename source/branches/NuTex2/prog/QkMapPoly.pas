@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41.2.1  2001/07/10 01:37:15  tiglari
+Merge of original NuTex (1.32.2.1) with regular version, plus changes to
+  TFace.Deplacement
+
 
 Revision 1.41  2001/07/08 02:25:22  tiglari
 change map writing so that integral vertices are used as threepoints in
@@ -303,6 +307,8 @@ type
                function GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
                procedure SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
                function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               procedure RevertToEnhTex;
                function LoadData : Boolean;
               {procedure UpdateSpecifics;}
               {function CheckFace : Boolean;}
@@ -326,7 +332,7 @@ type
                procedure AddTo3DScene; override;
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
-             end;
+            end;
 
 const
  TailleBaseSurface = SizeOf(TSurface)-SizeOf(TTableauFSommets);
@@ -357,7 +363,7 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 
 implementation
 
-uses QkFileObjects, Undo, PyMapView, QkPixelSet,
+uses QkFileObjects, Undo, PyMapView, QkPixelSet, Dialogs,
      Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
@@ -3414,6 +3420,34 @@ begin
 end;
 *)
 
+function TFace.SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+var
+ V1b, V2b: TVect;
+ R: TDouble;
+begin
+ Result:=True;
+ V1b.X:=V2.X-V1.X;
+ V1b.Y:=V2.Y-V1.Y;
+ V1b.Z:=V2.Z-V1.Z;
+ V2b.X:=V3.X-V1.X;
+ V2b.Y:=V3.Y-V1.Y;
+ V2b.Z:=V3.Z-V1.Z;
+ R:=Dot(Cross(V1b, V2b), nNormale);
+ if R > rien2 then
+  begin
+   SetThreePoints(V1, V2, V3);
+   TextureMirror:=False;
+  end
+ else
+  if R < -rien2 then
+   begin
+    SetThreePoints(V1, V3, V2);
+    TextureMirror:=True;
+   end
+  else
+   Result:=False;
+end;
+
 procedure TTexturedTreeMap.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: TDouble);
 const
  DefTexSize = 64;
@@ -3508,6 +3542,18 @@ begin
  P3.Y:=(V3.Y-V1.Y)/CorrH + V1.Y;
  P3.Z:=(V3.Z-V1.Z)/CorrH + V1.Z;
  SetThreePointsEx(V1, P2, P3, Normale);
+end;
+
+procedure TFace.RevertToEnhTex;
+var
+  TexV: array[1..6] of Single;
+  TexP: array[1..3] of TVect;
+begin
+  if LoadData and GetFloatsSpec('tv',TexV) then
+  begin
+    GetThreePointsT(TexP[1], TexP[2], TexP[3]);
+    SetThreePointsEnhEx(TexP[1], TexP[2], TexP[3], Normale);
+  end;
 end;
 
 
@@ -4793,6 +4839,16 @@ begin
  end;
 end;
 
+function fRevertToEnhTex(self, args: PyObject) : PyObject; cdecl;
+begin
+  with QkObjFromPyObj(self) as TFace do
+   begin
+    Acces;
+    RevertToEnhTex;
+   end;
+  Result:=PyNoResult;
+end;
+
 function fDistortion(self, args: PyObject) : PyObject; cdecl;
 var
  v1, v2: PyVect;
@@ -4978,13 +5034,14 @@ begin
 end;
 
 const
- FaceMethodTable: array[0..6] of TyMethodDef =
+ FaceMethodTable: array[0..7] of TyMethodDef =
   ((ml_name: 'verticesof';    ml_meth: fVerticesOf;    ml_flags: METH_VARARGS),
    (ml_name: 'distortion';    ml_meth: fDistortion;    ml_flags: METH_VARARGS),
    (ml_name: 'threepoints';   ml_meth: fThreePoints;   ml_flags: METH_VARARGS),
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
    (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
+   (ml_name: 'enhrevert';     ml_meth: fRevertToEnhTex;  ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));
 
 function TFace.PyGetAttr(attr: PChar) : PyObject;
