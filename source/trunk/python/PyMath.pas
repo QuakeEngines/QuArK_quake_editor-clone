@@ -269,7 +269,7 @@ var
 function GetMatrixAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 function PrintMatrix(self: PyObject) : PyObject; cdecl;
 function MatrixToStr(self: PyObject) : PyObject; cdecl;
-function MakePyMatrix(const nMatrix: TMatrixTransformation) : PyMatrix;
+function MakePyMatrix(const nMatrix: TMatrixTransformation; transposed : boolean = false) : PyMatrix;
 
 function MatrixLength(m: PyObject) : Integer; cdecl;
 function MatrixSubscript(m, ij: PyObject) : PyObject; cdecl;
@@ -2192,7 +2192,12 @@ begin
            Py_DECREF(obj[I]);
           Exit;
          end;
-   't': if StrComp(attr, 'tuple')=0 then
+   't':  if StrComp(attr, 'transposed')=0 then
+         begin
+           Result:=MakePyMatrix(PyMatrix(self)^.M,true);
+           Exit;
+         end
+         else if StrComp(attr, 'tuple')=0 then
          begin
           with PyMatrix(self)^ do
            for I:=1 to 3 do
@@ -2237,10 +2242,13 @@ begin
  end;
 end;
 
-function MakePyMatrix(const nMatrix: TMatrixTransformation) : PyMatrix;
+function MakePyMatrix(const nMatrix: TMatrixTransformation; transposed : boolean=false) : PyMatrix;
 begin
- Result:=PyMatrix(PyObject_New(@TyMatrix_Type));
- Result^.M:=nMatrix;
+  Result:=PyMatrix(PyObject_New(@TyMatrix_Type));
+  if transposed then
+    Result^.M:=MatriceTranspose(nMatrix)
+  else
+    Result^.M:=nMatrix;
 end;
 
 function MatrixLength(m: PyObject) : Integer;
