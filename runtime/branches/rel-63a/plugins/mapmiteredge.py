@@ -473,8 +473,8 @@ def buildwallmakerimages(self, singleimage=None):
             parent.appenditem(newgroup)
             for wall in newwalls:
                 newgroup.appenditem(wall)
-            for plug in plugs:
-                newgroup.appenditem(plug.copy())
+#            for plug in plugs:
+#                newgroup.appenditem(plug.copy())
         faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
         replacedict = {}
         donefaces = {}
@@ -568,6 +568,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.6.6.4  2003/01/11 21:27:54  tiglari
+# add 'plugs' to extruded walls
+#
 # Revision 1.6.6.3  2003/01/04 04:35:50  tiglari
 # remove swapsides_leavetex() optimization - it makes bad texture scales
 #  that create problems for some build tools
