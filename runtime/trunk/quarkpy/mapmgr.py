@@ -756,10 +756,13 @@ class MapLayout(BaseLayout):
     def faceflagsclose(self, sender):
         self.faceflags = None
 
-    def loadtfflist(self):
+    def loadtfflist(self, form=None):
         flist = self.getfacelists()
         txdict = {}
         texsrc = self.editor.TexSource
+        #
+        # Make a dict of texobjs indexed by texnames
+        #
         for tex in quarkx.texturesof(flist):
             texobj = quarkx.loadtexture(tex, texsrc)
             if texobj is not None:
@@ -768,6 +771,52 @@ class MapLayout(BaseLayout):
                 except quarkx.error:
                     continue
             txdict[tex] = texobj
+        #
+        # Handle the default values, is this really worth it, tiglari wonders
+        #
+        # FIXME(?): maybe this should be restricted to games
+        #   where defaults for the specifics are useful, or to
+        #   specifics whose name begins with _esp_.
+        #
+        #  Maybe there's a way to do all this in the Delphi
+        #
+        #  a specific is represented as a subitem of the form whose
+        #    shortname is the name of the specific as normally understood,
+        #    with the other stuff as specifics thereof.
+        #
+        # For each specific in the form, if it has a "Default", and if
+        #   the faces have different values for that specific, and then
+        #   for each texobj that lacks a value for the specific, replace
+        #   it with a copy that has the default (whew).  All this to
+        #   get the little question marks for disagreeing specifics in
+        #   the texture-flags window.
+        #
+        if form is not None and len(flist)>1: # no clashes if only one face
+            copied=0
+            def getspecval(spec, f, texobj):
+                val = f[spec]
+                if val is None:
+                    val = texobj[spec]
+                return val
+
+            for specific in form.subitems:
+                if specific["Default"] is not None:
+                    sname = specific.shortname
+                    value = getspecval(sname, flist[0], txdict[flist[0].texturename])
+                    for i in range(1, len(flist)):
+                        f = flist[i]
+                        value2 = getspecval(sname, f, txdict[f.texturename])
+                        if value!=value2:
+                            for texobj in txdict.values():
+                                if not copied:
+                                    texobj=texobj.copy()  # copy them all, God will recognize his own
+                                    txdict[f.texturename] = texobj
+                                    copied=1
+                                if texobj[sname] is None:
+                                    texobj[sname]=specific["Default"]
+        #
+        # Build the pairs list
+        #
         for i in range(0, len(flist)):
             f = flist[i]
             try:
@@ -777,12 +826,13 @@ class MapLayout(BaseLayout):
             flist[i] = (f, texobj)
         return flist
 
+
     def loadfaceflags(self, form=None):
         ff = self.faceflags
         df = ff.mainpanel.controls()[0]
         if form is None:
             form = df.form
-        df.setdata(self.loadtfflist(), form)
+        df.setdata(self.loadtfflist(form), form)
 
 
     def selchange(self):
@@ -818,6 +868,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.8  2002/04/07 12:46:31  decker_dk
+#Made the texture/face-flags window bigger.
+#
 #Revision 1.7  2001/10/22 10:24:32  tiglari
 #live pointer hunt, revise icon loading
 #
