@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/02/06 09:22:19  tiglari
+filters working
+
 Revision 1.25  2001/02/04 18:30:56  tiglari
 filter shaders by shaderlist.txt
 
@@ -922,6 +925,7 @@ begin
   List:=TStringList.Create;
   if not FileExists(FileName) then
     Exit;
+  try
   AssignFile(F,FileName);
   Reset(F);
   while not Eof(F) do
@@ -935,6 +939,9 @@ begin
       List.Add(S);
   end;
   CloseFile(F);
+  except
+   ShowMessage('For some unknown reason, '+FileName+' wont open, even though it exists');
+  end;
 end;
 
 
