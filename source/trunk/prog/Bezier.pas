@@ -464,7 +464,7 @@ begin
        end;
       end
      else
-      if Info.ModeDeplacement <= mdDeplacementGrille then
+      if Info.ModeDeplacement > mdDeplacementGrille then
        begin
         V.X:=V.X-InfoClic.X;
         V.Y:=V.Y-InfoClic.Y;
@@ -474,9 +474,14 @@ begin
        end;
     { else
        translation by InfoClic, done below }
-     Dest^[0]:=V.X+InfoClic.X;
-     Dest^[1]:=V.Y+InfoClic.Y;
-     Dest^[2]:=V.Z+InfoClic.Z;
+     V.X:=V.X+InfoClic.X;
+     V.Y:=V.Y+InfoClic.Y;
+     V.Z:=V.Z+InfoClic.Z;
+     if Info.ModeDeplacement=mdDeplacementGrilleFort then
+      AjusteGrille1(V, PasGrille);
+     Dest^[0]:=V.X;
+     Dest^[1]:=V.Y;
+     Dest^[2]:=V.Z;
      Inc(Source);
      if Transpose then
       Inc(Dest, ncp.W)
