@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/18 19:38:00  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.8  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -70,6 +73,8 @@ type
                 function ExtractTo(PathBase: String) : Integer;
                 procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
                 function PyGetAttr(attr: PChar) : PyObject; override;
+                function TestConversionType(I: Integer) : QFileObjectClass; override;
+                function ConversionFrom(Source: QFileObject) : Boolean;     override;
               end;
  QPak = class(QPakFolder)
         protected
@@ -124,7 +129,7 @@ type
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin;
+uses Travail, QkExplorer, Quarkx, PyObjects, Game, QkSin, Qkzip2, qkq3;
 
 {$R *.DFM}
 
@@ -475,21 +480,14 @@ function QPakFolder.GetFolder(Path: String) : QPakFolder;
 var
  I, J: Integer;
  Folder: QObject;
- FolderType: string; {DECKER}
 begin
  Result:=Self;
-{DECKER}
- if (Result.TypeInfo = '.pk3') then
-  FolderType:='.zipfolder'
- else
-  FolderType:='.pakfolder';
-{DECKER}
  while Path<>'' do
   begin
    I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
    J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
    if I>J then I:=J;
-   Folder:=Result.SubElements.FindName(Copy(Path, 1, I-1) + FolderType); {DECKER}
+   Folder:=Result.SubElements.FindName(Copy(Path, 1, I-1) + '.pakfolder'); {DECKER}
    if Folder=Nil then
     begin
      Folder:=QPakFolder.Create(Copy(Path, 1, I-1), Result);
@@ -768,8 +766,29 @@ begin
          Count:=QPakFolder(FileObject).ExtractTo(Path);
          finally ProgressIndicatorStop; end;
          MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
-        end;  
+        end;
       end;
+  end;
+end;
+
+function QPakFolder.TestConversionType(I: Integer) : QFileObjectClass;
+begin
+  case I of
+    1: Result:=Q3Pak;
+    2: Result:=QZipPak;
+    3: Result:=QSinPak;
+    4: Result:=QPak;
+    else
+      Result:=Nil;
+  end;
+end;
+
+function QPakFolder.ConversionFrom(Source: QFileObject) : Boolean;
+begin
+  Result:=(Source is QPakFolder);
+  if Result then begin
+    Source.Acces;
+    CopyAllData(Source, False);   { directly copies data }
   end;
 end;
 

@@ -354,6 +354,7 @@ var
   EoSig,s,nEnd: Longint;
   eocd: TEndOfCentralDir;
   I:Integer;
+  eocd_found: boolean;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -361,17 +362,24 @@ begin
       CheminPrec:='';
       org:=f.position;
       f.seek(FSize,soFromBeginning); {end of 'file'}
-      if fsize<$FF then
-        raise Exception.CreateFmt('File "%s" is Corrupt (fsize<$FF)',[LoadName]);
-      f.seek(-($FF+sizeof(TEndOfCentralDIR)),soFromCurrent);
-      while true do begin
-        f.ReadBuffer(eosig,4);
-        if eosig<>EOCD_HEADER then
-          f.seek(-3,soFromCurrent)
-        else
-          break;
+      f.seek(-sizeof(TEndOfCentralDIR),soFromCurrent); // EOCD is stored at least -Sizeof(endofcentradir) header
+      eocd_found:=false;
+      try // catch stream read errors
+        while true do begin
+          f.ReadBuffer(eosig,4);                         // check for EOCD_HEADER signiture
+          eocd_found:=eosig=EOCD_HEADER;
+          if eosig<>EOCD_HEADER then
+            f.seek(-5,soFromCurrent)                     // Skip back 1 byte, and recheck
+          else
+            break;
+        end;
+      finally
+        if not eocd_found then
+          raise Exception.CreateFmt('File "%s" is Corrupt (eocd_found=false)',[LoadName]);
       end;
       f.readbuffer(eocd,sizeof(eocd));
+      if eocd.disk_no<>0 then
+        raise Exception.CreateFmt('File "%s" cannot be loaded: it is spanned across sereral disks',[LoadName]);
       f.seek(org, soFromBeginning); {beginning of 'file'}
       f.seek(eocd.offset_cd,soFromCurrent);
       files:=TMemoryStream.Create;    {ms for central directory}
@@ -381,17 +389,14 @@ begin
       for i:=1 to eocd.no_entries do begin
         files.readbuffer(s,4); // Signiture
         if s<>CFILE_HEADER then
-          raise Exception.CreateFmt('%d<>CFILE_HEADER (%d)',[s,CFILE_HEADER]);
+          raise Exception.CreateFmt('Central directory is Corrupt: %d<>CFILE_HEADER(%d) File: "%s"',[s,CFILE_HEADER, LoadName]);
         files.ReadBuffer(fh,sizeof(TFileHeader));
         ReadaString(files,chemin,FH.filename_len);
         ReadaString(files,ex,FH.extrafield_len);
         ReadaString(files,ex,FH.filecomment_len);
         fn:=Chemin;
-        if (FH.compression_method<>0) and
-           (FH.compression_method<>1) and
-           (FH.compression_method<>6) and
-           (FH.compression_method<>8) then
-              Raise EErrorFmt(5692, [Self.Filename,FH.compression_method]);
+        if (FH.compression_method<>0)and(FH.compression_method<>1) and(FH.compression_method<>6)and(FH.compression_method<>8) then
+          Raise EErrorFmt(5692, [LoadName,FH.compression_method]);
         if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
           Delete(Chemin, 1, Length(CheminPrec))
         else begin
@@ -402,23 +407,22 @@ begin
           J:=Pos('/', Chemin);
           if J=0 then
             Break;
-          nDossier:=Dossier.SubElements.FindName(
-          Copy(Chemin, 1, J-1) + '.zipfolder');
+          nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.zipfolder');
           if (nDossier=Nil) then begin
             nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
-            Dossier.SubElements.{Insert(K,} Add(nDossier);
+            Dossier.SubElements.Add(nDossier);
           end;
           CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
           Delete(Chemin, 1, J);
           Dossier:=nDossier;
         until False;
         Size:=FH.compressed;
-        if size<>0 then begin
+        if fn[length(fn)]<>'/' then begin
           Size:=Size+(FH.extrafield_len+FH.filename_len+4+sizeof(FH)+FH.filecomment_len);
           Q:=OpenFileObjectData(nil, Chemin, Size, Dossier);
           Dossier.SubElements.Add(Q);
           F.Seek(Org+fh.local_header_offset,soFromBeginning);
-                   {Copied From LoadedItem & Modified}
+          {Copied From LoadedItem & Modified}
           if Q is QFileObject then
             QFileObject(Q).ReadFormat:=rf_default
           else
@@ -427,7 +431,6 @@ begin
           Q.Open(TQStream(F), Size);
           F.Position:=nEnd;
           {/Copied From LoadedItem & Modified}
-
           Q.FNode^.OnAccess:=ZipAddRef;
         end;
         ProgressIndicatorIncrement;
