@@ -1,5 +1,8 @@
 QQRKSRC1
 // Kingpin definition file for Quark
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
 // cre 04-09-1999 mac
 //
 
@@ -86,6 +89,12 @@ QQRKSRC1
         origin = "-144 0 -72"
         angle = "360"
       }
+      light:e =
+      {
+        origin = "0 0 0"
+        light = "300"
+        _color = "255 255 255"
+      }
     }
   }
 
@@ -137,13 +146,13 @@ QQRKSRC1
       Contents:={Cap="slime"          Typ="X16"        Hint="mildly damaging"}
       Contents:={Cap="water"          Typ="X32"        Hint=""}
       Contents:={Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
-      Contents:={Cap="fence"          Typ="X128"       Hint=""}
+      Contents:={Cap="fence"          Typ="X128"       Hint="used together with alpha for fences"}
       Contents:={Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
       Contents:={Cap="monsterclip"    Typ="X131072"    Hint="Stops monsters passing through"}
       Contents:={Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
       Contents:={Cap="monster"        Typ="X33554432"  Hint=""}
       Contents:={Cap="corpse"         Typ="X67108864"  Hint=""}
-      Contents:={Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
+      Contents:={Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that VIS can ignore"}
       Contents:={Cap="translucent"    Typ="X268435456" Hint=""}
       Contents:={Cap="ladder"         Typ="X536870912" Hint="Player can climb up this"}
 
@@ -172,22 +181,22 @@ QQRKSRC1
       Flags:   ={Cap="skip"           Typ="X512"       Hint="completely ignore, allowing non-closed brushes"}
       Flags:   ={Cap="specular"       Typ="X1024"       Hint=""}
       Flags:   ={Cap="diffuse"        Typ="X2048"       Hint=""}
-      Flags:   ={Cap="alpha"          Typ="X4096"       Hint=""}
+      Flags:   ={Cap="alpha"          Typ="X4096"       Hint="used for textures with alpha channel (e.g. fences)"}
       Flags:   ={Cap="mirror"         Typ="X8192"       Hint=""}
       Flags:   ={Cap="wndw33"         Typ="X16384"       Hint=""}
       Flags:   ={Cap="wndw66"         Typ="X32768"       Hint=""}
-      Flags:   ={Cap=""               Typ="X65536"       Hint=""}
-      Flags:   ={Cap=""               Typ="X131072"      Hint=""}
-      Flags:   ={Cap=""               Typ="X262144"      Hint=""}
-      Flags:   ={Cap="water"          Typ="X524288"      Hint=""}
-      Flags:   ={Cap="concrete"       Typ="X1048576"     Hint=""}
-      Flags:   ={Cap="fabric"         Typ="X2097152"     Hint=""}
-      Flags:   ={Cap="gravel"         Typ="X4194304"     Hint=""}
-      Flags:   ={Cap="metal"          Typ="X8388608"     Hint=""}
-      Flags:   ={Cap="metal lite"     Typ="X16777216"    Hint=""}
-      Flags:   ={Cap="tin"            Typ="X33554432"    Hint=""}
-      Flags:   ={Cap="tile"           Typ="X67108864"    Hint=""}
-      Flags:   ={Cap="wood"           Typ="X134217728"   Hint=""}
+//      Flags:   ={Cap=""               Typ="X65536"       Hint=""}
+//      Flags:   ={Cap=""               Typ="X131072"      Hint=""}
+//      Flags:   ={Cap=""               Typ="X262144"      Hint=""}
+      Flags:   ={Cap="water"          Typ="X524288"      Hint="sound property for footsteps in water"}
+      Flags:   ={Cap="concrete"       Typ="X1048576"     Hint="sound property for footsteps on concrete floor, default anyway"}
+      Flags:   ={Cap="fabric"         Typ="X2097152"     Hint="sound property for footsteps on fabric"}
+      Flags:   ={Cap="gravel"         Typ="X4194304"     Hint="sound property for footsteps on gravel"}
+      Flags:   ={Cap="metal"          Typ="X8388608"     Hint="sound property for footsteps on metal"}
+      Flags:   ={Cap="metal lite"     Typ="X16777216"    Hint="sound property for footsteps on metal, lighter sound"}
+      Flags:   ={Cap="tin"            Typ="X33554432"    Hint="sound property for footsteps on tin, e.g. tin roof"}
+      Flags:   ={Cap="tile"           Typ="X67108864"    Hint="sound property for footsteps on stone tiles"}
+      Flags:   ={Cap="wood"           Typ="X134217728"   Hint="sound property for footsteps on wood"}
       Flags:   ={Cap="reflect fake"   Typ="X268435456"   Hint=""}
       Flags:   ={Cap="reflect light"  Typ="X536870912"   Hint=""}
 
@@ -989,27 +998,27 @@ QQRKSRC1
             west:f =
             {
               v = '-32 -32 -32 -32 -32 96 -32 96 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             north:f =
             {
               v = '-32 32 -32 -32 32 96 96 32 -32'
-             tex = "common/0_trigger"
+             tex = "common/0_origin"
             }
             south:f =
             {
               v = '-32 -32 -32 96 -32 -32 -32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             up:f =
             {
               v = '-32 -32 32 96 -32 32 -32 96 32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             down:f =
             {
               v = '-32 -32 -32 -32 96 -32 96 -32 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
           }
         }
@@ -1059,32 +1068,32 @@ QQRKSRC1
             east:f =
             {
               v = '32 -32 -32 32 96 -32 32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             west:f =
             {
               v = '-32 -32 -32 -32 -32 96 -32 96 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             north:f =
             {
               v = '-32 32 -32 -32 32 96 96 32 -32'
-             tex = "common/0_trigger"
+             tex = "common/0_origin"
             }
             south:f =
             {
               v = '-32 -32 -32 96 -32 -32 -32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             up:f =
             {
               v = '-32 -32 32 96 -32 32 -32 96 32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             down:f =
             {
               v = '-32 -32 -32 -32 96 -32 96 -32 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
           }
         }
@@ -1212,32 +1221,32 @@ QQRKSRC1
             east:f =
             {
               v = '32 -32 -32 32 96 -32 32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             west:f =
             {
               v = '-32 -32 -32 -32 -32 96 -32 96 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             north:f =
             {
               v = '-32 32 -32 -32 32 96 96 32 -32'
-             tex = "common/0_trigger"
+             tex = "common/0_origin"
             }
             south:f =
             {
               v = '-32 -32 -32 96 -32 -32 -32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             up:f =
             {
               v = '-32 -32 32 96 -32 32 -32 96 32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             down:f =
             {
               v = '-32 -32 -32 -32 96 -32 96 -32 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
           }
         }
@@ -1249,32 +1258,32 @@ QQRKSRC1
             east:f =
             {
               v = '32 -32 -32 32 96 -32 32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             west:f =
             {
               v = '-32 -32 -32 -32 -32 96 -32 96 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             north:f =
             {
               v = '-32 32 -32 -32 32 96 96 32 -32'
-             tex = "common/0_trigger"
+             tex = "common/0_origin"
             }
             south:f =
             {
               v = '-32 -32 -32 96 -32 -32 -32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             up:f =
             {
               v = '-32 -32 32 96 -32 32 -32 96 32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             down:f =
             {
               v = '-32 -32 -32 -32 96 -32 96 -32 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
           }
         }
@@ -1522,32 +1531,32 @@ QQRKSRC1
             east:f =
             {
               v = '32 -32 -32 32 96 -32 32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             west:f =
             {
               v = '-32 -32 -32 -32 -32 96 -32 96 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             north:f =
             {
               v = '-32 32 -32 -32 32 96 96 32 -32'
-             tex = "common/0_trigger"
+             tex = "common/0_origin"
             }
             south:f =
             {
               v = '-32 -32 -32 96 -32 -32 -32 -32 96'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             up:f =
             {
               v = '-32 -32 32 96 -32 32 -32 96 32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
             down:f =
             {
               v = '-32 -32 -32 -32 96 -32 96 -32 -32'
-              tex = "common/0_trigger"
+              tex = "common/0_origin"
             }
           }
         }
@@ -5948,7 +5957,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       dmg: =
       {
@@ -6028,7 +6043,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       light: =
       {
@@ -6058,7 +6079,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       angle: =
       {
@@ -6546,7 +6573,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       _fade: =
       {
@@ -6665,11 +6698,6 @@ QQRKSRC1
     {
       help ="Non-displayed light.Default light value is 300.Default style is 0.If targeted, will toggle between on and off.Default _cone value is 10 (used to set size of light for spotlights)movedir will be the color of the flarehealth is size for lightflaredmg will specify the flare typeFLARE_WHITE       0FLARE_SUN		1FLARE_AMBER		2FLARE_RED		3FLARE_BLUE		4FLARE_GREEN		5"
       bbox ='-8 -8 -8 8 8 8'
-      _FADE: =
-      {
-        Txt = "&"
-        Hint = ""
-      }
       spawnflags: =
       {
         Typ = "X1"
@@ -6697,7 +6725,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       _cone: =
       {
@@ -6732,7 +6766,7 @@ QQRKSRC1
       light: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "total Intensity of light source"
       }
       style: =
       {
@@ -6784,7 +6818,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       _cone: =
       {
@@ -6940,7 +6980,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       alphalevel: =
       {
@@ -6992,7 +7038,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       alphalevel: =
       {
@@ -7044,7 +7096,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       _fade: =
       {
@@ -7286,7 +7344,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       _fade: =
       {
@@ -10463,7 +10527,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       alphalevel: =
       {
@@ -10830,7 +10900,13 @@ QQRKSRC1
       _color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       angle: =
       {
@@ -11508,7 +11584,13 @@ QQRKSRC1
       _sun_color: =
       {
         Txt = "&"
-        Hint = ""
+        Hint = "(R G B intensity)"
+      }
+      _sun_color: =
+      {
+        Typ="L 3"
+        Txt="&"
+        Hint="Click here to pick the light color"
       }
       _sun_diffuse: =
       {
