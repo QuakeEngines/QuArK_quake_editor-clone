@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.12  2000/06/27 11:03:49  tiglari
+//detail content flag reinstated
+//
 //Revision 1.11  2000/05/21 13:17:09  decker_dk
 //A small comment fixup
 //
@@ -37,6 +40,35 @@ QQRKSRC1
 {
   QuArKProtected = "1"
   Description = "Base Quake 3 Arena data"
+
+  Default forms.qctx =
+  {
+    dup arenafilemaker:form =
+    {
+        help ="put one in your map to create a .arena script automatically"
+        bots: =
+        {
+          Txt = "&"
+          Hint = "bots that are default for this map"
+        }
+        longname: =
+        {
+          Txt = "&"
+          Hint = "This name will be shown in Quake 3"
+        }
+        fraglimit: =
+        {
+          Txt = "&"
+          Typ = "EF1"
+          Hint = "default fraglimit for map"
+        }
+        type: =
+        {
+          Txt = "&"
+          Hint = "ffa tourney etc."
+        }
+    }
+  }
   Quake 3 setup.qctx =
   {
     Game = "Quake 3"
