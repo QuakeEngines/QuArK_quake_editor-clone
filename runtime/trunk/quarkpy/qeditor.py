@@ -1,10 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<!-- saved from url=(0060)http://groups.yahoo.com/group/quark/files/PATCHES/qeditor.py -->
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=windows-1252">
-<META content="MSHTML 5.50.4134.600" name=GENERATOR></HEAD>
-<BODY><XMP>"""   QuArK  -  Quake Army Knife
-
 Various constants and Screen Controls for editors.
 """
 #
@@ -1483,6 +1476,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.11  2002/06/09 22:47:14  tiglari
+#model editor bugfix by cdunde
+#
 #Revision 1.10  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #
@@ -1512,4 +1508,3 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #
-</XMP></BODY></HTML>
