@@ -289,9 +289,9 @@ def read2vec(vals):
 
 
 def buildLinearMatrix(dup):
-    linear = dup["linear"]
+    linear = dup["matrix"]
     matrix = quarkx.matrix('1 0 0 0 1 0 0 0 1')
-    if linear:
+    if linear is not None:
         matrix = quarkx.matrix(linear)*matrix
     scale = dup["scale"]
     if scale is not None:
@@ -306,6 +306,9 @@ def buildLinearMatrix(dup):
 #
 #
 #$Log$
+#Revision 1.12  2001/03/29 09:27:58  tiglari
+#scale & rotate specifics for duplicators
+#
 #Revision 1.11  2001/03/20 07:58:40  tiglari
 #customizable hot key support
 #
