@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2000/09/18 01:34:00  alexander
+//new: StarTrek Voyager Elite Force Support file
+//
 //
 // 
 //template 2000-09-17
@@ -341,7 +344,7 @@ QQRKSRC1
       _color = "1 1 1"
     }
   }
-
+}
   Toolbox Folders.qtx =
   {
     ToolBox = "Texture Browser..."
