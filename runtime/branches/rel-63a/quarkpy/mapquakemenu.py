@@ -577,8 +577,11 @@ def loadLeakFile(m):
     import mapholes
     mapholes.LoadLinFile(m.editor, m.holefilename)
         
-def leakMenuItem(editor):
-    item = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
+
+leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
+
+def prepLeakMenuItem(m):
+    editor = m.editor
     mapfileobject = editor.fileobject
     map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
     mapfilename = quarkx.outputfile('')+'maps\\'+map
@@ -587,17 +590,21 @@ def leakMenuItem(editor):
         holeextension='.lin'
     holefilename = mapfilename+holeextension
     if quarkx.getfileattr(holefilename)==FA_FILENOTFOUND:
-        item.state = qmenu.disabled
+        m.state = qmenu.disabled
     else:
-        item.editor = editor
-        item.holefilename = holefilename
+        m.state = qmenu.normal
+        m.editor = editor
+        m.holefilename = holefilename
     return item
     
+def onclick(m):
+    prepLeakMenuItem(leakMenuItem)
+
 def QuakeMenu(editor):
     "The Quake menu, with its shortcuts."
 
      # this menu is read from UserData.qrk.
-
+    debug('Quake Menu')
     items = []
     sc = {}
     isbsp = "Bsp" in editor.fileobject.classes   # some items don't apply for BSP files
@@ -621,16 +628,20 @@ def QuakeMenu(editor):
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
-        items.append(leakMenuItem(editor))
+        leakMenuItem.editor=editor
+        items.append(leakMenuItem)
         items.append(qmenu.sep)
         items.append(qmenu.item("&Customize menu...", Customize1Click, "customizes this menu"))
-    Quake1 = qmenu.popup("&"+gamename, items)
+    Quake1 = qmenu.popup("&"+gamename, items, onclick)
     Quake1.state = not len(items) and qmenu.disabled
     return Quake1, sc
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.26.2.3  2003/03/17 00:12:46  tiglari
+#Add manual leak file loading command
+#
 #Revision 1.28  2003/01/06 22:24:02  tiglari
 #check leak files for having actual content before registering build error
 #
