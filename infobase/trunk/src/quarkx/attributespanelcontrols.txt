@@ -29,15 +29,15 @@ Returns a list of the controls within this panel.
 </td></tr>
 
 <tr><td class="doccode">
-newleftpanel(size)
+newleftpanel(size)<br>
 newleftpanel(size,resizable)
 </td><td>
 Makes and returns a new left-padded panel with width size. resizable defaults to True; if it is False, the user cannot resize the panel himself.
 </td></tr>
 
 <tr><td class="doccode">
-newrightpanel(..)
-newtoppanel(..)
+newrightpanel(..)<br>
+newtoppanel(..)<br>
 newbottompanel(..)
 </td><td>
 See newleftpanel(..).
@@ -68,14 +68,14 @@ Returns a new Map View control.
 </td></tr>
 
 <tr><td class="doccode">
-newimagectrl()
+newimagectrl()<br>
 newimagectrl(icon)
 </td><td>
 Returns a new Image Displayer control. If specified, icon is the initial value of the image attribute.
 </td></tr>
 
 <tr><td class="doccode">
-newbtnpanel()
+newbtnpanel()<br>
 newbtnpanel(btns)
 </td><td>
 Returns a new Button Panel control. If specified, btns is the initial value of the buttons attribute.

@@ -7,7 +7,7 @@ format: html
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-begincolor
+begincolor<br>
 endcolor
 </td><td>
 The colors used for the gradient caption. begincolor is the color at the left and endcolor is the color at the right. Please follow the convention that begincolor represents the window type (blue for editors, black for toolboxes,...) and endcolor represents the file type (black for maps,...)
@@ -44,8 +44,8 @@ Any data for Python code use
 </td></tr>
 
 <tr><td class="doccode">
-menubar
-shortcuts
+menubar<br>
+shortcuts<br>
 numshortcuts
 </td><td>
 The menu bar and the key shortcuts. See Menus below.

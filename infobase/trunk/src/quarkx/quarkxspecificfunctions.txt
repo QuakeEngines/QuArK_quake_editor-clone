@@ -7,38 +7,38 @@ format: html
 <tr><td class="doccode">
 Setup1(...)
 </td><td>
-Must be called at start-up for initialization only. See quark.py.
+Must be called at start-up for initialization only. See <span class="doccode">quark.py</span>.
 </td></tr>
 
 <tr><td class="doccode">
 action()
 </td><td>
-Starts an undoable user action. Returns a copy of the undo module described below.
+Starts an undoable user action. Returns a copy of the <span class="doccode">undo</span> module described below.
 </td></tr>
 
 <tr><td class="doccode">
 undostate(obj)
 </td><td>
-Returns a tuple (undostr, redostr) with two strings that give the next operation that can be undone (resp. redone) on the object obj. undostr and redostr are set to None if there is no operation to undo (resp. redo).
+Returns a tuple <span class="doccode">(undostr, redostr)</span> with two strings that give the next operation that can be undone (resp. redone) on the object <span class="doccode">obj</span>. <span class="doccode">undostr</span> and <span class="doccode">redostr</span> are set to <span class="doccode">None</span> if there is no operation to undo (resp. redo).
 </td></tr>
 
 <tr><td class="doccode">
 boundingboxof(list)
 </td><td>
-Returns a bounding box (vmin, vmax) for the given list of map objects, or None. vmin and vmax are 3D vector objects. The list may also contain (non-projected) 3D vector objects that will be included in the returned bounding box.
+Returns a bounding box <span class="doccode">(vmin, vmax)</span> for the given <span class="doccode">list</span> of map objects, or <span class="doccode">None</span>. <span class="doccode">vmin</span> and <span class="doccode">vmax</span> are 3D vector objects. The list may also contain (non-projected) 3D vector objects that will be included in the returned bounding box.
 </td></tr>
 
 <tr><td class="doccode">
 texturesof(list)
 </td><td>
-Returns a sorted list of all texture names used in the given list of map objects.
+Returns a sorted list of all texture names used in the given <span class="doccode">list</span> of map objects.
 </td></tr>
 
 <tr><td class="doccode">
 extendcoplanar(list, lookin)<br>
 extendcoplanar(list, lookin, side)
 </td><td>
-list should be a list of polyhedron faces. This routine searches for faces in the objects in the list lookin that are coplanar and adjacent to the given faces, and appends them to list. All given faces must already be coplanar. side controls whether two faces of opposite normal vector match: 1, must be the same direction; -1, must be opposite; 0 (default), both. Note that the resulting list may contain a face more than once if it is shared by several polyhedron or if it was originally both in list and lookin.
+<span class="doccode">list</span> should be a list of polyhedron faces. This routine searches for faces in the objects in the list <span class="doccode">lookin</span> that are coplanar and adjacent to the given faces, and appends them to <span class="doccode">list</span>. All given faces must already be coplanar. <span class="doccode">side</span> controls whether two faces of opposite normal vector match; <span class="doccode">1</span> must be the same direction, <span class="doccode">-1</span> must be opposite, <span class="doccode">0 </span>(default) both. Note that the resulting <span class="doccode">list</span> may contain a face more than once if it is shared by several polyhedron or if it was originally both in <span class="doccode">list</span> and <span class="doccode">lookin</span>.
 </td></tr>
 
 <tr><td class="doccode">
@@ -46,34 +46,34 @@ forms()<br>
 forms(1)<br>
 forms(2)
 </td><td>
-Returns a list of all opened windows. Note that this is currently not very useful, because only Python-controlled windows are included. In the second form of the call, Floating windows are included as well. In the 3rd form of the call, non-Python windows are included as None in the list, and the order is such as the first item in the list represents the active window.
+Returns a list of all opened windows. Note that this is currently not very useful, because only Python-controlled windows are included. In the second form of the call, Floating windows are included as well. In the 3rd form of the call, non-Python windows are included as <span class="doccode">None</span> in the list, and the order is such as the first item in the list represents the active window.
 </td></tr>
 
 <tr><td class="doccode">
 newform()
 </td><td>
-Opens a new window. Don’t use this. To create floating toolbox windows, see newfloating().
+Opens a new window. Don’t use this. To create floating toolbox windows, see <span class="doccode">newfloating()</span>.
 </td></tr>
 
 <tr><td class="doccode">
 update()<br>
 update(form)
 </td><td>
-Updates the window form, or all windows if not specified. Menu bars, toolbars, and buttons are updated. See below for more information.
+Updates the window <span class="doccode">form</span>, or all windows if not specified. Menu bars, toolbars, and buttons are updated. See below for more information.
 </td></tr>
 
 <tr><td class="doccode">
 opentoolbox(toolbox)<br>
 opentoolbox(toolbox, select)
 </td><td>
-Opens the toolbox given by name. If toolbox is empty, this function opens the texture browser. If select is specified, attempts to find and select this Internal object in the toolbox. If select is None, and if some objects were previously selected in the toolbox, they are unselected.
+Opens the toolbox given by name. If <span class="doccode">toolbox</span> is empty, this function opens the texture browser. If <span class="doccode">select</span> is specified, attempts to find and select this Internal object in the toolbox. If <span class="doccode">select</span> is <span class="doccode">None</span>, and if some objects were previously selected in the toolbox, they are unselected.
 </td></tr>
 
 <tr><td class="doccode">
 findtoolboxes()<br>
 findtoolboxes(tb)
 </td><td>
-Find all toolbox data objects. Returns a list of couples ("toolbox name", rootofdata). If tb is specified, it must be a string and findtoolboxes will only return data for this toolbox.
+Find all toolbox data objects. Returns a list of couples <span class="doccode">("toolbox name", rootofdata)</span>. If <span class="doccode">tb</span> is specified, it must be a string and <span class="doccode">findtoolboxes</span> will only return data for this toolbox.
 </td></tr>
 
 <tr><td class="doccode">
@@ -81,14 +81,14 @@ openconfigdlg()<br>
 openconfigdlg(path)<br>
 openconfigdlg(caption, obj, newobjlist)
 </td><td>
-Opens the Configuration dialog box. If path is given, the corresponding folder or subfolder is opened, e.g. "Map:Options", or ":" for the current game’s configuration page. In the third form, obj is a :config object that gives alternate configuration data to display, and caption is the window caption. In this case, the dialog box is modal and openconfigdlg returns 1 or 0 to let you know if the user clicked on Ok or Cancel. newobjlist is a list of objects that the user can insert from buttons, or None if no editing of the object hierarchy is allowed.
+Opens the Configuration dialog box. If <span class="doccode">path</span> is given, the corresponding folder or subfolder is opened, e.g. "<span class="doccode">Map:Options</span>", or "<span class="doccode">:</span>" for the current game’s configuration page. In the third form, <span class="doccode">obj</span> is a <span class="doccode">:config</span> object that gives alternate configuration data to display, and <span class="doccode">caption</span> is the window caption. In this case, the dialog box is modal and <span class="doccode">openconfigdlg</span> returns <span class="doccode">1</span> or <span class="doccode">0</span> to let you know if the user clicked on Ok or Cancel. <span class="doccode">newobjlist</span> is a list of objects that the user can insert from buttons, or <span class="doccode">None</span> if no editing of the object hierarchy is allowed.
 </td></tr>
 
 <tr><td class="doccode">
 globalaccept()<br>
 globalaccept(ok)
 </td><td>
-Ends pending user editing (e.g. in yellow edit boxes). If ok is True or omitted, the changes are accepted; otherwise, they are cancelled.
+Ends pending user editing (e.g. in yellow edit boxes). If <span class="doccode">ok</span> is <span class="doccode">True</span> or omitted, the changes are accepted; otherwise, they are cancelled.
 </td></tr>
 
 </table>

@@ -9,34 +9,34 @@ format: html
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-brushcolor
+brushcolor<br>
 brushstyle
 </td><td>
 Color and style of the brush (to fill the background of drawings). See qeditor.BS_XXX for styles.
 </td></tr>
 
 <tr><td class="doccode">
-pencolor
-penwidth
+pencolor<br>
+penwidth<br>
 penstyle
 </td><td>
 Color, width, and style of the pen. See qeditor.PS_XXX for styles. The width is normally set to zero to mean “ as thin as possible ” (although this is generally the same as setting it to 1).
 </td></tr>
 
 <tr><td class="doccode">
-fontcolor
-fontname
-fontsize
-fontbold
-fontitalic
-fontunderline
+fontcolor<br>
+fontname<br>
+fontsize<br>
+fontbold<br>
+fontitalic<br>
+fontunderline<br>
 transparent
 </td><td>
 Properties of the font used by textout and textsize.
 </td></tr>
 
 <tr><td class="doccode">
-line(p1,p2)
+line(p1,p2)<br>
 line(x1,y1,x2,y2)
 </td><td>
 Draws a line between two points. The first form is preffered for map views if the two points are projections of 3D points. This lets QuArK clip the line if one point is before and the other point is behind the camera. In this situation, line(p1.x,p1.y,p2.x,p2.y) would be incorrect.
@@ -55,7 +55,7 @@ Draws a filled ellipse and its border inside the rectangle (x1,y1,x2,y2). To dra
 </td></tr>
 
 <tr><td class="doccode">
-polygon(listxy)
+polygon(listxy)<br>
 polygon(listpt,ccw)
 </td><td>
 Draws a filled polygon using the points in the list. The list can contain either tuples (x,y) or projected vector objects. The same remark as for line applies. If the list contains projected vectors, ccw (counterclockwise) must be True or False to give the orientation of the points in the list.
@@ -80,7 +80,7 @@ Draws the icon at the location x,y.
 </td></tr>
 
 <tr><td class="doccode">
-painttexture(tex, rect)
+painttexture(tex, rect)<br>
 painttexture(tex, rect, gradient)
 </td><td>
 Fills the specified area with the texture object tex, which must have been loaded by a function like loadtexture. rect is the area to fill (left,top,right,bottom). gradient (default 1) specifies the light gradient direction: the image is brighter at left or right if gradient is positive or negative. There is no gradient if gradient is set to 0.

@@ -25,7 +25,7 @@ Current dock position: "topdock", "leftdock", "rightdock", "bottomdock", or None
 </td></tr>
 
 <tr><td class="doccode">
-dockpos
+dockpos<br>
 dockrow
 </td><td>
 Position and row within the dock. (If they are several toolbars on the same dock, they can be organized in several rows.)

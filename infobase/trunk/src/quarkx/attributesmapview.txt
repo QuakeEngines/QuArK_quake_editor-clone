@@ -7,14 +7,14 @@ format: html
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-color
+color<br>
 darkcolor
 </td><td>
 The background color in wireframe mode. darkcolor is used as background for selected objects (in draw mode DM_BACKGROUND).
 </td></tr>
 
 <tr><td class="doccode">
-cursor
+cursor<br>
 handlecursor
 </td><td>
 Mouse cursor shape. handlecursor is the shape when the mouse is over a handle, if the handle doesn’t have its own cursor shape. Handles are described below. See qeditor.CR_XXX for a list of cursor shapes.

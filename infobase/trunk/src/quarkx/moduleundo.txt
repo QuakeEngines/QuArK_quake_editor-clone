@@ -7,7 +7,7 @@ format: html
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-put(parent, new)
+put(parent, new)<br>
 put(parent, new, insertbefore)
 </td><td>
 Operation that puts the new object into the group parent. It is inserted at the end of the subitems list, unless insertbefore is specified. insertbefore must be an existing subitem of parent.
@@ -20,7 +20,7 @@ Operation that replaces the old object with the new one. If new is None, the old
 </td></tr>
 
 <tr><td class="doccode">
-setspec(obj, spec, arg)
+setspec(obj, spec, arg)<br>
 setspec(obj, spec, arg, position)
 </td><td>
 Operation that sets a Specific/Arg pair in the object obj. spec is a string, and arg can be a string, a tuple of floats, or an integer, as the command obj[spec]=arg would do. If position is specified, it controls the position relative to other Specifics.
@@ -33,7 +33,7 @@ Operation that changes the shortname of an object.
 </td></tr>
 
 <tr><td class="doccode">
-move(obj, target)
+move(obj, target)<br>
 move(obj, target, insertbefore)
 </td><td>
 Operation that moves the object obj into the group target, inserting it before the item insertbefore. Don’t use this to move objects outside the tree view they belong to, or even between roots of this tree view (tree view with multiple roots may be found in toolboxes, for example).

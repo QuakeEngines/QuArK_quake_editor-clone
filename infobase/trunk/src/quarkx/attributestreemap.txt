@@ -7,7 +7,7 @@ format: html
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-replacetex(tx1, tx2)
+replacetex(tx1, tx2)<br>
 replacetex(tx1, tx2, undomode)
 </td><td>
 Replaces all textures named tx1 with the texture tx2. If tx1 is empty, all textures are replaced. If undomode is specified and is True, this function does not change the textures in the polyhedron faces themselves, but creates a copy of each modified face and put it into the active undo operation list (see below). Returns the number of modified textures.

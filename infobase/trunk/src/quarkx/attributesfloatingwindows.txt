@@ -13,7 +13,7 @@ Window caption.
 </td></tr>
 
 <tr><td class="doccode">
-begincolor
+begincolor<br>
 endcolor
 </td><td>
 The colors used for the gradient caption. See the begincolor and endcolor attributes of Window Objects for more info.

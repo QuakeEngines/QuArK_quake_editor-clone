@@ -7,22 +7,22 @@ format: html
 <table border=1 cellspacing=0 cellpadding=4>
 
 <tr><td class="doccode">
-setprojmode("3D")
-setprojmode("2D", matrix)
+setprojmode("3D")<br>
+setprojmode("2D", matrix)<br>
 setprojmode("2D", matrix, range)
 </td><td>
 Sets the projection type. In 3D (perspective), display parameters like the field of view are controlled by the current setup (see the attribute setup below). In 2D (flat), you must give the matrix used for projection. In this mode, proj(vect) is the same as matrix*vect, but a little more efficient. There are functions to build standard projection matrices in the module qeditor.py. The matrix must have a positive determinant, or else you will get a quarkx.error with message Invalid floating point operation. If range is specified and is False, the scroll bar range and position is left unchanged (see setrange and screencenter).
 </td></tr>
 
 <tr><td class="doccode">
-proj(vect)
+proj(vect)<br>
 proj(x,y,z)
 </td><td>
 Projects a point in 3D space onto the map view surface using the current projection attributes. The result is a “ projected vector ”. See above for more informations about projected vectors. Important: you must not use the resulting vector’s x and y attributes to make drawings before you check that the point is really visible (i.e. in front of the camera) by reading the vector’s visible attribute.
 </td></tr>
 
 <tr><td class="doccode">
-space(vect)
+space(vect)<br>
 space(x,y,z)
 </td><td>
 Reverse operation. Returns the 3D point that would be projected to the screen coordinates x,y,z.
@@ -45,15 +45,15 @@ Sets the minimum and maximum depth that are considered visible. Depending on the
 </td></tr>
 
 <tr><td class="doccode">
-drawmap(obj)
-drawmap(obj, flags)
+drawmap(obj)<br>
+drawmap(obj, flags)<br>
 drawmap(obj, flags, color)
 </td><td>
 Draws the object obj and all its sub-objects. How the objects are really drawn depends on the flags, listed in qeditor.DM_XXX. See qeditor.py and mapeditor.py for more information about drawing map parts.
 </td></tr>
 
 <tr><td class="doccode">
-solidimage()
+solidimage()<br>
 solidimage(texsrc)
 </td><td>
 In solid and textured modes, the map parts drawn with drawmap are stored in a buffer and the image is only really computed and displayed when solidimage() is called. Call this after you have drawn the solid map parts but before you draw the wireframe ones. texsrc is an optional alternate place to look for textures (e.g. in the opened .BSP file).
@@ -78,31 +78,31 @@ Sets the scroll bars position to (x,y). If x or y is None, the position of the c
 </td></tr>
 
 <tr><td class="doccode">
-setrange(x,y)
+setrange(x,y)<br>
 setrange(x,y, center)
 </td><td>
 Sets the scroll bars range. center is the 3D point that should be at the center of the full visible range (default 0 0 0).
 </td></tr>
 
 <tr><td class="doccode">
-drawgrid(vx, vy, color)
-drawgrid(vx, vy, color, flags_n)
-drawgrid(vx, vy, color, flags_n, color2)
+drawgrid(vx, vy, color)<br>
+drawgrid(vx, vy, color, flags_n)<br>
+drawgrid(vx, vy, color, flags_n, color2)<br>
 drawgrid(vx, vy, color, flags_n, color2, origin)
 </td><td>
 Draws a grid using dots of color color. One grid dots is put at each of the 3D positions i*vx+j*vy, where i and j range over the integers. Grids cannot be drawn on perspective views (ask me if you need this feature). flags can be a set of DG_XXX flags (see qeditor.py). To highlight every nth grid line, add n to flags and set the highlight color in color2. origin is the 3D point from which the grid display begins (by default 0 0 0).
 </td></tr>
 
 <tr><td class="doccode">
-scale()
+scale()<br>
 scale(point)
 </td><td>
 Returns the current projection scaling factor. In 2D projection modes, this is always the scale value given to setprojmode. In 3D projection mode, the scaling factor is computed at the given point. If no point is given in 3D mode, or if the computation fails for another reason, scale returns 1.0.
 </td></tr>
 
 <tr><td class="doccode">
-full3DFX(1)
-full3DFX(0)
+full3DFX(1)<br>
+full3DFX(0)<br>
 full3DFX(-1)
 </td><td>
 When called with 1 as parameter, this Map View image is sent to the full- screen 3DFX display. If two monitors are connected on the computer, the full-screen 3DFX image can be displayed together with the normal 2D image; otherwise, as long as the user doesn't press Esc or click a mouse button, he cannot do anything else. full3DFX only works with a true 3DFX card, not with the Software emulation; use a maximized window instead. Note that some features of common Map Views do not apply in full-screen 3DFX. For example, the user cannot (yet?) use the mouse on 3DFX screens, and no wireframe lines can be rendered (yet?). In general, consider the full-screen 3DFX mode as for viewing only, not editing. This method returns 0 in case of error. With one monitor, it returns 1 but only after the user finished walking in the view. With two monitors, it immediately returns 2. In the latter case only it makes sense to call full3DFX with the other parameter values: 0 to turn off the display on the second monitor, or -1 to query the current full-screen status.

@@ -21,7 +21,7 @@ The current frame.
 </td></tr>
 
 <tr><td class="doccode">
-mergevertices( framelist)
+mergevertices(framelist)
 </td><td>
 Reduces the component triangles and vertices by merging together the vertices that are at the same position in all frames.
 </td></tr>

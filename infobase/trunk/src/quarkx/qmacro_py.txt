@@ -35,7 +35,7 @@ Called whenever a linear operation is applied on an entity or a Duplicator. This
 </td></tr>
 
 <tr><td class="doccode">
-MACRO_hint(form)
+MACRO_hint(form)<br>
 MACRO_hint(form, text)
 </td><td>
 Called to set or retrive the current help text.
