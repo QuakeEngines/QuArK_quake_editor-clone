@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.149  2001/06/21 17:33:36  decker_dk
+//Added preliminary support for 6DX.
+//
 //Revision 1.148  2001/06/18 02:35:36  tiglari
 //update version
 //
@@ -3464,7 +3467,7 @@ QQRKSRC1
           _color = ""          // the button deletes this Specific
         }
       }
-      usercenterform = !      
+      usercenterform = !
       sep1:  = {Typ="S" Txt = ""}
       neg:   = {Txt="Neg. polys" Cap="Negative" Typ="X" Hint="polyhedrons in negative groups dig the map"}
       sep1:  = {Typ="S" Txt = ""}
@@ -3504,7 +3507,7 @@ QQRKSRC1
        linedit: = {
          Txt="Edit Linear" Typ="P" Macro="linedit" Cap="push" Hint="Push to edit the matrix in the linear specific" $0D "  (Under Construction)"}
     }
-   
+
     dup lin:form =
     {
       outform = !
@@ -3535,7 +3538,7 @@ QQRKSRC1
       angle: = {Txt="&" Typ="E" Hint="Not sure how this one works ..."}
       serialform = !
     }
-  
+
     dup radial:form =
     {
       Help = "Brushes placed inside this will be replicated around the axis," $0D " which can be tilted."
@@ -3574,11 +3577,11 @@ QQRKSRC1
     subdivideform:incl =
     {
       subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate 2^n+1 control points along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds, also big patches might not show in Q3)"}
-    }     
+    }
     brushsubdivideform:incl =
     {
       subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate 2^n brushes along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds ...)"}
-    }     
+    }
     dup cap:form =
     {
       inverse:    = {Txt="&" Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
@@ -3722,7 +3725,7 @@ QQRKSRC1
         Txt="&"
         Typ="CL"
         Items="hollow"  $0D "solid" $0D "autobox" $0D "patches"
-        Values="t" $0D "b" $0D "ab" $ 0D "p" 
+        Values="t" $0D "b" $0D "ab" $ 0D "p"
       }
       edge: =
       {
@@ -3734,13 +3737,13 @@ QQRKSRC1
       {
         Txt="&"
         Typ="X"
-        Hint="If checked, texture shown on outside rather than inside." $0D "  Only meaningful for patch type."        
+        Hint="If checked, texture shown on outside rather than inside." $0D "  Only meaningful for patch type."
       }
       open: =
       {
         Txt="&"
         Typ="X"
-        Hint="If checked, open line rather than closed loop." $0D "  Only meaningful for patch and pipe types."        
+        Hint="If checked, open line rather than closed loop." $0D "  Only meaningful for patch and pipe types."
       }
 
 //      texture specs: =
@@ -3759,7 +3762,19 @@ QQRKSRC1
 //        Form="corridor auxiliary:form"
 //        Hint="Some extra specs for special functions."
 //      }
+    }
 
+    arg replacer:form = {
+        Help =  "Put your point-entities and brush-entities under this Arg Replacer,"
+             $0D"you can make groups in groups just like normal, if you want to."
+          $0D$0D"In the spec/arg view of the Arg Replacer, insert keywords you want to be"
+             $0D"replaced with keydata. Something like this:"
+          $0D$0D"  prefix         grp1"
+             $0D"  mylight       400"
+          $0D$0D"and in the entities specs/args that should be replaced with the keydata, do this:"
+          $0D$0D"  targetname     %prefix%_A"
+             $0D"  _light              255 255 255 %mylight%"
+          $0D$0D"Be aware that everything is case-sensitive! 'prefix' is not equal to 'PREFIX'."
     }
 
     QuakeCtx:form =     // form that applies when editing .qctx objects
@@ -3925,7 +3940,7 @@ QQRKSRC1
         Txt = "Form"
         Typ = "E"
         Hint = "Form to open when button is pressed"
-      }      
+      }
       info3: = {Typ="S" Txt=" ---- Python Macro Button (P) specific ----"}
       Macro: = {
         Txt = "Macro"
@@ -3959,7 +3974,7 @@ QQRKSRC1
         Typ = "E"
         Hint = "Caption of checkbox"
       }
-    }      
+    }
     ToolBox:form =      // form that applies when editing .qtx objects
     {
       Style = "3"
@@ -4642,7 +4657,10 @@ QQRKSRC1
             }
           }
         }
-                
+        ArgReplacer:d = {
+	  ;desc = "Arg Replacer : Search and Replaces %keyword% in spec/args"
+          macro = "arg replacer"
+        }
       }
       Shape Builders.qtxfolder =
       {
@@ -4718,11 +4736,11 @@ QQRKSRC1
     Searched.qtxfolder =
     {
       SearchBox = "1"
-      Searched Texures.txlist = 
+      Searched Texures.txlist =
       {
       }
     }
-  }  
+  }
 //  Map Specifics display.qctx =
 //  {
 //    DrawMap: =
