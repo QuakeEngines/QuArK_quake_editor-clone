@@ -10,3 +10,12 @@ For simple objects (typically, the ones with no subobject), the display form giv
 Semi-complex objects, paradoxally, have simpler display forms : their information is stored as subobjects and the user can edit them without any particular form. For example, a sprite object is basically just a list of images, so that it is represented as an object with images as subobjects. Editing them for the user is quite easy : all he has to do is rename, move, add, delete images. A particular sprite form is needed only for the stuff that cannot be edited this way, e.g. how long each image is to stay in the sprite animation sequence.
 
 Really-complex objects (e.g. maps or models) require more sophisticated display code, which only gives a preview of the object when users click on it in the QuArK Explorer and invokes a complex editor when needed.
+
+Note that for the subobjects of an object to be displayed in tree views, you need to override the IsExplorerItem method. This method controls whether each subobject is displayed or not, or whether it is allowed to be dropped there by the user or not. In general it should be implemented as follows :
+
+<html><pre>
+function xxx.IsExplorerItem(Q: QObject) : TIsExplorerItem;
+begin
+ Result:=ieResult[(Q is someclass) or (Q is someotherclass) or...];
+end;
+<html></pre>
