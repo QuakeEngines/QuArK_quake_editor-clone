@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2005/01/04 18:23:51  alexander
+enabled multiple output specifics by removing all numeric postfix on their name
+
 Revision 1.41  2004/12/22 11:42:15  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -1495,6 +1498,7 @@ var
  S: String;
  Q: QObject;
  J: Integer;
+ boxindex,start,i:integer;
 begin
  Result:=False;
  S:={QuakeClassname}GetFormName;
@@ -1520,6 +1524,30 @@ begin
         BBox[J]:=BBox[J]*BBox[6];
       Result:=True;
      end;
+  else
+  begin
+    // if a binary float specific could not be found,
+    // try a string !
+    S:=Specifics.Values['bbox'];
+    if S<>'' then
+    begin
+      boxindex:=0;
+      start:=0;
+      for i:=1 to length(s) do
+      begin
+        if s[i]=' ' then
+        begin
+          bbox[boxindex]:=strtofloat(copy(s,start,i-start));
+          start:=i;
+          boxindex:=boxindex+1;
+        end;
+      end;
+      bbox[boxindex]:=strtofloat(copy(s,start,length(s)-start+1));
+      boxindex:=boxindex+1;
+      if boxindex=6 then
+        result:= true;
+    end;
+  end;
  end;
 end;
 
