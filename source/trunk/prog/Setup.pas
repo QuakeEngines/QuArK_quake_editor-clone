@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2002/04/04 17:49:06  decker_dk
+Added gamecode 'f' for Jedi Knight II support.
+
 Revision 1.32  2002/02/24 13:47:10  decker_dk
 Added MOHAA (Medal Of Honor:Allied Assault) with gamecode 'e'.
 
@@ -184,6 +187,7 @@ const
  mjRTCW         = 'd';  { Return To Castle Wolfenstein }
  mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
  mjJK2          = 'f';  { Jedi Knight II - Jedi Outcast }
+ mjTorque       = 'g';
 
  mjAny          = #1;
  mjNotQuake2    = #2;
