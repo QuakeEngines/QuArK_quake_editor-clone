@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/03/09 21:11:56  aiv
+Misc. Bug fixes
+
 Revision 1.12  2001/03/09 01:50:56  aiv
 fixed treeview updating bug
 
@@ -467,9 +470,12 @@ begin
     begin
       ProgressIndicatorIncrement;
       Entities:=TQList.Create;
-      NewAddonsList.Items1[i].FindAllSubObjects('', TTreeMapSpec, QObject, Entities);
+      NewAddonsList[i].acces;
+      NewAddonsList[i].FindAllSubObjects('', TTreemapSpec, QObject, Entities);
       for j:=0 to Entities.Count-1 do
       begin
+        if not(Entities[j] is TTreeMapSpec) then
+          continue;
         OldEntity:=TTreeMapSpec(Entities.Items1[j]);
         Entity:=TTreeMapSpec(EntityTBX_2.FindSubObject(OldEntity.Name, TTreeMapSpec, QObject));
         if (Entity = nil) then
@@ -550,16 +556,16 @@ begin
       TexFolders.FParent:=TexRoot;
     end;
 
-    NewAddonsList.free;
-    bsps.free;
-    paks.free;
-
     TBX.Flags := TBX.flags or ofTreeViewSubElement;
     entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
-    ExplorerFromObject(FParent).Refresh;
   finally
     ProgressIndicatorStop;
   end;
+
+  NewAddonsList.free;
+  bsps.free;
+  paks.free;
+  ExplorerFromObject(FParent).Refresh;
 end;
 
  {------------------------}

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/03/09 21:11:56  aiv
+Misc. Bug fixes
+
 Revision 1.22  2001/03/08 23:22:53  aiv
 entity tool finished completly i think.
 
@@ -1162,7 +1165,6 @@ end;
 Function QBsp.CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
 var
   e: QObject;
-  z: QZText;
   S, ext, tb: String;
   specList: TStringList;
   e_sl: TStringList;
@@ -1188,8 +1190,9 @@ begin
   begin
     raise Exception.Create('No Entities in BSP');
   end;
-  z:=QZText(e);
-  S:=z.GetArg('Data');
+//  z:=QZText(e);
+  e.acces;
+  S:=e.Specifics.Values['Data'];
   (*
     Build Addon Root
   *)
@@ -1269,6 +1272,7 @@ begin
     else
     begin
       EntityTBX_2.SubElements.Add(Entity);
+      Entity.FParent:=EntityTBX_2;
     end;
   end;
   speclist.free;
@@ -1281,7 +1285,7 @@ begin
   EntityTBX_2.FindAllSubObjects('',TTreeMapSpec, QObject, Entities);
   for i:=0 to entities.Count-1 do
   begin
-    Entity:=TTreeMapEntity(entities[i]);
+    Entity:=TTreeMapSpec(entities[i]);
     eForm:=QFormCfg.Create(Entity.Name, entityForms);
     entityForms.Subelements.Add(eForm);
     hasOrigin:=false;
