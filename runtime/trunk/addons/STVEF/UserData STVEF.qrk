@@ -5,6 +5,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/03/20 21:55:03  decker_dk
+//Added log-header / misc.
+//
 
 {
   Description = "Custom configuration file for StarTrekEF."
@@ -84,7 +87,7 @@ QQRKSRC1
   {
     item: =
     {
-      Txt = "&GO ! (textures+build+Quake)"
+      Txt = "&GO ! (textures+build+STVEF)"
       Shortcut = "Ctrl+R"
       RunGame = "1"
       Textures = "1"
@@ -144,7 +147,7 @@ QQRKSRC1
     }
     item: =
     {
-      Txt = "&Run Quake 3"
+      Txt = "&Run STVEF"
       RunGame = "1"
     }
     item: =
