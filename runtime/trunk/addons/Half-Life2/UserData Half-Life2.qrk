@@ -57,23 +57,19 @@ QQRKSRC1
     {
       Txt = "&GO ! (textures+build+HL)"
       Shortcut = "Ctrl+R"
-      Textures = "1"
       RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
       BuildPgm3 = "1"
-      BuildPgm4 = "1"
     }
     item: =
     {
       Txt = "Quic&kGO ! (no VIS, fast LIGHT)"
       Shortcut = "Ctrl+K"
-      Textures = "1"
       RunGame = "1"
       BuildPgm1 = "1"
       BuildPgm2 = "1"
-      BuildPgm4 = "1"
       ExportMapFile = "1"
     }
     item: =
@@ -81,7 +77,6 @@ QQRKSRC1
       Txt = "QuickGO on &selection only"
       Shortcut = "Ctrl+P"
       SelOnly = "1"
-      Textures = "1"
       RunGame = "1"
       ExportMapFile = "1"
       BuildPgm1 = "1"
