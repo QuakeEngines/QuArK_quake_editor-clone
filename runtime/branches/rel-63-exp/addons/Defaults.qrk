@@ -30,6 +30,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+
+//Revision 1.97.2.1  2001/03/11 22:06:08  tiglari
+//hot key defaults
+//
+//Revision 1.105  2001/03/17 21:55:25  decker_dk
+//Added 'Q3ArchLib.qrk' and 'Q3models.qrk' as AddOns for Quake-3
+//
 //Revision 1.104  2001/03/16 17:09:22  maleficus
 //saveprt added for q3 vlight
 //
@@ -1101,6 +1108,20 @@ QQRKSRC1
         MoveUp = "&"
         MoveDown = "("
         Form = "MapKeys"
+      }
+      HotKeys:config =
+      {
+        Tag Side = "Ctrl+T"
+        Clear Tags = "Alt+C"
+        Add to Tagged = "Ctrl+A"
+        Glue Side = "Ctrl+G"
+        Align Texture = "Ctrl+W"
+        Link Selection = "Ctrl+L"
+        Extend Selection = "Ctrl+E"
+        Unrestrict Selection = "Ctrl+U"
+        Restrict to Selection = "Alt+R"
+        Brush Subtraction =  "Ctrl+B"
+        Form = "MapHotKeys"
       }
       Options:config =
       {
@@ -2559,6 +2580,12 @@ QQRKSRC1
       Linear:     = { Txt = "Linear Mapping box" Typ = "LI" }
       Vertices:   = { Txt = "Vertex dots" Typ = "LI" }
     }
+    HotKeyForm:incl =
+    {
+      Txt = "&"
+      Typ = "E"
+      Hint = "If map editor has started, new assignment will apply on next Quark restart."$0D" Otherwise when map editor is started" 
+    }
     MouseForm:incl =       // ":incl" objects can be included in other objects (see below)
     {
       Typ = "CL"      // Combobox List
@@ -2602,6 +2629,20 @@ QQRKSRC1
             $0D"R-"
             $0D"Z"
             $0D"C"
+    }
+    MapHotKeys:form =
+    {
+       Style = "7"
+       Tag Side: = {HotKeyForm = !}
+       Clear Tags: = {HotKeyForm = !}
+       Glue Side: = {HotKeyForm = !}
+       Add to Tagged: = {HotKeyForm = !}
+       Align Texture: = {HotKeyForm = !}
+       Link Selection: = {HotKeyForm = !}
+       Extend Selection: = {HotKeyForm = !}
+       Unrestrict Selection: = {HotKeyForm = !}
+       Restrict to Selection: = {HotKeyForm = !}
+       Brush Subtraction: = {HotKeyForm = !}
     }
     MapMouse:form =
     {
