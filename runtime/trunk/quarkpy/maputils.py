@@ -264,11 +264,30 @@ def solveForThreepoints((v1, (s1, t1)), (v2, (s2, t2)), (v3, (s3, t3))):
     d2 = quarkx.vect(d2x, d2y, d2z)/denom
     return p0, d1+p0, d2+p0
     
+#
+# matrix for rotation taking u onto v
+#
+def matrix_rot_u2v(u,v):
+    axis = u^v
+    if axis:
+      axis = axis.normalized
+      import qhandles
+      return qhandles.UserRotationMatrix(axis, v, u, 0)
+    else:
+      matrix = quarkx.matrix("1 0 0 0 1 0 0 0 1")
+      if v*u > 0:
+        return matrix
+      else:
+        return ~matrix
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.7  2001/02/14 11:04:36  tiglari
+#shifted some texture positioning utils in from maptexpin
+#
 #Revision 1.6  2000/09/04 21:27:56  tiglari
 #added 2d line intersection finder, vectors->matrix utility
 #
