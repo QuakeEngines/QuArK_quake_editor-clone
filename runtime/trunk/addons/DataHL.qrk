@@ -27,6 +27,8 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-08-05   [-] Hopefully resolved conflict of CLIP/ORIGIN/AAATRIGGER textures between HALFLIFE.WAD and TFC.WAD
+//
 // 2000-07-08   [TFC] Updated texture links
 //
 // 2000-06-14   [OP4] Added OP4 CTF entities and textures
@@ -18145,13 +18147,13 @@ values=
         {XENO_6.wl = { t_xe = ! }
         {XENO_6B.wl = { t_xe = ! }
        }
-       Xeno Extra.txlist =
-       {
-        AAATRIGGER.wl = { t_xe = ! }
-        BLACK.wl = { t_xe = ! }
-        CLIP.wl = { t_xe = ! }
-        ORIGIN.wl = { t_xe = ! }
-       }
+//       Xeno Extra.txlist =
+//       {
+//        AAATRIGGER.wl = { t_xe = ! }
+//        BLACK.wl = { t_xe = ! }
+//        CLIP.wl = { t_xe = ! }
+//        ORIGIN.wl = { t_xe = ! }
+//       }
       }
     }
   }
@@ -19053,7 +19055,7 @@ values=
         CANYONSSAND4.wl = { t_tfc = ! }
         CANYONSSAND1.wl = { t_tfc = ! }
         CANYONSSAND2.wl = { t_tfc = ! }
-        CLIP.wl = { t_tfc = ! }
+//        CLIP.wl = { t_tfc = ! }
         COMP9ABLU.wl = { t_tfc = ! }
         COMP9ARED.wl = { t_tfc = ! }
         COMP9BBLU.wl = { t_tfc = ! }
