@@ -47,6 +47,7 @@ import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.qhandles
 import quarkpy.mapbtns
+import mapsnapobject
 import mergepolys
 from quarkpy.maputils import *
 from tagging import *
@@ -1512,6 +1513,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   tagged = gettaggedplane(editor)
   glueitem = gluemenuitem("&Glue to tagged", GlueSideClick, o, gluetext)
   glueitem.label = 'glue'
+  snapitem = mapsnapobject.parentSnapPopup(o,editor)
   linktotagged = gluemenuitem("&Link face to tagged", LinkFaceClick, o, "|Links face to tagged for the `glue to linked' command.\n\nNormally the `Glue to tagged' command with the `link on glue' option set should be used instead of this command, because this command doesn't move the face to what it gets linked to, and so doesn't test for broken polys.")
 #  aligntex = gluemenuitem("&Wrap texture from tagged", AlignTexClick, o, aligntext)
   tagpop = tagpopup(editor, o)
@@ -1550,6 +1552,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
               gluemenuitem("&Tag face",TagSideClick,o,tagtext),
 #              addtotagged,
               glueitem,
+              snapitem,
               tagpop,
               linkpopup,
 #              projecttex(editor,o),
@@ -1808,6 +1811,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2001/06/17 21:10:56  tiglari
+#fix button captions
+#
 #Revision 1.16  2001/05/25 12:26:01  tiglari
 #tagged plane support
 #
