@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2002/04/03 00:28:07  tiglari
+Now logs whether Spec Mem Sharing is on or off (via NoShare Conditonal Define)
+
 Revision 1.10  2001/04/19 19:38:50  aiv
 added support for "patch.txt"
 
@@ -133,7 +136,7 @@ begin
     LOG_PYTHONSOURCE: s:='PythonLog> '+s;
   end;
   {$I-}
-  WriteLn(LogFile, s);
+  WriteLn(LogFile, s); Flush(LogFile);
   {$I+}
 end;
 
