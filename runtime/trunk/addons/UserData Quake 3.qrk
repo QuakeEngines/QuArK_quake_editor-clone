@@ -116,6 +116,8 @@ QQRKSRC1
       VIS1 = "1"
       LIGHT1 = "1"
       LIGHTCmd = "-extra"
+      BSPC1 = "1"
+      BSPCCmd = "-bsp2aas"
       Pause = "1"
     }
     item: =
@@ -149,6 +151,13 @@ QQRKSRC1
     }
     item: =
     {
+      Txt = "&BSPC -bsp2aas (bot nodelist)"
+      BSPC1 = "1"
+      BSPCCmd = "-bsp2aas -noverbose"
+      Pause = "1"
+    }
+    item: =
+    {
       Txt = "-"
     }
     item: =
@@ -156,6 +165,13 @@ QQRKSRC1
       Txt = "Q3MAP -onlyents (only &entities)"
       QBSP1 = "1"
       QBSPCmd = "-onlyents"
+      Pause = "1"
+    }
+    item: =
+    {
+      Txt = "&BSPC -reach (update entity reachability)"
+      BSPC1 = "1"
+      BSPCCmd = "-reach"
       Pause = "1"
     }
   }
