@@ -111,6 +111,7 @@ Strings = {
     #263: "JPG image (*.jpg)|*.jpg",
     264: "Map beziers",
     # /Rowdy
+    265: "unexpected surface attribute",
 
     288: "Help snippet - (press ESC to close window)",
     289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.",
@@ -909,6 +910,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.49  2002/04/28 21:28:33  tiglari
+#update version
+#
 #Revision 1.48  2002/02/26 23:22:59  tiglari
 #update version
 #
