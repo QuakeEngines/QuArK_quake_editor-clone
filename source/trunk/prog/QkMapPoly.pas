@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/04/01 06:52:07  tiglari
+don't recenter threepoints option added
+
 Revision 1.31  2001/03/31 04:25:36  tiglari
 WC33 (mapversion 220) map writing
 
@@ -4677,6 +4680,51 @@ begin
  end;
 end;
 
+function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
+begin
+  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
+end;
+
+
+function fAxisBase(self, args: PyObject) : PyObject; cdecl;
+var
+  I, mode: Integer;
+  Ok: Boolean;
+  P, T: array[1..3] of TVect;
+  v: array[1..3] of PyVect;
+  ov: PyVect;
+  AltTexSrc: PyObject;
+  Orig, TexS, TexT : TVect;
+
+begin
+  try
+    Result:=Nil;
+    AltTexSrc:=Nil;
+    with QkObjFromPyObj(self) as TFace do
+    begin
+      Acces;
+      Ok:=GetThreePointsUserTex(P[1], P[2], P[3], QkObjFromPyObj(AltTexSrc));
+      if Ok and LoadData then
+      begin
+        GetAxisBase(Normale, TexS, TexT);
+        for I:=1 to 3 do
+        begin
+          T[I]:=CoordShift(P[I], Orig, TexS, TexT);
+          v[I]:=MakePyVect(T[I]);
+        end;
+        Result:=Py_BuildValueX('OO', [MakePyVect(TexS),MakePyVect(TexT)]);
+        for I:=2 downto 1 do
+          Py_DECREF(v[I]);
+      end
+      else
+        Result:=PyNoResult;
+    end
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 function fSwapSides(self, args: PyObject) : PyObject; cdecl;
 begin
  try
@@ -4724,12 +4772,13 @@ begin
 end;
 
 const
- FaceMethodTable: array[0..5] of TyMethodDef =
+ FaceMethodTable: array[0..6] of TyMethodDef =
   ((ml_name: 'verticesof';    ml_meth: fVerticesOf;    ml_flags: METH_VARARGS),
    (ml_name: 'distortion';    ml_meth: fDistortion;    ml_flags: METH_VARARGS),
    (ml_name: 'threepoints';   ml_meth: fThreePoints;   ml_flags: METH_VARARGS),
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
+   (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));
 
 function TFace.PyGetAttr(attr: PChar) : PyObject;
