@@ -1,61 +1,63 @@
-title: Quark 6.2
+title: QuArK 6.2
 author: tiglari, etc.
-format: html
 
 Red means stuff that should defintely be done for release.
 
+<ul>
 
-<UL>
-<LI>Q3(T)A Model display: (Andy/Maleficus)
-<br> status: done.
-<LI>OsFolders: (tiglari) load up resources from disk by specified paths 
-     etc.
-<BR>status:  basically done.  editing of folder properties not yet
-   implemented, maybe delay til 6.3
-<LI><font color=#FF0000>Bezier Page:</font> (Andy)
-<br>status: texture itself isn't being shown,
-starting scale too big.
-<LI>
-  Read/Write Brush Primitives: (tiglari)
-    <BR>status: done (wants testing)
-<LI>
-  <FONT color=red> Path duplicator</FONT>: (decker, tiglari)
-   <BR>status: orientation bug fixed by math remake, texture
-     positioning not quite there yet.
-<LI>
-  CTF duplicator: (tiglari)
-<BR>   status: envisioned, seems like it might be easy
+<li>Q3(T)A Model display: (Andy/Maleficus)
+<br>status: done.
 
-<LI> Brush curve duplicator: (tiglari)
-<BR>   status: texture positioning done;
-`thick' to be delayed to 6.3.
+<li>OsFolders: (tiglari)
+    load up resources from disk by specified paths etc.
+<br>status: basically done.
+            editing of folder properties not yet implemented, maybe delay til 6.3
 
-<LI>  Stairway duplicator: (decker)
-<BR>    status: done, further developments envisioned.
+<li><font color=#FF0000>Bezier Page:</font> (Andy)
+<br>status: texture itself isn't being shown, starting scale too big.
 
-<LI>  Microbrush H/K: (tiglari) find and destroy them
-<BR>   status: done
+<li>Read/Write Brush Primitives: (tiglari)
+<br>status: done (wants testing)
 
-<LI>  STVEF support: (Alex)
-<BR>   status: done
+<li><FONT color=red>Path duplicator</FONT>: (decker, tiglari)
+<br>status: orientation bug fixed by math remake,
+            texture positioning not quite there yet.
 
-<LI>  Q3TA support: (Maleficus, Andy)
-<BR>    status: done 
+<li>CTF duplicator: (tiglari)
+<br>status: envisioned, seems like it might be easy
 
-<LI>  Drag & Drop imprecision bug: (tiglari)
-<BR>    status: possibly fixed.
+<li>Brush curve duplicator: (tiglari)
+<br>status: texture positioning done;
+            `thick' to be delayed to 6.3.
 
-<LI>  Model editor: (Andy)
-<BR>    status: pre-alpha Q1/2
+<li>Stairway duplicator: (decker)
+<br>status: done, further developments envisioned.
 
-<LI>  `texture pinning': (tiglari)
-<br> status: done
+<li>Microbrush H/K: (tiglari)
+    find and destroy them
+<br>status: done
 
-<LI>  bezier CP `picking': (tiglar).  Pick a subset of the Cps
-of a bezier and drag, linear map. etc only them
-<br> status: done
+<li>STVEF support: (Alex)
+<br>status: done
 
-<LI>  sprites etc. display: (Andy).  display assorted minor
-resources.  Full Adquedit functionlity by 6.3?
-<br> status: ?
-</UL>
+<li>Q3TA support: (Maleficus, Andy)
+<br>status: done
+
+<li>Drag & Drop imprecision bug: (tiglari)
+<br>status: possibly fixed.
+
+<li>Model editor: (Andy)
+<br>status: pre-alpha Q1/2
+
+<li>`texture pinning': (tiglari)
+<br>status: done
+
+<li>bezier CP `picking': (tiglar).
+    Pick a subset of the Cps of a bezier and drag, linear map. etc only them
+<br>status: done
+
+<li>sprites etc. display: (Andy).
+    Display assorted minor resources. Full Adquedit functionlity by 6.3?
+<br>status: ?
+
+</ul>

@@ -1,11 +1,6 @@
-title: Planned Quark Features
+title: Planned QuArK Features
 desc: q62 q63 q6n
 
 Here is a list of features currently being considered for future
-of Quark.  Needless to say highly subject to change!
+of QuArK.  Needless to say highly subject to change!
 
-
-
-
-
- 

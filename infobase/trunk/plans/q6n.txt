@@ -1,10 +1,10 @@
-title: Quark 6.?
+title: QuArK 6.?
 author: tiglari, etc.
-format: html
 
-<UL>
-<LI>
-   Model editor: (Andy, tiglari)
-     export closed mesh to brushset
-</UL>
+<ul>
+
+<li>Model editor: (Andy, tiglari)
+    export closed mesh to brushset
+
+</ul>
 
