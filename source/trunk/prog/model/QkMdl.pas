@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/01/07 18:44:59  aiv
+Fixed game code prob.
+
 Revision 1.3  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -160,10 +163,10 @@ begin
         { setup Root }
       Root:=Loaded_Root;
       C:=Loaded_Component(Root, '');
-      if RA then
+{      if RA then
         ObjectGameCode:=mjHexen
       else
-        ObjectGameCode:=mjQuake;
+        ObjectGameCode:=mjQuake;}
       Root.Specifics.Values['seamtrick']:='1';
       Size[1]:=mdl.synctype;
       Size[2]:=mdl.flags;
