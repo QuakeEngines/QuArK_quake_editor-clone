@@ -55,9 +55,9 @@ type
  TGLSceneBase = class(TSceneObject)
  protected
    ScreenX, ScreenY: Integer;
-   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
-   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
-   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
+   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
  public
    procedure SetViewRect(SX, SY: Integer); override;
@@ -267,7 +267,7 @@ var
  pfd: TPixelFormatDescriptor;
  pfi: Integer;
  FogColor: GLfloat4;
- FarDistance: Reel;
+ FarDistance: TDouble;
  Setup: QObject;
  Fog: Boolean;
 begin
@@ -575,7 +575,7 @@ begin
  CurrentGLSceneObject.EndBuildScene;
 end;
 
-procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
  with Texture^ do
   begin
@@ -584,7 +584,7 @@ begin
   end;
 end;
 
-procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel);
+procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
  with Skin^ do
   begin
@@ -593,7 +593,7 @@ begin
   end;
 end;
 
-procedure TGLSceneBase.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+procedure TGLSceneBase.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
  ScaleS:=1;
  ScaleT:=1;
@@ -920,10 +920,10 @@ procedure LightAtPoint(var Point1: TP3D; SubList: PLightList; const Currentf: GL
                        const LightParams: TLightParams; const NormalePlan: vec3_t);
 var
  LP: PLightList;
- Light: array[0..2] of Reel;
+ Light: array[0..2] of TDouble;
  ColoredLights: Boolean;
  Incoming: vec3_t;
- Dist1, DistToSource: Reel;
+ Dist1, DistToSource: TDouble;
  K: Integer;
 begin
  with Point1 do
@@ -1025,7 +1025,7 @@ var
  f, fstep: Single;
  SubList: PLightList;
  LPP: ^PLightList;
- DistToSource, Dist1: Reel;
+ DistToSource, Dist1: TDouble;
  l: array[0..2] of GLfloat;
 begin
  SubList:=Nil;

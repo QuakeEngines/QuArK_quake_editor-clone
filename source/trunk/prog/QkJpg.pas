@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.7  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -108,16 +111,16 @@ var
   BmpInfo: TBitmapInfo256;
   Data:String;
   V: array[1..2] of Single;
-  TailleImage: Longint;
+  ImageSize: Longint;
 begin
   F.Seek(0,soFromBeginning);
   F.ReadBuffer(Header, SizeOf(Header));
   F.ReadBuffer(BmpInfo, SizeOf(TBitmapInfoHeader));
   if BmpInfo.bmiHeader.biBitCount=24 then
-    TailleImage:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
+    ImageSize:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
   else
     begin
-      TailleImage:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
+      ImageSize:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
     end;
   F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
   if BmpInfo.bmiHeader.biBitCount=8 then
@@ -134,8 +137,8 @@ begin
   V[2]:=BmpInfo.bmiHeader.biHeight;
   SetFloatsSpec('Size', V);
   Data:=Spec1;
-  SetLength(Data, Length(Spec1)+TailleImage);
-  F.ReadBuffer(Data[Length(Spec1)+1], TailleImage);
+  SetLength(Data, Length(Spec1)+ImageSize);
+  F.ReadBuffer(Data[Length(Spec1)+1], ImageSize);
   Specifics.Add(Data);   { Image1= }
 end;
 

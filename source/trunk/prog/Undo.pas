@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -290,7 +293,7 @@ begin
    repeat
     if Q.Flags and ofWarnBeforeChange <> 0 then
      begin
-      S:=(Q as QFileObject).NomFichier;
+      S:=(Q as QFileObject).Filename;
       if S='' then
        S:=LoadStr1(5528)
       else

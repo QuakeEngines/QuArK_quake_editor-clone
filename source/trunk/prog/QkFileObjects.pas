@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.10  2000/05/21 13:11:51  decker_dk
 Find new shaders and misc.
 
@@ -138,14 +141,14 @@ type
   QFileObjectClass = class of QFileObject;
   QFileObject = class(QObject)
                 private
-                  procedure ChargerCommeTexte(F: TStream; Taille: Integer);
+                  procedure LoadObjsFromText(F: TStream; Taille: Integer);
                   function GetObjectGameCode: Char;
                   procedure SetObjectGameCode(nCode: Char);
                 protected
                   function OuvrirFenetre(nOwner: TComponent) : TQForm1; dynamic;
                   function ObtenirFenetre(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
-                  function LireEnteteFichierStd(Source: TStream; var SourceTaille: Integer) : Integer;
-                  procedure EcrireEnteteFichierStd(TotalSize: Integer; F: TStream);
+                  function ReadStandardFileHeading(Source: TStream; var SourceTaille: Integer) : Integer;
+                  procedure WriteStandardFileHeading(TotalSize: Integer; F: TStream);
                   procedure LoadFile(F: TStream; FSize: Integer); override;
                   procedure SaveFile(Info: TInfoEnreg1); override;
                  {function ChargerQuArK(F: TStream; Taille: Integer) : Boolean;
@@ -153,7 +156,7 @@ type
                   function LoadName: String;
                   procedure WriteSiblingsTo(Info1: TInfoEnreg1);
                 public
-                  NomFichier: String;
+                  Filename: String;
                   ReadFormat: Integer;
                   destructor Destroy; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); virtual;
@@ -216,7 +219,7 @@ function SortedFindFileName(Q: TQList; const nFileName: String) : QFileObject;
 
 procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
 procedure ConvertObjsToText(Self: QObject; L: TStringList; Comment: Boolean);
-function EnteteObjTexte(var P: PChar) : Boolean;
+function CheckFileSignature(var P: PChar) : Boolean;
 function MakeTempFileName(const Tag: String) : String;
 
  {------------------------}
@@ -232,17 +235,17 @@ uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
  {------------------------}
 
 const
- SignatureFichierQ   = $4B525151;  {QQRK}
- VersionFichierQ     = $314E4942;  {BIN1}
- VersionSourceQ      = $31435253;  {SRC1}
+ c_FileSignatureQQRK   = $4B525151;  {QQRK}
+ c_FileVersionBinary     = $314E4942;  {BIN1}
+ c_FileVersionText      = $31435253;  {SRC1}
 
- TailleEnteteMin = 2*SizeOf(LongInt);  { Signature + Version }
+ c_FileSignatureSize = 2*SizeOf(LongInt);  { Signature + Version }
 
 type
- TEnteteFichierQ = record
+ TFileHeaderBinary = record
                     Signature: LongInt;
                     Version: LongInt;
-                    TailleTotale: LongInt;
+                    TotalFileLength: LongInt;
                     InfoType: array[0..19] of Byte;
                    end;
 
@@ -279,9 +282,9 @@ begin
  if NoPath and (nParent<>Nil) then
   begin  { try to complete the file path }
    Q:=GetFileRoot(nParent);
-   if (Q<>Nil) and (Q.NomFichier<>'') then
+   if (Q<>Nil) and (Q.Filename<>'') then
     begin
-     CurDir:=ExtractFilePath(Q.NomFichier);
+     CurDir:=ExtractFilePath(Q.Filename);
      {IncludePath:=CurDir+';';}
      if FileExists(CurDir+theFilename) then
       NomComplet:=CurDir+theFilename;
@@ -304,7 +307,7 @@ end;
 function BuildFileRoot(const theFilename: String; nParent: QObject) : QFileObject;
 begin
  Result:=ConstructQObject(ExtractFileName(theFilename), nParent) as QFileObject;
- Result.NomFichier:=theFilename;
+ Result.Filename:=theFilename;
 (*  { set ReadFormat according to the file extension }
  Result.ReadFormat:=Ord(CodeConstruction)-(Ord('A')-rf_Default); *)
  Result.ReadFormat:=rf_Default;
@@ -362,7 +365,7 @@ end;
 
 function ByFileName(Item1, Item2: Pointer) : Integer;
 begin
- Result:=CompareText(QFileObject(Item1).NomFichier, QFileObject(Item2).NomFichier);
+ Result:=CompareText(QFileObject(Item1).Filename, QFileObject(Item2).Filename);
 end;
 
 function SortedFindName(Q: TQList; const nName: String) : QObject;
@@ -394,7 +397,7 @@ begin
   begin
    Test:=(Min+Max) div 2;
    Result:=QFileObject(Q[Test]);
-   Diff:=CompareText(nFileName, Result.NomFichier);
+   Diff:=CompareText(nFileName, Result.Filename);
    if Diff=0 then
     Exit;  { found it }
    if Diff<0 then
@@ -583,35 +586,35 @@ begin
  if Flags and ofFileLink = 0 then
   Result:=Name+TypeInfo
  else
-  Result:=NomFichier;
+  Result:=Filename;
 end;
 
-function QFileObject.LireEnteteFichierStd(Source: TStream; var SourceTaille: Integer) : Integer;
+function QFileObject.ReadStandardFileHeading(Source: TStream; var SourceTaille: Integer) : Integer;
 var
- Entete: TEnteteFichierQ;
+ Header: TFileHeaderBinary;
  S: String;
  Lu: Integer;
 begin
- Lu:=Source.Read(Entete, SizeOf(Entete));
- if (Lu < TailleEnteteMin)
- or (Entete.Signature<>SignatureFichierQ) then
+ Lu:=Source.Read(Header, SizeOf(Header));
+ if (Lu < c_FileSignatureSize)
+ or (Header.Signature<>c_FileSignatureQQRK) then
   Raise EErrorFmt(5184, [LoadName]);
- case Entete.Version of
-  VersionFichierQ: begin
-                    if (Lu<SizeOf(Entete))
-                    or (Entete.TailleTotale < SizeOf(Entete)) then
+ case Header.Version of
+  c_FileVersionBinary: begin
+                    if (Lu<SizeOf(Header))
+                    or (Header.TotalFileLength < SizeOf(Header)) then
                      Raise EErrorFmt(5186, [LoadName]);
-                    if Entete.TailleTotale > SourceTaille then
+                    if Header.TotalFileLength > SourceTaille then
                      FileCrashRecoverHack;
-                    S:=CharToPas(Entete.InfoType);
+                    S:=CharToPas(Header.InfoType);
                     if CompareText(S, TypeInfo) <> 0 then
                      Raise EErrorFmt(5187, [LoadName, S]);
-                    SourceTaille:=Entete.TailleTotale - SizeOf(Entete);
+                    SourceTaille:=Header.TotalFileLength - SizeOf(Header);
                     ReadFormat:=rf_Private;
                    end;
-  VersionSourceQ: begin
-                   Source.Seek(TailleEnteteMin - Lu, soFromCurrent);
-                   Dec(SourceTaille, TailleEnteteMin);
+  c_FileVersionText: begin
+                   Source.Seek(c_FileSignatureSize - Lu, soFromCurrent);
+                   Dec(SourceTaille, c_FileSignatureSize);
                    ReadFormat:=rf_AsText;
                   end;
   else
@@ -630,10 +633,10 @@ begin
   begin
    FileObjectClassInfo(Info);
    if Info.QuArKFileObject then  { object is stored in QuArK style }
-    if LireEnteteFichierStd(F, FSize) <> rf_AsText then
+    if ReadStandardFileHeading(F, FSize) <> rf_AsText then
      inherited
     else
-     ChargerCommeTexte(F, FSize)
+     LoadObjsFromText(F, FSize)
    else   { object is stored in its own format }
     if ReadFormat>=rf_Default then
      ReadUnformatted(F, FSize)  { as unformatted stand-alone file }
@@ -645,25 +648,25 @@ end;
 (*procedure QQuArKFileObject.LoadFile(F: TStream; FSize: Integer);
 begin
  if (ReadFormat=rf_Private)
- or (LireEnteteFichierStd(F, FSize) <> rf_AsText) then
+ or (ReadStandardFileHeading(F, FSize) <> rf_AsText) then
   inherited LoadFile(F, FSize)
  else
-  ChargerCommeTexte(F, FSize);
+  LoadObjsFromText(F, FSize);
 end;*)
 
 (*function ChargerQuArK(F: TStream; Taille: Integer) : Boolean;
 begin
  if (ReadFormat=rf_Private)
- or (LireEnteteFichierStd(F, Taille) <> rf_AsText) then
+ or (ReadStandardFileHeading(F, Taille) <> rf_AsText) then
   Result:=True
  else
   begin
-   ChargerCommeTexte(F, Taille);
+   LoadObjsFromText(F, Taille);
    Result:=False;
   end;
 end;*)
 
-procedure QFileObject.ChargerCommeTexte(F: TStream; Taille: Integer);
+procedure QFileObject.LoadObjsFromText(F: TStream; Taille: Integer);
 var
  S: String;
 begin
@@ -671,8 +674,8 @@ begin
  F.ReadBuffer(S[1], Taille);
  ConstructObjsFromText(Self, PChar(S), Taille);
   { when loading from the Addons path, try to build a cached (compiled) version }
-(* if (ExtractFilePath(NomFichier)=ApplicationPath+AddonsPath)
- and (ExtractFileExt(NomFichier)=TypeInfo)... *)
+(* if (ExtractFilePath(Filename)=ApplicationPath+AddonsPath)
+ and (ExtractFileExt(Filename)=TypeInfo)... *)
 end;
 
 procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
@@ -848,18 +851,18 @@ begin
  finally FinTravail; end;
 end;
 
-procedure QFileObject.EcrireEnteteFichierStd(TotalSize: Integer; F: TStream);
+procedure QFileObject.WriteStandardFileHeading(TotalSize: Integer; F: TStream);
 var
- Entete: TEnteteFichierQ;
+ Header: TFileHeaderBinary;
 begin
  if TotalSize=0 then
-  Entete.Signature:=0   { while the whole file is not written yet }
+  Header.Signature:=0   { while the whole file is not written yet }
  else
-  Entete.Signature:=SignatureFichierQ;
- Entete.Version:=VersionFichierQ;
- Entete.TailleTotale:=TotalSize;
- PasToChar(Entete.InfoType, TypeInfo);
- F.WriteBuffer(Entete, SizeOf(Entete));
+  Header.Signature:=c_FileSignatureQQRK;
+ Header.Version:=c_FileVersionBinary;
+ Header.TotalFileLength:=TotalSize;
+ PasToChar(Header.InfoType, TypeInfo);
+ F.WriteBuffer(Header, SizeOf(Header));
 end;
 
 function MakeTempFileName(const Tag: String) : String;
@@ -984,7 +987,7 @@ begin
   Info1:=TFileSibling.Create; try
   Info1.Format:=rf_Siblings;
   if Update then
-   Info1.BasePath:=ExtractFilePath(NomFichier)
+   Info1.BasePath:=ExtractFilePath(Filename)
   else
    Info1.BasePath:=ExtractFilePath(AlternateFile);
   SaveFile1(Info1);
@@ -1001,7 +1004,7 @@ begin
   if Update then
    begin
     ReadFormat:=Format;
-    AlternateFile:=NomFichier;
+    AlternateFile:=Filename;
    end;
 
    { figure out if we can actually override the target file }
@@ -1017,7 +1020,7 @@ begin
    { copy or move the file to the target name }
   AlternateFile:=ExpandFileName(AlternateFile);
   if Update then
-   NomFichier:=AlternateFile;
+   Filename:=AlternateFile;
 
   S:=Copy(AlternateFile, 1, Pos('\',AlternateFile));
   if GetDriveType(PChar(S)) = DRIVE_FIXED then
@@ -1087,7 +1090,7 @@ procedure QFileObject.TrySavingNow;
  F: TQForm1;}
 begin
  if FFlags and ofFileLink = 0 then
-  Raise EErrorFmt(5531, [NomFichier]);
+  Raise EErrorFmt(5531, [Filename]);
  SaveInFile(RecommendFormat, '');
 {while EnumObjectWindow(F) do
   SendMessage(F.Handle, wm_InternalMessage, wp_SetModify, 0);
@@ -1270,9 +1273,9 @@ procedure ConvertObjsToText(Self: QObject; L: TStringList; Comment: Boolean);
 var
  S: String;
 begin
- SetLength(S, TailleEnteteMin);
- PInteger(@S[1])^:=SignatureFichierQ;
- PInteger(@S[1+SizeOf(LongInt)])^:=VersionSourceQ;
+ SetLength(S, c_FileSignatureSize);
+ PInteger(@S[1])^:=c_FileSignatureQQRK;
+ PInteger(@S[1+SizeOf(LongInt)])^:=c_FileVersionText;
  L.Add(S);
  if Comment then
   begin
@@ -1284,9 +1287,9 @@ begin
  L.Add('}');
 end;
 
-function EnteteObjTexte(var P: PChar) : Boolean;
+function CheckFileSignature(var P: PChar) : Boolean;
 begin
- Result:=(PInteger(P)^=SignatureFichierQ) and (PInteger(P+SizeOf(LongInt))^=VersionSourceQ);
+ Result:=(PInteger(P)^=c_FileSignatureQQRK) and (PInteger(P+SizeOf(LongInt))^=c_FileVersionText);
  Inc(P, 2*SizeOf(LongInt));
 end;
 
@@ -1303,13 +1306,13 @@ begin
      if Info1.QuArKFileObject then
       begin    { object is stored in QuArK style }
        Origin:=F.Position;
-       EcrireEnteteFichierStd(0, F);
+       WriteStandardFileHeading(0, F);
        Format:=rf_Private;
        inherited SaveFile(Info);
        Format:=rf_Default;
        Eof:=F.Position;
        F.Position:=Origin;
-       EcrireEnteteFichierStd(Eof-Origin, F);
+       WriteStandardFileHeading(Eof-Origin, F);
        F.Position:=Eof;
       end
      else     { object is stored as unformatted data }
@@ -1341,19 +1344,19 @@ begin
   rf_Default:
     begin
      Origin:=F.Position;
-     EcrireEnteteFichierStd(0, F);
+     WriteStandardFileHeading(0, F);
      inherited SaveFile(rf_Private, F);
      Eof:=F.Position;
      F.Position:=Origin;
-     EcrireEnteteFichierStd(Eof-Origin, F);
+     WriteStandardFileHeading(Eof-Origin, F);
      F.Position:=Eof;
     end;
   rf_AsText:
     begin
      L:=TStringList.Create; try
-     SetLength(S, TailleEnteteMin);
-     PInteger(@S[1])^:=SignatureFichierQ;
-     PInteger(@S[1+SizeOf(LongInt)])^:=VersionSourceQ;
+     SetLength(S, c_FileSignatureSize);
+     PInteger(@S[1])^:=c_FileSignatureQQRK;
+     PInteger(@S[1+SizeOf(LongInt)])^:=c_FileVersionText;
      L.Add(S);
      L.Add(FmtLoadStr1(5200, [QuarkVersion, Name+TypeInfo]));
      L.Text:=L.Text;   { #13 --> #13#10 }
@@ -1379,19 +1382,19 @@ begin
   rf_Default:
     begin
      Origin:=F.Position;
-     EcrireEnteteFichierStd(0, F);
+     WriteStandardFileHeading(0, F);
      SaveFile(rf_Private, F);
      Eof:=F.Position;
      F.Position:=Origin;
-     EcrireEnteteFichierStd(Eof-Origin, F);
+     WriteStandardFileHeading(Eof-Origin, F);
      F.Position:=Eof;
     end;
   rf_AsText:
     begin
      L:=TStringList.Create; try
-     SetLength(S, TailleEnteteMin);
-     PInteger(@S[1])^:=SignatureFichierQ;
-     PInteger(@S[1+SizeOf(LongInt)])^:=VersionSourceQ;
+     SetLength(S, c_FileSignatureSize);
+     PInteger(@S[1])^:=c_FileSignatureQQRK;
+     PInteger(@S[1+SizeOf(LongInt)])^:=c_FileVersionText;
      L.Add(S);
      L.Add(FmtLoadStr1(5200, [QuarkVersion, Name+TypeInfo]));
      L.Text:=L.Text;   { #13 --> #13#10 }
@@ -1573,7 +1576,7 @@ end;}
 {procedure QFileObject.LienFichier(const theFilename: String);
 begin
  FFlags:=FFlags or (ofLienFichier or ofSurDisque);
- NomFichier:=ExpandFileName(theFilename);
+ Filename:=ExpandFileName(theFilename);
 end;}
 
 function QFileObject.EnumObjectWindow(var F: TQForm1) : Boolean;
@@ -1638,7 +1641,7 @@ begin
   try
    FFileObject.FileObjectClassInfo(Info);
    SavingTo:=FFileObject.RecommendFormat;
-   if (AskName=fm_SaveAsFile) or (SavingTo=rf_Private) or (FFileObject.NomFichier='')
+   if (AskName=fm_SaveAsFile) or (SavingTo=rf_Private) or (FFileObject.Filename='')
    or ((SavingTo<>rf_AsText) and (Info.FileExt=0)) then
     begin
      S:='';
@@ -1681,7 +1684,7 @@ begin
      else
       if SavingTo=rf_AsText then
        SaveDialog1.FilterIndex:=SavingAsText;
-     S:=FFileObject.NomFichier;
+     S:=FFileObject.Filename;
      if S<>'' then
       begin
        S:=ExtractFileName(S);
@@ -1750,7 +1753,7 @@ begin
        FFileObject.AddRef(+1);
       end;
 
-     FFileObject.NomFichier:=FileName;
+     FFileObject.Filename:=FileName;
      FileName:=ExtractFileName(FileName);
      S:=FFileObject.TypeInfo;
      if CompareText(Copy(FileName, Length(FileName)-Length(S)+1, MaxInt), S)=0 then
@@ -1763,7 +1766,7 @@ begin
     FFileObject.SaveInFile(SavingTo, '')
    else
     begin  { must wrap into a .qrk to save as text }
-     S:=ChangeFileExt(FFileObject.NomFichier, '.qrk');
+     S:=ChangeFileExt(FFileObject.Filename, '.qrk');
      Dup:=BuildFileRoot(S, Nil);
      Dup.AddRef(+1); try
      Dup.SubElements.Add(FFileObject);
@@ -1940,8 +1943,8 @@ begin
   end
  else
   begin
-   if NomFichier='' then Exit;
-   S:=ExtractFilePath(NomFichier)+nName;
+   if Filename='' then Exit;
+   S:=ExtractFilePath(Filename)+nName;
    while Pos('/',S)<>0 do
     S[Pos('/',S)]:='\';
    if FileExists(S) then
@@ -2077,7 +2080,7 @@ begin
  case attr[0] of
   'f': if StrComp(attr, 'filename') = 0 then
         begin
-         Result:=PyString_FromString(PChar(NomFichier));
+         Result:=PyString_FromString(PChar(Filename));
          Exit;
         end;
   't': if StrComp(attr, 'tempfilename') = 0 then
@@ -2104,7 +2107,7 @@ begin
          begin
           P:=PyString_AsString(value);
           if P=Nil then Exit;
-          NomFichier:=P;
+          Filename:=P;
           Result:=True;
           Exit;
          end;
@@ -2416,7 +2419,7 @@ begin
    GetViewForm.Perform(wm_InternalMessage, wp_FileMenu, AskName);
    Exit;
   end;
- if (AskName=fm_Save) and (FFileObject.NomFichier='') then
+ if (AskName=fm_Save) and (FFileObject.Filename='') then
   begin  { stand-alone newly created object : ask if we must save in QuArK Explorer }
    case MessageDlg(LoadStr1(5601), mtConfirmation, mbYesNoCancel, 0) of
     mrYes: begin

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -43,7 +46,7 @@ type
  TAnalyseClic = record
                  Suivant: PAnalyseClic;
                  T: Q3DObject;
-                 H: Reel;
+                 H: TDouble;
                 end;}
  Q3DObject = class(QObject)
              protected
@@ -56,7 +59,7 @@ type
                function GetOrigin(var Pt: TVect) : Boolean; virtual;
               {function AnalyserClic(ModeAnalyse: Integer) : Q3DObject;}
                procedure AnalyseClic(Liste: PyObject); virtual;
-               procedure Deplacement(const PasGrille: Reel); virtual;
+               procedure Deplacement(const PasGrille: TDouble); virtual;
                procedure ChercheExtremites(var Min, Max: TVect); virtual;
               {function VisuallySelected : Boolean; virtual;}
               {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; virtual;}
@@ -80,28 +83,28 @@ const   { for Info.TexAntiScroll }
  tas_NearestAxis   = 2;
 
 type
- TesCouleurs = (esCouleurGrise, esNormal, esSelGroupe, esSelection, esSel2,
+ UserColors = (esGreyColor, esNormal, esSelectedGroup, esSelection, esSel2,
                 esDuplicator, esModel, esModelNoSkin);
- TCouleursTraits = array[TesCouleurs] of Char;
+ TColorTraits = array[UserColors] of Char;
 
- TModeDeplacement = (mdDeplacement, mdDeplacementGrilleFort, mdDeplacementGrille, mdLineaire, mdLineaireCompat,
-                     mdImageDuplicator, mdImageDuplicatorGrille, mdInflate, {mdInflateFace,}
-                     mdVecteurAngles);
- TModeDessin = set of (mdParcourirSel, mdCouleurFixe, mdRedrawFaces, mdComputePolys, mdComputingPolys);
+ TDisplacementMode = (mdDisplacement, mdStrongDisplacementGrid, mdDisplacementGrid, mdLinear, mdLineaireCompat,
+                     mdImageDuplicator, mdImageDuplicatorGrid, mdInflate, {mdInflateFace,}
+                     mdVectorAngles);
+ TModeDessin = set of (mdTraversalSelected, mdColorFixed, mdRedrawFaces, mdComputePolys, mdComputingPolys);
 {TModeDeplTextures = (mdtAucun, mdtTranslations);}
 
- TInfoDessiner = record
+ TDrawInfo = record
                   DC: HDC;
-                  PinceauSelection, PinceauNoir, PinceauGris: HPen;
+                  SelectedBrush, BlackBrush, GreyBrush: HPen;
                   ModeAff: Integer;
                   {VisibleRect: TRect;}
                   {SelectionVisuelle: TTreeMap;}
                   X, Y: Integer;
-                  ClicZ: Reel;
+                  ClicZ: TDouble;
                   Clic, Clic2: TVect;
-                  Matrice: TMatriceTransformation;
+                  Matrice: TMatrixTransformation;
                   MapIcons: HImageList;
-                  ModeDeplacement: TModeDeplacement;
+                  ModeDeplacement: TDisplacementMode;
                   ConstruirePolyedres: Boolean;
                   DessinerBBox: Byte;
                   ModeDessin: TModeDessin;
@@ -112,12 +115,12 @@ type
                   DefWhiteOnBlack: Boolean;
                   TexAntiScroll: Byte;                  
                   ShiftState: TShiftState;
-                  CouleursTraits: TCouleursTraits;
+                  ColorTraits: TColorTraits;
                   Restrictor: Q3DObject;
                  end;
 
 var
- Info: TInfoDessiner;
+ Info: TDrawInfo;
 
  {------------------------}
 
@@ -142,17 +145,17 @@ uses QkQuakeCtx, QkUnknown, PyObjects, Quarkx;
 
  {------------------------}
 
-(*function ChargeCouleursTraits : TCouleursTraits;
+(*function ChargeCouleursTraits : TColorTraits;
 const
- DefaultsValues: TCouleursTraits = (#3,#255,#15,#244,#47,#210,#0,#5);
- Specs: array[TesCouleurs] of String =
+ DefaultsValues: TColorTraits = (#3,#255,#15,#244,#47,#210,#0,#5);
+ Specs: array[UserColors] of String =
    ('Bkgnd', 'Normal', 'GroupSel', 'UniqueSel', 'HiddenSel',
     'Duplicator', 'Model', 'ModelNoSkin');
 
 var
  I: Integer;
  L: TQList;
- T: TesCouleurs;
+ T: UserColors;
  S: String;
 begin
  Result:=DefaultsValues;
@@ -194,7 +197,7 @@ begin
  GetOrigin:=False;
 end;
 
-procedure Q3DObject.Deplacement(const PasGrille: Reel);
+procedure Q3DObject.Deplacement(const PasGrille: TDouble);
 begin
 end;
 
@@ -211,8 +214,8 @@ begin
   if Odd(SelMult) then
    begin
     DrawFlags:=df_HasBackColor;
-    LineColor:=Info.CouleursTraits[esSelection];
-    LineBackColor:=Info.CouleursTraits[esSel2];
+    LineColor:=Info.ColorTraits[esSelection];
+    LineBackColor:=Info.ColorTraits[esSel2];
    end
   else
    begin
@@ -221,9 +224,9 @@ begin
     while (T<>Nil) and not Odd(T.SelMult) do
      T:=T.TvParent;
     if T=Nil then
-     LineColor:=Info.CouleursTraits[esNormal]
+     LineColor:=Info.ColorTraits[esNormal]
     else
-     LineColor:=Info.CouleursTraits[esSelGroupe];
+     LineColor:=Info.ColorTraits[esSelectedGroup];
    end;
 end;
 
@@ -317,7 +320,7 @@ begin
  Py_DECREF(couple);
 end;
 
-(*procedure Q3DObject.ResultatAnalyseClic(var Liste: PAnalyseClic; nH: Reel);
+(*procedure Q3DObject.ResultatAnalyseClic(var Liste: PAnalyseClic; nH: TDouble);
 var
  P2: ^PAnalyseClic;
  Nouveau: PAnalyseClic;
@@ -387,7 +390,7 @@ end;
 function qTranslate(self, args: PyObject) : PyObject; cdecl;
 var
  V1: PyVect;
- nGrid: Reel;
+ nGrid: TDouble;
 begin
  try
   Result:=Nil;
@@ -395,9 +398,9 @@ begin
   if not PyArg_ParseTupleX(args, 'O!|d', [@TyVect_Type, @V1, @nGrid]) then
    Exit;
   if nGrid>0 then
-   Info.ModeDeplacement:=mdDeplacementGrille
+   Info.ModeDeplacement:=mdDisplacementGrid
   else
-   Info.ModeDeplacement:=mdDeplacement;
+   Info.ModeDeplacement:=mdDisplacement;
   Info.Clic:=V1^.V;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
@@ -413,7 +416,7 @@ end;
 
 function qForceToGrid(self, args: PyObject) : PyObject; cdecl;
 var
- nGrid: Reel;
+ nGrid: TDouble;
 begin
  try
   Result:=Nil;
@@ -421,7 +424,7 @@ begin
    Exit;
   if nGrid>0 then
    begin
-    Info.ModeDeplacement:=mdDeplacementGrilleFort;
+    Info.ModeDeplacement:=mdStrongDisplacementGrid;
     Info.Clic:=Origine;
     with QkObjFromPyObj(self) as Q3DObject do
      begin
@@ -445,7 +448,7 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O!O!', [@TyVect_Type, @V1, @TyMatrix_Type, @M1]) then
    Exit;
-  Info.ModeDeplacement:=mdLineaire;
+  Info.ModeDeplacement:=mdLinear;
   Info.Clic:=V1^.V;
   Info.Matrice:=M1^.M;
   with QkObjFromPyObj(self) as Q3DObject do

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -43,34 +46,34 @@ const
  DemiFacteur     = 1 shl DemiFacteur1;
 
 type
- Reel = Double;
+ TDouble = Double;
  PVect = ^TVect;
  TVect = record
-          X, Y, Z: Reel;
+          X, Y, Z: TDouble;
          end;
  scalar_t = Single;
  vec3_p = ^vec3_t;
  vec3_t = packed array[0..2] of scalar_t;
 
 function Cross(const V1, V2: TVect) : TVect;
-function Dot(const V1, V2: TVect) : Reel;
+function Dot(const V1, V2: TVect) : TDouble;
 procedure Normalise(var V: TVect);
-function AngleXY(const X, Y: Reel) : Reel;
-procedure LireValeurs(const S1: String; var Vals: array of Reel);
+function AngleXY(const X, Y: TDouble) : TDouble;
+procedure LireValeurs(const S1: String; var Vals: array of TDouble);
 function LireVecteur(const S: String) : TVect;
-function LireReelEx(const S: String) : Reel;
-function ftos(const F: Reel) : String;
-function ftos0(const F: Reel) : String;
-function ftos1(const F: Reel) : String;
-function ftosp(const F: Reel; const P: integer) : String;
+function LireReelEx(const S: String) : TDouble;
+function ftos(const F: TDouble) : String;
+function ftos0(const F: TDouble) : String;
+function ftos1(const F: TDouble) : String;
+function ftosp(const F: TDouble; const P: integer) : String;
 function vtos(const V: TVect) : String;
 function vtos1(const V: TVect) : String;
-function StrToFloatDef(const S: String; const Def: Reel) : Reel;
+function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
 function CalculeMAngle(const Angles: TVect) : TVect;
 function coltov(C: TColor) : TVect;
 function coltos255(C: TColor) : String;
 function vtocol(const V: TVect) : TColor;
-function vtocol255(const R,G,B: Reel) : TColor;
+function vtocol255(const R,G,B: TDouble) : TColor;
 procedure NormaliseCol1(var V: TVect);
 {function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
 function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
@@ -83,11 +86,11 @@ const
 type
  TModeProj = (VueXY, VueXZ, Vue3D);
  TProjEventEx = function (const P: TVect; var Pt: TPoint) : Boolean of object;
- TProfondeurEventEx = function (const P: TVect) : Reel of object;
+ TProfondeurEventEx = function (const P: TVect) : TDouble of object;
 
 var
  pDeltaX, pDeltaY, pDeltaZ: Integer;
- pProjX, pProjY, pProjZ: Reel;
+ pProjX, pProjY, pProjZ: TDouble;
  ModeProj: TModeProj;
  CalculeProj3D: TProjEventEx;
  CalculeProfondeur3D: TProfondeurEventEx;
@@ -100,7 +103,7 @@ var
 function Proj(const P: TVect) : TPoint;
 function ProjEx(const P: TVect; var Dest: TPoint) : Boolean;
 function Espace(X,Y,Z: Integer) : TVect;
-function Profondeur(const V: TVect) : Reel;
+function Profondeur(const V: TVect) : TDouble;
 procedure InitProjVar;
 
 function TailleMaximaleEcranX: Integer;
@@ -119,7 +122,7 @@ implementation
 uses Quarkx;
 
 var
- Facteur: Reel;
+ Facteur: TDouble;
 
 function Cross(const V1, V2: TVect) : TVect;
 begin
@@ -128,14 +131,14 @@ begin
  Cross.Z := v1.X*v2.Y - v1.Y*v2.X;
 end;
 
-function Dot(const V1, V2: TVect) : Reel;
+function Dot(const V1, V2: TVect) : TDouble;
 begin
  Dot:=V1.X*V2.X + V1.Y*V2.Y + V1.Z*V2.Z;
 end;
 
 procedure Normalise(var V: TVect);
 var
- F: Reel;
+ F: TDouble;
 begin
  F:=1/Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
  V.X:=V.X*F;
@@ -188,7 +191,7 @@ begin
  Facteur:=1/(Sqr(pProjX)+Sqr(pProjY));
 end;
 
-function Profondeur(const V: TVect) : Reel;
+function Profondeur(const V: TVect) : TDouble;
 begin
  case ModeProj of
   VueXY: Profondeur:=-V.Z;
@@ -211,7 +214,7 @@ begin
    Result:=ArcTan(Y/X)+pi;
 end;
 
-function ftos(const F: Reel) : String;
+function ftos(const F: TDouble) : String;
 var
  R: Integer;
 begin
@@ -225,7 +228,7 @@ begin
   end;
 end;
 
-function ftos0(const F: Reel) : String;
+function ftos0(const F: TDouble) : String;
 var
  R: Integer;
 begin
@@ -239,7 +242,7 @@ begin
   end;
 end;
 
-function ftos1(const F: Reel) : String;
+function ftos1(const F: TDouble) : String;
 var
  R: Integer;
 begin
@@ -253,7 +256,7 @@ begin
   end;
 end;
 
-function ftosp(const F: Reel; const P: integer) : String;
+function ftosp(const F: TDouble; const P: integer) : String;
 var
  R: Integer;
 begin
@@ -267,7 +270,7 @@ begin
   end;
 end;
 
-procedure LireValeurs(const S1: String; var Vals: array of Reel);
+procedure LireValeurs(const S1: String; var Vals: array of TDouble);
 var
  P, I: Integer;
  S: String;
@@ -288,7 +291,7 @@ end;
 
 function LireVecteur(const S: String) : TVect;
 var
- Lu: array[1..3] of Reel;
+ Lu: array[1..3] of TDouble;
 begin
  LireValeurs(S, Lu);
  Result.X:=Lu[1];
@@ -296,7 +299,7 @@ begin
  Result.Z:=Lu[3];
 end;
 
-function LireReelEx(const S: String) : Reel;
+function LireReelEx(const S: String) : TDouble;
 var
  S1, S2: String;
  P: Integer;
@@ -351,7 +354,7 @@ end;
 
 function CalculeMAngle(const Angles: TVect) : TVect;
 var
- A, B: Reel;
+ A, B: TDouble;
 begin
  A:=Angles.Y*(pi/180);
  B:=Angles.X*(-pi/180);
@@ -372,7 +375,7 @@ end;
 
 (*function LirePositionFenetre(const R: TRect) : String;
 var
- XMax, YMax: Reel;
+ XMax, YMax: TDouble;
 begin
 {DecimalSeparator:='.';}
  XMax:=1/TailleMaximaleEcranX;
@@ -385,7 +388,7 @@ end;
 
 function AppliquerPositionFenetre(const S: String) : TRect;
 var
- V: array[0..3] of Reel;
+ V: array[0..3] of TDouble;
  XMax, YMax: Integer;
 begin
  LireValeurs(S, V);
@@ -676,7 +679,7 @@ begin
  Result:=ftos1(V.X) + ' ' + ftos1(V.Y) + ' ' + ftos1(V.Z);
 end;
 
-function StrToFloatDef(const S: String; const Def: Reel) : Reel;
+function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
 begin
  if S='' then
   Result:=Def
@@ -711,7 +714,7 @@ begin
  Result:=vtocol255(V.X*$100, V.Y*$100, V.Z*$100);
 end;
 
-function vtocol255(const R,G,B: Reel) : TColor;
+function vtocol255(const R,G,B: TDouble) : TColor;
 var
  ComposantesCible: array[1..3] of Byte absolute Result;
  Entier: Integer;
@@ -730,7 +733,7 @@ end;
 
 procedure NormaliseCol1(var V: TVect);
 var
- Max: Reel;
+ Max: TDouble;
 begin
  if V.X>V.Y then Max:=V.X else Max:=V.Y;
  if V.Z>Max then Max:=V.Z;

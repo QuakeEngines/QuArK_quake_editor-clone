@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -290,7 +293,7 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
    I, J: Integer;
    Test, Macro: QObject;
    V1, V2: TVect;
-   R: Reel;
+   R: TDouble;
    Pt1, Pt2, Pt3, Pt4, Pt5: TPoint;
    Pen: HPen;
   begin

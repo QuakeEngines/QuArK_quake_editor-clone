@@ -121,7 +121,7 @@ type
                  FullScreen: Boolean;
                  SecondMonitor: Char;  { #0: none, '1': left, '2': right }
                  FKey3D: array[TKey3D] of Word;
-                 FRAMETIME: Reel;
+                 FRAMETIME: TDouble;
                  Animation: PAnimationSeq;
                  OldCameraPos: PyObject;
                  procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
@@ -435,7 +435,7 @@ end;
 procedure TPyMapView.ReadSetupInformation(Inv: Boolean);
 var
 {Size: array[1..2] of Single;}
- VAngle: Reel;
+ VAngle: TDouble;
  K: TKey3D;
  ve1: TViewEntities;
  AllowsGDI: Boolean;
@@ -637,7 +637,7 @@ var
  S: String;
  R: TRect;
  P1: TPointProj;
- W, H: Reel;
+ W, H: TDouble;
 begin
  if not PyArg_ParseTupleX(FBackground, 'sO!f:background', [@filename, @TyVect_Type, @center, @scale]) then
   Exit;
@@ -1229,23 +1229,23 @@ const
 var
  K, K1: TKey3D;
  KeySet: set of TKey3D;
- Speed, Accel: array[Boolean] of Reel;
- RotateSpeed: Reel;
- v: array[1..5] of Reel;
+ Speed, Accel: array[Boolean] of TDouble;
+ RotateSpeed: TDouble;
+ v: array[1..5] of TDouble;
  LR: Boolean;
  DC, SrcDC: HDC;
  TickCounts: array[0..NumTickCounts-1] of LongInt;
  NumTicks: Integer;
  Msg: TMsg;
  nEye, Look, Right, Down: TVect;
- nHorzAngle, nPitchAngle: Reel;
+ nHorzAngle, nPitchAngle: TDouble;
  BackBuffer, OldBmp: HBitmap;
  Brush: HBrush;
 {$IFDEF POSITIONLOG}
  F: System.Text;
 {$ENDIF}
 
-  function Test(var v1: Reel; KPlus, KMinus: TKey3D; Max: Reel; Zero: Boolean) : Boolean;
+  function Test(var v1: TDouble; KPlus, KMinus: TKey3D; Max: TDouble; Zero: Boolean) : Boolean;
   begin
    Result:=True;
    if (KMinus in KeySet) and not (KPlus in KeySet) then
@@ -1518,12 +1518,12 @@ const
  dg_OnlyHighlighted = $20000;
  dg_n_mask = $FFFF;
 (*var
- x1, y1, x2, y2: Reel;
- a,b,c,d: Reel;
+ x1, y1, x2, y2: TDouble;
+ a,b,c,d: TDouble;
  DC: HDC;
  R: TRect;
  S, T, HMin, HMax, HX, HY: Integer;
- X, Y: Reel;
+ X, Y: TDouble;
  Center: TPointProj;
 
   function Dot(x,y: Integer; hx,hy: Integer) : Boolean;
@@ -1543,9 +1543,9 @@ const
 
   type TDir = set of (Up, Down, Left, Right);
 
-  procedure ExtendedDraw(const x,y: Reel; hx,hy: Integer; Dir: TDir);
+  procedure ExtendedDraw(const x,y: TDouble; hx,hy: Integer; Dir: TDir);
   var
-   v,w: Reel;
+   v,w: TDouble;
    I: Integer;
   begin
    if Up in Dir then
@@ -1640,20 +1640,20 @@ begin
 end;*)
 
 var
- x1, y1, x2, y2: Reel;
- a,b,c,d: Reel;
+ x1, y1, x2, y2: TDouble;
+ a,b,c,d: TDouble;
  DC: HDC;
  R, CR: TRect;
- PasG, PasInv: Reel;
+ PasG, PasInv: TDouble;
  I,J,K, Taille, Highlight: Integer;
- pXI, pXJ, pYI, pYJ, pXJ0, pYJ0: Reel;
+ pXI, pXJ, pYI, pYJ, pXJ0, pYJ0: TDouble;
  pX, pY: TVect;
  Pen: HPen;
  PointArray, P, P2: PInteger;
  Center: TPointProj;
  BB, OH: Boolean;
 
-  procedure Tester(X,Y: Reel);
+  procedure Tester(X,Y: TDouble);
   var
    S, T: Integer;
   begin
@@ -2153,27 +2153,27 @@ begin
   Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
   if flags and dmOtherColor = 0 then
    begin
-    Info.PinceauGris:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
+    Info.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
     Pen1:=GetStockObject(Null_Pen);
    end
   else
    begin
-    Info.PinceauGris:=0;
+    Info.GreyBrush:=0;
     Pen1:=CreatePen(ps_Solid, 0, OtherColor);
-    Info.PinceauNoir:=Pen1;
+    Info.BlackBrush:=Pen1;
    end;
   Pen:=SelectObject(Info.DC, Pen1);
   if flags and dmSelected = 0 then
-   Info.PinceauSelection:=0
+   Info.SelectedBrush:=0
   else
-   Info.PinceauSelection:=CreatePen(ps_Dot, 0, C);
+   Info.SelectedBrush:=CreatePen(ps_Dot, 0, C);
   Info.ModeDessin:=[];
   if flags and dmDontDrawSel = 0 then
-   Include(Info.ModeDessin, mdParcourirSel);
+   Include(Info.ModeDessin, mdTraversalSelected);
   if flags and dmBBox <> 0 then
    Info.DessinerBBox:=BBox_Actif or BBox_Cadre or BBox_Selection;
   if flags and dmOtherColor <> 0 then
-   Include(Info.ModeDessin, mdCouleurFixe);
+   Include(Info.ModeDessin, mdColorFixed);
   if flags and dmRedrawFaces <> 0 then
    Include(Info.ModeDessin, mdRedrawFaces);
   try
@@ -2220,8 +2220,8 @@ begin
    { /tiglari }
    SelectObject(Info.DC, Brush);
    SelectObject(Info.DC, Pen);
-   DeleteObject(Info.PinceauSelection);
-   DeleteObject(Info.PinceauGris);
+   DeleteObject(Info.SelectedBrush);
+   DeleteObject(Info.GreyBrush);
    DeleteObject(Pen1);
   end;
 
@@ -2471,7 +2471,7 @@ function mScale(self, args: PyObject) : PyObject; cdecl;
 var
  v1: PyVect;
  V: PVect;
- F: Reel;
+ F: TDouble;
 begin
  try
   Result:=Nil;

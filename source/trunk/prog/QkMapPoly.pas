@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.9  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -65,7 +68,7 @@ type
  EPolyedreInvalide = class(Exception)
                      end;
 
- TFaceParams = array[1..5] of Reel;
+ TFaceParams = array[1..5] of TDouble;
 
  TFace     = class;
  PSurface = ^TSurface;
@@ -82,7 +85,7 @@ type
                DescFaces: Pointer;
                NbAretes2: Integer;
                procedure DetruireSommets;
-               function ConstruireSommets1(const DistMin: Reel; var Err1, Err2: String) : Boolean;
+               function ConstruireSommets1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
                function PyCloneEmpty : TPolyhedron;
              protected
                PolyhedronState: TPolyhedronState;
@@ -120,7 +123,7 @@ type
                procedure AjouteFace(FJ: TFace; Copie: Boolean);
                function EnumAretes(Sommet: PSommet; var nSommets: TTableauFSommets) : Integer;
                function PyGetAttr(attr: PChar) : PyObject; override;
-               procedure Deplacement(const PasGrille: Reel); override;
+               procedure Deplacement(const PasGrille: TDouble); override;
              end;
  TPolyedre = TPolyhedron;
 
@@ -131,7 +134,7 @@ type
                       function GetTextureMirror : Boolean;
                       procedure SetTextureMirror(Value: Boolean);
                     protected
-                      procedure UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: Reel);
+                      procedure UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: TDouble);
                     public
                       property NomTex : String read GetNomTex write SetNomTex;
                       procedure FindTextures(SortedList: TStringList); override;
@@ -159,7 +162,7 @@ type
                 { Vertices: PTableauPointsProj or Nil }
              public
                Normale: TVect;
-               Dist: Reel;
+               Dist: TDouble;
                destructor Destroy; override;
                procedure PreDessinerSel; override;
                procedure Dessiner; override;
@@ -182,13 +185,13 @@ type
                function CentreFace : TVect;
                function GetOrigin(var Pt: TVect) : Boolean; override;
                procedure ChercheExtremites(var Min, Max: TVect); override;
-               procedure Deplacement(const PasGrille: Reel); override;
+               procedure Deplacement(const PasGrille: TDouble); override;
                procedure Distortion(const nNormal, FixPoint: TVect);
                procedure DistortionPoint(const Fix1, Fix2, Src, Dest: TVect);
                procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
               {property VertexCount[Cmpo: Integer] : Integer read GetVertexCount;
                property Vertex[Cmpo, I: Integer] : TVect read GetVertex;}
-               procedure SetFaceFromParams(const nNormale: TVect; nDist: Reel; const TexParams: TFaceParams);
+               procedure SetFaceFromParams(const nNormale: TVect; nDist: TDouble; const TexParams: TFaceParams);
                function GetFaceError : String;
               {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
                property FaceOfPoly: PSurface read GetFaceOfPoly;
@@ -302,7 +305,7 @@ end;
 
 procedure TroisPointsDansFaceAncienStyle(const S: TFace; var Pt, Pt2, Pt3: TVect);
 {var
- Distance, DistMin: Reel;
+ Distance, DistMin: TDouble;
  I: Integer;
  Ok: Boolean;}
 begin
@@ -325,7 +328,7 @@ begin
   TroisPointsDansFaceRapide(S, Pt, Pt2, Pt3);
 end;
 
-{function Chk(X: Reel) : Boolean;
+{function Chk(X: TDouble) : Boolean;
 begin
  X:=Abs(X);
  Chk:=(X>rien2) and (X<1+rien2);
@@ -340,12 +343,12 @@ end;
 type
  TTag = record
          Index: Integer;
-         Produit: Reel;
+         Produit: TDouble;
         end;
 var
  Tag1, Tag2, Tag3: TTag;
  I, J: Integer;
- Produit: Reel;
+ Produit: TDouble;
  V, P1, P0, W: TVect;
  Sommets, P, PTest: ^TVect;
  NbSommets: Integer;
@@ -573,7 +576,7 @@ procedure SoustractionPolyedre(Anciens, Nouveaux: TQList; P: TPolyedre; Soustrai
 type
  TFace1 = record
            Surface: PSurface;
-           Ecart: Reel;
+           Ecart: TDouble;
           end;
  PTableauFaces = ^TTableauFaces;
  TTableauFaces = array[0..0] of TFace1;
@@ -585,7 +588,7 @@ var
  S: TFace;
 {Test, Liberer: TTreeMap;}
  ListeFaces: PTableauFaces;
- R, RMin: Reel;
+ R, RMin: TDouble;
 begin
  GetMem(ListeFaces, P.Faces.Count*SizeOf(TFace1)); try
  for I:=0 to P.Faces.Count-1 do
@@ -688,7 +691,7 @@ end;
 
 procedure AjusterNormale(var Normale: TVect);
 var
- Norme: Reel;
+ Norme: TDouble;
  Delta: TVect;
 
   procedure TestV(const V: TVect);
@@ -700,7 +703,7 @@ var
     end;
   end;
 
-  procedure Test(const X, Y, Z: Reel);
+  procedure Test(const X, Y, Z: TDouble);
   var
    V: TVect;
   begin
@@ -734,10 +737,10 @@ type
               Created: PSommet;
              end;
 
-function AjouteSommet(const Pt: TVect; DistMin: Reel; Sommets: TList) : Integer;
+function AjouteSommet(const Pt: TVect; DistMin: TDouble; Sommets: TList) : Integer;
 var
  I: Integer;
- Dist: Reel;
+ Dist: TDouble;
  Test, Old: PSommetEx;
 begin
  Result:=-1;
@@ -836,7 +839,7 @@ var
  NbPts{, Resultat}: Integer;
 {Pt1, Pt2: TPoint;}
  PI: TVect;
- D1, D2: Reel;
+ D1, D2: TDouble;
  P1, P2, V,W: TVect;
 begin
  Result:=False;
@@ -910,8 +913,8 @@ end;
 
 procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
- PX, PY: array[1..3] of Reel;
- A, P2, S, C: Reel;
+ PX, PY: array[1..3] of TDouble;
+ A, P2, S, C: TDouble;
  I: Integer;
  Plan: Char;
 begin
@@ -974,7 +977,7 @@ var
  TestFace: TFace;
  Test: PSurface;
  Normale1: TVect;
- Dist1: Reel;
+ Dist1: TDouble;
  Q: QObject;
 
   procedure Parcourir(T: TTreeMap);
@@ -1204,10 +1207,10 @@ begin
   end;
 end;
 
-function InterieurArrete(Faces: TList; const Org, Arr: TVect; var Min, Max: Reel; F1,F2: Integer) : Boolean;
+function InterieurArrete(Faces: TList; const Org, Arr: TVect; var Min, Max: TDouble; F1,F2: Integer) : Boolean;
 var
  K: Integer;
- Alpha, Beta: Reel;
+ Alpha, Beta: TDouble;
 begin
  Min:=-1E11;
  Max:=1E11;
@@ -1240,7 +1243,7 @@ begin
  Result:=Max > Min+rien;
 end;
 
-function TPolyedre.ConstruireSommets1(const DistMin: Reel; var Err1, Err2: String) : Boolean;
+function TPolyedre.ConstruireSommets1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
 type
  TUnSommet = record Ar: Integer; end;
  TableauSommets = array[0..99] of TUnSommet;
@@ -1249,7 +1252,7 @@ var
  I, J, K: Integer;
  FI, FJ: TFace;
  Org, Arr: TVect;
- NiNj, Alpha, Min, Max: Reel;
+ NiNj, Alpha, Min, Max: TDouble;
  Pt: TVect;
  Aretes, FaceList: TList;
 {FacesVCount: ^TableauEntiers;}
@@ -1618,7 +1621,7 @@ begin
  Result:=True;
 end;
 
-function PolyedreNonVide1(nFaces: TList; ReloadData : Boolean; const DistMin: Reel) : Boolean;
+function PolyedreNonVide1(nFaces: TList; ReloadData : Boolean; const DistMin: TDouble) : Boolean;
 const
  PlaceHolder = PSommet(1);
 type
@@ -1629,7 +1632,7 @@ var
  I, J, L: Integer;
  FI, FJ: TFace;
  Org, Arr: TVect;
- NiNj, Alpha, Min, Max: Reel;
+ NiNj, Alpha, Min, Max: TDouble;
  Pt: TVect;
  FaceList: TList;
 {FacesVCount: ^TableauEntiers;}
@@ -1874,7 +1877,7 @@ var
    P: TThreePoints;
    Params: TFaceParams;
    Delta1: TVect;
-   Facteur: Reel;
+   Facteur: TDouble;
 
    { tiglari }
    rval : Single; { for Value/lightvalue }
@@ -2181,7 +2184,7 @@ var
  Nombres: PInteger;
  TamponAretes: ^Word;
  Q: QObject;
- Prof: Reel;
+ Prof: TDouble;
 begin
  CheckPolyhedron;
  for I:=0 to SubElements.Count-1 do
@@ -2207,9 +2210,9 @@ begin
   with S^[I] do
    Pt:=CCoord.Proj(PSommet(Sommets[I])^.P);
  NewPen:=False;
- if Info.PinceauSelection<>0 then
+ if Info.SelectedBrush<>0 then
   begin
-   {OldPen:=}SelectObject(Info.DC, Info.PinceauSelection);
+   {OldPen:=}SelectObject(Info.DC, Info.SelectedBrush);
    {OldROP:=}SetROP2(Info.DC, R2_CopyPen);
   end
  else
@@ -2231,7 +2234,7 @@ begin
       begin
        if (Info.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
         Exit;
-       SelectObject(Info.DC, Info.PinceauGris);
+       SelectObject(Info.DC, Info.GreyBrush);
        SetROP2(Info.DC, Info.MaskR2);
       end
      else
@@ -2241,7 +2244,7 @@ begin
     NewPen:=True
   else
    begin   { Restricted }
-    SelectObject(Info.DC, Info.PinceauGris);
+    SelectObject(Info.DC, Info.GreyBrush);
     SetROP2(Info.DC, Info.MaskR2);
    end;
  if NewPen then
@@ -2251,7 +2254,7 @@ begin
    else
     begin
      NewPen:=False;
-     SelectObject(Info.DC, Info.PinceauNoir);
+     SelectObject(Info.DC, Info.BlackBrush);
     end;
    SetROP2(Info.DC, R2_CopyPen);
   end;
@@ -2309,7 +2312,7 @@ begin
   end;
  finally FreeMem(S); end;
  if NewPen then
-  DeleteObject(SelectObject(Info.DC, Info.PinceauNoir));
+  DeleteObject(SelectObject(Info.DC, Info.BlackBrush));
 end;
 
 procedure TPolyedre.PreDessinerSel{1};
@@ -2332,7 +2335,7 @@ begin
  if FaceHandles then
   begin
    Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
-   Pen:=SelectObject(Info.DC, Info.PinceauNoir);
+   Pen:=SelectObject(Info.DC, Info.BlackBrush);
    PostDessinerSel1;                      { poignées noires creuses }
    SelectObject(Info.DC, Pen);
    SelectObject(Info.DC, Brush);
@@ -2555,7 +2558,7 @@ begin
     begin
      S:=PSurface(Faces[I]);
      S^.F.AjouterSurfaceRef(Liste, S, Vertices, Sommets.Count, ZMax1, Odd(S^.F.SelMult));
-      {Info.CouleursTraits[esNormal]);}
+      {Info.ColorTraits[esNormal]);}
     end;
    finally FreeMem(Vertices); end;
    Result:=1;
@@ -2574,8 +2577,8 @@ begin
     with PPlan(Plan)^ do
      begin
       DrawFlags:=df_HasBackColor;
-      LineColor:=Info.CouleursTraits[esSelection];
-      LineBackColor:=Info.CouleursTraits[esSel2];
+      LineColor:=Info.ColorTraits[esSelection];
+      LineBackColor:=Info.ColorTraits[esSel2];
       Exit;
      end;
  inherited;
@@ -2644,12 +2647,12 @@ begin
     end;
 end;
 
-procedure TPolyedre.Deplacement(const PasGrille: Reel);
+procedure TPolyedre.Deplacement(const PasGrille: TDouble);
 var
  Info1: TVect;
  OldOrg, NewOrg: TVect;
 begin
- if (Info.ModeDeplacement in [mdDeplacementGrille, mdDeplacementGrilleFort])
+ if (Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid])
  and (PasGrille>0) and CheckPolyhedron then
   begin
    try
@@ -2871,7 +2874,7 @@ end;
 function TFace.SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
 var
  V1b, V2b: TVect;
- R: Reel;
+ R: TDouble;
 begin
  Result:=True;
  V1b.X:=V2.X-V1.X;
@@ -2896,7 +2899,7 @@ begin
    Result:=False;
 end;
 
-procedure TTexturedTreeMap.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: Reel);
+procedure TTexturedTreeMap.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: TDouble);
 const
  DefTexSize = 64;
 var
@@ -2921,7 +2924,7 @@ function TFace.GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) 
 var
  TexP: array[1..4] of TVect;
  I, W, H: Integer;
- CorrW, CorrH: Reel;
+ CorrW, CorrH: TDouble;
 begin
  Result:=GetThreePointsT(TexP[1], TexP[2], TexP[3]);
  if not Result then Exit;
@@ -2975,7 +2978,7 @@ end;
 
 procedure TFace.SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
 var
- CorrW, CorrH: Reel;
+ CorrW, CorrH: TDouble;
  P2, P3: TVect;
 begin
  if not LoadData then Exit;
@@ -3206,7 +3209,7 @@ var
  Pen: HPen;
  Rop1: Integer;
 begin
- if not (mdCouleurFixe in Info.ModeDessin) then
+ if not (mdColorFixed in Info.ModeDessin) then
   Pen:=SelectObject(Info.DC, CreatePen(ps_Solid, 0, MapColors(Col)))
  else
   Pen:=0;
@@ -3253,10 +3256,10 @@ begin
   begin
    if (P^.Source is TPolyedre) and not (mdRedrawFaces in Info.ModeDessin) then
     begin
-     if Info.PinceauSelection<>0 then    { si selection multiple }
+     if Info.SelectedBrush<>0 then    { si selection multiple }
       begin
        Pts:=CCoord.Proj(CentreSurface(P));
-       Pen:=SelectObject(Info.DC, Info.PinceauSelection);
+       Pen:=SelectObject(Info.DC, Info.SelectedBrush);
        Rop1:=SetROP2(Info.DC, R2_CopyPen);
        J:=P^.prvNbS;
        while J>0 do
@@ -3271,7 +3274,7 @@ begin
          SelectObject(Info.DC, Pen);
          TPolyedre(P^.Source).PostDessinerSel1;     { dessine les poignées creuses sur le 1er polyèdre }
         end;*)
-     (*SelectObject(Info.DC, Info.PinceauNoir);
+     (*SelectObject(Info.DC, Info.BlackBrush);
        if Info.BasePen=White_pen then
         J:=GetStockObject(Black_brush)
        else
@@ -3324,7 +3327,7 @@ var
  Brush: HBrush;
  LogBrush: TLogBrush;
  Poly: TPolyedre;
- Rapport: Reel;
+ Rapport: TDouble;
  P: PSurface;
  FirstPoly: Boolean;
 begin
@@ -3508,12 +3511,12 @@ begin
   end;
 end;
 
-procedure TFace.Deplacement(const PasGrille: Reel);
+procedure TFace.Deplacement(const PasGrille: TDouble);
 var
  Pt: array[1..3] of TVect;
  I: Integer;
  OldOrg, NewOrg, InfoClic: TVect;
- f: Reel;
+ f: TDouble;
 begin
  if GetThreePoints(Pt[1], Pt[2], Pt[3]) then
   begin
@@ -3526,7 +3529,7 @@ begin
     end
    else
     InfoClic:=Info.Clic;
-   if Info.ModeDeplacement in [mdDeplacementGrille, mdDeplacementGrilleFort] then
+   if Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
     begin
      OldOrg:=CentreFace;
      NewOrg:=OldOrg;
@@ -3545,7 +3548,7 @@ begin
      end
     else
      AjusteGrille1(InfoClic, PasGrille);*)
-   if Info.ModeDeplacement <= mdDeplacementGrille then
+   if Info.ModeDeplacement <= mdDisplacementGrid then
     case Info.TexAntiScroll of
      tas_Perpendicular:
        if LoadData then
@@ -3569,13 +3572,13 @@ begin
     end;
    for I:=1 to 3 do
     begin
-     if (Info.ModeDeplacement > mdDeplacementGrille)
+     if (Info.ModeDeplacement > mdDisplacementGrid)
      and (Info.ModeDeplacement <> mdInflate) then
       begin
        Pt[I].X:=Pt[I].X-InfoClic.X;
        Pt[I].Y:=Pt[I].Y-InfoClic.Y;
        Pt[I].Z:=Pt[I].Z-InfoClic.Z;
-       if Info.ModeDeplacement in [mdLineaire, mdLineaireCompat] then
+       if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
         TransformationLineaire(Pt[I]);
       end;
      Pt[I].X:=Pt[I].X+InfoClic.X;
@@ -3628,13 +3631,13 @@ const
  N2 = 2;
 var
  Axe: TVect;
- L: Reel;
+ L: TDouble;
  I: Integer;
- M, Base: TMatriceTransformation;
+ M, Base: TMatrixTransformation;
 begin
  if not LoadData then Exit;
  Info.Clic:=FixPoint;
- Info.ModeDeplacement:=mdLineaire;
+ Info.ModeDeplacement:=mdLinear;
  Axe:=Cross(Normale, nNormal);
  L:=Sqr(Axe.X)+Sqr(Axe.Y)+Sqr(Axe.Z);
  if L<={rien}0 then
@@ -3681,7 +3684,7 @@ end;
 procedure TFace.DistortionPoint(const Fix1, Fix2, Src, Dest: TVect);
 var
  V1, V2: TVect;
- Base: TMatriceTransformation;
+ Base: TMatrixTransformation;
 var
  Pt: array[1..3] of TVect;
  I: Integer;
@@ -3700,7 +3703,7 @@ begin
      Base[2,3]:=Y;
      Base[3,3]:=Z;
     end;
-   Info.ModeDeplacement:=mdLineaire;
+   Info.ModeDeplacement:=mdLinear;
    Info.Matrice:=MatriceInverse(Base);
    V2.X:=Dest.X-Src.X;
    V2.Y:=Dest.Y-Src.Y;
@@ -3834,7 +3837,7 @@ end;*)
 
 function PointsToPlane(const Normale: TVect) : Char;
 var
- X1, Y1, Z1: Reel;
+ X1, Y1, Z1: TDouble;
 begin
  X1:=Abs(Normale.X);
  Y1:=Abs(Normale.Y);
@@ -3851,7 +3854,7 @@ begin
    Result:='Y';   { face points to axis Y }
 end;
 (*var
- A, S, C: Reel;
+ A, S, C: TDouble;
 begin
  A:=Abs(Normale.X);
  S:=Abs(Normale.Y);
@@ -3868,11 +3871,11 @@ begin
    Result:='Z';   { face points to axis Z }
 end;*)
 
-procedure TFace.SetFaceFromParams(const nNormale: TVect; nDist: Reel; const TexParams: TFaceParams);
+procedure TFace.SetFaceFromParams(const nNormale: TVect; nDist: TDouble; const TexParams: TFaceParams);
 
-  procedure ApplyParams(var PX, PY: Reel);
+  procedure ApplyParams(var PX, PY: TDouble);
   var
-   A, S, C: Reel;
+   A, S, C: TDouble;
   begin
    PX:=PX-TexParams[1];
    PY:=PY+TexParams[2];
@@ -4022,7 +4025,7 @@ var
  TexP: array[1..3] of TVect;
  TexPt: array[1..3] of TPoint3D;
  Det: LongInt;
- DetInv: Reel;
+ DetInv: TDouble;
  Form4: TForm4;
 
   procedure ProjTex3D(PX, PY: LongInt; var X, Y: LongInt);
@@ -4158,9 +4161,9 @@ begin
      Plan.ObjetTreeMap:=S^.Source;
      Plan.Centre.Z:=ZMax;
      if Sel then
-      Plan.LineColor:=Info.CouleursTraits[esSelection]
+      Plan.LineColor:=Info.ColorTraits[esSelection]
      else
-      Plan.LineColor:=Info.CouleursTraits[esNormal];
+      Plan.LineColor:=Info.ColorTraits[esNormal];
      Liste.Add(Plan);
     end
    {$IFDEF Debug}
@@ -4179,7 +4182,7 @@ begin
    while P<>Nil do
     begin
      AjouterSurfaceRef(Liste, P, Nil, 0, -MaxInt, False);
-     {Info.CouleursTraits[esNormal]);}
+     {Info.ColorTraits[esNormal]);}
      P:=P^.NextF;
     end;
    Result:=1;

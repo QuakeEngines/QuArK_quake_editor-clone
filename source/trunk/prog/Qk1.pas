@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.6  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -1140,7 +1143,7 @@ begin
  if FileObject=Nil then
   FileObject:=BuildFileRoot(
    FmtLoadStr1(5128, [Info.NomClasseEnClair]) + NewClass, Nil);
- FileObject.NomFichier:='';
+ FileObject.Filename:='';
  FileObject.OpenStandAloneWindow(Nil, False);
  finally Gr.Free; end;
 end;
@@ -1422,7 +1425,7 @@ begin
    S:=LoadStr1(5550);
    for I:=0 to L.Count-1 do
     begin
-     S1:=(L[I] as QFileObject).NomFichier;
+     S1:=(L[I] as QFileObject).Filename;
      if S1='' then
       S1:=LoadStr1(5552);
      S:=S+FmtLoadStr1(5551, [S1]);

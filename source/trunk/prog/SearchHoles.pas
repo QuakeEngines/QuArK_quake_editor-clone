@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -61,7 +64,7 @@ const
 type
  PInfo = ^TInfo;
  TInfo = record
-          Distance: Reel;
+          Distance: TDouble;
           Poly: TPolyedre;
           Face: PSurface;
          end;
@@ -121,14 +124,14 @@ var
    F, F1: PSurface;
    nFace: TFace;
    Derriere: Boolean;
-   Dist1: Reel;
+   Dist1: TDouble;
    Info: TInfo;
    nCentre: TInfoSource;
 
     PROCEDURE TrierTampon(Gauche,Droite : INTEGER);
     VAR
      I,J : INTEGER;
-     Pivot: Reel;
+     Pivot: TDouble;
      UneCase: TInfo;
     BEGIN
      I:=Gauche; J:=Droite;
@@ -155,8 +158,8 @@ var
      FK: PSurface;
      Centre: TInfoSource;
      P1, P2: TVect;
-     Norm2: array[0..MaxFSommets-1] of record Y,Z,Dist: Reel end;
-     Min, Max, D1, D2: Reel;
+     Norm2: array[0..MaxFSommets-1] of record Y,Z,Dist: TDouble end;
+     Min, Max, D1, D2: TDouble;
     begin
      P1:=Sommets[0]^.P;
      for S:=NbS-1 downto 0 do
@@ -236,8 +239,8 @@ var
      FK: PSurface;
      Centre: TInfoSource;
      P1, P2: TVect;
-     Norm2: array[0..MaxFSommets-1] of record X,Z,Dist: Reel end;
-     Min, Max, D1, D2: Reel;
+     Norm2: array[0..MaxFSommets-1] of record X,Z,Dist: TDouble end;
+     Min, Max, D1, D2: TDouble;
     begin
      P1:=Sommets[0]^.P;
      for S:=NbS-1 downto 0 do
@@ -317,8 +320,8 @@ var
      FK: PSurface;
      Centre: TInfoSource;
      P1, P2: TVect;
-     Norm2: array[0..MaxFSommets-1] of record X,Y,Dist: Reel end;
-     Min, Max, D1, D2: Reel;
+     Norm2: array[0..MaxFSommets-1] of record X,Y,Dist: TDouble end;
+     Min, Max, D1, D2: TDouble;
     begin
      P1:=Sommets[0]^.P;
      for S:=NbS-1 downto 0 do

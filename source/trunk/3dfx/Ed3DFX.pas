@@ -130,9 +130,9 @@ type
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
-   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
-   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
-   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
+   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
+   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); virtual; abstract;
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
    procedure BuildTexture(Texture: PTexture3); virtual; abstract;
@@ -172,9 +172,9 @@ type
    function ScreenExtent(var L, R: Integer; var bmiHeader: TBitmapInfoHeader) : Boolean;
  protected
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
-   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
-   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
-   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
+   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
    procedure PostBuild(nVertexList, nVertexList2: TList); override;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
@@ -205,7 +205,7 @@ type
   {CurrentPalettePtr: PGuPalette;}
    PaletteCache: TList;
    DefaultGamePalette: Integer;
-   GammaValue: Reel;
+   GammaValue: TDouble;
   {Colors: TBitmapInfoColors;
    PaletteLmp: PPaletteLmp;}
    {NoGamma{, WallTexLoaded: Boolean;}
@@ -240,7 +240,7 @@ procedure TwoMonitorsActivation;
 procedure TwoMonitorsDeactivation;
 procedure Close3DEditor;
 procedure Free3DFXEditor;
-procedure GammaCorrection(Value: Reel);
+procedure GammaCorrection(Value: TDouble);
 procedure LibererMemoireTextures;
 procedure GetwhForTexture(const info: GrTexInfo; var w,h: Integer);
 function SwapColor(Col: GrColor_t) : GrColor_t;
@@ -542,7 +542,7 @@ var
  re, gr, bl: Integer;
  pl: array[0..255] of record pr, pg, pb: Integer; end;
  I, J: Integer;
- Facteur: Reel;
+ Facteur: TDouble;
  P: PChar;
 begin
  re:=0;
@@ -1445,9 +1445,9 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+procedure T3DFXSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 var
- CorrW, CorrH: Reel;
+ CorrW, CorrH: TDouble;
 begin
  CorrW:=1/(EchelleTexture*256);
  CorrH:=-1/(EchelleTexture*256);
@@ -1466,7 +1466,7 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel);
+procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 var
  w, h: Integer;
 begin
@@ -1487,7 +1487,7 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+procedure T3DFXSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 var
  w, h: Integer;
 begin
@@ -1523,7 +1523,7 @@ var
  PV: PChar;
  TexPt: array[1..3] of TVect;
  DeltaV, v2, v3: TVect;
- CorrW, CorrH, aa, bb, {cc,} dd, dot22, dot23, dot33, mdet: Reel;
+ CorrW, CorrH, aa, bb, {cc,} dd, dot22, dot23, dot33, mdet: TDouble;
  nVertexList, nVertexList2: TList;
  R: TRect;
  Gauche: Integer;
@@ -1568,7 +1568,7 @@ var
    vp0, vp1, vp2: vec3_p;
    stp: vec_st_p;
    v2, v3, DeltaV: TVect;
-   dd, Radius2, nRadius2: Reel;
+   dd, Radius2, nRadius2: TDouble;
   begin
    PV:=PChar(Surf3D)+SizeOf(TSurface3D);
    vp0:=BezierBuf.CP; Inc(vp0,i1); stp:=st; Inc(stp,i1);
@@ -2216,7 +2216,7 @@ begin
  LibererMemoireTextures;
 end;
 
-procedure GammaCorrection(Value: Reel);
+procedure GammaCorrection(Value: TDouble);
 begin
  if Assigned(gr.grGammaCorrectionValue) then
   gr.grGammaCorrectionValue(Value);
@@ -2236,7 +2236,7 @@ type
  TLoadVProc = procedure (var PrevV1: TV1; PV: PVertex3D);
 
 var
- FlatZFactor, FlatZDelta, FlatZValue: Reel;
+ FlatZFactor, FlatZDelta, FlatZValue: TDouble;
  LoadV: TLoadVProc;
  IteratedAlpha: Boolean;
 
@@ -2251,7 +2251,7 @@ procedure LoadV3D(var PrevV1: TV1; PV: PVertex3D); forward;
 
 (*procedure TSceneObject.GetProjInfo(var ProjInfo: TProjInfo; nRFactor: scalar_t);
 var
- SA,CA,SP,CP: Reel;
+ SA,CA,SP,CP: TDouble;
 begin
  ProjInfo.Eye:=Eye;
  SA:=Sin(HorzAngle);  CA:=Cos(HorzAngle);
@@ -2339,7 +2339,7 @@ end;
 
 procedure T3DFXSceneObject.Render3DView;
 var
- OldMinDist, OldMaxDist: Reel;
+ OldMinDist, OldMaxDist: TDouble;
 begin
  CCoord:=Coord;  { PyMath.CCoord }
  if CCoord.FlatDisplay then

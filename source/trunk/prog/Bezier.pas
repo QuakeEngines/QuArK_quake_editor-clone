@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -49,10 +52,10 @@ type
  vec5_t = array[0..4] of scalar_t;
  vec_st_p = ^vec_st_t;
  vec_st_t = record
-             s,t: Reel;
+             s,t: TDouble;
             end;
  TVect5 = record
-           X, Y, Z, S, T: Reel;
+           X, Y, Z, S, T: TDouble;
           end;
 {beziercontrolpoints_t = array[0..2, 0..2] of vec5_t;  -- removed for generalized "quilt" support (variable number of control points)
  TBezierMeshCache = array[0..BezierMeshCnt, 0..BezierMeshCnt] of vec3_t;}
@@ -97,7 +100,7 @@ type
              class function TypeInfo: String; override;
              destructor Destroy; override;
              {procedure FixupReference; override;}
-             procedure Deplacement(const PasGrille: Reel); override;
+             procedure Deplacement(const PasGrille: TDouble); override;
              procedure Dessiner; override;
              procedure PreDessinerSel; override;
              procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
@@ -182,9 +185,9 @@ uses PyMapView, PyObjects;
   *****)
 
  { Various versions of the Bezier line formula }
-function BezierLine3(const u: Reel; const p0, p1, p2: TVect) : TVect;
+function BezierLine3(const u: TDouble; const p0, p1, p2: TVect) : TVect;
 var
- f0, f1, f2: Reel;
+ f0, f1, f2: TDouble;
 begin
  f0:=(1-u)*(1-u);
  f1:=2*u*(1-u);
@@ -194,9 +197,9 @@ begin
  Result.Z := p0.Z*f0 + p1.Z*f1 + p2.Z*f2;
 end;
 
-function BezierLine53(const u: Reel; const p0, p1, p2: vec5_t) : TVect;
+function BezierLine53(const u: TDouble; const p0, p1, p2: vec5_t) : TVect;
 var
- f0, f1, f2: Reel;
+ f0, f1, f2: TDouble;
 begin
  f0:=(1-u)*(1-u);
  f1:=2*u*(1-u);
@@ -206,9 +209,9 @@ begin
  Result.Z := p0[2]*f0 + p1[2]*f1 + p2[2]*f2;
 end;
 
-function BezierLine52(const u: Reel; const p0, p1, p2: vec5_t) : vec_st_t;
+function BezierLine52(const u: TDouble; const p0, p1, p2: vec5_t) : vec_st_t;
 var
- f0, f1, f2: Reel;
+ f0, f1, f2: TDouble;
 begin
  f0:=(1-u)*(1-u);
  f1:=2*u*(1-u);
@@ -217,9 +220,9 @@ begin
  Result.t := p0[4]*f0 + p1[4]*f1 + p2[4]*f2;
 end;
 
-function BezierLine22(const u: Reel; const p0, p1, p2: vec_st_t) : vec_st_t;
+function BezierLine22(const u: TDouble; const p0, p1, p2: vec_st_t) : vec_st_t;
 var
- f0, f1, f2: Reel;
+ f0, f1, f2: TDouble;
 begin
  f0:=(1-u)*(1-u);
  f1:=2*u*(1-u);
@@ -243,7 +246,7 @@ function TriangleSTCoordinates(const cp: TBezierMeshBuf5; I, J: Integer) : vec_s
 var
  P, Q1, Q2: vec5_p;
  I1, J1: Integer;
- f: Reel;
+ f: TDouble;
  r1, r2, r3: vec_st_t;
 begin
  I1:=I div BezierMeshCnt;
@@ -336,7 +339,7 @@ end;
 function TBezier.GetQuiltSize;
 var
  S: String;
- V: array[1..2] of Reel;
+ V: array[1..2] of TDouble;
 begin
  Result.X:=1;  { default value }
  Result.Y:=1;
@@ -423,7 +426,7 @@ const
 var
  cp: TBezierMeshBuf5;
  I, I0, J, CurJ: Integer;
- u, v: Reel;
+ u, v: TDouble;
  p0, p1, p2: TVect;
  Dest: vec3_p;
 
@@ -510,12 +513,12 @@ begin
 end;
 
  { Movement of the patch under translations, inflations, and linear mappings }
-procedure TBezier.Deplacement(const PasGrille: Reel);
+procedure TBezier.Deplacement(const PasGrille: TDouble);
 var
  cp, ncp: TBezierMeshBuf5;
  I, J: Integer;
  InfoClic, V, dgdu, dgdv: TVect;
- F: Reel;
+ F: TDouble;
  Source, Dest, P1, P2: vec5_p;
  Transpose: Boolean;
 begin
@@ -572,12 +575,12 @@ begin
        end;
       end
      else
-      if Info.ModeDeplacement > mdDeplacementGrille then
+      if Info.ModeDeplacement > mdDisplacementGrid then
        begin
         V.X:=V.X-InfoClic.X;
         V.Y:=V.Y-InfoClic.Y;
         V.Z:=V.Z-InfoClic.Z;
-        if Info.ModeDeplacement in [mdLineaire, mdLineaireCompat] then
+        if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
          TransformationLineaire(V);  { linear mapping }
        end;
     { else
@@ -585,7 +588,7 @@ begin
      V.X:=V.X+InfoClic.X;
      V.Y:=V.Y+InfoClic.Y;
      V.Z:=V.Z+InfoClic.Z;
-     if Info.ModeDeplacement=mdDeplacementGrilleFort then
+     if Info.ModeDeplacement=mdStrongDisplacementGrid then
       AjusteGrille1(V, PasGrille);
      Dest^[0]:=V.X;
      Dest^[1]:=V.Y;
@@ -694,9 +697,9 @@ begin
 
  VisChecked:=False;
  NewPen:=False;
- if Info.PinceauSelection<>0 then
+ if Info.SelectedBrush<>0 then
   begin
-   {OldPen:=}SelectObject(Info.DC, Info.PinceauSelection);
+   {OldPen:=}SelectObject(Info.DC, Info.SelectedBrush);
    {OldROP:=}SetROP2(Info.DC, R2_CopyPen);
   end
  else
@@ -715,7 +718,7 @@ begin
       begin
        if (Info.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
         Exit;
-       SelectObject(Info.DC, Info.PinceauGris);
+       SelectObject(Info.DC, Info.GreyBrush);
        SetROP2(Info.DC, Info.MaskR2);
       end
      else
@@ -725,7 +728,7 @@ begin
     NewPen:=True
   else
    begin   { Restricted }
-    SelectObject(Info.DC, Info.PinceauGris);
+    SelectObject(Info.DC, Info.GreyBrush);
     SetROP2(Info.DC, Info.MaskR2);
    end;
  if NewPen then
@@ -815,7 +818,7 @@ begin
  
  finally FreeMem(PP); end;
  if NewPen then
-  DeleteObject(SelectObject(Info.DC, Info.PinceauNoir));
+  DeleteObject(SelectObject(Info.DC, Info.BlackBrush));
 end;
 
 { to sort triangles in Z order }
@@ -1075,7 +1078,7 @@ var
  Triangles, TriPtr: PBezierTriangle;
  TriCount, I, PrevL, L: Integer;
  W1, W2, Normale: TVect;
- d0, d1, dv, f: Reel;
+ d0, d1, dv, f: TDouble;
 begin
  Triangles:=Nil; try
  TriCount:=ListBezierTriangles(Triangles, Nil{, lbtmFast});
@@ -1129,7 +1132,7 @@ procedure TBezier.SwapSides;
 var
  cp, ncp: TBezierMeshBuf5;
  I, J, K: Integer;
- F: Reel;
+ F: TDouble;
  Source, Dest, P1, P2: vec5_p;
 begin
  cp:=ControlPoints;

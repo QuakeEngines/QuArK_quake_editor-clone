@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.7  2000/06/09 00:31:06  tiglari
 Commented out unneeded imglist uses.
 
@@ -160,20 +163,20 @@ end;
 
 (*procedure QWad.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
 var
- Entete: TEnteteWad;
+ Header: TEnteteWad;
 begin
- Source.ReadBuffer(Entete, SizeOf(Entete));
- if Entete.Signature<>SignatureWad2 then
-  Raise EErrorFmt(5505, [Nom, Entete.Signature, SignatureWad2]);
- if Entete.PosRep + Entete.NbEntrees*SizeOf(TEntreeRep) > SourceTaille then
+ Source.ReadBuffer(Header, SizeOf(Header));
+ if Header.Signature<>SignatureWad2 then
+  Raise EErrorFmt(5505, [Nom, Header.Signature, SignatureWad2]);
+ if Header.PosRep + Header.NbEntrees*SizeOf(TEntreeRep) > SourceTaille then
   Raise EErrorFmt(5186, [Nom]);
- Source.Seek(-SizeOf(Entete), soFromCurrent);
+ Source.Seek(-SizeOf(Header), soFromCurrent);
  LoadFormat:=1;
 end;*)
 
 procedure QWad.LoadFile(F: TStream; FSize: Integer);
 var
- Entete: TEnteteWad;
+ Header: TEnteteWad;
  I: Integer;
  Entrees, P: PEntreeRep;
  Origine: LongInt;
@@ -182,31 +185,31 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if FSize<SizeOf(Entete) then
+      if FSize<SizeOf(Header) then
        Raise EError(5519);
       Origine:=F.Position;
-      F.ReadBuffer(Entete, SizeOf(Entete));
-      if Entete.Signature=SignatureWad2 then
+      F.ReadBuffer(Header, SizeOf(Header));
+      if Header.Signature=SignatureWad2 then
        Prefix:='.wad_'
       else
-       if Entete.Signature=SignatureWad3 then
+       if Header.Signature=SignatureWad3 then
         Prefix:='.wad3_'
        else
-        Raise EErrorFmt(5505, [LoadName, Entete.Signature, SignatureWad2]);
-      I:=Entete.NbEntrees * SizeOf(TEntreeRep);
-      if (I<0) or (Entete.PosRep<SizeOf(TEnteteWad)) then
+        Raise EErrorFmt(5505, [LoadName, Header.Signature, SignatureWad2]);
+      I:=Header.NbEntrees * SizeOf(TEntreeRep);
+      if (I<0) or (Header.PosRep<SizeOf(TEnteteWad)) then
        Raise EErrorFmt(5509, [71]);
-      if Entete.PosRep + I > FSize then
+      if Header.PosRep + I > FSize then
        Raise EErrorFmt(5186, [LoadName]);
 
       GetMem(Entrees, I); try
-      F.Position:=Origine + Entete.PosRep;
+      F.Position:=Origine + Header.PosRep;
       F.ReadBuffer(Entrees^, I);
       P:=Entrees;
-      for I:=1 to Entete.NbEntrees do
+      for I:=1 to Header.NbEntrees do
        begin
         if (P^.Position+P^.Taille > FSize)
-        or (P^.Position<SizeOf(Entete))
+        or (P^.Position<SizeOf(Header))
         or (P^.Taille<0) then
          Raise EErrorFmt(5509, [72]);
         F.Position:=P^.Position;
@@ -223,7 +226,7 @@ end;
 
 procedure QWad.SaveFile(Info: TInfoEnreg1);
 var
- Entete: TEnteteWad;
+ Header: TEnteteWad;
  Entree: TEntreeRep;
  Repertoire: TMemoryStream;
  Origine, Fin: LongInt;
@@ -237,12 +240,12 @@ begin
  with Info do case Format of
   1: begin  { as stand-alone file }
       Origine:=F.Position;
-      F.WriteBuffer(Entete, SizeOf(Entete));  { updated later }
-      Entete.Signature:=SignatureWad2;
+      F.WriteBuffer(Header, SizeOf(Header));  { updated later }
+      Header.Signature:=SignatureWad2;
 
        { write .wad entries }
       Repertoire:=TMemoryStream.Create; try
-      Entete.NbEntrees:=0;
+      Header.NbEntrees:=0;
       for I:=0 to SubElements.Count-1 do
        begin
         FillChar(Entree, SizeOf(Entree), 0);
@@ -251,7 +254,7 @@ begin
 
         Wad3:=Copy(S, Length(S)-6, 6) = '.wad3_';
         if Wad3 then
-         Entete.Signature:=SignatureWad3;
+         Header.Signature:=SignatureWad3;
         if Wad3 or (Copy(S, Length(S)-5, 5) = '.wad_') then
          begin
           Entree.InfoType:=S[Length(S)];
@@ -281,19 +284,19 @@ begin
         Zero:=0;
         F.WriteBuffer(Zero, (-Entree.Taille) and 3);  { align to 4 bytes }
         Repertoire.WriteBuffer(Entree, SizeOf(Entree));
-        Inc(Entete.NbEntrees);
+        Inc(Header.NbEntrees);
         ProgresTravail;
        end;
 
        { write directory }
-      Entete.PosRep:=F.Position-Origine;
+      Header.PosRep:=F.Position-Origine;
       F.CopyFrom(Repertoire, 0);
       finally Repertoire.Free; end;
 
        { update header }
       Fin:=F.Position;
       F.Position:=Origine;
-      F.WriteBuffer(Entete, SizeOf(Entete));
+      F.WriteBuffer(Header, SizeOf(Header));
       F.Position:=Fin;
      end;
  else inherited;
@@ -503,16 +506,16 @@ end;
 
 (*function TextureCaption(Q: QTexture) : String;
 var
- Entete: TQ1Miptex;
+ Header: TQ1Miptex;
  Reduction: Integer;
 begin
  Result:=Q.Name;
- Entete:=Q.BuildQ1Header;
+ Header:=Q.BuildQ1Header;
  Reduction:=0;
- while (Reduction<3) and ((Entete.W>64) or (Entete.H>64)) do
+ while (Reduction<3) and ((Header.W>64) or (Header.H>64)) do
   begin
-   Entete.W:=Entete.W div 2;
-   Entete.H:=Entete.H div 2;
+   Header.W:=Header.W div 2;
+   Header.H:=Header.H div 2;
    Inc(Reduction);
   end;
  case Reduction of
@@ -608,7 +611,7 @@ var
  NomTexture{, Image}, ErrorMsg: String;
  I, J, Reduction, Gauche{, Source}: Integer;
 {P: PChar;
- Entete: TQ1Miptex;}
+ Header: TQ1Miptex;}
  DC: HDC;
 {Bits: array[0..63, 0..63] of Char;}
  Q: QObject;

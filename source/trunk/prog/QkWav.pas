@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -264,7 +267,7 @@ function QWav.GetDataInfo : TRawDataInfo;
 var
  S: TStream;
  Position0, Taille, TailleA, Pos1, ErrorCode: Integer;
- Entete: TEnteteRiff;
+ Header: TEnteteRiff;
  Typ: LongInt;
  WaveFmt: TWaveFmt;
 begin
@@ -279,26 +282,26 @@ begin
      BytesPerTick:=0;
      Exit;
     end;
-   if Taille<=SizeOf(Entete)+SizeOf(Typ) then Raise EErrorFmt(5186, [LoadName]);
+   if Taille<=SizeOf(Header)+SizeOf(Typ) then Raise EErrorFmt(5186, [LoadName]);
    Position0:=S.Position;
-   S.ReadBuffer(Entete, SizeOf(Entete));
-   if Entete.Signature<>SignatureRIFF then Raise EErrorFmt(5605, [LoadName, Entete.Signature, SignatureRIFF]);
-   if Taille<SizeOf(Entete)+Entete.Taille then Raise EErrorFmt(5186, [LoadName]);
+   S.ReadBuffer(Header, SizeOf(Header));
+   if Header.Signature<>SignatureRIFF then Raise EErrorFmt(5605, [LoadName, Header.Signature, SignatureRIFF]);
+   if Taille<SizeOf(Header)+Header.Taille then Raise EErrorFmt(5186, [LoadName]);
    S.Readbuffer(Typ, SizeOf(Typ));
    if Typ<>SignatureWAVE then Raise EErrorFmt(5605, [Typ, SignatureWAVE]);
-   Taille:=Entete.Taille;
-   while Taille>=SizeOf(Entete) do
+   Taille:=Header.Taille;
+   while Taille>=SizeOf(Header) do
     begin
-     S.ReadBuffer(Entete, SizeOf(Entete));
-     TailleA:=(Entete.Taille+1) and not 1;
-     Dec(Taille, SizeOf(Entete)+TailleA);
+     S.ReadBuffer(Header, SizeOf(Header));
+     TailleA:=(Header.Taille+1) and not 1;
+     Dec(Taille, SizeOf(Header)+TailleA);
      if Taille<0 then
       begin
        ErrorCode:=130;
        Break;
       end;
      Pos1:=S.Position;
-     if (Entete.Signature=WaveBlockfmt) and (Entete.Taille>=SizeOf(TWaveFmt)) then
+     if (Header.Signature=WaveBlockfmt) and (Header.Taille>=SizeOf(TWaveFmt)) then
       begin
        S.ReadBuffer(WaveFmt, SizeOf(WaveFmt));
        SndRate:=WaveFmt.fmtRate;
@@ -307,10 +310,10 @@ begin
        ErrorCode:=132;
       end
      else
-      if Entete.Signature=WaveBlockdata then
+      if Header.Signature=WaveBlockdata then
        begin
         OfsData:=Pos1-Position0;
-        DataSize:=Entete.Taille;
+        DataSize:=Header.Taille;
         ErrorCode:=133;
        end;
      S.Position:=Pos1+TailleA;

@@ -5,6 +5,9 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.9  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -465,7 +468,7 @@ begin
             (FH.compression_method<>1) and
             (FH.compression_method<>6) and
             (FH.compression_method<>8) then
-               Raise EErrorFmt(5692, [Self.NomFichier,FH.compression_method]);
+               Raise EErrorFmt(5692, [Self.Filename,FH.compression_method]);
          if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
            Delete(Chemin, 1, Length(CheminPrec))
          else begin

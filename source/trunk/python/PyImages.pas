@@ -117,7 +117,7 @@ var
 var
  InternalImages: array[0..InternalImagesCount-1, 0..1] of PyObject; { PyImage1 or a function to call }
 
-function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: Reel) : PyImageList;
+function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
 procedure OpenGlobalImageList(ListView1: TListView);
 procedure CloseGlobalImageList(ListView1: TListView);
 function LoadGlobalImageList(Q: QObject) : Integer;
@@ -133,7 +133,7 @@ const
 
  {-------------------}
 
-function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: Reel) : PyImageList;
+function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
 var
  IWidth, IHeight: Integer;
     {Test: TImageInfo;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -167,7 +170,7 @@ const
  tcImmediate: array[TTypeCode] of String = ('IMMEDIATE', 'I+');
 var
  Zero: Vecteur;
- Entete: TEntete;
+ Header: TEntete;
  Origine: LongInt;
  Chaines: String;
 {St: TVarStruct;
@@ -237,7 +240,7 @@ var
       Exit;
      end;}
    Min:=0;
-   Max:=Entete.Entrees[2].Nb-1;
+   Max:=Header.Entrees[2].Nb-1;
    while Min < Max do
     begin
      Test:=(Min+Max) shr 1;
@@ -251,7 +254,7 @@ var
        begin
         while (Test>0) and (StrIComp(PChar(@Chaines[Vars^[Test-1].Nom+1]), PChar(Nom)) = 0) do
          Dec(Test);
-        Max:=Entete.Entrees[2].Nb-1;
+        Max:=Header.Entrees[2].Nb-1;
         while ((Vars^[Test].InfoType=tObjData) xor VariableObjet)
         and (Test<Max) and (StrIComp(PChar(@Chaines[Vars^[Test+1].Nom+1]), PChar(Nom)) = 0) do
          Inc(Test);
@@ -615,14 +618,14 @@ var
      NFrames.Position:=Result*SizeOf(TFrame);
      NFrames.ReadBuffer(F, SizeOf(TFrame));
     end;
-   {if L>=Entete.Entrees[4].Nb then
+   {if L>=Header.Entrees[4].Nb then
      begin
-      NFrames.Position:=(L-Entete.Entrees[4].Nb)*SizeOf(TFrame);
+      NFrames.Position:=(L-Header.Entrees[4].Nb)*SizeOf(TFrame);
       NFrames.ReadBuffer(F, SizeOf(TFrame));
      end
     else
      begin
-      Source.Position:=Origine+Entete.Entrees[4].Pos + L*SizeOf(TFrame);
+      Source.Position:=Origine+Header.Entrees[4].Pos + L*SizeOf(TFrame);
       Source.ReadBuffer(F, SizeOf(TFrame));
      end;}
   end;
@@ -1146,7 +1149,7 @@ VAR
 
   procedure QCodeSeek(Pos1: LongInt; Delta: LongInt);
   begin
-   QCode.Position:=(Pos1-Entete.Entrees[1].Nb)*8+Delta;
+   QCode.Position:=(Pos1-Header.Entrees[1].Nb)*8+Delta;
   end;
 
   function CompilerBloc : Integer;  { result = taille var. locales }
@@ -1553,12 +1556,12 @@ VAR
     Inc(SymboleVar.Pos, TailleType[SymboleVar.InfoType]);
     L:=SymboleVar.Pos;}
     ObjDataDef.Position:=ObjDataDef.Size;
-    L:=Entete.TailleLocData;
+    L:=Header.TailleLocData;
     SymboleVar.Pos:=L;
     SymboleVar.InfoType:=T;
     SymboleVar.Nom:=EcrireChaine(SymboleMot);
     ObjDataDef.Write(SymboleVar, 8);
-    Entete.TailleLocData:=L+TailleType[T];
+    Header.TailleLocData:=L+TailleType[T];
     SymboleVar.InfoType:=tObjData;
     SymboleVar.Pos:=NDatas;
     NDataDef.Write(SymboleVar, 8);
@@ -1715,9 +1718,9 @@ VAR
   var
    T: Integer;
   begin
-   T:=Entete.Entrees[Numero].Nb * FacteurT[Numero];
+   T:=Header.Entrees[Numero].Nb * FacteurT[Numero];
    SetLength(Result, T);
-   Source.Position:=Origine+Entete.Entrees[Numero].Pos;
+   Source.Position:=Origine+Header.Entrees[Numero].Pos;
    Source.ReadBuffer(PChar(Result)^, T);
   end;
 
@@ -1726,7 +1729,7 @@ VAR
    nEntete: TEntete;
   begin
    Chaines:=Chaines + Copy(#0#0#0, (Length(Chaines)-1) and 3 + 1, 3);
-   nEntete:=Entete;
+   nEntete:=Header;
    nEntete.Entrees[1].Nb:=NQCode;
    Inc(nEntete.Entrees[2].Nb, NDataDef.Size div 8);
    nEntete.Entrees[3].Nb:=ObjDataDef.Size div 8;
@@ -1739,22 +1742,22 @@ VAR
    nEntete.Entrees[5].Pos:=Dest.Position;
    Dest.WriteBuffer(PChar(Chaines)^, Length(Chaines));
    nEntete.Entrees[1].Pos:=Dest.Position;
-   Source.Position:=Origine+Entete.Entrees[1].Pos;
-   if Entete.Entrees[1].Nb>0 then
-    Dest.CopyFrom(Source, Entete.Entrees[1].Nb*8);
+   Source.Position:=Origine+Header.Entrees[1].Pos;
+   if Header.Entrees[1].Nb>0 then
+    Dest.CopyFrom(Source, Header.Entrees[1].Nb*8);
    QCode.Position:=0;
-   if NQCode>Entete.Entrees[1].Nb then
-    Dest.CopyFrom(QCode, (NQCode-Entete.Entrees[1].Nb)*8);
+   if NQCode>Header.Entrees[1].Nb then
+    Dest.CopyFrom(QCode, (NQCode-Header.Entrees[1].Nb)*8);
    nEntete.Entrees[4].Pos:=Dest.Position;
-  {Source.Position:=Origine+Entete.Entrees[4].Pos;
-   Dest.CopyFrom(Source, Entete.Entrees[4].Nb*SizeOf(TFrame));}
+  {Source.Position:=Origine+Header.Entrees[4].Pos;
+   Dest.CopyFrom(Source, Header.Entrees[4].Nb*SizeOf(TFrame));}
    NFrames.Position:=0;
    if NoFrame>0 then
-    Dest.CopyFrom(NFrames, (NoFrame{-Entete.Entrees[4].Nb})*SizeOf(TFrame));
+    Dest.CopyFrom(NFrames, (NoFrame{-Header.Entrees[4].Nb})*SizeOf(TFrame));
    nEntete.Entrees[2].Pos:=Dest.Position;
-   Source.Position:=Origine+Entete.Entrees[2].Pos;
-   if Entete.Entrees[2].Nb>0 then
-    Dest.CopyFrom(Source, Entete.Entrees[2].Nb*8);
+   Source.Position:=Origine+Header.Entrees[2].Pos;
+   if Header.Entrees[2].Nb>0 then
+    Dest.CopyFrom(Source, Header.Entrees[2].Nb*8);
    Dest.CopyFrom(NDataDef, 0);
    nEntete.Entrees[3].Pos:=Dest.Position;
    Dest.CopyFrom(ObjDataDef, 0);
@@ -1814,28 +1817,28 @@ begin
  NoImpulse:=Impulse0;
   { lecture des informations principales du Progs.dat original }
  Origine:=Source.Position;
- Source.ReadBuffer(Entete, SizeOf(Entete));
- if Entete.Version <> VersionProgsDat then
+ Source.ReadBuffer(Header, SizeOf(Header));
+ if Header.Version <> VersionProgsDat then
   Raise EError(809);
  Chaines:=LireEntree(5);
- GetMem(Vars, Pred(Entete.Entrees[2].Nb)*SizeOf(TVarStruct));
+ GetMem(Vars, Pred(Header.Entrees[2].Nb)*SizeOf(TVarStruct));
  Datas:=TMemoryStream.Create;
  ObjDataDef:=TMemoryStream.Create;
  NDataDef:=TMemoryStream.Create;
  try
-  Source.Position:=Origine+Entete.Entrees[2].Pos + SizeOf(TVarStruct);
-  Source.ReadBuffer(Vars^, Pred(Entete.Entrees[2].Nb)*SizeOf(TVarStruct));
-  TrieVariables(0, Entete.Entrees[2].Nb-2);
-  Source.Position:=Origine+Entete.Entrees[6].Pos;
-  if Entete.Entrees[6].Nb>0 then
-   Datas.CopyFrom(Source, Entete.Entrees[6].Nb*4);
-  Source.Position:=Origine+Entete.Entrees[3].Pos;
-  if Entete.Entrees[3].Nb>0 then
-   ObjDataDef.CopyFrom(Source, Entete.Entrees[3].Nb*8);
+  Source.Position:=Origine+Header.Entrees[2].Pos + SizeOf(TVarStruct);
+  Source.ReadBuffer(Vars^, Pred(Header.Entrees[2].Nb)*SizeOf(TVarStruct));
+  TrieVariables(0, Header.Entrees[2].Nb-2);
+  Source.Position:=Origine+Header.Entrees[6].Pos;
+  if Header.Entrees[6].Nb>0 then
+   Datas.CopyFrom(Source, Header.Entrees[6].Nb*4);
+  Source.Position:=Origine+Header.Entrees[3].Pos;
+  if Header.Entrees[3].Nb>0 then
+   ObjDataDef.CopyFrom(Source, Header.Entrees[3].Nb*8);
   NFrames:=TMemoryStream.Create;
-  Source.Position:=Origine+Entete.Entrees[4].Pos;
-  if Entete.Entrees[4].Nb>0 then
-   NFrames.CopyFrom(Source, Entete.Entrees[4].Nb*SizeOf(TFrame));
+  Source.Position:=Origine+Header.Entrees[4].Pos;
+  if Header.Entrees[4].Nb>0 then
+   NFrames.CopyFrom(Source, Header.Entrees[4].Nb*SizeOf(TFrame));
    { compilation du patch }
   QCode:=TMemoryStream.Create;
   VarGlobales:=TStringList.Create;
@@ -1843,9 +1846,9 @@ begin
   MdlFrames:=TStringList.Create;
   try
    VariableObjet:=False;
-   NDatas:=Entete.Entrees[6].Nb;
-   NoFrame:=Entete.Entrees[4].Nb;
-   NQCode:=Entete.Entrees[1].Nb;
+   NDatas:=Header.Entrees[6].Nb;
+   NoFrame:=Header.Entrees[4].Nb;
+   NQCode:=Header.Entrees[1].Nb;
    Commentaires:=False;
    LigneCourante:=0;
    LigneLocale:=0;

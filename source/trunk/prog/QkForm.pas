@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.5  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -863,7 +866,7 @@ var
  I: Integer;
  Q, AddOns: QObject;
  TbInfo: TTbInfo;
- nWidth: Reel;
+ nWidth: TDouble;
 begin
  AddOns:=MakeAddOnsList; try
  TbInfo.Base:=TQList.Create; try
@@ -935,7 +938,7 @@ end;
 
 function TQkForm.SavePositionTo(const Tag: String; Dest: QObject) : Boolean;
 var
- XMax, YMax: Reel;
+ XMax, YMax: TDouble;
  R: TRect;
  V: array[0..3] of Single;
 begin
@@ -1145,7 +1148,7 @@ begin
           ProcessMacros(Q2, Q);
           with Q2 as QFileObject do
            begin
-            NomFichier:='';
+            Filename:='';
             ReadFormat:=rf_Default;
             Flags:=(Flags or ofFileLink) and not (ofModified or ofTreeViewSubElement);
             OpenStandAloneWindow(Nil, False);

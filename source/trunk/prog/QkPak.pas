@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.6  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -189,7 +192,7 @@ end;
 
 procedure QPakFolder.LoadFile(F: TStream; FSize: Integer);
 var
- Entete: TIntroPakEx;
+ Header: TIntroPakEx;
  I, J: Integer;
  Entrees1, P1: PChar;
  TailleNom: Integer;
@@ -206,35 +209,35 @@ begin
       if FSize<SizeOf(TIntroPakEx) then
        begin
         J:=SizeOf(TIntroPak);
-        Entete.Code1:=0;
+        Header.Code1:=0;
        end
       else
        J:=SizeOf(TIntroPakEx);
-      F.ReadBuffer(Entete, J);
-      if Entete.Intro.Signature=SignaturePACK then
+      F.ReadBuffer(Header, J);
+      if Header.Intro.Signature=SignaturePACK then
        TailleNom:=TailleNomFichPACK
       else
-       if Entete.Intro.Signature=SignatureSPAK then
+       if Header.Intro.Signature=SignatureSPAK then
         TailleNom:=TailleNomFichSPAK
         else
-         Raise EErrorFmt(5506, [LoadName, Entete.Intro.Signature, SignaturePACK]);
-      if Entete.Intro.PosRep + Entete.Intro.TailleRep > FSize then
+         Raise EErrorFmt(5506, [LoadName, Header.Intro.Signature, SignaturePACK]);
+      if Header.Intro.PosRep + Header.Intro.TailleRep > FSize then
        Raise EErrorFmt(5186, [LoadName]);
-      if (Entete.Code1=SignatureQuArKPAK1)
-      and (Entete.Code2=SignatureQuArKPAK2) then
+      if (Header.Code1=SignatureQuArKPAK1)
+      and (Header.Code2=SignatureQuArKPAK2) then
        Specifics.Values['temp']:='1';
-      if (Entete.Intro.PosRep + Entete.Intro.TailleRep > FSize)
-      or (Entete.Intro.PosRep<SizeOf(TIntroPak))
-      or (Entete.Intro.TailleRep<0) then
+      if (Header.Intro.PosRep + Header.Intro.TailleRep > FSize)
+      or (Header.Intro.PosRep<SizeOf(TIntroPak))
+      or (Header.Intro.TailleRep<0) then
        Raise EErrorFmt(5509, [61]);
-      F.Position:=Origine + Entete.Intro.PosRep;
-      GetMem(Entrees1, Entete.Intro.TailleRep); try
-      F.ReadBuffer(Entrees1^, Entete.Intro.TailleRep);
+      F.Position:=Origine + Header.Intro.PosRep;
+      GetMem(Entrees1, Header.Intro.TailleRep); try
+      F.ReadBuffer(Entrees1^, Header.Intro.TailleRep);
       P1:=Entrees1;
-      Entete.Intro.TailleRep:=Entete.Intro.TailleRep div (TailleNom+SizeOf(TFinEntreePak));
+      Header.Intro.TailleRep:=Header.Intro.TailleRep div (TailleNom+SizeOf(TFinEntreePak));
       Dossier:=Self;
       CheminPrec:='';
-      for I:=1 to Entete.Intro.TailleRep do
+      for I:=1 to Header.Intro.TailleRep do
        begin
         SetString(Chemin, P1, TailleNom);
         SetLength(Chemin, StrLen(PChar(Chemin)));
@@ -390,7 +393,7 @@ end;
 
 procedure QPakFolder.SaveFile(Info: TInfoEnreg1);
 var
- Entete: TIntroPakEx;
+ Header: TIntroPakEx;
  Repertoire: TMemoryStream;
  Origine, Fin: LongInt;
 begin
@@ -398,25 +401,25 @@ begin
   1: begin  { as stand-alone file }
        { cannot use AccesCopying because the .pak folder hierarchy is not stored directly in the .pak }
       Origine:=F.Position;
-      Entete.Intro.Signature:=0;
+      Header.Intro.Signature:=0;
       if Specifics.Values['temp']<>'' then
        begin
-        Entete.Code1:=SignatureQuArKPAK1;
-        Entete.Code2:=SignatureQuArKPAK2;
+        Header.Code1:=SignatureQuArKPAK1;
+        Header.Code2:=SignatureQuArKPAK2;
         Fin:=SizeOf(TIntroPakEx);
        end
       else
        Fin:=SizeOf(TIntroPak);
-      F.WriteBuffer(Entete, Fin);  { updated later }
+      F.WriteBuffer(Header, Fin);  { updated later }
 
       if Self is QSinPak then
        begin
-        Entete.Intro.Signature:=SignatureSPAK;
+        Header.Intro.Signature:=SignatureSPAK;
         Fin:=TailleNomFichSPAK;
        end
       else
        begin
-        Entete.Intro.Signature:=SignaturePACK;
+        Header.Intro.Signature:=SignaturePACK;
         Fin:=TailleNomFichPACK;
        end;
 
@@ -425,15 +428,15 @@ begin
       EcrireEntreesPak(Info, Origine, '', Fin, Repertoire);
 
        { write directory }
-      Entete.Intro.PosRep:=F.Position-Origine;
-      Entete.Intro.TailleRep:=Repertoire.Size;
+      Header.Intro.PosRep:=F.Position-Origine;
+      Header.Intro.TailleRep:=Repertoire.Size;
       F.CopyFrom(Repertoire, 0);
       finally Repertoire.Free; end;
 
        { update header }
       Fin:=F.Position;
       F.Position:=Origine;
-      F.WriteBuffer(Entete, SizeOf(TIntroPak));
+      F.WriteBuffer(Header, SizeOf(TIntroPak));
       F.Position:=Fin;
      end;
  else inherited;

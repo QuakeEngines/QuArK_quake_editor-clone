@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.6  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -144,7 +147,7 @@ type
               OnChange: TNotifyEvent;
               Modified, AllowEdit, InternalEditing,
               NoHeader, AddRemaining, NoClientAlign: Boolean;
-              Delta: Reel;
+              Delta: TDouble;
               TxtSpec, TxtArg: Integer;
               EditNames, HintPrefix: String;
               OnNeedGameInfo: TNeedGameInfoEvent;
@@ -669,9 +672,9 @@ end;
 
 procedure TFormCfg.AcceptEditFloat(Sender: TObject);
 const
- None : Reel = (1 shl 25)*1.0*(1 shl 25);
+ None : TDouble = (1 shl 25)*1.0*(1 shl 25);
 var
- Value, LimitMin, LimitMax: Reel;
+ Value, LimitMin, LimitMax: TDouble;
  Arg, Arg1, S: String;
  IsFloat: Boolean;
  N, Needed, P: Integer;
@@ -1531,7 +1534,7 @@ var
  BmpHandle: HBitmap;
  obj: PyObject;
  PythonCode, ReadOnly: Boolean;
- Lu4: array[1..4] of Reel;
+ Lu4: array[1..4] of TDouble;
  Valeurs: vec3_t;
  ValeursV: TVect;
 begin

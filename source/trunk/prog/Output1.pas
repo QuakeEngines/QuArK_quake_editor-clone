@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.5  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -94,7 +97,7 @@ type
 procedure OutputDirDlg;
 {procedure PrepareRunGame(InternalSpecs: QObject);}
 
-function NomFichierSortiePak(Force: Boolean) : String;
+function FindNextAvailablePakFilename(Force: Boolean) : String;
 function IsPakTemp(const theFilename: String) : Boolean;
 (*DECKER-begin
 function GetPakZero(const Path: String; Back: Boolean) : String;
@@ -282,7 +285,7 @@ begin
 end;
 DECKER-end*)
 
-function NomFichierSortiePak(Force: Boolean) : String;
+function FindNextAvailablePakFilename(Force: Boolean) : String;
 var
  GameModDir, AvailablePakFile: String;
 {DECKER-begin}
@@ -294,7 +297,7 @@ begin
  if (SetupGameSet.Specifics.Values['AlwaysPak']='')
  and (GameModDir=GettmpQuArK) and not Force then
   begin
-   NomFichierSortiePak:='';  { no .pak file to write }
+   FindNextAvailablePakFilename:='';  { no .pak file to write }
    Exit;
   end;
  GameModDir:=PathAndFile(QuakeDir, GameModDir);
@@ -305,7 +308,7 @@ begin
   begin
    if IsPakTemp(AvailablePakFile) then
     begin
-     NomFichierSortiePak:=AvailablePakFile;
+     FindNextAvailablePakFilename:=AvailablePakFile;
      Exit;
     end;
   end
@@ -313,7 +316,7 @@ begin
   AvailablePakFile:=GetPakZero(ExpandFileName(GameModDir), False);
  if not GetNextPakName(False, AvailablePakFile, False) then
   Raise EErrorFmt(5630, [AvailablePakFile]);
- NomFichierSortiePak:=AvailablePakFile;
+ FindNextAvailablePakFilename:=AvailablePakFile;
 }
  FoundIt:=FALSE;
  GetPakNames := TGetPakNames.Create;
@@ -332,7 +335,7 @@ begin
     AvailablePakFile:='';
    end
   end;
- NomFichierSortiePak:=AvailablePakFile;
+ FindNextAvailablePakFilename:=AvailablePakFile;
  GetPakNames.Destroy;
 {DECKER-end}
 end;
@@ -357,7 +360,7 @@ var
  PakFile: QPak;
  FileList: TStringList;
 begin
- PakFileName:=NomFichierSortiePak;
+ PakFileName:=FindNextAvailablePakFilename;
  PakFile:=Nil; try
  if PakFileName<>'' then
   begin
@@ -438,7 +441,7 @@ var
  S: String;
 begin
  SetBtnChecked(CheckBox1, CheckedStateOf[SetupGameSet.Specifics.Values['AlwaysPak']<>'']);
- S:=NomFichierSortiePak(False);
+ S:=FindNextAvailablePakFilename(False);
  if S='' then
   Edit1.Text:=FmtLoadStr1(5626, [GettmpQuArK])
  else

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/05/21 18:58:55  decker_dk
 A little more englishification
 
@@ -326,7 +329,7 @@ end;
 
 procedure QBsp.LoadBsp1(F: TStream; Taille: Integer);
 var
- Entete: TBsp1Header;
+ Header: TBsp1Header;
  Origine: LongInt;
  P: PChar;
  E: TBsp1EntryTypes;
@@ -334,25 +337,25 @@ var
  ModeQ1, ModeH2: Boolean;
  Q: QObject;
 begin
- if Taille<SizeOf(Entete) then
+ if Taille<SizeOf(Header) then
   Raise EError(5519);
  Origine:=F.Position;
- F.ReadBuffer(Entete, SizeOf(Entete));
+ F.ReadBuffer(Header, SizeOf(Header));
  for E:=Low(E) to High(E) do
   begin
-   if (Entete.Entrees[E].Position+Entete.Entrees[E].Taille > Taille)
-   or (Entete.Entrees[E].Position<SizeOf(Entete))
-   or (Entete.Entrees[E].Taille<0) then
+   if (Header.Entrees[E].Position+Header.Entrees[E].Taille > Taille)
+   or (Header.Entrees[E].Position<SizeOf(Header))
+   or (Header.Entrees[E].Taille<0) then
     Raise EErrorFmt(5509, [82]);
-   F.Position:=Origine + Entete.Entrees[E].Position;
-   Q:=OpenFileObjectData(F, Bsp1EntryNames[E], Entete.Entrees[E].Taille, Self);
-  {if (E=eMipTex) and (Entete.Signature = SignatureBSPHL) then
+   F.Position:=Origine + Header.Entrees[E].Position;
+   Q:=OpenFileObjectData(F, Bsp1EntryNames[E], Header.Entrees[E].Taille, Self);
+  {if (E=eMipTex) and (Header.Signature = SignatureBSPHL) then
     Q.SetSpecificsList.Values['TextureType']:='.wad3_C';}
    SubElements.Add(Q);
-   LoadedItem(rf_Default, F, Q, Entete.Entrees[E].Taille);
+   LoadedItem(rf_Default, F, Q, Header.Entrees[E].Taille);
   end;
 
- if Entete.Signature = SignatureBSPHL then
+ if Header.Signature = SignatureBSPHL then
   ObjectGameCode:=mjHalfLife
  else
   begin
@@ -379,37 +382,37 @@ end;
 
 procedure QBsp.LoadBsp2(F: TStream; Taille: Integer);
 var
- Entete: TBsp2Header;
+ Header: TBsp2Header;
  Origine: LongInt;
  Q: QObject;
  E: TBsp2EntryTypes;
 begin
- if Taille<SizeOf(Entete) then
+ if Taille<SizeOf(Header) then
   Raise EError(5519);
  Origine:=F.Position;
- F.ReadBuffer(Entete, SizeOf(Entete));
- if Entete.Version<>VersionBSP2 then
-  Raise EErrorFmt(5572, [LoadName, Entete.Version, VersionBSP2]);
+ F.ReadBuffer(Header, SizeOf(Header));
+ if Header.Version<>VersionBSP2 then
+  Raise EErrorFmt(5572, [LoadName, Header.Version, VersionBSP2]);
  for E:=Low(E) to High(E) do
   begin
-   if Entete.Entrees[E].Taille<0 then
+   if Header.Entrees[E].Taille<0 then
     Raise EErrorFmt(5509, [84]);
-   if Entete.Entrees[E].Taille=0 then
-    Entete.Entrees[E].Position:=SizeOf(Entete)
+   if Header.Entrees[E].Taille=0 then
+    Header.Entrees[E].Position:=SizeOf(Header)
    else
     begin
-     if Entete.Entrees[E].Position<SizeOf(Entete) then
+     if Header.Entrees[E].Position<SizeOf(Header) then
       Raise EErrorFmt(5509, [85]);
-     if Entete.Entrees[E].Position+Entete.Entrees[E].Taille > Taille then
+     if Header.Entrees[E].Position+Header.Entrees[E].Taille > Taille then
       begin
-       Entete.Entrees[E].Taille:=Taille - Entete.Entrees[E].Position;
+       Header.Entrees[E].Taille:=Taille - Header.Entrees[E].Position;
        GlobalWarning(LoadStr1(5641));
       end;
     end;
-   F.Position:=Origine + Entete.Entrees[E].Position;
-   Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Entete.Entrees[E].Taille, Self);
+   F.Position:=Origine + Header.Entrees[E].Position;
+   Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Header.Entrees[E].Taille, Self);
    SubElements.Add(Q);
-   LoadedItem(rf_Default, F, Q, Entete.Entrees[E].Taille);
+   LoadedItem(rf_Default, F, Q, Header.Entrees[E].Taille);
   end;
  ObjectGameCode:=CurrentQuake2Mode;
 end;
@@ -437,7 +440,7 @@ end;
 
 procedure QBsp.EnregistrerBsp1(Info: TInfoEnreg1);
 var
- Entete: TBsp1Header;
+ Header: TBsp1Header;
  Origine, Fin: LongInt;
  Zero: Integer;
  Q: QObject;
@@ -446,26 +449,26 @@ begin
  with Info do begin
   DebutTravail(5450, Ord(High(E))-Ord(Low(E))+1); try
   Origine:=F.Position;
-  F.WriteBuffer(Entete, SizeOf(Entete));  { updated later }
+  F.WriteBuffer(Header, SizeOf(Header));  { updated later }
 
    { write .bsp entries }
   for E:=Low(E) to High(E) do
    begin
     Q:=BspEntry[E, NoBsp2];
-    Entete.Entrees[E].Position:=F.Position;
+    Header.Entrees[E].Position:=F.Position;
     Q.SaveFile1(Info);   { save in non-QuArK file format }
-    Entete.Entrees[E].Taille:=F.Position-Entete.Entrees[E].Position;
-    Dec(Entete.Entrees[E].Position, Origine);
+    Header.Entrees[E].Taille:=F.Position-Header.Entrees[E].Position;
+    Dec(Header.Entrees[E].Position, Origine);
     Zero:=0;
-    F.WriteBuffer(Zero, (-Entete.Entrees[E].Taille) and 3);  { align to 4 bytes }
+    F.WriteBuffer(Zero, (-Header.Entrees[E].Taille) and 3);  { align to 4 bytes }
     ProgresTravail;
    end;
 
    { update header }
   Fin:=F.Position;
   F.Position:=Origine;
-  Entete.Signature:=SignatureBSP;
-  F.WriteBuffer(Entete, SizeOf(Entete));
+  Header.Signature:=SignatureBSP;
+  F.WriteBuffer(Header, SizeOf(Header));
   F.Position:=Fin;
   finally FinTravail; end;
  end;
@@ -473,7 +476,7 @@ end;
 
 procedure QBsp.EnregistrerBsp2(Info: TInfoEnreg1);
 var
- Entete: TBsp2Header;
+ Header: TBsp2Header;
  Origine, Fin: LongInt;
  Zero: Integer;
  Q: QObject;
@@ -482,27 +485,27 @@ begin
  with Info do begin
   DebutTravail(5450, Ord(High(E))-Ord(Low(E))+1); try
   Origine:=F.Position;
-  F.WriteBuffer(Entete, SizeOf(Entete));  { updated later }
+  F.WriteBuffer(Header, SizeOf(Header));  { updated later }
 
    { write .bsp entries }
   for E:=Low(E) to High(E) do
    begin
     Q:=BspEntry[NoBsp1, E];
-    Entete.Entrees[E].Position:=F.Position;
+    Header.Entrees[E].Position:=F.Position;
     Q.SaveFile1(Info);   { save in non-QuArK file format }
-    Entete.Entrees[E].Taille:=F.Position-Entete.Entrees[E].Position;
-    Dec(Entete.Entrees[E].Position, Origine);
+    Header.Entrees[E].Taille:=F.Position-Header.Entrees[E].Position;
+    Dec(Header.Entrees[E].Position, Origine);
     Zero:=0;
-    F.WriteBuffer(Zero, (-Entete.Entrees[E].Taille) and 3);  { align to 4 bytes }
+    F.WriteBuffer(Zero, (-Header.Entrees[E].Taille) and 3);  { align to 4 bytes }
     ProgresTravail;
    end;
 
    { update header }
   Fin:=F.Position;
   F.Position:=Origine;
-  Entete.Signature:=SignatureBSP2;
-  Entete.Version:=VersionBSP2;
-  F.WriteBuffer(Entete, SizeOf(Entete));
+  Header.Signature:=SignatureBSP2;
+  Header.Version:=VersionBSP2;
+  F.WriteBuffer(Header, SizeOf(Header));
   F.Position:=Fin;
   finally FinTravail; end;
  end;

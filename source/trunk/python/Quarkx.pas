@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/09 13:19:28  decker_dk
+Englishification and a little layout
+
 Revision 1.5  2000/05/14 20:26:48  alexander
 ToutCharger -> LoadAll
 
@@ -525,7 +528,7 @@ var
  Bitmap: TBitmap;
  Ok: Boolean;
  WidthObj: PyObject;
- cratio: Reel;
+ cratio: TDouble;
 begin
  try
   Result:=Nil;
@@ -1017,7 +1020,7 @@ end;
 function xMatrix(self, args: PyObject) : PyObject; cdecl;
 var
  obj: array[1..3] of PyObject;
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
  I: Integer;
 begin
  try
@@ -1225,7 +1228,7 @@ var
  c2c: array[0..3] of Byte absolute c2;
  c3c: array[0..3] of Byte absolute Result;
  I: Integer;
- R: Reel;
+ R: TDouble;
 begin
  for I:=0 to 2 do
   begin
@@ -1807,7 +1810,7 @@ begin
   test:=Py_None;
   if not PyArg_ParseTupleX(args, 'O', [@test]) then
    Exit;
-  S:=NomFichierSortiePak(PyObject_IsTrue(test));
+  S:=FindNextAvailablePakFilename(PyObject_IsTrue(test));
   if S='' then
    Result:=PyNoResult
   else

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.9  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -213,7 +216,7 @@ var
  InvPoly, InvFaces: Integer;
  TxCommand: Char;
  OriginBrush: TPolyedre;
- Facteur: Reel;
+ Facteur: TDouble;
  Delta, Delta1: TVect;
  {Rowdy}
  V5: TVect5;
@@ -1137,7 +1140,7 @@ var
  S: String;
  Min, Max, D: TVect;
  Racine: QObject;
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
 begin
  if Msg.wParam=wp_AfficherObjet then
   begin
@@ -1230,13 +1233,13 @@ begin
   ScrollBox1.MapViewProj.SetAsCCoord(DC);
   Pen:=SelectObject(Info.DC, GetStockObject(Null_Pen));
   Brush:=SelectObject(Info.DC, GetStockObject(Null_Brush));
-  Info.PinceauGris:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
+  Info.GreyBrush:=CreatePen(ps_Solid, 0, MapColors(lcOutOfView));
   try
    FRoot.Dessiner;
   finally
    SelectObject(Info.DC, Brush);
    SelectObject(Info.DC, Pen);
-   DeleteObject(Info.PinceauGris);
+   DeleteObject(Info.GreyBrush);
   end;
  finally
   Canvas.Handle:=0;

@@ -1,5 +1,4 @@
 
-
 #       #Done up to QkMdl and including
 #       Enregistrer Save
 #       TInfoEnreg1 TSaveInfo
@@ -284,6 +283,41 @@
 #       #SoustractionPolyedre PolyhedralSubtraction ???
 
 #---DONE---
+#ChargerCommeTexte LoadObjsFromText
+#NomFichier Filename
+#NomFichierSortiePak FindNextAvailablePakFilename
+#EnteteObjTexte CheckFileSignature
+#SignatureFichierQ c_FileSignatureQQRK
+#VersionFichierQ c_FileVersionBinary
+#VersionSourceQ c_FileVersionText
+#TailleEnteteMin c_FileSignatureSize
+#TEnteteFichierQ TFileHeaderBinary
+#Entete Header
+#TailleTotale TotalFileLength
+#Reel TDouble
+#TailleImage ImageSize
+#esCouleurGrise esGreyColor
+#PinceauGris GreyBrush
+#TCouleursTraits TColorTraits
+#CouleursTraits ColorTraits
+#TesCouleurs UserColors
+#TInfoDessiner TDrawInfo
+#TMatriceTransformation TMatrixTransformation
+#TModeDeplacement TDisplacementMode
+#mdVecteurAngles mdVectorAngles
+#mdDeplacement mdDisplacement
+#esSelGroupe esSelectedGroup
+#PinceauNoir BlackBrush
+#PinceauSelection SelectedBrush
+#mdCouleurFixe mdColorFixed
+#mdDeplacementGrilleFort mdStrongDisplacementGrid
+#mdDeplacementGrille mdDisplacementGrid
+#mdLineaire mdLinear
+#mdImageDuplicatorGrille mdImageDuplicatorGrid
+#mdParcourirSel mdTraversalSelected
+#LireEnteteFichierStd ReadStandardFileHeading
+#EcrireEnteteFichierStd WriteStandardFileHeading
+
 #wmMessageInterne wmInternalMessage
 #wm_MessageInterne wm_InternalMessage
 #wp_RestaureFocus wp_RestoreFocus

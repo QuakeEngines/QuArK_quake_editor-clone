@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -678,7 +681,7 @@ begin
    begin
     S:=LoadStr1(5529);
     for I:=0 to ModifiedFiles.Count-1 do
-     S:=S+FmtLoadStr1(5530, [(ModifiedFiles[I] as QFileObject).NomFichier]);
+     S:=S+FmtLoadStr1(5530, [(ModifiedFiles[I] as QFileObject).Filename]);
     case MessageDlg(S, mtConfirmation, mbYesNoCancel, 0) of
      mrYes: for I:=0 to ModifiedFiles.Count-1 do
              QFileObject(ModifiedFiles[I]).TrySavingNow;

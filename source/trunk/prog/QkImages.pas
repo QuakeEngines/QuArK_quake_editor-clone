@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/04/20 10:43:33  arigo
 JPeg writing fixes
 
@@ -656,19 +659,19 @@ var
  Bits: Pointer;
  Data: String;
  Size: TPoint;
- TailleImage: Integer;
+ ImageSize: Integer;
 begin
  GetPalette(Lmp);
  PaletteFromLmp(Lmp, BmpInfo, Nil, Nil);
  Size:=GetSize;
  Data:=GetSpecArg('Image1');
- TailleImage:=((Size.X+3) and not 3) * Size.Y;
- if Length(Data)-Length('Image1=') < TailleImage then
+ ImageSize:=((Size.X+3) and not 3) * Size.Y;
+ if Length(Data)-Length('Image1=') < ImageSize then
   Raise EErrorFmt(5534, ['Image1']);
  Result:=CreateDIBSection(DC, BitmapInfo,
   dib_RGB_Colors, Bits, Nil, 0);
  if Result<>0 then
-  Move(Data[Length('Image1=')+1], Bits^, TailleImage);
+  Move(Data[Length('Image1=')+1], Bits^, ImageSize);
 end;}
 
 procedure QImages.CopyExtraData;
@@ -923,7 +926,7 @@ end;
 procedure TFQImages.EditSizeAccept(Sender: TObject);
 var
  NewPSD: TPixelSetDescription;
- Size: array[1..2] of Reel;
+ Size: array[1..2] of TDouble;
 begin
  LireValeurs(EditSize.Text, Size);
  NewPSD.Init;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.12  2000/06/17 11:21:59  arigo
 minor fix for Decker's hack
 
@@ -138,7 +141,7 @@ procedure DeleteGameBuffer(B: PGameBuffer);
 
 procedure GameCfgDlg;
 procedure DisplayAddOnsList(ListView1: TListView);
-function InitGeneralGammaBuffer(var Buf: TGeneralGammaBuffer; var FG: Reel) : Boolean;
+function InitGeneralGammaBuffer(var Buf: TGeneralGammaBuffer; var FG: TDouble) : Boolean;
 
  {------------------------}
 
@@ -634,11 +637,11 @@ end;
 
 type
  TGammaBuffer = record
-                 Factor: Reel;
+                 Factor: TDouble;
                  Map: array[0..255] of SmallInt;
                 end;
 
-function GetGammaValue: Reel;
+function GetGammaValue: TDouble;
 begin
  Result:=SetupSubSet(ssGeneral, 'Display').GetFloatSpec('Gamma', 11/8);
  if Result<1.0 then Result:=1.0 else if Result>20.0 then Result:=20.0;
@@ -660,9 +663,9 @@ begin
  Buf.Map[B]:=Result;
 end;
 
-function InitGeneralGammaBuffer(var Buf: TGeneralGammaBuffer; var FG: Reel) : Boolean;
+function InitGeneralGammaBuffer(var Buf: TGeneralGammaBuffer; var FG: TDouble) : Boolean;
 var
- FG1: Reel;
+ FG1: TDouble;
  B: Integer;
 begin
  FG1:=GetGammaValue;
@@ -914,7 +917,7 @@ begin
 end;*)
 (*var
  DestDC, TempDC: HDC;
- TailleImage: Integer;
+ ImageSize: Integer;
  Dest, Bmp1, Temp, Bmp2: HBitmap;
  Game: PGameBuffer;
  Bits: Pointer;
@@ -965,18 +968,18 @@ begin
   Raise EErrorFmt(5537, [GetLastError, Dest, DestDC, Bmp1, W, H, nW, nH]);
 
  if Format=dfWinFormat then
-  TailleImage:=((W+3) and not 3) * H
+  ImageSize:=((W+3) and not 3) * H
  else
-  TailleImage:=W*H;
- SetLength(Result, TailleImage);
+  ImageSize:=W*H;
+ SetLength(Result, ImageSize);
  GdiFlush;
 
  case Format of
-  dfWinFormat: Move(Bits^, Result[1], TailleImage);
+  dfWinFormat: Move(Bits^, Result[1], ImageSize);
   dfTextureFormat:
     begin  { must remove the 4-bytes alignment and bottom-up swap made by Windows }
      PSrc:=PChar(Bits);
-     PDest:=PChar(Result)+TailleImage;
+     PDest:=PChar(Result)+ImageSize;
      for J:=1 to H do
       begin
        Dec(PDest, W);

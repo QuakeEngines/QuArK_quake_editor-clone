@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -183,7 +186,7 @@ end;
 procedure TCinDataInfo.EstimateLength;
 var
  Progress: LongInt;
- Estimated: Reel;
+ Estimated: TDouble;
 begin
  if EOF then Exit;
  Progress:=LongInt(FrameOfs.Last)-OfsData;

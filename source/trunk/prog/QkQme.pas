@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -224,7 +227,7 @@ type
  TSurface = record
             { définition de la face }
              Normale: TVect;
-             Dist: Reel;
+             Dist: TDouble;
              Params: TFaceParams;
              case Integer of
               0: (Q2Contents, Q2Flags, Q2Value: Integer;
@@ -233,10 +236,10 @@ type
             end;
 
 const
- TailleSurfDef1 = SizeOf(TVect)+6*SizeOf(Reel);     {Normale..Params}
+ TailleSurfDef1 = SizeOf(TVect)+6*SizeOf(TDouble);     {Normale..Params}
  TailleSurfQ2   = 3*SizeOf(Integer);                {Q2Contents..Q2Value}
  TailleSurfDef  = TailleSurfDef1+TailleSurfQ2;      {Normale..Q2Value}
- TailleSurfPlan = SizeOf(TVect)+SizeOf(Reel);       {Normale..Dist}
+ TailleSurfPlan = SizeOf(TVect)+SizeOf(TDouble);       {Normale..Dist}
  TailleSurfParm1= TailleSurfDef1 - TailleSurfPlan;  {Params}
  TailleSurfParm = TailleSurfDef  - TailleSurfPlan;  {Params..Q2Value}
  TailleSurfVis  = TailleSurfParm + TailleNomTex;    {Params..NomTex}
@@ -323,7 +326,7 @@ begin
    if Abr>=8 then
     Abr:=Abr shr 5;
    if Abr=7 then
-    S.ReadBuffer(OldF^.Normale, SizeOf(TVect)+SizeOf(Reel))
+    S.ReadBuffer(OldF^.Normale, SizeOf(TVect)+SizeOf(TDouble))
    else
     begin
      OldF^.Normale:=Origine;
@@ -335,7 +338,7 @@ begin
       5 : OldF^.Normale.Z:=-1;
       6 : OldF^.Normale.Z:=1;
      end;
-     S.ReadBuffer(OldF^.Dist, SizeOf(Reel));
+     S.ReadBuffer(OldF^.Dist, SizeOf(TDouble));
     end;
    F:=TFace.Create(LoadStr1(139), Result);
    Result.SubElements.Add(F);

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -1069,7 +1072,7 @@ begin
 
  NewPen:=0;
  DeletePen:=0;
- if Info.PinceauGris <> 0 then
+ if Info.GreyBrush <> 0 then
   begin    { if color changes must be made now }
    if not Odd(SelMult) then
     begin
@@ -1087,16 +1090,16 @@ begin
   end;
  if NewPen<>0 then
   begin
-   OldPen:=Info.PinceauNoir;
-   Info.PinceauNoir:=NewPen;
+   OldPen:=Info.BlackBrush;
+   Info.BlackBrush:=NewPen;
   end
  else
   OldPen:=0;
  SetupComponentDC(CDC);
 
- if Info.PinceauSelection<>0 then
+ if Info.SelectedBrush<>0 then
   begin
-   SelectObject(Info.DC, Info.PinceauSelection);
+   SelectObject(Info.DC, Info.SelectedBrush);
    SetROP2(Info.DC, R2_CopyPen);
    CurPenMode:=0;
    ScrAnd0:=0;
@@ -1179,12 +1182,12 @@ begin
      begin
       if NewPenMode=0 then
        begin
-        SelectObject(Info.DC, Info.PinceauNoir);
+        SelectObject(Info.DC, Info.BlackBrush);
         SetROP2(Info.DC, R2_CopyPen);
        end
       else
        begin
-        SelectObject(Info.DC, Info.PinceauGris);
+        SelectObject(Info.DC, Info.GreyBrush);
         SetROP2(Info.DC, Info.MaskR2);
        end;
       CurPenMode:=NewPenMode;
@@ -1203,7 +1206,7 @@ begin
   if OldPen<>0 then
    begin
     SelectObject(Info.DC, OldPen);
-    Info.PinceauNoir:=OldPen;
+    Info.BlackBrush:=OldPen;
     if DeletePen<>0 then
      DeleteObject(DeletePen);
    end;
@@ -1225,7 +1228,7 @@ var
  W1, W2: TVect;
  Normale: TVect;
  obj: PyObject;
- f, d0,dv,d1: Reel;
+ f, d0,dv,d1: TDouble;
 begin
  if CurrentFrame=Nil then Exit;
  Count:=CurrentFrame.GetVertices(vec3_p(CVertArray));

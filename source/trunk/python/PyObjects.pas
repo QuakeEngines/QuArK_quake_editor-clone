@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:19:28  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/05/14 20:33:45  alexander
 header
 
@@ -695,7 +698,7 @@ begin
    'f': if StrComp(attr, 'filename') = 0 then
          with QkObjFromPyObj(self) as QFileObject do
           begin
-           Result:=PyString_FromString(PChar(NomFichier));
+           Result:=PyString_FromString(PChar(Filename));
            Exit;
           end;
   end;
@@ -718,7 +721,7 @@ begin
           P:=PyString_AsString(value);
           if P=Nil then Exit;
           with QkObjFromPyObj(self) as QFileObject do
-           NomFichier:=P;
+           Filename:=P;
           Result:=0;
           Exit;
          end;

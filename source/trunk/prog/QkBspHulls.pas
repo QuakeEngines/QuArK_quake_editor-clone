@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -211,7 +214,7 @@ var
  InvFaces: Integer;
  LastError: String;
  P1, P2, P3, NN: TVect;
- PlaneDist: Reel;
+ PlaneDist: TDouble;
  TextureList: QTextureList;
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
@@ -484,9 +487,9 @@ begin
  FBsp.GetBspEntryData(eEdges, lump_edges, Edges);
  Vertices:=PChar(FBsp.FVertices);
 
- if Info.PinceauSelection<>0 then
+ if Info.SelectedBrush<>0 then
   begin
-   NewPen:=Info.PinceauSelection;
+   NewPen:=Info.SelectedBrush;
   {OldROP:=SetROP2(Info.DC, R2_CopyPen);}
   end
  else
@@ -513,8 +516,8 @@ begin
       Inc(Dest);
       Inc(Src);
      end;
-    OutOfViewChk:=(Info.ModeAff>0) and (Info.PinceauSelection=0);
-  (*if (Info.ModeAff>0) and (Info.PinceauSelection=0) then
+    OutOfViewChk:=(Info.ModeAff>0) and (Info.SelectedBrush=0);
+  (*if (Info.ModeAff>0) and (Info.SelectedBrush=0) then
      begin
       OutOfView:=TBits.Create;
       OutOfView.Size:=UsedVertex;
@@ -553,7 +556,7 @@ begin
                if Info.ModeAff=2 then
                 Continue;
                SetROP2(Info.DC, Info.MaskR2);
-               SelectObject(Info.DC, Info.PinceauGris);
+               SelectObject(Info.DC, Info.GreyBrush);
               end;
             end;
            CCoord.Line95f(PV0^, PV1^);
@@ -579,7 +582,7 @@ begin
           ProjSommets[1]:=CCoord.Proj(Sommets[1]^);
           CCoord.CheckVisible(ProjSommets[0]);
           CCoord.CheckVisible(ProjSommets[1]);
-          if (Info.ModeAff>0) and (Info.PinceauSelection=0) then
+          if (Info.ModeAff>0) and (Info.SelectedBrush=0) then
            begin
           (*ModeProj:=TModeProj(1-Ord(ModeProj));
             Pts[0]:=Proj(Sommets[0]^);
@@ -601,7 +604,7 @@ begin
               if Info.ModeAff=2 then
                Continue;
               SetROP2(Info.DC, Info.MaskR2);
-              SelectObject(Info.DC, Info.PinceauGris);
+              SelectObject(Info.DC, Info.GreyBrush);
              end;
            end;
           CCoord.Line95f(ProjSommets[0], ProjSommets[1]);
@@ -613,7 +616,7 @@ begin
  {OutOfView.Free;}
   FreeMem(ProjVertices);
   SelectObject(Info.DC, OldPen);
-  if Info.PinceauSelection<>0 then
+  if Info.SelectedBrush<>0 then
   {SetROP2(Info.DC, OldROP)}
   else
    DeleteObject(NewPen);
@@ -675,7 +678,7 @@ begin
       begin
        S:=PSurface(Faces[I]);
        S^.F.AjouterSurfaceRef(Liste, S, Vertices, Sommets.Count, ZMax1, Odd(S^.F.SelMult));
-        {Info.CouleursTraits[esNormal]);}
+        {Info.ColorTraits[esNormal]);}
       end;
      finally FreeMem(Vertices); end;
     end

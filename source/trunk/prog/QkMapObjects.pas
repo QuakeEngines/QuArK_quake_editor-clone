@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.7  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -80,7 +83,7 @@ type
               function GetNegative: String;
               procedure SetNegative(const Neg: String);
             protected
-             {procedure ResultatAnalyseClic(var Liste: PAnalyseClic; nH: Reel);}
+             {procedure ResultatAnalyseClic(var Liste: PAnalyseClic; nH: TDouble);}
              {function GetTreeView(var M: TMapExplorer) : Boolean;}
             public
              {procedure Dessiner; virtual;
@@ -90,7 +93,7 @@ type
              {function GetOrigin(var Pt: TVect) : Boolean; virtual;
               function AnalyserClic(ModeAnalyse: Integer) : TTreeMap;}
               procedure AnalyseClic(Liste: PyObject); override;
-              procedure Deplacement(const PasGrille: Reel); override;
+              procedure Deplacement(const PasGrille: TDouble); override;
              {property Origin: TVect read GetOrigin1 write SetOrigin;
               property HasOrigin: Boolean read GetHasOrigin;}
               procedure ChercheExtremites(var Min, Max: TVect); override;
@@ -121,7 +124,7 @@ type
                   function CalculePosEcran(var P: TPoint; var V: TVect) : Integer;
                   function VecteurNormalDirection(var V: TVect) : Boolean;
                   function ModeAngle(var S: String) : Integer;}
-                  procedure Deplacement(const PasGrille: Reel); override;
+                  procedure Deplacement(const PasGrille: TDouble); override;
                  {procedure PreDessinerSel; override;
                   procedure PostDessinerSel; override;}
                 end;
@@ -148,7 +151,7 @@ type
                     procedure ChercheExtremites(var Min, Max: TVect); override;
                     procedure PreDessinerSel; override;
                     procedure Dessiner; override;
-                    procedure Deplacement(const PasGrille: Reel); override;
+                    procedure Deplacement(const PasGrille: TDouble); override;
                     procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                     procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                     function GetFormName : String; override;
@@ -366,7 +369,7 @@ begin
  until False;
 end;
 
-procedure TTreeMap.Deplacement(const PasGrille: Reel);
+procedure TTreeMap.Deplacement(const PasGrille: TDouble);
 var
  I: Integer;
 begin
@@ -391,7 +394,7 @@ begin
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
-   if not Odd(T.SelMult) or (mdParcourirSel in Info.ModeDessin) then
+   if not Odd(T.SelMult) or (mdTraversalSelected in Info.ModeDessin) then
     T.AddTo3DScene;
   end;
 end;
@@ -428,24 +431,24 @@ begin
  Specifics.Values['origin']:=vtos(nOrigin);
 end;*)
 
-(*procedure TTreeMap.Deplacement(const PasGrille: Reel);
+(*procedure TTreeMap.Deplacement(const PasGrille: TDouble);
 var
  Pt: TVect;
 begin
  if GetOrigin(Pt) then
   begin
-   if Info.ModeDeplacement > mdDeplacementGrille then
+   if Info.ModeDeplacement > mdDisplacementGrid then
     begin
      Pt.X:=Pt.X-Info.Clic.X;
      Pt.Y:=Pt.Y-Info.Clic.Y;
      Pt.Z:=Pt.Z-Info.Clic.Z;
-     if Info.ModeDeplacement in [mdLineaire, mdLineaireCompat] then
+     if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
       TransformationLineaire(Pt);
     end;
    Pt.X:=Pt.X+Info.Clic.X;
    Pt.Y:=Pt.Y+Info.Clic.Y;
    Pt.Z:=Pt.Z+Info.Clic.Z;
-   if Info.ModeDeplacement in [mdDeplacementGrille, mdDeplacementGrilleFort] then
+   if Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
     AjusteGrille1(Pt, PasGrille);
    Origin:=Pt;
   end;
@@ -712,7 +715,7 @@ function TTreeMapSpec.CalculePosAngle(var V: TVect) : Integer;
 var
  S: String;
  Code: Integer;
- Angle, Rapport: Reel;
+ Angle, Rapport: TDouble;
  Origin: TVect;
 begin
  Result:=0;
@@ -799,12 +802,12 @@ begin
  end;
 end;*)
 
-procedure TTreeMapSpec.Deplacement(const PasGrille: Reel);
+procedure TTreeMapSpec.Deplacement(const PasGrille: TDouble);
 var
  mx: PyObject;
 begin
  inherited;
- if Info.ModeDeplacement=mdLineaire then
+ if Info.ModeDeplacement=mdLinear then
   begin
    mx:=MakePyMatrix(Info.Matrice); try
    Py_XDECREF(CallMacroEx(Py_BuildValueX('OO', [@PythonObj, mx]),
@@ -816,7 +819,7 @@ end;
  V, Dest: TVect;
  AnglePlat: Integer;
  Spec, Chaine: String;}
-(* if (Info.ModeDeplacement=mdLineaire)
+(* if (Info.ModeDeplacement=mdLinear)
  and VecteurNormalDirection(V) then
   begin
    TransformationLineaire(V);
@@ -1190,7 +1193,7 @@ begin
   end;
 end;
 
-procedure TTreeMapEntity.Deplacement(const PasGrille: Reel);
+procedure TTreeMapEntity.Deplacement(const PasGrille: TDouble);
 var
  Pt: TVect;
 begin
@@ -1198,18 +1201,18 @@ begin
  if HasOrigin then
   begin
    Pt:=Origin;
-   if Info.ModeDeplacement > mdDeplacementGrille then
+   if Info.ModeDeplacement > mdDisplacementGrid then
     begin
      Pt.X:=Pt.X-Info.Clic.X;
      Pt.Y:=Pt.Y-Info.Clic.Y;
      Pt.Z:=Pt.Z-Info.Clic.Z;
-     if Info.ModeDeplacement in [mdLineaire, mdLineaireCompat] then
+     if Info.ModeDeplacement in [mdLinear, mdLineaireCompat] then
       TransformationLineaire(Pt);
     end;
    Pt.X:=Pt.X+Info.Clic.X;
    Pt.Y:=Pt.Y+Info.Clic.Y;
    Pt.Z:=Pt.Z+Info.Clic.Z;
-   if Info.ModeDeplacement in [mdDeplacementGrille, mdDeplacementGrilleFort] then
+   if Info.ModeDeplacement in [mdDisplacementGrid, mdStrongDisplacementGrid] then
     AjusteGrille1(Pt, PasGrille);
    Origin:=Pt;
   end;
@@ -1261,7 +1264,7 @@ var
  BBox: TBBoxInfo;
  V: TVect;
  R, {Max,} I, J, X1, Y1, X2, Y2: Integer;
-{Facteur: Reel;
+{Facteur: TDouble;
  Trait: TPoint;
  Form4: TForm4;}
  Vs: array[0..2] of TVect;
@@ -1271,9 +1274,9 @@ begin
   {OldPen:=0;}
    Pts:=CCoord.Proj(Origin);
    if not CCoord.CheckVisible(Pts) then Exit;
-   if Info.PinceauSelection<>0 then
+   if Info.SelectedBrush<>0 then
     begin
-     SelectObject(Info.DC, Info.PinceauSelection);
+     SelectObject(Info.DC, Info.SelectedBrush);
      SetROP2(Info.DC, Info.BaseR2);
     end
    else
@@ -1282,26 +1285,26 @@ begin
       begin
        if Pts.OffScreen=0 then
         begin
-         SelectObject(Info.DC, Info.PinceauNoir);
+         SelectObject(Info.DC, Info.BlackBrush);
          SetROP2(Info.DC, R2_CopyPen);
         end
        else
         begin
          if Info.ModeAff=2 then
           Exit;
-         SelectObject(Info.DC, Info.PinceauGris);
+         SelectObject(Info.DC, Info.GreyBrush);
          SetROP2(Info.DC, Info.MaskR2);
         end;
       end
      else
      {if Info.ModeAff=0 then}
        begin
-        SelectObject(Info.DC, Info.PinceauNoir);
+        SelectObject(Info.DC, Info.BlackBrush);
         SetROP2(Info.DC, R2_CopyPen);
        end
     else
      begin   { Restricted }
-      SelectObject(Info.DC, Info.PinceauGris);
+      SelectObject(Info.DC, Info.GreyBrush);
       SetROP2(Info.DC, Info.MaskR2);
      end;
    X1:=Round(Pts.x);
@@ -1310,9 +1313,9 @@ begin
    LineTo  (Info.DC, X1+4, Y1);
    MoveToEx(Info.DC, X1, Y1-2, Nil);
    LineTo  (Info.DC, X1, Y1+3);
-   if Info.PinceauSelection<>0 then
+   if Info.SelectedBrush<>0 then
     begin
-     SelectObject(Info.DC, Info.PinceauSelection);
+     SelectObject(Info.DC, Info.SelectedBrush);
      SetROP2(Info.DC, R2_CopyPen);
      Ellipse(Info.DC, X1-7, Y1-7, X1+8, Y1+7);
     end;
@@ -1425,7 +1428,7 @@ var
  R{, Min,Max}: Integer;
 {Brush: HBrush;
  Pen: HPen;
- Rayon: Reel;}
+ Rayon: TDouble;}
  OriginPt: TPointProj;
 {Form4: TForm4;}
  I, J, X1, Y1, X2, Y2: Integer;
@@ -1588,7 +1591,7 @@ var
  I, K, Count: Integer;
  ModelOrg: vec3_t;
  Angle: Integer;
- ASin, ACos: Reel;
+ ASin, ACos: TDouble;
  SkinDescr: String;
 
 begin
@@ -1723,8 +1726,8 @@ end;
 procedure TTreeMapEntity.AddTo3DScene;
 var
  Light: Single;
- L4: array[1..4] of Reel;
- L3: array[1..3] of Reel;
+ L4: array[1..4] of TDouble;
+ L3: array[1..3] of TDouble;
  S: String;
  Color: TColorRef;
 begin
@@ -1890,12 +1893,12 @@ var
 begin
  NewPen:=0;
  DeletePen:=0;
- if Info.PinceauGris <> 0 then
+ if Info.GreyBrush <> 0 then
   begin    { if color changes must be made now }
    Flags:=ViewFlags;
    if Flags and vfHidden <> 0 then Exit;
    if Flags and vfGrayedout <> 0 then
-    NewPen:=Info.PinceauGris;
+    NewPen:=Info.GreyBrush;
   {if Self = Info.SelectionVisuelle then
     begin
      Info.GroupeOuvert:=False;
@@ -1916,8 +1919,8 @@ begin
   end;
  if NewPen<>0 then
   begin
-   OldPen:=Info.PinceauNoir;
-   Info.PinceauNoir:=NewPen;
+   OldPen:=Info.BlackBrush;
+   Info.BlackBrush:=NewPen;
   end
  else
   OldPen:=0;
@@ -1926,14 +1929,14 @@ begin
  for I:=0 to SubElements.Count-1 do
   begin
    T:=TTreeMap(SubElements[I]);
-   if not Odd(T.SelMult) or (mdParcourirSel in Info.ModeDessin) then
+   if not Odd(T.SelMult) or (mdTraversalSelected in Info.ModeDessin) then
     T.Dessiner;
   end;
  if IsRestrictor then Info.Restrictor:=Self;
  if OldPen<>0 then
   begin
    SelectObject(Info.DC, OldPen);
-   Info.PinceauNoir:=OldPen;
+   Info.BlackBrush:=OldPen;
    if DeletePen<>0 then
     DeleteObject(DeletePen);
   end;
@@ -2082,7 +2085,7 @@ begin
  Polyedres:=TQList.Create;
  try
   I:=soAddTo3DScene;
-  if not (mdParcourirSel in Info.ModeDessin) then
+  if not (mdTraversalSelected in Info.ModeDessin) then
    Inc(I, soNonParcourirSel);
   ListePolyedres(Polyedres, Negatifs, I, MaxInt);
   for I:=0 to Polyedres.Count-1 do

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -37,26 +40,26 @@ interface
 uses SysUtils, qmath;
 
 type
- TMatriceTransformation = array[1..3, 1..3] of Reel;
+ TMatrixTransformation = array[1..3, 1..3] of TDouble;
 
 const
- MatriceIdentite : TMatriceTransformation =
+ MatriceIdentite : TMatrixTransformation =
   ((1,0,0),
    (0,1,0),
    (0,0,1));
 
  {------------------------}
 
-procedure AjusteGrille1(var Delta: TVect; const PasGrille: Reel);
+procedure AjusteGrille1(var Delta: TVect; const PasGrille: TDouble);
 procedure TransformationLineaire(var Pt: TVect);
 function InverseOrientation : Boolean;
-procedure Info_mx_Rot(N1,N2: Integer; V: Reel);
+procedure Info_mx_Rot(N1,N2: Integer; V: TDouble);
 procedure Info_mx_Symetrie(Coord: Integer);
-function MultiplieMatrices(const M1, M2: TMatriceTransformation) : TMatriceTransformation;
-function mxtos(const M: TMatriceTransformation) : String;
-function stomx(const S: String) : TMatriceTransformation;
-function MatriceInverse(const M: TMatriceTransformation) : TMatriceTransformation;
-function Determinant(const Matrice: TMatriceTransformation) : Reel;
+function MultiplieMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransformation;
+function mxtos(const M: TMatrixTransformation) : String;
+function stomx(const S: String) : TMatrixTransformation;
+function MatriceInverse(const M: TMatrixTransformation) : TMatrixTransformation;
+function Determinant(const Matrice: TMatrixTransformation) : TDouble;
 
  {------------------------}
 
@@ -66,7 +69,7 @@ uses Qk3D;
 
  {------------------------}
 
-procedure AjusteGrille1(var Delta: TVect; const PasGrille: Reel);
+procedure AjusteGrille1(var Delta: TVect; const PasGrille: TDouble);
 begin
  if PasGrille>0 then
   begin
@@ -92,7 +95,7 @@ end;
 function InverseOrientation : Boolean;
 begin
  with Info do
-  InverseOrientation:=(ModeDeplacement in [mdLineaire, mdLineaireCompat])
+  InverseOrientation:=(ModeDeplacement in [mdLinear, mdLineaireCompat])
    and (Determinant(Matrice) < 0);
 end;
 
@@ -107,9 +110,9 @@ begin
        -Matrice[1,3]*Matrice[2,2]*Matrice[3,1];
 end;
 
-procedure Info_mx_Rot(N1,N2: Integer; V: Reel);
+procedure Info_mx_Rot(N1,N2: Integer; V: TDouble);
 var
- Angle: Reel;
+ Angle: TDouble;
 begin
  Angle:=V * (pi/180);
  Info.Matrice:=MatriceIdentite;
@@ -125,7 +128,7 @@ begin
  Info.Matrice[Coord,Coord]:=-1;
 end;
 
-function MultiplieMatrices(const M1, M2: TMatriceTransformation) : TMatriceTransformation;
+function MultiplieMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransformation;
 var
  I,J: Integer;
 begin
@@ -137,9 +140,9 @@ begin
   end;
 end;
 
-function MatriceInverse(const M: TMatriceTransformation) : TMatriceTransformation;
+function MatriceInverse(const M: TMatrixTransformation) : TMatrixTransformation;
 var
- Facteur: Reel;
+ Facteur: TDouble;
 {Aux: TMatriceDeplacement;}
  I,J,I1,I2,J1,J2: Integer;
 begin
@@ -176,7 +179,7 @@ begin
   end;}
 end;
 
-function mxtos(const M: TMatriceTransformation) : String;
+function mxtos(const M: TMatrixTransformation) : String;
 var
  I,J: Integer;
 begin
@@ -187,12 +190,12 @@ begin
  SetLength(Result, Length(Result)-1);
 end;
 
-function stomx(const S: String) : TMatriceTransformation;
+function stomx(const S: String) : TMatrixTransformation;
 var
- V: array[1..{12}9] of Reel;
+ V: array[1..{12}9] of TDouble;
 begin
  LireValeurs(S, V);
- Result:=TMatriceTransformation(V);
+ Result:=TMatrixTransformation(V);
 end;
 
  {------------------------}

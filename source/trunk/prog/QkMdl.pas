@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -585,7 +588,7 @@ var
  Vert1, Vert2, Vert3: vec3_t;
  tvx: trivertx_t;
  NormalesSommets: ^TVect_array;
- Aire, AireTotale, Maximum: Reel;
+ Aire, AireTotale, Maximum: TDouble;
 
   function Compacter(const T: vec3_t) : trivertx_t;
   begin
@@ -1139,7 +1142,7 @@ var
  typ, besttyp: Boolean;
  best_st, best_xyz, best_tris, strip_st, strip_xyz, strip_tris, tmpptr: ^TIntegerArray;
  st1: dstvert_p;
- skinwidth1, skinheight1: Reel;
+ skinwidth1, skinheight1: TDouble;
  s, t: Single;
 
   function StripLength(starttri: Integer) : Integer;
@@ -1351,7 +1354,7 @@ var
  NormalesSommets: ^TVect_array;
  Vert1, Vert2, Vert3: vec3_t;
  Vec1, Vec2, Vec3, EchelleCompacter: TVect;
- Aire, Maximum: Reel;
+ Aire, Maximum: TDouble;
  tvx: dtrivertx_t;
 begin
  with Info do case Format of

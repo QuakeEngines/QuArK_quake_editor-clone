@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -202,7 +205,7 @@ var
  Lmp: PPaletteLmp;
  S: String;
  V: array[1..2] of Single;
- Cl: array[0..2] of Reel;
+ Cl: array[0..2] of TDouble;
  begin
  with Info do case Format of
   1: begin  { as stand-alone file }

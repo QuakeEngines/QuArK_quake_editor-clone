@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.14  2000/07/03 23:17:15  alexander
 set snapshot version
 
@@ -1292,7 +1295,7 @@ begin
    begin
     if FFlags and ofFileLink = 0 then
      Raise EError(5507);
-    S:=(Self as QFileObject).NomFichier;
+    S:=(Self as QFileObject).Filename;
     Source:=FileAccessQ(S, []);
     SourceTaille:=Source.Size;
    end;
@@ -1352,7 +1355,7 @@ begin
   if FNode=Nil then  { add the size of the not already loaded data }
    begin     { from a not yet opened file }
     if FFlags and ofFileLink = 0 then Exit;  { error }
-    if FindFirst((Self as QFileObject).NomFichier, faAnyFile, F) = 0 then
+    if FindFirst((Self as QFileObject).Filename, faAnyFile, F) = 0 then
      Inc(Result, F.Size);
     FindClose(F);
    end
@@ -1380,7 +1383,7 @@ begin
   if FFlags and ofLienFichier <> 0 then
    begin
     QStreamRelease(FNode);
-    S:=(Self as QFileObject).NomFichier;
+    S:=(Self as QFileObject).Filename;
     Source:=FileAccessQ(S, False);
     SourceTaille:=Source.Size;
     LireEnteteFichier(Source, S, SourceTaille);
@@ -1448,7 +1451,7 @@ begin  { if possible, copy directly from the original file into the new one }
    begin
     if FFlags and ofFileLink = 0 then
      Raise EError(5507);
-    S:=(Self as QFileObject).NomFichier;
+    S:=(Self as QFileObject).Filename;
     Source:=FileAccessQ(S, []);
     SourceTaille:=Source.Size;
    end;

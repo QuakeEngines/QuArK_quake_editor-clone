@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.17  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -1740,12 +1743,12 @@ end;
 
 (*procedure QTexture1.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
 var
- Entete: TQ1Miptex;
+ Header: TQ1Miptex;
 begin
- Source.ReadBuffer(Entete, SizeOf(Entete));
- if not CheckQ1Miptex(Entete, SourceTaille) then
+ Source.ReadBuffer(Header, SizeOf(Header));
+ if not CheckQ1Miptex(Header, SourceTaille) then
   Raise EErrorFmt(5514, [Nom, 1]);
- Source.Seek(-SizeOf(Entete), soFromCurrent);
+ Source.Seek(-SizeOf(Header), soFromCurrent);
  LoadFormat:=1;
 end;*)
 
@@ -1893,12 +1896,12 @@ end;
 
 (*procedure QTexture2.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
 var
- Entete: TQ2Miptex;
+ Header: TQ2Miptex;
 begin
- Source.ReadBuffer(Entete, SizeOf(Entete));
- if not CheckQ2Miptex(Entete, SourceTaille) then
+ Source.ReadBuffer(Header, SizeOf(Header));
+ if not CheckQ2Miptex(Header, SourceTaille) then
   Raise EErrorFmt(5514, [Nom, 2]);
- Source.Seek(-SizeOf(Entete), soFromCurrent);
+ Source.Seek(-SizeOf(Header), soFromCurrent);
  LoadFormat:=1;
 end;*)
 
@@ -2240,25 +2243,28 @@ begin
       Count:=QTextureFile(PS).ImagesCount
      else
       Count:=1;
-     PSD:=PS.Description; try
-     FullSize:=PSD.Size;
-     Step:=(CW-PSD.Size.X*2) div (Count+1);
-     if Step<MinStep then Step:=MinStep;
-     X:=Step;
-     W:=PSD.Size.X;
-     H:=PSD.Size.Y;
-     for I:=0 to Count - 1 do
-      begin
-       if I>0 then
+     PSD:=PS.Description;
+     try
+       FullSize:=PSD.Size;
+       Step:=(CW-PSD.Size.X*2) div (Count+1);
+       if Step<MinStep then Step:=MinStep;
+       X:=Step;
+       W:=PSD.Size.X;
+       H:=PSD.Size.Y;
+       for I:=0 to Count - 1 do
         begin
-         PSD.Done;
-         PSD:=(PS as QTextureFile).ScaledDownDescription(I);
+         if I>0 then
+          begin
+           PSD.Done;
+           PSD:=(PS as QTextureFile).ScaledDownDescription(I);
+          end;
+         PSD.Paint(DC, X, (CH-H) div 2);
+         Inc(X, W + Step);
+         if not ScaleDown(W,H) then Break;
         end;
-       PSD.Paint(DC, X, (CH-H) div 2);
-       Inc(X, W + Step);
-       if not ScaleDown(W,H) then Break;
-      end;
-     finally PSD.Done; end;
+     finally
+       PSD.Done;
+     end;
      SetTextColor(DC, clGray);
      S:=FmtLoadStr1(5387, [Info^.GameName, FullSize.X, FullSize.Y]);
      TextOut(DC, 5,1, PChar(S), Length(S));
@@ -2268,12 +2274,13 @@ begin
        SetTextColor(DC, clSilver);
        S:=GetExceptionMessage(E);
        R:=PaintPanel1.ClientRect;
-       InflateRect(R, -20,-20);
-       DrawText(DC, PChar(S), Length(S), R,
-        DT_NOCLIP or DT_WORDBREAK);
+       InflateRect(R, -20, -20);
+       DrawText(DC, PChar(S), Length(S), R, DT_NOCLIP or DT_WORDBREAK);
       end;
     end;
-    finally ReleaseDC(PaintPanel1.Handle, DC); end;
+    finally
+     ReleaseDC(PaintPanel1.Handle, DC);
+    end;
    end;
 end;
 
@@ -2353,7 +2360,7 @@ function TFQTexture.MacroCommand(Cmd: Integer) : Boolean;
 var
  Pal: TToolbar97;
  S: String;
- Size: array[1..2] of Reel;
+ Size: array[1..2] of TDouble;
 begin
  MacroCommand:=True;
  case Cmd of

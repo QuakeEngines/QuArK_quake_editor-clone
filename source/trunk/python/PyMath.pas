@@ -46,11 +46,11 @@ type
            end;
   PyVectST = ^TyVectST;
   TyVectST = object(TyVect)
-              TexS, TexT: Reel;
+              TexS, TexT: TDouble;
              end;
   PyMatrix = ^TyMatrix;
   TyMatrix = object(TyObject)
-              M: TMatriceTransformation;
+              M: TMatrixTransformation;
              end;
   PPointProj = ^TPointProj;
   TPointProj = record
@@ -66,7 +66,7 @@ type
     FastDisplay: Boolean;   { can use the standard drawing routines }
     FlatDisplay: Boolean;   { is a 2D view }
     HiddenRegions: Byte;   { os_xxx }
-    MinDistance, MaxDistance: Reel;
+    MinDistance, MaxDistance: TDouble;
     ScrCenter: TPoint;
    {ViewRectLeft, ViewRectTop, ViewRectRight, ViewRectBottom: Integer;}
      { 3D point -> window (x,y,w), w is the distance from the viewer with the same scale as x and y }
@@ -82,13 +82,13 @@ type
      { 3D vector from Pt in the direction of the eye }
     function VectorEye(const Pt: TVect) : TVect; virtual; abstract;
      { is the "eye" in the given half space ? }
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; virtual; abstract;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; virtual; abstract;
      { compare two TPointProj.oow depths }
     function NearerThan(const oow1, oow2: Single) : Boolean; virtual; abstract;
    (*{ normal vector end }
     function VecteurNormalDe(const Centre, Normale: TVect) : TVect;*)
      { scaling factor, if any }
-    function ScalingFactor(Pt: PVect) : Reel; virtual;
+    function ScalingFactor(Pt: PVect) : TDouble; virtual;
      { set as current CCoord }
     procedure SetAsCCoord(nDC: HDC);
      { checks for orthogonality }
@@ -109,16 +109,16 @@ type
 
 (*T2DCoordinates = class(TCoordinates)
   protected
-    pProjZ, Facteur: Reel;
+    pProjZ, Facteur: TDouble;
     procedure InitProjVar;
   public
-    function ScalingFactor(Pt: PVect) : Reel; override;
+    function ScalingFactor(Pt: PVect) : TDouble; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
   end;
 
   TStdCoordinates = class(T2DCoordinates)
   protected
-    pProjX, pProjY: Reel;
+    pProjX, pProjY: TDouble;
     Vue: (v_XY, v_YmX, v_mXmY, v_mYX, v_Autre);
     procedure InitProjVar;
   public
@@ -132,7 +132,7 @@ type
     function VectorX : TVect; override;
     function VectorY : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; override;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
   end;
 
   TXY2Coordinates = class(TXYCoordinates)
@@ -142,7 +142,7 @@ type
     function VectorX : TVect; override;
     function VectorY : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; override;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
   end;
 
   TXZCoordinates = class(TStdCoordinates)
@@ -152,37 +152,37 @@ type
     function VectorX : TVect; override;
     function VectorY : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; override;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
   end;
 
   TAACoordinates = class(T2DCoordinates)
   protected
-    SinAngle, CosAngle: Reel;    { normalized, length 1 }
-    SinAngleV, CosAngleV: Reel;  { not normalized, length pProjZ }
+    SinAngle, CosAngle: TDouble;    { normalized, length 1 }
+    SinAngleV, CosAngleV: TDouble;  { not normalized, length pProjZ }
   public
     function Espace(const P: TPointProj) : TVect; override;
     function Proj(const V: TVect) : TPointProj; override;
     function VectorX : TVect; override;
     function VectorY : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; override;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
     {function Orthogonal : Boolean; override;}
   end;*)
 
   T2DCoordinates = class(TCoordinates)
   protected
-    pProjZ: Reel;
-    mx, mxinv: TMatriceTransformation;
+    pProjZ: TDouble;
+    mx, mxinv: TMatrixTransformation;
     procedure InitProjVar;
   public
-    function ScalingFactor(Pt: PVect) : Reel; override;
+    function ScalingFactor(Pt: PVect) : TDouble; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
     function Espace(const P: TPointProj) : TVect; override;
     function Proj(const V: TVect) : TPointProj; override;
     function VectorX : TVect; override;
     function VectorY : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; override;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
   end;
 
   TXYCoordinates = class(T2DCoordinates)
@@ -202,11 +202,11 @@ type
 var
  CCoord : TCoordinates;
 
-{function GetCoordinates(const Up: TVect; const Scale: Reel) : T2DCoordinates;
-function GetTopDownAngle(const Angle, Scale: Reel; BottomUp: Boolean) : TXYCoordinates;
-function GetAngleCoord(const Angle, VAngle, Scale: Reel) : T2DCoordinates;}
+{function GetCoordinates(const Up: TVect; const Scale: TDouble) : T2DCoordinates;
+function GetTopDownAngle(const Angle, Scale: TDouble; BottomUp: Boolean) : TXYCoordinates;
+function GetAngleCoord(const Angle, VAngle, Scale: TDouble) : T2DCoordinates;}
 
-function GetMatrixCoordinates(const mx: TMatriceTransformation) : T2DCoordinates;
+function GetMatrixCoordinates(const mx: TMatrixTransformation) : T2DCoordinates;
 
 procedure Rectangle95(DC: HDC; X1, Y1, X2, Y2: Integer);
 procedure Ellipse95(DC: HDC; X1, Y1, X2, Y2: Integer);
@@ -269,7 +269,7 @@ var
 function GetMatrixAttr(self: PyObject; attr: PChar) : PyObject; cdecl;
 function PrintMatrix(self: PyObject) : PyObject; cdecl;
 function MatrixToStr(self: PyObject) : PyObject; cdecl;
-function MakePyMatrix(const nMatrix: TMatriceTransformation) : PyMatrix;
+function MakePyMatrix(const nMatrix: TMatrixTransformation) : PyMatrix;
 
 function MatrixLength(m: PyObject) : Integer; cdecl;
 function MatrixSubscript(m, ij: PyObject) : PyObject; cdecl;
@@ -336,7 +336,7 @@ const
 
 function Ligne95(var P1, P2: TPointProj; Test3D: Boolean) : Boolean;
 var
- F: Reel;
+ F: TDouble;
 begin
  if Test3D then
   begin
@@ -900,9 +900,9 @@ end;
 
  {------------------------}
 
-(*function GetCoordinates(const Up: TVect; const Scale: Reel) : T2DCoordinates;
+(*function GetCoordinates(const Up: TVect; const Scale: TDouble) : T2DCoordinates;
 var
- R: Reel;
+ R: TDouble;
 begin
  if Abs(Up.Z)>1-rien then
   begin
@@ -946,7 +946,7 @@ begin
    end;
 end;
 
-function GetTopDownAngle(const Angle, Scale: Reel; BottomUp: Boolean) : TXYCoordinates;
+function GetTopDownAngle(const Angle, Scale: TDouble; BottomUp: Boolean) : TXYCoordinates;
 begin
  if BottomUp then
   Result:=TXY2Coordinates.Create
@@ -961,9 +961,9 @@ begin
   end;
 end;
 
-function GetAngleCoord(const Angle, VAngle, Scale: Reel) : T2DCoordinates;
+function GetAngleCoord(const Angle, VAngle, Scale: TDouble) : T2DCoordinates;
 var
- R: Reel;
+ R: TDouble;
  Up: TVect;
 begin
  Up.Z:=Sin(VAngle);
@@ -978,7 +978,7 @@ begin
   end;
 end;*)
 
-function GetMatrixCoordinates(const mx: TMatriceTransformation) : T2DCoordinates;
+function GetMatrixCoordinates(const mx: TMatrixTransformation) : T2DCoordinates;
 begin
  if (Abs(mx[1,2])<rien) and (Abs(mx[1,3])<rien)
  and (Abs(mx[2,1])<rien) and (Abs(mx[3,1])<rien) then
@@ -1005,19 +1005,19 @@ begin
  CCoord:=Self;
 {CheckWindows16bits(ScalingFactor>2);}
  Info.ModeAff:=0;
- Info.PinceauNoir:=GetStockObject(Info.BasePen);
- Info.PinceauSelection:=0;
+ Info.BlackBrush:=GetStockObject(Info.BasePen);
+ Info.SelectedBrush:=0;
  SetROP2(Info.DC, R2_CopyPen);
 end;
 
-function TCoordinates.ScalingFactor(Pt: PVect) : Reel;
+function TCoordinates.ScalingFactor(Pt: PVect) : TDouble;
 begin
  ScalingFactor:=1.0;
 end;
 
 (*function TCoordinates.VecteurNormalDe(const Centre, Normale: TVect) : TVect;
 var
- Dist1: Reel;
+ Dist1: TDouble;
 begin
  Dist1:=LongueurVectNormal/ScalingFactor;
  Result.X:=Centre.X + Normale.X*Dist1;
@@ -1066,7 +1066,7 @@ var
  V: array[0..3] of TVect;
  W, Normale: TVect;
  Pts: array[0..3] of TPointProj;
-{Facteur: Reel;
+{Facteur: TDouble;
  Trait: TPoint;}
  R: Integer;
 begin
@@ -1201,7 +1201,7 @@ end;
 
  {------------------------}
 
-function T2DCoordinates.ScalingFactor(Pt: PVect) : Reel;
+function T2DCoordinates.ScalingFactor(Pt: PVect) : TDouble;
 begin
  ScalingFactor:=pProjZ;
 end;
@@ -1248,14 +1248,14 @@ begin
  Result.Z:=-mxinv[3,3];
 end;
 
-function T2DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean;
+function T2DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
 begin
  Result:=(mx[3,1]*NormaleX + mx[3,2]*NormaleY + mx[3,3]*NormaleZ)<0;
 end;
 
 function T2DCoordinates.Espace(const P: TPointProj) : TVect;
 var
- X, Y: Reel;
+ X, Y: TDouble;
 begin
  X:=P.X-pDeltaX;
  Y:=P.Y-pDeltaY;
@@ -1409,14 +1409,14 @@ begin
  Result.Z:={-}pProjZ;
 end;
 
-function TXYCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean;
+function TXYCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
 begin
  Result:=NormaleZ>0;
 end;
 
 function TXYCoordinates.Espace(const P: TPointProj) : TVect;
 var
- X, Y: Reel;
+ X, Y: TDouble;
 begin
  X:=P.X-pDeltaX;
  Y:=pDeltaY-P.Y;
@@ -1465,7 +1465,7 @@ begin
  Result.Z:= - pProjZ;
 end;
 
-function TXY2Coordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean;
+function TXY2Coordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
 begin
  Result:=NormaleZ<0;
 end;
@@ -1501,7 +1501,7 @@ end;
 
 function TXZCoordinates.Espace(const P: TPointProj) : TVect;
 var
- X: Reel;
+ X: TDouble;
 begin
  X:=P.X-pDeltaX;
  Espace.X:=(  X  *pProjX - P.oow*pProjY) * Facteur;
@@ -1530,7 +1530,7 @@ begin
  Result.Z:=0;
 end;
 
-function TXZCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean;
+function TXZCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
 begin
  Result:=NormaleX*pProjY - NormaleY*pProjX > 0;
 end;
@@ -1539,7 +1539,7 @@ end;
 
 function TAACoordinates.Espace(const P: TPointProj) : TVect;
 var
- V1, X, Y: Reel;
+ V1, X, Y: TDouble;
 begin
  X:=(P.X - pDeltaX) * pProjZ;
  Y:=pDeltaY - P.Y;
@@ -1551,7 +1551,7 @@ end;
 
 function TAACoordinates.Proj(const V: TVect) : TPointProj;
 var
- V1: Reel;
+ V1: TDouble;
 begin
  V1:=V.X*SinAngle+V.Y*CosAngle;
  Result.X:=(pProjZ*(V.X*CosAngle - V.Y*SinAngle)) + pDeltaX;
@@ -1580,7 +1580,7 @@ begin
  Result.Z:=SinAngleV;
 end;
 
-function TAACoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean;
+function TAACoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
 begin
  Result:=NormaleX*SinAngle*CosAngleV*pProjY + NormaleY*CosAngle*CosAngleV + NormaleZ*SinAngleV > 0;
 end;
@@ -1918,9 +1918,9 @@ end;
  {------------------------}
 
 const
- COERCEDFROMFLOAT : Reel = -1E308;
+ COERCEDFROMFLOAT : TDouble = -1E308;
 
-function PyVectST_S(v1: PyObject) : Reel;
+function PyVectST_S(v1: PyObject) : TDouble;
 begin
  if PyVect(v1)^.ST then
   Result:=PyVectST(v1)^.TexS
@@ -1928,7 +1928,7 @@ begin
   Result:=0;
 end;
 
-function PyVectST_T(v1: PyObject) : Reel;
+function PyVectST_T(v1: PyObject) : TDouble;
 begin
  if PyVect(v1)^.ST then
   Result:=PyVectST(v1)^.TexT
@@ -2030,7 +2030,7 @@ end;
 function VectorDivide(v1, v2: PyObject) : PyObject;
 var
  W1, W2: TVect;
- f: Reel;
+ f: TDouble;
 begin
  try
   if (v1^.ob_type <> @TyVect_Type)
@@ -2139,7 +2139,7 @@ end;
 
 function VectorCoerce(var v1, v2: PyObject) : Integer; 
 var
- f: Reel;
+ f: TDouble;
  v3: PyObject;
 begin
  try
@@ -2237,7 +2237,7 @@ begin
  end;
 end;
 
-function MakePyMatrix(const nMatrix: TMatriceTransformation) : PyMatrix;
+function MakePyMatrix(const nMatrix: TMatrixTransformation) : PyMatrix;
 begin
  Result:=PyMatrix(PyObject_New(@TyMatrix_Type));
  Result^.M:=nMatrix;
@@ -2292,7 +2292,7 @@ end;
 
 function MatrixAdd(v1, v2: PyObject) : PyObject;
 var
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
  I, J: Integer;
 begin
  try
@@ -2313,7 +2313,7 @@ end;
 
 function MatrixSubtract(v1, v2: PyObject) : PyObject;
 var
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
  I, J: Integer;
 begin
  try
@@ -2334,7 +2334,7 @@ end;
 
 function MatrixMultiply(v1, v2: PyObject) : PyObject;
 var
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
  v3: PyObject;
  I, J: Integer;
 begin
@@ -2380,8 +2380,8 @@ end;
 
 function MatrixDivide(v1, v2: PyObject) : PyObject;
 var
- M: TMatriceTransformation;
- F: Reel;
+ M: TMatrixTransformation;
+ F: TDouble;
  I, J: Integer;
 begin
  try
@@ -2420,7 +2420,7 @@ end;
 
 function MatrixNegative(v1: PyObject) : PyObject;
 var
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
  I, J: Integer;
 begin
  try
@@ -2494,7 +2494,7 @@ end;
 function MatrixCoerce(var v1, v2: PyObject) : Integer;
 var
  v3: PyObject;
- M: TMatriceTransformation;
+ M: TMatrixTransformation;
 begin
  try
   Result:=-1;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -540,11 +543,11 @@ procedure TFileExplorer.RootChanging(Root: QObject);
 begin
  if NiveauAction and (na_Action or na_Cancel) = na_Action then
   with Root as QFileObject do
-   if (NomFichier<>'')
+   if (Filename<>'')
    and (MessageDlg(LoadStr1(5210), mtConfirmation, mbOkCancel, 0) = mrCancel) then
     Abort
    else
-    NomFichier:=Name+TypeInfo;
+    Filename:=Name+TypeInfo;
  MessageInterne(wp_AfficherInfos, 0);
 end;
 

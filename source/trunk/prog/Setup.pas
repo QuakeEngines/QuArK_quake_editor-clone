@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.7  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -395,7 +398,7 @@ var
  SetupQrk: QFileObject;
  V1, V2: String;
  T: TSetupSet;
- Version: Reel;
+ Version: TDouble;
 begin
  for T:=High(T) downto Low(T) do
   if SetupSet[T]<>Nil then
@@ -413,7 +416,7 @@ begin
   SetupQrk:=LienFichierQObject(DefaultsFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
-   DefaultsFileName1:=SetupQrk.NomFichier;
+   DefaultsFileName1:=SetupQrk.Filename;
    BrowseConfig(SetupQrk);  { copies this setup data into memory }
   finally
    SetupQrk.AddRef(-1);
@@ -451,7 +454,7 @@ begin
   SetupQrk:=LienFichierQObject(SetupFileName, Nil, False);
   SetupQrk.AddRef(+1);
   try
-  {SetupFileName1:=SetupQrk.NomFichier;}
+  {SetupFileName1:=SetupQrk.Filename;}
    BrowseConfig(SetupQrk);  { copies this setup data into memory }
   finally
    SetupQrk.AddRef(-1);
@@ -692,7 +695,7 @@ begin
    Result.AddRef(+1);
    try
     Result.Flags:=Result.Flags or ofFileLink;
-    Result.NomFichier:=DefaultsFileName1;
+    Result.Filename:=DefaultsFileName1;
     Result.SubElements.Add(ExactFileLink(DefaultsFileName1, Result, False));
   (*Result.SubElements.Add(LienFichierQObject(
      SetupGameSet.Specifics.Values['Base'], Result));*)

@@ -39,30 +39,30 @@ type
   T3DCoordinates = class(TCoordinates)
   protected
     Eye, Look, Right, Down: TVect;
-    ooWFactor, SpaceFactor: Reel;
+    ooWFactor, SpaceFactor: TDouble;
     procedure InitProjVar;
   public
-    FarDistance: Reel;
+    FarDistance: TDouble;
     function Espace(const P: TPointProj) : TVect; override;
     function Proj(const V: TVect) : TPointProj; override;
     function VectorX : TVect; override;
     function VectorY : TVect; override;
     function VectorEye(const Pt: TVect) : TVect; override;
-    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean; override;
+    function PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean; override;
     function NearerThan(const oow1, oow2: Single) : Boolean; override;
-    function ScalingFactor(Pt: PVect) : Reel; override;
-    property FCheckRadius: Reel read ooWFactor;
+    function ScalingFactor(Pt: PVect) : TDouble; override;
+    property FCheckRadius: TDouble read ooWFactor;
   end;
 
   TCameraCoordinates = class(T3DCoordinates)
   protected
-    FHorzAngle, FPitchAngle, RFactorDistance: Reel;
+    FHorzAngle, FPitchAngle, RFactorDistance: TDouble;
   public
     VAngleDegrees: Single;
-    RFactorBase: Reel;
+    RFactorBase: TDouble;
     property Camera: TVect read Eye write Eye;
-    property HorzAngle: Reel read FHorzAngle write FHorzAngle;
-    property PitchAngle: Reel read FPitchAngle write FPitchAngle;
+    property HorzAngle: TDouble read FHorzAngle write FHorzAngle;
+    property PitchAngle: TDouble read FPitchAngle write FPitchAngle;
     procedure ResetCamera;
     procedure Resize(nWidth, nHeight: Integer); override;
   end;
@@ -70,7 +70,7 @@ type
  {------------------------}
 
 function Get3DCoord : TCameraCoordinates;
-procedure CameraVectors(const nHorzAngle, nPitchAngle, nLength: Reel; var Look, Right, Down: TVect);
+procedure CameraVectors(const nHorzAngle, nPitchAngle, nLength: TDouble; var Look, Right, Down: TVect);
 
  {------------------------}
 
@@ -106,7 +106,7 @@ end;*)
 
 function T3DCoordinates.Espace(const P: TPointProj) : TVect;
 var
- Dist, X, Y: Reel;
+ Dist, X, Y: TDouble;
 begin
  Dist:=ooWFactor/P.oow;
  X:=(P.x-ScrCenter.X)*SpaceFactor;
@@ -119,7 +119,7 @@ end;
 function T3DCoordinates.Proj(const V: TVect) : TPointProj;
 var
  Delta: TVect;
- Dist: Reel;
+ Dist: TDouble;
 begin
  Delta.X:=V.X - Eye.X;
  Delta.Y:=V.Y - Eye.Y;
@@ -152,7 +152,7 @@ begin
  Result.Z:=Eye.Z-Pt.Z;
 end;
 
-function T3DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: Reel) : Boolean;
+function T3DCoordinates.PositiveHalf(const NormaleX, NormaleY, NormaleZ, Dist: TDouble) : Boolean;
 begin
  Result:=NormaleX*Eye.X + NormaleY*Eye.Y + NormaleZ*Eye.Z > Dist;
 end;
@@ -166,10 +166,10 @@ begin
   Result:=(oow2>=0) or (oow1<oow2);
 end;
 
-function T3DCoordinates.ScalingFactor(Pt: PVect) : Reel;
+function T3DCoordinates.ScalingFactor(Pt: PVect) : TDouble;
 var
  Delta: TVect;
- Dist: Reel;
+ Dist: TDouble;
 begin
  if Pt=Nil then
   Result:=inherited ScalingFactor(Nil)
@@ -190,9 +190,9 @@ end;
 
  {------------------------}
 
-procedure CameraVectors(const nHorzAngle, nPitchAngle, nLength: Reel; var Look, Right, Down: TVect);
+procedure CameraVectors(const nHorzAngle, nPitchAngle, nLength: TDouble; var Look, Right, Down: TVect);
 var
- SA,CA,SP,CP: Reel;
+ SA,CA,SP,CP: TDouble;
 begin
  SA:=Sin(nHorzAngle);  CA:=Cos(nHorzAngle);
  SP:=Sin(nPitchAngle); CP:=Cos(nPitchAngle);
@@ -209,7 +209,7 @@ end;
 
 procedure TCameraCoordinates.ResetCamera;
 var
- nRFactor: Reel;
+ nRFactor: TDouble;
 begin
  nRFactor:=RFactorDistance/FarDistance;
  CameraVectors(HorzAngle, PitchAngle, nRFactor, Look, Right, Down);

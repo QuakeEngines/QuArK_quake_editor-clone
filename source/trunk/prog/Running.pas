@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -250,7 +253,7 @@ begin
      Raise EError(5538);
    end;
   NewObj2.Flags:=(NewObj2.Flags and not ofCloneFlags) or (Q.Flags and ofCloneFlags);
-  NewObj2.NomFichier:=(Q as QFileObject).NomFichier;
+  NewObj2.Filename:=(Q as QFileObject).Filename;
   DebutAction;
   ListeActionsCopie(NewObj2, Q, ConvertClass=Q.ClassType);
   finally NewObj2.AddRef(-1); end;

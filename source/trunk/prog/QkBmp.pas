@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.6  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -147,7 +150,7 @@ var
  BmpInfo: TBitmapInfo256;
  V: array[1..2] of Single;
  Data: String;
- TailleImage: LongInt;
+ ImageSize: LongInt;
 begin
  if Taille>SizeOf(TBitmapInfoHeader) then
   begin
@@ -161,13 +164,13 @@ begin
     begin
      Dec(Taille, BmpInfo.bmiHeader.biSize);
      if BmpInfo.bmiHeader.biBitCount=24 then
-      TailleImage:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
+      ImageSize:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
      else
       begin
-       TailleImage:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
+       ImageSize:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
         Dec(Taille, bmpTaillePalette);
       end;
-     if (TailleImage<0) or (TailleImage>Taille) then
+     if (ImageSize<0) or (ImageSize>Taille) then
       Raise EErrorFmt(5509, [21]);
      F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
 
@@ -187,8 +190,8 @@ begin
      V[2]:=BmpInfo.bmiHeader.biHeight;
      SetFloatsSpec('Size', V);
      Data:=Spec1;
-     SetLength(Data, Length(Spec1)+TailleImage);
-     F.ReadBuffer(Data[Length(Spec1)+1], TailleImage);
+     SetLength(Data, Length(Spec1)+ImageSize);
+     F.ReadBuffer(Data[Length(Spec1)+1], ImageSize);
      Specifics.Add(Data);   { Image1= }
 
      Result:=True;

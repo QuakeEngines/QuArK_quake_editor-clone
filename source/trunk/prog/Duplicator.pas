@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -183,12 +186,12 @@ var
 begin
  BuildImages;
  OldPen:=0;
- if Info.PinceauGris <> 0 then
+ if Info.GreyBrush <> 0 then
   begin    { if color changes must be made now }
    C:=MapColors({DefaultColor}lcDuplicator);
    CouleurDessin(C);
-   OldPen:=Info.PinceauNoir;
-   Info.PinceauNoir:=CreatePen(ps_Solid, 0, C);
+   OldPen:=Info.BlackBrush;
+   Info.BlackBrush:=CreatePen(ps_Solid, 0, C);
   end;
  IsRestrictor:=Info.Restrictor=Self;
  if IsRestrictor then Info.Restrictor:=Nil;
@@ -201,14 +204,14 @@ begin
  if OldPen<>0 then
   begin
    SelectObject(Info.DC, OldPen);
-   DeleteObject(Info.PinceauNoir);
-   Info.PinceauNoir:=OldPen;
+   DeleteObject(Info.BlackBrush);
+   Info.BlackBrush:=OldPen;
   end;
  if HasOrigin then
   begin
    Pts:=CCoord.Proj(Origin);
    if not CCoord.CheckVisible(Pts) then Exit;
-   if Info.PinceauSelection<>0 then
+   if Info.SelectedBrush<>0 then
     SetROP2(Info.DC, Info.BaseR2)
    else
     if IsRestrictor then
@@ -216,26 +219,26 @@ begin
       begin
        if Pts.OffScreen = 0 then
         begin
-         SelectObject(Info.DC, Info.PinceauNoir);
+         SelectObject(Info.DC, Info.BlackBrush);
          SetROP2(Info.DC, R2_CopyPen);
         end
        else
         begin
          if Info.ModeAff=2 then
           Exit;
-         SelectObject(Info.DC, Info.PinceauGris);
+         SelectObject(Info.DC, Info.GreyBrush);
          SetROP2(Info.DC, Info.MaskR2);
         end;
       end
      else
      {if Info.ModeAff=0 then}
        begin
-        SelectObject(Info.DC, Info.PinceauNoir);
+        SelectObject(Info.DC, Info.BlackBrush);
         SetROP2(Info.DC, R2_CopyPen);
        end
     else
      begin   { Restricted }
-      SelectObject(Info.DC, Info.PinceauGris);
+      SelectObject(Info.DC, Info.GreyBrush);
       SetROP2(Info.DC, Info.MaskR2);
      end;
    X1:=Round(Pts.x);
@@ -244,9 +247,9 @@ begin
    LineTo  (Info.DC, X1+5, Y1+5);
    MoveToEx(Info.DC, X1-4, Y1+4, Nil);
    LineTo  (Info.DC, X1+5, Y1-5);
-   if Info.PinceauSelection<>0 then
+   if Info.SelectedBrush<>0 then
     begin
-     SelectObject(Info.DC, Info.PinceauSelection);
+     SelectObject(Info.DC, Info.SelectedBrush);
      SetROP2(Info.DC, R2_CopyPen);
      Ellipse(Info.DC, X1-7, Y1-7, X1+8, Y1+7);
     end;
