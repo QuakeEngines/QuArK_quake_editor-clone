@@ -1,8 +1,12 @@
 QQRKSRC1
-// This file has been written by QuArK QuArK 6.4 alpha
-// It's the text version of file: entities-hl2-dm.qrk
-
+//
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
 {
+  QuArKProtected = "1"
+  Description = "HL2 DM Entities"
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."
