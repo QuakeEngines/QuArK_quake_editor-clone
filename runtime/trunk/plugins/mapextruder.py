@@ -33,7 +33,7 @@ from quarkpy.maphandles import MapRotateHandle
 #from mapmadsel import getstashed
 from quarkpy.maputils import *
 from tagging import *
-from faceutils import *
+#from faceutils import *
 from quarkpy.dlgclasses import placepersistent_dialogbox
 from quarkpy.qeditor import matrix_rot_z
 from quarkpy.qeditor import matrix_rot_y
