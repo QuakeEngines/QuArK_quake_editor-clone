@@ -135,6 +135,7 @@ class ToolMoveBar(ToolBar):
             ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
 #        icons = LoadPoolObj("ico_movepal", LoadIconSet1, "movepal", 1.0)
         icons = ico_dict['ico_movepal']
+
         btn1 = qtoolbar.button(btnclick, "move selection||Offsets the selected objects by the distance specified in the toolbar settings (last button of this toolbar).", icons, 1)
         btn1.text = Strings[552]
         btn1.spec = "mpOffset"
@@ -144,47 +145,53 @@ class ToolMoveBar(ToolBar):
         btn2.text = Strings[548]
         btn2.spec = "mpZoom"
         btn2.matrix = matrix_zoom
+
         btn3 = qtoolbar.button(btnclick, "shrink||Shrinks the selected objects by a factor specified in the toolbar settings (last button of this toolbar).", icons, 3)
         btn3.text = Strings[548]
         btn3.spec = "mpZoom"
         btn3.matrix = lambda f: matrix_zoom(1.0/f)
 
-        btn4 = qtoolbar.button(btnclick, "Z symmetry", icons, 4)
+        btn4 = qtoolbar.button(btnclick, "X symmetry", icons, 5)
         btn4.text = Strings[551]
-        btn4.matrix = matrix_sym('z')
-        btn5 = qtoolbar.button(btnclick, "X symmetry", icons, 5)
-        btn5.text = Strings[551]
-        btn5.matrix = matrix_sym('x')
-        btn6 = qtoolbar.button(btnclick, "Y symmetry", icons, 6)
-        btn6.text = Strings[551]
-        btn6.matrix = matrix_sym('y')
+        btn4.matrix = matrix_sym('x')
 
-        btn7 = qtoolbar.button(btnclick, "Z-axis rotation||Rotates the selected objects clockwise around the Z axis by an angle specified in the toolbar settings (last button of this toolbar).", icons, 10)
+        btn5 = qtoolbar.button(btnclick, "Y symmetry", icons, 6)
+        btn5.text = Strings[551]
+        btn5.matrix = matrix_sym('y')
+
+        btn6 = qtoolbar.button(btnclick, "Z symmetry", icons, 4)
+        btn6.text = Strings[551]
+        btn6.matrix = matrix_sym('z')
+
+        btn7 = qtoolbar.button(btnclick, "X-axis rotation\nclockwise||Rotates the selected objects clockwise around the X axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 8)
         btn7.text = Strings[550]
         btn7.spec = "mpRotate"
-        btn7.matrix = lambda f: matrix_rot_z(-f * deg2rad)
-        btn8 = qtoolbar.button(btnclick, "Z-axis rotation||Rotates the selected objects counterclockwise around the Z axis by an angle specified in the toolbar settings (last button of this toolbar).", icons, 7)
+        btn7.matrix = lambda f: matrix_rot_x(f * deg2rad)
+
+        btn8 = qtoolbar.button(btnclick, "X-axis rotation\ncounterclockwise||Rotates the selected objects counterclockwise around the X axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 11)
         btn8.text = Strings[550]
         btn8.spec = "mpRotate"
-        btn8.matrix = lambda f: matrix_rot_z(f * deg2rad)
+        btn8.matrix = lambda f: matrix_rot_x(-f * deg2rad)
 
-        btn9 = qtoolbar.button(btnclick, "X-axis rotation||Rotates the selected objects counterclockwise around the X axis by an angle specified in the toolbar settings (last button of this toolbar).", icons, 8)
+        btn9 = qtoolbar.button(btnclick, "Y-axis rotation\nclockwise||Rotates the selected objects clockwise around the Y axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 9)
         btn9.text = Strings[550]
         btn9.spec = "mpRotate"
-        btn9.matrix = lambda f: matrix_rot_x(f * deg2rad)
-        btn10 = qtoolbar.button(btnclick, "X-axis rotation||Rotates the selected objects clockwise around the X axis by an angle specified in the toolbar settings (last button of this toolbar).", icons, 11)
+        btn9.matrix = lambda f: matrix_rot_y(-f * deg2rad)
+
+        btn10 = qtoolbar.button(btnclick, "Y-axis rotation\ncounterclockwise||Rotates the selected objects counterclockwise around the Y axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 12)
         btn10.text = Strings[550]
         btn10.spec = "mpRotate"
-        btn10.matrix = lambda f: matrix_rot_x(-f * deg2rad)
+        btn10.matrix = lambda f: matrix_rot_y(f * deg2rad)
 
-        btn11 = qtoolbar.button(btnclick, "Y-axis rotation||Rotates the selected objects clockwise around the Y axis by an angle specified in the toolbar settings (last button of this toolbar).", icons, 9)
+        btn11 = qtoolbar.button(btnclick, "Z-axis rotation\nclockwise||Rotates the selected objects clockwise around the Z axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 10)
         btn11.text = Strings[550]
         btn11.spec = "mpRotate"
-        btn11.matrix = lambda f: matrix_rot_y(-f * deg2rad)
-        btn12 = qtoolbar.button(btnclick, "Y-axis rotation||Rotates the selected objects counterclockwise around the Y axis by an angle specified in the toolbar settings (last button of this toolbar).", icons, 12)
+        btn11.matrix = lambda f: matrix_rot_z(-f * deg2rad)
+
+        btn12 = qtoolbar.button(btnclick, "Z-axis rotation\ncounterclockwise||Rotates the selected objects counterclockwise around the Z axis by an angle specified in the toolbar CFG settings (last button of this toolbar).\nTo display an X, Y or Z axis icon in their respective 2-D view window,\nClick on the Options menu and select the Axis XYZ letter item.", icons, 7)
         btn12.text = Strings[550]
         btn12.spec = "mpRotate"
-        btn12.matrix = lambda f: matrix_rot_y(f * deg2rad)
+        btn12.matrix = lambda f: matrix_rot_z(f * deg2rad)
 
         btn13 = qtoolbar.button(btnclick, "inflate/deflate||Inflate or deflate the selected polyhedrons by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.", icons, 13)
         btn13.text = Strings[549]
@@ -202,6 +209,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.5  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.4  2001/06/17 21:05:27  tiglari
 #fix button captions
 #
