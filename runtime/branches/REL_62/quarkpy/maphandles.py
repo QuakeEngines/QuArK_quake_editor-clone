@@ -27,7 +27,7 @@ from qdictionnary import Strings
 import qhandles
 from maputils import *
 import mapentities
-
+import qmacro
 
 #
 # The handle classes.
@@ -314,6 +314,21 @@ class PolyHandle(CenterHandle):
 
 
 
+#
+# if vtxes contains a point close to the line thru v along axis, return
+#  it, otherwise v+axis
+#
+def getotherfixed(v, vtxes, axis):
+    for v2 in vtxes:
+        if not (v-v2):
+            continue;
+        perp = perptonormthru(v2,v,axis.normalized)
+        if abs(perp)<.05:
+            debug('found otther')
+            return v2
+    return v+axis
+
+
 class VertexHandle(qhandles.GenericHandle):
     "A polyhedron vertex."
 
@@ -566,7 +581,7 @@ class VertexHandle(qhandles.GenericHandle):
                 # if this face is part of the original group
                 #
                 if f in orgfaces:
-
+                    debug('f: '+f.shortname)
                     #
                     # if the point is on the face
                     #
@@ -621,8 +636,9 @@ class VertexHandle(qhandles.GenericHandle):
                             # the most distant point
                             #
                             rotationaxis = mvlist [0] - mvlist [1]
-
-
+                            otherfixed =getotherfixed(vmax, mvlist, rotationaxis)
+                            fixedpoints = vmax, otherfixed
+                  
                         #
                         # otherwise, we are draging one
                         #
@@ -638,9 +654,9 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             # sort the vertex list and use the last vertex as
                             # a rotational reference point
-                            #
-                            vlist.sort()
-                            vmax = vlist[-1][1]
+                            # (already done, seems to me)
+                        #    vlist.sort()
+                        #    vmax = vlist[-1][1]
 
 
                             #
@@ -649,6 +665,7 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             if not (flags&MB_SHIFT):
                                 rotationaxis = (vmax - vlist [-2] [1])
+                                fixedpoints = vmax, vlist[-2][1]
 
                             #
                             # METHOD B: Using the most distant point, rotate
@@ -657,22 +674,39 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             else:
                                 rotationaxis = (vmax - self .pos) ^ f .normal
+                                otherfixed =getotherfixed(vmax, vlist, rotationaxis)
+                                fixedpoints = vmax, otherfixed
 
                         #
                         # apply the rotation axis to the face (requires that
                         # rotationaxis and vmax to be set)
                         #
+                        newpoint = self.pos+delta
                         nf = new.subitem(orgfaces.index(f))
+                        tp = nf.threepoints(2)
+                        x,y = nf.axisbase()
+                        def proj1(p, x=x,y=y,v=vmax):
+                            return (p-v)*x, (p-v)*y
+                        tp = tuple(map(proj1, tp))
+                        nf.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+
                         newnormal = rotationaxis ^ (self.pos+delta-vmax)
                         testnormal = rotationaxis ^ (self.pos-vmax)
                         if newnormal:
                             if testnormal * f.normal < 0.0:
                                 newnormal = -newnormal
-                            nf.distortion(newnormal.normalized, vmax)
-                            smallcorrection = nf.normal * (self.pos+delta) - nf.dist
-                            nf.translate(nf.normal * smallcorrection)
 
-                #
+
+                        if nf.normal*newnormal<0.0:
+                            nf.swapsides()
+                        x,y=nf.axisbase()
+                        def proj2(p,x=x,y=y,v=vmax):
+                            return v+p[0]*x+p[1]*y
+                        tp = tuple(map(proj2,tp))
+                        nf.setthreepoints(tp ,2)
+
+ 
+ 
                 # if the face is not part of the original group
                 #
 
@@ -1330,11 +1364,87 @@ def singlebezierzoom(view):
     view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
     view.screencenter = sc
     
+def GetUserCenter(obj):
+#    debug('type: '+`type(obj)`)
+    if type(obj) is type([]):  # obj is list
+        if len(obj)==1 and obj[0]["usercenter"] is not None:
+            uc = obj[0]["usercenter"]
+        else:
+            box=quarkx.boundingboxof(obj)
+            return (box[0]+box[1])/2
+    else:
+        uc = obj["usercenter"]
+    if uc is None:
+        uc = mapentities.ObjectOrigin(obj).tuple
+#        debug(' oo '+`uc`)
+    return quarkx.vect(uc)
+
+def SetUserCenter(obj, v):
+    obj["usercenter"] = v.tuple
+
+def macro_usercenter(self):
+    from qeditor import mapeditor
+    editor=mapeditor()
+    if editor is None: return
+    dup = editor.layout.explorer.uniquesel
+    if not dup: return
+    undo = quarkx.action()
+    from mapentities import ObjectOrigin
+    tup = ObjectOrigin(dup).tuple
+    debug('tup '+`tup`)
+    undo.setspec(dup,'usercenter',tup)
+    debug('set')
+    editor.ok(undo,'add usercenter')
+    debug('ok')
+    editor.invalidateviews()
+    
+qmacro.MACRO_usercenter = macro_usercenter
+class UserCenterHandle(CenterHandle):
+
+    def __init__(self, dup):
+        pos = GetUserCenter(dup)
+        CenterHandle.__init__(self, pos, dup, MapColor("Axis"))
+
+
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        dup = self.centerof.copy()
+        SetUserCenter(dup, GetUserCenter(dup)+delta)
+        return [self.centerof], [dup]
     
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.18  2001/04/06 04:46:04  tiglari
+#clean out some debug statements
+#
+#Revision 1.17  2001/04/05 12:36:13  tiglari
+#revise vertex move code to try to reduce drift of non-drug vertexes
+#
+#Revision 1.13.2.3  2001/04/04 10:30:17  tiglari
+#find more fixed points, clean up code
+#
+#Revision 1.13.2.2  2001/04/03 08:54:51  tiglari
+#more vertex drag anti-drift.  Very convoluted,if it helps, it needs to be
+# cleaned up.
+#
+#Revision 1.15  2001/04/02 21:09:44  tiglari
+#fixes to getusercenter, ntp tuple-hood
+#
+#Revision 1.14  2001/04/02 09:23:11  tiglari
+#stuck various things to try to nail down supposed fixpoint vertices in the
+#vtx movement code
+#
+#Revision 1.13  2001/04/01 00:07:13  tiglari
+#revisions to GetUserCenter
+#
+#Revision 1.12  2001/03/31 10:15:22  tiglari
+#support for usercenter specific
+#
+#Revision 1.11  2001/03/01 19:14:58  decker_dk
+#Fix for CyanBezier2Handle.drag 'if new:'. Now testing for 'if new is not None:'.
+#
 #Revision 1.10  2001/02/28 09:46:43  tiglari
 #linear mapping handles removed from bez page
 #
