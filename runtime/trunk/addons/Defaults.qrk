@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.71  2000/12/30 15:28:53  decker_dk
+//Path Duplicator
+//
 //Revision 1.70  2000/11/19 15:32:29  decker_dk
 //- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 //Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -225,7 +228,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20001015"
+      Version = "quarksnapshot_20010107"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

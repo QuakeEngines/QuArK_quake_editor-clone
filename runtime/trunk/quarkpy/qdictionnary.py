@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "quarksnapshot_20001015",
+    0: "quarksnapshot_20010107",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -884,6 +884,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.26  2001/01/02 19:29:20  decker_dk
+#Help Snippet, press ESC to close
+#
 #Revision 1.25  2000/12/30 15:27:02  decker_dk
 #- Direct3D
 #
