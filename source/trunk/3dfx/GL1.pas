@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/03/20 21:38:02  decker_dk
+Updated copyright-header
+
 Revision 1.5  2000/12/07 19:47:59  decker_dk
 - Changed the code in Glide.PAS and GL1.PAS, to more understandable
 and readable code (as seen in Python.PAS), which isn't as subtle to
@@ -621,6 +624,7 @@ var
   wglMakeCurrent: function (DC: HDC; p2: HGLRC): Bool; stdcall;
   wglDeleteContext: function (p1: HGLRC): Bool; stdcall;
   wglCreateContext: function (DC: HDC): HGLRC; stdcall;
+  wglSwapBuffers: function (DC: HDC): Bool; stdcall; {Decker 2002.02.26 - Added}
 
   glClearColor: procedure (red, green, blue, alpha: GLclampf); stdcall;
   glClearDepth: procedure (depth: GLclampd); stdcall;
@@ -673,7 +677,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..37] of
+  OpenGL32DLL_FuncList : array[0..38] of {Decker 2002.02.26 - Increased}
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -681,6 +685,7 @@ const
   ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
    ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
    ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
+   ,(FuncPtr: @@wglSwapBuffers;        FuncName: 'wglSwapBuffers'        ) {Decker 2002.02.26 - Added}
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
    ,(FuncPtr: @@glEnable;              FuncName: 'glEnable'              )
