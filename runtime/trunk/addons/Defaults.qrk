@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.191  2002/05/13 10:34:52  tiglari
+//support frozen selections (don't change until another frozen selection is made,
+//or they are cancelled with ESC or unfreeze selection)
+//
 //Revision 1.190  2002/05/13 10:24:06  tiglari
 //support bilinear filtering in OGL views
 //
@@ -621,7 +625,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap 2002ap29"
+      Version = "QuArK 6.3 rc1"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
