@@ -1,0 +1,30 @@
+Quake Army Knife (QuArK) authors and contact addresses
+======================================================
+
+The original author of QuArK
+----------------------------
+
+- Armin Rigo
+        e-mail:         arigo@planetquake.com
+        snail mail:     Armin Rigo
+                        c/o Bernard Rigo
+                        Chemin du Chatelard 3
+                        CH-1860 Aigle
+                        Switzerland
+
+
+The contributing authors of QuArK
+---------------------------------
+
+- Avery "tiglari" Andrews
+        e-mail:         tiglari@planetquake.com
+
+- Andy Vincent
+        e-mail:         andyvinc@hotmail.com
+
+- Alexander Haarer
+        e-mail:         mac.@gmx.net
+
+- Bent "Decker" Svendsen
+        e-mail:         decker@planetquake.com
+
