@@ -34,7 +34,7 @@
 !define QRK_MAJOR_VER 6.4
 !define QRK_MINOR_VER 0
 !define QRK_STATE "alpha"
-!define QRK_RELEASE 1
+!define QRK_RELEASE 3
 
 #-----------------------------#
 # Setup the installer GUI etc #
@@ -127,8 +127,10 @@ Section "QuArK" SectionQuArK
   File /r "quark\images"
   File /r "quark\lgicons"
   File /r "quark\addons"
-  File "quark\readme.txt"
+  File "quark\README.txt"
   File "quark\COPYING.txt"
+  File "quark\AUTHORS.txt"
+  File "quark\NEWS.txt"
   File "quark\QuArK.exe"
 SectionEnd
 
