@@ -5,6 +5,15 @@ QQRKSRC1
 // ----------- REVISION HISTORY ------------
 //$Log$
 //
+//Revision 1.46 2003/08/21 DannJ
+//Added DEATHMATCH spawnflags to all weapons and ammo
+//Added NO PUSH spawnflag to OBJ_BASKET
+//Added NO PUSH spawnflag to OBJ_BARREL_METAL
+//Added NO DEATHMATCH spawnflag to all doors
+//Added NO DEATHMATCH spawnflag to FUNC_BUTTON & all levers
+//Added NO DEATHMATCH spawnflag to all puzzle pieces
+//Fixed OBJ_SIGN1 styles
+//
 //Revision 1.45 2003/07/30 DannJ
 //Added COOP spawnflags to all weapons and ammo
 //Removed duplicate ANGLE field in OBJ_TORTURE_TABLE
@@ -9201,6 +9210,11 @@ QQRKSRC1
         Typ="X1"
         Cap="TOUCH"
         Hint="player can touch button to set it of"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     func_door:form =
     {
@@ -9285,6 +9299,11 @@ QQRKSRC1
         Typ="X64"
         Cap="ANIMATED_FAST"
         Hint="has animate texture, goes faster than just ANIMATED"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     func_door_rotating:form =
     {
@@ -9392,6 +9411,11 @@ QQRKSRC1
         Hint="No hint yet"}
      spawnflags: =
        {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
+     spawnflags: =
+       {Txt="&"
         Typ="X8192"
         Cap="SWINGAWAY"
         Hint="door will always swing away from the activator.."}
@@ -9418,6 +9442,11 @@ QQRKSRC1
         Typ="X4"
         Cap="1ST_DOWN"
         Hint="No hint yet"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
@@ -9937,6 +9966,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_ammo_phoenix:form =
     {
@@ -9949,6 +9983,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_ammo_redrain:form =
     {
@@ -9961,6 +10000,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_defense_meteorbarrier:form =
     {
@@ -9973,6 +10017,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_defense_polymorph:form =
     {
@@ -9985,6 +10034,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_defense_ringofrepulsion:form =
     {
@@ -9997,6 +10051,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_defense_shield:form =
     {
@@ -10009,6 +10068,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_defense_teleport:form =
     {
@@ -10021,6 +10085,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_defense_tornado:form =
     {
@@ -10033,6 +10102,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_health_full:form =
     {
@@ -10105,6 +10179,11 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_cloudkey:form =
     {
@@ -10115,6 +10194,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_cog:form =
     {
@@ -10125,6 +10209,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_crystal:form =
     {
@@ -10132,6 +10221,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_crystal"
      mdl = "models/items/puzzles/crystalshard/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_dungeonkey:form =
     {
@@ -10139,6 +10233,11 @@ QQRKSRC1
      bbox = '-1 -18 -9 1 18 9 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_dungeonkey"
      mdl = "models/items/puzzles/dungeonkey/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_highpriestesskey:form =
     {
@@ -10152,6 +10251,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_highpriestesssymbol:form =
     {
@@ -10165,6 +10269,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_hive2amulet:form =
     {
@@ -10178,6 +10287,11 @@ QQRKSRC1
      target: =
         {Txt = "&" Hint = "object with matching targetname is triggered."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_hive2gem:form =
     {
@@ -10185,6 +10299,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_hive2gem"
      mdl = "models/items/puzzles/tcheckrikgem/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_hive2spear:form =
     {
@@ -10198,6 +10317,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_minecartwheel:form =
     {
@@ -10205,12 +10329,22 @@ QQRKSRC1
      bbox = '-1 -6 -6 1 6 6 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_minecartwheel"
      mdl = "models/items/puzzles/wheel/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_ore:form =
     {
      Help = "Unrefined Ore puzzle item"
      bbox = '-10 -10 -8 10 10 8 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_ore"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_plazacontainer:form =
     {
@@ -10223,12 +10357,22 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_potion:form =
     {
      Help = "Potion puzzle item"
      bbox = '-3 -3 -10 3 3 10 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_potion"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_refinedore:form =
     {
@@ -10236,6 +10380,11 @@ QQRKSRC1
      bbox = '-3 -12 -2 3 12 2 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_refinedore"
      mdl = "models/items/puzzles/orerefined/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_shield:form =
     {
@@ -10246,6 +10395,11 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_slumcontainer:form =
     {
@@ -10253,6 +10407,11 @@ QQRKSRC1
      bbox = '-6 -6 -8 6 6 6 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_slumcontainer"
      mdl = "models/objects/labs/container1/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_tavernkey:form =
     {
@@ -10260,6 +10419,11 @@ QQRKSRC1
      bbox = '-8 -8 -4 8 8 4 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_tavernkey"
      mdl = "models/items/puzzles/andoriankey/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_tome:form =
     {
@@ -10267,6 +10431,11 @@ QQRKSRC1
      bbox = '-12 -12 -4 12 12 4 1'
      HTML = "help/hr2/g_items.htm#item_puzzle_tome"
      mdl = "models/items/puzzles/book/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_puzzle_townkey:form =
     {
@@ -10277,6 +10446,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     item_spitter:form =
     {
@@ -10375,6 +10549,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_weapon_hellstaff:form =
     {
@@ -10387,6 +10566,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
@@ -10402,6 +10586,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_weapon_magicmissile:form =
     {
@@ -10414,6 +10603,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_weapon_phoenixbow:form =
     {
@@ -10426,6 +10620,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
      target: =
         {Txt = "&" Hint = "object with matching targetname is triggered."
        }
@@ -10441,6 +10640,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     item_weapon_sphereofannihilation:form =
     {
@@ -10453,6 +10657,11 @@ QQRKSRC1
         Typ="X1"
         Cap="COOP_ONLY"
         Hint="Only appears in COOP game"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X5888"
+        Cap="DEATHMATCH_ONLY"
+        Hint="Only appears in DEATHMATCH game"}
     }
     light:form =
     {
@@ -12458,7 +12667,7 @@ QQRKSRC1
        {Txt="&"
         Typ="X8"
         Cap="NOPUSH"
-        Hint="can't be moved by playe"}
+        Hint="can't be moved by player"}
     }
     obj_barrel_explosive:form =
     {
@@ -12520,6 +12729,11 @@ QQRKSRC1
         Typ="X1"
         Cap="INVULNERABLE"
         Hint="it can't be hurt"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X8"
+        Cap="NOPUSH"
+        Hint="can't be moved by player"}
     }
     obj_basket:form =
     {
@@ -12552,7 +12766,12 @@ QQRKSRC1
        {Txt="&"
         Typ="X1"
         Cap="INVULNERABLE"
-        Hint="it can't be hur"}
+        Hint="it can't be hurt"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X8"
+        Cap="NOPUSH"
+        Hint="can't be moved by player"}
     }
     obj_bench:form =
     {
@@ -14476,6 +14695,11 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     obj_lever2:form =
     {
@@ -14489,6 +14713,11 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     obj_lever3:form =
     {
@@ -14518,6 +14747,11 @@ QQRKSRC1
         Typ="X1"
         Cap="INVULNERABLE"
         Hint="always invulnerabl"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X2048"
+        Cap="NOT DEATHMATCH"
+        Hint="Wont appear in a deathmatch game"}
     }
     obj_metalchunk1:form =
     {
@@ -15639,9 +15873,14 @@ QQRKSRC1
      style: =
         {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicke" $0D "  32-63 for linking banks of lights.  Trigger should share style-value."
       Typ="C"
-      Items="0) sign with a dragon" $0D "1) sign with two steins" $0D "2) sign with a fish"
-      values="0" $0D "1" $0D "2"
+      Items="0) sign with a dragon" $0D "1) sign with a fish" $0D
+      values="0" $0D "1" $0D
        }
+     spawnflags: =
+       {Txt="&"
+        Typ="X2"
+        Cap="ANIMATE"
+        Hint="Appears in ssdocks map, doesn't seem to work"}
     }
     obj_sign4:form =
     {
