@@ -137,7 +137,7 @@ Open a new CS map using the button circled in the window to the right and a new 
 
 <table border=0 cellspacing=0>
 <tr><td width=300 valign=top>
-To get to the next part where we will change the menu; select <b>Crystal</b> Space from the tool bar and click <b>“Customize menu...”</b> as shown in the figure to the right here.
+To get to the next part where we will change the menu; select <b>Crystal Space</b> from the tool bar and click <b>“Customize menu...”</b> as shown in the figure to the right here.
 </td>
 
 
