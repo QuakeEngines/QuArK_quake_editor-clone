@@ -19,14 +19,8 @@ Info = {
    "quark":         "Version 6" }
 
 
-import quarkx
 import quarkpy.mapoptions
 from quarkpy.maputils import *
-
-
-import quarkpy.qmenu
-import quarkpy.mapmenus
-import quarkpy.mapcommands
 
 
 #
@@ -59,8 +53,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
     gridoldfinish(editor, view)
 
     #
-    # Below ties this function to the toggel button
-    #  in the Option menu.
+    # Below test if the grid is even on
     #
 
     if editor.grid == 0:return
@@ -82,7 +75,7 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                     vlink[1].scrollto(None, y)
                 else:
                     vlink[1].scrollto(y, None)
-            if not MapOption("AxisXYZ") and not MapOption("XviewScale") and  not MapOption("YviewScale") and not MapOption("ZviewScale"):
+            if not MapOption("AxisXYZ") and not MapOption("All2DviewsScale") and not MapOption("XviewScale") and not MapOption("YviewScale") and not MapOption("ZviewScale"):
                 view.update()
             else:
                 view.repaint()
@@ -99,8 +92,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
     type = view.info["type"]  # These type values are set
                               #  in the layout-defining plugins.
 
+
     if type == "YZ":
-       if not MapOption("XviewScale"):
+
+       if not MapOption("XviewScale") and not MapOption("All2DviewsScale"):
            return
 
        YZarea = `view.clientarea`      # Gets the view area as a string
@@ -187,8 +182,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Ycounter = Ycounter + 1
                Ytotal = Ytotal + (units*2)
 
+
     elif type == "XZ":
-       if not MapOption("YviewScale"):
+
+       if not MapOption("All2DviewsScale") and not MapOption("YviewScale"):
            return
 
        XZarea = `view.clientarea`
@@ -275,8 +272,10 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
                Xcounter = Xcounter + 1
                Xtotal = Xtotal + (units*2)
 
+
     elif type == "XY":
-       if not MapOption("ZviewScale"):
+
+       if not MapOption("All2DviewsScale") and not MapOption("ZviewScale"):
            return
 
        XZarea = `view.clientarea`
@@ -376,32 +375,71 @@ quarkpy.mapeditor.MapEditor.finishdrawing = gridfinishdrawing
 # ********* This creates the Options menu 2D grid items ***************
 
 
+def All2DviewsClick(m):
+    editor = mapeditor()
+    if not MapOption("All2DviewsScale"):
+        quarkx.setupsubset(SS_MAP, "Options")['All2DviewsScale'] = "1"
+        quarkx.setupsubset(SS_MAP, "Options")['XviewScale'] = None
+        quarkx.setupsubset(SS_MAP, "Options")['YviewScale'] = None
+        quarkx.setupsubset(SS_MAP, "Options")['ZviewScale'] = None
+    else:
+        quarkx.setupsubset(SS_MAP, "Options")['All2DviewsScale'] = None
+    editor.invalidateviews()
+
+def XviewScaleClick(m):
+    editor = mapeditor()
+    if not MapOption("XviewScale"):
+        quarkx.setupsubset(SS_MAP, "Options")['XviewScale'] = "1"
+        quarkx.setupsubset(SS_MAP, "Options")['All2DviewsScale'] = None
+    else:
+        quarkx.setupsubset(SS_MAP, "Options")['XviewScale'] = None
+    editor.invalidateviews()
+
+def YviewScaleClick(m):
+    editor = mapeditor()
+    if not MapOption("YviewScale"):
+        quarkx.setupsubset(SS_MAP, "Options")['YviewScale'] = "1"
+        quarkx.setupsubset(SS_MAP, "Options")['All2DviewsScale'] = None
+    else:
+        quarkx.setupsubset(SS_MAP, "Options")['YviewScale'] = None
+    editor.invalidateviews()
+
+def ZviewScaleClick(m):
+    editor = mapeditor()
+    if not MapOption("ZviewScale"):
+        quarkx.setupsubset(SS_MAP, "Options")['ZviewScale'] = "1"
+        quarkx.setupsubset(SS_MAP, "Options")['All2DviewsScale'] = None
+    else:
+        quarkx.setupsubset(SS_MAP, "Options")['ZviewScale'] = None
+    editor.invalidateviews()
+
+
+
 def View2DgridMenu(editor):
 
-    grouplist = filter(lambda o: o.type==':g', editor.layout.explorer.sellist)
-#    onclick = quarkpy.mapbtns.groupview1click
-#    onclick = quarkpy.mapoptions.Options1Click
-#    onclick = quarkpy.mapoptions.toggleitem
+    X0 = quarkpy.qmenu.item("All 2D views", All2DviewsClick, "|All 2D views:\n\nIf this menu item is checked, it will display a scale of the current grid setting in all 2D views and deactivate this menu's individual items.|intro.mapeditor.menu.html#optionsmenu")
 
-    X1 = quarkpy.mapoptions.toggleitem("X-Face 2D view", "XviewScale", (1,1),
-      hint="|X-Face 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in only the ' X-Face ' 2D view.|intro.mapeditor.menu.html#optionsmenu")
+    X1 = quarkpy.qmenu.item("X-Face 2D view", XviewScaleClick, "|X-Face 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' X - Face ' 2D view and deactivate this menu's  'All 2D views'  item if it is currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
-    X2 = quarkpy.mapoptions.toggleitem("Y-Side 2D view", "YviewScale", (1,1),
-      hint="|Y-Side 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in only the ' Y-Side ' 2D view.|intro.mapeditor.menu.html#optionsmenu")
+    X2 = quarkpy.qmenu.item("Y-Side 2D view", YviewScaleClick, "|Y-Side 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' Y-Side ' 2D view and deactivate this menu's  'All 2D views'  item if it is currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
-    X3 = quarkpy.mapoptions.toggleitem("Z-Top 2D view", "ZviewScale", (1,1),
-      hint="|Z-Top 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in only the ' Z-Top ' 2D view.|intro.mapeditor.menu.html#optionsmenu")
+    X3 = quarkpy.qmenu.item("Z-Top 2D view", ZviewScaleClick, "|Z-Top 2D view:\n\nIf this menu item is checked, it will display a scale of the current grid setting in the ' Z-Top ' 2D view and deactivate this menu's  'All 2D views'  item if it is currently checked.|intro.mapeditor.menu.html#optionsmenu")
 
-    menulist = [X1, X2, X3]
-    for item in menulist:
-        item.state = quarkx.setupsubset(SS_MAP, "Options").getint(item.tog)
+    menulist = [X0, X1, X2, X3]
+
+    items = menulist
+    X0.state = quarkx.setupsubset(SS_MAP,"Options").getint("All2DviewsScale")
+    X1.state = quarkx.setupsubset(SS_MAP,"Options").getint("XviewScale")
+    X2.state = quarkx.setupsubset(SS_MAP,"Options").getint("YviewScale")
+    X3.state = quarkx.setupsubset(SS_MAP,"Options").getint("ZviewScale")
+
     return menulist
 
-shortcuts = { }
+shortcuts = {}
 
 
 # ************************************************************
-# ************************************************************
+# ******************Creates the Popup menu********************
 
 def ViewAmendMenu1click(m):
     editor = mapeditor(SS_MAP)
@@ -416,6 +454,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.2  2003/12/15 12:47:37  cdunde
+#To add menu check marks and zoom feature
+#
 #Revision 1.1  2003/12/13 22:12:42  cdunde
 #To add new Grid in 2D views feature
 #
