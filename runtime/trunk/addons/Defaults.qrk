@@ -30,6 +30,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.24  2000/05/11 22:00:43  alexander
+//removed palette.pcx
+//changed default texture
+//
 //Revision 1.23  2000/05/06 15:21:01  decker_dk
 //Dont overwrite files that already exist. This fix may cause a problem elsewhere however...
 //
@@ -522,7 +526,7 @@ QQRKSRC1
         TriggerTextureDef = "castle/1_tunnelfloor_1" //FIXME
         LightFactor = '0.90000'
         3DLight = '512'
-        walTrick = "1"     // FIXME is that needed ? 
+        walTrick = "1"     // FIXME is that needed ?
         TextureFormat = ".m32"
       }
       Quake 3:config =
@@ -548,6 +552,7 @@ QQRKSRC1
         //Gradient = "pics/colormap.pcx"
         //ExtractFiles = "pics/colormap.pcx"
         Q2TexPath = "textures/"
+        Q3ShaderPath = "scripts/" //DECKER
         //Q2TexFlags = "1"
         ShadersPath = "scripts/"
         ExtraCmdLine = "+set fs_game %s"
@@ -1650,7 +1655,7 @@ QQRKSRC1
         Typ = "E"
         Txt = "...command-line parameters"
       }
-      walTrick: = { //FIXME ! is this needed ? 
+      walTrick: = { //FIXME ! is this needed ?
         Typ = "X"
         Txt = "This version of qbsp3 wants"
         Cap = ".WAL texture files"

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/05/11 22:07:00  alexander
+added LinkSpecificChar 'l' for  GameMode mjSOF
+
 Revision 1.12  2000/04/25 21:57:03  alexander
 inserted hack to read kingpin texture flag from datakp.qrk texture entries
 
@@ -256,6 +259,7 @@ function WriteAllTextures(L: TStringList; Op: Integer; AltTexSrc: QObject) : TQL
 
 function TestConversionTextures(var I: Integer) : QTextureFileClass;
 function Q2TexPath : String;
+function Q3ShaderPath : String; {DECKER}
 function ScaleDown(var W, H: Integer) : Boolean;
 
 procedure RoundTextureSize(var Size: TPoint; cp: Integer);
@@ -310,6 +314,13 @@ begin
 {if Result='' then
   Result:=DefQ2TexPath;}
 end;
+
+{DECKER}
+function Q3ShaderPath : String;
+begin
+ Result:=SetupGameSet.Specifics.Values['Q3ShaderPath'];
+end;
+{DECKER}
 
 function ScaleDown(var W, H: Integer) : Boolean;
 begin

@@ -457,14 +457,21 @@ function QPakFolder.GetFolder(Path: String) : QPakFolder;
 var
  I, J: Integer;
  Folder: QObject;
+ FolderType: string; {DECKER}
 begin
  Result:=Self;
+{DECKER}
+ if (Result.TypeInfo = '.pk3') then
+  FolderType:='.zipfolder'
+ else
+  FolderType:='.pakfolder';
+{DECKER}
  while Path<>'' do
   begin
    I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
    J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
    if I>J then I:=J;
-   Folder:=Result.SousElements.FindName(Copy(Path, 1, I-1) + '.pakfolder');
+   Folder:=Result.SousElements.FindName(Copy(Path, 1, I-1) + FolderType); {DECKER}
    if Folder=Nil then
     begin
      Folder:=QPakFolder.Create(Copy(Path, 1, I-1), Result);

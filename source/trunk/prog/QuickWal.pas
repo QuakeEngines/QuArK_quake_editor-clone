@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/05/11 22:09:28  alexander
+added link creation for .m32 files with link type "l"
+added cvs header
+
 }
 unit QuickWal;
 
@@ -126,7 +130,20 @@ begin
       end;
     end;
    LinkFolder(Folder, ResultFolder, FolderName);
+  end
+{DECKER}
+ else
+ if CompareText(ExtractFileExt(Name), '.tga') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
+ if CompareText(ExtractFileExt(Name), '.jpg') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
+ if CompareText(ExtractFileExt(Name), '.shader') = 0 then
+  begin
+   (*Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-7), 'a', Base)*)
   end;
+{DECKER}
 end;
 
 function ParseRecPak(Pak: QPakFolder; const Base, FolderName: String) : QObject;
@@ -220,6 +237,22 @@ begin
           LinkFolder(Q1, Q, '');
          end;
        end;
+{DECKER}
+      try
+        Q1:=Pak.GetFolder(Q3ShaderPath);
+        if Q1<>Nil then
+         begin
+          Q1:=ParseRecPak(Q1 as QPakFolder, Base, '');
+          if Q1<>Nil then
+           begin
+            Q1.Name:=F.Name;
+            LinkFolder(Q1, Q, '');
+           end;
+         end;
+      except
+       (*do nothing*)
+      end;
+{DECKER}
       finally Pak.AddRef(-1); end;
       DosError:=FindNext(F);
      end;
