@@ -97,7 +97,7 @@ Strings = {
 	257: "QuArK has found %d invalid polyhedron face(s) in this file. Look for the \042broken face\042 icons in the list.",
 	# 258: "Polyhedrons with the 'origin' content flag are not allowed in 'worldspawn'. Ignored.",
 
-    # Rowdy    
+    # Rowdy
     260: "\042patchDef2\042 expected",
     261: "bezier",
     #262: "JPG image",
@@ -266,7 +266,7 @@ Strings = {
         2432: "This model contains no data to save",
         2433: "Internal error : Invalid packed model structure//Please report : %s",
         2434: "The current structure of this model is invalid. It cannot be saved in %s format.",
-        2435: "The model contains no skin and the skin size is unspecified",  
+        2435: "The model contains no skin and the skin size is unspecified",
 
 	3001: "Esc",
 	3002: "1",
@@ -433,7 +433,7 @@ Strings = {
 	4202: "'['",
 	4203: "']'",
 
-        4416: "Cannot set this attribute to screen panel objects", 
+        4416: "Cannot set this attribute to screen panel objects",
         4417: "QuArK file object expected",
         4418: "Cannot load bitmap file '%s'",
         4419: "Invalid dock position",
@@ -544,7 +544,7 @@ Strings = {
         5176: ".md3 file",
         5177: "M32 Texture (SoF)",
 
-        5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",  
+        5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
 	5184: "'%s' is not a QuArK-5 file",
 	5185: "'%s' was created with a more recent version of QuArK",
 	5186: "'%s' is invalid (the end of the file seems to be missing)",
@@ -662,7 +662,7 @@ Strings = {
 
         5503: "'%s' is a Half-Life Model which cannot be read (yet)",
 	5504: "No texture image//Missing or invalid %s",
-	5505: "'%s' is not a WAD file//%d should be %d",
+    5505: "'%s' is not a WAD file//%d should be %d or %d",
 	5506: "'%s' is not a PACK file//%d should be %d",
 	# 5507: "Internal error N - this program is buggy !//Acces without FNode",
 	5508: "Files names in PACK files are limited to %d characters, including the path. '%s' is too long",
@@ -878,6 +878,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.21  2000/09/10 13:02:12  alexander
+#set name
+#
 #Revision 1.20  2000/09/01 00:49:52  alexander
 #set name
 #
