@@ -463,7 +463,6 @@ end;
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 var
  NomChemin, NomComplet: String;
- Pak: QPak;
 
 (*procedure FoundInFile(Q: QObject);
   var
@@ -498,8 +497,8 @@ begin
        GameFiles.Add(Result);
        GameFiles.Sort(ByFileName);
       end;
-     Pak:=Result as QPak;
-     Result:=Pak.FindFile(FileName);
+     {Pak:=Result as QPak;}
+     Result:={Pak}Result.FindFile(FileName);
      if Result<>Nil then
       begin
       {FoundInFile(Pak);}
