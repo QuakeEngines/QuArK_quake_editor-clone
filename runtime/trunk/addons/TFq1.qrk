@@ -3,11 +3,11 @@ QQRKSRC1
 {
 	QuArKProtected = "1"
 	Description = "Team Fortress Add-On"
-	fortress directory infos.qctx =	
+	fortress directory infos.qctx =
 	{
-		Game = "Quake 1"	
-		SourceDir = "fortress"		
-		GameDir = "fortress"		
+		Game = "Quake 1"
+		SourceDir = "fortress"
+		GameDir = "fortress"
 	}
 	NewMapItems.qtx =
 	{
@@ -23,10 +23,10 @@ QQRKSRC1
 			{
 				origin = "0 0 0"
 				;desc = "Starting points for teams"
-				angle = "0" 
+				angle = "0"
 			}
-			Goals.qtxfolder = 
-			{	
+			Goals.qtxfolder =
+			{
 				info_tfgoal:e=
 				{
 					origin = "0 0 0"
@@ -41,7 +41,7 @@ QQRKSRC1
 				{
 					origin = "0 0 0"
 					;desc = "Timer goal entity"
-				}	
+				}
 			}
 		}
 	}
@@ -93,7 +93,7 @@ QQRKSRC1
 				Typ="E"
 				Hint="Number of Lives allowed for players on team 4, 0=infinite"
 			}
-			ammo_medkit:=
+                        ammo_medikit:=
 			{	Txt="&"
 				Typ="E"
 				Hint="Max number of people allowed on team 1"
@@ -103,7 +103,7 @@ QQRKSRC1
 				Typ="E"
 				Hint="Max number of people allowed on team 2"
 			}
-			maxammo_medkit:=
+                        maxammo_medikit:=
 			{	Txt="&"
 				Typ="E"
 				Hint="Max number of people allowed on team 3"
@@ -112,7 +112,7 @@ QQRKSRC1
 			{	Txt="&"
 				Typ="E"
 				Hint="Max number of people allowed on team 4"
-			} 
+			}
 		}
 		info_player_teamspawn:form =
 		{
@@ -155,7 +155,7 @@ QQRKSRC1
 			{	Txt="&"
 				Typ="E"
 				Hint="Model used by goal, note unspecified means invisible"
-			}	
+			}
 			team_no:=
 			{	Txt="&"
 				Typ="E"

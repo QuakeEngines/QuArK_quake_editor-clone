@@ -383,6 +383,7 @@ QQRKSRC1
 	origin = "0 0 0"
 	;desc = "gives coords for a teleport destination"
         targetname = "[auto]"
+        angle = "360"
 	}
 	misc_fireball:e =
 	{
