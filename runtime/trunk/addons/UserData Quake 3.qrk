@@ -74,7 +74,6 @@ QQRKSRC1
       LIGHT1 = "1"
       LIGHTCmd = "-extra"
       RunGame = "1"
-      BSPC1 = "1"
       BSPCCmd = "-bsp2aas"
     }
     item: =
