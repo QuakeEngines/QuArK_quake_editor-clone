@@ -763,7 +763,8 @@ end;
 
 if index>s.souselements.count-1 then index:=s.Souselements.count-1;
 
-if s.souselements[index]<>nil then begin
+if index<>-1 then
+  if s.souselements[index]<>nil then begin
    ps:=QPcx(s.Souselements[index]);
    ImageDisplayer.Source:=ps;
    ImageDisplayer.AutoSize;
