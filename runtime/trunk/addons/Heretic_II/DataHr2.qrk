@@ -5,7 +5,21 @@ QQRKSRC1
 // ----------- REVISION HISTORY ------------
 //$Log$
 //
-//Revision 1.42 2003/06/15 dannj
+//Revision 1.45 2003/07/30 DannJ
+//Added COOP spawnflags to all weapons and ammo
+//Removed duplicate ANGLE field in OBJ_TORTURE_TABLE
+//Changed STYLE field to SKINNUM in OBJ_DYING_ELF (allows bloody elf option)
+//Added LIGHT field to LIGHT_FLOORTORCH
+//Fixed obj_basket MDL path
+//
+//Revision 1.44 2003/07/02 DannJ
+//Added angle field to more monsters
+//Changed the default 'New Map' room
+//
+//Revision 1.43 2003/06/20 DannJ
+//Added SKINNUM to GUARDIAN statue (now two types)
+//
+//Revision 1.42 2003/06/15 DannJ
 //Added ANGLE field to a heap of monsters
 //Added SKINNUM to obj_bookopen (now two types)
 //Added SKINNUM to obj_bush2 (now two types)
@@ -14,12 +28,12 @@ QQRKSRC1
 //Fixed MDL paths for Banneronpole and Banner
 //Removed DEGREES & DAMAGE from func_door_rotating (DISTANCE & DMG used instead)
 //
-//Revision 1.41 2003/04/3 dannj
+//Revision 1.41 2003/04/3 DannJ
 //Fixed 'current_0' and 'current_180' direction descriptions
 //Added ANIMATE flag to floor torch
 //Fixed material types for exploding trains
 //
-//Revision 1.4  2003/03/9 dannj
+//Revision 1.4  2003/03/9 DannJ
 //Added Whirlwind defensive spell (for Heretic II update version 1.06)
 //Added ANIMATE flag to wall torch
 //Added FORCE_ONCE flag to trigger_push
@@ -198,66 +212,71 @@ QQRKSRC1
       {
         East wall:p =
         {
-          west:f =  { v = '256 0 272 256 -128 272 256 0 400'       walltex = ! }
-          east:f =  { v = '272 0 272 272 128 272 272 0 400'        walltex = ! }
-          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' walltex = ! }
-          north:f = { v = '432 192 272 304 192 272 432 192 400'    walltex = ! }
-          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
-          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+          west:f =  { v = '576 512 512 448 512 512 576 512 640'       walltex = ! }
+          east:f =  { v = '576 -512 512 704 -512 512 576 -512 640'    walltex = ! }
+          south:f = { v = '512 448 512 512 320 512 512 448 640'       walltex = ! }
+          north:f = { v = '576 448 512 576 576 512 576 448 640'       walltex = ! }
+          down:f =  { v = '576 448 -64 576 320 -64 448 448 -64'       walltex = ! }
+          up:f =    { v = '576 448 576 576 320 576 704 448 576'       walltex = ! }
         }
         West wall:p =
         {
-          west:f =  { v = '-272 0 272 -272 -128 272 -272 0 400'    walltex = ! }
-          east:f =  { v = '-256 0 272 -256 128 272 -256 0 400'     walltex = ! }
-          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' walltex = ! }
-          north:f = { v = '432 192 272 304 192 272 432 192 400'    walltex = ! }
-          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
-          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+          west:f =  { v = '-512 512 512 -640 512 512 -512 512 640'    walltex = ! }
+          east:f =  { v = '-512 -512 512 -384 -512 512 -512 -512 640' walltex = ! }
+          south:f = { v = '-576 448 512 -576 320 512 -576 448 640'    walltex = ! }
+          north:f = { v = '-512 448 512 -512 576 512 -512 448 640'    walltex = ! }
+          down:f =  { v = '-512 448 -64 -512 320 -64 -640 448 -64'    walltex = ! }
+          up:f =    { v = '-512 448 576 -512 320 576 -384 448 576'    walltex = ! }
         }
         North wall:p =
         {
-          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    walltex = ! }
-          east:f =  { v = '256 0 272 256 128 272 256 0 400'        walltex = ! }
-          south:f = { v = '432 192 272 560 192 272 432 192 400'    walltex = ! }
-          north:f = { v = '432 208 272 304 208 272 432 208 400'    walltex = ! }
-          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
-          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+          west:f =  { v = '-512 576 512 -512 448 512 -512 576 640'    walltex = ! }
+          east:f =  { v = '512 576 512 512 704 512 512 576 640'       walltex = ! }
+          south:f = { v = '-448 512 512 -320 512 512 -448 512 640'    walltex = ! }
+          north:f = { v = '-448 576 512 -576 576 512 -448 576 640'    walltex = ! }
+          down:f =  { v = '-448 576 -64 -320 576 -64 -448 448 -64'    walltex = ! }
+          up:f =    { v = '-448 576 576 -320 576 576 -448 704 576'    walltex = ! }
         }
         South wall:p =
         {
-          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    walltex = ! }
-          east:f =  { v = '256 0 272 256 128 272 256 0 400'        walltex = ! }
-          south:f = { v = '432 -208 272 560 -208 272 432 -208 400' walltex = ! }
-          north:f = { v = '432 -192 272 304 -192 272 432 -192 400' walltex = ! }
-          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
-          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+          west:f =  { v = '-512 -512 512 -512 -640 512 -512 -512 640' walltex = ! }
+          east:f =  { v = '512 -512 512 512 -384 512 512 -512 640'    walltex = ! }
+          south:f = { v = '-448 -576 512 -320 -576 512 -448 -576 640' walltex = ! }
+          north:f = { v = '-448 -512 512 -576 -512 512 -448 -512 640' walltex = ! }
+          down:f =  { v = '-448 -512 -64 -320 -512 -64 -448 -640 -64' walltex = ! }
+          up:f =    { v = '-448 -512 576 -320 -512 576 -448 -384 576' walltex = ! }
         }
         Sky:p =
         {
-          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    ceiltex = ! }
-          east:f =  { v = '256 0 272 256 128 272 256 0 400'        ceiltex = ! }
-          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' ceiltex = ! }
-          north:f = { v = '432 192 272 304 192 272 432 192 400'    ceiltex = ! }
-          down:f =  { v = '432 0 96 560 0 96 432 -128 96'          ceiltex = ! }
-          up:f =    { v = '432 0 112 560 0 112 432 128 112'        ceiltex = ! }
+          west:f =  { v = '-512 0 512 -512 -128 512 -512 0 640'    ceiltex = ! }
+          east:f =  { v = '512 0 512 512 128 512 512 0 640'        ceiltex = ! }
+          south:f = { v = '0 -512 512 128 -512 512 0 -512 640'     ceiltex = ! }
+          north:f = { v = '0 512 512 -128 512 512 0 512 640'       ceiltex = ! }
+          down:f =  { v = '0 0 512 128 0 512 0 -128 512'           ceiltex = ! }
+          up:f =    { v = '0 0 576 128 0 576 0 128 576'            ceiltex = ! }
         }
         Floor:p =
         {
-          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    floortex = ! }
-          east:f =  { v = '256 0 272 256 128 272 256 0 400'        floortex = ! }
-          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' floortex = ! }
-          north:f = { v = '432 192 272 304 192 272 432 192 400'    floortex = ! }
-          down:f =  { v = '432 0 -112 560 0 -112 432 -128 -112'    floortex = ! }
-          up:f =    { v = '432 0 -96 560 0 -96 432 128 -96'        floortex = ! }
+          west:f =  { v = '-512 0 -64 -512 -128 -64 -512 0 64'    floortex = ! }
+          east:f =  { v = '512 0 -64 512 128 -64 512 0 64'        floortex = ! }
+          south:f = { v = '0 -512 -64 128 -512 -64 0 -512 64'     floortex = ! }
+          north:f = { v = '0 512 -64 -128 512 -64 0 512 64'       floortex = ! }
+          down:f =  { v = '0 0 -64 128 0 -64 0 -128 -64'          floortex = ! }
+          up:f =    { v = '0 0 0 128 0 0 0 128 0'                 floortex = ! }
         }
       }
-      info_player_start:e =
-      {
-        origin = "-144 0 -72"
-        angle = "360"
-      }
+    info_player_start:e =
+    {
+      origin = "0 0 24"
+      angle = "90"
+    }
+    light:e =
+    {
+      origin = "0 0 256"
+      light = "800"
     }
   }
+}
 
     //
     //   ***   TEXTURES   ***
@@ -6407,11 +6426,13 @@ QQRKSRC1
        {
          origin = "0 0 0"
          ;desc = "The High Priestess (what more do you need to know?!?!)"
+         angle = "0"
        }
        monster_imp:e =
        {
          origin = "0 0 0"
-         ;desc = "Our old pal, the fire imp (not fully implemented, sigh)"
+         ;desc = "Our old pal, the fire imp (needs model: www.ravenfiles.com/file.php?id=116)"
+         angle = "0"
        }
        monster_morcalavin:e =
        {
@@ -6424,26 +6445,31 @@ QQRKSRC1
        {
          origin = "0 0 0"
          ;desc = "The mssithra"
+         angle = "0"
        }
        monster_ogle:e =
        {
          origin = "0 0 0"
          ;desc = "The little, disgruntled Ogle"
+         angle = "0"
        }
        monster_palace_plague_guard:e =
        {
          origin = "0 0 0"
          ;desc = "A plague Elf."
+         angle = "0"
        }
        monster_palace_plague_guard_invisible:e =
        {
          origin = "0 0 0"
          ;desc = "An often invisible plague Elf"
+         angle = "0"
        }
        monster_plagueElf:e =
        {
          origin = "0 0 0"
          ;desc = "The basic plagueElf"
+         angle = "0"
        }
        monster_rat:e =
        {
@@ -6461,6 +6487,7 @@ QQRKSRC1
        {
          origin = "0 0 0"
          ;desc = "The big, ugly, brutal Guard.."
+         angle = "0"
        }
        monster_seraph_overlord:e =
        {
@@ -6472,21 +6499,25 @@ QQRKSRC1
        {
          origin = "0 0 0"
          ;desc = "The spreader"
+         angle = "0"
        }
        monster_ssithra:e =
        {
          origin = "0 0 0"
          ;desc = "The plague ssithra"
+         angle = "0"
        }
        monster_tcheckrik_female:e =
        {
          origin = "0 0 0"
          ;desc = "The hot babe insect"
+         angle = "0"
        }
        monster_tcheckrik_male:e =
        {
          origin = "0 0 0"
          ;desc = "The studmuffin insect"
+         angle = "0"
        }
        monster_tcheckrik_mothers:e =
        {
@@ -7602,6 +7633,7 @@ QQRKSRC1
          origin = "0 0 0"
          ;desc = "A big statue of a fish guy on his haunches holding a spear."
          angle = ""
+         skinnum = "0"
        }
        obj_statue_saraphbust:e =
        {
@@ -7759,7 +7791,6 @@ QQRKSRC1
        {
          origin = "0 0 0"
          ;desc = "A table useful for wringing confessions from your broken and pitiful enemies."
-         angle = "0"
          angle = "0"
        }
        obj_torture_wallring:e =
@@ -9905,7 +9936,7 @@ QQRKSRC1
        {Txt="&"
         Typ="X1"
         Cap="COOP_ONLY"
-        Hint="No hint yet"}
+        Hint="Only appears in COOP game"}
     }
     item_ammo_phoenix:form =
     {
@@ -9913,6 +9944,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_ammo_phoenix"
      mdl = "models/items/Ammo/Phoenix/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_ammo_redrain:form =
     {
@@ -9924,7 +9960,7 @@ QQRKSRC1
        {Txt="&"
         Typ="X1"
         Cap="COOP_ONLY"
-        Hint="No hint yet"}
+        Hint="Only appears in COOP game"}
     }
     item_defense_meteorbarrier:form =
     {
@@ -9932,6 +9968,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_defense_meteorbarrier"
      mdl = "models/items/Defense/Meteorbarrier/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_defense_polymorph:form =
     {
@@ -9939,6 +9980,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_defense_polymorph"
      mdl = "models/items/Defense/Polymorph/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_defense_ringofrepulsion:form =
     {
@@ -9946,6 +9992,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_defense_ringofrepulsion"
      mdl = "models/items/Defense/Repulsion/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_defense_shield:form =
     {
@@ -9953,6 +10004,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_defense_shield"
      mdl = "models/items/Defense/lightshield/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_defense_teleport:form =
     {
@@ -9960,6 +10016,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_defense_teleport"
      mdl = "models/items/Defense/Teleport/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_defense_tornado:form =
     {
@@ -9967,6 +10028,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm"
      mdl = "models/items/Defense/Tornado/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_health_full:form =
     {
@@ -10304,6 +10370,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_firewall"
      mdl = "models/items/Weapons/Firewall/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_weapon_hellstaff:form =
     {
@@ -10311,6 +10382,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_hellstaff"
      mdl = "models/items/Weapons/Hellstaff/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
@@ -10321,6 +10397,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_maceballs"
      mdl = "models/items/Weapons/Maceballs/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_weapon_magicmissile:form =
     {
@@ -10328,6 +10409,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_magicmissile"
      mdl = "models/items/Weapons/MagicMissile/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_weapon_phoenixbow:form =
     {
@@ -10335,6 +10421,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_phoenixbow"
      mdl = "models/items/Weapons/Bow/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
      target: =
         {Txt = "&" Hint = "object with matching targetname is triggered."
        }
@@ -10345,6 +10436,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_redrain_bow"
      mdl = "models/items/Weapons/Bow/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     item_weapon_sphereofannihilation:form =
     {
@@ -10352,6 +10448,11 @@ QQRKSRC1
      bbox = '-16 -16 -16 16 16 16 1'
      HTML = "help/hr2/g_items.htm#item_weapon_sphereofannihilation"
      mdl = "models/items/Weapons/Sphere/tris.fm"
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="COOP_ONLY"
+        Hint="Only appears in COOP game"}
     }
     light:form =
     {
@@ -10478,6 +10579,9 @@ QQRKSRC1
        }
      _color: =
         {Txt = "&" Typ = "L" Hint = "color-selection button"}
+     light: =
+        {Txt = "&" Hint = "intensity, default = 200 (pretty dim, max = 800)"
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11480,6 +11584,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                   = 1" $0D "  melee_range              = " $0D "  missile_range            = 51" $0D "  min_missile_range        = " $0D "  bypass_missile_chance    = 6" $0D "  jump_chance              = 5" $0D "  wakeup_distance          = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -12412,14 +12519,14 @@ QQRKSRC1
        {Txt="&"
         Typ="X1"
         Cap="INVULNERABLE"
-        Hint="it can't be hur"}
+        Hint="it can't be hurt"}
     }
     obj_basket:form =
     {
      Help = "A tall basket with a lid on it."
      bbox = '-13 -13 -21 13 13 21 1'
      HTML = "help/hr2/g_obj.htm#obj_basket"
-     mdl = "mdl: models/objects/pots/basket/tris.fm"
+     mdl = "models/objects/pots/basket/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
@@ -13541,8 +13648,8 @@ QQRKSRC1
       Form="obj_targetting:form"
       Hint="specifics for targetting"
     }
-     style: =
-        {Txt = "&" Hint = "supposedly skin; both look the same to me."
+     skinnum: =
+        {Txt = "&" Hint = "0 Normal. 1 Bloody"
       Typ="C"
       Items="0)" $0D "1)"
       values="0" $0D "1"
@@ -16119,6 +16226,12 @@ QQRKSRC1
        }
      abslight: =
         {Txt = "&" Typ = "L 3" Hint = "color-selection button"}
+     skinnum: =
+        {Txt = "&" Hint = "default 0 = Greenish"
+      Typ="C"
+      Items="0) Greenish" $0D "1) Reddish"
+      values="0" $0D "1"
+       }
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
@@ -16626,9 +16739,6 @@ QQRKSRC1
      bbox = '-46 -14 -14 46 14 14 1'
      HTML = "help/hr2/g_obj.htm#obj_torture_table"
      mdl = "models/objects/torture/table/tris.fm"
-     angle: =
-        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
-       }
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
