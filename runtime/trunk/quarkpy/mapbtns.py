@@ -548,10 +548,16 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                 new.translate(offset)     # offset the objects
             if matrix:
                 if direct:
+                    debug('applylinear')
                     import mapduplicator
                     mapduplicator.DupManager(new).applylinear(matrix, 1)
                 else:
                     new.linear(origin, matrix)   # apply the linear mapping
+                    for item in new.findallsubitems("",":g"):
+                        center = item["usercenter"]
+                        if center is not None:
+                            newcenter = matrix*(quarkx.vect(center)-origin)+origin
+                            item["usercenter"]=newcenter.tuple
             if inflate:
                 new.inflate(inflate)    # inflate / deflate
             undo.exchange(obj, new)
@@ -693,6 +699,11 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.12  2001/04/17 23:29:07  tiglari
+#texture-rescaling bug fix (fixedscale="1" added to objects when they're
+#dragged to the panel, removed when inserted to the map, blocks
+#rescaling of textures on insert-by-pressing-panel-button
+#
 #Revision 1.11  2001/04/03 21:09:28  tiglari
 #cleaned out debug statements
 #
