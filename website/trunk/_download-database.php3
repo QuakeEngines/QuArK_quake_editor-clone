@@ -40,7 +40,7 @@ $Games[] = new cGame(602 ,"KP"    ,"Kingpin"                            ,"game_k
 $Games[] = new cGame(602 ,"SOF"   ,"Soldier of Fortune"                 ,"game_sof.gif"          ,""                               ,"SOFSDK11.zip|http://www.fileplanet.com/index.asp?file=45356");
 $Games[] = new cGame(602 ,"Q3A"   ,"Quake 3:Arena (+ Team Arena)"       ,"game_quake3.gif"       ,""                               ,"GTKRadiant's tools|http://www.qeradiant.com/?data=editors/gtk|Q3ToolSetup_Mar172000.exe|http://www.fileplanet.com/index.asp?file=39158");
 $Games[] = new cGame(602 ,"STVEF" ,"Star Trek:Voyager-Elite Force"      ,"game_stvef.gif"        ,""                               ,"GTKRadiant's tools|http://www.qeradiant.com/?data=editors/gtk|eliteforceGDK.zip|http://www.fileplanet.com/index.asp?file=50614");
-$Games[] = new cGame(602 ,"CS"    ,"Crystal Space engine"               ,"game_crystalspace.gif" ,"http://crystal.sourceforge.net" ,"");
+$Games[] = new cGame(602 ,"CrSp"  ,"Crystal Space engine"               ,"game_crystalspace.gif" ,"http://crystal.sourceforge.net" ,"");
 $Games[] = new cGame(603 ,"RTCW"  ,"Return to Castle Wolfenstein"       ,"game_rtcw.gif"         ,""                               ,"WolfToolsSDK.zip|http://www.fileplanet.com/index.asp?file=83872|GTKRadiant's tools|http://www.qeradiant.com/?data=editors/gtk");
 $Games[] = new cGame(603 ,"6DX"   ,"6DX engine"                         ,"game_6dx.gif"          ,"http://www.aztica.com"          ,"");
 $Games[] = new cGame(603 ,"T"     ,"Torque engine"                      ,"game_torque.gif"       ,"http://www.garagegames.com"     ,"");
