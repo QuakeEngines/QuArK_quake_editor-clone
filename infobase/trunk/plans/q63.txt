@@ -1,9 +1,10 @@
 title: QuArK 6.3
 author: tiglari, etc.
 
-This is stuff that tiglari currently envisions for the next release of
-QuArK.  Needless to say, highly non-definitive! I think I've put my
-name on more than I can get around to doing for a timely release.
+This is stuff that tiglari and anyone else who updates this
+file currently envisions for the next release of
+QuArK. There's a good chance that this will split into 6.3
+and 6.4
 
 <ul>
 <li>Linear Matrix editor: (tiglari)
@@ -42,12 +43,18 @@ from interface). NYI as fixpoint for linear mapping in duplicators.
 <br>status: done
 
 <li>Form-editing: (Andy)
-<br>status: editing only - no create
+<br>status: needs create capacity
 
 <li> Entity Extractor: (Andy)
 <br> Entities extracted from .bsp's in many formats
     (including Q3(T)A).
 <br> Status: basically done but some apparent issues.    
+
+<li> Entity Lump Extractor: (tiglari)
+<br> extracts entity lumps from .bsp's in a .pak to independent files.
+<br> status: done but seems to fail with STVEF .bsp's whose names
+begin with underscore.  More thought about easy preparation of
+entity addons is needed.
 
 <li>FAKK2 support: (?)
 <br>And what about Daikatana, Alice, & Gunman
@@ -66,7 +73,8 @@ from interface). NYI as fixpoint for linear mapping in duplicators.
 <br>edit the properties of pre-existing OsFolders
 
 <li>Brush-based shape-builders: (tiglari, Decker)
-<br> 'thick', and 'inner boxes' (more control over arch shapes).
+<br>'inner boxes' (two independently manipulable boxes, one inside
+   the other, giving more control over arch shapes).
 Also should have a 'force-to-grid' option.
 <br> redo prism-builder as shape-builder.
 <br> more fancy options for stair-builder

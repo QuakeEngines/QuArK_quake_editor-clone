@@ -12,7 +12,7 @@ and 6.1?
 
 <li>OsFolders: (tiglari)
 <br> Load up resources from disk by specified paths etc.
-Editing of folder properties not yet implemented, maybe delay til 6.3
+Editing of folder properties not implemented.
 
 <li>Bezier Page: (tiglari)
 <br>No 'cp picking' or linear mapping handles.
@@ -42,7 +42,7 @@ dialogs, `roll control'.
 <br>New orientations.
 
 <li>Brush-based shape builders: (tiglari)
-<br>No 'thick' yet.  Same orientations as patch-based ones.
+<br>thick & grid specifics added, plus same new orientations as patch-based ones.
 
 <li>Stairway duplicator: (Decker)
 <br>Stairs in a box
@@ -51,7 +51,7 @@ dialogs, `roll control'.
 <br> Find and destroy.
 
 <li>New Games/Addons Supported:
-<br>STVEF (Alex)
+<br>STVEF (Alex, Jeff[EFR]Scorpion, Mark Matthieson, tiglari)
 <br>Q3TA (Maleficus, Andy)
 <br>Crystal Space (Desmond Fletcher, et. al.)  This one probably
 needs more work from somebody knowledgeable about CS.
@@ -93,8 +93,7 @@ radially around a tiltable axis, with 'spiral' attributes.
 object.
 
 <li>MipTex Extraction: (Andy)
-<br>Get the add-on builder to handle Q1, Hx2 properly
-<br>status: done.
+<br>extract textures from Q1, Hx1 .bsp's
 
 <li>Vertex Movement: (tiglari)
 <br>less drifting of non-drug vertexes when a vertex is dragged.

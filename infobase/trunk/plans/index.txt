@@ -1,5 +1,5 @@
 title: History and Plans
-desc: q62 q63 q6n suggestions branches
+desc: q62 q63 suggestions q6n branches
 
 Features added to this and previous versions of QuArK,
 and proposed for the future.
