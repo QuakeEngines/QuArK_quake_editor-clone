@@ -479,6 +479,7 @@ def subdivideColumns(n, cp, func=None):
 #  the idea is to think of the b2 curve as an approximation
 #  to an image of a quarter-circle.
 # 
+# Derived from a suggestion by Alex Haarer.
 #
 def arcSubdivideLine(n, p0, p1, p2):
     mat = matrix_u_v(p0-p1, p2-p1)
@@ -510,6 +511,9 @@ def cpPos(p,b2):
 #
 #
 #$Log$
+#Revision 1.16  2000/12/30 05:27:11  tiglari
+#cpPos function for mapping index position to i, j coordinates
+#
 #Revision 1.15  2000/09/04 21:24:23  tiglari
 #added procedures for better circular arc segments
 #
