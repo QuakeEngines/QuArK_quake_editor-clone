@@ -2625,8 +2625,17 @@ begin
   if S[I]='\' then
    System.Insert('\', S, I);
  S:=Format(PythonSetupString, [S]);
+ { tiglari:
+   S will now be the python commands:
+    import sys
+    sys.path[:0]=["<the path to the quark exe>"]
+    import quarkpy
+ }
  if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);
  InitSetup;
+ { tiglari:
+   runs quarkpy.RunQuArK(), defined in quarkpy.__init__.py;
+   mostly sets up icons and stuff like that.}
  if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
  PythonCodeEnd;
  PythonUpdateAll;

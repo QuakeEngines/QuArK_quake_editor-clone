@@ -362,6 +362,9 @@ begin
   end;
  Py_Initialize;
  Result:=1;
+ { tiglari:
+   Now we set the value of some global variables
+   to the basic Python types }
  obj1:=PyList_New(0);
  if obj1=Nil then Exit;
  PyList_Type:=obj1^.ob_type;

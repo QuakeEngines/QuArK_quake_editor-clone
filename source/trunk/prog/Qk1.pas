@@ -324,6 +324,10 @@ begin
  DecimalSeparator:='.';
  Form1Handle:=Handle;
 
+ { comment by tiglari:
+   in quarkx: splash & nag screens,
+   python initialization,
+   loading defaults.qrk, setup.qrk }
  PythonLoadMain;
 
 (*ImageList1.Handle:=ImageList_LoadImage(HInstance, MakeIntResource(101),
