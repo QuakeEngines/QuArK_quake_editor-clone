@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2002/03/07 19:17:48  decker_dk
+Removed QImages, as it was just another name for QImage
+
 Revision 1.12  2002/02/26 23:16:11  tiglari
 support for forward slash in path to skin of md2, by Andy Vincent,
 committed by tiglari
@@ -665,7 +668,10 @@ begin
       org2:=f.position;
       if (head.id='IDP3') and (head.version=15) then
       begin
-        ObjectGameCode:=mjQ3A;
+        if CharModeJeu<mjQ3A then
+          ObjectGameCode := mjQ3A
+        else
+          ObjectGameCode := CharModeJeu;
       end
       else if (head.id='RDM5') and (head.version=2) then
       begin
