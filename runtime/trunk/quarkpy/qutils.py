@@ -8,6 +8,9 @@ Various constants and routines
 # FOUND IN FILE "COPYING.TXT"
 #
 
+
+#$Header$
+
 import quarkx
 
 
@@ -141,7 +144,7 @@ iiImport                = 42
 iiPython                = 43
 iiBezier                = 44
 #Sprite File Support
-iiSprFile		= 45
+iiSprFile               = 45
 iiTotalImageCount       = 46
 
 
@@ -186,11 +189,28 @@ def loadmapeditor():
     import maputils
     import mapeditor
     import mapmenus
+         
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MAP")
+
+    def patchload():
+       import quarkx
+       if quarkx.setupsubset()["ShadersPath"]:
+         import mapbezier
+         plugins.LoadPlugins("MB2")
+         loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
+
+    patchload()
+    
     #-----------------------------
-    loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
+#    loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
+    #
+    # next call to loadmapeditor loads patch stuff if needed
+    #
+    loadmapeditor = patchload
+                                     
+
 
 #
 # Model modules loader (mdl*.py modules require a special load order)
@@ -410,4 +430,9 @@ def debug(text):
 import plugins
 plugins.LoadPlugins("Q_")
 #-----------------------------
+
+
+# ----------- REVISION HISTORY ------------
+#$Log$
+#--- snap ----
 
