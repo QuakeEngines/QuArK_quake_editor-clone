@@ -184,6 +184,12 @@ def quilt_addrow(cp,(i,j)):
   cp[i:i+1] = [q1, md, q3]
 
 
+def doubleRowsOfQuilt(cp):
+    newcp = copyCp(cp)
+    for i in range(len(cp)-2,0,-2):
+        quilt_addrow(newcp,(i,0))
+    return newcp
+
 def quilt_addcol(cp,(i,j)):
   "alters cp so that two patch-rows replace the ith one"
   for row in cp:
@@ -194,6 +200,11 @@ def quilt_addcol(cp,(i,j)):
      row[j:j+1]=[b2midcp(arc[0],qt1, mid),
           mid,b2midcp(mid,qt3,arc[2])]
 
+def doubleColsOfQuilt(cp):
+    newcp = copyCp(cp)
+    for j in range(len(cp[0])-2,0,-2):
+        quilt_addcol(newcp,(0,j))
+    return newcp
 
 def quilt_delrow(cp,(i,j)):
     md = []
@@ -203,7 +214,7 @@ def quilt_delrow(cp,(i,j)):
         md.append(mid)
     cp[i-1:i+2]=[md]
     
-    
+
 def quilt_delcol(cp, (i,j)):
     for row in cp:
         arc=row[j-2],row[j],row[j+2]
@@ -258,7 +269,7 @@ class CPHandle(qhandles.GenericHandle):
             return 0
         return 1
         
-    def type(self):
+    def edgeType(self):
         "(type, dim); type=P_FRONT etc"
         "None; not an edge"
         i, j = self.ij
@@ -357,7 +368,23 @@ class CPHandle(qhandles.GenericHandle):
         if len(cp[0])<4 or j==0 or j==len(cp[0])-1:
           delcol.state=qmenu.disabled
           
-        mesh = qmenu.popup("Mesh",[addrow, addcol, delrow, delcol])
+        def meshclick(m, self=self, editor=editor):
+            b2 = self.b2
+            new = b2.copy()
+            new.cp = m.action(new.cp)
+            undo = quarkx.action()
+            undo.exchange(b2, new)
+            editor.ok(undo, "change mesh")
+        
+        
+        doublerow = qmenu.item("Double Rows", meshclick, "|Double the number of rows in the mesh")
+        doublerow.action = doubleRowsOfQuilt
+        
+        doublecol = qmenu.item("Double Columns", meshclick, "|Double the number of columns in the mesh")
+        doublecol.action = doubleColsOfQuilt
+        
+        mesh = qmenu.popup("Mesh",[addrow, addcol, delrow, delcol,
+                qmenu.sep, doublerow, doublecol])
         
         
         tagpt = gettaggedpt(editor)
@@ -397,19 +424,33 @@ class CPHandle(qhandles.GenericHandle):
             editor.ok(undo,'Join Patches')
             editor.invalidateviews()
 
+        def KnitClick(m,self=self, editor=editor):
+            b2 = self.b2
+            tb2 = m.tagged.b2
+            ncp = knitCp(m.selftype,b2.cp,m.tagtype,tb2.cp)
+            new = b2.copy()
+            new.cp = ncp
+            undo = quarkx.action()
+            undo.exchange(b2, new)
+            editor.ok(undo,'Knit edges')
+            editor.invalidateviews()
+
         joinitem = qmenu.item("&Join patch to tagged",JoinClick,"|Combine tagged patch and this one into one quilt")
-        joinitem.state=qmenu.disabled
+        knititem = qmenu.item("&Knit edge to tagged",KnitClick,"|Attach this edge to tagged edge")
+        joinitem.state=knititem.state=qmenu.disabled
         tagged = gettaggedb2cp(editor)
-        if tagged is not None:
-            tagtype = tagged.type()
-            selftype = self.type()
+        for item in joinitem, knititem:
+          if tagged is not None:
+            tagtype = tagged.edgeType() # orientation, dimension of edge
+            selftype = self.edgeType()
             if tagtype is not None and selftype is not None:
-                if tagtype[1]==selftype[1]:
-                    joinitem.state=qmenu.normal
-                    joinitem.tagtype, joinitem.selftype = tagtype, selftype
-                    joinitem.tagged = tagged
-        if joinitem.state==qmenu.disabled:
-             joinitem.hint=joinitem.hint+"\n\nTo enable this menu item, tag a non-corner edge point of one patch, and RMB on a non-corner edge point of another"
+                if tagtype[1]==selftype[1]:  # same dim
+                    item.state=qmenu.normal
+                    item.tagtype, item.selftype = tagtype, selftype
+                    item.tagged = tagged
+          if item.state==qmenu.disabled:
+             morehint = "\n\nTo enable this menu item, tag a non-corner edge point of one patch, and RMB on a non-corner edge point of another"
+             item.hint=item.hint+morehint
 
         tagged = gettaggededge(editor)
         
@@ -449,7 +490,7 @@ class CPHandle(qhandles.GenericHandle):
 
 
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [mesh, joinitem, alignrow, aligncol] + patchmenu
+        return [mesh, joinitem, knititem, alignrow, aligncol] + patchmenu
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -709,6 +750,10 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2000/07/30 23:03:51  tiglari
+#align row/column to tagged edge added; glue to tagged removed,
+#since the one in plugins.maptagpoint already does the job.
+#
 #Revision 1.29  2000/07/29 01:12:14  alexander
 #fixed: copycp ->copyCp (texture coordinate pyton crash AGAIN :)
 #
