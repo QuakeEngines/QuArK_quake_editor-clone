@@ -22,6 +22,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/01/05 15:57:53  alexander
+late dll initialization on LoadFile method
+dependent dlls are checked before
+made dll loading errors or api mismatch errors fatal because there is no means of recovery
+
 Revision 1.6  2004/12/28 02:25:22  alexander
 dll api changed : allow selection of mip level
 
@@ -70,7 +75,7 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
 
-const RequiredVTFAPI=2;
+const RequiredVTFAPI=3;
 
 var
   HQuArKVTF   : HINST;
@@ -81,8 +86,8 @@ var
 //DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength, long iMipLevel, unsigned char *pDstImage)
 //DLL_IMPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
   APIVersion : function    : Longword; stdcall;
-  vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar): Integer; stdcall;
-  vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger): Integer; stdcall;
+  vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar;usealpha :longword): Integer; stdcall;
+  vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger; hasalpha: PInteger): Integer; stdcall;
 
 
 
@@ -157,7 +162,7 @@ var
   Source, DestAlpha, DestImg,pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
   NumberOfPixels,mip: Integer;
-  Width,Height,MipLevels:Integer;
+  Width,Height,MipLevels,HasAlpha:Integer;
 begin
   initdll;
   case ReadFormat of
@@ -170,7 +175,7 @@ begin
 
      if @vtf_info <> nil then
      begin
-      if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels) then
+      if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels, @HasAlpha) then
         Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
 
       mip:=0;
@@ -183,8 +188,12 @@ begin
 
       NumberOfPixels:= Width*Height;
       SetSize(Point(Width , Height ));
-      SetLength(DecodedBuffer, NumberOfPixels * 4 );
-      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,mip ,PChar(DecodedBuffer)) then
+      if HasAlpha=1 then
+        SetLength(DecodedBuffer, NumberOfPixels * 4 )
+      else
+        SetLength(DecodedBuffer, NumberOfPixels * 3 );
+
+      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,mip ,PChar(DecodedBuffer),HasAlpha) then
         Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
 
      end
@@ -192,85 +201,74 @@ begin
        Raise EError(5705);
 
 
-
-(*
-
-// old code
-      if FSize<SizeOf(Header) then
-        Raise EError(5519);
-
-      F.ReadBuffer(Header, SizeOf(Header));
-
-      { check the file format }
-      if (Header.magic[0] <>'V') or
-         (Header.magic[1] <>'T') or
-         (Header.magic[2] <>'F') then
-         Raise EError(5704);
-
-      NumberOfPixels:= Header.Width*Header.Height;
-      case  Header.Format of
-        13 : CompressedSize:= NumberOfPixels div 2;
-        15 : CompressedSize:= NumberOfPixels;
-      else
-        Raise EErrorFmt(5703, [LoadName, Header.Width, Header.Height, Header.Format]);
-      end;
-
-      {chose a size to pass to quark}
-      Width:=Header.Width;
-      Height:=Header.Height;
-      PictureStartPosition := FSize-CompressedSize;
-
-      SetSize(Point(Width, Height));
-
-      SetLength(RawBuffer, CompressedSize);
-      SetLength(DecodedBuffer, NumberOfPixels * 4);
-
-      F.Seek(PictureStartPosition, soFromBeginning	  );
-
-      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
-
-      if @extract_dxt <> nil then
-        case  Header.Format of
-          13 : extract_dxt(1,PChar(RawBuffer), Width, Height, PChar(DecodedBuffer) );
-          15 : extract_dxt(5,PChar(RawBuffer), Width, Height, PChar(DecodedBuffer) );
-        end
-      else
-        Raise EError(5705);
-
-*)
-      {allocate quarks image buffers}
-      ImgData:=ImageSpec;
-      AlphaData:=AlphaSpec;
-      SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
-      Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
-
-      {copy and reverse the upside down RGBA image to quarks internal format}
-      {also the alpha channel is split, and R and B are exchanged}
-      Source:=PChar(DecodedBuffer)+ NumberOfPixels*4;
-      DestImg:=PChar(ImgData)+Length(ImageSpec);
-      DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
-      for J:=1 to Height do
+      if HasAlpha=1 then
       begin
-        Dec(Source,  4 * Width);
-        pSource:=Source;
-        pDestImg:=DestImg;
-        pDestAlpha:=DestAlpha;
-        for I:=1 to Width do
+
+        {allocate quarks image buffers}
+        ImgData:=ImageSpec;
+        AlphaData:=AlphaSpec;
+        SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
+        Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
+
+        {copy and reverse the upside down RGBA image to quarks internal format}
+        {also the alpha channel is split, and R and B are exchanged}
+        Source:=PChar(DecodedBuffer)+ NumberOfPixels*4;
+        DestImg:=PChar(ImgData)+Length(ImageSpec);
+        DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
+        for J:=1 to Height do
         begin
-          PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
-          PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
-          PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
-          pDestAlpha^:=pSource[3];                { alpha }
-          Inc(pSource, 4);
-          Inc(pDestImg, 3);
-          Inc(pDestAlpha);
+          Dec(Source,  4 * Width);
+          pSource:=Source;
+          pDestImg:=DestImg;
+          pDestAlpha:=DestAlpha;
+          for I:=1 to Width do
+          begin
+            PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
+            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
+            PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
+            pDestAlpha^:=pSource[3];                { alpha }
+            Inc(pSource, 4);
+            Inc(pDestImg, 3);
+            Inc(pDestAlpha);
+          end;
+          Inc(DestImg, 3 * Width);
+          Inc(DestAlpha, Width);
         end;
-        Inc(DestImg, 3 * Width);
-        Inc(DestAlpha, Width);
+
+        Specifics.Add(AlphaData);
+        Specifics.Add(ImgData);
+
+      end
+      else
+      begin // no alpha
+
+        {allocate quarks image buffers}
+        ImgData:=ImageSpec;
+        SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
+
+        {copy and reverse the upside down RGB image to quarks internal format}
+        Source:=PChar(DecodedBuffer)+ NumberOfPixels*3;
+        DestImg:=PChar(ImgData)+Length(ImageSpec);
+        for J:=1 to Height do
+        begin
+          Dec(Source,  3 * Width);
+          pSource:=Source;
+          pDestImg:=DestImg;
+          for I:=1 to Width do
+          begin
+            PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
+            PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
+            PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
+            Inc(pSource, 3);
+            Inc(pDestImg, 3);
+          end;
+          Inc(DestImg, 3 * Width);
+        end;
+
+        Specifics.Add(ImgData);
+
       end;
 
-      Specifics.Add(ImgData);
-      Specifics.Add(AlphaData);
      end;
      else
        inherited;

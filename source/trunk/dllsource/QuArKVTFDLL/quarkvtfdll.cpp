@@ -1,4 +1,4 @@
-#define QUARKVTFDLL_API_VERSION 2
+#define QUARKVTFDLL_API_VERSION 3
 
 #include <stdlib.h>
 
@@ -26,7 +26,7 @@ DLL_EXPORT unsigned long APIVersion(void)
   return QUARKVTFDLL_API_VERSION;
 }
 
-DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength,long iMipLevel, unsigned char *pDstImage)
+DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength,long iMipLevel, unsigned char *pDstImage, long usealpha)
 {
   CUtlBuffer buf;
   buf.SetExternalBuffer( bufmem, readlength );
@@ -77,7 +77,7 @@ DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength,long iMipLevel, unsigned
   pTex->ComputeMipLevelDimensions( iMipLevel, &iWidth, &iHeight );
   msg("Image: %ld x %ld\n",iWidth,iHeight );
 
-  ImageFormat dstFormat= IMAGE_FORMAT_BGRA8888;
+  ImageFormat dstFormat = usealpha ? IMAGE_FORMAT_BGRA8888 : IMAGE_FORMAT_BGR888;
   if (pDstImage==0)
   {
     pDstImage = new unsigned char[ImageLoader::GetMemRequired( iWidth, iHeight, dstFormat, false )];
@@ -91,7 +91,7 @@ DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength,long iMipLevel, unsigned
 }
 
 
-DLL_EXPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels)
+DLL_EXPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels, int* hasalpha)
 {
 
   CUtlBuffer buf;
@@ -107,6 +107,8 @@ DLL_EXPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, 
   *width= pTex->Width();
   *height= pTex->Height();
   *miplevels= pTex->MipCount();
+  *hasalpha= (pTex->Flags() & TEXTUREFLAGS_EIGHTBITALPHA) ||
+    (pTex->Flags() & TEXTUREFLAGS_ONEBITALPHA) ? 1 : 0;
   msg( "vtf width: %d\n", pTex->Width() );
   msg( "vtf height: %d\n", pTex->Height() );
   msg( "mip levels: %d\n", pTex->MipCount() );
