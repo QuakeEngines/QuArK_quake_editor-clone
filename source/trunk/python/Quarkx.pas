@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/11/11 17:55:56  decker_dk
+Rearranged try-finally statements, so the code will be more readable
+
 Revision 1.9  2000/10/16 22:27:40  aiv
 pylogging added (not fully working yet)
 
@@ -2312,73 +2315,73 @@ end;
 
 const
  MethodTable: array[0..65] of TyMethodDef =
-  ((ml_name: 'Setup1';       ml_meth: xSetup1;       ml_flags: METH_VARARGS),
-   (ml_name: 'newobj';       ml_meth: xNewObj;       ml_flags: METH_VARARGS),
-   (ml_name: 'newfileobj';   ml_meth: xNewFileObj;   ml_flags: METH_VARARGS),
-   (ml_name: 'openfileobj';  ml_meth: xOpenFileObj;  ml_flags: METH_VARARGS),
-   (ml_name: 'setupsubset';  ml_meth: xSetupSubSet;  ml_flags: METH_VARARGS),
-   (ml_name: 'lines2list';   ml_meth: xLines2List;   ml_flags: METH_VARARGS),
-   (ml_name: 'list2lines';   ml_meth: xList2Lines;   ml_flags: METH_VARARGS),
-   (ml_name: 'truncstr';     ml_meth: xTruncStr;     ml_flags: METH_VARARGS),
-   (ml_name: 'getshorthint'; ml_meth: xGetShortHint; ml_flags: METH_VARARGS),
-   (ml_name: 'getlonghint';  ml_meth: xGetLongHint;  ml_flags: METH_VARARGS),
-   (ml_name: 'action';       ml_meth: xAction;       ml_flags: METH_VARARGS),
-   (ml_name: 'undostate';    ml_meth: xUndoState;    ml_flags: METH_VARARGS),
-   (ml_name: 'pasteobj';     ml_meth: xPasteObj;     ml_flags: METH_VARARGS),
-   (ml_name: 'copyobj';      ml_meth: xCopyObj;      ml_flags: METH_VARARGS),
-   (ml_name: 'settimer';     ml_meth: xSetTimer;     ml_flags: METH_VARARGS),
-   (ml_name: 'forms';        ml_meth: xForms;        ml_flags: METH_VARARGS),
-   (ml_name: 'rnd';          ml_meth: xRnd;          ml_flags: METH_VARARGS),
-   (ml_name: 'ftos';         ml_meth: xftos;         ml_flags: METH_VARARGS),
-   (ml_name: 'menuname';     ml_meth: xMenuName;     ml_flags: METH_VARARGS),
-   (ml_name: 'middlecolor';  ml_meth: xMiddleColor;  ml_flags: METH_VARARGS),
-   (ml_name: 'boundingboxof';ml_meth: xBoundingBoxOf;ml_flags: METH_VARARGS),
-   (ml_name: 'texturesof';   ml_meth: xTexturesOf;   ml_flags: METH_VARARGS),
-   (ml_name: 'extendcoplanar';ml_meth: xExtendCoplanar;ml_flags: METH_VARARGS),
-   (ml_name: 'loadtexture';  ml_meth: xLoadTexture;  ml_flags: METH_VARARGS),
-   (ml_name: 'maptextures';  ml_meth: xMapTextures;  ml_flags: METH_VARARGS),
-   (ml_name: 'outputfile';   ml_meth: xOutputFile;   ml_flags: METH_VARARGS),
-   (ml_name: 'outputpakfile';ml_meth: xOutputPakFile;ml_flags: METH_VARARGS),
-   (ml_name: 'opentoolbox';  ml_meth: xOpenToolBox;  ml_flags: METH_VARARGS),
-   (ml_name: 'openconfigdlg';ml_meth: xOpenConfigDlg;ml_flags: METH_VARARGS),
-   (ml_name: 'progressbar';  ml_meth: xProgressBar;  ml_flags: METH_VARARGS),
-   (ml_name: 'clipline';     ml_meth: xClipLine;     ml_flags: METH_VARARGS),
-  {(ml_name: 'offscreenbitmap';ml_meth:xOffscreenBitmap;ml_flags: METH_VARARGS),}
-   (ml_name: 'keydown';      ml_meth: xKeyDown;      ml_flags: METH_VARARGS),
-   (ml_name: 'poolobj';      ml_meth: xPoolObj;      ml_flags: METH_VARARGS),
-   (ml_name: 'setpoolobj';   ml_meth: xSetPoolObj;   ml_flags: METH_VARARGS),
-   (ml_name: 'vect';         ml_meth: xVect;         ml_flags: METH_VARARGS),
-   (ml_name: 'matrix';       ml_meth: xMatrix;       ml_flags: METH_VARARGS),
-   (ml_name: 'newform';      ml_meth: xNewForm;      ml_flags: METH_VARARGS),
-   (ml_name: 'update';       ml_meth: xUpdate;       ml_flags: METH_VARARGS),
-   (ml_name: 'getqctxlist';  ml_meth: xGetQCtxList;  ml_flags: METH_VARARGS),
-   (ml_name: 'listfileext';  ml_meth: xListFileExt;  ml_flags: METH_VARARGS),
-   (ml_name: 'filedialogbox';ml_meth: xFileDialogBox;ml_flags: METH_VARARGS),
-   (ml_name: 'loadimages';   ml_meth: xLoadImages;   ml_flags: METH_VARARGS),
-   (ml_name: 'reloadsetup';  ml_meth: xReloadSetup;  ml_flags: METH_VARARGS),
-   (ml_name: 'screenrect';   ml_meth: xScreenRect;   ml_flags: METH_VARARGS),
-   (ml_name: 'seticons';     ml_meth: xSetIcons;     ml_flags: METH_VARARGS),
-   (ml_name: 'msgbox';       ml_meth: xMsgBox;       ml_flags: METH_VARARGS),
-   (ml_name: 'beep';         ml_meth: xBeep;         ml_flags: METH_VARARGS),
-   (ml_name: 'console';      ml_meth: xConsole;      ml_flags: METH_VARARGS),
-   (ml_name: 'writeconsole'; ml_meth: xWriteConsole; ml_flags: METH_VARARGS),
-   (ml_name: 'globalaccept'; ml_meth: xGlobalAccept; ml_flags: METH_VARARGS),
-   (ml_name: 'runprogram';   ml_meth: xRunProgram;   ml_flags: METH_VARARGS),
-   (ml_name: 'getfileattr';  ml_meth: xGetFileAttr;  ml_flags: METH_VARARGS),
-   (ml_name: 'setfileattr';  ml_meth: xSetFileAttr;  ml_flags: METH_VARARGS),
-   (ml_name: 'listmapviews'; ml_meth: xListMapViews; ml_flags: METH_VARARGS),
-   (ml_name: 'newfaceex';    ml_meth: xNewFaceEx;    ml_flags: METH_VARARGS),
-   (ml_name: 'searchforholes';ml_meth:xSearchForHoles;ml_flags:METH_VARARGS),
-   (ml_name: 'findtoolboxes';ml_meth: xFindToolBoxes;ml_flags: METH_VARARGS),
-   (ml_name: 'sethint';      ml_meth: xSetHint;      ml_flags: METH_VARARGS),
-   (ml_name: 'helppopup';    ml_meth: xHelpPopup;    ml_flags: METH_VARARGS),
-   (ml_name: 'helpmenuitem'; ml_meth: xHelpMenuItem; ml_flags: METH_VARARGS),
-   (ml_name: 'htmldoc';      ml_meth: xHTMLDoc;      ml_flags: METH_VARARGS),
-   (ml_name: 'needgamefile'; ml_meth: xNeedGameFile; ml_flags: METH_VARARGS),
-   (ml_name: 'wait';         ml_meth: xWait;         ml_flags: METH_VARARGS),
-   (ml_name: 'exit';         ml_meth: xExit;         ml_flags: METH_VARARGS),
-{AiV}(ml_name: 'logging';      ml_meth: xLogging;       ml_flags: METH_VARARGS),
-   (ml_Name: Nil;            ml_meth: Nil));
+  ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
+   (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
+   (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
+   (ml_name: 'openfileobj';     ml_meth: xOpenFileObj;    ml_flags: METH_VARARGS),
+   (ml_name: 'setupsubset';     ml_meth: xSetupSubSet;    ml_flags: METH_VARARGS),
+   (ml_name: 'lines2list';      ml_meth: xLines2List;     ml_flags: METH_VARARGS),
+   (ml_name: 'list2lines';      ml_meth: xList2Lines;     ml_flags: METH_VARARGS),
+   (ml_name: 'truncstr';        ml_meth: xTruncStr;       ml_flags: METH_VARARGS),
+   (ml_name: 'getshorthint';    ml_meth: xGetShortHint;   ml_flags: METH_VARARGS),
+   (ml_name: 'getlonghint';     ml_meth: xGetLongHint;    ml_flags: METH_VARARGS),
+   (ml_name: 'action';          ml_meth: xAction;         ml_flags: METH_VARARGS),
+   (ml_name: 'undostate';       ml_meth: xUndoState;      ml_flags: METH_VARARGS),
+   (ml_name: 'pasteobj';        ml_meth: xPasteObj;       ml_flags: METH_VARARGS),
+   (ml_name: 'copyobj';         ml_meth: xCopyObj;        ml_flags: METH_VARARGS),
+   (ml_name: 'settimer';        ml_meth: xSetTimer;       ml_flags: METH_VARARGS),
+   (ml_name: 'forms';           ml_meth: xForms;          ml_flags: METH_VARARGS),
+   (ml_name: 'rnd';             ml_meth: xRnd;            ml_flags: METH_VARARGS),
+   (ml_name: 'ftos';            ml_meth: xftos;           ml_flags: METH_VARARGS),
+   (ml_name: 'menuname';        ml_meth: xMenuName;       ml_flags: METH_VARARGS),
+   (ml_name: 'middlecolor';     ml_meth: xMiddleColor;    ml_flags: METH_VARARGS),
+   (ml_name: 'boundingboxof';   ml_meth: xBoundingBoxOf;  ml_flags: METH_VARARGS),
+   (ml_name: 'texturesof';      ml_meth: xTexturesOf;     ml_flags: METH_VARARGS),
+   (ml_name: 'extendcoplanar';  ml_meth: xExtendCoplanar; ml_flags: METH_VARARGS),
+   (ml_name: 'loadtexture';     ml_meth: xLoadTexture;    ml_flags: METH_VARARGS),
+   (ml_name: 'maptextures';     ml_meth: xMapTextures;    ml_flags: METH_VARARGS),
+   (ml_name: 'outputfile';      ml_meth: xOutputFile;     ml_flags: METH_VARARGS),
+   (ml_name: 'outputpakfile';   ml_meth: xOutputPakFile;  ml_flags: METH_VARARGS),
+   (ml_name: 'opentoolbox';     ml_meth: xOpenToolBox;    ml_flags: METH_VARARGS),
+   (ml_name: 'openconfigdlg';   ml_meth: xOpenConfigDlg;  ml_flags: METH_VARARGS),
+   (ml_name: 'progressbar';     ml_meth: xProgressBar;    ml_flags: METH_VARARGS),
+   (ml_name: 'clipline';        ml_meth: xClipLine;       ml_flags: METH_VARARGS),
+  {(ml_name: 'offscreenbitmap'; ml_meth: xOffscreenBitmap;ml_flags: METH_VARARGS),}
+   (ml_name: 'keydown';         ml_meth: xKeyDown;        ml_flags: METH_VARARGS),
+   (ml_name: 'poolobj';         ml_meth: xPoolObj;        ml_flags: METH_VARARGS),
+   (ml_name: 'setpoolobj';      ml_meth: xSetPoolObj;     ml_flags: METH_VARARGS),
+   (ml_name: 'vect';            ml_meth: xVect;           ml_flags: METH_VARARGS),
+   (ml_name: 'matrix';          ml_meth: xMatrix;         ml_flags: METH_VARARGS),
+   (ml_name: 'newform';         ml_meth: xNewForm;        ml_flags: METH_VARARGS),
+   (ml_name: 'update';          ml_meth: xUpdate;         ml_flags: METH_VARARGS),
+   (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;    ml_flags: METH_VARARGS),
+   (ml_name: 'listfileext';     ml_meth: xListFileExt;    ml_flags: METH_VARARGS),
+   (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;  ml_flags: METH_VARARGS),
+   (ml_name: 'loadimages';      ml_meth: xLoadImages;     ml_flags: METH_VARARGS),
+   (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;    ml_flags: METH_VARARGS),
+   (ml_name: 'screenrect';      ml_meth: xScreenRect;     ml_flags: METH_VARARGS),
+   (ml_name: 'seticons';        ml_meth: xSetIcons;       ml_flags: METH_VARARGS),
+   (ml_name: 'msgbox';          ml_meth: xMsgBox;         ml_flags: METH_VARARGS),
+   (ml_name: 'beep';            ml_meth: xBeep;           ml_flags: METH_VARARGS),
+   (ml_name: 'console';         ml_meth: xConsole;        ml_flags: METH_VARARGS),
+   (ml_name: 'writeconsole';    ml_meth: xWriteConsole;   ml_flags: METH_VARARGS),
+   (ml_name: 'globalaccept';    ml_meth: xGlobalAccept;   ml_flags: METH_VARARGS),
+   (ml_name: 'runprogram';      ml_meth: xRunProgram;     ml_flags: METH_VARARGS),
+   (ml_name: 'getfileattr';     ml_meth: xGetFileAttr;    ml_flags: METH_VARARGS),
+   (ml_name: 'setfileattr';     ml_meth: xSetFileAttr;    ml_flags: METH_VARARGS),
+   (ml_name: 'listmapviews';    ml_meth: xListMapViews;   ml_flags: METH_VARARGS),
+   (ml_name: 'newfaceex';       ml_meth: xNewFaceEx;      ml_flags: METH_VARARGS),
+   (ml_name: 'searchforholes';  ml_meth: xSearchForHoles; ml_flags: METH_VARARGS),
+   (ml_name: 'findtoolboxes';   ml_meth: xFindToolBoxes;  ml_flags: METH_VARARGS),
+   (ml_name: 'sethint';         ml_meth: xSetHint;        ml_flags: METH_VARARGS),
+   (ml_name: 'helppopup';       ml_meth: xHelpPopup;      ml_flags: METH_VARARGS),
+   (ml_name: 'helpmenuitem';    ml_meth: xHelpMenuItem;   ml_flags: METH_VARARGS),
+   (ml_name: 'htmldoc';         ml_meth: xHTMLDoc;        ml_flags: METH_VARARGS),
+   (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
+   (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
+   (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
+   (ml_name: 'logging';         ml_meth: xLogging;        ml_flags: METH_VARARGS),{AiV}
+   (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}
 
@@ -2393,10 +2396,13 @@ var
  m: PyObject;
 begin
  Result:=False;
+
  m:=Py_InitModule4('quarkx', MethodTable, Nil, Nil, PYTHON_API_VERSION);
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  QuarkxDict:=PyModule_GetDict(m);
- if QuarkxDict=Nil then Exit;
+ if QuarkxDict=Nil then
+  Exit;
  EmptyTuple:=PyTuple_New(0);
 
  RegType(TyWindow_Type,    'window_type');
@@ -2423,41 +2429,61 @@ begin
  PyDict_SetItemString(QuarkxDict, 'mainform', @Temp.WndObject);*)
 
  QuarkxError:=PyErr_NewException('quarkx.error', Nil, Nil);
- if QuarkxError=Nil then Exit;
+ if QuarkxError=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'error', QuarkxError);
+
  QuarkxAborted:=PyErr_NewException('quarkx.aborted', Nil, Nil);
- if QuarkxAborted=Nil then Exit;
+ if QuarkxAborted=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'aborted', QuarkxAborted);
+
  m:=PyString_FromString(QuArKVersion);
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'version', m);
  Py_DECREF(m);
+
  m:=PyString_FromString(PChar(ApplicationPath));
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'exepath', m);
  Py_DECREF(m);
+
  m:=PyList_New(0);
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'editshortcuts', m);
  Py_DECREF(m);
+
  m:=PyList_New(0);
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'buildmodes', m);
  Py_DECREF(m);
+
  ToolboxMenu:=PyList_New(0);
- if ToolboxMenu=Nil then Exit;
+ if ToolboxMenu=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'toolboxmenu', ToolboxMenu);
+
  HelpMenu:=PyList_New(0);
- if HelpMenu=Nil then Exit;
+ if HelpMenu=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'helpmenu', HelpMenu);
+
 {m:=Py_BuildValueX('OOOO', [Py_None, Py_None, Py_None, Py_None]);
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'redlinesicons', m);
  Py_DECREF(m);}
+
  m:=PyInt_FromLong(BezierMeshCnt);
- if m=Nil then Exit;
+ if m=Nil then
+  Exit;
  PyDict_SetItemString(QuarkxDict, 'beziermeshcnt', m);
  Py_DECREF(m);
+
  Result:=True;
 end;
 
@@ -2472,7 +2498,8 @@ begin
  key.ob_type:=PyInt_Type;
  key.ob_ival:=I;
  obj:=PyObject_GetItem(Py_xStrings, @key);
- if obj=Nil then Exit;
+ if obj=Nil then
+  Exit;
  P:=PyString_AsString(obj);
  if P<>Nil then
   Result:=StrPas(P);

@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit Python;
 
@@ -260,12 +265,12 @@ procedure Py_XDECREF(o: PyObject);
 function PySeq_Item(o: PyObject; index: Integer) : PyObject;}
 
 var
- PyInt_Type: PyTypeObject;
- PyType_Type: PyTypeObject;
- PyList_Type: PyTypeObject;
+ PyInt_Type:    PyTypeObject;
+ PyType_Type:   PyTypeObject;
+ PyList_Type:   PyTypeObject;
  PyString_Type: PyTypeObject;
- PyFloat_Type: PyTypeObject;
- PyTuple_Type: PyTypeObject;
+ PyFloat_Type:  PyTypeObject;
+ PyTuple_Type:  PyTypeObject;
 
 function InitializePython : Integer;
 
@@ -280,66 +285,68 @@ uses
  {-------------------}
 
 const
- PythonProcList: array[0..53] of record Variable: Pointer; Name: PChar; end = (
-
-  (Variable: @@Py_Initialize; Name: 'Py_Initialize'),
-  (Variable: @@PyRun_SimpleString; Name: 'PyRun_SimpleString'),
-//  (Variable: @@Py_CompileString; Name: 'Py_CompileString'),
-  (Variable: @@Py_InitModule4; Name: 'Py_InitModule4'),
-  (Variable: @@PyModule_GetDict; Name: 'PyModule_GetDict'),
-  (Variable: @@PyModule_New; Name: 'PyModule_New'),
-//  (Variable: @@PyImport_ImportModule; Name: 'PyImport_ImportModule'),
-//  (Variable: @@PyEval_GetGlobals; Name: 'PyEval_GetGlobals'),
-//  (Variable: @@PyEval_GetLocals; Name: 'PyEval_GetLocals'),
-  (Variable: @@PyEval_CallObject; Name: 'PyEval_CallObject'),
-  (Variable: @@PyCallable_Check; Name: 'PyCallable_Check'),
-  (Variable: @@PyErr_Print; Name: 'PyErr_Print'),
-  (Variable: @@PyErr_Clear; Name: 'PyErr_Clear'),
-  (Variable: @@PyErr_Occurred; Name: 'PyErr_Occurred'),
-  (Variable: @@PyErr_Fetch; Name: 'PyErr_Fetch'),
-  (Variable: @@PyErr_NewException; Name: 'PyErr_NewException'),
-  (Variable: @@PyErr_SetString; Name: 'PyErr_SetString'),
-  (Variable: @@PyErr_ExceptionMatches; Name: 'PyErr_ExceptionMatches'),
-  (Variable: @@PyObject_Length; Name: 'PyObject_Length'),
-  (Variable: @@PyObject_GetItem; Name: 'PyObject_GetItem'),
-  (Variable: @@PyObject_HasAttrString; Name: 'PyObject_HasAttrString'),
-  (Variable: @@PyObject_GetAttrString; Name: 'PyObject_GetAttrString'),
-  (Variable: @@PyObject_IsTrue; Name: 'PyObject_IsTrue'),
-  (Variable: @@PyObject_Str; Name: 'PyObject_Str'),
-  (Variable: @@PyObject_Repr; Name: 'PyObject_Repr'),
-  (Variable: @@PySequence_GetItem; Name: 'PySequence_GetItem'),
-  (Variable: @@PySequence_In; Name: 'PySequence_In'),
-  (Variable: @@PySequence_Index; Name: 'PySequence_Index'),
-  (Variable: @@PySequence_DelItem; Name: 'PySequence_DelItem'),
-  (Variable: @@PyMapping_HasKey; Name: 'PyMapping_HasKey'),
-  (Variable: @@PyMapping_HasKeyString; Name: 'PyMapping_HasKeyString'),
-  (Variable: @@PyNumber_Float; Name: 'PyNumber_Float'),
-  (Variable: @@Py_BuildValue; Name: 'Py_BuildValue'),
-  (Variable: @@PyArg_ParseTuple; Name: 'PyArg_ParseTuple'),
-  (Variable: @@PyTuple_New; Name: 'PyTuple_New'),
-  (Variable: @@PyTuple_GetItem; Name: 'PyTuple_GetItem'),
-  (Variable: @@PyTuple_SetItem; Name: 'PyTuple_SetItem'),
-  (Variable: @@PyList_New; Name: 'PyList_New'),
-  (Variable: @@PyList_GetItem; Name: 'PyList_GetItem'),
-  (Variable: @@PyList_SetItem; Name: 'PyList_SetItem'),
-  (Variable: @@PyList_Insert; Name: 'PyList_Insert'),
-  (Variable: @@PyList_Append; Name: 'PyList_Append'),
-  (Variable: @@PyDict_New; Name: 'PyDict_New'),
-  (Variable: @@PyDict_SetItemString; Name: 'PyDict_SetItemString'),
-  (Variable: @@PyDict_GetItemString; Name: 'PyDict_GetItemString'),
-  (Variable: @@PyDict_GetItem; Name: 'PyDict_GetItem'),
-  (Variable: @@PyDict_Keys; Name: 'PyDict_Keys'),
-  (Variable: @@PyDict_Values; Name: 'PyDict_Values'),
-  (Variable: @@PyString_FromString; Name: 'PyString_FromString'),
-  (Variable: @@PyString_AsString; Name: 'PyString_AsString'),
-  (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'),
-  (Variable: @@PyString_Size; Name: 'PyString_Size'),
-  (Variable: @@PyInt_FromLong; Name: 'PyInt_FromLong'),
-  (Variable: @@PyInt_AsLong; Name: 'PyInt_AsLong'),
-  (Variable: @@PyFloat_FromDouble; Name: 'PyFloat_FromDouble'),
-  (Variable: @@PyFloat_AsDouble; Name: 'PyFloat_AsDouble'),
-  (Variable: @@_PyObject_New; Name: '_PyObject_New'),
-  (Variable: @@PyCFunction_New; Name: 'PyCFunction_New'));
+  PythonProcList: array[0..53] of record
+                                    Variable: Pointer;
+                                    Name: PChar;
+                                  end =
+  ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize'             ),
+    (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString'        ),
+//  (Variable: @@Py_CompileString;           Name: 'Py_CompileString'          ),
+    (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4'            ),
+    (Variable: @@PyModule_GetDict;           Name: 'PyModule_GetDict'          ),
+    (Variable: @@PyModule_New;               Name: 'PyModule_New'              ),
+//  (Variable: @@PyImport_ImportModule;      Name: 'PyImport_ImportModule'     ),
+//  (Variable: @@PyEval_GetGlobals;          Name: 'PyEval_GetGlobals'         ),
+//  (Variable: @@PyEval_GetLocals;           Name: 'PyEval_GetLocals'          ),
+    (Variable: @@PyEval_CallObject;          Name: 'PyEval_CallObject'         ),
+    (Variable: @@PyCallable_Check;           Name: 'PyCallable_Check'          ),
+    (Variable: @@PyErr_Print;                Name: 'PyErr_Print'               ),
+    (Variable: @@PyErr_Clear;                Name: 'PyErr_Clear'               ),
+    (Variable: @@PyErr_Occurred;             Name: 'PyErr_Occurred'            ),
+    (Variable: @@PyErr_Fetch;                Name: 'PyErr_Fetch'               ),
+    (Variable: @@PyErr_NewException;         Name: 'PyErr_NewException'        ),
+    (Variable: @@PyErr_SetString;            Name: 'PyErr_SetString'           ),
+    (Variable: @@PyErr_ExceptionMatches;     Name: 'PyErr_ExceptionMatches'    ),
+    (Variable: @@PyObject_Length;            Name: 'PyObject_Length'           ),
+    (Variable: @@PyObject_GetItem;           Name: 'PyObject_GetItem'          ),
+    (Variable: @@PyObject_HasAttrString;     Name: 'PyObject_HasAttrString'    ),
+    (Variable: @@PyObject_GetAttrString;     Name: 'PyObject_GetAttrString'    ),
+    (Variable: @@PyObject_IsTrue;            Name: 'PyObject_IsTrue'           ),
+    (Variable: @@PyObject_Str;               Name: 'PyObject_Str'              ),
+    (Variable: @@PyObject_Repr;              Name: 'PyObject_Repr'             ),
+    (Variable: @@PySequence_GetItem;         Name: 'PySequence_GetItem'        ),
+    (Variable: @@PySequence_In;              Name: 'PySequence_In'             ),
+    (Variable: @@PySequence_Index;           Name: 'PySequence_Index'          ),
+    (Variable: @@PySequence_DelItem;         Name: 'PySequence_DelItem'        ),
+    (Variable: @@PyMapping_HasKey;           Name: 'PyMapping_HasKey'          ),
+    (Variable: @@PyMapping_HasKeyString;     Name: 'PyMapping_HasKeyString'    ),
+    (Variable: @@PyNumber_Float;             Name: 'PyNumber_Float'            ),
+    (Variable: @@Py_BuildValue;              Name: 'Py_BuildValue'             ),
+    (Variable: @@PyArg_ParseTuple;           Name: 'PyArg_ParseTuple'          ),
+    (Variable: @@PyTuple_New;                Name: 'PyTuple_New'               ),
+    (Variable: @@PyTuple_GetItem;            Name: 'PyTuple_GetItem'           ),
+    (Variable: @@PyTuple_SetItem;            Name: 'PyTuple_SetItem'           ),
+    (Variable: @@PyList_New;                 Name: 'PyList_New'                ),
+    (Variable: @@PyList_GetItem;             Name: 'PyList_GetItem'            ),
+    (Variable: @@PyList_SetItem;             Name: 'PyList_SetItem'            ),
+    (Variable: @@PyList_Insert;              Name: 'PyList_Insert'             ),
+    (Variable: @@PyList_Append;              Name: 'PyList_Append'             ),
+    (Variable: @@PyDict_New;                 Name: 'PyDict_New'                ),
+    (Variable: @@PyDict_SetItemString;       Name: 'PyDict_SetItemString'      ),
+    (Variable: @@PyDict_GetItemString;       Name: 'PyDict_GetItemString'      ),
+    (Variable: @@PyDict_GetItem;             Name: 'PyDict_GetItem'            ),
+    (Variable: @@PyDict_Keys;                Name: 'PyDict_Keys'               ),
+    (Variable: @@PyDict_Values;              Name: 'PyDict_Values'             ),
+    (Variable: @@PyString_FromString;        Name: 'PyString_FromString'       ),
+    (Variable: @@PyString_AsString;          Name: 'PyString_AsString'         ),
+    (Variable: @@PyString_FromStringAndSize; Name: 'PyString_FromStringAndSize'),
+    (Variable: @@PyString_Size;              Name: 'PyString_Size'             ),
+    (Variable: @@PyInt_FromLong;             Name: 'PyInt_FromLong'            ),
+    (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong'              ),
+    (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble'        ),
+    (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble'          ),
+    (Variable: @@_PyObject_New;              Name: '_PyObject_New'             ),
+    (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New'           ) );
 
  {-------------------}
 
@@ -354,39 +361,53 @@ var
 begin
  Result:=2;
  Lib:=LoadLibrary('PYTHON15.DLL');
- if Lib=0 then Exit;
+ if Lib=0 then
+  Exit;
  for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
    P:=GetProcAddress(Lib, PythonProcList[I].Name);
-   if P=Nil then Exit;
+   if P=Nil then
+    Exit;
    PPointer(PythonProcList[I].Variable)^:=P;
   end;
  Py_Initialize;
  Result:=1;
+
  { tiglari:
    Now we set the value of some global variables
    to the basic Python types }
  obj1:=PyList_New(0);
- if obj1=Nil then Exit;
+ if obj1=Nil then
+  Exit;
  PyList_Type:=obj1^.ob_type;
  Py_DECREF(obj1);
+
  obj1:=PyTuple_New(0);
- if obj1=Nil then Exit;
+ if obj1=Nil then
+  Exit;
  PyTuple_Type:=obj1^.ob_type;
  Py_DECREF(obj1);
+
  obj1:=PyInt_FromLong(0);
- if obj1=Nil then Exit;
+ if obj1=Nil then
+  Exit;
  PyInt_Type:=obj1^.ob_type;
  Py_DECREF(obj1);
+
  obj1:=PyString_FromString('');
- if obj1=Nil then Exit;
+ if obj1=Nil then
+  Exit;
  PyString_Type:=obj1^.ob_type;
  Py_DECREF(obj1);
+
  obj1:=PyFloat_FromDouble(0.0);
- if obj1=Nil then Exit;
+ if obj1=Nil then
+  Exit;
  PyFloat_Type:=obj1^.ob_type;
  Py_DECREF(obj1);
+
  PyType_Type:=PyList_Type^.ob_type;
+
  Result:=0;
 end;
 
@@ -408,12 +429,12 @@ begin
 end;}
 
 function Py_BuildValueX(fmt: PChar; Args: array of const) : PyObject;
-asm
- push edi
- add ecx, ecx
- add ecx, ecx
- lea edi, [ecx+8]
- add ecx, ecx
+asm                     { Comments added by Decker, but I'm not sure they are correct!! }
+ push edi               { save the value of edi for later retrival }
+ add ecx, ecx           { multiply ecx with 2}
+ add ecx, ecx           { multiply ecx with 2 again - so in reality its "ecx = ecx * 4" }
+ lea edi, [ecx+8]       { load edi register with the result of "ecx + 8" }
+ add ecx, ecx           { multiply ecx with 2 - now it would have been "ecx = ecx * 8" }
  add ecx, edx
  @L1:
   push dword ptr [ecx]
@@ -423,7 +444,7 @@ asm
  push fmt
  call Py_BuildValue
  add esp, edi
- pop edi
+ pop edi                { get the saved value of edi }
 end;
 
 function PyArg_ParseTupleX(src: PyObject; fmt: PChar; AllArgs: array of const) : LongBool;
