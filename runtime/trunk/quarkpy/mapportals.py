@@ -30,8 +30,8 @@ class PortalsDlg(qmacro.dialogbox):
       {
         Style = "15"
         Caption = "Portals"
-        sep: = {Typ="S" Bold="0" Txt="Here are the portals"}
-        sep: = {Typ="S" Bold="0" Txt="as blue lines."}
+        sep: = {Typ="S" Bold="0" Txt="Here are the portals from the"}
+        sep: = {Typ="S" Bold="0" Txt="last build, as blue lines."}
         close:py = {Txt="" }
       }
     """
@@ -139,5 +139,8 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.1  2003/03/19 11:07:52  tiglari
+#first version, only tested for Q1
+#
 #
 
