@@ -512,13 +512,27 @@ class BaseEditor:
                 if list[1]==list[4]: tag = tag + 2
                 if list[2]==list[5]: tag = tag + 4
                 if tag==6:
-                    s = s + "     y: " + list[1] + "   z: " + list[2]
+                    s = s + " y:" + list[1] + " z:" + list[2] #DECKER
                 elif tag==5:
-                    s = s + "     x: " + list[0] + "   z: " + list[2]
+                    s = s + " x:" + list[0] + " z:" + list[2] #DECKER
                 elif tag==3:
-                    s = s + "     x: " + list[0] + "   y: " + list[1]
+                    s = s + " x:" + list[0] + " y:" + list[1] #DECKER
             else:
-                s = quarkx.getlonghint(handle.hint)
+#DECKER - begin Show width/height/depth of selected polyhedron(s)
+                try:
+                    objlist = self.layout.explorer.sellist
+                    polylistlist = map(lambda x: x.findallsubitems("", ":p", ":g"), objlist)
+                    polylist = reduce(lambda a,b: a+b, polylistlist)
+                    if len(polylist) > 1:
+                        s = "Polys size"
+                    else:
+                        s = "Poly size"
+                    box = quarkx.boundingboxof(polylist)
+                    selsize = box[1] - box[0]
+                    s = s + " w:" + quarkx.ftos(selsize.x) + " h:" + quarkx.ftos(selsize.z) + " d:" + quarkx.ftos(selsize.y)
+                except:
+                    s = quarkx.getlonghint(handle.hint) #DECKER if all else fail, get the normal hint-text
+#DECKER - end
             self.showhint(s)
 
         #
@@ -645,7 +659,7 @@ class BaseEditor:
         else:
             self.deleteitems(list)           # else simply delete the given map items
 
-            
+
     def visualselection(self):
         "Visual selection (this is overridden by MapEditor)."
         return self.layout.explorer.sellist
