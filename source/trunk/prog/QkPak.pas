@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/04/16 00:37:33  tiglari
+extract entity lumps from .bsp's in pakfolder
+
 Revision 1.14  2001/03/20 21:44:37  decker_dk
 Updated copyright-header
 
@@ -254,8 +257,8 @@ begin
       else
        if Header.Intro.Signature=SignatureSPAK then
         TailleNom:=TailleNomFichSPAK
-        else
-         Raise EErrorFmt(5506, [LoadName, Header.Intro.Signature, SignaturePACK]);
+       else
+        Raise EErrorFmt(5506, [LoadName, Header.Intro.Signature, SignaturePACK]);
       if Header.Intro.PosRep + Header.Intro.TailleRep > FSize then
        Raise EErrorFmt(5186, [LoadName]);
       if (Header.Code1=SignatureQuArKPAK1)
@@ -266,54 +269,64 @@ begin
       or (Header.Intro.TailleRep<0) then
        Raise EErrorFmt(5509, [61]);
       F.Position:=Origine + Header.Intro.PosRep;
-      GetMem(Entrees1, Header.Intro.TailleRep); try
-      F.ReadBuffer(Entrees1^, Header.Intro.TailleRep);
-      P1:=Entrees1;
-      Header.Intro.TailleRep:=Header.Intro.TailleRep div (TailleNom+SizeOf(TFinEntreePak));
-      Dossier:=Self;
-      CheminPrec:='';
-      for I:=1 to Header.Intro.TailleRep do
-       begin
-        SetString(Chemin, P1, TailleNom);
-        SetLength(Chemin, StrLen(PChar(Chemin)));
-        Inc(P1, TailleNom);
-        if (PFinEntreePak(P1)^.Position+PFinEntreePak(P1)^.Taille > FSize)
-        or (PFinEntreePak(P1)^.Position<SizeOf(TIntroPak))
-        or (PFinEntreePak(P1)^.Taille<0) then
-         Raise EErrorFmt(5509, [62]);
-        if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
-         Delete(Chemin, 1, Length(CheminPrec))
-        else
+      GetMem(Entrees1, Header.Intro.TailleRep);
+      try
+       F.ReadBuffer(Entrees1^, Header.Intro.TailleRep);
+       P1:=Entrees1;
+       Header.Intro.TailleRep:=Header.Intro.TailleRep div (TailleNom+SizeOf(TFinEntreePak));
+       Dossier:=Self;
+       CheminPrec:='';
+       for I:=1 to Header.Intro.TailleRep do
+        begin
+         SetString(Chemin, P1, TailleNom);
+         SetLength(Chemin, StrLen(PChar(Chemin)));
+         Inc(P1, TailleNom);
+         {Decker - Open only PAK-entries that have a size bigger than zero.
+          Fixes problem with opening BlueShift PAK0.PAK file, which have an entry
+          that was only a folder; "sound/holo/" with size zero.}
+         if (PFinEntreePak(P1)^.Taille>0) then
          begin
-          Dossier:=Self;
-          CheminPrec:='';
+           if (PFinEntreePak(P1)^.Position+PFinEntreePak(P1)^.Taille > FSize)
+           or (PFinEntreePak(P1)^.Position<SizeOf(TIntroPak))
+           {or (PFinEntreePak(P1)^.Taille<0)} then
+            Raise EErrorFmt(5509, [62]);
+           if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
+            Delete(Chemin, 1, Length(CheminPrec))
+           else
+            begin
+             Dossier:=Self;
+             CheminPrec:='';
+            end;
+           repeat
+            J:=Pos('/', Chemin);
+            if J=0 then Break;
+            nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.pakfolder');
+            if nDossier=Nil then
+             begin
+              nDossier:=QPakFolder.Create(Copy(Chemin, 1, J-1), Dossier);
+             {K:=0;
+              while (K<Dossier.SubElements.Count) and (Dossier.SubElements[K] is QPakFolder) do
+               Inc(K);}
+              Dossier.SubElements.{Insert(K,} Add(nDossier);
+             end;
+            CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
+            Delete(Chemin, 1, J);
+            Dossier:=nDossier;
+           until False;
+           F.Position:=PFinEntreePak(P1)^.Position;
+           Q:=OpenFileObjectData(F, Chemin, PFinEntreePak(P1)^.Taille, Dossier);
+           Dossier.SubElements.Add(Q);
+           LoadedItem(rf_Default, F, Q, PFinEntreePak(P1)^.Taille);
          end;
-        repeat
-         J:=Pos('/', Chemin);
-         if J=0 then Break;
-         nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.pakfolder');
-         if nDossier=Nil then
-          begin
-           nDossier:=QPakFolder.Create(Copy(Chemin, 1, J-1), Dossier);
-          {K:=0;
-           while (K<Dossier.SubElements.Count) and (Dossier.SubElements[K] is QPakFolder) do
-            Inc(K);}
-           Dossier.SubElements.{Insert(K,} Add(nDossier);
-          end;
-         CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
-         Delete(Chemin, 1, J);
-         Dossier:=nDossier;
-        until False;
-        F.Position:=PFinEntreePak(P1)^.Position;
-        Q:=OpenFileObjectData(F, Chemin, PFinEntreePak(P1)^.Taille, Dossier);
-        Dossier.SubElements.Add(Q);
-        LoadedItem(rf_Default, F, Q, PFinEntreePak(P1)^.Taille);
-        Inc(P1, SizeOf(TFinEntreePak));
-       end;
-      finally FreeMem(Entrees1); end;
+         Inc(P1, SizeOf(TFinEntreePak));
+        end;
+      finally
+        FreeMem(Entrees1);
+      end;
       SortPakFolder;
      end;
- else inherited;
+ else
+  inherited;
  end;
 end;
 
