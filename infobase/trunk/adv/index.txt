@@ -1,5 +1,6 @@
 title: Advanced customization
 subdir: intro
+subdir: newgame
 subdir: addons
 subdir: python
 subdir: plugins

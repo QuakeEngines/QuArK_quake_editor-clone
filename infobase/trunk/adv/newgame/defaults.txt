@@ -1,0 +1,12 @@
+title: Defaults.qrk
+author: tiglari
+
+Then the game will need a :config and :form section in the file Defaults.qrk,
+grouped with the :config and :form sections for the games already
+supported.  People usually copy the ones for the game that is most similar
+to the new one, and then change whatever needs to be changed.
+You should pick a recognizable abbreviation and use it consistently,
+e.g. SoF2 for Soldier of Fortune 2.
+
+Finally, the game needs to be added to the QuakeCtx:form|Game|Items list
+(in Default.qrk).
