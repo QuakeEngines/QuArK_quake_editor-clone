@@ -242,15 +242,34 @@ def makecap(o, editor, inverse=0, lower=0, open=0, thick=0):
         [pd["blb"],pd["tlb"], (pd["tlb"]+pd["trb"])/2.0, pd["trb"], pd["brb"]]]
   cp[1] = map(lambda x, y:(x+y)/2, cp[0], cp[2])
   #
-  # Project the bottom face's texture scale to flat cp array
+  # Project the bottom face's texture scale to flat cp array (bcp)
   #  of the same size, then transfer the tex coordinates
   #  to the arch curve (this reduces distortion).
   #
   bcp = cp_from_4pts(pd["blf"], pd["brf"], pd["blb"], pd["brb"],3,5)
+  #
+  # more distortion reduction
+  #
   if inverse:
     cp, bcp = transposecp(cp), transposecp(bcp)
+  #
+  # This makes a `flat projection', bigtime distortion
+  #
   bcp = texcp_from_face(bcp, fdict["d"], editor)
-  inner = b2fromface(texcp_from_b2(cp, bcp), 'inner', fdict["d"], editor)
+  #
+  # Now we smooth it out
+  #
+  bcp = antidistort_columns(bcp, cp)
+  #
+  # Now transfer the texture coordinates to the main cp array
+  #
+  cp = texcp_from_b2(cp, bcp)
+  #
+  # and finally make the thing
+  #
+  inner = quarkx.newobj('inner:b2')
+  inner.cp = cp
+  inner["tex"] = fdict["d"]["tex"]
   if lower:
       inner.swapsides()
   if open:
@@ -357,6 +376,10 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2000/06/03 13:01:25  tiglari
+#fixed arch duplicator maploading problem, hopefully, also
+#arch duplicator map writing problem
+#
 #Revision 1.3  2000/06/03 10:25:30  alexander
 #added cvs headers
 #
