@@ -461,7 +461,7 @@ begin
  finally if FrameBrush<>0 then DeleteObject(FrameBrush); end;
  SetDIBitsToDevice(DC, L, T,
   bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-  0,bmiHeader.biHeight, Bits, BmpInfo, 0);
+  0,bmiHeader.biHeight, Bits, BmpInfo, dib_RGB_Colors);
  finally FreeMem(Bits); end;
 end;
 
