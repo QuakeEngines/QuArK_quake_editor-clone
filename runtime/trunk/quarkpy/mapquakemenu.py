@@ -39,6 +39,7 @@ def CreateCheckFileExtensionArray(instring):
         if (not instring[:1] in gExt_Controllers):
             return None, None
         # Find next char not in 'gExt_ValidExtChars', or end-of-line
+        ext = ""
         for i in range(1, len(instring)):
             if (instring[i] not in gExt_ValidExtChars):
                 ext = instring[0:i]
@@ -554,6 +555,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.17  2001/03/14 19:20:49  decker_dk
+#Functionality for '-ext{action}'... which is not documented yet!
+#
 #Revision 1.16  2001/03/12 15:31:39  tiglari
 #Hacked in linfile loading. Assumes that .lin/.pts is the only must-not-exist file,
 #  which is true for now, but prolly not reliable.  better fix wanted
