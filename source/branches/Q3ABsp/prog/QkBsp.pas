@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/04/24 23:59:44  aiv
+re-implementated again (hopefully less memory req'd)
+
 Revision 1.32  2001/04/23 23:14:02  aiv
 pretty much changed all entity maker code
 
@@ -182,26 +185,27 @@ type
    ,lump_areas
    ,lump_areaportals);
 
- TBsp3EntryTypes =
+
+  TBsp3EntryTypes =
    (eBsp3_entities
-   ,eBsp3_planes
-   ,eBsp3_vertexes
-   ,eBsp3_visibility
-   ,eBsp3_nodes
    ,eBsp3_texinfo
-   ,eBsp3_faces
-   ,eBsp3_lighting
+   ,eBsp3_planes
+   ,eBsp3_nodes
    ,eBsp3_leafs
    ,eBsp3_leaffaces
    ,eBsp3_leafbrushes
-   ,eBsp3_edges
-   ,eBsp3_surfedges
    ,eBsp3_models
    ,eBsp3_brushes
    ,eBsp3_brushsides
-   ,eBsp3_pop);
+   ,eBsp3_vertexes
+   ,eBsp3_meshvertexes
+   ,eBsp3_effects
+   ,eBsp3_faces
+   ,eBsp3_lighting
+   ,eBsp3_lightvol
+   ,eBsp3_visibility);
 
-const
+ const
   NoBsp1 = TBsp1EntryTypes(-1);
   NoBsp2 = TBsp2EntryTypes(-1);
   NoBsp3 = TBsp3EntryTypes(-1);
@@ -256,7 +260,6 @@ type
 type
   TFQBsp = class(TQForm1)
     Button1: TButton;
-    Button2: TButton;
     procedure Button1Click(Sender: TObject);
   private
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
@@ -920,9 +923,10 @@ begin
    FStructure.AddRef(+1);
    Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
    Q.Acces;
-   if CharModeJeu>=mjQ3A then
+{   if CharModeJeu>=mjQ3A then
       ShowMessage('Sorry, no bsp editing for this game')
    else
+ }
      ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
    finally ProgressIndicatorStop; end;
   end;
@@ -1053,9 +1057,10 @@ end;
 procedure TFQBsp.Button1Click(Sender: TObject);
 begin
  with ValidParentForm(Self) as TQkForm do
-  if CharModeJeu>=mjQ3a then
+{  if CharModeJeu>=mjQ3a then
     ShowMessage('Sorry, no bsp viewing for this game yet')
   else
+}
     ProcessEditMsg(edOpen);
 end;
 
