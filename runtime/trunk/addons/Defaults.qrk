@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.145  2001/06/17 02:55:14  aiv
+//fixed error
+//
 //Revision 1.144  2001/06/17 02:37:39  aiv
 //imported texture search plugin
 //
@@ -1544,7 +1547,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "By default, Mouse Free Zoom is Shift-Middle-mouse-button"$0D"Enter a negative value to reverse 'In' and 'Out' directions"
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       HandlesDelay: =
       {
         Txt = "Delay to display handles"
@@ -1645,7 +1648,7 @@ QQRKSRC1
       BuildPgm9:  = {t_GameBuildPgm=!}
       BuildArgs9: = {t_GameBuildArgs=!}
       BuildCheck9:= {t_GameBuildCheck=!}
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       MapCommentsPrefix: = {
         Typ="E"
         Txt=".MAP comments prefix"
@@ -1732,7 +1735,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAM1"}    // switches to Quake 1
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1755,7 +1758,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -1812,7 +1815,7 @@ QQRKSRC1
              $0D "Necromancer"
              $0D "Assassin"
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1835,7 +1838,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -1887,7 +1890,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMA"}    // switches to Quake 2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1915,7 +1918,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -1967,7 +1970,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMB"}    // switches to Hr2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1990,7 +1993,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2036,7 +2039,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAM3"}    // switches to Half-Life
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2064,7 +2067,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2116,7 +2119,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMC"}    // switches to Sin
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2139,7 +2142,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2186,7 +2189,7 @@ QQRKSRC1
         cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin (cmd=GAM, game=D)
         cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2214,7 +2217,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       walTrick: = {
         Typ = "X"
@@ -2267,7 +2270,7 @@ QQRKSRC1
         cmd:macro = { Typ = "M" Msg = "GAME" } // switches to SOF (cmd=GAM, game=E)
         cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2295,7 +2298,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       walTrick: = { //FIXME ! is this needed ?
         Typ = "X"
@@ -2353,7 +2356,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMa"}    // switches to Quake 3 (cmd=GAM, game=a)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2386,7 +2389,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2439,7 +2442,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2472,7 +2475,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2518,7 +2521,7 @@ QQRKSRC1
         cmd:macro = { Typ = "M" Msg = "GAMc" } // switches to CrystalSpace (cmd=GAM, game=c)
         cmd:macro = { Typ = "M" Msg = "OUTP" } // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2531,7 +2534,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2654,6 +2657,7 @@ QQRKSRC1
       Sep1: =
       {
         Typ = "S"    // Separator
+        Txt = ""
       }
       InvertedColors: =
       {
@@ -2792,14 +2796,14 @@ QQRKSRC1
        Open: = {HotKeyForm = !}
        Save: = {HotKeyForm = !}
        Close: = {HotKeyForm = !}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt = ""}
        Cut: = {HotKeyForm = !}
        Copy: = {HotKeyForm = !}
        Delete: = {HotKeyForm = !}
        Undo: = {HotKeyForm = !}
        Redo: = {HotKeyForm = !}
        Duplicate: = {HotKeyForm = !}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt = ""}
        Remove: = {HotKeyForm = !}
        Select Parent: = {HotKeyForm = !}
        Collapse Tree: = {AlphaKeyForm = ! Hint="Prevent collapse of treeview on climb with Parent key."$0D" Key must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
@@ -2808,7 +2812,7 @@ QQRKSRC1
        Select Previous: = {HotKeyForm = !}
        Same Type = {AlphaKeyForm = ! Hint="When this key is depressed, prev/next selection must be of same type" $0D
                      " Must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt = ""}
        Insert: = {HotKeyForm = !}
        Tag Side: = {HotKeyForm = !}
        Clear Tags: = {HotKeyForm = !}
@@ -2820,7 +2824,7 @@ QQRKSRC1
        Unrestrict Selection: = {HotKeyForm = !}
        Restrict to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
     MapMouse:form =
@@ -2839,7 +2843,7 @@ QQRKSRC1
       Middle:      = { Txt = "Middle mouse button" MouseForm = ! }
       MiddleShift: = { Txt = "Middle button with Shift key" MouseForm = ! }
       MiddleCtrl:  = { Txt = "Middle button with Ctrl key" MouseForm = ! }
-      sep:={Typ="S"}
+      sep:={Typ="S" Txt = ""}
       LeftDrag:        = { Txt = "Left button dragging" MDragForm = ! }
       LeftDragShift:   = { Txt = "Left dragging with Shift" MDragForm = ! }
       LeftDragCtrl:    = { Txt = "Left dragging with Ctrl" MDragForm = ! }
@@ -2865,16 +2869,16 @@ QQRKSRC1
       Style = "3"
       Gamma: = {Txt="Gamma correction" Typ="EF1" Hint="Gamma correction to display texture (1=darker, 2=lighter)"}
       MarsCaption: = {Txt="Window captions" Typ="X" Cap="Colorful"}
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       AutoFocus: = {Txt="Activate windows on mouseover" Typ="X" Cap="AutoFocus" Hint="if checked, the focus (active window) follows the mouse between windows (e.g. in the map editor)"}
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       sep: = {Typ="S" Txt="Button and object icon colors"}
       Unsel: = {Typ="X" Txt="If not selected" Cap="display blue icons" Hint="Check this to display blue icons instead of brown ones for 'unselected' icons"}
       Sel: =   {Typ="X" Txt="If selected"     Cap="display blue icons" Hint="Uncheck this to display brown icons instead of blue ones for 'selected' icons"}
       IconPath: = {Typ="CL" Txt="Icon size"   Values="images\\"$0D"lgicons\\"  Items="Normal"$0D"Large (LGIcons needed !)" Hint="Large icons require you to download first the 'LGIcons' pack from the web site."}
       sep: = {Typ="S" Bold="0" Txt="(restart QuArK to reload icons with the new colors"}
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
     }
     GeneralMemory:form =
@@ -2895,7 +2899,7 @@ QQRKSRC1
     {
       Style = "3"
       Info: = {Typ="S" Txt="External editors to called from QuArK"}
-      Info2: = {Typ="S"}
+      Info2: = {Typ="S" Txt = ""}
       .pcx: = { Txt="PCX images" externaledit = ! }
       .tga: = { Txt="TGA images" externaledit = ! }
       .bmp: = { Txt="BMP images" externaledit = ! }
@@ -2924,7 +2928,7 @@ QQRKSRC1
       Font2: = {Typ="F" Txt="Operators" Cap="+ - * / < > = !"}
       Font4: = {Typ="F" Txt="Comments" Cap="// Comments"}
       Font6: = {Typ="F" Txt="Brackets" Cap="{   }"}
-      Sep1: = {Typ="S"}
+      Sep1: = {Typ="S" Txt = ""}
       Enabled: = {Typ="X" Txt="Code Syntax Highlighting" Cap="Enabled"}
     }
     General3DView:form =
@@ -2946,7 +2950,7 @@ QQRKSRC1
         Values=  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
         Hint="A lower value uses less memory for texture-images,"$0D"but will also decrease the texture quality in the 3D-views"
       }
-      Sep0: = {Typ="S"}
+      Sep0: = {Typ="S" Txt = ""}
       L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
       //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
       TwoMonitors: = {
@@ -2961,7 +2965,7 @@ QQRKSRC1
       FogDensity: = {Txt="Fog density" Typ="EF1" Min='1' Hint="Fog density. Try yourself to see what it does."}
       FogColor: = {Txt="Fog color" Typ="LI" Hint="Fog color (recommended : either black or white)"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
-      Sep2: = {Typ="S"}
+      Sep2: = {Typ="S" Txt = ""}
       L1: = {Typ="S" Txt="---- Software driver only ----"}
       SoftQuality: = {
         Txt="Software image quality"
@@ -2977,14 +2981,14 @@ QQRKSRC1
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: High details   Fastest: Low details"
       }
-      Sep2c: = {Typ="S"}
+      Sep2c: = {Typ="S" Txt = ""}
       L5: = {Typ="S" Txt="Mouse sensitivity (neg. numbers invert direction)"}
       MouseWalk:     = {Typ="EF1" Txt="  walk forward/backward"}
       MouseHLook:    = {Typ="EF1" Txt="  look left/right"}
       MouseVLook:    = {Typ="EF1" Txt="  look up/down"}
       MouseSideStep: = {Typ="EF1" Txt="  sidestep left/right"}
       MouseUpDown:   = {Typ="EF1" Txt="  move up/down"}
-      Sep2b: = {Typ="S"}
+      Sep2b: = {Typ="S" Txt = ""}
       L4: = {Typ="S" Txt="Keyboard settings"}
       KeyForward:    = {Typ="K" Txt="  forward"}
       KeyBack:       = {Typ="K" Txt="  backward"}
@@ -2999,7 +3003,7 @@ QQRKSRC1
       KeyDown:       = {Typ="K" Txt="  move down"}
       KeyRun:        = {Typ="K" Txt="  run"}
       KeyStep:       = {Typ="K" Txt="  sidestep"}
-      Sep3: = {Typ="S"}
+      Sep3: = {Typ="S" Txt = ""}
       L3: = {Typ="S" Txt="Keyboard movement dynamics"}
       Speed: = {Txt="Movement speed" Typ="EF1" Hint="How fast you move, in pixels/second"}
       RunSpeed: = {Txt="Running speed" Typ="EF1" Hint="How fast you move when you hold down the run key, in pixels/second"}
@@ -3010,7 +3014,7 @@ QQRKSRC1
     GeneralOpenGL:form =
     {
       Style = "3"
-      Sep0: = {Typ="S"}
+      Sep0: = {Typ="S" Txt = ""}
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
       Mode: = {
         Txt="Use OpenGL for..."
@@ -3030,7 +3034,7 @@ QQRKSRC1
       }
       L0: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
       L0: = {Typ="S" Bold="0" Txt="configuration page for each game."}
-      Sep0: = {Typ="S"}
+      Sep0: = {Typ="S" Txt = ""}
       L0: = {Typ="S" Txt="---- troubleshooting options ----"}
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
@@ -3044,7 +3048,7 @@ QQRKSRC1
     {
       Style = "3"
       t: = {Typ="S" Txt="File extensions Association"}
-      t: = {Typ="S"}
+      t: = {Typ="S" Txt = ""}
       t: = {Typ="S" Bold="0" Txt="Check the file types to associate with QuArK, then click"}
       btn:tbbtn = {
         Typ="M"
@@ -3141,7 +3145,7 @@ QQRKSRC1
         Txt = "Auto-Save"
         Cap = "before running game"
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt = ""}
       DefPoly: = {
         Typ     = "C"
         Txt     = "Default brush-entity size"
@@ -3165,7 +3169,7 @@ QQRKSRC1
         Min = '1'
         Max = '90'
       }
-      //sep: = {Typ="S"}
+      //sep: = {Typ="S" Txt = ""}
       //BezierCenterX: = {
       //  Txt = "Bezier center offset (X)"
       //  Typ = "EF1"
@@ -3330,9 +3334,9 @@ QQRKSRC1
         }
       }
       usercenterform = !      
-      sep1:  = {Typ="S"}
+      sep1:  = {Typ="S" Txt = ""}
       neg:   = {Txt="Neg. polys" Cap="Negative" Typ="X" Hint="polyhedrons in negative groups dig the map"}
-      sep1:  = {Typ="S"}
+      sep1:  = {Typ="S" Txt = ""}
       ;view: = {Txt="&" Typ="X01"  Cap="Grayed out"         Hint="the whole group is displayed grayed out"}
       ;view: = {Txt="&" Typ="X02"  Cap="Hidden"             Hint="the group is hidden from map views"}
       ;view: = {Txt="&" Typ="X08"  Cap="Hidden on textured" Hint="the group is hidden from textured views"}
@@ -3851,7 +3855,7 @@ QQRKSRC1
         Txt = "caption color"
         Hint = "rightmost gradient caption color (leftmost color is always black for toolboxes)"
       }
-      sep2: = {Typ="S"}
+      sep2: = {Typ="S" Txt = ""}
       info3: = {Typ="S" Txt="Open the toolbox to edit the content."}
       root: = {Typ="!"}  // prevents "root" from being displayed at all
       target: = {Typ="!"}
@@ -3905,12 +3909,12 @@ QQRKSRC1
       sep:           = {Typ="S" Txt="---- Menu Item / Output ----"}
       Shortcut:      = {Typ="E" Txt="Keyboard shortcut" Hint="Keyboard shortcut as it appears in the menu (recommended: 'Ctrl+letter')"}
       Pause:         = {Typ="X" Txt="When build has finished..." Cap="Console stay open" Hint="Don't automatically close the console where all build-program's output has been written"}
-      sep:           = {Typ="S"}
+      sep:           = {Typ="S" Txt = ""}
       sep:           = {Typ="S" Txt="---- Before build / After build ----"}
       ExportMapFile: = {Typ="X" Txt="First..."                  Cap="Export new .MAP file"    Hint=""}
       Textures:      = {Typ="X" Txt="Then..."                   Cap="Prepare used textures"   Hint="Prepare all textures used in map and write"$0D"them to a place where the build-programs will find them"}
       RunGame:       = {Typ="X" Txt="After successful build..." Cap[]="Run [::Game] with map" Hint="Run the game when the map has been rebuilt"}
-      sep:           = {Typ="S"}
+      sep:           = {Typ="S" Txt = ""}
       sep:           = {Typ="S" Txt="---- Build Programs Enable/Disable Sequence ----"}
       sep:           = {Typ="S" Txt[]="1st program '[::BuildPgm1] [::BuildArgs1]'"}
       BuildPgm1:     = {CustomBuildPgm=!}
@@ -3955,7 +3959,7 @@ QQRKSRC1
         Txt = "File"
       }
       sep: = {
-        Typ="S"
+        Typ="S" Txt = ""
       }
       plug-in: = {
         Typ = "E R"    // Edit Read-only
@@ -4885,7 +4889,7 @@ QQRKSRC1
     //      }
     //    }
     //  }
-      sep1:tbbtn = {Typ="S"}    // separator line
+      sep1:tbbtn = {Typ="S" Txt = ""}    // separator line
       group:tbbtn = {
         Typ  = "C"     // object creation
         Hint = "new group"
@@ -4946,7 +4950,7 @@ QQRKSRC1
           ToolBox = "New map items..."
           Shortcut = "Ins"
         }
-        sep1:tbbtn = {Typ="S"}
+        sep1:tbbtn = {Typ="S" Txt = ""}
         tex:tbbtn = {
           Cap = "Select texture..."
           Typ = "M"
@@ -4957,7 +4961,7 @@ QQRKSRC1
           Typ = "M"
           Msg = "MOV"
         }
-        sep2:tbbtn = {Typ="S"}
+        sep2:tbbtn = {Typ="S" Txt = ""}
         subp:tbbtn = {
           Cap = "Subtract polyhedrons"
           Typ = "M"
@@ -4982,7 +4986,7 @@ QQRKSRC1
           Typ  = "X"   // Check boX
           Path = "Map:Options:DeleteFaces"
         }
-        sep1:tbbtn = {Typ="S"}
+        sep1:tbbtn = {Typ="S" Txt = ""}
         cfg:tbbtn = {
           Typ  = "M"
           Cap  = "&Configuration..."
@@ -5012,7 +5016,7 @@ QQRKSRC1
           cmd:macro = {;copy="FastLIGHTBuild"}  // do the FastLIGHTBuild:incl command (below)
           cmd:macro = {;incl="RunGame1"}        // do the RunGame1:incl command (below)
         }
-        sep1:tbbtn = {Typ="S"}
+        sep1:tbbtn = {Typ="S" Txt = ""}
         tex1:tbbtn = {
           Cap = "&Prepare used textures"
           Typ = "M"
@@ -5030,7 +5034,7 @@ QQRKSRC1
           Cap[] = "&Run [::Game]"
           ;incl = "RunGame1"
         }
-        sep2:tbbtn = {Typ="S"}
+        sep2:tbbtn = {Typ="S" Txt = ""}
         bsp1:tbbtn = {
           Cap = "&QBSP (.bsp file creation)"
           Typ = "+"
@@ -5045,7 +5049,7 @@ QQRKSRC1
           Cap = "&LIGHT (light projection)"
           ;copy = "LIGHTBuild"
         }
-        sep3:tbbtn = {Typ="S"}
+        sep3:tbbtn = {Typ="S" Txt = ""}
         ents:tbbtn = {
           Cap = "QBSP - only &entities"
           Typ = "+"
@@ -5100,7 +5104,7 @@ QQRKSRC1
                $98772772278888099877722FFFF8880987777FF8777FF809877FF0887777FF09
                $8FF8808777FF889988FF8077FF8899999988F8FF889999999999888899999999
       }
-      sep1:tbbtn = {Typ="S"}    // separator line
+      sep1:tbbtn = {Typ="S" Txt = ""}    // separator line
       undo:tbbtn = {
         Typ  = "M"
         Msg  = "MURD"
@@ -5129,7 +5133,7 @@ QQRKSRC1
                 $999100000000A0F9900999009990A0000000AA0F99099909990AA0000000AAA0F909990990AAA0000000AAA00909990900AAA0000000AAAA0F
                 $9999990AAAA0000000AAAAA0F99990AAAAA0000000AAAAAA0F990AAAAAA0000000AAAAAAA0F0AAAAAAA0000000AAAAAAAA0AAAAAAAA0000000
       }
-      sep2:tbbtn = {Typ="S"}    // separator line
+      sep2:tbbtn = {Typ="S" Txt = ""}    // separator line
       lock:tbbtn = {
         Typ  = "X"   // configuration checkbox
         Path = "Map:Options:PagesLocked"
