@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2002/04/11 12:17:14  tiglari
+fix invalid DeletObject errors
+
 Revision 1.15  2002/03/30 00:51:56  tiglari
 Map outside of restriction (if there is one) now not drawn or drawn grey
 depending on setting of hide-/grey- out of view flag.
@@ -225,7 +228,7 @@ procedure CloseAll3DView;
 implementation
 
 uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
-     EdOpenGL;
+     EdOpenGL, SystemDetails;
 
 procedure CloseAll3DView;
 var
@@ -1175,8 +1178,8 @@ begin
      if HiddenMouse>=2 then
       Screen.Cursor:=crNone;
 
-     SSize.X:=GetSystemMetrics(sm_CxScreen);
-     SSize.Y:=GetSystemMetrics(sm_CyScreen);
+     SSize.X:=GetSystemMetrics(g_CxScreen);
+     SSize.Y:=GetSystemMetrics(g_CyScreen);
      if P.X<Margin then
       Delta.X:=TargetPosition.X
      else

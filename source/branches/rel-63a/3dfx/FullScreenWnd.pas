@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:38:02  decker_dk
+Updated copyright-header
+
 Revision 1.2  2000/09/10 14:04:24  alexander
 added cvs headers
 }
@@ -64,6 +67,8 @@ procedure OpenFullScrDlg(nView: TPyMapView);
 
 implementation
 
+uses
+  SystemDetails;
 {$R *.DFM}
 
  {------------------------}
@@ -158,8 +163,8 @@ end;
 procedure TFullScrDlg.FormCreate(Sender: TObject);
 begin
  MouseDelta.X:=MaxInt;
- ScreenCenter.X:=GetSystemMetrics(sm_CxScreen) div 2;
- ScreenCenter.Y:=GetSystemMetrics(sm_CyScreen) div 2;
+ ScreenCenter.X:=GetSystemMetrics(g_CxScreen) div 2;
+ ScreenCenter.Y:=GetSystemMetrics(g_CyScreen) div 2;
 end;
 
 end.
