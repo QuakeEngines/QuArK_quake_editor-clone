@@ -8094,9 +8094,7 @@ QQRKSRC1
     {
       mdl = "[model]"
       Help = "This is placable model for your map."
-//Decker 2001.03.17 - This point-entity should not have a bounding-box, as it
-//would give a wrong impression of the model
-//      bbox = '-16 -16 -32 16 16 32'
+      bbox = '-16 -16 -24 16 16 32'
       model: =
       {
         t_modelbrowser = !
@@ -8104,6 +8102,16 @@ QQRKSRC1
         Hint = "Path and name of a model to use."
       }
       t_model = !
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>min b-box coords XYZ."$0D"The default setting is -16 -16 -24"$0D"the size shown in the editor."
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>max b-box coords XYZ"$0D"The default setting is 16 16 32"$0D"the size shown in the editor."
+      }
     }
     misc_portal_camera:form =
     {
