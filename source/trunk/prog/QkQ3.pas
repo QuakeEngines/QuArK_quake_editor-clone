@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2002/06/18 00:55:51  tiglari
+add .png to .jpg texture support.  If any more image formats start being used
+  for textures, the strategy for doing this will need to be rethought
+
 Revision 1.22  2002/05/05 10:21:16  tiglari
 Reading editable surfaceparms from MOHAA shaders
 
@@ -520,7 +524,7 @@ var
  Shader: QShader;
  Stage: QShaderStage;
  I, LineNumber: Integer;
- Comment: Boolean;
+ SectionComment, Comment: Boolean;
  V: array[1..2] of Single;
  masked: boolean; { Mohaa (tiglari): I'm guessing that this means that some
                     of the surfaceparms should be loaded into the editor as
@@ -623,16 +627,27 @@ begin
 
        { preprocess comments }
       Comment:=False;
-      for I:=0 to FSize-1 do
-       begin
+      SectionComment:=False;
+      for I:=0 to FSize-2 do
+      begin
         if (Source[I]='/') and (Source[I+1]='/') then
-         Comment:=True
-        else
-         if Source[I] in [#13,#10] then
-          Comment:=False;
-        if Comment then
-         Source[I]:=' ';
-       end;
+          Comment:=True
+        else if (Source[I]='/') and (Source[I+1]='*') then
+          SectionComment := TRUE
+        else if (Source[I]='*') and (Source[I+1]='/') then
+        begin
+          SectionComment := FALSE;
+          Source[I] := ' ';
+          Source[I+1] := ' ';
+        end
+        else begin
+          if Source[I] in [#13,#10]
+          then Comment:=False;
+        end;
+
+        if (Comment or SectionComment) then
+          Source[I]:=' ';
+      end;
 
       NextStep:=Source+ProgressStep;
       LineNumber:=1;
@@ -645,6 +660,7 @@ begin
        Shader:=QShader.Create(ReadLine, Self);    { new shader object }
        SubElements.Add(Shader);
        SkipSpaces;
+       if Source^=#0 then Break;    { end of file }
        if Source^<>'{' then SyntaxError;
        Inc(Source);
        repeat
