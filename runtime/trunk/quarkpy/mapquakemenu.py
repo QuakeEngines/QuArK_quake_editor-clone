@@ -25,7 +25,11 @@ gExt_GotToExist     = "+"
 gExt_MustNotExist   = "-"
 gExt_Controllers    = gExt_GotToExist + gExt_MustNotExist
 gExt_ValidExtChars  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-gExt_AllCharacters  = " " + gExt_Controllers + gExt_ValidExtChars
+gExt_StartOfAction  = "{"
+gExt_EndOfAction    = "}"
+gExt_ActionFunction = ":"
+gExt_SpecialChars   = gExt_StartOfAction + gExt_EndOfAction + gExt_ActionFunction
+gExt_AllCharacters  = " " + gExt_Controllers + gExt_ValidExtChars + gExt_SpecialChars
 
 
 def CreateCheckFileExtensionArray(instring):
@@ -33,21 +37,30 @@ def CreateCheckFileExtensionArray(instring):
     def FindSingleExtension(instring):
         # Must start with a 'gExt_Controllers' character!
         if (not instring[:1] in gExt_Controllers):
-            return None
+            return None, None
         # Find next char not in 'gExt_ValidExtChars', or end-of-line
         for i in range(1, len(instring)):
             if (instring[i] not in gExt_ValidExtChars):
-                return instring[0:i]
-        return instring[0:]
+                ext = instring[0:i]
+                instring = instring[i:]
+                break
+        action = None
+        if (instring[:1] == gExt_StartOfAction):
+            # Unpack action
+            for i in range(1, len(instring)):
+                if (instring[i] not in gExt_ValidExtChars):
+                    action = instring[1:i]
+                    break
+        return ext, action
 
     # Remove all unnessary characters
     reducedstring = filter(lambda d: d in gExt_AllCharacters, instring)
-    extlist = []
+    extactionlist = []
     for i in range(0, len(reducedstring)):
-        res = FindSingleExtension(reducedstring[i:])
-        if (res is not None):
-            extlist = extlist + [string.upper(res)]
-    return extlist
+        ext, action = FindSingleExtension(reducedstring[i:])
+        if (ext is not None):
+            extactionlist = extactionlist + [(string.upper(ext), action)]
+    return extactionlist
 
 
 
@@ -72,7 +85,7 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
         except:
             self.bspfile_wo_ext = bspfile
         # Initial check for files with checkextensions
-        for ext in self.checkextensions:
+        for ext, action in self.checkextensions:
             try:
                 workfile = self.bspfile_wo_ext + "." + ext[1:]
                 attr = quarkx.getfileattr(workfile)
@@ -81,9 +94,25 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
             except quarkx.error:
                 pass
 
+    def doAction(self, action, ext):
+        # This is the place for the actions, that have HARDCODED names!
+        if (action is None):
+            return
+        action = string.upper(action)
+        if (action == "LOADLINFILE"):
+            if self.editor is not None:
+                import mapholes
+                mapholes.LoadLinFile(self.editor, self.bspfile_wo_ext+'.'+ext)
+        elif (action == "LOADPTSFILE"):
+            if self.editor is not None:
+                import mapholes
+                mapholes.LoadLinFile(self.editor, self.bspfile_wo_ext+'.'+ext)
+        else:
+            print "ERROR: Unknown action \"" + action + "\" for extension \"" + ext + "\""
+
     def close(self):
-        errorlineprintet = 0
-        for ext in self.checkextensions:
+        errorfoundandprintet = 0
+        for ext, action in self.checkextensions:
             errortext = None
             workfile = self.bspfile_wo_ext + "." + ext[1:]
             attr = quarkx.getfileattr(workfile)
@@ -91,20 +120,16 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
                 errortext = "Build failed, because it did not create the (%s) file: " % ext + workfile
             elif ((ext[:1] == gExt_MustNotExist) and ((attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE))):
                 errortext = "Build failed, because it created the (%s) file: " % ext + workfile
-                if self.editor is None:
-                    print "NOTE: Build program has found a hole in this map"
-                else:
-                    import mapholes
-                    mapholes.LoadLinFile(self.editor, self.bspfile_wo_ext+'.'+ext[1:])
-
 
             # Was error found?
             if (errortext is not None):
-                if (not errorlineprintet):
+                if (not errorfoundandprintet):
                     print "!-!"*26
-                    errorlineprintet = 1
+                    errorfoundandprintet = 1
                 print errortext
-        if (errorlineprintet):
+                self.doAction(action, ext[1:])
+
+        if (errorfoundandprintet):
             # Error occured!
             quarkx.console()
             del self.next
@@ -214,16 +239,16 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     for mapfileobject, root, buildmode in maplist:
         map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
         mapinfo = {"map": map}
-        if buildmode["ExportMapFile"] or\
-           buildmode["BuildPgm1"] or\
-           buildmode["BuildPgm2"] or\
-           buildmode["BuildPgm3"] or\
-           buildmode["BuildPgm4"] or\
-           buildmode["BuildPgm5"] or\
-           buildmode["BuildPgm6"] or\
-           buildmode["BuildPgm7"] or\
-           buildmode["BuildPgm8"] or\
-           buildmode["BuildPgm9"]:
+        if buildmode["ExportMapFile"] \
+        or buildmode["BuildPgm1"] \
+        or buildmode["BuildPgm2"] \
+        or buildmode["BuildPgm3"] \
+        or buildmode["BuildPgm4"] \
+        or buildmode["BuildPgm5"] \
+        or buildmode["BuildPgm6"] \
+        or buildmode["BuildPgm7"] \
+        or buildmode["BuildPgm8"] \
+        or buildmode["BuildPgm9"]:
             bspfile = quarkx.outputfile("maps/%s.bsp" % map)
             if bspfile in extracted:
                 continue
@@ -529,6 +554,10 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.16  2001/03/12 15:31:39  tiglari
+#Hacked in linfile loading. Assumes that .lin/.pts is the only must-not-exist file,
+#  which is true for now, but prolly not reliable.  better fix wanted
+#
 #Revision 1.15  2001/02/07 00:08:33  aiv
 #added fixes from 6.1c release
 #

@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.98  2001/03/13 01:40:23  aiv
+//new fgd->qrk converter inbuilt
+//
 //Revision 1.97  2001/03/10 01:29:21  tiglari
 //Crystal Space and STVEF added to Quake Context list
 //
@@ -499,12 +502,12 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
 
-        BuildPgm1  = "QBSP.EXE"
+        BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-PRT"
-        BuildPgm2  = "VIS.EXE"
+        BuildCheck1= "+BSP,+PRT"
+        BuildPgm2  = "RVIS.EXE"
         BuildArgs2 = ""
-        BuildPgm3  = "LIGHT.EXE"
+        BuildPgm3  = "ARGHLITE.EXE"
         BuildArgs3 = ""
 
         DefaultTexture = "bricka2_2"
@@ -548,7 +551,7 @@ QQRKSRC1
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-PRT"
+        BuildCheck1= "+BSP,+PRT"
         BuildPgm2  = "VIS.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "LIGHT.EXE"
@@ -601,7 +604,7 @@ QQRKSRC1
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "TIMVIS3.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "ARGHRAD.EXE"
@@ -649,7 +652,7 @@ QQRKSRC1
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "TIMVIS3.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "ARGHRAD.EXE"
@@ -751,7 +754,7 @@ QQRKSRC1
 
         BuildPgm1  = "QBSP3.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "QVIS3.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "QRAD3.EXE"
@@ -800,7 +803,7 @@ QQRKSRC1
 
         BuildPgm1  = "KPBSP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "KPVIS.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "KPRAD.EXE"
@@ -853,7 +856,7 @@ QQRKSRC1
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "SOFBSP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "SOFVIS.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "SOFARGHRAD.EXE"
@@ -902,7 +905,7 @@ QQRKSRC1
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-vis"
         BuildPgm3  = "Q3MAP.EXE"
@@ -965,7 +968,7 @@ QQRKSRC1
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,-LIN"
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-vis"
         BuildPgm3  = "Q3MAP.EXE"
@@ -1404,7 +1407,7 @@ QQRKSRC1
       Items= ""
           $0D"+BSP"
           $0D"+BSP,+PRT"
-          $0D"+BSP,-LIN"
+          $0D"+BSP,-LIN{LoadLinFile}"
           $0D"+AAS"
       Hint="Here you list which file-extensions that should exist or not exist,"
         $0D"after the build-program have ended."
@@ -3095,7 +3098,7 @@ QQRKSRC1
     }
 
     dup radial:form =
-    { 
+    {
       Help = "Brushes placed inside this will be replicated around the axis," $0D " which can be tilted."
       count: = {Txt = "&" Hint = "Number of copies"}
       around: = {Txt = "&" Typ = "EF1"
@@ -3775,7 +3778,7 @@ QQRKSRC1
       tex = "[auto]"
     }
   }
-          
+
         }
         Digger:d =
         {
