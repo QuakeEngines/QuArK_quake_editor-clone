@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/09/10 14:05:21  alexander
+added cvs headers
+
 
 }
 unit BrowseForFolder;
@@ -19,7 +22,7 @@ uses SysUtils, {$IFDEF VER90} ShellObj, OLE2; {$ELSE} ShlObj, ActiveX; {$ENDIF}
 
 function CheckFileExists(const Path, CheckFile: String) : Boolean;
 var
- S: String;
+  S, S2: String;
 begin
  if (Path='') or (CheckFile='') then
   Result:=True
@@ -28,7 +31,31 @@ begin
    S:=Path;
    if S[Length(S)]<>'\' then
     S:=S+'\';
-   Result:=FileExists(S+CheckFile);
+
+   if pos(#$D, CheckFile) <> 0 then
+   begin
+     Result:=false;
+     S2:=CheckFile;
+     while (pos(#$D, S2) <> 0) do
+     begin
+       Result:=Result or FileExists(S+Copy(S2, 1, pos(#$D, S2)-1));
+       Delete(S2, 1, pos(#$D, S2));
+     end;
+   end
+   else if pos(#$A, CheckFile) <> 0 then
+   begin
+     Result:=true;
+     S2:=CheckFile;
+     while (pos(#$A, S2) <> 0) do
+     begin
+       Result:=Result and FileExists(S+Copy(S2, 1, pos(#$A, S2)-1));
+       Delete(S2, 1, pos(#$A, S2));
+     end;
+   end
+   else
+   begin
+     Result:=FileExists(S+CheckFile);
+   end;
   end; 
 end;
 

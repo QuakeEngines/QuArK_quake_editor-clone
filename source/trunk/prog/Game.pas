@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
 Revision 1.22  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -1219,18 +1222,55 @@ end;
 function CheckQuakeDir : Boolean;
 var
   CheckFile: String;
+  CheckDir, S2: String;
+  TryingToFind: String;
+  F: Boolean;
 begin
-  CheckFile:=PathAndFile(QuakeDir, SetupGameSet.Specifics.Values['CheckDirectory']);
-  Result:=FileExists(CheckFile);
+  CheckDir:=SetupGameSet.Specifics.Values['CheckDirectory'];
+  if pos(#$D, CheckDir) <> 0 then
+  begin
+    Result:=false;
+    S2:=CheckDir;
+    while (pos(#$D, S2) <> 0) do
+    begin
+      CheckFile:=PathAndFile(QuakeDir, Copy(S2, 1, pos(#$D, S2)-1));
+      F:=FileExists(CheckFile);
+      Result:=Result or F;
+      if not F then TryingToFind:=TryingToFind+Copy(S2, 1, pos(#$D, S2)-1)+', or ';
+      Delete(S2, 1, pos(#$D, S2));
+    end;
+    Delete(TryingToFind, Length(TryingToFind)-4, 5);
+  end
+  else if pos(#$A, CheckDir) <> 0 then
+  begin
+    Result:=true;
+    S2:=CheckDir;
+    while (pos(#$A, S2) <> 0) do
+    begin
+      CheckFile:=PathAndFile(QuakeDir, Copy(S2, 1, pos(#$A, S2)-1));
+      F:=FileExists(CheckFile);
+      Result:=Result and F;
+      if not F then TryingToFind:=TryingToFind+Copy(S2, 1, pos(#$A, S2)-1)+', and ';
+      Delete(S2, 1, pos(#$A, S2));
+    end;
+    Delete(TryingToFind, Length(TryingToFind)-5, 6);
+  end
+  else
+  begin
+    Result:=FileExists(PathAndFile(QuakeDir, CheckDir));
+    TryingToFind:=CheckDir;
+  end;
+
+//  Result:=FileExists(CheckFile);
   if not Result then
   begin
-    case MessageDlg(FmtLoadStr1(5627, [SetupGameSet.Name, CheckFile]),
+    case MessageDlg(FmtLoadStr1(5627, [SetupGameSet.Name, TryingToFind]),
                     mtConfirmation, [mbOk, mbCancel, mbIgnore], 0) of
       mrOk: begin
-            {ShowConfigDlg('Games:'+SetupGameSet.Name);}
+           {ShowConfigDlg('Games:'+SetupGameSet.Name);}
               ShowConfigDlg(':');
               Abort;
-            end;
+           end;
       mrIgnore:
             ;
     else
