@@ -280,11 +280,22 @@ def matrix_rot_u2v(u,v):
       else:
         return ~matrix
 
+def read2vec(vals):
+    if vals is None:
+       return None, None
+    strings = string.split(vals)
+    if len(strings)<2:
+       return None, None
+    return eval(strings[0]), eval(strings[1])
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.8  2001/03/04 06:41:15  tiglari
+#arbitrary axis rot matrix-producer added
+#
 #Revision 1.7  2001/02/14 11:04:36  tiglari
 #shifted some texture positioning utils in from maptexpin
 #
