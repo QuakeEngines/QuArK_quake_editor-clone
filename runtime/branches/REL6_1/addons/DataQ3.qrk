@@ -26,14 +26,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
-//
-//Revision 1.15 2000/08/05 16:21:44   Maleficus       
-//e-mail: Maleficus666@yahoo.com
+//Revision 1.14.2.2  2000/08/08 23:05:23  alexander
+//committed changes by Maleficus (Maleficus666@yahoo.com)
 //Added missing Quake 3 entites, fixed incorrect comments, fixed incorrect specifics,
 //added missing specifics, added model2 menu for func_* entities, more logical placement of
 //entities, removed incorrect or broken entities.
-//Any errors, please contact me, I will fix 
-//them ASAP. Glad I could help out with the development of QuArK 6! 
+//Any errors, please contact Maleficus666@yahoo.com
 //
 //Revision 1.14.2.1  2000/08/05 12:38:30  alexander
 //added missing angle tag to misc_model
