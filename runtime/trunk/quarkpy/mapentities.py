@@ -378,9 +378,11 @@ class BezierType(EntityManager):
 
         Tex1 = qmenu.item("&Texture...", mapbtns.texturebrowser, "choose texture for patch")
 
+        texpop = qmenu.popup("&Texture on Patch",[Tex1])
+        texpop.label="texpop"
         swap = qmenu.item("&Swap sides",swapclick,"Flip visible side of patch")
 
-        return [Tex1, swap]
+        return [texpop, swap]
         
     # /tiglari
 
@@ -582,6 +584,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2000/07/24 09:09:23  tiglari
+#Put Texture.. (choose) and Texture Flags into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
+#
 #Revision 1.16  2000/07/16 07:56:26  tiglari
 #bezier menu -> menubegin
 #
