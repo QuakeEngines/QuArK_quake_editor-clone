@@ -150,7 +150,7 @@ begin
        begin
         Result:=EnteteObjTexte(P);
         if Result and Assigned(PasteNow) then
-         ChargerObjTexte(PasteNow, P, StrLen(P));
+         ConstructObjsFromText(PasteNow, P, StrLen(P));
        end;
       GlobalUnlock(H);
      end;

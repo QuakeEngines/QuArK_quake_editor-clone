@@ -101,7 +101,7 @@ type
   public
     FSelection1: QObject;
    {FDragTag: ShortInt;}
-    HasRootSpec, ToutChargerAuto: Boolean;
+    HasRootSpec, LoadAllAuto: Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddRoot(Q: QObject);
@@ -388,7 +388,7 @@ procedure TQkExplorer.AddRoot;
 begin
  FAllExplorers.Remove(Self);
  FAllExplorers.Add(Self);
- if ToutChargerAuto then
+ if LoadAllAuto then
   Q.AccesRec
  else
   Q.Acces;
@@ -596,9 +596,9 @@ end;
 
 procedure TQkExplorer.AjouterElement(El: QObject{; nParent, nInsert: TTreeNode});
 begin
- if not ToutChargerAuto then
+ if not LoadAllAuto then
   El.Acces;
- InitEl(El, ToutChargerAuto);
+ InitEl(El, LoadAllAuto);
 {if El.AjouterElement(Items, nParent, nInsert)=Nil then
   GlobalWarning(LoadStr1(5218))
  else
@@ -658,7 +658,7 @@ begin
    if Result=Nil then
     Raise EError(5633);
    Result.Acces;
-   InitEl(Result, ToutChargerAuto);
+   InitEl(Result, LoadAllAuto);
    Node.Data:=Result;
    Result.SetNode(Node, NodeParent);
    ControlerEtatNoeud(Result);
@@ -686,7 +686,7 @@ var
  Q: QObject;
 begin
  if El.Flags and ofTvAlreadyExpanded <> 0 then Exit;
- if ToutChargerAuto then
+ if LoadAllAuto then
   El.AccesRec
  else
   El.Acces;
@@ -697,7 +697,7 @@ begin
    if Q.Flags and (ofTvSousElement or ofTvInvisible) = ofTvSousElement then
     begin
      if (Q.Flags and ofSurDisque <> 0)
-     and (ieListView in El.IsExplorerItem(Q)) and not ToutChargerAuto then
+     and (ieListView in El.IsExplorerItem(Q)) and not LoadAllAuto then
       begin  { delayed add - only an empty, "cut"ted node is added now }
        if CuttedNodes=Nil then
         CuttedNodes:=TList.Create;
@@ -705,9 +705,9 @@ begin
       end
      else
       begin
-       if not ToutChargerAuto then
+       if not LoadAllAuto then
         Q.Acces;
-       InitEl(Q, ToutChargerAuto);
+       InitEl(Q, LoadAllAuto);
       {ControlerEtatNoeud(Q);}
       end;
     end;

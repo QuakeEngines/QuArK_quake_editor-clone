@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/05/11 22:08:04  alexander
+added copyright header
+
 }
 unit QkSoF;
 
@@ -35,7 +38,7 @@ type
  QM32 = class(QImages)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -195,7 +198,7 @@ begin
    rgb:=Data;
 end;
 
-Procedure QM32.Charger(F: TStream; Taille: Integer);
+Procedure QM32.LoadFile(F: TStream; FSize: Integer);
 const
   spec1='Image1=';
   spec2='Alpha=';

@@ -500,7 +500,7 @@ begin
   {Explorer.ObjToolbar:=ObjToolbar;}
    Explorer.AllowEditing:=aeUndo;
    Explorer.Height:=TailleMaximaleEcranY;
-  {Explorer.ToutChargerAuto:=True;}
+  {Explorer.LoadAllAuto:=True;}
    Explorer.CreateSplitter;
    MarsCap.AppCaption:=LoadStr1(5441);
    MarsCap.ActiveBeginColor:=clBlack;

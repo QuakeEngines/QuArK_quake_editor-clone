@@ -35,7 +35,7 @@ type
         protected
           function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           function TestConversionType(I: Integer) : QFileObjectClass; override;
@@ -48,7 +48,7 @@ type
                 protected
                  {function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;}
                   procedure Enregistrer(Info: TInfoEnreg1); override;
-                  procedure Charger(F: TStream; Taille: Integer); override;
+                  procedure LoadFile(F: TStream; FSize: Integer); override;
                 public
                   class function TypeInfo: String; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -160,7 +160,7 @@ begin
  LoadFormat:=1;
 end;*)
 
-procedure QWad.Charger(F: TStream; Taille: Integer);
+procedure QWad.LoadFile(F: TStream; FSize: Integer);
 var
  Entete: TEnteteWad;
  I: Integer;
@@ -171,7 +171,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Entete) then
+      if FSize<SizeOf(Entete) then
        Raise EError(5519);
       Origine:=F.Position;
       F.ReadBuffer(Entete, SizeOf(Entete));
@@ -185,7 +185,7 @@ begin
       I:=Entete.NbEntrees * SizeOf(TEntreeRep);
       if (I<0) or (Entete.PosRep<SizeOf(TEnteteWad)) then
        Raise EErrorFmt(5509, [71]);
-      if Entete.PosRep + I > Taille then
+      if Entete.PosRep + I > FSize then
        Raise EErrorFmt(5186, [LoadName]);
 
       GetMem(Entrees, I); try
@@ -194,7 +194,7 @@ begin
       P:=Entrees;
       for I:=1 to Entete.NbEntrees do
        begin
-        if (P^.Position+P^.Taille > Taille)
+        if (P^.Position+P^.Taille > FSize)
         or (P^.Position<SizeOf(Entete))
         or (P^.Taille<0) then
          Raise EErrorFmt(5509, [72]);
@@ -335,7 +335,7 @@ begin
   Result:=ieResult[Q is QFileObject];
 end;
 
-procedure QTextureList.Charger(F: TStream; Taille: Integer);
+procedure QTextureList.LoadFile(F: TStream; FSize: Integer);
 var
  Count: LongInt;
  Positions, P: ^LongInt;
@@ -348,7 +348,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Count) then
+      if FSize<SizeOf(Count) then
        {Raise EError(5519);}Exit;   { assume an empty list }
       Origine:=F.Position;
       F.ReadBuffer(Count, SizeOf(Count));
@@ -357,7 +357,7 @@ begin
       if Count=0 then
        Exit;
       Min:=(Count+1)*SizeOf(LongInt);
-      if Min > Taille then
+      if Min > FSize then
        Raise EErrorFmt(5186, [LoadName]);
 
      {TT:=Specifics.Values['TextureType'];
@@ -375,11 +375,11 @@ begin
          end
         else
          begin
-          if (P^>Taille) or (P^<Min) then
+          if (P^>FSize) or (P^<Min) then
            Raise EErrorFmt(5509, [92]);
           F.Position:=Origine + P^;
           if I=Count then
-           MaxSize:=Taille
+           MaxSize:=FSize
           else
            MaxSize:=(PLongInt(PChar(P)+SizeOf(LongInt)))^;
           Dec(MaxSize, P^);

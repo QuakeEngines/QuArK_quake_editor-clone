@@ -32,7 +32,7 @@ type
  QM8  = class(QTexture2)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function CustomParams : Integer; override;
           class function TypeInfo: String; override;
@@ -41,7 +41,7 @@ type
         end;
  QHr2Model = class(QMd2File)
              protected
-               procedure Charger(F: TStream; Taille: Integer); override;
+               procedure LoadFile(F: TStream; FSize: Integer); override;
                procedure Enregistrer(Info: TInfoEnreg1); override;
              public
                class function TypeInfo: String; override;
@@ -92,7 +92,7 @@ begin
  Result:=mjHeretic2;
 end;
 
-procedure QM8.Charger(F: TStream; Taille: Integer);
+procedure QM8.LoadFile(F: TStream; FSize: Integer);
 const
  Spec1 = 'Image1=';
  Spec2 = 'Pal=';
@@ -104,7 +104,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<=SizeOf(Header) then
+      if FSize<=SizeOf(Header) then
        Raise EError(5519);
       Base:=F.Position;
       F.ReadBuffer(Header, SizeOf(Header));
@@ -136,7 +136,7 @@ begin
       Q2MipTex.Contents:=Header.Contents;
       Q2MipTex.Flags:=Header.Flags;
       Q2MipTex.Value:=Header.Value;
-      Charger1(F, Base, Taille, Q2MipTex, @Header.Offsets, Nil, Nil);
+      Charger1(F, Base, FSize, Q2MipTex, @Header.Offsets, Nil, Nil);
      end;
  else inherited;
  end;
@@ -218,7 +218,7 @@ begin
  Info.FileExt:=795;
 end;
 
-procedure QHr2Model.Charger(F: TStream; Taille: Integer);
+procedure QHr2Model.LoadFile(F: TStream; FSize: Integer);
 var
  mdl: dmdl_t;
  Origine, Delta: LongInt;
@@ -233,12 +233,12 @@ begin
       Origine:=F.Position;
       FillChar(mdl, SizeOf(mdl), 0);
       Delta:=0;
-      while Delta <= Taille-SizeOf(Hr2Entry) do
+      while Delta <= FSize-SizeOf(Hr2Entry) do
        begin
         F.Position:=Origine+Delta;
         F.ReadBuffer(Hr2Entry, SizeOf(Hr2Entry));
         Inc(Delta, SizeOf(Hr2Entry));
-        if (Hr2Entry.Size<0) or (Delta+Hr2Entry.Size > Taille) then
+        if (Hr2Entry.Size<0) or (Delta+Hr2Entry.Size > FSize) then
          Raise EErrorFmt(5509, [291]);
 
         S:=CharToPas(Hr2Entry.SectionName);

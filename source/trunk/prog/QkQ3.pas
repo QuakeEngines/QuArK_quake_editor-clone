@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/04/29 15:13:30  decker_dk
+Allow other than PAK#.PAK files
+
 Revision 1.7  2000/04/24 09:54:54  arigo
 Q3 shaders, once more
 
@@ -88,7 +91,7 @@ type
   QShaderFile = class(QWad)
                 protected
                   procedure Enregistrer(Info: TInfoEnreg1); override;
-                  procedure Charger(F: TStream; Taille: Integer); override;
+                  procedure LoadFile(F: TStream; FSize: Integer); override;
                 public
                   class function TypeInfo: String; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -359,7 +362,7 @@ begin
   Result:=ieResult[False];
 end;
 
-procedure QShaderFile.Charger(F: TStream; Taille: Integer);
+procedure QShaderFile.LoadFile(F: TStream; FSize: Integer);
 const
  ProgressStep = 4096;
 var
@@ -434,14 +437,14 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      DebutTravail(5453, Taille div ProgressStep); try
-      SetLength(Data, Taille);
+      DebutTravail(5453, FSize div ProgressStep); try
+      SetLength(Data, FSize);
       Source:=PChar(Data);
-      F.ReadBuffer(Source^, Taille);  { read the whole file at once }
+      F.ReadBuffer(Source^, FSize);  { read the whole file at once }
 
        { preprocess comments }
       Comment:=False;
-      for I:=0 to Taille-1 do
+      for I:=0 to FSize-1 do
        begin
         if (Source[I]='/') and (Source[I+1]='/') then
          Comment:=True

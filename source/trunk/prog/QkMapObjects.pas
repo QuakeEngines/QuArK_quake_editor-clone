@@ -625,7 +625,7 @@ begin
    Exit;
   with QkObjFromPyObj(self) as TTreeMap do
    begin
-    ToutCharger;
+    LoadAll;
     Result:=PyInt_FromLong(ReplaceTexture(tOld, tNew, (u<>Nil) and PyObject_IsTrue(u)));
    end;
  except

@@ -38,7 +38,7 @@ type
                 procedure EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream);
                 function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
                 procedure Enregistrer(Info: TInfoEnreg1); override;
-                procedure Charger(F: TStream; Taille: Integer); override;
+                procedure LoadFile(F: TStream; FSize: Integer); override;
                 procedure SortPakFolder;
               public
                 class function TypeInfo: String; override;
@@ -175,7 +175,7 @@ begin
    Result:=[];
 end;
 
-procedure QPakFolder.Charger(F: TStream; Taille: Integer);
+procedure QPakFolder.LoadFile(F: TStream; FSize: Integer);
 var
  Entete: TIntroPakEx;
  I, J: Integer;
@@ -188,10 +188,10 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(TIntroPak) then
+      if FSize<SizeOf(TIntroPak) then
        Raise EError(5519);
       Origine:=F.Position;
-      if Taille<SizeOf(TIntroPakEx) then
+      if FSize<SizeOf(TIntroPakEx) then
        begin
         J:=SizeOf(TIntroPak);
         Entete.Code1:=0;
@@ -206,12 +206,12 @@ begin
         TailleNom:=TailleNomFichSPAK
         else
          Raise EErrorFmt(5506, [LoadName, Entete.Intro.Signature, SignaturePACK]);
-      if Entete.Intro.PosRep + Entete.Intro.TailleRep > Taille then
+      if Entete.Intro.PosRep + Entete.Intro.TailleRep > FSize then
        Raise EErrorFmt(5186, [LoadName]);
       if (Entete.Code1=SignatureQuArKPAK1)
       and (Entete.Code2=SignatureQuArKPAK2) then
        Specifics.Values['temp']:='1';
-      if (Entete.Intro.PosRep + Entete.Intro.TailleRep > Taille)
+      if (Entete.Intro.PosRep + Entete.Intro.TailleRep > FSize)
       or (Entete.Intro.PosRep<SizeOf(TIntroPak))
       or (Entete.Intro.TailleRep<0) then
        Raise EErrorFmt(5509, [61]);
@@ -227,7 +227,7 @@ begin
         SetString(Chemin, P1, TailleNom);
         SetLength(Chemin, StrLen(PChar(Chemin)));
         Inc(P1, TailleNom);
-        if (PFinEntreePak(P1)^.Position+PFinEntreePak(P1)^.Taille > Taille)
+        if (PFinEntreePak(P1)^.Position+PFinEntreePak(P1)^.Taille > FSize)
         or (PFinEntreePak(P1)^.Position<SizeOf(TIntroPak))
         or (PFinEntreePak(P1)^.Taille<0) then
          Raise EErrorFmt(5509, [62]);

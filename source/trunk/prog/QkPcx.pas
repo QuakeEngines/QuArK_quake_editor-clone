@@ -31,7 +31,7 @@ type
  QPcx = class(QImages)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -80,7 +80,7 @@ begin
  Info.WndInfo:=[wiWindow];
 end;
 
-procedure QPcx.Charger(F: TStream; Taille: Integer);
+procedure QPcx.LoadFile(F: TStream; FSize: Integer);
 const
  Spec1 = 'Image1=';
  Spec2 = 'Pal=';
@@ -97,21 +97,21 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Header) then
+      if FSize<SizeOf(Header) then
        Raise EError(5519);
       F.ReadBuffer(Header, SizeOf(Header));
       Origine:=F.Position;
-      Dec(Taille, SizeOf(Header));
+      Dec(FSize, SizeOf(Header));
       if (Header.Signature<>pcxSignature)
       or (Header.ColorPlanes<>pcxColorPlanes) then
        Raise EErrorFmt(5532, [LoadName,
         Header.Signature, Header.ColorPlanes,
         pcxSignature,     pcxColorPlanes]);
-      if Taille<pcxPositionPalette then
+      if FSize<pcxPositionPalette then
        Raise EErrorFmt(5533, [LoadName]);
-      Dec(Taille, pcxPositionPalette);
+      Dec(FSize, pcxPositionPalette);
 
-      F.Position:=Origine+Taille;
+      F.Position:=Origine+FSize;
       F.ReadBuffer(Byte1, 1);
       if Byte1<>pcxPalette256 then
        Raise EErrorFmt(5533, [LoadName]);
@@ -147,10 +147,10 @@ begin
           BufStart:=1;
            { loads data }
           I:=Length(InBuffer)+1-BufEnd;
-          if I>Taille then I:=Taille;
+          if I>FSize then I:=FSize;
           F.ReadBuffer(InBuffer[BufEnd], I);
           Inc(BufEnd, I);
-          Dec(Taille, I);
+          Dec(FSize, I);
          end;
 
          { decodes the line }
@@ -190,7 +190,7 @@ begin
       Specifics.Add(Data);  { "Data=xxxxx" }
 
        { reads the palette }
-      F.Seek(Taille+1, 1);  { skips remaining data if any (should not) }
+      F.Seek(FSize+1, 1);  { skips remaining data if any (should not) }
       Data:=Spec2;
       SetLength(Data, Length(Spec2)+pcxTaillePalette);
       F.ReadBuffer(Data[Length(Spec2)+1], pcxTaillePalette);

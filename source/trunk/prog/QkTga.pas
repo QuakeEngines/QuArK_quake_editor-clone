@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/04/14 09:50:17  arigo
+more TGA flips fix
+
 Revision 1.3  2000/04/12 22:10:47  alexander
 fixed: crash when exporting TGA Textures with alpha channel
 fixed: flipped exported TGA textures
@@ -43,7 +46,7 @@ type
  QTga = class(QImages)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -95,7 +98,7 @@ begin
  Info.WndInfo:=[wiWindow];
 end;
 
-procedure QTga.Charger(F: TStream; Taille: Integer);
+procedure QTga.LoadFile(F: TStream; FSize: Integer);
 const
  Spec1 = 'Image1=';
  Spec2 = 'Pal=';
@@ -114,7 +117,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Header) then
+      if FSize<SizeOf(Header) then
        Raise EError(5519);
       F.ReadBuffer(Header, SizeOf(Header));
       TaillePalette:=0;
@@ -132,7 +135,7 @@ begin
         or (Header.ColorMapBpp<>24) then   {24-bits palette entries}
          Raise EErrorFmt(5679, [LoadName, Header.ColorMapType, Header.TypeCode, Header.bpp]);
         TaillePalette:=3*Header.ColorMapLen;
-        if Taille<SizeOf(Header)+Header.ExtraData+TaillePalette then
+        if FSize<SizeOf(Header)+Header.ExtraData+TaillePalette then
          Raise EError(5678);
 
         { load the palette }
@@ -172,7 +175,7 @@ begin
        end;
       case Header.TypeCode of
        1,2: begin
-           if Taille<SizeOf(Header)+Header.ExtraData+TaillePalette+I*Header.Height then
+           if FSize<SizeOf(Header)+Header.ExtraData+TaillePalette+I*Header.Height then
             Raise EError(5678);
            for J:=1 to Header.Height do
             begin
@@ -183,7 +186,7 @@ begin
             end;
           end;
        9,10: begin
-            SetLength(Buffer, Taille-SizeOf(Header)-Header.ExtraData);
+            SetLength(Buffer, FSize-SizeOf(Header)-Header.ExtraData);
             F.ReadBuffer(Pointer(Buffer)^, Length(Buffer));
             J:=Header.Height;
             Dest:=ScanLine;

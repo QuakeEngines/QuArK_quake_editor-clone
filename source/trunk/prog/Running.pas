@@ -222,7 +222,7 @@ begin
 
   NewObj:=LienFichierExact(EditorFileName, Q.FParent, False);
   NewObj.AddRef(+1); try
-  NewObj.ToutCharger;
+  NewObj.LoadAll;
   NewObj2:=Nil; try
   if ConvertClass=Q.ClassType then
    begin

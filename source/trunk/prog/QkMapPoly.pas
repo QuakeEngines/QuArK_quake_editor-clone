@@ -2682,7 +2682,7 @@ begin
   try
    PyListToQList(lst, L1, TPolyedre);
    Poly:=QkObjFromPyObj(self) as TPolyedre;
-   Poly.ToutCharger;
+   Poly.LoadAll;
    if Poly.CheckPolyhedron then
     begin
      for I:=L1.Count-1 downto 0 do
@@ -2717,7 +2717,7 @@ begin
   if not PyArg_ParseTupleX(args, 'O!|O!', [@TyObject_Type, @poly, @TyObject_Type, @face]) then
    Exit;
   Me:=QkObjFromPyObj(self) as TPolyedre;
-  Me.ToutCharger;
+  Me.LoadAll;
   BoolResult:=False;
   if Me.CheckPolyhedron then
    if face=Nil then

@@ -44,7 +44,7 @@ type
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
          procedure EtatObjet(var E: TEtatObjet); override;
          function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
-         procedure Charger(F: TStream; Taille: Integer); override;
+         procedure LoadFile(F: TStream; FSize: Integer); override;
          procedure DoQ1Spr(fs:TStream; PPPalette:PGameBuffer);
          procedure DoQ2Spr(Fs: TStream);
          procedure DoHLSpr(Fs:TStream);
@@ -119,7 +119,7 @@ if (Q is QPcx) then
    Result:=[];
 end;
 
-procedure QSprFile.Charger(F: TStream; Taille: Integer);
+procedure QSprFile.LoadFile(F: TStream; FSize: Integer);
 var
 ID_SPRHEADER,ID_SP2Header,head,ver,org:Longint;
 pgb:PGameBuffer;

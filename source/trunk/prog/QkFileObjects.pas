@@ -138,7 +138,7 @@ type
                   function ObtenirFenetre(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
                   function LireEnteteFichierStd(Source: TStream; var SourceTaille: Integer) : Integer;
                   procedure EcrireEnteteFichierStd(TotalSize: Integer; F: TStream);
-                  procedure Charger(F: TStream; Taille: Integer); override;
+                  procedure LoadFile(F: TStream; FSize: Integer); override;
                   procedure Enregistrer(Info: TInfoEnreg1); override;
                  {function ChargerQuArK(F: TStream; Taille: Integer) : Boolean;
                   function EnregistrerQuArK(Format: Integer; F: TStream) : Boolean;}
@@ -176,7 +176,7 @@ type
                 end;
  {QQuArKFileObject = class(QFileObject)
                      protected
-                       procedure Charger(F: TStream; Taille: Integer); override;
+                       procedure LoadFile(F: TStream; FSize: Integer); override;
                        procedure Enregistrer(Format: Integer; F: TStream); override;
                      end;}
   EQObjectFileNotFound = class(Exception);
@@ -206,7 +206,7 @@ function ByFileName(Item1, Item2: Pointer) : Integer;
 function SortedFindName(Q: TQList; const nName: String) : QObject;
 function SortedFindFileName(Q: TQList; const nFileName: String) : QFileObject;
 
-procedure ChargerObjTexte(Self: QObject; P: PChar; Taille: Integer);
+procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
 procedure EcrireObjTexte(Self: QObject; L: TStringList; Comment: Boolean);
 function EnteteObjTexte(var P: PChar) : Boolean;
 function MakeTempFileName(const Tag: String) : String;
@@ -612,7 +612,7 @@ begin
  Result:=ReadFormat;
 end;
 
-procedure QFileObject.Charger(F: TStream; Taille: Integer);
+procedure QFileObject.LoadFile(F: TStream; FSize: Integer);
 var
  Info: TFileObjectClassInfo;
 begin
@@ -622,25 +622,25 @@ begin
   begin
    FileObjectClassInfo(Info);
    if Info.QuArKFileObject then  { object is stored in QuArK style }
-    if LireEnteteFichierStd(F, Taille) <> rf_AsText then
+    if LireEnteteFichierStd(F, FSize) <> rf_AsText then
      inherited
     else
-     ChargerCommeTexte(F, Taille)
+     ChargerCommeTexte(F, FSize)
    else   { object is stored in its own format }
     if ReadFormat>=rf_Default then
-     ReadUnformatted(F, Taille)  { as unformatted stand-alone file }
+     ReadUnformatted(F, FSize)  { as unformatted stand-alone file }
     else
      inherited;
   end;
 end;
 
-(*procedure QQuArKFileObject.Charger(F: TStream; Taille: Integer);
+(*procedure QQuArKFileObject.LoadFile(F: TStream; FSize: Integer);
 begin
  if (ReadFormat=rf_Private)
- or (LireEnteteFichierStd(F, Taille) <> rf_AsText) then
-  inherited Charger(F, Taille)
+ or (LireEnteteFichierStd(F, FSize) <> rf_AsText) then
+  inherited LoadFile(F, FSize)
  else
-  ChargerCommeTexte(F, Taille);
+  ChargerCommeTexte(F, FSize);
 end;*)
 
 (*function ChargerQuArK(F: TStream; Taille: Integer) : Boolean;
@@ -661,13 +661,13 @@ var
 begin
  SetLength(S, Taille);
  F.ReadBuffer(S[1], Taille);
- ChargerObjTexte(Self, PChar(S), Taille);
+ ConstructObjsFromText(Self, PChar(S), Taille);
   { when loading from the Addons path, try to build a cached (compiled) version }
 (* if (ExtractFilePath(NomFichier)=ApplicationPath+AddonsPath)
  and (ExtractFileExt(NomFichier)=TypeInfo)... *)
 end;
 
-procedure ChargerObjTexte(Self: QObject; P: PChar; Taille: Integer);
+procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
 const
  Separateurs = [#13, #10, ' ', #9];
  Granularite = 8192;
@@ -720,7 +720,7 @@ var
   end;
 
 begin
- DebutTravail(5447, Taille div Granularite); try
+ DebutTravail(5447, PSize div Granularite); try
  Ligne:=1;
  Prochain:=P+Granularite;
  Lu(0);
@@ -916,7 +916,7 @@ end;
 procedure QFileObject.LoadFromStream(F: TStream);
 begin
  {$IFDEF Debug} FLoading:=True; try {$ENDIF}
- Charger(F, F.Size-F.Position);
+ LoadFile(F, F.Size-F.Position);
  {$IFDEF Debug} finally FLoading:=False; end; {$ENDIF}
 end;
 

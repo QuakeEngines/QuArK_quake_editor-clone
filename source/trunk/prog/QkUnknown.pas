@@ -40,7 +40,7 @@ type
               function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
              {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
              {procedure Enregistrer(Format: Integer; F: TStream); override;}
-             {procedure Charger(F: TStream; Taille: Integer); override;}
+             {procedure LoadFile(F: TStream; FSize: Integer); override;}
             public
               class function TypeInfo: String; override;
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;

@@ -32,7 +32,7 @@ type
  QTextureSin = class(QTexture2)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           class function CustomParams : Integer; override;
@@ -53,7 +53,7 @@ uses Game, Setup, Quarkx;
 
 type
  {tiglari: this stuff is binary data just read into this structure in
-    one gulp in QTextureSin.Charger}
+    one gulp in QTextureSin.LoadFile}
  TSinHeader = packed record
                Name: array[0..63] of Char;
                Width, Height: LongInt;
@@ -94,7 +94,7 @@ begin
  Result:=mjSin;
 end;
 
-procedure QTextureSin.Charger(F: TStream; Taille: Integer);
+procedure QTextureSin.LoadFile(F: TStream; FSize: Integer);
 const
  Spec1 = 'Image1=';
  Spec2 = 'Pal=';
@@ -110,7 +110,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<=SizeOf(Header) then
+      if FSize<=SizeOf(Header) then
        Raise EError(5519);
       Base:=F.Position;
       F.ReadBuffer(Header, SizeOf(Header));
@@ -173,7 +173,7 @@ begin
       Q2MipTex.Contents:=Header.Contents;
       Q2MipTex.Flags:=Header.Flags;
       Q2MipTex.Value:=Header.Value;
-      Charger1(F, Base, Taille, Q2MipTex, @Header.Offsets,
+      Charger1(F, Base, FSize, Q2MipTex, @Header.Offsets,
        Header.Name, Header.AnimName);
      end;
  else inherited;

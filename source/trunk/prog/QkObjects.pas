@@ -196,7 +196,7 @@ type
              procedure Enregistrer(Info: TInfoEnreg1); virtual;
                { core function for writing to file, normally overridden,
                  nature of Info varies per file format unit (e.g. QkSin) }
-             procedure Charger(F: TStream; Taille: Integer); virtual;
+             procedure LoadFile(F: TStream; FSize: Integer); virtual;
                { core function for reading from file, normally overridden }
              procedure FixupReference; virtual;
                { normally does nothing, sometimes packs things up into a
@@ -204,7 +204,7 @@ type
              procedure ReadUnformatted(F: TStream; Size: Integer);
              procedure SaveUnformatted(F: TStream);
                { for reading/writing raw data to/from a Data specific,
-                 used in overrides for Charger/Enregistrer }
+                 used in overrides for Load/Enregistrer }
              procedure FileCrashRecoverHack;
            public
               { propriétés commune aux QObjects }
@@ -216,7 +216,7 @@ type
              FParent: QObject;
              Name: String;
              constructor Create(const nName: String; nParent: QObject);
-             procedure ToutCharger;
+             procedure LoadAll;
              procedure AccesRec;
              procedure Ouvrir(F: TQStream; Taille: Integer);
              procedure Enregistrer1(Info: TInfoEnreg1);
@@ -230,7 +230,7 @@ type
                { incr/decr Py reference count, frees if 0 }
              procedure Acces;
                { does actual full read-in }
-             procedure ChargerInterne(F: TStream; Taille: Integer);
+             procedure LoadInternal(F: TStream; FSize: Integer);
              function GetObjectSize(Loaded: TQStream; LoadNow: Boolean) : Integer;
              procedure EtatObjet(var E: TEtatObjet); virtual;
              procedure DisplayDetails(SelIcon: Boolean; var D: TDisplayDetails); virtual;
@@ -1208,7 +1208,7 @@ begin
  if (FFlags and ofSurDisque <> 0) and not FLoading then
   begin  { optimization only : tags the source stream as "DisableDelayLoading",
            which means that subobjects will be immediately loaded in LoadedItem
-           instead of by the recursive ToutCharger call below. }
+           instead of by the recursive LoadAll call below. }
    S:=FNode^.Self;
    S.AddRef;
    ddl:=S.DisableDelayLoading;
@@ -1222,13 +1222,13 @@ begin
   end;
 end;
 
-procedure QObject.ToutCharger;
+procedure QObject.LoadAll;
 var
  I: Integer;
 begin
  AccesRec;
  for I:=0 to SousElements.Count-1 do
-  SousElements[I].ToutCharger;
+  SousElements[I].LoadAll;
 end;
 
 {procedure QObject.LireEnteteFichier;
@@ -1254,7 +1254,7 @@ begin
   Raise InternalE('Acces:FNode=Nil');
  SourceTaille:=QStreamAddRef(FNode, Source); try
  FLoading:=True; try
- Charger(Source, SourceTaille);
+ LoadFile(Source, SourceTaille);
  finally FLoading:=False; end;
  FFlags:=FFlags and not ofSurDisque;
  QStreamRelease(FNode);
@@ -1277,7 +1277,7 @@ begin
     Source:=AccesFichierQ(S, []);
     SourceTaille:=Source.Size;
    end;
-  Charger(Source, SourceTaille);
+  LoadFile(Source, SourceTaille);
   FFlags:=FFlags and not ofSurDisque;
   QStreamRelease(FNode);
  finally
@@ -1368,7 +1368,7 @@ begin
    end
   else
    SourceTaille:=QStreamAddRef(FNode, Source);
-  Charger(Source, SourceTaille);
+  LoadFile(Source, SourceTaille);
   FFlags:=FFlags and not ofSurDisque;
   QStreamCopying(FNode, F);
  finally
@@ -1544,10 +1544,10 @@ type
                   NameSize: Byte;
                  end;
 
-procedure QObject.ChargerInterne(F: TStream; Taille: Integer);
+procedure QObject.LoadInternal(F: TStream; FSize: Integer);
 begin
  FLoading:=True; try
- Charger(F, Taille);
+ LoadFile(F, FSize);
  finally FLoading:=False; end;
 end;
 
@@ -1560,7 +1560,7 @@ begin
   Abort;
 end;
 
-procedure QObject.Charger(F: TStream; Taille: Integer);
+procedure QObject.LoadFile(F: TStream; FSize: Integer);
 var
  Name, Names, ExtraSizes: String;
  DeltaPos, I, J, FileItemCount, Size, ExtraSize: Integer;
@@ -1593,7 +1593,7 @@ begin
 
  Size:=FileItemCount * SizeOf(TFileItemInfo);
  Inc(DeltaPos, Size);
- if DeltaPos > Taille then   { Raise EErrorFmt(5509, [52]); }
+ if DeltaPos > FSize then   { Raise EErrorFmt(5509, [52]); }
   begin
    FileCrashRecoverHack;
    Exit;
@@ -1614,7 +1614,7 @@ begin
   end;
 
  Inc(DeltaPos, Size);
- if DeltaPos > Taille then
+ if DeltaPos > FSize then
   Raise EErrorFmt(5509, [53]);
  SetLength(Names, Size);
  F.ReadBuffer(Names[1], Size);  { read the names }
@@ -1623,8 +1623,8 @@ begin
   ExtraSizes:=''
  else
   begin   { read the extra sizes }
-   Dec(Taille, ExtraSize);
-   I:=Taille-DeltaPos;  { stored at the end of the data block }
+   Dec(FSize, ExtraSize);
+   I:=FSize-DeltaPos;  { stored at the end of the data block }
    if I<0 then
     Raise EErrorFmt(5509, [54]);
    F.Seek(I, 1);
@@ -1659,15 +1659,15 @@ begin
     end;
 
    Inc(DeltaPos, Size);
-   if DeltaPos > Taille then    {Raise EErrorFmt(5509, [56])}
+   if DeltaPos > FSize then    {Raise EErrorFmt(5509, [56])}
     begin
      if not Hack then
       begin
        FileCrashRecoverHack;
        Hack:=True;
       end;
-     Size:=Taille-(DeltaPos-Size);
-     DeltaPos:=Taille;
+     Size:=FSize-(DeltaPos-Size);
+     DeltaPos:=FSize;
     end;
 
    if Info^.Code and qsBitSubObject = 0 then
@@ -1811,7 +1811,7 @@ begin
  else
   begin
    Q.FLoading:=True; try
-   Q.Charger(F, Size);
+   Q.LoadFile(F, Size);
    finally Q.FLoading:=False; end;
   end;
  Q.FixupReference;

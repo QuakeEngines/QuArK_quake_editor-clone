@@ -32,7 +32,7 @@ type
  QBmp = class(QImages)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
           function ReadDIBData(F: TStream; Taille: Integer) : Boolean;
         public
           class function TypeInfo: String; override;
@@ -186,7 +186,7 @@ begin
  Result:=False;
 end;
 
-procedure QBmp.Charger(F: TStream; Taille: Integer);
+procedure QBmp.LoadFile(F: TStream; FSize: Integer);
 var
  Header: TBitmapFileHeader;
  Origine, Taille0: LongInt;
@@ -194,16 +194,16 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<=SizeOf(Header)+SizeOf(TBitmapCoreHeader) then
+      if FSize<=SizeOf(Header)+SizeOf(TBitmapCoreHeader) then
        Raise EError(5519);
       Origine:=F.Position;
-      Taille0:=Taille;
+      Taille0:=FSize;
       F.ReadBuffer(Header, SizeOf(Header));
-      Dec(Taille, SizeOf(Header));
+      Dec(FSize, SizeOf(Header));
       if Header.bfType<>bmpSignature then
        Raise EErrorFmt(5535, [LoadName, Header.bfType, bmpSignature]);
 
-      if not ReadDIBData(F, Taille) then
+      if not ReadDIBData(F, FSize) then
        begin
         F.Position:=Origine;
         case MessageDlg(FmtLoadStr1(5536, [LoadName, SetupGameSet.Name]),

@@ -53,7 +53,7 @@ type
         end;
  QMapFile = class(QMap)
             protected
-              procedure Charger(F: TStream; Taille: Integer); override;
+              procedure LoadFile(F: TStream; FSize: Integer); override;
               procedure Enregistrer(Info: TInfoEnreg1); override;
             public
               class function TypeInfo: String; override;
@@ -851,7 +851,7 @@ begin
               Contents:=StrToInt(Q.Specifics.Values['Contents']);
               Flags:=StrToInt(Q.Specifics.Values['Flags']);
             while Symbole=sTexteInattendu do
-             begin  { verbose but fast, c.f. QkSin: QTextureSin.Charger }
+             begin  { verbose but fast, c.f. QkSin: QTextureSin.LoadFile }
               if s = 'color' then  { three following values }
                begin
                 Lire(sTexteInattendu);
@@ -1041,7 +1041,7 @@ begin
  Info.FileExt:=784;
 end;
 
-procedure QMapFile.Charger(F: TStream; Taille: Integer);
+procedure QMapFile.LoadFile(F: TStream; FSize: Integer);
 var
  Racine: TTreeMapBrush;
  ModeJeu: Char;
@@ -1049,8 +1049,8 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      SetLength(Source, Taille);
-      F.ReadBuffer(Source[1], Taille);
+      SetLength(Source, FSize);
+      F.ReadBuffer(Source[1], FSize);
       Racine:=TTreeMapBrush.Create('', Self);
       Racine.AddRef(+1); try
       ModeJeu:=OuvrirListeEntites(Racine, Source, Nil);
@@ -1074,7 +1074,7 @@ begin
       Racine:=SousElements.FindName(Specifics.Values['Root']);
       if (Racine=Nil) or not (Racine is TTreeMapBrush) then
        Raise EError(5558);
-      Racine.ToutCharger;
+      Racine.LoadAll;
       HxStrings:=Nil;
       List:=TQList.Create;
       Dest:=TStringList.Create;

@@ -52,7 +52,7 @@ type
  QRawFileObject = class(QFileObject)
                   protected
                     procedure Enregistrer(Info: TInfoEnreg1); override;
-                    procedure Charger(F: TStream; Taille: Integer); override;
+                    procedure LoadFile(F: TStream; FSize: Integer); override;
                     procedure SetWriteString(const WriteString: String);
                     function GetDataInfo : TRawDataInfo; virtual; abstract;
                     function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
@@ -170,7 +170,7 @@ begin
  Result:=TFQRawFile.Create(nOwner);
 end;
 
-procedure QRawFileObject.Charger;
+procedure QRawFileObject.LoadFile;
 var
  Q: QUnknown;
 begin
@@ -178,7 +178,7 @@ begin
   1: begin  { as stand-alone file }
       Q:=QUnknown.Create('Data', Self);
       SousElements.Add(Q);
-      LoadedItem(rf_Default, F, Q, Taille);  { delayed read }
+      LoadedItem(rf_Default, F, Q, FSize);  { delayed read }
      end;
  else inherited;
  end;

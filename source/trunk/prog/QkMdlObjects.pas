@@ -1306,7 +1306,7 @@ begin
   PyListToQList(lst, Q, QFrame);
   with QkObjFromPyObj(self) as QComponent do
    begin
-    ToutCharger;
+    LoadAll;
     Result:=PyInt_FromLong(Ord(MergeVertices(Q)));
    end; 
   finally Q.Free; end;

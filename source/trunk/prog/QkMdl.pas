@@ -57,7 +57,7 @@ type
               end;
  QMdlFile = class(QModelFile)
             protected
-              procedure Charger(F: TStream; Taille: Integer); override;
+              procedure LoadFile(F: TStream; FSize: Integer); override;
               procedure Enregistrer(Info: TInfoEnreg1); override;
             public
               class function TypeInfo: String; override;
@@ -65,7 +65,7 @@ type
             end;
  QMd2File = class(QModelFile)
             protected
-              procedure Charger(F: TStream; Taille: Integer); override;
+              procedure LoadFile(F: TStream; FSize: Integer); override;
               procedure Enregistrer(Info: TInfoEnreg1); override;
               function ReadMd2File(F: TStream; Origine: Integer; const mdl: dmdl_t) : QPackedModel;
             public
@@ -276,7 +276,7 @@ function QModelFile.Saving_Root;
 var
  Root1: QModelGroup;
 begin
- ToutCharger;
+ LoadAll;
  Root1:=GetRoot;
  if Root1=Nil then Raise EError(2432);
  Result:=Root1.PackedVersion;
@@ -297,7 +297,7 @@ begin
  Info.FileExt:=786;
 end;
 
-procedure QMdlFile.Charger(F: TStream; Taille: Integer);
+procedure QMdlFile.LoadFile(F: TStream; FSize: Integer);
 const
  Spec1 = 'Tris=';
  Spec2 = 'Vertices=';
@@ -331,9 +331,9 @@ var
 
   procedure Read1(var Buf; Count: Integer);
   begin
-   if Count>Taille then
+   if Count>FSize then
     Raise EErrorFmt(5186, [LoadName]);
-   Dec(Taille, Count);
+   Dec(FSize, Count);
    F.ReadBuffer(Buf, Count);
   end;
 
@@ -347,10 +347,10 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(mdl) then
+      if FSize<SizeOf(mdl) then
        Raise EError(5519);
       F.ReadBuffer(mdl, SizeOf(mdl));
-      Dec(Taille, SizeOf(mdl));
+      Dec(FSize, SizeOf(mdl));
       RA:=(mdl.id=SignatureMdlRa) and (mdl.version=VersionMdlRa);
       if RA then
        Read1(mdl_ra, SizeOf(mdl_ra))
@@ -983,12 +983,12 @@ begin
  Info.FileExt:=787;
 end;
 
-procedure QMd2File.Charger(F: TStream; Taille: Integer);
+procedure QMd2File.LoadFile(F: TStream; FSize: Integer);
 
   procedure Check(Ofs, Num, Size1: Integer);
   begin
-   if (Ofs<SizeOf(dmdl_t)) or (Ofs>Taille)
-   or (Num<0) or (Ofs+Size1*Num>Taille) then
+   if (Ofs<SizeOf(dmdl_t)) or (Ofs>FSize)
+   or (Num<0) or (Ofs+Size1*Num>FSize) then
     Raise EErrorFmt(5509, [142]);
   end;
 
@@ -998,7 +998,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(mdl) then
+      if FSize<SizeOf(mdl) then
        Raise EError(5519);
       Origine:=F.Position;
       F.ReadBuffer(mdl, SizeOf(mdl));
@@ -1006,9 +1006,9 @@ begin
        Raise EErrorFmt(5571, [LoadName, mdl.ident, mdl.version, SignatureMdl2, VersionMdl2]);
       if (mdl.num_frames>0) and (mdl.framesize<>BaseAliasFrameSize+mdl.num_xyz*SizeOf(dtrivertx_t)) then
        Raise EErrorFmt(5509, [141]);
-      if mdl.ofs_end>Taille then
+      if mdl.ofs_end>FSize then
        Raise EErrorFmt(5186, [LoadName]);
-      Taille:=mdl.ofs_end;
+      FSize:=mdl.ofs_end;
       Check(mdl.ofs_skins, mdl.num_skins, MAX_SKINNAME);
       Check(mdl.ofs_st, mdl.num_st, SizeOf(dstvert_t));
       Check(mdl.ofs_tris, mdl.num_tris, SizeOf(dtriangle_t));

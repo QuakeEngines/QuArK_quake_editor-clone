@@ -392,7 +392,7 @@ begin
   Info.Clic:=V1^.V;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
-    ToutCharger;
+    LoadAll;
     Deplacement(nGrid);
    end; 
   Result:=PyNoResult;
@@ -416,7 +416,7 @@ begin
     Info.Clic:=Origine;
     with QkObjFromPyObj(self) as Q3DObject do
      begin
-      ToutCharger;
+      LoadAll;
       Deplacement(nGrid);
      end; 
    end;
@@ -441,7 +441,7 @@ begin
   Info.Matrice:=M1^.M;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
-    ToutCharger;
+    LoadAll;
     Deplacement(0);
    end; 
   Result:=PyNoResult;
@@ -461,7 +461,7 @@ begin
   Info.Clic:=Origine;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
-    ToutCharger;
+    LoadAll;
     Deplacement(0);
    end; 
   Result:=PyNoResult;

@@ -53,7 +53,7 @@ type
                 procedure EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream; eocd: PEndOfCentralDir);
 //                function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
                 procedure Enregistrer(Info: TInfoEnreg1); override;
-                procedure Charger(F: TStream; Taille: Integer); override;
+                procedure LoadFile(F: TStream; FSize: Integer); override;
 //                procedure SortPakFolder;
               public
                 class function TypeInfo: String; override;
@@ -406,7 +406,7 @@ begin
   end;
 end;
 
-procedure QZipFolder.Charger(F: TStream; Taille: Integer);
+procedure QZipFolder.LoadFile(F: TStream; FSize: Integer);
 var
  J: Integer;
  Dossier, nDossier: QObject;
@@ -424,7 +424,7 @@ begin
        Dossier:=Self;
        CheminPrec:='';
        org:=f.position;
-       f.seek(Taille,soFromBeginning); {end of 'file'}
+       f.seek(FSize,soFromBeginning); {end of 'file'}
        f.seek(-($FF+sizeof(TEndOfCentralDIR)),soFromCurrent);
        while true do begin
          f.ReadBuffer(eosig,4);

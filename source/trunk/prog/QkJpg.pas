@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/04/20 10:43:33  arigo
+JPeg writing fixes
+
 }
 
 unit QkJpg;
@@ -15,7 +18,7 @@ type
  QJPeg = class(QImages)
         protected
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           function BaseGame : Char;
           class function CustomParams : Integer;
@@ -127,7 +130,7 @@ begin
   Specifics.Add(Data);   { Image1= }
 end;
 
-procedure QJPeg.Charger(F:TStream; Taille: Integer);
+procedure QJPeg.LoadFile(F:TStream; FSize: Integer);
 var
   bmp:TMemoryStream;
   FileWrap: TJpegFileWrapper;

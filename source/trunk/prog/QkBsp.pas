@@ -68,7 +68,7 @@ type
         protected
           function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
@@ -365,19 +365,19 @@ begin
  ObjectGameCode:=CurrentQuake2Mode;
 end;
 
-procedure QBsp.Charger(F: TStream; Taille: Integer);
+procedure QBsp.LoadFile(F: TStream; FSize: Integer);
 var
  Signature: LongInt;
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Signature) then
+      if FSize<SizeOf(Signature) then
        Raise EError(5519);
       F.ReadBuffer(Signature, SizeOf(Signature));
       F.Seek(-SizeOf(Signature), soFromCurrent);
       case Signature of
-       SignatureBSP, SignatureBSPHL: ChargerBsp1(F, Taille);
-       SignatureBSP2: ChargerBsp2(F, Taille);
+       SignatureBSP, SignatureBSPHL: ChargerBsp1(F, FSize);
+       SignatureBSP2: ChargerBsp2(F, FSize);
       else
        Raise EErrorFmt(5520, [LoadName, Signature, SignatureBSP, SignatureBSP2]);
       end;
@@ -548,7 +548,7 @@ var
 begin
  if FStructure<>Nil then
   begin
-   FStructure.ToutCharger;
+   FStructure.LoadAll;
    Dest:=TStringList.Create;
    try
     FStructure.SauverTexte(Nil, Dest, soBSP, Nil);

@@ -36,7 +36,7 @@ type
         protected
           function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
           procedure Enregistrer(Info: TInfoEnreg1); override;
-          procedure Charger(F: TStream; Taille: Integer); override;
+          procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           procedure EtatObjet(var E: TEtatObjet); override;
@@ -56,15 +56,15 @@ type
  {------------------------}
 
 type
- QQme0  = class(QFileObject) public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme1  = class(QMap       ) public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme2  = class(QQuakeC    ) public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme3  = class(QFileObject) public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme4  = class(QTextureList)public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme5  = class(QImport)     public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme6  = class(QFileObject) public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme7  = class(QExplorerGroup)public class function TypeInfo: String;override;protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
- QQme8  = class(QMdlFile)    public class function TypeInfo: String; override; protected procedure Charger(F: TStream; Taille: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme0  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme1  = class(QMap       ) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme2  = class(QQuakeC    ) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme3  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme4  = class(QTextureList)public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme5  = class(QImport)     public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme6  = class(QFileObject) public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme7  = class(QExplorerGroup)public class function TypeInfo: String;override;protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
+ QQme8  = class(QMdlFile)    public class function TypeInfo: String; override; protected procedure LoadFile(F: TStream; FSize: Integer); override; procedure Enregistrer(Info: TInfoEnreg1); override; end;
 
  {------------------------}
 
@@ -188,9 +188,9 @@ end;
 
  {------------------------}
 
-procedure QQme0 .Charger;
+procedure QQme0 .LoadFile;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
  else
   inherited;
 end;
@@ -423,14 +423,14 @@ begin
  Result.Specifics.Values['macro']:=Macro;
 end;
 
-procedure QQme1 .Charger;
+procedure QQme1 .LoadFile;
 var
  T: TTransfertTreeMap;
  Q: QObject;
  S: String;
  M: TMemoryStream;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
   begin  { turns this data into a map }
    FillChar(T, SizeOf(T), 0);
    S:=Specifics.Values['Map'];
@@ -461,9 +461,9 @@ end;
 
  {------------------------}
 
-procedure QQme2 .Charger;
+procedure QQme2 .LoadFile;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
  else
   inherited;
 end;
@@ -474,9 +474,9 @@ begin
   inherited;
 end;
 
-procedure QQme3 .Charger;
+procedure QQme3 .LoadFile;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
  else
   inherited;
 end;
@@ -487,15 +487,15 @@ begin
   inherited;
 end;
 
-procedure QQme4 .Charger;
+procedure QQme4 .LoadFile;
 var
  M: TMemoryStream;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
   begin
    M:=SpecAsMemStream(Specifics.Values['Data']); try
    Specifics.Values['Data']:='';
-   inherited Charger(M, M.Size);
+   inherited LoadFile(M, M.Size);
    finally M.Free; end;
   end
  else
@@ -508,7 +508,7 @@ begin
   inherited;
 end;
 
-procedure QQme5 .Charger;
+procedure QQme5 .LoadFile;
 var
  S: String;
  Folder: QPakFolder;
@@ -516,7 +516,7 @@ var
  I, J: Integer;
  M: TMemoryStream;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
   begin
    Folder:=GetFolder(Specifics.Values['Path']);
    for I:=Specifics.Count-1 downto 0 do
@@ -547,9 +547,9 @@ begin
   inherited;
 end;
 
-procedure QQme6 .Charger;
+procedure QQme6 .LoadFile;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
  else
   inherited;
 end;
@@ -560,11 +560,11 @@ begin
   inherited;
 end;
 
-procedure QQme7 .Charger;
+procedure QQme7 .LoadFile;
 var
  S: String;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
   begin
    S:=Specifics.Values['FileName'];
    if S<>'' then
@@ -580,15 +580,15 @@ begin
   inherited;
 end;
 
-procedure QQme8 .Charger;
+procedure QQme8 .LoadFile;
 var
  M: TMemoryStream;
 begin
- if ReadAsQmeEntry(Self, F, Taille) then
+ if ReadAsQmeEntry(Self, F, FSize) then
   begin
    M:=SpecAsMemStream(Specifics.Values['Mdl']); try
    Specifics.Values['Mdl']:='';
-   inherited Charger(M, M.Size);
+   inherited LoadFile(M, M.Size);
    finally M.Free; end;
   end
  else
@@ -638,7 +638,7 @@ begin
     (CompareText(Copy(S, Length(S)-4, 4), '.qme') = 0) and (S[Length(S)] in ['0'..'8'])];
 end;
 
-procedure QQme.Charger(F: TStream; Taille: Integer);
+procedure QQme.LoadFile(F: TStream; FSize: Integer);
 var
  Intro: TIntroQM;
  Entree: TEntreeRepQM;
@@ -648,7 +648,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Intro) then
+      if FSize<SizeOf(Intro) then
        Raise EError(5519);
       Origine:=F.Position;
       F.ReadBuffer(Intro, SizeOf(Intro));

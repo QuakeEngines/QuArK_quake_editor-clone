@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/05/12 17:43:34  decker_dk
+Auto-create Texture-links to .tga/.jpg files - .shaders still missing
+
 Revision 1.13  2000/05/11 22:07:00  alexander
 added LinkSpecificChar 'l' for  GameMode mjSOF
 
@@ -171,7 +174,7 @@ type
                procedure ChargerFin(F: TStream; TailleRestante: Integer); virtual;
               {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
                procedure Enregistrer(Info: TInfoEnreg1); override;
-               procedure Charger(F: TStream; Taille: Integer); override;
+               procedure LoadFile(F: TStream; FSize: Integer); override;
              public
                class function TypeInfo: String; override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -186,7 +189,7 @@ type
                           NomTex, AnimTex: PChar);
               {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
                procedure Enregistrer(Info: TInfoEnreg1); override;
-               procedure Charger(F: TStream; Taille: Integer); override;
+               procedure LoadFile(F: TStream; FSize: Integer); override;
              public
                function BuildWalFileHeader : TQ2Miptex;
                class function TypeInfo: String; override;
@@ -1736,7 +1739,7 @@ procedure QTexture1.ChargerFin(F: TStream; TailleRestante: Integer);
 begin
 end;
 
-procedure QTexture1.Charger(F: TStream; Taille: Integer);
+procedure QTexture1.LoadFile(F: TStream; FSize: Integer);
 const
  Spec1 = 'Image#=';
  PosNb = 6;
@@ -1749,11 +1752,11 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Header) then
+      if FSize<SizeOf(Header) then
        Raise EError(5519);
       Base:=F.Position;
       F.ReadBuffer(Header, SizeOf(Header));
-      Max:=CheckQ1Miptex(Header, Taille);
+      Max:=CheckQ1Miptex(Header, FSize);
       if Max=0 then
        Raise EErrorFmt(5514, [LoadName, 1]);
       CheckTexName(CharToPas(Header.Nom));
@@ -1772,8 +1775,8 @@ begin
         Taille1:=Taille1 div 4;  { next images are scaled-down }
        end;
       F.Position:=Base+Max;
-      ChargerFin(F, Taille-Max);
-      F.Position:=Base+Taille;
+      ChargerFin(F, FSize-Max);
+      F.Position:=Base+FSize;
      end;
  else inherited;
  end;
@@ -1942,18 +1945,18 @@ begin
  F.Position:=Base+Taille;
 end;
 
-procedure QTexture2.Charger(F: TStream; Taille: Integer);
+procedure QTexture2.LoadFile(F: TStream; FSize: Integer);
 var
  Header: TQ2Miptex;
  Base: Integer;
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      if Taille<SizeOf(Header) then
+      if FSize<SizeOf(Header) then
        Raise EError(5519);
       Base:=F.Position;
       F.ReadBuffer(Header, SizeOf(Header));
-      Charger1(F, Base, Taille, Header, @Header.Indexes, Nil, Nil);
+      Charger1(F, Base, FSize, Header, @Header.Indexes, Nil, Nil);
      end;
  else inherited;
  end;
