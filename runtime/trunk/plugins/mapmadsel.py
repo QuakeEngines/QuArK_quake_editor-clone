@@ -647,6 +647,13 @@ def NoSelClick(m):
   else:
     mennosel.state = qmenu.checked
      
+
+def Unrestrict(editor):
+  del editor.restrictor
+  menrestsel.state = qmenu.disabled
+  editor.invalidateviews()
+
+
 def UnrestrictClick(m):
   editor = mapeditor()
   if editor is None: return
@@ -716,6 +723,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.4  2001/03/20 08:02:16  tiglari
+# customizable hot key support
+#
 # Revision 1.3.2.1  2001/03/11 22:08:15  tiglari
 # customizable hot keys
 #
