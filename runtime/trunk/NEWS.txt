@@ -12,6 +12,9 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+
+ * [cdunde/Rowdy]: Added light Color-Picker function for Torque game engine.
+
  * [alexander]: HL2 Support started. I changed quite a lot of files:
        runtime/addons/Defaults.qrk-//hl2 support started
        runtime/addons/Half-Life2/entities-hl2-cs.qrk-//first useable versions, added rcs headers

@@ -357,6 +357,9 @@ def colorquake(i):     # i must be a color as an integer
 def makeRGBcolor(r,g,b):
     return quarkx.rnd(r) | (quarkx.rnd(g)<<8) | (quarkx.rnd(b)<<16)
 
+def vectorRGBcolor(v):     # v must be vector (x,y,z for color components)
+    return quarkx.rnd(v.x) | (quarkx.rnd(v.y)<<8) | (quarkx.rnd(v.z)<<16)
+
 def readfloats(s):     # reads a space-separated string of floats
     try:
         return map(float, s.split())
@@ -1485,6 +1488,11 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.18  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
 #Revision 1.17  2003/03/21 05:57:05  cdunde
 #Update infobase and add links
 #
