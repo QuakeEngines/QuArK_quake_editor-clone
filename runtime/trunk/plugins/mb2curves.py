@@ -227,6 +227,58 @@ def b2fromface(cp, name, face, editor):
     b2["tex"]=face["tex"]
     return b2
 
+
+def smallerarchbox(box, thick):
+    "returns a box for arch, thick smaller than input box"
+    fi = thick*(box["brf"]-box["blf"]).normalized
+    bi = thick*(box["brb"]-box["blb"]).normalized
+    fd = thick*(box["brf"]-box["trf"]).normalized
+    bd = thick*(box["brb"]-box["trb"]).normalized
+    box2 = {}
+    for (corner, delta) in (("blf",fi), ("blb",bi),
+            ("tlf",fi+fd), ("tlb",fd+bd), ("trf",fd-fi), ("trb",bd-bi),
+            ("brf",-fi), ("brb",-bi)):
+        box2[corner]=box[corner]+delta
+    return box2
+
+def smallerbevelbox(box, thick):
+    "returns a box for bevel, thick smaller than input box"
+    def gap(goal, source, box=box, thick=thick):
+        return thick*(box[goal]-box[source]).normalized
+    rf = gap("tlf", "trf")
+    rb = gap("tlb", "trb")
+    lb = gap("tlf", "tlb")
+    box2 = {}
+    for (corner, delta) in (("blf",zip), ("blb",lb),
+            ("tlf",zip), ("tlb",lb), ("trf",rf), ("trb",rb),
+            ("brf",rf), ("brb",rb)):
+        box2[corner]=box[corner]+delta
+    return box2
+
+
+def archline(pd, a, b, c, d):
+    "returns 5-tuple with middle halfway between b and c"
+    return [pd[a], pd[b], (pd[b]+pd[c])/2, pd[c], pd[d]]
+
+def cp_from_rows(row0, row2):
+    "makes cp from top & bottom rows & fills in middle"
+    cp = [row0, None, row2]
+    cp[1] = map(lambda x, y:(x+y)/2, cp[0], cp[2]) 
+    return cp
+
+def archcurve(pd):
+    cp = cp_from_rows(archline(pd, "blf", "tlf", "trf", "brf"),
+                      archline(pd, "blb", "tlb", "trb", "brb"))
+    return cp
+
+
+def makeseam(row0, row2, texface, name):
+     cp = cp_from_rows(row0, row2)
+     seam = quarkx.newobj(name+":b2")
+     seam["tex"] = texface["tex"]
+     seam.cp = texcp_from_face(cp, texface, None)
+     return seam
+
 def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
@@ -246,17 +298,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
   #
   # make the basic inner curved face, a 3x5 quilt
   #
-  cp = [[pd["blf"],pd["tlf"], (pd["tlf"]+pd["trf"])/2.0, pd["trf"], pd["brf"]],
-        None,
-        [pd["blb"],pd["tlb"], (pd["tlb"]+pd["trb"])/2.0, pd["trb"], pd["brb"]]]
-  cp[1] = map(lambda x, y:(x+y)/2, cp[0], cp[2])
-  #
-  # Project the bottom face's texture scale to flat cp array (bcp)
-  #  of the same size, then transfer the tex coordinates
-  #  to the arch curve (this reduces distortion).
-  #
-  if inverse:
-    cp = transposecp(cp)
+  cp = archcurve(pd)
   #
   # project cps from face to patch (flat projection, distorted)
   #
@@ -268,8 +310,35 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
   inner = quarkx.newobj('inner:b2')
   inner.cp = cp
   inner["tex"] = fdict["d"]["tex"]
+  if thick:
+      pd2 = smallerarchbox(pd, thick)
+      cp2 = archcurve(pd2)
+      inner2=quarkx.newobj("inner2:b2")
+      cp2 = texcp_from_b2(cp2, cp)
+      inner2.cp = cp2
+      inner2["tex"] = inner["tex"]
+      #
+      # seams
+      #
+      fseam = makeseam(archline(pd, "brf", "trf", "tlf", "blf"),
+                       archline(pd2,"brf", "trf", "tlf", "blf"),
+                       fdict["f"], "front")
+      bseam = makeseam(archline(pd, "blb", "tlb", "trb", "brb"),
+                       archline(pd2,"blb", "tlb", "trb", "brb"),
+                       fdict["b"], "back")
+      if lower:
+        inner.swapsides()
+        bseam.swapsides()
+        fseam.swapsides()
+      else:
+        inner2.swapsides()
+      return [inner, inner2, fseam, bseam]
+  # end if thick
+
   if lower:
       inner.swapsides()
+  if inverse:
+     inner.swapsides()
   if open:
       return [inner]
   if inverse:
@@ -286,7 +355,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
   back = b2fromface(bcp,'back', fdict["b"], editor)
   return [inner, front, back]
 
-def bevelimages(o, editor, inverse=0, left=0, sidetex=0, open=0, thick=0):
+def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
   fdict = facedict(o)
@@ -295,10 +364,11 @@ def bevelimages(o, editor, inverse=0, left=0, sidetex=0, open=0, thick=0):
   pd = pointdict(vtxlistdict(fdict,o))
   if left:
       pd = pointdict_hflip(pd)
-  cp = [[pd["trf"],pd["trb"],pd["tlb"]],
-        None,
-       [pd["brf"],pd["brb"],pd["blb"]]]
-  cp[1] = map(lambda x, y:(x+y)/2, cp[0], cp[2])
+
+  def bevelcurve(pd):
+      return cp_from_rows([pd["tlb"],pd["trb"],pd["trf"]],
+                        [pd["blb"],pd["brb"],pd["brf"]])
+  cp = bevelcurve(pd)          
   length = lengthof(cp[0],3)
   inner = quarkx.newobj('inner:b2')
   cp = texcp_from_face(cp, fdict["b"], editor)
@@ -313,15 +383,52 @@ def bevelimages(o, editor, inverse=0, left=0, sidetex=0, open=0, thick=0):
     right.distortion(fdict["r"].normal,pd["brb"])
   cp2 = texcp_from_face(cp, right, editor)
   for i in range(3):
-    cp[i][0]=cp2[i][0]
+    cp[i][2]=cp2[i][2]
   cp = antidistort_rows(cp)
   inner.cp = cp
   inner["tex"] = fdict["b"]["tex"]
+  if thick:
+      pd2 = smallerbevelbox(pd, thick)
+      cp2 = bevelcurve(pd2)
+      inner2=quarkx.newobj("inner2:b2")
+      inner2.cp = texcp_from_b2(cp2, cp)
+      inner2["tex"]=inner["tex"]
+      tseam = makeseam([pd["trf"], pd["trb"], pd["tlb"]],
+                       [pd2["trf"], pd2["trb"], pd2["tlb"]],
+                        fdict["u"],"top")
+      bseam = makeseam([pd["blb"], pd["brb"], pd["brf"]],
+                       [pd2["blb"], pd2["brb"], pd2["brf"]],
+                        fdict["d"],"bottom")
+      if left:
+          inner.swapsides()
+          tseam.swapsides()
+          bseam.swapsides()
+      else:
+          inner2.swapsides()
+
+      return [inner, inner2, tseam, bseam]
   if left:
     inner.swapsides()
-  return [inner]   
-
-  return []
+  if inverse:
+    inner.swapsides()
+  if open:
+      return [inner]   
+  if inverse:
+      tcp = cp_from_rows([pd["tlb"], pd["trb"], pd["trf"]],
+                         [pd["trb"], pd["trb"], pd["trf"]])
+      bcp = cp_from_rows([pd["brf"], pd["brb"], pd["blb"]],
+                         [pd["brf"], pd["brb"], pd["brb"]])
+  else:
+      tcp = cp_from_rows([pd["trf"], pd["trb"], pd["tlb"]],
+                         [pd["tlf"], pd["tlf"], pd["tlb"]])
+      bcp = cp_from_rows([pd["blb"], pd["brb"], pd["brf"]],
+                         [pd["blb"], pd["blf"], pd["blf"]])
+  top = b2fromface(tcp,"top",fdict["u"],editor)
+  bottom = b2fromface(bcp,"bottom",fdict["d"],editor)
+  if left:
+    top.swapsides()
+    bottom.swapsides()
+  return [inner, top, bottom]
 
 class CapDuplicator(StandardDuplicator):
 
@@ -330,6 +437,8 @@ class CapDuplicator(StandardDuplicator):
       return []
     editor = mapeditor()
     inverse, lower, open, thick = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"]
+    if thick:
+      thick, = thick
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
@@ -344,6 +453,8 @@ class BevelDuplicator(StandardDuplicator):
     editor = mapeditor()
     inverse, left, sidetex, open, thick = map(lambda spec,self=self:self.dup[spec],
       ("inverse", "left", "sidetex", "open", "thick"))
+    if thick:
+      thick, = thick
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
@@ -357,7 +468,7 @@ quarkpy.mapduplicator.DupCodes.update({
 def curvemenu(o, editor):
 
   def makecap(m, o=o, editor=editor):
-      dup = quarkx.newobj("arch:d")
+      dup = quarkx.newobj(m.mapname+":d")
       dup["macro"]="dup cap"
       if m.inverse:
         dup["inverse"]=1
@@ -405,9 +516,10 @@ def curvemenu(o, editor):
           item.o=o
           item.newpoly = newpoly
 
-  for (name, inv) in (("&Arch", 1), ("&Cap", 0)):
-    item = qmenu.item(name, makecap)
+  for (menname, mapname, inv) in (("&Arch", "arch",  1), ("&Cap", "cap", 0)):
+    item = qmenu.item(menname, makecap)
     item.inverse = inv
+    item.mapname = mapname
     finishitem(item)
     list.append(item)
 
@@ -477,6 +589,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2000/06/12 11:18:20  tiglari
+#Added bevel duplicator and round corner curves submenu items for Q3
+#
 #Revision 1.5  2000/06/04 03:23:50  tiglari
 #reduced/eliminated distortion on arch/cap curve face
 #
