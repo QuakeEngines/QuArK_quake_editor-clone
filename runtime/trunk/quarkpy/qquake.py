@@ -62,6 +62,7 @@ class GameConsole(BatchConsole):
         flst = []
         playerclass = setup["PlayerClass"]
         if playerclass:
+            # 'PlayerClass' is specifically only for Hexen-II
             if playerclass != "X":
                 cfgfile = "%splayerclass %s\n" % (cfgfile, playerclass)
             cfg = quarkx.newfileobj("quark.cfg")
