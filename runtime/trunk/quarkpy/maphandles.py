@@ -680,7 +680,7 @@ class VertexHandle(qhandles.GenericHandle):
                         nf2.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
                         def project(p,along=nf2.normal,at=newpoint):
                             return projectpointtoplane(p,along,at,along)
-                        ntp=map(project,nf.threepoints(0))
+                        ntp=tuple(map(project,nf.threepoints(0)))
                         nf.setthreepoints(ntp,0)
 
                 #
@@ -1342,8 +1342,9 @@ def singlebezierzoom(view):
     view.screencenter = sc
     
 def GetUserCenter(obj):
+    debug('type: '+`type(obj)`)
     if type(obj) is type([]):  # obj is list
-        if len(obj)==1:
+        if len(obj)==1 and obj[0]["usercenter"] is not None:
             uc = obj[0]["usercenter"]
         else:
             box=quarkx.boundingboxof(obj)
@@ -1391,6 +1392,10 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.14  2001/04/02 09:23:11  tiglari
+#stuck various things to try to nail down supposed fixpoint vertices in the
+#vtx movement code
+#
 #Revision 1.13  2001/04/01 00:07:13  tiglari
 #revisions to GetUserCenter
 #
