@@ -44,7 +44,7 @@ in quarkpy.mapentities.py) to figure out what form to to use to display
 the duplicator's specifics on the specifics page of the multi-pages-panel.
 See 'dup lin:form' in defaults.qrk for an example.
 <LI>handles: returns a handle to drag the thing around with.
-<UL>
+</UL>
 Many of the shape builders (path duplicator in plugins.mapdupspath.py)
 are defined as descendents of DuplicatorManager, and probably some of
 the others such as the brush and patch curve-builders should have been.

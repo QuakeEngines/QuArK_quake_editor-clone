@@ -2,8 +2,7 @@ title: Registering at SourceForge
 author: Armin Rigo
 
 Connect to the <a href="http://sourceforge.net">SourceForge</a>
-and register yourself as a new user. Then contact a project administrator (currenlty
-arigo@<!-- -->planetquake.com or Alexander@<!-- -->users.sourceforge.net) and give your
+and register yourself as a new user. Then contact a project administrator and give your
 login name so that we can add you to the QuArK project members list.
 
 Follow the instructions given in the file

@@ -48,6 +48,6 @@ impenetrable thicket at first!
 And if you get stuck or think you've found a mistake
 (it's been done before :)), don't hesitate
 to post a query to the
-<A HREF="http://www.egroups.com/list/quark-python">QuArK-Python discussion list</A>,
+<A HREF="http://www.planetquake.com/quark/forums.shtml">QuArK-Python discussion list</A>,
 or email directly to
 <A HREF="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</A>.
