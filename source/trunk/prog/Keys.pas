@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:47:44  decker_dk
+Updated copyright-header
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
@@ -34,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  KeySel, StdCtrls, Buttons, ComCtrls;
+  KeySel, StdCtrls, Buttons, ComCtrls, ImgList;
 
 type
   TKeyDlg = class(TForm)
