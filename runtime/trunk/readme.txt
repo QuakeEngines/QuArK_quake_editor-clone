@@ -1,6 +1,12 @@
 
                  QuArK 6.3 Release Candidate 1
-                 
+
+ * [tiglari] Replace texture dialog: if just a face is selected,
+    its texture is now loaded into dialog (bug report from fpbrowser)
+
+ * [tiglari] some Valve 220 map reading errors now recorded in the
+    console (bad texture scale info)
+
  * [tiglari] Bezier patches selectable from back as well as front
   
  * [tiglari] Bilinear filtering option for textures in OpenGL view
