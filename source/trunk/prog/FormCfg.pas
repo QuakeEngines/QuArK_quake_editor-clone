@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2002/03/07 19:15:38  decker_dk
+Removed QImages, as it was just another name for QImage
+
 Revision 1.19  2001/06/18 18:33:26  decker_dk
 Don't use my new TXT-check, if its a QPyMacro or QToolButton.
 
@@ -2507,6 +2510,7 @@ begin
              begin    { makes a separator }
               Q:=QInternal.Create('', Form);
               Q.Specifics.Add('Typ=S');
+              Q.Specifics.Add('Txt='); {Decker 2002-04-07 - fixup for "Decker 2001-06-14", which caused ugly separator in spec/args-view}
               Form.SubElements.Add(Q);
               NeedSep:=False;
              end;
