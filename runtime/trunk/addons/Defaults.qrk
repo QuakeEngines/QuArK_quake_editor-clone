@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.102  2001/03/16 00:28:50  aiv
+//made customizable maplimits for games
+//
 //Revision 1.101  2001/03/15 21:11:39  aiv
 //moved .fgd reading to menu, sepearted texture & entity reading
 //
@@ -900,7 +903,7 @@ QQRKSRC1
       {
         Game = "Quake 3"
         Code = "a" // Hardcoded value in Setup.PAS
-
+	  MapLimit = '65536 65536 65536'
         Program = "Quake3.EXE +set sv_pure 0"
 
         Directory = "\Quake3"
