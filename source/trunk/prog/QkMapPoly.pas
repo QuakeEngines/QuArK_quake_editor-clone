@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2001/07/07 09:43:05  tiglari
+bp & wc220 formats now write fp coordinates unless this is explicitly disabled
+ (radiant seems to read them OK if the grid is turned off, thanks gage144)
+
 Revision 1.39  2001/06/05 18:41:26  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -2184,7 +2188,7 @@ var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers, BrushPrim, Valve220Map, ExpandThreePoints : Boolean;
+ WriteIntegers, BrushPrim, Valve220Map, UseIntegralVertices, ExpandThreePoints : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2378,7 +2382,7 @@ var
       end;
      S:='  ';
      { FIXME: this should be thought about }
-     if ExpandThreePoints then
+     if UseIntegralVertices then
      begin
        { wacko crap to get the vertexes }
        { FS is first of a linked list of structures
@@ -2437,11 +2441,16 @@ var
          end
      end
 *)
-     else
-       begin
+     else if ExpandThreePoints then
+     (* slower but more accurate alternative, suggested by gage144
+        on Quake3World editing forum: make a 2d grid of points on
+        the axis plane closest to the face plane, project them onto
+        the face, then use the three projected points that are nearest
+        to being integral, rounded to integral *)
+     begin
         P[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
         P[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
-       end
+     end
      end;
 
      for I:=1 to 3 do
@@ -2601,7 +2610,8 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  Valve220Map:=Flags and soWriteValve220<>0;
- ExpandThreePoints:=WriteIntegers and (BrushPrim or Valve220Map or (Flags and soDisableEnhTex<>0));
+ UseIntegralVertices:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex<>0);
+ ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
