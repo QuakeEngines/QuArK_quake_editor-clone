@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2002/02/05 18:32:14  decker_dk
+//Begun preliminary support for Medal of Honor:Allied Assault
+//
 
 {
   QuArKProtected = "1"
@@ -101,7 +104,7 @@ QQRKSRC1
           west:f =
           {
             v = '256 192 -96 256 96 -96 256 192 0'
-            tex = "xlab_wall/xconcrete_c53b"
+            tex = "general_structure/archstone2lt"
           }
           east:f =
           {
@@ -139,7 +142,7 @@ QQRKSRC1
           east:f =
           {
             v = '-256 -192 -96 -256 -96 -96 -256 -192 0'
-            tex = "xlab_wall/xconcrete_c53b"
+            tex = "general_structure/archstone2lt"
           }
           south:f =
           {
@@ -177,7 +180,7 @@ QQRKSRC1
           south:f =
           {
             v = '-256 192 -96 -128 192 -96 -256 192 0'
-            tex = "xlab_wall/xconcrete_c53b"
+            tex = "general_structure/archstone2lt"
           }
           north:f =
           {
@@ -215,7 +218,7 @@ QQRKSRC1
           north:f =
           {
             v = '256 -192 -96 128 -192 -96 256 -192 0'
-            tex = "xlab_wall/xconcrete_c53b"
+            tex = "general_structure/archstone2lt"
           }
           down:f =
           {
@@ -233,32 +236,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "skies/newclouds"
+            tex = "sky/d-day2"
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "skies/newclouds"
+            tex = "sky/d-day2"
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "skies/newclouds"
+            tex = "sky/d-day2"
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "skies/newclouds"
+            tex = "sky/d-day2"
           }
           down:f =
           {
             v = '432 0 96 560 0 96 432 -128 96'
-            tex = "skies/newclouds"
+            tex = "sky/d-day2"
           }
           up:f =
           {
             v = '432 0 112 560 0 112 432 128 112'
-            tex = "skies/newclouds"
+            tex = "sky/d-day2"
           }
         }
         Floor:p =
@@ -291,7 +294,7 @@ QQRKSRC1
           up:f =
           {
             v = '432 0 -96 560 0 -96 432 128 -96'
-            tex = "xlab_floor/xfloor_c07"
+            tex = "misc_outside/nu_grass_set1"
           }
         }
       }
