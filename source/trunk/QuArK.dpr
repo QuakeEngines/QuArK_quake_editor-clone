@@ -162,7 +162,8 @@ uses
   Sprite in 'prog\Sprite.pas',
   crc32 in 'prog\crc32.pas',
   QkApplPaths in 'prog\QkApplPaths.pas',
-  ExtraFunctionality in 'prog\ExtraFunctionality.pas';
+  ExtraFunctionality in 'prog\ExtraFunctionality.pas',
+  SystemDetails in 'prog\SystemDetails.pas';
 
 {$R *.RES}
 
