@@ -29,6 +29,11 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2003/12/17 14:00:11  peter-b
+- Rewrote defines for setting Python version
+- Removed back-compatibility with Python 1.5
+- Removed reliance on external string library from Python scripts
+
 Revision 1.15  2003/08/21 14:28:59  peter-b
 Fix for type incompatibility bug when compiling for separate Python.
 
@@ -301,6 +306,12 @@ type
       end;
 
 const
+ // PYTHON_API_VERSION =
+ //   1007 for Python 1.5.1?
+ //   1008 for Python 1.5.2b1 (NO LONGER SUPPORTED!)
+ //   1010 for Python 2.1a2 (and probably 2.1 as well)
+ //   1011 for Python 2.2
+ //   1012 for Python 2.3
  PYTHON_API_VERSION = 1011; // Rowdy (was: 1007;)
  METH_VARARGS  = $0001;
  METH_KEYWORDS = $0002;
@@ -544,6 +555,7 @@ var
   s: string;
 begin
   Result:=3;
+  Lib:=0;
 {$IFDEF PYTHON_BUNDLED}
 // Python's bundled with QuArK, so look for python.dll in the Dlls directory
   dll:=GetApplicationDllPath()+'python.dll';
@@ -554,14 +566,17 @@ begin
 {$IFDEF PYTHON23}
     dll:='python23.dll';
     Lib:=LoadLibrary(PChar(dll));
+{$ELSE}
 {$IFDEF PYTHON22}
     if Lib=0 then
       dll:='python22.dll';
       Lib:=LoadLibrary(PChar(dll));
+{$ELSE}
 {$IFDEF PYTHON21}
     if Lib=0 then
       dll:='python21.dll';
       Lib:=LoadLibrary(PChar(dll));
+{$ELSE}
 {$IFDEF PYTHON20}
     if Lib=0 then
       dll:='python20.dll';
@@ -808,7 +823,6 @@ asm
 end;
 *)
 
-
 procedure Py_DECREF(o: PyObject);
 begin
   with o^ do begin
@@ -821,47 +835,28 @@ end;
 
 (*
 procedure Py_DECREF(o: PyObject); assembler;
-
 asm
-
 {$IFDEF Debug}
-
  cmp dword ptr [eax], 0
-
  jle RefError
-
 {$ENDIF}
-
  dec dword ptr [eax]
-
  jz Py_Dealloc
-
 end;
 *)
 
 (*
 procedure Py_XDECREF(o: PyObject); assembler;
-
 asm
-
  or eax, eax
-
  jz @Null
-
 {$IFDEF Debug}
-
  cmp dword ptr [eax], 0
-
  jle RefError
-
 {$ENDIF}
-
  dec dword ptr [eax]
-
  jz Py_Dealloc
-
 @Null:
-
 end;
 *)
 
@@ -870,43 +865,23 @@ begin
   if o <> nil then Py_DECREF(o);
 end;
 
-
-
-
 {function PySeq_Length(o: PyObject) : Integer;
-
 begin
-
  with PyTypeObject(o^.ob_type)^ do
-
   if (tp_as_sequence=Nil) or not Assigned(tp_as_sequence^.sq_length) then
-
    Result:=0
-
   else
-
    Result:=tp_as_sequence^.sq_length(o);
-
 end;
 
-
-
 function PySeq_Item(o: PyObject; index: Integer) : PyObject;
-
 begin
-
  with PyTypeObject(o^.ob_type)^ do
-
   if (tp_as_sequence=Nil) or not Assigned(tp_as_sequence^.sq_item) then
-
    Result:=Nil
-
   else
-
    Result:=tp_as_sequence^.sq_item(o, index);
-
 end;}
 
-
-
 end.
+

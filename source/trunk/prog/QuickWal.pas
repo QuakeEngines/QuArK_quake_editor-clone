@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2002/06/18 00:55:51  tiglari
+add .png to .jpg texture support.  If any more image formats start being used
+  for textures, the strategy for doing this will need to be rethought
+
 Revision 1.33  2001/03/28 20:28:00  tiglari
 remove \ from in front of disk folders
 
@@ -172,7 +176,7 @@ implementation
 
 uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
   Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
-  Setup, QkQ3, OsFolder;
+  Setup, QkQ3, OsFolder, QkD3;
 
 {$R *.DFM}
 
@@ -383,6 +387,28 @@ begin
       end;
     end;
    LinkFolder(Folder, ResultFolder, FolderName);
+  end
+ else
+ if CompareText(ExtractFileExt(Name), '.mtr') = 0 then
+  begin
+   if Loaded=Nil then
+    begin
+     Result:=True; { load the file }
+     Exit;
+    end;
+   Loaded.Acces;
+   Folder:=Nil;
+   for I:=0 to Loaded.SubElements.Count-1 do
+    begin
+     Tex:=Loaded.SubElements[I];
+     if Tex is D3Material then
+      begin
+       Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.MTR/' to indicate what this folder contains }
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Specifics.Values['b']:=Name;
+      end;
+    end;
+   LinkFolder(Folder, ResultFolder, FolderName);
   end;
 end;
 
@@ -448,6 +474,28 @@ begin
      if Tex is QShader then
       begin
        Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
+       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       Q.Specifics.Values['b']:=Name;
+      end;
+    end;
+   LinkFolder(Folder, ResultFolder, FolderName);
+  end
+ else
+ if CompareText(ExtractFileExt(Name), '.mtr') = 0 then
+  begin
+   if Loaded=Nil then
+    begin
+     Result:=True; { load the file }
+     Exit;
+    end;
+   Loaded.Acces;
+   Folder:=Nil;
+   for I:=0 to Loaded.SubElements.Count-1 do
+    begin
+     Tex:=Loaded.SubElements[I];
+     if Tex is D3Material then
+      begin
+       Q:=Link1(Folder, Name+'/', Tex.Name, 'a', Base); { use 'filename.MTR/' to indicate what this folder contains }
        Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
        Q.Specifics.Values['b']:=Name;
       end;

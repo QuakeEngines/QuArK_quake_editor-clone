@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2004/12/19 10:03:19  alexander
+support for HL2 input and output type specifics (input#specificname)
+they will be generated as connection list for HL2
+
 Revision 1.39  2004/11/25 01:25:24  alexander
 save in HL2 map format when MapFormat is configured to HL2
 
@@ -240,7 +244,7 @@ type
             end;
  TTreeMapSpec = class(TTreeMap)
                 protected
-                  procedure SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer);
+                  procedure SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
                  {procedure DessinePoignee(const Pts0: TPoint); virtual;}
                   procedure CouleurDessin(var C: TColor); virtual;
                 public
@@ -1196,14 +1200,16 @@ begin
   PoigneeRouge(CCoord.Proj(Pt));
 end;*)
 
-procedure TTreeMapSpec.SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer);
+procedure TTreeMapSpec.SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer; EntityNumber: Integer);
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
  MJ, S, Msg, LineStart: String;
- P1, I, J, P,hashpos: Integer;
+ P1, I, J, P, hashpos: Integer;
  typedspecs:Bool;
+ DoneNameSpecific: boolean; // Rowdy: for Doom 3
 begin
+ DoneNameSpecific:=False;
  MJ:=CharModeJeu;
  if Flags and soBsp=0 then
    Dest.Add(CommentMapLine(Ancestry));
@@ -1241,16 +1247,24 @@ begin
          Dec(P);
        end
        else
-        P1:=1;
-      {$IFDEF RemoveEmptySpecs}
+         P1:=1;
+       {$IFDEF RemoveEmptySpecs}
        if Msg<>'' then
-      {$ENDIF}
-        Dest.Add(LineStart+Copy(S, P1, P-1)+'" "'+Msg+'"');
+       begin
+       {$ENDIF}
+         Dest.Add(LineStart+Copy(S, P1, P-1)+'" "'+Msg+'"');
+         // Rowdy: Doom 3 requires each entity to have a unique "name" specific
+         // and we can use the entity number for that
+         if LowerCase(Copy(S, P1, P-1)) = 'name' then
+           DoneNameSpecific:=True;
+       {$IFDEF RemoveEmptySpecs}
+       end;
+       {$ENDIF}
      end;
    end
    else
      typedspecs:=true;
- end;
+ end; // for J:=...
 
  if typedspecs and (GetMapFormatType=HL2Type)then
  begin
@@ -1274,6 +1288,11 @@ begin
    end;
    Dest.Add('  }');
  end;
+
+  // Rowdy: Doom 3 entity names: use the entity class + '_' + entity number
+  // e.g. if entity 17 was a light, the name specific would be 'light_17'
+  if (CharModeJeu=mjDoom3) and not(DoneNameSpecific) then
+   Dest.Add(LineStart+'name" "'+Name+'_'+IntToStr(EntityNumber)+'"');
 end;
 
 procedure TTreeMapSpec.CouleurDessin;
@@ -1396,10 +1415,15 @@ begin
 end;
 
 procedure TTreeMapEntity.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
+var EntityNumber: Integer;
 begin
+ EntityNumber:=0;
  if Flags and soBSP=0 then
-   Texte.Add(CommentMapLine('Entity '+IntToStr(GetNextEntityNo)));
- SaveAsTextSpecArgs(Texte, HxStrings, Flags);
+  begin
+   EntityNumber:=GetNextEntityNo;
+   Texte.Add(CommentMapLine('Entity '+IntToStr(EntityNumber)));
+  end;
+ SaveAsTextSpecArgs(Texte, HxStrings, Flags, EntityNumber);
  Texte.Add('}');
 end;
 
@@ -2486,7 +2510,7 @@ begin
   I := GetNextEntityNo;
  if Flags and soBSP = 0 then
    Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
- SaveAsTextSpecArgs(Texte, HxStrings, Flags);
+ SaveAsTextSpecArgs(Texte, HxStrings, Flags, I);
  if Flags and soBSP = 0 then
   begin
    Polyedres:=TQList.Create;

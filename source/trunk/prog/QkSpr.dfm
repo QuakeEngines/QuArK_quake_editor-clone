@@ -1,6 +1,6 @@
 inherited QSprForm: TQSprForm
-  Left = 220
-  Top = 210
+  Left = 748
+  Top = 549
   Width = 532
   Height = 415
   Caption = 'QSprForm'
@@ -10,21 +10,21 @@ inherited QSprForm: TQSprForm
     Width = 524
   end
   inherited leftdock: TDock97
-    Height = 366
+    Height = 359
   end
   inherited rightdock: TDock97
     Left = 515
-    Height = 366
+    Height = 359
   end
   inherited bottomdock: TDock97
-    Top = 379
+    Top = 372
     Width = 524
   end
   object Panel1: TPanel
     Left = 9
     Top = 13
     Width = 506
-    Height = 366
+    Height = 359
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 4
@@ -32,7 +32,7 @@ inherited QSprForm: TQSprForm
       Left = 0
       Top = 101
       Width = 506
-      Height = 265
+      Height = 258
       Align = alClient
       Columns = <
         item
@@ -106,14 +106,14 @@ inherited QSprForm: TQSprForm
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
+        TabOrder = 0
+        OnChange = ComboBox2Change
         Items.Strings = (
           'SPR_VP_PARALLEL_UPRIGHT'
           'SPR_FACING_UPRIGHT'
           'SPR_VP_PARALLEL'
           'SPR_ORIENTED'
           'SPR_VP_PARALLEL_ORIENTED')
-        TabOrder = 0
-        OnChange = ComboBox2Change
       end
       object ComboBox3: TComboBox
         Left = 96
@@ -122,13 +122,13 @@ inherited QSprForm: TQSprForm
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
+        TabOrder = 1
+        OnChange = ComboBox3Change
         Items.Strings = (
           'SPR_NORMAL'
           'SPR_ADDITIVE'
           'SPR_INDEXALPHA'
           'SPR_ALPHTEST')
-        TabOrder = 1
-        OnChange = ComboBox3Change
       end
       object Panel3: TPanel
         Left = 1

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2004/11/08 22:47:43  alexander
+hl2 support started
+
 Revision 1.37  2002/12/30 18:07:35  decker_dk
 Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
 
@@ -337,7 +340,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkFormCfg,
-  QkQ1 ,QkQ2, QkObjectClassList;
+  QkQ1 ,QkQ2, QkObjectClassList, QkD3;
 
 {$R *.DFM}
 
@@ -1089,6 +1092,7 @@ var
   TexList: QWad;
   I: Integer;
   ShaderFile: QShaderFile;
+  MaterialFile: D3MaterialFile;
 begin
   Acces;
   if Link=Nil then
@@ -1097,6 +1101,7 @@ begin
     if TexName='' then
       TexName:=Name;
     DefaultImageName:=Specifics.Values['q'];
+
     for I:=Low(StdGameTextureLinks) to High(StdGameTextureLinks) do
     begin
       S:=Specifics.Values[StdGameTextureLinks[I].LinkSpecificChar];
@@ -1127,16 +1132,33 @@ begin
       begin   { Quake 3 }
         Arg:=Specifics.Values['b'];
         if Arg<>'' then
-        begin { shader }
-          ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
-          ShaderFile.Acces;  { load the .shader file (if not already loaded) }
-          Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
+        begin { shader (Q3) or material (D3) }
+          if CharModeJeu=mjDoom3 then
+           begin
+            // the revised code (Doom 3 material)
+            MaterialFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['MaterialsPath']+Arg) as D3MaterialFile;
+            MaterialFile.Acces;  { load the .mtr file (if not already loaded) }
+            Link:=MaterialFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
 
-          if DefaultImageName<>'' then
-            Link.Specifics.Values['q']:=DefaultImageName;
+            if DefaultImageName<>'' then
+              Link.Specifics.Values['q']:=DefaultImageName;
 
-          if Link=Nil then
-            Raise EErrorFmt(5698, [TexName, Arg]);
+            if Link=Nil then
+              Raise EErrorFmt(5755, [TexName, Arg]);
+           end
+          else
+           begin
+            // the original code (Quake 3 shader)
+            ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
+            ShaderFile.Acces;  { load the .shader file (if not already loaded) }
+            Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
+
+            if DefaultImageName<>'' then
+              Link.Specifics.Values['q']:=DefaultImageName;
+
+            if Link=Nil then
+              Raise EErrorFmt(5698, [TexName, Arg]);
+           end;
         end
         else  { direct (non-shader) }
           Link:=NeedGameFileBase(S, GameTexturesPath+TexName+'.tga') as QPixelSet;

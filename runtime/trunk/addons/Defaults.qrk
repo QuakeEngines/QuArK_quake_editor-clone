@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.232  2004/12/03 10:44:49  alexander
+//solved conflict
+//added mp, singleplayer, and cs options to form
+//
 //Revision 1.231  2004/11/30 06:23:13  cdunde
 //To add game support for Jedi Academy and alphabetize game  menu listing for HL2
 //
@@ -863,6 +867,7 @@ QQRKSRC1
         .pak = "1"     ipak = '5'
         .sin = "1"     isin = '5'
         .pk3 = "1"     ipk3 = '5'
+        .pk4 = "1"     ipk4 = '5'
         .bsp = "1"     ibsp = '3'
         .qc  = "1"     iqc  = '8'
         .hc  = "1"     ihc  = '8'
@@ -898,6 +903,7 @@ QQRKSRC1
         .m8  = ""
         .pak = "<open>"
         .pk3 = "<open>" //DECKER
+        .pk4 = "<open>"
         .sin = ""
         .bsp = "<open>"
         .wad = "<open>"
@@ -2195,11 +2201,74 @@ QQRKSRC1
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
 
+      Doom 3:config =
+      {
+        Game = "Doom 3"
+        Code = "j" // Hardcoded value in Setup.PAS
+        Program = "Doom3.exe +set sv_pure 0"
 
+        Directory = "\Doom3"
+        CheckDirectory = "DOOM3.EXE"
+
+        CD = ""
+        CDDir = "\Doom3\base"
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "Brush Primitives"
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        AlwaysWriteThreeFields = "1"
+        SupportsBrushPrim = "1"
+        BuildPgm1  = "Doom3.exe"
+        //BuildArgs1 = "-moddir .."
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        //BuildPgm2  = "Q3MAP.EXE"
+        //BuildArgs2 = "-vis -saveprt"
+        //BuildPgm3  = "Q3MAP.EXE"
+        //BuildArgs3 = "-light"
+        //BuildPgm4  = "BSPC.EXE"
+        //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+        //BuildCheck4= "+AAS"
+
+        TexturesPath = "textures/"
+        ShadersPath = "materials/"
+        MaterialsPath = "materials/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "base_wall/a_sopanel1_d01b"
+        DefaultTextureTrigger = "common/trigger"
+        //DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "materials/quark.mtr"  // TextureMaterials?
+
+        BaseDir = "base"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
+        AddOns = "DataD3.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk4"
+        PakFormat = "*.PK4"
+        Console = "1"
+        Form = "GameDoom3"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+      }
     }
-
-
-
 
     Map:config =
     {
@@ -4780,6 +4849,189 @@ QQRKSRC1
       t_GameBuildPgms=!
     }
 
+    GameHalfLife2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Half-Life2 command-line"
+        t_ProgramHint=!
+        Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
+      }
+      Directory: =
+      {
+        Txt = "SteamApps Directory"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path where all the gcf files are"
+        CheckFile = "../steam.exe"
+      }
+      tmpQuArK: =
+      {
+        Txt = ""
+        Typ = "C"   // combo box    
+        Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
+        Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
+                $0D"<Steam User Name>/half-life 2/hl2"
+                $0D"<Steam User Name>/counter-strike source/cstrike"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Half-Life2"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      EnableTransparency: =
+      {
+        Txt = "In OpenGL window, enable transparency (slow!)"
+        Typ = "X"
+        Hint = "When checked, brush-entities that has their"
+            $0D"'rendermode' and 'renderamt' set to transparency,"
+            $0D"will be drawn transparent in the OpenGL window - "
+            $0D"though NOT exactly drawn as in-game."
+            $0D
+            $0D"Notice! When enabled the OpenGL window may"
+            $0D"be very slow to update itself, when changing"
+            $0D"the scenery."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameDoom3:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Doom 3 command-line"
+        Items = "Doom3.EXE +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Doom 3"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "DOOM3.EXE"
+      }
+      CD: =
+      {
+        Txt = "Doom 3 CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
+        CheckFile = "Doom3\base\pak000.pk4"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Doom 3 (cmd=GAM, game=j)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Doom 3 (cmd=GAM, game=j)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "Doom 3"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
 
     MapColors:form =
     {
@@ -5192,6 +5444,7 @@ QQRKSRC1
       .m8:  = { Txt="M8 textures" externaledit = ! }
       .pak: = { Txt="PAK archives" externaledit = ! }
       .pk3: = { Txt="PK3 archives" externaledit = ! }
+      .pk4: = { Txt="PK4 archives" externaledit = ! }
       .sin: = { Txt="SIN Pak archives" externaledit = ! }
       .bsp: = { Txt="BSP compiled maps" externaledit = ! }
       .wad: = { Txt="WAD texture lists" externaledit = ! }
@@ -5347,6 +5600,7 @@ QQRKSRC1
       .pak: = {Typ="X" Cap=".pak" Txt="PACK files"}
       .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
       .pk3: = {Typ="X" Cap=".pk3" Txt="PACK files for Quake 3"}
+      .pk4: = {Typ="X" Cap=".pk4" Txt="PACK files for Doom 3"}
       .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
       .qc:  = {Typ="X" Cap=".qc"  Txt="QuakeC Code (Quake 1)"}
       .hc:  = {Typ="X" Cap=".hc"  Txt="HexenC Code (Hexen II)"}
@@ -6040,7 +6294,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"MOHAA"$0D"JK2"$0D"SoF2"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"MOHAA"$0D"JK2"$0D"SoF2"$0D"Doom 3"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {

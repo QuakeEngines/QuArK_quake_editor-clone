@@ -278,7 +278,6 @@ Strings = {
     816: "Steam Container File  (*.gcf)|*.gcf",
     817: "Valve Map File  (*.vmf)|*.vmf",
 
-
     2368: "Skins",
     2369: "Frames",
     2370: "Main component",
@@ -918,11 +917,11 @@ Strings = {
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
 
     5750: "Material '%s' has no image to display",
-    # 5751: reserved
-    # 5752: reserved
-    # 5753: reserved
-    # 5754: reserved
-    # 5755: reserved
+    5751: "Material images are read-only",
+    5752: "Material stage '%s' has no image to display",
+    5753: "Material list (Doom 3)",
+    5754: "Syntax error in Material file, line %d",
+    5755: "Material '%s' not found in %s",
     # 5756: reserved
     # 5757: reserved
     # 5758: reserved
@@ -956,6 +955,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.61  2004/12/21 09:03:02  alexander
+#changed vtf loading to use QuArKVTF.dll
+#
 #Revision 1.60  2004/12/02 19:36:58  alexander
 #added format names for hl2
 #

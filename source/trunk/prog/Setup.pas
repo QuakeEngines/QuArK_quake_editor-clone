@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2004/11/08 22:47:43  alexander
+hl2 support started
+
 Revision 1.40  2004/05/21 01:11:11  cdunde
 To add support for Sylphis game engine. Code by Harry Kalogirou.
 
@@ -213,7 +216,7 @@ const
  mjTorque       = 'g';
  mjSOF2         = 'h';  { Soldier of Fortune II }
  mjSylphis      = 'i';  { Sylphis }
- mjDoom3        = 'j';  { Doom3}
+ mjDoom3        = 'j';  { Doom 3}
  mjHL2          = 'k';  { Half Life 2}
 
  mjAny          = #1;

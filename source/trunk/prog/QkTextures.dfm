@@ -1,5 +1,5 @@
 inherited FQTexture: TFQTexture
-  Left = 187
+  Left = 757
   Width = 523
   Color = clBlack
   PixelsPerInch = 96
@@ -17,7 +17,7 @@ inherited FQTexture: TFQTexture
     Left = 9
     Top = 13
     Width = 497
-    Height = 246
+    Height = 239
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
@@ -26,7 +26,7 @@ inherited FQTexture: TFQTexture
       Left = 0
       Top = 0
       Width = 497
-      Height = 183
+      Height = 176
       OnPaint = PaintPanel1Paint
       Align = alClient
       ParentColor = True
@@ -34,7 +34,7 @@ inherited FQTexture: TFQTexture
     end
     object Panel2: TPanel
       Left = 0
-      Top = 204
+      Top = 197
       Width = 497
       Height = 42
       Align = alBottom
@@ -136,7 +136,7 @@ inherited FQTexture: TFQTexture
     end
     object Panel3: TPanel
       Left = 0
-      Top = 183
+      Top = 176
       Width = 497
       Height = 21
       Align = alBottom

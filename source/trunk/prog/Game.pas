@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2004/11/25 00:35:50  alexander
+first gcf access attempt
+
 Revision 1.29  2003/08/12 15:39:45  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -726,7 +729,6 @@ begin
         Exit; { found it }
     *)
     end;
-
 
     RestartAliasing;
     FilenameAlias := FileName;

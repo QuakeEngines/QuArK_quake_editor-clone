@@ -19,208 +19,88 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-{
-$Header$
- ----------- REVISION HISTORY ------------
-$Log$
-Revision 1.26  2004/05/14 05:48:55  cdunde
-To fix comment symbol errors causing shader textures not to show up in texture Browser. Correction by Rowdy
+(*
+ * stuff for Doom 3 - a lot (ok, most) of this was copied from QkQ3.pas as Quake 3
+ * and Doom 3 have a lot in common, but it is the little differences that make for
+ * potential problems if we use the classes defined in QkQ3.pas for Doom 3, starting
+ * with shaders in Doom 3 are called "materials", and altho the syntax looks similar
+ * there is no guarantee that they are syntactically identical, plus there are a few
+ * work-arounds in QkQ3.pas for Q3 that might be ignored, or might produce undesirable
+ * side-effects if applied to Doom 3.  So there :-P
+ *)
 
-Revision 1.25  2003/10/26 00:33:50  silverpaladin
-Added Missing Shader Texture texture  To try to prevent Access Violations in 3d views
-
-Revision 1.24  2003/08/12 15:57:01  silverpaladin
-Added support for block comments in shader files
-
-Revision 1.23  2002/06/18 00:55:51  tiglari
-add .png to .jpg texture support.  If any more image formats start being used
-  for textures, the strategy for doing this will need to be rethought
-
-Revision 1.22  2002/05/05 10:21:16  tiglari
-Reading editable surfaceparms from MOHAA shaders
-
-Revision 1.21  2001/03/20 21:44:19  decker_dk
-Updated copyright-header
-
-Revision 1.20  2001/01/21 15:49:48  decker_dk
-Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
-
-Revision 1.19  2001/01/15 19:21:04  decker_dk
-Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
-
-Revision 1.18  2000/09/10 12:57:06  alexander
-disabled defaultimage caching (cache is not easily initialized)
-
-Revision 1.17  2000/08/22 11:39:21  tiglari
-'q' specific processing added to shaders,for specifying image in .qrk files
-
-Revision 1.16  2000/08/19 07:30:47  tiglari
-Cacheing of DefaultImage for Shaders
-
-Revision 1.15  2000/07/18 19:38:00  decker_dk
-Englishification - Big One This Time...
-
-Revision 1.14  2000/07/09 13:20:44  decker_dk
-Englishification and a little layout
-
-Revision 1.13  2000/07/06 02:47:58  alexander
-attempt to improve shader handling
-
-Revision 1.12  2000/06/24 02:50:35  tiglari
-bad solution for adjust w. min. distortion for shaders
-
-Revision 1.11  2000/06/12 18:41:59  decker_dk
-more control on shaders being valid
-
-Revision 1.10  2000/05/21 13:11:50  decker_dk
-Find new shaders and misc.
-
-Revision 1.9  2000/05/14 15:06:56  decker_dk
-Charger(F,Taille) -> LoadFile(F,FSize)
-ToutCharger -> LoadAll
-ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
-ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
-
-Revision 1.8  2000/04/29 15:13:30  decker_dk
-Allow other than PAK#.PAK files
-
-Revision 1.7  2000/04/24 09:54:54  arigo
-Q3 shaders, once more
-
-Revision 1.6  2000/04/22 08:54:23  arigo
-Shader stage attributes were not written correctly
-
-Revision 1.5  2000/04/18 18:47:57  arigo
-Quake 3 : auto export shaders
-}
-
-unit QkQ3;
+unit QkD3;
 
 interface
 
 uses
-  SysUtils, Windows, Classes, QkZip2, QkFileObjects, Quarkx, QkObjects, QkText,
-  QkJpg, QkTextures, Setup, QkWad, QkPixelSet;
+  Types, Classes, SysUtils, Windows,
+  QkZip2, QkFileObjects, Quarkx, QkObjectClassList, QkPixelSet, QkObjects, QkWad,
+  Game, Setup, Travail;
 
 type
-  Q_CFile = class(QCfgFile)
-        public
-         class function TypeInfo: String; override;
-         class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-         procedure ObjectState(var E: TEtatObjet); override;
-        end;
-  Q_HFile = class(QCfgFile)
-        public
-         class function TypeInfo: String; override;
-         class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-         procedure ObjectState(var E: TEtatObjet); override;
-        end;
-  Q3Pak = class(QZipPak)
-        public
-         class function TypeInfo: String; override;
-         class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-        end;
-  QShader = class(QPixelSet)
-            protected
-              DefaultImageCache : QPixelSet;
-            public
-              class function TypeInfo: String; override;
-              {procedure DataUpdate;}
-              function DumpString : String;
-              function DefaultImage : QPixelSet;
-              {procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;}
-              function GetSize : TPoint; override;
-              procedure SetSize(const nSize: TPoint); override;
-              function Description : TPixelSetDescription; override;
-              function SetDescription(const PSD: TPixelSetDescription;
-                                      Confirm: TSDConfirm) : Boolean; override;
-              function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-              procedure ListDependencies(L: TStringList); override;
-            end;
-  QShaderStage = class(QPixelSet)
-                 public
-                   class function TypeInfo: String; override;
-                   function ContainsImageReference : Boolean;
-                   function ProvidesSomeImage : QPixelSet;
-                   function LoadPixelSet : QPixelSet; override;
-                   function Description : TPixelSetDescription; override;
-                   function SetDescription(const PSD: TPixelSetDescription;
-                                           Confirm: TSDConfirm) : Boolean; override;
-                 end;
-  QShaderFile = class(QWad)
-                protected
-                  procedure SaveFile(Info: TInfoEnreg1); override;
-                  procedure LoadFile(F: TStream; FSize: Integer); override;
-                public
-                  class function TypeInfo: String; override;
-                  class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-                  function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-                end;
+  D3Pak = class(QZipPak)
+    public
+      class function TypeInfo: String; override;
+      class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+    end;
+
+  D3Material = class(QPixelSet)
+    protected
+      DefaultImageCache : QPixelSet;
+    public
+      class function TypeInfo: String; override;
+      {procedure DataUpdate;}
+      function DumpString : String;
+      function DefaultImage : QPixelSet;
+      {procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;}
+      function GetSize : TPoint; override;
+      procedure SetSize(const nSize: TPoint); override;
+      function Description : TPixelSetDescription; override;
+      function SetDescription(const PSD: TPixelSetDescription; Confirm: TSDConfirm) : Boolean; override;
+      function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
+      procedure ListDependencies(L: TStringList); override;
+    end;
+
+  D3MaterialStage = class(QPixelSet)
+    public
+      class function TypeInfo: String; override;
+      function ContainsImageReference : Boolean;
+      function ProvidesSomeImage : QPixelSet;
+      function LoadPixelSet : QPixelSet; override;
+      function Description : TPixelSetDescription; override;
+      function SetDescription(const PSD: TPixelSetDescription; Confirm: TSDConfirm) : Boolean; override;
+    end;
+
+  D3MaterialFile = class(QWad)
+    protected
+      procedure SaveFile(Info: TInfoEnreg1); override;
+      procedure LoadFile(F: TStream; FSize: Integer); override;
+    public
+      class function TypeInfo: String; override;
+      class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+      function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
+    end;
 
 implementation
 
-uses Game, Travail, QkObjectClassList;
+{------------------------}
 
-procedure Q_HFile.ObjectState(var E: TEtatObjet);
+class function D3Pak.TypeInfo;
+begin
+ Result:='.pk4';
+end;
+
+class procedure D3Pak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- E.IndexImage:=iiText;
-// E.MarsColor:=clWhite;
-end;
-
-class function Q_HFile.TypeInfo;
-begin
- Result:='.h';
-end;
-
-class procedure Q_HFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5174);
- Info.FileExt:=803;
-end;
-
-procedure Q_CFile.ObjectState(var E: TEtatObjet);
-begin
- inherited;
- E.IndexImage:=iiText;
-// E.MarsColor:=clWhite;
-end;
-
-class function Q_CFile.TypeInfo;
-begin
- Result:='.c';
-end;
-
-class procedure Q_CFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5173);
- Info.FileExt:=802;
+ Info.FileObjectDescriptionText:=LoadStr1(5146);
+ Info.FileExt:=813;
 end;
 
 {------------------------}
 
-class function Q3Pak.TypeInfo;
-begin
- Result:='.pk3';
-end;
-
-class procedure Q3Pak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5170);
- Info.FileExt:=798;
-end;
-
-{------------------------}
-
-class function QShader.TypeInfo;
-begin
- Result:=':shader';
-end;
-
-function QShader.DefaultImage : QPixelSet;
+function D3Material.DefaultImage: QPixelSet;
 const
  EditorImageSpec = 'qer_editorimage';
 var
@@ -233,18 +113,6 @@ var
 begin
  Acces;
  Result:=Nil;
- {tiglari}
- {alex disabled this because it led to crashes
-  (it is never initilialized)
- if DefaultImageCache<>Nil then
- begin
-
-   result:=DefaultImageCache
- end
- else
- begin
- /alex}
- {/tiglari}
  {this function tries to guess what image should be displayed
   for the shader. The priority is
   1. the qer_editorimage
@@ -306,13 +174,13 @@ begin
    for I:=0 to SubElements.Count-1 do
    begin
      Q:=SubElements[I];
-     if Q is QShaderStage then
+     if Q is D3MaterialStage then
      begin
        { Skip over $lightmap and those not containing images }
-       if QShaderStage(Q).ContainsImageReference then
+       if D3MaterialStage(Q).ContainsImageReference then
        begin
          try
-           ValidStage:=QShaderStage(Q).ProvidesSomeImage;
+           ValidStage:=D3MaterialStage(Q).ProvidesSomeImage;
            { Missing a texture, shader invalid? Return NIL }
            if not (ValidStage=Nil) then
              { Set to first valid stage, so something is displayed in the texture-browser }
@@ -323,24 +191,6 @@ begin
          end;
        end;
      end;
-   end;
- { tiglari }
- {alex
- end;
- DefaultImageCache:=Result;
- /alex}
- { /tiglari }
-
- end;
-
- // SilverPaladin - 10/25/03 - Added Missing Shader Texture texture
- // To try to prevent Access Violations in 3d views
- if (Result = NIL)
- then begin
-   try
-     Result := NeedGameFile('radiant/shadernotex') as QPixelSet;
-   except
-     Result:=NIL
    end;
  end;
 
@@ -357,23 +207,16 @@ begin
  {/tiglari}
 end;
 
-(*procedure QShader.DataUpdate;
+function D3Material.Description: TPixelSetDescription;
 var
  Image: QPixelSet;
 begin
-  { we only want to set the correct size of this shader,
-    based on the first valid stage size }
  Image:=DefaultImage;
- if Image<>Nil then
-  try
-   Image.Acces;
-   SetSize(Image.GetSize);
-  except
-   {nothing}
-  end;
-end;*)
+ if Image=Nil then Raise EErrorFmt(5695, [Name]);
+ Result:=Image.Description;
+end;
 
-function QShader.DumpString : String;
+function D3Material.DumpString: String;
 var
  I, K: Integer;
  Q: QObject;
@@ -383,10 +226,10 @@ var
    J: Integer;
   begin
    J:=Pos('=', Spec);
-     { ignore specifics that cannot be written as text }
+   { ignore specifics that cannot be written as text }
    if (J>0) and (Ord(Spec[1]) and chrFloatSpec = 0) then
     Result:=Result + Indent + Copy(Spec,1,J-1) + TrimRight(' ' + Copy(Spec,J+1,MaxInt)) + #13#10;
-      { dump the specific as a shader or stage attribute }
+    { dump the specific as a shader or stage attribute }
   end;
 
 begin
@@ -398,35 +241,18 @@ begin
   begin
    Q:=SubElements[K];
    Q.Acces;
-    { stage intro }
+   { stage intro }
    Result:=Result + chr(vk_Tab) + '{'#13#10;
-(* DECKER
-   { include 'map' attribute from the name of the stage }
-   if Q.Name <> LoadStr1(5699) then
-    Result:=Result + chr(vk_Tab) + chr(vk_Tab) + 'map ' + Q.Name + #13#10;
-*)
    for I:=0 to Q.Specifics.Count-1 do  { stage attributes }
     DumpSpec(Q.Specifics[I], chr(vk_Tab) + chr(vk_Tab));
-    { stage end }
+   { stage end }
    Result:=Result + chr(vk_Tab) + '}'#13#10;
   end;
  { shader end }
  Result:=Result + '}'#13#10#13#10;
 end;
 
-(*procedure QShader.OperationInScene(Aj: TAjScene; PosRel: Integer);
-begin
- inherited;
- if Aj=asModifie then
-  DataUpdate;
-end;*)
-
-function QShader.IsExplorerItem(Q: QObject) : TIsExplorerItem;
-begin
- Result:=ieResult[Q is QShaderStage];
-end;
-
-function QShader.GetSize : TPoint;
+function D3Material.GetSize: TPoint;
 var
  Image: QPixelSet;
 begin
@@ -436,26 +262,12 @@ begin
  Result:=Image.GetSize;
 end;
 
-function QShader.Description : TPixelSetDescription;
-var
- Image: QPixelSet;
+function D3Material.IsExplorerItem(Q: QObject): TIsExplorerItem;
 begin
- Image:=DefaultImage;
- if Image=Nil then Raise EErrorFmt(5695, [Name]);
- Result:=Image.Description;
+ Result:=ieResult[Q is D3MaterialStage];
 end;
 
-procedure QShader.SetSize;
-begin
- Raise EError(5696);
-end;
-
-function QShader.SetDescription;
-begin
- Raise EError(5696);
-end;
-
-procedure QShader.ListDependencies(L: TStringList);
+procedure D3Material.ListDependencies(L: TStringList);
 var
  I: Integer;
  S, SpecialStage: String;
@@ -471,14 +283,26 @@ begin
   end;
 end;
 
- {------------------------}
-
-class function QShaderStage.TypeInfo;
+function D3Material.SetDescription(const PSD: TPixelSetDescription; Confirm: TSDConfirm): Boolean;
 begin
- Result:=':shstg';
+ Raise EError(5751);
 end;
 
-function QShaderStage.ContainsImageReference : Boolean;
+procedure D3Material.SetSize(const nSize: TPoint);
+begin
+ Raise EError(5751);
+end;
+
+class function D3Material.TypeInfo;
+begin
+ Result:=':material';
+end;
+
+{------------------------}
+
+{ D3MaterialStage }
+
+function D3MaterialStage.ContainsImageReference: Boolean;
 begin
  if (Name='') or (Name[1]='$') then
   Result:=False
@@ -486,7 +310,20 @@ begin
   Result:=True;
 end;
 
-function QShaderStage.ProvidesSomeImage : QPixelSet;
+function D3MaterialStage.Description: TPixelSetDescription;
+begin
+ Result:=LoadPixelSet.Description;
+end;
+
+function D3MaterialStage.LoadPixelSet: QPixelSet;
+begin
+ Result:=ProvidesSomeImage;
+ if Result=Nil then
+  Raise EErrorFmt(5752, [Name]);
+ Result.Acces;
+end;
+
+function D3MaterialStage.ProvidesSomeImage: QPixelSet;
 begin
  Result:=Nil;
  if ContainsImageReference then
@@ -498,55 +335,44 @@ begin
  end;
 end;
 
-function QShaderStage.LoadPixelSet : QPixelSet;
+function D3MaterialStage.SetDescription(const PSD: TPixelSetDescription; Confirm: TSDConfirm): Boolean;
 begin
- Result:=ProvidesSomeImage;
- if Result=Nil then
-  Raise EErrorFmt(5697, [Name]);
- Result.Acces;
+ Raise EError(5751);
 end;
 
-function QShaderStage.Description : TPixelSetDescription;
+class function D3MaterialStage.TypeInfo: String;
 begin
- Result:=LoadPixelSet.Description;
+ Result:=':matstg';
 end;
 
-function QShaderStage.SetDescription(const PSD: TPixelSetDescription;
-                                     Confirm: TSDConfirm) : Boolean;
-begin
- Raise EError(5696);
-end;
+{------------------------}
 
- {------------------------}
+{ D3MaterialFile }
 
-class function QShaderFile.TypeInfo;
-begin
- Result:='.shader';
-end;
-
-class procedure QShaderFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+class procedure D3MaterialFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5175);
+ // Rowdy: technically Doom 3 does not have material lists (equivalent to Q3's shader lists)
+ Info.FileObjectDescriptionText:=LoadStr1(5753);
  Info.FileExt{Count}:=804;
 end;
 
-function QShaderFile.IsExplorerItem(Q: QObject) : TIsExplorerItem;
+function D3MaterialFile.IsExplorerItem(Q: QObject): TIsExplorerItem;
 begin
- if Q is QShader then
+ if Q is D3Material then
   Result:=ieResult[True] + [ieListView]
  else
   Result:=ieResult[False];
 end;
 
-procedure QShaderFile.LoadFile(F: TStream; FSize: Integer);
+procedure D3MaterialFile.LoadFile(F: TStream; FSize: Integer);
 const
  ProgressStep = 4096;
 var
  ComplexStage, Data: String;
  Source, NextStep: PChar;
- Shader: QShader;
- Stage: QShaderStage;
+ Material: D3Material;
+ Stage: D3MaterialStage;
  I, LineNumber: Integer;
  SectionComment, Comment: Boolean;
  V: array[1..2] of Single;
@@ -559,7 +385,7 @@ var
 
   procedure SyntaxError;
   begin
-   Raise EErrorFmt(5694, [LineNumber]);
+   Raise EErrorFmt(5754, [LineNumber]);
   end;
 
   procedure SkipSpaces;
@@ -639,7 +465,6 @@ var
   end;
 
 begin
-
  EditableSurfaceParms:=SetupGameSet.Specifics.Values['EditableSurfaceParms']<>'';
 
  case ReadFormat of
@@ -649,7 +474,24 @@ begin
       Source:=PChar(Data);
       F.ReadBuffer(Source^, FSize);  { read the whole file at once }
 
-       { preprocess comments }
+      // Rowdy: Doom 3 adds some extra things to material files (*.mtr), such as "table"
+      // We will ignore these for now, unless and until it become apparent that they are
+      // actually used/needed, and/or someone works out how to use them ;-)
+      //
+      // Example from base_wall.mtr:
+      //
+      // table senetable { { .9, .5, .8, .6, .6, .3, .8, .7} }
+      //
+      // We will ignore this by replacing "table" with "//ble" so that the line
+      // is removed by the comment filtering code below
+      for I:=0 to FSize-5 do
+       if (Source[I]='t') and (Source[I+1]='a') and (Source[I+2]='b') and (Source[I+3]='l') and (Source[I+4]='e') then
+        begin
+         Source[I]:='/';
+         Source[I+1]:='/';
+        end;
+
+      { preprocess (remove by converting to spaces) comments }
       Comment:=False;
       SectionComment:=False;
       for I:=0 to FSize-2 do
@@ -689,8 +531,8 @@ begin
        masked:= false;   // mohaa
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
-       Shader:=QShader.Create(ReadLine, Self);    { new shader object }
-       SubElements.Add(Shader);
+       Material:=D3Material.Create(ReadLine, Self);    { new shader object }
+       SubElements.Add(Material);
        SkipSpaces;
        if Source^=#0 then Break;    { end of file }
        if Source^<>'{' then SyntaxError;
@@ -702,8 +544,8 @@ begin
         if Source^='{' then
          begin   { shader stage }
           Inc(Source);
-          Stage:=QShaderStage.Create(ComplexStage, Shader);
-          Shader.SubElements.Add(Stage);
+          Stage:=D3MaterialStage.Create(ComplexStage, Material);
+          Material.SubElements.Add(Stage);
           repeat
             { read one stage attribute per loop }
            SkipSpaces;
@@ -716,9 +558,9 @@ begin
           if Stage.Specifics.Values['map']<>'' then
           begin
            Stage.Name:=Stage.Specifics.Values['map'];
-(* DECKER
+{ DECKER
            Stage.Specifics.Values['map']:='';
-*)
+}
           end
           else
           {DECKER - try 'clampmap' instead }
@@ -735,7 +577,7 @@ begin
           end;
          end
         else   { shader attribute }
-         ReadAttribute(Shader);
+         ReadAttribute(Material);
        until False;
        Inc(Source);   { skip the closing brace }
        { Shader.DataUpdate;   { shader ready }
@@ -760,7 +602,7 @@ begin
  end;
 end;
 
-procedure QShaderFile.SaveFile(Info: TInfoEnreg1);
+procedure D3MaterialFile.SaveFile(Info: TInfoEnreg1);
 var
  I: Integer;
  Q: QObject;
@@ -771,10 +613,10 @@ begin
       for I:=0 to SubElements.Count-1 do
        begin
         Q:=SubElements[I];
-        if Q is QShader then
+        if Q is D3Material then
          begin
            { write this shader definition into the string Data }
-          Data:=QShader(Q).DumpString;
+          Data:=D3Material(Q).DumpString;
            { dump Data to the stream }
           F.WriteBuffer(PChar(Data)^, Length(Data));
          end;
@@ -784,14 +626,16 @@ begin
  end;
 end;
 
- {------------------------}
+class function D3MaterialFile.TypeInfo: String;
+begin
+ Result:='.mtr';
+end;
 
 initialization
-  RegisterQObject(Q3Pak, 's');
-  RegisterQObject(Q_CFile, 's');
-  RegisterQObject(Q_HFile, 's');
-  RegisterQObject(QShader, 'a');
-  RegisterQObject(QShaderStage, 'a');
-  RegisterQObject(QShaderFile, 'p');
+  RegisterQObject(D3Pak, 's');
+  RegisterQObject(D3Material, 'a');
+  RegisterQObject(D3MaterialStage, 'a');
+  RegisterQObject(D3MaterialFile, 'p');
+
 end.
 

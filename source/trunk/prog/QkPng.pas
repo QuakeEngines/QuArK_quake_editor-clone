@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2004/05/21 01:11:10  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
 Revision 1.2  2002/03/07 19:16:43  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -75,7 +78,7 @@ var
   BitmapInfo: TBitmapInfo absolute BmpInfo;
   Source: String;
   sss : string;
-  bpp, BaseMemSize: Integer;
+  bpp{, BaseMemSize}: Integer;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -95,7 +98,7 @@ begin
    biHeight:=png.Height;
    biPlanes:=1;
   end;
- BaseMemSize:=((png.Width+3) and not 3) * png.Height;
+ //not used (and the only hint when building QuArK): BaseMemSize:=((png.Width+3) and not 3) * png.Height;
  GetObject(png.Handle, SizeOf(BitmapStruct), @BitmapStruct);
  bpp:=BitmapStruct.bmBitsPixel*BitmapStruct.bmPlanes;
  if bpp=8 then

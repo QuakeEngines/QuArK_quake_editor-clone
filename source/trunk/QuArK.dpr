@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2004/12/19 10:04:14  alexander
+added a form for gcf browsing
+
 Revision 1.22  2004/11/25 00:42:19  alexander
 first gcf access attempt
 
@@ -193,6 +196,7 @@ uses
   QkTribes2 in 'prog\QkTribes2.pas',
   JPEGLib in 'components\JPEG\jpeglib.pas',
   JmoreCfg in 'components\jpeg\JMORECFG.PAS',
+  QkD3 in 'prog\QkD3.pas',
   QkVTF in 'prog\QkVTF.pas',
   QkGCF in 'prog\QkGCF.pas' {FQGCF};
 

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2004/11/11 18:43:49  alexander
+fixed malformed comment line with 0D inside fooling D5 and not D6
+
 Revision 1.53  2004/11/06 08:18:38  cdunde
 Reversed last change to end statement due to compiling problem
 
@@ -399,6 +402,9 @@ var
  Flags, Contents : LongInt;
  Q : QPixelSet;
  Header : TQ2MipTex;
+
+ { Rowdy, for Doom 3 stuff}
+ MapVersion: double;
 
  function ReadInt(str : string) : LongInt;
  begin
@@ -1412,6 +1418,21 @@ begin
       { if the thing just read wasn't {, the ReadSymbol call will bomb.
         Otherwise, it will pull in the next chunk (which ought to be
         a quoted string), and set SymbolType to the type of what it got. }
+
+       // ... except for Doom 3, where we might have a "version 1" or "version 2" line BEFORE
+       // the first "}" ...
+       if (SymbolType=sStringToken) and (CompareText(S,'Version')=0) then
+        begin
+         ReadSymbol(sStringToken); // get the map version number // NumValueToken);
+         if SymbolType<>sNumValueToken then
+           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]); // invalid number
+         MapVersion := NumericValue;
+         if MapVersion <> 1 then
+           raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(266)]); // can't read Doom 3 version 2 maps
+         Result:=mjDoom3;
+         ReadSymbol(sNumValueToken);
+        end;
+
        ReadSymbol(sCurlyBracketLeft);
        L.Clear;
        Classname:='';
@@ -1420,6 +1441,19 @@ begin
        while SymbolType=sStringQuotedToken do
         begin
          S1:=S;  { S is where ReadSymbol sticks quoted strings }
+
+         // NOT HERE ---
+         // Rowdy: the thing read might not be a { as Doom 3 appears to expect "Version" followed by
+         // "1" or "2" (all without quotes) to indicate what version the .map file is.
+         // Barf right now if it is a Doom 3 Map, especially version 2
+         //if CompareText(s1, 'version') = 0 then
+         //begin
+         //  ReadSymbol(sNumValueToken);
+         //  MapVersion := NumericValue;
+         //  if MapVersion <> 1 then
+         //    raise EErrorFmt(266, [LineNoBeingParsed, LoadStr1(260)]); // don't read Doom 3 version 2 maps
+         //end;
+
         {FinDeLigne:=True;}
          ReadSymbol(sStringQuotedToken);
         {FinDeLigne:=False;}
@@ -1836,6 +1870,15 @@ begin
        Dest.Add(CommentMapLine(FmtLoadStr1(177, [SetupGameSet.Name])));
        Dest.Add(CommentMapLine(FmtLoadStr1(178, [])));
        Dest.Add('');
+       if ObjectGameCode=mjDoom3 then
+       begin
+         // Rowdy: write an extra line to indicate we are using version 1 .map file
+         // format (instead of Doom 3's default Version 2).  Maybe later on this could
+         // become an option, so QuArK could write either version 1 or version 2
+         // depending on a configuration setting
+         Dest.Add('Version 1');
+         Dest.Add('');
+       end;
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
 
        saveflags:=0;

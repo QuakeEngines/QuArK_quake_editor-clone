@@ -1,6 +1,6 @@
 object QForm1: TQForm1
-  Left = 111
-  Top = 222
+  Left = 845
+  Top = 669
   Width = 435
   Height = 295
   Caption = '(new)'
