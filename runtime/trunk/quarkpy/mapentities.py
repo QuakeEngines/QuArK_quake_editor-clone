@@ -8,11 +8,7 @@ Map Editor Entities manager
 # FOUND IN FILE "COPYING.TXT"
 #
 
-<<<<<<< mapentities.py
 #$Header$
-=======
-#$Header$
->>>>>>> 1.33
 
 
 import quarkx
@@ -552,8 +548,6 @@ class DefaultDrawEntityLines:
             if L1 or L2 or L3 or L4:
             # Rowdy: cdunde reported that Torque uses falloff1 (minimum radius) and falloff2
             #        (maximum radius) for lights, and does not have a 'light' specific
-            L3 = entity["falloff2"]
-            if L1 or L2 or L3:
                 try:
                     if L1:
                         radius = float(L1)
@@ -586,17 +580,6 @@ class DefaultDrawEntityLines:
                         #radius = L3[3]
                         #color = makeRGBcolor(L3[0], L3[1], L3[2])
 
-                    else:
-                        radius = float(L3)
-                        if entity["_color"]:
-                            try:
-                                color = quakecolor(quarkx.vect(entity["_color"]))
-                            except:
-                                pass
-
-                        #L3 = readfloats(L3)
-                        #radius = L3[3]
-                        #color = makeRGBcolor(L3[0], L3[1], L3[2])
                     lightfactor, = quarkx.setupsubset()["LightFactor"]
                     radius = radius * view.scale(org) * lightfactor
                     cv = view.canvas()
@@ -685,21 +668,18 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-<<<<<<< mapentities.py
+#Revision 1.34  2004/12/26 20:08:38  cdunde
+#Added light Color-Picker function for Torque game engine.
+#
+#Revision 1.33  2004/12/26 02:32:35  rowdy
+#modified DefaultDrawEntityLines.drawentitylines to draw trigger->func lines for Doom 3, where the func's 'name' specific is used instead of (or as well as) 'targetname'
+#
 #Revision 1.32  2004/12/23 11:25:09  rowdy
 #Rowdy: added support for specific 'falloff2' which is used in Torque instead of the 'light' specific to indicate the (maximum) radius of a light entity (suggested by cdunde)
 #
 #Revision 1.31  2004/12/19 09:56:44  alexander
 #movedir specific gets angle maphandle
 #
-=======
-#Revision 1.33  2004/12/26 02:32:35  rowdy
-#modified DefaultDrawEntityLines.drawentitylines to draw trigger->func lines for Doom 3, where the func's 'name' specific is used instead of (or as well as) 'targetname'
-#
-#Revision 1.31  2004/12/19 09:56:44  alexander
-#movedir specific gets angle maphandle
-#
->>>>>>> 1.33
 #Revision 1.30  2003/03/23 07:31:18  tiglari
 #make trigger-target line thickness configurable
 #
