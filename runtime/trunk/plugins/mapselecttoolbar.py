@@ -294,3 +294,5 @@ quarkpy.maptools.toolbars["tb_selectmodes"] = SelectModesBar
 
 # ----------- REVISION HISTORY ------------
 #
+# $Log$
+#
