@@ -107,6 +107,8 @@ for all submenus, just some of the more useful ones)
 <li>Support for Gunman, Blue Shift & other HL derivatives: (Decker)
 <br>status: done
 
+<li>Arg Replacer: (decker)
+<br>status: done & documented
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
 <br>status: envisioned, maybe defer to 6.4

@@ -14,5 +14,8 @@ only done a few recent ones, mostly that I've been responsible for.
 <LI> <B>REL_62</B>: branch for the 6.2 release.  Hopefully closed off now!
 <LI> <B>NuTex</B>: an experimental branch for testing schemes
   for dissociating texture positioning from face-positioning.
-  Hopefully not relevant any more.
+  <br>obsolete
+<LI> <B>NuTex2</B>: an newer experimental branch for testing schemes
+  for dissociating texture positioning from face-positioning.
+  <br>only applies to QkMapPoly.pas
 </B>
