@@ -1,5 +1,19 @@
 
-                     6.4  alpha snapshot Mar27 2003
+                     6.4  alpha snapshot Mar 29 2003
+
+ There are quite a lot of new features here, one of the most noteworthy
+ is that many of the help popup windows have a button in them which will
+ call up the relevant infobase page.  This feature was conceived and
+ implemented by cdunde, with some help from Andy Vincent and tiglari.
+ To use the new feature, you need to unzip the infobase  (downloadable
+ help file) into a subfolder of your QuArK folder called `help'.  For
+ best results, use the most recent one, linked to from whereever you
+ downloaded this from.
+
+ Other additions include display of transparency in Q2 and other games,
+ loading portal files, and a brush-from number-finder.  Here's the list,
+ complete except for whatever I've forgotten:
+ 
 
  * [tiglari] select tagged faces menu item enable bug fixed (bug noted by cdunde)
 
@@ -34,8 +48,6 @@
  
  * [tiglari] option for specifying thickness of lines overdrawn
       on map (holes and portals currently supported)
- 
- * [marco leise] more GL modes supported
 
  * [tiglari] writes genesis3d maps in map format, with texture coordinates
      diddled so that they will hopefully be correct when imported into
@@ -55,10 +67,7 @@
  * [tiglari] enhancements to wall maker
 
  * [decker] bot waypoint editor, preliminary
-=======
- * [decker] bot waypoint editor
->>>>>>> 1.51
-=======
+
  * [tiglari] writes genesis3d maps in map format, with texture coordinates
      diddled so that they will hopefully be correct when imported into
      Genesis3d editors.
