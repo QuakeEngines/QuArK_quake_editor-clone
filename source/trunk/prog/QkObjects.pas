@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.57  2001/08/06 00:18:24  tiglari
+update version
+
 Revision 1.56  2001/07/09 09:53:56  tiglari
 update version #
 
@@ -564,6 +567,7 @@ procedure ClearObjectManager;
 
 {$IFDEF Debug}
 var g_MemQObject: TList;
+    QFileList: TStringList;
 procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
@@ -584,7 +588,6 @@ type
   TStringArray = array[0..99] of String;
 
 var
-  QFileList: TStringList;
 {$IFDEF ShareSpecMem}
   CommonSpecifics: TList = Nil;
 {$ENDIF}
@@ -3222,4 +3225,8 @@ initialization
   g_DataDumpProc:=@TestDataDump;
   g_MemQObject:=TList.Create;
   {$ENDIF}
+
+finalization
+   QFileList.Free;
+
 end.
