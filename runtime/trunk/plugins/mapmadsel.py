@@ -46,6 +46,7 @@ import quarkpy.mapeditor
 import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.maphandles
+import quarkpy.dlgclasses
 import maptagside
 import faceutils
 from quarkpy.maputils import *
@@ -138,11 +139,16 @@ def ZoomToMe(m):
     editor = mapeditor()
     if editor is None:
         maptagside.squawk("no editor")
+
+    else:
+        zoomToMeFunc(editor,m.object)
+        
+def zoomToMeFunc(editor,object):
     #
     #  regular views
     #
     layout = editor.layout
-    scale1, center1 = AutoZoom(layout.views, quarkx.boundingboxof([m.object]), scale1=layout.MAXAUTOZOOM)
+    scale1, center1 = AutoZoom(layout.views, quarkx.boundingboxof([object]), scale1=layout.MAXAUTOZOOM)
     if scale1 is not None:
         layout.editor.setscaleandcenter(scale1, center1)
     #
@@ -153,7 +159,7 @@ def ZoomToMe(m):
         pos, yaw, pitch = view.cameraposition
         def between(pair):
             return (pair[0]+pair[1])/2
-        center = between(quarkx.boundingboxof([m.object]))
+        center = between(quarkx.boundingboxof([object]))
         dir = (center-pos).normalized
         pitch, yaw = vec2rads(dir)
         view.cameraposition = pos, yaw, pitch
@@ -161,11 +167,14 @@ def ZoomToMe(m):
 
 
 def SelectMe(m):
-  import quarkpy.mapmenus
-  editor = mapeditor()
-  if editor is None:
-    maptagside.squawk("no editor")
-  else:
+      import quarkpy.mapmenus
+      editor = mapeditor()
+      if editor is None:
+          maptagside.squawk("no editor")
+      else:
+          selectMeFunc(editor,m.object)
+          
+def selectMeFunc(editor, object):
     #
     # the tree-view
     #
@@ -179,14 +188,16 @@ def SelectMe(m):
     Spec1 = qmenu.item("", quarkpy.mapmenus.set_mpp_page, "")
     Spec1.page = 0
     quarkpy.mapmenus.set_mpp_page(Spec1) 
-    current = m.object
+    current = object.treeparent
+    if current is None:
+        return
     olist = []
     while current.name != "worldspawn:b":
-      olist[:0] = [current]
-      current = current.parent
+        olist[:0] = [current]
+        current = current.parent
     for current in olist:
-      explorer.expand(current)
-    explorer.sellist=[m.object]
+        explorer.expand(current)
+    explorer.sellist=[object]
     
 #
 # --------- stashing ---------
@@ -699,6 +710,137 @@ def ClearMarkClick(m):
     if editor is None: return
     clearstashed(editor)
     
+###############################
+#
+# browsing multiple selections
+#
+###############################
+
+
+#
+# a dialog for choosing one of a list of selected items
+#
+class BrowseListDlg(quarkpy.dlgclasses.ListerDlg):
+
+    size = (220,140)
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Browse List Dialog"
+
+        collected: = {
+          Typ = "C"
+          Txt = "Selected:"
+          Items = "%s"
+          Values = "%s"
+          Hint = "These are the listed items.  Pick one," $0D " then push buttons on row below for action."
+        }
+
+       
+        sep: = { Typ="S" Txt=""}
+
+        buttons: = {
+          Typ = "PM"
+          Num = "3"
+          Macro = "browselist"
+          Caps = "OZB"
+          Txt = "Actions:"
+          Hint1 = "Open the tree-view to the chosen one"
+          Hint2 = "Zoom to the chosen one"
+          Hint3 = "Both open and Zoom to the chosen one"
+        }
+
+        num: = {
+          Typ = "EF1"
+          Txt = "# listed"
+        }
+
+        sep: = { Typ="S" Txt=""}
+
+        exit:py = {Txt="" }
+    }
+    """
+
+#    def select(self, editor):
+#        editor.layout.explorer.sellist=[chosen]
+#        editor.invalidateviews()
+
+    def open(self, editor):
+        selectMeFunc(editor,self.chosen)
+
+    def zoom(self, editor):
+        zoomToMeFunc(editor,self.chosen)
+
+    def both(self, editor):
+        zoomToMeFunc(editor,self.chosen)
+        selectMeFunc(editor,self.chosen)
+
+def macro_browselist(self, index=0):
+    editor = mapeditor()
+    if editor is None: return
+    elif index==1:
+        editor.dlg_browselist.open(editor)
+    elif index==2:
+        editor.dlg_browselist.zoom(editor)
+    elif index==3:
+        editor.dlg_browselist.open(editor)
+        editor.dlg_browselist.zoom(editor)
+        
+        
+quarkpy.qmacro.MACRO_browselist = macro_browselist
+
+
+#
+# Creates a ListerDlg-descendent to browse a list.
+#
+def browseListFunc(editor, list):
+
+    class pack:
+        "stick stuff here"
+    pack.collected=list
+    
+    def action(self,editor=editor):
+        editor.layout.explorer.sellist=[self.chosen]
+        editor.invalidateviews()
+    
+    BrowseListDlg('browselist', editor, pack, None, action)
+
+browseHelpString="|Makes a dialog for browsing the selected elements."
+
+
+def linredmenu(self, editor, view):
+
+    def browseSelClick(m, editor=editor):
+        browseListFunc(editor, editor.layout.explorer.sellist)
+
+    item = qmenu.item('&Browse Selection',browseSelClick,browseHelpString)
+    return [item]
+    
+quarkpy.qhandles.LinRedHandle.menu=linredmenu    
+    
+def multreemenu(sellist, editor, oldmenu=quarkpy.mapmenus.MultiSelMenu):
+
+    def browseSelClick(m,editor=editor,sellist=sellist):
+        browseListFunc(editor,sellist)
+        
+    item = qmenu.item('&Browse Selection', browseSelClick,browseHelpString)
+    
+    return [item]+oldmenu(sellist, editor)
+    
+quarkpy.mapmenus.MultiSelMenu = multreemenu
+
+def browseMulClick(m):
+    editor=mapeditor()
+    if editor is None: return
+    browseListFunc(editor, editor.layout.explorer.sellist)
+    
+########################################
+#
+# selection menu items
+#
+########################################
+
 menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
 menrestsel.state=quarkpy.qmenu.disabled
 
@@ -707,6 +849,8 @@ menextsel = quarkpy.qmenu.item("&Extend Selection from Face", ExtendSelClick, ex
 mennosel = quarkpy.qmenu.item("No Selection in Map Views", NoSelClick, "|When this menu item is checked, selection in the map views is prevented.\n\nI find this useful when touring with the 3d viewer, since I tend to accidentally select things and create messes.");
 
 menunrestrict = quarkpy.qmenu.item("&Unrestrict Selection",UnrestrictClick,"|When selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.")
+
+browseItem = qmenu.item("Browse Multiple Selection",browseMulClick,browseHelpString)
 
 def menunrestrictenable(editor):
   if getrestrictor(editor) is None:
@@ -717,7 +861,8 @@ def menunrestrictenable(editor):
 
 for menitem, keytag in [(menextsel, "Extend Selection"),
                         (menunrestrict, "Unrestrict Selection"),
-                        (menrestsel, "Restrict to Selection")]:
+                        (menrestsel, "Restrict to Selection"),
+                        (browseItem, "Browse Multiple Selection")]:
 
     MapHotKey(keytag,menitem,quarkpy.mapselection)
 
@@ -738,6 +883,11 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     editor = mapeditor()
     if editor is None: return
     menunrestrictenable(editor)
+    sellist = editor.layout.explorer.sellist
+    if len(sellist)>1:
+        browseItem.state=qmenu.normal
+    else:
+        browseItem.state=qmenu.disabled
     sel = editor.layout.explorer.uniquesel
     marked = getstashed(editor)
     if marked is None:
@@ -763,6 +913,7 @@ quarkpy.mapselection.items.append(qmenu.sep)
 quarkpy.mapselection.items.append(parentSelPop)
 quarkpy.mapselection.items.append(reorganizePop)
 quarkpy.mapselection.items.append(menextsel)
+quarkpy.mapselection.items.append(browseItem)
 quarkpy.mapselection.items.append(menunrestrict)
 quarkpy.mapselection.items.append(menrestsel)
 quarkpy.mapselection.items.append(zoomItem)
@@ -781,6 +932,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.13  2001/07/24 01:09:49  tiglari
+# clear mark command
+#
 # Revision 1.12  2001/05/21 11:57:19  tiglari
 # remove some debugs
 #
