@@ -54,7 +54,7 @@ will either disappear or be greyed out (depending on the grey/hide out
 of view setting, or disappear entirely in the textured 3d views), and
 can't be selected.
 
-<i>Zoom to selection.</i> Zooms the map views in to the selection.
+<i>Zoom to selection.</i> This zooms the map 2D views in to the selection(s). If there is a 3D view open, it will also look at or zoom to the selection(s) in that view as well. See 'Look and Zoom in 3D views' under the 'Options' menu for more detail on how it works with this function.
 
 <i>Mark selection.</i> Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view. For example you can mark a group, and then later insert a selected entity into it, or mark an entity, and later insert it into or over (in the treeview) the selected group. Reorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.
 

@@ -267,7 +267,7 @@ class SelectModesBar(ToolBar):
         btn11 = qtoolbar.button(restSelClick, "Restrict to Selection||Restrict to Selection:\n\nThis restricts the map editor to working only on what is selected.", icons, 11, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
-        btn12 = qtoolbar.button(zoomToMe, "Zoom to selection||Zoom to selection:\n\nThis zooms the map views in to the selection.", icons, 12, infobaselink="intro.mapeditor.menu.html#invertface")
+        btn12 = qtoolbar.button(zoomToMe, "Zoom to selection||Zoom to selection:\n\nThis zooms the map 2D views in to the selection(s).\n\nIf there is a 3D view open, it will also look at or zoom to the selection(s) in that view as well.\n\nSee 'Look and Zoom in 3D views' under the 'Options' menu for more detail on how it works with this function.", icons, 12, infobaselink="intro.mapeditor.menu.html#invertface")
 
 
         btn13 = qtoolbar.button(stashMe, "Mark selection||Mark selection:\n\nThis command designates the selection as a special element for other (mostly somewhat advanced) commands, such as 'Lift face to marked group' on the face RMB, or the 'Reorganize Tree' commands on various map object RMB's.", icons, 13, infobaselink="intro.mapeditor.menu.html#invertface")
@@ -295,4 +295,7 @@ quarkpy.maptools.toolbars["tb_selectmodes"] = SelectModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.3  2003/11/16 08:34:02  cdunde
+# To add log
+#
 #

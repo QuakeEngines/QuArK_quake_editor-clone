@@ -54,6 +54,8 @@ import maptagside
 import faceutils
 from quarkpy.maputils import *
 
+import mapfacemenu
+
 
 types = {
     ":d": "duplicator",
@@ -148,7 +150,7 @@ def vec2rads(v):
     "returns pitch, yaw, in radians"
     v = v.normalized
     import math
-    pitch = -math.sin(v.z)
+    pitch = (-math.sin(v.z))
     yaw = math.atan2(v.y, v.x)
     return pitch, yaw
 
@@ -161,7 +163,7 @@ def ZoomToMe(m):
         zoomToMeFunc(editor,m.object)
 
 quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Look and Zoom in 3D views", "3Dzoom", (1,1),
-      hint="|Look and Zoom in 3D views:\n\nWhen this menu item is checked, it will zoom in and center on the selection(s) in all of the 3D views when the 'Zoom to selection' button on the 'Selection Toolbar' is clicked.\n\nWhen unchecked, it will only look in the selection(s) direction from the current camera position.|intro.mapeditor.menu.html#optionsmenu"))
+      hint="|Look and Zoom in 3D views:\n\nIf this menu item is checked, it will zoom in and center on the selection(s) in all of the 3D views when the 'Zoom to selection' button on the 'Selection Toolbar' is clicked.\n\nIf a face is selected and the 'Shift' key is held down, it will look at the other side of the face and strive to center it in the view.\n\nIf this menu item is unchecked, it will only look in the selection(s) direction from the current camera position.|intro.mapeditor.menu.html#optionsmenu"))
 
         
 def zoomToMeFunc(editor,object):
@@ -187,30 +189,86 @@ def zoomToMeFunc(editor,object):
         dir = (center-pos).normalized
         pitch, yaw = vec2rads(dir)
         if MapOption("3Dzoom"):
-            if size.x > size.y:
-                if size.x > size.z:
-                    newposx = center.x - (size.x*1.5)
-                    pos = quarkx.vect(newposx,center.y,center.z)
-                else:
-                    newposx = center.x - (size.z*1.5)
-                    pos = quarkx.vect(newposx,center.y,center.z)
+            brush = editor.layout.explorer.uniquesel
+
+            if quarkx.keydown('\020')==1: # shift is down
+                reverse = 1
             else:
-                if size.y > size.z:
-                    newposx = center.x - (size.y*1.5)
-                    pos = quarkx.vect(newposx,center.y,center.z)
-                else:  # This allows for entities without bounding boxes
-                    if size.x == 0:
-                        if size.y == 0:
-                            if size.z == 0:
-                                newposx = center.x - 100
-                                pos = quarkx.vect(newposx,center.y,center.z)
-                            else:continue
-                        else:continue
+                reverse = 0
+
+            if object.type == ":f":
+                face = editor.layout.explorer.uniquesel
+                dist = abs(pos - face.origin)
+                center = face.origin
+                if size.x == 0:
+                    if size.y > size.z:
+                        dist = size.y
                     else:
-                        newposx = center.x - (size.z*1.5)
+                        dist = size.z
+                else:
+                    if size.y == 0:
+                        if size.x > size.z:
+                            dist = size.x
+                        else:
+                            dist = size.z
+                    else:
+                        if size.z == 0:
+                            if size.x > size.y:
+                                dist = size.x
+                            else:
+                                dist = size.y
+                        else:
+                            if size.x > size.y:
+                                if size.x > size.z:
+                                    dist = size.x*1.3
+                                else:
+                                    dist = size.z*1.3
+                            else:
+                                if size.y > size.z:
+                                    dist = size.y*1.3
+                                else:
+                                    dist = size.z*1.3
+
+                if reverse:
+                    norm = -face.normal
+                else:
+                    norm = face.normal
+                pos = face.origin+dist*(norm)
+                pitch, yaw = vec2rads(-norm)
+                if size.z == 0:
+                    pitch = pitch*1.867
+                view.cameraposition = pos, yaw, pitch
+                editor.invalidateviews()
+
+            else:
+                if size.x > size.y:
+                    if size.x > size.z:
+                        if size.z > size.y:
+                            newposx = center.x - (size.x/2) - size.z
+                            pos = quarkx.vect(newposx,center.y,center.z)
+                        else:
+                            newposx = center.x - (size.x/2) - size.y
+                            pos = quarkx.vect(newposx,center.y,center.z)
+                    else:
+                        newposx = center.x - (size.x/2) - size.z
                         pos = quarkx.vect(newposx,center.y,center.z)
-            yaw = 0
-            pitch = 0
+                else:
+                    if size.y > size.z:
+                        newposx = center.x - (size.x/2) - size.y
+                        pos = quarkx.vect(newposx,center.y,center.z)
+                    else:  # This allows for entities without bounding boxes
+                        if size.x == 0:
+                            if size.y == 0:
+                                if size.z == 0:
+                                    newposx = center.x - 100
+                                    pos = quarkx.vect(newposx,center.y,center.z)
+                                else:continue
+                            else:continue
+                        else:
+                            newposx = center.x - (size.x/2) - size.z
+                            pos = quarkx.vect(newposx,center.y,center.z)
+                yaw = 0
+                pitch = 0
         view.cameraposition = pos, yaw, pitch
     editor.invalidateviews()
 
@@ -1042,6 +1100,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.27  2003/11/22 08:13:57  cdunde
+# To update plugin and infobase for final version of 3D views Zoom feature
+#
 # Revision 1.26  2003/11/15 09:30:55  cdunde
 # To add 3D zoom feature to Selection toolbar and Options menu with Infobase update
 #
