@@ -1,16 +1,30 @@
- ___       ___  ___           _      ___   ___ ___   _          ___
-/ _ \|| ||/ _ \| _ \|| //   //      | _ \||   / _ \|| \\|\  /|||
-|| |||| |||| |||| ||||//    ||_     || ||||__ || |||| |||\\//|||__
-||_||||_||||=||||=|/||\\    || \\   ||=|/||   ||=|||| ||||\/||||
-\_\\/\___/|| |||| \\|| \\   \\_//   || \\||___|| ||||_//||  ||||___
-   \\
+$Id$
 
-:Author:   Peter Brett
-:Date:     $Date$
-:Revision: $Revision$
+   ########                    ####                  ####    ####
+  ####  ####                 ########                ####   ####
+ ####    #### ####    #### ####    #### ####    #### ####  ####
+ ####    #### ####    #### ####    #### #### ####### #### ####
+ ####    #### ####    #### ####    #### #######      ######
+ ####    #### ####    #### ############ ####         #### ####
+ ####    #### ####    #### ####    #### ####         ####  ####
+  ####  ####   ####   #### ####    #### ####         ####   ####
+   ########     ########## ####    #### ####         ####    ####
+       #####
+        #####    Quake Army Knife 6.4 Readme
+
+
+Contents
+--------
 
 1. What is QuArK?
---------------
+2. Where can I get QuArK?
+3. How do I install QuArK?
+4. How do I get help?
+5. What's New
+6. License
+
+1. What is QuArK?
+-----------------
 
 QuArK is the Quake Army Knife, a multi-purpose tool for games based on
 or similar to the Quake engine by id Software.  QuArK has the ability
@@ -75,8 +89,8 @@ the help snippet, and will take you to the relevant Infobase page.
 If you're still stuck, people will be happy to help you on the QuArK
 mailing lists (see http://www.planetquake.com/quark/forums.shtml).
 
-5. Changelog
-------------
+5. What's New
+-------------
 
 See `NEWS.txt` in the same directory as this file.
 
