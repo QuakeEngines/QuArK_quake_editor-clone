@@ -810,10 +810,10 @@ class PropGlueDlg (SimpleCancelDlgBox):
         prop: =
         {
         Txt = "Proportion:"
-        Typ = "EF1"
+        Typ = "EF001"
         Hint = "L-end will be moved to this proportion of the distance" $0D "from the texture origin to the tagged point"
         }
-        close:py = {Txt="" }
+        cancel:py = {Txt="" }
     }
     """
 
@@ -1746,6 +1746,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.32  2001/09/24 23:56:42  tiglari
+#store cyanlhandle glue proportion in setup, fix some issues
+#
 #Revision 1.31  2001/09/24 10:15:19  tiglari
 #proportional glue for CyanLHandles
 #
