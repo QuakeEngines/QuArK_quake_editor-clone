@@ -161,7 +161,8 @@ uses
   QkObjectClassList in 'prog\QkObjectClassList.pas',
   Sprite in 'prog\Sprite.pas',
   crc32 in 'prog\crc32.pas',
-  QkApplPaths in 'prog\QkApplPaths.pas';
+  QkApplPaths in 'prog\QkApplPaths.pas',
+  ExtraFunctionality in 'prog\ExtraFunctionality.pas';
 
 {$R *.RES}
 
