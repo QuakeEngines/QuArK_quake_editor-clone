@@ -15,7 +15,6 @@ import quarkx
 from maputils import *
 import maphandles
 
-
 #
 # Classes that implement operations on all types of Map Objects,
 # e.g. Quake entities, groups, brush entities, duplicators, etc.
@@ -578,6 +577,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2000/05/19 10:13:39  tiglari
+#fixed `snap' in revision history at bottom
+#
 #Revision 1.11  2000/05/19 10:11:13  tiglari
 #added revision history, comments on use of BezierType menu
 #
