@@ -3,7 +3,7 @@ unit QkJpg;
 interface
 
 uses Windows,SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Graphics, Game, QkBmp, dialogs,
-     Quarkx, JpegFileWrapper, Travail;
+     Quarkx, JpegFileWrapper, Travail, QkTextures, Setup;
 
 type
  QJPeg = class(QImages)
@@ -11,6 +11,8 @@ type
           procedure Enregistrer(Info: TInfoEnreg1); override;
           procedure Charger(F: TStream; Taille: Integer); override;
         public
+          function BaseGame : Char;
+          class function CustomParams : Integer;
           procedure GetPaletteAndDataFromBmp(f:TStream);
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
@@ -21,6 +23,16 @@ implementation
 procedure progress(percent: Integer);
 begin
   ProgresTravail;
+end;
+
+class function QJpeg.CustomParams : Integer;
+begin
+ Result:=cpAnyHeight;
+end;
+
+function QJpeg.BaseGame : Char;
+begin
+ Result:=mjQ3A;
 end;
 
 procedure QJpeg.Enregistrer(Info: TInfoEnreg1);
@@ -35,6 +47,7 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
+    acces;
     FileWrap:=TJpegFileWrapper.Create(nil);
     bmp:=TMemoryStream.Create;
     FillChar(Header, SizeOf(Header), 0);

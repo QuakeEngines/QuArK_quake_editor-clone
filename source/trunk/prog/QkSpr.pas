@@ -729,12 +729,22 @@ begin
   OldIndex:=Combobox1.itemindex;
 end;
 
+Function SetRowSelect(h: THandle):Boolean;
+var
+lvflags: DWord;
+begin
+  lvflags:=SendMessage(h, $1000 + 55, 0, 0);
+  lvflags:=lvflags or $00000020;
+  result:=bool(SendMessage(h, $1000 + 54, 0, lvflags));
+end;
+
 procedure TQSprForm.FormCreate(Sender: TObject);
 begin
   inherited;
   ImageDisplayer:=TImageDisplayer.Create(Self);
   ImageDisplayer.Parent:=Panel1;
   ImageDisplayer.Align:=alClient;
+  SetRowSelect(ListView1.Handle);
 end;
 
 procedure TQSprForm.playClick(Sender: TObject);

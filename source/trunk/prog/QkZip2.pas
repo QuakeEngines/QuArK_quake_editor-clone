@@ -60,7 +60,7 @@ type
 //                procedure EtatObjet(var E: TEtatObjet); override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
 //                function CreateOwnExplorer(nOwner: TComponent) : TWinControl; override;
-//                function FindFile(const PakPath: String) : QFileObject; override;
+                function FindFile(const PakPath: String) : QFileObject; override;
 //                function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
 //                function GetFolder(Path: String) : QZipFolder;
 //                procedure AddFileWithPath(PathAndShortName: String; Q: QFileObject; SetName: Boolean);
@@ -502,7 +502,7 @@ begin
  Result:=TPakExplorer.Create(nOwner);
  Result.Width:=170;
 end;
-
+         }
 function QZipFolder.FindFile(const PakPath: String) : QFileObject;
 var
  I: Integer;
@@ -521,7 +521,7 @@ begin
    end;
  Result:=SousElements.FindName(PakPath) as QFileObject;
 end;
-
+    {
 function QZipFolder.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
  if (Q is QZipFolder) then

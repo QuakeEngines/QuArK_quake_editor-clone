@@ -3,7 +3,7 @@ unit QkQ3;
 interface
 
 uses
-  QkZip2,QkFileObjects,Quarkx,QkObjects,QkText;
+  QkZip2,QkFileObjects,Quarkx,QkObjects,QkText, QkJpg, QkTextures, Setup;
 
 type
   Q_CFile = class(QCfgFile)
