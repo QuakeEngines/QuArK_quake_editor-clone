@@ -1,3 +1,9 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkFrame;
 
 interface
@@ -73,7 +79,7 @@ begin
     exit;
   S0:=FloatSpecNameOf('Vertices');
   S:=S0+'=';
-  SetLength(S, BaseSize+SizeOf(vec3_t)*Count-1);
+  SetLength(S, BaseSize+SizeOf(vec3_t)*(Count-1));
   PChar(Dest):=PChar(S)+BaseSize;
   for i:=1 to count do begin
     if i<>index then begin

@@ -1,3 +1,9 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkMd3;
 
 interface
@@ -194,7 +200,7 @@ type
 var
   mhead: TMD3Mesh;
   tex: TMD3Skin;
-  i, j: Integer;
+  i, j, k: Integer;
   Skin: QImages;
   Frame: QFrame;
   s: String;
@@ -301,9 +307,8 @@ begin
       Vertexes2:=Vertexes;
       for J:=0 to mhead.vertex_Num-1 do begin
         with Vertexes2^ do begin
-          CVert^[0]:=Vec[1] / 64;
-          CVert^[1]:=Vec[2] / 64;
-          CVert^[2]:=Vec[3] / 64;
+          for k:=0 to 2 do
+            CVert^[k]:=Vec[k+1] / 64;
         end;
         Inc(Vertexes2);
         Inc(CVert);

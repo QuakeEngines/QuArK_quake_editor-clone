@@ -1,3 +1,9 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkModel;
 
 interface
@@ -22,7 +28,7 @@ type
 
 implementation
 
-uses QkQkl, QkMdl, QkMd2, QkMd3, form_model;
+uses QkQkl, QkMdl, QkMd2, QkMd3, form_model, QkHr2;
 
 function QModel.TestConversionType(I: Integer) : QFileObjectClass;
 begin
@@ -31,6 +37,7 @@ begin
     2: Result:=QMd3File;
     3: Result:=QMd2File;
     4: Result:=QMdlFile;
+    5: Result:=QHr2Model;
     else Result:=Nil;
   end;
 end;

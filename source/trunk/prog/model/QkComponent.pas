@@ -1,10 +1,16 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkComponent;
 
 interface
 
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, qmath, QkTextures, PyMath, Python, dialogs, QkMdlObject,
-     QkFrame, QkFrameGroup, QkSkinGroup, QkBoneGroup;
+     QkFrame, QkFrameGroup, QkSkinGroup, QkBoneGroup, QkSkinDrawObject;
 
 const
   MDL_GROUP_FRAME = 1;
@@ -52,8 +58,11 @@ type
     Function CreateBoneGroup: QBoneGroup;
     Function CreateSkinGroup: QSkinGroup;
     Function CreateFrameGroup: QFrameGroup;
+    Function CreateSDO: QSkinDrawObject;
+    Function SDO: QSkinDrawObject;
     procedure SetParentFrames(nFrame: QFrame);
     Function FindRoot: QObject;
+    function GetOriginOfComponent(mode: Integer): TVect;
   end;
 
 implementation
@@ -198,21 +207,25 @@ begin
       tris:=tris2;
       for i:=1 to cnt do begin
         found:=false;
+        // first loop to check if triangle contains 'vertexno'
         for j:=0 to 2 do begin
           if tris^[j].vertexno = index then begin
             found:=true;
             break;
-          end else begin
+          end;
+        end;
+        // only create triangle if triangle doesn't contain 'vertexno'
+        if not found then begin
+          for j:=0 to 2 do begin
             Dest^[j].VertexNo:= tris^[j].VertexNo;
             if Dest^[j].VertexNo>index then
               Dest^[j].VertexNo:= Dest^[j].VertexNo-1;
             Dest^[j].S:= tris^[j].S;
             Dest^[j].T:= tris^[j].T;
           end;
+          Inc(Dest);
         end;
         inc(tris);
-        if not found then
-          Inc(Dest);
       end;
       // add triangles spec to component.
       Specifics.Delete(Specifics.IndexofName(Spec1));
@@ -695,6 +708,29 @@ begin
   SubElements.Add(Result);
 end;
 
+Function QComponent.CreateSDO: QSkinDrawObject;
+begin
+  result:=QSkinDrawObject.Create('SDO', Self);
+  Subelements.add(result);
+end;
+
+Function QComponent.SDO: QSkinDrawObject;
+var
+  i: Integer;
+  x: QObject;
+begin
+  result:=nil;
+  for i:=0 to SubElements.Count-1 do begin
+    x:=SubElements.Items1[i];
+    if x is QSkinDrawObject then begin
+      result:=QSkinDrawObject(x);
+      exit;
+    end;
+  end;
+  if result=nil then
+    Result:=CreateSDO;
+end;
+
 Function QComponent.CreateFrameGroup: QFrameGroup;
 begin
   Result:=QFrameGroup.Create('Frames', Self);
@@ -777,11 +813,13 @@ var
   S: String;
   test, total: Single;
   Mode3D: Boolean;
+Label
+  PreExit;
 begin
   if CurrentFrame=Nil then begin
     CurrentFrame:=GetFrameFromIndex(0);
     if CurrentFrame=Nil then
-      Exit;
+      Goto PreExit;
   end;
   FCurrentFrameCount:=FCurrentFrameObj.GetVertices(FCurrentFrame);
   GetMem(ProjPts, FCurrentFrameCount * SizeOf(TPointProj));
@@ -879,10 +917,10 @@ begin
             if I<FillTrisCount then begin
               obj:=PyList_GetItem(FSelTris, I);
               if obj=Nil then
-                Exit;
+                exit;
               if obj^.ob_type=PyTuple_Type then begin
                 if not PyArg_ParseTupleX(obj, 'OO;filltris format error', [@patterns[False], @patterns[True]]) then
-                  Exit;
+                  exit;//Goto PreExit;
                 with Tris^ do
                   for K:=0 to 2 do begin
                     v3p[K]:=FCurrentFrame;
@@ -896,7 +934,7 @@ begin
                 V2.Z:=v3p[2]^[2] - v3p[0]^[2];
                 Normale:=Cross(V1, V2);
                 Back:=CCoord.PositiveHalf(Normale.X, Normale.Y, Normale.Z,
-                Normale.X * v3p[0]^[0] + Normale.Y * v3p[0]^[1] + Normale.Z * v3p[0]^[2]);
+                         Normale.X * v3p[0]^[0] + Normale.Y * v3p[0]^[1] + Normale.Z * v3p[0]^[2]);
                 obj:=patterns[Back];
                 if obj <> Py_None then begin
                   Hollow:=False;
@@ -905,17 +943,18 @@ begin
                     C2:=C1;
                   end else
                     if not PyArg_ParseTupleX(obj, 'ii;filltris format error', [@C1, @C2]) then
-                      Exit;
+                      exit;//Goto PreExit;
                   SetTextColor(Info.DC, C1);
                   SetBkColor(Info.DC, C2);
                 end;
               end;
             end;
-          ScrAnd:=ScrAnd0;
-          with Tris^ do
-            for K:=0 to 2 do begin
-              Pts[K]:=Vertices[K]^;
-              ScrAnd:=ScrAnd and Pts[K].OffScreen;
+            ScrAnd:=ScrAnd0;
+            with Tris^ do begin
+              for K:=0 to 2 do begin
+                Pts[K]:=Vertices[K]^;
+                ScrAnd:=ScrAnd and Pts[K].OffScreen;
+              end;
             end;
             if ScrAnd<>0 then begin
               NewPenMode:=1;
@@ -958,6 +997,10 @@ begin
   finally
     FreeMem(ProjPts);
   end;
+
+PreExit:
+  inherited;
+  
 end;
 
 procedure QComponent.AnalyseClic(Liste: PyObject);
@@ -1024,6 +1067,32 @@ begin
   end;
 end;
 
+function QComponent.GetOriginOfComponent(mode: Integer): TVect;
+var
+  tris, tris_o: PComponentTris;
+  numtris, i, j: integer;
+begin
+  result:=origine;
+  case mode of
+    0: begin  // normal
+      raise exception.create('not implemented yet');
+    end;
+    1: begin  // st vertices
+      numtris:=triangles(tris_o);
+      tris:=tris_o;
+      result.z:=0;
+      for i:=0 to numtris-1 do begin
+        for j:=0 to 2 do begin
+          result.x:=result.x+tris^[j].s;
+          result.y:=result.y+tris^[j].t;
+        end;
+      end;
+      result.x:=result.x / (numtris * 3);
+      result.y:=result.y / (numtris * 3);
+    end;
+  end;
+end;
+
 function QComponent.PyGetAttr(attr: PChar) : PyObject;
 var
   I, L, Count: Integer;
@@ -1052,6 +1121,10 @@ begin
       Py_INCREF(Result);
       Exit;
     end;
+    's': if StrComp(attr, 'skindrawobject')=0 then begin
+      Result:=GetPyObj(SDO);
+      Exit;
+    end;
     'g': if StrComp(attr, 'group_frame')=0 then begin
       Result:=GetPyObj(FrameGroup);
       Exit;
@@ -1068,6 +1141,13 @@ begin
       else
         Result:=FInfo;
       Py_INCREF(Result);
+      Exit;
+    end;
+    'o': if StrComp(attr, 'origin_comp')=0 then begin
+      Result:=MakePyVect(GetOriginOfComponent(0));
+      Exit;
+    end else if StrComp(attr, 'originst')=0 then begin
+      Result:=MakePyVect(GetOriginOfComponent(1));
       Exit;
     end;
     't': if StrComp(attr, 'triangles')=0 then begin

@@ -1,3 +1,9 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkModelFile;
 
 interface
@@ -21,7 +27,7 @@ type
 
 implementation
 
-uses quarkx;
+uses quarkx, qkskindrawobject;
 
 function QModelFile.Loaded_Component(Root: QModelRoot; cname: string): QComponent;
 var
@@ -38,6 +44,7 @@ begin
       CreateSkinGroup;
       CreateFrameGroup;
       CreateBoneGroup;
+      CreateSDO;
     end;
     Root.SubElements.Add(Result);
   finally

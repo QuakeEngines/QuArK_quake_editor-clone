@@ -1,3 +1,9 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkModelRoot;
 
 interface
@@ -11,6 +17,7 @@ type
   private
     FCurrentComponentObj: QComponent;
     procedure SetCurrentComponent(nComponent: QComponent);
+    Procedure MergeCurrentWithComp(Comp: QComponent);
   public
     class function TypeInfo: String; override;
     function Triangles(var P: PComponentTris) : Integer;
@@ -72,6 +79,10 @@ const
 function Max(a,b: Longint): Longint;
 begin
 if a>b then result:=a else result:=b;
+end;
+
+Procedure QModelRoot.MergeCurrentWithComp(Comp: QCOmponent);
+begin
 end;
 
 procedure QModelRoot.SetFrames(index: Integer);

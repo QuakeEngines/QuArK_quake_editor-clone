@@ -1,3 +1,9 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
+
 unit QkMdlObject;
 
 interface
@@ -40,6 +46,8 @@ type
 
 implementation
 
+uses qkskindrawobject;
+
 class function QMdlObject.TypeInfo;
 begin
   TypeInfo:=':m';
@@ -53,7 +61,7 @@ end;
 
 function QMdlObject.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
-  Result:=ieResult[True];
+  Result:=ieResult[not (Q is QSkinDrawObject)];
 end;
 
 procedure QMdlObject.AddTo3DScene;
