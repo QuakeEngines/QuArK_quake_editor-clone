@@ -158,9 +158,9 @@ $GamesQRKAddons["Q3A"  ][] = new cQRKAddon("Q3 map model prefabs"     ,""       
 $GamesQRKAddons["Q3A"  ][] = new cQRKAddon("Q3 sample DM maps"        ,""                                           ,"The three Q3Radiant sample maps, fixed and converted into QuArK format, using tree-view groups. By <a href=\"javascript:mail_decode('E.C.Uhyforetra@Fghqrag.GHQrysg.AY');\">Rolf Hulsbergen</a>. (original <a href=\"http://www.student.citg.tudelft.nl/c9375215/samples.zip\">file</a>)"
                                                                                                                         ,"Q3A_Map_Samples.zip"
                                                                                                                                             ,"http://dl.fileplanet.com/dl/dl.asp?quark/addons/quake3/Q3A_Map_Samples.zip"                             ,"(Dated 2001-03-17)");
-$GamesQRKAddons["Q3A"  ][] = new cQRKAddon("Q3 Pong"                  ,""                                           ,"By <a href=\"javascript:mail_decode('klcure@zdz.vjnec.pbz');\">\"Xypher\"</a>."
+$GamesQRKAddons["Q3A"  ][] = new cQRKAddon("Q3 Pong"                  ,""                                           ,"By <a href=\"javascript:mail_decode('jroznfgre@zdz.vjnec.pbz');\">\"Xypher\"</a>."
                                                                                                                         ,"Q3Pong.zip"       ,"http://dl.fileplanet.com/dl/dl.asp?quark/addons/quake3/Q3Pong.zip"                                      ,"(Dated 2001-07-18)");
-$GamesQRKAddons["Q3A"  ][] = new cQRKAddon("Q3 Rally"                 ,""                                           ,"By <a href=\"javascript:mail_decode('klcure@zdz.vjnec.pbz');\">\"Xypher\"</a>."
+$GamesQRKAddons["Q3A"  ][] = new cQRKAddon("Q3 Rally"                 ,""                                           ,"By <a href=\"javascript:mail_decode('jroznfgre@zdz.vjnec.pbz');\">\"Xypher\"</a>."
                                                                                                                         ,"Q3Rally.zip"      ,"http://dl.fileplanet.com/dl/dl.asp?quark/addons/quake3/Q3Rally.zip"                                     ,"(Dated 2001-07-18)");
 
 # Star Trek:Voyager-Elite Force
