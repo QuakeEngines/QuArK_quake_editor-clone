@@ -55,6 +55,31 @@ def matrix_rot_v2u(u,v):
     else:
       return ~matrix
 
+#
+# destructive, do to copies
+#
+def evaluateDuplicators(group):
+    for obj in group.subitems:
+       if obj.type==":b" or obj.type==":g":
+           evaluateDuplicators(obj)
+    getmgr = quarkpy.mapduplicator.DupManager
+    for obj in group.subitems:
+       if obj.type==":d":
+            index=group.subitems.index(obj)
+            mgr = getmgr(obj)
+            image = 0
+            while 1:
+                objlist = mgr.buildimages(image)
+                if len(objlist)==0:
+                    break
+                image = image + 1
+                new = quarkx.newobj("%s (%d):g" % (obj.shortname, image))
+                for o in objlist:
+                    new.appenditem(o)
+                group.removeitem(index)
+                group.insertitem(index, new)
+       
+
 def MakeAxes2(x):
     xn=x.normalized
     if abs(xn*quarkx.vect(0,1,0))<.1:
@@ -243,6 +268,7 @@ class PathDuplicator(StandardDuplicator):
         group = quarkx.newobj("group:g");
         for item in list:
            group.appenditem(item.copy())
+        evaluateDuplicators(group)
         return group
 
     def sourcelist2(self):
@@ -669,6 +695,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2001/02/09 10:49:07  tiglari
+#fixed bug with no-angle path joints
+#
 #Revision 1.5  2001/02/08 10:44:27  tiglari
 #Fixed problems with paths going up & down.
 # Replaced subtraction code with end-face movement/distortion.
