@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, QkObjects, QkFileObjects,
   QkForm, QkImages, Python, Game, QkPCX, QkTextures, qkmodelroot, Forms,
-  PyForms, form_model;
+  PyForms;
 
 type
   QModel = class(QFileObject)
@@ -22,7 +22,7 @@ type
 
 implementation
 
-uses QkQkl, QkMdl, QkMd2, QkMd3;
+uses QkQkl, QkMdl, QkMd2, QkMd3, form_model;
 
 function QModel.TestConversionType(I: Integer) : QFileObjectClass;
 begin

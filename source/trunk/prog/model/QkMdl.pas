@@ -215,90 +215,91 @@ begin
               Derriere:=TrisRA^.facesfront=0;
               for J:=0 to 2 do begin
                 with CTris^[J] do begin
-                VertexNo:=TrisRA^.index_xyz[J];
-                with STData^[TrisRA^.index_st[J]] do begin
-                  S:=ss;
-                  T:=tt;
-                  if Derriere and (onseam and $20 <> 0) then
-                    Inc(S, Delta);
+                  VertexNo:=TrisRA^.index_xyz[J];
+                  with STData^[TrisRA^.index_st[J]] do begin
+                    S:=ss;
+                    T:=tt;
+                    if Derriere and (onseam and $20 <> 0) then
+                      Inc(S, Delta);
+                  end;
                 end;
               end;
+              Inc(TrisRA);
+              Inc(CTris);
             end;
-            Inc(TrisRA);
-            Inc(CTris);
-          end;
-        end else  { default Q1 and H2 Models }
-          for I:=1 to mdl.numtris do begin
-            Derriere:=Tris^.facesfront=0;
-            for J:=0 to 2 do
-              with CTris^[J] do begin
-                VertexNo:=Tris^.index_xyz[J];
-                with STData^[Tris^.index_xyz[J]] do begin
-                  S:=ss;
-                  T:=tt;
-                  if Derriere and (onseam and $20 <> 0) then
-                    Inc(S, Delta);
+          end else  { default Q1 and H2 Models }
+            for I:=1 to mdl.numtris do begin
+              Derriere:=Tris^.facesfront=0;
+              for J:=0 to 2 do
+                with CTris^[J] do begin
+                  VertexNo:=Tris^.index_xyz[J];
+                  with STData^[Tris^.index_xyz[J]] do begin
+                    S:=ss;
+                    T:=tt;
+                    if Derriere and (onseam and $20 <> 0) then
+                      Inc(S, Delta);
+                  end;
                 end;
-              end;
-            Inc(Tris);
-            Inc(CTris);
-          end;
-        C.Specifics.Add(S);   { Tris= }
+              Inc(Tris);
+              Inc(CTris);
+            end;
+          C.Specifics.Add(S);   { Tris= }
+        finally
+          FreeMem(Triangles);
+        end;
       finally
-        FreeMem(Triangles);
+        FreeMem(STData);
       end;
-    finally
-      FreeMem(STData);
-    end;
-    { load frames }
-    Taille1:=SizeOf(trivertx_t)*mdl.numverts;
-    GetMem(FrSourcePts, Taille1);
-    try
-      for I:=1 to mdl.numframes do begin
-        Read1(J, SizeOf(LongInt));
-        if J=0 then begin
-          FrameGroup.count:=1;
-          NextTime:=Nil;
-        end else begin
-          Read1(FrameGroup, SizeOf(FrameGroup));
-          SetLength(Times, FrameGroup.count*SizeOf(Single));
-          PChar(NextTime):=PChar(Times);
-          Read1(NextTime^, FrameGroup.count*SizeOf(Single));
-        end;
-        PreviousTime:=0;
-        for K:=1 to FrameGroup.count do begin
-          Read1(Frame, SizeOf(Frame));
-          Read1(FrSourcePts^, Taille1);
-          FrameObj:=Loaded_Frame(C, CharToPas(Frame.Nom));
-          if NextTime<>Nil then begin
-            if K=1 then
-              FrameObj.Specifics.Values['group']:='1';
-            FrameObj.SetFloatSpec('duration', NextTime^-PreviousTime);
-            PreviousTime:=NextTime^;
-            Inc(NextTime);
+      { load frames }
+      Taille1:=SizeOf(trivertx_t)*mdl.numverts;
+      GetMem(FrSourcePts, Taille1);
+      try
+        for I:=1 to mdl.numframes do begin
+          Read1(J, SizeOf(LongInt));
+          if J=0 then begin
+            FrameGroup.count:=1;
+            NextTime:=Nil;
+          end else begin
+            Read1(FrameGroup, SizeOf(FrameGroup));
+            SetLength(Times, FrameGroup.count*SizeOf(Single));
+            PChar(NextTime):=PChar(Times);
+            Read1(NextTime^, FrameGroup.count*SizeOf(Single));
           end;
-          S:=FloatSpecNameOf(Spec2);
-          SetLength(S, Length(Spec2)+mdl.numverts*SizeOf(vec3_t));
-          PChar(CVert):=PChar(S)+Length(Spec2);
-          FrSource:=FrSourcePts;
-          for J:=0 to mdl.numverts-1 do begin
-            with FrSource^ do begin
-              CVert^[0]:=mdl.scale[0] * X + mdl.origin[0];
-              CVert^[1]:=mdl.scale[1] * Y + mdl.origin[1];
-              CVert^[2]:=mdl.scale[2] * Z + mdl.origin[2];
+          PreviousTime:=0;
+          for K:=1 to FrameGroup.count do begin
+            Read1(Frame, SizeOf(Frame));
+            Read1(FrSourcePts^, Taille1);
+            FrameObj:=Loaded_Frame(C, CharToPas(Frame.Nom));
+            if NextTime<>Nil then begin
+              if K=1 then
+                FrameObj.Specifics.Values['group']:='1';
+              FrameObj.SetFloatSpec('duration', NextTime^-PreviousTime);
+              PreviousTime:=NextTime^;
+              Inc(NextTime);
             end;
-            Inc(FrSource);
-            Inc(CVert);
+            S:=FloatSpecNameOf(Spec2);
+            SetLength(S, Length(Spec2)+mdl.numverts*SizeOf(vec3_t));
+            PChar(CVert):=PChar(S)+Length(Spec2);
+            FrSource:=FrSourcePts;
+            for J:=0 to mdl.numverts-1 do begin
+              with FrSource^ do begin
+                CVert^[0]:=mdl.scale[0] * X + mdl.origin[0];
+                CVert^[1]:=mdl.scale[1] * Y + mdl.origin[1];
+                CVert^[2]:=mdl.scale[2] * Z + mdl.origin[2];
+              end;
+              Inc(FrSource);
+              Inc(CVert);
+            end;
+            FrameObj.Specifics.Add(S);
           end;
-          FrameObj.Specifics.Add(S);
         end;
+      finally
+        FreeMem(FrSourcePts);
       end;
-    finally
-      FreeMem(FrSourcePts);
     end;
-  end;
-  else
-    inherited;
+    else begin
+      inherited;
+    end;
   end;
 end;
 

@@ -113,10 +113,11 @@ begin
         f1:=(tris^[0].vertexno=v1)or(tris^[0].vertexno=v2)or(tris^[0].vertexno=v3);
         f2:=(tris^[1].vertexno=v2)or(tris^[1].vertexno=v2)or(tris^[1].vertexno=v3);
         f3:=(tris^[2].vertexno=v2)or(tris^[2].vertexno=v2)or(tris^[2].vertexno=v3);
-        if f1 and f2 and f3 then begin
+        if f1 and f2 and f3 then begin  // v1, v2 & v3 can be in any order!
           index:=i;
           break;
         end;
+        inc(tris);
       end;
       if index=-1 then
         exit;
@@ -128,17 +129,15 @@ begin
       // Recreate triangles array specific.
       tris:=tris2;
       for i:=1 to cnt do begin
-        if i=index then
-          inc(tris)
-        else begin
+        if i<>index then begin
           for j:=0 to 2 do begin
-            if not (tris^[j].vertexno = index) then begin
-              with Dest^[j] do begin
-                VertexNo:= tris^[j].VertexNo;
-                S       := tris^[j].S;
-                T       := tris^[j].T;
-              end;
+//            if not (tris^[j].vertexno = index) then begin
+            with Dest^[j] do begin
+              VertexNo:= tris^[j].VertexNo;
+              S       := tris^[j].S;
+              T       := tris^[j].T;
             end;
+//            end;
           end;
           Inc(Dest);
         end;

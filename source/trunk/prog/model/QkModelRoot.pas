@@ -246,6 +246,8 @@ procedure QModelRoot.Dessiner;
 var
   i: Integer;
 begin
+  if CurrentComponent=nil then
+    CurrentComponent:=GetComponentFromIndex(0);
   for i:=0 to SubElements.Count-1 do begin
     if SubElements.Items1[i].Typeinfo = QComponent.Typeinfo then
       QComponent(SubElements.Items1[i]).Dessiner;
