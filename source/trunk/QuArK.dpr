@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2003/08/13 04:26:21  silverpaladin
+final changes to gk1's TG_Form vs TForm1.  Added a couple jpg modules and a reference to default.qrk for easy access
+
 Revision 1.19  2002/05/15 21:19:09  tiglari
 add prog/maperror to project
 
@@ -42,7 +45,7 @@ uses
   MemTester in 'Prog\MemTester.pas',
   Forms,
   QkObjects in 'Prog\QkObjects.pas',
-  Qk1 in 'Prog\Qk1.pas' {g_Form1},
+  Qk1 in 'Prog\Qk1.pas' {Form1},
   QkExplorer in 'Prog\QkExplorer.pas',
   QkGroup in 'Prog\QkGroup.pas' {FQGroup},
   QkUnknown in 'Prog\QkUnknown.pas' {FQUnknown},
@@ -190,7 +193,7 @@ uses
 begin
   Application.Initialize;
   Application.Title:='Quake Army Knife';
-  Application.CreateForm(Tg_Form1, g_Form1);
+  Application.CreateForm(TForm1, Form1);
   Application.Run;
 
 (* In case of compile error  "Missing $ENDIF",
