@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20.2.1  2000/09/01 01:46:03  alexander
+set name
+
 Revision 1.20  2000/07/28 15:11:34  alexander
 set snapshot name
 
@@ -63,7 +66,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'REL6_1-pre-1';
+ QuArKVersion            = 'REL6_1-pre-2';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
@@ -1326,6 +1329,13 @@ end;
 {$IFDEF Debug}
 function QObject.GetSpecifics : TStringList;
 begin
+  {alex}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  begin
+     AccesRec;
+  end;
+  {/alex ######### FIXME ! i think this is needed , and thus it should be
+   enabled always !!!!!}
  if (FFlags and ofSurDisque <> 0) and not FLoading then
   Raise InternalE('GetSpecifics');
  Result:=FSpecifics;
@@ -1333,8 +1343,15 @@ end;
 
 function QObject.GetSubElements : TQList;
 begin
+  {alex}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  begin
+     AccesRec;
+  end;
+  {/alex ######### FIXME ! i think this is needed , and thus it should be
+   enabled always !!!!!}
  if (FFlags and ofSurDisque <> 0) and not FLoading then
-  Raise InternalE('GetSousElements');
+    Raise InternalE('GetSubElements');
  Result:=FSubElements;
 end;
 {$ENDIF}
