@@ -1,4 +1,32 @@
 
+           QuArK Snapshot of 2002feb24
+
+ * [Decker]
+   Added some Medal of Honor:Allied Assault support. Not much,
+   as the buildtools for maps (.BSP files and such) have not yet 
+   been released, nor have entity-describtions.
+
+ * [Decker]
+   The buildtools-setup for Return to Castle Wolfenstein is now
+   configured for GTKRadiant's Q3MAP.EXE program.
+
+ * [Andy/Decker]
+   Added .PNG images file support, though only 8-bits/paletted
+   images shown in QuArK's texture-browser. This means that any
+   24-bits .PNG images will not show correctly in QuArK.
+   (Programmers note: Duplicated ZLib code. Should try to only
+   use source\components\zip, and eliminate the need for 
+   source\components\PNGZlib.PAS and source\components\*.OBJ)
+
+ * [Andy/Decker]
+   Added Tribes 2 .VL2 and .CS-script files support. Note that 
+   .VL2 files are actually .ZIP files, just like .PK3 files are,
+   so if you're not happy with the way QuArK handles .VL2 files,
+   you can use WinZIP or any other ZIP-utility. And .CS files 
+   are just plain text-files, so use your favorite "NotePad"-
+   editor.
+
+
            QuArK Snapshot of 2002jan06
 
  * [Decker]
