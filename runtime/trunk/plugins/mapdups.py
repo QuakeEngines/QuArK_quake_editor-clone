@@ -28,6 +28,7 @@ Info = {
 from quarkpy.maputils import *
 import quarkpy.mapduplicator
 import quarkpy.maphandles
+import quarkpy.mapcommands
 StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 
 
@@ -272,11 +273,23 @@ quarkpy.mapduplicator.DupCodes.update({
   "wall maker":      WallMaker,
 })
 
+#
+# Clear texture cycle files cache (so that edits will
+#   be reloaded)
+#
+
+def resetTextureCycleClick(m):
+    quarkpy.mapduplicator.Dup_Tex_Dicts={}
+
+quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCycleClick,"|Reload files specifying texture cycles for duplicators"))
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.7  2001/05/19 03:55:42  tiglari
+# dissociate one, dissociate all, for 'out' duplicators
+#
 # Revision 1.6  2001/05/12 10:15:56  tiglari
 # remove matrix2 (buildLinearMatrix) support from linear duplicator
 #
