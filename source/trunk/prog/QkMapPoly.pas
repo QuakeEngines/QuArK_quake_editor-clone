@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2003/03/12 11:30:26  decker_dk
+Half-Life transparency support for the OpenGL-window (somewhat) implemented, in TTexturedTreeMap.GetFaceOpacity()
+
 Revision 1.69  2003/01/29 10:02:45  tiglari
 Englishification:
   TFace.prvNbs -> prvVertexCount
@@ -1320,61 +1323,72 @@ begin
 end;
 
 
-procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
+procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean; GameCode: char);
 var
- PX, PY: array[1..3] of TDouble;
- A, P2, S, C: TDouble;
- I: Integer;
- Plan: Char;
+  PX, PY: array[1..3] of TDouble;
+  A, P2, S, C: TDouble;
+  I: Integer;
+  Plan: Char;
 begin
- Plan:=PointsToPlane(Normale);
- for I:=1 to 3 do
-  case Plan of
-   'X': begin
-         PX[I]:=V[I].Y;
-         PY[I]:=V[I].Z;
-        end;
-   'Y': begin
-         PX[I]:=V[I].X;
-         PY[I]:=V[I].Z;
-        end;
-   'Z': begin
-         PX[I]:=V[I].X;
-         PY[I]:=V[I].Y;
-        end;
+  Plan:=PointsToPlane(Normale);
+  for I:=1 to 3 do
+    case Plan of
+      'X': begin
+             PX[I]:=V[I].Y;
+             PY[I]:=V[I].Z;
+           end;
+      'Y': begin
+             PX[I]:=V[I].X;
+             PY[I]:=V[I].Z;
+           end;
+      'Z': begin
+             PX[I]:=V[I].X;
+             PY[I]:=V[I].Y;
+           end;
   end;
- if not Mirror then
+  if not Mirror then
   begin
-   P2:=PX[2]; PX[2]:=PX[3]; PX[3]:=P2;
-   P2:=PY[2]; PY[2]:=PY[3]; PY[3]:=P2;
+    P2:=PX[2]; PX[2]:=PX[3]; PX[3]:=P2;
+    P2:=PY[2]; PY[2]:=PY[3]; PY[3]:=P2;
   end;
- PY[3]:=PY[3]-PY[1];
- PX[2]:=PX[2]-PX[1];
- PY[2]:=PY[2]-PY[1];
- if Abs(PY[2])<rien then
-  Params[3]:=0
- else
+  PY[3]:=PY[3]-PY[1];
+  PX[2]:=PX[2]-PX[1];
+  PY[2]:=PY[2]-PY[1];
+  if Abs(PY[2])<rien then
+    Params[3]:=0
+  else
   begin
-   A:=AngleXY(PX[2], PY[2]);
-   S:=Sin(A);
-   C:=Cos(A);
-  {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
-   PX[2]:=PX[2]*C + PY[2]*S;
-   Params[3]:=A*(180/pi);
+    A:=AngleXY(PX[2], PY[2]);
+    S:=Sin(A);
+    C:=Cos(A);
+   {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
+    PX[2]:=PX[2]*C + PY[2]*S;
+    Params[3]:=A*(180/pi);
 
-   PX[3]:=PX[3]-PX[1];
-   PY[3]:=PY[3]*C - PX[3]*S;
+    PX[3]:=PX[3]-PX[1];
+    PY[3]:=PY[3]*C - PX[3]*S;
 
-   P2:=PX[1];
-   PX[1]:=P2*C + PY[1]*S;
-   PY[1]:=PY[1]*C - P2*S;
+    P2:=PX[1];
+    PX[1]:=P2*C + PY[1]*S;
+    PY[1]:=PY[1]*C - P2*S;
   end;
- Params[4]:=PX[2] / EchelleTexture;
- Params[5]:=PY[3] / EchelleTexture;  { approximation is here : we ignore the angle that the third vector may do }
- if Abs(Params[4])<rien2 then A:=1 else A:=1/Params[4];
- Params[1]:=-PX[1]*A;
- if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
- Params[2]:=PY[1]*A;
+  Params[4]:=PX[2] / EchelleTexture;
+  if GameCode=mjGenesis3d then
+  begin
+    Params[3]:=Round(Params[3]);
+    if Plan='Y' then
+      Params[3]:=-Params[3];
+  end;
+  Params[5]:=PY[3] / EchelleTexture;  { approximation is here : we ignore the angle that the third vector may do }
+  if Abs(Params[4])<rien2 then A:=1 else A:=1/Params[4];
+  Params[1]:=-PX[1]*A;
+  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
+  Params[2]:=PY[1]*A;
+  if GameCode=mjGenesis3d then
+  begin
+    if Plan='X' then
+      Params[4]:=-Params[4]
+  end
 end;
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
@@ -2759,7 +2773,7 @@ var
        begin
          SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
 
-         ApproximateParams(Normale, PT, Params, Mirror); {does scale}
+         ApproximateParams(Normale, PT, Params, Mirror, MJ); {does scale}
          for I:=1 to 2 do
            S:=S+' '+IntToStr(Round(Params[I]));
          for I:=3 to 5 do
