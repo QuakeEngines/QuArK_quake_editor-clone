@@ -1,6 +1,5 @@
 title: M...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="mailinglists">     </a>Mailinglists        <dd>(editing mailinglists) A specialized e-mailing list, which only those who subscribe to it can receive/send messages. For QuArK there exist these three mailinglists; QuArK-News, QuArK and QuArK-Python. To subscribe, go to the forums-page on <a href="http://www.planetquake.com/quark/">http://www.planetquake.com/quark/</a>, and follow the directions from there.

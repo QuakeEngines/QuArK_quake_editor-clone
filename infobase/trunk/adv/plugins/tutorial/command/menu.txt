@@ -59,7 +59,7 @@ in the plugins directory, you should be able to start up quark, fire
 up the map editor, find the `Do Nothing' command on the command menu,
 click on it, and see the resulting message box.
 
-<P>If it doesn't work, possible explanations are:
+If it doesn't work, possible explanations are:
 <UL>
 <LI> A syntax error in the program, in which case you'll be looking
 at the Quark console, which will have some kind of error message.
@@ -68,8 +68,8 @@ QuArK will work but your new command won't appear on the menu.
 <LI> Something else, tell me when you manage to figure out it.
 </UL>
 
-<html>If all else fails, the file <tt>maptagside0.py</tt> in
-<zip>plugin_examples.zip
+If all else fails, the file <tt>maptagside0.py</tt> in
+<zip>plugin_examples.zip</zip>
 contains what is hopefully a working version of the code for this
 section.
 

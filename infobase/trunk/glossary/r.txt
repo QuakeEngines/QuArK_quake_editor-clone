@@ -1,6 +1,5 @@
 title: R...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="r_drawflat">       </a>R_DrawFlat  <dd>(console command) Used in conjuction with <a href="#r_speeds">r_speeds</a>, to see which parts of the map can be seen from which other parts. Its actually a <i>draw everything in reverse</i>.

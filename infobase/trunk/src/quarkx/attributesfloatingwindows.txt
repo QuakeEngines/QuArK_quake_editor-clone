@@ -1,8 +1,9 @@
 title: Additionnal attributes of Floating Windows controls
 author: Armin Rigo
-format: html
 
-<p>Floating windows are created by a window’s newfloating() method. They are screen controls, and as all screen controls are, they are attached to their owner window. Unlike other screen controls, however, they can float anywhere on the screen and are never automatically aligned by a parent panel. In fact, their parent attribute is always None.</p>
+Floating windows are created by a window’s newfloating() method. They are screen controls, and as all screen controls are, they
+are attached to their owner window. Unlike other screen controls, however, they can float anywhere on the screen and are never
+automatically aligned by a parent panel. In fact, their parent attribute is always None.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

@@ -2,5 +2,5 @@ title: The CVS repository at SourceForge
 desc: software anonymous reg
 
 The source of QuArK is now based on a CVS repository provided by
-<html><a href="http://sourceforge.net">SourceForge</a>.
+<a href="http://sourceforge.net">SourceForge</a>.
 Here is how you can access it.

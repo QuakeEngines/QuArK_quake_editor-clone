@@ -1,11 +1,11 @@
 title: Security-/locked doors with keys
 author:
 
-<html><b>Question:</b><br>
+<b>Question:</b><br>
 How do I use keys and doors in Quake-2?
 
-<html><b>Answer:</b><br>
-<html>The keys are the "key_<i>xxx</i>&nbsp;" entities.
+<b>Answer:</b><br>
+The keys are the "key_<i>xxx</i>&nbsp;" entities.
 Countrary to the good old Quake-1,
 you cannot simply tell a door it must not open unless the player carries
 some key.

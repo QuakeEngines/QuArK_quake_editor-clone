@@ -1,8 +1,10 @@
 title: The undo module
 author: Armin Rigo
-format: html
 
-<p>As a general rule, you must never directly modify map objects. This would prevent the user from undoing his actions. Instead, when you have changes to make, you must call quarkx.action() which returns a module object where you will find the functions described in the next table. Duplicate the objects you want to change using their copy() method, make changes in the copies, and use the following functions to give the new objects to QuArK’s undo mechanism.</p>
+As a general rule, you must never directly modify map objects. This would prevent the user from undoing his actions. Instead,
+when you have changes to make, you must call quarkx.action() which returns a module object where you will find the functions
+described in the next table. Duplicate the objects you want to change using their copy() method, make changes in the copies,
+and use the following functions to give the new objects to QuArK’s undo mechanism.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

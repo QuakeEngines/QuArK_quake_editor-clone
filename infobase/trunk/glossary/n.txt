@@ -1,6 +1,5 @@
 title: N...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="negativepoly">     </a>Negative Poly       <dd>A QuArK speciality, which allows the map-designer to <i>carve without carving</i>. Meaning, a negative poly will first make its brush-subtraction at compile-time, so the map-designer won't have to control "hundreds" of small brushes.

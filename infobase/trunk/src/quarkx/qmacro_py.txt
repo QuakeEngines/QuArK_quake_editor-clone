@@ -1,6 +1,5 @@
 title: Macros expected by QuArK in the module qmacro.py
 author: Armin Rigo
-format: html
 
 <table border=1 cellspacing=0 cellpadding=4>
 

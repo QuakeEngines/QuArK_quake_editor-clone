@@ -1,8 +1,8 @@
 title: Image List objects
 author: Armin Rigo
-format: html
 
-<p>Image Lists are built with the function quarkx.loadimages. They are similar to immutable sequences of icons, but only the following operations are defined on them:</p>
+Image Lists are built with the function quarkx.loadimages. They are similar to immutable sequences of icons, but only the
+following operations are defined on them:
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -20,21 +20,14 @@ The ith image, starting at 0
 
 </table>
 
-<p>Do not use Image List objects in places where a sequence could normally be used, e.g. in for. Instead of</p>
-
-<blockquote class="doccode">
-<pre>
+Do not use Image List objects in places where a sequence could normally be used, e.g. in for. Instead of
+<code>
 for icon in imagelist:
   ...
-</pre>
-</blockquote>
-
-<p>write</p>
-
-<blockquote class="doccode">
-<pre>
+</code>
+write
+<code>
 for i in range(0, len(imagelist)):
   icon = imagelist[i]
   ...
-</pre>
-</blockquote>
+</code>

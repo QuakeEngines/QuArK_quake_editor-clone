@@ -1,6 +1,5 @@
 title: B...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="bbox">                     </a>B-Box                       <dd>See <a href="#boundingbox">bounding box</a>

@@ -1,8 +1,8 @@
 title: Attributes of Internal objects of class "TreeMapBrush"
 author: Armin Rigo
-format: html
 
-<p>TreeMapBrush objects are all Quake's "Brush entities", that is, all entities with associated brushes. The top-level object worldspawn is a TreeMapBrush, and so are all doors, plats, etc. These objects have three additionnal read-only attributes.</p>
+TreeMapBrush objects are all Quake's "Brush entities", that is, all entities with associated brushes. The top-level object
+worldspawn is a TreeMapBrush, and so are all doors, plats, etc. These objects have three additionnal read-only attributes.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

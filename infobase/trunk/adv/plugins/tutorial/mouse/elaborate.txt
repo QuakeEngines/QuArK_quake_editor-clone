@@ -19,9 +19,9 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
     elif tagged==o:
         mentagside.state = menglueside.state = qmenu.disabled
     menu = [mentagside, menglueside, mencleartag]+menu
-    return menu  
+    return menu
 </code>
-<html><tt>maptagside4.py</tt> contains the final version of this
+<tt>maptagside4.py</tt> contains the final version of this
 stuff so far.
 
 Here we're using menu items and click functions defined outside
@@ -71,7 +71,7 @@ or else by attaching thing them directly to the menu item:
     if isefulInfo is None:
         menuItem.state=qmenu.disabled
     else:
-        menuitem.usefulInfo=usefulInfo    
+        menuitem.usefulInfo=usefulInfo
 </code>
 If the latter technique is used, the click function can be
 defined outside of the menu function definition:

@@ -8,5 +8,5 @@ Yes you read it correct, I did write "the Q3Radiant manual". It contains very go
 should know, or at least would want to, before falling into the utter frustration when something just won't work.
 
 The manual should be available from
-<html><a href="http://www.qeradiant.com">www.qeradiant.com</a>,
+<a href="http://www.qeradiant.com">www.qeradiant.com</a>,
 or other well assorted Quake-3:Arena/Q3Radiant editing sites.

@@ -265,15 +265,13 @@ suggested so far: it can operate on many objects at once,
 and display in the form default information provided from
 a default object rather than the thing being edited itself.
 
-Here's what it says in
-<ref> src/quarkx
- :
+Here's what it says in <ref> src/quarkx </ref>:
 
 <code>
 setdata(objs) setdata(objs, formobj):
 </code>
-<html><ul><li>
-  Select the object(s) whose Specifics/Args are to be
+<ul>
+<li>Select the object(s) whose Specifics/Args are to be
   displayed in the data form. objs can be either a single
   " objspec " or a list of " objspecs ". An " objspec " i
   either a single object or a tuple of two objects : the
@@ -282,7 +280,7 @@ setdata(objs) setdata(objs, formobj):
   form displays the one from its default value. The
   optional argument formobj gives a :form Internal object
   to use.
-<html></li></ul>
+</ul>
 
 So for example for a face, if the face doesn't have
 some property but the face's texture specifies a default

@@ -1,14 +1,14 @@
 title: Windows, Transparency, Breakable
 author:
 
-<html><b>Question:</b><br>
+<b>Question:</b><br>
 How do I create a transparent breakable window in Half-Life? Or just a transparent object?
 
-<html><b>Answer:</b><br>
+<b>Answer:</b><br>
 It is only possible to create transparent objects in Half-Life, by using brush-entities.
 
 Most brush-entities in Half-Life, have some
-<html>"render<i>xxx</i>&nbsp;" specifics.
+"render<i>xxx</i>&nbsp;" specifics.
 It is these that are used to tell the game-engine, that this brush
 should be drawn transparent or do other special effects.
 

@@ -1,7 +1,7 @@
 title: Gotchas
 author: tiglari
 
-<html><strong>QuarkX functions & None</strong>:
+<strong>QuarkX functions & None</strong>:
 If you write something like:
 <code>
     if quarkx.function():
@@ -9,9 +9,9 @@ If you write something like:
       blah
 </code>
 
-  expecting blah blah to not execute when function()
-  returns None as a value, you'll probably get a bizarre
-  run-time error.  Instead write:
+expecting blah blah to not execute when function()
+returns None as a value, you'll probably get a bizarre
+run-time error.  Instead write:
 
 <code>
     if quarkx.function() is not None:
@@ -28,16 +28,13 @@ or false, including the Delphi-defined objects -- at least
 the Python core expects it so, and the Delphi code doesn't
 do it right :-(  So always explicitely compare with None.
 
-<html><strong>vector equality</strong>:
+<strong>vector equality</strong>:
 Don't try to compare Quarkx vectors with equality,
 rather test their difference for being zero.  Armin discusses
-this in the
-<ref> src/quarkx
- document.
+this in the <ref> src/quarkx </ref> document.
 
-<html><strong>tuples & assigment</strong>:
-Python has a concept of
-`tuple', which is a sequence of numbers whose members can't
+<strong>tuples & assigment</strong>:
+Python has a concept of `tuple', which is a sequence of numbers whose members can't
 be changed (they're `immutable').  1-element tuples are
 written with a comma after them, which leads to wierd
 looking things like:
@@ -58,9 +55,8 @@ These commas are a bit unusual and easy to miss at first, and
 since many of the most useful specifics in dialog boxes
 are of tuple-type, missing them can lead to a lot of frustration.
 
-<html><strong>Tabs & whitespace</strong>:
-One of Python's distinctive
-features is `whitespace structuring', whereby all members of
+<strong>Tabs & whitespace</strong>:
+One of Python's distinctive features is `whitespace structuring', whereby all members of
 the same block have to be indented the same distance, and
 sub-blocks are indented more.  This saves hunting around for
 matching curlies, but can lead to at least one kind of

@@ -1,8 +1,8 @@
 title: Matrix objects
 author: Armin Rigo
-format: html
 
-<p>3x3 matrices are used to represent linear mappings. Use quarkx.matrix to create matrices. They are not immutable objects, because you can change values in individual cases, but in general they should be considered as immutable.</p>
+3x3 matrices are used to represent linear mappings. Use quarkx.matrix to create matrices. They are not immutable objects,
+because you can change values in individual cases, but in general they should be considered as immutable.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

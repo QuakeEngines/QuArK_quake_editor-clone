@@ -27,7 +27,12 @@ TEXT_TO_HTML_NBSP[" "] = "&nbsp;"
 #today = time.strftime("%d %b %Y", time.localtime(time.time()))
 
 def text2html(text):
-    return string.join(map(TEXT_TO_HTML.get, text), "")
+    newtext = string.join(map(TEXT_TO_HTML.get, text), "")
+    # Fix a problem with "&lt;" "&gt;" becomming "&amp;lt;" "&amp;gt;"
+    newtext = string.replace(newtext, "&amp;lt;",   "&lt;")
+    newtext = string.replace(newtext, "&amp;gt;",   "&gt;")
+    newtext = string.replace(newtext, "&amp;nbsp;", "&nbsp;")
+    return newtext
 
 def text2html_nbsp(text, maxlen=999):
     if (len(text) > maxlen):
@@ -39,35 +44,36 @@ def path2html(path):
 
 def climbpath(curpath, relpath):
     if relpath[:3] == "../" :
-       return climbpath(curpath[:-1],relpath[3:])
+       return climbpath(curpath[:-1], relpath[3:])
     else:
-#       print 'CURPATH '+`curpath`
-       newpath = string.join(curpath,'/')+relpath
-#       print 'NEWPATH '+`newpath`
+#      print 'CURPATH ' + `curpath`
+       newpath = string.join(curpath, '/') + relpath
+#      print 'NEWPATH ' + `newpath`
        return newpath
 
 
 def relpath(curpath, relpath):
-    if relpath[0]!='.':
+    if relpath[0] != '.':
        return relpath
-    elif relpath[1]=='/':
-       return curpath+relpath[2:]
-    elif relpath[1:3]=='./':
-       track = string.split(curpath,'/')
-       return climbpath(track[:-2],relpath[2:])
+    elif relpath[1] == '/':
+       return curpath + relpath[2:]
+    elif relpath[1:3] == './':
+       track = string.split(curpath, '/')
+       return climbpath(track[:-2], relpath[2:])
 
 def findref(root, path, name, fkw):
-#    print 'FKW: '+`fkw["path"]`
-    def ref(REF, REF_NAME, kw,name=name):
-        if name=="":
+#   print 'FKW: ' + `fkw["path"]`
+
+    def ref(REF, REF_NAME, kw, name=name):
+        if name == "":
             return REF % kw
         else:
-            kw['refname']=name
+            kw['refname'] = name
             return REF_NAME % kw
-            
+
     path = relpath(fkw["path"], path)
-    print 'PATH: '+`path`
-    print "name: "+name
+#   print 'PATH: ' + `path`
+#   print 'name: ' + `name`
     path0 = path
     path = string.split(path, "/")
     path1 = ""
@@ -82,14 +88,16 @@ def findref(root, path, name, fkw):
             if len(path) == 1:
                 for kw, text in root.files:
                     if kw["hrefaname"] == path[0]:
-                        return ref(REFFILE,REFFILE_NAME,kw)
-            raise "Reference not found : " + path0
-    return ref(REFDIR,REFDIR_NAME,root.kw)
+                        return ref(REFFILE, REFFILE_NAME, kw)
+            raise "Reference not found: " + path0
+    return ref(REFDIR, REFDIR_NAME, root.kw)
 
-def procpic(kw, path):  #tiglari
+def procpic(kw, path, extraargs):  #tiglari
+    if (string.find(path, "/") > -1) or (string.find(path, "\\") > -1) or (path[:1] == "."):
+        raise "Illegal picture filename: [%s]" % path
     picrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
-    img = '<img src="%s">'%picrl
-    data = open(kw["path"]+path,"rb").read()
+    img = '<img %s src="%s">' % (extraargs, picrl)
+    data = open(kw["path"]+path, "rb").read()
     f = open("output/"+picrl, "wb")
     f.write(data)
     f.close()
@@ -98,27 +106,179 @@ def procpic(kw, path):  #tiglari
 
 def procrsc(kw, path):  #tiglari
     rscrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
-    data = open(kw["path"]+path,"rb").read()
+    data = open(kw["path"]+path, "rb").read()
     f = open("output/"+rscrl, "wb")
     f.write(data)
     f.close()
     kw["forgotten"].remove(path)
-    return '"%s"'%rscrl
+    return '"%s"' % rscrl
 
 def proczip(kw, path):  #tiglari
     if localMode:
-        data = open("zips/"+path,"rb").read()
+        data = open("zips/"+path, "rb").read()
         if not os.path.exists("output/zips"):
             os.mkdir("output/zips")
         f = open("output/zips/"+path, "wb")
         f.write(data)
         f.close()
-        return '<a href="%s">%s</a>'%(path,path)
+        return '<a href="%s">%s</a>' % (path, path)
     else:
-        return '<a href="%s%s">%s</a>'%(ZIPLOC,path,path)
-    
+        return '<a href="%s%s">%s</a>' % (ZIPLOC, path, path)
+
 
 def processtext(root, text, data, kw):
+
+    def perform_tag_action(tag, line, flags, root, kw):
+
+        def perform_ref_action(datastring, root, kw):
+            datastring = string.strip(datastring)
+            try:
+                idx = string.index(datastring, '\\')
+                pathname = string.strip(datastring[:idx])
+                refname = string.strip(datastring[idx+1:])
+            except (ValueError):
+                pathname = datastring
+                refname = "";
+            return findref(root, pathname, refname, kw)
+
+        def perform_pic_action(extraargs, datastring, root, kw):
+            return procpic(kw, string.strip(datastring), string.strip(extraargs))
+
+        def perform_zip_action(datastring, root, kw):
+            return proczip(kw, string.strip(datastring))
+
+        def perform_rsc_action(datastring, root, kw):
+            return procrsc(kw, string.strip(datastring))
+
+        if (tag[:5] == "<code"):
+            replacewith = "<div class=\"doccode\"><pre>"
+            flags["preformatmode"] = flags["preformatmode"] + 1
+        elif (tag[:6] == "</code"):
+            replacewith = "</pre></div>"
+            if (flags["preformatmode"] > 0):
+                flags["preformatmode"] = flags["preformatmode"] - 1
+        elif (tag[:4] == "<tt>"):
+            replacewith = "&nbsp;<tt>"
+        elif (tag[:5] == "</tt>"):
+            replacewith = "</tt>&nbsp;"
+        elif (tag[:4] == "<ref"):
+            end_tag = string.find(line, "</ref>")
+            if end_tag == -1:
+                # A <ref>-tag must have a </ref>-tag on the same line, else this code won't work.
+                raise "<ref>-tag without any </ref>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_ref_action(line[:end_tag], root, kw)
+            line = line[end_tag+len("</ref>"):]
+        elif (tag[:4] == "<img"):
+            end_tag = string.find(line, "</img>")
+            if end_tag == -1:
+                # A <img>-tag must have a </img>-tag on the same line, else this code won't work.
+                raise "<img>-tag without any </img>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_pic_action(tag[4:-1], line[:end_tag], root, kw)
+            line = line[end_tag+len("</img>"):]
+        elif (tag[:4] == "<pic"):
+            end_tag = string.find(line, "</pic>")
+            if end_tag == -1:
+                # A <pic>-tag must have a </pic>-tag on the same line, else this code won't work.
+                raise "<pic>-tag without any </pic>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_pic_action(tag[4:-1], line[:end_tag], root, kw)
+            line = line[end_tag+len("</pic>"):]
+        elif (tag[:4] == "<zip"):
+            end_tag = string.find(line, "</zip>")
+            if end_tag == -1:
+                # A <zip>-tag must have a </zip>-tag on the same line, else this code won't work.
+                raise "<zip>-tag without any </zip>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_zip_action(line[:end_tag], root, kw)
+            line = line[end_tag+len("</zip>"):]
+        elif (tag[:4] == "<rsc"):
+            end_tag = string.find(line, "</rsc>")
+            if end_tag == -1:
+                # A <rsc>-tag must have a </rsc>-tag on the same line, else this code won't work.
+                raise "<rsc>-tag without any </rsc>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_rsc_action(line[:end_tag], root, kw)
+            line = line[end_tag+len("</rsc>"):]
+        elif (tag[:4] == "</i>"):
+            replacewith = tag
+            if (line[:6] <> "&nbsp;"):
+                # Force in a non-breakable-space after end-of-italic.
+                replacewith = replacewith + "&nbsp;"
+        elif (tag[:2] == "< "):
+            raise "Illegal use of '<'-char. Use '&lt;' if a single '<' is needed! <File>.TXT title: \"%s\"" % kw["title"]
+        else:
+            replacewith = tag
+            if (tag[:4] == "<pre"):
+                flags["preformatmode"] = flags["preformatmode"] + 1
+            elif (tag[:5] == "</pre"):
+                if (flags["preformatmode"] > 0):
+                    flags["preformatmode"] = flags["preformatmode"] - 1
+        return replacewith, line, flags
+
+    paragraf_tags_added = 0
+    flags = { }
+    flags["prevlineempty"] = 1
+    flags["preformatmode"] = 0
+    flags["inhtmlcomment"] = 0
+
+    for line in text:
+        correctedline = ""
+        trimmedline = string.strip(line)
+        if not trimmedline:
+            correctedline = "\n"
+            flags["prevlineempty"] = 1
+            if (paragraf_tags_added > 0) and (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+                correctedline = "</p>"
+                paragraf_tags_added = paragraf_tags_added - 1
+        else:
+            # Scan through the 'line' in search for "<tag's" to replace/perform actions on
+            while len(line) > 0:
+                if (flags["inhtmlcomment"] == 1):
+                    endofcomment_found = string.find(line, "-->")
+                    if endofcomment_found == -1:
+                        # We're still in HTML-comment
+                        line = ""
+                    else:
+                        # Exiting HTML-comment mode
+                        line = line[endofcomment_found+len("-->"):]
+                        flags["inhtmlcomment"] = 0
+                else:
+                    startchar_tag_found = string.find(line, "<")
+                    if startchar_tag_found == -1:
+                        # No "<tag" were found, so just copy the entire line
+                        correctedline = correctedline + text2html(line)
+                        line = ""
+                    else:
+                        # Found a "<tag". Take anything before that, and append to 'correctedline'
+                        correctedline = correctedline + text2html(line[:startchar_tag_found])
+                        line = line[startchar_tag_found:]
+                        if (line[:4] == "<!--"):
+                            flags["inhtmlcomment"] = 1
+                        else:
+                            endchar_tag_found = string.find(line, ">")
+                            if endchar_tag_found == -1:
+                                # there must exist an endchar_tag on the same line!
+                                raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], kw["title"])
+                            else:
+                                tag = string.lower(line[:endchar_tag_found+1])
+                                if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html"):
+                                    # do now allow these tags anymore!
+                                    raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, kw["title"])
+                                correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, kw)
+
+                            correctedline = correctedline + correctedappend
+
+            if flags["prevlineempty"] == 1:
+                if (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
+                    # prepend with paragraf-tag
+                    correctedline = "<p>" + correctedline
+                    paragraf_tags_added = paragraf_tags_added + 1
+
+            flags["prevlineempty"] = 0
+
+        data.append(correctedline)
+
+    for ptags in range(paragraf_tags_added):
+        data.append("</p>")
+
+def xprocesstext(root, text, data, kw):
     currentpara = None
     TEXT = 1
     HTML = 2
@@ -221,9 +381,11 @@ def processtext(root, text, data, kw):
 def parse(file):
     f = open(file, "r")
     kw = { }
+    # Read the beginning non-empty lines, which should contain "key: value"'s
     while 1:
         line = string.strip(f.readline())
-        if not line: break
+        if not line: # empty line found, stop reading for "key: value"'s
+            break
         key = string.split(line, ":")[0]
         value = string.strip(line[len(key)+1:])
         try:
@@ -328,8 +490,9 @@ class Folder:
             folder.writefiles(root, filewriter)
 
     def makefile(self, root):
-        data = [ HEADER % self.kw ]
+        data = [ HEADER_BEGIN % self.kw ]
         processtext(root, self.text, data, self.kw)
+        data.append(HEADER_END)
         if self.folders:
             data.append(SUBDIR_BEGIN % self.kw)
             for folder in self.folders:
@@ -410,6 +573,7 @@ def run(filewriter):
     # recursively load everything in memory
     root = Folder("", (), ())
     print "-"*50
+    # recursively set navigation links
     root.navigation() # Decker
     print "-"*50
     # recursively write everything to disk
@@ -432,6 +596,10 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.11  2000/11/12 06:31:50  tiglari
+# <REF> file \ name
+# <ZIP> file.zip
+#
 # Revision 1.10  2000/11/02 06:36:24  tiglari
 # support for explicit names in REF's
 #

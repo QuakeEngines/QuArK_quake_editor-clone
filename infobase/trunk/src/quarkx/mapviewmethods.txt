@@ -1,8 +1,8 @@
 title: Methods of Map View controls
 author: Armin Rigo
-format: html
 
-<p>Map Views are the most important type of screen control in QuArK. Each Map View can display 3D objects under various projection types. Objects can be displayed in wireframe, solid, or textured.</p>
+Map Views are the most important type of screen control in QuArK. Each Map View can display 3D objects under various projection
+types. Objects can be displayed in wireframe, solid, or textured.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

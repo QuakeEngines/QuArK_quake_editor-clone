@@ -5,7 +5,7 @@ Now on to implement the gluing command!  First, add a new
 command to the  commands menu
 called `&Glue to Tagged', which invokes the function glueSideClick.
 
-<P>Now to define this function.  It basically has to do three things:
+Now to define this function.  It basically has to do three things:
 <UL>
 <LI>Identify the side that we want to glue (move)
 <LI>Identify the side that we want to glue it to
@@ -35,7 +35,7 @@ def glueSideClick (m):
     #
     # check that it meets conditions (this could be done more slickly)
     #
-    if len(sides) < 1:
+    if len(sides) &lt; 1:
         quarkx.msgbox("Something must be selected for glueing", MT_WARNING, MB_OK)
         return
     if len(sides) > 1:
@@ -77,14 +77,11 @@ So here's how to use the undo module:
 Here we just perform one exchange before the ok, but any number
 of actions can be performed, and there's more than just
 exchange, as you can see by consulting
-the documentation of
-<ref>src/quarkx/moduleundo
-.
+the documentation of <ref>src/quarkx/moduleundo</ref>.
 
 Next we want to define the function that produces the new face.
 This involves some map object manipulation and 3D math (see
-<ref>src/quarkx/attributesface
-):
+<ref>src/quarkx/attributesface</ref>):
 <code>
 def glueToTagged(side, tagged):
     #
@@ -96,7 +93,7 @@ def glueToTagged(side, tagged):
     #  to make sure that the normal is going to point outward from
     #  its parent poly.
     #
-    if new.normal*tagged.normal < 0:
+    if new.normal*tagged.normal &lt; 0:
         new.distortion(-tagged.normal, new.origin)
     else: new.distortion(tagged.normal, new.origin)
     #

@@ -1,8 +1,8 @@
 title: Attributes common to Internal objects of class "TreeMap"
 author: Armin Rigo
-format: html
 
-<p>Here are the additionnal attributes of Internal objects with "TreeMap" in their class tuple. All objects present in the map editor’s tree view are TreeMap objects, and no other one.</p>
+Here are the additionnal attributes of Internal objects with "TreeMap" in their class tuple. All objects present in the map
+editor’s tree view are TreeMap objects, and no other one.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

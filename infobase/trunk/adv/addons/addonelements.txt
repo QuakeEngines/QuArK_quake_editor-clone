@@ -1,6 +1,5 @@
 title: Elements of an add-on (unfinished)
 author: Decker
-format: html
 
 <code>
 <b>QQRKSRC1
@@ -20,8 +19,8 @@ format: html
 <b>}</b>
 </code>
 
-<p>A add-on which contain new entities, must have these two .qtx and .qctx structures:
-</p>
+A add-on which contain new entities, must have these two .qtx and .qctx structures:
+
 
 <code>
 // Structure which declares what entities are available

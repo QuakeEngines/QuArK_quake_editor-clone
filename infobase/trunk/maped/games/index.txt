@@ -7,8 +7,8 @@ subdir: heretic2
 subdir: half-life
 subdir: sin
 subdir: kingpin
-subdir: quake3
 subdir: sof
+subdir: quake3
 subdir: stvef
 subdir: crystalspace
 

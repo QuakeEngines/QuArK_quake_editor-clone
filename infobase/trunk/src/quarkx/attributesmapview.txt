@@ -1,8 +1,7 @@
 title: Additionnal attributes of Map View controls
 author: Armin Rigo
-format: html
 
-<p>Methods are described above. The following table describes the other attributes only.</p>
+Methods are described above. The following table describes the other attributes only.
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -124,8 +123,16 @@ Background image (filename, center, scale), where filename is the name of a .bmp
 
 </table>
 
-<p>A useful feature of Map views is their ability to work with handles: the attribute handles can be set to a list of Python instances (like a menu bar or a list of buttons), where each instance must have an attribute pos corresponding to the 3D location of the handle, and an attribute cursor giving the cursor shape to use when the mouse cursor is over the handle. cursor can be a CR_XXX value or a callback function that will be called with the map view as single parameter and that should return a CR_XXX value. The value CR_DEFAULT is replaced by the value set in the map view’s handlecursor attribute.</p>
+A useful feature of Map views is their ability to work with handles: the attribute handles can be set to a list of Python
+instances (like a menu bar or a list of buttons), where each instance must have an attribute pos corresponding to the 3D
+location of the handle, and an attribute cursor giving the cursor shape to use when the mouse cursor is over the handle. cursor
+can be a CR_XXX value or a callback function that will be called with the map view as single parameter and that should return a
+CR_XXX value. The value CR_DEFAULT is replaced by the value set in the map view’s handlecursor attribute.
 
-<p>Normally, the area around the handle center where you can click is 10 by 10 pixels large, that is, the distance between the mouse click and the handle center must be less than 5 pixels horizontally and vertically. You can give a custom horizontal and vertical size in the handle's size attribute, which defaults to the tuple (5,5).</p>
+Normally, the area around the handle center where you can click is 10 by 10 pixels large, that is, the distance between the
+mouse click and the handle center must be less than 5 pixels horizontally and vertically. You can give a custom horizontal and
+vertical size in the handle's size attribute, which defaults to the tuple (5,5).
 
-<p>You can set a string in the hint attribute. This string will be displayed in a small pop-up rectangle when the mouse is over the handle. To display hints over a blue background (for entity-specific information only), make the hint string begin with a question mark ("?"). QuArK does not draw the handles itself. The Python code is responsible for that. See maphandles.py.</p>
+You can set a string in the hint attribute. This string will be displayed in a small pop-up rectangle when the mouse is over
+the handle. To display hints over a blue background (for entity-specific information only), make the hint string begin with a
+question mark ("?"). QuArK does not draw the handles itself. The Python code is responsible for that. See maphandles.py.

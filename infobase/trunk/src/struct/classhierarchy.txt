@@ -1,8 +1,7 @@
 title: Source Code Class Hierarchy
 author: Decker
-format: html
 
-<blockquote class="doccode"><pre>
+<code>
 QObject
 |
 +- QFormCfg
@@ -444,4 +443,4 @@ TLayoutMgr
 TTimer
 |
 +- TPyTimer
-</pre></blockquote>
+</code>

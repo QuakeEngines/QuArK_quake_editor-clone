@@ -2,8 +2,9 @@ title: Map editing
 author: Decker
 subdir: games
 subdir: builderrors
+subdir: plugins
 
 Sorry, under construction.
 
 Please refer to Decker's
-<html><a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.
+<a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.

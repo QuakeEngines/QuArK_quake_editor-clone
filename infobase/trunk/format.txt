@@ -9,7 +9,7 @@ EXTENSION = ".txt"
 #
 ZIPLOC = "ftp://ftp.fileplanet.com/"
 
-HEADER = """
+HEADER_BEGIN = """
 <html>
 <head>
   <title>%(title)s</title>
@@ -44,7 +44,12 @@ HEADER = """
       &nbsp;%(navprev)s%(navup)s%(navnext)s&nbsp;
     </td>
   </tr>
-</table>"""
+</table>
+<br><table border=0 width=100%%><tr><td>"""
+HEADER_END = """
+</td></tr></table>
+<br>
+"""
 
 # nesting-level-dependent formatting
 #  main page
@@ -74,7 +79,6 @@ FOOTER = """
 # Formatting: List of folders
 #
 SUBDIR_BEGIN = """
-<br>
 <table width=100%% border=0 cellspacing=0>
   <tr class="headline">
     <td width=100%%>
@@ -94,7 +98,6 @@ SUBDIR_END = """
 # Formatting: List of files (first an index with titles only, then with detailed answers)
 #
 FILES_BEGIN = """
-<br>
 <table width=100%% border=0 cellspacing=0>
   <tr class="headline">
     <td width=100%%>
@@ -114,6 +117,10 @@ FILES_MIDDLE = """
 <br>
 
 """
+FILES_END = """
+<br>
+"""
+
 FILE_BEGIN = """
 <a name="%(hrefaname)s"></a>
   <table width=100%% border=0 cellspacing=0>
@@ -129,10 +136,11 @@ FILE_BEGIN = """
       </td>
     </tr>
   </table>
+  <br><table border=0 width=100%%><tr><td>
 """
 FILE_END = """
-<br>"""
-FILES_END = """
+  </td></tr></table>
+  <br>
 """
 
 #
@@ -168,10 +176,10 @@ SUBFILES_TABLEEND = """
 #
 # Cross-references
 #
-REFFILE      = """<a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a>"""
-REFDIR       = """<a href="%(htmlfile)s">%(title)s</a>"""
-REFFILE_NAME = """<a href="%(htmlfile)s#%(hrefaname)s">%(refname)s</a>"""
-REFDIR_NAME  = """<a href="%(htmlfile)s">%(refname)s</a>"""
+REFFILE      = """<a href="%(htmlfile)s#%(hrefaname)s">'%(title)s'</a>"""
+REFDIR       = """<a href="%(htmlfile)s">'%(title)s'</a>"""
+REFFILE_NAME = """<a href="%(htmlfile)s#%(hrefaname)s">'%(refname)s'</a>"""
+REFDIR_NAME  = """<a href="%(htmlfile)s">'%(refname)s'</a>"""
 REFPIC       = """<img src="%(imgfile)s">"""
 
 #

@@ -60,7 +60,7 @@ making it do something.
 But maybe I should first say a bit about what's really going
 on.  In the running of a Python program, the first time a module
 is imported, the statements in it are executed.  The
-<html><tt>def</tt> and <tt>class</tt> statements cause things
+<tt>def</tt> and <tt>class</tt> statements cause things
 to get defined, but you can write code to do anything
 you like.  Subsequent
 imports of a module don't re-execute its statements, they

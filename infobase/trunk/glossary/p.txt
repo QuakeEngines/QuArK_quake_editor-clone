@@ -1,6 +1,5 @@
 title: P...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="partialconversion">        </a>Partial conversion  <dd>[PC] A partial conversion is a <a href="#modification">modification</a> of the <a href="#fps">FPS-game's</a> normal rules <u>or</u> levels <u>or</u> sounds <u>or</u> graphics. So it is only parts of the normal game, that is changed, as opposed to an <a href="#totalconversion">total conversion</a>.

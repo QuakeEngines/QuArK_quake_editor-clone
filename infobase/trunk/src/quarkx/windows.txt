@@ -1,8 +1,9 @@
 title: Windows (forms)
 author: Armin Rigo
-format: html
 
-<p>Window Objects (commonly called “ forms ”) are the Python objects with which you can control a window’s aspect. In the current versions, only the map and model editors are Window objects; other windows cannot be accessed from Python. Here are the attributes of Window objects.</p>
+Window Objects (commonly called “ forms ”) are the Python objects with which you can control a window’s aspect. In the current
+versions, only the map and model editors are Window objects; other windows cannot be accessed from Python. Here are the
+attributes of Window objects.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

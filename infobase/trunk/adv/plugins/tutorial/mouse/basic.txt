@@ -23,8 +23,8 @@ Here is a basic format for adding things to the face menu:
 def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
     "the new right-mouse for sides"
     menu = oldfacemenu(o, editor)
-    <add stuff to menu>
-    return menu  
+    &lt;add stuff to menu&gt;
+    return menu
 </code>
 <code>
 quarkpy.mapentities.FaceType.menu = tagmenu
@@ -40,7 +40,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
     "the new right-mouse for sides"
     menu = oldfacemenu(o, editor)
     menu = [mentagside, menglueside, menclearside]+menu
-    return menu  
+    return menu
 </code>
 These menu-building functions take two arguments, the
 object they're called by RMB-ing on, and the editor.  And

@@ -1,8 +1,7 @@
 title: Guide to Typ's
 author: Decker
-format: html
 
-<p>Here is a list of the most common used Typ's in .QRK :form definitions.</p>
+Here is a list of the most common used Typ's in .QRK :form definitions.
 
 <table border=1 cellpadding=2 cellspacing=0>
 <tr><th width=10%>Typ's</th><th width=40%>Description</th><th width=50%>Example</th></tr>
@@ -14,8 +13,10 @@ E[-R]
 This is the default type, if Typ="..." is not given.<br>
 The last "R" (at third position) means Read/Only<br>
 </td><td>
-targetname: = { Typ="E" Txt="&" }<br>
+<pre>
+targetname: = { Typ="E" Txt="&" }
 target: = { Txt="&" }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -25,7 +26,9 @@ EF[999]
 <b>Entry field containing Float(s)</b>.<br>
 The last "R" (at third position) means Read/Only<br>
 </td><td>
-&nbsp;
+<pre>
+.
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -34,8 +37,10 @@ ED[L]<br>
 <b>Entry field containing Directory-path (with browse button)</b>.<br>
 The last "L" (at third position) means only the last foldername of the path is to be used.<br>
 </td><td>
-SourceDir: = { Typ="ED" Hint="Full directory-path" }<br>
-GameMod: = { Typ="EDL" Hint="Modification folder" }<br>
+<pre>
+SourceDir: = { Typ="ED" Hint="Full directory-path" }
+GameMod: = { Typ="EDL" Hint="Modification folder" }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -44,7 +49,9 @@ ET<br>
 <b>Entry field containing Texture-name (with browse button)</b>.<br>
 Opens the texture-browser, if the browse button is pressed.<br>
 </td><td>
+<pre>
 Texture: = { Typ="ET" Hint="Choose texture" }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -53,8 +60,10 @@ EP<br>
 <b>Entry field containing Path and File-name (with browse button)</b>.<br>
 Opens a file-dialog, so the user can choose a filename.
 </td><td>
-QBSP1: = { Typ="EP" Txt="Path to QBSP" DefExt="exe" }<br>
-LIGHT1: = { Typ="EP" Txt="Path to QRAD3" DefExt="exe" }<br>
+<pre>
+QBSP1: = { Typ="EP" Txt="Path to QBSP" DefExt="exe" }
+LIGHT1: = { Typ="EP" Txt="Path to QRAD3" DefExt="exe" }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -64,9 +73,11 @@ X&lt;value&gt;
 The same specificname may appear, with different &lt;values&gt;, so each bit in the specific can be controlled individually.<br>
 Usually used together with a Cap="...", to tell what the bit controls.
 </td><td>
-spawnflags: = { Typ="X1" Cap="Ambush" Txt="&" }<br>
-spawnflags: = { Typ="X2" Cap="On Trigger" Txt="&" }<br>
+<pre>
+spawnflags: = { Typ="X1" Cap="Ambush" Txt="&" }
+spawnflags: = { Typ="X2" Cap="On Trigger" Txt="&" }
 spawnflags: = { Typ="X128" Cap="X Axis" Txt="&" }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -76,16 +87,18 @@ C
 A predefined list of choices and their values. To use this type, the <i>items</i> and <i>values</i> must also be set, as can be seen in the example.<br>
 Each choice in the list will be indicated by a newline ($0D), except for the last choice!
 </td><td>
-mylist: = { Typ="C" Txt="&"<br>
-&nbsp;&nbsp;items =<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Choice 1" $0D<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Choice 2" $0D<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Choice 3"<br>
-&nbsp;&nbsp;values =<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"1" $0D<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"2" $0D<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"3"<br>
+<pre>
+mylist: = { Typ="C" Txt="&"
+  items =
+      "Choice 1" $0D
+      "Choice 2" $0D
+      "Choice 3"
+  values =
+      "1" $0D
+      "2" $0D
+      "3"
 }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -95,10 +108,12 @@ B
 Usually used to activate a second spec/arg view (a :form), which contains other spec/args thats more specialized for some purpose.<br>
 The Cap="..." controls the text in the pushbutton.
 </td><td>
-more: = { Typ="B" Txt="Specialize"<br>
-&nbsp;&nbsp;Cap = "Push..."<br>
-&nbsp;&nbsp;Form = "specialize_this:form"<br>
+<pre>
+more: = { Typ="B" Txt="Specialize"
+  Cap = "Push..."
+  Form = "specialize_this:form"
 }
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -110,14 +125,17 @@ If only Typ="L" is given, the resulting RGB values, will be in range 0 - 255.<br
 If Typ="LN" is given, the RGB values will be normalized to range 0.0 - 1.0.<br>
 If Typ="LN4" or Typ="L 4" is given, there will be created a fourth value, which controls the brightness of the light. This however, must be changed using a second spec/arg pair, with Typ="E".
 </td><td>
-_color: = { Typ="L" Txt="&" }<br>
-_light: = { Typ="LN" Txt="&" }<br>
-light: = { Typ="L 4" Txt="&" }<br>
-_lightbright: = { Typ="LN4" Txt="&" }<br>
-<br>
-//To view the exact values, create a second spec/arg pair<br>
-color: = { Txt="&" Typ="L" } //Pushbutton<br>
+<pre>
+_color: = { Typ="L" Txt="&" }
+_light: = { Typ="LN" Txt="&" }
+light: = { Typ="L 4" Txt="&" }
+_lightbright: = { Typ="LN4" Txt="&" }
+
+//To view the exact values, create a
+//second spec/arg pair
+color: = { Txt="&" Typ="L" } //Pushbutton
 color: = { Txt="&" } //Entryfield
+</pre>
 </td></tr>
 
 <tr><td align=center>
@@ -125,13 +143,17 @@ S
 </td><td valign=top>
 <b>Seperator</b>.
 </td><td>
+<pre>
 sep: = { Typ="S" }
+</pre>
 </td></tr>
 
 <!--
 <tr><td align=center>
 </td><td valign=top>
 </td><td>
+<pre>
+</pre>
 </td></tr>
 -->
 

@@ -1,6 +1,5 @@
 title: Functions of the module quarkx that build special objects
 author: Armin Rigo
-format: html
 
 <table border=1 cellspacing=0 cellpadding=4>
 

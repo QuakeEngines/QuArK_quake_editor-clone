@@ -1,4 +1,5 @@
 title: File-by-file descriptions
 subdir: qk1 qkobjects bezier qkmap qkq3a
+subdir: 3drender
 
 This section contains detailled description of some of the Pascal source files.

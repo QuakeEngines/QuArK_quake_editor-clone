@@ -8,16 +8,11 @@ floors, ceilings...), and then you put entities to populate it (monsters, lights
 It is important to distinguish between what is related to QuArK's map editor and what is related to the game you are making
 maps for. For example, how you give complex shapes to polyhedrons or how you change the attributes of entities is related to
 the map editor. On the other hand, what all these entity attributes actually mean is related to the game only, and so is the
-list of entities and textures you can use; see
-<ref>./entitiesforgame
- below.
+list of entities and textures you can use; see <ref> ./entitiesforgame </ref> below.
 
 For the basic QuArK-related operations, you can get help from one of the available tutorials. A basic one is found in the
-<html><a href="../help/maps/index.html">documentation of the map editor</a> (included in the QuArK distribution).
-Other ones are found on the
-<html><a href="http://www.planetquake.com/quark">QuArK web site</a>.
+<a href="../help/maps/index.html">documentation of the map editor</a> (included in the QuArK distribution).
+Other ones are found on the <a href="http://www.planetquake.com/quark">QuArK web site</a>.
 
-Questions about this subject are welcome in the
-<html><a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum</a>.
-See also the
-<html><a href="http://www.planetquake.com/quark/help/index.html">on-line docs</a> on the web site.
+Questions about this subject are welcome in the <a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum</a>.
+See also the <a href="http://www.planetquake.com/quark/help/index.html">on-line docs</a> on the web site.

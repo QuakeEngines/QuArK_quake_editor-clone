@@ -1,7 +1,7 @@
 title: Dialog Boxes
 author: Tiglari
 
-<html><u>Window Structure</u><br>
+<u>Window Structure</u><br>
 Dialog boxes are actually a special kind of 'floating window',
 defined by the class quarkpy.qmacro.dialogbox.  Floating
 windows are child windows of the application that float
@@ -30,7 +30,7 @@ once panel, as we will see eventually).  The qmacro.dialogbox
 code sets all this up for you, but I think it's good to
 know this much about it at the beginning.
 
-<html><u>Defining a Dialog</u><br>
+<u>Defining a Dialog</u><br>
 So down to the details.  We'll look at the MakeTexMultDlg
 in plugins.maptagside, since it's very simple.  This
 dialog asks for a number which the mapper is going to
@@ -117,29 +117,29 @@ mult:, and finally a button, of which more shortly.
 
 There are a number of gotchas for forms:
 
-<html><ol><li>
+<ol><li>
      The syntax is full of easy-to-screw up punctuation,
      and the error-messages tell you what line in the quoted
      string is wrong, rather than in the file, so you
      have to do some arithmetic to use the info (so I
      always start by dlgdefs by taking some other one that's
      already done as a basis, and modifying it).
-<html><li>
+<li>
      Buttons in forms are a horrible mess.  I don't have
      a deep enough understanding to know why Armin couldn't
      find one good implementation, but actually there are
      three crappy ones (2 by him, 1 by me), that work in
      different contexts.  This dialog box uses 'PyButtons',
      which are but into forms by lines like this:
-<html><span class="doccode">
+<span class="doccode">
      close:py = { }
-<html></span>
+</span>
      (the content of the button is specified later)
-<html><li>
+<li>
       You can't put comments into these triple quote-defined
       forms, the function that reads them can't strip them
       out.
-<html></ol>
+</ol>
 
 Other than buttons, almost everything that works in an
 entity form will work in a dialog box form, and vice versa,
@@ -155,8 +155,8 @@ to build dialog box forms, one that's rather useful for
 making a bit of extra horizontal space is a separator like
 this:
 
-<div class="doccode><pre>
-          sep: = {Typ="S" Txt=" "}
+<code>
+      sep: = {Typ="S" Txt=" "}
 </code>
 
 For a horizontal line rather than space, leave out the

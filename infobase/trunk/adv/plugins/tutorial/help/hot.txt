@@ -26,4 +26,4 @@ plugin writers.  I think it would be a cool and possibly feasable
 (but pretty hard)
 project to allow users to set up shortcuts the way they want them.
 
-<html>Working example of stuff so far in <tt>maptagside2.py</tt>, as usual.
+Working example of stuff so far in <tt>maptagside2.py</tt>, as usual.

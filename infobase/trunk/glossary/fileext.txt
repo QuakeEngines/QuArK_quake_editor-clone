@@ -1,6 +1,5 @@
 title: File-Extensions...
 author: Decker
-format: html
 
 <dl>
 <dt><a name=".ACE">   </a>.ACE   <dd>(binary)               An compressed archive of files. See <a href="http://www.winace.com">http://www.winace.com</a>.

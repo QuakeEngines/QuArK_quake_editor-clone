@@ -1,6 +1,5 @@
 title: U...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="unreal">           </a>Unreal              <dd>(game) A <a href="#fps">FPS-game</a> made by <a href="http://www.3drealms.com">3DRealms</a>. Unreal uses a different method of making/storing maps, which is not compatible with the Quake-engine series. QuArK does not support making maps for Unreal.

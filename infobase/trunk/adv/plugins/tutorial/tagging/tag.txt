@@ -1,7 +1,7 @@
 title: Tagging
 author: tiglari
 
-<P>For tagging, What we need to do is:
+For tagging, What we need to do is:
 <OL Type=1>
 <LI> See what's has been selected
 <LI> check that it is a single side
@@ -55,12 +55,12 @@ def tagSideClick (m):
     #
     # now check that what's selected is exactly one side
     #
-    if (len(tagged) < 1):
+    if (len(tagged) &lt; 1):
         quarkx.msgbox("No selection", MT_ERROR, MB_OK)
     elif (len(tagged) > 1):
-        quarkx.msgbox("Only one selection allowed", MT_ERROR, MB_OK) 
+        quarkx.msgbox("Only one selection allowed", MT_ERROR, MB_OK)
     elif (tagged[0].type!= ":f"):
-        quarkx.msgbox("The selected object is not a face", MT_ERROR, MB_OK) 
+        quarkx.msgbox("The selected object is not a face", MT_ERROR, MB_OK)
     #
     # and at last we're ready to rock and roll!
     #

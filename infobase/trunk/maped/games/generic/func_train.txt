@@ -1,11 +1,11 @@
 title: Func_train entity
 author:
 
-<html><b>Question:</b><br>
+<b>Question:</b><br>
 I am experimenting with a func_train and I seem to be unable to predict the exact course that this thing
 will follow after I put down the path_corners for it.
 
-<html><b>Answer:</b><br>
+<b>Answer:</b><br>
 The general path it will follow is set by the chain of target/targetname
 that tie the path_corner entities together. When you click on one of the
 path_corners, QuArK should display the whole path with arrows; if it doesn't,

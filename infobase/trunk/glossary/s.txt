@@ -1,6 +1,5 @@
 title: S...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="sin">                      </a>SiN                                 <dd>[SIN] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ritual.com">Ritual Entertainment</a>. Based upon the <a href="#quake2">Quake-2</a> graphics engine.

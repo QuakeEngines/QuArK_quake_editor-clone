@@ -1,6 +1,5 @@
 title: Attributes common to all Internal objects
 author: Armin Rigo
-format: html
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -184,4 +183,6 @@ A read-only dictionnary with all Specific/Arg pairs.
 
 </table>
 
-<p>Note that Internal Objects implement none of the operations like +,*,not, etc. Trying to use them, or even using an Internal Object in a boolean operation, will likely raise an Access Violation error. To test if a function returned an actual object or None, don’t write if obj:... but write if obj is not None:...
+Note that Internal Objects implement none of the operations like +,*,not, etc. Trying to use them, or even using an Internal
+Object in a boolean operation, will likely raise an Access Violation error. To test if a function returned an actual object or
+None, don’t write if obj:... but write if obj is not None:...

@@ -9,19 +9,13 @@ subdir: doc
 This section discusses the features of QuArK that can be customized without modifying the source code.
 This mainly includes:
 
-<html><strong>Add-Ons</strong>:
+<strong>Add-Ons</strong>:
 lists describing new entity types, new textures, etc. This is what you need to have QuArK support
 new Mods of the game or new games altogether.
 
-<html><strong>Python</strong>:
+<strong>Python</strong>:
 The language which much of the map-editor is written, and the
 major components of the Python portion of the editor,
-<ref>adv/quarkpy \ quarkpy
- and
-<ref>adv/plugins \ plugins
-.
+<ref> adv/quarkpy \ quarkpy </ref> and <ref> adv/plugins \ plugins </ref>.
 
-
-See the section
-<ref> maped
- for more information about how to use the map editor.
+See the section <ref> maped </ref> for more information about how to use the map editor.

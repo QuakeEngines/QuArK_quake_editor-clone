@@ -63,6 +63,5 @@ when we move the tagged side, the Glue item should become
 disabled on the menu.
 
 Finally, as an easy exercise, you should implement a `Clear tag"
-command.  Sample final results in
-<html><tt>maptagside3.py</tt>.
+command.  Sample final results in <tt>maptagside3.py</tt>.
 

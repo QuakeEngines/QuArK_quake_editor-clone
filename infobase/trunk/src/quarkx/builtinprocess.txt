@@ -1,8 +1,7 @@
 title: Built-in process objects
 author: Armin Rigo
-format: html
 
-<p>A process object lets you know the state of a program executed by quarkx.runprogram. It has the following attributes:</p>
+A process object lets you know the state of a program executed by quarkx.runprogram. It has the following attributes:
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -20,5 +19,5 @@ Set a callback function that is called when the program terminates, or immediate
 
 </table>
 
-<p>Note that this object might become obsolete in a future version of QuArK. Don’t rely on it. The stdout and stderr mecanism can be used to know when console processes terminate.</p>
-
+Note that this object might become obsolete in a future version of QuArK. Don’t rely on it. The stdout and stderr mecanism can
+be used to know when console processes terminate.

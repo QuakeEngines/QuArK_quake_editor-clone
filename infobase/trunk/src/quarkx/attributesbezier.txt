@@ -1,12 +1,11 @@
 title: Attributes of Internal objects of class "Bezier"
 author: Armin Rigo
-format: html
 
-<p>These objects are Bezier patches (for Quake 3). They can actually represent any "quilt" of <span class="doccode">m</span> times <span class="doccode">n</span> joined quadratic Bezier patches, where <span class="doccode">m</span> or <span class="doccode">n</span> can be zero (for Bezier lines).</p>
+These objects are Bezier patches (for Quake 3). They can actually represent any "quilt" of <tt>m</tt> times
+<tt>n</tt> joined quadratic Bezier patches, where <tt>m</tt> or
+<tt>n</tt> can be zero (for Bezier lines).
 
-<p>For more information about Bezier patches see 
-<ref> src/pas/bezier
-.</p>
+For more information about Bezier patches see <ref> src/pas/bezier </ref>.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

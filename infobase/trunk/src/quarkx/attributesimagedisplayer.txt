@@ -1,8 +1,8 @@
 title: Additionnal attributes of Image Displayer controls
 author: Armin Rigo
-format: html
 
-<p>Image Displayers are created by a panel’s newimagectrl() method. They are screen controls that display an image. Additionnal drawings can be painted over the image by Python code.</p>
+Image Displayers are created by a panel’s newimagectrl() method. They are screen controls that display an image. Additionnal
+drawings can be painted over the image by Python code.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

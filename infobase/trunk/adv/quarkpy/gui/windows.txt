@@ -11,11 +11,10 @@ One of the fundamental ideas of GUI programs is 'window'.
 is a region (typically a rectangle) on the screen that is
 looked after by some code. The job of this code is to;
 
-<html><ol><li>
-draw the window's region, typically in different ways depending on what's going on at the time.
-<html><li>
-respond to events that occur when the mouse cursor is in the window's region.
-<html></ol>
+<ol>
+<li>draw the window's region, typically in different ways depending on what's going on at the time.
+<li>respond to events that occur when the mouse cursor is in the window's region.
+</ol>
 
 So a 'button' is a little window that draws a picture that
 looks something like a button in an 'up position', but if

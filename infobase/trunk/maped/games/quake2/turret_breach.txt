@@ -1,16 +1,16 @@
 title: Turret entities
 author: Armin Rigo
 
-<html><b>Question:</b><br>
+<b>Question:</b><br>
 I am working on a huge turret.
 
-<html><b>Answer:</b><br>
+<b>Answer:</b><br>
 Turrets are a bit hard to design.
 
 The turret_base and turret_breach must have the same "team" specific.
-<html><br>
+<br>
 The turret_driver's "target" must match the turret_breach's "targetname".
-<html><br>
+<br>
 The turret_breach's "target" must match the "target" of yet another entity, "info_notnull".
 
 You must design and place all three turret_xxx entities as if the turret where looking to the direction 0 (east). If you want

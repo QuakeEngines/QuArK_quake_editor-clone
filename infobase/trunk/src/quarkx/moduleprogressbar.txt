@@ -1,8 +1,8 @@
 title: The progressbar module
 author: Armin Rigo
-format: html
 
-<p>You create a progress bar by calling quarkx.progressbar(txt,count), which returns a copy of the module described in the following table.</p>
+You create a progress bar by calling quarkx.progressbar(txt,count), which returns a copy of the module described in the
+following table.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

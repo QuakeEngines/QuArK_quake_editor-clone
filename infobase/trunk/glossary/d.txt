@@ -1,6 +1,5 @@
 title: D...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="duplicator">       </a>Duplicator          <dd>An active (macro) function in QuArK's <a href="#treeview">tree-view</a>, which allow the map-designer to duplicate objects many times, and still be able to edit the <i>master-objects</i>, where the changes will instantaneously be reflected on the duplicates.

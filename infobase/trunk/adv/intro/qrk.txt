@@ -1,11 +1,11 @@
 title: .Qrk files
 author: Tiglari
 
-<html><pre>
+<pre>
 Useful additions:
   *a rundown of the major compoments of a game-support file and an addon file.
   *a guide to Typ's in :form's
-<html></pre>
+</pre>
 
 .qrk files are just QObjects stored in files.  There are actually
 two kinds of .qrk files, text and binary (both unfortunately with
@@ -36,10 +36,10 @@ suprisiing that the rest of a QObject will consist of a series
 of pairs:
 
 <code>
-  <Name> = <Value>
+  &lt;Name> = &lt;Value>
 </code>
 
-  (where <Value> can be as large an expanse of text as you like,
+  (where &lt;Value> can be as large an expanse of text as you like,
    if it's a great big QOobject)
 
 Until we fetch up at the end with the closing `}', after which the
@@ -120,7 +120,7 @@ in the file QkFileObject.
 
 * sections on the major components of the major kinds of .qrk file would go nicely here *
 
-<html><strong>Forms:</strong>
+<strong>Forms:</strong>
  For game supporters, one of the most important kinds of components
  of .qrk files are :forms, since these control how the specifics
  of entities are entered into maps.  :forms are also important

@@ -1,8 +1,7 @@
 title: Icon objects
 author: Armin Rigo
-format: html
 
-<p>Icon Objects are the individual items of Image Lists.</p>
+Icon Objects are the individual items of Image Lists.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

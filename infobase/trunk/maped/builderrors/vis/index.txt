@@ -5,67 +5,67 @@ This page lists various encountered errors, that may occur during the VIS .bsp-o
 
 All QuArK supported games, are know to use a VIS .bsp-optimization phase:
 
-<html><center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+<center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
 
-<html><tr><td>
+<tr><td>
 Quake-1
-<html></td><td>
+</td><td>
 VIS.EXE, RVIS.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Hexen-2
-<html></td><td>
+</td><td>
 VIS.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Quake-2
-<html></td><td>
+</td><td>
 QVIS3.EXE, TIMVIS3.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Heretic-2
-<html></td><td>
+</td><td>
 QVIS3.EXE, TIMVIS3.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Half-Life
-<html></td><td>
+</td><td>
 VIS.EXE, HLVIS.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Sin
-<html></td><td>
+</td><td>
 QVIS3.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Kingpin
-<html></td><td>
+</td><td>
 KPVIS.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Quake-3:Arena
-<html></td><td>
+</td><td>
 "Q3MAP.EXE -vis"
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Soldier of Fortune
-<html></td><td>
+</td><td>
 SOFVIS.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Star Trek:Voyager - Elite Force
-<html></td><td>
+</td><td>
 "Q3MAP.EXE -vis"
-<html></td></tr>
+</td></tr>
 
-<html></table></center>
+</table></center>
 

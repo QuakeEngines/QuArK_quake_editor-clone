@@ -1,6 +1,5 @@
 title: A...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="addon">   </a>Add-on  <dd>A <a href="#.QRK">.QRK</a> file which consists of usefull data, typically new <a href="#entities">entities</a> and/or <a href="#textures">textures</a>.

@@ -10,7 +10,5 @@ compilation of changed .py files into .pyc files is automatic.
 
 If you want to develop in Python however, you will probably
 want the full distribution from
-<html><a href="http://www.python.org">www.python.org</a>
-, since this includes documentation including
-a tutorial, command-line listener for testing out what functions do,
-etc.
+<a href="http://www.python.org">www.python.org</a>, since this includes documentation including
+a tutorial, command-line listener for testing out what functions do, etc.

@@ -5,9 +5,9 @@ Help is the easiest.  In the third position of qmenu.item, we can
 put a string which is displayed at the bottom-left of the screen when
 the cursor sits on the menu item.  Or if the text is too long to be
 likely to fit into the window down there, begin it with a `|', then
-there's a message to press <F1> for help in the little window, and the
+there's a message to press &lt;F1&gt; for help in the little window, and the
 string will appear in a popup window in the middle of the screen when
-<F1> is pressed.
+&lt;F1&gt; is pressed.
 
 So we might replace our current menu-adding commands with something
 like this:

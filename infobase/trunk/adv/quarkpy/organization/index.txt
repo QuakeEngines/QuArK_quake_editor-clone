@@ -1,10 +1,9 @@
 title: Organization
 format: html
 
-<P>
 Quark was originally envisaged as having a map editor and
 a model editor.  The latter hasn't been finished, but Andy
-Vincent is working hard on it.<P>
+Vincent is working hard on it.
 
 Files that are providing facilities for both editors are
 usually prefixed with q- (qdictionnary.py, qkeys.py, etc.),

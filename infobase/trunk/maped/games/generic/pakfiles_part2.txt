@@ -1,10 +1,10 @@
 title: .PAK files - Part II
 author: Decker / Armin Rigo
 
-<html><b>Question:</b><br>
+<b>Question:</b><br>
 I also saw a few examples of guys distributing home-made PAK#.PAK-files.
 
-<html><b>Answer:</b><br>
+<b>Answer:</b><br>
 Yes, you can do that with QuArK, too. In the main window's Games menu,
 select 'Output directories', and check 'Always create .pak files'. Then
 QuArK will build a .PAK file in the 'TmpQuArK' directory, and the created

@@ -5,66 +5,66 @@ This page lists various encountered errors, that may occur during the RAD .bsp-l
 
 All QuArK supported games, are know to use a RAD .bsp-lighting phase:
 
-<html><center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+<center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
 
-<html><tr><td>
+<tr><td>
 Quake-1
-<html></td><td>
+</td><td>
 LIGHT.EXE, ARGHLITH.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Hexen-2
-<html></td><td>
+</td><td>
 LIGHT.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Quake-2
-<html></td><td>
+</td><td>
 QRAD3.EXE, ARGHRAD.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Heretic-2
-<html></td><td>
+</td><td>
 QRAD3.EXE, ARGHRAD.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Half-Life
-<html></td><td>
+</td><td>
 QRAD.EXE, HLRAD.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Sin
-<html></td><td>
+</td><td>
 QRAD3.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Kingpin
-<html></td><td>
+</td><td>
 KPRAD.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Quake-3:Arena
-<html></td><td>
+</td><td>
 "Q3MAP.EXE -light"
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Soldier of Fortune
-<html></td><td>
+</td><td>
 SOFARGHRAD.EXE
-<html></td></tr>
+</td></tr>
 
-<html><tr><td>
+<tr><td>
 Star Trek:Voyager - Elite Force
-<html></td><td>
+</td><td>
 "Q3MAP.EXE -light"
-<html></td></tr>
+</td></tr>
 
-<html></table></center>
+</table></center>

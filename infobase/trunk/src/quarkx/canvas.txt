@@ -1,10 +1,12 @@
 title: Canvas objects
 author: Armin Rigo
-format: html
 
-<p>Canvas Objects let you draw dots and lines from Python code. You obtain a Canvas object by calling a screen control’s canvas() method. Currently, only Image Displayers and Map Views have a canvas() method. You cannot create off-screen bitmaps currently.</p>
+Canvas Objects let you draw dots and lines from Python code. You obtain a Canvas object by calling a screen control’s canvas()
+method. Currently, only Image Displayers and Map Views have a canvas() method. You cannot create off-screen bitmaps
+currently.
 
-<p>Note that the Canvas returned by such an object should be considered as temporary: only use it right after you called canvas(). Don’t store it into something else than a local variable.</p>
+Note that the Canvas returned by such an object should be considered as temporary: only use it right after you called canvas().
+Don’t store it into something else than a local variable.
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -106,4 +108,5 @@ Resets the default pen and brush color and styles. Returns the canvas itself.
 
 </table>
 
-<p>There are of course other drawing methods that could be implemented, e.g. polylines, arcs, and so on. Ask me if you need them.</p>
+There are of course other drawing methods that could be implemented, e.g. polylines, arcs, and so on. Ask me if you need
+them.

@@ -1,8 +1,9 @@
 title: Floating toolbars, Toolbar panels, and Buttons
 author: Armin Rigo
-format: html
 
-<p>Floating Toolbars correspond to a built-in type. You create toolbars with the method newtoolbar of Window objects. The user can move Floating toolbars and either dock them (put them along the border of the window) or make them float (appear as a small stand-alone window). Note that Toolbars are not screen controls, as mentionned above. Here are all their attributes.</p>
+Floating Toolbars correspond to a built-in type. You create toolbars with the method newtoolbar of Window objects. The user can
+move Floating toolbars and either dock them (put them along the border of the window) or make them float (appear as a small
+stand-alone window). Note that Toolbars are not screen controls, as mentionned above. Here are all their attributes.
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -75,9 +76,11 @@ Same as ondrop for screen controls. (not implemented in 5.0.c4)
 
 </table>
 
-<p>Individual buttons are, like menu items, not built-in types, but rather instances of a standard Python class. See qtoolbar.py for more information.</p>
+Individual buttons are, like menu items, not built-in types, but rather instances of a standard Python class. See qtoolbar.py
+for more information.
 
-<p>Besides Floating Toolbars, buttons can also be displayed on fixed panels. Such panels are called Button Panels, and are created with a panel’s newbtnpanel() method. They are screen controls, with a few additionnal attributes:</p>
+Besides Floating Toolbars, buttons can also be displayed on fixed panels. Such panels are called Button Panels, and are created
+with a panel’s newbtnpanel() method. They are screen controls, with a few additionnal attributes:
 
 <table border=1 cellspacing=0 cellpadding=4>
 
@@ -101,4 +104,5 @@ See the method update() of Floating toolbars.
 
 </table>
 
-<p>Button panels have additionnal formatting capabilities: by inserting special values in the list of buttons, you can create gaps between buttons, pad buttons to the right, or force a new button row to begin. See qtoolbar.py.</p>
+Button panels have additionnal formatting capabilities: by inserting special values in the list of buttons, you can create gaps
+between buttons, pad buttons to the right, or force a new button row to begin. See qtoolbar.py.

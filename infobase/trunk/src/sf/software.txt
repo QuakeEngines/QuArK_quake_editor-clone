@@ -2,12 +2,11 @@ title: Required software
 author: Armin Rigo
 
 First, note that you need no special software to browse the
-<html><a href="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/?cvsroot=quark&sortby=date">on-line version of the repository</a>.
+<a href="http://cvs.sourceforge.net/cgi-bin/cvsweb.cgi/?cvsroot=quark&sortby=date">on-line version of the repository</a>.
 
 For more serious work, the software you need is first a CVS client. For Windows the best one is
-<html><a href="http://www.wincvs.org">WinCVS</a>.
-Download it and install it.
+<a href="http://www.wincvs.org">WinCVS</a>. Download it and install it.
 
 If you want to be able to contribute your own changes to the source into the repository, you will also need an SSH client.
 There is one you can download from
-<html><a href="http://asp.planetquake.com/dl/dl.asp?quark/source/ssh-pack.zip">this place</a>.
+<a href="http://asp.planetquake.com/dl/dl.asp?quark/source/ssh-pack.zip">this place</a>.

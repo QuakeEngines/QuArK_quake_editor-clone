@@ -1,8 +1,12 @@
 title: Additionnal attributes of Tree view controls (Explorers)
 author: Armin Rigo
-format: html
 
-<p>Tree views are created by a panel’s newexplorer() method. They are screen controls that display a hierarchical view of Internal QuArK Objects. Any number of objects in a tree view can be selected (they appear in blue), but only one can have the focus (a rectangle of dots around it). Note that if the object with the focus is in a closed group, the group itself will be displayed with the rectangle of dots, but the focus stays on the correct object. Objects are not considered selected themselves if they are into a group that is already selected; in this case, they are displayed with a blue border instead of a blue background.</p>
+Tree views are created by a panel’s newexplorer() method. They are screen controls that display a hierarchical view of Internal
+QuArK Objects. Any number of objects in a tree view can be selected (they appear in blue), but only one can have the focus (a
+rectangle of dots around it). Note that if the object with the focus is in a closed group, the group itself will be displayed
+with the rectangle of dots, but the focus stays on the correct object. Objects are not considered selected themselves if they
+are into a group that is already selected; in this case, they are displayed with a blue border instead of a blue
+background.
 
 <table border=1 cellspacing=0 cellpadding=4>
 

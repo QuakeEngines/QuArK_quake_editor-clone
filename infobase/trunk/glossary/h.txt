@@ -1,6 +1,5 @@
 title: H...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="halflife">         </a>Half-Life           <dd>[HL] (game) A <a href="#fps">FPS-game</a> made by <a href="#valvesoftware">Valve Software</a>. Based upon a heavily modified <a href="quake1">Quake-1</a> graphics engine.

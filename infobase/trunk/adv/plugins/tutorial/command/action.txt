@@ -13,7 +13,7 @@ here, but we will later on.
 The body of the function calls the `msgbox' function from the module
 `quarkx', which is imported in the first import statement.  Note
 that this works a bit differently from say an
-<html><tt>#include</tt>
+<tt>#include</tt>
 in C; when we import a module, we can't just use the names of the
 functions in it, but have to `qualify' those names by putting the
 module name in front, separated by a period.
@@ -24,9 +24,7 @@ the important function when it's used states where it came from,
 so the reader has a better chance of finding out what it does.
 We will soon see how to use unqualified imported names as well.
 
-As for the actual
-<html><tt>msgbox</tt>
-function, it produces little
+As for the actual <tt>msgbox</tt> function, it produces little
 `message box' dialogs that you can respond to by pushing buttons; its
 first argument is the string to be displayed in the
 message box, the second a `type' which determines the graphic icons
@@ -34,8 +32,7 @@ associated with the box, and third a flag that says that
 the messagebox has an OK button.
 
 Symbolic names for the useful values for these arguments are
-defined in the file
-<html><tt>quarkpy\qtils.py</tt>,
+defined in the file <tt>quarkpy\qtils.py</tt>,
 under the heading `# quarkx.msgbox'.
 So you can look there to see what the possibilities are.
 But hey, we haven't imported this module, and the symbols
@@ -43,19 +40,12 @@ aren't qualified anyway, so what's going on?
 
 What we have done is imported the module quarkpy.maputils,
 in a somewhat different way, in the last line of the import
-statement.
-<html><tt>from<i>
-<module name>
-<html> </i>import *</tt>
-means `import everything
-that's defined in the named module, and use it without
-qualification'.  And furthermore,
-<html><tt>quarkpy.maputils,</tt>
+statement. <tt>from <i>&lt;module name%gt;</i> import *</tt>
+means `import everything that's defined in the named module, and use it without
+qualification'.  And furthermore, <tt>quarkpy.maputils,</tt>
 a general grab-bag of utility functions for the map editor, imports
-<html><tt>quarkpy.qeditor</tt>
-in this way, which itself does the same to
-<html><tt>quarkpy.qutils.py</tt>.
-So everything defined
+<tt>quarkpy.qeditor</tt> in this way, which itself does the same to
+<tt>quarkpy.qutils.py</tt>. So everything defined
 in all of these modules is available to our plugin, without
 qualifying the names.
 
@@ -72,8 +62,7 @@ as files, and folders are taken to be `super modules' containing
 sub-modules.  So all of the files in quarkpy make up the quarkpy
 module, and to import them into a file outside of quarkpy
 you need the quarkpy. qualification.  Inside quarkpy you don't,
-so the statement that
-<html><tt>maputils.py</tt> uses to import <tt>qeditor.py</tt> is just:
+so the statement that <tt>maputils.py</tt> uses to import <tt>qeditor.py</tt> is just:
 <code>
 from qeditors import *
 </code>

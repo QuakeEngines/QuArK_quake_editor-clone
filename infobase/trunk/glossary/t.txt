@@ -1,6 +1,5 @@
 title: T...
 author: Decker
-format: html
 
 <dl>
 <dt><a name="teamfortress">             </a>Team Fortress               <dd>[TF] (modification) A teambased multiplayer game, which expands the <a href="#capturetheflag">Capture The Flag</a> concept with unique features like; specialized playerclasses, multiple and/or different map objectives. Team Fortress exists only for Quake/QuakeWorld. See also <a href="http://www.teamfortress.com">http://www.teamfortress.com</a>.
