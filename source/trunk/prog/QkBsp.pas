@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.55  2003/08/12 15:49:31  silverpaladin
 Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
 
@@ -617,10 +620,11 @@ const
 
  cSignatureBspJK2     = $50534252; {"RBSP" 4-letter header, which Jedi Knight II contains}
  cSignatureMohaa      = 892416050;
+ cSignatureHL2        = $50534256; {HL2 .bsp}
 
  cVersionBspQ3        = $0000002E; {Quake-3 or STVEF .BSP}
  cVersionBspJK2       = $00000001; {JK2 .BSP}
-
+ cVersionBspHL2       = $00000013; {HL2 .bsp}
 const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
    (              {Actually a 'FilenameExtension' - See TypeInfo()}
@@ -1080,6 +1084,14 @@ begin
           ObjectGameCode := mjMohaa;
 *)
         end;
+
+        cSignatureHL2: { HL2}
+        begin
+          ObjectGameCode := mjHL2;
+//          Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
+
+        end;
+
 
       else
         Raise EErrorFmt(5520, [LoadName, Signature, cSignatureBspQ1H2, cSignatureBspQ2DKQ3]);
