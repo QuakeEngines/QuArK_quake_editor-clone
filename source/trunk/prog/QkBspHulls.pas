@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/08/04 09:57:19  tiglari
+move hulltype stuff into QkBspHulls, bstype stuff into QkBsp
+
 Revision 1.21  2001/07/28 05:30:49  tiglari
 shift some decs to QkBsp.pas
 
@@ -692,6 +695,7 @@ begin
         end;
     end;
     { Some changes needed here if NuTex2 branch stuff used  }
+    Face.SetThreePoints(P1, P2, P3);
     if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
     begin
       SubElements.Remove(Face);
