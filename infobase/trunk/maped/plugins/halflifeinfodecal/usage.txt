@@ -1,6 +1,7 @@
 title: Usage
 author: Decker
 
+<img border=1 align=right> argspecs.png </img>
 There are five specifics, in the infodecal helper, which you must know about:
 <ul>
 <li>text

@@ -1,4 +1,7 @@
 title: Plug-in descriptions
+author: tiglari
+subdir: tagside
+subdir: madsel
 subdir: halflifeinfodecal
 
 Hopefully here there will be a list of known plugins for QuArK, and their documentation / how-to-use-them.
