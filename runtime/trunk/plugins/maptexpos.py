@@ -17,6 +17,9 @@
 #
 ##########################################################
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Alternate Texture Positioning",
    "desc":          "Alternate Texture Positioning",
@@ -167,3 +170,11 @@ def texmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
   return menu
   
 quarkpy.mapentities.FaceType.menu = texmenu
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

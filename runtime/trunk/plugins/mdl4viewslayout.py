@@ -8,6 +8,9 @@ Plug-in which define the 4-views screen layouts.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Model 4-Views Layout",
    "desc":          "Model 4-views Screen Layouts.",
@@ -282,3 +285,10 @@ class FourViewsLayout2(FourViewsLayout):
 
 LayoutsList.insert(0, FourViewsLayout2)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

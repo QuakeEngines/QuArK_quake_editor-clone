@@ -21,6 +21,9 @@
 #
 #-------------------------------------------------------------------------------
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Make n sided Prism",
    "desc":          "Make an n sided prism from user supplied specs",
@@ -391,3 +394,11 @@ def MakePrismClick (m):
 # Register the replace texture menu item
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClick))
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

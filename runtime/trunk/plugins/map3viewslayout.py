@@ -8,6 +8,10 @@ Plug-in which define the Classical screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
+
 Info = {
    "plug-in":       "3-Views Layout",
    "desc":          "QuArK's 3-views Screen Layout.",
@@ -236,3 +240,11 @@ class ThreeViewsLayout(MapLayout):
 
 LayoutsList.append(ThreeViewsLayout)
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

@@ -16,6 +16,9 @@
 #       
 #-------------------------------------------------------------------------------
 
+#$Header$
+
+
 
 Info = {
    "plug-in":       "Find and Replace textures",
@@ -209,3 +212,11 @@ def ReplaceTextClick (m):
 
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Replace textures", ReplaceTextClick))
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

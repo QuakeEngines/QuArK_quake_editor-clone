@@ -8,6 +8,10 @@ A tricky "force-the-whole-map-polyhedrons-to-grid"
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
+
 Info = {
    "plug-in":       "Force All Polyhedrons to grid",
    "desc":          'A tricky "force-the-whole-map-polyhedrons-to-grid".',
@@ -176,3 +180,11 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(
   quarkpy.qmenu.item("Tricky force to grid...", TFTGclick, "Repairs off-the-grid maps"))
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

@@ -17,6 +17,9 @@
 ###
 ##########################################################
 
+#$Header$
+
+
 
 Info = {
    "plug-in":       "Slide Plugin",
@@ -276,3 +279,11 @@ def newbrushmenu(o, editor, oldmenu=quarkpy.mapentities.BrushEntityType.menu.im_
 quarkpy.mapentities.BrushEntityType.menu = newbrushmenu
 
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

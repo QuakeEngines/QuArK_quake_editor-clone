@@ -8,6 +8,9 @@ Map editor "3D" page on the Multi-Pages-Panel.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 Info = {
    "plug-in":       "3D Page",
    "desc":          "Displays the 3D page (bottom left).",
@@ -50,3 +53,11 @@ class Page3D(MPPage):
 # Register this new page
 mppages.append(Page3D)
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

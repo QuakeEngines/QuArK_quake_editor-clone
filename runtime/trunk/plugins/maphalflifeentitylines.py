@@ -10,6 +10,10 @@ History:
 1999-01-16  Added axis-rotating lines to rotating entities, so its a little easier to visualize around what the entity will rotate.
 """
 
+
+#$Header$
+
+
 Info = {
    "plug-in":       "Half-Life Arrow Extensions",
    "desc":          "Arrows/Axis for specifics like: 'master', 'multi_manager' and more...",
@@ -289,3 +293,12 @@ class HalfLifeDrawEntityLines(DefaultDrawEntityLines):
 quarkpy.mapentities.EntityLinesMapping.update({
   "Half-Life": HalfLifeDrawEntityLines()
 })
+
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

@@ -7,8 +7,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 #$Header$
-# ----------- REVISION HISTORY ------------
-#$Log$
+#
 
 import quarkx
 import quarkpy.mapentities
@@ -97,3 +96,10 @@ def RegisterInToolbox(toolboxname, qtxfolder, obj):
         t[1].parent.appenditem(newf)
         print "--folderadded"
         return
+
+# ----------- REVISION HISTORY ------------
+#$Log$
+#Revision 1.3  2000/05/23 19:09:47  decker_dk
+#Removed evil hidden TAB-characters
+#
+#

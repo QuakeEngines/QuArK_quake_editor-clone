@@ -8,6 +8,9 @@ Python code to implement the various Duplicator styles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 #
 # Feel free to add your own styles here, or better
 # in a new plug-in that looks like this one.
@@ -255,3 +258,11 @@ quarkpy.mapduplicator.DupCodes.update({
   "wall maker":      WallMaker,
 })
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

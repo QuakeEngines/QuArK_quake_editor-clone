@@ -8,6 +8,10 @@ Additionnal mouse dragging modes (entity selecter, brush cutter, cube maker)
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
+
 Info = {
    "plug-in":       "Mouse Drag Modes",
    "desc":          "Entity selecter, brush cutter, cube maker.",
@@ -341,3 +345,11 @@ class DragModesBar(ToolBar):
 
 quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

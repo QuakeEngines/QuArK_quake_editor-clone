@@ -21,6 +21,9 @@
 #
 ##########################################################
 
+#$Header$
+
+
 import quarkx
 import quarkpy.qbaseeditor
 from quarkpy.maputils import *
@@ -229,3 +232,11 @@ def tagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     return
  
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = tagfinishdrawing
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

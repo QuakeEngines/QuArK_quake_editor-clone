@@ -8,6 +8,10 @@ Basic map validity checking
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
+
 Info = {
    "plug-in":       "Basic Checks",
    "desc":          "Basic map validity checking.",
@@ -98,3 +102,11 @@ def BasicCheck(menu=None):
 Basic1 = quarkpy.qmenu.item("&Basic checks", BasicCheck)
 quarkpy.mapsearch.checkitems.append(Basic1)
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

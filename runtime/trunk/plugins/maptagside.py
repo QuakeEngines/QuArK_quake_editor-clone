@@ -1990,4 +1990,7 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-#--- snap ----
+#Revision 1.3  2000/05/27 05:37:08  tiglari
+#hopefully fixed texture scale transpose problem in wrapping (wraptex).
+#
+#

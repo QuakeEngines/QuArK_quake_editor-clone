@@ -8,6 +8,9 @@ Implementation of the menu commands related to faces
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Face Menu",
    "desc":          "Various polyhedron face menu commands.",
@@ -233,3 +236,11 @@ def newmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
 
 quarkpy.mapentities.FaceType.menu = newmenu
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

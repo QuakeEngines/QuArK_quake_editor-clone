@@ -8,6 +8,9 @@ Implementation of QuArK Map editor features for the "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Basic Search",
    "desc":          "Basic items for the Search menu.",
@@ -231,3 +234,11 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &name", SearchByNam
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &Specific", SearchBySpec))
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Brok1Click))
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

@@ -2,6 +2,10 @@
 
 """
 
+#$Header$
+
+
+
 Info = {
    "plug-in":       "Arg Replacer",
    "desc":          "",
@@ -59,3 +63,11 @@ class ArgReplacer(quarkpy.mapduplicator.DuplicatorManager):
 quarkpy.mapduplicator.DupCodes.update({
   "arg replacer":	     ArgReplacer,
 })
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

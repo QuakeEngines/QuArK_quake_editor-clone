@@ -26,6 +26,9 @@
 ##########################################################
 
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Mad Selector",
    "desc":          "Manipulating selection in various ways",
@@ -672,3 +675,10 @@ quarkpy.mapoptions.items.append(mennosel)
 
 ## Jan 28, 1999 - rewrote extension code to use quarkx.extendcoplanar
 #     added flyover help.
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

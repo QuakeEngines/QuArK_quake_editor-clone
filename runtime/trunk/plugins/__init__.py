@@ -8,6 +8,9 @@ Plug-ins Launcher
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 # This code loads files from the "plugins" directory.
 
@@ -34,3 +37,11 @@ def LoadPlugins(beginning):
 LoadPlugins("Q_")   # immediately loads plug-ins whose name
                     # begins with Q_
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

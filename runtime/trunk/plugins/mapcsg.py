@@ -8,6 +8,10 @@ Implementation of the Brush Subtraction commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
+
 Info = {
    "plug-in":       "CSG Brush Subtraction",
    "desc":          "Various polyhedron subtraction commands.",
@@ -296,3 +300,11 @@ def newmenubegin(o, editor, oldmenubegin = quarkpy.mapentities.PolyhedronType.me
 
 quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

@@ -8,6 +8,9 @@ Example Plug-in which define a new screen layout.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Model Full-screen 3D Layout",
    "desc":          "The full-screen 3D wireframe Screen Layout.",
@@ -38,3 +41,10 @@ class Full3DLayout(ModelLayout):
 
 LayoutsList.append(Full3DLayout)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#

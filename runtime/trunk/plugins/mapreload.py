@@ -1,3 +1,6 @@
+
+#$Header$
+
 import quarkx
 import quarkpy.mapmenus
 import quarkpy.mapcommands
@@ -112,3 +115,11 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
   quarkpy.mapcommands.items.append(menreload)
   quarkpy.mapcommands.shortcuts["Alt+R"] = menreload
 
+
+# ----------- REVISION HISTORY ------------
+#
+#
+# $Log$
+#
+#
+#
