@@ -106,9 +106,14 @@ class KeyChoices(Key):
         indent.appenditem(s)
         it = ""
         vl = ""
+        c = 0
         for value, desc in self.m_choices:
-          it = it + "\n" + desc
-          vl = vl + "\n" + value
+          it = it + desc
+          vl = vl + value
+          c = c + 1
+          if (c <> len(self.m_choices)):
+            it = it + "\r"
+            vl = vl + "\r"
         s["items"] = it
         s["values"] = vl
         return None
@@ -174,9 +179,9 @@ class Entity:
     def GenerateForm(self, indent):
         s = quarkx.newobj(self.m_classname + self.TypeForm())
         if (self.m_size is not None):
-            s["bbox"] = self.m_size
+            s["bbox"] = str(self.m_size)
         for inh in self.m_inherit:
-            s[inh] = "!"
+            s.specificadd(inh+"=!")
         for key in self.m_keys:
             key.GenerateForm(s)
         indent.appenditem(s)

@@ -255,7 +255,19 @@ def MACRO_makeaddon(self):
     import qutils
     a = quarkx.getqctxlist()
     a.reverse()
-    a[0].makeaddonfromqctx();
+    i = 0
+    while (a[i]["GameDir"] == None):
+        i = i + 1
+    a[i].makeentitiesfromqctx();
+
+def MACRO_makeaddon_tex(self):
+    import qutils
+    a = quarkx.getqctxlist()
+    a.reverse()
+    i = 0
+    while (a[i]["GameDir"] == None):
+        i = i + 1
+    a[i].maketexturesfromqctx();
 
 def MACRO_makeaddonfromfgd(self):
     import qfgd2qrk

@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.100  2001/03/15 11:30:28  tiglari
+//remove stupidbuildtoolkludge from Q3A
+//
 //Revision 1.99  2001/03/14 19:21:13  decker_dk
 //Functionality for '-ext{action}'... which is not documented yet!
 //
@@ -3280,14 +3283,14 @@ QQRKSRC1
       GetEntitiesBtn: =
       {
         Typ = "P"
-        Cap = "Get Entities for this game"
+        Cap = "Get entities for this game"
         Macro = "makeaddon"
       }
-      GetEntitiesBtn: =
+      GetTexturesBtn: =
       {
         Typ = "P"
-        Cap = "Get entities from .fgd file"
-        Macro = "makeaddonfromfgd"
+        Cap = "Get textures for this game"
+        Macro = "makeaddon_tex"
       }
     }
     FormContext:form =
@@ -3490,6 +3493,36 @@ QQRKSRC1
       {
         ;incl = "NewMap"
       }
+      Model.qkl =
+      {
+        Root = "Model Root:mr"
+        Model Root:mr =
+        {
+          Misc Group:mg =
+          {
+            type = $06
+          }
+          Component:mc =
+          {
+            Skeleton:bg =
+            {
+              type = $05
+            }
+            Skins:sg =
+            {
+              type = $02
+              Skin0.pcx =
+              {
+                ;incl = "EmptyImage"
+              }
+            }
+            Frames:fg =
+            {
+              type = $01
+            }
+          }
+        }
+      }      
       Pak.pak = { }
       ZIP Archive.zip = { }
       PCX Image.pcx = { ;incl = "EmptyImage" }
