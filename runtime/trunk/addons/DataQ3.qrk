@@ -1325,6 +1325,7 @@ QQRKSRC1
     Toolbox = "Texture Browser..."
     Root = "id Software Shaders.qtxfolder"
 
+    // Notice! The b="<filename>" specific is non-existing!
     t_q3shader_base:incl                = { a="baseq3" b="base.shader" }
     t_q3shader_base_button:incl         = { a="baseq3" b="base_button.shader" }
     t_q3shader_base_floor:incl          = { a="baseq3" b="base_floor.shader" }
