@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/01/29 19:23:11  tiglari
+fixed texture folder building but (texture directories not processed right)
+
 Revision 1.12  2001/01/28 03:33:40  tiglari
 `Merge' mode added (textures & shaders merged into a single list, shader
 get marked for QkWal display)
@@ -142,6 +145,15 @@ begin
  Result.Specifics.Values[Spec]:=Arg;
  ResultFolder.LocateSubElement(Result.Name, Index2);
  ResultFolder.SubElements.Insert(Index2,Result);
+end;
+
+function Link2(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject; overload
+begin
+ if ResultFolder=Nil then
+  ResultFolder:=QTextureList.Create(Copy(FolderName, 1, Length(FolderName)-1), Nil);
+ Result:=QTextureLnk.Create(FolderName+Name, ResultFolder);
+ Result.Specifics.Values[Spec]:=Arg;
+ ResultFolder.SubElements.Add(Result);
 end;
 
 procedure LinkFolder(Q: QObject; var ToolBoxFolder: QObject; const FolderName: String); overload;
@@ -334,10 +346,18 @@ begin
   end;
 end;
 
+procedure OrderedMakeFolder(var Folder, Parental: QObject; Name: String; Index: Integer);
+begin
+    Folder:=QTextureList.Create(Name, Nil);
+    Folder.FParent:=Parental;
+    Parental.SubElements.Insert(Index,Folder);
+end;
+
 function LinkShaderFolder(var ResultFolder: QObject; const Name, FolderName, Base: String; Loaded: QObject) : Boolean;
 var
- I: Integer;
- Folder, Q, Tex: QObject;
+ I, P, Index: Integer;
+ Folder, SubFolder, Q, Tex: QObject;
+ Name2, FolderName2: String;
 begin
  Result:=False;
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
@@ -348,19 +368,31 @@ begin
      Exit;
     end;
    Loaded.Acces;
-   Folder:=Nil;
    for I:=0 to Loaded.SubElements.Count-1 do
     begin
      Tex:=Loaded.SubElements[I];
      if Tex is QShader then
-      begin
-       Q:=Link1(Folder, FileNameOnly(Name)+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
+     begin
+       Folder:=ResultFolder;
+       Name2:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+       P:=Pos('/',Name2)+1;
+       while P>1 do
+       begin
+         Index:=0;
+         FolderName2:=Copy(Name2,1,P-2);
+         SubFolder:=Folder.LocateSubElement(FolderName2,Index);
+         if SubFolder=Nil then
+           OrderedMakeFolder(SubFolder,Folder,FolderName2,Index);
+         Name2:=Copy(Name2,P,999);
+         P:=Pos('/',Name2)+1;
+         Folder:=SubFolder;
+       end;
+       Q:=Link2(Folder, FileNameOnly(Name)+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
        Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
        Q.Specifics.Values['b']:=Name;
        Q.Specifics.Values['shader']:='1';
-      end;
+     end;
     end;
-    OrderedLinkFolder(Folder, ResultFolder, FolderName);
   end;
 end;
 
@@ -381,7 +413,7 @@ begin
   end;
 end;
 
-function ParseRecPakMerge(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
+function ParseRecPakTexture(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
 var
   I, Index: Integer;
   Q, SubFolder, Previous: QObject;
@@ -396,9 +428,9 @@ begin
     begin
       SubFolder:=DestFolder.LocateSubElement(Q.Name,Index);
       if SubFolder=Nil then
-        LinkFolder(ParseRecPakMerge(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName, Index)
+        LinkFolder(ParseRecPakTexture(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName, Index)
       else
-        ParseRecPakMerge(QPakFolder(Q), Base, FolderName+Q.Name+'/', SubFolder)
+        ParseRecPakTexture(QPakFolder(Q), Base, FolderName+Q.Name+'/', SubFolder)
     end
     else
     begin
@@ -409,20 +441,29 @@ begin
   end;
 end;
 
-
-function ParseRecPakShader(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject) : QObject;
+function StringInList(Name: String; List: TStrings) : boolean;
 var
- I, Index: Integer;
+  I: Integer;
+begin
+  for I:=0 to List.Count-1 do
+    if Name=List[I] then
+    begin
+      Result:=true;
+      Exit;
+    end;
+end;
+
+function ParsePakShaderFiles(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject; DirShaders: TStrings) : QObject;
+var
+ I: Integer;
  Q: QObject;
 begin
  Result:=DestFolder;
  Pak.Acces;
- Index:=0;
  for I:=0 to Pak.SubElements.Count-1 do
   begin
    Q:=Pak.SubElements[I];
-   Index:=0;
-   if Result.LocateSubElement(Q.Name+'.shader',Index)<>Nil then
+   if StringInList(Q.Name,DirShaders) then
       continue;
    if Q is QPakFolder then
     OrderedLinkFolder(ParseRecPak(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName)
@@ -430,6 +471,7 @@ begin
     LinkShaderFolder(Result, Q.Name, FolderName, Base, Q);
   end;
 end;
+
 
 function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 var
@@ -520,9 +562,10 @@ begin
       FindClose(F);
     end;
     {parse found sub-folders}
-    Index:=0;
+   begin
     for I:=0 to L.Count-1 do
     begin
+      Index:=0;
       SubFolder:=DestFolder.LocateSubElement(L[I],Index);
       if SubFolder=Nil then
       begin
@@ -532,13 +575,14 @@ begin
       else
         ParseRecTexture(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', SubFolder)
     end;
+   end;
   finally
     L.Free;
   end;
 end;
 
 
-function ParseRecShader(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
+function ParseShaderFiles(const Path, Base, FolderName: String; DestFolder:QObject; var DirShaders: TStrings) : QObject;
 var
  F: TSearchRec;
  I, FindError: Integer;
@@ -558,6 +602,7 @@ begin
           Loaded:=Nil;
           try
             ShortName:=FileNameOnly(F.Name);
+            DirShaders.Add(ShortName);
             while LinkShaderFolder(Result, F.Name, FolderName, Base, Loaded) do
             begin
               Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
@@ -724,14 +769,16 @@ var
   FindError: Integer;
   F: TSearchRec;
   Pak: QPakFolder;
+  DirShaders: TStrings;
 begin
   Path:=PathAndFile(QuakeDir, Base);
 
   { Get Shaders }
   try
      { Find Quake-3:Arena .shader files in directory }
+     DirShaders:=TStringList.Create;
      S:=PathAndFile(Path, GameShadersPath);
-     Q:=ParseRecShader(S, Base, '', Q);
+     Q:=ParseShaderFiles(S, Base, '', Q, DirShaders);
   except
      (*do nothing*)
   end;
@@ -756,7 +803,7 @@ begin
            SearchFolder:=Pak.GetFolder(GameShadersPath);
          if SearchFolder<>Nil then
          begin
-           Q:=ParseRecPakShader(SearchFolder as QPakFolder, Base, '', Q);
+           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, DirShaders);
          end;
         except
          (*do nothing*)
@@ -799,7 +846,7 @@ begin
          else
            SearchFolder:=Pak.GetFolder(GameTexturesPath);
          if SearchFolder<>Nil then
-           Q:=ParseRecPakMerge(SearchFolder as QPakFolder, Base, '', Q);
+           Q:=ParseRecPakTexture(SearchFolder as QPakFolder, Base, '', Q);
         except
          (*do nothing*)
         end;
