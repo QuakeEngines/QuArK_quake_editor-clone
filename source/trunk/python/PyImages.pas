@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/10/20 02:09:30  tiglari
+live pointer hunt: remove various failed & unnecessary stuff
+
 Revision 1.9  2001/10/11 11:33:40  tiglari
 Live Pointer Cleanup.
 
@@ -150,10 +153,6 @@ uses Quarkx, PyCanvas, Dialogs;
 const
  DisabledNak = TBitmap(1);
 
-var
- g_Mem_ImageLists: TList;
- g_Mem_PyImage1List: TList;
-
  {-------------------}
 
 function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
@@ -176,7 +175,6 @@ begin
  Bitmap:=Bmp;
 {$ENDIF}
  Result:=PyImageList(PyObject_NEW(@TyImageList_Type));
- g_Mem_ImageLists.Add(Result);
  with Result^ do
   begin
    IWidth:=Bitmap.Width;
@@ -914,7 +912,6 @@ end;
 
 initialization
   FillChar(InternalImages, SizeOf(InternalImages), 0);
-  g_Mem_ImageLists:=TList.Create;
 
 finalization
   FinalizeInternalImages;
