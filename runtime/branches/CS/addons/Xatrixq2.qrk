@@ -1,0 +1,932 @@
+QQRKSRC1
+
+// This file has been written by QuArK Version 5.0.b5
+// It's the text version of file: Q2xatrix.qrk
+// The Reckoning Mission pack Addon. By: Akuma
+// Akuma@Telefragged.com | Akuma@BTinternet.com
+
+{
+	QuArKProtected = "1"
+	Xatrix directory infos.qctx =
+	{
+		Game = "Quake 2"
+		SourceDir = "xatrix"
+		GameDir = "xatrix"
+	}
+
+	Textures.qtx =
+	{
+		ToolBox = "Texture Browser..."
+		Root = "Xatrix Textures.qtxfolder"
+		Xatrix Textures.qtxfolder =
+		{
+
+			Dark_1.txlist =
+			{
+				dark_1/+0endsign12a.wl  =	{w = "xatrix"}
+				dark_1/+0endsign13.wl  =	{w = "xatrix"}
+				dark_1/+0endsign14.wl  =	{w = "xatrix"}
+				dark_1/+0endsign15.wl  =	{w = "xatrix"}
+				dark_1/+0endsign16.wl  =	{w = "xatrix"}
+				dark_1/+0endsign18.wl  =	{w = "xatrix"}
+				dark_1/+0endsign19.wl  =	{w = "xatrix"}
+				dark_1/+1endsign12a.wl  =	{w = "xatrix"}
+				dark_1/+1endsign13.wl  =	{w = "xatrix"}
+				dark_1/+1endsign14.wl  =	{w = "xatrix"}
+				dark_1/+1endsign15.wl  =	{w = "xatrix"}
+				dark_1/+1endsign16.wl  =	{w = "xatrix"}
+				dark_1/+1endsign18.wl  =	{w = "xatrix"}
+				dark_1/+1endsign19.wl  =	{w = "xatrix"}
+				dark_1/0text_100.wl  =		{w = "xatrix"}
+				dark_1/0text_101.wl  =		{w = "xatrix"}
+				dark_1/0text_102.wl  =		{w = "xatrix"}
+				dark_1/0text_104.wl  =		{w = "xatrix"}
+				dark_1/0text_15.wl  =		{w = "xatrix"}
+				dark_1/0text_16.wl  =		{w = "xatrix"}
+				dark_1/0text_18.wl  =		{w = "xatrix"}
+				dark_1/0text_19.wl  =		{w = "xatrix"}
+				dark_1/0text_20.wl  =		{w = "xatrix"}
+				dark_1/0text_23.wl  =		{w = "xatrix"}
+				dark_1/0text_24.wl  =		{w = "xatrix"}
+				dark_1/0text_25.wl  =		{w = "xatrix"}
+				dark_1/0text_26.wl  =		{w = "xatrix"}
+				dark_1/0text_27.wl  =		{w = "xatrix"}
+				dark_1/0text_35.wl  =		{w = "xatrix"}
+				dark_1/0text_36.wl  =		{w = "xatrix"}
+				dark_1/0text_38.wl  =		{w = "xatrix"}
+				dark_1/0text_39.wl  =		{w = "xatrix"}
+				dark_1/0text_40.wl  =		{w = "xatrix"}
+				dark_1/0text_41.wl  =		{w = "xatrix"}
+				dark_1/0text_42.wl  =		{w = "xatrix"}
+				dark_1/0text_43.wl  =		{w = "xatrix"}
+				dark_1/0text_44.wl  =		{w = "xatrix"}
+				dark_1/0text_45.wl  =		{w = "xatrix"}
+				dark_1/0text_47.wl  =		{w = "xatrix"}
+				dark_1/0text_48.wl  =		{w = "xatrix"}
+				dark_1/0text_50.wl  =		{w = "xatrix"}
+				dark_1/0text_51.wl  =		{w = "xatrix"}
+				dark_1/0text_52.wl  =		{w = "xatrix"}
+				dark_1/0text_59.wl  =		{w = "xatrix"}
+				dark_1/0text_60.wl  =		{w = "xatrix"}
+				dark_1/0text_61.wl  =		{w = "xatrix"}
+				dark_1/0text_65.wl  =		{w = "xatrix"}
+				dark_1/0text_66.wl  =		{w = "xatrix"}
+				dark_1/0text_68.wl  =		{w = "xatrix"}
+				dark_1/0text_70.wl  =		{w = "xatrix"}
+				dark_1/0text_81.wl  =		{w = "xatrix"}
+				dark_1/0text_83.wl  =		{w = "xatrix"}
+				dark_1/0text_84.wl  =		{w = "xatrix"}
+				dark_1/0text_85.wl  =		{w = "xatrix"}
+				dark_1/0text_86.wl  =		{w = "xatrix"}
+				dark_1/0text_91.wl  =		{w = "xatrix"}
+				dark_1/0text_93.wl  =		{w = "xatrix"}
+				dark_1/0text_94.wl  =		{w = "xatrix"}
+				dark_1/0text_97.wl  =		{w = "xatrix"}
+				dark_1/0text_98.wl  =		{w = "xatrix"}
+				dark_1/0text_99.wl  =		{w = "xatrix"}
+				dark_1/0xruin_70.wl  =		{w = "xatrix"}
+				dark_1/0xruin_73.wl  =		{w = "xatrix"}
+				dark_1/endsign13.wl  =		{w = "xatrix"}
+				dark_1/metla_1.wl  =		{w = "xatrix"}
+				dark_1/metlb_1.wl  =		{w = "xatrix"}
+				dark_1/rust_d1.wl  =		{w = "xatrix"}
+				dark_1/rust_d2.wl  =		{w = "xatrix"}
+				dark_1/rust_p.wl  =		{w = "xatrix"}
+				dark_1/sew_dr1.wl  =		{w = "xatrix"}
+				dark_1/train_dor6.wl  =		{w = "xatrix"}
+				dark_1/train_sd.wl  =		{w = "xatrix"}
+				dark_1/train_sd2.wl  =		{w = "xatrix"}
+				dark_1/train_sd4.wl  =		{w = "xatrix"}
+				dark_1/wall70.wl  =		{w = "xatrix"}
+				dark_1/wall71.wl  =		{w = "xatrix"}
+				dark_1/wall72.wl  =		{w = "xatrix"}
+				dark_1/wall73.wl  =		{w = "xatrix"}
+				dark_1/wall74.wl  =		{w = "xatrix"}
+				dark_1/water1.wl  =		{w = "xatrix"}
+				dark_1/x_baslt1.wl  =		{w = "xatrix"}
+				dark_1/x_com1_1.wl  =		{w = "xatrix"}
+				dark_1/x_com2_1.wl  =		{w = "xatrix"}
+				dark_1/x_com3_1.wl  =		{w = "xatrix"}
+				dark_1/x_door1.wl  =		{w = "xatrix"}
+				dark_1/x_grate2.wl  =		{w = "xatrix"}
+				dark_1/xbigbox.wl  =		{w = "xatrix"}
+				dark_1/xpipes1_1.wl  =		{w = "xatrix"}
+				dark_1/xpod1.wl  =		{w = "xatrix"}
+				dark_1/xpod2.wl  =		{w = "xatrix"}
+			}
+			Moon_1.txlist =
+			{	
+				// Moon_1 directory textures
+
+				moon_1/bl_lt2.wl  =  		{w = "xatrix"}
+				moon_1/ice1_6.wl  =		{w = "xatrix"}	
+				moon_1/icecyc1_4.wl  =		{w = "xatrix"}
+				moon_1/iceflr1_3.wl  =		{w = "xatrix"}
+				moon_1/icerf1_1.wl  =		{w = "xatrix"}
+				moon_1/icerf1_2.wl  =		{w = "xatrix"}
+				moon_1/icewall1_5.wl  =		{w = "xatrix"}
+				moon_1/mb_f1.wl  =		{w = "xatrix"}
+				moon_1/mb_f3.wl  =		{w = "xatrix"}
+				moon_1/mb_f4.wl  =		{w = "xatrix"}
+				moon_1/moon_10.wl  =		{w = "xatrix"}
+				moon_1/moon_12.wl  =		{w = "xatrix"}
+				moon_1/moon_7.wl  =		{w = "xatrix"}
+				moon_1/m_flr3.wl  =		{w = "xatrix"}
+				moon_1/redfuse.wl  =		{w = "xatrix"}
+				moon_1/shp_mtl7.wl  =		{w = "xatrix"}
+				moon_1/shp_mtl8.wl  =		{w = "xatrix"}
+				moon_1/sign01.wl  =		{w = "xatrix"}
+				moon_1/sign02.wl  =		{w = "xatrix"}
+				moon_1/sky02.wl  =		{w = "xatrix"}
+				moon_1/wall02.wl  =		{w = "xatrix"}
+				moon_1/wall04.wl  =		{w = "xatrix"}
+				moon_1/wall08a.wl  =		{w = "xatrix"}
+				moon_1/wall11.wl  =		{w = "xatrix"}
+				moon_1/wall17a.wl  =		{w = "xatrix"}
+				moon_1/wall41.wl  =		{w = "xatrix"}
+				moon_1/wall44.wl  =		{w = "xatrix"}
+				moon_1/wall53.wl  =		{w = "xatrix"}
+				moon_1/wall56.wl  =		{w = "xatrix"}
+				moon_1/wall57.wl  =		{w = "xatrix"}
+				moon_1/wall58.wl  =		{w = "xatrix"}
+				moon_1/wall60.wl  =		{w = "xatrix"}
+				moon_1/wall64.wl  =		{w = "xatrix"}
+				moon_1/wall_d1.wl  =		{w = "xatrix"}
+				moon_1/wall_m3.wl  =		{w = "xatrix"}
+				moon_1/wall_m9.wl  =		{w = "xatrix"}
+				moon_1/wall_ms12.wl  =		{w = "xatrix"}
+				moon_1/wall_ms13.wl  =		{w = "xatrix"}
+				moon_1/wall_ms14.wl  =		{w = "xatrix"}
+				moon_1/wall_ms15.wl  =		{w = "xatrix"}
+				moon_1/wall_ms16.wl  =		{w = "xatrix"}
+				moon_1/wall_ms17.wl  =		{w = "xatrix"}
+				moon_1/wall_ms18.wl  =		{w = "xatrix"}
+				moon_1/wall_ms20.wl  =		{w = "xatrix"}
+				moon_1/wall_ms22.wl  =		{w = "xatrix"}
+				moon_1/wall_ms23.wl  =		{w = "xatrix"}
+				moon_1/wall_ms24.wl  =		{w = "xatrix"}
+				moon_1/wall_ms3.wl  =		{w = "xatrix"}
+				moon_1/xmine01.wl  =		{w = "xatrix"}
+				moon_1/xmine03.wl  =		{w = "xatrix"}
+				moon_1/xmine10.wl  =		{w = "xatrix"}
+				moon_1/xmine11.wl  =		{w = "xatrix"}
+				moon_1/xmine14.wl  =		{w = "xatrix"}
+				moon_1/xmoon_1.wl  =		{w = "xatrix"}
+				moon_1/xsign_1.wl  =		{w = "xatrix"}
+				moon_1/xsign_2.wl  =		{w = "xatrix"}
+
+			}
+			Ship_1.txlist =
+			{
+				// Ship_1 directory textures
+
+				ship_1/+0compx_1.wl  =		{w = "xatrix"}
+				ship_1/+0xsign1.wl  =		{w = "xatrix"}
+				ship_1/+1compx_1.wl  =		{w = "xatrix"}
+				ship_1/+1xsign1.wl  =		{w = "xatrix"}
+				ship_1/+2compx_1.wl  =		{w = "xatrix"}
+				ship_1/+2xsign1.wl  =		{w = "xatrix"}
+				ship_1/+3compx_1.wl  =		{w = "xatrix"}
+				ship_1/+3xsign1.wl  =		{w = "xatrix"}
+				ship_1/+4compx_1.wl  =		{w = "xatrix"}
+				ship_1/1xcgrate1.wl  =		{w = "xatrix"}
+				ship_1/4xcomp1.wl  =		{w = "xatrix"}
+				ship_1/ship_12.wl  =		{w = "xatrix"}
+				ship_1/ship_25.wl  =		{w = "xatrix"}
+				ship_1/ship_27.wl  =		{w = "xatrix"}
+				ship_1/ship_53.wl  =		{w = "xatrix"}
+				ship_1/ship_61.wl  =		{w = "xatrix"}		
+				ship_1/ship_64.wl  =		{w = "xatrix"}
+				ship_1/ship_66.wl  =		{w = "xatrix"}
+				ship_1/ship_67.wl  =		{w = "xatrix"}
+				ship_1/ship_68.wl  =		{w = "xatrix"}
+				ship_1/ship_70.wl  =		{w = "xatrix"}
+				ship_1/ship_71.wl  =		{w = "xatrix"}
+				ship_1/ship_82.wl  =		{w = "xatrix"}
+				ship_1/ship_84.wl  =		{w = "xatrix"}
+				ship_1/ship_85.wl  =		{w = "xatrix"}
+				ship_1/sym6_4.wl  =		{w = "xatrix"}
+				ship_1/x1hvy_dr4_2.wl  =	{w = "xatrix"}
+				ship_1/x1metal3_4.wl  =		{w = "xatrix"}
+				ship_1/x1metal5_6.wl  =		{w = "xatrix"}
+				ship_1/x1metal8_4.wl  =		{w = "xatrix"}
+				ship_1/x1metal8_5.wl  =		{w = "xatrix"}
+				ship_1/x2hvy_dr4_2.wl  =	{w = "xatrix"}
+				ship_1/x3hvy_dr4_2.wl  =	{w = "xatrix"}
+				ship_1/x3metal5_6.wl  =		{w = "xatrix"}
+				ship_1/x3metal9_1.wl  =		{w = "xatrix"}
+				ship_1/x4metal9_1.wl  =		{w = "xatrix"}
+				ship_1/x5metal9_1.wl  =		{w = "xatrix"}
+				ship_1/xcomp10_1.wl  =		{w = "xatrix"}
+				ship_1/xcomp2_1.wl  =		{w = "xatrix"}
+				ship_1/xcomp2_2.wl  =		{w = "xatrix"}
+				ship_1/xcomp2_4.wl  =		{w = "xatrix"}
+				ship_1/xcomp5_1.wl  =		{w = "xatrix"}
+				ship_1/xcomp7_1.wl  =		{w = "xatrix"}
+				ship_1/xcomp8_1.wl  =		{w = "xatrix"}
+				ship_1/xcomp9_1.wl  =		{w = "xatrix"}
+				ship_1/xhvy_dr4_2.wl  =		{w = "xatrix"}
+				ship_1/xlite_1.wl  =		{w = "xatrix"}
+				ship_1/xlite_3.wl  =		{w = "xatrix"}
+				ship_1/xlite_b1.wl  =		{w = "xatrix"}
+				ship_1/xmetal11_4.wl  =		{w = "xatrix"}
+				ship_1/xmetal2_3.wl  =		{w = "xatrix"}
+				ship_1/xmetal5_6.wl  =		{w = "xatrix"}
+				ship_1/xmetal8_4.wl  =		{w = "xatrix"}
+				ship_1/xmetal8_5.wl  =		{w = "xatrix"}
+				ship_1/xmetal9_1.wl  =		{w = "xatrix"}
+				ship_1/xmetals_1a.wl  =		{w = "xatrix"}
+				ship_1/xmetals_4.wl  =		{w = "xatrix"}
+				ship_1/xsign01.wl  =		{w = "xatrix"}
+				ship_1/xsign02.wl  =		{w = "xatrix"}
+				ship_1/xsign03.wl  =		{w = "xatrix"}
+			}
+		}
+	}
+
+	NewMapItems.qtx =
+	{
+
+		ToolBox = "New Map Items..."
+		Root = "Xatrix Entities.qtxfolder"
+		Xatrix Entities.qtxfolder =
+		{
+			Monsters.qtxfolder =
+			{
+				Soldiers.qtxfolder =
+				{
+					monster_soldier_hypergun:e =
+					{
+						origin = "0 0 0"
+						;desc = "Hypergun Soldier"
+						angle = "0"
+					}
+
+					monster_soldier_lasergun:e =
+					{
+						origin = "0 0 0"
+						;desc = "Lasergun Soldier"
+						angle = "0"
+					}
+
+					monster_soldier_ripper:e =
+					{
+						origin = "0 0 0"
+						;desc = "Ripper Soldier"
+						angle = "0"
+					}
+				}
+
+				monster_gekk:e =
+				{
+					origin = "0 0 0"
+					;desc = "Fires a small blaster type weapon. Also jumps (High)"
+					angle = "0"
+				}
+				
+				monster_chick_heat:e =
+				{
+					origin = "0 0 0"
+					;desc = "Iron Maiden with heatseeking rockets"
+					angle = "0"
+				}
+		
+				monster_gladb:e =
+				{
+					origin = "0 0 0"
+					;desc = "Enhanced Gladiator with power shield."
+						  "Uses a Phalanx weapon"
+					angle = "0"
+				}
+
+				monster_boss5:e =
+				{
+					origin = "0 0 0"
+					;desc = "Enhanced SuperTank with shield"
+					angle = "0"
+				}
+			
+				monster_fixbot:e =
+				{
+					origin = "0 0 0"
+					;desc = "Repair's func_object_repairs, and re-animates"
+						  "dead monsters"
+					angle = "0"
+				}
+
+			}
+			Misc.qtxfolder =
+			{
+
+				misc_crashviper:e =
+				{
+					origin = "0 0 0"
+					;desc = "Large viper. Follows path_corner's"
+					angle = "0"
+				}
+
+				misc_viper_missile :e =
+				{
+					origin = "0 0 0"
+					;desc = "Viper missile"
+					angle = "0"
+				}
+
+				misc_transport:e =
+				{
+					origin = "0 0 0"
+					;desc = "Transport ship used at end of game. Will follow path corners"
+					angle = "0"
+				}
+
+				misc_nuke:e =
+				{
+					origin = "0 0 0"
+					;desc = "Kills eveything when trigered. Including you"
+						  "Monsters dont gib, they get removed(?)"
+					angle = "0"
+				}
+
+				misc_amb4:e =
+				{
+					origin = "0 0 0"
+					;desc = "Mal's amb4 loop entity"
+					angle = "0"
+				}
+
+			}
+			Func.qtxfolder =
+			{
+	
+				func_object_repair:e =
+				{
+					origin = "0 0 0"
+					;desc = "Object to be repaired"
+					angle = "0"
+
+				}
+
+			}
+			Rotate.qtxfolder =
+			{
+
+				rotating_light:e =
+				{
+					origin = "0 0 0"
+					;desc = "Rotating strobe light. Can be any colour"
+					angle = "0"
+				}
+
+			}
+			Target.qtxfolder =
+			{
+
+				target_mal_laser:e =
+				{
+					origin = "0 0 0"
+					;desc = "Randomly fires a laser"
+					angle = "0"
+				}
+
+			}
+			Weapons and Ammo.qtxfolder =
+			{
+
+				weapon_boomer:e =
+				{
+					origin = "0 0 0"
+					;desc = "Fires a bouncing projectile"
+					angle = "0"
+				}
+
+				weapon_phalanx:e =
+				{
+					origin = "0 0 0"
+					;desc = "Fires 2 blasts at once"
+					angle = "0"
+				}
+
+				ammo_magslug:e =
+				{
+					origin = "0 0 0"
+					;desc = "Ammo for phalanx weapon"
+					angle = "0"
+				}
+
+				ammo_trap:e =
+				{
+					origin = "0 0 0"
+					;desc = "Drags monsters and Players inside if they get close"
+					angle = "0"
+				}
+
+			}
+			Items.qtxfolder =
+			{
+
+				item_quadfire:e =
+				{
+					origin = "0 0 0"
+					;desc = "Shortens your weapon reload time by half"
+					angle = "0"
+				}
+			}
+			Keys.qtxfolder =
+			{
+
+				key_green_key:e =
+				{
+					origin = "0 0 0"
+					;desc = "Green Maitnence Key"
+					angle = "0"
+				}
+			}
+		}
+	}
+	
+	// ######## Entity details ########
+
+	Entity forms.qctx =
+	{
+		
+		monster_gekk:form =
+		{
+			Help = "Monster_Gekk"
+			bbox = '-24 -24 -24 24 24 24'
+			mdl = "models/monsters/gekk/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X8"
+				Cap = "Chant"
+				Hint = "If checked the Gekk will chant"
+			}
+		}
+
+		monster_chick_heat:form =
+		{
+			Help = "Monster Chick Heat"
+			bbox = '-16 -16 -24 16 16 32'
+			mdl = "models/monsters/bitch/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Used to spawn the transport in. Set a targetname"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		}
+	
+		monster_gladb:form =
+		{
+			Help = "Monster Gladb"
+			bbox = '-32 -32 -24 32 32 64'
+			mdl = "models/monsters/gladb/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level. Set a targetname"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		}
+		
+		monster_boss5:form =
+		{
+			Help = "Monster Boss5"
+			bbox = '-64 -64 0 64 64 72'
+			mdl = "models/monsters/boss5/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level. Set a targetname"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		}
+
+		monster_soldier_hypergun:form =
+		{
+			Help = "Monster Soldier Hypergun"
+			bbox = '-16 -16 -24 16 16 32'
+			mdl = "models/monsters/soldierh/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level. Set a targetname"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		}
+
+		monster_soldier_laysergun:form =
+		{
+			Help = "Monster Soldier Hypergun"
+			bbox = '-16 -16 -24 16 16 32'
+			mdl = "models/monsters/soldierh/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level. Set a targetname"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		}
+
+		monster_soldier_ripper:form =
+		{
+			Help = "Monster Soldier Ripper"
+			bbox = '-16 -16 -24 16 16 32'
+			mdl = "models/monsters/soldierh/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Ambush"
+				Hint = "Ambush"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level. Set a targetname"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Sight"
+				Hint = "Sight"
+			}
+		}
+
+		monster_fixbot:form =
+		{
+			Help = "If no Spawnflags are set fixbot will " 
+				 "wait for player to pass by then attck"
+			bbox = '-32 -32 -24 32 32 24'
+			mdl = "models/monsters/fixbot/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Repair"
+				Hint = "Will search out func_object_repair's" 
+					 "and ignore players unless attacked"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Trigger_Spawn"
+				Hint = "Spawns monster into the level "
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Fixit"
+				Hint = "If checked monster will be passive towards the player unless"
+					   "fired upon. He'll re-animate dead monsters. And he'll look for"
+					   "func_object_repair entities to fix"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X8"
+				Cap = "Takeoff"
+				Hint = "Raises and searches for func_object_repair's "
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X16"
+				Cap = "Landing"
+				Hint = "Drops almost to floor height and searches for func_object_repair's"
+			}
+		}
+
+		misc_crashviper:form =
+		{
+			Help = "Large viper, about to crash"
+			bbox = '-176 -120 -24 176 120 72'
+			//mdl = ""
+			target: =
+			{
+				Txt = "&"
+				Hint = "First path target"
+			}
+			speed: =
+			{
+				Txt = "&"
+				Hint = "How fast the Viper should fly"
+			}
+		}
+
+		misc_viper_missile:form =
+		{
+			Help = "Viper missile"
+			bbox = '-8 -8 -8 8 8 8'
+			//mdl = ""
+			dmg: =
+			{
+				Txt = "&"
+				Hint = "How much boom should the missle make (Default 250)"
+			}
+		}
+
+		misc_transport:form =
+		{
+			Help = "Maxx's transport at end of game"
+			bbox = '-256 -256 -64 256 256 64'
+			mdl = "models/objects/ship/tris.md2"
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Trigger_Spawn"
+				Hint = "Used to spawn the transport in"
+			}
+		}
+
+		misc_nuke:form =
+		{
+			Help = "Nuke Kills all players when fired"
+			bbox = '-8 -8 -8 8 8 8'
+			//mdl = ""
+			targetname: =
+			{
+				Txt = "&"
+				Hint = "Used to fire the Nuke"
+			}
+		}
+
+		target_mal_laser:form =
+		{
+			Help = "Mal's laser"
+			bbox = '-8 -8 -8 8 8 8'
+			wait: =
+			{
+				Txt = "&"
+				Hint = "Wait"
+			}
+			delay: =
+			{
+				Txt = "&"
+				Hint = "Dealy"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "Start_On"
+				Hint = "Check this if you want the laser to start on"
+			}
+
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Red"
+				Hint = "Makes the laser Red"
+			}
+
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X4"
+				Cap = "Green"
+				Hint = "Makes the laser Green"
+			}
+
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X8"
+				Cap = "Blue"
+				Hint = "Makes the laser Blue"
+			}
+
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X16"
+				Cap = "Yellow"
+				Hint = "Makes the laser Yellow"
+			}
+
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X32"
+				Cap = "Orange"
+				Hint = "Makes the laser Orange"
+			}
+
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X64"
+				Cap = "Fat"
+				Hint = "Makes the laser Fat"
+			}
+		}
+
+		misc_amb4:form =
+		{
+			Help = "Mal's amb4.wav looping sound that fills the whole level"
+			bbox = '-16 -16 -16 16 16 16'
+		}
+
+		func_object_repair:form =
+		{
+			Help = "Object to be repaired"
+			bbox = '-8 -8 -8 8 8 8'
+			delay: =
+			{
+				Txt = "&"
+				Hint = "The delay in seconds for spark to occur (Default 1)"
+			}
+		}
+
+		rotating_light:form =
+		{
+			Help = "Rotating light"
+			bbox = '-8 -8 -8 8 8 8'
+			mdl = "models/objects/light/tris.md2"
+			health: =
+			{
+				Txt = "&"
+				Hint = "If set, the light may be killed"
+			}
+			targetname: =
+			{
+				Txt = "&"
+				Hint = "set a targetname to switch the light on and off"
+			}
+			_color: =
+			{
+				Txt = "&"
+				Hint = "The colour of the light"
+			}
+			angle: =
+			{
+				Txt = "&"
+				Hint = "Direction to point at startup"
+			}
+			light: =
+			{
+				Txt = "&"
+				Hint = "Amount of light to emit"
+			}
+		      spawnflags: =
+		      {
+				Txt = "&"
+				Typ = "X1"
+				Cap = "START_OFF"
+				Hint = "Check this if you want it to start off."
+			}
+			spawnflags: =
+			{
+				Txt = "&"
+				Typ = "X2"
+				Cap = "Alarm"
+				Hint = "If Alarm is set, a siren will sound upon triggering"
+			}
+		}
+
+		weapon_boomer:form =
+		{
+			Help = "Fires a bouncing projectile"
+			bbox = '-16 -16 -16 16 16 16'
+			mdl = "models/weapons/v_boomer/tris.md2"
+		}
+
+		weapon_phalanx:form =
+		{
+			Help = "Fires two shots at once"
+			bbox = '-16 -16 -16 16 16 16'
+			mdl = "models/weapons/g_shotx/tris.md2"
+		}
+		
+		ammo_magslug:form =
+		{
+			Help = "Ammo for the Phalanx"
+			bbox = '-16 -16 -16 16 16 16'
+			mdl = "modles/objects/ammo/tris.md2"
+		}
+
+		ammo_trap:form =
+		{
+			Help = "Trap"
+			bbox = '-16 -16 -16 16 16 16'
+			mdl = "models/weapons/g_trap/tris.md2"
+		}			
+
+		item_quadfire:form =
+		{
+			Help = "Shortens reload time by half"
+			bbox = '-16 -16 -16 16 16 16'
+			mdl = "models/items/quadfire/tris.md2"
+		}
+
+		key_green_key:form =
+		{
+			Help = "Green Key card"
+			bbox = '-16 -16 -16 16 16 16'
+			mdl = "models/items/keys/green_key/tris.md2"
+		}			
+	}
+}
