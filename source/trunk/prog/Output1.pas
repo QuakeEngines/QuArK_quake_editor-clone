@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/05/04 19:29:27  decker_dk
+Refined TGetPakNames and functions that used GetPakZero/GetNextPakName
+
 }
 
 unit Output1;
@@ -74,9 +77,9 @@ type
   public
    constructor Create;
    destructor Destroy; override;
-   procedure CreateTmpPakList(const Path: String; Back: Boolean);
-   function GetPakZero(const Path: String; Back: Boolean) : String;
-   function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
+   procedure CreatePakTempList(const Path: String; Back: Boolean);
+   procedure CreatePakList(const Path: String; Back: Boolean);
+   function GetPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
   end;
 {DECKER-end}
 
@@ -148,7 +151,7 @@ begin
  end;
 end;
 
-procedure TGetPakNames.CreateTmpPakList(const Path: String; Back: Boolean);
+procedure TGetPakNames.CreatePakTempList(const Path: String; Back: Boolean);
 var
  FileFilter, Search : String;
  i,p : Integer;
@@ -186,15 +189,15 @@ begin
  end;
 
  if (Back) then
-  StrListIter:=StrList.Count-1
+  StrListIter:=StrList.Count
  else
   if StrList.Count > 0 then
-   StrListIter:=0
+   StrListIter:=-1 {-- will be increased in GetNextPakName --}
   else
-   StrListIter:=-1;
+   StrListIter:=-99;
 end;
 
-function TGetPakNames.GetPakZero(const Path: String; Back: Boolean) : String;
+procedure TGetPakNames.CreatePakList(const Path: String; Back: Boolean);
 var
  FileFilter : String;
  i : Integer;
@@ -214,29 +217,25 @@ begin
   FindFiles(Path, FileFilter);
 
  if (Back) then
-  StrListIter:=StrList.Count-1
+  StrListIter:=StrList.Count
  else
   if (StrList.Count > 0) then
-   StrListIter:=0
+   StrListIter:=-1 {-- will be increased in GetNextPakName --}
   else
-   StrListIter:=-1;
- if (StrListIter<0) then
-  Result:=PathAndFile(Path, 'PAK0.PAK')
- else
-  Result:=StrList.Strings[StrListIter];
+   StrListIter:=-99;
 end;
 
-function TGetPakNames.GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
+function TGetPakNames.GetPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
 begin
  Result:=False;
  repeat
-  if (StrListIter<0) or (StrListIter>=StrList.Count) then
-    Exit;
-  FileName:=StrList.Strings[StrListIter];
   if (Back) then
    Dec(StrListIter)
   else
    Inc(StrListIter);
+  if (StrListIter<0) or (StrListIter>=StrList.Count) then
+   Exit;
+  FileName:=StrList.Strings[StrListIter];
  until not MustExist or FileExists(FileName);
  Result:=True;
 end;
@@ -312,21 +311,20 @@ begin
 }
  FoundIt:=FALSE;
  GetPakNames := TGetPakNames.Create;
-{ AvailablePakFile:=GetPakNames.GetPakZero(ExpandFileName(GameModDir), True);}
- GetPakNames.CreateTmpPakList(ExpandFileName(GameModDir), True);
- if GetPakNames.GetNextPakName(True, AvailablePakFile, True) then
+ {-- Find last existing package with QuArK-tag --}
+ GetPakNames.CreatePakTempList(ExpandFileName(GameModDir), True);
+ if GetPakNames.GetPakName(True, AvailablePakFile, True) then
   begin
    if IsPakTemp(AvailablePakFile) then
-    begin
-     FoundIt:=TRUE;
-    end;
+    FoundIt:=TRUE;
   end;
  if not FoundIt then
   begin
-{   AvailablePakFile:=GetPakNames.GetPakZero(ExpandFileName(GameModDir), False);}
-   GetPakNames.CreateTmpPakList(ExpandFileName(GameModDir), False);
-   if not GetPakNames.GetNextPakName(False, AvailablePakFile, False) then
+   if not GetPakNames.GetPakName(False, AvailablePakFile, False) then
+   begin
     Raise EErrorFmt(5630, [AvailablePakFile]);
+    AvailablePakFile:='';
+   end
   end;
  NomFichierSortiePak:=AvailablePakFile;
  GetPakNames.Destroy;
@@ -473,8 +471,8 @@ begin
      while GetNextPakName(True, Chemin, False) do
 }
      GetPakNames := TGetPakNames.Create;
-     Chemin := GetPakNames.GetPakZero(PathAndFile(QD1, S.Name), False);
-     while GetPakNames.GetNextPakName(True, Chemin, False) do
+     GetPakNames.CreatePakList(PathAndFile(QD1, S.Name), False);
+     while GetPakNames.GetPakName(True, Chemin, False) do
 {DECKER-end}
       if IsPakTemp(Chemin) then
        begin

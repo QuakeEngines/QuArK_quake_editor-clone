@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/04/29 15:13:30  decker_dk
+Allow other than PAK#.PAK files
+
 Revision 1.8  2000/04/14 17:29:00  alexander
 fixed: crash, when loading alias files
 
@@ -534,8 +537,8 @@ begin
 }
   FoundIt := FALSE;
   GetPakNames:=TGetPakNames.Create;
-  NomComplet:=GetPakNames.GetPakZero(NomChemin, True);
-  while GetPakNames.GetNextPakName(True, NomComplet, True) do
+  GetPakNames.CreatePakList(NomChemin, True);
+  while GetPakNames.GetPakName(True, NomComplet, True) do
 {DECKER-end}
    if not IsPakTemp(NomComplet) then  { ignores QuArK's own temporary .pak's }
     begin
