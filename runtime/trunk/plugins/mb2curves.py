@@ -223,6 +223,7 @@ def makecap(o, editor, inverse=0, lower=0, open=0, thick=0):
   #
   # Make dictionary of faces u/d/f/b/r/l
   #
+  o.rebuildall()
   fdict = facedict(o)
   if fdict is None:
     return
@@ -274,11 +275,12 @@ class CapDuplicator(StandardDuplicator):
   def buildimages(self, singleimage=None):
     if singleimage is not None and singleimage>0:
       return []
+    editor = mapeditor()
     inverse, lower, open, thick = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"]
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return makecap(o, mapeditor(), inverse, lower, open, thick)
+        return makecap(o, editor, inverse, lower, open, thick)
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
@@ -355,6 +357,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2000/06/03 10:25:30  alexander
+#added cvs headers
+#
 #Revision 1.2  2000/05/28 06:28:48  tiglari
 #fixed problem with revision history (2 of them, no# for first snap)
 #
