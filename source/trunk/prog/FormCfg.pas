@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2003/07/21 05:03:18  nerdiii
+Typ "EP" update. I also removed the * joker
+
 Revision 1.25  2003/05/01 06:30:36  nerdiii
 added AugPath to the EP edit box
 
@@ -1462,12 +1465,20 @@ begin
                            Conv:=Copy(Conv,I,Length(Conv));
                            S:=Copy(S,I,Length(S));
                          end else begin
+                           {$ifndef VER140} // Pre-dates Delphi 6
+                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)),0);
+                           {$else}
                            Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
+                           {$endif}
                            goto again;
                          end;
                        end;
                      end else begin
+                       {$ifndef VER140} // Pre-dates Delphi 6
+                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)),0);
+                       {$else}
                        Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
+                       {$endif}
                        goto again;
                      end;
                    end;
