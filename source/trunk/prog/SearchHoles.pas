@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/07/18 03:50:31  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+
 Revision 1.6  2001/03/20 21:42:24  decker_dk
 Updated copyright-header
 
@@ -187,11 +191,11 @@ var
          and (Abs(FK^.F.Normale.Z+F^.F.Normale.Z)<rien)
          and (Abs(FK^.F.Dist+F^.F.Dist)<rien) then
           begin
-           P1:=FK^.prvDescS[0]^.P;
-           for L:=FK^.prvNbS-1 downto 0 do
+           P1:=FK^.prvVertexTable[0]^.P;
+           for L:=FK^.prvVertexCount-1 downto 0 do
             begin
              P2:=P1;
-             P1:=FK^.prvDescS[L]^.P;
+             P1:=FK^.prvVertexTable[L]^.P;
              Min:=0;
              Max:=1;
              for S:=0 to NbS-1 do
@@ -268,11 +272,11 @@ var
          and (Abs(FK^.F.Normale.Z+F^.F.Normale.Z)<rien)
          and (Abs(FK^.F.Dist+F^.F.Dist)<rien) then
           begin
-           P1:=FK^.prvDescS[0]^.P;
-           for L:=FK^.prvNbS-1 downto 0 do
+           P1:=FK^.prvVertexTable[0]^.P;
+           for L:=FK^.prvVertexCount-1 downto 0 do
             begin
              P2:=P1;
-             P1:=FK^.prvDescS[L]^.P;
+             P1:=FK^.prvVertexTable[L]^.P;
              Min:=0;
              Max:=1;
              for S:=0 to NbS-1 do
@@ -349,11 +353,11 @@ var
          and (Abs(FK^.F.Normale.Z+F^.F.Normale.Z)<rien)
          and (Abs(FK^.F.Dist+F^.F.Dist)<rien) then
           begin
-           P1:=FK^.prvDescS[0]^.P;
-           for L:=FK^.prvNbS-1 downto 0 do
+           P1:=FK^.prvVertexTable[0]^.P;
+           for L:=FK^.prvVertexCount-1 downto 0 do
             begin
              P2:=P1;
-             P1:=FK^.prvDescS[L]^.P;
+             P1:=FK^.prvVertexTable[L]^.P;
              Min:=0;
              Max:=1;
              for S:=0 to NbS-1 do
@@ -438,8 +442,8 @@ var
         if F<>Nil then
          begin
           Derriere:=True;
-          for J:=0 to F1^.prvNbS-1 do
-           Derriere:=Derriere and (Dot(F1^.prvDescS[J]^.P, F^.F.Normale) < F^.F.Dist{+rien});
+          for J:=0 to F1^.prvVertexCount-1 do
+           Derriere:=Derriere and (Dot(F1^.prvVertexTable[J]^.P, F^.F.Normale) < F^.F.Dist{+rien});
           if Derriere then
            Break;
          end;
@@ -457,7 +461,7 @@ var
         finally nFace.AddRef(-1); end;
        end;
      end;
-    Nouveau.ConstruireSommets;
+    Nouveau.ConstructVertices;
     Sources.Seek(0,soFromEnd);
     for K:=0 to Nouveau.Faces.Count-1 do
      begin
@@ -471,14 +475,14 @@ var
       with F^.F.Normale do
        if Abs(X)>Abs(Y) then
         if Abs(X)>Abs(Z) then
-         DiviserX(F^.prvDescS, F^.prvNbS, 0)
+         DiviserX(F^.prvVertexTable, F^.prvVertexCount, 0)
         else
-         DiviserZ(F^.prvDescS, F^.prvNbS, 0)
+         DiviserZ(F^.prvVertexTable, F^.prvVertexCount, 0)
        else
         if Abs(Y)>Abs(Z) then
-         DiviserY(F^.prvDescS, F^.prvNbS, 0)
+         DiviserY(F^.prvVertexTable, F^.prvVertexCount, 0)
         else
-         DiviserZ(F^.prvDescS, F^.prvNbS, 0);
+         DiviserZ(F^.prvVertexTable, F^.prvVertexCount, 0);
      end;
     Nouveau.Precedent:=Sources0;
     Info.Poly:=Nouveau;
