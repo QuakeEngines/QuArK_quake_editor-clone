@@ -19,7 +19,7 @@ This file contains all the online documentation found on the
 <a href=\"http://www.planetquake.com/quark/infobase/index.html\">InfoBase</a> pages.<br>
 <br>
 <!--<a href=\"http://www.fileplanet.com/dl.aspx?/planetquake/quark/Releases/help_package/quark_help_20030525.zip\">QuArK_Help_20030525.zip</a>-->
-<a href=\"http://quark.sourceforge.net/download/quark-help-20030817.zip\">QuArK-Help-20030817.zip</a>
+<a href=\"http://quark.sourceforge.net/download/quark-help-20030817.zip\">QuArK-Help-20030819.zip</a>
 </center>
 ";
 
