@@ -132,6 +132,7 @@ def curvemenu(o, editor, view):
       dup["macro"]="dup stair"
       dup["steps"]="8"
       dup["sameheight"]=""
+      dup["oldstyle"]=""
       dup.appenditem(m.newpoly)
       undo=quarkx.action()
       undo.exchange(o, dup)
@@ -191,6 +192,11 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3.14.1  2003/02/04 09:39:21  tiglari
+#tris/overdraw-efficient fan-style stair, as suggested by foo, quakin' and Plan B
+#on the quake3world editing forum.  For old non-equal-height stair, use
+#'oldstyle' checkbox specific
+#
 #Revision 1.3  2001/03/03 19:26:59  decker_dk
 #Minor problem fixed.
 #
