@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2004/12/21 09:03:47  alexander
+changed gcfwrap dll location to be in dlls directory
+
 Revision 1.3  2004/12/17 14:29:02  alexander
 fixed crash
 
@@ -36,44 +39,26 @@ first gcf access attempt
 
 }
 
-
 unit QkGCF;
 
 interface
 
-uses
-  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, TB97, QkFileExplorer, QkListView, BrowseForFolder,
-  ComCtrls, QkForm, QkGroup, Python;
+uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak;
 
 type
- QGCFFolder = class(QFileObject)
+ QGCFFolder = class(QPakFolder)
               private
                 gcfhandle  : PChar;
-                procedure RecGO1(const SubPath: String; extracted: PyObject);
-
               protected
-                procedure EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream);
-                function OpenWindow(nOwner: TComponent) : TQForm1; override;
                 procedure SaveFile(Info: TInfoEnreg1); override;
                 procedure LoadFile(F: TStream; FSize: Integer); override;
-                procedure SortPakFolder;
               public
                 class function TypeInfo: String; override;
-                procedure ObjectState(var E: TEtatObjet); override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-                function CreateOwnExplorer(nOwner: TComponent) : TWinControl; override;
                 function FindFile(const PakPath: String) : QFileObject; override;
-                function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                 function GetFolder(Path: String) : QGCFFolder;
-                procedure AddFileWithPath(PathAndShortName: String; Q: QFileObject; SetName: Boolean);
-                function ExtractTo(PathBase: String) : Integer;
-                function ExtractEntitiesTo(PathBase: String) : Integer;
-                procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
-                function PyGetAttr(attr: PChar) : PyObject; override;
-                function TestConversionType(I: Integer) : QFileObjectClass; override;
-                function ConversionFrom(Source: QFileObject) : Boolean;     override;
               end;
+
  QGCF = class(QGCFFolder)
         protected
         public
@@ -82,75 +67,46 @@ type
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
 
- TGCFExplorer =  TFileExplorer;
-
- 
-
- {------------------------}
-type
-  TFQGCF = class(TQForm2)
-    private
-      procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
-    protected
-      function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
-      function GetConfigStr: String; override;
-    public
-     function MacroCommand(Cmd: Integer) : Boolean; override;
-  end;
-
-
-
  {------------------------}
 
 implementation
 
-uses Travail, QkExplorer, Quarkx, PyObjects, Game,
- QkObjectClassList, QkBsp;
+uses Quarkx, PyObjects, Game, QkObjectClassList;
 
+const RequiredGCFAPI=1;
 var
+// binding to c dll
   Hgcfwrap  : HINST;
-  // c signatures
-  //p_packagehandle GCFOpen(LPCSTR PackageName)
-  //void GCFClose(p_packagehandle pkg)
-  //p_packagefile GCFOpenElement(p_packagehandle pkg, const char* FileName)
-  //void GCFCloseElement(p_packagefile p )
-  //unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData,DWORD dwSize)
-  //int GCFElementIsFolder(p_packagefile p )
-  //long GCFNumSubElements(p_packagefile p )
-  //p_packagefile GCFGetSubElement(p_packagefile p , long e)
-  //char* GCFSubElementName(p_packagefile p )
+// c signatures
+//DLL_EXPORT DWORD APIVersion(void)
+//DLL_EXPORT p_packagehandle GCFOpen(char* PackageName)
+//DLL_EXPORT void GCFClose(p_packagehandle pkg)
+//DLL_EXPORT p_packagefile GCFOpenElement(p_packagehandle pkg, char* FileName)
+//DLL_EXPORT void GCFCloseElement(p_packagefile p )
+//DLL_EXPORT int GCFElementIsFolder(p_packagefile p )
+//DLL_EXPORT long GCFNumSubElements(p_packagefile p )
+//DLL_EXPORT p_packagefile GCFGetSubElement(p_packagefile p , long e)
+//DLL_EXPORT const char* GCFSubElementName(p_packagefile p )
+//DLL_EXPORT unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData)
+//DLL_EXPORT unsigned long GCFFileSize(p_packagefile p )
 
-
+  APIVersion          : function    : Longword; stdcall;
   GCFOpen             : function   (name: PChar) : PChar; stdcall;
   GCFClose            : procedure  (package: PChar); stdcall;
   GCFOpenElement      : function   (package: PChar; name: PChar ) : PChar; stdcall;
   GCFCloseElement     : procedure  (pkgfile: PChar); stdcall;
-  GCFReadFile         : function   (pkgfile: PChar; data: PChar; size: Longword ) : Longword	; stdcall;
+  GCFReadFile         : function   (pkgfile: PChar; data: PChar) : Longword	; stdcall;
+  GCFFileSize         : function   (pkgfile: PChar) : Longword	; stdcall;
   GCFElementIsFolder  : function   (pkgfile: PChar): Integer; stdcall;
   GCFNumSubElements   : function   (pkgfile: PChar): Integer; stdcall;
   GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; stdcall;
   GCFSubElementName   : function   (pkgfile: PChar): PChar; stdcall;
 
-
-
-
- {------------------------}
+ {------------ QGCFFolder ------------}
 
 class function QGCFFolder.TypeInfo;
 begin
  Result:='.gcffolder';
-end;
-
-function QGCFFolder.OpenWindow(nOwner: TComponent) : TQForm1;
-begin
- Result:=TFQGCF.Create(nOwner);
-end;
-
-procedure QGCFFolder.ObjectState(var E: TEtatObjet);
-begin
- inherited;
- E.IndexImage:=iiPakFolder;
- E.MarsColor:={ $0000C0C0}clLime;
 end;
 
 class procedure QGCFFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
@@ -160,25 +116,52 @@ begin
  Info.WndInfo:=[wiSameExplorer];
 end;
 
-function QGCFFolder.IsExplorerItem(Q: QObject) : TIsExplorerItem;
+function MakeFileQObject(const FullName: String;  nParent: QObject) : QFileObject;
+var
+  i :integer;
 begin
- if Q is QGCFFolder then
-  Result:=ieResult[True] + [ieListView]
- else
-  if Q is QFileObject then
-   begin
-    Result:=ieResult[True] + [ieListView];
-   end
-  else
-   Result:=[];
+  {wraparound for a stupid function OpenFileObjectData having obsolete parameters }
+  {tbd: clean this up in QkFileobjects and at all referencing places}
+ Result:=OpenFileObjectData(nil, FullName, i, nParent);
 end;
 
-Procedure AddTree(ParentFolder: QObject; gcfelement  : PChar; root: Bool);
+Function GCFAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
+var
+  mem: TMemoryStream;
+  read,filesize: Longword;
+  name,errstr:string;
+  gcfelement:PChar;
+begin
+  Ref^.Self.Position:=Ref^.Position;
+  mem := TMemoryStream.Create;
+  gcfelement := Ref^.PUserdata;
+  filesize := GCFFileSize(gcfelement);
+  name := GCFSubElementName(gcfelement);
+  mem.SetSize(filesize);
+  if filesize=0 then
+  begin
+    errstr:='file '+name+ 'does not contain data';
+    mem.write(errstr,Length(errstr));
+  end
+  else
+  begin
+    read:= GCFReadFile(Ref^.PUserdata,mem.Memory);
+    if read<>1 then
+      raise Exception.CreateFmt('Error reading %s from gcf',[name]);
+  end;
+  Result:=mem.Size;
+  mem.Position:=0;
+  S:=mem;
+end;
+
+
+Procedure AddTree(ParentFolder: QObject; gcfelement  : PChar; root: Bool;F: TStream);
 var
   subelements : Longword;
   subgcfelement  : PChar;
   i: Integer;
-  Folder: QObject;
+  Folder,Q: QObject;
+  n: string;
 begin
   if GCFElementIsFolder(gcfelement) <> 0 then
   begin
@@ -195,107 +178,80 @@ begin
     for i:=0 to subelements-1 do
     begin
       subgcfelement:= GCFGetSubElement(gcfelement,i);
-      AddTree(Folder,subgcfelement,False);
+      AddTree(Folder,subgcfelement,False,F);
     end;
-
   end
   else
-    {handle a file}
-    ParentFolder.SubElements.Add( ConstructQObject( GCFSubElementName(gcfelement), ParentFolder) as QFileObject );
+  begin
+    Q := MakeFileQObject( GCFSubElementName(gcfelement), ParentFolder);
+
+    ParentFolder.SubElements.Add( Q );
+
+    n:=Q.GetFullName;
+    if Q is QFileObject then
+      QFileObject(Q).ReadFormat := rf_default
+    else
+      Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
+    Q.Open(TQStream(F), 0);
+    // i must access the object, from inside the onaccess function
+    Q.FNode^.PUserdata:=gcfelement;
+    Q.FNode^.OnAccess:=GCFAddRef;
+  end;
 end;
 
 procedure QGCFFolder.LoadFile(F: TStream; FSize: Integer);
+var
+  gcfelement,subgcfelement  : PChar;
+  nsubelements,i : Longword;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
-         if @GCFOpen <> nil then
-         begin
-           gcfhandle:= GCFOpen(PChar(LoadName));
-           if gcfhandle=nil then
-             Raise EErrorFmt(5707, [LoadName]); {cant open gcf file}
-           AddTree(Self,GCFOpenElement(gcfhandle,'root'),true );
-         end
-         else
+         gcfhandle:= GCFOpen(PChar(LoadName));
+         if gcfhandle=nil then
+           Raise EErrorFmt(5707, [LoadName]); {cant open gcf file}
+         if @GCFOpenElement = nil then
            Raise EError(5706); {dll not there}
+         gcfelement:=GCFOpenElement(gcfhandle,'root');
+         nsubelements:= GCFNumSubElements(gcfelement);
+         for i:=0 to nsubelements-1 do
+         begin
+           subgcfelement:= GCFGetSubElement(gcfelement,i);
+           AddTree(Self,subgcfelement,False,F);
+         end;
        end;
     else
       inherited;
   end;
 end;
 
-function ByPakOrder(Item1, Item2: Pointer) : Integer;
-var
- Q1: QObject absolute Item1;
- Q2: QObject absolute Item2;
-begin
- if Q1 is QGCFFolder then
-  if Q2 is QGCFFolder then
-   Result:=CompareText(Q1.Name, Q2.Name)
-  else
-   Result:=-1
- else
-  if Q2 is QGCFFolder then
-   Result:=1
-  else
-   begin
-    Result:=CompareText(Q1.Name, Q2.Name);
-    if Result=0 then
-     Result:=CompareText(Q1.TypeInfo, Q2.TypeInfo);
-   end;
-end;
-
-procedure QGCFFolder.SortPakFolder;
-var
- Q: QObject;
- I: Integer;
-begin
- SubElements.Sort(ByPakOrder);
- for I:=0 to SubElements.Count-1 do
-  begin
-   Q:=SubElements[I];
-   if not (Q is QGCFFolder) then Break;
-   QGCFFolder(Q).SortPakFolder;
-  end;
-end;
-
-
-
-procedure QGCFFolder.EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream);
-begin
-end;
-
 procedure QGCFFolder.SaveFile(Info: TInfoEnreg1);
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-       { cannot use AccesCopying because the .pak folder hierarchy is not stored directly in the .pak }
+      {tbd: save to gcf}
      end;
  else inherited;
  end;
 end;
 
-function QGCFFolder.CreateOwnExplorer;
-begin
- Result:=TGCFExplorer.Create(nOwner);
- Result.Width:=170;
-end;
-
 function QGCFFolder.FindFile(const PakPath: String) : QFileObject;
 var
- gcffilehandle: PChar;
-
+  I: Integer;
+  Folder: QObject;
 begin
   Acces;
-  if @GCFOpenElement <> nil then
+  for I:=1 to Length(PakPath) do
   begin
-    gcffilehandle:= GCFOpenElement(gcfhandle,PChar(PakPath));
-    if gcffilehandle=nil then
-      Raise EErrorFmt(5708, [PakPath,LoadName]) {cant open file in gcf file}
-  end
-  else
-    Raise EError(5706); {dll not there}
-
-  {access file from gcf container here}
+    if PakPath[I] in ['/','\'] then
+    begin
+      Folder:=SubElements.FindName(Copy(PakPath, 1, I-1) + '.gcffolder');
+      if (Folder=Nil) or not (Folder is QGCFFolder) then
+        Result:=Nil
+      else
+        Result:=QGCFFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
+      Exit;
+    end;
+  end;
   Result:=SubElements.FindName(PakPath) as QFileObject;
 end;
 
@@ -305,17 +261,15 @@ var
  Folder: QObject;
  S: String;
 begin
-{}
   S:=TypeInfo;
   S:=S;
-{}
  Result:=Self;
  while Path<>'' do
   begin
    I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
    J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
    if I>J then I:=J;
-   Folder:=Self.SubElements.FindName(Copy(Path, 1, I-1) + '.pakfolder'); {DECKER}
+   Folder:=Self.SubElements.FindName(Copy(Path, 1, I-1) + '.gcffolder');
    if Folder=Nil then
     begin
      Folder:=QGCFFolder.Create(Copy(Path, 1, I-1), Self);
@@ -326,183 +280,7 @@ begin
   end;
 end;
 
-procedure QGCFFolder.AddFileWithPath(PathAndShortName: String; Q: QFileObject; SetName: Boolean);
-var
- I: Integer;
- Folder: QGCFFolder;
- Q1: QObject;
-begin
- Q.AddRef(+1); try
- I:=Length(PathAndShortName);
- while (I>0) and not (PathAndShortName[I] in ['/','\']) do
-  Dec(I);
- Folder:=GetFolder(Copy(PathAndShortName, 1, I));
- Q.FParent:=Folder;
- PathAndShortName:=Copy(PathAndShortName, I+1, MaxInt);
- if SetName then
-  Q.Name:=PathAndShortName;
- Q1:=Folder.SubElements.FindName(PathAndShortName);
- if Q1<>Nil then
-  begin
-   I:=Folder.SubElements.IndexOf(Q1);
-   Folder.SubElements[I]:=Q;
-  end
- else
-  Folder.SubElements.Add(Q);
- finally Q.AddRef(-1); end;
-end;
-
-function QGCFFolder.ExtractTo(PathBase: String) : Integer;
-var
- I: Integer;
- Q: QObject;
-begin
- Result:=0;
- if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
- for I:=1 to Length(PathBase) do
-  if PathBase[I]=PathDelim then
-   begin
-    PathBase[I]:=#0;
-    CreateDirectory(PChar(PathBase), Nil);
-    PathBase[I]:=PathDelim;
-   end;
- Acces;
- for I:=0 to SubElements.Count-1 do
-  begin
-   Q:=SubElements[I];
-   if Q is QGCFFolder then
-    Inc(Result, QGCFFolder(Q).ExtractTo(PathBase+Q.Name))
-   else
-    if Q is QFileObject then
-     begin
-      QFileObject(Q).SaveInFile(rf_Default, PathBase+Q.Name+Q.TypeInfo);
-      Inc(Result);
-     end;
-  end;
-end;
-
-function QGCFFolder.ExtractEntitiesTo(PathBase: String) : Integer;
-var
- I: Integer;
- Q: QObject;
- S: String;
- EntityFile: TextFile;
-begin
- Result:=0;
-
- if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
- for I:=1 to Length(PathBase) do
-  if PathBase[I]=PathDelim then
-   begin
-    PathBase[I]:=#0;
-    CreateDirectory(PChar(PathBase), Nil);
-    PathBase[I]:=PathDelim;
-   end;
- Acces;
- for I:=0 to SubElements.Count-1 do
-  begin
-   Q:=SubElements[I];
-   if Q is QGCFFolder then
-    Inc(Result, QGCFFolder(Q).ExtractEntitiesTo(PathBase))
-   else
-    if (Q is QFileObject) and (Q.Typeinfo='.bsp') then
-     begin
-      S:= QBsp(Q).GetEntityLump;
-      AssignFile(EntityFile, PathBase+Q.Name+'.ent');
-      rewrite(Entityfile);
-      Writeln(EntityFile,S);
-      CloseFile(EntityFile);
-      Inc(Result);
-     end;
-  end;
-end;
-
-procedure QGCFFolder.RecGO1(const SubPath: String; extracted: PyObject);
-var
- I: Integer;
- Q: QObject;
- S: String;
- v: PyObject;
-begin
- Acces;
- ProgressIndicatorStart(175, SubElements.Count); try
- for I:=0 to SubElements.Count-1 do
-  begin
-   Q:=SubElements[I];
-   if Q is QGCFFolder then
-    QGCFFolder(Q).RecGO1(SubPath+Q.Name+'/', extracted)
-   else
-    if Q is QFileObject then
-     begin
-      S:=SubPath+Q.Name+Q.TypeInfo;
-      v:=PyString_FromString(PChar(S));
-      PyList_Append(extracted, v);
-      Py_DECREF(v);
-      S:=OutputFile(S);
-      QFileObject(Q).SaveInFile(rf_Default, S);
-     end;
-   ProgressIndicatorIncrement;
-  end;
- finally ProgressIndicatorStop; end;
-end;
-
-procedure QGCFFolder.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
-begin
- RecGO1('', extracted);
-end;
-
-function pExtract(self, args: PyObject) : PyObject; cdecl;
-var
- pathbase: PChar;
-begin
- try
-  Result:=Nil;
-  if not PyArg_ParseTupleX(args, 's', [@pathbase]) then
-   Exit;
-  ProgressIndicatorStart(0,0); try
-  Result:=PyInt_FromLong((QkObjFromPyObj(self) as QGCFFolder).ExtractTo(pathbase));
-  finally ProgressIndicatorStop; end;
- except
-  EBackToPython;
-  Result:=Nil;
- end;
-end;
-
-function pGetFolder(self, args: PyObject) : PyObject; cdecl;
-var
- path: PChar;
-begin
- try
-  Result:=Nil;
-  if not PyArg_ParseTupleX(args, 's', [@path]) then
-   Exit;
-  Result:=GetPyObj((QkObjFromPyObj(self) as QGCFFolder).GetFolder(path));
- except
-  EBackToPython;
-  Result:=Nil;
- end;
-end;
-
-const
- MethodTable: array[0..1] of TyMethodDef =
-  ((ml_name: 'extract';        ml_meth: pExtract;        ml_flags: METH_VARARGS),
-   (ml_name: 'getfolder';      ml_meth: pGetFolder;      ml_flags: METH_VARARGS));
-
-function QGCFFolder.PyGetAttr(attr: PChar) : PyObject;
-var
- I: Integer;
-begin
- Result:=inherited PyGetAttr(attr);
- if Result<>Nil then Exit;
- for I:=Low(MethodTable) to High(MethodTable) do
-  if StrComp(attr, MethodTable[I].ml_name) = 0 then
-   begin
-    Result:=PyCFunction_New(MethodTable[I], @PythonObj);
-    Exit;
-   end;
-end;
-
- {------------------------}
+ {------------ QGCF ------------}
 
 class function QGCF.TypeInfo;
 begin
@@ -523,128 +301,40 @@ begin
  Info.WndInfo:=[wiOwnExplorer];
 end;
 
-
-
-
  {------------------------}
-
-function QGCFFolder.TestConversionType(I: Integer) : QFileObjectClass;
+procedure Fatal(x:string);
 begin
-      Result:=Nil;
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);
 end;
 
-function QGCFFolder.ConversionFrom(Source: QFileObject) : Boolean;
+function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
 begin
-  Result:=(Source is QGCFFolder);
-  if Result then begin
-    Source.Acces;
-    CopyAllData(Source, False);   { directly copies data }
-  end;
+   result:= GetProcAddress(DLLHandle, APIFuncname);
+   if result=Nil then
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKSteamFS.dll');
 end;
-
-
-
-function TFQGCF.AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean;
-begin
- Result:=(Q is QGCFFolder) and inherited AssignObject(Q, State);
-end;
-
-procedure TFQGCF.wmInternalMessage(var Msg: TMessage);
-begin
- case Msg.wParam of
-  wp_EditMsg:
-    case Msg.lParam of
-     edObjEnable: if TMSelUnique<>Nil then
-                   Msg.Result:=edOk or edOpen;
-    end;
- end;
- if Msg.Result=0 then
-  inherited;
-end;
-
-function TFQGCF.GetConfigStr;
-begin
- Result:='GCF';
-end;
-
-function TFQGCF.MacroCommand(Cmd: Integer) : Boolean;
-var
- Path: String;
- Count: Integer;
-begin
- Result:=inherited MacroCommand(Cmd);
- if not Result then
-  case Cmd of
-  { PAKX } Ord('P')+256*Ord('A')+65536*Ord('K')+16777216*Ord('X'):
-     if FileObject is QGCFFolder then
-     begin
-       GetDir(0, Path);
-       Result:=BrowseForFolderDlg(Handle, Path, LoadStr1(5662), '');
-       if Result then
-       begin
-         Update;
-         ProgressIndicatorStart(0,0); try
-         Count:=QGCFFolder(FileObject).ExtractTo(Path);
-         finally ProgressIndicatorStop; end;
-         MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
-       end;
-     end;
-
-  { PAKE } Ord('P')+256*Ord('A')+65536*Ord('K')+16777216*Ord('E'):
-     if FileObject is QGCFFolder then
-     begin
-       GetDir(0, Path);
-       Result:=BrowseForFolderDlg(Handle, Path, LoadStr1(5662), '');
-       if Result then
-         Update;
-         ProgressIndicatorStart(0,0); try
-         Count:=QGCFFolder(FileObject).ExtractEntitiesTo(Path);
-         finally ProgressIndicatorStop; end;
-         MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
-     end;
-  end;
-end;
-
-
-
-
-
-
-
-
-
-
-
-
 
 initialization
-  Hgcfwrap := LoadLibrary('dlls/gcfwrap.dll');
+  Hgcfwrap := LoadLibrary('dlls/QuArKSteamFS.dll');
   if Hgcfwrap >= 32 then { success }
   begin
-    GCFOpen         := GetProcAddress(Hgcfwrap, 'GCFOpen');
-    GCFClose        := GetProcAddress(Hgcfwrap, 'GCFClose');
-    GCFOpenElement  := GetProcAddress(Hgcfwrap, 'GCFOpenElement');
-    GCFCloseElement := GetProcAddress(Hgcfwrap, 'GCFCloseElement');
-    GCFReadFile     := GetProcAddress(Hgcfwrap, 'GCFReadFile');
-    GCFElementIsFolder  := GetProcAddress(Hgcfwrap, 'GCFElementIsFolder');
-    GCFNumSubElements   := GetProcAddress(Hgcfwrap, 'GCFNumSubElements');
-    GCFGetSubElement    := GetProcAddress(Hgcfwrap, 'GCFGetSubElement');
-    GCFSubElementName   := GetProcAddress(Hgcfwrap, 'GCFSubElementName');
-  end
-  else
-  begin
-    GCFOpen             := nil;
-    GCFClose            := nil;
-    GCFOpenElement      := nil;
-    GCFCloseElement     := nil;
-    GCFReadFile         := nil;
-    GCFElementIsFolder  := nil;
-    GCFNumSubElements   := nil;
-    GCFGetSubElement    := nil;
-    GCFSubElementName   := nil;
+    APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
+    if APIVersion<>RequiredGCFAPI then
+      Fatal('dlls/QuArKSteamFS.dll API version mismatch');
+    GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
+    GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
+    GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
+    GCFCloseElement := InitDllPointer(Hgcfwrap, 'GCFCloseElement');
+    GCFReadFile     := InitDllPointer(Hgcfwrap, 'GCFReadFile');
+    GCFFileSize     := InitDllPointer(Hgcfwrap, 'GCFFileSize');
+    GCFElementIsFolder  := InitDllPointer(Hgcfwrap, 'GCFElementIsFolder');
+    GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
+    GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
+    GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
   end;
 
-  RegisterQObject(QGCF, 't');
+  {tbd is the code ok to be used ?  }
+  RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');
- // RegisterQObject(QImport, 'a');
 end.
