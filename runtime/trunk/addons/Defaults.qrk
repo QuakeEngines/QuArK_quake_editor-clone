@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.243  2005/01/21 17:44:33  alexander
+//allow file selection for hl2 filesystem dll
+//
 //Revision 1.242  2005/01/05 12:18:34  alexander
 //introduced %gamedir% variable expansion for running tools and utilized for hl2 support
 //
@@ -2229,6 +2232,8 @@ QQRKSRC1
         AddOns = "DataTorque.qrk"
         Console = "1"
         Form = "GameTorque"
+        LightFactor = '0.9'
+        3DLight = '512'
         //   PlayerClass = "X"
       }
 
