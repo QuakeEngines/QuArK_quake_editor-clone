@@ -325,6 +325,7 @@ type
                { --- start of the QuArK-specific part --- }
               RefCount1: Integer;
               Temporary: Boolean;
+              DisableDelayLoading: Boolean;
             { Root: QObject;  { actually a QFileObject }
              {destructor Destroy; override;}
               procedure AddRef;
@@ -1198,8 +1199,22 @@ end;*)
 procedure QObject.ToutCharger;
 var
  I: Integer;
+ S: TQStream;
 begin
- Acces;
+ if (FFlags and ofSurDisque <> 0) and not FLoading then
+  begin  { optimization only : tags the source stream as "DisableDelayLoading",
+           which means that subobjects will be immediately loaded in LoadedItem
+           instead of by the recursive ToutCharger call below. }
+   S:=FNode^.Self;
+   S.AddRef;
+   S.DisableDelayLoading:=True;
+   try
+    Acces;
+   finally
+    S.DisableDelayLoading:=False;
+    S.Release;
+   end;
+  end;
  for I:=0 to SousElements.Count-1 do
   SousElements[I].ToutCharger;
 end;
@@ -1703,7 +1718,7 @@ begin
   if Format<>rf_Private then
    Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(Format));
  nEnd:=F.Position+Size;
- if {Delayed and} (F is TQStream) then
+ if (F is TQStream) and not TQStream(F).DisableDelayLoading then
   Q.Ouvrir(TQStream(F), Size)
  else
   begin
