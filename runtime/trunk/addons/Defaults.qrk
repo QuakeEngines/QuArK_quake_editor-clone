@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.95  2001/03/08 23:31:23  aiv
+//entity tool finished completly i think.
+//
 //Revision 1.94  2001/03/08 21:55:18  tiglari
 //first segment of path dup is now 'level' (won't twist)
 //
@@ -310,8 +313,8 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20010225"
-      InternalVersion = '6.00011'
+      Version = "QuArK 6.2"
+      InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
       RecentFiles = ""
@@ -3265,9 +3268,9 @@ QQRKSRC1
       }
       GetEntitiesBtn: =
       {
-	Typ = "P"
-	Cap = "Get Entities for this game"
-	Macro = "makeaddon"
+    Typ = "P"
+    Cap = "Get Entities for this game"
+    Macro = "makeaddon"
       }
     }
     FormContext:form =

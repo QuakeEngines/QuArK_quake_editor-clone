@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2001/02/25 11:19:12  tiglari
+reset snapshot #
+
 Revision 1.45  2001/02/23 19:25:35  decker_dk
 Proper indenting, and other small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -164,7 +167,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'quarksnapshot_20010225';
+  QuArKVersion            = 'Quark 6.2';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
