@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/10/20 02:11:47  tiglari
+live pointer hunt: redo shutdown macro
+
 Revision 1.27  2001/10/16 11:39:05  tiglari
 live pointer hunt, macro to delete some stuff on Python shutdown
 
@@ -1531,6 +1534,9 @@ begin
  DestroyGameBuffers;
 end;
 
+var
+  g_IsInSavePendingFiles: boolean = false;
+
 procedure TForm1.SavePendingFiles(CanCancel: Boolean);
 const
  Buttons: array[Boolean] of TMsgDlgButtons =
@@ -1540,30 +1546,37 @@ var
  S, S1: String;
  I: Integer;
 begin
- L:=TQList.Create; try
- GetListOfModified(L);
- if L.Count>0 then
-  begin
-   S:=LoadStr1(5550);
-   for I:=0 to L.Count-1 do
+  if (g_IsInSavePendingFiles=true) then
+    exit;
+  g_IsInSavePendingFiles:=true;
+  L:=TQList.Create;
+  try
+    GetListOfModified(L);
+    if L.Count>0 then
     begin
-     S1:=(L[I] as QFileObject).Filename;
-     if S1='' then
-      S1:=LoadStr1(5552);
-     S:=S+FmtLoadStr1(5551, [S1]);
+      S:=LoadStr1(5550);
+      for I:=0 to L.Count-1 do
+      begin
+        S1:=(L[I] as QFileObject).Filename;
+        if S1='' then
+          S1:=LoadStr1(5552);
+        S:=S+FmtLoadStr1(5551, [S1]);
+      end;
+      case MessageDlg(S, mtConfirmation, Buttons[CanCancel], 0) of
+        mrYes:
+          for I:=0 to L.Count-1 do
+            QFileObject(L[I]).TrySavingNow;
+        mrNo:
+          for I:=0 to L.Count-1 do
+            L[I].Flags:=L[I].Flags and not ofModified;
+      else
+        Abort;
+      end;
     end;
-   case MessageDlg(S, mtConfirmation, Buttons[CanCancel], 0) of
-    mrYes:
-      for I:=0 to L.Count-1 do
-       QFileObject(L[I]).TrySavingNow;
-    mrNo:
-      for I:=0 to L.Count-1 do
-       with L[I] do
-        Flags:=Flags and not ofModified;
-   else Abort;
-   end;
+  finally
+    L.Free;
+    g_IsInSavePendingFiles:=false;
   end;
- finally L.Free; end;
 end;
 
 procedure TForm1.Saveinnewentry1Click(Sender: TObject);
