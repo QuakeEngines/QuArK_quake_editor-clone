@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.158  2001/07/19 11:58:58  tiglari
+//disable mapchecks for 6dx
+//
 //Revision 1.157  2001/07/19 02:23:24  tiglari
 //.hmf extension support for 6dx
 //
@@ -1293,8 +1296,14 @@ QQRKSRC1
         BuildPgm1 = "MAP2CS.EXE"
         BuildArgs1 = "%mapfile% %file%.zip c:\map2cs\map2cs.cfg"
 
-        TexturesPath = "textures/"
+        BuildPgm2 = "cp"
+        BuildArgs2 = "%file%.zip %mappath%\.."
+      
+      TexturesPath = "textures/"
         Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
         DefaultTexture = "intro/wl_outbrick1a"
 
