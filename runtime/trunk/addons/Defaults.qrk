@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.25  2000/05/12 17:44:19  decker_dk
+//Auto-create Texture-links to .tga/.jpg files - .shaders still missing
+//
 //Revision 1.24  2000/05/11 22:00:43  alexander
 //removed palette.pcx
 //changed default texture
@@ -2373,18 +2376,18 @@ QQRKSRC1
         Max = '90'
       }
         //sep: = {Typ="S"}
-	//BezierCenterX: = {
-	//  Txt = "Bezier center offset (X)"
-	//  Typ = "EF1"
-	//  Min = '-64'
-	//  Max = '64'
-	//}
-	//BezierCenterY: = {
-	//  Txt = "Bezier center offset (Y)"
-	//  Typ = "EF1"
-	//  Min = '-64'
-	//  Max = '64'
-	//}
+        //BezierCenterX: = {
+        //  Txt = "Bezier center offset (X)"
+        //  Typ = "EF1"
+        //  Min = '-64'
+        //  Max = '64'
+        //}
+        //BezierCenterY: = {
+        //  Txt = "Bezier center offset (Y)"
+        //  Typ = "EF1"
+        //  Min = '-64'
+        //  Max = '64'
+        //}
     }
     MdlBuilding:form =
     {
@@ -2491,6 +2494,20 @@ QQRKSRC1
     Default:d:form =    // form that applies when editing duplicators
     {
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
+    }
+    dup cap:form =
+    {
+      inverse: = {Txt="&" Typ="X"
+               Hint = "if checked, upper surface of curve is outer"}
+      lower: = {Txt="&" Typ="X"
+               Hint = "if checked, the whole thing is upside-down"}
+      thick: = {Txt ="&" Typ="EF1"
+                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      open: = {Txt="&" Typ="X"
+               Hint = "if chcked, front and back are open"}
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "This one is not for you, Saruman"}
+
     }
     QuakeCtx:form =     // form that applies when editing .qctx objects
     {
