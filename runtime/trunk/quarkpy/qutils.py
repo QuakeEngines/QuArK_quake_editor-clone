@@ -239,13 +239,11 @@ def loadmdleditor():
     import plugins
     plugins.LoadPlugins("MDL")
 
-
 # Default icons for the objects
 ico_objects = LoadIconSet("images\\objects", 16)
 
 # Generic editor icons
 ico_editor = LoadIconSet("images\\editor", 16)
-
 
 #
 # Variable icons handlers for Quake entities
@@ -302,16 +300,17 @@ def DuplicatorIconSel(dup):
     return iconlist[1][iconindex]
 
 
-
 #
 # Variable icons handlers for groups
 #
 
-def GroupIconUnsel(grp, ico_objects_group_set={
+ico_objects_group_set={
   (0,0):ico_objects[0][32],
   (0,1):ico_objects[0][13],
   (4,0):ico_objects[0][33],
-  (4,1):ico_objects[0][31]}):
+  (4,1):ico_objects[0][31]}
+
+def GroupIconUnsel(grp):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
@@ -320,11 +319,14 @@ def GroupIconUnsel(grp, ico_objects_group_set={
             pass
     return ico_objects[0][13]
 
-def GroupIconSel(grp, ico_objects_group_set={
+
+ico_objects_group_set={
   (0,0):ico_objects[1][32],
   (0,1):ico_objects[1][13],
   (4,0):ico_objects[1][33],
-  (4,1):ico_objects[1][31]}):
+  (4,1):ico_objects[1][31]}
+  
+def GroupIconSel(grp):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
@@ -333,6 +335,7 @@ def GroupIconSel(grp, ico_objects_group_set={
             pass
     return ico_objects[1][13]
 
+del ico_objects_group_set
 
 #
 # Variable icons handlers for Model objects
@@ -363,7 +366,6 @@ def ModelGroupIconSel(obj):
 
 def ModelGroupIconUnsel(obj):
     return ModelIcon(obj, 0)
-
 
 
 # quarkx.msgbox
@@ -457,6 +459,10 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2001/07/28 05:29:19  tiglari
+#fix loading of bsp support so that it works after a map has been edited.
+#rename patchLoad to reLoad
+#
 #Revision 1.13  2001/07/27 11:31:47  tiglari
 #bsp study: plane viewing, faces in treeview
 #
