@@ -76,9 +76,9 @@ class ClosePlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
         m.object=self.pack.closeones[index]
 #        mapmadsel.ZoomToMe(m)
         mapmadsel.SelectMe(m)
-        closeones = hasCloseNeighbors(m.object,eval(self.pack.close),retvals=1)
-        self.pack.closeones=closeones
-        self.editor.layout.explorer.sellist=closeones
+#        closeones = hasCloseNeighbors(m.object,eval(self.pack.close),retvals=1)
+#        self.pack.closeones=closeones
+#        self.editor.layout.explorer.sellist=closeones
 
     def listClose(self):
         index = eval(self.chosen)
@@ -89,7 +89,6 @@ def macro_closeplanes(self, index=0):
     editor = mapeditor()
     if editor is None: return
     if index==1:
-        debug(' index 1')
         editor.closeplanesdlg.inspect()
     #
     # Presently not used
@@ -116,21 +115,12 @@ def PlanesClick(m):
     editor.planes = planegroup
 
 
-#
-# This one should perhaps be redone in delphi, for speed
-#
-def getClosePlanes(close, planes):
+def getClosePlanes(close, editor):
     closeones=[]
-    for i in xrange(0,len(planes),2):
-        plane = planes[i]
-        planept = plane.dist*plane.normal
-        for j in xrange(i+2,len(planes),2):
-#           debug('i: %d, j: %d'%(i,j))
-           plane2=planes[j]
-           diff=abs(planept-plane2.dist*plane2.normal)
-           if diff<close:
-              closeones.append(plane)
-              break
+    planes = editor.planes.subitems
+    indexes = editor.Root.parent.closeplanes(1.0)
+    for i in indexes:
+        closeones.append(planes[i])
     return closeones
 
 def CheckPlanesClick(m):
@@ -145,7 +135,7 @@ def CheckPlanesClick(m):
     if close==None:
         close="1.0"
     
-    closeones = getClosePlanes(eval(close), planes)
+    closeones = getClosePlanes(eval(close), editor)
 #    editor.layout.explorer.sellist=closeones
 #    quarkx.msgbox("%d suspicious planes found"%len(closeones),2,4)
 
@@ -192,7 +182,7 @@ def CheckPlanesClick(m):
                 quarkx.setupsubset(SS_MAP, "Options")["planestooclose"]="%f2"%newclose
  
             pack.close="%.2f"%newclose
-            pack.closeones=getClosePlanes(newclose, editor.planes.subitems)
+            pack.closeones=getClosePlanes(newclose, editor)
 
     #
     # Cleanup when dialog closes (not needed if no mess has
@@ -222,6 +212,100 @@ quarkpy.bspcommands.items.append(planesitem)
 quarkpy.bspcommands.items.append(nodesitem)
 quarkpy.bspcommands.items.append(planecheckitem)
 
+
+#
+#  This one is to identify the planes that lie close
+#    to a specified one.  ClosePlanesDlg above identifies
+#    planes that have others near them.  Uses same
+#    tolerance as that one.
+#
+class NearPlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (220,160)
+    dfsep = 0.35
+    dlgflags = FWF_KEEPFOCUS 
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Near Planes"
+
+        nearplanes: = {
+          Typ = "C"
+          Txt = "Planes:"
+          Items = "%s"
+          Values = "%s"
+          Hint = "These are the planes that are near the given one.  Pick one," $0D " then push buttons on row below for action."
+        }
+
+        sep: = { Typ="S" Txt=""}
+
+        buttons: = {
+          Typ = "PM"
+          Num = "1"
+          Macro = "nearplanes"
+          Caps = "I"
+          Txt = "Actions:"
+          Hint1 = "Inspect the chosen one"
+        }
+
+        num: = {
+          Typ = "EF1"
+          Txt = "# found"
+        }
+        
+        close: = {
+          Typ = "EF001"
+          Txt = "tolerance: "
+          Hint = "Planes whose dist*norm difference is less than this are deemed suspicious."
+        }
+
+        sep: = { Typ="S" Txt=""}
+
+        exit:py = {Txt="" }
+    }
+    """
+
+    def inspect(self):
+        index = eval(self.chosen)
+        #
+        # FIXME: dumb hack, revise mapmadsel
+        #
+        m = qmenu.item("",None)
+        m.object=self.pack.nearones[index]
+#        mapmadsel.ZoomToMe(m)
+        mapmadsel.SelectMe(m)
+#        nearones = hasNearNeighbors(m.object,eval(self.pack.close),retvals=1)
+#        self.pack.nearones=nearones
+#        self.editor.layout.explorer.sellist=nearones
+
+    def listNear(self):
+        index = eval(self.chosen)
+        undo=quarkx.action()
+        quarkx.msgbox('inspect %d'%index,2,4)
+
+def macro_nearplanes(self, index=0):
+    editor = mapeditor()
+    if editor is None: return
+    if index==1:
+        editor.nearplanesdlg.inspect()
+    #
+    # Presently not used
+    #
+    elif index==2:
+        editor.nearplanesdlg.listclose()
+        
+quarkpy.qmacro.MACRO_nearplanes = macro_nearplanes
+
+def getNearPlanes(close, plane, editor):
+    indexes = plane.nearplanes(close,editor.Root.parent)
+    return map(lambda index,planes=editor.planes.subitems:planes[index], indexes)
+
+
 class PlaneType(quarkpy.mapentities.EntityManager):
     "Bsp planes"
 
@@ -229,12 +313,10 @@ class PlaneType(quarkpy.mapentities.EntityManager):
 
         def collectFaces(m,o=o,editor=editor):
             faces = editor.Root.findallsubitems("",":f")
-            dist, = o["dist"]
-            norm = o["norm"]
+            facept = o.dist*o.normal
             coplanar=[]
             for face in faces:
-                if dist==face.dist:
-                  if norm==face.normal.tuple:
+                if not facept-face.dist*face.normal:
                     coplanar.append(face)
      
             quarkx.msgbox(`len(coplanar)`+' coplanar faces',2,4)            
@@ -242,20 +324,76 @@ class PlaneType(quarkpy.mapentities.EntityManager):
             
             
         def nearPlanesClick(m,o=o,editor=editor):
-            planept = o.dist*o.normal
             #
             # planes must have been collected for this
             #  menu item to be available
             #
-            planes=editor.planes.subitems
-            suss=[o]
-            for i in xrange(0,len(planes),2):
-                plane2=planes[i]
-                if plane2 is o:
-                    continue
-                if abs(planept-plane2.dist*plane2.normal)<1.0:
-                    suss.append(plane2)
-            editor.layout.explorer.sellist=suss
+            close = quarkx.setupsubset(SS_MAP, "Options")["planestooclose"]
+            if close==None:
+                close="1.0"
+
+            nearones = getNearPlanes(eval(close),o, editor)
+        #   debug('near '+`nearones`)
+        #    editor.layout.explorer.sellist=closeones
+        #    quarkx.msgbox("%d suspicious planes found"%len(closeones),2,4)
+
+            class pack:
+              "stick stuff here"
+            pack.close=close
+            pack.nearones=nearones
+
+            def setup(self, pack=pack, editor=editor, plane=o):
+                self.pack=pack
+                self.plane=plane
+                #
+                # Part of the convolution for the buttons, to communicate
+                #  which objects methods should be called when one pushed.
+                # Cleaned up in onclosing below.
+                #
+                editor.nearplanesdlg=self
+
+                #
+                # Names and list-indexes of close planes
+                #
+                pack.slist = map(lambda obj:obj.shortname, pack.nearones)
+                pack.klist = map(lambda d:`d`, range(len(pack.nearones)))
+                self.src["nearplanes$Items"] = string.join(pack.slist, "\015")
+                self.src["nearplanes$Values"] = string.join(pack.klist, "\015")
+                #
+                # Note the commas, EF..1 controls take 1-tuples as data
+                #
+                self.src["num"]=len(pack.klist),
+                self.src["close"]=eval(pack.close),
+
+            def action(self, pack=pack, editor=editor):
+                src = self.src
+                #
+                # note what's been chosen
+                #
+                self.chosen = src["nearplanes"]
+                #
+                # see if thinness threshold has been changed
+                #
+                newclose, = self.src["close"]
+                if newclose!=pack.close:
+                    if newclose==1.0:
+                        quarkx.setupsubset(SS_MAP, "Options")["planestooclose"]=None
+                    else:
+                        quarkx.setupsubset(SS_MAP, "Options")["planestooclose"]="%f2"%newclose
+
+                    pack.close="%.2f"%newclose
+                    pack.nearones=getNearPlanes(newclose, self.plane, editor)
+            
+            #
+            # Cleanup when dialog closes (not needed if no mess has
+            #  been created)
+            #
+            def onclosing(self,editor=editor):
+                del editor.nearplanesdlg
+
+            NearPlanesDlg(quarkx.clickform, 'nearplanes', editor, setup, action, onclosing)
+
+
 
         nearItem = qmenu.item("Near Planes",nearPlanesClick)
         return [qmenu.item("Collect Faces",collectFaces), nearItem]
@@ -368,7 +506,7 @@ def bspfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     cv = view.canvas()
     cv.pencolor = MapColor("Duplicator")
     if sel.type==":bspplane":
-        debug('plane')
+#        debug('plane')
         dist, = sel["dist"]
         norm = quarkx.vect(sel["norm"])
         pos = dist*norm         
