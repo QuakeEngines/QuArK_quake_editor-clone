@@ -6,6 +6,7 @@
 #
 #$Header$
 
+
 Info = {
    "plug-in":       "Path Duplicator",
    "desc":          "BETA! Path Duplicator",
@@ -29,7 +30,6 @@ StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 DuplicatorManager = quarkpy.mapduplicator.DuplicatorManager
 DupOffsetHandle = quarkpy.mapduplicator.DupOffsetHandle
 ObjectOrigin = quarkpy.mapentities.ObjectOrigin
-ObjectCustomOrigin = quarkpy.mapentities.ObjectCustomOrigin
 
 
 #
@@ -524,7 +524,6 @@ class PathDuplicator(StandardDuplicator):
         return list
 
     def buildimages(self, singleimage=None):
-        debug('single: '+`singleimage`)
         try:
             self.readvalues()
         except:
@@ -537,8 +536,6 @@ class PathDuplicator(StandardDuplicator):
         templategroup = self.sourcelist()
         templatebbox = quarkx.boundingboxof([templategroup])
         templatesize = templatebbox[1] - templatebbox[0]
-
-
 
         # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
         if self.speed == 1:
@@ -553,7 +550,8 @@ class PathDuplicator(StandardDuplicator):
         else:
            newobjs = []
         templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
+        OriginShift = -ObjectOrigin(templategroup)
+        templategroup.translate(OriginShift, 0)    # Move it to (0,0,0)
 
         tile = templategroup.findname("Tile:g")
         if tile is not None:
@@ -635,16 +633,18 @@ class PathDuplicator(StandardDuplicator):
             # find out where flat-ended segments would end if they
             #   are to just touch at the corners
             #
-            def vtxshift(vtx,mat=mat,orig=thisorigin):
-                return mat*vtx+orig
-
+            def vtxshift(vtx,mat=mat,orig=thisorigin, shift=OriginShift):
+                return mat*(vtx+shift)+orig
             if (tile is not None) or self.dup["squarend"]:
                 startseg=endseg=0
                 for vtx in map(vtxshift,rimvtxes):
-                    frontproj=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
-                    startseg=max(startseg,(frontproj-thisorigin)*xax)
-                    backproj=projectpointtoplane(vtx,xax,nextorigin,back[0].normal)
-                    endseg=min(endseg,(backproj-nextorigin)*xax)
+                    frontpoint=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
+                    frontproj = (frontpoint-thisorigin)*xax
+                    startseg=max(startseg,frontproj)
+                    backpoint=projectpointtoplane(vtx,-xax,nextorigin,back[0].normal)
+                    backproj = -(backpoint-nextorigin)*xax
+                    endseg=min(endseg,backproj)
+
             if tile is not None:
                 tileableLength=abs(pathdist)-startseg+endseg
                 tileOffset = (tileableLength%templatesize.x)/2
@@ -689,6 +689,112 @@ class PathDuplicator(StandardDuplicator):
         return newobjs
 
 
+
+    def buildimages2(self, singleimage=None):
+        try:
+            self.readvalues()
+        except:
+            print "Note: Invalid Duplicator Specific/Args."
+            return
+
+        pathlist = plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2())
+        #pathlist.insert(0, self.dup)
+
+        templategroup = self.sourcelist()
+        templatebbox = quarkx.boundingboxof([templategroup])
+        templatesize = templatebbox[1] - templatebbox[0]
+
+        # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
+        if self.speed == 1:
+           del templategroup
+           templategroup = quarkx.newobj("group:g")
+           templategroup.appenditem(plugins.deckerutils.NewXYZCube(templatesize.x, templatesize.y, templatesize.z, quarkx.setupsubset()["DefaultTexture"]))
+
+        if (singleimage is None and self.speed != 1):
+           viewabletemplategroup = templategroup.copy()
+           viewabletemplategroup[";view"] = str(VF_IGNORETOBUILDMAP)  # Do not send this to .MAP file
+           newobjs = [viewabletemplategroup]
+        else:
+           newobjs = []
+        templatescale = min(templatesize.x, templatesize.y)/3
+        templategroup.translate(ObjectOrigin(templategroup) * -1, 0)    # Move it to (0,0,0)
+
+        # -- If SCALETEXTURES is on, use the linear() operation
+        if (self.scaletex != 0):
+           scalematrix = quarkx.matrix((2048/templatescale,0,0), (0,1,0), (0,0,1))
+           templategroup.linear(quarkx.vect(0,0,0), scalematrix)
+        else:
+           # -- User does not want to scale textures (who wants), but then we must scale the polys in another way
+           flist = templategroup.findallsubitems("", ":f")
+           for f in flist:
+              f.translate(quarkx.vect(2048 - f.dist,0,0) * f.normal.x)
+
+        count = len(pathlist)-1
+        for i in range(count):
+            if (singleimage is not None): # Speed up Dissociate images processing
+               if (singleimage >= count):
+                  return [] # Nothing more to send back!
+               else:
+                  i = singleimage
+            thisorigin = pathlist[i].origin
+            nextorigin = pathlist[i+1].origin
+            #print "Image#", i, "this", thisorigin, "next", nextorigin
+
+            list = templategroup.copy()
+
+            pathdist = nextorigin - thisorigin
+
+            # -- Compute new X-scale of template
+#           pathlength = abs(pathdist)
+#           scalematrix = quarkx.matrix((pathlength/templatescale,0,0), (0,1,0), (0,0,1))
+#           list.linear(quarkx.vect(0,0,0), scalematrix)
+
+            # -- Compute rotation
+            rotangles = quarkx.vect(quarkpy.qhandles.vec2angles1(pathdist))
+            radx = rotangles.x * quarkpy.qeditor.deg2rad
+            rady = rotangles.y * quarkpy.qeditor.deg2rad
+            # print "rotangles", rotangles, radx, rady
+            sin1, cos1 = math.sin(rady), math.cos(rady)
+            sin2, cos2 = math.sin(radx), math.cos(radx)
+            rotatematrix = quarkx.matrix((cos2,0,-sin2),(0,1,0),(sin2,0,cos2))
+            list.linear(quarkx.vect(0,0,0), rotatematrix)
+            rotatematrix = quarkx.matrix((cos1,-sin1,0),(sin1,cos1,0),(0,0,1))
+            list.linear(quarkx.vect(0,0,0), rotatematrix)
+
+            # -- Place center between the two paths
+            neworigin = pathdist*0.5 + thisorigin
+            list.translate(neworigin, 0)
+
+            # -- Now do some cube-subtraction, so edges matches up
+            if i==0:
+                try:
+                    nextnextorigin = pathlist[i+2].origin
+                except:
+                    nextnextorigin = None
+                list = self.subtractend2(None,thisorigin,nextorigin,list,-1)
+                list = self.subtractend2(thisorigin,nextorigin,nextnextorigin,list,1)
+            elif i>0 and i<(count-1):
+                prevorigin = pathlist[i-1].origin
+                try:
+                    nextnextorigin = pathlist[i+2].origin
+                except:
+                    nextnextorigin = None
+                list = self.subtractend2(prevorigin,thisorigin,nextorigin,list,-1)
+                list = self.subtractend2(thisorigin,nextorigin,nextnextorigin,list,1)
+            elif i==(count-1):
+                prevorigin = pathlist[i-1].origin
+                list = self.subtractend2(prevorigin,thisorigin,nextorigin,list,-1)
+                list = self.subtractend2(thisorigin,nextorigin,None,list,1)
+
+            if (singleimage is None) or (i==singleimage):
+                newobjs = newobjs + [list]
+            del list
+            if (i==singleimage): # Speed up Dissociate images processing
+                break
+        return newobjs
+
+
+
     def handles(self, editor, view):
         try:
             self.readvalues()
@@ -701,145 +807,221 @@ class PathDuplicator(StandardDuplicator):
        
         return DuplicatorManager.handles(self, editor, view) + [PathDuplicatorPointHandle(self.dup.origin, self.dup, 1)]+pathHandles
 
+
+# OLD STUFF
+#   handleprefix = "horigin"
 #
-# Inspired by a suggestion by Meatball402 on the the
-#  Quake3World forum (for gtkradiant).
+#   def gethorigin(self, num):
+#       if num<0:
+#          return None
+#       if num==0:
+#          return self.dup.origin
+#       else:
+#          handlespec = self.handleprefix+str(num)
+#          # print handlespec
+#          try:
+#             s = self.dup[handlespec]
+#             return quarkx.vect(s)
+#          except KeyError:
+#             return None
 #
-
-class InstanceDuplicator(PathDuplicator):
-    def buildimages(self, singleimage=None):
-
-        if len(self.dup.subitems)==0:
-            return
-
-
-        try:
-            self.readvalues()
-        except:
-            print "Note: Invalid Duplicator Specific/Args."
-            return
-
-        pathlist = plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2())
-        #pathlist.insert(0, self.dup)
-
-            
-        templategroup = self.sourcelist()
-        templatebbox = quarkx.boundingboxof([templategroup])
-        templatesize = templatebbox[1] - templatebbox[0]
-
-        if (singleimage is None and self.speed != 1):
-           viewabletemplategroup = templategroup.copy()
-           viewabletemplategroup[";view"] = str(VF_IGNORETOBUILDMAP)  # Do not send this to .MAP file
-           newobjs = [viewabletemplategroup]
-        else:
-           newobjs = []
-        templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
-        for item in templategroup.subitems[:]:
-            if item.type==":d" and item["macro"]=="dup origin":
-                templategroup.removeitem(item)
-
-        count = len(pathlist)
-        prevaxes = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
-        for i in range(count):
-            if (singleimage is not None): # Speed up Dissociate images processing
-               if (singleimage >= count):
-                  return [] # Nothing more to send back!
-               else:
-                  i = singleimage
-
-            list = templategroup.copy()
-            thisorigin = pathlist[i].origin
-            
-            if self.dup["track"] and count>1:
-                if i<count-1:           
-                    nextorigin = pathlist[i+1].origin
-                    pathdist = nextorigin - thisorigin
-                    #
-                    # otherwise just use last pathdist
-                    #
-                if pathlist[i]["level"]:
-                   prevaxes = MakeAxes3(pathdist.normalized)
-                else:
-                   prevaxes = NewAxes(prevaxes,pathdist.normalized)
-                xax, yax, zax = prevaxes
-                #
-                # N.B. when the three args are vectors they are indeed
-                #  input as columns.  Tuples otoh will go in as rows.
-                #
-                matrix = quarkx.matrix(xax,yax,zax)
-            else:
-                matrix=quarkx.matrix('1 0 0 0 1 0 0 0 1')
-                
-            if not pathlist[i]["no instance"]:
-                linear = pathlist[i]["linear"]
-                if linear:
-                    matrix = quarkx.matrix(linear)*matrix
-                list.translate(thisorigin)
-                scale = pathlist[i]["scale"]
-                if scale is not None:
-                    matrix = quarkx.matrix('%.2f 0 0 0 %.2f 0 0 0 %.2f'%scale)*matrix
-                angles = pathlist[i]["angles"]
-                if angles is not None:
-                    angles = map(lambda a:a*deg2rad, angles)
-                    matrix = matrix_rot_y(angles[0])*matrix_rot_x(angles[1])*matrix_rot_z(angles[2])*matrix
-                list.linear(thisorigin, matrix)
-
-                if (singleimage is None) or (i==singleimage):
-                    newobjs = newobjs + [list]
-            del list
-            if (i==singleimage): # Speed up Dissociate images processing
-                break
-        return newobjs
-
-
-def macro_instances(self):
-    editor=mapeditor()
-    if editor is None: return
-    dup = editor.layout.explorer.uniquesel
-    if not dup: return
-    undo = quarkx.action()
-    new=dup.copy()
-    new.shortname = 'Instance duplicator'
-    new["macro"] = 'dup instance'
-    for item in new.subitems[:]:
-        new.removeitem(item)
-    new.translate(quarkx.vect(64, -64, 0))
-    undo.put(dup.parent, new, dup)
-    editor.ok(undo,"add instance duplicator")
-    editor.layout.explorer.uniquesel=new
-
-    
-
-
-
-
-quarkpy.qmacro.MACRO_instances = macro_instances
-    
+#
+#      def handles(self, editor, view):
+#   #        h = DuplicatorManager.handles(self, editor, view)
+#           h = quarkpy.maphandles.CenterEntityHandle(self.dup, view, CenterPathDupHandle)
+#           try:
+#               self.readvalues()
+#           except:
+#               return h
+#           try:
+#               count = int(self.dup["count"])
+#           except:
+#               count = 1
+#           for i in range(1, count+1):
+#               thishandlespec = self.handleprefix+str(i)
+#               try:
+#                   if self.dup[thishandlespec] is None:
+#   #                  print "Handle is none"
+#                   if i>1:
+#                       prevhandlespec = self.handleprefix+str(i-1)
+#                       self.dup[thishandlespec] = str(quarkx.vect(self.dup[prevhandlespec]) + quarkx.vect(32,0,0))
+#                   else:
+#                       self.dup[thishandlespec] = str(self.dup.origin + quarkx.vect(32,0,0))
+#               except:
+#                   print "Handle ERROR"
+#               handleorigin = quarkx.vect(self.dup[thishandlespec])
+#               h.append(PathDupHandle(handleorigin, self.dup, i))
+#           # -- Remove old specs, can't be undone!
+#           try:
+#           for i in range(count+1, 99):
+#               thishandlespec = self.handleprefix+str(i)
+#               if self.dup[thishandlespec] is not None:
+#                   self.dup[thishandlespec] = ""
+#               else:
+#                   break
+#           except KeyError:
+#           pass
+#           return h
+#
+#       def pathremove(self):
+#           editor = mapeditor()
+#           undo = quarkx.action()
+#           try:
+#           pathnum = int(self.dup["lastchoosenhandle"])
+#           count = int(self.dup["count"])
+#           for i in range(pathnum, count):
+#               handle1spec = self.handleprefix+str(i)
+#               handle2spec = self.handleprefix+str(i+1)
+#               undo.setspec(self.dup, handle1spec, self.dup[handle2spec])
+#           undo.setspec(self.dup, self.handleprefix+str(count), "")
+#           undo.setspec(self.dup, "count", str(count - 1))
+#           editor.ok(undo, "Remove path-handle")
+#           except:
+#           undo.cancel()
+#
+#       def pathinsert(self):
+#           print "PathInsert"
+#           editor = mapeditor()
+#           undo = quarkx.action()
+#           try:
+#           pathnum = int(self.dup["lastchoosenhandle"])
+#           count = int(self.dup["count"])
+#           thisorigin = self.gethorigin(pathnum)
+#           prevorigin = self.gethorigin(pathnum - 1)
+#           insertpoint = thisorigin - ((thisorigin - prevorigin) / 2)
+#           for i in range(count, pathnum-1, -1):
+#               handle1spec = self.handleprefix+str(i)
+#               handle2spec = self.handleprefix+str(i+1)
+#               undo.setspec(self.dup, handle2spec, self.dup[handle1spec])
+#           undo.setspec(self.dup, self.handleprefix+str(pathnum), str(insertpoint))
+#           undo.setspec(self.dup, "count", str(count + 1))
+#           editor.ok(undo, "Insert path-handle")
+#           except:
+#           undo.cancel()
+#
+#   class CenterPathDupHandle(quarkpy.maphandles.IconHandle):
+#       def menu(self, editor, view):
+#           self.centerof["lastchoosenhandle"] = "0" # Store this path-handle, so we can identify what the user pressed
+#           return quarkpy.mapentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
+#
+#
+#
+#   class PathDupHandle(quarkpy.maphandles.CenterHandle):
+#       # -- Blue handle
+#       def __init__(self, pos, dup, handlenum):
+#           quarkpy.maphandles.CenterHandle.__init__(self, pos, dup, MapColor("Duplicator"))
+#           self.handlenum = handlenum
+#
+#       def menu(self, editor, view):
+#           self.centerof["lastchoosenhandle"] = str(self.handlenum) # Store this path-handle, so we can identify what the user pressed
+#           return quarkpy.mapentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
+#
+#       def draw(self, view, cv, draghandle=None):
+#           # -- Draw a line from last handle to this handle
+#           cv.reset()
+#           cv.pencolor = MapColor("Axis")
+#           cv.penwidth = 2
+#           cv.penstyle = PS_DASH
+#           if self.handlenum>1:
+#           vpos1 = view.proj(quarkx.vect(self.centerof[PathDuplicator.handleprefix+str(self.handlenum-1)]))
+#           else:
+#           vpos1 = view.proj(self.centerof.origin)
+#           vpos2 = view.proj(self.pos)
+#           if (vpos1.visible and vpos2.visible):
+#           cv.line(vpos1, vpos2)
+#           # -- Call the draw handle method
+#           quarkpy.maphandles.CenterHandle.draw(self, view, cv, draghandle)
+#
+#       def drag(self, v1, v2, flags, view):
+#           import quarkpy.qhandles
+#           delta = v2-v1
+#           if flags&MB_CTRL:
+#               delta = quarkpy.qhandles.aligntogrid(self.pos + delta, 1) - self.pos
+#           else:
+#               delta = quarkpy.qhandles.aligntogrid(delta, 0)
+#           if delta or (flags&MB_REDIMAGE):
+#               new = self.centerof.copy()
+#               handlespec = PathDuplicator.handleprefix+str(self.handlenum)
+#               new[handlespec] = str(self.pos + delta)
+#               if (flags&MB_DRAGGING) and self.centerof["out"]:
+#                   # The red image includes the siblings if needed.
+#                   group = quarkx.newobj("redimage:g")
+#                   for obj in self.centerof.parent.subitems:
+#   #                   print obj.type,
+#                       if obj is self.centerof:
+#                           obj = new
+#                       else:
+#                           obj = obj.copy()
+#                       group.appenditem(obj)
+#                   new = [group]
+#               else:
+#                   new = [new]
+#           else:
+#               new = None
+#           return [self.centerof], new
+#
+#   #
+#   # Add item to the PathDuplicators pop-up menu.
+#   #
+#
+#   def pathinsert(menu):
+#           editor = mapeditor()
+#           if editor is None: return
+#           for obj in editor.layout.explorer.sellist:
+#           if obj.type == ':d':
+#               mgr = quarkpy.mapduplicator.DupManager(obj)
+#               mgr.pathinsert()
+#
+#   def pathremove(menu):
+#           editor = mapeditor()
+#           if editor is None: return
+#           for obj in editor.layout.explorer.sellist:
+#           if obj.type == ':d':
+#               mgr = quarkpy.mapduplicator.DupManager(obj)
+#               mgr.pathremove()
+#
+#   #def pathspeeddraw(menu):
+#   #       editor = mapeditor()
+#   #       if editor is None: return
+#   #       for obj in editor.layout.explorer.sellist:
+#   #          if obj.type == ':d':
+#   #             if int(obj["speeddraw"]) == 0:
+#   #               obj["speeddraw"] = "1"
+#   #             else:
+#   #               obj["speeddraw"] = "0"
+#   #             editor.invalidateviews()
+#   #             break
+#
+#   # pathspeeddraw = quarkpy.qmenu.item("Toggle path speeddraw", pathspeeddraw)
+#   pathinsert = quarkpy.qmenu.item("Insert path-handle before this", pathinsert)
+#   pathremove = quarkpy.qmenu.item("Remove this path-handle", pathremove)
+#
+#   def PathDuplicatorMenu(o, editor, oldmenu = quarkpy.mapentities.DuplicatorType.menubegin.im_func):
+#       omenu = oldmenu(o, editor)
+#       if (o["macro"] == 'dup path'):
+#           try:
+#           lch = int(o["lastchoosenhandle"])
+#           except:
+#           lch = 0
+#           if (lch > 0): # Only path-handles have extra menu-items
+#           if (omenu[-1] == quarkpy.qmenu.sep):
+#               return omenu[:-1] + [pathinsert, pathremove, quarkpy.qmenu.sep]  # Try to group actions inside the same seperators
+#           else:
+#               return omenu + [pathinsert, pathremove, quarkpy.qmenu.sep] # Otherwise just make a new seperator
+#       return omenu
+#
+#   quarkpy.mapentities.DuplicatorType.menubegin = PathDuplicatorMenu
 
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup path":       PathDuplicator,
   "dup path_point": PathDuplicatorPoint,
-  "dup instance":   InstanceDuplicator,
 })
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-#Revision 1.30  2001/03/22 08:16:08  tiglari
-#better handling of origin duplicator
-#
-#Revision 1.29  2001/03/21 21:20:30  tiglari
-#custom origin for instance dup.  doesn't seem to work right with path
-#
-#Revision 1.28  2001/03/20 22:46:37  tiglari
-#Meatball402's instance duplicator
-#
-#Revision 1.27  2001/03/20 09:19:23  tiglari
-#Nuke some old code
-#
-#Revision 1.26  2001/03/20 08:02:16  tiglari
-#customizable hot key support
+#Revision 1.25  2001/03/18 23:54:09  tiglari
+#experimental merge
 #
 #
 #Revision 1.24  2001/03/17 22:04:53  tiglari
