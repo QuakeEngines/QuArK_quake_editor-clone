@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2002/04/26 12:52:40  tiglari
+removed wrong Mirror-flipping in GetPYPY (this is already done in
+ GetThreePointsUserTex before GetPXPY is called)
+
 Revision 1.50  2002/04/17 12:54:08  decker_dk
 TPolyhedron.SaveAsTextPolygon(): If MJ=mjMOHAA, then write face-flags, until we figure out how to do it properly.
 Also made some layout/indenting.
@@ -3477,6 +3481,7 @@ begin
     V[3]:=T2.X; V[4]:=T2.Y;
     V[5]:=T3.X; V[6]:=T3.Y;
     SetFloatsSpec('tv', V);
+    Specifics.Values['m']:='';
   end;
 end;
 
