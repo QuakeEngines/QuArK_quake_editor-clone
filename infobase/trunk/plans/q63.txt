@@ -7,10 +7,10 @@ QuArK.  Considerable material has just been put off from 6.3 to 6.4
 
 <ul>
 <li>6DX Engine Support: (decker, Jacob Marner)
-<br>status: done (untested, may need more work)
+<br>status: done.
 
 <li>Crystal Space Support: (tiglari, funkiedamouse)
-<br>status: a cleanup done (untested, may need more work)
+<br>status: a cleanup done.
 
 <li>Linear Matrix editor: (tiglari, lots of design from Rolf Hulsbergen)
 <br>crank out matrices for rotation, scaling
@@ -106,7 +106,7 @@ for all submenus, just some of the more useful ones)
 <br>status: done
 
 <li>Support for Gunman, Blue Shift & other HL derivatives: (Decker)
-<br>status: done
+<br>status: done, except for BS problems.
 
 <li>Arg Replacer: (decker)
 <br>status: done & documented
@@ -115,10 +115,6 @@ for all submenus, just some of the more useful ones)
 <br>status: envisioned, maybe defer to 6.4
 
 <li>Show/edit Q3A, SOF, Hr2, KinPin bsp's (entities only): tiglari
+<br>status: done
 
-<li>Move object to tagged: (tiglari, idea by quantum_red)
-<br>select a face in an object, move object to tagged
-face so that selected faced is coplanar with tagged one.
-<br>status: envisioned, maybe defer to 6.4
 </ul>
-

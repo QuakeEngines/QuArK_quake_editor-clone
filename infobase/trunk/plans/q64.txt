@@ -5,12 +5,14 @@ Current plans for 6.4.  Some of the python-based facilities might become
 available as experimental addons to 6.3
 
 <UL>
-<li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
-<br>Actually, totally reorganize bsp reading code
+
+<li>Move object to tagged: (tiglari, idea by quantum_red)
+<br>select a face in an object, move object to tagged
+face so that selected faced is coplanar with tagged one.
+<br>status: envisioned, maybe defer to 6.4
 
 <li> Edit textures in .bsp files: (Andy, tiglari, Decker, ?)
 <br>an as-yet-unimplemented 4.7 feature.
-
 
 <li>FAKK2 support: (?)
 <br>And what about Daikatana?
@@ -45,7 +47,6 @@ requests for it
 <br>Or something like it.
 
 <li>full equivalence to GtkR patch texturing: (tiglari)
-<br>If we're actually behind 
 
 <li>Expand/Contract faces: (tiglari)
 <br>As enhancement to experimental mapmovevertex plugin
