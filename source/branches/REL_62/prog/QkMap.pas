@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/03/20 07:44:05  tiglari
+wc33 reading offset fix
+
 Revision 1.29  2001/03/18 01:35:48  tiglari
 wc33 map format read (not fully tested, offsets might be off)
 
@@ -1360,6 +1363,16 @@ begin
       if Result=mjHexen then
         Result:=mjQuake;
     end;
+   mjQ3A:
+    { FIXME:  barf coding, the idea is that  if Q3a mode
+      is detected, we stay in the current game mode if it's
+      one of the Q3A-format games, otherwise switch to Q3A }
+    begin
+     if CharModeJeu=mjStarTrekEF  then
+       Result:=CharModeJeu;
+    end;
+
+
   end;
 
   if InvFaces>0 then
