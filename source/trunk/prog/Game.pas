@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2005/01/02 15:19:27  alexander
+access files via steam service - first
+
 Revision 1.32  2004/12/27 10:56:23  alexander
 dont load gcf every time again
 
@@ -672,7 +675,8 @@ end;
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 var
  AbsolutePath, AbsolutePathAndFilename: String;
- FilenameAlias: String;
+ FilenameAlias,name,namerest: String;
+ index:integer;
  PakFile: QFileObject;
  GetPakNames: TGetPakNames;
  CDSearch: Boolean;
@@ -724,15 +728,21 @@ begin
     end;
 
     {HL2 steam access}
-    if AnsiEndsStr('.SteamFS', BaseDir) then
+    index:=AnsiPos('.SteamFS', BaseDir);
+    if index<>0 then
     begin
       RestartAliasing;
-      PakFile:=SortedFindFileName(GameFiles, BaseDir);
+      name:= Copy(BaseDir,1,index+7);
+      if length(name) <> length (basedir) then
+        namerest:=Copy(basedir,length(name)+2,length(basedir)-length(name))+'/'
+      else
+        namerest:='';
+      PakFile:=SortedFindFileName(GameFiles, name);
       if (PakFile=Nil) then
       begin  { open steam  if not already opened }
 
 {tbd this is probably wrong}
-        PakFile:=BuildFileRoot(BaseDir,nil);
+        PakFile:=BuildFileRoot(name,nil);
         PakFile.Flags:=PakFile.Flags or ofNotLoadedToMemory;
         mem := TMemoryStream.Create;
         PakFile.Open(TQStream(mem), 0);
@@ -743,7 +753,7 @@ begin
         GameFiles.Add(PakFile);
         GameFiles.Sort(ByFileName);
       end;
-      Result:=PakFile.FindFile( FileName );
+      Result:=PakFile.FindFile( namerest+FileName );
       if (Result<>Nil) then
         Exit; { found it }
     end;
