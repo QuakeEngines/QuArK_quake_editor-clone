@@ -32,8 +32,8 @@
 #   e.g. Quake Army Knife 6.4.1 rel 5 Setup
 
 !define QRK_MAJOR_VER 6.4
-!define QRK_MINOR_VER 0
-!define QRK_STATE "beta"
+!define QRK_MINOR_VER 1
+!define QRK_STATE "alpha"
 !define QRK_RELEASE 1
 
 #-----------------------------#
@@ -97,7 +97,8 @@ Section "QuArK" SectionQuArK
   !insertmacro MUI_STARTMENU_WRITE_BEGIN "QuArK"
 
     Push $R0
-    StrCpy $R0 $STARTMENU_FOLDER
+    StrCpy $R0 "$SMPROGRAMS\$STARTMENU_FOLDER"
+    CreateDirectory $R0
     CreateShortCut "$R0\QuArK.lnk" "$INSTDIR\QuArK.exe" "" "" "" "" "" "Quake Army Knife"
     CreateShortCut "$R0\QuArK Readme.lnk" "$INSTDIR\readme.txt"
     CreateShortCut "$R0\Uninstall QuArK.lnk" "$INSTDIR\uninstall.exe"
