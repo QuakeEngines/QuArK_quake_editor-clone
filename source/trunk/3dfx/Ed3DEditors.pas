@@ -24,14 +24,24 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
 }
 
 unit Ed3DEditors;
 
 interface
 
-uses Ed3DFX, EdOpenGL, EdDirect3D,
-     EdSceneObject;
+uses EdSceneObject
+    ,Ed3DFX
+    ,EdOpenGL
+  {$IFDEF QUARK_DIRECT3D}
+    ,EdDirect3D
+  {$ENDIF}
+    ;
 
  {------------------------}
 
@@ -44,14 +54,18 @@ implementation
 
 procedure Close3DEditors;
 begin
+{$IFDEF QUARK_DIRECT3D}
   CloseDirect3DEditor;
+{$ENDIF}
   CloseOpenGLEditor;
   Close3DFXEditor;
 end;
 
 procedure Free3DEditors;
 begin
+{$IFDEF QUARK_DIRECT3D}
   FreeDirect3DEditor;
+{$ENDIF}
   FreeOpenGLEditor;
   Free3DFXEditor;
   TTextureManager.FreeNonVisibleTextures;

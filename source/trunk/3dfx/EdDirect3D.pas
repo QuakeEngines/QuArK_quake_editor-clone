@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/01/22 00:11:02  aiv
+Beginning of support for sprites in 3d view
+
 Revision 1.1  2000/12/30 15:22:19  decker_dk
 - Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
 - Created Ed3DEditors.pas which contains close/free calls
@@ -33,6 +36,10 @@ Revision 1.1  2000/12/30 15:22:19  decker_dk
 
 unit EdDirect3D;
 
+{$IFNDEF QUARK_DIRECT3D}
+interface
+implementation
+{$ELSE}
 interface
 
 uses Windows,
@@ -420,4 +427,6 @@ begin
   g_Direct3DInitialized := False;
 end;
 
+{$ENDIF}
 end.
+
