@@ -1,0 +1,10 @@
+title: Quark 6.?
+author: tiglari, etc.
+format: html
+
+<UL>
+<LI>
+   Model editor: (Andy, tiglari)
+     export closed mesh to brushset
+</UL>
+

@@ -1,0 +1,24 @@
+title: Quark 6.3
+author: tiglari, etc.
+format: html
+
+<UL>
+<LI>  Read Brush Primitives: (tiglari)
+
+<LI>  Path Duplicator: (decker, tiglari)
+    tiling of substructures, curved & triangular elbows, possibly
+     rework handle code (all path handles to be visible when dup
+     selected)
+
+<LI>  OsFolders: (tiglari) edit the properties of pre-existing OsFolders
+
+<LI>  FAKK2 support: ?
+
+<LI>  Face-selection modes: (tiglari)
+<BR>   status: interface design being discussed on Quark board
+
+<LI>  Patch-based terrain builder: (tiglari, Seth?)
+
+<LI> L-square enhancements: (tiglari, ax2grind)
+</UL>
+

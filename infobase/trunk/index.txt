@@ -3,6 +3,7 @@ subdir: intro
 subdir: maped
 subdir: adv
 subdir: src
+subdir: plans
 subdir: glossary
 extrafiles_text: standard.css
 extrafiles_binary: quarkicon.gif
