@@ -37,7 +37,7 @@ for menitem, keytag in [(Rebuild3Ds, "Rebuild3D")]:
 def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
 
     oldfinish(editor, view)
-    if not MapOption("Rebuild3D"):return
+  #  if not MapOption("Rebuild3D"):return
 
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
@@ -45,4 +45,7 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2004/02/12 18:17:39  cdunde
+#To add 'Tab' HotKey function to rebuild all views and clear lockups
+#
 #
