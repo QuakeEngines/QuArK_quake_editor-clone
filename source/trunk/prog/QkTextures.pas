@@ -655,7 +655,9 @@ begin
          S:=Tex.Name;
         S:=Q2TexPath+S;
         Tex.EnregistrerDansFichier(rf_Default, OutputFile(S+Tex.TypeInfo));
-        if walTrick and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0) then
+        {/mac: the waltrick is also needed for kingpin
+         which uses qpixelset and not qtexturefile}
+        if walTrick {and (Tex is QTextureFile) and (QTextureFile(Tex).CustomParams and cpPalette <> 0)} then
          begin
           Tex1:=Tex;
           Tex:=QTexture2.Create(Tex.Name, Nil);
