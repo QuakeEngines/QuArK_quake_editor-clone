@@ -381,6 +381,9 @@ Strings = {
     3265: "Joy3",
     3266: "Joy4",
 
+    3500: "Warning...",
+    3501: "Information",
+
     4096: "Real number expected",
     4097: "Unexpected symbol.    Expected : %s    Found : %s",
     4098: "\253 ' \273 expected",
@@ -845,7 +848,7 @@ Strings = {
     5653: "Operation terminated.",
     5654: "To compile the QuakeC or HexenC code in this file, you must first switch to the appropriate game mode",
     5655: "'%s' is not a M8 texture file//%d should be %d",
-    # 5656: "The software 3D viewer is displaying strange colors because it does not support palettized textures. If you have a 3DFX card, select the 3DFX driver in the Configuration dialog box.",
+    5656: "The file you selected did not match the required pattern: %s",
     5657: "Cannot save the setup file",
     5658: "QuArK could not save your configuration :\n\n %s",
     5659: "QuArK cannot save any file because your system's temporary directory is invalid.",
@@ -910,6 +913,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.53  2003/03/17 01:51:13  cdunde
+#Update hints and add infobase links where needed
+#
 #Revision 1.52  2002/05/16 09:09:15  tiglari
 #Update version to 6.4 alpha (no diff from 6,3 yet)
 #

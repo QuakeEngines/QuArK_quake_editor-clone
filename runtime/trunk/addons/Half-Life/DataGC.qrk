@@ -2752,7 +2752,7 @@ QQRKSRC1
       t_Targetname = !
       message: =
       {
-        txt = "&"
+        t_soundbrowser = !
         hint = "WAV Name"
       }
       health: =
@@ -3013,7 +3013,7 @@ QQRKSRC1
       t_Targetname = !
       model: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "Model"
       }
       renderfx: =
@@ -3053,7 +3053,7 @@ QQRKSRC1
       t_Targetname = !
       model: =
       {
-        txt = "&"
+        t_spritebrowser = !
         hint = "Sprite"
       }
       framerate: =
@@ -3177,12 +3177,12 @@ QQRKSRC1
       t_RenderFields = !
       decoremodel: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "Model"
       }
       decoregib: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "Gib Model"
       }
       decoreidle: =
@@ -3265,7 +3265,7 @@ QQRKSRC1
       t_Target = !
       modelname: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "Model"
       }
       forwardspeed: =
@@ -3436,7 +3436,7 @@ QQRKSRC1
       }
       texture: =
       {
-        txt = "&"
+        t_spritebrowser = !
         hint = "Sprite Name"
       }
       TextureScroll: =
@@ -3744,7 +3744,7 @@ QQRKSRC1
       t_RenderFields = !
       model: =
       {
-        txt = "&"
+        t_spritebrowser = !
         hint = "Sprite Name"
       }
       scale: =
@@ -3785,7 +3785,7 @@ QQRKSRC1
       }
       texture: =
       {
-        txt = "&"
+        t_spritebrowser = !
         hint = "Sprite Name"
       }
       EndSprite: =
@@ -3856,7 +3856,7 @@ QQRKSRC1
       }
       messagesound: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "Sound Effect"
       }
       messagevolume: =
@@ -3942,7 +3942,11 @@ QQRKSRC1
       t_RenderFields = !
       shootmodel: =
       {
-        txt = "&"
+        Typ = "EP"
+        DefExt = "*"
+        BasePath = "$Game"
+        CutPath = "$Game\?\"
+        DirSep = "/"
         hint = "Model or Sprite name"
       }
       shootsounds: =
@@ -4022,7 +4026,7 @@ QQRKSRC1
       }
       model: =
       {
-        txt = "&"
+        t_spritebrowser = !
         hint = "Sprite Name"
       }
       scale: =
@@ -5399,7 +5403,7 @@ QQRKSRC1
       t_Monster = !
       model: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "model"
       }
       cyc_submodel1: =
@@ -5849,7 +5853,7 @@ QQRKSRC1
       }
       model: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "model"
       }
       body: =
@@ -5869,7 +5873,7 @@ QQRKSRC1
       t_Monster = !
       model: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "model"
       }
     }
@@ -5897,7 +5901,7 @@ QQRKSRC1
       }
       model: =
       {
-        txt = "&"
+        t_modelbrowser = !
         hint = "model"
       }
       body: =
@@ -6965,7 +6969,7 @@ QQRKSRC1
     {
       rsnoise: =
       {
-        txt = "&"
+        t_soundbrowser = !
         hint = "Path/filename.wav of WAV"
       }
       volume: =
@@ -7261,7 +7265,7 @@ QQRKSRC1
       }
       tsnoise: =
       {
-        txt = "&"
+        t_soundbrowser = !
         hint = "path/name.wav"
       }
       volume: =
