@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2004/12/14 00:32:07  alexander
+removed unnecessary resampling and gamma conversion for open gl true color textures
+
 Revision 1.23  2003/03/21 00:12:43  nerdiii
 tweaked OpenGL mode to render additive and texture modes as in Half-Life
 
@@ -1397,6 +1400,8 @@ begin
         end;
 
         PV:=PVertex3D(Surf);
+
+        // tbd: transparent rendering should not depend on light enabled !
         if DisplayLights then
         begin
           if AnyInfo.DisplayList=0 then
@@ -1437,22 +1442,31 @@ begin
                 PV3:=PV;
                 Inc(PV);
                 Case TextureMode of
-                  1,2,3:glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
-                  5:begin
+                  1,2,3:
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
+                  5:
+                  begin
                     glBlendFunc(GL_ONE, GL_ONE);
                   end;
                 End;
                 Case TextureMode of
-                  1:glDisable(GL_TEXTURE_2D);
-                  else glEnable(GL_TEXTURE_2D);
+                  1:
+                    glDisable(GL_TEXTURE_2D);
+                  else
+                    glEnable(GL_TEXTURE_2D);
                 End;
                 If Byte(Ptr(LongWord(@AlphaColor)+3)^)<>0 then Case TextureMode of
-                  0:RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
-                  4:RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
-                  else begin
-                    If TextureMode=5 then begin
+                  0:
+                    RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+                  4:
+                    RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+                  else
+                  begin
+                    If TextureMode=5 then
+                    begin
                       Currentf[0]:=Byte(Ptr(LongWord(@AlphaColor)+3)^)/255;
-                      for K := 1 to 2 do Currentf[K]:=Currentf[0];
+                      for K := 1 to 2 do
+                        Currentf[K]:=Currentf[0];
                     end;
                     RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright);
                   end;
