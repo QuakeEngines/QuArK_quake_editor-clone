@@ -1,0 +1,118 @@
+#
+# Document formatting
+#
+
+HEADER = """<html>
+<head>
+    <title>%(title)s</title>
+</head>
+
+<link rel=stylesheet href="standard.css" type="text/css">
+
+<body>
+<a name="__top__"></a>
+<table width=100%% border=0 cellspacing=0>
+<tr><td>
+<img src="quarkicon.gif" width=213 height=90 border=0>
+</td><td align=center>
+<div class="topheadline">%(classif)s %(title)s</div><div class="sm">Updated %(updateday)s</div>
+</td><td valign=bottom>
+%(headerlvl)s
+</td></tr>
+</table>
+<br>
+"""
+
+# nesting-level-dependent formatting
+   # main page
+MAINHEADERLVL = """-&nbsp;<a href="http://www.planetquake.com/quark">QuArK&nbsp;Web&nbsp;Site</a><br>"""
+   # other pages : begin with this :
+SUBHEADERLVL = """Upper&nbsp;levels:<br>"""
+   # then repeat this :
+HEADERLVL = """-&nbsp;<a href="%(htmlfile)s">%(classif)s %(htmltitle)s</a><br>"""
+
+FOOTER = """
+  </body>
+</html>
+"""
+
+EXTRAFILES_TEXT = ["standard.css"]
+EXTRAFILES_BINARY = ["quarkicon.gif"]
+EXTENSION = ".txt"
+
+#
+# Formatting: List of folders
+#
+SUBDIR_BEGIN = """
+<br><br>
+<table width=100%% border=0 cellspacing=0>
+  <tr bgcolor="#E0E0E0"><td width=100%%>
+    <p class="headline">Sections</p>
+  </td><td align=right><a href="#__top__">top</a></td></tr>
+</table>"""
+SUBDIR_ITEM = """
+<p><b>%(classif)s <a href="%(htmlfile)s">%(title)s</a></b></p>"""
+SUBDIR_END = """
+"""
+
+#
+# Formatting: List of files (first an index with titles only, then with detailled answers
+#
+FILES_BEGIN = """
+<br><br>
+<table width=100%% border=0 cellspacing=0>
+  <tr bgcolor="#E0E0E0"><td width=100%%>
+    <p class="headline">Index</p>
+  </td><td align=right><a href="#__top__">top</a></td></tr>
+</table>
+<ul>"""
+FILES_ITEM = """
+  <li><a href="#%(hrefaname)s">%(title)s</a>"""
+FILES_MIDDLE = """
+</ul><br>
+
+<hr>
+
+<dl>
+"""
+FILE_BEGIN = """
+<a name="%(hrefaname)s"></a>
+<dt><table width=100%% border=0 cellspacing=0>
+  <tr bgcolor="#E0E0E0"><td><p class="item">%(title)s</p></td>
+  <td align=right><i>%(author)s</i></td>
+  </td><td align=right><a href="#__top__">top</a></td></tr>
+</table>
+<dd>
+<p>"""
+FILE_END = """
+<br><br>
+"""
+FILES_END = """
+</dl>
+"""
+
+#
+# Sub-sub-folder list inside a folder list (one level of nesting)
+#
+SUBSUBDIR_BEGIN = """
+    <ul>"""
+SUBSUBDIR_ITEM = """
+      <li>%(classif)s <a href="%(htmlfile)s">%(title)s</a>"""
+SUBSUBDIR_END = """
+    </ul>"""
+
+#
+# Sub-files list inside a folder list (one level of nesting too)
+#
+SUBFILES_BEGIN = """
+    <ul>"""
+SUBFILES_ITEM = """
+      <li><a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a>"""
+SUBFILES_END = """
+    </ul>"""
+
+#
+# Cross-references
+#
+REFFILE = """<a href="%(htmlfile)s#%(hrefaname)s"><i>%(title)s</i></a>"""
+REFDIR  = """<a href="%(htmlfile)s"><i>%(title)s</i></a>"""
