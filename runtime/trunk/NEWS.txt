@@ -12,6 +12,13 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [alexander]:
+       runtime/addons/Defaults.qrk: set textures path for hl2 to "hl2/materials" 
+       runtime/addons/Half-Life2/textures-*.qrk: use gcf files instead of extracted files
+       source/prog/Game.pas:   load gcf only once and reuse data 
+       source/prog/QkGCF.pas:  gcf access working, versioning of dll interface (QuArKSteamFS.dll)
+       source/prog/QkObjects.pas: added a userdata pointer. This is needed to access context data from on_access callbacks
+       source/prog/QkVTF.pas: added versioning in dll interface (QuArKVTF.dll)
 
  * [Rowdy]: For Doom 3: Added bounding boxes to the entities, re-added
        common/* textures (like caulk, trigger), fixed the roof texture in the
