@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2002/12/15 14:05:14  tiglari
+improve efficiency of wc33 reading by eliminating unnecessary projections of
+ texture points to planes (this should be tested more to check that it's
+ really right)
+
 Revision 1.47  2002/05/15 22:04:51  tiglari
 fixes to map reading error recording (so that new maps can be created ..)
 
@@ -1138,31 +1143,22 @@ expected one.
 
   U/V Axis/Shift are straight from the 4-vectors, param[3]
   is rot which is ignored (implicit from the axes), while
-  param[4,5] are UV scales. (Zoner's HL tools source,
-  textures.cpp) *)
+  param[4,5] are UV scales.  Diferent from the bsp-format
+  is that the axes are normalized to length 1, and you
+  divide by the scale to get the .bsp-version of the axis.
+  (Zoner's HL tools source, textures.cpp) *)
 
  procedure WC33Params;
  var
-  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
+  PP0, PP1, PP2 : TVect;
  begin
-   (* find projections of threepoints on the texture plane*)
    PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
    PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
     { note p.i.t.a sign-flip }
    PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
-   (* Now project these onto the face-plane *)
    with Surface do
    begin
-     TexNorm:=Cross(UAxis,VAxis);
-     Normalise(TexNorm);
-     PlanePoint:=VecScale(Dist, Normale);
-     (* could perhaps be optimized by 'partial evaluation' *)
-     try
-     (*
-       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
-       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
-       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-     *)
+    try
        SetThreePointsEx(PP0,PP1,PP2,Normale);
      except
        g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
