@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:37:46  decker_dk
+Updated copyright-header
+
 Revision 1.3  2001/01/21 15:51:01  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -37,6 +40,7 @@ unit Qk3ds;
 
 interface
 
+{$IFDEF 3DS_MAX_DEBUG}
 uses
   SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Python, Game, QkModelFile, QMath,
   Graphics, Windows, QkModelRoot, QkMdlObject, QkFrame, QkComponent;
@@ -329,4 +333,9 @@ end;
 
 initialization
   RegisterQObject(Q3DSFile, 'u');
+{$ELSE}
+
+implementation
+
+{$ENDIF} {3DS_MAX_DEBUG}
 end.
