@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.51  2000/09/02 06:13:04  tiglari
+//detail specifics for cap duplicator (python not yet implemented)
+//
 //Revision 1.50  2000/09/01 11:12:55  tiglari
 //Put some bevel specifics onto a details button in the form.
 //
@@ -2634,6 +2637,8 @@ QQRKSRC1
                Hint = "if checked, the whole thing is upside-down"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      subdivide: = {Txt ="&" Typ="EF1"
+                Hint = "integer value, generate n patches along each side of curve"}
       stretchtex: = {Txt="&" Typ="X"
                Hint = "if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open: = {Txt="&" Typ="X"
