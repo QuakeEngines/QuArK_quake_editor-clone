@@ -1,4 +1,5 @@
 title: Map editing
+subdir: games
 
 Sorry, under construction.
 

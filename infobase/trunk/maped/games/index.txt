@@ -1,0 +1,13 @@
+title: FAQs for each supported game
+subdir: generic
+subdir: quake1
+subdir: hexen2
+subdir: quake2
+subdir: heretic2
+subdir: half-life
+subdir: sin
+subdir: kingpin
+subdir: quake3
+subdir: sof
+
+Here you will find information and frequently asked questions about the QuArK-supported games.
