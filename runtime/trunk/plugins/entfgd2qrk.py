@@ -565,8 +565,9 @@ def makeqrk(root, filename, gamename):
                 break
             expectedtypes = expectedtypes + [type]
         if newstate is None:
-            qutils.debug("Parse error: Got type", token_is, "but expected type(s);", expectedtypes)
-            qutils.debug( "Debug: Last classname was =", currentclassname )
+            print "Parse error: Got type", token_is, "but expected type(s);", expectedtypes
+            print "Debug: Last classname was =", currentclassname
+            print "Debug:", srcstring[:64]
             raise "Parse error!"
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
@@ -605,6 +606,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.2  2001/08/13 17:45:30  decker_dk
+#Problem with "<keyword>=!" placements in ":form" definitions. Hard to solve correctly, as its deep within QuArK's Delphi-code!
+#
 #Revision 1.1  2001/06/13 23:02:50  aiv
 #Moved 'Convert From' stuff to python code (plugin type)
 #
