@@ -144,9 +144,9 @@ void BuildFullPalette()
         for (gg=gcount=0; gcount<16; gg+=l11, gcount++)
           for (rr=rcount=0; rcount<16; rr+=l11, rcount++)
           {
-            fullpalette[base] = (z_macro(rr))
+            fullpalette[base] = (z_macro(rr) << 16)
                               | (z_macro(gg) << 8)
-                              | (z_macro(bb) << 16);
+                              | (z_macro(bb));
 #ifdef DEBUGCOLORS
             //if (l)
             //  printf("%06x  ", fullpalette[base]);
@@ -168,7 +168,8 @@ void FreeFullPalette()
 }
 
 #define c_macro(b,c)  (((b)*(FxU8)(c))>>12)
-#define PACKCOLOR(c)  ((((c) & 0x0000F0)<<17) | (((c) & 0x00F000)<<13) | (((c) & 0xE00000)<<8))
+//#define PACKCOLOR(c)  ((((c) & 0x0000F0)<<17) | (((c) & 0x00F000)<<13) | (((c) & 0xE00000)<<8))
+#define PACKCOLOR(c)  ((((c) & 0xF00000)<<1) | (((c) & 0x00F000)<<13) | (((c) & 0x0000E0)<<24))
 
 void FillCurrentPalette()
 {
@@ -193,9 +194,9 @@ void FillCurrentPalette()
       for (i=0; i<256; i++)
       {
         c = texturepalette[i];
-        currentpalette[i] = (c_macro(rbase, c) << 21)
+        currentpalette[i] = (c_macro(rbase, c>>16) << 21)
                           | (c_macro(gbase, c>>8) << 25)
-                          | (c_macro(bbase, c>>16) << 29);
+                          | (c_macro(bbase, c) << 29);
 #ifdef DEBUGCOLORS
         //printf("%08x  ", currentpalette[i]);
 #endif
