@@ -1859,7 +1859,7 @@ def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     if editor is None: return
     list = gettaggedlist(editor)
     if list is None:
-        list = getagged(editor)
+        list = gettagged(editor)
         if list is not None:
             list = [list]
     if list is None:
@@ -1877,6 +1877,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20.2.5  2003/03/24 23:03:00  tiglari
+#fix select tag faces menu enabler bug (noted by cdunde)
+#
 #Revision 1.20.2.4  2003/01/01 05:08:33  tiglari
 #remove debug comments
 #
