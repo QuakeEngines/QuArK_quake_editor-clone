@@ -69,7 +69,7 @@ QuArK will work but your new command won't appear on the menu.
 </UL>
 
 If all else fails, the file <tt>maptagside0.py</tt> in
-<zip>plugin_examples.zip</zip>
+<a href="zips">plugin_examples.zip</a>
 contains what is hopefully a working version of the code for this
 section.
 
