@@ -2,6 +2,11 @@
 # Document formatting -this is actually a script (!!)
 #
 
+#
+# Location for zip etc. archives for non-local version
+#
+ZIPLOC = "ftp://ftp.fileplanet.com/"
+
 HEADER = """
 <html>
 <head>

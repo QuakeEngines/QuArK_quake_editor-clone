@@ -4,7 +4,7 @@
 #  $Header$
 #
 
-import string, htmlentitydefs, time, os
+import string, htmlentitydefs, time, os, sys
 
 EXTENSION = ".txt"
 
@@ -105,6 +105,19 @@ def procrsc(kw, path):  #tiglari
     kw["forgotten"].remove(path)
     return '"%s"'%rscrl
 
+def proczip(kw, path):  #tiglari
+    if localMode:
+        data = open("zips/"+path,"rb").read()
+        if not os.path.exists("output/zips"):
+            os.mkdir("output/zips")
+        f = open("output/zips/"+path, "wb")
+        f.write(data)
+        f.close()
+        return '<a href="%s">%s</a>'%(path,path)
+    else:
+        return '<a href="%s%s">%s</a>'%(ZIPLOC,path,path)
+    
+
 def processtext(root, text, data, kw):
     currentpara = None
     TEXT = 1
@@ -156,6 +169,15 @@ def processtext(root, text, data, kw):
             # be moved into output and renamed like a pic or ref
             # function returns only the new name, double-quoted
             line = procrsc(kw, string.strip(string.strip(line)[5:]))
+        elif test[:5]=="<zip>": # tiglari
+            # for things that are shifted into the output directory
+            #  under their name unchanged if there's a command-line
+            #  argument -local, or not shifted and referred to
+            #  with ZIPLOC prefix otherwise (for things like zip
+            #  files that web hosts like to stick on special
+            #  servers)
+            #
+            line = proczip(kw, string.strip(string.strip(line)[5:]))
         # Tags to turn on/off html-conversion
         elif test[:9]=="<html on>": # Decker
             currentpara = HTML
@@ -399,12 +421,20 @@ def run(filewriter):
     root.forgotten = []
     root.viewforgotten()
 
-
+localMode=0
+for flag in sys.argv:
+    if flag=='-local':
+        localMode=1
+if not os.path.exists('output'):
+    os.mkdir('output')
 
 run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.10  2000/11/02 06:36:24  tiglari
+# support for explicit names in REF's
+#
 # Revision 1.9  2000/11/01 21:15:23  decker_dk
 # Misc. updates.
 #
