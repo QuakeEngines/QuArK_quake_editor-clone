@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.70  2002/05/16 09:07:40  tiglari
+Update version to 6.4 alpha (no diff from 6,3 yet)
+
 Revision 1.69  2002/05/13 11:31:17  tiglari
 update version
 
@@ -2821,7 +2824,7 @@ begin
 
   Acces;
   { in case of alph. order fault }
-  if (SubElements.Count>0) and (CompareText(LocName, SubElements[Index].Name)<0) then
+  if (Index >=SubElements.Count) or (SubElements.Count>0) and (CompareText(LocName, SubElements[Index].Name)<0) then
     Index:=0;
 
   for I:=Index to SubElements.Count-1 do
