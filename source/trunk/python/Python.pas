@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/04/19 19:27:45  aiv
+better error messages
+
 Revision 1.5  2001/03/20 21:34:29  decker_dk
 Updated copyright-header
 
@@ -392,6 +395,8 @@ begin
  if dll<>'' then
    Lib:=LoadLibrary(pchar(dll));
  if Lib=0 then}
+   Lib:=LoadLibrary('PYTHON151.DLL');
+ if Lib=0 then
    Lib:=LoadLibrary('PYTHON15.DLL');
  if Lib=0 then
   Exit;
