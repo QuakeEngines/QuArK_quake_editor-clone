@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.8  2003/09/25 11:59:01  cdunde
+// Adds framenumbers specific to the model_train entity.
+//
 // Revision 1.7  2003/09/24 08:20:57  cdunde
 // To add custom model viewing in editor feature
 //
@@ -22660,8 +22663,18 @@ $0D"For that use 3Dmodel above."
       noise: =
       {
         txt = "&"
-        hint = "Sound (path/file.wav). To get a complete list of all the sound"
-         "s go to http://www.gamedesign.net and check the tutorials."
+        Typ = "EP"
+        BasePath = "$Game\tmpQuArK\sound"
+        CutPath = "$Game\?\?\"
+        DefExt = "wav"
+        DirSep = "/"
+        hint = "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           $0D"The path is set so it will work if put into a .pak file."
       }
       attenuation: =
       {
