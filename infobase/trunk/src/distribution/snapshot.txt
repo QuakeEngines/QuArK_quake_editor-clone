@@ -2,10 +2,12 @@ title: Releasing a Snapshot
 author: Peter Brett
 
 Here's the process you might follow to prepare and release a snapshot.
-I'm going to assume you've followed the SourceForge guidelines for
-setting up SSH access to the shell server and you're using PuTTY on
-Microsoft Windows.  I'm also going to assume that the date is 31st
-August 2007.
+Before you'll be able to follow the process outlined below, you'll
+need to read <a href="http://sourceforge.net/docman/display_doc.php?docid=6841&group_id=1">Introduction
+to SSH on SourceForge.net</a>, and set up your system with PuTTY
+accordingly.
+
+I'm going to assume that the date is 31st August 2007.
 
 <ol>
 <li>Build a QuArK binary with <tt>PYTHON_BUNDLED</tt> and compress it
