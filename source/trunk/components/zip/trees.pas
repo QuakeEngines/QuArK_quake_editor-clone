@@ -42,7 +42,7 @@ interface
 {$I zconf.inc}
 
 uses
-  zutil, zlib;
+  zutil, zlib, sysutils;
 
 { ===========================================================================
   Internal compression state. }
