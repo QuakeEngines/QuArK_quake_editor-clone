@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.49  2000/09/01 00:49:02  alexander
+//merged in tiglaris default sof sky fix from rel6_1 branch
+//
 //
 //Revision 1.46.2.1  2000/08/26 09:44:48  tiglari
 //fixed default texture for SoF
@@ -2620,6 +2623,23 @@ QQRKSRC1
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
+    beveldetails:form =
+    {
+      faceonly: = {Txt="&" Typ="X"
+               Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
+      notop = {Txt="&" Typ="X"
+               Hint = "if checked, top face is not produced"}
+      nobottom: = {Txt="&" Typ="X"
+               Hint = "if checked, bottom face is not produced"}
+      noinner = {Txt="&" Typ="X"
+               Hint = "if checked, inner face is not produced (thick bevels only)"}
+      noouter: = {Txt="&" Typ="X"
+               Hint = "if checked, outer face is not produced (thick bevels only)"}
+      leftend: = {Txt="&" Typ="X"
+               Hint = "if checked, left end is produced"}
+      rightend: = {Txt="&" Typ="X"
+               Hint = "if checked, right end is produced"}
+    }
     dup bevel:form =
     {
       inverse: = {Txt="&" Typ="X"
@@ -2628,12 +2648,19 @@ QQRKSRC1
                Hint = "if checked, curve goes from back to left side rather than back to right side"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      subdivide: = {Txt ="&" Typ="EF1"
+                Hint = "integer value, generate n patches along curve"}
       stretchtex: = {Txt="&" Typ="X"
                Hint = "if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open: = {Txt="&" Typ="X"
                Hint = "if checked, top and bottom are open"}
-      faceonly: = {Txt="&" Typ="X"
-               Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
+      more: = {
+       Typ="B"
+       Txt="details"
+       Cap="Push"
+       Form="beveldetails:form"
+       Hint="specifics for more detailed control over generation of patches"
+      }
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
