@@ -1,16 +1,25 @@
- * [SilverPaladin]: Eliminated Delphi 1-3 support by converting all forms to text forms for 
-      better CVS management and by adding 32 bit properties to the projects.
+6.4.0 alpha 1
+=============
 
- * [SilverPaladin]: Fixed the error that caused all 3d Windows to fail when one is closed.
+ * [SilverPaladin]: Eliminated Delphi 1-3 support by converting all
+      forms to text forms for better CVS management and by adding 32
+      bit properties to the projects.
 
- * [SilverPaladin]: Added support for Return to Castle Wolfenstein: The WildWest (1.4).	
+ * [SilverPaladin]: Fixed the error that caused all 3d Windows to fail
+      when one is closed.
 
- * [nerdiii]: Edited default.qrk so texture origin and size are displayed with two decimals
+ * [SilverPaladin]: Added support for Return to Castle Wolfenstein:
+      The WildWest (1.4).	
 
- * [dannsdinosaurs]:  Heretic II Add-on Data, Added DEATHMATCH spawnflag to all weapons & ammo. Added
-      NOT DEATHMATCH to doors, levers, buttons, puzzle pieces.
+ * [nerdiii]: Edited default.qrk so texture origin and size are
+      displayed with two decimals
 
- * [SilverPaladin]: Changed model handling so that QIII/RtCW/WW models can be loaded.
+ * [dannsdinosaurs]:  Heretic II Add-on Data, Added DEATHMATCH
+      spawnflag to all weapons & ammo. Added NOT DEATHMATCH to doors,
+      levers, buttons, puzzle pieces.
+
+ * [SilverPaladin]: Changed model handling so that QIII/RtCW/WW models
+      can be loaded.
 
  * [peter-b]: Revision of the way Python version & DLL path are logged
 
@@ -19,13 +28,15 @@
  * [peter-b]: New executable installer and release policy
 
  * [SilverPaladin]: General Clean Up
-      Eliminated all Delphi 5 Hints and Warnings
-      Eliminated all Delphi 6 Hints and all but 2 Delphi 6 Warnings
-      Fixed Index out of bounds error producing false positives during leak search...
-      Improved platform independance for future porting to linux
-      Modified Normalise so that zero length vectors are returned unmodified 
-      Cleaned up Direct3d hints and warninds
-      Eliminated an access violation in the 3d views
+      - Eliminated all Delphi 5 Hints and Warnings
+      - Eliminated all Delphi 6 Hints and all but 2 Delphi 6 Warnings
+      - Fixed Index out of bounds error producing false positives
+        during leak search...
+      - Improved platform independance for future porting to linux
+      - Modified Normalise so that zero length vectors are returned
+        unmodified 
+      - Cleaned up Direct3d hints and warninds
+      - Eliminated an access violation in the 3d views
 
  * [peter-b, marco leise]: Fix for lambda bug
 
