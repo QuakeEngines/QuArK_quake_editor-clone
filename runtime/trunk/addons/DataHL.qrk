@@ -26,7 +26,10 @@ QQRKSRC1
 //
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
-// History
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//
 // 2000-09-06   [CS] Added func_vehicle, func_vehiclecontrols and texture-links (Thanks to Fredrik "Stedden" Stedenfeldt)
 //
 // 2000-08-25   [TFC] Misc. changes
