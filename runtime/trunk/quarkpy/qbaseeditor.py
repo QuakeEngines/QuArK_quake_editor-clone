@@ -362,6 +362,7 @@ class BaseEditor:
 
         v.ondraw = draw1
         v.onmouse = self.mousemap
+        v.onkey = self.keymap
         v.ondrop = self.dropmap
         v.flags = v.flags | flags
         self.lastscale = 0    # force a handle rebuild
@@ -501,6 +502,9 @@ class BaseEditor:
         self.fileobject['Root'] = new.name
 
 
+    def keymap(self, view, key, boolean):
+        pass
+        
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
 
@@ -835,6 +839,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.9  2001/03/16 00:29:59  aiv
+#made customizable maplimits for games
+#
 #Revision 1.8  2001/02/19 21:46:55  tiglari
 #removed some debugs
 #
