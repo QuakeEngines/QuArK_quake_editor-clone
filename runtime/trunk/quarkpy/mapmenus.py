@@ -18,6 +18,7 @@ import qmenu
 import qhandles
 from maputils import *
 import mapcommands
+import bspcommands
 import mapselection
 import mapbtns
 from mapentities import CallManager
@@ -133,7 +134,10 @@ def BuildMenuBar(editor):
     Search1, sc2 = mapsearch.SearchMenu()
     sc1.update(sc2)   # merge shortcuts
 
-    Commands1, sc2 = mapcommands.CommandsMenu()
+    if "Bsp" in editor.fileobject.classes:
+        Commands1, sc2 = bspcommands.CommandsMenu()
+    else:
+        Commands1, sc2 = mapcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
 
     Selection1, sc2 = mapselection.SelectionMenu()
@@ -412,6 +416,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.7  2001/04/28 02:21:04  tiglari
+#move 'remove' to mapselection.py, add selection menu therefrom
+#
 #Revision 1.6  2001/03/20 07:59:40  tiglari
 #customizable hot key support
 #
