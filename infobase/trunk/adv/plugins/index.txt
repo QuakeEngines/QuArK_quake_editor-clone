@@ -8,4 +8,7 @@ programmed mostly in Python.
 
 Probably the best way to get a feel for plugins is to
 first work thru a tutorial, then look at some existing
-examples.
+examples.  There's an archive
+<ZIP>plugin_examples.zip
+of working examples from the tutorial.
+

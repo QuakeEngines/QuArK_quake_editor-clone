@@ -31,3 +31,6 @@ It can't be made perfect, because Python doesn't have any
 `unload' command that could reverse the effects of loading
 a module.
 
+A tested version of what you ought to have now is
+<html><tt>maptagside1.py</tt> in
+<zip>plugin_examples.zip

@@ -72,6 +72,9 @@ def tagSideClick (m):
         #
         editor.tagging.tagged = tagged[0]
 </code>
+Make sure that this definition replaces your old one, if you put
+it in ahead of the old one, the old one will be loaded up
+second and overwrite the new one.
 You also want to change the command setting up the menu item so that
 it will be labelled `&Tag side'.
 
@@ -82,5 +85,5 @@ to get an error-notifying message-box.  So make a point of testing all
 the various erroneous conditions!  In general, it is very important
 to test that an operation will make sense before performing it (in jargon,
 that `it's preconditions are met'), but in fact this is a rather primitive
-approach, before we're done we'll use menu item enabling and
+approach, and we will soom move on to menu item enabling and
 disabling instead.

@@ -13,7 +13,3 @@ The actual maptagside plugin is a sprawling mess, since it
 was my first, & embodies many errors in design.  Perhaps
 I will clean it up some day, but otoh, if it ain't broke,
 don't fix it.
-
-<P><B>WARNING:</B> this tutorial is currently under revision/
-construction; it is a remake of the tutorial QPtutes.ZIP in
-<tt>www.egroups.com/files/quark-python</tt>.</B>

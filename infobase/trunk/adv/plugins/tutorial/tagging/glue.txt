@@ -103,11 +103,15 @@ def glueToTagged(side, tagged):
     #  Now shift our new side into position:
     #
     new.translate(tagged.origin-new.origin)
+    return new
 </code>
 This code works, but it has various problems.  To see
 the first, start a map, and click on the `Glue to Tagged' menu item.
-You'll get a console-screen-full of verbiage ending in a complaint about
-an `attribute error'.  That's because the GlueSideClick code refers to
+Either nothing will happen at all, or else
+you'll get a console-screen-full of verbiage ending in a complaint about
+an `attribute error' (you're supposed to get the console error,
+but currently something involved in delivering that error doesn't
+always work).  This is because the GlueSideClick code refers to
 the `tagging.tagged'-value of the mapeditor, but in this case it didn't
 have one, because no `Tag' command had been issued.
 
@@ -133,6 +137,8 @@ So we can prevent the grotty-looking console outburst by replacing line
 4 of GlueSideClick with:
 <code>
 tagged = gettagged(editor)
+if tagged is None:
+    quarkx.msgbox("Something must be tagged",MT_WARNING,MB_OK)
 </code>
 The real maptagside plugin actually does this, the gettagged function
 and much else besides is defined in plugins/tagging.py (which should
@@ -148,7 +154,8 @@ too many entanglements.
 Returning to the mere functioning of our plugin, another problem is
 that when we do tag a side, we see no indication of what we
 have done, in unfavorable contrast to actual Quark, where the tagged side
-acquires a little red square.  And also the interface invites us to
+gets outlined in red, with a red square in the center.
+And also the interface invites us to
 perform actions that then produce error messages, such as trying to
 glue when there's nothing to glue to, rather than indicating at
 any moment what the sensible things to do are, and also there
