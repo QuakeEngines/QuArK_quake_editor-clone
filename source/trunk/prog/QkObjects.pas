@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2001/01/21 06:18:36  tiglari
+support for doing stuff to QObjects before expanding them in treeviews
+
 Revision 1.34  2001/01/07 13:21:25  decker_dk
 Remember to put argument-list on procedure/function-definitions, and not only on declarations.
 Set Versionname.
@@ -305,7 +308,6 @@ type
                { for reading/writing raw data to/from a Data specific,
                  used in overrides for Load/SaveFile }
              procedure FileCrashRecoverHack;
-             procedure ExpandPrep; virtual;
            public
               { propriétés commune aux QObjects }
              PythonObj: TPythonObj;
@@ -317,7 +319,7 @@ type
              Name: String;
              constructor Create(const nName: String; nParent: QObject);
              { prep for expansion in a treeview }
-             procedure PrepareForExpand;
+             procedure PrepareForExpand; virtual;
              procedure LoadAll;
              procedure AccesRec;
              procedure Open(F: TQStream; Taille: Integer);
@@ -1935,11 +1937,6 @@ begin
 end;
 
 procedure QObject.PrepareForExpand;
-begin
-  ExpandPrep;
-end;
-
-procedure QObject.ExpandPrep;
 begin
 end;
 

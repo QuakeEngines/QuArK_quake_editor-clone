@@ -30,11 +30,9 @@ uses
 
 type
   QOsFolder = class(QToolBoxGroup)
-    protected
-      procedure ExpandPrep; override;
     public
+      procedure PrepareForExpand; override;
       class function TypeInfo: String; override;
-      class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
  end;
 
 
@@ -45,18 +43,12 @@ begin
  TypeInfo:='.osfolder';
 end;
 
-class procedure QOsFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+procedure QOsFolder.PrepareForExpand;
 begin
- inherited;
- Info.NomClasseEnClair:='Dynamic Toolbox Folder';
- Include(Info.WndInfo, wiNeverOpen);
- Info.WndInfo:=[wiSameExplorer];
+  ShowMessage('If OsFolders were finished, something useful would have happenned');
 end;
 
-
-procedure QOsFolder.ExpandPrep;
-begin
-  ShowMessage('If this was done, something useful would happen');
-end;
+initialization
+  RegisterQObject(QOsFolder, 'a');
 
 end.
