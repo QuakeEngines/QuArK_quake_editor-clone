@@ -906,6 +906,7 @@ Strings = {
     5706: "gcfwrap.dll not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "%s not found in %s",
+    5709: "ValveTextureFile  (*.vtf)|*.vtf",
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
 
@@ -948,6 +949,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.58  2004/11/23 10:52:45  rowdy
+#added a few messages for Doom 3 (more to come), replaced non-ASCIi character in item 5387
+#
 #Revision 1.57  2004/11/18 18:15:49  alexander
 #new messages for gcf files
 #
