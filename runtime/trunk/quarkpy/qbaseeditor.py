@@ -525,6 +525,7 @@ class BaseEditor:
         #
 
         elif flags & MB_MOUSEMOVE:
+            debug('left')
             if handle is None:
                 min, max = view.depth
                 list = map(quarkx.ftos, self.aligntogrid(view.space(quarkx.vect(x, y, min))).tuple + self.aligntogrid(view.space(quarkx.vect(x, y, max))).tuple)
@@ -627,7 +628,7 @@ class BaseEditor:
             # Or did the user start to drag the mouse ?
             #
 
-            elif flags & MB_DRAGSTART:
+            elif (flags & MB_DRAGSTART) and (flags & MB_LEFTBUTTON):
                 #
                 # First report the current grid size to the module qhandles
                 #
@@ -839,6 +840,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.10  2001/04/24 07:31:36  tiglari
+#infrastructure for keypress processing
+#
 #Revision 1.9  2001/03/16 00:29:59  aiv
 #made customizable maplimits for games
 #
