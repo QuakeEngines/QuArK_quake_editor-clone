@@ -278,8 +278,10 @@ def archline(pd, a, b, c, d):
     "returns 5-tuple with middle halfway between b and c"
     return [pd[a], pd[b], (pd[b]+pd[c])/2, pd[c], pd[d]]
 
-def cpFrom2Rows(row0, row2, bulge=(.5, 1)):
+def cpFrom2Rows(row0, row2, bulge=None):
     "makes cp from top & bottom rows & fills in middle"
+    if bulge is None:
+      bulge=(0.5, 1.0)
     cp = [row0, None, row2]
     cp[1] = map(lambda x, y, h=bulge[0]:h*x+(1-h)*y, cp[0], cp[2]) 
     if bulge[1]!=1:
@@ -293,7 +295,7 @@ def archcurve(pd):
     return cp
 
 
-def b2From2Rows(row0, row2, texface, name, bulge=1):
+def b2From2Rows(row0, row2, texface, name, bulge=None):
      cp = cpFrom2Rows(row0, row2, bulge)
      b2 = quarkx.newobj(name+":b2")
      b2["tex"] = texface["tex"]
@@ -803,6 +805,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2000/06/25 11:02:23  tiglari
+#cones & bulges for columns, some function renaming
+#
 #Revision 1.17  2000/06/25 06:09:34  tiglari
 #top & bottom plates for columns, some texturing bugfixes
 #
