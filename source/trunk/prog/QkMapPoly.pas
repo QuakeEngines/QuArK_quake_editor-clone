@@ -26,6 +26,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/10/26 17:16:29  tiglari
+brush primitives format support, needs a bit more checking (I accidentally
+committed a definitely bad version, this one could be OK...
+
 Revision 1.16  2000/10/26 17:02:33  tiglari
 added soEnableBrushPrim build flag
 
@@ -2010,7 +2014,7 @@ var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers: Boolean;
+ WriteIntegers, BrushPrim : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
     var
@@ -2215,7 +2219,7 @@ var
         else
          S:=S+FloatToStrF(Z, ffFixed, 20, 5)+' ) ';
        end;
-     if (MJ=mjQ3A) and (soEnableBrushPrim<>0) then
+     if (MJ=mjQ3A) and BrushPrim then
       with F do
        begin
         GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
@@ -2235,7 +2239,7 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if not ((MJ=mjQ3A) and (soEnableBrushPrim<>0)) then
+       if not ((MJ=mjQ3A) and BrushPrim) then
        begin
        ApproximateParams(Normale, P, Params, TextureMirror);
        for I:=1 to 2 do
@@ -2347,10 +2351,11 @@ var
 begin
  if Info.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
+ BrushPrim:=Flags and soEnableBrushPrim<>0;
  MJ:=CharModeJeu;
  { Brush.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry); }
  Brush.Add(' {');
- if (MJ=mjQ3A) and (soEnableBrushPrim<>0) then
+ if (MJ=mjQ3A) and BrushPrim then
  begin
   Brush.Add('brushDef');
   Brush.Add(' {');
@@ -2365,7 +2370,7 @@ begin
     if Q is TFace then
      WriteFace(TFace(Q));
    end;
- if (MJ=mjQ3A) and (soEnableBrushPrim<>0) then
+ if (MJ=mjQ3A) and BrushPrim then
    Brush.Add(' }');
  Brush.Add(' }');
 end;
