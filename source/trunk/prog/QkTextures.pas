@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2000/07/21 20:01:33  decker_dk
+Correctly Save HalfLife WAD3s
+
 Revision 1.20  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -1012,7 +1015,7 @@ end;
 
 function QTextureLnk.LoadPixelSet;
 var
- S, Arg, TexName, Ext: String;
+ S, Arg, TexName, Ext, DefaultImageName: String;
  Bsp: QBsp;
  TexList: QWad;
  I: Integer;
@@ -1023,6 +1026,7 @@ begin
   begin  { load the linked texture }
    TexName:=Specifics.Values['n'];
    if TexName='' then TexName:=Name;
+   DefaultImageName:=Specifics.Values['q'];
 
    for I:=Low(StdGameTextureLinks) to High(StdGameTextureLinks) do
     begin
@@ -1058,6 +1062,8 @@ begin
          ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
          ShaderFile.Acces;  { load the .shader file (if not already loaded) }
          Link:=ShaderFile.SubElements.FindShortName(Q2TexPath+TexName) as QPixelSet;
+         if DefaultImageName<>'' then
+          Link.Specifics.Values['q']:=DefaultImageName;
          if Link=Nil then Raise EErrorFmt(5698, [TexName, Arg]);
         end
        else  { direct (non-shader) }
