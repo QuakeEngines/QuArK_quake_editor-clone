@@ -1,6 +1,6 @@
-title: Planned QuArK Features
+title: History and Plans
 desc: q62 q63 q6n
 
-Here is a list of features currently being considered for future
-of QuArK.  Needless to say highly subject to change!
+Features added to this and previous versions of QuArK,
+and proposed for the future.
 

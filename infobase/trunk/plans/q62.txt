@@ -1,75 +1,91 @@
-title: QuArK 6.2
-author: tiglari, etc.
+title: QuArK 6.2 (current)
+author: tiglari
 
-Red means stuff that should defintely be done for release.
+Stuff actually implemented in QuArK 6.2.  Perhaps
+somebody could produce accurate lists for 6.0
+and 6.1?
 
 <ul>
 
 <li>Q3(T)A Model display: (Andy/Maleficus)
-<br>status: basically done, complex models not working yet.
+<br> Complex models now showing
 
 <li>OsFolders: (tiglari)
-    load up resources from disk by specified paths etc.
-<br>status: basically done.
-            editing of folder properties not yet implemented, maybe delay til 6.3
+<br> Load up resources from disk by specified paths etc.
+Editing of folder properties not yet implemented, maybe delay til 6.3
 
 <li>Bezier Page: (tiglari)
-<br>status: basically done, linear mapping handles non-functional
+<br>No 'cp picking' or linear mapping handles.
+
+<li>Bezier CP Picking: (tiglari)
+<br>Select certain cp's & operate on them only.
 
 <li>Read/Write Brush Primitives: (tiglari)
-<br>status: done. There's a potential for imprecisions to accumulate if
-stuff is imported & exported multiple times.  Can fix if problem turns out
-to exist.
+<br>There's a potential for imprecisions to accumulate if
+stuff is imported & exported multiple times/
 
 <li>DefaultTextureScale: (tiglari)
-<br>status: done for the buttons, don't yet understand how
+<br>Only for the buttons, don't yet understand how
 to do it for direct insert from toolbox menu.
 
+<li>Path duplicator: (Decker, tiglari)
+<br>With tiling substructures, 'elbow spaces'.
 
-<li>Path duplicator: (decker, tiglari)
-<br>status: orientation bug fixed by math remake, basic texture
-positioning done, repeating substructures (tiles) done but still
-terminology issues ("Tile", or "Repeater", or ???).  Needs serious
-docco, methinks.
+<li>Brush-based shape builders: (tiglari)
+<br>No 'thick' yet.
 
-<li>Brush curve duplicator: (tiglari)
-<br>status: texture positioning done, more orientation specifics
-added.  `thick' to be delayed to 6.3.
+<li>Patch-based shape builders: (tiglari)
+<br>New orientations.
 
-<li>Stairway duplicator: (decker)
-<br>status: done, further developments envisioned.
+<li>Stairway duplicator: (Decker)
+<br>Stairs in abox
 
 <li>Microbrush H/K: (tiglari)
-    find and destroy them
-<br>status: done
+<br> Find and destroy.
 
-<li>STVEF support: (Alex)
-<br>status: done
-
-<li>Q3TA support: (Maleficus, Andy)
-<br>status: done
+<li>New Games/Addons Supported:
+<br>STVEF (Alex)
+<br>Q3TA (Maleficus, Andy)
+<br>Crystal Space (Desmond Fletcher, et. al.)
 
 <li>Drag & Drop imprecision bug: (tiglari)
-<br>status: fixed.
+<br>squashed.
 
 <li>Model editor: (Andy)
-<br>status: pre-alpha Q1/2
+<br>pre-alpha Q1/2
 
-<li>`texture pinning': (tiglari)
-<br>status: done
-
-<li>bezier CP `picking': (tiglar).
-    Pick a subset of the Cps of a bezier and drag, linear map. etc only them
-<br>status: done
+<li>'texture pinning': (tiglari)
+<br>Position a texture by giving its coords at three points
 
 <li>sprites etc. display: (Andy).
-    Display assorted minor resources. Full Adquedit functionlity by 6.3?
-<br>status: ?
+<br> Display assorted minor resources. Full Adquedit not
+yet there.
 
-<li>Look At on face menu: (tiglari) moves & points the camera in an open
+<li>Look At on face menu: (tiglari)
+<br>moves & points the camera in an open
 3d view to look head on at the face (ctrl to view from backside)
-<br>status: done
 
-<li>`radial' duplicator: (tiglari) makes copies of things
-radially around a tiltable axis, with `spiral' attributes.
+<li>`radial' duplicator: (tiglari)
+<br>Makes copies of things
+radially around a tiltable axis, with 'spiral' attributes.
+
+<li> Entity Extractor: (Andy)
+<br> Entities extracted from .bsp's in many formats
+    (including Q3(T)A).
+    
+<li> tag side plugin: (tiglari)
+<br> Wrap texture across tagged might be less fussy
+    
+<li> Navigate Tree: (tiglari)
+<br>    Zoom now causes 3d view camera to swivel to object
+
+<li> Addon organization: (Decker)
+<br>   Addons now can go in a different folder for each game.
+   
+<li> Circlestrafe Selection Mouse-key combo: (tiglari)
+<br> Shift+RMB during drag to swivel around selected
+object.
+
+
 </ul>
+

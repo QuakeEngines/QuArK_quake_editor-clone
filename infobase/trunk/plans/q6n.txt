@@ -1,10 +1,35 @@
 title: QuArK 6.?
 author: tiglari, etc.
 
+These features are envisioned for the future, with
+no specific target release (might be put off, might
+be brought forward).
+
 <ul>
 
 <li>Model editor: (Andy, tiglari)
-    export closed mesh to brushset
+<br>  export closed mesh to brushset
+
+<li>persistent edits: (?)
+<br> undo/redo info written to files/saved with maps,
+supporting playable entity demos (Ax2grind idea),
+and 'orthogonal persistence' (http://www.tunes.org)
+of editing sessions
+
+<li>XML support: (?)
+<br>Maximum possible compatibility with GtkRadiant
+
+<li>Brush primitives: (?)
+<br>Some internal use (suggestion: use
+axis base coord system with threepoints[0] as
+origin; should speed up writing to bp format)
+
+<li>Big XY view: (?)
+<br> whole-screen XY view, with other stuff on RMB's
+
+<li>Surf Inspectors: (?)
+<br>Laid out more like in Radiant, which I like
+better than Quark's long list.
 
 </ul>
 
