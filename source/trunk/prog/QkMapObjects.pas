@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/02/23 02:21:39  aiv
+more on md3 linking
+
 Revision 1.23  2001/02/18 20:06:45  aiv
 attaching models to tags almost finished
 
@@ -1834,7 +1837,7 @@ begin
        Component:=QComponent(L[I]);
        Frame1:=Component.CurrentFrame;
        if Frame1=nil then
-         Frame1:=Component.GetFrameFromIndex(0);
+         continue;
 {       S:=Q.Specifics.Values['mdlframe'];
        if S<>'' then
          Frame1:=Component.GetFrameFromName(S)
