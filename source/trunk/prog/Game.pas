@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2003/08/12 15:39:45  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
 Revision 1.28  2003/07/21 04:52:21  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -118,7 +121,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, qmath, QkForm, StdCtrls, TB97, ComCtrls;
+  QkObjects, QkFileObjects, qmath, QkForm, StdCtrls, TB97, ComCtrls, StrUtils;
 
 type
   TGameCfgDlg = class(TQkForm)
@@ -708,6 +711,20 @@ begin
         Exit; { found it }
       end;
       FilenameAlias := FileAlias(FileName);
+    end;
+
+    {gcf container access}
+    if FileExists(AbsolutePath) and AnsiEndsStr('.gcf', AbsolutePath) then
+    begin
+      RestartAliasing;
+      PakFile:=ExactFileLink(AbsolutePath, Nil, True);
+      Result:=PakFile.FindFile( FileName );
+    (*
+      GCFFile=GCFOpen(AbsolutePath);
+      Result:=GCFFile.FindFile( FileName );
+      if (Result<>Nil) then
+        Exit; { found it }
+    *)
     end;
 
 
