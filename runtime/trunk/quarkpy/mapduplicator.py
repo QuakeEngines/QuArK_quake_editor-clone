@@ -108,6 +108,7 @@ class StandardDuplicator(DuplicatorManager):
             print "Note: Invalid Duplicator Specific/Args."
             return
         list = self.sourcelist()
+        list = map(lambda item:item.copy(), list)
         newobjs = []
         try:
             count = int(self.dup["count"])
@@ -121,7 +122,9 @@ class StandardDuplicator(DuplicatorManager):
         if self.matrix2:
             for item in list:
                 center = maphandles.GetUserCenter(item)
-                item = item.linear(center, self.matrix2)
+#                if item["usercenter"]:
+#                    center=center+offset
+                item.linear(center, self.matrix2)
         for i in range(count):
             cumoffset = offset+cumoffset
             self.imagenumber = i
@@ -134,8 +137,11 @@ class StandardDuplicator(DuplicatorManager):
             list = reduce(lambda x,y: x+y, map(lambda item, fn=self.do: fn(item.copy()), list), [])
             if self.matrix2:
                 for item in list:
-                    center = maphandles.GetUserCenter(item)+cumoffset
-                    item = item.linear(center, self.matrix2)
+                    center = maphandles.GetUserCenter(item)
+                    if item["usercenter"]:
+                        center=center+cumoffset
+                    debug(' center '+`center`)
+                    item.linear(center, self.matrix2)
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -256,6 +262,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2001/04/05 22:31:55  tiglari
+#cumulative matrix around UserCenter
+#
 #Revision 1.4  2001/03/21 21:19:09  tiglari
 #custom origin (center for groups) duplicator support
 #
