@@ -1,4 +1,4 @@
-Quake Army Knife (QuArK) authors and contact addresses
+Quake Army Knife (QuArK) developers and contact addresses
 ======================================================
 
 The original author of QuArK
@@ -13,8 +13,8 @@ The original author of QuArK
                         Switzerland
 
 
-The contributing authors of QuArK
----------------------------------
+The contributing developers of QuArK
+------------------------------------
 
 - Avery "tiglari" Andrews
         e-mail:         tiglari@planetquake.com
@@ -28,3 +28,29 @@ The contributing authors of QuArK
 - Bent "Decker" Svendsen
         e-mail:         decker@planetquake.com
 
+- Marco Leise
+        e-mail:         Marco.Leise@gmx.de
+
+- "cdunde"
+        e-mail:         cdunde1@attbi.com
+
+- "DG"
+        e-mail:         david@fielden.com.au
+
+- "Rowdy"
+        e-mail:         rowdy@netspace.net.au
+
+- Peter Brett
+        e-mail:         peter@peter-b.co.uk
+
+- "milifaar"
+        e-mail:         martin@abhoth.demon.nl
+
+- "ax2grind"
+        e-mail:         ax2grind@altavista.com
+
+- "nurail"
+        e-mail:         nurail@yahoo.com
+
+- Brian "silverpaladin" Layman
+        e-mail:         SockHeaven@MSN.com
