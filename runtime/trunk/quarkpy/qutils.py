@@ -194,42 +194,42 @@ def loadmapeditor():
     import maputils
     import mapeditor
     import mapmenus
-
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MAP")
 
-    def patchload():
-       import quarkx
-       if quarkx.setupsubset()["ShadersPath"]:
-         import mapbezier
-         plugins.LoadPlugins("MB2")
-         loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
+    def patchLoad():
+        #---- import the bezier plug-ins if so stated in Defaults.QRK ----
+        import quarkx
+        beziersupport = quarkx.setupsubset()["BezierPatchSupport"]
+        if (beziersupport is not None) and (beziersupport == "1"):
+            pluginprefixes = quarkx.setupsubset()["BezierPatchPluginPrefixes"]
+            if (pluginprefixes is None) or (pluginprefixes == ""):
+                raise "Serious failure in quarkpy.qutils.loadmapeditor: Missing specific-value 'BezierPatchPluginPrefixes' in Defaults.QRK"
+            loadmapeditor = lambda: None # next calls to loadmapeditor() do nothing. Everything is now loaded!
+            import mapbezier
+            import string
+            for prefix in string.split(pluginprefixes):
+                plugins.LoadPlugins(string.strip(prefix))
 
-    patchload()
-
-    #-----------------------------
-#    loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
-    #
-    # next call to loadmapeditor loads patch stuff if needed
-    #
-    loadmapeditor = patchload
-
-
+    # force an initial load of bezier-support, if any for the current game-mode.
+    patchLoad()
+    # next call to loadmapeditor, will check to see if there is a new need to load
+    # bezier-support, when/if the user changes game-mode in QuArK explorer.
+    loadmapeditor = patchLoad
 
 #
 # Model modules loader (mdl*.py modules require a special load order)
 #
 def loadmdleditor():
     global loadmdleditor
+    loadmdleditor = lambda: None    # next calls to loadmdleditor() do nothing
     import mdlutils
     import mdleditor
     import mdlmenus
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MDL")
-    #-----------------------------
-    loadmdleditor = lambda: None    # next calls to loadmdleditor() do nothing
 
 
 # Default icons for the objects
@@ -439,6 +439,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2000/11/19 15:33:02  decker_dk
+#Comment about keeping the constants equal with the .PAS source
+#
 #Revision 1.6  2000/10/26 18:14:34  tiglari
 #added SO_BRUSHPRIM
 #
