@@ -138,8 +138,16 @@ def prepareobjecttodrop(editor, obj):
     tex = textureof(editor)
     obj.replacetex("[auto]", tex)
 
-     # replace ";incl = defpoly"
-    if oldincl == "defpoly":
+     # replace ";incl = defpoly" or ";incl = trigpoly"
+    if oldincl == "defpoly" or oldincl == "trigpoly": #DECKER
+        if oldincl == "trigpoly": #DECKER
+            # If its a triggerpoly, try to get the default trigger texture
+            try: #DECKER
+                trigtex = quarkx.setupsubset()["TriggerTextureDef"] #DECKER
+            except: #DECKER
+                trigtex = None #DECKER
+            if trigtex is not None and trigtex <> "": #DECKER
+                tex = trigtex #DECKER
         defpoly = quarkx.setupsubset(SS_MAP, "Building")["DefPoly"]
         if defpoly == "poly128":
             obj.appenditem(newcube(128, tex))
@@ -293,7 +301,7 @@ def texturebrowser(reserved=None):
 
     quarkx.opentoolbox("", seltex)
 
-    
+
 
 #def warninginvfaces(editor):
 #   "Delete invalid faces with user confirmation."
@@ -392,7 +400,7 @@ def resettexscale(editor, flist, adjust):
 		    s2 = 1
 		s2 = l / s2
 		tp = (
-		   (tpn0, 
+		   (tpn0,
 		    tpn0 + s1 * (tpn1 - tpn0) .normalized,
 		    tpn0 + s2 * (tpn2 - tpn0) .normalized),
 		   2, editor.TexSource)
@@ -517,11 +525,7 @@ def groupcolor(m):
         undo.ok(editor.Root, Strings[622])
 
 
-def newcube(size, tex):
-    try:
-        dx, dy, dz = size
-    except:
-        dx = dy = dz = size
+def newcubeXYZ(dx, dy, dz, tex):
     p = quarkx.newobj("poly:p")
     dx=dx*0.5
     dy=dy*0.5
@@ -552,6 +556,9 @@ def newcube(size, tex):
     p.appenditem(f)
 
     return p
+
+def newcube(size, tex):
+    return newcubeXYZ(size, size, size, tex)
 
 
 def groupview1click(m):
