@@ -25,9 +25,15 @@ QQRKSRC1
 // Please see file TECHINFO.TXT for more information
 // about this file format.
 
+
 //$Header$
 
+
 //$Log$
+
+//Revision 1.192  2002/05/13 12:02:37  tiglari
+//update version
+//
 //Revision 1.191  2002/05/13 10:34:52  tiglari
 //support frozen selections (don't change until another frozen selection is made,
 //or they are cancelled with ESC or unfreeze selection)
@@ -817,8 +823,10 @@ QQRKSRC1
         Align Texture = "Ctrl+W"
         Link Selection = "Ctrl+L"
         Extend Selection = "Ctrl+E"
+        Select Tagged Faces = "Alt+S"
         Unrestrict Selection = "Ctrl+U"
         Restrict to Selection = "Alt+R"
+        Zoom to Selection = "Alt+Z"
         Brush Subtraction =  "Ctrl+B"
         Browse Multiple Selection = "Alt+B"
         Invert Face Selection = "Ctrl+I"
@@ -3689,9 +3697,11 @@ QQRKSRC1
        Add to Tagged: = {HotKeyForm = !}
        Align Texture: = {HotKeyForm = !}
        Link Selection: = {HotKeyForm = !}
+       Select Tagged Faces: = {HotKeyForm = !}
        Extend Selection: = {HotKeyForm = !}
        Unrestrict Selection: = {HotKeyForm = !}
        Restrict to Selection: = {HotKeyForm = !}
+       Zoom to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
        Browse Multiple Selection = {HotKeyForm = !}
        Freeze Selection: = {HotKeyForm = !}
