@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2002/04/28 21:23:49  tiglari
+comment out line as suggested by Andy Vincent to stop abnormal termination
+  after Python is Finalized
+
 Revision 1.34  2002/04/08 10:58:35  tiglari
 Add gamecode for Torque (from Desmond Fletcher)
 
@@ -191,6 +195,7 @@ const
  mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
  mjJK2          = 'f';  { Jedi Knight II - Jedi Outcast }
  mjTorque       = 'g';
+ mjSOF2         = 'h';  { Soldier of Fortune II }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
