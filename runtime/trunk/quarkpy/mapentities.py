@@ -354,9 +354,10 @@ class FaceType(EntityManager):
 
 
 #
-# Probably only this function should be put on the bezier menu
-# here, for the others use the technique employed for
-# project texture from tagged in mapbezier
+# Maybe these functions should be shifted to mapbezier,
+# with an empty menu set up here, and the functions added
+# using the technique employed for project texture from
+# tagged in mapbezier
 #
 class BezierType(EntityManager):
     "Bezier Patches"
@@ -364,6 +365,7 @@ class BezierType(EntityManager):
     # tiglari
     def menu(o, editor):
         import mapmenus
+        import mapbtns
 
         def swapclick(m, o=o, editor=editor):
             new = o.copy()
@@ -372,10 +374,11 @@ class BezierType(EntityManager):
             undo.exchange(o, new)
             editor.ok(undo, "Swap Sides")
 
+        Tex1 = qmenu.item("&Texture...", mapbtns.texturebrowser, "choose texture for patch")
 
         swap = qmenu.item("&Swap sides",swapclick,"Flip visible side of patch")
 
-        return [swap]
+        return [Tex1, swap]
         
     # /tiglari
 
@@ -577,6 +580,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #Revision 1.13  2000/05/26 23:07:39  tiglari
 #fiddled with beziertype entity manager
 #
