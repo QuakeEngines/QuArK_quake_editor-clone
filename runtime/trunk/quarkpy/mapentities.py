@@ -45,14 +45,6 @@ def ObjectOrigin(o):
         pos = 0.5*(box[0]+box[1])
     return pos
 
-
-def ObjectCustomOrigin(o):
-    if o.type==":g":
-        for item in o.subitems:
-            if item.type==":d" and item["macro"]=="dup origin":
-                return item.origin
-    return ObjectOrigin(o)
-
 #
 # Entity Manager base class, followed by subclasses.
 #
@@ -168,7 +160,6 @@ class DuplicatorType(EntityType):
     def handles(o, editor, view):
         import mapduplicator
         return mapduplicator.DupManager(o).handles(editor, view)
-
 
 
 class GroupType(EntityManager):
@@ -637,6 +628,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.26  2001/03/31 13:01:35  tiglari
+#usercenter for groups (for rotation)
+#
 #Revision 1.25  2001/03/22 08:14:31  tiglari
 #origin duplicator bugfix
 #
