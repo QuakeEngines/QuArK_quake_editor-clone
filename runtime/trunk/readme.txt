@@ -9,10 +9,13 @@
     dumps things at the path points.  linear stuff
     removed from path point forms, prolly not useful
     New Copy One does that stuff better.
-  *extruder functionality extended (significant stuff
-     still not working right).  After Dissociate Images,
-     Extruder Stuff | Punch Inner/Outer to put holes in
-     marked things.
+  *extruder functionality extended.  RMB menu has
+    items for punching holes in things (e.g. putting
+    a pipe thru a wall w/o overlap).  After 'dissociate
+    images', RMB on the resulting group has an 'Extruder
+    Stuff' submenu with the hole-punching, some texturing
+    stuff that doesn't work right, and a 'revert' that
+    restores the duplicator.
   *New Copy One duplicator, implementing ideas of Rolf
      Hulsbergen (better than Instance Dup, for many
      purposes): drop NCO into group like ordinary
