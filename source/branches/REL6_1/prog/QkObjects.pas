@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20.2.3  2000/10/30 22:14:18  alexander
+set name
+
 Revision 1.20.2.2  2000/09/10 14:37:33  alexander
 fixed getsubelements bug
 
@@ -69,7 +72,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'REL6_1-pre-3';
+ QuArKVersion            = 'Release 6.1';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
@@ -206,10 +209,10 @@ type
            private
              FSpecifics: TStringList;
              FSubElements: TQList;
-          {$IFDEF Debug}
+
              function GetSpecifics : TStringList;
              function GetSubElements : TQList;
-          {$ENDIF}
+
              function GetTvParent : QObject;
                { Tv for `tree-view; Nil if obj is root in a tree
                   view, such was worldspawn, whose parent is
@@ -261,9 +264,9 @@ type
              procedure SaveFile1(Info: TInfoEnreg1);
              destructor Destroy; override;
              procedure FixupAllReferences;
-             property Specifics: TStringList read {$IFDEF Debug} GetSpecifics; {$ELSE} FSpecifics; {$ENDIF}
+             property Specifics: TStringList read  GetSpecifics;
              property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
-             property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
+             property SubElements: TQList read GetSubElements; 
              property SubElementsC: TQList read FSubElements;
              procedure AddRef(Delta: Integer);
                { incr/decr Py reference count, frees if 0 }
@@ -1329,35 +1332,27 @@ begin
  end;*)
 end;
 
-{$IFDEF Debug}
 function QObject.GetSpecifics : TStringList;
 begin
-  {alex}
   if (FFlags and ofSurDisque <> 0) and not FLoading then
   begin
-     AccesRec;
+    AccesRec;
   end;
-  {/alex ######### FIXME ! i think this is needed , and thus it should be
-   enabled always !!!!!}
- if (FFlags and ofSurDisque <> 0) and not FLoading then
-  Raise InternalE('GetSpecifics');
- Result:=FSpecifics;
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+    Raise InternalE('GetSpecifics');
+  Result:=FSpecifics;
 end;
 
 function QObject.GetSubElements : TQList;
 begin
-  {alex}
   if (FFlags and ofSurDisque <> 0) and not FLoading then
   begin
      AccesRec;
   end;
-  {/alex ######### FIXME ! i think this is needed , and thus it should be
-   enabled always !!!!!}
- if (FFlags and ofSurDisque <> 0) and not FLoading then
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
     Raise InternalE('GetSubElements');
- Result:=FSubElements;
+  Result:=FSubElements;
 end;
-{$ENDIF}
 
 function QObject.GetObjectSize(Loaded: TQStream; LoadNow: Boolean) : Integer;
 const
