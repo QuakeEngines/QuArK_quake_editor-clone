@@ -1,0 +1,7 @@
+title: Duplicators
+subdir: basic path
+
+Duplicators are one of Quark's most powerful and unique
+features.  They are basically special entities which
+don't go directly into your map, but rather provide
+instructions for making complex or repetetive structures.

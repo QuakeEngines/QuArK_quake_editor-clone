@@ -1,0 +1,5 @@
+title: Basic Duplicators
+desc: basics theory advanced
+
+The simplest kind of duplicator just makes copies
+of a set of brushes.

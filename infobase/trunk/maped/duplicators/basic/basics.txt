@@ -1,0 +1,60 @@
+title: Basics
+author: tiglari
+
+There are actually two 'basic' duplicators, on
+the 'duplicators & misc' item in the New Polyhedrons
+panel button menu or the New Map Items toolbox.
+Thy're both named
+`Duplicator'.  Basically what they do is make copies
+of the stuff that is inside the (smallest) group
+they're in.
+
+So to see this effect, first create a new poly, then
+make a group over it (by hitting the `new group'
+panel button). Now, with either the group or the
+cube selected, insert the top Duplicator.  What
+you'll now see, in an XY view, is 5 blue outlines
+of the original New Cube heading off at a 45 degree
+angle.  These are the copies of the original brush.
+
+To control what's happening, look in the tree-view,
+select the duplicator, and look at its specifics.
+The first interesting one is 'offset', which will
+be the triple of numbers '32 32 0'.  This is the
+amount, in the X, Y and Z dimensions, whereby each
+copy is displaced from the previous one.  So we
+can make the copies head out in the X direction,
+spaced at a greater distance, by changing these
+numbers to say '200 0 0'.\
+
+The next number is 'count', which controls the
+number of copies, so if you only want one, set it
+to '1'.  The remaining specifics are more advanced,
+so we'll talk about them later.
+
+The final point about basic duplicators is that
+they make copies of everything in their containing
+group, brushes, entities, patches etc.  So you can
+for example make a row of columns with distinct
+column, base and cap brushes by having these three
+brushes in the group, plus a duplicator.  They
+also work 'recursively', so that if a group with
+a duplicator in it contains another group with
+a duplicator in it, the results of the inner group
+will be duplicated, so that you can make a rectangular
+array of identical objects with two duplicators
+and one copy of the object.  You can also but two
+duplicators into one group, but then each does
+their thing independently, rather than one applying
+to the output of the other.
+
+With a duplicator, you can edit the original, but
+not the copies.  However sometimes that's what you
+want to do (perhaps to introduce some variations
+into a bunch of things you've created).  You can
+make the copies individually editable by RMB |
+Dissociate Duplicator Images on the duplicator
+(in the tree-view).  Now the duplicator is removed
+from the map and replaced by the copies it has been
+created, as freestanding individual pieces of map
+structure.
