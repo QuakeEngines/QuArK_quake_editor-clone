@@ -4,6 +4,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.47 2003/12/04 Dann J
+//Added DEATHMATCH ONLY to FUNC_WALL (to block level exits in DM)
+//Removed DMG from TRIGGER_LIGHTNING (does nothing)
+//Added STYLE field to LIGHT_FLOORTORCH
+//Added TARGET field to OBJ_LEVER2
+//Added _MINLIGHT field to FUNC_DOOR_SECRET
 //
 //Revision 1.46 2003/08/21 DannJ
 //Added DEATHMATCH spawnflags to all weapons and ammo
@@ -9427,6 +9433,9 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "determines the direction"
        }
+     _minlight: =
+        {Txt = "&" Hint = "inherent glow for brushes, values from 0 to 1.5"
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -9792,6 +9801,11 @@ QQRKSRC1
         Typ="X16"
         Cap="ANIMATED_FAST"
         Hint="No hint yet"}
+     spawnflags: =
+       {Txt="&"
+        Typ="X1792"
+        Cap="DEATHMATCH ONLY"
+        Hint="Used to block level exits in a deathmatch"}
     }
     func_water:form =
     {
@@ -10790,6 +10804,9 @@ QQRKSRC1
         {Txt = "&" Typ = "L" Hint = "color-selection button"}
      light: =
         {Txt = "&" Hint = "intensity, default = 200 (pretty dim, max = 800)"
+       }
+     style: =
+        {Txt = "&" Hint = "0 default, 1 fast flicker, 2 steady fade in and out, 3 erratic flicke" $0D "  32-63 for linking banks of lights.  Trigger should share style-value."
        }
      spawnflags: =
        {Txt="&"
@@ -14707,9 +14724,25 @@ QQRKSRC1
      bbox = '-14 -14 -9 14 14 9 1'
      HTML = "help/hr2/g_obj.htm#obj_lever2"
      mdl = "models/objects/levers/lever2/tris.fm"
-     angles: =
-        {Txt = "&" Hint = "a triple of numbers, rotates 3d orientation of entit" $0D " around axes in order (Y, Z, X)"
+     abslight: =
+        {Txt = "&" Hint = "colored inherent glow for models, a triple of numbers 0-255, R B G" $0D "  color button below displays & selects visually."
        }
+     abslight: =
+        {Txt = "&" Typ = "L 3" Hint = "color-selection button"}
+     angle: =
+        {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
+       }
+     target: =
+        {Txt = "&" Hint = "object with matching targetname is triggered."
+       }
+     wait: =
+        {Txt = "&" Hint = "time before re-triggerable"
+       }
+     spawnflags: =
+       {Txt="&"
+        Typ="X1"
+        Cap="INVULNERABLE"
+        Hint="always invulnerabl"}
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
@@ -18335,9 +18368,6 @@ QQRKSRC1
        }
      delay: =
         {Txt = "&" Hint = "- (0-25.5) Sec. duration of lightning."
-       }
-     dmg: =
-        {Txt = "&" Hint = "damage it does."
        }
      materialtype: =
         {Txt = "&" Hint = "- 0=blue, 1=red"
