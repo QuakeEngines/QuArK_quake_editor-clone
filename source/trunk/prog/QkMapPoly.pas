@@ -20,14 +20,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
-<<<<<<< QkMapPoly.pas
 $Header$
-=======
-$Header$
->>>>>>> 1.32.2.1
  ----------- REVISION HISTORY ------------
 $Log$
-<<<<<<< QkMapPoly.pas
 Revision 1.41  2001/07/08 02:25:22  tiglari
 change map writing so that integral vertices are used as threepoints in
  bp, valve220 and disabledenhtex mode, forcing with explansion when
@@ -63,12 +58,6 @@ Worldcraft mapversion 220 misnomenclature fixed (mapversion 202->Valve220)
 Revision 1.33  2001/04/05 12:34:03  tiglari
 Add 'axisbase' method to face (for getting 2 nice axes for the face)
 
-=======
-Revision 1.32.2.1  2001/04/01 11:59:16  tiglari
-attempt to read/write texture scale from tv attribute (seems to work,
- is slow, does not solve fp errors in vertex dragging)
-
->>>>>>> 1.32.2.1
 Revision 1.32  2001/04/01 06:52:07  tiglari
 don't recenter threepoints option added
 
@@ -3339,63 +3328,23 @@ begin
   end;
 end;
 
-function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
+function TFace.GetThreePointsT;
 begin
-  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
+ if TextureMirror then
+  Result:=GetThreePoints(V1, V3, V2)
+ else
+  Result:=GetThreePoints(V1, V2, V3);
 end;
 
-function TFace.GetThreePointsT(var V1, V2, V3: TVect) : boolean;
-var
-  TexV: array[1..6] of Single;
-  P0, P1, P2, T1, T2, T3, TexS, TexT, V : TVect;
+procedure TFace.SetThreePointsT;
 begin
-  if LoadData and GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
-  begin
-      GetAxisBase(Normale, TexS, TexT);
-      T1:=MakeVect(TexV[1], TexV[2], 0);
-      T2:=MakeVect(TexV[3], TexV[4], 0);
-      T3:=MakeVect(TexV[5], TexV[6], 0);
-      V1:=Tex2FaceCoords(T1, P0, TexS, TexT);
-      V2:=Tex2FaceCoords(T2, P0, TexS, TexT);
-      V3:=Tex2FaceCoords(T3, P0, TexS, TexT);
-      Result:=true;
-      Exit;
-  end;
-  if TextureMirror then
-    Result:=GetThreePoints(V1, V3, V2)
-  else
-    Result:=GetThreePoints(V1, V2, V3);
-end;
-
-procedure TFace.SetThreePointsT(const V1, V2, V3: TVect);
-var
-  TexS, TexT, P0, P1, P2, T1, T2, T3, T : TVect;
-  V: array[1..6] of Single;
-begin
-(*
  if TextureMirror then
   SetThreePoints(V1, V3, V2)
  else
   SetThreePoints(V1, V2, V3);
-*)
-  if Loaddata and GetThreePoints(P0, P1, P2) then
-  begin
-    GetAxisBase(Normale,TexS,TexT);
-    T1:=CoordShift(V1, P0, texS, texT);
-    T2:=CoordShift(V2, P0, texS, texT);
-    T3:=CoordShift(V3, P0, texS, texT);
-    V[1]:=T1.X; V[2]:=T1.Y;
-    V[3]:=T2.X; V[4]:=T2.Y;
-    V[5]:=T3.X; V[6]:=T3.Y;
-    SetFloatsSpec('tv', V);
-  end;
 end;
 
 function TFace.SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
-begin
-  SetThreePointsT(V1, V2, V3);
-end;
-(*
 var
  V1b, V2b: TVect;
  R: TDouble;
@@ -3422,7 +3371,6 @@ begin
   else
    Result:=False;
 end;
-*)
 
 procedure TTexturedTreeMap.UserTexScale(AltTexSrc: QObject; var CorrW, CorrH: TDouble);
 const
@@ -3503,7 +3451,6 @@ begin
  V3.Z:=TexP[3].Z+TexP[1].Z;
 end;
 
-
 procedure TFace.SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
 var
  CorrW, CorrH: TDouble;
@@ -3519,7 +3466,6 @@ begin
  P3.Z:=(V3.Z-V1.Z)/CorrH + V1.Z;
  SetThreePointsEx(V1, P2, P3, Normale);
 end;
-
 
 {function TFace.InitVect : Boolean;
 begin
@@ -4042,7 +3988,7 @@ end;
 
 procedure TFace.Deplacement(const PasGrille: TDouble);
 var
- Pt, PTex: array[1..3] of TVect;
+ Pt: array[1..3] of TVect;
  I: Integer;
  OldOrg, NewOrg, InfoClic: TVect;
  f: TDouble;
@@ -4099,35 +4045,28 @@ begin
          end;
         end;
     end;
-   GetThreePointsT(PTex[1],PTex[2],PTex[3]);
    for I:=1 to 3 do
     begin
      if (g_DrawInfo.ModeDeplacement > mdDisplacementGrid)
      and (g_DrawInfo.ModeDeplacement <> mdInflate) then
       begin
-       Pt[I]:=VecDiff(Pt[I],InfoClic);
-       PTex[I]:=VecDiff(PTex[I],InfoClic);
+       Pt[I].X:=Pt[I].X-InfoClic.X;
+       Pt[I].Y:=Pt[I].Y-InfoClic.Y;
+       Pt[I].Z:=Pt[I].Z-InfoClic.Z;
        if g_DrawInfo.ModeDeplacement in [mdLinear, mdLineaireCompat] then
-       begin
-         TransformationLineaire(Pt[I]);
-         TransformationLineaire(PTex[I]);
-       end
+        TransformationLineaire(Pt[I]);
       end;
-     Pt[I]:=VecSum(Pt[I],InfoClic);
-     PTex[I]:=VecSum(PTex[I],InfoClic);
+     Pt[I].X:=Pt[I].X+InfoClic.X;
+     Pt[I].Y:=Pt[I].Y+InfoClic.Y;
+     Pt[I].Z:=Pt[I].Z+InfoClic.Z;
     end;
-{ Shouldn't be needed because we're already
-   adjusting the texture 
    if InverseOrientation then
     begin
      SetThreePoints(Pt[1], Pt[3], Pt[2]);
      TextureMirror:=not TextureMirror;
     end
    else
-}
     SetThreePoints(Pt[1], Pt[2], Pt[3]);
-   { adjust texture }
-   SetThreePointsT(PTex[1], PTex[2], PTex[3]);
   end;
 end;
 
@@ -4900,6 +4839,10 @@ begin
  end;
 end;
 
+function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
+begin
+  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
+end;
 
 
 function fAxisBase(self, args: PyObject) : PyObject; cdecl;
