@@ -35,6 +35,13 @@ import quarkpy.qmenu
 from quarkpy.maputils import *
 
 #
+# This plugin must run last, the name is intended to promote this, but
+#  if it doesn't work, plugins finding the 'texpop' and 'tagpop' popup
+#  menus need to be imported first:
+#
+import mapcaulk
+
+#
 # There must be a way to do this with greater generality.
 #  But there's also fiddly bits
 #
@@ -103,3 +110,6 @@ quarkpy.mapentities.FaceType.menu = facemenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2001/05/29 10:13:21  tiglari
+#kickoff
+#
