@@ -737,7 +737,7 @@ def ClearMarkClick(m):
 #
 # a dialog for choosing one of a list of selected items
 #
-class BrowseListDlg(quarkpy.dlgclasses.ListerDlg):
+class BrowseListDlg(quarkpy.dlgclasses.LiveBrowserDlg):
 
     size = (220,140)
 
@@ -955,6 +955,11 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.15  2001/08/03 11:50:15  tiglari
+# facilities for putting tree nav item on selection menu was causing free-ing
+#  errors, so disabled it.  Reorganized & renamed a bit to provide an
+#  explortable parent-menu facility
+#
 # Revision 1.14  2001/08/02 02:51:28  tiglari
 # browse multiselection list
 #
