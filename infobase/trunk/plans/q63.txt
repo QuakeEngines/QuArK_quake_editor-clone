@@ -135,6 +135,9 @@ by rd.
 <li>bilinear filtering option in texture views: (tiglari)
 <br>prodding from aguir_re.
 
-<li>Support Mohaa, RTCW, JKII, Torque.
+<li>Support RTCW, JKII, Torque, partial support for Mohaa.
+
+<li>Fixed problem with 2-monitor usage of QuArK:
+<br>breakthru insights from quantum_red and Decker.
 
 </ul>
