@@ -55,6 +55,8 @@ QQRKSRC1
 //
 // ----------- MANUAL REVISION HISTORY ------------
 //
+// 2001-01-07   [FLF] Added Front Line Force entities (Thanks to "Ryan Gregg")
+//
 // 2000-12-22   [SVC] Added Sven-Coop entities (Thanks to "Jon Adams")
 //              [-] Misc. 'spawnflags' changes
 //
@@ -278,16 +280,16 @@ QQRKSRC1
     Game = "Half-Life"
     HTML = "help\index.html"
     SFSkills = '256 512 1024 2048'   // must be 4 to 6 values : easy/medium/hard/deathm.[/coop/single]
-    CreateFiles: =
-    {
-      // the prefix '*' indicates that this file must never be packed into a .PAK file
-      *liblist.gam = {
-        Data =
-            "game "$22"tmpQuArK"$220D0A
-            "gamedll "$22"..\valve\dlls\hl.dll"$220D0A
-            ".\valve\dlls\hl.dll"$0D0A
-      }
-    }
+//  CreateFiles: =
+//  {
+//    // the prefix '*' indicates that this file must never be packed into a .PAK file
+//    *liblist.gam = {
+//      Data =
+//          "game "$22"tmpQuArK"$220D0A
+//          "gamedll "$22"..\valve\dlls\hl.dll"$220D0A
+//          ".\valve\dlls\hl.dll"$0D0A
+//    }
+//  }
   }
 
   NewFiles.qtx =
@@ -855,24 +857,24 @@ QQRKSRC1
         }
     }
 
-    War In Europe Entities.qtxfolder =
-    {
-        ;desc = "Send additions/corrections to decker@post1.tele.dk"
-
-        WIE Player starts.qtxfolder = {
-                info_player_team1:e     = { t_orig_ang=! ;desc = "Spawnpoint Allies" }
-                info_player_team2:e     = { t_orig_ang=! ;desc = "Spawnpoint Axies" }
-        }
-        WIE Weapons & Ammo.qtxfolder = {
-                ammo_mg42:e             = { t_orig_ang=! ;desc = "Ammo for MG42" }
-                ammo_mp40:e             = { t_orig_ang=! ;desc = "Ammo for MP40" }
-                ammo_bar:e              = { t_orig_ang=! ;desc = "Ammo for Bar" }
-                ammo_mauser:e           = { t_orig_ang=! ;desc = "Ammo for Mauser" }
-                ammo_sniper:e           = { t_orig_ang=! ;desc = "Ammo for Sniper" }
-                ammo_m1:e               = { t_orig_ang=! ;desc = "Ammo for M1" }
-                ammo_tommy:e            = { t_orig_ang=! ;desc = "Ammo for Tommy" }
-        }
-    }
+//  War In Europe Entities.qtxfolder =
+//  {
+//      ;desc = "Send additions/corrections to decker@post1.tele.dk"
+//
+//      WIE Player starts.qtxfolder = {
+//              info_player_team1:e     = { t_orig_ang=! ;desc = "Spawnpoint Allies" }
+//              info_player_team2:e     = { t_orig_ang=! ;desc = "Spawnpoint Axies" }
+//      }
+//      WIE Weapons & Ammo.qtxfolder = {
+//              ammo_mg42:e             = { t_orig_ang=! ;desc = "Ammo for MG42" }
+//              ammo_mp40:e             = { t_orig_ang=! ;desc = "Ammo for MP40" }
+//              ammo_bar:e              = { t_orig_ang=! ;desc = "Ammo for Bar" }
+//              ammo_mauser:e           = { t_orig_ang=! ;desc = "Ammo for Mauser" }
+//              ammo_sniper:e           = { t_orig_ang=! ;desc = "Ammo for Sniper" }
+//              ammo_m1:e               = { t_orig_ang=! ;desc = "Ammo for M1" }
+//              ammo_tommy:e            = { t_orig_ang=! ;desc = "Ammo for Tommy" }
+//      }
+//  }
 
     The Assignment Entities.qtxfolder =
     {
@@ -1087,6 +1089,24 @@ QQRKSRC1
                 }
                 weapon_uzi:e = { t_orig_ang=! ;desc="Single UZI (2 Uzis for Akimbo)" }
         }
+    }
+
+    Front Line Force Entities.qtxfolder =
+    {
+        ;desc = "Send additions/corrections to nemesis232@hotmail.com"
+
+	FLF Player Starts, Info & Capture Points.qtxfolder = {
+                info_player_attacker:e  = {t_orig_ang=! ;desc="Attacker Start" }
+                info_player_defender:e  = {t_orig_ang=! ;desc="Defender Start" }
+                info_player_observer:e  = {t_orig_ang=! ;desc="Introduction camera player first sees when he joins the map.  Place several of these close to capture points." }
+                info_frontline:e        = {             ;desc="FLF Info Entity (Required in all FLF Maps)" roundtime="5" warmuptime="30" arespawntime="5" drespawntime="10" }
+                capture_point:e         = {t_orig_ang=! ;desc="Attacker Capture Point Objective" capturetime="10" model="models/antena.mdl" }
+                game_player_equip:e     = {             ;desc="Initial player equipment" }
+	}
+	FLF Turrets.qtxfolder = {
+		monster_miniturret:e	= {t_orig_ang=!	;desc="Mini Auto Turret (Most commonly used)" }
+                monster_turret:e        = {t_orig_ang=! ;desc="Auto Turret" }
+	}
     }
    }
   }
@@ -2602,6 +2622,134 @@ $0D"models/wire_red32.mdl"
                     Hint = "Sven-Coop settings"
                 }
         }
+
+//
+// Front Line Force
+//
+        f_flf_game_player_equip:form = {
+                weapon_knife: = { txt="&" Typ="C"  Hint="Give Player Knife"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_glock18: = { txt="&" Typ="C"  Hint="Give Player Glock 18"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_usp: = { txt="&" Typ="C"  Hint="Give Player .45 Usp Tactical"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_deagle: = { txt="&" Typ="C"  Hint="Give Player Desert egale"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_p228: = { txt="&" Typ="C"  Hint="Give Player Sig p228"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_tmp: = { txt="&" Typ="C"  Hint="Give Player Steyr TMP"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_mp5navy: = { txt="&" Typ="C"  Hint="Give Player Mp5 Navy"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_p90: = { txt="&" Typ="C"  Hint="Give Player FN P90"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_m3: = { txt="&" Typ="C"  Hint="Give Player M3 Super 90 Combat"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_xm1014: = { txt="&" Typ="C"  Hint="Give Player xm1014"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_ak47: = { txt="&" Typ="C"  Hint="Give Player Ak47"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_sg552: = { txt="&" Typ="C"  Hint="Give Player Sg552 Commando"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_m4a1: = { txt="&" Typ="C"  Hint="Give Player Colt M4a1 Carbine"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_aug: = { txt="&" Typ="C"  Hint="Give Player Steyr Aug"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_scout: = { txt="&" Typ="C"  Hint="Give Player Steyr Scout Sniper Rifle"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_awp: = { txt="&" Typ="C"  Hint="Give Player Arctic Warfare Magnum"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_g3sg1: = { txt="&" Typ="C"  Hint="Give Player G3/SG-1 Sniper Rifle"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_m249: = { txt="&" Typ="C"  Hint="Give Player FN M249 Para"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_hegrenade: = { txt="&" Typ="C"  Hint="Give Player High Explosive Grenade"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_flashbang: = { txt="&" Typ="C"  Hint="Give Player Flashbang"
+                        items = "0"$0D"1"$0D"2"
+                        values= "0"$0D"1"$0D"2"
+                }
+                weapon_smokegrenade: = { txt="&" Typ="C"  Hint="Give Player Smoke Grenade"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                item_kevlar: = { txt="&" Typ="C"  Hint="Give Player Kevlar"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                item_assaultsuit: = { txt="&" Typ="C"  Hint="Give Player Kevlar & Helmet"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                weapon_c4: = { txt="&" Typ="C"  Hint="Give Player C4"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+                item_thighpack: = { txt="&" Typ="C"  Hint="Give Player Defuse Kit"
+                        items = "No"$0D"Yes"
+                        values= "0" $0D"1"
+                }
+        }
+        t_flf_game_player_equip:incl = {
+                flf: = {
+                    Typ = "B"
+                    Txt = "(FrontLineForce)"
+                    Cap = "Push..."
+                    form = "f_flf_game_player_equip:form"
+                    Hint = "Front Line Force settings"
+                }
+        }
+        f_flf_turret:form = {
+                teamowner: = {txt="&" hint="Owner, give it a value of 'attacker' if it belongs to the attackers or 'defender' if it belongs to the defenders." }
+        }
+        t_flf_turret:incl = {
+                flf: = {
+                    Typ = "B"
+                    Txt = "(FrontLineForce)"
+                    Cap = "Push..."
+                    form = "f_flf_turret:form"
+                    Hint = "Front Line Force settings"
+                }
+        }
+
 //
 //
 //
@@ -8380,6 +8528,7 @@ $0D"monster_handgrenade"
                 spawnflags: = { Txt="&" Typ="X32" Cap="Autostart" }
                 spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
                 t_tfc_turret = !
+                t_flf_turret = !
         }
         monster_nihilanth:form = { t_monster = ! bbox = '-192 -192 0 192 192 384' }
         monster_osprey:form = {
@@ -8467,6 +8616,7 @@ $0D"monster_handgrenade"
                 spawnflags: = { Txt="&" Typ="X32" Cap="Autostart" }
                 spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
                 t_tfc_turret = !
+                t_flf_turret = !
         }
         monster_zombie:form = { t_monster = ! bbox = '-16 -16 0 16 16 72'}
 
@@ -9102,6 +9252,8 @@ $0D"Track 30"
                 item_healthkit: = { Txt="&" Hint="Amount of item" }
                 item_longjump: = { Txt="&" Hint="Amount of item" }
                 item_security: = { Txt="&" Hint="Amount of item" }
+
+                t_flf_game_player_equip = !
         }
         game_player_hurt:form = {
                 Help="This entity is just like a trigger_hurt in most ways. It can be used to kill, damage, or heal players based"
@@ -10825,6 +10977,55 @@ $0D"weapon_smokegrenade"
             t_svc_HTML = !
             t_Weapon = !
             t_Targetx = !
+        }
+
+//
+//  Front Line Force
+//
+        t_flf_html:incl = {
+                HTML = "http://www.planethalflife.com/frontline/"
+        }
+        info_player_attacker:form =
+        {
+                t_flf_html = !
+                bbox = '-16 -16 -36 16 16 36'
+                Help = "This entity defines the FLF Attacker starting point."
+                t_player = !
+        }
+        info_player_defender:form =
+        {
+                t_flf_html = !
+                bbox = '-16 -16 -36 16 16 36'
+                Help = "This entity defines the FLF Defender starting point."
+                t_player = !
+        }
+        info_player_observer:form =
+        {
+                t_flf_html = !
+                Help = "Introduction camera player sees when he first joins the map.  Place several of these close to capture points as they will automatically point themselves towards the nearest one.."
+        }
+        info_frontline:form =
+        {
+                t_flf_html = !
+                Help = "This entity defines the FLF Info such as round time etc."
+                roundtime:      = {txt="&" hint="Round Time (Minutes) Min is 30 secs (.5)" }
+                warmuptime:     = {txt="&" hint="Warm-up time (Seconds) Min is 5, Max is 90" }
+                arespawntime:   = {txt="&" hint="Attacker Respawn time (Seconds) Min is 5, Max is 30" }
+                drespawntime:   = {txt="&" hint="Defender Respawn time (Seconds) Min is 10, Max is 35" }
+                weather:        = {txt="&" typ="C" hint="Weather Conditions"
+                        items = "Normal"$0D"Winter"
+                        values= "0"$0D"1"$0D
+                }
+        }
+        capture_point:form =
+        {
+                t_flf_html = !
+                bbox            = '-8 -8 -8 8 8 8'
+                Help            = "Capture Point (atena, radio etc.)"
+                t_target        = !
+                model:          = {txt="&" hint="Location of the model used in the capure point.  Could also be 'models/mainframe.mdl'" }
+                pointname:      = {txt="&" hint="'West' will appear in game as 'Captureing West Point' 'Warehouse' will appear in game as 'Captureing Warehouse Point'" }
+                capturetime:    = {txt="&" hint="Time to Capture (Seconds) Min time is 5" }
         }
 
 /////////////////////
