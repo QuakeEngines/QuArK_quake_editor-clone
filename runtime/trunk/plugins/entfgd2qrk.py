@@ -182,10 +182,11 @@ class Entity:
         s = quarkx.newobj(self.m_classname + self.TypeForm())
         if (self.m_size is not None):
             s["bbox"] = self.m_size
-        for inh in self.m_inherit:
-            s.specificadd(inh+"=!")
         for key in self.m_keys:
             key.GenerateForm(s)
+        # Place "<keyword>=!"-statements at the _end_ of ":form" definitions, because of a problem which Decker found but can't solve.
+        for inh in self.m_inherit:
+            s.specificadd(inh+"=!")
         indent.appenditem(s)
 
 class BrushEntity(Entity):
@@ -604,6 +605,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.1  2001/06/13 23:02:50  aiv
+#Moved 'Convert From' stuff to python code (plugin type)
+#
 #Revision 1.4  2001/06/11 17:42:38  decker_dk
 #Fixed the BBOX problem, where it would think the value were a string (double-quotes), and not 6 numbers (single-quotes).
 #Also added a messagebox which states what should be manually done afterwards.
