@@ -6,15 +6,11 @@ file currently envisions for the next release of
 QuArK.  Considerable material has just been put off from 6.3 to 6.4
 
 <ul>
-<li>Linear Matrix editor: (tiglari)
+<li>Linear Matrix editor: (tiglari, lots of design from Rolf Hulsbergen)
 <br>crank out matrices for rotation, scaling
 etc. from intelligible parameters (from pushbutton in duplicator
 forms).
-<br>status: done, by adding scale and rotation.
-specifics.
-<br>Note: linear mapping buttons on duplicators with a linear specific
-sort of do this, but scale/rot/shear components aren't isolated for
-independent manipulation.
+<br>status: re-done.
 
 <li>Extruder: (tiglari)
 <br>generate brushes etc. from 2d outlines.
