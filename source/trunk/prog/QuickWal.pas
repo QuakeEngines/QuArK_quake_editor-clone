@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/02/03 06:19:46  tiglari
+shaders now block textures in .pak.  There's still a problem with
+ animationTest
+
 Revision 1.20  2001/02/03 02:54:44  tiglari
 fixed problems in loading of .pak shader files
 
@@ -179,6 +183,7 @@ begin
  ResultFolder.SubElements.Add(Result);
 end;
 
+(*
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String; Index: Integer) : QObject; overload
 var Index2: Integer;
 begin
@@ -190,6 +195,20 @@ begin
  ResultFolder.LocateSubElement(Result.Name, Index2);
  ResultFolder.SubElements.Insert(Index2,Result);
 end;
+*)
+
+function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String; Index: Integer) : QObject; overload
+begin
+   if ResultFolder=Nil then
+  begin
+    ResultFolder:=QTextureList.Create(Copy(FolderName, 1, Length(FolderName)-1), Nil);
+    Index:=0;
+  end;
+  Result:=QTextureLnk.Create(FolderName+Name, ResultFolder);
+  Result.Specifics.Values[Spec]:=Arg;
+  ResultFolder.SubElements.Insert(Index,Result);
+end;
+
 
 procedure LinkFolder(Q: QObject; var ToolBoxFolder: QObject; const FolderName: String); overload;
 begin
@@ -450,6 +469,8 @@ begin
          continue;
        TexName:=Copy(Tex.Name,10,999);
        AnalyseFileName(TexName,Path,ShortName);
+       if TexName='animationTest' then
+         texName:=texName;
        Folder:=LocateTxListFromPath(DestFolder, Path);
        Index:=0;
        Q:=Folder.LocateSubElement(TexName,Index);
