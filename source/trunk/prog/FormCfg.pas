@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2002/04/07 12:47:04  decker_dk
+fixup for "Decker 2001-06-14", which caused ugly separator in spec/args-view.
+
 Revision 1.20  2002/03/07 19:15:38  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -167,12 +170,10 @@ type
               procedure PaintIcons(Sender: TObject);
               procedure PaintBoxClick(Sender: TObject);
               procedure PaintDots(Sender: TObject);
-              procedure EditKeyDown(Sender: TObject; var Key: Word;
-               Shift: TShiftState);
-              procedure ComboKeyDown(Sender: TObject; var Key: Word;
-               Shift: TShiftState);
-              procedure SpecEditKeyDown(Sender: TObject; var Key: Word;
-               Shift: TShiftState);
+              procedure MemoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+              procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+              procedure ComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+              procedure SpecEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
               procedure EnterEditChange(Sender: TObject);
               procedure AnyControlEnter(Sender: TObject);
               function MatchSpecItem(Sender: TObject; var Spec: String; SpecToItem: Boolean) : Integer;
@@ -1597,6 +1598,7 @@ const
 var
  N, BI, I, J, K, BitValue, X, Y, W, LeftMargin, Icone, ExtraVertSpace, MiddleX, NormalW: Integer;
  S, Captions, Spec, TextValues, HintMsg: String;
+ ArgValue: String; { The value from the argument of the specific. }
  Value: Single;
  Txt, Ctrl, ResultCtrl, SelectMe: TControl;
  Edit: TCustomEdit;
@@ -1607,6 +1609,7 @@ var
 {Cb: TCheckBox;}
  Btn, ReclickPopupForm: TToolbarButton97;
  Bevel: TBevel;
+ Memo: TMemo;
  L: TList;
  Checked: TCheckBoxState;
  Found: TCommonSpec;
@@ -1828,7 +1831,7 @@ begin
                  Icone:=1;
                  J:=StrToIntDef(Copy(S,3,MaxInt), 0);
                  if J=0 then
-                  Found:=GetSingleSpec(Spec, Spec)
+                  Found:=GetSingleSpec(Spec, ArgValue)
                  else
                   begin
                    Found:=csEverywhere;
@@ -1845,10 +1848,10 @@ begin
                                  end;
                       end;
                      end;
-                   Spec:=IntToStr(BitValue);
+                   ArgValue:=IntToStr(BitValue);
                   end;
                  case Found of
-                  csDiffers: Spec:=LoadStr1(Differs);
+                  csDiffers: ArgValue:=LoadStr1(Differs);
                   csEverywhere: Icone:=0;  { normally found }
                  end;
                  ComboBox:=TEnterComboBox.Create(Self);
@@ -1858,10 +1861,10 @@ begin
                   ComboBox.BorderStyle:=bsNone;}
                  ComboBox.SetBounds(X,Y,W,LineHeight);
                  ComboBox.Parent:=SB;
-                 ComboBox.Items.Text:=TextValues;
                  ComboBox.Tag:=I+1;
-                 ComboBox.ItemIndex:=MatchSpecItem(ComboBox, Spec, True);
-                 ComboBox.Text:=Spec;
+                 ComboBox.Items.Text:=TextValues;
+                 ComboBox.ItemIndex:=MatchSpecItem(ComboBox, ArgValue, True); { "ComboBox.Tag" must be set to a value!!! }
+                 ComboBox.Text:=ArgValue;
                  ComboBox.OnKeyDown:=ComboKeyDown;
                  ComboBox.OnChange:=EnterEditChange;
                  ComboBox.Hint:=HintMsg;
@@ -2187,6 +2190,28 @@ begin
                  Btn.OnClick:=ClickKey;
                  ResultCtrl:=Btn;
                 end;
+{Decker 2002-12-29}
+           'M': begin { Memo / Multiline-text-displaybox }
+                 Icone := 0;
+                 Memo := TMemo.Create(Self);
+                 Memo.SetBounds(X, Y, W, 3 * LineHeight); { hardcoded to display 3 lines. TODO: Calculate the most optimal height, considering WordWrap and the amount of text in ArgValue. }
+                 ExtraVertSpace := 2 * LineHeight; { to adjust height for Y below. }
+                 Memo.Parent := SB;
+                 Memo.Hint := HintMsg;
+                 Memo.Tag := I+1;
+                 Memo.ReadOnly := true; {Currently only ReadOnly is supported.   := (Length(S)>=3) and (S[3]='R');}
+                 Memo.WordWrap := true;
+                 { Set the text }
+                 Found:=GetSingleSpec(Spec, ArgValue);
+                 if (Found = csDiffers) then
+                   ArgValue := LoadStr1(Differs);
+                 Memo.Text := ArgValue;
+                 Memo.OnKeyDown := MemoKeyDown;
+                 {Memo.OnChange := EnterEditChange;}
+                 Memo.OnEnter := AnyControlEnter;
+                 ResultCtrl := Memo;
+                end;
+{/Decker 2002-12-29}
            '!': begin   { not displayed }
                  Dec(Y, LineHeight);
                 end;
@@ -2348,7 +2373,7 @@ begin
         if ExtraVertSpace>0 then
          begin
           if Txt<>Nil then
-           Txt.Top:=Txt.Top+ExtraVertSpace;
+           Txt.Top:=Txt.Top+(ExtraVertSpace div 2); {Decker 2002-12-29: Put label at "absmiddle", due to the height of Memo-fields.}
           Inc(Y, ExtraVertSpace);
          end;
         if (Found=csNowhere) and (Txt<>Nil) and (Txt is TEnterEdit) then
@@ -2771,7 +2796,38 @@ begin
   C.SetFocus;
 end;
 
-procedure TFormCfg.EditKeyDown;
+procedure TFormCfg.MemoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  {Decker 2002-12-29: Handle keys up/down/pageup/pagedown for a TMemo object}
+  case Key of
+    VK_UP:
+      begin
+        { If caret is not on the top-most line in the TMemo, then leave (perform normal action). }
+        if (TMemo(Sender).CaretPos.Y <> 0) then
+          Exit;
+      end;
+
+    VK_DOWN:
+      begin
+        { If caret is not on the bottom-most line in the TMemo, then leave (perform normal action). }
+        if ((TMemo(Sender).Lines.Count - 1) <> TMemo(Sender).CaretPos.Y) then
+          Exit;
+      end;
+
+    VK_PRIOR,
+    VK_NEXT:
+      begin
+        { Don't leave, let the special action do the job. }
+      end;
+  else
+    Exit;
+  end;
+
+  { Caret is on the top- or bottom-most line in the TMemo, so do the special action. }
+  EditKeyDown(Sender, Key, Shift);
+end;
+
+procedure TFormCfg.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
   function VisibleRowCount: Integer;
   begin
@@ -2784,14 +2840,14 @@ var
  Sens: Integer;
 begin
  case Key of
-  VK_UP: Sens:=-1;
-  VK_DOWN: Sens:=+1;
-  VK_PRIOR: Sens:=-VisibleRowCount;
-  VK_NEXT: Sens:=+VisibleRowCount;
- else Exit;
+   VK_UP:    Sens:=-1;
+   VK_DOWN:  Sens:=+1;
+   VK_PRIOR: Sens:=-VisibleRowCount;
+   VK_NEXT:  Sens:=+VisibleRowCount;
+ else
+   Exit;
  end;
- PostMessage(Handle, wm_InternalMessage,
-  wp_LineStep + Ord(Sender=Nil), Sens);
+ PostMessage(Handle, wm_InternalMessage, wp_LineStep + Ord(Sender=Nil), Sens);
  Key:=0;
 end;
 
@@ -2809,8 +2865,7 @@ end;
 
 procedure TFormCfg.EnterEditChange(Sender: TObject);
 begin
- PostMessage(Handle, wm_InternalMessage, wp_InternalEdit,
-  LongInt(Sender));
+ PostMessage(Handle, wm_InternalMessage, wp_InternalEdit, LongInt(Sender));
 end;
 
 procedure TFormCfg.PopupMenuClick(Sender: TObject);
@@ -2885,40 +2940,44 @@ end;
 
 function TFormCfg.MatchSpecItem(Sender: TObject; var Spec: String; SpecToItem: Boolean) : Integer;
 var
- Frm: QObject;
+  Frm: QObject;
 
   function ReadValues(Mode: Boolean) : String;
   const
-   Spc: array[Boolean] of String = ('Items', 'Values');
+    Spc: array[Boolean] of String = ('Items', 'Values');
   var
-   B: Boolean;
+    B: Boolean;
   begin
-   for B:=False to True do
+    for B:=False to True do
     begin
-     Result:=Format1str(Frm.Specifics.Values[Spc[Mode xor B]], Frm.Name+'$'+Spc[Mode xor B]);
-     if Result<>'' then Exit;
+      Result:=Format1str(Frm.Specifics.Values[Spc[Mode xor B]], Frm.Name+'$'+Spc[Mode xor B]);
+      if Result<>'' then
+        Exit;
     end;
   end;
 
 var
- SL: TStringList;
+  SL: TStringList;
 begin
- Result:=-1;
- Frm:=Form.SubElements[(Sender as TControl).Tag-1];
- SL:=TStringList.Create; try
- try
-  SL.Text:=ReadValues(SpecToItem);
-  Result:=SL.IndexOf(Spec);
-  if Result>=0 then
-   begin
-    SL.Text:=ReadValues(not SpecToItem);
-    Spec:=SL[Result];
-   end;
- except
-  on E: EListError do
-   Raise InternalE('Nonmatching Values and Items');
- end;
- finally SL.Free; end;
+  Result:=-1;
+  Frm:=Form.SubElements[(Sender as TControl).Tag-1];
+  SL:=TStringList.Create;
+  try
+    try
+      SL.Text:=ReadValues(SpecToItem);
+      Result:=SL.IndexOf(Spec);
+      if Result>=0 then
+      begin
+        SL.Text:=ReadValues(not SpecToItem);
+        Spec:=SL[Result];
+      end;
+    except
+      on E: EListError do
+        Raise InternalE('Nonmatching Values and Items');
+    end;
+  finally
+    SL.Free;
+  end;
 end;
 
 function TFormCfg.GetQPaletteIdx(I: Integer) : TColorRef;
