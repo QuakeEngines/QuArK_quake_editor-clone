@@ -577,11 +577,21 @@ def getzoommenu(zoombtn):
     def customzoom(m, views=zoombtn.views):
         CustomZoom(views)
     if zoombtn.near:
-        zoomlist = ((0.5, "1:2\tfar away"), (1.0, "1:1\tone for one"), (2.0, "2:1\tmiddle"),
-         (4.0, "4:1\tnear"), (8.0, "8:1\tnearer"), (16.0, "16:1\tnearest"))
+        # For mdl-editor
+        zoomlist = (( 0.5, "1:2\tfar away"),
+                    ( 1.0, "1:1\tone for one"),
+                    ( 2.0, "2:1\tmiddle"),
+                    ( 4.0, "4:1\tnear"),
+                    ( 8.0, "8:1\tnearer"),
+                    (16.0, "16:1\tnearest"))
     else:
-        zoomlist = ((0.1, "1:10\tvery far away"), (0.25, "1:4\tfar away"), (0.5, "1:2\tmiddle"),
-         (1.0, "1:1\tnear"), (2.0, "2:1\tnearer"), (10.0, "10:1\tmegazoom"))
+        # For map-editor
+        zoomlist = (( 0.1,  "1:10\tvery far away"),
+                    ( 0.25, "1:4\tfar away"),
+                    ( 0.5,  "1:2\tmiddle"),
+                    ( 1.0,  "1:1\tnear"),
+                    ( 2.0,  "2:1\tnearer"),
+                    (10.0,  "10:1\tmegazoom"))
     scale = commonscale(zoombtn.views)
     items = []
     otherstate = qmenu.radiocheck
@@ -1453,6 +1463,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.4  2000/12/17 12:35:02  decker_dk
+#- Changed [Quarkpy\qeditor] help3() to "help\\faq\\index.html", and some stuff to quarkx.htmldoc()
+#
 #Revision 1.3  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #
