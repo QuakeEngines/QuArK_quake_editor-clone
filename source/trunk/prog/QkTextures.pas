@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/04/25 21:57:03  alexander
+inserted hack to read kingpin texture flag from datakp.qrk texture entries
+
 Revision 1.11  2000/04/24 09:54:54  arigo
 Q3 shaders, once more
 
@@ -281,11 +284,15 @@ type
  { The following structure describes the texture formats used by the various games.
    It does not list the games where textures are included in .wad files. }
 const
- StdGameTextureLinks: array[1..4] of TStdGameTextureLink =
+ {FIXME! The mapping between game constants and these should be specified
+  in the Games default entries}
+ StdGameTextureLinks: array[1..5] of TStdGameTextureLink =
   ((LinkSpecificChar: 'w'; GameMode: mjQuake2),
    (LinkSpecificChar: 'm'; GameMode: mjHeretic2),
    (LinkSpecificChar: 'i'; GameMode: mjSin),
-   (LinkSpecificChar: 'k'; GameMode: mjKingPin));
+   (LinkSpecificChar: 'k'; GameMode: mjKingPin),
+   (LinkSpecificChar: 'l'; GameMode: mjSOF)
+   );
 
  { The following specifics are copied when converting a texture into another
    texture format. Generally only the most general flags-related specifics can
