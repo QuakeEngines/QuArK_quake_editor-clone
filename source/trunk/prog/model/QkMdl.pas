@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2002/03/07 19:17:48  decker_dk
+Removed QImages, as it was just another name for QImage
+
 Revision 1.10  2001/03/20 21:37:18  decker_dk
 Updated copyright-header
 
@@ -60,6 +63,8 @@ type
   QMdlFile = class(QModelFile)
   private
 //    procedure LoadHLModel(F: TStream; FSize: Integer);
+      Procedure ReadHL2Model(F: TStream; FileSize: Integer);
+      function Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
   protected
     procedure LoadFile(F: TStream; FSize: Integer); override;
     procedure SaveFile(Info: TInfoEnreg1); override;
@@ -123,9 +128,14 @@ type
     Nom: array[0..15] of Byte;
   end;
 
+
+
+
+
+
 implementation
 
-uses QuarkX, Setup, Travail, QkObjectClassList;
+uses QuarkX, Setup, Travail, QkObjectClassList,QkPcx;
 
 class function QMdlFile.TypeInfo;
 begin
@@ -304,6 +314,394 @@ begin
   end;
 end;
     }
+
+function QMdlFile.Loaded_HL2Skin(Comp: QComponent; tex_name: string): QImage;
+var
+  tex: QFileObject;
+begin
+  Result:=nil;
+  try
+    tex:= NeedGameFileBase('220.SteamFS', tex_name);
+    if tex = nil then
+      exit;
+    tex.acces;
+    Result:=QPcx.Create(tex_name, Comp.SkinGroup);
+    try
+      Result.ConversionFrom(tex);
+    except
+      Result.Free;
+      Result:=nil;
+      Exit;
+    end;
+    Comp.SkinGroup.Subelements.Add(result);
+    exit;
+  finally
+  end;
+end;
+
+Procedure QMdlFile.ReadHL2Model(F: TStream; FileSize: Integer);
+const
+  SpecTris = 'Tris=';
+  SpecVtx = 'Vertices=';
+type
+  hl2_model_t = record
+	id: Longint;
+	version: Longint;
+	checksum: longword;		// this has to be the same in the phy and vtx files to load!
+	name: array [1..64] of char;
+	length: Longint;
+	eyeposition: vec3_t;	// ideal eye position
+	illumposition: vec3_t;	// illumination center
+	hull_min: vec3_t;		// ideal movement hull size
+	hull_max: vec3_t;
+	view_bbmin: vec3_t;		// clipping bounding box
+	view_bbmax: vec3_t;
+	flags: Longint;
+	numbones: Longint;			// bones
+	boneindex: Longint;
+	numbonecontrollers: Longint;		// bone controllers
+	bonecontrollerindex: Longint;
+	numhitboxsets: Longint;
+	hitboxsetindex: Longint;
+	// file local animations? and sequences
+	numlocalanim: Longint;			// animations/poses
+	localanimindex: Longint;		// animation descriptions
+	numlocalseq: Longint;				// sequences
+	localseqindex: Longint;
+	activitylistversion: Longint;	// initialization flag - have the sequences been indexed?
+	eventsindexed: Longint;
+	// raw textures
+	numtextures: Longint;
+	textureindex: Longint;
+	// raw textures search paths
+	numcdtextures: Longint;
+	cdtextureindex: Longint;
+	// replaceable textures tables
+	numskinref: Longint;
+	numskinfamilies: Longint;
+	skinindex: Longint;
+	numbodyparts: Longint;
+	bodypartindex: Longint;
+	// queryable attachable points
+	numlocalattachments: Longint;
+	localattachmentindex: Longint;
+	// animation node to animation node transition graph
+	numlocalnodes: Longint;
+	localnodeindex: Longint;
+	localnodenameindex: Longint;
+	numflexdesc: Longint;
+	flexdescindex: Longint;
+	numflexcontrollers: Longint;
+	flexcontrollerindex: Longint;
+	numflexrules: Longint;
+	flexruleindex: Longint;
+	numikchains: Longint;
+	ikchainindex: Longint;
+	nummouths: Longint;
+	mouthindex: Longint;
+	numlocalposeparameters: Longint;
+	localposeparamindex: Longint;
+	surfacepropindex: Longint;
+	// Key values
+	keyvalueindex: Longint;
+	keyvaluesize: Longint;
+	numlocalikautoplaylocks: Longint;
+	localikautoplaylockindex: Longint;
+	// The collision model mass that jay wanted
+	mass: Single;
+	contents: Longint;
+	// external animations, models, etc.
+	numincludemodels: Longint;
+	includemodelindex: Longint;
+	// implementation specific back pointer to virtual data
+	virtualModel :Pointer;
+	// for demand loaded animation blocks
+	szanimblocknameindex: Longint;
+	numanimblocks: Longint;
+	animblockindex: Longint;
+	animblockModel:Pointer;
+	bonetablebynameindex: Longint;
+	// used by tools only that don't cache, but persist mdl's peer data
+	// engine uses virtualModel to back link to cache pointers
+	pVertexBase:Pointer;
+	pIndexBase:Pointer;
+	unused: array [1..8] of longint;		// remove as appropriate
+  end;
+
+
+  // to be changed
+  PMD3Triangle = ^TMD3Triangle;
+  TMD3Triangle = packed record
+    Triangle: array[1..3] of longint; //vertex 1,2,3 of triangle
+  end;
+
+  PMD3Vertex = ^TMD3Vertex;
+  TMD3Vertex = packed record
+    Vec: array[1..3]of smallint; //vertex X/Y/Z coordinate
+    envtex: array[1..2]of byte;
+  end;
+
+  PMD3TexVec = ^TMD3TexVec;
+  TMD3TexVec = packed record
+    Vec: array[1..2] of single;
+  end;
+
+  PVertxArray = ^TVertxArray;
+  TVertxArray = array[0..0] of TMD3TexVec;
+
+var
+  Root: QModelRoot;
+  mdl: hl2_model_t;
+
+  Skin: QImage;
+
+
+  CTris: PComponentTris;
+  CVert: vec3_p;
+  S: string;
+  triangle_num, vertex_num, meshframe_num,skin_num:integer;
+
+  i, j, k,l: Integer;
+  Frame: QFrame;
+  size: TPoint;
+  Comp: QComponent;
+
+  sizeset: Boolean;
+  org: Longint;
+  fsize: array[1..2] of Single;
+   t, base_tex_name: string;
+
+  //------ Pointers from here
+  Tris, Tris2: PMD3Triangle;
+  TexCoord: PVertxArray;
+  Vertexes, Vertexes2: PMD3Vertex;
+
+  vtxbox: array[0..7] of  TMD3Vertex;
+  xbounds: array[0..1]of single;
+  ybounds: array[0..1]of single;
+  zbounds: array[0..1]of single;
+  tribox: array[0..11]of TMD3Triangle;
+  texbox: array[0..35] of  TMD3TexVec;
+
+  procedure setuptripoints(var tri:TMD3Triangle; point1:integer; point2:integer; point3:integer);
+  begin
+    tri.Triangle[1]:=point1;
+    tri.Triangle[2]:=point2;
+    tri.Triangle[3]:=point3;
+  end;
+
+  procedure setuptritex(var tritex:TMD3TexVec; u1:double; v1:double);
+  begin
+    tritex.Vec[1]:=u1; tritex.Vec[2]:=v1;
+  end;
+
+  begin
+
+  F.Seek(0,soFromBeginning);
+  F.ReadBuffer(mdl, SizeOf(mdl));
+
+  ObjectGameCode := mjHL2;
+  { setup Root }
+  Root := Loaded_Root;
+
+  Comp := Loaded_Component(Root, LoadName);
+
+  // generate a model that is a box with the model dimensions
+  xbounds[0]:=mdl.hull_min[0];
+  xbounds[1]:=mdl.hull_max[0];
+  ybounds[0]:=mdl.hull_min[1];
+  ybounds[1]:=mdl.hull_max[1];
+  zbounds[0]:=mdl.hull_min[2];
+  zbounds[1]:=mdl.hull_max[2];
+  // make a box with bound values
+  for i:= 0 to 1 do
+    for j:= 0 to 1 do
+      for k:= 0 to 1 do
+      begin
+        l:=i + 2*j + 4*k;
+        vtxbox[l].Vec[1]:=round(xbounds[i]* 64);
+        vtxbox[l].Vec[2]:=round(ybounds[j]* 64);
+        vtxbox[l].Vec[3]:=round(zbounds[k]* 64);
+      end;
+
+  i:=0;
+  j:=0;
+  setuptripoints(tribox[i],0,1,2); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],3,2,1); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],0,4,1); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],1,4,5); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],4,6,5); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],6,7,5); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],1,5,3); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],3,5,7); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],2,4,0); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],6,4,2); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],7,6,2); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+  setuptripoints(tribox[i],2,3,7); inc(i);
+  setuptritex(texbox[j], 0.0,0.0); inc(j); setuptritex(texbox[j], 1.0,0.0); inc(j); setuptritex(texbox[j], 0.0,1.0);
+
+
+  triangle_num:=12;
+  meshframe_num:=1;
+  vertex_num:=8;
+  skin_num:=1;
+
+
+  //-----------------------------------------------------------
+  //-- LOAD SKINS + GET SIZE OF FIRST
+  //-----------------------------------------------------------
+  sizeset:=false;
+  size.x:=0;
+  size.y:=0;
+  for i:=1 to skin_Num do
+  begin
+{
+    fs.Seek(mhead.HeaderSize - sizeof(mhead), 1);
+    fs.readbuffer(tex, sizeof(tex));
+    if tex[1]=#0 then
+      tex[1]:='m';
+    base_tex_name:='dev/dev_hazzardstripe01a';
+    Skin:=Loaded_ShaderFile(Comp, base_tex_name);
+    if skin=nil then
+    skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
+    if skin=nil then
+      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
+    if skin=nil then
+      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
+    if skin=nil then
+      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.vtf'), false);
+    if skin=nil then
+    begin
+      t:=FmtLoadStr1(5575, [base_tex_name+' or '+ChangeFileExt(base_tex_name,'.jpg'), LoadName]);
+      GlobalWarning(t);
+      skin:=CantFindTexture(Comp, base_tex_name, Size);
+    end;
+}
+    base_tex_name:='hl2/materials/dev/dev_hazzardstripe01a.vtf';
+//    skin:= NeedGameFileBase('220.SteamFS', base_tex_name) as QImage;
+    skin:=Loaded_HL2Skin(Comp, base_tex_name );
+    if skin=nil then
+      skin:=CantFindTexture(Comp, base_tex_name, Size);
+    skin.Acces;
+    if skin<>nil then
+    begin
+      if (not sizeset) then
+      begin
+        Size:=Skin.GetSize;
+        Sizeset:=true;
+      end;
+    end;
+  end;
+  fSize[1]:=size.x;
+  fSize[2]:=size.y;
+  Comp.SetFloatsSpec('skinsize', fSize);
+  Root.Specifics.Values['rendermode']:='3';
+
+
+
+
+
+  //-----------------------------------------------------------
+  //-- LOAD TRIANGLES
+  //-----------------------------------------------------------
+//  fs.seek(org+mhead.triangle_start, sofrombeginning);
+//  getmem(tris, triangle_num*sizeof(TMD3Triangle));
+//  fs.readbuffer(tris^, mhead.triangle_num*sizeof(TMD3Triangle));
+
+tris := @tribox;
+  //-----------------------------------------------------------
+  //-- LOAD TEXTURE CO-ORDS
+  //-----------------------------------------------------------
+
+//  fs.seek(org+mhead.TexVec_Start, sofrombeginning);
+//  getmem(texCoord, vertex_num*sizeof(TMD3TexVec));
+//  fs.readbuffer(texCoord^, mhead.vertex_num*sizeof(TMD3TexVec));
+texcoord:=@texbox;
+
+
+  //-----------------------------------------------------------
+  //-- PROCESS TRIANGLES + TEXTURE CO-ORDS
+  //-----------------------------------------------------------
+  try
+    S:=SpecTris;
+    SetLength(S, Length(SpecTris)+Triangle_num*SizeOf(TComponentTris));
+    Tris2:=Tris;
+    PChar(CTris):=PChar(S)+Length(SpecTris);
+    for I:=1 to Triangle_num do
+    begin
+      for J:=0 to 2 do
+      begin
+        with CTris^[J] do
+        begin
+          VertexNo:=Tris2^.triangle[J+1];
+          with texCoord^[Tris2^.triangle[J+1]] do
+          begin
+            S:=round(vec[1]*Size.X);
+            T:=round(vec[2]*Size.Y);
+          end;
+        end;
+      end;
+      Inc(CTris);
+      Inc(Tris2);
+    end;
+    Comp.Specifics.Add(S); {tris=...}
+  finally
+//    freemem(Tris);
+//    freemem(texcoord);
+  end;
+
+  //-----------------------------------------------------------
+  //-- LOAD FRAMES + VERTEXES
+  //-----------------------------------------------------------
+
+//  fs.seek(org+mhead.Vertex_Start, sofrombeginning);
+
+  for i:=1 to MeshFrame_num do
+  begin
+    Frame:=Loaded_Frame(Comp, format('Frame %d',[i]));
+    Frame.SetFloatSpec('index', i);
+//    GetMem(Vertexes, vertex_Num * Sizeof(TMD3Vertex));
+    try
+
+       Vertexes:=@vtxbox;
+
+//      fs.readbuffer(Vertexes^, mhead.vertex_Num * Sizeof(TMD3Vertex));
+      //-----------------------------------------------------------
+      //-- PROCESS VERTEXES
+      //-----------------------------------------------------------
+      S:=FloatSpecNameOf(SpecVtx);
+      SetLength(S, Length(SpecVtx)+Vertex_num*SizeOf(vec3_t));
+      PChar(CVert):=PChar(S)+Length(SpecVtx);
+      Vertexes2:=Vertexes;
+      for J:=0 to vertex_Num-1 do
+      begin
+        with Vertexes2^ do
+        begin
+          for k:=0 to 2 do
+            CVert^[k]:=(Vec[k+1] / 64);
+        end;
+        Inc(Vertexes2);
+        Inc(CVert);
+      end;
+      Frame.Specifics.Add(S);
+    finally
+//      FreeMem(Vertexes);
+    end;
+  end;
+
+end;
+
 procedure QMdlFile.LoadFile(F: TStream; FSize: Integer);
 const
   Spec1 = 'Tris=';
@@ -353,10 +751,18 @@ begin
           raise EError(5519);
         F.ReadBuffer(mdl, SizeOf(mdl));
         Dec(FSize, SizeOf(mdl));
+        if (mdl.id = SignatureHLMdl) and (mdl.version = 44) then
+        begin
+          ReadHL2Model(F,FSize);
+        end
+        else
+        begin
+
         RA := (mdl.id = SignatureMdlRa) and (mdl.version = VersionMdlRa);
         if RA then
           Read1(mdl_ra, SizeOf(mdl_ra))
-        else begin
+        else
+        begin
           if (mdl.id <> SignatureMdl) or (mdl.version <> VersionMdl) then
             if ((mdl.id = SignatureHLMdl) or (mdl.id = SignatureHLMdlS)) and (mdl.version = VersionHLMdl) then begin
 //              Inc(FSize, SizeOf(Mdl));
@@ -364,7 +770,8 @@ begin
 //              LoadHLModel(F, FSize);
 //              Exit;
               Raise EErrorFmt(5503, [LoadName])
-            end else
+            end
+            else
               raise EErrorFmt(5593, [LoadName, mdl.id, mdl.version, SignatureMdl, VersionMdl]);
           mdl_ra.numstverts := mdl.numverts;
         end;
@@ -517,8 +924,11 @@ begin
         finally
           FreeMem(FrSourcePts);
         end;
+
       end;
-  else begin
+
+      end;
+  else begin // else of case
       inherited;
     end;
   end;
