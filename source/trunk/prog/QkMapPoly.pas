@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2001/07/18 03:50:31  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+
 Revision 1.43  2001/07/10 01:40:06  tiglari
 unwind of bungled branch (reversion to 1.41 is what's intended here)
 
@@ -359,7 +363,7 @@ procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
 
 implementation
 
-uses QkFileObjects, Undo, PyMapView, QkPixelSet,
+uses QkFileObjects, Undo, PyMapView, QkPixelSet, Dialogs,
      Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx, QkObjectClassList;
 
 const
@@ -2191,6 +2195,12 @@ begin
   end;
 end;
 
+function GameSupportsBrushPrim : Boolean;
+begin
+  (* ShowMessage(SetupGameSet.Specifics.Values['SupportsBrushPrim']); *)
+  Result:=(SetupGameSet.Specifics.Values['SupportsBrushPrim']<>'');
+end;
+
 procedure TPolyedre.SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
 var
  MJ: Char;
@@ -2481,7 +2491,7 @@ var
         else
          S:=S+FloatToStrF(Z, ffFixed, 20, 5)+' ) ';
        end;
-     if (MJ=mjQ3A) and BrushPrim then
+     if GameSupportsBrushPrim and BrushPrim then
       with F do
        begin
         GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
@@ -2504,7 +2514,7 @@ var
        if Valve220Map then
        begin
         Valve220MapParams(Normale, F, S);
-       end else if not ((MJ=mjQ3A) and BrushPrim) then
+       end else if not (GameSupportsBrushPrim and BrushPrim) then
        begin
          ApproximateParams(Normale, P, Params, TextureMirror);
          for I:=1 to 2 do
@@ -2623,7 +2633,7 @@ begin
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
- if (MJ=mjQ3A) and BrushPrim then
+ if (GameSupportsBrushPrim) and BrushPrim then
  begin
   Brush.Add('brushDef');
   Brush.Add(' {');
@@ -2638,7 +2648,7 @@ begin
     if Q is TFace then
      WriteFace(TFace(Q));
    end;
- if (MJ=mjQ3A) and BrushPrim then
+ if (GameSupportsBrushPrim) and BrushPrim then
    Brush.Add(' }');
  Brush.Add(' }');
 end;
