@@ -296,8 +296,9 @@ class ExtruderDupData:
     dup = self.dup
     if dup.type==":g":
       return quarkx.vect(dup["origin"])
-    else:
-      return dup.origin
+    elif dup.origin is None:
+      return quarkx.vect(readNvec(dup["origin"]))
+    return dup.origin
 
   def PathPos(self, j):
     pos = self.PathLoc(j)
@@ -1878,9 +1879,56 @@ def gettaggedcordup(editor):
   
 def extrudermenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_func):
   "duplicator entity menu"
+
   menu = oldmenu(o, editor)
-  if o["macro"] !="dup extruder" and o["macro"]!="dup patchextruder":
+  if o["macro"] !="dup extruder":
     return menu
+
+  info = o.findname("data:g")
+#  if info is not None and info["_extruder_data"]:
+  from mapmadsel import getstashed
+  data = ExtruderDupData(o)
+
+  def PunchInnerClick(m,o=o,editor=editor,info=info,data=data, outer=0):
+#      squawk(`data`)
+    from mapcsg import CSG
+    from mapmadsel import getstashed
+    points = data.CircCoords()
+    if outer:
+      points, names = outrim(points,data)
+      cycles, names = convexify(points, names)
+    else:
+      cycles, names = convexify(points)
+    listgroup = make_brushes(o, cycles, names)
+    sublist = []
+    for group in listgroup:
+      for item in group.findallsubitems("",":p"):
+        sublist.append(item)
+#      if outer:
+#        cycles, names = pipeify(points,data)
+#        outers = make_brushes(o,cycles,names)
+#        for brush in outers[0].findallsubitems("",":p"):
+#          sublist.append(brush)
+    marked = getstashed(editor)
+    plist = marked.findallsubitems("",":p")
+    for p in sublist:
+      if p in plist:
+          plist.remove(p)
+    if not plist:
+      return
+    CSG(editor, plist, sublist, "polyhedron subtraction")
+
+  def PunchOuterClick(m,o=o,editor=editor,info=info,data=data,punch=PunchInnerClick):
+    punch(m,o,editor,info,data,1)
+
+  punch_inner = qmenu.item("Punch &Inner",PunchInnerClick,"|Subtract the interior of the tunnel from the marked group")
+  punch_outer = qmenu.item("Punch &Outer",PunchOuterClick,"|Subtract the interior and the walls of the corrridor from the marked group.\n  Onely work works for `pipe'-type.")
+  marked = getstashed(editor)
+  if marked is None:
+    punch_inner.state=punch_outer.state=qmenu.disabled
+    punch_inner.hint=punch_inner.hint+"\n\nTo get the item enabled, mark something with RMB|Navigate Tree|<map object>|Mark."
+  if o["type"]!="t":
+    punch_outer_state=qmenu.disabled
 
   testconc1 = qmenu.item("test brushes",testbrushes)
   testpatch1 = qmenu.item("test patches",testpatches)
@@ -1921,7 +1969,7 @@ def extrudermenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_f
   
   n2d.o = o
 #  numen = [n2d, tex, tag, clone]
-  numen = [n2d, tag, clone, pathextrude, radextrude]
+  numen = [punch_inner, punch_outer, n2d, tag, clone, pathextrude, radextrude]
   if MapOption("Developer"):
     numen = numen + [testconc1, testpatch1, testpipe1]
   menu[:0] = numen + [qmenu.sep]
@@ -1962,6 +2010,8 @@ class ExtruderDuplicator(StandardDuplicator):
     dup = self.dup
     data = ExtruderDupData(dup)
     org = dup.origin
+    if org is None:
+        org = quarkx.vect(readNvec(dup["origin"]))
     axishandles = []
     for k in range(1,len(data.PathPoints())):
       axishandles.append(ExtruderPathHandle(dup, k))
@@ -2105,13 +2155,169 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
 #          sublist.append(brush)
       marked = getstashed(editor)
       plist = marked.findallsubitems("",":p")
-      blist = marked.findallsubitems("",":b3")
       for p in sublist:
         if p in plist:
             plist.remove(p)
-      if not plist and not blist:
+      if not plist:
         return
-      CSG(editor, plist, sublist, "polyhedron subtraction", blist=blist)
+      CSG(editor, plist, sublist, "polyhedron subtraction")
+
+    def PunchOuterClick(m,o=o,editor=editor,info=info,data=data,punch=PunchInnerClick):
+      punch(m,o,editor,info,data,1)
+      
+    #
+    # doesn't work, problems with position computations
+    #
+    def RevertClick(m,o=o,editor=editor,info=info):
+      dup = quarkx.newobj("Extruder:d")
+      dup.copyalldata(info)
+      undo=quarkx.action()
+#      dup["origin"]=""
+#      dup["origin"]=info["origin"]
+      undo.exchange(o,dup)
+      editor.ok(undo,"Revert to Duplicator")
+      
+    def WrapClick(m,o=o,editor=editor,info=info,data=data):
+      from maptagside import projecttexfrom
+      sources = m.sources
+      cont = find_path(o, ["content:g"])
+      undo = quarkx.action()
+      opt = gettexoption()
+      org = data.Org()
+      for j in range(2,data.PathLen()):
+        for source in sources:
+          name = source.name
+          name, ext = string.splitfields(name,":")
+          if (name[:4]=="side" or name[:5]=="outer"):
+            tex = source.texturename
+            type = data.dup["type"]
+            if type == "p":
+              face = quarkx.newobj(source.shortname+":b3")
+              face["tex"] = source["tex"]
+              
+            else:
+              texp = source.threepoints(2)
+              face = source.copy()
+            if opt == "track":
+              def transform(p, data=data, j=j):
+                return data.Transform(p,j-1)
+              texp2 = map(transform, texp)
+#            squawk("%s :: %s"%(texp, texp2))
+              face.setthreepoints(texp2,0)
+              face.setthreepoints(texp2,2)
+            p0, p1, p2 = face.threepoints(1)
+            seg = find_path(cont,["cor_seg_%d:g"%j])
+#            squawk(seg.name)
+            targets = seg.findallsubitems(name,":"+ext)
+            for target in targets[:]:
+              face.distortion(target.normal, p0)
+ #             squawk("%s : %s"%(face.normal,target.normal))
+              new = projecttexfrom(face,target)              
+              undo.exchange(target, new)
+
+      editor.ok(undo,"wrap texture")
+      editor.layout.explorer.sellist = [o]
+      editor.invalidateviews()      
+      
+    def TexOptClick(m):
+      settexoption(m.opt)
+
+    punch_inner = qmenu.item("Punch &Inner",PunchInnerClick,"|Subtract the interior of the tunnel from the marked group")
+    punch_outer = qmenu.item("Punch &Outer",PunchOuterClick,"|Subtract the interior and the walls of the corrridor from the marked group.\n  Onely work works for `pipe'-type.")
+    marked = getstashed(editor)
+    if marked is None:
+      punch_inner.state=punch_outer.state=qmenu.disabled
+      punch_inner.hint=punch_inner.hint+"\n\nTo get the item enabled, mark something with RMB|Navigate Tree|<map object>|Mark."
+    if info["type"]!="t":
+      punch_outer_state=qmenu.disabled
+    #
+    # Wrapping textures from tagged faces.
+    #
+    seg1 = find_path(o,["content:g", "cor_seg_1:g"])
+    fromtagged = qmenu.item("From &tagged",WrapClick,"|Wrap texture from first segment to others")
+    type = data.dup["type"]
+    if type == "p":
+      import maptagzbezier
+      tagged = gettaggedbzcplist(editor)
+    else:
+      tagged = gettaggedfaces(editor)
+    if tagged is not None:
+#      squawk(seg1.name)
+      for face in tagged[:]:
+        if not within(face, seg1):
+          tagged.remove(face)
+      if tagged == []:
+        tagged = None
+    if tagged is None:
+        fromtagged.state = qmenu.disabled
+        fromtagged.hint = fromtagged.hint+"\n\nFor this menu item to be enabled, you must tag some faces in the first segment of the extruder."
+    else:
+      fromtagged.sources = tagged
+    fromfirst = qmenu.item("From &first",WrapClick,"|Wraps texture from each face of first segment.")
+    if  type == "p":
+      fromfirst.sources = seg1.findallsubitems("",":b3")
+    else:  
+      fromfirst.sources = seg1.findallsubitems("",":f")
+    list = [fromtagged, fromfirst]
+    curr_opt = gettexoption()
+    for (label, opt, hint) in (("track", "track", "|Texture scale is shifted as is to the other segments, tracking direction changes"),
+#                               ("Lapped", "lapped","|Texture is wrapped around corners to other segments"),
+                               ("project", "project","|Texture is projected onto other segments.\n\n (good for some floors.)")):
+      item = qmenu.item(label, TexOptClick, hint)
+      item.opt = opt
+      if opt == curr_opt:
+        item.state = qmenu.checked
+      list.append(item)
+
+    wrap_texture = qmenu.popup("&Wrap Texture",list) 
+
+
+    revert = qmenu.item("Revert to dup",RevertClick,"|Convert extruder group back to duplicator.\n\nThe effects of holes made etc will all be lost.")
+
+    itemlist = [punch_inner,punch_outer,wrap_texture,revert]
+    item = qmenu.popup("Extruder Stuff",itemlist)
+    menu[:0] = [item,
+                qmenu.sep]
+  return menu  
+
+quarkpy.mapentities.GroupType.menu = corgroupmenu
+
+
+def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_func):
+  menu = oldmenu(o, editor)
+  info = o.findname("data:g")
+  if info is not None and info["_extruder_data"]:
+    from mapmadsel import getstashed
+    data = ExtruderDupData(info)
+
+    def PunchInnerClick(m,o=o,editor=editor,info=info,data=data, outer=0):
+#      squawk(`data`)
+      from mapcsg import CSG
+      from mapmadsel import getstashed
+      points = data.CircCoords()
+      if outer:
+        points, names = outrim(points,data)
+        cycles, names = convexify(points, names)
+      else:
+        cycles, names = convexify(points)
+      listgroup = make_brushes(info, cycles, names)
+      sublist = []
+      for group in listgroup:
+        for item in group.findallsubitems("",":p"):
+          sublist.append(item)
+#      if outer:
+#        cycles, names = pipeify(points,data)
+#        outers = make_brushes(info,cycles,names)
+#        for brush in outers[0].findallsubitems("",":p"):
+#          sublist.append(brush)
+      marked = getstashed(editor)
+      plist = marked.findallsubitems("",":p")
+      for p in sublist:
+        if p in plist:
+            plist.remove(p)
+      if not plist:
+        return
+      CSG(editor, plist, sublist, "polyhedron subtraction")
 
     def PunchOuterClick(m,o=o,editor=editor,info=info,data=data,punch=PunchInnerClick):
       punch(m,o,editor,info,data,1)
@@ -2229,7 +2435,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
                 qmenu.sep]
   return menu  
 
-quarkpy.mapentities.GroupType.menu = corgroupmenu
+quarkpy.mapentities.DuplicatorType.menu = cordupmenu
 
 
 #
@@ -2661,6 +2867,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.6  2001/05/05 10:02:11  tiglari
+#patch mode supported for extruder
+#
 #Revision 1.5  2001/05/04 23:07:31  tiglari
 #fix log
 #
