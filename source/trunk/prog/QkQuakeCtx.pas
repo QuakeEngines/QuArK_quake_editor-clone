@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/08 23:22:53  aiv
+entity tool finished completly i think.
+
 Revision 1.9  2001/01/21 15:49:48  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -348,7 +351,7 @@ var
   NewAddonsList: TQList;
   // Objects for creating new addon
   addonRoot: QFileObject;
-  TBX: QToolBox;
+  TBX, TexRoot: QToolBox;
   entityTBX: QToolBoxGroup;
   entityTBX_2: QToolBoxGroup;
   Group: QToolBoxGroup;
@@ -356,7 +359,7 @@ var
   Entities, Forms: TQList;
   entityForms:QFormContext;
   OldForm, Form: QFormCfg;
-  OldFormEl, FormEl: QObject;
+  OldFormEl, FormEl, TexFolders: QObject;
   (*
     Get all .bsp files in & out of pak's
   *)
@@ -487,6 +490,19 @@ begin
       end;
     end;
     Forms.Free;
+  end;
+  TexFolders:=nil;
+  BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
+
+  if TexFolders<>nil then
+  begin
+    TexFolders.Name:=Specifics.Values['GameDir']+' textures';
+    TexRoot:=QToolBox.Create('Textures',addonRoot);
+    TexRoot.SpecificsAdd('ToolBox=Texture Browser...');
+    TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
+    TexRoot.SubElements.Add(TexFolders);
+    TexFolders.FParent:=TexRoot;
+    AddonRoot.Subelements.Add(TexRoot);
   end;
 
   NewAddonsList.free;

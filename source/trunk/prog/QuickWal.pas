@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/03/08 23:22:53  aiv
+entity tool finished completly i think.
+
 Revision 1.29  2001/02/19 19:15:22  decker_dk
 Reordered the dialog, and wrote better(?) hints for the dynamic/merged/shaderlist checkboxes.
 
@@ -873,6 +876,10 @@ begin
     begin
       DiskFolder.Fparent:=Q;
       Q.SubElements.Add(DiskFolder);
+    end
+    else
+    begin
+      DiskFolder.Free;
     end;
     
     FindError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
