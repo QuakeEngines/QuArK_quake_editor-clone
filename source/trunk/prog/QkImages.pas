@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/07/25 19:13:47  decker_dk
+TImageDisplayer.Paint - removed black-border painting to reduce flicker.
+
 Revision 1.7  2001/03/20 21:45:50  decker_dk
 Updated copyright-header
 
@@ -493,7 +496,7 @@ begin
   end;
 end;*)
 
-procedure QImages.PasteBitmap;
+procedure QImages.PasteBitmap(Game: PGameBuffer; Bitmap: TBitmap);
 var
 {nBitmap2, SrcBmp: TBitmap;}
  BitmapStruct: Windows.TBitmap;
