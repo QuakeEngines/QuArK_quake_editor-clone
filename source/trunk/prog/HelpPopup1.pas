@@ -176,7 +176,10 @@ begin
   begin
     Key:=0;
     Close;
-  end;
+  end
+  else
+  if Key = vk_F1 then
+    OkBtnClick(Sender);
 end;
 
 {AiV/}
