@@ -1,3 +1,7 @@
+ * [peter-b]: Revision of the way Python version & DLL path are logged
+
+ * [peter-b]: Bundled Python upgrade to 2.2.3
+
  * [peter-b]: New executable installer and release policy
 
  * [peter-b, marco leise]: Fix for lambda bug
