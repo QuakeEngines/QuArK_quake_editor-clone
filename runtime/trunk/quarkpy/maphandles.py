@@ -1363,7 +1363,7 @@ def BuildCyanLHandles(editor, face):
 class RectSelDragObject(qhandles.RectangleDragObject):
     "A red rectangle that selects the polyhedrons it touches."
 
-    Hint = "rectangular selection of polyhedrons||After you click on this button, click and move the mouse on the map to draw a rectangle; all polyhedrons touching this rectangle will be selected.\n\nHold down Ctrl to prevent already selected polyhedron from being unselected first."
+    Hint = hintPlusInfobaselink("Rectangular selection of POLYHEDRONS||Rectangular selection of POLYHEDRONS:\n\nAfter you click on this button, click and move the mouse on the map to draw a rectangle; all polyhedrons touching this rectangle will be selected.\n\nHold down Ctrl to prevent already selected polyhedron from being unselected first.", "intro.mapeditor.toolpalettes.mousemodes.html#selectpoly")
 
     def rectanglesel(self, editor, x,y, rectangle):
         if not ("T" in self.todo):
@@ -1806,6 +1806,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.36  2003/03/06 22:21:34  tiglari
+#change for Py2.x compatibility
+#
 #Revision 1.35  2002/05/18 22:30:42  tiglari
 #remove debug statement
 #
