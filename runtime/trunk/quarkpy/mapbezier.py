@@ -26,10 +26,11 @@ class CPHandle(qhandles.GenericHandle):
     undomsg = Strings[627]
     hint = "reshape bezier patch (Ctrl key: force control point to grid)||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
-    def __init__(self, pos, b2, ij):
+    def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
         self.b2 = b2
         self.ij = ij
+        self.color = color #DECKER
 
     def draw(self, view, cv, draghandle=None):
         if self.ij == (0,0):
@@ -41,7 +42,9 @@ class CPHandle(qhandles.GenericHandle):
             cv.reset()
             #cv.brushcolor = MapColor("Bezier")
             #cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
-            cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
+            #cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
+            cv.brushcolor = self.color #DECKER
+            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
     def drawcpnet(self, view, cv, cp=None):
         #
