@@ -12,35 +12,43 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
- * [Rowdy/cdunde]: Mainly to play nice with Torque's map2dif utility, an
-      option has been added to the game configuration window for each game
-      to specify the number of decimal places to use when writing floating
-      point values to .map files.  Most games work with the default value
-      of 5, Torque/map2dif requires more (and is defaulted to 16).  Ranges
-      from 1 to 40.
+6.4.1 alpha 1
+=============
 
- * [alexander]: HL2 Releated Enhancements
+ * [Rowdy/cdunde]: Mainly to play nice with Torque's map2dif utility,
+      an option has been added to the game configuration window for
+      each game to specify the number of decimal places to use when
+      writing floating point values to .map files.  Most games work
+      with the default value of 5, Torque/map2dif requires more (and
+      is defaulted to 16).  Ranges from 1 to 40.
+
+ * [alexander]: HL2 Related Enhancements
       - can set lightmapscale for face in face specific page
-      - vmf file loader imports worldspawn attributes, dumps everything
-        it doesnt understant into a misc folder of the map structure
+      - vmf file loader imports worldspawn attributes, dumps
+        everything it doesnt understant into a misc folder of the map
+        structure
       - vmf loader does no longer break on hidden entities and brushes
 
- * [alexander]: HL2 Releated Enhancements
+ * [alexander]: HL2 Related Enhancements
       - loading of .vmf (hammer map files) is available
       - CS-Source textures complete
-      - QuArK Loads HL2 models and render yellow transparent boxes with the
-        models size and orientation in the open gl viever. Note that lights
-        must be enabled an a light entity must be in the map to make this work.
+      - QuArK Loads HL2 models and render yellow transparent boxes
+        with the models size and orientation in the open gl
+        viever. Note that lights must be enabled an a light entity
+        must be in the map to make this work.
       - QuArK understands now  a mdlrendermode setup for model rendering
-        additionally to the "mdl", "mdlbase" and "mdlopacity" form date specifics.
+        additionally to the "mdl", "mdlbase" and "mdlopacity" form
+        date specifics.
       - fixed bogus mdlopacity specific reading
       - The model selection form has been improved
-      - the quarksteamfs.dll allows now retry of a steam configuration, before
-        this we had to shutdown quark to be able to retry a different configuration.
-      - rendermode, renderamt and rendercolor settings of brush entities are
-        displayed in open gl mode
+      - the quarksteamfs.dll allows now retry of a steam
+        configuration, before this we had to shutdown quark to be able
+        to retry a different configuration.
+      - rendermode, renderamt and rendercolor settings of brush
+        entities are displayed in open gl mode
       - detect hl2 bsp format, but no loading yet 
-      - remove prepare textures and build program 4 call from default config
+      - remove prepare textures and build program 4 call from default
+        config
 
  * [alexander]: QuArK understands now how to access Steam directly.
       (Steam must be running for that). Some new configuration entries have
