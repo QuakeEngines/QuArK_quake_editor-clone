@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2002/04/12 22:09:13  tiglari
+Reminder -> Disclaimer, Rip out registration check code
+
 Revision 1.11  2001/06/05 18:38:06  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -75,7 +78,6 @@ type
     ProgramIcon: TImage;
     ProductName: TLabel;
     Version: TLabel;
-    ContributorsLabel: TLabel;
     OKButton: TButton;
     Edit1: TEdit;
     Label2: TLabel;
@@ -90,7 +92,9 @@ type
     Label10: TLabel;
     Memo1: TMemo;
     UsedCompilerLabel: TLabel;
-    Contributors: TMemo;
+    Label1: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -187,12 +191,16 @@ begin
     + 'You may charge a fee for the physical act of transferring a copy, and '
     + 'you may at your option offer warranty protection in exchange for a fee.';
 
+(*
   Contributors.Text :=
                'Armin Rigo (arigo@planetquake.com)'
     + #13#10 + 'tiglari (tiglari@planetquake.com)'
     + #13#10 + 'Decker (decker@planetquake.com)'
     + #13#10 + 'Andy Vincent (andyvinc@hotmail.com)'
     + #13#10 + 'Alexander Haarer (mac.@gmx.net)'
+    + #13#10 + 'Rowdy (david@fielden.com)'
+    // and others, this list is basically too hard to maintain
+ *)
 end;
 
 procedure TAboutBox.OKButtonClick(Sender: TObject);
