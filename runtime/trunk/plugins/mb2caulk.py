@@ -1,6 +1,36 @@
+"""   QuArK  -  Quake Army Knife Bezier shape makers
+
+
+"""
+
+
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+ 
+########################################################
+#
+#                          Caulk Plugin
+#                          v1.0, Aug 2000
+#                      works with Quark 6.0b2        
+#
+#
+#                    by tiglari@hexenworld.net  
+#
+#   You may freely distribute modified & extended versions of
+#   this plugin as long as you give due credit to tiglari &
+#   Armin Rigo. (It's free software, just like Quark itself.)
+#
+#   Please notify bugs & improvements to tiglari@hexenworld.com
+#
+###
+##########################################################
+
+#$Header: 
+
 Info = {
-   "plug-in":       "Nodraw shader plugin",
-   "desc":          "Pasting nodraw on stuff",
+   "plug-in":       "Caulk shader plugin",
+   "desc":          "Pasting caulk shader on stuff",
    "date":          "20 Aug 2000",
    "author":        "tiglari",
    "author e-mail": "tiglari@hexenworld.com",
@@ -115,3 +145,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
     return menu
   
 quarkpy.mapentities.FaceType.menu = tagmenu
+
+
+# ----------- REVISION HISTORY ------------
+#$Log: 
