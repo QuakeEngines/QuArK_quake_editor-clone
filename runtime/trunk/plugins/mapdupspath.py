@@ -524,6 +524,7 @@ class PathDuplicator(StandardDuplicator):
         return list
 
     def buildimages(self, singleimage=None):
+        debug('single: '+`singleimage`)
         try:
             self.readvalues()
         except:
@@ -579,6 +580,7 @@ class PathDuplicator(StandardDuplicator):
         prevaxes = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
         for i in range(count):
             if (singleimage is not None): # Speed up Dissociate images processing
+               debug('  singleimage: '+`singleimage`)
                if (singleimage >= count):
                   return [] # Nothing more to send back!
                else:
@@ -617,6 +619,9 @@ class PathDuplicator(StandardDuplicator):
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
                face.translate(thisorigin-center,0)
                if i>0:
+                   if singleimage is not None:
+                       lastx = (thisorigin-pathlist[i-1].origin).normalized
+                       joinnorm=((xax+lastx)/2).normalized
                    face.distortion(-joinnorm,thisorigin)
             for face in back:
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
@@ -1015,6 +1020,10 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2001/03/12 23:10:27  tiglari
+#path dup adding/positioning enhancements (does the work of the
+# 'torus generator' suggested plugin, inter alia)
+#
 #Revision 1.22  2001/03/08 06:23:26  tiglari
 #menu item to select duplicator on path point handles
 #
