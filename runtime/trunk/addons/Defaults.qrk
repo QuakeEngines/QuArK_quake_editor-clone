@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.187  2002/05/03 17:27:00  decker_dk
+//Fixes to the JK2 compile-tool, as discovered by 'nurail'.
+//
 //Revision 1.186  2002/04/30 17:56:22  decker_dk
 //JK2 compile-tools. Haven't testet yet though.
 //
@@ -1577,6 +1580,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Classic Quake"
+        EditableSurfaceParms="1"
 
         StupidBuildToolKludge = ""
         BuildPgm1  = "Q3MAP.EXE"
