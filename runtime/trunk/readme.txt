@@ -1,4 +1,21 @@
 
+           QuArK Snapshot of 2002feb28
+           
+ * [Andy]
+    .md3 skins can hopefully be loaded from paths with
+    forward slashes
+
+ * [Decker/tiglari]
+    a memory leak involving the display of textures
+    in the multi-pages panel has hopefully been fixed
+    
+ * [tiglari]
+    memory-use tracker.  To use it, first check Developer mode in
+    the options menu, then restart QuArk.  On the command menu will
+    appear an item 'heapstatus', click it to get a display of how
+    much memory has been allocated, and on a second click, how much
+    this has changed.
+
            QuArK Snapshot of 2002feb24
 
  * [Decker]
