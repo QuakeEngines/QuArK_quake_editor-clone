@@ -26,6 +26,9 @@
 #
 ##########################################################
 
+#$Header$
+
+
 Info = {
    "plug-in":       "Side Tag & Glue",
    "desc":          "Side tagging and gluing to tagged side",
@@ -909,16 +912,41 @@ def aligntexstate(aligntex, tagged, o):
   else:
     aligntex.state = qmenu.disabled
 
+def wraptexold(orig, side):
+    "actually wraps the texture from orig to side"
+    "assumes aligntexstate has checked the preconditions"
+    newside = side.copy()
+    squawk('copy')
+    (o, t1, t2) = orig.threepoints(0)
+    (r, s1, s2) = side.threepoints(0)
+    n = side.normal
+    if n*(t1-o) != 0:
+#      quarkx.msgbox("t1 is OK",MT_INFORMATION, MB_OK)
+      t = t1
+    else:
+#      quarkx.msgbox("t2 is hopefully OK",MT_INFORMATION, MB_OK)
+      t = t2
+    l = -(n*(o-r))/(n*(t-o))
+    p = l*(t-o)+o
+    if n*(p-r) > .000001:
+      squawk("Sorry, something's not right here, I can't do this")
+      return
+    newside.distortion(orig.normal,p)
+    newside.setthreepoints(orig.threepoints(1),1)
+    newside["tex"]=orig["tex"]
+    newside.distortion(side.normal,p) 
+    squawk('wrappin')
+    return newside
 
 def wraptex(orig, side):
     "actually wraps the texture from orig to side"
     "assumes aligntexstate has checked the preconditions"
-    newside = side.copy()
-#    copytags(side, newside) # transfers specifics beginning with _
+    #
+    # Find a point where the two sides intersect.
+    #
     (o, t1, t2) = orig.threepoints(0)
     (r, s1, s2) = side.threepoints(0)
     n = side.normal
-    newside.texturename = orig.texturename
     if n*(t1-o) != 0:
 #      quarkx.msgbox("t1 is OK",MT_INFORMATION, MB_OK)
       t = t1
@@ -930,31 +958,25 @@ def wraptex(orig, side):
     if n*(p-r) > .000001:
       squawk("Sorry, something's not right here, I can't do this")
       return
+    #
+    # Now make the new side
+    #
+    newside = side.copy()
+    newside.texturename = orig.texturename
+    #
+    # Orient the new side paralell to the original
+    #
     newside.setthreepoints((o, t1, t2,), 0)
+    #
+    # Now make sure texture orientation is right
+    #
+    newside.setthreepoints(orig.threepoints(1),3) 
+    #
+    #  Swing the new side into position
+    #
     newside.distortion(side.normal,p) 
     return newside
 
-def wraptex2(orig, side):
-    "actually wraps the texture from orig to side"
-    "assumes aligntexstate has checked the preconditions"
-    newside = orig.copy()
-    copytags(side, newside) # transfers specifics beginning with _
-    (o, t1, t2) = orig.threepoints(0)
-    (r, s1, s2) = side.threepoints(0)
-    n = side.normal
-    if n*(t1-o) != 0:
-#      quarkx.msgbox("t1 is OK",MT_INFORMATION, MB_OK)
-      t = t1
-    else:
-#      quarkx.msgbox("t2 is hopefully OK",MT_INFORMATION, MB_OK)
-      t = t2
-    l = -(n*(o-r))/(n*(t-o))
-    p = l*(t-o)+o
-    if n*(p-r) > .000001:
-      squawk("Sorry, something's not right here, I can't do this")
-      return
-    newside.distortion(side.normal,p) 
-    return newside
 
 def AlignTexClick(m):
   "wraps texture from tagged to selected side"
@@ -1966,4 +1988,6 @@ quarkpy.mapcommands.shortcuts["Ctrl+L"] = menlinksel
 
 quarkpy.mapcommands.onclick = commandsclick
 
-# Jan 28, 1999 - made menus constant, added flyover help
+# ----------- REVISION HISTORY ------------
+#$Log$
+#--- snap ----
