@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.79  2005/02/17 09:49:18  rowdy
+added a per-game configuration option to specify the number of decimal places to use when writing floats to .map files, defaulted to 5 for all games except Torque, where it is defaulted to 16 (this is a hack for Torque's map2dif utility)
+
 Revision 1.78  2005/02/06 21:11:35  alexander
 able to set lightmapscale value on a face for hl2
 
@@ -3099,7 +3102,9 @@ begin
    begin
      S:=PSurface(Faces[J])^.F.Specifics.values['lightmapscale'];
      if S<>'' then
-       Brush.Add('  "lightmapscale" "'+S+'"');
+       Brush.Add('  "lightmapscale" "'+S+'"')
+     else
+       Brush.Add('  "lightmapscale" "16"');
      Brush.Add(' }');
    end
   end
