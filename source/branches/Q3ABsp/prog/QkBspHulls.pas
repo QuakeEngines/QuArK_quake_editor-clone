@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/06/05 18:38:47  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.9  2001/03/20 21:46:48  decker_dk
 Updated copyright-header
 
@@ -59,6 +62,9 @@ uses Windows, SysUtils, Classes, QkObjects, QkMapObjects, QkBsp,
      qmath, QkFileObjects;
 
 type
+ TIntegerPair = record
+                 first, second : Integer;
+                end;
  TBoundBox = record
               Min, Max: vec3_t;
              end;
@@ -83,7 +89,14 @@ type
             Origin: vec3_t;
             HeadNode, Face_id, Face_num: LongInt;
            end;
-
+ PHullQ3 = ^THullQ3;
+ THullQ3 = record
+            Bound: TBoundBox;
+           { Origin: vec3_t;
+           { HeadNode, Face_id, Face_num: LongInt; }
+            Face_id, Face_num: Integer;
+            Brush_id, Brush_num: Integer;
+           end;
  PbPlane = ^TbPlane;
  TbPlane = record
             normal: vec3_t;
@@ -98,6 +111,37 @@ type
               LightStyles: array[0..3] of Char;
               LightMap: LongInt;
              end;
+
+ PbQ3Surface = ^TbQ3Surface;
+ TbQ3Surface = record
+                TexInfo_id: Integer;
+                Effect_id: Integer;
+                Face_Type: Integer; { 1=polygon, 2=patch, 3=mesh, 4=billboard }
+                Vertex_id, Vertex_num, Meshvert_id, Meshvert_num : Integer;
+                Lightmap_id : Integer;
+                Lm_Start, Lm_Size : TIntegerPair;
+                Lm_Origin, Lm_S, Lm_T : vec3_t;
+                Normal: vec3_t;
+                PatchDim: TIntegerPair;
+               end;
+   { q3map code :
+      int texture  Texture index.
+      int effect  Index into lump 12 (Effects), or -1.
+      int type  Face type. 1=polygon, 2=patch, 3=mesh, 4=billboard
+      int vertex  Index of first vertex.
+      int n_vertexes  Number of vertices.
+      int meshvert  Index of first meshvert.
+      int n_meshverts  Number of meshverts.
+      int lm_index  Lightmap index.
+      int[2] lm_start  Corner of this face's lightmap image in lightmap.
+      int[2] lm_size  Size of this face's lightmap image in lightmap.
+      float[3] lm_origin  World space origin of lightmap.
+      float[2][3] lm_vecs  World space lightmap s and t unit vectors.
+      float[3] normal  Surface normal.
+      int[2] size  Patch dimensions.
+
+  }
+
  PLEdge = ^TLEdge;
  TLEdge = LongInt;
  PEdge = ^TEdge;
@@ -216,7 +260,7 @@ var
  HullType: Char;
  Delta, Size1: Integer;
  S: String;
- I, J, NoVert, NoVert2{, TexInfo_id}: Integer;
+ I, J, NoVert, NoVert2{, TexInfo_id}, SurfaceSize: Integer;
  Faces, Faces2: PbSurface;
  LEdges, Edges, Vertices, TexInfo, Planes, P: PChar;
  cLEdges, cEdges, cVertices, cTexInfo, cPlanes: Integer;
@@ -246,6 +290,7 @@ begin
    mjQuake, mjHalfLife:  Size1:=SizeOf(THull);
    mjHexen:              Size1:=SizeOf(THullH2);
    mjQuake2, mjHeretic2: Size1:=SizeOf(THullQ2);
+   mjQ3A:                Size1:=SizeOf(THullQ3);
   else Exit;
   end;
   I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
@@ -272,7 +317,13 @@ begin
                FirstFace:=Face_id;
                cTexInfo:=SizeOf(TTexInfoQ2);
               end;
-  end;
+   mjQ3A: with PHullQ3(P)^ do
+              begin
+               NbFaces:=Face_num;
+               FirstFace:=Face_id;
+               cTexInfo:=SizeOf(TTexInfoQ2);
+              end;
+   end;
   if HullType>=mjQuake2 then
    TextureList:=Nil
   else
@@ -280,12 +331,19 @@ begin
     TextureList:=FBsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
     TextureList.Acces;
    end;
-  if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SizeOf(TbSurface) then
+  if HullType<mjQ3A then
+    SurfaceSize:=SizeOf(TbSurface)
+  else
+    SurfaceSize:=Sizeof(TbQ3Surface);
+  if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
    Raise EErrorFmt(5635, [2]);
-  Inc(PChar(Faces), Pred(FirstFace) * SizeOf(TbSurface));
-  cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, eBsp3_surfedges,  LEdges)   div SizeOf(TLEdge);
-  cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     eBsp3_edges,      Edges)    div SizeOf(TEdge);
-  cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
+  Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
+  if HullType<mjQ3A then
+  begin
+    cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3,  LEdges)   div SizeOf(TLEdge);
+    cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     NoBsp3,      Edges)    div SizeOf(TEdge);
+    cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
+  end;
   cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
   cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  eBsp3_vertexes,   Vertices) div SizeOf(vec3_t);
   Vertices:=PChar(FBsp.FVertices);
@@ -496,12 +554,18 @@ var
 begin
  if (FBsp=Nil) or (SurfaceList=Nil) then Exit;
 
- FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
- Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
- FBsp.GetBspEntryData(eListEdges, lump_surfedges, eBsp3_surfedges, LEdges);
- FBsp.GetBspEntryData(eEdges, lump_edges, eBsp3_edges, Edges);
- Vertices:=PChar(FBsp.FVertices);
-
+ if FBsp.NeedObjectGameCode<mjQ3A then
+ begin
+   FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
+   Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
+   FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3, LEdges);
+   FBsp.GetBspEntryData(eEdges, lump_edges, NoBsp3, Edges);
+   Vertices:=PChar(FBsp.FVertices);
+ end
+ else
+ begin
+   { Whatever Happens to draw Q3A bsp's ... }
+ end;
  if g_DrawInfo.SelectedBrush<>0 then
   begin
    NewPen:=g_DrawInfo.SelectedBrush;
