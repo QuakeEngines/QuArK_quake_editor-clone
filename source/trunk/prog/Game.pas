@@ -94,6 +94,7 @@ function NeedGameFile(const FileName: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 function PathAndFile(const Path, FileName: String) : String;
+function GetDLLDirectory: String;
 procedure BuildCorrectFileName(var S: String);
 function GettmpQuArK : String;
 function BaseOutputPath : String;
@@ -293,6 +294,13 @@ begin
    if (Result[Length(Result)]='\') and (Result[Length(Result)-2]<>':') then
     SetLength(Result, Length(Result)-1);
   end;
+end;
+
+function GetDLLDirectory: String;
+const
+ DLL_SUBDIRECTORY = 'dlls';
+begin
+ Result:=PathAndFile(ApplicationPath, DLL_SUBDIRECTORY);
 end;
 
 function GettmpQuArK : String;

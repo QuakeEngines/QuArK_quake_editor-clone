@@ -54,7 +54,7 @@ QQRKSRC1
       }
       3D view:config =
       {
-        Lib = "dlls/qrksoftg.dll"
+        Lib = "qrksoftg.dll"
         3DFXLogo = ""
         SoftQuality = "0"
         DynamicQuality = "2"

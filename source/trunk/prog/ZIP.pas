@@ -22,9 +22,6 @@ uses QkFileObjects, ZipMstr, QkZip2, Game, Setup;
 
 {$R ZipMsgUS.res}
 
-const
-  ZIP_DLL_SUBDIRECTORY = 'dlls';
-
 procedure CompressStream(var Input: TMemoryStream; var Output: TMemoryStream);
 var
   TempZipName, TempZipName2, TempFileName: String;
@@ -38,7 +35,7 @@ begin
   TempZipName:=ChangeFileExt(TempZipName2,'.zip');
   Input.SaveToFile(TempFileName);
   ZM:=TZipMaster.Create(Nil);
-  ZM.DLLDirectory:=PathAndFile(ApplicationPath, ZIP_DLL_SUBDIRECTORY);
+  ZM.DLLDirectory:=GetDLLDirectory;
   ZM.ZipFilename:=TempZipName;
   ZM.AddCompLevel:=8;
   ZM.List;

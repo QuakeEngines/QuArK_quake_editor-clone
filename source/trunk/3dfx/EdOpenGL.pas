@@ -131,9 +131,9 @@ end;
 
 procedure FreeOpenGLTexture(Tex: PTexture3);
 begin
- {$IFDEF DebugGLErr} if Assigned(gl) then Err(-101); {$ENDIF}
  if (Tex^.OpenGLName<>0) and Assigned(gl) then
   begin
+   {$IFDEF DebugGLErr} if Assigned(gl) then Err(-101); {$ENDIF}
    gl.glDeleteTextures(1, Tex^.OpenGLName);
    {$IFDEF DebugGLErr} Err(101); {$ENDIF}
   end;

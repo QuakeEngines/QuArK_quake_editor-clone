@@ -1123,7 +1123,7 @@ const
 var
  gr: PGlideRoutines;
 
-function ReloadGlide(const LibName: String) : Boolean;
+function ReloadGlide(const LibName, SearchDir: String) : Boolean;
 procedure UnloadGlide;
 function GlideLoaded : Boolean;
 
@@ -1182,12 +1182,13 @@ begin
  Result:=Assigned(gr);
 end;
 
-function ReloadGlide(const LibName: String) : Boolean;
+function ReloadGlide(const LibName, SearchDir: String) : Boolean;
 var
  gr1: PGlideRoutines;
  I: Integer;
  P: ^TFarProc;
  softgQuArK: function : Integer; stdcall;
+ S: String;
 begin
  UnloadGlide;
  Result:=False;
@@ -1195,7 +1196,12 @@ begin
  gr1^.GlideLib:=0;
  try
   gr1^.GlideLib:=LoadLibrary(PChar(LibName));
-  if gr1^.GlideLib=0 then Exit;
+  if gr1^.GlideLib=0 then
+   begin
+    S:=SearchDir+'\'+LibName;
+    gr1^.GlideLib:=LoadLibrary(PChar(S));
+    if gr1^.GlideLib=0 then Exit;
+   end;
   gr1^.LibName:=LibName;
   @softgQuArK:=GetProcAddress(gr1^.GlideLib, SoftwareVersionRoutine);
   if Assigned(softgQuArK) then
