@@ -2105,7 +2105,8 @@ end;
 
 procedure TTreeMapBrush.CouleurDessin;
 begin
- if (TvParent<>Nil) and (FParent is TTreeMap) then
+ if TvParent=Nil then Exit;  { always ignore the worldspawn's "_color" because it is used for Quake 3 ambiant lighting color }
+ if FParent is TTreeMap then
   C:=MapColors(lcBrushEntity);
  inherited;
 end;
