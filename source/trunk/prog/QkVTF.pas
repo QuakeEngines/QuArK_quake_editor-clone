@@ -22,6 +22,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2004/12/02 20:53:06  alexander
+added format names for hl2
+use vtf textures in original size again
+
 Revision 1.2  2004/11/25 00:25:51  alexander
 use maximum texture size of 128 pixels for quark to reduce mem use
 
@@ -37,24 +41,6 @@ interface
 uses Classes, QkImages, QkObjects, QkFileObjects;
 
 
-
-type
- TVTFHeader = packed record
-  magic:      array[0..2]  of char;     // the string "VTF"
-  ExtraData0: array[0..12] of Byte;     // some header data
-  Width, Height: Word;                  // width and height of texture
-  ExtraData1: array[0..31] of Byte;     // some more header data
-  Format: Byte;                         // a number which states the used image format
-                                        // most textures use 13 or 15
-  ExtraData2: array[0..10] of Byte;     // more data belonging to header (doesent change much from file to file)
-  // after this point the image data seems to begin, (changes much from file to file)
-  // it seems to contain large images at the end of the file and smaller images towards the start
-  // of the file ,appearently each half size of the one before. But even if we assume this goes down to
-  // 1x1 pixel , there is some space left between header and the first image .. ??
-  // Never mind, we just get the last image, assuming that it sits directly at the
-  // end of the file. So we seek to file length - image size and read it.
-
-end;
 
 
 type
@@ -74,13 +60,13 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
 var
-  Hdxtdecode  : HINST;
-  // c signature
-  //void extract_dxt(char dxtformat,char* buf, int width, int height,  char* p_texel)
-  extract_dxt : procedure (format: Byte; buf: PChar; width: Integer; height: Integer; outbuf: PChar); stdcall;
+  HQuArKVTF   : HINST;
 
-// this would be static usage of the dll
-//procedure extract_dxt(format: Byte; buf: PChar; width: Integer; height: Integer; outbuf: PChar); stdcall; external 'dxtdecode' index 1  name 'extract_dxt';
+
+//DLL_IMPORT int vtf_to_mem(void* bufmem, long readlength, unsigned char *pDstImage);
+//DLL_IMPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
+  vtf_to_mem : function ( buf: PChar; length: Integer; outbuf: PChar): Integer; stdcall;
+  vtf_info : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger): Integer; stdcall;
 
 
 class function QVTF.TypeInfo: String;
@@ -106,17 +92,42 @@ type
   PRGB = ^TRGB;
   TRGB = array[0..2] of Byte;
 var
-  Header: TVTFHeader;
   AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
   Source, DestAlpha, DestImg,pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
-  CompressedSize,NumberOfPixels,PictureStartPosition: Integer;
-  Width,Height:Integer;
+  NumberOfPixels: Integer;
+  Width,Height,MipLevels:Integer;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
+
+// new code
+      SetLength(RawBuffer, FSize);
+      F.Seek(0, 0	  );
+      F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
+
+     if @vtf_info <> nil then
+     begin
+      if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels) then
+        Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
+      NumberOfPixels:= Width*Height;
+      SetSize(Point(Width, Height));
+      SetLength(DecodedBuffer, NumberOfPixels * 4);
+      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,PChar(DecodedBuffer)) then
+        Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
+
+     end
+     else
+       Raise EError(5705);
+
+
+
+(*
+
+// old code
       if FSize<SizeOf(Header) then
         Raise EError(5519);
+
       F.ReadBuffer(Header, SizeOf(Header));
 
       { check the file format }
@@ -138,17 +149,6 @@ begin
       Height:=Header.Height;
       PictureStartPosition := FSize-CompressedSize;
 
-(* disabled
-      {halve size until W < 128}
-      while Width > 512 do
-      begin
-        Width := Width div 2;
-        Height := Height div 2;
-        CompressedSize := CompressedSize div 4 ;
-        NumberOfPixels := NumberOfPixels div 4 ;
-        PictureStartPosition := PictureStartPosition - CompressedSize;
-      end;
-*)
       SetSize(Point(Width, Height));
 
       SetLength(RawBuffer, CompressedSize);
@@ -166,7 +166,7 @@ begin
       else
         Raise EError(5705);
 
-
+*)
       {allocate quarks image buffers}
       ImgData:=ImageSpec;
       AlphaData:=AlphaSpec;
@@ -186,9 +186,9 @@ begin
         pDestAlpha:=DestAlpha;
         for I:=1 to Width do
         begin
-          PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];  { rgb }
+          PRGB(pDestImg)^[0]:=PRGB(pSource)^[0];  { rgb }
           PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
-          PRGB(pDestImg)^[2]:=PRGB(pSource)^[0];  { rgb }
+          PRGB(pDestImg)^[2]:=PRGB(pSource)^[2];  { rgb }
           pDestAlpha^:=pSource[3];                { alpha }
           Inc(pSource, 4);
           Inc(pDestImg, 3);
@@ -214,11 +214,18 @@ end;
 {-------------------}
 
 initialization
-  Hdxtdecode := LoadLibrary('dxtdecode.dll');
-  if Hdxtdecode >= 32 then { success }
-    extract_dxt := GetProcAddress(Hdxtdecode, 'extract_dxt')
+  HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
+  if HQuArKVTF >= 32 then { success }
+  begin
+    vtf_to_mem := GetProcAddress(HQuArKVTF, 'vtf_to_mem');
+    vtf_info := GetProcAddress(HQuArKVTF, 'vtf_info');
+  end
   else
-    extract_dxt:=nil;
+  begin
+    vtf_to_mem:=nil;
+    vtf_info:=nil;
+  end;
+
 
   {tbd is the code ok to be used ?  }
   RegisterQObject(QVTF, 'v');

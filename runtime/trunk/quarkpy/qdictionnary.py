@@ -907,7 +907,7 @@ Strings = {
     5702: "Files in this directory wont work. Select a file in a subdirectory please.",
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "no vtf file",
-    5705: "dxtdecode.dll not found",
+    5705: "QuArkVTF.dll not found, QuArK need this to load VTF Textures",
     5706: "gcfwrap.dll not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "%s not found in %s",
@@ -956,6 +956,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.60  2004/12/02 19:36:58  alexander
+#added format names for hl2
+#
 #Revision 1.59  2004/12/02 18:55:15  alexander
 #added vtf format name
 #
