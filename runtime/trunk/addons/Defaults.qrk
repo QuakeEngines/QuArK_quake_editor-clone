@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.199  2002/12/25 21:25:07  tiglari
+//add pts loading to Q1, Hx2, HL
+//
 //Revision 1.198  2002/12/18 00:52:37  tiglari
 //Preliminary crap Genesis3D support, copy of Q1
 //
@@ -910,54 +913,7 @@ QQRKSRC1
         Form = "GameQuake1"
         PlayerClass = "X"
       }
-      Genesis3D:config =
-      {
-        Game = "Genesis3D"
-        Code = "4" // Hardcoded value in Setup.PAS
 
-        Program = "Quake.EXE"
-
-        Directory = "\Quake"
-        CheckDirectory = "QUAKE.EXE"
-
-        MapCommentsPrefix = "//"
-
-        OutputMapFormat = "Classic Quake"
-        BuildPgm1  = "TXQBSP.EXE"
-        BuildArgs1 = ""
-        BuildCheck1= "+BSP,+PRT"
-        BuildPgm2  = "RVIS.EXE"
-        BuildArgs2 = ""
-        BuildPgm3  = "ARGHLITE.EXE"
-        BuildArgs3 = ""
-
-        DefaultTexture = "bricka2_2"
-        DefaultTextureTrigger = "trigger"
-        DefaultTextureClip = "clip"
-
-        WateryTex = "*"
-        TextureFormat = ".wad_D"
-        TextureWriteFormat = ".wad_D"
-        TextureWad = "gfx/QuArK.wad"
-
-        BaseDir = "id1"
-        tmpQuArK = "tmpQuArK"
-
-        MapHoles = ".pts"
-        Palette = "gfx/palette.lmp"
-        Gradient = "gfx/colormap.lmp"
-        UnifiedPalette = "1"
-        ExtraCmdLine = "-game %s"
-        RunMapCmdLine = " +map %s"
-        AddOns = "DataGen3D.qrk"    // list of files to use as add-ons for Quake 1 (separator is the character $0D hex., example : "first.qrk"$0D"second.qrk"$0D"third.qrk"
-        AlwaysPak = ""
-        PakExt = ".pak"
-        LightFactor = '0.9'
-        3DLight = '512'
-        Console = "1"
-        Form = "GameQuake1"
-        PlayerClass = "X"
-      }
       Hexen II:config =
       {
         Game = "Hexen II"
@@ -1851,6 +1807,55 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
+      }
+
+      Genesis3D:config =
+      {
+        Game = "Genesis3D"
+        Code = "4" // Hardcoded value in Setup.PAS
+
+        Program = "Quake.EXE"
+
+        Directory = "\Quake"
+        CheckDirectory = "QUAKE.EXE"
+
+        MapCommentsPrefix = "//"
+
+        OutputMapFormat = "Classic Quake"
+        BuildPgm1  = "TXQBSP.EXE"
+        BuildArgs1 = ""
+        BuildCheck1= "+BSP,+PRT"
+        BuildPgm2  = "RVIS.EXE"
+        BuildArgs2 = ""
+        BuildPgm3  = "ARGHLITE.EXE"
+        BuildArgs3 = ""
+
+        DefaultTexture = "bricka2_2"
+        DefaultTextureTrigger = "trigger"
+        DefaultTextureClip = "clip"
+
+        WateryTex = "*"
+        TextureFormat = ".wad_D"
+        TextureWriteFormat = ".wad_D"
+        TextureWad = "gfx/QuArK.wad"
+
+        BaseDir = "id1"
+        tmpQuArK = "tmpQuArK"
+
+        MapHoles = ".pts"
+        Palette = "gfx/palette.lmp"
+        Gradient = "gfx/colormap.lmp"
+        UnifiedPalette = "1"
+        ExtraCmdLine = "-game %s"
+        RunMapCmdLine = " +map %s"
+        AddOns = "DataGen3D.qrk"    // list of files to use as add-ons for Quake 1 (separator is the character $0D hex., example : "first.qrk"$0D"second.qrk"$0D"third.qrk"
+        AlwaysPak = ""
+        PakExt = ".pak"
+        LightFactor = '0.9'
+        3DLight = '512'
+        Console = "1"
+        Form = "GameQuake1"
+        PlayerClass = "X"
       }
 
     }
