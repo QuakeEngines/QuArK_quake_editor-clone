@@ -699,6 +699,8 @@ Strings = {
     5456: "Building .pak file...",
     5457: "Pasting...",
     5458: "Searching add-ons...",
+    5459: "preparing Faces...",
+    5460: "preparing Models...",
 
     5503: "'%s' is a Half-Life Model which cannot be read (yet)",
     5504: "No texture image//Missing or invalid %s",
@@ -976,6 +978,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.67  2005/01/27 00:16:03  alexander
+#added vmf file loading (brushes only)
+#
 #Revision 1.66  2005/01/26 23:40:22  alexander
 #hl2 map format warning
 #
