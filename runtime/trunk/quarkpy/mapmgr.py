@@ -104,7 +104,7 @@ class MapLayout(BaseLayout):
             mnu.append(item)
         sfbtn = qtoolbar.menubutton(mnu, "skill levels||This button lets you control in which difficulty settings the entity should appear in the game. This lets you make a map harder by for example hiding some health boxes in the upper skill levels. You can also hide some entities in deatchmatch games, for example some doors, or a wall (this is the purpose of the func_wall entity).", ico_maped, 10)
         sfbtn.caption = SFLetters[:len(sfskills)]
-        addspec = qtoolbar.button(self.plusminusclick, "display an empty Specific/Arg pair", ico_maped, 11)
+        addspec = qtoolbar.button(self.plusminusclick, "insert an empty Specific/Arg pair", ico_maped, 11)
         addspec.cmd = 0
         deletespec = qtoolbar.button(self.plusminusclick, "delete a Specific/Arg pair", ico_maped, 12)
         deletespec.cmd = 1
@@ -155,9 +155,9 @@ class MapLayout(BaseLayout):
         TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
         ts1Btn = qtoolbar.button(self.resettexscale, "reset 1:1 texture scale|resets 'scales' and 'angles'", ico_maped, 17)
         ts1Btn.adjust = 0
-        ts2Btn = qtoolbar.button(self.resettexscale, "adjust texture on face|adjust texture to fit the face", ico_maped, 18)
+        ts2Btn = qtoolbar.button(self.resettexscale, "adjust texture to fit the face", ico_maped, 18)
         ts2Btn.adjust = 1
-        ts3Btn = qtoolbar.button(self.resettexscale, "adjust texture on face but keep scaling to a minimum|ajust texture with less distortion", ico_maped, 24)
+        ts3Btn = qtoolbar.button(self.resettexscale, "adjust texture on face but keep scaling to a minimum|adjust texture with minimum scaling", ico_maped, 24)
         ts3Btn.adjust = 2
         prevface = qtoolbar.button(self.nextface, "previous face of poly.", ico_mapedsm, 0)
         prevface.delta = -1
@@ -411,7 +411,7 @@ class MapLayout(BaseLayout):
         if len(flist)!=1:
             return
         face = flist[0]
-        i = face.parent.subitems.index(face)   # face.parent in this case is the polyhedron containing this case 
+        i = face.parent.subitems.index(face)   # face.parent in this case is the polyhedron containing this case
         self.explorer.uniquesel = face.parent.subitem(i + btn.delta)
 
 
@@ -704,5 +704,8 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
