@@ -2239,8 +2239,8 @@ QQRKSRC1
     }
     misc_model:form =
     {
-      help = "this model is inserted into the bsp file"$0D22"model"$22"       "
-       " arbitrary .md3 file to display"
+      mdl = "[model]"
+      Help = "This is placable model for your map."
       angle: =
       {
         Txt = "&"
@@ -2250,11 +2250,6 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "Path and name of a model to use."
-      }
-      spawnflags: =
-      {
-        typ = "X1"
-        cap = "RMG"
       }
       t_model = !
     }
