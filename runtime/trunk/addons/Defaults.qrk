@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.146  2001/06/17 03:05:04  aiv
+//set all seperators to "" that require it
+//
 //Revision 1.145  2001/06/17 02:55:14  aiv
 //fixed error
 //
@@ -3551,8 +3554,8 @@ QQRKSRC1
       target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
       squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
       setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
-      instances: =
-       {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an instance duplicator"}
+//      elbows: =
+//       {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an elbow duplicator"}
     }
     dup path_point:form =
     {
