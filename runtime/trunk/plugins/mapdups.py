@@ -120,6 +120,21 @@ class SymXYDuplicator(StandardDuplicator):
         item3.linear(self.origin, self.mxy)
         return [item, item2, item3]
 
+class SymXYZDuplicator(StandardDuplicator):
+    "XYZ-Axis Symmetry."
+
+    def readvalues(self):
+        StandardDuplicator.readvalues(self)
+        x = 1
+        y = 1
+        z = 1
+        if self.dup["x"]:
+            x = -1
+        if self.dup["y"]:
+            y = -1
+        if self.dup["z"]:
+            z = -1
+        self.matrix = quarkx.matrix((x,0,0),(0,y,0),(0,0,z))
 
 
 class DiggingDuplicator(StandardDuplicator):
@@ -197,7 +212,7 @@ def dissociate1click(m):
     for obj in list:
         if obj.type == ':d':
            list2.append(obj)
-           if obj["out"] and obj.parent is not None:   
+           if obj["out"] and obj.parent is not None:
                for item in obj.parent.subitems:
                    if item!=obj and item.type==':d' and item["out"]:
                        list2.append(item)
@@ -268,6 +283,7 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup symy":        SymYDuplicator,
   "dup symz":        SymZDuplicator,
   "dup symxy":       SymXYDuplicator,
+  "dup symxyz":      SymXYZDuplicator,
   "digger":          Digger,
   "hollow maker":    HollowMaker,
   "wall maker":      WallMaker,
@@ -287,6 +303,9 @@ quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCy
 #
 #
 # $Log$
+# Revision 1.8  2001/08/07 23:33:43  tiglari
+# reset texture cycle command
+#
 # Revision 1.7  2001/05/19 03:55:42  tiglari
 # dissociate one, dissociate all, for 'out' duplicators
 #

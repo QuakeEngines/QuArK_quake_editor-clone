@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.162  2001/08/06 00:19:49  tiglari
+//update version
+//
 //Revision 1.161  2001/08/06 00:15:51  tiglari
 //texture-cycling for duplicators
 //
@@ -1308,7 +1311,7 @@ QQRKSRC1
 
         BuildPgm2 = "cp"
         BuildArgs2 = "%file%.zip %mappath%\.."
-      
+
       TexturesPath = "textures/"
         Q2TexFlags = "1"
 
@@ -3590,6 +3593,13 @@ QQRKSRC1
     {
       serialform = !
     }
+    dup symxyz:form =
+    {
+      x: = { txt="&" typ="X" cap="Flip X-axis" }
+      y: = { txt="&" typ="X" cap="Flip Y-axis" }
+      z: = { txt="&" typ="X" cap="Flip Z-axis" }
+      serialform = !
+    }
     dup basic:form =
     {
       outform = !
@@ -4525,6 +4535,14 @@ QQRKSRC1
           out = "1"
           origin = "0 0 0"
           macro = "dup symz"
+        }
+        Mirror XYZ:d =
+        {
+          ;desc = "XYZ-axes toggleable mirror"
+          out = "1"
+          origin = "0 0 0"
+          x = "X"
+          macro = "dup symxyz"
         }
         Mirror XY:d =
         {
