@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2003/03/15 01:56:31  tiglari
+make url path for infobaselink relative to application path
+
 Revision 1.8  2003/03/12 21:35:12  tiglari
 press F1 in snippet window calls up infobase page
 
@@ -192,7 +195,7 @@ end;
 procedure THelpPopup.SetInfoBaseLink(Link: String);
 begin
   InfoBaseLink := GetApplicationPath+'help\'+Link;  // tiglari
-  Button1.Visible := (InfoBaseLink <> '');
+  Button1.Visible := (Link <> '');
 end;
 {/AiV}
 
