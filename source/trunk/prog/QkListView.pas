@@ -522,7 +522,7 @@ begin
   for I:=0 to DragQueryFile(Msg.wParam, DWORD(-1), Nil, 0) - 1 do
    if DragQueryFile(Msg.wParam, I, Z, SizeOf(Z))>0 then
     begin
-     Q:=LienFichierExact(StrPas(Z), Nil, False);
+     Q:=ExactFileLink(StrPas(Z), Nil, False);
      Q.AddRef(+1); try
      Q1:=Q.Clone(Gr, False);
      Q1.Flags:=Q1.Flags and not (ofFileLink or ofModified);

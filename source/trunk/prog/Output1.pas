@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/05/07 09:33:02  decker_dk
+Fixed a problem with TGetPakNames
+
 Revision 1.3  2000/05/04 19:29:27  decker_dk
 Refined TGetPakNames and functions that used GetPakZero/GetNextPakName
 
@@ -89,7 +92,7 @@ procedure OutputDirDlg;
 {procedure PrepareRunGame(InternalSpecs: QObject);}
 
 function NomFichierSortiePak(Force: Boolean) : String;
-function IsPakTemp(const NomFich: String) : Boolean;
+function IsPakTemp(const theFilename: String) : Boolean;
 (*DECKER-begin
 function GetPakZero(const Path: String; Back: Boolean) : String;
 function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
@@ -104,13 +107,13 @@ uses FormCfg, Game, QkPak, Setup, QkQuakeCtx, QkUnknown, QkMacro, Travail,
 
 {$R *.DFM}
 
-function IsPakTemp(const NomFich: String) : Boolean;
+function IsPakTemp(const theFilename: String) : Boolean;
 var
  F: TFileStream;
  IntroEx: TIntroPakEx;
 begin
  try
-  F:=TFileStream.Create(NomFich, fmOpenRead or fmShareDenyNone); try
+  F:=TFileStream.Create(theFilename, fmOpenRead or fmShareDenyNone); try
   F.ReadBuffer(IntroEx, SizeOf(IntroEx));
   Result:=((IntroEx.Intro.Signature=SignaturePACK)
         or (IntroEx.Intro.Signature=SignatureSPAK))
@@ -392,7 +395,7 @@ begin
       begin
        S:=OutputFile(S);
        if FileExists(S) then
-        PakFile.AddFileWithPath(FileList[I], LienFichierExact(S, Nil, False), False);
+        PakFile.AddFileWithPath(FileList[I], ExactFileLink(S, Nil, False), False);
       end;
     end;
    ProgresTravail;

@@ -130,7 +130,7 @@ var
 begin
  Delta:=nPos*BytesPerTick;
  BytesLeft:=DataSize-Delta;
- Stream.Seek(OfsData+Delta, 1);
+ Stream.Seek(OfsData+Delta, soFromCurrent);
 end;
 
 procedure TWavDataInfo.StopThreads;

@@ -220,7 +220,7 @@ begin
   RunProgram(S, TempPath, 'General:External editors', L, True);
   finally L.Free; end;
 
-  NewObj:=LienFichierExact(EditorFileName, Q.FParent, False);
+  NewObj:=ExactFileLink(EditorFileName, Q.FParent, False);
   NewObj.AddRef(+1); try
   NewObj.LoadAll;
   NewObj2:=Nil; try

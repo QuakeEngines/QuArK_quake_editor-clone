@@ -83,7 +83,7 @@ const
 
  InternalImagesCount     = 46;
 
- ModeFichier = fmOpenRead or fmShareDenyWrite;
+ ModeFichier    = fmOpenRead      or fmShareDenyWrite;
  ModeFichierEcr = fmOpenReadWrite or fmShareDenyWrite;
 
  ofTvSousElement     = $01;   { all objects in a tree-view except top-level (don't change value, must be 1) }
@@ -94,15 +94,15 @@ const
  ofFileLink          = $20;
  ofWarnBeforeChange  = $40;
  ofModified          = $80;
- ofCloneFlags = $FF{-ofTvNode};
+ ofCloneFlags        = $FF{-ofTvNode};
 
 {of2TvNodeSel        = $01;
  ofCloneFlags2 = $FF;}
 
- smNonSel = 0;
- smSel = 1;
+ smNonSel      = 0;
+ smSel         = 1;
  smSousSelVide = 2;
- smSpecial = 4;
+ smSpecial     = 4;
 
  cmObjFirst = $6800;
  cmObjLast  = $68FE;
@@ -145,7 +145,7 @@ type
  PQStreamRef = ^TQStreamRef;
  TQStreamRef = record
                 Self: TQStream;
-                Position, Taille: Integer;
+                Position, StreamSize: Integer;
  {AiV}          OnAccess: Function (Ref: PQStreamRef; var S: TStream) : Integer;
                end;
 
@@ -218,7 +218,7 @@ type
              constructor Create(const nName: String; nParent: QObject);
              procedure LoadAll;
              procedure AccesRec;
-             procedure Ouvrir(F: TQStream; Taille: Integer);
+             procedure Open(F: TQStream; Taille: Integer);
              procedure Enregistrer1(Info: TInfoEnreg1);
              destructor Destroy; override;
              procedure FixupAllReferences;
@@ -358,7 +358,7 @@ procedure RegisterQObject(Q: QObjectClass; Prior: Char);
 function GetRegisteredQObject(const Ext: String) : QObjectClass;
 function ConstruireQObject(const Name: String; nParent: QObject) : QObject;
 function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
-function AccesFichierQ(const NomFich: String; Mode: TModeAcces) : TQStream;
+function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
 function FloatSpecNameOf(const Name: String) : String;
 function GetHumanSpec(const SpecArg: String) : String;
@@ -643,13 +643,13 @@ begin
  Raise EErrorFmt(5644, [nTypeInfo]);
 end;
 
-function AccesFichierQ(const NomFich: String; Mode: TModeAcces) : TQStream;
+function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 var
  I: Integer;
 {S1, S,} FullName: String;
  Z: array[0..MAX_PATH] of Char;
 begin
- FullName:=ExpandFileName(NomFich);
+ FullName:=ExpandFileName(theFilename);
 (*S1:=ExtractFilePath(FullName);
  SetLength(S, 511);
  if GetShortPathName(PChar(S1), PChar(S), 512) = 0 then
@@ -671,7 +671,7 @@ begin
   begin
    Result:=TQStream(QFileList.Objects[I]);
    if maUnique in Mode then
-    Raise EErrorFmt(5189, [NomFich]);
+    Raise EErrorFmt(5189, [theFilename]);
    if maNoOpen in Mode then
     Exit;
    Result.Position:=0;
@@ -949,7 +949,7 @@ begin
    Self.Position:=Position;
    Self.AddRef;
    S:=Self;
-   Result:=Taille;
+   Result:=StreamSize;
   end;
 end;
 
@@ -958,8 +958,8 @@ begin
  Inc(RefCount1);
  New(Result);
  Result^.Self:=Self;
- Result^.Position:=Seek(Taille, 1) - Taille;
- Result^.Taille:=Taille;
+ Result^.Position:=Seek(Taille, soFromCurrent) - Taille;
+ Result^.StreamSize:=Taille;
  Result^.OnAccess:=DefaultAddRef;
 end;
 
@@ -1078,8 +1078,8 @@ begin
   TQStream(F).AddRef;
   P^.Self:=TQStream(F);
   P^.Position:=TQStream(F).Position;
-  P^.Taille:=-1;
-  { P^.Taille is unknown yet ;
+  P^.StreamSize:=-1;
+  { P^.StreamSize is unknown yet ;
     it will be fixed in CloseCopying if this method is called }
   Ref:=TTreeNode(P);
  finally
@@ -1274,7 +1274,7 @@ begin
     if FFlags and ofFileLink = 0 then
      Raise EError(5507);
     S:=(Self as QFileObject).NomFichier;
-    Source:=AccesFichierQ(S, []);
+    Source:=FileAccessQ(S, []);
     SourceTaille:=Source.Size;
    end;
   LoadFile(Source, SourceTaille);
@@ -1318,7 +1318,7 @@ begin
     Acces   { load data }
    else
     begin
-     Inc(Result, PQStreamRef(FNode)^.Taille);  { size of not yet loaded data }
+     Inc(Result, PQStreamRef(FNode)^.StreamSize);  { size of not yet loaded data }
      Exit;
     end
   else
@@ -1338,7 +1338,7 @@ begin
     FindClose(F);
    end
   else      { from an already opened file }
-   Inc(Result, PQStreamRef(FNode)^.Taille);*)
+   Inc(Result, PQStreamRef(FNode)^.StreamSize);*)
 end;
 
 (*procedure QObject.AccesCopying(F: TStream);
@@ -1362,7 +1362,7 @@ begin
    begin
     QStreamRelease(FNode);
     S:=(Self as QFileObject).NomFichier;
-    Source:=AccesFichierQ(S, False);
+    Source:=FileAccessQ(S, False);
     SourceTaille:=Source.Size;
     LireEnteteFichier(Source, S, SourceTaille);
    end
@@ -1387,8 +1387,8 @@ begin
  if (FFlags and ofTvNode <> 0) or (FNode = Nil) then
   Exit;  { object is too much loaded to be unloadable }
  with PQStreamRef(FNode)^ do
-  if Taille=-1 then
-   Taille:=Self.Position - Position;  { update the size info }
+  if StreamSize=-1 then
+   StreamSize:=Self.Position - Position;  { update the size info }
  FFlags:=FFlags or ofSurDisque;
  SousElements.Clear;
  Specifics.Clear;
@@ -1411,7 +1411,7 @@ begin  { if possible, copy directly from the original file into the new one }
  if TransfertSource and (F is TQStream) then
   begin  { if the target is a TQStream, it can be used to replace the original source }
    QStreamRelease(FNode);
-   F.Seek(-SourceTaille, 1);
+   F.Seek(-SourceTaille, soFromCurrent);
    FNode:=TQStream(F).AddRefNode(SourceTaille);
   end;
 {AiV} finally
@@ -1430,7 +1430,7 @@ begin  { if possible, copy directly from the original file into the new one }
     if FFlags and ofFileLink = 0 then
      Raise EError(5507);
     S:=(Self as QFileObject).NomFichier;
-    Source:=AccesFichierQ(S, []);
+    Source:=FileAccessQ(S, []);
     SourceTaille:=Source.Size;
    end;
   if SourceTaille>0 then
@@ -1438,7 +1438,7 @@ begin  { if possible, copy directly from the original file into the new one }
   if F is TQStream then
    begin  { the target is a TQStream, so it can be used to replace the original source }
     QStreamRelease(FNode);
-    F.Seek(-SourceTaille, 1);
+    F.Seek(-SourceTaille, soFromCurrent);
     FNode:=TQStream(F).AddRefNode(SourceTaille);
    end;
  finally
@@ -1627,7 +1627,7 @@ begin
    I:=FSize-DeltaPos;  { stored at the end of the data block }
    if I<0 then
     Raise EErrorFmt(5509, [54]);
-   F.Seek(I, 1);
+   F.Seek(I, soFromCurrent);
    SetLength(ExtraSizes, ExtraSize);
    J:=F.Read(ExtraSizes[1], ExtraSize);
    if J<ExtraSize then
@@ -1637,7 +1637,7 @@ begin
      FillChar(ExtraSizes[J+1], ExtraSize-J, $FF);
      Dec(I, ExtraSize-J);
     end;
-   F.Seek(-ExtraSize-I, 1);  { come back }
+   F.Seek(-ExtraSize-I, soFromCurrent);  { come back }
   end;
 
  Info:=FileItemInfo;
@@ -1748,11 +1748,11 @@ begin
      Dec(Taille, ExtraSize);
      J:=Taille-DeltaPos;  { stored at the end of the data block }
      if J<0 then Exit;
-     F.Seek(J, 1);
+     F.Seek(J, soFromCurrent);
      Size:=0;
      if ExtraSize > SizeOf(Size) then Exit;
      if F.Read(Size, ExtraSize) < ExtraSize then Exit;
-     F.Seek(-ExtraSize-J, 1);  { come back }
+     F.Seek(-ExtraSize-J, soFromCurrent);  { come back }
     end;
 
    Inc(DeltaPos, Size);
@@ -1807,7 +1807,7 @@ begin
    Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(Format));
  nEnd:=F.Position+Size;
  if (F is TQStream) and not TQStream(F).DisableDelayLoading then
-  Q.Ouvrir(TQStream(F), Size)
+  Q.Open(TQStream(F), Size)
  else
   begin
    Q.FLoading:=True; try
@@ -1818,27 +1818,27 @@ begin
  F.Position:=nEnd;
 end;
 
-procedure QObject.Ouvrir;
+procedure QObject.Open;
 begin
  FNode:=F.AddRefNode(Taille);
  FFlags:=FFlags or ofSurDisque;
 end;
 
-function TailleTaille(T: Integer) : Integer;
+function RequiredBytesToContainValue(T: Integer) : Integer;
 begin
  if T<0 then
-  TailleTaille:=SizeOf(T)
+  RequiredBytesToContainValue:=SizeOf(T)
  else
   if T<$100 then
-   TailleTaille:=1
+   RequiredBytesToContainValue:=1
   else
    if T<$10000 then
-    TailleTaille:=2
+    RequiredBytesToContainValue:=2
    else
     if T<$1000000 then
-     TailleTaille:=3
+     RequiredBytesToContainValue:=3
     else
-     TailleTaille:=4;
+     RequiredBytesToContainValue:=4;
 end;
 
 function PackedStrToInt(const S: String) : Integer;
@@ -1860,7 +1860,7 @@ begin
   Result:=''
  else}
   begin
-   Taille:=TailleTaille(Value);
+   Taille:=RequiredBytesToContainValue(Value);
    SetLength(Result, Taille);
    Move(Value, Result[1], Taille);
   end;
@@ -1901,7 +1901,7 @@ begin
   FileItemCount:=Specifics.Count + SousElements.Count;
   if FileItemCount > qsShortSizeMax then
    begin
-    Size:=TailleTaille(FileItemCount);
+    Size:=RequiredBytesToContainValue(FileItemCount);
     J:=qsLongSize or Size;
     F.WriteBuffer(J, 1);
     F.WriteBuffer(FileItemCount, Size);   { long size }
@@ -1953,7 +1953,7 @@ begin
     F.WriteBuffer(S[J], Size);
     if Size > qsShortSizeMax then
      begin
-      Size2:=TailleTaille(Size);
+      Size2:=RequiredBytesToContainValue(Size);
       ItemInfo^.Code:=qsLongSize or Size2;
       SetString(S1, PChar(@Size), Size2);
       ExtraSizes:=ExtraSizes+S1;
@@ -1979,7 +1979,7 @@ begin
       Size:=F.Position - Size;
       if Size > qsShortSizeMax then
        begin
-        Size2:=TailleTaille(Size);
+        Size2:=RequiredBytesToContainValue(Size);
         ItemInfo^.Code:=(qsBitSubObject or qsLongSize) or Size2;
         SetString(S1, PChar(@Size), Size2);
         ExtraSizes:=ExtraSizes+S1;
@@ -2118,18 +2118,18 @@ begin
 end;
 
 procedure QObject.SetSelMult;
-  procedure OuvrirGroupes(Groupe: QObject);
+  procedure OpenGroups(Groupe: QObject);
   begin
    if Groupe<>Nil then
     begin
-     OuvrirGroupes(Groupe.TvParent);
+     OpenGroups(Groupe.TvParent);
     {if Groupe.Flags and ofTvNode <> 0 then
       Groupe.GetNode.Expand(False);}
      Groupe.SelMult:=Groupe.SelMult and not (smSousSelVide or smSpecial);
     end;
   end;
 begin
- OuvrirGroupes(TvParent);
+ OpenGroups(TvParent);
  SelMult:=SelMult or smSel;
 end;
 
@@ -2157,11 +2157,11 @@ begin
 end;
 
 procedure QObject.SetSelUnique(Value: Boolean);
-  procedure OuvrirGroupes(Groupe: QObject);
+  procedure OpenGroups(Groupe: QObject);
   begin
    if Groupe<>Nil then
     begin
-     OuvrirGroupes(Groupe.TvParent);
+     OpenGroups(Groupe.TvParent);
     {if Groupe.Flags and ofTvNode <> 0 then
       Groupe.GetNode.Expand(False);}
      Groupe.SelMult:=smNonSel;
@@ -2170,7 +2170,7 @@ procedure QObject.SetSelUnique(Value: Boolean);
 begin
  if Value then
   begin
-   OuvrirGroupes(TvParent);
+   OpenGroups(TvParent);
    SelMult:=SelMult or smSel;
   end
  else

@@ -2,6 +2,12 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
 Revision 1.5  2000/04/20 10:43:33  arigo
 JPeg writing fixes
 
@@ -110,7 +116,7 @@ begin
     begin
       TailleImage:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
     end;
-  F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), 1);
+  F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
   if BmpInfo.bmiHeader.biBitCount=8 then
     begin
     { reads the palette }

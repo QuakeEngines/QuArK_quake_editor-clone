@@ -28,14 +28,61 @@ interface
 uses Classes, SysUtils;
 
 type
- TType   = (tInconnu, tStr, tReel, tVecteur, tPtr, tObjData, tFrPtr);
- TSymbole = (symInconnu, symType, symIdent, symVariable, symObjVar,
-  symDeuxPoints, symPointVirgule, symPoint, symAffecte, symVirgule,
-  symPlus, symMoins, symFois, symDivise, symAnd, symOr, symNot, symLogOr, symLogAnd,
-  symEgal, symDifferent, symPlusPetit, symPlusGrand, symPlusPetitOuEgal, symPlusGrandOuEgal,
-  symAccolade1, symAccolade2, symParenthese1, symParenthese2, symLOCAL, symBIND, symAUTOEXEC,
-  symIF, symELSE, symWHILE, symDO, symRETURN, symReel, symChaine, symVecteur, symEOF,
-  symDollar, symCrochet1, symCrochet2);
+ TType = (
+        tInconnu
+       ,tStr
+       ,tReel
+       ,tVecteur
+       ,tPtr
+       ,tObjData
+       ,tFrPtr
+ );
+ TSymbole = (
+        symInconnu
+       ,symType
+       ,symIdent
+       ,symVariable
+       ,symObjVar
+       ,symDeuxPoints
+       ,symPointVirgule
+       ,symPoint
+       ,symAffecte
+       ,symVirgule
+       ,symPlus
+       ,symMoins
+       ,symFois
+       ,symDivise
+       ,symAnd
+       ,symOr
+       ,symNot
+       ,symLogOr
+       ,symLogAnd
+       ,symEgal
+       ,symDifferent
+       ,symPlusPetit
+       ,symPlusGrand
+       ,symPlusPetitOuEgal
+       ,symPlusGrandOuEgal
+       ,symAccolade1
+       ,symAccolade2
+       ,symParenthese1
+       ,symParenthese2
+       ,symLOCAL
+       ,symBIND
+       ,symAUTOEXEC
+       ,symIF
+       ,symELSE
+       ,symWHILE
+       ,symDO
+       ,symRETURN
+       ,symReel
+       ,symChaine
+       ,symVecteur
+       ,symEOF
+       ,symDollar
+       ,symCrochet1
+       ,symCrochet2
+ );
 
 const
  Impulse0Def = 166;
@@ -87,7 +134,7 @@ type
  PFrame = ^TFrame;
  TFrame = Packed RECORD
            Code, LocData, LocSize, Reserve : LONGINT;
-           NomFrame, NomFich    : LONGINT;
+           NomFrame, theFilename    : LONGINT;
            NbArguments          : LONGINT;
            Args                 : ARRAY[1..8] OF BYTE;
           END;
@@ -683,7 +730,7 @@ VAR
    IF (E.T<>tInconnu) and (T<>tInconnu) and (E.T<>T) THEN
     Erreur(4101);
   END;
-  
+
   CONST
    Affecte : ARRAY[Boolean, TType] OF WORD =
     (($1F, $21, $1F, $20, $22, $23, $24),
@@ -1363,7 +1410,7 @@ VAR
        if Variable.Nom=0 then
         Variable.Nom:=EcrireChaine(SymboleMot);
        F.NomFrame:=Variable.Nom;
-       F.NomFich:=EcrireChaine(NomPatch+tcExtension[TypeCode]);
+       F.theFilename:=EcrireChaine(NomPatch+tcExtension[TypeCode]);
        for I:=1 to T.NbArg do
         begin
          Taille:=TailleType[T.Arg[I].T];

@@ -442,7 +442,7 @@ var
        end;
      end;
     Nouveau.ConstruireSommets;
-    Sources.Seek(0,2);
+    Sources.Seek(0,soFromEnd);
     for K:=0 to Nouveau.Faces.Count-1 do
      begin
       F:=PSurface(Nouveau.Faces[K]);
@@ -483,7 +483,7 @@ var
     PyList_Append(list, v);
     Py_DECREF(v);
     if Centre.Poly=Nil then Break;
-    Sources.Seek(Centre.Poly.Precedent, 0);
+    Sources.Seek(Centre.Poly.Precedent, soFromBeginning);
     Sources.ReadBuffer(Centre, SizeOf(Centre));
    until False;
    SearchForHoles:=list;
@@ -496,7 +496,7 @@ begin
   Init;
   DebutTravail(172, 9999);
   try
-   Sources.Seek(0,0);
+   Sources.Seek(0,soFromBeginning);
    Sources0:=0;
    Compteur:=1;
    while Sources.Read(Centre, SizeOf(Centre)) = SizeOf(Centre) do
@@ -511,7 +511,7 @@ begin
        end;
      end;
      Inc(Sources0, SizeOf(Centre));
-     Sources.Seek(Sources0, 0);
+     Sources.Seek(Sources0, soFromBeginning);
      if Compteur>0 then
       Dec(Compteur)
      else

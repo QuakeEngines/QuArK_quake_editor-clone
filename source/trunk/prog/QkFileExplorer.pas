@@ -493,7 +493,7 @@ begin
   for I:=0 to DragQueryFile(Msg.wParam, DWORD(-1), Nil, 0) - 1 do
    if DragQueryFile(Msg.wParam, I, Z, SizeOf(Z))>0 then
     begin
-     Q:=LienFichierExact(StrPas(Z), Nil, True);
+     Q:=ExactFileLink(StrPas(Z), Nil, True);
      Q1:=Q;
      Q.AddRef(+2); try
      if MustCopy then

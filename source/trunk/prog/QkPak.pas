@@ -118,7 +118,7 @@ const
  PEntreePak = ^TEntreePak;
  TEntreePak = record
                case Integer of
-                0: (NomFich : array[0..TailleNomFich-1] of Char;
+                0: (theFilename : array[0..TailleNomFich-1] of Char;
                     Position, Taille : LongInt);
                 1: (Nom2 : array[0..TailleNomFich-1] of Byte);
               end;}

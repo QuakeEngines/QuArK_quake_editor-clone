@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/05/14 20:35:07  alexander
+Tim Smith's fix for compressed TGA's
+
 Revision 1.5  2000/05/14 15:06:56  decker_dk
 Charger(F,Taille) -> LoadFile(F,FSize)
 ToutCharger -> LoadAll
@@ -127,7 +130,7 @@ begin
        Raise EError(5519);
       F.ReadBuffer(Header, SizeOf(Header));
       TaillePalette:=0;
-      F.Seek(Header.ExtraData, 1);
+      F.Seek(Header.ExtraData, soFromCurrent);
 
       { check the file format }
       if not (Header.TypeCode in [2,10])   {true color}

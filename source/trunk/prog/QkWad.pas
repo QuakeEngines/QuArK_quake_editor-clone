@@ -156,7 +156,7 @@ begin
   Raise EErrorFmt(5505, [Nom, Entete.Signature, SignatureWad2]);
  if Entete.PosRep + Entete.NbEntrees*SizeOf(TEntreeRep) > SourceTaille then
   Raise EErrorFmt(5186, [Nom]);
- Source.Seek(-SizeOf(Entete), 1);
+ Source.Seek(-SizeOf(Entete), soFromCurrent);
  LoadFormat:=1;
 end;*)
 
@@ -402,7 +402,7 @@ begin
              end
             else
              Size:=0;   { assumes an empty texture (for Half-Life .bsp's) }
-            F.Seek(-SizeOf(Header), 1);
+            F.Seek(-SizeOf(Header), soFromCurrent);
            end;
          end;
         if Size=0 then

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/05/12 17:43:34  decker_dk
+Auto-create Texture-links to .tga/.jpg files - .shaders still missing
+
 Revision 1.3  2000/05/11 22:09:28  alexander
 added link creation for .m32 files with link type "l"
 added cvs header
@@ -182,7 +185,7 @@ begin
       Loaded:=Nil; try
       while TryToLink1(Result, F.Name, FolderName, Base, Loaded) do
        begin
-        Loaded:=LienFichierExact(PathAndFile(Path, F.Name), Nil, False);
+        Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
         Loaded.AddRef(+1);
        end;
       finally Loaded.AddRef(-1); end;
@@ -224,7 +227,7 @@ begin
    try
     while DosError=0 do
      begin
-      Pak:=LienFichierExact(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
+      Pak:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
       Pak.AddRef(+1); try
       Pak.Acces;
       Q1:=Pak.GetFolder(Q2TexPath);

@@ -157,7 +157,7 @@ begin
       end;
      if (TailleImage<0) or (TailleImage>Taille) then
       Raise EErrorFmt(5509, [21]);
-     F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), 1);
+     F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
 
      if BmpInfo.bmiHeader.biBitCount=8 then
       begin

@@ -1200,7 +1200,7 @@ begin
    Exit;
   end;
 
- FileObject:=LienFichierExact(FileName, Nil, True) as QFileObject;
+ FileObject:=ExactFileLink(FileName, Nil, True) as QFileObject;
  if ReadOnly then
   FileObject.Flags:=FileObject.Flags or ofWarnBeforeChange;
  FileObject.OpenStandAloneWindow(Nil, False);
@@ -1999,7 +1999,7 @@ begin
    Gr.AddRef(+1); try
    for I:=0 to OpenDialog1.Files.Count-1 do
     begin
-     FileObject:=LienFichierExact(OpenDialog1.Files[I], Nil, False);
+     FileObject:=ExactFileLink(OpenDialog1.Files[I], Nil, False);
      if Sender=Importfiles1 then
       FileObject.Flags:=FileObject.Flags and not ofFileLink;
      Gr.SousElements.Add(FileObject);

@@ -24,6 +24,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
 Revision 1.14  2000/05/12 17:43:34  decker_dk
 Auto-create Texture-links to .tga/.jpg files - .shaders still missing
 
@@ -1731,7 +1737,7 @@ begin
  Source.ReadBuffer(Entete, SizeOf(Entete));
  if not CheckQ1Miptex(Entete, SourceTaille) then
   Raise EErrorFmt(5514, [Nom, 1]);
- Source.Seek(-SizeOf(Entete), 1);
+ Source.Seek(-SizeOf(Entete), soFromCurrent);
  LoadFormat:=1;
 end;*)
 
@@ -1884,7 +1890,7 @@ begin
  Source.ReadBuffer(Entete, SizeOf(Entete));
  if not CheckQ2Miptex(Entete, SourceTaille) then
   Raise EErrorFmt(5514, [Nom, 2]);
- Source.Seek(-SizeOf(Entete), 1);
+ Source.Seek(-SizeOf(Entete), soFromCurrent);
  LoadFormat:=1;
 end;*)
 

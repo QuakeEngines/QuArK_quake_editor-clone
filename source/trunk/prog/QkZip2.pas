@@ -429,7 +429,7 @@ begin
        while true do begin
          f.ReadBuffer(eosig,4);
          if eosig<>EOCD_HEADER then
-           f.seek(-3,sofromcurrent)
+           f.seek(-3,soFromCurrent)
          else
            break;
        end;
@@ -487,7 +487,7 @@ begin
            else
              Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
            nEnd:=F.Position+Size;
-           Q.Ouvrir(TQStream(F), Size);
+           Q.Open(TQStream(F), Size);
            F.Position:=nEnd;
            {/Copied From LoadedItem & Modified}
 

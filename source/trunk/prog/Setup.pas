@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/05/11 22:10:17  alexander
+added comment
+
 Revision 1.4  2000/05/04 23:56:01  alexander
 added: game enumeration for Soldier of Fortune "E"
 
@@ -547,7 +550,7 @@ begin
  try
   FillChar(SetupSet, SizeOf(SetupSet), 0);  { reset SetupSet }
   try
-   SetupQrk:=LienFichierExact(DefaultsFileName1, Nil, False);
+   SetupQrk:=ExactFileLink(DefaultsFileName1, Nil, False);
    SetupQrk.AddRef(+1);
    try
     BrowseConfig(SetupQrk);  { loads the default setup data }
@@ -670,7 +673,7 @@ begin
    try
     Result.Flags:=Result.Flags or ofFileLink;
     Result.NomFichier:=DefaultsFileName1;
-    Result.SousElements.Add(LienFichierExact(DefaultsFileName1, Result, False));
+    Result.SousElements.Add(ExactFileLink(DefaultsFileName1, Result, False));
   (*Result.SousElements.Add(LienFichierQObject(
      SetupGameSet.Specifics.Values['Base'], Result));*)
     L:=TStringList.Create; try

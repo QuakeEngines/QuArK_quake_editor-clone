@@ -183,9 +183,9 @@ type
 
  {------------------------}
 
-function LienFichierQObject(const NomFich: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
-function LienFichierExact(const NomFich: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
-function BuildFileRoot(const NomFich: String; nParent: QObject) : QFileObject;
+function LienFichierQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
+function ExactFileLink(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
+function BuildFileRoot(const theFilename: String; nParent: QObject) : QFileObject;
 procedure CopyToolbar(Source, Dest: TToolbar97);
 function GlobalDoAccept{(Sender: TObject)} : Boolean;
 function LocalDoAccept(Ac: TControl) : Boolean;
@@ -238,16 +238,16 @@ type
                     InfoType: array[0..19] of Byte;
                    end;
 
-function LienFichierExact(const NomFich: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
+function ExactFileLink(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 var
  Source: TQStream;
 begin
- Source:=AccesFichierQ(NomFich, []);
+ Source:=FileAccessQ(theFilename, []);
  Source.AddRef; try
 {if Source.Root=Nil then
   begin  { the file was not previously opened, create a new object }
-   Result:=BuildFileRoot(NomFich, nParent);
-   Result.Ouvrir(Source, Source.Size);
+   Result:=BuildFileRoot(theFilename, nParent);
+   Result.Open(Source, Source.Size);
 (* Source.Root:=Result;
   {Result.AddRef(+1);}
   end
@@ -255,19 +255,19 @@ begin
   begin
    Result:=QFileObject(Source.Root);
    if CheckParent and (Result.FParent <> nParent) then
-    Raise EErrorFmt(5224, [NomFich]);
+    Raise EErrorFmt(5224, [theFilename]);
   end;*)
  finally Source.Release; end;
 end;
 
-function LienFichierQObject(const NomFich: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
+function LienFichierQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
 var
  NomComplet, {IncludePath,} CurDir: String;
  Q: QFileObject;
  NoPath: Boolean;
 begin
- NomComplet:=NomFich;
- NoPath:=ExtractFilePath(NomFich)='';
+ NomComplet:=theFilename;
+ NoPath:=ExtractFilePath(theFilename)='';
  if NoPath and (nParent<>Nil) then
   begin  { try to complete the file path }
    Q:=GetFileRoot(nParent);
@@ -275,28 +275,28 @@ begin
     begin
      CurDir:=ExtractFilePath(Q.NomFichier);
      {IncludePath:=CurDir+';';}
-     if FileExists(CurDir+NomFich) then
-      NomComplet:=CurDir+NomFich;
+     if FileExists(CurDir+theFilename) then
+      NomComplet:=CurDir+theFilename;
     end;
   end;
  if not FileExists(NomComplet) then
-  if NoPath and FileExists(ApplicationPath+NomFich) then
-   NomComplet:=ApplicationPath+NomFich
+  if NoPath and FileExists(ApplicationPath+theFilename) then
+   NomComplet:=ApplicationPath+theFilename
   else
-   if NoPath and FileExists(ApplicationPath+AddonsPath+NomFich) then
-    NomComplet:=ApplicationPath+AddonsPath+NomFich
+   if NoPath and FileExists(ApplicationPath+AddonsPath+theFilename) then
+    NomComplet:=ApplicationPath+AddonsPath+theFilename
    else
     begin
      GetDir(0, CurDir);
-     Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [NomFich, CurDir]));
+     Raise EQObjectFileNotFound.Create(FmtLoadStr1(5203, [theFilename, CurDir]));
     end;
- Result:=LienFichierExact(ExpandFileName(NomComplet), nParent, CheckParent);
+ Result:=ExactFileLink(ExpandFileName(NomComplet), nParent, CheckParent);
 end;
 
-function BuildFileRoot(const NomFich: String; nParent: QObject) : QFileObject;
+function BuildFileRoot(const theFilename: String; nParent: QObject) : QFileObject;
 begin
- Result:=ConstruireQObject(ExtractFileName(NomFich), nParent) as QFileObject;
- Result.NomFichier:=NomFich;
+ Result:=ConstruireQObject(ExtractFileName(theFilename), nParent) as QFileObject;
+ Result.NomFichier:=theFilename;
 (*  { set ReadFormat according to the file extension }
  Result.ReadFormat:=Ord(CodeConstruction)-(Ord('A')-rf_Default); *)
  Result.ReadFormat:=rf_Default;
@@ -602,7 +602,7 @@ begin
                     ReadFormat:=rf_Private;
                    end;
   VersionSourceQ: begin
-                   Source.Seek(TailleEnteteMin - Lu, 1);
+                   Source.Seek(TailleEnteteMin - Lu, soFromCurrent);
                    Dec(SourceTaille, TailleEnteteMin);
                    ReadFormat:=rf_AsText;
                   end;
@@ -982,7 +982,7 @@ begin
   Enregistrer1(Info1);
 
   TempFile:=MakeTempFileName(TagToDelete2);
-  F:=AccesFichierQ(TempFile, [maUnique]);
+  F:=FileAccessQ(TempFile, [maUnique]);
   F.AddRef; try
   F.Temporary:=True;
   Info1.Format:=Format;
@@ -997,13 +997,13 @@ begin
    end;
 
    { figure out if we can actually override the target file }
-  Target:=AccesFichierQ(AlternateFile, [maNoOpen]);
+  Target:=FileAccessQ(AlternateFile, [maNoOpen]);
   if Target<>Nil then
    begin  { there are maybe pending objects in the undo buffer }
     Target.AddRef; try
     ClearUndo(MaxInt, Target);   { load them or clear them }
     finally Target.Release; end;
-    AccesFichierQ(AlternateFile, [maNoOpen, maUnique]);  { try again }
+    FileAccessQ(AlternateFile, [maNoOpen, maUnique]);  { try again }
    end;
 
    { copy or move the file to the target name }
@@ -1562,10 +1562,10 @@ begin
  PosteMessageFiches(wp_ModifObjet, LongInt(Self));
 end;}
 
-{procedure QFileObject.LienFichier(const NomFich: String);
+{procedure QFileObject.LienFichier(const theFilename: String);
 begin
  FFlags:=FFlags or (ofLienFichier or ofSurDisque);
- NomFichier:=ExpandFileName(NomFich);
+ NomFichier:=ExpandFileName(theFilename);
 end;}
 
 function QFileObject.EnumObjectWindow(var F: TQForm1) : Boolean;
@@ -1937,7 +1937,7 @@ begin
    while Pos('/',S)<>0 do
     S[Pos('/',S)]:='\';
    if FileExists(S) then
-    Result:=LienFichierExact(S, Nil, False);
+    Result:=ExactFileLink(S, Nil, False);
   end;
  Result.AddRef(+1);
 end;

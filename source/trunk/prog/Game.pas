@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/05/07 09:33:02  decker_dk
+Fixed a problem with TGetPakNames
+
 Revision 1.9  2000/04/29 15:13:30  decker_dk
 Allow other than PAK#.PAK files
 
@@ -545,7 +548,7 @@ begin
      Result:=SortedFindFileName(GameFiles, NomComplet);
      if Result=Nil then
       begin  { open the .pak file if not already opened }
-       Result:=LienFichierExact(NomComplet, Nil, True);
+       Result:=ExactFileLink(NomComplet, Nil, True);
        Result.Flags:=Result.Flags or ofWarnBeforeChange;
        GameFiles.Add(Result);
        GameFiles.Sort(ByFileName);
@@ -595,7 +598,7 @@ begin
     { looks for it on the disk }
    if FileExists(NomComplet) then
     begin    { found it }
-     Result:=LienFichierExact(NomComplet, Nil, True);
+     Result:=ExactFileLink(NomComplet, Nil, True);
      Result.Flags:=Result.Flags or ofWarnBeforeChange;
      GameFiles.Add(Result);
      GameFiles.Sort(ByFileName);
