@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+
+Revision 1.10  2002/01/06 10:36:23  decker_dk
+Moved deletion of MyTVPlusSign and MyTVMinusSign down to the unit's finalization section, as
+tiglari's experiment on solving the memory-leak problem, caused another problem: The plus and minus bitmaps were
+not displayed in the treeviews.
+
 Revision 1.9  2001/12/30 08:57:23  tiglari
 delete bitmap handles
 
@@ -561,11 +567,11 @@ var
          if C<>clNone then
           begin
            R.Left:=X+22+TextSize.cx;
-           Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, TextColor));
-           Brush1:=SelectObject(DC, CreateSolidBrush(C));
+           Pen1:=SelectObject(DC, CreatePen(ps_Solid, 1, TextColor)); // Pen1 is the OLD object, while CreatePen() makes a NEW object
+           Brush1:=SelectObject(DC, CreateSolidBrush(C)); // Brush1 is the OLD object, while CreateSolidBrush() makes a NEW object
            Rectangle(DC, R.Left+4, R.Top+3, R.Left+16, R.Bottom-3);
-           SelectObject(DC, Brush1);
-           DeleteObject(SelectObject(DC, Pen1));
+           DeleteObject(SelectObject(DC, Brush1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
+           DeleteObject(SelectObject(DC, Pen1)); //Decker 2002-06-05, select the OLD object, returning the NEW object to the DeleteObject() function.
           end;
         end
        else
