@@ -370,7 +370,11 @@ class PathDuplicator(StandardDuplicator):
             #
             neworigin = pathdist.normalized*0.5*templatesize.z + thisorigin
 
-            prevaxes = xax, yax, zax = NewAxes(prevaxes,pathdist.normalized)
+            if pathlist[i]["level"]:
+               prevaxes = MakeAxes3(pathdist.normalized)
+            else:
+               prevaxes = NewAxes(prevaxes,pathdist.normalized)
+            xax, yax, zax = prevaxes
             #
             # N.B. when the three args are vectors they are indeed
             #  input as columns.  Tuples otoh will go in as rows.
@@ -782,6 +786,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20  2001/03/04 06:40:13  tiglari
+#changed to use arbitrary axis matrix rot from maputils
+#
 #Revision 1.19  2001/02/27 07:08:02  tiglari
 #center tiles along path segments
 #
