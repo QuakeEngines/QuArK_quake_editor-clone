@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
 Revision 1.15  2000/09/10 13:56:38  alexander
 added cvs headers
 
@@ -36,7 +39,7 @@ interface
 
 uses Windows, SysUtils, Classes, qmath, QkObjects, QkMapPoly, QkMdlObject, QkComponent,
      Glide, Game, QkTextures, QkImages, Setup, PyMath, PyMath3D,
-     Forms, Controls, QkPixelSet;
+     Forms, Controls, QkPixelSet, EdTListP2;
 
  {------------------------}
 

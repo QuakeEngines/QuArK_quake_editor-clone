@@ -26,6 +26,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.22  2000/11/19 15:31:49  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -520,7 +530,7 @@ function CentreSurface;
 var
  J, NbPts: Integer;
 begin
- Result:=Origine;
+ Result:={Origine}OriginVectorZero;
  NbPts:=P^.prvNbS;
  for J:=0 to NbPts-1 do
   with P^.prvDescS[J]^.P do
@@ -2612,7 +2622,7 @@ begin
 (*if not GetOrigin(Result) then
   Result:=Origine;  { why not }
   begin*)
- Result:=Origine;
+ Result:={Origine}OriginVectorZero;
  if not CheckPolyhedron or (Sommets=Nil) then Exit;
  NbPts:=Sommets.Count;
  if NbPts=0 then Exit;
@@ -3235,13 +3245,13 @@ begin
        + Normale.Y * V[2]
        + Normale.Z * V[3];
   except
-   Normale:=Origine;   { bad face }
+   Normale:={Origine}OriginVectorZero;   { bad face }
    Dist:=0;
    Result:=False;
   end
  else
   begin
-   Normale:=Origine;   { bad face }
+   Normale:={Origine}OriginVectorZero;   { bad face }
    Dist:=0;
   end;
 end;
@@ -3418,7 +3428,7 @@ begin
     Result.Z:=(P2.Z+P3.Z) * 0.5;
    end
   else
-   Result:=Origine;
+   Result:={Origine}OriginVectorZero;
 end;
 
 procedure DrawSquare(S: PSurface; Col: TListeCouleurs);
@@ -3779,7 +3789,7 @@ begin
        if LoadData then
         begin
          f:=Dot(Normale, InfoClic);
-         InfoClic:=Origine;
+         InfoClic:={Origine}OriginVectorZero;
          case PointsToPlane(Normale) of
           'X': InfoClic.X:=f/Normale.X;
           'Y': InfoClic.Y:=f/Normale.Y;

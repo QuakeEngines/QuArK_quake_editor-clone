@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkComponent;
@@ -1072,7 +1075,7 @@ var
   tris, tris_o: PComponentTris;
   numtris, i, j: integer;
 begin
-  result:=origine;
+  result:={Origine}OriginVectorZero;
   case mode of
     0: begin  // normal
       raise exception.create('not implemented yet');

@@ -24,6 +24,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.31  2000/11/19 15:31:49  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -174,13 +184,13 @@ const
  ofModified                = $80;
  ofCloneFlags              = $FF{-ofTvNode};
 
-{of2TvNodeSel        = $01;
+{of2TvNodeSel  = $01;
  ofCloneFlags2 = $FF;}
 
- smNonSel      = 0;
- smSel         = 1;
- smSousSelVide = 2;
- smSpecial     = 4;
+ smNonSel      = $00;
+ smSel         = $01;
+ smSousSelVide = $02;
+ smSpecial     = $04;
 
  cmObjFirst = $6800;
  cmObjLast  = $68FE;
@@ -280,7 +290,7 @@ type
                { normally does nothing, sometimes packs things up into a
                  more efficient format, e.g. TTreeMapEntity origin (QkMapObject.pas)}
              procedure ReadUnformatted(F: TStream; Size: Integer);
-             function Pedigree : String;
+             {function Pedigree : String;}
              procedure SaveUnformatted(F: TStream);
                { for reading/writing raw data to/from a Data specific,
                  used in overrides for Load/SaveFile }
@@ -360,11 +370,6 @@ type
              property PyNoParent: Boolean write FPyNoParent;
              procedure SpecificsAdd(S: String);
              function DirectDataAccess(var S: TStream; var Size: Integer) : Boolean;
-           end;
-
- TListP2 = class(TList)
-           protected
-             procedure Grow; override;
            end;
 
  TQList = class(TList)
@@ -702,8 +707,7 @@ begin
 {until CompareText(Copy(Name, Length(Name)-Length(S)+1, MaxInt), S) = 0;}
   {and (not FileOnly or (QObjectClass(QObjectClassList.Objects[I]) is QFileObject));}
 (*CodeConstruction:=S[2];*)
- Result:=QObjectClass(QObjectClassList.Objects[I]).Create(
-  Copy(Name, 1, Length(Name)-Length(S)+1), nParent);
+ Result:=QObjectClass(QObjectClassList.Objects[I]).Create(Copy(Name, 1, Length(Name)-Length(S)+1), nParent);
 end;
 
 function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
@@ -863,16 +867,6 @@ end;
 
  {------------------------}
 
-procedure TListP2.Grow;
-begin
- if Capacity < 32 then
-  Capacity:=32
- else
-  Capacity:=Capacity*2;   { large steps }
-end;
-
- {------------------------}
-
 function TQList.GetItem1(I: Integer) : QObject;
 begin
  if (I<0) or (I>=Count) then
@@ -933,7 +927,8 @@ end;
 function TQList.Remove(Q: QObject) : Integer;
 begin
  Result:=IndexOf(Q);
- if Result<>-1 then Delete(Result);
+ if Result<>-1 then
+  Delete(Result);
 end;
 
 function TQList.FindName(const nName: String) : QObject;
@@ -1382,6 +1377,7 @@ begin
  end;*)
 end;
 
+(*
 function QObject.Pedigree : String;
 var
   Parent:QObject;
@@ -1411,7 +1407,7 @@ begin
   else
     Result:=Name;
 end;
-
+*)
 
 {$IFDEF Debug}
 function QObject.GetSpecifics : TStringList;
@@ -2057,114 +2053,123 @@ var
  S, S1, Names, ExtraSizes: String;
  Q: QObject;
 begin
- with Info do begin
+ with Info do
+ begin
   if Format<>rf_Private then
    begin
-    if Format=rf_Siblings then Exit;
+    if Format=rf_Siblings then
+     Exit;
     Raise InternalE('Enregistrer '+GetFullName+' '+IntToStr(Format));
    end;
  {BuildReferences;}
-  ProgressIndicatorStart(5442, SubElements.Count+1); try
-  FileItemCount:=Specifics.Count + SubElements.Count;
-  if FileItemCount > qsShortSizeMax then
-   begin
-    Size:=RequiredBytesToContainValue(FileItemCount);
-    J:=qsLongSize or Size;
-    F.WriteBuffer(J, 1);
-    F.WriteBuffer(FileItemCount, Size);   { long size }
-   end
-  else
-   begin
-    F.WriteBuffer(FileItemCount, 1);   { short size }
-    if FileItemCount=0 then Exit;      { quit if no data }
-   end;
+  ProgressIndicatorStart(5442, SubElements.Count+1);
+  try
+   FileItemCount:=Specifics.Count + SubElements.Count;
+   if FileItemCount > qsShortSizeMax then
+    begin
+     Size:=RequiredBytesToContainValue(FileItemCount);
+     J:=qsLongSize or Size;
+     F.WriteBuffer(J, 1);
+     F.WriteBuffer(FileItemCount, Size);   { long size }
+    end
+   else
+    begin
+     F.WriteBuffer(FileItemCount, 1);   { short size }
+     if FileItemCount=0 then
+      Exit;      { quit if no data }
+    end;
 
-  Size:=FileItemCount * SizeOf(TFileItemInfo);
-  GetMem(FileItemInfo, Size); try
-   { the FileItemInfo list is built later }
-  FileItemInfo^.Code:=$FF;  { invalid }
-  Origin:=F.Position;
-  F.WriteBuffer(FileItemInfo^, Size);
+   Size:=FileItemCount * SizeOf(TFileItemInfo);
+   GetMem(FileItemInfo, Size);
+   try
+     { the FileItemInfo list is built later }
+    FileItemInfo^.Code:=$FF;  { invalid }
+    Origin:=F.Position;
+    F.WriteBuffer(FileItemInfo^, Size);
 
-  Names:='';
-  ItemInfo:=FileItemInfo;
-  for I:=0 to Specifics.Count-1 do  { write the Names }
-   begin
-    S:=Specifics[I];
-    J:=Pos('=',S)-1;
-    if J<0 then
-     Raise InternalE('Specifics='+Copy(S,1,25));
-    ItemInfo^.NameSize:=J;
-    Names:=Names + Copy(S, 1, J);
-    Inc(ItemInfo);
-   end;
-  for I:=0 to SubElements.Count-1 do
-   begin
-    Q:=SubElements[I];
-    S:=Q.GetFullName;
-    J:=Length(S);
-    ItemInfo^.NameSize:=J;
-    Names:=Names + S;
-    Inc(ItemInfo);
-   end;
-  if Length(Names)>0 then
-   F.WriteBuffer(Names[1], Length(Names));
+    Names:='';
+    ItemInfo:=FileItemInfo;
+    for I:=0 to Specifics.Count-1 do  { write the Names }
+     begin
+      S:=Specifics[I];
+      J:=Pos('=',S)-1;
+      if J<0 then
+       Raise InternalE('Specifics='+Copy(S,1,25));
+      ItemInfo^.NameSize:=J;
+      Names:=Names + Copy(S, 1, J);
+      Inc(ItemInfo);
+     end;
+    for I:=0 to SubElements.Count-1 do
+     begin
+      Q:=SubElements[I];
+      S:=Q.GetFullName;
+      J:=Length(S);
+      ItemInfo^.NameSize:=J;
+      Names:=Names + S;
+      Inc(ItemInfo);
+     end;
+    if Length(Names)>0 then
+     F.WriteBuffer(Names[1], Length(Names));
 
-  ExtraSizes:='';
-  ItemInfo:=FileItemInfo;
-  for I:=0 to Specifics.Count-1 do  { write the actual data }
-   begin
-    S:=Specifics[I];
-    J:=ItemInfo^.NameSize+2;
-    Size:=Length(S)-J+1;
-    F.WriteBuffer(S[J], Size);
-    if Size > qsShortSizeMax then
+    ExtraSizes:='';
+    ItemInfo:=FileItemInfo;
+    for I:=0 to Specifics.Count-1 do  { write the actual data }
      begin
-      Size2:=RequiredBytesToContainValue(Size);
-      ItemInfo^.Code:=qsLongSize or Size2;
-      SetString(S1, PChar(@Size), Size2);
-      ExtraSizes:=ExtraSizes+S1;
-     end
-    else
-     ItemInfo^.Code:=Size;
-    Inc(ItemInfo);
-   end;
-  ProgressIndicatorIncrement;
-  for I:=0 to SubElements.Count-1 do
-   begin
-    Q:=SubElements[I];
-    if Q.Flags and ofFileLink <> 0 then
-     begin
-      if Q.Flags and ofModified <> 0 then
-       (Q as QFileObject).TrySavingNow;
-      ItemInfo^.Code:=qsCodeFileLink;
-     end
-    else
-     begin
-      Size:=F.Position;
-      Q.SaveFile1(Info);
-      Size:=F.Position - Size;
+      S:=Specifics[I];
+      J:=ItemInfo^.NameSize+2;
+      Size:=Length(S)-J+1;
+      F.WriteBuffer(S[J], Size);
       if Size > qsShortSizeMax then
        begin
         Size2:=RequiredBytesToContainValue(Size);
-        ItemInfo^.Code:=(qsBitSubObject or qsLongSize) or Size2;
+        ItemInfo^.Code:=qsLongSize or Size2;
         SetString(S1, PChar(@Size), Size2);
         ExtraSizes:=ExtraSizes+S1;
        end
       else
-       ItemInfo^.Code:=qsBitSubObject or Size;
+       ItemInfo^.Code:=Size;
+      Inc(ItemInfo);
      end;
-    Inc(ItemInfo);
     ProgressIndicatorIncrement;
+    for I:=0 to SubElements.Count-1 do
+     begin
+      Q:=SubElements[I];
+      if Q.Flags and ofFileLink <> 0 then
+       begin
+        if Q.Flags and ofModified <> 0 then
+         (Q as QFileObject).TrySavingNow;
+        ItemInfo^.Code:=qsCodeFileLink;
+       end
+      else
+       begin
+        Size:=F.Position;
+        Q.SaveFile1(Info);
+        Size:=F.Position - Size;
+        if Size > qsShortSizeMax then
+         begin
+          Size2:=RequiredBytesToContainValue(Size);
+          ItemInfo^.Code:=(qsBitSubObject or qsLongSize) or Size2;
+          SetString(S1, PChar(@Size), Size2);
+          ExtraSizes:=ExtraSizes+S1;
+         end
+        else
+         ItemInfo^.Code:=qsBitSubObject or Size;
+       end;
+      Inc(ItemInfo);
+      ProgressIndicatorIncrement;
+     end;
+    if Length(ExtraSizes)>0 then
+     F.WriteBuffer(ExtraSizes[1], Length(ExtraSizes));
+    Size:=F.Position;
+    F.Position:=Origin;
+    F.WriteBuffer(FileItemInfo^, FileItemCount * SizeOf(TFileItemInfo));
+    F.Position:=Size;
+   finally
+    FreeMem(FileItemInfo);
    end;
-  if Length(ExtraSizes)>0 then
-   F.WriteBuffer(ExtraSizes[1], Length(ExtraSizes));
-  Size:=F.Position;
-  F.Position:=Origin;
-  F.WriteBuffer(FileItemInfo^, FileItemCount * SizeOf(TFileItemInfo));
-  F.Position:=Size;
-  finally FreeMem(FileItemInfo); end;
-  finally ProgressIndicatorStop; end;
+  finally
+   ProgressIndicatorStop;
+  end;
  end;
 end;
 
@@ -2333,7 +2338,8 @@ end;
 
 procedure QObject.ToggleSelMult;
 begin
- if Odd(SelMult) then
+ {if Odd(SelMult) then}
+ if (SelMult and smSel <> 0) then {Decker - better clarify what the hell we're testing SelMult for!}
   SelMult:=smNonSel
  else
   SetSelMult;
@@ -2355,20 +2361,20 @@ begin
 end;
 
 procedure QObject.SetSelUnique(Value: Boolean);
-  procedure OpenGroups(Groupe: QObject);
+  procedure DeselectAllParents(aParent: QObject);
   begin
-   if Groupe<>Nil then
+   if aParent<>Nil then
     begin
-     OpenGroups(Groupe.TvParent);
-    {if Groupe.Flags and ofTvNode <> 0 then
-      Groupe.GetNode.Expand(False);}
-     Groupe.SelMult:=smNonSel;
+     DeselectAllParents(aParent.TvParent);
+    {if aParent.Flags and ofTvNode <> 0 then
+      aParent.GetNode.Expand(False);}
+     aParent.SelMult:=smNonSel;
     end;
   end;
 begin
  if Value then
   begin
-   OpenGroups(TvParent);
+   DeselectAllParents(TvParent);
    SelMult:=SelMult or smSel;
   end
  else
@@ -2457,7 +2463,7 @@ begin
    Result.Z:=V[2];
   end
  else
-  Result:=Origine;
+  Result:={Origine}OriginVectorZero;
 end;
 
 procedure QObject.SetVectSpec(const Name: String; const Value: TVect);

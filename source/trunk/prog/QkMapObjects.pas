@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/11/19 15:31:49  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.13  2000/10/26 17:05:46  tiglari
 soEnableBrushPrim flag added
 
@@ -713,7 +727,8 @@ var
  I: Integer;
 begin
  Result:=inherited PyGetAttr(attr);
- if Result<>Nil then Exit;
+ if Result<>Nil then
+  Exit;
  for I:=Low(MethodTable) to High(MethodTable) do
   if StrComp(attr, MethodTable[I].ml_name) = 0 then
    begin
@@ -847,10 +862,12 @@ begin
  inherited;
  if Info.ModeDeplacement=mdLinear then
   begin
-   mx:=MakePyMatrix(Info.Matrice); try
-   Py_XDECREF(CallMacroEx(Py_BuildValueX('OO', [@PythonObj, mx]),
-    'applylinear'));
-   finally Py_DECREF(mx); end;
+   mx:=MakePyMatrix(Info.Matrice);
+   try
+    Py_XDECREF(CallMacroEx(Py_BuildValueX('OO', [@PythonObj, mx]), 'applylinear'));
+   finally
+    Py_DECREF(mx);
+   end;
   end;
 end;
 {var
@@ -1275,9 +1292,11 @@ var
 begin
  Result:=False;
  S:={QuakeClassname}GetFormName;
- if S='' then Exit;
+ if S='' then
+  Exit;
  Q:=CurrentMapView.EntityForms.FindLastShortName(S);
- if Q=Nil then Exit;
+ if Q=Nil then
+  Exit;
  Q.Acces;
  J:=Q.GetFloatsSpecPartial('BBox', BBox);
  case J of
@@ -1313,7 +1332,8 @@ begin
   begin
   {OldPen:=0;}
    Pts:=CCoord.Proj(Origin);
-   if not CCoord.CheckVisible(Pts) then Exit;
+   if not CCoord.CheckVisible(Pts) then
+    Exit;
    if Info.SelectedBrush<>0 then
     begin
      SelectObject(Info.DC, Info.SelectedBrush);
@@ -1366,7 +1386,8 @@ begin
        (Info.DessinerBBox and (BBox_Actif or BBox_Selection)
                             = (BBox_Actif or BBox_Selection))) then
      begin
-      if not GetBBoxInfo(BBox) then Exit;
+      if not GetBBoxInfo(BBox) then
+       Exit;
 
        { object has a BBox }
       if CCoord.Orthogonal then

@@ -26,6 +26,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.17  2000/11/19 15:31:51  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -591,7 +601,7 @@ begin
         InfoClic.Y:=InfoClic.Y*F;
         InfoClic.Z:=InfoClic.Z*F;
        except
-        InfoClic:=Origine;   { ignore points with no normal vector }
+        InfoClic:={Origine}OriginVectorZero;   { ignore points with no normal vector }
        end;
       end
      else
@@ -1079,7 +1089,7 @@ begin
  Cnt:=cp.W*cp.H;
  Result:=Cnt>0;
  if not Result then Exit;
- Center:=Origine;
+ Center:={Origine}OriginVectorZero;
  for I:=1 to Cnt do
   begin
    Center.X:=Center.X+cp.CP^[0];

@@ -26,6 +26,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.7  2000/11/19 15:31:50  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -610,20 +620,23 @@ begin
  else
   if El.Flags and ofNotLoadedToMemory <> 0 then
    Exit;
- ProgressIndicatorStart(5446, El.SubElements.Count); try
- for I:=0 to El.SubElements.Count-1 do
-  begin
-   Q:=El.SubElements[I];
-   InitEl(Q, Charger);
-   with Q do
-    begin
-     SelMult:=smSousSelVide;
-     Flags:=Flags and not ofTreeViewExpanded;
-    end;
-   ProgressIndicatorIncrement;
-  end;
- ControlerEtatNoeud(El);
- finally ProgressIndicatorStop; end;
+ ProgressIndicatorStart(5446, El.SubElements.Count);
+ try
+  for I:=0 to El.SubElements.Count-1 do
+   begin
+    Q:=El.SubElements[I];
+    InitEl(Q, Charger);
+    with Q do
+     begin
+      SelMult:=smSousSelVide;
+      Flags:=Flags and not ofTreeViewExpanded;
+     end;
+    ProgressIndicatorIncrement;
+   end;
+  ControlerEtatNoeud(El);
+ finally
+  ProgressIndicatorStop;
+ end;
 end;
 
 procedure TQkExplorer.AjouterElement(El: QObject{; nParent, nInsert: TTreeNode});
@@ -717,35 +730,39 @@ var
  I: Integer;
  Q: QObject;
 begin
- if El.Flags and ofTreeViewAlreadyExpanded <> 0 then Exit;
+ if El.Flags and ofTreeViewAlreadyExpanded <> 0 then
+  Exit;
  if LoadAllAuto then
   El.AccesRec
  else
   El.Acces;
- ProgressIndicatorStart(5446, El.SubElements.Count); try
- for I:=0 to El.SubElements.Count-1 do
-  begin
-   Q:=El.SubElements[I];
-   if Q.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
-    begin
-     if (Q.Flags and ofNotLoadedToMemory <> 0)
-     and (ieListView in El.IsExplorerItem(Q)) and not LoadAllAuto then
-      begin  { delayed add - only an empty, "cut"ted node is added now }
-       if CuttedNodes=Nil then
-        CuttedNodes:=TList.Create;
-       CuttedNodes.Add(Q);
-      end
-     else
-      begin
-       if not LoadAllAuto then
-        Q.Acces;
-       InitEl(Q, LoadAllAuto);
-      {ControlerEtatNoeud(Q);}
-      end;
-    end;
-   ProgressIndicatorIncrement;
-  end;
- finally ProgressIndicatorStop; end;
+ ProgressIndicatorStart(5446, El.SubElements.Count);
+ try
+  for I:=0 to El.SubElements.Count-1 do
+   begin
+    Q:=El.SubElements[I];
+    if Q.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then {DECKER 2000.11.26 - Hu? Isn't the "or ofTreeViewInvisible" unnecessary in this if-statement?}
+     begin
+      if (Q.Flags and ofNotLoadedToMemory <> 0)
+      and (ieListView in El.IsExplorerItem(Q)) and not LoadAllAuto then
+       begin  { delayed add - only an empty, "cut"ted node is added now }
+        if CuttedNodes=Nil then
+         CuttedNodes:=TList.Create;
+        CuttedNodes.Add(Q);
+       end
+      else
+       begin
+        if not LoadAllAuto then
+         Q.Acces;
+        InitEl(Q, LoadAllAuto);
+       {ControlerEtatNoeud(Q);}
+       end;
+     end;
+    ProgressIndicatorIncrement;
+   end;
+ finally
+  ProgressIndicatorStop;
+ end;
  El.Flags:=El.Flags or ofTreeViewAlreadyExpanded;
 end;
 
@@ -1413,11 +1430,14 @@ var
  I: Integer;
 begin
  Result:=ClipboardGroup;
- L:=ListSel(MaxInt); try
- Result.SubElements.Capacity:=L.Count;
- for I:=0 to L.Count-1 do
-  Result.SubElements.Add(QObject(L[I]));
- finally L.Free; end;
+ L:=ListSel(MaxInt);
+ try
+  Result.SubElements.Capacity:=L.Count;
+  for I:=0 to L.Count-1 do
+   Result.SubElements.Add(QObject(L[I]));
+ finally
+  L.Free;
+ end;
 end;
 
 procedure TQkExplorer.StartDragEvt;
@@ -1446,12 +1466,15 @@ var
 begin
 {if Selected<>Nil then
   Selected.EndEdit(True);}
- if DropTarget = Nil then Exit;
+ if DropTarget = Nil then
+  Exit;
  Flags:=DragFlags;
- if Flags=0 then Exit;
+ if Flags=0 then
+  Exit;
  if Source=Self then
   begin
-   if Odd(DropTarget.SelMult) then Exit;
+   if Odd(DropTarget.SelMult) then
+    Exit;
    FInternalDrop:=0;
   end
  else
@@ -1561,23 +1584,26 @@ begin
  SourceQ:=DragObject;
  if Copier or not Interne then
   SourceQ:=SourceQ.Clone(Nil, False);
- SourceQ.AddRef(+1); try
- if not Interne and not CopyFromOutside(SourceQ) then
-  Exit;
- DebutAction;
- for I:=0 to SourceQ.SubElements.Count-1 do
-  begin
-   El:=SourceQ.SubElements[I];
-   if ieCanDrop in DropTarget.IsExplorerItem(El) then
-    if Copier or not Interne then
-     begin
-      El.FParent:=DropTarget;
-      ListeActions.Add(TQObjectUndo.Create('', Nil, El));
-     end
-    else
-     ListeActions.Add(TMoveUndo.Create('', El, DropTarget, Nil));
-  end;
- finally SourceQ.AddRef(-1); end;
+ SourceQ.AddRef(+1);
+ try
+  if not Interne and not CopyFromOutside(SourceQ) then
+   Exit;
+  DebutAction;
+  for I:=0 to SourceQ.SubElements.Count-1 do
+   begin
+    El:=SourceQ.SubElements[I];
+    if ieCanDrop in DropTarget.IsExplorerItem(El) then
+     if Copier or not Interne then
+      begin
+       El.FParent:=DropTarget;
+       ListeActions.Add(TQObjectUndo.Create('', Nil, El));
+      end
+     else
+      ListeActions.Add(TMoveUndo.Create('', El, DropTarget, Nil));
+   end;
+ finally
+  SourceQ.AddRef(-1);
+ end;
  if AllowEditing=aeFree then
   FreeAction(DropTarget)
  else
@@ -1601,41 +1627,47 @@ begin
  SourceQ:=DragObject;
  if Copier or not Interne then
   SourceQ:=SourceQ.Clone(Nil, False);
- SourceQ.AddRef(+1); try
- if not Interne and not CopyFromOutside(SourceQ) then
-  Exit;
- DebutAction;
- InsererAvant:=DropTarget;
- if Interne and not Copier then
-  begin
-   L:=ListSel(MaxInt); try
-   for J:=0 to L.Count-1 do
-    begin
-     El:=QObject(L[J]);
-     if (El.TvParent=DropTarget.TvParent)
-     and (El.TvParent.SubElements.IndexOf(El) < El.TvParent.SubElements.IndexOf(DropTarget)) then
+ SourceQ.AddRef(+1);
+ try
+  if not Interne and not CopyFromOutside(SourceQ) then
+   Exit;
+  DebutAction;
+  InsererAvant:=DropTarget;
+  if Interne and not Copier then
+   begin
+    L:=ListSel(MaxInt);
+    try
+     for J:=0 to L.Count-1 do
       begin
-       InsererAvant:=InsererAvant.SuivantDansGroupe;
-       Break;
+       El:=QObject(L[J]);
+       if (El.TvParent=DropTarget.TvParent)
+       and (El.TvParent.SubElements.IndexOf(El) < El.TvParent.SubElements.IndexOf(DropTarget)) then
+        begin
+         InsererAvant:=InsererAvant.SuivantDansGroupe;
+         Break;
+        end;
       end;
+    finally
+     L.Free;
     end;
-   finally L.Free; end;
-  end;
- for I:=0 to SourceQ.SubElements.Count-1 do
-  begin
-   El:=SourceQ.SubElements[I];
-   if ieCanDrop in DropTarget.TvParent.IsExplorerItem(El) then
-    if Copier or not Interne then
-     begin
-      El.FParent:=DropTarget.TvParent;
-      U:=TQObjectUndo.Create('', Nil, El);
-      ListeActions.Add(U);
-      U.InsererAvant:=InsererAvant;
-     end
-    else
-     ListeActions.Add(TMoveUndo.Create('', El, DropTarget.TvParent, InsererAvant));
-  end;
- finally SourceQ.AddRef(-1); end;
+   end;
+  for I:=0 to SourceQ.SubElements.Count-1 do
+   begin
+    El:=SourceQ.SubElements[I];
+    if ieCanDrop in DropTarget.TvParent.IsExplorerItem(El) then
+     if Copier or not Interne then
+      begin
+       El.FParent:=DropTarget.TvParent;
+       U:=TQObjectUndo.Create('', Nil, El);
+       ListeActions.Add(U);
+       U.InsererAvant:=InsererAvant;
+      end
+     else
+      ListeActions.Add(TMoveUndo.Create('', El, DropTarget.TvParent, InsererAvant));
+   end;
+ finally
+  SourceQ.AddRef(-1);
+ end;
  if AllowEditing=aeFree then
   FreeAction(DropTarget)
  else
@@ -1722,9 +1754,12 @@ var
  Gr: QExplorerGroup;
 begin
  Gr:=GroupeSelection;
- Gr.AddRef(+1); try
- Gr.CopierObjets(False);
- finally Gr.AddRef(-1); end;
+ Gr.AddRef(+1);
+ try
+  Gr.CopierObjets(False);
+ finally
+  Gr.AddRef(-1);
+ end;
 end;
 
 function TQkExplorer.DropObjectsNow(Gr: QExplorerGroup; const Texte: String; Beep: Boolean) : Boolean;
@@ -1769,10 +1804,13 @@ var
  Gr: QExplorerGroup;
 begin
  Gr:=ClipboardGroup;
- Gr.AddRef(+1); try
- if ClipboardChain(Gr) then
-  DropObjectsNow(Gr, LoadStr1(543), True);
- finally Gr.AddRef(-1); end;
+ Gr.AddRef(+1);
+ try
+  if ClipboardChain(Gr) then
+   DropObjectsNow(Gr, LoadStr1(543), True);
+ finally
+  Gr.AddRef(-1);
+ end;
 end;
 
 procedure TQkExplorer.DeleteSelection(NoTexte: Integer);
@@ -1782,43 +1820,48 @@ var
  L: TList;
  I: Integer;
 begin
- L:=ListSel(MaxInt); try
- if L.Count=1 then
-  begin
-   if AllowEditing=aeNo then Exit;
-   T:=QObject(L[0]);
-   if not Odd(T.Flags) then   { if ofTreeViewSubElement is not set }
-    begin
-     MessageBeep(0);   { cannot delete a root }
+ L:=ListSel(MaxInt);
+ try
+  if L.Count=1 then
+   begin
+    if AllowEditing=aeNo then
      Exit;
-    end;
-   if NoTexte=0 then
-    S:=FmtLoadStr1(582, [T.Name])
-   else
+    T:=QObject(L[0]);
+    if not Odd(T.Flags) then   { if ofTreeViewSubElement is not set }
+     begin
+      MessageBeep(0);   { cannot delete a root }
+      Exit;
+     end;
+    if NoTexte=0 then
+     S:=FmtLoadStr1(582, [T.Name])
+    else
+     S:=LoadStr1(NoTexte);
+    DebutAction;
+    ListeActions.Add(TQObjectUndo.Create('', T, Nil));
+    AnyObj:=T.TvParent;
+   end
+  else
+   begin
+    if NoTexte=0 then
+     NoTexte:=579;
+    DebutAction;
+    AnyObj:=Nil;
+    for I:=0 to L.Count-1 do
+     begin
+      if AllowEditing=aeNo then
+       Exit;
+      T:=QObject(L[I]);
+      if Odd(T.Flags) then   { if ofTreeViewSubElement is set }
+       begin
+        AnyObj:=T.TvParent;
+        ListeActions.Add(TQObjectUndo.Create('', T, Nil));
+       end;
+     end;
     S:=LoadStr1(NoTexte);
-   DebutAction;
-   ListeActions.Add(TQObjectUndo.Create('', T, Nil));
-   AnyObj:=T.TvParent;
-  end
- else
-  begin
-   if NoTexte=0 then
-    NoTexte:=579;
-   DebutAction;
-   AnyObj:=Nil;
-   for I:=0 to L.Count-1 do
-    begin
-     if AllowEditing=aeNo then Exit;
-     T:=QObject(L[I]);
-     if Odd(T.Flags) then   { if ofTreeViewSubElement is set }
-      begin
-       AnyObj:=T.TvParent;
-       ListeActions.Add(TQObjectUndo.Create('', T, Nil));
-      end;
-    end;
-   S:=LoadStr1(NoTexte);
-  end;
- finally L.Free; end;
+   end;
+ finally
+  L.Free;
+ end;
  if AllowEditing=aeFree then
   FreeAction(AnyObj)
  else

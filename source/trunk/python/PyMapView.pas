@@ -922,7 +922,7 @@ var
  P1, P2: TVect;
 begin
  if MapViewProj=Nil then
-  Result:=Origine
+  Result:={Origine}OriginVectorZero
  else
   with MapViewProj do
    begin
@@ -998,8 +998,8 @@ begin
  if MapViewProj=Nil then
   begin
    Result:=False;
-   Info.Clic:=Origine;
-   Info.Clic2:=Origine;
+   Info.Clic:={Origine}OriginVectorZero;
+   Info.Clic2:={Origine}OriginVectorZero;
   end
  else
   begin
@@ -1938,7 +1938,7 @@ begin
      else
       Py_DECREF(cpos);
      if MapViewProj=Nil then
-      Centre:=Origine
+      Centre:={Origine}OriginVectorZero
      else
       begin
        Centre:=CentreEcran;
@@ -2442,7 +2442,7 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 'O', [@obj]) then
    Exit;
-  V:=Origine;
+  V:={Origine}OriginVectorZero;
   if PyControlF(self)^.QkControl<>Nil then
    with PyControlF(self)^.QkControl as TPyMapView do
     if MapViewProj<>Nil then
@@ -2456,7 +2456,7 @@ begin
         case Upcase(P^) of
          'X': V:=MapViewProj.VectorX;
          'Y': V:=MapViewProj.VectorY;
-         'Z': V:=MapViewProj.VectorEye(Origine);
+         'Z': V:=MapViewProj.VectorEye({Origine}OriginVectorZero);
         end;
        end;
      end;
@@ -2511,7 +2511,7 @@ begin
   if not PyArg_ParseTupleX(args, 'O!O!i|iiO!', [@TyVect_Type, @v1obj, @TyVect_Type, @v2obj, @color, @flags, @color2, @TyVect_Type, @norg]) then
    Exit;
   if norg=Nil then
-   V:=Origine
+   V:={Origine}OriginVectorZero
   else
    V:=norg^.V;
   if PyControlF(self)^.QkControl<>Nil then

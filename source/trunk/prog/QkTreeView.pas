@@ -26,6 +26,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.5  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -912,12 +922,16 @@ var
   end;
 
 begin
- L:=TList.Create; try
- for I:=0 to Roots.Count-1 do
-  if Roots[I].SelMult<>smSousSelVide then
-   if Enum(Roots[I])=0 then
-    Break;
- except L.Free; raise; end;
+ L:=TList.Create;
+ try
+  for I:=0 to Roots.Count-1 do
+   if Roots[I].SelMult<>smSousSelVide then
+    if Enum(Roots[I])=0 then
+     Break;
+ except
+  L.Free;
+  raise;
+ end;
  Result:=L;
 end;
 

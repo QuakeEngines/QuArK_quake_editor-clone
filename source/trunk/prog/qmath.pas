@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/10/26 17:00:05  tiglari
+added some vector functions
+
 Revision 1.4  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -88,7 +91,7 @@ function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
 
 const
- Origine: TVect = (X:0; Y:0; Z:0);
+ {Origine}OriginVectorZero: TVect = (X:0; Y:0; Z:0);
  rien = 1E-5;
  rien2 = 3E-3;
 

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -332,7 +335,7 @@ begin
     S.ReadBuffer(OldF^.Normale, SizeOf(TVect)+SizeOf(TDouble))
    else
     begin
-     OldF^.Normale:=Origine;
+     OldF^.Normale:={Origine}OriginVectorZero;
      case Abr of
       1 : OldF^.Normale.X:=-1;
       2 : OldF^.Normale.X:=1;

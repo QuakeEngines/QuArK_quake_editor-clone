@@ -153,7 +153,8 @@ uses
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   Qk3ds in 'prog\model\Qk3ds.pas',
   Logging in 'prog\Logging.pas',
-  PyLogging in 'python\PyLogging.pas';
+  PyLogging in 'python\PyLogging.pas',
+  EdTListP2 in '3dfx\EdTListP2.pas';
 
 {$R *.RES}
 

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -425,7 +428,7 @@ begin
   if nGrid>0 then
    begin
     Info.ModeDeplacement:=mdStrongDisplacementGrid;
-    Info.Clic:=Origine;
+    Info.Clic:={Origine}OriginVectorZero;
     with QkObjFromPyObj(self) as Q3DObject do
      begin
       LoadAll;
@@ -470,7 +473,7 @@ begin
   if not PyArg_ParseTupleX(args, 'd', [@Info.ClicZ]) then
    Exit;
   Info.ModeDeplacement:=mdInflate;
-  Info.Clic:=Origine;
+  Info.Clic:={Origine}OriginVectorZero;
   with QkObjFromPyObj(self) as Q3DObject do
    begin
     LoadAll;
