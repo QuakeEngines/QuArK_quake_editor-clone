@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/08/19 07:30:47  tiglari
+Cacheing of DefaultImage for Shaders
+
 Revision 1.15  2000/07/18 19:38:00  decker_dk
 Englishification - Big One This Time...
 
@@ -215,8 +218,12 @@ begin
   Note, that it is first tried to load as tga, then as jpeg
   }
 
- { looks for 'qer_editorimage' }
- S:=Specifics.Values[EditorImageSpec];
+  if Specifics.Values['q']<>'' then
+   { look at the q specific (QTextureLnk.LoadPixelSet) }
+    S:=Specifics.Values['q']
+  else
+   { looks for 'qer_editorimage' }
+    S:=Specifics.Values[EditorImageSpec];
  if S<>'' then
  begin
    try
