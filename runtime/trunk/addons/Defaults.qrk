@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.84  2001/02/22 19:19:29  decker_dk
+//Added three pathdup.points
+//
 //Revision 1.83  2001/02/20 08:07:41  tiglari
 //DefaultTextureScale added for Q3A
 //
@@ -3168,6 +3171,13 @@ QQRKSRC1
       macro:        = { Typ="ESR" Txt="&" }
     }
 
+    dup path:form =
+    {
+      squarend: = {Txt="&" Typ="X"
+               Hint = "if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
+      setback: = {Txt="&" Typ="EF001"
+               Hint = "if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
+    }
     QuakeCtx:form =     // form that applies when editing .qctx objects
     {
       Style = "3"
