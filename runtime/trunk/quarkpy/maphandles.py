@@ -1080,10 +1080,73 @@ def singlefacezoom(view, center=None):
     p = view.proj(view.info["origin"])
     view.depth = (p.z-0.1, p.z+100.0)
 
+#
+# Single bezier map view display for the Multi-Pages Panel.
+#
+
+def viewsinglebezier(editor, view, bezier):
+    "Special code to view a single face with handles to move the texture."
+
+    def drawsinglebezier(view, bezier=bezier, editor=editor):
+        view.drawmap(bezier)   # textured face
+        view.solidimage(editor.TexSource)
+        view.drawmap(bezier, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
+        editor.finishdrawing(view)
+        # end of drawsinglebezier
+
+    origin = bezier.origin
+    if origin is None: return
+
+    h = mapentities.CallManager("tex_handles", bezier, editor, view)
+    
+    view.handles = qhandles.FilterHandles(h, SS_MAP)
+
+#DECKER - begin
+    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
+    oldx, oldy, doautozoom = 0, 0, 0
+    try:
+        oldorigin = view.info["origin"]
+        if not abs(origin - oldorigin):
+            oldscale = view.info["scale"]
+            if oldscale is None:
+                doautozoom = 1
+            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
+        else:
+            doautozoom = 1
+    except:
+        doautozoom = 1
+
+    if doautozoom:
+        oldscale = 0.01
+#DECKER - end
+
+    view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
+    view.viewmode = "tex"
+    view.info = {"type": "2D",
+                 "matrix": matrix_rot_z(math.pi),
+                 "bbox": quarkx.boundingboxof([bezier] + map(lambda h: h.pos, view.handles)),
+                 "scale": oldscale, #DECKER
+                 "custom": singlefacezoom,
+                 "origin": origin,
+                 "noclick": None,
+                 "mousemode": None }
+    view.flags = view.flags | qhandles.vfSkinView;
+    singlefacezoom(view, origin)
+    if doautozoom: #DECKER
+        singlefaceautozoom(view, bezier) #DECKER
+    editor.setupview(view, drawsinglebezier, 0)
+    if (oldx or oldy) and not doautozoom: #DECKER
+        view.scrollto(oldx, oldy) #DECKER
+    return 1
+    
+    
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.7  2000/06/17 07:32:06  tiglari
+#a slight change to clickedview
+#
 #Revision 1.6  2000/06/16 10:44:54  tiglari
 #CenterHandle menu function adds clickedview to editor.layout
 #(for support of perspective-driven curve creation in mb2curves.py)

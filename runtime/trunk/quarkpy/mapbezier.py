@@ -645,6 +645,90 @@ class CPHandle(qhandles.GenericHandle):
             new = None
         return [self.b2], new
 
+class CPTextureHandle(qhandles.GenericHandle):
+    "Bezier Control point (Texture Handle)."
+
+    undomsg = Strings[627]
+    hint = "re-position texture vertexes (Ctrl key: force control point to grid)\n  Alt: move whole row (same hue)\n  Shift: move whole column.\n  Shift+Alt key: move everything.  \n S: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
+
+    def __init__(self, pos, b2, ij, color): #DECKER
+        qhandles.GenericHandle.__init__(self, pos)
+        self.b2 = b2
+        self.ij = ij
+        self.hint = "(%s,%s)--"%ij+self.hint
+        self.color = color #DECKER
+        self.cursor = CR_CROSSH
+        self.h = len(b2.cp) 
+        self.w =  len(b2.cp[0])
+
+    def draw(self, view, cv, draghandle=None):
+        if self.ij == (0,0):
+            cv.reset()
+            #self.drawcpnet(view, cv)
+        p = view.proj(self.pos)
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = self.color #DECKER
+            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+
+    #
+    # This is important because in general the derivative
+    #  will only be well-defined at corners
+    #
+    def iscorner(self):
+        i, j = self.ij
+        if not (i==0 or i==self.b2.H-1):
+            return 0
+        if not (j==0 or j==self.b2.W-1):
+            return 0
+        return 1
+        
+    def edgeType(self):
+        "(type, dim); type=P_FRONT etc"
+        "None; not an edge"
+        i, j = self.ij
+        cp = self.b2.cp
+        h = len(cp)
+        w = len(cp[0])
+        if 0<i<h-1:
+            if j==0:
+                return P_FRONT, h
+            if j==w-1:
+                return P_BACK, h 
+        if 0<j<w-1:
+            if i==0:
+                return P_BOTTOM, w
+            if i==h-1:
+                return P_TOP, w            
+    
+    # converting to standard ij
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        if not (flags&MB_CTRL):
+            delta = qhandles.aligntogrid(delta, 0)
+        if delta or (flags&MB_REDIMAGE):
+            new = self.b2.copy()
+            cp = map(list, self.b2.cp)
+            i, j = self.ij
+            moverow = (quarkx.keydown('\022')==1)  # ALT
+            movecol = (quarkx.keydown('\020')==1)  # SHIFT
+            picked = self.b2["picked"]
+            if picked:
+                indexes = map(lambda p,b2=self.b2:cpPos(p,b2),picked)
+            else:
+                indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
+            td = (v2-v1)/128
+            for m,n in indexes:
+                 q = cp[m][n]
+                 cp[m][n]=quarkx.vect(q.x, q.y, q.z, q.s + delta.x, q.t + delta.y)
+            self.draghint = vtohint(delta)
+            new.cp = self.newcp = cp
+            new = [new]
+        else:
+            self.newcp = None
+            new = None
+        return [self.b2], new
+
 #
 # getting tag point to actually tag the bezier control point.
 #
@@ -826,6 +910,10 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.33  2001/01/15 21:56:29  tiglari
+#remove useless `subdiv' menu item (old test code, methinks).
+#`picking' extended to drag (drag one picked CP now drags all)
+#
 #Revision 1.32  2000/12/30 05:28:19  tiglari
 #`pick' functions for acting on selected bezier cp's
 #

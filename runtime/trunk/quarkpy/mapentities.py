@@ -386,7 +386,35 @@ class BezierType(EntityManager):
         
     # /tiglari
 
+    def tex_handles(o, editor, view):
+        import mapbezier
+        #
+        # Bezier handles : one per control point
+        #
+        colors = [[0xF00000, 0xD00000, 0xB00000, 0x900000, 0x700000],   #DECKER
+                  [0x00F000, 0x00D000, 0x00B000, 0x009000, 0x007000],
+                  [0x0000F0, 0x0000D0, 0x0000B0, 0x000090, 0x000070],
+                  [0xF0F000, 0xD0D000, 0xB0B000, 0x909000, 0x707000],
+                  [0x00F0F0, 0x00D0D0, 0x00B0B0, 0x009090, 0x007070],
+                  [0xF000F0, 0xD000D0, 0xB000B0, 0x900090, 0x700070],
+                  [0xF0F0F0, 0xD0D0D0, 0xB0B0B0, 0x909090, 0x707070]]
+        coli = 0 #DECKER
+        h = []
+        cp = o.cp
+        for i in range(len(cp)):
+            colj = 0 #DECKER
+            cpline = cp[i]
+            for j in range(len(cpline)):
+                c1 = cpline[j]
+                # makes a list of couples (projected position, handle object)
+                c1 = quarkx.vect(c1.s, c1.t, 0)
+                h.append( mapbezier.CPTextureHandle(c1, o, (i,j), colors[coli][colj])) #DECKER
+                colj = (colj+1)%4
+            coli = (coli+1)%6
 
+        return h
+    
+    
     def handles(o, editor, view):
         import mapbezier
         #
@@ -594,6 +622,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2001/01/10 20:25:53  tiglari
+#fix bug in registerPyForm
+#
 #Revision 1.21  2000/12/31 02:46:02  tiglari
 #Support for python code to add entity forms
 # (for shape-generator development: lookup/registerPyForm)

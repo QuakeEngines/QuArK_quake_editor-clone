@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/01/28 17:26:31  decker_dk
+Added map-comment ancestry to TBezier.SaveAsTextBezier().
+
 Revision 1.23  2001/01/21 15:48:01  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -186,6 +189,7 @@ type
              procedure SwapSides; { tiglari }
              function PyGetAttr(attr: PChar) : PyObject; override;
              function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
+             procedure DrawTexVertices;
            end;
 
  {------------------------}
@@ -721,6 +725,62 @@ begin
  end;
 end;
 
+procedure TBezier.DrawTexVertices;
+var
+  cp: TBezierMeshBuf5;
+  I,J: Integer;
+  PP, P, Dest: PPointProj;
+  Source: vec5_p;
+  V: TVect;
+begin
+  cp:=ControlPoints;
+  J:=cp.W*cp.H*SizeOf(TPointProj);
+  if CCoord.FastDisplay then
+    Inc(J, FMeshCache.W*FMeshCache.H*(2*SizeOf(TPoint)) + (FMeshCache.W+FMeshCache.H)*SizeOf(Integer))
+  else
+    Inc(J, FMeshCache.H*SizeOf(TPointProj));
+  GetMem(PP, J);
+  try
+    Dest:=PP;
+    Source:=cp.CP;
+    for J:=0 to cp.H-1 do
+    begin
+      for I:=0 to cp.W-1 do
+      begin
+        V.X:=Source^[3];
+        V.Y:=Source^[4];
+        V.Z:=0;
+        Inc(Source);
+        Dest^:=CCoord.Proj(V);
+        Inc(Dest);
+      end;
+    end;
+    Dest:=PP;
+    { draw the horizontal lines first }
+    for J:=1 to cp.H do
+    begin
+      CCoord.Polyline95f(Dest^, cp.W);
+      Inc(Dest, cp.W);
+    end;
+    { now draw the vertical lines }
+    for I:=0 to cp.W-1 do
+    begin
+      P:=PP;
+      Inc(P, I);
+      for J:=0 to cp.H-1 do
+      begin    { put on column of control points in a row }
+        Dest^:=P^;
+        Inc(Dest);
+        Inc(P, cp.W);
+      end;
+      Dec(Dest, cp.H);
+      CCoord.Polyline95f(Dest^, cp.H);
+    end;
+  finally
+    FreeMem(PP);
+  end;
+end;
+
  { Draw the Bezier patch on map views }
 procedure TBezier.Dessiner;
 var
@@ -736,6 +796,11 @@ var
 begin
  if not Assigned(FMeshCache.CP) then
   BuildMeshCache;
+ if (md2donly in Info.ModeDessin) then
+ begin
+   DrawTexVertices;
+   exit;
+ end;
  J:=FMeshCache.W*FMeshCache.H*SizeOf(TPointProj);
  if CCoord.FastDisplay then
   Inc(J, FMeshCache.W*FMeshCache.H*(2*SizeOf(TPoint)) + (FMeshCache.W+FMeshCache.H)*SizeOf(Integer))
@@ -851,7 +916,7 @@ begin
        Inc(Dest);
       end;
     end;
-   
+
     { draw the horizontal lines first }
    Dest:=PP;
    for J:=1 to FMeshCache.H do
@@ -875,7 +940,7 @@ begin
      CCoord.Polyline95f(Dest^, FMeshCache.H);
     end;
   end;
- 
+
  finally FreeMem(PP); end;
  if NewPen then
   DeleteObject(SelectObject(Info.DC, Info.BlackBrush));

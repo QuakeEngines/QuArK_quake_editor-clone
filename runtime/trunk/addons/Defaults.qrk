@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.77  2001/02/07 00:06:57  aiv
+//added fixes from 6.1c release
+//
 //Revision 1.76  2001/02/02 08:21:00  tiglari
 //updated version #
 //
@@ -2979,6 +2982,21 @@ QQRKSRC1
         Typ = "EF02"
         Txt = "Tex. angles:"
         Hint = "Direction of texture axis||The angles of the direction of each texture axis, in degrees."$0D$0D"Usually, you will use the mouse to rotate the texture below instead."
+      }
+    }
+    Bezier:form =     // form on the faces page
+    {
+      Style = "1"
+      header: = {
+        Typ = "S"
+        Txt = "%s"   // caption text is found in the object put in the form
+        //Bold = "0"
+      }
+      texture: = {
+        Typ = "C"
+        Txt = "Texture :"
+        Items = "%s"   // items are found in the object put the form (texture$items)
+        Hint = "%s||This box lets you see and change the name of the texture used on this or these faces. Wait with the mouse over the box to see the texture images."
       }
     }
     Default:g:form =      // form that applies when editing groups

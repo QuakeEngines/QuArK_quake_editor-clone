@@ -29,8 +29,6 @@ import qmenu
 
 vertexdotcolor = 0
 
-vfSkinView = 0x80
-
 
 #
 # The handle classes.
@@ -283,7 +281,7 @@ def buildskinvertices(editor, view, component):
                  "mousemode": None
                  }
     skinzoom(view, org)
-    view.flags = view.flags | vfSkinView;
+    view.flags = view.flags | qhandles.vfSkinView;
     editor.setupview(view, drawsingleskin, 0)
     
       
@@ -420,6 +418,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.6  2001/02/05 20:03:12  aiv
+#Fixed stupid bug when displaying texture vertices
+#
 #Revision 1.5  2000/10/11 19:07:47  aiv
 #Bones, and some kinda skin vertice viewer
 #

@@ -25,6 +25,7 @@ import qmenu
 MOUSEZOOMFACTOR = math.sqrt(2)     # with this value, the zoom factor doubles every two click
 STEP3DVIEW = 64.0
 
+vfSkinView = 0x80 # 2d only - used for skin page for mdl editor and bezier page for map editor
 
 #
 # Global variables that are set by the map editor.
@@ -1509,6 +1510,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.3  2000/10/10 07:37:12  tiglari
+#support for circlestrafe selection
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
