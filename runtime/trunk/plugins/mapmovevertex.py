@@ -53,6 +53,10 @@ import tagging
 #
 from quarkpy.maputils import *
 
+#
+# For the stuff below about moving some object containing a vertex
+#
+import mapmadsel
 
 #
 # repeated from maputils to make it work with older quark versions.
@@ -594,9 +598,36 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
 #            del editor.lockedVertices
         editor.invalidateviews()
  
+
+    #
+    # Moving a containing group so that the vertex shifts to ongrid
+    #
+    def moveparentpopup(self=self,editor=editor):
+        shift=self.pos-editor.aligntogrid(self.pos)
+
+        def makeitem(object,editor,r,shift=shift):
+
+            def Shifter(m, object=object, editor=editor, shift=shift):
+                new=object.copy()
+                undo=quarkx.action()
+                new.translate(shift)
+                undo.exchange(object, new)
+                editor.ok(undo, "Move object")
+                editor.invalidateviews()
+
+            item = qmenu.item(object.name,Shifter, "Move me")
+            item.menuicon = object.geticon(1)
+            return item
+            
+        poly=self.poly
+        list=mapmadsel.buildParentPopupList(self.poly,makeitem, editor)
+        return list
+     
     #
     # And their menu items
     #
+    moveparentitem = qmenu.popup("&Move Containing", moveparentpopup(),
+      hint="|The clicked-on containing object of this vertex will be moved so as to force the vertex onto the grid.")
     moveitem = qmenu.item("&Move Vertex", moveclick)
     lockitem = qmenu.item("&Lock Vertex", lockclick)
     unlockitem = qmenu.item("&Unlock Vertex", unlockclick)
@@ -620,7 +651,7 @@ def vertexmenu(self, editor, view, oldmenu=quarkpy.maphandles.VertexHandle.menu.
     # And we return the menu, the new items stuck onto the
     #  front of the old.
     #
-    return [moveitem, locker, clearitem]+oldmenu(self,editor,view)
+    return [moveparentitem, moveitem, locker, clearitem]+oldmenu(self,editor,view)
     
 #
 # And here's the magic bit; when vertexmenu got defined, the
@@ -832,6 +863,7 @@ quarkpy.qhandles.GenericHandle.OriginItems = originmenu
 #   option (Shift-LMB drag by default), so this code will
 #   be removed from the final version.
 #
+
 def circleinit(self, editor, view, x, y, old = quarkpy.qhandles.SideStepDragObject.__init__):
     self.editor = editor
     old(self, editor, view, x, y)
@@ -858,6 +890,9 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.4  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.3  2001/06/16 03:19:05  tiglari
 # add Txt="" to separators that need it
 #
