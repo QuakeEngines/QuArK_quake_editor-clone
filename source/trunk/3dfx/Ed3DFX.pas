@@ -2041,7 +2041,7 @@ begin
       GetMem(stBuffer, BezierBuf.W*BezierBuf.H*SizeOf(vec_st_t)); try
       st:=stBuffer;
       for L:=0 to BezierBuf.H-1 do
-       for K:=0 to BezierBuf.H-1 do
+       for K:=0 to BezierBuf.W-1 do
         begin
          st^:=TriangleSTCoordinates(BControlPoints, K, L);
          Inc(st);
