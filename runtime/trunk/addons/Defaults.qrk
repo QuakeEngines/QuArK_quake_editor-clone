@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.138  2001/05/27 00:12:41  tiglari
+//support for 'serializable' (suffix incrementing) duplicators
+//
 //Revision 1.137  2001/05/25 12:37:18  tiglari
 //tagged plane support
 //
@@ -3321,10 +3324,10 @@ QQRKSRC1
     }
     serialform:incl = // include for dups that serialize target etc.
     {
-      serialize: = {Txt="&" Typ="X" Hint="If this is checked, target, targetname, killtarget values are serialized"}
-      all target serial: ={Txt="&" Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are serialized"}
-      serial specifics: = {Txt="&" Typ="E" Hint="List here additional specifics to be serialized"}
-      final target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " Additional specifics of this form can be added for targetname, etc." }
+      increment suffix: = {Txt="increment" Typ="X" Hint="If this is checked, target, targetname, killtarget values ending in a sequence of digits are incremented"}
+      increment all target: ={Txt="incr. all targ." Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are incremented"}
+      incrementable specifics: = {Txt="incrementable" Typ="E" Hint="List here additional specifics to be incremented"}
+      final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics" }
     }
     Default:d:form =    // form that applies when editing duplicators
     {

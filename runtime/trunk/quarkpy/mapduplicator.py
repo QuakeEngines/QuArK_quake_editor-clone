@@ -121,7 +121,7 @@ class StandardDuplicator(DuplicatorManager):
         #
         # serializing specifics stuff
         #
-        if self.dup["serialize"]=="1":
+        if self.dup["increment suffix"]=="1":
             #
             # Final values
             #
@@ -130,20 +130,20 @@ class StandardDuplicator(DuplicatorManager):
                 if string.find(spec,'final_')==0:
                     self.final_specs[spec[6:]]=self.dup[spec]
             #
-            # Deciding which get serialized
+            # Deciding which get increment suffixd
             #
-            if self.dup["all target serial"] is not None:
+            if self.dup["increment all target"] is not None:
                 specs = pool_specs(sourcelist)
-                serializable = []
+                incrementable = []
                 for spec in specs:
                     if string.find(spec,"target")>=0:
-                        serializable.append(spec)
+                        incrementable.append(spec)
             else:
-                serializable = ["target", "targetname", "killtarget"]
-            moreserial = self.dup["serial specific"]
+                incrementable = ["target", "targetname", "killtarget"]
+            moreserial = self.dup["incrementable specifics"]
             if moreserial is not None:
-                serializable=serializable+string.split(moreserial)
-            self.serializable=serializable
+                incrementable=incrementable+string.split(moreserial)
+            self.incrementable=incrementable
 
     def applylinear(self, matrix, direct=0):
         s = self.dup["offset"]
@@ -159,8 +159,8 @@ class StandardDuplicator(DuplicatorManager):
             item.translate(self.offset)
         if self.matrix and not self.dup["item center"]:
             item.linear(self.origin, self.matrix)
-        if self.dup["serialize"]=="1":
-            for spec in self.serializable:
+        if self.dup["increment suffix"]=="1":
+            for spec in self.incrementable:
                 val = item[spec]   
                 if val is not None:
                     if is_digit(val[len(val)-1]):
@@ -217,13 +217,17 @@ class StandardDuplicator(DuplicatorManager):
                 except (AttributeError):
                     pass
             #
-            # Set final spec values for serializers
+            # Set final spec values for incrementable suffixes
             #
-            if self.dup["serialize"]:
+            if self.dup["increment suffix"]:
                 if i==count-1:
                     for item in list:
                         for spec in self.final_specs.keys():
-                            item[spec]=self.final_specs[spec]
+                            val = self.final_specs[spec]
+                            if val=="None":
+                                item[spec]=""
+                            else:
+                                item[spec]=self.final_specs[spec]
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -344,6 +348,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2001/05/27 00:13:26  tiglari
+#support for 'incrementable' (suffix incrementing) duplicators
+#
 #Revision 1.12  2001/05/12 23:04:07  tiglari
 #make new linear fixpoint behavior contingent on 'item center' flag
 #
