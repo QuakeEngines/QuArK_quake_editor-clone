@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:38:21  decker_dk
+Updated copyright-header
+
 Revision 1.3  2001/02/01 20:45:45  decker_dk
 Only include Direct3D support-code, if QUARK_DIRECT3D is defined.
 
@@ -61,7 +64,7 @@ type
     m_pD3DDevice: IDIRECT3DDEVICE7;
     m_pDD: IDirectDraw7;
 
-    m_CurrentAlpha, m_CurrentColor: DWord;
+    m_CurrentAlpha, m_CurrentColor: Integer;
 
     function StartBuildScene(var VertexSize: Integer) : TBuildMode; override;
     procedure EndBuildScene; override;
@@ -350,6 +353,8 @@ begin
   m_pD3DDevice.EndScene;
 
   l_Res := m_pD3DX.UpdateFrame(0);
+  if (l_Res <> 0) then
+    raise EErrorFmt(4882, ['UpdateFrane', D3DXGetErrorMsg(l_Res)]);
 end;
 
 procedure TDirect3DSceneObject.RenderTransparentD3D(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
@@ -372,11 +377,7 @@ procedure TDirect3DSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, D
 var
   Surf: PSurface3D;
   SurfEnd: PChar;
-  PV, PVBase, PV2, PV3: PVertex3D;
-  l_NeedTex: Boolean;
-  I, Sz: Integer;
 begin
-  l_NeedTex:=True;
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
 
@@ -400,7 +401,6 @@ begin
           l_NeedTex:=False;
         end;
 *)
-        PV:=PVertex3D(Surf);
         begin
 (*
           for I:=1 to Abs(VertexCount) do
