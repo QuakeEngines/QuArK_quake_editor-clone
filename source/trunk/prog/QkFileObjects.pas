@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/10/14 10:13:32  tiglari
+Live Pointer Hunt: rollback to version of 2001-10-02
+
 Revision 1.29  2001/06/14 18:54:46  decker_dk
 Added a 'ChoiceList' parsing to ConstructObjsFromText() - See function comments for reason.
 
@@ -2048,7 +2051,8 @@ begin
  finally
   FindClose(Rec);
  end;
- CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
+ H:=CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
+ CloseHandle(H);
 end;
 
 function GetFileRoot(Q: QObject) : QFileObject;
