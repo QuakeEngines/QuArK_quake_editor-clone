@@ -108,6 +108,7 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
         if (action == "LOADLINFILE"):
             if self.editor is not None:
                 import mapholes
+#                debug('loading: '+ self.bspfile_wo_ext+'.'+ext)
                 mapholes.LoadLinFile(self.editor, self.bspfile_wo_ext+'.'+ext)
         elif (action == "LOADPTSFILE"):
             if self.editor is not None:
@@ -604,7 +605,7 @@ def prepAuxFileMenuItem(item,extkey,defext):
 
 
 def onclick(m):
-    for args in ((leakMenuItem,"MapHoles",".pts"),
+    for args in ((leakMenuItem,"MapHoles",".lin"),
                  (portalsMenuItem,"MapPortals",".prt")):
       apply(prepAuxFileMenuItem,args)
 
@@ -651,6 +652,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.31  2003/03/19 11:24:32  tiglari
+#expand help for portal view command
+#
 #Revision 1.30  2003/03/19 11:06:54  tiglari
 #add commands for loading leak (pts/lin) and portal (prt) files
 #
