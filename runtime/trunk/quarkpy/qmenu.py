@@ -37,7 +37,6 @@ class item:
         self.onclick = onclick
         self.state = normal
         if hint:
-            self.hint = hint
             self.hint = hintPlusInfobaselink(hint,infobaselink)
 
 
@@ -50,7 +49,6 @@ class popup:
         self.items = items       # this lets you modify 'items' to reflect the current menu state
         self.state = normal
         if hint:
-            self.hint = hint
             self.hint = hintPlusInfobaselink(hint,infobaselink)
 
 
@@ -187,6 +185,9 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.4  2003/03/15 20:41:07  cdunde
+#To update hints and add infobase links
+#
 #Revision 1.3  2001/03/20 07:59:40  tiglari
 #customizable hot key support
 #
