@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/06/05 18:38:28  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.24  2001/05/09 18:53:29  aiv
 fix for retail cs.
 
@@ -1230,6 +1233,13 @@ var
   F: Boolean;
 begin
   CheckDir:=SetupGameSet.Specifics.Values['CheckDirectory'];
+{Decker - If no value in CheckDirectory, then accept any directory}
+  if CheckDir='' then
+  begin
+    Result:=true;
+    Exit;
+  end;
+{/Decker}
   if pos(#$D, CheckDir) <> 0 then
   begin
     Result:=false;
