@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.66  2000/10/29 16:12:43  decker_dk
+//Q3A and STVEF 'CheckFile' modifications
+//
 //Revision 1.65  2000/10/28 19:28:34  decker_dk
 //Some more comments reg. user-variables for build-tool controllers
 //
@@ -725,7 +728,7 @@ QQRKSRC1
         Q2TexFlags = "1"
         ShadersPath = "scripts/"
         ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +map %s"
+        RunMapCmdLine = " +devmap %s"
         AddOns = "DataQ3.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
