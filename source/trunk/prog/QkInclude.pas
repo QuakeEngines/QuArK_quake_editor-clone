@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
 Revision 1.4  2001/01/21 15:49:03  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -55,20 +58,17 @@ type
  {------------------------}
 
 function DoIncludeData(Target, LookFrom: QObject; const InclName: String) : Boolean;
-function FindIncludeData1(LookFrom: QObject; const InclName: String) : QObject;
+function FindIncludeData1(LookFrom: QObject; const InclName: String; FullMatch: Boolean; Original: QObject = nil) : QObject;
 
  {------------------------}
 
 implementation
 
-uses QkGroup, Setup, QkObjectClassList;
+uses QkGroup, QkQuakeCtx, Setup, QkObjectClassList;
 
  {------------------------}
 
-function FindIncludeData1(LookFrom: QObject; const InclName: String) : QObject;
-var
- FullMatch: Boolean;
- Match: String;
+function FindIncludeData1(LookFrom: QObject; const InclName: String; FullMatch: Boolean; Original: QObject = nil) : QObject;
 
   function Parcourir(Parent: QObject) : Boolean;
   var
@@ -78,8 +78,9 @@ var
    for I:=0 to Parent.SubElements.Count-1 do
     begin
      Q:=Parent.SubElements[I];
-     if (FullMatch and (CompareText(Q.Name+Q.TypeInfo, Match) = 0))
-     or (not FullMatch and (Q is QIncluded) and (CompareText(Q.Name, InclName) = 0)) then
+     if ((FullMatch and (CompareText(Q.Name+Q.TypeInfo, InclName) = 0))
+     or (not FullMatch and (Q is QIncluded) and (CompareText(Q.Name, InclName) = 0)))
+     and (Q<>Original) then
       begin
        Q.Acces;   { found it }
        if FullMatch then
@@ -93,7 +94,7 @@ var
        Result:=True;
        Exit;
       end;
-     if (Q is QIncluded) or (Q is QExplorerGroup) then
+     if (Q is QIncluded) or (Q is QExplorerGroup) or (Q is QQuakeCtx) then
       begin
        Q.Acces;     { browse recursively }
        if Parcourir(Q) then
@@ -109,9 +110,6 @@ var
 var
  AddOns: QObject;
 begin
- FullMatch:=(Length(InclName)>2) and (InclName[1]='(') and (InclName[Length(InclName)]=')');
- if FullMatch then
-  Match:=Copy(InclName, 2, Length(InclName)-2);
  FindIncludeData1:=Nil;
  while (LookFrom<>Nil) and not Parcourir(LookFrom) do
   LookFrom:=LookFrom.FParent;
@@ -126,19 +124,30 @@ end;
 function DoIncludeData(Target, LookFrom: QObject; const InclName: String) : Boolean;
 var
  J: Integer;
- Q, N: QObject;
+ Q, Q2, N: QObject;
+ FullMatch: Boolean;
+ MatchName: String;
 begin
- Q:=FindIncludeData1(LookFrom, InclName);
+ FullMatch:=((InclName[1]='(') and (InclName[Length(InclName)]=')'));
+ if FullMatch=True then
+  MatchName:=Copy(InclName, 2, Length(InclName)-2)
+ else
+  MatchName:=InclName;
+ Q:=FindIncludeData1(LookFrom, MatchName, FullMatch, Target);
  Q.AddRef(+1); try
  Result:=Q<>Nil;
  if Result then
   begin
-    { copy all data from Q into Target }
-   for J:=0 to Q.Specifics.Count-1 do
-    Target.Specifics.Add(Q.Specifics[J]);
-   for J:=0 to Q.SubElements.Count-1 do
+   if FullMatch=True then
+    Q2:=Q.SubElements[0]
+   else
+    Q2:=Q;
+   { copy all data from Q2 into Target }
+   for J:=0 to Q2.Specifics.Count-1 do
+    Target.Specifics.Add(Q2.Specifics[J]);
+   for J:=0 to Q2.SubElements.Count-1 do
     begin
-     N:=Q.SubElements[J].Clone(Target, False);
+     N:=Q2.SubElements[J].Clone(Target, False);
     {if (IncludePos<0) or (IncludePos>=Target.SubElements.Count) then}
       Target.SubElements.Add(N)
     {else
