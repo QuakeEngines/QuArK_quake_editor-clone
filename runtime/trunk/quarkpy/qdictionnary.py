@@ -115,6 +115,8 @@ Strings = {
     265: "unexpected surface attribute",
     266: "Sorry, Doom 3 version 2 maps are not currently supported.",
 
+    270: "Sorry, unsupported HL2 map format.",
+
     288: "Help snippet - (press ESC to close window)",
     289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.|intro.mapeditor.menu.html#optionsmenu",
 
@@ -974,6 +976,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.65  2005/01/11 01:45:21  alexander
+#nicer messages
+#
 #Revision 1.64  2005/01/02 15:21:31  alexander
 #access files via steam service - first
 #
