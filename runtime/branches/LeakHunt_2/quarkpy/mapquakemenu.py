@@ -116,6 +116,18 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
         else:
             print "ERROR: Unknown action \"" + action + "\" for extension \"" + ext + "\""
 
+    def FileHasContent(self, ext, attr, filename):
+        if (ext[:1] != gExt_MustNotExist):
+            return 0
+        if ((attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE)):
+            return 0
+        if attr!=FA_FILENOTFOUND:
+            f=open(filename, "r")
+            data = f.readlines()
+            for line in data:
+                if string.strip(line)!='':
+                    return 1
+        
     def close(self):
         errorfoundandprintet = 0
         for ext, action in self.checkextensions:
@@ -124,7 +136,8 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
             attr = quarkx.getfileattr(workfile)
             if ((ext[:1] == gExt_GotToExist) and ((attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE))):
                 errortext = "Build failed, because it did not create the (%s) file: " % ext + workfile
-            elif ((ext[:1] == gExt_MustNotExist) and ((attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE))):
+            elif self.FileHasContent(ext, attr, workfile):
+#            elif ((ext[:1] == gExt_MustNotExist) and ((attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE))):
                 errortext = "Build failed, because it created the (%s) file: " % ext + workfile
 
             # Was error found?
@@ -579,6 +592,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.22  2001/09/24 22:24:27  tiglari
+#checks moved into RebuildandRun, made conditional on ExportMapFile
+#
 #Revision 1.21  2001/07/24 02:42:40  tiglari
 #.hmf extension when 6dx maps committed
 #
