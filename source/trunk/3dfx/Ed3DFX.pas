@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/07/18 03:50:55  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+
 Revision 1.23  2001/03/20 21:38:37  decker_dk
 Updated copyright-header
 
@@ -155,7 +159,7 @@ procedure Set3DFXGammaCorrection(Value: TDouble);
 implementation
 
 uses Game, Quarkx, FullScr1, Travail,
-     PyMath3D,
+     PyMath3D, Ed3DEditors,
      QkPixelSet, QkTextures, QkMapPoly, QkApplPaths;
 
 function Open3DFXEditor(const LibName: String; var FullScreen: Boolean) : Boolean; forward;
@@ -427,6 +431,11 @@ begin
  FreeMem(FogTableCache);
  inherited;
  Old.Free;
+ { I'm not at all sure that this is the right thing
+   to do.  This freeing doesn't get called when
+   exitor exited with x,without the below. }
+
+ Free3DEditors;
 end;
 
 procedure T3DFXSceneObject.ClearScene;
