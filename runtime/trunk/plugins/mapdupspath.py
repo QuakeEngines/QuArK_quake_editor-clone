@@ -77,7 +77,7 @@ def MakeAxes3(x):
     x=x.normalized
     mapx, mapy, mapz = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
     if abs(x*mapx)<.0001: # straight up
-        return mapz, mapy, -mapx
+        return mapy, mapx, -mapz
     #
     # project onto the xy plane
     #
@@ -834,6 +834,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.40  2001/05/12 23:04:38  tiglari
+#make new linear fixpoint behavior contingent on 'item center' flag
+#
 #Revision 1.39  2001/05/06 10:22:10  tiglari
 #remove buildLinearMatrix stuff from instance duplicator buildimages
 #
