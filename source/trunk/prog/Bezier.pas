@@ -94,6 +94,7 @@ type
              procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
              procedure EtatObjet(var E: TEtatObjet); override;
              procedure AddTo3DScene; override;
+             procedure ChercheExtremites(var Min, Max: TVect); override;
 
              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
              procedure SauverTexteBezier(Target: TStrings);
@@ -1179,6 +1180,25 @@ end;
 procedure TBezier.AddTo3DScene;
 begin
  CurrentMapView.Scene.BezierInfo.Add(Self);
+end;
+
+ { bounding box }
+procedure TBezier.ChercheExtremites(var Min, Max: TVect);
+var
+ cp: TBezierMeshBuf5;
+ I: Integer;
+begin
+ cp:=ControlPoints;  { approximate the boundinb box by the control points }
+ for I:=1 to cp.W*cp.H do
+  begin
+   if Min.X > cp.CP^[0] then Min.X:=cp.CP^[0];
+   if Min.Y > cp.CP^[1] then Min.Y:=cp.CP^[1];
+   if Min.Z > cp.CP^[2] then Min.Z:=cp.CP^[2];
+   if Max.X < cp.CP^[0] then Max.X:=cp.CP^[0];
+   if Max.Y < cp.CP^[1] then Max.Y:=cp.CP^[1];
+   if Max.Z < cp.CP^[2] then Max.Z:=cp.CP^[2];
+   Inc(cp.CP);
+  end;
 end;
 
  { save as text for .map files }
