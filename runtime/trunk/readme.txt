@@ -1,6 +1,9 @@
 
                    QuArK 6.4 Snapshot 1
 
+ * [ut_fourdays] bad spawnflag fix for func_door/rotating
+
+ * [quantum_red,Decker,tiglari] fix dual screen monitor problem
 
  * [Decker] Fixed GDI-object(s) not being released (leaked), when using 
      colors on tree-view groups (reported by Raybot).

@@ -1,5 +1,6 @@
                          QuArK 6.3
 
+ * [ut_fourdays] bad spawnflag fix for func_door/rotating
 
  * [quantum_red,Decker,tiglari] fix dual screen monitor problem
 
