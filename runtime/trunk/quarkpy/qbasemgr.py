@@ -193,12 +193,12 @@ class BaseLayout:
                     break
             else:
                 common = test
-        for m in menu.items[0:3]:
+        for m in menu.items[0:3]: # position of (self.getlayoutmenu) Mod1, Mod2 and Mod3
             m.state = (m.mode == common) and qmenu.radiocheck
         #menu.items[4].state = (self is BaseLayout.CurrentOpenGLOwner) and qmenu.checked
-        for m in menu.items[7:10]:
+        for m in menu.items[7:10]: # position of (self.getlayoutmenu) DrM1, DrM2 and DrM3
             m.state = (m.mode == (self.editor.drawmode&DM_MASKOOV)) and qmenu.radiocheck
-        menu.items[11].state = (self.leftpanel.align=="right") and qmenu.checked
+        menu.items[11].state = (self.leftpanel.align=="right") and qmenu.checked # position of (self.getlayoutmenu) PanelRight
 
 
     def setviewmode(self, menu):
@@ -216,7 +216,7 @@ class BaseLayout:
     def panelatright(self, menu):
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
-        
+
     def close3Dwindow(self, floating, view=None):
         if view is None:
             view = floating.info
@@ -472,7 +472,7 @@ class BaseLayout:
         gridmenu.append(qmenu.item(txt, self.editor.customgrid))
         return gridmenu
 
-        
+
     def screencenter(self):
         pt = self.editor.interestingpoint()
         if pt is None:
@@ -592,5 +592,8 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.4  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
