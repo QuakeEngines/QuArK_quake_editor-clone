@@ -39,19 +39,19 @@
    * If you're trying it out an a project done with QuArK 6.2 or
       earlier, back up your original work, and experiment on a copy.
       
-  New features (all tiglari):
+  New features:
   
-   * when the selection is frozen, radiant-style brush and face-movement
-       is enabled (quickest apparent fix to movement and vertex-selection
-       bugs bugs)
+   * [tiglari] when the selection is frozen, radiant-style brush and
+       face-movement is enabled (quickest apparent fix to movement and
+       vertex-selection bugs)
        
-   * mirror-image  face|textures RMB command (yes, I know new features
-       aren't supposed to appear in bugfix updates, but this one seemed
-       egregiously missing)
+   * [tiglari] mirror-image  face|textures RMB command.
        
-   * finding and fixing faces with non-integral vertices - finder on
-       search, fixer on command menus; F1 for help.
- 
+   * [tiglari] finding and fixing faces with non-integral vertices -
+      finder on search, fixer on command menus; F1 for help.
+
+   * [decker] calculation of jumppad trajectories for Q3 
+
   Problems addressed:
   
     *subtle problems in swapsides method causing problems with extruded/mitred
