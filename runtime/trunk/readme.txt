@@ -1,3 +1,14 @@
+                Pattch 1 to QuArK Snapshot of 2002ap20
+                
+ * [tiglari] fix errors on opening map editor (for some people,
+      not me, for reasons which are completely unkown to me)
+      
+ * [tiglari] basic Mohaa maps now compile and run.  Texture
+      flags don't work yet but.  Another peculiar feature of
+      Mohaa is that the maps are written into the main directory,
+      since the engine seems to have trouble with tmpquark.  This
+      may change.
+
 
                 QuArK Snapshot of 2002ap29
                 
