@@ -96,6 +96,48 @@ def CSG(editor, plist, sublist, undomsg, undo=None):
     editor.ok(undo, undomsg)
 
 
+#DECKER-begin Code by tiglari
+def ExtWall1click(m):
+    editor = mapeditor()
+    if editor is None: return
+    plist = []
+    for p in editor.visualselection():
+        plist = plist + p.findallsubitems("", ":p")  # find selected polyhedrons
+    if not len(plist):
+        quarkx.msgbox("This command lets you turn polyhedrons into rooms by extruding walls from their faces. It makes in one or several polyhedrons a room with the same shape.\n\nSelect the polyhedron(s) first. Note that wall thickness can be chosen in the Movement Palette configuration box, under 'Inflate/Deflate'.",
+          MT_INFORMATION, MB_OK)
+        return
+    extrudewalls(editor, plist)
+
+def extrudewalls(editor, plist, wallwidth=None):
+    import quarkpy.qmovepal
+    wallwidth, = quarkpy.qmovepal.readmpvalues("WallWidth", SS_MAP)
+    if wallwidth > 0:           #DECKER
+        wallwidth = -wallwidth  #DECKER
+    if wallwidth < 0:           #DECKER
+        undo = quarkx.action()
+        for p in plist:
+          newg = quarkx.newobj(p.shortname+" group:g")
+          for f in p.faces:
+            walls = f.extrudeprism(p)
+            for wall in walls:
+              wall.texturename=f.texturename
+            inner = f.copy()
+            inner.swapsides()
+            outer = f.copy()
+            n = f.normal
+            n = n.normalized
+            outer.translate(abs(wallwidth)*n)
+            newp = quarkx.newobj("wall:p")
+            for face in walls + [inner, outer]:
+              newp.appenditem(face)
+            newg.appenditem(newp)
+          undo.exchange(p, newg)
+        editor.ok(undo,"extrude walls")
+    else: #DECKER
+        quarkx.msgbox("Error! 'Inflate/Deflate' value is 0.", MT_INFORMATION, MB_OK) #DECKER
+#DECKER-end
+
 
 
 def Hollow1click(m):
@@ -234,12 +276,14 @@ def FaceSub1click(m):
 CSG1 = quarkpy.qmenu.item("&Brush subtraction", CSG1click, "|Brush subtraction is the process of 'digging' a hole with the shape of a given polyhedron.Design a polyhedron with the shape of the hole, move it at the location where you expect a hole (that is, it must overlap at least one other polyhedron), and select this command. The polyhedrons that overlap this one will be 'digged'. If necessary, you can then remove the hole-shaped polyhedron.\n\nNote that all polyhedrons are always convex : this means that the polyhedrons you are digging into will usually be broken into several smaller pieces, each convex. To prevent these extra polyhedrons to make your map too complex, use a Negative polyhedron (a button bottom left after you selected a polyhedron), or a Digger (from the New Items window).\n\nThere are other features that also lets you make holes; the most useful is probably the polyhedron cutter (button 'cut polyhedrons in two', top)\n\n"
  + "If you select several polyhedrons, the last one subtracts in the other ones only (instead of in the whole world). You can use a group instead of a polyhedron as subtracter.")
 FaceSub1 = quarkpy.qmenu.item("&Face Sharing subtraction", FaceSub1click, "|A special version of the previous command, 'Brush subtraction'. The small broken pieces will be designed to share common faces, so that you can still resize the broken polyhedron as a whole without having to resize each piece. This command, however, may produce a result that gets a bit confusing.")
+ExtWall1 = quarkpy.qmenu.item("&Extrude walls", ExtWall1click, "|Extrudes walls from the faces, deletes the poly(s).") #DECKER Code by tiglari
 Hollow1 = quarkpy.qmenu.item("&Make hollow", Hollow1click, "|Makes the selected polyhedron or polyhedrons hollow. If several touching polyhedrons are selected, the whole shape they define will be made hollow.\n\nYou can set the wall width by clicking on the button 'change toolbar settings', under 'inflate/deflate by'. A positive value means extruded polyhedrons, a negative value means digged polyhedrons.")
 Intersect1 = quarkpy.qmenu.item("&Intersection", Intersect1click, "|Computes the intersection of two or more overlapping polyhedrons.")
 
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(CSG1)
 quarkpy.mapcommands.items.append(FaceSub1)
+quarkpy.mapcommands.items.append(ExtWall1) #DECKER Code by tiglari
 quarkpy.mapcommands.items.append(Hollow1)
 quarkpy.mapcommands.items.append(Intersect1)
 quarkpy.mapcommands.shortcuts["Ctrl+B"] = CSG1
