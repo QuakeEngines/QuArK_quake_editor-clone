@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2003/04/29 05:59:35  nerdiii
+Added some game specific stuff to the 'EP' file browser control
+
 Revision 1.22  2002/12/29 12:40:42  decker_dk
 Added support for readonly Memo-fields (multiline-text). Typ="M"
 
@@ -1424,37 +1427,39 @@ begin
            Options:=[ofFileMustExist, ofHideReadOnly];
            again:
            Ok:=Execute;
-           S:=Specifics.Values['CutPath'];
-           If S<>'' then begin //for some entity-specific directory cut-offs
-             While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
-             S:=LowerCase(S);
-             Conv:=LowerCase(FileName);
-             joker:=false;
-             while Length(S)<>0 do begin
-               Test:=Copy(S,1,Pos('\',S));
-               If (Test='?\') and (Pos('\',Conv)<>0) then begin
-                 //joker: no matter what direcory
-               end else If Test='*\' then begin
-                 //joker: directory does not need to be included
-                 joker:=True;
-               end else If Test<>Copy(Conv,1,Pos('\',Conv)) then begin
-                 If joker then begin
-                   Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
-                   joker:=false;
-                   continue;
+           If Ok then begin
+             S:=Specifics.Values['CutPath'];
+             If S<>'' then begin //for some entity-specific directory cut-offs
+               While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
+               S:=LowerCase(S);
+               Conv:=LowerCase(FileName);
+               joker:=false;
+               while Length(S)<>0 do begin
+                 Test:=Copy(S,1,Pos('\',S));
+                 If (Test='?\') and (Pos('\',Conv)<>0) then begin
+                   //joker: no matter what direcory
+                 end else If Test='*\' then begin
+                   //joker: directory does not need to be included
+                   joker:=True;
+                 end else If Test<>Copy(Conv,1,Pos('\',Conv)) then begin
+                   If joker then begin
+                     Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
+                     joker:=false;
+                     continue;
+                   end;
+                   Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[S])),PAnsiChar(LoadStr1(3500)));
+                   goto again;
                  end;
-                 Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[S])),PAnsiChar(LoadStr1(3500)));
-                 goto again;
+                 S:=Copy(S,Pos('\',S)+1,Length(S));
+                 If not joker then Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
                end;
-               S:=Copy(S,Pos('\',S)+1,Length(S));
-               If not joker then Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
+               FileName:=Conv;
              end;
-             FileName:=Conv;
+             DirSep:=Specifics.Values['DirSep'];
+             If DirSep='' then DirSep:='\';
+             FileName:=StringReplace(FileName,'\',DirSep,[rfReplaceAll]);
+             Path:=FileName;
            end;
-           DirSep:=Specifics.Values['DirSep'];
-           If DirSep='' then DirSep:='\';
-           FileName:=StringReplace(FileName,'\',DirSep,[rfReplaceAll]);
-           Path:=FileName;
           finally
            Free;
           end;
