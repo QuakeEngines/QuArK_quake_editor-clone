@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/10/11 11:33:40  tiglari
+Live Pointer Cleanup.
+
 Revision 1.8  2001/10/10 23:04:15  tiglari
 Live Pointer Cleanup: clear->free
 
@@ -91,6 +94,7 @@ procedure FreeImageList(o: PyObject); cdecl;
 function GetImage1Attr(self: PyObject; attr: PChar) : PyObject; cdecl;
 procedure FreeImage1(o: PyObject); cdecl;
 
+
 const
  TyImageList_Seq: TySequenceMethods =
   (sq_length:      ImageList_length;
@@ -141,13 +145,15 @@ function LoadGlobalImageList(Q: QObject) : Integer;
 
 implementation
 
-uses Quarkx, PyCanvas;
+uses Quarkx, PyCanvas, Dialogs;
 
 const
  DisabledNak = TBitmap(1);
 
 var
  g_Mem_ImageLists: TList;
+ g_Mem_PyImage1List: TList;
+
  {-------------------}
 
 function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
@@ -905,22 +911,12 @@ begin
   end;
 end;
 
-procedure Clear_Mem_ImageLists;
-var I: Integer;
-begin
-    for I:=0 to g_Mem_ImageLists.Count-1 do
-    begin
-      PyImageList(g_Mem_ImageLists[I])^.Images[True].Free;
-      PyImageList(g_Mem_ImageLists[I])^.Images[False].Free;
-      FreeMem(g_Mem_ImageLists[I]);
-    end;
-    g_Mem_ImageLists.Free;
-end;
 
 initialization
   FillChar(InternalImages, SizeOf(InternalImages), 0);
   g_Mem_ImageLists:=TList.Create;
+
 finalization
   FinalizeInternalImages;
-  Clear_Mem_ImageLists;
+
 end.
