@@ -275,7 +275,7 @@ Strings = {
     813: "Doom 3 Pak Files (*.pk4)|*.pk4",
     814: "Valve Texture File  (*.vtf)|*.vtf",
     815: "Valve Material File  (*.vmt)|*.vmt",
-    816: "Steam Container File  (*.gcf)|*.gcf",
+    816: "Steam Cache File  (*.gcf)|*.gcf",
     817: "Valve Map File  (*.vmf)|*.vmf",
 
     2368: "Skins",
@@ -904,15 +904,31 @@ Strings = {
     5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
     5702: "Files in this directory wont work. Select a file in a subdirectory please.",
+
+    # hl2
+    # alexander would like to reserve 5703 .. 5725 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "no vtf file",
     5705: "QuArkVTF.dll not found, QuArK need this to load VTF Textures",
-    5706: "gcfwrap.dll not found",
+    5706: "QuArkSteamFS.dll not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "%s not found in %s",
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
+    5712: 'reserved for hl2',
+    5713: 'reserved for hl2',
+    5714: 'reserved for hl2',
+    5715: 'reserved for hl2',
+    5716: 'reserved for hl2',
+    5717: 'reserved for hl2',
+    5718: 'reserved for hl2',
+    5719: 'reserved for hl2',
+    5720: 'reserved for hl2',
+    5721: 'reserved for hl2',
+    5722: 'reserved for hl2',
+    5723: 'reserved for hl2',
+    5724: 'reserved for hl2',
 
     # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
 
@@ -955,6 +971,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.62  2004/12/22 11:37:40  rowdy
+#Rowdy - first pass of support for Doom 3
+#
 #Revision 1.61  2004/12/21 09:03:02  alexander
 #changed vtf loading to use QuArKVTF.dll
 #
