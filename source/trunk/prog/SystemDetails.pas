@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/02 19:35:55  decker_dk
+Physical Memory Total logged too.
+
 Revision 1.4  2001/02/23 19:25:04  decker_dk
 Fixed problem with 'idata' in TDisplay.GetInfo being used wrongly.
 
@@ -226,6 +229,7 @@ type
     FTextCaps: TTextCaps;
     FMemory: TStrings;
     FChipset: TStrings;
+    FDevices: TStrings;  
     FAdapter: TStrings;
     FDAC: TStrings;
     FAcc: TStrings;
@@ -237,6 +241,7 @@ type
     procedure Report(var sl :TStringList);
   published
     property Adapter :TStrings read FAdapter write FAdapter stored false;
+    property Devices :TStrings read FDevices write FDevices stored false;
     property Accelerator :TStrings read FAcc write FAcc stored false;
     property DAC :TStrings read FDAC write FDAC stored false;
     property Chipset :TStrings read FChipset write FChipset stored false;
@@ -483,11 +488,14 @@ begin
   until i>11;
   FVendorNo:=-1;
   for i:=0 to high(CPUVendorIDs) do
-    if result=CPUVendorIDs[i] then begin
+  begin
+    if result=CPUVendorIDs[i] then
+    begin
       result:=CPUVendors[i];
       FVendorNo:=i;
       break;
     end;
+  end;
 end;
 
 function TCPU.GetCPUVendorID :string;
@@ -678,7 +686,8 @@ begin
 //  Vendor:=
 //  VendorID:=
   CPUID:=CPUIDExists;
-  if CPUID then begin
+  if CPUID then
+  begin
     Level:=GetCPUIDLevel;
     Freq:=Round(GetCPUFreqEx);
     Typ:=GetCPUType;
@@ -695,7 +704,8 @@ end;
 
 procedure TCPU.Report(var sl: TStringList);
 begin
-  with sl do begin
+  with sl do
+  begin
     add(format('%d x %s %s - %d MHz',[self.Count,Vendor,VendorID,Freq]));
     add(format('Submodel: %s',[Submodel]));
     add(format('Model ID: Family %d  Model %d  Stepping %d  Level %d',[Family,Model,Stepping,Level]));
@@ -730,10 +740,12 @@ begin
   b:=GetEnvironmentStrings;
   i:=0;
   s:='';
-  while i<c do begin
+  while i<c do
+  begin
     if b[i]<>#0 then
       s:=s+b[i]
-    else begin
+    else
+    begin
       if s='' then
         break;
       FEnv.Add(s);
@@ -810,10 +822,13 @@ begin
   RegisteredUser:='';
   RegisteredOrg:='';
   SerialNumber:='';
-  with TRegistry.create do begin
+  with TRegistry.create do
+  begin
     rootkey:=HKEY_LOCAL_MACHINE;
-    if isnt then begin
-      if OpenKey(rkOSInfoNT,false) then begin
+    if isnt then
+    begin
+      if OpenKey(rkOSInfoNT,false) then
+      begin
         if ValueExists(rvVersionNameNT) then
           Version:=ReadString(rvVersionNameNT);
         if ValueExists(rvRegOrg) then
@@ -824,8 +839,11 @@ begin
           SerialNumber:=ReadString(rvProductID);
         closekey;
       end;
-    end else begin
-      if OpenKey(rkOSInfo95,false) then begin
+    end
+    else
+    begin
+      if OpenKey(rkOSInfo95,false) then
+      begin
         if ValueExists(rvVersionName95) then
           Version:=ReadString(rvVersionName95);
         if ValueExists(rvRegOrg) then
@@ -842,7 +860,8 @@ begin
       OK:=OpenKey(rkOSInfoNT,False)
     else
       OK:=OpenKey(rkOSInfo95,False);
-    if OK then begin
+    if OK then
+    begin
       FDirs.Add('CommonFiles='  +ReadString('CommonFilesDir'));
       FDirs.Add('ProgramFiles=' +ReadString('ProgramFilesDir'));
       FDirs.Add('Device='       +ReadString('DevicePath'));
@@ -907,7 +926,8 @@ end;
 
 procedure TOperatingSystem.Report(var sl: TStringList);
 begin
-  with sl do begin
+  with sl do
+  begin
     add('Platform: '+Platform);
     add(format('Version: %s %d.%d.%d',[Version,MajorVersion,MinorVersion,BuildNumber]));
   end;
@@ -968,7 +988,8 @@ end;
 
 procedure TMemory.Report(var sl: TStringList);
 begin
-  with sl do begin
+  with sl do
+  begin
     add(formatfloat('Physical Memory Total: #,## B',PhysicalTotal));
     add(formatfloat('Physical Memory Free: #,## B',PhysicalFree));
     add(formatfloat('Virtual Memory Free: #,## B',VirtualFree));
@@ -998,9 +1019,11 @@ begin
   GetComputerName(buf,n);
   result:=strpas(buf);
   strdispose(buf);
-  with TRegistry.Create do begin
+  with TRegistry.Create do
+  begin
     rootkey:=HKEY_LOCAL_MACHINE;
-    if OpenKey(rkMachine,false) then begin
+    if OpenKey(rkMachine,false) then
+    begin
       if ValueExists(rvMachine) then
         result:=ReadString(rvMachine);
       closekey;
@@ -1045,13 +1068,17 @@ begin
   FSystemUpTime:=GetSystemUpTime;
   FName:=GetMachine;
   FUser:=GetUser;
-  if isNT then begin
-    with TRegistry.Create do begin
+  if isNT then
+  begin
+    with TRegistry.Create do
+    begin
       rootkey:=HKEY_LOCAL_MACHINE;
-      if OpenKey(rkBIOS,false) then begin
+      if OpenKey(rkBIOS,false) then
+      begin
         if ValueExists(rvBIOSID) then
           FBiosName:=ReadString(rvBIOSID);
-        if ValueExists(rvBIOSVersion) then begin
+        if ValueExists(rvBIOSVersion) then
+        begin
           bdata:=stralloc(255);
           try
             readbinarydata(rvBIOSVersion,bdata^,255);
@@ -1065,7 +1092,9 @@ begin
       end;
       free;
     end;
-  end else begin
+  end
+  else
+  begin
     FBIOSName:=string(pchar(ptr(cBIOSName)));
     FBIOSDate:=string(pchar(ptr(cBIOSDate)));
     FBIOSCopyright:=string(pchar(ptr(cBIOSCopyright)));
@@ -1080,7 +1109,8 @@ end;
 
 procedure TWorkstation.Report(var sl: TStringList);
 begin
-  with sl do begin
+  with sl do
+  begin
     add('Name: '+Name);
     add('User: '+User);
 //    add('System Up Time: '+formatseconds(SystemUpTime,true,false,false));
@@ -1098,38 +1128,50 @@ const
 begin
   Result:='';
   AResult.Clear;
-  with TRegistry.Create do begin
+  with TRegistry.Create do
+  begin
     RootKey:=HKEY_LOCAL_MACHINE;
-    if OpenKey(AStartKey,false) then begin
+    if OpenKey(AStartKey,false) then
+    begin
       sl:=TStringList.Create;
       GetKeyNames(sl);
       CloseKey;
       for i:=0 to sl.Count-1 do
-        if OpenKey(AStartKey+'\'+sl[i],false) then begin
-          if ValueExists(rvClass) then begin
+      begin
+        if OpenKey(AStartKey+'\'+sl[i],false) then
+        begin
+          if ValueExists(rvClass) then
+          begin
             rclass:=UpperCase(ReadString(rvClass));
-            if rclass=UpperCase(AClassName) then begin
-              if not IsNT then begin
+            if rclass=UpperCase(AClassName) then
+            begin
+              if not IsNT then
+              begin
                 s:=UpperCase(ReadString(rvLink));
                 CloseKey;
                 if not OpenKey(AStartKey+'\'+s,False) then
                   Exit;
-              end else
+              end
+              else
                 s:=sl[i];
               Result:=AStartKey+'\'+s;
               GetKeyNames(sl);
               CloseKey;
               for j:=0 to sl.count-1 do
-                if OpenKey(AStartKey+'\'+s+'\'+sl[j],false) then begin
+              begin
+                if OpenKey(AStartKey+'\'+s+'\'+sl[j],false) then
+                begin
                   if ValueExists(AValueName) then
                     AResult.Add(ReadString(AValueName));
                   CloseKey;
                 end;
-                Break;
+              end;
+              Break;
             end;
           end;
           CloseKey;
         end;
+      end;
       sl.free;
     end;
     free;
@@ -1144,10 +1186,12 @@ begin
   j:=0;
   i:=0;
   repeat
-    if buffer[i]<>#0 then begin
+    if buffer[i]<>#0 then
+    begin
       result:=result+buffer[i];
       j:=0;
-    end else
+    end
+    else
       inc(j);
     inc(i);
   until j>1;
@@ -1190,6 +1234,7 @@ begin
   FHorzRes:=GetDeviceCaps(GetDC(0),windows.HORZRES);
   FVertRes:=GetDeviceCaps(GetDC(0),windows.VERTRES);
   FColorDepth:=GetDeviceCaps(GetDC(0),BITSPIXEL);
+
   case GetDeviceCaps(GetDC(0),windows.TECHNOLOGY) of
     DT_PLOTTER:    FTechnology:='Vector Plotter';
     DT_RASDISPLAY: FTechnology:='Raster Display';
@@ -1199,13 +1244,16 @@ begin
     DT_METAFILE:   FTechnology:='Metafile';
     DT_DISPFILE:   FTechnology:='Display File';
   end;
+
   FHorzSize:=GetDeviceCaps(GetDC(0),HORZSIZE);
   FVertSize:=GetDeviceCaps(GetDC(0),VERTSIZE);
   FPixelWidth:=GetDeviceCaps(GetDC(0),ASPECTX);
   FPixelHeight:=GetDeviceCaps(GetDC(0),ASPECTY);
   FPixelDiagonal:=GetDeviceCaps(GetDC(0),ASPECTXY);
+
   FCurveCaps:=[];
-  if GetDeviceCaps(GetDC(0),windows.CURVECAPS)<>CC_NONE then begin
+  if GetDeviceCaps(GetDC(0),windows.CURVECAPS)<>CC_NONE then
+  begin
     if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_CIRCLES)=CC_CIRCLES then
       FCurveCaps:=FCurveCaps+[ccCircles];
     if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_PIE)=CC_PIE then
@@ -1225,8 +1273,10 @@ begin
     if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_ROUNDRECT)=CC_ROUNDRECT then
       FCurveCaps:=FCurveCaps+[ccRoundedRects];
   end;
+
   FLineCaps:=[];
-  if GetDeviceCaps(GetDC(0),windows.LINECAPS)<>LC_NONE then begin
+  if GetDeviceCaps(GetDC(0),windows.LINECAPS)<>LC_NONE then
+  begin
     if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_POLYLINE)=LC_POLYLINE then
       FLineCaps:=FLineCaps+[lcPolylines];
     if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_MARKER)=LC_MARKER then
@@ -1242,8 +1292,10 @@ begin
     if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_INTERIORS)=LC_INTERIORS then
       FLineCaps:=FLineCaps+[lcInteriors];
   end;
+
   FPolygonCaps:=[];
-  if GetDeviceCaps(GetDC(0),POLYGONALCAPS)<>PC_NONE then begin
+  if GetDeviceCaps(GetDC(0),POLYGONALCAPS)<>PC_NONE then
+  begin
     if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_POLYGON)=PC_POLYGON then
       FPolygonCaps:=FPolygonCaps+[pcAltFillPolygons];
     if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_RECTANGLE)=PC_RECTANGLE then
@@ -1261,6 +1313,7 @@ begin
     if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_INTERIORS)=PC_INTERIORS then
       FPolygonCaps:=FPolygonCaps+[pcInteriors];
   end;
+
   FRasterCaps:=[];
   if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_BANDING)=RC_BANDING then
     FRasterCaps:=FRasterCaps+[rcRequiresBanding];
@@ -1284,6 +1337,7 @@ begin
     FRasterCaps:=FRasterCaps+[rcStretchBlt];
   if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_STRETCHDIB)=RC_STRETCHDIB then
     FRasterCaps:=FRasterCaps+[rcStretchDIBits];
+
   FTextCaps:=[];
   if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_OP_CHARACTER)=TC_OP_CHARACTER then
     FTextCaps:=FTextCaps+[tcCharOutPrec];
@@ -1317,47 +1371,74 @@ begin
     FTextCaps:=FTextCaps+[tcVectorFonts];
   if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_SCROLLBLT)=TC_SCROLLBLT then
     FTextCaps:=FTextCaps+[tcNoScrollUsingBlts];
+
   sl:=tstringlist.create;
   FAdapter.Clear;
+  FDevices.Clear;
   FDAC.Clear;
   FChipset.Clear;
   FMemory.Clear;
   bdata:=stralloc(255);
-  rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FAdapter);
+  rk:=GetClassDevices(ClassKey,rvVideoClass,DescValue,FDevices);
   Found:=False;
-  with TRegistry.Create do begin
+
+  with TRegistry.Create do
+  begin
     RootKey:=HKEY_LOCAL_MACHINE;
-    if OpenKey(rk,false) then begin
+    if OpenKey(rk,false) then
+    begin
       GetKeyNames(sl);
       CloseKey;
       for i:=0 to sl.count-1 do
-        if OpenKey(rk+'\'+sl[i]+'\'+rkClassInfo,false) then begin
+      begin
+        if OpenKey(rk+'\'+sl[i]+'\'+rkClassInfo,false) then
+        begin
           Found:=True;
+
           if ValueExists(rvCIDAC) then
-            FDAC.Add(ReadString(rvCIDAC));
+            FDAC.Add(ReadString(rvCIDAC))
+          else
+            FDAC.Add('no DAC information');
+
           if ValueExists(rvCIChip) then
+          begin
             FChipset.Add(ReadString(rvCIChip));
-          if ValueExists(rvCIRev) then
-            FChipset[FChipset.Count-1]:=FChipset[FChipset.Count-1]+' Rev '+ReadString(rvCIRev);
+            if ValueExists(rvCIRev) then
+              FChipset[FChipset.Count-1]:=FChipset[FChipset.Count-1]+' Rev '+ReadString(rvCIRev);
+          end
+          else
+            FChipset.Add('no Chipset information');
+
           if ValueExists(rvCIMem) then
-            FMemory.Add(inttostr(readinteger(rvCIMem)));
+            FMemory.Add(inttostr(readinteger(rvCIMem)))
+          else
+            FMemory.Add('no Memory information');
+
           CloseKey;
         end;
+      end;
     end;
-    if not Found then begin
-      if OpenKey(rkVideoHardware,false) then begin
+
+    if not Found then
+    begin
+      if OpenKey(rkVideoHardware,false) then
+      begin
         if ValueExists(rvVideoKey1) then
           rk:=ReadString(rvVideoKey1)
         else
+        begin
           if ValueExists(rvVideoKey2) then
             rk:=ReadString(rvVideoKey2)
           else
             rk:='';
-
+        end;
         closekey;
-        if rk<>'' then begin
+
+        if rk<>'' then
+        begin
           rk:=copy(rk,pos('Machine\',rk)+8,255);
-          if OpenKey(rk,false) then begin
+          if OpenKey(rk,false) then
+          begin
             if ValueExists(rvHardware+'.'+rvHWVideo) then
               try
                 readbinarydata(rvHardware+'.'+rvHWVideo,bdata^,255);
@@ -1387,8 +1468,10 @@ begin
         end;
       end;
     end;
-    if OpenKey(rkBIOS,false) then begin
-      if ValueExists(rvVideoBIOSVersion) then begin
+    if OpenKey(rkBIOS,false) then
+    begin
+      if ValueExists(rvVideoBIOSVersion) then
+      begin
         try
           readbinarydata(rvVideoBIOSVersion,bdata^,151);
           FBIOSVersion:=strpas(pchar(bdata));
@@ -1407,10 +1490,13 @@ begin
   FModes.Clear;
   i:=0;
   while EnumDisplaySettings(nil,i,Devmode) do
-    with Devmode do begin
+  begin
+    with Devmode do
+    begin
       FModes.Add(Format('%d x %d - %d bit',[dmPelsWidth,dmPelsHeight,dmBitsPerPel]));
       Inc(i);
     end;
+  end;
   strdispose(bdata);
   sl.free;
 end;
@@ -1427,6 +1513,7 @@ constructor TDisplay.Create;
 begin
   inherited;
   FAdapter:=TStringList.Create;
+  FDevices:=TStringList.Create;
   FModes:=TStringList.Create;
   FAcc:=TStringList.Create;
   FDAc:=TStringList.Create;
@@ -1437,6 +1524,7 @@ end;
 destructor TDisplay.Destroy;
 begin
   FAdapter.Free;
+  FDevices.Free;
   FDAc.Free;
   FChipset.Free;
   FMemory.Free;
@@ -1449,15 +1537,18 @@ procedure TDisplay.Report(var sl: TStringList);
 var
   i :integer;
 begin
-  with sl do begin
-    for i:=0 to Adapter.count-1 do begin
-       add(format('[%d] %s',[i+1,Adapter[i]]));
-       if Chipset.count-1>=i then
-         add('    Chipset: '+Chipset[i]);
-        if DAC.count-1>=i then
-          add('    DAC: '+DAC[i]);
-        if Memory.count-1>=i then
-          add('    Memory: '+Memory[i]+' B');
+  with sl do
+  begin
+    for i:=0 to Devices.count-1 do
+    begin
+      add(format('[Device %d] %s', [i+1,Devices[i]]));
+    end;
+    for i:=0 to Adapter.count-1 do
+    begin
+      add(format('[Adapter %d] %s', [i+1,Adapter[i]]));
+      add('    Chipset: '   +Chipset[i]);
+      add('    DAC: '       +DAC[i]);
+      add('    Memory: '    +Memory[i] + ' B');
     end;
   end;
 end;
@@ -1488,9 +1579,11 @@ const
   rkDirectMusic = {HKEY_LOCAL_MACHINE\}'SOFTWARE\Microsoft\DirectMusic\SoftwareSynths';
     rvDesc = 'Description';
 begin
-  with TRegistry.Create do begin
+  with TRegistry.Create do
+  begin
     rootkey:=HKEY_LOCAL_MACHINE;
-    if OpenKey(rkDirectX,false) then begin
+    if OpenKey(rkDirectX,false) then
+    begin
       bdata:=stralloc(255);
       if ValueExists(rvDXVersion95) then
         FVersion:=ReadString(rvDXVersion95);
@@ -1513,11 +1606,13 @@ begin
     end;
     FDirect3D.Clear;
     sl:=tstringlist.create;
-    if OpenKey(rkDirect3D,false) then begin
+    if OpenKey(rkDirect3D,false) then
+    begin
       getkeynames(sl);
       closekey;
       for i:=0 to sl.count-1 do
-        if OpenKey(rkDirect3D+'\'+sl[i],false) then begin
+        if OpenKey(rkDirect3D+'\'+sl[i],false) then
+        begin
           if ValueExists(rvDesc) then
             FDirect3D.Add(ReadString(rvDesc));
           closekey;
@@ -1531,11 +1626,14 @@ end;
 
 procedure TDirectX.Report(var sl: TStringList);
 begin
-  with sl do begin
-    if Version<>'' then begin
+  with sl do
+  begin
+    if Version<>'' then
+    begin
       add('Installed version: '+Version);
       addstrings(Direct3D);
-    end else
+    end
+    else
       add('Not installed.');
   end;
 end;
@@ -1593,7 +1691,8 @@ end;
 function GetPlatform: TPlatformType;
 begin
   Result:=os9x;
-  if isNT then begin
+  if isNT then
+  begin
     if is2000 then
       Result:=os2K
     else
@@ -1670,13 +1769,16 @@ begin
   R:=TRegistry.Create;
   R.RootKey:=HKEY_LOCAL_MACHINE;
   installed:=R.KeyExists('\Software\Python\PythonCore\CurrentVersion');
-  if installed then begin
+  if installed then
+  begin
     R.OpenKey('\Software\Python\PythonCore\CurrentVersion', false);
     v:=R.ReadString('');
     S.Add('Version: '+v);
     R.OpenKey('\Software\Python\PythonCore\'+v+'\Dll', false);
     S.Add('Dll path: '+R.ReadString(''));
-  end else begin
+  end
+  else
+  begin
     S.Add('Not Installed!');
   end;
   R.free;
@@ -1709,7 +1811,8 @@ begin
   s.add('DIRECTX:');
   GetDirectxDetails(s);
   s.add('');
-  for i:=0 to s.count-1 do begin
+  for i:=0 to s.count-1 do
+  begin
     aLog(-1,'SysLog> '+s.strings[i]);
   end;
 end;
