@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.92  2001/03/04 11:21:08  decker_dk
+//Minor fix for dup stair
+//
 //Revision 1.91  2001/03/04 06:42:46  tiglari
 //radial duplicator support
 //
@@ -3210,6 +3213,12 @@ QQRKSRC1
     {
       squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
       setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
+    }
+    dup path_point:form =
+    {
+      level: = {Txt="&" Typ="X"      Hint="if checked, following path segment doesn't rotate (may cause non-fitting joins)"}
+      target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
+      targetname: = {Txt="&" Typ="E" Hint="should be managed automatically"}
     }
     dup stair:form =
     {
