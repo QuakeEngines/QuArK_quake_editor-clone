@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "quarksnapshot_20010201",
+    0: "quarksnapshot_20010213",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -889,6 +889,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.30  2001/02/02 08:24:24  tiglari
+#updated version #
+#
 #Revision 1.29  2001/01/28 17:25:24  decker_dk
 #Added entries 177 and 178. Modified 176, which split its text up into the two others.
 #Added entry 5701.

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.42  2001/02/05 11:32:16  tiglari
+dynamic folder writing fix
+
 Revision 1.41  2001/02/02 08:17:57  tiglari
 updated version #
 
@@ -150,7 +153,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'quarksnapshot_20010201';
+ QuArKVersion            = 'quarksnapshot_20010213';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;

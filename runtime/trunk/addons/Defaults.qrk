@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.79  2001/02/08 11:08:22  tiglari
+//removed path points from path duplicator toolbox item
+//
 //Revision 1.78  2001/02/07 18:44:02  aiv
 //bezier texture vertice page started.
 //
@@ -262,7 +265,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20010201"
+      Version = "quarksnapshot_20010213"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
