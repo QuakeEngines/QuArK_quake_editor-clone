@@ -302,7 +302,7 @@ def AddSpawnflag(token):
         theKey = KeyFlags()
         theKey.SetKeyname("spawnflags")
     # Only append spawnflag-tokens that are not "x" nor "-"
-    if not (token == "x" or token == "-"):
+    if not (token == "x" or token == "-" or token == "?"):
         theKey.AddKeyFlag(str(currentspawnflagbit), token, 0)
     # Always double the spawnflagbit-value
     currentspawnflagbit = currentspawnflagbit * 2
@@ -372,11 +372,16 @@ def getnexttoken(srcstring):
     while (srcstring[i] in " \t"):
         i = i + 1
 
+    if (srcstring[i] in "{"):
+        while (not srcstring[i] in "}"):
+            i = i + 1
+        i = i + 1
+
     token_is = TYPE_UNKNOWN
     token = ""
 
     # Determine token-type
-    if (srcstring[i] in CHARS_NUMERIC) \
+    if (srcstring[i] in CHARS_NUMERIC and not srcstring[i+1] in CHARS_ALFABETIC) \
     or (srcstring[i] in CHARS_NUMERIC_SYMBOLS and srcstring[i+1] in CHARS_NUMERIC):
         # Numeric
         token_is = TYPE_NUMERIC
@@ -493,7 +498,7 @@ def makeqrk(root, filename, gamename):
         newstate = None
         typestates = statediagram[state]
         for type, nextstate, func in typestates:
-            if (type == token_is or type == TYPE_ANY):
+            if (type == token_is or type == TYPE_ANY or (token_is == TYPE_QUESTION_MARK and func == AddSpawnflag)):
                 # We found the correct token type, now remember what new state we're going into
                 newstate = nextstate
                 break
@@ -502,6 +507,7 @@ def makeqrk(root, filename, gamename):
             print "Parse error: Got type", token_is, "but expected type(s);", expectedtypes
             print "Debug: Last classname was =", currentclassname
             print "Debug:", srcstring[:64]
+            print "Debug - Associated function: ", func
             raise "Parse error!"
         if (func is not None):
             # This state have a function attached to it. Call it giving it the found token.
@@ -539,6 +545,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.4  2002/04/17 12:32:20  decker_dk
+#Minor problem, which caused it to not convert the MOHAA .DEF file correctly.
+#
 #Revision 1.3  2002/02/05 18:32:58  decker_dk
 #Corrected a problem with debug() calls
 #
