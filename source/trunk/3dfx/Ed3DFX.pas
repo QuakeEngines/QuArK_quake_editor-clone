@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2003/08/28 05:35:06  silverpaladin
+Removed some code that was causing access violations.  Removed a bandaid I'd put in till I could find the real problem
+
 Revision 1.27  2003/08/13 04:22:01  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -646,67 +649,53 @@ begin
   end;
 end;
 
-procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+
+procedure StandardScaling(Tex: PTexture3; var ScaleS, ScaleT: TDouble);
 var
  w, h: Integer;
 begin
-  with Skin^ do
-  begin
-    w:=256;
-    h:=256;
-    case info.aspectratio of
-      GR_ASPECT_8x1: h:=32;
-      GR_ASPECT_4x1: h:=64;
-      GR_ASPECT_2x1: h:=128;
-      GR_ASPECT_1x2: w:=128;
-      GR_ASPECT_1x4: w:=64;
-      GR_ASPECT_1x8: w:=32;
-    end;
-    ScaleS:=w/TexW;
-    ScaleT:=h/TexH;
+  // This routine was added to show the standard scaling done between routines
+  w:=256;
+  h:=256;
+  case Tex.info.aspectratio of
+    GR_ASPECT_8x1: h:=32;
+    GR_ASPECT_4x1: h:=64;
+    GR_ASPECT_2x1: h:=128;
+    GR_ASPECT_1x2: w:=128;
+    GR_ASPECT_1x4: w:=64;
+    GR_ASPECT_1x8: w:=32;
   end;
+
+  // SilverPaladin - 12/01/2003 - If the tex width was 0, the whole routine was blowing up
+  // with a divide by 0.  I've changed it to simply return a scale factor of 1:1.
+  // If the width is 0 that needs to be detected and handled somewhere else.
+  if Tex.TexW = 0
+  then ScaleS := 1
+  else ScaleS := w / Tex.TexW;
+
+  // SilverPaladin - 12/01/2003 - Ditto
+  if Tex.TexH = 0
+  then ScaleT := 1
+  else ScaleT := h / Tex.TexH;
+end;
+
+procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+begin
+  StandardScaling(Skin, ScaleS, ScaleT);
 end;
 
 procedure T3DFXSceneObject.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
-var
- w, h: Integer;
 begin
-  with Skin^ do
-  begin
-    w:=256;
-    h:=256;
-    case info.aspectratio of
-      GR_ASPECT_8x1: h:=32;
-      GR_ASPECT_4x1: h:=64;
-      GR_ASPECT_2x1: h:=128;
-      GR_ASPECT_1x2: w:=128;
-      GR_ASPECT_1x4: w:=64;
-      GR_ASPECT_1x8: w:=32;
-    end;
-    ScaleS:=w/TexW;
-    ScaleT:=h/TexH;
-  end;
+  StandardScaling(Skin, ScaleS, ScaleT);
 end;
 
 procedure T3DFXSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
-var
- w, h: Integer;
 begin
-  with Texture^ do
-  begin
-    w:=256;
-    h:=256;
-    case info.aspectratio of
-      GR_ASPECT_8x1: h:=32;
-      GR_ASPECT_4x1: h:=64;
-      GR_ASPECT_2x1: h:=128;
-      GR_ASPECT_1x2: w:=128;
-      GR_ASPECT_1x4: w:=64;
-      GR_ASPECT_1x8: w:=32;
-    end;
-    ScaleS:=w;
-    ScaleT:=h;
-  end;
+  // SilverPaladin - 1/5/2003 - This is a change.  This routine was not
+  // returning a scale but the unaltered w and h variables. So, when handled
+  // as a scale, it was enlarging the textures by 256 or 128 (whichever) and
+  // I don't think that could have been right.
+  StandardScaling(Texture, ScaleS, ScaleT);
 end;
 
  {------------------------}
