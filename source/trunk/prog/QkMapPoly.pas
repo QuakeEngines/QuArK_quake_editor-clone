@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2001/05/21 21:24:48  tiglari
+fixed expandthreepoints/no tex comments code
+
 Revision 1.36  2001/05/20 23:51:34  tiglari
 change map-writing method for bp, valve220, & when tx comment writing is
  disabled: near-integral vertexes corrected to integrals are used as threepoints
@@ -2586,7 +2589,7 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  Valve220Map:=Flags and soWriteValve220<>0;
- ExpandThreePoints:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex!=0);
+ ExpandThreePoints:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex<>0);
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
