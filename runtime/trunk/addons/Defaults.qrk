@@ -28,6 +28,11 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.142  2001/06/14 18:53:12  decker_dk
+//Inverted the use of TXT="&" in .QRK files. Now if it does not exist it defaults to TXT="&",
+//but if you don't want a caption-text to appear, you must explicitly write TXT="".
+//See [FormCfg.PAS] TFormCfg.wmInternalMessage() comments for reason.
+//
 //Revision 1.141  2001/06/05 12:38:44  tiglari
 //final value elaborations
 //
@@ -3370,7 +3375,18 @@ QQRKSRC1
       linearform = !
       serialform = !
     }
-
+    dup symx:form =
+    {
+      serialform = !
+    }
+    dup symy:form =
+    {
+      serialform = !
+    }
+    dup symz:form =
+    {
+      serialform = !
+    }
     dup basic:form =
     {
       outform = !
