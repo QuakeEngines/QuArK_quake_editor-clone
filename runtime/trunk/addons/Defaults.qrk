@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.205  2003/01/08 23:06:34  tiglari
+//AlwaysWriteThreeFields support
+//
 //Revision 1.204  2003/01/06 23:18:57  tiglari
 //defaults for wall maker altered again, hints enhanced
 //
@@ -2039,19 +2042,21 @@ QQRKSRC1
       Options:config =
       {
         DrawAxis           = "1"
+        DrawMapLimit       = "1"
         SolidGrid          = ""
         GridVisible        = "1"
         GridActive         = "1"
-        GridVisibleTex     = "1"
-        DrawMapLimit       = "1"
-        CrossCursor        = "1"
-        PagesLocked        = ""
-        AutoAdjustNormal   = ""
+        GridVisibleTex     = ""
+        CompassNumbers     = "1"
         NoScrollBars       = "1"
+        CrossCursor        = ""
+        HideMouseDrag      = ""
+        AutoAdjustNormal   = ""
+        PagesLocked        = ""
         HandleHints        = "1"
+
         LinearBox          = ""
         TreeKeybDelay      = ""
-        CompassNumbers     = ""
         Form = "MdlOptions"
       }
       Building:config =
@@ -4274,6 +4279,27 @@ QQRKSRC1
 //      DisableEnhTex:          = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
       UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
+    }
+    MdlOptions:form =
+    {
+      Style = "1"
+      DrawAxis:                 = {Typ="X" Txt="Model background"                 Cap="Draw axis"                            }
+      DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw model limits"                      }
+      SolidGrid:                = {Typ="X" Txt="Grid"                           Cap="Grid as lines"                        }
+      GridVisible:              = {Typ="X" Txt="   ``"                          Cap="Grid visible"                         }
+      GridActive:               = {Typ="X" Txt="   ``"                          Cap="Grid active"                          }
+      GridVisibleTex:           = {Typ="X" Txt="   ``"                          Cap="Show it on textured views too"        }
+      CompassNumbers:           = {Typ="X" Txt="Compass"                        Cap="Display angle values"                 }
+    //GrayOutOfView:            = {Typ="X" Txt="Model view mode"                  Cap="Gray out of view"                     }
+    //HideOutOfView:            = {Typ="X" Txt="   ``"                          Cap="Hide out of view"                     }
+    //Textured:                 = {Typ="X" Txt="   ``"                          Cap="Textured view"                        }
+    //ViewModels:               = {Typ="X" Txt="Textured view"                  Cap="...include Models"                    }
+      NoScrollBars:             = {Typ="X" Txt="Model view scroll"                Cap="Hide scroll bars"                     }
+      CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
+      HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                       }
+      PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
+      HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for map handles"                }
     }
     MapBuilding:form =
     {
