@@ -739,10 +739,10 @@ class BaseEditor:
 
     def initquickkeys(self, quickkeys):
         "Setup the 'numshortcuts' attribute of the editor window."
-        #
-        # See mapmenus.QuickKeys
-        #
         nsc = {}
+        #
+        # See qbasemgr.BaseLayout.bs_multipagespanel
+        #
         try:
             n = len(self.layout.mpp.pagebtns)
         except:
@@ -752,6 +752,9 @@ class BaseEditor:
             def fn1(editor=self, page=i):
                 editor.layout.mpp.viewpage(page)
             nsc[49+i] = fn1
+        #
+        # See mapmenus.QuickKeys
+        #
         setup = quarkx.setupsubset(self.MODE, "Keys")
         for fn in quickkeys:
             s = setup.getint(fn.__name__)
@@ -803,6 +806,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.4  2000/09/03 01:37:35  tiglari
+#Possible fix/amelioration of drag problem (drag-end problem moved to top ov mousemap)
+#
 #Revision 1.3  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
