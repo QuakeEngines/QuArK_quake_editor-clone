@@ -27,6 +27,9 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-05-23   [TSP] Added The Sherman Project entities
+//              [DC] Added Desert Crisis entities
+//
 // 2000-05-07   [FA] Added FireArms 1.1 entities and texture-links
 //
 // 2000-05-01   [KB] Added Kanonball entities
@@ -870,9 +873,91 @@ QQRKSRC1
                 info_firearms_detect:e  = {t_orig_ang=! ;desc="Firearms Detection Entity" }
                 fa_push_point:b         = {             ;desc="Push Point" ;incl="trigpoly" }
                 fa_push_flag:e          = {t_orig_ang=! ;desc="Push Flag" }
+	}
+        FA Items.qtxfolder = {
+		item_bandage:e		= {t_orig_ang=! ;desc="Bandage"}
+		item_claymore:e		= {t_orig_ang=! ;desc="Claymore Mine"}
+		item_flashbang:e	= {t_orig_ang=! ;desc="Flashbang Grenade"}
+		item_frag:e		= {t_orig_ang=! ;desc="Fragmentation Grenade"}
+		item_stg24:e		= {t_orig_ang=! ;desc="Stiehlhandgrenade"}
+	}
+        FA Ammo.qtxfolder = {
+		ammo_ak47:e		= {t_orig_ang=! ;desc="AK-47 Clip"}
+		ammo_anaconda:e		= {t_orig_ang=! ;desc="Colt Anaconda Ammo"}
+		ammo_aug:e		= {t_orig_ang=! ;desc="Steyr Aug Ammo"}
+		ammo_benelli:e		= {t_orig_ang=! ;desc="Benelli M3 Super 90 Ammo"}
+		ammo_ber92f:e		= {t_orig_ang=! ;desc="Beretta 92F Clip"}
+		ammo_ber93r:e		= {t_orig_ang=! ;desc="Beretta 93R Clip"}
+		ammo_coltgov:e		= {t_orig_ang=! ;desc="Colt Government M1911A1 Ammo"}
+		ammo_desert:e		= {t_orig_ang=! ;desc="IMI Desert Eagle Ammo"}
+		ammo_g36e:e		= {t_orig_ang=! ;desc="H&K G36E Ammo"}
+		ammo_g3a3:e		= {t_orig_ang=! ;desc="H&K G3A3 Ammo"}
+		ammo_m11:e		= {t_orig_ang=! ;desc="Ingram M11 Ammo"}
+		ammo_m16:e		= {t_orig_ang=! ;desc="M16 Clip"}
+		ammo_m4:e		= {t_orig_ang=! ;desc="M4 Beta-C Magazine"}
+		ammo_m60:e		= {t_orig_ang=! ;desc="M-60 Machinegun Ammo"}
+		ammo_m79:e		= {t_orig_ang=! ;desc="M79 40mm HE Grenades"}
+		ammo_m82:e		= {t_orig_ang=! ;desc="M82 Clip"}
+		ammo_mp5a5:e		= {t_orig_ang=! ;desc="MP5A5 Clip"}
+		ammo_mp5k:e		= {t_orig_ang=! ;desc="MP5K Clip"}
+		ammo_psg1:e		= {t_orig_ang=! ;desc="H&K PSG-1 Ammo"}
+		ammo_saiga:e		= {t_orig_ang=! ;desc="Saiga 12K Clip"}
+        }
+        FA Weapons.qtxfolder = {
+		weapon_ak47:e		= {t_orig_ang=! ;desc="AK-47"}
+		weapon_anaconda:e	= {t_orig_ang=! ;desc="Colt Anaconda"}
+		weapon_aug:e		= {t_orig_ang=! ;desc="Steyr AUG A1"}
+		weapon_benelli:e	= {t_orig_ang=! ;desc="Benelli M3 Super 90 Combat Shotgun"}
+		weapon_ber92f:e		= {t_orig_ang=! ;desc="Beretta 92F"}
+		weapon_ber92f:e		= {t_orig_ang=! ;desc="Beretta 92F"}
+		weapon_claymore:e	= {t_orig_ang=! ;desc="Claymore Mines"}
+		weapon_coltgov:e	= {t_orig_ang=! ;desc="Colt Government M1911A1"}
+		weapon_desert:e		= {t_orig_ang=! ;desc="IMI Desert Eagle"}
+		weapon_flashbang:e	= {t_orig_ang=! ;desc="Flashbang Grenades"}
+		weapon_g36e:e		= {t_orig_ang=! ;desc="H&K G36E"}
+		weapon_g3a3:e		= {t_orig_ang=! ;desc="H&K G3A3"}
+		weapon_frag:e		= {t_orig_ang=! ;desc="Fragmentation Grenades"}
+		weapon_knife:e		= {t_orig_ang=! ;desc="Combat Knife"}
+		weapon_m11:e		= {t_orig_ang=! ;desc="Ingram M11"}
+		weapon_m16:e		= {t_orig_ang=! ;desc="Colt M-16A1"}
+		weapon_m4:e		= {t_orig_ang=! ;desc="Colt M4A1"}
+		weapon_m60:e		= {t_orig_ang=! ;desc="M-60 Machinegun"}
+		weapon_m79:e		= {t_orig_ang=! ;desc="M-79 Grenade Launcher"}
+		weapon_m82:e		= {t_orig_ang=! ;desc="Barett M-82A1"}
+		weapon_mp5a5:e		= {t_orig_ang=! ;desc="H&K MP5A5"}
+		weapon_mp5k:e		= {t_orig_ang=! ;desc="H&K MP5K"}
+		weapon_psg1:e		= {t_orig_ang=! ;desc="H&K PSG-1"}
+		weapon_saiga:e		= {t_orig_ang=! ;desc="Kalashnikov Saiga-12k Combat Shotgun"}
+		weapon_stg24:e		= {t_orig_ang=! ;desc="Stiehlandgrenade"}
+	}
+    }
+
+    Desert Crisis Entities.qtxfolder =
+    {
+        ;desc = "Send additions/corrections to decker@post1.tele.dk"
+
+        DC Entities.qtxfolder = {
+		info_player_upko:e	= {t_orig_ang=!	;desc="UP-KO deathmatch start" }
+		info_player_usa:e	= {t_orig_ang=!	;desc="USA deathmatch start" }
+		info_player_sotd:e	= {t_orig_ang=!	;desc="SD deathmatch start" }
+		func_vehicle:b		= {angle="360"  ;desc="Vehicle" ;incl="defpoly" }
+		func_wheel:b 		= {angle="360"	;desc="Wheel of Vehicle" ;incl="defpoly" }
+		func_fence:b		= {		;desc="Fence (Vehicle blocker)" ;incl="trigpoly" }
         }
     }
 
+    The Sherman Project Entities.qtxfolder =
+    {
+        ;desc = "Send additions/corrections to decker@post1.tele.dk"
+
+	TSP Entities.qtxfolder = {
+		info_teamstart:e	= {t_orig_ang=!	;desc="Team spawn point" weaponpref="-1" }
+		info_capturezone:b	= {		;desc="Capture Zone" ;incl="trigpoly" duration="1" }
+		info_roundwin:e		= {		;desc="Trigger to win" }
+		info_captureitem:e	= {t_orig_ang=!	;desc="Capture item" model="models/filecabinet.mdl" }
+		info_areaname:b		= {		;desc="Area Identifier" ;incl="trigpoly" }
+	}
+    }
    }
   }
 
@@ -1831,6 +1916,18 @@ QQRKSRC1
                     Hint = "FireArms settings"
             }
         }
+
+//
+// The Sherman Project
+//
+	t_tsp_teamid:incl = {
+		teamid: = { txt="&" typ="C" hint="Team ID"
+			items=	"Good guys"$0D
+				"Bad guys"$0D
+				"special"
+			values="0"$0D"1"$0D"2"
+		}
+	}
 
 //
 //
@@ -13615,7 +13712,7 @@ values=
                               "Yes"
                         values="0"$0D"1"
                 }
-                speed = {txt="&" hint="Reinforcement Gain (+/-)" }
+                speed: = {txt="&" hint="Reinforcement Gain (+/-)" }
         }
         fa_team_item:form = {
                 t_targetname=!
@@ -13662,6 +13759,131 @@ values=
                 t_target=!
                 bbox = '-8 -8 -16 8 8 16'
         }
+	item_bandage:form = {t_item=!}
+	item_claymore:form = {t_item=!}
+	item_flashbang:form = {t_item=!}
+	item_frag:form = {t_item=!}
+	item_stg24:form = {t_item=!}
+	ammo_ak47:form = {t_ammo=!}
+	ammo_anaconda:form = {t_ammo=!}
+	ammo_aug:form = {t_ammo=!}
+	ammo_benelli:form = {t_ammo=!}
+	ammo_ber92f:form = {t_ammo=!}
+	ammo_ber93r:form = {t_ammo=!}
+	ammo_coltgov:form = {t_ammo=!}
+	ammo_desert:form = {t_ammo=!}
+	ammo_g36e:form = {t_ammo=!}
+	ammo_g3a3:form = {t_ammo=!}
+	ammo_m11:form = {t_ammo=!}
+	ammo_m16:form = {t_ammo=!}
+	ammo_m4:form = {t_ammo=!}
+	ammo_m60:form = {t_ammo=!}
+	ammo_m79:form = {t_ammo=!}
+	ammo_m82:form = {t_ammo=!}
+	ammo_mp5a5:form = {t_ammo=!}
+	ammo_mp5k:form = {t_ammo=!}
+	ammo_psg1:form = {t_ammo=!}
+	ammo_saiga:form = {t_ammo=!}
+	weapon_ak47:form = {t_weapon=!}
+	weapon_anaconda:form = {t_weapon=!}
+	weapon_aug:form = {t_weapon=!}
+	weapon_benelli:form = {t_weapon=!}
+	weapon_ber92f:form = {t_weapon=!}
+	weapon_ber92f:form = {t_weapon=!}
+	weapon_claymore:form = {t_weapon=!}
+	weapon_coltgov:form = {t_weapon=!}
+	weapon_desert:form = {t_weapon=!}
+	weapon_flashbang:form = {t_weapon=!}
+	weapon_g36e:form = {t_weapon=!}
+	weapon_g3a3:form = {t_weapon=!}
+	weapon_frag:form = {t_weapon=!}
+	weapon_knife:form = {t_weapon=!}
+	weapon_m11:form = {t_weapon=!}
+	weapon_m16:form = {t_weapon=!}
+	weapon_m4:form = {t_weapon=!}
+	weapon_m60:form = {t_weapon=!}
+	weapon_m79:form = {t_weapon=!}
+	weapon_m82:form = {t_weapon=!}
+	weapon_mp5a5:form = {t_weapon=!}
+	weapon_mp5k:form = {t_weapon=!}
+	weapon_psg1:form = {t_weapon=!}
+	weapon_saiga:form = {t_weapon=!}
+	weapon_stg24:form = {t_weapon=!}
+
+
+//
+// Desert Crisis
+//
+	info_player_upko:form = { t_player=! }
+	info_player_usa:form = { t_player=! }
+	info_player_sotd:form = { t_player=! }
+	func_vehicle:form = { t_targetname=! }
+	func_wheel:form = {
+		t_target=!
+		wheeltype: = {txt="&" typ="C" hint="WheelType"
+			items=	"Front driver-side"$0D
+				"Front passenger-side"$0D
+				"Rear driver-side"$0D
+				"Rear passenger-side"
+			values="0"$0D"1"$0D"2"$0D"3"
+		}
+	}
+
+//
+// The Sherman Project
+//
+	info_teamstart:form = {
+		bbox = '-16 -16 -36 16 16 36'
+		t_tsp_teamid=!
+		teammodel: = {txt="&" typ="C" hint="Choose player model for team"
+			items=	"Swat Green"$0D
+				"Swat Blue"$0D
+				"Swat Black"$0D
+				"Delta Blue"$0D
+				"Delta Green"$0D
+				"Urban Terror Skimask Blue"$0D
+				"Urban Terror Skimask Tan"$0D
+				"Outdoor Terror Greasepaint Green"$0D
+				"Outdoor Terror Greasepaint Black"$0D
+				"Civilian"
+			values=	"0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"
+		}
+		weaponpref: = {txt="&" hint="Specialist preference" }
+		movedelay: = {txt="&" hint="How long before player can move" }
+	}
+	info_capturezone:form = {
+		t_tsp_teamid=!
+		duration: = {txt="&" hint="Duration (seconds)" }
+		itemid: = {txt="&" typ="C" hint="Choose item that activates me"
+			items=	"Bomb Detonator"$0D
+				"Secret Files"$0D
+				"Key"$0D
+				"Insert cool item here"
+			values=	"0"$0D"1"$0D"2"$0D"3"
+		}
+	}
+	info_roundwin:form = {
+		t_tsp_teamid=!
+		t_targetname=!
+	}
+	info_captureitem:form = {
+		t_tsp_teamid=!
+		model: = {txt="&" hint="Model" }
+		itemid: = {txt="&" typ="C" hint="Choose an item"
+			items=	"Bomb Detonator"$0D
+				"Secret Files"$0D
+				"Key"$0D
+				"Insert cool item here"
+			values=	"0"$0D"1"$0D"2"$0D"3"
+		}
+		message: = {txt="&" hint="Text Message" }
+		t_target=!
+	}
+	info_areaname:form = {
+		targetname: = {txt="&" hint="Area Name" }
+		message: = {txt="&" hint="Optional .wav (path/file)" }
+		t_rendermode=!
+	}
 
 /////////////////////
   }
