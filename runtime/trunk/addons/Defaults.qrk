@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.209  2003/03/19 22:22:36  tiglari
+//specify holes file for HL
+//
 //Revision 1.208  2003/03/12 11:32:27  decker_dk
 //Added 'EnableTransparency' checkbox for Half-Life. See also QkMapPoly.PAS (same date)
 //
@@ -4785,6 +4788,7 @@ QQRKSRC1
     {
       steps:      = {Txt="&"            Hint="number of steps in the staircase"}
       sameheight: = {Txt="&" Typ="X"    Hint="if all steps should have the same height"$0D"or all aligned to the bottom"}
+      oldstyle: = {Txt="&" Typ="X"    Hint="the original style staircase"}
       macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
     }
     dup hlinfodecal:form =
@@ -5842,6 +5846,7 @@ QQRKSRC1
           macro = "dup stair"
           steps = "8"
           sameheight = ""
+          oldstyle = ""
           t_shapebuilder_cube = !
         }
       }
