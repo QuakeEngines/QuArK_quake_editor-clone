@@ -700,7 +700,7 @@ menextsel = quarkpy.qmenu.item("&Extend Selection from Face", ExtendSelClick, ex
  
 mennosel = quarkpy.qmenu.item("No Selection in Map Views", NoSelClick, "|When this menu item is checked, selection in the map views is prevented.\n\nI find this useful when touring with the 3d viewer, since I tend to accidentally select things and create messes.");
 
-menunrestrict = quarkpy.qmenu.item("Unrestrict Selection",UnrestrictClick,"|When selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.")
+menunrestrict = quarkpy.qmenu.item("&Unrestrict Selection",UnrestrictClick,"|When selection is restricted (see the Containing Groups right-mouse menu), clicking on this will unrestrict the selection & restore things to normal.")
 
 def menunrestrictenable(editor):
   if getrestrictor(editor) is None:
@@ -763,6 +763,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.9  2001/05/04 03:51:07  tiglari
+# shift commands from commands to (new) selection menu
+#
 # Revision 1.8  2001/04/29 04:09:43  tiglari
 # reorganize/navigate tree added to selection menu, some internal reorgs.
 #
