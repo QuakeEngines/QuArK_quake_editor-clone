@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2002/04/04 17:50:54  decker_dk
+Try to load JK2 .BSPs by using the Q3 loader. It may work, but don't bet on it.
+
 Revision 1.50  2001/08/05 05:41:35  tiglari
 support bsp cruising for q1,2,3, by using intermediary BspNode, BspLeaf
  classes to shift data from the bsp itself into QBspNode.
@@ -561,7 +564,8 @@ const
  cVersionBspQ2        = $00000026; {Quake-2 .BSP}
  cVersionSin          = $00000001; {Sin .BSP}
  cVersionBspDK        = $00000029; {Daikatana .BSP}
-
+ cVersionBspRTCW      = $0000002F; {RTCW .BSP}
+  
 const
  Bsp2EntryNames : array[TBsp2EntryTypes] of String =
    (              {Actually a 'FilenameExtension' - See TypeInfo()}
@@ -599,6 +603,7 @@ const
  // Note: Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
 
  cSignatureBspJK2     = $50534252; {"RBSP" 4-letter header, which Jedi Knight II contains}
+ cSignatureMohaa      = 892416050;
 
  cVersionBspQ3        = $0000002E; {Quake-3 or STVEF .BSP}
  cVersionBspJK2       = $00000001; {JK2 .BSP}
@@ -1029,6 +1034,16 @@ begin
               end;
             end;
 
+           (* well nice try but it doesn't actually work *)
+            cVersionBspRTCW:  { RTCW }
+            begin
+          (*
+              LoadBSP3(F, StreamSize);
+              ObjectGameCode:=mjRTCW;
+          *)
+              Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
+            end;
+
             else {version unknown}
               Raise EErrorFmt(5572, [LoadName, Version, cVersionBspQ2]);
           end;
@@ -1041,6 +1056,16 @@ begin
             ObjectGameCode := mjQ3A
           else
             ObjectGameCode := CharModeJeu;
+        end;
+
+        cSignatureMohaa: { Moh:aa}
+        begin
+          Raise EErrorFmt(5602, [LoadName, Version, cVersionBspRTCW]);
+
+(* Non functiona
+          LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2 maps}
+          ObjectGameCode := mjMohaa;
+*)
         end;
 
       else
