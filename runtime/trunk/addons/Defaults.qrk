@@ -30,6 +30,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.43  2000/07/04 20:22:32  alexander
+//added SOF specific default form reference for quakemenu (without extract textures)
+//removed Q3 specific dup arenafilemaker form
+//
 //Revision 1.42  2000/07/04 17:24:59  alexander
 //added default form for dup arenafilemaker
 //
@@ -110,7 +114,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000704"
+      Version = "quarksnapshot_20000718"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
