@@ -921,12 +921,15 @@ clearItem = qmenu.item("Clear Mark", ClearMarkClick, "Unset Mark")
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
 #    reorganizePop.state = parentSelPop.state=qmenu.disabled
     menrestsel.state=menextsel.state=qmenu.disabled
+    meninvertfacesel.state = stashItem.state = zoomItem.state = qmenu.disabled
     stashItem.state = zoomItem.state = qmenu.disabled
     oldcommand(menu)
     editor = mapeditor()
     if editor is None: return
     menunrestrictenable(editor)
     sellist = editor.layout.explorer.sellist
+    if filter(lambda x:x.type==':f', sellist):
+        meninvertfacesel.state=qmenu.normal
     if len(sellist)>1:
         browseItem.state=qmenu.normal
     else:
@@ -985,6 +988,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.18.2.3  2003/03/17 21:52:47  tiglari
+# fix invertfaceselclick hint (fix by cdunde)
+#
 # Revision 1.18.2.2  2002/05/19 05:09:07  tiglari
 # Hot key for Zoom to selection
 #
