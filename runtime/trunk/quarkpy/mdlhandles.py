@@ -23,6 +23,7 @@ from qdictionnary import Strings
 import qhandles
 from mdlutils import *
 import mdlentities
+import qmenu
 
 
 
@@ -56,16 +57,58 @@ class VertexHandle(qhandles.GenericHandle):
 
     size = (3,3)
 
+    def __init__(self, pos):
+        qhandles.GenericHandle.__init__(self, pos)
+        self.cursor = CR_CROSSH
+
+    def menu(self, editor, view):
+        def forcegrid1click(m, self=self, editor=editor, view=view):
+            self.Action(editor, self.pos, self.pos, MB_CTRL, view, Strings[560])
+        def addhere1click(m, self=self, editor=editor, view=view):
+            addvertex(editor.Root.currentcomponent, self.pos)
+        def removevertex1click(m, self=self, editor=editor, view=view):
+            removevertex(editor.Root.currentcomponent, self.index)
+
+        return [qmenu.item("&Add Vertex Here", addhere1click, "add vertex to component"),
+                qmenu.item("&Remove Vertex", removevertex1click, "removes a vertex from the component"),
+                qmenu.sep,
+                qmenu.item("&Force to grid", forcegrid1click,"force vertex to grid")] + self.OriginItems(editor, view)
+
     def draw(self, view, cv, draghandle=None):
         p = view.proj(self.pos)
         if p.visible:
             cv.setpixel(p.x, p.y, vertexdotcolor)
 
+    def drag(self, v1, v2, flags, view):
+        p0 = view.proj(self.pos)
+        if not p0.visible: return
+        if flags&MB_CTRL:
+          v2 = qhandles.aligntogrid(v2, 0)
+        delta = v2-v1
+        editor = mapeditor()
+        if editor is None: return
+        if editor.lock_x==1:
+          delta = quarkx.vect(0, delta.y, delta.z)
+        if editor.lock_y==1:
+          delta = quarkx.vect(delta.x, 0, delta.z)
+        if editor.lock_z==1:
+          delta = quarkx.vect(delta.x, delta.y, 0)
+        self.draghint = vtohint(delta)
+        new = self.frame.copy()
+        if delta or (flags&MB_REDIMAGE):
+          vtxs = self.frame.vertices
+          vtxs[self.index] = vtxs[self.index] + delta
+          new.vertices = vtxs
+        return [self.frame], [new]
+
+    def click(self, editor):
+        if quarkx.keydown('\020')==1: #SHIFT
+          editor.vsellist = editor.vsellist + [self]
+          return "S"
 
 #
 # Functions to build common lists of handles.
 #
-
 
 def BuildCommonHandles(editor, ex):
     "Build a list of handles to display on all map views."
@@ -196,5 +239,8 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

@@ -23,23 +23,47 @@ from mdlutils import *
 # Drag-and-drop functions
 #
 
+def componentof(obj):
+  while not (obj is None):
+    obj = obj.parent
+    if obj is None:
+      return None
+    else:
+      if obj.type == ':mc':
+        return obj
+
 def droptarget(editor, newitem):
     "Where is the new item to be inserted ? (parent, insertbefore)"
     ex = editor.layout.explorer
     fs = ex.focussel     # currently selected item
-    if not fs is None:
-        if (fs.type==':m') and (newitem.type in (':mf', '.pcx')):
-            return fs, None   # put frames and skins inside groups by default
-        if (fs.flags & OF_TVEXPANDED) and fs.acceptitem(newitem):
-            # never put an object into a closed group
-            return fs, None    # put inside the selected object
-        while fs is not editor.Root:
-            oldfs = fs
-            fs = fs.parent
-            if fs.acceptitem(newitem):
-                return fs, oldfs.nextingroup()   # can insert here, right after the previously selected item
-    if editor.Root.acceptitem(newitem):
-        return editor.Root, None   # in the root, at the end
+    if not newitem is None:
+      if newitem.type==':mc':
+        return editor.Root, None
+      elif newitem.type==':mf':
+        if not fs is None:
+          c=componentof(fs)
+          if c is None:
+            c=editor.Root.currentcomponent
+          return c.group_frame, None
+      elif newitem.type in ('.jpg', '.pcx'):
+        if not fs is None:
+          c=componentof(fs)
+          if c is None:
+            c=editor.Root.currentcomponent
+          return c.group_skin, None
+      elif newitem.type==(':tag'):
+        return editor.Root.group_misc, None
+      elif newitem.type==(':bone'):
+        if editor.Root["no_skeleton"]=='1':
+          return editor.Root.group_misc, None
+        else: 
+          if not fs is None:
+            c=componentof(fs)
+            if c is None:
+              c=editor.Root.currentcomponent
+            return c.group_bone, None
+#    if editor.Root.acceptitem(newitem):
+#        return editor.Root, None   # in the root, at the end
     # cannot insert new item at all...
     return None, None
 
@@ -286,5 +310,8 @@ def groupcolor(m):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

@@ -16,7 +16,7 @@ import quarkx
 from qdictionnary import Strings
 import qmenu
 from mdlutils import *
-#import mapcommands
+import mdlcommands
 #import mapbtns
 
 
@@ -26,9 +26,7 @@ EditMenuShortcuts = {}
 
 def BuildMenuBar(editor):
     import mdlmgr
-    #import mapcommands
-    #import mapsearch
-    #import mapquakemenu
+    import mdlcommands
     import mdltools
     import mdloptions
 
@@ -59,14 +57,8 @@ def BuildMenuBar(editor):
         Edit1.items = Edit1.items + [qmenu.sep] + l1
     sc1.update(EditMenuShortcuts)   # merge shortcuts
 
-    #Search1, sc2 = mapsearch.SearchMenu()
-    #sc1.update(sc2)   # merge shortcuts
-
-    #Commands1, sc2 = mapcommands.CommandsMenu()
-    #sc1.update(sc2)   # merge shortcuts
-
-    #Quake1, sc2 = mapquakemenu.QuakeMenu(editor)
-    #sc1.update(sc2)   # merge shortcuts
+    Commands1, sc2 = mdlcommands.CommandsMenu()
+    sc1.update(sc2)   # merge shortcuts
 
     Tools1, sc2 = mdltools.ToolsMenu(editor, mdltools.toolbars)
     sc1.update(sc2)   # merge shortcuts
@@ -74,7 +66,7 @@ def BuildMenuBar(editor):
     Options1, sc2 = mdloptions.OptionsMenu()
     sc1.update(sc2)   # merge shortcuts
 
-    return [File1, Layout1, Edit1, quarkx.toolboxmenu, Tools1, Options1], sc1
+    return [File1, Layout1, Edit1, quarkx.toolboxmenu, Commands1, Tools1, Options1], sc1
 
 
 
@@ -147,5 +139,8 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

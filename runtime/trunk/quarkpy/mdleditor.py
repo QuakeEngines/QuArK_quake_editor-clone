@@ -37,14 +37,11 @@ class ModelEditor(BaseEditor):
         Root = self.fileobject['Root']
         if Root is not None:
             Root = self.fileobject.findname(Root)
-        if (Root is not None) and (Root.type == ':mp'):    # packed model
-            import mdlpack
-            oldroot = Root
-            Root = mdlpack.UnpackModel(Root)
-            self.fileobject.removeitem(oldroot)
-            self.fileobject.appenditem(Root)
-            self.fileobject['Root'] = Root.name
         self.Root = Root
+#        self.vsellist = [ ]
+        self.lock_x = 0
+        self.lock_y = 0
+        self.lock_z = 0
         for c in self.ListComponents():
             c.info = { }
             c.filltris = [(WHITE,(WHITE,GRAY))]*len(c.triangles)
@@ -144,5 +141,8 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

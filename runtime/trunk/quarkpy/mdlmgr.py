@@ -48,11 +48,9 @@ class ModelLayout(BaseLayout):
     def readtoolbars(self, config):
         readtoolbars(mdltools.toolbars, self, self.editor.form, config)
 
-
-
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
-        return [ ], mppages
+        return [], mppages
 
     def bs_userobjects(self, panel):
         "A panel with user-defined model objects."
@@ -90,18 +88,29 @@ class ModelLayout(BaseLayout):
                 return obj
 
 
+    def selectcomponent(self, comp):
+        self.editor.Root.setcomponent(comp)
+        self.editor.invalidateviews(1)
+
+    def selectcgroup(self, group):
+        comp = self.componentof(group)
+        if comp is not None:
+          self.selectcomponent(comp)
+
     def selectframe(self, frame):
         c = self.componentof(frame)
         if c is not None and frame is not c.currentframe:
+            self.selectcomponent(c)
             c.setframe(frame)
             self.editor.invalidateviews(1)
+            c.setparentframes(frame)
 
     def selectskin(self, skin):
         c = self.componentof(skin)
         if c is not None and skin is not c.currentskin:
+            self.selectcomponent(c)
             c.currentskin = skin
             self.editor.invalidatetexviews()
-
 
     def selchange(self):
         #if self.faceflags is not None:
@@ -110,16 +119,24 @@ class ModelLayout(BaseLayout):
         
         fs = self.explorer.uniquesel
         if fs is not None:
-            if fs.type == ':mf':
+            if fs.type == ':mf':       # frame
                 self.selectframe(fs)
-            elif fs.type == '.pcx':
+            elif fs.type == ':fg':     # frame group
+                self.selectcgroup(fs)
+            elif fs.type == ':sg':     # skin group
+                self.selectcgroup(fs)
+            elif fs.type == ':bg':     # bone group
+                self.selectcgroup(fs)
+            elif fs.type == ':mc':     # component
+                self.selectcomponent(fs)
+            elif fs.type == '.pcx':    # skin
+                self.selectskin(fs)
+            elif fs.type == '.jpg':    # skin
                 self.selectskin(fs)
 
 
     def NewItem1Click(self, m):
-        #quarkx.opentoolbox("New map items...")
-        pass#...
-
+        pass
 
 
 #
@@ -140,5 +157,8 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
