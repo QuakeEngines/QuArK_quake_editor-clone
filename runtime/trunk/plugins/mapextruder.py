@@ -2670,4 +2670,4 @@ def ExtrudeClick(btn):
   btn.editor.layout.new2dwin.close()
 
 
-#$Log $
+#$Log$
