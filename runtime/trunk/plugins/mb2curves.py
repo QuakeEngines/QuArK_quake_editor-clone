@@ -416,6 +416,11 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0,
 #  if lower:
 #      fcp = transposeCp(fcp)
 #  else:
+  if subdivide>1:
+      if not nofront:
+          fcp = subdivideRows(subdivide, fcp)
+      if not noback:
+          bcp = subdivideRows(subdivide, bcp)
   bcp = transposeCp(bcp)
   faces = []
   if not nofront:
@@ -531,8 +536,13 @@ def circleLine(p0, p1, p2, p3):
     return [(p0+p1)/2, p1, (p1+p2)/2, p2, (p2+p3)/2, p3,
             (p3+p0)/2, p0, (p0+p1)/2]
 
-def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,1), funnel=None):
+def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,1),
+      funnel=None, faceonly=0, notop=0, nobottom=0, noinner=0, noouter=0, circle=0, (subdivide,)=1):
     "makes a column on the basis of brush o"
+    if circle:
+        subfunc=arcSubdivideLine
+    else:
+        subfunc=None
     o.rebuildall()
     fdict = faceDict(o)
     if fdict is None:
@@ -562,10 +572,12 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
         
     cp = curveCp(pd)
 
-    def makeTube (cp, pd, oldface, pdo=pdo, fdict=fdict, stretchtex=stretchtex, editor=editor):
+    def makeTube (cp, pd, oldface, pdo=pdo, fdict=fdict, stretchtex=stretchtex, subfunc=subfunc, subdivide=subdivide,editor=editor):
         cp2 = interpolateGrid(pdo["tlb"], pdo["trb"], pdo["blb"], pdo["brb"], 3, 9)
         cp2 = texcpFromFace(cp2, oldface, editor)
         cp = texcpFromCp(cp, cp2)
+        if subdivide>1:
+            cp = subdivideRows(subdivide,cp,subfunc)
         if not stretchtex:
             for (facekey, corner) in (("r", "trb"),("f", "trf"),("l","tlf")):
                 newface=oldface.copy()
@@ -584,18 +596,34 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
         return inner
 
     inner = makeTube(cp, pd, fdict["b"])
- 
     if thick:
         pd2 = smallercolumnbox(pd, thick)
         cp2 = curveCp(pd2)
         inner2 = makeTube(cp2, pd2, fdict["f"])
+        inner2.shortname="inner"
+        inner.shortname="outer"
         tcp = cpFrom2Rows(cp[0],cp2[0])
+        bcp = cpFrom2Rows(cp[2], cp2[2])
+        if subdivide>1:
+            tcp = subdivideRows(subdivide,tcp, subfunc)
+            bcp = subdivideRows(subdivide,bcp, subfunc)
         top = b2FromCpFace(tcp,"top",fdict["u"],editor)
         top.swapsides()
-        bcp = cpFrom2Rows(cp[2], cp2[0])
         bottom = b2FromCpFace(bcp,"bottom",fdict["d"],editor)
         inner2.swapsides()
-        return [inner,inner2,top,bottom]
+        seams = [top, bottom]
+        if notop:
+            seams.remove(top)
+        if nobottom:
+            seams.remove(bottom)
+        if faceonly:
+           return seams
+        inners = [inner, inner2]
+        if noinner:
+            inners.remove(inner2)
+        if noouter:
+            inners.remove(inner)
+        return inners+seams
         
     if open:
        if inverse:
@@ -612,10 +640,10 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
              
             return halfSquare(row[:4]), halfSquare(row[4:8])
             
-        def faces(circline, borderfunc, name, texface):
+        def faces(circline, borderfunc, name, texface, subdivide=subdivide,subfunc=subfunc):
             out0, out1 = borderfunc(circline)
-            b2a = b2From2Rows(out0, circline[0:5],texface,name+'0')
-            b2b = b2From2Rows(out1, circline[4:9],texface,name+'1')
+            b2a = b2From2Rows(out0, circline[0:5],texface,name+'0',subdivide=subdivide,subfunc=subfunc)
+            b2b = b2From2Rows(out1, circline[4:9],texface,name+'1',subdivide=subdivide,subfunc=subfunc)
             return b2a, b2b
 
         topa, topb = faces(cp[0],squareFromCircle,'top',fdict['u'])
@@ -623,15 +651,31 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
         topa.swapsides()
         topb.swapsides()
         bottoma, bottomb = faces(cp[2],squareFromCircle,'bottom',fdict['d'])
-        return [inner, topa, topb, bottoma, bottomb]
+        result = [inner, topa, topb, bottoma, bottomb]
+        if faceonly:
+            result.remove(inner)
+        if notop:
+            result.remove(topa)
+            result.remove(topb)
+        if nobottom:
+            result.remove(bottoma)
+            result.remove(bottomb)
     else:
         def center(v):
             c = (v[1]+v[3]+v[5]+v[7])/4.0
             return map(lambda x,c=c:c,range(9))
 
-        top = b2From2Rows(center(cp[0]),cp[0],fdict['u'],'top')
-        bottom = b2From2Rows(cp[2], center(cp[2]),fdict['d'],'bottom')
-        return [inner, top, bottom]
+        top = b2From2Rows(center(cp[0]),cp[0],fdict['u'],'top',subdivide=subdivide,subfunc=subfunc)
+        bottom = b2From2Rows(cp[2], center(cp[2]),fdict['d'],'bottom',subdivide=subdivide,subfunc=subfunc)
+        result = [inner, top, bottom]
+        if faceonly:
+            result.remove(inner)
+        if notop:
+            result.remove(top)
+        if nobottom:
+            result.remove(bottom)
+
+    return result
 
 
 def images(buildfn, args):
@@ -692,14 +736,17 @@ class ColumnDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, open, thick, stretchtex, bulge, funnel = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "open", "thick", "stretchtex", "bulge", "funnel"))
+    inverse, open, thick, stretchtex, bulge, funnel, faceonly,notop,nobottom, noinner, noouter, circle, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "open", "thick", "stretchtex", "bulge", "funnel", "faceonly", "notop", "nobottom", "noinner","noouter",  "circle", "subdivide"))
     if thick:
       thick, = thick
     list = self.sourcelist()
+    if subdivide is None:
+        subdivide=1,
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-           return images(columnImages, (o, editor, inverse, open, thick, stretchtex, bulge,funnel))
+           return images(columnImages, (o, editor, inverse, open, thick, stretchtex, bulge,funnel,
+             faceonly,notop,nobottom, noinner, noouter, circle,subdivide))
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
@@ -853,6 +900,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.25  2000/09/02 11:25:43  tiglari
+#added subdivides & detail specifics to arch/cap.  last two (ends/sides) are howeer still unimplemented
+#
 #Revision 1.24  2000/07/26 11:37:31  tiglari
 #thick arch/bevel bugz fixed
 #
