@@ -628,7 +628,7 @@ class BaseEditor:
             # Or did the user start to drag the mouse ?
             #
 
-            elif (flags & MB_DRAGSTART) and (flags & MB_LEFTBUTTON):
+            elif flags & MB_DRAGSTART:
                 #
                 # First report the current grid size to the module qhandles
                 #
@@ -840,6 +840,10 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.11  2001/05/07 00:05:33  tiglari
+#prevent RMB dragging (if anyone screams about this, it can be made
+# conditional on an option)
+#
 #Revision 1.10  2001/04/24 07:31:36  tiglari
 #infrastructure for keypress processing
 #
