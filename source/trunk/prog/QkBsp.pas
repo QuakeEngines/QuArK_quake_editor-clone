@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.53  2003/01/01 14:34:10  decker_dk
 Fixed some compiler-warnings, a source-line placement error, and done some indenting.
 
@@ -203,7 +206,7 @@ unit QkBsp;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, ComCtrls, QkForm, QkMapObjects, qmath,
   StdCtrls, Python, PyObjects, PyMath, Game, QkUnknown;
 

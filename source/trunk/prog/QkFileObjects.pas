@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.34  2002/04/04 11:46:10  tiglari
 comment out the handle close because it might cause an error
  (decker on quark-python, april 4)
@@ -121,7 +124,7 @@ unit QkFileObjects;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, QkObjects, TB97, EnterEditCtrl, QkForm, ComCtrls, CommCtrl, Python;
 
 const

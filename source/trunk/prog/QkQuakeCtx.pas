@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.22  2003/03/12 11:35:42  decker_dk
 Changed 'LoadTInfo()' to 'LoadTexFlagsTransparentInfo()' and modified variables to a bit more intuitive names.
 
@@ -90,7 +93,7 @@ unit QkQuakeCtx;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects, Logging;
 
 type

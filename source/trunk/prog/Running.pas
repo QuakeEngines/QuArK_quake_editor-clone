@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2003/07/21 04:43:50  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.7  2001/03/20 21:42:24  decker_dk
 Updated copyright-header
 
@@ -42,7 +45,7 @@ unit Running;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ShellAPI,
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs, ShellAPI,
   StdCtrls, ExtCtrls, TB97, QkObjects, QkFileObjects, QkForm;
 
 type

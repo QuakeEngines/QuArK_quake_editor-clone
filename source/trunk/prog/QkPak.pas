@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.17  2002/03/07 19:14:32  decker_dk
 Removed QLvFileObject, as it was just another name for QFileObject.
 Removed QImages, as it was just another name for QImage
@@ -82,7 +85,7 @@ unit QkPak;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, QkFileExplorer, QkListView, BrowseForFolder,
   ComCtrls, QkForm, QkGroup, Python;
 
