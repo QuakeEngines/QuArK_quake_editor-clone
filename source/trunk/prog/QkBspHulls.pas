@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/07/18 03:50:31  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+
 Revision 1.13  2001/07/18 02:17:30  tiglari
 Oops missing paren
 
@@ -107,12 +111,7 @@ type
             Face_id, Face_num: Integer;
             Brush_id, Brush_num: Integer;
            end;
- PbPlane = ^TbPlane;
- TbPlane = record
-            normal: vec3_t;
-            dist: scalar_t;
-            flags: Integer;
-           end;
+
  PbSurface = ^TbSurface;
  TbSurface = record
               Plane_id, Side: Word;
@@ -210,7 +209,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 
 implementation
 
-uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList, Dialogs;
+uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList;
  {------------------------}
 
 function CheckQ1Hulls(Hulls: PHull; Size, FaceCount: Integer) : Boolean;
@@ -297,7 +296,6 @@ var
  Q3Vertex: TQ3Vertex;
  Q3VertexP: PQ3Vertex;
  TextureList: QTextureList;
- NonFaces: Integer;
 
  function AdjustTexScale(const V: TVect5) : TVect5;
  begin
@@ -315,7 +313,6 @@ begin
  try
   InvFaces:=0;
   cTexInfo:=0;
-  NonFaces:=0;
   HullType:=FBsp.NeedObjectGameCode;
   case HullType of
    mjQuake, mjHalfLife:  Size1:=SizeOf(THull);
@@ -378,9 +375,11 @@ begin
     Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
   end;
   cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
-  cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
+  { cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane); }
   { FBsp.FVertices, VertexCount are previously computed
     by FBsp.GetStructure }
+  Planes:=FBsp.Planes;
+  cPlanes:=FBsp.PlaneCount;
   Vertices:=PChar(FBsp.FVertices);
   cVertices:=FBsp.VertexCount;
 
@@ -409,7 +408,7 @@ begin
         Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PVertex));
       end
       else
-        Inc(NonFaces);
+        Inc(FBsp.NonFaceCount);
         { we'll be wanting to do something smarter with patches etc }
     end;
   end;
@@ -653,11 +652,6 @@ begin
     PChar(Surface1):=PChar(Dest);
    end;
 
- { FIXME : This is a stopgap, when it is improved, Dialogs should
-   be removed from the implementation uses statement }
-
- if NonFaces>0 then
-    ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
   if InvFaces>0 then
    GlobalWarning(FmtLoadStr1(5638, [Index, InvFaces, LastError]));
  except

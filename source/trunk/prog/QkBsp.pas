@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2001/07/16 10:57:43  tiglari
+support for displaying Q3A .bsp's
+
 
 Revision 1.33  2001/04/24 23:59:44  aiv
 re-implementated again (hopefully less memory req'd)
@@ -229,6 +232,21 @@ type
               Color : array[0..3] of Byte;
              end;
 
+ { Q1/2-type plane }
+ PbPlane = ^TbPlane;
+ TbPlane = record
+            normal: vec3_t;
+            dist: scalar_t;
+            flags: Integer;
+           end;
+
+ { Q3-type plane }
+ PQ3Plane = ^TQ3Plane;
+ TQ3Plane = record
+            normal: vec3_t;
+            dist: scalar_t;
+           end;
+
  QBsp = class(QFileObject)
         private
           FStructure: TTreeMapBrush;
@@ -242,7 +260,6 @@ type
           procedure SaveBsp1(Info: TInfoEnreg1);
           procedure SaveBsp2(Info: TInfoEnreg1);
         protected
-          _VertexCount: Integer;
           function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; StreamSize: Integer); override;
@@ -250,6 +267,9 @@ type
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
           Q3Vertices: PChar;
+          Planes: PChar;
+          NonFaceCount : Integer;
+          VertexCount, PlaneCount : Integer;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
           class function TypeInfo: String; override;
@@ -267,7 +287,7 @@ type
           Function GetTextureFolder: QObject;
           Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
-          function VertexCount : Integer;
+
         end;
 
 type
@@ -915,6 +935,7 @@ var
  HullType: Char;
  Pozzie: vec3_t;
 begin
+ NonFaceCount:=0;
  HullType:=NeedObjectGameCode;
  if FStructure=Nil then
   begin
@@ -923,13 +944,16 @@ begin
    FVerticesRefCount:=0;
    ProgressIndicatorStart(0,0); try
    if HullType<mjQ3A then
-      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t)
+   begin
+      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
+      PlaneCount  :=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
+   end
    else
    begin
       Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
+      PlaneCount  :=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
       PQ3:=PQ3Vertex(Q3Vertices);
    end;
-   _VertexCount:=Count;
    ReallocMem(FVertices, Count*SizeOf(TVect));
    Dest:=PVect(FVertices);
    if HullType<mjQ3A then
@@ -967,6 +991,8 @@ begin
    else
  }
      ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
+   if NonFaceCount>0 then
+     ShowMessage(IntToStr(NonFaceCount)+' Non-Face Surfacess Ignored');
    finally ProgressIndicatorStop; end;
   end;
  GetStructure:=FStructure;
@@ -1015,13 +1041,6 @@ begin
  Py_DECREF(mapname);
 end;
 
-
- {------------------------}
-
-function QBsp.VertexCount : Integer;
-begin
-  Result:=_VertexCount;
-end;
 
  {------------------------}
 
