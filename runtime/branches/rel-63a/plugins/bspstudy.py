@@ -389,7 +389,7 @@ def nearPlanesClickFunc(m,o,editor):
                 # Names and list-indexes of close planes
                 #
                 ran = range(len(pack.nearones))
-                pack.slist = map(lambda obj, num:"%d) %s"%(num, obj.shortname, pack.nearones, ran)
+                pack.slist = map(lambda obj, num:"%d) %s"%(num, obj.shortname, pack.nearones, ran))
                 pack.klist = map(lambda d:`d`, ran)
                 self.src["nearplanes$Items"] = string.join(pack.slist, "\015")
                 self.src["nearplanes$Values"] = string.join(pack.klist, "\015")
