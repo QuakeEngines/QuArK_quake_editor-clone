@@ -580,9 +580,14 @@ class DefaultDrawEntityLines:
                     pass
         if entity["target"] is not None:
            self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
+           # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
+           self.drawentityarrows("name", entity["target"], org, 0, color, view, entities, processentities)
         if entity["targetname"] is not None:
            self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
            self.drawentityarrows("killtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
+        if entity["name"] is not None:
+           # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
+           self.drawentityarrows("target", entity["name"], org, 1, color, view, entities, processentities)
         if entity["killtarget"] is not None:
            self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
 
