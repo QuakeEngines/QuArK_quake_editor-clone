@@ -25,6 +25,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/01/02 19:26:40  decker_dk
+Modified HelpPopup1.PAS a little; removed the blue-background, put caret at
+top of contents in Memo1.
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
@@ -44,7 +48,6 @@ type
     Memo1: TMemo;
     procedure FormDeactivate(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
@@ -68,9 +71,6 @@ uses Quarkx, TB97;
 const
  BlueColor = $D0A000;
 
-var
- CurrentActiveHelpPopup: PHelpPopup;
-
 procedure HelpPopup(const HelpText: String);
 var
  P: TPoint;
@@ -79,14 +79,7 @@ var
  R: TRect;
 begin
  Application.Hint:='';
-{DECKER-todo
- if (CurrentActiveHelpPopup<>nil) then
-  F:=CurrentActiveHelpPopup^
- else
-  F:=THelpPopup.Create(Application);
- CurrentActiveHelpPopup:=@F;
-}
- F:=THelpPopup.Create(Application); {DECKER-todo}
+ F:=THelpPopup.Create(Application);
  with F do
   begin
    Caption:=LoadStr1(288);
@@ -136,43 +129,9 @@ begin
  Memo1.SetBounds(0,0, ClientWidth, ClientHeight);
 end;
 
-procedure THelpPopup.FormPaint(Sender: TObject);
-var
- W, H: Integer;
-begin
-(*
- W:=ClientWidth-1;
- H:=ClientHeight-1;
- with Canvas do
-  begin
-   Pen.Color:=ColorToRGB(clWindow);
-   MoveTo(1,H);
-   LineTo(W,H);
-   LineTo(W,0);
-   Pen.Color:=BlueColor;
-   MoveTo(W-1,0);
-   LineTo(0,0);
-   LineTo(0,H);
-  {Pen.Color:=Color;
-   Pixels[0,H]:=Color;
-   Pixels[W,0]:=Color;
-   Dec(W);
-   Dec(H);
-   MoveTo(1,1);
-   LineTo(1,H);
-   LineTo(W,H);
-   LineTo(W,1);
-   LineTo(1,1);}
-  end;
-*)
-end;
-
 procedure THelpPopup.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  Action:=caFree;
-{DECKER-todo
- CurrentActiveHelpPopup:=nil;
-}
 end;
 
 procedure THelpPopup.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -182,11 +141,6 @@ begin
    Key:=0;
    Close;
   end;
-end;
-
-initialization
-begin
- CurrentActiveHelpPopup:=nil;
 end;
 
 end.
