@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.26  2000/05/21 01:20:15  tiglari
+//Added cap duplicator specifics
+//
 //Revision 1.25  2000/05/12 17:44:19  decker_dk
 //Auto-create Texture-links to .tga/.jpg files - .shaders still missing
 //
@@ -487,7 +490,8 @@ QQRKSRC1
         Form = "GameKingPin"
         TextureDef = "bricks/b_cp_v10x"
         TriggerTextureDef = "common/0_trigger"
-        LightFactor = '0.90000'
+	OriginTextureDef = "common/0_origin"
+        LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
         3DLight = '512'
         walTrick = "1"
         TextureFormat = ".tga"
@@ -525,8 +529,9 @@ QQRKSRC1
         CheckDirectory = "sof.EXE"
         Console = "1"
         Form = "GameSOF"
-        TextureDef = "castle/1_2_subfloor_1"
-        TriggerTextureDef = "castle/1_tunnelfloor_1" //FIXME
+        TextureDef = "armory/1_2_subfloor_1"
+        TriggerTextureDef = "armory/trigger"
+        OriginTextureDef = "armory/origin"
         LightFactor = '0.90000'
         3DLight = '512'
         walTrick = "1"     // FIXME is that needed ?
@@ -1598,6 +1603,13 @@ QQRKSRC1
         Hint = "Default trigger texture when new brush-entities request it"
         GameCfg = "KingPin"
       }
+      OriginTextureDef: =
+      {
+        Txt = "Default origin texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default origin texture when new brush-entities request it"
+        GameCfg = "KingPin"
+      }
       3DLight: =
       {
         Txt = "Game Light saturation"
@@ -1705,6 +1717,13 @@ QQRKSRC1
         Txt = "Default trigger texture"
         Typ = "ET"      // Edit Texture
         Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "SOF"
+      }
+      OriginTextureDef: =
+      {
+        Txt = "Default origin texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default origin texture when new brush-entities request it"
         GameCfg = "SOF"
       }
       3DLight: =
