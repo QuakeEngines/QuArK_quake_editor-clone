@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.4  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -62,6 +65,7 @@ type
                  function GetFormName : String; override;
                  procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                  procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+                 procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
                  procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                  procedure AddTo3DScene; override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
@@ -283,6 +287,14 @@ var
 begin
  for I:=0 to PyObject_Length(BuildImages)-1 do
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites, Cat);
+end;
+
+procedure TDuplicator.ListeBeziers;
+var
+ I: Integer;
+begin
+ for I:=0 to PyObject_Length(BuildImages)-1 do
+  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeBeziers(Entites, Flags);
 end;
 
 procedure TDuplicator.SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);

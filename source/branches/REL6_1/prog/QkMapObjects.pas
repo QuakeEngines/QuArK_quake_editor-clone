@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.9  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -105,6 +108,7 @@ type
              {function VisuallySelected : Boolean; virtual;}
               procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); virtual;
               procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); virtual;
+              procedure ListeBeziers(Entites: TQList; Flags: Integer); virtual;
               procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); virtual;
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
@@ -176,6 +180,7 @@ type
                    property ViewFlags: Integer read GetViewFlags write SetViewFlags;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+                   procedure ListeBeziers(Entites: TQList; Flags: Integer); override;
                    procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    procedure AddTo3DScene; override;
                    procedure AnalyseClic(Liste: PyObject); override;
@@ -504,6 +509,10 @@ begin
 end;
 
 procedure TTreeMap.ListeEntites;
+begin
+end;
+
+procedure TTreeMap.ListeBeziers;
 begin
 end;
 
@@ -2060,6 +2069,19 @@ begin
   TTreeMap(SubElements[I]).ListeEntites(Entites, Cat);
 end;
 
+procedure TTreeMapGroup.ListeBeziers(Entites: TQList; Flags: Integer);
+var
+ I: Integer;
+begin
+ if (Flags and soIgnoreToBuild <> 0)
+ and (ViewFlags and vfIgnoreToBuildMap <> 0) then
+  Exit;
+ if Odd(SelMult) then
+  Flags:=Flags and not soSelOnly;
+ for I:=0 to SubElements.Count-1 do
+  TTreeMap(SubElements[I]).ListeBeziers(Entites, Flags);
+end;
+
 procedure TTreeMapGroup.SauverTexte;
 var
  I: Integer;
@@ -2181,7 +2203,7 @@ begin
     TPolyedre(Polyedres[I]).SauverTextePolyedre(Texte, OriginBrush, Flags);
    { proceed with Bezier patches }
    Polyedres.Clear;
-   ListeEntites(Polyedres, [ecBezier]);
+   ListeBeziers(Polyedres, Flags);
    for I:=0 to Polyedres.Count-1 do
     TBezier(Polyedres[I]).SauverTexteBezier(Texte);
    finally Polyedres.Free; end;

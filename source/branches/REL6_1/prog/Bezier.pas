@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.15  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -112,6 +115,7 @@ type
              procedure ChercheExtremites(var Min, Max: TVect); override;
 
              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+             procedure ListeBeziers(Entites: TQList; Flag: Integer); override;
              procedure SauverTexteBezier(Target: TStrings);
 
              {function CountBezierTriangles(var Cache: TBezierMeshBuf3) : Integer;}
@@ -1219,6 +1223,11 @@ end;
 procedure TBezier.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 begin
  if ecBezier in Cat then
+  Entites.Add(Self);
+end;
+
+procedure TBezier.ListeBeziers;
+begin
   Entites.Add(Self);
 end;
 
