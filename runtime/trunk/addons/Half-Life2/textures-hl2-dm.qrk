@@ -12,7 +12,7 @@ QQRKSRC1
     Root = "HL2 DM Textures.qtxfolder"
 
     //t_hl2:incl =      {  v="source materials.gcf"}
-    t_hl2:incl =    {  v="macwurst/materials_from_source_materials"}
+    t_hl2:incl =    {  v="tmpQuArK/materials_from_source_materials"}
 
     HL2 DM Textures.qtxfolder =
     {

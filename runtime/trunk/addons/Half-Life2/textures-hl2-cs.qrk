@@ -16,7 +16,7 @@ QQRKSRC1
     Root = "HL2 CS.qtxfolder"
 
     //t_hl2cs:incl =      {  v="counter-strike source shared.gcf"}
-    t_hl2cs:incl =    {  v="macwurst/materials_from_cs_source_shared"}
+    t_hl2cs:incl =    {  v="tmpQuArK/materials_from_cs_source_shared"}
 
 
       HL2 CS.qtxfolder =
