@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/10/26 12:36:49  tiglari
+live pointer hunt (cleaning up some of my own mess)
+
 Revision 1.10  2001/10/20 02:09:30  tiglari
 live pointer hunt: remove various failed & unnecessary stuff
 
@@ -53,6 +56,7 @@ type
  PyImage1 = ^TyImage1;
  PyImageList = ^TyImageList;
  TyImageList = object(TyObject)
+                Name: PChar;
                 Handle: HImageList;
                 BkgndColor: TColorRef;
                 Images: array[Boolean] of TList;
@@ -139,7 +143,7 @@ var
 var
  InternalImages: array[0..InternalImagesCount-1, 0..1] of PyObject; { PyImage1 or a function to call }
 
-function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
+function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble; Name: Pchar) : PyImageList;
 procedure OpenGlobalImageList(ListView1: TListView);
 procedure CloseGlobalImageList(ListView1: TListView);
 function LoadGlobalImageList(Q: QObject) : Integer;
@@ -148,16 +152,20 @@ function LoadGlobalImageList(Q: QObject) : Integer;
 
 implementation
 
-uses Quarkx, PyCanvas, Dialogs;
+uses Quarkx, PyCanvas, Dialogs, Logging;
 
 const
  DisabledNak = TBitmap(1);
 
  {-------------------}
 
-function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
+ImagesMade : Integer=0;
+ImagesFreed : Integer=0;
+ImagesFailed : Integer=0;
+
+function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble; Name: PChar) : PyImageList;
 var
- IWidth, IHeight: Integer;
+ IWidth, IHeight, I: Integer;
     {Test: TImageInfo;
      Bmp: TBitmap;
      I: Integer;}
@@ -168,6 +176,7 @@ var
 {$ENDIF}
 begin
 {$IFNDEF VER90}
+ Inc(ImagesMade);
  Bmp:=TBitmap.Create; try
  Bmp.Width:=Bitmap.Width;
  Bmp.Height:=Bitmap.Height;
@@ -175,6 +184,9 @@ begin
  Bitmap:=Bmp;
 {$ENDIF}
  Result:=PyImageList(PyObject_NEW(@TyImageList_Type));
+ Result^.Name:=AllocMem(Strlen(Name)+1);
+ for I:=0 to Strlen(Name) do
+  (Result^.Name+I)^:=(Name+I)^;
  with Result^ do
   begin
    IWidth:=Bitmap.Width;
@@ -397,11 +409,18 @@ procedure FreeImageList(o: PyObject); cdecl;
 var
  I: Integer;
  B: Boolean;
+ S: String;
 {$ENDIF}
+var
+ I: Integer;
+ S: String;
 begin
+ for I:=1 to 30 do
+   S:=S+(PyImageList(o)^.Name+I)^;
  try
   with PyImageList(o)^ do
    begin
+    Freemem(Name);
     {$IFDEF Debug}
     for B:=False to True do
      for I:=Images[B].Count-1 downto 0 do
@@ -413,7 +432,9 @@ begin
     Images[False].Free;
    end;
   FreeMem(o);
+  Inc(ImagesFreed);
  except
+  Inc(ImagesFailed);
   EBackToPython;
  end;
 end;
@@ -915,5 +936,7 @@ initialization
 
 finalization
   FinalizeInternalImages;
-
+  aLog(LOG_PASCALSOURCE,'Images Made '+IntToStr(ImagesMade));
+  aLog(LOG_PASCALSOURCE, 'Images Freed '+IntToStr(ImagesFreed));
+  aLog(LOG_PASCALSOURCE, 'Images Failed '+IntToStr(ImagesFailed));
 end.

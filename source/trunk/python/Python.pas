@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/05/20 06:50:43  tiglari
+try to load python151.dll, if this fails, python15.dll.  The idea is to install
+minipy, rename the dll to 151, then you can install 1.5.2 without altering
+QuArK's behavior (1.5.2 makes it more robust, bad for testing stuff
+for people using the Minipy)
+
 Revision 1.6  2001/04/19 19:27:45  aiv
 better error messages
 
@@ -48,6 +54,7 @@ type
              ob_refcnt: Integer;
              ob_type: PyTypeObject;
             end;
+
  PyVarObject = ^TyVarObject;
  TyVarObject = object(TyObject)
                 ob_size: Integer;
@@ -172,6 +179,7 @@ type
 var
 
 Py_Initialize: procedure; cdecl;
+Py_Finalize: procedure; cdecl;
 PyRun_SimpleString: function (P: PChar) : Integer; cdecl;
 //PyRun_String: function (str: PChar; start: Integer; Globals, Locals: PyObject) : PyObject; cdecl;
 //Py_CompileString: function (str, filename: PChar; start: Integer) : PyObject; cdecl;
@@ -292,11 +300,12 @@ uses
  {-------------------}
 
 const
-  PythonProcList: array[0..53] of record
+  PythonProcList: array[0..54] of record
                                     Variable: Pointer;
                                     Name: PChar;
                                   end =
   ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize'             ),
+    (Variable: @@Py_Finalize;                Name: 'Py_Finalize'        ),
     (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString'        ),
 //  (Variable: @@Py_CompileString;           Name: 'Py_CompileString'          ),
     (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4'            ),
