@@ -78,10 +78,14 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
             ico_editor, 0,
             "Cancel"))
 
-    def datachange(self, df):
-        self.close()   # "OK" is automatic when the user changed the data.
+#    def datachange(self, df):
+#        self.close()   # "OK" is automatic when the user changed the data.
 
     def onclose(self, dlg):
+        if self.src is None:
+#            quarkx.msgbox("Empty string does not name a module, done nothing", MT_ERROR, MB_OK)
+            qmacro.dialogbox.onclose(self, dlg)
+            return
         quarkx.globalaccept()
         self.action(self)
         qmacro.dialogbox.onclose(self, dlg)
@@ -95,11 +99,12 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
 
 def ReloadClick(m):
   def action(self):
+    if self.src["module"] is None:
+      quarkx.msgbox("Empty string does not name a module, done nothing", MT_ERROR, MB_OK)
+      return
     module = self.src["module"]
     quarkx.setupsubset(SS_MAP, "Options")["ReloadModule"] = module
-    if not module:
-      quarkx.msgbox("Empty string does not name a module, done nothing",
-        MT_ERROR, MB_OK)
+
     command = "reload(%s)"%module
     eval(command)
     
@@ -119,6 +124,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.5  2003/03/28 02:54:40  cdunde
+# To update info and add infobase links.
+#
 # Revision 1.4  2001/06/17 21:10:57  tiglari
 # fix button captions
 #
