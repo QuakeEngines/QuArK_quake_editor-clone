@@ -127,14 +127,31 @@ a face of the object are paralell.
 <br>Now moves object over plane and along normal.
 <br>status: done.
 
-<li>Map reconstructor for Q3: (tiglari)
-<br>This might be easier to do well for Q3 engine
-games because the model structure seems to include
-brush info as well as face info.
-<br>status: envisioned, maybe do, maybe defer.
-
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
 <br>status: envisioned, maybe defer to 6.4
 
+<li> Don't draw restricted out stuff: (tiglari)
+<br>when hide-out-of-view is checkd.
+<br>status: done.
+
+<li> Search for defective textures: (tiglari)
+<br>whose scales are too small (request from rust QuArK forum)
+<br>status: done.
+
+<li>'Move containing' item on the vertex RMB: (tiglari)
+<br>that moves the parent item selected from the submenu so that
+the vertex becomes on-grid (solution to problem from the RQF)
+<br>status: done.
+
+<li>'Output Map Format' field in game configs: (tiglari)
+<br>replacing some of the Map Options.
+<br>status: done.
+
+<li>various selection modes: (tiglari)
+<br>frozen selections (shift RMB) that don't change until another
+frozen selection is made, selection of brush, face, patch, entity only,
+done via 'auxiliary keys' (hold down during mouseclick)
+<br>status: experimental patch, not yet committed; maybe defer for
+6.4 snapshot.
 </ul>
