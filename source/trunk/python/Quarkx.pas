@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2002/05/15 00:09:25  tiglari
+Python access to map-reading errors
+
 Revision 1.27  2002/04/19 22:37:37  aiv
 Free 'Pool' in finalization of unit
 
@@ -2305,10 +2308,10 @@ begin
   FillChar(V, SizeOf(V), 0);
   GetMem(S, TailleBaseSurface + Count*(SizeOf(PVertex)+SizeOf(TVertex)));
   try
-   nVertex:=PVertex(@S^.prvDescS[Count]);
+   nVertex:=PVertex(@S^.prvVertexTable[Count]);
    for I:=0 to Count-1 do
     begin
-     S^.prvDescS[I]:=nVertex;
+     S^.prvVertexTable[I]:=nVertex;
      obj:=PyList_GetItem(vtx, I);
      if obj=Nil then Exit;
      if obj^.ob_type <> @TyVect_Type then
@@ -2322,7 +2325,7 @@ begin
    S^.Source:=Face;
    S^.F:=Face;
    S^.NextF:=Nil;
-   S^.prvNbS:=Count;
+   S^.prvVertexCount:=Count;
    Face.LinkSurface(S);
   except
    FreeMem(S);

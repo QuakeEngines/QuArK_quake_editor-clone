@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/10/16 23:25:43  tiglari
+live pointer hunt
+
 Revision 1.3  2001/03/20 21:38:21  decker_dk
 Updated copyright-header
 
@@ -544,10 +547,10 @@ begin
        end
        else
        begin
-         AddSurfaceRef(PolySurface^.F.NomTex, SizeOf(TSurface3D) + PolySurface^.prvNbS * VertexSize, Nil);
+         AddSurfaceRef(PolySurface^.F.NomTex, SizeOf(TSurface3D) + PolySurface^.prvVertexCount * VertexSize, Nil);
          if nVertexList<>Nil then
-           for J:=0 to PolySurface^.prvNbS-1 do
-             nVertexList.Add(PolySurface^.prvDescS[J]);
+           for J:=0 to PolySurface^.prvVertexCount-1 do
+             nVertexList.Add(PolySurface^.prvVertexTable[J]);
        end;
 
        Inc(I); { Increment to get the next element }
@@ -788,7 +791,7 @@ begin
            end;
 
            Dist:=F.Dist;
-           VertexCount:=prvNbS;
+           VertexCount:=prvVertexCount;
 
            AlphaColor:=CurrentColor or (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
            Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
@@ -875,9 +878,9 @@ begin
 
          Radius2:=0;
          PV:=PChar(Surf3D) + SizeOf(TSurface3D);
-         for J:=0 to prvNbS-1 do
+         for J:=0 to prvVertexCount-1 do
          begin
-           with prvDescS[J]^.P do
+           with prvVertexTable[J]^.P do
            begin
              if J=0 then
              begin
@@ -897,7 +900,7 @@ begin
              DeltaV.Z:=Z-TexPt[1].Z;
            end;
 
-           WriteVertex(PV, prvDescS[J], Dot(v2, DeltaV), Dot(v3, DeltaV), True);
+           WriteVertex(PV, prvVertexTable[J], Dot(v2, DeltaV), Dot(v3, DeltaV), True);
 
            Inc(PV, VertexSize);
          end;
