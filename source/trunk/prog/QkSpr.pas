@@ -130,10 +130,8 @@ begin
         ID_SP2Header:=(ord('2') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
         org:=f.Position;
         f.ReadBuffer(head,4);
-        if (head<>ID_SPRHEADER) and (head<>ID_SP2HEADER) then begin
-          Showmessage(format('Sprite Signiture = %d, Should be: %d or %d',[head,ID_SPRHEADER,ID_SP2HEADER]));
-          exit;
-          end;
+        if (head<>ID_SPRHEADER) and (head<>ID_SP2HEADER) then
+          raise Exception.CreateFmt('Sprite Signiture = %d, Should be: %d or %d',[head,ID_SPRHEADER,ID_SP2HEADER]);
         f.ReadBuffer(ver,4);
         f.seek(org,soFromBeginning);
         if (ver=1 ) and (head=ID_SPRHEADER) then begin
@@ -143,10 +141,8 @@ begin
            end
         else if (ver=2) and (head=ID_SP2HEADER) then DoQ2Spr(f)
         else if ver=2 then DoHLSpr(f)
-        else begin
-          Showmessage(format('Sprite Version %d UnSupported, Versions Supported: 1 (Quake 1), and 2 (Quake 2 / Half-Life)',[ver]));
-          exit;
-          end;
+        else
+          raise Exception.CreateFmt('Sprite Version %d UnSupported, Versions Supported: 1 (Quake 1), and 2 (Quake 2 / Half-Life)',[ver]);
        end;
     else inherited;
   end;
@@ -158,21 +154,17 @@ group,ID_SPRHeader,i,j,pos,nopics{,noframes}:longint;
 xoffset,yoffset,width,height:Longint;
 aPalette: TPaletteLmp;
 p: PChar;
-DeltaW:Longint;
+DeltaW:Integer;
 pout:String;
 times: array[1..1024] of Single;
 begin
   aPalette:=PPPalette^.PaletteLmp;
   fs.ReadBuffer(dst,sizeof(dst));
   ID_SPRHeader:=(ord('P') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
-  if dst.ident<>ID_SPRHEADER then begin
-    Showmessage(format('Quake 1 Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SPRHEADER]));
-    exit;
-    end;
-  if dst.version<>1 then begin
-    Showmessage(format('Quake 1 Sprite Version = %d, Should be: %d',[dst.version,2]));
-    exit;
-    end;
+  if dst.ident<>ID_SPRHEADER then
+    raise Exception.CreateFmt('Quake 1 Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SPRHEADER]);
+  if dst.version<>1 then
+    raise Exception.CreateFmt('Quake 1 Sprite Version = %d, Should be: %d',[dst.version,2]);
   ObjectGameCode:=mjQuake;
   Self.SpecificsAdd(format('SPR_STYPE=%d',[dst.sType]));
   Self.SpecificsAdd(format('SPR_TXTYPE=%d',[-1]));
@@ -218,7 +210,8 @@ end;
 procedure QSprFile.DoHLSpr(Fs:TStream);
 var
 dst:dsprite_t;
-ID_SPRHEADER, i, w, h, lint, lint2, J, DeltaW:Longint;
+ID_SPRHEADER, i, w, h, lint, lint2, J:Longint;
+DeltaW:Integer;
 fshort:SmallInt;
 aPalette: TPaletteLmp;
 P:PChar;
@@ -226,14 +219,10 @@ pout:String;
 begin
   ID_SPRHEADER:=(ord('P') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
   fs.ReadBuffer(dst,sizeof(dst));
-  if dst.ident<>ID_SPRHEADER then begin
-    Showmessage(format('Half Life Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SPRHEADER]));
-    exit;
-    end;
-  if dst.version<>2 then begin
-    Showmessage(format('Half Life Sprite Version = %d, Should be: %d',[dst.version,2]));
-    exit;
-    end;
+  if dst.ident<>ID_SPRHEADER then
+    raise Exception.CreateFmt('Half Life Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SPRHEADER]);
+  if dst.version<>2 then
+    raise Exception.CreateFmt('Half Life Sprite Version = %d, Should be: %d',[dst.version,2]);
   ObjectGameCode:=mjHalfLife;
   Self.SpecificsAdd(format('SPR_STYPE=%d',[dst.sType]));
   Self.SpecificsAdd(format('SPR_TXTYPE=%d',[dst.texformat]));
@@ -277,14 +266,10 @@ str{,fstr}:String;
 begin
   ID_SP2Header:=(ord('2') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
   fs.ReadBuffer(Dst,sizeof(dst));
-  if dst.ident<>ID_SP2HEADER then begin
-    Showmessage(format('Quake 2 Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SP2HEADER]));
-    exit;
-    end;
-  if dst.version<>2 then begin
-    Showmessage(format('Quake 2 Sprite Version = %d, Should be: %d',[dst.version,2]));
-    exit;
-    end;
+  if dst.ident<>ID_SP2HEADER then
+    raise Exception.CreateFmt('Quake 2 Sprite Signiture = %d, Should be: %d',[dst.ident,ID_SP2HEADER]);
+  if dst.version<>2 then
+    raise Exception.CreateFmt('Quake 2 Sprite Version = %d, Should be: %d',[dst.version,2]);
   ObjectGameCode:=mjQuake2;
   Self.SpecificsAdd(format('SPR_STYPE=%d',[-1]));
   Self.SpecificsAdd(format('SPR_TXTYPE=%d',[-1]));
@@ -716,9 +701,8 @@ end;
 procedure TQSprForm.ComboBox1Change(Sender: TObject);
 begin
 if OldIndex=1 then begin
-  showmessage('Cannnot Convert From a Quake 2 Sprite!');
   Combobox1.ItemIndex:=1;
-  exit;
+  raise Exception.Create('Cannnot Convert From a Quake 2 Sprite!');
   end;
 if Combobox1.itemindex=0 then begin
   QSprFile(FileObject).ObjectGameCode:=mjQuake;
@@ -728,8 +712,8 @@ if Combobox1.itemindex=0 then begin
   Combobox3.ItemIndex:=-1;
   end
 else if Combobox1.itemindex=1 then begin
-  showmessage('Cannnot Convert To a Quake 2 Sprite!');
   Combobox1.itemindex:=oldindex;
+  raise Exception.Create('Cannnot Convert To a Quake 2 Sprite!');
   end
 else if Combobox1.itemindex=2 then begin
   QSprFile(FileObject).ObjectGameCode:=mjHalfLife;
@@ -764,7 +748,7 @@ case TComponent(Sender).Tag of
    100: index:=s.SousElements.count-1;
      1: if index+1>s.souselements.count-1 then index:=s.SousElements.count-1 else index:=index+1;
     -1: if index-1<0 then index:=0 else index:=index-1;
-  else showmessage('Invalid Tag!');
+  else raise Exception.Create('Invalid Tag!');
 end;
 
 if index>s.souselements.count-1 then index:=s.Souselements.count-1;

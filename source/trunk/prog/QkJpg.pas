@@ -115,14 +115,19 @@ var
   bmp:TMemoryStream;
   FileWrap: TJpegFileWrapper;
 begin
-  DebutTravail(5452,100);
-  bmp:=TMemoryStream.Create;
-  FileWrap:=TJpegFileWrapper.Create(nil);
-  FileWrap.Load(F, bmp, 0, progress);
-  GetPaletteAndDataFromBmp(bmp);
-  FileWrap.Free;
-  bmp.free;
-  FinTravail;
+ case ReadFormat of
+  1: begin  { as stand-alone file }
+      DebutTravail(5452,100);
+      bmp:=TMemoryStream.Create;
+      FileWrap:=TJpegFileWrapper.Create(nil);
+      FileWrap.Load(F, bmp, 0, progress);
+      GetPaletteAndDataFromBmp(bmp);
+      FileWrap.Free;
+      bmp.free;
+      FinTravail;
+     end;
+ else inherited;
+ end;
 end;
 
 class function QJPeg.TypeInfo: String;
