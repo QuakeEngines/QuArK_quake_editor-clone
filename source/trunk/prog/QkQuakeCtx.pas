@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/03/09 00:01:31  aiv
+added texture linking to entity tool.
+
 Revision 1.10  2001/03/08 23:22:53  aiv
 entity tool finished completly i think.
 
@@ -95,7 +98,8 @@ function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
 implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
-     ToolBoxGroup, ExtraFunctionality, Game, QkMapObjects, FormCfg;
+     ToolBoxGroup, ExtraFunctionality, Game, QkMapObjects, FormCfg, QkExplorer,
+     QkForm;
 
  {------------------------}
 
@@ -360,6 +364,8 @@ var
   entityForms:QFormContext;
   OldForm, Form: QFormCfg;
   OldFormEl, FormEl, TexFolders: QObject;
+  // updating tree view at end
+  F, FF: TQForm1;
   (*
     Get all .bsp files in & out of pak's
   *)
@@ -423,7 +429,7 @@ begin
   EntityTBX.Subelements.Add(EntityTBX_2);
   entityForms:=QFormContext.Create('Entity forms', addonRoot);
   addonRoot.SubElements.Add(entityForms);
-  
+
   for i:=0 to NewAddonsList.Count-1 do
   begin
     Entities:=TQList.Create;
@@ -497,17 +503,22 @@ begin
   if TexFolders<>nil then
   begin
     TexFolders.Name:=Specifics.Values['GameDir']+' textures';
-    TexRoot:=QToolBox.Create('Textures',addonRoot);
+    TexRoot:=QToolBox.Create('Textures', addonRoot);
+    AddonRoot.Subelements.Add(TexRoot);
+    TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
     TexRoot.SpecificsAdd('ToolBox=Texture Browser...');
     TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
     TexRoot.SubElements.Add(TexFolders);
     TexFolders.FParent:=TexRoot;
-    AddonRoot.Subelements.Add(TexRoot);
   end;
 
   NewAddonsList.free;
   bsps.free;
   paks.free;
+
+  TBX.Flags := TBX.flags or ofTreeViewSubElement;
+  entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
+  ExplorerFromObject(FParent).Refresh;
 end;
 
  {------------------------}
