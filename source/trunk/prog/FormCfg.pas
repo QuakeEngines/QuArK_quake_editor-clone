@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/01/21 15:48:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.10  2000/08/25 18:00:02  decker_dk
 Added Typ='EDL' functionality specialy for QuakeCtx:form
 
@@ -1343,8 +1346,7 @@ begin
            if Title<>'' then
             Title:=#13#10+Title;
            Title:=Specifics.Values['Txt']+Title;
-           Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path,
-               Title, Specifics.Values['CheckFile']);
+           Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path, Title, Specifics.Values['CheckFile']);
            Title:=Specifics.Values['Append'];
            if (Title<>'') and (Path<>'') then
             begin
