@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.186  2002/04/30 17:56:22  decker_dk
+//JK2 compile-tools. Haven't testet yet though.
+//
 //Revision 1.185  2002/04/30 05:30:15  tiglari
 //STVEF info now runs Brush Primitives using the standard tools
 // (STVEF GDK 1.2)
@@ -1637,16 +1640,16 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
+        OutputMapFormat="Brush Primitives"
 
-        StupidBuildToolKludge = ""
+        StupidBuildToolKludge = "1" // OMG. This SOF2MAP.EXE is stupid...!
         BuildPgm1  = "SOF2MAP.EXE"
-        BuildArgs1 = "-bsp "$22"%file%"$22
+        BuildArgs1 = "-bsp %mapfile%"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "SOF2MAP.EXE"
-        BuildArgs2 = "-vis "$22"%file%"$22
+        BuildArgs2 = "-vis %mapfile%"
         BuildPgm3  = "SOF2MAP.EXE"
-        BuildArgs3 = "-light "$22"%file%"$22
+        BuildArgs3 = "-light %mapfile%"
 
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
