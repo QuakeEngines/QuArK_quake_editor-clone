@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.27  2002/03/07 19:15:38  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -114,7 +117,7 @@ unit Game;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, ExtraFunctionality, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, qmath, QkForm, StdCtrls, TB97, ComCtrls;
 
 type

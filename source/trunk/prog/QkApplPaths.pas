@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2003/07/21 04:50:02  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.3  2001/03/20 21:47:10  decker_dk
 Updated copyright-header
 
@@ -75,7 +78,7 @@ type
 
 implementation
 
-uses SysUtils, Windows, Setup;
+uses SysUtils, ExtraFunctionality, Windows, Setup;
 
 var
   ApplicationPath : String; {must always contain trailing backslash}
