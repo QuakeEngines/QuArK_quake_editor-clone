@@ -899,6 +899,9 @@ Strings = {
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "no vtf file",
     5705: "dxtdecode.dll not found",
+    5706: "gcfwrap.dll not found",
+    5707: "gcf file %s cannot be opened. Corrupt ?",
+    5708: "%s not found in %s",
     
 # Negative numbers are never used directly by QUARK5.EXE.
 
@@ -918,6 +921,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.56  2004/11/07 16:24:22  alexander
+#new: support for vtf file loading
+#
 #Revision 1.55  2003/07/21 04:50:02  nerdiii
 #Linux compatibility ( '/' '\' )
 #
