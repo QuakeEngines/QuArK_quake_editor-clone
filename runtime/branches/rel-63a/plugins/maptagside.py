@@ -1851,7 +1851,7 @@ for menitem, keytag in [(mentagside, "Tag Side"),
     MapHotKey(keytag,menitem,quarkpy.mapcommands)
 
 
-menselecttagged = quarkpy.qmenu.item("Select Tagged Faces",SelectTaggedClick,"|The things now tagged will become a multiple selection")
+menselecttagged = quarkpy.qmenu.item("Select Tagged Face(s)",SelectTaggedClick,"|The things now tagged will become a multiple selection")
 
 def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     oldselect(menu)
@@ -1859,8 +1859,13 @@ def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     if editor is None: return
     list = gettaggedlist(editor)
     if list is None:
+        list = getagged(editor)
+        if list is not None:
+            list = [list]
+    if list is None:
         menselecttagged.state=qmenu.disabled
     else:
+        menselecttagged.state=qmenu.normal
         menselecttagged.taglist = list
      
 quarkpy.mapselection.onclick = selectionclick
@@ -1872,6 +1877,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20.2.4  2003/01/01 05:08:33  tiglari
+#remove debug comments
+#
 #Revision 1.20.2.3  2002/12/30 05:04:13  tiglari
 #remove 'to mirror' option - doesn't seem to be necessary
 #
