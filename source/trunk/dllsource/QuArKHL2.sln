@@ -1,0 +1,37 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuArKVTFdll", "QuArKVTFDLL\QuArKVTFDLLl.vcproj", "{2E237618-608D-43DA-9172-C1EFDB438A80}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuArKGCFdll", "QuArKGCFDLL\QuArKGCFDLL.vcproj", "{2E237618-608D-43DA-9172-C1EFDB438A80}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuArKSteamFSdll", "QuArKSteamFSDLL\QuArKSteamFSDLL.vcproj", "{2E237618-608D-43DA-9172-C1EFDB438A80}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Debug.ActiveCfg = Debug|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Debug.Build.0 = Debug|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Release.ActiveCfg = Release|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Release.Build.0 = Release|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Debug.ActiveCfg = Debug|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Debug.Build.0 = Debug|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Release.ActiveCfg = Release|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Release.Build.0 = Release|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Debug.ActiveCfg = Debug|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Debug.Build.0 = Debug|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Release.ActiveCfg = Release|Win32
+		{2E237618-608D-43DA-9172-C1EFDB438A80}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
