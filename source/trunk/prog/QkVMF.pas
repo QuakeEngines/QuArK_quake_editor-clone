@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2005/01/28 23:14:27  alexander
+connections completed
+
 Revision 1.3  2005/01/28 18:48:53  alexander
 entities are processed, not yet the connections
 
@@ -661,7 +664,7 @@ procedure WC33Params;
  // mixed quoted string pairs "a" "b"
  // and named objects   name { }
  // example
- // a { "b" "c" sub { "sa" "sb" } "d" "e" } 
+ // a { "b" "c" sub { "sa" "sb" } "d" "e" }
  procedure ReadHL2GenericHierarchy;
  begin
    ReadSymbol(sStringToken);
@@ -683,6 +686,34 @@ procedure WC33Params;
    ReadSymbol(sCurlyBracketRight);
  end;
 
+ procedure ReadHL2Group(parentgroup: TTreeMapSpec);
+ var
+  group: TTreeMapSpec;
+ begin
+   group:=TTreeMapGroup.Create(S, parentgroup);
+   parentgroup.SubElements.Add(group);
+
+   ReadSymbol(sStringToken);
+   ReadSymbol(sCurlyBracketLeft);
+   // read attributes
+   while SymbolType<>sCurlyBracketRight do
+   begin
+     if SymbolType=sStringQuotedToken then
+     begin
+       S1:=S;
+       ReadSymbol(sStringQuotedToken);
+       group.Specifics.Add(S1+'='+S);
+       ReadSymbol(sStringQuotedToken);
+     end
+     else
+       if SymbolType=sStringToken then
+         if S='entity' then
+           ReadHL2Entity(group)
+         else
+           ReadHL2Group(group); //descend
+   end;
+   ReadSymbol(sCurlyBracketRight);
+ end;
 
 
 
@@ -691,6 +722,7 @@ procedure WC33Params;
  begin
    ReadSymbol(sStringToken);
    ReadSymbol(sCurlyBracketLeft);
+
 
    // read attributes of world
    while SymbolType=sStringQuotedToken do
@@ -701,7 +733,9 @@ procedure WC33Params;
      begin
        WorldSpawn:=True;
        Root.Name:=ClassnameWorldspawn;
-     end;
+     end
+     else
+       Root.Specifics.Add(S1+'='+S);
      ReadSymbol(sStringQuotedToken);
 
 
@@ -714,7 +748,7 @@ procedure WC33Params;
          ReadHL2Solid(MapStructure)
        else
          if LowerCase(s)='group' then
-           ReadHL2GenericHierarchy
+           ReadHL2Group(MapStructure)
          else
            raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
    ReadSymbol(sCurlyBracketRight);
@@ -804,7 +838,8 @@ begin
                    else
                      //found string hidden
                      if CompareText(S,'hidden')=0 then
-                       ReadHL2GenericHierarchy
+//                       ReadHL2GenericHierarchy
+                       ReadHL2Group(root)
                      else
                        raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
 
