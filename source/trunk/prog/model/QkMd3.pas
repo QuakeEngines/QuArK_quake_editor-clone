@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2003/08/28 05:31:33  silverpaladin
+Some Models have headers large than the TMD3Mesh.  So I added a seek.  This was suggested by Harkel.
+
 Revision 1.18  2003/08/12 16:11:53  silverpaladin
 Added ExtraFunctionality to uses for access to Pre-Delphi6  multi platform support routines.
 
@@ -430,15 +433,16 @@ begin
 {Decker 2002-06-19. If we can't convert the shader to an image, then return NIL,
  as the caller can take care of that, but not exception-handling for some reason.}
           Result:=nil;
-          Exit;
+          exit;
           //Raise;
-{/Decker 2002-06-19}
         end;
         Comp.SkinGroup.Subelements.Add(result);
         exit;
       end;
     end;
-  finally
+  except
+    // SilverPaladin - 12/01/2003 - As stated above, NIL can be returned but not an exception
+    Result := NIL;
   end;
 end;
 
@@ -469,10 +473,11 @@ var
   Vertexes, Vertexes2: PMD3Vertex;
   CTris: PComponentTris;
   CVert: vec3_p;
+  ImageFile: QFileObject;
 begin
   org:=fs.position;
   fs.readbuffer(mhead, sizeof(mhead));
-  
+
   // SilverPaladin - 08/28/2003 - Skip past the remainder of the header...
   // Required for RtCW and other games that have a head larger than the TMD3Mesh
   // component allows for.
@@ -497,6 +502,7 @@ begin
     if CharModeJeu=mjSoF2 then
       if Pos(#0,base_tex_name)<>0 then
          base_tex_name[Pos(#0,base_tex_name)]:='.';
+
     Skin:=Loaded_ShaderFile(Comp, base_tex_name);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
@@ -504,6 +510,28 @@ begin
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
+
+    // SilverPaladin - 12/01/2003 - If we have not been able to find a skin file
+    // in the current directories (unpure has priority), look for it in the PK3
+    // files (pure mode) that have been loaded for the game.
+    if (Skin = NIL)
+    then begin
+      ImageFile := NeedGameFile(base_tex_name);
+      if (ImageFile <> NIL)
+      then begin
+       ImageFile.AddRef(+1);
+       try
+         ImageFile.Acces;
+         if (ImageFile is QImage)
+         then Skin := QImage(ImageFile);
+       finally
+         ImageFile.AddRef(-1);
+       end;
+      end;
+    end;
+
+    // If the files does not exist in the directories or in the packs then raise
+    // an error.
     if skin=nil then
     begin
       t:=FmtLoadStr1(5575, [base_tex_name+' or '+ChangeFileExt(base_tex_name,'.jpg'), LoadName]);
