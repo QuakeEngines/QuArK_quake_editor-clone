@@ -211,6 +211,11 @@ def getstashed(e):
     return e.marker
   except (AttributeError) : return None
   
+def clearstashed(e):
+    try:
+        del e.marker
+    except (AttributeError) : pass
+
 #
 # -------------  restrictor -----------
 #   (like stash, for marking but just for restricting
@@ -681,15 +686,19 @@ def Unrestrict(editor):
 
 
 def UnrestrictClick(m):
-  editor = mapeditor()
-  if editor is None: return
-#    maptagside.squawk("no editor")
-  del editor.restrictor
-  menrestsel.state = qmenu.normal
-  editor.invalidateviews()
-  return
+    editor = mapeditor()
+    if editor is None: return
+  #    maptagside.squawk("no editor")
+    del editor.restrictor
+    menrestsel.state = qmenu.normal
+    editor.invalidateviews()
+    return
 
-
+def ClearMarkClick(m):
+    editor = mapeditor()
+    if editor is None: return
+    clearstashed(editor)
+    
 menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
 menrestsel.state=quarkpy.qmenu.disabled
 
@@ -717,8 +726,9 @@ for menitem, keytag in [(menextsel, "Extend Selection"),
 # -- selection menu items
 #
 
-stashItem = qmenu.item("&Mark selectioin", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
+stashItem = qmenu.item("&Mark selection", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
 zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "Fill the views with selected.")
+clearItem = qmenu.item("Clear Mark", ClearMarkClick, "Unset Mark")
 
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     reorganizePop.state = parentSelPop.state=qmenu.disabled
@@ -729,6 +739,11 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     if editor is None: return
     menunrestrictenable(editor)
     sel = editor.layout.explorer.uniquesel
+    marked = getstashed(editor)
+    if marked is None:
+        clearItem.state=qmenu.disabled
+    else:
+        clearItem.state=qmenu.normal
     if sel is None: return
     for popup, items in ((parentSelPop, parentPopItems(sel)),
                            (reorganizePop, reorganizePopItems(sel))):
@@ -741,7 +756,7 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     if sel.type == ':f':
         menextsel.state = quarkpy.qmenu.normal
 
-    
+
 quarkpy.mapselection.onclick = selectionclick  
 
 quarkpy.mapselection.items.append(qmenu.sep)
@@ -752,7 +767,7 @@ quarkpy.mapselection.items.append(menunrestrict)
 quarkpy.mapselection.items.append(menrestsel)
 quarkpy.mapselection.items.append(zoomItem)
 quarkpy.mapselection.items.append(stashItem)
-
+quarkpy.mapselection.items.append(clearItem)
 
 #
 #  -- options menu items
@@ -766,6 +781,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.12  2001/05/21 11:57:19  tiglari
+# remove some debugs
+#
 # Revision 1.11  2001/05/06 08:03:17  tiglari
 # put Mark, Zoom on selection menu
 #
