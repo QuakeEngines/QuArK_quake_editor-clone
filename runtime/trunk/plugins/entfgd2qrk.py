@@ -3,30 +3,12 @@
 Python macros available for direct call by QuArK
 """
 #
-#tbd: concat strings
+#tbd:
 #     readonly
 #     halfgridsnap
 #     forms for specific data types
 #
-#$Header$
-#
-#
-#
-#$Log$
-#Revision 1.9  2004/12/08 21:10:55  alexander
-#can parse hl2 and hl2 mp hammer files now
-#
-#Revision 1.8  2004/12/07 17:59:52  alexander
-#parse almost all of hammers fgd file except
-#- readonly
-#- halfgridsnap
-#- include directives
-#
-#Revision 1.7  2004/12/01 21:48:29  alexander
-#preliminary hammer files parsed
-#
-#
-#
+
 
 import time, sys
 
@@ -845,6 +827,12 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.10  2004/12/19 09:59:48  alexander
+#no default angle specifics
+#generate model form button for studio specifics
+#generate texture form button for texture and decal specifics
+#support for input and output type specifics (input#specificname)
+#
 #Revision 1.9  2004/12/08 21:10:55  alexander
 #can parse hl2 and hl2 mp hammer files now
 #
