@@ -14,11 +14,21 @@
    the model shows up black. The fix is to watch which one you use and switch
    to the other form of the model. Wish I could tell ya more.
      [Doug Abele/CHK Shoot]
+   This should be fixed by editing the addons to lead us not into temptation.
 
- Still Unresolved Issues (from QuArK forums, June-Sep)
+ Possible Unresolved Issues (from QuArK forums, June-Sep)
+
  * quark 6.3 Q1 mdl-viewing problems
- * bsp viewing for Quake
- * copy/paste causing texture misalignment
+     can't replicate
+
+ * bsp viewing for Quake:
+     can't replicate in current version, with small maps.  Note:
+     .bsp's look different from maps, forex faces are only visible
+     from their outside, and hidden faces are deleted.  So a newbie
+     might think that .bsp viewing is messed up when it isn't.
+
+ * copy/paste causing texture misalignment:
+     can't replicate in current version
 
                          QuArK 6.3c
                          
