@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2003/08/13 04:17:32  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.32  2003/08/12 16:15:33  silverpaladin
 Fixed some hint for variables that were left in after the code was commented out.
 Fixed form name for GK1's form
@@ -122,7 +125,7 @@ uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
 const
- PythonSetupString = 'import sys'#10'sys.path[:0]=["%s"]'#10'import quarkpy';
+ PythonSetupString = 'import sys'#10'sys.path = ["%s", "%s\\lib"]'#10'import quarkpy';
  PythonRunPackage  = 'quarkpy.RunQuArK()';
  FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure Python and QuArK are correctly installed; reinstall them if required.';
  FatalErrorCaption = 'QuArK Python';
@@ -2926,11 +2929,11 @@ begin
    for I:=Length(S) downto 1 do
     if S[I]='\' then
      System.Insert('\', S, I);
-   S:=Format(PythonSetupString, [S]);
-   { tiglari:
+   S:=Format(PythonSetupString, [S, S]);
+   { tiglari, peter-b:
      S will now be the python commands:
       import sys
-      sys.path[:0]=["<the path to the quark exe>"]
+      sys.path=["<the path to the quark exe>", "<the path to the quark lib directory>"]
       import quarkpy
    }
    if PyRun_SimpleString(PChar(S))<>0 then FatalError(-8);

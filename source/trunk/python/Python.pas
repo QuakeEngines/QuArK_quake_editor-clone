@@ -29,6 +29,10 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2003/08/19 21:43:28  peter-b
+Defines PYTHON23_OR_HIGHER for Python 2.3 support.
+Fixed logging to accurately log installed Python version and DLL path.
+
 Revision 1.12  2003/08/12 16:14:42  silverpaladin
 Fixed some hint for variables that were left in after the code was commented out.
 
@@ -598,8 +602,8 @@ begin
   end;
   Py_Initialize;
   s:=Py_GetVersion;
-  aLog(LOG_PYTHONSOURCE,'Version '+s);
-  aLog(LOG_PYTHONSOURCE,'DLL Path '+dll);
+  aLog(LOG_PYTHONSOURCE,'Version: '+s);
+  aLog(LOG_PYTHONSOURCE,'DLL: '+dll);
   aLog(LOG_PYTHONSOURCE,'');
   Result:=1;
 
