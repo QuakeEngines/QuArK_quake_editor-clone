@@ -83,7 +83,7 @@ def processtext(root, text, data, kw):
                     line = "<p>" + line
                     currentpara = TEXT
         data.append(line)
-        
+
 
 def parse(file):
     f = open(file, "r")
@@ -107,7 +107,10 @@ class Folder:
     def __init__(self, path, classif, parents):
         self.path = path
         self.classif = classif
-        shortname = string.join(map(lambda s: s+".", classif), "")
+        if classif: #DECKER
+            shortname = string.join(map(lambda s: s+".", classif), "") + "&nbsp;"
+        else: #DECKER
+            shortname = "" #DECKER - Make the 'index.html' title _not_ prefixed with a single space
         print shortname,
         self.kw, self.text, ctime = parse(self.path+"index"+EXTENSION)
         s = self.kw["title"]
@@ -171,7 +174,7 @@ class Folder:
                     data.append(SUBFILES_BEGIN % folder.kw)
                     for subfiles in folder.files:
                         data.append(SUBFILES_ITEM % subfiles[0])
-                    data.append(SUBFILES_END % folder.kw)                    
+                    data.append(SUBFILES_END % folder.kw)
             data.append(SUBDIR_END % self.kw)
         if self.files:
             data.append(FILES_BEGIN % self.kw)

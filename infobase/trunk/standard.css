@@ -48,7 +48,7 @@ A:visited {
   /*text-decoration: underline;*/
 }
 p.headline {
-  text-align: center;
+  text-align: left;
   font-weight: bold;
   font-size: 14pt;
 }
