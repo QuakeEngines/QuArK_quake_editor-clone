@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.16  2003/01/27 02:17:19  cdunde
+//To remove due script for MapAuxKeys:form of Select Faces:
+//
 //Revision 1.192.2.15  2003/01/14 20:42:35  tiglari
 //add plug attribute to brushes
 //
@@ -4713,6 +4716,7 @@ QQRKSRC1
     {
       steps:      = {Txt="&"            Hint="number of steps in the staircase"}
       sameheight: = {Txt="&" Typ="X"    Hint="if all steps should have the same height"$0D"or all aligned to the bottom"}
+      oldstyle: =   {Txt="&" Typ="X"    Hint="old-column stairs, rather than efficient fan, when not sameheight" $0D "(new gives better r-speeds, less tris and overdraw)"}
       macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
     }
     dup hlinfodecal:form =
@@ -4765,6 +4769,18 @@ QQRKSRC1
          Txt="thickness"
          Typ="E"
          Hint="thickness of walls"
+      }
+      caulkhull:=
+      {
+         Txt="caulkhull"
+         Typ="E"
+         Hint="thickness of caulk hull walls"
+      }
+      caulksetback:=
+      {
+         Txt="caulksetback"
+         Typ="E"
+         Hint="distance caulk hull is set back from detail." $0D " should be empty except for special effects"
       }
     }
     dup extruder:form = {
