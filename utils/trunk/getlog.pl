@@ -40,20 +40,20 @@ while(<FILE>)
 {
   ## get current rev from header tag
   ## 
-  if(m/^[\#\s]*\$(Header:.+)$/)
+  if(m/^[\#\s\/]*\$(Header:.+)$/)
   {
     ($hea,$fileident,$rev,$date,$time,$usr,$bla)=split(/\s+/,$1);
 #    print "Headerrev=$rev\n";
   }
 $logentrycount=0;
   ## start of log entries is detected
-  if(m/^[\#\s]*\$(Log)/)
+  if(m/^[\#\s\/]*\$(Log)/)
   {
 #    print "log start $1\n";
     while(<FILE>)
     {
       ## a log entry is etecte
-      if(m/^[\#\s]*Revision\s+(.+)\s+([\d\/]+) /)
+      if(m/^[\#\s\/]*Revision\s+(.+)\s+([\d\/]+) /)
       { 
         $logrev=$1;
         ($cyy,$cmm,$cdd)=split(/\//,$2);
@@ -99,6 +99,9 @@ $logentrycount=0;
 #
 #
 #$Log$
+#Revision 1.2  2000/06/03 10:53:05  alexander
+#protected from cvs using $(Log) and alike
+#
 #Revision 1.1  2000/06/02 17:07:12  alexander
 #initial commit
 #
