@@ -1,5 +1,8 @@
                          QuArK 6.3
 
+ 
+ * [tiglari] fix RTCW misc_model models, many skins still AWOL dunno why
+
  * [ut_fourdays] bad spawnflag fix for func_door/rotating
 
  * [quantum_red,Decker,tiglari] fix dual screen monitor problem

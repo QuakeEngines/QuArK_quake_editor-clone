@@ -1,5 +1,7 @@
 
                    QuArK 6.4 Snapshot 1
+ 
+ * [tiglari] fix RTCW misc_model models, many skins still AWOL dunno why
 
  * [ut_fourdays] bad spawnflag fix for func_door/rotating
 
