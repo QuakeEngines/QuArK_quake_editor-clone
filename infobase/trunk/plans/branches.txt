@@ -1,0 +1,18 @@
+title: Tags & Branches
+author: tiglari, etc.
+
+The idea here is to record tags and branches entered into the
+repository, with comments on their purpose and status.  I've
+only done a few recent ones, mostly that I've been responsible for.
+
+<UL>
+<LI> <B>REL_61</B>: the branch for the Quark 6.1 release
+<LI> <B>rel-63</B>: a short-lived branch for putting new stuff
+  that wasn't supposed to go into 62. relevant contents merged
+  into the main branch
+<LI> <B>rel-63-exp</B>: ditto
+<LI> <B>REL_62</B>: branch for the 6.2 release.  Hopefully closed off now!
+<LI> <B>NuTex</B>: an experimental branch for testing schemes
+  for dissociating texture positioning from face-positioning.
+  Hopefully not relevant any more.
+</B>
