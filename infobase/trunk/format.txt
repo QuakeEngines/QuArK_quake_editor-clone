@@ -1,6 +1,8 @@
 #
-# Document formatting -this is actually a script (!!)
+# Document formatting - this is actually a Python-script that is executed from within Build.PY
 #
+
+EXTENSION = ".txt"
 
 #
 # Location for zip etc. archives for non-local version
@@ -12,7 +14,7 @@ HEADER = """
 <head>
   <title>%(title)s</title>
   <meta name="Description" content="QuArK Information Database - Page: %(classif)s%(title)s">
-  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-Of-Fortune">
+  <meta name="Keywords" content="QuArK InfoBase Quake Army Knife QRK QKM Python PY Map Editor Hexen Heretic Half-Life Sin Kingpin Soldier-of-Fortune Star-Trek-Voyager Elite-Force">
 </head>
 
 <link rel=stylesheet href="standard.css" type="text/css">
@@ -68,14 +70,11 @@ FOOTER = """
 </body>
 </html>"""
 
-EXTRAFILES_TEXT = ["standard.css"]
-EXTRAFILES_BINARY = ["quarkicon.gif"]
-EXTENSION = ".txt"
-
 #
 # Formatting: List of folders
 #
 SUBDIR_BEGIN = """
+<br>
 <table width=100%% border=0 cellspacing=0>
   <tr class="headline">
     <td width=100%%>
@@ -123,10 +122,10 @@ FILE_BEGIN = """
         <p class="item">&nbsp;%(title)s</p>
       </td>
       <td align=right>
-        <i>%(author)s&nbsp;-&nbsp;%(updateday)s</i>&nbsp;&nbsp;
+        <font size=-2>%(author)s&nbsp;-&nbsp;%(updateday)s</font>
       </td>
       <td width=1%% align=right nowrap>
-        -&nbsp;<a href="#__top__">Top</a>&nbsp;
+        &nbsp;&nbsp;[&nbsp;<a href="#__top__">Top</a>&nbsp;]&nbsp;
       </td>
     </tr>
   </table>
@@ -169,20 +168,21 @@ SUBFILES_TABLEEND = """
 #
 # Cross-references
 #
-REFFILE = """<a href="%(htmlfile)s#%(hrefaname)s"><i>%(title)s</i></a>&nbsp;""" # DECKER - '&nbsp;' because of italic
-REFDIR  = """<a href="%(htmlfile)s"><i>%(title)s</i></a>&nbsp;"""               # DECKER - '&nbsp;' because of italic
+REFFILE      = """<a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a>"""
+REFDIR       = """<a href="%(htmlfile)s">%(title)s</a>"""
 REFFILE_NAME = """<a href="%(htmlfile)s#%(hrefaname)s">%(refname)s</a>"""
 REFDIR_NAME  = """<a href="%(htmlfile)s">%(refname)s</a>"""
-REFPIC  = """<img src="%(imgfile)s">"""
+REFPIC       = """<img src="%(imgfile)s">"""
 
 #
 # Navigation buttons
 #
 ## Enabled
-NAVPREV   = """<span class="navenable">&lt;&nbsp;<a href="%(htmlfile)s">Prev</a></span>&nbsp;"""
+NAVPREV   = """[&nbsp;<span class="navenable"><a href="%(htmlfile)s">Prev</a></span>&nbsp;"""
 NAVUP     = """-&nbsp;<span class="navenable"><a href="%(htmlfile)s">Up</a></span>&nbsp;-"""
-NAVNEXT   = """&nbsp;<span class="navenable"><a href="%(htmlfile)s">Next</a>&nbsp;&gt;</span>"""
+NAVNEXT   = """&nbsp;<span class="navenable"><a href="%(htmlfile)s">Next</a></span>&nbsp;]"""
 ## Disabled
-NAVNOPREV = """<span class="navdisable">&lt;&nbsp;Prev</span>&nbsp;"""
+NAVNOPREV = """[&nbsp;<span class="navdisable">Prev</span>&nbsp;"""
 NAVNOUP   = """-&nbsp;<span class="navdisable">Up</span>&nbsp;-"""
-NAVNONEXT = """&nbsp;<span class="navdisable">Next&nbsp;&gt;</span>"""
+NAVNONEXT = """&nbsp;<span class="navdisable">Next</span>&nbsp;]"""
+
