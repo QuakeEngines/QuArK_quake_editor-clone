@@ -20,6 +20,9 @@ from quarkpy.maputils import *
 import quarkpy.qmacro
 import quarkpy.dlgclasses
 from quarkpy.qdictionnary import Strings
+from quarkpy.qeditor import matrix_rot_x
+from quarkpy.qeditor import matrix_rot_y
+from quarkpy.qeditor import matrix_rot_z
 
 
 class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
@@ -45,19 +48,19 @@ class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
 
         sep: = {Typ="S" Txt=" "} 
 
-        rotation: =
+        angles: =
         {
-        Txt = "Rotation"
+        Txt = "Angles"
         Typ = "EF003"
-        Hint = "Pitch, Roll, Yaw angles (rotations around Y, Z, Z" $0D " axes, in order"
+        Hint = "Pitch, Yaw, Roll angles (rotations around Y, Z, X" $0D " axes, in order"
         }
 
         sep: = {Typ="S" Txt=" "} 
 
-        tilt: = {
+        shear: = {
         Txt = "Shear"
         Typ = "EF003"
-        Hint = "Shear angles for Z w.r.t X, Y into Y-plane, Y into X-plane"
+        Hint = "Shear angles: Z crunch (toward X axis),"$0D " Y-lift (out of XY plane), Y-twist (from Y-axis orientation)" $0D " For mirror-image, set Y-twist to 180"
         }
       
         sep: = { Typ="S"}
@@ -69,7 +72,8 @@ class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
 def macro_linedit(self):
     editor = mapeditor()
     if editor is None:
-        squawk("o shit, no editor")
+        quarkx.msgbox('Unfortunately, you need to reselect me in the tree-view',
+           MT_INFORMATION,MB_OK)
         return
 
     sel = editor.layout.explorer.uniquesel
@@ -81,7 +85,9 @@ def macro_linedit(self):
         "just a place to stick stuff"
     pack.sel = sel
 
-    def setup(self, pack=pack):
+    axes = quarkx.matrix('1 0 0 0 1 0 0 0 1').cols
+
+    def setup(self, pack=pack, axes=axes):
         pass
         src = self.src
         sel = pack.sel
@@ -91,17 +97,67 @@ def macro_linedit(self):
         linear = quarkx.matrix(linear)
         pack.linear = linear
         cols = linear.cols
+        #
+        # get scale
+        #
         src["scale"]=tuple(map(lambda v:abs(v), cols))
-        pack.cols = tuple(map(lambda v:v.normalized, cols))    
+        cols = tuple(map(lambda v:v.normalized, cols))    
+        #
+        # get rotations, cols[0] is 'rotated X axis, compute the others
+        #
+        yrot = cols[2]^cols[0]
+        zrot = cols[0]^yrot
+        pitch = math.asin(cols[0]*axes[2])
+        if abs(pitch)<89.99:
+            p = projectpointtoplane(cols[0],axes[2],
+              quarkx.vect(0,0,0), axes[2]).normalized
+            yaw = math.atan2(p.y, p.x)
+        else:
+            yaw = 0
+        y2 = matrix_rot_y(-pitch)*matrix_rot_z(-yaw)*yrot
+        roll = math.atan2(y2*axes[2], y2*axes[1])
+        src["angles"] = pitch/deg2rad, yaw/deg2rad, roll/deg2rad
+
+        mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+
+        cols = map(lambda v, mat=mat:~mat*v,cols)
+        
+#        cols = quarkx.matrix('1 0 0 0 1 0 0 0 1').cols
+        #
+        # Now get shear info (the cols have been rotated into
+        #   'canonical' position)
+        #
+        zxshear = math.asin(cols[0]*cols[2])
+        ylift = math.asin(axes[2]*cols[1])
+        p = projectpointtoplane(cols[1],axes[2],quarkx.vect(0,0,0),axes[2]).normalized
+        ytwist = math.atan2(p*axes[0], p*axes[1])
+        
+        src["shear"] = zxshear/deg2rad, ylift/deg2rad, ytwist/deg2rad
+        
 
     def action(self, pack=pack, editor=editor):
         src = self.src
+        zxshear, ylift, ytwist = tuple(map(lambda x:x*deg2rad, src["shear"]))
+        colz = matrix_rot_y(-zxshear)*quarkx.vect(0,0,1)
+        coly = matrix_rot_x(ylift)*matrix_rot_z(-ytwist)*quarkx.vect(0,1,0)
+        cols = quarkx.vect(1,0,0), coly, colz
         scale = src["scale"]
-        cols = map(lambda v,s:s*v, pack.cols, scale)
+        cols = map(lambda v,s:s*v, cols, scale)
+        angles = src["angles"]
+        pitch, yaw, roll = tuple(map(lambda a:a*deg2rad, angles))
+
+        mat = matrix_rot_z(yaw)*matrix_rot_y(pitch)*matrix_rot_x(roll)
+                
+        cols = map(lambda v,mat=mat:mat*v, cols)
+
+
+        #
+        # apply change  
+        #
         linear = str(quarkx.matrix(cols[0],cols[1],cols[2]))
         undo = quarkx.action()
-#        if linear == '1 0 0 0 1 0 0 0 1':
-#            linear = None
+        if linear == '1 0 0 0 1 0 0 0 1':
+            linear = None
         undo.setspec(pack.sel, 'linear', linear)
         editor.ok(undo,"Set matrix scale")
         
@@ -113,5 +169,8 @@ def macro_linedit(self):
 quarkpy.qmacro.MACRO_linedit = macro_linedit
 
 #$Log$
+#Revision 1.1  2001/05/11 09:39:41  tiglari
+#kickoff with scale
+#
 
     
