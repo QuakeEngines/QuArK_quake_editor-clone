@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/04/19 19:38:50  aiv
+added support for "patch.txt"
+
 Revision 1.9  2001/03/20 21:47:44  decker_dk
 Updated copyright-header
 
@@ -112,6 +115,11 @@ begin
   LogOpened:=true;
   LogEx('QuArK started at %s',[DateTimeToStr(now)]);
   LogEx('QuArK version is %s',[QuarkVersion+GetPatchVersion]);
+  {$IFDEF NoShare}
+  Log('Spec Mem Sharing Off');
+  {$ELSE}
+  Log('Spec Mem Sharing On');
+  {$ENDIF}
   LogSystemDetails;
   {$I+}
 end;
@@ -161,3 +169,4 @@ initialization
 finalization
   CloseLogFile;
 end.
+
