@@ -13,6 +13,39 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
+6.4.0 alpha 4
+=============
+ * [SilverPaladin]: Improved the compiling menu for The-WildWest 
+      Maps.  Q3Map2 2.5.11 or newer is recommended.  Updated the 
+      Wild-West support for the version 1.5 release.
+
+ * [SilverPaladin] Fixed the model handling so that if a skin is not 
+      found uncompressed on your hard drive, it will look in the pack 
+      files you've loaded for the game.  
+ 
+ * [SilverPaladin] Fixed the last two compilation warnings in the 
+      Quark source code. Quark now compiles warning and hit free in 
+      Delphi 5 and 6.  I'll check under Delphi 7 soon.
+       
+ * [SilverPaladin] Fixed several access violations that could occur 
+      when closing QuArK.
+ 
+ * [SilverPaladin] Protected against several divide by zero errors 
+      that would occur when viewing MD3 files in Quark.  
+
+ * [SilverPaladin] Changed the general saving method so that 
+      "Unsupported File Format" errors still allow you to save your
+      QRK file and not lose your work.  This could occur if you linked 
+      to an MD3 file in an add-on.
+
+ * [SilverPaladin] Updated the Map Check methods so that you can have 
+      brush objects contain only beziers.  Prior to this an error 
+      message was displayed erroneously stating your map would not 
+      work if a brush entity did not contain at least on poly.  This 
+      message has been eliminated in all games which support Bezier 
+      Patches.
+
+
 6.4.0 alpha 3
 =============
 
