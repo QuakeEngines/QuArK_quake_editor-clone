@@ -26,10 +26,10 @@ unit OsFolder;
 interface
 
 uses
-  ToolBoxGroup, QkObjects, Dialogs, Classes, QkFileObjects, QuickWal;
+  ToolBoxGroup, QkObjects, Dialogs, Classes, QkFileObjects, QuickWal, QkWad;
 
 type
-  QOsFolder = class(QToolBoxGroup)
+  QOsFolder = class(QTextureList)
     private
       procedure ReadFolder;
     protected
