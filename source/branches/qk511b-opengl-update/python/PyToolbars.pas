@@ -1207,8 +1207,7 @@ begin
  OwnerForm:=Owner;
  if not (OwnerForm is TPyForm) then
   OwnerForm:=Nil;
- if ClickItem(BtnObject, True, TPyForm(OwnerForm)) then
-  PythonCodeEnd;
+ ClickItem(BtnObject, [cioHourglass, cioPythonCodeEnd], TPyForm(OwnerForm));
 end;
 
 procedure TQkToolbarButton.DoRClick;

@@ -192,7 +192,7 @@ class BaseLayout:
                 common = test
         for m in menu.items[0:3]:
             m.state = (m.mode == common) and qmenu.radiocheck
-        menu.items[4].state = (self is BaseLayout.CurrentOpenGLOwner) and qmenu.checked
+        #menu.items[4].state = (self is BaseLayout.CurrentOpenGLOwner) and qmenu.checked
         for m in menu.items[7:10]:
             m.state = (m.mode == (self.editor.drawmode&DM_MASKOOV)) and qmenu.radiocheck
         menu.items[11].state = (self.leftpanel.align=="right") and qmenu.checked
@@ -214,8 +214,9 @@ class BaseLayout:
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
         
-    def close3Dwindow(self, floating):
-        view = floating.info
+    def close3Dwindow(self, floating, view=None):
+        if view is None:
+            view = floating.info
         if view in self.views:
             self.views.remove(view)
             self.update3Dviews()
@@ -246,28 +247,31 @@ class BaseLayout:
             if not timerclose: return
             if BaseLayout.CurrentOpenGLOwner is not None: return
         else:
-            BaseLayout.CurrentOpenGLOwner = None
             self.buttons["opengl"].state = 0
             quarkx.update(self.editor.form)
         import qopengl
         floating = qopengl.wnd
         if floating is not None:
             if BaseLayout.CurrentOpenGLOwner is self:
-                self.close3Dwindow(floating)
+                self.close3Dwindow(floating, qopengl.glview)
+                qopengl.clearviewdeps()
             if timerclose:
                 floating.toback()
                 quarkx.settimer(qopengl.deadtest, None, 10000)
+        BaseLayout.CurrentOpenGLOwner = None
 
     def toggleOpenGLwindow(self, menu):
-        "Opens/closes the OpenGL window."
+        ###"Opens/closes the OpenGL window."
+        "Opens the OpenGL window."
         import qopengl
         if self is BaseLayout.CurrentOpenGLOwner:
-            qopengl.close()
+            ###qopengl.close()
+            qopengl.open()
         else:
             if BaseLayout.CurrentOpenGLOwner is not None:
                 BaseLayout.CurrentOpenGLOwner.releaseOpenGL()
             qopengl.open()
-            view = qopengl.wnd.info
+            view = qopengl.glview
             self.editor.setupview(view)
             if not (view in self.views):
                 self.views.append(view)

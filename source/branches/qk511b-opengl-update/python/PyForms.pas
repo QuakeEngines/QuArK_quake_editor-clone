@@ -32,6 +32,8 @@ uses
 
 type
   TPyForm = class;
+  TClickItemOption = (cioHourglass, cioImmediate, cioPythonCodeEnd);
+  TClickItemOptions = set of TClickItemOption;
 
   PyWindow = ^TyWindow;
   TyWindow = object(TyObject)
@@ -46,7 +48,7 @@ type
     WndObject: PyWindow;
     PythonMacro: String;
     PopupMenuShowing, Released: Boolean;
-    ci_Hourglass: Boolean;
+    ci_options: TClickItemOptions;
     ci_obj: PyObject;
     {DSorting: Boolean;  { sorting map views }
     procedure wmMenuSelect(var Msg: TMessage); message wm_MenuSelect;
@@ -98,7 +100,7 @@ procedure PythonUpdateAll;
 procedure AutoFocus(Control: TWinControl);
 function GetParentPyForm(Control: TControl) : TPyForm;
 function NewPyForm(Q: QFileObject) : TPyForm;
-function ClickItem(obj: PyObject; Hourglass: Boolean; nForm: TPyForm) : Boolean;
+function ClickItem(obj: PyObject; Options: TClickItemOptions; nForm: TPyForm) : Boolean;
 
  {-------------------}
 
@@ -112,7 +114,7 @@ uses PyMenus, PyToolbars, PyObjects, Setup, Qk1,
 
  {-------------------}
 
-function ClickItemNow(obj: PyObject; Hourglass: Boolean; nForm: TPyForm) : Boolean;
+function ClickItemNow(obj: PyObject; Options: TClickItemOptions; nForm: TPyForm) : Boolean;
 var
  callback, arglist, callresult: PyObject;
 begin
@@ -127,13 +129,13 @@ begin
       ClickForm(nForm);
       arglist:=Py_BuildValueX('(O)', [obj]);
       if arglist=Nil then Exit;
-      if Hourglass then
+      if cioHourglass in Options then
        DebutTravail(0,0);
       try
        callresult:=PyEval_CallObject(callback, arglist);
        Py_XDECREF(callresult);
       finally
-       if Hourglass then
+       if cioHourglass in Options then
         FinTravail;
        Py_DECREF(arglist);
       end;
@@ -141,23 +143,25 @@ begin
    finally
     Py_DECREF(callback);
    end;
+   if cioPythonCodeEnd in Options then
+    PythonCodeEnd;
   end;
 end;
 
-function ClickItem(obj: PyObject; Hourglass: Boolean; nForm: TPyForm) : Boolean;
+function ClickItem(obj: PyObject; Options: TClickItemOptions; nForm: TPyForm) : Boolean;
 begin
- if nForm<>Nil then
+ if (nForm<>Nil) and not (cioImmediate in Options) then
   begin
    Result:=PyObject_HasAttrString(obj, 'onclick');
    if not Result then Exit;
    Py_XDECREF(nForm.ci_obj);
    nForm.ci_obj:=obj;
    Py_INCREF(obj);
-   nForm.ci_Hourglass:=Hourglass;
+   nForm.ci_options:=Options;
    PostMessage(nForm.Handle, wm_MessageInterne, wp_ClickItem, 0);
   end
  else
-  Result:=ClickItemNow(obj, Hourglass, Nil);
+  Result:=ClickItemNow(obj, Options, nForm);
 end;
 
  {-------------------}
@@ -425,6 +429,38 @@ begin
  end;
 end;
 
+function wToFront(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  if PyWindow(self)^.Form<>Nil then
+   with PyWindow(self)^.Form do
+    begin
+     BringToFront;
+     Show;
+    end;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+function wToBack(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  if PyWindow(self)^.Form<>Nil then
+   with PyWindow(self)^.Form do
+    begin
+     SendToBack;
+     Visible:=True;
+    end;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 (*function wGlobalAccept(self, args: PyObject) : PyObject; cdecl;
 var
  ok: PyObject;
@@ -448,7 +484,7 @@ begin
 end;*)
 
 const
- MethodTable: array[0..7] of TyMethodDef =
+ MethodTable: array[0..9] of TyMethodDef =
   ((ml_name: 'macro';          ml_meth: wMacro;          ml_flags: METH_VARARGS),
    (ml_name: 'newtoolbar';     ml_meth: wNewToolbar;     ml_flags: METH_VARARGS),
    (ml_name: 'newfloating';    ml_meth: wNewFloating;    ml_flags: METH_VARARGS),
@@ -456,7 +492,9 @@ const
    (ml_name: 'floatings';      ml_meth: wFloatings;      ml_flags: METH_VARARGS),
    (ml_name: 'btnpanels';      ml_meth: wBtnPanels;      ml_flags: METH_VARARGS),
    (ml_name: 'allbuttons';     ml_meth: wAllButtons;     ml_flags: METH_VARARGS),
-   (ml_name: 'choosecolor';    ml_meth: wChooseColor;    ml_flags: METH_VARARGS));
+   (ml_name: 'choosecolor';    ml_meth: wChooseColor;    ml_flags: METH_VARARGS),
+   (ml_name: 'tofront';        ml_meth: wToFront;        ml_flags: METH_VARARGS),
+   (ml_name: 'toback';         ml_meth: wToBack;         ml_flags: METH_VARARGS));
 
  {-------------------}
 
@@ -820,6 +858,7 @@ begin
    if C is TPyFloatingWnd then
     TPyFloatingWnd(C).CloseNow;
   end;
+ WndCallback('onclose1');
  if FileObject<>Nil then
   begin
    WndCallback('onclose');
@@ -972,7 +1011,7 @@ begin
  obj:=PyObject(Callbacks[Info.wID-1]);
  if obj=Nil then Exit;
  Py_INCREF(obj); try
- ClickMenuItem(obj, False, Self);
+ ClickItem(obj, [cioImmediate], Self);
  result:=PyObject_GetAttrString(obj, 'items');
  if result=Nil then Exit;
  try
@@ -1041,7 +1080,7 @@ begin
      if obj=Nil then Exit;
      Py_INCREF(obj); try
      PopupMenuShowing:=False;
-     ClickMenuItem(obj, True, Self);
+     ClickItem(obj, [cioHourglass, cioPythonCodeEnd], Self);
      finally Py_DECREF(obj); end;
      Exit;
     end;
@@ -1149,7 +1188,7 @@ begin
  {wp_SortMapViews: SortMapViews(Self);}
   wp_ClickItem: if ci_obj<>Nil then
                  begin
-                  ClickItemNow(ci_obj, ci_Hourglass, Self);
+                  ClickItemNow(ci_obj, ci_options, Self);
                   Py_DECREF(ci_obj);
                   ci_obj:=Nil;
                  end;
@@ -1232,8 +1271,10 @@ begin
   begin
    Result:=True;
    obj:=PyDict_GetItemString(ShortCuts, PChar(S));
-   if (obj=Nil) or ClickItem(obj, True, Self) then
-    PythonCodeEnd;
+   if obj=Nil then
+    PythonCodeEnd
+   else
+    ClickItem(obj, [cioHourglass, cioPythonCodeEnd], Self);
   end;
 end;
 

@@ -16,6 +16,7 @@ OpenGL manager.
 #
 
 import quarkx
+import qopengl   # that's myself
 from qbasemgr import BaseLayout
 from qeditor import *
 BaseLayout.CurrentOpenGLOwner = None
@@ -27,39 +28,56 @@ BaseLayout.CurrentOpenGLOwner = None
 # and then copy the data to their own surface.
 #
 wnd = None
+glview = None
 
 
 def open(bkgnd=0):
     # open the OpenGL window. If bkgnd=1, put it in the background.
 
-    global wnd
+    global wnd, glview
     quarkx.settimer(deadtest, None, 0)  # cancel this timer if pending
     if wnd is None:
         setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
         if setup["Warning"]:
             if quarkx.msgbox("Using the OpenGL display modes might lock QuArK (or even your whole machine !). In case of troubles, change some settings in the OpenGL section of the configuration dialog box and try again.\n\nAre you sure you want to continue ?", MT_WARNING, MB_YES|MB_NO) != MR_YES:
                 raise quarkx.abort
-        floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "OpenGL 3D")
+        floating = quarkx.newform("OpenGL 3D")
         r = setup["WndRect"]
         if type(r)==type(()):
             floating.windowrect = r
-            floating.rect = r[2:]
+            #floating.rect = r[2:]
         view = floating.mainpanel.newmapview()
         view.info = {"type": "3D"}
         view.viewmode = "opengl"
         setprojmode(view)
-        floating.info = view
-        floating.onclose = notifyCloseOpenGLwnd
+        floating.info = qopengl   # so that qopengl.onclose1 is called when the window is closed
         wnd = floating
+        glview = view
+        clearviewdeps()
         if bkgnd:
             floating.toback()
-        floating.show()
+    if not bkgnd:
+        wnd.tofront()
+
+
+def grayimage(view, *args):
+    cv = view.canvas()
+    cv.brushcolor = 0x604040
+    w,h = view.clientarea
+    cv.rectangle(-1,-1,w,h)
+
+def clearviewdeps():
+    # sets or resets the OpenGL view's parameters
+    v = glview
+    v.ondrop = v.onmouse = lambda *args: None
+    v.ondraw = grayimage
+    v.cursor = CR_ARROW
 
 
 def close():
     # close the OpenGL window.
     if wnd is not None:
-        wnd.close()
+        wnd.macro("EXIT")
 
 
 def deadtest(*reserved):
@@ -68,13 +86,14 @@ def deadtest(*reserved):
         close()
 
 
-def notifyCloseOpenGLwnd(floating):
-    global wnd
-    wnd = None
+def onclose1(floating):
+    # called by the Delphi code when the window is closed
+    global wnd, glview
     if BaseLayout.CurrentOpenGLOwner is not None:
         BaseLayout.CurrentOpenGLOwner.releaseOpenGL()
+    wnd = glview = None
     r = floating.windowrect
-    r = r[:2] + floating.rect
+    #r = r[:2] + floating.rect
     setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
     setup["WndRect"] = r
     setup["Warning"] = ""
