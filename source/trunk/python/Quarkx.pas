@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2002/01/08 10:09:20  tiglari
+heapstatus function added to access GetHeapStatus
+
 Revision 1.22  2001/11/11 01:28:49  tiglari
 icon leak fixes
 
@@ -570,10 +573,23 @@ begin
  end;
 end;
 
+
 (*function xMainForm(self, args: PyObject) : PyObject; cdecl;
 begin
  Result:=PyNewWindow(QkForm);
 end;*)
+
+{ this function just lets you put watches etc to examine the
+   Python-based internal state attributes of an object }
+
+function xExamine(self, args: PyObject) : PyObject; cdecl;
+var
+  Obj: PyObject;
+begin
+  Result:=NIL;
+  if not PyArg_ParseTupleX(args, '|O', [@Obj]) then
+   Exit;
+end;
 
 function xLoadImages(self, args: PyObject) : PyObject; cdecl;
 var
@@ -633,7 +649,8 @@ begin
        Exit;
       end;
     end;
-   Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
+   aLog(LOG_PYTHONSOURCE,'Making image '+Filename);
+   Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio, FileName);
   finally
    Bitmap.Free;
   end;
@@ -641,21 +658,6 @@ begin
   EBackToPython;
   Result:=Nil;
  end;
-end;
-
-function xLoadImages2(self, args: PyObject) : PyObject; cdecl;
-begin
-  Result:=xLoadImages(self, args)
-end;
-
-function xLoadImages3(self, args: PyObject) : PyObject; cdecl;
-begin
-  Result:=xLoadImages(self, args)
-end;
-
-function xLoadImages4(self, args: PyObject) : PyObject; cdecl;
-begin
-  Result:=xLoadImages(self, args)
 end;
 
 function xExit(self, args: PyObject) : PyObject; cdecl;
@@ -2394,8 +2396,6 @@ begin
 end;{/AiV}
 
 function xHeapStatus(self, args: PyObject) : PyObject; cdecl;
-var
-  S: String;
 begin
  try
   with GetHeapStatus do
@@ -2414,19 +2414,6 @@ begin
       SpecificsAdd('HeapErrorCode='+IntToStr(HeapErrorCode));
       Py_INCREF(Result);
     end;
-(*
-     TotalAddrSpace,
-     TotalUncommitted,
-     TotalCommitted,
-     TotalAllocated,
-     TotalFree,
-     FreeSmall,
-     FreeBig,
-     Unused,
-     Overhead,
-     HeapErrorCode);
-*)
-
  except
   EBackToPython;
   Result:=Nil;
@@ -2434,7 +2421,7 @@ begin
 end;
 
 const
- MethodTable: array[0..70] of TyMethodDef =
+ MethodTable: array[0..71] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2477,10 +2464,8 @@ const
    (ml_name: 'getqctxlist';     ml_meth: xGetQCtxList;    ml_flags: METH_VARARGS),
    (ml_name: 'listfileext';     ml_meth: xListFileExt;    ml_flags: METH_VARARGS),
    (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;  ml_flags: METH_VARARGS),
+   (ml_name: 'examine';         ml_meth: xExamine;     ml_flags: METH_VARARGS),
    (ml_name: 'loadimages';      ml_meth: xLoadImages;     ml_flags: METH_VARARGS),
-   (ml_name: 'loadimages2';      ml_meth: xLoadImages2;     ml_flags: METH_VARARGS),
-   (ml_name: 'loadimages3';      ml_meth: xLoadImages3;     ml_flags: METH_VARARGS),
-   (ml_name: 'loadimages4';      ml_meth: xLoadImages3;     ml_flags: METH_VARARGS),
    (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;    ml_flags: METH_VARARGS),
    (ml_name: 'screenrect';      ml_meth: xScreenRect;     ml_flags: METH_VARARGS),
    (ml_name: 'seticons';        ml_meth: xSetIcons;       ml_flags: METH_VARARGS),
