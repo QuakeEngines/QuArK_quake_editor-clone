@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/10/05 18:01:21  decker_dk
+Modified ConvertObjsToTextWithComment() so its output is a bit more human-readable.
+
 Revision 1.29  2001/06/14 18:54:46  decker_dk
 Added a 'ChoiceList' parsing to ConstructObjsFromText() - See function comments for reason.
 
@@ -1005,6 +1008,7 @@ begin
             SetLength(Arg, Length(Arg)+4);  { SizeOf(Single) }
             Move(Value, Arg[Length(Arg)-3], 4);  { SizeOf(Single) }
             Lu(0);
+            Finalize(Arg);
           end;
 
           Lu(1);
