@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.55  2000/09/17 14:59:29  alexander
+//committed convex' generalization of texture format aliasing
+//
 //Revision 1.54  2000/09/10 13:01:23  alexander
 //set name
 //
@@ -350,6 +353,7 @@ QQRKSRC1
         Form = "GameQuake1"
         PlayerClass = "X"
         TextureFormat = ".wad_D"
+        TextureWriteFormat = ".wad_D"
       }
       Hexen II:config =
       {
@@ -388,6 +392,7 @@ QQRKSRC1
         HxStrings = "strings.txt"
         PlayerClass = "1"
         TextureFormat = ".wad_D"
+        TextureWriteFormat = ".wad_D"
       }
       Quake 2:config =
       {
@@ -427,6 +432,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".wal"
+        TextureWriteFormat = ".wal"
       }
       Heretic II:config =
       {
@@ -466,6 +472,7 @@ QQRKSRC1
         3DLight = '512'
         walTrick = "1"
         TextureFormat = ".m8"
+        TextureWriteFormat = ".m8"
       }
       Half-Life:config =
       {
@@ -507,6 +514,7 @@ QQRKSRC1
         Form = "GameHalfLife"
         PlayerClass = "X"
         TextureFormat = ".wad3_C"
+        TextureWriteFormat = ".wad3_C"
       }
       Sin:config =
       {
@@ -546,6 +554,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".swl"
+        TextureWriteFormat = ".swl"
       }
       KingPin:config =
       {
@@ -587,6 +596,7 @@ QQRKSRC1
         3DLight = '512'
         walTrick = "1"
         TextureFormat = ".tga"
+        TextureWriteFormat = ".tga"
       }
       SOF:config =
       {
@@ -629,6 +639,7 @@ QQRKSRC1
         3DLight = '512'
         walTrick = "1"     // FIXME is that needed ?
         TextureFormat = ".m32"
+        TextureWriteFormat = ".m32"
       }
       Quake 3:config =
       {
@@ -675,6 +686,55 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         TextureFormat = ".tga,.jpg"
+        TextureWriteFormat = ".tga"
+        TextureShaders = "scripts/quark.shader"
+      }
+      StarTrekEF:config =
+      {
+        Game = "StarTrekEF"
+        Code = "b"
+        Directory = ""
+        CD = ""
+        CDDir = "Setup\BaseEF"
+        Program = "stvoy +set sv_pure 0"
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        QBSP1 = "Q3MAP.EXE"
+        QBSPCmd = ""
+        VIS1 = "Q3MAP.EXE"
+        VISCmd = "-vis"
+        LIGHT1 = "Q3MAP.EXE"
+        LIGHTCmd = "-light"
+        BSPC1 = "BSPC.EXE"
+        BSPCCmd = ""
+        QBSPDesc = "Q3MAP"
+        VISDesc = "Q3MAP w/vis"
+        LIGHTDesc = "Q3MAP w/light"
+        BSPCDesc = "BSPC -bsp2aas"
+        BaseDir = "baseEF"
+        tmpQuArK = "tmpQuArK"
+        Palette = ":pics/colormap.pcx"
+        //Gradient = "pics/colormap.pcx"
+        //ExtractFiles = "pics/colormap.pcx"
+        Q2TexPath = "textures/"
+        Q3ShaderPath = "scripts/" //DECKER
+        Q2TexFlags = "1"
+        ShadersPath = "scripts/"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +map %s"
+        AddOns = "DataStarTrekEF.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        CheckDirectory = "stvoy.exe"
+        Console = "1"
+        Form = "GameStartrekEF"
+        SpecialCustomQuakeMenu = "CustomQuakeMenuBSPC"           //enable special form
+        TextureDef = "base_wall/basewall03"
+        TriggerTextureDef = "common/trigger"
+        LightFactor = '0.9'
+        3DLight = '512'
+        TextureFormat = ".tga,.jpg"
+        TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
       }
     }
@@ -1942,6 +2002,120 @@ QQRKSRC1
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
     }
+
+    GameStarTrekEF:form =
+    {
+      Style = "3"
+      Directory: =
+      {
+        Txt = "Directory of StarTrek Voyager Elite Force"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "stvoy.EXE"
+      }
+      CD: =
+      {
+        Txt = "StarTrek CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed StarTrek minimally, this is the drive of the CD-ROM."
+        CheckFile = "Setup\BASEEF\PAK0.PAK"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      Sep1: = {Typ="S"}    // separator
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "StarTrek command-line"
+        Items = "StarTrek"
+      }
+      QBSP1: = {
+        Typ = "EP"    // edit path to file
+        Txt = "Path to Q3MAP"
+        DefExt = "exe"
+      }
+      QBSPCmd: = {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      VIS1: = {
+        Typ = "EP"    // edit path to file
+        Txt = "Path to Q3MAP w/vis"
+        DefExt = "exe"
+      }
+      VISCmd: = {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      LIGHT1: = {
+        Typ = "EP"    // edit path to file
+        Txt = "Path to Q3MAP w/light"
+        DefExt = "exe"
+      }
+      LIGHTCmd: = {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      BSPC1: = {
+        Typ = "EP"    // edit path to file
+        Txt = "Path to bspc tool"
+        DefExt = "exe"
+      }
+      BSPCCmd: = {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      Console: = {
+        Typ = "X"
+        Txt = "Run these programs..."
+        Cap = "in QuArK's console"
+      }
+      Sep2: = {Typ="S"}    // separator
+      TextureDef: =
+      {
+        Txt = "Default texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default texture when inserting polyhedrons in maps"
+        GameCfg = "StarTrekEF"
+      }
+      TriggerTextureDef: =
+      {
+        Txt = "Default trigger texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Default trigger texture when new brush-entities request it"
+        GameCfg = "StarTrekEF"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+    }
+
+
+
     MapColors:form =
     {
       Style = "7"       // gray form instead of white one
