@@ -2,12 +2,18 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2001/04/14 19:30:42  decker_dk
+//Added Lazarus data addon.
+//
 {
+  Game Directories.qctx =
+  {
+  }
   Toolbox Folders.qtx =
   {
     Toolbox = "New map items..."
-    Root = "Entities for quake2_lazarus.fgd.qtxfolder"
-    Entities for quake2_lazarus.fgd.qtxfolder =
+    Root = "Entities for Lazarus.qtxfolder"
+    Entities for Lazarus.qtxfolder =
     {
       ;desc = "Created from quake2_lazarus.fgd"
       other entities.qtxfolder =
@@ -19,6 +25,19 @@ QQRKSRC1
           attenuation = "1.0"
           shift = "1.0"
           gravity = "800"
+        }
+        light:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Light"
+          light = "250"
+          _falloff = "0"
+          _fade = "1"
+          _angfade = "1"
+          style = "0"
+          _cone = "10"
+          _focus = "1"
         }
         viewthing:e =
         {
@@ -540,19 +559,6 @@ QQRKSRC1
       }
       light_* entities.qtxfolder =
       {
-        light:e =
-        {
-          angle = "360"
-          origin = "0 0 0"
-          ;desc = "Light"
-          light = "250"
-          _falloff = "0"
-          _fade = "1"
-          _angfade = "1"
-          style = "0"
-          _cone = "10"
-          _focus = "1"
-        }
         light_mine1:e =
         {
           angle = "360"
@@ -598,6 +604,7 @@ QQRKSRC1
           angle = "360"
           origin = "0 0 0"
           ;desc = "Dead guys"
+          style = "0"
         }
         misc_eastertank:e =
         {
@@ -1122,6 +1129,19 @@ QQRKSRC1
           fog_density = "20"
           density = "0"
         }
+        target_fountain:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Model fountain"
+          bleft = "0 0 0"
+          count = "1"
+          mass = "0"
+          mass2 = "8"
+          sounds = "183"
+          speed = "300"
+          tright = "0 0 0"
+        }
         target_goal:e =
         {
           angle = "360"
@@ -1217,6 +1237,20 @@ QQRKSRC1
           volume = "1"
           fadein = "0"
           fadeout = "0"
+        }
+        target_precipitation:e =
+        {
+          angle = "360"
+          origin = "0 0 0"
+          ;desc = "Rain/snow"
+          style = "0"
+          bleft = "0 0 0"
+          count = "1"
+          mass = "0"
+          mass2 = "8"
+          sounds = "183"
+          speed = "300"
+          tright = "0 0 0"
         }
         target_rocks:e =
         {
@@ -1534,8 +1568,36 @@ QQRKSRC1
   }
   Entity Forms.fctx =
   {
+    t_Appearflags:incl =
+    {
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X256"
+        cap = "256>Not Easy"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X512"
+        cap = "512>Not Normal"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1024"
+        cap = "1024>Not Hard"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2048"
+        cap = "2048>Not DM"
+      }
+    }
     t_Appearflags1:incl =
     {
+      t_Appearflags = !
       spawnflags: =
       {
         txt = "&"
@@ -2021,7 +2083,8 @@ QQRKSRC1
     }
     t_Ammo:incl =
     {
-      bbox = "-16 -16 -16 16 16 16"
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
       t_TeamDM = !
       t_Target = !
       t_Targetname = !
@@ -2078,6 +2141,7 @@ QQRKSRC1
     }
     t_CraneBeam:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       target: =
       {
@@ -2117,6 +2181,7 @@ QQRKSRC1
     }
     t_CranePanel:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       target: =
       {
@@ -2147,6 +2212,7 @@ QQRKSRC1
     }
     t_CraneHoist:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       target: =
       {
@@ -2181,6 +2247,7 @@ QQRKSRC1
     }
     t_CraneHook:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       speed: =
       {
@@ -2221,6 +2288,7 @@ QQRKSRC1
     }
     crane_reset:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       target: =
@@ -2235,6 +2303,7 @@ QQRKSRC1
     }
     t_FBobbingwater:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Speed25 = !
@@ -2294,6 +2363,7 @@ QQRKSRC1
     }
     t_FButton:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -2338,7 +2408,8 @@ QQRKSRC1
     }
     func_clock:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Pathtarget = !
       spawnflags: =
@@ -2386,6 +2457,7 @@ QQRKSRC1
     }
     func_conveyor:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Speed100 = !
       t_ArghBmodel = !
@@ -2404,6 +2476,7 @@ QQRKSRC1
     }
     t_FDoor:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Angles1 = !
@@ -2467,6 +2540,11 @@ QQRKSRC1
         txt = "&"
         hint = "Decel>deceleration"
       }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
       wait: =
       {
         txt = "&"
@@ -2498,6 +2576,7 @@ QQRKSRC1
     }
     t_FDoorRot:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -2562,6 +2641,11 @@ QQRKSRC1
         txt = "&"
         hint = "Distance>deg/rotation"
       }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>debris amount"
+      }
       message: =
       {
         txt = "&"
@@ -2615,6 +2699,7 @@ QQRKSRC1
     }
     t_FDoorSecret:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       spawnflags: =
@@ -2658,6 +2743,7 @@ QQRKSRC1
     }
     t_FDoorSwing:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -2812,6 +2898,7 @@ QQRKSRC1
     }
     func_force_wall:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Count1 = !
       spawnflags: =
@@ -2836,11 +2923,13 @@ QQRKSRC1
     }
     func_killbox:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
     }
     t_FMonitor:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -2867,6 +2956,7 @@ QQRKSRC1
     }
     t_FObject:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -2899,6 +2989,7 @@ QQRKSRC1
     }
     func_pendulum:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_ArghBmodel = !
       spawnflags: =
@@ -2946,6 +3037,7 @@ QQRKSRC1
     }
     t_FPlat:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Speed100 = !
       spawnflags: =
@@ -2987,6 +3079,7 @@ QQRKSRC1
     }
     t_FPushable:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -3040,6 +3133,7 @@ QQRKSRC1
     }
     t_FRot:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_SpeedDeg100 = !
       t_Movewith = !
@@ -3136,7 +3230,8 @@ QQRKSRC1
     }
     func_timer:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Count1 = !
@@ -3169,6 +3264,7 @@ QQRKSRC1
     }
     t_FTrackchange:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -3232,6 +3328,7 @@ QQRKSRC1
     }
     t_FTracktrain:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -3332,6 +3429,7 @@ QQRKSRC1
     }
     t_FTrain:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Speed100 = !
       spawnflags: =
@@ -3464,6 +3562,7 @@ QQRKSRC1
     }
     t_FVehicle:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -3533,6 +3632,7 @@ QQRKSRC1
     }
     func_wall:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       t_Count1 = !
@@ -3570,6 +3670,7 @@ QQRKSRC1
     }
     t_FWater:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Speed25 = !
@@ -3619,7 +3720,7 @@ QQRKSRC1
     }
     hint_path:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       spawnflags: =
@@ -3641,19 +3742,22 @@ QQRKSRC1
     }
     info_null:form =
     {
-      bbox = "-4 -4 -4 4 4 4"
+      bbox = '-4 -4 -4 4 4 4'
+      t_Appearflags = !
       t_Targetname = !
     }
     info_notnull:form =
     {
-      bbox = "-4 -4 -4 4 4 4"
+      bbox = '-4 -4 -4 4 4 4'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Movewith = !
     }
     t_PlayerClass:incl =
     {
-      bbox = "-16 -16 -24 16 16 32"
+      bbox = '-16 -16 -24 16 16 32'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
@@ -3679,7 +3783,8 @@ QQRKSRC1
     }
     t_Items:incl =
     {
-      bbox = "-16 -16 -16 16 16 16"
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
       t_TeamDM = !
       t_Targetname = !
       t_Target = !
@@ -3808,7 +3913,8 @@ QQRKSRC1
     }
     t_Keys:incl =
     {
-      bbox = "-16 -16 -16 16 16 16"
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -3890,7 +3996,8 @@ QQRKSRC1
     }
     light:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count1 = !
       spawnflags: =
@@ -3972,8 +4079,10 @@ QQRKSRC1
     }
     light_mine1:form =
     {
-      bbox = "-2 -2 -12 2 2 12"
+      bbox = '-2 -2 -12 2 2 12'
       t_Angles1 = !
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count1 = !
       spawnflags: =
@@ -4060,8 +4169,10 @@ QQRKSRC1
     }
     light_mine2:form =
     {
-      bbox = "-2 -2 -12 2 2 12"
+      bbox = '-2 -2 -12 2 2 12'
       t_Angles1 = !
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count1 = !
       spawnflags: =
@@ -4148,7 +4259,7 @@ QQRKSRC1
     }
     misc_actor:form =
     {
-      bbox = "-16 -16 -24 16 16 32"
+      bbox = '-16 -16 -24 16 16 32'
       t_Appearflags1 = !
       t_Targetname = !
       t_Angles = !
@@ -4300,19 +4411,21 @@ QQRKSRC1
     }
     misc_banner:form =
     {
-      bbox = "-4 -4 0 4 4 246"
+      bbox = '-4 -4 0 4 4 246'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_blackhole:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_deadsoldier:form =
     {
-      bbox = "-16 -16 0 16 16 16"
+      bbox = '-16 -16 0 16 16 16'
       t_Appearflags1 = !
       t_Targetname = !
       t_Angles = !
@@ -4359,10 +4472,23 @@ QQRKSRC1
         typ = "X64"
         cap = "64>Flies"
       }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>skin"
+        typ = "C"
+        items = "0>Default"$0D"1>Cipher"$0D"2>Claymore"$0D"3>Flak"$0D"4>Grunt"$0D
+         "5>Howitzer"$0D"6>Major"$0D"7>Nightops"$0D"8>Pointman"$0D"9>Psycho"$0D
+         "10>Rampage"$0D"11>Razor"$0D"12>Recon"$0D"13>Scout"$0D"14>Sniper"$0D"1"
+         "5>Viper"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"$0D"9"$0D"1"
+         "0"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"
+      }
     }
     misc_eastertank:form =
     {
-      bbox = "-32 -32 -16 32 32 32"
+      bbox = '-32 -32 -16 32 32 32'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       spawnflags: =
@@ -4374,7 +4500,8 @@ QQRKSRC1
     }
     misc_easterchick:form =
     {
-      bbox = "-32 -32 0 32 32 32"
+      bbox = '-32 -32 0 32 32 32'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       spawnflags: =
@@ -4386,7 +4513,8 @@ QQRKSRC1
     }
     misc_easterchick2:form =
     {
-      bbox = "-32 -32 0 32 32 32"
+      bbox = '-32 -32 0 32 32 32'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       spawnflags: =
@@ -4398,7 +4526,7 @@ QQRKSRC1
     }
     misc_explobox:form =
     {
-      bbox = "-16 -16 0 16 16 40"
+      bbox = '-16 -16 0 16 16 40'
       t_Appearflags1 = !
       t_Targetname = !
       t_Angles = !
@@ -4420,25 +4548,28 @@ QQRKSRC1
     }
     misc_gib_arm:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_gib_head:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_gib_leg:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_insane:form =
     {
-      bbox = "-16 -16 -24 16 16 32"
+      bbox = '-16 -16 -24 16 16 32'
       t_Appearflags1 = !
       t_Targetname = !
       t_Angles = !
@@ -4527,13 +4658,15 @@ QQRKSRC1
     }
     misc_satellite_dish:form =
     {
-      bbox = "-64 -64 0 64 64 128"
+      bbox = '-64 -64 0 64 64 128'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_strogg_ship:form =
     {
-      bbox = "-16 -16 0 16 16 32"
+      bbox = '-16 -16 0 16 16 32'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Speed100 = !
@@ -4598,7 +4731,8 @@ QQRKSRC1
     }
     misc_teleporter:form =
     {
-      bbox = "-32 -32 -24 32 32 -16"
+      bbox = '-32 -32 -24 32 32 -16'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Movewith = !
@@ -4640,20 +4774,23 @@ QQRKSRC1
     }
     misc_teleporter_dest:form =
     {
-      bbox = "-32 -32 -24 32 32 -16"
+      bbox = '-32 -32 -24 32 32 -16'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Movewith = !
     }
     misc_bigviper:form =
     {
-      bbox = "-176 -120 -24 176 120 72"
+      bbox = '-176 -120 -24 176 120 72'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
     }
     misc_viper:form =
     {
-      bbox = "-16 -16 0 16 16 32"
+      bbox = '-16 -16 0 16 16 32'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Speed100 = !
@@ -4718,7 +4855,8 @@ QQRKSRC1
     }
     misc_viper_bomb:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       t_Speed0 = !
@@ -4752,7 +4890,8 @@ QQRKSRC1
     }
     model_spawn:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Movewith = !
@@ -4774,6 +4913,12 @@ QQRKSRC1
         txt = "&"
         typ = "X16"
         cap = "16>No Model"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X32"
+        cap = "32>Anim Once"
       }
       usermodel: =
       {
@@ -4831,6 +4976,7 @@ QQRKSRC1
     }
     t_MTrain:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Angles = !
       t_Speed100 = !
@@ -4961,13 +5107,13 @@ QQRKSRC1
     }
     model_train:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_MTrain = !
       t_TremorEffects = !
     }
     t_Monsters:incl =
     {
-      bbox = "-16 -16 -24 16 16 32"
+      bbox = '-16 -16 -24 16 16 32'
       t_Appearflags1 = !
       t_Targetname = !
       t_Angles = !
@@ -5008,6 +5154,14 @@ QQRKSRC1
         typ = "X128"
         cap = "128>Ignore Fire"
       }
+      blood_type: =
+      {
+        txt = "&"
+        hint = "Blood_type"
+        typ = "C"
+        items = "0>Default"$0D"1>Green (gekk)"$0D"2>Robot sparks"
+        values = "0"$0D"1"$0D"2"
+      }
       dmgteam: =
       {
         txt = "&"
@@ -5027,6 +5181,11 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Deathtarget>trigger ent at death"
+      }
+      gib_type: =
+      {
+        txt = "&"
+        hint = "Gib_type>models/objects/gibX"
       }
       killtarget: =
       {
@@ -5088,7 +5247,7 @@ QQRKSRC1
     }
     monster_boss2:form =
     {
-      bbox = "-56 -56 0 56 56 80"
+      bbox = '-56 -56 0 56 56 80'
       t_Monsters1 = !
       health: =
       {
@@ -5103,7 +5262,8 @@ QQRKSRC1
     }
     monster_boss3_stand:form =
     {
-      bbox = "-32 -32 0 32 32 90"
+      bbox = '-32 -32 0 32 32 90'
+      t_Appearflags = !
       t_Targetname = !
     }
     monster_brain:form =
@@ -5161,7 +5321,8 @@ QQRKSRC1
     }
     monster_commander_body:form =
     {
-      bbox = "-32 -32 0 32 32 48"
+      bbox = '-32 -32 0 32 32 48'
+      t_Appearflags = !
       t_Targetname = !
     }
     monster_flipper:form =
@@ -5218,7 +5379,7 @@ QQRKSRC1
     }
     monster_gladiator:form =
     {
-      bbox = "-32 -32 -24 32 32 48"
+      bbox = '-32 -32 -24 32 32 48'
       t_Monsters = !
       health: =
       {
@@ -5320,7 +5481,7 @@ QQRKSRC1
     }
     monster_jorg:form =
     {
-      bbox = "-80 -80 0 90 90 140"
+      bbox = '-80 -80 0 90 90 140'
       t_Monsters = !
       health: =
       {
@@ -5360,7 +5521,7 @@ QQRKSRC1
     }
     monster_makron:form =
     {
-      bbox = "-30 -30 0 30 30 90"
+      bbox = '-30 -30 0 30 30 90'
       t_Monsters = !
     }
     monster_medic:form =
@@ -5394,7 +5555,7 @@ QQRKSRC1
     }
     monster_mutant:form =
     {
-      bbox = "-32 -32 -24 32 32 32"
+      bbox = '-32 -32 -24 32 32 32'
       t_Monsters = !
       health: =
       {
@@ -5535,7 +5696,7 @@ QQRKSRC1
     }
     monster_supertank:form =
     {
-      bbox = "-64 -64 0 64 64 72"
+      bbox = '-64 -64 0 64 64 72'
       t_Monsters1 = !
       health: =
       {
@@ -5555,7 +5716,7 @@ QQRKSRC1
     }
     monster_tank:form =
     {
-      bbox = "-32 -32 -16 32 32 72"
+      bbox = '-32 -32 -16 32 32 72'
       t_Monsters1 = !
       health: =
       {
@@ -5585,7 +5746,7 @@ QQRKSRC1
     }
     monster_tank_commander:form =
     {
-      bbox = "-32 -32 -16 32 32 72"
+      bbox = '-32 -32 -16 32 32 72'
       t_Monsters1 = !
       health: =
       {
@@ -5615,7 +5776,8 @@ QQRKSRC1
     }
     path_corner:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Pathtarget = !
       t_Count = !
@@ -5670,7 +5832,8 @@ QQRKSRC1
     }
     path_track:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -5724,7 +5887,7 @@ QQRKSRC1
     }
     point_combat:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Pathtarget = !
@@ -5743,7 +5906,7 @@ QQRKSRC1
     }
     target_actor:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Count = !
@@ -5810,7 +5973,7 @@ QQRKSRC1
     }
     target_anger:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Count = !
@@ -5854,7 +6017,8 @@ QQRKSRC1
     }
     target_animation:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       sounds: =
@@ -5884,7 +6048,8 @@ QQRKSRC1
     }
     target_attractor:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Pathtarget = !
       t_Speed0 = !
@@ -5957,7 +6122,8 @@ QQRKSRC1
     }
     target_blaster:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Angles1 = !
@@ -6020,7 +6186,8 @@ QQRKSRC1
     }
     target_bmodel_spawner:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       spawnflags: =
@@ -6052,7 +6219,8 @@ QQRKSRC1
     }
     target_cd:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       sounds: =
@@ -6068,7 +6236,8 @@ QQRKSRC1
     }
     target_change:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -6216,7 +6385,8 @@ QQRKSRC1
     }
     target_changelevel:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -6244,6 +6414,7 @@ QQRKSRC1
     }
     t_TCharacter:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       team: =
       {
@@ -6263,7 +6434,8 @@ QQRKSRC1
     }
     target_crosslevel_trigger:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -6324,7 +6496,8 @@ QQRKSRC1
     }
     target_crosslevel_target:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -6380,7 +6553,8 @@ QQRKSRC1
     }
     target_earthquake:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       speed: =
       {
@@ -6395,7 +6569,8 @@ QQRKSRC1
     }
     target_effect:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Movewith = !
@@ -6467,7 +6642,8 @@ QQRKSRC1
     }
     target_explosion:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Delay = !
       t_Killtarget = !
@@ -6481,7 +6657,7 @@ QQRKSRC1
     }
     target_fade:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Count = !
@@ -6513,7 +6689,8 @@ QQRKSRC1
     }
     target_failure:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       spawnflags: =
@@ -6541,7 +6718,8 @@ QQRKSRC1
     }
     target_fog:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       t_Angles1 = !
@@ -6602,15 +6780,109 @@ QQRKSRC1
         hint = "Density>Density at 180 deg."
       }
     }
+    target_fountain:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_TremorEffects = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Splash"
+      }
+      attenuation: =
+      {
+        txt = "&"
+        hint = "Attenuation>Rebound"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min extent"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>Number/frame"
+      }
+      fadeout: =
+      {
+        txt = "&"
+        hint = "Fadeout>Leaf life"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "Gravity>sv_gravity ratio"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>Weight of model"
+      }
+      mass2: =
+      {
+        txt = "&"
+        hint = "Mass2>Num. splash particles"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "Random>Count variance"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>color index"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>Falling speed"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max extent"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>model name"
+      }
+    }
     target_goal:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
     }
     target_help:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Count = !
@@ -6628,7 +6900,8 @@ QQRKSRC1
     }
     target_laser:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Count1 = !
@@ -6718,7 +6991,7 @@ QQRKSRC1
     }
     target_lightramp:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Target = !
@@ -6754,7 +7027,8 @@ QQRKSRC1
     }
     target_lightswitch:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       message: =
@@ -6765,7 +7039,8 @@ QQRKSRC1
     }
     target_locator:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       target: =
       {
@@ -6780,7 +7055,8 @@ QQRKSRC1
     }
     target_lock:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -6822,7 +7098,8 @@ QQRKSRC1
     }
     target_lock_code:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -6838,7 +7115,8 @@ QQRKSRC1
     }
     target_lock_clue:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -6859,6 +7137,7 @@ QQRKSRC1
     }
     t_LockDigit:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       team: =
       {
@@ -6878,7 +7157,8 @@ QQRKSRC1
     }
     target_monitor:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       t_Angles = !
@@ -6917,7 +7197,7 @@ QQRKSRC1
     }
     target_monsterbattle:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Count = !
@@ -6934,7 +7214,8 @@ QQRKSRC1
     }
     target_movewith:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       target: =
@@ -6956,7 +7237,8 @@ QQRKSRC1
     }
     target_playback:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       t_Count = !
@@ -7021,9 +7303,114 @@ QQRKSRC1
         hint = "fadeout>fade-out time (sec)"
       }
     }
+    target_precipitation:form =
+    {
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
+      t_Targetname = !
+      t_Angles1 = !
+      t_TremorEffects = !
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "1>Start On"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "2>Splash"
+      }
+      style: =
+      {
+        txt = "&"
+        hint = "Style>effect"
+        typ = "C"
+        items = "0>Single raindrop"$0D"1>10 raindrops"$0D"2>10 snowflakes"$0D"3"
+         ">Leaves"$0D"4>User-defined"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
+      attenuation: =
+      {
+        txt = "&"
+        hint = "Attenuation>Rebound"
+      }
+      bleft: =
+      {
+        txt = "&"
+        hint = "Bleft>Min extent"
+      }
+      count: =
+      {
+        txt = "&"
+        hint = "Count>Number/frame"
+      }
+      fadeout: =
+      {
+        txt = "&"
+        hint = "Fadeout>Leaf life"
+      }
+      gravity: =
+      {
+        txt = "&"
+        hint = "Gravity>sv_gravity ratio"
+      }
+      mass: =
+      {
+        txt = "&"
+        hint = "Mass>Weight of model"
+      }
+      mass2: =
+      {
+        txt = "&"
+        hint = "Mass2>Num. splash particles"
+      }
+      random: =
+      {
+        txt = "&"
+        hint = "Random>Count variance"
+      }
+      sounds: =
+      {
+        txt = "&"
+        hint = "Sounds>color index"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed>Falling speed"
+      }
+      tright: =
+      {
+        txt = "&"
+        hint = "Tright>Max extent"
+      }
+      pitch_speed: =
+      {
+        txt = "&"
+        hint = "Pitch_Speed>deg/sec"
+      }
+      yaw_speed: =
+      {
+        txt = "&"
+        hint = "Yaw_Speed>deg/sec"
+      }
+      roll_speed: =
+      {
+        txt = "&"
+        hint = "Roll_Speed>deg/sec"
+      }
+      usermodel: =
+      {
+        txt = "&"
+        hint = "Usermodel>model name"
+      }
+    }
     target_rocks:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Count = !
@@ -7040,7 +7427,8 @@ QQRKSRC1
     }
     target_rotation:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       spawnflags: =
@@ -7063,7 +7451,7 @@ QQRKSRC1
     }
     target_secret:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       message: =
@@ -7074,7 +7462,8 @@ QQRKSRC1
     }
     target_set_effect:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_TremorEffects = !
       target: =
@@ -7085,7 +7474,7 @@ QQRKSRC1
     }
     target_sky:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Appearflags1 = !
       t_Targetname = !
       t_Count = !
@@ -7097,7 +7486,8 @@ QQRKSRC1
     }
     target_spawner:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Speed0 = !
@@ -7111,7 +7501,8 @@ QQRKSRC1
     }
     target_speaker:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       t_Movewith = !
@@ -7155,7 +7546,8 @@ QQRKSRC1
     }
     target_splash:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Movewith = !
@@ -7182,7 +7574,8 @@ QQRKSRC1
     }
     target_string:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       team: =
       {
@@ -7192,7 +7585,8 @@ QQRKSRC1
     }
     target_temp_entity:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Count = !
       t_Movewith = !
@@ -7207,7 +7601,8 @@ QQRKSRC1
     }
     target_text:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       message: =
       {
@@ -7229,6 +7624,7 @@ QQRKSRC1
     }
     t_Trigger:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -7249,14 +7645,16 @@ QQRKSRC1
     }
     trigger_always:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Target = !
       t_Delay = !
       t_Killtarget = !
     }
     trigger_bbox:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Trigger = !
       t_Pathtarget1 = !
       t_Count1 = !
@@ -7304,7 +7702,8 @@ QQRKSRC1
     }
     trigger_counter:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -7352,11 +7751,13 @@ QQRKSRC1
     }
     trigger_elevator:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
     }
     trigger_fog:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Count1 = !
@@ -7413,6 +7814,7 @@ QQRKSRC1
     }
     trigger_gravity:form =
     {
+      t_Appearflags = !
       gravity: =
       {
         txt = "&"
@@ -7421,6 +7823,7 @@ QQRKSRC1
     }
     trigger_hurt:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       spawnflags: =
@@ -7494,7 +7897,8 @@ QQRKSRC1
     }
     trigger_key:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
       t_Targetname = !
       t_Target = !
       t_Killtarget = !
@@ -7581,7 +7985,7 @@ QQRKSRC1
     }
     trigger_relay:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
       t_Trigger = !
       t_Pathtarget1 = !
       t_Count = !
@@ -7633,6 +8037,7 @@ QQRKSRC1
     }
     trigger_monsterjump:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       speed: =
@@ -7720,6 +8125,7 @@ QQRKSRC1
     }
     trigger_push:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Angles1 = !
       t_Movewith = !
@@ -7748,6 +8154,7 @@ QQRKSRC1
     }
     trigger_scales:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       spawnflags: =
       {
@@ -7763,6 +8170,7 @@ QQRKSRC1
     }
     trigger_teleporter:form =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       spawnflags: =
@@ -7808,10 +8216,12 @@ QQRKSRC1
     }
     trigger_transition:form =
     {
+      t_Appearflags = !
       t_Targetname = !
     }
     t_TurretBreach:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       spawnflags: =
@@ -7934,6 +8344,7 @@ QQRKSRC1
     }
     t_TurretBase:incl =
     {
+      t_Appearflags = !
       t_Targetname = !
       t_Movewith = !
       spawnflags: =
@@ -7955,7 +8366,7 @@ QQRKSRC1
     }
     turret_driver:form =
     {
-      bbox = "-16 -16 -24 16 16 32"
+      bbox = '-16 -16 -24 16 16 32'
       t_Appearflags1 = !
       t_Angles = !
       spawnflags: =
@@ -7972,11 +8383,13 @@ QQRKSRC1
     }
     viewthing:form =
     {
-      bbox = "-8 -8 -8 8 8 8"
+      bbox = '-8 -8 -8 8 8 8'
+      t_Appearflags = !
     }
     t_Weapons:incl =
     {
-      bbox = "-16 -16 -16 16 16 16"
+      bbox = '-16 -16 -16 16 16 16'
+      t_Appearflags = !
       t_TeamDM = !
       t_Targetname = !
       t_Target = !
