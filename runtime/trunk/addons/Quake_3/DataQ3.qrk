@@ -26,6 +26,13 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/02/13 18:11:29  maleficus
+//All item entities show models now! More help info. Some cleanup.
+//
+//$Log$
+//Revision 1.1  2001/02/11 11:09:59  decker_dk
+//Moved from addons directory
+//
 //Revision 1.19  2001/02/07 18:34:29  aiv
 //added support for misc_model type entities
 //
@@ -2393,7 +2400,7 @@ QQRKSRC1
         {
           origin = "0 0 0"
           wait = "10"
-          ;desc = "Does this really need a explaination? Uses ammo_bfg."
+          ;desc = "Does this really need a explanation? Uses ammo_bfg."
         }
         weapon_grapplinghook:e =
         {
@@ -2626,7 +2633,7 @@ QQRKSRC1
         item_health_mega:e =
         {
           origin = "0 0 0"
-          ;desc = "Blue M bubble equale to 100 points of health."
+          ;desc = "Blue M bubble equal to 100 points of health."
         }
       }
       Light Entities.qtxfolder =
@@ -6234,7 +6241,7 @@ QQRKSRC1
       phase: =
       {
         Txt = "&"
-	Hint = "sets the start offset of the oscillation cycle. Values must be 0 < phase < 1. Any integer phase value is the same as no offset (default 0)."
+	  Hint = "sets the start offset of the oscillation cycle. Values must be 0 < phase < 1. Any integer phase value is the same as no offset (default 0)."
       }
       model2: =
       {
@@ -6872,8 +6879,9 @@ QQRKSRC1
     }
     holdable_medkit:form =
     {
-      Help = "This gives the player 100 health when used."
+      Help = "This sets the player's health at 125 health when used. Can only carry one at a time"
       t_item_size = !
+	mdl = "models/powerups/holdable/medkit.md3"
       wait: =
       {
         Txt = "&"
@@ -6930,8 +6938,9 @@ QQRKSRC1
     }
     holdable_teleporter:form =
     {
-      Help = "This gives the player ability to teleport when used."
+      Help = "This gives the player ability to teleport when used. Can only carry one at a time."
       t_item_size = !
+	mdl = "models/powerups/holdable/teleporter.md3"
       wait: =
       {
         Txt = "&"
@@ -7003,7 +7012,7 @@ QQRKSRC1
     }
 	item_botroam:form =
     {
-	Help = "Game Function: An invisible entity which attracts a bot to it. Use to move bots to parts of a map that might otherwise not be used."
+	Help = "Game Function: An invisible entity which attracts a bot to it. Use to move bots to parts of a map that might otherwise not be used. Don't set too high, or bot roaming will suffer."
       t_player_size = !
 	weight: =
 	{
@@ -7085,6 +7094,7 @@ QQRKSRC1
     {
       Help = "This is where a player spawns into the game at."
       t_player_size = !
+	mdl = "models/players/sarge/lower.md3"
       target: =
       {
         Txt = "&"
@@ -7155,8 +7165,9 @@ QQRKSRC1
     }
     item_armor_body:form =
     {
-      Help = "This gives the player 100 points of armor."
+      Help = "The red armor. This gives the player 100 points of armor."
       t_item_size = !
+	mdl = "models/powerups/armor/armor_red.md3"
       wait: =
       {
         Txt = "&"
@@ -7212,8 +7223,9 @@ QQRKSRC1
     }
     item_armor_combat:form =
     {
-      Help = "This gives the player 50 points of armor."
+      Help = "The yellow armor. This gives the player 50 points of armor."
       t_item_size = !
+	mdl = "models/powerups/armor/armor_yel.md3"
       wait: =
       {
         Txt = "&"
@@ -7269,8 +7281,9 @@ QQRKSRC1
     }
     item_armor_shard:form =
     {
-      Help = "This gives the player 5 points of armor."
+      Help = "The small, green shard. This gives the player 5 points of armor."
       t_item_size = !
+	mdl = "models/powerups/armor/shard.md3"
       wait: =
       {
         Txt = "&"
@@ -7283,7 +7296,7 @@ QQRKSRC1
       }
       team: =
       {
-        Txt = "&"
+      Txt = "&"
 	Hint = "set this to team items. Teamed items will respawn randomly after team master is picked up."
       }
 	notsingle: =
@@ -7326,8 +7339,9 @@ QQRKSRC1
     }
     item_enviro:form =
     {
-      Help = "Battle Suit - Invulnerability."
+      Help = "Battle Suit - Invulnerability. Protects from lava and splash damage from weapons. Won't protect you from death fog, or the Void."
       t_item_size = !
+	mdl = "models/powerups/instant/enviro.md3"
       wait: =
       {
         Txt = "&"
@@ -7388,8 +7402,9 @@ QQRKSRC1
     }
     item_flight:form =
     {
-      Help = "Flight power up. Bots can't use this."
+      Help = "Flight power up. Bots can't use this. Only used for multiplay."
       t_item_size = !
+	mdl = "models/powerups/instant/flight.md3"
       wait: =
       {
         Txt = "&"
@@ -7452,6 +7467,7 @@ QQRKSRC1
     {
       Help = "Speed power up."
       t_item_size = !
+	mdl = "models/powerups/instant/haste.md3"
       wait: =
       {
         Txt = "&"
@@ -7514,6 +7530,7 @@ QQRKSRC1
     {
       Help = "This gives the player 25 points of health."
       t_item_size = !
+	mdl = "models/powerups/health/medium_sphere.md3"
       wait: =
       {
         Txt = "&"
@@ -7576,6 +7593,7 @@ QQRKSRC1
     {
       Help = "This gives the player 50 points of health."
       t_item_size = !
+	mdl = "models/powerups/health/large_sphere.md3"
       wait: =
       {
         Txt = "&"
@@ -7638,6 +7656,7 @@ QQRKSRC1
     {
       Help = "This gives the player 100 points of health."
       t_item_size = !
+	mdl = "models/powerups/health/mega_sphere.md3"
       wait: =
       {
         Txt = "&"
@@ -7699,6 +7718,7 @@ QQRKSRC1
     item_health_small:form =
     {
       Help = "This gives the player 5 points of health."
+	mdl = "models/powerups/health/small_sphere.md3"
       t_item_size = !
       wait: =
       {
@@ -7762,6 +7782,7 @@ QQRKSRC1
     item_invis:form =
     {
       Help = "Invisiblity powerup."
+	mdl = "models/powerups/instant/invis.md3"
       t_item_size = !
       wait: =
       {
@@ -7823,8 +7844,9 @@ QQRKSRC1
     }
     item_quad:form =
     {
-      Help = "Oh come on do i really need to explain this?"
+      Help = "Oh come on, do i really need to explain this?"
       t_item_size = !
+	mdl = "models/powerups/instant/quad.md3"
       wait: =
       {
         Txt = "&"
@@ -7887,6 +7909,7 @@ QQRKSRC1
     {
       Help = "Regeneration power up."
       t_item_size = !
+	mdl = "models/powerups/instant/regen.md3"
       wait: =
       {
         Txt = "&"
@@ -7976,7 +7999,7 @@ QQRKSRC1
 	Txt = "&"
 	Typ = "X1"
 	Cap = "LINEAR"
-	Hint = "light falloff will be linear instead of inverse square of distance from source."
+	Hint = "light falloff will be linear instead of inverse square of distance from source. i.e. makes sharp, contrasting shadows."
       }
     }
     misc_model:form =
@@ -8730,11 +8753,14 @@ QQRKSRC1
     {
       Help = "This is the blue teams flag."
       t_player_size = !
+	mdl = "models/flags/b_flag.md3"
     }
     team_CTF_blueplayer:form =
     {
       Help = "Initial Blue team spawning position for CTF games."
       t_player_size = !
+	mdl = "models/players/major/lower.md3"
+
       target: =
       {
         Txt = "&"
@@ -8745,6 +8771,7 @@ QQRKSRC1
     {
       Help = "Blue team respawning position for CTF games."
       t_player_size = !
+	mdl = "models/players/major/lower.md3"
       target: =
       {
         Txt = "&"
@@ -8755,11 +8782,13 @@ QQRKSRC1
     {
       Help = "This is the red teams flag."
       t_player_size = !
+	mdl = "models/flags/r_flag.md3"
     }
     team_CTF_redplayer:form =
     {
       Help = "Initial Red team spawning position for CTF games."
       t_player_size = !
+	mdl = "models/players/doom/lower.md3"
       target: =
       {
         Txt = "&"
@@ -8770,6 +8799,7 @@ QQRKSRC1
     {
       Help = "Red team respawning position for CTF games."
       t_player_size = !
+	mdl = "models/players/doom/lower.md3"
       target: =
       {
         Txt = "&"
@@ -8956,6 +8986,7 @@ QQRKSRC1
     {
       Help = "This needs no explaination."
       t_weapon_size = !
+	mdl = "models/weapons2/bfg/bfg.md3"
 	target: =
       {
         Txt = "&"
@@ -9018,6 +9049,7 @@ QQRKSRC1
     {
       Help = "One-handed chainsaw-like weapon. Uses no ammo."
       t_weapon_size = !
+	mdl = "models/weapons2/gauntlet/gauntlet.md3"
       wait: =
       {
         Txt = "&"
@@ -9080,6 +9112,7 @@ QQRKSRC1
     {
       Help = "Pully and wire used for propelling oneself to higher elevation."
       t_weapon_size = !
+	mdl = "models/weapons2/grapple/grapple.md3"
       wait: =
       {
         Txt = "&"
@@ -9142,6 +9175,7 @@ QQRKSRC1
     {
       Help = "Canister style explosive launcher. Uses ammo_grenades."
       t_weapon_size = !
+	mdl = "models/weapons2/grenadel/grenadel.md3"
       wait: =
       {
         Txt = "&"
@@ -9204,6 +9238,7 @@ QQRKSRC1
     {
       Help = "Electric stimulator. :P. Uses ammo_lightning."
       t_weapon_size = !
+	mdl = "models/weapons2/lightning/lightning.md3"
       wait: =
       {
         Txt = "&"
@@ -9266,6 +9301,7 @@ QQRKSRC1
     {
       Help = "A weak multiple rounds fired weapon. Uses ammo_bullets."
       t_weapon_size = !
+	mdl = "models/weapons2/machinegun/machinegun.md3"
       wait: =
       {
         Txt = "&"
@@ -9328,6 +9364,7 @@ QQRKSRC1
     {
       Help = "Short range multiple shots fired weapons decent power. Uses ammo_cells."
       t_weapon_size = !
+	mdl = "models/weapons2/plasma/plasma.md3"
       wait: =
       {
         Txt = "&"
@@ -9390,6 +9427,7 @@ QQRKSRC1
     {
       Help = "Long distance very powerful weapon. Uses ammo_slugs."
       t_weapon_size = !
+	mdl = "models/weapons2/railgun/railgun.md3"
       wait: =
       {
         Txt = "&"
@@ -9452,6 +9490,7 @@ QQRKSRC1
     {
       Help = "Impact explosive projectile weapon. Uses ammo_rockets."
       t_weapon_size = !
+	mdl = "models/weapons2/rocketl/rocketl.md3"
       wait: =
       {
         Txt = "&"
@@ -9514,6 +9553,7 @@ QQRKSRC1
     {
       Help = "Doubled barreled weapon with short range power.Uses ammo_shells."
       t_weapon_size = !
+	mdl = "models/weapons2/shotgun/shotgun.md3"
       wait: =
       {
         Txt = "&"
