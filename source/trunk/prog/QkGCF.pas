@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2004/12/02 20:53:06  alexander
+added format names for hl2
+use vtf textures in original size again
+
 Revision 1.1  2004/11/25 00:31:42  alexander
 first gcf access attempt
 
@@ -74,10 +78,22 @@ type
           procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
- 
+
+ TGCFExplorer =  TFileExplorer;
+
  
 
  {------------------------}
+type
+  TFQGCF = class(TQForm2)
+    private
+      procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
+    protected
+      function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
+      function GetConfigStr: String; override;
+    public
+     function MacroCommand(Cmd: Integer) : Boolean; override;
+  end;
 
 
 
@@ -124,6 +140,7 @@ end;
 
 function QGCFFolder.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
+ Result:=TFQGCF.Create(nOwner);
 end;
 
 procedure QGCFFolder.ObjectState(var E: TEtatObjet);
@@ -136,13 +153,11 @@ end;
 class procedure QGCFFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5136);
+ Info.FileObjectDescriptionText:=LoadStr1(5711);
  Info.WndInfo:=[wiSameExplorer];
 end;
 
 function QGCFFolder.IsExplorerItem(Q: QObject) : TIsExplorerItem;
-{var
- T: QObject;}
 begin
  if Q is QGCFFolder then
   Result:=ieResult[True] + [ieListView]
@@ -155,7 +170,7 @@ begin
    Result:=[];
 end;
 
-Procedure AddTree(ParentFolder: QObject; gcfelement  : PChar);
+Procedure AddTree(ParentFolder: QObject; gcfelement  : PChar; root: Bool);
 var
   subelements : Longword;
   subgcfelement  : PChar;
@@ -167,13 +182,17 @@ begin
     {handle a folder}
     Folder:= QGCFFolder.Create( GCFSubElementName(gcfelement), ParentFolder) ;
     ParentFolder.SubElements.Add( Folder );
+    if root then
+      Folder.TvParent:= nil
+    else
+      Folder.TvParent:= ParentFolder;
 
     {recurse into subelements of folder}
     subelements:= GCFNumSubElements(gcfelement);
     for i:=0 to subelements-1 do
     begin
       subgcfelement:= GCFGetSubElement(gcfelement,i);
-      AddTree(Folder,subgcfelement);
+      AddTree(Folder,subgcfelement,False);
     end;
 
   end
@@ -183,13 +202,6 @@ begin
 end;
 
 procedure QGCFFolder.LoadFile(F: TStream; FSize: Integer);
-var
- I, J: Integer;
- TailleNom: Integer;
- Origine: LongInt;
- Dossier, nDossier: QObject;
- Q: QObject;
- gcfelement  : PChar;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -198,7 +210,7 @@ begin
            gcfhandle:= GCFOpen(PChar(LoadName));
            if gcfhandle=nil then
              Raise EErrorFmt(5707, [LoadName]); {cant open gcf file}
-           AddTree(Self,GCFOpenElement(gcfhandle,'root') );
+           AddTree(Self,GCFOpenElement(gcfhandle,'root'),true );
          end
          else
            Raise EError(5706); {dll not there}
@@ -261,13 +273,12 @@ end;
 
 function QGCFFolder.CreateOwnExplorer;
 begin
-
+ Result:=TGCFExplorer.Create(nOwner);
+ Result.Width:=170;
 end;
 
 function QGCFFolder.FindFile(const PakPath: String) : QFileObject;
 var
- I: Integer;
- Folder: QObject;
  gcffilehandle: PChar;
 
 begin
@@ -527,6 +538,81 @@ begin
     CopyAllData(Source, False);   { directly copies data }
   end;
 end;
+
+
+
+function TFQGCF.AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean;
+begin
+ Result:=(Q is QGCFFolder) and inherited AssignObject(Q, State);
+end;
+
+procedure TFQGCF.wmInternalMessage(var Msg: TMessage);
+begin
+ case Msg.wParam of
+  wp_EditMsg:
+    case Msg.lParam of
+     edObjEnable: if TMSelUnique<>Nil then
+                   Msg.Result:=edOk or edOpen;
+    end;
+ end;
+ if Msg.Result=0 then
+  inherited;
+end;
+
+function TFQGCF.GetConfigStr;
+begin
+ Result:='GCF';
+end;
+
+function TFQGCF.MacroCommand(Cmd: Integer) : Boolean;
+var
+ Path: String;
+ Count: Integer;
+begin
+ Result:=inherited MacroCommand(Cmd);
+ if not Result then
+  case Cmd of
+  { PAKX } Ord('P')+256*Ord('A')+65536*Ord('K')+16777216*Ord('X'):
+     if FileObject is QGCFFolder then
+     begin
+       GetDir(0, Path);
+       Result:=BrowseForFolderDlg(Handle, Path, LoadStr1(5662), '');
+       if Result then
+       begin
+         Update;
+         ProgressIndicatorStart(0,0); try
+         Count:=QGCFFolder(FileObject).ExtractTo(Path);
+         finally ProgressIndicatorStop; end;
+         MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
+       end;
+     end;
+
+  { PAKE } Ord('P')+256*Ord('A')+65536*Ord('K')+16777216*Ord('E'):
+     if FileObject is QGCFFolder then
+     begin
+       GetDir(0, Path);
+       Result:=BrowseForFolderDlg(Handle, Path, LoadStr1(5662), '');
+       if Result then
+         Update;
+         ProgressIndicatorStart(0,0); try
+         Count:=QGCFFolder(FileObject).ExtractEntitiesTo(Path);
+         finally ProgressIndicatorStop; end;
+         MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
+     end;
+  end;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
 
 initialization
   Hgcfwrap := LoadLibrary('gcfwrap.dll');
