@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2002/02/26 23:19:46  tiglari
+update version
+
 Revision 1.64  2002/02/24 13:46:53  decker_dk
 Update version to "QuArK 6.3snap 2002feb24"
 
@@ -210,7 +213,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
      Controls, Graphics, Forms, qmath, Menus,
      CommCtrl, Python;
 
-{DEFINE ShareSpecMem}
+{ $DEFINE ShareSpecMem}
 
 const
   QuArKVersion            = 'QuArK 6.3snap 2002feb28';
