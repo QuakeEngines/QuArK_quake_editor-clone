@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2005/01/02 16:44:52  alexander
+use setup value for file system module
+
 Revision 1.1  2005/01/02 15:19:27  alexander
 access files via steam service - first
 
@@ -61,7 +64,7 @@ implementation
 
 uses Quarkx, PyObjects, Game, QkObjectClassList;
 
-const RequiredGCFAPI=1;
+const RequiredSTEAMFSAPI=2;
 
 type
 qfileinfo = record
@@ -72,10 +75,18 @@ end;
 var
 // binding to c dll
   Hsteamfswrap  : HINST;
+  Htier0        : HINST;
+  Hvstdlib      : HINST;
+
 // c signatures
 
 //DLL_EXPORT unsigned long APIVersion(void)
-//DLL_EXPORT pfshandle SteamFSInit( const char *m_pFileSystemDLLName, unsigned long contentid)
+//DLL_EXPORT pfshandle SteamFSInit( const char* m_pFileSystemDLLName,
+//                                  unsigned long contentid,
+//                                  const char* pSteamAppUser,
+//                                  const char* pSteamUserPassphrase,
+//                                  const char* pSteamAppId,
+//                                  const char* pSteamPath)
 //DLL_EXPORT void SteamFSTerm(pfshandle pfs)
 //DLL_EXPORT psteamfile SteamFSOpen(pfshandle pfs, const char* name,const char* mode)
 //DLL_EXPORT void SteamFSClose(psteamfile pf)
@@ -89,7 +100,12 @@ var
 
   APIVersion          : function    : Longword; stdcall;
 
-  SteamFSInit       : function  (FileSystemDLLName : PChar;  contentid : Longword ) : Pointer; stdcall;// returns pfs
+  SteamFSInit       : function  (FileSystemDLLName : PChar;
+                                 contentid : Longword ;
+                                 pSteamAppUser : PChar;
+                                 pSteamUserPassphrase : PChar;
+                                 pSteamAppId : PChar;
+                                 pSteamPath : PChar) : Pointer; stdcall;// returns pfs
   SteamFSTerm       : procedure (pfs : Pointer);   stdcall;
   SteamFSOpen       : function  (pfs : Pointer; name: PChar ; mode: PChar ): Pointer; stdcall;// returns pf
   SteamFSClose      : procedure (pf  : Pointer); stdcall;
@@ -164,7 +180,7 @@ begin
   begin
     read:= SteamFSRead(fh,mem.Memory,filesize);
     if read<>filesize then
-      raise Exception.CreateFmt('Error reading %s from gcf, got only%d',[pfileinfo^.filename,read]);
+      raise Exception.CreateFmt('Error reading %s from steam, got only%d',[pfileinfo^.filename,read]);
   end;
 
   Result:=mem.Size;
@@ -233,17 +249,12 @@ end;
 procedure QSteamFSFolder.LoadFile(F: TStream; FSize: Integer);
 var
 //  steamfolderitem : pointer;
-  FSModule:String;
+  FSModule,SteamAppUser,SteamUserPassphrase,SteamAppId,SteamPath:String;
   contentid: longword;
 
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
-         // tbd:
-         //setenv(steamappuser=macwurst)
-         //setenv(steamappid=211)
-         //set path to e:\spiele\steam
-
          try
            if self is QSteamFS then
              contentid:=strtoint(self.Name)
@@ -253,7 +264,17 @@ begin
            Raise EErrorFmt(5714, [self.Name]);
          end;
          FsModule:=SetupGameSet.Specifics.Values['SteamFSModule'];
-         steamfshandle:= SteamFSInit(PChar(FsModule) ,contentid);
+         SteamAppUser:=SetupGameSet.Specifics.Values['SteamAppUser'];
+         SteamAppId:=SetupGameSet.Specifics.Values['SteamAppId'];
+         SteamUserPassphrase:=SetupGameSet.Specifics.Values['SteamUserPassphrase'];
+         SteamPath:=SetupGameSet.Specifics.Values['Directory'];
+
+         steamfshandle:= SteamFSInit(PChar(FsModule),
+                                     contentid,
+                                     PChar(SteamAppUser),
+                                     nil{PChar(SteamUserPassphrase)},
+                                     PChar(SteamAppId),
+                                     PChar(SteamPath));
          if steamfshandle=nil then
            Raise EErrorFmt(5712, [LoadName]); {init steam}
 
@@ -428,11 +449,15 @@ begin
 end;
 
 initialization
+  //Htier0 := LoadLibrary('tier0.dll');
+  //Hvstdlib := LoadLibrary('vstdlib.dll');
+
+
   Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
   if Hsteamfswrap >= 32 then { success }
   begin
     APIVersion      := InitDllPointer(Hsteamfswrap, 'APIVersion');
-    if APIVersion<>RequiredGCFAPI then
+    if APIVersion <> RequiredSTEAMFSAPI then
       Fatal('dlls/QuArKSteamFS.dll API version mismatch');
     SteamFSInit            := InitDllPointer(Hsteamfswrap, 'SteamFSInit');
     SteamFSTerm            := InitDllPointer(Hsteamfswrap, 'SteamFSTerm');

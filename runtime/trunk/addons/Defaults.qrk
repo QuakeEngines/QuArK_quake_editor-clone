@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.240  2005/01/02 16:51:49  alexander
+//use setup value for file system module
+//
 //Revision 1.239  2004/12/30 06:42:17  cdunde
 //To add updated support for JA by nazar
 //
@@ -1258,9 +1261,10 @@ QQRKSRC1
         Code = "k" // Hardcoded value in Setup.PAS
 
 
-        Directory = "e:\spiele\steam\steamapps"
-        SteamFSModule = "E:/spiele/steam/steamapps/macwurst/sourcesdk/bin/FileSystem_Steam.dll"
-        CheckDirectory = "..\steam.exe"
+        Directory = "e:\spiele\steam"
+        SteamFSModule = "E:/spiele/steam/steamapps/<steam user name>/sourcesdk/bin/FileSystem_Steam.dll"
+        SteamAppUser = "<your steam username>"
+        SteamAppId = "211"
 
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
@@ -3087,25 +3091,35 @@ QQRKSRC1
       }
       SteamFSModule =
       {
-        Txt = "Steam Filesystem Module"
+        Txt = "Steam Filesystem Dll"
         Typ = "ED"      // Edit Directory
-        Hint = "use filesystem dll from sdk/bin as start"
+        Hint = "use sourcesdk/bin/FileSystem_Steam.dll"
+      }
+      SteamAppUser =
+      {
+        Txt = "Steam Account Name"
+        Hint = "The Name you logon into steam"
+      }
+      SteamAppId =
+      {
+        Txt = "Steam App Id"
+        Hint = "set to 211"
       }
       Directory: =
       {
-        Txt = "SteamApps Directory"
+        Txt = "Steam Directory"
         Typ = "ED"      // Edit Directory
-        Hint = "Path where all the gcf files are"
-        CheckFile = "../steam.exe"
+        Hint = "Steam Install Directory"
+        CheckFile = "steam.exe"
       }
       tmpQuArK: =
       {
         Txt = "Game Directory"
         Typ = "C"   // combo box    
-        Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
-        Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
-                $0D"<Steam User Name>/half-life 2/hl2"
-                $0D"<Steam User Name>/counter-strike source/cstrike"
+        Hint = "relative to steam install directory, e.g. SteamApps/<Steam Account Name>/counter-strike source/cstrike"
+        Items =    "SteamApps/<Steam Account Name>/half-life 2 deathmatch/hl2mp"
+                $0D"SteamApps/<Steam Account Name>/half-life 2/hl2"
+                $0D"SteamApps/<Steam Account Name>/counter-strike source/cstrike"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
