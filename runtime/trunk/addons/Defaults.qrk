@@ -112,7 +112,7 @@ QQRKSRC1
         Fog = "1"
         VCorrection = '1'
         Lights = "1"
-        Ambient = '0.25'
+        Ambient = '0.4'
         Form = "GeneralOpenGL"
       }
       Memory:config =
