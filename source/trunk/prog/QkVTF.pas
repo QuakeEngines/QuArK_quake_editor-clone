@@ -22,6 +22,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2004/12/27 11:01:58  alexander
+added versioning in dll interface (QuArKVTF.dll)
+cleanup
+
 Revision 1.4  2004/12/21 09:03:03  alexander
 changed vtf loading to use QuArKVTF.dll
 
@@ -63,7 +67,7 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
 
-const RequiredVTFAPI=1;
+const RequiredVTFAPI=2;
 
 var
   HQuArKVTF   : HINST;
@@ -71,10 +75,10 @@ var
 
 // c signatures
 //DLL_EXPORT DWORD APIVersion(void)
-//DLL_IMPORT int vtf_to_mem(void* bufmem, long readlength, unsigned char *pDstImage);
+//DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength, long iMipLevel, unsigned char *pDstImage)
 //DLL_IMPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
   APIVersion : function    : Longword; stdcall;
-  vtf_to_mem : function ( buf: PChar; length: Integer; outbuf: PChar): Integer; stdcall;
+  vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar): Integer; stdcall;
   vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger): Integer; stdcall;
 
 
@@ -104,7 +108,7 @@ var
   AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
   Source, DestAlpha, DestImg,pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
-  NumberOfPixels: Integer;
+  NumberOfPixels,mip: Integer;
   Width,Height,MipLevels:Integer;
 begin
   case ReadFormat of
@@ -119,10 +123,19 @@ begin
      begin
       if 0 = vtf_info (PChar(RawBuffer), FSize, @Width, @Height, @MipLevels) then
         Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
+
+      mip:=0;
+
+      for i:=1 to mip do
+      begin
+        width:=width div 2;
+        height:=height div 2;
+      end;
+
       NumberOfPixels:= Width*Height;
-      SetSize(Point(Width, Height));
-      SetLength(DecodedBuffer, NumberOfPixels * 4);
-      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,PChar(DecodedBuffer)) then
+      SetSize(Point(Width , Height ));
+      SetLength(DecodedBuffer, NumberOfPixels * 4 );
+      if 0 = vtf_to_mem (PChar(RawBuffer), FSize,mip ,PChar(DecodedBuffer)) then
         Raise EErrorFmt(5703, [LoadName, Width, Height, MipLevels]);
 
      end
