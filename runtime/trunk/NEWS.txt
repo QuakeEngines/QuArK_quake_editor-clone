@@ -11,114 +11,56 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####    Quake Army Knife 6.4 Changelog
+ * [alexander]: QuArK understands now how to access Steam directly.
+     (Steam must be running for that). Some new configuration entries have
+     to be set up for steam access.
 
- * [alexander]:
-    QuArK understands now how to access steam directly ( steam must be running for that)
-    see texture addon files for the details. Two environment variables must be set: 
-      SteamAppUser : to your steam account name
-      SteamAppId : to 211
-    A path to the steam dll directory (where steam is installed must be set)
-    The Steam Filesystem Module must be chosen in the quark configuration
-    (use filesystem dll from sdk/bin )
-
- * [cdunde]: Added support for Q3 based mods CoD (Call of Duty),
-    ET (Enemy Terror) and UT (Urban Terror - 2 data unit files).
+ * [cdunde]: Added support for Q3 based mods CoD (Call of Duty), ET
+      (Enemy Territory) and UT (Urban Terror - 2 data unit files).
 
  * [cdunde]: Weapon entities added to the DataMOHAA file by Hannibal.
 
  * [Nazar]: Added additional support for JA (Jedi Academy) with full
-    lists of all textures, shaders and all singleplayer entities as
-    well as a partial list of multiplayer entities.
-    Setup a new path in the Defaults.qrk file for game and command
-    lines for the map compiler file q3map2.exe.
+      lists of all textures, shaders and all singleplayer entities as
+      well as a partial list of multiplayer entities. Setup a new path
+      in the Defaults.qrk file for game and command lines for the map
+      compiler file q3map2.exe.
 
- * [alexander]:
-    Introduced new PointSpecHandle which allows to have additional 3d
-    control points on entities. Which specifics are used for these
-    points is controlled similar to the angle specific list. This is
-    needed to support ladders and breakable security glass in HL2.
+ * [alexander]: Introduced new PointSpecHandle which allows to have
+      additional 3d control points on entities. Which specifics are
+      used for these points is controlled similar to the angle
+      specific list. This is needed to support ladders and breakable
+      security glass in HL2.
 
- * [alexander]:
-    allow individual texture paths for hl2
-    vtf dll api changed , can select mip level now
-    preparations for this splitting access via steam and via hllib
-    gcf dll has now static linkage against hllib
+ * [alexander]: HL2-related enhancements:
+      - allow individual texture paths for hl2
+      - VTF DLL api changed, can select mip level now
+      - preparations for this splitting access via Steam and via HLLib
+      - GCF DLL has now static linkage against HLLib
  
- * [alexander]:
-    runtime/addons/Defaults.qrk: set textures path for hl2 to 
-      "hl2/materials"
-    runtime/addons/Half-Life2/textures-*.qrk: use gcf
-      files instead of extracted files
-    source/prog/Game.pas:   load gcf only once and reuse data 
-    source/prog/QkGCF.pas:  gcf access working, versioning of dll
-      interface (QuArKSteamFS.dll)
-    source/prog/QkObjects.pas: added a userdata pointer. This is
-      needed to access context data from on_access callbacks
-    source/prog/QkVTF.pas: added versioning in dll interface
-      (QuArKVTF.dll)
+ * [alexander]: Fixes for HL2/Source supported
+      - Fixes for GCF file handling
+      - Configuration changes to handle HL2 textures
 
- * [Rowdy]: For Doom 3: Added bounding boxes to the entities,
-    re-added common/* textures (like caulk, trigger), fixed the roof
-      texture in the default room,
-    added an "export .map" option to the Doom 3 menu on the
-      map editing window (makes exporting .map files in preparation
-      for compilation somewhat easier), updated readme_doom3.txt.
+ * [Rowdy]: For Doom 3: Added bounding boxes to the entities, re-added
+      common/* textures (like caulk, trigger), fixed the roof texture
+      in the default room, added an "export .map" option to the Doom 3
+      menu on the map editing window (makes exporting .map files in
+      preparation for compilation somewhat easier), updated
+      readme_doom3.txt.
 
  * [cdunde/Rowdy]: Added light Color-Picker function for Torque game
-    engine.
+      engine.
 
- * [alexander]: HL2 Support started. I changed quite a lot of files:
-    runtime/addons/Defaults.qrk-//hl2 support started
-    runtime/addons/Half-Life2/entities-hl2-cs.qrk-//first useable
-      versions, added rcs headers
-    runtime/addons/Half-Life2/entities-hl2-dm.qrk-//first useable
-      versions, added rcs headers
-    runtime/addons/Half-Life2/entities-hl2.qrk-//first useable
-      versions, added rcs headers
-    runtime/addons/Half-Life2/models-hl2.qrk-//first useable
-      versions,cvs headers added
-    runtime/plugins/entfgd2qrk.py-#removed bloody duplicated rcs
-      headers again
-    runtime/plugins/entfgd2qrk.py-#no default angle specifics
-    runtime/plugins/entfgd2qrk.py-#can parse hl2 and hl2 mp hammer
-      files now
-    runtime/quarkpy/mapentities.py-#movedir specific gets angle
-      maphandle
-    runtime/quarkpy/qdictionnary.py-#added format names for hl2
-    runtime/quarkpy/qdictionnary.py-#added vtf format name
-    runtime/quarkpy/qdictionnary.py-#new messages for gcf files
-    runtime/quarkpy/qdictionnary.py-#new: support for vtf file loading
-    source/dllsource/dxtdecode/dxtdec.c-hl2 support started
-    source/dllsource/dxtdecode/dxtdecode.def-;hl2 support started
-    source/dllsource/dxtdecode/Makefile-#hl2 support started
-    source/dllsource/gcfwrap/dxtdec.c-hl2 support started
-    source/Makefile-#added makefile to build quark with the help of
-      gmake
-    source/prog/Game.pas-first gcf access attempt
-    source/prog/QkGCF.pas-first gcf access attempt
-    source/prog/QkImages.pas-hl2 support started
-    source/prog/QkMapObjects.pas-support for HL2 input and output type
-      specifics (input#specificname)
-    source/prog/QkMapObjects.pas-save in HL2 map format when MapFormat 
-      is configured to HL2
-    source/prog/QkMapPoly.pas-default lightrmap scale export
-    source/prog/QkMapPoly.pas-save in HL2 map format when MapFormat 
-      is configured to HL2
-    source/prog/QkTextures.pas-hl2 support started
-    source/prog/QkVTF.pas-changed vtf loading to use QuArKVTF.dll
-    source/prog/QkVTF.pas-added format names for hl2
-    source/prog/QkVTF.pas-new: support for vtf file loading
-    source/prog/Setup.pas-hl2 support started
-    source/QuArK.dpr-added a form for gcf browsing, added files for 
-      HL2 support
+ * [alexander]: HL2 Support started. Too many changes to list here.
 
- * [alexander]: removed unnecessary resampling and gamma conversion for
-    open gl true color textures
+ * [alexander]: removed unnecessary resampling and gamma conversion
+      for open gl true color textures
 
- * [alexander]: source/prog/QkMap.pas fixed malformed comment line with
-    0D inside fooling D5 and not D6
+ * [alexander]: source/prog/QkMap.pas fixed malformed comment line
+      with 0D inside fooling D5 and not D6
  
- * [alexander]: source/prog/Game2.pas-fixed missing use clause
+ * [alexander]: source/prog/Game2.pas - fixed missing use clause
  
  * [cdunde]: Created GameCodeList.txt file to keep track of codes.
 
@@ -888,4 +830,3 @@ Changes from 052101
   *Merge Polys in Group: (tiglari)
     Mergeable polys in a group are merged.  Not guaranteed
     optimal.
-
