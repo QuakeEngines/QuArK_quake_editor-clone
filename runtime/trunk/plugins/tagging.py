@@ -21,6 +21,8 @@
 #
 ##########################################################
 
+#$Header$
+
 import quarkx
 import quarkpy.qbaseeditor
 from quarkpy.maputils import *
@@ -284,7 +286,7 @@ def tagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     drawsquare(cv, (p1+p2)/2, 8)
     return
   tagged=gettaggedplane(editor)
-  if tagged is not None:
+  if tagged is not None and gettagged(editor) is None:
     p1, p2, p3 = editor.tagging.taggedplane
     center = (p1+p2+p3)/3.0
     center = view.proj(center)
@@ -294,3 +296,6 @@ def tagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     return
  
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = tagfinishdrawing
+
+#$Log: #
+#
