@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
 Revision 1.12  2001/01/28 17:27:41  decker_dk
 Concatenated two source-lines into one.
 
@@ -1680,24 +1683,36 @@ begin
         S:=Values['Txt'];
         if S<>'' then
          begin
-          if S='&' then
-           begin
+          { check for 'editable specific label'. Txt="&" or Txt="&E" }
+          if (S='&') or (S='&E') then
+          begin
             Txt:=TEnterEdit.Create(Self);
             TEnterEdit(Txt).BorderStyle:=bsNone;
             TEnterEdit(Txt).ParentColor:=True;
-            TEnterEdit(Txt).Text:=Spec;
+            TEnterEdit(Txt).Text:=Spec; {use specific-name as caption-text}
             TEnterEdit(Txt).OnKeyDown:=SpecEditKeyDown;
             TEnterEdit(Txt).OnAccept:=SpecEditAccept;
             TEnterEdit(Txt).OnEnter:=AnyControlEnter;
-           end
+          end
           else
-           begin
+          { check for 'read-only specific label'. Txt="&R" }
+          if (S='&R') then
+          begin
             Txt:=TLabel.Create(Self);
             TLabel(Txt).AutoSize:=False;
-            TLabel(Txt).Caption:=S;
+            TLabel(Txt).Caption:=Spec; {use specific-name as caption-text}
             TLabel(Txt).WordWrap:=False;
             TLabel(Txt).OnClick:=PaintBoxClick;
-           end;
+          end
+          else
+          { otherwise use the supplied value as label for the caption-text }
+          begin
+            Txt:=TLabel.Create(Self);
+            TLabel(Txt).AutoSize:=False;
+            TLabel(Txt).Caption:=S; {use supplied caption-text}
+            TLabel(Txt).WordWrap:=False;
+            TLabel(Txt).OnClick:=PaintBoxClick;
+          end;
           Txt.SetBounds(LeftMargin, Y+LineHeight-LabelMargin, MiddleX-LeftMargin-MiddleMargin, LabelMargin);
           Txt.Tag:=I+1;
           Txt.Parent:=SB;
