@@ -63,6 +63,34 @@ class EntRectSelDragObject(parent):
             editor.layout.explorer.focus = lastsel
             editor.layout.explorer.selchanged()
 
+class EverythingRectSelDragObject(parent):
+    "A red rectangle that selects the entities it touches."
+
+    Hint = "rectangular selection of everything||This works like 'rectangular selection of polyhedron' (just on the left), but selects everything including duplicators and beziers."
+
+    def rectanglesel(self, editor, x,y, rectangle):
+        if not ("T" in self.todo):
+            editor.layout.explorer.uniquesel = None
+        everythinglist = FindSelectable(editor.Root, None, [":e", ":p", ":d", ":b2"])
+        lastsel = None
+        for o in everythinglist:
+            if o.type == ":p":
+                if rectangle.intersects(o):
+                    o.selected = 1
+                    lastsel = o
+            else:
+                org = o.origin
+                if org is None: continue
+                for f in rectangle.faces:
+                    if org*f.normal > f.dist:
+                        break
+                else: # the point is inside the polyhedron
+                    o.selected = 1
+                    lastsel = o
+        if lastsel is not None:
+            editor.layout.explorer.focus = lastsel
+            editor.layout.explorer.selchanged()
+
 
 class CubeMakerDragObject(parent):
     "A cube maker."
@@ -153,7 +181,7 @@ def CubeCut(editor, face, choicefn=lambda face,n1: -abs(face.normal*n1)):
         undo.exchange(sellist[0], None)
         editor.ok(undo, "cut face in two")
         return
-    
+
     sellist = editor.visualselection()
     if len(sellist)==0:
         sellist = [editor.Root]
@@ -301,9 +329,14 @@ class CubeCutter(parent):
 # The tool bar with the available drag modes.
 # Add other drag modes from other plug-ins into this list :
 #
-
-DragModes = [quarkpy.maphandles.RectSelDragObject, EntRectSelDragObject,
-              CubeMakerDragObject, CubeCutter]#, TextureCopier]
+            #(the_object                            ,icon_index)
+DragModes = [(quarkpy.maphandles.RectSelDragObject  ,0)
+            ,(EntRectSelDragObject                  ,1)
+            ,(EverythingRectSelDragObject           ,5)
+            ,(CubeMakerDragObject                   ,2)
+            ,(CubeCutter                            ,3)
+           #,(TextureCopier                         ,4)
+            ]
 
 def selectmode(btn):
     editor = mapeditor(SS_MAP)
@@ -319,7 +352,7 @@ def selectmode(btn):
     quarkx.setupsubset(SS_MAP, "Building").setint("DragMode", btn.i)
 
 def select1(btn, toolbar, editor):
-    editor.MouseDragMode = DragModes[btn.i]
+    editor.MouseDragMode, dummyicon = DragModes[btn.i]
     btn.state = quarkpy.qtoolbar.selected
 
 
@@ -331,7 +364,8 @@ class DragModesBar(ToolBar):
     def buildbuttons(self, layout):
         btns = []
         for i in range(len(DragModes)):
-            btn = qtoolbar.button(selectmode, DragModes[i].Hint, ico_dragmodes, i)
+            obj, icon = DragModes[i]
+            btn = qtoolbar.button(selectmode, obj.Hint, ico_dragmodes, icon)
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MAP, "Building").getint("DragMode")
@@ -348,8 +382,8 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 
 # ----------- REVISION HISTORY ------------
 #
-#
 # $Log$
+# Revision 1.3  2000/06/03 10:25:30  alexander
+# added cvs headers
 #
-#
-#
+
