@@ -210,7 +210,8 @@ class CPHandle(qhandles.GenericHandle):
           #
           # Operating on cp's `in situ' doesn't seem to work.
           #
-          ncp = copycp(new.cp)
+
+          ncp = copyCp(new.cp)
           m.thicken(ncp, self.ij)
           #
           # this setting of the cp attribute triggers a lot of stuff
@@ -430,6 +431,10 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2000/06/26 22:51:55  tiglari
+#renaming: antidistort_rows/columns->undistortRows/Colunmns,
+#tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
+#
 #Revision 1.21  2000/06/25 23:48:02  tiglari
 #Function Renaming & Reorganization, hope no breakage
 #
