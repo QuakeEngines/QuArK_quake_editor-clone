@@ -26,6 +26,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/11/25 20:51:32  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.8  2000/11/16 19:42:17  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -272,6 +282,7 @@ begin
       Origine:=F.Position;
       FillChar(mdl, SizeOf(mdl), 0);
       Delta:=0;
+      ObjectGameCode:=mjHeretic2;
       while Delta <= FSize-SizeOf(Hr2Entry) do
        begin
         F.Position:=Origine+Delta;
