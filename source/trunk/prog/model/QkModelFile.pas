@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkModelFile;
@@ -11,7 +14,7 @@ interface
 uses
   windows, sysutils, QkObjects, QkFileObjects, QkForm, QkImages, Python, Game, QkModel, QkModelRoot,
   qkcomponent, qkframe, qkskingroup, qkframegroup, qkbonegroup, qkpcx, qktextures, qkmiscgroup,
-  graphics;
+  graphics, QkModelBone;
 
 type
   QModelFile = class(QModel)
@@ -22,6 +25,7 @@ type
     function Loaded_Frame(Component: QComponent; const Name: String) : QFrame;
     function Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImages;
     function Loaded_Component(Root: QModelRoot; cname: string): QComponent;
+    function Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
     function CantFindTexture(Component: QComponent; name: string; SZ: TPoint): QImages;
   end;
 
@@ -81,7 +85,20 @@ var
 begin
   Frames:=Component.FrameGroup;
   Result:=QFrame.Create(Name, Frames);
+  Result.ParentComponent:=Component;
   Frames.SubElements.Add(Result);
+end;
+
+function QModelFile.Loaded_Bone(Component: QComponent; Parent: QModelBone; const Name: String): QModelBone;
+var
+  Bones: QObject;      // Actually a QBoneObject
+begin
+  Bones:=Parent;
+  if Bones = nil then
+    Bones:=Component.BoneGroup;
+  Result:=QModelBone.Create(Name, Bones);
+  Result.ParentComponent:=Component;
+  Bones.SubElements.Add(Result);
 end;
 
 function QModelFile.Loaded_SkinFile(Component: QComponent; const Name: String; warnifnotfound: Boolean) : QImages;

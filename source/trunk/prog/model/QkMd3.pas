@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/01/21 15:51:16  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.4  2001/01/15 19:23:05  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -38,6 +41,7 @@ type
   public
     class function TypeInfo: String; override;
     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+    function Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
   end;
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
@@ -192,7 +196,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, QkObjectClassList;
+uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset;
 
 class function QMd3File.TypeInfo;
 begin
@@ -204,6 +208,47 @@ begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5176);
  Info.FileExt:=805;
+end;
+
+function QMd3File.Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
+var
+  shader_filename: string;
+  shader_texturename: string;
+  I: Integer;
+
+  shader_file: QObject;
+  shader_texture: QPixelSet;
+begin
+  shader_filename:=copy(tex_name, 1, pos('/', tex_name)-1);
+  result:=nil;
+  if shader_filename='' then
+    exit;
+  shader_filename:=SetupGameSet.Specifics.Values['ShadersPath']+shader_filename+'.shader';
+  shader_texturename:=copy(tex_name, 1, pos('.', tex_name)-1);
+
+  try
+    shader_file:=needgamefile(shader_filename);
+    if shader_file = nil then
+      exit;
+    shader_file.acces;
+    for i:=0 to shader_file.subelements.count-1 do
+    begin
+      shader_texture:=QPixelSet(shader_file.subelements[i]);
+      if (shader_texture is QShader) and (uppercase(shader_texture.name)=uppercase(shader_texturename)) then
+      begin
+        Result:=QPcx.Create(shader_texturename, Comp.SkinGroup);
+        try
+          Result.ConversionFrom(shader_texture);
+        except
+          Result.Free;
+          Raise;
+        end;
+        Comp.SkinGroup.Subelements.Add(result);
+        exit;
+      end;
+    end;
+  except
+  end;
 end;
 
 Procedure QMD3File.ReadMesh(fs: TStream; Root: QModelRoot);
@@ -247,7 +292,9 @@ begin
   for i:=1 to mhead.skin_Num do begin
     fs.readbuffer(tex, sizeof(tex));
     base_tex_name:=trim(string(tex.Name));
-    Skin:=Loaded_SkinFile(Comp, base_tex_name, false);
+    Skin:=Loaded_ShaderFile(Comp, base_tex_name);
+    if skin=nil then
+      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
     if skin=nil then begin

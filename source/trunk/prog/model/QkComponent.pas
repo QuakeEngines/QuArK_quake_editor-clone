@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/02/01 22:00:56  aiv
+Remove Vertex code now in python.
+
 Revision 1.8  2001/01/23 23:38:27  aiv
 Minor Update
 
@@ -96,6 +99,7 @@ type
     procedure SetParentFrames(nFrame: QFrame);
     Function FindRoot: QObject;
     function GetOriginOfComponent(mode: Integer): TVect;
+    function FindRefFrame: QFrame;
   end;
 
 implementation
@@ -1214,6 +1218,11 @@ begin
     end;
   end;
 end;
+
+function QComponent.FindRefFrame: QFrame;
+begin
+end;
+
 
 initialization
   RegisterQObject(QComponent, 'a');

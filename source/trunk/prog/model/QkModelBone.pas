@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/01/21 15:51:16  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.3  2000/10/12 20:07:32  aiv
 Fixed PyGetAttr 'bone_length'
 
@@ -53,6 +56,8 @@ type
   psingle = ^single;
 
   QModelBone = class(QMdlObject)
+  private
+    Component: QObject;
   public
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
@@ -65,11 +70,24 @@ type
     function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
     Function GetLength:Double;
     Function CalcDistBetween(v1,v2: vec3_t): Double;
+    property ParentComponent: QObject read Component write Component;
+    procedure SetBoneRadius(rad: Single);
+    Function GetBoneRadius: Single;
   end;
 
 implementation
 
 uses qk3d, pymath, quarkx, QkObjectClassList;
+
+procedure QModelBone.SetBoneRadius(rad: Single);
+begin
+  SetFloatSpec('Radius',rad);
+end;
+
+Function QModelBone.GetBoneRadius: Single;
+begin
+  Result:=GetFloatSpec('Radius',0);
+end;
 
 class function QModelBone.TypeInfo;
 begin
