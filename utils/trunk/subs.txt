@@ -1,4 +1,5 @@
 
+
 #       #Done up to QkMdl and including
 #       Enregistrer Save
 #       TInfoEnreg1 TSaveInfo
@@ -176,7 +177,7 @@
 #       #DECKER the following for QPAcc.PAS
 #       tInconnu tVoid
 #       tStr tString
-#       tReel tFloat
+#       tReel tNumValue
 #       tVecteur tVector
 #       tPtr tPointer
 #       tObjData tObjData
@@ -198,15 +199,15 @@
 #       symPlusGrand symGreaterThan
 #       symPlusPetitOuEgal symLessOrEqualTo
 #       symPlusGrandOuEgal symGreaterOrEqualTo
-#       symAccolade1 symCurlyBracketBegin
-#       symAccolade2 symCurlyBracketEnd
-#       symParenthese1 symBracketBegin
-#       symParenthese2 symBracketEnd
-#       symReel symFloat
+#       symAccolade1 symCurlyBracketOpen
+#       symAccolade2 symCurlyBracketClose
+#       symParenthese1 symBracketOpen
+#       symParenthese2 symBracketClose
+#       symReel symNumValue
 #       symChaine symChain
 #       symVecteur symVector
-#       symCrochet1 symSquareBracketBegin
-#       symCrochet2 symSquareBracketEnd
+#       symCrochet1 symSquareBracketOpen
+#       symCrochet2 symSquareBracketClose
 #
 #       #TAjScene
 #       #Polyedres Polygons Polyhedras ????
@@ -283,6 +284,86 @@
 #       #SoustractionPolyedre PolyhedralSubtraction ???
 
 #---DONE---
+#Valeur NumericValue
+#Valeur1 NumericValue1
+#OuvrirListeEntites ReadEntityList
+#Separateurs cSeperators
+#sTexteInattendu sStringToken
+#sChaine sStringQuotedToken
+#sValeur sNumValueToken
+#sNomTex sTokenForcedToString
+#sParenthese1 sBracketLeft
+#sParenthese2 sBracketRight
+#TexteInattendu ReadStringToken
+#sAccolade1 sCurlyBracketLeft
+#sAccolade2 sCurlyBracketRight
+#sSquareBracketOpen sSquareBracketLeft
+#sSquareBracketClose sSquareBracketRight
+#LireTexte ReadSymbolForceToText
+#Lire ReadSymbol
+#LireValeurs ReadValues
+#LireEntree ReadEntry
+#LireReel ReadNumValue
+#LireVecteur ReadVector
+#LireReelEx ReadNumValueEx
+#LireVect ReadVect
+#LireVect5 ReadVect5
+#TSymbole TSymbols
+#Symbole SymbolType
+#tInconnu tVoid
+#tStr tString
+#tReel tNumValue
+#tVecteur tVector
+#tPtr tPointer
+#tFrPtr tFrPointer
+#symInconnu symUnknown
+#symDeuxPoints symColon
+#symPointVirgule symSemiColon
+#symPoint symPeriod
+#symAffecte symAssign
+#symVirgule symComma
+#symPlus symAdd
+#symMoins symSubtract
+#symFois symMultiply
+#symDivise symDivide
+#symLogOr symLogicalOr
+#symLogAnd symLogicalAnd
+#symEgal symEqual
+#symPlusPetit symLessThan
+#symPlusGrand symGreaterThan
+#symPlusPetitOuEgal symLessOrEqualTo
+#symPlusGrandOuEgal symGreaterOrEqualTo
+#symAccolade1 symCurlyBracketLeft
+#symAccolade2 symCurlyBracketRight
+#symParenthese1 symBracketLeft
+#symParenthese2 symBracketRight
+#symReel symNumValue
+#symChaine symChain
+#symVecteur symVector
+#symCrochet1 symSquareBracketLeft
+#symCrochet2 symSquareBracketRight
+
+#TEnteteWad TWadHeader
+#NbEntrees NoOfFileEntries
+#PEntreeRep PWadFileRec
+#TEntreeRep TWadFileRec
+#OuvrirFenetre OpenWindow
+#ObtenirFenetre ObtainWindow
+#EtatObjet ObjectState
+#OuvrirDansFenetre OpenInWindow
+#OpDansScene OperationInScene
+#LibererMemoireTextures FreeNonVisibleTextures
+#LibererMemoireFiches FreeNonVisibleForms
+#LibererMaxMemoire FreeNonUsedObjects
+#PTravail PProgressIndicator
+#TTravail TProgressIndicator
+#TravailCnt ProgressIndicatorCount
+#DebutTravail ProgressIndicatorStart
+#ChangeMaxTravail ProgressIndicatorChangeMax
+#ProgresTravail ProgressIndicatorIncrement
+#FinTravail ProgressIndicatorStop
+#CaracFichDOS cDOSFilenameValidChars
+
 #ChargerCommeTexte LoadObjsFromText
 #NomFichier Filename
 #NomFichierSortiePak FindNextAvailablePakFilename
