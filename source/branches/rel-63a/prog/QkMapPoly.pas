@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.6  2002/12/28 23:50:30  tiglari
+faces with _fixed specific never center L-square
+
 Revision 1.56.2.5  2002/12/22 05:33:57  tiglari
 restoring projecting points to planes, to make lighting work out
 
@@ -3790,7 +3793,7 @@ begin
  TexP[3].X:=(TexP[3].X-TexP[1].X)*CorrH;
  TexP[3].Y:=(TexP[3].Y-TexP[1].Y)*CorrH;
  TexP[3].Z:=(TexP[3].Z-TexP[1].Z)*CorrH;
- if SetupSubSet(ssMap,'Options').Specifics.Values['DontCenterThreePoints']<>'1' then
+ if (SetupSubSet(ssMap,'Options').Specifics.Values['DontCenterThreePoints']<>'1') then
  begin
    TexP[4]:=CentreFace;
    CorrW:=1;
@@ -3824,6 +3827,31 @@ begin
      end;
    end;
  end;
+ V1:=TexP[1];
+ V2.X:=TexP[2].X+TexP[1].X;
+ V2.Y:=TexP[2].Y+TexP[1].Y;
+ V2.Z:=TexP[2].Z+TexP[1].Z;
+ V3.X:=TexP[3].X+TexP[1].X;
+ V3.Y:=TexP[3].Y+TexP[1].Y;
+ V3.Z:=TexP[3].Z+TexP[1].Z;
+end;
+
+
+function TFace.GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
+var
+ TexP: array[1..4] of TVect;
+ I, W, H: Integer;
+ CorrW, CorrH: TDouble;
+begin
+ Result:=GetThreePointsT(TexP[1], TexP[2], TexP[3]);
+ if not Result then Exit;
+ UserTexScale(AltTexSrc, CorrW, CorrH);
+ TexP[2].X:=(TexP[2].X-TexP[1].X)*CorrW;
+ TexP[2].Y:=(TexP[2].Y-TexP[1].Y)*CorrW;
+ TexP[2].Z:=(TexP[2].Z-TexP[1].Z)*CorrW;
+ TexP[3].X:=(TexP[3].X-TexP[1].X)*CorrH;
+ TexP[3].Y:=(TexP[3].Y-TexP[1].Y)*CorrH;
+ TexP[3].Z:=(TexP[3].Z-TexP[1].Z)*CorrH;
  V1:=TexP[1];
  V2.X:=TexP[2].X+TexP[1].X;
  V2.Y:=TexP[2].Y+TexP[1].Y;
@@ -5263,6 +5291,8 @@ begin
     case mode of
      0:  Ok:=GetThreePoints(P[1], P[2], P[3]);
      2:  Ok:=GetThreePointsUserTex(P[1], P[2], P[3], QkObjFromPyObj(AltTexSrc));
+     // six because there's a QuArK variant with more modes ..
+     6:  Ok:=GetThreePointsUserTexNoRecenter(P[1], P[2], P[3], QkObjFromPyObj(AltTexSrc));
     else Ok:=GetThreePointsT(P[1], P[2], P[3]);
     end;
    end;
