@@ -1,6 +1,8 @@
 
                      6.4  alpha snapshot Mar27 2003
 
+ * [tiglari] select tagged faces menu item enable bug fixed (bug noted by cdunde)
+
  * [tiglari] brush-from-number finder (on build menu)
 
  * [nurail]  new layout for dual monitors
