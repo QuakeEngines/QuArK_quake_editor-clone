@@ -5,7 +5,7 @@ author: tigalri
 The arch/cap duplicator code is fairly complicated, and
 various things can go wrong.  The typical symptom is
 that the arch disappears, because something goes wrong with the
-code that generates its `images' (the patches that it's
+code that generates its `images'; (the patches that it's
 supposed to produce, in this case).<BR><BR>
 
 When this happens, inspect the duplicator
@@ -33,11 +33,11 @@ Two other things that might go wrong are:
 <UL>
 <LI> texture distortion on the curve, for some (small,
 non-rectangular) textures.
-<LI> `cracks' between the seams of complex architecture, when
+<LI> `cracks&180; between the seams of complex architecture, when
 Q3A is run with hi r_subdivisions values.
 </UL>
 The first is a bug with no real cure, the remedies are to either
-use another corner, or check `stretchtex' and do texture alignments
+use another corner, or check `stretchtex'; and do texture alignments
 by hand.<BR><BR>
 
 For the second, the problem is that Q3A is tesselating the two
