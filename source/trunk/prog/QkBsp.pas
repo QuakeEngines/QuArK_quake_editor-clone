@@ -232,7 +232,6 @@ type
               Color : array[0..3] of Byte;
              end;
 
- { Q1/2-type plane }
  PbPlane = ^TbPlane;
  TbPlane = record
             normal: vec3_t;
@@ -240,7 +239,6 @@ type
             flags: Integer;
            end;
 
- { Q3-type plane }
  PQ3Plane = ^TQ3Plane;
  TQ3Plane = record
             normal: vec3_t;
@@ -266,10 +264,9 @@ type
         public
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
-          Q3Vertices: PChar;
-          Planes: PChar;
-          NonFaceCount : Integer;
-          VertexCount, PlaneCount : Integer;
+          Q3Vertices, Planes: PChar;
+          VertexCount, PlaneCount: Integer;
+          NonFaces: Integer;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
           class function TypeInfo: String; override;
@@ -287,7 +284,6 @@ type
           Function GetTextureFolder: QObject;
           Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
-
         end;
 
 type
@@ -930,12 +926,11 @@ var
  Q: QObject;
  P: vec3_p;
  PQ3: PQ3Vertex;
- I, Count: Integer;
+ I : Integer;
  Dest: PVect;
  HullType: Char;
  Pozzie: vec3_t;
 begin
- NonFaceCount:=0;
  HullType:=NeedObjectGameCode;
  if FStructure=Nil then
   begin
@@ -945,19 +940,20 @@ begin
    ProgressIndicatorStart(0,0); try
    if HullType<mjQ3A then
    begin
-      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
-      PlaneCount  :=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
+      VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
+      ReallocMem(FVertices, VertexCount*SizeOf(TVect));
+      PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
    end
    else
    begin
-      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
-      PlaneCount  :=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
+      VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
       PQ3:=PQ3Vertex(Q3Vertices);
+      ReallocMem(FVertices, VertexCount*SizeOf(TQ3Vertex));
+      PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
    end;
-   ReallocMem(FVertices, Count*SizeOf(TVect));
    Dest:=PVect(FVertices);
    if HullType<mjQ3A then
-   for I:=1 to Count do
+   for I:=1 to VertexCount do
    begin
      with Dest^ do
      begin
@@ -969,7 +965,7 @@ begin
      Inc(Dest);
    end
    else
-   for I:=1 to Count do
+   for I:=1 to VertexCount do
    begin
      with Dest^ do
      begin
@@ -990,9 +986,10 @@ begin
       ShowMessage('Sorry, no bsp editing for this game')
    else
  }
-     ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
-   if NonFaceCount>0 then
-     ShowMessage(IntToStr(NonFaceCount)+' Non-Face Surfacess Ignored');
+   NonFaces:=0;
+   ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
+   if NonFaces>0 then
+     ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
    finally ProgressIndicatorStop; end;
   end;
  GetStructure:=FStructure;
@@ -1042,7 +1039,6 @@ begin
 end;
 
 
- {------------------------}
 
 function qReloadStructure(self, args: PyObject) : PyObject; cdecl;
 begin

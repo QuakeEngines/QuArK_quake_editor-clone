@@ -209,7 +209,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 
 implementation
 
-uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList;
+uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList, Dialogs;
  {------------------------}
 
 function CheckQ1Hulls(Hulls: PHull; Size, FaceCount: Integer) : Boolean;
@@ -375,11 +375,13 @@ begin
     Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
   end;
   cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
-  { cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane); }
+  { cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
   { FBsp.FVertices, VertexCount are previously computed
     by FBsp.GetStructure }
-  Planes:=FBsp.Planes;
-  cPlanes:=FBsp.PlaneCount;
+
+  cPlanes := FBsp.PlaneCount;
+  Planes := FBsp.Planes;
+
   Vertices:=PChar(FBsp.FVertices);
   cVertices:=FBsp.VertexCount;
 
@@ -408,7 +410,7 @@ begin
         Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PVertex));
       end
       else
-        Inc(FBsp.NonFaceCount);
+        Inc(FBsp.NonFaces);
         { we'll be wanting to do something smarter with patches etc }
     end;
   end;
