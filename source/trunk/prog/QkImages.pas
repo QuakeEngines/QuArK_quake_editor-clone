@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/03/20 21:45:50  decker_dk
+Updated copyright-header
+
 Revision 1.6  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -793,7 +796,8 @@ var
  Rect: TRect;
  Size: TPoint;
  DC: HDC;
- L, T, R, B: Integer;
+ L, T: Integer;
+{ R, B: Integer;}
 begin
  if FSource<>Nil then
   with FSource do
@@ -804,13 +808,17 @@ begin
      Size:=GetSize;
      L:=(Rect.Right-Size.X) div 2;
      T:=(Rect.Bottom-Size.Y) div 2;
+(*Decker - see below
      R:=L+Size.X;
      B:=T+Size.Y;
+/Decker*)
      CopyImageToDC(DC, L, T);
+(*Decker - removed to reduce flicker on screen, and to show the size of the image
      if L>0           then PatBlt(DC, 0, T, L, B-T, Blackness);
      if T>0           then PatBlt(DC, 0, 0, Rect.Right, T, Blackness);
      if R<Rect.Right  then PatBlt(DC, R, T, Rect.Right-R, B-T, Blackness);
      if B<Rect.Bottom then PatBlt(DC, 0, B, Rect.Right, Rect.Bottom-B, Blackness);
+/Decker*)
     except
      on E: Exception do
       begin
