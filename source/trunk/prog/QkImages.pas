@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2002/02/24 13:43:02  decker_dk
+I hate when the function-definition isn't containing the argument-list, just like the function-declaration. So I added it to QImage.PasteBitmap.
+
 Revision 1.8  2001/07/25 19:13:47  decker_dk
 TImageDisplayer.Paint - removed black-border painting to reduce flicker.
 
@@ -52,7 +55,7 @@ uses
   QkForm, QkTextures, QkPixelSet, StdCtrls, EnterEditCtrl;
 
 type
- QImage  = class(QPixelSet)
+ QImage = class(QPixelSet)
            protected
              function OpenWindow(nOwner: TComponent) : TQForm1; override;
             {procedure PasteImageDC(NeededGame: Char; DC: HDC; W,H: Integer);}
@@ -81,18 +84,17 @@ type
                                        Confirm: TSDConfirm) : Boolean; override;
              procedure ImageConvertTo(NewPSD: TPixelSetDescription);
            end;
- QImages = QImage;   { I don't want to correct this all around... }
- QImagesClass = class of QImages;
+ QImageClass = class of QImage;
 
 type
   TImageDisplayer = class(TGraphicControl)
                     private
-                      FSource: QImages;
-                      procedure SetSource(nSource: QImages);
+                      FSource: QImage;
+                      procedure SetSource(nSource: QImage);
                     protected
                       procedure Paint; override;
                     public
-                      property Source: QImages read FSource write SetSource;
+                      property Source: QImage read FSource write SetSource;
                       destructor Destroy; override;
                       procedure AutoSize;
                     end;
@@ -123,19 +125,19 @@ type
 
  {------------------------}
 
-function TestConversionImages(var I: Integer{; Exclude: QImages}) : QImagesClass;
+function TestConversionImages(var I: Integer{; Exclude: QImage}) : QImageClass;
 
  {------------------------}
 
 implementation
 
-uses QkPcx, QkBmp, QkTga, QkJpg, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
+uses QkPcx, QkBmp, QkTga, QkJpg, QkPng, QkSoF, TbPalette, qmath, Quarkx, CCode, Undo, Travail;
 
 {$R *.DFM}
 
-(*function TestConversionImages(var I: Integer; Exclude: QImages) : QImagesClass;
+(*function TestConversionImages(var I: Integer; Exclude: QImage) : QImageClass;
 const
- IntlImages: array[1..2] of QImagesClass = (QPcx, QBmp);
+ IntlImages: array[1..2] of QImageClass = (QPcx, QBmp);
 var
  J: Integer;
 begin
@@ -152,9 +154,9 @@ begin
  Result:=Nil;
 end;*)
 
-function TestConversionImages(var I: Integer) : QImagesClass;
+function TestConversionImages(var I: Integer) : QImageClass;
 const
- IntlImages: array[1..4] of QImagesClass = (QPcx, QTga, QBmp, QJPeg);
+ IntlImages: array[1..6] of QImageClass = (QPcx, QTga, QBmp, QJPeg, QPng, QM32);
 begin
  if I>High(IntlImages) then
   begin
@@ -201,30 +203,30 @@ end;
 
  {------------------------}
 
-function QImages.OpenWindow(nOwner: TComponent) : TQForm1;
+function QImage.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQImages.Create(nOwner);
 end;
 
-procedure QImages.ObjectState(var E: TEtatObjet);
+procedure QImage.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPcx;
  E.MarsColor:=$00FF80FF;
 end;
 
-function QImages.IsTrueColor : Boolean;
+function QImage.IsTrueColor : Boolean;
 begin
  Result:=Specifics.IndexOfName('Pal')<0;
 end;
 
-procedure QImages.NotTrueColor;
+procedure QImage.NotTrueColor;
 begin
  if Specifics.IndexOfName('Pal')<0 then
   Raise EError(5680);
 end;
 
-(*function QImages.GetSize : TPoint;
+(*function QImage.GetSize : TPoint;
 var
  V: array[1..2] of Single;
 begin
@@ -234,7 +236,7 @@ begin
  Result.Y:=Round(V[2]);
 end;*)
 
-function QImages.GetImage1 : String;
+function QImage.GetImage1 : String;
 var
  Size: TPoint;
  ScanW: Integer;
@@ -249,7 +251,7 @@ begin
   Raise EErrorFmt(5534, ['Image1']);
 end;
 
-procedure QImages.GetImageData1(var Buf; BufSize: Integer);
+procedure QImage.GetImageData1(var Buf; BufSize: Integer);
 const
  Spec1 = 'Image1';
 var
@@ -268,7 +270,7 @@ begin
   end;
 end;
 
-function QImages.GetImagePtr1 : PChar;
+function QImage.GetImagePtr1 : PChar;
 const
  Spec1 = 'Image1';
 var
@@ -278,7 +280,7 @@ begin
  Result:=PChar(S)+(Length(Spec1)+1);
 end;
 
-procedure QImages.GetPalette1(var Data: TPaletteLmp);
+procedure QImage.GetPalette1(var Data: TPaletteLmp);
 var
  Pal: String;
 begin
@@ -288,7 +290,7 @@ begin
  Move((PChar(Pal)+Length('Pal='))^, Data, SizeOf(TPaletteLmp));
 end;
 
-function QImages.GetPalettePtr1 : PPaletteLmp;
+function QImage.GetPalettePtr1 : PPaletteLmp;
 var
  S: String;
 begin
@@ -298,7 +300,7 @@ begin
  PChar(Result):=PChar(S)+Length('Pal=');
 end;
 
-{procedure QImages.GetAsTexture3D(var P: TTexture3D);
+{procedure QImage.GetAsTexture3D(var P: TTexture3D);
 var
  I: Integer;
 begin
@@ -314,7 +316,7 @@ begin
  P.BitsSource:=Specifics[I];
 end;}
 
-function QImages.Description : TPixelSetDescription;
+function QImage.Description : TPixelSetDescription;
 const
  AlphaSpec = 'Alpha';
 var
@@ -347,7 +349,7 @@ begin
    Result.AlphaBits:=psaNoAlpha;
 end;
 
-function QImages.SetDescription(const PSD: TPixelSetDescription;
+function QImage.SetDescription(const PSD: TPixelSetDescription;
                                 Confirm: TSDConfirm) : Boolean;
 const
  ImageSpec = 'Image1';
@@ -445,7 +447,7 @@ begin
  Specifics.Add(S);
 end;*)
 
-{function QImages.GetBitmapImage : TBitmap;
+{function QImage.GetBitmapImage : TBitmap;
 var
  Data: PChar;
  Size: TPoint;
@@ -462,7 +464,7 @@ begin
  Result.Palette:=Palette1;
 end;}
 
-procedure QImages.SetQuakeImageData(const Lmp: TPaletteLmp; const Data: String; W,H: Integer);
+procedure QImage.SetQuakeImageData(const Lmp: TPaletteLmp; const Data: String; W,H: Integer);
 var
  PalStr: String;
 begin
@@ -472,12 +474,12 @@ begin
  Specifics.Values['Pal']:=PalStr;
 end;
 
-(*procedure QImages.PasteImageDC(NeededGame: Char; DC: HDC; W,H: Integer);
+(*procedure QImage.PasteImageDC(NeededGame: Char; DC: HDC; W,H: Integer);
 begin
  SetQuakeImageData(NeededGame, MakeQuakeImageData(NeededGame, DC, W,H, W,H, dfWinFormat), W,H);
 end;
 
-procedure QImages.PasteBitmapH;
+procedure QImage.PasteBitmapH;
 var
  Log: Windows.TBitmap;
  DC: HDC;
@@ -496,7 +498,7 @@ begin
   end;
 end;*)
 
-procedure QImages.PasteBitmap(Game: PGameBuffer; Bitmap: TBitmap);
+procedure QImage.PasteBitmap(Game: PGameBuffer; Bitmap: TBitmap);
 var
 {nBitmap2, SrcBmp: TBitmap;}
  BitmapStruct: Windows.TBitmap;
@@ -547,21 +549,21 @@ begin
  SetQuakeImageData(Game^.PaletteLmp, Data, BmpInfo.bmiHeader.biWidth, BmpInfo.bmiHeader.biHeight);
 end;
 
-function QImages.TestConversionType(I: Integer) : QFileObjectClass;
+function QImage.TestConversionType(I: Integer) : QFileObjectClass;
 begin
  Result:=TestConversionImages(I);
  if Result=Nil then
   Result:=TestConversionTextures(I);
 end;
 
-(*function QImages.ConversionFrom(Source: QFileObject) : Boolean;
+(*function QImage.ConversionFrom(Source: QFileObject) : Boolean;
 var
  Header: TQ1Miptex;
  Data: String;
  Lmp: PPaletteLmp;
 begin
  Result:=True;
- if Source is QImages then
+ if Source is QImage then
   begin
    Source.Acces;
    CopyAllData(Source, False);   { directly copies data }
@@ -581,7 +583,7 @@ begin
    Result:=False;
 end;*)
 
-function QImages.GetBitmapInfo1(var BmpInfo: TBitmapInfo256) : Integer;
+function QImage.GetBitmapInfo1(var BmpInfo: TBitmapInfo256) : Integer;
 var
  Lmp: TPaletteLmp;
  Size: TPoint;
@@ -616,7 +618,7 @@ begin
   end;
 end;
 
-procedure QImages.CopyImageToDC(DC: HDC; Left, Top: Integer);
+procedure QImage.CopyImageToDC(DC: HDC; Left, Top: Integer);
 var
  Size: TPoint;
  Lmp: TPaletteLmp;
@@ -661,7 +663,7 @@ begin
  end;
 end;
 
-{function QImages.MakeDIBSection(DC: HDC) : HBitmap;
+{function QImage.MakeDIBSection(DC: HDC) : HBitmap;
 var
  BmpInfo: TBitmapInfo256;
  BitmapInfo: TBitmapInfo absolute BmpInfo;
@@ -684,7 +686,7 @@ begin
   Move(Data[Length('Image1=')+1], Bits^, ImageSize);
 end;}
 
-procedure QImages.CopyExtraData;
+procedure QImage.CopyExtraData;
 var
  BmpInfo: TBitmapInfo256;
  H: THandle;
@@ -706,7 +708,7 @@ begin  { copy a bitmap version of the data to the clipboard }
   end;
 end;
 
-function QImages.ConvertToTrueColor;
+function QImage.ConvertToTrueColor;
 const
  Spec1 = 'Image1=';
 var
@@ -741,15 +743,15 @@ begin
    Inc(SrcScanLine, SrcScanW);
    Inc(DestScanLine, DestScanW);
   end;
- Result:=QImages(QObjectClass(ClassType).Create(Name, Nil));
+ Result:=QImage(QObjectClass(ClassType).Create(Name, Nil));
  Result.Specifics.Add(Data);
  Result.Specifics.Add(Specifics[Specifics.IndexOfName(FloatSpecNameOf('Size'))]);
 end;
 
-procedure QImages.ImageConvertTo(NewPSD: TPixelSetDescription);
+procedure QImage.ImageConvertTo(NewPSD: TPixelSetDescription);
 var
  PSD: TPixelSetDescription;
- Temp: QImages;
+ Temp: QImage;
 begin
  ProgressIndicatorStart(0,0); try
  PSD:=Description; try
@@ -764,7 +766,7 @@ end;
 
  {------------------------}
 
-procedure TImageDisplayer.SetSource;
+procedure TImageDisplayer.SetSource(nSource: QImage);
 begin
  FSource.AddRef(-1);
  FSource:=nSource;
@@ -783,14 +785,15 @@ var
  Size: TPoint;
 begin
  if FSource<>Nil then
-  with FSource do
+ begin
    try
-    Size:=GetSize;
+    Size:=FSource.GetSize;
     Width:=Size.X;
     Height:=Size.Y;
    except
     {rien}
    end;
+ end;
 end;
 
 procedure TImageDisplayer.Paint;
@@ -802,20 +805,19 @@ var
  L, T: Integer;
 { R, B: Integer;}
 begin
- if FSource<>Nil then
-  with FSource do
-   begin
+  if FSource<>Nil then
+  begin
     Rect:=ClientRect;
     DC:=Canvas.Handle;
     try
-     Size:=GetSize;
+     Size:=FSource.GetSize;
      L:=(Rect.Right-Size.X) div 2;
      T:=(Rect.Bottom-Size.Y) div 2;
 (*Decker - see below
      R:=L+Size.X;
      B:=T+Size.Y;
 /Decker*)
-     CopyImageToDC(DC, L, T);
+     FSource.CopyImageToDC(DC, L, T);
 (*Decker - removed to reduce flicker on screen, and to show the size of the image
      if L>0           then PatBlt(DC, 0, T, L, B-T, Blackness);
      if T>0           then PatBlt(DC, 0, 0, Rect.Right, T, Blackness);
@@ -828,11 +830,10 @@ begin
        SetBkColor(DC, clBlack);
        SetTextColor(DC, clSilver);
        S:=GetExceptionMessage(E);
-       DrawText(DC, PChar(S), Length(S), Rect,
-        DT_NOCLIP or DT_WORDBREAK);
+       DrawText(DC, PChar(S), Length(S), Rect, DT_NOCLIP or DT_WORDBREAK);
       end;
     end;
-   end;
+  end;
 end;
 
  {------------------------}
@@ -841,12 +842,12 @@ procedure TFQImages.wmInternalMessage(var Msg: TMessage);
 var
  Pal: TToolbar97;
  PSD: TPixelSetDescription;
- FileObj1: QImages;
+ FileObj1: QImage;
 begin
  case Msg.wParam of
   wp_AfficherObjet:
     begin
-     FileObj1:=FileObject as QImages;
+     FileObj1:=FileObject as QImage;
      ImageDisplayer.Source:=FileObj1;
      Pal:=GetPaletteToolbar(ValidParentForm(Self));
      if Pal<>Nil then
@@ -854,7 +855,7 @@ begin
        Pal.Free
       else
        DynamicPaletteToolbar(Pal, FileObject, 'Pal');
-     PSD:=QImages(FileObject).Description;
+     PSD:=QImage(FileObject).Description;
      FFileObject:=Nil;
      try
       EditSize.SetFocus;
@@ -873,7 +874,7 @@ end;
 
 function TFQImages.AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean;
 begin
- Result:=(Q is QImages) and inherited AssignObject(Q, State);
+ Result:=(Q is QImage) and inherited AssignObject(Q, State);
 end;
 
 procedure TFQImages.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -928,7 +929,7 @@ begin
  try
   FFileObject:=Nil;
   try
-   (FileObj as QImages).ImageConvertTo(NewPSD);
+   (FileObj as QImage).ImageConvertTo(NewPSD);
   except
    PostMessage(Handle, wm_InternalMessage, wp_AfficherObjet, 0);
    Raise;
