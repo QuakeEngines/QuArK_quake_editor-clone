@@ -144,7 +144,7 @@ def WrapMultClick(m):
     requestmultiplier.state=qmenu.checked
     MakeTexMultDlg(quarkx.clickform,editor)
 
-requestmultiplier=qmenu.item("Texture Wrap Multiplier",WrapMultClick,"|When this item is checked, texture-fitting uses the specified mulitplier")
+requestmultiplier=qmenu.item("Texture Wrap Multiplier",WrapMultClick,"|When this item is checked, if you wrap a texture across a set of faces (around pillar or across tagged faces), the texture is scaled in the direction of fitting so as to fit as many times as specified in the dialog box.\n\nThe multiplier stays active until the dialog box is closed.  The 'preserve aspect ration' menu item controls whether the texture scales correspondingly in the other direction.")
 
 
 #
@@ -1811,6 +1811,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2001/10/07 22:33:58  tiglari
+#None-returning function call fixed
+#
 #Revision 1.18  2001/08/07 23:35:37  tiglari
 #snap map object to tagged face command
 #
