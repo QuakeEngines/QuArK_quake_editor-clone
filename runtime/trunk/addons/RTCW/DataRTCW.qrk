@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2002/04/28 11:40:18  tiglari
+//Modifications to get RTCW support working better
+//
 //Revision 1.2  2002/02/05 18:32:38  decker_dk
 //Corrected default room textures, and converted GTKRadiant's Wolf_Entites.def file to this file.
 //
@@ -331,13 +334,17 @@ QQRKSRC1
     Toolbox = "Texture Browser..."
     Root = "RTCW Textures.qtxfolder"
 
-    RTCW Textures.qtxfolder =
+    RTCW Textures and Shaders.qtxfolder =
     {
-      Dynamically Found.osfolder =
+      Main (GtkRadiant clean).osfolder =
       {
         path = "Main"
-        allshaders = "1"
       }
+//      All shaders from pk3s.osfolder =
+//      {
+/        path = "Main"
+//        allshaders = "1"
+//      }
     }
   }
 
