@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2000/10/27 10:11:16  tiglari
+oops failed to actuall reinstate the ancestry comment line last time!
+
 Revision 1.19  2000/10/27 10:06:48  tiglari
 comments and cleanup to brush prim support;
 ancestry comments reinstated
@@ -262,7 +265,7 @@ procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean
 implementation
 
 uses QkFileObjects, Undo, PyMapView, QkPixelSet,
-     Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx, Math;
+     Ed3DFX, Quarkx, PyObjects, QkSin, QkQuakeCtx;
 
 const
  TmpFaceSpec = '!~tmp~!this is a bug';
@@ -1909,6 +1912,13 @@ begin
    Result.Z:=0.0;
 end;
 
+function ATan2(Y, X: Extended): Extended;
+asm
+        FLD     Y
+        FLD     X
+        FPATAN
+        FWAIT
+end;
 
 { algorithm from Q3R as provided by Timothee Besset }
 procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
@@ -1924,8 +1934,8 @@ begin
   Normal.Y:=0.0;
  if Abs(Normal.Z)<1e-6 then
   Normal.Z:=0.0;
- RotY:=-ArcTan2(Normal.Z,sqrt(Normal.Y*Normal.Y+Normal.X*Normal.X));
- RotZ:=ArcTan2(Normal.Y,Normal.X);
+ RotY:=-ATan2(Normal.Z,sqrt(Normal.Y*Normal.Y+Normal.X*Normal.X));
+ RotZ:=ATan2(Normal.Y,Normal.X);
  { rotate (0,1,0) and (0,0,1) to compute texS and texT  }
  texS.X:=-Sin(RotZ);
  texS.Y:=Cos(RotZ);
