@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/01/21 15:49:48  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.2  2001/01/15 19:21:04  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -50,13 +53,14 @@ type
               W,H: LongInt;
               Indexes: array[0..3] of LongInt;
               Animation: TCompactTexName;
-              Flags, Contents, Value: LongInt;
+              Flags: LongInt;
+              Contents: LongInt;
+              Value: LongInt;
              end;
 
  QTexture2 = class(QTextureFile)
              protected
-               procedure Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt;
-                          NomTex, AnimTex: PChar);
+               procedure LoadTextureData(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt; NomTex, AnimTex: PChar);
               {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
                procedure SaveFile(Info: TInfoEnreg1); override;
                procedure LoadFile(F: TStream; FSize: Integer); override;
@@ -184,7 +188,7 @@ begin
   Result.Value   :=StrToIntDef(Specifics.Values['Value'], 0);
 end;
 
-procedure QTexture2.Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt; NomTex, AnimTex: PChar);
+procedure QTexture2.LoadTextureData(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt; NomTex, AnimTex: PChar);
 const
   Spec1 = 'Image#=';
   PosNb = 6;
@@ -258,7 +262,7 @@ begin
         Raise EError(5519);
       Base:=F.Position;
       F.ReadBuffer(Header, SizeOf(Header));
-      Charger1(F, Base, FSize, Header, @Header.Indexes, Nil, Nil);
+      LoadTextureData(F, Base, FSize, Header, @Header.Indexes, Nil, Nil);
     end;
   else
     inherited;

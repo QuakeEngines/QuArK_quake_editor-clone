@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/21 15:50:08  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.9  2001/01/15 19:21:42  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -218,8 +221,7 @@ begin
       Q2MipTex.Contents:=Header.Contents;
       Q2MipTex.Flags:=Header.Flags;
       Q2MipTex.Value:=Header.Value;
-      Charger1(F, Base, FSize, Q2MipTex, @Header.Offsets,
-       Header.Name, Header.AnimName);
+      LoadTextureData(F, Base, FSize, Q2MipTex, @Header.Offsets, Header.Name, Header.AnimName);
      end;
  else inherited;
  end;
