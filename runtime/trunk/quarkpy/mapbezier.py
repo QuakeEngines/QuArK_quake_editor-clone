@@ -26,11 +26,10 @@ class CPHandle(qhandles.GenericHandle):
     undomsg = Strings[627]
     hint = "reshape bezier patch (Ctrl key: force control point to grid)||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
-    def __init__(self, pos, b2, ij, color): #DECKER
+    def __init__(self, pos, b2, ij):
         qhandles.GenericHandle.__init__(self, pos)
         self.b2 = b2
         self.ij = ij
-        self.color = color #DECKER
 
     def draw(self, view, cv, draghandle=None):
         if self.ij == (0,0):
@@ -41,8 +40,8 @@ class CPHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             #cv.brushcolor = MapColor("Bezier")
-            cv.brushcolor = self.color #DECKER
-            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            #cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
 
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -124,4 +123,8 @@ class CenterHandle(maphandles.CenterHandle):
     "Bezier center."
 
     def __init__(self, pos, centerof):
-        maphandles.CenterHandle.__init__(self, pos, centerof, 0x202020, 1)
+	c_x = quarkx.setupsubset(SS_MAP, "Building")["BezierCenterX"][0]
+	c_y = quarkx.setupsubset(SS_MAP, "Building")["BezierCenterY"][0]
+	p = quarkx.vect(pos.x + c_x, pos.y+c_y, pos.z)
+        maphandles.CenterHandle.__init__(self, p, centerof, 0x202020, 1)
+
