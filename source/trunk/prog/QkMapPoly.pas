@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/10/26 18:10:17  tiglari
+fixed problems blocking non-brush prim format for Q3A
+
 Revision 1.17  2000/10/26 17:16:29  tiglari
 brush primitives format support, needs a bit more checking (I accidentally
 committed a definitely bad version, this one could be OK...
@@ -1882,33 +1885,16 @@ begin
  end;
 end;*)
 
+(* don't actually need this right now
+   should to qo qmatrices.pas if it is needed
 function MatrixMult(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
 begin
    Result.X:=Matrice[1,1]*V.X+Matrice[1,2]*V.Y+Matrice[1,3]*V.Z{+Matrice[1,4]};
    Result.Y:=Matrice[2,1]*V.X+Matrice[2,2]*V.Y+Matrice[2,3]*V.Z{+Matrice[2,4]};
    Result.Z:=Matrice[3,1]*V.X+Matrice[3,2]*V.Y+Matrice[3,3]*V.Z{+Matrice[3,4]};
 end;
+*)
 
-function VecDiff(const V, W : TVect) : TVect;
-begin
- Result.X:=V.X-W.X;
- Result.Y:=V.Y-W.Y;
- Result.Z:=V.Z-W.Z;
-end;
-
-function VecSum(const V, W : TVect) : TVect;
-begin
- Result.X:=V.X+W.X;
- Result.Y:=V.Y+W.Y;
- Result.Z:=V.Z+W.Z;
-end;
-
-function VecScale(const R: Double; const V: TVect) : TVect;
-begin
- Result.X:=R*V.X;
- Result.Y:=R*V.Y;
- Result.Z:=R*V.Z;
-end;
 
 function CoordShift(P, texO, texS, texT : TVect) : TVect;
 var D: TVect;
@@ -1918,7 +1904,6 @@ begin
    Result.Y:=Dot(D,texT);
    Result.Z:=0.0;
 end;
-
 
 
 { algorithm from Q3R as provided by Timothee Besset }
@@ -1957,13 +1942,18 @@ end;
   provided by Timothee Besset }
 procedure GetPXPY(const Normal: TVect; const V: TThreePoints; Mirror: boolean; var PX, PY: array of Double; const Dist : Double);
 var
-  texS, texT, texO, P0, P1, P2, D1, D2, p, Q : TVect;
-  Mat :  TMatrixTransformation;
-  I: Integer;
-  D: Double;
+  texS, texT, texO, P0, P1, P2: TVect;
+  D : Double;
 begin
+  { get basis vectors for affine plane of face }
   GetAxisBase(Normal, texS, texT);
+  { origin of plane's coordindate system }
   texO:=VecScale(Dist, Normal);
+  { get the texture points.  V has been provided by
+     Face.GetThreePointsUserTex, so if texture scale
+     is 1:1, (P1-P0) will be texture width, P2-P0
+     texture height.  In written out map, for 1:1
+     texture scale these #'s will be 128 }
   P0:=V[1];
   if Mirror then
    begin
@@ -1973,39 +1963,25 @@ begin
    begin
     P2:=V[3]; P1:=V[2];
    end;
-   { redo threepoints in axis base }
+   { redo threepoints in plane coordinate system }
    P0:=CoordShift(P0, texO, texS, texT);
    P1:=CoordShift(P1, texO, texS, texT);
    P2:=CoordShift(P2, texO, texS, texT);
 
+   { Now solve the equation system produced
+     where PX, PY are to be row 1 and row 2
+     of the homogenous matrix that will map
+     (0,0), (1,0) and (0,-1) onto P0, P1, P2
+     respectively (note sign swap) }
+
    D:=InvertDenom(P0, P1, P2);
+
    PX[1]:=(P2.Y-P0.Y)/D;
    PX[2]:=(P0.X-P2.X)/D;
-   PX[3]:=(-P2.Y*P0.X+P2.X*P0.y)/d;
+   PX[3]:=(-P2.Y*P0.X+P2.X*P0.Y)/D;
    PY[1]:=(P1.Y-P0.Y)/D;
    PY[2]:=(P0.X-P1.X)/D;
    PY[3]:=(-P0.X*P1.Y+P0.Y*P1.X)/D;
-
-   P:=P1;
-   Q.X:=P.X*PX[1] + P.Y*PX[2] + PX[3];
-   Q.Y:=P.X*PY[2] + P.Y*PY[2] + PY[3];
-   Q.Z:=0;
-
- (*
-   D1:=VecDiff(P1, P0);
-   D2:=VecDiff(P2, P0);
-   Mat[1,1]:=D1.X; Mat[2,1]:=D1.Y;
-   Mat[1,2]:=D2.X; Mat[2,2]:=D2.Y;
-   Mat[1,3]:=P0.X;
-   Mat[2,3]:=P0.Y;
-   Mat[3,1]:=0; Mat[3,2]:=1; Mat[3,3]:=1;
-   Mat:=MatriceInverse(Mat);
-   for I:=1 to 3 do
-   begin
-     PX[I]:=Mat[1,I];
-     PY[I]:=Mat[2,I];
-   end;
- *)
 end;
 
 
