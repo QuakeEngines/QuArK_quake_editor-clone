@@ -356,6 +356,24 @@ class FaceType(EntityManager):
 class BezierType(EntityManager):
     "Bezier Patches"
 
+    # tiglari
+    def menu(o, editor):
+        import mapmenus
+        import mapbezier
+
+        def swapclick(m, o=o, editor=editor):
+            new = o.copy()
+            new.swapsides();
+            undo=quarkx.action()
+            undo.exchange(o, new)
+            editor.ok(undo, "Swap Sides")
+
+        swap = qmenu.item("&Swap sides",swapclick,"Flip visible side of patch")
+        
+        return [swap]
+    # /tiglari
+
+
     def handles(o, editor, view):
         import mapbezier
         #
