@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.4  2002/12/21 06:22:45  tiglari
+remove some unneeded stuff from v220-writing
+
 Revision 1.56.2.3  2002/12/21 04:14:21  tiglari
 yet another attempt at v220 map writing
 
@@ -1153,16 +1156,18 @@ var
   end;
 
 begin
-(*
+
   Plan:=PointsToPlane(Normale);
   case Plan of
    'X' : Axis := MakeVect(1, 0, 0);
    'Y' : Axis := MakeVect(0, 1, 0);
    'Z' : Axis := MakeVect(0, 0, 1);
   end;
- *)
 
-  F.GetThreePointsT(P0, P1, P2);
+  Origin:=MakeVect(0,0,0);
+
+
+  F.GetThreePointsT(PP0, PP1, PP2);
 (*
    this code seems to show that the results of
      GetThreePointsT are the same as getting the
@@ -1191,6 +1196,10 @@ begin
   end;
 
  *)
+
+  P0:=ProjectPointToPlane(PP0, Axis, Origin, Axis);
+  P1:=ProjectPointToPlane(PP1, Axis, Origin, Axis);
+  P2:=ProjectPointToPlane(PP2, Axis, Origin, Axis);
 
   // D1|D2 = Zoner's TexPt[0|1]
   D1:= VecScale(1.0/128.0, VecDiff(P1, P0));

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47.2.1  2002/12/21 09:24:00  tiglari
+steamline v220 map-reading
+
 Revision 1.47  2002/05/15 22:04:51  tiglari
 fixes to map reading error recording (so that new maps can be created ..)
 
@@ -1141,7 +1144,7 @@ expected one.
 
  procedure WC33Params;
  var
-  PP0, PP1, PP2 {, NP0, NP1, NP2, PlanePoint, TexNorm} : TVect;
+  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
  begin
    PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
    PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
@@ -1149,18 +1152,15 @@ expected one.
    PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
    with Surface do
    begin
-     (*
      TexNorm:=Cross(UAxis,VAxis);
      Normalise(TexNorm);
      PlanePoint:=VecScale(Dist, Normale);
      (* could perhaps be optimized by 'partial evaluation' *)
      try
-     (*
        NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
        NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
        NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-     *)
-       SetThreePointsEx(PP0,PP1,PP2,Normale);
+       SetThreePointsEx(NP0,NP1,NP2,Normale);
      except
        g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
      end;
