@@ -1,5 +1,24 @@
 
 
+# QTexture1 QTexture_Q1
+# QTexture2 QTexture_Q2
+# QM8 QTexture_HR2
+# QTextureHL QTexture_HL
+# QTextureHL1 QTexture_HL1
+# QTextureSin QTexture_SIN
+# QM32 QImage_SOF
+# QPcx QImage_PCX
+# QBmp QImage_BMP
+# QTga QImage_TGA
+# QJpeg QImage_JPG
+#
+# ofTvInvisible ofTreeViewInvisible
+# ofTvAlreadyExpanded ofTreeViewAlreadyExpanded
+# ofTvExpanded ofTreeViewExpanded
+# ofSurDisque ofOnDisk
+# ModeFichier fmOpenReadOnly_ShareDenyWrite
+# ModeFichierEcr fmOpenReadWrite_ShareDenyWrite
+
 #       #Done up to QkMdl and including
 #       Enregistrer Save
 #       TInfoEnreg1 TSaveInfo
@@ -439,3 +458,8 @@
 #TQ2BSP TBsp2Header
 #ChargerBsp1 LoadBsp1
 #ChargerBsp2 LoadBsp2
+
+#SauverTexte SaveAsText
+#SauverTextePolyedre SaveAsTextPolygon
+#SauverTexteBezier SaveAsTextBezier
+#SauverSpec SaveAsTextSpecArgs
