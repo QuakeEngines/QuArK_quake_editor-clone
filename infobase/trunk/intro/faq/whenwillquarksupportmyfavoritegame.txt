@@ -11,12 +11,12 @@ a nice package, that would improve the chances (there's also the issue of
 whether the game developers themselves impose restrictions on editing
 their content).
 
-If it's a landscape-based game such as Giants, the answer is probably Wno
+If it's a landscape-based game such as Giants, the answer is probably no
 (nullpointer at  <a href=http://www.planetcitizenkabuto.com>
 http://www.planetcitizenkabuto.com</a> is planning to extend his
 GiantsEdit to cover more games of that nature).
 
 If you're interested in extending QuArK to deal with a new kind of
-game, post on the <a href=http://www.egroups.com/messages/quark-python>
-quark-python</a> forum at <a href=http://www.yahoo.com>Yahoo</a>
+game, post on the <a href="http://groups.yahoo.com/group/quark-python">
+quark-python</a> forum at <a href="http://groups.yahoo.com">Yahoo! Groups</a>.
 
