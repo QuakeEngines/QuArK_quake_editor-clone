@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/08/25 17:59:18  decker_dk
+Ready for C/C++ escape-chars, though uncommented for the moment. This does cause slower loading of text-QRK files.
+
 Revision 1.13  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -1734,6 +1737,9 @@ begin
       S:=Copy(S, Pos('/',S)+1, MaxInt);
      if S<>'' then
       BuildCorrectFileName(S);
+     { tigari: .map extension fix }
+     S:=Copy(S,1,Length(S)-Length(ExtractFileExt(S)));
+     {tiglari}
      SaveDialog1.FileName:=S;
      SaveDialog1.Options:=[ofHideReadOnly, ofOverwritePrompt, ofPathMustExist];
 
