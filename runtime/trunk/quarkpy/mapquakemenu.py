@@ -573,6 +573,26 @@ def Customize1Click(mnu):
         file.savefile()
 
 
+def loadLeakFile(m):
+    import mapholes
+    mapholes.LoadLinFile(m.editor, m.holefilename)
+        
+def leakMenuItem(editor):
+    item = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
+    mapfileobject = editor.fileobject
+    map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
+    mapfilename = quarkx.outputfile('')+'maps\\'+map
+    holeextension = quarkx.setupsubset()["MapHoles"]
+    if not holeextension:
+        holeextension='.lin'
+    holefilename = mapfilename+holeextension
+    if quarkx.getfileattr(holefilename)==FA_FILENOTFOUND:
+        item.state = qmenu.disabled
+    else:
+        item.editor = editor
+        item.holefilename = holefilename
+    return item
+    
 def QuakeMenu(editor):
     "The Quake menu, with its shortcuts."
 
@@ -601,6 +621,8 @@ def QuakeMenu(editor):
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
+        items.append(leakMenuItem(editor))
+        items.append(qmenu.sep)
         items.append(qmenu.item("&Customize menu...", Customize1Click, "customizes this menu"))
     Quake1 = qmenu.popup("&"+gamename, items)
     Quake1.state = not len(items) and qmenu.disabled
@@ -608,8 +630,10 @@ def QuakeMenu(editor):
 
 # ----------- REVISION HISTORY ------------
 #
-#
 #$Log$
+#Revision 1.28  2003/01/06 22:24:02  tiglari
+#check leak files for having actual content before registering build error
+#
 #Revision 1.27  2002/08/09 10:01:45  decker_dk
 #Fixed problem, when "warning about missing textures and do you want to continue"
 #never continued regarding pressing OK or Cancel. The if-statement checked for MR_YES
