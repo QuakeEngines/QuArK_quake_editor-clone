@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/03/31 04:27:28  tiglari
+WC33 mapversion 220 flag now kept, map will be written in 220 if present
+ (concurrent update to QkMapPoly.pas)
+
 Revision 1.31  2001/03/20 21:50:54  decker_dk
 Updated copyright-header
 
@@ -1361,6 +1365,14 @@ begin
       Result:=CurrentQuake1Mode;
       if Result=mjHexen then
         Result:=mjQuake;
+    end;
+    mjQ3A:
+    { FIXME:  barf coding, the idea is that  if Q3a mode
+      is detected, we stay in the current game mode if it's
+      one of the Q3A-format games, otherwise switch to Q3A }
+    begin
+     if CharModeJeu=mjStarTrekEF  then
+       Result:=CharModeJeu;
     end;
   end;
 
