@@ -18,12 +18,13 @@ author: Decker
 <dt><a name=".PAK">   </a>.PAK   <dd>(binary)               A container/package file, which contains other types of files in an internal directory structure. Quake-1 was the first <a href="#fps">FPS</a> which used these types of files. This is the enhanced version of an <a href="#.WAD">.WAD</a> file.
 <dt><a name=".PCX">   </a>.PCX   <dd>(binary)               A graphics image file format. Supports up to 24bit-color (<a href="#rgb">RGB</a>).
 <dt><a name=".PK3">   </a>.PK3   <dd>(binary)               A container/package file, which actually is a <a href="#.ZIP">.ZIP</a> file, used by <a href="#quake3">Quake-3:Arena</a>.
+<dt><a name=".PNG">   </a>.PNG   <dd>(binary)               A graphics image file format. <b>P</b>ortable <b>N</b>etwork <b>G</b>raphics
 <dt><a name=".PY">    </a>.PY    <dd>(program source-text)  A <a href="#python">Python</a> source-text file.
 <dt><a name=".PYC">   </a>.PYC   <dd>(binary)               A compiled <a href="#.PY">.PY</a>.
 <dt><a name=".QC">    </a>.QC    <dd>(program source-text)  See <a href="#quakec">QuakeC</a>.
 <dt><a name=".QKM">   </a>.QKM   <dd>(binary/text)          QuArK map file.
 <dt><a name=".QRK">   </a>.QRK   <dd>(binary/text)          QuArK data file. Can contain all kinds of data. Is saved in either binary- or text-format.
-<dt><a name=".QVM">   </a>.QVM   <dd>(binary)               Properly stands for <b>Q</b>uake <b>V</b>itrual <b>M</b>achine. Its a Quake-3:Arena "game-rules" program, as we know from Quake-1's PROGS.DAT file.
+<dt><a name=".QVM">   </a>.QVM   <dd>(binary)               Probably stands for <b>Q</b>uake <b>V</b>itrual <b>M</b>achine. Its a Quake-3:Arena "game-rules" program, as we know from Quake-1's PROGS.DAT file.
 <dt><a name=".RMF">   </a>.RMF   <dd>(binary)               WorldCraft map file. Can <u>not</u> be read by QuArK.
 <dt><a name=".SHADER"></a>.SHADER<dd>(text)                 A Quake-3:Arena "texture"-definition file.
 <dt><a name=".TGA">   </a>.TGA   <dd>(binary)               A graphics image file format. Supports up to 24/32bit-color (<a href="#rgba">RGBA</a>).
