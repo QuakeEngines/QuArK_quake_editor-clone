@@ -8,6 +8,8 @@ Map Duplicator abstract classes.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
 #
 # Duplicators are really implemented in the plug-in "mapdups.py".
 #
@@ -149,7 +151,7 @@ class CenterDupHandle(maphandles.IconHandle):
 
     def drag(self, v1, v2, flags, view):
         old, new = maphandles.IconHandle.drag(self, v1, v2, flags, view)
-        if len(new) and (flags&MB_DRAGGING) and self.centerof["out"]:
+        if new is not None and len(new) and (flags&MB_DRAGGING) and self.centerof["out"]:
             #
             # The red image includes the siblings if needed.
             #
@@ -228,3 +230,6 @@ def DupManager(dup):
 
 DupCodes = { }    # see mapdups.py
 
+# ----------- REVISION HISTORY ------------
+#$Log$
+#--- snap ----
