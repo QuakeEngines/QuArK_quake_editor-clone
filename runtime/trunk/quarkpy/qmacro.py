@@ -20,7 +20,6 @@ import quarkx
 import qtoolbar
 import qutils
 
-
 #
 # Macros called when there is an object to display in a window.
 #
@@ -256,8 +255,20 @@ def MACRO_makeaddon(self):
     import qutils
     a = quarkx.getqctxlist()
     a.reverse()
-    qutils.debug( a[0].name )
     a[0].makeaddonfromqctx();
+
+def MACRO_makeaddonfromfgd(self):
+    import qfgd2qrk
+    import qutils
+    a = quarkx.getqctxlist()
+    a.reverse()
+    files = quarkx.filedialogbox("Select FGD File", "*.fgd", ["WorldCraft Data File","*.fgd"], 0)
+    file = files[0]
+    gn = a[0]["GameDir"]
+    if (gn is None) or (gn == ""):
+        gn = file
+    qfgd2qrk.makeqrk(a[0].parent, file, gn)
+    
 
 # ----------- REVISION HISTORY ------------
 #
