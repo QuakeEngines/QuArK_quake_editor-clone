@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/07/25 19:13:29  decker_dk
+QPakFolder.LoadFile - Ignoring zero-length PAK-directory entries (E.g. BlueShift PAK0.PAK)
+
 Revision 1.15  2001/04/16 00:37:33  tiglari
 extract entity lumps from .bsp's in pakfolder
 
@@ -80,7 +83,7 @@ uses
   ComCtrls, QkForm, QkGroup, Python;
 
 type
- QPakFolder = class(QLvFileObject)
+ QPakFolder = class(QFileObject)
               private
                 procedure RecGO1(const SubPath: String; extracted: PyObject);
               protected

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/03/20 21:43:04  decker_dk
+Updated copyright-header
+
 Revision 1.20  2001/02/20 19:43:30  decker_dk
 Append '(shader)'-text to texturetitle if its a shader, instead of prefixing it with a '$'-sign.
 
@@ -115,7 +118,7 @@ uses
   {$IFNDEF DontNeedImgListDCU}, ImgList{$ENDIF};
 
 type
- QWad = class(QLvFileObject)
+ QWad = class(QFileObject)
         protected
           function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
