@@ -143,22 +143,19 @@ shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    prevItem.state=nextItem.state=parentItem.state=childItem.state=qmenu.disabled
-    freezeItem.state = unfreezeItem.state = removeItem.state=qmenu.disabled
+    removeItem.state=parentItem.state=childItem.state=qmenu.disabled
+    nextItem.state=prevItem.state=freezeItem.state=unfreezeItem.state=qmenu.disabled
     if editor is not None:
-        uniquesel = editor.layout.explorer.uniquesel 
-        if uniquesel is not None:
-            prevItem.state=nextItem.state=qmenu.normal
-            if len(uniquesel.subitems)>0:
-                childItem.state = qmenu.normal
-            if uniquesel.treeparent:
-                parentItem.state=qmenu.normal
-            removeItem.state=qmenu.normal
+        if editor.layout.explorer.uniquesel is not None:
+            removeItem.state=parentItem.state=childItem.state=qmenu.normal
+            nextItem.state=prevItem.state=freezeItem.state=qmenu.normal
             if getAttr(editor,'frozenselection') is None:
                 freezeItem.state=qmenu.normal
+                unfreezeItem.state=qmenu.disabled
             else:
+                freezeItem.state=qmenu.disabled
                 unfreezeItem.state=qmenu.normal
-
+        else: return
 
 def SelectionMenu():
     "The Selection menu, with its shortcuts."
@@ -175,6 +172,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.11  2003/03/25 10:16:52  tiglari
+# re-fix enablement bugs
+#
 # Revision 1.10  2003/03/25 09:56:49  cdunde
 # To correct conflict and add infobase links and update
 #
