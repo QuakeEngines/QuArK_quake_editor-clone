@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/03/20 21:45:22  decker_dk
+Updated copyright-header
+
 Revision 1.26  2001/03/18 00:38:14  aiv
 Misc Cleanups and Fixes
 
@@ -134,6 +137,7 @@ const
  soDisableEnhTex     = $00000004;
  soDisableFPCoord    = $00000008;
  soEnableBrushPrim   = $00000010;
+ soEnableWC202       = $00000020;
 
  soDirectDup         = $04000000;
  soBSP               = $08000000;
@@ -2374,7 +2378,11 @@ begin
  { If this is the first time we're called, soOutsideWorldspawn is not set,
    and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
  if (Flags and soOutsideWorldspawn = 0) then
-  I := GetFirstEntityNo
+ begin
+  I := GetFirstEntityNo;
+  if Specifics.Values['mapversion']='220' then
+    Flags:=Flags + soEnableWC202
+ end
  else
   I := GetNextEntityNo;
  Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
