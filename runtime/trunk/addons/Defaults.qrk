@@ -453,6 +453,7 @@ QQRKSRC1
         TextureDef = "bricks/b_cp_v10x"
         LightFactor = '0.90000'
         3DLight = '512'
+        walTrick = "1"
         TextureFormat = ".tga"
       }
       Quake 3:config =
@@ -1463,6 +1464,12 @@ QQRKSRC1
       {
         Typ = "E"
         Txt = "...command-line parameters"
+      }
+      walTrick: = {
+        Typ = "X"
+        Txt = "This version of qbsp3 wants"
+        Cap = ".wal texture files"
+        Hint = "check this to have QuArK write both .wal and .tga textures ( kpBSP can't read tga textures)" 
       }
       Console: =
       {
