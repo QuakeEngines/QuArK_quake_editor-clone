@@ -1,5 +1,5 @@
 title: Duplicators
-subdir: basic path
+subdir: basic path instance
 
 Duplicators mean that if you use Quark, you'll never need
 to make 26 copies of a complicated object, then make
