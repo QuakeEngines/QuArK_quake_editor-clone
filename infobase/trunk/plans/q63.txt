@@ -1,10 +1,9 @@
 title: QuArK 6.3
 author: tiglari, etc.
 
-This is stuff that tiglari currently envisions for the next release
-of QuArK.  Needless to say, highly non-definitive!
-I think I've put my name on more than I can get
-around to doing for a timely release.
+This is stuff that tiglari currently envisions for the next release of
+QuArK.  Needless to say, highly non-definitive! I think I've put my
+name on more than I can get around to doing for a timely release.
 
 <ul>
 <li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
@@ -20,10 +19,11 @@ around to doing for a timely release.
 
 <li>Linear Matrix editor: (tiglari)
 <br>crank out matrices for rotation, scaling
-etc. from intelligble parameters
+etc. from intelligible parameters (from pushbutton in duplicator
+forms).
 
 <li>OsFolders: (tiglari)
-<br>    edit the properties of pre-existing OsFolders
+<br>edit the properties of pre-existing OsFolders
 
 <li>Brush-based shape-builders: (tiglari, Decker)
 <br> 'thick', and 'inner boxes' (more control over arch shapes)
@@ -38,8 +38,8 @@ etc. from intelligble parameters
 Wild West game?
 
 <li>User-configurable hot keys: (tiglari)
-<br>status: started; how many functions should have hot keys,
-should they all be U.C.?
+<br>status: current ones all done.  What additional ones
+should be added?
 
 <li>User-specifible rotation/linear mapping origin: (tiglari)
 <br>Do they really need to be persistent properties of groups?
@@ -53,9 +53,19 @@ like addons; this would make it easier to try things out
 <li>Expand/Contract faces: (tiglari)
 <br>As enhancement to experimental mapmovevertex plugin
 
-
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
+<br>project from nearest plane', emulating classic qe texture
+alignment: the projection
+of the texture scale on the closest axis plane to the tagged
+face normal is found, then that is projected onto the tagged
+face.
+
+<li>Ripoff of WC `arch maker': (tiglari)
+<br>would be called something like`arc builder', probably
+basically a duplicator, emulating the wc thing's functionality.
+
+<li>3point cutting plane: (tiglari)
 
 <li>Face-selection modes: (tiglari)
 
