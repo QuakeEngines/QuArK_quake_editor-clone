@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit Output1;
 
@@ -69,6 +74,7 @@ type
   public
    constructor Create;
    destructor Destroy; override;
+   procedure CreateTmpPakList(const Path: String; Back: Boolean);
    function GetPakZero(const Path: String; Back: Boolean) : String;
    function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
   end;
@@ -81,8 +87,10 @@ procedure OutputDirDlg;
 
 function NomFichierSortiePak(Force: Boolean) : String;
 function IsPakTemp(const NomFich: String) : Boolean;
+(*DECKER-begin
 function GetPakZero(const Path: String; Back: Boolean) : String;
 function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
+DECKER-end*)
 
  {------------------------}
 
@@ -140,19 +148,78 @@ begin
  end;
 end;
 
-function TGetPakNames.GetPakZero(const Path: String; Back: Boolean) : String;
+procedure TGetPakNames.CreateTmpPakList(const Path: String; Back: Boolean);
 var
- FileFilter : String;
+ FileFilter, Search : String;
+ i,p : Integer;
+ ptr : PChar;
 begin
  FileFilter:=SetupGameSet.Specifics.Values['PakFormat'];
  if (Length(FileFilter)<=4) then
-  FileFilter:='PAK*.PAK';
- FileFilter[Length(FileFilter)-4]:='*';
- FindFiles(Path, FileFilter);
+  FileFilter:='PAK#.PAK';
+ if (FileFilter[Length(FileFilter)-4] = '#') then
+ begin
+  for i:=0 to 9 do
+  begin
+   FileFilter[Length(FileFilter)-4] := chr(ord('0') + i);
+   StrList.Add(PathAndFile(Path, FileFilter));
+  end;
+ end
+ else
+ begin
+  Search:='*';
+  ptr:=StrPos(PChar(FileFilter), PChar(Search));
+  if (ptr <> nil) then
+  begin
+   p := PChar(FileFilter) - ptr;
+   if (p = 0) then
+   begin
+    FileFilter:='tmpQuArK'+FileFilter;
+    p:=1+length('tmpQuArK');
+   end;
+   for i:=0 to 9 do
+   begin
+    FileFilter[p] := chr(ord('0') + i);
+    StrList.Add(PathAndFile(Path, FileFilter));
+   end;
+  end;
+ end;
+
  if (Back) then
   StrListIter:=StrList.Count-1
  else
-  StrListIter:=0;
+  if StrList.Count > 0 then
+   StrListIter:=0
+  else
+   StrListIter:=-1;
+end;
+
+function TGetPakNames.GetPakZero(const Path: String; Back: Boolean) : String;
+var
+ FileFilter : String;
+ i : Integer;
+begin
+ FileFilter:=SetupGameSet.Specifics.Values['PakFormat'];
+ if (Length(FileFilter)<=4) then
+  FileFilter:='PAK#.PAK';
+ if (FileFilter[Length(FileFilter)-4] = '#') then
+ begin
+  for i:=0 to 9 do
+  begin
+   FileFilter[Length(FileFilter)-4] := chr(ord('0') + i);
+   StrList.Add(PathAndFile(Path, FileFilter));
+  end;
+ end
+ else
+  FindFiles(Path, FileFilter);
+
+ if (Back) then
+  StrListIter:=StrList.Count-1
+ else
+  if (StrList.Count > 0) then
+   StrListIter:=0
+  else
+   StrListIter:=-1;
  if (StrListIter<0) then
   Result:=PathAndFile(Path, 'PAK0.PAK')
  else
@@ -175,6 +242,7 @@ begin
 end;
 {DECKER-end}
 
+(*DECKER-begin
 function GetPakZero(const Path: String; Back: Boolean) : String;
 const
  Init: array[Boolean] of Char = (Pred('0'), Succ('9'));
@@ -207,33 +275,62 @@ begin
  until not MustExist or FileExists(FileName);
  Result:=True;
 end;
+DECKER-end*)
 
 function NomFichierSortiePak(Force: Boolean) : String;
 var
- NomChemin, NomComplet: String;
+ GameModDir, AvailablePakFile: String;
+{DECKER-begin}
+ FoundIt: Boolean;
+ GetPakNames: TGetPakNames;
+{DECKER-end}
 begin
- NomChemin:=GetGameDir;
+ GameModDir:=GetGameDir;
  if (SetupGameSet.Specifics.Values['AlwaysPak']='')
- and (NomChemin=GettmpQuArK) and not Force then
+ and (GameModDir=GettmpQuArK) and not Force then
   begin
    NomFichierSortiePak:='';  { no .pak file to write }
    Exit;
   end;
- NomChemin:=PathAndFile(QuakeDir, NomChemin);
- NomComplet:=GetPakZero(ExpandFileName(NomChemin), True);
- if GetNextPakName(True, NomComplet, True) then
+ GameModDir:=PathAndFile(QuakeDir, GameModDir);
+{DECKER-begin}
+{
+ AvailablePakFile:=GetPakZero(ExpandFileName(GameModDir), True);
+ if GetNextPakName(True, AvailablePakFile, True) then
   begin
-   if IsPakTemp(NomComplet) then
+   if IsPakTemp(AvailablePakFile) then
     begin
-     NomFichierSortiePak:=NomComplet;
+     NomFichierSortiePak:=AvailablePakFile;
      Exit;
     end;
   end
  else
-  NomComplet:=GetPakZero(ExpandFileName(NomChemin), False);
- if not GetNextPakName(False, NomComplet, False) then
-  Raise EErrorFmt(5630, [NomComplet]);
- NomFichierSortiePak:=NomComplet;
+  AvailablePakFile:=GetPakZero(ExpandFileName(GameModDir), False);
+ if not GetNextPakName(False, AvailablePakFile, False) then
+  Raise EErrorFmt(5630, [AvailablePakFile]);
+ NomFichierSortiePak:=AvailablePakFile;
+}
+ FoundIt:=FALSE;
+ GetPakNames := TGetPakNames.Create;
+{ AvailablePakFile:=GetPakNames.GetPakZero(ExpandFileName(GameModDir), True);}
+ GetPakNames.CreateTmpPakList(ExpandFileName(GameModDir), True);
+ if GetPakNames.GetNextPakName(True, AvailablePakFile, True) then
+  begin
+   if IsPakTemp(AvailablePakFile) then
+    begin
+     FoundIt:=TRUE;
+    end;
+  end;
+ if not FoundIt then
+  begin
+{   AvailablePakFile:=GetPakNames.GetPakZero(ExpandFileName(GameModDir), False);}
+   GetPakNames.CreateTmpPakList(ExpandFileName(GameModDir), False);
+   if not GetPakNames.GetNextPakName(False, AvailablePakFile, False) then
+    Raise EErrorFmt(5630, [AvailablePakFile]);
+  end;
+ NomFichierSortiePak:=AvailablePakFile;
+ GetPakNames.Destroy;
+{DECKER-end}
 end;
 
 procedure OutputDirDlg;
@@ -358,6 +455,9 @@ procedure TOutputDirDlg.FormActivate(Sender: TObject);
 var
  S: TSearchRec;
  QD1, Chemin: String;
+{DECKER-begin}
+ GetPakNames: TGetPakNames;
+{DECKER-end}
 begin
  OnActivate:=Nil;
  Screen.Cursor:=crHourglass; try
@@ -365,16 +465,26 @@ begin
  QD1:=QuakeDir;
  if FindFirst(PathAndFile(QD1, '*.*'), faDirectory, S) = 0 then
   repeat
-   if (S.Name<>'.') and (S.Name<>'..') then
+   if (S.Name<>'.') and (S.Name<>'..') and (S.Attr and faDirectory > 0) then {DECKER added "S.Attr & faDirectory" check}
     begin
+{DECKER-begin}
+{
      Chemin:=GetPakZero(PathAndFile(QD1, S.Name), False);
      while GetNextPakName(True, Chemin, False) do
+}
+     GetPakNames := TGetPakNames.Create;
+     Chemin := GetPakNames.GetPakZero(PathAndFile(QD1, S.Name), False);
+     while GetPakNames.GetNextPakName(True, Chemin, False) do
+{DECKER-end}
       if IsPakTemp(Chemin) then
        begin
         ListBox1.Items.Add(Chemin);
         ListBox1.Selected[ListBox1.Items.Count-1]:=True;
         ListBox1.Update;
        end;
+{DECKER-begin}
+     GetPakNames.Destroy;
+{DECKER-end}
     end;
   until FindNext(S)<>0;
  FindClose(S);
