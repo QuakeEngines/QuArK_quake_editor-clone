@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2003/08/21 14:03:29  peter-b
+Fix for module search path bug.
+
 Revision 1.13  2003/08/19 21:43:28  peter-b
 Defines PYTHON23_OR_HIGHER for Python 2.3 support.
 Fixed logging to accurately log installed Python version and DLL path.
@@ -563,19 +566,19 @@ begin
   Lib:=0;
 {$IFDEF PYTHON20_OR_HIGHER}
     dll:='python23.dll';
-    Lib:=LoadLibrary(dll);
+    Lib:=LoadLibrary(PChar(dll));
 {$IFNDEF PYTHON23_OR_HIGHER}
     if Lib=0 then
       dll:='python22.dll';
-      Lib:=LoadLibrary(dll);
+      Lib:=LoadLibrary(PChar(dll));
 {$IFNDEF PYTHON22_OR_HIGHER}
     if Lib=0 then
       dll:='python21.dll';
-      Lib:=LoadLibrary('python21.dll');
+      Lib:=LoadLibrary(PChar(dll));
 {$IFNDEF PYTHON21_OR_HIGHER}
     if Lib=0 then
       dll:='python20.dll';
-      Lib:=LoadLibrary(dll);
+      Lib:=LoadLibrary(PChar(dll));
 {$ENDIF}
 {$ENDIF}
 // if dll<>'' then
@@ -583,10 +586,10 @@ begin
 {$ELSE}
   if Lib=0 then
     dll:='python151.dll';
-    Lib:=LoadLibrary(dll);
+    Lib:=LoadLibrary(PChar(dll));
   if Lib=0 then
     dll:='python15.dll';
-    Lib:=LoadLibrary(dll);
+    Lib:=LoadLibrary(PChar(dll));
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
