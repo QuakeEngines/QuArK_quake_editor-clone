@@ -312,6 +312,13 @@ class Rotate3DHandle(GenericHandle):
           "|This command forces the angle to a 'round' value. It works like a kind of grid for angles.\n\nSet the 'angle grid' in the Configuration box, Map, Building, 'Force to angle'. See also the Options menu, 'Adjust angles automatically'.")]
 
 
+def updatecenters(item,delta):
+    if item["usercenter"]:
+        center = quarkx.vect(item["usercenter"])
+        item["usercenter"]=(center+delta).tuple
+    for subitem in item.subitems:
+#        debug('subitem '+subitem.name)
+        updatecenters(subitem,delta)
 
 class CenterHandle(GenericHandle):
     "Handle at the center of an object."
@@ -346,9 +353,7 @@ class CenterHandle(GenericHandle):
         if delta or (flags&MB_REDIMAGE):
             new = self.centerof.copy()
             new.translate(delta, g1)
-            if self.centerof["usercenter"]:
-                center = quarkx.vect(self.centerof["usercenter"])
-                new["usercenter"]=(center+delta).tuple
+            updatecenters(new,delta)
             new = [new]
         else:
             new = None
@@ -1533,6 +1538,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.6  2001/04/08 00:40:31  tiglari
+#'usercenter' specific updated on CenterHandle drag
+#
 #Revision 1.5  2001/02/25 11:22:51  tiglari
 #bezier page support, transplanted with permission from CryEd (CryTek)
 #
