@@ -106,8 +106,8 @@ class StandardDuplicator(DuplicatorManager):
                 item.translate(self.origin-self.sourcecenter)
         if self.offset:
             item.translate(self.offset)
-#        if self.matrix:
-#            item.linear(self.origin, self.matrix)
+        if self.matrix and not self.dup["item center"]:
+            item.linear(self.origin, self.matrix)
         return [item]
 
     def buildimages(self, singleimage=None):
@@ -128,13 +128,14 @@ class StandardDuplicator(DuplicatorManager):
             offset = quarkx.vect(self.dup["offset"])
         else:
             offset = cumoffset
-        try:
-            if self.matrix is not None:
-                for item in list:
-                    center = maphandles.GetUserCenter(item)
-                    item.linear(center, self.matrix)
-        except (AttributeError):
-            pass
+        if self.dup["item center"]:
+            try:
+                if self.matrix is not None:
+                    for item in list:
+                        center = maphandles.GetUserCenter(item)
+                        item.linear(center, self.matrix)
+            except (AttributeError):
+                pass
         for i in range(count):
             cumoffset = offset+cumoffset
             self.imagenumber = i
@@ -145,15 +146,16 @@ class StandardDuplicator(DuplicatorManager):
             #  - removes all None objects;
             #  - and stores the new list back in "list".
             list = reduce(lambda x,y: x+y, map(lambda item, fn=self.do: fn(item.copy()), list), [])
-            try:
-                if self.matrix is not None:
-                    for item in list:
-                        center = maphandles.GetUserCenter(item)
-                        if item["usercenter"]:
-                            center=center+cumoffset
-                        item.linear(center, self.matrix)
-            except (AttributeError):
-                pass
+            if self.dup["item center"]:
+                try:
+                    if self.matrix is not None:
+                        for item in list:
+                            center = maphandles.GetUserCenter(item)
+                            if item["usercenter"]:
+                                center=center+cumoffset
+                            item.linear(center, self.matrix)
+                except (AttributeError):
+                    pass
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -274,6 +276,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11  2001/05/12 18:58:54  tiglari
+#drop matrix2/buildLinearMatrix support
+#
 #Revision 1.10  2001/05/12 10:14:24  tiglari
 #disable old--style dup=fixpoint behavior, install usercenter as fixpoint
 #  behavior

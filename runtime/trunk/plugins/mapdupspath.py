@@ -9,7 +9,7 @@
 
 Info = {
    "plug-in":       "Path Duplicator",
-   "desc":          "BETA! Path Duplicator",
+   "desc":          "Path Duplicator",
    "date":          "3 feb 01",
    "author":        "Decker, also tiglari",
    "author e-mail": "decker@planetquake.com, tiglari@hexenworld.net",
@@ -834,6 +834,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.39  2001/05/06 10:22:10  tiglari
+#remove buildLinearMatrix stuff from instance duplicator buildimages
+#
 #Revision 1.38  2001/04/08 02:43:10  tiglari
 #if a group inside the instance duplicator has a usercenter, then the
 # matrix/scale/rotate attributes of a path point will apply the transformations
