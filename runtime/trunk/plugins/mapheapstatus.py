@@ -65,6 +65,15 @@ class HeapStatus(quarkpy.dlgclasses.placepersistent_dialogbox):
         Hint = "Total Bytes Allocated by the Program"
         }
 
+        ChangeAllocated: =
+        {
+        Txt = "&"
+        Typ = "ESR"
+        Hint = "Change in Total Bytes Allocated by the Program"
+        }
+
+        
+
         sep: = { Typ="S" Txt=" " }
 
         cancel:py = {Txt="" }
@@ -82,7 +91,18 @@ class HeapStatus(quarkpy.dlgclasses.placepersistent_dialogbox):
     #
 
         self.editor = editor
+        #
+        # heapstatus object passed as parameter used directly to load
+        #   dialog
+        #
         self.src = src
+        totalalloc=eval(src["TotalAllocated"])
+        try:
+            oldalloc = editor.oldalloc
+            src["ChangeAllocated"]=`totalalloc-oldalloc`
+        except:
+            pass
+        editor.oldalloc = totalalloc
         self.form = form
           
     #
@@ -116,3 +136,8 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.1  2002/01/08 10:11:41  tiglari
+# uses heapstatus function to display heap info (currently just TotalAllocated,
+# all of the fields mentioned in the comments can be accessed as specifics
+# of the QObject returned by heapstatus)
+#
