@@ -924,7 +924,7 @@ Strings = {
           ' steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n',
     5713: 'steam file system',
     5714: 'bad content id: %s',
-    5715: 'reserved for hl2',
+    5715: 'vmf file',
     5716: 'reserved for hl2',
     5717: 'reserved for hl2',
     5718: 'reserved for hl2',
@@ -976,6 +976,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.66  2005/01/26 23:40:22  alexander
+#hl2 map format warning
+#
 #Revision 1.65  2005/01/11 01:45:21  alexander
 #nicer messages
 #

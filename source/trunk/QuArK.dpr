@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2005/01/02 15:19:54  alexander
+access files via steam service - first
+
 Revision 1.24  2004/12/22 11:42:16  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -202,7 +205,8 @@ uses
   QkD3 in 'prog\QkD3.pas',
   QkVTF in 'prog\QkVTF.pas',
   QkGCF in 'prog\QkGCF.pas',
-  QkSteamFS in 'prog\QkSteamFS.pas';
+  QkSteamFS in 'prog\QkSteamFS.pas',
+  QkVMF in 'prog\QkVMF.pas';
 
 {$R *.RES}
 
