@@ -19,7 +19,7 @@ from qutils import *
 import math
 import string
 
-#qmacro.qeditor_loaded=1
+qmacro.qeditor_loaded=1
 
 pi2 = 2.0 * math.pi
 epsilon = 0.00001
@@ -1478,6 +1478,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.10  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.9  2001/08/07 23:37:09  tiglari
 #X_, Y_, Z_, axis constants added
 #
