@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/10/11 19:04:22  aiv
+Initial Release
+
 }
 
 unit Logging;
@@ -37,6 +40,8 @@ end;
 
 Procedure OpenLogFile;
 begin
+  if LogOpened then
+    exit;
   {$I-}
   Setup.InitApplicationPath;
   AssignFile(LogFile, AppendSlash(Setup.ApplicationPath)+LOG_FILENAME);
@@ -89,6 +94,7 @@ begin
 end;
 
 initialization
+  LogOpened:=False;
   OpenLogFile;
 finalization
   CloseLogFile;
