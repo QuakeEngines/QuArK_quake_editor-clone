@@ -1,6 +1,10 @@
 
                    QuArK 6.4 Snapshot 1
 
+ * [tiglari] Fix problems with texture positioning in Classic Quake
+     and Quark etp mode (reported on the rust QuArK forum, argggh
+     what was I smoking when I wrote that code ...)
+                 
  * [tiglari] Improve many of the search dialogs (thin faces, microbrushes,
      bad texture scales, targetting/ed, bsp study, browse multiple selection)
      so that they start with the first item on the list loaded and ready to

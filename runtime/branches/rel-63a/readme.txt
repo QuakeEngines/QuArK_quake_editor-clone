@@ -1,14 +1,15 @@
 
-                 QuArK 6.3 Release Candiate 1 Patch 2
+                 QuArK 6.3 Release Candidate 2
+
+ * [tiglari] Fix problems with texture positioning in Classic Quake
+     and Quark etp mode (reported on the rust QuArK forum, argggh
+     what was I smoking when I wrote that code ...)
                  
  * [tiglari] fix selection dialog problems for mapthinfaces.py, mapmicrobrush.py,
       mapbadtexscale.py, bspstudy.py, quarkpy\dlgclasses.py (used in mapmadsel,
       for Browse Multiple Selection)
- 
-                 QuArK 6.3 Release Candiate 1 Patches 1
 
  * [tiglari] remove debug statements from various files
-
 
                  QuArK 6.3 Release Candidate 1
 
