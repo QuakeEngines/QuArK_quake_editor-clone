@@ -54,7 +54,7 @@ class EntityManager:
 
     def drawsel(o, view, mode):
         "Called to draw the object 'o' selected."
-        #view.drawmap(o, mode)  # draw normally by default
+#        view.drawmap(o, DM_SELECTED, YELLOW)  # draw normally by default
         pass
 
     def handles(o, editor, view):
@@ -233,6 +233,9 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.6  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
 #Revision 1.5  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #

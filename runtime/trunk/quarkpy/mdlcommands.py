@@ -72,12 +72,14 @@ class NewTriDlg(dlgclasses.LiveEditDlg):
         Hint = "s t texture coordinates.  Enter new ones here." $0D "The difference between new and old can be propagated to row, column or all with checkboxes below."
         }
         sep: = {Typ="S"} 
-        ok:py = { }
         exit:py = { }
     }
     """
     
 def addtriclick(m):
+    editor = mapeditor()
+    if editor is None: return
+   
     class pack:
         "place to stick stuff"
     def setup(self, pack=pack):
@@ -91,8 +93,21 @@ def addtriclick(m):
 
     def action(self, pack=pack):
         pass
+        
+    def actiona(self, pack=pack):
+        src = self.src
+        strings = string.split(src["STCoord1"])
+        s1,t1 = eval(strings[0]), eval(strings[1])
+        strings = string.split(src["STCoord2"])
+        s2,t2 = eval(strings[0]), eval(strings[1])
+        strings = string.split(src["STCoord3"])
+        s3,t3 = eval(strings[0]), eval(strings[1])
+        v1 = eval(src["VertexNo1"])
+	v2 = eval(src["VertexNo2"])
+	v3 = eval(src["VertexNo3"])
+	addtriangle(editor.Root.currentcomponent,v1,v2,v3, s1,t1, s2,t2, s3,t3)
  
-    NewTriDlg(quarkx.clickform, 'addtridlg', mapeditor(), setup, action)  
+    NewTriDlg(quarkx.clickform, 'addtridlg', editor, setup, action, actiona)  
 
 def checkcomponents(m):
   editor = mapeditor()
@@ -119,4 +134,7 @@ def CommandsMenu():
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.2  2000/10/11 19:09:00  aiv
+# added cvs header and triangle adding dialog (not finished)
+#
 #

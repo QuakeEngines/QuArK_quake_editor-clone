@@ -49,12 +49,33 @@ def invalidateviews():
   editor.invalidateviews(1)
 
 #
+# Remove a triangle from a given component
+#
+def removeTriangle(comp, index):
+  if (index is None):
+    return
+  newcomp = comp.copy()
+  old_tris = newcomp.triangles
+  tris = old_tris[:index] + old_tris[index+1:]
+  newcomp.triangles = tris
+  undo = quarkx.action()
+  undo.exchange(comp, new_comp)
+  mapeditor().ok(undo, "remove triangle")
+  invalidateviews()
+    
+
+#
 # Add a frame to a given component (ie duplicate last one)
 #
 def addframe(comp):
   if (comp is None):
     return
-  f = comp.addframe() # easier - done in delphi code :-)
+  newcomp = comp.copy()
+  f = newcomp.addframe() # easier - done in delphi code :-)
+  undo = quarkx.action()
+  undo.exchange(comp, new_comp)
+  mapeditor().ok(undo, "add frame")
+  
   invalidateviews()
   return f
 
@@ -69,8 +90,13 @@ def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
   if (t1 is None) or (t2 is None) or (t3 is None):
     return
   tris = comp.triangles
-  tris = tris + [[v1,s1,t1],[v2,s2,t2],[v3,s3,t3]]
-  comp.triangle = tris
+  tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))]
+  newcomp = comp.copy()
+  newcomp.triangle = tris
+
+  undo = quarkx.action()
+  undo.exchange(comp, new_comp)
+  mapeditor().ok(undo, "add triangle")
   invalidateviews()
 
 #
@@ -79,22 +105,98 @@ def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
 def addvertex(comp, org):
   if (comp is None) or (org is None):
     return
-  frames = comp.findallsubitems("", ':mf')   # find all frames
+  newcomp = comp.copy()
+  frames = newcomp.findallsubitems("", ':mf')   # find all frames
   for frame in frames: 
     vtxs = frame.vertices
     vtxs = vtxs + [org]
     frame.vertices = vtxs
+
+  undo = quarkx.action()
+  undo.exchange(comp, new_comp)
+  mapeditor().ok(undo, "add vertex")
+
   invalidateviews()
   
+#
+# Checks triangle for vertex [index]
+#
+def checkTriangle(tri, index):
+  for c in tri:
+    if ( c[0] == index): # c[0] is the 'vertexno'
+      return 1  
+  return 0
+
+
+#
+# Find triangles containing a selected vertex  [index]
+#
+def findTriangles(comp, index):
+  tris = comp.triangles
+  tris_out = [ ]
+  for tri in tris:
+    isit = checkTriangle(tri, index)
+    if (isit == 1):
+      tris_out = tris_out + [ tri ]
+  return tris_out
+
+def fixTri(tri, index):
+  new_tri = [ ]
+  for c in tri:
+    v = 0
+    if ( c[0] > index):
+      v = c[0]-1
+    else:
+      v = c[0]
+    s = c[1]
+    t = c[2]
+    new_tri = new_tri + [(v,s,t)]
+  return (new_tri[0], new_tri[1], new_tri[2])
+  
+#
+# goes through tri list: if greaterthan index then takes 1 away from vertexno
+#
+def fixUpVertexNos(tris, index):
+  new_tris = [ ]
+  for tri in tris:
+     x = fixTri(tri, index)
+     new_tris = new_tris + [x]
+  return new_tris
+
+def checkinlist(tri, toberemoved):
+  for tbr in toberemoved:
+    if (tri == tbr):
+      return 1
+  return 0
+
 #
 # remove a vertex from a component
 #
 def removevertex(comp, index):
   if (comp is None) or (index is None):
     return
-  comp.removevertex(index)
+  #### 1) find all triangles that use vertex 'index' and delete them.
+  toBeRemoved = findTriangles(comp, index)
+  tris = comp.triangles
+  new_tris = []
+  for tri in tris:
+    p = checkinlist(tri, toBeRemoved)
+    if (p==0):
+      new_tris = new_tris + [ tri ]
+  enew_tris = fixUpVertexNos(new_tris, index)
+  new_comp = comp.copy() # create a copy to edit (we store the old one in the undo list)
+  new_comp.triangles = enew_tris
+  #### 2) loop through all frames and delete vertex.
+  frames = new_comp.findallsubitems("", ':mf')   # find all frames
+  for frame in frames: 
+    old_vtxs = frame.vertices
+    vtxs = old_vtxs[:index] + old_vtxs[index+1:]
+    frame.vertices = vtxs
+  #### 3) re-build all views
+  undo = quarkx.action()
+  undo.exchange(comp, new_comp)
+  mapeditor().ok(undo, "remove vertex")
   invalidateviews()
-
 
 #
 # Is a given object still in the tree view, or was it removed ?
@@ -138,6 +240,9 @@ class MdlUserDataPanel(UserDataPanel):
 #
 #
 #$Log$
+#Revision 1.5  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
 #Revision 1.4  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #
