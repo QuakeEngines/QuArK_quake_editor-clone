@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2003/07/21 04:52:21  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.8  2001/03/20 21:38:02  decker_dk
 Updated copyright-header
 
@@ -50,7 +53,7 @@ unit Glide;
 
 interface
 
-uses Windows, SysUtils;
+uses Windows, SysUtils, ExtraFunctionality;
 
 (**************    3DFX.H    **************)
 
