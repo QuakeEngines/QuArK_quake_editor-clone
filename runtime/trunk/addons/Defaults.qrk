@@ -30,6 +30,21 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.73  2001/01/27 18:24:17  decker_dk
+//Removed the key 'Q3ShaderPath', as it is replaced with 'ShadersPath'.
+//Renamed the key 'Q2TexPath' to 'TexturesPath'.
+//Suffixed all 'program' keyvalues with '.EXE'.
+//Moved some :config key/values around to more logical groupings.
+//Renamed:
+//= TextureDef        -> DefaultTexture
+//= TriggerTextureDef -> DefaultTextureTrigger
+//= ClipTextureDef    -> DefaultTextureClip
+//= OriginTextureDef  -> DefaultTextureOrigin
+//Inserted in 'CustomQuakeMenu:form' extra information as '[::BuildArgs1]'
+//Added some hints to the games configuration-forms.
+//Key 'DefPoly' changed values to '<X>x<Y>x<Z>'
+//Added DefaultTextureCaulk
+//
 //Revision 1.72  2001/01/07 13:21:48  decker_dk
 //Set Versionname.
 //
@@ -127,7 +142,6 @@ QQRKSRC1
 //
 //Revision 1.49  2000/09/01 00:49:02  alexander
 //merged in tiglaris default sof sky fix from rel6_1 branch
-//
 //
 //Revision 1.46.2.1  2000/08/26 09:44:48  tiglari
 //fixed default texture for SoF
@@ -409,6 +423,8 @@ QQRKSRC1
         Directory = "\Quake"
         CheckDirectory = "QUAKE.EXE"
 
+        MapCommentsPrefix = "//"
+
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-PRT"
@@ -453,6 +469,8 @@ QQRKSRC1
 
         Directory = "\Hexen II"
         CheckDirectory = "H2.EXE"
+
+        MapCommentsPrefix = "//"
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
@@ -505,6 +523,8 @@ QQRKSRC1
         CD = ""
         CDDir = "Install\Data"
 
+        MapCommentsPrefix = ";"
+
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
@@ -551,6 +571,8 @@ QQRKSRC1
         Directory = "\Heretic II"
         CheckDirectory = "HERETIC2.EXE"
 
+        MapCommentsPrefix = ";"
+
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
@@ -595,6 +617,8 @@ QQRKSRC1
 
         Directory = "\Sierra\Half-Life"
         CheckDirectory = "HL.EXE"
+
+        MapCommentsPrefix = "//"
 
         BuildPgm1  = "HLCSG.EXE"
         BuildArgs1 = ""
@@ -649,6 +673,8 @@ QQRKSRC1
         CD = ""
         CDDir = "Setup\Data"
 
+        MapCommentsPrefix = ";"
+
         BuildPgm1  = "QBSP3.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN"
@@ -695,6 +721,8 @@ QQRKSRC1
 
         CD = ""
         CDDir = "Install\Data"
+
+        MapCommentsPrefix = ";"
 
         BuildPgm1  = "KPBSP.EXE"
         BuildArgs1 = ""
@@ -746,6 +774,8 @@ QQRKSRC1
         CD = ""
         CDDir = "Install\Data"
 
+        MapCommentsPrefix = ";"
+
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "SOFBSP.EXE"
         BuildArgs1 = ""
@@ -792,6 +822,8 @@ QQRKSRC1
 
         CD = ""
         CDDir = "Install\Data"
+
+        MapCommentsPrefix = "//"
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
@@ -848,6 +880,8 @@ QQRKSRC1
         CD = ""
         CDDir = "Setup\BaseEF"
 
+        MapCommentsPrefix = "//"
+
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = ""
@@ -899,6 +933,8 @@ QQRKSRC1
 
         Directory = "/quark2cs_511/"
         CheckDirectory = "WALKTEST.EXE"
+
+        MapCommentsPrefix = "//"
 
         BuildPgm1 = "MAP2CS.EXE"
 
@@ -965,41 +1001,42 @@ QQRKSRC1
       }
       Options:config =
       {
-        DrawAxis           = "1"
-        SolidGrid          = ""
-        GridVisible        = "1"
-        GridActive         = "1"
-        GridVisibleTex     = "1"
-        RedLines2          = ""
-        //ShowWholeLevel     = ""
-        //GrayOutOfView      = "1"
-        //HideOutOfView      = ""
-        //Textured           = ""
-        CrossCursor        = "1"
-        AutoAdjustNormal   = ""
-        DrawMapLimit       = "1"
-        PagesLocked        = ""
-        TexPanelActive     = "1"
-        TexPanelLight      = "1"
-        BBoxAlways         = "1"
-        BBoxSelected       = "1"
-        DeleteFaces        = "1"
-        //ViewModels         = "1"
-        NoScrollBars       = ""
-        PolySubtractMax    = ""
-        HideFaces          = ""
-        AutoClosePoly      = ""
-        Recenter           = "1"
-        HandleHints        = "1"
-        TreeKeybDelay      = "1"
-        IgnoreToBuild      = "1"
-        DisableEnhTex      = ""
-        DisableFPCoord     = ""
-        AutoCheckMap       = "1"
-        EntityLinesDispersion = "1"
-        CompassNumbers     = "1"
-        ComputePolys       = "1"
-        HideMouseDrag      = "1"
+        DrawAxis                = "1"
+        SolidGrid               = ""
+        GridVisible             = "1"
+        GridActive              = "1"
+        GridVisibleTex          = "1"
+        RedLines2               = ""
+      //ShowWholeLevel          = ""
+      //GrayOutOfView           = "1"
+      //HideOutOfView           = ""
+      //Textured                = ""
+        CrossCursor             = "1"
+        AutoAdjustNormal        = ""
+        DrawMapLimit            = "1"
+        PagesLocked             = ""
+        TexPanelActive          = "1"
+        TexPanelLight           = "1"
+        BBoxAlways              = "1"
+        BBoxSelected            = "1"
+        DeleteFaces             = "1"
+      //ViewModels              = "1"
+        NoScrollBars            = "1"
+        PolySubtractMax         = ""
+        HideFaces               = ""
+        AutoClosePoly           = ""
+        Recenter                = "1"
+        HandleHints             = "1"
+        TreeKeybDelay           = "1"
+        IgnoreToBuild           = "1"
+        DisableMapComments      = ""
+        DisableEnhTex           = ""
+        DisableFPCoord          = ""
+        AutoCheckMap            = "1"
+        EntityLinesDispersion   = "1"
+        CompassNumbers          = "1"
+        ComputePolys            = "1"
+        HideMouseDrag           = "1"
         Form = "MapOptions"
       }
       Building:config =
@@ -1334,6 +1371,14 @@ QQRKSRC1
                 BuildPgm9:  = {GameBuildPgm=!}
                 BuildArgs9: = {GameBuildArgs=!}
                 BuildCheck9:= {GameBuildCheck=!}
+                sep:        = {Typ="S"}
+                MapCommentsPrefix: = {
+                        Typ="E"
+                        Txt=".MAP comments prefix"
+                        Hint="Specify the character(s) that instruct the build-tools,"
+                          $0D"which lines in the .MAP file, are end-of-line comments,"
+                          $0D"and will be ignored."
+                }
         }
         t_DefaultTexture:incl = {
                 Txt = "Default texture"
@@ -2688,10 +2733,10 @@ QQRKSRC1
                $66000000BBB0FF7866607770FF0FFF78444844400487FF785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
       }
-      //.qrk: = {Typ="X" Cap=".qrk" Txt="QuArK main file type"}
-      //.qkm: = {Typ="X" Cap=".qkm" Txt="QuArK maps (if not in .qrk)"}
+    //.qrk: = {Typ="X" Cap=".qrk" Txt="QuArK main file type"}
+    //.qkm: = {Typ="X" Cap=".qkm" Txt="QuArK maps (if not in .qrk)"}
       .map: = {Typ="X" Cap=".map" Txt="Standard Quake .map files"}
-      //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
+    //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
       .md2: = {Typ="X" Cap=".md2" Txt="Standard Quake 2 Models"}
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}
       .pak: = {Typ="X" Cap=".pak" Txt="PACK files"}
@@ -2725,40 +2770,41 @@ QQRKSRC1
     MapOptions:form =
     {
       Style = "1"
-      DrawAxis: = {Typ="X"     Txt="Map background" Cap="Draw axis"}
-      EntityLinesDispersion: = {Typ="X" Txt="   ``" Cap="Show indirect 'target' links"}
-      DrawMapLimit: = {Typ="X" Txt="   ``"       Cap="Draw map limits"}
-      SolidGrid: = {Typ="X" Txt="Grid"     Cap="Grid as lines"}
-      GridVisible: = {Typ="X" Txt="   ``"  Cap="Grid visible"}
-      GridActive: = {Typ="X"  Txt="   ``"  Cap="Grid active"}
-      GridVisibleTex: = {Typ="X" Txt="   ``"  Cap="Show it on textured views too"}
-      RedLines2: = {Typ="X" Txt="Red selection lines" Cap="Both red lines"}
-      CompassNumbers: = {Typ="X" Txt="Compass" Cap="Display angle values"}
-      //GrayOutOfView: = {Typ="X" Txt="Map view mode" Cap="Gray out of view"}
-      //HideOutOfView: = {Typ="X" Txt="   ``"         Cap="Hide out of view"}
-      //Textured: = {Typ="X"      Txt="   ``"         Cap="Textured view"}
-      //ViewModels: = {Typ="X" Txt="Textured view"      Cap="...include Models"}
-      NoScrollBars: = {Typ="X" Txt="Map view scroll"  Cap="Hide scroll bars"}
-      CrossCursor: = {Typ="X" Txt="Mouse cursor" Cap="Cross-like cursor"}
-      HideMouseDrag: = {Typ="X" Txt="   ``"      Cap="Hidden while dragging"}
-      AutoAdjustNormal: = {Typ="X" Txt="Polyhedron editing" Cap="Auto adjust normal"}
-      PagesLocked: = {Typ="X" Txt="Multi-pages panel" Cap="Locked"}
-      TexPanelActive: = {Typ="X" Txt="   ``"          Cap="Show texture"}
-      TexPanelLight: = {Typ="X"  Txt="   ``"          Cap="Light gradient"}
-      BBoxAlways: = {Typ="X" Txt="Entities Bounding boxes" Cap="Bounding frame corner"}
-      BBoxSelected: = {Typ="X" Txt="   ``"                 Cap="Dark box on selected"}
-      DeleteFaces: = {Typ="X" Txt="Unused faces && polys" Cap="Delete unused faces"}
-      PolySubtractMax: = {Typ="X" Txt="Polyhedron subtraction" Cap="Allow overlapping"}
-      ComputePolys: = {Typ="X" Txt="   ``" Cap="Dig in 3D views"}
-      HideFaces: = {Typ="X" Txt="Polyhedron faces" Cap="Hide faces in tree"}
-      AutoClosePoly: = {Typ="X" Txt="   ``"        Cap="Auto collapse polyhedrons"}
-      HandleHints: = {Typ="X" Txt="Hints (help rectangles)" Cap="Hints for map handles"}
-      Recenter: = {Typ="X" Txt="Position of new objects" Cap="Screen center"}
-      AutoCheckMap: =  {Typ="X" Txt="When building the map" Cap="Perform checks first"}
-      IgnoreToBuild: = {Typ="X" Txt="   ``"                 Cap="Ignore groups marked so"}
-      DisableEnhTex: = {Typ="X" Txt="   ``"                 Cap="Don't write //TX# in .map files"}
-      DisableFPCoord: = {Typ="X" Txt="   ``"                 Cap="Don't write floating-point coords"}
-      EnableBrushBrim: = {Typ="X" Txt="   ``"                 Cap="Brush primitives in maps (Q3A only)"}
+      DrawAxis:                 = {Typ="X" Txt="Map background"                 Cap="Draw axis"                            }
+      EntityLinesDispersion:    = {Typ="X" Txt="   ``"                          Cap="Show indirect 'target' links"         }
+      DrawMapLimit:             = {Typ="X" Txt="   ``"                          Cap="Draw map limits"                      }
+      SolidGrid:                = {Typ="X" Txt="Grid"                           Cap="Grid as lines"                        }
+      GridVisible:              = {Typ="X" Txt="   ``"                          Cap="Grid visible"                         }
+      GridActive:               = {Typ="X" Txt="   ``"                          Cap="Grid active"                          }
+      GridVisibleTex:           = {Typ="X" Txt="   ``"                          Cap="Show it on textured views too"        }
+      RedLines2:                = {Typ="X" Txt="Red selection lines"            Cap="Both red lines"                       }
+      CompassNumbers:           = {Typ="X" Txt="Compass"                        Cap="Display angle values"                 }
+    //GrayOutOfView:            = {Typ="X" Txt="Map view mode"                  Cap="Gray out of view"                     }
+    //HideOutOfView:            = {Typ="X" Txt="   ``"                          Cap="Hide out of view"                     }
+    //Textured:                 = {Typ="X" Txt="   ``"                          Cap="Textured view"                        }
+    //ViewModels:               = {Typ="X" Txt="Textured view"                  Cap="...include Models"                    }
+      NoScrollBars:             = {Typ="X" Txt="Map view scroll"                Cap="Hide scroll bars"                     }
+      CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
+      HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Auto adjust normal"                   }
+      PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
+      TexPanelActive:           = {Typ="X" Txt="   ``"                          Cap="Show texture"                         }
+      TexPanelLight:            = {Typ="X" Txt="   ``"                          Cap="Light gradient"                       }
+      BBoxAlways:               = {Typ="X" Txt="Entities Bounding boxes"        Cap="Bounding frame corner"                }
+      BBoxSelected:             = {Typ="X" Txt="   ``"                          Cap="Dark box on selected"                 }
+      DeleteFaces:              = {Typ="X" Txt="Unused faces && polys"          Cap="Delete unused faces"                  }
+      PolySubtractMax:          = {Typ="X" Txt="Polyhedron subtraction"         Cap="Allow overlapping"                    }
+      ComputePolys:             = {Typ="X" Txt="   ``"                          Cap="Dig in 3D views"                      }
+      HideFaces:                = {Typ="X" Txt="Polyhedron faces"               Cap="Hide faces in tree"                   }
+      AutoClosePoly:            = {Typ="X" Txt="   ``"                          Cap="Auto collapse polyhedrons"            }
+      HandleHints:              = {Typ="X" Txt="Hints (help rectangles)"        Cap="Hints for map handles"                }
+      Recenter:                 = {Typ="X" Txt="Position of new objects"        Cap="Screen center"                        }
+      AutoCheckMap:             = {Typ="X" Txt="When building the map"          Cap="Perform checks first"                 }
+      IgnoreToBuild:            = {Typ="X" Txt="   ``"                          Cap="Ignore groups marked so"              }
+      DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
+      DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
+      DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
+      EnableBrushBrim:          = {Typ="X" Txt="   ``"                          Cap="Brush primitives in maps (Q3A only)"  }
     }
     MapBuilding:form =
     {
@@ -2797,19 +2843,19 @@ QQRKSRC1
         Min = '1'
         Max = '90'
       }
-        //sep: = {Typ="S"}
-        //BezierCenterX: = {
-        //  Txt = "Bezier center offset (X)"
-        //  Typ = "EF1"
-        //  Min = '-64'
-        //  Max = '64'
-        //}
-        //BezierCenterY: = {
-        //  Txt = "Bezier center offset (Y)"
-        //  Typ = "EF1"
-        //  Min = '-64'
-        //  Max = '64'
-        //}
+      //sep: = {Typ="S"}
+      //BezierCenterX: = {
+      //  Txt = "Bezier center offset (X)"
+      //  Typ = "EF1"
+      //  Min = '-64'
+      //  Max = '64'
+      //}
+      //BezierCenterY: = {
+      //  Txt = "Bezier center offset (Y)"
+      //  Typ = "EF1"
+      //  Min = '-64'
+      //  Max = '64'
+      //}
     }
     MdlBuilding:form =
     {
