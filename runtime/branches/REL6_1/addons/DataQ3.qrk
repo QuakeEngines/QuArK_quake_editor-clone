@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.14  2000/07/06 01:37:09  alexander
+//added missing models
+//
 //Revision 1.13  2000/07/04 20:09:55  alexander
 //moved q3 specific default form here
 //
@@ -2551,6 +2554,7 @@ QQRKSRC1
         misc_model:e =
         {
           origin = "0 0 0"
+          angle = "0"
           ;desc = "This can be used to place models in a map."
         }
       }
@@ -5386,6 +5390,12 @@ QQRKSRC1
     {
       Help = "This is placable model for your map."
       bbox = '-16 -16 -32 16 16 32'
+      angle: =
+      {
+        Txt = "&"
+        Typ = "1F"
+        Hint = "rotate the model using the handle or insert a value"
+      }
       model: =
       {
         Txt = "&"
