@@ -324,7 +324,6 @@ def getotherfixed(v, vtxes, axis):
             continue;
         perp = perptonormthru(v2,v,axis.normalized)
         if abs(perp)<.05:
-            debug('found otther')
             return v2
     return v+axis
 
@@ -581,7 +580,6 @@ class VertexHandle(qhandles.GenericHandle):
                 # if this face is part of the original group
                 #
                 if f in orgfaces:
-                    debug('f: '+f.shortname)
                     #
                     # if the point is on the face
                     #
@@ -864,7 +862,6 @@ class BTLinHandlesManager(qhandles.LinHandlesManager):
         return quarkx.vect(p.x/w, p.y/h, 0.0)
 
     def linear(self, sender, obj, center, matrix):
-        debug('lin')
         if obj.type==":b3":
             obj.vst = sender.dynst = map(self.p2t, map(lambda v,center=center,matrix=matrix: matrix*(v-center)+center, map(self.t2p, obj.vst)))
         else:
@@ -1391,11 +1388,8 @@ def macro_usercenter(self):
     undo = quarkx.action()
     from mapentities import ObjectOrigin
     tup = ObjectOrigin(dup).tuple
-    debug('tup '+`tup`)
     undo.setspec(dup,'usercenter',tup)
-    debug('set')
     editor.ok(undo,'add usercenter')
-    debug('ok')
     editor.invalidateviews()
     
 qmacro.MACRO_usercenter = macro_usercenter
@@ -1416,6 +1410,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.11.6.1  2001/04/06 10:50:08  tiglari
+#code for better vertex dragging (from main branch)
+#
 #Revision 1.18  2001/04/06 04:46:04  tiglari
 #clean out some debug statements
 #
