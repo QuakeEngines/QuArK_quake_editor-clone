@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/07/30 12:09:26  tiglari
+vector length function
+
 Revision 1.13  2001/07/16 10:46:40  tiglari
 add SolveForThreePoints procedure
 
@@ -135,6 +138,7 @@ const
  {Origine}OriginVectorZero: TVect = (X:0; Y:0; Z:0);
  rien = 1E-5;
  rien2 = 3E-3;
+ Deg2Rad = Pi/180;
 
 type
  TModeProj = (VueXY, VueXZ, Vue3D);
