@@ -7,15 +7,15 @@
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
- 
+
 ########################################################
 #
 #                          Brush Curves Plugin
 #                          v1.0, Dec 2000
-#                      works with Quark 6.1        
+#                      works with Quark 6.1
 #
 #
-#                    by tiglari@hexenworld.net     
+#                    by tiglari@hexenworld.net
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -63,7 +63,7 @@ from quarkpy.perspective import *
 #  - image builders: implementation of buildimages for the
 #      shape-builders
 #
- 
+
 
 
 
@@ -80,11 +80,11 @@ def matrixFromMap(v1, v2, v3, w1, w2, w3):
 
 #
 # Temp from maputils to help run with older quark versions
-# 
+#
 #
 def matrix_u_v(u,v):
     return quarkx.matrix(u, v, quarkx.vect(0,0,1))
-                         
+
 def intersectionPoint2d(p0, d0, p1, d1):
     "intersection in 2D plane, point, direction"
     for v in p0, d0, p1, d1:
@@ -95,7 +95,7 @@ def intersectionPoint2d(p0, d0, p1, d1):
         return 0  # lines paralell
     s = (p0.y*d1.x - p1.y*d1.x - d1.y*p0.x +d1.y*p1.x)/det
     return p0+s*d0
-        
+
 
 
 #
@@ -124,7 +124,7 @@ def innerArcLine(n, p0, p1, p2):
         points.append(next)
     points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
     return points
-    
+
 #
 # Approximates quarter-circle with lines outside,
 #  touching as tangent
@@ -150,8 +150,8 @@ def outerArcLine(n, p0, p1, p2):
         prevdir = currdir
     points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
     return points
-    
-    
+
+
 def arcLength(points):
     length=0.0
     for i in range(len(points)-1):
@@ -224,11 +224,11 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
     if lower:
        fdict = facedict_fflip(fdict)
     subdivide = int(subdivide)
-    def makestuff(pd, fdict, subdivide=subdivide, inner=inner, grid=grid): 
+    def makestuff(pd, fdict, subdivide=subdivide, inner=inner, grid=grid):
         if inner:
-            curve = innerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+            curve = innerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])
         else:
-            curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+            curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])
         #
         # assumes that the box points are already on the grid,
         #  so that we only have to force the curve points
@@ -243,7 +243,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         span = (pd["trb"]-pd["tlb"]).normalized
         depth = (pd["tlb"]-pd["blb"]).normalized
         cross = (span^depth).normalized
-        texmat = matrixFromMap(depth,cross,span*cornerlength,depth,cross,span*arcLength(curve)) 
+        texmat = matrixFromMap(depth,cross,span*cornerlength,depth,cross,span*arcLength(curve))
 
         #
         # make texture source face
@@ -256,7 +256,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
 
     pd = pointdict(vtxlistdict(fdict,o))
     curve, texface = makestuff(pd, fdict)
-    
+
     brushes = []
     #
     #  Generate the brushes
@@ -273,7 +273,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         texface.swapsides()
     if lower:
         texface.swapsides()
-    
+
     def transfertex(face,texface, pivot):
         texface.distortion(face.normal,pivot)
         face.setthreepoints(texface.threepoints(2),2)
@@ -310,7 +310,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             end.shortname = "end"
             brush.appenditem(end)
             brushes.append(brush)
-     
+
         side=quarkx.newobj('side:f')
 #        side["tex"]=fdict["b"]["tex"]
         side["tex"]=CaulkTexture()
@@ -368,7 +368,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             else:
                 brush.appenditem(side)
             brushes.append(brush)
-        
+
         #
         # make the 'legs'
         #
@@ -378,7 +378,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             brush.appenditem(top.copy())
             base=side.copy()
             base.swapsides()
-            brush.appenditem(base)        
+            brush.appenditem(base)
             brush.appenditem(fdict['f'].copy())
             brushes.append(brush)
             out = fdict['b'].copy()
@@ -389,7 +389,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             innit.translate(pd2["trf"]-pd["trf"])
             innit.swapsides()
             brush.appenditem(innit)
-        
+
         return brushes
 
     if inverse:
@@ -403,7 +403,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         base, side = map(makeFace, ("l","f"))
     base.shortname, side.shortname = "base", "side"
     for i in range(subdivide):
-        brush = quarkx.newobj('brush'+`i`+':p')
+        brush = quarkx.newobj('bevelImage brush'+`i`+':p') # DECKER 2002-08-09: A more descriptive name for debugging. The previous made it a bit confusing to read in .MAP comments.
         brush.appenditem(base)
         if i==0 and not inverse and not inner:
             brush.appenditem(fdict["b"].copy())
@@ -439,7 +439,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
                 brush.appenditem(fdict["r"].copy())
         brushes.append(brush)
     return brushes
-  
+
 
 def images(buildfn, args):
     if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
@@ -484,15 +484,19 @@ class BrushCapDuplicator(StandardDuplicator):
            face = quarkx.newobj("left:f")
            face.setthreepoints((mtf, mtb, mbf),0)
            face2 = face.copy()
-  
+
            face2.swapsides()
            face2.shortname = "right"
+
+           face["tex"]  = o.findallsubitems('left' ,':f')[0]["tex"] # DECKER 2002-08-09: Remember to give the newly created faces a texture.
+           face2["tex"] = o.findallsubitems('right',':f')[0]["tex"] # Thanks to "Adam K" <sentrymaster@hotmail.com> for indirectly pointing out this error.
 
            o1, o2 = o.copy(), o.copy()
            o1.removeitem(o1.findallsubitems('left',':f')[0])
            o2.removeitem(o2.findallsubitems('right',':f')[0])
-           o1.appenditem(face), o2.appenditem(face2)
-           
+           o1.appenditem(face)
+           o2.appenditem(face2)
+
            im1 = images(bevelImages, (o1, editor, inverse, 0, lower, standup, grid, thick, inner, subdivide))
            im2 = images(bevelImages, (o2, editor, inverse, 1, lower, standup, grid, thick, inner, subdivide))
 
@@ -504,6 +508,7 @@ class BrushCapDuplicator(StandardDuplicator):
                im2 = im2[1:]
                pass
            return im1+im2
+    return None # DECKER 2002-08-09: Always return something, even if we're never supposed to end here!
 
 class BrushBevelDuplicator(StandardDuplicator):
 
@@ -549,7 +554,7 @@ def curvemenu(o, editor, view):
         editor.ok(undo, "make cap")
       editor.invalidateviews()
 
-  
+
   def makebevel(m, o=o, editor=editor):
       dup = quarkx.newobj("bevel:d")
       dup["macro"]="dup brushbevel"
@@ -565,8 +570,8 @@ def curvemenu(o, editor, view):
         editor.ok(undo, "make left corner")
       else:
         editor.ok(undo, "make right corner")
-      
-      
+
+
   disable = (len(o.subitems)!=6)
 
   newpoly = perspectiveRename(o, view)
@@ -584,7 +589,7 @@ def curvemenu(o, editor, view):
           item.o=o
           item.newpoly = newpoly
           item.view = view
-          
+
   for (menname, mapname, inv) in (("&Arch", "arch",  1), ("&Cap", "cap", 0)):
     item = qmenu.item(menname, makecap)
     item.inverse = inv
@@ -622,7 +627,7 @@ When the duplicator is selected, the entity page provides a variety of specifics
 The curve will be oriented w.r.t. the map view you RMB-clicked on, or, if you're RMB-ing on the treeview, the most recent mapview you clicked in.
 
 If the brush vanishes without being replaced by a shape, the brush may have been too screwy a shape, or looked at from a bad angle. (My attempts to detect these conditions in advance are meeting with unexpected resistance. There is also a bug in that if you apply this to a brush after first opening the map editor, without inserting anything first, the orientations are wrong.)
-"""      
+"""
   curvepop = qmenu.popup("Brush Curves",list, hint=curvehint)
   if newpoly is None:
     if len(o.subitems)!=6:
@@ -664,6 +669,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2001/05/13 01:08:56  tiglari
+#caulk hidden joins, add missing sides to non-inverse non-outer arch/bevel
+#
 #Revision 1.12  2001/04/29 21:00:09  tiglari
 #add missing textures to thick curves
 #
