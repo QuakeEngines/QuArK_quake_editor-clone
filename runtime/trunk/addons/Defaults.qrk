@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.45  2000/07/25 16:03:04  alexander
+//set snapshot name
+//
 //Revision 1.44  2000/07/18 13:48:29  alexander
 //set snapshot name
 //
@@ -117,7 +120,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000725"
+      Version = "quarksnapshot_20000728"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2000/07/25 16:04:32  alexander
+set snapshot name
+
 Revision 1.18  2000/07/18 19:38:00  decker_dk
 Englishification - Big One This Time...
 
@@ -57,7 +60,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'quarksnapshot_20000725';
+ QuArKVersion            = 'quarksnapshot_20000728';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
