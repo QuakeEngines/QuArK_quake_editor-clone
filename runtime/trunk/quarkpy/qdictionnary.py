@@ -911,13 +911,15 @@ Strings = {
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "no vtf file",
     5705: "QuArKVTF.dll not found, QuArK need this to load VTF Textures",
-    5706: "QuArKGCF.dll not found",
+    5706: "%s not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
-    5708: "%s not found in %s",
+    5708: "reserved for hl2",
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: 'cannot initialize Steam Service filesystem Access, remember to set up the environment: \nset SteamAppUser, set SteamAppId,set Path to steam.dll  ',
+    5712: 'cannot initialize Steam Service filesystem Access, '+\
+          'please check the following QuArK configuration items \n'+\
+          ' steam filesystem dll\n steam account name (case sensitive!)\n steam app id\n steam directory \n',
     5713: 'steam file system',
     5714: 'bad content id: %s',
     5715: 'reserved for hl2',
@@ -972,6 +974,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.64  2005/01/02 15:21:31  alexander
+#access files via steam service - first
+#
 #Revision 1.63  2004/12/27 10:58:39  alexander
 #changed some hl2 messages
 #
