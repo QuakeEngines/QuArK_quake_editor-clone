@@ -1,5 +1,20 @@
 
-                             6.4
+                     6.4  alpha snapshot Mar27 2003
+
+ * [tiglari] brush-from-number finder (on build menu)
+
+ * [nurail]  new layout for dual monitors
+
+ * [tiglari] manual loading of leak files.
+ 
+ * [cdunde] infobase links added to many hints
+ 
+ * [tiglari] loading of portal files
+ 
+ * [tiglari] option for specifying thickness of lines overdrawn
+      on map (holes and portals currently supported)
+ 
+ * [marco leise] more GL modes supported
 
  * [tiglari] writes genesis3d maps in map format, with texture coordinates
      diddled so that they will hopefully be correct when imported into
@@ -8,6 +23,8 @@
  * [decker] transparency
  
  * [dannj] updates to Heretic II entities
+ 
+ * [cdunde] greatly improved Q2_Lazarus entities
  
  * [cdunde] tagging toolbar
  
