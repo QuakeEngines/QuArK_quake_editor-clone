@@ -1,4 +1,4 @@
 title: Specific Topics
-subdir: face beziers mapsave mapread
+subdir: face beziers mapviewmouse mapsave mapread
 
 Here are discussions of various specific topics.
