@@ -3419,7 +3419,7 @@ begin
         
           add esi, 3
           shr ax, 3    {GB}
-          shl dl, 3    {R}
+          and dl, $F8  {R}
           or ah, dl    {RGB}
           stosw
          loop @xloop

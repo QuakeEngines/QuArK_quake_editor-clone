@@ -50,6 +50,7 @@ const
   MaxRecentFiles = 5;
 
   AddonsPath = 'addons\';
+  CachedCompiledVersion = '.compiled';
 
 type
   TFileObjectWndState = (cmNone, cmWindow, cmOwnExplorer);
@@ -661,6 +662,9 @@ begin
  SetLength(S, Taille);
  F.ReadBuffer(S[1], Taille);
  ChargerObjTexte(Self, PChar(S), Taille);
+  { when loading from the Addons path, try to build a cached (compiled) version }
+(* if (ExtractFilePath(NomFichier)=ApplicationPath+AddonsPath)
+ and (ExtractFileExt(NomFichier)=TypeInfo)... *)
 end;
 
 procedure ChargerObjTexte(Self: QObject; P: PChar; Taille: Integer);
