@@ -3,7 +3,8 @@ author: tiglari, etc.
 
 These features are envisioned for the future, with
 no specific target release (might be put off, might
-be brought forward).
+be brought forward, might be just tdfh).  Ranging
+from the relatively straightforward to crazed dreams.
 
 <ul>
 
@@ -19,6 +20,9 @@ of editing sessions
 <li>XML support: (?)
 <br>Maximum possible compatibility with GtkRadiant
 
+<li>Qrk editor: (?)
+<br>Edit .qrk's in the style of a decent XML editor
+
 <li>Brush primitives: (?)
 <br>Some internal use (suggestion: use
 axis base coord system with threepoints[0] as
@@ -26,6 +30,10 @@ origin; should speed up writing to bp format)
 
 <li>Big XY view: (?)
 <br> whole-screen XY view, with other stuff on RMB's
+
+<li>Integrated Dynamic bsp builder: (?)
+<br>bsp building & optimization while u're scratching
+ur head...
 
 <li>Surf Inspectors: (?)
 <br>Laid out more like in Radiant, which I like

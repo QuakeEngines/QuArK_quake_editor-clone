@@ -3,10 +3,18 @@ author: tiglari, etc.
 
 This is stuff that tiglari currently envisions for the next release
 of QuArK.  Needless to say, highly non-definitive!
+I think I've put my name on more than I can get
+around to doing for a timely release.
 
 <ul>
 <li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
 <br>Actually, totally reorganize bsp reading code
+
+<li>Model Editor: (Andy)
+<br>More games supported better
+
+<li>MipTex Extraction: (tiglari,Andy)
+<br>Get the add-on builder to handle Q1, Hx2 properly
 
 <li>Path Duplicator: (Decker, tiglari)
 <br>Dialogs for making arcs etc.
@@ -15,18 +23,34 @@ of QuArK.  Needless to say, highly non-definitive!
 <li>OsFolders: (tiglari)
 <br>    edit the properties of pre-existing OsFolders
 
-<li>Brush-based shape-builders: (tiglari)
+<li>Brush-based shape-builders: (tiglari, Decker)
 <br> 'thick', and 'inner boxes' (more control over arch shapes)
 <br> redo prism-builder as shape-builder.
+<br> more fancy options for stair-builder
 
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes'
 
 <li>FAKK2 support: (?)
+<br>And what about Daikatana, Alice, & the new HL-based
+Wild West game?
 
 <li>User-configurable hot keys: (tiglari)
 <br>status: started; how many functions should have hot keys,
 should they all be U.C.?
+
+<li>User-specifible rotation/linear mapping origin: (tiglari)
+<br>Do they really need to be persistent properties of groups?
+(as opposed say to a tagged point)
+<br>what about axis?
+
+<li>Optional plugins: (tiglari)
+<br>Some plugins wouldn't load unless they were 'registered'
+like addons; this would make it easier to try things out
+
+<li>Expand/Contract faces: (tiglari)
+<br>As enhancement to experimental mapmovevertex plugin
+
 
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.
@@ -37,7 +61,7 @@ should they all be U.C.?
 
 <li>L-square enhancements: (tiglari, ax2grind)
 
-<li>Adquedit-level resource display: (Andy, ?)
+<li>Adquedit-equivalent resource display: (Andy, ?)
 
 <li>CTF duplicator: (tiglari)
 <br>Maybe too complicated?
