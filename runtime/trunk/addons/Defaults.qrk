@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.75  2001/01/30 19:09:48  decker_dk
+//Renamed to 'Crystal Space:config'.
+//
 //Revision 1.74  2001/01/28 17:26:10  decker_dk
 //Set 'Hide scrollbars in map-editor' to enabled as default. (Due to the Q3A huge-maps problem, which is easily solved by hiding the scrollbars!)
 //Added 'DisableMapComments' option to 'Map:config'.
@@ -250,7 +253,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20010107"
+      Version = "quarksnapshot_20010201"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

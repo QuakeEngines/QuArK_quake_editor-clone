@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2001/01/29 19:24:58  tiglari
+removed priorityadd, fixed bug in locatesubelement
+
 Revision 1.39  2001/01/28 03:30:41  tiglari
 LocateSubElement method added
 
@@ -144,7 +147,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'quarksnapshot_20010107';
+ QuArKVersion            = 'quarksnapshot_20010201';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
