@@ -1,5 +1,5 @@
 QQRKSRC1
-// This file has been written by QuArK quarksnapshot_20000702
+// This file has been written by QuArK quarksnapshot_20000704
 // It's the text version of file: UserData Quake 3.qrk
 
 {
@@ -59,6 +59,19 @@ QQRKSRC1
           0.50000 128 64 0 1 0.50000 0 128 0 0 1 64 128 0 0.50000 1 128 128 0 1
           1'
         tex = "base_wall/basewall03"
+      }
+    }
+    ArenaFileMaker: =
+    {
+      ArenaFileMaker:d =
+      {
+        ;desc = "Put one in your map and an arena script will be created automagically"
+        origin = "0 0 0"
+        bots = "ranger bones"
+        longname = "my very cool map"
+        fraglimit = "50"
+        type = "ffa"
+        macro = "dup arenafilemaker"
       }
     }
   }
