@@ -470,9 +470,9 @@ class BaseLayout:
     def getgridmenu(self, gridbtn):
         grid = self.editor.gridstep
         gridmenu = []
-        for g in (0,64,32,16,8,4,2,1):
+        for g in (0,64,32,16,8,4,2,1,.5,.25,.1):
             if g:
-                cap = "grid %d" % g
+                cap = "grid \t%s" % g
             else:
                 cap = "no grid"
             item = qmenu.item(cap, self.editor.gridmenuclick)
@@ -607,6 +607,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.7  2001/10/22 10:26:17  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.6  2001/01/26 19:07:26  decker_dk
 #bs_multipagespanel. Better indication of keys '1'-'5', which are actually shortcut-keys to the tree-view and  alike panels.
 #
