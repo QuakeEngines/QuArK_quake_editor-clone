@@ -24,9 +24,9 @@ textures used in the map.
 The next menuitems varies from FPS-game to FPS-game. Familiarize yourself with
 these <g>build tools</g>, for the FPS-game you're building a map to.
 
-<i>Load Leak file</i> If you have a 'Leak' (hole) in your map you will see a <FONT COLOR="#FF0000">red line</FONT> running through the effected area and QuArK will generate a 'Point' file which creates this line. This feature allows you to reload that file to see the line again, as long as the map is not recompiled after the hole is fixed. If it is fixed and recommpiled, QuArK will eleminate the 'Point' file which turns this function off.
+<i>Load Leak file</i> If you have a 'Leak' (hole) in your map you will see a <FONT COLOR="#FF0000">red line</FONT> running through the effected area and QuArK will generate a 'Point' file which creates this line. This feature allows you to reload that file to see the line again, as long as the map is not recompiled after the hole is fixed. If it is fixed and recommpiled, QuArK will eleminate the error which turns this function off.
 
-<i>Load Portal file</i> This feature will show the 'Portals' of your map outlined with <FONT COLOR="#4184D7">blue lines</FONT>. However if there was a 'Hole' in your map the last time it was compiled, this menu item will be turned off until the map is recompiled after the 'Hole' is fixed (see 'Load Leak file' above).
+<i>Load Portal file</i> This feature will show the 'Portals' of your map outlined with <FONT COLOR="#4184D7">blue lines</FONT>. What the blue lines indicate is the 'windows' between the convex ('leaf nodes') that the bsp process carves the visible spaces of your map into. So you can investigate the effects of using detail and hint-brushes, etc to make your map more efficient and run better. However if there was a 'Hole' in your map the last time it was compiled, this menu item will be turned off until the map is recompiled after the 'Hole' is fixed (see 'Load Leak file' above).
 
 <i>Select Brush Number</i> Tries to find brushes by Entity and Brush number, as specified in the <a href="maped.builderrors.console.html#mixed_face">Python-console</a> compile tool error messages (the use of duplicators, etc. might subvert this).
 

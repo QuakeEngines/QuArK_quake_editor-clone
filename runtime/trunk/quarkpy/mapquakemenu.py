@@ -578,14 +578,14 @@ def loadLeakFile(m):
     import mapholes
     mapholes.LoadLinFile(m.editor, m.auxfilename)
         
-leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).\n\nThe thickness of the 'Leak line' that will be drawn can be changed by going to the 'Options' menu and selecting the 'Set Line Thickness' function.|glossary.html#l")
+leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).\n\nThe thickness of the 'Leak line' that will be drawn can be changed by going to the 'Options' menu and selecting the 'Set Line Thickness' function.|intro.mapeditor.menu.html#gamemenu")
 
 
 def loadPortalFile(m):
     import mapportals
     mapportals.LoadPortalFile(m.editor, m.auxfilename)
         
-portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on, and are up-to-date.|maped.builderrors.html")
+portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nWhat the blue lines indicate is the 'windows' between the convex ('leaf nodes') that the bsp process carves the visible spaces of your map into. So you can investigate the effects of using detail and hint-brushes, etc to make your map more efficient and run better.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on, and are up-to-date.|intro.mapeditor.menu.html#gamemenu")
 
 def prepAuxFileMenuItem(item,extkey,defext):
     editor=item.editor
@@ -661,6 +661,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.35  2003/03/27 20:35:48  cdunde
+#Update info and links to infobase.
+#
 #Revision 1.34  2003/03/24 10:34:24  tiglari
 #support for brush-number finder
 #
