@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,30 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/11/16 19:42:17  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.8  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -41,7 +57,6 @@ Fixed a problem with TGetPakNames
 
 Revision 1.3  2000/05/04 19:29:27  decker_dk
 Refined TGetPakNames and functions that used GetPakZero/GetNextPakName
-
 }
 
 unit Output1;

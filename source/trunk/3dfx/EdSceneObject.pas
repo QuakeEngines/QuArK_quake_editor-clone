@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,26 +16,27 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2001/01/22 00:11:02  aiv
+Beginning of support for sprites in 3d view
+
 Revision 1.1  2000/12/30 15:22:19  decker_dk
 - Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
 - Created Ed3DEditors.pas which contains close/free calls
 - Created EdDirect3D.pas with minimal contents
-
 }
 
 unit EdSceneObject;
 
 interface
 
-uses Windows, Classes,  
+uses Windows, Classes,
      Game, PyMath, qmath, Bezier,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
      Glide, Sprite;

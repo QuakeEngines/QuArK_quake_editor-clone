@@ -1,7 +1,7 @@
 QQRKSRC1
 //**************************************************************************
 //QuArK -- Quake Army Knife -- 3D game editor
-//Copyright (C) 1996-99 Armin Rigo
+//Copyright (C) Armin Rigo
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -17,25 +17,23 @@ QQRKSRC1
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
-//Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-//or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-//See also http://www.planetquake.com/quark
+//http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 //**************************************************************************
 
-// Main configuration file for QuArK 6.
-
-// Please see file TECHINFO.TXT for more information
-// about this file format.
+// Main configuration file for QuArK.
 
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.108  2001/03/20 15:49:34  maleficus
+//quark will now tell q3map to support whatever mod folder the map file was called from.
+//This requires the latest version of q3map to work properly.
+//
 //Revision 1.107  2001/03/20 10:58:56  tiglari
 //hotkey fix (now in General)
 //
 //Revision 1.106  2001/03/20 08:04:09  tiglari
 //customizable hot key support
-//
 //
 //Revision 1.97.2.1  2001/03/11 22:06:08  tiglari
 //hot key defaults
@@ -2602,7 +2600,7 @@ QQRKSRC1
     {
       Txt = "&"
       Typ = "E"
-      Hint = "If map editor has started, new assignment will apply on next Quark restart."$0D" Otherwise when map editor is started" 
+      Hint = "If map editor has started, new assignment will apply on next Quark restart."$0D" Otherwise when map editor is started"
     }
     MouseForm:incl =       // ":incl" objects can be included in other objects (see below)
     {

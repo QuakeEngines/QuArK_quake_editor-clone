@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/03/09 00:01:31  aiv
+added texture linking to entity tool.
+
 Revision 1.30  2001/03/08 23:22:53  aiv
 entity tool finished completly i think.
 
@@ -113,7 +115,6 @@ Auto-create Texture-links to .tga/.jpg files - .shaders still missing
 Revision 1.3  2000/05/11 22:09:28  alexander
 added link creation for .m32 files with link type "l"
 added cvs header
-
 }
 
 {This unit build qtexfolders from directory structure, as

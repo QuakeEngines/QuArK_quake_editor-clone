@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,16 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/01/28 17:22:14  decker_dk
+Renamed 'Charger1' to 'LoadTextureData'
+
 Revision 1.10  2001/01/21 15:50:08  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -63,8 +63,6 @@ Englishification and a little layout
 
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 
@@ -115,7 +113,7 @@ type
                animtime, nonlit: Single;
                directangle, trans_angle: Word;
                directstyle, translucence, friction, restitution, trans_mag: Single;
-               color: array[0..2] of Single; 
+               color: array[0..2] of Single;
               end;
 
  {------------------------}

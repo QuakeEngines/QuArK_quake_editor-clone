@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,21 +16,30 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/11/25 20:50:41  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.3  2000/07/09 13:19:27  decker_dk
 Englishification and a little layout
 
 Revision 1.2  2000/05/14 20:27:53  alexander
 ToutChargerAuto -> LoadAllAuto
-
 }
+
 unit PyExplorer;
 
 interface
@@ -263,7 +272,7 @@ begin
   begin
    Result:=True;
    Exit;
-  end; 
+  end;
  obj:=QListToPyList(SourceQ.SubElements); try
  callresult:=GetPythonValue(FOnInsert, Py_BuildValueX('OO', [ExplorerObject, obj]), True);
  Result:=(callresult<>Nil) and ((callresult=Py_None) or PyObject_IsTrue(callresult));

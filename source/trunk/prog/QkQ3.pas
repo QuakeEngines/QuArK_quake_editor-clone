@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/01/21 15:49:48  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.19  2001/01/15 19:21:04  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -71,7 +73,6 @@ Shader stage attributes were not written correctly
 
 Revision 1.5  2000/04/18 18:47:57  arigo
 Quake 3 : auto export shaders
-
 }
 
 unit QkQ3;
@@ -417,14 +418,14 @@ var
  I: Integer;
  S, SpecialStage: String;
 begin
- Acces;
- SpecialStage:=LoadStr1(5699);
- for I:=0 to SubElements.Count-1 do
+  Acces;
+  SpecialStage:=LoadStr1(5699);
+  for I:=0 to SubElements.Count-1 do
   begin
-   S:=SubElements[I].Name;
+    S:=SubElements[I].Name;
     { to do: check for animated stages }
-   if (S<>'') and (S[1]<>'$') and (S<>SpecialStage) then
-    L.Add(#255+S);   { #255 means it is not a texture name but directly a file name }
+    if (S<>'') and (S[1]<>'$') and (S<>SpecialStage) then
+      L.Add(#255+S);   { #255 means it is not a texture name but directly a file name }
   end;
 end;
 

@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,10 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit PyMath;
 
@@ -447,7 +451,7 @@ begin
    Windows.LineTo(Info.DC, Round(P2.x), Round(P2.y));
   end;
 end;
-                              
+
 procedure Rectangle95(DC: HDC; X1, Y1, X2, Y2: Integer);
 begin
  if not Info.WindowsNT then
@@ -458,7 +462,7 @@ begin
    if Y1<-Max95 then Y1:=-Max95;
    if X2>Max95 then X2:=Max95;
    if Y2>Max95 then Y2:=Max95;
-  end; 
+  end;
  Windows.Rectangle(DC, X1,Y1,X2,Y2);
 end;
 

@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/05 11:02:32  tiglari
+q3 bsp editing support, entities OK, map structure not there yet
+
 Revision 1.7  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -443,7 +445,7 @@ begin
       SubElements.Remove(Face);
       Inc(InvFaces); LastError:='Err degenerate'; Continue;
      end;
-    Face.Specifics.Add(CannotEditFaceYet+'=1'); 
+    Face.Specifics.Add(CannotEditFaceYet+'=1');
     Surface1^.F:=Face;
     Face.LinkSurface(Surface1);
     Face.NomTex:=S;

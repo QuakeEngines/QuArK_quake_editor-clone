@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,27 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/11/19 15:31:50  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.5  2000/11/16 19:42:16  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -46,7 +59,6 @@ Englishification and a little layout
 
 Revision 1.3  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
-
 }
 
 unit QkListView;

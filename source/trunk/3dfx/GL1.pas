@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,20 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/12/07 19:47:59  decker_dk
+- Changed the code in Glide.PAS and GL1.PAS, to more understandable
+and readable code (as seen in Python.PAS), which isn't as subtle to
+function-pointer changes, as the old code was. This modification also
+had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
+prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
+
 Revision 1.4  2000/11/11 17:56:52  decker_dk
 Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
 

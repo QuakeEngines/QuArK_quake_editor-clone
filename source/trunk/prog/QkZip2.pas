@@ -1,10 +1,33 @@
-unit QkZip2;
+(**************************************************************************
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) Armin Rigo
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
+**************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.18  2001/01/28 17:23:12  decker_dk
 Removed 'Constant expression violates subrange bounds' compiler warnings for 'crc:=$FFFFFFFF', by forcing it to 'crc:=LongInt($FFFFFFFF)'.
 
@@ -32,10 +55,9 @@ Englishification and a little layout
 
 Revision 1.9  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
+unit QkZip2;
 
 interface
 

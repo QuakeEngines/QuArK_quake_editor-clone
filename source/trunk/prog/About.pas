@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,15 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/09 21:11:56  aiv
+Misc. Bug fixes
+
 Revision 1.8  2001/03/09 09:29:47  tiglari
 change credits
 
@@ -146,11 +147,13 @@ begin
   Memo1.Text :=
       'QuArK comes with ABSOLUTELY NO WARRANTY; for details, see below. '
     + 'This is free software, and you are welcome to redistribute it under certain conditions; '
-    + 'for details, see below.'#13#10#13#10
+    + 'for details, see below.'
+    + #13#10#13#10
     + 'QuArK is protected by the GNU General Public License; text below is part of this Licence. '
     + 'The complete Licence is found in file COPYING.TXT.'
     + #13#10#13#10
-    + 'NO WARRANTY'#13#10#13#10
+    + 'NO WARRANTY'
+    + #13#10#13#10
     + 'BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT '
     + 'PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER '
     + 'PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT '
@@ -165,7 +168,8 @@ begin
     + 'BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR '
     + 'OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.'
     + #13#10#13#10
-    + 'REDISTRIBUTION'#13#10#13#10
+    + 'REDISTRIBUTION'
+    + #13#10#13#10
     + 'You may copy and distribute verbatim copies of the Program''s '
     + 'source code as you receive it, in any medium, provided that you '
     + 'conspicuously and appropriately publish on each copy an appropriate '
@@ -340,7 +344,7 @@ begin
   begin
     SetEvent(Event);
     CloseHandle(Event);
-    Event:=0; // Strange error under Win2K (others?) if 'event' isn't set to 0 after call to CloseHandle(..) 
+    Event:=0; // Strange error under Win2K (others?) if 'event' isn't set to 0 after call to CloseHandle(..)
   end;
 end;
 

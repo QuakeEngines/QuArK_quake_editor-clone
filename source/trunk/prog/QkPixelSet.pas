@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/18 19:38:00  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.7  2000/04/24 09:54:54  arigo
 Q3 shaders, once more
 
@@ -38,7 +40,6 @@ more TGA flips fix
 
 Revision 1.3  2000/04/12 22:11:22  alexander
 fixed: flipped exported TGA textures
-
 }
 
 unit QkPixelSet;
@@ -182,7 +183,7 @@ end;
 procedure TPixelSetDescription.FlipBottomUp;
 begin
  ScanLine:=-ScanLine;
- AlphaScanLine:=-AlphaScanLine; 
+ AlphaScanLine:=-AlphaScanLine;
 end;
 
 function TPixelSetDescription.GetColors(var Buffer: TBitmapInfoColors) : PBitmapInfoColors;
@@ -256,7 +257,7 @@ end;
    Format to psfDefault will let PSDConvert set the target format equal
    to the source format). Any field already set in the target object
    will force conversion. *)
-   
+
 function PSDConvert;
 var
  Resizing: Boolean;
@@ -329,7 +330,7 @@ begin
         Exit;
        end;
     end;
-  
+
    if Resizing then
     Resample(Source.ColorPalette, Source.Data,
              ColorPalette, Data,

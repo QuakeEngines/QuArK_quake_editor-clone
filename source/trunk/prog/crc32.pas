@@ -15,14 +15,14 @@ UNIT crc32;
   lookup table.}
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/01/28 17:23:50  decker_dk
+Removed 'Constant expression violates subrange bounds' compiler warnings, by forcing them to 'LongInt($xxxxxxxx)'
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 

@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,14 +16,16 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -32,7 +34,6 @@ Englishification and a little layout
 
 Revision 1.3  2000/04/20 10:43:33  arigo
 JPeg writing fixes
-
 }
 
 unit QkImages;
@@ -393,7 +394,7 @@ begin
  Specifics.Add(ImageData);
  if PaletteData<>'' then Specifics.Add(PaletteData);
  if AlphaData<>'' then Specifics.Add(AlphaData);
- 
+
  finally NewPSD.Done; end;
 end;
 (*const
