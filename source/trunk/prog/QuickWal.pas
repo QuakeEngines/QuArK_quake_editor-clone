@@ -20,7 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 unit QuickWal;
 
 interface
@@ -96,6 +100,8 @@ begin
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'w', Base)
  else if CompareText(ExtractFileExt(Name), '.m8') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-3), 'm', Base)
+ else if CompareText(ExtractFileExt(Name), '.m32') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'l', Base)
  else if CompareText(ExtractFileExt(Name), '.swl') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'i', Base)
  else if CompareText(ExtractFileExt(Name), '.wad') = 0 then
