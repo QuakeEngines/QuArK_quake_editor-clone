@@ -1,3 +1,29 @@
+
+        Patch 2, for QuArK Snaprot of 070901
+               (072201)
+               
+ *Read/write with entity-edits bsp's for:
+   Q3A, SOF, Heretic II, KingPin (every supported
+   Q-engine game except Sin).
+ *Map comments automatically disabled when writing
+   bsp entities (should fix unplayble map-writing
+   problem)
+ *Start room removed for 6DX
+
+
+        Patch 1, for QuArK Snapshot of 070901
+               (071701)
+               
+ *.hmf file support added for 6dx, map checks disabled.
+    6dx default map needs textures added to it
+    (in data6dx.qrk)
+ *basic viewing of Q3A .bsp files now works.  Writing
+    not yet supported
+  
+  Note: to edit entities and write the .bsp's for Q2 etc.
+    you need to turn off comment writing in the map-option
+    defaults, this might be made automatic in a later
+    version but requires a bit more thought.
              
              QuArK Snapshot 070901
              
