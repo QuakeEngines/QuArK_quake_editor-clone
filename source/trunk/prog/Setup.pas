@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2002/02/24 13:47:10  decker_dk
+Added MOHAA (Medal Of Honor:Allied Assault) with gamecode 'e'.
+
 Revision 1.31  2001/12/05 20:39:17  decker_dk
 Added RTCW (Return To Castle Wolfenstein) with gamecode 'd'.
 
@@ -180,6 +183,7 @@ const
  mjCrystalSpace = 'c';
  mjRTCW         = 'd';  { Return To Castle Wolfenstein }
  mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
+ mjJK2          = 'f';  { Jedi Knight II - Jedi Outcast }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
