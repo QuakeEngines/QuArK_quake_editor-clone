@@ -1,6 +1,10 @@
 6.4.0 alpha 2
 =============
 
+ * [cdunde]: Added 'Look and Zoom in 3D views' feature to Options menu
+      and which is activated by the 'Zoom to selection' button in the
+      'Selection Toolbar' with related hint and Infobase entry.
+
  * [SilverPaladin]: Fixed the error that caused all Toolbox window
       Edit and Toolboxes menus not to work.
 
