@@ -77,6 +77,37 @@ def NewXYZCube(x,y,z,tex):
 
     return p
 
+
+def GetEntityChain(firsttargetname, list):
+    # Returns an ordered list of entities, which points to each other by target/targetname
+    newlist = []
+    for e in list:
+        if e.type == ':g':
+            newlist = newlist + e.findallsubitems("", ":e")
+            newlist = newlist + e.findallsubitems("", ":b")
+        else:
+            newlist.append(e)
+
+    def FindEntityByTargetname(name, list):
+        for e in list:
+            if (e["targetname"] == name):
+                return e, e["target"]
+        return None, None
+
+    nextname = firsttargetname
+    namelist = []
+    entlist = []
+    ent, nextname = FindEntityByTargetname(nextname, newlist)
+    if (ent is not None):
+        entlist.append(ent)
+    while ((nextname is not None) and (not nextname in namelist)):
+        namelist.append(nextname)
+        ent, nextname = FindEntityByTargetname(nextname, newlist)
+        if (ent is not None):
+            entlist.append(ent)
+    return entlist
+
+
 def RegisterInToolbox(toolboxname, qtxfolder, obj):
 # FIXME - Make so ':form' also can be added somewhere.
     for t in quarkx.findtoolboxes(toolboxname):
@@ -99,6 +130,9 @@ def RegisterInToolbox(toolboxname, qtxfolder, obj):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2000/06/03 10:25:30  alexander
+#added cvs headers
+#
 #Revision 1.3  2000/05/23 19:09:47  decker_dk
 #Removed evil hidden TAB-characters
 #
