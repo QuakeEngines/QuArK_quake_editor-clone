@@ -1,4 +1,4 @@
-object g_Form1: Tg_Form1
+object Form1: TForm1
   Left = 299
   Top = 266
   Width = 472
