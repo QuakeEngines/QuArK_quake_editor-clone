@@ -1,5 +1,5 @@
 title: Shape Builders
-subdir: introduction archcap brusharchcap
+subdir: introduction archcap brusharchcap bevel column
 
 Shape-builders are a method for building complex objects,
 such as arches, stairways and more, on the basis
