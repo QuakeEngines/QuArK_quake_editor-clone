@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/03/16 00:04:16  aiv
+fixed saving of include commands (t_model = !)
+
 Revision 1.24  2001/03/13 01:42:47  aiv
 new fgd->qrk converter inbuilt
 
@@ -1276,8 +1279,8 @@ begin
    else
     if P=Length(S) then
      Arg:=Arg+'""'   { empty Specific }
-    else if S[P+1]='!' then
-      Arg:=Arg+'!'
+//    else if (Length(S)=P+1) and (S[P+1]='!') then
+//      Arg:=Arg+'!'
     else
      begin  { normal Specific }
       Binaire:=False;
