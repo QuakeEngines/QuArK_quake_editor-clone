@@ -72,11 +72,9 @@ class RadialDuplicator(StandardDuplicator):
 
 
     def buildimages(self, singleimage=None):
-        debug('build')
         if singleimage is not None and singleimage>0:
             return []
         axis = quarkx.vect(self.dup["axis"]).normalized
-        debug('axis '+`axis`)
         around, = self.dup["around"]
         spiral = self.dup["spiral"]
         if spiral is not None:
@@ -85,33 +83,38 @@ class RadialDuplicator(StandardDuplicator):
             upward, outward = 0, 0
         origin = self.dup.origin
         list = self.sourcelist()
-        templatebox=quarkx.boundingboxof(list)
-#        templateorigin = (templatebox[0]+templatebox[1])/2
-#        radius = templateorigin-origin       
+        templateorigin = quarkpy.maphandles.GetUserCenter(list)
+        #
+        # Axis can be tilted
+        #
         tiltmat = matrix_rot_u2v(quarkx.vect(0,0,1),axis)
         result = []
         try:
             count = int(self.dup["count"])
         except:
             count = 1
+        #
+        # A linear matrix can apply cumulatively to the images
+        #
         dupmat = buildLinearMatrix(self.dup)
-        cummat = dupmat
+        cummat = quarkx.matrix('1 0 0 0 1 0 0 0 1')
         for i in range(0, count):
             group=quarkx.newobj('radial %d:g'%i)
+            for item in list:
+                group.appenditem(item.copy())
             result.append(group)
-            angle = i*around*deg2rad
-            matrix = cummat*tiltmat*matrix_rot_z(angle)
+            group.linear(templateorigin,cummat) 
             cummat = dupmat*cummat
+            angle = i*around*deg2rad
+            matrix = tiltmat*matrix_rot_z(angle)
             shift = upward*axis*i
-            for object in list:
-                new = object.copy()
-                new.linear(origin,matrix)
-                new.translate(shift)
-                radvec = perptonormthru(origin,object.origin,axis).normalized
-                radvec = matrix*radvec
-                shift = -i*outward*radvec
-                new.translate(shift)
-                group.appenditem(new)
+            group.linear(origin,matrix)
+            group.translate(shift)
+            center=quarkpy.maphandles.GetUserCenter(group)
+            radvec = perptonormthru(origin,center,axis).normalized            
+            radvec = matrix*radvec
+            shift = -i*outward*radvec
+            group.translate(shift)
 
         return result
 
