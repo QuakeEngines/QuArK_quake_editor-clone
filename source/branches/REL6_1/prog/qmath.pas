@@ -1,0 +1,751 @@
+(**************************************************************************
+QuArK -- Quake Army Knife -- 3D game editor
+Copyright (C) 1996-99 Armin Rigo
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Contact the author Armin Rigo by e-mail: arigo@planetquake.com
+or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
+See also http://www.planetquake.com/quark
+**************************************************************************)
+
+{
+
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+Revision 1.3  2000/07/16 16:34:51  decker_dk
+Englishification
+
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
+
+}
+
+
+unit qmath;
+
+interface
+
+uses Windows, Messages, SysUtils, Graphics;
+
+const
+ FacteurEchelle1 = 10;
+ FacteurEchelle  = 1 shl FacteurEchelle1;
+ DemiFacteur1    = 5;
+ DemiFacteur     = 1 shl DemiFacteur1;
+
+type
+ TDouble = Double;
+ PVect = ^TVect;
+ TVect = record
+          X, Y, Z: TDouble;
+         end;
+ scalar_t = Single;
+ vec3_p = ^vec3_t;
+ vec3_t = packed array[0..2] of scalar_t;
+
+function Cross(const V1, V2: TVect) : TVect;
+function Dot(const V1, V2: TVect) : TDouble;
+procedure Normalise(var V: TVect);
+function AngleXY(const X, Y: TDouble) : TDouble;
+procedure ReadValues(const S1: String; var Vals: array of TDouble);
+function ReadVector(const S: String) : TVect;
+function ReadNumValueEx(const S: String) : TDouble;
+function ftos(const F: TDouble) : String;
+function ftos0(const F: TDouble) : String;
+function ftos1(const F: TDouble) : String;
+function ftosp(const F: TDouble; const P: integer) : String;
+function vtos(const V: TVect) : String;
+function vtos1(const V: TVect) : String;
+function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
+function CalculeMAngle(const Angles: TVect) : TVect;
+function coltov(C: TColor) : TVect;
+function coltos255(C: TColor) : String;
+function vtocol(const V: TVect) : TColor;
+function vtocol255(const R,G,B: TDouble) : TColor;
+procedure NormaliseCol1(var V: TVect);
+{function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
+function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
+
+const
+ Origine: TVect = (X:0; Y:0; Z:0);
+ rien = 1E-5;
+ rien2 = 3E-3;
+
+type
+ TModeProj = (VueXY, VueXZ, Vue3D);
+ TProjEventEx = function (const P: TVect; var Pt: TPoint) : Boolean of object;
+ TProfondeurEventEx = function (const P: TVect) : TDouble of object;
+
+var
+ pDeltaX, pDeltaY, pDeltaZ: Integer;
+ pProjX, pProjY, pProjZ: TDouble;
+ ModeProj: TModeProj;
+ CalculeProj3D: TProjEventEx;
+ CalculeProfondeur3D: TProfondeurEventEx;
+{PointVisible16: function (const P: TPoint) : Boolean;
+ Polygon16: function (DC: HDC; var Pts; NbPts: Integer) : Bool; stdcall;
+ PolyPolyline16: function (DC: HDC; var Pts, Cnt; NbPolylines: Integer) : Bool; stdcall;
+ Rectangle16: function (DC: HDC; X1,Y1,X2,Y2: Integer) : Bool; stdcall;
+ Line16: procedure (DC: HDC; const P1,P2: TPoint);}
+
+function Proj(const P: TVect) : TPoint;
+function ProjEx(const P: TVect; var Dest: TPoint) : Boolean;
+function Espace(X,Y,Z: Integer) : TVect;
+function Profondeur(const V: TVect) : TDouble;
+procedure InitProjVar;
+
+function TailleMaximaleEcranX: Integer;
+function TailleMaximaleEcranY: Integer;
+
+{procedure CheckWindows16bits(HiZoom: Boolean);}
+
+{function PolyPolyline95(DC: HDC; var Pts, Cnt; NbPolylines: Integer) : Bool; stdcall;
+function Rectangle95(DC: HDC; X1,Y1,X2,Y2: Integer) : Bool; stdcall;
+procedure Line95(DC: HDC; const P1,P2: TPoint);
+function Polygon95(DC: HDC; var Pts; NbPts: Integer) : Bool; stdcall;
+function PointVisible95(const P: TPoint) : Boolean;}
+
+implementation
+
+uses Quarkx;
+
+var
+ Facteur: TDouble;
+
+function Cross(const V1, V2: TVect) : TVect;
+begin
+ Cross.X := v1.Y*v2.Z - v1.Z*v2.Y;
+ Cross.Y := v1.Z*v2.X - v1.X*v2.Z;
+ Cross.Z := v1.X*v2.Y - v1.Y*v2.X;
+end;
+
+function Dot(const V1, V2: TVect) : TDouble;
+begin
+ Dot:=V1.X*V2.X + V1.Y*V2.Y + V1.Z*V2.Z;
+end;
+
+procedure Normalise(var V: TVect);
+var
+ F: TDouble;
+begin
+ F:=1/Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
+ V.X:=V.X*F;
+ V.Y:=V.Y*F;
+ V.Z:=V.Z*F;
+end;
+
+function Proj;
+begin
+ case ModeProj of
+  VueXY: begin
+          Proj.X:=Round(P.X*pProjX+P.Y*pProjY)+pDeltaX;
+          Proj.Y:=pDeltaY-Round(P.Y*pProjX-P.X*pProjY);
+         end;
+  VueXZ: begin
+          Proj.X:=Round(P.X*pProjX+P.Y*pProjY)+pDeltaX;
+          Proj.Y:=pDeltaZ-Round(P.Z*pProjZ);
+         end;
+  else   if not CalculeProj3D(P, Result) then
+          Raise EErrorFmt(167, [vtos(P)]);
+ end;
+{if Result.X<-16384 then Result.X:=-16384;
+ if Result.X>=16384 then Result.X:=16383;
+ if Result.Y<-16384 then Result.Y:=-16384;
+ if Result.Y>=16384 then Result.Y:=16383;}
+end;
+
+function ProjEx(const P: TVect; var Dest: TPoint) : Boolean;
+begin
+ if ModeProj=Vue3D then
+  Result:=CalculeProj3D(P, Dest)
+ else
+  begin
+   Dest:=Proj(P);
+   ProjEx:=True;
+  end;
+end;
+
+function Espace;
+begin
+ Dec(X, pDeltaX);
+ Y:=pDeltaY-Y;
+ Espace.X:=(X*pProjX - Y*pProjY) * Facteur;
+ Espace.Y:=(Y*pProjX + X*pProjY) * Facteur;
+ Espace.Z:=(pDeltaZ-Z) / pProjZ;
+end;
+
+procedure InitProjVar;
+begin
+ Facteur:=1/(Sqr(pProjX)+Sqr(pProjY));
+end;
+
+function Profondeur(const V: TVect) : TDouble;
+begin
+ case ModeProj of
+  VueXY: Profondeur:=-V.Z;
+  VueXZ: Profondeur:=V.Y*pProjX-V.X*pProjY;
+  else Profondeur:=CalculeProfondeur3D(V);
+ end;
+end;
+
+function AngleXY;
+begin
+ if Abs(X)<rien then
+  if Y>0 then
+   Result:=pi/2
+  else
+   Result:=-pi/2
+ else
+  if X>0 then
+   Result:=ArcTan(Y/X)
+  else
+   Result:=ArcTan(Y/X)+pi;
+end;
+
+function ftos(const F: TDouble) : String;
+var
+ R: Integer;
+begin
+ R:=Round(F);
+ if Abs(F-R) <= rien then
+  Result:=IntToStr(R)
+ else
+  begin
+  {DecimalSeparator:='.';}
+   Result:=FloatToStrF(F, ffFixed, 7, 1);
+  end;
+end;
+
+function ftos0(const F: TDouble) : String;
+var
+ R: Integer;
+begin
+ R:=Round(F);
+ if Abs(F-R) <= rien then
+  Result:=IntToStr(R)+'.0'
+ else
+  begin
+  {DecimalSeparator:='.';}
+   Result:=FloatToStrF(F, ffFixed, 7, 5);
+  end;
+end;
+
+function ftos1(const F: TDouble) : String;
+var
+ R: Integer;
+begin
+ R:=Round(F);
+ if Abs(F-R) <= rien then
+  Result:=IntToStr(R)
+ else
+  begin
+  {DecimalSeparator:='.';}
+   Result:=FloatToStrF(F, ffFixed, 7, 5);
+  end;
+end;
+
+function ftosp(const F: TDouble; const P: integer) : String;
+var
+ R: Integer;
+begin
+ R:=Round(F);
+ if Abs(F-R) <= rien then
+  Result:=IntToStr(R)
+ else
+  begin
+  {DecimalSeparator:='.';}
+   Result:=FloatToStrF(F, ffFixed, 7, P);
+  end;
+end;
+
+procedure ReadValues(const S1: String; var Vals: array of TDouble);
+var
+ P, I: Integer;
+ S: String;
+begin
+ S:=S1;
+{DecimalSeparator:='.';}
+ for I:=1 to High(Vals) do
+  begin
+   S:=Trim(S);
+   P:=Pos(' ', S);
+   if P=0 then
+    Raise EErrorFmt(192, [High(Vals)+1, S1]);
+   Vals[I-1]:=StrToFloat(Copy(S, 1, P-1));
+   System.Delete(S, 1, P);
+  end;
+ Vals[High(Vals)]:=StrToFloat(Trim(S));
+end;
+
+function ReadVector(const S: String) : TVect;
+var
+ Lu: array[1..3] of TDouble;
+begin
+ ReadValues(S, Lu);
+ Result.X:=Lu[1];
+ Result.Y:=Lu[2];
+ Result.Z:=Lu[3];
+end;
+
+function ReadNumValueEx(const S: String) : TDouble;
+var
+ S1, S2: String;
+ P: Integer;
+begin
+ Result:=1;
+ S1:=S;
+ repeat
+  P:=Pos('*', S1);
+  if P=0 then
+   S2:=S1
+  else
+   begin
+    S2:=Copy(S1, 1, P-1);
+    System.Delete(S1, 1, P);
+   end;
+  Result:=Result*StrToFloat(Trim(S2));
+ until P=0;
+end;
+
+function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
+var
+ P: Integer;
+ S: String;
+begin
+ S:=Trim(S1);
+ Result:=0;
+ while (S<>'') and (Result<MaxCount) do
+  begin
+   P:=Pos(' ', S);
+   if P=0 then P:=Length(S)+1;
+   Int^:=StrToInt(Copy(S, 1, P-1));
+   Inc(Int);
+   Inc(Result);
+   System.Delete(S, 1, P);
+   S:=Trim(S);
+  end;
+end;
+
+function sWriteIntegers(Int: PLongInt; Count: Integer) : String;
+var
+ I: Integer;
+begin
+ Result:='';
+ for I:=1 to Count do
+  begin
+   if I>1 then
+    Result:=Result+' ';
+   Result:=Result+IntToStr(Int^);
+   Inc(Int);
+  end;
+end;
+
+function CalculeMAngle(const Angles: TVect) : TVect;
+var
+ A, B: TDouble;
+begin
+ A:=Angles.Y*(pi/180);
+ B:=Angles.X*(-pi/180);
+ Result.X:=Cos(A)*Cos(B);
+ Result.Y:=Sin(A)*Cos(B);
+ Result.Z:=Sin(B);
+end;
+
+function TailleMaximaleEcranX: Integer;
+begin
+ Result:=GetSystemMetrics(sm_CxMaximized)-2*GetSystemMetrics(sm_CxSizeFrame);
+end;
+
+function TailleMaximaleEcranY: Integer;
+begin
+ Result:=GetSystemMetrics(sm_CyMaximized)-2*GetSystemMetrics(sm_CySizeFrame);
+end;
+
+(*function LirePositionFenetre(const R: TRect) : String;
+var
+ XMax, YMax: TDouble;
+begin
+{DecimalSeparator:='.';}
+ XMax:=1/TailleMaximaleEcranX;
+ YMax:=1/TailleMaximaleEcranY;
+ Result:=FloatToStrF(R.Left  *XMax, ffFixed, 5,3)
+   +' '+ FloatToStrF(R.Top   *YMax, ffFixed, 5,3)
+   +' '+ FloatToStrF(R.Right *XMax, ffFixed, 5,3)
+   +' '+ FloatToStrF(R.Bottom*YMax, ffFixed, 5,3);
+end;
+
+function AppliquerPositionFenetre(const S: String) : TRect;
+var
+ V: array[0..3] of TDouble;
+ XMax, YMax: Integer;
+begin
+ ReadValues(S, V);
+ XMax:=TailleMaximaleEcranX;
+ Result.Left:=Round(V[0]*XMax);
+ Result.Right:=Round(V[2]*XMax);
+ YMax:=TailleMaximaleEcranY;
+ Result.Top:=Round(V[1]*YMax);
+ Result.Bottom:=Round(V[3]*YMax);
+end;*)
+
+ {------------------------------------}
+
+function PointVisibleOk(const P: TPoint) : Boolean;
+begin
+ Result:=True;
+end;
+
+procedure LineOk(DC: HDC; const P1,P2: TPoint);
+begin
+ Windows.MoveToEx(DC, P1.X,P1.Y, Nil);
+ Windows.LineTo(DC, P2.X,P2.Y);
+end;
+
+const
+ Max95 = 8192;
+
+function PointVisible95(const P: TPoint) : Boolean;
+begin
+ Result:=(P.X>=-Max95) and (P.Y>=-Max95) and (P.X<Max95) and (P.Y<Max95);
+end;
+
+function Ligne95(var P1, P2: TPoint) : Boolean;
+begin
+ Ligne95:=True;
+ if P1.Y<-Max95 then
+  begin
+   if P2.Y<-Max95 then
+    begin
+     P2.Y:=-Max95;
+     Ligne95:=False;
+    end
+   else
+    P1.X:=P2.X + MulDiv(P2.Y+Max95, P1.X-P2.X, P2.Y-P1.Y);
+   P1.Y:=-Max95;
+  end;
+ if P1.Y>Max95 then
+  begin
+   if P2.Y>Max95 then
+    begin
+     P2.Y:=Max95;
+     Ligne95:=False;
+    end
+   else
+    P1.X:=P2.X + MulDiv(Max95-P2.Y, P1.X-P2.X, P1.Y-P2.Y);
+   P1.Y:=Max95;
+  end;
+ if P2.Y<-Max95 then
+  begin
+   P2.X:=P1.X + MulDiv(P1.Y+Max95, P2.X-P1.X, P1.Y-P2.Y);
+   P2.Y:=-Max95;
+  end;
+ if P2.Y>Max95 then
+  begin
+   P2.X:=P1.X + MulDiv(Max95-P1.Y, P2.X-P1.X, P2.Y-P1.Y);
+   P2.Y:=Max95;
+  end;
+
+ if P1.X<-Max95 then
+  begin
+   if P2.X<-Max95 then
+    begin
+     P2.X:=-Max95;
+     Ligne95:=False;
+    end
+   else
+    P1.Y:=P2.Y + MulDiv(P2.X+Max95, P1.Y-P2.Y, P2.X-P1.X);
+   P1.X:=-Max95;
+  end;
+ if P1.X>Max95 then
+  begin
+   if P2.X>Max95 then
+    begin
+     P2.X:=Max95;
+     Ligne95:=False;
+    end
+   else
+    P1.Y:=P2.Y + MulDiv(Max95-P2.X, P1.Y-P2.Y, P1.X-P2.X);
+   P1.X:=Max95;
+  end;
+ if P2.X<-Max95 then
+  begin
+   P2.Y:=P1.Y + MulDiv(P1.X+Max95, P2.Y-P1.Y, P1.X-P2.X);
+   P2.X:=-Max95;
+  end;
+ if P2.X>Max95 then
+  begin
+   P2.Y:=P1.Y + MulDiv(Max95-P1.X, P2.Y-P1.Y, P2.X-P1.X);
+   P2.X:=Max95;
+  end;
+end;
+
+function Polygon95(DC: HDC; var Pts; NbPts: Integer) : Bool; stdcall;
+var
+ I, J: Integer;
+ Pt, Tampon, Dest: ^TPoint;
+ CorrPolygon: Boolean;
+ Origine0, Origine, Cible, PointCourant: TPoint;
+begin
+ CorrPolygon:=False;
+ Pt:=@Pts;
+ for J:=1 to NbPts do
+  begin
+   with Pt^ do
+    if (X<-Max95) or (Y<-Max95) or (X>Max95) or (Y>Max95) then
+     begin
+      CorrPolygon:=True;
+      Break;
+     end;
+   Inc(Pt);
+  end;
+ if CorrPolygon then
+  begin
+   GetMem(Tampon, NbPts * (2*SizeOf(TPoint)));
+   Pt:=@Pts;
+   Dest:=Pt;
+   Inc(Dest, NbPts-1);
+   Origine0:=Dest^;
+   Dest:=Tampon;
+   I:=0;
+   PointCourant.X:=MaxInt;
+   for J:=1 to NbPts do
+    begin
+     Origine:=Origine0;
+     Cible:=Pt^;
+     Origine0:=Cible;
+     Ligne95(Origine, Cible);
+     if (Origine.X<>PointCourant.X) or (Origine.Y<>PointCourant.Y) then
+      begin
+       Dest^:=Origine;
+       Inc(Dest);
+       Inc(I);
+      end;
+     if (Origine.X<>Cible.X) or (Origine.Y<>Cible.Y) then
+      begin
+       Dest^:=Cible;
+       Inc(Dest);
+       Inc(I);
+      end;
+     PointCourant:=Cible;
+     Inc(Pt);
+    end;
+   Dec(Dest);
+   with Dest^ do
+    if (X=Tampon^.X) and (Y=Tampon^.Y) then
+     Dec(I);
+   if I>=3 then
+    Windows.Polygon(DC, Tampon^, I);
+   FreeMem(Tampon);
+  end
+ else
+  Windows.Polygon(DC, Pts, NbPts);
+ Result:=True;
+end;
+
+function PolyPolyline95(DC: HDC; var Pts, Cnt; NbPolylines: Integer) : Bool; stdcall;
+var
+ I, J: Integer;
+ P: ^Integer;
+ Pt: ^TPoint;
+ Origine0, Origine, Dest: TPoint;
+ CorrPolyline: Boolean;
+begin
+ CorrPolyline:=False;
+ P:=@Cnt;
+ Pt:=@Pts;
+ for I:=1 to NbPolylines do
+  begin
+   for J:=P^ downto 1 do
+    begin
+     with Pt^ do
+      if (X<-Max95) or (Y<-Max95) or (X>Max95) or (Y>Max95) then
+       begin
+        CorrPolyline:=True;
+        Inc(Pt, J);
+        Inc(P^, $80000000);
+        Break;
+       end;
+     Inc(Pt);
+    end;
+   Inc(P);
+  end;
+ if CorrPolyline then
+  begin
+   P:=@Cnt;
+   Pt:=@Pts;
+   for I:=1 to NbPolylines do
+    begin
+     if P^<0 then
+      begin
+       Dec(P^, $80000000);
+       Origine0:=Pt^;
+       Inc(Pt);
+       for J:=2 to P^ do
+        begin
+         Origine:=Origine0;
+         Dest:=Pt^;
+         Origine0:=Dest;
+         if Ligne95(Origine, Dest) then
+          begin
+           Windows.MoveToEx(DC, Origine.X, Origine.Y, Nil);
+           Windows.LineTo(DC, Dest.X, Dest.Y);
+          end;
+         Inc(Pt);
+        end;
+      end
+     else
+      begin
+       Windows.Polyline(DC, Pt^, P^);
+       Inc(Pt, P^);
+      end;
+     Inc(P);
+    end;
+  end
+ else
+  Windows.PolyPolyline(DC, Pts, Cnt, NbPolylines);
+ Result:=True; 
+end;
+
+function Rectangle95(DC: HDC; X1,Y1,X2,Y2: Integer) : Bool; stdcall;
+begin
+ if (X2<=-Max95) or (Y2<=-Max95) or (X1>=Max95) or (Y1>=Max95) then
+  begin
+   Result:=True;
+   Exit;
+  end;
+ if X1<-Max95 then X1:=-Max95;
+ if Y1<-Max95 then Y1:=-Max95;
+ if X2>Max95 then X2:=Max95;
+ if Y2>Max95 then Y2:=Max95;
+ Result:=Windows.Rectangle(DC, X1,Y1,X2,Y2);
+end;
+
+procedure Line95(DC: HDC; const P1,P2: TPoint);
+var
+ P1x, P2x: TPoint;
+begin
+ P1x:=P1;
+ P2x:=P2;
+ if Ligne95(P1x, P2x) then
+  begin
+   Windows.MoveToEx(DC, P1x.X,P1x.Y, Nil);
+   Windows.LineTo(DC, P2x.X,P2x.Y);
+  end;
+end;
+
+(*procedure CheckWindows16bits(HiZoom: Boolean);
+var
+ OSVersion: TOSVersionInfo;
+begin
+ OSVersion.dwOSVersionInfoSize:=SizeOf(OSVersion);
+ if not HiZoom
+ or (GetVersionEx(OSVersion) and (OSVersion.dwPlatformId=VER_PLATFORM_WIN32_NT)) then
+  begin   { Windows NT : Ok }
+   PointVisible16:=PointVisibleOk;
+   Polygon16:=Windows.Polygon;
+   PolyPolyline16:=Windows.PolyPolyline;
+   Rectangle16:=Windows.Rectangle;
+   Line16:=LineOk;
+  end
+ else
+  begin
+   PointVisible16:=PointVisible95;
+   Polygon16:=Polygon95;
+   PolyPolyline16:=PolyPolyline95;
+   Rectangle16:=Rectangle95;
+   Line16:=Line95;
+  end;
+end;*)
+
+function vtos(const V: TVect) : String;
+begin
+ Result:=ftos(V.X) + ' ' + ftos(V.Y) + ' ' + ftos(V.Z);
+end;
+
+function vtos1(const V: TVect) : String;
+begin
+ Result:=ftos1(V.X) + ' ' + ftos1(V.Y) + ' ' + ftos1(V.Z);
+end;
+
+function StrToFloatDef(const S: String; const Def: TDouble) : TDouble;
+begin
+ if S='' then
+  Result:=Def
+ else
+  try
+   Result:=StrToFloat(S);
+  except
+   Result:=Def;
+  end;
+end;
+
+function coltov(C: TColor) : TVect;
+var
+ ComposantesSource: array[1..3] of Byte absolute C;
+begin
+ if ComposantesSource[1]=$FF then Result.X:=1 else Result.X:=ComposantesSource[1]*(1/$100);
+ if ComposantesSource[2]=$FF then Result.Y:=1 else Result.Y:=ComposantesSource[2]*(1/$100);
+ if ComposantesSource[3]=$FF then Result.Z:=1 else Result.Z:=ComposantesSource[3]*(1/$100);
+end;
+
+function coltos255(C: TColor) : String;
+var
+ ComposantesSource: array[1..3] of Byte absolute C;
+begin
+ Result:=IntToStr(ComposantesSource[1])
+    +' '+IntToStr(ComposantesSource[2])
+    +' '+IntToStr(ComposantesSource[3]);
+end;
+
+function vtocol(const V: TVect) : TColor;
+begin
+ Result:=vtocol255(V.X*$100, V.Y*$100, V.Z*$100);
+end;
+
+function vtocol255(const R,G,B: TDouble) : TColor;
+var
+ ComposantesCible: array[1..3] of Byte absolute Result;
+ Entier: Integer;
+begin
+ Result:=0;
+ Entier:=Round(R);
+ if Entier<0 then Entier:=0 else if Entier>=$100 then Entier:=$FF;
+ ComposantesCible[1]:=Entier;
+ Entier:=Round(G);
+ if Entier<0 then Entier:=0 else if Entier>=$100 then Entier:=$FF;
+ ComposantesCible[2]:=Entier;
+ Entier:=Round(B);
+ if Entier<0 then Entier:=0 else if Entier>=$100 then Entier:=$FF;
+ ComposantesCible[3]:=Entier;
+end;
+
+procedure NormaliseCol1(var V: TVect);
+var
+ Max: TDouble;
+begin
+ if V.X>V.Y then Max:=V.X else Max:=V.Y;
+ if V.Z>Max then Max:=V.Z;
+ if Max>rien then
+  begin
+   V.X:=V.X/Max;
+   V.Y:=V.Y/Max;
+   V.Z:=V.Z/Max;
+  end;
+end;
+
+end.
