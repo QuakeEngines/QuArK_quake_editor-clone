@@ -24,6 +24,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.32  2000/11/25 20:51:32  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -118,7 +124,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'quarksnapshot_20001015';
+ QuArKVersion            = 'quarksnapshot_20010107';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
@@ -417,7 +423,7 @@ type
              {destructor Destroy; override;}
               procedure AddRef;
               procedure Release;
-              function AddRefNode(Taille: Integer): PQStreamRef;
+              function AddRefNode(a_StreamSize: Integer): PQStreamRef;
               procedure TemporaryClose;
               function ReopenAs(const FileName: String) : Boolean;
             end;
@@ -1021,22 +1027,19 @@ end;
 {AiV}
 Function DefaultAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 begin
- with Ref^ do
-  begin
-   Self.Position:=Position;
-   Self.AddRef;
-   S:=Self;
-   Result:=StreamSize;
-  end;
+  Ref^.Self.Position:=Ref^.Position;
+  Ref^.Self.AddRef;
+  S:=Ref^.Self;
+  Result:=Ref^.StreamSize;
 end;
 
-function TQStream.AddRefNode(Taille: Integer): PQStreamRef;
+function TQStream.AddRefNode(a_StreamSize: Integer): PQStreamRef;
 begin
  Inc(RefCount1);
  New(Result);
  Result^.Self:=Self;
- Result^.Position:=Seek(Taille, soFromCurrent) - Taille;
- Result^.StreamSize:=Taille;
+ Result^.Position:=Seek(a_StreamSize, soFromCurrent) - a_StreamSize;
+ Result^.StreamSize:=a_StreamSize;
  Result^.OnAccess:=DefaultAddRef;
 end;
 
@@ -1981,7 +1984,7 @@ begin
  F.Position:=nEnd;
 end;
 
-procedure QObject.Open;
+procedure QObject.Open(F: TQStream; Taille: Integer);
 begin
  FNode:=F.AddRefNode(Taille);
  FFlags:=FFlags or ofNotLoadedToMemory;
