@@ -1,0 +1,121 @@
+body {
+  background-color: #FFFFFF;
+  margin: 0;
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+
+p {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+p.sm {
+  font-size: 8pt;
+}
+
+A:link {
+  color: #3090EF;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: Verdana, Arial;
+}
+
+A:visited {
+  color: #246cb2;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: Verdana, Arial;
+}
+
+/*Below added by Decker@post1.tele.dk*/
+
+.sm {
+  font-family: Verdana, Arial;
+  font-size: 8pt;
+  color: #000000;
+}
+
+.warning {
+  font-size: 12pt; color: #FF0000;
+}
+
+.topheadline {
+  font-family: Verdana, Arial;
+  font-size: 24pt;
+  font-weight: bold;
+  /*text-decoration: underline;*/
+}
+p.headline {
+  text-align: left;
+  font-weight: bold;
+  font-size: 14pt;
+}
+p.subheadline {
+  text-decoration: underline;
+  font-weight: bold;
+}
+p.subsubheadline {
+  font-weight: bold;
+}
+UL {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+TH {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+TD {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+DL {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+DT {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #00F0000;
+}
+DD {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+
+SPAN.added {
+  font-family: Small Fonts;
+  font-size: 6pt;
+  color: #AAAAAA;
+}
+
+OL {
+  font-family: Verdana, Arial;
+  font-size: 10pt;
+  color: #000000;
+}
+
+.doccode {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+  color: #000088;
+}
+
+/*Below added by Armin*/
+
+pre {
+  font-family: Fixed;
+}
+
+p.item {
+  font-family: Verdana, Arial;
+  font-weight: bold;
+}
+

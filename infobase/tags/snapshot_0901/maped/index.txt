@@ -1,0 +1,6 @@
+title: Map editing
+subdir: games
+
+Sorry, under construction.
+
+<p>Please refer to Decker's <a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.
