@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2003/05/01 06:30:36  nerdiii
+added AugPath to the EP edit box
+
 Revision 1.24  2003/04/29 13:06:47  nerdiii
 no message
 
@@ -93,7 +96,7 @@ interface
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
      Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
-     CursorScrollBox, Spin, SmArrowBtn, QkFormCfg;
+     CursorScrollBox, Spin, SmArrowBtn, QkFormCfg, ExtraFunctionality;
 
 const
  wp_InternalEdit = 96;
@@ -1332,18 +1335,17 @@ begin
 end;
 
 procedure TFormCfg.BrowseButtonClick(Sender: TObject);
+  procedure ConvertCodes(var S:String);
+  begin
+    While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
+  end; {ConvertCodes}
 var
- Path0, Path, Title, S, FNCopy, Conv, Test: String;
+ Path0, Path, Title, S, FNCopy, Conv, ConvOriginal, SOriginal: String;
  FormObj: QObject;
  PathEdit: TWinControl;
  Ok, joker: Boolean;
  I: Integer;
 label again;
-
-procedure ConvertCodes(var S:String);
-begin
-  While pos('$Game',S)<>0 do S:=copy(S,1,pos('$Game',S)-1)+SetupGameSet.Specifics.Values['Directory']+copy(S,pos('$Game',S)+5,length(S));
-end; {ConvertCodes}
 
 begin
  PathEdit:=FindFormControl((Sender as TControl).Tag-1, False);
@@ -1375,13 +1377,13 @@ begin
            begin
             I:=Length(Path);
             {If ending with backslash, then remove it}
-            if Path[I]='\' then
+            if Path[I]=PathDelim then
             begin
              SetLength(Path, I-1);
              Dec(I);
             end;
             {Find last backslash}
-            while (I>0) and (Path[I]<>'\') do
+            while (I>0) and (Path[I]<>PathDelim) do
              Dec(I);
             {Extract the _Last_ folder-name in path, without prefixing backslash}
             Path:=Copy(Path, I+1, 99);
@@ -1399,11 +1401,10 @@ begin
            if (Title<>'') and (Path<>'') then
             begin
              I:=Length(Path);
-             while (I>0) and (Path[I]<>'\') do Dec(I);
+             while (I>0) and (Path[I]<>PathDelim) do Dec(I);
              if (I=0) or (CompareText(Copy(Path, I+1, Length(Title)), Title)<>0) then
               begin
-               if Path[Length(Path)]<>'\' then
-                Path:=Path+'\';
+               Path:=IncludeTrailingPathDelimiter(Path);
                Path:=Path+Title;
               end;
             end;
@@ -1422,15 +1423,13 @@ begin
           PopupFormSpec:=Name;
           Ok:=False;
          end;
-    'P': with TOpenDialog.Create(Self) do
-          try
+    'P': with TOpenDialog.Create(Self) do try
            Title:=Specifics.Values['Txt'];
-           S:=Specifics.Values['BasePath'];
+           S:=ConvertPath(Specifics.Values['BasePath']);
            If S<>'' then begin
              ConvertCodes(S);
              InitialDir:=S;
-           end else
-           FileName:=Path;
+           end else FileName:=Path;
            DefaultExt:=Specifics.Values['DefExt'];
            Filter:=Format('*.%0:s|*.%0:s|%1:s', [DefaultExt, LoadStr1(774)]);
            Options:=[ofFileMustExist, ofHideReadOnly];
@@ -1442,32 +1441,42 @@ begin
              If S<>'' then begin //for some entity-specific directory cut-offs
                ConvertCodes(S);
                S:=LowerCase(S);
+               SOriginal:=IncludeTrailingPathDelimiter(StringReplace(S,'?',LoadStr1(186),[rfReplaceAll]));
                Conv:=LowerCase(FNCopy);
-               joker:=false;
+               ConvOriginal:=ExtractFilePath(Conv);
                while Length(S)<>0 do begin
-                 Test:=Copy(S,1,Pos('\',S));
-                 If (Test='?\') and (Pos('\',Conv)<>0) then begin
-                   //joker: no matter what direcory
-                 end else If Test='*\' then begin
-                   //joker: directory does not need to be included
-                   joker:=True;
-                 end else If Test<>Copy(Conv,1,Pos('\',Conv)) then begin
-                   If joker then begin
-                     Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
-                     joker:=false;
-                     continue;
+                 Case S[1] of
+                   PathDelim:begin
+                     Conv:=Copy(Conv,2,Length(Conv));
+                     S:=Copy(S,2,Length(S));
                    end;
-                   Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[S])),PAnsiChar(LoadStr1(3500)));
-                   goto again;
+                   else begin
+                     joker:= S[1] = '?';
+                     I:=Pos(PathDelim,Conv);
+                     If I<>0 then begin
+                       if joker then begin
+                         Conv:=Copy(Conv,I,Length(Conv));
+                         S:=Copy(S,2,Length(S));
+                       end else begin
+                         if (Copy(Conv,1,I-1)=Copy(S,1,I-1)) and ((I=Pos(PathDelim,S)) or (I=Length(S)+1)) then begin
+                           Conv:=Copy(Conv,I,Length(Conv));
+                           S:=Copy(S,I,Length(S));
+                         end else begin
+                           Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
+                           goto again;
+                         end;
+                       end;
+                     end else begin
+                       Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
+                       goto again;
+                     end;
+                   end;
                  end;
-                 S:=Copy(S,Pos('\',S)+1,Length(S));
-                 If not joker then Conv:=Copy(Conv,Pos('\',Conv)+1,Length(Conv));
                end;
                FNCopy:=Conv;
              end;
              S:=Specifics.Values['DirSep'];
-             If S='' then S:='\';
-             FNCopy:=StringReplace(FNCopy,'\',S,[rfReplaceAll]);
+             If S<>'' then FNCopy:=StringReplace(FNCopy,PathDelim,S,[rfReplaceAll]);
              S:=Specifics.Values['AugPath'];
              FNCopy:=S+FNCopy;
              Path:=FNCopy;
