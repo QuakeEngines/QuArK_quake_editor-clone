@@ -488,16 +488,19 @@ class CPHandle(qhandles.GenericHandle):
             alignrow.col=0
             aligncol.col=1
 
-        def subdivide(m,self=self,editor=editor):
-            cp = copyCp(self.b2.cp)
-            new = self.b2.copy()
-            newcp = subdivideColumns(3,cp)
-            new.cp = newcp
-            undo=quarkx.action()
-            undo.exchange(self.b2, new)
-            editor.ok(undo,"subdivide")
-
-        subdiv = qmenu.item("subdivide",subdivide)
+#
+# not sure why this was here, testing perhaps?
+#
+#        def subdivide(m,self=self,editor=editor):
+#            cp = copyCp(self.b2.cp)
+#            new = self.b2.copy()
+#            newcp = subdivideColumns(3,cp)
+#            new.cp = newcp
+#            undo=quarkx.action()
+#            undo.exchange(self.b2, new)
+#            editor.ok(undo,"subdivide")
+#
+#        subdiv = qmenu.item("subdivide",subdivide)
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
 
         index = i*(self.b2.W)+j
@@ -528,7 +531,7 @@ class CPHandle(qhandles.GenericHandle):
             editor.ok(undo,"Unpick All")
             editor.invalidateviews()
             
-        pickItem = qmenu.item("Pick CP", pickClick)
+        pickItem = qmenu.item("Pick CP", pickClick,"|When one or more CPs are picked `picked', dragging one of them drags all, and movement palette operations applied to a patch are applied only to the picked CPs.\n\nPatches remember which of their CPs are picked.")
         unPickItem = qmenu.item("Unpick CP", unPickClick)
         unPickAllItem = qmenu.item("Unpick All", unPickAllClick)
       
@@ -544,7 +547,7 @@ class CPHandle(qhandles.GenericHandle):
       
         picklist = [qmenu.sep, pickItem, unPickItem, unPickAllItem]
         
-        return [mesh, subdiv, joinitem, knititem, alignrow, aligncol] + picklist+[qmenu.sep] + patchmenu
+        return [mesh, joinitem, knititem, alignrow, aligncol] + picklist+[qmenu.sep] + patchmenu
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -600,7 +603,11 @@ class CPHandle(qhandles.GenericHandle):
             i, j = self.ij
             moverow = (quarkx.keydown('\022')==1)  # ALT
             movecol = (quarkx.keydown('\020')==1)  # SHIFT
-            indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
+            picked = self.b2["picked"]
+            if picked:
+                indexes = map(lambda p,b2=self.b2:cpPos(p,b2),picked)
+            else:
+                indexes = pointsToMove(moverow, movecol, i, j, self.h, self.w)        # tiglari, need to unswap 
 #            squawk(`indexes`)
             td = (v2-v1)/128
             for m,n in indexes:
@@ -819,6 +826,9 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.32  2000/12/30 05:28:19  tiglari
+#`pick' functions for acting on selected bezier cp's
+#
 #Revision 1.31  2000/08/23 12:13:53  tiglari
 #added knit edge RMB for patches; also double rows/columns
 #
