@@ -1,0 +1,8 @@
+title: Leakhunt
+
+desc: event popup
+
+Use of memproof, a resource tracker (www.automatedqa.com) reveals
+an assortment of live pointers, unreleased Windows resources and other
+problems.  These vary in priority and some of them actually shouldn't
+be fixed, so here's some discussion.
