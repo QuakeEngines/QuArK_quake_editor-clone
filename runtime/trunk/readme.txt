@@ -1,10 +1,50 @@
 
-             QuArK Snapshot 052101 
+             QuArK Snapshot 06??01 
 
-                patch 1 - 052401
-                
-                
- Changes from 052101
+Changes from 052101
+
+  *storeable 3d camera positions
+    - add them on the 3d view eye handles & background
+        RMB menus
+    - they appear in the map and treeview like
+        duplicators, can be dragged, deleted, etc
+        like ordinary map objects
+    - set and store view menu items on their RMB
+    - if multiple views are open, these commands use
+       the last 3d view clicked on (usually, doesn't
+       quite always seem to work, dunno why)
+    - cycle the ones in a group with prev/next +
+        'C' depressed (should be made user-configurable)
+    - find camera positions dialog on search menu
+  *entity conversion (fgd->qrk) tools pythonified
+  *group selection movement commands (swap & align,
+   suggested by Alan Donald and quantum_red)
+  *due north path duplicator bug fixed
+  *menu promotion/demotion added to the basic distribution
+  *incrementable specifics added to basic and linear duplicators.
+     - If 'increment' specific is checked, then target,
+         targetname and killtarget specifics ending in
+         a string of digits have the digid string incremented
+         in the sequence.
+     - if 'incr. all targ. specific is checked, all specifics
+         whose name contains 'target' get incremented.
+     - any specifics listed in 'incrementable; are also
+         incremented.
+     - if 'final_target' has a value, this is used as the
+         'target' value in the last image.  Likewise
+         for 'final_killtarget' etc.
+     - if 'increment by' has a value, then this is used
+         as the increment, rather than 1.  This can be
+         used to use increments with nested duplicators,
+         if the outer one increments by 10 and the inner
+         by 1, you can have an Nx9 grid,etc.
+     - if 'incre_lip' has a value, then that value is
+         used to increment the 'lip' speciric, likewise
+         incre_<spec> for any other choice of <spec>.
+
+     Limitation: Doesn't work for New Copy One and
+       Radial duplicators (yet; if you want it to,
+       holler).
   *corrections to the 'vertex movement' plugin (this is
     still basically experimental)
   *new 3 point plane stuff:
@@ -13,7 +53,7 @@
          etc.
     b) use tag plane command after tagging an edge
                 
-
+               63 Snapshot 052101
 
  Changes from 050701:
 
