@@ -5,13 +5,16 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/03/20 21:52:26  decker_dk
+//Added log-header
+//
 
 {
   QuArKProtected = "1"
-  Description = "Base CrystalSpace data"
-  CrystalSpace setup.qctx =
+  Description = "Base Crystal Space data"
+  Crystal Space setup.qctx =
   {
-    Game = "CrystalSpace"
+    Game = "Crystal Space"
     HTML = "help\index.html"
     SFSkills = '256 512 1024 2048'
     TexFlagsTransparent = '16 0.66670 32 0.33330'
@@ -664,8 +667,8 @@ QQRKSRC1
   NewFiles.qtx =
   {
     ToolBox = "New files..."
-    Root = "CrystalSpace file types.qtxfolder"
-    CrystalSpace file types.qtxfolder =
+    Root = "Crystal Space file types.qtxfolder"
+    Crystal Space file types.qtxfolder =
     {
       Texture Wad.wad =
       {
@@ -674,7 +677,7 @@ QQRKSRC1
   }
   NewMap:incl =
   {
-    Game = "CrystalSpace"
+    Game = "Crystal Space"
     Root = "worldspawn:b"
     worldspawn:b =
     {
@@ -913,19 +916,16 @@ QQRKSRC1
   Toolbox Folders.qtx =
   {
     ToolBox = "Texture Browser..."
-    Root = "CrystalSpace Textures.qtxfolder"
-    CrystalSpace Textures.qtxfolder =
+    Root = "Crystal Space Textures.qtxfolder"
+    Crystal Space Textures.qtxfolder =
     {
-      cstex_1.wad = @
-      dftex_1.wad = @
-      light_cs.wad = @
     }
   }
   Toolbox Folders.qtx =
   {
     ToolBox = "New map items..."
-    Root = "CrystalSpace Entities.qtxfolder"
-    CrystalSpace Entities.qtxfolder =
+    Root = "Crystal Space Entities.qtxfolder"
+    Crystal Space Entities.qtxfolder =
     {
       PlayerStarts.qtxfolder =
       {
@@ -958,7 +958,7 @@ QQRKSRC1
       {
         cs_sector:b =
         {
-          ;desc = "CrystalSpace sector brush"
+          ;desc = "Crystal Space sector brush"
           ;incl = "defpoly"
           cs_name = ""
           lighting = "yes"
@@ -967,7 +967,7 @@ QQRKSRC1
         }
         cs_sky:b =
         {
-          ;desc = "CrystalSpace sky brush"
+          ;desc = "Crystal Space sky brush"
           ;incl = "defpoly"
           cs_name = "cs_skysector"
 		  sky = "1"
