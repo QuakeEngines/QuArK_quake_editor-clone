@@ -1,5 +1,7 @@
 title: Path Duplicator
-desc: basics tiles
+desc: basics 
+desc: tiles
+desc: tips
 
 The Path Duplicator is one of the most sophisticated
 and powerful ones.  Its purpose is to make it easier
