@@ -59,7 +59,7 @@ class TFTGDlg (quarkpy.qmacro.dialogbox):
                 Txt = "Normal at least"
                 Typ = "EF1"
             }
-        sep: = { Typ = "S" }
+        sep: = { Typ = "S" Txt=""}
         ok1:py = {Txt="" }
         //ok2:py = {Txt="" }
             cancel:py = {Txt="" }
@@ -185,6 +185,9 @@ quarkpy.mapcommands.items.append(
 #
 #
 # $Log$
+# Revision 1.4  2003/03/24 08:57:15  cdunde
+# To update info and link to infobase
+#
 # Revision 1.3  2001/06/17 21:10:57  tiglari
 # fix button captions
 #
