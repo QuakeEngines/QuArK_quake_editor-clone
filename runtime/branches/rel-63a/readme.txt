@@ -1,4 +1,12 @@
 
+                       QuArK 6.3e update 1
+                       
+                        Jan 01, 2003
+                        
+    * fix error-on-RMB-on-vertex-in-restricted-selection bug
+                        
+
+
                       QuArK 6.3e Provisional Release
                       
                           Jan 01, 2003
