@@ -501,11 +501,16 @@ class BaseEditor:
     def mousemap(self, view, x, y, flags, handle):
         "Called by QuArK upon mouse operation."
 
+        if flags & MB_DRAGEND:
+            if self.dragobject is not None:
+                self.dragobject.ok(self, x, y, flags)
+                self.dragobject = None
+
         #
         # Are we simply moving the mouse over the view ?
         #
 
-        if flags & MB_MOUSEMOVE:
+        elif flags & MB_MOUSEMOVE:
             if handle is None:
                 s = view.info["type"] + " view"
                 min, max = view.depth
@@ -556,12 +561,6 @@ class BaseEditor:
         #
         # Are we finished dragging the mouse ? Notify the dragobject.
         #
-
-        elif flags & MB_DRAGEND:
-            if self.dragobject is not None:
-                self.dragobject.ok(self, x, y, flags)
-                self.dragobject = None
-
         else:
             #
             # Read the setup to determine what the mouse click should do.
@@ -804,5 +803,8 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.3  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
