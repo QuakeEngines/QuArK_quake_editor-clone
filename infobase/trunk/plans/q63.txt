@@ -13,6 +13,8 @@ author: tiglari, etc.
 
 <li>FAKK2 support: ?
 
+<li>fix flakey hot key behavior (CTRL-W, forex)
+
 <li>Face-selection modes: (tiglari)
 <br>status: interface design being discussed on QuArK board
 
@@ -21,5 +23,8 @@ author: tiglari, etc.
 <li>L-square enhancements: (tiglari, ax2grind)
 
 <li>Adquedit-level resource display: (Andy, ?)
+
+<li>CTF duplicator: (tiglari)
+<br>status: envisioned, decker discerns many potential complexities...
 
 </ul>

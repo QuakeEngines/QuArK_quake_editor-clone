@@ -6,7 +6,7 @@ Red means stuff that should defintely be done for release.
 <ul>
 
 <li>Q3(T)A Model display: (Andy/Maleficus)
-<br>status: done.
+<br>status: basically done, complex models not working yet.
 
 <li>OsFolders: (tiglari)
     load up resources from disk by specified paths etc.
@@ -17,19 +17,18 @@ Red means stuff that should defintely be done for release.
 <br>status: texture itself isn't being shown, starting scale too big.
 
 <li>Read/Write Brush Primitives: (tiglari)
-<br>status: done (wants testing)
+<br>status: done. There's a potential for imprecisions to accumulate if
+stuff is imported & exported multiple times.  Can fix if problem turns out
+to exist.
 
 <li>DefaultTextureScale: (tiglari)
 <br>status: done for the buttons, don't yet understand how
 to do it for direct insert from toolbox menu.
 
 
-<li><FONT color=red>Path duplicator</FONT>: (decker, tiglari)
-<br>status: orientation bug fixed by math remake,
-            texture positioning not quite there yet.
-
-<li>CTF duplicator: (tiglari)
-<br>status: envisioned, seems like it might be easy
+<li>Path duplicator: (decker, tiglari)
+<br>status: orientation bug fixed by math remake, basic texture
+positioning done.
 
 <li>Brush curve duplicator: (tiglari)
 <br>status: texture positioning done;
@@ -49,7 +48,7 @@ to do it for direct insert from toolbox menu.
 <br>status: done
 
 <li>Drag & Drop imprecision bug: (tiglari)
-<br>status: possibly fixed.
+<br>status: fixed.
 
 <li>Model editor: (Andy)
 <br>status: pre-alpha Q1/2
@@ -64,5 +63,9 @@ to do it for direct insert from toolbox menu.
 <li>sprites etc. display: (Andy).
     Display assorted minor resources. Full Adquedit functionlity by 6.3?
 <br>status: ?
+
+<li>Look At on face menu: (tiglari) moves & points the camera in an open
+3d view to look head on at the face (ctrl to view from backside)
+<br>status: done
 
 </ul>
