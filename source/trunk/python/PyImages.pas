@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/10/10 23:04:15  tiglari
+Live Pointer Cleanup: clear->free
+
 Revision 1.7  2001/10/10 22:21:47  tiglari
 Live Pointer Cleanup: free ImageLists
 
@@ -907,6 +910,8 @@ var I: Integer;
 begin
     for I:=0 to g_Mem_ImageLists.Count-1 do
     begin
+      PyImageList(g_Mem_ImageLists[I])^.Images[True].Free;
+      PyImageList(g_Mem_ImageLists[I])^.Images[False].Free;
       FreeMem(g_Mem_ImageLists[I]);
     end;
     g_Mem_ImageLists.Free;
