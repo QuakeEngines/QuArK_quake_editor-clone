@@ -221,6 +221,7 @@ class SearchReplaceTextureDlg(quarkpy.qmacro.dialogbox):
 
 def SearchReplaceTexClick(m):
     editor = mapeditor()
+
     if editor is None:
         return
     SearchReplaceTextureDlg(quarkx.clickform, editor)
@@ -229,11 +230,15 @@ def SearchReplaceTexClick(m):
 # Register the replace texture menu item
 #
 
-quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Search/replace textures...", SearchReplaceTexClick))
+quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Search/replace textures...", SearchReplaceTexClick, "|Search/replace textures:\n\nThis function can either just search for a particular texture, or\nit can replace it with another texture of your choice.", "intro.mapeditor.menu.html#searchmenu"))
 
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.8  2002/06/10 09:27:39  decker_dk
+# Updated to allow only search-for-texture, without replacing any.
+# TODO: Switch to specify search (and replace) for brushes that have the texture either on _all_ its faces _or_ only partly.
+#
 # Revision 1.7  2002/05/16 03:05:41  tiglari
 # If just a face is selected, the texture on the face is loaded into the dialog
 #  (bug report from fpbrowser)

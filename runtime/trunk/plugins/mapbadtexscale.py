@@ -247,9 +247,12 @@ def badClick(m):
 
 
 quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
- "|This finds faces whose texture axes are almost parallel"))
+ "|Find Bad Tex Scale:\n\nThis finds faces whose texture axes are almost parallel.|intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.6  2002/05/21 10:24:12  tiglari
+#make collected item numbering start with 1)
+#
 #Revision 1.5  2002/05/21 09:16:16  tiglari
 #fix problems with selection dialog: the first of two with identical names was
 # always being chosen, and first item on list wouldn't load

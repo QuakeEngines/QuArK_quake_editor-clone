@@ -419,7 +419,7 @@ def findClick(m):
     FindCameraPosDlg(quarkx.clickform, 'findcamerapos', editor, setup, action)
 
 mapsearch.items.append(qmenu.item('Find Camera Positions', findClick,
- "|This finds all the camera positions."))
+ "|Find Camera Positions:\n\nThis finds all the camera positions.|intro.mapeditor.menu.html#searchmenu"))
 
 
 #
@@ -452,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.8  2002/05/21 21:30:21  tiglari
+# no-selection tree-view RMB bug fixed (ut_fourdays)
+#
 # Revision 1.7  2001/06/17 21:10:57  tiglari
 # fix button captions
 #

@@ -99,7 +99,7 @@ def BasicCheck(menu=None):
 
 #--- add the new menu item into the "Search" menu ---
 
-Basic1 = quarkpy.qmenu.item("&Basic checks", BasicCheck)
+Basic1 = quarkpy.qmenu.item("&Basic checks", BasicCheck, "|Basic checks:\n\nThis function performs various checks on your map, to see if it can be compiled correctly, and function properly.", "intro.mapeditor.menu.html#searchmenu")
 quarkpy.mapsearch.checkitems.append(Basic1)
 
 
@@ -107,6 +107,9 @@ quarkpy.mapsearch.checkitems.append(Basic1)
 #
 #
 # $Log$
+# Revision 1.3  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #

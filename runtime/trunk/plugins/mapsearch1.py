@@ -229,15 +229,18 @@ class SearchBySpec(SearchDlg):
 # Register these new menu items for the "Search" menu.
 #
 
-quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &name", SearchByName))
-quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &Specific", SearchBySpec))
-quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Brok1Click))
+quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &name", SearchByName, "|Object by name:\n\nThis function will search for an object (which are also called Entities) by its 'classname' (the type of game entity it represents, a particular monster, weapon, item...).", "intro.mapeditor.menu.html#searchmenu"))
+quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Object by &Specific/Aug", SearchBySpec, "|Object by Specific/Aug:\n\nThis function will search for all objects (which are also called Entities) by a particular Specific (key) or Argument (value) setting.", "intro.mapeditor.menu.html#searchmenu"))
+quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Brok1Click, "|Broken polys and faces:\n\nThis function will search your map for any invalid polyhedrons and faces which do not belong to a polyhedron.", "intro.mapeditor.menu.html#searchmenu"))
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.7  2002/04/07 12:46:06  decker_dk
+# Pretty separator.
+#
 # Revision 1.6  2001/10/08 22:44:09  tiglari
 # revert to original and redo indent fix and separators
 #

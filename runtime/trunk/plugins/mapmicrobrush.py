@@ -272,9 +272,12 @@ def thinClick(m):
 
 
 quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
- "|This identifies brushes that are suspiciously small, at least in one dimension."))
+ "|Find Microbrushes:\n\nThis function identifies brushes that are suspiciously small, at least in one dimension.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.7  2002/05/21 10:24:12  tiglari
+#make collected item numbering start with 1)
+#
 #Revision 1.6  2002/05/21 09:16:16  tiglari
 #fix problems with selection dialog: the first of two with identical names was
 # always being chosen, and first item on list wouldn't load
