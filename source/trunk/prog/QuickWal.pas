@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/02/02 23:48:37  tiglari
+shaders now going into folder by their name rather than that
+of the shaderfile
+
 Revision 1.17  2001/02/02 08:13:08  tiglari
 fixed pak reading order
 
@@ -407,7 +411,7 @@ begin
     Index:=0;
     SubFolder:=Folder.LocateSubElement(Path[I],Index);
     if SubFolder=Nil then
-      SubFolder:=InsertNewTextureList(Folder,Path[I],Index);
+      SubFolder:=InsertNewTxList(Folder,Path[I],Index);
     Folder:=SubFolder;
   end;
   Result:=Folder;
@@ -440,10 +444,15 @@ begin
          continue;
        AnalyseFileName(Copy(Tex.Name,10,999),Path,ShortName);
        Folder:=LocateTxListFromPath(DestFolder, Path);
-       Q:=Link1(Folder, FileNameOnly(Name)+'/', Tex.Name, 'a', Base); { use 'filename.SHADER/' to indicate what this folder contains }
-       Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
-       Q.Specifics.Values['b']:=Name;
-       Q.Specifics.Values['shader']:='1';
+       Index:=0;
+       Q:=Folder.LocateSubElement(ShortName,Index);
+       if Q=Nil then
+       begin
+         Q:=Link1(Folder, FileNameOnly(Name)+'/', Tex.Name, 'a', Base, Index); { use 'filename.SHADER/' to indicate what this folder contains }
+         Q.Name:=Copy(Tex.Name, Pos('/', Tex.Name)+1, 999);
+         Q.Specifics.Values['b']:=Name;
+         Q.Specifics.Values['shader']:='1';
+       end;
      end;
     end;
   end;
@@ -507,7 +516,7 @@ begin
   begin
    Q:=Pak.SubElements[I];
    Index:=0;
-   if Result.LocateSubElement(Q.Name+'.shader',Index)<>Nil then
+   if Result.LocateSubElement(Q.Name,Index)<>Nil then
       continue;
    if Q is QPakFolder then
     OrderedLinkFolder(ParseRecPak(QPakFolder(Q), Base, FolderName+Q.Name+'/', nil), Result, FolderName)
