@@ -708,36 +708,12 @@ def menunrestrictenable(editor):
   else:
     menunrestrict.state=qmenu.normal
 
-def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
-  oldcommand(menu)
-  editor = mapeditor()
-  if editor is None: return
-  selection = editor.layout.explorer.sellist
-  if len(selection)==1 and menrestsel.state != qmenu.checked:
-     menrestsel.state=qmenu.normal
-  if len(selection) == 1 and selection[0].type == ':f':
-    menextsel.state = quarkpy.qmenu.normal
-  else:
-    menextsel.state = quarkpy.qmenu.disabled
-  menunrestrictenable(editor)
-    
-quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
-quarkpy.mapcommands.items.append(menextsel)
-quarkpy.mapcommands.items.append(menunrestrict)
-quarkpy.mapcommands.items.append(menrestsel)
-
-#quarkpy.mapcommands.shortcuts["Ctrl+U"] = menunrestrict
-
-#quarkpy.mapcommands.shortcuts["Ctrl+E"] = menextsel
-#quarkpy.mapcommands.shortcuts["Alt+R"] = menrestsel
-
-quarkpy.mapcommands.onclick = commandsclick
 
 for menitem, keytag in [(menextsel, "Extend Selection"),
                         (menunrestrict, "Unrestrict Selection"),
                         (menrestsel, "Restrict to Selection")]:
 
-    MapHotKey(keytag,menitem,quarkpy.mapcommands)
+    MapHotKey(keytag,menitem,quarkpy.mapselection)
 
 
 #
@@ -748,21 +724,31 @@ for menitem, keytag in [(menextsel, "Extend Selection"),
 
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     reorganizePop.state = parentSelPop.state=qmenu.disabled
+    menrestsel.state=menextsel.state=qmenu.disabled
     oldcommand(menu)
     editor = mapeditor()
     if editor is None: return
+    menunrestrictenable(editor)
     sel = editor.layout.explorer.uniquesel
     if sel is None: return
     for popup, items in ((parentSelPop, parentPopItems(sel)),
                            (reorganizePop, reorganizePopItems(sel))):
         popup.items = items
         popup.state=qmenu.normal
+    if menrestsel.state != qmenu.checked:
+       menrestsel.state=qmenu.normal
+    if sel.type == ':f':
+      menextsel.state = quarkpy.qmenu.normal
+
     
 quarkpy.mapselection.onclick = selectionclick  
 
 quarkpy.mapselection.items.append(qmenu.sep)
 quarkpy.mapselection.items.append(parentSelPop)
 quarkpy.mapselection.items.append(reorganizePop)
+quarkpy.mapselection.items.append(menextsel)
+quarkpy.mapselection.items.append(menunrestrict)
+quarkpy.mapselection.items.append(menrestsel)
 
 
 #
@@ -777,6 +763,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.8  2001/04/29 04:09:43  tiglari
+# reorganize/navigate tree added to selection menu, some internal reorgs.
+#
 # Revision 1.7  2001/04/27 04:23:06  tiglari
 # add tree nav/reorg to bezier menu; remove extend selection from group
 #
