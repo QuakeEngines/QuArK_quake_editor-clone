@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/01/11 01:52:59  alexander
+added a rendermode byte to the modelinfo structure
+initialize the texturemode from the render mode
+(rendermode is setup from the form data)
+
 Revision 1.7  2003/09/06 02:21:09  tiglari
 added comments to BuildScene
 
@@ -811,6 +816,15 @@ begin
              TextureMode:=Mode;
            end;
            Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
+
+           // if the texture has alpha channel its probably transparent
+           if assigned (PList^.Texture^.SourceTexture) then
+             if PList^.Texture^.SourceTexture.Description.AlphaBits = psa8bpp then
+           begin
+             Include(PList^.Transparent,True);
+             TextureMode:=2;
+             AlphaColor:=CurrentColor or (254 shl 24);
+           end
          end;
 
          if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then

@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/03/14 21:53:53  alexander
+fix: save memory by checking if texture has alpha at all and only then generate alpha data into quarks local texture
+
 Revision 1.7  2005/01/05 15:57:53  alexander
 late dll initialization on LoadFile method
 dependent dlls are checked before
@@ -245,6 +248,7 @@ begin
         {allocate quarks image buffers}
         ImgData:=ImageSpec;
         SetLength(ImgData , Length(ImageSpec) + NumberOfPixels * 3); {RGB buffer}
+        AlphaData:=AlphaSpec;
 
         {copy and reverse the upside down RGB image to quarks internal format}
         Source:=PChar(DecodedBuffer)+ NumberOfPixels*3;
@@ -265,6 +269,7 @@ begin
           Inc(DestImg, 3 * Width);
         end;
 
+        Specifics.Add(AlphaData);
         Specifics.Add(ImgData);
 
       end;

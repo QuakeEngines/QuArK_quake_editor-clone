@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2005/01/11 01:58:56  alexander
+some indentation to assist when debugging, no semantic change
+
 Revision 1.24  2004/12/14 00:32:07  alexander
 removed unnecessary resampling and gamma conversion for open gl true color textures
 
@@ -1137,7 +1140,7 @@ procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
 var
  TexData: PChar;
  MemSize, W, H, J: Integer;
- Source, Dest: PChar;
+ Alphasource,Source, Dest: PChar;
  PaletteEx: array[0..255] of LongInt;
 {BasePalette: Pointer;}
  PSD, PSD2: TPixelSetDescription;
@@ -1166,7 +1169,7 @@ begin
       PSD2.Init;
       PSD2.Format := psf24bpp;
       PSD2.Palette := pspDefault;
-      PSD2.AlphaBits := psaDefault;
+      PSD2.AlphaBits := PSD.AlphaBits;
       PSD2.Size:=PSD.Size;
       PSD2.FlipBottomUp;
       PSDConvert(PSD2, PSD, 0);
@@ -1180,7 +1183,31 @@ begin
       glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
       {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
 
-      glTexImage2D(GL_TEXTURE_2D, 0, 3,PSD2.Size.X, PSD2.Size.Y,0, GL_BGR, GL_UNSIGNED_BYTE, PSD2.Data);
+      //making use of alpha channel of textures
+      if PSD2.AlphaBits = psa8bpp then
+      begin
+        MemSize:=PSD2.Size.X * PSD2.Size.Y * 4;
+        RenderingTextureBuffer.SetSize(MemSize);
+        TexData:=RenderingTextureBuffer.Memory;
+        Source:=PSD2.Data;
+        AlphaSource:=PSD2.AlphaData;
+        Dest:=TexData;
+        J:= PSD2.Size.X * PSD2.Size.Y;
+
+        // tbd: more efficient copying
+        while J > 0 do
+        begin
+          Dest^ := Source^;        inc(Source);      Inc(Dest);
+          Dest^ := Source^;        inc(Source);      Inc(Dest);
+          Dest^ := Source^;        inc(Source);      Inc(Dest);
+          Dest^ := AlphaSource^;   inc(AlphaSource); Inc(Dest);
+          Dec(J);
+        end;
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,PSD2.Size.X, PSD2.Size.Y,0, GL_BGRA, GL_UNSIGNED_BYTE, TexData);
+      end       // end of making use of alpha channel of textures
+      else
+        glTexImage2D(GL_TEXTURE_2D, 0, 3,PSD2.Size.X, PSD2.Size.Y,0, GL_BGR, GL_UNSIGNED_BYTE, PSD2.Data);
+
     finally
       PSD.Done;
       PSD2.Done;
@@ -1522,8 +1549,16 @@ begin
            end;
          end*)
         end
-        else
+
+        else // not displaylights
+
         begin
+
+// testing blending always
+    glEnable(GL_BLEND);
+          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
+          glEnable(GL_TEXTURE_2D);
+
           if NeedColor then
           begin
             UnpackColor(AlphaColor, Currentf);
