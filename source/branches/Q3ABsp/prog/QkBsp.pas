@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33.4.2  2001/07/15 05:57:46  tiglari
+now draws the 2d views! (many safeguards missing, no texture unfo)
+
 Revision 1.33.4.1  2001/07/14 01:50:16  tiglari
 Fix totally wrong Q3A lump names
 
@@ -220,6 +223,7 @@ type
                  {Surfaces: array of TSurface}
                 end;*)
  PVertexList = ^TVertexList;
+ {sleazy trick below, memory will be reserved for pointers to this }
  TVertexList = array[0..0] of TVect;
 
  PQ3Vertex = ^TQ3Vertex;
@@ -233,7 +237,7 @@ type
  QBsp = class(QFileObject)
         private
           FStructure: TTreeMapBrush;
-          FVerticesRefCount: Integer;
+          FVerticesRefCount, FTexCoordsRefCount: Integer;
           function GetStructure : TTreeMapBrush;
           function GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes) : QFileObject;
           procedure LoadBsp1(F: TStream; StreamSize: Integer);
@@ -250,6 +254,7 @@ type
         public
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
+          Q3Vertices: PChar;
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
           class function TypeInfo: String; override;
@@ -925,7 +930,10 @@ begin
    if HullType<mjQ3A then
       Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t)
    else
-      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(PQ3)) div SizeOf(TQ3Vertex);
+   begin
+      Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
+      PQ3:=PQ3Vertex(Q3Vertices);
+   end;
    _VertexCount:=Count;
    ReallocMem(FVertices, Count*SizeOf(TVect));
    Dest:=PVect(FVertices);
@@ -951,6 +959,7 @@ begin
        Y:=Pozzie[1];
        Z:=Pozzie[2];
      end;
+    { is this really necessary? }
      Inc(PQ3);
      Inc(Dest);
    end;
