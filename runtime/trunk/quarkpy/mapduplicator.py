@@ -80,6 +80,13 @@ class StandardDuplicator(DuplicatorManager):
         self.origin = self.dup.origin
         if self.origin is None:
             self.origin = quarkx.vect(0,0,0)
+        if self.dup["offset dup"]=="1":
+           box=quarkx.boundingboxof(self.sourcelist())
+           if box is not None:
+               self.sourcecenter = 0.5*(box[0]+box[1])
+           else:
+               self.sourcecenter = None
+        
         s = self.dup["offset"]
         if s:
             self.offset = quarkx.vect(s)
@@ -95,6 +102,9 @@ class StandardDuplicator(DuplicatorManager):
 
     def do(self, item):
         "Default code to apply a one-step operation on 'item'."
+        if self.dup["offset dup"]=="1":
+            if self.sourcecenter is not None:
+                item.translate(self.origin-self.sourcecenter)
         if self.offset:
             item.translate(self.offset)
         if self.matrix:
@@ -262,6 +272,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2001/04/06 06:23:42  tiglari
+#hopefully got linear mapping around UserCenter working for standard duplicators
+#
 #Revision 1.5  2001/04/05 22:31:55  tiglari
 #cumulative matrix around UserCenter
 #
