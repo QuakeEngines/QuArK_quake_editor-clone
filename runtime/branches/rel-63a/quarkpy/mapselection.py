@@ -139,17 +139,16 @@ shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    prevItem.state=nextItem.state=parentItem.state=childItem.state=qmenu.disabled
-    freezeItem.state = unfreezeItem.state = removeItem.state=qmenu.disabled
+    removeItem.state=parentItem.state=childItem.state=qmenu.disabled
+    nextItem.state=prevItem.state=freezeItem.state=unfreezeItem.state=qmenu.disabled
     if editor is not None:
         uniquesel = editor.layout.explorer.uniquesel 
         if uniquesel is not None:
-            prevItem.state=nextItem.state=qmenu.normal
+            removeItem.state=nextItem.state=prevItem.state=qmenu.normal
             if len(uniquesel.subitems)>0:
                 childItem.state = qmenu.normal
-            if uniquesel.treeparent:
+            if uniquesel.treeparent is not None:
                 parentItem.state=qmenu.normal
-            removeItem.state=qmenu.normal
             if getAttr(editor,'frozenselection') is None:
                 freezeItem.state=qmenu.normal
             else:
@@ -171,6 +170,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.5.4.1  2003/03/25 08:28:56  tiglari
+# fix enabler and select parent logic
+#
 # Revision 1.5  2002/05/13 10:35:57  tiglari
 # support frozen selections (don't change until another frozen selection is made,
 # or they are cancelled with ESC or unfreeze selection)
