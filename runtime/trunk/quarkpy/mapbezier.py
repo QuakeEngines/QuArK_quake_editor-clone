@@ -73,10 +73,8 @@ def texcpclick(m):
           for j0 in range(len(cp)):
             for i0 in range (len(cp[j0])):
               cp[j0][i0] = cp[j0][i0]+diff
-              squawk(`cp[j0][i0]`)
         else:
           cp[j][i] = quarkx.vect(cpji.xyz + (s, t))
-#          squawk(`cp[j][i]`)
         new = b2.copy()
         new.cp = cp
         undo=quarkx.action()
@@ -95,46 +93,29 @@ within45 = math.cos(deg2rad*45)
 def iseven(num):
   return not divmod(num,2)[1]
 
+def linearcomb(C, P):
+ "linear combination"
+ return reduce(lambda x,y:x+y, map(lambda p,c:c*p,C,P))
+
 #
-# needed cuz vector math returns 3-vectors, shud be fixed.
+# Some useful things for Quadratic Beziers
 #
-def coefficients(P, C):
- x = y = z = s = t = 0.0
- for i in range(len(P)):
-   x = x+C[i]*(P[i].x) 
-   y = y+C[i]*(P[i].y)
-   z = z+C[i]*(P[i].z)
-   s = s+C[i]*(P[i].s) 
-   t = t+C[i]*(P[i].t)
-#
-# BUGGED:  5-tuple vector-builder produces 3-vector
-#
- result = quarkx.vect(x, y, z, s, t)
-# squawk("result5: %s"%result)
- return result
-   
+
 def b2midpoint(p0, p1, p2):
   "midpoint of the b2 line for the three points"
-#  squawk("points: %s %s %s"%(p0, p1, p2))
-#  result = 0.25*p0 + 0.5*p1 + 0.25*p2
-  result = coefficients((p0, p1, p2),(0.25, 0.5, 0.25))
-#  squawk(`result`)
-  return result
+  return 0.25*p0 + 0.5*p1 + 0.25*p2
   
 def b2qtpoint(p0, p1, p2):
   "1 quarter point of the b2 line for the three points"
-#  return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
-  return coefficients((p0, p1, p2), (9/16.0, 3/8.0, 1/16.0))
+  return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
 
 def b2qt3point(p0, p1, p2):
-  "2 quarter point of the b2 line for the three points"
-#  return (1/16.0)*p0+(3/8.0)*p1+(9/16.0)*p2
-  return coefficients((p0, p1, p2), (1/16.0, 3/8.0, 9/16.0))
+  "3 quarter point of the b2 line for the three points"
+  return (1/16.0)*p0+(3/8.0)*p1+(9/16.0)*p2
 
 def b2midcp(p0, m, p2):
   "cp to get b2 line from p0 to p2 passing thru m"
-#  return 2.0*m-.5*(p0+p2)
-  return coefficients((p0, m, p2), (-0.5, 2.0, -0.5))
+  return 2.0*m-0.5*(p0+p2)
 
 #
 # copy.deepcopy() doesn't seem to work
@@ -152,9 +133,12 @@ def copyquilt(quilt):
 #  the new even coordinate cp, & the new odd coordinate cp's are
 #  chosen to get the line to pass thru the 1/4 and 3/4 points.
 #
+# The structure of this code should be revamped to operate on
+#  ranges of rows, columns or both at once, then thinning should
+#  be added.  I think some prefabs and texture
+#
 def quilt_addrow(cp,(i,j)):
   "returns a new quit with two patch-rows replacing the ith one"
-  ncp = copyquilt(cp)
   md, q1, q3 = [], [], []
   #
   # Should try to do this with maplist ...
@@ -169,23 +153,18 @@ def quilt_addrow(cp,(i,j)):
      qt3 = apply(b2qt3point, arc)
      q1.append(b2midcp(cp[i-1][c],qt1, mid))
      q3.append(b2midcp(mid,qt3,cp[i+1][c]))
-  ncp[i:i+1] = [q1, md, q3]
-  return ncp
+  cp[i:i+1] = [q1, md, q3]
 
 
 def quilt_addcol(cp,(i,j)):
   "returns a new quit with two patch-rows replacing the ith one"
-  ncp = copyquilt(cp)
-  for row in ncp:
+  for row in cp:
      arc = row[j-1],row[j],row[j+1]
-#     squawk("arc: %s"%(arc,))
      mid = apply(b2midpoint, arc)
-#     squawk("mid: %s"%mid)
      qt1 = apply(b2qtpoint, arc)
      qt3 = apply(b2qt3point, arc)
      row[j:j+1]=[b2midcp(arc[0],qt1, mid),
           mid,b2midcp(mid,qt3,arc[2])]
-  return ncp
 
 #
 # Handles for control points.
@@ -232,12 +211,26 @@ class CPHandle(qhandles.GenericHandle):
         
         def thickenclick(m,self=self,editor=editor):
           new = self.b2.copy()
-          new.cp = m.thicken(self.b2.cp, self.ij)
+          #
+          # Operating on cp's `in situ' doesn't seem to work.
+          #
+          ncp = copyquilt(new.cp)
+          m.thicken(ncp, self.ij)
+          #
+          # this setting of the cp attribute triggers a lot of stuff
+          #   in the delphi
+          #
+          new.cp = ncp
           undo = quarkx.action()
           undo.exchange(self.b2, new)
           editor.ok(undo,"thicken mesh")
 
 
+        #
+        # We have both add row & column because sometimes an edge
+        #  point is hard to find, and for interior points either
+        #  would be possible
+        #
         addrow = qmenu.item("Add Row",thickenclick,"|Adds a row to the mesh")
         if iseven(i):
           addrow.state=qmenu.disabled
@@ -269,8 +262,8 @@ class CPHandle(qhandles.GenericHandle):
         # Draw the horizontal lines
         #
         for cpline in cp:
-            for i in range(len(cpline)-1):
-                cv.line(cpline[i], cpline[i+1])
+            for j in range(len(cpline)-1):
+                cv.line(cpline[j], cpline[j+1])
         #
         # Transpose the "cp" matrix and draw the vertical lines
         #
