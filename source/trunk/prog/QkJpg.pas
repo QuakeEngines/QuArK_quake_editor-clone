@@ -47,7 +47,6 @@ var
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-    acces;
     FileWrap:=TJpegFileWrapper.Create(nil);
     bmp:=TMemoryStream.Create;
     FillChar(Header, SizeOf(Header), 0);
