@@ -8,6 +8,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 import quarkx
@@ -17,6 +18,9 @@ import maphandles
 import mapentities
 import dlgclasses
 import copy
+
+from plugins.tagging import *
+
 
 class CPTexPos(dlgclasses.LiveEditDlg):
     endcolor = AQUA
@@ -68,7 +72,7 @@ def texcpclick(m):
     #
     def action(self, pack=pack):
 #        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
-        cp, (j, i), b2 = copyquilt(pack.b2.cp),   pack.ij, pack.b2
+        cp, (j, i), b2 = copycp(pack.b2.cp),   pack.ij, pack.b2
         s, t = self.src["Coords"]
         cpji = cp[j][i]
         if self.src["global"]:
@@ -123,14 +127,6 @@ def b2midcp(p0, m, p2):
   "cp to get b2 line from p0 to p2 passing thru m"
   return 2.0*m-0.5*(p0+p2)
 
-#
-# copy.deepcopy() doesn't seem to work
-#
-def copyquilt(quilt):
-  result=[]
-  for row in quilt:
-    result.append(list(row))
-  return result
 
 #
 # The idea here is to use the bezier formulas (see comments to bezier.pas)
@@ -141,7 +137,7 @@ def copyquilt(quilt):
 #
 # The structure of this code should be revamped to operate on
 #  ranges of rows, columns or both at once, then thinning should
-#  be added.  I think some prefabs and texture
+#  be added.
 #
 def quilt_addrow(cp,(i,j)):
   "returns a new quit with two patch-rows replacing the ith one"
@@ -226,7 +222,40 @@ def d5(cp, i, j):
         dSdv = 2.0*(cp[i][j]-cp[i-1][j])
     return dSdu, dSdv  
     
+#
+# This seems to be needed because copy.deepcopy() non sembra functionare
+#
+def copycp(cp):
+    "returns a copy of the cp array"
+    return map(lambda row:map(lambda v:v, row), cp)
 
+def mapcp(f, cp):
+    "returns a new cp array with f applied to each member of cp"
+    return map(lambda row,f=f:map(f, row), cp)
+
+#
+# The basic idea here is that if the patch is sitting right over
+#  the face, the three points p0, p1, p2 should get the patch .st
+#  coordinates (0,0), (1,0) and (0, 1) respectively.
+#
+def texcp_from_face(cp, face, editor):
+    "returns a copy of cp with the texture-scale of the face projected"
+    p0, p1, p2 = face.threepoints(2,editor.TexSource)
+    
+    def axis(p, p0=p0):
+        "turns a texp point into axis for computing b2 texcp's"
+        return (p-p0).normalized/abs(p-p0)
+
+    def project(v, p0=p0, (s_axis, t_axis)=map(axis, (p1, p2))):
+        # note the wacko sign-flip for t
+        return quarkx.vect(v.xyz + ((v-p0)*s_axis, -(v-p0)*t_axis))
+
+    return mapcp(project, cp)
+
+def b2tex_from_face(b2, face, editor):
+    "copies texture and scale from face to bezier"
+    b2["tex"] = face["tex"]
+    b2.cp = texcp_from_face(b2.cp, face, editor)
 
 #
 # Handles for control points.
@@ -264,13 +293,21 @@ class CPHandle(qhandles.GenericHandle):
             cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
  
+    #
+    # Things that are only sensible for particular control points
+    #  should go here, things that are sensible for the whole patch
+    #  should go on the BezierType menu update below.
+    #
+
     def menu(self, editor, view):
-        from plugins.tagging import *
 
         texcp = qmenu.item("Texture Coordinates",texcpclick)
         texcp.h, texcp.editor = self, editor
         i, j = self.ij
         
+        #
+        # doesn't work yet
+        #
         def wraptexclick(m, self=self, editor=editor):
             p0, p1, p2 = m.tagged.threepoints(2,editor.TexSource)
             dmds, dmdt = (p1-p0)/128.0, (p2-p0)/128.0  # div to shift to patch scale
@@ -280,22 +317,13 @@ class CPHandle(qhandles.GenericHandle):
             b2, (i, j) = self.b2, self.ij
             squawk('oik')
             squawk(`d5(b2.cp, i, j)[0]`)
-                              
-        
-        wraptex = qmenu.item("Wrap Texture", wraptexclick)
-        tagged = gettaggedface(editor)
-        if tagged is None:
-          wraptex.state=qmenu.disabled
-        else:
-          wraptex.tagged = tagged
-
 
         def thickenclick(m,self=self,editor=editor):
           new = self.b2.copy()
           #
           # Operating on cp's `in situ' doesn't seem to work.
           #
-          ncp = copyquilt(new.cp)
+          ncp = copycp(new.cp)
           m.thicken(ncp, self.ij)
           #
           # this setting of the cp attribute triggers a lot of stuff
@@ -327,7 +355,7 @@ class CPHandle(qhandles.GenericHandle):
         thicken = qmenu.popup("Thicken",[addrow, addcol])
         
         
-        return [texcp,wraptex,thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -456,6 +484,30 @@ class CPHandle(qhandles.GenericHandle):
             new = None
         return [self.b2], new
 
+#
+# Stuff that's meaningful for the whole patch should go here
+#
+def newb2menu(o, editor, oldmenu=mapentities.BezierType.menu.im_func):
+    "update for RMB menu for beziers"
+
+    def projtexclick(m, o=o, editor=editor):
+        new = o.copy()
+        b2tex_from_face(new, m.tagged, editor)
+        undo = quarkx.action()
+        undo.exchange(o, new)
+        editor.ok(undo,"project texture from tagged")
+
+    projtex = qmenu.item("&Project Texture from tagged", projtexclick)
+    tagged = gettaggedface(editor)
+    if tagged is None:
+       projtex.state=qmenu.disabled
+    else:
+       projtex.tagged = tagged
+
+
+    return  [projtex]+oldmenu(o, editor)
+
+mapentities.BezierType.menu = newb2menu
 
 #
 # Handle for the center of a Bezier patch.
@@ -479,7 +531,9 @@ class CenterHandle(maphandles.CenterHandle):
     
 
 
-#$Header$
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2000/05/08 11:12:19  tiglari
+#fixed problems with keys for bezier cp movement
+#
 
