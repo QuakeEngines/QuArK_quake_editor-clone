@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.168  2001/10/07 22:36:03  tiglari
+//extrude mode for wallmaker
+//
 //Revision 1.167  2001/09/23 08:56:17  tiglari
 //oops, replace 'bevel' with 'miter' in wallmaker stuff
 //
@@ -3837,6 +3840,12 @@ QQRKSRC1
          Txt="&"
          Typ="X"
          Hint="If this is checked, walls will be extruded, but corners will not be mitered" $0D " outsides of shapes may need touching up"
+      }
+     solid: =
+      {
+         Txt="&"
+         Typ="X"
+         Hint="If this is checked, brushes are made solid, no wall made." $0D " (simpler processing for quicker editing)"
       }
       depth: =
       {
