@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.10  2004/05/28 03:51:16  cdunde
+//Add handels to entities.
+//
 //Revision 1.9  2003/12/30 03:08:10  cdunde
 //To add model viewin in 3D views and selection window features
 //
@@ -7166,7 +7169,7 @@ QQRKSRC1
     {
       Help = "This is where a player spawns into the game at."
       t_player_size = !
-	mdl = "models/players/sarge/upper.md3"
+      mdl = "models/players/sarge/upper.md3"
       md3_autolink = "1"
       :u_torso = "Frame 125"
       :u_rshoulder = "Frame 125"
