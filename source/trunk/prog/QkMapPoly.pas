@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2002/12/15 14:06:05  tiglari
+fix bug in writing valve 220 map format
+
 Revision 1.57  2002/05/23 09:02:10  tiglari
 fix texture positioning problems with Classic Quake and Quark etp
 
@@ -1223,11 +1226,12 @@ begin
  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
  Params[2]:=PY[1]*A;
 
-
- if (Plan='X') and (CharModeJeu=mjGenesis3D) then
-   Params[4]:=-Params[4];
-
-
+ if CharModeJeu=mjGenesis3D then
+ begin
+   if (Plan='X') then
+     Params[4]:=-Params[4];
+   Params[3]:=Round(Params[3]);
+ end;
 end;
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
