@@ -152,7 +152,8 @@ uses
   QkQ2 in 'prog\QkQ2.pas',
   qkskindrawobject in 'prog\model\qkskindrawobject.pas',
   Qk3ds in 'prog\model\Qk3ds.pas',
-  Logging in 'prog\Logging.pas';
+  Logging in 'prog\Logging.pas',
+  PyLogging in 'python\PyLogging.pas';
 
 {$R *.RES}
 
