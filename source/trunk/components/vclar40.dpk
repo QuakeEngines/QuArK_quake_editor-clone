@@ -26,7 +26,7 @@ package VCLAR40;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl40;
+  vcl50;
 
 contains
   TB97 in 'Tb97.pas',
