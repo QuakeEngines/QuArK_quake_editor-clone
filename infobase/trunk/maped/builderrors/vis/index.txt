@@ -1,4 +1,71 @@
-title: VIS
+title: VIS - Visibility
 author: Decker
 
-VISibility
+This page lists various encountered errors, that may occur during the VIS .bsp-optimization phase.
+
+All QuArK supported games, are know to use a VIS .bsp-optimization phase:
+
+<html><center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+
+<html><tr><td>
+Quake-1
+<html></td><td>
+VIS.EXE, RVIS.EXE
+<html></td></tr>
+
+<html><tr><td>
+Hexen-2
+<html></td><td>
+VIS.EXE
+<html></td></tr>
+
+<html><tr><td>
+Quake-2
+<html></td><td>
+QVIS3.EXE, TIMVIS3.EXE
+<html></td></tr>
+
+<html><tr><td>
+Heretic-2
+<html></td><td>
+QVIS3.EXE, TIMVIS3.EXE
+<html></td></tr>
+
+<html><tr><td>
+Half-Life
+<html></td><td>
+VIS.EXE, HLVIS.EXE
+<html></td></tr>
+
+<html><tr><td>
+Sin
+<html></td><td>
+QVIS3.EXE
+<html></td></tr>
+
+<html><tr><td>
+Kingpin
+<html></td><td>
+KPVIS.EXE
+<html></td></tr>
+
+<html><tr><td>
+Quake-3:Arena
+<html></td><td>
+"Q3MAP.EXE -vis"
+<html></td></tr>
+
+<html><tr><td>
+Soldier of Fortune
+<html></td><td>
+SOFVIS.EXE
+<html></td></tr>
+
+<html><tr><td>
+Star Trek:Voyager - Elite Force
+<html></td><td>
+"Q3MAP.EXE -vis"
+<html></td></tr>
+
+<html></table></center>
+

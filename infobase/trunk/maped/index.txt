@@ -1,7 +1,7 @@
 title: Map editing
 author: Decker
-subdir: builderrors
 subdir: games
+subdir: builderrors
 
 Sorry, under construction.
 
