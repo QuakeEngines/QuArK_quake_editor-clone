@@ -1,71 +1,85 @@
 QQRKSRC1
-// Configuration file for Torque
-
-//   This file is maintained by fletcher, send bug-reports to decker@post1.tele.dk.
-//
-//$Header$
-
-// ----------- REVISION HISTORY ------------
-//$Log$
-//Revision 0.1 2001/10/31 16:00:00 fletcher 
-//First build of Torque entities
-//
-// ----------- MANUAL REVISION HISTORY ------------
-//
-// 2001-10-31  Started history 
-//
+// This file has been written by QuArK QuArK 6.4 alpha
+// It's the text version of file: DataTorque.qrk
 
 {
   QuArKProtected = "1"
   Description = "Base Torque data"
-
   Torque setup.qctx =
   {
     Game = "Torque"
     HTML = "help\index.html"
   }
-
   NewFiles.qtx =
   {
     ToolBox = "New files..."
     Root = "Torque file types.qtxfolder"
     Torque file types.qtxfolder =
     {
-      //Texture Wad.wad = { }
-        Pk3.pk3 = { }
+      Pk3.pk3 =
+      {
+      }
     }
   }
-//
-// Entity-Template definitions ********************************************************
-//
-  t_orig:incl = 
-  { 
-    origin="0 0 0"
+  t_orig:incl =
+  {
+    origin = "0 0 0"
   }
-
   TorqueEntities.qtx =
   {
     ToolBox = "New map items..."
     Root = "Torque Entities.qtxfolder"
     Torque Entities.qtxfolder =
     {
-//
-// Entities ***************************************************************************
-//
+      quarantine player scale:g =
+      {
+        _color = "1 0 0"
+        ;view = "20"
+        redbox:p =
+        {
+          side:f =
+          {
+            v = '-15.99997 15.99998 31.99998 -144.00000 15.99998 31.99998 -15.99997
+              15.99998 160'
+            tv = '-32 15.99998 -24 15.99998 -32 1.99999'
+            tex = "stain1"
+          }
+          side:f =
+          {
+            v = '16.00003 15.99998 31.99998 16.00003 144.00000 31.99998 16.00003
+              15.99998 160'
+            tv = '-31.99998 15.99998 -23.99999 15.99998 -31.99998 1.99999'
+            tex = "stain1"
+          }
+          side:f =
+          {
+            v = '0.00003 -16 31.99998 128.00000 -16 31.99998 0.00003 -16 160'
+            tv = '-16 15.99998 -8 15.99998 -16 1.99999'
+            tex = "stain1"
+          }
+          side:f =
+          {
+            v = '-15.99997 0 31.99998 -15.99997 -128 31.99998 -15.99997 0 160'
+            tv = '-15.99998 15.99998 -7.99999 15.99998 -15.99998 1.99999'
+            tex = "stain1"
+          }
+          front:f =
+          {
+            v = '-15.99997 15.99998 71.99998 112.00000 15.99998 71.99998 -15.99997
+              144.00000 71.99998'
+            tv = '-31.99998 0 -31.99998 8 -23.99999 0'
+            tex = "stain1"
+          }
+          back:f =
+          {
+            v = '-15.99997 15.99998 16 112.00000 15.99998 16 -15.99997 -112 16'
+            tv = '0 0 0 -8 -8 0'
+            tex = "stain1"
+          }
+        }
+      }
       Brush-based entities.qtxfolder =
       {
-//        worldspawn:b =
-//        {
-//          ;desc = "WorldSpawn entity"
-//          detail_number = "0"
-//          min_pixels = "250"
-//          geometry_scale = "32.0"
-//          light_geometry_scale = "32.0"
-//          ambient_color = "0 0 0"
-//          emergency_ambient_color = "0 0 0"
-//	        mapversion = "Set this to a value of '220',"$0D"if you want QuArK to write in WorldCraft 3.3 .MAP format"$0D"Leave blank when using the -q <2 or 3> switch for Quake style maps"
-//
-//        }
         detail:b =
         {
           ;incl = "brush64"
@@ -92,7 +106,7 @@ QQRKSRC1
       {
         light_emitter_point:e =
         {
-          t_orig=!
+          origin = "0 0 0"
           ;desc = "Point emitter"
           state_index = "0"
           falloff_type = "1"
@@ -241,12 +255,8 @@ QQRKSRC1
       }
     }
   }
-
   Entity forms.qctx =
   {
-//
-// Form-Template definitions *******************************************************
-//
     t_Targetname:incl =
     {
       name: =
@@ -298,9 +308,6 @@ QQRKSRC1
     t_LightFalloffs:incl =
     {
     }
-//
-//Forms *****************************************************************************
-//
     worldspawn:form =
     {
       detail_number: =
@@ -336,7 +343,8 @@ QQRKSRC1
       mapversion: =
       {
         txt = "&"
-        hint = "Set this to a value of '220',"$0D"if you want QuArK to write in WorldCraft 3.3 .MAP format"
+        hint = "Set this to a value of '220',"$0D"if you want QuArK to write i"
+         "n WorldCraft 3.3 .MAP format"
       }
     }
     detail:form =
@@ -366,19 +374,27 @@ QQRKSRC1
         txt = "&"
         hint = "Translucency"
         typ = "C"
-        items = "Fully mirrored"$0D"AlphaLevel=0.167"$0D"AlphaLevel=0.33"$0D
-		"AlphaLevel=0.5"$0D"AlphaLevel=0.67"$0D"AplhaLevel=0.83"$0D
-		"Use texture's alpha channel"
+        items = "Fully mirrored"$0D"AlphaLevel=0.167"$0D"AlphaLevel=0.33"$0D"A"
+         "lphaLevel=0.5"$0D"AlphaLevel=0.67"$0D"AplhaLevel=0.83"$0D"Use textur"
+         "e's alpha channel"
         values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"
       }
     }
     target:form =
     {
-      t_Targetname = !
+      name: =
+      {
+        txt = "&"
+        hint = "Target source"
+      }
     }
     light_emitter_point:form =
     {
-      t_Target = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target destination"
+      }
       state_index: =
       {
         txt = "&"
@@ -410,7 +426,11 @@ QQRKSRC1
     }
     light_emitter_spot:form =
     {
-      t_Target = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target destination"
+      }
       direction: =
       {
         txt = "&"
@@ -432,6 +452,7 @@ QQRKSRC1
       color: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color (R G B)"
       }
       alarm_type: =
@@ -455,10 +476,15 @@ QQRKSRC1
     }
     light_spot:form =
     {
-      t_Target = !
+      target: =
+      {
+        txt = "&"
+        hint = "Target destination"
+      }
       color: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color (R G B)"
       }
       alarm_type: =
@@ -492,9 +518,37 @@ QQRKSRC1
     }
     light_strobe:form =
     {
-      t_Targetname = !
-      t_LightAnimSpeed = !
-      t_LightAnimFlags = !
+      name: =
+      {
+        txt = "&"
+        hint = "Target source"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed"
+        typ = "C"
+        items = "Very slow"$0D"Slow"$0D"Normal"$0D"Fast"$0D"Very fast"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X1"
+        cap = "Auto start"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X2"
+        cap = "Loop to end frame"
+      }
+      spawnflags: =
+      {
+        txt = "&"
+        typ = "X4"
+        cap = "Random frame"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -512,11 +566,13 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color1 (R G B)"
       }
       color2: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color2 (R G B)"
       }
       falloff1: =
@@ -532,8 +588,19 @@ QQRKSRC1
     }
     light_pulse:form =
     {
-      t_Targetname = !
-      t_LightAnimSpeed = !
+      name: =
+      {
+        txt = "&"
+        hint = "Target source"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed"
+        typ = "C"
+        items = "Very slow"$0D"Slow"$0D"Normal"$0D"Fast"$0D"Very fast"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -551,11 +618,13 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color1 (R G B)"
       }
       color2: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color2 (R G B)"
       }
       falloff1: =
@@ -571,7 +640,11 @@ QQRKSRC1
     }
     light_pulse2:form =
     {
-      t_Targetname = !
+      name: =
+      {
+        txt = "&"
+        hint = "Target source"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -589,11 +662,13 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color1 (R G B)"
       }
       color2: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color2 (R G B)"
       }
       falloff1: =
@@ -629,8 +704,19 @@ QQRKSRC1
     }
     light_flicker:form =
     {
-      t_Targetname = !
-      t_LightAnimSpeed = !
+      name: =
+      {
+        txt = "&"
+        hint = "Target source"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed"
+        typ = "C"
+        items = "Very slow"$0D"Slow"$0D"Normal"$0D"Fast"$0D"Very fast"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
       spawnflags: =
       {
         txt = "&"
@@ -648,26 +734,31 @@ QQRKSRC1
       color1: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color1 (R G B)"
       }
       color2: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color2 (R G B)"
       }
       color3: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color3 (R G B)"
       }
       color4: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color4 (R G B)"
       }
       color5: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color5 (R G B)"
       }
       falloff1: =
@@ -683,12 +774,28 @@ QQRKSRC1
     }
     light_runway:form =
     {
-      t_Targetname = !
-      t_Target = !
-      t_LightAnimSpeed = !
+      name: =
+      {
+        txt = "&"
+        hint = "Target source"
+      }
+      target: =
+      {
+        txt = "&"
+        hint = "Target destination"
+      }
+      speed: =
+      {
+        txt = "&"
+        hint = "Speed"
+        typ = "C"
+        items = "Very slow"$0D"Slow"$0D"Normal"$0D"Fast"$0D"Very fast"
+        values = "0"$0D"1"$0D"2"$0D"3"$0D"4"
+      }
       color: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Color (R G B)"
       }
       spawnflags: =
@@ -888,9 +995,6 @@ QQRKSRC1
       }
     }
   }
-
-// Sample Room***************************************************************************
-//  tex:incl = {tex="concrete"}
   NewMap:incl =
   {
     Game = "Torque"
@@ -910,75 +1014,267 @@ QQRKSRC1
         {
           poly:p =
           {
-            east:f = { v = '368 -224 64 368 -96 64 368 -224 192' tex = "concrete" }
-            west:f = { v = '-352 -224 64 -352 -352 64 -352 -224 192' tex = "concrete" }
-            north:f = { v = '32 -272 64 -96 -272 64 32 -272 192' tex = "concrete" }
-            south:f = { v = '32 -288 64 160 -288 64 32 -288 192' tex = "concrete" }
-            up:f = { v = '32 -224 144 160 -224 144 32 -96 144' tex = "concrete" }
-            down:f = { v = '32 -224 0 160 -224 0 32 -352 0' tex = "concrete" }
+            east:f =
+            {
+              v = '368 -224 64 368 -96 64 368 -224 192'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-352 -224 64 -352 -352 64 -352 -224 192'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '32 -272 64 -96 -272 64 32 -272 192'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '32 -288 64 160 -288 64 32 -288 192'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '32 -224 144 160 -224 144 32 -96 144'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '32 -224 0 160 -224 0 32 -352 0'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '368 336 64 368 464 64 368 336 192' tex = "concrete" }
-            west:f = { v = '-352 336 64 -352 208 64 -352 336 192' tex = "concrete" }
-            north:f = { v = '32 288 64 -96 288 64 32 288 192' tex = "concrete" }
-            south:f = { v = '32 272 64 160 272 64 32 272 192' tex = "concrete" }
-            up:f = { v = '32 336 144 160 336 144 32 464 144' tex = "concrete" }
-            down:f = { v = '32 336 0 160 336 0 32 208 0' tex = "concrete" }
+            east:f =
+            {
+              v = '368 336 64 368 464 64 368 336 192'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-352 336 64 -352 208 64 -352 336 192'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '32 288 64 -96 288 64 32 288 192'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '32 272 64 160 272 64 32 272 192'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '32 336 144 160 336 144 32 464 144'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '32 336 0 160 336 0 32 208 0'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '-352 320 64 -352 448 64 -352 320 192' tex = "concrete" }
-            west:f = { v = '-368 320 64 -368 192 64 -368 320 192' tex = "concrete" }
-            north:f = { v = '32 64 64 -96 64 64 32 64 192' tex = "concrete" }
-            south:f = { v = '32 -64 64 160 -64 64 32 -64 192' tex = "concrete" }
-            up:f = { v = '32 320 144 160 320 144 32 448 144' tex = "concrete" }
-            down:f = { v = '32 320 128 160 320 128 32 192 128' tex = "concrete" }
+            east:f =
+            {
+              v = '-352 320 64 -352 448 64 -352 320 192'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-368 320 64 -368 192 64 -368 320 192'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '32 64 64 -96 64 64 32 64 192'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '32 -64 64 160 -64 64 32 -64 192'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '32 320 144 160 320 144 32 448 144'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '32 320 128 160 320 128 32 192 128'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '-352 320 64 -352 448 64 -352 320 192' tex = "concrete" }
-            west:f = { v = '-368 320 64 -368 192 64 -368 320 192' tex = "concrete" }
-            north:f = { v = '32 288 64 -96 288 64 32 288 192' tex = "concrete" }
-            south:f = { v = '32 64 64 160 64 64 32 64 192' tex = "concrete" }
-            up:f = { v = '32 320 144 160 320 144 32 448 144' tex = "concrete" }
-            down:f = { v = '32 320 0 160 320 0 32 192 0' tex = "concrete" }
+            east:f =
+            {
+              v = '-352 320 64 -352 448 64 -352 320 192'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-368 320 64 -368 192 64 -368 320 192'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '32 288 64 -96 288 64 32 288 192'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '32 64 64 160 64 64 32 64 192'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '32 320 144 160 320 144 32 448 144'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '32 320 0 160 320 0 32 192 0'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '-352 320 64 -352 448 64 -352 320 192' tex = "concrete" }
-            west:f = { v = '-368 320 64 -368 192 64 -368 320 192' tex = "concrete" }
-            north:f = { v = '32 -64 64 -96 -64 64 32 -64 192' tex = "concrete" }
-            south:f = { v = '32 -288 64 160 -288 64 32 -288 192' tex = "concrete" }
-            up:f = { v = '32 320 144 160 320 144 32 448 144' tex = "concrete" }
-            down:f = { v = '32 320 0 160 320 0 32 192 0' tex = "concrete" }
+            east:f =
+            {
+              v = '-352 320 64 -352 448 64 -352 320 192'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-368 320 64 -368 192 64 -368 320 192'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '32 -64 64 -96 -64 64 32 -64 192'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '32 -288 64 160 -288 64 32 -288 192'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '32 320 144 160 320 144 32 448 144'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '32 320 0 160 320 0 32 192 0'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '384 320 64 384 448 64 384 320 192' tex = "concrete" }
-            west:f = { v = '368 320 64 368 192 64 368 320 192' tex = "concrete" }
-            north:f = { v = '768 288 64 640 288 64 768 288 192' tex = "concrete" }
-            south:f = { v = '768 -288 64 896 -288 64 768 -288 192' tex = "concrete" }
-            up:f = { v = '768 320 144 896 320 144 768 448 144' tex = "concrete" }
-            down:f = { v = '768 320 0 896 320 0 768 192 0' tex = "concrete" }
+            east:f =
+            {
+              v = '384 320 64 384 448 64 384 320 192'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '368 320 64 368 192 64 368 320 192'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '768 288 64 640 288 64 768 288 192'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '768 -288 64 896 -288 64 768 -288 192'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '768 320 144 896 320 144 768 448 144'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '768 320 0 896 320 0 768 192 0'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '384 320 208 384 448 208 384 320 336' tex = "concrete" }
-            west:f = { v = '-368 320 208 -368 192 208 -368 320 336' tex = "concrete" }
-            north:f = { v = '752 288 208 624 288 208 752 288 336' tex = "concrete" }
-            south:f = { v = '752 -288 208 880 -288 208 752 -288 336' tex = "concrete" }
-            up:f = { v = '752 320 160 880 320 160 752 448 160' tex = "concrete" }
-            down:f = { v = '752 320 144 880 320 144 752 192 144' tex = "concrete" }
+            east:f =
+            {
+              v = '384 320 208 384 448 208 384 320 336'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-368 320 208 -368 192 208 -368 320 336'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '752 288 208 624 288 208 752 288 336'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '752 -288 208 880 -288 208 752 -288 336'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '752 320 160 880 320 160 752 448 160'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '752 320 144 880 320 144 752 192 144'
+              tex = "concrete"
+            }
           }
           poly:p =
           {
-            east:f = { v = '384 320 48 384 448 48 384 320 176' tex = "concrete" }
-            west:f = { v = '-368 320 48 -368 192 48 -368 320 176' tex = "concrete" }
-            north:f = { v = '752 288 48 624 288 48 752 288 176' tex = "concrete" }
-            south:f = { v = '752 -288 48 880 -288 48 752 -288 176' tex = "concrete" }
-            up:f = { v = '752 320 0 880 320 0 752 448 0' tex = "concrete" }
-            down:f = { v = '752 320 -16 880 320 -16 752 192 -16' tex = "concrete" }
+            east:f =
+            {
+              v = '384 320 48 384 448 48 384 320 176'
+              tex = "concrete"
+            }
+            west:f =
+            {
+              v = '-368 320 48 -368 192 48 -368 320 176'
+              tex = "concrete"
+            }
+            north:f =
+            {
+              v = '752 288 48 624 288 48 752 288 176'
+              tex = "concrete"
+            }
+            south:f =
+            {
+              v = '752 -288 48 880 -288 48 752 -288 176'
+              tex = "concrete"
+            }
+            up:f =
+            {
+              v = '752 320 0 880 320 0 752 448 0'
+              tex = "concrete"
+            }
+            down:f =
+            {
+              v = '752 320 -16 880 320 -16 752 192 -16'
+              tex = "concrete"
+            }
           }
         }
         portals:g =
@@ -988,12 +1284,36 @@ QQRKSRC1
             ambient_light = "0"
             poly:p =
             {
-              east:f = { v = '-360 8 64 -360 136 64 -360 8 192' tex = "NULL" }
-              west:f = { v = '-362 8 64 -362 -120 64 -362 8 192' tex = "NULL" }
-              north:f = { v = '-298 66 64 -426 66 64 -298 66 192' tex = "NULL" }
-              south:f = { v = '-298 -66 64 -170 -66 64 -298 -66 192' tex = "NULL" }
-              up:f = { v = '-298 8 130 -170 8 130 -298 136 130' tex = "NULL" }
-              down:f = { v = '-298 8 -2 -170 8 -2 -298 -120 -2' tex = "NULL" }
+              east:f =
+              {
+                v = '-360 8 64 -360 136 64 -360 8 192'
+                tex = "NULL"
+              }
+              west:f =
+              {
+                v = '-362 8 64 -362 -120 64 -362 8 192'
+                tex = "NULL"
+              }
+              north:f =
+              {
+                v = '-298 66 64 -426 66 64 -298 66 192'
+                tex = "NULL"
+              }
+              south:f =
+              {
+                v = '-298 -66 64 -170 -66 64 -298 -66 192'
+                tex = "NULL"
+              }
+              up:f =
+              {
+                v = '-298 8 130 -170 8 130 -298 136 130'
+                tex = "NULL"
+              }
+              down:f =
+              {
+                v = '-298 8 -2 -170 8 -2 -298 -120 -2'
+                tex = "NULL"
+              }
             }
           }
         }
@@ -1003,39 +1323,135 @@ QQRKSRC1
           {
             poly:p =
             {
-              east:f = { v = '128 -48 64 128 80 64 128 -48 192' tex = "concrete" }
-              west:f = { v = '96 -48 64 96 -176 64 96 -48 192' tex = "concrete" }
-              north:f = { v = '160 -80 64 32 -80 64 160 -80 192' tex = "concrete" }
-              south:f = { v = '160 -112 64 288 -112 64 160 -112 192' tex = "concrete" }
-              up:f = { v = '160 -48 144 288 -48 144 160 80 144' tex = "concrete" }
-              down:f = { v = '160 -48 0 288 -48 0 160 -176 0' tex = "concrete" }
+              east:f =
+              {
+                v = '128 -48 64 128 80 64 128 -48 192'
+                tex = "concrete"
+              }
+              west:f =
+              {
+                v = '96 -48 64 96 -176 64 96 -48 192'
+                tex = "concrete"
+              }
+              north:f =
+              {
+                v = '160 -80 64 32 -80 64 160 -80 192'
+                tex = "concrete"
+              }
+              south:f =
+              {
+                v = '160 -112 64 288 -112 64 160 -112 192'
+                tex = "concrete"
+              }
+              up:f =
+              {
+                v = '160 -48 144 288 -48 144 160 80 144'
+                tex = "concrete"
+              }
+              down:f =
+              {
+                v = '160 -48 0 288 -48 0 160 -176 0'
+                tex = "concrete"
+              }
             }
             poly:p =
             {
-              east:f = { v = '-96 -48 64 -96 80 64 -96 -48 192' tex = "concrete" }
-              west:f = { v = '-128 -48 64 -128 -176 64 -128 -48 192' tex = "concrete" }
-              north:f = { v = '-64 -80 64 -192 -80 64 -64 -80 192' tex = "concrete" }
-              south:f = { v = '-64 -112 64 64 -112 64 -64 -112 192' tex = "concrete" }
-              up:f = { v = '-64 -48 144 64 -48 144 -64 80 144' tex = "concrete" }
-              down:f = { v = '-64 -48 0 64 -48 0 -64 -176 0' tex = "concrete" }
+              east:f =
+              {
+                v = '-96 -48 64 -96 80 64 -96 -48 192'
+                tex = "concrete"
+              }
+              west:f =
+              {
+                v = '-128 -48 64 -128 -176 64 -128 -48 192'
+                tex = "concrete"
+              }
+              north:f =
+              {
+                v = '-64 -80 64 -192 -80 64 -64 -80 192'
+                tex = "concrete"
+              }
+              south:f =
+              {
+                v = '-64 -112 64 64 -112 64 -64 -112 192'
+                tex = "concrete"
+              }
+              up:f =
+              {
+                v = '-64 -48 144 64 -48 144 -64 80 144'
+                tex = "concrete"
+              }
+              down:f =
+              {
+                v = '-64 -48 0 64 -48 0 -64 -176 0'
+                tex = "concrete"
+              }
             }
             poly:p =
             {
-              east:f = { v = '-96 144 64 -96 272 64 -96 144 192' tex = "concrete" }
-              west:f = { v = '-128 144 64 -128 16 64 -128 144 192' tex = "concrete" }
-              north:f = { v = '-64 112 64 -192 112 64 -64 112 192' tex = "concrete" }
-              south:f = { v = '-64 80 64 64 80 64 -64 80 192' tex = "concrete" }
-              up:f = { v = '-64 144 144 64 144 144 -64 272 144' tex = "concrete" }
-              down:f = { v = '-64 144 0 64 144 0 -64 16 0' tex = "concrete" }
+              east:f =
+              {
+                v = '-96 144 64 -96 272 64 -96 144 192'
+                tex = "concrete"
+              }
+              west:f =
+              {
+                v = '-128 144 64 -128 16 64 -128 144 192'
+                tex = "concrete"
+              }
+              north:f =
+              {
+                v = '-64 112 64 -192 112 64 -64 112 192'
+                tex = "concrete"
+              }
+              south:f =
+              {
+                v = '-64 80 64 64 80 64 -64 80 192'
+                tex = "concrete"
+              }
+              up:f =
+              {
+                v = '-64 144 144 64 144 144 -64 272 144'
+                tex = "concrete"
+              }
+              down:f =
+              {
+                v = '-64 144 0 64 144 0 -64 16 0'
+                tex = "concrete"
+              }
             }
             poly:p =
             {
-              east:f = { v = '128 144 64 128 272 64 128 144 192' tex = "concrete" }
-              west:f = { v = '96 144 64 96 16 64 96 144 192' tex = "concrete" }
-              north:f = { v = '160 112 64 32 112 64 160 112 192' tex = "concrete" }
-              south:f = { v = '160 80 64 288 80 64 160 80 192' tex = "concrete" }
-              up:f = { v = '160 144 144 288 144 144 160 272 144' tex = "concrete" }
-              down:f = { v = '160 144 0 288 144 0 160 16 0' tex = "concrete" }
+              east:f =
+              {
+                v = '128 144 64 128 272 64 128 144 192'
+                tex = "concrete"
+              }
+              west:f =
+              {
+                v = '96 144 64 96 16 64 96 144 192'
+                tex = "concrete"
+              }
+              north:f =
+              {
+                v = '160 112 64 32 112 64 160 112 192'
+                tex = "concrete"
+              }
+              south:f =
+              {
+                v = '160 80 64 288 80 64 160 80 192'
+                tex = "concrete"
+              }
+              up:f =
+              {
+                v = '160 144 144 288 144 144 160 272 144'
+                tex = "concrete"
+              }
+              down:f =
+              {
+                v = '160 144 0 288 144 0 160 16 0'
+                tex = "concrete"
+              }
             }
           }
         }
@@ -1082,7 +1498,7 @@ QQRKSRC1
             falloff2 = "200"
           }
         }
-      }//end sample_group
-    } //end worldspawn 
-  }//end newmap
+      }
+    }
+  }
 }
