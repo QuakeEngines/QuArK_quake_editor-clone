@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.46.2.1  2000/08/26 09:44:48  tiglari
+//fixed default texture for SoF
+//
 //Revision 1.46  2000/07/28 15:09:48  alexander
 //set snapshot name
 //
@@ -123,7 +126,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "quarksnapshot_20000728"
+      Version = "REL6_1-pre-1"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
