@@ -38,8 +38,8 @@ def open(bkgnd=0):
     quarkx.settimer(deadtest, None, 0)  # cancel this timer if pending
     if wnd is None:
         setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
-        if setup["Warning"]:
-            if quarkx.msgbox("Using the OpenGL display modes might lock QuArK (or even your whole machine !). In case of troubles, change some settings in the OpenGL section of the configuration dialog box and try again.\n\nAre you sure you want to continue ?", MT_WARNING, MB_YES|MB_NO) != MR_YES:
+        if setup["Warning2"]:
+            if quarkx.msgbox(Strings[-104], MT_WARNING, MB_YES|MB_NO) != MR_YES:
                 raise quarkx.abort
         floating = quarkx.newform("OpenGL 3D")
         r = setup["WndRect"]
@@ -96,5 +96,5 @@ def onclose1(floating):
     #r = r[:2] + floating.rect
     setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
     setup["WndRect"] = r
-    setup["Warning"] = ""
+    setup["Warning2"] = ""
 

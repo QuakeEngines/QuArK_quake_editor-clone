@@ -852,4 +852,5 @@ Strings = {
         -101: "Cannot drop this item into a map.",
         #-102: "\nNote: to use a bitmap as a texture, you must first convert the bitmap into a texture : in the Texture Browser, choose 'Paste Special' instead of 'Paste'.",
         -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
+        -104: "This command uses OpenGL. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the OpenGL section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load OpenGL now ?",
 }

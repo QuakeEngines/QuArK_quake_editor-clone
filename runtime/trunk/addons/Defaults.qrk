@@ -101,7 +101,7 @@ QQRKSRC1
       }
       OpenGL:config =
       {
-        Warning = "1"
+        Warning2 = "1"
         WndRect = '0 0 640 480'
         DoubleBuffer = "1"
         SupportsGDI = ""
@@ -2055,7 +2055,7 @@ QQRKSRC1
       Style = "3"
       Sep0: = {Typ="S"}
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
-      Warning: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
+      Warning2: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
       WndRect: = {Typ="EF4" Txt="Position/size of window" Hint="Position and size in pixels of the OpenGL window"}
       Fog: = {Typ="X" Txt="Fog" Cap="Fog enabled"}
       Lights: = {Typ="X" Txt="Lights" Cap="Lights enabled"}
