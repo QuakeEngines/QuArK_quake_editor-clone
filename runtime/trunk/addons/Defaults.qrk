@@ -30,6 +30,20 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.70  2000/11/19 15:32:29  decker_dk
+//- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+//Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+//- Modified TFQWad.PopulateListView, so it reads the above settings.
+//- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+//- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+//- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+//it will be more readable in the .MAP file.
+//- Replaced the function-names:
+//  = SauverTexte         -> SaveAsText
+//  = SauverTextePolyedre -> SaveAsTextPolygon
+//  = SauverTexteBezier   -> SaveAsTextBezier
+//  = SauverSpec          -> SaveAsTextSpecArgs
+//
 //Revision 1.69  2000/11/16 19:42:44  decker_dk
 //- Modified Convex's texture-fileextension alias code, so it won't conflict
 //with the rest of the existing code.
@@ -242,6 +256,7 @@ QQRKSRC1
         FarDistance = '1500'  // objects are totally black at this distance
         DarkFactor = '0.67'   // only 67% of the FarDistance is considered really visible
         TranspFactor = '0.3'  // in isometric views, an additionnal 30% of the normal depth is visible but transparent
+        TextureMaxDimension="7"
         VAngle = '30'
         FogDensity = '1.05'
         FogColor = $000000
@@ -2495,6 +2510,11 @@ QQRKSRC1
       FarDistance: = {Txt="``Far´´ distance" Typ="EF1" Min="50" Hint="How far you can view before objects are lost in the fog (lower numbers accelerate rendering because there is less to display)"}
       VAngle: = {Txt="Vertical view angle" Typ="EF1" Min="5" Max="80" Hint="Angle between the horizon and the higher and lower points you can see - larger numbers mean smaller image"}
       FrameColor: = {Txt="Frame color" Typ="LI" Hint="Color displayed besides the image if the window is too large"}
+      TextureMaxDimension: = {Txt="Textures max-dimension" Typ="C"
+        Items ="256"$0D"128"$0D"64"$0D"32"$0D"16"$0D"8"
+        Values=  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
+        Hint="A lower value uses less memory for texture-images,"$0D"but will also decrease the texture quality in the 3D-views"
+      }
       Sep0: = {Typ="S"}
       L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
       //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
@@ -3436,6 +3456,62 @@ QQRKSRC1
           ;incl = "defpoly"
           macro = "wall maker"
           depth = "8"
+        }
+        Path Duplicator (experimental):g =
+        {
+          ;desc = "corridor maker, easy creation of connected corridors"
+          Duplicator:d =
+          {
+            origin        = "0 0 0"
+            macro         = "dup path"
+            target        = "p1"
+            speeddraw     = "0"
+            scaletexture  = "0"
+            Template:g =
+            {
+              cube:p =
+              {
+                east:f  = { v = ' 64   0   0   64 128   0   64   0 128' tex = "[auto]" }
+                west:f  = { v = '-64   0   0  -64   0 128  -64 128   0' tex = "[auto]" m = "1" }
+                north:f = { v = '  0  64   0    0  64 128  128  64   0' tex = "[auto]" m = "1" }
+                south:f = { v = '  0 -64   0  128 -64   0    0 -64 128' tex = "[auto]" }
+                up:f    = { v = '  0   0  64  128   0  64    0 128  64' tex = "[auto]" }
+                down:f  = { v = '  0   0 -64    0 128 -64  128   0 -64' tex = "[auto]" m = "1" }
+              }
+              cube:p =
+              {
+                neg = "1"
+                east:f  = { v = ' 64   0   0   64 128   0   64   0 128' tex = "[auto]" }
+                west:f  = { v = '-64   0   0  -64   0 128  -64 128   0' tex = "[auto]" m = "1" }
+                north:f = { v = '  0  32   0    0  32 128  128  32   0' tex = "[auto]" m = "1" }
+                south:f = { v = '  0 -32   0  128 -32   0    0 -32 128' tex = "[auto]" }
+                up:f    = { v = '  0   0  32  128   0  32    0 128  32' tex = "[auto]" }
+                down:f  = { v = '  0   0 -32    0 128 -32  128   0 -32' tex = "[auto]" m = "1" }
+              }
+            }
+          }
+          Path Handles:g =
+          {
+            ;view = "4" // Ignore to build to map
+            path_corner:e =
+            {
+              origin     = "32 32 0"
+              targetname = "p1"
+              target     = "p2"
+            }
+            path_corner:e =
+            {
+              origin     = "64 64 0"
+              targetname = "p2"
+              target     = "p3"
+            }
+            path_corner:e =
+            {
+              origin     = "96 96 0"
+              targetname = "p3"
+              target     = ""
+            }
+          }
         }
       }
     }
