@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.176  2002/03/26 10:21:02  tiglari
+//remove DisableEnhTex, BrushPrim from Map Options,
+//add OutputMapFormat to game config
+//
 //Revision 1.175  2002/03/23 09:43:30  tiglari
 //add SupportsBrushPrim flag to game config form and Quake3 defaults
 //
@@ -1592,8 +1596,10 @@ QQRKSRC1
         TreeKeybDelay           = "1"
         IgnoreToBuild           = "1"
         DisableMapComments      = ""
-        DisableEnhTex           = ""
+//        DisableEnhTex           = ""
         DisableFPCoord          = ""
+// Experimental; disable in distributions:
+//        UseIntetralVertices     = ""
         AutoCheckMap            = "1"
         EntityLinesDispersion   = "1"
         CompassNumbers          = "1"
@@ -3663,9 +3669,9 @@ QQRKSRC1
       AutoCheckMap:             = {Typ="X" Txt="When building the map"          Cap="Perform checks first"                 }
       IgnoreToBuild:            = {Typ="X" Txt="   ``"                          Cap="Ignore groups marked so"              }
       DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
-//      DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
+//      DisableEnhTex:          = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
-//      EnableBrushBrim:          = {Typ="X" Txt="   ``"                          Cap="Brush primitives in maps (Q3A only)"  }
+      UseIntegralVertices:      = {Typ="X" Txt="   ``"                          Cap="Use Integral Vertices as Threepoints" }
     }
     MapBuilding:form =
     {
