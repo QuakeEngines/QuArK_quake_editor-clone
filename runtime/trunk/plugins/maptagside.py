@@ -912,31 +912,6 @@ def aligntexstate(aligntex, tagged, o):
   else:
     aligntex.state = qmenu.disabled
 
-def wraptexold(orig, side):
-    "actually wraps the texture from orig to side"
-    "assumes aligntexstate has checked the preconditions"
-    newside = side.copy()
-    squawk('copy')
-    (o, t1, t2) = orig.threepoints(0)
-    (r, s1, s2) = side.threepoints(0)
-    n = side.normal
-    if n*(t1-o) != 0:
-#      quarkx.msgbox("t1 is OK",MT_INFORMATION, MB_OK)
-      t = t1
-    else:
-#      quarkx.msgbox("t2 is hopefully OK",MT_INFORMATION, MB_OK)
-      t = t2
-    l = -(n*(o-r))/(n*(t-o))
-    p = l*(t-o)+o
-    if n*(p-r) > .000001:
-      squawk("Sorry, something's not right here, I can't do this")
-      return
-    newside.distortion(orig.normal,p)
-    newside.setthreepoints(orig.threepoints(1),1)
-    newside["tex"]=orig["tex"]
-    newside.distortion(side.normal,p) 
-    squawk('wrappin')
-    return newside
 
 def wraptex(orig, side):
     "actually wraps the texture from orig to side"
@@ -974,7 +949,10 @@ def wraptex(orig, side):
     #
     #  Swing the new side into position
     #
-    newside.distortion(side.normal,p) 
+    newside.distortion(side.normal,p)
+    #
+    # check orientation
+    #
     return newside
 
 
@@ -989,15 +967,10 @@ def AlignTexClick(m):
   ActionString = "wrap texture from tagged"
   undo = quarkx.action()
   if m.abuttype == 1:
-  #
-  #   first, we find a texture axis on the tagged side that intersects
-  #   the selected plane, and then compute the point of intersection,
-  #   then rotate a copy of the tagged side around the point, (all this
-  #   done by wraptex), and then swap it in for the selected side
-  #  
     newside = wraptex(tagged, side)
   else:
-    newside = tagged.copy()
+    newside=side.copy()
+    newside = projecttexfrom(tagged, newside)
   undo.exchange(side, newside)
   editor.ok(undo, ActionString)
   if checkshifttagged.state == qmenu.checked:
@@ -1990,6 +1963,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2000/06/03 10:25:30  alexander
+#added cvs headers
+#
 #Revision 1.3  2000/05/27 05:37:08  tiglari
 #hopefully fixed texture scale transpose problem in wrapping (wraptex).
 #
