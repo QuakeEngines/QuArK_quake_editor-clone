@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/01/28 17:25:52  decker_dk
+Made QMapFile.SaveFile() use the function 'CommentMapLine(string)' to write the .MAP comment-header.
+
 Revision 1.23  2001/01/21 15:49:03  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -493,16 +496,17 @@ var
  end;
  { /tiglari}
 
+ procedure ReadSymbol(PrevSymbolMustBe: TSymbols);
+{
+ReadSymbol(PrevSymbolMustBe : TSymbols) reads the next token, and checks
+whether the previous is what PrevSymbolMustBe says it should have been.
+This can also be checked by examining SymbolType, if there are
+several possibilities.
 
- {  ReadSymbol(PrevSymbolMustBe : TSymbols) below reads the next token, and checks
-    whether the previous is what PrevSymbolMustBe says it should have been.
-    This can also be checked by examining SymbolType, if there are
-    several possibilities.
-
-    "SymbolType" contains the kind of token just read :
-    "sStringToken": a string token, whose value is in "S"
-    "sStringQuotedToken": a quote-delimited string, whose value is in "S"
-    "sNumValueToken": a floating-point value, found in "NumericValue"
+   "SymbolType" contains the kind of token just read :
+   "sStringToken": a string token, whose value is in "S"
+   "sStringQuotedToken": a quote-delimited string, whose value is in "S"
+   "sNumValueToken": a floating-point value, found in "NumericValue"
 
 Call the procedure "ReadSymbol()" to get the next token. The argument to the
 procedure is the current token kind again; useful to read e.g. three
@@ -518,174 +522,198 @@ floating-point values :
 This way, the procedure "ReadSymbol" checks that the kind of token was really the
 expected one.
 }
-
-
- procedure ReadSymbol(PrevSymbolMustBe: TSymbols);
  var
-  C: Char;
-  Arret: Boolean;
+   C: Char;
+   Arret: Boolean;
 
-   procedure ReadStringToken;
+   procedure ReadStringToken();
    begin
-    S:='';
-    repeat
-     S:=S+C;
-     C:=Source^;
-     if C=#0 then Break;
-     Inc(Source);
-    until C in cSeperators;
-    if (C=#13) or ((C=#10) {and not Juste13}) then
-     Inc(LineNoBeingParsed);
-    Juste13:=C=#13;
-    SymbolType:=sStringToken;
+     S:='';
+     repeat
+       S:=S+C;
+       C:=Source^;
+       if C=#0 then
+         Break;
+       Inc(Source);
+     until C in cSeperators;
+     if (C=#13) or ((C=#10) {and not Juste13}) then
+       Inc(LineNoBeingParsed);
+     Juste13:=C=#13;
+     SymbolType:=sStringToken;
    end;
 
  begin
-  repeat
-   if (SymbolType<>PrevSymbolMustBe) and (PrevSymbolMustBe<>sEOF) then
-    Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(248)]);
    repeat
-    C:=Source^;
-    if C=#0 then
+     if (SymbolType<>PrevSymbolMustBe) and (PrevSymbolMustBe<>sEOF) then
+       Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(248)]);
+
+     repeat
+       C:=Source^;
+       if C=#0 then
+       begin
+         SymbolType:=sEOF;
+         Exit;
+       end;
+
+       Inc(Source);
+       if (C=#13) or ((C=#10) and not Juste13) then
+         Inc(LineNoBeingParsed);
+       Juste13:=C=#13;
+     until not (C in cSeperators);
+
+     while Source>Prochain do
      begin
-      SymbolType:=sEOF;
-      Exit;
+       ProgressIndicatorIncrement;
+       Inc(Prochain, Granularite);
      end;
-    Inc(Source);
-    if (C=#13) or ((C=#10) and not Juste13) then
-     Inc(LineNoBeingParsed);
-    Juste13:=C=#13;
-   until not (C in cSeperators);
-   while Source>Prochain do
-    begin
-     ProgressIndicatorIncrement;
-     Inc(Prochain, Granularite);
-    end;
-   if ReadSymbolForceToText then
-    begin
-     ReadStringToken;
-     SymbolType:=sTokenForcedToString;
-     Exit;
-    end;
-   Arret:=True;
-   case C of
-    '(': SymbolType:=sBracketLeft;
-    ')': SymbolType:=sBracketRight;
-    '{': SymbolType:=sCurlyBracketLeft;
-    '}': SymbolType:=sCurlyBracketRight;
-    '[': SymbolType:=sSquareBracketLeft;
-    ']': SymbolType:=sSquareBracketRight;
-    '"': begin
-          S:='';
-          repeat
+
+     if ReadSymbolForceToText then
+     begin
+       ReadStringToken();
+       SymbolType:=sTokenForcedToString;
+       Exit;
+     end;
+
+     Arret:=True;
+
+     case C of
+     '(': SymbolType:=sBracketLeft;
+     ')': SymbolType:=sBracketRight;
+     '{': SymbolType:=sCurlyBracketLeft;
+     '}': SymbolType:=sCurlyBracketRight;
+     '[': SymbolType:=sSquareBracketLeft;
+     ']': SymbolType:=sSquareBracketRight;
+
+     '"':
+       begin
+         S:='';
+         repeat
            C:=Source^;
            if C in [#0, #13, #10] then
-            if FinDeLigne and (S<>'') and (S[Length(S)]='"') then
+           begin
+             if FinDeLigne and (S<>'') and (S[Length(S)]='"') then
              begin
-              SetLength(S, Length(S)-1);
-              Break;
+               SetLength(S, Length(S)-1);
+               Break;
              end
-            else
-             Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(249)]);
+             else
+               Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(249)]);
+           end;
+
            Inc(Source);
-           if (C='"') and not FinDeLigne then Break;
+           if (C='"') and not FinDeLigne then
+             Break;
            S:=S+C;
-          until False;
-          SymbolType:=sStringQuotedToken;
+         until False;
+         SymbolType:=sStringQuotedToken;
+       end;
+
+     '-', '0'..'9':
+       begin
+         if (C='-') and not (Source^ in ['0'..'9','.']) then
+           ReadStringToken()
+         else
+         begin
+           S:='';
+           repeat
+             S:=S+C;
+             C:=Source^;
+             if C=#0 then
+               Break;
+             Inc(Source);
+           until not (C in ['0'..'9', '.']);
+
+           { Did we encounter a exponent-value? Something like: "1.322e-12"
+             Then continue to read the characters }
+           if (C in cExponentChars) then
+           begin
+             repeat
+               S:=S+C;
+               C:=Source^;
+               if C=#0 then
+                 Break;
+               Inc(Source);
+             until not (C in ['0'..'9', '-', '+']);
+           end;
+
+           if (C=#0) or (C in cSeperators) then
+           begin
+             if (C=#13) or ((C=#10) {and not Juste13}) then
+               Inc(LineNoBeingParsed);
+             Juste13:=C=#13;
+             NumericValue:=StrToFloat(S);
+             SymbolType:=sNumValueToken;
+           end
+           else
+             Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]);
          end;
-    '-','0'..'9': if (C='-') and not (Source^ in ['0'..'9','.']) then
-                   ReadStringToken
-                  else
-                  begin
-                    S:='';
-                    repeat
-                      S:=S+C;
-                      C:=Source^;
-                      if C=#0 then
-                        Break;
-                      Inc(Source);
-                    until not (C in ['0'..'9','.']);
+       end;
 
-                    { Did we encounter a exponent-value? Something like: "1.322e-12"
-                      Then continue to read the characters }
-                    if (C in cExponentChars) then
-                    begin
-                      repeat
-                        S:=S+C;
-                        C:=Source^;
-                        if C=#0 then
-                          Break;
-                        Inc(Source);
-                      until not (C in ['0'..'9','-','+']);
-                    end;
-
-                    if (C=#0) or (C in cSeperators) then
-                    begin
-                      if (C=#13) or ((C=#10) {and not Juste13}) then
-                       Inc(LineNoBeingParsed);
-                      Juste13:=C=#13;
-                      NumericValue:=StrToFloat(S);
-                      SymbolType:=sNumValueToken;
-                    end
-                    else
-                     Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]);
-                  end;
-    '/', ';':
+     '/', ';':
+       begin
          if (C=';') or (Source^='/') then
-          begin
-           if C=';' then Dec(Source);
+         begin
+           if C=';' then
+             Dec(Source);
+
            if (Source[1]='T') and (Source[2]='X') then
-            TxCommand:=Source[3];
+             TxCommand:=Source[3];
+
            Inc(Source);
            repeat
-            C:=Source^;
-            if C=#0 then Break;
-            Inc(Source);
-           until C in [#13,#10];
+             C:=Source^;
+             if C=#0 then
+               Break;
+             Inc(Source);
+           until C in [#13, #10];
+
            if (C=#13) or ((C=#10) {and not Juste13}) then
-            Inc(LineNoBeingParsed);
+             Inc(LineNoBeingParsed);
+
            Juste13:=C=#13;
            Arret:=False;
-          end
+         end
          else
-          Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(248)]);
-    else
-     ReadStringToken;
-   end;
-  until Arret;
+           Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(248)]);
+       end;
+
+     else
+       ReadStringToken();
+     end;
+   until Arret;
  end;
 
  function ReadVect(theLastSymbolForceToText: Boolean): TVect;
  begin
-  ReadSymbol(sBracketLeft);
-  Result.X:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  Result.Y:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  Result.Z:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  ReadSymbolForceToText:=theLastSymbolForceToText;
-  ReadSymbol(sBracketRight);
-  ReadSymbolForceToText:=False;
+   ReadSymbol(sBracketLeft);
+   Result.X:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Y:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Z:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   ReadSymbolForceToText:=theLastSymbolForceToText;
+   ReadSymbol(sBracketRight);
+   ReadSymbolForceToText:=False;
  end;
 
  {Rowdy}
  function ReadVect5(theLastSymbolForceToText: Boolean): TVect5;
  begin
-  ReadSymbol(sBracketLeft);
-  Result.X:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  Result.Y:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  Result.Z:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  Result.S:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  Result.T:=NumericValue;
-  ReadSymbol(sNumValueToken);
-  ReadSymbolForceToText:=theLastSymbolForceToText;
-  ReadSymbol(sBracketRight);
-  ReadSymbolForceToText:=False;
+   ReadSymbol(sBracketLeft);
+   Result.X:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Y:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Z:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.S:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.T:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   ReadSymbolForceToText:=theLastSymbolForceToText;
+   ReadSymbol(sBracketRight);
+   ReadSymbolForceToText:=False;
  end;
  {/Rowdy}
 
@@ -693,87 +721,87 @@ expected one.
  var
    I, J: Integer;
  begin
-  ReadSymbol(sStringToken); // lbrace follows "patchDef2"
-  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+   ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
 
-  {$IFDEF TexUpperCase}
-  S:=LowerCase(S);
-  {$ENDIF}
-  Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+   {$IFDEF TexUpperCase}
+   S:=LowerCase(S);
+   {$ENDIF}
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
-  B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
-  EntiteBezier.SubElements.Add(B); //&&&
-  B.NomTex:=S;   { here we get the texture-name }
+   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+   EntiteBezier.SubElements.Add(B); //&&&
+   B.NomTex:=S;   { here we get the texture-name }
 
-  ReadSymbol(sStringToken); // lparen follows texture
+   ReadSymbol(sStringToken); // lparen follows texture
 
-  // now comes 5 numbers which tell how many control points there are
-  // use ReadVect5 which is the same as ReadVect but expects 5 numbers
-  // and we only need the X and Y values
-  V5:=ReadVect5(False);
-  // X tells us how many lines of control points there are (height)
-  // Y tells us how many control points on each line (width)
+   // now comes 5 numbers which tell how many control points there are
+   // use ReadVect5 which is the same as ReadVect but expects 5 numbers
+   // and we only need the X and Y values
+   V5:=ReadVect5(False);
+   // X tells us how many lines of control points there are (height)
+   // Y tells us how many control points on each line (width)
 
 
-  MeshBuf1.W := Round(V5.X);
-  MeshBuf1.H := Round(V5.Y);
+   MeshBuf1.W := Round(V5.X);
+   MeshBuf1.H := Round(V5.Y);
 
-  GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
-  try
-    ReadSymbol(sBracketLeft); // lparen follows vect5
-    for I:=0 to MeshBuf1.W-1 do
-      begin
-        pCP1:=MeshBuf1.CP;
-        Inc(pCP1, I);
-        ReadSymbol(sBracketLeft); // read the leading lparen for the line
-        for J:=1 to MeshBuf1.H do
-          begin
-            V5:=ReadVect5(False);
-            pCP1^[0]:=V5.X;
-            pCP1^[1]:=V5.Y;
-            pCP1^[2]:=V5.Z;
-            pCP1^[3]:=V5.S;
-            pCP1^[4]:=V5.T;
-            Inc(pCP1, MeshBuf1.W);
-          end;
-        ReadSymbol(sBracketRight); // read the trailing rparen for the line
-      end;
-    ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
-    ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
-    ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect5
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V5:=ReadVect5(False);
+         pCP1^[0]:=V5.X;
+         pCP1^[1]:=V5.Y;
+         pCP1^[2]:=V5.Z;
+         pCP1^[3]:=V5.S;
+         pCP1^[4]:=V5.T;
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line
+     end;
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
 
-    B.ControlPoints:=MeshBuf1;
-    B.AutoSetSmooth;
-  finally
-    FreeMem(MeshBuf1.CP);
-  end;
+     B.ControlPoints:=MeshBuf1;
+     B.AutoSetSmooth;
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
  end;
 
  procedure ReadSinSurfaceFlags;
  begin
-  { tiglari[, sin surf info reading }
+   { tiglari[, sin surf info reading }
 
-  { Here's how you get texture info from its name.
-    Note the use of BuildQ2Header to get the default
-    fields for the texture.  Something like this is
-    needed because Sin maps mark the *difference* between
-    the default & what the properties of the face are for
-    these fields. }
-  { this loads some a sort of index to the texture, but doesn't
-     really load it.  The 2nd arg is only useful when editing
-     a bsp with the textures in it }
-  Q:=GlobalFindTexture(Surface.NomTex, Nil);
-  if Q<>Nil then
-  begin
-    { this does the real loading.  always check if loading happened.
-      if Q comes up Nil at the end, all defaults will be 0 }
-    Q:=Q.LoadPixelSet;
-    if not (Q is QTextureSin) then
-      Q:=Nil;
-  end;
-  Contents:=StrToInt(Q.Specifics.Values['Contents']);
-  Flags:=StrToInt(Q.Specifics.Values['Flags']);
-  while SymbolType=sStringToken do
+   { Here's how you get texture info from its name.
+     Note the use of BuildQ2Header to get the default
+     fields for the texture.  Something like this is
+     needed because Sin maps mark the *difference* between
+     the default & what the properties of the face are for
+     these fields. }
+   { this loads some a sort of index to the texture, but doesn't
+      really load it.  The 2nd arg is only useful when editing
+      a bsp with the textures in it }
+   Q:=GlobalFindTexture(Surface.NomTex, Nil);
+   if Q<>Nil then
+   begin
+     { this does the real loading.  always check if loading happened.
+       if Q comes up Nil at the end, all defaults will be 0 }
+     Q:=Q.LoadPixelSet;
+     if not (Q is QTextureSin) then
+       Q:=Nil;
+   end;
+   Contents:=StrToInt(Q.Specifics.Values['Contents']);
+   Flags:=StrToInt(Q.Specifics.Values['Flags']);
+   while SymbolType=sStringToken do
    begin  { verbose but fast, c.f. QkSin: QTextureSin.LoadFile }
     if S = 'color' then  { three following values }
      begin
@@ -860,344 +888,344 @@ expected one.
    S1 := IntToStr(Flags);
    Surface.Specifics.Values['Contents']:=IntToStr(Contents);
    Surface.Specifics.Values['Flags']:=IntToStr(Flags);
- { /tiglari }
+  { /tiglari }
  end;
 
  function ReadSquareTex4 : Double;
  begin
-  ReadSymbol(sSquareBracketLeft);
-  {:=NumericValue;}
-  ReadSymbol(sNumValueToken);
-  {:=NumericValue;}
-  ReadSymbol(sNumValueToken);
-  {:=NumericValue;}
-  ReadSymbol(sNumValueToken);
-  {:=NumericValue;}
-  ReadSymbol(sNumValueToken);
-  Result:=0; {DECKER - I have no clue of how the 4 values "[ a b c d ]" should be converted
-              into one, so I just return zero. It will screw up the texture scale/position,
-              but hey its only a WC33 imported map ;*) }
+   ReadSymbol(sSquareBracketLeft);
+   {:=NumericValue;}
+   ReadSymbol(sNumValueToken);
+   {:=NumericValue;}
+   ReadSymbol(sNumValueToken);
+   {:=NumericValue;}
+   ReadSymbol(sNumValueToken);
+   {:=NumericValue;}
+   ReadSymbol(sNumValueToken);
+   Result:=0; {DECKER - I have no clue of how the 4 values "[ a b c d ]" should be converted
+               into one, so I just return zero. It will screw up the texture scale/position,
+               but hey its only a WC33 imported map ;*) }
  end;
 
 begin
- ProgressIndicatorStart(5451, Length(SourceFile) div Granularite);
- try
-   Source:=PChar(SourceFile);
-   Prochain:=Source+Granularite;   { point at which progress marker will be ticked}
-   Result:=mjQuake;     { Into Result is but info about what game the map is for }
-   Q2Tex:=False;
-   WC33map:=False; {Decker}
-   ReadSymbolForceToText:=False;    { ReadSymbol is not to expect text}
-   LineNoBeingParsed:=1;
-   InvPoly:=0;
-   InvFaces:=0;
-   Juste13:=False;
-  {FinDeLigne:=False;}
-   HullList:=Nil;
-   L:=TStringList.Create;
-   try   { L and HullList get freed by finally, regardless of exceptions }
-    WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
-    Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
-    Racine.SubElements.Add(Entities);
-    MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
-    Racine.SubElements.Add(MapStructure);
-    {Rowdy}
-    MapStructureB:=Nil;
-    (*** commented out by Armin : only create the group if actually needed
-     *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
-     *  Racine.SubElements.Add(MapStructureB);
-     *)
-    {/Rowdy}
-    ReadSymbol(sEOF);
-    while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
-                  The first real char ought to be {.  If it is, it
-                  will become C in ReadSymbol, and SymbolType will sCurlyBracketLeft }
-     begin
-     { if the thing just read wasn't {, the ReadSymbol call will bomb.
-       Otherwise, it will pull in the next chunk (which ought to be
-       a quoted string), and set SymbolType to the type of what it got. }
-      ReadSymbol(sCurlyBracketLeft);
-      L.Clear;
-      Classname:='';
-      HullNum:=-1;
-      { pull in the quoted-string attribute-value pairs }
-      while SymbolType=sStringQuotedToken do
-       begin
-        S1:=S;  { S is where ReadSymbol sticks quoted strings }
-       {FinDeLigne:=True;}
-        ReadSymbol(sStringQuotedToken);
-       {FinDeLigne:=False;}
-        if SymbolType=sStringQuotedToken then
-         { SpecClassname is `classname', defined in QKMapObjects }
-         if CompareText(S1, SpecClassname)=0 then
-          {$IFDEF ClassnameLowerCase}
-          Classname:=LowerCase(S)
-          {$ELSE}
-          Classname:=S
-          {$ENDIF}
-         else
-          begin
-           { this looks like adding an attribute-value pair to L }
-           L.Add(S1+'='+S);
-           { stuff for dealing with model attributes in BSP entity lists }
-           if (BSP<>Nil) and (CompareText(S1, 'model')=0) and (S<>'') and (S[1]='*') then
-            begin
-             Val(Copy(S,2,MaxInt), HullNum, I);
-             if I<>0 then
-              HullNum:=-1;
-            end;
-          end;
-        ReadSymbol(sStringQuotedToken);
-       end;
-
-      if Classname = ClassnameWorldspawn then
-       begin
-        { only one worldpsawn allowed }
-        if WorldSpawn then
-         Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(252)]);
-        Entite:=Racine;
-        EntitePoly:=MapStructure;
-        {Rowdy}
-        EntiteBezier:=MapStructureB;
-        {/Rowdy}
-        WorldSpawn:=True;
-        HullNum:=0;
-        Racine.Name:=ClassnameWorldspawn;
-       end
-      else
-       begin
-        if (SymbolType<>sCurlyBracketLeft) and (HullNum=-1) then
-         Entite:=TTreeMapEntity.Create(Classname, Entities)
-        else
-         Entite:=TTreeMapBrush.Create(Classname, Entities);
-        Entities.SubElements.Add(Entite);
-        EntitePoly:=Entite;
-        {Rowdy}
-        EntiteBezier:=Entite;
-        {/Rowdy}
-       end;
-
-      OriginBrush:=Nil;
-      if BSP<>Nil then    { only relevant if we're reading a BSP }
-       begin
-        if HullNum>=0 then
-         begin
-          if HullList=Nil then
-           HullList:=TList.Create;
-          for I:=HullList.Count to HullNum do
-           HullList.Add(Nil);
-          HullList[HullNum]:=EntitePoly;
-         end;
-       end
-      else
-       while SymbolType = sCurlyBracketLeft do  {read a brush}
+  ProgressIndicatorStart(5451, Length(SourceFile) div Granularite);
+  try
+    Source:=PChar(SourceFile);
+    Prochain:=Source+Granularite;   { point at which progress marker will be ticked}
+    Result:=mjQuake;     { Into Result is but info about what game the map is for }
+    Q2Tex:=False;
+    WC33map:=False; {Decker}
+    ReadSymbolForceToText:=False;    { ReadSymbol is not to expect text}
+    LineNoBeingParsed:=1;
+    InvPoly:=0;
+    InvFaces:=0;
+    Juste13:=False;
+   {FinDeLigne:=False;}
+    HullList:=Nil;
+    L:=TStringList.Create;
+    try   { L and HullList get freed by finally, regardless of exceptions }
+     WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
+     Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
+     Racine.SubElements.Add(Entities);
+     MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
+     Racine.SubElements.Add(MapStructure);
+     {Rowdy}
+     MapStructureB:=Nil;
+     (*** commented out by Armin : only create the group if actually needed
+      *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+      *  Racine.SubElements.Add(MapStructureB);
+      *)
+     {/Rowdy}
+     ReadSymbol(sEOF);
+     while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
+                   The first real char ought to be {.  If it is, it
+                   will become C in ReadSymbol, and SymbolType will sCurlyBracketLeft }
+      begin
+      { if the thing just read wasn't {, the ReadSymbol call will bomb.
+        Otherwise, it will pull in the next chunk (which ought to be
+        a quoted string), and set SymbolType to the type of what it got. }
+       ReadSymbol(sCurlyBracketLeft);
+       L.Clear;
+       Classname:='';
+       HullNum:=-1;
+       { pull in the quoted-string attribute-value pairs }
+       while SymbolType=sStringQuotedToken do
         begin
-         ReadSymbol(sCurlyBracketLeft);
-         {Rowdy}
-         // Q3A might have 'patchDef2'
-         if SymbolType=sStringToken then
-          begin
-            {DECKER - dont expect that patchDef2 is the only stringToken
-             that can appear in a future .MAP-file format. So compare instead
-             of 'is-not-equal-to then raise exception'.}
-            if LowerCase(s)='patchdef2' then
-            begin
-             { Armin: a patchDef2 means it is a Quake 3 map }
-              Result:=mjQ3A;
-             { Armin: create the MapStructureB group if not already done }
-              if EntiteBezier=Nil then
-              begin
-                MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
-                Racine.SubElements.Add(MapStructureB);
-                EntiteBezier:=MapStructureB;
-              end;
-              ReadQ3PatchDef(); {DECKER - moved to local-procedure to increase readability}
-            end
-            else
-              raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]); // "patchDef2" expected
-          end
-         else
-          begin
-          {/Rowdy}
-           P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
-           EntitePoly.SubElements.Add(P);
-           ContentsFlags:=0;
-           while SymbolType <> sCurlyBracketRight do  { read the faces }
-            begin
-             TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
-             V[1]:=ReadVect(False);
-             V[2]:=ReadVect(False);
-             V[3]:=ReadVect(True);
-             Surface:=TFace.Create(LoadStr1(139), P);
-             P.SubElements.Add(Surface);
-             Surface.SetThreePoints(V[1], V[3], V[2]);
-             {$IFDEF TexUpperCase}
-             S:=LowerCase(S);
-             {$ENDIF}
-             Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-             Surface.NomTex:=S;   { here we get the texture-name }
-             ReadSymbol(sTokenForcedToString);
-             {DECKER}
-             if (SymbolType=sSquareBracketLeft) then
+         S1:=S;  { S is where ReadSymbol sticks quoted strings }
+        {FinDeLigne:=True;}
+         ReadSymbol(sStringQuotedToken);
+        {FinDeLigne:=False;}
+         if SymbolType=sStringQuotedToken then
+          { SpecClassname is `classname', defined in QKMapObjects }
+          if CompareText(S1, SpecClassname)=0 then
+           {$IFDEF ClassnameLowerCase}
+           Classname:=LowerCase(S)
+           {$ELSE}
+           Classname:=S
+           {$ENDIF}
+          else
+           begin
+            { this looks like adding an attribute-value pair to L }
+            L.Add(S1+'='+S);
+            { stuff for dealing with model attributes in BSP entity lists }
+            if (BSP<>Nil) and (CompareText(S1, 'model')=0) and (S<>'') and (S[1]='*') then
              begin
-               { WorldCraft3.3 map-format version 220 encountered }
-               WC33map:=True;
-               Params[1]:=ReadSquareTex4(); {Read some texture scale/position thingy}
-               ReadSymbol(sSquareBracketRight);
-               Params[2]:=ReadSquareTex4(); {Read some texture scale/position thingy}
-               ReadSymbol(sSquareBracketRight);
-               for I:=3 to 5 do {Read the last three values}
-                begin
-                 Params[I]:=NumericValue;
-                 ReadSymbol(sNumValueToken);
-                end;
-             end
-             else
-               for I:=1 to 5 do
-                begin
-                 Params[I]:=NumericValue;
-                 ReadSymbol(sNumValueToken);
-                end;
-             {/DECKER}
-             if SymbolType=sNumValueToken then
-              begin
-               NumericValue1:=Round(NumericValue);
-               ReadSymbol(sNumValueToken);
-               if SymbolType<>sNumValueToken then
-                Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
-               else
-                begin  { Quake 2 : importe les trois champs }
-                 ContentsFlags:=NumericValue1;
-                 Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
-                 Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
-                 ReadSymbol(sNumValueToken);
-                 Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
-                 ReadSymbol(sNumValueToken);
-                 Result:=mjNotQuake1;
-                end;
-              end
-             else
-              if SymbolType=sStringToken then
-               begin  { Sin : extra surface flags as text }
-                Result:=mjSin;
-                ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
-               end;
-
-             if not Surface.LoadData then
-              Inc(InvFaces)
-             else
-              case TxCommand of   { "//TX#" means that the three points already define the texture params themselves }
-               '1': ;
-               '2': Surface.TextureMirror:=True;
-              else
-               with Surface do
-                SetFaceFromParams(Normale, Dist, Params);
-              end;
-            end;
-
-           ReadSymbol(sCurlyBracketRight);
-
-           if not P.CheckPolyhedron then
-            Inc(InvPoly)
-           else
-            if ContentsFlags and ContentsOrigin <> 0 then
-             OriginBrush:=P;
-        {Rowdy}
-          end; // end of not patchDef2
-        {/Rowdy}
+              Val(Copy(S,2,MaxInt), HullNum, I);
+              if I<>0 then
+               HullNum:=-1;
+             end;
+           end;
+         ReadSymbol(sStringQuotedToken);
         end;
 
-      if (OriginBrush<>Nil) and (EntitePoly<>MapStructure) then
-       begin
-        V[1].X:=MaxInt;
-        V[1].Y:=MaxInt;
-        V[1].Z:=MaxInt;
-        V[2].X:=-MaxInt;
-        V[2].Y:=-MaxInt;
-        V[2].Z:=-MaxInt;
-        OriginBrush.ChercheExtremites(V[1], V[2]);
-        if V[1].X<V[2].X then
+       if Classname = ClassnameWorldspawn then
+        begin
+         { only one worldpsawn allowed }
+         if WorldSpawn then
+          Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(252)]);
+         Entite:=Racine;
+         EntitePoly:=MapStructure;
+         {Rowdy}
+         EntiteBezier:=MapStructureB;
+         {/Rowdy}
+         WorldSpawn:=True;
+         HullNum:=0;
+         Racine.Name:=ClassnameWorldspawn;
+        end
+       else
+        begin
+         if (SymbolType<>sCurlyBracketLeft) and (HullNum=-1) then
+          Entite:=TTreeMapEntity.Create(Classname, Entities)
+         else
+          Entite:=TTreeMapBrush.Create(Classname, Entities);
+         Entities.SubElements.Add(Entite);
+         EntitePoly:=Entite;
+         {Rowdy}
+         EntiteBezier:=Entite;
+         {/Rowdy}
+        end;
+
+       OriginBrush:=Nil;
+       if BSP<>Nil then    { only relevant if we're reading a BSP }
+        begin
+         if HullNum>=0 then
+          begin
+           if HullList=Nil then
+            HullList:=TList.Create;
+           for I:=HullList.Count to HullNum do
+            HullList.Add(Nil);
+           HullList[HullNum]:=EntitePoly;
+          end;
+        end
+       else
+        while SymbolType = sCurlyBracketLeft do  {read a brush}
          begin
-          Delta.X:=0.5*(V[1].X+V[2].X);
-          Delta.Y:=0.5*(V[1].Y+V[2].Y);      { center of the 'origin brush' }
-          Delta.Z:=0.5*(V[1].Z+V[2].Z);
-          for I:=0 to EntitePoly.SubElements.Count-1 do
-           with EntitePoly.SubElements[I] do
-            for J:=0 to SubElements.Count-1 do
-             with SubElements[J] as TFace do
-              if GetThreePoints(V[1], V[2], V[3]) and LoadData then
+          ReadSymbol(sCurlyBracketLeft);
+          {Rowdy}
+          // Q3A might have 'patchDef2'
+          if SymbolType=sStringToken then
+           begin
+             {DECKER - dont expect that patchDef2 is the only stringToken
+              that can appear in a future .MAP-file format. So compare instead
+              of 'is-not-equal-to then raise exception'.}
+             if LowerCase(s)='patchdef2' then
+             begin
+              { Armin: a patchDef2 means it is a Quake 3 map }
+               Result:=mjQ3A;
+              { Armin: create the MapStructureB group if not already done }
+               if EntiteBezier=Nil then
                begin
-                Facteur:=Dot(Normale, Delta);
-                Delta1.X:=Delta.X - Normale.X*Facteur;
-                Delta1.Y:=Delta.Y - Normale.Y*Facteur;    { Delta1 is Delta forced in the plane of the face }
-                Delta1.Z:=Delta.Z - Normale.Z*Facteur;
-                for K:=1 to 3 do
-                 begin
-                  V[K].X:=V[K].X + Delta1.X;
-                  V[K].Y:=V[K].Y + Delta1.Y;
-                  V[K].Z:=V[K].Z + Delta1.Z;
-                 end;
-                SetThreePoints(V[1], V[2], V[3]);
+                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+                 Racine.SubElements.Add(MapStructureB);
+                 EntiteBezier:=MapStructureB;
                end;
+               ReadQ3PatchDef(); {DECKER - moved to local-procedure to increase readability}
+             end
+             else
+               raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]); // "patchDef2" expected
+           end
+          else
+           begin
+           {/Rowdy}
+            P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
+            EntitePoly.SubElements.Add(P);
+            ContentsFlags:=0;
+            while SymbolType <> sCurlyBracketRight do  { read the faces }
+             begin
+              TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+              V[1]:=ReadVect(False);
+              V[2]:=ReadVect(False);
+              V[3]:=ReadVect(True);
+              Surface:=TFace.Create(LoadStr1(139), P);
+              P.SubElements.Add(Surface);
+              Surface.SetThreePoints(V[1], V[3], V[2]);
+              {$IFDEF TexUpperCase}
+              S:=LowerCase(S);
+              {$ENDIF}
+              Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+              Surface.NomTex:=S;   { here we get the texture-name }
+              ReadSymbol(sTokenForcedToString);
+              {DECKER}
+              if (SymbolType=sSquareBracketLeft) then
+              begin
+                { WorldCraft3.3 map-format version 220 encountered }
+                WC33map:=True;
+                Params[1]:=ReadSquareTex4(); {Read some texture scale/position thingy}
+                ReadSymbol(sSquareBracketRight);
+                Params[2]:=ReadSquareTex4(); {Read some texture scale/position thingy}
+                ReadSymbol(sSquareBracketRight);
+                for I:=3 to 5 do {Read the last three values}
+                 begin
+                  Params[I]:=NumericValue;
+                  ReadSymbol(sNumValueToken);
+                 end;
+              end
+              else
+                for I:=1 to 5 do
+                 begin
+                  Params[I]:=NumericValue;
+                  ReadSymbol(sNumValueToken);
+                 end;
+              {/DECKER}
+              if SymbolType=sNumValueToken then
+               begin
+                NumericValue1:=Round(NumericValue);
+                ReadSymbol(sNumValueToken);
+                if SymbolType<>sNumValueToken then
+                 Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
+                else
+                 begin  { Quake 2 : importe les trois champs }
+                  ContentsFlags:=NumericValue1;
+                  Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
+                  Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
+                  ReadSymbol(sNumValueToken);
+                  Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
+                  ReadSymbol(sNumValueToken);
+                  Result:=mjNotQuake1;
+                 end;
+               end
+              else
+               if SymbolType=sStringToken then
+                begin  { Sin : extra surface flags as text }
+                 Result:=mjSin;
+                 ReadSinSurfaceFlags(); {DECKER - moved to procedure to increase readability}
+                end;
+
+              if not Surface.LoadData then
+               Inc(InvFaces)
+              else
+               case TxCommand of   { "//TX#" means that the three points already define the texture params themselves }
+                '1': ;
+                '2': Surface.TextureMirror:=True;
+               else
+                with Surface do
+                 SetFaceFromParams(Normale, Dist, Params);
+               end;
+             end;
+
+            ReadSymbol(sCurlyBracketRight);
+
+            if not P.CheckPolyhedron then
+             Inc(InvPoly)
+            else
+             if ContentsFlags and ContentsOrigin <> 0 then
+              OriginBrush:=P;
+         {Rowdy}
+           end; // end of not patchDef2
+         {/Rowdy}
          end;
+
+       if (OriginBrush<>Nil) and (EntitePoly<>MapStructure) then
+        begin
+         V[1].X:=MaxInt;
+         V[1].Y:=MaxInt;
+         V[1].Z:=MaxInt;
+         V[2].X:=-MaxInt;
+         V[2].Y:=-MaxInt;
+         V[2].Z:=-MaxInt;
+         OriginBrush.ChercheExtremites(V[1], V[2]);
+         if V[1].X<V[2].X then
+          begin
+           Delta.X:=0.5*(V[1].X+V[2].X);
+           Delta.Y:=0.5*(V[1].Y+V[2].Y);      { center of the 'origin brush' }
+           Delta.Z:=0.5*(V[1].Z+V[2].Z);
+           for I:=0 to EntitePoly.SubElements.Count-1 do
+            with EntitePoly.SubElements[I] do
+             for J:=0 to SubElements.Count-1 do
+              with SubElements[J] as TFace do
+               if GetThreePoints(V[1], V[2], V[3]) and LoadData then
+                begin
+                 Facteur:=Dot(Normale, Delta);
+                 Delta1.X:=Delta.X - Normale.X*Facteur;
+                 Delta1.Y:=Delta.Y - Normale.Y*Facteur;    { Delta1 is Delta forced in the plane of the face }
+                 Delta1.Z:=Delta.Z - Normale.Z*Facteur;
+                 for K:=1 to 3 do
+                  begin
+                   V[K].X:=V[K].X + Delta1.X;
+                   V[K].Y:=V[K].Y + Delta1.Y;
+                   V[K].Z:=V[K].Z + Delta1.Z;
+                  end;
+                 SetThreePoints(V[1], V[2], V[3]);
+                end;
+          end;
+        end;
+
+       {Decker}
+       if (WC33map) then
+       begin
+         { Remove the spec/arg "mapversion=220" from worldspawn,
+           since QuArK does not write version 220 of the .MAP format }
+         SpecIndex := L.IndexOf('mapversion=220');
+         if (SpecIndex >= 0) then
+           L.Delete(SpecIndex);
+       end;
+       {/Decker}
+
+      {Entite.Item.Text:=Classname;}
+       Entite.Specifics.Assign(L);
+      {Entite.SpecificsChange;}
+       ReadSymbol(sCurlyBracketRight);
+      end;
+
+     if HullList<>Nil then
+      for I:=0 to HullList.Count-1 do
+       begin
+        EntitePoly:=TTreeMapSpec(HullList[I]);
+        if EntitePoly<>Nil then
+         EntitePoly.SubElements.Add(TBSPHull.CreateHull(BSP, I, EntitePoly as TTreeMapGroup));
        end;
 
-      {Decker}
-      if (WC33map) then
-      begin
-        { Remove the spec/arg "mapversion=220" from worldspawn,
-          since QuArK does not write version 220 of the .MAP format }
-        SpecIndex := L.IndexOf('mapversion=220');
-        if (SpecIndex >= 0) then
-          L.Delete(SpecIndex);
-      end;
-      {/Decker}
+     if not WorldSpawn then
+      Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(255)]);
 
-     {Entite.Item.Text:=Classname;}
-      Entite.Specifics.Assign(L);
-     {Entite.SpecificsChange;}
-      ReadSymbol(sCurlyBracketRight);
-     end;
+    finally
+     L.Free;
+     HullList.Free;
+    end;
 
-    if HullList<>Nil then
-     for I:=0 to HullList.Count-1 do
-      begin
-       EntitePoly:=TTreeMapSpec(HullList[I]);
-       if EntitePoly<>Nil then
-        EntitePoly.SubElements.Add(TBSPHull.CreateHull(BSP, I, EntitePoly as TTreeMapGroup));
-      end;
+    Racine.FixupAllReferences;
+  finally
+    ProgressIndicatorStop;
+  end;
 
-    if not WorldSpawn then
-     Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(255)]);
+  if (Result=mjQuake) and Q2Tex then
+    Result:=mjNotQuake1;
 
-   finally
-    L.Free;
-    HullList.Free;
-   end;
+  case Result of
+  mjNotQuake1:
+    Result:=CurrentQuake2Mode;
+  mjQuake:
+    begin
+      Result:=CurrentQuake1Mode;
+      if Result=mjHexen then
+        Result:=mjQuake;
+    end;
+  end;
 
-   Racine.FixupAllReferences;
- finally
-   ProgressIndicatorStop;
- end;
-
- if (Result=mjQuake) and Q2Tex then
-  Result:=mjNotQuake1;
-
- case Result of
-   mjNotQuake1:
-     Result:=CurrentQuake2Mode;
-   mjQuake:
-     begin
-       Result:=CurrentQuake1Mode;
-       if Result=mjHexen then
-         Result:=mjQuake;
-     end;
- end;
-
- if InvFaces>0 then
-  GlobalWarning(FmtLoadStr1(257, [InvFaces]));
- if InvPoly>0 then
-  GlobalWarning(FmtLoadStr1(256, [InvPoly]));
+  if InvFaces>0 then
+    GlobalWarning(FmtLoadStr1(257, [InvFaces]));
+  if InvPoly>0 then
+    GlobalWarning(FmtLoadStr1(256, [InvPoly]));
 end;
 
  {------------------------}
