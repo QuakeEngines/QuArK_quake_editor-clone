@@ -452,12 +452,24 @@ begin
 end;
 
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
+var
+ other,filestr: string;
 begin
  repeat
   Result:=GetGameFileBase(BaseDir, FileName, True);
  until (Result<>Nil) or not CDRetry(FileName);
+ {AiV - Alternate Texture File Type (.jpg / .tga)...}
+ filestr:=filename;
+ if (CharModeJeu=mjQ3A) and (Result=nil) then begin // if its quake3 and we haven't found the .tga file then
+   other:=ChangeFileExt(FileName,'.jpg');
+   repeat
+     Result:=GetGameFileBase(BaseDir, other, True); //check for .jpg file instead
+   until (Result<>Nil) or not CDRetry(other);
+   filestr:=filestr+' or '+ other;
+ end;
+ {/AiV}
  if Result=Nil then
-  Raise EErrorFmt(5561, [SetupGameSet.Name, FileName, BaseDir]);
+  Raise EErrorFmt(5561, [SetupGameSet.Name, Filestr, BaseDir]);
 end;
 
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
