@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2004/12/22 11:42:16  rowdy
+Rowdy - first pass of support for Doom 3
+
 Revision 1.30  2004/11/25 00:35:50  alexander
 first gcf access attempt
 
@@ -716,18 +719,21 @@ begin
       FilenameAlias := FileAlias(FileName);
     end;
 
-    {gcf container access}
+    {HL2 gcf access}
     if FileExists(AbsolutePath) and AnsiEndsStr('.gcf', AbsolutePath) then
     begin
       RestartAliasing;
-      PakFile:=ExactFileLink(AbsolutePath, Nil, True);
+      PakFile:=SortedFindFileName(GameFiles, AbsolutePath);
+      if (PakFile=Nil) then
+      begin  { open the .gcf file if not already opened }
+        PakFile:=ExactFileLink(AbsolutePath, Nil, True);
+        PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
+        GameFiles.Add(PakFile);
+        GameFiles.Sort(ByFileName);
+      end;
       Result:=PakFile.FindFile( FileName );
-    (*
-      GCFFile=GCFOpen(AbsolutePath);
-      Result:=GCFFile.FindFile( FileName );
       if (Result<>Nil) then
         Exit; { found it }
-    *)
     end;
 
     RestartAliasing;
