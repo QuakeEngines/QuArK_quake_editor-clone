@@ -1,6 +1,6 @@
 title: The Source Code
 subdir: sf intro introc struct topics pas
-subdir: quarkx
+subdir: quarkx math
 
 This section discusses QuArK programming.
 
