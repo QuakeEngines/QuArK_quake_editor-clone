@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit QkPixelSet;
 
@@ -392,8 +397,8 @@ function PSDToDIB(const Source: TPixelSetDescription) : TPixelSetDescription;
 begin
  Result.Init;
  case Source.Format of
-  psf8bpp: Result.ScanLine:=-((Source.Size.X+3) and not 3);
-  psf24bpp: Result.ScanLine:=-((Source.Size.X*3+3) and not 3);
+  psf8bpp: Result.ScanLine:=((Source.Size.X+3) and not 3);
+  psf24bpp: Result.ScanLine:=((Source.Size.X*3+3) and not 3);
  else
   raise InternalE('unknown PSD format');
  end;
