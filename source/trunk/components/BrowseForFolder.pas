@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2003/08/13 04:21:28  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.3  2001/05/09 18:54:01  aiv
 fix for retail cs.
 
@@ -62,8 +65,7 @@ begin
   end; 
 end;
 
-function BrowseCallback(hwnd: HWnd; uMsg, lParam, lpData: Integer) : Integer;
- stdcall; export;
+function BrowseCallback(hWnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): Integer stdcall; export;
 var
  S: String;
  Ok: Boolean;
@@ -109,7 +111,7 @@ begin
  FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
  BrowseInfo.hwndOwner:=hwnd;
  BrowseInfo.lpszTitle:=PChar(Title);
- BrowseInfo.lpfn:=@BrowseCallback;
+ BrowseInfo.lpfn:= BrowseCallback;
  S:=Path;
  if (S<>'') and (S[Length(S)]<>'\') then
   S:=S+'\';
