@@ -15,8 +15,8 @@ Info = {
    "plug-in":       "Extruder",
    "desc":          "Extrude 2D outlines",
    "date":          "29 Mar 2001",
-   "author":        "Crytek studios, tiglari",
-   "author e-mail": "tiglari@hexenworld.net",
+   "author":        "Crytek Studios, tiglari",
+   "author e-mail": "tiglari@planetquake.com",
    "quark":         "Version 6.2"
 }
 
@@ -37,7 +37,7 @@ from tagging import *
 from quarkpy.dlgclasses import placepersistent_dialogbox
 from quarkpy.qeditor import matrix_rot_z
 from quarkpy.qeditor import matrix_rot_y
-
+from quarkpy.qhandles import aligntogrid
 
 #
 # --- wtf
@@ -634,20 +634,13 @@ class ExtruderPathHandle(quarkpy.maphandles.CenterHandle):
         data = ExtruderDupData(dup)
         pos0 = data.PathPos(j)
         if flags&MB_CTRL:
-            g1 = grid[1]
+            newpos = aligntogrid(pos0+delta,1)
         else:
-            delta = quarkpy.qhandles.aligntogrid(delta, 0)
-            g1 = 0
+            delta = quarkpy.qhandles.aligntogrid(delta, 1)
+            newpos = pos0+delta
         if delta or (flags&MB_REDIMAGE):
-#            point = data.PathPoint(j)
-#            new = point.copy()
-#            set_path_pos(dup, new, pos0+delta)
-#            new = [new]
-#        else:
-#            new = None
-#        return [point], new
             new = self.centerof.copy()
-            set_path_pos(new, j, pos0+delta)
+            set_path_pos(new, j, newpos)
             new = [new]
         else:
             new = None
@@ -1480,25 +1473,13 @@ class ExtruderCircHandle(quarkpy.maphandles.CenterHandle):
         k = self.k
         pos0 = data.CircPos(k)
         if flags&MB_CTRL:
-            g1 = grid[1]
+            newpos = aligntogrid(pos0+delta,1)
         else:
-            delta = quarkpy.qhandles.aligntogrid(delta, 0)
-            g1 = 0
-#        if flags&MB_CTRL:
-#            pos1 = quarkpy.qhandles.aligntogrid(pos0+delta, 1)
-#            delta = pos1 - pos0
-#        else:
-#            delta = quarkpy.qhandles.aligntogrid(delta, 0)
+            delta = quarkpy.qhandles.aligntogrid(delta, 1)
+            newpos = pos0+delta
         if delta or (flags&MB_REDIMAGE):
-#            point = data.CircPoint(k)
-#            new = point.copy()
-#            set_circ_pos(data.dup, new, pos0+delta)                    
-#            new = [new]
-#        else:
-#            new = None
-#        return [point], new
             new = data.dup.copy()
-            set_circ_pos(new, k, pos0+delta)                    
+            set_circ_pos(new, k, newpos)                    
             new = [new]
         else:
             new = None
