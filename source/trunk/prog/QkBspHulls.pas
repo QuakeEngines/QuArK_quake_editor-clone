@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2002/12/25 21:21:57  tiglari
+check for degenerate tex scale before flipping mirrored texture
+
 Revision 1.24  2002/12/21 06:21:46  tiglari
 invert threepoints for mirror-image textures
 
@@ -497,7 +500,7 @@ begin
     Surface1^.NextF:=Nil;
     if q12surf then
     begin
-      Surface1^.prvNbS:=Faces^.ledge_num;
+      Surface1^.prvVertexCount:=Faces^.ledge_num;
       if Faces^.Plane_id >= cPlanes then
       begin
         Inc(InvFaces); LastError:='Err Plane_id'; Continue;
@@ -514,7 +517,7 @@ begin
     begin
       with Q3Faces^ do
       begin
-        Surface1^.prvNbS:=Vertex_num;
+        Surface1^.prvVertexCount:=Vertex_num;
         NN.X:=Normal[0];
         NN.Y:=Normal[1];
         NN.Z:=Normal[2];
