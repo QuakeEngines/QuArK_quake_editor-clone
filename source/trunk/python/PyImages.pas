@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/06/05 18:43:13  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.5  2001/03/20 21:35:06  decker_dk
 Updated copyright-header
 }
@@ -137,6 +140,8 @@ uses Quarkx, PyCanvas;
 const
  DisabledNak = TBitmap(1);
 
+var
+ g_Mem_ImageLists: TList;
  {-------------------}
 
 function NewImageList(Bitmap: TBitmap; cx: Integer; MaskX, MaskY: Integer; const cratio: TDouble) : PyImageList;
@@ -159,6 +164,7 @@ begin
  Bitmap:=Bmp;
 {$ENDIF}
  Result:=PyImageList(PyObject_NEW(@TyImageList_Type));
+ g_Mem_ImageLists.Add(Result);
  with Result^ do
   begin
    IWidth:=Bitmap.Width;
@@ -890,11 +896,23 @@ begin
   begin
    Py_XDECREF(InternalImages[I,1]);
    Py_XDECREF(InternalImages[I,0]);
-  end; 
+  end;
+end;
+
+procedure Clear_Mem_ImageLists;
+var I: Integer;
+begin
+    for I:=0 to g_Mem_ImageLists.Count-1 do
+    begin
+      FreeMem(g_Mem_ImageLists[I]);
+    end;
+    g_Mem_ImageLists.Clear;
 end;
 
 initialization
   FillChar(InternalImages, SizeOf(InternalImages), 0);
+  g_Mem_ImageLists:=TList.Create;
 finalization
   FinalizeInternalImages;
+  Clear_Mem_ImageLists;
 end.
