@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10.4.6  2001/07/15 11:20:41  tiglari
+prepare for rendering textures
+
 Revision 1.10.4.5  2001/07/15 08:00:33  tiglari
 non-faces discarded before display,
 
@@ -180,6 +183,13 @@ type
                nexttexinfo: Integer;           // for animations, -1 = end of chain
               end;
 
+ PTexInfoQ3 = ^ TTexInfoQ3;
+ TTexInfoQ3 = record
+                texture: array[0..62] of Byte;
+                flags: Integer;
+                content: Integer;
+              end;
+
 type
  TBSPHull = class(TTreeMapGroup)
             private
@@ -295,6 +305,13 @@ var
  Q3VertexP: PQ3Vertex;
  TextureList: QTextureList;
  NonFaces: Integer;
+
+ function AdjustTexScale(const V: TVect5) : TVect5;
+ begin
+   Result:=V;
+   Result.S:=Result.S;
+   Result.T:=Result.T;
+ end;
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
  HullNum:=Index;
@@ -341,7 +358,7 @@ begin
               begin
                NbFaces:=Face_num;
                FirstFace:=Face_id;
-               cTexInfo:=SizeOf(TTexInfoQ2);
+               cTexInfo:=SizeOf(TTexInfoQ3);
               end;
    end;
   if HullType>=mjQuake2 then
@@ -359,7 +376,6 @@ begin
     Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
     cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3,  LEdges)   div SizeOf(TLEdge);
     cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     NoBsp3,      Edges)    div SizeOf(TEdge);
-    cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
   end else
   begin
     SurfaceSize:=Sizeof(TbQ3Surface);
@@ -367,6 +383,7 @@ begin
       Raise EErrorFmt(5635, [2]);
     Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
   end;
+  cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
   cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
   { FBsp.FVertices, VertexCount are previously computed
     by FBsp.GetStructure }
@@ -495,25 +512,20 @@ begin
       begin
         Dest^:=PSommet(Vertices+(Vertex_id+J-1)*SizeOf(TVect));
         Q3VertexP:=PQ3Vertex(FBsp.Q3Vertices+(Vertex_id+J-1)*SizeOf(TQ3Vertex));
+        dist:=Q3VertexP^.Normal;
         if J=1 then
         begin
-          P1:=Dest^.P;
           { This trick works because the position and tex coords are the
             first 5 fields.  If we want to drag lightmaps into it we'll
             need to go to 7, or do something different }
-          P5_1:=MakeVect5(vec5_p(Q3VertexP)^);
+          P5_1:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^));
+          P1:=MakeVect(vec3_p(Q3VertexP)^);
           PlaneDist:=Dot(NN,P1)
         end
         else if J=2 then
-        begin
-          P2:=Dest^.P;
-          P5_2:=MakeVect5(vec5_p(Q3VertexP)^);
-        end
-        else
-        begin
-          P3:=Dest^.P;
-          P5_3:=MakeVect5(vec5_p(Q3VertexP)^);
-        end;
+          P5_2:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^))
+        else if J=3 then
+          P5_3:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^));
         Inc(Dest);
       end;
     end;
@@ -532,6 +544,13 @@ begin
          LastError:='Err TexInfo_id';
         Continue;
        end;
+      if HullType>=mjQ3A then
+        with PTexInfoQ3(TexInfo+Q3Faces^.TexInfo_id*SizeOf(TTexInfoQ3))^ do
+        begin
+          S:=CharToPas(texture);
+          { get flags & contents }
+        end
+      else
       if HullType>=mjQuake2 then
        with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
         begin
@@ -588,6 +607,15 @@ begin
     begin {Q3 texture info}
      { The idea is to take the 3 5-vecs collected earlier and convert
        them to etp 3points P1-P3 }
+      SolveForThreePoints(P5_1, P5_2, P5_3, P1, P2, P3);
+        with PTexInfoQ3(TexInfo+Q3Faces^.TexInfo_id*SizeOf(TTexInfoQ3))^ do
+        begin
+          S:=CharToPas(texture);
+          { strip off leading texture/ }
+          S:=Copy(S,10,Length(S)-9);
+          { get flags & contents }
+        end
+
     end;
 
     Face:=TFace.Create(IntToStr(I), Self);
@@ -613,16 +641,16 @@ begin
         with Face do
         begin
           Normale:=NN;
-          Dist:=PlaneDist;
+        {  Dist:=PlaneDist;  }
         end;
     end;
     { NuTex format doesn't work here, not sure why.
       To compile with normal main branch, use SetThreePointsEx }
-    if not Face.SetThreePointsEnhEx(P1, P2, P3, Face.Normale) then
-     begin
+    if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
+    begin
       SubElements.Remove(Face);
       Inc(InvFaces); LastError:='Err degenerate'; Continue;
-     end;
+    end;
     Face.Specifics.Add(CannotEditFaceYet+'=1');
     Surface1^.F:=Face;
     Face.LinkSurface(Surface1);
