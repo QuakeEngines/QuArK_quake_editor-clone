@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2005/01/05 09:40:45  alexander
+accept also string bbox specifics as bounding box
+
 Revision 1.42  2005/01/04 18:23:51  alexander
 enabled multiple output specifics by removing all numeric postfix on their name
 
@@ -1885,11 +1888,12 @@ var
  VDest: vec3_p;
  I, K, Count: Integer;
  ModelOrg: vec3_t;
- Angle: Integer;
- ASin, ACos: TDouble;
+ RotVec: vec3_t;
  SkinDescr: String;
  spec,comp_name: string;
  c: QComponent;
+ AnglesDefined:bool;
+ mRotationMatrix:TMatrixTransformation;
 begin
  Result:=False;
  try
@@ -1903,6 +1907,7 @@ begin
 
    Q.Acces;
 
+   // here the specific is evaluated
    MdlPath:=Q.Specifics.Values['mdl'];
    if MdlPath='' then
      Exit;
@@ -1967,22 +1972,30 @@ begin
      ModelOrg[2]:=Z;
    end;
 
-   S:=Specifics.Values['angle'];
-   if (S<>'') and (S<>'0') and (S<>'360') then
-     Angle:=Round(StrToFloatDef(S, 0)) mod 360
-   else
-     Angle:=0;
-   if Angle<>0 then
+
+   AnglesDefined:=false;
+   rotvec[0]:=0;
+   rotvec[1]:=0;
+   rotvec[2]:=0;
+   mRotationMatrix:=MatriceIdentite;
+
+   // analyse angles specific first!
+   S:=Specifics.Values['angles'];
+   if (S<>'') then
    begin
-     ASin:=Angle*(pi/180);
-     ACos:=Cos(ASin);
-     ASin:=Sin(ASin);
-   end
-   else
-   begin
-     ACos:=0;
-     ASin:=0;
+     rotvec:=ReadVec3(s);
+     mRotationMatrix:=RotMatrixPitchRoll(rotvec[1],-rotvec[0],mRotationMatrix);
+     AnglesDefined:=true;
    end;
+
+   S:=Specifics.Values['angle'];
+   if (S<>'') and (S<>'0') and (S<>'360') and not AnglesDefined then
+   begin
+     rotvec[0]:=Round(StrToFloatDef(S, 0)) mod 360;
+     AnglesDefined:=true;
+     mRotationMatrix:=RotMatrixZ(rotvec[0],mRotationMatrix);
+   end;
+
 
    { list components }
    L:=TQList.Create;
@@ -2038,15 +2051,14 @@ begin
        GetMem(Model, SizeOf(TModel3DInfo)+Count*SizeOf(vec3_t));
        try
          Model^.VertexCount:=Count;
+         Model^.ModelRendermode:=0;
          PChar(VDest):=PChar(Model)+SizeOf(TModel3DInfo);
          Model^.Vertices:=VDest;
-         if Angle=0 then
+         if not AnglesDefined then
          begin
            for K:=0 to Count-1 do
            begin
-            VDest^[0]:=VSrc^[0]+ModelOrg[0];
-            VDest^[1]:=VSrc^[1]+ModelOrg[1];
-            VDest^[2]:=VSrc^[2]+ModelOrg[2];
+            VDest^:=VecAdd(VSrc^,ModelOrg);
             Inc(VSrc);
             Inc(VDest);
            end;
@@ -2055,16 +2067,32 @@ begin
          begin
            for K:=0 to Count-1 do
            begin
-             VDest^[0]:=VSrc^[0]*ACos - VSrc^[1]*ASin + ModelOrg[0];
-             VDest^[1]:=VSrc^[0]*ASin + VSrc^[1]*ACos + ModelOrg[1];
-             VDest^[2]:=VSrc^[2]+ModelOrg[2];
+             VDest^:=VecAdd(VectByMatrix(mRotationMatrix,VSrc^), ModelOrg);
              Inc(VSrc);
              Inc(VDest);
            end;
          end;
 
          { find alpha }
-         Model^.ModelAlpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
+         Model^.ModelAlpha:=255;
+         S:=Q.Specifics.Values['mdlopacity'];
+         try
+           if S<>'' then
+             Model^.ModelAlpha:=Round(255*StrToFloat(S));
+         finally;
+         end;
+
+         { find mode }
+         S:=Q.Specifics.Values['mdlrendermode'];
+         try
+           if S<>'' then
+             Model^.ModelRenderMode:=StrToInt(S);
+         finally;
+         end;
+
+// tbd this is bogus because mdlopacity is read from ONLY from config file and
+// binary speficics are not possible there
+//         Model^.ModelAlpha:=Round(255*Q.GetFloatSpec('mdlopacity', 1));
        except
          FreeMem(Model);
          Raise;
