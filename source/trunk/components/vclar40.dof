@@ -81,11 +81,9 @@ ProductName=QuArK -- Quake Army Knife -- 3D game editor
 ProductVersion=6.4
 Comments=QuArK Original Author: Armin Rigo
 [Excluded Packages]
-D:\MyFiles\MyLib32\FSDC.BPL=(untitled)
-D:\MyFiles\MyLib32\FSDC_ip50d_d5.bpl=Woll2Woll InfoPower 2000 - FSDC Edition
 [HistoryLists\hlDebugSourcePath]
 Count=1
-Item0=$(DELPHI)\Lib\Debug;.;c:\MyFiles\Quark\Source\components\jpeg;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
+Item0=$(DELPHI)\Lib\Debug;.;.\components;.\components\jpeg;.\components\PNG;.\components\zip;.\Prog;.\Prog\Model;.\Prog\Python;.\3dfx
 [HistoryLists\hlConditionals]
 Count=2
 Item0=PYTHON_BUNDLED;
