@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -53,8 +56,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure ListView1Change(Sender: TObject; Item: TListItem;
-      Change: TItemChange);
+    procedure ListView1Change(Sender: TObject; Item: TListItem; Change: TItemChange);
   private
   public
     SrcListView: TListView;
@@ -128,24 +130,29 @@ begin
    end;
   end;
  Update;
- ProgressIndicatorStart(5458, ListView1.Items.Count); try
- for I:=0 to ListView1.Items.Count-1 do
-  with ListView1.Items[I] do
-   try
-    Q:=LienFichierQObject(Caption, Nil, False);
-    Q.AddRef(+1); try
-    Q.Acces;
-    SubItems.Add(Q.Specifics.Values['Description']);
-    ImageIndex:=LoadGlobalImageList(Q);
-    MakeVisible(False);
-    ListView1.Repaint;
-    finally Q.AddRef(-1); end;
-    ProgressIndicatorIncrement;
-   except
-    on EAbort do Break;
-    else
-     {rien};
-   end;
+
+ ProgressIndicatorStart(5458, ListView1.Items.Count);
+ try
+  for I:=0 to ListView1.Items.Count-1 do
+   with ListView1.Items[I] do
+    try
+     Q:=LienFichierQObject(Caption, Nil, False);
+     Q.AddRef(+1);
+     try
+      Q.Acces;
+      SubItems.Add(Q.Specifics.Values['Description']);
+      ImageIndex:=LoadGlobalImageList(Q);
+      MakeVisible(False);
+      ListView1.Repaint;
+     finally
+      Q.AddRef(-1);
+     end;
+     ProgressIndicatorIncrement;
+    except
+     on EAbort do Break;
+     else
+      {rien};
+    end;
  finally
   ProgressIndicatorStop;
   ListView1.Font.Color:=clWindowText;
@@ -157,8 +164,7 @@ begin
  CloseGlobalImageList(ListView1);
 end;
 
-procedure TAddOnsAddDlg.ListView1Change(Sender: TObject; Item: TListItem;
-  Change: TItemChange);
+procedure TAddOnsAddDlg.ListView1Change(Sender: TObject; Item: TListItem; Change: TItemChange);
 begin
  OkBtn.Enabled:=(ListView1.Selected<>Nil) and not ListView1.Selected.Cut;
 end;
