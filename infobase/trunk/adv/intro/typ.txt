@@ -103,6 +103,38 @@ handling for the Typ="EP" above</b>.
 </td></tr>
 
 <tr><td align=center>
+EQ<br>
+</td><td valign=top>
+<b>Entry field with direction button</b>.<br>
+Displays entry field for two floating point entries and 
+4-way directional button as pressed gives floating point entries.<br>
+</td><td>
+<pre><br>
+<img align=left>EQ_btn.png</img>
+</br>
+<br>
+offset: = { Txt = "Offset" Typ="EQ" Hint="x, y offsets" }
+</br>
+</pre>
+</td></tr>
+
+<tr><td align=center>
+EU<br>
+</td><td valign=top>
+<b>Entry field with increase/decrease button</b>.<br>
+Displays entry field for single digit entry and 
+increase/decrease button as pressed gives single digit entry.<br>
+</td><td>
+<pre><br>
+<img align=left>EU_btn.png</img>
+</br>
+<br>
+tilt: = { Txt = "Tilt" Typ="EU" Hint="`tilt' angle, in degrees." }
+</br>
+</pre>
+</td></tr>
+
+<tr><td align=center>
 X&lt;value&gt;
 </td><td valign=top>
 <b>Checkbox</b>, which sets the bits according to &lt;value&gt;.<br>
