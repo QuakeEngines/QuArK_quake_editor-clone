@@ -92,7 +92,7 @@ function OuvrirListeEntites(Racine: TTreeMapBrush; const SourceFile: String; BSP
 implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
-  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet;
+  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy};
 
 {$R *.DFM}
 
@@ -196,13 +196,20 @@ var
  HullNum: Integer;
  HullList: TList;
  Source, Prochain: PChar;
- Entities, MapStructure: TTreeMapGroup;
+ Entities, MapStructure {Rowdy}, MapStructureB {/Rowdy}: TTreeMapGroup;
  Params: TFaceParams;
  InvPoly, InvFaces: Integer;
  TxCommand: Char;
  OriginBrush: TPolyedre;
  Facteur: Reel;
  Delta, Delta1: TVect;
+ {Rowdy}
+ V5: TVect5;
+ B: TBezier;
+ EntiteBezier: TTreeMapSpec;
+ MeshBuf1: TBezierMeshBuf5;
+ pCP1: vec5_p;
+ {/Rowdy}
 
  { tiglari, for sin stuff }
  ThreeSing: array[0..2] of Single;
@@ -211,7 +218,7 @@ var
  Flags, Contents : LongInt;
  Q : QPixelSet;
  Header : TQ2MipTex;
- 
+
  function ReadInt(str : string) : LongInt;
  begin
    if str = '' then
@@ -572,6 +579,26 @@ expected one.
   LireTexte:=False;
  end;
 
+ {Rowdy}
+ function LireVect5(Dernier: Boolean): TVect5;
+ begin
+  Lire(sParenthese1);
+  Result.X:=Valeur;
+  Lire(sValeur);
+  Result.Y:=Valeur;
+  Lire(sValeur);
+  Result.Z:=Valeur;
+  Lire(sValeur);
+  Result.S:=Valeur;
+  Lire(sValeur);
+  Result.T:=Valeur;
+  Lire(sValeur);
+  LireTexte:=Dernier;
+  Lire(sParenthese2);
+  LireTexte:=False;
+ end;
+ {/Rowdy}
+
 begin
  DebutTravail(5451, Length(SourceFile) div Granularite); try
  Source:=PChar(SourceFile);
@@ -592,6 +619,13 @@ begin
   Racine.SousElements.Add(Entities);
   MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
   Racine.SousElements.Add(MapStructure);
+  {Rowdy}
+  MapStructureB:=Nil;
+  (*** commented out by Armin : only create the group if actually needed
+   *  MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+   *  Racine.SousElements.Add(MapStructureB);
+   *)
+  {/Rowdy}
   Lire(sEOF);
   while Symbole<>sEOF do { when Lire's arg is sEOF, it's not really `expected'.
                 The first real char ought to be {.  If it is, it
@@ -641,6 +675,9 @@ begin
        Raise EErrorFmt(254, [NoLigne, LoadStr1(252)]);
       Entite:=Racine;
       EntitePoly:=MapStructure;
+      {Rowdy}
+      EntiteBezier:=MapStructureB;
+      {/Rowdy}
       WorldSpawn:=True;
       HullNum:=0;
       Racine.Name:=ClassnameWorldspawn;
@@ -653,6 +690,9 @@ begin
        Entite:=TTreeMapBrush.Create(Classname, Entities);
       Entities.SousElements.Add(Entite);
       EntitePoly:=Entite;
+      {Rowdy}
+      EntiteBezier:=Entite;
+      {/Rowdy}
      end;
     OriginBrush:=Nil;
     if BSP<>Nil then    { only relevant if we're reading a BSP }
@@ -670,6 +710,84 @@ begin
      while Symbole=sAccolade1 do  {read a brush}
       begin
        Lire(sAccolade1);
+       {Rowdy}
+       // Q3A might have 'patchDef2'
+       if Symbole=sTexteInattendu then
+        begin
+          if LowerCase(s)<>'patchdef2' then
+            raise EErrorFmt(254, [NoLigne, LoadStr1(260)]); // "patchDef2" expected
+         { Armin: create the MapStructureB group if not already done }
+          if EntiteBezier=Nil then
+           begin
+            MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+            Racine.SousElements.Add(MapStructureB);
+            EntiteBezier:=MapStructureB;
+           end;
+          
+          Lire(sTexteInattendu); // lbrace follows "patchDef2"
+
+          Lire(sAccolade1); // texture follows lbrace
+
+          {$IFDEF TexUpperCase}
+          S:=LowerCase(S);
+          {$ENDIF}
+          Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+          Lire(sTexteInattendu); // lparen follows texture
+
+          // now comes 5 numbers which tell how many control points there are
+          // use LireVect5 which is the same as LireVect but expects 5 numbers
+          // and we only need the X and Y values
+          V5:=LireVect5(False);
+          // X tells us how many lines of control points there are (height)
+          // Y tells us how many control points on each line (width)
+
+          B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
+          EntiteBezier.SousElements.Add(B); //&&&
+          B.NomTex:=S;   { here we get the texture-name }
+
+          MeshBuf1.W := Trunc(V5.Y);
+          MeshBuf1.H := Trunc(V5.X);
+
+          GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+          pCP1:=MeshBuf1.CP;
+          try
+            Lire(sParenthese1); // lparen follows vect5
+            for I:=1 to MeshBuf1.H do
+              begin
+                if I=1 then
+                  Lire(sParenthese1) // first line: just read the leading lparen
+                else
+                  begin
+                    // second and subsequent line: read the trailing rparen on the preceding line, then the
+                    // leading lparen on this line
+                    Lire(sParenthese2);
+                    Lire(sparenthese1);
+                  end;
+                for J:=1 to MeshBuf1.W do
+                  begin
+                    V5:=LireVect5(False);
+                    pCP1^[0]:=V5.X;
+                    pCP1^[1]:=V5.Y;
+                    pCP1^[2]:=V5.Z;
+                    pCP1^[3]:=V5.S;
+                    pCP1^[4]:=V5.T;
+                    Inc(pCP1);
+                  end;
+              end;
+            Lire(sParenthese2);  { final rparen at the end of the last control points line }
+            Lire(sParenthese2);  { rparen which finishes all the lines of control points }
+            Lire(sAccolade2);    { rbrace which finishes the patchDef2 }
+            Lire(sAccolade2);    { rbrace which finishes the brush }
+
+            B.ControlPoints:=MeshBuf1;
+          finally
+            FreeMem(MeshBuf1.CP);
+          end;
+        end
+       else
+        begin
+        {/Rowdy}
        P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
        EntitePoly.SousElements.Add(P);
        ContentsFlags:=0;
@@ -838,6 +956,9 @@ begin
        else
         if ContentsFlags and ContentsOrigin <> 0 then
          OriginBrush:=P;
+       {Rowdy}
+       end; // end of not patchDef2
+       {/Rowdy}
       end;
     if (OriginBrush<>Nil) and (EntitePoly<>MapStructure) then
      begin

@@ -94,6 +94,14 @@ Strings = {
 	257: "QuArK has found %d invalid polyhedron face(s) in this file. Look for the \042broken face\042 icons in the list.",
 	# 258: "Polyhedrons with the 'origin' content flag are not allowed in 'worldspawn'. Ignored.",
 
+    # Rowdy    
+    260: "\042patchDef2\042 expected",
+    261: "bezier",
+    #262: "JPG image",
+    #263: "JPG image (*.jpg)|*.jpg",
+    264: "Map beziers",
+    # /Rowdy
+
         288: "Help snippet",
         289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.",
 
