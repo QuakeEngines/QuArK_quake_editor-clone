@@ -461,6 +461,13 @@ class VertexHandle(qhandles.GenericHandle):
             cv.rectangle(p.x-0.501, p.y-0.501, p.x+2.499, p.y+2.499)
 
 
+    def ok2(self, editor,undo,old,new):
+        qhandles.GenericHandle.ok(self,editor,undo,old,new)
+        for poly in new:
+            for face in poly.faces:
+                face.enhrevert()
+        editor.layout.explorer.sellist=new
+   
     def drag(self, v1, v2, flags, view):
 
         #### Vertex Dragging Code by Tim Smith ####
@@ -754,7 +761,10 @@ class VertexHandle(qhandles.GenericHandle):
                             def proj2(p,x=x,y=y,v=vmax):
                                 return v+p[0]*x+p[1]*y
                             tp = tuple(map(proj2,tp))
-                            nf.setthreepoints(tp ,2)
+                            #
+                            # Code 4 for NuTex
+                            #
+                            nf.setthreepoints(tp ,4)
 
  
  
@@ -798,17 +808,29 @@ class CyanLHandle(qhandles.GenericHandle):
          "enlarge or distort 2nd texture axis", "rotate texture")[n] +   \
          "||Use the 4 handles at the corners of this 'L' to scroll or rotate the texture on the face.\n\nThe center of the 'L' lets you scroll the texture; the two ends lets you enlarge and distort the texture in the corresponding directions; the 4th point lets you rotate the texture."
 
-    def menu(self, editor, view):
-        return [qmenu.item('Hello',None)]
-
     def menu(self,editor,view):
         from plugins.tagging import *
 
         norm=self.face.normal
         facepoint=self.face.dist*norm
 
+        #
+        # .axisbase() method recovers orthogonal vectors
+        # in plane of face, y horizontal.
+        #
         x, y = self.face.axisbase()
 
+        #
+        # converts p to coordinates with origin org,
+        #  axisbase axis vectors.  See Python Tute
+        #  4.7.1. for the default argument constructioin
+        #  x=x, etc.  Here the x on the left represents
+        #  x in the function, x on the right x outside;
+        #  when the function is called, we only need to
+        #  specify the first two arguments and the other
+        #  two will take their default values as provided
+        #  in the lines above.
+        #
         def toAxisBase(p,org,x=x,y=y,z=norm):
             diff = p-org
             return quarkx.vect(diff*x, diff*y, diff*z)
@@ -838,19 +860,38 @@ class CyanLHandle(qhandles.GenericHandle):
             taggedonface=0
             
         def glueClick(m,tagged=tagged,self=self,editor=editor,toFace=toFace):
+            #
+            # We only want to glue to points on the plane of theface, so
+            #  any off-plane points are projected to the plane.
+            #
             tagged=toFace(tagged)
+            #
+            # These are the locations of the four Cyan handles
+            #  (origin, s, t, rotation)
+            #
             p1, p2, p3, p4 = self.tp4
+            #
+            # We'll operate on a copy, then undo.exchange()
+            #
             newface = self.face.copy()
             #
-            # assumes that menuitem is disabled for n=3
+            # The n-value of the handle says which of
+            #   the four handles this one is, starting # 0.
+            # Below assumes that menuitem is disabled for n=3
             #
             if self.n==0:
                 diff = p1-tagged
+                #
+                # setthreepoints(texp,2) for setting a texture scale.
+                #
                 newface.setthreepoints((tagged,p2-diff,p3-diff),2)
             elif self.n==1:
                 newface.setthreepoints((p1,tagged,p3),2)
             elif self.n==2:
                 newface.setthreepoints((p1,p2,tagged),2)
+            #
+            # And now the undo - exchange sequence.
+            #
             undo=quarkx.action()
             undo.exchange(self.face,newface)
             editor.ok(undo,'Glue to Tagged')
@@ -876,6 +917,11 @@ class CyanLHandle(qhandles.GenericHandle):
             def toAngle(p):
                 p = p.normalized
                 return math.atan2(p.y, p.x)
+            #
+            # 'map' applies the function to the list/tuple.
+            #  in Minipy, result is a list and needs to
+            #  be coerced to tuple.
+            #
             edgeang, p2ang, p3ang = tuple(map(toAngle, (edge, p2, p3)))
             #
             # Find the smallest angle that will rotate the threepoints
@@ -1597,6 +1643,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.25  2001/06/14 12:17:36  tiglari
+#note last 3d view clicked on in mouseclicked
+#
 #Revision 1.24  2001/06/13 20:58:44  tiglari
 #Add map-specific EyePosition handle
 #
