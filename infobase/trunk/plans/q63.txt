@@ -2,6 +2,9 @@ title: QuArK 6.3
 author: tiglari, etc.
 
 <ul>
+<li>Read Q3/STVEF .bsp files: (?) (thereby supporting
+entity-only change in .bsp)
+
 <li>Path Duplicator: (decker, tiglari)
 different kinds of elbows?
 
