@@ -13,6 +13,9 @@ Python macros available for direct call by QuArK
 #
 #
 #$Log$
+#Revision 1.9  2004/12/08 21:10:55  alexander
+#can parse hl2 and hl2 mp hammer files now
+#
 #Revision 1.8  2004/12/07 17:59:52  alexander
 #parse almost all of hammers fgd file except
 #- readonly
@@ -32,6 +35,7 @@ class Key:
         self.m_keyname = None
         self.m_desc = ""
         self.m_defaultvalue = None
+        self.m_kind =None
 
     def SetKeyname(self, keyname):
         self.m_keyname = keyname
@@ -74,6 +78,36 @@ class KeyString(Key):
         indent.appenditem(s)
         return s
 
+class KeyInput(Key):
+    def __init__(self):
+        Key.__init__(self)
+        self.m_kind='input'
+    	print 'create input',self.m_keyname
+
+    def GenerateForm(self, indent):
+    	print 'generate input',self.m_keyname
+        s = quarkx.newobj(self.m_kind+'_'+self.m_keyname + ":")
+        s["txt"] = "&"
+        s["inp"] = self.m_keyname
+        s["hint"] = self.m_desc
+        indent.appenditem(s)
+        return s
+
+class KeyOutput(Key):
+    def __init__(self):
+        Key.__init__(self)
+        self.m_kind='output'
+    	print 'create output',self.m_keyname
+
+    def GenerateForm(self, indent):
+    	print 'generate output',self.m_keyname
+        s = quarkx.newobj(self.m_kind+'_'+self.m_keyname + ":")
+        s["txt"] = "&"
+        s["outp"] = self.m_keyname
+        s["hint"] = self.m_desc
+        indent.appenditem(s)
+        return s
+
 class KeyNumeric(Key):
     def __init__(self):
         Key.__init__(self)
@@ -95,6 +129,34 @@ class KeyBool(Key):
         s["hint"] = self.m_desc
         indent.appenditem(s)
         return None
+
+class KeyStudio(Key):
+    def __init__(self):
+        Key.__init__(self)
+
+    def GenerateForm(self, indent):
+        s = quarkx.newobj(self.m_keyname + ":")
+        s["txt"] = "&"
+        s["hint"] = self.m_desc
+        s["typ"] = "B"
+        s["Cap"] = "models..."
+        s["form"] = "t_models_hl2_form:form"
+        indent.appenditem(s)
+        return None
+
+class KeyTexture(Key):
+    def __init__(self):
+        Key.__init__(self)
+
+    def GenerateForm(self, indent):
+        s = quarkx.newobj(self.m_keyname + ":")
+        s["txt"] = "&"
+        s["hint"] = self.m_desc
+        s["typ"] = "ET"
+        s["Cap"] = "texture..."
+        indent.appenditem(s)
+        return None
+
 
 class KeyFlags(Key):
     def __init__(self):
@@ -234,7 +296,7 @@ class BrushEntity(Entity):
     def GetFolderStuff(self, s):
         if (self.m_classname.lower() == "worldspawn"):
             return
-        s["angle"] = "360"
+#        s["angles"] = "0 0 0"
         s[";incl"] = "defpoly"
 
 class PointEntity(Entity):
@@ -245,7 +307,7 @@ class PointEntity(Entity):
         return ":e"
 
     def GetFolderStuff(self, s):
-        s["angle"] = "360"
+#        s["angles"] = "0 0 0"
         s["origin"] = "0 0 0"
 
 class InheritEntity(Entity):
@@ -271,6 +333,7 @@ theEntity = None
 theKey = None
 currentclassname = None
 currentkeyname = None
+currentkeytype = None
 currentinherit = None
 currentinheritargs = None
 currentkeyflag = None
@@ -350,6 +413,16 @@ def BeginKey(token):
     EndKey("--EndByBeginKey--")
     currentkeyname = token
 
+def SetInput(token):
+    global currentkeytype
+    EndKey("--EndByBeginKey--")
+    currentkeytype = 'input'
+
+def SetOutput(token):
+    global currentkeytype
+    EndKey("--EndByBeginKey--")
+    currentkeytype = 'output'
+
 def AddKeyType(token):
     global currentkeyname, theKey
     # Determine what type this key is, so the correct object can be created
@@ -361,19 +434,16 @@ def AddKeyType(token):
        or token == "target_destination" \
        or token == "color1" \
        or token == "color255" \
-       or token == "studio" \
        or token == "sound" \
        or token == "sprite" \
        or token == "angle" \
        or token == "origin" \
-       or token == "input" \
-       or token == "output" \
        or token == "filterclass" \
        or token == "npcclass" \
        or token == "target_name_or_class" \
        or token == "pointentityclass" \
-       or token == "scene" \
-       or token == "decal"):
+       or token == "scene"):
+#       or token == "decal"):
         theKey = KeyString()
     elif (token == "flags"):
         theKey = KeyFlags()
@@ -390,9 +460,13 @@ def AddKeyType(token):
     elif (token == "sidelist"):
         theKey = KeyString()       #tbd 
     elif (token == "material"):
-        theKey = KeyString()       #tbd 
+        theKey = KeyTexture()       #tbd 
+    elif (token == "decal"):
+        theKey = KeyTexture()       #tbd 
     elif (token == "bool"):
         theKey = KeyBool()       #tbd 
+    elif (token == "studio"):
+        theKey = KeyStudio()
     else:
         raise "Unknown KeyType-token:", token
     theKey.SetKeyname(currentkeyname)
@@ -440,7 +514,7 @@ def AddKeyChoiceNum(token):
 
 def AddKeyChoiceStr(token):
     global currentkeychoice
-    EndKeyChoice("--EndByAddKeyChoiceNum--")
+    EndKeyChoice("--EndByAddKeyChoiceStr--")
     currentkeychoice = token
 
 def AddKeyChoiceDesc(token):
@@ -457,13 +531,17 @@ def EndKeyChoice(token):
     currentkeychoice = None
 
 def EndKey(token):
-    global currentkeyname, theEntity, theKey
+    global currentkeyname, theEntity, theKey,currentkeytype
     if (currentkeyname is None):
         return
     if (theKey is None or theEntity is None):
         raise "Failure in EndKey()"
+    if (currentkeytype != None):
+    	print currentkeytype,currentkeyname
+    	theKey.m_keyname = currentkeytype+'#'+theKey.m_keyname
     theEntity.AddKey(theKey)
     currentkeyname = None
+    currentkeytype = None
 
 def EndKeyFlags(token):
     EndKeyFlag("--EndByEndKeyFlags--")
@@ -619,8 +697,8 @@ statediagram =                                                                  
                                                                                                 \
 ,'STATE_KEYSBEGIN'      :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)           \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
                                                                                                 \
 ,'STATE_INPUTBEGIN'     :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)         ] \
                                                                                                 \
@@ -657,8 +735,8 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE3'         ,None)               \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
                                                                                                 \
 ,'STATE_VALUE3'         :[(TYPE_NUMERIC            ,'STATE_VALUE4'         ,AddKeyDefa)         \
                          ,(TYPE_STRING             ,'STATE_VALUE4'         ,AddKeyDefa)         \
@@ -668,16 +746,16 @@ statediagram =                                                                  
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE5'         ,None)               \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
                                                                                                 \
 ,'STATE_VALUE5'         :[(TYPE_STRING             ,'STATE_VALUE5'         ,None)               \
                          ,(TYPE_SPLITTER_PLUS      ,'STATE_VALUE5'         ,None)               \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
-                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
-                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
+                         ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,SetInput)               \
+                         ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,SetOutput)             ] \
                                                                                                 \
 ,'STATE_CHOICES'        :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_CHOICES2'       ,None)             ] \
 ,'STATE_CHOICES2'       :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_KEYSBEGIN'      ,EndKeyChoices)      \
@@ -767,6 +845,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.9  2004/12/08 21:10:55  alexander
+#can parse hl2 and hl2 mp hammer files now
+#
 #Revision 1.8  2004/12/07 17:59:52  alexander
 #parse almost all of hammers fgd file except
 #- readonly
