@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.132  2001/05/07 08:55:04  tiglari
+//update version
+//
 //Revision 1.131  2001/05/06 08:04:16  tiglari
 //remove instance dup from toolbox, simply path dup path point forms
 //
@@ -3308,6 +3311,8 @@ QQRKSRC1
        scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling" }
        angles: = {Txt="&" Typ="E"  Hint="Pitch Roll Yaw Angles" $ 0D " (Rotation around Y X Z axes, in order)" }
        matrix: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
+       linedit: = {
+         Txt="Edit Linear" Typ="P" Macro="linedit" Cap="push" Hint="Push to edit the matrix in the linear specific" $0D "  (Under Construction)"}
     }
    
     dup lin:form =
