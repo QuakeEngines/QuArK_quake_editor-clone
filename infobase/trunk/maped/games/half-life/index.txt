@@ -1,6 +1,8 @@
 title: Half-Life
 desc: import_is_quake2_map
 desc: windows_transparency_breakable
+desc: blue_color_problem
+desc: using_decals
 desc: mapversion_220
 desc: cstrike_retail_setup
 desc: keys_in_multi_manager
