@@ -38,7 +38,7 @@ class ModelEditor(BaseEditor):
         if Root is not None:
             Root = self.fileobject.findname(Root)
         self.Root = Root
-#        self.vsellist = [ ]
+        self.vsellist = [ ]
         self.lock_x = 0
         self.lock_y = 0
         self.lock_z = 0

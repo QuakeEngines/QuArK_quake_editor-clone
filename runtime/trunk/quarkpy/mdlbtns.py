@@ -37,6 +37,7 @@ def droptarget(editor, newitem):
     ex = editor.layout.explorer
     fs = ex.focussel     # currently selected item
     if not newitem is None:
+      
       if newitem.type==':mc':
         return editor.Root, None
       elif newitem.type==':mf':

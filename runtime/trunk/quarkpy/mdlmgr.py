@@ -35,11 +35,11 @@ class ModelLayout(BaseLayout):
     MODE = SS_MODEL
     MAXAUTOZOOM = 10.0
 
-    #def clearrefs(self):
-    #    BaseLayout.clearrefs(self)
+    def clearrefs(self):
+        BaseLayout.clearrefs(self)
+        self.skinform = None
+        self.skinview = None
     #    self.dataform = None
-    #    self.polyform = None
-    #    self.polyview = None
     #    self.faceform = None
     #    self.faceview = None
     #    self.faceflags = None
@@ -48,9 +48,30 @@ class ModelLayout(BaseLayout):
     def readtoolbars(self, config):
         readtoolbars(mdltools.toolbars, self, self.editor.form, config)
 
+    def bs_skinform(self, panel):
+        fp = panel.newpanel()
+#        TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 0)
+#        NegBtn = qtoolbar.button(self.neg1click, "negative poly||When a polyhedron is marked as negative, it behaves like a hole : every polyhedron in the same group as this one is 'digged' by the overlapping part.\n\nUsing 'Brush subtraction' in the 'Commands' menu is the same as marking the polyhedron negative, except that digging is not performed immediately. This helps keep the map clear.\n\nNegative polyhedrons appear in pink on the map.", ico_maped, 23)
+#        self.buttons["negpoly"] = NegBtn
+        tp = fp.newtoppanel(124)
+#        tp.newbottompanel(ico_maped_y,0).newbtnpanel([TexBtn, qtoolbar.widegap, NegBtn, qtoolbar.padright] + self.texflags("polyhedron"))
+        self.skinform = tp.newdataform()
+        self.skinform.header = 0
+        self.skinform.sep = -79
+        self.skinform.setdata([], quarkx.getqctxlist(':form', "Skin")[-1])
+#        self.skinform.onchange = self.skinformchange
+        self.skinview = fp.newmapview()
+        self.skinview.color = NOCOLOR
+        self.skinview.ondraw = self.skinviewdraw
+#        self.skinview.onmouse = self.skinviewmouse
+#        self.skinview.hint = "|click to select texture"
+        return fp
+
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
-        return [], mppages
+        skin = qtoolbar.button(self.fillskinform, "Parameters about the selected skin", ico_objects, iiPcx)
+        skin.pc = [self.bs_skinform(panel)]
+        return [skin], mppages
 
     def bs_userobjects(self, panel):
         "A panel with user-defined model objects."
@@ -61,8 +82,6 @@ class ModelLayout(BaseLayout):
         #
         MdlUserDataPanel(panel, "Drop your most commonly used Model parts to this panel", "MdlObjPanel.qrk",
           "UserData.qrk")
-
-
 
     def actionmpp(self):
         "Switch the multi-pages-panel for the current selection."
@@ -87,6 +106,25 @@ class ModelLayout(BaseLayout):
             if obj.type == ':mc':
                 return obj
 
+    def fillskinform(self, reserved):
+        self.skinview.invalidate(1)
+        q = quarkx.newobj(':')   # internal object
+        if self.editor.Root.currentcomponent is not None:
+          q["header"] = "Selected Skin"
+          q["triangles"] = str(len(self.editor.Root.currentcomponent.triangles))
+          q["ownedby"] = self.editor.Root.currentcomponent.shortname
+        self.skinform.setdata(q, self.skinform.form)
+
+    def skinviewdraw(self, view):
+        tex = self.editor.Root.currentcomponent.currentskin
+        w,h = view.clientarea
+        cv = view.canvas()
+        cv.penstyle = PS_CLEAR
+        cv.brushcolor = GRAY
+        cv.rectangle(0,0,w,h)
+        if not (tex is None):
+          view.canvas().painttexture(tex, (0,0)+tex["Size"], BLACK)
+          return
 
     def selectcomponent(self, comp):
         self.editor.Root.setcomponent(comp)

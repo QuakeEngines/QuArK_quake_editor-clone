@@ -1297,6 +1297,7 @@ def ToolsMenu(editor, toolbars):
 # Icons for the layout of the Map/Model Editor
 #
 ico_maped = LoadIconSet1("maped", 1.0)
+ico_mdled = LoadIconSet1("mdled", 1.0)
 ico_mapedsm = LoadIconSet1("mapedsm", 0.5)    # small
 ico_maped_y = ico_maped[0][0].size[1] + 7
 
@@ -1449,5 +1450,8 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

@@ -86,13 +86,13 @@ class VertexHandle(qhandles.GenericHandle):
           v2 = qhandles.aligntogrid(v2, 0)
         delta = v2-v1
         editor = mapeditor()
-        if editor is None: return
-        if editor.lock_x==1:
-          delta = quarkx.vect(0, delta.y, delta.z)
-        if editor.lock_y==1:
-          delta = quarkx.vect(delta.x, 0, delta.z)
-        if editor.lock_z==1:
-          delta = quarkx.vect(delta.x, delta.y, 0)
+        if editor is not None:
+          if editor.lock_x==1:
+            delta = quarkx.vect(0, delta.y, delta.z)
+          if editor.lock_y==1:
+            delta = quarkx.vect(delta.x, 0, delta.z)
+          if editor.lock_z==1:
+            delta = quarkx.vect(delta.x, delta.y, 0)
         self.draghint = vtohint(delta)
         new = self.frame.copy()
         if delta or (flags&MB_REDIMAGE):
