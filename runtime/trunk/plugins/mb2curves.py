@@ -621,7 +621,7 @@ class CapDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-         return images(capimages, [o, editor, inverse, lower, open, thick, faceonly, stretchtex])
+         return images(capimages, (o, editor, inverse, lower, open, thick, faceonly, stretchtex))
 
 
 class BevelDuplicator(StandardDuplicator):
@@ -805,6 +805,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2000/06/25 11:30:11  tiglari
+#oops, bugfix for cones & bulges for columns, some function renaming
+#
 #Revision 1.18  2000/06/25 11:02:23  tiglari
 #cones & bulges for columns, some function renaming
 #
