@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2002/03/26 10:11:30  tiglari
+get rid of soDisableEnhTex, soWriteValve220 (obsoleted by OutputMapFormat)
+
 Revision 1.37  2001/07/19 09:49:46  tiglari
 rearrange QMap hierarchy to make QHfmFile work properly
 
@@ -309,7 +312,7 @@ var
  StringValue: String;
  NumericValue: Double;
  V: array[1..3] of TVect;
- P: TPolyedre;
+ P: TPolyhedron;
  Surface: TFace;
  I, J, K, NumericValue1, ContentsFlags: Integer;
  WorldSpawn: Boolean;
@@ -324,7 +327,7 @@ var
  Params: TFaceParams;
  InvPoly, InvFaces: Integer;
  TxCommand: Char;
- OriginBrush: TPolyedre;
+ OriginBrush: TPolyhedron;
  Facteur: TDouble;
  Delta, Delta1: TVect;
  {Rowdy}
@@ -830,7 +833,7 @@ expected one.
  begin
   ReadSymbol(sStringToken); // lbrace follows "patchDef2"
   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
-  P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
+  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
   EntitePoly.SubElements.Add(P);
   ContentsFlags:=0;
   while SymbolType <> sCurlyBracketRight do  { read the faces }
@@ -1206,7 +1209,7 @@ begin
           else
            begin
            {/Rowdy}
-            P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
+            P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
             EntitePoly.SubElements.Add(P);
             ContentsFlags:=0;
             while SymbolType <> sCurlyBracketRight do  { read the faces }
