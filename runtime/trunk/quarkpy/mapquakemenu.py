@@ -426,7 +426,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         next.run()    # do it !
 
     elif texcount is not None:
-        target = setup["TextureWad"] or setup["Q2TexPath"]
+        target = setup["TextureWad"] or setup["TexturesPath"]
 #        quarkx.msgbox(target,2,4)
         target = quarkx.outputfile(target)
 #        quarkx.msgbox(target,2,4)
@@ -517,6 +517,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.13  2000/10/28 19:29:38  decker_dk
+#Correctly export .MAP file, even if no build-tool is marked for execution
+#
 #Revision 1.12  2000/10/26 18:15:45  tiglari
 #Enable Brush Primitives support
 #
