@@ -2,13 +2,16 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/02/23 19:25:04  decker_dk
+Fixed problem with 'idata' in TDisplay.GetInfo being used wrongly.
+
 Revision 1.3  2001/02/14 20:45:10  aiv
 Added Logging of Python version.
 
 Revision 1.2  2001/02/11 22:26:44  aiv
 Added CVS Headers
-
 }
+
 unit SystemDetails;
 
 interface
@@ -35,6 +38,7 @@ type
   {$ENDIF}
   TPlatFormType = (os9x,osNT4,os2K);
   TStrBuf = array[0..11] of char;
+
   TCPU = class(TPersistent)
   private
     FVendorID,
@@ -94,7 +98,6 @@ type
     FGDIRes: Byte;
     FUserRes: Byte;
     FSystemRes: Byte;
-
     function GetSystemRes: Byte;
     function GetGDIRes: Byte;
     function GetUSERRes: Byte;
@@ -117,6 +120,7 @@ type
     property Win9x_GDIRes: Byte read FGDIRes write FGDIRes stored false;
     property Win9x_UserRes: Byte read FUserRes write FUserRes stored false;
   end;
+
   TOperatingSystem = class(TPersistent)
   private
     FBuildNumber: integer;
@@ -150,6 +154,7 @@ type
     property Environment :TStrings read FEnv write FEnv stored false;
     property Directories: TStrings read FDirs write FDirs stored False;
   end;
+
   TWorkstation = class(TPersistent)
   private
     FName: string;
@@ -180,7 +185,8 @@ type
     property NumLock: Boolean read FNumLock write FNumLock stored false;
     property ScrollLock: Boolean read FScrollLock write FScrollLock stored false;
   end;
-    TCurveCap = (ccCircles,ccPieWedges,ccChords,ccEllipses,ccWideBorders,ccStyledBorders,
+
+  TCurveCap = (ccCircles,ccPieWedges,ccChords,ccEllipses,ccWideBorders,ccStyledBorders,
                ccWideStyledBorders,ccInteriors,ccRoundedRects);
   TLineCap = (lcPolylines,lcMarkers,lcMultipleMarkers,lcWideLines,lcStyledLines,
                lcWideStyledLines,lcInteriors);
@@ -254,6 +260,7 @@ type
     property TextCaps :TTextCaps read FTextCaps write FTextCaps stored false;
     property Modes :TStrings read FModes write FModes stored False;
   end;
+
   TDirectX = class(TPersistent)
   private
     FVersion: string;
@@ -274,7 +281,6 @@ var
   Platform: TPlatformType;
 
 implementation
-
 
 uses ShlObj, Logging;
 
@@ -314,17 +320,17 @@ const
 
 function TCPU.CPUIDExists: boolean; register;
 asm
-	PUSHFD			 //direct access to flags no possible, only via stack
-	POP     EAX		 //flags to EAX
-	MOV     EDX,EAX		 //save current flags
-	XOR     EAX,ID_BIT	 //not ID bit
-	PUSH    EAX		 //onto stack
-	POPFD			 //from stack to flags, with not ID bit
-	PUSHFD			 //back to stack
-	POP     EAX		 //get back to EAX
-	XOR     EAX,EDX		 //check if ID bit affected
-	JZ      @exit		 //no, CPUID not availavle
-	MOV     AL,True		 //Result=True
+	PUSHFD			        //direct access to flags no possible, only via stack
+	POP     EAX		      //flags to EAX
+	MOV     EDX,EAX		  //save current flags
+	XOR     EAX,ID_BIT	//not ID bit
+	PUSH    EAX		      //onto stack
+	POPFD			          //from stack to flags, with not ID bit
+	PUSHFD			        //back to stack
+	POP     EAX		      //get back to EAX
+	XOR     EAX,EDX		  //check if ID bit affected
+	JZ      @exit		    //no, CPUID not availavle
+	MOV     AL,True		  //Result=True
 @exit:
 end;
 
@@ -360,7 +366,7 @@ function TCPU.GetCPUIDLevel: integer;
 begin
   VLevel:=0;
   asm
-	MOV eax, 0	//  Get Level
+	MOV eax, 0	    //  Get Level
 	DB 0Fh,0a2h     //  CPUID opcode
 	MOV VLevel,al
 	//RET
@@ -393,7 +399,7 @@ asm
 	POP eax
 	XOR eax,ecx
 	MOV eax,3          //assume 80386
-	JE @@end_CPUTyp   //it's a 386
+	JE @@end_CPUTyp     //it's a 386
 
 // i486 DX CPU / i487 SX MCP and i486 SX CPU checking
 // Checking for ability to set/clear ID flag (Bit 21) in EFLAGS
@@ -439,13 +445,13 @@ var
 
   function _GetCPUVendor :TStrBuf; assembler; register;
   asm
-  	PUSH    ebx	       	//Save regs
+  	PUSH    ebx	    //Save regs
 	PUSH    edi
 	MOV     edi,eax		//@Result (TStrBuf)
 	MOV     eax,0
-	DW      $A20F		//CPUID Command
+	DW      $A20F		  //CPUID Command
 	MOV     eax,ebx
-	XCHG	ebx,ecx         //save ECX result
+	XCHG	ebx,ecx     //save ECX result
 	MOV	ecx,4
   @1:
 	STOSB            	//save first 4 byte
@@ -459,11 +465,11 @@ var
 	LOOP    @2
 	MOV     eax,ebx
 	MOV	ecx,4
-  @3:            			//save last 4 byte
+  @3:            		//save last 4 byte
 	STOSB
 	SHR     eax,8
 	LOOP    @3
-	POP     edi		//Restore regs
+	POP     edi		    //Restore regs
 	POP     ebx
   end;
 
@@ -487,83 +493,83 @@ end;
 function TCPU.GetCPUVendorID :string;
 begin
   case Family of
-     4 :case FVendorNo Of
-          0 :case Model of
-               0 :result:='i80486DX-25/33';
-               1 :result:='i80486DX-50';
-               2 :result:='i80486SX';
-               3 :result:='i80486DX2';
-               4 :result:='i80486SL';
-               5 :result:='i80486SX2';
-               7 :result:='i80486DX2WB';
-               8 :result:='i80486DX4';
-	              9 :result:='i80486DX4WB';
+     4: case FVendorNo Of
+          0: case Model of
+               0: result:='i80486DX-25/33';
+               1: result:='i80486DX-50';
+               2: result:='i80486SX';
+               3: result:='i80486DX2';
+               4: result:='i80486SL';
+               5: result:='i80486SX2';
+               7: result:='i80486DX2WB';
+               8: result:='i80486DX4';
+	             9: result:='i80486DX4WB';
              end;
-          1 :case Model of
-               1 :result:='U5D(486DX)';
-	              2 :result:='U5S(486SX)';
+          1: case Model of
+               1: result:='U5D(486DX)';
+	             2: result:='U5S(486SX)';
              end;
-          2 :case Model of
-               3 :result:='80486DX2WT';
-               7 :result:='80486DX2WB';
-               8 :result:='80486DX4';
-               9 :result:='80486DX4WB';
-              14 :result:='5x86';
-              15 :result:='5x86WB';
+          2: case Model of
+               3: result:='80486DX2WT';
+               7: result:='80486DX2WB';
+               8: result:='80486DX4';
+               9: result:='80486DX4WB';
+              14: result:='5x86';
+              15: result:='5x86WB';
              end;
-          3 :case Model of
-               4 :result:='Cyrix Media GX';
-               9 :result:='Cyrix 5x86';
+          3: case Model of
+               4: result:='Cyrix Media GX';
+               9: result:='Cyrix 5x86';
              end;
         end;
-     5 :case FVendorNo of
-          0 :case Model of
-               0 :result:='P5 A-step';
-               1 :result:='P5';
-               2 :result:='P54C';
-               3 :result:='P24T OverDrive';
-               4 :result:='P55C';
-               5 :result:='DX4 OverDrive?';
-               6 :result:='P5 OverDrive?';
-	              7 :result:='P54C';
-               8 :result:='P55C(0,25µm)MMX';
+     5: case FVendorNo of
+          0: case Model of
+               0: result:='P5 A-step';
+               1: result:='P5';
+               2: result:='P54C';
+               3: result:='P24T OverDrive';
+               4: result:='P55C';
+               5: result:='DX4 OverDrive?';
+               6: result:='P5 OverDrive?';
+	             7: result:='P54C';
+               8: result:='P55C(0,25µm)MMX';
              end;
-          2 :case Model of
-	              0 :result:='SSA5';
-               1 :result:='5k86';
-               2 :result:='5k86';
-               3 :result:='5k86';
-               6 :result:='K6';
-               7 :result:='K6';
-               8 :result:='K6-3D';
-	              9 :result:='K6PLUS-3D';
+          2: case Model of
+	             0: result:='SSA5';
+               1: result:='5k86';
+               2: result:='5k86';
+               3: result:='5k86';
+               6: result:='K6';
+               7: result:='K6';
+               8: result:='K6-3D';
+	             9: result:='K6PLUS-3D';
              end;
-          3 :case Model of
-               0 :result:='Pentium Cx6X86 GXm';
-               2 :result:='Std. Cx6x86';
-               4 :result:='Cx6x86 GXm';
+          3: case Model of
+               0: result:='Pentium Cx6X86 GXm';
+               2: result:='Std. Cx6x86';
+               4: result:='Cx6x86 GXm';
              end;
           else
              if FVendorNo=4 then
                result:='Nx586';
              if FVendorNo=5 then
                result:='IDT C6 (WinChip)';
-	end;
-     6 :case FVendorNo of
-          0 :case Model of
-               0 :result:='PentiumPro A-step';
-               1 :result:='Pentium Pro';
-               3 :result:='Pentium II';
-               4 :result:='P55CT (P54 overdrive)';
-               5 :result:='Pentium II 0,25µm';
+	        end;
+     6: case FVendorNo of
+          0: case Model of
+               0: result:='PentiumPro A-step';
+               1: result:='Pentium Pro';
+               3: result:='Pentium II';
+               4: result:='P55CT (P54 overdrive)';
+               5: result:='Pentium II 0,25µm';
              end;
-	  2 :case Model of
-               6 :result:='K6';
-               7 :result:='K6';
-               8 :result:='K6-3D';
-       	       9 :result:='K6PLUS-3D';
+	        2: case Model of
+               6: result:='K6';
+               7: result:='K6';
+               8: result:='K6-3D';
+       	       9: result:='K6PLUS-3D';
              end;
-          3 :if Model=0 then
+          3: if Model=0 then
                result:='Cx6x86 MX/MII';
         end;
   end;
@@ -571,8 +577,8 @@ end;
 
 function GetTimeStampHi: DWORD; assembler; register;
 asm
-        DW      $310F        //RDTSC Command
-        MOV @Result, EDX;
+  DW      $310F        //RDTSC Command
+  MOV @Result, EDX;
 end;
 
 function GetTimeStampLo: DWORD; assembler; register;
@@ -652,10 +658,10 @@ end;
 function TCPU.GetSubModel :string;
 begin
   case VTyp of
-    3 :result:='Reserved';
-    2 :result:='Secondary';
-    1 :result:='OverDrive';
-    0 :result:='Primary';
+    3: result:='Reserved';
+    2: result:='Secondary';
+    1: result:='OverDrive';
+    0: result:='Primary';
     else
       result:='Not Detected!';
   end;
@@ -793,9 +799,9 @@ begin
   MinorVersion:=OS.dwMinorVersion;
   BuildNumber:=word(OS.dwBuildNumber);
   case OS.dwPlatformId of
-    VER_PLATFORM_WIN32s        :Platform:='Windows 3.1x';
-    VER_PLATFORM_WIN32_WINDOWS :Platform:='Windows 95';
-    VER_PLATFORM_WIN32_NT      :Platform:='Windows NT';
+    VER_PLATFORM_WIN32s:        Platform:='Windows 3.1x';
+    VER_PLATFORM_WIN32_WINDOWS: Platform:='Windows 95';
+    VER_PLATFORM_WIN32_NT:      Platform:='Windows NT';
   end;
   if MajorVersion>4 then
     Platform:='Windows 2000';
@@ -837,13 +843,13 @@ begin
     else
       OK:=OpenKey(rkOSInfo95,False);
     if OK then begin
-      FDirs.Add('CommonFiles='+ReadString('CommonFilesDir'));
-      FDirs.Add('ProgramFiles='+ReadString('ProgramFilesDir'));
-      FDirs.Add('Device='+ReadString('DevicePath'));
-      FDirs.Add('OtherDevice='+ReadString('OtherDevicePath'));
-      FDirs.Add('Media='+ReadString('MediaPath'));
-      FDirs.Add('Config='+ReadString('ConfigPath'));
-      FDirs.Add('Wallpaper='+ReadString('WallPaperDir'));
+      FDirs.Add('CommonFiles='  +ReadString('CommonFilesDir'));
+      FDirs.Add('ProgramFiles=' +ReadString('ProgramFilesDir'));
+      FDirs.Add('Device='       +ReadString('DevicePath'));
+      FDirs.Add('OtherDevice='  +ReadString('OtherDevicePath'));
+      FDirs.Add('Media='        +ReadString('MediaPath'));
+      FDirs.Add('Config='       +ReadString('ConfigPath'));
+      FDirs.Add('Wallpaper='    +ReadString('WallPaperDir'));
       CloseKey;
     end;
     Free;
@@ -864,35 +870,35 @@ begin
   StrDispose(p);
 
   WinH:=GetDesktopWindow;
-  FDirs.Add('AppData='+GetSpecialFolder(WinH,CSIDL_APPDATA));
-  FDirs.Add('CommonDesktopDir='+GetSpecialFolder(WinH,CSIDL_COMMON_DESKTOPDIRECTORY));
-  FDirs.Add('CommonAltStartUp='+GetSpecialFolder(WinH,CSIDL_COMMON_ALTSTARTUP));
-  FDirs.Add('RecycleBin='+GetSpecialFolder(WinH,CSIDL_BITBUCKET));
-  FDirs.Add('CommonPrograms='+GetSpecialFolder(WinH,CSIDL_COMMON_PROGRAMS));
-  FDirs.Add('CommonStartMenu='+GetSpecialFolder(WinH,CSIDL_COMMON_STARTMENU));
-  FDirs.Add('CommonStartup='+GetSpecialFolder(WinH,CSIDL_COMMON_STARTUP));
-  FDirs.Add('CommonFavorites='+GetSpecialFolder(WinH,CSIDL_COMMON_FAVORITES));
-  FDirs.Add('Cookies='+GetSpecialFolder(WinH,CSIDL_COOKIES));
-  FDirs.Add('Controls='+GetSpecialFolder(WinH,CSIDL_CONTROLS));
-  FDirs.Add('Desktop='+GetSpecialFolder(WinH,CSIDL_DESKTOP));
-  FDirs.Add('DesktopDir='+GetSpecialFolder(WinH,CSIDL_DESKTOPDIRECTORY));
-  FDirs.Add('Favorites='+GetSpecialFolder(WinH,CSIDL_FAVORITES));
-  FDirs.Add('Drives='+GetSpecialFolder(WinH,CSIDL_DRIVES));
-  FDirs.Add('Fonts='+GetSpecialFolder(WinH,CSIDL_FONTS));
-  FDirs.Add('History='+GetSpecialFolder(WinH,CSIDL_HISTORY));
-  FDirs.Add('Internet='+GetSpecialFolder(WinH,CSIDL_INTERNET));
-  FDirs.Add('InternetCache='+GetSpecialFolder(WinH,CSIDL_INTERNET_CACHE));
-  FDirs.Add('NetWork='+GetSpecialFolder(WinH,CSIDL_NETWORK));
-  FDirs.Add('NetHood='+GetSpecialFolder(WinH,CSIDL_NETHOOD));
-  FDirs.Add('MyDocuments='+GetSpecialFolder(WinH,CSIDL_PERSONAL));
-  FDirs.Add('PrintHood='+GetSpecialFolder(WinH,CSIDL_PRINTHOOD));
-  FDirs.Add('Printers='+GetSpecialFolder(WinH,CSIDL_PRINTERS));
-  FDirs.Add('Programs='+GetSpecialFolder(WinH,CSIDL_PROGRAMS));
-  FDirs.Add('Recent='+GetSpecialFolder(WinH,CSIDL_RECENT));
-  FDirs.Add('SendTo='+GetSpecialFolder(WinH,CSIDL_SENDTO));
-  FDirs.Add('StartMenu='+GetSpecialFolder(WinH,CSIDL_STARTMENU));
-  FDirs.Add('StartUp='+GetSpecialFolder(WinH,CSIDL_STARTUP));
-  FDirs.Add('Templates='+GetSpecialFolder(WinH,CSIDL_TEMPLATES));
+  FDirs.Add('AppData='          +GetSpecialFolder(WinH,CSIDL_APPDATA));
+  FDirs.Add('CommonDesktopDir=' +GetSpecialFolder(WinH,CSIDL_COMMON_DESKTOPDIRECTORY));
+  FDirs.Add('CommonAltStartUp=' +GetSpecialFolder(WinH,CSIDL_COMMON_ALTSTARTUP));
+  FDirs.Add('RecycleBin='       +GetSpecialFolder(WinH,CSIDL_BITBUCKET));
+  FDirs.Add('CommonPrograms='   +GetSpecialFolder(WinH,CSIDL_COMMON_PROGRAMS));
+  FDirs.Add('CommonStartMenu='  +GetSpecialFolder(WinH,CSIDL_COMMON_STARTMENU));
+  FDirs.Add('CommonStartup='    +GetSpecialFolder(WinH,CSIDL_COMMON_STARTUP));
+  FDirs.Add('CommonFavorites='  +GetSpecialFolder(WinH,CSIDL_COMMON_FAVORITES));
+  FDirs.Add('Cookies='          +GetSpecialFolder(WinH,CSIDL_COOKIES));
+  FDirs.Add('Controls='         +GetSpecialFolder(WinH,CSIDL_CONTROLS));
+  FDirs.Add('Desktop='          +GetSpecialFolder(WinH,CSIDL_DESKTOP));
+  FDirs.Add('DesktopDir='       +GetSpecialFolder(WinH,CSIDL_DESKTOPDIRECTORY));
+  FDirs.Add('Favorites='        +GetSpecialFolder(WinH,CSIDL_FAVORITES));
+  FDirs.Add('Drives='           +GetSpecialFolder(WinH,CSIDL_DRIVES));
+  FDirs.Add('Fonts='            +GetSpecialFolder(WinH,CSIDL_FONTS));
+  FDirs.Add('History='          +GetSpecialFolder(WinH,CSIDL_HISTORY));
+  FDirs.Add('Internet='         +GetSpecialFolder(WinH,CSIDL_INTERNET));
+  FDirs.Add('InternetCache='    +GetSpecialFolder(WinH,CSIDL_INTERNET_CACHE));
+  FDirs.Add('NetWork='          +GetSpecialFolder(WinH,CSIDL_NETWORK));
+  FDirs.Add('NetHood='          +GetSpecialFolder(WinH,CSIDL_NETHOOD));
+  FDirs.Add('MyDocuments='      +GetSpecialFolder(WinH,CSIDL_PERSONAL));
+  FDirs.Add('PrintHood='        +GetSpecialFolder(WinH,CSIDL_PRINTHOOD));
+  FDirs.Add('Printers='         +GetSpecialFolder(WinH,CSIDL_PRINTERS));
+  FDirs.Add('Programs='         +GetSpecialFolder(WinH,CSIDL_PROGRAMS));
+  FDirs.Add('Recent='           +GetSpecialFolder(WinH,CSIDL_RECENT));
+  FDirs.Add('SendTo='           +GetSpecialFolder(WinH,CSIDL_SENDTO));
+  FDirs.Add('StartMenu='        +GetSpecialFolder(WinH,CSIDL_STARTMENU));
+  FDirs.Add('StartUp='          +GetSpecialFolder(WinH,CSIDL_STARTUP));
+  FDirs.Add('Templates='        +GetSpecialFolder(WinH,CSIDL_TEMPLATES));
   s:=ReverseStr(FDirs.Values['Desktop']);
   s:=ReverseStr(Copy(s,Pos('\',s)+1,255));
   FDirs.Add('Profile='+s);
@@ -963,6 +969,7 @@ end;
 procedure TMemory.Report(var sl: TStringList);
 begin
   with sl do begin
+    add(formatfloat('Physical Memory Total: #,## B',PhysicalTotal));
     add(formatfloat('Physical Memory Free: #,## B',PhysicalFree));
     add(formatfloat('Virtual Memory Free: #,## B',VirtualFree));
   end;
@@ -1530,7 +1537,7 @@ begin
       addstrings(Direct3D);
     end else
       add('Not installed.');
-  end;   
+  end;
 end;
 
 function IsOSNT :boolean;
@@ -1703,7 +1710,7 @@ begin
   GetDirectxDetails(s);
   s.add('');
   for i:=0 to s.count-1 do begin
-    aLog(-1,'syslog> '+s.strings[i]);
+    aLog(-1,'SysLog> '+s.strings[i]);
   end;
 end;
 
