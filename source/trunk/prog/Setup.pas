@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/12/05 20:39:17  decker_dk
+Added RTCW (Return To Castle Wolfenstein) with gamecode 'd'.
+
 Revision 1.30  2001/10/12 11:03:16  tiglari
 Live Pointer Hunt (non-Debug build)
 
@@ -176,6 +179,7 @@ const
  mjStarTrekEF   = 'b';  { Star Trek:Voyager - Elite Force }
  mjCrystalSpace = 'c';
  mjRTCW         = 'd';  { Return To Castle Wolfenstein }
+ mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
@@ -1251,7 +1255,7 @@ initialization
 finalization
   CloseSetupSet;
 {$IFDEF Debug}
-  Clear_g_MemQObject;
+//  Clear_g_MemQObject;
 {$ENDIF}
 
   if g_TexExtensions<>NIL then
