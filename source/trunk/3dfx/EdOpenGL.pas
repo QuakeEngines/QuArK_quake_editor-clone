@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2003/03/21 00:12:43  nerdiii
+tweaked OpenGL mode to render additive and texture modes as in Half-Life
+
 Revision 1.22  2003/03/14 10:09:30  decker_dk
 Some indent-changes and a bit cleanup.
 
@@ -1146,7 +1149,45 @@ begin
       DebugOpenGL(-104, 'BuildTexture(<Nil>)', []);
     {$ENDIF}
 
+
+    PSD:=GetTex3Description(Texture^);
+
+    //normally this would also handle paletted textures, but it breaks
+    //Q2 models . so we have to keep the assembler stuff till it is understood
+    //and fixed
+    if PSD.Format = psf24bpp then
+    begin
+    try
+
+      //a paletted textures is convert to BGR format first and flipped
+      PSD2.Init;
+      PSD2.Format := psf24bpp;
+      PSD2.Palette := pspDefault;
+      PSD2.AlphaBits := psaDefault;
+      PSD2.Size:=PSD.Size;
+      PSD2.FlipBottomUp;
+      PSDConvert(PSD2, PSD, 0);
+
+      //tbd: setup gamma at gl window setup}
+
+      glGenTextures(1, Texture^.OpenGLName);
+      {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
+      if Texture^.OpenGLName=0 then
+        Raise InternalE('out of texture numbers');
+      glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
+      {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
+
+      glTexImage2D(GL_TEXTURE_2D, 0, 3,PSD2.Size.X, PSD2.Size.Y,0, GL_BGR, GL_UNSIGNED_BYTE, PSD2.Data);
+    finally
+      PSD.Done;
+      PSD2.Done;
+    end;
+    end
+    else
+    begin //handle paletted textures
+
     GetwhForTexture(Texture^.info, W, H);
+
     MemSize:=W*H*4;
 
     if RenderingTextureBuffer.Size < MemSize then
@@ -1156,7 +1197,6 @@ begin
 
     PSD2.Init;
     {PSD2.AlphaBits:=psaNoAlpha;}
-    PSD:=GetTex3Description(Texture^);
 
     try
       PSD2.Size.X:=W;
@@ -1165,6 +1205,7 @@ begin
 
       Source:=PSD2.StartPointer;
       Dest:=TexData;
+
       GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
 
       if PSD2.Format = psf24bpp then
@@ -1276,6 +1317,8 @@ begin
       PSD2.Done;
     end;
 
+
+
    {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
     glGenTextures(1, Texture^.OpenGLName);
     {$IFDEF DebugGLErr} DebugOpenGL(104, 'glGenTextures(1, <%d>)', [Texture^.OpenGLName]); {$ENDIF}
@@ -1283,7 +1326,11 @@ begin
       Raise InternalE('out of texture numbers');
     glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
     {$IFDEF DebugGLErr} DebugOpenGL(105, '', []); {$ENDIF}
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData)
+
+    end;//paletted textures
+
     {$IFDEF DebugGLErr} DebugOpenGL(106, '', []); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

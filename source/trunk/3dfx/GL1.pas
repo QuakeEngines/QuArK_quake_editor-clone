@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2003/03/13 20:19:22  decker_dk
+Added glBlendFunc.
+
 Revision 1.7  2002/04/04 18:01:27  decker_dk
 Added wglSwapBuffers - dated 2002.02.26.
 
@@ -529,6 +532,13 @@ const
   GL_LUMINANCE       = $1909;
   GL_LUMINANCE_ALPHA = $190A;
 
+  GL_BGR             = $80E0;
+  GL_BGRA            = $80E1;
+
+  {internal format}
+  GL_RGB8            = $8051;
+
+
   (* PixelType *)
 
   GL_BITMAP = $1A00;
@@ -659,7 +669,7 @@ var
   glTexCoord2fv: procedure (var v); stdcall;
   glVertex3fv: procedure (var v ); stdcall;
   glFlush: procedure; stdcall;
-  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
+  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; pixels:PChar ); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
   glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
