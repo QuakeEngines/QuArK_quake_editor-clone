@@ -40,9 +40,67 @@ DupOffsetHandle = quarkpy.mapduplicator.DupOffsetHandle
 ObjectOrigin = quarkpy.mapentities.ObjectOrigin
 
 
+#
+# matrix for rotation taking v onto u
+#
+def matrix_rot_v2u(u,v):
+  axis = v^u
+  if axis:
+    axis = axis.normalized
+    return quarkpy.qhandles.UserRotationMatrix(axis, u, v, 0)
+  else:
+    matrix = quarkx.matrix("1 0 0 0 1 0 0 0 1")
+    if v*u > 0:
+      return matrix
+    else:
+      return ~matrix
+
+def MakeAxes2(x):
+    xn=x.normalized
+    if abs(xn*quarkx.vect(0,1,0))<.1:
+        z=(xn^quarkx.vect(-1,0,0)).normalized
+    else:
+        z=(xn^quarkx.vect(0,1,0)).normalized
+    y = (z^x).normalized
+    return xn, y, z
+    
+def MakeAxes3(x):
+    x=x.normalized
+    mapx, mapy, mapz = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
+    if abs(x*mapx)<.0001: # straight up
+        return mapz, mapy, -mapx
+    #
+    # project onto the xy plane
+    #
+    xp = quarkx.vect(x*mapx,x*mapy,0).normalized
+    y = matrix_rot_z(-math.pi/2)*xp
+    return x, y, (y^x).normalized
+    
+def NewAxes(prevaxes, newx):
+    mat=matrix_rot_v2u(newx,prevaxes[0])
+    return newx, mat*prevaxes[1], mat*prevaxes[2]
+
 def MakeUniqueTargetname():
     import time
     return "t" + time.strftime("%Y%m%d%H%M%S", time.gmtime(time.time()))
+
+
+def getends(group,x_axis):  # tiglari's
+    front=[]
+    back=[]
+    SMALL=0.001
+    debug('ready')
+    for face in group.findallsubitems("",":f"):
+        dotprod=face.normal*x_axis
+#            debug('normal')
+        if abs(dotprod-1)<SMALL:
+#               debug(' back '+face.shortname)
+           back.append(face)
+        elif abs(dotprod+1)<SMALL:
+#               debug(' front '+face.shortname)
+           front.append(face)
+    return front, back
+          
 
 
 class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
@@ -178,63 +236,6 @@ class PathDuplicator(StandardDuplicator):
     def do(self, item):
         pass
 
-    def subtractend2(self,prevorigin,thisorigin,nextorigin,group,beforeafter):
-        # Subtract inbetween-path
-        # -- Create a subtraction cube, must be very VERY HUGE!
-        cube = self.tmpcube.copy()
-
-        print "sub", prevorigin, ":", thisorigin, ":", nextorigin, ":",
-        if (prevorigin is not None) and (nextorigin is not None):
-           pathdist1 = nextorigin - thisorigin
-           pathdist2 = thisorigin - prevorigin
-           rotangles1 = quarkx.vect(quarkpy.qhandles.vec2angles1(pathdist1))
-           rotangles2 = quarkx.vect(quarkpy.qhandles.vec2angles1(pathdist2))
-           rotangles = (rotangles1 + rotangles2) / 2
-           print "d1",pathdist1,"d2",pathdist2,"r1",rotangles1,"r2",rotangles2,"r",rotangles
-        else:
-           if prevorigin is None:
-              pathdiff = nextorigin - thisorigin
-           elif nextorigin is None:
-              pathdiff = thisorigin - prevorigin
-           rotangles = quarkx.vect(quarkpy.qhandles.vec2angles1(pathdiff))
-           print "r",rotangles
-        # -- Compute rotation
-        radx = rotangles.x * quarkpy.qeditor.deg2rad
-        rady = rotangles.y * quarkpy.qeditor.deg2rad
-        radz = rotangles.z * quarkpy.qeditor.deg2rad
-
-        cube.translate(quarkx.vect(self.cuberadius * beforeafter,0,0), 0)
-
-        sin1, cos1 = math.sin(rady), math.cos(rady)
-        sin2, cos2 = math.sin(radx), math.cos(radx)
-        rotatematrix = quarkx.matrix((cos2,0,-sin2),(0,1,0),(sin2,0,cos2))
-        cube.linear(quarkx.vect(0,0,0), rotatematrix)
-        rotatematrix = quarkx.matrix((cos1,-sin1,0),(sin1,cos1,0),(0,0,1))
-        cube.linear(quarkx.vect(0,0,0), rotatematrix)
-
-        cube.translate(thisorigin, 0)
-
-#       group.appenditem(cube.copy())
-#       print "Appended cube"
-#       return group
-
-        group.rebuildall()
-        plist = []
-        elist = []
-        for p in [group]:
-           plist = plist + p.findallsubitems("", ":p")
-           elist = elist + p.findallsubitems("", ":e")
-        cube.rebuildall()
-        newplist = cube.subtractfrom(plist)
-        newgroup = quarkx.newobj("group:g")
-        for p in newplist:
-           newgroup.appenditem(p.copy())
-        for p in elist:
-           newgroup.appenditem(p.copy())
-        del newplist
-        del cube
-        return newgroup
-
     def sourcelist(self):
         list = StandardDuplicator.sourcelist(self)
         group = quarkx.newobj("group:g");
@@ -252,6 +253,100 @@ class PathDuplicator(StandardDuplicator):
         return list
 
     def buildimages(self, singleimage=None):
+        try:
+            self.readvalues()
+        except:
+            print "Note: Invalid Duplicator Specific/Args."
+            return
+
+        pathlist = plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2())
+        #pathlist.insert(0, self.dup)
+
+        templategroup = self.sourcelist()
+        templatebbox = quarkx.boundingboxof([templategroup])
+        templatesize = templatebbox[1] - templatebbox[0]
+
+        # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
+        if self.speed == 1:
+           del templategroup
+           templategroup = quarkx.newobj("group:g")
+           templategroup.appenditem(plugins.deckerutils.NewXYZCube(templatesize.x, templatesize.y, templatesize.z, quarkx.setupsubset()["DefaultTexture"]))
+
+        if (singleimage is None and self.speed != 1):
+           viewabletemplategroup = templategroup.copy()
+           viewabletemplategroup[";view"] = str(VF_IGNORETOBUILDMAP)  # Do not send this to .MAP file
+           newobjs = [viewabletemplategroup]
+        else:
+           newobjs = []
+        templatescale = min(templatesize.x, templatesize.y)/3
+        templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
+
+#        # -- If SCALETEXTURES is on, use the linear() operation
+#        if (self.scaletex != 0):
+#           scalematrix = quarkx.matrix((2048/templatescale,0,0), (0,1,0), (0,0,1))
+#        else:
+#           # -- User does not want to scale textures (who wants), but then we must scale the polys in another way
+#           flist = templategroup.findallsubitems("", ":f")
+#           for f in flist:
+#              f.translate(quarkx.vect(2048 - f.dist,0,0) * f.normal.x)
+
+        count = len(pathlist)-1
+        prevaxes = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
+        for i in range(count):
+            if (singleimage is not None): # Speed up Dissociate images processing
+               if (singleimage >= count):
+                  return [] # Nothing more to send back!
+               else:
+                  i = singleimage
+            thisorigin = pathlist[i].origin
+            nextorigin = pathlist[i+1].origin
+            #print "Image#", i, "this", thisorigin, "next", nextorigin
+
+            list = templategroup.copy()
+
+            pathdist = nextorigin - thisorigin
+
+            # -- Place center between the two paths
+            neworigin = pathdist*0.5 + thisorigin
+
+            
+            prevaxes = xax, yax, zax = NewAxes(prevaxes,pathdist.normalized)
+            
+
+            #
+            # mebbe quarkx.colmat command would be good
+            #
+            mat=quarkx.matrix((xax.x,yax.x,zax.x),
+                              (xax.y,yax.y,zax.y),
+                              (xax.z,yax.z,zax.z))
+
+            list.translate(neworigin, 0)
+            list.linear(neworigin, mat)
+            front, back = getends(list,xax)
+            debug(`len(front)`)
+            for face in front:
+               center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
+               face.translate(thisorigin-center,0)
+               if i>0:
+                   face.distortion(-joinnorm,thisorigin)
+                   pass
+            for face in back:
+               center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
+               face.translate(nextorigin-center,0)
+               if i<count-1:
+                   nextx=(pathlist[i+2].origin-nextorigin).normalized
+                   joinnorm=((xax+nextx)/2).normalized
+                   face.distortion(joinnorm,nextorigin)
+            if (singleimage is None) or (i==singleimage):
+                newobjs = newobjs + [list]
+            del list
+            if (i==singleimage): # Speed up Dissociate images processing
+                break
+        return newobjs
+
+
+
+    def buildimages2(self, singleimage=None):
         try:
             self.readvalues()
         except:
@@ -572,6 +667,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2001/02/04 11:51:45  decker_dk
+#Some cleanup
+#
 #Revision 1.3  2001/02/03 19:08:30  decker_dk
 #Changed path-handles to ':d'-macros, so functions can be performed on them. Like adding new path-handles.
 #
