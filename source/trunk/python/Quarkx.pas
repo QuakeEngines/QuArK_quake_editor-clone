@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2003/07/21 04:47:03  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.30  2003/03/03 20:23:13  cdunde
 tiglari changed quarkx.pas so that the HelpPopup python function can take
 two parameters.
@@ -109,7 +112,7 @@ unit Quarkx;
 
 interface
 
-uses Windows, Messages, ShellApi, SysUtils, Python, Forms,
+uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
 const
@@ -2793,7 +2796,7 @@ begin
    PyErr_SetString(QuarkxAborted, PChar(LoadStr1(4452)))
   else
    begin
-    S:=Format('%s [%p]', [GetExceptionMessage(Exception(ExceptObject)), @TForm1.AppException]);
+    S:=Format('%s [%p]', [GetExceptionMessage(Exception(ExceptObject)), @Tg_Form1.AppException]);
     PyErr_SetString(QuarkxError, PChar(S));
    end;
 end;
