@@ -21,9 +21,6 @@
 #
 ##########################################################
 
-#$Header$
-
-
 import quarkx
 import quarkpy.qbaseeditor
 from quarkpy.maputils import *
@@ -60,6 +57,16 @@ def gettaggedlist(editor):
   try:
     return editor.tagging.taglist
   except (AttributeError): return None
+  
+  
+def gettaggedfaces(editor):
+  "tagged face or faces"
+  tagged = gettagged(editor)
+  if tagged is None:
+    return gettaggedlist(editor)
+  else:
+    return [tagged]
+    
 
 #
 # 2-point edges only
@@ -101,10 +108,30 @@ def gettaggedface(editor):
   if tagged is not None:
     return tagged.face
 
+#
+# Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
+#
+def gettaggedb2cp(editor):
+    try:
+        return editor.tagging.tagb2cp
+    except (AttributeError):
+        return None
 
 def anytag(o):
   "Is anything tagged ?"
   return gettagged(o) is not None or gettaggedpt(o) is not None or gettaggedlist(o) is not None
+
+def gettaggedtexplane(editor):
+    "returns an actual tagged face, or an abstract one"
+    plane = gettaggedface(editor)
+    if plane is not None:
+        return plane
+    b2cp = gettaggedb2cp(editor)
+    if b2cp is not None:
+        return quarkpy.b2utils.texPlaneFromCph(b2cp, editor)
+        
+    
+    
 
 #
 # --------- setting & clearing tags
@@ -135,6 +162,13 @@ def tagfaceedge(edge, editor):
   editor.tagging = Tagging()
   editor.tagging.taggedfaceedge = edge
   editor.invalidateviews()
+
+#
+# Maybe this one shouldn't be here, but in quarkpy.mapbezier.py
+#
+def tagb2cp(cp, editor):
+    tagpoint(cp.pos, editor)
+    editor.tagging.tagb2cp = cp
 
 
 def addtotaggedfaces(face, editor):
@@ -232,11 +266,3 @@ def tagfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finish
     return
  
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = tagfinishdrawing
-
-# ----------- REVISION HISTORY ------------
-#
-#
-# $Log$
-#
-#
-#
