@@ -20,6 +20,7 @@ editor is started
 
 Probably the best way to get a feel for plugins is to
 first work thru a tutorial, then look at some existing
-examples.  There's an archive <ZIP> plugin_examples.zip </zip>
-of working examples from the tutorial.
+examples.  There is an archive here, <a href="zips">plugin_examples.zip</a>,
+of working examples for this tutorial (and others) in the
+'zips' sub-folder of your QuArk-help folder on your hard drive.
 
