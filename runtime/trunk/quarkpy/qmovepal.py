@@ -151,15 +151,15 @@ class ToolMoveBar(ToolBar):
         btn3.spec = "mpZoom"
         btn3.matrix = lambda f: matrix_zoom(1.0/f)
 
-        btn4 = qtoolbar.button(btnclick, "X symmetry", icons, 5)
+        btn4 = qtoolbar.button(btnclick, "X symmetry||X-symmetry. Mirror around the selection's common X-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 5)
         btn4.text = Strings[551]
         btn4.matrix = matrix_sym('x')
 
-        btn5 = qtoolbar.button(btnclick, "Y symmetry", icons, 6)
+        btn5 = qtoolbar.button(btnclick, "Y symmetry||Y-symmetry. Mirror around the selection's common Y-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 6)
         btn5.text = Strings[551]
         btn5.matrix = matrix_sym('y')
 
-        btn6 = qtoolbar.button(btnclick, "Z symmetry", icons, 4)
+        btn6 = qtoolbar.button(btnclick, "Z symmetry||Z-symmetry. Mirror around the selection's common Z-axis.\n\nThese buttons will mirror your selection, around its common center. To see the common center of your selected object(s), you must be able to see the 'Linear handle' of the selection.", icons, 4)
         btn6.text = Strings[551]
         btn6.matrix = matrix_sym('z')
 
@@ -193,12 +193,12 @@ class ToolMoveBar(ToolBar):
         btn12.spec = "mpRotate"
         btn12.matrix = lambda f: matrix_rot_z(f * deg2rad)
 
-        btn13 = qtoolbar.button(btnclick, "inflate/deflate||Inflate or deflate the selected polyhedrons by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.", icons, 13)
+        btn13 = qtoolbar.button(btnclick, "inflate/deflate||Inflate or deflate the selected polyhedrons by an amount specified in the toolbar settings (last button of this toolbar).\n\nInflating or deflating means moving the planes of the faces of the polyhedrons by a fixed amount of pixels. This is not the same as simply zooming, which preserves the aspect of the polyhedron.\n\nThis setting is also used for the Make Hollow function for two different atributes.\n\n1)  The number set will be the thickness of the walls created in units.\n\n2)  If the number is positive, the walls will be created outside the perimeter of the current solid polygon.\nIf the number is negative, the walls will be created inside the perimeter of the current solid polygon.", icons, 13)
         btn13.text = Strings[549]
         btn13.spec = "WallWidth"
         btn13.inflate = lambda f: f
 
-        btncfg = qtoolbar.button(ConfigDialog, "change toolbar settings", icons, 0)
+        btncfg = qtoolbar.button(ConfigDialog, "change this toolbar settings||This opens the Movement toolbar configuration window.\n\nIf you hold your mouse cursor over each of the setting input areas, a description- help display will appear to give you information about what settings to use and how they work.\n\nClick the check mark to apply the new settings.\n\nClick the X to close the window without changing the current settings.", icons, 0)
         btncfg.icolist = icons
         btncfg.mode = layout.MODE
 
@@ -209,6 +209,9 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.6  2002/12/27 07:38:02  cdunde
+#Rearranged icons with added help info
+#
 #Revision 1.5  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #
