@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/10/10 22:21:47  tiglari
+Live Pointer Cleanup: free ImageLists
+
 Revision 1.6  2001/06/05 18:43:13  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -906,7 +909,7 @@ begin
     begin
       FreeMem(g_Mem_ImageLists[I]);
     end;
-    g_Mem_ImageLists.Clear;
+    g_Mem_ImageLists.Free;
 end;
 
 initialization
