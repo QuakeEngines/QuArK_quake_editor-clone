@@ -1980,7 +1980,7 @@ QQRKSRC1
       Lib: = {
         Txt="Select 3D viewer"
         Typ="CL"
-        Items  = "3DFX card (Glide drivers)" "Software only"
+        Items  = "3DFX card (Glide drivers)" $0D "Software only"
         Values = "glide2x.dll" $0D "qrksoftg.dll"
         Hint="see also the OpenGL configuration page"
       }
