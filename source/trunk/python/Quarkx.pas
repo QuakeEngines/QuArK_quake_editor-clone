@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2002/04/12 22:08:24  tiglari
+Reminder -> Disclaimer
+
 Revision 1.25  2002/04/12 11:47:46  tiglari
 more corrections from cleaning up image-leak-tracking stuff
 
@@ -3100,5 +3103,9 @@ begin
 end;*)
 
  {-------------------}
+initialization
 
+finalization
+  if (Pool <> nil) then
+    Pool.Free;
 end.
