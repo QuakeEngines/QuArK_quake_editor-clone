@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.3snap 2002jan06",
+    0: "QuArK 6.3snap 2002feb24",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -264,6 +264,10 @@ Strings = {
     808: "Hmf (6DX) map format (*.hmf)|*.hmf",
 
     809: "Invalid version number in Quake's original Progs.dat",
+
+    810: "PNG image (*.png)|*.png",
+    811: "Tribes 2 VL2 Files (*.vl2)|*.vl2",
+    812: "Tribes 2 CS-script Files (*.cs)|*.cs",
 
     2368: "Skins",
     2369: "Frames",
@@ -560,6 +564,9 @@ Strings = {
     5178: "3d studio file",
     5179: "Form Context",
     5180: ".hmf (6DX) file",
+    5181: "PNG image",
+    5182: "Tribes 2 VL2 file",
+    5183: "Tribes 2 CS-script file",
 
     5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     5184: "'%s' is not a QuArK-5 file",
@@ -902,6 +909,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.46  2002/01/06 10:37:04  decker_dk
+#update version to "QuArK 6.3snap 2002jan06"
+#
 #Revision 1.45  2001/08/06 00:19:01  tiglari
 #update version
 #
