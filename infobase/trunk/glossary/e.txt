@@ -1,11 +1,10 @@
 title: E...
-author:
+author: Decker
 format: html
 
 <dl>
-<dt><a name="edge">     </a>Edge        <dd>The line where two <a href="#faces">faces</a> meet. A dice has 12 edges.<br>
+<dt><a name="edge">     </a>Edge        <dd>The line where two <a href="#face">faces</a> meet, or the line between two <a href="#vertex">vertexes</a>. A dice has 12 edges.<br>
                                             <pic>dice.gif
-<dt><a name="edges">    </a>Edges       <dd>Plural of <a href="#edge">edge</a>.
 <dt><a name="entities"> </a>Entities    <dd>Plural of <a href="#entity">entity</a>.
 <dt><a name="entity">   </a>Entity      <dd>An <a href="#fps">FPS-game</a> entity, is an object which the player can interact with. Most entities are monsters, weapons and moving doors. Some entities are used to light the level as if you placed an invisible light-bulb in a spot. Other entities, like doors, require that it has some <a href="#polyhedrons">polyhedrons</a> connected to it.
 </dl>
