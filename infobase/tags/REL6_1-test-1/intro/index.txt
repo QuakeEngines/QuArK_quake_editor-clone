@@ -1,0 +1,3 @@
+title: Introduction to QuArK
+
+<p>Please see <a href="http://www.planetquake.com/quark/help/basicknowledge.html">this page</a> for the basic information about QuArK.
