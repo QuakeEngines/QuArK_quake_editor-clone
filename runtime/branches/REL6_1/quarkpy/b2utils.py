@@ -380,6 +380,15 @@ def RotateCpCounter(i, cp):
     if i==3:
         return RotateCpCounter1(RotateCpCounter2(cp))
         
+def twistedRows(cp1, cp2):
+    lr, lc = len(cp1)-1, len(cp1[0])-1
+    e1, e2 = cp1[0][lc], cp1[lr][lc]
+    b1, b2 = cp2[0][0], cp2[lr][0]
+    if abs(e1-b1)>abs(e1-b2) and abs(e2-b2)>abs(e2-b1):
+       return 1
+    return 0
+      
+      
 def joinCp((tp1,X), cp1, (tp2,Y), cp2):
     "returns cp1 extended to include cp2, assumes preconditions"
 #    squawk(`tp1-P_BACK`)
@@ -387,7 +396,12 @@ def joinCp((tp1,X), cp1, (tp2,Y), cp2):
     cp2 = RotateCpCounter(P_FRONT-tp2, cp2)
 #    squawk(`cp1`)
 #    squawk(`cp2`)
-    ncp = map(lambda row1, row2,cp1=cp1,cp2=cp2:row1+row2[1:], cp1, cp2)
+    twisted = twistedRows(cp1,cp2)
+    if twisted:
+       cp1.reverse()
+    ncp = map(lambda row1, row2:row1+row2[1:], cp1, cp2)
+    if twisted:
+       ncp.reverse()
     return RotateCpCounter(tp1-P_BACK, ncp)
 
 
@@ -395,6 +409,9 @@ def joinCp((tp1,X), cp1, (tp2,Y), cp2):
 #
 #
 #$Log$
+#Revision 1.12  2000/07/24 12:47:40  tiglari
+#listCP function added
+#
 #Revision 1.11  2000/07/23 08:40:44  tiglari
 #faceTexFromCph removed; texPlaneFromCph added
 #
