@@ -1,4 +1,10 @@
-unit PaintPanel;
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+
+}unit PaintPanel;
 
 interface
 

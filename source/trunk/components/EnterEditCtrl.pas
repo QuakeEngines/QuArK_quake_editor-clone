@@ -1,3 +1,10 @@
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+
+}
 unit EnterEditCtrl;
 
 interface

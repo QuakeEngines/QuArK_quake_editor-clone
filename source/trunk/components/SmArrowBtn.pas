@@ -1,4 +1,10 @@
-unit SmArrowBtn;
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+
+}unit SmArrowBtn;
 
 interface
 

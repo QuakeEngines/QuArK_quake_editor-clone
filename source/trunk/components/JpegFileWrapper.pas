@@ -1,4 +1,10 @@
-unit JpegFileWrapper;
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+
+}unit JpegFileWrapper;
 
 interface
 
