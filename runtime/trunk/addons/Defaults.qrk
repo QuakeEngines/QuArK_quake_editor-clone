@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.221  2004/01/14 09:28:35  cdunde
+//To correct coding error for wedge brush
+//
 //Revision 1.220  2004/01/05 22:29:55  silverpaladin
 //Updated the WildWest configuration. Changed it so that the ShaderList was not overwritten by default and made the menu options more readable.
 //
@@ -5621,7 +5624,7 @@ QQRKSRC1
           face:f = { v = '0 0 -128 0 128 -128 128 0 -128' tex = "[auto]" m = "1" }
           face:f = { v = '0 0 128 128 0 128 0 128 128' tex = "[auto]" }
         }
-        wedge, 5 sides:p =
+        wedge:p =
         {
           ;desc = "a wedge in the horizontal position"
           face:f = { v = '-5.63757 -26.12108 32 -5.63757 -154.12110 32 124.89730 -26.12108 32' tex = "[auto]" }
@@ -5630,9 +5633,105 @@ QQRKSRC1
           face:f = { v = '86.17815 -86.22846 -0.00002 18.29591 -18.34623 -0.00002 86.07752 -86.32910 127.99990' tex = "[auto]" }
           face:f = { v = '-64 -63.57516 0 -64 -63.57516 128 -64 64.42484 0' tex = "[auto]" m = "1" }
         }
+        pyramid:p =
+        {
+          ;desc = "a pyramid with 4 sides and a base"
+          down:f =
+          {
+            v = '0 0 -32 0 128 -32 128 0 -32'
+            tex = "[auto]"
+            tv = '0 0 0 -128 128 0'
+          }
+          cut:f =
+          {
+            v = '0 0 96 57.24334 0 210.48670 0 128 96'
+            tex = "[auto]"
+            tv = '0 0 0 -128 -128 0'
+          }
+          cut:f =
+          {
+            v = '0 0 96 57.24334 0 -18.48668 0 128 96'
+            tex = "[auto]"
+            tv = '0 0 0 128 128 0'
+          }
+          cut:f =
+          {
+            v = '0 35.37833 25.24334 0 -21.86501 139.73000 128 35.37833 25.24334'
+            tex = "[auto]"
+            tv = '0 0 -128 0 0 -128'
+          }
+          cut:f =
+          {
+            v = '0 35.37833 166.75670 0 -21.86501 52.26997 128 35.37833 166.75670'
+            tex = "[auto]"
+            tv = '0 0 128 0 0 128'
+          }
+        }
+        tetrahedron:p =
+        {
+          ;desc = "a pyramid with 3 sides and a base"
+          north:f =
+          {
+            v = '0 0 80 0 -96 -64 112 96 -64'
+            tex = "[auto]"
+            tv = '-43.67456 204.07960 84.32544 204.07960 -43.67456 76.07958'
+          }
+          down:f =
+          {
+            v = '0 -96 -64 -112 96 -64 112 96 -64'
+            tex = "[auto]"
+            tv = '172.83590 -52.57535 64.28578 15.25432 240.66560 55.97481'
+          }
+          cut:f =
+          {
+            v = '0 0 80 -112 96 -64 0 -96 -64'
+            tex = "[auto]"
+            tv = '-36.55682 198.00990 91.44318 198.00990 -36.55679 70.00988'
+          }
+          cut:f =
+          {
+            v = '0 0 80 112 96 -64 -112 96 -64'
+            tex = "[auto]"
+            tv = '-58.46191 187.83180 69.53809 187.83230 -58.46140 59.83178'
+          }
+        }
       }
       Complex polyhedrons.qtxfolder =
       {
+        triangular prism:p =
+        {
+          ;desc = "a prism with a triangular base"
+          north:f =
+          {
+            v = '0 96 0 -192 96 0 0 96 192'
+            tex = "[auto]"
+            tv = '0 0 192 0 0 -192'
+          }
+          south:f =
+          {
+            v = '0 -96 0 192 -96 0 0 -96 192'
+            tex = "[auto]"
+            tv = '0 0 192 0 0 -192'
+          }
+          down:f =
+          {
+            v = '0 0 -48 192 0 -48 0 -192 -48'
+            tex = "[auto]"
+            tv = '0 0 0 -192 -192 0'
+          }
+          cut:f =
+          {
+            v = '-69.46625 0 -90.93250 -155.33130 0 -262.66260 -69.46625 -192 -90.93250'
+            tex = "[auto]"
+            tv = '0 0 0 192 192 0'
+          }
+          cut:f =
+          {
+            v = '-69.46627 0 186.93250 -155.33130 0 358.66260 -69.46627 -192 186.93250'
+            tex = "[auto]"
+            tv = '0 0 0 -192 -192 0'
+          }
+        }
         prism, 6 sides:p =
         {
           ;desc = "a prism with a hexagonal base"
