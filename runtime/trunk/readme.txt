@@ -1,3 +1,13 @@
+
+
+                 Patch4 to QuArK Snapshot of 2002ap20
+                 
+  * [tiglari] Mohaa map reading implemented, various map writing
+       bugs fixed
+       
+  * [nurail] JKII light path entities corrected
+
+
                  Patch3 to QuArK Snapshot of 2002ap29
 
    
