@@ -26,6 +26,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/07/30 11:21:03  tiglari
+put in pascal version of map saving flag code from mapquakemenu.py
+to make save flags apply when map is saved from  File menu.  Question:
+why did Armin put it in the Python in the first place?
+
 Revision 1.13  2000/07/19 18:23:26  decker_dk
 Read mapversion 220 maps (WC33 format)
 
@@ -802,7 +807,7 @@ expected one.
  { /tiglari }
  end;
 
- function ReadSquareTex4() : Double;
+ function ReadSquareTex4 : Double;
  begin
   ReadSymbol(sSquareBracketLeft);
   {:=NumericValue;}
