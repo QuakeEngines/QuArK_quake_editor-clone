@@ -159,8 +159,10 @@ this:
       sep: = {Typ="S" Txt=" "}
 </code>
 
-For a horizontal line rather than space, leave out the
-Txt part.
+The Txt part has three formats you can use:
+1) Txt="" gives a horizontal line separator
+2) Txt=" " just separates with a blank area (note the space)
+3) Txt="Your Label" will print the text in bold lettering
 
 So next comes initialization of the dialog box object:
 
