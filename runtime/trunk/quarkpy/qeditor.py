@@ -166,6 +166,14 @@ def MiddleDepth(view):
     min, max = view.depth
     return (min+max)*0.5
 
+#
+# The coordinate axes
+#
+
+X_axis = quarkx.vect(1,0,0)
+Y_axis = quarkx.vect(0,1,0)
+Z_axis = quarkx.vect(0,0,1)
+
 
 #
 # Standard Matrix computation
@@ -313,7 +321,7 @@ def orthogonalvect(vect, view=None):
         angle = 0       # if view is None, or if view has no "angle", use a default value
     return quarkx.vect(math.cos(angle), math.sin(angle), 0)
 
-def bestaxes(n, view):
+def bestaxes(n, view=None):
   v1 = orthogonalvect(n, view)
   v2 = (n^v1).normalized
   return v1, v2
@@ -1463,6 +1471,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.8  2001/06/17 21:05:27  tiglari
+#fix button captions
+#
 #Revision 1.7  2001/06/16 03:20:48  tiglari
 #add Txt="" to separators that need it
 #
