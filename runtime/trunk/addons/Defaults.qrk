@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.155  2001/07/09 09:52:32  tiglari
+//update version #
+//
 //Revision 1.154  2001/07/08 08:33:06  tiglari
 //reinstated elbow button for path dup; added 'level' spec for path dup and
 //  instance (elbow) dup.
@@ -1298,7 +1301,7 @@ QQRKSRC1
         RunMapCmdLine = " %s"
         AddOns = "DataCS.qrk"
         AlwaysPak = ""
-        PakExt = ".csz"
+        PakExt = ".zip"
         LightFactor = '0.90000'
         3DLight = '512'
         Console = "1"
