@@ -99,6 +99,63 @@ def CSG(editor, plist, sublist, undomsg, undo=None):
 
     editor.ok(undo, undomsg)
 
+def polyintersects(p1, p2):
+    p = quarkx.newobj("test:p")
+    for sp in (p1, p2):
+        for face in sp.faces:
+            p.appenditem(face.copy())
+    return len(p.faces)
+
+mat_shrink=quarkx.matrix((0.99,0,0), (0,0.99,0), (0,0,0.99))
+
+#
+# CSG for non-map stuff
+#
+def CSGlist(plist, sublist):
+
+    # We compute the subtraction operation
+
+    source = plist
+    progr = quarkx.progressbar(508, len(sublist))
+    try:
+        for p in sublist:
+            tp = p.copy()
+            tp.linear(tp.origin, mat_shrink)
+ #           tp.shortname="shrunk"
+ #           undo = quarkx.action()
+ #           undo.put(p.parent,tp,p)
+
+            tplist = plist[:]
+            ignored = []
+            for targ in tplist[:]:
+              if not polyintersects(tp,targ):
+                tplist.remove(targ)
+                ignored.append(targ)
+            plist = p.subtractfrom(tplist)+ignored
+            progr.progress()
+    finally:
+        progr.close()
+
+    # We add the pieces of broken polyhedrons into the map
+    for p in plist:
+        if p.pieceof is not None:    # p comes from a polyhedron in 'source' that was broken into pieces
+            p.pieceof.parent.appenditem(p)
+#            undo.put(p.pieceof.parent, p, p.pieceof)
+            # we put 'p' into the group that was the parent of the polyhedron
+            # whose 'p' is a piece of, and we insert 'p' right before it
+            # (it will be removed anyway by the "exchange" command below,
+            #  so before or after doesn't matter).
+
+    # If you feel like, you can add code so that when a single polyhedron is broken into
+    # several pieces, the pieces are put into a new group. You can also change the name
+    # of the pieces (by default, they all have the name of the original polyhedron).
+
+    # We remove the broken polyhedrons
+    for p in source:
+        if not (p in plist):     # original polyhedron was broken into pieces
+#            undo.exchange(p, None)   # remove it from the map
+            p.parent.removeitem(p)
+
 
 #DECKER-begin Code by tiglari
 def ExtWall1click(m):
@@ -303,6 +360,9 @@ quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2001/03/20 08:02:16  tiglari
+# customizable hot key support
+#
 # Revision 1.3.4.1  2001/03/11 22:08:15  tiglari
 # customizable hot keys
 #
