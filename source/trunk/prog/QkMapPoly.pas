@@ -1932,12 +1932,16 @@ var
        (name: 'ladder'; pos: 29));
 
     {tiglari}
-    function CheckFieldDefault(const spec:String; const Q:QPixelSet) : String;
+    function CheckFieldDefault(const spec, linkspec:String; const Q:QPixelSet) : String;
     begin
-     if (F.Specifics.Values[spec]='') and (Q.Specifics.Values[spec]<>'') then
-       result:= Q.Specifics.Values[spec]
-     else
-       result:='0'
+      { fixed? by Armin }
+     Result:=F.Specifics.Values[spec];
+     if Result<>'' then   { if spec was found in the face, we are done }
+      Exit;
+     if Q<>Nil then   { is there a texture link to look into for default flags ? }
+      Result:=Q.Specifics.Values[linkspec];   { yes }
+     if Result='' then
+      Result:='0';      { if not found at all, supply a numeric default }
     end;
     {/tiglari}
 
@@ -2102,27 +2106,12 @@ var
                written into the map }
       if MJ=mjKingPin then
       begin
-       Q := GlobalFindTexture(F.NomTex,Nil);
-       if Q<>Nil then
-       begin { see comments to QkMap on what's going on here }
-         Q:=Q.LoadPixelSet;
-         {Query for Armin: this was stuck in to correspond
-           to something in the Sin stuff but it breaks things
-           because Q is QTextureLnk always comes out false.
-           What is the Sin version for?  Should anything like
-           it be here?
-         if not (Q is QTextureLnk) then
-           Q:=Nil;  }
-       end;
-       if Q=Nil then Q:=QTextureLnk.Create('', Nil);
-       {more Query for Armin: what's the Addref stuff
-         for? }
-       Q.AddRef(+1); try
-        S1:=CheckFieldDefault('Contents',Q);
-        S2:=CheckFieldDefault('Flags',Q);
-        S3:=CheckFieldDefault('Value',Q);
-        S:=S+' '+S1+' '+S2+' '+S3;
-       finally Q.AddRef(-1); end;
+       Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+       if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
+       S1:=CheckFieldDefault('Contents','c', Q);
+       S2:=CheckFieldDefault('Flags','f', Q);
+       S3:=CheckFieldDefault('Value','v', Q);
+       S:=S+' '+S1+' '+S2+' '+S3;
       end {\tiglari}
      else
       if MJ>=mjQuake2 then
