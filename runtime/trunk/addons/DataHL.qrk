@@ -27,6 +27,8 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-02-10   [CS] Added info_vip_start
+//
 // 2000-01-30   [CS] Added four new entities for Counter-Strike (Thanks to Necro & Lestat)
 //
 // 2000-01-17   [SB] Added Sabaneta 2050 entities and texture-links (Thanks to Jorge "ChackO" Santos)
@@ -705,6 +707,7 @@ QQRKSRC1
 	}
         CS Assassination.qtxfolder = {
                 func_vip_safetyzone:b   = { ;desc="VIP safety zone" ;incl = "trigpoly" }
+                info_vip_start:e        = { origin="0 0 0" angle="360" ;desc="VIP start" }
         }
         CS Escape.qtxfolder = {
                 func_escapezone:b       = { ;desc="Terrorist escape zone" ;incl = "trigpoly" }
@@ -12533,6 +12536,9 @@ QQRKSRC1
 			values ="0"$0D"1"$0D"2"
 		}
 	}
+        info_vip_start:form = {
+                t_player = !
+        }
         armoury_entity:form = {
                 bbox = '-16 -16 0 16 16 16'
                 item: = { typ="C" hint="Item"
