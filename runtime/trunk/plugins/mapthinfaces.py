@@ -62,7 +62,7 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
         }
 
           
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         buttons: = {
         Typ = "PM"
@@ -85,7 +85,7 @@ class ThinFaceDlg (quarkpy.dlgclasses.LiveEditDlg):
           Hint = "Faces that aren't wider than this are too thin."
         }
         
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -279,3 +279,6 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|This identifies brushes with faces that are suspiciously thin."))
 
 #$Log$
+#Revision 1.1  2001/05/21 11:58:26  tiglari
+#kickoff
+#

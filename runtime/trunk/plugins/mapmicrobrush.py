@@ -68,7 +68,7 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
         }
 
           
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         buttons: = {
         Typ = "PM"
@@ -92,7 +92,7 @@ class MicroKillDlg (quarkpy.dlgclasses.LiveEditDlg):
           Hint = "Brushes thinner than this will be nominated for removal"
         }
         
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -265,6 +265,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|This identifies brushes that are suspiciously small, at least in one dimension."))
 
 #$Log$
+#Revision 1.3  2001/05/21 11:56:51  tiglari
+#a bit of cleaning
+#
 #Revision 1.2  2001/02/11 08:04:15  tiglari
 #comments added, some cosmetics
 #

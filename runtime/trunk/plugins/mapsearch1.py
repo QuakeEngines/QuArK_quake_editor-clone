@@ -50,14 +50,14 @@ class SearchDlg(quarkpy.qmacro.dialogbox):
         self.sellist = editor.visualselection()
 
         src = quarkx.newobj(":")
-	if not self.sellist:
-	    src ["scope"] = "W"
-	    src ["scope$Items"] = "Whole map"
-	    src ["scope$Values"] = "W"
-	else:
-	    src ["scope"] = "W"  ## "S"
-	    src ["scope$Items"] = "Selection\nWhole map"
-	    src ["scope$Values"] = "S\nW"
+    if not self.sellist:
+        src ["scope"] = "W"
+        src ["scope$Items"] = "Whole map"
+        src ["scope$Values"] = "W"
+    else:
+        src ["scope"] = "W"  ## "S"
+        src ["scope$Items"] = "Selection\nWhole map"
+        src ["scope$Values"] = "S\nW"
 
         src["kind"] = "e,b"
         slist = ["All entities"]
@@ -142,7 +142,7 @@ class SearchByName(SearchDlg):
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-        sep: = {Typ="S"}
+        sep: = {Typ="S" Txt=""}
         ok:py = { }
         cancel:py = { }
       }
@@ -194,7 +194,7 @@ class SearchBySpec(SearchDlg):
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-        sep: = {Typ="S"}
+        sep: = {Typ="S" Txt=""}
         ok:py = { }
         cancel:py = { }
       }
@@ -239,6 +239,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #

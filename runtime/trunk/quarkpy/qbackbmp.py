@@ -35,11 +35,11 @@ class BackBmpDlg(qmacro.dialogbox):
         Caption = "Background image"
         info: = {Typ="S" Bold="0" Txt="use this feature to display a image"}
         info: = {Typ="S" Bold="0" Txt="from your scanner or from another program."}
-        sep: = {Typ="S"}
+        sep: = {Typ="S" Txt=""}
         filename: = {Typ="EP" DefExt="bmp" Txt="Background image file"}
         center: = {Typ="EF3" Txt="Coordinates of the center"}
         scale: = {Typ="EF1" Txt="Scale"}
-        sep: = {Typ="S"}
+        sep: = {Typ="S" Txt=""}
         ok:py = { }
         no:py = { }
       }
@@ -94,5 +94,8 @@ class BackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

@@ -168,7 +168,7 @@ class VtxDragDlg(quarkpy.dlgclasses.LiveEditDlg):
         Hint="If this is checked, vertexes move in the plane of a locked face, but not necessarily to where you specify"
         }
 
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -858,6 +858,9 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.2  2001/05/24 22:28:05  tiglari
+# fix tuple bug, improved anti-drift
+#
 # Revision 1.1  2001/04/01 22:45:31  tiglari
 # initial commit
 #

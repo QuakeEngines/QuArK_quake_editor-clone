@@ -96,7 +96,7 @@ class ConfigDialog(qmacro.dialogbox):
           Hint="the angle that each rotation makes the objects turn"
         }
         sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S"}    // a separator line
+        sep: = {Typ="S" Txt=""}    // a separator line
         ok:py = { }
         cancel:py = { }
       }
@@ -199,5 +199,8 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

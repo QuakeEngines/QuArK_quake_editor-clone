@@ -89,7 +89,7 @@ class TexPosDlg (quarkpy.dlgclasses.LiveEditDlg):
         }
         
       
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -176,6 +176,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.3  2000/07/24 09:18:11  tiglari
+# Put texture-position dialog into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

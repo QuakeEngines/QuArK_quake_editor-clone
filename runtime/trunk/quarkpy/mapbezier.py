@@ -59,12 +59,12 @@ class CornerTexPos(dlgclasses.LiveEditDlg):
          Hint = "s t texture coordinates for m,n corner"
         }
 
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         fixed: ={Txt="fixed int." Typ="X"
                 }
                 
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
 
 
@@ -97,7 +97,7 @@ class CPTexPos(dlgclasses.LiveEditDlg):
         moveall: ={Txt="move all" Typ="X"
                    Hint = "If this is checked, whole texture is shifted"}
         
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -910,6 +910,9 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.34  2001/02/07 18:40:47  aiv
+#bezier texture vertice page started.
+#
 #Revision 1.33  2001/01/15 21:56:29  tiglari
 #remove useless `subdiv' menu item (old test code, methinks).
 #`picking' extended to drag (drag one picked CP now drags all)

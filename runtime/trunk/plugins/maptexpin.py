@@ -94,7 +94,7 @@ class VtxPinDlg(quarkpy.dlgclasses.placepersistent_dialogbox):
         pin:= { Txt = "pin:" Typ = "ER"
                    Hint = "# vertex being pinned (read-only)" }
 
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
         cancel:py = { }

@@ -99,7 +99,7 @@ class SlideDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "Object forced to grid after movement"
         }
 
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
 
@@ -284,6 +284,9 @@ quarkpy.mapentities.BrushEntityType.menu = newbrushmenu
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #

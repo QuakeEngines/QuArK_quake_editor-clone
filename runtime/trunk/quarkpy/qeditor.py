@@ -440,7 +440,7 @@ class XYZDialog(SimpleCancelDlgBox):
           SelectMe="1"
         }
         sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S"}    // a separator line
+        sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = { }
       }
     """
@@ -480,7 +480,7 @@ class CustomGridDlgBox(SimpleCancelDlgBox):
           SelectMe="1"       // WARNING: be careful when using this
         }
         sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S"}    // a separator line
+        sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = { }
       }
     """
@@ -540,7 +540,7 @@ class CustomZoomDlgBox(SimpleCancelDlgBox):
         info: = {Typ="S" Bold="0" Txt="down the shift key and use the right button,"}
         info: = {Typ="S" Bold="0" Txt="or press and hold down both buttons together."}
         //sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S"}    // a separator line
+        sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = { }     // the cancel button
       }
     """
@@ -1463,6 +1463,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.6  2001/03/02 19:35:02  decker_dk
+#Changed Help2()/Help3() to direct to the infobase files.
+#
 #Revision 1.5  2001/01/26 19:06:35  decker_dk
 #Better layout of zoom-list texts.
 #

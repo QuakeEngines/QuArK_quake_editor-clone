@@ -14,6 +14,9 @@ Info = {
    "author e-mail": "tiglari@planetquake.com",
    "quark":         "Quark 6.3" }
 
+#
+#  Lots of design suggestions by quantum_red.
+#
 
 import quarkx
 #
@@ -169,7 +172,7 @@ class NameDialog(SimpleCancelDlgBox):
           Typ="E"
         }
         sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S"}    // a separator line
+        sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = { }
       }
     """
@@ -268,7 +271,7 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
         }
 
           
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         buttons: = {
         Typ = "PM"
@@ -286,7 +289,7 @@ class FindCameraPosDlg(dlgclasses.LiveEditDlg):
           Txt = "# found"
         }
 
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -396,6 +399,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.3  2001/06/16 02:44:09  tiglari
+# Camera Position finder dialog, cycle-in group with PgUp/Down+'C'
+#
 # Revision 1.2  2001/06/14 12:16:47  tiglari
 # nameing dialog, multiple view support (pick last clicked on)
 #
