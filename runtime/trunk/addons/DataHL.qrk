@@ -29,6 +29,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.26  2000/12/19 21:10:47  decker_dk
+//Added rendermode to func_rot_button brush-entity
+//
 //Revision 1.25  2000/11/19 15:34:08  decker_dk
 //Uncommented some conflicting equal texture-names
 //
@@ -48,6 +51,9 @@ QQRKSRC1
 //Added CVS revision-history
 //
 // ----------- MANUAL REVISION HISTORY ------------
+//
+// 2000-12-22   [SVC] Added Sven-Coop entities (Thanks to "Jon Adams")
+//              [-] Misc. 'spawnflags' changes
 //
 // 2000-11-19   [-] Misc. uncommenting of texture-links for modifications, which conflicted with HalfLife.WAD
 //                   (Thanks to "Vlask")
@@ -334,8 +340,7 @@ QQRKSRC1
                 info_player_coop:e              = { t_orig_ang=! ;desc = "Cooperative start" }
                 info_player_deathmatch:e        = { t_orig_ang=! ;desc = "Deathmatch start" }
         }
-        Weapons & Ammo.qtxfolder =
-        {
+        Weapons & Ammo.qtxfolder = {
                 weapon_357:e                    = { t_orig_ang=! ;desc = "357 Handgun" }
                 weapon_9mmAR:e                  = { t_orig_ang=! ;desc = "9mm Assault Rifle" }
                 weapon_9mmhandgun:e             = { t_orig_ang=! ;desc = "9mm Handgun" }
@@ -363,8 +368,7 @@ QQRKSRC1
                 ammo_gaussclip:e                = { t_orig_ang=! ;desc = "Gauss Gun Ammo" }
                 ammo_rpgclip:e                  = { t_orig_ang=! ;desc = "RPG Ammo" }
 
-                Weapon & Ammo Synonyms.qtxfolder =
-                {
+                Weapon & Ammo Synonyms.qtxfolder = {
                         weapon_glock:e          = { t_orig_ang=! ;desc = "...same as 9mm Handgun" }
                         weapon_mp5:e            = { t_orig_ang=! ;desc = "...same as 9mm Assault Rifle" }
                         weapon_python:e         = { t_orig_ang=! ;desc = "...same as 357 Handgun" }
@@ -581,8 +585,7 @@ QQRKSRC1
     {
         ;desc = "Send additions/corrections to decker@post1.tele.dk"
 
-        OP4 Weapons & Ammo.qtxfolder =
-        {
+        OP4 Weapons & Ammo.qtxfolder = {
                 weapon_pipewrench:e     = { t_orig_ang=! ;desc="Pipe Wrench" }
                 weapon_knife:e          = { t_orig_ang=! ;desc="Knife" }
                 weapon_grapple:e        = { t_orig_ang=! ;desc="Barnacle Grapple" }
@@ -597,14 +600,12 @@ QQRKSRC1
                 ammo_762:e              = { t_orig_ang=! ;desc="Sniper Ammo" }
                 ammo_spore:e            = { t_orig_ang=! ;desc="Spore Ammo" }
         }
-
         OP4 Env_ entities.qtxfolder = {
                 env_blowercannon:e              = { origin="0 0 0" ;desc="Blower Cannon" }
                 env_electrified_wire:e          = { origin="0 0 0" ;desc="Electrified Wire" segments="16" sparkfrequency="3" bodysparkfrequency="3" lightningfrequency="3" xforce="80000" yforce="80000" zforce="80000" endingmodel="models/wire_copper16.mdl" bodymodel="models/wire_black16.mdl" }
                 env_rope:e                      = { origin="0 0 0" ;desc="Rope" segments="16" endingmodel="models/rope16.mdl" bodymodel="models/rope16.mdl" }
                 env_spritetrain:e               = { origin="0 0 0" ;desc="Sprite Train" model="sprites/glow01.spr" speed="64" }
         }
-
         OP4 Func_ entities.qtxfolder = {
                 op4mortar:e                     = { origin="0 0 0" ;desc="Op4 Mortar" }
                 func_op4mortarcontroller:b      = {                ;desc="Op4 Mortar Controller" ;incl="trigpoly" }
@@ -614,18 +615,15 @@ QQRKSRC1
                 func_tankrocket_of:b            = { angle="360"    ;desc="Brush Rocket Turret" t_originpoly = ! yawrate="30" yawrange="180" yawtolerance="15" pitchtolerance="5" spritescale="1" firerate="1" persistence="1" enemytype="1" }
                 func_tankmortar_of:b            = { angle="360"    ;desc="Brush Mortar Turret" t_originpoly = ! yawrate="30" yawrange="180" yawtolerance="15" pitchtolerance="5" spritescale="1" firerate="1" persistence="1" enemytype="1" }
         }
-
         OP4 Info_ entities.qtxfolder = {
                 info_displacer_xen_target:e     = { origin="0 0 0" ;desc="Displacer XEN Target" }
                 info_displacer_earth_target:e   = { origin="0 0 0" ;desc="Displacer EARTH Target" }
                 info_pitworm_steam_lock:e       = { origin="0 0 0" ;desc="Pitworm Steam Lock" }
         }
-
         OP4 Item_ entities.qtxfolder = {
                 item_generic:e          = { t_orig_ang=! ;desc="Generic scenery item" sequencename="idle" model="models/egg.mdl" }
                 item_nuclearbomb:e      = { t_orig_ang=! ;desc="Nuclear Bomb" wait="1" }
         }
-
         OP4 Monster_ entities.qtxfolder = {
                 monster_alien_babyvoltigore:e           = { t_orig_ang=! ;desc="Baby Voltigore" }
                 monster_alien_voltigore:e               = { t_orig_ang=! ;desc="Voltigore" }
@@ -662,13 +660,11 @@ QQRKSRC1
                 monster_shocktrooper:e                  = { t_orig_ang=! ;desc="Shock Trooper" }
                 pitworm_gibshooter:e                    = { t_orig_ang=! ;desc="Pitworm Gib Shooter" }
         }
-
         OP4 Trigger_ entities.qtxfolder = {
                 trigger_geneworm_hit:b  = {                ;desc="Trigger GeneWorm Hit" ;incl="trigpoly" }
                 trigger_playerfreeze:e  = { origin="0 0 0" ;desc="Trigger Player Freeze" }
                 trigger_xen_return:b    = {                ;desc="Return To Earth (self-tele)" ;incl="trigpoly" }
         }
-
         OP4 CTF entities.qtxfolder = {
                 info_ctfdetect:e        = {              ;desc="CTF Detect" }
                 info_ctfspawn:e         = { t_orig_ang=! ;desc="Player CTF Start" }
@@ -1057,6 +1053,38 @@ QQRKSRC1
                 world_items:e            = { t_orig_ang=! ;desc = "World Items" }
         }
     }
+
+    Sven-Coop Entities.qtxfolder =
+    {
+        ;desc = "Send additions/corrections to mufasa@columbus.rr.com"
+
+        SVC Entities.qtxfolder = {
+                squadmaker:e = { t_orig_ang=! ;desc="Squad Maker"
+                        monstercount="-1"
+                        respawn_as_playerally="0"
+                        delay="5"
+                        m_imaxlivechildren="5"
+                        weapons="1"
+                        change_rendermode="0"
+                        new_model=""
+                        new_body="-1"
+                        trigger_condition="0"
+                        notsolid="-1"
+                        gag="-1"
+                        is_squad_leader="0"
+                        squadname=""
+                }
+                trigger_random:e = { origin="0 0 0" ;desc="Trigger Random"
+                        target_count="4"
+                }
+                trigger_random_time:e = { origin="0 0 0" ;desc="Trigger Random Time"
+                        target_count="4"
+                        min_delay="3.0"
+                        max_delay="7.0"
+                }
+                weapon_uzi:e = { t_orig_ang=! ;desc="Single UZI (2 Uzis for Akimbo)" }
+        }
+    }
    }
   }
 
@@ -1067,8 +1095,8 @@ QQRKSRC1
 // Form-Template definitions
 //
         f_zhlt:form = {
-                zhlt_lightflags: = { typ="X1" txt="&" cap="Embedded Fix" hint="" }
-                zhlt_lightflags: = { typ="X2" txt="&" cap="Opaque" hint="" }
+                zhlt_lightflags: = { txt="&" typ="X1" cap="Embedded Fix" hint="" }
+                zhlt_lightflags: = { txt="&" typ="X2" cap="Opaque" hint="" }
         }
 
         t_pointentity:incl = {}
@@ -1129,14 +1157,15 @@ $0D"Hologram (Distort + fade)"
                              $0D"Additive"
                         Values ="0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"
                 }
-                renderamt: = { Txt="&" Hint="FX Amount (0 - 255)"$0D
-                     $0D"The renderamt value is depended on what rendermode is set to:"
-                     $0D"NORMAL -> As it says."
-                     $0D"COLOR -> The lower the value, the more clear(transparent) the color will be. 'Rendercolor' must be specified. Brush-texture is irrelevant."
-                     $0D"TEXTURE -> The lower the value, the more transparent the texture will be. 'Rendercolor' seems irrelevant."
-                     $0D"GLOW -> Not for brushes, only env_ entities! The lower the value, the less glow the sprite will show."
-                     $0D"SOLID -> For see-through textures (Rails). Value 0 is invisible, other values gives visibility."
-                     $0D"ADDITIVE -> Like COLOR, but 'add' the colors behind it, so it gives a special neat effect."
+                renderamt: = { Txt="&"
+                        Hint="FX Amount (0 - 255)"$0D
+                        $0D"The renderamt value is depended on what rendermode is set to:"
+                        $0D"NORMAL -> As it says."
+                        $0D"COLOR -> The lower the value, the more clear(transparent) the color will be. 'Rendercolor' must be specified. Brush-texture is irrelevant."
+                        $0D"TEXTURE -> The lower the value, the more transparent the texture will be. 'Rendercolor' seems irrelevant."
+                        $0D"GLOW -> Not for brushes, only env_ entities! The lower the value, the less glow the sprite will show."
+                        $0D"SOLID -> For see-through textures (Rails). Value 0 is invisible, other values gives visibility."
+                        $0D"ADDITIVE -> Like COLOR, but 'add' the colors behind it, so it gives a special neat effect."
                 }
                 rendercolor: = { Txt="&" Hint="FX Color (R G B)" }
         }
@@ -2038,7 +2067,7 @@ $0D"!WAR_YSEC_4"
                 t_rendermode = !
         }
 
-        f_op4_worldspawn_settings:form = {
+        f_op4_worldspawn:form = {
                 defaultctf: = { Txt="&" Typ="C" Hint="Default CTF"
                         items = "Not CTF map"
                              $0D"CTF map"
@@ -2050,11 +2079,11 @@ $0D"!WAR_YSEC_4"
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_worldspawn_settings:form"
+                        form = "f_op4_worldspawn:form"
                         Hint = "Opposing Force settings"
                 }
         }
-        f_op4_scientist_settings:form = {
+        f_op4_scientist:form = {
                 body: = { Typ="C" Txt="&"
                         Items = "Random"
                              $0D"Glasses"
@@ -2076,11 +2105,11 @@ $0D"!WAR_YSEC_4"
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_scientist_settings:form"
+                        form = "f_op4_scientist:form"
                         Hint = "Opposing Force settings"
                 }
         }
-        f_op4_suspicious_settings:form = {
+        f_op4_suspicious:form = {
                 suspicious: = { Typ="C" Hint="(Opposing Force)" Txt="&"
                         items = "No"
                              $0D"Yes"
@@ -2092,11 +2121,11 @@ $0D"!WAR_YSEC_4"
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_suspicious_settings:form"
+                        form = "f_op4_suspicious:form"
                         Hint = "Opposing Force settings"
                 }
         }
-        f_op4_body_settings:form = {
+        f_op4_body:form = {
                 body: = { Typ="C" Hint="(Opposing Force)" Txt="&"
                         items = "Standing"
                              $0D"Laying flat"
@@ -2108,43 +2137,43 @@ $0D"!WAR_YSEC_4"
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_body_settings:form"
+                        form = "f_op4_body:form"
                         Hint = "Opposing Force settings"
                 }
         }
-        f_op4_headcontroller_settings:form = {
-                spawnflags: = { Typ="X8" Cap="Head Controller" Txt="&" Hint = "(Opposing Force)" }
+        f_op4_headcontroller:form = {
+                spawnflags: = { Txt="&" Typ="X8" Cap="Head Controller" Hint = "(Opposing Force)" }
         }
         t_op4_headcontroller_settings:incl = {
                 op4: = {
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_headcontroller_settings:form"
+                        form = "f_op4_headcontroller:form"
                         Hint = "Opposing Force settings"
                 }
         }
-        f_op4_tentacle3_settings:form = {
-                spawnflags: = { Typ="X64" Cap="Tentacle3" Txt="&" Hint="(Opposing Force)" }
+        f_op4_tentacle3:form = {
+                spawnflags: = { Txt="&" Typ="X64" Cap="Tentacle3" Hint="(Opposing Force)" }
         }
         t_op4_tentacle3_settings:incl = {
                 op4: = {
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_tentacle3_settings:form"
+                        form = "f_op4_tentacle3:form"
                         Hint = "Opposing Force settings"
                 }
         }
-        f_op4_noresetentity_settings:form = {
-                spawnflags: = { Typ="X256" Cap="No Reset Entity" Txt="&" Hint="(Opposing Force)" }
+        f_op4_noresetentity:form = {
+                spawnflags: = { Txt="&" Typ="X256" Cap="No Reset Entity" Hint="(Opposing Force)" }
         }
         t_op4_noresetentity_settings:incl = {
                 op4: = {
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_noresetentity_settings:form"
+                        form = "f_op4_noresetentity:form"
                         Hint = "Opposing Force settings"
                 }
         }
@@ -2190,7 +2219,7 @@ $0D"models/wire_red16.mdl"
 $0D"models/wire_red24.mdl"
 $0D"models/wire_red32.mdl"
         }
-        f_op4_teleport_settings:form = {
+        f_op4_teleport:form = {
                 telesound: = { txt="&" Hint="Teleport Sound" }
         }
         t_op4_teleport_settings:incl = {
@@ -2198,7 +2227,7 @@ $0D"models/wire_red32.mdl"
                         Typ = "B"
                         Txt = "(OpposingForce)"
                         Cap = "Push..."
-                        form = "f_op4_teleport_settings:form"
+                        form = "f_op4_teleport:form"
                         Hint = "Opposing Force settings"
                 }
         }
@@ -2249,6 +2278,327 @@ $0D"models/wire_red32.mdl"
 		}
 	}
 
+//
+// Sven-Coop
+//
+        t_svc_HTML:incl = {
+            HTML = "http://www.svencoop.com"
+        }
+
+        f_svc_basetank:form = {
+            relation_player:    = { typ="C" txt="&" hint="R Player"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_none:    = { typ="C" txt="&" hint="R Unknown"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_machine:    = { typ="C" txt="&" hint="R Machine"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_human_passive:    = { typ="C" txt="&" hint="R Human Passive"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_human_militar:    = { typ="C" txt="&" hint="R Human Militar"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_alien_militar:    = { typ="C" txt="&" hint="R Alien Militar"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_alien_passive:    = { typ="C" txt="&" hint="R Alien Passive"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_alien_monster:    = { typ="C" txt="&" hint="R Alien Monster"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_alien_prey:    = { typ="C" txt="&" hint="R Alien Prey"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_alien_predator:    = { typ="C" txt="&" hint="R Alien Predator"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_insect:    = { typ="C" txt="&" hint="R Insect"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_player_ally:    = { typ="C" txt="&" hint="R Player Ally"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_player_bioweapon:    = { typ="C" txt="&" hint="R Player BioWeapon"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+            relation_monster_bioweapon:    = { typ="C" txt="&" hint="R Monster BioWeapon"
+                items =
+                       "Ally"
+                    $0D"Friend"
+                    $0D"No Relation"
+                    $0D"Dislike"
+                    $0D"Hate"
+                    $0D"Nemesis"
+                values =
+                       "-2"
+                    $0D"-1"
+                    $0D"0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+            }
+        }
+        t_svc_basetank:incl = {
+                svc: = {
+                    Typ = "B"
+                    Txt = "(Sven-Coop)"
+                    Cap = "Push..."
+                    form = "f_svc_basetank:form"
+                    Hint = "Sven-Coop settings"
+                }
+        }
+
+        f_svc_monster_barney:form = {
+            is_player_ally:    = { typ="C" txt="&" hint="Is Player Ally"
+                items =
+                       "No"
+                    $0D"Yes"
+                values =
+                       "1"
+                    $0D"0"
+            }
+        }
+        t_svc_monster_barney:incl = {
+                svc: = {
+                    Typ = "B"
+                    Txt = "(Sven-Coop)"
+                    Cap = "Push..."
+                    form = "f_svc_monster_barney:form"
+                    Hint = "Sven-Coop settings"
+                }
+        }
+
+        f_svc_monster_grunt_repel:form = {
+            weapons:    = { typ="C" txt="&" hint="Weapons"
+                items =
+                       "9mmAR"
+                    $0D"9mmAR + HG"
+                    $0D"9mmAR + GL"
+                    $0D"Shotgun"
+                    $0D"Shotgun + HG"
+                values =
+                       "1"
+                    $0D"3"
+                    $0D"5"
+                    $0D"8"
+                    $0D"10"
+            }
+        }
+        t_svc_monster_grunt_repel:incl = {
+                svc: = {
+                    Typ = "B"
+                    Txt = "(Sven-Coop)"
+                    Cap = "Push..."
+                    form = "f_svc_monster_grunt_repel:form"
+                    Hint = "Sven-Coop settings"
+                }
+        }
+
+        f_svc_monster_osprey:form = {
+            health:    = { txt="&" hint="Health" }
+        }
+        t_svc_monster_osprey:incl = {
+                svc: = {
+                    Typ = "B"
+                    Txt = "(Sven-Coop)"
+                    Cap = "Push..."
+                    form = "f_svc_monster_osprey:form"
+                    Hint = "Sven-Coop settings"
+                }
+        }
+
+        f_svc_monstermaker:form = {
+            respawn_as_playerally:    = { typ="C" txt="&" hint="Make Player Allys"
+                items =
+                       "NO"
+                    $0D"YES"
+                values =
+                       "0"
+                    $0D"1"
+            }
+        }
+        t_svc_monstermaker:incl = {
+                svc: = {
+                    Typ = "B"
+                    Txt = "(Sven-Coop)"
+                    Cap = "Push..."
+                    form = "f_svc_monstermaker:form"
+                    Hint = "Sven-Coop settings"
+                }
+        }
 //
 //
 //
@@ -2301,13 +2651,13 @@ $0D"models/wire_red32.mdl"
 //                                $0D"6"
                              $0D"7"$0D"8"$0D"9"$0D"10"$0D"11"
                 }
-                spawnflags: = { Typ="X1" Cap="WaitTillSeen" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Gag" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="MonsterClip" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Prisoner" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="WaitForScript" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Pre-Disaster" Txt="&" }
-                spawnflags: = { Typ="X512" Cap="Fade Corpse" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="WaitTillSeen" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Gag" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="MonsterClip" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Prisoner" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="WaitForScript" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Pre-Disaster" }
+                spawnflags: = { Txt="&" Typ="X512" Cap="Fade Corpse" }
                 t_rendermode = !
 		t_angles = !
         }
@@ -2317,7 +2667,7 @@ $0D"models/wire_red32.mdl"
         }
         t_squadmonster:incl = {
                 netname: = { Txt="&"  Hint="Squad Name" }
-                spawnflags: = { Typ="X32" Cap="Squad Leader" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Squad Leader" }
         }
         t_op4_suspicious:incl = {
                 t_op4_suspicious_settings = !
@@ -2578,12 +2928,12 @@ $0D"Hornet Gun"
                         Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"$0D"6"$0D"7"$0D"8"
                 }
                 message: = { Txt="&" Hint="Message if triggered" }
-                spawnflags: = { Typ="X1" Cap="Starts Open" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Don't Link" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Passable" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Toggle" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Use Only" Txt="&" }
-                spawnflags: = { Typ="X512" Cap="Monsters Can't" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Starts Open" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Don't Link" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Passable" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Toggle" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Use Only" }
+                spawnflags: = { Txt="&" Typ="X512" Cap="Monsters Can't" }
                 t_buttondoorsnds = !
                 t__minlight = !
                 t_rendermode = !
@@ -2598,12 +2948,12 @@ $0D"Hornet Gun"
                 t_targetname = !
                 t_target = !
                 t_globalname = !
-                spawnflags: = { Typ="X1" Cap="Active" Txt="&" }
-//Removed?      spawnflags: = { Typ="X2" Cap="Player" Txt="&" }
-//Removed?      spawnflags: = { Typ="X4" Cap="Humans" Txt="&" }
-//Removed?      spawnflags: = { Typ="X8" Cap="Aliens" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Only Direct" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Controllable" Txt="&" Hint="Players can control it (Remember to have a 'func_tankcontrols' target this object)" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Active" }
+//Removed?      spawnflags: = { Txt="&" Typ="X2" Cap="Player" }
+//Removed?      spawnflags: = { Txt="&" Typ="X4" Cap="Humans" }
+//Removed?      spawnflags: = { Txt="&" Typ="X8" Cap="Aliens" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Only Direct" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Controllable" Hint="Players can control it (Remember to have a 'func_tankcontrols' target this object)" }
                 t_gamemaster = !
                 yawrate: = { Txt="&" Hint="Yaw rate (the higher value the faster it moves. 600 is good for deathmatch)" }
                 yawrange: = { Txt="&" Hint="Yaw range (how many degrees it can turn to the left and right)" }
@@ -2642,6 +2992,7 @@ $0D"Hornet Gun"
                 t_rendermode = !
 		t_angles = !
                 t_tfc_settings = !
+                t_svc_basetank = !
         }
         t_platsound:incl = {
                 movesnd: = { Typ="C" Txt="&"
@@ -2683,12 +3034,12 @@ $0D"Hornet Gun"
                 toptrack: = { Txt="&" Hint="Top track (targetname of a 'path_track' object)" }
                 bottomtrack: = { Txt="&" Hint="Bottom track (targetname of a 'path_track' object)" }
                 speed: = { Txt="&" Hint="Move/Rotate speed" }
-                spawnflags: = { Typ="X1" Cap="Auto Activate Train" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Re-link track" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Start at Bottom" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Rotate Only" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Auto Activate Train" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Re-link track" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Start at Bottom" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Rotate Only" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Y Axis" }
                 t_platsound = !
                 t_rendermode = !
         }
@@ -2706,9 +3057,9 @@ $0D"Hornet Gun"
                              $0D"3"
                         Values = "0"$0D"1"$0D"2"$0D"3"
                 }
-                spawnflags: = { Typ="X1" Cap="Monsters" Txt="&" Hint="Triggered by monsters" }
-                spawnflags: = { Typ="X2" Cap="No Clients" Txt="&" Hint="Not triggered by players" }
-                spawnflags: = { Typ="X4" Cap="Pushables" Txt="&" Hint="Activated by pushable objects" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Monsters" Hint="Triggered by monsters" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="No Clients" Hint="Not triggered by players" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Pushables" Hint="Activated by pushable objects" }
                 t_tfc_settings = !
         }
         t_scientistbody:incl = {
@@ -2728,7 +3079,7 @@ $0D"Hornet Gun"
                 m_flVelocity: = { Txt="&" Hint="How fast the gibs are fired" }
                 m_flVariance: = { Txt="&" Hint="Course Variance" }
                 m_flGibLife: = { Txt="&" Hint="Time in seconds for gibs to live +/- 5%" }
-                spawnflags: = { Typ="X1" Cap="Repeatable" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Repeatable" }
 		t_angles = !
         }
 //
@@ -6261,12 +6612,12 @@ $0D"!NEAR_WAR12"
                 lfomodpitch: = { Txt="&" Hint="LFO mod pitch (0-100)" }
                 lfomodvol: = { Txt="&" Hint="LFO mod vol (0-100)" }
                 cspinup: = { Txt="&" Hint="Incremental spinup count" }
-                spawnflags: = { Typ="X1" Cap="Play Everywhere" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Small Radius" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Medium Radius" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Large Radius" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Start Silent" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Is NOT Looped" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Play Everywhere" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Small Radius" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Medium Radius" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Large Radius" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Start Silent" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Is NOT Looped" }
         }
 
         ammo_357:form = { t_ammo = ! }
@@ -6347,7 +6698,7 @@ $0D"!NEAR_WAR12"
         item_security:form = { t_item = ! }
         item_suit:form = {
                 t_item = !
-                spawnflags: = { Typ="X1" Cap="Short Logon" Txt="&" Hint="Skips all the HEV status-check announcements" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Short Logon" Hint="Skips all the HEV status-check announcements" }
                 t_op4_body_settings = !
         }
         world_items:form = {
@@ -6573,15 +6924,15 @@ $0D"sprites/zbeam6.spr"         // Beam
                 framestart: = { Txt="&" Hint="Starting Frame" }
                 StrikeTime: = { Txt="&" Hint="Strike again time (secs)" }
                 damage: = { Txt="&" Hint="Damage / second" }
-                spawnflags: = { Typ="X1" Cap="Start On" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Toggle" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Random Strike" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Ring" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="StartSparks" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="EndSparks" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Decal End" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Shade Start" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Shade End" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start On" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Toggle" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Random Strike" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Ring" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="StartSparks" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="EndSparks" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Decal End" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Shade Start" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Shade End" }
         }
         env_beverage:form = {
                 bbox = '-4 -4 -4 4 4 4'
@@ -6607,10 +6958,10 @@ $0D"sprites/zbeam6.spr"         // Beam
                         Values = "0"$0D"1"
                 }
                 amount: = { Txt="&" Hint="Amount of blood (damage to simulate)" }
-                spawnflags: = { Typ="X1" Cap="Random Direction" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Blood Stream" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="On Player" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Spray decals" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Random Direction" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Blood Stream" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="On Player" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Spray decals" }
                 t_angles = !
         }
         env_bubbles:form = {
@@ -6618,27 +6969,27 @@ $0D"sprites/zbeam6.spr"         // Beam
                 density: = { Txt="&" Hint="Bubble density" }
                 frequency: = { Txt="&" Hint="Bubble frequency" }
                 current: = { Txt="&" Hint="Speed of Current" }
-                spawnflags: = { Typ="X1" Cap="Start Off" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start Off" }
                 t_brushentity = !
         }
         env_explosion:form = {
                 t_targetname = !
                 iMagnitude: = { Txt="&" Hint="Magnitude" }
-                spawnflags: = { Typ="X1" Cap="No Damage" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Repeatable" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="No Fireball" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="No Smoke" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="No Decal" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="No Sparks" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Damage" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Repeatable" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="No Fireball" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="No Smoke" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="No Decal" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="No Sparks" }
         }
         env_fade_jailbreak:form = {
                 master: = { Txt="&" Hint="(Team) Master" }
         }
         env_fade:form = {
                 t_targetname = !
-                spawnflags: = { Typ="X1" Cap="Fade From" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Modulate" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Activator Only" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Fade From" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Modulate" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Activator Only" }
                 duration: = { Txt="&" Hint="Duration (seconds)" }
                 holdtime: = { Txt="&" Hint="Hold Fade (seconds)" }
                 renderamt: = { Txt="&" Hint="Fade Alpha" }
@@ -6653,7 +7004,7 @@ $0D"sprites/zbeam6.spr"         // Beam
         }
         env_funnel:form = {
                 t_targetname = !
-                spawnflags: = { Typ="X1" Cap="Reverse" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Reverse" }
         }
         env_global:form = {
                 Help =  "Changes global state variable when triggered."
@@ -6677,7 +7028,7 @@ $0D"sprites/zbeam6.spr"         // Beam
                              $0D"Dead"
                         Values = "0"$0D"1"$0D"2"
                 }
-                spawnflags: = { Typ="X1" Cap="Set Initial State" Txt="&"
+                spawnflags: = { Txt="&" Typ="X1" Cap="Set Initial State"
                         Hint=   "This must be enabled for the initial state to be set."
                              $0D"This is here mostly to allow global entities to be killed by the trigger"
                              $0D"without being affected by some initial state."
@@ -6747,10 +7098,10 @@ $0D"sprites/yelflare2.spr"
                 TextureScroll: = { Txt="&" Hint="Texture Scroll Rate (0-100)" }
                 framestart: = { Txt="&" Hint="Starting Frame" }
                 damage: = { Txt="&" Hint="Damage / second" }
-                spawnflags: = { Typ="X1" Cap="Start On" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="StartSparks" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="EndSparks" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Decal End" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start On" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="StartSparks" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="EndSparks" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Decal End" }
                 t_renderfx = !
                 t_angles = !
         }
@@ -6766,8 +7117,8 @@ $0D"sprites/yelflare2.spr"
                         form = "qrk_env_message_message:form"
                         Hint = "Lists of message names from TITLES.TXT"
                 }
-                spawnflags: = { Typ="X1" Cap="Play Once" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="All Clients" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Play Once" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="All Clients" }
                 messagesound: = { Txt="&"  Hint="path/filename of WAV" }
                 messagevolume: = { Txt="&" Hint="Volume 0-10" }
                 messageattenuation: = { Typ="C" Txt="&"
@@ -6787,18 +7138,18 @@ $0D"sprites/yelflare2.spr"
                      $0D"Can be applyed to monsters!"
                 t_target = !
                 t_targetname = !
-                spawnflags: = { Typ="X1" Cap="No Renderfx" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="No Renderamt" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="No Rendermode" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="No Rendercolor" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Renderfx" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="No Renderamt" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="No Rendermode" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="No Rendercolor" }
                 t_rendermode = !
         }
         env_shake:form = {
                 Help = "This will cause the screen to shake, possibly to simulate an earthquake or some other seismic event."
                 t_targetname = !
-                spawnflags: = { Typ="X1" Cap="GlobalShake" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="DisruptControl" Txt="&" Hint="(Probably does not work)" }
-                spawnflags: = { Typ="X4" Cap="In Air" Txt="&" Hint="(Probably does not work)" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="GlobalShake" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="DisruptControl" Hint="(Probably does not work)" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="In Air" Hint="(Probably does not work)" }
                 amplitude: = { Txt="&" Hint="Amplitude 0-16" }
                 radius: = { Txt="&" Hint="Effect radius" }
                 duration: = { Txt="&" Hint="Duration (seconds)" }
@@ -6955,8 +7306,8 @@ $0D"Weirdo 3"
         env_spark:form = {
                 MaxDelay: = { Txt="&" Hint="Max Delay" }
                 targetname: = { Txt="&"  Hint="Name" }
-                spawnflags: = { Typ="X32" Cap="Toggle" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Start ON" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Toggle" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start ON" }
                 t_angles = !
         }
         env_sprite:form = {
@@ -7273,8 +7624,8 @@ $0D"sprites/zbeam6.spr"
 $0D"sprites/zerogxplode.spr"
                 }
                 scale: = { Txt="&" Hint="Scale" }
-                spawnflags: = { Typ="X1" Cap="Start on" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Play Once" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start on" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Play Once" }
                 t_rendermode = !
                 t_angles = !
         }
@@ -7282,10 +7633,10 @@ $0D"sprites/zerogxplode.spr"
         func_breakable:form = {
                 t_targetname = !
                 t_breakable = !
-                spawnflags: = { Typ="X1" Cap="Only Trigger" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Touch" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Pressure" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Instant Crowbar" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Only Trigger" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Touch" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Pressure" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Instant Crowbar" }
                 t_rendermode = !
                 t_angles = !
                 t_brushentity = !
@@ -7317,10 +7668,10 @@ $0D"sprites/zerogxplode.spr"
                 }
                 wait: = { Txt="&"  Hint="Delay before reset (-1 = Stays pressed)" }
                 delay: = { Txt="&" Hint="Delay before trigger" }
-                spawnflags: = { Typ="X1" Cap="Don't move" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Toggle" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Sparks" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Touch Activates" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Don't move" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Toggle" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Sparks" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Touch Activates" }
                 t_buttondoorsnds = !
                 t__minlight = !
                 t_rendermode = !
@@ -7334,8 +7685,8 @@ $0D"sprites/zerogxplode.spr"
                      $0D"controlled in the polys face-properties."
                 t_targetname = !
                 t_globalname = !
-                spawnflags: = { Typ="X1" Cap="No Push" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Not Solid" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Push" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Not Solid" }
                 speed: = { Txt="&" Hint="Conveyor Speed" }
                 t__minlight = !
                 t_rendermode = !
@@ -7346,10 +7697,10 @@ $0D"sprites/zerogxplode.spr"
         func_door_rotating:form =
         {
                 distance: = { Txt="&" Hint="Distance (deg)" }
-                spawnflags: = { Typ="X2" Cap="Reverse Dir" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="One-Way" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Reverse Dir" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="One-Way" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Y Axis" }
                 t_door = !
         }
         func_friction:form = {
@@ -7364,7 +7715,7 @@ $0D"sprites/zerogxplode.spr"
                 target: = { Txt="&"  Hint="First stop target" }
                 message: = { Txt="&"  Hint="Fire on damage" }
                 health: = { Txt="&" Hint="Damage to Take" }
-                spawnflags: = { Typ="X1" Cap="Start On" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start On" }
                 t__minlight = !
                 t_rendermode = !
                 t_brushentity = !
@@ -7417,11 +7768,11 @@ $0D"sprites/zerogxplode.spr"
                 distance: = { Txt="&" Hint="Distance (deg)" }
                 damp: = { Txt="&" Hint="Damping (0-1000)" }
                 dmg: = { Txt="&" Hint="Damage inflicted when blocked" }
-                spawnflags: = { Typ="X1" Cap="Start ON" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Passable" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Auto-return" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start ON" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Passable" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Auto-return" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Y Axis" }
                 t__minlight = !
                 t_rendermode = !
                 t_angles = !
@@ -7430,7 +7781,7 @@ $0D"sprites/zerogxplode.spr"
         func_plat:form = {
                 t_targetname = !
                 t_globalname = !
-                spawnflags: = { Typ="X1" Cap="Toggle" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Toggle" }
                 height: = { Txt="&" Hint="Travel altitude (can be negative)" }
                 speed: = { Txt="&" Hint="Travel speed" }
                 t_platsound = !
@@ -7450,9 +7801,9 @@ $0D"sprites/zerogxplode.spr"
 //                           $0D"Chain Slow"
 //                      Values =""$0D"1"$0D"2"
 //              }
-                spawnflags: = { Typ="X1" Cap="Toggle" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Toggle" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Y Axis" }
                 rotation: = { Txt="&" Hint="Spin amount" }
                 t_platsound = !
                 t__minlight = !
@@ -7470,7 +7821,7 @@ $0D"sprites/zerogxplode.spr"
                              $0D"Player duck"
                         Values = "0"$0D"1"$0D"2"$0D"3"
                 }
-                spawnflags: = { Typ="X128" Cap="Breakable" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Breakable" }
                 friction: = { Txt="&" Hint="Friction (0-400)" }
                 buoyancy: = { Txt="&" Hint="Buoyancy" }
                 t__minlight = !
@@ -7503,12 +7854,12 @@ $0D"sprites/zerogxplode.spr"
                 wait: = { Txt="&"  Hint="Delay before reset (-1 = Stays pressed)" }
                 delay: = { Txt="&" Hint="Delay before trigger" }
                 distance: = { Txt="&" Hint="Distance (deg)" }
-                spawnflags: = { Typ="X1" Cap="Not solid" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Reverse Dir" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Toggle" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Touch Activates" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Not solid" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Reverse Dir" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Toggle" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Y Axis" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Touch Activates" }
                 t__minlight = !
                 t_angles = !
                 t_rendermode = !
@@ -7531,16 +7882,16 @@ $0D"sprites/zerogxplode.spr"
                         Values = "0"$0D"1"$0D"2"$0D"3"$0D"4"$0D"5"
                 }
                 message: = { Txt="&"  Hint="Path/filename.wav of WAV" }
-                spawnflags: = { Typ="X1" Cap="Start ON" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Reverse Direction" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Y Axis" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Acc/Dec" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Fan Pain" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Not Solid" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Small Radius" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Medium Radius" Txt="&" }
-                spawnflags: = { Typ="X512" Cap="Large Radius" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start ON" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Reverse Direction" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Y Axis" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Acc/Dec" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Fan Pain" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Not Solid" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Small Radius" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Medium Radius" }
+                spawnflags: = { Txt="&" Typ="X512" Cap="Large Radius" }
                 spawnorigin: = { Txt="&" Hint="X Y Z - Move here after lighting" }
                 dmg: = { Txt="&" Hint="Damage inflicted when blocked" }
                 t__minlight = !
@@ -7582,9 +7933,9 @@ $0D"sprites/zerogxplode.spr"
                 t_targetname = !
                 target: = { Txt="&" Hint="First stop target" }
                 t_globalname = !
-                spawnflags: = { Typ="X1" Cap="No Pitch (X-rot)" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="No User Control" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Passable" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Pitch (X-rot)" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="No User Control" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Passable" }
                 sounds: = { Typ="C" Txt="&" Hint="Sound"
                         Items = "(none)"
                              $0D"Rail 1"
@@ -7648,8 +7999,8 @@ $0D"sprites/zerogxplode.spr"
                 dmg: = { Txt="&" Hint="Damage on crush" }
                 skin: = { Txt="&" Hint="Contents" }
                 volume: = { Txt="&" Hint="Sound Volume 0.0 - 1.0" }
-                //  spawnflags: = { Typ="X1" Cap="Wait to re-trigger" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Not solid" Txt="&" }
+                //  spawnflags: = { Txt="&" Typ="X1" Cap="Wait to re-trigger" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Not solid" }
                 t__minlight = !
                 t_rendermode = !
         }
@@ -7666,14 +8017,14 @@ $0D"sprites/zerogxplode.spr"
         func_wall_toggle:form = {
                 t_targetname = !
                 t_globalname = !
-                spawnflags: = { Typ="X1" Cap="Starts Invisible" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Starts Invisible" }
                 t__minlight = !
                 t_rendermode = !
                 t_brushentity = !
         }
         func_water:form = {
-                spawnflags: = { Typ="X1" Cap="Starts Open" Txt="&" }
-                spawnflags: = { Typ="X256" Cap="Use Only" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Starts Open" }
+                spawnflags: = { Txt="&" Typ="X256" Cap="Use Only" }
                 skin: = { Typ="C" Txt="&" Hint="Contents"
                          Items = "Water"
                               $0D"Slime"
@@ -7756,8 +8107,8 @@ $0D"sprites/zerogxplode.spr"
                 t_targetname = !
                 t_target = !
                 t_killtarget = !
-                spawnflags: = { Typ="X1" Cap="Run To Node" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Wait Indefinitely" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Run To Node" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Wait Indefinitely" }
                 radius: = { Txt="&" Hint="Radius" }
                 reachdelay: = { Txt="&" Hint="Wait after approach" }
                 reachtarget: = { Txt="&" Hint="Fire on approach" }
@@ -7791,7 +8142,7 @@ $0D"sprites/zerogxplode.spr"
                 t_target = !
                 t_targetname = !
                 t_light = !
-                spawnflags: = { Typ="X1" Cap="Initially dark" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Initially dark" }
         }
         light_environment:form = {
                 pitch: = { Txt="&" Hint="Pitch" }
@@ -7810,7 +8161,7 @@ $0D"sprites/zerogxplode.spr"
                              $0D"Yes"
                         Values = "0"$0D"1"
                 }
-                spawnflags: = { Typ="X1" Cap="Initially dark" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Initially dark" }
                 t_light = !
                 t_angles = !
         }
@@ -7859,10 +8210,10 @@ $0D"monster_tripmine"
 $0D"monster_handgrenade"
                 }
                 netname: = { Txt="&"  Hint="Children's Name" }
-                spawnflags: = { Typ="X1" Cap="Start ON" Txt="&" }
-//                spawnflags: = { Typ="X2" Cap="PVS On/Off" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Cyclic" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="MonsterClip" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start ON" }
+//                spawnflags: = { Txt="&" Typ="X2" Cap="PVS On/Off" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Cyclic" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="MonsterClip" }
                 monstercount: = { Txt="&" Hint="How many monsters the monstermaker can create ( -1 = unlimited )" }
                 delay: = { Txt="&"
                         Hint="If delay is -1, new monster will be made when last monster dies."
@@ -7873,6 +8224,7 @@ $0D"monster_handgrenade"
                           $0D"-1 no limit"
                 }
                 t_angles = !
+                t_svc_monstermaker = !
         }
         monster_alien_controller:form = { t_monster = ! bbox = '-16 -16 0 16 16 72' }
         monster_alien_grunt:form = {
@@ -7884,13 +8236,13 @@ $0D"monster_handgrenade"
                 t_monster = !
                 bbox = '-16 -16 0 16 16 72'
                 t_squadmonster = !
-                spawnflags: = { Typ="X64" Cap="IgnorePlayer" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="IgnorePlayer" }
         }
         monster_apache:form = {
                 t_monster = !
                 bbox = '-360 -360 -172 360 360 8'
-                spawnflags: = { Typ="X8" Cap="NoWreckage" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Start Inactive" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="NoWreckage" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
         }
         monster_babycrab:form = { bbox = '-16 -16 0 16 16 36' }
         monster_barnacle:form = { bbox = '-16 -16 -36 16 16 0' }
@@ -7906,6 +8258,7 @@ $0D"monster_handgrenade"
                         Hint = "List of use/unuse sentences for Barney"
                 }
                 t_op4_suspicious = !
+                t_svc_monster_barney = !
         }
         monster_barney_dead:form = {
                 bbox = '-16 -16 0 16 16 72'
@@ -7946,13 +8299,15 @@ $0D"monster_handgrenade"
         monster_generic:form = {
                 t_monster = !
                 bbox = '-16 -16 -36 16 16 36'
-                spawnflags: = { Typ="X4" Cap="Not solid" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Not solid" }
                 t_op4_headcontroller_settings = !
                 model: = { Txt="&" Hint="Model" }
                 body: = { Txt="&" Hint="Body" }
         }
         monster_gman:form = { t_monster = ! bbox = '-16 -16 0 16 16 72'}
-        monster_grunt_repel:form = { t_monster = ! bbox = '-16 -16 0 16 16 72' }
+        monster_grunt_repel:form = { t_monster = ! bbox = '-16 -16 0 16 16 72'
+                t_svc_monster_grunt_repel = !
+        }
         monster_handgrenade:form = { t_weapon = ! t_targetx = ! }
         monster_headcrab:form = { t_monster = ! bbox = '-16 -16 0 16 16 36' }
         monster_hevsuit_dead:form = {
@@ -8019,15 +8374,16 @@ $0D"monster_handgrenade"
                              $0D"Ceiling Mount"
                         Values = "0"$0D"1"
                 }
-                spawnflags: = { Typ="X32" Cap="Autostart" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Start Inactive" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Autostart" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
                 t_tfc_turret = !
         }
         monster_nihilanth:form = { t_monster = ! bbox = '-192 -192 0 192 192 384' }
         monster_osprey:form = {
                 t_monster = !
                 bbox = '-480 -480 -112 480 480 24'
-                spawnflags: = { Typ="X64" Cap="Start Inactive" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
+                t_svc_monster_osprey = !
         }
         monster_rat:form = {
                 Help = "This monster does not have any AI"
@@ -8068,8 +8424,8 @@ $0D"monster_handgrenade"
         monster_sentry:form = {
                 t_monster = !
                 bbox = '-16 -16 0 16 16 72'
-                spawnflags: = { Typ="X32" Cap="Autostart" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Start Inactive" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Autostart" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
                 t_tfc_turret = !
         }
         monster_sitting_scientist:form = {
@@ -8095,7 +8451,7 @@ $0D"monster_handgrenade"
         monster_tripmine:form = {
                 t_monster = !
                 bbox = '-8 -8 -8 8 8 8'
-                spawnflags: = { Typ="X1" Cap="Instant On" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Instant On" }
         }
         monster_turret:form = {
                 t_monster = !
@@ -8105,8 +8461,8 @@ $0D"monster_handgrenade"
                              $0D"Ceiling Mount"
                         Values = "0"$0D"1"
                 }
-                spawnflags: = { Typ="X32" Cap="Autostart" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="Start Inactive" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Autostart" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
                 t_tfc_turret = !
         }
         monster_zombie:form = { t_monster = ! bbox = '-16 -16 0 16 16 72'}
@@ -8118,9 +8474,9 @@ $0D"monster_handgrenade"
                 wait: = { Txt="&" Hint="Wait here (secs)" }
                 speed: = { Txt="&" Hint="New Train Speed" }
                 yaw_speed: = { Txt="&" Hint="New Train rot. Speed" }
-                spawnflags: = { Typ="X1" Cap="Wait for retrigger" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Teleport" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Fire once" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Wait for retrigger" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Teleport" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Fire once" }
                 t_angles = !
         }
         path_track:form = {
@@ -8131,10 +8487,10 @@ $0D"monster_handgrenade"
                 message: = { Txt="&"  Hint="Fire on Pass (targetname of object to trigger when this point is passed)" }
                 netname: = { Txt="&"  Hint="Fire on Dead End" }
                 speed: = { Txt="&" Hint="New Train Speed" }
-                spawnflags: = { Typ="X1" Cap="Disabled" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Fire once" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Branch Reverse" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Disable train" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Disabled" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Fire once" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Branch Reverse" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Disable train" }
                 t_angles = !
         }
 
@@ -8143,7 +8499,7 @@ $0D"monster_handgrenade"
                 Help = "This trigger fires its targets when the level starts"
                 t_targetx = !
                 globalstate: = { Txt="&" Hint="Global State to Read" }
-                spawnflags: = { Typ="X1" Cap="Remove On fire" Txt="&" Hint="Remove trigger once it is activated" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove On fire" Hint="Remove trigger once it is activated" }
                 triggerstate: = {Typ="C" Txt="&" Hint="Trigger State"
                         Items = "Off"
                              $0D"On"
@@ -8162,9 +8518,9 @@ $0D"monster_handgrenade"
                 speed: = { Txt="&" Hint="Initial Speed" }
                 acceleration: = { Txt="&" Hint="Acceleration units/sec^2" }
                 deceleration: = { Txt="&" Hint="Stop Deceleration units/sec^2" }
-                spawnflags: = { Typ="X1" Cap="Start At Player" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Follow Player" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Freeze Player" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start At Player" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Follow Player" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Freeze Player" }
         }
         trigger_cdaudio:form = {
                 t_targetname = !
@@ -8210,8 +8566,8 @@ $0D"Track 30"
                 landmark: = { Txt="&"  Hint="info_landmark name" }
                 changetarget: = { Txt="&"  Hint="Change Target" }
                 changedelay: = { Txt="&" Hint="Delay before change target" }
-                spawnflags: = { Typ="X1" Cap="No Intermission" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="USE Only" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Intermission" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="USE Only" }
         }
         trigger_changetarget:form = {
                 Help = "This allows you to change the 'target' of the targeted entity to the value held in m_iszNewTarget"
@@ -8221,13 +8577,13 @@ $0D"Track 30"
         }
         trigger_counter:form = {
                 t_trigger = !
-                spawnflags: = { Typ="X1" Cap="No Message" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Message" }
                 count: = { Txt="&" Hint="Count before activation" }
         }
         trigger_endsection:form = {
                 t_targetname = !
                 section: = { Txt="&"  Hint="Section" }
-                spawnflags: = { Typ="X1" Cap="USE Only" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="USE Only" }
         }
         trigger_gravity:form = {
                 t_trigger = !
@@ -8271,11 +8627,11 @@ $0D"Slow freeze"
                         form = "qrk_trigger_hurt_damagetype:form"
                         Hint = "Mix damagetype"
                 }
-                spawnflags: = { Typ="X1" Cap="Target Once" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Start Off" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="No clients" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="FireClientOnly" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="TouchClientOnly" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Target Once" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Start Off" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="No clients" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="FireClientOnly" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="TouchClientOnly" }
                 t_tfc_settings = !
         }
         trigger_monsterjump:form = {
@@ -8292,15 +8648,15 @@ $0D"Slow freeze"
         trigger_once:form = { t_trigger = ! }
         trigger_push:form = {
                 t_trigger = !
-                spawnflags: = { Typ="X1" Cap="Once Only" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Start Off" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Once Only" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Start Off" }
                 speed: = { Txt="&" Hint="Speed of push" }
                 t_angles = !
         }
         trigger_relay:form = {
                 t_targetname = !
                 t_targetx = !
-                spawnflags: = { Typ="X1" Cap="Remove On fire" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove On fire" }
                 triggerstate: = {Typ="C" Txt="&" Hint="Trigger State"
                         Items = "Off"
                              $0D"On"
@@ -8324,7 +8680,7 @@ $0D"Slow freeze"
         }
         xen_hair:form = {
                 bbox = '-8 -8 0 8 8 32'
-                spawnflags: = { Typ="X1" Cap="Sync Movement" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Sync Movement" }
                 xen_plants = !
         }
         xen_plantlight:form = {
@@ -8352,8 +8708,8 @@ $0D"Slow freeze"
         button_target:form = {
                 t_target = !
                 t_master = !
-                spawnflags: = { Typ="X1" Cap="Use Activates" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Start On" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Use Activates" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Start On" }
                 t_rendermode = !
                 t_angles = !
         }
@@ -8408,11 +8764,11 @@ $0D"Slow freeze"
                 }
                 distance: = { Txt="&" Hint="Distance (deg)" }
                 returnspeed: = { Txt="&" Hint="Auto-return speed" }
-                spawnflags: = { Typ="X1" Cap="Door Hack" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Not useable" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Auto Return" Txt="&" }
-                spawnflags: = { Typ="X64" Cap="X Axis" Txt="&" }
-                spawnflags: = { Typ="X128" Cap="Y Axis" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Door Hack" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Not useable" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Auto Return" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="X Axis" }
+                spawnflags: = { Txt="&" Typ="X128" Cap="Y Axis" }
                 t__minlight = !
                 t_rendermode = !
                 t_angles = !
@@ -8430,7 +8786,7 @@ $0D"Slow freeze"
                      $0D"  mystuff#2    1.0"
                      $0D"  mystuff#Q    2.0"
                 t_targetname = !
-                spawnflags: = { Typ="X1" Txt="MultiThreaded" Cap="Yes" Hint="Starts a new multi_manager 'thread' whenever it is triggered."$0D"A default 'not multithreaded' multi_manager can not be triggered again when it is running."  }
+                spawnflags: = { Txt="&" Typ="X1" Cap="MultiThreaded" Hint="Starts a new multi_manager 'thread' whenever it is triggered."$0D"A default 'not multithreaded' multi_manager can not be triggered again when it is running."  }
         }
         multisource:form = {
                 Help =  "The multisource entity acts as an 'AND' gate."$0D
@@ -8503,10 +8859,10 @@ $0D"Slow freeze"
                 duration: = { Txt="&" Hint="Sentence Time" }
                 radius: = { Txt="&" Hint="Search Radius" }
                 refire: = { Txt="&" Hint="Delay Before Refire" }
-                spawnflags: = { Typ="X1" Cap="Fire Once" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Followers Only" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Interrupt Speech" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="Concurrent" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Fire Once" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Followers Only" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Interrupt Speech" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Concurrent" }
                 listener: = { Txt="&" Hint="Listener Entity" }
                 volume: = { Txt="&" Hint="Volume 0-10" }
                 attenuation: = { Typ="C" Txt="&" Hint="Sound Radius"
@@ -8559,11 +8915,11 @@ $0D"Slow freeze"
                              $0D"Ambush"
                         Values = "0"$0D"1"
                 }
-//Obsolete              spawnflags: = { Typ="X1" Cap="WaitTillSeen" Txt="&" }
-//Obsolete              spawnflags: = { Typ="X2" Cap="Exit Agitated" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Repeatable" Txt="&"
+//Obsolete              spawnflags: = { Txt="&" Typ="X1" Cap="WaitTillSeen" }
+//Obsolete              spawnflags: = { Txt="&" Typ="X2" Cap="Exit Agitated" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Repeatable"
                         Hint="This lets the sequence be triggered more than once." }
-                spawnflags: = { Typ="X8" Cap="Leave Corpse" Txt="&"
+                spawnflags: = { Txt="&" Typ="X8" Cap="Leave Corpse"
                         Hint="If a character dies in a script with this flag set, it's animation is frozen in the"
                           $0D"last position, and a 'corpse' is left. Otherwise, dead characters will fade out." }
 		t_angles = !
@@ -8594,20 +8950,20 @@ $0D"Slow freeze"
                 m_flRadius: = { Txt="&" Hint="Search Radius" }
                 m_flRepeat: = { Txt="&" Hint="Repeat Rate ms" }
                 t_m_fMoveTo = !
-//Obsolete              spawnflags: = { Typ="X1" Cap="WaitTillSeen" Txt="&" }
-//Obsolete              spawnflags: = { Typ="X2" Cap="Exit Agitated" Txt="&" }
-                spawnflags: = { Typ="X4" Cap="Repeatable" Txt="&"
+//Obsolete              spawnflags: = { Txt="&" Typ="X1" Cap="WaitTillSeen" }
+//Obsolete              spawnflags: = { Txt="&" Typ="X2" Cap="Exit Agitated" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Repeatable"
                         Hint="This lets the sequence be triggered more than once." }
-                spawnflags: = { Typ="X8" Cap="Leave Corpse" Txt="&"
+                spawnflags: = { Txt="&" Typ="X8" Cap="Leave Corpse"
                         Hint="If a character dies in a script with this flag set, it's animation is frozen in the"
                           $0D"last position, and a 'corpse' is left. Otherwise, dead characters will fade out." }
-                spawnflags: = { Typ="X32" Cap="No Interruptions" Txt="&"
+                spawnflags: = { Txt="&" Typ="X32" Cap="No Interruptions"
                         Hint="This means that the script will not stop for any reason, even if the player"
                           $0D"shoots the character, until the script completes." }
-                spawnflags: = { Typ="X64" Cap="Override AI" Txt="&"
+                spawnflags: = { Txt="&" Typ="X64" Cap="Override AI"
                         Hint="Sometimes a character's AI will keep them from playing a script because the"
                           $0D"character is fighting or something like that." }
-                spawnflags: = { Typ="X128" Cap="No Script Movement" Txt="&"
+                spawnflags: = { Txt="&" Typ="X128" Cap="No Script Movement"
                         Hint="This disables the code that tries to fixup the position of a character at"
                           $0D"the end of a script so the AI can properly take over. Only turn this on"
                           $0D"if the character jumps to a new position after playing the script." }
@@ -8641,7 +8997,7 @@ $0D"Slow freeze"
                         Hint = "Lists of sentence-groups from SENTENCES.TXT"
                 }
                 health: = { Txt="&" Hint="Volume (10 = loudest)" }
-                spawnflags: = { Typ="X1" Cap="Start Silent" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Start Silent" }
         }
         target_cdaudio:form = {
                 t_targetname = !
@@ -8687,8 +9043,8 @@ $0D"Track 30"
                 Help="The game_counter counts triggers and fires when it reaches its limit."
                 t_targetname = !
                 t_targetx = !
-                spawnflags: = { Typ="X1" Cap="Remove on fire" }
-                spawnflags: = { Typ="X2" Cap="Reset on fire" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove on fire" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Reset on fire" }
                 t_gamemaster = !
                 frags: = { Txt="&" Hint="Initial value" }
                 health: = { Txt="&" Hint="Limit value (Activates its targets when this value is hit)" }
@@ -8697,7 +9053,7 @@ $0D"Track 30"
                 Help="Sets the limit value of a game_counter"
                 t_targetname = !
                 t_target = !
-                spawnflags: = { Typ="X1" Cap="Remove on fire" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove on fire" }
                 t_gamemaster = !
                 frags: = { Txt="&" Hint="New limit value for the game_counter entity" }
         }
@@ -8713,7 +9069,7 @@ $0D"Track 30"
                   $0D"other team will start with HEV suits only."
                 t_targetname = !
                 master: = { Txt="&" Hint="Points to a game_team_master entity" }
-                spawnflags: = { Typ="X1" Cap="Use only" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Use only" }
                 weapon_357: = { Txt="&" Hint="Amount of item" }
                 weapon_9mmAR: = { Txt="&" Hint="Amount of item" }
                 weapon_9mmhandgun: = { Txt="&" Hint="Amount of item" }
@@ -8751,21 +9107,21 @@ $0D"Track 30"
                   $0D"who presses the button, gets fried."
                 t_targetname = !
                 dmg: = { Txt="&" Hint="Damage to apply" }
-                spawnflags: = { Typ="X1" Cap="Remove on fire" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove on fire" }
                 t_gamemaster = !
         }
         game_player_team:form = {
                 t_targetname = !
                 target: = { Txt="&" Hint="Must point to a game_team_master entity to use" }
                 t_gamemaster = !
-                spawnflags: = { Typ="X1" Cap="Remove on fire" }
-                spawnflags: = { Typ="X2" Cap="Kill player" }
-                spawnflags: = { Typ="X4" Cap="Gib player" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove on fire" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Kill player" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Gib player" }
         }
         game_score:form = {
                 t_targetname = !
-                spawnflags: = { Typ="X1" Cap="Allow negative" }
-                spawnflags: = { Typ="X2" Cap="Team points" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Allow negative" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Team points" }
                 points: = { Txt="&" Hint="Points to add (+/-)" }
                 t_gamemaster = !
         }
@@ -8775,7 +9131,7 @@ $0D"Track 30"
                   $0D"value."
                 t_targetname = !
                 t_targetx = !
-                spawnflags: = { Typ="X1" Cap="Remove on fire" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove on fire" }
                 triggerstate: = { Typ="C"
                         items = "Off"
                              $0D"On"
@@ -8789,13 +9145,13 @@ $0D"Track 30"
                 t_targetname = !
                 t_targetx = !
                 target: = { Txt="&" Hint="Points to a game_team_master entity" }
-                spawnflags: = { Typ="X1" Cap="Remove on fire" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove on fire" }
                 t_gamemaster = !
         }
         game_text:form = {
                 t_targetname = !
                 t_target = !
-                spawnflags: = { Typ="X1" Cap="To all players" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="To all players" }
                 message: = { Txt="&" Hint="Message text" }
                 x: = { Txt="&" Hint="X position (0.0 = left, 1.0 = right, -1 = center)" }
                 y: = { Txt="&" Hint="Y position (0.0 = top, 1.0 = bottom, -1 = center)" }
@@ -9259,9 +9615,9 @@ $0D"weapon_smokegrenade"
                 t_target = !
         }
 	func_vehicle:form = {
-		spawnflags: = { Typ="X1" Cap="No Pitch (X-rot)" Txt="&" }
-		spawnflags: = { Typ="X2" Cap="No User Control" Txt="&" }
-		spawnflags: = { Typ="X8" Cap="Passable" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No Pitch (X-rot)" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="No User Control" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="Passable" }
 		sounds: = { Typ="C" Txt="&" Hint="Sound"
                         Items = "(none)"
                              $0D"Car 1"
@@ -9291,23 +9647,23 @@ $0D"weapon_smokegrenade"
 //
         trigger_jail_release:form = {
                 t_targetname = !
-                spawnflags: = { Typ="X1" Txt="&" Cap="No default sounds" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="No default sounds" }
         }
         trigger_jail:form = {
-                spawnflags: = { Typ="X1" Txt="&" Cap="In jail" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="In jail" }
         }
         trigger_armory:form = {
-                spawnflags: = { Typ="X1" Txt="&" Cap="In armory" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="In armory" }
         }
         jail_team_master:form = {
                 t_targetname = !
                 t_targetx = !
-                spawnflags: = { Typ="X1" Txt="&" Cap="Remove On fire" }
-                spawnflags: = { Typ="X1024" Txt="&" Cap="Is free" }
-                spawnflags: = { Typ="X2048" Txt="&" Cap="In jail" }
-                spawnflags: = { Typ="X4096" Txt="&" Cap="On deathrow" }
-                spawnflags: = { Typ="X8192" Txt="&" Cap="In armory" }
-                spawnflags: = { Typ="X16384" Txt="&" Cap="Not in armory" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Remove On fire" }
+                spawnflags: = { Txt="&" Typ="X1024" Cap="Is free" }
+                spawnflags: = { Txt="&" Typ="X2048" Cap="In jail" }
+                spawnflags: = { Txt="&" Typ="X4096" Cap="On deathrow" }
+                spawnflags: = { Txt="&" Typ="X8192" Cap="In armory" }
+                spawnflags: = { Txt="&" Typ="X16384" Cap="Not in armory" }
 
                 triggerstate: = { Typ="C" Txt="&" Hint="Trigger State"
                         Items = "On"
@@ -9318,8 +9674,8 @@ $0D"weapon_smokegrenade"
                 teamindex: = { Txt="&" Hint="Team Index (-1 = no team)" }
         }
         jail_execute:form = {
-                spawnflags: = { Typ="X1" Txt="&" Cap="Leave Body" }
-                spawnflags: = { Typ="X2" Txt="&" Cap="No default sound" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Leave Body" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="No default sound" }
                 executedelay: = { Txt="&" Hint="Execution Delay" }
                 master: = { Txt="&" Hint="(Team) Master" }
         }
@@ -9468,9 +9824,9 @@ $0D"weapon_smokegrenade"
                 t_target = !
                 t_rendermode = !
                 t_globalname = !
-                spawnflags: = { Typ="X1" Cap="Active" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Only Direct" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Controllable" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Active" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Only Direct" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Controllable" }
                 master: = { Txt="&" Hint="(Team) Master" }
 
                 yawrate: = { Txt="&" Hint="Yaw rate" }
@@ -9579,13 +9935,13 @@ $0D"weapon_smokegrenade"
         monster_blkop_apache:form = {
                 bbox = '-360 -360 -172 360 360 8'
                 t_monster = !
-                spawnflags: = { Typ="X8 " Cap="NoWreckage" }
-                spawnflags: = { Typ="X64 " Cap="Start Inactive" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="NoWreckage" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
         }
         monster_blkop_osprey:form = {
                 bbox = '-480 -480 -112 480 480 24'
                 t_monster = !
-                spawnflags: = { Typ="X64 " Cap="Start Inactive" }
+                spawnflags: = { Txt="&" Typ="X64" Cap="Start Inactive" }
         }
         monster_cleansuit_scientist:form = {
                 bbox = '-16 -16 0 16 16 72'
@@ -9775,7 +10131,7 @@ $0D"weapon_smokegrenade"
                 bbox = '-16 -16 -36 16 16 36'
                 t_monster = !
                 t_rendermode = !
-                spawnflags: = { Typ="X4" Cap="Not solid" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X4" Cap="Not solid" }
         }
         monster_otis:form = {
                 bbox = '-16 -16 0 16 16 72'
@@ -9857,9 +10213,9 @@ $0D"weapon_smokegrenade"
         }
         op4mortar:form = {
                 t_targetname = !
-                spawnflags: = { Typ="X1" Cap="Active" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Line of Sight" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Can Control" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Active" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Line of Sight" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Can Control" }
                 mortar_velocity: = { Txt="&" Hint="Velocity" }
                 h_min: = { Txt="&" Hint="Horiz MIN" }
                 h_max: = { Txt="&" Hint="Horiz MAX" }
@@ -9877,11 +10233,11 @@ $0D"weapon_smokegrenade"
         trigger_geneworm_hit:form = {
                 t_targetname = !
                 t_target = !
-                spawnflags: = { Typ="X1" Cap="Target Once" Txt="&" }
-                spawnflags: = { Typ="X2" Cap="Start Off" Txt="&" }
-                spawnflags: = { Typ="X8" Cap="No clients" Txt="&" }
-                spawnflags: = { Typ="X16" Cap="Fire Client Only" Txt="&" }
-                spawnflags: = { Typ="X32" Cap="Touch Client Only" Txt="&" }
+                spawnflags: = { Txt="&" Typ="X1" Cap="Target Once" }
+                spawnflags: = { Txt="&" Typ="X2" Cap="Start Off" }
+                spawnflags: = { Txt="&" Typ="X8" Cap="No clients" }
+                spawnflags: = { Txt="&" Typ="X16" Cap="Fire Client Only" }
+                spawnflags: = { Txt="&" Typ="X32" Cap="Touch Client Only" }
                 master: = { Txt="&" Hint="Master" }
                 delay: = { Txt="&" Hint="Delay before trigger" }
         }
@@ -9917,7 +10273,7 @@ $0D"weapon_smokegrenade"
                 bbox = '-16 -16 0 16 16 72'
         }
         t_op4_ctfitem:incl = {
-                spawnflags: = { typ="X4" Cap="Random Spawn" }
+                spawnflags: = { txt="&" typ="X4" Cap="Random Spawn" }
                 team: = { Typ="C" Hint="Team"
                         items = "Random"
                              $0D"Black Mesa"
@@ -10074,7 +10430,7 @@ $0D"weapon_smokegrenade"
         fa_team_goal:form = {
                 t_targetname=!
                 t_target=!
-                spawnflags: = { Typ="X1" Cap="Once Only" }
+                spawnflags: = { txt="&" Typ="X1" Cap="Once Only" }
                 team: = { txt="&" typ="C" hint="Team/Item Applies To"
                         items="Either Team"
                            $0D"Red Force"
@@ -10330,6 +10686,142 @@ $0D"weapon_smokegrenade"
                              $0D"Suit"
                         Values = "44"$0D"42"$0D"43"$0D"45"
                 }
+        }
+
+//
+// Sven-Coop
+//
+        squadmaker:form = {
+            t_svc_HTML = !
+            bbox = '-16 -16 -16 16 16 16'
+            t_Targetname = !
+            t_Angles = !
+            t_rendermode = !
+            target:    = { txt="&" hint="Target On Release" }
+            monstertype:    = { txt="&" hint="Monster Type" }
+            netname:    = { txt="&" hint="Childrens' Name" }
+            spawnflags:    = { txt="&" typ="X1" cap="Start ON" hint="" }
+            spawnflags:    = { txt="&" typ="X4" cap="Cyclic" hint="" }
+            spawnflags:    = { txt="&" typ="X8" cap="MonsterClip" hint="" }
+            spawnflags:    = { txt="&" typ="X16" cap="Prisoner" hint="" }
+            spawnflags:    = { txt="&" typ="X128" cap="WaitForScript" hint="" }
+            monstercount:    = { txt="&" hint=" monster count " }
+            respawn_as_playerally:    = { typ="C" txt="&" hint="Make Player Allys"
+                items =
+                       "NO"
+                    $0D"YES"
+                values =
+                       "0"
+                    $0D"1"
+            }
+            delay:    = { txt="&" hint="Frequency" }
+            m_imaxlivechildren:    = { txt="&" hint="Max live children" }
+            weapons:    = { typ="C" txt="&" hint="HumanGrunt Weapons"
+                items =
+                       "9mmAR"
+                    $0D"9mmAR + HG"
+                    $0D"9mmAR + GL"
+                    $0D"Shotgun"
+                    $0D"Shotgun + HG"
+                values =
+                       "1"
+                    $0D"3"
+                    $0D"5"
+                    $0D"8"
+                    $0D"10"
+            }
+            change_rendermode:    = { typ="C" txt="&" hint="Override Render Mode"
+                items =
+                       "No"
+                    $0D"Yes"
+                values =
+                       "0"
+                    $0D"1"
+            }
+            new_model:    = { txt="&" hint="Model name" }
+            new_body:    = { txt="&" hint="Body (-1 off)" }
+            trigger_target:    = { txt="&" hint="TriggerTarget" }
+            trigger_condition:    = { typ="C" txt="&" hint="Trigger Condition"
+                items =
+                       "No Trigger"
+                    $0D"See Player, Mad at Player"
+                    $0D"Take Damage"
+                    $0D"50% Health Remaining"
+                    $0D"Death"
+                    $0D"Hear World"
+                    $0D"Hear Player"
+                    $0D"Hear Combat"
+                    $0D"See Player Unconditional"
+                    $0D"See Player, Not In Combat"
+                values =
+                       "0"
+                    $0D"1"
+                    $0D"2"
+                    $0D"3"
+                    $0D"4"
+                    $0D"7"
+                    $0D"8"
+                    $0D"9"
+                    $0D"10"
+                    $0D"11"
+            }
+            notsolid:    = { typ="C" txt="&" hint="Not Solid (-1 Monster Standard)"
+                items =
+                       "Standard"
+                    $0D"No"
+                    $0D"Yes"
+                values =
+                       "-1"
+                    $0D"0"
+                    $0D"1"
+            }
+            gag:    = { typ="C" txt="&" hint="Gag (-1 Monster Standard)"
+                items =
+                       "Standard"
+                    $0D"No"
+                    $0D"Yes"
+                values =
+                       "-1"
+                    $0D"0"
+                    $0D"1"
+            }
+            is_squad_leader:    = { typ="C" txt="&" hint="Squad Leader"
+                items =
+                       "No"
+                    $0D"Yes"
+                values =
+                       "0"
+                    $0D"1"
+            }
+            squadname:    = { txt="&" hint="Squadname" }
+        }
+        trigger_random:form = {
+            t_svc_HTML = !
+            t_Targetname = !
+            target_count:    = { txt="&" hint="Target Count" }
+            target1:    = { txt="&" hint="Target1" }
+            target2:    = { txt="&" hint="Target2" }
+            target3:    = { txt="&" hint="Target3" }
+            target4:    = { txt="&" hint="Target4" }
+            target5:    = { txt="&" hint="Target5" }
+        }
+        trigger_random_time:form = {
+            t_svc_HTML = !
+            t_Targetname = !
+            spawnflags:    = { txt="&" typ="X1" cap="Start On" hint="" }
+            target_count:    = { txt="&" hint="Target Count" }
+            target1:    = { txt="&" hint="Target1" }
+            target2:    = { txt="&" hint="Target2" }
+            target3:    = { txt="&" hint="Target3" }
+            target4:    = { txt="&" hint="Target4" }
+            target5:    = { txt="&" hint="Target5" }
+            min_delay:    = { txt="&" hint="Minimum Random Delay 0=off" }
+            max_delay:    = { txt="&" hint="Maximum Random Delay 0=off" }
+        }
+        weapon_uzi:form = {
+            t_svc_HTML = !
+            t_Weapon = !
+            t_Targetx = !
         }
 
 /////////////////////
