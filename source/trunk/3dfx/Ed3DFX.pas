@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/09/10 13:56:38  alexander
+added cvs headers
+
 
 }
 
@@ -303,7 +306,7 @@ begin
  Writeln(F, v3.x:10:5, v3.y:10:5, v3.oow:12:8, v3.tmuvtx[0].sow:12:8, v3.tmuvtx[0].tow:12:8);
 
  System.Close(F);
- if Assigned(gr.grSstIdle) then gr.grSstIdle;
+ if Assigned(qrkGlide_API.grSstIdle) then qrkGlide_API.grSstIdle;
 {Append(F);
  Writeln(F, '*');
  System.Close(F);}
@@ -315,7 +318,7 @@ begin
  Append(F);
  Writeln(F, S);
  System.Close(F);
- gr.grSstIdle;
+ qrkGlide_API.grSstIdle;
  Append(F);
  Writeln(F, '*');
  System.Close(F);
@@ -324,7 +327,7 @@ end;*)
 
 procedure ClearBuffers(Col: GrColor_t);
 begin
- gr.grBufferClear(Col, 0, GR_WDEPTHVALUE_FARTHEST);
+ qrkGlide_API.grBufferClear(Col, 0, GR_WDEPTHVALUE_FARTHEST);
 end;
 
 function SwapColor(Col: GrColor_t) : GrColor_t;
@@ -413,7 +416,7 @@ begin
    Result:=PGuPalette(PaletteCache[DefaultGamePalette]);
    Exit;
   end;
-                      
+
  for I:=0 to 255 do
   nPalette[I]:=(GammaBuffer[Lmp^[I,0]] shl 16)
             or (GammaBuffer[Lmp^[I,1]] shl 8)
@@ -914,7 +917,7 @@ begin
        if Q=Nil then
         begin
          for J:=0 to MemSize-1 do
-          begin       { build a checkerboard texture image 
+          begin       { build a checkerboard texture image
            if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
             Dest^:=#0
            else
@@ -930,9 +933,9 @@ begin
           begin
            Move(
            Inc(Src, PSD.ScanLine);
-           Inc(Dest, 
+           Inc(Dest,
       end
-      
+
       case SkinType of
        stTexture:
          begin
@@ -946,14 +949,14 @@ begin
          end;
        stSkin:
          begin
-          Image1.NotTrueColor;  { FIXME 
+          Image1.NotTrueColor;  { FIXME
           Image1.GetImageData1(data^, MemSize);
-         end; 
+         end;
        else
          begin
           Dest:=PChar(data);
           for J:=0 to MemSize-1 do
-           begin       { build a checkerboard texture image 
+           begin       { build a checkerboard texture image
             if (J and (DummyTexture div 2)) = ((J div DummyTexture) and (DummyTexture div 2)) then
              Dest^:=#0
             else
@@ -1026,19 +1029,19 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
 constructor TGlideState.Create;
 begin
  inherited;
- if gr.Version>=HardwareGlideVersion then
+ if qrkGlide_API.Version>=HardwareGlideVersion then
   begin  { first time hardware setup }
-   FMinAddress:=gr.grTexMinAddress(GR_TMU0);
-   FMaxAddress:=gr.grTexMaxAddress(GR_TMU0);
+   FMinAddress:=qrkGlide_API.grTexMinAddress(GR_TMU0);
+   FMaxAddress:=qrkGlide_API.grTexMaxAddress(GR_TMU0);
    FLoopAddress:=FMinAddress;
 
-   gr.grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-   gr.grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
-   gr.grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
-   if Assigned(gr.grTexLodBiasValue) then
-    gr.grTexLodBiasValue(GR_TMU0, +0.5);
-   gr.grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
-   gr.grFogMode(GR_FOG_WITH_TABLE);
+   qrkGlide_API.grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+   qrkGlide_API.grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
+   qrkGlide_API.grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
+   if Assigned(qrkGlide_API.grTexLodBiasValue) then
+    qrkGlide_API.grTexLodBiasValue(GR_TMU0, +0.5);
+   qrkGlide_API.grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
+   qrkGlide_API.grFogMode(GR_FOG_WITH_TABLE);
   end;
 end;
 
@@ -1046,7 +1049,7 @@ end;
 begin
  if not PalWarning then
   begin
-   if gr.Version < SoftMultiplePalettes then
+   if qrkGlide_API.Version < SoftMultiplePalettes then
     GlobalWarning(LoadStr1(5656));
    PalWarning:=True;
   end;
@@ -1064,12 +1067,12 @@ begin
   Raise InternalE('NeedTex: texture not loaded');
  {$ENDIF}
  if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
- and (gr.Version>=HardwareGlideVersion) then
+ and (qrkGlide_API.Version>=HardwareGlideVersion) then
   begin
    TextureManager:=TTextureManager.GetInstance;
     { computes destination address }
    nStartAddress:=FLoopAddress;
-   nSize:=gr.grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
+   nSize:=qrkGlide_API.grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
    if nStartAddress+nSize > FMaxAddress then
     nStartAddress:=FMinAddress
    else
@@ -1087,7 +1090,7 @@ begin
       startAddress:=GR_NULL_MIPMAP_HANDLE;
 
     { downloads the new texture }
-   gr.grTexDownloadMipMap(GR_TMU0, nStartAddress,
+   qrkGlide_API.grTexDownloadMipMap(GR_TMU0, nStartAddress,
     GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
    PTex^.startAddress:=nStartAddress;
    PTex^.endAddress:=FLoopAddress;
@@ -1102,10 +1105,10 @@ begin
    if PTex^.GuPalette <> TextureManager.DownloadedPalette then
     begin
      TextureManager.DownloadedPalette:=PTex^.GuPalette;
-     gr.grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
+     qrkGlide_API.grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
     end;
   end;
- gr.grTexSource(GR_TMU0, PTex^.startAddress,
+ qrkGlide_API.grTexSource(GR_TMU0, PTex^.startAddress,
   GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
 end;
 
@@ -1119,19 +1122,19 @@ begin
   begin
    PerspectiveMode:=nPerspectiveMode;
    if nPerspectiveMode=0 then Exit;
-   if Assigned(gr.grHints) then
+   if Assigned(qrkGlide_API.grHints) then
     if nPerspectiveMode=2 then  { flat display }
-     gr.grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
+     qrkGlide_API.grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
     else
-     gr.grHints(GR_HINT_STWHINT, 0);
-   if Assigned(gr.guFogGenerateExp2)
-   and Assigned(gr.grFogTable) then
+     qrkGlide_API.grHints(GR_HINT_STWHINT, 0);
+   if Assigned(qrkGlide_API.guFogGenerateExp2)
+   and Assigned(qrkGlide_API.grFogTable) then
   (*if nPerspectiveMode=2 then  { flat display }
      begin
      {for I:=0 to GR_FOG_TABLE_SIZE-1 do
        FogTable2D[I]:=I*(256 div GR_FOG_TABLE_SIZE);}
-      gr.guFogGenerateExp2(FogTable2D, 0.003);
-      gr.grFogTable(FogTable2D);
+      qrkGlide_API.guFogGenerateExp2(FogTable2D, 0.003);
+      qrkGlide_API.grFogTable(FogTable2D);
      end
     else*)
      Result:=True;
@@ -1250,38 +1253,38 @@ begin
  Coord:=nCoord;
  Open3DEditor(LibName, FullScreen);
  TTextureManager.AddScene(Self, FullScreen);
- TGlideState(gr.State).Init;
- Hardware3DFX:=gr.Version>=HardwareGlideVersion;
- if gr.Version>=HardwareGlideVersion then
+ TGlideState(qrkGlide_API.State).Init;
+ Hardware3DFX:=qrkGlide_API.Version>=HardwareGlideVersion;
+ if qrkGlide_API.Version>=HardwareGlideVersion then
   HiColor:=True
  else
-  if gr.Version<SoftMultiplePalettes then
+  if qrkGlide_API.Version<SoftMultiplePalettes then
    HiColor:=False
   else
    begin
     HiColor:=not TTextureManager.GetInstance.UnifiedPalette;
-    gr.softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
-    HiColor:=HiColor and (gr.Version>=SoftTexFmt565);
+    qrkGlide_API.softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
+    HiColor:=HiColor and (qrkGlide_API.Version>=SoftTexFmt565);
    end;
- TGlideState(gr.State).Accepts16bpp:=HiColor;
+ TGlideState(qrkGlide_API.State).Accepts16bpp:=HiColor;
 
- I:=Ord({not nCoord.FlatDisplay and} Assigned(gr.guFogGenerateExp2));
+ I:=Ord({not nCoord.FlatDisplay and} Assigned(qrkGlide_API.guFogGenerateExp2));
  ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
  if I<>0 then
   begin
    if nCoord.FlatDisplay then
     FOG_DENSITY:=FOG_DENSITY*256;
-   gr.guFogGenerateExp2(FogTableCache^, FOG_DENSITY);
+   qrkGlide_API.guFogGenerateExp2(FogTableCache^, FOG_DENSITY);
   end;
-{if Assigned(gr.guFogGenerateExp2)
- and Assigned(gr.grFogTable) then
+{if Assigned(qrkGlide_API.guFogGenerateExp2)
+ and Assigned(qrkGlide_API.grFogTable) then
   begin
-   gr.guFogGenerateExp2(FogTable, FOG_DENSITY);
-   gr.grFogTable(FogTable);
+   qrkGlide_API.guFogGenerateExp2(FogTable, FOG_DENSITY);
+   qrkGlide_API.grFogTable(FogTable);
   end;}
  FOG_COLOR:=SwapColor(FOG_COLOR);
- if Assigned(gr.grFogColorValue) then
-  gr.grFogColorValue(FOG_COLOR);
+ if Assigned(qrkGlide_API.grFogColorValue) then
+  qrkGlide_API.grFogColorValue(FOG_COLOR);
  VOID_COLOR:=FOG_COLOR;
  FRAME_COLOR:=SwapColor(FrameColor);
 end;
@@ -1391,7 +1394,7 @@ end;*)
 
 function T3DFXSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
-{PW:=TGlideState(gr.State).PaletteWarning;}
+{PW:=TGlideState(qrkGlide_API.State).PaletteWarning;}
  VertexSize:=SizeOf(TVertex3D);
  FBuildNo:=1;
  Result:=bm3DFX;
@@ -1586,7 +1589,7 @@ var
    vp2:=BezierBuf.CP; Inc(vp2,i3); stp:=st; Inc(stp,i3);
    WriteVertex(PV, vp2, stp^.s * CorrW, stp^.t * CorrH, False);
    Inc(PV, VertexSize);
-   
+
    v2.X:=vp1^[0] - vp0^[0];
    v2.Y:=vp1^[1] - vp0^[1];
    v2.Z:=vp1^[2] - vp0^[2];
@@ -1625,477 +1628,487 @@ begin
  TextureManager:=TTextureManager.GetInstance;
 {TextureManager.PaletteLmp:=Nil;}
  VertexSize3m:=SizeOf(TSurface3D)+3*VertexSize;
- TexNames:=TStringList.Create; try
-{PList:=PSurfaces(FListSurfaces);
- while Assigned(PList) do
-  begin
-   TexNames.AddObject(PList^.TexName, TObject(PList));
-   PList^.tmp:=Nil;
-   PList:=PList^.Next;
-  end;}
- TexNames.Sorted:=True;
- if Mode=bm3DFX then
-  nVertexList:=TListP2.Create
- else
-  nVertexList:=Nil; try
- I:=0;
- while I<PolyFaces.Count do
-  begin
-   Dest:=PolyFaces[I];
-   if Dest=Nil then
-    Inc(I,2)
-   else
-    with PSurface(Dest)^ do
-     begin
-      AddSurfaceRef(F.NomTex, SizeOf(TSurface3D)+prvNbS*VertexSize, Nil);
-      if nVertexList<>Nil then
-       for J:=0 to prvNbS-1 do
-        nVertexList.Add(prvDescS[J]);
-      Inc(I);
-     end;
-  end;
- if Mode=bm3DFX then
-  nVertexList2:=TListP2.Create
- else
-  nVertexList2:=Nil; try
- I:=0;
- while I<ModelInfo.Count do
-  begin
-   Dest:=ModelInfo[I];
-   if Dest=Nil then
-    Inc(I,2)
-   else
-    with PModel3DInfo(Dest)^ do
-     begin
-      Inc(I);
-      J:=Base.Triangles(CTris);
-      AddSurfaceRef(Base.GetSkinDescr(StaticSkin), J*VertexSize3m, Base.CurrentSkin);
-      if nVertexList2<>Nil then
-       begin
-        CVertex:=Vertices;
-        for J:=0 to VertexCount-1 do
-         begin
-          nVertexList2.Add(CVertex);
-          Inc(CVertex);
-         end;
-       end;
-     end;
-   end;
- I:=0;
- while I<BezierInfo.Count do
-  begin
-   Dest:=BezierInfo[I];
-   if Dest=Nil then
-    Inc(I,2)
-   else
-    with TBezier(Dest) do
-     begin
-      Inc(I);
-      if Mode<>bmOpenGL then
-       begin
-        BezierBuf:=GetMeshCache;
-        AddSurfaceRef(NomTex, ((BezierBuf.H-1)*(BezierBuf.W-1)*2)*VertexSize3m, Nil);
-        for J:=1 to BezierBuf.W*BezierBuf.H do
-         begin
-          nVertexList2.Add(BezierBuf.CP);
-          Inc(BezierBuf.CP);
-         end;
-       end
-      else   { bmOpenGL }
-       with GetMeshCache do
-        AddSurfaceRef(NomTex, (H-1)*(SizeOf(TSurface3D)+2*W*(VertexSize+SizeOf(vec3_t))), Nil);
-     end;
-   end;
- NewTextures:=0;
- PList:=FListSurfaces;
- while Assigned(PList) do
-  begin
-   if PList^.Texture=Nil then
+ TexNames:=TStringList.Create;
+ try
+ {PList:=PSurfaces(FListSurfaces);
+  while Assigned(PList) do
+   begin
+    TexNames.AddObject(PList^.TexName, TObject(PList));
+    PList^.tmp:=Nil;
+    PList:=PList^.Next;
+   end;}
+  TexNames.Sorted:=True;
+  if Mode=bm3DFX then
+   nVertexList:=TListP2.Create
+  else
+   nVertexList:=Nil;
+  try
+   I:=0;
+   while I<PolyFaces.Count do
     begin
-     TextureManager.GetTexture(PList, False, Nil{, PalWarning});
-     if PList^.Texture=Nil then
-      Inc(NewTextures)
+     Dest:=PolyFaces[I];
+     if Dest=Nil then
+      Inc(I,2)
      else
-      BuildTexture(PList^.Texture);
+      with PSurface(Dest)^ do
+       begin
+        AddSurfaceRef(F.NomTex, SizeOf(TSurface3D)+prvNbS*VertexSize, Nil);
+        if nVertexList<>Nil then
+         for J:=0 to prvNbS-1 do
+          nVertexList.Add(prvDescS[J]);
+        Inc(I);
+       end;
     end;
-   PList:=PList^.Next;
-  end;
- TextureManager.FreeTextures(False);   { free unused textures }
-
-  { load new textures }
- if NewTextures>0 then
-  begin
-   Gauche:=0;
-   Brush:=0;
-   if DC=HDC(-1) then
-    ProgressIndicatorStart(5454, NewTextures)
+   if Mode=bm3DFX then
+    nVertexList2:=TListP2.Create
    else
-    if DC<>0 then
-     begin
-      GetClipBox(DC, R);
-      Gauche:=(R.Right+R.Left-LargeurBarre) div 2;
-      R.Left:=Gauche;
-      R.Right:=Gauche+LargeurBarre;
-      R.Top:=(R.Top+R.Bottom-HauteurBarre) div 2;
-      R.Bottom:=R.Top+HauteurBarre;
-      TextePreparation:=LoadStr1(5454);
-      SetBkColor(DC, $FFFFFF);
-      SetTextColor(DC, $000000);
-      ExtTextOut(DC, Gauche+38,R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
-      InflateRect(R, +1,+1);
-      FrameRect(DC, R, GetStockObject(Black_brush));
-      InflateRect(R, -1,-1);
-      GdiFlush;
-      R.Right:=R.Left;
-      Brush:=CreateSolidBrush($FF0000);
-     end;
+    nVertexList2:=Nil;
    try
-    NewTexCount:=0;
+    I:=0;
+    while I<ModelInfo.Count do
+     begin
+      Dest:=ModelInfo[I];
+      if Dest=Nil then
+       Inc(I,2)
+      else
+       with PModel3DInfo(Dest)^ do
+        begin
+         Inc(I);
+         J:=Base.Triangles(CTris);
+         AddSurfaceRef(Base.GetSkinDescr(StaticSkin), J*VertexSize3m, Base.CurrentSkin);
+         if nVertexList2<>Nil then
+          begin
+           CVertex:=Vertices;
+           for J:=0 to VertexCount-1 do
+            begin
+             nVertexList2.Add(CVertex);
+             Inc(CVertex);
+            end;
+          end;
+        end;
+      end;
+    I:=0;
+    while I<BezierInfo.Count do
+     begin
+      Dest:=BezierInfo[I];
+      if Dest=Nil then
+       Inc(I,2)
+      else
+       with TBezier(Dest) do
+        begin
+         Inc(I);
+         if Mode<>bmOpenGL then
+          begin
+           BezierBuf:=GetMeshCache;
+           AddSurfaceRef(NomTex, ((BezierBuf.H-1)*(BezierBuf.W-1)*2)*VertexSize3m, Nil);
+           for J:=1 to BezierBuf.W*BezierBuf.H do
+            begin
+             nVertexList2.Add(BezierBuf.CP);
+             Inc(BezierBuf.CP);
+            end;
+          end
+         else   { bmOpenGL }
+          with GetMeshCache do
+           AddSurfaceRef(NomTex, (H-1)*(SizeOf(TSurface3D)+2*W*(VertexSize+SizeOf(vec3_t))), Nil);
+        end;
+      end;
+    NewTextures:=0;
     PList:=FListSurfaces;
     while Assigned(PList) do
      begin
       if PList^.Texture=Nil then
        begin
-        TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
-        BuildTexture(PList^.Texture);
-        if DC=HDC(-1) then
-         begin
-          {Inc(NewTexCount);
-          if NewTexCount>NewTextures then Raise InternalE('NewTexCount>NewTextures');}
-          ProgressIndicatorIncrement;
-         end
+        TextureManager.GetTexture(PList, False, Nil{, PalWarning});
+        if PList^.Texture=Nil then
+         Inc(NewTextures)
         else
-         if DC<>0 then
-          begin
-           Inc(NewTexCount);
-           R.Right:=Gauche + MulDiv(LargeurBarre, NewTexCount, NewTextures);
-           FillRect(DC, R, Brush);
-           R.Left:=R.Right;
-          end;
+         BuildTexture(PList^.Texture);
        end;
       PList:=PList^.Next;
      end;
+    TextureManager.FreeTextures(False);   { free unused textures }
+
+     { load new textures }
+    if NewTextures>0 then
+     begin
+      Gauche:=0;
+      Brush:=0;
+      if DC=HDC(-1) then
+       ProgressIndicatorStart(5454, NewTextures)
+      else
+       if DC<>0 then
+        begin
+         GetClipBox(DC, R);
+         Gauche:=(R.Right+R.Left-LargeurBarre) div 2;
+         R.Left:=Gauche;
+         R.Right:=Gauche+LargeurBarre;
+         R.Top:=(R.Top+R.Bottom-HauteurBarre) div 2;
+         R.Bottom:=R.Top+HauteurBarre;
+         TextePreparation:=LoadStr1(5454);
+         SetBkColor(DC, $FFFFFF);
+         SetTextColor(DC, $000000);
+         ExtTextOut(DC, Gauche+38,R.Top+3, eto_Opaque, @R, PChar(TextePreparation), Length(TextePreparation), Nil);
+         InflateRect(R, +1,+1);
+         FrameRect(DC, R, GetStockObject(Black_brush));
+         InflateRect(R, -1,-1);
+         GdiFlush;
+         R.Right:=R.Left;
+         Brush:=CreateSolidBrush($FF0000);
+        end;
+      try
+       NewTexCount:=0;
+       PList:=FListSurfaces;
+       while Assigned(PList) do
+        begin
+         if PList^.Texture=Nil then
+          begin
+           TextureManager.GetTexture(PList, True, AltTexSrc{, PalWarning});
+           BuildTexture(PList^.Texture);
+           if DC=HDC(-1) then
+            begin
+             {Inc(NewTexCount);
+             if NewTexCount>NewTextures then Raise InternalE('NewTexCount>NewTextures');}
+             ProgressIndicatorIncrement;
+            end
+           else
+            if DC<>0 then
+             begin
+              Inc(NewTexCount);
+              R.Right:=Gauche + MulDiv(LargeurBarre, NewTexCount, NewTextures);
+              FillRect(DC, R, Brush);
+              R.Left:=R.Right;
+             end;
+          end;
+         PList:=PList^.Next;
+        end;
+      finally
+       if DC=HDC(-1) then
+        ProgressIndicatorStop;
+       if Brush<>0 then
+        DeleteObject(Brush);
+      end;
+     end;
+
+    PostBuild(nVertexList, nVertexList2);
    finally
-    if DC=HDC(-1) then
-     ProgressIndicatorStop;
-    if Brush<>0 then
-     DeleteObject(Brush);
+    nVertexList2.Free;
    end;
+  finally
+   nVertexList.Free;
   end;
 
- PostBuild(nVertexList, nVertexList2);
- finally nVertexList2.Free; end;
- finally nVertexList.Free; end;
-
- CurrentColor:=$FFFFFF;
- I:=0;
- while I<PolyFaces.Count do
-  begin
-   Dest:=PolyFaces[I];
-   if Dest=Nil then
-    begin
-     CurrentColor:=FxU32(PolyFaces[I+1]);
-     Inc(I,2);
-    end
-   else
-    with PSurface(Dest)^ do
+  CurrentColor:=$FFFFFF;
+  I:=0;
+  while I<PolyFaces.Count do
+   begin
+    Dest:=PolyFaces[I];
+    if Dest=Nil then
      begin
-      Inc(I);
-      S:=F.NomTex;
-      if not TexNames.Find(S, J) then
-       {$IFDEF Debug}Raise InternalE('TexNames.Find'){$ENDIF};
-      PList:=PSurfaces(TexNames.Objects[J]);
-      if PList^.Surf=Nil then
-       begin
-        GetMem(PList^.Surf, PList^.SurfSize);
-        Surf3D:=PList^.Surf;
-       end
-      else
-       Surf3D:=PList^.tmp;
-      with Surf3D^ do
-       begin
-        with F.Normale do
-         begin
-          Normale[0]:=X;
-          Normale[1]:=Y;
-          Normale[2]:=Z;
-         end;
-        Dist:=F.Dist;
-        VertexCount:=prvNbS;
-        AlphaColor:=CurrentColor or
-         (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
-        Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
-       end;
-      if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
-       Raise InternalE('BuildScene - empty face');
-
-    (*TexPt[2].X:=TexPt[2].X-TexPt[1].X;
-      TexPt[2].Y:=TexPt[2].Y-TexPt[1].Y;
-      TexPt[2].Z:=TexPt[2].Z-TexPt[1].Z;
-      TexPt[3].X:=TexPt[3].X-TexPt[1].X;
-      TexPt[3].Y:=TexPt[3].Y-TexPt[1].Y;
-      TexPt[3].Z:=TexPt[3].Z-TexPt[1].Z;
-
-      {...must inverse the equations...}
-
-      CorrW:=(EchelleTexture*256)/(PTex^.TexW*(Sqr(TexPt[2].X)+Sqr(TexPt[2].Y)+Sqr(TexPt[2].Z)));
-      CorrH:=(-EchelleTexture*256)/(PTex^.TexH*(Sqr(TexPt[3].X)+Sqr(TexPt[3].Y)+Sqr(TexPt[3].Z)));
-      TexPt[2].X:=TexPt[2].X*CorrW;
-      TexPt[2].Y:=TexPt[2].Y*CorrW;
-      TexPt[2].Z:=TexPt[2].Z*CorrW;
-      TexPt[3].X:=TexPt[3].X*CorrH;
-      TexPt[3].Y:=TexPt[3].Y*CorrH;
-      TexPt[3].Z:=TexPt[3].Z*CorrH;*)
-
-      stScalePoly(PList^.Texture, CorrW, CorrH);
-      TexPt[2].X:=(TexPt[2].X-TexPt[1].X)*CorrW;
-      TexPt[2].Y:=(TexPt[2].Y-TexPt[1].Y)*CorrW;
-      TexPt[2].Z:=(TexPt[2].Z-TexPt[1].Z)*CorrW;
-      TexPt[3].X:=(TexPt[3].X-TexPt[1].X)*CorrH;
-      TexPt[3].Y:=(TexPt[3].Y-TexPt[1].Y)*CorrH;
-      TexPt[3].Z:=(TexPt[3].Z-TexPt[1].Z)*CorrH;
-
-      { we must inverse the equations for X, Y, Z :
-         s*TexPt[2]+t*TexPt[3] = DeltaV
-
-         s = v2.DeltaV
-         t = v3.DeltaV
-
-         (v2.DeltaV)*TexPt[2]+(v3.DeltaV)*TexPt[3] = DeltaV
-
-         v2.TexPt[2] = 1    v3.TexPt[2] = 0
-         v2.TexPt[3] = 0    v3.TexPt[3] = 1
-
-         v2=a*TexPt[2]+b*TexPt[3]    v3=c*TexPt[2]+d*TexPt[3]
-
-         a*TexPt[2].TexPt[2] + b*TexPt[3].TexPt[2] = 1
-         a*TexPt[2].TexPt[3] + b*TexPt[3].TexPt[3] = 0
-         c*TexPt[2].TexPt[2] + d*TexPt[3].TexPt[2] = 0
-         c*TexPt[2].TexPt[3] + d*TexPt[3].TexPt[3] = 1
-      }
-      dot22:=Dot(TexPt[2], TexPt[2]);
-      dot23:=Dot(TexPt[2], TexPt[3]);
-      dot33:=Dot(TexPt[3], TexPt[3]);
-      mdet:=dot22*dot33-dot23*dot23;
-      if Abs(mdet)<1E-8 then
-       begin
-        aa:=0;
-        bb:=0;
-       {cc:=0;}
-        dd:=0;
-       end
-      else
-       begin
-        mdet:=1/mdet;
-        aa:= mdet*dot33;
-        bb:=-mdet*dot23;
-       {cc:=-mdet*dot23;}
-        dd:= mdet*dot22;
-       end;
-      v2.X:= aa   *TexPt[2].X + bb*TexPt[3].X;
-      v2.Y:= aa   *TexPt[2].Y + bb*TexPt[3].Y;
-      v2.Z:= aa   *TexPt[2].Z + bb*TexPt[3].Z;
-      v3.X:={cc}bb*TexPt[2].X + dd*TexPt[3].X;
-      v3.Y:={cc}bb*TexPt[2].Y + dd*TexPt[3].Y;
-      v3.Z:={cc}bb*TexPt[2].Z + dd*TexPt[3].Z;
-
-      Radius2:=0;
-      PV:=PChar(Surf3D) + SizeOf(TSurface3D);
-      for J:=0 to prvNbS-1 do
-       begin
-        with prvDescS[J]^.P do
-         begin
-          if J=0 then
-           begin
-            FirstPoint.X:=X;
-            FirstPoint.Y:=Y;
-            FirstPoint.Z:=Z;
-           end
-          else
-           begin
-            nRadius2:=Sqr(FirstPoint.X-X)+Sqr(FirstPoint.Y-Y)+Sqr(FirstPoint.Z-Z);
-            if nRadius2>Radius2 then
-             Radius2:=nRadius2;
-           end;
-          DeltaV.X:=X-TexPt[1].X;
-          DeltaV.Y:=Y-TexPt[1].Y;
-          DeltaV.Z:=Z-TexPt[1].Z;
-         end;
-        WriteVertex(PV, prvDescS[J], Dot(v2,DeltaV), Dot(v3,DeltaV), True);
-        Inc(PV, VertexSize);
-       end;
-      if Mode=bm3DFX then
-       Surf3D^.AnyInfo.Radius:=Sqrt(Radius2)
-      else
-       Surf3D^.AnyInfo.DisplayList:=0;
-      PList^.tmp:=PSurface3D(PV);
-     end;
-   end;
-
- CurrentColor:=$FFFFFF;
- I:=0;
- while I<ModelInfo.Count do
-  begin
-   Dest:=ModelInfo[I];
-   if Dest=Nil then
-    begin
-     CurrentColor:=FxU32(ModelInfo[I+1]);
-     Inc(I,2);
-    end
-   else
-    with PModel3DInfo(Dest)^ do
-     begin
-      Inc(I);
-      if not TexNames.Find(Base.GetSkinDescr(StaticSkin), J) then
-       {$IFDEF Debug}Raise InternalE('TexNames.Find.2'){$ENDIF};
-      PList:=PSurfaces(TexNames.Objects[J]);
-      if PList^.Surf=Nil then
-       begin
-        GetMem(PList^.Surf, PList^.SurfSize);
-        Surf3D:=PList^.Surf;
-       end
-      else
-       Surf3D:=PList^.tmp;
-      Include(PList^.Transparent, ModelAlpha<>255);
-
-      stScaleModel(PList^.Texture, CorrW, CorrH);
-
-      for J:=1 to Base.Triangles(CTris) do
-       begin
-        PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-        for L:=0 to 2 do
-         with CTris^[L] do
-          begin
-           if VertexNo >= VertexCount then
-            Raise EError(5667);
-           v3p[L]:=Vertices;
-           Inc(v3p[L], VertexNo);
-           WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
-           Inc(PV, VertexSize);
-          end;
-        Inc(CTris);
-        v2.X:=v3p[1]^[0] - v3p[0]^[0];
-        v2.Y:=v3p[1]^[1] - v3p[0]^[1];
-        v2.Z:=v3p[1]^[2] - v3p[0]^[2];
-        v3.X:=v3p[2]^[0] - v3p[0]^[0];
-        v3.Y:=v3p[2]^[1] - v3p[0]^[1];
-        v3.Z:=v3p[2]^[2] - v3p[0]^[2];
-        DeltaV:=Cross(v3, v2);
-        dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
-        if dd<rien then
-         Dec(PList^.SurfSize, VertexSize3m)
-        else
-         begin
-          dd:=1/Sqrt(dd);
-          Radius2:=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
-          nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
-          with Surf3D^ do
-           begin
-            Normale[0]:=DeltaV.X*dd;
-            Normale[1]:=DeltaV.Y*dd;
-            Normale[2]:=DeltaV.Z*dd;
-            Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
-            if Mode=bm3DFX then
-             if nRadius2>Radius2 then
-              AnyInfo.Radius:=Sqrt(nRadius2)
-             else
-              AnyInfo.Radius:=Sqrt(Radius2)
-            else
-             AnyInfo.DisplayList:=0;
-            VertexCount:=3;
-            AlphaColor:=CurrentColor or (ModelAlpha shl 24);
-           end;
-          Inc(PChar(Surf3D), VertexSize3m);
-         end;
-       end;
-      PList^.tmp:=Surf3D;
-     end;
-   end;
-
- CurrentColor:=$FFFFFF;
- I:=0;
- while I<BezierInfo.Count do
-  begin
-   Dest:=BezierInfo[I];
-   if Dest=Nil then
-    begin
-     CurrentColor:=FxU32(BezierInfo[I+1]);
-     Inc(I,2);
-    end
-   else
-    with TBezier(Dest) do
-     begin
-      Inc(I);
-      S:=NomTex;
-      if not TexNames.Find(S, J) then
-       {$IFDEF Debug}Raise InternalE('TexNames.Find.3'){$ENDIF};
-      PList:=PSurfaces(TexNames.Objects[J]);
-      if PList^.Surf=Nil then
-       begin
-        GetMem(PList^.Surf, PList^.SurfSize);
-        Surf3D:=PList^.Surf;
-       end
-      else
-       Surf3D:=PList^.tmp;
-      ObjectColor:=CurrentColor or
-         (GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
-      Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
-
-      stScaleBezier(PList^.Texture, CorrW, CorrH);
-      BezierBuf:=GetMeshCache;
-      BControlPoints:=ControlPoints;
-      GetMem(stBuffer, BezierBuf.W*BezierBuf.H*SizeOf(vec_st_t)); try
-      st:=stBuffer;
-      for L:=0 to BezierBuf.H-1 do
-       for K:=0 to BezierBuf.W-1 do
+      CurrentColor:=FxU32(PolyFaces[I+1]);
+      Inc(I,2);
+     end
+    else
+     with PSurface(Dest)^ do
+      begin
+       Inc(I);
+       S:=F.NomTex;
+       if not TexNames.Find(S, J) then
+        {$IFDEF Debug}Raise InternalE('TexNames.Find'){$ENDIF};
+       PList:=PSurfaces(TexNames.Objects[J]);
+       if PList^.Surf=Nil then
         begin
-         st^:=TriangleSTCoordinates(BControlPoints, K, L);
-         Inc(st);
-        end;
-      
-      st:=stBuffer;
-      if Mode=bm3DFX then
-       for L:=0 to BezierBuf.H-2 do
-        begin
-         for K:=0 to BezierBuf.W-2 do
-          begin
-           SmallBezierTriangle(0, BezierBuf.W, 1);
-           SmallBezierTriangle(BezierBuf.W, BezierBuf.W+1, 1);
-           Inc(BezierBuf.CP); Inc(st);
-          end;
-         Inc(BezierBuf.CP); Inc(st);
+         GetMem(PList^.Surf, PList^.SurfSize);
+         Surf3D:=PList^.Surf;
         end
-      else   { bmOpenGL }
-       for L:=0 to BezierBuf.H-2 do
+       else
+        Surf3D:=PList^.tmp;
+       with Surf3D^ do
         begin
-         with Surf3D^ do
+         with F.Normale do
           begin
-           AnyInfo.DisplayList:=0;
-           VertexCount:=-(2*BezierBuf.W);
-           AlphaColor:=ObjectColor;
+           Normale[0]:=X;
+           Normale[1]:=Y;
+           Normale[2]:=Z;
           end;
+         Dist:=F.Dist;
+         VertexCount:=prvNbS;
+         AlphaColor:=CurrentColor or
+          (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+         Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
+        end;
+       if not F.GetThreePointsT(TexPt[1], TexPt[2], TexPt[3]) then
+        Raise InternalE('BuildScene - empty face');
+
+     (*TexPt[2].X:=TexPt[2].X-TexPt[1].X;
+       TexPt[2].Y:=TexPt[2].Y-TexPt[1].Y;
+       TexPt[2].Z:=TexPt[2].Z-TexPt[1].Z;
+       TexPt[3].X:=TexPt[3].X-TexPt[1].X;
+       TexPt[3].Y:=TexPt[3].Y-TexPt[1].Y;
+       TexPt[3].Z:=TexPt[3].Z-TexPt[1].Z;
+
+       {...must inverse the equations...}
+
+       CorrW:=(EchelleTexture*256)/(PTex^.TexW*(Sqr(TexPt[2].X)+Sqr(TexPt[2].Y)+Sqr(TexPt[2].Z)));
+       CorrH:=(-EchelleTexture*256)/(PTex^.TexH*(Sqr(TexPt[3].X)+Sqr(TexPt[3].Y)+Sqr(TexPt[3].Z)));
+       TexPt[2].X:=TexPt[2].X*CorrW;
+       TexPt[2].Y:=TexPt[2].Y*CorrW;
+       TexPt[2].Z:=TexPt[2].Z*CorrW;
+       TexPt[3].X:=TexPt[3].X*CorrH;
+       TexPt[3].Y:=TexPt[3].Y*CorrH;
+       TexPt[3].Z:=TexPt[3].Z*CorrH;*)
+
+       stScalePoly(PList^.Texture, CorrW, CorrH);
+       TexPt[2].X:=(TexPt[2].X-TexPt[1].X)*CorrW;
+       TexPt[2].Y:=(TexPt[2].Y-TexPt[1].Y)*CorrW;
+       TexPt[2].Z:=(TexPt[2].Z-TexPt[1].Z)*CorrW;
+       TexPt[3].X:=(TexPt[3].X-TexPt[1].X)*CorrH;
+       TexPt[3].Y:=(TexPt[3].Y-TexPt[1].Y)*CorrH;
+       TexPt[3].Z:=(TexPt[3].Z-TexPt[1].Z)*CorrH;
+
+       { we must inverse the equations for X, Y, Z :
+          s*TexPt[2]+t*TexPt[3] = DeltaV
+
+          s = v2.DeltaV
+          t = v3.DeltaV
+
+          (v2.DeltaV)*TexPt[2]+(v3.DeltaV)*TexPt[3] = DeltaV
+
+          v2.TexPt[2] = 1    v3.TexPt[2] = 0
+          v2.TexPt[3] = 0    v3.TexPt[3] = 1
+
+          v2=a*TexPt[2]+b*TexPt[3]    v3=c*TexPt[2]+d*TexPt[3]
+
+          a*TexPt[2].TexPt[2] + b*TexPt[3].TexPt[2] = 1
+          a*TexPt[2].TexPt[3] + b*TexPt[3].TexPt[3] = 0
+          c*TexPt[2].TexPt[2] + d*TexPt[3].TexPt[2] = 0
+          c*TexPt[2].TexPt[3] + d*TexPt[3].TexPt[3] = 1
+       }
+       dot22:=Dot(TexPt[2], TexPt[2]);
+       dot23:=Dot(TexPt[2], TexPt[3]);
+       dot33:=Dot(TexPt[3], TexPt[3]);
+       mdet:=dot22*dot33-dot23*dot23;
+       if Abs(mdet)<1E-8 then
+        begin
+         aa:=0;
+         bb:=0;
+        {cc:=0;}
+         dd:=0;
+        end
+       else
+        begin
+         mdet:=1/mdet;
+         aa:= mdet*dot33;
+         bb:=-mdet*dot23;
+        {cc:=-mdet*dot23;}
+         dd:= mdet*dot22;
+        end;
+       v2.X:= aa   *TexPt[2].X + bb*TexPt[3].X;
+       v2.Y:= aa   *TexPt[2].Y + bb*TexPt[3].Y;
+       v2.Z:= aa   *TexPt[2].Z + bb*TexPt[3].Z;
+       v3.X:={cc}bb*TexPt[2].X + dd*TexPt[3].X;
+       v3.Y:={cc}bb*TexPt[2].Y + dd*TexPt[3].Y;
+       v3.Z:={cc}bb*TexPt[2].Z + dd*TexPt[3].Z;
+
+       Radius2:=0;
+       PV:=PChar(Surf3D) + SizeOf(TSurface3D);
+       for J:=0 to prvNbS-1 do
+        begin
+         with prvDescS[J]^.P do
+          begin
+           if J=0 then
+            begin
+             FirstPoint.X:=X;
+             FirstPoint.Y:=Y;
+             FirstPoint.Z:=Z;
+            end
+           else
+            begin
+             nRadius2:=Sqr(FirstPoint.X-X)+Sqr(FirstPoint.Y-Y)+Sqr(FirstPoint.Z-Z);
+             if nRadius2>Radius2 then
+              Radius2:=nRadius2;
+            end;
+           DeltaV.X:=X-TexPt[1].X;
+           DeltaV.Y:=Y-TexPt[1].Y;
+           DeltaV.Z:=Z-TexPt[1].Z;
+          end;
+         WriteVertex(PV, prvDescS[J], Dot(v2,DeltaV), Dot(v3,DeltaV), True);
+         Inc(PV, VertexSize);
+        end;
+       if Mode=bm3DFX then
+        Surf3D^.AnyInfo.Radius:=Sqrt(Radius2)
+       else
+        Surf3D^.AnyInfo.DisplayList:=0;
+       PList^.tmp:=PSurface3D(PV);
+      end;
+    end;
+
+  CurrentColor:=$FFFFFF;
+  I:=0;
+  while I<ModelInfo.Count do
+   begin
+    Dest:=ModelInfo[I];
+    if Dest=Nil then
+     begin
+      CurrentColor:=FxU32(ModelInfo[I+1]);
+      Inc(I,2);
+     end
+    else
+     with PModel3DInfo(Dest)^ do
+      begin
+       Inc(I);
+       if not TexNames.Find(Base.GetSkinDescr(StaticSkin), J) then
+        {$IFDEF Debug}Raise InternalE('TexNames.Find.2'){$ENDIF};
+       PList:=PSurfaces(TexNames.Objects[J]);
+       if PList^.Surf=Nil then
+        begin
+         GetMem(PList^.Surf, PList^.SurfSize);
+         Surf3D:=PList^.Surf;
+        end
+       else
+        Surf3D:=PList^.tmp;
+       Include(PList^.Transparent, ModelAlpha<>255);
+
+       stScaleModel(PList^.Texture, CorrW, CorrH);
+
+       for J:=1 to Base.Triangles(CTris) do
+        begin
          PV:=PChar(Surf3D)+SizeOf(TSurface3D);
-         bb:=L*(1/BezierMeshCnt);
+         for L:=0 to 2 do
+          with CTris^[L] do
+           begin
+            if VertexNo >= VertexCount then
+             Raise EError(5667);
+            v3p[L]:=Vertices;
+            Inc(v3p[L], VertexNo);
+            WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
+            Inc(PV, VertexSize);
+           end;
+         Inc(CTris);
+         v2.X:=v3p[1]^[0] - v3p[0]^[0];
+         v2.Y:=v3p[1]^[1] - v3p[0]^[1];
+         v2.Z:=v3p[1]^[2] - v3p[0]^[2];
+         v3.X:=v3p[2]^[0] - v3p[0]^[0];
+         v3.Y:=v3p[2]^[1] - v3p[0]^[1];
+         v3.Z:=v3p[2]^[2] - v3p[0]^[2];
+         DeltaV:=Cross(v3, v2);
+         dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
+         if dd<rien then
+          Dec(PList^.SurfSize, VertexSize3m)
+         else
+          begin
+           dd:=1/Sqrt(dd);
+           Radius2:=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
+           nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
+           with Surf3D^ do
+            begin
+             Normale[0]:=DeltaV.X*dd;
+             Normale[1]:=DeltaV.Y*dd;
+             Normale[2]:=DeltaV.Z*dd;
+             Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+             if Mode=bm3DFX then
+              if nRadius2>Radius2 then
+               AnyInfo.Radius:=Sqrt(nRadius2)
+              else
+               AnyInfo.Radius:=Sqrt(Radius2)
+             else
+              AnyInfo.DisplayList:=0;
+             VertexCount:=3;
+             AlphaColor:=CurrentColor or (ModelAlpha shl 24);
+            end;
+           Inc(PChar(Surf3D), VertexSize3m);
+          end;
+        end;
+       PList^.tmp:=Surf3D;
+      end;
+    end;
+
+  CurrentColor:=$FFFFFF;
+  I:=0;
+  while I<BezierInfo.Count do
+   begin
+    Dest:=BezierInfo[I];
+    if Dest=Nil then
+     begin
+      CurrentColor:=FxU32(BezierInfo[I+1]);
+      Inc(I,2);
+     end
+    else
+     with TBezier(Dest) do
+      begin
+       Inc(I);
+       S:=NomTex;
+       if not TexNames.Find(S, J) then
+        {$IFDEF Debug}Raise InternalE('TexNames.Find.3'){$ENDIF};
+       PList:=PSurfaces(TexNames.Objects[J]);
+       if PList^.Surf=Nil then
+        begin
+         GetMem(PList^.Surf, PList^.SurfSize);
+         Surf3D:=PList^.Surf;
+        end
+       else
+        Surf3D:=PList^.tmp;
+       ObjectColor:=CurrentColor or
+          (GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+       Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
+
+       stScaleBezier(PList^.Texture, CorrW, CorrH);
+       BezierBuf:=GetMeshCache;
+       BControlPoints:=ControlPoints;
+       GetMem(stBuffer, BezierBuf.W*BezierBuf.H*SizeOf(vec_st_t));
+       try
+        st:=stBuffer;
+        for L:=0 to BezierBuf.H-1 do
          for K:=0 to BezierBuf.W-1 do
           begin
-           aa:=K*(1/BezierMeshCnt);
-           WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
-           Inc(PV, VertexSize);
-           vec3_p(PV)^:=OrthogonalVector(aa,bb);
-           Inc(vec3_p(PV));
-           Inc(BezierBuf.CP, BezierBuf.W); Inc(st, BezierBuf.W);
-           WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
-           Inc(PV, VertexSize);
-           vec3_p(PV)^:=OrthogonalVector(aa,bb+1/BezierMeshCnt);
-           Inc(vec3_p(PV));
-           Dec(BezierBuf.CP, BezierBuf.W-1); Dec(st, BezierBuf.W-1);
+           st^:=TriangleSTCoordinates(BControlPoints, K, L);
+           Inc(st);
           end;
-         PChar(Surf3D):=PChar(PV);
-        end;
-      finally FreeMem(stBuffer); end;
-      PList^.tmp:=PSurface3D(Surf3D);
-     end;
-   end;
+
+        st:=stBuffer;
+        if Mode=bm3DFX then
+         for L:=0 to BezierBuf.H-2 do
+          begin
+           for K:=0 to BezierBuf.W-2 do
+            begin
+             SmallBezierTriangle(0, BezierBuf.W, 1);
+             SmallBezierTriangle(BezierBuf.W, BezierBuf.W+1, 1);
+             Inc(BezierBuf.CP); Inc(st);
+            end;
+           Inc(BezierBuf.CP); Inc(st);
+          end
+        else   { bmOpenGL }
+         for L:=0 to BezierBuf.H-2 do
+          begin
+           with Surf3D^ do
+            begin
+             AnyInfo.DisplayList:=0;
+             VertexCount:=-(2*BezierBuf.W);
+             AlphaColor:=ObjectColor;
+            end;
+           PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+           bb:=L*(1/BezierMeshCnt);
+           for K:=0 to BezierBuf.W-1 do
+            begin
+             aa:=K*(1/BezierMeshCnt);
+             WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
+             Inc(PV, VertexSize);
+             vec3_p(PV)^:=OrthogonalVector(aa,bb);
+             Inc(vec3_p(PV));
+             Inc(BezierBuf.CP, BezierBuf.W); Inc(st, BezierBuf.W);
+             WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
+             Inc(PV, VertexSize);
+             vec3_p(PV)^:=OrthogonalVector(aa,bb+1/BezierMeshCnt);
+             Inc(vec3_p(PV));
+             Dec(BezierBuf.CP, BezierBuf.W-1); Dec(st, BezierBuf.W-1);
+            end;
+           PChar(Surf3D):=PChar(PV);
+          end;
+       finally
+        FreeMem(stBuffer);
+       end;
+       PList^.tmp:=PSurface3D(Surf3D);
+      end;
+    end;
 
  finally
   TexNames.Free;
@@ -2146,77 +2159,83 @@ var
  hwconfig: GrHwConfiguration;
 begin
  Result:=False;
- if (gr=Nil) or (gr.State=Nil) or ((LibName<>'') and (gr.LibName<>LibName)) then
+ if (qrkGlide_API=Nil) or (qrkGlide_API.State=Nil) or ((LibName<>'') and (qrkGlide_API.LibName<>LibName)) then
   begin
-   ProgressIndicatorStart(0,0); try
-   Free3DFXEditor;
-   if LibName='' then
-    Raise EError(4867);
-   if not ReloadGlide(LibName, GetDLLDirectory) then
-    Raise EErrorFmt(4865, [LibName, GetLastError]);
-   Result:=True;
-   SetIntelPrecision; try
-   gr.grGlideInit;
-   if Assigned(gr.grSstQueryHardware) then
-    if not gr.grSstQueryHardware(hwconfig) then
-     Raise EErrorFmt(4866, ['grSstQueryHardware']);
-   if Assigned(gr.grSstSelect) then
-    gr.grSstSelect(0);
-   if not gr.grSstWinOpen(0,
-             GR_RESOLUTION_640x480,
-             GR_REFRESH_60HZ,
-             GR_COLORFORMAT_ARGB,
-             GR_ORIGIN_LOWER_LEFT,
-             2, 1) then
-    Raise EErrorFmt(4866, ['grSstWinOpen']);
-   finally RestoreIntelPrecision; end; 
-  // gr.grSstControl(GR_CONTROL_DEACTIVATE);
-   if Assigned(gr.grDepthBufferMode) then
-    gr.grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-   if Assigned(gr.grDepthMask) then
-    gr.grDepthMask(FXTRUE);
-   ClearBuffers(0);
-   finally ProgressIndicatorStop; end;
-   gr.State:=TGlideState.Create;
+   ProgressIndicatorStart(0,0);
+   try
+    Free3DFXEditor;
+    if LibName='' then
+     Raise EError(4867);
+    if not ReloadGlide(LibName, GetDLLDirectory) then
+     Raise EErrorFmt(4865, [LibName, GetLastError]);
+    Result:=True;
+    SetIntelPrecision;
+    try
+     qrkGlide_API.grGlideInit;
+     if Assigned(qrkGlide_API.grSstQueryHardware) then
+      if not qrkGlide_API.grSstQueryHardware(hwconfig) then
+       Raise EErrorFmt(4866, ['grSstQueryHardware']);
+     if Assigned(qrkGlide_API.grSstSelect) then
+      qrkGlide_API.grSstSelect(0);
+     if not qrkGlide_API.grSstWinOpen(0,
+               GR_RESOLUTION_640x480,
+               GR_REFRESH_60HZ,
+               GR_COLORFORMAT_ARGB,
+               GR_ORIGIN_LOWER_LEFT,
+               2, 1) then
+      Raise EErrorFmt(4866, ['grSstWinOpen']);
+    finally
+     RestoreIntelPrecision;
+    end;
+   // qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
+    if Assigned(qrkGlide_API.grDepthBufferMode) then
+     qrkGlide_API.grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+    if Assigned(qrkGlide_API.grDepthMask) then
+     qrkGlide_API.grDepthMask(FXTRUE);
+    ClearBuffers(0);
+   finally
+    ProgressIndicatorStop;
+   end;
+   qrkGlide_API.State:=TGlideState.Create;
   end;
- if gr.Version<HardwareGlideVersion then
+ if qrkGlide_API.Version<HardwareGlideVersion then
   FullScreen:=False;
- if Assigned(gr.grSstControl) then
+ if Assigned(qrkGlide_API.grSstControl) then
   if FullScreen then
-   gr.grSstControl(GR_CONTROL_ACTIVATE)
+   qrkGlide_API.grSstControl(GR_CONTROL_ACTIVATE)
   else
    if TwoMonitorsDlg=Nil then
-    gr.grSstControl(GR_CONTROL_DEACTIVATE);
+    qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
 procedure TwoMonitorsActivation;
 begin
- if GlideLoaded and Assigned(gr.grSstControl) then
-  gr.grSstControl(GR_CONTROL_ACTIVATE);
+ if GlideLoaded and Assigned(qrkGlide_API.grSstControl) then
+  qrkGlide_API.grSstControl(GR_CONTROL_ACTIVATE);
 end;
 
 procedure TwoMonitorsDeactivation;
 begin
- if GlideLoaded and Assigned(gr.grSstControl) then
-  gr.grSstControl(GR_CONTROL_DEACTIVATE);
+ if GlideLoaded and Assigned(qrkGlide_API.grSstControl) then
+  qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
 procedure Close3DEditor;
 begin
- if GlideLoaded and Assigned(gr.grSstControl) then
-  gr.grSstControl(GR_CONTROL_DEACTIVATE);
+ if GlideLoaded and Assigned(qrkGlide_API.grSstControl) then
+  qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
 procedure Free3DFXEditor;
 begin
  if GlideLoaded then
   begin
-   gr.State.Free;
-   gr.State:=Nil;
-   if Assigned(gr.grSstWinClose) then
-    gr.grSstWinClose;
-   if Assigned(gr.grGlideShutdown) then
-    gr.grGlideShutdown;
+   qrkGlide_API.State.Free;
+   qrkGlide_API.State:=Nil;
+   if Assigned(qrkGlide_API.grSstWinClose) then
+    qrkGlide_API.grSstWinClose;
+   if Assigned(qrkGlide_API.grGlideShutdown) then
+    qrkGlide_API.grGlideShutdown;
    UnloadGlide;
   end;
  FreeNonVisibleTextures;
@@ -2224,15 +2243,15 @@ end;
 
 procedure GammaCorrection(Value: TDouble);
 begin
- if Assigned(gr.grGammaCorrectionValue) then
-  gr.grGammaCorrectionValue(Value);
+ if Assigned(qrkGlide_API.grGammaCorrectionValue) then
+  qrkGlide_API.grGammaCorrectionValue(Value);
 end;
 
  {------------------------}
 
 const
  SOFTMARGIN = 2;
- 
+
 type
  TV1 = record
         x, y, oow, sow, tow: FxFloat;
@@ -2288,17 +2307,17 @@ var
 
   procedure ClearFrame1(X,Y,W,H: Integer);
   begin
-   gr.grClipWindow(X,Y,X+W,Y+H);
-   if not Special and Assigned(gr.grDepthMask) then
+   qrkGlide_API.grClipWindow(X,Y,X+W,Y+H);
+   if not Special and Assigned(qrkGlide_API.grDepthMask) then
     begin
      Special:=True;
-     gr.grDepthMask(FXFALSE);
+     qrkGlide_API.grDepthMask(FXFALSE);
     end;
    ClearBuffers(FRAME_COLOR);
   end;
 
 begin
- if gr.Version<HardwareGlideVersion then Exit;
+ if qrkGlide_API.Version<HardwareGlideVersion then Exit;
  L:=ViewRect.R.Left;
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
@@ -2311,7 +2330,7 @@ begin
   if B<SY then ClearFrame1(0, B, SX, SY-B);
  finally
   if Special then
-   gr.grDepthMask(FXTRUE);
+   qrkGlide_API.grDepthMask(FXTRUE);
  end;
 end;
 
@@ -2356,28 +2375,28 @@ begin
  else
   LoadV:=LoadV3D;
 
- if Assigned(gr.guColorCombineFunction) then
+ if Assigned(qrkGlide_API.guColorCombineFunction) then
   if SolidColors then
-   gr.guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
+   qrkGlide_API.guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
   else
-   gr.guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
- if TGlideState(gr.State).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1) then
-  gr.grFogTable(FogTableCache^);
- if gr.Version>=HardwareGlideVersion then
-  gr.grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
+   qrkGlide_API.guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
+ if TGlideState(qrkGlide_API.State).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1) then
+  qrkGlide_API.grFogTable(FogTableCache^);
+ if qrkGlide_API.Version>=HardwareGlideVersion then
+  qrkGlide_API.grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
  else
-  gr.grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
+  qrkGlide_API.grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
 
  CurrentAlpha:=0;
  IteratedAlpha:=False;
-{if Assigned(gr.grDepthMask) then
-  gr.grDepthMask(FXTRUE);}
- if Assigned(gr.grAlphaBlendFunction) then
+{if Assigned(qrkGlide_API.grDepthMask) then
+  qrkGlide_API.grDepthMask(FXTRUE);}
+ if Assigned(qrkGlide_API.grAlphaBlendFunction) then
   begin
-   if Assigned(gr.grAlphaCombine) then
-    gr.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE,
+   if Assigned(qrkGlide_API.grAlphaCombine) then
+    qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE,
      GR_COMBINE_LOCAL_NONE, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
-   gr.grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
+   qrkGlide_API.grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
   end;
  ClearBuffers(VOID_COLOR);
  Inc(FBuildNo);
@@ -2385,38 +2404,38 @@ begin
  FProjInfo:=@ProjInfo;}
 
  RenderTransparent(False);
-{if Assigned(gr.grDepthMask) then
-  gr.grDepthMask(FXFALSE);}
- if Assigned(gr.grAlphaBlendFunction) then
-  gr.grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
+{if Assigned(qrkGlide_API.grDepthMask) then
+  qrkGlide_API.grDepthMask(FXFALSE);}
+ if Assigned(qrkGlide_API.grAlphaBlendFunction) then
+  qrkGlide_API.grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
  RenderTransparent(True);
 
- if (gr.Version>=HardwareGlideVersion) and CCoord.FlatDisplay and (TranspFactor>0) then
+ if (qrkGlide_API.Version>=HardwareGlideVersion) and CCoord.FlatDisplay and (TranspFactor>0) then
   begin
    Inc(FBuildNo);
-   //gr.grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA,
+   //qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA,
    // GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
-   gr.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
+   qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
     GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
    IteratedAlpha:=True;
-   //gr.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA,
+   //qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA,
    // GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
-   //gr.grConstantColorValue($30FFFFFF);
+   //qrkGlide_API.grConstantColorValue($30FFFFFF);
    OldMinDist:=CCoord.MinDistance;
    OldMaxDist:=CCoord.MaxDistance;
    try
     CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
     CCoord.MaxDistance:=OldMinDist;
     InitFlatZ;
-    gr.grFogMode(GR_FOG_DISABLE);
-    gr.grDepthMask(FXFALSE);
-    gr.grDepthBufferFunction(GR_CMP_ALWAYS);
+    qrkGlide_API.grFogMode(GR_FOG_DISABLE);
+    qrkGlide_API.grDepthMask(FXFALSE);
+    qrkGlide_API.grDepthBufferFunction(GR_CMP_ALWAYS);
     RenderTransparent(False);
     RenderTransparent(True);
    finally
-    gr.grDepthBufferFunction(GR_CMP_LESS);
-    gr.grDepthMask(FXTRUE);
-    gr.grFogMode(GR_FOG_WITH_TABLE);
+    qrkGlide_API.grDepthBufferFunction(GR_CMP_LESS);
+    qrkGlide_API.grDepthMask(FXTRUE);
+    qrkGlide_API.grFogMode(GR_FOG_WITH_TABLE);
     CCoord.MinDistance:=OldMinDist;
     CCoord.MaxDistance:=OldMaxDist;
    end;
@@ -2519,7 +2538,7 @@ begin
   end;
 end;*)
 
-{type          déclaré plus haut 
+{type          déclaré plus haut
  TV1 = record
         x, y, oow, sow, tow: FxFloat;
         Scr: Byte;
@@ -2843,7 +2862,7 @@ begin
  LocalViewRectTop   :=ViewRect.Top;
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
- if (gr.Version<HardwareGlideVersion)
+ if (qrkGlide_API.Version<HardwareGlideVersion)
  and (SoftBufferFormat = SoftBufferCoarse) then
   VertexSnapper1:=VertexSnapper+0.25
  else
@@ -2864,17 +2883,20 @@ begin
         begin
          if MeanColor = MeanColorNotComputed then
           begin
-           PSD:=GetTex3Description(PList^.Texture^); try
-           MeanColor:=ComputeMeanColor(PSD);
-           finally PSD.Done; end;
+           PSD:=GetTex3Description(PList^.Texture^);
+           try
+            MeanColor:=ComputeMeanColor(PSD);
+           finally
+            PSD.Done;
+           end;
           end;
          nColor:=(((nColor and $FF)*(MeanColor and $FF)) shr 8)
               or ((((nColor shr 8) and $FF)*((MeanColor shr 8) and $FF)) and $00FF00)
               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
         end;
-      if Assigned(gr.grConstantColorValue) and (nColor<>CurrentAlpha) then
+      if Assigned(qrkGlide_API.grConstantColorValue) and (nColor<>CurrentAlpha) then
        begin
-        gr.grConstantColorValue(nColor);
+        qrkGlide_API.grConstantColorValue(nColor);
         CurrentAlpha:=nColor;
        end;
       if CCoord.FlatDisplay then
@@ -3118,7 +3140,7 @@ begin
             {$IFDEF DebugLOG} LogS:=''; {$ENDIF}
             if NeedTex then
              begin
-              TGlideState(gr.State).NeedTex(PList^.Texture);
+              TGlideState(qrkGlide_API.State).NeedTex(PList^.Texture);
             {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
               NeedTex:=False;
              end;
@@ -3144,8 +3166,8 @@ begin
               with VList[I] do
                a:=oow * (MinW*255.0);
 
-           {gr.grDrawPlanarPolygonVertexList(N, VList[0]);
-           {gr.grDrawPolygonVertexList(N, VList[0]);}
+           {qrkGlide_API.grDrawPlanarPolygonVertexList(N, VList[0]);
+           {qrkGlide_API.grDrawPolygonVertexList(N, VList[0]);}
             for I:=1 to N-2 do
              begin
               {$IFDEF DebugLOG}
@@ -3155,7 +3177,7 @@ begin
               if {Abs((VList[I+1].x-VList[0].x)*(VList[I].y-VList[0].y)
                     -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
                > MinTriangleArea2} True then
-               gr.grDrawTriangle(VList[0], VList[I], VList[I+1])
+               qrkGlide_API.grDrawTriangle(VList[0], VList[I], VList[I+1])
               else
                begin
                 {$IFDEF DebugLOG} LogS:=LogS+' dropped'; {$ENDIF}
@@ -3179,7 +3201,7 @@ begin
   begin
    biWidth:=R-L;
    biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
-   if gr.Version<HardwareGlideVersion then
+   if qrkGlide_API.Version<HardwareGlideVersion then
     begin
      Inc(biHeight, 2*SOFTMARGIN);
      if SoftBufferFormat>0 then
@@ -3221,105 +3243,112 @@ begin
   end;
  ScreenExtent(L, R, bmiHeader);
 
- GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3); try
- if gr.Version>=HardwareGlideVersion then
-  begin
-   if not gr.grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
-         GR_ORIGIN_ANY, FXFALSE, info) then
-    Raise EErrorFmt(4866, ['grLfbLock']);
-   I:=bmiHeader.biHeight;
-   SrcPtr:=info.lfbptr;
-   Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*info.strideInBytes);
-   Count1:=(R-L) div 4;
-   asm
-    push esi
-    push edi
-    mov edi, [Bits]
+ GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3);
+ try
+  if qrkGlide_API.Version>=HardwareGlideVersion then
+   begin
+    if not qrkGlide_API.grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
+          GR_ORIGIN_ANY, FXFALSE, info) then
+     Raise EErrorFmt(4866, ['grLfbLock']);
+    I:=bmiHeader.biHeight;
+    SrcPtr:=info.lfbptr;
+    Inc(PChar(SrcPtr), L*2 + (ScreenSizeY-ViewRect.R.Bottom)*info.strideInBytes);
+    Count1:=(R-L) div 4;
+    asm
+     push esi
+     push edi
+     mov edi, [Bits]
 
-    @BoucleY:
-     mov esi, [SrcPtr]
-     mov eax, [info.strideInBytes]
-     add eax, esi
-     mov [SrcPtr], eax
-     mov ecx, [Count1]
-     push ebx
+     @BoucleY:
+      mov esi, [SrcPtr]
+      mov eax, [info.strideInBytes]
+      add eax, esi
+      mov [SrcPtr], eax
+      mov ecx, [Count1]
+      push ebx
 
-     @Boucle:
+      @Boucle:
 
-      mov eax, [esi]
-      mov edx, eax
-      shl eax, 11    { 1B }
-      mov ebx, edx
-      shr edx, 3
-      mov al, dl     { 1G }
-      shl eax, 16
-      mov ah, bh     { 1R }
-      shr edx, 10
-      mov al, dl     { 2B }
-      and eax, $F8FCF8F8
-      bswap eax
-      mov [edi], eax
+       mov eax, [esi]
+       mov edx, eax
+       shl eax, 11    { 1B }
+       mov ebx, edx
+       shr edx, 3
+       mov al, dl     { 1G }
+       shl eax, 16
+       mov ah, bh     { 1R }
+       shr edx, 10
+       mov al, dl     { 2B }
+       and eax, $F8FCF8F8
+       bswap eax
+       mov [edi], eax
 
-      shr edx, 6
-      shl dh, 3
-      and dl, $F8
-      bswap edx    { 2G - 2R }
-      mov eax, [esi+4]
-      add esi, 8
-      shld ebx, eax, 16
-      shl eax, 3
-      mov dh, al   { 3B }
-      shl eax, 2
-      mov dl, ah   { 3G }
-      bswap edx
-      mov [edi+4], edx
+       shr edx, 6
+       shl dh, 3
+       and dl, $F8
+       bswap edx    { 2G - 2R }
+       mov eax, [esi+4]
+       add esi, 8
+       shld ebx, eax, 16
+       shl eax, 3
+       mov dh, al   { 3B }
+       shl eax, 2
+       mov dl, ah   { 3G }
+       bswap edx
+       mov [edi+4], edx
 
-      mov ah, bl   { 4B }
-      shl eax, 11  { 3R }
-      mov al, bh   { 4R }
-      shr ebx, 3
-      mov ah, bl   { 4G }
-      and eax, $F8F8FCF8
-      bswap eax
-      mov [edi+8], eax
-      add edi, 12
+       mov ah, bl   { 4B }
+       shl eax, 11  { 3R }
+       mov al, bh   { 4R }
+       shr ebx, 3
+       mov ah, bl   { 4G }
+       and eax, $F8F8FCF8
+       bswap eax
+       mov [edi+8], eax
+       add edi, 12
 
-      dec ecx
-     jnz @Boucle
+       dec ecx
+      jnz @Boucle
 
-     pop ebx
-     dec [I]
-    jnz @BoucleY
+      pop ebx
+      dec [I]
+     jnz @BoucleY
 
-    pop edi
-    pop esi
-   end;
-   gr.grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
-  end
- else
-  gr.softgLoadFrameBuffer(Bits, SoftBufferFormat);
- L:=(SX-bmiHeader.biWidth) div 2;
- T:=(SY-bmiHeader.biHeight) div 2;
- R:=L+bmiHeader.biWidth;
- B:=T+bmiHeader.biHeight;
- FrameBrush:=0; try
- if L>0 then  Frame(0, T, L, B-T);
- if T>0 then  Frame(0, 0, SX, T);
- if R<SX then Frame(R, T, SX-R, B-T);
- if B<SY then Frame(0, B, SX, SY-B);
- finally if FrameBrush<>0 then DeleteObject(FrameBrush); end;
- SetDIBitsToDevice(DC, L, T,
-  bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-  0,bmiHeader.biHeight, Bits, BmpInfo, 0);
- finally FreeMem(Bits); end;
+     pop edi
+     pop esi
+    end;
+    qrkGlide_API.grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+   end
+  else
+   qrkGlide_API.softgLoadFrameBuffer(Bits, SoftBufferFormat);
+  L:=(SX-bmiHeader.biWidth) div 2;
+  T:=(SY-bmiHeader.biHeight) div 2;
+  R:=L+bmiHeader.biWidth;
+  B:=T+bmiHeader.biHeight;
+  FrameBrush:=0;
+  try
+   if L>0 then  Frame(0, T, L, B-T);
+   if T>0 then  Frame(0, 0, SX, T);
+   if R<SX then Frame(R, T, SX-R, B-T);
+   if B<SY then Frame(0, B, SX, SY-B);
+  finally
+   if FrameBrush<>0 then
+    DeleteObject(FrameBrush);
+  end;
+  SetDIBitsToDevice(DC, L, T,
+   bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+   0,bmiHeader.biHeight, Bits, BmpInfo, 0);
+ finally
+  FreeMem(Bits);
+ end;
 end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
 begin
- if Assigned(gr.grBufferSwap) then
-  gr.grBufferSwap(0);
- if Synch and Assigned(gr.grSstIdle) then
-  gr.grSstIdle;
+ if Assigned(qrkGlide_API.grBufferSwap) then
+  qrkGlide_API.grBufferSwap(0);
+ if Synch and Assigned(qrkGlide_API.grSstIdle) then
+  qrkGlide_API.grSstIdle;
 end;
 
 procedure T3DFXSceneObject.SetViewRect(SX, SY: Integer);
@@ -3341,7 +3370,7 @@ begin
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- if gr.Version>=HardwareGlideVersion then
+ if qrkGlide_API.Version>=HardwareGlideVersion then
   begin
   end
  else
@@ -3367,7 +3396,7 @@ end;
 
 function T3DFXSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
- Result:=(gr.Version<HardwareGlideVersion)
+ Result:=(qrkGlide_API.Version<HardwareGlideVersion)
      and (SoftBufferFormat<>nQuality);
  SoftBufferFormat:=nQuality;
 end;
@@ -3386,92 +3415,93 @@ begin
     MemSize:=w*h;
     PSD2.Init;
     PSD2.AlphaBits:=psaNoAlpha;
-    PSD:=GetTex3Description(Texture^); try
-    if (PSD.Format=psf24bpp) and TGlideState(gr.State).Accepts16bpp then
-     begin
-      format:=GR_TEXFMT_RGB_565;
-      if smallLod<>largeLod then
-       raise InternalE('true-color+anti-aliasing');
-      MemSize:=MemSize*2;
-      GetMem(data, MemSize);
-      PSD2.Format:=psf24bpp;
-      PSD2.Size.X:=w;
-      PSD2.Size.Y:=h;
-      PSDConvert(PSD2, PSD, ccTemporary);
-      GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
-      Source:=PSD2.StartPointer;
-      Dest:=PChar(data);
-      for J:=1 to h do
-       begin
-        asm
-         push esi
-         push edi
-         push ebx
-         mov ecx, [w]
-         mov esi, [Source]
-         mov edi, [Dest]
-         mov ebx, [GammaBuf]
-         cld
-         xor edx, edx
-        
-         @xloop:
-          mov dl, [esi]
-          mov al, [ebx+edx]   {B}
-          mov dl, [esi+1]
-          mov ah, [ebx+edx]   {G}
-          mov dl, [esi+2]
-          shr ah, 2    {G}
-          mov dl, [ebx+edx]   {R}
-        
-          add esi, 3
-          shr ax, 3    {GB}
-          and dl, $F8  {R}
-          or ah, dl    {RGB}
-          stosw
-         loop @xloop
+    PSD:=GetTex3Description(Texture^);
+    try
+     if (PSD.Format=psf24bpp) and TGlideState(qrkGlide_API.State).Accepts16bpp then
+      begin
+       format:=GR_TEXFMT_RGB_565;
+       if smallLod<>largeLod then
+        raise InternalE('true-color+anti-aliasing');
+       MemSize:=MemSize*2;
+       GetMem(data, MemSize);
+       PSD2.Format:=psf24bpp;
+       PSD2.Size.X:=w;
+       PSD2.Size.Y:=h;
+       PSDConvert(PSD2, PSD, ccTemporary);
+       GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
+       Source:=PSD2.StartPointer;
+       Dest:=PChar(data);
+       for J:=1 to h do
+        begin
+         asm
+          push esi
+          push edi
+          push ebx
+          mov ecx, [w]
+          mov esi, [Source]
+          mov edi, [Dest]
+          mov ebx, [GammaBuf]
+          cld
+          xor edx, edx
 
-         pop ebx
-         mov [Dest], edi
-         pop edi
-         pop esi
-        end;
-        Inc(Source, PSD2.ScanLine);
-       end;
-     end
-    else
-     begin
-      format:=GR_TEXFMT_P_8;
-      if smallLod<>largeLod then
-       MemSizeTotal:=(MemSize*(64+16+4+1)) div 64
-      else
-       MemSizeTotal:=MemSize;
-      GetMem(data, MemSizeTotal);
-      PSD2.Format:=psf8bpp;
-      PSD2.Size.X:=w;
-      PSD2.Size.Y:=h;
-      PSD2.ScanLine:=w;
-      PSD2.Data:=data;
-      PSD3:=PSD2;
-      PSDConvert(PSD2, PSD, ccTemporary);
-      { gamma correction included in ComputeGuPalette }
-      Texture^.GuPalette:=TTextureManager.GetInstance.ComputeGuPalette(PSD2.ColorPalette);
-      
-      if smallLod<>largeLod then
-        for J:=1 to 3 do
-         begin
-          Dest:=PChar(PSD2.Data);
-          PSD.Done;
-          PSD:=(Texture^.SourceTexture as QTextureFile).ScaledDownDescription(J);
-          PSD3.Size.X:=PSD3.Size.X div 2;
-          PSD3.Size.Y:=PSD3.Size.Y div 2;
-          PSD3.ScanLine:=PSD3.Size.X;
-          Inc(PChar(PSD3.Data), MemSize);
-          MemSize:=MemSize div 4;
-          PSD2.Done;
-          PSD2:=PSD3;
-          PSDConvert(PSD2, PSD, ccTemporary);
+          @xloop:
+           mov dl, [esi]
+           mov al, [ebx+edx]   {B}
+           mov dl, [esi+1]
+           mov ah, [ebx+edx]   {G}
+           mov dl, [esi+2]
+           shr ah, 2    {G}
+           mov dl, [ebx+edx]   {R}
+
+           add esi, 3
+           shr ax, 3    {GB}
+           and dl, $F8  {R}
+           or ah, dl    {RGB}
+           stosw
+          loop @xloop
+
+          pop ebx
+          mov [Dest], edi
+          pop edi
+          pop esi
          end;
-     end;    
+         Inc(Source, PSD2.ScanLine);
+        end;
+      end
+     else
+      begin
+       format:=GR_TEXFMT_P_8;
+       if smallLod<>largeLod then
+        MemSizeTotal:=(MemSize*(64+16+4+1)) div 64
+       else
+        MemSizeTotal:=MemSize;
+       GetMem(data, MemSizeTotal);
+       PSD2.Format:=psf8bpp;
+       PSD2.Size.X:=w;
+       PSD2.Size.Y:=h;
+       PSD2.ScanLine:=w;
+       PSD2.Data:=data;
+       PSD3:=PSD2;
+       PSDConvert(PSD2, PSD, ccTemporary);
+       { gamma correction included in ComputeGuPalette }
+       Texture^.GuPalette:=TTextureManager.GetInstance.ComputeGuPalette(PSD2.ColorPalette);
+
+       if smallLod<>largeLod then
+         for J:=1 to 3 do
+          begin
+           Dest:=PChar(PSD2.Data);
+           PSD.Done;
+           PSD:=(Texture^.SourceTexture as QTextureFile).ScaledDownDescription(J);
+           PSD3.Size.X:=PSD3.Size.X div 2;
+           PSD3.Size.Y:=PSD3.Size.Y div 2;
+           PSD3.ScanLine:=PSD3.Size.X;
+           Inc(PChar(PSD3.Data), MemSize);
+           MemSize:=MemSize div 4;
+           PSD2.Done;
+           PSD2:=PSD3;
+           PSDConvert(PSD2, PSD, ccTemporary);
+          end;
+      end;
     finally
      PSD.Done;
      PSD2.Done;

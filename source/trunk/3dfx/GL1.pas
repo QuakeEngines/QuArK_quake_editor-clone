@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/09/10 14:04:24  alexander
+added cvs headers
+
 
 
 }
@@ -422,7 +425,7 @@ const
   GL_NICEST    = $1102;
 
   (* LightName *)
-    
+
   GL_LIGHT0 = $4000;
   GL_LIGHT1 = $4001;
   GL_LIGHT2 = $4002;
@@ -602,18 +605,16 @@ const
   GL_TEXTURE_WRAP_T     = $2803;
 
   (* TextureWrapMode *)
-  
+
   GL_CLAMP  = $2900;
   GL_REPEAT = $2901;
 
 type
  PGlRoutines = ^TGlRoutines;
  TGlRoutines = record
-
-(*
-** OpenGL routines from OPENGL32.DLL
-*)
-
+  (*
+  ** OpenGL routines from OPENGL32.DLL
+  *)
   wglMakeCurrent: function (DC: HDC; p2: HGLRC): Bool; stdcall;
   wglDeleteContext: function (p1: HGLRC): Bool; stdcall;
   wglCreateContext: function (DC: HDC): HGLRC; stdcall;
@@ -657,23 +658,23 @@ type
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
   glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
 
-(*
-** Utility routines from GLU32.DLL
-*)
-
+  (*
+  ** Utility routines from GLU32.DLL
+  *)
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
  {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint;
                                format: GLenum; typ: GLenum; const data): GLint; stdcall;}
 
-(*
-** end of routines
-*)
+  (*
+  ** end of routines
+  *)
 
-  OpenGL32Lib, Glu32Lib: THandle;
-end;
+  OpenGL32Lib: THandle;
+  Glu32Lib: THandle;
+ end; {end-of-record}
 
 var
- gl: PGlRoutines;
+ qrkOpenGL_API: PGlRoutines;
 
 function ReloadOpenGl : Boolean;
 procedure UnloadOpenGl;
@@ -728,36 +729,38 @@ const
 
 function OpenGlLoaded : Boolean;
 begin
- Result:=Assigned(gl);
+ Result:=Assigned(qrkOpenGL_API);
 end;
 
 function ReloadOpenGl : Boolean;
 var
- gl1: PGlRoutines;
+ LocalOpenGL_API: PGlRoutines;
  I: Integer;
  P: ^TFarProc;
 begin
  UnloadOpenGl;
  Result:=False;
- New(gl1);
- gl1^.OpenGL32Lib:=0;
- gl1^.Glu32Lib:=0;
+ New(LocalOpenGL_API);
+ LocalOpenGL_API^.OpenGL32Lib:=0;
+ LocalOpenGL_API^.Glu32Lib:=0;
  try
-  gl1^.OpenGL32Lib:=LoadLibrary('OPENGL32.DLL');
-  if gl1^.OpenGL32Lib=0 then Exit;
-  gl1^.Glu32Lib:=LoadLibrary('GLU32.DLL');
-  if gl1^.Glu32Lib=0 then Exit;
-  PChar(P):=PChar(gl1);
+  LocalOpenGL_API^.OpenGL32Lib:=LoadLibrary('OPENGL32.DLL');
+  if LocalOpenGL_API^.OpenGL32Lib=0 then
+   Exit;
+  LocalOpenGL_API^.Glu32Lib:=LoadLibrary('GLU32.DLL');
+  if LocalOpenGL_API^.Glu32Lib=0 then
+   Exit;
+  PChar(P):=PChar(LocalOpenGL_API);
   for I:=Low(GlRoutines) to High(GlRoutines) do
    begin
-    P^:=GetProcAddress(gl1^.OpenGL32Lib, GlRoutines[I]);
+    P^:=GetProcAddress(LocalOpenGL_API^.OpenGL32Lib, GlRoutines[I]);
     if P^=Nil then
      Exit;
     Inc(P);
    end;
   for I:=Low(GluRoutines) to High(GluRoutines) do
    begin
-    P^:=GetProcAddress(gl1^.Glu32Lib, GluRoutines[I]);
+    P^:=GetProcAddress(LocalOpenGL_API^.Glu32Lib, GluRoutines[I]);
     if P^=Nil then
      Exit;
     Inc(P);
@@ -765,26 +768,26 @@ begin
   Result:=True;
  finally
   if Result then
-   gl:=gl1
+   qrkOpenGL_API:=LocalOpenGL_API
   else
    begin
-    if gl1^.Glu32Lib<>0 then
-     FreeLibrary(gl1^.Glu32Lib);
-    if gl1^.OpenGL32Lib<>0 then
-     FreeLibrary(gl1^.OpenGL32Lib);
-    FreeMem(gl1);
+    if LocalOpenGL_API^.Glu32Lib<>0 then
+     FreeLibrary(LocalOpenGL_API^.Glu32Lib);
+    if LocalOpenGL_API^.OpenGL32Lib<>0 then
+     FreeLibrary(LocalOpenGL_API^.OpenGL32Lib);
+    FreeMem(LocalOpenGL_API);
    end;
  end;
 end;
 
 procedure UnloadOpenGl;
 begin
- if Assigned(gl) then
+ if Assigned(qrkOpenGL_API) then
   begin
-   FreeLibrary(gl^.Glu32Lib);
-   FreeLibrary(gl^.OpenGL32Lib);
-   FreeMem(gl);
-   gl:=Nil;
+   FreeLibrary(qrkOpenGL_API^.Glu32Lib);
+   FreeLibrary(qrkOpenGL_API^.OpenGL32Lib);
+   FreeMem(qrkOpenGL_API);
+   qrkOpenGL_API:=Nil;
   end;
 end;
 

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/09/10 14:04:24  alexander
+added cvs headers
+
 
 }
 
@@ -210,7 +213,7 @@ const
 type
  GrAspectRatio_t = FxI32;
 
-const 
+const
  GR_ASPECT_8x1 = $0;      (* 8W x 1H *)
  GR_ASPECT_4x1 = $1;      (* 4W x 1H *)
  GR_ASPECT_2x1 = $2;      (* 2W x 1H *)
@@ -488,7 +491,7 @@ const
 type
  GrScreenResolution_t = FxI32;
 
-const 
+const
  GR_RESOLUTION_320x200   = $0;
  GR_RESOLUTION_320x240   = $1;
  GR_RESOLUTION_400x256   = $2;
@@ -558,10 +561,10 @@ type
  end;
 
 type
- GuTexPalette = array[0..255] of FxU32; 
+ GuTexPalette = array[0..255] of FxU32;
 
 type
- GrSstType = Integer; 
+ GrSstType = Integer;
 
 const
  GR_SSTTYPE_VOODOO   = 0;
@@ -649,7 +652,7 @@ const
 
 type
  PGlideRoutines = ^TGlideRoutines;
- TGlideRoutines = record 
+ TGlideRoutines = record
 
 (*
 ** rendering functions
@@ -697,10 +700,10 @@ grSstIdle: procedure ; stdcall;
 (*FX_ENTRY FxU32 FX_CALL
 grSstVideoLine( void ); stdcall;
 
-FX_ENTRY FxBool FX_CALL 
+FX_ENTRY FxBool FX_CALL
 grSstVRetraceOn( void ); stdcall;
 
-FX_ENTRY FxBool FX_CALL 
+FX_ENTRY FxBool FX_CALL
 grSstIsBusy( void ); stdcall;
 *)
 grSstWinOpen: function (
@@ -727,7 +730,7 @@ grSstSelect: procedure (which_sst: Integer); stdcall;
 FX_ENTRY FxU32 FX_CALL
 grSstScreenHeight( void ); stdcall;
 
-FX_ENTRY FxU32 FX_CALL 
+FX_ENTRY FxU32 FX_CALL
 grSstScreenWidth( void ); stdcall;
 
 FX_ENTRY FxU32 FX_CALL
@@ -765,10 +768,10 @@ grAlphaTestFunction( GrCmpFnc_t function ); stdcall;
 procedure
 grAlphaTestReferenceValue( GrAlpha_t value ); stdcall;
 
-procedure 
+procedure
 grChromakeyMode( GrChromakeyMode_t mode ); stdcall;
 
-procedure 
+procedure
 grChromakeyValue( GrColor_t value ); stdcall;
 *)
 
@@ -787,10 +790,10 @@ grCullMode( GrCullMode_t mode ); stdcall;
 *)
 grConstantColorValue: procedure (value: GrColor_t); stdcall;
 (*
-procedure 
+procedure
 grConstantColorValue4( float a, float r, float g, float b ); stdcall;
 
-procedure 
+procedure
 grDepthBiasLevel( FxI16 level ); stdcall;
 *)
 
@@ -803,7 +806,7 @@ grDepthMask: procedure(mask: FxBool); stdcall;
 (*procedure
 grDisableAllEffects( void ); stdcall;
 
-procedure 
+procedure
 grDitherMode( GrDitherMode_t mode ); stdcall;
 *)
 
@@ -889,7 +892,7 @@ grTexDownloadMipMapLevel( GrChipID_t        tmu,
                           FxU32             evenOdd,
                           void              *data ); stdcall;
 
-procedure 
+procedure
 grTexDownloadMipMapLevelPartial( GrChipID_t        tmu,
                                  FxU32             startAddress,
                                  GrLOD_t           thisLod,
@@ -902,7 +905,7 @@ grTexDownloadMipMapLevelPartial( GrChipID_t        tmu,
                                  int               end ); stdcall;
 
 
-procedure 
+procedure
 ConvertAndDownloadRle( GrChipID_t        tmu,
                         FxU32             startAddress,
                         GrLOD_t           thisLod,
@@ -969,7 +972,7 @@ guTexAllocateMemory(
                     FxBool trilinear
                     ); stdcall;
 
-FX_ENTRY FxBool FX_CALL 
+FX_ENTRY FxBool FX_CALL
 guTexChangeAttributes(
                       GrMipMapId_t mmid,
                       int width, int height,
@@ -983,38 +986,38 @@ guTexChangeAttributes(
                       GrTextureFilterMode_t magFilterMode
                       ); stdcall;
 
-procedure 
+procedure
 guTexCombineFunction(
                      GrChipID_t tmu,
                      GrTextureCombineFnc_t fnc
                      ); stdcall;
 
-FX_ENTRY GrMipMapId_t FX_CALL 
+FX_ENTRY GrMipMapId_t FX_CALL
 guTexGetCurrentMipMap( GrChipID_t tmu ); stdcall;
 
-FX_ENTRY GrMipMapInfo * FX_CALL 
+FX_ENTRY GrMipMapInfo * FX_CALL
 guTexGetMipMapInfo( GrMipMapId_t mmid ); stdcall;
 
-FX_ENTRY FxU32 FX_CALL 
+FX_ENTRY FxU32 FX_CALL
 guTexMemQueryAvail( GrChipID_t tmu ); stdcall;
 
-procedure 
+procedure
 guTexMemReset( void ); stdcall;
 
-procedure 
+procedure
 guTexDownloadMipMap(
                     GrMipMapId_t mmid,
                     const void *src,
                     const GuNccTable *table
                     ); stdcall;
 
-procedure 
+procedure
 guTexDownloadMipMapLevel(
                          GrMipMapId_t mmid,
                          GrLOD_t lod,
                          const void **src
                          ); stdcall;
-procedure 
+procedure
 guTexSource( GrMipMapId_t id ); stdcall;
 
 (*
@@ -1033,7 +1036,7 @@ grLfbConstantAlpha( GrAlpha_t alpha ); stdcall;
 procedure
 grLfbConstantDepth( FxU16 depth ); stdcall;
 
-procedure 
+procedure
 grLfbWriteColorSwizzle(FxBool swizzleBytes, FxBool swapWords); stdcall;
 
 procedure
@@ -1041,10 +1044,10 @@ grLfbWriteColorFormat(GrColorFormat_t colorFormat); stdcall;
 
 
 FX_ENTRY FxBool FX_CALL
-grLfbWriteRegion( GrBuffer_t dst_buffer, 
+grLfbWriteRegion( GrBuffer_t dst_buffer,
                   FxU32 dst_x, FxU32 dst_y,
-                  GrLfbSrcFmt_t src_format, 
-                  FxU32 src_width, FxU32 src_height, 
+                  GrLfbSrcFmt_t src_format,
+                  FxU32 src_width, FxU32 src_height,
                   FxI32 src_stride, void *src_data ); stdcall;
 *)
 
@@ -1113,6 +1116,10 @@ guFogGenerateExp2: procedure (var fogtable: GrFogTable_t; density: FxFloat); std
 
 softgLoadFrameBuffer: procedure (Data: Pointer; Format: Integer); stdcall;
 
+(*
+** end of routines
+*)
+
   GlideLib: THandle;
   Version: Integer;
   LibName: String;
@@ -1128,7 +1135,7 @@ const
  SoftBufferCoarse     = 1;
 
 var
- gr: PGlideRoutines;
+ qrkGlide_API: PGlideRoutines;
 
 function ReloadGlide(const LibName, SearchDir: String) : Boolean;
 procedure UnloadGlide;
@@ -1186,12 +1193,12 @@ const
 
 function GlideLoaded : Boolean;
 begin
- Result:=Assigned(gr);
+ Result:=Assigned(qrkGlide_API);
 end;
 
 function ReloadGlide(const LibName, SearchDir: String) : Boolean;
 var
- gr1: PGlideRoutines;
+ LocalGlide_API: PGlideRoutines;
  I: Integer;
  P: ^TFarProc;
  softgQuArK: function : Integer; stdcall;
@@ -1199,27 +1206,28 @@ var
 begin
  UnloadGlide;
  Result:=False;
- New(gr1);
- gr1^.GlideLib:=0;
+ New(LocalGlide_API);
+ LocalGlide_API^.GlideLib:=0;
  try
-  gr1^.GlideLib:=LoadLibrary(PChar(LibName));
-  if gr1^.GlideLib=0 then
+  LocalGlide_API^.GlideLib:=LoadLibrary(PChar(LibName));
+  if LocalGlide_API^.GlideLib=0 then
    begin
     S:=SearchDir+'\'+LibName;
-    gr1^.GlideLib:=LoadLibrary(PChar(S));
-    if gr1^.GlideLib=0 then Exit;
+    LocalGlide_API^.GlideLib:=LoadLibrary(PChar(S));
+    if LocalGlide_API^.GlideLib=0 then
+     Exit;
    end;
-  gr1^.LibName:=LibName;
-  @softgQuArK:=GetProcAddress(gr1^.GlideLib, SoftwareVersionRoutine);
+  LocalGlide_API^.LibName:=LibName;
+  @softgQuArK:=GetProcAddress(LocalGlide_API^.GlideLib, SoftwareVersionRoutine);
   if Assigned(softgQuArK) then
-   gr1^.Version:=softgQuArK
+   LocalGlide_API^.Version:=softgQuArK
   else
-   gr1^.Version:=HardwareGlideVersion;
-  gr1^.State:=Nil;
-  PChar(P):=PChar(gr1);
+   LocalGlide_API^.Version:=HardwareGlideVersion;
+  LocalGlide_API^.State:=Nil;
+  PChar(P):=PChar(LocalGlide_API);
   for I:=Low(GlideRoutines) to High(GlideRoutines) do
    begin
-    P^:=GetProcAddress(gr1^.GlideLib, GlideRoutines[I]+1);
+    P^:=GetProcAddress(LocalGlide_API^.GlideLib, GlideRoutines[I]+1);
     if (P^=Nil) and (GlideRoutines[I]^<>'?') and not Assigned(softgQuArK) then
      Exit;
     Inc(P);
@@ -1227,23 +1235,23 @@ begin
   Result:=True;
  finally
   if Result then
-   gr:=gr1
+   qrkGlide_API:=LocalGlide_API
   else
    begin
-    if gr1^.GlideLib<>0 then
-     FreeLibrary(gr1^.GlideLib);
-    FreeMem(gr1);
+    if LocalGlide_API^.GlideLib<>0 then
+     FreeLibrary(LocalGlide_API^.GlideLib);
+    FreeMem(LocalGlide_API);
    end;
  end;
 end;
 
 procedure UnloadGlide;
 begin
- if Assigned(gr) then
+ if Assigned(qrkGlide_API) then
   begin
-   FreeLibrary(gr^.GlideLib);
-   FreeMem(gr);
-   gr:=Nil;
+   FreeLibrary(qrkGlide_API^.GlideLib);
+   FreeMem(qrkGlide_API);
+   qrkGlide_API:=Nil;
   end;
 end;
 
