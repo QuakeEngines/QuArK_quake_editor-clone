@@ -11,5 +11,6 @@ subdir: sof
 subdir: quake3
 subdir: stvef
 subdir: crystalspace
+subdir: rtcw
 
 Here you will find information and frequently asked questions about the QuArK-supported games.
