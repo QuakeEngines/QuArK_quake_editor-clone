@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.217  2003/08/31 21:15:52  silverpaladin
+//Minor change to the WildWest game launch line
+//
 //Revision 1.215  2003/08/29 18:59:57  nerdiii
 //texture position/size with two decimals
 //
@@ -5027,6 +5030,13 @@ QQRKSRC1
     }
 
     dup extruder:form = {
+      tex: =
+      {
+        Txt = "texture"
+        Typ = "ET"      // Edit Texture
+        Hint = "Select the texture you want,"
+            $0D"otherwise the Default texture will be used."
+      }
       type: =
       {
         Txt="&"
@@ -5058,6 +5068,7 @@ QQRKSRC1
         Typ="X"
         Hint="If checked, only the first segment is generated" $0D " (speeds up editing of complex shapes)"
       }
+
 
 //      texture specs: =
 //      {
