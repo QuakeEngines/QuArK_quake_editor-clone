@@ -62,6 +62,7 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
         # Compute a handle for the entity angle.
         #
         h = []
+        #
         for spec, cls in mapentities.ListAngleSpecs(o):
             s = o[spec]
             if s:
@@ -326,6 +327,43 @@ def getotherfixed(v, vtxes, axis):
         if abs(perp)<.05:
             return v2
     return v+axis
+
+
+#
+# A handle for edges
+#
+class EdgeHandle(qhandles.GenericHandle):
+    undomsg = "drag edge"
+    hint = "tag this edge for lining up objects, etc."
+    
+    def __init__(self, face, vtx1, vtx2):
+        pos = (vtx2+vtx1)/2
+        qhandles.GenericHandle.__init__(self, pos)
+        self.face = face
+        self.vtx1, self.vtx2 = vtx1, vtx2
+        cur = FaceHandleCursor()
+        cur.pos = pos
+        cur.face = face
+        self.cursor = cur.getcursor
+ 
+    def menu(self, editor, view):
+        self.click(editor)
+        editor.layout.clickedview = view
+        return self.OriginItems(editor, view)
+
+    def draw(self, view, cv, draghandle=None):
+        p = view.proj(self.pos)
+        oldcolor = cv.pencolor
+        p1 = view.proj(self.vtx1)
+        p2 = view.proj(self.vtx2)
+        cv.pencolor = oldcolor
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = view.darkcolor
+            radius = 3
+            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+#            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+
 
 
 class VertexHandle(qhandles.GenericHandle):
@@ -1555,6 +1593,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.21  2001/04/26 22:45:03  tiglari
+#face-only selection & texture L RMB
+#
 #Revision 1.20  2001/04/17 03:18:01  tiglari
 #attempt to fix vertex-drag crash
 #
