@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2002/02/24 13:48:46  decker_dk
+Added QkPNG.PAS and QkTribes2.PAS
+
 Revision 1.17  2001/06/12 18:31:34  decker_dk
 Forgot a global-prefix to 'g_Form1'
 Added revision-log.
@@ -173,6 +176,7 @@ uses
   SystemDetails in 'prog\SystemDetails.pas',
   QkFormCfg in 'prog\QkFormCfg.pas',
   QkPNG in 'prog\QkPng.pas',
+  MapError in 'prog\MapError.pas',
   QkTribes2 in 'prog\QkTribes2.pas';
 
 {$R *.RES}
