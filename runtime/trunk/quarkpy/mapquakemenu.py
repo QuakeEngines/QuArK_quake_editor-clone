@@ -59,7 +59,7 @@ def CreateCheckFileExtensionArray(instring):
     for i in range(0, len(reducedstring)):
         ext, action = FindSingleExtension(reducedstring[i:])
         if (ext is not None):
-            extactionlist = extactionlist + [(ext.upper, action)]
+            extactionlist = extactionlist + [(ext.upper(), action)]
     return extactionlist
 
 
@@ -278,7 +278,8 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     if mapsearch.CheckMap() == 0:
                         return
 
-        map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname).lower()
+        map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname)
+        map = map.lower()
         mapinfo = {"map": map}
         if buildmode["ExportMapFile"] \
         or buildmode["BuildPgm1"] \
@@ -589,7 +590,8 @@ portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the 
 def prepAuxFileMenuItem(item,extkey,defext):
     editor=item.editor
     mapfileobject = editor.fileobject
-    map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname).lower()
+    map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname)
+    map = map.lower()
     mapfilename = quarkx.outputfile('')+'maps\\'+map
     auxextension = quarkx.setupsubset()[extkey]
     if not auxextension:
@@ -660,6 +662,11 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.37  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
 #Revision 1.36  2003/03/28 16:09:23  cdunde
 #More infobase updates
 #
