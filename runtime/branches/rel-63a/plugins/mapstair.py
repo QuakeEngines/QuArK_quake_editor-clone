@@ -87,7 +87,7 @@ class StairDuplicator(StandardDuplicator):
         back = face
 
         result.append(poly)
-        debug('oldstyle: %s'%oldstyle)
+        #debug('oldstyle: %s'%oldstyle)
 
         if sameheight!="1" and oldstyle!="1":
             #
@@ -96,7 +96,7 @@ class StairDuplicator(StandardDuplicator):
             # the 'down' goes from the the bottom of the visible front of the
             #   stairstep to the lower back of the whole thing
             #
-            debug('here')
+            #debug('here')
             upperback = points["trb"] - backnormal * frontbackinterval * (steps - step - 1) - upnormal * (updowninterval * (steps - step - 1))
             back.setthreepoints((upperback, points["brb"], points["blb"]),0)
             lowerfront = points["trb"] - backnormal * frontbackinterval * (steps-step) - upnormal*updowninterval*(steps-step)
@@ -192,6 +192,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3.14.2  2003/04/08 06:26:07  cdunde
+#finish needed changes to activate  'oldstyle' specific - by cdunde
+#
 #Revision 1.3.14.1  2003/02/04 09:39:21  tiglari
 #tris/overdraw-efficient fan-style stair, as suggested by foo, quakin' and Plan B
 #on the quake3world editing forum.  For old non-equal-height stair, use
