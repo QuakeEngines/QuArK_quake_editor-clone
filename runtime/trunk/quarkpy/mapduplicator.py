@@ -127,7 +127,7 @@ class StandardDuplicator(DuplicatorManager):
             #
             self.final_specs={}
             for spec in self.dup.dictspec.keys():
-                if string.find(spec,'final_')==0:
+                if string.find(spec,'final_')==0 and self.dup[spec]!="":
                     self.final_specs[spec[6:]]=self.dup[spec]
             #
             # Deciding which get increment suffixd
@@ -221,11 +221,13 @@ class StandardDuplicator(DuplicatorManager):
             #
             if self.dup["increment suffix"]:
                 if i==count-1:
+                    debug('final '+`self.final_specs.keys()`)
                     for item in list:
                         for spec in self.final_specs.keys():
                             val = self.final_specs[spec]
                             if val=="None":
                                 item[spec]=""
+                                debug('nuke')
                             else:
                                 item[spec]=self.final_specs[spec]
             if (singleimage is None) or (i==singleimage):
@@ -348,6 +350,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2001/05/27 01:08:47  tiglari
+#change 'serialize' to 'increment' for the duplicators as suggested by Decker
+#
 #Revision 1.13  2001/05/27 00:13:26  tiglari
 #support for 'incrementable' (suffix incrementing) duplicators
 #
