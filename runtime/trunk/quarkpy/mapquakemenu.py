@@ -125,6 +125,8 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None):
         saveflags = saveflags | SO_DISABLEENHTEX
     if MapOption("DisableFPCoord"):
         saveflags = saveflags | SO_DISABLEFPCOORD
+    if MapOption("EnableBrushPrim"):
+        saveflags = saveflags | SO_ENABLEBRUSHPRIM
     if selonly:
         saveflags = saveflags | SO_SELONLY
     m = quarkx.newfileobj(mapname+'.map')
@@ -517,6 +519,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.11  2000/10/19 19:00:42  decker_dk
+#Fix if 'BuildPgmsDir' was not filled out
+#
 #Revision 1.10  2000/10/09 18:18:02  decker_dk
 #Build-Tool Controllers
 #
