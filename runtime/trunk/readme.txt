@@ -1,4 +1,23 @@
+          Patch 5, for QuArK Snapshot of 070901
 
+ *enhanced BSP exploration for Q3A:
+    Best to use these in .bsp's extracted from .paks,
+    due to less memory use & chance of accidental
+    save.
+    
+    Command menu items for collecting nodes & planes;
+    these appear in the treeview.  Large maps can't show
+    all the planes in the treeview.
+    
+    When asked whether to save changes, don't.
+    
+    There are also some facilities for finding planes
+    that lie near others; this isn't ready for the bigtime.
+
+
+          Patch 3, for QuArK Snapshot of 070901
+            (072701)      
+ 
  *beziers & new build tool for Crystal Space support
  *Blue Shift pak's now open
  *add align to marked option, clear mark command.
