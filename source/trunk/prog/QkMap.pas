@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2002/03/26 10:16:40  tiglari
+Englishification: TPolyedre->TPolyhedron
+
 Revision 1.38  2002/03/26 10:11:30  tiglari
 get rid of soDisableEnhTex, soWriteValve220 (obsoleted by OutputMapFormat)
 
@@ -1497,7 +1500,9 @@ begin
          saveflags:=saveflags or soIgnoreToBuild;
        if MapOptionSpecs.Values['DisableFPCoord']<>'' then
          saveflags:=saveflags or soDisableFPCoord;
-      saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
+        if MapOptionSpecs.Values['UseIntegralVertices']<>'' then
+         saveflags:=saveflags or soUseIntegralVertices;
+     saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
      { TTreeMap(Racine).SaveAsText(List, Dest, IntSpec['saveflags'], HxStrings); }
        TTreeMap(Racine).SaveAsText(List, Dest, saveflags, HxStrings);

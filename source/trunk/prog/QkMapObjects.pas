@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2002/03/26 10:12:26  tiglari
+get rid of soDisableEnhTex,  soEnableBrushPrim (obsoleted by OutputMapFormat)
+
 Revision 1.34  2002/03/07 19:16:02  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -154,9 +157,13 @@ const
  vfHideOn3Dview     = 8;
  vfCantSelect       = 16;
 
- soSelOnly           = $00000001;
- soIgnoreToBuild     = $00000002;
- soDisableFPCoord    = $00000008;
+ soSelOnly           =   $00000001;
+ soIgnoreToBuild     =   $00000002;
+// soDisableEnhTex     =   $00000004;
+ soDisableFPCoord    =   $00000008;
+// soEnableBrushPrim   =   $00000010;
+// soWriteValve220     =   $00000020;
+ soUseIntegralVertices = $0000040;
  soWrite6DXHierarky  = $00000080;
 
  soDirectDup         = $04000000;

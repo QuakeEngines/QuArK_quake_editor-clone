@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2002/03/26 10:17:51  tiglari
+Englishification: TPolyedre->TPolyhedron
+  and
+Implement OutputMapFormat to replace soDisableEnhTex etc.
+
 Revision 1.45  2002/03/23 09:41:42  tiglari
 refer to SupportsBrushPrim rather mjQ3A for brush primitive activation
 
@@ -2434,7 +2439,7 @@ var
         end;
       end;
      S:='  ';
-     { FIXME: this should be thought about }
+     { experiment }
      if UseIntegralVertices then
      begin
        { wacko crap to get the vertexes }
@@ -2660,14 +2665,17 @@ var
 
 begin
  if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
+ { these means brutally round off the threepoints, whatever they are }
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  MapFormat:=GetMapFormatType;
 {
  UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
  ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
  }
- UseIntegralVertices:=false;
- ExpandThreePoints:=false;
+ UseIntegralVertices:=(MapFormat<>QetpType) and (Flags and soUseIntegralVertices<>0);
+ ExpandThreePoints:=false; { abandon this heroic but foolish measure.  The
+   idea was to force threepoints to integers with less distortion, in aid
+   of easier commerce between QuArK and Radiant, but it's just a Bad Idea. }
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');

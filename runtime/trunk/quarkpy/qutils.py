@@ -95,9 +95,10 @@ VF_CANTSELECT       = 16   # the objects in this group can't be selected by clic
 # !! Must match the constants in QkMapObjects.PAS !!
 SO_SELONLY         = 1    # only the selection is saved
 SO_IGNORETOBUILD   = 2    # the groups marked VF_IGNORETOBUILDMAP are not saved
-SO_DISABLEENHTEX   = 4    # don't write the "//TX1"-style comments required by TXQBSP for enhanced texture positionning
+#SO_DISABLEENHTEX   = 4    # don't write the "//TX1"-style comments required by TXQBSP for enhanced texture positionning
 SO_DISABLEFPCOORD  = 8    # don't write floating-point coordinates in .map files, round all values
-SO_ENABLEBRUSHPRIM = 16   # enable brush primitives format
+#SO_ENABLEBRUSHPRIM = 16   # enable brush primitives format
+SO_USEINTEGRALVERTICES = 64 # use integral vertices as threepoints if possible
 
 # icon indexes of internal objects (to be used with quarkx.seticons)
 iiUnknownFile           = 0
@@ -500,6 +501,10 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2002/03/05 11:03:50  tiglari
+#revert group icon selection code to older version to restore hidden/nonhidden
+# difference.
+#
 #Revision 1.17  2001/10/22 11:27:26  tiglari
 #clean up some leak tracking stuff
 #

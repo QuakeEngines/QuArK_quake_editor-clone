@@ -160,12 +160,14 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None):
     saveflags = 0
     if MapOption("IgnoreToBuild"):
         saveflags = saveflags | SO_IGNORETOBUILD
-    if MapOption("DisableEnhTex"):
-        saveflags = saveflags | SO_DISABLEENHTEX
+#    if MapOption("DisableEnhTex"):
+#        saveflags = saveflags | SO_DISABLEENHTEX
     if MapOption("DisableFPCoord"):
         saveflags = saveflags | SO_DISABLEFPCOORD
-    if MapOption("EnableBrushPrim"):
-        saveflags = saveflags | SO_ENABLEBRUSHPRIM
+#    if MapOption("EnableBrushPrim"):
+#        saveflags = saveflags | SO_ENABLEBRUSHPRIM
+    if MapOption("UseIntegralVertices"):
+         saveflags = saveflags | SO_USEINTEGRALVERTICES
     if selonly:
         saveflags = saveflags | SO_SELONLY
     setup = quarkx.setupsubset()
@@ -580,6 +582,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.23  2002/02/05 18:33:15  decker_dk
+#Added a %basepath% command-line replacement variable.
+#
 #Revision 1.22  2001/09/24 22:24:27  tiglari
 #checks moved into RebuildandRun, made conditional on ExportMapFile
 #
