@@ -79,7 +79,6 @@ uses
   About in 'Prog\About.pas' {AboutBox},
   Reg2 in 'Prog\Reg2.pas',
   Output1 in 'Prog\Output1.pas' {OutputDirDlg},
-  QkText in 'Prog\QkText.pas' {FQText},
   QkBspHulls in 'Prog\QkBspHulls.pas',
   QkTreeView in 'Prog\QkTreeView.pas',
   CCode in 'Prog\CCode.pas',
@@ -124,7 +123,15 @@ uses
   EdOpenGL in '3DFX\EdOpenGL.pas',
   QkTga in 'Prog\QkTga.pas',
   QkPixelSet in 'prog\QkPixelSet.pas',
-  Bezier in 'prog\Bezier.pas';
+  Bezier in 'prog\Bezier.pas',
+  UNZIP in 'prog\UNZIP.pas',
+  ZIP in 'prog\ZIP.pas',
+  QkZip2 in 'prog\QkZip2.pas',
+  QkJpg in 'prog\QkJpg.pas',
+  crc32 in 'prog\crc32.pas',
+  QkQ3 in 'prog\QkQ3.pas',
+  QkText in 'prog\QkText.pas', {FQText}
+  QkSpr in 'prog\QkSpr.pas';
 
 {$R *.RES}
 
