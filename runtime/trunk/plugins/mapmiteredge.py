@@ -34,8 +34,13 @@ from mapdupspath import evaluateDuplicators
 # These should go to maputils someday
 #
 
-SMALL = .01
+SMALL = .1
+SMALLER = .001
 
+#
+# colinear from maptagside seems to be wrong, s/b replaced
+# by something like this when it's stabilized.
+#
 def colinear(list):
     "first 2 should not be coincident"
     if len(list) < 3:
@@ -44,10 +49,15 @@ def colinear(list):
     v0 = list[0]
     for v in list[2:]:
         if abs(v0 - v)>SMALL:
-            if abs(norm-(v-v0).normalized)>SMALL:
-                return 0
-    return 1
-
+            norm2 = (v-v0).normalized
+            if abs(norm-norm2)<SMALLER:
+                return 1
+            if abs(norm+norm2)<SMALLER:
+                return 1
+        else:
+            return 1
+    return 0
+    
 def flatContainedWithin(list1, list2):
     "every vertex in list1 lies on the face defined by list2"
     len1 = len(list1)
@@ -66,20 +76,20 @@ def nextInList(list, current, incr=1):
     return list[(current+incr)%len(list)]
 
 
-def overlapEdge(v1, v2, v3, v4):
-    if v1-v3:
-        if v2-v4:
-            return 1
-        else:
-            return 0
-    diff = abs(v1-v2)
-    if diff==abs(v3-v1)+abs(v2-v3):
-        return 1
-    if diff==abs(v4-v1)+abs(v2-v4):
-        return 1
-    return 0
+def parentnames(o):
+#    debug('p1')
+    name = o.name
+    while o.parent is not None:
+#        debug('loop')
+        o=o.parent
+        name = name+':'+o.name
+    return name
 
 def overlapEdge(v1, v2, v3, v4):
+#    if abs((v1-v2).normalized+(v3-v4).normalized)<SMALL:
+#        debug('oppdir: '+`v1`+' '+`v2`+' '+`v3`+' '+`v4`)
+#    else:
+#        debug('samedir'+`v1`+' '+`v2`+' '+`v3`+' '+`v4`)
     if abs(v1-v3)>SMALL:
         if abs(v2-v4)>SMALL:
             return 1
@@ -91,7 +101,17 @@ def overlapEdge(v1, v2, v3, v4):
     if math.fabs(diff-abs(v4-v1)-abs(v2-v4))<SMALL:
         return 1
     return 0
-
+        
+#
+# Assumes points are colinear
+#
+def overlapEdge(v1, v2, v3, v4):
+    if (v2-v1)*(v3-v1)>SMALL:
+        return 1
+    if (v1-v2)*(v4-v2)>SMALL:
+        return 1
+    return 0
+    
 #
 # Every 'facet' (face of a poly) of face2 is contained
 #   within some facet of face1
@@ -127,6 +147,9 @@ def findEdgePoints(f1, f2):
                         if colinear([vtxlist1[i], nexti, prevj]):
                             if overlapEdge(vtxlist1[i], nexti, vtxlist2[(j-1)%len(vtxlist2)], vtxlist2[j]):
                                 return (poly1, i), (poly2, (j-1)%len(vtxlist2))
+                            else:
+                                debug('no overlap: '+parentnames(f1)+' '+parentnames(f2))
+                                
 
 #
 # previous code requiring edge coincidence
@@ -146,8 +169,8 @@ def findAdjoiningFace(poly, face, i):
             continue
         vtxes2 = face2.verticesof(poly)
         for j in range(len(vtxes2)):
-            if not (vtx - vtxes2[j]):
-                if not (nextInList(vtxes,i)-nextInList(vtxes2,j,-1)):
+            if abs(vtx - vtxes2[j])<SMALL:
+                if abs(nextInList(vtxes,i)-nextInList(vtxes2,j,-1))<SMALL:
                     return face2
 
 
@@ -161,7 +184,7 @@ def findOppositeFace(poly, face):
 def findSharedVertex(face1, face2, poly):
     for vtx in face1.verticesof(poly):
         for vtx2 in face2.verticesof(poly):
-            if not (vtx-vtx2):
+            if abs(vtx-vtx2)<SMALL:
                 return vtx
 
 def faceCenter(face, poly):
@@ -182,6 +205,7 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
     face1 = findAdjoiningFace(poly1, f1, i1)
     face2 = findAdjoiningFace(poly2, f2, i2) 
     if face1 is None or face2 is None:
+        debug('no adjoining')
         return
     #
     # We're looking for paralell faces on the opposite side to
@@ -219,7 +243,9 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
             newlist=[]
             for face in oldlist:
                 newface=face.copy()
-                newface.setthreepoints((vtx, vtx2, point),1)
+                newface.setthreepoints((vtx, vtx2, point),0)
+                if colinear([vtx, vtx2, point]):
+                   debug('colinear: '+`vtx`+' '+`vtx2`+' '+`point`)
                 newface['tex']=CaulkTexture()
                 newlist.append(newface)
             matched=1
@@ -242,11 +268,11 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
         oldlist = [face1, face2]
         newlist = [newface1, newface2]
     for i in range(len(oldlist)):
-        p1, p2, p3 = oldlist[i].threepoints(1)
-        q1, q2, q3 = newlist[i].threepoints(1)
+        p1, p2, p3 = oldlist[i].threepoints(0)
+        q1, q2, q3 = newlist[i].threepoints(0)
         cross = ((p2-p1)^(p3-p2))*((q2-q1)^(q3-q1))
         if cross<0:
-            newlist[i].setthreepoints((q1, q3, q2),1)
+            newlist[i].setthreepoints((q1, q3, q2),0)
 #        elif cross==0:
 #            debug('zero cross')
         newlist[i].rebuildall()
@@ -352,7 +378,8 @@ def findMiterableFaces(faces):
         face1 = faces[fi1]
         for fi2 in range(fi1+1, len(faces)):
             face2=faces[fi2]
-            if face1.normal-face2.normal and face1.normal+face2.normal:
+#            if face1.normal-face2.normal and face1.normal+face2.normal:
+            if abs(face1.normal-face2.normal)>SMALL and abs(face1.normal+face2.normal)>SMALL:
                 edgepoints = findEdgePoints(face1, face2)
                 if edgepoints is None:
                     continue
@@ -420,7 +447,7 @@ def buildwallmakerimages(self, singleimage=None):
             miterfaces = findMiterableFaces(faces)
             for face1 in miterfaces.keys():
                 for face2 in miterfaces[face1].keys():
-                    ((poly1, i1), (poly2, i2)) = miterfaces[face1][face2]
+    #                ((poly1, i1), (poly2, i2)) = miterfaces[face1][face2]
     #                debug('faces %s %s'%(face1.name, face2.name))
     #                debug('polys %s %s'%(poly1.name, poly2.name))
                     edgepoints = miterfaces[face1][face2]
@@ -442,6 +469,8 @@ def buildwallmakerimages(self, singleimage=None):
                             if poly.broken:
                                 newface.swapsides()
                             poly.rebuildall()
+                            if poly.broken:
+                                debug('fuck, still busted')
         return [wallgroup]
         
 mapdups.WallMaker.buildimages = buildwallmakerimages
@@ -455,6 +484,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.2  2001/09/23 08:56:57  tiglari
+# oops, replace 'bevel' with 'miter' in wallmaker stuff
+#
 # Revision 1.1  2001/09/23 07:00:34  tiglari
 # mitered edges for wall maker duplicator
 #
