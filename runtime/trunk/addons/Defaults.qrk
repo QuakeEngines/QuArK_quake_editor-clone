@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.152  2001/07/04 11:56:13  uid21314
+//TextureFormat -> TextureWriteFormat for Crystal Space
+//
 //Revision 1.151  2001/07/03 02:35:13  tiglari
 //Crystal Space revisions
 //
@@ -1270,6 +1273,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         BuildPgm1 = "MAP2CS.EXE"
+        BuildArgs1 = "%mapfile% %file%.zip c:\map2cs\map2cs.cfg"
 
         TexturesPath = "textures/"
         Q2TexFlags = "1"
@@ -3750,6 +3754,12 @@ QQRKSRC1
         Txt="&"
         Typ="X"
         Hint="If checked, open line rather than closed loop." $0D "  Only meaningful for patch and pipe types."
+      }
+      short: =
+      {
+        Txt="&"
+        Typ="X"
+        Hint="If checked, only the first segment is generated" $0D " (speeds up editing of complex shapes)"
       }
 
 //      texture specs: =
