@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2003/01/29 09:59:27  tiglari
+Englishification:
+  TFace.prvNbs -> prvVertexCount
+  TFace.PrvDescS -> prvVertexTable
+
 Revision 1.4  2001/10/16 23:25:43  tiglari
 live pointer hunt
 
@@ -93,6 +98,7 @@ type
                AnyInfo: TSurfaceAnyInfo;
                VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
+               TextureMode: Integer;
               end;
 
  PGuPalette = ^GuTexPalette;
@@ -394,6 +400,7 @@ var
  nRadius2, Radius2: FxFloat;
  FirstPoint: TVect;
  CurrentColor, ObjectColor: FxU32;
+ NewRenderMode: Integer;
  TextureManager: TTextureManager;
  Mode: TBuildMode;
  VertexSize, VertexSize3m: Integer;
@@ -793,7 +800,12 @@ begin
            Dist:=F.Dist;
            VertexCount:=prvVertexCount;
 
-           AlphaColor:=CurrentColor or (F.GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+           with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
+           begin
+             If Mode=1 then AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
+             else AlphaColor:=CurrentColor or (Value shl 24);
+             TextureMode:=Mode;
+           end;
            Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
          end;
 
@@ -1150,7 +1162,12 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         ObjectColor:=CurrentColor or (GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+         with GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
+         begin
+           ObjectColor:=CurrentColor or (Value shl 24);
+           NewRenderMode:=Mode;
+         end;
+
          Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
 
          stScaleBezier(PList^.Texture, CorrW, CorrH);
@@ -1195,6 +1212,7 @@ begin
                  AnyInfo.DisplayList:=0;
                  VertexCount:=-(2*BezierBuf.W);
                  AlphaColor:=ObjectColor;
+                 TextureMode:=NewRenderMode;
                end;
 
                PV:=PChar(Surf3D)+SizeOf(TSurface3D);

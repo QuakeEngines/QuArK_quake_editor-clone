@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2003/03/16 00:12:19  tiglari
+Genesis3D tweaks to map format (orientation flips in Q1-style texture coordinates)
+
 Revision 1.70  2003/03/12 11:30:26  decker_dk
 Half-Life transparency support for the OpenGL-window (somewhat) implemented, in TTexturedTreeMap.GetFaceOpacity()
 
@@ -289,6 +292,11 @@ type
      BPType     { Brush Primitives }
   );
 
+ TTexOpacityInfo = record
+                    Value: Byte; { 0..1 (like 0..255 in Half-Life) }
+                    Mode: Integer; { Rendermode (0=Normal, 1=Color, 2=Texture, 4=Solid, 5=Additive }
+                    Color: Array[0..2] of Byte; { for rendermode=color }
+                   end;
 
  PVertex = ^TVertex;
  TVertex = record
@@ -381,7 +389,7 @@ type
                       property TextureMirror: Boolean read GetTextureMirror write SetTextureMirror;
                       function PyGetAttr(attr: PChar) : PyObject; override;
                       function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
-                      function GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;   { 0 - 255 }
+                      function GetFaceOpacity(Default: Integer) : TTexOpacityInfo;
                     end;
 
  { The entire treatment of texture-positiong is somewhat crufty, since
@@ -1181,12 +1189,9 @@ end;
 procedure Valve220MapParams(const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
-  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2,
-   V0, V1, V2, V2b : TVect;
+  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2:TVect;
 
-  Mat: TMatrixTransformation;
   S1, S2, UOff, VOff : Double;
-  Mirror : boolean;
   Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
   QV0, QV1, UAxis, VAxis : TVect; // from Zoners
 
@@ -2471,8 +2476,8 @@ var
     ((' //TX1', ' //TX2'),
      (' ;TX1',  ' ;TX2' ));
   var
-   S, S1, S2, S3, SpecStr, Spec, Val, Spec2, Val2: String;
-   I, R, J, K, L, R2, Pozzie : Integer;
+   S, S1, S2, S3, SpecStr, Spec, Val, Val2: String;
+   I, R, J, K, Pozzie : Integer;
    P, PT, VT: TThreePoints;
    Params: TFaceParams;
    Delta1, V, V2: TVect;
@@ -2659,6 +2664,7 @@ var
        { FS is first of a linked list of structures
           specifying vertex cycles }
        FS:=F.FaceOfPoly;
+       K:=1;
        while Assigned(FS) do {FS is not Nil, why not say it that way?
                               imitating vertices(of) code below) }
        begin
@@ -2987,7 +2993,6 @@ var
  Nombres: PInteger;
  TamponAretes: ^Word;
  Q: QObject;
- Prof: TDouble;
 begin
  CheckPolyhedron;
  for I:=0 to SubElements.Count-1 do
@@ -3669,7 +3674,7 @@ end;
 function TFace.GetThreePointsT(var V1, V2, V3: TVect) : boolean;
 var
   TexV: array[1..6] of Single;
-  P0, P1, P2, T1, T2, T3, TexS, TexT, V, Norm : TVect;
+  P0, P1, P2, T1, T2, T3, TexS, TexT, Norm : TVect;
 begin
   if GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
   begin
@@ -3692,7 +3697,7 @@ end;
 
 function TFace.SetFlipTex(var TexV: array of Single) : boolean;
 var
-  P0, P1, P2, T1, T2, T3, TexS, TexT, V, MNorm, V1, V2, V3 : TVect;
+  P0, P1, P2, T1, T2, T3, TexS, TexT, MNorm, V1, V2, V3 : TVect;
 begin
   if GetThreepoints(P0, P1, P2) then
   begin
@@ -3712,7 +3717,7 @@ end;
 { sets the tv specific }
 procedure TFace.SetThreePointsT(const V1, V2, V3: TVect);
 var
-  TexS, TexT, P0, P1, P2, T1, T2, T3, T, Norm : TVect;
+  TexS, TexT, P0, P1, P2, T1, T2, T3, Norm : TVect;
   V: array[1..6] of Single;
 begin
 (*
@@ -3902,7 +3907,6 @@ end;
 function TFace.GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
 var
  TexP: array[1..4] of TVect;
- I, W, H: Integer;
  CorrW, CorrH: TDouble;
 begin
  Result:=GetThreePointsT(TexP[1], TexP[2], TexP[3]);
@@ -3976,7 +3980,6 @@ end;
 procedure TFace.SimulateEnhTex(var V1, V2, V3: TVect; var Mirror: boolean);
 var
   TexV: array[1..6] of Single;
-  TexP: array[1..3] of TVect;
   V1b, V2b: TVect;
   R: TDouble;
 begin
@@ -4529,7 +4532,7 @@ end;
 
 procedure TFace.Deplacement(const PasGrille: TDouble);
 var
- Pt, PTex, TexV: array[1..3] of TVect;
+ Pt, PTex: array[1..3] of TVect;
  I: Integer;
  OldOrg, NewOrg, InfoClic: TVect;
  f: TDouble;
@@ -5035,8 +5038,6 @@ end;
 function TFace.Retourner_leavetex : Boolean;
 var
  V1, V2, V3 : TVect;
- TexV: array[1..6] of Single;
- Tv : boolean;
 begin
  Result:=GetThreePoints(V1, V2, V3);
  if Result then
@@ -5248,16 +5249,19 @@ begin
   end;
 end;
 
-function TTexturedTreeMap.GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;
+function TTexturedTreeMap.GetFaceOpacity(Default: Integer) : TTexOpacityInfo;
 var
  S: String;
+ Val: Integer;
  Parent: ^Q3DObject;
+ C:Array[0..2] of Double;
 begin
+ Result.Value := Default;
+ Integer(Addr(Result.Color)^) := Integer(0);
+ Result.Mode := 0;
 {DECKER 2003.03.12}
  if CharModeJeu = mjHalfLife then
  begin
-   Result := Default;
-
    // OMG! This is so slow, but hopefully a little faster than the below
    // while-loop, if the end-user don't want to see transparency in the OpenGL window.
    if SetupGameSet.GetArg('EnableTransparency') <> '1' then
@@ -5276,15 +5280,26 @@ begin
      S:=Parent^.Specifics.Values['rendermode'];
      if S<>'' then
      begin
-       case StrToIntDef(S,0) of
+       Result.Mode:=StrToIntDef(S,0);
+       If Result.Mode=3 then Result.Mode:=2; // If someone selected 'GLOW' switch to 'TEXTURE'
+       Case Result.Mode of
         1, // Rendermode = COLOR
         2, // Rendermode = TEXTURE
+        4,
         5: // Rendermode = ADDITIVE
-          begin
-            S:=Parent^.Specifics.Values['renderamt'];
-            if S<>'' then
-              Result:=StrToIntDef(S,255) // If conversion to integer fails, make sure "no transparency" is the default (100% opaque = 255)
-          end;
+         begin
+           if Result.Mode=1 then
+           begin
+             S:=Parent^.Specifics.Values['rendercolor'];
+             ReadValues(S, C);
+             for val:=0 to 2 do result.Color[val]:=trunc(C[val]) mod 256;
+           end;
+           S:=Parent^.Specifics.Values['renderamt'];
+           if S<>'' then
+            Result.Value:=StrToIntDef(S,255); // If conversion to integer fails, make sure "no transparency" is the default (100% opaque = 255)
+           if (result.mode=4) and (result.value<>0) then result.value:=255
+           else if (result.Mode=5) and (result.Value=255) then result.Value:=254; //<- dirty hack... a value of 255 is always drawn 'solid' :/  
+         end;
        end;
        exit;
      end;
@@ -5294,10 +5309,11 @@ begin
 {/DECKER}
  begin
    S:=Specifics.Values['Flags'];
-   if S='' then
-     Result:=Default
-   else
-     Result:=OpacityFromFlags(StrToIntDef(S,0){, Info});
+   if S<>'' then
+   begin
+     Result.Value:=OpacityFromFlags(StrToIntDef(S,0));
+     Result.Mode:=2;
+   end;
  end;
 end;
 
@@ -5461,17 +5477,15 @@ end;
 
 function fAxisBase(self, args: PyObject) : PyObject; cdecl;
 var
-  I, mode: Integer;
+  I: Integer;
   Ok: Boolean;
   P, T: array[1..3] of TVect;
   v: array[1..3] of PyVect;
-  ov: PyVect;
   AltTexSrc: PyObject;
   Orig, TexS, TexT : TVect;
 
 begin
   try
-    Result:=Nil;
     AltTexSrc:=Nil;
     with QkObjFromPyObj(self) as TFace do
     begin

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2003/03/14 10:09:30  decker_dk
+Some indent-changes and a bit cleanup.
+
 Revision 1.21  2003/03/13 20:20:32  decker_dk
 Modified so much to support transparency.
 
@@ -123,6 +126,7 @@ type
    Lights: PLightList;
    DisplayLists: Integer;
    LightParams: TLightParams;
+   FullBright: TLightParams;
    procedure LoadCurrentTexture(Tex: PTexture3);
  protected
    Bilinear: boolean;
@@ -814,6 +818,9 @@ var
  Setup: QObject;
  Fog: Boolean;
 begin
+  FillChar(FullBright,SizeOf(FullBright),0);
+  FullBright.ZeroLight:=1;
+
   ReleaseResources;
   { have the OpenGL DLL already been loaded? }
   if not OpenGlLoaded() then
@@ -881,7 +888,6 @@ begin
   glEnable(GL_DEPTH_TEST);
  {glDepthFunc(GL_LEQUAL);}
  {glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);}
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
   glEdgeFlag(0);
   {$IFDEF DebugGLErr} DebugOpenGL(1, '', []); {$ENDIF}
 
@@ -1312,8 +1318,11 @@ var
  SurfEnd: PChar;
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
- I, Sz: Integer;
+ I, K, Sz: Integer;
 begin
+  FullBright.ZeroLight:=1;
+  FullBright.BrightnessSaturation:=0;
+  FullBright.LightFactor:=0;
   NeedTex:=True;
   Surf:=PList^.Surf;
   SurfEnd:=PChar(Surf)+PList^.SurfSize;
@@ -1380,7 +1389,27 @@ begin
                 Inc(PV);
                 PV3:=PV;
                 Inc(PV);
-                RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+                Case TextureMode of
+                  1,2,3:glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
+                  5:begin
+                    glBlendFunc(GL_ONE, GL_ONE);
+                  end;
+                End;
+                Case TextureMode of
+                  1:glDisable(GL_TEXTURE_2D);
+                  else glEnable(GL_TEXTURE_2D);
+                End;
+                If Byte(Ptr(LongWord(@AlphaColor)+3)^)<>0 then Case TextureMode of
+                  0:RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+                  4:RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+                  else begin
+                    If TextureMode=5 then begin
+                      Currentf[0]:=Byte(Ptr(LongWord(@AlphaColor)+3)^)/255;
+                      for K := 1 to 2 do Currentf[K]:=Currentf[0];
+                    end;
+                    RenderQuad(PVBase, PV2, PV3, PV, Currentf, nil, Normale, Dist, FullBright);
+                  end;
+                end;
               end;
             end
             else
