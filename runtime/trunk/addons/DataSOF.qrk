@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.13  2001/01/21 09:34:13  decker_dk
+//added item_control_flag and trigger_conquer (thanks to Sniper-HQ@gmx.de)
+//
 //Revision 1.12  2000/09/01 00:42:04  alexander
 //merged in tiglaris missing sky specific fix from rel6_1 branch
 //
@@ -4329,6 +4332,136 @@ QQRKSRC1
         uganda/window2_dirt.wl = { t_base=! }
         uganda/window2_dirtd.wl = { t_base=! }
       }
+
+//Begin - Supplied by Sniper-HQ@gmx.de
+      PAK2 bosnia.txlist =
+      {
+        bosnia/1_3_brickdark1.wl = { t_base=! }
+        bosnia/1_3_brickstreet.wl = { t_base=! }
+        bosnia/1_3_bricktan1_btm.wl = { t_base=! }
+        bosnia/1_3_bricktan2.wl = { t_base=! }
+        bosnia/1_3_build_win.wl = { t_base=! }
+        bosnia/1_3_build1a.wl = { t_base=! }
+        bosnia/1_3_build2a.wl = { t_base=! }
+        bosnia/1_3_cobblegrey.wl = { t_base=! }
+        bosnia/1_3_con3.wl = { t_base=! }
+        bosnia/1_3_con4.wl = { t_base=! }
+        bosnia/1_3_crete1.wl = { t_base=! }
+        bosnia/1_3_outlet.wl = { t_base=! }
+        bosnia/1_3_outlet_d.wl = { t_base=! }
+        bosnia/1_3_plast1.wl = { t_base=! }
+        bosnia/1_3_plaster4.wl = { t_base=! }
+        bosnia/1_3_plasty1.wl = { t_base=! }
+        bosnia/1_3_plasty2.wl = { t_base=! }
+        bosnia/1_3_plastyb.wl = { t_base=! }
+        bosnia/1_3_shingle.wl = { t_base=! }
+        bosnia/1_3_shingle4.wl = { t_base=! }
+        bosnia/1_3_stairslab.wl = { t_base=! }
+        bosnia/1_3_stairtop_wood.wl = { t_base=! }
+        bosnia/1_3_stuccodark.wl = { t_base=! }
+        bosnia/1_3_woodalpha1.wl = { t_base=! }
+        bosnia/1_trim_wood.wl = { t_base=! }
+        bosnia/1_wtrim1.wl = { t_base=! }
+        bosnia/2_dirt_floor4.wl = { t_base=! }
+        bosnia/ctfr_base.wl = { t_base=! }
+        bosnia/env1a.wl = { t_base=! }
+        bosnia/gravel1.wl = { t_base=! }
+        bosnia/ladder_rung1.wl = { t_base=! }
+        bosnia/light_yellow1.wl = { t_base=! }
+        bosnia/metal_rust.wl = { t_base=! }
+        bosnia/meter1.wl = { t_base=! }
+        bosnia/oldwood2.wl = { t_base=! }
+        bosnia/roadd.wl = { t_base=! }
+        bosnia/sign_postoffice.wl = { t_base=! }
+        bosnia/water2.wl = { t_base=! }
+        bosnia/water3.wl = { t_base=! }
+      }
+      PAK2 castle.txlist =
+      {
+        castle/1_sidewalk3.wl = { t_base=! }
+        castle/banner03.wl = { t_base=! }
+        castle/banner04.wl = { t_base=! }
+        castle/d_gravel.wl = { t_base=! }
+        castle/d_sand.wl = { t_base=! }
+        castle/dungeonwall_slimya.wl = { t_base=! }
+        castle/metalrib2.wl = { t_base=! }
+        castle/pebbles.wl = { t_base=! }
+        castle/stuc_wallb.wl = { t_base=! }
+        castle/wood1.wl = { t_base=! }
+        castle/woodfloor4.wl = { t_base=! }
+      }
+      PAK2 iraq.txlist =
+      {
+        iraq/2_3_liftdoor.wl = { t_base=! }
+        iraq/3_steelwall3x.wl = { t_base=! }
+        iraq/f_ceil2.wl = { t_base=! }
+        iraq/king_hill.wl = { t_base=! }
+        iraq/pipe4b.wl = { t_base=! }
+        iraq/sign12.wl = { t_base=! }
+      }
+      PAK2 siberia.txlist =
+      {
+        siberia/1_snowpipe2.wl = { t_base=! }
+        siberia/2_3_ceil2.wl = { t_base=! }
+        siberia/2_3_door4.wl = { t_base=! }
+        siberia/2_3_floor4.wl = { t_base=! }
+        siberia/2_3_fuse3.wl = { t_base=! }
+        siberia/2_big_pipe2.wl = { t_base=! }
+        siberia/2_concrete2_bottom.wl = { t_base=! }
+        siberia/2_concrete2a_ice1.wl = { t_base=! }
+        siberia/2_concrete3_snow.wl = { t_base=! }
+        siberia/2_door1.wl = { t_base=! }
+        siberia/2_gratinga.wl = { t_base=! }
+        siberia/2_walla_bottom.wl = { t_base=! }
+        siberia/2_walla_top.wl = { t_base=! }
+        siberia/2_wallb_bottom.wl = { t_base=! }
+        siberia/3_tanktop.wl = { t_base=! }
+        siberia/dm_cabin_roof2.wl = { t_base=! }
+        siberia/light_blue8.wl = { t_base=! }
+        siberia/light_green2.wl = { t_base=! }
+        siberia/light_yellow6.wl = { t_base=! }
+        siberia/metal_plate.wl = { t_base=! }
+      }
+      PAK2 subway.txlist =
+      {
+        subway/1_stair_side2.wl = { t_base=! }
+        subway/2_guage.wl = { t_base=! }
+        subway/2_steelwallc5.wl = { t_base=! }
+        subway/2_steelwallh.wl = { t_base=! }
+        subway/2_water1.wl = { t_base=! }
+        subway/3_panel2.wl = { t_base=! }
+        subway/3_panel2d.wl = { t_base=! }
+        subway/3_panel7.wl = { t_base=! }
+        subway/3_panel7d.wl = { t_base=! }
+        subway/3_tarpaper_vert.wl = { t_base=! }
+        subway/cargo_elev3.wl = { t_base=! }
+        subway/h_cretewall_dirty.wl = { t_base=! }
+        subway/pipe_grey1.wl = { t_base=! }
+        subway/pipe3b.wl = { t_base=! }
+        subway/sky.wl = { t_base=! }
+        subway/window2.wl = { t_base=! }
+        subway/window2_d1.wl = { t_base=! }
+        subway/window2_d2.wl = { t_base=! }
+      }
+      PAK2 tokyo.txlist =
+      {
+        tokyo/1_basement1b.wl = { t_base=! }
+        tokyo/1_build9c.wl = { t_base=! }
+        tokyo/1_build9dd.wl = { t_base=! }
+        tokyo/1_metalpanel.wl = { t_base=! }
+        tokyo/2_clean_grate.wl = { t_base=! }
+        tokyo/2_cleanpanel.wl = { t_base=! }
+        tokyo/2_cleanpaneld.wl = { t_base=! }
+        tokyo/2_cleansteel.wl = { t_base=! }
+        tokyo/carpet13b.wl = { t_base=! }
+      }
+      PAK2 uganda.txlist =
+      {
+        uganda/3_cavefloor1.wl = { t_base=! }
+        uganda/stair_side2.wl = { t_base=! }
+      }
+//End - Supplied by Sniper-HQ@gmx.de
+
     }
   }
 
