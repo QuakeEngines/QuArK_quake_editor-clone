@@ -41,8 +41,7 @@ What we're going to do is to redefine this method.  Some code that
 does this is:
 <code>
 def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
-#  quarkx.msgbox("Man do I rock", MT_INFORMATION, MB_OK)
-  oldcommand(menu)
+    oldcommand(menu)
 </code>
 <code>
 quarkpy.mapcommands.onclick = commandsclick
@@ -58,20 +57,21 @@ to our new commandsclick function.  You should now test this to make
 sure nothing has gotten accidently broken, and then we'll move on to
 making it do something.
 
-<P>But maybe I should first say a bit about what's really going
+But maybe I should first say a bit about what's really going
 on.  In the running of a Python program, the first time a module
 is imported, the statements in it are executed.  The
-<tt>def</tt> and <tt>class</tt> statements cause things
-to get defined, but you can do anything.  Subsequent
+<html><tt>def</tt> and <tt>class</tt> statements cause things
+to get defined, but you can write code to do anything
+you like.  Subsequent
 imports of a module don't re-execute its statements, they
 just make the stuff defined in the module available, not
 only for `read' access, but also for `write' access
 (redefinition).  This makes plugins extremely powerful,
 and is described in the Python documentation as a rather
 dangerous practice, but it seems to work out OK, the way
-it's managed in Quark.<P>
+it's managed in Quark.
 
-wll now what we want to do of course is check for the preconditions of our two
+But now what we want to do of course is check for the preconditions of our two
 menu items.  For side-tagging, we want the selection to consist of
 exactly one side.  If this is true, we want the menu state to be normal,
 otherwise disabled.  Here's some code that does it:

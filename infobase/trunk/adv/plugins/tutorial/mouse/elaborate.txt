@@ -12,16 +12,17 @@ and revise our menu function to, say, this:
 def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
     "the new right-mouse for sides"
     menu = oldfacemenu(o, editor)
-    menglueside.state = mentagside.state = qmenu.normal
+    menglueside.state = mentagside.state = mencleartag.state = qmenu.normal
     tagged = gettagged(editor)
     if tagged is None:
-        menglueside.state = qmenu.disabled
+        menglueside.state = mencleartag.state = qmenu.disabled
     elif tagged==o:
         mentagside.state = menglueside.state = qmenu.disabled
-        
-    menu = [mentagside, menglueside, menclearside]+menu
+    menu = [mentagside, menglueside, mencleartag]+menu
     return menu  
 </code>
+<html><tt>maptagside4.py</tt> contains the final version of this
+stuff so far.
 
 Here we're using menu items and click functions defined outside
 menu functions, but there is another approach that's possible

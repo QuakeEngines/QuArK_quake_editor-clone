@@ -26,6 +26,7 @@ face, which we then check the value of before proceeding:
 <code>
     ...
     tagged = gettagged(editor)
+    if tagged is None: return
 </code>
 <code>
     def checktagged(tagged=tagged, editor=editor):
@@ -61,10 +62,7 @@ Now as a pleasant side effect of all this,
 when we move the tagged side, the Glue item should become
 disabled on the menu.
 
-99999
-except disabling isn't working at all
-Do Nothing is appearing on the command menu for no reason
-
-
 Finally, as an easy exercise, you should implement a `Clear tag"
-command
+command.  Sample final results in
+<html><tt>maptagside3.py</tt>.
+
