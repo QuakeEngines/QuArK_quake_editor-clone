@@ -73,19 +73,17 @@ def MakeAxes2(x):
     y = (z^x).normalized
     return xn, y, z
 
+def Vertical(x):
+    x=x.normalized
+    return abs(x*quarkx.vect(0,0,1))>.99999
+    
 def MakeLevelAxes(x):
     x=x.normalized
     mapx, mapy, mapz = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
-    dot=x*mapy
-    if dot>0.999:
-        return mapy, -mapx, mapz
-    elif dot<-0.999:
-        return -mapy, mapx, mapz
-#    if abs(x*mapx)<.0001: # straight up
-#        return mapy, mapx, -mapz
+    dot = x*mapz
     #
     # project onto the xy plane
-    #
+    # 
     xp = quarkx.vect(x*mapx,x*mapy,0).normalized
     y = matrix_rot_z(math.pi/2)*xp
     return x, y, (x^y).normalized
@@ -606,7 +604,7 @@ class PathDuplicator(StandardDuplicator):
             #
             neworigin = pathdist.normalized*0.5*templatesize.z + thisorigin
 
-            if pathlist[i]["level"] or self.dup["level"]:
+            if (pathlist[i]["level"] or self.dup["level"]) and not Vertical(pathdist):
                prevaxes = MakeLevelAxes(pathdist.normalized)
             else:
                prevaxes = NewAxes(prevaxes,pathdist.normalized)
@@ -789,7 +787,7 @@ class InstanceDuplicator(PathDuplicator):
 #                   pathdist=pathlist[count-2].origin-pathlist[count-1].origin
                 if self.dup["elbow"]:
                    pathdist = thisorigin-pathlist[i-1].origin
-                if pathlist[i]["level"] or self.dup["level"]:
+                if (pathlist[i]["level"] or self.dup["level"]) and not Vertical(pathdist):
                    prevaxes = MakeLevelAxes(pathdist.normalized)
                 else:
                    prevaxes = NewAxes(prevaxes,pathdist.normalized)
@@ -855,6 +853,10 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.44  2001/07/08 08:34:31  tiglari
+#reinstated elbow button for path dup; added 'level' spec for path dup and
+#  instance (elbow) dup, fixed orientation bugs
+#
 #Revision 1.43  2001/06/17 21:10:57  tiglari
 #fix button captions
 #
