@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/02/18 20:06:45  aiv
+attaching models to tags almost finished
+
 Revision 1.22  2001/02/07 18:36:47  aiv
 added support for misc_model type entities
 
@@ -304,7 +307,7 @@ implementation
 uses Setup, QkMapPoly, Undo, FormCfg,
      Game, QkMacro, Quarkx, PyMath,
      PyMapView, PyObjects, QkImages, Bezier,
-     EdSceneObject, QkObjectClassList, QKmd3, QKModelFile;
+     EdSceneObject, QkObjectClassList, QKmd3, QKModelFile, QkModelRoot;
 
  {------------------------}
 
@@ -1709,7 +1712,7 @@ end;*)
 function TTreeMapEntity.AddModelTo3DScene : Boolean;
 var
  S, MdlPath, MdlBase: String;
- Q, FileObj1, FileObj2: QObject;
+ Q, FileObj1: QObject;
  Mdl: QModel;
  Frame1: QFrame;
  Skin1: QImages;
@@ -1724,8 +1727,8 @@ var
  Angle: Integer;
  ASin, ACos: TDouble;
  SkinDescr: String;
- x,spec,tag_name,tag_filename,tag_frame: string;
-
+ spec,comp_name: string;
+ c: QComponent;
 begin
  Result:=False;
  try
@@ -1768,30 +1771,26 @@ begin
    if S<>'' then
      QModelFile(Mdl).getRoot.setFramesByName(S)
    else
-     QModelFile(Mdl).getRoot.setFrames(Round(Q.GetFloatSpec(':'+tag_name+':frame', 0)));
+     QModelFile(Mdl).getRoot.setFrames(Round(Q.GetFloatSpec('mdlframe', 0)));
 
-   for i:=0 to q.specifics.count-1 do
+   // Check for auto-tag linking for .md3 files and derivatives (Doom3 ?? STVEF ??)
+   if Q.Specifics.Values['md3_autolink']='1' then // auto link tags to models
+     if (mdl is QMD3File) then
+       QMD3File(mdl).TryAutoLoadParts;
+
+   for i:=0 to Q.Specifics.count-1 do
    begin
-     if Q.specifics.names[i][1]=':' then // its a tag one
+     if Q.Specifics.Names[i][1]=':' then  // text after a ':' is component name (for setting the frame number)
      begin
-       tag_name:=copy(Q.specifics.names[i],2,length(Q.specifics.names[i])-1);
-       x:=copy(tag_name, length(tag_name)-5,6);
-       if x=':frame' then
-         continue;
-       tag_filename:=Q.specifics.values[':'+tag_name];
-       if mdl.typeinfo='.md3' then
-       begin
-         FileObj2:=NeedGameFile(tag_filename);
-         if FileObj2=nil then
-           continue;
-         FileObj2.Acces;
-         tag_frame:=Q.specifics.values[':'+tag_name+':frame'];
-         if tag_frame<>'' then
-           QModelFile(FileObj2).getRoot.setFramesByName(tag_frame)
-         else
-           QModelFile(FileObj2).getRoot.setFrames(Round(Q.GetFloatSpec(':'+tag_name+':frame', 0)));
-         QMD3File(mdl).AttachModelToTag(tag_name, QModelFile(fileobj2));
-       end;
+       comp_name:=Copy(Q.Specifics.Names[i], 2, length(Q.Specifics[i])-2);
+       c:=QComponent(mdl.findsubobject(comp_name, QComponent, QModelRoot));
+       if c=nil then
+         continue; // not found
+       S:=Q.Specifics.Values[Q.Specifics.Names[i]];
+       if S<>'' then
+         c.CurrentFrame:=c.GetFrameFromName(S)
+       else
+         c.CurrentFrame:=c.GetFrameFromIndex(Round(Q.GetFloatSpec(Q.Specifics.Names[i], 0)));
      end;
    end;
 
@@ -1834,6 +1833,8 @@ begin
        { find frame & skin }
        Component:=QComponent(L[I]);
        Frame1:=Component.CurrentFrame;
+       if Frame1=nil then
+         Frame1:=Component.GetFrameFromIndex(0);
 {       S:=Q.Specifics.Values['mdlframe'];
        if S<>'' then
          Frame1:=Component.GetFrameFromName(S)
@@ -2048,9 +2049,6 @@ end;*)
 function TTreeMapEntity.PyGetAttr(attr: PChar) : PyObject;
 var
   BBox: TBBoxInfo;
-  S, mdl, mdlbase, mdlframe, mdlskin: String;
-  Q: QObject;
-  mdl_nfo: PyObject;
 begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
