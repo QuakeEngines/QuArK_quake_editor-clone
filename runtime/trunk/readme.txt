@@ -1,4 +1,12 @@
 
+                   QuArK 6.4 Snapshot 1
+
+ * [tiglari] Radiant-style dragging for frozen selections (if
+     drag starts inside brush/patch but not on a handle, the
+     whole thing is drug, if drag starts outside of brush,
+     most nearly facing face is.  Dragging of handles stays as
+     before.
+
                  QuArK 6.3 Release Candidate 1
 
  * [tiglari] Replace texture dialog: if just a face is selected,
