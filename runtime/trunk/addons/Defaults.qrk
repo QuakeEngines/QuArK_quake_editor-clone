@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.239  2004/12/30 06:42:17  cdunde
+//To add updated support for JA by nazar
+//
 //Revision 1.238  2004/12/28 02:17:52  alexander
 //allow individual texture paths for hl2
 //
@@ -1256,6 +1259,7 @@ QQRKSRC1
 
 
         Directory = "e:\spiele\steam\steamapps"
+        SteamFSModule = "E:/spiele/steam/steamapps/macwurst/sourcesdk/bin/FileSystem_Steam.dll"
         CheckDirectory = "..\steam.exe"
 
         BaseDir = "hl2"
@@ -3080,6 +3084,12 @@ QQRKSRC1
         Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
                 $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
                 $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
+      }
+      SteamFSModule =
+      {
+        Txt = "Steam Filesystem Module"
+        Typ = "ED"      // Edit Directory
+        Hint = "use filesystem dll from sdk/bin as start"
       }
       Directory: =
       {

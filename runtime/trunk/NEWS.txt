@@ -12,6 +12,15 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [alexander]:
+    QuArK understands now how to access steam directly ( steam must be running for that)
+    see texture addon files for the details. Two environment variables must be set: 
+      SteamAppUser : to your steam account name
+      SteamAppId : to 211
+    A path to the steam dll directory (where steam is installed must be set)
+    The Steam Filesystem Module must be chosen in the quark configuration
+    (use filesystem dll from sdk/bin )
+
  * [cdunde]: Added support for Q3 based mods CoD (Call of Duty),
     ET (Enemy Terror) and UT (Urban Terror - 2 data unit files).
 
@@ -26,7 +35,8 @@ $Id$
  * [alexander]:
     Introduced new PointSpecHandle which allows to have additional 3d
     control points on entities. Which specifics are used for these
-    points is controlled similar to the angle specific list. This is     needed to support ladders and breakable security glass in HL2.
+    points is controlled similar to the angle specific list. This is
+    needed to support ladders and breakable security glass in HL2.
 
  * [alexander]:
     allow individual texture paths for hl2
