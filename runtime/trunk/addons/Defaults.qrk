@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.122  2001/04/27 04:49:18  tiglari
+//fix bad hint about subdivides, using form inclusion
+//
 //Revision 1.121  2001/04/16 00:41:36  tiglari
 //extract entity lumps from .bsp's in pakfolder toolbar button
 //
@@ -578,6 +581,9 @@ QQRKSRC1
         Redo = "Shift+Ctrl+Z"
         Duplicate= "Ctrl+D"
         Remove= "Esc"
+        Select Parent="Home"
+        Select Next="PgDn"
+        Select Previous="PgUp"
         Insert = "Ins"
         Tag Side = "Ctrl+T"
         Clear Tags = "Alt+C"
@@ -2713,7 +2719,11 @@ QQRKSRC1
        Undo: = {HotKeyForm = !}
        Redo: = {HotKeyForm = !}
        Duplicate: = {HotKeyForm = !}
+       sep:={Typ="S"}
        Remove: = {HotKeyForm = !}
+       Select Parent: = {HotKeyForm = !}
+       Select Next: = {HotKeyForm = !}
+       Select Previous: = {HotKeyForm = !}
        sep:={Typ="S"}
        Insert: = {HotKeyForm = !}
        Tag Side: = {HotKeyForm = !}
