@@ -142,6 +142,12 @@ def getLineThickness():
      else:
          return 3
      
+def getThinLineThickness():
+     thick =  getLineThickness()
+     if thick > 1:
+         thick = thick-1
+     return thick
+     
 def setLineThick(m):
     editor = mapeditor()
     if editor is None:
@@ -194,6 +200,10 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.6  2003/03/23 06:30:19  tiglari
+#change close to cancel button in linethickness dlg to fix error
+# noted by cdunde
+#
 #Revision 1.5  2003/03/21 10:56:08  tiglari
 #support for line-thickness specified by mapoption
 #
