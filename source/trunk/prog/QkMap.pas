@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/07/19 18:23:26  decker_dk
+Read mapversion 220 maps (WC33 format)
+
 Revision 1.12  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -1181,6 +1184,8 @@ var
  Dest, HxStrings: TStringList;
  Racine: QObject;
  List: TQList;
+ saveflags : Integer;
+ MapOptionSpecs : TStringList;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -1199,7 +1204,18 @@ begin
         end;
        Dest.Text:=FmtLoadStr1(176, [QuarkVersion, SetupGameSet.Name]);
        Dest.Text:=Dest.Text;   { #13 -> #13#10 }
-       TTreeMap(Racine).SauverTexte(List, Dest, IntSpec['saveflags'], HxStrings);
+       saveflags:=0;
+       MapOptionSpecs:=SetupSubSet(ssMap,'Options').Specifics;
+       if MapOptionSpecs.Values['IgnoreToBuild']<>'' then
+         saveflags:=saveflags or soIgnoreToBuild;
+       if MapOptionSpecs.Values['DisableEnhTex']<>'' then
+         saveflags:=saveflags or soDisableEnhTex;
+       if MapOptionSpecs.Values['DisableFPCoord']<>'' then
+         saveflags:=saveflags or soDisableEnhTex;
+       saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
+
+     { TTreeMap(Racine).SauverTexte(List, Dest, IntSpec['saveflags'], HxStrings); }
+       TTreeMap(Racine).SauverTexte(List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;
