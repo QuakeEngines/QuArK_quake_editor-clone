@@ -240,7 +240,7 @@ implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
-  CCode, PyObjects, QkHr2, QkHL, QkSin;
+  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3;
 
 {$R *.DFM}
 
@@ -852,6 +852,7 @@ var
  Bsp: QBsp;
  TexList: QWad;
  I: Integer;
+ ShaderFile: QShaderFile;
 begin
  Acces;
  if Link=Nil then
@@ -876,8 +877,16 @@ begin
      S:=Specifics.Values['a'];
      if S<>'' then
       begin   { Quake 3 }
-        { no support for shaders currently }
-       Link:=NeedGameFileBase(S, Q2TexPath+TexName+'.tga') as QPixelSet;
+       Arg:=Specifics.Values['b'];
+       if Arg<>'' then
+        begin { shader }
+         ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
+         ShaderFile.Acces;  { load the .shader file (if not already loaded) }
+         Link:=ShaderFile.SousElements.FindShortName(Q2TexPath+TexName) as QPixelSet;
+         if Link=Nil then Raise EErrorFmt(5698, [TexName, Arg]);
+        end
+       else  { direct (non-shader) }
+        Link:=NeedGameFileBase(S, Q2TexPath+TexName+'.tga') as QPixelSet;
        Link.AddRef(+1);
        Link.Acces;  { we found the linked texture }
       end

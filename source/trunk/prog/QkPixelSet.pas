@@ -81,8 +81,8 @@ type
                ReverseLink: QObject;  { actually a QTextureLnk object -- INTERNAL }
                function ConversionFrom(Source: QFileObject) : Boolean; override;
                function ConvertFrom(Source: QPixelSet; Flags: Integer) : Boolean; virtual;
-               function GetSize : TPoint;
-               procedure SetSize(const nSize: TPoint);
+               function GetSize : TPoint; virtual;
+               procedure SetSize(const nSize: TPoint); virtual;
                function Description : TPixelSetDescription; virtual; abstract;
                function SetDescription(const PSD: TPixelSetDescription;
                                        Confirm: TSDConfirm) : Boolean; virtual; abstract;

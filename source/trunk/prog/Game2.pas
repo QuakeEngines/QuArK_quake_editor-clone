@@ -50,7 +50,7 @@ type
 
 implementation
 
-uses Game, QkFileObjects, Setup, QkObjects, PyImages;
+uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail;
 
 {$R *.DFM}
 
@@ -90,30 +90,37 @@ var
  S: TSearchRec;
  I: Integer;
  Q: QFileObject;
+ Pass2: Boolean;
 begin
  OnActivate:=Nil;
- I:=FindFirst(ApplicationPath+'*.qrk', faAnyFile, S);
- try
-  Screen.Cursor:=crHourglass;
-  while I=0 do
-   begin
-    with ListView1.Items.Add do
+ for Pass2:=False to True do
+  begin
+   if Pass2 then
+    I:=FindFirst(ApplicationPath+AddonsPath+'*.qrk', faAnyFile, S)
+   else
+    I:=FindFirst(ApplicationPath+'*.qrk', faAnyFile, S);
+   try
+    while I=0 do
      begin
-      Caption:=S.Name;
-      if SrcListView.FindCaption(0, Caption, False, True, False) <> Nil then
-       Cut:=True;
+      if ListView1.FindCaption(0, S.Name, False, True, False) = Nil then
+       with ListView1.Items.Add do
+        begin
+         Caption:=S.Name;
+         if SrcListView.FindCaption(0, Caption, False, True, False) <> Nil then
+          Cut:=True;
+        end;
+      I:=FindNext(S);
      end;
-    I:=FindNext(S);
+   finally
+    FindClose(S);
    end;
- finally
-  Screen.Cursor:=crDefault;
-  FindClose(S);
- end;
+  end;
  Update;
+ DebutTravail(5458, ListView1.Items.Count); try
  for I:=0 to ListView1.Items.Count-1 do
   with ListView1.Items[I] do
    try
-    Q:=LienFichierExact(ApplicationPath+Caption, Nil, False);
+    Q:=LienFichierQObject(Caption, Nil, False);
     Q.AddRef(+1); try
     Q.Acces;
     SubItems.Add(Q.Specifics.Values['Description']);
@@ -121,10 +128,16 @@ begin
     MakeVisible(False);
     ListView1.Repaint;
     finally Q.AddRef(-1); end;
+    ProgresTravail;
    except
-    {rien}
+    on EAbort do Break;
+    else
+     {rien};
    end;
- ListView1.Font.Color:=clWindowText;
+ finally
+  FinTravail;
+  ListView1.Font.Color:=clWindowText;
+ end;
 end;
 
 procedure TAddOnsAddDlg.FormDestroy(Sender: TObject);

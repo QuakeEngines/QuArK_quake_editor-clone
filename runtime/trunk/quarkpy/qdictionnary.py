@@ -246,6 +246,7 @@ Strings = {
 	801: "JPEG Image (*.jpg)|*.jpg",
 	802: "C Files (*.c)|*.c",
 	803: "C Header Files (*.h)|*.h",
+	804: "Quake 3 Shaders (*.shader)|*.shader",
 
 	809: "Invalid version number in Quake's original Progs.dat",
 
@@ -534,6 +535,7 @@ Strings = {
 	5172: "JPEG Image",
 	5173: "C File",
 	5174: "C Header File",
+        5175: "Shader list (Quake 3)",
 
         5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",  
 	5184: "'%s' is not a QuArK-5 file",
@@ -649,6 +651,7 @@ Strings = {
 	5455: "Fast forward...",
 	5456: "Building .pak file...",
         5457: "Pasting...",
+        5458: "Searching add-ons...",
 
 	5504: "No texture image//Missing or invalid %s",
 	5505: "'%s' is not a WAD file//%d should be %d",
@@ -847,6 +850,11 @@ Strings = {
         5691: "Invalid Sprite File!",
         5692: "The File %s is not compressed\nusing stored, shrunk, imploded and deflated methods.\n\nLoading Aborted! (%d)",
         5693: "Out of OpenGL display lists. Disable lighting in configuration box",
+        5694: "Syntax error in Shader file, line %d",
+        5695: "Shader '%s' has no image to display",
+        5696: "Shader images are read-only",
+        5697: "Shader stage '%s' has no image to display",
+ 	5698: "Shader '%s' not found in %s",
 
 # Negative numbers are never used directly by QUARK5.EXE.
 

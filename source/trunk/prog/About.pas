@@ -126,23 +126,23 @@ begin
  +'THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE '
  +'COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION. '
  +#13#10#13#10
- +'IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY'
- +'OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,'
- +'INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE'
- +'THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED'
- +'BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR'
+ +'IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY '
+ +'OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, '
+ +'INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE '
+ +'THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED '
+ +'BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR '
  +'OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.'
  +#13#10#13#10
  +'REDISTRIBUTION'#13#10#13#10
- +'You may copy and distribute verbatim copies of the Program''s'
- +'source code as you receive it, in any medium, provided that you'
- +'conspicuously and appropriately publish on each copy an appropriate'
- +'copyright notice and disclaimer of warranty; keep intact all the'
- +'notices that refer to this License and to the absence of any warranty;'
- +'and give any other recipients of the Program a copy of this License'
+ +'You may copy and distribute verbatim copies of the Program''s '
+ +'source code as you receive it, in any medium, provided that you '
+ +'conspicuously and appropriately publish on each copy an appropriate '
+ +'copyright notice and disclaimer of warranty; keep intact all the '
+ +'notices that refer to this License and to the absence of any warranty; '
+ +'and give any other recipients of the Program a copy of this License '
  +'along with the Program.'
  +#13#10#13#10
- +'You may charge a fee for the physical act of transferring a copy, and'
+ +'You may charge a fee for the physical act of transferring a copy, and '
  +'you may at your option offer warranty protection in exchange for a fee.';
 
 end;

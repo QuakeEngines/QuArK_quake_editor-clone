@@ -492,6 +492,7 @@ QQRKSRC1
         //ExtractFiles = "pics/colormap.pcx"
         Q2TexPath = "textures/"
         Q2TexFlags = "1"
+        ShadersPath = "scripts/"
         ExtraCmdLine = "+set game %s"
         RunMapCmdLine = " +map %s"
         AddOns = "DataQ3.qrk"
