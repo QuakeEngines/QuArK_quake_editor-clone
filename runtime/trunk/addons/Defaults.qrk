@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.52  2000/09/02 11:19:11  tiglari
+//added subdivide specific for arch/cap
+//
 //Revision 1.51  2000/09/02 06:13:04  tiglari
 //detail specifics for cap duplicator (python not yet implemented)
 //
@@ -2700,6 +2703,10 @@ QQRKSRC1
                Hint = "if checked, concave surface of curve is outer and has texture"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      subdivide: = {Txt ="&" Typ="EF1"
+                Hint = "integer value, generate n patches along curve"}
+      circle:= {Txt="&" Typ="X"
+               }
       stretchtex: = {Txt="&" Typ="X"
                Hint = "if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
       open: = {Txt="&" Typ="X"
@@ -2709,6 +2716,13 @@ QQRKSRC1
                        $0D " e.g. 0 1 for upward pointing cone"}
       bulge:= {Txt="&" Typ="EF002"
                Hint = "height, width of bulge, proportional, .5 1=straight"}
+      more: = {
+       Typ="B"
+       Txt="details"
+       Cap="Push"
+       Form="beveldetails:form"
+       Hint="specifics for more detailed control over generation of patches"
+      }
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
