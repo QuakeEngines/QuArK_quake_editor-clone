@@ -1,0 +1,1 @@
+All these files must be in UNIX format. Meaning that a newline only consists of the single "0x0A" character, and not the DOS format of two characters "0x0D 0x0A".
