@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/03/04 17:02:45  aiv
+fixed 'origin' adding bug in entity wizard.
+
 Revision 1.15  2001/03/03 00:11:09  aiv
 addon creation from bsp files!
 
@@ -134,22 +137,22 @@ type
 
  TBsp3EntryTypes =
    (eBsp3_entities
-   ,eBsp3_unknown01
-   ,eBsp3_unknown02
-   ,eBsp3_unknown03
-   ,eBsp3_unknown04
-   ,eBsp3_unknown05
-   ,eBsp3_unknown06
-   ,eBsp3_unknown07
-   ,eBsp3_unknown08
-   ,eBsp3_unknown09
-   ,eBsp3_unknown10
-   ,eBsp3_unknown11
-   ,eBsp3_unknown12
-   ,eBsp3_unknown13
-   ,eBsp3_unknown14
-   ,eBsp3_unknown15
-   ,eBsp3_unknown16);
+   ,eBsp3_planes
+   ,eBsp3_vertexes
+   ,eBsp3_visibility
+   ,eBsp3_nodes
+   ,eBsp3_texinfo
+   ,eBsp3_faces
+   ,eBsp3_lighting
+   ,eBsp3_leafs
+   ,eBsp3_leaffaces
+   ,eBsp3_leafbrushes
+   ,eBsp3_edges
+   ,eBsp3_surfedges
+   ,eBsp3_models
+   ,eBsp3_brushes
+   ,eBsp3_brushsides
+   ,eBsp3_pop);
 
 const
   NoBsp1 = TBsp1EntryTypes(-1);
@@ -313,22 +316,22 @@ const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
    (              {Actually a 'FilenameExtension' - See TypeInfo()}
     'entities'    + '.a.bsp3'   // eBsp3_entities
-   ,'unknown01'   + '.b.bsp3'   // eBsp3_unknown01
-   ,'unknown02'   + '.c.bsp3'   // eBsp3_unknown02
-   ,'unknown03'   + '.d.bsp3'   // eBsp3_unknown03
-   ,'unknown04'   + '.e.bsp3'   // eBsp3_unknown04
-   ,'unknown05'   + '.f.bsp3'   // eBsp3_unknown05
-   ,'unknown06'   + '.g.bsp3'   // eBsp3_unknown06
-   ,'unknown07'   + '.h.bsp3'   // eBsp3_unknown07
-   ,'unknown08'   + '.i.bsp3'   // eBsp3_unknown08
-   ,'unknown09'   + '.j.bsp3'   // eBsp3_unknown09
-   ,'unknown10'   + '.k.bsp3'   // eBsp3_unknown10
-   ,'unknown11'   + '.l.bsp3'   // eBsp3_unknown11
-   ,'unknown12'   + '.m.bsp3'   // eBsp3_unknown12
-   ,'unknown13'   + '.n.bsp3'   // eBsp3_unknown13
-   ,'unknown14'   + '.o.bsp3'   // eBsp3_unknown14
-   ,'unknown15'   + '.p.bsp3'   // eBsp3_unknown15
-   ,'unknown16'   + '.q.bsp3'   // eBsp3_unknown16
+   ,'planes'      + '.b.bsp3'   // eBsp3_unknown01
+   ,'vertexes'    + '.c.bsp3'   // eBsp3_unknown02
+   ,'visibility'  + '.d.bsp3'   // eBsp3_unknown03
+   ,'nodes'       + '.e.bsp3'   // eBsp3_unknown04
+   ,'texinfo'     + '.f.bsp3'   // eBsp3_unknown05
+   ,'faces'       + '.g.bsp3'   // eBsp3_unknown06
+   ,'lighting'    + '.h.bsp3'   // eBsp3_unknown07
+   ,'leafs'       + '.i.bsp3'   // eBsp3_unknown08
+   ,'leaffaces'   + '.j.bsp3'   // eBsp3_unknown09
+   ,'leafbrushes' + '.k.bsp3'   // eBsp3_unknown10
+   ,'edges'       + '.l.bsp3'   // eBsp3_unknown11
+   ,'surfedges'   + '.m.bsp3'   // eBsp3_unknown12
+   ,'models'      + '.n.bsp3'   // eBsp3_unknown13
+   ,'brushes'     + '.o.bsp3'   // eBsp3_unknown14
+   ,'brushsides'  + '.p.bsp3'   // eBsp3_unknown15
+   ,'pop'         + '.q.bsp3'   // eBsp3_unknown16
    );
 
 type
