@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.64  2003/01/03 07:49:01  tiglari
+transfer texture position management and swapsides stuff from rel-63a branch
+
 Revision 1.56.2.10  2003/01/01 05:09:59  tiglari
 fix Retourner_leavetex
 
@@ -738,7 +741,7 @@ end;
 
 procedure CylindreDeFace(F: PSurface; ListeFaces: TQList);
 var
- S1, S2, V: TVect;
+ S1, S2, V, D1, D2, P1, P2: TVect;
  I: Integer;
  Surf: TFace;
 begin
@@ -753,11 +756,16 @@ begin
      V.Z:=S1.Z+Z;
     end;
    S2:=F^.prvDescS[I]^.P;
+   D1:=VecDiff(V, S1);    D2:=VecDiff(S2, S1);
+   Normalise(D1);         Normalise(D2);
+   D1:=VecScale(128, D1); D2:=VecScale(128,D2);
+   P1:=VecSum(S1, D1);    P2:=VecSum(S1, D2);
    Surf:=TFace.Create('', Nil);
    ListeFaces.Add(Surf);
-   Surf.SetThreePoints(S1, V, S2);
+   Surf.SetThreePoints(S1, P1, P2);
   end;
 end;
+
 
 function FaceRencontrePolyedre(F: PSurface; P: TPolyedre) : Boolean;
 var
