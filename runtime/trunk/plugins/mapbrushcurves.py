@@ -75,16 +75,14 @@ def matrixFromMap(v1, v2, v3, w1, w2, w3):
     outvect = quarkx.matrix(w1,w2,w3)
     if abs(invect)==0:
         return None
-    return (~invect*outvect).transposed
+    return outvect*~invect
 
 #
 # Temp from maputils to help run with older quark versions
 # 
 #
 def matrix_u_v(u,v):
-    return quarkx.matrix((u.x, v.x, 0),
-                         (u.y, v.y, 0),
-                         (u.z, v.z, 1))
+    return quarkx.matrix(u, v, quarkx.vect(0,0,1))
                          
 def intersectionPoint2d(p0, d0, p1, d1):
     "intersection in 2D plane, point, direction"
@@ -238,41 +236,18 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
     # get line of equal length of curve, in back face plane
     #
     span = (pd["trb"]-pd["tlb"]).normalized
-    depth = pd["tlb"]-pd["brb"]
-    cross = span^depth
-#    texline = (arcLength(curve)/cornerlength)*span
-    texmat = matrixFromMap(depth, cross, span*cornerlength, depth, cross, span*arcLength(curve)) 
-#    squawk(`texmat`)
+    depth = (pd["tlb"]-pd["blb"]).normalized
+    cross = (span^depth).normalized
+    texmat = matrixFromMap(depth,cross,span*cornerlength,depth,cross,span*arcLength(curve)) 
+
+    debug(`texmat`)
     #
     # make texture source face
     #
     texface = fdict["b"].copy()
     texface.linear(curve[0],texmat)
+
     texface.swapsides()
-#    #
-#    # get 2 texpoints according to the tex scale of the
-#    #  actual back face
-#    #
-#    def texpoint(v, texface=texface):
-#        return texCoords(v, texface.threepoints(2), 128)
-#    texpoints = map(texpoint, [pd["tlb"], pd["blb"]])
-#    #
-#    # now rotate this tex face around a right-back pivot parallel
-#    #   to right face
-#    #
-#    texface.distortion(fdict["r"].normal,pd["trb"])
-#    #
-#    # get the tex coordinates now appropriate to trf
-#    #
-#    texpoints.append(texCoords(pd["trf"],texface.threepoints(2),128))
-#    #
-#    # now solve for threepoints, except adjusted for the actual
-##    #
-#    texp=solveForThreepoints((pd["tlb"], texpoints[0]),
-#                             (pd["blb"], texpoints[1]),
-#                             (pd["tlb"]+texline, texpoints[2]))
-#    texface.distortion(fdict["b"].normal,pd["trb"])
-#    texface.setthreepoints(texp,2)
     brushes = []
     #
     #  Generate the brushes
@@ -587,7 +562,7 @@ def curvemenu(o, editor, view):
       dup["macro"]="dup brushcap"
       if m.inverse:
         dup["inverse"]=1
-      dup["subdivide"]=1,
+      dup["subdivide"]=2,
       dup.appenditem(m.newpoly)
       undo=quarkx.action()
       undo.exchange(o, dup)
@@ -602,7 +577,7 @@ def curvemenu(o, editor, view):
       dup = quarkx.newobj("bevel:d")
       dup["macro"]="dup brushbevel"
       dup["inverse"]=1
-      dup["subdivide"]=1,
+      dup["subdivide"]=2,
       if m.left:
         dup["left"]=1
       dup["open"]=1  # since this is normally rounding a corner with wall & ceiling"
@@ -721,63 +696,12 @@ def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
 #
 quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
-brushcapstring = """
-    {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      lower: = {Txt="&" Typ="X"
-               Hint = "if checked, the whole thing is upside-down"}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      inner: = {Txt="&" Typ="X"
-               Hint = "if checked, inner approximation is used; otherwise outer"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along each side of curve"}
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
-    }
-"""
-
-brushbevelstring = """
-    {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      left: = {Txt="&" Typ="X"
-               Hint = "if checked, curve goes from back to left side rather than back to right side"}
-      thick: = {Txt ="&" Typ="EF1"
-                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
-      inner: = {Txt="&" Typ="X"
-               Hint = "if checked, inner approximation is used; otherwise outer"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along curve"}
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
-    }
-"""
-
-brushcolumnstring = """
-    {
-      inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, concave surface of curve is outer and has texture"}
-      subdivide: = {Txt ="&" Typ="EF1"
-                Hint = "integer value, generate n patches along curve"}
-      circle:= {Txt="&" Typ="X"
-               }
-      funnel:= {Txt="&" Typ="EF002"
-               Hint = "if specified, first number is expand factor for top, second for bottom."
-                       $0D " e.g. 0 1 for upward pointing cone"}
-      bulge:= {Txt="&" Typ="EF002"
-               Hint = "height, width of bulge, proportional, .5 1=straight"}
-      macro: = {Txt = "&" Typ = "ESR"
-                 Hint = "This one is not for you, Saruman"}
-    }
-"""
-quarkpy.mapentities.registerPyForm("dup brushcap", brushcapstring)
-quarkpy.mapentities.registerPyForm("dup brushbevel", brushbevelstring)
-quarkpy.mapentities.registerPyForm("dup brushcolumn", brushcolumnstring)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2001/02/17 23:12:45  tiglari
+#texture positioning done
+#
 #Revision 1.4  2001/02/14 10:08:58  tiglari
 #extract perspective stuff to quarkpy.perspective.py
 #
