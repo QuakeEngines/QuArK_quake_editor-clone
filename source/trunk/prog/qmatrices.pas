@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2002/12/18 00:50:11  tiglari
+More matrix ops
+
 Revision 1.9  2001/06/05 18:41:51  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -82,6 +85,12 @@ function MatrixFromRows(const V1, V2, V3 : TVect) : TMatrixTransformation;
 function Determinant(const Matrice: TMatrixTransformation) : TDouble;
 function VectByMatrix(const Matrice : TMatrixTransformation; const V: TVect) : TVect; overload;
 function VectByMatrix(const Matrice : TMatrixTransformation; const V: vec3_t) : vec3_t; overload;
+function VecAdd(const V1: vec3_t; const V2: vec3_t) : vec3_t;
+
+function RotMatrixZ(V: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
+function RotMatrixY(V: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
+function RotMatrixPitchRoll(Pitch: TDouble;Roll: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
+
 
  {------------------------}
 
@@ -148,6 +157,42 @@ procedure Info_mx_Symetrie(Coord: Integer);
 begin
  g_DrawInfo.Matrice:=MatriceIdentite;
  g_DrawInfo.Matrice[Coord,Coord]:=-1;
+end;
+
+function RotMatrixZ(V: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
+var
+ Angle: TDouble;
+begin
+ Angle:=V * (pi/180);
+ Result:=InMatrix;
+ Result[1,1]:=Cos(Angle);  Result[1,2]:=-Sin(Angle); {0}
+ Result[2,1]:=Sin(Angle);  Result[2,2]:=Cos(Angle);  {0}
+ {0}                       {0}                       {1}
+end;
+
+function RotMatrixY(V: TDouble; InMatrix:TMatrixTransformation):TMatrixTransformation ;
+var
+ Angle: TDouble;
+begin
+ Angle:=V * (pi/180);
+ Result:=InMatrix;
+ Result[1,1]:=Cos(Angle);  {0}               Result[1,3]:=-Sin(Angle);
+ {0}                       {1}               {0}
+ Result[3,1]:=Sin(Angle);  {0}               Result[3,3]:=Cos(Angle);
+end;
+
+function RotMatrixPitchRoll(Pitch: TDouble; Roll: TDouble;  InMatrix:TMatrixTransformation):TMatrixTransformation ;
+var
+ AngleP: TDouble;
+ AngleR: TDouble;
+begin
+ AngleP:=Pitch * (pi/180);
+ AngleR:=Roll * (pi/180);
+ Result:=InMatrix;
+ Result[1,1]:=Cos(AngleP) * Cos(AngleR);  Result[1,2]:=-Sin(AngleP);  Result[1,3]:=-Sin(AngleR);
+ Result[2,1]:=Sin(AngleP);                Result[2,2]:=Cos(AngleP);   {0}
+ Result[3,1]:=Sin(AngleR);                {0}                         Result[3,3]:=Cos(AngleR);
+
 end;
 
 function MultiplieMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransformation;
@@ -277,6 +322,13 @@ begin
    Result[0]:=Matrice[1,1]*V[0]+Matrice[1,2]*V[1]+Matrice[1,3]*V[2]{+Matrice[1,4]};
    Result[1]:=Matrice[2,1]*V[0]+Matrice[2,2]*V[1]+Matrice[2,3]*V[2]{+Matrice[2,4]};
    Result[2]:=Matrice[3,1]*V[0]+Matrice[3,2]*V[1]+Matrice[3,3]*V[2]{+Matrice[3,4]};
+end;
+
+function VecAdd(const V1: vec3_t; const V2: vec3_t) : vec3_t;
+begin
+   Result[0]:=V1[0]+V2[0];
+   Result[1]:=V1[1]+V2[1];
+   Result[2]:=V1[2]+V2[2];
 end;
 
 end.
