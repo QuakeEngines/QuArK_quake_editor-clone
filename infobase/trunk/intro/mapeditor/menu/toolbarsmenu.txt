@@ -1,0 +1,10 @@
+title: Toolbars menu
+author: Decker
+
+<img border=0 align=right>toolbars.png</img>
+<i>Display</i>. Wether or not the display toolbar should be visible.
+
+<i>Movement tool palette</i>. Whether or not the movement toolbar should be
+visible.
+
+<i>Mouse modes</i>. Wether or not the mouse modes toolbar should be visible.

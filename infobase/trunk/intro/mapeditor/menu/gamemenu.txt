@@ -1,0 +1,24 @@
+title: Game menu
+author: Decker
+
+<img border=0 align=right>game.png</img>
+<i>GO!</i> does the whole sheebang.
+
+<i>QuickGO!</i> a faster version, which should only be used when testing your
+map.
+
+<i>QuickGO on selection only</i>, as QuickGO! but only builds what you have
+selected.
+
+<i>Prepare used textures</i> creates a <g>.WAD</g> texture-file, with the
+textures used in the map.
+
+<i>Complete rebuild</i> will build everything, except running the FPS-game.
+
+<i>Run FPS-game</i> starts the game with the current map.
+
+The next menuitems varies from FPS-game to FPS-game. Familiarize yourself with
+these <g>build tools</g>, for the FPS-game you're building a map to.
+
+<i>Customize menu</i> opens a window, in where you can add, change and remove
+the above menuitems and their functionality.

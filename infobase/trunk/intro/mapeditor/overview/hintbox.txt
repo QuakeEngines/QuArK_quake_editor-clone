@@ -1,0 +1,25 @@
+title: Hintbox
+author: Decker
+
+<table border=0 cellspacing=0>
+<tr><td valign=top>
+
+Whenever you see the text "<tt>Press <b>F1</b> for help</tt>" in the little
+hintbox under the <a href="#dataform">dataform-display</a>, you can press F1
+and get a larger hintbox, which tells you a little about the thing you are
+pointing at.
+
+If you are new to QuArK, these hints comes in handy if you do not exactly knows
+what the thing you are pointing at, does. So press F1 to get a hint, before
+asking about it in the <g>editing-newsgroups</g>.
+
+Once you move your mouse outside the larger hintbox, it will automatically
+disappear.
+
+</td><td valign=top>
+<center>
+<img border=0>hintbox_small.png</img><br><br>
+<img border=0>hintbox_large.png</img>
+</center>
+</td></tr>
+</table>

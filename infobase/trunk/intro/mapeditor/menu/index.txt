@@ -1,0 +1,14 @@
+title: Menubar
+author: Decker
+desc: filemenu
+desc: layoutmenu
+desc: editmenu
+desc: toolboxesmenu
+desc: searchmenu
+desc: commandsmenu
+desc: gamemenu
+desc: toolbarsmenu
+desc: optionsmenu
+desc: helpmenu
+
+<img>menu.png</img>

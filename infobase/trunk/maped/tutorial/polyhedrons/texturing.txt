@@ -1,0 +1,43 @@
+title: Texturing
+author: Decker
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr><td>
+
+<img width=179 height=201 align=right>image11.png</img>
+It would be quite a dull level, if you only used one <g>texture</g>. So how do
+we change the texture on a brush?
+
+First the brush(es) must be selected. When they are selected, the
+<ref> intro/mapeditor/dataforms/polyhedronview </ref> will appear
+instead of the tree-view, showing you some information about the selected
+brush(es) and the texture, as shown in the image.
+
+To change the texture on the whole brush, press on the <b>choose texture</b>
+icon <img width=24 height=22 align=absmiddle>image12.png</img>, or right-click
+on the brush to get a <b>context menu</b> up, where you can select
+<b>Texture...</b>
+
+In the <a href="../texturebrowser/index.html">texture-browser</a>, you can
+browse (wow!) through the available textures, and select the one you want
+assigned to the brush(es). You select a texture by double-clicking on it in the
+texture-browser.
+
+</td></tr>
+<tr><td>
+
+<img width=170 height=238 align=right>image13.png</img>
+To change the texture on just one face, you select the face by clicking on its
+face-handle. The same handle you used to size the brush with.
+
+Again, to change the texture, press on the <b>choose texture</b> icon
+<img width=25 height=23 align=absmiddle>image14.png</img>, or right-click on
+the face-handle to get a context menu up, where you can select
+<b>Texture...</b>
+
+This should be enough introduction for you, to mess around with texturing the
+rest of your cubes. Try also to assign different textures to each face of a
+cube, and see what happens.
+
+</td></tr>
+</table>
