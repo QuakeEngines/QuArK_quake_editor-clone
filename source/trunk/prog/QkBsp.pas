@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2001/07/21 01:48:07  tiglari
+add/use functions & values defining classes of games
+
 Revision 1.37  2001/07/19 22:54:46  tiglari
 STVEF bsp's now showing
 
@@ -269,6 +272,7 @@ type
           procedure LoadBsp3(F: TStream; StreamSize: Integer);
           procedure SaveBsp1(Info: TInfoEnreg1);
           procedure SaveBsp2(Info: TInfoEnreg1);
+          procedure SaveBsp3(Info: TInfoEnreg1);
         protected
           function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
@@ -921,16 +925,73 @@ begin
   end;
 end;
 
+procedure QBsp.SaveBsp3(Info: TInfoEnreg1);
+var
+  Header: TBsp3Header;
+  Origine, Fin: LongInt;
+  Zero: Integer;
+  Q: QObject;
+  E: TBsp3EntryTypes;
+begin
+  ProgressIndicatorStart(5450, Ord(High(E)) - Ord(Low(E)) + 1);
+  try
+    Origine := Info.F.Position;
+    Info.F.WriteBuffer(Header, SizeOf(Header));  { updated later }
+
+    { write .bsp entries }
+    for E:=Low(E) to High(E) do
+    begin
+      Q := BspEntry[NoBsp1, NoBsp2, E];
+      Header.Entries[E].EntryPosition := Info.F.Position;
+
+      Q.SaveFile1(Info);   { save in non-QuArK file format }
+
+      Header.Entries[E].EntrySize := Info.F.Position - Header.Entries[E].EntryPosition;
+      Dec(Header.Entries[E].EntryPosition, Origine);
+
+      Zero:=0;
+      Info.F.WriteBuffer(Zero, (-Header.Entries[E].EntrySize) and 3);  { align to 4 bytes }
+
+      ProgressIndicatorIncrement;
+    end;
+
+    { update header }
+    Fin := Info.F.Position;
+
+    Info.F.Position := Origine;
+    Header.Signature := cSignatureBspQ2DKQ3;
+    Header.Version := cVersionBspQ3;
+    Info.F.WriteBuffer(Header, SizeOf(Header));
+
+    Info.F.Position := Fin;
+  finally
+    ProgressIndicatorStop;
+  end;
+end;
+
+
 procedure QBsp.SaveFile(Info: TInfoEnreg1);
+var
+  C : Char;
 begin
   case Info.Format of
     1: { as stand-alone file }
+{
     begin
       if NeedObjectGameCode >= mjQuake2 then
         SaveBsp2(Info)
       else
         SaveBsp1(Info);
     end;
+}
+    begin
+      C := BspType(NeedObjectGameCode);
+      case C of
+        bspTypeQ1, bspTypeHx: SaveBsp1(Info);
+        bspTypeQ2: SaveBsp2(Info);
+        bspTypeQ3: SaveBsp3(Info);
+      end;
+    end
   else
     inherited;
   end;
