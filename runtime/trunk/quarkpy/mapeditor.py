@@ -29,6 +29,7 @@ Core of the Map editor.
 
 from maputils import *
 import mapmgr
+import qhandles
 import maphandles
 import mapbtns
 import mapentities
@@ -65,6 +66,56 @@ class MapEditor(BaseEditor):
                 debug(' '+error)
             quarkx.msgbox('there were errors reading the map; check the console',2,4)
         self.AutoSave(0)
+
+    def FrozenDragObject(self, view, x, y, s, redcolor):
+        #
+        # Some code to emulate Q3R drag behavior here.
+        #
+        sel = self.layout.explorer.uniquesel
+        if sel.type==":f":
+           debug('facial selection')
+           sel = self.visualselection()[0]
+        if sel is None:
+            debug('mapeditor.FrozenDragObject is sulking because there is no uniquesel, htf did that happen??')
+        else: # drag the whole thing
+            if view.clicktarget(sel,x,y):
+                handle=maphandles.CenterHandle(sel.origin, sel, MapColor("Tag"))
+                return qhandles.HandleDragObject(view, x, y, handle, redcolor)
+            elif sel.type==":p": # if sel is a poly drag the side that's closed to 'facing' the click
+
+                startloc = quarkx.vect(x, y, 0)
+#                debug('startloc: '+`startloc`)
+                closest = None
+                for face in sel.faces:
+                    #
+                    # find the face whose projected normal is closest to
+                    #  paralell with the line from the center to the click
+                    #  
+                    #
+#                    debug('zero: '+`view.proj(quarkx.vect(0,0,0))`)
+#                    debug('face '+`face.name`)
+                    center = face.origin
+                    center = view.proj(center)
+#                    debug(' center: '+`center`)
+                    normend = face.origin+face.normal
+                    normend = view.proj(normend)
+#                    debug(' normend: '+`normend`)
+#                    debug(' abs: %4f'%abs(normend-center))
+#                    debug(' startloc-center: '+`(startloc-center).normalized`)
+
+                    if abs(normend-center)<.001:
+                        continue
+                    dot = (startloc-center).normalized*(normend-center).normalized
+#                    debug(' dot: %2f'%dot)
+                    if closest is None:
+                        closest = face
+                        biggest=dot
+                    elif dot>biggest:
+                        biggest = dot
+                        closest = face
+                handle=maphandles.FaceHandle(closest.origin, closest)
+                return qhandles.HandleDragObject(view, x, y, handle, redcolor)
+                     
 
     def CloseRoot(self):
         if not (self.Root is None) and ("Bsp" in self.fileobject.classes):
@@ -299,6 +350,9 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.3  2002/05/15 00:10:06  tiglari
+#Write map-reading errors to console
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

@@ -1229,7 +1229,13 @@ class Rotator2D(DragObject):
 def MouseDragging(editor, view, x, y, s, handle, redcolor):
     "Called when the user drags the mouse on a map view."
 
+    
     if handle is None:
+        if getAttr(editor,'frozenselection') is not None:
+            if editor.layout.explorer.uniquesel is not None:
+                if "S" in s and "R" in s:
+                    return editor.FrozenDragObject(view,x,y,s,redcolor)
+        
         if "C" in s:
             if view.info["type"]=="3D":
                 return CircleStrafeDragObject(editor, view, x, y) 
@@ -1289,8 +1295,13 @@ def MouseClicked(editor, view, x, y, s, handle):
         if not "M" in s:
             for h in view.handles:
                 h.leave(editor)
+        #
+        #  if selection is frozen, it can't be changed,
+        #    a different handle of the selected object
+        #    can be manipulated
+        #
         return flags+"1"
-
+            
     if view.info["type"]=="3D":
         #
         # Zoom in and out on 3D views -- make the camera walk forward or backward.
@@ -1543,6 +1554,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.8  2001/04/26 22:45:03  tiglari
+#face-only selection & texture L RMB
+#
 #Revision 1.7  2001/04/08 02:39:37  tiglari
 #usercenters now update recursively thru subobjects.  If this proves to
 # be too slow for large objects, maybe it could be optimized to happen only
