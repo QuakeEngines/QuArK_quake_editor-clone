@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.14  2002/12/31 04:10:54  rowdy
 added support for Delphi 7
 
@@ -1829,6 +1832,13 @@ begin
 end;
 
 procedure GetPythonDetails(var S: TStringlist);
+{
+  Peter: deprecated as of 18-08-2003.
+  Logging of Python interpreter details now done in Python.pas.
+
+  This routine looks in the wrong place anyway.  Versions of Python later than
+  2.0 do not use the \Software\Python\PythonCore\CurrentVersion registry key.
+}
 var
   R: TRegistry;
   v: string;
@@ -1852,6 +1862,7 @@ begin
   R.free;
 end;
 
+
 Procedure LogSystemDetails;
 var
   s: TStringlist;
@@ -1867,9 +1878,14 @@ begin
   s.add('OS:');
   GetOperatingSystemDetails(s);
   s.add('');
+(*Peter: removed as of 18-08-2003.
+  Logging of Python interpreter details now done in Python.pas.
+
   s.add('PYTHON:');
   GetPythonDetails(s);
   s.add('');
+*)
+
 (*DECKER 2001.03.17 - we're not interested in Machine-/Username. We're not Login-Crackers!
   s.add('MACHINE:');
   GetWorkStationDetails(s);
