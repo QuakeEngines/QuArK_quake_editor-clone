@@ -2108,18 +2108,31 @@ end;
 
 function xHelpPopup(self, args: PyObject) : PyObject; cdecl;
 var
- s: PChar;
+  helptext, infobaselink: PChar;
 begin
- try
-  Result:=Nil;
-  if not PyArg_ParseTupleX(args, 's', [@s]) then
-   Exit;
-  HelpPopup(s);
-  Result:=PyNoResult;
- except
-  EBackToUser;
-  Result:=Nil;
- end;
+  try
+    Result:=Nil;
+
+    helptext := nil;
+    infobaselink := nil;
+
+    if not PyArg_ParseTupleX(args, 's|s', [@helptext, @infobaselink]) then
+      Exit;
+
+    if (infobaselink = nil) then
+    begin
+      HelpPopup(helptext, '');
+    end
+    else
+    begin
+      HelpPopup(helptext, infobaselink);
+    end;
+
+    Result:=PyNoResult;
+  except
+    EBackToUser;
+    Result:=Nil;
+  end;
 end;
 
 function xHelpMenuItem(self, args: PyObject) : PyObject; cdecl;
