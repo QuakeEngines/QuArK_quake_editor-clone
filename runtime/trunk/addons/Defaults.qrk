@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.203  2003/01/03 23:44:01  rowdy
+//removed duplicate Faces entry in AuxKey form definition
+//
 //Revision 1.201  2002/12/29 12:43:18  decker_dk
 //Altered the PluginInfo:form to use the new Memo-field type.
 //
@@ -4763,7 +4766,7 @@ QQRKSRC1
       {
          Txt="&"
          Typ="X"
-         Hint="If this is checked, walls will be extruded, but corners will not be mitered" $0D " outsides of shapes may need touching up"
+         Hint="If this is checked, walls will be extruded, but corners will not be mitered;" $0D$ " reshaping will be faster, but corners may have texturing faults and other problems." $0D "If neither this nor mitered is checked,negative polys will be used;" $0D " it is best to avoid them."
       }
      solid: =
       {
@@ -4778,6 +4781,7 @@ QQRKSRC1
          Hint="thickness of walls"
       }
     }
+
     dup extruder:form = {
       type: =
       {
