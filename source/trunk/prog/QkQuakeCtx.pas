@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2003/03/12 11:35:42  decker_dk
+Changed 'LoadTInfo()' to 'LoadTexFlagsTransparentInfo()' and modified variables to a bit more intuitive names.
+
 Revision 1.21  2001/04/24 23:59:44  aiv
 re-implementated again (hopefully less memory req'd)
 
@@ -118,7 +121,7 @@ function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
 implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
-     ToolBoxGroup, ExtraFunctionality, Game, QkMapObjects, FormCfg, QkExplorer,
+     ToolBoxGroup, Game, QkMapObjects, FormCfg, QkExplorer,
      QkForm, Travail, QkFormCfg;
 
  {------------------------}
@@ -326,7 +329,7 @@ begin
   Result:=TQList.Create;
   For i:=0 to l.count-1 do
   begin
-    Result.Add(ExactFileLink(dir+'\'+l.strings[i], nil, false));
+    Result.Add(ExactFileLink(dir+PathDelim+l.strings[i], nil, false));
   end;
 end;
 
@@ -339,7 +342,7 @@ begin
   f_e:=FindFirst(filter, faAnyFile, F);
   while f_e=0 do
   begin
-    Result.add(ExactFileLink(dir+'\'+f.name, nil, false));
+    Result.add(ExactFileLink(dir+PathDelim+f.name, nil, false));
     f_e:=FindNext(F);
   end;
   FindClose(f);
@@ -388,9 +391,9 @@ var
   p_f: QPakFolder;
   j: Integer;
 begin
-  dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
+  dir:=IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir'];
   paks:=OpenFiles(dir, ListPakFiles(dir));
-  Result:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
+  Result:=FindFiles(dir+PathDelim+'maps', IncludeTrailingPathDelimiter(QuakeDir)+Specifics.Values['GameDir']+PathDelim+'maps'+PathDelim+'*.bsp');
   ProgressIndicatorStart(5458,paks.count);
   while (Paks.count <> 0) do
   begin
@@ -570,7 +573,7 @@ var
   var
     bsps: TQList;
     bsp: QBsp;
-    e: QObject;
+//    e: QObject;
   begin
     BSPs:=GetAllBSPsFiles;
     ProgressIndicatorStart(5458,bsps.count);

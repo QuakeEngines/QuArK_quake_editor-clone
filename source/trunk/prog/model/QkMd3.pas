@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2002/06/19 19:43:52  decker_dk
+Don't re-raise exception in Loaded_ShaderFile, but only return NIL.
+(Also made some layout re-arrangements in the code)
+
 Revision 1.15  2002/06/18 11:57:04  tiglari
 Support SOF2's use of #0 as a filename-extension delimiter for md3 skins
  (ugly, this will probably need to be fixed as more pathology comes to light)
@@ -600,7 +604,7 @@ begin
     While O.FParent<>nil do
     begin
       O:=O.FParent;
-      Result:=O.Name+'\'+Result;
+      Result:=O.Name+PathDelim+Result;
     end;
   end
   else
@@ -650,7 +654,7 @@ begin
     begin
       tag:=QModelTag(TagList[i]);
       fname:=extractfilepath(GetFullFilename);
-      fname:=copy(fname, pos('\', fname)+1, length(fname)-pos('\',fname)+1);
+      fname:=copy(fname, pos(PathDelim, fname)+1, length(fname)-pos(PathDelim,fname)+1);
       x:=TagNameToMd3FileName(tag.name, name);
       if x='' then
         continue;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/08/13 17:37:36  aiv
+added for 'temp=1' specific used by temporary pak files
+
 Revision 1.20  2001/03/20 21:43:04  decker_dk
 Updated copyright-header
 
@@ -714,13 +717,12 @@ var
   Q: QObject;
 begin
   Result:=0;
-  if (PathBase<>'') and (PathBase[Length(PathBase)]<>'\') then
-    PathBase:=PathBase+'\';
+  if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
   for I:=1 to Length(PathBase) do
-    if PathBase[I]='\' then begin
+    if PathBase[I]=PathDelim then begin
       PathBase[I]:=#0;
       CreateDirectory(PChar(PathBase), Nil);
-      PathBase[I]:='\';
+      PathBase[I]:=PathDelim;
     end;
   Acces;
   for I:=0 to SubElements.Count-1 do begin

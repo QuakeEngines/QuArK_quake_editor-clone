@@ -30,6 +30,9 @@ allowed - that should be enough for PK3 support) from one stream to another.
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:41:11  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/10/16 22:14:39  aiv
 zip files now handled entirely in pascal (no dlls!)
 
@@ -166,7 +169,11 @@ var
 begin
   Len := StrLen(p);
   for i := 1 to Len do
+    {$IFDEF LINUX}
+    if p[i] = '\' then p[i] := '/';
+    {$ELSE}
     if p[i] = '/' then p[i] := '\';
+    {$ENDIF}
 end;
 
 function StrTok(Source: PChar; Token: CHAR): PChar;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/03/20 21:42:24  decker_dk
+Updated copyright-header
+
 Revision 1.6  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -168,13 +171,13 @@ var
 begin
  GetTempPath(MAX_PATH-12, Z);
  P:=StrEnd(Z);
- if (P<>Z) and (P[-1]='\') then
+ if (P<>Z) and (P[-1]=PathDelim) then
   begin
    Dec(P);
    P^:=#0;
   end;
  TempPath:=StrPas(Z);
- P^:='\';
+ P^:=PathDelim;
  Inc(P);
  J:=5;
  for I:=1 to Length(Q.Name) do

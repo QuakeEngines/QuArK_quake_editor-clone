@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2002/03/07 19:14:32  decker_dk
+Removed QLvFileObject, as it was just another name for QFileObject.
+Removed QImages, as it was just another name for QImage
+
 Revision 1.16  2001/07/25 19:13:29  decker_dk
 QPakFolder.LoadFile - Ignoring zero-length PAK-directory entries (E.g. BlueShift PAK0.PAK)
 
@@ -577,14 +581,13 @@ var
  Q: QObject;
 begin
  Result:=0;
- if (PathBase<>'') and (PathBase[Length(PathBase)]<>'\') then
-  PathBase:=PathBase+'\';
+ if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
  for I:=1 to Length(PathBase) do
-  if PathBase[I]='\' then
+  if PathBase[I]=PathDelim then
    begin
     PathBase[I]:=#0;
     CreateDirectory(PChar(PathBase), Nil);
-    PathBase[I]:='\';
+    PathBase[I]:=PathDelim;
    end;
  Acces;
  for I:=0 to SubElements.Count-1 do
@@ -610,14 +613,13 @@ var
 begin
  Result:=0;
 
- if (PathBase<>'') and (PathBase[Length(PathBase)]<>'\') then
-  PathBase:=PathBase+'\';
+ if PathBase<>'' then PathBase:=IncludeTrailingPathDelimiter(PathBase);
  for I:=1 to Length(PathBase) do
-  if PathBase[I]='\' then
+  if PathBase[I]=PathDelim then
    begin
     PathBase[I]:=#0;
     CreateDirectory(PChar(PathBase), Nil);
-    PathBase[I]:='\';
+    PathBase[I]:=PathDelim;
    end;
  Acces;
  for I:=0 to SubElements.Count-1 do

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2003/01/01 14:34:10  decker_dk
+Fixed some compiler-warnings, a source-line placement error, and done some indenting.
+
 Revision 1.52  2002/04/30 12:28:45  tiglari
 Detect RTCW and Mohaa .bsp's and proclaim inability to read them (the
  obvious idea didn't work ...)
@@ -1643,13 +1646,13 @@ begin
   While SlashCount<wSlashCount do
   begin
     Dec(I);
-    if F[I]='\' then
+    if F[I]=PathDelim then
     begin
       Inc(SlashCount);
     end;
   end;
   Result:=Copy(F, I+1, length(F)-I+1);
-  SlashCount:=Pos('\', Result);
+  SlashCount:=Pos(PathDelim, Result);
   Result:=Copy(Result, 1, SlashCount-1);
 end;
 

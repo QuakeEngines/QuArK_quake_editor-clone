@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2002/12/30 18:07:35  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
 Revision 1.37  2002/12/18 00:49:17  tiglari
 Add Genesis3D code
 
@@ -500,8 +503,7 @@ begin
  else
   begin
    SetString(ApplicationPath, Z, I);
-   if ApplicationPath[I]<>'\' then
-    ApplicationPath:=ApplicationPath+'\';
+   ApplicationPath:=IncludeTrailingPathDelimiter(ApplicationPath);
   end;
 end;
 /DECKER*)
@@ -751,12 +753,7 @@ begin
  if s<>Nil then
   begin
    P:=PyString_AsString(s);
-   if (P<>Nil) and (P^<>#0) then
-    begin
-     Path:=P;
-     if Path[Length(Path)]<>'\' then
-      Path:=Path+'\';
-    end;
+   if (P<>Nil) and (P^<>#0) then Path:=IncludeTrailingPathDelimiter(P);
   end;
  SaveSetup(rf_AsText, Path);   { save as text }
 end;*)

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:47:10  decker_dk
+Updated copyright-header
+
 Revision 1.2  2001/02/02 00:09:32  aiv
 Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionality.pas
 for us non-D5 users.
@@ -72,7 +75,7 @@ type
 
 implementation
 
-uses SysUtils, Windows, Setup, ExtraFunctionality;
+uses SysUtils, Windows, Setup;
 
 var
   ApplicationPath : String; {must always contain trailing backslash}
@@ -93,7 +96,7 @@ begin
   else
     SetString(ApplicationPath, environmentContents, environmentLength);
 
-  ApplicationPath := IncludeTrailingBackslash(ApplicationPath);
+  ApplicationPath := IncludeTrailingPathDelimiter(ApplicationPath);
 end;
 
 function GetApplicationPath() : String;
@@ -126,13 +129,13 @@ begin
       GamenameUnderscored[I] := '_';
   end;
 
-  Result := GetApplicationAddonsPath() + IncludeTrailingBackslash(GamenameUnderscored);
+  Result := GetApplicationAddonsPath() + IncludeTrailingPathDelimiter(GamenameUnderscored);
 end;
 
 function GetApplicationDllPath(): String;
 { Returns the application\DLLS\ path }
 const
-  DLL_SUBDIRECTORY = 'Dlls\';
+  DLL_SUBDIRECTORY = 'Dlls'+PathDelim;
 begin
   Result := ApplicationPath + DLL_SUBDIRECTORY;
 end;

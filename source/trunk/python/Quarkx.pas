@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2003/03/03 20:23:13  cdunde
+tiglari changed quarkx.pas so that the HelpPopup python function can take
+two parameters.
+
 Revision 1.28  2002/05/15 00:09:25  tiglari
 Python access to map-reading errors
 
@@ -2908,7 +2912,7 @@ begin
    if not InitializeQuarkx then FatalError(-9);
 
    S:=GetApplicationPath();
-   if (Length(S)>0) and (S[Length(S)]='\') then
+   if (Length(S)>0) and (S[Length(S)]=PathDelim) then
     SetLength(S, Length(S)-1);
    for I:=Length(S) downto 1 do
     if S[I]='\' then

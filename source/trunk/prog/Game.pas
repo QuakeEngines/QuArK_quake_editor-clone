@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2002/03/07 19:15:38  decker_dk
+Removed QImages, as it was just another name for QImage
+
 Revision 1.26  2001/06/21 17:34:50  decker_dk
 If no value in CheckDirectory, then accept any directory.
 
@@ -177,7 +180,7 @@ procedure DestroyGameBuffers;
 procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
-function PathAndFile(const Path, FileName: String) : String;
+function PathAndFile(Path, FileName: String) : String;
 (*function GetDLLDirectory: String;*)
 procedure BuildCorrectFileName(var S: String);
 function GettmpQuArK : String;
@@ -386,18 +389,19 @@ begin
  UpdateAddOnsContent;
 end;
 
-function PathAndFile(const Path, FileName: String) : String;
+function PathAndFile(Path, FileName: String) : String;
 begin
- if (Path<>'') and not (Path[Length(Path)] in ['/','\']) then
-  Result:=Path+'\'+FileName
- else
-  Result:=Path+FileName;
- while Pos('/',Result)<>0 do
-  Result[Pos('/',Result)]:='\';
- if (Result<>'') and (Result[Length(Result)]='\') then   { this is a path }
+ if Path<>'' then Path:=IncludeTrailingPathDelimiter(Path);
+ Result:=Path+FileName;
+ {$IFDEF LINUX}
+ Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
+ {$ELSE}
+ Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
+ {$ENDIF}
+ if (Result<>'') and (Result[Length(Result)]=PathDelim) then   { this is a path }
   begin
    Result:=ExpandFileName(Result);
-   if (Result[Length(Result)]='\') and (Result[Length(Result)-2]<>':') then
+   if (Result[Length(Result)]=PathDelim) and (Result[Length(Result)-2]<>':') then
     SetLength(Result, Length(Result)-1);
   end;
 end;
@@ -451,12 +455,15 @@ var
 begin
  Result:=BaseOutputPath;
  I:=Length(Result);
- Result:=Result+'\'+FileName;
+ Result:=Result+PathDelim+FileName;
+ {$IFDEF LINUX}
+ Result:=StringReplace(Result,'\',PathDelim,[rfReplaceAll]);
+ {$ELSE}
+ Result:=StringReplace(Result,'/',PathDelim,[rfReplaceAll]);
+ {$ENDIF}
  repeat
   Inc(I);
-  if Result[I]='/' then
-   Result[I]:='\';
-  if Result[I]='\' then
+  if Result[I]=PathDelim then
    begin
     {$I-}
     S:=Copy(Result, 1, I-1);
@@ -1219,7 +1226,7 @@ begin
   Remove:=Rep;
   if Remove<>'' then
   begin
-    if Remove[Length(Remove)]='\' then
+    if Remove[Length(Remove)]=PathDelim then
       SetLength(Remove, Length(Remove)-1);
     {$I-}
     RmDir(Remove);

@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2002/04/04 11:46:10  tiglari
+comment out the handle close because it might cause an error
+ (decker on quark-python, april 4)
+
 Revision 1.33  2002/04/02 21:05:20  tiglari
 close event handle
 
@@ -1083,8 +1087,7 @@ begin
  TempPath:=StrPas(Z);
  if TempPath='' then
   Exit;  { error }
- if TempPath[Length(TempPath)]<>'\' then
-  TempPath:=TempPath+'\';
+ TempPath:=IncludeTrailingPathDelimiter(TempPath);
  List:=TStringList.Create;
  try
   ListFiles(TagToDelete);
@@ -1199,7 +1202,7 @@ begin
   if Update then
    Filename:=AlternateFile;
 
-  S:=Copy(AlternateFile, 1, Pos('\',AlternateFile));
+  S:=Copy(AlternateFile, 1, Pos(PathDelim,AlternateFile));
   if GetDriveType(PChar(S)) = DRIVE_FIXED then
    begin  { target is a fixed drive - we MOVE the file there }
     S:=TempFile;
@@ -2136,8 +2139,7 @@ begin
   begin
    if Filename='' then Exit;
    S:=ExtractFilePath(Filename)+nName;
-   while Pos('/',S)<>0 do
-    S[Pos('/',S)]:='\';
+   StringReplace(S,'/','\',[rfReplaceAll]);
    if FileExists(S) then
     Result:=ExactFileLink(S, Nil, False);
   end;

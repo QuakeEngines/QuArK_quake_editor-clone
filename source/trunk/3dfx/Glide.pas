@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:38:02  decker_dk
+Updated copyright-header
+
 Revision 1.7  2000/12/30 15:22:19  decker_dk
 - Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
 - Created Ed3DEditors.pas which contains close/free calls
@@ -47,7 +50,7 @@ unit Glide;
 
 interface
 
-uses Windows;
+uses Windows, SysUtils;
 
 (**************    3DFX.H    **************)
 
@@ -1253,7 +1256,7 @@ begin
     GlideLib:=LoadLibrary(PChar(LibName));
     if GlideLib=0 then
     begin
-      S:=SearchDir+'\'+LibName;
+      S:=SearchDir+PathDelim+LibName;
       GlideLib:=LoadLibrary(PChar(S));
       if GlideLib=0 then
         Exit;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:48:05  decker_dk
+Updated copyright-header
+
 Revision 1.7  2001/02/02 00:09:32  aiv
 Added IsPathDelimiter & IncludeTrailingBackslash to new File : ExtraFunctionality.pas
 for us non-D5 users.
@@ -71,7 +74,7 @@ type
 
 implementation
 
-uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths, ExtraFunctionality;
+uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths;
 
 {$R *.DFM}
 

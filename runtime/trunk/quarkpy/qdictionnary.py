@@ -74,6 +74,7 @@ Strings = {
     183: "corner",
     184: "  Model for the game %s",
     185: "Textures used in this map",
+    186: "[any directory]",
 
     192: "You must enter %d value(s)//Text : %s",
     193: "No matching item found.",
@@ -848,7 +849,7 @@ Strings = {
     5653: "Operation terminated.",
     5654: "To compile the QuakeC or HexenC code in this file, you must first switch to the appropriate game mode",
     5655: "'%s' is not a M8 texture file//%d should be %d",
-    5656: "The file you selected did not match the required pattern: %s",
+    5656: "This directory is not valid.\n\nYour path: %s\nRequired path: %s",
     5657: "Cannot save the setup file",
     5658: "QuArK could not save your configuration :\n\n %s",
     5659: "QuArK cannot save any file because your system's temporary directory is invalid.",
@@ -894,7 +895,8 @@ Strings = {
     5699: "(complex)",
     5700: "%s or %s",
     5701: "The configuration-setting '.MAP comments prefix' for %s is empty.\nPlease correct this, or set the \"Don't write comments in .map files\" in Configuration->Map->Options.",
-
+    5702: "Files in this directory wont work. Select a file in a subdirectory please.",
+    
 # Negative numbers are never used directly by QUARK5.EXE.
 
     -101: "Cannot drop this item into a map.",
@@ -904,7 +906,7 @@ Strings = {
 
     -409: "Bézier",
 
-    -459: "Parameters about the selected Bézier patch(es)|bezier patches",
+    -459: "Parameters about the selected Bézier patch(es)|bézier patches",
 
 
 }
@@ -913,6 +915,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.54  2003/04/29 14:31:12  nerdiii
+#no message
+#
 #Revision 1.53  2003/03/17 01:51:13  cdunde
 #Update hints and add infobase links where needed
 #
