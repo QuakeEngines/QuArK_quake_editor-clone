@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.15  2000/08/20 11:16:47  aiv
 Removed (not req'd)
 
@@ -650,6 +653,10 @@ expected one.
   {$ENDIF}
   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
 
+  B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
+  EntiteBezier.SubElements.Add(B); //&&&
+  B.NomTex:=S;   { here we get the texture-name }
+
   ReadSymbol(sStringToken); // lparen follows texture
 
   // now comes 5 numbers which tell how many control points there are
@@ -659,9 +666,6 @@ expected one.
   // X tells us how many lines of control points there are (height)
   // Y tells us how many control points on each line (width)
 
-  B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
-  EntiteBezier.SubElements.Add(B); //&&&
-  B.NomTex:=S;   { here we get the texture-name }
 
   MeshBuf1.W := Round(V5.X);
   MeshBuf1.H := Round(V5.Y);
