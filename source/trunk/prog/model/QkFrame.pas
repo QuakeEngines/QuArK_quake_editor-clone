@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/02/23 02:14:27  aiv
+more on md3 linking
+
 Revision 1.5  2001/02/14 20:46:28  aiv
 Fixed Loading of Shaders used by md3 files.
 
@@ -212,15 +215,8 @@ var
   s0: string;
 begin
   result:=0;
-  S:=GetSpecArg(FloatSpecNameOf('Vertices'));
-  if S='' then
-    Exit;
-  Result:=(Length(S) - VertSpec) div SizeOf(vec3_t);
-  if Result<=0 then begin
-    Result:=0;
-    Exit;
-  end;
-  PChar(P):=PChar(S) + VertSpec;
+  s_tag:=nil; o_tag:=nil;
+  bf:=nil; bf2:=nil;
   myRoot:=QModelRoot(GetRoot(false));
   modelRoot:=QModelRoot(GetRoot(true));
   if myRoot<>modelRoot then
@@ -231,6 +227,16 @@ begin
     bf2:=QModelBone(myRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(GetFloatSpec('index',1))), QModelBone, nil));
     o_tag:=bf2.Tag(myRoot.Specifics.Values['linked_to']);
     s_tag:=bf.Tag(myRoot.Specifics.Values['linked_to']);
+  end;
+  S:=GetSpecArg(FloatSpecNameOf('Vertices'));
+  if S='' then
+    Exit;
+  Result:=(Length(S) - VertSpec) div SizeOf(vec3_t);
+  if Result<=0 then begin
+    Result:=0;
+    Exit;
+  end;
+  PChar(P):=PChar(S) + VertSpec;
     if (s_tag<>nil)and(o_tag<>nil)and(bf<>nil)and(bf2<>nil) then
     begin
       S0:=FloatSpecNameOf('NewVertices');
@@ -248,7 +254,6 @@ begin
         Specifics.Delete(Specifics.IndexofName(S0));
       Specifics.Add(S);
     end;
-  end;
 end;
 
 Procedure QFrame.RemoveVertex(index: Integer);
