@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/03/13 01:42:47  aiv
+new fgd->qrk converter inbuilt
+
 Revision 1.23  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -1273,6 +1276,8 @@ begin
    else
     if P=Length(S) then
      Arg:=Arg+'""'   { empty Specific }
+    else if S[P+1]='!' then
+      Arg:=Arg+'!'
     else
      begin  { normal Specific }
       Binaire:=False;
