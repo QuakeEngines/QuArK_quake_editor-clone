@@ -2,6 +2,8 @@ title: Options menu
 author: Decker
 
 <img border=0 align=right>options.png</img>
+<i>Grid scale in 2D views</i>&nbsp;. These functions allow you to display a scale of the current grid setting in any one, combination, or all of the 2D views of the Editor. If&nbsp;' All 2D views '&nbsp; is checked, it will deactivate this menu's individual items.
+
 <i>Delete unused faces & polys</i>. If this is unchecked, you will be able to
 make invalid polyhedrons/faces. Always keep this marked, so QuArK will warn
 you, when you are going to make an invalid polyhedron/face.
