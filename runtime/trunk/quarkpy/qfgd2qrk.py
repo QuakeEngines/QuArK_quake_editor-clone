@@ -4,7 +4,7 @@ Python macros available for direct call by QuArK
 """
 
 #
-#  $Header
+#$Header$
 #
 
 import string, time, os, sys
@@ -170,8 +170,8 @@ class Entity:
                 folder = quarkx.newobj(s.name[:p+1]+"* entities.qtxfolder")
                 indent.appenditem(folder)
         folder.appenditem(s)
-	self.GetFolderStuff(s)
-	s[";desc"] = self.m_desc
+        self.GetFolderStuff(s)
+        s[";desc"] = self.m_desc
         founddefaults = 0
         for key in self.m_keys:
             k = key.GenerateFolder(s)
@@ -315,6 +315,7 @@ def AddKeyType(token):
     elif (token == "string" \
        or token == "target_source" \
        or token == "target_destination" \
+       or token == "color1" \
        or token == "color255" \
        or token == "studio" \
        or token == "sound" \
@@ -587,19 +588,19 @@ def makeqrk(root, filename, gamename):
 
     r_tbx["Root"] = e_tbx.name
     qutils.debug("Here ..")
-    
+
     for ent in theEntities:
         ent.GenerateFolder(e_tbx)
 
     f_tbx = quarkx.newobj("Entity Forms.fctx")
     f_tbx.flags = f_tbx.flags | qutils.OF_TVSUBITEM
     root.appenditem(f_tbx)
-    
+
     for ent in theEntities:
         ent.GenerateForm(f_tbx)
     qutils.debug("Here ...")
     root.refreshtv()
 
 #
-# $Log
+#$Log$
 #
