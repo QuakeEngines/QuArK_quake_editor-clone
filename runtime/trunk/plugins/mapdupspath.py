@@ -6,15 +6,6 @@
 #
 #$Header$
 
-# Tree-view:
-#
-# - Group
-#   - Path Duplicator        (target=p1, speeddraw=0, scaletexture=0, macro=dup path, origin=0 0 0)
-#     - TemplateOfBrushesGroup
-#       + cube
-#       + cube
-#       + cube
-
 
 Info = {
    "plug-in":       "Path Duplicator",
@@ -78,7 +69,7 @@ def evaluateDuplicators(group):
                     new.appenditem(o)
                 group.removeitem(index)
                 group.insertitem(index, new)
-       
+
 
 def MakeAxes2(x):
     xn=x.normalized
@@ -88,7 +79,7 @@ def MakeAxes2(x):
         z=(xn^quarkx.vect(0,1,0)).normalized
     y = (z^x).normalized
     return xn, y, z
-    
+
 def MakeAxes3(x):
     x=x.normalized
     mapx, mapy, mapz = quarkx.vect(1,0,0),quarkx.vect(0,1,0),quarkx.vect(0,0,1)
@@ -100,13 +91,14 @@ def MakeAxes3(x):
     xp = quarkx.vect(x*mapx,x*mapy,0).normalized
     y = matrix_rot_z(-math.pi/2)*xp
     return x, y, (y^x).normalized
-    
+
 def NewAxes(prevaxes, newx):
     try:
         mat=matrix_rot_v2u(newx,prevaxes[0])
         return newx, mat*prevaxes[1], mat*prevaxes[2]
     except:  # no angle
         return prevaxes
+
 def MakeUniqueTargetname():
     import time
     return "t" + time.strftime("%Y%m%d%H%M%S", time.gmtime(time.time()))
@@ -127,7 +119,7 @@ def getends(group,x_axis):  # tiglari's
 #               debug(' front '+face.shortname)
            front.append(face)
     return front, back
-          
+
 
 
 class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
@@ -168,9 +160,19 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
             undo = quarkx.action()
             new = self.makecopy(self.centerof)
             new["targetname"] = MakeUniqueTargetname()
-            new.translate(quarkx.vect(32,32,0))
             undo.setspec(self.centerof, "target", new["targetname"])
             who_do_i_target = self.findpathdupcornerwith(self.centerof.parent.subitems, "targetname", new["target"])
+            if (who_do_i_target is not None):
+                newtranslate = (who_do_i_target.origin - self.centerof.origin) / 2
+            else:
+                prev_prev = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", self.centerof["targetname"])
+                if (prev_prev is not None) and (prev_prev["macro"] == "dup path_point"):
+                    newtranslate = (self.centerof.origin - prev_prev.origin)
+                else:
+                    newtranslate = quarkx.vect(64,0,0)
+            new.translate(newtranslate)
+            newtranslate = new.origin - quarkpy.qhandles.aligntogrid(new.origin, 1)
+            new.translate(newtranslate)
             if ((who_do_i_target is not None) and (who_do_i_target.parent == self.centerof.parent)):
                 undo.put(self.centerof.parent, new, who_do_i_target)
             else:
@@ -187,7 +189,17 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
             new = self.makecopy(self.centerof)
             new["targetname"] = MakeUniqueTargetname()
             new["target"] = self.centerof["targetname"]
-            new.translate(quarkx.vect(-32,-32,0))
+            if (who_targets_me is not None) and (who_targets_me["macro"] == "dup path_point"):
+                newtranslate = (who_targets_me.origin - self.centerof.origin) / 2
+            else:
+                next_next = self.findpathdupcornerwith(self.centerof.parent.subitems, "targetname", self.centerof["target"])
+                if (next_next is not None) and (next_next["macro"] == "dup path_point"):
+                    newtranslate = (self.centerof.origin - next_next.origin)
+                else:
+                    newtranslate = quarkx.vect(-64,0,0)
+            new.translate(newtranslate)
+            newtranslate = new.origin - quarkpy.qhandles.aligntogrid(new.origin, 1)
+            new.translate(newtranslate)
             undo.put(self.centerof.parent, new, self.centerof)
             if (who_targets_me is not None):
                 undo.setspec(who_targets_me, "target", new["targetname"])
@@ -228,6 +240,8 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
 
 
 class PathDuplicatorPoint(DuplicatorManager):
+
+    Icon = (quarkpy.mapduplicator.ico_mapdups, 2)
 
     def buildimages(self, singleimage=None):
         pass
@@ -337,9 +351,9 @@ class PathDuplicator(StandardDuplicator):
             # -- Place center between the two paths
             neworigin = pathdist*0.5 + thisorigin
 
-            
+
             prevaxes = xax, yax, zax = NewAxes(prevaxes,pathdist.normalized)
-            
+
 
             #
             # mebbe quarkx.colmat command would be good
@@ -695,6 +709,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2001/02/11 09:46:52  tiglari
+#evaluation of duplicators within template
+#
 #Revision 1.6  2001/02/09 10:49:07  tiglari
 #fixed bug with no-angle path joints
 #
