@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:35:21  decker_dk
+Updated copyright-header
+
 }
 
 unit PyFormCfg;
@@ -72,7 +75,7 @@ var
 
 implementation
 
-uses Qk1, PyForms, Undo;
+uses Qk1, PyForms, Undo, QkFormCfg;
 
  {------------------------}
 

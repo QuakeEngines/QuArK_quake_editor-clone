@@ -160,7 +160,8 @@ uses
   crc32 in 'prog\crc32.pas',
   QkApplPaths in 'prog\QkApplPaths.pas',
   ExtraFunctionality in 'prog\ExtraFunctionality.pas',
-  SystemDetails in 'prog\SystemDetails.pas';
+  SystemDetails in 'prog\SystemDetails.pas',
+  QkFormCfg in 'prog\QkFormCfg.pas';
 
 {$R *.RES}
 

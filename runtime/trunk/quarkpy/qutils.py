@@ -150,7 +150,11 @@ iiBezier                = 44
 iiSprFile               = 45
 iiMD3Tag                = 46
 iiMD3Bone               = 47
-iiTotalImageCount       = 48
+iiFormElement           = 48
+iiForm                  = 49
+iiFormContext           = 50
+
+iiTotalImageCount       = 51
 
 
 def LoadIconSet(filename, width, transparencypt=(0,0)):
@@ -424,19 +428,10 @@ def LoadPoolObj(tag, loadfn, *loadargs):
         quarkx.setpoolobj(tag, obj)
     return obj
 
+
 def debug(text):
     import sys
     sys.stderr.write(text+"\n")
-
-def MapHotKey(keytag, keyfunc, menu):
-    key = quarkx.setupsubset(SS_GENERAL,"HotKeys")[keytag]
-    if key:
-        menu.shortcuts[key] = keyfunc
-
-def MapHotKeyList(keytag, keyfunc, list):
-    key = quarkx.setupsubset(SS_GENERAL,"HotKeys")[keytag]
-    if key:
-        list[key] = keyfunc
 
 
 
@@ -448,9 +443,6 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-#Revision 1.9  2001/03/20 07:59:40  tiglari
-#customizable hot key support
-#
 #Revision 1.8  2001/03/01 19:15:14  decker_dk
 #changed loadmapeditor() so it reads the 'BezierPatchSupport' and 'BezierPatchPluginPrefixes' instead.
 #

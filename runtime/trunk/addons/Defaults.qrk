@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.112  2001/03/28 19:23:45  decker_dk
+//In HotKeyForm:incl, changed from Txt="&" (editable) to Txt="&R" (readonly).
+//
 //Revision 1.111  2001/03/22 20:24:31  tiglari
 //path-following rotation for instances
 //
@@ -3401,6 +3404,166 @@ QQRKSRC1
       info: = {Typ="S" Txt=" ---- Entity forms ----"}
       Style = "3"
     }
+    FormCFG:form =
+    {
+      info1: = {Typ="S" Txt=" ---- General form options ----"}
+      Style = "1"
+      Style: = {
+        Txt = "Style"
+        Typ = "E"
+        Hint = "The forms style"
+      }
+      Help: = {
+        Txt = "Help"
+        Typ = "E"
+        Hint = "The forms help text"
+      }
+      HTML: = {
+        Txt = "HTML Link"
+        Typ = "E"
+        Hint = "The forms help file"
+      }
+      info2: = {Typ="S" Txt=" ---- Point entity specific ----"}
+      bbox: = {
+        Txt = "Bounding Box"
+        Typ = "EF7"
+        Hint = "The entities bounding box"
+      }
+      mdl: = {
+        Txt = "Model"
+        Typ = "E"
+        Hint = "Model to use in 3D view"
+      }
+      mdlbase: = {
+        Txt = "Model Base"
+        Typ = "E"
+        Hint = "Model base path (can be blank)"
+      }
+      mdlframe: = {
+        Txt = "Model Frame"
+        Typ = "E"
+        Hint = "Frame to use for model"
+      }
+      mdlskin: = {
+        Txt = "Model Skin"
+        Typ = "E"
+        Hint = "Skin to use for model"
+      }
+      info3: = {Typ="S" Txt=" ---- Brush entity specific ----"}
+      info4: = {Typ="S" Txt="(none yet)"}
+    }
+    SpecArgForm:form =
+    {
+      info1: = {Typ="S" Txt=" ---- Specific / Argument options ----"}
+      Style = "1"
+      Typ: = {
+        Txt = "Type"
+        Typ = "C"
+        Hint =  "The specifics type:"$0D
+                "E = Edit"$0D
+                "E R = Edit - Read Only"$0D
+                "EF = Edit - Number/Floating Point"$0D
+                "ED = Edit - Directory"$0D
+                "ET = Edit - Texture"$0D
+                "EP = Edit - File"$0D
+                "EN = Edit - Name"$0D
+                "EU = Edit - Up/Down Button"$0D
+                "EQ = Edit - Up/Down/Left/Right Button"$0D
+                "X  = Checkbox"$0D
+                "B  = Button"$0D
+                "P  = Python Button"$0D
+                "PM = Python Button (Multiple)"$0D
+                "C  = Combobox"$0D
+                "S  = Seperator"$0D
+                "L  = Color"$0D
+                "LP = Color - Palletized"$0D
+                "LN = Color - Normalized"$0D
+                "I  = Image"$0D
+                "F  = Font"$0D
+                "K  = Key"
+        Items =   "E"$0D
+                  "ER"$0D
+                  "EF"$0D
+                  "ED"$0D
+                  "ET"$0D
+                  "EP"$0D
+                  "EN"$0D
+                  "EU"$0D
+                  "EQ"$0D
+                  "X"$0D
+                  "B"$0D
+                  "P"$0D
+                  "PM"$0D
+                  "C"$0D
+                  "S"$0D
+                  "L"$0D
+                  "LP"$0D
+                  "LN"$0D
+                  "I"$0D
+                  "F"$0D
+                  "K"
+      }
+      Txt: = {
+        Txt = "Text"
+        Typ = "E"
+        Hint = "The specifics caption"
+      }
+      Hint: = {
+        Txt = "Hint"
+        Typ = "E"
+        Hint = "The specifics help text"
+      }
+      info2: = {Typ="S" Txt=" ---- Combobox (C) specific ----"}
+      Items: = {
+        Txt = "Items"
+        Typ = "E"
+        Hint = "Items in combobox - seperated by $0D"
+      }
+      Values: = {
+        Txt = "Values"
+        Typ = "E"
+        Hint = "Values for items - seperated by $0D"
+      }
+      info2: = {Typ="S" Txt=" ---- Button (B) specific ----"}
+      Form: = {
+        Txt = "Form"
+        Typ = "E"
+        Hint = "Form to open when button is pressed"
+      }      
+      info3: = {Typ="S" Txt=" ---- Python Macro Button (P) specific ----"}
+      Macro: = {
+        Txt = "Macro"
+        Typ = "E"
+        Hint = "Macro to call when pressed"
+      }
+      info4: = {Typ="S" Txt=" ---- Python Macro Button (PM) specific ----"}
+      Num: = {
+        Txt = "Count"
+        Typ = "E"
+        Hint = "Number of buttons - Use if 'M' is second character of type"
+      }
+      Caps: = {
+        Txt = "Captions"
+        Typ = "E"
+        Hint = "Caption of button, one character per button - Use if 'M' is second character of type"
+      }
+      Macro: = {
+        Txt = "Macro"
+        Typ = "E"
+        Hint = "Macro to call when pressed"
+      }
+      Hint1: = {
+        Txt = "Hint"
+        Typ = "E"
+        Hint = "Hint for button 1 (add more if necessary - Hint2....Hintx)"
+      }
+      info5: = {Typ="S" Txt=" ---- Checkbox (X) specific ----"}
+      Cap: = {
+        Txt = "Caption"
+        Typ = "E"
+        Hint = "Caption of checkbox"
+      }
+    }      
     ToolBox:form =      // form that applies when editing .qtx objects
     {
       Style = "3"
@@ -3607,6 +3770,7 @@ QQRKSRC1
           }
           Component:mc =
           {
+            show = $01
             Skeleton:bg =
             {
               type = $05
