@@ -87,6 +87,15 @@ class BSPC_Console(qquake.BatchConsole):
             pass
         self.aasfile = bspfile[:-4] + ".aas"
 
+        self.editor = editor
+        self.linfile = bspfile[:-4] + ".lin"
+        try:
+            attr = quarkx.getfileattr(self.linfile)
+            if (attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE):
+                quarkx.setfileattr(self.linfile, attr-FA_ARCHIVE)
+        except quarkx.error:
+            pass
+
     def close(self):
         attr = quarkx.getfileattr(self.aasfile)
         if (attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE):
@@ -94,6 +103,14 @@ class BSPC_Console(qquake.BatchConsole):
             print "Failed to build the file", self.aasfile
             quarkx.console()
             del self.next
+
+            attr = quarkx.getfileattr(self.linfile)
+            if (attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE):
+                if self.editor is None:
+                    print "NOTE: BSPC has found a hole in this map"
+                else:
+                    import mapholes
+                    mapholes.LoadLinFile(self.editor, self.linfile)
         else:
             qquake.BatchConsole.close(self)
             return 1
@@ -469,6 +486,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.8  2000/07/03 14:10:50  alexander
+#fixed: removed unnecessary dialogs when extract textures
+#
 #Revision 1.7  2000/06/07 22:29:19  alexander
 #changed: use the setup entry "SpecialCustomQuakeMenu" instead of
 #         the NEEDQCSG flag to select a form for custom quake menus
