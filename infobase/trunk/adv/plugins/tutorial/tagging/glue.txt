@@ -35,17 +35,18 @@ def glueSideClick (m):
     #
     # check that it meets conditions (this could be done more slickly)
     #
-    if (len(sides) < 1):
+    if len(sides) < 1:
         quarkx.msgbox("Something must be selected for glueing", MT_WARNING, MB_OK)
         return
-    if len(sides) > 1):
+    if len(sides) > 1:
         quarkx.msgbox("Only one thing may be selected for glueing", MT_WARNING, MB_OK)
         return
-    if (side.type != ":f"):
+    if sides[0].type != ":f":
         quarkx.msgbox("The selection must be a face", MT_WARNING, MB_OK)
     #
     # Now derive the new side
     #
+    side = sides[0]
     newside = glueToTagged(side, tagged)
 </code>
 Now we get so something a bit tricky.  The glueToTagged function,
@@ -85,7 +86,7 @@ This involves some map object manipulation and 3D math (see
 <ref>src/quarkx/attributesface
 ):
 <code>
-def glueToTagged(side, tagged)
+def glueToTagged(side, tagged):
     #
     # Make a copy of the original (so that texture etc. info is preserved)
     #

@@ -1,5 +1,5 @@
 title: Plugin Tutorial
-subdir: blather starting command tagging
+subdir: blather command tagging help display
 
 In this tutorial we slowly construct an oversimplified
 version of the maptagside plugin.

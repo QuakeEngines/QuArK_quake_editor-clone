@@ -76,50 +76,57 @@ menu items.  For side-tagging, we want the selection to consist of
 exactly one side.  If this is true, we want the menu state to be normal,
 otherwise disabled.  Here's some code that does it:
 <code>
-def oneFaceSelected(editor):
+def selFace(editor):
     sel = editor.layout.explorer.sellist
     if len(sel)!=1 or sel[0].type!=":f":
-        return 0
-    return 1
+        return None
+    return sel[0]
 </code>
 <code>
 def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
     editor = mapeditor()
     if editor is None: return
     oldcommand(menu)
-    if oneFaceSelected(editor):
-        mentagside.state = qmenu.normal
-    else:
+    mentagside.state = qmenu.normal
+    sel = selFace(editor)
+    if sel is None:
         mentagside.state = qmenu.disabled
 </code>
-I've packed the test for one-face-hood into a function, since it's
-the sort of thing that is likely to recur.  commandsclick has now
-been loaded up with code to find the selection.  Also it seems to
-be necessary to explicitly set the menu to normal if the conditions are
-met, didn't seem to work if I just disabled it when the conditions
-were not met (maybe I just screwed something up, try playing around
-with it).  We can now remove the checks & message boxes from the
+We can now remove the checks & message boxes from the
 tagSideClick code (tho it might be sensible to leave them in for
 a while to make sure our disabler is really picking up on all the
 preconditions).
 
 The next step is to extend commandsclick to test whether the gluing
-command is applicable. We've already got a function
-to fetch the tagged side, so we can just use it,
-by adding some code like this to the end of commandsclick:
+command is applicable.  Working out all of the conditions is a bit
+tricky, here's something that seems to be OK:
 <code>
-   tagged = gettagged(editor)
-   if tagged is not None:                        :
-       menglueside.state=qmenu.normal
-   else:
-       menglueside.state=qmenu.disabled
+def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
+    editor = mapeditor()
+    if editor is None: return
+    oldcommand(menu)
+    mentagside.state = menglueside.state = qmenu.normal
+    sel = selFace(editor)
+    if sel is None:
+        mentagside.state = qmenu.disabled
+        menglueside.state = qmenu.disabled
+    tagged = gettagged(editor)
+    if tagged is None:
+        menglueside.state = qmenu.disabled
+    elif sel == tagged:
+        menglueside.state = mentagside.state = qmenu.disabled
 </code>
 Now we've lost a little bit, because there aren't any more
 explanations of what the problem is when the user tries to
 do the wrong thing.  So the conditions under which the
 menu item can be used should be explained in its hint.
 
-It's also possible to dynamically adjust the hint, by writing
+It is also, in my experience, rather tricky to work out the
+conditions under which items should be disabled, & the code
+tends to get fragile.  So it's good if the operations check
+that they're not going to cause trouble before proceeding.
+
+A further possibility is to dynamically adjust the hint, by writing
 code that says things like:
 <code>
     hint = "|This menu item is disabled because ..."+hint[1:]
@@ -130,3 +137,7 @@ yet loads as a plugin!  That's because things to do with
 bezier curves, that are only useful with Q3A-engine games,
 should be put into plugins starting with `mb2'.
 
+A possible project would be to enhance the `tagging.py' module
+with some code that put into the tagging object info about the
+unsuccessful attempts to retrieve various kinds of tagged things;
+this info could then be used to add information to hints.

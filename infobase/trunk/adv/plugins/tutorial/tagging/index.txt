@@ -1,5 +1,5 @@
 title:  Tagging and Gluing
-desc: tag glue
+desc: tag glue trouble
 
 Now we get some commands to actually do something.  What
 we want the user to be able to do is first `tag' a selected side,
