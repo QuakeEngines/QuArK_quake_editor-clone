@@ -1397,14 +1397,16 @@ def TexModeMenu(editor, view):
 
     if view.viewmode == "opengl":
         modhint = "the mode is fixed to OpenGL"
+        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
     else:
         import qbasemgr
         modhint = qbasemgr.ModesHint + "\n\nThe commands in this menu lets you select the mode for the view you right-clicked on. You can set the mode for all views at once in the 'Layouts' menu."
-    Mod1 = qmenu.item("&Wireframe", setviewmode, modhint)
+        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
+    Mod1 = qmenu.item("&Wireframe", setviewmode, modhint, infobaselink)
     Mod1.mode = "wire"
-    Mod2 = qmenu.item("&Solid", setviewmode, modhint)
+    Mod2 = qmenu.item("&Solid", setviewmode, modhint, infobaselink)
     Mod2.mode = "solid"
-    Mod3 = qmenu.item("&Textured", setviewmode, modhint)
+    Mod3 = qmenu.item("&Textured", setviewmode, modhint, infobaselink)
     Mod3.mode = "tex"
     List = [Mod1, Mod2, Mod3]
     for menu in List:

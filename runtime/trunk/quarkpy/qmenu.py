@@ -92,12 +92,13 @@ def DefaultFileMenu():
     "The standard File menu, with its shortcuts."
 
     #NewMap1 = item("&New map")  # not implemented yet
-    Open1 = macroitem("&Open...", "FOPN", "open a file of ANY type")
+    Open1 = macroitem("&Open...", "FOPN", "|You can open a file of ANY type.", "intro.mapeditor.menu.html#filemenu")
     savehint = "|You have several ways to save your maps :\n\nAs .map files : the .map format is standard among all Quake editors, but you should only use it to exchange data with another editor, because QuArK cannot store its own data in .map files (e.g. groups, duplicators, etc).\n\nAs .qkm files : this is QuArK's own file format for maps.\n\nInside .qrk files : this is the best solution if you want to organize several maps inside a single file. Choose the menu command 'Save in QuArK Explorer'."
-    Save1 = macroitem("&Save", "FSAV", savehint)
-    SaveQE1 = macroitem("Save in QuArK &Explorer", "FSAN", savehint)
-    SaveAs1 = macroitem("Save &as file...", "FSAA", savehint)
-    SaveAll1 = macroitem("Save a&ll", "FSAL", "save all opened files")
+    infobaselink = "intro.mapeditor.menu.html#filemenu"
+    Save1 = macroitem("&Save", "FSAV", savehint, infobaselink)
+    SaveQE1 = macroitem("Save in QuArK &Explorer", "FSAN", savehint, infobaselink)
+    SaveAs1 = macroitem("Save &as file...", "FSAA", savehint, infobaselink)
+    SaveAll1 = macroitem("Save a&ll", "FSAL", savehint, infobaselink)
     Close1 = macroitem("&Close", "EXIT", "close the map editor")
     File1 = popup("&File", [Open1, Save1, SaveQE1,
      SaveAs1, sep, SaveAll1, sep, Close1])
@@ -147,18 +148,19 @@ editmenu = {}
 def DefaultEditMenu(editor):
     "The standard Edit menu, with its shortcuts."
 
-    Undo1 = macroitem("&Undo", "UNDO", "undo the previous action (unlimited)")
-    Redo1 = macroitem("&Redo", "REDO", "redo what you have just undone")
-    UndoRedo1 = macroitem("U&ndo / Redo...", "MURD", "list of actions to undo/redo")
-    Cut1 = item("&Cut", editor.editcmdclick, "cut the selection to the clipboard")
+    infobaselink = "intro.mapeditor.menu.html#editmenu"
+    Undo1 = macroitem("&Undo", "UNDO", "|undo the previous action (unlimited)", infobaselink)
+    Redo1 = macroitem("&Redo", "REDO", "|redo what you have just undone", infobaselink)
+    UndoRedo1 = macroitem("U&ndo / Redo...", "MURD", "|list of actions to undo/redo", infobaselink)
+    Cut1 = item("&Cut", editor.editcmdclick, "|cut the selection to the clipboard", infobaselink)
     Cut1.cmd = "cut"
-    Copy1 = item("Cop&y", editor.editcmdclick, "copy the selection to the clipboard")
+    Copy1 = item("Cop&y", editor.editcmdclick, "|copy the selection to the clipboard", infobaselink)
     Copy1.cmd = "copy"
-    Paste1 = item("&Paste", editor.editcmdclick, "paste a map object from the clipboard")
+    Paste1 = item("&Paste", editor.editcmdclick, "|paste a map object from the clipboard", infobaselink)
     Paste1.cmd = "paste"
-    Duplicate1 = item("Dup&licate", editor.editcmdclick, "|This makes a copy of the selected object(s). The copies are created at exactly the same position as the original, so don't be surprised if you don't see them : there are here, waiting to be moved elsewhere.")
+    Duplicate1 = item("Dup&licate", editor.editcmdclick, "|This makes a copy of the selected object(s). The copies are created at exactly the same position as the original, so don't be surprised if you don't see them : there are here, waiting to be moved elsewhere.", infobaselink)
     Duplicate1.cmd = "dup"
-    Delete1 = item("&Delete", editor.editcmdclick, "delete the selection")
+    Delete1 = item("&Delete", editor.editcmdclick, "|delete the selection", infobaselink)
     Delete1.cmd = "del"
     Edit1 = popup("&Edit", [Undo1, Redo1, UndoRedo1, sep,
      Cut1, Copy1, Paste1, sep, Duplicate1, Delete1], Edit1Click)
@@ -185,6 +187,9 @@ def DefaultEditMenu(editor):
 #
 #
 #$Log$
+#Revision 1.5  2003/03/16 02:43:09  tiglari
+#fixed minor errors (unnecessary assignments)
+#
 #Revision 1.4  2003/03/15 20:41:07  cdunde
 #To update hints and add infobase links
 #

@@ -25,7 +25,7 @@ import qmenu
 from qeditor import *
 
 
-ModesHint = "|Each view can be set to one of three rendering modes :\n\nWireframe : all polygons are drawn as lines, entities as points, etc.\nSolid : each polygon is drawn in a single, solid color.\nTextured : polygon and models are displayed with their texture."
+ModesHint = "|Each view can be set to one of three rendering modes :\n\nWireframe : all polygons are drawn as lines, entities as points, etc.\n\nSolid : each polygon is drawn in a single, solid color.\n\nTextured : polygon and models are displayed with their texture."
 
 class BaseLayout:
     "An abstract base class for Map and Model Editor screen layouts."
@@ -159,24 +159,25 @@ class BaseLayout:
 
     def getlayoutmenu(self, text="level"):
         "Builds a default Layout menu (may be overridden)."
-        modhint = ModesHint + "\n\nThe commands in this menu lets you change the mode for all views at once. To set the mode of a single view, right-click on it."
+        modhint = ModesHint + "\n\nThe commands in this menu lets you change the mode for all views at once. To set the mode of a single view, right-click on it.|intro.mapeditor.menu.html#layoutmenu"
+        infobaselink = "intro.mapeditor.menu.html#layoutmenu"
         Mod1 = qmenu.item("&Wireframe", self.setviewmode, modhint)
         Mod1.mode = "wire"
         Mod2 = qmenu.item("&Solid", self.setviewmode, modhint)
         Mod2.mode = "solid"
         Mod3 = qmenu.item("&Textured", self.setviewmode, modhint)
         Mod3.mode = "tex"
-        New3D = qmenu.item("New &3D window", self.new3Dwindow, "new 3D window")
-        NewOGL = qmenu.item("OpenGL view", self.toggleOpenGLwindow, "OpenGL 3D view")
-        NewF3D = qmenu.item("Full 3D view", self.full3Dclick, "Full 3D view")
+        New3D = qmenu.item("New &3D window", self.new3Dwindow, "|New 3D window:\n\nThis will create a new free-floating 3D edit window. ", infobaselink)
+        NewOGL = qmenu.item("OpenGL view", self.toggleOpenGLwindow, "|OpenGL 3D view:\n\nThis does the same as the previous command\n'New 3D-window' but the 3D viewer uses the OpenGL standard 3D graphic library. ", infobaselink)
+        NewF3D = qmenu.item("Full 3D view", self.full3Dclick, "|Full 3D view:\n\nThis does the same as the 'New 3D-window' command but in full screen mode.", infobaselink)
         cliphint = "|While you edit your "+text+", some parts of it may be visible on one view but not on the others. Such parts are considered to be 'out of view', and these commands control how they are displayed :\n\n'Show whole "+text+"': no out-of-view masking\n'Gray out of view': grayed out (default)\n'Hide out of view': simply hidden"
-        DrM1 = qmenu.item("Show &whole "+text, self.setdrawmode, cliphint)
+        DrM1 = qmenu.item("Show &whole "+text, self.setdrawmode, cliphint, infobaselink)
         DrM1.mode = DM_NORMAL
-        DrM2 = qmenu.item("&Gray out of view", self.setdrawmode, cliphint)
+        DrM2 = qmenu.item("&Gray out of view", self.setdrawmode, cliphint, infobaselink)
         DrM2.mode = DM_GRAYOOV
-        DrM3 = qmenu.item("&Hide out of view", self.setdrawmode, cliphint)
+        DrM3 = qmenu.item("&Hide out of view", self.setdrawmode, cliphint, infobaselink)
         DrM3.mode = DM_HIDEOOV
-        PanelRight = qmenu.item("Panel at &right", self.panelatright, "main panel at right")
+        PanelRight = qmenu.item("Panel at &right", self.panelatright, "|Panel at right:\n\nThis will move the main panel to the right side of your screen. Unselecting this function will move it back to the left side.", infobaselink)
          #
          # NOTE: this menu is accessed by position in the function "layoutmenuclick"
          #

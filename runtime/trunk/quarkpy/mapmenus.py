@@ -40,7 +40,7 @@ def EscClick(m):
 
 EditMenuCmds = [#qmenu.item("Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected."),
                 #qmenu.sep,
-                qmenu.popup("View Group", [], ViewGroup1click, "options for groups")]
+                qmenu.popup("View Group", [], ViewGroup1click, "|options for groups", "intro.mapeditor.menu.html#viewgroup")]
 EditMenuShortcuts = {}
 #MapHotKeyList("Remove",  EditMenuCmds[0], EditMenuShortcuts)
 
@@ -360,7 +360,7 @@ def MenuTexFlags(editor):
                checklist(flist, m.items[2].items)
             else:
                checklist(flist, m.items[2:])
-        texpop = qmenu.popup("Texture Flags", [], tfclick, "surface property flags")
+        texpop = qmenu.popup("Texture Flags", [], tfclick, "|surface property flags", "intro.texturebrowser.details.html#textureflags")
         #if NoTexFlags():
         #   texpop.state = qmenu.disabled
         #   texpop.hint = "|No Texture Flags for Quake 3; their function is performed by shaders."
@@ -419,6 +419,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.9  2003/02/01 07:37:50  cdunde
+#To add Cancel Selections to RMB menu
+#
 #Revision 1.8  2001/07/27 11:32:57  tiglari
 #bsp study: special commands menu when bsp is loaded
 #

@@ -578,14 +578,14 @@ def loadLeakFile(m):
     import mapholes
     mapholes.LoadLinFile(m.editor, m.auxfilename)
         
-leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
+leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).|glossary.html#l")
 
 
 def loadPortalFile(m):
     import mapportals
     mapportals.LoadPortalFile(m.editor, m.auxfilename)
         
-portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on, and are up-to-date.")
+portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on, and are up-to-date.|maped.builderrors.html")
 
 def prepAuxFileMenuItem(item,extkey,defext):
     editor=item.editor
@@ -652,6 +652,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.32  2003/03/19 22:27:58  tiglari
+#change default holes file to .lin
+#
 #Revision 1.31  2003/03/19 11:24:32  tiglari
 #expand help for portal view command
 #
