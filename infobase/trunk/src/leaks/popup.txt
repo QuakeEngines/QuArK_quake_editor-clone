@@ -1,10 +1,12 @@
-title: Popup Menus
+title: Popup Menus (resolved)
 author: tiglari
 
 Well this one seems to be cleared by destroying the menubarhandle in
 the TPyForm.FormDestroy method in PyFroms.pas ...
 
 Easy money!
+
+*******
 
 The User|Menu|CreatePopup Menu error appears to be noncrititical.  11 popup
 menus are created when the map editor is started, and not properly deleted

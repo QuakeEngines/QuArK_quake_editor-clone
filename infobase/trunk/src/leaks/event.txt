@@ -1,5 +1,5 @@
-title:
-author: tiglari & Decker
+title: Unfreed Event (don't mess with)
+author: Decker (mostly) & tiglari
 
 The kernel error CreatEvent generated at QkFileObjects.pas:RestoreAutoSaved
 line 2061 should not be fixed by deleting the event; here's what Decker had
