@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/03/06 22:16:53  tiglari
+head off attempt to view Q3A bsp
+
 Revision 1.19  2001/03/05 21:45:47  tiglari
 different getbspentry
 
@@ -687,6 +690,7 @@ begin
           case Version of
             cVersionBspQ2: { Quake-2 }
             begin
+              ChangeGameMode(mjQuake2,true);
               LoadBsp2(F, StreamSize);
               ObjectGameCode := CurrentQuake2Mode;
             end;
