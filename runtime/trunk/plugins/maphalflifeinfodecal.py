@@ -1,11 +1,7 @@
 """   QuArK  -  Quake Army Knife
-
-History:
-1999-11-14  Added self-registering
-1999-01-29  Made so only one group gets created, when "Dissociate items"
-1999-01-23	Removed redimage when moving center/duphandles of the HalfLifeInfodecalHelper duplicator.
-
 """
+
+#$Header$
 
 Info = {
    "plug-in":       "Half-Life infodecal helper",
@@ -175,8 +171,16 @@ def HalfLifeInfoDecalRegister():
     newdup["macro"] = "dup hlinfodecal"
     plugins.deckerutils.RegisterInToolbox("New map items...", "Duplicators & misc", newdup)
 
-HalfLifeInfoDecalRegister()
+### HalfLifeInfoDecalRegister()
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup hlinfodecal":	     HalfLifeInfodecalHelper,
 })
+
+
+# ----------- REVISION HISTORY ------------
+# $Log$
+#History:
+#1999-11-14  Added self-registering
+#1999-01-29  Made so only one group gets created, when "Dissociate items"
+#1999-01-23  Removed redimage when moving center/duphandles of the HalfLifeInfodecalHelper duplicator.
