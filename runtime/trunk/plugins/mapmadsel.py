@@ -412,7 +412,7 @@ quarkpy.mapentities.PolyhedronType.menu = madpolymenu
 def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   "the new right-mouse menu for groups"
   menu = oldmenu(o, editor)
-  menu[:0] = [extmenuitem("Extended Selection",ExtendSelClick,o,grptext),
+  menu[:0] = [#extmenuitem("Extended Selection",ExtendSelClick,o,grptext),
               #stashitem(o),
               parentpopup(o),
               restructurepopup(o),
@@ -421,6 +421,23 @@ def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   return menu  
 
 quarkpy.mapentities.GroupType.menu = madgroupmenu
+
+#
+#  ----------right-mouse menus for groups -------------
+#
+
+
+    
+def madbezmenu(o, editor, oldmenu=quarkpy.mapentities.BezierType.menu.im_func):
+  "the new right-mouse menu for groups"
+  menu = oldmenu(o, editor)
+  menu[:0] = [parentpopup(o),
+              restructurepopup(o),
+              qmenu.sep]
+  return menu  
+
+quarkpy.mapentities.BezierType.menu = madbezmenu
+
 
 def madentmenu(o, editor, oldmenu=quarkpy.mapentities.EntityType.menu.im_func):
   "point entity menu"
@@ -719,6 +736,10 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.6  2001/04/15 06:07:12  tiglari
+# use new coplanar function from faceutils, enhance hint text for
+# lift face to marked group (hints explain why item is disabled)
+#
 # Revision 1.5  2001/03/29 21:04:59  tiglari
 # split UnrestrictClick into interface & exective functions
 #

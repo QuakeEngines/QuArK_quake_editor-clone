@@ -416,7 +416,7 @@ quarkpy.mapentities.PolyhedronType.menu = madpolymenu
 def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   "the new right-mouse menu for groups"
   menu = oldmenu(o, editor)
-  menu[:0] = [extmenuitem("Extended Selection",ExtendSelClick,o,grptext),
+  menu[:0] = [#extmenuitem("Extended Selection",ExtendSelClick,o,grptext),
               #stashitem(o),
               parentpopup(o),
               restructurepopup(o),
@@ -425,6 +425,22 @@ def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   return menu  
 
 quarkpy.mapentities.GroupType.menu = madgroupmenu
+
+#
+#  ----------right-mouse menus for groups -------------
+#
+
+
+    
+def madbezmenu(o, editor, oldmenu=quarkpy.mapentities.BezierType.menu.im_func):
+  "the new right-mouse menu for groups"
+  menu = oldmenu(o, editor)
+  menu[:0] = [parentpopup(o),
+              restructurepopup(o),
+              qmenu.sep]
+  return menu  
+
+quarkpy.mapentities.BezierType.menu = madbezmenu
 
 def madentmenu(o, editor, oldmenu=quarkpy.mapentities.EntityType.menu.im_func):
   "point entity menu"
@@ -707,6 +723,10 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.3  2001/03/06 09:52:27  tiglari
+# ZoomTo aims 3d view cameras (no pos change yet, so not true zooming
+#  in 3d views)
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #
