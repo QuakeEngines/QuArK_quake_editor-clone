@@ -1,0 +1,153 @@
+title:  Making an arch
+author: tiglari
+format: html
+
+<TABLE>
+<TR><TD>
+The brush-arch is a collection of brushes designed to fill
+in a boxy hole to make it look like an archway.  So a
+good way to start would be to make a wall with a hole in it,
+perhaps by first making a wall-brush, then a subtractor
+brush, then subtracting.  The result might look like this,
+where the bottom of the subtractor has then been raised
+up a bit in preparation for the next step:
+</td><td>
+<pic> arch1.jpg </pic>
+</td>
+</tr></table>
+
+<table>
+<tr><td>
+Now to make the arch-shaped filler, facing the brush that's been
+left in the archway, RMB|Brush Curves|Arch:
+</td></tr>
+<tr><td>
+<pic>arch2.jpg</pic>
+</td></tr></table>
+
+<TABLE><TR><TD>
+Some additional brushes froming arch-shape (tinted blue
+in some views, such as the one to the right) will appear
+inside the brush, and if the brush itself
+isn't selected, it will be invisible.<BR><BR>
+What's happened is that the original brush has been put
+inside a duplicator (you should check this  by fossicking
+around in the tree-view), which makes it invisible unless selected.
+By default, four brushes are produced, and there is a gap
+in the middle, but this and various other aspects of what
+is produced can be changed by changing the specifics of
+the duplicator.
+</TD>
+<td>
+<pic> arch3.jpg </pic>
+</TD></TR>
+
+<tr><td>
+
+Now the most important aspect of this way of making an
+arch is that it can be changed dynamically, after it's
+made.  To see this, click inside its area until the arch
+itself disappears, and its `guide brush' appears instead
+because it's selected:
+</TD>
+<td>
+<pic> arch4.jpg </pic>
+</TD></TR>
+<tr><td>
+We can now drag this brush around, and the arch will move, 
+and more importantly,  we can reproportion the arch by
+dragging the individual faces.  Especially, we can change
+it's shape inside the hole by dragging the bottom up
+and down:
+<BR><BR>
+Since these are ordinary faces, which provide data to the duplicator
+code the makes the arch patches, we can do all the ordinary face
+stuff to them, such as tag/glue.
+</TD>
+<td>
+<pic> arch5.jpg </pic>
+</TD></TR>
+</table>
+
+So there's the shape; the next problem is to control
+the textures.
+
+<table>
+<TR>
+<TD> Arches get the textures of their front and back faces
+off the front and back faces of their guide brush.  So all
+we have to is to tag some face of the wall (assuming the other
+wall bits are properly aligned), then select the front face
+of the arch's guide brush, and then RMB|Project Texture from Tagged.
+and ditto for the back wall.  The results should look more or
+less as to the right (the red line is the part of the outline
+of the wall-face that the texture was projected from).<BR><BR> 
+If your arch's front or back
+textures are misaligned, you should fix them now; if they're not,
+mess them up and then fix them.
+</td>
+<TD halign=left>
+<pic> arch6.jpg </pic>
+</TD>
+</tr></table>
+
+The inside of the arch is unfortunately not so straightforward.  It
+would be nice if there was some way to wrap the texture on the front
+or back onto the inside curve, but there isn't, at least without using
+specially pre-prepared and proportioned textures.  So we basically
+are stuck with a misalignment here, which can be ameliorated
+by using some fairly bland, unpatterned texture on the inside
+faces.
+
+<table>
+<tr><td>
+But what we can do is get the textures aligned around the inside
+of the archway.  The inside faces get
+their texture off the top face of the guide-brush.  So basically
+what we want to do is wrap that texture onto the two walls.
+But somehow everything has to get aligned.  What happens is
+that texture is compressed and positioned in such a way that
+if the same texture is projected to the top face of the hole
+and wrapped down the wall, everything lines up.  So first
+put a bland texture on the top face of the guide-brush.
+This will produce something like what's to the right, not
+very good because of the different texture appearing at
+the very top and sides:
+</td>
+<TD halign=left>
+<pic> arch7.jpg </pic>
+</TD>
+</tr>
+<tr><td>
+So Next, tag the top face of  guide brush, then the bottom
+face of the brush that's at the top of the whole, and RMB|
+Texture|Project from tagged.  Then tne quickest way to wrap
+down the sides is to select the sides of the whole, and
+RMB|Texture|Wrapping|Wrap from tagged mirror.  The result
+ought to look like this:
+</td>
+<TD halign=left>
+<pic> arch8.jpg </pic>
+</TD>
+</tr>
+</table>
+
+In the game, the joins may be unpleasantly visible, due to light
+effects, but if there is an arghrad-like editing tool, this can
+be fixed by putting the same lightvalue (or equivalent property)
+onto the top face of the guide brush and the other faces forming
+the opening.  The top-brush's lightvalue (& all other specifics)
+will be copied onto the inner faces of the generated brushes.
+
+If you put an appropriately patterned texture around the inside
+of the arch, and look closel, you'll see
+that the texture scale is compressed somewhat on the curved portion;
+that's because its being positioned and scaled on the curve so
+that it will join up smoothly with what's on the walls, but
+the distance around the flat wall face is longer than on the
+smooth curve-face.  This is because of a bit of tricky coding
+in the duplicator, whereby the texture scale is compressed
+just enough so that the distance in texture-space around
+the curve equals the distance, w.r.t the top-face scale, around
+the three faces defining the arch.
+
