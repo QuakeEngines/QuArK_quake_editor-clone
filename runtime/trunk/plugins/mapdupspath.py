@@ -348,9 +348,13 @@ class PathDuplicator(StandardDuplicator):
 
             pathdist = nextorigin - thisorigin
 
-            # -- Place center between the two paths
-            neworigin = pathdist*0.5 + thisorigin
+#            # -- Place center between the two paths
+#            neworigin = pathdist*0.5 + thisorigin
 
+            #
+            # place center so textures will tile from start
+            #
+            neworigin = pathdist.normalized*0.5*templatesize.z + thisorigin
 
             prevaxes = xax, yax, zax = NewAxes(prevaxes,pathdist.normalized)
 
@@ -709,6 +713,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2001/02/19 19:15:57  decker_dk
+#Insert before/after actions now places new 'handle' at more intutive position, and aligned-to-grid.
+#
 #Revision 1.7  2001/02/11 09:46:52  tiglari
 #evaluation of duplicators within template
 #
