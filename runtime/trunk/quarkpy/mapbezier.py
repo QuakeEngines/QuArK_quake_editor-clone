@@ -22,6 +22,56 @@ from plugins.tagging import *
 import plugins.maptagpoint
 from b2utils import *
 
+class CornerTexPos(dlgclasses.LiveEditDlg):
+    endcolor = AQUA
+    size = (170,190)
+    dfsep = 0.4
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Texture Corner Dialog"
+
+
+        Corners: =
+        {
+         Txt = "texrect" Typ = "EF004"
+         Hint = "(0,0).s (0,0).t, (m,n).s, (m,n).t, when tex placement is rectangular." $0D "Set these numbers to enforce a rectangular texture scale." $0D "If this is blank, the scale is not rectangular"
+        }
+        Corner1: =
+        {
+         Txt = "(0,0)"  Typ = "EF002"
+         Hint = "s t texture coordinates for 0,0 corner"
+        }
+        Corner2: =
+        {
+         Txt = "(0,n)"  Typ = "EF002"
+         Hint = "s t texture coordinates for 0,n corner"
+        }
+        Corner3: =
+        {
+         Txt = "(m,0)"  Typ = "EF002"
+         Hint = "s t texture coordinates for m,0 corner"
+        }
+        Corner4: =
+        {
+         Txt = "(m,n)"  Typ = "EF002"
+         Hint = "s t texture coordinates for m,n corner"
+        }
+
+        sep: = { Typ="S"}
+
+        fixed: ={Txt="fixed int." Typ="X"
+                }
+                
+        sep: = { Typ="S"}
+
+
+
+        exit:py = { }
+    }
+    """
+
 class CPTexPos(dlgclasses.LiveEditDlg):
     endcolor = AQUA
     size = (100,100)
@@ -73,7 +123,7 @@ def texcpclick(m):
     h, editor = m.h, m.editor
           
     class pack:
-        "place to stickstuff"
+        "place to stick stuff"
     pack.ij, pack.b2 = h.ij, h.b2
 
     def setup(self, pack=pack):
@@ -160,59 +210,6 @@ def quilt_delcol(cp, (i,j)):
         mid = apply(b2midcp,arc)
         row[j-1:j+2]=[mid]
         
-
-#
-#   The counterclockwise traversal of the edges
-#     supports using arithmetic to figure out how
-#     to `rotate' things for patch-merger
-#
-P_FRONT = 0   # first column of patch
-P_TOP = 1     # last row of patch 
-P_BACK = 2    # last column of patch
-P_BOTTOM = 3  # row 0 of patch
-
-
-def RotateCpCounter1(cp):
-    "returns a cp net where the old P_BACK is now P_TOP"
-    ncp = []
-    h = len(cp)
-    w = len(cp[0])
-    for j in range(w):
-        ncp.append(map(lambda i,cp=cp,k=w-j-1:cp[i][k],range(h)))
-    return ncp
-
-def RotateCpCounter2(cp):
-    ncp = []
-    h = len(cp)
-    for i in range(h):
-      row = cp[h-i-1]
-      row = list(row)
-      row.reverse()
-      ncp.append(row)
-    return ncp
-
-def RotateCpCounter(i, cp):
-    if i==0:
-        return copyCp(cp)
-    i=i%4
-    if i==0:
-        return copyCp(cp)
-    if i==1:
-        return RotateCpCounter1(cp)
-    if i==2:
-        return RotateCpCounter2(cp)
-    if i==3:
-        return RotateCpCounter1(RotateCpCounter2(cp))
-        
-def joinCp((tp1,X), cp1, (tp2,Y), cp2):
-    "returns cp1 extended to include cp2, assumes preconditions"
-#    squawk(`tp1-P_BACK`)
-    cp1 = RotateCpCounter(P_BACK-tp1, cp1)
-    cp2 = RotateCpCounter(P_FRONT-tp2, cp2)
-#    squawk(`cp1`)
-#    squawk(`cp2`)
-    ncp = map(lambda row1, row2,cp1=cp1,cp2=cp2:row1+row2[1:], cp1, cp2)
-    return RotateCpCounter(tp1-P_BACK, ncp)
 
 #
 # Handles for control points.
@@ -527,6 +524,7 @@ quarkpy.qhandles.GenericHandle.OriginItems = originmenu
 def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
     "update for RMB menu for beziers"
 
+
     def projtexclick(m, o=o, editor=editor):
         new = o.copy()
         texFromFaceToB2(new, m.tagged, editor)
@@ -534,7 +532,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
         undo.exchange(o, new)
         editor.ok(undo,"project texture from tagged")
 
-    projtex = qmenu.item("&Project Texture from tagged", projtexclick)
+    projtex = qmenu.item("&Project from tagged", projtexclick, "|Texture of a tagged face is projected onto the patch in a `flat' way (just like project texture from tagged face onto faces).")
     tagged = gettaggedface(editor)
     if tagged is None:
        projtex.state=qmenu.disabled
@@ -542,7 +540,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
        projtex.tagged = tagged
 
     def rotclick(m, o=o, editor=editor):
-        ncp = RotateCpCounter(-1,o.cp)
+        ncp = RotateCpCounter(1,o.cp)
         new = o.copy()
         new.cp = ncp
         undo=quarkx.action()
@@ -550,7 +548,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
         editor.ok(undo,"Spin")
         editor.invalidateviews()
 
-    spin = qmenu.item("Rotate",rotclick)
+    rotate = qmenu.item("Rotate",rotclick,"|`Rotates' control points without changeing patch shape\n(I'm not sure if it's useful on its own but it helps in the implementation of some things so here it is anyway.)")
     
     def unwarpclick(m,o=o,editor=editor):
         new=o.copy()
@@ -559,11 +557,85 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
         undo.exchange(o, new)
         editor.ok(undo,"unwarp")
         
-        
-    unwarp = qmenu.item("Unwarp texture", unwarpclick, "|Tries to reduce texture scale changes within patch, keeping corner points the same.")
-     
+    unwarp = qmenu.item("Unwarp", unwarpclick, "|Tries to reduce texture scale changes within patch, keeping corner points the same.")
+    
+    def cornertexclick(m,o=o,editor=editor):
 
-    return  [projtex, unwarp]+oldmenu(o, editor)
+        class pack:
+            "a place to stick stuff"
+        pack.o=o
+        pack.fixed=""
+        
+        def reset(self, pack=pack):
+            cp = pack.o.cp
+            m = len(cp)-1
+            n = len(cp[0])-1
+               
+            one = cp[0][0].s, cp[0][0].t, cp[m][n].s, cp[m][n].t
+            two = cp[m][0].s, cp[0][n].t, cp[0][n].s ,cp[m][0].t
+#            squawk("1: %s; 2: %s"%(one, two))
+            if one==two:
+                self.src["Corners"] = cp[0][0].s, cp[0][0].t, cp[m][n].s, cp[m][n].t, 
+            else:
+                self.src["Corners"] = None
+            pack.oldcnr = self.src["Corners"]
+        
+        def setup(self, pack=pack, reset=reset):
+            src=self.src
+            cp = pack.o.cp
+            m = len(cp)-1
+            n = len(cp[0])-1
+            src["Corner1"]=cp[0][0].s, cp[0][0].t
+            src["Corner2"]=cp[0][n].s, cp[0][n].t
+            src["Corner3"]=cp[m][0].s, cp[m][0].t
+            src["Corner4"]=cp[m][n].s, cp[m][n].t
+            reset(self)
+        
+        def action(self, pack=pack, reset=reset):
+            src = self.src
+            new = pack.o.copy()
+            cp = listCp(new.cp)
+            m = len(cp)-1
+            n = len(cp[0])-1
+            st = range(4)
+            if src["Corners"]!=pack.oldcnr:
+                cnr = src["Corners"]
+                src["Corner1"] = cnr[0], cnr[1]
+                src["Corner2"] = cnr[2], cnr[1]
+                src["Corner3"] = cnr[0], cnr[3]
+                src["Corner4"] = cnr[2], cnr[3]
+            st[0]= src["Corner1"]
+            st[1]= src["Corner2"]
+            st[2]= src["Corner3"]
+            st[3]= src["Corner4"]
+            cnrs = range(4)
+            for (i, j, k) in ((0,0,0),(0,n,1),(m,0,2),(m,n,3)):
+                cp[i][j]=quarkx.vect(cp[i][j].xyz+st[k])
+                cnrs[k] = cp[i][j]
+#            if src["fixed"]:
+            if 0:
+                cp2 = apply(interpolateGrid,cnrs+[len(cp),len(cp[0])])
+                cp = texcpFromCp(cp, cp2)
+            else:
+                cp = undistortColumns(undistortRows(cp))
+            new.cp=cp
+            undo=quarkx.action()
+            undo.exchange(pack.o, new)
+            self.editor.ok(undo,"corners")
+            pack.o = new
+            reset(self)
+
+        CornerTexPos(quarkx.clickform,'cornertexpos',editor,setup,action)
+    
+    cornertex = qmenu.item("Texture at &corners",cornertexclick,"|A dialog for positioning textures by specifying the texture coordinates of the corners of the patch")
+        
+
+    old = oldmenu(o, editor)
+    texpop = findlabelled(old,'texpop')
+    
+    texpop.items = texpop.items + [projtex, cornertex, unwarp]
+
+    return old+[rotate]
 
 mapentities.BezierType.menubegin = newb2menu
 
@@ -590,6 +662,10 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.25  2000/07/23 08:43:17  tiglari
+#project texture to tagged plane removed from bezier cp menu
+#(functionality now in project tex. from tagged for faces)
+#
 #Revision 1.24  2000/07/16 07:58:11  tiglari
 #bezier menu -> menubegin; mesh thinning
 #
