@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.231  2004/11/30 06:23:13  cdunde
+//To add game support for Jedi Academy and alphabetize game  menu listing for HL2
+//
 //Revision 1.230  2004/11/25 00:42:18  alexander
 //first gcf access attempt
 //
@@ -1157,13 +1160,15 @@ QQRKSRC1
         Game = "Half-Life2"
         Code = "k" // Hardcoded value in Setup.PAS
 
-        Program = "HL2.EXE -console -dev -zone 1024 +set sv_cheats 1"
 
         Directory = "e:\spiele\steam\steamapps"
         CheckDirectory = "..\steam.exe"
 
+        BaseDir = "hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
+        AddOns = "DataHL2.qrk"
+        BuildPgmsDir="E:\spiele\steam\SteamApps\<steam username>\sourcesdk\bin"
 
         BuildPgm1  = "vbsp.exe"
         BuildArgs1 = ""
@@ -1173,13 +1178,11 @@ QQRKSRC1
         BuildCheck2= ""
         BuildPgm3  = "vrad.exe"
         BuildArgs3 = ""
-        BuildPgm4  = ""
-        BuildArgs4 = ""
 
-        DefaultTexture = "FIFTIES_WALL14Y"
-        DefaultTextureTrigger = "AAATRIGGER"
-        DefaultTextureOrigin = "ORIGIN"
-        DefaultTextureClip = "CLIP"
+        DefaultTexture = "Brick/brickwall001a"
+        DefaultTextureTrigger = "Tools/toolstrigger"
+        DefaultTextureOrigin = "Tools/toolsorigin"
+        DefaultTextureClip = "Tools/toolsclip"
         EnableTransparency = ""
         TextureWad = "?"     // variable (the map name is used)
         GameNeedWad = "1"
@@ -1188,19 +1191,11 @@ QQRKSRC1
         TextureWriteFormat = ".vtf"
         //TexturesPath = "root/hl2/materials/"
 
-        BaseDir = "hl2"
-        tmpQuArK = "hl2"
 
         MapHoles = ".pts"
-        //Palette = "gfx/palette.lmp"
-        //Gradient = "gfx/colormap.lmp"
-        //DECKER - 'ExtractFiles' just creates troubles, if another mod-directory is choosen....
-        //ExtractFiles = "cl_dlls/*.*"
         ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
 
-        AddOns = "DataHL2.qrk"
-//      AddOns = "BaseData.qrk"
 
         PakExt = ".gcf"
         PakFormat = "*.gcf"
@@ -4158,7 +4153,7 @@ QQRKSRC1
       {
         Txt = "Output Map Format"
         Typ = "C"
-        Items = "Classic Quake"$0D"Quark etp"$0D"Valve 220"$0D"Brush Primitive"
+        Items = "Classic Quake"$0D"Quark etp"$0D"Valve 220"$0D"Brush Primitive"$0D"HL2"
          "s"
         Hint = "These are set for the game's reccommended build tools.  If you"
          " don't have these,"$0D" Classic Quake1/2/3 will function at a minima"
@@ -4694,22 +4689,26 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Half-Life2 command-line"
-        Items = "../steam.exe"
-             $0D"HL2.EXE -console -dev -zone 1024 +set sv_cheats 1"
         t_ProgramHint=!
+        Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
       }
       Directory: =
       {
-        Txt = "Directory of Half-Life 2"
+        Txt = "SteamApps Directory"
         Typ = "ED"      // Edit Directory
-        Hint = "Path to the game executable"
+        Hint = "Path where all the gcf files are"
         CheckFile = "../steam.exe"
       }
-      BaseDir: =
+      tmpQuArK: =
       {
-        Txt = "Steam User Name "
-        Typ = "ET"      // Edit Directory
-        Hint = "In this directory the map files are generated to"
+        Txt = ""
+        Typ = "C"   // combo box    
+        Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
+        Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
+                $0D"<Steam User Name>/half-life 2/hl2"
+                $0D"<Steam User Name>/counter-strike source/cstrike"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
