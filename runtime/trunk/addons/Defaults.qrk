@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.134  2001/05/12 19:01:23  tiglari
+//remove scale & rotate buttons from linearform
+//
 //Revision 1.133  2001/05/11 09:37:41  tiglari
 //linear specific edit button added to linearform (scale & rotate must die,
 //  but not quite yet)
@@ -3326,6 +3329,7 @@ QQRKSRC1
       offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
       count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
       offset dup: = {Txt="&" Typ="X" Hint="If this is checked, image is located at dup.origin-images center+offset" $0D " It's meant for New Copy One duplicator"}
+      item center: = {Txt="&" Typ="X" Hint="If this is checked, if there is a 'linear' specific, each item in the" $0D " group is rotated around its own center (can be" $0D " usercenter) rather than the duplicator."}
       linearform = !
     }
   
@@ -4219,6 +4223,7 @@ QQRKSRC1
           offset = "32 32 0"
           count = "3"
           out = "1"
+          item center = "1"
           linear = "1 0 0 0 1 0 0 0 1"
           macro = "dup lin"
         }
