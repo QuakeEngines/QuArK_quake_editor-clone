@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.15  2000/09/01 00:20:30  alexander
+//merged in 1.14.2.1 to 1.14.2.3 from rel6_1 branch (Maleficus' fixes)
+//
 //Revision 1.14.2.3  2000/08/08 23:23:07  alexander
 //corrected history :)
 //
@@ -454,7 +457,7 @@ QQRKSRC1
       }
       Door.txlist =
       {
-        base_door\c_ggrate8_b.wl                    = { t_q3=! }
+        base_door/c_ggrate8_b.wl                    = { t_q3=! }
         base_door/kcdm18door_bot.wl                 = { t_q3=! }
         base_door/kcdm18door_top.wl                 = { t_q3=! }
         base_door/kcdm18talldoormetal.wl            = { t_q3=! }
