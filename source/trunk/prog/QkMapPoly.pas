@@ -23,13 +23,6 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.67  2003/01/06 20:34:03  tiglari
-Always write the three fields, for appropriate games, even if they're all 0
- (GtkRadiant wants it that way, as well as the mohaa tools)
-
-Revision 1.66  2003/01/05 03:36:17  tiglari
-Genesis3D support, with peculiar sign-flips and coordinate rounding
-
 Revision 1.65  2003/01/05 02:07:55  tiglari
 make threepoints in CylindreDeFace method more symmetrical, to prevent
  problems with texture scales (detected by quantum_red)
@@ -309,16 +302,16 @@ type
              Source: TTreeMap;
              F: TFace;
              NextF: PSurface;   { linked list of PSurfaces for a given face }
-             prvNbS: Integer;
-             prvDescS: TFVertexTable;
+             prvVertexCount: Integer;
+             prvVertexTable: TFVertexTable;
             end;
 
  TPolyhedron = class(TTreeMap)
              private
                DescFaces: Pointer;
                NbAretes2: Integer;
-               procedure DetruireSommets;
-               function ConstruireSommets1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
+               procedure DestroyVertices;
+               function ConstructVertices1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
                function PyCloneEmpty : TPolyhedron;
              protected
                PolyhedronState: TPolyhedronState;
@@ -327,10 +320,10 @@ type
              (*procedure PreDessinerSel1(FaceHandles: Boolean);
                procedure PostDessinerSel2;*)
              public
-               Sommets, Faces: TList;
+               Vertices, Faces: TList;
                destructor Destroy; override;
                class function TypeInfo: String; override;
-               procedure ConstruireSommets;
+               procedure ConstructVertices;
                procedure ConstruireReduire;
                function CheckPolyhedron: Boolean;
                procedure ObjectState(var E: TEtatObjet); override;
@@ -392,8 +385,8 @@ type
              private
               { données internes pour gestion polyèdre }
                FFaceOfPoly: PSurface;
-              {prvDescS: PFVertexTable;
-               prvNbS: Integer;}
+              {prvVertexTable: PFVertexTable;
+               prvVertexCount: Integer;}
               {function GetFaceCenter : TVect;}
               {function GetVertexCount(Cmpo: Integer) : Integer;
                function GetVertex(Cmpo, I: Integer) : TVect;}
@@ -561,14 +554,14 @@ procedure TroisPointsDansFaceAncienStyle(const S: TFace; var Pt, Pt2, Pt3: TVect
 begin
 {Ok:=False;
  DistMin:=0.22;
- for I:=0 to S.prvNbS-1 do
+ for I:=0 to S.prvVertexCount-1 do
   begin
-   with S.prvDescS^[I]^.P do
+   with S.prvVertexTable^[I]^.P do
     Distance:=Sqr(X-Round(X))+Sqr(Y-Round(Y))+Sqr(Z-Round(Z));
    if Distance < DistMin then
     begin
      DistMin:=Distance;
-     Pt2:=S.prvDescS^[I]^.P;
+     Pt2:=S.prvVertexTable^[I]^.P;
      Ok:=True;
     end;
   end;
@@ -608,11 +601,11 @@ begin
    TroisPointsDansFaceAncienStyle(S, Pt,Pt2,Pt3);
    Exit;
   end;
- GetMem(Sommets, S.prvNbS * SizeOf(TVect)); try
+ GetMem(Sommets, S.prvVertexCount * SizeOf(TVect)); try
  NbSommets:=0;
  P:=Sommets;
- for I:=0 to S.prvNbS-1 do
-  with S.prvDescS^[I]^.P do
+ for I:=0 to S.prvVertexCount-1 do
+  with S.prvVertexTable^[I]^.P do
    if  (Abs(X-Round(X)) < rien)
    and (Abs(Y-Round(Y)) < rien)
    and (Abs(Z-Round(Z)) < rien) then
@@ -632,7 +625,7 @@ begin
      if J=0 then
       begin
        Inc(NbSommets);
-       P^:=S.prvDescS^[I]^.P;
+       P^:=S.prvVertexTable^[I]^.P;
        Inc(P);
       end;
     end;
@@ -722,9 +715,9 @@ var
  J, NbPts: Integer;
 begin
  Result:={Origine}OriginVectorZero;
- NbPts:=P^.prvNbS;
+ NbPts:=P^.prvVertexCount;
  for J:=0 to NbPts-1 do
-  with P^.prvDescS[J]^.P do
+  with P^.prvVertexTable[J]^.P do
    begin
     Result.X:=Result.X + X;
     Result.Y:=Result.Y + Y;
@@ -756,8 +749,8 @@ var
  I: Integer;
  Surf: TFace;
 begin
- S2:=F^.prvDescS[F^.prvNbS-1]^.P;
- for I:=0 to F^.prvNbS-1 do
+ S2:=F^.prvVertexTable[F^.prvVertexCount-1]^.P;
+ for I:=0 to F^.prvVertexCount-1 do
   begin
    S1:=S2;
    with F^.F.Normale do
@@ -766,7 +759,7 @@ begin
      V.Y:=S1.Y+Y;
      V.Z:=S1.Z+Z;
     end;
-   S2:=F^.prvDescS[I]^.P;
+   S2:=F^.prvVertexTable[I]^.P;
    D1:=VecDiff(V, S1);    D2:=VecDiff(S2, S1);
    Normalise(D1);         Normalise(D2);
    D1:=VecScale(128, D1); D2:=VecScale(128,D2);
@@ -789,7 +782,7 @@ begin
  if not F^.F.GetThreePoints(V1, V2, V3) then
   Exit;
 
- NbPoints:=F^.prvNbS;
+ NbPoints:=F^.prvVertexCount;
  ListeFaces:=TQList.Create; try
  ListeFaces.Capacity:=P.Faces.Count+NbPoints+1;
  for I:=0 to P.Faces.Count-1 do
@@ -814,7 +807,7 @@ var
  I: Integer;
 begin
  ListeFaces:=TQList.Create; try
- ListeFaces.Capacity:=F1^.prvNbS+F2^.prvNbS;
+ ListeFaces.Capacity:=F1^.prvVertexCount+F2^.prvVertexCount;
  CylindreDeFace(F1, ListeFaces);
  CylindreDeFace(F2, ListeFaces);
  for I:=0 to ListeFaces.Count-1 do
@@ -1110,7 +1103,7 @@ begin
     end
    else
     if D1<0 then Exit;  { si Clic est à l'intérieur de la face }
-   NbPts:=prvNbS;
+   NbPts:=prvVertexCount;
 
    D1:=D1/(D1+D2);
     { PI est le point d'intersection }
@@ -1118,12 +1111,12 @@ begin
    PI.Y:=g_DrawInfo.Clic.Y + (g_DrawInfo.Clic2.Y - g_DrawInfo.Clic.Y) * D1;
    PI.Z:=g_DrawInfo.Clic.Z + (g_DrawInfo.Clic2.Z - g_DrawInfo.Clic.Z) * D1;
 
-   P2:=prvDescS[0]^.P;
+   P2:=prvVertexTable[0]^.P;
    while NbPts>0 do
     begin
      Dec(NbPts);
      P1:=P2;
-     P2:=prvDescS[NbPts]^.P;
+     P2:=prvVertexTable[NbPts]^.P;
      V.X:=PI.X-P1.X;
      V.Y:=PI.Y-P1.Y;
      V.Z:=PI.Z-P1.Z;
@@ -1146,11 +1139,11 @@ var
  Pts2: array[0..MaxFVertices-1] of TPointProj;
  J, NbPts: Integer;
 begin
- NbPts:=S^.prvNbS;
+ NbPts:=S^.prvVertexCount;
  if CCoord.FastDisplay then
   begin
    for J:=0 to NbPts-1 do
-    with CCoord.Proj(S^.prvDescS[J]^.P) do
+    with CCoord.Proj(S^.prvVertexTable[J]^.P) do
      begin
       Pts[J].X:=Round(x);
       Pts[J].Y:=Round(y);
@@ -1160,9 +1153,9 @@ begin
  else
   begin
    for J:=0 to NbPts-1 do
-    Pts2[J]:=CCoord.Proj(S^.prvDescS[J]^.P);
+    Pts2[J]:=CCoord.Proj(S^.prvVertexTable[J]^.P);
    { dessine une image en fil de fer ou pleine selon le mode }
-   CCoord.Polygon95(Pts2, NbPts, Dot(S^.F.Normale, CCoord.VectorEye(S^.prvDescS[0]^.P))<0);
+   CCoord.Polygon95(Pts2, NbPts, Dot(S^.F.Normale, CCoord.VectorEye(S^.prvVertexTable[0]^.P))<0);
   end;
 end;
 
@@ -1324,7 +1317,7 @@ var
  PX, PY: array[1..3] of TDouble;
  A, P2, S, C: TDouble;
  I: Integer;
- Plan : Char;
+ Plan: Char;
 begin
  Plan:=PointsToPlane(Normale);
  for I:=1 to 3 do
@@ -1374,16 +1367,6 @@ begin
  Params[1]:=-PX[1]*A;
  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
  Params[2]:=PY[1]*A;
-
- if CharModeJeu=mjGenesis3D then
- begin
-   for I:= 0 to 5 do
-     Params[I]:=Round(Params[I]);
-   if Plan='Y' then
-       Params[3]:=-Params[3];
-   if Plan='X' then
-     Params[4]:=-Params[4];
- end;
 end;
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
@@ -1475,8 +1458,8 @@ end;
 
 destructor TPolyhedron.Destroy;
 begin
- DetruireSommets;
- Sommets.Free;
+ DestroyVertices;
+ Vertices.Free;
  Faces.Free;
  inherited;
 end;
@@ -1525,7 +1508,7 @@ begin
     Exit;
    end;
   Test:=SubElements[I];
- until (Test is TFace) and (TFace(Test).prvNbS>0);
+ until (Test is TFace) and (TFace(Test).prvVertexCount>0);
  F:=TFace(Test);
  Result:=True;
 end;*)
@@ -1534,7 +1517,7 @@ function TPolyhedron.CheckPolyhedron: Boolean;
 begin
  if PolyhedronState=psUnknown then
   try
-   ConstruireSommets;
+   ConstructVertices;
   except
    on EPolyedreInvalide do
     PolyhedronState:=psError;
@@ -1542,35 +1525,36 @@ begin
  CheckPolyhedron:=PolyhedronState=psOk;
 end;
 
-procedure TPolyhedron.ConstruireSommets;
+procedure TPolyhedron.ConstructVertices;
 var
  Err1, Extra: String;
  L: TStringList;
  CP: Boolean;
 begin
- if not ConstruireSommets1(rien2, Err1, Extra)
- and not ConstruireSommets1(rien, Err1, Extra) then
-  begin
-   L:=TStringList.Create;
-   try
-    L.Add(LoadStr1(4618));
-    CP:=g_DrawInfo.ConstruirePolyedres;
-    try
-     g_DrawInfo.ConstruirePolyedres:=False;
-     SaveAsTextPolygon(L, Nil, soErrorMessageFlags);
-    finally
-     g_DrawInfo.ConstruirePolyedres:=CP;
-    end;
-    if Extra<>'' then
-     L.Add(Extra);
-   {E.Message:=E.Message+L.Text;}
-    Err1:=Err1+L.Text;
-   finally
-    L.Free;
-   end;
-  {E.HelpContext:=520;}
+  if not ConstructVertices1(rien2, Err1, Extra)
+    and not ConstructVertices1(rien, Err1, Extra) then
+   begin
+     L:=TStringList.Create;
+     try
+       // 4618 = '"//Description of the invalid polygon :"
+       L.Add(LoadStr1(4618));
+       CP:=g_DrawInfo.ConstruirePolyedres;
+       try
+         g_DrawInfo.ConstruirePolyedres:=False;
+         SaveAsTextPolygon(L, Nil, soErrorMessageFlags);
+       finally
+         g_DrawInfo.ConstruirePolyedres:=CP;
+       end;
+       if Extra<>'' then
+         L.Add(Extra);
+       {E.Message:=E.Message+L.Text;}
+       Err1:=Err1+L.Text;
+     finally
+       L.Free;
+     end;
+    {E.HelpContext:=520;}
 
-   Raise EPolyedreInvalide.Create(Err1);
+     Raise EPolyedreInvalide.Create(Err1);
   end;
 end;
 
@@ -1580,7 +1564,7 @@ begin
  if PolyhedronState=psOk then
   Exit;
  try
-  ConstruireSommets;
+  ConstructVertices;
  except
   on E: EPolyedreInvalide do
    begin
@@ -1590,7 +1574,7 @@ begin
  end;
 end;
 
-procedure TPolyhedron.DetruireSommets;
+procedure TPolyhedron.DestroyVertices;
 var
  I: Integer;
  S: PSurface;
@@ -1610,11 +1594,11 @@ begin
    Faces.Clear;
   end;
  ReallocMem(DescFaces, 0);
- if Sommets<>Nil then
+ if Vertices<>Nil then
   begin
-   for I:=Sommets.Count-1 downto 0 do
-    Dispose(PVertex(Sommets[I]));
-   Sommets.Clear;
+   for I:=Vertices.Count-1 downto 0 do
+    Dispose(PVertex(Vertices[I]));
+   Vertices.Clear;
   end;
  PolyhedronState:=psUnknown;
 end;
@@ -1667,382 +1651,372 @@ begin
  Result:=Max > Min+rien;
 end;
 
-function TPolyhedron.ConstruireSommets1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
+function TPolyhedron.ConstructVertices1(const DistMin: TDouble; var Err1, Err2: String) : Boolean;
 type
- TUnSommet = record Ar: Integer; end;
- TableauSommets = array[0..99] of TUnSommet;
- TableauEntiers = array[0..99] of Integer;
+  TUnSommet = record Ar: Integer; end;
+  TableauSommets = array[0..99] of TUnSommet;
+  TableauEntiers = array[0..99] of Integer;
 var
- I, J, K: Integer;
- FI, FJ: TFace;
- Org, Arr: TVect;
- NiNj, Alpha, Min, Max: TDouble;
- Pt: TVect;
- Aretes, FaceList: TList;
-{FacesVCount: ^TableauEntiers;}
- S, Prec, Source, Suivant: PVertex;
- S1, S2, S3, S4: Integer;
- nVertices: PFVertexTable;
- Surface: PSurface;
- Base: ^TableauSommets;
- NoSommet: Integer;
- TamponArete: ^Word;
- V, W: TVect;
- T, Q: QObject;
- Opposite: Boolean;
- ListeSommets: TList;
- SommetEx: PVertexEx;
- NoAretes: array[1..2] of Integer;
+  I, J, K: Integer;
+  FI, FJ: TFace;
+  Org, Arr: TVect;
+  NiNj, Alpha, Min, Max: TDouble;
+  Pt: TVect;
+  Aretes, FaceList: TList;
+ {FacesVCount: ^TableauEntiers;}
+  S, Prec, Source, Suivant: PVertex;
+  S1, S2, S3, S4: Integer;
+  nVertices: PFVertexTable;
+  Surface: PSurface;
+  Base: ^TableauSommets;
+  NoSommet: Integer;
+  TamponArete: ^Word;
+  V, W: TVect;
+  T, Q: QObject;
+  Opposite: Boolean;
+  ListeSommets: TList;
+  SommetEx: PVertexEx;
+  NoAretes: array[1..2] of Integer;
 
-   procedure RemoveFace(FI: TFace; I: Integer);
-   var
+  procedure RemoveFace(FI: TFace; I: Integer);
+  var
     K: Integer;
-   begin   { delete a plane and remove its vertices }
+  begin   { delete a plane and remove its vertices }
     FaceList.Delete(I);
    {Move(FacesVCount^[I+1], FacesVCount^[I], (FaceList.Count-I)*SizeOf(Integer));}
     for K:=Aretes.Count div 4 - 1 downto 0 do
-     if (Aretes[K*4]=FI) or (Aretes[K*4+2]=FI) then
+      if (Aretes[K*4]=FI) or (Aretes[K*4+2]=FI) then
       begin
-       Aretes.Delete(K*4+3);
-       Aretes.Delete(K*4+2);
-       Aretes.Delete(K*4+1);
-       Aretes.Delete(K*4);
+        Aretes.Delete(K*4+3);
+        Aretes.Delete(K*4+2);
+        Aretes.Delete(K*4+1);
+        Aretes.Delete(K*4);
       end;
-   end;
+  end;
 
 begin
- Result:=False;
- {$IFDEF Debug}
- if not g_DrawInfo.ConstruirePolyedres then
-  Raise InternalE('Infinite polyhedron build loop');
- {$ENDIF}
- DetruireSommets;
- FaceList:=TList.Create; try
- T:=Self;
- repeat
-  for I:=T.SubElements.Count-1 downto 0 do
-   begin
-    Q:=T.SubElements[I];
-    if Q is TFace then
-     if TFace(Q).LoadData then
-      FaceList.Add(Q);
-   end;
-  T:=T.TvParent;
- until T=Nil;
- if FaceList.Count<4 then
-  begin
-   Err1:=LoadStr1(240);
-   Err2:='';
-   Exit;
-  end;
- Aretes:=TList.Create; try
- ListeSommets:=TList.Create; try
-{GetMem(FacesVCount, FaceList.Count*SizeOf(Integer)); try
- FillChar(FacesVCount^, FaceList.Count*SizeOf(Integer), 0);}
- for I:=FaceList.Count-1 downto 1 do
-  begin
-   FI:=TFace(FaceList[I]);
-   for J:=I-1 downto 0 do
-    begin
-     FJ:=TFace(FaceList[J]);
-     Arr:=Cross(FI.Normale, FJ.Normale);
-     if (Abs(Arr.X)<rien) and (Abs(Arr.Y)<rien) and (Abs(Arr.Z)<rien) then
-      begin   { plans parallèles }
-        { do they point to the same direction ? }
-       Opposite:=Dot(FI.Normale, FJ.Normale) < 0;
-       if Opposite then
-        Alpha:=-FJ.Dist
-       else
-        Alpha:=FJ.Dist;
-       if Abs(FI.Dist-Alpha) < rien2 then
-        {Invalide(EPolyedreInvalide.CreateRes(241), FloatToStr(Min));}
-        begin  { twice the same plane... }
-         if Opposite then  { opposite direction : nothing left between the planes }
-          begin
-           Err1:=LoadStr1(242);
-           Err2:=LoadStr1(5207);
-           Exit;
-          end;
-            { otherwise, we delete the first plane and remove its vertices }
-         RemoveFace(FI, I);
-         Break;  { out of "for J" }
-        end;
-      end
-     else
-      begin
-       NiNj:=Dot(FI.Normale, FJ.Normale);
-       Alpha:=(FJ.Dist - FI.Dist*NiNj) / (1-Sqr(NiNj));
-       Org.X:=FI.Dist*FI.Normale.X + Alpha*(FJ.Normale.X - FI.Normale.X*NiNj);
-       Org.Y:=FI.Dist*FI.Normale.Y + Alpha*(FJ.Normale.Y - FI.Normale.Y*NiNj);
-       Org.Z:=FI.Dist*FI.Normale.Z + Alpha*(FJ.Normale.Z - FI.Normale.Z*NiNj);
-       if InterieurArrete(FaceList, Org, Arr, Min, Max, I,J) then
-        begin
-         Pt.X:=Org.X + Min*Arr.X;
-         Pt.Y:=Org.Y + Min*Arr.Y;
-         Pt.Z:=Org.Z + Min*Arr.Z;
-         S1:=AjouteSommet(Pt, DistMin, ListeSommets);
-         Pt.X:=Org.X + Max*Arr.X;
-         Pt.Y:=Org.Y + Max*Arr.Y;
-         Pt.Z:=Org.Z + Max*Arr.Z;
-         S2:=AjouteSommet(Pt, DistMin, ListeSommets);
-        {if S1<>S2 then
-          begin
-           Inc(FacesVCount^[I]);}
-           Aretes.Add(FI);
-           Aretes.Add(Pointer(S1));
-          {Inc(FacesVCount^[J]);}
-           Aretes.Add(FJ);
-           Aretes.Add(Pointer(S2));
-         {end;}
-        end;
-      end;
-    end;
-  end;
- I:=ListeSommets.Count;
- if I >= 4 then
-  begin
-   if Sommets=Nil then
-    Sommets:=TList.Create;
-   for J:=0 to I-1 do
-    begin
-     SommetEx:=PVertexEx(ListeSommets[J]);
-     S:=SommetEx^.Created;
-     if S=Nil then
-      begin
-       S:=New(PVertex);
-       S^.P:=SommetEx^.V;
-       Sommets.Add(S);
-       SommetEx^.Created:=S;
-      end;
-    end;
-   I:=Sommets.Count;
-  end;
- if I < 4 then
-  begin
-   Err1:=LoadStr1(242);
-   Err2:=IntToStr(I);
-   Exit;
-  end;
-
- I:=Aretes.Count-1;
- while I>0 do
-  begin
-   Pointer(S1):=Aretes[I-2];
-   Pointer(S2):=Aretes[I];
-  {if S1<>S2 then
-    begin
-     J:=I-4;
-     while J>0 do
-      begin
-       Pointer(S3):=Aretes[J-2];
-       Pointer(S4):=Aretes[J];
-       if ((S3=S1) and (S4=S2)) or ((S3=S2) and (S4=S1)) then
-        begin
-         S1:=S2;
-         Break;
-        end;
-       Dec(J,4);
-      end;
-    end;}
-   if S1=S2 then
-    begin
-     Aretes.Delete(I);
-     Aretes.Delete(I-1);
-     Aretes.Delete(I-2);
-     Aretes.Delete(I-3);
-    end
-   else
-    begin
-     Prec:=PVertexEx(ListeSommets[S1])^.Created;
-     Suivant:=PVertexEx(ListeSommets[S2])^.Created;
-     Aretes[I-2]:=Prec;
-     Aretes[I]:=Suivant;
-    end;
-   Dec(I,4);
-  end;
-
- finally
-  for I:=0 to ListeSommets.Count-1 do
-   begin
-    SommetEx:=PVertexEx(ListeSommets[I]);
-    if SommetEx^.RefCount=1 then
-     Dispose(SommetEx)
-    else
-     Dec(SommetEx^.RefCount);
-   end;
-  ListeSommets.Free;
- end;
-
- for I:=FaceList.Count-1 downto 0 do
-  begin
-   FI:=TFace(FaceList[I]);
-   K:=0;
-   J:=Aretes.Count-2;
-   while J>=0 do
-    begin
-     if Aretes[J]=FI then
-      begin
-       Inc(K);
-       if K=3 then Break;
-       NoAretes[K]:=J;
-      end;
-     Dec(J,2);
-    end;
-   if K<3 then
-    begin
-     if K=2 then
-      begin
-       Pointer(S1):=Aretes[NoAretes[1] xor 1];
-       Pointer(S2):=Aretes[NoAretes[1] xor 3];
-       Pointer(S3):=Aretes[NoAretes[2] xor 1];
-       Pointer(S4):=Aretes[NoAretes[2] xor 3];
-       if ((S3=S1) and (S4=S2)) or ((S3=S2) and (S4=S1)) then
-        begin
-         Aretes[NoAretes[1]]:=Aretes[NoAretes[2] xor 2];
-         J:=NoAretes[2] and not 3;
-         Aretes.Delete(J+3);
-         Aretes.Delete(J+2);
-         Aretes.Delete(J+1);
-         Aretes.Delete(J);
-        end;
-      end;
-     RemoveFace(FI, I);   { remove unused faces }
-    end;
-  end;
-
- if FaceList.Count<4 then   { in case we removed faces, check again }
-  begin
-   Err1:=LoadStr1(240);
-   Err2:=FmtLoadStr1(5208, [FaceList.Count]);
-   Exit;
-  end;
-
- if Faces=Nil then
-  Faces:=TList.Create;
- Faces.Capacity:=FaceList.Count;
- K:=FaceList.Count*SizeOf(TSurface) + Aretes.Count + SizeOf(Word);
-  { taille maximale, sera réalloué plus tard }
- GetMem(DescFaces, K + Sommets.Count*SizeOf(TUnSommet));
- PChar(Base):=PChar(DescFaces)+K;
- Surface:=PSurface(DescFaces);
- try
-  for J:=0 to FaceList.Count-1 do
-   begin
-    FJ:=TFace(FaceList[J]);
-    nVertices:=@Surface^.prvDescS;
-    I:=0;
-    while Aretes[I]<>FJ do
-     Inc(I,2);
-    S:=PVertex(Aretes[I xor 3]);
-    Prec:=PVertex(Aretes[I xor 1]);
-    K:=1;
+  Result:=False;
+  {$IFDEF Debug}
+  if not g_DrawInfo.ConstruirePolyedres then
+   Raise InternalE('Infinite polyhedron build loop');
+  {$ENDIF}
+  DestroyVertices;
+  FaceList:=TList.Create;
+  try // 1
+    T:=Self;
     repeat
-     if K=MaxFVertices then
+      for I:=T.SubElements.Count-1 downto 0 do
       begin
-       Err1:=FmtLoadStr1(250, [MaxFVertices]);
-       Err2:=IntToStr(J);
-       Exit;
+        Q:=T.SubElements[I];
+        if Q is TFace then
+          if TFace(Q).LoadData then
+        FaceList.Add(Q);
       end;
-     I:=0;
-     while (Aretes[I xor 1]<>S) or (Aretes[I xor 3]=Prec)
-      or ((Aretes[I]<>FJ) and (Aretes[I xor 2]<>FJ)) do
-       Inc(I,2);
-     Suivant:=PVertex(Aretes[I xor 3]);
-     if K=1 then
-      begin
-        { contrôle l'orientation du polygone }
-       with S^ do
-        begin
-         with Suivant^.P do
-          begin
-           V.X:=X-P.X;
-           V.Y:=Y-P.Y;
-           V.Z:=Z-P.Z;
-          end;
-         with Prec^.P do
-          begin
-           W.X:=P.X-X;
-           W.Y:=P.Y-Y;
-           W.Z:=P.Z-Z;
-          end;
-        end;
-       if Dot(Cross(W, V), FJ.Normale) > 0 then
-        begin  { CCW (counterclockwise) -> on doit le retourner }
-         Source:=Suivant;
-         Suivant:=Prec;
-         Prec:=Source;
-        end;
-       nVertices^[0]:=Prec;
-      end;
-     nVertices^[K]:=S;
-     Inc(K);
-     Prec:=S;
-     S:=Suivant;
-    until S=nVertices^[0];
-   {FJ^.prvPremierS:=(PChar(nVertices)-PChar(DescFaces)) div SizeOf(PVertex);}
-    Surface^.Source:=Self;
-    Surface^.F:=FJ;
-    Surface^.prvNbS:=K;
-    Faces.Add(Surface);
-    FJ.LinkSurface(Surface);
-    Inc(PChar(Surface), TailleBaseSurface+K*SizeOf(PVertex));
-   end;
- except
-  on E:EListError do
-   begin
-    Err1:=LoadStr1(243);
-    Err2:=E.Message;
-    Exit;
-   end;
- end;
- PChar(TamponArete):=PChar(Surface);
-{GetMem(Base, Sommets.Count*SizeOf(TUnSommet)); try}
- J:=Aretes.Count+1;
- for I:=0 to Sommets.Count-1 do
-  with Base^[I] do
-   begin
-   {Pt:=Coord.Proj(PVertex(Sommets[I])^.P);}
-    Ar:=J;
-   end;
- NoSommet:=0;
- J:=0;
- repeat
-  Source:=PVertex(Sommets[NoSommet]);
-  TamponArete^:=not NoSommet;
-  repeat
-   with Base^[NoSommet] do
+      T:=T.TvParent;
+    until T=Nil;
+    if FaceList.Count<4 then
     begin
-     repeat
-      Dec(Ar, 4);
-     until (Ar<0) or (Aretes[Ar]=Source);
-     if Ar<0 then
-      Break;
-     Source:=PVertex(Aretes[Ar+2]);
-     NoSommet:=Sommets.IndexOf(Source);
+      Err1:=LoadStr1(240);
+      Err2:='';
+      Exit;
     end;
-   J:=-1;
-   Inc(TamponArete);
-   TamponArete^:=NoSommet;
-  until False;
-  if J<0 then
-   Inc(TamponArete);
-  Inc(NoSommet);
-  if NoSommet=Sommets.Count then NoSommet:=0;
-  Inc(J);
- until J=Sommets.Count;
- TamponArete^:=$8000;
- {$IFDEF Debug}
- Pointer(Source):=DescFaces;
- {$ENDIF}
- ReallocMem(DescFaces, PChar(TamponArete)+SizeOf(Word)-PChar(DescFaces));
- {$IFDEF Debug}
- if Pointer(Source)<>DescFaces then Raise InternalE('ReallocMem modified DescFaces');
- {$ENDIF}
- NbAretes2:=(PChar(Surface)-PChar(DescFaces)) div SizeOf(PVertex);
- finally Aretes.Free; end;
- finally FaceList.Free; end;
- PolyhedronState:=psOk;
- Result:=True;
+    Aretes:=TList.Create;
+    try //2
+      ListeSommets:=TList.Create;
+      try //3
+        for I:=FaceList.Count-1 downto 1 do
+        begin
+          FI:=TFace(FaceList[I]);
+          for J:=I-1 downto 0 do
+          begin
+            FJ:=TFace(FaceList[J]);
+            Arr:=Cross(FI.Normale, FJ.Normale);
+            if (Abs(Arr.X)<rien) and (Abs(Arr.Y)<rien) and (Abs(Arr.Z)<rien) then
+            begin   { plans parallèles }
+               { do they point to the same direction ? }
+              Opposite:=Dot(FI.Normale, FJ.Normale) < 0;
+              if Opposite then
+                Alpha:=-FJ.Dist
+              else
+                Alpha:=FJ.Dist;
+              if Abs(FI.Dist-Alpha) < rien2 then
+              {Invalide(EPolyedreInvalide.CreateRes(241), FloatToStr(Min));}
+              begin  { twice the same plane... }
+                if Opposite then  { opposite direction : nothing left between the planes }
+                begin
+                  Err1:=LoadStr1(242);
+                  Err2:=LoadStr1(5207);
+                  Exit;
+                end;
+                  { otherwise, we delete the first plane and remove its vertices }
+                RemoveFace(FI, I);
+                Break;  { out of "for J" }
+              end;
+            end
+            else
+            begin
+              NiNj:=Dot(FI.Normale, FJ.Normale);
+              Alpha:=(FJ.Dist - FI.Dist*NiNj) / (1-Sqr(NiNj));
+              Org.X:=FI.Dist*FI.Normale.X + Alpha*(FJ.Normale.X - FI.Normale.X*NiNj);
+              Org.Y:=FI.Dist*FI.Normale.Y + Alpha*(FJ.Normale.Y - FI.Normale.Y*NiNj);
+              Org.Z:=FI.Dist*FI.Normale.Z + Alpha*(FJ.Normale.Z - FI.Normale.Z*NiNj);
+              if InterieurArrete(FaceList, Org, Arr, Min, Max, I,J) then
+              begin
+               Pt.X:=Org.X + Min*Arr.X;
+               Pt.Y:=Org.Y + Min*Arr.Y;
+               Pt.Z:=Org.Z + Min*Arr.Z;
+               S1:=AjouteSommet(Pt, DistMin, ListeSommets);
+               Pt.X:=Org.X + Max*Arr.X;
+               Pt.Y:=Org.Y + Max*Arr.Y;
+               Pt.Z:=Org.Z + Max*Arr.Z;
+               S2:=AjouteSommet(Pt, DistMin, ListeSommets);
+              {if S1<>S2 then
+                begin
+                 Inc(FacesVCount^[I]);}
+                 Aretes.Add(FI);
+                 Aretes.Add(Pointer(S1));
+                {Inc(FacesVCount^[J]);}
+                 Aretes.Add(FJ);
+                 Aretes.Add(Pointer(S2));
+               {end;}
+              end;
+            end;
+          end;
+        end;
+        I:=ListeSommets.Count;
+        if I >= 4 then
+        begin
+          if Vertices=Nil then
+            Vertices:=TList.Create;
+          for J:=0 to I-1 do
+          begin
+            SommetEx:=PVertexEx(ListeSommets[J]);
+            S:=SommetEx^.Created;
+            if S=Nil then
+            begin
+              S:=New(PVertex);
+              S^.P:=SommetEx^.V;
+              Vertices.Add(S);
+              SommetEx^.Created:=S;
+            end;
+          end;
+          I:=Vertices.Count;
+        end;
+        if I < 4 then
+        begin
+          Err1:=LoadStr1(242);
+          Err2:=IntToStr(I);
+          Exit;
+        end;
+
+        I:=Aretes.Count-1;
+        while I>0 do
+        begin
+          Pointer(S1):=Aretes[I-2];
+          Pointer(S2):=Aretes[I];
+          if S1=S2 then
+          begin
+            Aretes.Delete(I);
+            Aretes.Delete(I-1);
+            Aretes.Delete(I-2);
+            Aretes.Delete(I-3);
+          end
+          else
+          begin
+            Prec:=PVertexEx(ListeSommets[S1])^.Created;
+            Suivant:=PVertexEx(ListeSommets[S2])^.Created;
+            Aretes[I-2]:=Prec;
+            Aretes[I]:=Suivant;
+          end;
+          Dec(I,4);
+        end;
+
+      finally // 3
+        for I:=0 to ListeSommets.Count-1 do
+        begin
+          SommetEx:=PVertexEx(ListeSommets[I]);
+          if SommetEx^.RefCount=1 then
+            Dispose(SommetEx)
+          else
+            Dec(SommetEx^.RefCount);
+        end;
+        ListeSommets.Free;
+      end;
+
+      for I:=FaceList.Count-1 downto 0 do
+      begin
+        FI:=TFace(FaceList[I]);
+        K:=0;
+        J:=Aretes.Count-2;
+        while J>=0 do
+        begin
+          if Aretes[J]=FI then
+          begin
+            Inc(K);
+            if K=3 then Break;
+            NoAretes[K]:=J;
+          end;
+          Dec(J,2);
+        end;
+        if K<3 then
+        begin
+          if K=2 then
+          begin
+            Pointer(S1):=Aretes[NoAretes[1] xor 1];
+            Pointer(S2):=Aretes[NoAretes[1] xor 3];
+            Pointer(S3):=Aretes[NoAretes[2] xor 1];
+            Pointer(S4):=Aretes[NoAretes[2] xor 3];
+            if ((S3=S1) and (S4=S2)) or ((S3=S2) and (S4=S1)) then
+            begin
+              Aretes[NoAretes[1]]:=Aretes[NoAretes[2] xor 2];
+              J:=NoAretes[2] and not 3;
+              Aretes.Delete(J+3);
+              Aretes.Delete(J+2);
+              Aretes.Delete(J+1);
+              Aretes.Delete(J);
+            end;
+          end;
+          RemoveFace(FI, I);   { remove unused faces }
+         end;
+      end;
+
+      if FaceList.Count<4 then   { in case we removed faces, check again }
+      begin
+        Err1:=LoadStr1(240);
+        Err2:=FmtLoadStr1(5208, [FaceList.Count]);
+        Exit;
+      end;
+
+      if Faces=Nil then
+        Faces:=TList.Create;
+      Faces.Capacity:=FaceList.Count;
+      K:=FaceList.Count*SizeOf(TSurface) + Aretes.Count + SizeOf(Word);
+       { taille maximale, sera réalloué plus tard }
+      GetMem(DescFaces, K + Vertices.Count*SizeOf(TUnSommet));
+      PChar(Base):=PChar(DescFaces)+K;
+      Surface:=PSurface(DescFaces);
+      //there
+      try // 3
+        for J:=0 to FaceList.Count-1 do
+        begin
+          FJ:=TFace(FaceList[J]);
+          nVertices:=@Surface^.prvVertexTable;
+          I:=0;
+          while Aretes[I]<>FJ do
+            Inc(I,2);
+          S:=PVertex(Aretes[I xor 3]);
+          Prec:=PVertex(Aretes[I xor 1]);
+          K:=1;
+          repeat
+            if K=MaxFVertices then
+            begin
+              Err1:=FmtLoadStr1(250, [MaxFVertices]);
+              Err2:=IntToStr(J);
+              Exit;
+            end;
+            I:=0;
+            while (Aretes[I xor 1]<>S) or (Aretes[I xor 3]=Prec)
+               or ((Aretes[I]<>FJ) and (Aretes[I xor 2]<>FJ)) do
+              Inc(I,2);
+            Suivant:=PVertex(Aretes[I xor 3]);
+            if K=1 then
+            begin
+              { contrôle l'orientation du polygone }
+              with S^ do
+              begin
+                with Suivant^.P do
+                begin
+                  V.X:=X-P.X;
+                  V.Y:=Y-P.Y;
+                  V.Z:=Z-P.Z;
+                end;
+                with Prec^.P do
+                begin
+                  W.X:=P.X-X;
+                  W.Y:=P.Y-Y;
+                  W.Z:=P.Z-Z;
+                end;
+              end;
+              if Dot(Cross(W, V), FJ.Normale) > 0 then
+              begin  { CCW (counterclockwise) -> on doit le retourner }
+                Source:=Suivant;
+                Suivant:=Prec;
+                Prec:=Source;
+              end;
+              nVertices^[0]:=Prec;
+            end;
+            nVertices^[K]:=S;
+            Inc(K);
+            Prec:=S;
+            S:=Suivant;
+          until
+            S=nVertices^[0];
+          Surface^.Source:=Self;
+          Surface^.F:=FJ;
+          Surface^.prvVertexCount:=K;
+          Faces.Add(Surface);
+          FJ.LinkSurface(Surface);
+          Inc(PChar(Surface), TailleBaseSurface+K*SizeOf(PVertex));
+         end;
+      except  // 3
+        on E:EListError do
+        begin
+          Err1:=LoadStr1(243);
+          Err2:=E.Message;
+          Exit;
+        end;
+      end;
+      PChar(TamponArete):=PChar(Surface);
+      J:=Aretes.Count+1;
+      for I:=0 to Vertices.Count-1 do
+        with Base^[I] do
+        begin
+          Ar:=J;
+        end;
+      NoSommet:=0;
+      J:=0;
+      repeat
+        Source:=PVertex(Vertices[NoSommet]);
+        TamponArete^:=not NoSommet;
+        repeat
+          with Base^[NoSommet] do
+          begin
+            repeat
+              Dec(Ar, 4);
+            until (Ar<0) or (Aretes[Ar]=Source);
+            if Ar<0 then
+              Break;
+            Source:=PVertex(Aretes[Ar+2]);
+            NoSommet:=Vertices.IndexOf(Source);
+          end;
+          J:=-1;
+          Inc(TamponArete);
+          TamponArete^:=NoSommet;
+        until False;
+        if J<0 then
+          Inc(TamponArete);
+        Inc(NoSommet);
+        if NoSommet=Vertices.Count then NoSommet:=0;
+        Inc(J);
+      until J=Vertices.Count;
+      TamponArete^:=$8000;
+      {$IFDEF Debug}
+      Pointer(Source):=DescFaces;
+      {$ENDIF}
+      ReallocMem(DescFaces, PChar(TamponArete)+SizeOf(Word)-PChar(DescFaces));
+      {$IFDEF Debug}
+      if Pointer(Source)<>DescFaces then Raise InternalE('ReallocMem modified DescFaces');
+      {$ENDIF}
+      NbAretes2:=(PChar(Surface)-PChar(DescFaces)) div SizeOf(PVertex);
+    finally // 2
+   // here
+      Aretes.Free;
+    end;
+  finally  // 1
+    FaceList.Free;
+  end;
+  PolyhedronState:=psOk;
+  Result:=True;
 end;
 
 function PolyedreNonVide1(nFaces: TList; ReloadData : Boolean; const DistMin: TDouble) : Boolean;
@@ -2078,7 +2052,8 @@ begin
    end;
   if FaceList.Count<4 then
    Exit;
-{ GetMem(FacesVCount, FaceList.Count*SizeOf(Integer)); try
+{ GetMem(FacesVCount, FaceList.Count*SizeOf(Integer));
+  try
   FillChar(FacesVCount^, FaceList.Count*SizeOf(Integer), 0);}
   for I:=FaceList.Count-1 downto 1 do
    begin
@@ -2189,7 +2164,7 @@ var
  I, J: Integer;
  Q: QObject;
 begin
- ConstruireSommets;
+ ConstructVertices;
  for I:=SubElements.Count-1 downto 0 do
   begin
    Q:=SubElements[I];
@@ -2444,7 +2419,7 @@ var
  J: Integer;
  Q: QObject;
  { BrushPrim, Valve220Map : Boolean }
- WriteIntegers, UseIntegralVertices, ExpandThreePoints, AlwaysWriteThreeFields : Boolean;
+ WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
  MapFormat: MapFormatTypes;
 
     procedure write3vect(const P: array of Double; var S: String);
@@ -2666,10 +2641,10 @@ var
                               imitating vertices(of) code below) }
        begin
          K:=1;
-         for J:=0 to FS^.prvNbS-1 do {one more than # vertexes useed }
+         for J:=0 to FS^.prvVertexCount-1 do {one more than # vertexes useed }
          { try to find some that are almost integers }
          begin
-           V:=FS^.prvDescS[J]^.P;  { an actual vertex }
+           V:=FS^.prvVertexTable[J]^.P;  { an actual vertex }
            if AlmostIntegral(V,V2) then
            begin
              if (K=2) and EqualVect(VT[1],V2) then
@@ -2875,11 +2850,8 @@ var
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
         S3:=F.Specifics.Values['Value'];
-         if (S1<>'') or (S2<>'') or (S3<>'')
-           or AlwaysWriteThreefields  then {Decker - write face-flags when MOHAA;
-             tiglari - and now all Q3 engine games, since GtkRadiant wants them
-             we need the condition because this code gets run for all games }
-        if true then
+        if (S1<>'') or (S2<>'') or (S3<>'')
+        or (MJ=mjMOHAA) then {Decker - write face-flags when MOHAA}
         begin
           if S1='' then S1:='0';
           if S2='' then S2:='0';
@@ -2945,7 +2917,6 @@ begin
  { these means brutally round off the threepoints, whatever they are }
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  MapFormat:=GetMapFormatType;
- AlwaysWriteThreeFields:=(SetupGameSet.Specifics.Values['AlwaysWriteThreeFields']<>'');
 {
  UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
  ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
@@ -3013,12 +2984,12 @@ begin
  if not CheckPolyhedron then
   Exit;
  J:=NbAretes2;
- Base:=Sommets.Count*SizeOf(TUnSommet);
+ Base:=Vertices.Count*SizeOf(TUnSommet);
  BaseNombre:=Base + J*SizeOf(TPointProj);
  GetMem(S, BaseNombre + J*(SizeOf(Integer) div 2)); try
- for I:=0 to Sommets.Count-1 do
+ for I:=0 to Vertices.Count-1 do
   with S^[I] do
-   Pt:=CCoord.Proj(PVertex(Sommets[I])^.P);
+   Pt:=CCoord.Proj(PVertex(Vertices[I])^.P);
  NewPen:=False;
  if g_DrawInfo.SelectedBrush<>0 then
   begin
@@ -3029,7 +3000,7 @@ begin
   if (g_DrawInfo.Restrictor=Nil) or (g_DrawInfo.Restrictor=Self) then   { True if object is not to be greyed out }
    if g_DrawInfo.ModeAff>0 then
     begin
-     J:=Sommets.Count;
+     J:=Vertices.Count;
      ScrAnd:=os_Back or os_Far;
      while (J>0) and (ScrAnd<>0) do
       begin
@@ -3206,11 +3177,11 @@ begin
   Result:=Origine;  { why not }
   begin*)
  Result:={Origine}OriginVectorZero;
- if not CheckPolyhedron or (Sommets=Nil) then Exit;
- NbPts:=Sommets.Count;
+ if not CheckPolyhedron or (Vertices=Nil) then Exit;
+ NbPts:=Vertices.Count;
  if NbPts=0 then Exit;
  for J:=0 to NbPts-1 do
-  with PVertex(Sommets[J])^.P do
+  with PVertex(Vertices[J])^.P do
    begin
     Result.X:=Result.X + X;
     Result.Y:=Result.Y + Y;
@@ -3224,7 +3195,7 @@ end;
 function TPolyhedron.GetOrigin;
 begin
  CheckPolyhedron;
- if (Sommets=Nil) or (Sommets.Count=0) then
+ if (Vertices=Nil) or (Vertices.Count=0) then
   GetOrigin:=False
  else
   begin
@@ -3295,8 +3266,8 @@ var
  I: Integer;
 begin
  if CheckPolyhedron then
-  for I:=0 to Sommets.Count-1 do
-   with PVertex(Sommets[I]).P do
+  for I:=0 to Vertices.Count-1 do
+   with PVertex(Vertices[I]).P do
     begin
      if Min.X > X then Min.X:=X;
      if Min.Y > Y then Min.Y:=Y;
@@ -3435,10 +3406,10 @@ begin
   for I:=0 to Faces.Count-1 do
    with PSurface(Faces[I])^ do
     begin
-     Prec:=prvDescS[0];
-     for J:=prvNbS-1 downto 0 do
+     Prec:=prvVertexTable[0];
+     for J:=prvVertexCount-1 downto 0 do
       begin
-       S:=prvDescS[J];
+       S:=prvVertexTable[J];
        if S=Sommet then
         begin
          K:=Result;
@@ -3468,7 +3439,7 @@ begin
    try
     OldOrg:=CentrePolyedre;
    finally
-    DetruireSommets;
+    DestroyVertices;
    end;
    Info1:=g_DrawInfo.Clic;
    try
@@ -3641,9 +3612,9 @@ begin
           Result:=PyList_New(0)
          else
           begin
-           Result:=PyList_New(Sommets.Count);
-           for I:=0 to Sommets.Count-1 do
-            PyList_SetItem(Result, I, MakePyVect(PVertex(Sommets[I])^.P));
+           Result:=PyList_New(Vertices.Count);
+           for I:=0 to Vertices.Count-1 do
+            PyList_SetItem(Result, I, MakePyVect(PVertex(Vertices[I])^.P));
           end;
          Exit;
         end;
@@ -4017,7 +3988,7 @@ end;
 
 {function TFace.InitVect : Boolean;
 begin
- Result:=(prvNbS>0) or Reset;
+ Result:=(prvVertexCount>0) or Reset;
 end;}
 
 function TFace.LoadData : Boolean;
@@ -4025,7 +3996,7 @@ var
  V1, V2: TVect;
  V: array[1..9] of Single;
 begin
-{prvNbS:=0;}
+{prvVertexCount:=0;}
  Result:=GetFloatsSpec('v', V);
  if Result then
   try
@@ -4056,7 +4027,7 @@ end;
  Code: Integer;
 begin
  Result:=True;
- prvNbS:=0;
+ prvVertexCount:=0;
  S:=Specifics.Values['d'];
  if S='' then
   begin
@@ -4117,11 +4088,11 @@ begin
    FFaceOfPoly^.Source:=Self;
    FFaceOfPoly^.F:=Self;
    FFaceOfPoly^.NextF:=Nil;
-   FFaceOfPoly^.prvNbS:=4;
-   nSommet:=PVertex(@FFaceOfPoly^.prvDescS[4]);
+   FFaceOfPoly^.prvVertexCount:=4;
+   nSommet:=PVertex(@FFaceOfPoly^.prvVertexTable[4]);
    for I:=0 to 3 do
     begin
-     FFaceOfPoly^.prvDescS[I]:=nSommet;
+     FFaceOfPoly^.prvVertexTable[I]:=nSommet;
      with nSommet^ do
       case I of
        0: P:=P1;
@@ -4168,7 +4139,7 @@ end;
 {function TFace.CheckFace;
 begin
  CheckFace:=(TvParent<>Nil) and (FParent is TPolyedre)
- and TPolyedre(FParent).CheckPolyhedron and (prvNbS>0);
+ and TPolyedre(FParent).CheckPolyhedron and (prvVertexCount>0);
 end;}
 
 function TTexturedTreeMap.GetNomTex : String;
@@ -4197,9 +4168,9 @@ var
  J, NbPts: Integer;
 begin
  Result:=Origine;
- NbPts:=prvNbS;
+ NbPts:=prvVertexCount;
  for J:=0 to NbPts-1 do
-  with prvDescS^[J]^.P do
+  with prvVertexTable^[J]^.P do
    begin
     Result.X:=Result.X + X;
     Result.Y:=Result.Y + Y;
@@ -4284,11 +4255,11 @@ begin
        Pts:=CCoord.Proj(CentreSurface(P));
        Pen:=SelectObject(g_DrawInfo.DC, g_DrawInfo.SelectedBrush);
        Rop1:=SetROP2(g_DrawInfo.DC, R2_CopyPen);
-       J:=P^.prvNbS;
+       J:=P^.prvVertexCount;
        while J>0 do
         begin
          Dec(J);     { croix en traitillés }
-         CCoord.Line95(CCoord.Proj(P^.prvDescS[J]^.P), Pts);
+         CCoord.Line95(CCoord.Proj(P^.prvVertexTable[J]^.P), Pts);
         end;
        SetROP2(g_DrawInfo.DC, Rop1);
      (*if FirstPoly then
@@ -4365,7 +4336,7 @@ begin
        FirstPoly:=False;
        Poly:=TPolyedre(P^.Source);
        Poly.PostDessinerSel1;       { dessine toutes les poignées }
-      {if prvNbS>0 then}
+      {if prvVertexCount>0 then}
         begin
          Pt:=CentreSurface(P);
          Pts[0]:=CCoord.Proj(Pt);
@@ -4387,12 +4358,12 @@ begin
          repeat              { dessine le vecteur normal }
           case I of
            0: begin
-               NbPts:=P^.prvNbS;
+               NbPts:=P^.prvVertexCount;
                Pen:=SelectObject(g_DrawInfo.DC, CreatePen(ps_Solid, 0, clYellow));
                while NbPts>0 do
                 begin
                  Dec(NbPts);
-                 Line16(g_DrawInfo.DC, CCoord.Proj(P^.prvDescS[NbPts]^.P), Pts[0]);
+                 Line16(g_DrawInfo.DC, CCoord.Proj(P^.prvVertexTable[NbPts]^.P), Pts[0]);
                 end;
                DeleteObject(SelectObject(g_DrawInfo.DC, Pen));
               end;
@@ -4457,8 +4428,8 @@ begin
 {P:=FFaceOfPoly;
  while P<>Nil do
   begin}
-   for I:=0 to Surface^.prvNbS-1 do
-    if Surface^.prvDescS[I]=Sommet then
+   for I:=0 to Surface^.prvVertexCount-1 do
+    if Surface^.prvVertexTable[I]=Sommet then
      begin
       Result:=True;
       Exit;
@@ -4520,8 +4491,8 @@ begin
  P:=FaceOfPoly;
  while P<>Nil do
   begin
-   for I:=0 to P^.prvNbS-1 do
-    with P^.prvDescS[I]^.P do
+   for I:=0 to P^.prvVertexCount-1 do
+    with P^.prvVertexTable[I]^.P do
      begin
       if Min.X > X then Min.X:=X;
       if Min.Y > Y then Min.Y:=Y;
@@ -4818,7 +4789,7 @@ begin
   begin
    P:=FFaceOfPoly;
    if FFaceOfPoly^.Source is TPolyedre then
-    TPolyedre(FFaceOfPoly^.Source).DetruireSommets
+    TPolyedre(FFaceOfPoly^.Source).DestroyVertices
    else
     begin
      UnlinkSurface(FFaceOfPoly);
@@ -4837,7 +4808,7 @@ var
  P1, P2, P3: TVect;
 begin
  if CheckFace then
-  Result:=prvNbS
+  Result:=prvVertexCount
  else
   if GetThreePoints(P1, P2, P3) then
    Result:=4
@@ -4850,7 +4821,7 @@ var
  P1, P2, P3: TVect;
 begin
  if CheckFace then
-  Result:=prvDescS^[I]^.P
+  Result:=prvVertexTable^[I]^.P
  else
   if GetThreePoints(P1, P2, P3) then
    case I of
@@ -5090,7 +5061,7 @@ var
 begin
  if not GetThreePointsT(TexP[1], TexP[2], TexP[3]) then
   Exit;
- NbSommets:=S^.prvNbS;
+ NbSommets:=S^.prvVertexCount;
  with Normale do
   begin
    NormaleX.X:=X*65536;
@@ -5144,7 +5115,7 @@ begin
    for I:=0 to NbSommets-1 do
     with Sommets[I] do
      begin
-      Src1:=S^.prvDescS[I];
+      Src1:=S^.prvVertexTable[I];
       for J:=0 to VertexCount-1 do
        with PTableauPointsProj(Vertices)^[J] do
         if Src=Src1 then
@@ -5298,10 +5269,10 @@ begin
    begin
     if @S^.Source.PythonObj = nobj then
      begin
-      Result:=PyList_New(S^.prvNbS);
+      Result:=PyList_New(S^.prvVertexCount);
       if Result=Nil then Exit;
-      for J:=0 to S^.prvNbS-1 do
-       PyList_SetItem(Result, J, MakePyVect(S^.prvDescS[J]^.P));
+      for J:=0 to S^.prvVertexCount-1 do
+       PyList_SetItem(Result, J, MakePyVect(S^.prvVertexTable[J]^.P));
       Exit;
      end;
     S:=S^.NextF;
@@ -5591,15 +5562,15 @@ begin
          Result:=PyList_New(0);
          while Assigned(S) do
           begin
-           liste:=PyList_New(S^.prvNbS);
+           liste:=PyList_New(S^.prvVertexCount);
            if liste=Nil then
             begin
              Py_DECREF(Result);
              Result:=Nil;
              Exit;
             end;
-           for J:=0 to S^.prvNbS-1 do
-            PyList_SetItem(liste, J, MakePyVect(S^.prvDescS[J]^.P));
+           for J:=0 to S^.prvVertexCount-1 do
+            PyList_SetItem(liste, J, MakePyVect(S^.prvVertexTable[J]^.P));
            PyList_Append(Result, liste);
            Py_DECREF(liste);
            S:=S^.NextF;
