@@ -46,8 +46,8 @@ while(<FILE>)
 #    print "Headerrev=$rev\n";
   }
 $logentrycount=0;
-  ## start of log entries is etecte
-  if(m/^[\#\s]*\$Log$/)
+  ## start of log entries is detected
+  if(m/^[\#\s]*\$(Log)/)
   {
 #    print "log start $1\n";
     while(<FILE>)
@@ -99,6 +99,9 @@ $logentrycount=0;
 #
 #
 #$Log$
+#Revision 1.1  2000/06/02 17:07:12  alexander
+#initial commit
+#
 #
 #
 ############################################################################
