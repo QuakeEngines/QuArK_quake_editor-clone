@@ -12,6 +12,8 @@ format: html
 
 <LI>  OsFolders: (tiglari) edit the properties of pre-existing OsFolders
 
+<LI> Brush curves: (tiglari) thickness
+
 <LI>  FAKK2 support: ?
 
 <LI>  Face-selection modes: (tiglari)
@@ -20,5 +22,6 @@ format: html
 <LI>  Patch-based terrain builder: (tiglari, Seth?)
 
 <LI> L-square enhancements: (tiglari, ax2grind)
+
 </UL>
 

@@ -27,8 +27,8 @@ starting scale too big.
 <BR>   status: envisioned, seems like it might be easy
 
 <LI> <FONT color=#FF0000>  Brush curve duplicator:</FONT> (tiglari)
-<BR>   status: partially done, thick shapes & something about texturing
-     needed
+<BR>   status: partially done; texture positioning needed.
+`thick' to be delayed to 6.3.
 
 <LI>  Stairway duplicator: (decker)
 <BR>    status: done, further developments envisioned.
@@ -45,10 +45,9 @@ starting scale too big.
 <LI>  Drag & Drop imprecision bug: (tiglari)
 <BR>    status: possibly fixed.
 
-<LI>  <FONT color=#FF0000>Model display for Q3(T)A: </FONT> (Andy, Maleficus)
-<BR>    status: done but not yet committed (?)
-
 <LI>  Model editor: (Andy)
 <BR>    status: pre-alpha Q1/2
 
+<LI>  `texture pinning': (tiglari)
+<br> status: done
 </UL>
