@@ -42,7 +42,8 @@ def BasicCheck(menu=None):
 
     test = editor.Root.findallsubitems("info_player_start", ':e')
     if len(test)==0:
-        err["The map must contain at least one info_player_start."] = 0
+        if quarkx.setupsubset()["Code"] < "a":   # ignore the error in Quake 3 mode
+            err["The map must contain at least one info_player_start."] = 0
     elif len(test)>1:
         err["The map should not contain several info_player_start."] = 0
         errobj = errobj + test
