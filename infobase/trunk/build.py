@@ -62,15 +62,15 @@ def relpath(curpath, relpath):
        track = string.split(curpath, '/')
        return climbpath(track[:-2], relpath[2:])
 
-def findref(root, path, name, fkw):
+def findref(root, path, name, fkw, extraargs):
 #   print 'FKW: ' + `fkw["path"]`
 
-    def ref(REF, REF_NAME, kw, name=name):
+    def ref(refnormal, refwithname, kw, name=name, extraargs):
         if name == "":
-            return REF % kw
+            return refnormal % kw
         else:
             kw['refname'] = name
-            return REF_NAME % kw
+            return refwithname % kw
 
     path = relpath(fkw["path"], path)
 #   print 'PATH: ' + `path`
@@ -90,15 +90,29 @@ def findref(root, path, name, fkw):
                 for kw, text in root.files:
                     if kw["hrefaname"] == path[0]:
                         return ref(REFFILE, REFFILE_NAME, kw)
-            raise "Reference not found: " + path0
+            raise "Reference not found: " + path0 + " in " + fkw["title"]
     return ref(REFDIR, REFDIR_NAME, root.kw)
+
+def proc_g(kw, words):
+    # '<g>...</g>' for Glossary-link
+    # Ugly hack! This needs proper fixing, and not this semi-hardcoded bullshit.
+    if words[:1] == '.':
+        namelink = "fileext"
+    elif words[:1] >= '0' and words[:1] <= '9':
+        namelink = "numbers"
+    else:
+        namelink = string.lower(words[:1])
+    return "<a href=\"glossary.html#%s\">%s</a>" % (namelink, words)
 
 def procpic(kw, path, extraargs):  #tiglari
     if (string.find(path, "/") > -1) or (string.find(path, "\\") > -1) or (path[:1] == "."):
         raise "Illegal picture filename: [%s]" % path
     picrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     img = '<img %s src="%s">' % (extraargs, picrl)
-    data = open(kw["path"]+path, "rb").read()
+    try:
+        data = open(kw["path"]+path, "rb").read()
+    except:
+        raise "open-error for file \"%s\"" % (kw["path"]+path)
     f = open("output/"+picrl, "wb")
     f.write(data)
     f.close()
@@ -111,7 +125,7 @@ def procrsc(kw, path):  #tiglari
     f = open("output/"+rscrl, "wb")
     f.write(data)
     f.close()
-    kw["forgotten"].remove(path)
+#    kw["forgotten"].remove(path)
     return '"%s"' % rscrl
 
 def proczip(kw, path):  #tiglari
@@ -138,16 +152,17 @@ def processtext(root, text, data, kw):
 
     def perform_tag_action(tag, line, flags, root, kw):
 
-        def perform_ref_action(datastring, root, kw):
+        def perform_ref_action(extraargs, datastring, root, kw):
             datastring = string.strip(datastring)
             try:
+                # figure out, if there is a alternative text for the link-reference
                 idx = string.index(datastring, '\\')
                 pathname = string.strip(datastring[:idx])
                 refname = string.strip(datastring[idx+1:])
             except (ValueError):
                 pathname = datastring
                 refname = "";
-            return findref(root, pathname, refname, kw)
+            return findref(root, pathname, refname, kw, string.strip(extraargs))
 
         def perform_pic_action(extraargs, datastring, root, kw):
             return procpic(kw, string.strip(datastring), string.strip(extraargs))
@@ -160,6 +175,9 @@ def processtext(root, text, data, kw):
 
         def perform_act_action(datastring, root, kw):
             return procact(kw, string.strip(datastring))
+
+        def perform_g_action(datastring, root, kw):
+            return proc_g(kw, string.strip(datastring))
 
 
         if (tag[:5] == "<code"):
@@ -178,7 +196,7 @@ def processtext(root, text, data, kw):
             if end_tag == -1:
                 # A <ref>-tag must have a </ref>-tag on the same line, else this code won't work.
                 raise "<ref>-tag without any </ref>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
-            replacewith = perform_ref_action(line[:end_tag], root, kw)
+            replacewith = perform_ref_action(tag[4:-1], line[:end_tag], root, kw)
             line = line[end_tag+len("</ref>"):]
         elif (tag[:4] == "<img"):
             end_tag = string.find(line, "</img>")
@@ -215,6 +233,13 @@ def processtext(root, text, data, kw):
                 raise "<act>-tag without any </act>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
             replacewith = perform_act_action(line[:end_tag], root, kw)
             line = line[end_tag+len("</act>"):]
+        elif (tag[:2] == "<g"):
+            end_tag = string.find(line, "</g>")
+            if end_tag == -1:
+                # A <g>-tag must have a </g>-tag on the same line, else this code won't work.
+                raise "<g>-tag without any </g>-tag on same line! <File>.TXT title: \"%s\"" % kw["title"]
+            replacewith = perform_g_action(line[:end_tag], root, kw)
+            line = line[end_tag+len("</g>"):]
         elif (tag[:4] == "</i>"):
             replacewith = tag
             if (line[:6] <> "&nbsp;"):
@@ -253,9 +278,11 @@ def processtext(root, text, data, kw):
                     endofcomment_found = string.find(line, "-->")
                     if endofcomment_found == -1:
                         # We're still in HTML-comment
+                        correctedline = correctedline + line
                         line = ""
                     else:
                         # Exiting HTML-comment mode
+                        correctedline = correctedline + line[:endofcomment_found+len("-->")]
                         line = line[endofcomment_found+len("-->"):]
                         flags["inhtmlcomment"] = 0
                 else:
@@ -270,6 +297,8 @@ def processtext(root, text, data, kw):
                         line = line[startchar_tag_found:]
                         if (line[:4] == "<!--"):
                             flags["inhtmlcomment"] = 1
+                            correctedappend = line[:len("<!--")]
+                            line = line[len("<!--"):]
                         else:
                             endchar_tag_found = string.find(line, ">")
                             if endchar_tag_found == -1:
@@ -282,7 +311,7 @@ def processtext(root, text, data, kw):
                                     raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, kw["title"])
                                 correctedappend, line, line_flags = perform_tag_action(tag, line[endchar_tag_found+1:], flags, root, kw)
 
-                            correctedline = correctedline + correctedappend
+                        correctedline = correctedline + correctedappend
 
             if flags["prevlineempty"] == 1:
                 if (flags["preformatmode"] == 0) and (flags["inhtmlcomment"] == 0):
@@ -515,6 +544,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.14  2001/02/25 16:38:22  decker_dk
+# Added <act> </act> functionality
+#
 # Revision 1.13  2001/02/20 19:33:14  decker_dk
 # Changed to .PNG image-format, and a comment in BUILD.PY
 #
