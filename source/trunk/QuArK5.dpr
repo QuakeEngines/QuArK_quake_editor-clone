@@ -130,8 +130,10 @@ uses
   QkJpg in 'prog\QkJpg.pas',
   crc32 in 'prog\crc32.pas',
   QkQ3 in 'prog\QkQ3.pas',
-  QkText in 'prog\QkText.pas', {FQText}
-  QkSpr in 'prog\QkSpr.pas';
+  QkText in 'prog\QkText.pas',
+  QkSpr in 'prog\QkSpr.pas',
+//  QkMd3 in 'prog\QkMd3.pas', not ready yet -- Andy V
+  QkSoF in 'prog\QkSoF.pas';
 
 {$R *.RES}
 
