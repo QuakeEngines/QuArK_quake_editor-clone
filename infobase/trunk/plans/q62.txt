@@ -19,6 +19,11 @@ Red means stuff that should defintely be done for release.
 <li>Read/Write Brush Primitives: (tiglari)
 <br>status: done (wants testing)
 
+<li>DefaultTextureScale: (tiglari)
+<br>status: done for the buttons, don't yet understand how
+to do it for direct insert from toolbox menu.
+
+
 <li><FONT color=red>Path duplicator</FONT>: (decker, tiglari)
 <br>status: orientation bug fixed by math remake,
             texture positioning not quite there yet.
