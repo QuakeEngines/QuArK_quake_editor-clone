@@ -6,6 +6,40 @@ QuArK.  Needless to say, highly non-definitive! I think I've put my
 name on more than I can get around to doing for a timely release.
 
 <ul>
+<li>Linear Matrix editor: (tiglari)
+<br>crank out matrices for rotation, scaling
+etc. from intelligible parameters (from pushbutton in duplicator
+forms).
+<br>status: done; forms with scale & angles added
+
+<li>Extruder: (tiglari)
+<br>generate brushes etc. from 2d outlines.
+<br>status: done (integrates with path duplicator)
+
+<li>'Instance' duplicator: (tiglari)
+<br> put copies of a structure where you want it.  Inspired
+by a suggestion by Meatball402 on Quake3World editing forum.
+<br>status: done.
+
+<li>User-configurable hot keys: (tiglari)
+<br>status: current ones all done.  What additional ones
+should be added?
+
+<li>User-specifible rotation/linear mapping origin: (tiglari)
+<br>Do they really need to be persistent properties of groups?
+(as opposed say to a tagged point)
+<br>what about axis?
+<br>status: an origin duplicator done, used in instance
+duplicator, no axis.  NYI for rotation buttons. Is
+this a good way to do it?
+
+<li>Form-editing: (Andy)
+<br>status: something done
+
+<li>FAKK2 support: (?)
+<br>And what about Daikatana, Alice, & Gunman
+<br>status: Gunman seems supportable as an add-on
+
 <li>Read Q3/STVEF .bsp files: (Andy, tiglari, ?)
 <br>Actually, totally reorganize bsp reading code
 
@@ -20,11 +54,6 @@ name on more than I can get around to doing for a timely release.
 <li>MipTex Extraction: (tiglari,Andy)
 <br>Get the add-on builder to handle Q1, Hx2 properly
 
-<li>Linear Matrix editor: (tiglari)
-<br>crank out matrices for rotation, scaling
-etc. from intelligible parameters (from pushbutton in duplicator
-forms).
-
 <li>OsFolders: (tiglari)
 <br>edit the properties of pre-existing OsFolders
 
@@ -33,27 +62,9 @@ forms).
 <br> redo prism-builder as shape-builder.
 <br> more fancy options for stair-builder
 
-<li>'Instance' duplicator: (tiglari)
-<br> put copies of a structure where you want it.  Inspired
-by a suggestion by Meatball402 on Quake3World editing forum.
-<br>status: basic version committed.  Working on integration with
-path duplicator.
-
 <li>Patch-based shape-builders: (tiglari)
 <br> sphere, 'inner boxes'
 
-<li>FAKK2 support: (?)
-<br>And what about Daikatana, Alice, & the new HL-based
-Wild West game?
-
-<li>User-configurable hot keys: (tiglari)
-<br>status: current ones all done.  What additional ones
-should be added?
-
-<li>User-specifible rotation/linear mapping origin: (tiglari)
-<br>Do they really need to be persistent properties of groups?
-(as opposed say to a tagged point)
-<br>what about axis?
 
 <li>Optional plugins: (tiglari)
 <br>Some plugins wouldn't load unless they were 'registered'
