@@ -101,6 +101,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
        if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("XviewScale") and not MapOption("XyScaleCentered") and not MapOption("XzScaleCentered"):
            return
 
+       cv.fontcolor = BLACK
+       cv.fontsize = 8
+
        YZarea = `view.clientarea`      # Gets the view area as a string
        pixels = YZarea.replace("(","")   # trims ( from YZarea
        pixels = pixels.replace(")","")  # trims ) from YZarea
@@ -215,6 +218,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
        if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("YviewScale") and not MapOption("YxScaleCentered") and not MapOption("YzScaleCentered"):
            return
+
+       cv.fontcolor = BLACK
+       cv.fontsize = 8
 
        XZarea = `view.clientarea`
        pixels = XZarea.replace("(","")
@@ -337,6 +343,9 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
 
        if not MapOption("All2DviewsScale") and not MapOption("AllScalesCentered") and not MapOption("ZviewScale") and not MapOption("ZxScaleCentered") and not MapOption("ZyScaleCentered"):
            return
+
+       cv.fontcolor = BLACK
+       cv.fontsize = 8
 
        XZarea = `view.clientarea`
        pixels = XZarea.replace("(","")
@@ -662,6 +671,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.7  2004/11/26 05:21:51  cdunde
+#Needed to make correction for individual settings
+#
 #Revision 1.6  2004/11/18 20:56:40  cdunde
 #To add all 2D view grid scale settings function.
 #
