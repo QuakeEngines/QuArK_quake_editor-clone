@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/10/19 11:30:36  tiglari
+live pointer hunt.
+
 Revision 1.24  2001/07/18 03:50:55  tiglari
 Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
  PSommet, TTableauFSommets, PTableauFSommets
@@ -75,7 +78,7 @@ unit Ed3DFX;
 
 interface
 
-uses Windows, Classes,
+uses Windows, Classes, SysUtils,
      PyMath, qmath, Bezier,
      QkObjects,
      Glide,
@@ -387,6 +390,9 @@ begin
  Coord:=nCoord;
  Open3DFXEditor(LibName, FullScreen);
  TTextureManager.AddScene(Self, FullScreen);
+ // Assigned check added by SilverPaladin
+ if (not Assigned(qrkGlideState))
+ then raise Exception.Create('You must first call Open3dFX');
  TGlideState(qrkGlideState).Init;
  Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
  if qrkGlideVersion>=HardwareGlideVersion then
@@ -803,7 +809,9 @@ procedure Free3DFXEditor;
 begin
  if GlideLoaded then
   begin
-   qrkGlideState.Free;
+    // Assigned check added by SilverPaladin
+   if (Assigned(qrkGlideState))
+   then qrkGlideState.Free;
    qrkGlideState:=Nil;
    if Assigned(grSstWinClose) then
     grSstWinClose;
@@ -954,13 +962,17 @@ begin
 
  if Assigned(guColorCombineFunction) then
  begin
-   if SolidColors then
+   if SolidColors or CCoord.FlatDisplay then
      guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
-   else
+   else try // BCL
      guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
+   except
+     guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
+   end;
  end;
 
- if TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1) then
+ // Assigned check added by SilverPaladin
+ if (Assigned(qrkGlideState) and TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1)) then
    grFogTable(FogTableCache^);
 
  if qrkGlideVersion>=HardwareGlideVersion then
@@ -1749,7 +1761,8 @@ begin
           if (N>=3) {and (bb-aa>MinVertexDist1) and (dd-cc>MinVertexDist1)} then
           begin
             {$IFDEF DebugLOG} LogS:=''; {$ENDIF}
-            if NeedTex then
+              // Assigned check added by SilverPaladin
+            if (NeedTex and Assigned(qrkGlideState))then
             begin
               TGlideState(qrkGlideState).NeedTex(PList^.Texture);
               {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
@@ -2040,7 +2053,8 @@ begin
       PSD:=GetTex3Description(Texture^);
 
       try
-        if (PSD.Format=psf24bpp) and TGlideState(qrkGlideState).Accepts16bpp then
+        // Assigned check added by SilverPaladin
+        if (PSD.Format=psf24bpp) and ((Assigned(qrkGlideState) and (TGlideState(qrkGlideState).Accepts16bpp))) then
         begin
           format:=GR_TEXFMT_RGB_565;
           if smallLod<>largeLod then
