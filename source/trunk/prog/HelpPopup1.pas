@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2003/03/12 20:30:07  tiglari
+[oops forgot to save, vacuous commit] Pressing F1 in help snippet window calls up infobase help
+
 Revision 1.5  2001/03/20 21:48:05  decker_dk
 Updated copyright-header
 
