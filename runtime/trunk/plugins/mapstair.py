@@ -32,85 +32,7 @@ from quarkpy.maputils import *
 
 import quarkpy.mapbezier
 from quarkpy.b2utils import *
-
-#  -- Perspective Stuff --
-#
-
-#
-# return X, Y, Z axes:
-#  X to right on screen
-#  Y away from viewer (toward would mean lh coord sys)
-#  Z up on screen
-#
-#  The idea is that these should equal map coordinates in Quark's
-#    default side-on view.  All the sign-flips & axis swapping
-#    is kinda confusing.
-#
-def perspectiveAxes(view=None):
-    try:
-        if view is None:
-            view = quarkx.clickform.focus  # gets the mapview clicked on
-        x, z = view.vector("x"), -view.vector("y")
-#  axes = view.vector("x"), -view.vector(view.screencenter), -view.vector("y")
-        return map(lambda v:v.normalized, (x, (x^z), z))
-    except:
-        return map(lambda t:quarkx.vect(t), ((1,0,0), (0,-1,0), (0,0,1)))
-
-#
-# return front, back, left, right, top, bottom w.r.t. view
-#  perspective if possible, otherwise None.
-#
-def perspectiveFaceDict(o, view):
-  faces = o.subitems
-  if len(faces)!=6:
-    return None
-  axes = perspectiveAxes(view)
-  pool = faces[:]
-  faceDict = {}
-  for (label, ax, dir) in (('f',1, 1)
-                          ,('b',1,-1)
-                          ,('u',2, 1)
-                          ,('d',2,-1)
-                          ,('r',0, 1)
-                          ,('l',0,-1)):
-    chosenface = pool[0]
-    axis = axes[ax]*dir
-    chosendot = chosenface.normal*axis
-    for face in pool[1:]:
-      if face.normal*axis>chosendot:
-        chosenface=face
-        chosendot=face.normal*axis
-    faceDict[label]=chosenface
-    pool.remove(chosenface)
-  return faceDict
-
-def faceDict(o):
-  result = {}
-  for (key, name) in (('f','front')
-                     ,('b','back' )
-                     ,('u','up'   )
-                     ,('d','down' )
-                     ,('r','right')
-                     ,('l','left' )):
-    result[key]=o.findshortname(name)
-  return result
-
-def perspectiveRename(o, view):
-  "renames the faces of a 6-face polyhedron in accord with perspective of last-clicked-on view"
-  dict = perspectiveFaceDict(o, view)
-  if dict is None:
-    return None
-  newpoly = quarkx.newobj(o.name)
-  for (key, name) in (('f','front')
-                     ,('b','back' )
-                     ,('u','up'   )
-                     ,('d','down' )
-                     ,('r','right')
-                     ,('l','left' )):
-    newface = dict[key].copy()
-    newface.shortname = name
-    newpoly.appenditem(newface)
-  return newpoly
+from quarkpy.perspective import *
 
 #
 #  --- Duplicators ---
@@ -252,3 +174,6 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2001/02/04 11:52:01  decker_dk
+#Stair making plugin
+#
