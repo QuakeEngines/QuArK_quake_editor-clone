@@ -5,6 +5,8 @@ Configuring Delphi falls into three broad categories - setting general Delphi op
 
 (Note that the examples below are from Delphi 7, but the commands and dialogs are similar for earlier versions of Delphi.)
 
+(Note also that Delphi version 5 or greater is required.)
+
 <dl>
 <dt><a name="options"></a>Delphi options<dd>
 There are a few Delphi options which I have found it useful to set prior to doing anything.
