@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2000/05/21 13:17:09  decker_dk
+//A small comment fixup
+//
 //Revision 1.10  2000/05/06 22:26:30  alexander
 //added cvs logging
 //
@@ -64,16 +67,37 @@ QQRKSRC1
     {
       scripts/shaderlist.txt = {
         Data =
-	    "// Created by QuArK"$0D0A
+            "// Created by QuArK"$0D0A
             "// All shaders are extracted to a single file called 'quark.shader'"$0D0A
-	    "quark"$0D0A
+            "quark"$0D0A
       }
       scripts/shaderlist.txt = {    // 2nd case: if there is no shader in the map
         Data =
-	    "// Created by QuArK"$0D0A
+            "// Created by QuArK"$0D0A
             "// No shader in this map"$0D0A
       }
     }
+    
+        TextureFlags:form =     // a form for setting Quake 2 texture flags on polyhedron faces
+        {
+          Style = "5"
+    
+          Reset: =       // Reset button
+          {
+            Cap = "Reset to default"      // button caption
+            Typ = "B"                     // "B"utton
+            Hint = "Reset all flags to the texture's default"
+            Delete: =
+            {
+              Flags = ""          // the button deletes these Specifics
+              Contents = ""
+              Value = ""
+            }
+          }
+    
+          Contents:={Cap="detail"         Typ="X134217728" Hint="for small, detail brushes that QVIS3 can ignore"}
+        }
+    
   }
 
   NewFiles.qtx =
