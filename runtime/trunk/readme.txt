@@ -1,31 +1,33 @@
 
-
-                 Patch4 to QuArK Snapshot of 2002ap20
+                 QuArK 6.3 Release Candidate 1
                  
-  * [tiglari] Mohaa map reading implemented, various map writing
-       bugs fixed
+ * [tiglari] Bezier patches selectable from back as well as front
+  
+ * [tiglari] Bilinear filtering option for textures in OpenGL view
+      (supported by a lot of code cleanup by Decker and Andy)
+      
+ * [tiglari] Configurable 'Aux Keys' held down to select brushes,
+      faces, curves and entities
+      
+ * [tiglari] 'frozen selection': Shift-LMB like Radiant select,
+      selection doesn't change until another frozen selection is
+      made, selection is changed in tree-view, or deselected with
+      ESC or Unfreeze selection
+                 
+ * [tiglari] Mohaa map reading implemented, various map writing
+     bugs fixed
        
-  * [nurail] JKII light path entities corrected
-
-
-                 Patch3 to QuArK Snapshot of 2002ap29
-
+ * [nurail] JKII light path entities corrected
    
  * [nurail] error involving line 447 mapquakemenu hopefully fixed
 
  * [rtdtheprof] torque maps read correctly
 
  * [tiglari] Mohaa maps should now be written correctly (not read, yet). 
-
-
-                Patch 2  to QuArK Snapshot of 2002ap29
                 
  * [tiglari] mirror duplicators are supposed to work now.  This is
     really a fix to new texture positioning scheme, the underlying
     problem might have been having other repercussions.
-
-
-                Pattch 1 to QuArK Snapshot of 2002ap20
                 
  * [tiglari] fix errors on opening map editor (for some people,
       not me, for reasons which I don't understand at all)
@@ -63,8 +65,6 @@
     Better F1 help for the 'texture wrap multiplier' menu item on the
      face RMB|Textures submenu
      
-                QuArK Snapshot of 2002mar28
-           
  * [tiglari]
     fix groups hidden/greyed icon change (report by off_by_two)
 
