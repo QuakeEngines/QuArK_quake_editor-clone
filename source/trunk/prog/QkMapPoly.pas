@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.65  2003/01/05 02:07:55  tiglari
+make threepoints in CylindreDeFace method more symmetrical, to prevent
+ problems with texture scales (detected by quantum_red)
+
 Revision 1.64  2003/01/03 07:49:01  tiglari
 transfer texture position management and swapsides stuff from rel-63a branch
 
@@ -1313,7 +1317,7 @@ var
  PX, PY: array[1..3] of TDouble;
  A, P2, S, C: TDouble;
  I: Integer;
- Plan: Char;
+ Plan : Char;
 begin
  Plan:=PointsToPlane(Normale);
  for I:=1 to 3 do
@@ -1363,6 +1367,16 @@ begin
  Params[1]:=-PX[1]*A;
  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
  Params[2]:=PY[1]*A;
+
+ if CharModeJeu=mjGenesis3D then
+ begin
+   for I:= 0 to 5 do
+     Params[I]:=Round(Params[I]);
+   if Plan='Y' then
+       Params[3]:=-Params[3];
+   if Plan='X' then
+     Params[4]:=-Params[4];
+ end;
 end;
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
