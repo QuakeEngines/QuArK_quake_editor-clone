@@ -201,12 +201,14 @@ def loadmapeditor(what=None):
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MAP")
-    if what=='bsp':
-        plugins.LoadPlugins("BSP")
 
-    def patchLoad(what=None):
+    def reLoad(what=None):
         #---- import the bezier plug-ins if so stated in Defaults.QRK ----
+        #---- and bsp support if we're editing a bsp
         import quarkx
+        if what=='bsp':
+            plugins.LoadPlugins("BSP")
+
         beziersupport = quarkx.setupsubset()["BezierPatchSupport"]
         if (beziersupport is not None) and (beziersupport == "1"):
             pluginprefixes = quarkx.setupsubset()["BezierPatchPluginPrefixes"]
@@ -219,10 +221,10 @@ def loadmapeditor(what=None):
                 plugins.LoadPlugins(string.strip(prefix))
 
     # force an initial load of bezier-support, if any for the current game-mode.
-    patchLoad()
+    reLoad(what)
     # next call to loadmapeditor, will check to see if there is a new need to load
-    # bezier-support, when/if the user changes game-mode in QuArK explorer.
-    loadmapeditor = patchLoad
+    # bezier/bsp-support, when/if the user changes game-mode in QuArK explorer.
+    loadmapeditor = reLoad
 
 #
 # Model modules loader (mdl*.py modules require a special load order)
@@ -455,6 +457,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2001/07/27 11:31:47  tiglari
+#bsp study: plane viewing, faces in treeview
+#
 #Revision 1.12  2001/03/29 04:42:11  tiglari
 #reinstate MapHotKey & MapHotKeyList
 #
