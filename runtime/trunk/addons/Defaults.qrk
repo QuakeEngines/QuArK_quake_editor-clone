@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.207  2003/02/09 06:11:40  cdunde
+//Discription update and HotKey name change
+//
 //Revision 1.206  2003/02/03 08:43:27  cdunde
 //To build Model Options configuration form.
 //
@@ -1110,6 +1113,7 @@ QQRKSRC1
         DefaultTextureTrigger = "AAATRIGGER"
         DefaultTextureOrigin = "ORIGIN"
         DefaultTextureClip = "CLIP"
+        EnableTransparency = ""
 
         TextureWad = "?"     // variable (the map name is used)
         GameNeedWad = "1"
@@ -2726,6 +2730,19 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      EnableTransparency: =
+      {
+        Txt = "In OpenGL window, enable transparency (slow!)"
+        Typ = "X"
+        Hint = "When checked, brush-entities that has their"
+            $0D"'rendermode' and 'renderamt' set to transparency,"
+            $0D"will be drawn transparent in the OpenGL window - "
+            $0D"though NOT exactly drawn as in-game."
+            $0D
+            $0D"Notice! When enabled the OpenGL window may"
+            $0D"be very slow to update itself, when changing"
+            $0D"the scenery."
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
