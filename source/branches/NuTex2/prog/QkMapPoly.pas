@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41.2.2  2001/07/11 21:19:44  tiglari
+add revert function.  doesnt delete tv attribute, how2do that?
+
 Revision 1.41.2.1  2001/07/10 01:37:15  tiglari
 Merge of original NuTex (1.32.2.1) with regular version, plus changes to
   TFace.Deplacement
@@ -3553,6 +3556,7 @@ begin
   begin
     GetThreePointsT(TexP[1], TexP[2], TexP[3]);
     SetThreePointsEnhEx(TexP[1], TexP[2], TexP[3], Normale);
+    Specifics.Values['tv']:='';
   end;
 end;
 
