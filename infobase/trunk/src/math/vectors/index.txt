@@ -1,6 +1,6 @@
-title: Vectors
+title: Vectors 
 
-desc: intro
+desc: intro coord
 
 [This is not yet indexed into the output because
 it's quite unfinished]
