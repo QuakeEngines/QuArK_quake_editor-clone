@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2002/04/01 10:01:52  tiglari
+changes to make QuArK compile under Delphi 6 Personal
+
 Revision 1.11  2001/10/21 10:23:38  decker_dk
 Replaced multiple calls to GetDC() with only one, and remembered to call ReleaseDC() afterwards.
 
@@ -70,6 +73,14 @@ uses
 {$IFDEF VER120}
   {$DEFINE D4PLUS}
 {$ENDIF}
+
+const
+SM_CXVIRTUALSCREEN   =	78;
+SM_CYVIRTUALSCREEN   =  79;
+
+var
+
+g_CxScreen, g_CyScreen: Integer;
 
 Procedure LogSystemDetails;
 
@@ -850,6 +861,16 @@ begin
   GetVersionEx(OS);
   MajorVersion:=OS.dwMajorVersion;
   MinorVersion:=OS.dwMinorVersion;
+  if Is95 then
+  begin
+    g_CxScreen:=sm_CxScreen;
+    g_CyScreen:=sm_CyScreen;
+  end
+  else
+  begin
+    g_CxScreen:=SM_CXVIRTUALSCREEN;
+    g_CyScreen:=SM_CYVIRTUALSCREEN;
+  end;
   BuildNumber:=word(OS.dwBuildNumber);
   case OS.dwPlatformId of
     VER_PLATFORM_WIN32s:        Platform:='Windows 3.1x';
