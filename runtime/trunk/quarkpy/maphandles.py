@@ -792,6 +792,67 @@ class MapEyeDirection(qhandles.EyeDirection):
     MODE = SS_MAP
 
 
+class PropGlueDlg (SimpleCancelDlgBox):
+
+    #
+    # dialog layout
+    #
+
+    size = (130, 75)
+    dfsep = 0.6       # separation at 40% between labels and edit boxes
+    dlgflags = FWF_KEEPFOCUS
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Glue Proportion"
+
+        prop: =
+        {
+        Txt = "Proportion:"
+        Typ = "EF1"
+        Hint = "L-end will be moved to this proportion of the distance" $0D "from the texture origin to the tagged point"
+        }
+        close:py = {Txt="" }
+    }
+    """
+
+    #
+    # __init__ initialize the object
+    #
+
+    def __init__(self, form, action, initialvalue=None):
+
+    #
+    # General initialization of some local values
+    #
+
+        src = quarkx.newobj(":")
+        if initialvalue is not None:
+           src["prop"]=initialvalue,
+        self.initialvalue=initialvalue
+        self.action=action
+        SimpleCancelDlgBox.__init__(self, form, src)
+
+    #
+    # This is executed when the data changes, close when a new
+    #   name is provided
+    #
+    def datachange(self, df):
+        if self.src["prop"]!=(self.initialvalue,):
+            self.close()
+ 
+
+    #
+    # This is executed when the OK button is pressed
+    #   FIXME: 'local' code doesn't work right, dialog
+    #   would need some redesign
+    #
+    def ok(self):
+        prop, = self.src["prop"]
+        self.prop = prop
+        self.action(self)
+
 
 class CyanLHandle(qhandles.GenericHandle):
     "Texture moving of faces : cyan L vertices."
@@ -948,7 +1009,29 @@ class CyanLHandle(qhandles.GenericHandle):
         if edge is None:
             alignitem.state=qmenu.disabled
 
-        return [glueitem, alignitem]
+        def action(dlgself, self=self, tagged=tagged, editor=editor, toFace=toFace):
+            prop=dlgself.prop            
+            tagged=toFace(tagged)
+            p1, p2, p3, p4 = self.tp4
+            newface = self.face.copy()
+            diff=prop*(tagged-p1)
+            if self.n==1:
+                newface.setthreepoints((p1, p1+diff, p3),2)
+            elif self.n==2:
+                newface.setthreepoints((p1,p2,p1+diff),2)
+            undo=quarkx.action()
+            undo.exchange(self.face,newface)
+            editor.ok(undo,'Proportional Glue to Tagged')
+ 
+        def propGlueClick(m, action=action):
+            PropGlueDlg(quarkx.clickform,action,1)
+        
+        propglueitem = qmenu.item('Proportional glue',propGlueClick)
+        propglueitem.state=qmenu.disabled
+        if tagged is not None and (self.n==1 or self.n==2):
+            propglueitem.state=qmenu.normal
+
+        return [glueitem, propglueitem, alignitem]
 
 
     def drag(self, v1, v2, flags, view):
@@ -1662,6 +1745,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.30  2001/08/16 20:09:15  decker_dk
+#Support for snap-to-grid in UserCenterHandle drag.
+#Specific hint for a UserCenterHandle.
+#
 #Revision 1.29  2001/08/15 17:52:42  decker_dk
 #Exception-catch for def GetUserCenter(), in case "return (box[0]+box[1])/2" fails.
 #
