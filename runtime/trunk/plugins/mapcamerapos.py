@@ -25,6 +25,13 @@ import quarkx
 from quarkpy import mapentities
 from quarkpy import mapduplicator
 from quarkpy import qhandles
+from quarkpy import mapsearch
+from quarkpy import dlgclasses
+from quarkpy import qmacro
+from quarkpy import mapselection
+
+import mapmadsel
+
 #
 # and because of this, things from maphhandles can be used
 #  w/o qualification
@@ -32,7 +39,14 @@ from quarkpy import qhandles
 from quarkpy.maphandles import *
         
 
+#
+# Tries to find the last 3D view clicked on
+#
 def get3DView(editor):
+    #
+    # A bit of showoff coding, see the onlne Python tutorial,
+    #   functional programming techiques
+    #
     views = filter(lambda v:v.info["type"]=="3D",editor.layout.views)
     if len(views)==0:
         quarkx.msgbox("Open a 3D view",2,4)
@@ -40,13 +54,47 @@ def get3DView(editor):
     elif len(views)==1:
         return views[0]
     for view in views:
+        #
+        # put it in an exception-catching block for in case
+        #   editor doesn't have a last3DView
+        #
         try:
             if view is editor.last3DView:
                 return view
         except (AttributeError):
             pass
+    #
+    # If intelligent selection fails, take the first.
+    #
     return views[0]
 
+#
+# We're going to trigger these actions both by menu
+#  items and buttons in a dialog, so we define them
+#  independently of the UI elements that call them.
+#
+def setView(o,editor):
+    view = get3DView(editor)
+    if view is None:
+        return
+    view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]          
+    editor.invalidateviews()
+    editor.currentcampos=o
+
+def storeView(o,editor):
+    view = get3DView(editor)
+    if view is None:
+        return
+    pos, yaw, pitch = view.cameraposition
+    undo = quarkx.action()
+    undo.setspec(o,"origin",str(pos))
+    #
+    # note setting values as 1-element tuples (Python docco)
+    #
+    undo.setspec(o,"yaw",(yaw,))
+    undo.setspec(o,"pitch",(pitch,))
+    editor.ok(undo,"store camera position")
+    editor.currentcampos=o
 #
 # The menu redefinition trick, as discussed in the plugin tutorial
 #  in the infobase.  'o' is the duplicator object
@@ -58,35 +106,14 @@ def camposmenu(o, editor, oldmenu=mapentities.DuplicatorType.menu.im_func):
     if o["macro"] !="cameraposition":
         return menu
 
-    #
-    # FIXME: a more sophisticated 3D view finder
-    #  w/b good.  What if someone has more than
-    #  one open? this will grab the first that it
-    #  finds, is there a better thing to do?
-    #
     def setViewClick(m,o=o,editor=editor):
-        view = get3DView(editor)
-        if view is None:
-            return
-        view.cameraposition = o.origin, o["yaw"][0], o["pitch"][0]          
-        editor.invalidateviews()
+        setView(o,editor)
 
     def storeViewClick(m,o=o,editor=editor):
-        view = get3DView(editor)
-        if view is None:
-            return
-        pos, yaw, pitch = view.cameraposition
-        undo = quarkx.action()
-        undo.setspec(o,"origin",str(pos))
-        #
-        # not setting values as 1-element tuples (Python docco)
-        #
-        undo.setspec(o,"yaw",(yaw,))
-        undo.setspec(o,"pitch",(pitch,))
-        editor.ok(undo,"store camera position")
+        storeView(o,editor)
 
-    storeitem=qmenu.item("Store View",storeViewClick,"Store 3D view position in this position item")
-    getitem=qmenu.item("Set View", setViewClick,"Set 3D view position from this position item")
+    storeitem=qmenu.item("Store View",storeViewClick,"|Store 3D view position in this position item.")
+    getitem=qmenu.item("Set View", setViewClick,"|Set 3D view position from this position item.\n\nThen use PgUp/Down with 'C' depressed to cycle prev/next camera positions in the same group as this one.\n\nThis won't work until a view has been set or stored in the group with the menu item")
     return [getitem, storeitem]
   
 mapentities.DuplicatorType.menu = camposmenu
@@ -121,7 +148,11 @@ mapduplicator.DupCodes.update({
   "cameraposition":  CamPosDuplicator,
 })
 
-
+#
+# See the dialog box section in the advanced customization
+#  section of the infobase.  SimpleCancelDlgBox is
+#  defined in quarkpy.qeditor.
+#
 class NameDialog(SimpleCancelDlgBox):
     "A simple dialog box to enter a name."
 
@@ -150,6 +181,9 @@ class NameDialog(SimpleCancelDlgBox):
         self.action=action
         SimpleCancelDlgBox.__init__(self, form, src)
 
+    #
+    # This is exectued when the OK button is pressed
+    #
     def ok(self):
         name = self.src["name"]
         if name is None:
@@ -164,11 +198,24 @@ class NameDialog(SimpleCancelDlgBox):
 def newEyePosMenu(self, editor, view):
     
     def addClick(m,self=self,editor=editor):
+        #
+        # Dialogs run 'asynchronously', which means
+        #  that the after the creation of the dialog just
+        #  runs without waiting for a value to be entered
+        #  into the dialog.  So if you don't want something
+        #  to happen until then, you need to code it in a
+        #  function that gets passed to the dialog as
+        #  a parameter, which is what this is.
+        #
         def action(name,self=self,editor=editor):
             view = self.view3D
             #
             # NB: elsewhere in the code, 'yaw' tends to
             # be misnamed as 'roll'
+            #
+            #  pitch = up/down angle (relative to x axis)
+            #  yaw = left/right angle (relative to x axis)
+            #  roll = turn around long axis (relative to y)
             #
             pos, yaw, pitch = self.view3D.cameraposition
             camdup = quarkx.newobj(name+":d")
@@ -183,7 +230,9 @@ def newEyePosMenu(self, editor, view):
             undo.setspec(camdup,"yaw",(yaw,))
             undo.setspec(camdup,"pitch",(pitch,))
             editor.ok(undo,'add camera position')
-         
+        #
+        # Now execute the dialog
+        #
         NameDialog(quarkx.clickform,action,"Camera Position")
          
     item = qmenu.item('Add position',addClick)
@@ -191,7 +240,165 @@ def newEyePosMenu(self, editor, view):
 
 EyePositionMap.menu = newEyePosMenu
 
+
+#
+# A Live Edit dialog.  Closely modelled on the Microbrush
+#  H/K dialog, so look at that for enlightenment
+#
+class FindCameraPosDlg(dlgclasses.LiveEditDlg):
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (220,160)
+    dfsep = 0.35
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Camera position finder"
+
+        cameras: = {
+          Typ = "C"
+          Txt = "Positions:"
+          Items = "%s"
+          Values = "%s"
+          Hint = "These are the camera positions.  Pick one," $0D " then push buttons on row below for action."
+        }
+
+          
+        sep: = { Typ="S"}
+
+        buttons: = {
+        Typ = "PM"
+        Num = "3"
+        Macro = "camerapos"
+        Caps = "TVS"
+        Txt = "Actions:"
+        Hint1 = "Select the chosen one in the treeview"
+        Hint2 = "Set the view to the chosen one"
+        Hint3 = "Store the view in the chosen one"
+        }
+
+        num: = {
+          Typ = "EF1"
+          Txt = "# found"
+        }
+
+        sep: = { Typ="S"}
+
+        exit:py = { }
+    }
+    """
+
+    def select(self):
+        index = eval(self.chosen)
+        #
+        # FIXME: dumb hack, revise mapmadsel
+        #
+        m = qmenu.item("",None)
+        m.object=self.pack.cameras[index]
+        mapmadsel.SelectMe(m)
+
+    def setview(self):
+        index = eval(self.chosen)
+        editor=mapeditor()
+        if editor is None:
+            quarkx.msgbox('oops no editor',2,4)
+        setView(self.pack.cameras[index],editor)
+                
+    def storeview(self):
+        index = eval(self.chosen)
+        editor=mapeditor()
+        if editor is None:
+            quarkx.msgbox('oops no editor',2,4)
+        storeView(self.pack.cameras[index],editor)
+                
+    
+#
+# Define the zapview macro here, put the definition into
+#  quarkpy.qmacro, which is where macros called from delphi
+#  live.
+#
+def macro_camerapos(self, index=0):
+    editor = mapeditor()
+    if editor is None: return
+    if index==1:
+        editor.cameraposdlg.select()
+    elif index==2:
+        editor.cameraposdlg.setview()
+    elif index==3:
+        editor.cameraposdlg.storeview()
+        
+qmacro.MACRO_camerapos = macro_camerapos
+
+def findClick(m):
+    editor=mapeditor()
+
+    class pack:
+        "stick stuff in this"
+    
+    def setup(self, pack=pack, editor=editor):
+        editor.cameraposdlg=self
+        self.pack=pack
+        cameras = filter(lambda d:d["macro"]=="cameraposition",editor.Root.findallsubitems("",":d"))
+        pack.cameras = cameras
+        pack.slist = map(lambda obj:obj.shortname, cameras)
+        pack.klist = map(lambda d:`d`, range(len(cameras)))
+        #
+        #  wtf doesn't this work, item loads but function is trashed
+        #
+#        self.src["cameras"] = pack.klist[0]
+        self.src["cameras$Items"] = string.join(pack.slist, "\015")
+        self.src["cameras$Values"] = string.join(pack.klist, "\015")
+        self.src["num"]=len(pack.klist),
+
+    def action(self, pack=pack, editor=editor):
+       src = self.src
+       #
+       # note what's been chosen
+       #
+       self.chosen = src["cameras"]
+         
+    FindCameraPosDlg(quarkx.clickform, 'findcamerapos', editor, setup, action)
+
+mapsearch.items.append(qmenu.item('Find Camera Positions', findClick,
+ "|This finds all the camera positions."))
+
+
+#
+# Prev/Next hotkey subversion
+#
+def camnextClick(m, editor=None, oldnext=mapselection.nextClick):
+    if quarkx.keydown('C')==1:
+        editor=mapeditor()
+        if editor is None:
+           quarkx.msgbox('oops no editor',2,4)
+           return
+        try:
+            current=editor.currentcampos
+        except (AttributeError):
+            quarkx.msgbox("You need to set or store a view first for this to work",2,4)
+            return
+        successor = m.succ(current) # succ=prev or next, depending on key
+        #
+        # Skip over any non-camera stuff
+        #
+        while successor is not current and successor["macro"]!="cameraposition":
+            successor=m.succ(successor)
+        setView(successor,editor)
+    else:
+        oldnext(m,editor)
+
+mapselection.nextItem.onclick=camnextClick
+mapselection.prevItem.onclick=camnextClick
+
+
 # $Log$
+# Revision 1.2  2001/06/14 12:16:47  tiglari
+# nameing dialog, multiple view support (pick last clicked on)
+#
 # Revision 1.1  2001/06/13 22:28:09  tiglari
 # kickoff
 #
