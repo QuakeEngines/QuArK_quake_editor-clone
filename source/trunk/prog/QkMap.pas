@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2002/12/21 09:25:13  tiglari
+steamline v220 map-reading
+
 Revision 1.48  2002/12/15 14:05:14  tiglari
 improve efficiency of wc33 reading by eliminating unnecessary projections of
  texture points to planes (this should be tested more to check that it's
@@ -1148,9 +1151,9 @@ expected one.
   divide by the scale to get the .bsp-version of the axis.
   (Zoner's HL tools source, textures.cpp) *)
 
- procedure WC33Params;
+procedure WC33Params;
  var
-  PP0, PP1, PP2 : TVect;
+  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
  begin
    PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
    PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
@@ -1158,8 +1161,15 @@ expected one.
    PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
    with Surface do
    begin
-    try
-       SetThreePointsEx(PP0,PP1,PP2,Normale);
+     TexNorm:=Cross(UAxis,VAxis);
+     Normalise(TexNorm);
+     PlanePoint:=VecScale(Dist, Normale);
+     (* could perhaps be optimized by 'partial evaluation' *)
+     try
+       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
+       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
+       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
+       SetThreePointsEx(NP0,NP1,NP2,Normale);
      except
        g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
      end;
