@@ -55,8 +55,16 @@ class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "Pitch, Yaw, Roll angles (rotations around Y, Z, X" $0D " axes, in order"
         }
 
+        sep: = {Typ="S" Txt=" "}
+        
+        mirror: = {
+        Txt = "Mirror"
+        Typ = "X"
+        Hint = "Mirror in XZ plane.  Mirror effects can also be produced" $0D " with negative scale values"
+        }
+       
         sep: = {Typ="S" Txt=" "} 
-
+        
         shear: = {
         Txt = "Shear"
         Typ = "EF003"
@@ -131,13 +139,18 @@ def macro_linedit(self):
         ylift = math.asin(axes[2]*cols[1])
         p = projectpointtoplane(cols[1],axes[2],quarkx.vect(0,0,0),axes[2]).normalized
         ytwist = math.atan2(p*axes[0], p*axes[1])
-        
+        if ytwist > math.pi/2:
+            src["mirror"] = 1
+            ytwist = math.pi-ytwist
         src["shear"] = zxshear/deg2rad, ylift/deg2rad, ytwist/deg2rad
         
 
     def action(self, pack=pack, editor=editor):
         src = self.src
         zxshear, ylift, ytwist = tuple(map(lambda x:x*deg2rad, src["shear"]))
+        if src["mirror"]:
+            ytwist = math.pi-ytwist
+#        debug('yt '+`ytwist/deg2rad`)
         colz = matrix_rot_y(-zxshear)*quarkx.vect(0,0,1)
         coly = matrix_rot_x(ylift)*matrix_rot_z(-ytwist)*quarkx.vect(0,1,0)
         cols = quarkx.vect(1,0,0), coly, colz
@@ -169,6 +182,9 @@ def macro_linedit(self):
 quarkpy.qmacro.MACRO_linedit = macro_linedit
 
 #$Log$
+#Revision 1.2  2001/05/12 12:24:23  tiglari
+#add rotate & shear
+#
 #Revision 1.1  2001/05/11 09:39:41  tiglari
 #kickoff with scale
 #
