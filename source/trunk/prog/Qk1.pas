@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2001/06/13 22:54:07  aiv
+Moved 'Convert From' stuff to python code (plugin type)
+
 Revision 1.21  2001/06/05 18:38:46  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -1427,6 +1430,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  end;
  ClearGameBuffers(False);
  ClearPool(True);
+ QObjectClassList.Free;
 end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
