@@ -434,5 +434,7 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-#--- snap ----
-
+#Revision 1.3  2000/05/26 23:13:37  tiglari
+#Changed patch support loading (loadmapeditor) so that it is loaded when you open a map whose game has shaders
+#
+#

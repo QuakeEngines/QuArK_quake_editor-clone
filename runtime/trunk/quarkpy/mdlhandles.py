@@ -8,6 +8,9 @@ Model editor mouse handles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # See comments in maphandles.py.
@@ -189,3 +192,9 @@ def MouseClicked(self, view, x, y, s, handle):
         return flags+"S"
     return flags
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

@@ -8,6 +8,9 @@ Map and Model editor Layout managers.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # See comments in file mapmgr.py.
@@ -585,3 +588,9 @@ class MPPage:
     def button(self):
         raise "You must override the method 'button' of the class 'MPPage'" # abstract
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

@@ -8,6 +8,9 @@ Map editor "Line through hole" displayer
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # This version can only load .lin files from Quake 2.
@@ -165,3 +168,9 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
 
 mapeditor.MapEditor.finishdrawing = DrawLines
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

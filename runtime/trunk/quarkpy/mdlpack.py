@@ -15,6 +15,9 @@ Model packing and unpacking.
 # loaded file into a full tree structure, and "Packing" is the reverse operation.
 #
 
+#$Header$
+
+
 import quarkx
 import mdlentities
 
@@ -97,3 +100,9 @@ def PackModel(model):
 
     return root
     
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

@@ -7,6 +7,7 @@ The Movement Toolbar Palette.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 
 import qtoolbar
@@ -194,3 +195,9 @@ class ToolMoveBar(ToolBar):
         return [btn1, btn2, btn3, btn13, qtoolbar.sep, btn4, btn5, btn6,
           btn7, btn8, btn9, btn10, btn11, btn12, qtoolbar.sep, btncfg]
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

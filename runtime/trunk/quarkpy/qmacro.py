@@ -7,6 +7,7 @@ Python macros available for direct call by QuArK
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 #
 # Macros are called by QuArK based on name. These are the
@@ -251,3 +252,9 @@ def MACRO_pybutton(pybtn):
     dlg = dialogboxes[pybtn["sendto"]]
     return dlg.info.buttons[pybtn.shortname]
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

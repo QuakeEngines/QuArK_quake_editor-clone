@@ -135,3 +135,9 @@ class locatable_dialog_box(qmacro.dialogbox):
     size = self.size
     return (ox+cx-size[0]/2, oy+cy-size[1]/2, ox+cx+size[0]/2, oy+cy+size[1]/2)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

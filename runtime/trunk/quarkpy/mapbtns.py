@@ -8,6 +8,9 @@ Map Editor Buttons and implementation of editing commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 import qtoolbar
@@ -591,3 +594,9 @@ def groupview1click(m):
         undo.setspec(group, ";view", nval)
     undo.ok(editor.Root, Strings[590])
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

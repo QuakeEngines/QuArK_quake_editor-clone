@@ -8,6 +8,9 @@ The map editor's "Toolbars" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import qmenu
 from mdlutils import *
@@ -44,3 +47,9 @@ class DisplayBar(ToolBar):
 import qmovepal
 toolbars = {"tb_display": DisplayBar, "tb_movepal": qmovepal.ToolMoveBar}
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

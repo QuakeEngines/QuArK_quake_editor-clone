@@ -8,6 +8,9 @@ Various Model editor utilities.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 from qeditor import *
@@ -51,3 +54,9 @@ class MdlUserDataPanel(UserDataPanel):
         #            list = [group2folder(list[0])]
         #UserDataPanel.drop(self, btnpanel, list, i, source)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

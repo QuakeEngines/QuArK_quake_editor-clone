@@ -8,6 +8,9 @@ Map editor pop-up menus.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 from qdictionnary import Strings
@@ -394,3 +397,9 @@ def BaseMenu(sellist, editor):
 
     return [Force1, qmenu.sep, Cut1, Copy1, Delete1]
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

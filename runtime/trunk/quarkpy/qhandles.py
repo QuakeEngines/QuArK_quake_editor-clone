@@ -8,6 +8,8 @@ Generic Mouse handles code.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
 #
 # Generic handles. See maphandles.py for more information.
 # This module defines only generic handle classes that are
@@ -1463,3 +1465,9 @@ def flat3Dview(view3d, layout, selonly=0):
     #setprojmode(view3d)
     return view3d
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

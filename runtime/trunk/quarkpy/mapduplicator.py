@@ -232,4 +232,7 @@ DupCodes = { }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-#--- snap ----
+#Revision 1.2  2000/05/26 23:11:36  tiglari
+#tried to fix `no drag' bug (select/release dup without dragging it sometimes causes problems)
+#
+#

@@ -8,6 +8,9 @@ Model Editor Buttons and implementation of editing commands
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 import qtoolbar
@@ -279,3 +282,9 @@ def groupcolor(m):
         undo.setspec(group, "_color", nval)
         undo.ok(editor.Root, Strings[622])
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

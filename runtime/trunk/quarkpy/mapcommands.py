@@ -8,6 +8,9 @@ The map editor's "Commands" menu (to be extended by plug-ins)
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 import qmenu
@@ -35,3 +38,9 @@ def CommandsMenu():
     "The Commands menu, with its shortcuts."
     return qmenu.popup("&Commands", items, onclick), shortcuts
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

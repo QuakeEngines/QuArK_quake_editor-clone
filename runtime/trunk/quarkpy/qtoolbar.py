@@ -7,7 +7,8 @@ Tool Bars and Buttons
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
-
+#$Header$
+#
 import quarkx
 
 
@@ -144,3 +145,9 @@ import qutils
 qutils.SetupRoutines.append(BtnPrefChanged)
 BtnText = quarkx.setupsubset(qutils.SS_GENERAL, "Display")["BtnText"]
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

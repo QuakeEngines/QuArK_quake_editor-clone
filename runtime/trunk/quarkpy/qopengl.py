@@ -7,6 +7,7 @@ OpenGL manager.
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 #
 # NOTE: this module is NEVER actually loaded before an OpenGL
@@ -149,3 +150,9 @@ def setupchanged(level):
 
 SetupRoutines.append(setupchanged)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

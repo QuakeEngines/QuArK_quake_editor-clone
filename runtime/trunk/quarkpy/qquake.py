@@ -7,6 +7,7 @@ Routines to execute Quake, Hexen II, or Quake 2
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 
 import quarkx
@@ -193,3 +194,9 @@ class GameConsole(BatchConsole):
         except:
             pass
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

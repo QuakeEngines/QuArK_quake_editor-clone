@@ -8,6 +8,9 @@ Core of the Map editor.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # This file defines a class, "MapEditor", whose instances are
@@ -285,3 +288,9 @@ def autosave(editor):
     if time1 > 0.0:
         return time1
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

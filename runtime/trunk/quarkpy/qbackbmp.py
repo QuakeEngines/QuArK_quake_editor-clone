@@ -8,6 +8,9 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 import qmacro
@@ -87,3 +90,9 @@ class BackBmpDlg(qmacro.dialogbox):
         self.view.invalidate()
         self.close()
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

@@ -8,6 +8,9 @@ Base of the Map editor "Search" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 from qdictionnary import Strings
@@ -100,3 +103,9 @@ def SearchMenu():
     it1 = items + [qmenu.sep, sholes1, qmenu.sep] + checkitems + allchecks
     return qmenu.popup("&Search", it1, onclick), shortcuts
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

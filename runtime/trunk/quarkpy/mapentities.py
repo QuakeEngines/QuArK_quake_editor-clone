@@ -577,11 +577,14 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2000/05/26 23:07:39  tiglari
+#fiddled with beziertype entity manager
+#
 #Revision 1.12  2000/05/19 10:13:39  tiglari
 #fixed `snap' in revision history at bottom
 #
 #Revision 1.11  2000/05/19 10:11:13  tiglari
 #added revision history, comments on use of BezierType menu
 #
-#--- snap ----
+#
 

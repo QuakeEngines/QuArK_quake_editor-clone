@@ -8,6 +8,9 @@ Various constants and Screen Controls for editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 import quarkx
 import qtoolbar
 import qmacro
@@ -1442,3 +1445,9 @@ def FindSelectable(root, singletype=None, types=None):
         lst = lst1
     return result
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

@@ -8,6 +8,9 @@ Model Editor Entities manager
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 
 import quarkx
@@ -172,3 +175,9 @@ def LoadEntityForm(sl):
                 formobj = flist[-1]
     return formobj
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

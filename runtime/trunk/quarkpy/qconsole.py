@@ -8,6 +8,9 @@ Console code
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 #
 # This module defines the class 'console',
 # which can be subclassed to analyse the output of
@@ -72,3 +75,9 @@ def runprogram(cmdline, currentdir, stdout=0, stderr=None):
         quarkx.msgbox("Cannot execute this program :\n\n    %s\n\nCheck the path and required DLLs." % cmdline, 1, 4)
         raise quarkx.aborted
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

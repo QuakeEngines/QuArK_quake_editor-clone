@@ -8,6 +8,9 @@ Implementation of QuArK Model editor's "Options" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import quarkx
 import string
@@ -88,3 +91,9 @@ def OptionsMenu():
     Options1 = qmenu.popup("&Options", items+[qmenu.sep, PlugIns, Config1], Options1Click)
     return Options1, shortcuts
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

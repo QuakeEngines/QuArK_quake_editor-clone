@@ -8,6 +8,9 @@ Dictionnary of all strings used within the program
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 Strings = {
         0: "Version 6.00b1",
 	1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
@@ -869,3 +872,10 @@ Strings = {
         -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
         -104: "This command uses OpenGL. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the OpenGL section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load OpenGL now ?",
 }
+
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

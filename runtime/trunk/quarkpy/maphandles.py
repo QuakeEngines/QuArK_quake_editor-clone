@@ -8,6 +8,9 @@ Map editor mouse handles.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # This module manages the map "handles", i.e. the small active areas
@@ -1067,3 +1070,9 @@ def singlefacezoom(view, center=None):
     p = view.proj(view.info["origin"])
     view.depth = (p.z-0.1, p.z+100.0)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

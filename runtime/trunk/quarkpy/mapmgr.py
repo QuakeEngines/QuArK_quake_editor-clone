@@ -8,6 +8,9 @@ Map editor Layout managers.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # This file defines the base class for Map Layout Managers.
@@ -697,3 +700,9 @@ LayoutsList = []
 #
 mppages = []
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

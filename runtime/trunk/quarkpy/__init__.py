@@ -86,3 +86,9 @@ def RunQuArK():
     qmacro.helpfn[s] = "Help3"
     quarkx.helpmenuitem(s)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

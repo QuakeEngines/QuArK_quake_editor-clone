@@ -8,6 +8,9 @@ Implementation of QuArK Map editor's "Quake" menu
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import string
 import quarkx
@@ -418,3 +421,9 @@ def QuakeMenu(editor):
     Quake1.state = not len(items) and qmenu.disabled
     return Quake1, sc
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

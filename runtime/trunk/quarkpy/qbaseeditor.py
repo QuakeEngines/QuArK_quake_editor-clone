@@ -8,6 +8,9 @@ Core of the Map and Model editors.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 #
 # See comments in file mapeditor.py.
@@ -797,3 +800,9 @@ class BaseEditor:
 
 NeedViewError = "this key only applies to a 2D map view"
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

@@ -7,6 +7,7 @@ Menu Bars and Popup Menus code
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
+#$Header$
 
 
 import quarkx
@@ -173,3 +174,9 @@ def DefaultEditMenu(editor):
           "Ctrl+D": Duplicate1 }
     return Edit1, sc
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#

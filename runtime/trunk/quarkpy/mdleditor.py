@@ -8,6 +8,9 @@ Core of the Model editor.
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
+
+
 
 import qmenu
 import qtoolbar
@@ -137,3 +140,9 @@ def commonhandles(self, redraw=1):
             for h in hlist:
                 h.draw(v, cv, None)
 
+# ----------- REVISION HISTORY ------------
+#
+#
+#$Log$
+#
+#
