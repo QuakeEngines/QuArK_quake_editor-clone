@@ -139,7 +139,7 @@ def WrapMultClick(m):
   editor = mapeditor()
   if editor is None: return
   if requestmultiplier.state==qmenu.checked:
-#    requestmultiplier.state=qmenu.normal
+ #    requestmultiplier.state=qmenu.normal
      editor.texmult.close()
   else:
     requestmultiplier.state=qmenu.checked
@@ -670,17 +670,28 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = linkfinishdrawing
 
 
 def TagSideClick (m):
-  "tags a face on mouse-click"
-  editor = mapeditor()
-  if editor is None: return
-  tagface(sideof(m, editor), editor)
+    "tags a face on mouse-click"
+    editor = mapeditor()
+    if editor is None: return
+    try:
+        sides = [m.side]
+    except (AttributeError):
+        sides = editor.layout.explorer.sellist
+    if (len(sides) < 1):
+        quarkx.msgbox("No selection has been made\n\nYou must first select\na face or vertex point to tag", MT_ERROR, MB_OK)
+        return
+    for side in sides:
+        if (side.type != ":f"):
+            quarkx.msgbox("Nothing has been done\n\nYou have selected a brush or multipal brushes\n\nYou need to select the face or vertex point\nof a single brush to be able to tag it", MT_ERROR, MB_OK)
+            return
+    tagface(sideof(m, editor), editor)
 
 
 def ClearTagClick (m):
-  "clears tag on menu-click"
-  editor = mapeditor()
-  if editor is None: return
-  cleartag(editor)
+    "clears tag on menu-click"
+    editor = mapeditor()
+    if editor is None: return
+    cleartag(editor)
 
 
 #
@@ -697,16 +708,17 @@ def GlueSideClick(m):
     except (AttributeError):
         sides = editor.layout.explorer.sellist
     if (len(sides) < 1):
-        quarkx.msgbox("Nothing to do", MT_WARNING, MB_OK)
+        quarkx.msgbox("No selection has been made.\n\nYou must select and tag only one face or vertex point\nand then select another one to glue to the first one", MT_ERROR, MB_OK)
         return
     for side in sides:
         if (side.type != ":f"):
-            quarkx.msgbox("Some selected object is not a face", MT_ERROR, MB_OK)
+            quarkx.msgbox("The selected object is not\na face or vertex point", MT_ERROR, MB_OK)
             return
     tagged = gettaggedplane(editor)
     if tagged is None:
         tagpt = gettaggedpt(editor)
         if tagpt is None:
+            quarkx.msgbox("Nothing done\n\nEither you have not tagged a face or vertex point\nor you have tagged more than one\n\nYou must first select and tag only one face or vertex point\nand then select another one to glue to the first one", MT_ERROR, MB_OK)
             return
     else:
         tagpt = tagged.origin
@@ -765,10 +777,11 @@ def AddtoTaggedClick(m):
   "expects the selected face to be attached to m as .side"
   editor = mapeditor()
   if editor is None: return
+  taglist = gettaggedlist(editor)
   side = editor.layout.explorer.uniquesel
   if side is not None:
-      addtotaggedfaces(side, editor)  
- 
+      addtotaggedfaces(side, editor)
+
 def RemovefromTaggedClick(m):
   "expects the selected face to be attached to m as .side"
   editor = mapeditor()
@@ -1872,6 +1885,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2003/01/03 07:50:42  tiglari
+#transfer texture-mirror, swapsides_leavetex from rel-63a brancy
+#
 #Revision 1.20.2.4  2003/01/01 05:08:33  tiglari
 #remove debug comments
 #
