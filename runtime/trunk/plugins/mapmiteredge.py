@@ -393,7 +393,7 @@ def findMiterableFaces(faces):
         
 
 def buildwallmakerimages(self, singleimage=None):
-        if not (self.dup["miter"] or self.dup["extrude"]):
+        if not (self.dup["miter"] or self.dup["extrude"] or self.dup["solid"]):
             return mapdups.DepthDuplicator.buildimages(self,singleimage)
             
         if singleimage is not None and singleimage>0:
@@ -405,13 +405,24 @@ def buildwallmakerimages(self, singleimage=None):
             return
 #        wallgroups = mapdups.DepthDuplicator.buildimages(self, singleimage)
 
-        polys = self.sourcelist()
+        polys2 = self.sourcelist()
+        polys=[]
+        for poly in polys2:
+            polys.append(poly.copy())
+        #
+        # we won't return this group as a value, but we need it to use
+        #  our trick for preserving the tree structure.
+        #
+        wallgroup = quarkx.newobj("wallgroup:g")
+        if self.dup["solid"]=='1':
+            return polys
+        for poly in polys:
+            wallgroup.appenditem(poly)
         polys = reduce(lambda x,y:x+y,map(lambda i:i.findallsubitems("",":p"),polys))
         negatives = filter(lambda p:p["neg"]=='1', polys)
         polys = filter(lambda p:p["neg"]!='1', polys)
         depth=int(self.dup["depth"])
         wallgroups = map(lambda item:item.subitems, wallsFromPoly(polys, depth))
-        wallgroup = quarkx.newobj("wallgroup:g")
         for i in range(len(polys)):
             walls = wallgroups[i]
             newwalls = []
@@ -436,9 +447,11 @@ def buildwallmakerimages(self, singleimage=None):
             for hole in negatives:
                 newwalls=hole.subtractfrom(newwalls)
             newgroup=quarkx.newobj(polys[i].shortname+':g')
+            parent = polys[i].parent
+            parent.removeitem(polys[i])
+            parent.appenditem(newgroup)
             for wall in newwalls:
                 newgroup.appenditem(wall)
-            wallgroup.appenditem(newgroup)
         faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
         replacedict = {}
         donefaces = {}
@@ -516,7 +529,10 @@ def buildwallmakerimages(self, singleimage=None):
                         poly.rebuildall()
                         if poly.broken:
                             debug('fuck, still busted')
-        return [wallgroup]
+        list = []
+        for item in wallgroup.subitems:
+            list.append(item)
+        return list
         
 mapdups.WallMaker.buildimages = buildwallmakerimages
         
@@ -529,6 +545,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.5  2001/10/07 22:34:53  tiglari
+# negative polys dig hole in walls, extrude mode, colinear to maputils
+#
 # Revision 1.4  2001/10/07 00:43:59  tiglari
 # caulk-exposing bug supposedly fixed (by a considerable reorganizing
 # of the mitering process, using a dictionary instead of successive list
