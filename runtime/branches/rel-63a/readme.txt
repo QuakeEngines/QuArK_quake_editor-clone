@@ -1,6 +1,16 @@
                           QuArK 6.3d
                          
-                         Dec 26, 2002
+ Real and Possible Unresolved Issues (from QuArK forums, June-Sep)
+
+   * hole-finder on Search menu finds leaks when there aren't
+   
+   * very likely still a significant memory leak - save your work often!
+   
+   * quark 6.3 Q1 mdl-viewing problems?
+       can't replicate
+
+   * copy/paste causing texture misalignment?
+       can't replicate in current version
 
 
  Updates:
@@ -14,18 +24,6 @@
         Doug Abele (CHK Shoot); see infobase.
    * [tiglari] restore partial Mohaa and SoF2 support
  
- Possible Unresolved Issues (from QuArK forums, June-Sep)
-
-   * quark 6.3 Q1 mdl-viewing problems 
-       can't replicate
-
-   * bsp viewing for Quake broken:
-      fixed a problem with faces where textures have been
-      mirror-imaged, but maybe there are more problems?
-
-   * copy/paste causing texture misalignment:
-       can't replicate in current version
-
                          QuArK 6.3c
                          
                      update Oct 12, 2002
