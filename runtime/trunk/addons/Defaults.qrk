@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.208  2003/03/12 11:32:27  decker_dk
+//Added 'EnableTransparency' checkbox for Half-Life. See also QkMapPoly.PAS (same date)
+//
 //Revision 1.207  2003/02/09 06:11:40  cdunde
 //Discription update and HotKey name change
 //
@@ -1114,7 +1117,6 @@ QQRKSRC1
         DefaultTextureOrigin = "ORIGIN"
         DefaultTextureClip = "CLIP"
         EnableTransparency = ""
-
         TextureWad = "?"     // variable (the map name is used)
         GameNeedWad = "1"
         WateryTex = "!"
@@ -1124,6 +1126,7 @@ QQRKSRC1
         BaseDir = "valve"
         tmpQuArK = "tmpQuArK"
 
+        MapHoles = ".pts"
         Palette = "gfx/palette.lmp"
         Gradient = "gfx/colormap.lmp"
         //DECKER - 'ExtractFiles' just creates troubles, if another mod-directory is choosen....
@@ -4834,6 +4837,18 @@ QQRKSRC1
          Txt="thickness"
          Typ="E"
          Hint="thickness of walls"
+      }
+      caulkhull:=
+      {
+         Txt="caulkhull"
+         Typ="E"
+         Hint="thickness of caulk hull walls"
+      }
+      caulksetback:=
+      {
+         Txt="caulksetback"
+         Typ="E"
+         Hint="distance caulk hull is set back from detail." $0D " should be empty except for special effects"
       }
     }
 
