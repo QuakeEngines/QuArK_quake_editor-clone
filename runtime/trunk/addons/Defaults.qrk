@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.171  2002/01/06 10:37:31  decker_dk
+//update version to "QuArK 6.3snap 2002jan06"
+//
 //Revision 1.170  2001/12/05 20:38:57  decker_dk
 //Added RTCW (Return To Castle Wolfenstein)
 //
@@ -998,7 +1001,10 @@ QQRKSRC1
         //ExtractFiles = "cl_dlls/*.*"
         ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
+
         AddOns = "DataHL.qrk"
+//      AddOns = "BaseData.qrk"
+
         AlwaysPak = ""
         PakExt = ".pak"
         LightFactor = '0.9'
@@ -1381,14 +1387,14 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
 
-        StupidBuildToolKludge = "1" //those guys should get shot for that
+        StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = "-moddir .."
+        BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-vis -saveprt"
+        BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
         BuildPgm3  = "Q3MAP.EXE"
-        BuildArgs3 = "-light"
+        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
         BuildPgm4  = "BSPC.EXE"
         BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
         BuildCheck4= "+AAS"
@@ -1400,7 +1406,7 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "base_wall/basewall03"
+        DefaultTexture = "xlab_wall/xconcrete_c53b"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureOrigin = "common/origin"
         DefaultTextureClip = "common/clip"
@@ -1772,9 +1778,10 @@ QQRKSRC1
         $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
         $0D"so you better remember to do this yourself."
         $0D
-        $0D"%file%    - Gives the map's path and filename without extension"
-        $0D"%mappath% - Gives the map's path with ending backslash"
-        $0D"%mapfile% - Gives the map's path and filename with .MAP extension"
+        $0D"%file%     - Gives the map's path and filename without extension"
+        $0D"%mappath%  - Gives the map's path with ending backslash"
+        $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
+        $0D"%basepath% - Gives the directory of the game (see Game Settings above)"
         $0D
         $0D"Examples:"
         $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
