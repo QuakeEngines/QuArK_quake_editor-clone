@@ -306,7 +306,7 @@ def processtext(root, text, data, kw):
                                 # there must exist an endchar_tag on the same line!
                                 raise "'%s' without ending '>' problem! <File>.TXT title: \"%s\"" % (line[:5], kw["title"])
                             else:
-                                tag = string.lower(line[:endchar_tag_found+1])
+                                tag = (line[:endchar_tag_found+1])
                                 if (tag == "<p>") or (tag == "</p>") or (tag[:5] == "<html"):
                                     # do now allow these tags anymore!
                                     raise "The %s tag is not allowed! <File>.TXT title: \"%s\"" % (tag, kw["title"])
@@ -550,6 +550,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.19  2003/01/02 06:36:32  rowdy
+# do not warn about pictures which are not in the index
+#
 # Revision 1.18  2002/05/03 17:37:58  decker_dk
 # Added two seperator lines, to indicate what step have been executed.
 #
