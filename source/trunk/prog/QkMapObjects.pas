@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/06/21 17:35:07  decker_dk
+Check for 'mapformat' as well as ';mapformat', since specifics thats prefixed
+with an ';'-character won't be written to the .MAP file (which can be useful at times.)
+
 Revision 1.30  2001/06/05 18:39:33  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -1158,7 +1162,7 @@ begin
   PoigneeRouge(CCoord.Proj(Pt));
 end;*)
 
-procedure TTreeMapSpec.SaveAsTextSpecArgs;
+procedure TTreeMapSpec.SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Integer);
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
@@ -1166,7 +1170,8 @@ var
  P1, I, J, P: Integer;
 begin
  MJ:=CharModeJeu;
- Dest.Add(CommentMapLine(Ancestry));
+ if Flags and soBsp=0 then
+   Dest.Add(CommentMapLine(Ancestry));
  Dest.Add('{');
  LineStart:=LineStarts[Flags and soBSP <> 0];
  Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
