@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.105  2001/03/17 21:55:25  decker_dk
+//Added 'Q3ArchLib.qrk' and 'Q3models.qrk' as AddOns for Quake-3
+//
 //Revision 1.104  2001/03/16 17:09:22  maleficus
 //saveprt added for q3 vlight
 //
@@ -921,6 +924,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
 
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
@@ -1438,6 +1442,7 @@ QQRKSRC1
     t_GameBuildPgms:incl = {
       Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
       BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
+      StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
       sep:        = {Typ="S" Txt="1st program"}
       BuildPgm1:  = {t_GameBuildPgm=!}
       BuildArgs1: = {t_GameBuildArgs=!}
