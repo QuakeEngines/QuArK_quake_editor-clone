@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/06/24 02:50:35  tiglari
+bad solution for adjust w. min. distortion for shaders
+
 Revision 1.11  2000/06/12 18:41:59  decker_dk
 more control on shaders being valid
 
@@ -185,49 +188,75 @@ var
 begin
  Acces;
  Result:=Nil;
+
+ {this function tries to guess what image should be displayed
+  for the shader. The priority is
+  1. the qer_editorimage
+  2. a texture named as the shader name itself
+  3. any "suitable" image from one of the shader stages
+  Note, that it is first tried to load as tga, then as jpeg
+  }
+
  { looks for 'qer_editorimage' }
  S:=Specifics.Values[EditorImageSpec];
  if S<>'' then
  begin
-  if (ExtractFileExt(S)='') then
-  begin
    try
-    Result:=NeedGameFile(S+'.tga') as QPixelSet;
+     if (ExtractFileExt(S)='') then
+     begin
+       try
+         Result:=NeedGameFile(S+'.tga') as QPixelSet;
+       except
+         Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+       end;
+     end
+     else
+       Result:=NeedGameFile(S) as QPixelSet;
    except
-    Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+     Result:=NIL
    end;
-  end
-  else
-   Result:=NeedGameFile(S) as QPixelSet;
  end;
- { examines all shaderstages for existing images }
- for I:=0 to SousElements.Count-1 do
- begin
-  Q:=SousElements[I];
-  if Q is QShaderStage then
-  begin
-   { Skip over $lightmap and those not containing images }
-   if QShaderStage(Q).ContainsImageReference then
-   begin
-    ValidStage:=QShaderStage(Q).ProvidesSomeImage;
-    { Missing a texture, shader invalid? Return NIL }
-    if ValidStage=Nil then
-     Exit;
-    { Set to first valid stage, so something is displayed in the texture-browser }
-    if Result=Nil then
-     Result:=ValidStage;
-   end;
-  end;
- end;
+
+ { If no image could be found yet, try the shader-name itself }
  if Result=Nil then
  begin
-  { If no image could be found, try the shader-name itself }
-  try
-   Result:=NeedGameFile(Name+'.tga') as QPixelSet;
-  except
-   Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
-  end;
+   try
+     try
+       Result:=NeedGameFile(Name+'.tga') as QPixelSet;
+     except
+       Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+     end;
+   except
+     Result:=NIL
+   end;
  end;
+
+ { examines all shaderstages for existing images }
+ if Result=Nil then
+ begin
+   for I:=0 to SousElements.Count-1 do
+   begin
+     Q:=SousElements[I];
+     if Q is QShaderStage then
+     begin
+       { Skip over $lightmap and those not containing images }
+       if QShaderStage(Q).ContainsImageReference then
+       begin
+         try
+           ValidStage:=QShaderStage(Q).ProvidesSomeImage;
+           { Missing a texture, shader invalid? Return NIL }
+           if not (ValidStage=Nil) then
+             { Set to first valid stage, so something is displayed in the texture-browser }
+             Result:=ValidStage;
+             break;
+         except
+           Result:=NIL;
+         end;
+       end;
+     end;
+   end;
+ end;
+
  {tiglari: giving shaders a size.  a presumably
   horrible place to do it, but doesn't work when
   shaders are being loaded }
