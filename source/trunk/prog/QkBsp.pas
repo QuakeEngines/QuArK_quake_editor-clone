@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.6  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -192,6 +195,7 @@ type
 const
  SignatureBSP2 = $50534249;
  VersionBSP2   = 38;
+ VersionBSP3   = 46;
 
 const
  Bsp2EntryNames : array[TBsp2EntryTypes] of String =
@@ -394,30 +398,41 @@ begin
   Raise EError(5519);
  Origine:=F.Position;
  F.ReadBuffer(Header, SizeOf(Header));
- if Header.Version<>VersionBSP2 then
-  Raise EErrorFmt(5572, [LoadName, Header.Version, VersionBSP2]);
- for E:=Low(E) to High(E) do
-  begin
-   if Header.Entrees[E].Taille<0 then
-    Raise EErrorFmt(5509, [84]);
-   if Header.Entrees[E].Taille=0 then
-    Header.Entrees[E].Position:=SizeOf(Header)
+
+ case Header.Version of
+   VersionBSP2:
+   begin
+     for E:=Low(E) to High(E) do
+     begin
+       if Header.Entrees[E].Taille<0 then
+         Raise EErrorFmt(5509, [84]);
+       if Header.Entrees[E].Taille=0 then
+         Header.Entrees[E].Position:=SizeOf(Header)
+       else
+       begin
+         if Header.Entrees[E].Position<SizeOf(Header) then
+           Raise EErrorFmt(5509, [85]);
+         if Header.Entrees[E].Position+Header.Entrees[E].Taille > Taille then
+         begin
+           Header.Entrees[E].Taille:=Taille - Header.Entrees[E].Position;
+           GlobalWarning(LoadStr1(5641));
+         end;
+       end;
+       F.Position:=Origine + Header.Entrees[E].Position;
+       Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Header.Entrees[E].Taille, Self);
+       SubElements.Add(Q);
+       LoadedItem(rf_Default, F, Q, Header.Entrees[E].Taille);
+     end;
+     ObjectGameCode:=CurrentQuake2Mode;
+   end; {bspversion versionquake 2}
+
+   VersionBSP3:
+   begin
+     Raise EErrorFmt(5602,[LoadName, Header.Version]);
+   end;
    else
-    begin
-     if Header.Entrees[E].Position<SizeOf(Header) then
-      Raise EErrorFmt(5509, [85]);
-     if Header.Entrees[E].Position+Header.Entrees[E].Taille > Taille then
-      begin
-       Header.Entrees[E].Taille:=Taille - Header.Entrees[E].Position;
-       GlobalWarning(LoadStr1(5641));
-      end;
-    end;
-   F.Position:=Origine + Header.Entrees[E].Position;
-   Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Header.Entrees[E].Taille, Self);
-   SubElements.Add(Q);
-   LoadedItem(rf_Default, F, Q, Header.Entrees[E].Taille);
-  end;
- ObjectGameCode:=CurrentQuake2Mode;
+     Raise EErrorFmt(5572, [LoadName, Header.Version, VersionBSP2]);
+  end;    {case bsp version}
 end;
 
 procedure QBsp.LoadFile(F: TStream; FSize: Integer);
