@@ -85,7 +85,7 @@ class Orientation(quarkpy.qmacro.dialogbox):
           Hint="positive: toward up,  negative: toward down"
         }
         sep: = {Typ="S" Txt=" "}    // some space
-        sep: = {Typ="S"}    // a separator line
+        sep: = {Typ="S" Txt=""}    // a separator line
         cancel:py = { }
       }
     """
@@ -295,6 +295,9 @@ quarkpy.mapentities.FaceType.menu = newmenu
 #
 #
 # $Log$
+# Revision 1.3  2001/02/20 21:30:20  tiglari
+# LookAt added
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

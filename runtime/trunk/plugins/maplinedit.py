@@ -71,7 +71,7 @@ class LinEditDlg (quarkpy.dlgclasses.LiveEditDlg):
         Hint = "Shear angles: Z crunch (toward X axis),"$0D " Y-lift (out of XY plane), Y-twist (from Y-axis orientation)" $0D " For mirror-image, set Y-twist to 180"
         }
       
-        sep: = { Typ="S"}
+        sep: = { Typ="S" Txt=""}
 
         exit:py = { }
     }
@@ -182,6 +182,9 @@ def macro_linedit(self):
 quarkpy.qmacro.MACRO_linedit = macro_linedit
 
 #$Log$
+#Revision 1.3  2001/05/12 18:57:36  tiglari
+#add Mirror checkbox
+#
 #Revision 1.2  2001/05/12 12:24:23  tiglari
 #add rotate & shear
 #
