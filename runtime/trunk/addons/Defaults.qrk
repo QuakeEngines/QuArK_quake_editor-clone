@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.154  2001/07/08 08:33:06  tiglari
+//reinstated elbow button for path dup; added 'level' spec for path dup and
+//  instance (elbow) dup.
+//
 //Revision 1.153  2001/07/08 00:26:25  tiglari
 //'short' specific for extruder
 //
@@ -503,7 +507,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap061801"
+      Version = "QuArK 6.3snap070901"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
