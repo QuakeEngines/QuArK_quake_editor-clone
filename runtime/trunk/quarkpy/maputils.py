@@ -376,10 +376,35 @@ def warpedCircleFrom4Points(n, points):
         circle.append(corner[0]+mat*point)
     return circle    
     
+
+SMALL = .1
+SMALLER = .001
+
+def colinear(list):
+    "first 2 should not be coincident"
+    if len(list) < 3:
+       return 1
+    norm = (list[1]-list[0]).normalized
+    v0 = list[0]
+    for v in list[2:]:
+        if abs(v0 - v)>SMALL:
+            norm2 = (v-v0).normalized
+            if abs(norm-norm2)<SMALLER:
+                return 1
+            if abs(norm+norm2)<SMALLER:
+                return 1
+        else:
+            return 1
+    return 0
+    
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.19  2001/06/09 22:35:12  tiglari
+#add warpec circle routine
+#
 #Revision 1.18  2001/05/13 01:07:58  tiglari
 #disable buildLinearMapping, add CaulkTexture()
 #
