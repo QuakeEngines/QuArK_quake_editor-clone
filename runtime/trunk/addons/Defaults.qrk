@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.215  2003/08/29 18:59:57  nerdiii
+//texture position/size with two decimals
+//
 //Revision 1.214  2003/07/04 19:58:21  cdunde
 //To add new wedge shape builder
 //
@@ -1599,7 +1602,7 @@ QQRKSRC1
         Code = "d" // Hardcoded value in Setup.PAS
         Program = "WOLFMP.EXE +set sv_pure 0"
 
-        Directory = "\Return To Castle Wolfenstin"
+        Directory = "c:\Progra~1\Return~1"
         CheckDirectory = "WOLFSP.EXE"
 
         CD = ""
@@ -1612,12 +1615,13 @@ QQRKSRC1
         AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
-        BuildPgm1  = "Q3MAP.EXE"
+        BuildPgm1  = "Q3MAP2.EXE"
         BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
-        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "Q3MAP.EXE"
+
+        BuildCheck1 = "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "Q3MAP2.EXE"
         BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
-        BuildPgm3  = "Q3MAP.EXE"
+        BuildPgm3  = "Q3MAP2.EXE"
         BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vlight "$22"%file%"$22
         BuildPgm4 = "BSPC.EXE"
         BuildArgs4 = "-threads 1 -ext _b0 -cfg %buildpgmsdir%\aascfg_sm.c -bsp2aas ..\%output%\%file%.bsp -output ..\%output%\maps"
@@ -1660,6 +1664,79 @@ QQRKSRC1
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
+
+      WildWest:config =
+      {
+        // WildWest game add on by SilverPaladin (Capt. Queeg to WildWest folk)
+        Game = "WildWest"
+        Code = "w" // Hardcoded value in Setup.PAS
+        Program = "WOLFMP.EXE +set sv_pure 0 "
+
+        Directory = "C:\Progra~1\Return~1\"
+        CheckDirectory = "WildWest.EXE"
+
+        CD = ""
+        CDDir = "WildWest"
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat="Brush Primitives"
+        AlwaysWriteThreeFields = "1"
+        StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
+        BuildPgm1  = "Q3MAP2.EXE"
+        BuildPgmsDir = "c:\Progra~1\Return~1\Radiant"
+// RtCW BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
+        BuildArgs1 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest "$22"%mapfile%"$22
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "Q3MAP2.EXE"
+        BuildArgs2 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vis -saveprt "$22"%mapfile%"$22
+// RtCW BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
+        BuildPgm3  = "Q3MAP2.EXE"
+        BuildArgs3 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vlight "$22"%mapfile%"$22
+// RtCW BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vlight "$22"%file%"$22
+        BuildPgm4 = "BSPC.EXE"
+        BuildArgs4 = "-threads 1 -ext _b0 -cfg %buildpgmsdir%\aascfg_sm.c -bsp2aas ..\%output%\%file%.bsp -output ..\%output%\maps"
+//        BuildCheck4= "+AAS"  // it's actually _b0.aas
+        BuildPgm5 = "BSPC.EXE"
+        BuildArgs5 = "-threads 1 -ext _b1 -cfg %buildpgmsdir%\aascfg_lg.c -bsp2aas %basepath%\%output%\%file%.bsp -output ..\%output%\maps"
+        TexturesPath = "textures/"
+        ShadersPath = "scripts/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "cowboys/kb_wood03"
+        DefaultTextureTrigger = "common/trigger"
+        DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "scripts/quark.shader"
+
+        BaseDir = "WildWest"
+        tmpQuArK = "WildWest"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = ""
+        RunMapCmdLine = " +devmap %s" // won't work, but open console and
+                                      //   run the map by /spmap <mapname> in the console
+        AddOns = "DataWildWest.qrk"$0D"Q3ArchLib.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        Console = "1"
+        Form = "GameWildWest"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+      }
+
       MOHAA:config =
       {
         Game = "MOHAA"
@@ -3397,6 +3474,84 @@ QQRKSRC1
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
+    GameWildWest:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "WildWest command-line"
+        Items = "WOLFMP.EXE +set sv_pure 0 +set fs_Game WildWest"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of WildWest"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "WildWest.exe"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMw"}    // switches to RTCW (cmd=GAM, game=d)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMw"}    // switches to RTCW (cmd=GAM, game=d)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "WildWest"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "WildWest"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "WildWest"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "WildWest"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "WildWest"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
     GameMOHAA:form =
     {
       Style = "3"
@@ -4453,7 +4608,7 @@ QQRKSRC1
         Hint = "The number of faces this polyhedron has|Number of faces"
       }
       center: = {
-        Typ = "EF03"     // Edit Float, 3 values, Short (max. 2 decimals)
+        Typ = "EF003"     // Edit Float, 3 values, Short (max. 2 decimals)
         Txt = "Center :"
         Hint = "The X, Y, Z coordinates of the center (you can enter other values to move the polyhedron)|Polyhedron center"
       }
@@ -6775,32 +6930,6 @@ QQRKSRC1
         }
       }
     }
-//    Text.toolbar =
-//    {
-//      Caption = "text"
-//      DockedTo = "topdock"
-//      DockPos = '32'
-//      Form = "_toolbar_"
-//      search:tbbtn = {
-//        Typ   = "M"
-//        Msg   = "TXSH"
-//        Hint  = "search for text"
-//        Icon  = $A88888AAAAA88888000008AAAA000008070008AAAA07000807000888A807
-//                $00080000000800000008A070000007000008007000700700000800700070
-//                $0700000AA0000000000000AAAA07000807000AAAAA00000A00000AAAAAA0
-//                $008AA0008AAAAAA0708AA0708AAAAAA000AAA000AAAAAAAAAAAAAAAAAAAA
-//      }
-//      replace:tbbtn = {
-//        Typ   = "M"
-//        Msg   = "TXRP"
-//        Hint  = "search and replace text"
-//        IconW = '18'
-//        Icon  = $777777777777700008000000777777774777708700000000777777774477708700000000777778444447
-//                $700008000000777784774477708700000000777747774777700008000000777747777777777777000000
-//                $777777777777777777000000008780007777774777000000707770077747774777000000780000877447
-//                $748777000000770700774444487777000000778008777447777777000000777007777747777777000000
-//      }
-//    }
     QuakeC.toolbar =
     {
       Caption = "QuakeC"
@@ -6828,145 +6957,6 @@ QQRKSRC1
       }
     }
   }
-
-//  QBSPBuild:incl =
-//  {
-//    Typ = "G"       // Go  (execute a program)
-//    CheckFileCfg = ":QBSP1"    // in case of failure, check this config item
-//    MustUpdate[] = "maps/[~map].bsp"   // this program is supposed to create or update this file (multiple files allowed, separate them with $0D)
-//    Exec[] = $22"[::QBSP1]"$22" [::QBSPCmd] maps/[~map]"        // $22 is quote
-//    Dir[] = "[::Directory]\[::tmpQuArK]"
-//    LinFile[] = "maps/[~map].lin"
-//    //AddToPack[] = "maps/[~map].prt"   // copy this file to the .pak, if the file exists and if a .pak is being created
-//  }
-//  EntsQBSPBuild:incl =
-//  {
-//    Typ = "G"       // Go  (execute a program)
-//    CheckFileCfg = ":QBSP1"    // in case of failure, check this config item
-//    MustUpdate[] = "maps/[~map].bsp"   // this program is supposed to create or update this file (multiple files allowed, separate them with $0D)
-//    Exec[] = $22"[::QBSP1]"$22" [::QBSPCmd] -onlyents maps/[~map]"        // $22 is quote
-//    Dir[] = "[::Directory]\[::tmpQuArK]"
-//  }
-//  VISBuild:incl =
-//  {
-//    Typ = "G"       // Go  (execute a program)
-//    CheckFileCfg = ":VIS1"    // in case of failure, check this config item
-//    MustUpdate[] = "maps/[~map].bsp"   // this program is supposed to create or update this file (multiple files allowed, separate them with $0D)
-//    Exec[] = $22"[::VIS1]"$22" [::VISCmd] maps/[~map]"        // $22 is quote
-//    Dir[] = "[::Directory]\[::tmpQuArK]"
-//  }
-//  LIGHTBuild:incl =
-//  {
-//    Typ = "G"       // Go  (execute a program)
-//    CheckFileCfg = ":LIGHT1"    // in case of failure, check this config item
-//    MustUpdate[] = "maps/[~map].bsp"   // this program is supposed to create or update this file (multiple files allowed, separate them with $0D)
-//    Exec[] = $22"[::LIGHT1]"$22" [::LIGHTCmd] -extra maps/[~map]"        // $22 is quote
-//    Dir[] = "[::Directory]\[::tmpQuArK]"
-//  }
-//  FastLIGHTBuild:incl =
-//  {
-//    Typ = "G"       // Go  (execute a program)
-//    CheckFileCfg = ":LIGHT1"    // in case of failure, check this config item
-//    MustUpdate[] = "maps/[~map].bsp"   // this program is supposed to create or update this file (multiple files allowed, separate them with $0D)
-//    Exec[] = $22"[::LIGHT1]"$22" [::LIGHTCmd] maps/[~map]"        // $22 is quote
-//    Dir[] = "[::Directory]\[::tmpQuArK]"
-//  }
-//  RunGame1:incl =
-//  {
-//    Typ = "+"        // macro
-//    cmd:macro = {Typ="M" Msg="3DFR"}     // close the 3D editor (in case it's 3DFX, it cannot be shared with Quake)
-//    cmd:macro = {Typ="O" RunGame="1"}    // extracts a few files needed for Quake
-//    cmd:macro = {Typ="M" Msg="FREE"}     // free some internal buffers (to give Quake more memory)
-//    cmd:macro = {;copy="RunGame"}        // do the RunGame:incl (from DataXX.qrk)
-//  }
-
-//Duplicators:incl =
-//{
-//  dup basic:incl =
-//  {
-//    loop:macro = {
-//      Typ="+"      // loop
-//      count[]="[~count]"
-//      cmd:macro = {Typ="O" Op="Move" offset[]="[~offset]"}
-//      cmd:macro = {Typ="O" Op="RotZ" angle[]="[~angle]"}
-//      cmd:macro = {Typ="O" Op="Save"}
-//    }
-//  }
-//  dup lin:incl =
-//  {
-//    loop:macro = {
-//      Typ="+"
-//      count[]="[~count]"
-//      cmd:macro = {Typ="O" Op="Move" offset[]="[~offset]"}
-//      cmd:macro = {Typ="O" Op="Linr" linear[]="[~linear]"}
-//      cmd:macro = {Typ="O" Op="Save"}
-//    }
-//  }
-//  dup symx:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="SymX"}
-//  }
-//  dup symy:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="SymY"}
-//  }
-//  dup symz:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="SymZ"}
-//  }
-//  dup symxy:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="SymX"}
-//    cmd:macro = {Typ="O" Op="Save"}
-//    cmd:macro = {Typ="O" Op="SymY"}
-//    cmd:macro = {Typ="O" Op="Done"}
-//    cmd:macro = {Typ="O" Op="SymY"}
-//  }
-//  digger:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="Neg"}
-//  }
-//  hollow maker:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="Save"}
-//    cmd:macro = {Typ="O" Op="Infl" inflate[]="-[~depth]"}
-//    cmd:macro = {Typ="O" Op="Neg"}
-//  }
-//  wall maker:incl =
-//  {
-//    cmd:macro = {Typ="O" Op="Infl" inflate[]="[~depth]"}
-//    cmd:macro = {Typ="O" Op="Done"}
-//    cmd:macro = {Typ="O" Op="Neg"}
-//  }
-//}
-
-//  ExtractFilesDef:incl =
-//  {
-//    quake.rc = {
-//      Data[] =
-//             "// This file has been created by QuArK - Quake Army Knife"
-//       $0D$0A"//  [:General:Version]   [:General:Date]"
-//       $0D$0A"//"
-//       $0D$0A"// For more info about QuArK please see the home page at :"
-//       $0D$0A"//"
-//       $0D$0A"//      http://www.planetquake.com/quark"
-//       $0D$0A"//"
-//       $0D$0A"//"
-//       $0D$0A"//                                   -- Armin Rigo"
-//       $0D$0A
-//       $0D$0A"exec default.cfg"
-//       $0D$0A"exec config.cfg"
-//       $0D$0A"exec autoexec.cfg"
-//       $0D$0A"echo"
-//       $0D$0A"echo "$22" "$80$81$81$81$81$82" Quake Army Knife 5 "$80$81$81$81$81$82$22
-//       $0D$0A"echo"
-//       $0D$0A"exec quark.cfg"
-//       $0D$0A"stuffcmds"
-//    }
-//    quark.cfg = {
-//      Data[] = "[~cfg]"
-//    }
-//  }
 
 }
 
