@@ -535,9 +535,9 @@ def intersecting_sides(side1, side2):
 # ----------- menu-management utilties ----------------
 #
 
-def gluemenuitem(String, ClickFunction,o, helptext=''):
+def gluemenuitem(String, ClickFunction,o, helptext='', infobaselink=''):
   "make a menu-item with a side attached"
-  item = qmenu.item(String, ClickFunction, helptext)
+  item = qmenu.item(String, ClickFunction, helptext,infobaselink=infobaselink)
   item.side = o
   return item
 
@@ -1604,7 +1604,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   projtex.text = "Project from tagged"
   texpop.items = texpop.items + [projtex,mirrorflipitem,wrappop]
   menu[:0] = [#extendtolinked(editor, o),
-              gluemenuitem("&Tag face",TagSideClick,o,tagtext),
+              gluemenuitem("&Tag face",TagSideClick,o,tagtext,"maped.plugins.tagside.html"),
 #              addtotagged,
               glueitem,
               snapitem,
@@ -1864,7 +1864,7 @@ for menitem, keytag in [(mentagside, "Tag Side"),
     MapHotKey(keytag,menitem,quarkpy.mapcommands)
 
 
-menselecttagged = quarkpy.qmenu.item("Select Tagged Faces",SelectTaggedClick,"|The things now tagged will become a multiple selection")
+menselecttagged = quarkpy.qmenu.item("Select Tagged Face(s)",SelectTaggedClick,"|The things now tagged will become a multiple selection")
 
 def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     oldselect(menu)
@@ -1872,8 +1872,13 @@ def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
     if editor is None: return
     list = gettaggedlist(editor)
     if list is None:
+        list = getagged(editor)
+        if list is not None:
+            list = [list]
+    if list is None:
         menselecttagged.state=qmenu.disabled
     else:
+        menselecttagged.state=qmenu.normal
         menselecttagged.taglist = list
      
 quarkpy.mapselection.onclick = selectionclick
@@ -1885,6 +1890,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.25  2003/03/24 08:57:15  cdunde
+#To update info and link to infobase
+#
 #Revision 1.24  2003/03/15 06:56:56  cdunde
 #To add hint updates and infobaselinks
 #
