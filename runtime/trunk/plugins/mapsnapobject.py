@@ -82,28 +82,19 @@ from quarkpy.maputils import *
 #     of the two planes to be the specified distance/
 
 def snapObjectToPlane(face, object, tagged, separation, doswivel=1, dotilt=1, doshift=1):
-    if math.fabs(face.normal*quarkx.vect(0,0,1))==1:
-        if math.fabs(tagged.normal*quarkx.vect(0,0,1))==1:
-            doswivel=dotilt=0
-        else:
-            doswivel=0
-            tiltaxis=orthogonalvect(tagged.normal)
-    else:
-        if math.fabs(tagged.normal*quarkx.vect(0,0,1))==1:
-             doswivel=0
-             tiltaxis=orthogonalvect(face.normal)
-        else:
-           facehoriz, taggedhoriz = orthogonalvect(face.normal), orthogonalvect(tagged.normal)
-#    if not doswivel:
-#        quarkx.msgbox('no swivel',2,4)
-#    if not dotilt:
-#        quarkx.msgbox('no tilt',2,4)
-#    if doswivel and dotilt:
-#        quarkx.msgbox('the full monty',2,4)
 
+    #
+    # FIXME: things sometimes get spun around 180 from what they
+    #  ought to be, if tagged face is horizontal
+    #
+    facehoriz=face.axisbase()[0]
+    taggedhoriz=tagged.axisbase()[0]
+    
+    if math.fabs(face.normal*Z_axis)==1 :
+        doswivel=0
+    
     face2, object2 = face.copy(), object.copy()
     idmat = quarkx.matrix(X_axis, Y_axis, Z_axis)
-#    if 0:
     if doswivel:
         #
         # think of the taggedhoriz as the x axis, facehoriz
@@ -111,16 +102,11 @@ def snapObjectToPlane(face, object, tagged, separation, doswivel=1, dotilt=1, do
         #  atan2 to recover the actual angle
         #
         yax = (Z_axis^taggedhoriz).normalized
- #       debug('yax '+`yax`)
- #       debug('facehoriz '+`facehoriz`)
         swivelangle=-math.atan2(facehoriz*yax,facehoriz*taggedhoriz)+math.pi
         swivelmat=matrix_rot_z(swivelangle)
     else:
         swivelmat = idmat
-#    debug('swivelmat '+`swivelmat`)
-#    if 0:
     if dotilt:
-        debug('tilt')
         facenormal=-swivelmat*face.normal
         #
         # Same idea, but this time we're interested
@@ -134,7 +120,6 @@ def snapObjectToPlane(face, object, tagged, separation, doswivel=1, dotilt=1, do
         tiltmat=ArbRotationMatrix(taggedhoriz, tiltangle)
     else:
         tiltmat=idmat
-#    debug('tilt '+`tiltmat`)
     mat = tiltmat*swivelmat
     object2.linear(object.origin,mat)
     face2.linear(object.origin,mat)
@@ -268,6 +253,7 @@ def snapFunc(o, current, editor):
     pack.face=o
     pack.tagged = gettaggedplane(editor)
     pack.editor=editor
+    pack.separation,=readWithDefault('snapobject_separation',(1,))
 
     def setup(self, pack=pack, editor=editor):
         
@@ -277,7 +263,7 @@ def snapFunc(o, current, editor):
             src[dattr]=readFlippedSetupCheckVal(oattr)
         
         src['separation']=readWithDefault('snapobject_separation',(1,))
-        pack.separation, = src['separation']
+        src['separation'] = pack.separation,
         pack.doswivel=pack.dotilt=pack.doshift=0
         if src['swivel']:
             pack.doswivel=1
@@ -293,7 +279,8 @@ def snapFunc(o, current, editor):
             writeFlippedSetupCheckVal(oattr,src[dattr])
         
         writeWithDefault('snapobject_separation',src['separation'], (1,))
-        
+        pack.separation,=src['separation']
+
     SnapObjectDlg('snapobject',editor,setup,action)
     
 #
@@ -306,6 +293,7 @@ def snapItems(current, editor, restricted):
         snapFunc(editor.layout.explorer.sellist[0], current, editor)
     
     snapItem=qmenu.item("Snap to tagged",snapClick)
+    snapItem.state=qmenu.default
     
     item = qmenu.popup(name,[snapItem],None,"|This is the name of some group or brush entity that contains what you have selected.\n\nLook at its submenu for stuff you can do!\n\nIf there's a bar in the menu, then the `Restrict Selections' menu item is checked, and you can only select stuff above the bar.")
     item.menuicon = current.geticon(1)
