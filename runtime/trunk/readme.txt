@@ -1,3 +1,9 @@
+           Patch 1 to QuArK Snapshot of 2002feb28
+           
+ * [tiglari]
+    fix groups hidden/greyed icon change (report by off_by_two)
+
+
 
            QuArK Snapshot of 2002feb28
            
@@ -14,7 +20,8 @@
     the options menu, then restart QuArk.  On the command menu will
     appear an item 'heapstatus', click it to get a display of how
     much memory has been allocated, and on a second click, how much
-    this has changed.
+    this has changed.  The undo stack seems to consume about 1500 bytes
+    for a simple brush move; I set this to 0 for leak hunting.
 
            QuArK Snapshot of 2002feb24
 
