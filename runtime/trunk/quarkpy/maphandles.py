@@ -584,7 +584,7 @@ class VertexHandle(qhandles.GenericHandle):
                                 vlist.append((abs (d), v))
 
                         #
-                        # sort the list of vertecies, this places the 
+                        # sort the list of vertecies, this places the
                         # most distant point at the end
                         #
                         vlist.sort ()
@@ -604,7 +604,7 @@ class VertexHandle(qhandles.GenericHandle):
 
                             #
                             # the rotational axis is between the two
-                            # points being drug.  the reference point is 
+                            # points being drug.  the reference point is
                             # the most distant point
                             #
                             rotationaxis = mvlist [0] - mvlist [1]
@@ -964,6 +964,25 @@ def viewsingleface(editor, view, face):
                 h.append(VertexHandle(v, p))
     view.handles = qhandles.FilterHandles(h, SS_MAP) + BuildCyanLHandles(editor, face)
 
+#DECKER - begin
+    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
+    oldx, oldy, doautozoom = 0, 0, 0
+    try:
+        oldorigin = view.info["origin"]
+        if not abs(origin - oldorigin):
+            oldscale = view.info["scale"]
+            if oldscale is None:
+                doautozoom = 1
+            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
+        else:
+            doautozoom = 1
+    except:
+        doautozoom = 1
+
+    if doautozoom:
+        oldscale = 0.01
+#DECKER - end
+
     v = orthogonalvect(n, editor.layout.views[0])
     view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
     view.viewmode = "tex"
@@ -976,8 +995,11 @@ def viewsingleface(editor, view, face):
                  "noclick": None,
                  "mousemode": None }
     singlefacezoom(view, origin)
-    singlefaceautozoom(view, face)
+    if doautozoom: #DECKER
+        singlefaceautozoom(view, face) #DECKER
     editor.setupview(view, drawsingleface, 0)
+    if (oldx or oldy) and not doautozoom: #DECKER
+        view.scrollto(oldx, oldy) #DECKER
     return 1
 
 
