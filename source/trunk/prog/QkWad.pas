@@ -28,7 +28,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkFileObjects, TB97, QkObjects, StdCtrls, ExtCtrls, ComCtrls, CommCtrl,
-  QkListView, QkTextures, Game, QkForm, QkPixelSet;
+  QkListView, QkTextures, Game, QkForm, QkPixelSet, ImgList;
 
 type
  QWad = class(QLvFileObject)
@@ -704,13 +704,13 @@ begin
       if Tex=Nil then
        begin
         Tex:=TBitmap.Create;
-        Tex.Width:=64;
-        Tex.Height:=64;
+        Tex.Width:=64;  {DECKER - try to figure out how to make these modifyable, so QuArK won't crash!}
+        Tex.Height:=64; {       - and actually display the images in 32x32, 128x128, 256x256 or ...}
        end;
       Q:=QPixelSet(TexLoop[J]).LoadPixelSet;
       PSD.Size:=QPixelSet(Q).GetSize;
       Reduction:=0;
-      while (PSD.Size.X>64) or (PSD.Size.Y>64) do
+      while (PSD.Size.X>(*64*)Tex.Width) or (PSD.Size.Y>(*64*)Tex.Height) do
        begin
         PSD.Size.X:=PSD.Size.X div 2;
         PSD.Size.Y:=PSD.Size.Y div 2;
@@ -739,9 +739,9 @@ begin
           PSDConvert(NewPSD, PSD, ccTemporary);
          end;
        DC:=Tex.Canvas.Handle;
-       PatBlt(DC, 0, 0, 64, 64, Blackness);
-       Gauche:=(64-NewPSD.Size.X) div 2;
-       NewPSD.Paint(DC, Gauche, 64-NewPSD.Size.Y);
+       PatBlt(DC, 0, 0, (*64*)Tex.Width, (*64*)Tex.Height, Blackness);
+       Gauche:=((*64*)Tex.Width-NewPSD.Size.X) div 2;
+       NewPSD.Paint(DC, Gauche, (*64*)Tex.Height-NewPSD.Size.Y);
       finally
        NewPSD.Done;
        PSD.Done;
@@ -750,18 +750,20 @@ begin
       on E: Exception do
        with Tex.Canvas do
         begin
-         PatBlt(Handle, 0,0,64,64, Whiteness);
+         PatBlt(Handle, 0,0,(*64*)Tex.Width,(*64*)Tex.Height, Whiteness);
          Font.Name:='Small fonts';
          Font.Size:=6;
          ErrorMsg:=GetExceptionMessage(E);
-         R.Left:=3;
-         R.Top:=5;
-         R.Right:=62;
-         R.Bottom:=64;
+         R.Left:=(*3*)1;
+         R.Top:=(*5*)1;
+         R.Right:=(*62*)Tex.Width-2;
+         R.Bottom:=(*64*)Tex.Height-2;
          DrawText(Handle, PChar(ErrorMsg), Length(ErrorMsg), R,
           DT_NOCLIP or DT_NOPREFIX or DT_WORDBREAK);
+(*DECKER - don't change the displayed texture-name to "texture/....."
          if J=0 then
           NomTexture:=Q.Name;
+DECKER*)
         end;
      end;
     {if ScreenColors<>0 then
@@ -787,7 +789,12 @@ begin
     { add the list view item }
    if TexLoop.Count>1 then
     NomTexture:=NomTexture+' × '+IntToStr(TexLoop.Count);
-
+(*
+{DECKER-begin - How can we detect that this "texture" is a shader?}
+   if Q is QShader then
+    NomTexture:=NomTexture+Chr(13)+'Shader';
+{DECKER-end}
+*)
    Q:=QObject(TexLoop[0]);
    Item:=ListView1.Items.Add;
    {$IFDEF Debug}
