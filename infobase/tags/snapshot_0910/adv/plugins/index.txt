@@ -1,0 +1,7 @@
+title: Plug-Ins
+
+Plug-Ins are scripts programmed in Python that modify existing features or add new features to QuArK. They are mainly related to the map editor, which is itself programmed mostly in Python.
+
+See section
+<ref> adv/quarkpy
+ for more information about the current Python code base.
