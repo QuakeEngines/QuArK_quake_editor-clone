@@ -166,6 +166,7 @@ def MACRO_OpenGL(minx, miny):
     import qopengl, qeditor
     qopengl.open(qeditor.mapeditor(), minx, miny, bkgnd=1)  #, force=1)
 
+qeditor_loaded=0
 def MACRO_shutdown(text):
 #    quitfile=open(quarkx.exepath+'quit.txt','w')
 #    quitfile.write('quitting\n')
@@ -173,7 +174,10 @@ def MACRO_shutdown(text):
 
     del qutils.ico_objects
     del qutils.ico_editor
-    
+
+    if qeditor_loaded:       
+       del quarkx.redlinesicons
+
     for key in qutils.ico_dict.keys():
         del qutils.ico_dict[key]
 #        quitfile.write('zapping '+key+'\n')
@@ -314,6 +318,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.15  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.14  2001/10/20 02:13:18  tiglari
 #live pointer hunt: redo shutdown macro
 #
