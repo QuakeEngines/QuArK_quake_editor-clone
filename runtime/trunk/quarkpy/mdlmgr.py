@@ -20,7 +20,6 @@ Model editor Layout managers.
 
 import math
 import quarkx
-import string
 import qtoolbar
 import qmenu
 from mdlutils import *
@@ -185,6 +184,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.6  2001/03/15 21:07:49  aiv
+#fixed bugs found by fpbrowser
+#
 #Revision 1.5  2000/10/11 19:07:47  aiv
 #Bones, and some kinda skin vertice viewer
 #

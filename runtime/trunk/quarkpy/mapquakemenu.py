@@ -12,7 +12,6 @@ Implementation of QuArK Map editor's "Quake" menu
 
 
 
-import string
 import quarkx
 from qdictionnary import Strings
 from maputils import *
@@ -60,13 +59,13 @@ def CreateCheckFileExtensionArray(instring):
     for i in range(0, len(reducedstring)):
         ext, action = FindSingleExtension(reducedstring[i:])
         if (ext is not None):
-            extactionlist = extactionlist + [(string.upper(ext), action)]
+            extactionlist = extactionlist + [(ext.upper, action)]
     return extactionlist
 
 
 
 def ExtensionFromFilter(filter):
-    startex = string.rfind(filter,'|*.')
+    startex = filter.rfind('|*.')
     return filter[startex+2:]
 
 
@@ -87,7 +86,7 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
         self.checkextensions = checkextensions
         # Remove file-extension
         try:
-            self.bspfile_wo_ext = bspfile[:string.rindex(bspfile, ".")]
+            self.bspfile_wo_ext = bspfile[:bspfile.rindex(".")]
         except:
             self.bspfile_wo_ext = bspfile
         # Initial check for files with checkextensions
@@ -104,7 +103,7 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
         # This is the place for the actions, that have HARDCODED names!
         if (action is None):
             return
-        action = string.upper(action)
+        action = action.upper()
         if (action == "LOADLINFILE"):
             if self.editor is not None:
                 import mapholes
@@ -126,7 +125,7 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
             f=open(filename, "r")
             data = f.readlines()
             for line in data:
-                if string.strip(line)!='':
+                if line.strip()!='':
                     return 1
         return 0 # not actually necessary because Python functions returns None by default        
 
@@ -251,7 +250,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     # Turn the "extracted" to lowercase.
     #
     for i in range(len(extracted)):
-        extracted[i] = string.lower(extracted[i])
+        extracted[i] = extracted[i].lower()
 
     #
     # First, extract all textures and compute .map file names.
@@ -279,7 +278,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     if mapsearch.CheckMap() == 0:
                         return
 
-        map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
+        map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname).lower()
         mapinfo = {"map": map}
         if buildmode["ExportMapFile"] \
         or buildmode["BuildPgm1"] \
@@ -319,7 +318,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
             list2 = list
             if len(list2):
                 wadlist[texwad] = None
-            mapinfo["wad"] = string.join(wadlist.keys(), ';')
+            mapinfo["wad"] = ';'.join(wadlist.keys())
         else:
             texwad = setup["TextureWad"]
             mapinfo["wad"] = texwad
@@ -371,7 +370,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     if hxstrfile and len(maplist):
         try:
             hxstr = quarkx.needgamefile(hxstrfile)["Data"]
-            extracted.append(string.lower(hxstrfile))
+            extracted.append(hxstrfile.lower())
         except:
             pass
 
@@ -457,14 +456,14 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
                     # Search and replace any user-variable
                     newcmdline = cmdline
-                    newcmdline = string.replace(newcmdline, "%mappath%",  argument_mappath)
-                    newcmdline = string.replace(newcmdline, "%mapfile%",  argument_mapfile)
-                    newcmdline = string.replace(newcmdline, "%file%",     argument_file)
-                    newcmdline = string.replace(newcmdline, "%basepath%", setup["Directory"])
-                    newcmdline = string.replace(newcmdline, "%quarkpath%", quarkx.exepath)
+                    newcmdline = newcmdline.replace("%mappath%",  argument_mappath)
+                    newcmdline = newcmdline.replace("%mapfile%",  argument_mapfile)
+                    newcmdline = newcmdline.replace("%file%",     argument_file)
+                    newcmdline = newcmdline.replace("%basepath%", setup["Directory"])
+                    newcmdline = newcmdline.replace("%quarkpath%", quarkx.exepath)
                     if setup["BuildPgmsDir"] is not None:
-                       newcmdline = string.replace(newcmdline, "%buildpgmsdir%", setup["BuildPgmsDir"])
-                    newcmdline = string.replace(newcmdline, "%output%", quarkx.outputfile())
+                       newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
+                    newcmdline = newcmdline.replace("%output%", quarkx.outputfile())
 
 #                    debug('mappath: '+argument_mappath)
 #                    debug('mapfile: '+argument_mapfile)
@@ -590,7 +589,7 @@ portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the 
 def prepAuxFileMenuItem(item,extkey,defext):
     editor=item.editor
     mapfileobject = editor.fileobject
-    map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
+    map = checkfilename(mapfileobject["FileName"] or mapfileobject.shortname).lower()
     mapfilename = quarkx.outputfile('')+'maps\\'+map
     auxextension = quarkx.setupsubset()[extkey]
     if not auxextension:
@@ -661,6 +660,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.36  2003/03/28 16:09:23  cdunde
+#More infobase updates
+#
 #Revision 1.35  2003/03/27 20:35:48  cdunde
 #Update info and links to infobase.
 #

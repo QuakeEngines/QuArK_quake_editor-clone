@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2003/03/16 01:18:48  tiglari
+higher python version defs now in Python/PyVersions.inc
+
 Revision 1.12  2003/03/06 08:17:49  tiglari
 MakePyVect5 needs to work slightly differently when Python 20 or above is used
 
@@ -1852,11 +1855,7 @@ end;
 function MakePyVect5(const nX, nY, nZ, nS, nT: Double) : PyVectST;
 begin
   GetMem(Result, SizeOf(TyVectST));
-{$IFDEF PYTHON20_OR_HIGHER}
   Result:=PyVectST(PyObject_Init(Result, @TyVect_Type));
-{$ELSE}
-  Result:=PyVectST(_PyObject_New(@TyVect_Type ,Result));
-{$ENDIF}
   with PyVectST(Result)^ do
   begin
     V.X:=nX;

@@ -20,7 +20,6 @@ Info = {
    "quark":         "Version 5.1" }
 
 
-import string
 import quarkpy.qmenu
 import quarkpy.qmacro
 import quarkpy.mapsearch
@@ -69,9 +68,9 @@ class SearchDlg(quarkpy.qmacro.dialogbox):
             else:
                 slist.append("'%s' objects" % key)
         slist.append("All objects")
-        klist.append(string.join(klist[1:], ","))
-        src["kind$Items"] = string.join(slist, "\015")
-        src["kind$Values"] = string.join(klist, "\015")
+        klist.append(",".join(klist[1:]))
+        src["kind$Items"] = "\015".join(slist)
+        src["kind$Values"] = "\015".join(klist)
 
         for key, value in self.src_backup.items():
             src[key]=value
@@ -96,11 +95,11 @@ class SearchDlg(quarkpy.qmacro.dialogbox):
             sellist = self.editor.Root.subitems
         list = []
         def fix(s):
-            s = string.strip(s)
+            s = s.strip()
             if s[:1] != ':':
                 return ':'+s
             return s
-        tlist = map(fix, string.split(self.src["kind"], ","))
+        tlist = map(fix, self.src["kind"].split(","))
         for obj in sellist:
             for t in tlist:
                 list = list + obj.findallsubitems(classname, t)
@@ -238,6 +237,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
+# Revision 1.8  2003/03/21 05:47:45  cdunde
+# Update infobase and add links
+#
 # Revision 1.7  2002/04/07 12:46:06  decker_dk
 # Pretty separator.
 #

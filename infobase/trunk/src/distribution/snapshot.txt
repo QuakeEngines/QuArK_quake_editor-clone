@@ -58,7 +58,6 @@ $ cp -r runtime/* quark-win32-20070831/
 $ rm -f quark-win32-20070831/dlls/d3dxas.dll
 $ rm -f quark-win32-20070831/dlls/readme.txt
 $ cp micro-python22/dlls/python.dll quark-win32-20070821/dlls/
-$ cp -r micro-python22/lib/ quark-win32-20070831/
 </code></li>
 <li>Zip up the files.
 <code>$ zip -9rq quark-help-20070831.zip quark-help-20070831/

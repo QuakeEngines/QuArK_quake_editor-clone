@@ -13,7 +13,6 @@ Map Editor Buttons and implementation of editing commands
 
 
 
-import string
 import quarkx
 import qtoolbar
 from qdictionnary import Strings
@@ -188,20 +187,20 @@ def prepareobjecttodrop(editor, obj):
                 raise "Problem with 'Default polyhedron size'"
         except:
             defpolysize = [64, 64, 64] # must be an array of three values
-        oldincl = string.lower(oldincl)
+        oldincl = oldincl.lower()
         if (string.find(oldincl, "poly") > -1):
             # Create a default-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex))
-        if (string.find(oldincl, "trigger") > -1):
+        if (oldincl.find("trigger") > -1):
             # Create a trigger-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_trigger, "trigger poly"))
-        if (string.find(oldincl, "clip") > -1):
+        if (oldincl.find("clip") > -1):
             # Create a clip-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_clip, "clip poly"))
-        if (string.find(oldincl, "origin") > -1):
+        if (oldincl.find("origin") > -1):
             # Create a origin-poly half the X/Y-size, and 1.5 less the Z-size
             obj.appenditem(newcubeXYZ(defpolysize[0]/2, defpolysize[1]/2, defpolysize[2]/1.5, tex_for_origin, "origin poly"))
-        if (string.find(oldincl, "caulk") > -1):
+        if (oldincl.find("caulk") > -1):
             # Create a caulk-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex_for_caulk, "caulk poly"))
 
@@ -698,6 +697,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.14  2002/05/18 22:31:56  tiglari
+#remove debug statement
+#
 #Revision 1.13  2001/08/23 22:11:01  tiglari
 #usercenters now move when higher groups are rotated etc.
 #

@@ -7,7 +7,7 @@ Python macros available for direct call by QuArK
 #$Header$
 #
 
-import string, time, sys
+import time, sys
 
 class Key:
     def __init__(self):
@@ -165,14 +165,14 @@ class Entity:
         def SortedAppendItem(obj, subitem):
             i = 0
             for s in obj.subitems:
-                if (string.lower(s.shortname) > string.lower(subitem.shortname)):
+                if (s.shortname.lower() > subitem.shortname.lower()):
                     break
                 i = i + 1
             obj.insertitem(i, subitem)
 
         s = quarkx.newobj(self.m_classname + self.Type())
         folder = indent
-        p = string.find(s.name, "_")
+        p = s.name.find("_")
         if (p == -1):
             folder = indent.findname("other entities.qtxfolder")
             if (folder is None):
@@ -211,7 +211,7 @@ class BrushEntity(Entity):
         return ":b"
 
     def GetFolderStuff(self, s):
-        if (string.lower(self.m_classname) == "worldspawn"):
+        if (self.m_classname.lower() == "worldspawn"):
             return
         s["angle"] = "360"
         s[";incl"] = "defpoly"
@@ -315,7 +315,7 @@ def CloseSpawnflag(token):
 
 def AddComment(token):
     global currentcomment
-    token = string.replace(token, "\t", "    ")
+    token = token.replace("\t", "    ")
     if (currentcomment is None):
         currentcomment = token
     else:
@@ -336,7 +336,7 @@ def readentirefile(file):
         line = f.readline()
         if not line:
             break
-        line = string.strip(line)
+        line = line.strip()
         if line:
             filecontents = filecontents + line + "\n"
     f.close()
@@ -521,8 +521,8 @@ def makeqrk(root, filename, gamename):
     r_tbx.flags = r_tbx.flags | quarkpy.qutils.OF_TVSUBITEM
     root.appenditem(r_tbx)
 
-    e_tbx = quarkx.newobj("Entities for "+string.split(gamename, "\\")[-1]+".qtxfolder")
-    e_tbx[";desc"] = "Created from "+string.split(filename, "\\")[-1]
+    e_tbx = quarkx.newobj("Entities for "+gamename.split("\\")[-1]+".qtxfolder")
+    e_tbx[";desc"] = "Created from "+filename.split("\\")[-1]
     r_tbx.appenditem(e_tbx)
 
     r_tbx["Root"] = e_tbx.name
@@ -545,6 +545,14 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.5  2003/06/21 14:46:22  nerdiii
+#I modified the .def importer to work around three bugs:
+#1. {...} entries are ignored now, caused parse errors before
+#2. tokens starting with a digit such as '1st_left' are no longer treated as
+#a number
+#3. some entities have unused flags, that are named '?' in QERadiant. The
+#importer used to interpret them as special characters.
+#
 #Revision 1.4  2002/04/17 12:32:20  decker_dk
 #Minor problem, which caused it to not convert the MOHAA .DEF file correctly.
 #

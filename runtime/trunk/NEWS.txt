@@ -16,10 +16,16 @@ $Id$
 6.4.0 alpha 3
 =============
 
+ * [peter-b]: Removed reliance on external string library (QuArK now
+      uses Python's built-in string library directly).
+
+ * [peter-b]: Python 1.5 no longer supported: QuArK now only works
+      with Python 2.0 or higher.
+
  * [cdunde]: Added 'Grid scale in 2D views' feature to Options menu.
-      By activating the sub-menu items they will place the current grid
-      setting numbers on that particular view and will increase or
-      decrease as you zoom in and out.
+      By activating the sub-menu items they will place the current
+      grid setting numbers on that particular view and will increase
+      or decrease as you zoom in and out.
 
  * [peter-b]: Reorganised documentation to conform more closely to the
       norm for GPL projects.

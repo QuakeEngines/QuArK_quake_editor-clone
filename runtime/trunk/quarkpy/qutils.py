@@ -250,8 +250,7 @@ def loadmapeditor(what=None):
                 raise "Serious failure in quarkpy.qutils.loadmapeditor: Missing specific-value 'BezierPatchPluginPrefixes' in Defaults.QRK"
             loadmapeditor = lambda: None # next calls to loadmapeditor() do nothing. Everything is now loaded!
             import mapbezier
-            import string
-            for prefix in string.split(pluginprefixes):
+            for prefix in pluginprefixes.split():
                 plugins.LoadPlugins(string.strip(prefix))
 
     # force an initial load of bezier-support, if any for the current game-mode.
@@ -536,6 +535,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2003/03/15 01:57:40  tiglari
+#add hintPlusInfobaselink function
+#
 #Revision 1.21  2002/05/11 02:15:41  tiglari
 #added attribute-management methods
 #

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2003/12/12 22:20:09  peter-b
+Tidied up error messages & changed a couple to reflect that Python is now bundled
+
 Revision 1.37  2003/11/10 19:44:44  silverpaladin
 Fixed a problem with menus not showing up on the Toolbox menu.
 
@@ -137,10 +140,10 @@ uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
 const
-{$IFDEF PYTHON_BUNDLED}
- PythonSetupString = 'import sys'#10'sys.path = ["%s", "%s\\lib"]'#10'import quarkpy';
+{$IFDEF PYTHON_SDK}
+ PythonSetupString = 'import sys'#10'sys.path[:0] = ["%s"]'#10'import quarkpy';
 {$ELSE}
- PythonSetupString = 'import sys'#10'sys.path[:0] = ["%s", "%s\\lib"]'#10'import quarkpy';
+ PythonSetupString = 'import sys'#10'sys.path = ["%s"]'#10'import quarkpy';
 {$ENDIF}
  PythonRunPackage  = 'quarkpy.RunQuArK()';
  FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure QuArK is correctly installed; reinstall it if required.';

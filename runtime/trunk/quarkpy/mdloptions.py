@@ -13,7 +13,6 @@ Implementation of QuArK Model editor's "Options" menu
 
 
 import quarkx
-import string
 from qdictionnary import Strings
 from mdlutils import *
 import qmenu
@@ -39,7 +38,7 @@ def Plugins1Click(item):
     import plugins
     group = quarkx.newobj("Loaded Plug-ins:config")
     for p in plugins.LoadedPlugins:
-        txt = string.split(p.__name__, ".")[-1]
+        txt = p.__name__.split(".")[-1]
         ci = quarkx.newobj("%s.toolbar" % txt)
         try:
             info = p.Info
@@ -95,5 +94,8 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

@@ -7,7 +7,7 @@ Python macros available for direct call by QuArK
 #$Header$
 #
 
-import string, time, sys
+import time, sys
 
 class Key:
     def __init__(self):
@@ -160,7 +160,7 @@ class Entity:
     def GenerateFolder(self, indent):
         s = quarkx.newobj(self.m_classname + self.Type())
         folder = indent
-        p = string.find(s.name, "_")
+        p = s.name.find("_")
         if (p == -1):
             folder = indent.findname("other entities.qtxfolder")
             if (folder is None):
@@ -197,7 +197,7 @@ class BrushEntity(Entity):
         return ":b"
 
     def GetFolderStuff(self, s):
-        if (string.lower(self.m_classname) == "worldspawn"):
+        if (self.m_classname.lower() == "worldspawn"):
             return
         s["angle"] = "360"
         s[";incl"] = "defpoly"
@@ -245,11 +245,11 @@ def CreateClass(token):
     global theEntity, theEntities
     CloseClass("--CloseByCreateClass--")
     # Create entity-type
-    if (string.lower(token) == "solidclass"):
+    if (token.lower() == "solidclass"):
         theEntity = BrushEntity()
-    elif (string.lower(token) == "pointclass"):
+    elif (token.lower() == "pointclass"):
         theEntity = PointEntity()
-    elif (string.lower(token) == "baseclass"):
+    elif (token.lower() == "baseclass"):
         theEntity = InheritEntity()
     else:
         raise "Unknown @-token:", token
@@ -263,7 +263,7 @@ def CloseClass(token):
 def BeginInherit(token):
     global currentinherit, currentinheritargs
     EndInherit("--EndByBeginInherit--")
-    currentinherit = string.lower(token)
+    currentinherit = token.lower()
     currentinheritargs = []
 
 def AddInherit(token):
@@ -308,7 +308,7 @@ def BeginKey(token):
 def AddKeyType(token):
     global currentkeyname, theKey
     # Determine what type this key is, so the correct object can be created
-    token = string.lower(token)
+    token = token.lower()
     if (token == "integer"):
         theKey = KeyNumeric()
     elif (token == "string" \
@@ -404,8 +404,8 @@ def readentirefile(file):
         line = f.readline()
         if not line:
             break
-        line = string.strip(line)
-        line = string.split(line, "//")[0] # Remove end-of-line comments
+        line = line.strip()
+        line = line.split("//")[0] # Remove end-of-line comments
         if line:
             filecontents = filecontents + line + "\n"
     f.close()
@@ -605,6 +605,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.5  2002/02/05 18:32:58  decker_dk
+#Corrected a problem with debug() calls
+#
 #Revision 1.4  2001/12/02 09:57:45  decker_dk
 #Removing 'os' from the import list, and some other minor fixes.
 #

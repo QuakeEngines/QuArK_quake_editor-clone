@@ -16,7 +16,6 @@ import qutils
 qutils.loadmapeditor()
 from maputils import *
 import qconsole
-import string
 
 
 def BuildConsole():
@@ -122,9 +121,9 @@ class GameConsole(BatchConsole):
                         else:                                               #DECKER
                             qobj.savefile(quarkx.outputfile(qname))
                     else:
-                        type1 = string.upper(qobj.type)
+                        type1 = qobj.type.upper()
                         if type1:
-                            type2 = string.upper(qname[-len(type1):])
+                            type2 = qname[-len(type1):].upper()
                             if type1 != type2:
                                 raise "Invalid file types : %s should be of type %s" % (qname,type1)
                             qname = qname[:-len(type1)]
@@ -201,6 +200,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.6  2001/07/08 20:56:30  tiglari
+#fix crash when ExtraCMDLine=""
+#
 #Revision 1.5  2001/06/21 17:34:12  decker_dk
 #quarkx.openconfigdlg()
 #

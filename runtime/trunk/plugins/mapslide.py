@@ -30,7 +30,6 @@ Info = {
    "quark":         "Version 6.3" }
 
 
-import string
 import quarkx
 import quarkpy.mapmenus
 import quarkpy.mapentities
@@ -368,7 +367,7 @@ def slidePopup(o, editor):
 def makeEdgeSlide(o, editor):
     label = types[o.type]
     item = qmenu.item("along/around tagged edge",
-        EdgeSlideClick, "|Slides %s along or around tagged axis."%string.lower(label))
+        EdgeSlideClick, "|Slides %s along or around tagged axis."%label.lower())
     tagged = gettaggededge(editor)
     if tagged is None:
         item.state = qmenu.disabled
@@ -387,7 +386,7 @@ def makeEdgeSlide(o, editor):
 def makePlaneSlide(o, editor):
     label = types[o.type]
     item = qmenu.item("above tagged plane",
-        PlaneSlideClick, "|Slides %s above tagged plane."%string.lower(label))
+        PlaneSlideClick, "|Slides %s above tagged plane."%label.lower())
     tagged = gettaggedplane(editor)
     if tagged is None:
         item.state = qmenu.disabled
@@ -419,6 +418,9 @@ for Type in (quarkpy.mapentities.PolyhedronType,
 #
 #
 # $Log$
+# Revision 1.5  2001/08/11 02:53:02  tiglari
+# refurbish & add slide above tagged plane facility
+#
 # Revision 1.4  2001/06/17 21:10:56  tiglari
 # fix button captions
 #

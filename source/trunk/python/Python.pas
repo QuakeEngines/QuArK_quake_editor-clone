@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2003/08/21 14:28:59  peter-b
+Fix for type incompatibility bug when compiling for separate Python.
+
 Revision 1.14  2003/08/21 14:03:29  peter-b
 Fix for module search path bug.
 
@@ -253,21 +256,21 @@ type
 
                  tp_doc: PChar;
 
-{$IFDEF PYTHON20_OR_HIGHER}
+{$IFDEF PYTHON20}
     // call function for all accessible objects
     tp_traverse:    traverseproc;
 
     // delete references to contained objects
     tp_clear:       inquiry;
 {$ENDIF}
-{$IFDEF PYTHON21_OR_HIGHER}
+{$IFDEF PYTHON21}
     // rich comparisons
     tp_richcompare: richcmpfunc;
 
     // weak reference enabler
     tp_weaklistoffset: Longint;
 {$ENDIF}
-{$IFDEF PYTHON22_OR_HIGHER}
+{$IFDEF PYTHON22}
     // Iterators
     tp_iter : getiterfunc;
     tp_iternext : iternextfunc;
@@ -292,17 +295,10 @@ type
     tp_subclasses       : PyObject;
     tp_weaklist         : PyObject;
 {$ENDIF}
-{$IFDEF PYTHON20}
     //More spares
     tp_xxx7:        LongInt;
     tp_xxx8:        LongInt;
-{$ENDIF}
-{$IFDEF PYTHON15}
-    //More spares
-    tp_xxx7:        LongInt;
-    tp_xxx8:        LongInt;
-{$ENDIF}
-                end;
+      end;
 
 const
  PYTHON_API_VERSION = 1011; // Rowdy (was: 1007;)
@@ -390,11 +386,7 @@ PyInt_AsLong: function (o: PyObject) : LongInt; cdecl;
 PyFloat_FromDouble: function (Value: Double) : PyObject; cdecl;
 PyFloat_AsDouble: function (o: PyObject) : Double; cdecl;
 
-{$IFDEF PYTHON20_OR_HIGHER}
 PyObject_Init: function (o: PyObject; t: PyTypeObject) : PyObject; cdecl;
-{$ELSE}
-_PyObject_New: function (t: PyTypeObject; o: PyObject) : PyObject; cdecl;
-{$ENDIF}
 
 // function _PyObject_NewVar(t: PyTypeObject; i: Integer; o: PyObject) : PyObject; cdecl;
 
@@ -503,11 +495,7 @@ const
     (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong'              ),
     (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble'        ),
     (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble'          ),
-{$IFDEF PYTHON20_OR_HIGHER}
     (Variable: @@PyObject_Init;              Name: 'PyObject_Init'             ),
-{$ELSE}
-    (Variable: @@_PyObject_New;              Name: '_PyObject_New'             ),
-{$ENDIF}
     (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New'           ) );
 
  {-------------------}
@@ -563,33 +551,23 @@ begin
 {$ELSE}
 // Python isn't bundled with QuArK, so look on system
 // dll:=try_alternative_python_version;
-  Lib:=0;
-{$IFDEF PYTHON20_OR_HIGHER}
+{$IFDEF PYTHON23}
     dll:='python23.dll';
     Lib:=LoadLibrary(PChar(dll));
-{$IFNDEF PYTHON23_OR_HIGHER}
+{$IFDEF PYTHON22}
     if Lib=0 then
       dll:='python22.dll';
       Lib:=LoadLibrary(PChar(dll));
-{$IFNDEF PYTHON22_OR_HIGHER}
+{$IFDEF PYTHON21}
     if Lib=0 then
       dll:='python21.dll';
       Lib:=LoadLibrary(PChar(dll));
-{$IFNDEF PYTHON21_OR_HIGHER}
+{$IFDEF PYTHON20}
     if Lib=0 then
       dll:='python20.dll';
       Lib:=LoadLibrary(PChar(dll));
 {$ENDIF}
 {$ENDIF}
-// if dll<>'' then
-//   Lib:=LoadLibrary(pchar(dll));
-{$ELSE}
-  if Lib=0 then
-    dll:='python151.dll';
-    Lib:=LoadLibrary(PChar(dll));
-  if Lib=0 then
-    dll:='python15.dll';
-    Lib:=LoadLibrary(PChar(dll));
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
@@ -654,11 +632,7 @@ var
  o: PyObject;
 begin
   GetMem(o, t^.tp_basicsize);
-{$IFDEF PYTHON20_OR_HIGHER}
   Result:=PyObject_Init(o,t);
-{$ELSE}
-  Result:=_PyObject_New(t,o);
-{$ENDIF}
 end;
 
 {function PyObject_NEWVAR(t: PyTypeObject; i: Integer) : PyObject;

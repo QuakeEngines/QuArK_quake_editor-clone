@@ -298,8 +298,7 @@ def MACRO_ent_convertfrom(text):
     a.reverse()
     # Decker - Some menuitem-captions contains a '&'-character (you know, the one which tells what mnemonic-key can be used)
     # These '&'-characters has to be removed, for the entfn[text] to work properly.
-    import string
-    text = string.replace(text, "&", "")
+    text = text.replace("&", "")
     entf = entfn[text]
     if entf is not None:
         files = quarkx.filedialogbox("Select File", text, entf[0], 0)
@@ -314,6 +313,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.16  2003/07/24 18:22:36  peter-b
+#Marco's fix for the lambda bug
+#
 #Revision 1.15  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #

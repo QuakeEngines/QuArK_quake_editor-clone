@@ -19,7 +19,6 @@ Map and Model editor Layout managers.
 
 import math
 import quarkx
-import string
 import qtoolbar
 import qmenu
 from qeditor import *
@@ -382,7 +381,7 @@ class BaseLayout:
                 # See also qbaseeditor.BaseEditor.initquickkeys
                 #
                 # Split up the hint, into its components delimited by a "|".
-                hintstrings = string.split(btn.hint, "|");
+                hintstrings = btn.hint.split("|");
                 # Then alter the first flyover-hint, suffix with a "(keyboard shortcut..)" string.
                 hintstrings[0] = "%s\n(keyboard shortcut: '%d')" % (hintstrings[0], count) # To indicate what is a shortcut-key
                 # Put it all together again as a string, with the "|" delimiter
@@ -608,6 +607,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.12  2003/07/07 07:18:31  cdunde
+#To correct caption exclusion error and hint display
+#
 #Revision 1.11  2003/03/24 08:58:07  cdunde
 #To update info and link to infobase
 #

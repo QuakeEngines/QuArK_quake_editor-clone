@@ -13,7 +13,6 @@ Implementation of QuArK Map editor's "Options" menu
 
 
 import quarkx
-import string
 from qdictionnary import Strings
 from maputils import *
 import qmenu
@@ -39,7 +38,7 @@ def Plugins1Click(item):
     import plugins
     group = quarkx.newobj("Loaded Plug-ins:config")
     for p in plugins.LoadedPlugins:
-        txt = string.split(p.__name__, ".")[-1]
+        txt = p.__name__.split(".")[-1]
         ci = quarkx.newobj("%s.toolbar" % txt)
         try:
             info = p.Info
@@ -207,6 +206,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.9  2003/03/28 02:55:24  cdunde
+#To update info and add infobase links.
+#
 #Revision 1.8  2003/03/24 10:36:57  tiglari
 #remove debug statement
 #

@@ -21,7 +21,6 @@ Info = {
    "quark":         "Version 5.3" }
 
 
-import string
 import quarkx
 from quarkpy.maputils import *
 import quarkpy.qmenu
@@ -91,7 +90,7 @@ def BasicCheck(menu=None):
                         break
 
     if err != {}:
-        return quarkpy.mapsearch.problem(string.join(err.keys(), "\n"), errobj)
+        return quarkpy.mapsearch.problem("\n".join(err.keys()), errobj)
     else:
         return quarkpy.mapsearch.noproblem(menu)
 
@@ -107,6 +106,9 @@ quarkpy.mapsearch.checkitems.append(Basic1)
 #
 #
 # $Log$
+# Revision 1.4  2003/03/21 05:47:45  cdunde
+# Update infobase and add links
+#
 # Revision 1.3  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

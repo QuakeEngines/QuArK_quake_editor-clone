@@ -17,7 +17,6 @@ import qmacro
 import qmenu
 from qutils import *
 import math
-import string
 
 #qmacro.qeditor_loaded=1
 
@@ -360,7 +359,7 @@ def makeRGBcolor(r,g,b):
 
 def readfloats(s):     # reads a space-separated string of floats
     try:
-        return map(float, string.split(s))
+        return map(float, s.split())
     except:
         return []
 
@@ -1180,7 +1179,7 @@ class UserDataPanel:
                     break
         else:  # drop a new button with the given objects
             if len(list):
-                s = string.join(map(lambda obj: obj.shortname, list), ", ")
+                s = map(lambda obj: obj.shortname, list).join(", ")
                 p = quarkx.newobj(s + ":")
                 for obj in list:
                     p.appenditem(obj.copy())
@@ -1486,6 +1485,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.17  2003/03/21 05:57:05  cdunde
+#Update infobase and add links
+#
 #Revision 1.15  2003/03/10 20:20:44  decker_dk
 #It is QuArK - (Qu)ake (Ar)my (K)nife, and not "QuArk".
 #

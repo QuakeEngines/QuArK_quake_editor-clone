@@ -53,7 +53,6 @@ Map editor Layout managers.
 
 import math
 import quarkx
-import string
 import qtoolbar
 import qmenu
 from maputils import *
@@ -324,7 +323,7 @@ class MapLayout(BaseLayout):
         elif len(plist)==1:
             cap = plist[0].error
             if cap:
-                cap = string.capitalize(cap)
+                cap = cap.capitalize()
             else:
                 cap = Strings[142]
         else:
@@ -868,6 +867,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.11  2003/07/07 07:18:31  cdunde
+#To correct caption exclusion error and hint display
+#
 #Revision 1.10  2003/03/17 01:51:13  cdunde
 #Update hints and add infobase links where needed
 #
