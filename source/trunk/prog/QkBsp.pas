@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/04/16 00:37:33  tiglari
+extract entity lumps from .bsp's in pakfolder
+
 Revision 1.30  2001/04/07 20:17:57  aiv
 fix save as HL .bsp bug
 
@@ -242,7 +245,8 @@ type
           function GetAltTextureSrc : QObject;
           procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
           function PyGetAttr(attr: PChar) : PyObject; override;
-          Function CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
+          Function GetTextureFolder: QObject;
+          Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
           function GetEntityLump : String;
         end;
 
@@ -251,7 +255,6 @@ type
     Button1: TButton;
     Button2: TButton;
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
   private
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
@@ -1149,43 +1152,6 @@ begin
   Es.Free;
 end;
 
-function IsAllNumbers(arg: string): Boolean;
-const
-  Numbers = '0123456789-.';
-var
-  i: integer;
-begin
-  result:=true;
-  for i:=1 to length(arg) do
-    result:=result and (System.pos(arg[i], Numbers)<>0);
-end;
-
-function IsNumbersSeperated(arg: string): Integer;
-const
-  Numbers = '0123456789-. ';
-var
-  i: integer;
-  b: boolean;
-begin
-  b:=true;
-  for i:=1 to length(arg) do
-    b:=b and (System.pos(arg[i], Numbers)<>0);
-  result:=0;
-  if b then
-    for i:=1 to length(arg) do
-      if arg[i]=' ' then
-        result:=result+1;
-end;
-
-function GuessArgType(spec, arg: string): String; // returns
-begin
-  Result:='E';
-  if spec='color' then Result:='L' else
-  if spec='origin' then Result:='EF3' else
-  if IsAllNumbers(arg) then result:='EF' else
-  if IsNumbersSeperated(arg)<>0 then Result:='EF'+IntToStr(IsNumbersSeperated(arg));
-end;
-
 Function GetBaseDir(F: String; inPak: Boolean): String;
 var
   i: Integer;
@@ -1273,30 +1239,15 @@ begin
   Result:=S;
 end;
 
-Function QBsp.CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
+Function QBsp.CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
 var
   e: QObject;
-  S, ext, tb: String;
+  S: String;
   specList: TStringList;
-  e_sl: TStringList;
-  i,J: Integer;
-  hasOrigin: Boolean;
-
-  addonRoot: QFileObject;
-  TBX: QToolBox;
-  entityTBX: QToolBoxGroup;
-  entityTBX_2: QToolBoxGroup;
-  Entity: QObject;
-  eSpec: QObject;
-  eForm: QFormCfg;
-  entityForms:QFormContext;
-  dir_nfo : QQuakeCtx;
-  opt_tbx: QToolBoxGroup;
+  e_sl, f_sl: TStringList;
+  i,J,k: Integer;
   Addons: QFileObject;
-  entities: TQList;
-  TexFolder, TexFolder2: QObject;
-  Link: QTextureLnk;
-  Tex: QObject;
+  bFound: Boolean;
 begin
   Acces;
   e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
@@ -1310,126 +1261,57 @@ begin
     Convert Entities in bsp to stringlists & remove "worldspawn" and "light" and
     pre-existing entities now.
   *)
+  result:=0;
   specList:=EntityTextToStringList(S);
   Addons:=ExistingAddons;
   for i:=specList.count-1 downto 0 do
   begin
     e_sl:=TStringList(SpecList.Objects[i]);
-    if uppercase(e_sl.Values['classname']) = 'WORLDSPAWN' then
-      specList.Delete(i)
-    else if uppercase(e_sl.Values['classname']) = 'LIGHT' then
-      specList.Delete(i)
-    else if Addons.FindSubObject(e_sl.Values['classname'], QObject, QObject)<>nil then
-      specList.Delete(i);
-  end;
-  (*
-    Build Addon Root
-  *)
-  addonRoot:=BuildFileRoot('new addon.qrk', nil);
-  addonRoot.Filename:='';
-  addonRoot.SpecificsAdd('Description=(insert addon description here)');
-  (*
-    Build Directory Infos
-  *)
-  dir_nfo := QQuakeCtx.Create('addon directory infos', addonRoot);
-  dir_nfo.SpecificsAdd('Game='+GetGameName(ObjectGameCode));
-  addonRoot.SubElements.Add(dir_nfo);
-  (*
-    Build Toolboxes
-  *)
-  if specList.count>0 then // don't create new folders if entities don't exist
-  begin
-    TBX:=QToolBox.Create('Toolbox Folders', addonRoot);
-    addonRoot.Subelements.Add(TBX);
-    TBX.Specifics.Add('ToolBox=New map items...');
-    EntityTBX:=QToolBoxGroup.Create(Format('%s', [Name]), TBX);
-    TBX.Subelements.Add(EntityTBX);
-    TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
-    EntityTBX_2:=QToolBoxGroup.Create(Format('%s entities',[Name]), EntityTBX);
-    EntityTBX_2.SpecificsAdd(format(';desc=Created from %s',[GetFullName]));
-    EntityTBX.Subelements.Add(EntityTBX_2);
-    (*
-      Convert {...} entites to :e entities
-    *)
-    for i:=0 to specList.count-1 do
+    if (uppercase(e_sl.Values['classname']) = 'WORLDSPAWN') or
+       (uppercase(e_sl.Values['classname']) = 'LIGHT') or
+       (Addons.FindSubObject(e_sl.Values['classname'], QObject, QObject)<>nil) then
     begin
-      Application.ProcessMessages;
-      ext:=':e';
-      e_sl:=TStringList(SpecList.Objects[i]);
-      if e_sl.IndexOfName('model')<>-1 then
+      specList.Delete(i);
+      continue;
+    end;
+    if found.count=0 then
+    begin
+      found.addobject(e_sl.Values['classname'], e_sl);
+      continue;
+    end;
+    bFound:=false;
+    for j:=0 to found.count-1 do
+    begin
+      f_sl:=TStringList(found.objects[j]);
+      if (uppercase(f_sl.Values['classname']) = uppercase(e_sl.Values['classname'])) then
       begin
-        if e_sl.Values['model'][1]='*' then
+        bFound:=true;
+        for k:=0 to e_sl.count-1 do
         begin
-          ext:=':b';
-        end
-      end;
-      Entity:=ConstructQObject(e_sl.Values['classname']+ext, EntityTBX_2);
-      for j:=0 to e_sl.count-1 do
-      begin
-        if e_sl.Names[j] = 'classname' then continue // remove classname specific
-        else if (e_sl.Names[j] = 'model') and (e_sl.Values['model'][1]='*') then continue; // remove model specifics if it points to a BSP model
-        Entity.SpecificsAdd(e_sl.Strings[j]);
-      end;
-      Entity.SpecificsAdd(';desc=(insert description here)');
-      if ext=':b' then
-        Entity.SpecificsAdd(';incl=defpoly');
-      if pos('_',Entity.name)<>0 then
-      begin
-        tb:=copy(Entity.name, 1,pos('_', Entity.Name))+'* entities';
-        opt_tbx:=QToolboxGroup(EntityTBX_2.SubElements.FindName(tb+EntityTBX_2.typeinfo));
-        if (opt_tbx = nil) then
-        begin
-          opt_tbx:=QToolBoxGroup.Create(tb, EntityTBX_2);
-          EntityTBX_2.Subelements.add(opt_tbx);
-          Entity.FParent:=opt_tbx;
-          opt_tbx.SubElements.Add(Entity);
-        end
-        else
-        begin
-          Entity.FParent:=opt_tbx;
-          opt_tbx.SubElements.Add(Entity);
+          if f_sl.indexofname(e_sl.Names[k])=-1 then
+          begin
+            f_sl.add(e_sl.strings[k]);
+          end;
         end;
       end
-      else
-      begin
-        EntityTBX_2.SubElements.Add(Entity);
-        Entity.FParent:=EntityTBX_2;
-      end;
     end;
-    (*
-      Create forms for each entity & guess type for each spec
-    *)
-    entityForms:=QFormContext.Create('Entity forms', addonRoot);
-    addonRoot.SubElements.Add(entityForms);
-    entities:=TQList.Create;
-    EntityTBX_2.FindAllSubObjects('',TTreeMapSpec, QObject, Entities);
-    for i:=0 to entities.Count-1 do
+    if not bFound then
     begin
-      Entity:=TTreeMapSpec(entities[i]);
-      eForm:=QFormCfg.Create(Entity.Name, entityForms);
-      entityForms.Subelements.Add(eForm);
-      hasOrigin:=false;
-      for j:=Entity.Specifics.Count-1 downto 0 do
-      begin
-        if Entity.Specifics.Names[j][1]=';' then continue; // skip ;desc, ;incl etc
-        eSpec:=QInternal.Create(Entity.Specifics.Names[j], eForm);
-        if uppercase(Entity.Specifics.Names[j])='ORIGIN' then
-          hasOrigin:=true;
-        eSpec.SpecificsAdd('txt=&');
-        eSpec.SpecificsAdd('hint=(insert hint here)');
-        eSpec.SpecificsAdd('typ='+GuessArgType(Entity.Specifics.Names[j], Entity.Specifics.Values[Entity.Specifics.Names[j]]));
-        Entity.Specifics.Delete(J);
-        eForm.SubElements.Add(eSpec);
-      end;
-      if (Entity.TypeInfo = ':e') and (hasOrigin) then
-        Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
+      found.addobject(e_sl.Values['classname'], e_sl);
+      inc(result);
     end;
-    entities.free;
   end;
-  speclist.free;
-  (*
-    Link to textures from .bsp file if exists
-  *)
+end;
+
+Function QBsp.GetTextureFolder: QObject;
+var
+  e: QObject;
+  i: Integer;
+  TexFolder, TexFolder2: QObject;
+  Link: QTextureLnk;
+  Tex: QObject;
+begin
+  Acces;
   e:=nil;
   try
     e:=GetBspEntry(eMipTex, NoBsp2, NoBsp3);
@@ -1437,31 +1319,13 @@ begin
     { nothing }
   end;
 
+  TexFolder:=nil;
   if (e<>nil)and(ObjectGameCode <> mjHalfLife) then
   begin
     e.acces;
-    TBX:=QToolBox.Create('Textures', addonRoot);
-    addonRoot.Subelements.Add(TBX);
-    TBX.Specifics.Add('ToolBox=Texture Browser...');
-    TexFolder:=QToolboxGroup.Create('textures from '+GetFullName, TBX);
-    TBX.Specifics.Add('Root='+TexFolder.GetFullName);
-    TBX.Subelements.add(TexFolder);
+    TexFolder:=QToolboxGroup.Create('textures from '+GetFullName, nil);
     for i:=0 to e.subelements.count-1 do
     begin
-{      if (i mod TEXTURES_PER_FOLDER)=0 then
-      begin
-        if (e.subelements.count-1)-i>=TEXTURES_PER_FOLDER then
-        begin
-          next:=i + TEXTURES_PER_FOLDER;
-        end
-        else
-        begin
-          next:=e.subelements.count;
-        end;
-        TexFolder2:=QTextureList.Create('textures '+inttostr(i+1)+' - '+inttostr(next), TexFolder);
-        TexFolder.Subelements.Add(TexFolder2);
-      end;
-}
       Tex:=e.subelements[i];
       TexFolder2:=TexFolder.FindSubObject(Tex.Name[1], QTextureList, nil);
       if TexFolder2=nil then
@@ -1471,8 +1335,6 @@ begin
       end;
       Link:=QTextureLnk.Create(Tex.name, TexFolder2);
       Link.SpecificsAdd('b='+Name);
-//      if ObjectGameCode = mjHalfLife then
-//        Link.SpecificsAdd('h=C');
       if FParent=nil then
         Link.SpecificsAdd('s='+GetBaseDir(Self.Filename, false))
       else
@@ -1481,20 +1343,9 @@ begin
     end;
     SortTexFolder(TexFolder);
   end;
-  Result:=AddonRoot;
+  Result:=TexFolder;
 end;
 
-procedure TFQBsp.Button2Click(Sender: TObject);
-var
-  AddonRoot: QFileObject;
-  Addons: QFileObject;
-begin
-  Addons:=MakeAddOnsList;
-  AddonRoot:=QBsp(FileObject).CreateAddonFromEntities(Addons);
-  Addons.AddRef(-1);
-  if AddonRoot<>nil then
-    AddonRoot.OpenStandAloneWindow(Nil, False);
-end;
 
 initialization
   RegisterQObject(QBsp, 's');

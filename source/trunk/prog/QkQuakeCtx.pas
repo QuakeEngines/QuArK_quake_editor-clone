@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/04/22 16:05:01  aiv
+free bsps when finished with them, and other fixes.
+
 Revision 1.18  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -91,6 +94,7 @@ type
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                Procedure MakeAddonFromQctx;
                Procedure MakeTexturesFromQctx;
+               Function GetAllBSPsFiles: TQList;
                function PyGetAttr(attr: PChar) : PyObject; override;
              end;
 
@@ -360,72 +364,50 @@ begin
   end;
 end;
 
+Function QQuakeCtx.GetAllBSPsFiles: TQList;
+var
+  paks: TQList;
+  dir: string;
+  pak: QFileObject;
+  p_f: QPakFolder;
+  j: Integer;
+begin
+  dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
+  paks:=OpenFiles(dir, ListPakFiles(dir));
+  Result:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
+  ProgressIndicatorStart(5458,paks.count);
+  while (Paks.count <> 0) do
+  begin
+    ProgressIndicatorIncrement;
+    pak:=QFileObject(paks[0]);
+    try
+      pak.acces;
+    except
+      continue;
+    end;
+    p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
+    if p_f<>nil then
+    begin
+      for j:=0 to p_f.subelements.count-1 do
+      begin
+        if p_f.subelements[j] is QBsp then
+          Result.add(p_f.subelements[j]);
+      end;
+    end;
+    paks.delete(0);
+  end;
+  paks.free;
+  ProgressIndicatorStop;
+end;
+
 Procedure QQuakeCtx.MakeTexturesFromQctx;
 var
-  i,j: integer;
   // Objects for getting bsp list
-  paks: TQList;
   bsps: TQList;
-  Pak, ExistingAddons: QFileObject;
-  p_f: QPakFolder;
-  bsp: QBsp;
-  NewAddonsList: TQList;
   // Objects for creating new addon
   addonRoot: QFileObject;
   TexRoot: QToolBox;
   TexFolders, oldTexRoot: QObject;
-  (*
-    Get all .bsp files in & out of pak's
-  *)
-  procedure GetBSPFiles;
-  var
-    i,j: Integer;
-    dir: String;
-  begin
-    dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
-    paks:=OpenFiles(dir, ListPakFiles(dir));
-    bsps:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
-    ProgressIndicatorStart(5458,paks.count);
-    for i:=0 to paks.count-1 do
-    begin
-      ProgressIndicatorIncrement;
-      pak:=QFileObject(paks[i]);
-      try
-        pak.acces;
-      except
-        continue;
-      end;
-      p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
-      if p_f=nil then continue;
-      for j:=0 to p_f.subelements.count-1 do
-      begin
-        if p_f.subelements[j] is QBsp then
-          bsps.add(p_f.subelements[j]);
-      end;
-    end;
-    ProgressIndicatorStop;
-  end;
-  (*
-    Go through list of .bsps and create addon based on each
-  *)
-  Procedure CreateAddons;
-  var
-    i: integer;
-  begin
-    ExistingAddons:=MakeAddonsList;
-    ProgressIndicatorStart(5458,bsps.count);
-    for i:=0 to bsps.count-1 do
-    begin
-      if not (bsps[i] is QBsp) then
-        raise exception.create('Error: bsp list contains non QBSP object!');
-      bsp := QBsp(bsps[i]);
-      NewAddonsList.Add(bsp.CreateAddonFromEntities(ExistingAddons));
-      ProgressIndicatorIncrement;
-      Application.ProcessMessages;
-    end;
-    ProgressIndicatorStop;
-    ExistingAddons.AddRef(-1);
-  end;
   Function GetObject(nname, ntypeinfo, s: String): QObject;
   var
     i: Integer;
@@ -451,9 +433,7 @@ var
     end;
   end;
 begin
-  NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
-  GetBSPFiles;
-  CreateAddons;
+  BSPs:=GetAllBSPsFiles;
 
   addonRoot:=QFileObject(FParent);
   if addonRoot = nil then
@@ -463,7 +443,7 @@ begin
   if addonRoot.specifics.IndexOfName('Description')=-1 then
     addonRoot.specifics.Add(format('Description=Addon for %s',[Specifics.Values['GameDir']]));
   (*
-    Build Textures First
+    Build Textures
   *)
   TexFolders:=nil;
   TexRoot:=QToolBox(GetObject('Textures', QToolbox.TypeInfo, 'Texture Browser...'));
@@ -482,93 +462,98 @@ begin
       TexFolders.free;
     TexFolders.FParent:=TexRoot;
   end;
-  ProgressIndicatorStart(5458,NewAddonsList.Count);
+  ProgressIndicatorStart(5458,bsps.Count);
   try
-    for i:=0 to NewAddonsList.Count-1 do
+    while (bsps.Count <> 0) do
     begin
       (*
         Textures from .bsps (Q1, H2)
       *)
-      if TexFolders<>nil then
-      begin
-        oldTexRoot:=NewAddonsList.Items1[i].FindSubObject('Textures', QToolBox, nil);
-        if oldTexRoot<>nil then
-        begin
-          for j:=0 to oldTexRoot.Subelements.Count-1 do
-          begin
-            TexFolders.Subelements.Add(oldTexRoot.Subelements[j].Clone(TexFolders, false));
-          end;
-        end;
-      end;
+      oldTexRoot:=QBSP(bsps[0]).GetTextureFolder;
+      oldTexRoot.fParent:=TexFolders;
+      TexFolders.Subelements.Add(oldTexRoot);
+
+      bsps.delete(0);
     end;
   finally
     ProgressIndicatorStop;
   end;
-  NewAddonsList.free;
   bsps.free;
-  paks.free;
   ExplorerFromObject(FParent).Refresh;
+end;
+
+function IsAllNumbers(arg: string): Boolean;
+const
+  Numbers = '0123456789-.';
+var
+  i: integer;
+begin
+  result:=true;
+  for i:=1 to length(arg) do
+    result:=result and (System.pos(arg[i], Numbers)<>0);
+end;
+
+function IsNumbersSeperated(arg: string): Integer;
+const
+  Numbers = '0123456789-. ';
+var
+  i: integer;
+  b: boolean;
+begin
+  b:=true;
+  for i:=1 to length(arg) do
+    b:=b and (System.pos(arg[i], Numbers)<>0);
+  result:=0;
+  if b then
+  begin
+    for i:=1 to length(arg) do
+    begin
+      if arg[i]=' ' then
+      begin
+        result:=result+1;
+      end;
+    end;
+    inc(result);
+  end;
+end;
+
+function GuessArgType(spec, arg: string): String; // returns
+begin
+  Result:='E';
+  if spec='color' then Result:='L' else
+  if spec='origin' then Result:='EF3' else
+  if IsAllNumbers(arg) then result:='EF' else
+  if IsNumbersSeperated(arg)<>0 then Result:='EF'+IntToStr(IsNumbersSeperated(arg));
 end;
 
 Procedure QQuakeCtx.MakeAddonFromQctx;
 var
-  i,j,k,l: integer;
+  i,j: integer;
+  count: Integer;
   tb: string;
+  ext: string;
   // Objects for getting bsp list
-  paks: TQList;
   bsps: TQList;
-  Pak, ExistingAddons: QFileObject;
-  p_f: QPakFolder;
+  ExistingAddons: QFileObject;
   bsp: QBsp;
   NewAddonsList: TQList;
+  text_entities, e_sl: TStringList;
   // Objects for creating new addon
   addonRoot: QFileObject;
   TBX: QToolBox;
   entityTBX: QToolBoxGroup;
-  entityTBX_2: QToolBoxGroup;
-  Group: QToolBoxGroup;
-  OldEntity, Entity: TTreeMapSpec;
-  Objects: TQList;
+  Entity: TTreeMapSpec;
   entityForms:QFormContext;
-  OldForm, Form: QFormCfg;
-  OldFormEl, FormEl: QObject;
-  (*
-    Get all .bsp files in & out of pak's
-  *)
-  procedure GetBSPFiles;
-  var
-    i,j: Integer;
-    dir: String;
-  begin
-    dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
-    paks:=OpenFiles(dir, ListPakFiles(dir));
-    bsps:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
-    ProgressIndicatorStart(5458,paks.count);
-    for i:=0 to paks.count-1 do
-    begin
-      ProgressIndicatorIncrement;
-      pak:=QFileObject(paks[i]);
-      try
-        pak.acces;
-      except
-        continue;
-      end;
-      p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
-      if p_f=nil then continue;
-      for j:=0 to p_f.subelements.count-1 do
-      begin
-        if p_f.subelements[j] is QBsp then
-          bsps.add(p_f.subelements[j]);
-      end;
-    end;
-    ProgressIndicatorStop;
-  end;
+  hasOrigin: Boolean;
+
+  eSpec: QObject;
+  eForm: QFormCfg;
+  opt_tbx: QToolBoxGroup;
+  entities: TQList;
   (*
     Go through list of .bsps and create addon based on each
   *)
   Procedure CreateAddons;
-  var
-    i: integer;
   begin
     ExistingAddons:=MakeAddonsList;
     ProgressIndicatorStart(5458,bsps.count);
@@ -577,7 +562,7 @@ var
       if not (bsps[0] is QBsp) then
         raise exception.create('Error: bsp list contains non QBSP object!');
       bsp := QBsp(bsps[0]);
-      NewAddonsList.Add(bsp.CreateAddonFromEntities(ExistingAddons));
+      bsp.CreateStringListFromEntities(ExistingAddons, text_entities);
       ProgressIndicatorIncrement;
       Application.ProcessMessages;
       bsps.Delete(0);
@@ -585,6 +570,7 @@ var
     ProgressIndicatorStop;
     ExistingAddons.AddRef(-1);
   end;
+
   Function GetObject(nname, ntypeinfo, s: String): QObject;
   var
     i: Integer;
@@ -609,119 +595,128 @@ var
       FParent.SubElements.Add(Result);
     end;
   end;
+  function getword(i: Integer): String;
+  begin
+    if (i=0) or (i>1) then result:='entities' else result:='entity';
+  end;
 begin
+  text_entities:=TStringList.Create;
   NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
-  GetBSPFiles;
+  BSPs:=GetAllBSPsFiles;
   CreateAddons;
   bsps.free;
-  paks.free;
+  count:=text_entities.count;
 
   addonRoot:=QFileObject(FParent);
   if addonRoot = nil then
   begin
-    raise Exception.Create('addonRoot = nil');
+    raise Exception.Create('Error obtaining Root (addonRoot = nil)');
   end;
   if addonRoot.specifics.IndexOfName('Description')=-1 then
     addonRoot.specifics.Add(format('Description=Addon for %s',[Specifics.Values['GameDir']]));
-  TBX:=QToolBox(GetObject('Toolbox Folders', QToolbox.TypeInfo, 'New map items...'));
-  EntityTBX:=QToolBoxGroup.Create(Format('%s Entities', [Specifics.Values['GameDir']]), TBX);
-  TBX.Subelements.Add(EntityTBX);
-  TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
-  EntityTBX_2:=EntityTBX;
-  entityForms:=QFormContext(GetObject('Entity forms', QFormContext.Typeinfo, ''));
   (*
-    Now build entities & include any textures found in .bsp files
+    Now build entities found in .bsp files
   *)
   ProgressIndicatorStart(5458,NewAddonsList.Count);
   try
-    Objects:=TQList.Create;
-    for i:=0 to NewAddonsList.Count-1 do
+    if text_entities.count>0 then // don't create new folders if entities don't exist
     begin
-      ProgressIndicatorIncrement;
-      NewAddonsList[i].acces;
+      TBX:=QToolBox.Create('Toolbox Folders', addonRoot);
+      TBX.Flags := TBX.flags or ofTreeViewSubElement;
+      addonRoot.Subelements.Add(TBX);
+      TBX.Specifics.Add('ToolBox=New map items...');
+      EntityTBX:=QToolBoxGroup.Create(Format('%s entities', [Specifics.Values['GameDir']]), TBX);
+      TBX.Subelements.Add(EntityTBX);
+      TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
       (*
-        Entities
+        Convert {...} entites to :e entities
       *)
-      NewAddonsList[i].FindAllSubObjects('', TTreemapSpec, QObject, Objects);
-      for j:=0 to Objects.Count-1 do
+      for i:=0 to text_entities.count-1 do
       begin
-        if not(Objects[j] is TTreeMapSpec) then
-          continue;
-        OldEntity:=TTreeMapSpec(Objects.Items1[j]);
-        Entity:=TTreeMapSpec(EntityTBX_2.FindSubObject(OldEntity.Name, TTreeMapSpec, QObject));
-        if (Entity = nil) then
+        Application.ProcessMessages;
+        ext:=':e';
+        e_sl:=TStringList(text_entities.Objects[i]);
+        if e_sl.IndexOfName('model')<>-1 then
         begin
-          if pos('_',OldEntity.name)<>0 then
+          if e_sl.Values['model'][1]='*' then
           begin
-            tb:=copy(OldEntity.name, 1,pos('_', OldEntity.Name))+'* entities';
-            Group:=QToolboxGroup(EntityTBX_2.SubElements.FindName(tb+EntityTBX_2.typeinfo));
-            if (Group = nil) then
-            begin
-              Group:=QToolBoxGroup.Create(tb, EntityTBX_2);
-              EntityTBX_2.Subelements.add(Group);
-            end
+            ext:=':b';
+          end
+        end;
+        Entity:=TTreeMapSpec(ConstructQObject(e_sl.Values['classname']+ext, EntityTBX));
+        for j:=0 to e_sl.count-1 do
+        begin
+          if e_sl.Names[j] = 'classname' then continue // remove classname specific
+          else if (e_sl.Names[j] = 'model') and (e_sl.Values['model'][1]='*') then continue; // remove model specifics if it points to a BSP model
+          Entity.SpecificsAdd(e_sl.Strings[j]);
+        end;
+        Entity.SpecificsAdd(';desc=(insert description here)');
+        if ext=':b' then
+          Entity.SpecificsAdd(';incl=defpoly');
+        if pos('_',Entity.name)<>0 then
+        begin
+          tb:=copy(Entity.name, 1,pos('_', Entity.Name))+'* entities';
+          opt_tbx:=QToolboxGroup(EntityTBX.SubElements.FindName(tb+EntityTBX.typeinfo));
+          if (opt_tbx = nil) then
+          begin
+            opt_tbx:=QToolBoxGroup.Create(tb, EntityTBX);
+            EntityTBX.Subelements.add(opt_tbx);
+            Entity.FParent:=opt_tbx;
+            opt_tbx.SubElements.Add(Entity);
           end
           else
           begin
-            Group:=EntityTBX_2;
+            Entity.FParent:=opt_tbx;
+            opt_tbx.SubElements.Add(Entity);
           end;
-          Entity:=TTreeMapSpec(ConstructQObject(OldEntity.GetFullName, Group));
-          Group.SubElements.Add(Entity);
-        end;
-        for k:=0 to OldEntity.Specifics.Count-1 do
+        end
+        else
         begin
-          if Entity.Specifics.IndexOfName(OldEntity.Specifics.Names[k])=-1 then
-          begin
-            Entity.Specifics.Add(OldEntity.Specifics[k]);
-          end;
+          EntityTBX.SubElements.Add(Entity);
+          Entity.FParent:=EntityTBX;
         end;
       end;
-      Objects.Clear;
       (*
-        Entity Forms
+        Create forms for each entity & guess type for each spec
       *)
-      NewAddonsList.Items1[i].FindAllSubObjects('', QFormCfg, QObject, Objects);
-      for j:=0 to Objects.Count-1 do
+      entityForms:=QFormContext.Create('Entity forms', addonRoot);
+      addonRoot.SubElements.Add(entityForms);
+      entities:=TQList.Create;
+      EntityTBX.FindAllSubObjects('',TTreeMapSpec, QObject, Entities);
+      for i:=0 to entities.Count-1 do
       begin
-        OldForm:=QFormCfg(Objects.Items1[j]);
-        Form:=QFormCfg(entityForms.FindSubObject(OldForm.Name, QFormCfg, QObject));
-        if (Form = nil) then
+        Entity:=TTreeMapSpec(entities[i]);
+        eForm:=QFormCfg.Create(Entity.Name, entityForms);
+        entityForms.Subelements.Add(eForm);
+        hasOrigin:=false;
+        eForm.Flags := eForm.flags or ofTreeViewSubElement;
+        for j:=Entity.Specifics.Count-1 downto 0 do
         begin
-          Form:=QFormCfg(ConstructQObject(OldForm.GetFullName, entityForms));
-          entityForms.SubElements.Add(Form);
+          if Entity.Specifics.Names[j][1]=';' then continue; // skip ;desc, ;incl etc
+          eSpec:=QInternal.Create(Entity.Specifics.Names[j], eForm);
+          if uppercase(Entity.Specifics.Names[j])='ORIGIN' then
+            hasOrigin:=true;
+          eSpec.SpecificsAdd('txt=&');
+          eSpec.SpecificsAdd('hint=(insert hint here)');
+          eSpec.SpecificsAdd('typ='+GuessArgType(Entity.Specifics.Names[j], Entity.Specifics.Values[Entity.Specifics.Names[j]]));
+          eSpec.Flags := eSpec.flags or ofTreeViewSubElement;
+          Entity.Specifics.Delete(J);
+          eForm.SubElements.Add(eSpec);
         end;
-        Form.Flags := Form.flags or ofTreeViewSubElement;
-        for k:=0 to OldForm.Subelements.Count-1 do
-        begin
-          OldFormEl:=OldForm.Subelements[k];
-          FormEl:=Form.FindSubObject(OldFormEl.Name, QObject, QObject);
-          if FormEl=nil then
-          begin
-            FormEl:=ConstructQObject(OldFormEl.GetFullName, Form);
-            Form.Subelements.Add(FormEl);
-          end;
-          FormEl.Flags := FormEl.flags or ofTreeViewSubElement;
-          for l:=0 to OldFormEl.Specifics.Count-1 do
-          begin
-            if FormEl.Specifics.IndexOfName(OldFormEl.Specifics.Names[l])=-1 then
-            begin
-              FormEl.Specifics.Add(OldFormEl.Specifics[l]);
-            end;
-          end;
-        end;
+        if (Entity.TypeInfo = ':e') and (hasOrigin) then
+          Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
       end;
-      Objects.Clear;
+      entities.free;
+      entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
     end;
-    Objects.Free;
-
-    TBX.Flags := TBX.flags or ofTreeViewSubElement;
-    entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
   finally
     ProgressIndicatorStop;
   end;
 
-  NewAddonsList.free;
+  text_entities.free;
   ExplorerFromObject(FParent).Refresh;
+
+  showmessage(format('%d new %s found in directory "%s"',[ count,getword(count), Specifics.Values['GameDir']]));
 end;
 
  {------------------------}
