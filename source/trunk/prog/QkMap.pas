@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2000/12/10 21:38:36  decker_dk
+Able to read exponent-values from .MAP files
+
 Revision 1.20  2000/11/19 15:31:49  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -224,7 +227,7 @@ end;
 class procedure QQkm.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5126);
+ Info.FileObjectDescriptionText:=LoadStr1(5126);
  Info.FileExt:=775;
  Info.QuArKFileObject:=True;
 end;
@@ -1201,7 +1204,7 @@ end;
 class procedure QMapFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5142);
+ Info.FileObjectDescriptionText:=LoadStr1(5142);
  Info.FileExt:=784;
 end;
 

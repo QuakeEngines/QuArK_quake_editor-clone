@@ -26,6 +26,23 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.10  2000/09/03 11:20:31  aiv
 archive conversion
 minor bug fixes to zip stuff
@@ -177,7 +194,7 @@ end;
 class procedure QPakFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5136);
+ Info.FileObjectDescriptionText:=LoadStr1(5136);
  Info.WndInfo:=[wiSameExplorer];
 end;
 
@@ -663,7 +680,7 @@ end;
 class procedure QPak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5133);
+ Info.FileObjectDescriptionText:=LoadStr1(5133);
  Info.FileExt:=778;
  Info.WndInfo:=[wiOwnExplorer];
 end;
@@ -684,7 +701,7 @@ end;
 class procedure QImport.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5162);
+ Info.FileObjectDescriptionText:=LoadStr1(5162);
  Info.WndInfo:=[];
 end;
 

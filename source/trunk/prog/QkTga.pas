@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/09/01 00:13:44  alexander
+merged in my kingpin texture flip fix from rel6_1 branch
+
 
 Revision 1.8  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
@@ -109,7 +112,7 @@ end;
 class procedure QTga.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5168);
+ Info.FileObjectDescriptionText:=LoadStr1(5168);
  Info.FileExt:=796;
  Info.WndInfo:=[wiWindow];
 end;

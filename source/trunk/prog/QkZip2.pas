@@ -5,6 +5,9 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/10/16 22:14:39  aiv
+zip files now handled entirely in pascal (no dlls!)
+
 Revision 1.14  2000/09/03 11:20:31  aiv
 archive conversion
 minor bug fixes to zip stuff
@@ -459,7 +462,7 @@ end;
 class procedure QZipFolder.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5136);
+  Info.FileObjectDescriptionText:=LoadStr1(5136);
   Info.WndInfo:=[wiSameExplorer];
 end;
 
@@ -510,7 +513,7 @@ end;
 class procedure QZipPak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5169);
+  Info.FileObjectDescriptionText:=LoadStr1(5169);
   Info.FileExt:=797;
   Info.WndInfo:=[wiOwnExplorer];
 end;

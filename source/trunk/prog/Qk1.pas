@@ -25,6 +25,15 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
 Revision 1.13  2000/12/11 21:36:36  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -907,8 +916,8 @@ begin
  if FileObject<>Nil then
   FileObject.FileObjectClassInfo(Info)
  else
-  Info.NomClasseEnClair:=LoadStr1(5125);
- News1.Caption:=FmtLoadStr1(2, [Info.NomClasseEnClair]);
+  Info.FileObjectDescriptionText:=LoadStr1(5125);
+ News1.Caption:=FmtLoadStr1(2, [Info.FileObjectDescriptionText]);
  if FileMenu.Tag=0 then
   begin
    L:=TStringList.Create; try
@@ -1162,7 +1171,7 @@ var
  F: TCustomForm;
  Gr, Gr1: QExplorerGroup;
 begin
- Info.NomClasseEnClair:=LoadStr1(5125);
+ Info.FileObjectDescriptionText:=LoadStr1(5125);
  NewClass:='.qrk';
  NewObj:='';
  Gr:=Nil; try
@@ -1200,7 +1209,7 @@ begin
   FileObject:=Nil;
  if FileObject=Nil then
   FileObject:=BuildFileRoot(
-   FmtLoadStr1(5128, [Info.NomClasseEnClair]) + NewClass, Nil);
+   FmtLoadStr1(5128, [Info.FileObjectDescriptionText]) + NewClass, Nil);
  FileObject.Filename:='';
  FileObject.OpenStandAloneWindow(Nil, False);
  finally Gr.Free; end;
@@ -1591,11 +1600,11 @@ begin
        ConvertClass:=QFileObject(Q).TestConversionType(I);
        if ConvertClass=Nil then Break;
        ConvertClass.FileObjectClassInfo(Info);
-       if L.IndexOf(Info.NomClasseEnClair)<0 then
-        L.Add(Info.NomClasseEnClair);
-       if (ConvertClass=Q.ClassType) and (Chk<>Info.NomClasseEnClair) then
+       if L.IndexOf(Info.FileObjectDescriptionText)<0 then
+        L.Add(Info.FileObjectDescriptionText);
+       if (ConvertClass=Q.ClassType) and (Chk<>Info.FileObjectDescriptionText) then
         if Chk='' then
-         Chk:=Info.NomClasseEnClair
+         Chk:=Info.FileObjectDescriptionText
         else
          Chk:='!';
        Inc(I);
@@ -1653,7 +1662,7 @@ begin
          Break;
         end;
        ConvertClass.FileObjectClassInfo(Info);
-       if S=Info.NomClasseEnClair then
+       if S=Info.FileObjectDescriptionText then
         begin
          Dup:=ConvertClass.Create(Q.Name, Nil);
          Dup.AddRef(+1); try

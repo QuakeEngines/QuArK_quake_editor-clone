@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.6  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -644,7 +650,7 @@ end;
 class procedure QQme.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5141);
+ Info.FileObjectDescriptionText:=LoadStr1(5141);
  Info.FileExt:=783;
  Info.WndInfo:=[wiOwnExplorer];
 end;

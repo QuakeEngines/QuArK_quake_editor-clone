@@ -24,6 +24,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.17  2000/11/23 19:06:44  decker_dk
 Removed one FindFirst in the ListFiles procedure.
 
@@ -155,7 +165,7 @@ type
   PFileObjectClassInfo = ^TFileObjectClassInfo;
   TFileObjectClassInfo = record
                           WndInfo: TFileObjectWndInfo;
-                          NomClasseEnClair: String;
+                          FileObjectDescriptionText: String;
                           FileExt: Integer;
                           DefaultExt: String;
                           QuArKFileObject: Boolean;
@@ -284,21 +294,24 @@ var
  Source: TQStream;
 begin
  Source:=FileAccessQ(theFilename, []);
- Source.AddRef; try
-{if Source.Root=Nil then
-  begin  { the file was not previously opened, create a new object }
-   Result:=BuildFileRoot(theFilename, nParent);
-   Result.Open(Source, Source.Size);
-(* Source.Root:=Result;
-  {Result.AddRef(+1);}
-  end
- else  { reuse the same object for the file }
-  begin
-   Result:=QFileObject(Source.Root);
-   if CheckParent and (Result.FParent <> nParent) then
-    Raise EErrorFmt(5224, [theFilename]);
-  end;*)
- finally Source.Release; end;
+ Source.AddRef;
+ try
+ {if Source.Root=Nil then
+   begin  { the file was not previously opened, create a new object }
+    Result:=BuildFileRoot(theFilename, nParent);
+    Result.Open(Source, Source.Size);
+ (* Source.Root:=Result;
+   {Result.AddRef(+1);}
+   end
+  else  { reuse the same object for the file }
+   begin
+    Result:=QFileObject(Source.Root);
+    if CheckParent and (Result.FParent <> nParent) then
+     Raise EErrorFmt(5224, [theFilename]);
+   end;*)
+ finally
+  Source.Release;
+ end;
 end;
 
 function LienFichierQObject(const theFilename: String; nParent: QObject; CheckParent: Boolean) : QFileObject;
@@ -1479,8 +1492,8 @@ end;*)
 class procedure QFileObject.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  FillChar(Info, SizeOf(Info), 0);
- Info.NomClasseEnClair:=TypeInfo;
- Info.DefaultExt:=Copy(Info.NomClasseEnClair, 2, MaxInt);
+ Info.FileObjectDescriptionText:=TypeInfo;
+ Info.DefaultExt:=Copy(Info.FileObjectDescriptionText, 2, MaxInt);
 end;
 
 procedure QFileObject.ObjectState(var E: TEtatObjet);
@@ -2408,7 +2421,7 @@ begin
       else
        begin}
         FileObject.FileObjectClassInfo(Info);
-        MarsCap.AppCaption:=FmtLoadStr1(5123, [Info.NomClasseEnClair]);
+        MarsCap.AppCaption:=FmtLoadStr1(5123, [Info.FileObjectDescriptionText]);
         UpdateMarsCap;
       {end;}
       RedrawWindow(Handle, Nil, 0, rdw_Invalidate or rdw_Frame);

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.8  2000/07/03 14:10:04  alexander
 fixed: hang when extract textures
 
@@ -321,7 +324,7 @@ end;
 class Procedure QM32.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5177);
+  Info.FileObjectDescriptionText:=LoadStr1(5177);
   Info.FileExt:=806;
   Info.WndInfo:=[wiWindow];
 end;

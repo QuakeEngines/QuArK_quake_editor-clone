@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkQkl;
@@ -30,7 +33,7 @@ end;
 class procedure QQkl.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5143);
+  Info.FileObjectDescriptionText:=LoadStr1(5143);
   Info.FileExt:=785;
   Info.QuArKFileObject:=True;
 end;

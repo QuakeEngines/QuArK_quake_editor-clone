@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.7  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -137,7 +140,7 @@ end;
 class procedure QBmp.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5138);
+ Info.FileObjectDescriptionText:=LoadStr1(5138);
  Info.FileExt:=782;
  Info.WndInfo:=[wiWindow];
 end;

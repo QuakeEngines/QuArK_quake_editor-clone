@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -261,7 +264,7 @@ end;
 class procedure QWav.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5157);
+ Info.FileObjectDescriptionText:=LoadStr1(5157);
  Info.FileExt:=788;
  Info.WndInfo:=[wiWindow];
 end;

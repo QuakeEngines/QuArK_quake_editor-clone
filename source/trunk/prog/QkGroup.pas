@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -238,7 +241,7 @@ end;
 class procedure QExplorerGroup.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5120);
+ Info.FileObjectDescriptionText:=LoadStr1(5120);
 {Info.FileExtCount:=1;}
  Info.FileExt{[0]}:=772;
 {Info.DefaultExt[0]:='qrk';}

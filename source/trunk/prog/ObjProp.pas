@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.4  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -142,14 +145,14 @@ begin
    if (CommonType<>Nil) and CommonType.InheritsFrom(QFileObject) then
     begin
      QFileObjectClass(CommonType).FileObjectClassInfo(Info);
-     Label4.Caption:=Info.NomClasseEnClair + '   ';
+     Label4.Caption:=Info.FileObjectDescriptionText + '   ';
      Chk:=-1;
      I:=1;
      repeat
       ConvertClass:=QFileObject(QL[0]).TestConversionType(I);
       if ConvertClass=Nil then Break;
       ConvertClass.FileObjectClassInfo(Info);
-      ListBox1.Items.Add(Info.NomClasseEnClair);
+      ListBox1.Items.Add(Info.FileObjectDescriptionText);
       if ConvertClass=CommonType then
        Chk:=I-1;
       Inc(I);

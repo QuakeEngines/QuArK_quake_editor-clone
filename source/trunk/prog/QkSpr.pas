@@ -5,6 +5,9 @@ unit QkSpr;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/08/20 10:45:48  aiv
+Updated and layed out code
+
 Revision 1.8  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -512,7 +515,7 @@ end;
 class procedure QSprFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5171);
+  Info.FileObjectDescriptionText:=LoadStr1(5171);
   Info.FileExt:=799;
   Info.WndInfo:=[wiOwnExplorer];
 end;
@@ -590,7 +593,7 @@ end;
 class procedure QSp2File.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5171);
+  Info.FileObjectDescriptionText:=LoadStr1(5171);
   Info.FileExt:=800;
   Info.WndInfo:=[wiWindow,wiSameExplorer];
 end;

@@ -24,6 +24,23 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.1  2000/09/14 18:00:22  decker_dk
 Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
 
@@ -126,7 +143,7 @@ end;
 class procedure QTexture1.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5131);
+  Info.FileObjectDescriptionText:=LoadStr1(5131);
 end;
 
 procedure QTexture1.ChargerFin(F: TStream; TailleRestante: Integer);

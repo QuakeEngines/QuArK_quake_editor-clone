@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/01/08 23:04:59  aiv
+Possible fix again...?
+
 Revision 1.4  2001/01/07 18:44:59  aiv
 Fixed game code prob.
 
@@ -95,7 +98,7 @@ end;
 class procedure QMdlFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5144);
+  Info.FileObjectDescriptionText:=LoadStr1(5144);
   Info.FileExt:=786;
 end;
 

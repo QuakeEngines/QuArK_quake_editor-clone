@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/08/25 17:57:24  decker_dk
+Layout indenting
+
 Revision 1.6  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -259,7 +262,7 @@ end;
 class procedure QQuakeCtx.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5155);
+ Info.FileObjectDescriptionText:=LoadStr1(5155);
 {Info.FileExt:=779;
  Info.WndInfo:=[wiWindow];}
 end;

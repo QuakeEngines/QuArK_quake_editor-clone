@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -116,7 +119,7 @@ end;*)
 class procedure QUnknown.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5121);
+ Info.FileObjectDescriptionText:=LoadStr1(5121);
 {Info.FileExtCount:=1;
  Info.FileExt[0]:=774;}
  Info.FileExt:=774;
@@ -163,7 +166,7 @@ begin
     begin
      LabelName.Caption:=FileObject.Name+FileObject.TypeInfo;
      FileObject.FileObjectClassInfo(Info);
-     LabelType.Caption:=Info.NomClasseEnClair;
+     LabelType.Caption:=Info.FileObjectDescriptionText;
      LabelSize.Caption:=FmtLoadStr1(5392, [(FileObject.GetObjectSize(Nil, False)+512) div 1024]);
     end;
  end;

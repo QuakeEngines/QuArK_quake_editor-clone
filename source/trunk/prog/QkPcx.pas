@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:38:00  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -90,7 +93,7 @@ end;
 class procedure QPcx.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5137);
+ Info.FileObjectDescriptionText:=LoadStr1(5137);
  Info.FileExt:=781;
  Info.WndInfo:=[wiWindow];
 end;

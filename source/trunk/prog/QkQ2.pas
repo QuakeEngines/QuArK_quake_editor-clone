@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 }
 
 unit QkQ2;
@@ -144,7 +147,7 @@ end;
 class procedure QTexture2.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5132);
+  Info.FileObjectDescriptionText:=LoadStr1(5132);
 { Info.FileExtCount:=1;}
   Info.FileExt{[0]}:=777;
 { Info.DefaultExt[0]:='wal';}

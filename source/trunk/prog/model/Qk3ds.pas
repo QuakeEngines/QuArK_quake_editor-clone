@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/10/11 18:58:21  aiv
+Initial Release
+
 }
 
 unit Qk3ds;
@@ -59,7 +62,7 @@ end;
 class procedure Q3DSFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.NomClasseEnClair:=LoadStr1(5178);
+  Info.FileObjectDescriptionText:=LoadStr1(5178);
   Info.FileExt:=807;
 end;
 

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/09/10 12:57:06  alexander
+disabled defaultimage caching (cache is not easily initialized)
+
 Revision 1.17  2000/08/22 11:39:21  tiglari
 'q' specific processing added to shaders,for specifying image in .qrk files
 
@@ -150,7 +153,7 @@ end;
 class procedure Q_HFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5174);
+ Info.FileObjectDescriptionText:=LoadStr1(5174);
  Info.FileExt:=803;
 end;
 
@@ -169,7 +172,7 @@ end;
 class procedure Q_CFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5173);
+ Info.FileObjectDescriptionText:=LoadStr1(5173);
  Info.FileExt:=802;
 end;
 
@@ -181,7 +184,7 @@ end;
 class procedure Q3Pak.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5170);
+ Info.FileObjectDescriptionText:=LoadStr1(5170);
  Info.FileExt:=798;
 end;
 
@@ -478,7 +481,7 @@ end;
 class procedure QShaderFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5175);
+ Info.FileObjectDescriptionText:=LoadStr1(5175);
  Info.FileExt{Count}:=804;
 end;
 

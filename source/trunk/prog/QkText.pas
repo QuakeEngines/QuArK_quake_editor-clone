@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.3  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -147,7 +150,7 @@ end;
 class procedure QText.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5160);
+ Info.FileObjectDescriptionText:=LoadStr1(5160);
  Info.FileExt:=790;
  Info.WndInfo:=[wiWindow];
 end;
@@ -226,7 +229,7 @@ end;
 class procedure QCfgFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5161);
+ Info.FileObjectDescriptionText:=LoadStr1(5161);
  Info.FileExt:=791;
  Info.WndInfo:=[wiWindow];
 end;

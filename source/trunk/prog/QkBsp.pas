@@ -24,6 +24,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.9  2000/11/19 15:31:51  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -282,7 +292,7 @@ end;
 class procedure QBsp.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5134);
+ Info.FileObjectDescriptionText:=LoadStr1(5134);
 {Info.FileExtCount:=1;}
  Info.FileExt{[0]}:=779;
 {Info.DefaultExt[0]:='bsp';}

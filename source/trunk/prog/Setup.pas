@@ -24,6 +24,15 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/12/30 15:24:55  decker_dk
+- The .MAP exporting entity-numbering, didn't take into account Treeview-
+groups. Modified TTreeMapEntity.SaveAsText(), TTreeMapGroup.SaveAsText() and
+TTreeMapBrush.SaveAsText().
+- Created a "Textures max-dimension" for the 3D views. A lower value requires
+less memory for the textures, but will also decrease the texture quality in the
+3D views.
+- Removed the "Registering..." menuitem
+
 Revision 1.17  2000/11/19 15:31:48  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -1062,7 +1071,7 @@ begin
  if (QClassPtr<>Nil) and (QClassPtr.InheritsFrom(QFileObject)) then
   begin
    QFileObjectClass(QClassPtr).FileObjectClassInfo(QClassInfo);
-   Description:=QClassInfo.NomClasseEnClair;
+   Description:=QClassInfo.FileObjectDescriptionText;
   end;
 
  Result:=False;

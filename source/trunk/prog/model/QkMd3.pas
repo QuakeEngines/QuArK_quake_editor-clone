@@ -2,6 +2,16 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/11/25 20:50:53  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.2  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -189,7 +199,7 @@ end;
 class procedure QMd3File.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5176);
+ Info.FileObjectDescriptionText:=LoadStr1(5176);
  Info.FileExt:=805;
 end;
 

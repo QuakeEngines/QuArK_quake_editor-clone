@@ -24,6 +24,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/11/19 15:31:49  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.15  2000/11/16 19:42:16  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -183,7 +197,7 @@ end;
 class procedure QWad.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5129);
+ Info.FileObjectDescriptionText:=LoadStr1(5129);
 {Info.FileExtCount:=1;}
  Info.FileExt{[0]}:=776;
 {Info.DefaultExt[0]:='wad';}
@@ -407,7 +421,7 @@ end;}
 class procedure QTextureList.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5135);
+ Info.FileObjectDescriptionText:=LoadStr1(5135);
  Info.FileExt{Count}:=0;
 end;
 

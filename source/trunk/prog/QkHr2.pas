@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/07 18:39:21  aiv
+Added 'ObjectGameCode:=mjHeretic2;'
+
 Revision 1.9  2000/11/25 20:51:32  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -127,7 +130,7 @@ end;
 class procedure QM8.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5163);
+ Info.FileObjectDescriptionText:=LoadStr1(5163);
  Info.FileExt:=792;
 end;
 
@@ -263,7 +266,7 @@ end;
 class procedure QHr2Model.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.NomClasseEnClair:=LoadStr1(5167);
+ Info.FileObjectDescriptionText:=LoadStr1(5167);
  Info.FileExt:=795;
 end;
 
