@@ -291,7 +291,7 @@ def matrix_rot_u2v(u,v):
 def read2vec(vals):
     if vals is None:
        return None, None
-    strings = string.split(vals)
+    strings = vals.split()
     if len(strings)<2:
        return None, None
     return eval(strings[0]), eval(strings[1])
@@ -299,7 +299,7 @@ def read2vec(vals):
 def readNvec(vals):
     if vals is None:
        return None
-    strings = string.split(vals)
+    strings = vals.split()
     return tuple(map(lambda str:eval(str), strings))
 
 #
@@ -315,7 +315,7 @@ def buildLinearMatrix(dup):
         matrix = quarkx.matrix('%.2f 0 0 0 %.2f 0 0 0 %.2f'%scale)*matrix
     angles = dup["angles"]
     if type(angles)==type(""):
-        angles = string.split(angles)
+        angles = angles.split()
         angles = eval(angles[0]), eval(angles[1]), eval(angles[2])
 
     if angles is not None:
@@ -381,6 +381,9 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.21  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.19  2001/06/09 22:35:12  tiglari
 #add warpec circle routine
 #

@@ -67,11 +67,11 @@ class PortalsDlg(qmacro.dialogbox):
 def readPortal(pos0, line):
     result = []
     while pos0!=-1:
-        pos1 = string.find(line,')',pos0+1)
+        pos1 = line.find(')',pos0+1)
         vecstr = line[pos0+1:pos1]
         vec = quarkx.vect(vecstr)
         result.append(quarkx.vect(vecstr))
-        pos0 = string.find(line,'(',pos1+1)
+        pos0 = line.find('(',pos1+1)
     return result
 
 #
@@ -90,7 +90,7 @@ def LoadPortalFile(editor, filename):
     # skip over introductory lines without actual portals
     #
     while index<len(data):
-        pos = string.find(data[index],'(')
+        pos = data[index].find('(')
         if pos!=-1:
             break
         index = index+1
@@ -103,9 +103,9 @@ def LoadPortalFile(editor, filename):
     #  numbers are one-sided; we ignore them, and quit when they appear.
     #
     while index<len(data):
-        pos = string.find(data[index],'(')
+        pos = data[index].find('(')
         line = data[index]
-        numbers = string.split(line[:pos])
+        numbers = line[:pos].split()
         if len(numbers)<3:
             break
         portals.append(readPortal(pos,line))
@@ -140,6 +140,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.5  2003/03/21 10:56:08  tiglari
+#support for line-thickness specified by mapoption
+#
 #Revision 1.4  2003/03/19 22:24:10  tiglari
 #fix bug in parsing
 #

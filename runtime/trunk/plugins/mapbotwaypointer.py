@@ -134,8 +134,8 @@ class BotWaypointConvertHPB(BotWaypointConverter):
         # Write the header
         f.write("HPB_bot\x00")
         f.write(struct.pack("iii", 4, 0, len(self.m_waypoints)))
-        data = string.split(filename, "\\")[-1]
-        data = string.split(data, ".")[0]
+        data = filename.split("\\")[-1]
+        data = data.split(".")[0]
         data = data + "\x00"*(31-len(data))+"\x00"
         f.write(data)
 
@@ -333,10 +333,10 @@ class BotWaypointConvertACE(BotWaypointConverter):
 
                 for spec in obj.dictspec.keys():
                     if (spec[:4] == "via_"):
-                        wp_num = string.split(spec, "_")[1]
+                        wp_num = spec.split("_")[1]
                         via_node_num = targetnames_to_nodenum[wp_num]
                         arg = obj[spec]
-                        for wp_num in string.split(arg, ";"):
+                        for wp_num in arg.split(";"):
                             node_path[targetnames_to_nodenum[wp_num]] = via_node_num
 
                 for j in range(num_of_nodes):
@@ -369,7 +369,7 @@ def macro_botwaypointer_loadfile(self):
 
     files = quarkx.filedialogbox("Load bot waypoint file...", "", gBotFileExtFilter, 0, "*.*")
     if len(files) == 1:
-        files[0] = string.lower(files[0])
+        files[0] = files[0].lower()
         if (files[0][-3:] == "wpt"):
             aObj = BotWaypointConvertHPB()
         elif (files[0][-3:] == "ltk"):
@@ -415,7 +415,7 @@ def macro_botwaypointer_savefile(self):
 
     files = quarkx.filedialogbox("Save bot waypoint file...", "", gBotFileExtFilter, 1, last_file)
     if len(files) == 1:
-        files[0] = string.lower(files[0])
+        files[0] = files[0].lower()
         if (files[0][-3:] == "wpt"):
             aObj = BotWaypointConvertHPB()
         elif (files[0][-3:] == "ltk"):
@@ -462,9 +462,9 @@ def ShortestRouteTree(view, cv, obj, waypoints, cnt=0):
     pp2 = view.proj(obj.origin)
     for spec in obj.dictspec.keys():
         if (spec[0:4] == "via_"):
-            viaobj = FindEntityByTargetname(string.split(spec, "_")[1], obj.treeparent.subitems)
+            viaobj = FindEntityByTargetname(spec.split("_")[1], obj.treeparent.subitems)
             if (viaobj is not None):
-                routes = string.split(obj[spec], ";")
+                routes = obj[spec].split(";")
 
                 # Use only those waypoint-names, which exists in both lists ('routes' and 'waypoints').
                 def isinlist(wp, routes=routes):
@@ -520,13 +520,13 @@ class BotWaypointerPointHandle(CenterHandle):
                     if (spec[0:4] == "via_"):
                         cv.pencolor = colors[nextclr]
                         nextclr = (nextclr + 1) % 6
-                        viaobj = FindEntityByTargetname(string.split(spec, "_")[1], myparent.subitems)
+                        viaobj = FindEntityByTargetname(spec.split("_")[1], myparent.subitems)
                         if (viaobj is not None):
                             pp2 = view.proj(viaobj.origin)
                             cv.penwidth = 3
                             cv.line(view.proj(self.pos), pp2)
                             cv.penwidth = 1
-                            via_routes = string.split(myself[spec], ";")
+                            via_routes = myself[spec].split(";")
                             if (ShortestRouteTree(view, cv, viaobj, via_routes) != 0):
                                 raise "Possible cyclic path"
                            #for wp in via_routes:
@@ -724,7 +724,7 @@ class BotWaypointerPoint(DuplicatorManager):
                     if (points_to not in to_list):
                         to_list.append(points_to)
             if (spec[:4] == "via_" and myself[spec] is not None and myself[spec] != ""):
-                routes_to = FindEntityByTargetname(string.split(spec, "_")[1], myparent.subitems)
+                routes_to = FindEntityByTargetname(spec.split("_")[1], myparent.subitems)
                 if (routes_to is not None):
                     routes_to_list.append(routes_to.origin)
                     if (routes_to not in to_list):
@@ -817,10 +817,10 @@ def PasteBotWaypointClick(m):
     #
     newobj = clipboard[0].copy()
     x, y, z = m.pos.x, m.pos.y, m.pos.z
-    mx, my, mz = tuple(string.split(master["lastwaypointorigin"]))
-    if   m.view.info["type"] == "XY": z = string.atof(mz)
-    elif m.view.info["type"] == "XZ": y = string.atof(my)
-    elif m.view.info["type"] == "YZ": x = string.atof(mx)
+    mx, my, mz = tuple(master["lastwaypointorigin"].split())
+    if   m.view.info["type"] == "XY": z = float(mz)
+    elif m.view.info["type"] == "XZ": y = float(my)
+    elif m.view.info["type"] == "YZ": x = float(mx)
     newobj["origin"] = str(editor.aligntogrid(quarkx.vect(x, y, z)))
     newobj.translate(quarkx.vect(0, 0, 0)) # damn - if this isn't here, the entity will not show in the views
     newobj["targetname"] = NewWaypointTargetname(master.subitems)
@@ -863,6 +863,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.2  2002/08/02 19:17:08  decker_dk
+# Uhm... Lots of things changed, of which I've forgotten.
+#
 # Revision 1.1  2002/06/11 17:12:57  decker_dk
 # A Bot waypoint-editor. At the moment only works for HPBBot(Half-Life) and LTK/ACEBot(Quake-2)
 #

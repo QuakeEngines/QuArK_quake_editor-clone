@@ -72,21 +72,21 @@ class HalfLifeInfodecalHelper(StandardDuplicator):
 	   StandardDuplicator.do(self, item)	# Do standard offset/matrix calculations
 	if character in self.char_numeric:	# Is it a numeric char?
 	   if self.tex_numeric:			# Is numeric texture-template specified?
-	      pos = string.find(self.tex_numeric, self.wildchar) # Try to find wildchar in texture-templatename
+	      pos = self.tex_numeric.find(self.wildchar) # Try to find wildchar in texture-templatename
 	      if pos > -1:
 	         item["texture"] = self.tex_numeric[:pos] + character + self.tex_numeric[pos + 1:]
 	      else:
 	         item["texture"] = self.tex_numeric + character	# Just append the character, and hope thats going to work
 	elif character in self.char_upper:
 	   if self.tex_upper:			# Is upper texture-template specified?
-	      pos = string.find(self.tex_upper, self.wildchar) # Try to find wildchar in texture-templatename
+	      pos = self.tex_upper.find(self.wildchar) # Try to find wildchar in texture-templatename
 	      if pos > -1:
 	         item["texture"] = self.tex_upper[:pos] + character + self.tex_upper[pos + 1:]
 	      else:
 	         item["texture"] = self.tex_upper + character	# Just append the character, and hope thats going to work
 	elif character in self.char_lower:
 	   if self.tex_lower:			# Is lower texture-template specified?
-	      pos = string.find(self.tex_lower, self.wildchar) # Try to find wildchar in texture-templatename
+	      pos = self.tex_lower.find(self.wildchar) # Try to find wildchar in texture-templatename
 	      if pos > -1:
 	         item["texture"] = self.tex_lower[:pos] + character + self.tex_lower[pos + 1:]
 	      else:
@@ -180,6 +180,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.2  2001/02/18 20:21:56  decker_dk
+# Do not register itself in 'New map items...'
+#
 #History:
 #1999-11-14  Added self-registering
 #1999-01-29  Made so only one group gets created, when "Dissociate items"

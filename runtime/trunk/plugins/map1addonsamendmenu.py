@@ -145,16 +145,16 @@ def CreateMenuItems(self):
     if catagory == "3":
         catagory = "OtherMenu"
     program = self.src["program"]
-    words = string.split(program, "\\")
+    words = program.split("\\")
     cmdline = words [-1]
     path_to_program = words [ 0 : -1 ]
-    currentdir = string.join ( path_to_program, "\\" )
-    words = string.split(cmdline, ".")
+    currentdir = "\\".join(path_to_program)
+    words = ".".split(cmdline)
     name =  words [0]
-    name = string.replace( name, " ", "")
+    name = name.replace(" ", "")
     mapfile = self.src["mapfile"]
-    objfile = string.replace( mapfile, "\\", "/")
-    proglocate = string.replace( program, "\\", "/")
+    objfile = mapfile.replace("\\", "/")
+    proglocate = program.replace("\\", "/")
 
 
     outfile = open(quarkx.exepath + "plugins\map1AddonsMenuEdit.py", "w")
@@ -231,14 +231,14 @@ def AddItemClick(m):
         pass
         catagory = self.src["catagory"]
         program = self.src["program"]
-        words = string.split(program, "\\")
+        words = program.split("\\")
         cmdline = words [-1]
         path_to_program = words [ 0 : -1 ]
-        currentdir = string.join ( path_to_program, "\\" )
-        words = string.split(cmdline, ".")
+        currentdir = "\\".join(path_to_program)
+        words = cmdline.split(".")
         name =  words [0]
-        name = string.replace( name, " ", "")
-        proglocate = string.replace( program, "\\", "/")
+        name = name.replace(" ", "")
+        proglocate = program.replace("\\", "/")
 
         files = (quarkx.exepath + "plugins\map1AddonsMenuEdit.py")
 
@@ -267,7 +267,7 @@ def AddItemClick(m):
                 if line == '': # completely empty line means end-of-file
                     break
 
-                words = string.splitfields(line, '\r\n')
+                words = line.split('\r\n')
                 for word in words:
 
                     if word == "# ------------ Delete This Item ------------\n":
@@ -295,7 +295,7 @@ def AddItemClick(m):
             if catagory == "3":
                 catagory = "OtherMenu"
             mapfile = self.src["mapfile"]
-            objfile = string.replace( mapfile, "\\", "/")
+            objfile = mapfile.replace("\\", "/")
 
             f = open(quarkx.exepath + "plugins\map1AddonsMenuEdit.py")
 
@@ -304,7 +304,7 @@ def AddItemClick(m):
                 if line == '': # completely empty line means end-of-file
                     break
 
-                words = string.splitfields(line, '\r\n')
+                words = line.split('\r\n')
                 for word in words:
 
                     if word == "plugins.map1addonsmenu." + catagory + ".items.append(qmenu.sep)\n":
@@ -437,8 +437,8 @@ class DeleteDlg(quarkpy.qmacro.dialogbox):
             line = f.readline()
             if line == '': # completely empty line means end-of-file
                 break
-            words = string.splitfields(line,'\n')
-            words = string.splitfields(line,' ')
+            words = line.split('\n')
+            words = line.split(' ')
             for word in words:
                 if word == 'Catagory:':
                     catagory = (line[2:+16])
@@ -510,7 +510,7 @@ class DeleteDlg(quarkpy.qmacro.dialogbox):
         array = data
         checkboxes_string = ""
         num = 0
-        words = string.splitfields(array, '\n')
+        words = array.split('\n')
 
         for item in words:
             if item == '': # completely empty line means end-of-file
@@ -518,31 +518,31 @@ class DeleteDlg(quarkpy.qmacro.dialogbox):
 
             if item == "ShapesMenu":
                 labelArray = "Shapes Menu :"
-                contents = string.replace(contentstemplate, "<text>", labelArray)
+                contents = contentstemplate.replace("<text>", labelArray)
                 checkboxes_string = checkboxes_string + contents
             else:
 
                 if item == "TerrainMenu":
                     labelArray = "Terrain Menu :"
-                    contents = septemplate + string.replace(contentstemplate, "<text>", labelArray)
+                    contents = septemplate + contentstemplate.replace("<text>", labelArray)
                     checkboxes_string = checkboxes_string + contents
                 else:
 
                     if item == "OtherMenu":
                         labelArray = "Other Menu :"
-                        contents = septemplate + string.replace(contentstemplate, "<text>", labelArray)
+                        contents = septemplate + contentstemplate.replace("<text>", labelArray)
                         checkboxes_string = checkboxes_string + contents
 
                     else:
                         num = num + 1
                         my_caption = item
                         my_text = ""
-                        checkbox_string = string.replace(checkboxtemplate, "<number>", str(num))
-                        checkbox_string = string.replace(checkbox_string, "<caption>", my_caption)
-                        checkbox_string = string.replace(checkbox_string, "<text>", my_text)
+                        checkbox_string = checkboxtemplate.replace("<number>", str(num))
+                        checkbox_string = checkbox_string.replace("<caption>", my_caption)
+                        checkbox_string = checkbox_string.replace("<text>", my_text)
                         checkboxes_string = checkboxes_string + checkbox_string
 
-        new_dlgdef = string.replace(dlgdef, "<checkboxes>", checkboxes_string)
+        new_dlgdef = dlgdef.replace("<checkboxes>", checkboxes_string)
 
         return new_dlgdef
 
@@ -622,7 +622,7 @@ def RemoveItemClick(m):
             if line == '': # completely empty line means end-of-file
                 break
 
-            words = string.splitfields(line, '\r\n')
+            words = line.split('\r\n')
             for word in words:
 
                 if word == "# ------------ Delete This Item ------------\n":
@@ -652,7 +652,7 @@ def RemoveItemClick(m):
 
 # To get the number of check boxes there are
 
-        totalboxes = string.count(line,'cb') + 1
+        totalboxes = line.count('cb') + 1
 
 # This lets us setup the format needed later
 # to see if a check box is checked (returns 1)
@@ -669,7 +669,7 @@ def RemoveItemClick(m):
 # Sets up text file to write to and checkbox format to test
 
         text = ""
-        cbx = string.replace(checkboxtemplate, "<number>", str(loops))
+        cbx = checkboxtemplate.replace("<number>", str(loops))
         deleteflag = 0
         deleteLF = 0
 
@@ -682,11 +682,11 @@ def RemoveItemClick(m):
             if file == '': # completely empty line means end-of-file
                 f.close()
                 break
-            words = string.splitfields(file, '\r\n')
+            words = file.split('\r\n')
             for word in words:
                 if word == "# ------------ Delete This Item ------------\n":
                     loops = loops + 1
-                    cbx = string.replace(checkboxtemplate, "<number>", str(loops))
+                    cbx = checkboxtemplate.replace("<number>", str(loops))
 
 # If the box is checked, we skip it for the rewrite process
 
@@ -728,7 +728,7 @@ def RemoveItemClick(m):
             if file == '': # completely empty line means end-of-file
                 f.close()
                 break
-            words = string.splitfields(file, '\r\n')
+            words = file.split('\r\n')
 
             for word in words:
                 if word == "#===========================================\n":
@@ -812,7 +812,7 @@ def RemoveItemClick(m):
             if file == '': # completely empty line means end-of-file
                 f.close()
                 break
-            words = string.splitfields(file, '\r')
+            words = file.split('\r')
 
             for word in words:
                 if flag == 0:
@@ -892,3 +892,6 @@ AmendMenuCmds = [quarkpy.qmenu.popup("&Add \ Delete menu items", [], ViewAmendMe
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2003/07/04 20:01:16  cdunde
+#To add new Addons main menu item and sub-menus
+#

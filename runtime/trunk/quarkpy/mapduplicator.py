@@ -71,7 +71,7 @@ class DuplicatorManager:
 
 def is_digit(s):
     if len(s)==1:
-        if string.find('0123456789',s)>=0:
+        if '0123456789'.find(s)>=0:
             return 1
     return 0
 
@@ -121,7 +121,7 @@ class StandardDuplicator(DuplicatorManager):
                     texfile=open(quarkx.exepath+tex_sub,'r')
                     line=texfile.readline()
                     while line:
-                        line = string.split(line)
+                        line = line.split()
                         tex_dict[line[0]]=line[:]
                         line=texfile.readline()
                 except:
@@ -158,7 +158,7 @@ class StandardDuplicator(DuplicatorManager):
                 specs = pool_specs(sourcelist)
                 incrementable = []
                 for spec in specs:
-                    if string.find(spec,"target")>=0:
+                    if spec.find("target")>=0:
                         incrementable.append(spec)
             else:
                 incrementable = ["target", "targetname", "killtarget"]
@@ -169,19 +169,19 @@ class StandardDuplicator(DuplicatorManager):
             self.incre_specs={}
             for spec in self.dup.dictspec.keys():
                 if self.dup[spec]!="":
-                    if string.find(spec,'final_')==0:
+                    if spec.find('final_')==0:
                         spec2=spec[6:]
                         val = self.dup[spec]
                         #
                         # value specifies a different final value
                         #   for each incrementable base
                         #
-                        if string.find(val,':')>=0:
+                        if val.find(':')>=0:
                             dict = {}
-                            pairs = string.split(val)
+                            pairs = val.split()
                             for pair in pairs:
-                                attr, val = string.split(pair,":")
-                                attr, val = string.strip(attr), string.strip(val)
+                                attr, val = pair.split(":")
+                                attr, val = attr.strip(), val.strip()
                                 dict[attr]=val
                             self.final_specs[spec2]=dict
                         #
@@ -189,14 +189,14 @@ class StandardDuplicator(DuplicatorManager):
                         #
                         else:
                             self.final_specs[spec2]=val
-                if string.find(spec,'incre_')==0:
+                if spec.find('incre_')==0:
                     spec2=spec[6:]
                     self.incre_specs[spec2]=int(self.dup[spec])
                     if not spec2 in incrementable:
                         incrementable.append(spec2)
             moreserial = self.dup["incrementable specifics"]
             if moreserial is not None:
-                incrementable=incrementable+string.split(moreserial)
+                incrementable=incrementable+moreserial.split()
             self.incrementable=incrementable
 
     def applylinear(self, matrix, direct=0):
@@ -227,7 +227,7 @@ class StandardDuplicator(DuplicatorManager):
                             base, index = get_suffix(val)
                             width = len(index)
                             index = int(index)+get_incr(spec)
-                            index = string.zfill(` index`,width)
+                            index = ` index`.zfill(width)
                             item2[spec]=base+index
         return [item]
 
@@ -447,6 +447,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.21  2001/08/06 00:16:43  tiglari
 #texture-cycling for duplicators
 #

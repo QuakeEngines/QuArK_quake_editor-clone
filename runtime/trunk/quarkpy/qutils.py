@@ -251,7 +251,7 @@ def loadmapeditor(what=None):
             loadmapeditor = lambda: None # next calls to loadmapeditor() do nothing. Everything is now loaded!
             import mapbezier
             for prefix in pluginprefixes.split():
-                plugins.LoadPlugins(string.strip(prefix))
+                plugins.LoadPlugins(prefix.strip())
 
     # force an initial load of bezier-support, if any for the current game-mode.
     reLoad(what)
@@ -535,6 +535,11 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
 #Revision 1.22  2003/03/15 01:57:40  tiglari
 #add hintPlusInfobaselink function
 #

@@ -99,14 +99,14 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            return
 
        YZarea = `view.clientarea`      # Gets the view area as a string
-       pixels = string.replace(YZarea,"(","")   # trims ( from YZarea
-       pixels = string.replace(pixels,")","")  # trims ) from YZarea
-       pixels = string.split(pixels,",")       # trims , from YZarea
-       Ystring = pixels [0]                 # pulls out y factor string
-       Zstring = string.strip(pixels [1])   # pulls out z factor string
-       Ypixels = string.atoi(Ystring)     # converts y string to intiger nbr
-       Zpixels = string.atoi(Zstring)     # converts z string to intiger nbr
-       highlight = string.atoi(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
+       pixels = YZarea.replace("(","")   # trims ( from YZarea
+       pixels = pixels.replace(")","")  # trims ) from YZarea
+       pixels = pixels.split(",")       # trims , from YZarea
+       Ystring = pixels[0]                 # pulls out y factor string
+       Zstring = pixels[1].strip()   # pulls out z factor string
+       Ypixels = int(Ystring)     # converts y string to intiger nbr
+       Zpixels = int(Zstring)     # converts z string to intiger nbr
+       highlight = int(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
        Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
        Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
        pixspergroup = Zpixels / Zgroups
@@ -189,14 +189,14 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            return
 
        XZarea = `view.clientarea`
-       pixels = string.replace(XZarea,"(","")
-       pixels = string.replace(pixels,")","")
-       pixels = string.split(pixels,",")
-       Xstring = pixels [0]
-       Zstring = string.strip(pixels [1])
-       Xpixels = string.atoi(Xstring)
-       Zpixels = string.atoi(Zstring)
-       highlight = string.atoi(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
+       pixels = XZarea.replace("(","")
+       pixels = pixels.replace(")","")
+       pixels = pixels.split(",")
+       Xstring = pixels[0]
+       Zstring = pixels[1].strip()
+       Xpixels = int(Xstring)
+       Zpixels = int(Zstring)
+       highlight = int(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
        Xgroups = ((Xpixels/(grid * 1.0)) / view.scale()) / highlight
        Zgroups = ((Zpixels/(grid * 1.0)) / view.scale()) / highlight
        pixspergroup = Zpixels / Zgroups
@@ -279,14 +279,14 @@ def gridfinishdrawing(editor, view, gridoldfinish=quarkpy.mapeditor.MapEditor.fi
            return
 
        XZarea = `view.clientarea`
-       pixels = string.replace(XZarea,"(","")
-       pixels = string.replace(pixels,")","")
-       pixels = string.split(pixels,",")
-       Xstring = pixels [0]
-       Ystring = string.strip(pixels [1])
-       Xpixels = string.atoi(Xstring)
-       Ypixels = string.atoi(Ystring)
-       highlight = string.atoi(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
+       pixels = XZarea.replace("(","")
+       pixels = pixels.replace(")","")
+       pixels = pixels.split(",")
+       Xstring = pixels[0]
+       Ystring = pixels[1].strip()
+       Xpixels = int(Xstring)
+       Ypixels = int(Ystring)
+       highlight = int(quarkx.setupsubset(SS_MAP, "Display")["GridHighlight"])
        Xgroups = ((Xpixels/(grid * 1.0)) / view.scale()) / highlight
        Ygroups = ((Ypixels/(grid * 1.0)) / view.scale()) / highlight
        pixspergroup = Ypixels / Ygroups
@@ -454,6 +454,9 @@ GridMenuCmds = [quarkpy.qmenu.popup("Grid scale in 2D views", [], ViewAmendMenu1
 #
 #
 #$Log$
+#Revision 1.3  2003/12/18 12:19:42  cdunde
+#To add All 2d views feature and auto trun offs
+#
 #Revision 1.2  2003/12/15 12:47:37  cdunde
 #To add menu check marks and zoom feature
 #

@@ -113,7 +113,7 @@ def ReloadClick(m):
     module = self.src["module"]
     quarkx.setupsubset(SS_MAP, "Options")["ReloadModule"] = module
 
-    command = string.replace("reload(%s)"%module, ".py", "")
+    command = "reload(%s)"%module.replace(".py", "")
     eval(command)
     
   editor=mapeditor()
@@ -132,6 +132,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.8  2003/05/18 04:02:50  cdunde
+# To change code to avoid path hard coding
+#
 # Revision 1.7  2003/05/13 20:33:29  cdunde
 # To add file browser and correct closing errors
 #

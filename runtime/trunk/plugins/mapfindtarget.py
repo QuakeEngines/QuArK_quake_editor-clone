@@ -180,8 +180,8 @@ def findClick(m, spec=None, val=None):
             #  wtf doesn't this work, item loads but function is trashed
             #
              
-            self.src["found$Items"] = string.join(pack.slist, "\015")
-            self.src["found$Values"] = string.join(pack.klist, "\015")
+            self.src["found$Items"] = "\015".join(pack.slist)
+            self.src["found$Values"] = "\015".join(pack.klist)
             self.src["num"]=len(pack.klist),
             if not pack.seen and len(ran)>0:
                 pack.seen = 1
@@ -263,6 +263,9 @@ quarkpy.mapentities.BrushEntityType.menu = brushmenu
 
 
 #$Log$
+#Revision 1.3  2002/05/21 07:06:10  tiglari
+#fix problems with selection dialog (loadiing first selection when appropriate)
+#
 #Revision 1.2  2002/05/20 11:07:54  tiglari
 #fix bug whereby if all targetted items had the same name, the first one
 #  of that name would be selected.  Also now preloading with first element works

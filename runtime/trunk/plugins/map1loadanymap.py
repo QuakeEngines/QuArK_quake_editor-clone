@@ -113,7 +113,7 @@ def LoadMapClick(m):
 
         editor = self.editor
         tmpquark = self.src["loadmap"]
-        objfile = string.replace( tmpquark, "/", "\\")
+        objfile = tmpquark.replace("/", "\\")
         info = quarkx.openfileobj(objfile)
         mygroup = quarkx.newobj('group:g')
         mygroup.copyalldata(info.subitem(0))
@@ -128,3 +128,6 @@ def LoadMapClick(m):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.1  2003/07/04 20:01:16  cdunde
+#To add new Addons main menu item and sub-menus
+#

@@ -96,7 +96,7 @@ class TexPosDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
 def read2vec(vals):
-  strings = string.split(vals)
+  strings = vals.split()
   return eval(strings[0]), eval(strings[1])
 
 def PosTexClick(m):
@@ -176,6 +176,9 @@ quarkpy.mapentities.FaceType.menu = texmenu
 #
 #
 # $Log$
+# Revision 1.5  2001/06/17 21:10:56  tiglari
+# fix button captions
+#
 # Revision 1.4  2001/06/16 03:19:47  tiglari
 # add Txt="" to separators that need it
 #

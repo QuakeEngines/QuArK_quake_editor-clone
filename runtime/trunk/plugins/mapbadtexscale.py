@@ -196,8 +196,8 @@ def badClick(m):
         pack.slist = map(lambda obj,num:"%d) %s:%s"%(num+1,obj.parent.shortname,obj.shortname), pack.baddies, ran)
         pack.klist = map(lambda d:`d`, ran)
 
-        self.src["micros$Items"] = string.join(pack.slist, "\015")
-        self.src["micros$Values"] = string.join(pack.klist, "\015")
+        self.src["micros$Items"] = pack.slist.join("\015")
+        self.src["micros$Values"] = pack.klist.join("\015")
         if not pack.seen and len(ran)>0:
             self.src["micros"] = '0'
             self.chosen = '0'
@@ -250,6 +250,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|Find Bad Tex Scale:\n\nThis finds faces whose texture axes are almost parallel.|intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.7  2003/03/21 05:47:45  cdunde
+#Update infobase and add links
+#
 #Revision 1.6  2002/05/21 10:24:12  tiglari
 #make collected item numbering start with 1)
 #

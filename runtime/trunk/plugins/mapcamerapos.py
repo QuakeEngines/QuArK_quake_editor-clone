@@ -405,8 +405,8 @@ def findClick(m):
         #  wtf doesn't this work, item loads but function is trashed
         #
 #        self.src["cameras"] = pack.klist[0]
-        self.src["cameras$Items"] = string.join(pack.slist, "\015")
-        self.src["cameras$Values"] = string.join(pack.klist, "\015")
+        self.src["cameras$Items"] = "\015".join(pack.slist)
+        self.src["cameras$Values"] = "\015".join(pack.klist)
         self.src["num"]=len(pack.klist),
 
     def action(self, pack=pack, editor=editor):
@@ -452,6 +452,9 @@ mapselection.prevItem.onclick=camnextClick
 
 
 # $Log$
+# Revision 1.9  2003/03/21 05:47:45  cdunde
+# Update infobase and add links
+#
 # Revision 1.8  2002/05/21 21:30:21  tiglari
 # no-selection tree-view RMB bug fixed (ut_fourdays)
 #

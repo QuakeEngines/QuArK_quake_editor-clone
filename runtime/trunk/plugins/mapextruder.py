@@ -2216,7 +2216,7 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
       for j in range(2,data.PathLen()):
         for source in sources:
           name = source.name
-          name, ext = string.splitfields(name,":")
+          name, ext = name.split(":")
           if (name[:4]=="side" or name[:5]=="outer"):
             tex = source.texturename
             type = data.dup["type"]
@@ -2371,7 +2371,7 @@ def cordupmenu(o, editor, oldmenu=quarkpy.mapentities.DuplicatorType.menu.im_fun
       for j in range(2,data.PathLen()):
         for source in sources:
           name = source.name
-          name, ext = string.splitfields(name,":")
+          name, ext = name.split(":")
           if (name[:4]=="side" or name[:5]=="outer"):
             tex = source.texturename
             type = data.dup["type"]
@@ -2896,6 +2896,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.15  2003/09/18 02:55:16  cdunde
+#to fix dialog sep
+#
 #Revision 1.14  2002/05/18 22:38:31  tiglari
 #remove debug statement
 #

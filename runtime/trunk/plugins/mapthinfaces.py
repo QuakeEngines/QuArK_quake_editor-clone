@@ -230,8 +230,8 @@ def thinClick(m):
         pack.slist = map(lambda obj, d:"%d) %s"%(d+1, obj.shortname), pack.useless, ran)
         pack.klist = map(lambda d:`d`, ran)
 
-        self.src["useless$Items"] = string.join(pack.slist, "\015")
-        self.src["useless$Values"] = string.join(pack.klist, "\015")
+        self.src["useless$Items"] = "\015".join(pack.slist)
+        self.src["useless$Values"] = "\015".join(pack.klist)
         #
         # load the first value
         #
@@ -287,6 +287,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|Find Thin Faces:\n\nThis function will search for and identifies brushes with faces that are suspiciously thin.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.5  2003/03/21 05:47:45  cdunde
+#Update infobase and add links
+#
 #Revision 1.4  2002/05/21 07:06:10  tiglari
 #fix problems with selection dialog (loadiing first selection when appropriate)
 #

@@ -220,8 +220,8 @@ def thinClick(m):
         #  wtf doesn't this work, item loads but function is trashed
         #
 #        self.src["micros"] = pack.klist[0]
-        self.src["micros$Items"] = string.join(pack.slist, "\015")
-        self.src["micros$Values"] = string.join(pack.klist, "\015")
+        self.src["micros$Items"] = "\015".join(pack.slist)
+        self.src["micros$Values"] = "\015".join(pack.klist)
         if not pack.seen and len(ran)>1:
             self.src["micros"] = '0'
             self.chosen = '0'
@@ -275,6 +275,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
  "|Find Microbrushes:\n\nThis function identifies brushes that are suspiciously small, at least in one dimension.", "intro.mapeditor.menu.html#searchmenu"))
 
 #$Log$
+#Revision 1.8  2003/03/21 05:47:45  cdunde
+#Update infobase and add links
+#
 #Revision 1.7  2002/05/21 10:24:12  tiglari
 #make collected item numbering start with 1)
 #

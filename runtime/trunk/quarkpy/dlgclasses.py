@@ -149,8 +149,8 @@ class LiveBrowserDlg(LiveButtonDlg):
          ran = range(len(pack.collected))
          pack.slist = map(lambda obj, num:"%d) %s"%(num+1,obj.shortname), pack.collected, ran)
          pack.klist = map(lambda d:`d`, ran)
-         self.src["collected$Items"] = string.join(pack.slist, "\015")
-         self.src["collected$Values"] = string.join(pack.klist, "\015")
+         self.src["collected$Items"] = "\015".join(pack.slist)
+         self.src["collected$Values"] = "\015".join(pack.klist)
          if not pack.seen and len(ran)>0:
              self.src["collected"] = '0'
              self.chosen = '0'
@@ -217,6 +217,10 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.7  2002/05/21 10:23:28  tiglari
+#Make LiveBrowserDlg handle correctly multiple entries with the same name;
+#  Load first one.
+#
 #Revision 1.6  2001/08/05 08:01:37  tiglari
 #spiff up new descendents of LiveEditDlg
 #

@@ -173,7 +173,7 @@ def prepareobjecttodrop(editor, obj):
         try:
             # Get the user's default poly XYZ-size
             defpoly = quarkx.setupsubset(SS_MAP, "Building")["DefPoly"]
-            defpolysize = string.split(defpoly, "x")
+            defpolysize = defpoly.split("x")
         except:
             defpolysize = ["64", "64", "64"]
         try:
@@ -188,7 +188,7 @@ def prepareobjecttodrop(editor, obj):
         except:
             defpolysize = [64, 64, 64] # must be an array of three values
         oldincl = oldincl.lower()
-        if (string.find(oldincl, "poly") > -1):
+        if (oldincl.find("poly") > -1):
             # Create a default-poly
             obj.appenditem(newcubeXYZ(defpolysize[0], defpolysize[1], defpolysize[2], tex))
         if (oldincl.find("trigger") > -1):
@@ -697,6 +697,11 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.15  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
 #Revision 1.14  2002/05/18 22:31:56  tiglari
 #remove debug statement
 #

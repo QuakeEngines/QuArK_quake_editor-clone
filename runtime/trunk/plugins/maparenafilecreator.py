@@ -78,7 +78,7 @@ class ArenaFileMaker(StandardDuplicator):
 
         # build arena script name
         editor = mapeditor(SS_MAP)
-        mapname =string.lower(checkfilename( editor.fileobject.shortname or editor.fileobject["FileName"]))
+        mapname = checkfilename(editor.fileobject.shortname or editor.fileobject["FileName"]).lower()
         scriptname = quarkx.outputfile("scripts/"+mapname+".arena")
 
         try:
@@ -103,5 +103,8 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 #
 #$Log$
+#Revision 1.1  2000/07/04 17:27:26  alexander
+#arenafilemaker macro
+#
 #
 #

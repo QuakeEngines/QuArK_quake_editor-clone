@@ -87,9 +87,9 @@ class BrushNumDlg(SimpleCancelDlgBox):
 class BrushAddressNode:
     ".name, .index (int)"
     def __init__(self, nodeLabel):
-        name, index =string.split(nodeLabel,'[')
-        self.name = string.strip(name)
-        index = string.strip(index)
+        name, index = nodeLabel.split('[')
+        self.name = name.strip()
+        index = index.strip()
         index = index[:len(index)-1]
         if index:
             self.index = eval(index)
@@ -111,7 +111,7 @@ def getBrushDict(editor, filename):
         line = data[i]
         if line[:commentPrefixLen]!=commentPrefix:
             continue
-        linewords = string.split(line)
+        linewords = line.split()
         if linewords[1]=="Entity":
             entity = eval(linewords[2])
             brushCount = -1
@@ -127,7 +127,7 @@ def getBrushDict(editor, filename):
         if line[:commentPrefixLen]!=commentPrefix:
             quarkx.msgbox('problem with map file at line %d'%i,MT_ERROR,MB_OK)
             continue
-        address = string.split(line[commentPrefixLen:],'->')
+        address = line[commentPrefixLen:].split('->')
         address = map(BrushAddressNode, address)
         dict[(entity, brushNum)] = address
     return dict
@@ -140,4 +140,7 @@ def LoadBrushNums(editor, filename):
         quarkx.helppopup("Brush number discrepancy at brush labelled %s; this probably means that the file is corrupt"%info)
        
 #$Log$
+#Revision 1.1  2003/03/24 10:34:24  tiglari
+#support for brush-number finder
+#
 

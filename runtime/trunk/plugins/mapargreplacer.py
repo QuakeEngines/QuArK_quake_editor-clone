@@ -32,8 +32,8 @@ class ArgReplacer(quarkpy.mapduplicator.DuplicatorManager):
         for r in replacerspecs:
            searchstring = '%' + r + '%'
            for key in item.dictspec.keys():
-              item[key] = string.replace(item[key], searchstring, self.dup.dictspec[r])
-              newkey = string.replace(key, searchstring, self.dup.dictspec[r])
+              item[key] = item[key].replace(searchstring, self.dup.dictspec[r])
+              newkey = key.replace(searchstring, self.dup.dictspec[r])
               if (newkey != key):
                  keyvalue = item[key]
                  item[key] = None
@@ -64,6 +64,9 @@ quarkpy.mapduplicator.DupCodes.update({
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2001/10/22 10:21:59  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.3  2001/06/24 14:47:58  decker_dk
 # Can now also replace specific-names.
 #
