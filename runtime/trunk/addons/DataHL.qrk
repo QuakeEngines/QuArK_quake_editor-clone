@@ -27,6 +27,9 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-08-15   [-] Texture conflict were not completly resolved. Now I've removed references to CLIP/HINT in all
+//                   .WAD files except HALFLIFE.WAD.
+//
 // 2000-08-05   [-] Hopefully resolved conflict of CLIP/ORIGIN/AAATRIGGER textures between HALFLIFE.WAD and TFC.WAD
 //
 // 2000-07-08   [TFC] Updated texture links
@@ -18462,7 +18465,7 @@ values=
           AAA_PUSH2.wl = { t_op4_OPFOR = ! }
           AAA_WALL.wl = { t_op4_OPFOR = ! }
           AAA_TRIGGER.wl = { t_op4_OPFOR = ! }
-          HINT.wl = { t_op4_OPFOR = ! }
+//          HINT.wl = { t_op4_OPFOR = ! }
         }
         BootCamp.txlist =
         {
@@ -19105,7 +19108,7 @@ values=
         GATEBLUEMETAL.wl = { t_tfc = ! }
         GATEREDFLR.wl = { t_tfc = ! }
         GATEREDMETAL.wl = { t_tfc = ! }
-        HINT.wl = { t_tfc = ! }
+//        HINT.wl = { t_tfc = ! }
         KAMI_WALL1.wl = { t_tfc = ! }
         KCHOLDER.wl = { t_tfc = ! }
         KEEP01.wl = { t_tfc = ! }
@@ -20225,7 +20228,7 @@ values=
         CinderBlock01.wl = { t_cs_cs_bdog = ! }
         Tracks01.wl = { t_cs_cs_bdog = ! }
         Gravel01.wl = { t_cs_cs_bdog = ! }
-        hint.wl = { t_cs_cs_bdog = ! }
+//        hint.wl = { t_cs_cs_bdog = ! }
         Tracks02.wl = { t_cs_cs_bdog = ! }
         Brick04_sm.wl = { t_cs_cs_bdog = ! }
         Brick05_sm.wl = { t_cs_cs_bdog = ! }
