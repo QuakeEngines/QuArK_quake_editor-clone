@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/04/24 09:54:54  arigo
+Q3 shaders, once more
+
 Revision 1.6  2000/04/22 08:54:23  arigo
 Shader stage attributes were not written correctly
 
@@ -179,7 +182,10 @@ begin
      if Result<>Nil then Exit;  { got it }
     end;
   end;
- Result:=Nil;  { nothing found }
+{DECKER-begin}
+ Result:=NeedGameFile(Name+'.tga') as QPixelSet;
+(* Result:=Nil;  { nothing found } *)
+{DECKER-end}
 end;
 
 (*procedure QShader.DataUpdate;

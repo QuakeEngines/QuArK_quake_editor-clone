@@ -60,6 +60,19 @@ type
     procedure ViewOutputConfig;
   public
   end;
+{DECKER-begin}
+  TGetPakNames = class
+  private
+   StrList : TStringList;
+   StrListIter : Integer;
+   procedure FindFiles(const Path, FileFilter: String);
+  public
+   constructor Create;
+   destructor Destroy; override;
+   function GetPakZero(const Path: String; Back: Boolean) : String;
+   function GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
+  end;
+{DECKER-end}
 
  {------------------------}
 
@@ -97,6 +110,70 @@ begin
   Result:=False;
  end;
 end;
+
+{DECKER-begin}
+constructor TGetPakNames.Create;
+begin
+ StrList := TStringList.Create;
+ StrList.Sorted := TRUE;
+end;
+
+destructor TGetPakNames.Destroy;
+begin
+ StrList.Free;
+end;
+
+procedure TGetPakNames.FindFiles(const Path, FileFilter: String);
+var
+ sr: TSearchRec;
+ PathAndFileFilter: String;
+begin
+ PathAndFileFilter:=PathAndFile(Path, FileFilter);
+ if FindFirst(PathAndFileFilter, faAnyFile, sr) = 0 then
+ begin
+  StrList.Add(PathAndFile(Path, sr.Name));
+  while FindNext(sr) = 0 do
+  begin
+   StrList.Add(PathAndFile(Path, sr.Name));
+  end;
+  FindClose(sr);
+ end;
+end;
+
+function TGetPakNames.GetPakZero(const Path: String; Back: Boolean) : String;
+var
+ FileFilter : String;
+begin
+ FileFilter:=SetupGameSet.Specifics.Values['PakFormat'];
+ if (Length(FileFilter)<=4) then
+  FileFilter:='PAK*.PAK';
+ FileFilter[Length(FileFilter)-4]:='*';
+ FindFiles(Path, FileFilter);
+ if (Back) then
+  StrListIter:=StrList.Count-1
+ else
+  StrListIter:=0;
+ if (StrListIter<0) then
+  Result:=PathAndFile(Path, 'PAK0.PAK')
+ else
+  Result:=StrList.Strings[StrListIter];
+end;
+
+function TGetPakNames.GetNextPakName(MustExist: Boolean; var FileName: String; Back: Boolean) : Boolean;
+begin
+ Result:=False;
+ repeat
+  if (StrListIter<0) or (StrListIter>=StrList.Count) then
+    Exit;
+  FileName:=StrList.Strings[StrListIter];
+  if (Back) then
+   Dec(StrListIter)
+  else
+   Inc(StrListIter);
+ until not MustExist or FileExists(FileName);
+ Result:=True;
+end;
+{DECKER-end}
 
 function GetPakZero(const Path: String; Back: Boolean) : String;
 const

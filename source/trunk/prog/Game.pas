@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/04/14 17:29:00  alexander
+fixed: crash, when loading alias files
+
 }
 unit Game;
 
@@ -498,6 +501,11 @@ var
  NoMoreAlias: Boolean;
  TempResult: QFileObject;
 
+{DECKER-begin}
+ FoundIt: Boolean;
+ GetPakNames: TGetPakNames;
+{DECKER-end}
+
 (*procedure FoundInFile(Q: QObject);
   var
    I: Integer;
@@ -518,10 +526,17 @@ begin
   GameFiles:=TQList.Create;
 
  repeat
-
    { looks in .pak files }
+{DECKER-begin}
+{
   NomComplet:=GetPakZero(NomChemin, True);
   while GetNextPakName(True, NomComplet, True) do
+}
+  FoundIt := FALSE;
+  GetPakNames:=TGetPakNames.Create;
+  NomComplet:=GetPakNames.GetPakZero(NomChemin, True);
+  while GetPakNames.GetNextPakName(True, NomComplet, True) do
+{DECKER-end}
    if not IsPakTemp(NomComplet) then  { ignores QuArK's own temporary .pak's }
     begin
      Result:=SortedFindFileName(GameFiles, NomComplet);
@@ -536,7 +551,13 @@ begin
      if TempResult<>Nil then
       begin
        Result:=TempResult;
+{DECKER-begin}
+(*
        Exit;   { found it }
+*)
+       FoundIt:=TRUE;
+       break;
+{DECKER-end}
       end;
      if Alias<>'' then
       begin   { look for the alias }
@@ -544,10 +565,20 @@ begin
        if TempResult<>Nil then
         begin
          Result:=TempResult;
+{DECKER-begin}
+(*
          Exit;   { found it as alias }
+*)
+         FoundIt:=TRUE;
+         break;
+{DECKER-end}
         end;
       end;
     end;
+{DECKER-begin}
+  GetPakNames.Destroy;
+  If FoundIt then Exit;
+{DECKER-end}
 
   NoMoreAlias:=Alias='';
   NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));

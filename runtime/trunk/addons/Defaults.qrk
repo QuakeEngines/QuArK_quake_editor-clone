@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.20  2000/04/26 02:01:30  alexander
+//fixed default trigger texture for kingpin
+//
 
 {
   QuArKProtected = "1"
@@ -502,7 +505,7 @@ QQRKSRC1
         AddOns = "DataQ3.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
-        PakFormat = "PAK#.PK3"
+        PakFormat = "*.PK3"
         CheckDirectory = "QUAKE3.EXE"
         Console = "1"
         Form = "GameQuake3"
