@@ -73,7 +73,7 @@ def BasicCheck(menu=None):
                 # it would be 1E-6 if texpt0 and texpt1 where scaled down by a factor 128.
                 #
                 if abs((texpt0*texpt0)*(texpt1*texpt1)-(texpt0*texpt1)*(texpt0*texpt1)) < 273.1:
-                    err["The scale of some textures is too small, or the textures are completely distorted."] = 0
+                    err["Some of the face-coordinates are too close together, and may cause trouble for some build-tools"] = 0
                     errobj.append(face)
         w = not watery(face)
         for face in f[:-1]:
@@ -107,6 +107,9 @@ quarkpy.mapsearch.checkitems.append(Basic1)
 #
 #
 # $Log$
+# Revision 1.3  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #
