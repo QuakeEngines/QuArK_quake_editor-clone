@@ -406,59 +406,91 @@ var
  Dossier, nDossier: QObject;
  ex,Chemin, CheminPrec,fn: String;
  Q: QObject;
- LocalHeader: TLocalFileHeader;
+ FH: TFileHeader;
  sig,org,Size:Longint;
+ files: TMemoryStream;
+ EoSig,s,nEnd: Longint;
+ eocd: TEndOfCentralDir;
+ I:Integer;
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
        Dossier:=Self;
        CheminPrec:='';
-       while (true) do begin
-         org:=f.position;
-         f.readbuffer(sig,4);
-         if sig<>ZIP_HEADER then break;
-         f.readbuffer(LocalHeader,sizeof(TLocalFileHeader));
-         ReadaString(f,chemin,LocalHeader.filename_len);
-         ReadaString(f,ex,LocalHeader.extrafield_len);
+       org:=f.position;
+       f.seek(Taille,soFromBeginning); {end of 'file'}
+       f.seek(-($FF+sizeof(TEndOfCentralDIR)),soFromCurrent);
+       while true do begin
+         f.ReadBuffer(eosig,4);
+         if eosig<>EOCD_HEADER then
+           f.seek(-3,sofromcurrent)
+         else
+           break;
+       end;
+       f.readbuffer(eocd,sizeof(eocd));
+       f.seek(org, soFromBeginning); {beginning of 'file'}
+       f.seek(eocd.offset_cd,soFromCurrent);
+       files:=TMemoryStream.Create;    {ms for central directory}
+       files.CopyFrom(f,eocd.size_cd); {read in central dir}
+       files.seek(0,sofrombeginning);
+       DebutTravail(5450, eocd.no_entries);
+       for i:=1 to eocd.no_entries do begin
+         files.readbuffer(s,4); // Signiture
+         if s<>CFILE_HEADER then
+           raise Exception.CreateFmt('%d<>CFILE_HEADER (%d)',[s,CFILE_HEADER]);
+         files.ReadBuffer(fh,sizeof(TFileHeader));
+         ReadaString(files,chemin,FH.filename_len);
+         ReadaString(files,ex,FH.extrafield_len);
+         ReadaString(files,ex,FH.filecomment_len);
          fn:=Chemin;
-         if (LocalHeader.compression_method<>0) and
-            (LocalHeader.compression_method<>1) and
-            (LocalHeader.compression_method<>6) and
-            (LocalHeader.compression_method<>8) then
-               Raise EErrorFmt(5692, [Self.NomFichier,LocalHeader.compression_method]);
-           if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
-             Delete(Chemin, 1, Length(CheminPrec))
-           else begin
-             Dossier:=Self;
-             CheminPrec:='';
-           end;
-           repeat
-             J:=Pos('/', Chemin);
-             if J=0 then Break;
-             nDossier:=Dossier.SousElements.FindName(
-             Copy(Chemin, 1, J-1) + '.zipfolder');
-             if (nDossier=Nil) then
-               begin
-                 nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
-                 Dossier.SousElements.{Insert(K,} Add(nDossier);
-               end;
-               CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
-               Delete(Chemin, 1, J);
-               Dossier:=nDossier;
-           until False;
-           f.seek(org,soFromBeginning);
-           Size:=LocalHeader.compressed;
-           if size<>0 then begin
-             Size:=Size+(LocalHeader.extrafield_len+LocalHeader.filename_len+4+sizeof(LocalHeader));
-             Q:=OpenFileObjectData(F, Chemin,Size, Dossier);
-             Dossier.SousElements.Add(Q);
-             LoadedItem(rf_Default, F, Q, Size);
-             Q.FNode^.OnAccess:=ZipAddRef;
-           end
+         if (FH.compression_method<>0) and
+            (FH.compression_method<>1) and
+            (FH.compression_method<>6) and
+            (FH.compression_method<>8) then
+               Raise EErrorFmt(5692, [Self.NomFichier,FH.compression_method]);
+         if Copy(Chemin, 1, Length(CheminPrec)) = CheminPrec then
+           Delete(Chemin, 1, Length(CheminPrec))
+         else begin
+           Dossier:=Self;
+           CheminPrec:='';
+         end;
+         repeat
+           J:=Pos('/', Chemin);
+           if J=0 then Break;
+           nDossier:=Dossier.SousElements.FindName(
+           Copy(Chemin, 1, J-1) + '.zipfolder');
+           if (nDossier=Nil) then
+             begin
+               nDossier:=QZipFolder.Create(Copy(Chemin, 1, J-1), Dossier);
+               Dossier.SousElements.{Insert(K,} Add(nDossier);
+             end;
+             CheminPrec:=CheminPrec + Copy(Chemin, 1, J);
+             Delete(Chemin, 1, J);
+             Dossier:=nDossier;
+         until False;
+         Size:=FH.compressed;
+         if size<>0 then begin
+           Size:=Size+(FH.extrafield_len+FH.filename_len+4+sizeof(FH)+FH.filecomment_len);
+           Q:=OpenFileObjectData(nil, Chemin, Size, Dossier);
+           Dossier.SousElements.Add(Q);
+           F.Seek(Org+fh.local_header_offset,soFromBeginning);
+
+           {Copied From LoadedItem & Modified}
+           if Q is QFileObject then
+             QFileObject(Q).ReadFormat:=rf_default
            else
-             f.Seek(org+LocalHeader.extrafield_len+LocalHeader.Filename_Len+Sizeof(LocalHeader)+4,soFromBeginning);
+             Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
+           nEnd:=F.Position+Size;
+           Q.Ouvrir(TQStream(F), Size);
+           F.Position:=nEnd;
+           {/Copied From LoadedItem & Modified}
+
+           Q.FNode^.OnAccess:=ZipAddRef;
+         end;
+         ProgresTravail;
        end;
        SortPakFolder;
+       FinTravail;
      end;
    else inherited;
  end;
