@@ -1,5 +1,15 @@
 
-                Patch1 to QuArK Snapshot of 2002mar28
+                QuArK Snapshot of 2002ap29
+                
+ * [Decker, tiglari] improved RTCW support
+ 
+ * [tiglari] fix bug in brush primitives writing
+ 
+ * [Decker] start Mohaa support
+ 
+ * [Andy] start JKII support
+ 
+ * [Rowdy] make it compile in Delphi 6
 
  * [tiglari]
     On search menu, 'find bad tex scale' item that locates faces with
