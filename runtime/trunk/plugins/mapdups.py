@@ -191,7 +191,17 @@ def dissociate1click(m):
     if editor is None: return
     getmgr = quarkpy.mapduplicator.DupManager
     undo = quarkx.action()
-    for obj in editor.layout.explorer.sellist:
+    list = editor.layout.explorer.sellist
+    list2=[]
+    for obj in list:
+        if obj.type == ':d':
+           list2.append(obj)
+           if obj["out"] and obj.parent is not None:   
+               for item in obj.parent.subitems:
+                   if item!=obj and item.type==':d' and item["out"]:
+                       list2.append(item)
+
+    for obj in list2:
         if obj.type == ':d':
             mgr = getmgr(obj)
             image = 0
@@ -209,7 +219,7 @@ def dissociate1click(m):
     editor.ok(undo, "dissociate images")
 
 
-dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click)
+dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click,'|If the duplicator is an "out" duplicator, and there are others (immediately) in the group, they will all be dissociated together.')
 
 
 #
@@ -267,6 +277,9 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 #
 # $Log$
+# Revision 1.6  2001/05/12 10:15:56  tiglari
+# remove matrix2 (buildLinearMatrix) support from linear duplicator
+#
 # Revision 1.5  2001/04/08 02:44:15  tiglari
 # fix conflict
 #

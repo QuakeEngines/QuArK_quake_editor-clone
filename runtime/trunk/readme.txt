@@ -1,5 +1,11 @@
 
-             QuArK Snapshot 050701 - patch4
+             QuArK Snapshot 050701 - patch5
+
+ Patch 4 updates
+ 
+  *when an 'out' duplicator is dissociated, all
+    other 'out' dups in its immediate group are
+    dissociated also
 
  Patch 4 updates
  
