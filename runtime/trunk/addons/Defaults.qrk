@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.163  2001/08/15 17:50:40  decker_dk
+//Added a 'dup symxyz' with toggleable axes.
+//
 //Revision 1.162  2001/08/06 00:19:49  tiglari
 //update version
 //
@@ -3790,6 +3793,21 @@ QQRKSRC1
       tex_numeric: = {Txt="&" Typ="ET"  Hint="Texture-name of numeric characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
       macro:       = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
     }
+    dup hlradfilemaker:form =
+    {
+      Help = "Set the specific-key to texturename and the arg to RGBV, like this:"
+          $0D"  ~LIGHT5B      255 255 0 300"
+          $0D"  SPOTLIGHT     0 128 255 800"
+       $0D$0D"Or use the 'texture' and 'lighting' specifics-interface;"
+          $0D"Push the [...] to select texture, and push to choose color (remember to"
+          $0D"append the brightness value). Then press the [Apply] button."
+      macro:    = {Typ="ESR" Hint="This one is not for you, Saruman"}
+      filename: = {Typ="C"   Hint="Choose or type the filename" Items="<mapname>.RAD"$0D"LIGHTS.RAD" Values=""$0D"LIGHTS.RAD"}
+      texture:  = {Typ="ET"  Hint="Choose texture. Push the [...] to open the texture-browser."}
+      lighting: = {          Hint="4 values: <Red 0-255> <Green 0-255> <Blue 0-255> <Brightness>"}
+      lighting: = {Typ="L 4" Hint="Choose color. Push to open the color-picker dialog."}
+      apply:    = {Typ="P" Cap="Apply" Txt=" " Macro="hlradfilemaker_apply" Hint="Push to apply the 'texture' and 'lighting' values to the list."}
+    }
 
     dup extruder:form = {
       type: =
@@ -4786,8 +4804,9 @@ QQRKSRC1
       }
       Game specific.qtxfolder =
       {
-        Half-Life info_decal Helper:d =
+        Half-Life infodecal Helper:d =
         {
+          ;desc = "Write words and sentences using infodecals"
           text = "HALFLIFE"
           wildchar = "@"
           tex_upper = "{CAPS@"
@@ -4796,6 +4815,11 @@ QQRKSRC1
           origin = "0 0 0"
           offset = "12 0 0"
           macro = "dup hlinfodecal"
+        }
+        Half-Life .RAD File Maker:d =
+        {
+          ;desc = "Helps you store texture lighting values (LIGHTS.RAD or <mapname>.RAD)"
+          macro = "dup hlradfilemaker"
         }
       }
       Tools.qtxfolder =
