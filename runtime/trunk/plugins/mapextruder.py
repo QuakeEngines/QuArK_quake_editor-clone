@@ -484,12 +484,12 @@ class ExtruderDupData:
     
 
   def ProjPos2Tuple(self, pos, axes = None):
-    if axes ==None:
-      xaxis, yaxis, zaxis = self.Axes
-    else:
-      xaxis, yaxis, zaxis = axes
-    pos2 = pos-self.dup.origin
-    return pos2*xaxis, pos2*yaxis, pos2*zaxis
+      if axes is None:
+          xaxis, yaxis, zaxis = self.Axes
+      else:
+          xaxis, yaxis, zaxis = axes
+      pos2 = pos-self.Org()
+      return pos2*xaxis, pos2*yaxis, pos2*zaxis
 
   def TexObj(self,editor):
     dup=self.dup
@@ -1245,17 +1245,10 @@ def adjust_points(data, points, j, names):
 # Attaches the sides to the brushes
 #
 def attach_sides(data, j, brush, bottom, cycle, names, texpos):
-  #  squawk("%d, %d"%(len(cycle),len(names)))
-  #  squawk("j: %s"%j)
     xaxis, yaxis, zaxis = axes = data.Axes(j-1)
     frontcycle=adjust_points(data, cycle, j-1, names)
     backcycle=adjust_points(data, cycle, j, names) 
     last = frontcycle[-1]
-  #  squawk('cycle: '+ `cycle`)
-  #  squawk(`names`)
-  #  squawk('front: '+ `frontcycle`)
-  #  squawk('back: '+ `backcycle`)
-  #  squawk('last: %s; first: %s'%(last, frontcycle[0]))
     for i in range(len(cycle)):
         pos = frontcycle[i]
         pos2 = backcycle[i]
@@ -1263,17 +1256,10 @@ def attach_sides(data, j, brush, bottom, cycle, names, texpos):
         short = new.shortname = names[i-1]
         p0, p1, p2 = bottom.threepoints(0)
         norm = bottom.normal
-  #      squawk("pos: %s; last: %s"%(pos, last))
         diff = last-pos
         if not diff:
-  #          squawk('no diff at: '+`i`)    
-  #          squawk('last: '+`last`)
-  #          squawk('pos: '+`pos`)
             continue
-  #      squawk('diff: '+`diff`)
-  #      squawk("z: %s, d: %s"%(zaxis,diff))
         gap = pos2-pos
-  #      squawk(`gap^diff`)
         norm = -(gap^diff).normalized
         new.distortion(norm, pos)
 
@@ -1282,12 +1268,11 @@ def attach_sides(data, j, brush, bottom, cycle, names, texpos):
             name = "%s:g"%new.shortname
   #          squawk(name)
             side = texpos.findname(name)
+            def mappoint(p, axes=axes,org=org,new=new):
+                return restore(p,axes,org,new)
             if side is not None:
-  #              squawk('side')
-                p0 = restore(side["p0"],axes,org, new)
-                p1 = restore(side["p1"],axes,org, new)
-                p2 = restore(side["p2"],axes,org, new)
-                new.setthreepoints((p0, p1, p2),4)
+                p0, p1, p2 = tuple(map(mappoint,(side["p0"],side["p1"],side["p2"])))
+                new.setthreepoints((p0, p1, p2),2)
                 new["tex"] = side["tex"]
         if new.shortname[:5]=='inner':
             new["tex"]=CaulkTexture()
@@ -1300,6 +1285,7 @@ def attach_sides(data, j, brush, bottom, cycle, names, texpos):
 def make_brushes(dup, cycles, names, limit=0):
     data = ExtruderDupData(dup)
     texpos = dup.findname("texinfo:g")
+    debug('brushes '+`texpos`)
     brushes = []
     if limit:
         pathlength=limit
@@ -2133,7 +2119,35 @@ def settexoption(opt):
     opt = None
   quarkx.setupsubset(SS_MAP, "Options")["cor_tex_lap"] = opt
   
-
+def getTexInfo(dup, object):
+    oldtex = dup.findname("texinfo:g")
+    if oldtex is not None:
+        dup.removeitem(oldtex)
+    data = ExtruderDupData(dup)
+    content = object.findname("content:g")
+    seg2 = content.findname("cor_seg_1:g")
+    faces = seg2.findallsubitems("",":f")
+    dict = {}
+    for face in faces:
+        name = face.shortname
+        if name != "inner":
+            dict[name] = face.texturename, face.threepoints(2)
+    keys = dict.keys()
+    texinfo = quarkx.newobj("texinfo:g")
+    axes = data.Axes()
+    for key in keys:
+        side = quarkx.newobj("%s:g"%key)
+        side["tex"], threepoints = dict[key]
+        p0, p1, p2 = threepoints
+        debug('three')
+        side["p0"] = (data.ProjPos2Tuple(p0,axes))
+        debug('proj')
+        side["p1"] = (data.ProjPos2Tuple(p1,axes))
+        side["p2"] = (data.ProjPos2Tuple(p2,axes))
+        texinfo.appenditem(side)
+    dup.appenditem(texinfo)
+    debug('append')
+    
 def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   menu = oldmenu(o, editor)
   info = o.findname("data:g")
@@ -2173,15 +2187,11 @@ def corgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
     def PunchOuterClick(m,o=o,editor=editor,info=info,data=data,punch=PunchInnerClick):
       punch(m,o,editor,info,data,1)
       
-    #
-    # doesn't work, problems with position computations
-    #
     def RevertClick(m,o=o,editor=editor,info=info):
       dup = quarkx.newobj("Extruder:d")
       dup.copyalldata(info)
+      getTexInfo(dup,o)
       undo=quarkx.action()
-#      dup["origin"]=""
-#      dup["origin"]=info["origin"]
       undo.exchange(o,dup)
       editor.ok(undo,"Revert to Duplicator")
       
@@ -2875,6 +2885,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.8  2001/05/13 02:59:48  tiglari
+#caulk hidden joins
+#
 #Revision 1.7  2001/05/06 10:16:32  tiglari
 #changes to get revert to dup working, hole punching on dup RMB
 # as well as former-dup-group RMB
