@@ -1943,16 +1943,18 @@ end;
 function Open3DEditor(const LibName: String; var FullScreen: Boolean) : Boolean;
 var
  hwconfig: GrHwConfiguration;
+ S: String;
 begin
  Result:=False;
- if (gr=Nil) or (gr.State=Nil) or ((LibName<>'') and (gr.LibName<>LibName)) then
+ S:=PathAndFile(ApplicationPath, LibName);
+ if (gr=Nil) or (gr.State=Nil) or ((LibName<>'') and (gr.LibName<>S)) then
   begin
    DebutTravail(0,0); try
    Free3DFXEditor;
    if LibName='' then
     Raise EError(4867);
-   if not ReloadGlide(LibName) then
-    Raise EErrorFmt(4865, [LibName, GetLastError]);
+   if not ReloadGlide(S) then
+    Raise EErrorFmt(4865, [S, GetLastError]);
    Result:=True;
    SetIntelPrecision; try
    gr.grGlideInit;
