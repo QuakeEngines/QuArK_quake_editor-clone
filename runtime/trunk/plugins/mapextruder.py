@@ -695,7 +695,7 @@ class KinkDlg (quarkpy.dlgclasses.LiveEditDlg):
         {
         Txt = "Show anchors"
         Typ = "X"
-        Hint = "If checked, non-draggable `anchor' handles are shown that you can tag for attaching things to"
+        Hint = "If checked, non-draggable `anchor' handles are shown" $0D "that you can tag for attaching things to"
         }
         
          elbow: =
@@ -2896,6 +2896,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.14  2002/05/18 22:38:31  tiglari
+#remove debug statement
+#
 #Revision 1.13  2001/07/09 09:49:41  tiglari
 #eliminate sidehandle in favor of using qedtor.orthogonalvect()
 #
