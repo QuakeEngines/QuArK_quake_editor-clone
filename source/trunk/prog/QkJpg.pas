@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.9  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -44,6 +47,10 @@ type
 
 implementation
 
+const
+  EINCLASS  = 'Exception "%s" in %s.%s ';
+  EINCLASS2 = EINCLASS + ' Stage %d';
+
 procedure progress(percent: Integer);
 begin
   ProgressIndicatorIncrement;
@@ -61,54 +68,68 @@ end;
 
 procedure QJpeg.SaveFile(Info: TInfoEnreg1);
 const
- bmpSignature = $4D42;
+  bmpSignature = $4D42;
 var
- Header: TBitmapFileHeader;
- BmpInfo: TBitmapInfo256;
- Data: String;
- bmp:TMemoryStream;
- FileWrap: TJpegFileWrapper;
+  Header: TBitmapFileHeader;
+  BmpInfo: TBitmapInfo256;
+  Data: String;
+  bmp:TMemoryStream;
+  FileWrap: TJpegFileWrapper;
 begin
- with Info do case Format of
-  1: begin  { as stand-alone file }
-    FileWrap:=TJpegFileWrapper.Create(nil); try
-    bmp:=TMemoryStream.Create; try
-    FillChar(Header, SizeOf(Header), 0);
-    try
-      Header.bfOffBits:=SizeOf(TBitmapFileHeader)+GetBitmapInfo1(BmpInfo);
-    except
-      if Specifics.Values['Data']='' then
-        Raise;
-      SaveUnformatted(bmp);
-      ProgressIndicatorStart(5450,100); try
-      FileWrap.Save(bmp, f,90, progress);
-      finally ProgressIndicatorStop; end;
-      exit;
-    end;
-    Header.bfType:=bmpSignature;
-    Header.bfSize:=Header.bfOffBits+BmpInfo.bmiHeader.biSizeImage;
-    bmp.WriteBuffer(Header, SizeOf(Header));
-    bmp.WriteBuffer(BmpInfo, Header.bfOffBits-SizeOf(TBitmapFileHeader));
-    Data:=GetSpecArg('Image1');
-    if Length(Data)-Length('Image1=') <> Integer(BmpInfo.bmiHeader.biSizeImage) then
-      Raise EErrorFmt(5534, ['Image1']);
-    bmp.WriteBuffer(PChar(Data)[Length('Image1=')], BmpInfo.bmiHeader.biSizeImage);
-    bmp.seek(0,soFromBeginning);
-    ProgressIndicatorStart(5450,100); try
-    FileWrap.Save(bmp, f,90, progress);
-    finally ProgressIndicatorStop; end;
-    finally bmp.free; end;
-    finally filewrap.free; end;
-    end;
- else inherited;
- end;
+  with Info do
+    case Format of
+      1: begin  { as stand-alone file }
+        FileWrap:=TJpegFileWrapper.Create(nil);
+        try
+          bmp:=TMemoryStream.Create;
+          try
+            FillChar(Header, SizeOf(Header), 0);
+            try
+              Header.bfOffBits:=SizeOf(TBitmapFileHeader)+GetBitmapInfo1(BmpInfo);
+            except
+              if Specifics.Values['Data']='' then
+                Raise;
+              SaveUnformatted(bmp);
+              ProgressIndicatorStart(5450,100);
+              try
+                FileWrap.Save(bmp, f,90, progress);
+              finally
+                ProgressIndicatorStop;
+              end;
+              exit;
+            end;
+            Header.bfType:=bmpSignature;
+            Header.bfSize:=Header.bfOffBits+BmpInfo.bmiHeader.biSizeImage;
+            bmp.WriteBuffer(Header, SizeOf(Header));
+            bmp.WriteBuffer(BmpInfo, Header.bfOffBits-SizeOf(TBitmapFileHeader));
+            Data:=GetSpecArg('Image1');
+            if Length(Data)-Length('Image1=') <> Integer(BmpInfo.bmiHeader.biSizeImage) then
+              Raise EErrorFmt(5534, ['Image1']);
+            bmp.WriteBuffer(PChar(Data)[Length('Image1=')], BmpInfo.bmiHeader.biSizeImage);
+            bmp.seek(0,soFromBeginning);
+            ProgressIndicatorStart(5450,100);
+            try
+              FileWrap.Save(bmp, f,90, progress);
+            finally
+              ProgressIndicatorStop;
+            end;
+          finally
+            bmp.free;
+          end;
+        finally
+          filewrap.free;
+        end;
+      end;
+    else
+      inherited;
+  end;
 end;
 
 procedure QJpeg.GetPaletteAndDataFromBmp(f:TStream);
 const
- Spec1 = 'Image1=';
- Spec2 = 'Pal=';
- bmpTaillePalette = 256*SizeOf(TRGBQuad);
+  Spec1 = 'Image1=';
+  Spec2 = 'Pal=';
+  bmpTaillePalette = 256*SizeOf(TRGBQuad);
 var
   Header: TBitmapFileHeader;
   BmpInfo: TBitmapInfo256;
@@ -117,31 +138,49 @@ var
   ImageSize: Longint;
 begin
   F.Seek(0,soFromBeginning);
-  F.ReadBuffer(Header, SizeOf(Header));
-  F.ReadBuffer(BmpInfo, SizeOf(TBitmapInfoHeader));
+  try
+    F.ReadBuffer(Header, SizeOf(Header));
+    F.ReadBuffer(BmpInfo, SizeOf(TBitmapInfoHeader));
+  except
+    on E: Exception do
+      Raise Exception.CreateFmt(EINCLASS2, [E.Message, 'QJpeg', 'GetPaletteAndDataFromBmp', 1]);
+  end;
   if BmpInfo.bmiHeader.biBitCount=24 then
     ImageSize:=((BmpInfo.bmiHeader.biWidth*3+3) and not 3)*BmpInfo.bmiHeader.biHeight
-  else
-    begin
+  else begin
       ImageSize:=((BmpInfo.bmiHeader.biWidth+3) and not 3)*BmpInfo.bmiHeader.biHeight;
-    end;
-  F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
-  if BmpInfo.bmiHeader.biBitCount=8 then
-    begin
+  end;
+  try
+    F.Seek(BmpInfo.bmiHeader.biSize-SizeOf(TBitmapInfoHeader), soFromCurrent);
+  except
+    on E: Exception do
+      Raise Exception.CreateFmt(EINCLASS2, [E.Message, 'QJpeg', 'GetPaletteAndDataFromBmp', 2]);
+  end;
+  if BmpInfo.bmiHeader.biBitCount=8 then begin
     { reads the palette }
-    F.ReadBuffer(BmpInfo.bmiColors, bmpTaillePalette);
+    try
+      F.ReadBuffer(BmpInfo.bmiColors, bmpTaillePalette);
+    except
+      on E: Exception do
+        Raise Exception.CreateFmt(EINCLASS2, [E.Message, 'QJpeg', 'GetPaletteAndDataFromBmp', 3]);
+    end;
     Data:=Spec2;
     SetLength(Data, Length(Spec2)+SizeOf(TPaletteLmp));
     BmpInfoToPaletteLmp(BmpInfo, PPaletteLmp(@Data[Length(Spec2)+1]));
     SpecificsAdd(Data);  { "Pal=xxxxx" }
-    end;
+  end;
   { reads the image data }
   V[1]:=BmpInfo.bmiHeader.biWidth;
   V[2]:=BmpInfo.bmiHeader.biHeight;
   SetFloatsSpec('Size', V);
   Data:=Spec1;
-  SetLength(Data, Length(Spec1)+ImageSize);
-  F.ReadBuffer(Data[Length(Spec1)+1], ImageSize);
+  try
+    SetLength(Data, Length(Spec1)+ImageSize);
+    F.ReadBuffer(Data[Length(Spec1)+1], ImageSize);
+  except
+    on E: Exception do
+      Raise Exception.CreateFmt(EINCLASS2, [E.Message, 'QJpeg', 'GetPaletteAndDataFromBmp', 4]);
+  end;
   Specifics.Add(Data);   { Image1= }
 end;
 
@@ -150,19 +189,29 @@ var
   bmp:TMemoryStream;
   FileWrap: TJpegFileWrapper;
 begin
- case ReadFormat of
-  1: begin  { as stand-alone file }
-      ProgressIndicatorStart(5452,100); try
-      bmp:=TMemoryStream.Create; try
-      FileWrap:=TJpegFileWrapper.Create(nil); try
-      FileWrap.Load(F, bmp, 0, progress);
-      GetPaletteAndDataFromBmp(bmp);
-      finally FileWrap.Free; end;
-      finally bmp.free; end;
-      finally ProgressIndicatorStop; end;
-     end;
- else inherited;
- end;
+  case ReadFormat of
+    1: begin  { as stand-alone file }
+      ProgressIndicatorStart(5452,100);
+      try
+        bmp:=TMemoryStream.Create;
+        try
+          FileWrap:=TJpegFileWrapper.Create(nil);
+          try
+            FileWrap.Load(F, bmp, 0, progress);
+            GetPaletteAndDataFromBmp(bmp);
+          finally
+            FileWrap.Free;
+          end;
+        finally
+          bmp.free;
+        end;
+      finally
+        ProgressIndicatorStop;
+      end;
+    end;
+    else
+      inherited;
+  end;
 end;
 
 class function QJPeg.TypeInfo: String;
