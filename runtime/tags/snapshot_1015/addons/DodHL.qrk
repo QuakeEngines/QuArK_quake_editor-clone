@@ -1,0 +1,95 @@
+QQRKSRC1
+{
+  // QuArK data add-on, made by decker@planetquake.com
+  //
+  // http://www.planethalflife.com/
+
+  Description = "Day of Defeat - Half-Life"
+
+  DOD Entities.qtx =
+  {
+    ToolBox = "New map items..."
+    Root = "Day of Defeat Entities.qtxfolder"
+
+    // "<name>:incl" is templates (@baseclass)
+    t_orig_ang:incl = {origin="0 0 0" angle="360"}
+
+    Day of Defeat Entities.qtxfolder =
+    {
+      	// "<classname>:e" is point-entities (@Pointclass)
+      	// "<classname>:b" is brush-entities (@Solidclass)
+
+        Player Starts.qtxfolder = {
+                info_player_allies:e    = {t_orig_ang=! ;desc="Allies team start" }
+                info_player_axis:e      = {t_orig_ang=! ;desc="Axis team start" }
+                info_player_observer:e  = {t_orig_ang=! ;desc="Observer team start" }
+        }
+        Objectives.qtxfolder = {
+                dod_object:e            = {t_orig_ang=! ;desc="Object Objective" }
+                dod_object_goal:b       = {angle="360" ;desc="Object Capturepoint" ;incl="defpoly" }
+                dod_score_ent:e         = {t_orig_ang=! ;desc="Used for done sequences" }
+        }
+    }
+  }
+
+  Entity forms.qctx =
+  {
+        t_targetname:incl       = { targetname: = { Txt="&" Hint="The name of this object, so others can 'target' it." } }
+        t_target:incl           = { target:     = { Txt="&" Hint="Target(s) to activate, when this object is triggered" } }
+//
+// Forms
+//
+        info_player_allies:form = { bbox = '-16 -16 -36 16 16 36' }
+        info_player_axis:form = { bbox = '-16 -16 -36 16 16 36' }
+        info_player_observer:form = { bbox = '-16 -16 -36 16 16 36' }
+
+        dod_object:form = {
+                t_targetname = !
+                t_target = !
+                model: = { txt="&" hint="Model" }
+                object_name: = { txt="&" hint="Objects Name" }
+                object_owner: = { typ="C" txt="&" hint="Owner"
+                        items = "Both"$0D"Allies"$0D"Axis"
+                        values = "0"$0D"1"$0D"2"
+                }
+                object_group: = { txt="&" hint="Group Name" }
+                object_takesound: = { txt="&" hint="Sound when taken" }
+                object_capsound: = { txt="&" hint="Sound when captured" }
+                object_dropsound: = { txt="&" hint="Sound when dropped" }
+                object_returnsound: = { txt="&" hint="Sound when returned" }
+                object_carryspeed: = { txt="&" hint="Carry speed (this*speed)" }
+                object_resetontouch: = { typ="C" txt="&" hint="Reset on touch"
+                        items = "No"$0D"Yes"
+                        values = "0"$0D"1"
+                }
+                object_resettime: = { txt="&" hint="Reset time (secs, max. 600)" }
+                object_cappoints: = { txt="&" hint="Points to capturer" }
+                object_otherpoints: = { txt="&" hint="Points for teammates" }
+                object_donetarget: = { txt="&" hint="Target When Complete" }
+        }
+
+        dod_object_goal:form = {
+                t_targetname = !
+                t_target = !
+                capobj_group: = { txt="&" hint="Group Name" }
+        }
+
+        dod_score_ent:form = {
+                t_targetname = !
+                t_target = !
+                team: = { typ="C" txt="&" hint="For Team"
+                        items = "Both"$0D"Allies"$0D"Axis"
+                        values = "0"$0D"1"$0D"2"
+                }
+                score_points: = { txt="&" hint="Points" }
+                score_resetitemtime: = { txt="&" hint="Reset Items Time (0 = none)" }
+                score_resetplayerstime: = { txt="&" hint="Reset Players Time (0 = none)" }
+                noise: = { txt="&" hint="Reset Group (blank for all)" }
+                noise2: = { typ="C" txt="&" hint="End game?"
+                        items = "No"$0D"Yes"
+                        values = "0"$0D"1"
+                }
+                message: = { txt="&" hint="Message" }
+        }
+  }
+}
