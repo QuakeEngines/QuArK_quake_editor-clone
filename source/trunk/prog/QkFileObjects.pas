@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/06/05 18:39:10  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.27  2001/03/20 21:49:18  decker_dk
 Updated copyright-header
 
@@ -812,6 +815,99 @@ var
    end;
   end;
 
+  function StringVal() : string;
+  var
+    P1: PChar;
+  begin
+   Result:='';
+   repeat
+    while P^='$' do
+     begin
+      Lu(1);
+      while P^ in ['0'..'9', 'a'..'f', 'A'..'F'] do
+       begin
+        Result:=Result+Chr((HexVal(P[0]) shl 4) or HexVal(P[1]));
+        Inc(P, 2);
+       end;
+      Lu(0);
+     end;
+    if P^<>'"' then
+     Break;
+    P1:=P;
+    repeat
+     Inc(P);
+     case P^ of
+      '"': Break;
+      #13, #10, #0: SyntaxError(5198);
+     end;
+    until False;
+    SetString(A1, P1+1, P-P1-1);
+    Result:=Result+A1;
+    Lu(1);
+   until False;
+  end;
+
+  procedure ChoiceList();
+  {Decker 2001-06-14
+    Reason for procedure: I was sick and tired of always having two different
+    specifics (Items, Values) to fill out for a TYP="C", never able to actually
+    see if the number of items was consistent with the number of values.
+    This procedure parses a text which looks like this:
+      ( "valuetext" : "itemtext"
+       ,"valuetext" : "itemtext"
+       ,"valuetext" : "itemtext" )
+    Or like this:
+      ( "valuetext"
+       ,"valuetext"
+       ,"valuetext" )
+    And builds these two specifics, which it adds to the current object (Level):
+      Items="itemtext"$0D"itemtext"$0D"itemtext"
+      Values="valuetext"$0D"valuetext"$0D"valuetext"
+  }
+  var
+    Item, Items: String;
+    Value, Values: String;
+    OnlyValues: Boolean;
+  begin
+    Lu(1);
+    Items:='';
+    Values:='';
+    OnlyValues:=True;
+    while P^<>')' do
+    begin
+      if (P^<>'"') then
+        SyntaxError(248);
+      Value:=StringVal();
+      Lu(0);
+      if (P^=':') then
+      begin
+        Lu(1);
+        if (P^<>'"') then
+          SyntaxError(248);
+        Item:=StringVal();
+        OnlyValues:=False;
+      end
+      else
+        Item:=Value;
+      Items:=Items+Item;
+      Values:=Values+Value;
+      if (P^=',') then
+      begin
+        Lu(1);
+        Items:=Items+#$0D;
+        Values:=Values+#$0D;
+      end;
+    end;
+    Lu(1);
+    if (OnlyValues=True) then
+      Level.SpecificsAdd('Items='+Values) { All the Values are actually Items. Go figure! }
+    else
+    begin
+      Level.SpecificsAdd('Items='+Items);
+      Level.SpecificsAdd('Values='+Values);
+    end;
+  end;
+
 begin
  ProgressIndicatorStart(5447, PSize div Granularite);
  try
@@ -851,7 +947,7 @@ begin
    SetString(NameSpec, P, I);
    Lu(J);
    case P^ of
-    '{': begin
+    '{': begin { New SubElement }
           Lu(1);
           {if IgnoreLevel=0 then}
            Q:=ConstructQObject(NameSpec, Level)
@@ -865,69 +961,18 @@ begin
             Level:=Q;
            {end;}
          end;
-    '@': begin
+    '@': begin { Load this file }
           Lu(1);
           {if IgnoreLevel=0 then}
            Level.LoadedFileLink(NameSpec, 0);
          end;
-    '"', '$':
+    '"', '$': { Text/Data Specific }
          begin
-          Arg:='';
-          repeat
-           while P^='$' do
-            begin
-             Lu(1);
-             while P^ in ['0'..'9', 'a'..'f', 'A'..'F'] do
-              begin
-               Arg:=Arg+Chr((HexVal(P[0]) shl 4) or HexVal(P[1]));
-               Inc(P, 2);
-              end;
-             Lu(0);
-            end;
-           if P^<>'"' then
-            Break;
-(*decker
-           P1:=P;
-/decker*)
-           repeat
-            Inc(P);
-            case P^ of
-             '"': Break;
-             #13, #10, #0: SyntaxError(5198);
-(*
-{decker - allow escape-characters like "\n", "\"" and "\\".
-          This implementation is not exactly C-style, as only
-          the mentioned three escape-characters are supported!}
-             '\':
-              begin
-               case P[1] of
-                'n': Arg:=Arg+#13; {convert to newline $0D character}
-                '"': Arg:=Arg+'"'; {convert to inline quote character}
-                '\': Arg:=Arg+'\'; {convert to single backslash character}
-                else {case-else}
-                 begin
-                  Arg:=Arg+P[0]; {unknown escape-sequence, use as normal backslash}
-                  Dec(P, 1); {Negate the next Inc()}
-                 end;
-               end;
-               Inc(P, 1);
-              end;
-*)
-             else {case-else}
-              Arg:=Arg+P[0];
-{/decker}
-            end;
-           until False;
-{decker - removed, to allow interpretation of escape-characters within string-quotes
-           SetString(A1, P1+1, P-P1-1);
-           Arg:=Arg+A1;
-/decker}
-           Lu(1);
-          until False;
+          Arg:=StringVal();
           {if IgnoreLevel=0 then}
            Level.SpecificsAdd(NameSpec+'='+Arg);
          end;
-    '''':begin
+    '''':begin { Number Specific }
           Arg:='';
           Lu(1);
           while P^<>'''' do
@@ -950,11 +995,14 @@ begin
           {if IgnoreLevel=0 then}
            Level.SpecificsAdd(NameSpec+'='+Arg);
          end;
-    '!': begin
+    '!': begin { Copy Specifics+SubElements from this Object }
           Lu(1);
           {if IgnoreLevel=0 then}
            if not DoIncludeData(Level, Level, NameSpec) then
             GlobalWarning(FmtLoadStr1(5643, [NameSpec]));
+         end;
+    '(': begin { Choice list }
+          ChoiceList();
          end;
     else
      SyntaxError(5196);
