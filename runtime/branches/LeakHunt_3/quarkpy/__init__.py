@@ -82,12 +82,13 @@ def RunQuArK():
     print " --- QuArK ---  Quake Army Knife ", quarkx.version
 
     import qmacro
+    import icons
     quarkx.Setup1(qmacro.__dict__)    # don't change this !
 
     import qutils
     quarkx.setupchanged = qutils.SetupChanged
-    unselicons = qutils.ico_objects[0]
-    selicons = qutils.ico_objects[1]
+    unselicons = icons.ico_objects[0]
+    selicons = icons.ico_objects[1]
     for i in range(0, qutils.iiTotalImageCount):
         quarkx.seticons(i, selicons[i], unselicons[i])
     quarkx.seticons(qutils.iiEntity,     qutils.EntityIconSel,     qutils.EntityIconUnsel)
@@ -106,6 +107,12 @@ def RunQuArK():
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4.12.1  2001/11/11 00:25:59  tiglari
+#icon leaks
+#
+#Revision 1.4  2001/03/02 19:34:34  decker_dk
+#Uncommented some broken big-GO! choices, due to the new build-tool controllers functionality.
+#
 #Revision 1.3  2000/06/03 18:01:28  alexander
 #added cvs header
 #

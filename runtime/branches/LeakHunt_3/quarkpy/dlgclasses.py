@@ -13,6 +13,7 @@
 
 import qmacro
 from maputils import *
+import icons
 
 class placepersistent_dialogbox(qmacro.dialogbox):
   def __init__(self, form, src, label, **buttons):
@@ -85,7 +86,7 @@ class LiveEditDlg (placepersistent_dialogbox):
            exit = qtoolbar.button(
             self.cancel,
             "close dialog",
-            ico_editor, 0,
+            icons.ico_editor, 0,
             "Exit"))
 
     def cancel(self, dlg):
@@ -207,6 +208,12 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.6.2.1  2001/11/11 00:25:59  tiglari
+#icon leaks
+#
+#Revision 1.6  2001/08/05 08:01:37  tiglari
+#spiff up new descendents of LiveEditDlg
+#
 #Revision 1.5  2001/08/02 02:55:49  tiglari
 #List-browser dialog (ListerDlg)
 #

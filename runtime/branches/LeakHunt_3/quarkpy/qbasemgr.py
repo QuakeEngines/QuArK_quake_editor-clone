@@ -363,7 +363,7 @@ class BaseLayout:
 
     def bs_multipagespanel(self, panel):
         "Builds the multi-pages panel (usually bottom left)."
-        ico_maped=ico_dict['ico_maped']
+        ico_maped=icons.ico_maped
         self.explorer = panel.newexplorer()
         self.explorer.flags = EF_AUTOFOCUS
         self.explorer.hint = "||This is the list of everything in your map : entities, polyhedrons, groups, etc. You should consider it as the best way to organize your map so that you can later easily find what you are looking for. Use groups (the button above) to organize your map.\n\nFor more information about the available object types, see the tutorials."
@@ -401,7 +401,8 @@ class BaseLayout:
 
     def bs_leftpanel(self, form, right=0):
         "Default-looking panel at the left or right of the screen."
-        ico_maped=ico_dict['ico_maped']
+        import icons
+        ico_maped=icons.ico_maped
         if right:
             LeftPanel = form.mainpanel.newrightpanel(180)
         else:
@@ -418,7 +419,7 @@ class BaseLayout:
         self.zoombar = ZoomBar(self.views, CompassPanel.newrightpanel(16,0), self.MODE)
 
         if ico_maped[0][0].size[1] <= 16:
-            NewItem = [qtoolbar.button(self.NewItem1Click, "new item", ico_objects, iiNewFolder)]
+            NewItem = [qtoolbar.button(self.NewItem1Click, "new item", icons.ico_objects, iiNewFolder)]
         else:
             NewItem = []
         Trash = qtoolbar.button(self.editor.editcmdclick, "delete selected item", ico_maped, 2)
@@ -607,6 +608,12 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.7.2.1  2001/11/11 00:25:59  tiglari
+#icon leaks
+#
+#Revision 1.7  2001/10/22 10:26:17  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.6  2001/01/26 19:07:26  decker_dk
 #bs_multipagespanel. Better indication of keys '1'-'5', which are actually shortcut-keys to the tree-view and  alike panels.
 #

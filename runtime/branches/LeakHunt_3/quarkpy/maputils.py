@@ -55,12 +55,13 @@ def chooselocaltexture(item):
     mapbtns.applytexture(editor, item.text)
 
 def loadlocaltextures(item):
+    import icons
     editor = mapeditor()
     if editor is None: return
     items = []
     for tex in quarkx.texturesof([editor.Root]):
         m = qmenu.item(tex, chooselocaltexture)
-        m.menuicon = ico_objects[1][iiTexture]
+        m.menuicon = icons.ico_objects[1][iiTexture]
         items.append(m)
     return items
 
@@ -76,7 +77,8 @@ class MapUserDataPanel(UserDataPanel):
 
     def buildbuttons(self, btnpanel):
         Btns = []
-        ico_maped=ico_dict['ico_maped']
+        import icons
+        ico_maped=icons.ico_maped
         for tb, icon in (("New map items...", 25), ("Texture Browser...", 26)):
             icons =  (ico_maped[0][icon], ico_maped[1][icon])
             toolboxes = quarkx.findtoolboxes(tb)
@@ -381,6 +383,12 @@ def warpedCircleFrom4Points(n, points):
 #
 #
 #$Log$
+#Revision 1.21.2.1  2001/11/11 00:25:59  tiglari
+#icon leaks
+#
+#Revision 1.21  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.19  2001/06/09 22:35:12  tiglari
 #add warpec circle routine
 #

@@ -108,6 +108,7 @@ class ConfigDialog(qmacro.dialogbox):
         except:
             self.mode = menu
         setup = quarkx.setupsubset(self.mode, "Building").copy()
+        ico_editor=icons.ico_editor
         qmacro.dialogbox.__init__(self, quarkx.clickform, setup,
           ok = qtoolbar.button(self.close, "close this box", ico_editor, 3, "Close"),
           cancel = qtoolbar.button(self.cancel, "cancel changes", ico_editor, 0, "Cancel"))
@@ -131,10 +132,11 @@ class ToolMoveBar(ToolBar):
     Caption = "Movement Tool Palette"
 
     def buildbuttons(self, layout):
-        if not ico_dict.has_key('ico_movepal'):
-            ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
+        import icons
+        if not icons.ico_dict.has_key('ico_movepal'):
+            icons.ico_dict['ico_movepal']=LoadIconSet1("movepal", 1.0)
 #        icons = LoadPoolObj("ico_movepal", LoadIconSet1, "movepal", 1.0)
-        icons = ico_dict['ico_movepal']
+        icons = icons.ico_dict['ico_movepal']
         btn1 = qtoolbar.button(btnclick, "move selection||Offsets the selected objects by the distance specified in the toolbar settings (last button of this toolbar).", icons, 1)
         btn1.text = Strings[552]
         btn1.spec = "mpOffset"
@@ -202,6 +204,12 @@ class ToolMoveBar(ToolBar):
 #
 #
 #$Log$
+#Revision 1.5.2.1  2001/11/11 00:25:59  tiglari
+#icon leaks
+#
+#Revision 1.5  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.4  2001/06/17 21:05:27  tiglari
 #fix button captions
 #

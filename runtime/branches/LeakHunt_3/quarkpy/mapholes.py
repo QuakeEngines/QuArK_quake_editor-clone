@@ -17,6 +17,7 @@ Map editor "Line through hole" displayer
 #
 
 import quarkx
+import icons
 import qmacro
 import qtoolbar
 from maputils import *
@@ -55,7 +56,7 @@ class LinesDlg(qmacro.dialogbox):
            close = qtoolbar.button(
               self.close,
               "click here to remove the arrow from your map",
-              ico_editor, 0,
+              icons.ico_editor, 0,
               "Ok, hide arrow"))
 
     def windowrect(self):
@@ -172,6 +173,12 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 #
 #
 #$Log$
+#Revision 1.3.2.1  2001/11/11 00:25:59  tiglari
+#icon leaks
+#
+#Revision 1.3  2001/06/17 21:05:27  tiglari
+#fix button captions
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
