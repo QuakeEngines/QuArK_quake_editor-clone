@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/01/31 11:47:16  tiglari
+fixed recursive pak texture bug.  there are still problems with shaders &
+lots of extraneous junk being dropped in at the top level.
+
 Revision 1.14  2001/01/30 22:04:09  tiglari
 assorted attempted improvements
 
@@ -618,7 +622,7 @@ begin
               Loaded.AddRef(+1);
             end;
           finally
-            Loaded.AddRef(-1);
+           Loaded.AddRef(-1);
           end;
         end
         else
@@ -632,9 +636,6 @@ begin
     finally
       FindClose(F);
     end;
-    {parse found sub-folders}
-    for I:=0 to L.Count-1 do
-      LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
   finally
     L.Free;
   end;
