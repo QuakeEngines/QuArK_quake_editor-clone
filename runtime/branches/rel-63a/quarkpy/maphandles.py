@@ -1387,7 +1387,6 @@ def MouseDragging(self, view, x, y, s, handle):
     #
     # qhandles.MouseDragging builds the DragObject.
     #
-    debug('dragg: '+s)
     if handle is not None:
         s = handle.click(self)
         if s and ("S" in s):
@@ -1805,6 +1804,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.34  2002/05/13 10:36:58  tiglari
+#support frozen selections (don't change until another frozen selection is made,
+#or they are cancelled with ESC or unfreeze selection)
+#
 #Revision 1.33  2001/09/26 22:37:24  tiglari
 #change close button to cancel in proportional glue dialog
 #
