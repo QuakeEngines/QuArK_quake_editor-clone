@@ -388,7 +388,10 @@ procedure TQkExplorer.AddRoot;
 begin
  FAllExplorers.Remove(Self);
  FAllExplorers.Add(Self);
- Q.Acces;
+ if ToutChargerAuto then
+  Q.AccesRec
+ else
+  Q.Acces;
  Roots.Add(Q);
  Q.SelMult:=smNonSel;
  Q.Flags:=Q.Flags and not (ofTvSousElement or ofTvInvisible) or ofTvExpanded;
@@ -571,7 +574,7 @@ var
 begin
  El.Flags:=El.Flags and not ofTvAlreadyExpanded;
  if Charger then
-  El.Acces
+  El.AccesRec
  else
   if El.Flags and ofSurDisque <> 0 then
    Exit;
@@ -593,7 +596,8 @@ end;
 
 procedure TQkExplorer.AjouterElement(El: QObject{; nParent, nInsert: TTreeNode});
 begin
- El.Acces;
+ if not ToutChargerAuto then
+  El.Acces;
  InitEl(El, ToutChargerAuto);
 {if El.AjouterElement(Items, nParent, nInsert)=Nil then
   GlobalWarning(LoadStr1(5218))
@@ -682,7 +686,10 @@ var
  Q: QObject;
 begin
  if El.Flags and ofTvAlreadyExpanded <> 0 then Exit;
- El.Acces;
+ if ToutChargerAuto then
+  El.AccesRec
+ else
+  El.Acces;
  DebutTravail(5446, El.SousElements.Count); try
  for I:=0 to El.SousElements.Count-1 do
   begin
@@ -698,7 +705,8 @@ begin
       end
      else
       begin
-       Q.Acces;
+       if not ToutChargerAuto then
+        Q.Acces;
        InitEl(Q, ToutChargerAuto);
       {ControlerEtatNoeud(Q);}
       end;

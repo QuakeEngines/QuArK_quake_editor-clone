@@ -217,6 +217,7 @@ type
              Name: String;
              constructor Create(const nName: String; nParent: QObject);
              procedure ToutCharger;
+             procedure AccesRec;
              procedure Ouvrir(F: TQStream; Taille: Integer);
              procedure Enregistrer1(Info: TInfoEnreg1);
              destructor Destroy; override;
@@ -1196,10 +1197,10 @@ begin
  finally Deleted:=OldList; end;
 end;*)
 
-procedure QObject.ToutCharger;
+procedure QObject.AccesRec;
 var
- I: Integer;
  S: TQStream;
+ ddl: Boolean;
 begin
  if (FFlags and ofSurDisque <> 0) and not FLoading then
   begin  { optimization only : tags the source stream as "DisableDelayLoading",
@@ -1207,14 +1208,22 @@ begin
            instead of by the recursive ToutCharger call below. }
    S:=FNode^.Self;
    S.AddRef;
-   S.DisableDelayLoading:=True;
+   ddl:=S.DisableDelayLoading;
    try
+    S.DisableDelayLoading:=True;
     Acces;
    finally
-    S.DisableDelayLoading:=False;
+    S.DisableDelayLoading:=ddl;
     S.Release;
    end;
   end;
+end;
+
+procedure QObject.ToutCharger;
+var
+ I: Integer;
+begin
+ AccesRec;
  for I:=0 to SousElements.Count-1 do
   SousElements[I].ToutCharger;
 end;
