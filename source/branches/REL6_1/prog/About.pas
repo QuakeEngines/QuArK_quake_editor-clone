@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -45,7 +48,6 @@ type
     Copyright: TLabel;
     OKButton: TButton;
     Edit1: TEdit;
-    Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -58,6 +60,10 @@ type
     Label10: TLabel;
     Memo1: TMemo;
     Label9: TLabel;
+    Label1: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
