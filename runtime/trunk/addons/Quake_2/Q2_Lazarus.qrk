@@ -5,6 +5,10 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.4  2003/03/03 23:05:22  cdunde
+// This is a convertion of the original Q2 Lazarus to
+//  work with the features of QuArk
+//
 
 {
   Game Directories.qctx =
@@ -799,7 +803,8 @@ QQRKSRC1
         {
           origin = "0 0 0"
           angle = "360"
-          ;desc = "This is the tank commander's destroyed body (just for looks)."
+          ;desc = "This is the tank commander's destroyed body (just for looks"
+           ")."
         }
         monster_flipper:e =
         {
@@ -1314,7 +1319,7 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Change env sky"
         }
-       target_spawner:e =
+        target_spawner:e =
         {
           angle = "360"
           origin = "0 0 0"
@@ -1624,7 +1629,6 @@ QQRKSRC1
       }
     }
   }
- 
   Entity Forms.fctx =
   {
     t_Appearflags:incl =
@@ -3580,8 +3584,8 @@ QQRKSRC1
     func_areaportal:form =
     {
       Help = "This is a non-visible object that divides the world into areas t"
-       "hat are seperated when this portal is not activated. Usually enclosed i"
-       "n the middle of a door."
+       "hat are seperated when this portal is not activated. Usually enclosed "
+       "in the middle of a door."
       targetname: =
       {
         txt = "&"
@@ -3961,12 +3965,14 @@ QQRKSRC1
       health: =
       {
         txt = "&"
-        hint = "Health>dmg before trigger. If set, the button must be killed instead of touched."
+        hint = "Health>dmg before trigger. If set, the button must be killed i"
+         "nstead of touched."
       }
       angles: =
       {
         txt = "&"
-        hint = "Angles>pitch yaw 0. The direction it should move in when touched(-1 is up,-2 is down)."
+        hint = "Angles>pitch yaw 0. The direction it should move in when touch"
+         "ed(-1 is up,-2 is down)."
       }
       pathtarget: =
       {
@@ -3986,12 +3992,14 @@ QQRKSRC1
       wait: =
       {
         txt = "&"
-        hint = "Wait>sec until reset. Override the default 1 second wait (-1 = never return)."
+        hint = "Wait>sec until reset. Override the default 1 second wait (-1 ="
+         " never return)."
       }
       lip: =
       {
         txt = "&"
-        hint = "Lip>units visible after move. Override the default 4 pixel lip remaining at end of move."
+        hint = "Lip>units visible after move. Override the default 4 pixel lip"
+         " remaining at end of move."
       }
       sounds: =
       {
@@ -4056,8 +4064,8 @@ QQRKSRC1
     }
     func_clock:form =
     {
-      Help = "Target a target_string with this. The default is to be a time o"
-       "f day clock."
+      Help = "Target a target_string with this. The default is to be a time of"
+       " day clock."
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -4124,7 +4132,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "This should be the name of a target_string or a target_explosion."
+        hint = "This should be the name of a target_string or a target_explosi"
+         "on."
       }
       count: =
       {
@@ -4142,8 +4151,9 @@ QQRKSRC1
     }
     func_conveyor:form =
     {
-      Help = "Conveyors are stationary brushes that move what's on them. The entity itself,"
-        " as well as one side of the brush, must BOTH have one current content activated."
+      Help = "Conveyors are stationary brushes that move what's on them. The e"
+       "ntity itself, as well as one side of the brush, must BOTH have one cur"
+       "rent content activated."
       spawnflags: =
       {
         txt = "&"
@@ -4461,15 +4471,16 @@ QQRKSRC1
         Txt = "&"
         Typ = "X2"
         Cap = "2>Presses"
-        Hint = "If you check this the door wont open if you get crushed in it. It w"
-         "ill just keep pressing until you die."
+        Hint = "If you check this the door wont open if you get crushed in it."
+         " It will just keep pressing until you die."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X4"
         cap = "4>Crusher"
-        Hint = "It will just keep trying to close and crush you. No matter what."
+        Hint = "It will just keep trying to close and crush you. No matter wha"
+         "t."
       }
       spawnflags: =
       {
@@ -4483,8 +4494,8 @@ QQRKSRC1
         txt = "&"
         typ = "X16"
         cap = "16>Animated"
-        Hint = "You must check this or ANIMATED_FAST if you use an animated texture on the d"
-          "oor."
+        Hint = "You must check this or ANIMATED_FAST if you use an animated te"
+         "xture on the door."
       }
       spawnflags: =
       {
@@ -4499,7 +4510,8 @@ QQRKSRC1
         typ = "X64"
         cap = "64>Ani Fast"
         Cap = "ANIMATED_FAST"
-        Hint = "You must check this or ANIMATED if you use an animated texture on the door."
+        Hint = "You must check this or ANIMATED if you use an animated texture"
+         " on the door."
       }
       team: =
       {
@@ -4530,12 +4542,14 @@ QQRKSRC1
       wait: =
       {
         txt = "&"
-        hint = "Wait>sec until reset. Wait before returning (default 3, -1 = never return)."
+        hint = "Wait>sec until reset. Wait before returning (default 3, -1 = n"
+         "ever return)."
       }
       lip: =
       {
         txt = "&"
-        hint = "Lip>units visible after move. Lip remaining at end of move (default 8)."
+        hint = "Lip>units visible after move. Lip remaining at end of move (de"
+         "fault 8)."
       }
       dmg: =
       {
@@ -4813,22 +4827,24 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "1>Start Open"
-        Hint = "The door moves to its destination when spawned, and operates in reverse."
+        Hint = "The door moves to its destination when spawned, and operates i"
+         "n reverse."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X2"
         cap = "2>Reverse"
-        Hint = "This will cause the door to rotate in the opposite direction(setting a neg"
-           "ative distance will have the same effect)."
+        Hint = "This will cause the door to rotate in the opposite direction(s"
+         "etting a negative distance will have the same effect)."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X4"
         cap = "4>Crusher"
-        Hint = " It will just keep trying to close and crush you, no matter what."
+        Hint = " It will just keep trying to close and crush you, no matter wh"
+         "at."
       }
       spawnflags: =
       {
@@ -4857,16 +4873,16 @@ QQRKSRC1
         txt = "&"
         typ = "X64"
         cap = "64>X Axis"
-        Hint = "It will rotate around the Z axis by default. You can check ei"
-         "ther the X_AXIS or Y_AXIS box to change that."
+        Hint = "It will rotate around the Z axis by default. You can check eit"
+         "her the X_AXIS or Y_AXIS box to change that."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X128"
         cap = "128>Y Axis"
-        Hint = "It will rotate around the Z axis by default. You can check ei"
-         "ther the X_AXIS or Y_AXIS box to change that."
+        Hint = "It will rotate around the Z axis by default. You can check eit"
+         "her the X_AXIS or Y_AXIS box to change that."
       }
       team: =
       {
@@ -5957,8 +5973,8 @@ QQRKSRC1
     }
     func_explosive:form =
     {
-      Help = "Use this for any brush that you want to explode or break apart, including"
-        " windows."
+      Help = "Use this for any brush that you want to explode or break apart, "
+       "including windows."
       spawnflags: =
       {
         txt = "&"
@@ -5991,7 +6007,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "If you set this, it won't be shootable unless you also set trigger_spawn."
+        hint = "If you set this, it won't be shootable unless you also set tri"
+         "gger_spawn."
       }
       target: =
       {
@@ -6013,22 +6030,24 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "1>Trig Spawn"
-        Hint = "If you set this, it will appear when triggered and you must shoot it."
+        Hint = "If you set this, it will appear when triggered and you must sh"
+         "oot it."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X2"
         cap = "2>Animated"
-        Hint = "You must check this or ANIMATED_FAST if you use an animated texture on"
-          " this brush."
+        Hint = "You must check this or ANIMATED_FAST if you use an animated te"
+         "xture on this brush."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X4"
         cap = "4>Ani Fast"
-        Hint = "You must check this or ANIMATED if you use an animated texture on this brush."
+        Hint = "You must check this or ANIMATED if you use an animated texture"
+         " on this brush."
       }
       health: =
       {
@@ -6418,31 +6437,32 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Make this the pathtarget of a path_corner so it will fall when it's support"
-          " is removed (use a func_train as the support)."
+        hint = "Make this the pathtarget of a path_corner so it will fall when"
+         " it's support is removed (use a func_train as the support)."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X1"
         cap = "1>Trig Spawn"
-        Hint = "If you check this, when it is triggered it will appear in the middle of "
-          "the air and fall."
+        Hint = "If you check this, when it is triggered it will appear in the "
+         "middle of the air and fall."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X2"
         cap = "2>Animated"
-        Hint = "You must check this or ANIMATED_FAST if you use an animated texture on this "
-          "brush."
+        Hint = "You must check this or ANIMATED_FAST if you use an animated te"
+         "xture on this brush."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X4"
         cap = "4>Ani Fast"
-        Hint = "You must check this or ANIMATED if you use an animated texture on this brush."
+        Hint = "You must check this or ANIMATED if you use an animated texture"
+         " on this brush."
       }
       dmg: =
       {
@@ -6748,8 +6768,8 @@ QQRKSRC1
       height: =
       {
         txt = "&"
-        hint = "the amount the plat moves. If not set it is implicitly determined "
-          "by the model's height"
+        hint = "the amount the plat moves. If not set it is implicitly determi"
+         "ned by the model's height"
       }
       dmg: =
       {
@@ -7118,8 +7138,8 @@ QQRKSRC1
     }
     func_rotating:form =
     {
-      Help = "You need to have an origin brush as part of this entity. The ce"
-       "nter of that brush will be the point around which it is rotated."
+      Help = "You need to have an origin brush as part of this entity. The cen"
+       "ter of that brush will be the point around which it is rotated."
       spawnflags: =
       {
         txt = "&"
@@ -7164,15 +7184,15 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "1>Start On"
-        Hint = "This will make it start out rotating. If it is targeted, it will stop when "
-          "triggered."
+        Hint = "This will make it start out rotating. If it is targeted, it wi"
+         "ll stop when triggered."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X2"
-        cap = "2>Reverse"        Hint = "This will cause it to rotate in the opposite direction."
-
+        cap = "2>Reverse"
+        Hint = "This will cause it to rotate in the opposite direction."
       }
       spawnflags: =
       {
@@ -7195,7 +7215,8 @@ QQRKSRC1
         txt = "&"
         typ = "X16"
         cap = "16>Pain Touch"
-        Hint = "Use this to make it cause damage when it touches the player or monsters."
+        Hint = "Use this to make it cause damage when it touches the player or"
+         " monsters."
       }
       spawnflags: =
       {
@@ -7209,14 +7230,16 @@ QQRKSRC1
         txt = "&"
         typ = "X64"
         cap = "64>Animated"
-        Hint = "You must check this or ANIMATED_FAST if you use an animated texture on this"
-          " brush."
+        Hint = "You must check this or ANIMATED_FAST if you use an animated te"
+         "xture on this brush."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X128"
-        cap = "128>Ani Fast"        Hint = "You must check this or ANIMATED if you use an animated texture on this brush."
+        cap = "128>Ani Fast"
+        Hint = "You must check this or ANIMATED if you use an animated texture"
+         " on this brush."
       }
       team: =
       {
@@ -7609,8 +7632,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Use this with a target_explosion or anything that should start a certain amount"
-          "of time after it is triggered."
+        hint = "Use this with a target_explosion or anything that should start"
+         " a certain amountof time after it is triggered."
       }
       count: =
       {
@@ -7622,7 +7645,8 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "1>Start On"
-        Hint = "If you check this, it doesn't have to be activated before it begins."
+        Hint = "If you check this, it doesn't have to be activated before it b"
+         "egins."
       }
       wait: =
       {
@@ -8347,7 +8371,8 @@ QQRKSRC1
         txt = "&"
         typ = "X4"
         cap = "4>Block Stops"
-        Hint = "If this is checked, it will stop instead of crushing the player."
+        Hint = "If this is checked, it will stop instead of crushing the playe"
+         "r."
       }
       spawnflags: =
       {
@@ -8382,7 +8407,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target a path_corner. It will spawn at the first path_corner it is aimed at."
+        hint = "Target a path_corner. It will spawn at the first path_corner i"
+         "t is aimed at."
       }
       team: =
       {
@@ -8397,7 +8423,8 @@ QQRKSRC1
       noise: =
       {
         txt = "&"
-        hint = "Noise>sound (path/file.wav) Looping sound to play when the train is in motion."
+        hint = "Noise>sound (path/file.wav) Looping sound to play when the tra"
+         "in is in motion."
       }
       health: =
       {
@@ -9087,22 +9114,24 @@ QQRKSRC1
         txt = "&"
         typ = "X4"
         cap = "4>Start On"
-        Hint = "Only valid for TRIGGER_SPAWN walls. The wall will initially be present."
+        Hint = "Only valid for TRIGGER_SPAWN walls. The wall will initially be"
+         " present."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X8"
         cap = "8>Animated"
-        Hint = "You must check this or ANIMATED_FAST if you use an animated texture on this"
-          " brush."
+        Hint = "You must check this or ANIMATED_FAST if you use an animated te"
+         "xture on this brush."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X16"
         cap = "16>Ani Fast"
-        Hint = "You must check this or ANIMATED if you use an animated texture on this brush."
+        Hint = "You must check this or ANIMATED if you use an animated texture"
+         " on this brush."
       }
     }
     t_FWater:incl =
@@ -9248,12 +9277,14 @@ QQRKSRC1
         typ = "C"
         items = "-1>Toggle"
         values = "-1"
-        hint = "Wait>sec until reset. Wait before returning (default 1, -1 = TOGGLE)."
+        hint = "Wait>sec until reset. Wait before returning (default 1, -1 = T"
+         "OGGLE)."
       }
       lip: =
       {
         txt = "&"
-        hint = "Lip>units visible after move. Lip remaining at end of move (default 0)."
+        hint = "Lip>units visible after move. Lip remaining at end of move (de"
+         "fault 0)."
       }
       sounds: =
       {
@@ -9829,7 +9860,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -9922,7 +9954,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10015,7 +10048,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10108,7 +10142,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10201,7 +10236,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10294,7 +10330,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10352,7 +10389,8 @@ QQRKSRC1
     }
     item_bandolier:form =
     {
-      Help = "Increases your carrying capacity for all ammunition except grenades & rockets."
+      Help = "Increases your carrying capacity for all ammunition except grena"
+       "des & rockets."
       bbox = '-16 -16 -16 16 16 16'
       mdl = "models/items/band/tris.md2"
       spawnflags: =
@@ -10387,7 +10425,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10480,7 +10519,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10573,7 +10613,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10762,7 +10803,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10855,7 +10897,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -10948,7 +10991,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11041,7 +11085,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11134,7 +11179,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11323,7 +11369,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11416,7 +11463,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11509,7 +11557,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11602,7 +11651,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -11695,7 +11745,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Use this to make it disappear by making it the killtarget of a monster."
+        hint = "Use this to make it disappear by making it the killtarget of a"
+         " monster."
       }
       target: =
       {
@@ -12051,7 +12102,8 @@ QQRKSRC1
     }
     key_commander_head:form =
     {
-      Help = "Tank commander's head, use this with a monster_commander_body as the target."
+      Help = "Tank commander's head, use this with a monster_commander_body as"
+       " the target."
       bbox = '-16 -16 -16 16 16 16'
       mdl = "models/monsters/commandr/head/tris.md2"
       spawnflags: =
@@ -12086,7 +12138,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target a monster_commander_body, which will move when triggered."
+        hint = "Target a monster_commander_body, which will move when triggere"
+         "d."
       }
       killtarget: =
       {
@@ -12842,7 +12895,8 @@ QQRKSRC1
       _cone: =
       {
         txt = "&"
-        hint = "Default _cone value is 10 (used to set size of light for spotl max=90)"
+        hint = "Default _cone value is 10 (used to set size of light for spotl"
+         " max=90)"
       }
       _focus: =
       {
@@ -12867,15 +12921,15 @@ QQRKSRC1
     }
     light_mine1:form =
     {
-     Help = "Predefined light entity from the mine levels"
+      Help = "Predefined light entity from the mine levels"
       bbox = '-2 -2 -12 2 2 12'
       bbox = '-8 -8 -8 8 8 8'
       mdl = "models/objects/minelite/light1/tris.md2"
       angles: =
       {
         txt = "&"
-        hint = "Angles>pitch yaw 0""  This is the direction the model will be facing. Has no effect "
-         "on the actual light."
+        hint = "Angles>pitch yaw 0  This is the direction the model will be fa"
+         "cing. Has no effect on the actual light."
       }
       spawnflags: =
       {
@@ -12927,7 +12981,7 @@ QQRKSRC1
       light: =
       {
         txt = "&"
-        hint = "Light>brightness."" The amount of light (default 300)."
+        hint = "Light>brightness. The amount of light (default 300)."
       }
       _falloff: =
       {
@@ -13005,8 +13059,8 @@ QQRKSRC1
       angles: =
       {
         txt = "&"
-        hint = "Angles>pitch yaw 0.""  This is the direction the model will be facing. Has no effect "
-         "on the actual light."
+        hint = "Angles>pitch yaw 0.  This is the direction the model will be f"
+         "acing. Has no effect on the actual light."
       }
       spawnflags: =
       {
@@ -13056,7 +13110,7 @@ QQRKSRC1
       light: =
       {
         txt = "&"
-        hint = "Light>brightness.""  The amount of light (default 300)."
+        hint = "Light>brightness.  The amount of light (default 300)."
       }
       _falloff: =
       {
@@ -13128,6 +13182,23 @@ QQRKSRC1
     misc_actor:form =
     {
       bbox = '-16 -16 -24 16 16 32'
+      mdl = "[3Dmodel]"
+      mdlbase = "baseq2"
+//      mdlskin = "[style]"  cdunde-tried to get user assigned skin to work
+      help = "This allows you to use your own custom entity 3D-models."
+$0D"Used as additional actors. These models will move around in the"
+$0D"game and can be set to do different things with the flags below."
+$0D"For just special effect custom models use the model_spawn entity."
+$0D"Click on this Help Book for more details."
+      HTML = "help/intro.mapeditor.menu.html#optionsmenu"
+
+      3Dmodel: =
+      {
+        txt = "&"
+        hint = "This is a custom model for QuArK 3d views only."
+$0D"It only uses the 0 skin and will not show in the actual game."
+$0D"For that use usermodel below."
+      }
       spawnflags: =
       {
         txt = "&"
@@ -13234,12 +13305,14 @@ QQRKSRC1
       style: =
       {
         txt = "&"
-        hint = "Style>skin number"
+        hint = "Style>skin number. This is the skin that will actually be used in the game."
       }
       usermodel: =
       {
         txt = "&"
-        hint = "Usermodel>player model"
+        hint = "This is a custom model for the actual game play only."
+$0D"It will not show in QuArK's 3D views."
+$0D"For that use 3Dmodel above."
       }
       dmgteam: =
       {
@@ -13319,8 +13392,8 @@ QQRKSRC1
     }
     misc_banner:form =
     {
-      Help = "The origin is the bottom of the banner. The banner is 128 units"
-       " tall."
+      Help = "The origin is the bottom of the banner. The banner is 128 units "
+       "tall."
       bbox = '-4 -4 0 4 4 246'
       mdl = "models/objects/banner/tris.md2"
       spawnflags: =
@@ -13709,7 +13782,7 @@ QQRKSRC1
     }
     misc_gib_arm:form =
     {
-     Help = "Intended for use with the target_spawner."
+      Help = "Intended for use with the target_spawner."
       bbox = '-8 -8 -8 8 8 8'
       mdl = "models/objects/gibs/arm/tris.md2"
       spawnflags: =
@@ -13968,7 +14041,8 @@ QQRKSRC1
     }
     misc_satellite_dish:form =
     {
-      Help = "You can either place this in a map on its own or you can trigger it."
+      Help = "You can either place this in a map on its own or you can trigger"
+       " it."
       bbox = '-64 -64 0 64 64 128'
       mdl = "models/objects/satellite/tris.md2"
       spawnflags: =
@@ -14456,7 +14530,23 @@ QQRKSRC1
     }
     model_spawn:form =
     {
-      bbox = '-8 -8 -8 8 8 8'
+      bbox = '-16 -16 -24 16 16 32'
+      mdl = "[3Dmodel]"
+      mdlbase = "baseq2"
+      mdlskin = '0'
+      help = "This allows you to use your own custom entity 3D-models."
+$0D"Used for special effects, you can control which model frames"
+$0D"are used. But the models do not fight like misc_actor entities do."
+$0D"Click on this Help Book for more details."
+      HTML = "help/intro.mapeditor.menu.html#optionsmenu"
+
+      3Dmodel: =
+      {
+        txt = "&"
+        hint = "This is a custom model for QuArK 3d views only."
+$0D"It will not show in the actual game."
+$0D"For that use usermodel below."
+      }
       spawnflags: =
       {
         txt = "&"
@@ -14556,7 +14646,9 @@ QQRKSRC1
       usermodel: =
       {
         txt = "&"
-        hint = "Usermodel>model (path/file.md2)"
+        hint = "This is a custom model for the actual game play only."
+$0D"It will not show in QuArK's 3D views."
+$0D"For that use 3Dmodel above."
       }
       startframe: =
       {
@@ -15833,14 +15925,14 @@ QQRKSRC1
         txt = "&"
         typ = "X2"
         cap = "2>Trig Spawn"
-       Hint = "This will spawn Iron Maiden when triggered."
+        Hint = "This will spawn Iron Maiden when triggered."
       }
       spawnflags: =
       {
         txt = "&"
         typ = "X4"
         cap = "4>Sight"
-       Hint = "This will make Iron Maiden attack when it sees you."
+        Hint = "This will make Iron Maiden attack when it sees you."
       }
       spawnflags: =
       {
@@ -19230,7 +19322,8 @@ QQRKSRC1
         txt = "&"
         typ = "X16"
         cap = "16>Hold"
-        Hint = "The actor will stay here and attack instead of pursuing the pathtarget."
+        Hint = "The actor will stay here and attack instead of pursuing the pa"
+         "thtarget."
       }
       spawnflags: =
       {
@@ -20061,12 +20154,14 @@ QQRKSRC1
       team: =
       {
         txt = "&"
-        hint = "Team>target_string. This must be the same as the team for the target_string."
+        hint = "Team>target_string. This must be the same as the team for the "
+         "target_string."
       }
       count: =
       {
         txt = "&"
-        hint = "Count>pos in string (L>R). This is the position in the string (starts at 1)."
+        hint = "Count>pos in string (L>R). This is the position in the string "
+         "(starts at 1)."
       }
       _minlight: =
       {
@@ -20118,8 +20213,8 @@ QQRKSRC1
     }
     target_crosslevel_trigger:form =
     {
-      Help = "Once this trigger is touched/used, any target_crosslevel_target"
-       " with the same trigger number is automatically fired."
+      Help = "Once this trigger is touched/used, any target_crosslevel_target "
+       "with the same trigger number is automatically fired."
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -20163,7 +20258,8 @@ QQRKSRC1
       delay: =
       {
         txt = "&"
-        hint = "Delay>trigger in x seconds. How long to wait before firing the target."
+        hint = "Delay>trigger in x seconds. How long to wait before firing the"
+         " target."
       }
       spawnflags: =
       {
@@ -20224,7 +20320,8 @@ QQRKSRC1
       message: =
       {
         txt = "&"
-        hint = "Message>print when activated. Use this if you wish to send a message to the player when he triggers this."
+        hint = "Message>print when activated. Use this if you wish to send a m"
+         "essage to the player when he triggers this."
       }
     }
     target_crosslevel_target:form =
@@ -20274,8 +20371,8 @@ QQRKSRC1
       delay: =
       {
         txt = "&"
-        hint = "Delay>trigger in x seconds. Delay before using targets if the trigger has been activated ("
-         "default 1)."
+        hint = "Delay>trigger in x seconds. Delay before using targets if the "
+         "trigger has been activated (default 1)."
       }
       spawnflags: =
       {
@@ -20518,7 +20615,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Target this with a func_timer or a func_clock to make a timebomb."
+        hint = "Target this with a func_timer or a func_clock to make a timebo"
+         "mb."
       }
       delay: =
       {
@@ -20543,7 +20641,8 @@ QQRKSRC1
       dmg: =
       {
         txt = "&"
-        hint = "Dmg>damage at origin. How much radius damage should be done (default 0)."
+        hint = "Dmg>damage at origin. How much radius damage should be done (d"
+         "efault 0)."
       }
     }
     target_fade:form =
@@ -20962,8 +21061,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Make sure this gets triggered by whatever the player has to do to "
-          "complete this goal."
+        hint = "Make sure this gets triggered by whatever the player has to do"
+         " to complete this goal."
       }
     }
     target_help:form =
@@ -21003,7 +21102,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "When the player completes the previous goal, this should also be triggered."
+        hint = "When the player completes the previous goal, this should also "
+         "be triggered."
       }
       count: =
       {
@@ -21021,14 +21121,14 @@ QQRKSRC1
       message: =
       {
         txt = "&"
-        hint = "Type in the message here that you what to display. Use \n to ju"
-         "mp to next line."
+        hint = "Type in the message here that you what to display. Use \n to j"
+         "ump to next line."
       }
     }
     target_laser:form =
     {
-      Help = "When triggered, fires a laser. You can either set a target or a"
-       " direction."
+      Help = "When triggered, fires a laser. You can either set a target or a "
+       "direction."
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -21062,7 +21162,8 @@ QQRKSRC1
       angles: =
       {
         txt = "&"
-        hint = "Angles>pitch yaw 0. ""Set this to make it shoot in a particular direction."
+        hint = "Angles>pitch yaw 0. Set this to make it shoot in a particular "
+         "direction."
       }
       count: =
       {
@@ -21133,7 +21234,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent aimed at. Set this to a func_train and the beam will follow it."
+        hint = "Target>ent aimed at. Set this to a func_train and the beam wil"
+         "l follow it."
       }
       dmg: =
       {
@@ -21201,8 +21303,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "The button or switch that you push to turn on the light should have this "
-          "targeted instead of the light itself."
+        hint = "The button or switch that you push to turn on the light should"
+         " have this targeted instead of the light itself."
       }
       target: =
       {
@@ -21219,7 +21321,8 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "1>Toggle"
-        Hint = "This will make the light fade on and off whenever it is triggered."
+        Hint = "This will make the light fade on and off whenever it is trigge"
+         "red."
       }
       spawnflags: =
       {
@@ -21236,12 +21339,14 @@ QQRKSRC1
       speed: =
       {
         txt = "&"
-        hint = "Speed>sec to cover range. How many seconds the ramping will take."
+        hint = "Speed>sec to cover range. How many seconds the ramping will ta"
+         "ke."
       }
       message: =
       {
         txt = "&"
-        hint = "Message>range or sequence(a-z). Two letters; starting lightlevel and ending lightlevel."
+        hint = "Message>range or sequence(a-z). Two letters; starting lightlev"
+         "el and ending lightlevel."
       }
     }
     target_lightswitch:form =
@@ -22224,8 +22329,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Place a trigger brush in the pathway to a secret area and use this as the "
-          "target."
+        hint = "Place a trigger brush in the pathway to a secret area and use "
+         "this as the target."
       }
       message: =
       {
@@ -22354,8 +22459,8 @@ QQRKSRC1
     }
     target_spawner:form =
     {
-      Help = "Set target to the type of entity you want spawned. Useful for s"
-       "pawning monsters and gibs."
+      Help = "Set target to the type of entity you want spawned. Useful for sp"
+       "awning monsters and gibs."
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -22389,13 +22494,15 @@ QQRKSRC1
       angles: =
       {
         txt = "&"
-        hint = "Angles>pitch yaw 0. For monsters. Set direction to the facing you want it to have."
+        hint = "Angles>pitch yaw 0. For monsters. Set direction to the facing "
+         "you want it to have."
       }
       speed: =
       {
         txt = "&"
-        hint = "Speed>units/sec. ""For gibs. Set direction if you want it moving and speed how fa"
-         "st it should be moving otherwise it will just be dropped."
+        hint = "Speed>units/sec. For gibs. Set direction if you want it moving"
+         " and speed how fast it should be moving otherwise it will just be dr"
+         "opped."
       }
       count: =
       {
@@ -22410,7 +22517,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>monster/item spawned. Whatever it is that you want to be spawned."
+        hint = "Target>monster/item spawned. Whatever it is that you want to b"
+         "e spawned."
       }
     }
     target_speaker:form =
@@ -22445,7 +22553,8 @@ QQRKSRC1
       targetname: =
       {
         txt = "&"
-        hint = "Give this the same name as whatever entity is supposed to be making the noise."
+        hint = "Give this the same name as whatever entity is supposed to be m"
+         "aking the noise."
       }
       count: =
       {
@@ -22483,7 +22592,8 @@ QQRKSRC1
       noise: =
       {
         txt = "&"
-        hint = "Sound (path/file.wav). ""To get a complete list of all the sounds go to http://www.gamedesign.net and check the tutorials."
+        hint = "Sound (path/file.wav). To get a complete list of all the sound"
+         "s go to http://www.gamedesign.net and check the tutorials."
       }
       attenuation: =
       {
@@ -22568,8 +22678,8 @@ QQRKSRC1
     }
     target_string:form =
     {
-      Help = "This is the relay between a func_clock and the target_characters that act as the "
-        "display"
+      Help = "This is the relay between a func_clock and the target_characters"
+       " that act as the display"
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -22603,7 +22713,8 @@ QQRKSRC1
       team: =
       {
         txt = "&"
-        hint = "This must be the same as the team key for the target_characters."
+        hint = "This must be the same as the team key for the target_character"
+         "s."
       }
     }
     target_temp_entity:form =
@@ -22655,7 +22766,8 @@ QQRKSRC1
         typ = "C"
         items = "20>Green Fireball"$0D"21>Particles #1"$0D"22>Particles #2"
         values = "20"$0D"21"$0D"22"
-        hint = "Style>effect type. ""17,18,20,21,or 22; anything else will crash Quake2."
+        hint = "Style>effect type. 17,18,20,21,or 22; anything else will crash"
+         " Quake2."
       }
     }
     target_text:form =
@@ -22799,7 +22911,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""Something that should be continuously fired."
+        hint = "Target>ent to trigger. Something that should be continuously f"
+         "ired."
       }
       delay: =
       {
@@ -22958,7 +23071,8 @@ QQRKSRC1
     }
     trigger_counter:form =
     {
-      Help = "Acts as an intermediary for an action that takes multiple inputs."
+      Help = "Acts as an intermediary for an action that takes multiple inputs"
+       "."
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -22992,7 +23106,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""This is what will be fired once enough triggers have hit this trigger_multiple."
+        hint = "Target>ent to trigger. This is what will be fired once enough "
+         "triggers have hit this trigger_multiple."
       }
       killtarget: =
       {
@@ -23014,7 +23129,8 @@ QQRKSRC1
       count: =
       {
         txt = "&"
-        hint = "Count>triggers before firing. ""Default 2, number of targets before triggering."
+        hint = "Count>triggers before firing. Default 2, number of targets bef"
+         "ore triggering."
       }
       message: =
       {
@@ -23117,7 +23233,7 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""This must be a func_train."
+        hint = "Target>ent to trigger. This must be a func_train."
       }
     }
     trigger_fog:form =
@@ -23333,7 +23449,7 @@ QQRKSRC1
       dmg: =
       {
         txt = "&"
-        hint = "Dmg>damage/.1 sec. ""Default 5 (whole numbers only)."
+        hint = "Dmg>damage/.1 sec. Default 5 (whole numbers only)."
       }
     }
     trigger_inside:form =
@@ -23454,7 +23570,7 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""Whatever it is that needs this key."
+        hint = "Target>ent to trigger. Whatever it is that needs this key."
       }
       killtarget: =
       {
@@ -23487,7 +23603,8 @@ QQRKSRC1
       item: =
       {
         txt = "&"
-        hint = "Item>needed to activate. ""Specify the required key, for example - key_data_cd."
+        hint = "Item>needed to activate. Specify the required key, for example"
+         " - key_data_cd."
       }
       message: =
       {
@@ -23616,7 +23733,8 @@ QQRKSRC1
     }
     trigger_relay:form =
     {
-      Help = "This fixed size trigger cannot be touched, it can only be fired by other events."
+      Help = "This fixed size trigger cannot be touched, it can only be fired "
+       "by other events."
       bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
@@ -23650,7 +23768,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""Use this to consolidate the use of entities (for a more efficient map)."
+        hint = "Target>ent to trigger. Use this to consolidate the use of enti"
+         "ties (for a more efficient map)."
       }
       killtarget: =
       {
@@ -23728,7 +23847,7 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""Whatever you want this to trigger."
+        hint = "Target>ent to trigger. Whatever you want this to trigger."
       }
       killtarget: =
       {
@@ -24018,7 +24137,8 @@ QQRKSRC1
         txt = "&"
         typ = "X4"
         cap = "4>Triggered"
-        Hint = "If you set this it must be triggered by something else before it can be used."
+        Hint = "If you set this it must be triggered by something else before "
+         "it can be used."
       }
       spawnflags: =
       {
@@ -24030,7 +24150,8 @@ QQRKSRC1
       wait: =
       {
         txt = "&"
-        hint = "Wait>sec between triggers. ""Default 2, seconds between triggerings."
+        hint = "Wait>sec between triggers. Default 2, seconds between triggeri"
+         "ngs."
       }
     }
     tremor_trigger_multiple:form =
@@ -24067,7 +24188,8 @@ QQRKSRC1
       target: =
       {
         txt = "&"
-        hint = "Target>ent to trigger. ""This should be something that can be triggered more than once."
+        hint = "Target>ent to trigger. This should be something that can be tr"
+         "iggered more than once."
       }
       killtarget: =
       {
@@ -24077,14 +24199,14 @@ QQRKSRC1
       delay: =
       {
         txt = "&"
-        hint = "Delay>trigger in x seconds. ""If - delay - is set, the trigger waits some time after activat"
-         "ing before firing."
+        hint = "Delay>trigger in x seconds. If - delay - is set, the trigger w"
+         "aits some time after activating before firing."
       }
       message: =
       {
         txt = "&"
-        hint = "Message>print when activated. ""Text string to be displayed when triggered.  Use \n for line b"
-         "reaks."
+        hint = "Message>print when activated. Text string to be displayed when"
+         " triggered.  Use \n for line breaks."
       }
       sounds: =
       {
@@ -24191,8 +24313,8 @@ QQRKSRC1
         txt = "&"
         typ = "X1"
         cap = "1>Push Once"
-        Hint = "Will only push in the given direction the first time the player walks through"
-          " it."
+        Hint = "Will only push in the given direction the first time the playe"
+         "r walks through it."
       }
       spawnflags: =
       {
@@ -24203,7 +24325,7 @@ QQRKSRC1
       speed: =
       {
         txt = "&"
-        hint = "Speed>velocity 10*units/sec. ""Default 1000."
+        hint = "Speed>velocity 10*units/sec. Default 1000."
       }
       noise: =
       {
