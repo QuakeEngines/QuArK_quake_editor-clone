@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2001/04/16 00:35:16  tiglari
+Worldcraft mapversion 220 misnomenclature fixed (mapversion 202->Valve220)
+
 Revision 1.33  2001/04/05 12:34:03  tiglari
 Add 'axisbase' method to face (for getting 2 nice axes for the face)
 
@@ -2450,7 +2453,7 @@ var
          end;
        end;
 
-     if (Flags and soDisableEnhTex = 0) and (not Valve220Map) then
+     if (Flags and soDisableEnhTex = 0) and (not (Valve220Map or BrushPrim)) then
       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
