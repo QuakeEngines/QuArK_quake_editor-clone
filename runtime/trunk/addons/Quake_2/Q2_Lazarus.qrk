@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.11  2004/03/16 07:39:52  cdunde
+// To add more sound, model and color selectors.
+//
 // Revision 1.10  2003/10/27 07:52:45  cdunde
 // To add sound selection feature to func_train entity
 //
@@ -18253,7 +18256,7 @@ $0D"For that use 3Dmodel above."
       Help = "This Guard has a Machine Gun."
       bbox = '-16 -16 -24 16 16 32'
       mdl = "models/monsters/soldier/tris.md2"
-      mdlskin = '2'
+      mdlBase = '2'
       spawnflags: =
       {
         txt = "&"
@@ -18420,7 +18423,7 @@ $0D"For that use 3Dmodel above."
       Help = "This is the Guard armed with a simple blaster."
       bbox = '-16 -16 -24 16 16 32'
       mdl = "models/monsters/soldier/tris.md2"
-      mdlskin = '0'
+      mdlBase = '0'
       spawnflags: =
       {
         txt = "&"
@@ -18587,7 +18590,7 @@ $0D"For that use 3Dmodel above."
       Help = "This Guard has a ShotGun."
       bbox = '-16 -16 -24 16 16 32'
       mdl = "models/monsters/soldier/tris.md2"
-      mdlskin = '4'
+      mdlBase = '4'
       spawnflags: =
       {
         txt = "&"
