@@ -621,8 +621,8 @@ class VertexHandle(qhandles.GenericHandle):
                             # the most distant point
                             #
                             rotationaxis = mvlist [0] - mvlist [1]
-
-
+                            fixedpoints = vmax, vmax+rotationaxis
+                  
                         #
                         # otherwise, we are draging one
                         #
@@ -638,9 +638,9 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             # sort the vertex list and use the last vertex as
                             # a rotational reference point
-                            #
-                            vlist.sort()
-                            vmax = vlist[-1][1]
+                            # (already done, seems to me)
+                        #    vlist.sort()
+                        #    vmax = vlist[-1][1]
 
 
                             #
@@ -649,6 +649,7 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             if not (flags&MB_SHIFT):
                                 rotationaxis = (vmax - vlist [-2] [1])
+                                fixedpoints = vmax, vlist[-2][1]
 
                             #
                             # METHOD B: Using the most distant point, rotate
@@ -657,20 +658,30 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             else:
                                 rotationaxis = (vmax - self .pos) ^ f .normal
+                                fixedpoints = vmax, vmax+rotationaxis
 
                         #
                         # apply the rotation axis to the face (requires that
                         # rotationaxis and vmax to be set)
                         #
+                        newpoint = self.pos+delta
                         nf = new.subitem(orgfaces.index(f))
                         newnormal = rotationaxis ^ (self.pos+delta-vmax)
                         testnormal = rotationaxis ^ (self.pos-vmax)
+
                         if newnormal:
                             if testnormal * f.normal < 0.0:
                                 newnormal = -newnormal
                             nf.distortion(newnormal.normalized, vmax)
-                            smallcorrection = nf.normal * (self.pos+delta) - nf.dist
-                            nf.translate(nf.normal * smallcorrection)
+#                            smallcorrection = nf.normal * (self.pos+delta) - nf.dist
+#                            nf.translate(nf.normal * smallcorrection)
+
+                        nf2 = nf.copy()
+                        nf2.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+                        def project(p,along=nf2.normal,at=newpoint):
+                            return projectpointtoplane(p,along,at,along)
+                        ntp=map(project,nf.threepoints(0))
+                        nf.setthreepoints(ntp,0)
 
                 #
                 # if the face is not part of the original group
@@ -1380,6 +1391,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.13  2001/04/01 00:07:13  tiglari
+#revisions to GetUserCenter
+#
 #Revision 1.12  2001/03/31 10:15:22  tiglari
 #support for usercenter specific
 #
