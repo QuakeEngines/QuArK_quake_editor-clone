@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/01/21 15:48:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.22  2001/01/07 21:33:42  tiglari
 ListeBeziers for support of ignoretobuild flag
 
@@ -1320,6 +1323,7 @@ begin
  cp:=ControlPoints;
  if (cp.W>1) and (cp.H>1) then
   begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
+   Target.Add(CommentMapLine(Ancestry));
    Target.Add(' {');
    Target.Add('  patchDef2');
    Target.Add('  {');
