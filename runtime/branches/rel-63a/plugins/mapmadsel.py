@@ -29,8 +29,8 @@
 ##########################################################
 
 
-#$Header$
 
+#$Header$
 
 Info = {
    "plug-in":       "Mad Selector",
@@ -892,6 +892,8 @@ menunrestrict = quarkpy.qmenu.item("&Unrestrict Selection",UnrestrictClick,"|Whe
 
 browseItem = qmenu.item("Browse Multiple Selection",browseMulClick,browseHelpString)
 
+zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "Fill the views with selected.")
+
 def menunrestrictenable(editor):
   if getrestrictor(editor) is None:
     menunrestrict.state=qmenu.disabled
@@ -903,7 +905,8 @@ for menitem, keytag in [(menextsel, "Extend Selection"),
                         (menunrestrict, "Unrestrict Selection"),
                         (menrestsel, "Restrict to Selection"),
                         (browseItem, "Browse Multiple Selection"),
-                        (meninvertfacesel, "Invert Face Selection")]:
+                        (meninvertfacesel, "Invert Face Selection"),
+                        (zoomItem, "Zoom to Selection")]:
 
     MapHotKey(keytag,menitem,quarkpy.mapselection)
 
@@ -913,7 +916,6 @@ for menitem, keytag in [(menextsel, "Extend Selection"),
 #
 
 stashItem = qmenu.item("&Mark selection", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
-zoomItem = qmenu.item("&Zoom to selection", ZoomToMe, "Fill the views with selected.")
 clearItem = qmenu.item("Clear Mark", ClearMarkClick, "Unset Mark")
 
 def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
@@ -983,6 +985,10 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+
+# Revision 1.18.2.1  2002/05/18 22:45:55  tiglari
+# remove debug statements
+#
 # Revision 1.18  2002/03/30 02:49:50  tiglari
 # fixed bug whereby selection menu wasn't enabling/disabling properly
 #
