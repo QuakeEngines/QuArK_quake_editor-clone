@@ -1,5 +1,6 @@
 title: VIS - Visibility
 author: Decker
+desc: loadportals
 
 This page lists various encountered errors, that may occur during the VIS .bsp-optimization phase.
 
