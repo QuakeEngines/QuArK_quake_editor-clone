@@ -17,6 +17,12 @@ Changes from 052101
     - cycle the ones in a group with prev/next +
         'C' depressed (should be made user-configurable)
     - find camera positions dialog on search menu
+  *extruder 'revert to duplicator' now imports
+    texture changes back to duplicator, so you can
+    texture at least the first segment of the extruder
+    by dissociating images, then change shape by revert
+    to duplicator.  Hopefully useful when 1-segment
+    extruder is put into path duplicator.
   *group selection movement commands (swap & align,
    suggested by Alan Donald and quantum_red)
   *due north path duplicator bug fixed
