@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.183  2002/04/28 11:39:05  tiglari
+//Modifications to get RTCW support working better
+//
 //Revision 1.182  2002/04/17 12:42:12  decker_dk
 //Updated MOHAA:config to use MOHAATool's compile-programs.
 //
@@ -596,7 +599,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap 2002feb28"
+      Version = "QuArK 6.3snap 2002ap29"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

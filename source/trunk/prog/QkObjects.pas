@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2002/04/03 00:27:16  tiglari
+ShareSpecMem now defined iff NoShare Conditional Define is not set
+
 Revision 1.66  2002/02/26 23:20:56  tiglari
 oops restore sharespecmem
 
@@ -222,7 +225,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$ENDIF}
 
 const
-  QuArKVersion            = 'QuArK 6.3snap 2002feb28';
+  QuArKVersion            = 'QuArK 6.3snap 2002ap29';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
