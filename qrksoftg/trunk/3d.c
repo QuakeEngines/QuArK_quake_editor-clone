@@ -1,7 +1,8 @@
 
+#include <stdlib.h>
 #include "3d.h"
 
-#define SOFTG_QUARK_VERSION_NUMBER		21
+#define SOFTG_QUARK_VERSION_NUMBER		30
 //#define DEBUG
 //#define DEBUGCOLORS
 //#define FULLBRIGHT
@@ -35,7 +36,8 @@ FxU32 currentpalette[256];    // [X] bbbggggrrrr00000 0000000000000000  format
 //FxU8  fogtable[64];
 float fogdensity;
 FxU32 *fullpalette;		// 256x256 array indexed by high word of framebuffer pixels
-grTexInfo_t *texsource;
+//grTexInfo_t *texsource;
+FxU8 *texdata;
 int texwmask, texhmask, texh1;
 float stowbase;
 int framew, frameh, framecount, firstcol, firstrow;
@@ -44,7 +46,9 @@ FxU32 *framebuffer;		// a pixel is :   [T] ttttttttcccfffff zzzzzzzzzzzzzzzz    
 						// paletteless :  [X] bbbggggrrrrfffff zzzzzzzzzzzzzzzz    (r)ed, (g)reen, (b)lue, (f)og, (z)-depth
 float oow_to_w[OOWTABLESIZE];
 FxU32 oow_to_pix[OOWTABLESIZE];
-char colormode, flatdisplay, texturepaletteok, unifiedpalette;
+char colormode, flatdisplay, texturepaletteok, unifiedpalettemode;
+
+#define unifiedpalette (unifiedpalettemode&1)
 
 // not for mode [X] :
 FxU32 SchemeBaseColor[SOLIDCOLORSCHEMES];
@@ -163,14 +167,14 @@ void FreeFullPalette()
   fullpalette=0;
 }
 
-#define c_macro(b,c)  (((b)*(unsigned char)(c))>>12)
+#define c_macro(b,c)  (((b)*(FxU8)(c))>>12)
 #define PACKCOLOR(c)  ((((c) & 0x0000F0)<<17) | (((c) & 0x00F000)<<13) | (((c) & 0xE00000)<<8))
 
 void FillCurrentPalette()
 {
   int i;
   FxU32 c;
-  if (!unifiedpalette)
+  if (!unifiedpalettemode)
   {
     if (schemecolor == 0xFFFFFF)
       for (i=0; i<256; i++)
@@ -347,7 +351,8 @@ void grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info)
   int texwbits, texhbits;
   int size1=8-info->largeLod;
 
-  texsource=info;
+  //texsource=info;
+  texdata = info->data;
   if (info->aspectRatio<=3)
     texwbits=size1;
   else
@@ -363,12 +368,28 @@ void grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info)
   #ifdef DEBUG
   printf("texwbits=%d   texwmask=%d   texhbits=%d   texhmask=%d\n", texwbits, texwmask, texhbits, texhmask);
   #endif
+
+  if (info->format == GR_TEXFMT_RGB_565)
+  {   // in-place convertion to internal format
+    FxU16 *p = (FxU16*)texdata;
+    FxU16 *end = p + (1 << (texwbits+texhbits));
+    while (p<end)
+    {
+      FxU16 value = *p;
+      *p++ = (value<<13) | ((value&0x0780)<<2) | ((value&0xF000)>>7);
+    }
+    info->format = GR_TEXFMT_RGB_443;
+  }
+  if (info->format == GR_TEXFMT_RGB_443)
+    unifiedpalettemode |= 4;
+  else
+    unifiedpalettemode &= ~4;
 }
 
 
 void setunifiedpalette(int n)
 {
-	unifiedpalette = n;
+	unifiedpalettemode = n;
 	schemecolor = 0xFFFFFF;
 	if (unifiedpalette)
 	{
@@ -488,13 +509,8 @@ void softgLoadFrameBuffer(int *buffer, int format)
   }
 }
 
-inline float fabs1(float x)
-{
-  if (x>=0)
-    return x;
-  else
-    return -x;
-}
+#define VERYSMALL(value)  ((value)<EPSILON && (value)>-EPSILON)
+
 
 __attribute__((__stdcall__))
 void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
@@ -502,7 +518,7 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
   grVertex_t *d, *a2, *b2, *c2;
   grTmuVertex_t deltah, deltav, cur, cur2;
   int scanline, midline, lastline, curx, minx, maxx;
-  int padright, curx2, s, t, pix, i;
+  int padright, curx2, s, t, i;
   float temp, temp1, curhx, curvy, left, right, left1, right1;
   FxU32 *dest;
 
@@ -521,7 +537,7 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
   #ifdef DEBUG
   printf("scanline %d   midline %d   lastline %d   curhx %f\n", scanline, midline, lastline, curhx);
   #endif
-  if (fabs1(b->x-curhx) < EPSILON) return;
+  if (VERYSMALL(b->x-curhx)) return;
   if (b->x>curhx)
   {
     left1 = (c->x - a->x) * temp1;
@@ -537,8 +553,7 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
 
   if (colormode & GR_COLORCOMBINE_TEXTURE)
   {
-    int displayroutines = unifiedpalette | flatdisplay;
-    FxU8 *texdata = texsource->data;
+    int displayroutines = unifiedpalettemode | flatdisplay;
 
     if (!texturepaletteok)
       FillCurrentPalette();
@@ -560,7 +575,7 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
 
     temp = (b2->x - a2->x) / (c2->x - a2->x);
     curvy = a2->y + (c2->y - a2->y) * temp;
-    if (fabs1(b2->y-curvy) < EPSILON) return;
+    if (VERYSMALL(b2->y-curvy)) return;
     deltav.sow = a2->tmuvtx[0].sow + (c2->tmuvtx[0].sow - a2->tmuvtx[0].sow) * temp - b2->tmuvtx[0].sow;
     deltav.tow = a2->tmuvtx[0].tow + (c2->tmuvtx[0].tow - a2->tmuvtx[0].tow) * temp - b2->tmuvtx[0].tow;
     deltav.oow =           a2->oow + (          c2->oow -           a2->oow) * temp -           b2->oow;
@@ -634,6 +649,80 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
         curx2 = curx;
         switch (displayroutines)
         {
+        case 6:
+          while (1)
+          {
+            i = (int)cur.oow;
+            if (i>=OOWTABLESIZE) i=OOWTABLESIZE-1;
+            else if (i<0) i=0;
+            if (i>((FxU16)(dest[curx])))
+            {
+              s = (int)cur.sow;
+              t = (int)cur.tow;
+              dest[curx] = oow_to_pix[i] | (((FxU32)(((FxU16*)texdata)[(s&texwmask) | ((t&texhmask)<<texh1)])) << 16);
+            }
+            if (curx==minx) break;
+            curx--;
+            cur.sow-=deltah.sow;
+            cur.tow-=deltah.tow;
+            cur.oow-=deltah.oow;
+          }
+          while (curx2<maxx)
+          {
+            curx2++;
+            cur2.sow+=deltah.sow;
+            cur2.tow+=deltah.tow;
+            cur2.oow+=deltah.oow;
+
+            i = (int)cur2.oow;
+            if (i>=OOWTABLESIZE) i=OOWTABLESIZE-1;
+            else if (i<0) i=0;
+            if (i>((FxU16)(dest[curx2])))
+            {
+              s = (int)cur2.sow;
+              t = (int)cur2.tow;
+              dest[curx2] = oow_to_pix[i] | (((FxU32)(((FxU16*)texdata)[(s&texwmask) | ((t&texhmask)<<texh1)])) << 16);
+            }
+          }
+          break;
+        case 4:
+          while (1)
+          {
+            i = (int)cur.oow;
+            if (i>=OOWTABLESIZE) i=OOWTABLESIZE-1;
+            else if (i<0) i=0;
+            if (i>((FxU16)(dest[curx])))
+            {
+              temp = oow_to_w[i];
+              s = (int)(cur.sow*temp);
+              t = (int)(cur.tow*temp);
+              dest[curx] = oow_to_pix[i] | (((FxU32)(((FxU16*)texdata)[(s&texwmask) | ((t&texhmask)<<texh1)])) << 16);
+            }
+            if (curx==minx) break;
+            curx--;
+            cur.sow-=deltah.sow;
+            cur.tow-=deltah.tow;
+            cur.oow-=deltah.oow;
+          }
+          while (curx2<maxx)
+          {
+            curx2++;
+            cur2.sow+=deltah.sow;
+            cur2.tow+=deltah.tow;
+            cur2.oow+=deltah.oow;
+
+            i = (int)cur2.oow;
+            if (i>=OOWTABLESIZE) i=OOWTABLESIZE-1;
+            else if (i<0) i=0;
+            if (i>((FxU16)(dest[curx2])))
+            {
+              temp = oow_to_w[i];
+              s = (int)(cur2.sow*temp);
+              t = (int)(cur2.tow*temp);
+              dest[curx2] = oow_to_pix[i] | (((FxU32)(((FxU16*)texdata)[(s&texwmask) | ((t&texhmask)<<texh1)])) << 16);
+            }
+          }
+          break;
         case 2:
           while (1)
           {
@@ -658,7 +747,7 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
             cur2.sow+=deltah.sow;
             cur2.tow+=deltah.tow;
             cur2.oow+=deltah.oow;
-      
+
             i = (int)cur2.oow;
             if (i>=OOWTABLESIZE) i=OOWTABLESIZE-1;
             else if (i<0) i=0;
@@ -821,7 +910,7 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
 
     temp = (b2->x - a2->x) / (c2->x - a2->x);
     curvy = a2->y + (c2->y - a2->y) * temp;
-    if (fabs1(b2->y-curvy) < EPSILON) return;
+    if (VERYSMALL(b2->y-curvy)) return;
     deltav.oow =           a2->oow + (          c2->oow -           a2->oow) * temp -           b2->oow;
     temp = 1.0 / (curvy - b2->y);
     deltav.oow *= temp * OOWTABLEBASE;
@@ -1005,3 +1094,12 @@ void grSstWinClose()
     FreeFullPalette();
   fogdensity = density;
 }*/
+
+
+#ifndef GCC
+BOOL WINAPI __declspec(dllexport) LibMain(HINSTANCE hDLLInst, DWORD fdwReason, LPVOID lpvReserved)
+{
+    return TRUE;
+}
+#endif
+

@@ -13,6 +13,9 @@ typedef struct {
     char *data;
 } grTexInfo_t;
 
+#define GR_TEXFMT_RGB_565  10
+#define GR_TEXFMT_RGB_443  222    // custom internal format
+
 typedef struct {
     float sow, tow, oow;
 } grTmuVertex_t;
@@ -35,6 +38,12 @@ typedef struct {
 #define OOWTABLESIZE     (1<<OOWTABLEBITS)
 #define OOWTABLEBASE     (OOWTABLESIZE<<MINWBITS)
 #define MAXOOWBIAS       (int)(OOWTABLEBASE/MAXW)
+
+
+#ifndef GCC
+#include <windows.h>
+#define __attribute__(x)           WINAPI __declspec(dllexport)
+#endif
 
 
 __attribute__((__stdcall__)) void grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info);

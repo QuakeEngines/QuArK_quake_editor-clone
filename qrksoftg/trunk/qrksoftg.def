@@ -1,15 +1,16 @@
-LIBRARY TEST3D
+LIBRARY QRKSOFTG
 EXPORTS
-_softgQuArK@0              = softgQuArK@0
-_grGlideInit@0             = grGlideInit@0
-_grSstWinOpen@28           = grSstWinOpen@28
-_grSstWinClose@0           = grSstWinClose@0
-_grTexSource@16            = grTexSource@16
-_grDrawTriangle@12         = grDrawTriangle@12
-_grBufferClear@12          = grBufferClear@12
-_grTexDownloadTable@12     = grTexDownloadTable@12
-_grClipWindow@16           = grClipWindow@16
-_grConstantColorValue@4    = grConstantColorValue@4
-_guColorCombineFunction@4  = guColorCombineFunction@4
-_grHints@8                 = grHints@8
-_softgLoadFrameBuffer@8    = softgLoadFrameBuffer@8
+softgQuArK@0
+grGlideInit@0
+grSstWinOpen@28
+grSstWinClose@0
+grTexSource@16
+grDrawTriangle@12
+grBufferClear@12
+grTexDownloadTable@12
+grClipWindow@16
+grConstantColorValue@4
+guColorCombineFunction@4
+grHints@8
+softgLoadFrameBuffer@8
+
