@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/10/10 11:56:16  tiglari
+Oops, reinstate the freeing of QObjectClassList; this is getting
+embarrassing
+
 Revision 1.25  2001/10/10 11:47:49  tiglari
 Undo previous change, finalization section is what should be used by freeing
   resources allocated in initialization sections of modules
@@ -1441,7 +1445,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearGameBuffers(False);
  ClearPool(True);
  QObjectClassList.Free;
-end;
+ Py_XDECREF(CallMacroEx(Py_BuildValueX('', []), 'shutdown'));end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
 var
