@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/08/05 05:39:38  tiglari
+move the bsptype stuff into qkbsp
+
 Revision 1.26  2001/07/21 01:48:07  tiglari
 add/use functions & values defining classes of games
 
@@ -1239,4 +1242,8 @@ initialization
 finalization
   CloseSetupSet;
 {$ENDIF}
+
+  if g_TexExtensions<>NIL then
+   g_TexExtensions.Free;
+
 end.
