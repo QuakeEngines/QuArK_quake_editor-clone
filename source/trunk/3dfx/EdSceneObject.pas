@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2003/09/06 02:21:09  tiglari
+added comments to BuildScene
+
 Revision 1.6  2003/03/21 00:12:43  nerdiii
 tweaked OpenGL mode to render additive and texture modes as in Half-Life
 
@@ -76,6 +79,7 @@ type
  TModel3DInfo = record
                   Base: QComponent;
                   ModelAlpha: Byte;
+                  ModelRendermode: Byte;
                   StaticSkin: Boolean;
                   VertexCount: Integer;
                   Vertices: vec3_p;
@@ -384,7 +388,7 @@ var
  I, J, K, L: Integer;
  NewTextures, NewTexCount: Integer;
  Surf3D: PSurface3D;
- S: String;
+ S,spec: String;
  TexNames: TStringList;
  PList: PSurfaces;
  Dest: PChar;
@@ -560,6 +564,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
+     //here the model is drawm
      I:=0;  // process the models, haven't looked into this one yet
      while I<ModelInfo.Count do
      begin
@@ -799,8 +804,10 @@ begin
 
            with F.GetFaceOpacity(PList^.Texture^.DefaultAlpha) do
            begin
-             If Mode=1 then AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
-             else AlphaColor:=CurrentColor or (Value shl 24);
+             If Mode=1 then
+               AlphaColor:=Integer(Addr(Color)^) or (Value shl 24)
+             else
+               AlphaColor:=CurrentColor or (Value shl 24);
              TextureMode:=Mode;
            end;
            Include(PList^.Transparent, AlphaColor and $FF000000 <> $FF000000);
@@ -1016,6 +1023,8 @@ begin
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
+
+               Texturemode:= ModelRenderMode;
              end;
 
              Inc(PChar(Surf3D), VertexSize3m);
