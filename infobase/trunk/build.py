@@ -91,7 +91,7 @@ def findref(root, path, name, fkw, extraargs):
                 for kw, text in root.files:
                     if kw["hrefaname"] == path[0]:
                         return ref(REFFILE, REFFILE_NAME, kw)
-            raise "Reference not found: " + path0 + " in " + fkw["title"]
+            raise "Reference not found to " + path0 + " in " + fkw["htmlfile"]
     return ref(REFDIR, REFDIR_NAME, root.kw)
 
 def proc_g(kw, words):
@@ -328,7 +328,10 @@ def processtext(root, text, data, kw):
         data.append("</p>")
 
 def parse(file):
-    f = open(file, "r")
+    try:
+        f = open(file, "r")
+    except:
+        raise "File missing:", file
     kw = { }
     # Read the beginning non-empty lines, which should contain "key: value"'s
     while 1:
@@ -357,10 +360,10 @@ class Folder:
             shortname = string.join(map(lambda s: s+".", classif), "") + "&nbsp;"
         else: # Decker
             shortname = "" # Decker - Make the 'index.html' title _not_ prefixed with a single space
-        print shortname,
+#       print shortname,
         self.kw, self.text, lastmodifydate = parse(self.path + "index" + EXTENSION)
         s = self.kw["title"]
-        print s
+#       print s
         self.kw["htmltitle"] = text2html_nbsp(s)
         self.kw["htmltitleshort"] = text2html_nbsp(s, 25) # Decker - Try to prevent text-wrapping, so make it max 25 characters long
         self.kw["classif"] = shortname
@@ -433,7 +436,7 @@ class Folder:
             folder.navigation()
 
     def writefiles(self, root, filewriter):
-        print self.kw["htmlfile"], "  [%s]" % self.kw["title"]
+#       print self.kw["htmlfile"], "  [%s]" % self.kw["title"]
         filewriter(self.kw["htmlfile"], self.makefile(root))
         for folder in self.folders:
             folder.writefiles(root, filewriter)
@@ -545,6 +548,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.16  2001/02/28 19:54:10  tiglari
+# removed extraarg from ref in findref
+#
 # Revision 1.15  2001/02/28 19:12:25  decker_dk
 # Added <g>...</g> Glossary-links. Though not the best method.
 #
