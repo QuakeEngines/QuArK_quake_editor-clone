@@ -4,6 +4,8 @@
 
  Changes from  Snapshot 042801
  
+  *Dragging on RMB blocked.  If anyone wants it back, an option
+    could be provided.
   *instance duplicator removed from toolbox, pushing
     'instance' drops it into path dup, where it
     dumps things at the path points.  linear stuff
