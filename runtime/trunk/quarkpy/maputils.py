@@ -301,6 +301,9 @@ def readNvec(vals):
     strings = string.split(vals)
     return tuple(map(lambda str:eval(str), strings))
 
+#
+# This one should be zapped soon, but not quite yet.
+#
 def buildLinearMatrix(dup):
     linear = dup["matrix"]
     matrix = quarkx.matrix('1 0 0 0 1 0 0 0 1')
@@ -323,6 +326,9 @@ def buildLinearMatrix(dup):
 #
 #
 #$Log$
+#Revision 1.16  2001/05/06 10:15:32  tiglari
+#readNvec function, for arbitrary lenth string to tuple
+#
 #Revision 1.15  2001/05/06 06:02:19  tiglari
 #Support angles Typ E in buildLinearMatrix (so that angles handle will work)
 #
