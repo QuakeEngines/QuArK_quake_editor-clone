@@ -7,14 +7,14 @@ $Applications = array();
 #                                   Color (keep shading)
 #                                   |         QuArK version
 #                                   |         |     QuArK title
-#                                   |         |     |                   Extra info after QuArK title
-#                                   |         |     |                   |                                URL for download
-#                                   |         |     |                   |                                |
-$Applications[] = new cApplication("#40C040" ,407 ,"QuArK v4.7"       ,"very old"                        ,"http://dl.fileplanet.com/dl/dl.asp?quark/releases/quark407.zip");
-$Applications[] = new cApplication("#40D040" ,510 ,"QuArK v5.10"      ,"requires Python -&gt;"           ,"http://dl.fileplanet.com/dl/dl.asp?quark/releases/quark510.exe");
-$Applications[] = new cApplication("#40E040" ,602 ,"QuArK v6.2c"      ,"requires Python -&gt;"           ,"http://dl.fileplanet.com/dl/dl.asp?quark/releases/quark_v6.2c.exe");
-$Applications[] = new cApplication("#40F040" ,603 ,"QuArK v6.3.0"     ,"requires Python -&gt;"           ,"http://www.fileplanet.com/dl/dl.asp?/planetquake/quark/releases/quark_v6.3.0.EXE");
-#$Applications[] = new cApplication("#9090FF" ,604 ,"QuArK v6.4 beta"  ,"snapshot, requires Python -&gt;" ,"http://www.planetquake.com/quark/latest");
+#                                   |         |     |                     Extra info after QuArK title
+#                                   |         |     |                     |                                             URL for download
+#                                   |         |     |                     |                                             |
+$Applications[] = new cApplication("#40C040" ,407 ,"QuArK v4.7"         ,"very old"                                     ,"http://dl.fileplanet.com/dl/dl.asp?quark/releases/quark407.zip");
+$Applications[] = new cApplication("#40D040" ,510 ,"QuArK v5.10"        ,"requires Python 1.5.x-&gt;"                        ,"http://dl.fileplanet.com/dl/dl.asp?quark/releases/quark510.exe");
+#$Applications[] = new cApplication("#40E040" ,602 ,"QuArK v6.2c"        ,"requires Python 1.5.x-&gt;"                        ,"http://dl.fileplanet.com/dl/dl.asp?quark/releases/quark_v6.2c.exe");
+$Applications[] = new cApplication("#40F040" ,603 ,"QuArK v6.3.0"       ,"requires Python 1.5.x-&gt;"                        ,"http://www.fileplanet.com/dl/dl.asp?/planetquake/quark/releases/quark_v6.3.0.EXE");
+$Applications[] = new cApplication("#9090FF" ,604 ,"QuArK v6.4 alpha1"  ,"snapshot, requires <b>Python 2.2.2</b> -&gt;" ,"http://quark.sourceforge.net/download/quark-win32-20030725.zip");
 
 
 

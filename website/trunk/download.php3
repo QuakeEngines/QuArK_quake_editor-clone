@@ -18,7 +18,8 @@ $bodytext = "
 This file contains all the online documentation found on the
 <a href=\"http://www.planetquake.com/quark/infobase/index.html\">InfoBase</a> pages.<br>
 <br>
-<a href=\"http://www.fileplanet.com/dl.aspx?/planetquake/quark/Releases/help_package/quark_help_20030525.zip\">QuArK_Help_20030525.zip</a>
+<!--<a href=\"http://www.fileplanet.com/dl.aspx?/planetquake/quark/Releases/help_package/quark_help_20030525.zip\">QuArK_Help_20030525.zip</a>-->
+<a href=\"http://quark.sourceforge.net/download/quark-help-20030725.zip\">QuArK-Help-20030725.zip</a>
 </center>
 ";
 
@@ -33,9 +34,9 @@ build-tools for the specific games are listed, as they are not part of the QuArK
 
 $PythonMessage = "
 Mini-Python package: <a href=\"http://dl.fileplanet.com/dl/dl.asp?quark/minipy15b.exe\">minipy15b.exe</a>.
-Download and install prior to installing QuArK 5.10 or later.<br>
+Download and install prior to installing QuArK 5.10 or QuArK 6.3.0.<br>
 You can also get Python with SDK from <a href=\"http://www.python.org\">www.python.org</a>.
-BEWARE though, as only Python v1.5.1 and v1.5.2 works with QuArK.
+BEWARE though, as only Python v1.5.1 and v1.5.2 works with QuArK 5.10 or QuArK 6.3.0.
 ";
 
 $OutroMessage = "
