@@ -290,12 +290,12 @@ def archcurve(pd):
     return cp
 
 
-def makeseam(row0, row2, texface, name):
+def b2From2Rows(row0, row2, texface, name):
      cp = cpFromRows(row0, row2)
-     seam = quarkx.newobj(name+":b2")
-     seam["tex"] = texface["tex"]
-     seam.cp = texcp_from_face(cp, texface, None)
-     return seam
+     b2 = quarkx.newobj(name+":b2")
+     b2["tex"] = texface["tex"]
+     b2.cp = texcp_from_face(cp, texface, None)
+     return b2
 
 def yflip(face):
     (p0, p1, p2) = face.threepoints(2)
@@ -371,10 +371,10 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
       #
       # seams
       #
-      fseam = makeseam(archline(pd, "brf", "trf", "tlf", "blf"),
+      fseam = b2From2Rows(archline(pd, "brf", "trf", "tlf", "blf"),
                        archline(pd2,"brf", "trf", "tlf", "blf"),
                        fdict["f"], "front")
-      bseam = makeseam(archline(pd, "blb", "tlb", "trb", "brb"),
+      bseam = b2From2Rows(archline(pd, "blb", "tlb", "trb", "brb"),
                        archline(pd2,"blb", "tlb", "trb", "brb"),
                        fdict["b"], "back")
       if lower:
@@ -447,10 +447,10 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       inner2=quarkx.newobj("inner2:b2")
       inner2.cp = texcp_from_b2(cp2, cp)
       inner2["tex"]=inner["tex"]
-      tseam = makeseam([pd["trf"], pd["trb"], pd["tlb"]],
+      tseam = b2From2Rows([pd["trf"], pd["trb"], pd["tlb"]],
                        [pd2["trf"], pd2["trb"], pd2["tlb"]],
                         fdict["u"],"top")
-      bseam = makeseam([pd["blb"], pd["brb"], pd["brf"]],
+      bseam = b2From2Rows([pd["blb"], pd["brb"], pd["brf"]],
                        [pd2["blb"], pd2["brb"], pd2["brf"]],
                         fdict["d"],"bottom")
       if left:
@@ -473,7 +473,7 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       bcp = cpFromRows([pd["brf"], pd["brb"], pd["blb"]],
                          [pd["brf"], pd["brb"], pd["brb"]])
   else:
-      tcp = cFromRows([pd["trf"], pd["trb"], pd["tlb"]],
+      tcp = cpFromRows([pd["trf"], pd["trb"], pd["tlb"]],
                          [pd["tlf"], pd["tlf"], pd["tlb"]])
       bcp = cpFromRows([pd["blb"], pd["brb"], pd["brf"]],
                          [pd["blb"], pd["blf"], pd["blf"]])
@@ -490,7 +490,6 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
 def circleLine(p0, p1, p2, p3):
     return [(p0+p1)/2, p1, (p1+p2)/2, p2, (p2+p3)/2, p3,
             (p3+p0)/2, p0, (p0+p1)/2]
-            
 
 def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0):
     "makes a bevel/inverse bevel on the basis of brush o"
@@ -542,10 +541,42 @@ def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0):
         inner2.swapsides()
         return [inner,inner2,top,bottom]
         
-    if inverse:
-       inner.swapsides()
+    if open:
+       if inverse:
+          inner.swapsides()
+       return [inner]
+        
 
-    return [inner]
+    if inverse:
+
+        def squareFromCircle(row): # row = 9 pts, cp's for circle
+            # first not used, passed to reduce index confusion
+            def halfSquare(hr): # hr=half-row excluding center
+                return [hr[1], hr[1], hr[2], hr[3], hr[3]]
+             
+            return halfSquare(row[:4]), halfSquare(row[4:8])
+            
+        def faces(circline, borderfunc, name, texface):
+            out0, out1 = borderfunc(circline)
+            b2a = b2From2Rows(out0, circline[0:5],texface,name+'0')
+            b2b = b2From2Rows(out1, circline[4:9],texface,name+'1')
+            return b2a, b2b
+
+        topa, topb = faces(cp[0],squareFromCircle,'top',fdict['u'])
+        inner.swapsides()
+        topa.swapsides()
+        topb.swapsides()
+        bottoma, bottomb = faces(cp[2],squareFromCircle,'bottom',fdict['d'])
+        return [inner, topa, topb, bottoma, bottomb]
+    else:
+        def center(v):
+            c = (v[1]+v[3]+v[5]+v[7])/4.0
+            return map(lambda x,c=c:c,range(9))
+
+        top = b2From2Rows(center(cp[0]),cp[0],fdict['u'],'top')
+        bottom = b2From2Rows(cp[2], center(cp[2]),fdict['d'],'bottom')
+        return [inner, top, bottom]
+
 
 
 def images(buildfn, args):
@@ -751,6 +782,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2000/06/24 09:40:17  tiglari
+#thickness for columns
+#
 #Revision 1.15  2000/06/22 22:39:40  tiglari
 #added support for columns (and pipes)
 #
