@@ -116,6 +116,19 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
         else:
             print "ERROR: Unknown action \"" + action + "\" for extension \"" + ext + "\""
 
+    def FileHasContent(self, ext, attr, filename):
+        if (ext[:1] != gExt_MustNotExist):
+            return 0
+        if ((attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE)):
+            return 0
+        if attr!=FA_FILENOTFOUND:
+            f=open(filename, "r")
+            data = f.readlines()
+            for line in data:
+                if string.strip(line)!='':
+                    return 1
+        return 0 # not actually necessary because Python functions returns None by default        
+
     def close(self):
         errorfoundandprintet = 0
         for ext, action in self.checkextensions:
@@ -124,7 +137,8 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
             attr = quarkx.getfileattr(workfile)
             if ((ext[:1] == gExt_GotToExist) and ((attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE))):
                 errortext = "Build failed, because it did not create the (%s) file: " % ext + workfile
-            elif ((ext[:1] == gExt_MustNotExist) and ((attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE))):
+            elif self.FileHasContent(ext, attr, workfile):
+#            elif ((ext[:1] == gExt_MustNotExist) and ((attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE))):
                 errortext = "Build failed, because it created the (%s) file: " % ext + workfile
 
             # Was error found?
@@ -596,6 +610,11 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.27  2002/08/09 10:01:45  decker_dk
+#Fixed problem, when "warning about missing textures and do you want to continue"
+#never continued regarding pressing OK or Cancel. The if-statement checked for MR_YES
+#and not MR_OK.
+#
 #Revision 1.26  2002/05/07 09:13:02  tiglari
 #prevent error when no default dir for buildpgms is specified (diagnosis and fix by nurail)
 #
