@@ -37,6 +37,7 @@ const
  mjSin      = 'C';
  mjKingPin  = 'D';   {/mac}
  mjQ3A      = 'a';
+ mjCrySpace = 'b'; {/pm}
 
  mjAny       = #1;
  mjNotQuake2 = #2;
@@ -831,7 +832,7 @@ begin
   mjNotQuake1: if not ModeJeuQuake2 then
                 nMode:=mjQuake2
                else
-                Exit; 
+                Exit;
  else
    if CharModeJeu=nMode then Exit;
  end;

@@ -958,6 +958,9 @@ begin
   else
    if Specifics.Values['b']<>'' then
     Result:=mjNotQuake2
+   else     {/pm start}
+     if Specifics.Values['b']<>'' then
+      Result:=mjCrySpace        {/pm stop}
    else
     Raise EError(5518);
 end;
