@@ -23,19 +23,27 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.61  2002/12/22 05:51:14  tiglari
+Revision 1.56.2.7  2002/12/29 02:56:42  tiglari
+add norecenter version of getthreepointsusertex, with threepoints method option
+ (2nd go at suppressing centering when needed)
+
+Revision 1.56.2.6  2002/12/28 23:50:30  tiglari
+faces with _fixed specific never center L-square
+
+Revision 1.56.2.5  2002/12/22 05:33:57  tiglari
 restoring projecting points to planes, to make lighting work out
 
-Revision 1.60  2002/12/21 21:33:07  tiglari
-valve220 map-writing fix
+Revision 1.56.2.4  2002/12/21 06:22:45  tiglari
+remove some unneeded stuff from v220-writing
 
-Revision 1.59  2002/12/21 09:28:41  tiglari
-update genesis3d map writing
+Revision 1.56.2.3  2002/12/21 04:14:21  tiglari
+yet another attempt at v220 map writing
 
-Revision 1.58  2002/12/15 14:06:05  tiglari
-fix bug in writing valve 220 map format
+Revision 1.56.2.2  2002/12/15 08:39:26  tiglari
+fix valve mapversion220 writing bug (it turns out that the texture-vectors do
+ *not* have to be confined to the closest plane!!(
 
-Revision 1.57  2002/05/23 09:02:10  tiglari
+Revision 1.56.2.1  2002/05/23 09:03:14  tiglari
 fix texture positioning problems with Classic Quake and Quark etp
 
 Revision 1.56  2002/05/07 23:22:51  tiglari
@@ -388,7 +396,7 @@ type
                function GetThreePointsT(var V1, V2, V3: TVect) : Boolean;
                function GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
                procedure SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
-               function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;              function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                function SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                procedure RevertToEnhTex;
                procedure SimulateEnhTex(var V1, V2, V3: TVect; var Mirror: boolean);
@@ -412,6 +420,7 @@ type
                procedure LinkSurface(S: PSurface);
                procedure UnlinkSurface(S: PSurface);
                function Retourner : Boolean;
+               function Retourner_leavetex : Boolean;
                procedure AddTo3DScene; override;
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
@@ -1279,6 +1288,7 @@ begin
 
 end;
 
+
 procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
  PX, PY: array[1..3] of TDouble;
@@ -1334,13 +1344,6 @@ begin
  Params[1]:=-PX[1]*A;
  if Abs(Params[5])<rien2 then A:=1 else A:=1/Params[5];
  Params[2]:=PY[1]*A;
-
- if CharModeJeu=mjGenesis3D then
- begin
-   if (Plan='X') then
-     Params[4]:=-Params[4];
-   Params[3]:=Round(Params[3]);
- end;
 end;
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
@@ -2581,7 +2584,7 @@ var
 }
     begin
 
-     if (MapFormat=QetpType) or { (MapFormat=V220Type) } then
+     if (MapFormat=QetpType) or (MapFormat=V220Type) then
      begin
        F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
 
@@ -3794,7 +3797,7 @@ begin
  TexP[3].X:=(TexP[3].X-TexP[1].X)*CorrH;
  TexP[3].Y:=(TexP[3].Y-TexP[1].Y)*CorrH;
  TexP[3].Z:=(TexP[3].Z-TexP[1].Z)*CorrH;
- if SetupSubSet(ssMap,'Options').Specifics.Values['DontCenterThreePoints']<>'1' then
+ if (SetupSubSet(ssMap,'Options').Specifics.Values['DontCenterThreePoints']<>'1') then
  begin
    TexP[4]:=CentreFace;
    CorrW:=1;
@@ -3828,6 +3831,31 @@ begin
      end;
    end;
  end;
+ V1:=TexP[1];
+ V2.X:=TexP[2].X+TexP[1].X;
+ V2.Y:=TexP[2].Y+TexP[1].Y;
+ V2.Z:=TexP[2].Z+TexP[1].Z;
+ V3.X:=TexP[3].X+TexP[1].X;
+ V3.Y:=TexP[3].Y+TexP[1].Y;
+ V3.Z:=TexP[3].Z+TexP[1].Z;
+end;
+
+
+function TFace.GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
+var
+ TexP: array[1..4] of TVect;
+ I, W, H: Integer;
+ CorrW, CorrH: TDouble;
+begin
+ Result:=GetThreePointsT(TexP[1], TexP[2], TexP[3]);
+ if not Result then Exit;
+ UserTexScale(AltTexSrc, CorrW, CorrH);
+ TexP[2].X:=(TexP[2].X-TexP[1].X)*CorrW;
+ TexP[2].Y:=(TexP[2].Y-TexP[1].Y)*CorrW;
+ TexP[2].Z:=(TexP[2].Z-TexP[1].Z)*CorrW;
+ TexP[3].X:=(TexP[3].X-TexP[1].X)*CorrH;
+ TexP[3].Y:=(TexP[3].Y-TexP[1].Y)*CorrH;
+ TexP[3].Z:=(TexP[3].Z-TexP[1].Z)*CorrH;
  V1:=TexP[1];
  V2.X:=TexP[2].X+TexP[1].X;
  V2.Y:=TexP[2].Y+TexP[1].Y;
@@ -4934,13 +4962,26 @@ end;
 
 function TFace.Retourner : Boolean;
 var
- V1, V2, V3: TVect;
+ V1, V2, V3, T1, T2, T3: TVect;
+begin
+ Result:=GetThreePoints(V1, V2, V3);
+ if Result then
+  begin
+   GetThreePointsT(T1, T2, T3);
+   SetThreePoints(V1, V3, V2);
+{   TextureMirror:=not TextureMirror; }
+   SetThreePointsT(T1, T2, T3);
+  end;
+end;
+
+function TFace.Retourner_leavetex : Boolean;
+var
+ V1, V2, V3 : TVect;
 begin
  Result:=GetThreePoints(V1, V2, V3);
  if Result then
   begin
    SetThreePoints(V1, V3, V2);
-   TextureMirror:=not TextureMirror;
   end;
 end;
 
@@ -5254,6 +5295,8 @@ begin
     case mode of
      0:  Ok:=GetThreePoints(P[1], P[2], P[3]);
      2:  Ok:=GetThreePointsUserTex(P[1], P[2], P[3], QkObjFromPyObj(AltTexSrc));
+     // six because there's a QuArK variant with more modes ..
+     6:  Ok:=GetThreePointsUserTexNoRecenter(P[1], P[2], P[3], QkObjFromPyObj(AltTexSrc));
     else Ok:=GetThreePointsT(P[1], P[2], P[3]);
     end;
    end;
@@ -5368,6 +5411,21 @@ begin
  end;
 end;
 
+function fSwapSides_leavetex(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  with QkObjFromPyObj(self) as TFace do
+   begin
+    Acces;
+    Retourner_leavetex;
+   end;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 function fExtrudePrism(self, args: PyObject) : PyObject; cdecl;
 var
  nobj: PyObject;
@@ -5400,12 +5458,13 @@ begin
 end;
 
 const
- FaceMethodTable: array[0..7] of TyMethodDef =
+ FaceMethodTable: array[0..8] of TyMethodDef =
   ((ml_name: 'verticesof';    ml_meth: fVerticesOf;    ml_flags: METH_VARARGS),
    (ml_name: 'distortion';    ml_meth: fDistortion;    ml_flags: METH_VARARGS),
    (ml_name: 'threepoints';   ml_meth: fThreePoints;   ml_flags: METH_VARARGS),
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
+   (ml_name: 'swapsides_leavetex';     ml_meth: fSwapSides_leavetex;     ml_flags: METH_VARARGS),
    (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
    (ml_name: 'enhrevert';     ml_meth: fRevertToEnhTex;  ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));

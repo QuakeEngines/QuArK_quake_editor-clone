@@ -183,18 +183,35 @@ def capImages(o, editor, inverse=0, lower=0, onside=0, open=0, thick=0, faceonly
         right, left = fdict["l"], fdict["r"]
       else:
         right, left = fdict["r"], fdict["l"]
+      #
+      # For the right and left sides of the guide brush ...
+      #
       for side, fulcrum, edge in ((right, "trf", 4), (left, "tlf", 0)):
           #
-          # FIXME: this 3points stuff below shouldn't be needed, but is.
+          #  make a copy of the 'top' (where the texture is being
+          #   taken from)
           #
           newside = texface.copy()
-          newside.setthreepoints(texface.threepoints(2),2)
+          #
+          # rotate around the front side corner, so that it is coincident
+          #  with the side
+          #
           newside.distortion(side.normal, pd[fulcrum])
+          #
+          # a copy of the patch's control-points with the rotated
+          #  face's texture projected onto it (would look good at
+          #  one end, terrible at the other)
+          #
           cp2 = texcpFromFace(cp, newside, editor)
+          #
+          # Now set the real patch control points along the edge to
+          #  the new ones.
+          #
           for index in range(3):
               cp[index][edge]=cp2[index][edge]
   #
-  # Now we smooth it out
+  # We have now set the cp's for both edges of the patch correctly,
+  #  so we smooth things out
   #
   cp = undistortRows(cp)
   cp = undistortColumns(cp)
@@ -275,10 +292,15 @@ def capImages(o, editor, inverse=0, lower=0, onside=0, open=0, thick=0, faceonly
       return faces
   return [inner]+faces
 
+
 def bevelImages(o, editor, inverse=0, lower=0, left=0, standup=0, open=0, thick=0,
   faceonly=0, stretchtex=0, notop=0, nobottom=0, noinner=0, noouter=0, (subdivide,)=1):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
+  #
+  # make a dictionary where faces are indexed by the first letter
+  # of their name (front|back|left|right|up|down)
+  #
   fdict = faceDict(o)
   if fdict is None:
     return
@@ -286,31 +308,51 @@ def bevelImages(o, editor, inverse=0, lower=0, left=0, standup=0, open=0, thick=
       fdict = facedict_rflip(fdict)
   if lower:
       fdict = facedict_fflip(fdict)
+  #
+  # get a dict of the vertices indexed by [t|b][r|l][f|b]
+  #
   pd = pointdict(vtxlistdict(fdict,o))
+  #
+  # interchange left and right vertices for left bevel
+  #
   if left:
       pd = pointdict_hflip(pd)
-
+  #
+  # make patch controlpoints, rows starting at the back, curving
+  #  towards front (for regular and left versions).  For left bevels,
+  #  'l' vertices will be right and vice versa
+  #
   def bevelcurve(pd):
-      return cpFrom2Rows([pd["tlb"],pd["trb"],pd["trf"]],
-                        [pd["blb"],pd["brb"],pd["brf"]])
+#      return cpFrom2Rows(subdivideLine(2, pd["tlb"], pd["trb"],pd["trf"]),
+#                         subdivideLine(2, pd["blb"],pd["brb"],pd["brf"]))
+      return cpFrom2Rows([pd["tlb"], pd["trb"],pd["trf"]],
+                         [pd["blb"],pd["brb"],pd["brf"]])
   cp = bevelcurve(pd)
-  length = lengthof(cp[0],3)
   inner = quarkx.newobj('inner:b2')
+  #
+  # project the texture from the back face onto the patch
+  #
   cp = texcpFromFace(cp, fdict["b"], editor)
-  right = fdict["b"].copy()
   if not stretchtex:
+      newside = fdict["b"].copy()
       #
-      # FIXME: this 3points stuff below shouldn't be needed, but is.
+      # fdict has not been flipped for left brushes
       #
-      right.setthreepoints(fdict["b"].threepoints(2),2)
       if left:
-          right.distortion(fdict["l"].normal,pd["brb"])
+          newside.distortion(fdict["l"].normal,pd["trb"])
       else:
-          right.distortion(fdict["r"].normal,pd["brb"])
-      cp2 = texcpFromFace(cp, right, editor)
-      for i in range(3):
-          cp[i][2]=cp2[i][2]
-  cp = subdivideRows(subdivide,undistortRows(cp))
+          newside.distortion(fdict["r"].normal,pd["trb"])
+      cp2 = texcpFromFace(cp, newside, editor)
+      debug("cp: ")
+      writecps(cp)
+#      debug("cp2: ")
+#      writecps(cp2)
+      for index in range(3):
+        cp[index][2]=cp2[index][2]
+
+  cp = undistortRows(cp)
+  cp = undistortColumns(cp)
+  cp = subdivideRows(subdivide,cp)
   inner.cp = cp
   inner["tex"] = fdict["b"]["tex"]
   if thick:
@@ -762,6 +804,16 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29.14.2  2002/12/29 02:59:28  tiglari
+#a bit of cleanup, remove failed attempt to supress centering tex coordinates
+# with threepoints call; this now down in quarkpy/bqurils:texcpfromface
+#
+#Revision 1.29.14.1  2002/12/28 23:52:18  tiglari
+#add _fixed flag to inhibit L-square recentering of tex alignment faces
+#
+#Revision 1.29  2001/03/01 19:14:16  decker_dk
+#changed newpolymenu() so it checks 'BezierPatchSupport' to see if it should allow the Curves-menu.
+#
 #Revision 1.28  2001/02/25 04:46:49  tiglari
 #new specifics for brush&patch arch&bevel
 #

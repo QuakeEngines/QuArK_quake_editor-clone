@@ -154,8 +154,10 @@ def listCp(cp):
 #
 def texcpFromFace(cp, face, editor):
     "returns a copy of cp with the texture-scale of the face projected"
-#    p0, p1, p2 = face.threepoints(2,editor.TexSource)
-    p0, p1, p2 = face.threepoints(2)
+    #    
+    # Note special code, which inhibits recentering threepoints
+    #
+    p0, p1, p2 = face.threepoints(6)
     
     def axis(p, p0=p0):
         "turns a texp point into axis for computing b2 texcp's"
@@ -507,10 +509,29 @@ def cpPos(p,b2):
     i, j = divmod(p, b2.W)
     return int(i), int(j)
 
+def writecps(cp):
+    debug('cp: ')
+    for row in range(len(cp)):
+      for  col in range(len(cp[row])):
+        point = cp[row][col]
+        try:
+#          debug(" %d,%d: s: %6.2f t: %6.2f"%(row, col, cp[row][col][3], cp[row][col][4]))
+           debug(" %d,%d: s: %6.2f, t: %6.2f"%(row, col, point.s, point.t))
+        except:
+          debug(" notexcoords")
+
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.17.10.1  2002/12/29 02:57:59  tiglari
+#texcpfromface now uses threepoints(6) to avoid recentering tex coords
+#
+#Revision 1.17  2001/03/20 11:01:51  tiglari
+#credit added
+#
 #Revision 1.16  2000/12/30 05:27:11  tiglari
 #cpPos function for mapping index position to i, j coordinates
 #
