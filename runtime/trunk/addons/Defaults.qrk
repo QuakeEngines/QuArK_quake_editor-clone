@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.64  2000/10/27 20:42:28  decker_dk
+//Crystal Space .QRK files
+//
 //Revision 1.63  2000/10/26 16:53:03  tiglari
 //enable brush primitives item added
 //
@@ -1139,13 +1142,18 @@ QQRKSRC1
                 Typ="E"
                 Txt="...fixed command-line arguments"
                 Hint="Use the following user-variables, which will be automatically"
-                  $0D"replaced at run-time."
+                  $0D"replaced at run-time. If at least one of these are used, QuArK"
+                  $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
+                  $0D"so you better remember to do this yourself."
                   $0D
                   $0D"%file%    - Gives the map's path and filename without extension"
                   $0D"%mappath% - Gives the map's path with ending backslash"
                   $0D"%mapfile% - Gives the map's path and filename with .MAP extension"
                   $0D
-                  $0D"Example:    BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
+                  $0D"Examples:"
+                  $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
+                  $0D"  VIS.EXE -fast %file%"
+                  $0D"  QRAD3.EXE -threads 4 %file%"
         }
         GameBuildCheck:incl = {
                 Typ="C"
@@ -2994,6 +3002,20 @@ QQRKSRC1
                   $0D"build-program here. They will be _additional_ to the"
                   $0D"fixed arguments, which are specified in the game's"
                   $0D"configuration section (QuArK Explorer->Games->Options)."
+                  $0D
+                  $0D"Use the following user-variables, which will be automatically"
+                  $0D"replaced at run-time. If at least one of these are used, QuArK"
+                  $0D"will _not_ append a '<path>/<mapfile>' to the command-line arg.,"
+                  $0D"so you better remember to do this yourself."
+                  $0D
+                  $0D"%file%    - Gives the map's path and filename without extension"
+                  $0D"%mappath% - Gives the map's path with ending backslash"
+                  $0D"%mapfile% - Gives the map's path and filename with .MAP extension"
+                  $0D
+                  $0D"Examples:"
+                  $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"
+                  $0D"  VIS.EXE -fast %file%"
+                  $0D"  QRAD3.EXE -threads 4 %file%"
         }
 
     CustomQuakeMenu:form =    // "customize Quake menu" box
