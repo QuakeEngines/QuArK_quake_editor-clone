@@ -1,0 +1,30 @@
+title: Plugin Tutorial
+subdir: blather starting command
+format: html
+
+<P>In this tutorial we slowly construct an oversimplified
+version of the maptagside plugin (the real one is a very
+messy sprawl, and exemplifies many bad practices, since
+it was my first).
+
+<!--
+So here's what's coming up:
+<A NAME=contents>
+<H2 align=center>Contents</H2>
+<UL>
+<LI> <A HREF="qptut01.htm">1. Tagging and Gluing Faces</A>
+<UL>
+<LI> <A HREF="qptut01.htm#menu">1.1.  Putting a command on the menu</A>
+<LI><A HREF="qptut02.htm">1.2.  Basic Tag & Glue </A>
+<LI><A HREF="qptut03.htm">1.3.  Adding some Polish </A>
+<LI><A HREF="qptut04.htm">1.4.  Displaying Tagged Sides </A>
+<LI><A HREF="qptut05.htm">1.5.  Right Mouse Menus </A>
+<LI><A HREF="qptut06.htm">1.6.  En Avant! </A>
+</UL>
+</UL>
+-->
+
+</BODY>
+</HTML>
+
+

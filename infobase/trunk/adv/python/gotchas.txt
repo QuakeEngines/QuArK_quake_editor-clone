@@ -59,3 +59,13 @@ will get made to its variables.<P>
 These commas are a bit unusual and easy to miss at first, and
 since many of the most useful specifics in dialog boxes
 are of tuple-type, missing them can lead to a lot of frustration.
+
+<strong>tabs & whitespace</strong>:One of Python's distinctive
+features is `whitespace structuring', whereby all members of
+the same block have to be indented the same distance, and
+sub-blocks are indented more.  This saves hunting around for
+matching curlies, but can lead to at least one kind of
+serious screwup, involving tabs:  if Python's idea of what
+a tab is different from your editors, you can screw up
+functioning code just by saving it.  I have my text editor
+set to convert all tabs to 4 spaces.

@@ -1,0 +1,162 @@
+title: Putting a Command on a Menu
+format: html
+ 
+<P>A plugin needs to do three things:
+<OL Type=1>
+<LI> Import resources from the rest of the program
+<LI> Define the actions that the plugin will perform
+<LI> Provide menu commands, buttons or some other facility for
+     the user to initiate the actions
+</OL>
+<P>What you need to import depends on what you're doing; what we'll
+need for the whole plugin is this:
+<pre>
+   import quarkx
+   import quarkpy.mapmenus
+   import quarkpy.mapentities
+   import quarkpy.qmenu
+   import quarkpy.mapeditor
+   import quarkpy.mapcommands
+   from quarkpy.maputils import *
+</pre>
+<P>We will gradually explain what all this means.
+
+<P>To produce the action we want, we need this:
+<pre>
+   def TagSideClick (m):
+       quarkx.msgbox("This command does nothing", MT_INFORMATION, MB_OK)
+</pre>
+<P>This defines a function `TagSideClick', which gets a parameter `m', which
+which is the actual menu item that invoked the action.  We don't use this
+here, but we will later on.
+The body of the function calls the `msgbox' function from the module
+`quarkx', which is imported in the first import statement.  Note
+that this works a bit differently from say an <tt>#include</tt>
+in C; when we import a module, we can't just use the names of the
+functions in it, but have to `qualify' those names by putting the
+module name in front, separated by a period.
+
+<P>This is to improve readability, at the expense of a a bit of
+typing on the part of the writer of the program; the name of
+the important function when it's used states where it came from,
+so the reader has a better chance of finding out what it does.
+We will soon see how to use unqualified imported names as well.
+
+<P>As for the actual <tt>msgbox</tt> function, it produces little
+`message box' dialogs that you can respond to by pushing buttons; its
+first argument is the string to be displayed in the
+message box, the second a `type' which determines the graphic icons
+associated with the box, and third a flag that says that
+the messagebox has an OK button.
+
+<P> Symbolic names for the useful values for these arguments are
+defined in the file quarkpy\qtils.py, in the `# quarkx.msgbox'.
+So you can look there to see what the possibilities are.
+But hey, we haven't imported this module, and the symbols
+aren't qualified anyway, so what's going on?
+
+<P>What we have done is imported the module quarkpy.maputils,
+in a somewhat different way, in the last line of the import
+statement. `from <module name> import *' means `import everything
+that's defined in the named module, and use it without
+qualification.  And furthermore, quarkpy.maputils, a general
+grab-bag of utility functions for the map editor, imports
+quarkpy.qeditor in this way, which itself does the same to
+quarkpy.qutils.py.  So everything defined
+in all of these modules is available to our plugin, without
+qualifying the names.
+
+<P>This is convenient for the writer, but can be confusing
+for the reader.  Even more so because symbols defined in later
+imports will override definitions from earlier ones.  So this
+import style should only be used for a limited number of
+widely used utility files, which people working on the program
+can be expected to learn about soon.
+
+<P>One more thing with the import statements, what's the deal
+with the dots?  Python modules are religiously identified
+as files, and folders are taken to be `super modules' containing
+sub-modules.  So all of the files in quarkpy make up the quarkpy
+module, and to import them into a file outside of quarkpy
+you need the quarkpy. qualification.  Inside quarkpy you don't,
+so the statement that maputils.py uses to import qeditor.py is
+just:
+<pre>
+  from qeditors import *
+</pre>
+
+<P>So now that we've got some code that does something,
+we need to install a menu item so the user can have it done:
+<pre>
+   quarkpy.mapcommands.items.append(qmenu.item("&Do Nothing", TagSideClick))
+</pre>
+On important point is that the text of this line has to start at
+the same horizontal position as the `def' line above, so that
+the whole thing looks like this:
+<pre>
+   def TagSideClick (m):
+       quarkx.msgbox("This command does nothing", MT_INFORMATION, MB_OK)
+
+   quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Do Nothing", TagSideClick))
+</pre>
+<P>rather than say like this:
+<pre>
+   def TagSideClick (m):
+       quarkx.msgbox("This command does nothing", MT_INFORMATION, MB_OK)
+       quarkpy.mapcommands.items.append(qmenu.item("&Do Nothing", TagSideClick))
+</pre>
+<P>The reason is that Python uses indendation to impose block-structure,
+so that the first version first defines the TagSideClick function
+and then puts an item on the mapcommands menu, while the second
+version defines a TagSideClick function that first produces a
+message-box and then adds something to the menu (so that something
+will never show up unless the TagSideClick function gets called,
+which isn't going to happen).
+The blank line on other hand is just make the presentation clearer,
+and doesn't affect the operation of the program.
+
+<P>And it remains to explain what this menu-item-adding line actually
+does.  quarky.mapcommands is the module where the `commands'
+menu is defined.  It creates a list-valued variable `items',
+and `append' is a built-in Python function for attaching
+something to a list.
+
+<P>What we append to this list is an something created by the
+`item' function, defined in the module quarkpy.qmenu.  We don't
+have to import this module because that job is already done by
+the qeditor.py module.  This has among its import statements:
+<pre>
+   import qmenu
+</pre>
+<P>, so when we import everything from quarkpy.maputils, and it
+imports everything from quarkpy.qeditor, we wind up getting
+qmenu, but we have to qualify the stuff in it with `qmenu'.
+This lets us use obvious words like `item', without having
+to use clumsy prefixing conventions, etc. to prevent name
+collisions.
+
+<P>So when this is all typed out and saved into a file `maptagside.py' in
+in the plugins directory, you should be able to start up quark, fire
+up the map editor, find the `Do Nothing' command on the command menu,
+click on it, and see the resulting message box.<P>
+
+<P>If it doesn't work, possible explanations are:
+<UL>
+<LI> A syntax error in the program, in which case you'll be looking
+at the Quark console, which will have some kind of error message.
+
+<LI> Your module-file's name doesn't start with `map', in which case
+QuArK will work but your new command won't appear on the menu.
+
+<LI> Something else, tell me when you manage to figure out it.
+</UL>
+
+<P>I'll also say a bit more about what goes on when modules are loaded.
+When a module is loaded, it is first `compiled' into a file with the
+same name and extension .pyc, which will load more quickly.  If
+the current .py file is older than the corresponding .pyc file,
+the compilation stage is skipped, and the .pyc file is loaded
+straight in.  So you can delete all the .pyc files if you want to,
+but it will slow things down the first time QuArK is run.<P>
+
+Next, we'll try to get a command to actually do something useful ...
