@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/03/05 11:02:32  tiglari
+q3 bsp editing support, entities OK, map structure not there yet
+
 Revision 1.17  2001/03/05 09:21:21  tiglari
 Q3 lump names filled in
 
@@ -430,16 +433,39 @@ var
 begin
   Acces;
 
-  if E2=NoBsp2 then
+(* truly I don't get what's supposed to be going on
+  here; this seems to work a bit better *)
+
+(*
+  if (E2=NoBsp2) and (E3=NoBsp3) then
     S:=Bsp1EntryNames[E1]
   else
-  if (E1=NoBsp1) or (E3=NoBsp3) or ((NeedObjectGameCode>=mjQuake2) and (NeedObjectGameCode<mjQ3A)) then
+  if  ((NeedObjectGameCode>=mjQuake2) and (NeedObjectGameCode<mjQ3A)) then
     S:=Bsp2EntryNames[E2]
   else
-  if (E1=NoBsp1) or (E2=NoBsp2) or (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjStarTrekEF) then
+  if (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjStarTrekEF) then
     S:=Bsp3EntryNames[E3]
   else
     S:=Bsp1EntryNames[E1];
+ *)
+
+
+  (* this is set when the .bsp is opened, from the version,
+      why isn't it just used below? *)
+  if (ObjectGameCode=mjQ3A) or (ObjectGameCode=mjStarTrekEF) then
+    S:=Bsp3EntryNames[E3]
+  else
+  if (ObjectGameCode>=mjQuake2) and (ObjectGameCode<mjQ3A) then
+    S:=Bsp2EntryNames[E2]
+  else
+  if E2=NoBsp2 then
+    S:=Bsp1EntryNames[E1]
+  else
+  if (E1=NoBsp1) or (NeedObjectGameCode>=mjQuake2) then
+    S:=Bsp2EntryNames[E2]
+  else
+    S:=Bsp1EntryNames[E1];
+
 
   Q := SubElements.FindName(S);
   if (Q=Nil) or not (Q is QFileObject) then
