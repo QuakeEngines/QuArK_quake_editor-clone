@@ -1,9 +1,11 @@
-                          QuArK 6.3
+                          QuArK 6.3d
                          
-                         Dec 22, 2002
+                         Dec 26, 2002
 
 
  Updates:
+   * [tiglari] lighting problems with etp and V220 formats, pinned down with
+       great effort by quantum_red, fixed.
    * [tiglari] bsp-viewing problem with mirror-imaged textures fixed
    * [tiglari] bug with non-inverse brush arches fixed (found by quantum_red)
    * [tiglari] problems with valve mapversion220 format writing fixed (ditto)
