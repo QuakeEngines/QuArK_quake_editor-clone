@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.129  2001/05/06 03:04:36  tiglari
+//New Copy One added,  with 'offset dup' support: if ="1", then
+// dup origin-sourcelist center is added to offset
+//
 //Revision 1.128  2001/05/05 10:01:25  tiglari
 //patch mode supported for extruder
 //
@@ -3296,7 +3300,7 @@ QQRKSRC1
     }
     linearform:incl = {
        scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling (instance dup only)" }
-       angles: = {Txt="&" Typ="EF03"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
+       angles: = {Txt="&" Typ="E"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
        matrix: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
     }
    
