@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2003/08/13 04:22:01  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.26  2003/08/12 16:04:50  silverpaladin
 Added bullet proofing around qrkGlideState which was causing access violations when NIL.
 
@@ -32,7 +35,7 @@ live pointer hunt.
 Revision 1.24  2001/07/18 03:50:55  tiglari
 Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
  PSommet, TTableauFSommets, PTableauFSommets
-
+ 
 Revision 1.23  2001/03/20 21:38:37  decker_dk
 Updated copyright-header
 
@@ -440,11 +443,16 @@ begin
  FreeMem(FogTableCache);
  inherited;
  Old.Free;
- { I'm not at all sure that this is the right thing
-   to do.  This freeing doesn't get called when
-   exitor exited with x,without the below. }
+ (* SilverPaladin - 08/27/2003 -
+    I've removed the following Free3DEditors call.  It was freeing the Slide
+    info when just one of perhaps several 3d views is closed.  This was the
+    major source of access violations up through 6.4 alpha
 
+ // I'm not at all sure that this is the right thing
+ // to do.  This freeing doesn't get called when
+ // exitor exited with x,without the below.
  Free3DEditors;
+ *)
 end;
 
 procedure T3DFXSceneObject.ClearScene;
@@ -965,13 +973,10 @@ begin
 
  if Assigned(guColorCombineFunction) then
  begin
-   if SolidColors or CCoord.FlatDisplay then
+   if SolidColors then
      guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
-   else try // BCL
+   else
      guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
-   except
-     guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
-   end;
  end;
 
  // Assigned check added by SilverPaladin
