@@ -25,13 +25,13 @@
 
 ## customize this for your needs
 
-LASTSNAPSHOTDATE=2000/06/02
+LASTSNAPSHOTDATE=2000/06/25
 SNAPSHOTPATH=..
 SOURCEPATH=../source
 RUNTIMEPATH=../runtime
 DCUPATH=/DCU
 UNITPATH=$(SOURCEPATH)/components\;$(SOURCEPATH)/components/zip\;$(SOURCEPATH)/components/jpeg\;$(SOURCEPATH)/3dfx
-PROJECT=QuArK5
+PROJECT=QuArK
 
 ###########################################################################
 ## no servicable parts beyond this point !
@@ -44,6 +44,10 @@ EXE=$(PROJECT).exe
 
 ### make a snapshot package
 distro: $(SNAPSHOTPATH)/$(SNAPSHOTNAME).ace
+
+### make a snapshot package
+name:
+	perl setqversion.pl "$(SNAPSHOTNAME)"
 
 ### remove snapshot package
 clean:
@@ -117,6 +121,9 @@ $(SNAPSHOTPATH)/$(SNAPSHOTNAME).ace: $(SNAPSHOTDIR)/$(EXE)
 #----------- CHANGE HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2000/06/02 17:07:44  alexander
+# added: generating changes file
+#
 # Revision 1.1  2000/05/20 00:51:53  alexander
 # initial checkin: Makefile to compile snapshots of quark
 #
