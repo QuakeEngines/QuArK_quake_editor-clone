@@ -14,21 +14,16 @@
 #       + cube
 #       + cube
 #       + cube
-#   + path_corner           (targetname=p1, target=p2)
-#   + path_corner           (targetname=p2, target=p3)
-#   + path_corner           (targetname=p3, target=p4)
-#   + path_corner           (targetname=p4, etc.)
 
 
 Info = {
    "plug-in":       "Path Duplicator",
    "desc":          "BETA! Path Duplicator",
-   "date":          "10 feb 98",
+   "date":          "3 feb 01",
    "author":        "Decker",
    "author e-mail": "decker@planetquake.com",
-   "quark":         "Version 5.5"
+   "quark":         "Version 6.2"
 }
-
 
 import quarkx
 from quarkpy.maputils import *
@@ -45,9 +40,122 @@ DupOffsetHandle = quarkpy.mapduplicator.DupOffsetHandle
 ObjectOrigin = quarkpy.mapentities.ObjectOrigin
 
 
+def MakeUniqueTargetname():
+    import time
+    return "t" + time.strftime("%Y%m%d%H%M%S", time.gmtime(time.time()))
+
+
+class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
+
+    def __init__(self, origin, centerof, pathdupmaster=0):
+        quarkpy.qhandles.IconHandle.__init__(self, origin, centerof)
+        self.pathdupmaster = pathdupmaster
+
+    def findpathdupcornerwith(self, list, entitykey, entitykeydata):
+        for e in list:
+            if e.type == ':d':
+                if e[entitykey] == entitykeydata:
+                    return e
+        return None
+
+    def makecopy(self, original):
+        new = original.copy()
+        # Erase all subitems from object.
+        while (new.itemcount > 0):
+            new.removeitem(new.itemcount-1)
+        # Erase all key/keydata in object.
+        for key in original.dictspec.keys():
+            new[key] = ""
+        # Copy only those key/keydata's we're interested in.
+        new.shortname = "PathDup.Point"
+        new["macro"] = "dup path_point"
+        new["origin"] = original["origin"]
+        new["target"] = original["target"]
+        new["targetname"] = original["targetname"]
+        return new
+
+    def menu(self, editor, view):
+
+        def after1click(m, self=self, editor=editor, view=view):
+            # Insert a copy of me, between me and whoever I point to, and give this
+            # new copy a unique targetname, which I should now point to instead.
+            # Try also to put the new copy, into the tree-view in targeting-order.
+            undo = quarkx.action()
+            new = self.makecopy(self.centerof)
+            new["targetname"] = MakeUniqueTargetname()
+            new.translate(quarkx.vect(32,32,0))
+            undo.setspec(self.centerof, "target", new["targetname"])
+            who_do_i_target = self.findpathdupcornerwith(self.centerof.parent.subitems, "targetname", new["target"])
+            if ((who_do_i_target is not None) and (who_do_i_target.parent == self.centerof.parent)):
+                undo.put(self.centerof.parent, new, who_do_i_target)
+            else:
+                undo.put(self.centerof.parent, new)
+            editor.ok(undo, "Insert after PathDuplicator corner")
+            editor.layout.explorer.sellist = [new]
+
+        def before1click(m, self=self, editor=editor, view=view):
+            # Insert a copy of me, between me and whoever points to ne, and give this
+            # new copy a unique targetname, which my previous should point to instead.
+            # Try also to put the new copy, into the tree-view in targeting-order.
+            undo = quarkx.action()
+            who_targets_me = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", self.centerof["targetname"])
+            new = self.makecopy(self.centerof)
+            new["targetname"] = MakeUniqueTargetname()
+            new["target"] = self.centerof["targetname"]
+            new.translate(quarkx.vect(-32,-32,0))
+            undo.put(self.centerof.parent, new, self.centerof)
+            if (who_targets_me is not None):
+                undo.setspec(who_targets_me, "target", new["targetname"])
+            editor.ok(undo, "Insert before PathDuplicator corner")
+            editor.layout.explorer.sellist = [new]
+
+        def remove1click(m, self=self, editor=editor, view=view):
+            # Tell whoever points to me, that it should now point to my target instead, as I am going to be removed now.
+            undo = quarkx.action()
+            what_is_my_target = self.centerof["target"]
+            who_targets_me = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", self.centerof["targetname"])
+            if who_targets_me is not None:
+                undo.setspec(who_targets_me, "target", what_is_my_target)
+            undo.exchange(self.centerof, None);
+            editor.ok(undo, "Remove PathDuplicator corner");
+
+        def speeddraw1click(m, self=self, editor=editor, view=view):
+            #
+            i = 20
+            walker = self.centerof
+            who_targets_me = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", walker["targetname"])
+            while (who_targets_me is not None) and (who_targets_me["target"] is not None):
+                print i, walker["targetname"], who_targets_me["target"]
+                i = i - 1
+                walker = who_targets_me
+                who_targets_me = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", walker["targetname"])
+            if (walker["speeddraw"] is not None):
+                if (walker["speeddraw"] == "1"):
+                    walker["speeddraw"] = "0"
+                else:
+                    walker["speeddraw"] = "1"
+
+        menulist = [qmenu.item("Insert after",  after1click)]
+        if (self.pathdupmaster == 0):
+            # if it is not the PathDup, then it must be a PathDupCorner, and two more menuitems are available
+            menulist.append(qmenu.item("Insert before", before1click))
+            menulist.append(qmenu.item("Remove",        remove1click))
+        menulist.append(qmenu.item("Toggle speeddraw",  speeddraw1click))
+        return menulist
+
+
+class PathDuplicatorPoint(DuplicatorManager):
+
+    def buildimages(self, singleimage=None):
+        pass
+
+    def handles(self, editor, view):
+        hndl = PathDuplicatorPointHandle(self.dup.origin, self.dup)
+        return [hndl]
+
+
 class PathDuplicator(StandardDuplicator):
 
-    handleprefix = "horigin"
     cuberadius = 3096
     tmpcube = quarkpy.mapbtns.newcube(cuberadius*2, quarkx.setupsubset()["DefaultTexture"])
 
@@ -71,20 +179,6 @@ class PathDuplicator(StandardDuplicator):
 
     def do(self, item):
         pass
-
-    def gethorigin(self, num):
-        if num<0:
-           return None
-        if num==0:
-           return self.dup.origin
-        else:
-           handlespec = self.handleprefix+str(num)
-           # print handlespec
-           try:
-              s = self.dup[handlespec]
-              return quarkx.vect(s)
-           except KeyError:
-              return None
 
     def subtractend2(self,prevorigin,thisorigin,nextorigin,group,beforeafter):
         # Subtract inbetween-path
@@ -155,7 +249,7 @@ class PathDuplicator(StandardDuplicator):
         list = []
         if (myself.parent is not None):
             for item in myself.parent.subitems:
-                if item!=myself and (item.type!=':d' or DupManager(item).siblingincluded(myself)):
+                if item!=myself and (item.type!=':d' or quarkpy.mapduplicator.DupManager(item).siblingincluded(myself)):
                     list.append(item)
         return list
 
@@ -205,8 +299,8 @@ class PathDuplicator(StandardDuplicator):
                   return [] # Nothing more to send back!
                else:
                   i = singleimage
-            thisorigin = pathlist[i].origin      #self.gethorigin(i)
-            nextorigin = pathlist[i+1].origin    #self.gethorigin(i+1)
+            thisorigin = pathlist[i].origin
+            nextorigin = pathlist[i+1].origin
             #print "Image#", i, "this", thisorigin, "next", nextorigin
 
             list = templategroup.copy()
@@ -237,21 +331,21 @@ class PathDuplicator(StandardDuplicator):
             # -- Now do some cube-subtraction, so edges matches up
             if i==0:
                 try:
-                    nextnextorigin = pathlist[i+2].origin #self.gethorigin(i+2)
+                    nextnextorigin = pathlist[i+2].origin
                 except:
                     nextnextorigin = None
                 list = self.subtractend2(None,thisorigin,nextorigin,list,-1)
                 list = self.subtractend2(thisorigin,nextorigin,nextnextorigin,list,1)
             elif i>0 and i<(count-1):
-                prevorigin = pathlist[i-1].origin #self.gethorigin(i-1)
+                prevorigin = pathlist[i-1].origin
                 try:
-                    nextnextorigin = pathlist[i+2].origin #self.gethorigin(i+2)
+                    nextnextorigin = pathlist[i+2].origin
                 except:
                     nextnextorigin = None
                 list = self.subtractend2(prevorigin,thisorigin,nextorigin,list,-1)
                 list = self.subtractend2(thisorigin,nextorigin,nextnextorigin,list,1)
             elif i==(count-1):
-                prevorigin = pathlist[i-1].origin #self.gethorigin(i-1)
+                prevorigin = pathlist[i-1].origin
                 list = self.subtractend2(prevorigin,thisorigin,nextorigin,list,-1)
                 list = self.subtractend2(thisorigin,nextorigin,None,list,1)
 
@@ -265,10 +359,26 @@ class PathDuplicator(StandardDuplicator):
 
 
     def handles(self, editor, view):
-        return DuplicatorManager.handles(self, editor, view)
+        return DuplicatorManager.handles(self, editor, view) + [PathDuplicatorPointHandle(self.dup.origin, self.dup, 1)]
 
 
 # OLD STUFF
+#   handleprefix = "horigin"
+#
+#   def gethorigin(self, num):
+#       if num<0:
+#          return None
+#       if num==0:
+#          return self.dup.origin
+#       else:
+#          handlespec = self.handleprefix+str(num)
+#          # print handlespec
+#          try:
+#             s = self.dup[handlespec]
+#             return quarkx.vect(s)
+#          except KeyError:
+#             return None
+#
 #
 #      def handles(self, editor, view):
 #   #        h = DuplicatorManager.handles(self, editor, view)
@@ -458,11 +568,15 @@ class PathDuplicator(StandardDuplicator):
 
 
 quarkpy.mapduplicator.DupCodes.update({
-  "dup path":    PathDuplicator,
+  "dup path":       PathDuplicator,
+  "dup path_point": PathDuplicatorPoint,
 })
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.2  2001/01/27 18:25:29  decker_dk
+#Renamed 'TextureDef' -> 'DefaultTexture'
+#
 #Revision 1.1  2000/12/19 21:07:19  decker_dk
 #Still a buggy Path Duplicator
 #
