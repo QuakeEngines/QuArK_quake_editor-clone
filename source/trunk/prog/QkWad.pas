@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/08/20 10:42:27  aiv
+Added $IFDEF's for Usage of ImgList.dcu (D4+)
+
 Revision 1.11  2000/07/21 20:01:33  decker_dk
 Correctly Save HalfLife WAD3s
 
@@ -348,7 +351,7 @@ begin
   1: Result:=QWad;
  else
   Result:=Nil;
- end; 
+ end;
 end;
 
 function QWad.ConversionFrom(Source: QFileObject) : Boolean;
@@ -416,59 +419,63 @@ begin
      {TT:=Specifics.Values['TextureType'];
       if TT='' then TT:='.wad_D';}
       I:=Count * SizeOf(LongInt);
-      GetMem(Positions, I); try
-      F.ReadBuffer(Positions^, I);
-      P:=Positions;
-      for I:=1 to Count do
-       begin
-        if P^<0 then  { missing texture }
-         begin
-          Size:=0;
-          S:=LoadStr1(5522);
-         end
-        else
-         begin
-          if (P^>FSize) or (P^<Min) then
-           Raise EErrorFmt(5509, [92]);
-          F.Position:=Origine + P^;
-          if I=Count then
-           MaxSize:=FSize
-          else
-           MaxSize:=(PLongInt(PChar(P)+SizeOf(LongInt)))^;
-          Dec(MaxSize, P^);
-          if MaxSize<SizeOf(Header) then
-           begin
-            Size:=0;
-            S:=LoadStr1(5523);
-           end
-          else
-           begin
-            F.ReadBuffer(Header, SizeOf(Header));
-            S:=CharToPas(Header.Nom);
-            if MaxSize>SizeOf(Header) then
-             begin
-              Size:=CheckQ1Miptex(Header, MaxSize);
-              if Size>MaxSize then
-               Size:=0
-              else
-               Size:=MaxSize;
-             end
-            else
-             Size:=0;   { assumes an empty texture (for Half-Life .bsp's) }
-            F.Seek(-SizeOf(Header), soFromCurrent);
-           end;
-         end;
-        if Size=0 then
-         Q:=OpenFileObjectData(F, S, Size, Self)
-        else
-         Q:=OpenFileObjectData(F, S+'.wad_D', Size, Self);
-        SubElements.Add(Q);
-        LoadedItem(rf_Default, F, Q, Size);
-        Inc(P);
-       end;
-      finally FreeMem(Positions); end;
+      GetMem(Positions, I);
+      try
+       F.ReadBuffer(Positions^, I);
+       P:=Positions;
+       for I:=1 to Count do
+        begin
+         if P^<0 then  { missing texture }
+          begin
+           Size:=0;
+           S:=LoadStr1(5522);
+          end
+         else
+          begin
+           if (P^>FSize) or (P^<Min) then
+            Raise EErrorFmt(5509, [92]);
+           F.Position:=Origine + P^;
+           if I=Count then
+            MaxSize:=FSize
+           else
+            MaxSize:=(PLongInt(PChar(P)+SizeOf(LongInt)))^;
+           Dec(MaxSize, P^);
+           if MaxSize<SizeOf(Header) then
+            begin
+             Size:=0;
+             S:=LoadStr1(5523);
+            end
+           else
+            begin
+             F.ReadBuffer(Header, SizeOf(Header));
+             S:=CharToPas(Header.Nom);
+             if MaxSize>SizeOf(Header) then
+              begin
+               Size:=CheckQ1Miptex(Header, MaxSize);
+               if Size>MaxSize then
+                Size:=0
+               else
+                Size:=MaxSize;
+              end
+             else
+              Size:=0;   { assumes an empty texture (for Half-Life .bsp's) }
+             F.Seek(-SizeOf(Header), soFromCurrent);
+            end;
+          end;
+         if Size=0 then
+          Q:=OpenFileObjectData(F, S, Size, Self)
+         else
+          Q:=OpenFileObjectData(F, S+'.wad_D', Size, Self);
+         SubElements.Add(Q);
+         LoadedItem(rf_Default, F, Q, Size);
+         Inc(P);
+        end;
+      finally
+       FreeMem(Positions);
+      end;
      end;
- else inherited;
+ else
+  inherited;
  end;
 end;
 
@@ -621,7 +628,7 @@ begin
        begin
         Q:=FileObject.SubElements[I];
         if Q is QTexture then
-         case QTexture(Q).NeededGame of       
+         case QTexture(Q).NeededGame of
           mjNotQuake2: Include(Modes, False);
           mjQuake2: Include(Modes, True);
          end;

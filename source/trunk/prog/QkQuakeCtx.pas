@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -178,26 +181,29 @@ var
 begin
  if QuakeContext=Nil then
   begin
-   Addons:=MakeAddOnsList; try
-   QuakeContext:=TQList.Create;
-   Addons.FindAllSubObjects('', QQuakeCtx, Nil, QuakeContext);
-   for I:=QuakeContext.Count-1 downto 0 do
-    begin
-     Q:=QuakeContext[I];
-     Q.Acces;
-     if not GameModeOk((Q as QQuakeCtx).ObjectGameCode) then
-      begin
-       while (Q<>Nil) and (Q.Flags and ofFileLink = 0) do
-        Q:=Q.FParent;
-       if (Q=Nil) or not (Q is QFileObject) then
-        S:=LoadStr1(5552)
-       else
-        S:=QFileObject(Q).Filename;
-       GlobalWarning(FmtLoadStr1(5582, [S, SetupGameSet.Name, QuakeContext[I].Specifics.Values['Game']]));
-       QuakeContext.Delete(I);
-      end;
-    end;
-   finally Addons.AddRef(-1); end;
+   Addons:=MakeAddOnsList;
+   try
+    QuakeContext:=TQList.Create;
+    Addons.FindAllSubObjects('', QQuakeCtx, Nil, QuakeContext);
+    for I:=QuakeContext.Count-1 downto 0 do
+     begin
+      Q:=QuakeContext[I];
+      Q.Acces;
+      if not GameModeOk((Q as QQuakeCtx).ObjectGameCode) then
+       begin
+        while (Q<>Nil) and (Q.Flags and ofFileLink = 0) do
+         Q:=Q.FParent;
+        if (Q=Nil) or not (Q is QFileObject) then
+         S:=LoadStr1(5552)
+        else
+         S:=QFileObject(Q).Filename;
+        GlobalWarning(FmtLoadStr1(5582, [S, SetupGameSet.Name, QuakeContext[I].Specifics.Values['Game']]));
+        QuakeContext.Delete(I);
+       end;
+     end;
+   finally
+    Addons.AddRef(-1);
+   end;
   end;
  GetQuakeContext:=QuakeContext;
 end;
