@@ -1,3 +1,9 @@
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+
+}
 unit SyntaxMemo;
 
 interface
