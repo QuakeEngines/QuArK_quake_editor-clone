@@ -23,6 +23,16 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.10  2003/01/01 05:09:59  tiglari
+fix Retourner_leavetex
+
+Revision 1.56.2.9  2002/12/31 01:25:17  tiglari
+Get/SetThreePointsT so that they don't use LoadData and thereby cause
+ exceptions with invalid poly's
+
+Revision 1.56.2.8  2002/12/29 04:15:55  tiglari
+declaration for gethreepointsusertexnorecenter
+
 Revision 1.56.2.7  2002/12/29 02:56:42  tiglari
 add norecenter version of getthreepointsusertex, with threepoints method option
  (2nd go at suppressing centering when needed)
@@ -396,8 +406,9 @@ type
                function GetThreePointsT(var V1, V2, V3: TVect) : Boolean;
                function GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
                procedure SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
-               function GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;              function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;             function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                function SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function SetFlipTex(var TexV: array of Single) : boolean;
                procedure RevertToEnhTex;
                procedure SimulateEnhTex(var V1, V2, V3: TVect; var Mirror: boolean);
                function LoadData : Boolean;
@@ -3632,11 +3643,12 @@ end;
 function TFace.GetThreePointsT(var V1, V2, V3: TVect) : boolean;
 var
   TexV: array[1..6] of Single;
-  P0, P1, P2, T1, T2, T3, TexS, TexT, V : TVect;
+  P0, P1, P2, T1, T2, T3, TexS, TexT, V, Norm : TVect;
 begin
-  if LoadData and GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
+  if GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
   begin
-      GetAxisBase(Normale, TexS, TexT);
+      Norm:=Cross(VecDiff(P1,P0),VecDiff(P2,P0));
+      GetAxisBase(Norm, TexS, TexT);
       T1:=MakeVect(TexV[1], TexV[2], 0);
       T2:=MakeVect(TexV[3], TexV[4], 0);
       T3:=MakeVect(TexV[5], TexV[6], 0);
@@ -3652,10 +3664,29 @@ begin
     Result:=GetThreePoints(V1, V2, V3);
 end;
 
+function TFace.SetFlipTex(var TexV: array of Single) : boolean;
+var
+  P0, P1, P2, T1, T2, T3, TexS, TexT, V, MNorm, V1, V2, V3 : TVect;
+begin
+  if GetThreepoints(P0, P1, P2) then
+  begin
+      MNorm :=VecScale(-1, Cross(VecDiff(P1,P0), VecDiff(P2, P0)));
+      GetAxisBase(MNorm, TexS, TexT);
+      T1:=MakeVect(TexV[1], TexV[2], 0);
+      T2:=MakeVect(TexV[3], TexV[4], 0);
+      T3:=MakeVect(TexV[5], TexV[6], 0);
+      V1:=Tex2FaceCoords(T1, P0, TexS, TexT);
+      V2:=Tex2FaceCoords(T2, P0, TexS, TexT);
+      V3:=Tex2FaceCoords(T3, P0, TexS, TexT);
+      SetThreePointsT(V1, V2, V3);
+  end;
+  Result:=true;
+end;
+
 { sets the tv specific }
 procedure TFace.SetThreePointsT(const V1, V2, V3: TVect);
 var
-  TexS, TexT, P0, P1, P2, T1, T2, T3, T : TVect;
+  TexS, TexT, P0, P1, P2, T1, T2, T3, T, Norm : TVect;
   V: array[1..6] of Single;
 begin
 (*
@@ -3664,9 +3695,10 @@ begin
  else
   SetThreePoints(V1, V2, V3);
 *)
-  if Loaddata and GetThreePoints(P0, P1, P2) then
+  if GetThreePoints(P0, P1, P2) then
   begin
-    GetAxisBase(Normale,TexS,TexT);
+    Norm:=Cross(VecDiff(P1,P0), VecDiff(P2,P0));
+    GetAxisBase(Norm,TexS,TexT);
     T1:=CoordShift(V1, P0, texS, texT);
     T2:=CoordShift(V2, P0, texS, texT);
     T3:=CoordShift(V3, P0, texS, texT);
@@ -4977,6 +5009,8 @@ end;
 function TFace.Retourner_leavetex : Boolean;
 var
  V1, V2, V3 : TVect;
+ TexV: array[1..6] of Single;
+ Tv : boolean;
 begin
  Result:=GetThreePoints(V1, V2, V3);
  if Result then
