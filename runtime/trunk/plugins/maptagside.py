@@ -50,6 +50,7 @@ import quarkpy.mapbtns
 from quarkpy.maputils import *
 from tagging import *
 
+import maptagpoint
 
 # A lot of recent code is piled up at the front.
 #  All this needs to be broken up into separate files!!
@@ -1674,7 +1675,7 @@ quarkpy.maphandles.VertexHandle.menu = tagvertmenu
 def backmenu(editor, view=None, origin=None, oldbackmenu = quarkpy.mapmenus.BackgroundMenu):
   menu = oldbackmenu(editor, view, origin)
   if origin is not None:
-    item = tagpointitem(editor, editor.aligntogrid(origin))
+    item = maptagpoint.tagpointitem(editor, editor.aligntogrid(origin))
     for test in menu:
       if hasattr(test, "origin"):
         i = menu.index(test)+1
@@ -1880,6 +1881,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2000/07/24 09:12:49  tiglari
+#Put texture-wrap & projection into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
+#
 #Revision 1.6  2000/07/23 08:35:12  tiglari
 #tag point functions removed, projection of texture from tagged corner bezier point added (to projecttex(editor, o))
 #
