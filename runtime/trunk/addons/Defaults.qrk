@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.233  2004/12/22 11:37:40  rowdy
+//Rowdy - first pass of support for Doom 3
+//
 //Revision 1.232  2004/12/03 10:44:49  alexander
 //solved conflict
 //added mp, singleplayer, and cs options to form
@@ -1052,6 +1055,74 @@ QQRKSRC1
         Console = "1"
         Form = "GameCrystalSpace"
         PlayerClass = "X"
+      }
+
+      Doom 3:config =
+      {
+        Game = "Doom 3"
+        Code = "j" // Hardcoded value in Setup.PAS
+        Program = "Doom3.exe +set sv_pure 0"
+
+        Directory = "\Doom3"
+        CheckDirectory = "DOOM3.EXE"
+
+        CD = ""
+        CDDir = "\Doom3\base"
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat = "Brush Primitives"
+        StupidBuildToolKludge = "1" //those guys should get shot for that
+        AlwaysWriteThreeFields = "1"
+        SupportsBrushPrim = "1"
+        BuildPgm1  = "Doom3.exe"
+        //BuildArgs1 = "-moddir .."
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        //BuildPgm2  = "Q3MAP.EXE"
+        //BuildArgs2 = "-vis -saveprt"
+        //BuildPgm3  = "Q3MAP.EXE"
+        //BuildArgs3 = "-light"
+        //BuildPgm4  = "BSPC.EXE"
+        //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+        //BuildCheck4= "+AAS"
+
+        TexturesPath = "textures/"
+        ShadersPath = "materials/"
+        MaterialsPath = "materials/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "base_wall/a_sopanel1_d01b"
+        DefaultTextureTrigger = "common/trigger"
+        //DefaultTextureOrigin = "common/origin"
+        DefaultTextureClip = "common/clip"
+        DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "materials/quark.mtr"  // TextureMaterials?
+
+        BaseDir = "base"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
+        AddOns = "DataD3.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk4"
+        PakFormat = "*.PK4"
+        Console = "1"
+        Form = "GameDoom3"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
 
       Genesis3D:config =
@@ -2196,74 +2267,6 @@ QQRKSRC1
         PakFormat = "*.PK3"
         Console = "1"
         Form = "GameWildWest"
-        LightFactor = '0.9'
-        3DLight = '512'
-        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-      }
-
-      Doom 3:config =
-      {
-        Game = "Doom 3"
-        Code = "j" // Hardcoded value in Setup.PAS
-        Program = "Doom3.exe +set sv_pure 0"
-
-        Directory = "\Doom3"
-        CheckDirectory = "DOOM3.EXE"
-
-        CD = ""
-        CDDir = "\Doom3\base"
-
-        MapLimit = '65536 65536 65536'
-
-        MapCommentsPrefix = "//"
-        OutputMapFormat = "Brush Primitives"
-        StupidBuildToolKludge = "1" //those guys should get shot for that
-        AlwaysWriteThreeFields = "1"
-        SupportsBrushPrim = "1"
-        BuildPgm1  = "Doom3.exe"
-        //BuildArgs1 = "-moddir .."
-        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
-        //BuildPgm2  = "Q3MAP.EXE"
-        //BuildArgs2 = "-vis -saveprt"
-        //BuildPgm3  = "Q3MAP.EXE"
-        //BuildArgs3 = "-light"
-        //BuildPgm4  = "BSPC.EXE"
-        //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-        //BuildCheck4= "+AAS"
-
-        TexturesPath = "textures/"
-        ShadersPath = "materials/"
-        MaterialsPath = "materials/"
-        Q2TexFlags = "1"
-
-        BezierPatchSupport = "1" // this game supports bezier-patches
-        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
-
-        DefaultTexture = "base_wall/a_sopanel1_d01b"
-        DefaultTextureTrigger = "common/trigger"
-        //DefaultTextureOrigin = "common/origin"
-        DefaultTextureClip = "common/clip"
-        DefaultTextureCaulk = "common/caulk"
-        DefaultTextureScale = "0.5"
-
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
-        TextureShaders = "materials/quark.mtr"  // TextureMaterials?
-
-        BaseDir = "base"
-        tmpQuArK = "tmpQuArK"
-
-        Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +devmap %s"
-        //AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
-        AddOns = "DataD3.qrk"
-        AlwaysPak = ""
-        PakExt = ".pk4"
-        PakFormat = "*.PK4"
-        Console = "1"
-        Form = "GameDoom3"
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
