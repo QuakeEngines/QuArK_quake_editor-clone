@@ -23,6 +23,7 @@ Info = {
 import math
 import quarkx
 from quarkpy.maputils import *
+from quarkpy import icons
 import quarkpy.qmenu
 import quarkpy.qtoolbar
 import quarkpy.qhandles
@@ -94,7 +95,7 @@ class Orientation(quarkpy.qmacro.dialogbox):
         self.face = None
         src = quarkx.newobj(":")
         quarkpy.qmacro.dialogbox.__init__(self, quarkx.clickform, src,
-          cancel = quarkpy.qtoolbar.button(self.close, "close this box", ico_editor, 0, "Close"))
+          cancel = quarkpy.qtoolbar.button(self.close, "close this box", icons.ico_editor, 0, "Close"))
         editor = mapeditor()
         if editor is None: return
         face = editor.layout.explorer.uniquesel
@@ -295,6 +296,9 @@ quarkpy.mapentities.FaceType.menu = newmenu
 #
 #
 # $Log$
+# Revision 1.5  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.4  2001/06/16 03:29:36  tiglari
 # add Txt="" to separators that need it
 #

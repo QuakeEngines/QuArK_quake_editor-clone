@@ -26,6 +26,7 @@ Info = {
 
 
 from quarkpy.maputils import *
+from quarkpy import icons
 import quarkpy.mapduplicator
 import quarkpy.maphandles
 import quarkpy.mapcommands
@@ -140,7 +141,7 @@ class SymXYZDuplicator(StandardDuplicator):
 class DiggingDuplicator(StandardDuplicator):
     "For what is a Digger rather than a Duplicator. (abstract)"
 
-    Icon = (ico_dict['ico_mapdups'], 1)
+    Icon = (icons.ico_dict['ico_mapdups'], 1)
 
     def readvalues(self):
         pass
@@ -307,6 +308,9 @@ quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCy
 #
 #
 # $Log$
+# Revision 1.11  2001/10/22 10:15:48  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.10  2001/09/23 07:00:34  tiglari
 # mitered edges for wall maker duplicator
 #

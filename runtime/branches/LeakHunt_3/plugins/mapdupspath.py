@@ -18,6 +18,7 @@ Info = {
 
 import quarkx
 from quarkpy.maputils import *
+from quarkpy import icons
 import plugins.deckerutils
 import quarkpy.mapduplicator
 import quarkpy.maphandles
@@ -469,7 +470,7 @@ class PathPointHandle(PathDuplicatorPointHandle):
 
 class PathDuplicatorPoint(DuplicatorManager):
 
-    Icon = (ico_dict['ico_mapdups'], 2)
+    Icon = (icons.ico_dict['ico_mapdups'], 2)
 
     def buildimages(self, singleimage=None):
         pass
@@ -853,6 +854,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.46  2001/10/22 10:15:48  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.45  2001/07/08 20:57:56  tiglari
 #change treatment of vertical 'level' segments
 #

@@ -22,6 +22,7 @@ Info = {
 
 
 import quarkx
+from quarkpy import icons
 import quarkpy.qtoolbar
 import quarkpy.qhandles
 from quarkpy.maputils import *
@@ -30,7 +31,7 @@ import quarkpy.maphandles
 import quarkpy.mapbtns
 
 
-ico_dict['ico_dragmodes'] = LoadIconSet1("mapdrm", 1.0)
+icons.ico_dict['ico_dragmodes'] = LoadIconSet1("mapdrm", 1.0)
 
 
 #
@@ -380,7 +381,7 @@ class DragModesBar(ToolBar):
         btns = []
         for i in range(len(DragModes)):
             obj, icon = DragModes[i]
-            btn = qtoolbar.button(selectmode, obj.Hint, ico_dict['ico_dragmodes'], icon)
+            btn = qtoolbar.button(selectmode, obj.Hint, icons.ico_dict['ico_dragmodes'], icon)
             btn.i = i
             btns.append(btn)
         i = quarkx.setupsubset(SS_MAP, "Building").getint("DragMode")
@@ -398,6 +399,9 @@ quarkpy.maptools.toolbars["tb_dragmodes"] = DragModesBar
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.6  2001/10/22 10:15:48  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.5  2001/04/15 22:48:17  tiglari
 # groups & brush entity selection in select everything mode (will be selected
 #  if all of their subitems are)

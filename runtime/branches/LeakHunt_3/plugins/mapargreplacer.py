@@ -14,11 +14,12 @@ Info = {
 }
 
 from quarkpy.maputils import *
+from quarkpy import icons
 import quarkpy.mapduplicator
 
 class ArgReplacer(quarkpy.mapduplicator.DuplicatorManager):
 
-    Icon = (ico_dict['ico_mapdups'], 2)
+    Icon = (icons.ico_dict['ico_mapdups'], 2)
 
     def filterspecs(self, specs):
         "Removes MACRO and ORIGIN if they exists in the dictspec.keys() array"
@@ -64,6 +65,9 @@ quarkpy.mapduplicator.DupCodes.update({
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.4  2001/10/22 10:21:59  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.3  2001/06/24 14:47:58  decker_dk
 # Can now also replace specific-names.
 #

@@ -12,7 +12,7 @@
 #
 #-------------------------------------------------------------------------------
 #
-#	$History: mapfindreptex $
+#       $History: mapfindreptex $
 #
 #-------------------------------------------------------------------------------
 
@@ -31,6 +31,7 @@ Info = {
 
 import quarkx
 import quarkpy.qmacro
+from quarkpy import icons
 import quarkpy.qtoolbar
 import quarkpy.mapsearch
 from quarkpy.maputils import *
@@ -82,60 +83,60 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
 
     def __init__(self, form, editor):
 
-	#
-	# General initialization of some local values
-	#
+        #
+        # General initialization of some local values
+        #
 
-	self .editor = editor
-	self .sellist = self .editor .visualselection ()
+        self .editor = editor
+        self .sellist = self .editor .visualselection ()
 
-	#
-	# Create the data source
-	#
+        #
+        # Create the data source
+        #
 
-	src = quarkx .newobj (":")
+        src = quarkx .newobj (":")
 
-	#
-	# Based on the textures in the selections, initialize the
-	# from and to textures
-	#
+        #
+        # Based on the textures in the selections, initialize the
+        # from and to textures
+        #
 
-	if len (self .sellist) == 0:
-	    texlist = quarkx .texturesof (editor .Root .findallsubitems ("", ':f'))
-	else:
-	    texlist = quarkx .texturesof (self .sellist);
-	if len (texlist) == 0:
-	    texlist .append (quarkx .setupsubset () ["DefaultTexture"])
-	src ["fromtex"] = texlist [0]
-	src ["totex"] = texlist [0]
+        if len (self .sellist) == 0:
+            texlist = quarkx .texturesof (editor .Root .findallsubitems ("", ':f'))
+        else:
+            texlist = quarkx .texturesof (self .sellist);
+        if len (texlist) == 0:
+            texlist .append (quarkx .setupsubset () ["DefaultTexture"])
+        src ["fromtex"] = texlist [0]
+        src ["totex"] = texlist [0]
 
-	#
-	# Based on the selection, populate the range combo box
-	#
+        #
+        # Based on the selection, populate the range combo box
+        #
 
-	if len (self .sellist) == 0:
-	    src ["scope"] = "W"
-	    src ["scope$Items"] = "Whole map"
-	    src ["scope$Values"] = "W"
-	else:
-	    src ["scope"] = "S"
-	    src ["scope$Items"] = "Selection\nWhole map"
-	    src ["scope$Values"] = "S\nW"
+        if len (self .sellist) == 0:
+            src ["scope"] = "W"
+            src ["scope$Items"] = "Whole map"
+            src ["scope$Values"] = "W"
+        else:
+            src ["scope"] = "S"
+            src ["scope$Items"] = "Selection\nWhole map"
+            src ["scope$Values"] = "S\nW"
 
-	#
-	# Create the dialog form and the buttons
-	#
+        #
+        # Create the dialog form and the buttons
+        #
 
         quarkpy.qmacro.dialogbox.__init__(self, form, src,
            close = quarkpy.qtoolbar.button(
               self.close,
               "close this box",
-              ico_editor, 0,
+              icons.ico_editor, 0,
               "Close"),
            ReplaceAll = quarkpy.qtoolbar.button(
               self.ReplaceAll,
               "replace all textures",
-              ico_editor, 2,
+              icons.ico_editor, 2,
               "Replace All"))
 
 
@@ -182,12 +183,12 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
             mb = MB_CANCEL
         result = quarkx .msgbox (txt, MT_INFORMATION, mb)
 
-	#
-	# commit or cancel the undo action
-	#
+        #
+        # commit or cancel the undo action
+        #
 
         if result == MR_OK:
-	    undo .ok (self .editor .Root, "replace textures")   # note: calling undo.ok() when nothing has actually been done is the same as calling undo.cancel()
+            undo .ok (self .editor .Root, "replace textures")   # note: calling undo.ok() when nothing has actually been done is the same as calling undo.cancel()
             #
             # Sorry, we have to close the dialog box, because the selection changed.
             # Allowing the user to make multiple replacements in the selection before committing them all
@@ -200,7 +201,7 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
 #
 # Function to start the replace dialog
 #
-	
+        
 def ReplaceTextClick (m):
     editor = mapeditor ()
     if editor is None: return
@@ -217,6 +218,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Replace textures", ReplaceTe
 #
 #
 # $Log$
+# Revision 1.5  2001/06/17 21:21:18  tiglari
+# re-fix button captions, there are tabs in this file, need to be cleared out
+#
 # Revision 1.3  2001/01/27 18:25:29  decker_dk
 # Renamed 'TextureDef' -> 'DefaultTexture'
 #

@@ -22,6 +22,7 @@ Info = {
 
 from quarkpy.qdictionnary import Strings
 import quarkpy.qhandles
+from quarkpy import icons
 import quarkpy.mapduplicator
 import quarkpy.maphandles
 import quarkpy.maputils
@@ -170,7 +171,7 @@ class TextureDlg (placepersistent_dialogbox):
            exit = quarkpy.qtoolbar.button(
             self.commit,
             "Commit your texture changes and return to regular editing\n (you can't just bail; instead, Undo your changes then commit)\n (if, in spite of my efforts, you find some way to close this box without hitting `commit', you will have made a mess.",
-            ico_editor, 0,
+            icons.ico_editor, 0,
             "Commit Texturing"))
 
     def commit(self, dlg):
@@ -2896,6 +2897,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.13  2001/07/09 09:49:41  tiglari
+#eliminate sidehandle in favor of using qedtor.orthogonalvect()
+#
 #Revision 1.12  2001/07/08 00:27:35  tiglari
 #'short' specific; fix angle-to-next and path-point dialog bugs
 #

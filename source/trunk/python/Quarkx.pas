@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/07/18 03:51:23  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+
 Revision 1.20  2001/06/13 22:58:25  aiv
 Moved 'Convert From' stuff to python code (plugin type)
 
@@ -634,6 +638,21 @@ begin
   EBackToPython;
   Result:=Nil;
  end;
+end;
+
+function xLoadImages2(self, args: PyObject) : PyObject; cdecl;
+begin
+  Result:=xLoadImages(self, args)
+end;
+
+function xLoadImages3(self, args: PyObject) : PyObject; cdecl;
+begin
+  Result:=xLoadImages(self, args)
+end;
+
+function xLoadImages4(self, args: PyObject) : PyObject; cdecl;
+begin
+  Result:=xLoadImages(self, args)
 end;
 
 function xExit(self, args: PyObject) : PyObject; cdecl;
@@ -2372,7 +2391,7 @@ begin
 end;{/AiV}
 
 const
- MethodTable: array[0..66] of TyMethodDef =
+ MethodTable: array[0..69] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2416,6 +2435,9 @@ const
    (ml_name: 'listfileext';     ml_meth: xListFileExt;    ml_flags: METH_VARARGS),
    (ml_name: 'filedialogbox';   ml_meth: xFileDialogBox;  ml_flags: METH_VARARGS),
    (ml_name: 'loadimages';      ml_meth: xLoadImages;     ml_flags: METH_VARARGS),
+   (ml_name: 'loadimages2';      ml_meth: xLoadImages2;     ml_flags: METH_VARARGS),
+   (ml_name: 'loadimages3';      ml_meth: xLoadImages3;     ml_flags: METH_VARARGS),
+   (ml_name: 'loadimages4';      ml_meth: xLoadImages3;     ml_flags: METH_VARARGS),
    (ml_name: 'reloadsetup';     ml_meth: xReloadSetup;    ml_flags: METH_VARARGS),
    (ml_name: 'screenrect';      ml_meth: xScreenRect;     ml_flags: METH_VARARGS),
    (ml_name: 'seticons';        ml_meth: xSetIcons;       ml_flags: METH_VARARGS),
