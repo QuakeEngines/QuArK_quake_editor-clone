@@ -44,7 +44,7 @@ class Page3D(MPPage):
         quarkpy.qhandles.z_recenter(self.mppview3d, list)
 
     def button(self):
-        pagebtn = qtoolbar.button(self.fill3dview, "3D view||3D view:\n\nThis displays a 3D texture view of the selected objects.\n\nSee the infobase for more detail.|intro.mapeditor.dataforms.html#3dview", ico_dict['ico_maped'], 21)
+        pagebtn = qtoolbar.button(self.fill3dview, "3D view||3D view:\n\nThis displays a 3D texture view of the selected objects.\n\nSee the infobase for more detail.", ico_dict['ico_maped'], 21, "3D view", infobaselink='intro.mapeditor.dataforms.html#3dview')
         pagebtn.pc = [self.bs_3Dview(self.panel)]
         return pagebtn
 
@@ -58,6 +58,9 @@ mppages.append(Page3D)
 #
 #
 # $Log$
+# Revision 1.5  2003/03/17 01:48:49  cdunde
+# Update hints and add infobase links where needed
+#
 # Revision 1.4  2001/10/22 10:14:25  tiglari
 # live pointer hunt, revise icon loading
 #

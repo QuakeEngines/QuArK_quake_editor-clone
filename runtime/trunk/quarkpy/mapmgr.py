@@ -208,13 +208,13 @@ class MapLayout(BaseLayout):
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
         thesepages = []
-        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.|intro.mapeditor.dataforms.html#specsargsview", ico_objects, iiEntity)
+        page1 = qtoolbar.button(self.filldataform, "Specifics/Args-view||Specifics/Args-view:\n\nThis view displays the general parameters for the selected object(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiEntity, "Specifics/Args-view", infobaselink='intro.mapeditor.dataforms.html#specsargsview')
         page1.pc = [self.bs_dataform(panel)]
         thesepages.append(page1)
-        page2 = qtoolbar.button(self.fillpolyform, "Polyhedron-view||Polyhedron-view:\n\nThis display shows the parameters about the selected polyhedron(s).\n\nSee the infobase for a more detailed description and use of this view display.|intro.mapeditor.dataforms.html#polyhedronview", ico_objects, iiPolyhedron)
+        page2 = qtoolbar.button(self.fillpolyform, "Polyhedron-view||Polyhedron-view:\n\nThis display shows the parameters about the selected polyhedron(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiPolyhedron, "Polyhedron-view", infobaselink='intro.mapeditor.dataforms.html#polyhedronview')
         page2.pc = [self.bs_polyform(panel)]
         thesepages.append(page2)
-        page3 = qtoolbar.button(self.fillfaceform, "Face-view||Face-view:\n\nThis display shows the parameters about the selected face(s).\n\nSee the infobase for a more detailed description and use of this view display.|intro.mapeditor.dataforms.html#faceview", ico_objects, iiFace)
+        page3 = qtoolbar.button(self.fillfaceform, "Face-view||Face-view:\n\nThis display shows the parameters about the selected face(s).\n\nSee the infobase for a more detailed description and use of this view display.", ico_objects, iiFace, "Face-view", infobaselink='intro.mapeditor.dataforms.html#faceview')
         page3.pc = [self.bs_faceform(panel)]
         page3.needangle = 1
         thesepages.append(page3)
@@ -868,6 +868,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.10  2003/03/17 01:51:13  cdunde
+#Update hints and add infobase links where needed
+#
 #Revision 1.9  2002/05/05 10:19:59  tiglari
 #Support for texture flag defaults in layout.loadtfflist (a long run for a shortish slide)
 #

@@ -368,7 +368,7 @@ class BaseLayout:
         self.explorer = panel.newexplorer()
         self.explorer.flags = EF_AUTOFOCUS
         self.explorer.hint = "Data displays||Data displays:\n\nThese are the various displays to help you build and organize your map.\n\nThere are five specific displays, they are:\n\nTree-view (hierarchy-view)\nSpecifics/Args-view\nPolyhedron-view\nFace-view\n3D-view\n\nFor a detailed description and use of these displays, see the infobase documents.|intro.mapeditor.dataforms.html"
-        page0 = qtoolbar.button(None, "Tree-view (hierarchy-view)||Tree-view (hierarchy-view):\n\nThis view displays a  list of everything in your map : entities, polyhedrons, groups, etc.\n\n You should consider it as the best way to organize your map so that you can easily find what you are looking for.\n\nUse groups (the button above) to organize your map.\nFor more information about the available object types, see the tutorials.\n\nAlso see the infobase for a more detailed description and use of this view display.|intro.mapeditor.dataforms.html#treeview", ico_maped, 8)
+        page0 = qtoolbar.button(None, "Tree-view (hierarchy-view)||Tree-view (hierarchy-view):\n\nThis view displays a  list of everything in your map : entities, polyhedrons, groups, etc.\n\n You should consider it as the best way to organize your map so that you can easily find what you are looking for.\n\nUse groups (the button above) to organize your map.\nFor more information about the available object types, see the tutorials.\n\nAlso see the infobase for a more detailed description and use of this view display.", ico_maped, 8, "Tree-view (hierarchy-view)", infobaselink='intro.mapeditor.dataforms.html#treeview')
         page0.pc = [self.explorer]
         plist, mppages = self.bs_additionalpages(panel)
         plist.insert(0, page0)
@@ -608,6 +608,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.11  2003/03/24 08:58:07  cdunde
+#To update info and link to infobase
+#
 #Revision 1.10  2003/03/21 05:57:05  cdunde
 #Update infobase and add links
 #
