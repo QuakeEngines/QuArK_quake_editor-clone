@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.150  2001/06/24 14:48:20  decker_dk
+//Added arg replacer
+//
 //Revision 1.149  2001/06/21 17:33:36  decker_dk
 //Added preliminary support for 6DX.
 //
@@ -359,7 +362,7 @@ QQRKSRC1
 //"C" code for circle-strafe selection added to map and model mouse modes
 //
 //Revision 1.58  2000/10/09 18:16:11  decker_dk
-//Build-Tool Controllers (and commented CrystalSpace)
+//Build-Tool Controllers (and commented Crystal Space)
 //
 //Revision 1.57  2000/09/25 00:09:28  alexander
 //set name
@@ -2620,13 +2623,13 @@ QQRKSRC1
       Program: =
       {
         Typ = "C"
-        Txt = "CrystalSpace command-line"
+        Txt = "Crystal Space command-line"
         Items = "WalkTest.EXE"
         t_ProgramHint=!
       }
       Directory: =
       {
-        Txt = "Directory of CrystalSpace"
+        Txt = "Directory of Crystal Space"
         Typ = "ED"
         Hint = "Path to the game executable"
         CheckFile = ""
@@ -2640,7 +2643,7 @@ QQRKSRC1
          $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
          $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
          $77CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = { Typ = "M" Msg = "GAMc" } // switches to CrystalSpace (cmd=GAM, game=c)
+        cmd:macro = { Typ = "M" Msg = "GAMc" } // switches to Crystal Space (cmd=GAM, game=c)
         cmd:macro = { Typ = "M" Msg = "ADDO" } // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -2652,7 +2655,7 @@ QQRKSRC1
          $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
          $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
          $AAA20006666666002A200666666666660006666666
-        cmd:macro = { Typ = "M" Msg = "GAMc" } // switches to CrystalSpace (cmd=GAM, game=c)
+        cmd:macro = { Typ = "M" Msg = "GAMc" } // switches to Crystal Space (cmd=GAM, game=c)
         cmd:macro = { Typ = "M" Msg = "OUTP" } // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}
