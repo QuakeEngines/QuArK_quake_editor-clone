@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2002/05/15 21:19:09  tiglari
+add prog/maperror to project
+
 Revision 1.18  2002/02/24 13:48:46  decker_dk
 Added QkPNG.PAS and QkTribes2.PAS
 
@@ -33,12 +36,13 @@ Added revision-log.
 }
 
 program QuArK;
+{%File '..\Runtime\addons\Defaults.qrk'}
 
 uses
   MemTester in 'Prog\MemTester.pas',
   Forms,
   QkObjects in 'Prog\QkObjects.pas',
-  Qk1 in 'Prog\Qk1.pas' {Form1},
+  Qk1 in 'Prog\Qk1.pas' {g_Form1},
   QkExplorer in 'Prog\QkExplorer.pas',
   QkGroup in 'Prog\QkGroup.pas' {FQGroup},
   QkUnknown in 'Prog\QkUnknown.pas' {FQUnknown},
@@ -177,14 +181,16 @@ uses
   QkFormCfg in 'prog\QkFormCfg.pas',
   QkPNG in 'prog\QkPng.pas',
   MapError in 'prog\MapError.pas',
-  QkTribes2 in 'prog\QkTribes2.pas';
+  QkTribes2 in 'prog\QkTribes2.pas',
+  JPEGLib in 'components\JPEG\jpeglib.pas',
+  JmoreCfg in 'components\jpeg\JMORECFG.PAS';
 
 {$R *.RES}
 
 begin
   Application.Initialize;
   Application.Title:='Quake Army Knife';
-  Application.CreateForm(TForm1, g_Form1);
+  Application.CreateForm(Tg_Form1, g_Form1);
   Application.Run;
 
 (* In case of compile error  "Missing $ENDIF",
