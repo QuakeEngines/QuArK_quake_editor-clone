@@ -1,4 +1,24 @@
                           QuArK 6.3d
+
+                         
+                         Dec 25, 2002
+                         
+                         
+ Installation and Use:
+ 
+   * You must have either the 'Minipy' installed, or Python 1.5.2.
+   
+   * After clicking on quark.exe, select the game you want to edit from
+      the 'games' menu, then 'configure' to set the paths to the game
+      directory and the location of the build-tools.
+      
+   * Q3-engine games (Q3A, Elite Force, RCTW, JKII) require that
+      GtkRadiant or the 'official' tools be installed; for other games
+      there are various options, as discussed on the QuArK site
+      http://www.planetquake.com/quark
+      
+   * See the QuArK infobase (on the QuArK site) for more details.
+   
                          
  Real and Possible Unresolved Issues (from QuArK forums, June-Sep)
 
