@@ -15,11 +15,15 @@ for wrapping a texture around a vertical edge, but would work
 out for say an obelisk.
 
 <LI>Wrap texture around pillar - Tag a face that's the side of
-a pillar, then select the one next to it.  The texture on the
-tagged face will be wrapped all the way around the pillar, in
-the direction of the pillar, and scaled to fit seamlessly.
-This only works if the edges where the faces to be wrapped around
-are all paralell (the whole pillar can however be at a slant).
+a pillar, then select the one next to it. Bring up the Texture Wrap
+Multiplier. Set the number of times the texture is to be repeated
+as it is wrapped and <u><b>do not</b></u> close the multiplier
+window. Reselect the face next to the tagged one and activate the
+Around pillar function.  The texture on the tagged face will be
+wrapped all the way around the pillar, in the direction of the
+pillar, and scaled to fit seamlessly. This only works if the edges
+where the faces to be wrapped around are all paralell
+(the whole pillar can however be at a slant).
 When the operation can't be performed, the item is disabled.
 
 <LI>Fit texture across tagged - this is a bit like the pillar wrap,
