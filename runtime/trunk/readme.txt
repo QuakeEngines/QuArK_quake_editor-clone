@@ -1,6 +1,20 @@
 
              QuArK Snapshot 052101 
 
+                patch 1 - 052401
+                
+                
+ Changes from 052101
+  *corrections to the 'vertex movement' plugin (this is
+    still basically experimental)
+  *new 3 point plane stuff:
+    a) introduce one from New Map Items|tools, drag
+         the handles around and tag it, the glue, cut
+         etc.
+    b) use tag plane command after tagging an edge
+                
+
+
  Changes from 050701:
 
   *Bsp opening bug in 050701 fixed
