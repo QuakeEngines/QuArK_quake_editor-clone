@@ -23,9 +23,6 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.35  2001/07/19 02:21:40  tiglari
-Hmf (hierarchical map format for 6dx) added
-
 Revision 1.34  2001/06/05 18:39:33  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -152,21 +149,23 @@ type
           class function TypeInfo: String; override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
- QMapFile = class(QMap)
+ QBaseMapFile = class(QMap)
             protected
               procedure LoadFile(F: TStream; FSize: Integer); override;
               procedure SaveFile(Info: TInfoEnreg1); override;
-            public
-              class function TypeInfo: String; override;
-              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
             end;
 
-  QHmfFile = class (QMapFile)
-            public
-              function TestConversionType(I: Integer) : QFileObjectClass; override;
-              class function TypeInfo: String; override;
-              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-            end;
+ QMapFile = class(QBaseMapFile)
+        public
+          class function TypeInfo: String; override;
+          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+         end;
+
+ QHmfFile = class(QBaseMapFile)
+        public
+          class function TypeInfo: String; override;
+          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+         end;
 
   TFQMap = class(TQForm1)
     Panel2: TPanel;
@@ -233,8 +232,10 @@ function QMap.TestConversionType(I: Integer) : QFileObjectClass;
 begin
  case I of
   1: Result:=QQkm;
-  2: Result:=QMapFile;
-  3: Result:=QHmfFile;
+  2: if CharModeJeu=mj6DX then
+       Result:=QHmfFile
+         else
+       Result:=QMapFile;
  else Result:=Nil;
  end;
 end;
@@ -1398,8 +1399,7 @@ begin
     GlobalWarning(FmtLoadStr1(256, [InvPoly]));
 end;
 
-
-  {------------------------}
+ {------------------------}
 
 class function QHmfFile.TypeInfo;
 begin
@@ -1413,16 +1413,6 @@ begin
  Info.FileExt:=808;
 end;
 
-function QHmfFile.TestConversionType(I: Integer) : QFileObjectClass;
-begin
- case I of
-  1: Result:=QQkm;
-  2: Result:=QHmfFile;
- else Result:=Nil;
- end;
-end;
-
-
  {------------------------}
 
 class function QMapFile.TypeInfo;
@@ -1434,10 +1424,10 @@ class procedure QMapFile.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
  Info.FileObjectDescriptionText:=LoadStr1(5142);
- Info.FileExt:=784
+ Info.FileExt:=784;
 end;
 
-procedure QMapFile.LoadFile(F: TStream; FSize: Integer);
+procedure QBaseMapFile.LoadFile(F: TStream; FSize: Integer);
 var
  Racine: TTreeMapBrush;
  ModeJeu: Char;
@@ -1463,7 +1453,7 @@ begin
  end;
 end;
 
-procedure QMapFile.SaveFile(Info: TInfoEnreg1);
+procedure QBaseMapFile.SaveFile(Info: TInfoEnreg1);
 var
  Dest, HxStrings: TStringList;
  Racine: QObject;
