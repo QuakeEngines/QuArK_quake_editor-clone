@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/06/05 18:38:28  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.15  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -260,7 +263,7 @@ begin
       if S='' then
        Source:=Nil
       else
-       Source:=FindIncludeData1(FSrcObj, S);
+       Source:=FindIncludeData1(FSrcObj, S, False);
       Source.AddRef(+1); try
       if (Source=Nil) or (Source.SubElements.Count=0) then
        L.Add(QInternal.Create('', Nil))
@@ -1060,7 +1063,8 @@ begin
    S:=Specifics.Values['Form'];
    if S<>'' then
     begin
-     Q:=FindIncludeData1(FOriginalForm, '('+S+')');
+     {Q:=FindIncludeData1(FOriginalForm, '('+S+')');}
+     Q:=FindIncludeData1(FOriginalForm, S, True);
      Q.AddRef(+1); try
      if (Q=Nil) or (Q.SubElements.Count=0) or not (Q.SubElements[0] is QFormCfg) then
       Raise Exception.CreateResFmt(5631, [S]);
@@ -1688,6 +1692,17 @@ begin
         HintMsg:=Values['Hint'];
         if HintMsg<>'' then
          HintMsg:=Format1str(HintPrefix+HintMsg, Spec+'$Hint');
+{Decker}
+        {Decker 2001-06-14
+        - Reason for these extra lines: I was sick and tired of always specifying
+          TXT="&" for each and every specific in .QRK files containing entities.
+        - Now I've turned it around: If there are no 'TXT', then use default;
+          which is "use the specific-name as caption-text". So if you don't want
+          the default, you need to write TXT="" (e.g. set TXT to an empty string) }
+        if (IndexOfName('Txt') = -1) then
+          S:='&E'
+        else
+{/Decker}
         S:=Values['Txt'];
         if S<>'' then
          begin
@@ -2053,7 +2068,7 @@ begin
                  Spec:=Values['Image'];
                  if Spec<>'' then
                   begin
-                   Q:=FindIncludeData1(Form.SubElements[I], Spec);
+                   Q:=FindIncludeData1(Form.SubElements[I], Spec, False);
                    Q.AddRef(+1); try
                    if Q<>Nil then
                     if (Q.SubElements.Count>0) and (Q.SubElements[0] is QImages) then
