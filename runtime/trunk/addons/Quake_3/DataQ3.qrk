@@ -26,10 +26,16 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/02/15 09:49:05  maleficus
+//Items show models, some more help info. Misc cleanup.
+//
 //Revision 1.2  2001/02/13 18:11:29  maleficus
 //All item entities show models now! More help info. Some cleanup.
 //
 //$Log$
+//Revision 1.2  2001/02/15 09:49:05  maleficus
+//Items show models, some more help info. Misc cleanup.
+//
 //Revision 1.1  2001/02/11 11:09:59  decker_dk
 //Moved from addons directory
 //
@@ -7094,7 +7100,13 @@ QQRKSRC1
     {
       Help = "This is where a player spawns into the game at."
       t_player_size = !
-	mdl = "models/players/sarge/lower.md3"
+	mdl = "models/players/sarge/upper.md3"
+      md3_autolink = "1"
+      :u_torso = "Frame 125"
+      :u_rshoulder = "Frame 125"
+      :l_legs = "Frame 170"
+      :h_cigar = "Frame 1"
+      :h_head = "Frame 1"
       target: =
       {
         Txt = "&"
