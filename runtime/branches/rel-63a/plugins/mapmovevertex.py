@@ -269,7 +269,7 @@ def moveFaces(faces, mvtx, delta, poly, locklist, freezelist, sloppy=None):
         if len(facelocked) == 0:
             proj = delta*norm
             newface.translate(proj*norm)
-            debug('translated '+newface.shortname)    
+#            debug('translated '+newface.shortname)    
         if len(facelocked) == 1:
             #
             # this autolock stuff isn't working right so its
@@ -307,7 +307,7 @@ def moveFaces(faces, mvtx, delta, poly, locklist, freezelist, sloppy=None):
                 rotateFace(newface, mvtx, delta, pivot, pivot+perp)
         if len(facelocked) == 2:
             rotateFace(newface, mvtx, delta, facelocked[0], facelocked[1])
-            debug('2-rotated '+newface.shortname)
+#            debug('2-rotated '+newface.shortname)
         if len(facelocked) > 2:
             if sloppy:
                 continue
@@ -890,6 +890,9 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.6  2002/04/01 08:30:05  tiglari
+# shift out the parentpopup menu stuff (to quarkpy.guiutils)
+#
 # Revision 1.5  2002/03/30 09:31:14  tiglari
 # Add 'move containing' item to the vertex RMB that moves a containing
 #   object so that the vertex becomes on-grid.

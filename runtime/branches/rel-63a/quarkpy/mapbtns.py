@@ -548,7 +548,7 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
                 new.translate(offset)     # offset the objects
             if matrix:
                 if direct:
-                    debug('applylinear')
+#                    debug('applylinear')
                     import mapduplicator
                     mapduplicator.DupManager(new).applylinear(matrix, 1)
                 else:
@@ -699,6 +699,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.13  2001/08/23 22:11:01  tiglari
+#usercenters now move when higher groups are rotated etc.
+#
 #Revision 1.12  2001/04/17 23:29:07  tiglari
 #texture-rescaling bug fix (fixedscale="1" added to objects when they're
 #dragged to the panel, removed when inserted to the map, blocks

@@ -869,11 +869,11 @@ def AlignTexClick(m):
   editor.invalidateviews()
   ActionString = "wrap texture from tagged"
   undo = quarkx.action()
-  debug('what abut')
+#  debug('what abut')
   if m.abuttype == 1:
     newside = wraptex(tagged, side)
   else:
-    debug('abut 0')
+#    debug('abut 0')
     newside=side.copy()
     newside = projecttexfrom(tagged, newside)
   undo.exchange(side, newside)
@@ -1811,6 +1811,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20  2002/03/30 06:33:33  tiglari
+#improve F1 help for texture wrap multiplier (face RMB|Textures menu)
+#
 #Revision 1.19  2001/10/07 22:33:58  tiglari
 #None-returning function call fixed
 #

@@ -864,18 +864,18 @@ def invertFaceSelClick(m):
     if editor is None: return
     faces = filter(lambda x:x.type==':f', editor.layout.explorer.sellist)
     polys = []
-    debug('filtered')
+#    debug('filtered')
     for face in faces:
         for poly in face.faceof:
             if not poly in polys:
                 polys.append(poly)
-    debug('polys')
+#    debug('polys')
     newfaces=[]
     for poly in polys:
         for face in poly.faces:
             if not (face in newfaces or face in faces):
                 newfaces.append(face)
-    debug('faces')
+#    debug('faces')
     editor.layout.explorer.sellist=newfaces
     editor.invalidateviews()
     
@@ -947,7 +947,7 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
 #        popup.state=qmenu.normal
     stashItem.object = zoomItem.object = sel
     stashItem.state = zoomItem.state = qmenu.normal
-    debug('greetings mortals')
+#    debug('greetings mortals')
 #    if menrestsel.state != qmenu.checked:
 #        menrestsel.state=qmenu.normal
     if sel.type == ':f':
@@ -983,6 +983,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.18  2002/03/30 02:49:50  tiglari
+# fixed bug whereby selection menu wasn't enabling/disabling properly
+#
 # Revision 1.17  2001/08/28 22:50:24  tiglari
 # 'Invert face selection command' added
 #
