@@ -35,7 +35,7 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
         Txt = "reload:"
         Typ = "EP"
         DefExt = "py"
-        BasePath = "C:\quark\plugins"
+        BasePath = "%splugins"
         DirSep = "."
         CutPath = "C:\?\\"
         Hint = "Type in the name of the module (.py file),"$0D
@@ -50,7 +50,7 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
         cancel:py = {Txt="" }
 
     }
-    """
+    """%quarkx.exepath  # suggestion by tiglari(the quotes stay)
 
     #
     # __init__ initialize the object
@@ -91,7 +91,7 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
 
     def onclose(self, dlg):
         if self.src is None:
-#            quarkx.msgbox("Empty string does not name a module, done nothing", MT_ERROR, MB_OK)
+#            quarkx.msgbox("Empty string does not name a module, nothing done", MT_ERROR, MB_OK)
             qmacro.dialogbox.onclose(self, dlg)
             return
         quarkx.globalaccept()
@@ -108,7 +108,7 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
 def ReloadClick(m):
   def action(self):
     if self.src["module"] is None:
-      quarkx.msgbox("Empty string does not name a module, done nothing", MT_ERROR, MB_OK)
+      quarkx.msgbox("Empty string does not name a module, nothing done", MT_ERROR, MB_OK)
       return
     module = self.src["module"]
     quarkx.setupsubset(SS_MAP, "Options")["ReloadModule"] = module
@@ -132,6 +132,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.7  2003/05/13 20:33:29  cdunde
+# To add file browser and correct closing errors
+#
 # Revision 1.6  2003/05/11 16:03:20  cdunde
 # To correct cancel console error
 #
