@@ -17,15 +17,15 @@ QQRKSRC1
   }
   walltex:incl =
   {
-    tex = "brick/brickwall001a"
+    tex = "Brick/brickwall001a"
   }
   floortex:incl =
   {
-    tex = "stone/stonefloor011a"
+    tex = "Stone/stonefloor011a"
   }
-  ceiltex:incl =
+  skytex:incl =
   {
-    tex = "skybox/sky_wasteland02lf"
+    tex = "Tools/toolsskybox"
   }
   NewMap:incl =
   {
@@ -40,204 +40,240 @@ QQRKSRC1
       startdark = "0"
       message = ""
       chaptertitle = ""
-      Border walls:g =
+      border walls:g =
       {
-        East wall:p =
+        wall:p =
         {
-          west:f =
-          {
-            v = '256 0 272 256 -128 272 256 0 400'
-            tex = "brick/brickwall001a"
-          }
           east:f =
           {
-            v = '272 0 272 272 128 272 272 0 400'
-            tex = "brick/brickwall001a"
+            v = '288 -32 -32 288 96 -32 288 -32 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          south:f =
+          west:f =
           {
-            v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "brick/brickwall001a"
+            v = '256 -32 -32 256 -160 -32 256 -32 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           north:f =
           {
-            v = '432 192 272 304 192 272 432 192 400'
-            tex = "brick/brickwall001a"
+            v = '320 224 -32 192 224 -32 320 224 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          down:f =
+          south:f =
           {
-            v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "brick/brickwall001a"
+            v = '320 -224 -32 448 -224 -32 320 -224 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           up:f =
           {
-            v = '432 0 96 560 0 96 432 128 96'
-            tex = "brick/brickwall001a"
+            v = '320 -32 96 448 -32 96 320 96 96'
+            walltex = !
+            tv = '0 0 0 128 128 0'
+          }
+          down:f =
+          {
+            v = '320 -32 -96 448 -32 -96 320 -160 -96'
+            walltex = !
+            tv = '0 0 0 -128 -128 0'
           }
         }
-        West wall:p =
+        wall:p =
         {
-          west:f =
-          {
-            v = '-272 0 272 -272 -128 272 -272 0 400'
-            tex = "brick/brickwall001a"
-          }
           east:f =
           {
-            v = '-256 0 272 -256 128 272 -256 0 400'
-            tex = "brick/brickwall001a"
+            v = '-256 -32 -32 -256 96 -32 -256 -32 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          south:f =
+          west:f =
           {
-            v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "brick/brickwall001a"
+            v = '-288 -32 -32 -288 -160 -32 -288 -32 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           north:f =
           {
-            v = '432 192 272 304 192 272 432 192 400'
-            tex = "brick/brickwall001a"
+            v = '-224 224 -32 -352 224 -32 -224 224 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          down:f =
+          south:f =
           {
-            v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "brick/brickwall001a"
+            v = '-224 -224 -32 -96 -224 -32 -224 -224 96'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           up:f =
           {
-            v = '432 0 96 560 0 96 432 128 96'
-            tex = "brick/brickwall001a"
+            v = '-224 -32 96 -96 -32 96 -224 96 96'
+            walltex = !
+            tv = '0 0 0 128 128 0'
+          }
+          down:f =
+          {
+            v = '-224 -32 -96 -96 -32 -96 -224 -160 -96'
+            walltex = !
+            tv = '0 0 0 -128 -128 0'
           }
         }
-        North wall:p =
+        wall:p =
         {
-          west:f =
-          {
-            v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "brick/brickwall001a"
-          }
           east:f =
           {
-            v = '256 0 272 256 128 272 256 0 400'
-            tex = "brick/brickwall001a"
+            v = '256 160 0 256 288 0 256 160 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          south:f =
+          west:f =
           {
-            v = '432 192 272 560 192 272 432 192 400'
-            tex = "brick/brickwall001a"
+            v = '-256 160 0 -256 32 0 -256 160 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           north:f =
           {
-            v = '432 208 272 304 208 272 432 208 400'
-            tex = "brick/brickwall001a"
+            v = '-192 224 0 -320 224 0 -192 224 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          down:f =
+          south:f =
           {
-            v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "brick/brickwall001a"
+            v = '-192 192 0 -64 192 0 -192 192 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           up:f =
           {
-            v = '432 0 96 560 0 96 432 128 96'
-            tex = "brick/brickwall001a"
+            v = '-192 160 96 -64 160 96 -192 288 96'
+            walltex = !
+            tv = '0 0 0 128 128 0'
+          }
+          down:f =
+          {
+            v = '-192 160 -96 -64 160 -96 -192 32 -96'
+            walltex = !
+            tv = '0 0 0 -128 -128 0'
           }
         }
-        South wall:p =
+        wall:p =
         {
-          west:f =
-          {
-            v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "brick/brickwall001a"
-          }
           east:f =
           {
-            v = '256 0 272 256 128 272 256 0 400'
-            tex = "brick/brickwall001a"
+            v = '256 -256 0 256 -128 0 256 -256 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          south:f =
+          west:f =
           {
-            v = '432 -208 272 560 -208 272 432 -208 400'
-            tex = "brick/brickwall001a"
+            v = '-256 -256 0 -256 -384 0 -256 -256 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           north:f =
           {
-            v = '432 -192 272 304 -192 272 432 -192 400'
-            tex = "brick/brickwall001a"
+            v = '-192 -192 0 -320 -192 0 -192 -192 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
-          down:f =
+          south:f =
           {
-            v = '432 0 -96 560 0 -96 432 -128 -96'
-            tex = "brick/brickwall001a"
+            v = '-192 -224 0 -64 -224 0 -192 -224 128'
+            walltex = !
+            tv = '0 0 128 0 0 -128'
           }
           up:f =
           {
-            v = '432 0 96 560 0 96 432 128 96'
-            tex = "brick/brickwall001a"
+            v = '-192 -256 96 -64 -256 96 -192 -128 96'
+            walltex = !
+            tv = '0 0 0 128 128 0'
+          }
+          down:f =
+          {
+            v = '-192 -256 -96 -64 -256 -96 -192 -384 -96'
+            walltex = !
+            tv = '0 0 0 -128 -128 0'
           }
         }
-        Sky:p =
+        sky:p =
         {
-          west:f =
-          {
-            v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "skybox/sky_wasteland02lf"
-          }
           east:f =
           {
-            v = '256 0 272 256 128 272 256 0 400'
-            tex = "skybox/sky_wasteland02lf"
+            v = '288 -160 64 288 -32 64 288 -160 192'
+            skytex = !
+            tv = '0 0 128 0 0 -128'
           }
-          south:f =
+          west:f =
           {
-            v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "skybox/sky_wasteland02lf"
+            v = '-288 -160 64 -288 -288 64 -288 -160 192'
+            skytex = !
+            tv = '0 0 128 0 0 -128'
           }
           north:f =
           {
-            v = '432 192 272 304 192 272 432 192 400'
-            tex = "skybox/sky_wasteland02lf"
+            v = '-224 224 64 -352 224 64 -224 224 192'
+            skytex = !
+            tv = '0 0 128 0 0 -128'
           }
-          down:f =
+          south:f =
           {
-            v = '432 0 96 560 0 96 432 -128 96'
-            tex = "skybox/sky_wasteland02lf"
+            v = '-224 -224 64 -96 -224 64 -224 -224 192'
+            skytex = !
+            tv = '0 0 128 0 0 -128'
           }
           up:f =
           {
-            v = '432 0 112 560 0 112 432 128 112'
-            tex = "skybox/sky_wasteland02lf"
+            v = '-224 -160 128 -96 -160 128 -224 -32 128'
+            skytex = !
+            tv = '0 0 0 128 128 0'
+          }
+          down:f =
+          {
+            v = '-224 -160 96 -96 -160 96 -224 -288 96'
+            skytex = !
+            tv = '0 0 0 -128 -128 0'
           }
         }
-        Floor:p =
+        floor:p =
         {
-          west:f =
-          {
-            v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "stone/stonefloor011a"
-          }
           east:f =
           {
-            v = '256 0 272 256 128 272 256 0 400'
-            tex = "stone/stonefloor011a"
+            v = '288 -160 -160 288 -32 -160 288 -160 -32'
+            floortex = !
+            tv = '0 0 128 0 0 -128'
           }
-          south:f =
+          west:f =
           {
-            v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "stone/stonefloor011a"
+            v = '-288 -160 -160 -288 -288 -160 -288 -160 -32'
+            floortex = !
+            tv = '0 0 128 0 0 -128'
           }
           north:f =
           {
-            v = '432 192 272 304 192 272 432 192 400'
-            tex = "stone/stonefloor011a"
+            v = '-224 224 -160 -352 224 -160 -224 224 -32'
+            floortex = !
+            tv = '0 0 128 0 0 -128'
           }
-          down:f =
+          south:f =
           {
-            v = '432 0 -112 560 0 -112 432 -128 -112'
-            tex = "stone/stonefloor011a"
+            v = '-224 -224 -160 -96 -224 -160 -224 -224 -32'
+            floortex = !
+            tv = '0 0 128 0 0 -128'
           }
           up:f =
           {
-            v = '432 0 -96 560 0 -96 432 128 -96'
-            tex = "stone/stonefloor011a"
+            v = '-224 -160 -96 -96 -160 -96 -224 -32 -96'
+            floortex = !
+            tv = '0 0 0 128 128 0'
+          }
+          down:f =
+          {
+            v = '-224 -160 -128 -96 -160 -128 -224 -288 -128'
+            floortex = !
+            tv = '0 0 0 -128 -128 0'
           }
         }
       }
@@ -252,6 +288,6 @@ QQRKSRC1
   {
     Game = "Half-Life2"
     HTML = "help/index.html"
-    SFSkills = '256 512 1024 2048'
+
   }
 }
