@@ -82,7 +82,7 @@ class GameConsole(BatchConsole):
         dir = setup["Directory"]
         program = setup["Program"]
         if not dir or not program:
-            openconfigdlg(":")
+            quarkx.openconfigdlg(":")
             raise "Invalid configuration of the game executable"
 
         if map is self.DONT_RUN:
@@ -198,5 +198,8 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.4  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
