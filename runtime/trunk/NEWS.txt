@@ -13,6 +13,14 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
+ * [cdunde]: New HotKey (Tab) and Options menu function,
+      Rebuild 3D views (actually all views) in case of a lockup.
+      This clears up all textured views, may need multiple attempts.
+
+ * [cdunde]: New HotKey (Alt+A) for Options menu function,
+      Axis XYZ letter indicator in view windows.
+
+
 6.4.0 alpha 3
 =============
 
