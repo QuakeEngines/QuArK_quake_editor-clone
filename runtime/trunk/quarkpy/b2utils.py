@@ -188,6 +188,8 @@ def antidistort_columns(cp):
             sum = sum + dist
             lengths.append(sum)
 #        squawk('sum')
+        if sum == 0:
+            sum = 1
         #
         # now rearrange texture cp's of bcp
         #
@@ -213,6 +215,9 @@ def antidistort_rows(cp):
 #
 #
 #$Log$
+#Revision 1.7  2000/06/22 22:38:37  tiglari
+#added interpolateGrid (replacing an unused fn with a goofy name)
+#
 #Revision 1.6  2000/06/12 11:20:45  tiglari
 #Redid antidistort_columns, added antidistort_rows
 #
