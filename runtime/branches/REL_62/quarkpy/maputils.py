@@ -117,13 +117,10 @@ class MapUserDataPanel(UserDataPanel):
                     return
                 if choice == MR_YES:
                     list = [group2folder(list[0])]
-        debug('cheking')
         if list[0].type=='.qtxfolder':
-            debug(' folder')
             for item in list[0].subitems:
                 item["fixedscale"]="1"
         else:
-            debug(' list')
             for item in list:
                 item["fixedscale"]="1"
         
@@ -304,6 +301,9 @@ def read2vec(vals):
 #
 #
 #$Log$
+#Revision 1.10.2.1  2001/04/17 11:55:01  tiglari
+#rescaling of prefabs bug fix
+#
 #Revision 1.10  2001/03/18 23:59:44  tiglari
 #experimental merge
 #
