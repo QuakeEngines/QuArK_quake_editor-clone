@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.47  2000/08/21 20:58:21  aiv
+//Added Skin form for model editor
+//
 //Revision 1.46  2000/07/28 15:09:48  alexander
 //set snapshot name
 //
@@ -2657,12 +2660,12 @@ QQRKSRC1
       }
       SourceDir: = {
         Txt = "Source directory"
-        Typ = "ED"
+        Typ = "EDL" // "EDL" = Editfield-Directorypath-Lastfolderonly
         Hint = "QuArK will look there for files like textures, 3D models, etc. Must be the name of a subdirectory directly the game path"
       }
       GameDir: = {
         Txt = "Game directory"
-        Typ = "ED"
+        Typ = "EDL" // "EDL" = Editfield-Directorypath-Lastfolderonly
         Hint = "QuArK will run the game with this as '-game' or '+set game' command-line parameter"
       }
     }

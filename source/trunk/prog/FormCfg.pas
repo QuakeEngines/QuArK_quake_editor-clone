@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.8  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -1305,24 +1308,55 @@ begin
    Title:=Specifics.Values['Typ'];
    case Title[2] of
     'D': begin
-          Title:=Specifics.Values['Hint'];
-          if Title<>'' then
-           Title:=#13#10+Title;
-          Title:=Specifics.Values['Txt']+Title;
-          Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path,
-              Title, Specifics.Values['CheckFile']);
-          Title:=Specifics.Values['Append'];
-          if (Title<>'') and (Path<>'') then
+{Decker}
+          if (Length(Title)>2) and (Title[3]='L') then
+          begin
+           {Directory-Dialog, but only returns the _Last_ folder-name. Usefull for game-modification folders}
+           Title:=Specifics.Values['Hint'];
+           if Title<>'' then
+            Title:=#13#10+Title;
+           Title:=Specifics.Values['Txt']+Title;
+           Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path, Title, Specifics.Values['CheckFile']);
+           if Path<>'' then
            begin
             I:=Length(Path);
-            while (I>0) and (Path[I]<>'\') do Dec(I);
-            if (I=0) or (CompareText(Copy(Path, I+1, Length(Title)), Title)<>0) then
-             begin
-              if Path[Length(Path)]<>'\' then
-               Path:=Path+'\';
-              Path:=Path+Title;
-             end; 
+            {If ending with backslash, then remove it}
+            if Path[I]='\' then
+            begin
+             SetLength(Path, I-1);
+             Dec(I);
+            end;
+            {Find last backslash}
+            while (I>0) and (Path[I]<>'\') do
+             Dec(I);
+            {Extract the _Last_ folder-name in path, without prefixing backslash}
+            Path:=Copy(Path, I+1, 99);
            end;
+          end
+          else
+          begin
+{/Decker}
+           Title:=Specifics.Values['Hint'];
+           if Title<>'' then
+            Title:=#13#10+Title;
+           Title:=Specifics.Values['Txt']+Title;
+           Ok:=BrowseForFolderDlg(ValidParentForm(Self).Handle, Path,
+               Title, Specifics.Values['CheckFile']);
+           Title:=Specifics.Values['Append'];
+           if (Title<>'') and (Path<>'') then
+            begin
+             I:=Length(Path);
+             while (I>0) and (Path[I]<>'\') do Dec(I);
+             if (I=0) or (CompareText(Copy(Path, I+1, Length(Title)), Title)<>0) then
+              begin
+               if Path[Length(Path)]<>'\' then
+                Path:=Path+'\';
+               Path:=Path+Title;
+              end;
+            end;
+{Decker}
+          end;
+{/Decker}
          end;
     'T': begin
           if PopupForm<>Nil then
@@ -1347,7 +1381,8 @@ begin
           finally
            Free;
           end;
-   else Ok:=False;
+   else
+    Ok:=False;
    end;
    if Ok and (Path<>Path0) then
     begin
@@ -1744,7 +1779,7 @@ begin
                                  end;
                       end;
                      end;
-                   Spec:=IntToStr(BitValue); 
+                   Spec:=IntToStr(BitValue);
                   end;
                  case Found of
                   csDiffers: Spec:=LoadStr1(Differs);
@@ -2146,12 +2181,14 @@ begin
                    TEnterEdit(Edit).Text:=Spec;
                    TEnterEdit(Edit).OnKeyDown:=EditKeyDown;
                    TEnterEdit(Edit).OnChange:=EnterEditChange;
-                   TEnterEdit(Edit).OnEnter:=AnyControlEnter; 
+                   TEnterEdit(Edit).OnEnter:=AnyControlEnter;
                   end;
                  J:=W;
                  Btn:=Nil;
                  case S[2] of
-                  'D', 'T', 'P':
+                  'D', {Browse for directory}
+                  'T', {Browse for texture}
+                  'P': {Browse for file}
                   begin
                    Dec(J, 12);
                    Btn:=TToolbarButton97.Create(Self);
@@ -2162,7 +2199,7 @@ begin
                    Btn.Tag:=I+1;
                    Btn.OnClick:=BrowseButtonClick;
                   end;
-                  'U':
+                  'U': {spin button}
                    begin
                     Dec(J, 12);
                     UpDown := TSpinButton.Create(Self);
@@ -2174,7 +2211,7 @@ begin
                     UpDown.Tag := I+1;
                     Notify:=AcceptEdit;
                    end;
-                  'Q':
+                  'Q': {four-way button}
                    begin
                     Dec(J, 20);
                     Quad := TSmallArrowButtons.Create(Self);
@@ -2204,11 +2241,11 @@ begin
                        end;
                   'N': Notify:=AcceptSetName;
                   'D': begin
-                        Btn.Hint:='5403';
+                        Btn.Hint:='5403'; {Browse for directory}
                         Notify:=AcceptDirectory;
                        end;
-                  'T': Btn.Hint:='5404';
-                  'P': Btn.Hint:='5405';
+                  'T': Btn.Hint:='5404'; {Browse for texture}
+                  'P': Btn.Hint:='5405'; {Browse for file}
                  end;
                 {if Color=clBtnFace then
                   TEdit97(Edit).OnChange:=Notify
@@ -2470,7 +2507,7 @@ begin
                Form.SubElements.Delete(I);
                Continue;
               end;
-            end;  
+            end;
            Specifics.Values['Typ']:=S;
            S[1]:=' ';
            Specifics.Values['Txt']:=S+' ';
@@ -2786,7 +2823,7 @@ var
   function ReadValues(Mode: Boolean) : String;
   const
    Spc: array[Boolean] of String = ('Items', 'Values');
-  var 
+  var
    B: Boolean;
   begin
    for B:=False to True do
