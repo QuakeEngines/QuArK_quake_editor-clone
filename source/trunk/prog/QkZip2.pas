@@ -341,8 +341,6 @@ begin
        Repertoire.WriteBuffer(PChar(S)^,Length(S));
 
        Info.F.CopyFrom(T2,0);       {Write Actual File Date ( Compressed ) }
-       freemem(@cdir);
-       freemem(@lfs);
        T2.Free;
     end;
     ProgresTravail;
@@ -377,7 +375,7 @@ begin
         sig:=EOCD_HEADER;
         F.WriteBuffer(sig,4);
         F.WriteBuffer(eHeader,sizeof(TEndOfCentralDir));
-        freemem(@eHeader);
+//        freemem(@eHeader);
       finally
         Repertoire.Free;
       end;

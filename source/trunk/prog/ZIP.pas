@@ -24,15 +24,15 @@ uses QkFileObjects, ZipMstr, QkZip2;
 
 procedure CompressStream(var Input: TMemoryStream; var Output: TMemoryStream);
 var
-  TempZipName, TempFileName: String;
+  TempZipName, TempZipName2, TempFileName: String;
   ZM:TZipMaster;
   T:TFileStream;
   F:TLocalFileHeader;
   sig:Longint;
 begin
-  TempZipName:=MakeTempFileName(TagToDelete);
+  TempZipName2:=MakeTempFileName(TagToDelete);
   TempFileName:=MakeTempFileName(TagToDelete);
-  TempZipName:=ChangeFileExt(TempZipName,'.Zip');
+  TempZipName:=ChangeFileExt(TempZipName2,'.zip');
   Input.SaveToFile(TempFileName);
   ZM:=TZipMaster.Create(Nil);
   ZM.ZipFilename:=TempZipName;
@@ -49,8 +49,6 @@ begin
   T.Seek(F.FileName_Len+F.ExtraField_Len, soFromCurrent);
   Output.CopyFrom(T,F.Compressed);
   T.Free;
-  DeleteFile(@TempZipName);
-  DeleteFile(@TempFileName);
 end;
 
 end.

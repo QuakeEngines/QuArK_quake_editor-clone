@@ -873,7 +873,8 @@ var
    F: TSearchRec;
   begin
    List.Clear;
-   if FindFirst(TempPath+Tag+'*.TMP', faAnyFile, F) = 0 then
+   if (FindFirst(TempPath+Tag+'*.TMP', faAnyFile, F) = 0) or
+{AiV} (FindFirst(TempPath+Tag+'*.ZIP', faAnyFile, F) = 0) then
     repeat
      List.Add(F.Name);
     until FindNext(F)<>0;
