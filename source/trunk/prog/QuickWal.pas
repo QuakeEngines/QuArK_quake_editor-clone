@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/02/04 18:30:56  tiglari
+filter shaders by shaderlist.txt
+
 Revision 1.24  2001/02/04 02:46:13  tiglari
 fixed problem with shaderfile loading (blocking was wrong)
 
@@ -125,6 +128,10 @@ type
     DynamicCheckBox: TCheckBox;
     MergeCheckBox: TCheckBox;
     ShaderListCheckBox: TCheckBox;
+    FilterEdit: TEdit;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
     procedure CancelBtnClick(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
@@ -137,9 +144,9 @@ type
 
 function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 procedure BuildTextureFolders(Base: String; var Q: QObject);
-procedure BuildDynamicFolders(Base: String; var Q: QObject; merged, allshaders: boolean);
-procedure BuildStaticFolders(Base: String; var Q: QObject; merged, allshaders: boolean);
-procedure MergeTextureFolders(Base: String; var Q: QObject; allshaders: boolean);
+procedure BuildDynamicFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
+procedure BuildStaticFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
+procedure MergeTextureFolders(Base: String; var Q: QObject; allshaders: boolean; Filter: String);
 function GameShaderList : String;
 
 implementation
@@ -469,7 +476,7 @@ end;
 
 function LinkShaderFolder(var DestFolder: QObject; const Name, FolderName, Base: String; Loaded: QObject) : Boolean;
 var
-  I, P, Index: Integer;
+  I, Index: Integer;
   Folder, Q, Tex: QObject;
   TexName, ShortName: String;
   Path: TStringList;
@@ -558,16 +565,14 @@ end;
 
 function ParsePakShaderFiles(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject; ShaderList, FoundShaders: TStringList) : QObject;
 var
- I, Index: Integer;
- Q, Loaded: QObject;
+ I: Integer;
+ Q: QObject;
 begin
   Result:=DestFolder;
   Pak.Acces;
-  Index:=0;
   for I:=0 to Pak.SubElements.Count-1 do
   begin
     Q:=Pak.SubElements[I];
-    Index:=0;
     if (ShaderList.Count>0) and (ShaderList.IndexOf(Q.Name)<0) then
       continue;
     if FoundShaders.IndexOf(Q.Name)<0 then
@@ -688,7 +693,7 @@ end;
 function ParseShaderFiles(const Path, Base, FolderName: String; DestFolder:QObject; ShaderList, FoundShaders: TStringList) : QObject;
 var
  F: TSearchRec;
- I, FindError: Integer;
+ FindError: Integer;
  Loaded: QObject;
  ShortName : String;
 begin
@@ -744,6 +749,7 @@ var
  Q : QObject;
  J : Integer;
  merged, allshaders : Boolean;
+ Filter: String;
 begin
  ProgressIndicatorStart(0,0);
  try
@@ -752,12 +758,13 @@ begin
   if E<>Nil then
   begin
     Q:=nil;
+    Filter:=Trim(FilterEdit.Text);
     merged:=MergeCheckBox.state=cbChecked;
     allshaders:=ShaderListCheckBox.state=cbUnChecked;
     if DynamicCheckBox.State=cbChecked then
-      BuildDynamicFolders(Base, Q, merged, allshaders)
+      BuildDynamicFolders(Base, Q, merged, allshaders, Filter)
     else
-      BuildStaticFolders(Base, Q, merged, allshaders);
+      BuildStaticFolders(Base, Q, merged, allshaders, Filter);
     if Q=Nil then
      Raise EErrorFmt(5660, [S]);
      try
@@ -791,7 +798,7 @@ begin
     Parental.SubElements.Add(Folder);
 end;
 
-procedure BuildDynamicFolders(Base : String; var Q:QObject; merged, allshaders: Boolean);
+procedure BuildDynamicFolders(Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
 var
   OsF : QObject;
 begin
@@ -803,11 +810,15 @@ begin
     OsF.Specifics.Values['build']:='1';
   if allshaders then
     OsF.Specifics.Values['allshaders']:='1';
-  ShowMessage('To see the contents of the new dynamic folder, restart Quark')
-  {MergeTextureFolders(Base, OsF)}
+  if Filter<>'' then
+    OsF.Specifics.Values['filter']:=Filter;
+  if merged then
+    MergeTextureFolders(Base, OsF, allshaders, Filter)
+  else
+    BuildTextureFolders(Base, OsF)
 end;
 
-procedure BuildStaticFolders(Base : String; var Q:QObject; merged, allshaders: Boolean);
+procedure BuildStaticFolders(Base : String; var Q:QObject; merged, allshaders: Boolean; Filter: String);
 var
   TxF : QObject;
 begin
@@ -815,8 +826,10 @@ begin
   TxF:=QTextureList.Create(Base, Q);
   Q.SubElements.Add(TxF);
   TxF.Specifics.Values['path']:=Base;
+  if Filter<>'' then
+    TxF.Specifics.Values['filter']:=Filter;
   if merged then
-    MergeTextureFolders(Base, QObject(TxF), allshaders)
+    MergeTextureFolders(Base, QObject(TxF), allshaders, Filter)
   else
     BuildTextureFolders(Base, TxF)
 end;
@@ -926,7 +939,7 @@ end;
 
 
 
-procedure MergeTextureFolders(Base : String; var Q:QObject; allshaders: boolean);
+procedure MergeTextureFolders(Base : String; var Q:QObject; allshaders: boolean; Filter: String);
 var
   S, Path: String;
   SearchFolder : QObject;

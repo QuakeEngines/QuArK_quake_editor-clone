@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/02/04 18:30:56  tiglari
+filter shaders by shaderlist.txt
+
 Revision 1.8  2001/02/04 01:41:00  tiglari
 changed visibility of QOsFolder.ReadFolder
 
@@ -82,7 +85,7 @@ begin
   if Specifics.Values['build']='1' then
     BuildTextureFolders(Base, QObject(Self))
   else
-    MergeTextureFolders(Base, QObject(Self), allshaders);
+    MergeTextureFolders(Base, QObject(Self), allshaders, Specifics.Values['filter']);
 end;
 
 function QOsFolder.WriteSubElements;
