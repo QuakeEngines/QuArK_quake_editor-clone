@@ -409,11 +409,8 @@ class BezierType(EntityManager):
                 c1 = cpline[j]
                 # makes a list of couples (projected position, handle object)
                 h.append((view.proj(c1), mapbezier.CPHandle(c1, o, (i,j), colors[coli][colj]))) #DECKER
-                #DECKER - I have no idea how to make the below more "hardcore", so I resolve to basic addition coding
-                colj = colj + 1 #DECKER
-                if colj > 4: colj = 0 #DECKER
-            coli = coli + 1 #DECKER
-            if coli > 6: coli = 0 #DECKER
+                colj = (colj+1)%4
+            coli = (coli+1)%6
 
         h.sort()  # sort on Z-order, nearest first
         h.reverse()  # we have to draw back handles first, so reverse the order
@@ -584,6 +581,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2000/07/26 11:34:02  tiglari
+#changes for bezier menu reorganizations
+#
 #Revision 1.18  2000/07/24 12:48:39  tiglari
 #reorganization of bezier texture menu
 #
