@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/07/15 11:19:10  tiglari
+removed 5-vec stuff to qmath
+
 Revision 1.27  2001/06/05 18:38:06  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -1199,6 +1202,7 @@ var
  TriCount, I, PrevL, L: Integer;
  W1, W2, Normale: TVect;
  d0, d1, dv, f: TDouble;
+ backside: boolean;
 begin
  Triangles:=Nil; try
  TriCount:=ListBezierTriangles(Triangles, Nil{, lbtmFast});
@@ -1210,13 +1214,23 @@ begin
   begin
    PrevL:=2;
    L:=0;
+   backside:=false;
    repeat
     W1.X:=TriPtr^.PP[L].X-TriPtr^.PP[PrevL].X;
     W1.Y:=TriPtr^.PP[L].Y-TriPtr^.PP[PrevL].Y;
     W1.Z:=TriPtr^.PP[L].Z-TriPtr^.PP[PrevL].Z;
     Normale:=Cross(W1, W2);
     if Dot(TriPtr^.PP[L], Normale) <= Dot(g_DrawInfo.Clic, Normale) then
-     Break;
+    begin
+      if L=0 then
+          backside:=true
+      else
+      if not backside then
+        Break
+    end
+    else
+      if backside then
+        Break;
     PrevL:=L;
     Inc(L);
    until L=3;
