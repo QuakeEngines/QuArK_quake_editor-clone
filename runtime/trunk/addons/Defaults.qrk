@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.33  2000/06/13 12:48:34  tiglari
+//revised bevel & cap/arch forms
+//
 //Revision 1.32  2000/06/12 11:14:39  tiglari
 //Bevel duplicator form added
 //
@@ -2559,6 +2562,8 @@ QQRKSRC1
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
       open: = {Txt="&" Typ="X"
                Hint = "if chcked, front and back are open"}
+      faceonly: = {Txt="&" Typ="X"
+               Hint = "if checked, only the front and back faces are produced, no inner curve"}
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
@@ -2572,6 +2577,8 @@ QQRKSRC1
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
       open: = {Txt="&" Typ="X"
                Hint = "if checked, top and bottom are open"}
+      faceonly: = {Txt="&" Typ="X"
+               Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }

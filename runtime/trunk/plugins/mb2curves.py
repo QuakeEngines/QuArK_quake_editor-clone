@@ -279,7 +279,7 @@ def makeseam(row0, row2, texface, name):
      seam.cp = texcp_from_face(cp, texface, None)
      return seam
 
-def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
+def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
   # Make dictionary of faces u/d/f/b/r/l
@@ -353,9 +353,11 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
       bcp = transposecp(bcp)
   front = b2fromface(fcp, 'front', fdict["f"], editor)
   back = b2fromface(bcp,'back', fdict["b"], editor)
+  if faceonly:
+    return [front, back]
   return [inner, front, back]
 
-def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0):
+def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
   fdict = facedict(o)
@@ -428,6 +430,8 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0):
   if left:
     top.swapsides()
     bottom.swapsides()
+  if faceonly:
+    return [top, bottom]
   return [inner, top, bottom]
 
 class CapDuplicator(StandardDuplicator):
@@ -436,13 +440,13 @@ class CapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, open, thick = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"]
+    inverse, lower, open, thick, faceonly = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"], self.dup["faceonly"]
     if thick:
       thick, = thick
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return capimages(o, editor, inverse, lower, open, thick)
+        return capimages(o, editor, inverse, lower, open, thick, faceonly)
 
 
 class BevelDuplicator(StandardDuplicator):
@@ -451,14 +455,14 @@ class BevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, left, sidetex, open, thick = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "left", "sidetex", "open", "thick"))
+    inverse, left, sidetex, open, thick, faceonly = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "left", "sidetex", "open", "thick", "faceonly"))
     if thick:
       thick, = thick
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return bevelimages(o, editor, inverse, left, open, thick)
+        return bevelimages(o, editor, inverse, left, open, thick, faceonly)
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
@@ -589,6 +593,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2000/06/13 12:52:40  tiglari
+#Supported all the current arch/cap and bevel specifics
+#
 #Revision 1.6  2000/06/12 11:18:20  tiglari
 #Added bevel duplicator and round corner curves submenu items for Q3
 #
