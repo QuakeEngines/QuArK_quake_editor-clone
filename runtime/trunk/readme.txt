@@ -3,10 +3,11 @@
 
  Patch 4 updates
  
-  *beginning of 'linear' (matrix) specific editor.
+  *'linear' (matrix) specific editor.
     try out with New Copy One duplicator, push button
     to call up editing dialog.
-    
+  *matrix2 support changed to linear in radial dup.
+  *rotate/scale specifics removed from linearform
   *linear duplicators changed to so that linear
     mappings apply around 'usercenter' of each item
     in their group, rather than duplicator location
