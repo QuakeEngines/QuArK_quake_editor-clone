@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.139  2001/05/27 01:08:14  tiglari
+//change 'serialize' to 'increment' for the duplicators as suggested by Decker
+//
 //Revision 1.138  2001/05/27 00:12:41  tiglari
 //support for 'serializable' (suffix incrementing) duplicators
 //
@@ -3328,6 +3331,8 @@ QQRKSRC1
       increment all target: ={Txt="incr. all targ." Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are incremented"}
       incrementable specifics: = {Txt="incrementable" Typ="E" Hint="List here additional specifics to be incremented"}
       final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics" }
+      increment by = {Txt="&" Typ="E" Hint="size of increment" }
+      incre_lip = {Txt="&" Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
     }
     Default:d:form =    // form that applies when editing duplicators
     {

@@ -72,7 +72,7 @@ class DuplicatorManager:
 
 def is_digit(s):
     if len(s)==1:
-        if string.find('012345679',s)>=0:
+        if string.find('0123456789',s)>=0:
             return 1
     return 0
 
@@ -84,12 +84,16 @@ def get_suffix(s):
             break
     return s[:l-j], s[l-j:l]
 
+def poolitems(item):
+    return item.findallsubitems("",":b")+item.findallsubitems("",":e")
+
 def pool_specs(list):
     specs = {}
     for item in list:
-        for key in item.dictspec.keys():
-            if not specs.has_key(key):
-                specs[key]="1"
+        for item2 in poolitems(item):
+            for key in item2.dictspec.keys():
+                if not specs.has_key(key):
+                    specs[key]="1"
     return specs.keys()
 
 class StandardDuplicator(DuplicatorManager):
@@ -122,13 +126,10 @@ class StandardDuplicator(DuplicatorManager):
         # serializing specifics stuff
         #
         if self.dup["increment suffix"]=="1":
-            #
-            # Final values
-            #
-            self.final_specs={}
-            for spec in self.dup.dictspec.keys():
-                if string.find(spec,'final_')==0 and self.dup[spec]!="":
-                    self.final_specs[spec[6:]]=self.dup[spec]
+            if self.dup["increment by"]:
+                self.incrementby=eval(self.dup["increment by"])
+            else:
+                self.incrementby=1
             #
             # Deciding which get increment suffixd
             #
@@ -140,6 +141,20 @@ class StandardDuplicator(DuplicatorManager):
                         incrementable.append(spec)
             else:
                 incrementable = ["target", "targetname", "killtarget"]
+            #
+            # Final values and custom increments
+            #
+            self.final_specs={}
+            self.incre_specs={}
+            for spec in self.dup.dictspec.keys():
+                if self.dup[spec]!="":
+                    if string.find(spec,'final_')==0:
+                        self.final_specs[spec[6:]]=self.dup[spec]
+                if string.find(spec,'incre_')==0:
+                    spec2=spec[6:]
+                    self.incre_specs[spec2]=int(self.dup[spec])
+                    if not spec2 in incrementable:
+                        incrementable.append(spec2)
             moreserial = self.dup["incrementable specifics"]
             if moreserial is not None:
                 incrementable=incrementable+string.split(moreserial)
@@ -160,14 +175,21 @@ class StandardDuplicator(DuplicatorManager):
         if self.matrix and not self.dup["item center"]:
             item.linear(self.origin, self.matrix)
         if self.dup["increment suffix"]=="1":
-            for spec in self.incrementable:
-                val = item[spec]   
-                if val is not None:
-                    if is_digit(val[len(val)-1]):
-                        base, index = get_suffix(val)
-                        width = len(index)
-                        index = string.zfill("%d"%(eval(index)+1),width)
-                        item[spec]=base+index
+            def get_incr(spec,self=self):
+                if self.incre_specs.has_key(spec):
+                    return self.incre_specs[spec]
+                else:
+                    return self.incrementby
+            for item2 in poolitems(item):
+                for spec in self.incrementable:
+                    val = item2[spec]
+                    if val is not None:
+                        if is_digit(val[len(val)-1]):
+                            base, index = get_suffix(val)
+                            width = len(index)
+                            index = int(index)+get_incr(spec)
+                            index = string.zfill(` index`,width)
+                            item2[spec]=base+index
         return [item]
 
     def buildimages(self, singleimage=None):
@@ -221,7 +243,6 @@ class StandardDuplicator(DuplicatorManager):
             #
             if self.dup["increment suffix"]:
                 if i==count-1:
-                    debug('final '+`self.final_specs.keys()`)
                     for item in list:
                         for spec in self.final_specs.keys():
                             if item[spec]!="":
@@ -351,6 +372,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2001/05/27 11:14:31  tiglari
+#fixed another final target bug
+#
 #Revision 1.15  2001/05/27 10:59:07  tiglari
 #fixed final target bug
 #
