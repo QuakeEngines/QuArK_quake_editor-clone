@@ -507,7 +507,7 @@ class Folder:
 
     def viewforgotten(self):
         for s in self.forgotten:
-            if s[-1:]!="~" and s!="cvs":
+            if s[-1:]!="~" and s!="cvs" and string.find(s,'.png')==-1 and string.find(s,'.jpg')==-1 and string.find(s,'.gif')==-1:
                 print "*** NOTE: file '%s' not found in index" % (self.path+s)
         for folder in self.folders:
             folder.viewforgotten()
@@ -550,6 +550,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.18  2002/05/03 17:37:58  decker_dk
+# Added two seperator lines, to indicate what step have been executed.
+#
 # Revision 1.17  2001/07/25 19:17:02  decker_dk
 # Added exception-handling when opening files thats missing.
 #
