@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.73  2004/01/05 22:16:18  silverpaladin
+Clearing is done from end down now with a assigned check added an assigned check to find name
+
 Revision 1.72  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -376,6 +379,7 @@ type
                   Position: Integer;
                   StreamSize: Integer;
  {AiV}            OnAccess: Function (Ref: PQStreamRef; var S: TStream) : Integer;
+                  PUserData:  Pointer;
                 end;
 
   TInfoEnreg1 = class
