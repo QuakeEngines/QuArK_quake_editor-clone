@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2002/04/12 11:23:48  tiglari
+add examine method to enable inspecting objects from Python in delphi
+remove the extra xloadimages methods
+
 Revision 1.23  2002/01/08 10:09:20  tiglari
 heapstatus function added to access GetHeapStatus
 
@@ -650,7 +654,7 @@ begin
       end;
     end;
    aLog(LOG_PYTHONSOURCE,'Making image '+Filename);
-   Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio, FileName);
+   Result:=NewImageList(Bitmap, cx, MaskX, MaskY, cratio);
   finally
    Bitmap.Free;
   end;
@@ -2421,7 +2425,7 @@ begin
 end;
 
 const
- MethodTable: array[0..71] of TyMethodDef =
+ MethodTable: array[0..68] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
