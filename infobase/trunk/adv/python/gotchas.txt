@@ -1,26 +1,24 @@
 title: Gotchas
 author: tiglari
-format: html
 
-<P>
-<strong>Quarkx functions & None</strong>:  
+<html><strong>QuarkX functions & None</strong>:
 If you write something like:
-<pre>  
+<code>
     if quarkx.function():
       blah
       blah
-</pre>
-<p>   
+</code>
+
   expecting blah blah to not execute when function()
   returns None as a value, you'll probably get a bizarre
   run-time error.  Instead write:
-   
-<p><pre>
+
+<code>
     if quarkx.function() is not None:
       blah
       blah
-</pre>
-<p>
+</code>
+
 This is because most of the Python objects implemented in
 Delphi do not explicitely support 'truth' evaluation.
 Armin thought the Python core would detect it but it
@@ -30,37 +28,38 @@ or false, including the Delphi-defined objects -- at least
 the Python core expects it so, and the Delphi code doesn't
 do it right :-(  So always explicitely compare with None.
 
-<P><strong>vector equality</strong>:&nbsp;
+<html><strong>vector equality</strong>:
 Don't try to compare Quarkx vectors with equality,
 rather test their difference for being zero.  Armin discusses
-this in the 
+this in the
 <ref> src/quarkx
-&nbsp;document.
+ document.
 
-<P><strong>tuples & assigment</strong>:&nbsp;
+<html><strong>tuples & assigment</strong>:
 Python has a concept of
 `tuple', which is a sequence of numbers whose members can't
 be changed (they're `immutable').  1-element tuples are
 written with a comma after them, which leads to wierd
 looking things like:
-<pre>
+<code>
   mytuple = mynumber,
-</pre>
-<p>
+</code>
 and
-<pre>
+<code>
   mynumber, = mytuple
-</pre>
-<p>
+</code>
+
 This latter is an example of `tuple assignment', if the right
 hand side of an assignemt is a tuple, then on the left hand side
 you can put a tuple-expression, and the appropriate assignments
-will get made to its variables.<P>
+will get made to its variables.
+
 These commas are a bit unusual and easy to miss at first, and
 since many of the most useful specifics in dialog boxes
 are of tuple-type, missing them can lead to a lot of frustration.
 
-<strong>tabs & whitespace</strong>:One of Python's distinctive
+<html><strong>Tabs & whitespace</strong>:
+One of Python's distinctive
 features is `whitespace structuring', whereby all members of
 the same block have to be indented the same distance, and
 sub-blocks are indented more.  This saves hunting around for

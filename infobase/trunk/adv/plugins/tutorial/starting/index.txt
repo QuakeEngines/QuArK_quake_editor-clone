@@ -1,0 +1,14 @@
+title: Starting Up
+
+Since we'll be building a simplified version
+of the `maptagside' plugin, which does side
+tagging and gluing, and more,the first thing to do is to
+disable the regular version of the plugin.  The simplest
+way to do this is to rename it to `tagside'; this will
+prevent it from loading when Quark starts, and you will
+be able to see the effects of your own construction
+emerge as you build it.
+
+Then create your own file maptagside.py, & we're ready
+to go.  Important point: the plugin's name must begin with
+`map' in order to be loaded by the map editor.

@@ -1,13 +1,11 @@
 title: Plug-Ins
 subdir: tutorial
-format: html
 
-<P>Plug-Ins are scripts programmed in Python that modify
+Plug-Ins are scripts programmed in Python that modify
 existing features or add new features to QuArK. They
 are mainly related to the map editor, which is itself
 programmed mostly in Python.
 
-<P>Probably the best way to get a feel for plugins is to
+Probably the best way to get a feel for plugins is to
 first work thru a tutorial, then look at some existing
 examples.
-<P>

@@ -5,7 +5,7 @@ Try copying the text below and pasting it into QuArK. It will
 automatically be translated into an object -- in this case, a
 test Bezier patch.
 
-<p><pre>
+<code>
 QQRKSRC1
 {
   test:b2 = {
@@ -14,7 +14,7 @@ QQRKSRC1
          0 128 0 0 128  64 128 0 64 128  128 128 0 128 128'
   }
 }
-</pre>
+</code>
 
 The 'v' specific contains 5 values (x,y,z,s,t coordinates) for each
 control point, that is, 45 values in total.

@@ -1,7 +1,6 @@
 title: Intro Blather
-format: html
 
-<P>I'm not sure what the prerequisites for this tutorial really are in
+I'm not sure what the prerequisites for this tutorial really are in
 terms of previous programming experience; some experience with
 `Object Oriented Programming' will help, on the other
 hand, messing with Python is a good way to acquire such experience
@@ -14,13 +13,13 @@ a book about Python first (suggestions in
 <ref>adv/python/learning
 ).
 
-<P>This tutorial is
+This tutorial is
 not to teach programming, but rather to make up for inexperience
 and general lack of talent at figuring out how OOP program work;
 it's based on my first asking Armin lots of questions about how to do things
 and writing up the answers, and later on seeing how he revised things
 I had written.  It would be fair to say that the Three Commandments
-are Ask, Imitate and Experiment.<P>
+are Ask, Imitate and Experiment.
 
 In addition, since QuArK is after all a program for manipulating 3D
 geometry, some kind of grasp of 3D math concepts such as normal vectors
@@ -28,7 +27,7 @@ and dot products is likely to help, tho there are certainly things
 you can do without knowing anything about that kind of stuff.
 I might try writing up a quickly intro to Object-Oriented
 Programming and Quark-relevant 3D-math, if I got some indication
-that this would be helpful.<P>
+that this would be helpful.
 
 If you've done a bit of programming & want to dive right in without
 reading anythng at all about Python first, it might be useful to know that
@@ -40,7 +39,7 @@ and data structures are much looser than those of of C/C++, so you
 can add new fields to anything whenever you want to, without having
 to mess around with declarations.
 
-<P>And of course you will need to consult
+And of course you will need to consult
 <ref>src/quarkx
 , the guide to the facilities that Delphi provides for Python.
 This is certainly not an introduction, but does present all the basic
@@ -50,7 +49,7 @@ just by browsing it.  Don't worry if it seems like a completely
 impenetrable thicket at first! 
 And if you get stuck or think you've found a mistake
 (it's been done before :)), don't hesitate
-to post a query to the <A HREF="http://www.egroups.com/list/quark-python">
-quark-python discussion list</a>, or email directly to
-<A HREF="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</A><P>
-</A>.
+to post a query to the 
+<html><A HREF="http://www.egroups.com/list/quark-python">quark-python discussion list</A>,
+or email directly to
+<html><A HREF="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</A>.

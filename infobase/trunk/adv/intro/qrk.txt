@@ -1,12 +1,11 @@
 title: .Qrk files
 author: Tiglari
 
-<p><pre>
-  Useful additions:
-     *a rundown of the major compoments of a game-
-         support file and an addon file.
-     *a guide to Typ's in :form's
-</pre>
+<html><pre>
+Useful additions:
+  *a rundown of the major compoments of a game-support file and an addon file.
+  *a guide to Typ's in :form's
+<html></pre>
 
 .qrk files are just QObjects stored in files.  There are actually
 two kinds of .qrk files, text and binary (both unfortunately with
@@ -29,20 +28,20 @@ igored), whitespace and blank lines etc. until we get down to
 business with a line whose first nonblack character is:
 
   '{'.
-  
+
 '{' opens a QObject.  We already know that QObjects have two
 `Specifics' (name-value pairs), and `Subitems', which are
 QObjects which will have a `name' specific.  So it's not too
 suprisiing that the rest of a QObject will consist of a series
 of pairs:
 
-<html><pre>
+<code>
   <Name> = <Value>
-<html></pre>
-  
+</code>
+
   (where <Value> can be as large an expanse of text as you like,
    if it's a great big QOobject)
-   
+
 Until we fetch up at the end with the closing `}', after which the
 file must end.
 
@@ -50,7 +49,7 @@ So let's look at the beginning of the Portal of Praevus add-on
 (I started as a Hexen II entity guy, so we gotta have some Hx2
 content here ...)
 
-<html><pre>
+<code>
 QQRKSRC1
 // This file has been written by QuArK Version 5.0.b5
 // It's the text version of file: Praevus.qrk
@@ -65,13 +64,13 @@ QQRKSRC1
   QuArKProtected = "1"
   Description = "Portal of Praevus Data"
 
-    praevus directory infos.qctx =  
+    praevus directory infos.qctx =
     {
-        Game = "Hexen II"   
-        SourceDir = "PORTALS"       
-//      GameDir = "fortress"        
+        Game = "Hexen II"
+        SourceDir = "PORTALS"
+//      GameDir = "fortress"
     }
-<html></pre>
+</code>
 
 After the opening guff, we see that the first specific is
 `QuArKProtected', I don't know exactly what it does, but that
@@ -94,45 +93,44 @@ specific-values.  Binary data is introduced with `$'.  So for example
 the line from the Defaults.qrk file prescribing the red default
 color for tags is:
 
-<html><pre>
+<code>
   Tag        = $FF0000
-<html></pre>
+</code>
 
 (a standard RGB color code, for those new to such things)
 
 Multiline strings can be specified as sequences of ordinary "-bounded
 strings separated by `$0D':
 
-<html><pre>
-  Hint = "This ought to work" $0D "  if it doesn't, why not try extreme skiing?"
-<html></pre>
+<code>
+  Hint = "This ought to work"
+      $0D"  if it doesn't, why not try extreme skiing?"
+</code>
 
-And sequences of numbers are bounded by `, a bounding box for example
+And sequences of numbers are bounded by ', a bounding box for example
 might be specified as:
 
-<html><pre>
+<code>
      bbox = '-8 -8 -8 8 8 8'
-<html></pre>
+</code>
 
 All this and some more stuff that I haven't seen exemplified is
 prescribed in the function ConstructObjsFromText
 in the file QkFileObject.
 
- * sections on the major components of the major kinds of
-     .qrk file would go nicely here *
-     
-<p><strong>Forms:</strong>
- 
+* sections on the major components of the major kinds of .qrk file would go nicely here *
+
+<html><strong>Forms:</strong>
  For game supporters, one of the most important kinds of components
  of .qrk files are :forms, since these control how the specifics
  of entities are entered into maps.  :forms are also important
  in Python coding, since they are used to control in making dialog
  boxes, etc.
- 
+
  To get a sense of how it goes, here's the beginning of the entity
  forms specifications from DATAH2.QRK:
- 
-<html><pre>
+
+<code>
    Entity forms.qctx =
    {  // ENTFRM
      Ring_Flight:form =
@@ -147,7 +145,7 @@ in the file QkFileObject.
        Form="item_triggers:form"
        Hint="specifics for triggering when item is taken"
      }
-      spawnflags: = 
+      spawnflags: =
         {Txt="&"
          Typ="X1"
          Cap="FLOAT"
@@ -156,7 +154,7 @@ in the file QkFileObject.
      Ring_Regeneration:form =
      { ...
      ....
-<html></pre>
+</code>
 
 Entity Forms is a Quake Context, its subitems are a (big) list of
 :form objects.  These have some specifics (all QObjects, regardless

@@ -11,23 +11,24 @@ TForm1) initializes
 Python, sets up the main explorer window, and heaps of
 other things.  Read the Delphi help on OnCreate.
 
-<p>The handlers for the various Main Menu items are all there
+The handlers for the various Main Menu items are all there
 (opening/saving files, cut/paste in the tree-view), tho
 you should not have to mess with any of this stuff in order
 to support a new file-type for example (you do that by
 defining a subclass of QkFileObject and redefining methods,
-as discussed in the <a href="src.struct.html#fileobjects">
-fileobjects</a> section).
+as discussed in the
+<html><a href="src.struct.html#fileobjects">fileobjects</a>
+ section).
 
-<p>The Toolbars containing the main menus at the left and
+The Toolbars containing the main menus at the left and
 right of the main window are set up in Form1 itself,
 defined in Qk1.dfm, also the menus.  The buttons are
 defined in defaults.qrk, in Tool bars|Main.toolbar,
 which is put into the topdock control by
 the line:
-<pre>
+<code>
  RestorePositionTb('Main', False, Explorer);
-</pre>
+</code>
 in Tform1.FormCreate (QkForm.pas).  Lines of this form can be used to put
 additional button toolbars into the main window (with names
 other then 'Main').
@@ -46,13 +47,13 @@ You'll see a long list of `uses' statements, followed by
 a few lines of the kind of code that's normally used to
 fire up GUI applications built with class libraries.
 
-<p>
 The line:
-<pre>
+<code>
   Application.CreateForm(TForm1, Form1);
-</pre>
-is responsible for setting up <strong>everything</strong>
-that distinguishes QuArK from other Delphi applications
+</code>
+is responsible for setting up
+<html><strong>everything</strong>
+ that distinguishes QuArK from other Delphi applications
 (with the uses statement marshalling the resources).
 
 

@@ -1,14 +1,19 @@
 title: Anonymous downloading
 author: Armin Rigo
 
-Once WinCVS is installed, you can anonymously download the QuArK source. Configure WinCVS (from the Admin menu) as follows :
+Once WinCVS is installed, you can anonymously download the QuArK source. Configure WinCVS (from the Admin menu) as follows:
 
-CVS Root : anonymous@cvs.quark.sourceforge.net:/cvsroot/quark
+<code>
+CVS Root:              anonymous@cvs.quark.sourceforge.net:/cvsroot/quark
+Authentication method: pserver (password-based)
+</code>
 
-Authentication method : pserver (password-based)
+You can then checkout one or several of the modules "source", "runtime" and "infobase". If you are prompted for a password,
+type enter (no password).
 
-You can then checkout one or several of the modules "source", "runtime" and "infobase". If you are prompted for a password, type enter (no password).
+"Checkout" means the initial download; "Update" means smaller downloads that only carry the updates that other people have
+done; "Commit" means upload of your own changes.
 
-"Checkout" means the initial download; "Update" means smaller downloads that only carry the updates that other people have done; "Commit" means upload of your own changes.
-
-Be careful, it seems that if you checkout modules anonymously, you might not be able to commit changes later even if you officially register. To prevent problems, avoid modifying files that you downloaded anonymously. If you want to modify these files, first officially register and checkout the modules under your official name.
+Be careful, it seems that if you checkout modules anonymously, you might not be able to commit changes later even if you
+officially register. To prevent problems, avoid modifying files that you downloaded anonymously. If you want to modify these
+files, first officially register and checkout the modules under your official name.

@@ -1,2 +1,3 @@
 title: Documenting QuArK
-desc: infobase infobase-format
+desc: infobase
+desc: infobase-format

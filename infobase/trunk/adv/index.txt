@@ -5,23 +5,20 @@ subdir: python
 subdir: quarkpy
 subdir: plugins
 subdir: doc
-format: html
 
-<p>This section discusses the features of QuArK that can be customized without modifying the source code. This mainly includes:
-</p>
+This section discusses the features of QuArK that can be customized without modifying the source code.
+This mainly includes:
 
-<p><strong>Add-Ons</strong>: lists describing new entity types, new textures, etc. This is what you need to have QuArK support
+<html><strong>Add-Ons</strong>:
+lists describing new entity types, new textures, etc. This is what you need to have QuArK support
 new Mods of the game or new games altogether.
-</p>
 
-<p><strong>Quarkpy</strong>: The basic map-editing facilities
-provided by Python.
+<html><strong>Quarkpy</strong>:
+The basic map-editing facilities provided by Python.
 
-<p><strong>Plug-Ins</strong>: More Python providing a wide range of
-specific facilities and enhancements.
-</p>
+<html><strong>Plug-Ins</strong>:
+More Python providing a wide range of specific facilities and enhancements.
 
-<p>See section
+See section
 <ref> maped
  for more information about how to use the map editor.
-</p>

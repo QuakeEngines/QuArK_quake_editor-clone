@@ -2,7 +2,7 @@ title: Elements of an add-on (unfinished)
 author: Decker
 format: html
 
-<div class="doccode"><pre>
+<code>
 <b>QQRKSRC1
 {
   QuArKProtected = "1"
@@ -18,12 +18,12 @@ format: html
   <i>...other .qtx structures</i>
   <i>...other .qctx structures</i>
 <b>}</b>
-</pre></div>
+</code>
 
 <p>A add-on which contain new entities, must have these two .qtx and .qctx structures:
 </p>
 
-<div class="doccode"><pre>
+<code>
 // Structure which declares what entities are available
 <i>gamename</i>Entities<b>.qtx =
 {</b>
@@ -92,4 +92,4 @@ format: html
 
   <i>...more :form definitions</i>
 <b>}</b>
-</pre></div>
+</code>

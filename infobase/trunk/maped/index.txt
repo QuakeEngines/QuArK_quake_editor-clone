@@ -1,11 +1,9 @@
 title: Map editing
 author: Decker
-format: html
 subdir: builderrors
 subdir: games
 
-<p>Sorry, under construction.
-</p>
+Sorry, under construction.
 
-<p>Please refer to Decker's <a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.
-</p>
+Please refer to Decker's
+<html><a href="http://www.planetquake.com/quark/help/index.html">Online documentation</a>.

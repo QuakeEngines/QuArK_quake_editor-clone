@@ -10,4 +10,5 @@ desc: starting import action menu register
      the user to initiate the actions
 </OL>
 And it should also register itself. So we'll do these five
-things in turn.<P>
+things in turn.
+</P>
