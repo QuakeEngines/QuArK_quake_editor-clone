@@ -26,21 +26,17 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2001/03/14 04:42:44  maleficus
+//worldspawn terrain keys added
+//
 //Revision 1.3  2001/03/05 03:26:45  maleficus
 //Loads complete player start md3 now. Still buggy.
 //
 //Revision 1.2  2001/02/15 09:49:05  maleficus
 //Items show models, some more help info. Misc cleanup.
 //
-//Revision 1.2  2001/02/13 18:11:29  maleficus
+//Revision xxx  2001/02/13 18:11:29  maleficus
 //All item entities show models now! More help info. Some cleanup.
-//
-//$Log$
-//Revision 1.3  2001/03/05 03:26:45  maleficus
-//Loads complete player start md3 now. Still buggy.
-//
-//Revision 1.2  2001/02/15 09:49:05  maleficus
-//Items show models, some more help info. Misc cleanup.
 //
 //Revision 1.1  2001/02/11 11:09:59  decker_dk
 //Moved from addons directory
@@ -1618,7 +1614,7 @@ QQRKSRC1
 
     // Notice! The b="<filename>" specifies which shaderfile the shader exists in
     t_q3shader_base_button:incl         = { a="baseq3" b="base_button.shader" }
-    t_q3shader_base_door:incl		    = { a="baseq3" b="base_door.shader" }
+    t_q3shader_base_door:incl           = { a="baseq3" b="base_door.shader" }
     t_q3shader_base_floor:incl          = { a="baseq3" b="base_floor.shader" }
     t_q3shader_base_light:incl          = { a="baseq3" b="base_light.shader" }
     t_q3shader_base_object:incl         = { a="baseq3" b="base_object.shader" }
@@ -1629,8 +1625,8 @@ QQRKSRC1
     t_q3shader_ctf:incl                 = { a="baseq3" b="ctf.shader" }
     t_q3shader_eerie:incl               = { a="baseq3" b="eerie.shader" }
     t_q3shader_gothic_block:incl        = { a="baseq3" b="gothic_block.shader" }
-    t_q3shader_gothic_button:incl	    = { a="baseq3" b="gothic_button.shader"}
-    t_q3shader_gothic_door:incl	    = { a="baseq3" b="gothic_door.shader"}
+    t_q3shader_gothic_button:incl       = { a="baseq3" b="gothic_button.shader"}
+    t_q3shader_gothic_door:incl         = { a="baseq3" b="gothic_door.shader"}
     t_q3shader_gothic_floor:incl        = { a="baseq3" b="gothic_floor.shader" }
     t_q3shader_gothic_light:incl        = { a="baseq3" b="gothic_light.shader" }
     t_q3shader_gothic_trim:incl         = { a="baseq3" b="gothic_trim.shader" }
@@ -1971,15 +1967,15 @@ QQRKSRC1
       }
       Gothic_Floor.txlist =
       {
-        gothic_floor/center2trn.wl                     = { t_q3shader_gothic_floor=! }
-        gothic_floor/largerblock3b_ow.wl               = { t_q3shader_gothic_floor=! }
-        gothic_floor/metalbridge06brokeb.wl            = { t_q3shader_gothic_floor=! }
-        gothic_floor/pent_metalbridge02.wl             = { t_q3shader_gothic_floor=! }
-        gothic_floor/pent_metalbridge06.wl             = { t_q3shader_gothic_floor=! }
-        gothic_floor/pent_metalbridge06b.wl            = { t_q3shader_gothic_floor=! }
-        gothic_floor/q1metal7_99spot.wl                = { t_q3shader_gothic_floor=! }
-        gothic_floor/xq1metalbig_ow.wl                 = { t_q3shader_gothic_floor=! }
-        gothic_floor/xstepborder3_shiney.wl            = { t_q3shader_gothic_floor=! }
+        gothic_floor/center2trn.wl                = { t_q3shader_gothic_floor=! }
+        gothic_floor/largerblock3b_ow.wl          = { t_q3shader_gothic_floor=! }
+        gothic_floor/metalbridge06brokeb.wl       = { t_q3shader_gothic_floor=! }
+        gothic_floor/pent_metalbridge02.wl        = { t_q3shader_gothic_floor=! }
+        gothic_floor/pent_metalbridge06.wl        = { t_q3shader_gothic_floor=! }
+        gothic_floor/pent_metalbridge06b.wl       = { t_q3shader_gothic_floor=! }
+        gothic_floor/q1metal7_99spot.wl           = { t_q3shader_gothic_floor=! }
+        gothic_floor/xq1metalbig_ow.wl            = { t_q3shader_gothic_floor=! }
+        gothic_floor/xstepborder3_shiney.wl       = { t_q3shader_gothic_floor=! }
       }
       Gothic_Light.txlist =
       {
@@ -2257,7 +2253,7 @@ QQRKSRC1
         skies/kc_dm10sky.wl                       = { t_q3shader_sky=! }
         skies/kcbasesky_arena1_sky.wl             = { t_q3shader_sky=! }
         skies/killsky.wl                          = { t_q3shader_sky=! }
-        skies/mkc_sky.wl          = { t_q3shader_sky=! }
+        skies/mkc_sky.wl                          = { t_q3shader_sky=! }
         skies/nightsky_xian_dm1.wl                = { t_q3shader_sky=! }
         skies/nightsky_xian_dm15.wl               = { t_q3shader_sky=! }
         skies/nightsky_xian_dm4.wl                = { t_q3shader_sky=! }
@@ -2886,7 +2882,7 @@ QQRKSRC1
 		    "Intro_09"$0D
 		    "Intro_10"$0D
 		    "Intro_11"$0D
-        "Lostlead"$0D
+                    "Lostlead"$0D
 		    "One"$0D
 		    "Perfect"$0D
 		    "Prepare"$0D
@@ -2897,7 +2893,7 @@ QQRKSRC1
 		    "Three"$0D
 		    "Tiedlead"$0D
 		    "Two"
-	         values =
+        values =
 		    "/sound/feedback/1_frag.wav"$0D
 		    "/sound/feedback/1_minute.wav"$0D
 		    "/sound/feedback/2_frags.wav"$0D
@@ -2932,9 +2928,9 @@ QQRKSRC1
 		    "/sound/feedback/teamstied.wav"$0D
 		    "/sound/feedback/three.wav"$0D
 		    "/sound/feedback/tiedlead.wav"$0D
-		    "/sound/feedback/two"
-	     }
-		noise: =
+                    "/sound/feedback/two"
+      }
+      noise: =
       {
 		typ = "C"
 		txt = "Items"
@@ -2985,8 +2981,8 @@ QQRKSRC1
 		"/sound/items/use_nothing.wav"$0D
 		"/sound/items/wearoff.wav"
       }
-		noise: =
-         {
+      noise: =
+      {
 		typ = "C"
 		txt = "Misc"
 		items =
@@ -3014,7 +3010,7 @@ QQRKSRC1
 		"/sound/misc/silence.wav"$0D
 		"/sound/misc/w_pkup.wav"
       }
-		noise: =
+      noise: =
       {
 		typ = "C"
 		txt = "Movers"
@@ -3027,7 +3023,7 @@ QQRKSRC1
 		"/sound/movers/doors/dr1_strt.wav"$0D
 		"/sound/movers/switches/butn2.wav"
       }
-		noise: =
+      noise: =
       {
 		typ = "C"
 		txt = "Players"
@@ -3342,7 +3338,7 @@ QQRKSRC1
 		"Universal: Watr_in"$0D
 		"Universal: Watr_out"$0D
 		"Universal: Watr_un"
-		values=
+        values=
 		"sound/player/anarki/death1.wav"$0D
 		"sound/player/anarki/death2.wav"$0D
 		"sound/player/anarki/death3.wav"$0D
