@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.18  2000/11/23 19:07:45  decker_dk
+//Put an Origin-brush on func_train ('t_originpoly:incl' actually)
+//
 //Revision 1.17  2000/10/15 16:04:57  alexander
 //committed changes from Maleficus666@yahoo.com:
 // - Added noise menu for target_speaker
@@ -7975,6 +7978,7 @@ QQRKSRC1
     }
     misc_model:form =
     {
+      mdl = "[model]"
       Help = "This is placable model for your map."
       bbox = '-16 -16 -32 16 16 32'
 	angle: =

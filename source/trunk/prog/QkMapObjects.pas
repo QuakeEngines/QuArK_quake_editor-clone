@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/02/06 10:22:51  tiglari
+fixed double writing of patches in maps
+
 Revision 1.20  2001/01/28 17:24:49  decker_dk
 Removed the 'Comment' array, and replaced it with a function 'CommentMapLine(string)', which is much more controllable (but may slow down the 'exporting .MAP file' from QuArK).
 Checking for 'DisableMapComments' option in the CommentMapLine() function.
@@ -1718,6 +1721,7 @@ var
  Angle: Integer;
  ASin, ACos: TDouble;
  SkinDescr: String;
+ spec: string;
 
 begin
  Result:=False;
@@ -1735,6 +1739,15 @@ begin
    MdlPath:=Q.Specifics.Values['mdl'];
    if MdlPath='' then
      Exit;
+   if (MdlPath[1]='[') and (MdlPath[length(mdlpath)]=']') then begin // uses model specified in entity (ie like in misc_model)
+     spec:=copy(mdlpath, 2, length(mdlpath)-2);
+     mdlpath:=Specifics.Values[spec];
+   end;
+
+   if mdlpath = '' then
+     exit;
+   if (mdlpath[1]='/') or (mdlpath[1]='\') then
+     mdlpath:=copy(mdlpath, 2, length(mdlpath)-1);
 
    { loads mdl }
    MdlBase:=Q.Specifics.Values['mdlbase'];
@@ -1999,7 +2012,10 @@ end;*)
 
 function TTreeMapEntity.PyGetAttr(attr: PChar) : PyObject;
 var
- BBox: TBBoxInfo;
+  BBox: TBBoxInfo;
+  S, mdl, mdlbase, mdlframe, mdlskin: String;
+  Q: QObject;
+  mdl_nfo: PyObject;
 begin
  Result:=inherited PyGetAttr(attr);
  if Result<>Nil then Exit;
