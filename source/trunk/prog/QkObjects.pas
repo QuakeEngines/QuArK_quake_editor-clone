@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2000/10/27 10:13:41  tiglari
+reformatted Ancestry value in accord with suggestions by decker
+
 Revision 1.28  2000/10/17 20:29:41  tiglari
 Added Ancestry function to QObject
 
@@ -260,6 +263,7 @@ type
                { normally does nothing, sometimes packs things up into a
                  more efficient format, e.g. TTreeMapEntity origin (QkMapObject.pas)}
              procedure ReadUnformatted(F: TStream; Size: Integer);
+             function Pedigree : String;
              procedure SaveUnformatted(F: TStream);
                { for reading/writing raw data to/from a Data specific,
                  used in overrides for Load/SaveFile }
@@ -1349,22 +1353,7 @@ begin
  end;*)
 end;
 
-{$IFDEF Debug}
-function QObject.GetSpecifics : TStringList;
-begin
-  {alex}
-  if (FFlags and ofSurDisque <> 0) and not FLoading then
-  begin
-     AccesRec;
-  end;
-  {/alex ######### FIXME ! i think this is needed , and thus it should be
-   enabled always !!!!!}
-  if (FFlags and ofSurDisque <> 0) and not FLoading then
-    Raise InternalE('GetSpecifics');
-  Result:=FSpecifics;
-end;
-
-function QObject.Pedigree;
+function QObject.Pedigree : String;
 var
   Parent:QObject;
   I: Integer;
@@ -1391,6 +1380,22 @@ label bail;
     Result:=Name+'.'+Ind;
   end else
     Result:=Name;
+end;
+
+
+{$IFDEF Debug}
+function QObject.GetSpecifics : TStringList;
+begin
+  {alex}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  begin
+     AccesRec;
+  end;
+  {/alex ######### FIXME ! i think this is needed , and thus it should be
+   enabled always !!!!!}
+  if (FFlags and ofSurDisque <> 0) and not FLoading then
+    Raise InternalE('GetSpecifics');
+  Result:=FSpecifics;
 end;
 
 function QObject.GetSubElements : TQList;
