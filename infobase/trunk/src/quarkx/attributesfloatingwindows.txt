@@ -49,4 +49,10 @@ onclose
 Callback function. Called when the window is closed. Takes one parameter: the window itself. This is not called if the window is only hidden.
 </td></tr>
 
+<tr><td class="doccode">
+close()
+</td><td>
+Closes the window.
+</td></tr>
+
 </table>
