@@ -124,6 +124,8 @@ class BaseEditor:
         if view.viewmode == "wire":
             def DrawAxis(setup=setup, view=view, MODE=self.MODE):
                 X, Y, Z = setup["MapLimit"]
+                if (quarkx.setupsubset()["MapLimit"]<>None):    # games can overide default setting
+                    X, Y, Z = quarkx.setupsubset()["MapLimit"]
                 ax = []
                 if MapOption("DrawAxis", MODE):
                     ax.append((-X, 0, 0,  X, 0, 0))
@@ -833,6 +835,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.8  2001/02/19 21:46:55  tiglari
+#removed some debugs
+#
 #Revision 1.7  2001/02/18 20:22:12  decker_dk
 #Changed 'show brush width/height/depth', so mouse have to be inside the selection, and not on a handle. Also fixed the problem of not showing w/h/d when a single face were selected.
 #

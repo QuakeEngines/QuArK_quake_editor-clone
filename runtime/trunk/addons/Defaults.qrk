@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.101  2001/03/15 21:11:39  aiv
+//moved .fgd reading to menu, sepearted texture & entity reading
+//
 //Revision 1.100  2001/03/15 11:30:28  tiglari
 //remove stupidbuildtoolkludge from Q3A
 //
@@ -954,6 +957,8 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+
+//        MapLimit = '8192 8192 8192'
       }
       STVEF:config =
       {
