@@ -1,4 +1,14 @@
 
+
+
+  * [cdunde, tiglari]: mapstairs problems; fixed bug and added 'old style'
+     flag.
+
+  * [dannj] Heretic2 data: Fixed material types for trains, added ANIMATE
+       flag for floor torch, fixed current direction descriptions, added
+       angle specifics for lots of entities and more.
+
+
                      6.4  alpha snapshot Mar 29 2003
 
  There are quite a lot of new features here, one of the most noteworthy
