@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/01/21 15:51:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.6  2000/12/30 15:25:28  decker_dk
 - Due to changes in 3D-render source-files
 
@@ -38,6 +41,12 @@ const
   MDL_GROUP_BONE  = 5;
 
 type
+  TBoneVertexLink = packed record
+    BoneName: String;
+    VertexIndex: Integer;
+    Offset: vec3_t;
+  end;
+  PBoneVertexLink = ^TBoneVertexLink;
   QComponent = class(QMdlObject)
   private
     FCurrentFrameObj: QFrame;
@@ -54,6 +63,7 @@ type
     procedure ObjectState(var E: TEtatObjet); override;
     destructor Destroy; override;
     function Triangles(var P: PComponentTris) : Integer;
+    function VertexLinks(var P: PBoneVertexLink) : Integer;
     function GetSkinDescr(Static: Boolean) : String;
     property CurrentSkin : QImages read FCurrentSkin write SetCurrentSkin;
     property CurrentFrame : QFrame read FCurrentFrameObj write SetCurrentFrame;
@@ -108,10 +118,10 @@ begin
         f.specificsadd(FloatSpecNameOf('Vertices='));
       end;
       fg.subelements.add(f);
-      CurrentFrame.SelUnique:=False;
+//      CurrentFrame.SelUnique:=False;
       CurrentFrame:=f;
-      CurrentFrame.SelUnique:=True;
-      Result:=GetPyObj(CurrentFrame);
+//      CurrentFrame.SelUnique:=True;
+      Result:=pyNoResult;//GetPyObj(CurrentFrame);
     end;
   except
     EBackToPython;
@@ -434,6 +444,17 @@ begin
   S:=GetSpecArg(Spec1);
   PChar(P):=PChar(S)+(Length(Spec1)+1);
   Result:=(Length(S)-(Length(Spec1)+1)) div SizeOf(TComponentTris);
+end;
+
+function QComponent.VertexLinks(var P: PBoneVertexLink) : Integer;
+const
+  Spec1 = 'VertexLinks';
+var
+  S: String;
+begin
+  S:=GetSpecArg(Spec1);
+  PChar(P):=PChar(S)+(Length(Spec1)+1);
+  Result:=(Length(S)-(Length(Spec1)+1)) div SizeOf(TBoneVertexLink);
 end;
 
 procedure QComponent.AddTo3DScene;

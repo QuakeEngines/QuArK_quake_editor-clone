@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/01/21 15:51:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.2  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -14,6 +17,11 @@ interface
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, PyMath, Python, QkMdlObject, QMath;
 
 type
+  TBoneRec = packed record
+    name: string;
+    new_offset: vec3_t;
+  end;
+  PBoneRec = ^TBoneRec;
   QFrame = class(QMdlObject)
   private
     FInfo: PyObject;
@@ -22,6 +30,7 @@ type
     destructor Destroy; override;
     procedure ObjectState(var E: TEtatObjet); override;
     function GetVertices(var P: vec3_p) : Integer;
+    function GetBoneMovement(var P: PBoneRec): Integer;
     Procedure RemoveVertex(index: Integer);
     procedure ChercheExtremites(var Min, Max: TVect); override;
     function PyGetAttr(attr: PChar) : PyObject; override;
@@ -48,19 +57,56 @@ begin
   inherited;
   E.IndexImage:=iiFrame;
 end;
+{
+function QFrame.tryusingbonelinks(var P: vec3_p): Integer;
+var
+  p_org: vec3_p;
+  no_p_org: integer;
+begin
+  no_p_org:=GetFirstVertices(p_org);
 
+end;
+}
 function QFrame.GetVertices(var P: vec3_p) : Integer;
 const
   I = Length('Vertices=');
 var
   S: String;
 begin
+//  if QComponent(FParent.FParent).IntSpec['show']=0 then begin
+//    result:=0;
+//    exit;
+//  end;
   S:=GetSpecArg(FloatSpecNameOf('Vertices'));
+  if S='' then begin
+//    result:=tryusingbonelinks(P);
+    result:=0;
+    Exit;
+  end;
+  Result:=(Length(S) - I) div SizeOf(vec3_t);
+  if Result<=0 then begin
+    Result:=0;
+    Exit;
+  end;
+  PChar(P):=PChar(S) + I;
+end;
+
+function QFrame.GetBoneMovement(var P: PBoneRec) : Integer;
+const
+  I = Length('Bones=');
+var
+  S: String;
+begin
+//  if QComponent(FParent.FParent).IntSpec['show']=0 then begin
+//    result:=0;
+//    exit;
+//  end;
+  S:=GetSpecArg('Bones');
   if S='' then begin
     Result:=0;
     Exit;
   end;
-  Result:=(Length(S) - I) div SizeOf(vec3_t);
+  Result:=(Length(S) - I) div SizeOf(PBoneRec);
   if Result<=0 then begin
     Result:=0;
     Exit;
@@ -123,10 +169,20 @@ function QFrame.PyGetAttr(attr: PChar) : PyObject;
 var
   I, Count: Integer;
   P: vec3_p;
+  Pb: PBoneRec;
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
   case attr[0] of
+    'b': if StrComp(attr, 'bones')=0 then begin
+      Count:=GetBoneMovement(Pb);
+      Result:=PyList_New(Count);
+      for I:=0 to Count-1 do begin
+        PyList_SetItem(Result, I, Py_BuildValueX('(sO)',[PChar(Pb^.Name), MakePyVectv(Pb^.new_offset) ]));
+        Inc(Pb);
+      end;
+      Exit;
+    end;
     'i': if StrComp(attr, 'info')=0 then begin
       if FInfo=Nil then
         Result:=Py_None
@@ -199,4 +255,3 @@ end;
 initialization
   RegisterQObject(QFrame, 'a');
 end.
- 
