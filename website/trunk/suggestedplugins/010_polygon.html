@@ -1,0 +1,44 @@
+
+<dl>
+	<dt><b>Problem:</b>
+	<dd>Not a problem, more an idea, of a new object that can be used in map-building, especially for cave and terrain areas.
+		<br><br>
+	<dt><b>Suggestion for plug-in:</b>
+	<dd>
+The way the 'polygon' (2D-shape) would work is you create an arbitrary convex
+polygon (perhaps you create it from selected point entities or perhaps
+from a brush face or perhaps you create a 'polygon' first then add
+vertices to it.) Then at compile time the convex polygon becomes a solid brush by being "extruded."<br>
+<!--This is a very simple process which could be implemented
+several ways. My favorite is to find the nearest major axis (x, y or z)
+to the normal of the polygon and duplicate the polygon's vertices along
+that axis.
+(you could duplicate the polygon's vertices along it's own normal but
+then it wouldn't fit neatly with surounding brushes or 'polygons')
+Then you can find the planes that make up the brush by picking three
+vertices from the original polygon, then three vertices from the
+duplicate, then two vertices from one and one vertex from the other for
+each of the other faces.-->
+This plug-in would eliminate clutter in much the same way that negative
+polyhedrons do, but without some of the risks associated with csg
+operations, and it would be especially convenient for modeling complex
+geometry like caves and terrain.<br>
+<span class="sml">(A simpler but almost just as good alternative to 'polygon' would be
+'triangle' which would be less versatile but gauranteed to be a flat
+convex polygon no matter how you try to move the vertices.)</span>
+		<br><br>
+	<dt><b>Suggested by:</b>
+  <dd>1999.08.05 - <a href="javascript:mail_decode('sgalbrai@linknet.kitsap.lib.wa.us');">'sgalbrai'</a><br>
+    <br>
+  <dt><b>Furthermore interested people:</b>
+  <dd>1999.08.08 - <a href="javascript:mail_decode('tebo@pyvp.arg');">"grob"</a><br>
+      2000.02.17 - <a href="javascript:mail_decode('cunagbz@o3041b6o532v.op.ufvn.gryhf.arg');">Piotr Banasik</a><br>
+      2000.05.05 - <a href="javascript:mail_decode('zvahfrq@zvafx2000.gb');">"-ED"</a><br>
+      2000.05.05 - <a href="javascript:mail_decode('w.w.orpx@puryyb.ay');">"jjjh"</a><br>
+      2001.04.30 - <a href="javascript:mail_decode('zrgubqrezvf@lnubb.pbz');">"muffinator"</a><br>
+      2001.11.05 - <a href="javascript:mail_decode('jvyy.oe@ogvagrearg.pbz');">"Will"</a><br>
+      <a href="javascript:mail_decode('qrpxre@cynargdhnxr.pbz?fhowrpg=Vagrerfg:Cbyltba');">Notify the Webmaster if you are interested in seeing this plug-in</a>
+		<br><br>
+	<dt><b>Under development by:</b>
+  <dd>None - <a href="javascript:mail_decode('qrpxre@cynargdhnxr.pbz?fhowrpg=Qrirybc:Cbyltba');">Notify the Webmaster if you want to develop this plug-in</a>
+</dl>

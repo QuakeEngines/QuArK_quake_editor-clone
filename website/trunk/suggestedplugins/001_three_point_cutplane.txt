@@ -1,0 +1,22 @@
+<name>Three point cut-plane</name>
+<dl>
+	<dt><b>Problem:</b>
+	<dd>Cutting using the current cut-tool, only splits/cuts the polys in the current compass-selected view,
+	    looking into the screen. A way of cutting polys with a plane/face thats been defined by three points in
+			space, would be helpfull in those cases where a complex split/cut have to be made.
+		<br><br>
+	<dt><b>Suggestion for plug-in:</b>
+	<dd>Three point plane clipping works this way: You place three points in the 2D and/or 3D views,
+	    which together define a plane/face. The selected polys are then split/cut along that plane/face.
+		<br><br>
+	<dt><b>Suggested by:</b>
+        <dd>1999.06.15 - <a href="mailto:***PLEASE@NO*SPAM***wayfinder@ber.netsurf.de">Sebastian</a>
+		<br><br>
+	<dt><b>Furthermore interested people:</b>
+        <dd>1999.06.18 - <a href="mailto:***PLEASE@NO*SPAM***j@chokmah.org">J Crossley</a><br>
+            2000.05.05 - <a href="mailto:***PLEASE@NO*SPAM***minused@minsk2000.to">"-ED"</a><br>
+            <a href="mailto:decker@***PLEASE@NO*SPAM***planetquake.com?subject=Interest:Three point clipping plane">Notify the Webmaster if you are interested in seeing this plug-in</a>
+		<br><br>
+	<dt><b>Under development by:</b>
+        <dd>None - <a href="Mailto:decker@***PLEASE@NO*SPAM***planetquake.com?subject=Develop:Three point clipping plane">Notify the Webmaster if you want to develop this plug-in</a>
+</dl>
