@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/06/05 18:39:33  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.29  2001/04/16 00:35:16  tiglari
 Worldcraft mapversion 220 misnomenclature fixed (mapversion 202->Valve220)
 
@@ -144,6 +147,7 @@ const
  soDisableFPCoord    = $00000008;
  soEnableBrushPrim   = $00000010;
  soWriteValve220     = $00000020;
+ soWrite6DXHierarky  = $00000080;
 
  soDirectDup         = $04000000;
  soBSP               = $08000000;
@@ -2385,9 +2389,16 @@ begin
    and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
  if (Flags and soOutsideWorldspawn = 0) then
  begin
-  I := GetFirstEntityNo;
+  { Do some checking of the spec/args in worldspawn,
+    to set up special .MAP writing methods.
+    Note, that specifics that starts with a ';'-character
+    will not be written to the .MAP file! }
   if Specifics.Values['mapversion']='220' then
-    Flags:=Flags + soWriteValve220;
+    Flags:=Flags + soWriteValve220
+  else if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
+    Flags:=Flags + soWrite6DXHierarky;
+
+  I := GetFirstEntityNo;
  end
  else
   I := GetNextEntityNo;
@@ -2441,8 +2452,25 @@ begin
     Polyedres.Free;
    end;
   end;
- Texte.Add('}');
- inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+ if (Flags and soWrite6DXHierarky <> 0) then
+ begin
+  { For 6DX support }
+   if (Flags and soOutsideWorldspawn = 0) then
+   begin
+     Texte.Add('}');
+     inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+   end
+   else
+   begin
+     inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+     Texte.Add('}');
+   end;
+ end
+ else
+ begin
+   Texte.Add('}');
+   inherited SaveAsText(Negatif, Texte, Flags or soOutsideWorldspawn, HxStrings);
+ end;
 end;
 
 (*procedure TTreeMapBrush.AddTo3DScene;
