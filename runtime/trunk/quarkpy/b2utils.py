@@ -498,11 +498,21 @@ def arcSubdivideLine(n, p0, p1, p2):
     points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
     return points
     
+#
+# get i, j from index position (row-after-row listing)
+#   think of a better name for this
+#
+def cpPos(p,b2):
+    i, j = divmod(p, b2.W)
+    return int(i), int(j)
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.15  2000/09/04 21:24:23  tiglari
+#added procedures for better circular arc segments
+#
 #Revision 1.14  2000/09/02 11:22:35  tiglari
 #generalized subdivideRows/Columns to arbitrary quilts
 #
