@@ -56,6 +56,38 @@ class IconHandle(qhandles.IconHandle):
         return mapentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
 
 
+
+class PointSpecHandle(qhandles.CenterHandle):
+    "3D point0 handle-like Specifics."
+
+    def __init__(self, pos, entity, spec):
+        qhandles.CenterHandle.__init__(self, pos, entity)
+        self.entity = entity
+        self.spec = spec
+
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        if flags&MB_CTRL:
+            g1 = grid[1]
+        else:
+            delta = qhandles.aligntogrid(delta, 0)
+            g1 = 0
+        self.draghint = vtohint(delta)
+        if delta or (flags&MB_REDIMAGE):
+            new=self.entity.copy()
+            s=new[self.spec]
+            if s:
+              pointpos=quarkx.vect(s)
+              pointpos= pointpos + delta
+              new[self.spec]=str(pointpos)
+              new=[new]
+            else:
+              new = None
+        else:
+            new = None
+        return [self.entity],new
+
+
 def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
     if pos is None:
         pos = o.origin
@@ -67,7 +99,7 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
         #
         for spec, cls in mapentities.ListAngleSpecs(o):
             s = o[spec]
-            if s:
+            if s:                
                 stov, vtos = cls.map
                 try:
                     normal = stov(s)
@@ -83,10 +115,23 @@ def CenterEntityHandle(o, view, handleclass=IconHandle, pos=None):
         # Set the hint as the entity classname in blue ("?").
         #
         new.hint = "?" + o.shortname + "||This point represents an entity, i.e. an object that appears and interacts in the game when you play the map. The exact kind of entity depends on its 'classname' (its name).\n\nThis handle lets you move the entity with the mouse. Normally, the mouvement is done by steps of the size of the grid : if the entity was not aligned on the grid before the movement, it will not be after it. Hold down Ctrl to force the entity to the grid."
+
+        #
+        # Compute a handle for aditional control points.
+        #
+        hp = []
+
+        for spec in mapentities.ListAddPointSpecs(o):
+            s = o[spec]
+            if s:
+                pointpos=quarkx.vect(s)
+                obj=PointSpecHandle(pointpos ,o ,spec )
+                obj.hint=spec
+                hp.append(obj)
         #
         # Return the handle
         #
-        return h+[new]
+        return h+[new]+hp
 
     else:
         #
@@ -1806,6 +1851,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.37  2003/03/15 20:54:20  cdunde
+#To update hints and add infobase links
+#
 #Revision 1.36  2003/03/06 22:21:34  tiglari
 #change for Py2.x compatibility
 #

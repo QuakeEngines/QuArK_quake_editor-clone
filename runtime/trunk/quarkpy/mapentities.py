@@ -95,6 +95,7 @@ class EntityManager:
 # are to be considered as 2D or 3D angles.
 #
 
+# tbd : this should be configured in the game addon file !
 def ListAngleSpecs(entity):
     h2D = maphandles.Angle2DHandle
     h3D = maphandles.Angles3DHandle
@@ -104,8 +105,27 @@ def ListAngleSpecs(entity):
         h = [("angle", h2D)]    # "angle" is 2D
     h.append(("angles", h3D))   # "angles" is 3D
     h.append(("mangle", h3D))   # "mangle" is 3D
-    h.append(("movedir", h3D))   # "mangle" is 3D
+    h.append(("movedir", h3D))   # HL2
+    h.append(("gibdir", h3D))   # HL2 
     return h
+
+
+#
+# A function to determine which Specifics in a Quake entity
+# are to be considered additional control points.
+#
+
+# tbd : this should be configured in the game addon file !
+def ListAddPointSpecs(entity):
+    h=[]
+    h.append("point0")   # HL2 ladder point
+    h.append("point1")   # HL2 ladder point
+    h.append("lowerleft")# HL2 breakable glass
+    h.append("upperleft")# HL2 breakable glass
+    h.append("lowerright")# HL2 breakable glass
+    h.append("upperright")# HL2 breakable glass
+    return h
+
 
 def entitylinear(entity, matrix):
     #
@@ -668,6 +688,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.35  2004/12/26 21:00:00  cdunde
+#To remove file errors and dupe entries.
+#
 #Revision 1.34  2004/12/26 20:08:38  cdunde
 #Added light Color-Picker function for Torque game engine.
 #
