@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.74  2004/11/25 01:25:24  alexander
+save in HL2 map format when MapFormat is configured to HL2
+
 Revision 1.73  2003/09/06 00:57:48  silverpaladin
 Fixed an index out of bounds error during leak search
 
@@ -1326,6 +1329,9 @@ begin
 
   if HL2 then
   begin
+    S1:=1.0/S1;
+    S2:=1.0/S2;
+
     S:=S+#13#10'  "uaxis" "';
     write4vectHL2(QV0, UOff, S);
     S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5)+'"';
