@@ -23,9 +23,6 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.30  2001/10/05 18:01:21  decker_dk
-Modified ConvertObjsToTextWithComment() so its output is a bit more human-readable.
-
 Revision 1.29  2001/06/14 18:54:46  decker_dk
 Added a 'ChoiceList' parsing to ConstructObjsFromText() - See function comments for reason.
 
@@ -919,119 +916,101 @@ begin
  try
   Ligne:=1;
   Prochain:=P+Granularite;
-
   Lu(0);
-  if P^<>'{' then
-   SyntaxError(5194);
-
+  if P^<>'{' then SyntaxError(5194);
   Level:=Self;
-
+  {IgnoreLevel:=0;}
   Lu(1);
   repeat
-
    while P^='}' do
-   begin
+    begin
      Lu(1);
-     Level.FinalizeFromText;
-
-     if Level=Self then
-     begin
-       if P^<>#0 then
+     {if IgnoreLevel>0 then
+      Dec(IgnoreLevel)
+     else}
+      Level.FinalizeFromText;
+      if Level=Self then
        begin
-         GlobalWarning(LoadStr1(5195))
-       end;
-
-       Self.FixupAllReferences;
-       Exit;
-     end
-     else
-     begin
-      Level:=Level.FParent
-     end;
-   end;
-
+        if P^<>#0 then GlobalWarning(LoadStr1(5195));
+        Self.FixupAllReferences;
+        Exit;
+       end
+      else
+       Level:=Level.FParent;
+    end;
    I:=1;
-
    while P[I] <> '=' do
-   begin
-     if P[I] in [#13, #10, #0] then
-      SyntaxError(5197);
+    begin
+     if P[I] in [#13, #10, #0] then SyntaxError(5197);
      Inc(I);
-   end;
-
+    end;
    J:=I+1;
-
    while P[I-1] in cSeperators do
     Dec(I);
-
    SetString(NameSpec, P, I);
    Lu(J);
-
    case P^ of
     '{': begin { New SubElement }
           Lu(1);
-          Q:=ConstructQObject(NameSpec, Level);
-          Level.SubElements.Add(Q);
-          Level:=Q;
+          {if IgnoreLevel=0 then}
+           Q:=ConstructQObject(NameSpec, Level)
+          {else
+           Q:=Nil};
+          {if Q=Nil then
+           Inc(IgnoreLevel)
+          else
+           begin}
+            Level.SubElements.Add(Q);
+            Level:=Q;
+           {end;}
          end;
-
     '@': begin { Load this file }
           Lu(1);
-          Level.LoadedFileLink(NameSpec, 0);
+          {if IgnoreLevel=0 then}
+           Level.LoadedFileLink(NameSpec, 0);
          end;
-
     '"', '$': { Text/Data Specific }
          begin
           Arg:=StringVal();
-          Level.SpecificsAdd(NameSpec+'='+Arg);
+          {if IgnoreLevel=0 then}
+           Level.SpecificsAdd(NameSpec+'='+Arg);
          end;
-
     '''':begin { Number Specific }
           Arg:='';
           Lu(1);
-
           while P^<>'''' do
-          begin
+           begin
             P1:=P;
-
             while not (P^ in (['''', #0]+cSeperators)) do
              Inc(P);
-
             SetString(A1, P1, P-P1);
-
             try
              Value:=StrToFloat(A1);
             except
              Raise EErrorFmt(5193, [Ligne, FmtLoadStr1(5209, [A1])]);
             end;
-
             SetLength(Arg, Length(Arg)+4);  { SizeOf(Single) }
             Move(Value, Arg[Length(Arg)-3], 4);  { SizeOf(Single) }
             Lu(0);
-            Finalize(Arg);
-          end;
-
+           end;
           Lu(1);
           NameSpec[1]:=Chr(Ord(NameSpec[1]) or chrFloatSpec);
-          Level.SpecificsAdd(NameSpec+'='+Arg);
+          {if IgnoreLevel=0 then}
+           Level.SpecificsAdd(NameSpec+'='+Arg);
          end;
-
     '!': begin { Copy Specifics+SubElements from this Object }
           Lu(1);
-          if not DoIncludeData(Level, Level, NameSpec) then
-           GlobalWarning(FmtLoadStr1(5643, [NameSpec]));
+          {if IgnoreLevel=0 then}
+           if not DoIncludeData(Level, Level, NameSpec) then
+            GlobalWarning(FmtLoadStr1(5643, [NameSpec]));
          end;
-
     '(': begin { Choice list }
           ChoiceList();
          end;
     else
-    begin
-     SyntaxError(5196)
-    end;
+     SyntaxError(5196);
    end;
   until False;
-
  finally
   ProgressIndicatorStop;
  end;
@@ -1314,206 +1293,154 @@ procedure ConvertObjsToTextWithComment(Level: QObject; L: TStringList; const Ind
 const
  Imprimable = [' '..#126] - ['"'];
  NonBinaire = [#13, #10, #9, ' '..#126];
- NewLine = [#13];
- c_MaxLineWidth = 254;
+ Marge      = 78;
 var
- S, Arg: String;
+ S, Arg{, Values}: String;
  P, I, J: Integer;
- Binaire, IsInsideQuotedString, IsPrefixedWithDollarChar: Boolean;
+ Binaire, Guillemet, Dollar{, FloatOk}: Boolean;
  Car: PChar;
  C: Char;
  Q: QObject;
- Value: Single;
- SpecificsMaxWidth: integer;
- LocalIndent: String;
+ Value{, Value2}: Single;
+{ValueL: LongInt absolute Value;
+ Value2L: LongInt absolute Value2;}
 begin
-  Level.Acces;
-
-  ProgressIndicatorStart(5443, Level.SubElements.Count+1);
-  try
-    { Figure out the max-width of all specifics,
-      and use that to "columnize" specs/args. }
-    SpecificsMaxWidth := 0;
-    LocalIndent := '  ';
-    for J:=0 to Level.Specifics.Count-1 do
-    begin
-      S:=Level.Specifics[J];
-      P:=Pos('=', S);
-      if (SpecificsMaxWidth < P) then
+ Level.Acces;
+{Level.BuildReferences;}
+ ProgressIndicatorStart(5443, Level.SubElements.Count+1); try
+ for J:=0 to Level.Specifics.Count-1 do
+  begin
+   S:=Level.Specifics[J];
+   P:=Pos('=', S);
+   Arg:=Indent + Copy(S, 1, P-1) + ' = ';
+   if (Ord(S[1])>=chrFloatSpec) and ((Length(S)-P) and 3 = 0) then
+    begin  { float Specific }
+     Arg[Length(Indent)+1]:=Chr(Ord(S[1]) and not chrFloatSpec);
+     C:='''';
+     for I:=1 to (Length(S)-P) div 4 do
       begin
-        SpecificsMaxWidth := P;
-      end;
-    end;
-    { Use the indent of "every 2nd column" }
-    SpecificsMaxWidth := SpecificsMaxWidth + (SpecificsMaxWidth and 1);
-    for I:=1 to SpecificsMaxWidth div 2 do
-    begin
-      LocalIndent := LocalIndent + '  ';
-    end;
-
-    for J:=0 to Level.Specifics.Count-1 do
-    begin
-      S:=Level.Specifics[J];
-      P:=Pos('=', S);
-
-      Arg := Indent + Copy(S, 1, P-1) + ' ';
-
-      { Fill out the remaining with spaces, until the 'SpecificsMaxWidth' is reached }
-      { [Now, if this was C/C++ I know of a faster way than this for-loop /Decker] }
-      for I:=P+1 to SpecificsMaxWidth do
-      begin
-        Arg := Arg + ' ';
-      end;
-      Arg := Arg + '= ';
-
-      if (Ord(S[1])>=chrFloatSpec) and ((Length(S)-P) and 3 = 0) then
-      begin  { float Specific }
-        Arg[Length(Indent)+1]:=Chr(Ord(S[1]) and not chrFloatSpec);
-        C:='''';
-
-        for I:=1 to (Length(S)-P) div 4 do
+       if Length(Arg)>=Marge then
         begin
-          if Length(Arg) >= c_MaxLineWidth then
+         L.Add(Arg);
+         Arg:=Indent+' ';
+        end;
+       Move(S[P+I*4-3], Value, 4);  { SizeOf(Single) }
+       Arg:=Arg + C + ftos1(Value);
+       C:=' ';
+      end;
+     if C<>' ' then Arg:=Arg+C;
+     Arg:=Arg+'''';
+    end
+   else
+    if P=Length(S) then
+     Arg:=Arg+'""'   { empty Specific }
+//    else if (Length(S)=P+1) and (S[P+1]='!') then
+//      Arg:=Arg+'!'
+    else
+     begin  { normal Specific }
+      Binaire:=False;
+      for I:=Length(S) downto P+1 do
+       if not (S[I] in NonBinaire) then
+        begin
+         if (I=Length(S)) and (S[I]=#0) then Continue;  { ignore this case }
+         Binaire:=True;
+         Break;
+        end;
+    (*FloatOk:=False;
+      if Binaire and ((Length(S)-P) and 3 = 0)   { 3 = SizeOf(Single)-1 }
+      and (Length(S)-P<=MaxFloatSpecLength) then
+       begin
+        Values:='''';
+        try
+         for I:=1 to (Length(S)-P) div 4 do
           begin
+           Move(S[P+I*4-3], Value, 4);  { SizeOf(Single) }
+           if (Value=0)
+           or ((Value>-MaxFloatAccept) and (Value<MaxFloatAccept)
+            and ((Value<-MinFloatAccept) or (Value>MinFloatAccept))) then
+            begin
+            {Value2:=StrToFloat(FloatToStr(Value));
+             if ValueL<>Value2L then
+              begin
+               FloatOk:=False;
+               Break;
+              end;}
+             Values:=Values + ftos1(Value) + ' ';
+            end;
+          end;
+         Values[Length(Values)]:='''';
+         Arg:=Arg+Values;
+         FloatOk:=True;
+        except
+         {FloatOk:=False;}
+        end;
+       end;
+      if not FloatOk then*)
+       begin
+        Guillemet:=False;
+        Dollar:=False;
+        Car:=PChar(S)+P;
+        for I:=P+1 to Length(S) do
+         begin
+          if Length(Arg)>=Marge then
+           begin
+            if Guillemet then
+             Arg:=Arg+'"';
             L.Add(Arg);
-            Arg:=Indent+LocalIndent;
-          end;
-
-          Move(S[P+I*4-3], Value, 4);  { SizeOf(Single) }
-          Arg:=Arg + C + ftos1(Value);
-          C:=' ';
-        end;
-
-        if C<>' ' then
-        begin
-          Arg:=Arg+C
-        end;
-
-        Arg:=Arg+'''';
-      end
-      else
-      begin
-        if P=Length(S) then
-        begin
-          Arg:=Arg+'""'   { empty Specific }
-        end
-        else
-        begin  { normal Specific }
-          Binaire:=False;
-
-          { Check to see if it contains any binary characters. }
-          for I:=Length(S) downto P+1 do
-          begin
-            if not (S[I] in NonBinaire) then
-            begin
-              if (I=Length(S)) and (S[I]=#0) then
-              begin
-                Continue  { ignore this case }
-              end;
-
-              Binaire:=True;
-              Break;
-            end;
-          end;
-
-          begin
-            IsInsideQuotedString:=False;
-            IsPrefixedWithDollarChar:=False;
-            Car:=PChar(S)+P;
-
-            for I:=P+1 to Length(S) do
-            begin
-              if Length(Arg)>=c_MaxLineWidth then
-              begin
-                if IsInsideQuotedString then
-                begin
-                  Arg:=Arg+'"'
-                end;
-
-                L.Add(Arg);
-                Arg:=Indent+LocalIndent;
-                IsInsideQuotedString:=False;
-                IsPrefixedWithDollarChar:=False;
-              end;
-
-              if Binaire or not (Car^ in Imprimable) then
-              begin
-                if IsInsideQuotedString then
-                begin
-                  Arg:=Arg+'"';
-                  IsInsideQuotedString:=False;
-                end;
-
-                { If we encountered a NewLine '$0D', then make a true newline in the output file.
-                  This makes it be more readable for the manual .QRK-editing user. }
-                if (Car^ in NewLine) then
-                begin
-                  L.Add(Arg);
-                  Arg:=Copy(Indent+LocalIndent, 1, Length(Indent+LocalIndent)-3);
-                end;
-
-                if not IsPrefixedWithDollarChar then
-                begin
-                  Arg:=Arg+'$';
-                  IsPrefixedWithDollarChar:=True;
-                end;
-
-                Arg:=Arg+IntToHex(Ord(Car^), 2);
-              end
-              else
-              begin
-                IsPrefixedWithDollarChar:=False;
-
-                if not IsInsideQuotedString then
-                begin
-                  Arg:=Arg+'"';
-                  IsInsideQuotedString:=True;
-                end;
-
-                Arg:=Arg+Car^;
-              end;
-
-              Inc(Car);
-            end;
-
-            if IsInsideQuotedString then
-            begin
-              Arg:=Arg+'"'
-            end;
-          end;
-        end;
-      end;
-
-      L.Add(Arg);
-    end;
-
-    ProgressIndicatorIncrement;
-
-    if Level.WriteSubElements then
-    begin
-      for J:=0 to Level.SubElements.Count-1 do
-      begin
-        Q:=Level.SubElements[J];
-
-        if Q.Flags and ofFileLink <> 0 then
-        begin
-          L.Add(Indent + Q.Name + Q.TypeInfo + ' = @')
-        end
-        else
-        begin
-          L.Add(Indent + Q.Name + Q.TypeInfo +' =');
-          L.Add(Indent + '{');
-          ConvertObjsToTextWithComment(Q, L, Indent+'  ');
-          L.Add(Indent + '}');
-        end;
-
-        ProgressIndicatorIncrement;
-      end;
-    end;
-
-  finally
-    ProgressIndicatorStop;
+            Arg:=Indent+' ';
+            Guillemet:=False;
+            Dollar:=False;
+           end;
+          if Binaire or not (Car^ in Imprimable) then
+           begin
+            if Guillemet then
+             begin
+              Arg:=Arg+'"';
+              Guillemet:=False;
+             end;
+            if not Dollar then
+             begin
+              Arg:=Arg+'$';
+              Dollar:=True;
+             end;
+            Arg:=Arg+IntToHex(Ord(Car^), 2);
+           end
+          else
+           begin
+            Dollar:=False;
+            if not Guillemet then
+             begin
+              Arg:=Arg+'"'+Car^;
+              Guillemet:=True;
+             end
+            else
+             Arg:=Arg+Car^;
+           end;
+          Inc(Car);
+         end;
+        if Guillemet then
+         Arg:=Arg+'"';
+       end;
+     end;
+   L.Add(Arg);
   end;
+ ProgressIndicatorIncrement;
+ if Level.WriteSubElements then
+ for J:=0 to Level.SubElements.Count-1 do
+  begin
+   Q:=Level.SubElements[J];
+   if Q.Flags and ofFileLink <> 0 then
+    L.Add(Indent + Q.Name + Q.TypeInfo + ' = @')
+   else
+    begin
+     L.Add(Indent + Q.Name + Q.TypeInfo +' =');
+     L.Add(Indent + '{');
+     ConvertObjsToTextWithComment(Q, L, Indent+'  ');
+     L.Add(Indent + '}');
+    end;
+   ProgressIndicatorIncrement;
+  end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure ConvertObjsToText(Self: QObject; L: TStringList; Comment: Boolean);
