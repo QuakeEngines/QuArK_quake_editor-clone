@@ -1931,6 +1931,15 @@ var
        (name: 'translucent'; pos: 28),
        (name: 'ladder'; pos: 29));
 
+    {tiglari}
+    function CheckFieldDefault(const spec:String; const Q:QPixelSet) : String;
+    begin
+     if (F.Specifics.Values[spec]='') and (Q.Specifics.Values[spec]<>'') then
+       result:= Q.Specifics.Values[spec]
+     else
+       result:='0'
+    end;
+    {/tiglari}
 
     procedure StashFloatFlag(const spec : String; const places : integer);
     var val : Single;
@@ -2049,7 +2058,9 @@ var
      if MJ=mjHexen then
       S:=S+' -1'
      else if MJ=mjSin then
-      { tiglari }
+      { tiglari: in Sin, we write to the map individual
+         flag positions that are different from the default..
+         messy! }
       begin
         Q := GlobalFindTexture(F.NomTex,Nil);
         if Q<>Nil then
@@ -2087,7 +2098,32 @@ var
         finally Q.AddRef(-1); end;
         end
      { /tiglari }
-
+     else  {tiglari: kp seems to need field values
+               written into the map }
+      if MJ=mjKingPin then
+      begin
+       Q := GlobalFindTexture(F.NomTex,Nil);
+       if Q<>Nil then
+       begin { see comments to QkMap on what's going on here }
+         Q:=Q.LoadPixelSet;
+         {Query for Armin: this was stuck in to correspond
+           to something in the Sin stuff but it breaks things
+           because Q is QTextureLnk always comes out false.
+           What is the Sin version for?  Should anything like
+           it be here?
+         if not (Q is QTextureLnk) then
+           Q:=Nil;  }
+       end;
+       if Q=Nil then Q:=QTextureLnk.Create('', Nil);
+       {more Query for Armin: what's the Addref stuff
+         for? }
+       Q.AddRef(+1); try
+        S1:=CheckFieldDefault('Contents',Q);
+        S2:=CheckFieldDefault('Flags',Q);
+        S3:=CheckFieldDefault('Value',Q);
+        S:=S+' '+S1+' '+S2+' '+S3;
+       finally Q.AddRef(-1); end;
+      end {\tiglari}
      else
       if MJ>=mjQuake2 then
        begin
