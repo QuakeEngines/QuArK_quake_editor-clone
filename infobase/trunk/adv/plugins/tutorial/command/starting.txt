@@ -1,11 +1,16 @@
-title: Getting Noticed
+title: Setting up
 author: tiglari
 
-To get noticed by the mapeditor, the name of a plugin
-must start with `map' (the code that handles this is
-<html><tt>loadmapeditor()</tt> in
-<html><tt>quarkpy\qutils.py</tt>).
-So we can shift the regular version of maptagside out of
-the way by renaming it to say `tagside.py', and then
-start a new file `maptagside.py' with our favorite
-text editor.
+What we'll be doing is making a replacement maptagside plugin.
+The real one is interconnected with some other plugins
+which we'll have to disable, & it would not be a good
+idea to mess with your regular quark installation, so
+you should make a second one, and in that installation,
+remove the files `plugins\mb2caulk' and `plugins\maptagside'.
+
+Since we're going to be making a series of new maptagside
+plugins, it might be convenient to call them maptagside0.py,
+maptagside01.py; you can disable the older ones and keep
+them from loading by renaming them `tagside0.py', etc
+(since plugins are only loaded by the mapeditor if their
+names begin with q- or map-, or mb2- for Q3 engine games).
