@@ -74,6 +74,30 @@ class QBSPConsole(BspConsole):
         self.editor = None
 
 
+class BSPC_Console(qquake.BatchConsole):
+    "StdOut console for programs that make an .aas from .bsp file."
+
+    def __init__(self, cmdline, currentdir, bspfile, editor, next):
+        qquake.BatchConsole.__init__(self, cmdline + ".bsp", currentdir, next)
+        try:
+            attr = quarkx.getfileattr(bspfile)
+            if (attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE):
+                quarkx.setfileattr(bspfile, attr-FA_ARCHIVE)
+        except quarkx.error:
+            pass
+        self.bspfile = bspfile
+        #### FIXME: we want to check if the aas file is created at all
+    def close(self):
+        attr = quarkx.getfileattr(self.bspfile)
+        if (attr==FA_FILENOTFOUND) or not (attr&FA_ARCHIVE):
+            print "-"*79
+            print "Failed to build the file", self.bspfile
+            quarkx.console()
+            del self.next
+        else:
+            qquake.BatchConsole.close(self)
+            return 1
+
 
 class CloseConsole:
     def run(self):
@@ -169,7 +193,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     for mapfileobject, root, buildmode in maplist:
         map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
         mapinfo = {"map": map}
-        if buildmode["QCSG1"] or buildmode["QBSP1"] or buildmode["VIS1"] or buildmode["LIGHT1"]:
+        if buildmode["QCSG1"] or buildmode["QBSP1"] or buildmode["VIS1"] or buildmode["LIGHT1"] or buildmode["BSPC1"]:
             bspfile = quarkx.outputfile("maps/%s.bsp" % map)
             if bspfile in extracted:
                 continue
@@ -277,7 +301,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         mapcmd = "./maps/" + map
         bspfile = quarkx.outputfile("maps/%s.bsp" % map)
 
-        for pgrm, console in (("LIGHT", BspConsole), ("VIS", BspConsole), ("QBSP", QBSPConsole), ("QCSG", BspConsole)):
+        for pgrm, console in (("BSPC", BSPC_Console), ("LIGHT", BspConsole), ("VIS", BspConsole), ("QBSP", QBSPConsole), ("QCSG", BspConsole)):
             pgrm1 = pgrm+"1"
             if buildmode[pgrm1]:    # prepare to run this program
                 cmdline = setup[pgrm1]
@@ -425,5 +449,8 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.3  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
