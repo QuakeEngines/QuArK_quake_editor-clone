@@ -6,9 +6,9 @@ around the z axis. from elementry trig and some visualization
 you can see that the result of this will be to transform
 the x, y and z axes as follows:
 <code>
-xa = <1, 0, 0>  -> <<a>cos(a), sin(a), 0>
-ya = <0, 1, 0>  -> <-sin(a), cos(a), 0>
-za = <0, 0, 1>  -> <0, 0, 1> (no change)
+xa = &lt;1, 0, 0&gt;  -> &lt;&lt;a&gt;cos(a), sin(a), &gt;>
+ya = &lt;0, 1, 0&gt;  -> &lt;-sin(a), cos(a), 0&gt;
+za = &lt;0, 0, 1&gt;  -> &lt;0, 0, 1&gt; (no change)
 </code>
 So in quarkpy.qeditor.py, we find this function to
 define the matrix for rotation by an angle rad (specified
@@ -40,11 +40,11 @@ the corresponding coordinate vector.
 For most uses of linear mappings, we don't want to use them
 on their own, but need to combine them with another kind
 of mapping, 'translations'.  Linear mappings always leave
-the origin <0, 0, 0> untouched; a translation adds the same
+the origin &lt;0, 0, 0&gt; untouched; a translation adds the same
 amount to everything, thereby shifting the whole space by
 a certain amount in a certain direction.  Now suppose we
 have an object sitting in our map, centered say at the
-point <100, 250, 920>.  If we just applied a rotation to it,
+point &lt;100, 250, 920&gt;.  If we just applied a rotation to it,
 it would rotate around the map origin, which is probably not
 what we want.  What we probably want to do is first apply
 a translation so that the point we want it to rotate around
