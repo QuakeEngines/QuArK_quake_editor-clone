@@ -161,7 +161,7 @@ def ZoomToMe(m):
         zoomToMeFunc(editor,m.object)
 
 quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Look and Zoom in 3D views", "3Dzoom", (1,1),
-      hint="|Look and Zoom in 3D views:\n\nWhen this menu item is checked, it will zoom in on the selection(s) in all of the 3D views with the first click of the\n' Zoom to selection' button. With a second click of the button, it will center the selection(s) in the 3D views.\n\nWhen unchecked, it will only look in the selection(s) direction from the current camera position.|intro.mapeditor.menu.html#optionsmenu"))
+      hint="|Look and Zoom in 3D views:\n\nWhen this menu item is checked, it will zoom in and center on the selection(s) in all of the 3D views when the 'Zoom to selection' button on the 'Selection Toolbar' is clicked.\n\nWhen unchecked, it will only look in the selection(s) direction from the current camera position.|intro.mapeditor.menu.html#optionsmenu"))
 
         
 def zoomToMeFunc(editor,object):
@@ -173,22 +173,45 @@ def zoomToMeFunc(editor,object):
     if scale1 is not None:
         layout.editor.setscaleandcenter(scale1, center1)
     #
-    # find my spot -  new cdunde
-    # 3d views
+    # 3d views with zoom feature
     #
     views = filter(lambda v:v.info["type"]=="3D", editor.layout.views)
     for view in views:
         pos, yaw, pitch = view.cameraposition
         def between(pair):
             return (pair[0]+pair[1])/2
+        def objsize(pair):
+            return (pair[1]-pair[0])
         center = between(quarkx.boundingboxof([object]))
+        size = objsize(quarkx.boundingboxof([object]))
         dir = (center-pos).normalized
         pitch, yaw = vec2rads(dir)
         if MapOption("3Dzoom"):
-            pos = dir
+            if size.x > size.y:
+                if size.x > size.z:
+                    newposx = center.x - (size.x*1.5)
+                    pos = quarkx.vect(newposx,center.y,center.z)
+                else:
+                    newposx = center.x - (size.z*1.5)
+                    pos = quarkx.vect(newposx,center.y,center.z)
+            else:
+                if size.y > size.z:
+                    newposx = center.x - (size.y*1.5)
+                    pos = quarkx.vect(newposx,center.y,center.z)
+                else:  # This allows for entities without bounding boxes
+                    if size.x == 0:
+                        if size.y == 0:
+                            if size.z == 0:
+                                newposx = center.x - 100
+                                pos = quarkx.vect(newposx,center.y,center.z)
+                            else:continue
+                        else:continue
+                    else:
+                        newposx = center.x - (size.z*1.5)
+                        pos = quarkx.vect(newposx,center.y,center.z)
+            yaw = 0
+            pitch = 0
         view.cameraposition = pos, yaw, pitch
-        print quarkx.boundingboxof([object])
-        print view.cameraposition
     editor.invalidateviews()
 
 
@@ -1019,6 +1042,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.26  2003/11/15 09:30:55  cdunde
+# To add 3D zoom feature to Selection toolbar and Options menu with Infobase update
+#
 # Revision 1.25  2003/04/07 14:01:13  cdunde
 # Multiple selections-fix error, add warning with instructions and keep Cancel Selections active.
 #
