@@ -366,7 +366,7 @@ class BaseLayout:
         ico_maped=ico_dict['ico_maped']
         self.explorer = panel.newexplorer()
         self.explorer.flags = EF_AUTOFOCUS
-        self.explorer.hint = "Data displays||Data displays:\n\nThese are the various displays to help you build and organize your map.\n\nThere are five specific displays, they are:\n\nTree-view (hierarchy-view)\nSpecifics/Args-view\nPolyhedron-view\nFace-view\n3D-view\n\nFor a detailed description and use of these displays, see the infobase documents.|intro.mapeditor.dataforms.html"
+        self.explorer.hint = "||Data displays:\n\nThese are the various displays to help you build and organize your map.\n\nThere are five specific displays, they are:\n\nTree-view (hierarchy-view)\nSpecifics/Args-view\nPolyhedron-view\nFace-view\n3D-view\n\nFor a detailed description and use of these displays, see the infobase documents.|intro.mapeditor.dataforms.html"
         page0 = qtoolbar.button(None, "Tree-view (hierarchy-view)||Tree-view (hierarchy-view):\n\nThis view displays a  list of everything in your map : entities, polyhedrons, groups, etc.\n\n You should consider it as the best way to organize your map so that you can easily find what you are looking for.\n\nUse groups (the button above) to organize your map.\nFor more information about the available object types, see the tutorials.\n\nAlso see the infobase for a more detailed description and use of this view display.", ico_maped, 8, "Tree-view (hierarchy-view)", infobaselink='intro.mapeditor.dataforms.html#treeview')
         page0.pc = [self.explorer]
         plist, mppages = self.bs_additionalpages(panel)
@@ -607,6 +607,11 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.13  2003/12/17 13:58:59  peter-b
+#- Rewrote defines for setting Python version
+#- Removed back-compatibility with Python 1.5
+#- Removed reliance on external string library from Python scripts
+#
 #Revision 1.12  2003/07/07 07:18:31  cdunde
 #To correct caption exclusion error and hint display
 #
