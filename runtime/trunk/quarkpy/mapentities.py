@@ -386,21 +386,21 @@ class BezierType(EntityManager):
                   [0x00F0F0, 0x00D0D0, 0x00B0B0, 0x009090, 0x007070],
                   [0xF000F0, 0xD000D0, 0xB000B0, 0x900090, 0x700070],
                   [0xF0F0F0, 0xD0D0D0, 0xB0B0B0, 0x909090, 0x707070]]
-        colj = 0 #DECKER
+        coli = 0 #DECKER
         h = []
         cp = o.cp
-        for j in range(len(cp)):
-            coli = 0 #DECKER
-            cpline = cp[j]
-            for i in range(len(cpline)):
-                c1 = cpline[i]
+        for i in range(len(cp)):
+            colj = 0 #DECKER
+            cpline = cp[i]
+            for j in range(len(cpline)):
+                c1 = cpline[j]
                 # makes a list of couples (projected position, handle object)
-                h.append((view.proj(c1), mapbezier.CPHandle(c1, o, (i,j), colors[colj][coli]))) #DECKER
+                h.append((view.proj(c1), mapbezier.CPHandle(c1, o, (i,j), colors[coli][colj]))) #DECKER
                 #DECKER - I have no idea how to make the below more "hardcore", so I resolve to basic addition coding
-                coli = coli + 1 #DECKER
-                if coli > 4: coli = 0 #DECKER
-            colj = colj + 1 #DECKER
-            if colj > 6: colj = 0 #DECKER
+                colj = colj + 1 #DECKER
+                if colj > 4: colj = 0 #DECKER
+            coli = coli + 1 #DECKER
+            if coli > 6: coli = 0 #DECKER
 
         h.sort()  # sort on Z-order, nearest first
         h.reverse()  # we have to draw back handles first, so reverse the order
