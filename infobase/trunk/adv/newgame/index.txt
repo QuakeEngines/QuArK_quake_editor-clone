@@ -6,12 +6,12 @@ desc: gamedata
 desc: aftermath
 
 Here is a quick overview of how to support a new game; if the game uses
-pretty much the same tech as one that QuArK already supports, this might
-be enough, otherwise you might actually have learn something about how
+pretty much the same technology as one that QuArK already supports, this might
+be enough, otherwise you might actually have to learn something about how
 QuArK works.
 
 But first, before actually doing anything, post to one of the
-QuArK yahoo groups, or if you for some reason can't do that, email Decker
-or tiglari to say what you want to do, in case somebody is already doing it.
-
+<a href="http://www.planetquake.com/quark/forums.shtml">QuArK Yahoo groups</a>,
+or if you for some reason can't do that, e-mail Decker or tiglari to say what
+you want to do, in case somebody is already doing it.
 

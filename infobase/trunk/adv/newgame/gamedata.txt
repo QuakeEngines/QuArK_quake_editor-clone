@@ -16,20 +16,20 @@ A workable texture toolbox for SoF2 is:
     Root = "SoF2 Textures.qtxfolder"
     SoF2 Textures.qtxfolder =
     {
-      i Textures and Shaders.osfolder =
+      Textures and Shaders.osfolder =
       {
         path = "base"
       }
     }
   }
 </code>
-This will load up textures dynamically from the .pk3 folders.
+This will load up textures dynamically from the <g>.PK3</g> folders.
 For better performance,
 you can use the 'make texture links' button in the texture toolbox and
-check 'static' to produce a list of the textures in the .pk3.
+check 'static' to produce a list of the textures in the .PK3.
 
-For entities, if the game has a .def or .fgd file, you can use the
-Files|Convert From menu item to produce a basic entity toolbox entry
+For entities, if the game has a <g>.DEF</g> or <g>.FGD</g> file, you can use the
+<act>File|Convert from</act> facility from the QuArK-Explorer main menu, to produce a basic entity toolbox entry
 which in the case of SoF2 might start look like this:
 <code>
   SoF2Entities.qtx =
@@ -48,6 +48,4 @@ which in the case of SoF2 might start look like this:
 Whatever you get should be substituted for the entity tollbox folder in
 the file you're copying from, and later edited by hand to add missing entities,
 improved help, etc.
-
-
 
