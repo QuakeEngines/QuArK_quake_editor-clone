@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.34  2002/03/07 19:16:02  decker_dk
+Removed QImages, as it was just another name for QImage
+
 Revision 1.33  2001/07/23 12:08:04  tiglari
 now hopefully map comments really aren't written in .bsp's!
 
@@ -153,10 +156,7 @@ const
 
  soSelOnly           = $00000001;
  soIgnoreToBuild     = $00000002;
- soDisableEnhTex     = $00000004;
  soDisableFPCoord    = $00000008;
- soEnableBrushPrim   = $00000010;
- soWriteValve220     = $00000020;
  soWrite6DXHierarky  = $00000080;
 
  soDirectDup         = $04000000;
@@ -164,7 +164,7 @@ const
  soOutsideWorldspawn = $10000000;
  soAddTo3DScene      = $20000000;
  soNonParcourirSel   = $40000000;
- soErrorMessageFlags = soDisableEnhTex;
+ soErrorMessageFlags = $00000004;
 
  SpecClassname = 'classname';
  ClassnameWorldspawn = 'worldspawn';
@@ -2404,9 +2404,10 @@ begin
     to set up special .MAP writing methods.
     Note, that specifics that starts with a ';'-character
     will not be written to the .MAP file! }
+  { this is nuked, maps will now be written based on OutputMapFormat
   if Specifics.Values['mapversion']='220' then
-    Flags:=Flags + soWriteValve220
-  else if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
+    Flags:=Flags + soWriteValve220, except we'll leave 6dx the same for now 
+  else }if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
     Flags:=Flags + soWrite6DXHierarky;
 
   I := GetFirstEntityNo;
