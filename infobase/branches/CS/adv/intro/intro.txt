@@ -1,0 +1,106 @@
+title: Introduction
+author: Tiglari
+
+Quark development can be carried out at three levels:
+
+  the *.qrk configuration files
+  
+  the Python code
+  
+  the Delphi code.
+  
+The first two require just a text-editor, since a functioning Quark
+installation includes the Python interpreter, while the last requires
+Delphi 2 or better.  Older versions of Delphi can often be picked
+up quite inexpensively, though the improved code navigation
+features of Delphi 4/5 make life much easier.
+
+TC's can typically be supported by creating new *.qrk files in the
+form of `addons', while supporting a new game usually requires some
+delphi coding (mostly because each game tends to introduce some quirks
+into the texture and map formats, and the read/write code for these
+needs to be reasonably fast).  Interface ideas on the other hand can
+often be supported just in Python, with maybe a little bit of Delphi
+to support a new `specific type' in a form (if you have a bright idea
+and think you need a new specific type, some delphi coder might
+well be able to provide it).
+
+Central to eveything is the concept of `QObject', Quark's universal
+format for the storage and management of structured information.
+The .Qrk files are just a written format for QObjects, and understanding
+them is essential for following the Python and Delphi as well.
+
+A QObject is a thing (technically an instance of a class in Delphi)
+with two kinds of properties:
+
+<html><ul><li>
+A list of attributes called `Specifics', each with a value, which
+      might be a string, a number, a sequence of numbers or a few
+      other things.
+<html><li>      
+A list of `subelements' (SousElements in the Delphi, .subitems
+      in the Python), each of which is just another QObject.
+<html></ul>
+      
+So a face is a QObject with a `v' specific of 9 numbers indicating
+the face and texture position information (the location of the
+corner and two ends of the Cyan L), and a `tex' specific giving
+the name of the texture.  You can see the specifics of a map object
+by hittng the second button over the multi-page panel (it's usually
+only interesting for entities).
+
+And a poly (brush) is a QObject whose list of subitems are the non-shared
+faces of that poly (shared faces appear in the subitem list of the group
+containing that poly).  And so on.
+
+There's one special specific that should always be there, and maybe
+shouldn't be thought of as a specific at all, and that is `name'.
+A QObject's name is divided into two parts, shortname, and extension.
+The shortname is usually just an identifying label (tho for entities
+it's the classname), but the extension, separated by a dot or colon,
+specifies the kind of object.  I don't fully grasp the difference
+between dot extensions, like .qctx (Quake Context) and colon extension
+like :f (face), but the dots seem to be file-like objects discriminated by
+what's done with them by the surrounding code, whereas the colon extensions
+seem to refer to delphi-defind subclasses of QObject, with special
+properties and `methods' defined in the Delphi code, and available
+in Python.  The coding details don't matter for people just modifying
+.qrk's, but here's a list of some of the major extensions:
+
+<html><ul><li>
+   .qctx - Quake Context.  Contains info that modifies how things are done
+<html><li>
+   .qtx  -  Toolbox.  Collection of objects that can be chosen from and
+             inserted into something.
+<html><li>
+   .qtxfolder - folder in .qtx
+<html><li>
+   :form - specifies a format for a window whereby info about something
+             is entered into Quark.  To support a mod, you'll have to
+             get familiar with the :form object associated with each
+             entity, these are found in the entity forms.qctx of the
+             .qrk
+<html><li>
+   :f    - face
+<html><li>
+   :p    - poly (brush; faces in subitems thereof, shortname arbitrary
+              label)
+<html><li>
+   :g    - group (contained faces, brushes & entities in subitems,
+              shortname arbitrary label)
+<html><li>
+   :b    - brush entity (attached brushes in subitems, entity attributes
+              in specifics, shortname = classname)
+               
+<html><li>
+   :e    - point entity (entity attributes in specifics, shortname =
+              classname)
+<html></ul>
+
+Because each specific has a unique identifying name, the order of the
+specifics list doesn't matter, but the subelements don't have labels;
+for map objects, they are displayed in the tree-view, and the order is
+as given.  In principle you could make something depend on it, tho I
+don't think anyone ever has).
+
+With QObjects in hand, we push on to .qrk's.

@@ -1,0 +1,4 @@
+title: File-by-file descriptions
+subdir: bezier qkmap qkq3a
+
+This section contains detailled description of some of the Pascal source files.

@@ -1,0 +1,6 @@
+title: Saving files
+author: Armin Rigo
+
+Saving files is the exact inverse of loading them. The method Enregistrer must turn the Specific/Args and the subobjects structure back into a file. ("Enregistrer" = "To store".)
+
+If the Charger method used LoadSibling, Enregistrer calls Info.WriteSibling (see QkMdl.pas).

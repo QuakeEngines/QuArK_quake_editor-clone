@@ -1,0 +1,138 @@
+title: 3D Vector objects
+author: Armin Rigo
+format: html
+
+<p>3D Vector Objects are created with the function quarkx.vect. Vectors are immutable in the Python sense. Vector Objects usually represent 3D points or 3D vectors, but in some cases they are projections on a map view. See the second table below for the additionnal attributes that apply to projected vectors only. All vectors have a few attributes you can read, and you can use the arithmetic operations described below:</p>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+v+w<br>
+v-w<br>
+-v
+</td><td>
+Sum, difference, negation of vectors
+</td></tr>
+
+<tr><td class="doccode">
+v*float<br>
+float*v<br>
+v/float
+</td><td>
+Multiplication or division of a vector by a float
+</td></tr>
+
+<tr><td class="doccode">
+v*w
+</td><td>
+Dot product
+</td></tr>
+
+<tr><td class="doccode">
+v^w
+</td><td>
+Cross product
+</td></tr>
+
+<tr><td class="doccode">
+abs(v)
+</td><td>
+Norm (length) of a vector
+</td></tr>
+
+<tr><td class="doccode">
+boolean value
+</td><td>
+A vector is considered <span class="doccode">False</span> if it is zero or almost zero, to accomodate for small computation errors.
+</td></tr>
+
+<tr><td class="doccode">
+str(v)
+</td><td>
+String representation. <span class="doccode">quarkx.vect(string)</span> is the inverse operation.
+</td></tr>
+
+<tr><td class="doccode">
+v.copy
+</td><td>
+A copy of the vector (note: no “ () ”). Probably not useful, as vectors are immutable anyway.
+</td></tr>
+
+<tr><td class="doccode">
+v.normalized
+</td><td>
+A normalized copy of length 1 of the vector.
+</td></tr>
+
+<tr><td class="doccode">
+v.tuple
+</td><td>
+A tuple <span class="doccode">(x,y,z)</span> with the vector coordinates.
+</td></tr>
+
+<tr><td class="doccode">
+v.x<br>
+v.y<br>
+v.z
+</td><td>
+The individual coordinates.
+</td></tr>
+
+</table>
+
+<p>Note: do not compare two vectors with "<span class="doccode">v=w</span>"! Instead, make their difference and check if the result is <span class="doccode">True</span> or <span class="doccode">False</span> with a boolean operation.</p>
+
+<p>About projected vectors: their <span class="doccode">x</span> and <span class="doccode">y</span> coordinates are pixels in the window, and the <span class="doccode">z</span> coordinate represents the depth. Depending on the projection type, flat or perspective, the <span class="doccode">z</span> coordinate has various meanings. You cannot tell which point is nearer by comparing their <span class="doccode">z</span> values; instead, use the compare operators on the vectors themselves:</p>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+v&lt;w<br>
+v=w<br>
+v&gt;w
+</td><td>
+Compares the depth of vectors. <span class="doccode">v&lt;w</span> if <span class="doccode">v</span> is nearer than <span class="doccode">w</span>.
+</td></tr>
+
+<tr><td class="doccode">
+v.visible
+</td><td>
+<span class="doccode">1</span> or <span class="doccode">0</span> depending on whether the original 3D point was in a visible screen region or not. It is <span class="doccode">0</span> if, projected from a perspective view, the point was behind the camera. In this case, <b>don’t use</b> the values <span class="doccode">v.x</span> and <span class="doccode">v.y</span> to draw something! You would draw it somewhere in the middle of the window, where there is actually nothing. <span class="doccode">v.visible</span> is <span class="doccode">-1</span> if v is not a projected point.
+</td></tr>
+
+<tr><td class="doccode">
+v.offscreen
+</td><td>
+<span class="doccode">0</span> if the point is really on-screen, and neither too far or too near. <span class="doccode">offscreen</span> is actually a combination of flags that tell whether the point is too much to the left, too far, and so on.
+</td></tr>
+
+</table>
+
+<p>The control points of Bezier patches use an extension of the 3D vectors: 5D vectors. These vectors have two additionnal coordinates, representing the texture coordinates. 5D vectors have the same Python type as 3D vectors, and all operations you can do with 3D vectors can be done with 5D vectors too; here is the new stuff:</p>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+v+w<br>
+v-w<br>
+v*float<br>
+float*v<br>
+v/float
+</td><td>
+These operations apply on all 5 coordinates. Note that adding or subtracting a 3D and a 5D vector together will produce a 5D vector as expected.
+</td></tr>
+
+<tr><td class="doccode">
+v.tex_s<br>
+v.tex_t
+</td><td>
+The two additional coordinates of 5D vectors.
+</td></tr>
+
+<tr><td class="doccode">
+v.tex
+</td><td>
+The tuple <span class="doccode">(v.tex_s, v.tex_t)</span>.
+</td></tr>
+
+</table>
