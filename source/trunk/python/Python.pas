@@ -19,10 +19,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+// Comments:
+(* this file has been hacked by Rowdy and tiglari to make QuArK work
+with Python 2.X.    We've tried to rig it so that it will work with
+Normal QuArK if the $DEFINEs below are changed in the obvious manner
+*)
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2002/04/12 11:43:18  tiglari
+add Py_Finalize
+
 Revision 1.7  2001/05/20 06:50:43  tiglari
 try to load python151.dll, if this fails, python15.dll.  The idea is to install
 minipy, rename the dll to 151, then you can install 1.5.2 without altering
@@ -44,6 +53,17 @@ unit Python;
 interface
 
  {-------------------}
+
+{$IFDEF PYTHON22_OR_HIGHER}
+{$DEFINE PYTHON21_OR_HIGHER}
+{$ENDIF}
+{$IFDEF PYTHON21_OR_HIGHER}
+{$DEFINE PYTHON20_OR_HIGHER}
+{$DEFINE PYTHON20}
+{$ENDIF}
+{$IFNDEF PYTHON20_OR_HIGHER}
+{$DEFINE PYTHON15}
+{$ENDIF}
 
 type
  PyObjectPtr = ^PyObject;
@@ -74,6 +94,51 @@ type
                    ob_svar: array[0..0] of Char;
                   end; *)
 
+{Rowdy - moved from below due to references}
+ TyCFunction = function(self, args: PyObject) : PyObject; cdecl;
+ TyCFunctionKey = function(self, args, keys: PyObject) : PyObject; cdecl;
+ PTymethodDef = ^TyMethodDef; // Rowdy
+ TyMethodDef = record
+                ml_name: PChar;
+                case Integer of
+                 0: (ml_meth: TyCFunction;
+                     ml_flags: Integer;
+                     ml_doc: PChar);
+                 1: (ml_keymeth: TyCFunctionKey);
+               end;
+{/Rowdy}
+{Rowdy}
+  // structmember.h
+  PPyMemberDef = ^PyMemberDef;
+  PyMemberDef = packed record
+    name : PChar;
+    _type : integer;
+    offset : integer;
+    flags : integer;
+    doc : PChar;
+  end;
+
+  getter = function ( ob : PyObject; ptr : Pointer) : PyObject;
+  setter = function ( ob1, ob2 : PyObject; ptr : Pointer) : integer;
+
+  PPyGetSetDef = ^PyGetSetDef;
+  PyGetSetDef = packed record
+    name : PChar;
+    get : getter;
+    _set : setter;
+    doc : PChar;
+    closure : Pointer;
+  end;
+
+  descrgetfunc      = function ( ob1, ob2, ob3 : PyObject) : PyObject;
+  descrsetfunc      = function ( ob1, ob2, ob3 : PyObject) : Integer;
+  initproc          = function ( ob1, ob2, ob3 : PyObject) : Integer;
+  newfunc           = function ( t: PyTypeObject; ob1, ob2 : PyObject) : PyObject;
+  allocfunc         = function ( t: PyTypeObject; i : integer) : PyObject;
+  pydestructor      = procedure(ob: PyObject); cdecl;
+  richcmpfunc       = function ( ob1, ob2 : PyObject; i : Integer) : PyObject; cdecl;
+{/Rowdy}
+
  CFILE = Pointer;
 
  FnUnaryFunc         = function(o1: PyObject) : PyObject; cdecl;
@@ -96,6 +161,13 @@ type
  FnReprfunc      = function(o: PyObject) : PyObject; cdecl;
  FnHashfunc      = function(o: PyObject) : LongInt; cdecl;
  FnCoercion      = function(var o1, o2: PyObject) : Integer; cdecl;
+
+  inquiry           = function( ob1 : PyObject): integer; cdecl;
+  visitproc         = function ( ob1: PyObject; ptr: Pointer): integer; cdecl;
+  traverseproc      = function ( ob1: PyObject; proc: visitproc; ptr: Pointer): integer; cdecl;
+  getiterfunc       = function ( ob1 : PyObject) : PyObject;
+  iternextfunc      = function ( ob1 : PyObject) : PyObject;
+
 
  PyNumberMethods = ^TyNumberMethods;
  TyNumberMethods = record
@@ -155,24 +227,62 @@ type
                  tp_xxx4: LongInt;
 
                  tp_doc: PChar;
+
+{$IFDEF PYTHON20_OR_HIGHER}
+    // call function for all accessible objects
+    tp_traverse:    traverseproc;
+
+    // delete references to contained objects
+    tp_clear:       inquiry;
+{$ENDIF}
+{$IFDEF PYTHON21_OR_HIGHER}
+    // rich comparisons
+    tp_richcompare: richcmpfunc;
+
+    // weak reference enabler
+    tp_weaklistoffset: Longint;
+{$ENDIF}
+{$IFDEF PYTHON22_OR_HIGHER}
+    // Iterators
+    tp_iter : getiterfunc;
+    tp_iternext : iternextfunc;
+
+    // Attribute descriptor and subclassing stuff
+    tp_methods          : PTyMethodDef;
+    tp_members          : PPyMemberDef;
+    tp_getset           : PPyGetSetDef;
+    tp_base             : PyTypeObject;
+    tp_dict             : PyObject;
+    tp_descr_get        : descrgetfunc;
+    tp_descr_set        : descrsetfunc;
+    tp_dictoffset       : longint;
+    tp_init             : initproc;
+    tp_alloc            : allocfunc;
+    tp_new              : newfunc;
+    tp_free             : pydestructor; // Low-level free-memory routine
+    tp_is_gc            : inquiry; // For PyObject_IS_GC
+    tp_bases            : PyObject;
+    tp_mro              : PyObject; // method resolution order
+    tp_cache            : PyObject;
+    tp_subclasses       : PyObject;
+    tp_weaklist         : PyObject;
+{$ENDIF}
+{$IFDEF PYTHON20}
+    //More spares
+    tp_xxx7:        LongInt;
+    tp_xxx8:        LongInt;
+{$ENDIF}
+{$IFDEF PYTHON15}
+    //More spares
+    tp_xxx7:        LongInt;
+    tp_xxx8:        LongInt;
+{$ENDIF}
                 end;
 
 const
- PYTHON_API_VERSION = 1007;
+ PYTHON_API_VERSION = 1011; // Rowdy (was: 1007;)
  METH_VARARGS  = $0001;
  METH_KEYWORDS = $0002;
-
-type
- TyCFunction = function(self, args: PyObject) : PyObject; cdecl;
- TyCFunctionKey = function(self, args, keys: PyObject) : PyObject; cdecl;
- TyMethodDef = record
-                ml_name: PChar;
-                case Integer of
-                 0: (ml_meth: TyCFunction;
-                     ml_flags: Integer;
-                     ml_doc: PChar);
-                 1: (ml_keymeth: TyCFunctionKey);
-               end;
 
  {-------------------}
 
@@ -254,8 +364,13 @@ PyInt_AsLong: function (o: PyObject) : LongInt; cdecl;
 PyFloat_FromDouble: function (Value: Double) : PyObject; cdecl;
 PyFloat_AsDouble: function (o: PyObject) : Double; cdecl;
 
+{$IFDEF PYTHON20_OR_HIGHER}
+PyObject_Init: function (o: PyObject; t: PyTypeObject) : PyObject; cdecl;
+{$ELSE}
 _PyObject_New: function (t: PyTypeObject; o: PyObject) : PyObject; cdecl;
-//function _PyObject_NewVar(t: PyTypeObject; i: Integer; o: PyObject) : PyObject; cdecl;
+{$ENDIF}
+
+// function _PyObject_NewVar(t: PyTypeObject; i: Integer; o: PyObject) : PyObject; cdecl;
 
 PyCFunction_New: function (const Def: TyMethodDef; self: PyObject) : PyObject; cdecl;
 
@@ -295,7 +410,7 @@ implementation
 
 uses
 {$IFDEF Debug} QkObjects, {$ENDIF}
-     Windows, Registry;
+     Windows, Registry, SysUtils;
 
  {-------------------}
 
@@ -361,11 +476,17 @@ const
     (Variable: @@PyInt_AsLong;               Name: 'PyInt_AsLong'              ),
     (Variable: @@PyFloat_FromDouble;         Name: 'PyFloat_FromDouble'        ),
     (Variable: @@PyFloat_AsDouble;           Name: 'PyFloat_AsDouble'          ),
+{$IFDEF PYTHON20_OR_HIGHER}
+    (Variable: @@PyObject_Init;              Name: 'PyObject_Init'             ),
+{$ELSE}
     (Variable: @@_PyObject_New;              Name: '_PyObject_New'             ),
+{$ENDIF}
     (Variable: @@PyCFunction_New;            Name: 'PyCFunction_New'           ) );
 
  {-------------------}
 
+(* hoping to retire this one, see IFDEFs in InitializePython
+  below  *)
 function try_alternative_python_version: string;
 var
   R: TRegistry;
@@ -373,6 +494,7 @@ var
   installed: boolean;
 begin
   result:='';
+  (*
   R:=TRegistry.Create;
   try
     R.RootKey:=HKEY_LOCAL_MACHINE;
@@ -386,76 +508,93 @@ begin
   finally
     R.free;
   end;
+  *)
+  // ugh, there really doesn't seem to be a sensible way to
+  // clean this up
+  if FileExists('c:\WINNT\system32\python22.dll') then
+    Result := 'c:\WINNT\system32\python22.dll';
 end;
 
 function InitializePython : Integer;
 type
- PPointer = ^Pointer;
+  PPointer = ^Pointer;
 var
- obj1: PyObject;
- I: Integer;
- Lib: THandle;
- P: Pointer;
- dll: string;
+  obj1: PyObject;
+  I: Integer;
+  Lib: THandle;
+  P: Pointer;
+  dll: string;
 begin
- Result:=3;
-{ dll:=try_alternative_python_version;
- Lib:=0;
- if dll<>'' then
-   Lib:=LoadLibrary(pchar(dll));
- if Lib=0 then}
-   Lib:=LoadLibrary('PYTHON151.DLL');
- if Lib=0 then
-   Lib:=LoadLibrary('PYTHON15.DLL');
- if Lib=0 then
-  Exit;
- Result:=2;
- for I:=Low(PythonProcList) to High(PythonProcList) do
-  begin
-   P:=GetProcAddress(Lib, PythonProcList[I].Name);
-   if P=Nil then
+  Result:=3;
+// dll:=try_alternative_python_version;
+  Lib:=0;
+{$IFDEF PYTHON20_OR_HIGHER}
+   Lib:=LoadLibrary('PYTHON22.DLL');
+{$IFNDEF PYTHON22_OR_HIGHER}
+   if Lib=0 then
+     Lib:=LoadLibrary('PYTHON21.DLL');
+{$IFNDEF PYTHON21_OR_HIGHER}
+   if Lib=0 then
+     Lib:=LoadLibrary('PYTHON20.DLL');
+{$ENDIF}
+{$ENDIF}
+// if dll<>'' then
+//   Lib:=LoadLibrary(pchar(dll));
+{$ELSE}
+  if Lib=0 then
+    Lib:=LoadLibrary('PYTHON151.DLL');
+  if Lib=0 then
+    Lib:=LoadLibrary('PYTHON15.DLL');
+{$ENDIF}
+  if Lib=0 then
     Exit;
-   PPointer(PythonProcList[I].Variable)^:=P;
+  Result:=2;
+  for I:=Low(PythonProcList) to High(PythonProcList) do
+  begin
+    P:=GetProcAddress(Lib, PythonProcList[I].Name);
+    if P=Nil then
+     Exit;
+    PPointer(PythonProcList[I].Variable)^:=P;
   end;
- Py_Initialize;
- Result:=1;
+  Py_Initialize;
+  Result:=1;
 
  { tiglari:
    Now we set the value of some global variables
    to the basic Python types }
- obj1:=PyList_New(0);
- if obj1=Nil then
+  obj1:=PyList_New(0);
+  if obj1=Nil then
+    Exit;
+  PyList_Type:=obj1^.ob_type;
+  Py_DECREF(obj1);
+
+  obj1:=PyTuple_New(0);
+  if obj1=Nil then
   Exit;
- PyList_Type:=obj1^.ob_type;
- Py_DECREF(obj1);
+  PyTuple_Type:=obj1^.ob_type;
+  Py_DECREF(obj1);
 
- obj1:=PyTuple_New(0);
- if obj1=Nil then
-  Exit;
- PyTuple_Type:=obj1^.ob_type;
- Py_DECREF(obj1);
+  obj1:=PyInt_FromLong(0);
+  if obj1=Nil then
+    Exit;
+  PyInt_Type:=obj1^.ob_type;
+  Py_DECREF(obj1);
 
- obj1:=PyInt_FromLong(0);
- if obj1=Nil then
-  Exit;
- PyInt_Type:=obj1^.ob_type;
- Py_DECREF(obj1);
+  obj1:=PyString_FromString('');
+  if obj1=Nil then
+    Exit;
+  PyString_Type:=obj1^.ob_type;
+  Py_DECREF(obj1);
 
- obj1:=PyString_FromString('');
- if obj1=Nil then
-  Exit;
- PyString_Type:=obj1^.ob_type;
- Py_DECREF(obj1);
+  obj1:=PyFloat_FromDouble(0.0);
+  if obj1=Nil then
+    Exit;
+  PyFloat_Type:=obj1^.ob_type;
+  Py_DECREF(obj1);
 
- obj1:=PyFloat_FromDouble(0.0);
- if obj1=Nil then
-  Exit;
- PyFloat_Type:=obj1^.ob_type;
- Py_DECREF(obj1);
+  PyType_Type:=PyList_Type^.ob_type;
 
- PyType_Type:=PyList_Type^.ob_type;
-
- Result:=0;
+  Result:=0;
 end;
 
 
@@ -463,8 +602,12 @@ function PyObject_NEW(t: PyTypeObject) : PyObject;
 var
  o: PyObject;
 begin
- GetMem(o, t^.tp_basicsize);
- Result:=_PyObject_New(t,o);
+  GetMem(o, t^.tp_basicsize);
+{$IFDEF PYTHON20_OR_HIGHER}
+  Result:=PyObject_Init(o,t);
+{$ELSE}
+  Result:=_PyObject_New(t,o);
+{$ENDIF}
 end;
 
 {function PyObject_NEWVAR(t: PyTypeObject; i: Integer) : PyObject;
@@ -575,6 +718,12 @@ begin
 end;
 {$ENDIF}
 
+procedure Py_INCREF(o: PyObject);
+begin
+  Inc(o^.ob_refcnt);
+end;
+
+(*
 procedure Py_INCREF(o: PyObject); assembler;
 asm
 {$IFDEF Debug}
@@ -583,7 +732,9 @@ asm
 {$ENDIF}
  inc dword ptr [eax]
 end;
+*)
 
+(*
 procedure Py_XINCREF(o: PyObject); assembler;
 asm
  or eax, eax
@@ -595,12 +746,21 @@ asm
  inc dword ptr [eax]
 @Null:
 end;
+*)
+
+procedure Py_XINCREF(o: PyObject);
+begin
+  if o <> nil then Py_INCREF(o);
+end;
 
 (*{$IFDEF Debug}
 procedure Py_Dealloc1(o: PyObject); forward;
 {$ENDIF}*)
 
 procedure Py_Dealloc(o: PyObject);
+begin
+  o^.ob_type^.tp_dealloc(o);
+end;
 (*{$IFDEF Debug}
 var
  Size: Integer;
@@ -613,7 +773,7 @@ begin
   FillChar(o^, Size, $FF);
 end;
 procedure Py_Dealloc1(o: PyObject);
-{$ENDIF}*)
+{$ENDIF}
 assembler;
 asm
  push eax
@@ -621,46 +781,107 @@ asm
  call dword [edx+TyTypeObject.tp_dealloc]
  add esp, 4
 end;
+*)
 
+
+procedure Py_DECREF(o: PyObject);
+begin
+  with o^ do begin
+    Dec(ob_refcnt);
+    if ob_refcnt = 0 then begin
+      ob_type^.tp_dealloc(o);
+    end;
+  end;
+end;
+
+(*
 procedure Py_DECREF(o: PyObject); assembler;
+
 asm
+
 {$IFDEF Debug}
+
  cmp dword ptr [eax], 0
+
  jle RefError
+
 {$ENDIF}
+
  dec dword ptr [eax]
+
  jz Py_Dealloc
+
+end;
+*)
+
+(*
+procedure Py_XDECREF(o: PyObject); assembler;
+
+asm
+
+ or eax, eax
+
+ jz @Null
+
+{$IFDEF Debug}
+
+ cmp dword ptr [eax], 0
+
+ jle RefError
+
+{$ENDIF}
+
+ dec dword ptr [eax]
+
+ jz Py_Dealloc
+
+@Null:
+
+end;
+*)
+
+procedure Py_XDECREF(o: PyObject);
+begin
+  if o <> nil then Py_DECREF(o);
 end;
 
-procedure Py_XDECREF(o: PyObject); assembler;
-asm
- or eax, eax
- jz @Null
-{$IFDEF Debug}
- cmp dword ptr [eax], 0
- jle RefError
-{$ENDIF}
- dec dword ptr [eax]
- jz Py_Dealloc
-@Null:
-end;
+
+
 
 {function PySeq_Length(o: PyObject) : Integer;
+
 begin
+
  with PyTypeObject(o^.ob_type)^ do
+
   if (tp_as_sequence=Nil) or not Assigned(tp_as_sequence^.sq_length) then
+
    Result:=0
+
   else
+
    Result:=tp_as_sequence^.sq_length(o);
+
 end;
 
+
+
 function PySeq_Item(o: PyObject; index: Integer) : PyObject;
+
 begin
+
  with PyTypeObject(o^.ob_type)^ do
+
   if (tp_as_sequence=Nil) or not Assigned(tp_as_sequence^.sq_item) then
+
    Result:=Nil
+
   else
+
    Result:=tp_as_sequence^.sq_item(o, index);
+
 end;}
+
+
 
 end.
