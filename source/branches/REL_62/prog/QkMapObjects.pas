@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/03/18 00:38:14  aiv
+Misc Cleanups and Fixes
+
 Revision 1.25  2001/03/06 00:26:39  aiv
 fixed 4-legged player bug
 
@@ -136,6 +139,7 @@ const
  soDisableEnhTex     = $00000004;
  soDisableFPCoord    = $00000008;
  soEnableBrushPrim   = $00000010;
+ soEnableWC202       = $00000020;
 
  soDirectDup         = $04000000;
  soBSP               = $08000000;
@@ -2376,7 +2380,11 @@ begin
  { If this is the first time we're called, soOutsideWorldspawn is not set,
    and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
  if (Flags and soOutsideWorldspawn = 0) then
-  I := GetFirstEntityNo
+ begin
+  I := GetFirstEntityNo;
+  if Specifics.Values['mapversion']='220' then
+    Flags:=Flags + soEnableWC202
+ end
  else
   I := GetNextEntityNo;
  Texte.Add(CommentMapLine('Entity '+IntToStr(I)));

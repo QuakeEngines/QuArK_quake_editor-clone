@@ -1,6 +1,6 @@
 (**************************************************************************
 QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) 1996-99 Armin Rigo
+Copyright (C) Armin Rigo
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,16 +16,31 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-Contact the author Armin Rigo by e-mail: arigo@planetquake.com
-or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
-See also http://www.planetquake.com/quark
+http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/04/05 12:34:03  tiglari
+Add 'axisbase' method to face (for getting 2 nice axes for the face)
+
+Revision 1.32  2001/04/01 06:52:07  tiglari
+don't recenter threepoints option added
+
+Revision 1.31  2001/03/31 04:25:36  tiglari
+WC33 (mapversion 220) map writing
+
+Revision 1.30  2001/03/30 22:17:36  tiglari
+some wc33(202) map writing, untested, tex offsets not yet handled
+
+Revision 1.29  2001/03/20 21:45:22  decker_dk
+Updated copyright-header
+
+Revision 1.28  2001/02/17 06:06:13  tiglari
+removed matrixmult(by vect)
+
 Revision 1.27  2001/01/28 17:25:08  decker_dk
 Removed the 'Comment' array, and replaced it with a function-call to 'CommentMapLine(string)'.
 
@@ -110,8 +125,6 @@ Englishification and a little layout
 
 Revision 1.9  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 
@@ -979,7 +992,7 @@ begin
       Pts[J].X:=Round(x);
       Pts[J].Y:=Round(y);
      end;
-   Polygon(Info.DC, Pts, NbPts);       
+   Polygon(Info.DC, Pts, NbPts);
   end
  else
   begin
@@ -989,6 +1002,68 @@ begin
    CCoord.Polygon95(Pts2, NbPts, Dot(S^.F.Normale, CCoord.VectorEye(S^.prvDescS[0]^.P))<0);
   end;
 end;
+
+{ The Quark 3points are the projection onto the face of the
+  image on the plane with the closest normal of the texture
+  origin, u and -v axes (yes, -v, friggin sign flip)
+
+  So the idea here is to project the threepoints onto the plane
+  with the closest normal to the face, then normalize &
+  pull out the scale & shift info }
+
+procedure WC202MapParams(const Normale: TVect; const F: TFace; var S: String);
+var
+  Plan: Char;
+  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2 : TVect;
+  Mat: TMatrixTransformation;
+  S1, S2 : Double;
+
+  procedure write4vect(const V: TVect; D : Double; var S: String);
+  begin
+     S:=S+' [ ';
+     S:=S+FloatToStrF(V.X, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(V.Y, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(V.Z, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(D, ffFixed, 20, 5)+' ';
+     S:=S+'] ';
+  end;
+
+begin
+  Plan:=PointsToPlane(Normale);
+  case Plan of
+   'X' : Axis := MakeVect(1, 0, 0);
+   'Y' : Axis := MakeVect(0, 1, 0);
+   'Z' : Axis := MakeVect(0, 0, 1);
+  end;
+
+  F.GetThreePointsT(P0, P1, P2);
+  Origin:=MakeVect(0,0,0);
+  PP0:=ProjectPointToPlane(P0, Axis, Origin, Axis);
+  PP1:=ProjectPointToPlane(P1, Axis, Origin, Axis);
+  PP2:=ProjectPointToPlane(P2, Axis, Origin, Axis);
+  D1:= VecDiff(PP1, PP0);
+  D2:= VecDiff(PP2, PP0);
+  Normalise(D1, S1);
+  Normalise(D2, S2);
+  S1:=S1/128;
+  S2:=S2/128;
+  { probably can be optimized }
+
+  Mat:= MatriceInverse(MatrixFromCols(D1, D2,Cross(D1,D2)));
+  PP0:= MatrixMultByVect(Mat,PP0);
+
+
+  write4vect(D1, -PP0.X/S1, S);
+  write4vect(D2, PP0.Y/S2, S);
+
+  S:=S+' 0 ';
+  S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5);
+  { sign flip engineered into Scale }
+  S:=S+' '+FloatToStrF(-S2, ffFixed, 20, 5);
+
+
+end;
+
 
 procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
@@ -1029,7 +1104,7 @@ begin
    S:=Sin(A);
    C:=Cos(A);
   {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
-   PX[2]:=PX[2]*C + PY[2]*S; 
+   PX[2]:=PX[2]*C + PY[2]*S;
    Params[3]:=A*(180/pi);
 
    PX[3]:=PX[3]-PX[1];
@@ -2041,7 +2116,7 @@ var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers, BrushPrim : Boolean;
+ WriteIntegers, BrushPrim, WC202Map : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2062,6 +2137,7 @@ var
      end;
 }     S:=S+') ';
     end;
+
 
   procedure WriteFace(F: TFace);
   const
@@ -2268,21 +2344,24 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if not ((MJ=mjQ3A) and BrushPrim) then
+       if WC202Map then
        begin
-       ApproximateParams(Normale, P, Params, TextureMirror);
-       for I:=1 to 2 do
-        S:=S+' '+IntToStr(Round(Params[I]));
-       for I:=3 to 5 do
-        begin
-         R:=Round(Params[I]);
-         if Abs(R-Params[I])<rien then
-          S:=S+' '+IntToStr(R)
-         else
-          S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
-        end;
+        WC202MapParams(Normale, F, S);
+       end else if not ((MJ=mjQ3A) and BrushPrim) then
+       begin
+         ApproximateParams(Normale, P, Params, TextureMirror);
+         for I:=1 to 2 do
+           S:=S+' '+IntToStr(Round(Params[I]));
+         for I:=3 to 5 do
+         begin
+           R:=Round(Params[I]);
+           if Abs(R-Params[I])<rien then
+             S:=S+' '+IntToStr(R)
+           else
+             S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
+         end;
        end;
-      end;
+     end;
      if MJ=mjHexen then
       S:=S+' -1'
      else
@@ -2371,7 +2450,7 @@ var
          end;
        end;
 
-     if Flags and soDisableEnhTex = 0 then
+     if (Flags and soDisableEnhTex = 0) and (not WC202Map) then
       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
@@ -2381,6 +2460,7 @@ begin
  if Info.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
+ WC202Map:=Flags and soEnableWC202<>0;
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
@@ -3172,38 +3252,40 @@ begin
  TexP[3].X:=(TexP[3].X-TexP[1].X)*CorrH;
  TexP[3].Y:=(TexP[3].Y-TexP[1].Y)*CorrH;
  TexP[3].Z:=(TexP[3].Z-TexP[1].Z)*CorrH;
-
- TexP[4]:=CentreFace;
- CorrW:=1;
- for I:=1 to 3 do
-  begin
-   TexP[4].X:=TexP[4].X-TexP[I].X*CorrW;
-   TexP[4].Y:=TexP[4].Y-TexP[I].Y*CorrW;
-   TexP[4].Z:=TexP[4].Z-TexP[I].Z*CorrW;
-   CorrW:=0.3;
-  end;
- CorrW:=Sqr(TexP[2].X)+Sqr(TexP[2].Y)+Sqr(TexP[2].Z);
- if CorrW>rien2 then
-  begin
-   W:=Round(Dot(TexP[4], TexP[2])/CorrW);
-   if W<>0 then
-    begin
-     TexP[1].X:=TexP[1].X+W*TexP[2].X;
-     TexP[1].Y:=TexP[1].Y+W*TexP[2].Y;
-     TexP[1].Z:=TexP[1].Z+W*TexP[2].Z;
-    end;
-  end;
- CorrH:=Sqr(TexP[3].X)+Sqr(TexP[3].Y)+Sqr(TexP[3].Z);
- if CorrH>rien2 then
-  begin
-   H:=Round(Dot(TexP[4], TexP[3])/CorrH);
-   if H<>0 then
-    begin
-     TexP[1].X:=TexP[1].X+H*TexP[3].X;
-     TexP[1].Y:=TexP[1].Y+H*TexP[3].Y;
-     TexP[1].Z:=TexP[1].Z+H*TexP[3].Z;
-    end;
-  end;
+ if SetupSubSet(ssMap,'Options').Specifics.Values['DontCenterThreePoints']<>'1' then
+ begin
+   TexP[4]:=CentreFace;
+   CorrW:=1;
+   for I:=1 to 3 do
+   begin
+     TexP[4].X:=TexP[4].X-TexP[I].X*CorrW;
+     TexP[4].Y:=TexP[4].Y-TexP[I].Y*CorrW;
+     TexP[4].Z:=TexP[4].Z-TexP[I].Z*CorrW;
+     CorrW:=0.3;
+   end;
+   CorrW:=Sqr(TexP[2].X)+Sqr(TexP[2].Y)+Sqr(TexP[2].Z);
+   if CorrW>rien2 then
+   begin
+     W:=Round(Dot(TexP[4], TexP[2])/CorrW);
+     if W<>0 then
+     begin
+       TexP[1].X:=TexP[1].X+W*TexP[2].X;
+       TexP[1].Y:=TexP[1].Y+W*TexP[2].Y;
+       TexP[1].Z:=TexP[1].Z+W*TexP[2].Z;
+     end;
+   end;
+   CorrH:=Sqr(TexP[3].X)+Sqr(TexP[3].Y)+Sqr(TexP[3].Z);
+   if CorrH>rien2 then
+   begin
+     H:=Round(Dot(TexP[4], TexP[3])/CorrH);
+     if H<>0 then
+     begin
+       TexP[1].X:=TexP[1].X+H*TexP[3].X;
+       TexP[1].Y:=TexP[1].Y+H*TexP[3].Y;
+       TexP[1].Z:=TexP[1].Z+H*TexP[3].Z;
+     end;
+   end;
+ end;
  V1:=TexP[1];
  V2.X:=TexP[2].X+TexP[1].X;
  V2.Y:=TexP[2].Y+TexP[1].Y;
@@ -4601,6 +4683,51 @@ begin
  end;
 end;
 
+function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
+begin
+  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
+end;
+
+
+function fAxisBase(self, args: PyObject) : PyObject; cdecl;
+var
+  I, mode: Integer;
+  Ok: Boolean;
+  P, T: array[1..3] of TVect;
+  v: array[1..3] of PyVect;
+  ov: PyVect;
+  AltTexSrc: PyObject;
+  Orig, TexS, TexT : TVect;
+
+begin
+  try
+    Result:=Nil;
+    AltTexSrc:=Nil;
+    with QkObjFromPyObj(self) as TFace do
+    begin
+      Acces;
+      Ok:=GetThreePointsUserTex(P[1], P[2], P[3], QkObjFromPyObj(AltTexSrc));
+      if Ok and LoadData then
+      begin
+        GetAxisBase(Normale, TexS, TexT);
+        for I:=1 to 3 do
+        begin
+          T[I]:=CoordShift(P[I], Orig, TexS, TexT);
+          v[I]:=MakePyVect(T[I]);
+        end;
+        Result:=Py_BuildValueX('OO', [MakePyVect(TexS),MakePyVect(TexT)]);
+        for I:=2 downto 1 do
+          Py_DECREF(v[I]);
+      end
+      else
+        Result:=PyNoResult;
+    end
+  except
+    EBackToPython;
+    Result:=Nil;
+  end;
+end;
+
 function fSwapSides(self, args: PyObject) : PyObject; cdecl;
 begin
  try
@@ -4648,12 +4775,13 @@ begin
 end;
 
 const
- FaceMethodTable: array[0..5] of TyMethodDef =
+ FaceMethodTable: array[0..6] of TyMethodDef =
   ((ml_name: 'verticesof';    ml_meth: fVerticesOf;    ml_flags: METH_VARARGS),
    (ml_name: 'distortion';    ml_meth: fDistortion;    ml_flags: METH_VARARGS),
    (ml_name: 'threepoints';   ml_meth: fThreePoints;   ml_flags: METH_VARARGS),
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
+   (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));
 
 function TFace.PyGetAttr(attr: PChar) : PyObject;
