@@ -1,3 +1,8 @@
 title: QuarkPy
+subdir: intro gui
 
-x
+Sorry, not much information available. Go through the .py files and try to make your way... You will need some basic knowledge of
+<html><a href="http://www.python.org">Python</a>
+ before you can do so. See also
+<ref> src/quarkx
+.

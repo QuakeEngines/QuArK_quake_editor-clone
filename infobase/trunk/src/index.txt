@@ -1,5 +1,5 @@
 title: The Source Code
-subdir: sf intro struct pas
+subdir: sf intro introc struct pas
 subdir: quarkx
 
 This section discusses QuArK programming.

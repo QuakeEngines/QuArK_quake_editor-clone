@@ -1,5 +1,5 @@
 title: Advanced customization
-subdir: addons plugins quarkpy doc
+subdir: intro addons plugins quarkpy doc
 
 This section discusses the features of QuArK that can be customized without modifying the source code. This mainly includes :
 
