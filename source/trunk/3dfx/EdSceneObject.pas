@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2003/03/21 00:12:43  nerdiii
+tweaked OpenGL mode to render additive and texture modes as in Half-Life
+
 Revision 1.5  2003/01/29 09:59:27  tiglari
 Englishification:
   TFace.prvNbs -> prvVertexCount
@@ -412,7 +415,11 @@ var
   Model3DInfo: PModel3DInfo;
   OneBezier:   TBezier;
   xSpriteInfo: PSpriteInfo;
-
+  { a PSurfaces object is a list wherein each texturename indexes the list
+     of surfaces with that texture.  This routine adds a new texturename
+     to the list, or increases the SurfSize associated with
+     a previously encountered texturename.  I don't undertand what SurfSize
+     is for since there seems to be no pointer to the vertices }
   procedure AddSurfaceRef(const a_TexName: String; a_SurfSize: Integer; a_Tmp: Pointer);
   var
     Idx: Integer;
@@ -429,7 +436,7 @@ var
       FillChar(SurfacesElement^, SizeOf(TSurfaces), 0);
       { set the pointer-chain of ListSurfaces }
       SurfacesElement^.Next:=FListSurfaces;
-      FListSurfaces:=SurfacesElement;
+      FListSurfaces:=SurfacesElement;  // whoah, wtf does this do???
       { assign the texturename, and some tmp value }
       SurfacesElement^.TexName:=a_TexName;
       Pointer(SurfacesElement^.tmp):=a_Tmp;
@@ -515,23 +522,13 @@ begin
  ClearPList;
  Mode:=StartBuildScene({PalWarning,} VertexSize);
  TextureManager:=TTextureManager.GetInstance;
-{TextureManager.PaletteLmp:=Nil;}
  VertexSize3m:=SizeOf(TSurface3D)+3*VertexSize;
  TexNames:=TStringList.Create;
- try
-  {PList:=PSurfaces(FListSurfaces);
-   while Assigned(PList) do
-    begin
-     TexNames.AddObject(PList^.TexName, TObject(PList));
-     PList^.tmp:=Nil;
-     PList:=PList^.Next;
-    end;}
+ try  {begin outer try block - almost whole method}
    TexNames.Sorted:=True;
 
-   if Mode=bm3DFX then
+   if Mode=bm3DFX then           //buildmode, 3dfx, ogl, d3d
    begin
-     {nVertexList:=TListP2.Create}
-     {nVertexList2:=TListP2.Create}
      nVertexList:=TList.Create;
      nVertexList2:=TList.Create;
    end
@@ -541,8 +538,8 @@ begin
      nVertexList2:=Nil;
    end;
 
-   try
-     I:=0;
+   try  {begin build FListSurfaces, also nVertexList(2), used only in 3dfx mode}
+     I:=0;   // process the faces of the polys
      while I<PolyFaces.Count do
      begin
        PolySurface:=PSurface(PolyFaces[I]);
@@ -553,9 +550,9 @@ begin
          Inc(I);
        end
        else
-       begin
+       begin // wtf, we're keeping track of texture name and total size of needed vertexes, but not the vertexes themselves
          AddSurfaceRef(PolySurface^.F.NomTex, SizeOf(TSurface3D) + PolySurface^.prvVertexCount * VertexSize, Nil);
-         if nVertexList<>Nil then
+         if nVertexList<>Nil then    // only in software/3dfx mode
            for J:=0 to PolySurface^.prvVertexCount-1 do
              nVertexList.Add(PolySurface^.prvVertexTable[J]);
        end;
@@ -563,7 +560,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     I:=0;
+     I:=0;  // process the models, haven't looked into this one yet
      while I<ModelInfo.Count do
      begin
        Model3DInfo:=PModel3DInfo(ModelInfo[I]);
@@ -591,7 +588,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     I:=0;
+     I:=0;  // process the sprites, haven't looked into this one yet/
      while I<SpriteInfo.Count do
      begin
        xSpriteInfo:=PSpriteInfo(SpriteInfo[I]);
@@ -617,8 +614,8 @@ begin
 
        Inc(I); { Increment to get the next element }
      end;
-        
-     I:=0;
+
+     I:=0; // process the biezers, haven't looked into this one yet
      while I<BezierInfo.Count do
      begin
        OneBezier:=TBezier(BezierInfo[I]);
@@ -653,7 +650,7 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
-     PostBuild(nVertexList, nVertexList2);
+     PostBuild(nVertexList, nVertexList2);  // only does anything in 3dfx mode
    finally
      if (nVertexList <> nil) then
        nVertexList.Free;
@@ -662,9 +659,9 @@ begin
      if (nVertexList2 <> nil) then
        nVertexList2.Free;
      nVertexList2:=nil;
-   end;
+   end;  {end build FSurfaceList}
 
-   NewTextures:=0;
+   NewTextures:=0; {rebuild old textures}
    PList:=FListSurfaces;
    while Assigned(PList) do
    begin
@@ -681,7 +678,7 @@ begin
 
    TextureManager.FreeTextures(False);   { free unused textures }
 
-   { load new textures }
+   { build load new textures }
    if NewTextures>0 then
    begin
      Gauche:=0;
@@ -753,10 +750,10 @@ begin
        if Brush<>0 then
          DeleteObject(Brush);
      end;
-   end;
+   end;  {end build and load new textures}
 
-
-   CurrentColor:=$FFFFFF;
+   { do something major with the polys }
+   CurrentColor:=$FFFFFF; // what does the CurrentColor do?
    I:=0;
    while I<PolyFaces.Count do
    begin
@@ -778,7 +775,7 @@ begin
          { get the associated Surfaces-element for this texturename }
          PList:=PSurfaces(TexNames.Objects[J]);
 
-         { setup the Surf3D to point to an area in the Surfaces-element }
+         { setup the Surf3D to point to an area in the dereference of Surfaces-element }
          if PList^.Surf=Nil then
          begin
            GetMem(PList^.Surf, PList^.SurfSize);
@@ -787,7 +784,7 @@ begin
          else
            Surf3D:=PList^.tmp;
 
-         { initialize this Surf3D area }
+         { initialize this Surf3D area with info from the face and its PSurface}
          with Surf3D^ do
          begin
            with F.Normale do
@@ -929,7 +926,7 @@ begin
      end;
    end;
 
-   CurrentColor:=$FFFFFF;
+   CurrentColor:=$FFFFFF;  {same deal for models}
    I:=0;
    while I<ModelInfo.Count do
    begin
@@ -1032,7 +1029,7 @@ begin
      end;
    end;
 
-   CurrentColor:=$FFFFFF;
+   CurrentColor:=$FFFFFF;  { and sprites }
    I:=0;
    while I<SpriteInfo.Count do
    begin
@@ -1135,7 +1132,7 @@ begin
      end;
    end;
 
-   CurrentColor:=$FFFFFF;
+   CurrentColor:=$FFFFFF;  { and beziers }
    I:=0;
    while I<BezierInfo.Count do
    begin
@@ -1253,7 +1250,7 @@ begin
  finally
    TexNames.Free;
  end;
-
+ {/end outer try block}
  PolyFaces.Clear;
  EndBuildScene;
 end;
