@@ -90,7 +90,7 @@ def tagpointitem(editor, origin):
   if oldtag is not None and not (origin-oldtag):
     tagv = qmenu.item("Clear tag", ClearTagClick)
   else:
-    tagv = qmenu.item("&Tag point", TagPointClick, "|`Tags' the point below the mouse for reference in later operations of positioning and alignment.\n\nThe tagged point then appears in red.")
+    tagv = qmenu.item("&Tag point", TagPointClick, "|`Tags' the point below the mouse for reference in later operations of positioning and alignment.\n\nThe tagged point then appears in red.\n\nFor more detail on the use of this fuction, click on the InfoBase button below.|maped.plugins.tagside.html#basic")
     tagv.pos = origin
     tagv.tagger = 1
   return tagv

@@ -1633,7 +1633,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   projtex.text = "Project from tagged"
   texpop.items = texpop.items + [projtex,mirrorflipitem,wrappop]
   menu[:0] = [#extendtolinked(editor, o),
-              gluemenuitem("&Tag face",TagSideClick,o,tagtext,"maped.plugins.tagside.html"),
+              gluemenuitem("&Tag face",TagSideClick,o,"|Tag face:\n\n`Tags' a face for reference in later operations of positioning and alignment.\n\nThe tagged face then appears in red.\n\nFor more detail on the use of this fuction, click on the InfoBase button below.|maped.plugins.tagside.html#basic"),
 #              addtotagged,
               glueitem,
               snapitem,
@@ -1919,6 +1919,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.31  2003/05/21 06:39:35  cdunde
+#To remove error message box causing cleartag for tagged point not to work properly
+#
 #Revision 1.30  2003/05/09 01:01:08  cdunde
 #Added function buttons for tagtoolbar
 #

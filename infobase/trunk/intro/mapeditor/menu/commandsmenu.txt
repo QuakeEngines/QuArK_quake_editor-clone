@@ -6,9 +6,9 @@ author: Decker, tiglari
 
 <i>Tricky force to grid.</i> Repairs maps that are off-the-grid.
 
-<i>Tag side.</i> This menuitem are created by an <g>plug-in</g>. It allows you
+<i>Tag side.</i> This menuitem are created by a <g>plug-in</g>. It allows you
 to select, or tag as it says, a <g>face</g> of an polyhedron. With a
-tagged-face, the next three menuitems becomes active.
+tagged-face, the next three menuitems becomes active. See <ref>maped/plugins/tagside/basic</ref> for detail on how to use this function.
 
 <i>Clear tag.</i> Removes the tag.
 
@@ -24,7 +24,7 @@ the selection, with a fluent seam.
 other face is selected; adds the selected face to the collection of tagged
 ones.
 
-<i>Link selection.</i> To use this one, you first need to create a multiple
+<i>Link selected.</i> To use this one, you first need to create a multiple
 selection of faces all occupying the same plane.  This can be
 done with the 'Extend Selection from Face' from the
 <ref>intro/mapeditor/menu/selectionmenu</ref> below, or, if you have made
