@@ -18,8 +18,8 @@ right-face of the left wall-block.  Now RMB|More Tagging|Caulk
 from tagged.  The wall will be split into two, and the caulk
 pasted onto the part of the wall that's hidden.<BR><BR>
 
-In Quark, you can see a bit of the caulk-texture where the curve
+In QuArK, you can see a bit of the caulk-texture where the curve
 and the wall join, but in Quake3a you can't (I'm not sure if
-Quark's behavior is a bug or a feature).  Of course, if you
+QuArK's behavior is a bug or a feature).  Of course, if you
 reproportion the arch, you'll need to adjust the walls as well;
 a good application for Tag Face/Glue to Tagged.<BR><BR>

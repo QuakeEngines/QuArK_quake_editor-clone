@@ -5,10 +5,10 @@ author: tiglari
 employed by GtkRadiant, and read by the the GtkRadiant
 version of qbsp3.  It's main feature is that like it can
 represent the full range of texture-positionings, like
-Quark's 'enhanced texture positioning (and also the
+QuArK's 'enhanced texture positioning (and also the
 mapversion 220 format of WorldCraft 3.3).
 
-Quark reads maps in brush-primitives format, and will write
+QuArK reads maps in brush-primitives format, and will write
 them (currently Q3(T)A only) if the Config|Map|Options
 item
 <code>

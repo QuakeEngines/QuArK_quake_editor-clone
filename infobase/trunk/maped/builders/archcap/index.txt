@@ -1,6 +1,5 @@
 title: Caps and Arches (Patches)
-desc: makearch  caulk specifics trouble techniques
-format: html
+desc: makearch caulk specifics trouble techniques
 
 Patch-based 'Caps' and arches are made by the same
 shape-builder, and

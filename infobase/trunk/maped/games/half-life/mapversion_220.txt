@@ -1,7 +1,7 @@
 title: What's the deal with WC 3.3 & mapversion 220
 author: tiglari
 
-Quark now reads (as of version 6.2) the new mapversion 220
+QuArK now reads (as of version 6.2) the new mapversion 220
 format of worldcraft 3.3, and if a map's worldspawn
 element has a "mapversion" specific with value "220",
 it will be written in this format.  If you want to read

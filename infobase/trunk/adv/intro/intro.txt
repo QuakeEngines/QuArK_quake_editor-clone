@@ -9,7 +9,7 @@ QuArK development can be carried out at three levels:
 
   the Delphi code.
 
-The first two require just a text-editor, since a functioning Quark
+The first two require just a text-editor, since a functioning QuArK
 installation includes the Python interpreter, while the last requires
 Delphi (Borland;s version of Pascal, enhanced with visual development
 tools).  The current developers seem to be using versions 4 or 5;
