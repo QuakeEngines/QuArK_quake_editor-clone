@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2001/01/28 03:30:41  tiglari
+LocateSubElement method added
+
 Revision 1.38  2001/01/23 08:05:39  tiglari
 Infrastructure for OsFolders (read their contents from folders on disk,
  don't write them when writing the .qrk).
@@ -399,11 +402,7 @@ type
                has been read in from text rep. }
              procedure FinalizeFromText; virtual;
              function WriteSubelements : Boolean; virtual;
-             { Adds to subitem list replacing item with same name,
-               if any, inserting alphabetically after Index, -1
-               for start, updating index to insertion position }
-             procedure PriorityAdd(Q : QObject; var Index: Integer);
-           end;
+          end;
 
  TQList = class(TList)
           private
@@ -2568,36 +2567,6 @@ begin
  Result:=Nil;
 end;
 
-{ scans subitems backwards for optimization in case
-   elements being inserted are already ordered }
-procedure QObject.PriorityAdd(Q : QObject; var Index : Integer);
-var
- I, C: Integer;
-begin
-  Acces;
- { in case of alph. order fault }
-  if (SubElements.Count>0) and (CompareText(Q.Name, SubElements[Index].Name)<0) then
-    Index:=0;
-  for I:=Index to SubElements.Count-1 do
-  begin
-    C:=CompareText(Q.Name, SubElements[I].Name);
-    if C=0 then
-    begin
-      SubElements.Delete(I);
-      SubElements.Insert(I,Q);
-      Exit;
-    end;
-    if C<0 then
-    begin
-      SubElements.Insert(I,Q);
-      Index:=I;
-      Exit;
-    end;
-  end;
-  SubElements.Add(Q);
-  Index:=I;
-end;
-
 { find subelement by name if present, setting Index to lexical
   order insertion position (CompareText), otherwise return Nil,
   with Index set to appropriate lexical insertion position }
@@ -2605,9 +2574,14 @@ function QObject.LocateSubElement(const LocName : String; var Index : Integer) :
 var
  I, C: Integer;
 begin
+  Result:=Nil;
+  if Self=Nil then
+  begin
+    Index:=0;
+    Exit;
+  end;
   Acces;
  { in case of alph. order fault }
-  Result:=Nil;
   if (SubElements.Count>0) and (CompareText(LocName, SubElements[Index].Name)<0) then
     Index:=0;
   for I:=Index to SubElements.Count-1 do
