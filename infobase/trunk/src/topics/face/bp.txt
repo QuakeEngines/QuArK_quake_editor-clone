@@ -1,9 +1,9 @@
 title: Brush Primitives
 author: tiglari
 
-'Brush primitives' is the new brush format used by Q3Radiant.
+'Brush primitives' is the new brush format used by GtkRadiant.
 Other than a bit of extra wrapping around the brush, its main
-new feature (for now at any rate) is an improved methods of
+new feature (for now at any rate) is an improved method of
 expressing the texture-mapping over the 5 'shift scale rotate'
 numbers that come after the texture name in the old
 representation.
@@ -33,7 +33,7 @@ Y and Z coordinates of map space so that they lie in the
 plane.  These direction vectors are computed by function
 GetAxisBase in QkMapPoly.pas.  It's essential that q3map
 and the editor compute them in the same way; hopefully the
-Q3Radiant/Q3map developers won't change it without telling us.
+GtkRadiant/Q3map developers won't change it without telling us.
 Then of course for a coordinate system you need an origin,
 this is gotten by scaling the face's normal vector by its
 Dist (-ance from the origin).
@@ -54,3 +54,5 @@ to get the solution):
  a21*p2x+a22*p2y+a23 = -1
 </code>
 
+The conversions from Brush Primitives to QuArK (once etp, now tv6) are
+made in the procedure ReadQ3BrushDef in QkMap.pas.

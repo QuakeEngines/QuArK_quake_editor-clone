@@ -1,8 +1,10 @@
 title: Face Formats
-desc: classic etp tv6 bp
+desc: classic etp tv6 bp valve220
 
 Here are described various aspects of face formats, which are of relevance
 to the code in QkMapPoly.pas and QkMap.pas.  Especially the relationship
 between QuArK's original internal representation (Quark etp) and the
 'Classic Quake' map format(s), and the new internal/.qrk/.qkm representation.
+The first three sections are of most importance to QuArK programmers, while
+the ones on Brush Primitives and Valve Mapversion 220 are more cursory.
 

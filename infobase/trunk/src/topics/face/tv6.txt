@@ -20,9 +20,11 @@ GetThreePointsUserTex also has an option to either keep the origin of the
 texture coordinates roughly in the middle of the face, or not do this.
 
 So much for reading; setting the texture is done by SetThreePointsUserTex,
-which handles the scaling, which calls SetThreePointsEx, which returns
-a boolean value and does a check for reasons I don't understand,
-but at any rate calls SetThreePointsT which now sets the tv spec,
+which handles the scaling.  this calls SetThreePointsEx, which checks
+whether the texture threeoints actually manage to define a plane (taking
+a cross-product, see below), returning true if they do and false if
+they don't (I don't think we need this check anymore, but am leaving it in
+for now, and then calls SetThreePointsT which now sets the tv spec,
 coincidentally erasing the 'm' specific if this is present, since
 we don't need it any more.  Unless of course we're writing the Quark etp
 format, in which case TFace.SimulateEnhTex generates old-style
@@ -48,3 +50,6 @@ if there's some mistake it can't happen that somebody's total map will
 be trashed, there can only be problems with the faces actually worked on.
 The downside is a certain amount of cruft, perhaps someday this could be
 eliminated.
+
+A final point is that there is are methods TFace.SetThreePointsEnhEx and
+TFace.RevertToEnhTex, callable from Python by enhrevert, just in case.

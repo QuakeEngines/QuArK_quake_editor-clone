@@ -1,0 +1,19 @@
+title: Valve Mapversion 220
+author: tiglari
+
+The Valve Mapversion 220 map format used by WorldCraft 3.3
+uses texture-scale representation that is quite close
+to the texinfo_t data structure used by qbsp.  This
+consists of 2 axes lying in one of the three planes
+normal to the axes, plus offsets, & the formula for
+computing the texture coordinate of a point xyz on
+a face is:
+<code>
+   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
+   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
+</code>
+(Max McGuire's Quake2 BSP file format tutorial on
+ www.flipcode.com)
+
+There's more about this in the comments to proceeure ReadSquareTex4
+in QkMap, Valve220MapParams does the job of writing in QkMapPoly.
