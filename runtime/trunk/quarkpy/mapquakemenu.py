@@ -64,6 +64,7 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
 
     def __init__(self, cmdline, currentdir, bspfile, editor, next, checkextensions):
         qquake.BatchConsole.__init__(self, cmdline, currentdir, next)
+        self.editor=editor
         self.checkextensions = checkextensions
         # Remove file-extension
         try:
@@ -90,6 +91,13 @@ class BuildPgmConsole_Advanced(qquake.BatchConsole):
                 errortext = "Build failed, because it did not create the (%s) file: " % ext + workfile
             elif ((ext[:1] == gExt_MustNotExist) and ((attr!=FA_FILENOTFOUND) and (attr&FA_ARCHIVE))):
                 errortext = "Build failed, because it created the (%s) file: " % ext + workfile
+                if self.editor is None:
+                    print "NOTE: Build program has found a hole in this map"
+                else:
+                    import mapholes
+                    mapholes.LoadLinFile(self.editor, self.bspfile_wo_ext+'.'+ext[1:])
+
+
             # Was error found?
             if (errortext is not None):
                 if (not errorlineprintet):
@@ -521,6 +529,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.15  2001/02/07 00:08:33  aiv
+#added fixes from 6.1c release
+#
 #Revision 1.14  2001/01/27 18:24:39  decker_dk
 #Renamed the key 'Q2TexPath' to 'TexturesPath'.
 #
