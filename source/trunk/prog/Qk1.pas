@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/10/10 11:47:49  tiglari
+Undo previous change, finalization section is what should be used by freeing
+  resources allocated in initialization sections of modules
+
 Revision 1.24  2001/10/10 11:44:29  tiglari
 attempt to eliminate live pointer by freeing QFileList
 
@@ -1436,6 +1440,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  end;
  ClearGameBuffers(False);
  ClearPool(True);
+ QObjectClassList.Free;
 end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
