@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.6  2003/05/01 16:24:39  cdunde
+// To up date for new file search feature for custom models
+//
 // Revision 1.5  2003/04/23 07:25:23  cdunde
 // To add the feature of using Cuatom models for misc_actor and spawn_model and link Contextual help to infobase
 //
@@ -14895,6 +14898,27 @@ $0D"For that use 3Dmodel above."
     model_train:form =
     {
       bbox = '-8 -8 -8 8 8 8'
+      mdl = "[3Dmodel]"
+      mdlbase = "baseq2"
+      help = "This allows you to use your own custom entity 3D-models."
+$0D"Used for special effects, you can control which model frames"
+$0D"are used. But the models do not fight like misc_actor entities do."
+$0D"Click on this Help Book for more details."
+      HTML = "help/intro.mapeditor.menu.html#optionsmenu"
+
+      3Dmodel: =
+      {
+        Txt = "3D Model"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        hint = "Type in the model path or use the file browser button to the right."
+$0D"This is a custom model for QuArK 3d views only."
+$0D"It will not show in the actual game."
+$0D"For that use usermodel below."
+      }
       spawnflags: =
       {
         txt = "&"
@@ -14994,8 +15018,17 @@ $0D"For that use 3Dmodel above."
       }
       usermodel: =
       {
-        txt = "&"
-        hint = "Usermodel>model (path/file.md2)"
+        Txt = "usermodel"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        AugPath = "../"
+        hint = "Type in the model path or use the file browser button to the right."
+$0D"This is a custom model for the actual game play only."
+$0D"It will not show in QuArK's 3D views."
+$0D"For that use 3Dmodel above."
       }
       startframe: =
       {
