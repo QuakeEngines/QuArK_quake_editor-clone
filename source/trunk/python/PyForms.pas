@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2002/04/12 10:03:47  tiglari
+leakhunt: destroy menubarhandle on form close
+
 Revision 1.9  2001/06/05 18:43:13  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -936,25 +939,36 @@ begin
  end;
 end;
 
+
 procedure TPyForm.wmHelp;
 var
- P: PChar;
- obj: PyObject;
- S: String;
+  P: PChar;
+  obj: PyObject;
+  S, S2: String;
+  UrlPos : Integer;
 begin
- obj:=CallMacroEx2(Py_BuildValueX('(O)', [WndObject]), 'hint', False); try
- if (obj<>Nil) and (obj<>Py_None) then
-  begin
-   P:=PyString_AsString(obj);
-   if P<>Nil then
+  obj:=CallMacroEx2(Py_BuildValueX('(O)', [WndObject]), 'hint', False);
+  try
+    if (obj<>Nil) and (obj<>Py_None) then
     begin
-     S:=P;
-     if (Length(S)<=1) or (S[1]<>'|') then Exit;
-     HelpPopup(Copy(S, 2, MaxInt));
+      P:=PyString_AsString(obj);
+      if P<>Nil then
+      begin
+        S:=P;
+        if (Length(S)<=1) or (S[1]<>'|') then Exit;
+        S2:=Copy(S,2,Maxint);
+        UrlPos:=AnsiPos('|',S2);
+        if UrlPos<>0 then
+          HelpPopup(Copy(S2, 1, UrlPos-1), Copy(S2,UrlPos+1,MaxInt))
+        else
+          HelpPopup(S2);
+      end;
     end;
+    finally Py_XDECREF(obj);
   end;
- finally Py_XDECREF(obj); end;
 end;
+
+
 
 procedure TPyForm.wmMenuSelect;
 var
