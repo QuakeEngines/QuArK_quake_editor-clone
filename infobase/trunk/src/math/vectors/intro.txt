@@ -1,0 +1,60 @@
+title: Introduction
+author: tiglari
+
+'Vector' means 'carrier' in Latin.  Hence rats as plague
+vectors.  In mathematics, the most basic meaning is
+a relationship between two points, that is, the
+displacement that would carry one into the other, and
+also a sequence of numbers representing that displacement,
+such as 2 units forward, 3 to the left and 1 up, giving
+the vector <2,3,1>, or quarkx.vect(2,4,1) in QuArK
+Python programming.
+
+These abstract geometrical relationships can be 'added'
+in the sense of performing one displacement after another,
+and also multiplied by numbers, in the sense of performing
+the displacement a (possibly fractional or irrational)
+number of times, and likewise the numberical sequence
+vectors can be added by adding the numbers in the
+corresponding positions, or multiplying all the numbers
+by the same number:
+<code>
+<<>x, y, z> + <<>u, v, w> = <<>x+u, y+v, z+w>
+a*<<>x, y, z> = <a*x, a*y, a*z>
+</code>
+In jargon, addition of vectors and multiplication of a
+vector by a 'scalar' (an ordinary number, in context where
+vectors are the focus of attention) are defined
+'componentwise'.
+
+If we're using the number sequences to represent
+displacements, we can see that the algebraic definition
+agrees with our intuitive conceptions of how addition of
+displacements and the multiplication of a displacement
+by a number should work, and if you crank through the
+algebra you should be able to see that all of the standard
+algebraic laws such as commutative and associative
+work, for those combinations to which they are applicable.
+For example:
+<code>
+(a+b)*(v+w) = a*b + a*w + b*v + b*w
+a*(b*v) = (a*b)*v = (b*a)*v = b*(a*v)
+</code>
+Vector algebra or calculus textbooks will give complete
+lists, but basically it's just Junior Hi level algebra.
+
+And in QuArK python, + works for vectors, and * will
+combine a vector and a float, the only difference from
+standard math notation being that you can also put the
+float second, or use the division symbol in the usual
+way:
+<code>
+(1/a)*v == v*(1/a) == v/a
+</code>
+(if v is a vector and a is a float).
+
+It is also usual for vectors to be used to represent points,
+but there's a issue here: it makes no sense to add
+points to each other, or multiply them by numbers.  What's
+going on is that to represent a point by a vector, we first
+need to pick a special point called the 'origin'

@@ -1,0 +1,15 @@
+title: Vectors
+
+desc: intro
+
+[This is not yet indexed into the output because
+it's quite unfinished]
+
+Here is a rather short introduction to vectors, in certain
+respects rather philosophical, but also with reference
+to QuArK's vector facilities.  The first few chapters of
+books on 'vector calculus' are a good source for this
+kind of material, although fortunately there's little need
+to wade very far into them (I learned a lot from the one
+by Marsden).
+
