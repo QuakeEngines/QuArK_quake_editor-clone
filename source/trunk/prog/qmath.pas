@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/11/26 19:08:32  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.5  2000/10/26 17:00:05  tiglari
 added some vector functions
 
@@ -89,6 +95,7 @@ function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
 function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
+function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;
 
 const
  {Origine}OriginVectorZero: TVect = (X:0; Y:0; Z:0);
@@ -627,7 +634,7 @@ begin
   end
  else
   Windows.PolyPolyline(DC, Pts, Cnt, NbPolylines);
- Result:=True; 
+ Result:=True;
 end;
 
 function Rectangle95(DC: HDC; X1,Y1,X2,Y2: Integer) : Bool; stdcall;
@@ -776,6 +783,14 @@ begin
  Result.X:=R*V.X;
  Result.Y:=R*V.Y;
  Result.Z:=R*V.Z;
+end;
+
+function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;
+ var Dot1, Dot2 : Double;
+begin
+  Dot1:=Dot(VecDiff(PlanePoint,Point), PlaneNorm);
+  Dot2:=Dot(Along, PlaneNorm);
+  Result:=VecSum(Point,VecScale(Dot1/Dot2,Along));
 end;
 
 end.
