@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2003/03/21 00:12:43  nerdiii
+tweaked OpenGL mode to render additive and texture modes as in Half-Life
+
 Revision 1.71  2003/03/16 00:12:19  tiglari
 Genesis3D tweaks to map format (orientation flips in Q1-style texture coordinates)
 
@@ -1684,6 +1687,7 @@ type
   TableauSommets = array[0..99] of TUnSommet;
   TableauEntiers = array[0..99] of Integer;
 var
+  FaceCount: Integer;
   I, J, K: Integer;
   FI, FJ: TFace;
   Org, Arr: TVect;
@@ -1942,8 +1946,9 @@ begin
               Exit;
             end;
             I:=0;
-            while (Aretes[I xor 1]<>S) or (Aretes[I xor 3]=Prec)
-               or ((Aretes[I]<>FJ) and (Aretes[I xor 2]<>FJ)) do
+            FaceCount := Aretes.Count;  //SilverPaladin - Added Face count to prevent index OoB
+            while (((I+2) xor 3) < FaceCount) and ((Aretes[I xor 1]<>S) or (Aretes[I xor 3]=Prec)
+               or ((Aretes[I]<>FJ) and (Aretes[I xor 2]<>FJ))) do
               Inc(I,2);
             Suivant:=PVertex(Aretes[I xor 3]);
             if K=1 then
