@@ -52,7 +52,13 @@ def BasicCheck(menu=None):
         errobj = errobj + test
 
     test = editor.Root.findallsubitems("", ':b')
-    for obj in test:
+    if quarkx.setupsubset()["BezierPatchSupport"] == "1":
+      for obj in test:
+        if len(obj.findallsubitems("", ':p') + obj.findallsubitems("", ':b2'))==0:
+            err["Brush entities (e.g. doors and plats) are not valid without any attached polyhedron or bezier patch. Delete these empty entities in the tree view now or the game will crash."] = 0
+            errobj.append(obj)
+    else:
+      for obj in test:
         if len(obj.findallsubitems("", ':p'))==0:
             err["Brush entities (e.g. doors and plats) are not valid without any attached polyhedron. Delete these empty entities in the tree view now or the game will crash."] = 0
             errobj.append(obj)
@@ -106,6 +112,11 @@ quarkpy.mapsearch.checkitems.append(Basic1)
 #
 #
 # $Log$
+# Revision 1.5  2003/12/17 13:58:59  peter-b
+# - Rewrote defines for setting Python version
+# - Removed back-compatibility with Python 1.5
+# - Removed reliance on external string library from Python scripts
+#
 # Revision 1.4  2003/03/21 05:47:45  cdunde
 # Update infobase and add links
 #
