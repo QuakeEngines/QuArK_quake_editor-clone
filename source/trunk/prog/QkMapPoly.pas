@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2001/04/23 11:33:39  tiglari
+automatic suppression of TX in brush prim mode (makes Radiant barf)
+
 Revision 1.34  2001/04/16 00:35:16  tiglari
 Worldcraft mapversion 220 misnomenclature fixed (mapversion 202->Valve220)
 
@@ -2114,12 +2117,51 @@ begin
 end;
 
 
+function AlmostIntegral(const V: TVect; var V2: TVect) : boolean;
+var
+  DV: TVect;
+begin
+  V2:=MakeVect(Round(V.X), Round(V.Y), Round(V.Z));
+  DV:=VecDiff(V, V2);
+  if sqr(DV.X)+sqr(DV.Y)+sqr(DV.Z)<0.0001 then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function EqualVect(V1, V2 : TVect) : boolean;
+begin
+  if (V1.X=V2.X) and (V1.Y=V2.Y) and (V1.Z=V2.Z) then
+    Result:=true
+  else
+    Result:=false;
+end;
+
+function CoLinear(V1, V2, V3: TVect) : boolean ;
+var
+  D1, D2: TVect;
+begin
+  if EqualVect(V1,V2) or EqualVect(V2,V3) or
+      EqualVect(V1, V3) then
+    Result:=true
+  else
+  begin
+    D1:=VecDiff(V2,V1);
+    D2:=VecDiff(V3,V2);
+    Normalise(D1); Normalise(D2);
+    if Dot(D1,D2)>0.999 then
+      Result:=true
+    else
+      Result:=false;
+  end;
+end;
+
 procedure TPolyedre.SaveAsTextPolygon(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
 var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers, BrushPrim, Valve220Map : Boolean;
+ WriteIntegers, BrushPrim, Valve220Map, ExpandThreePoints : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2149,11 +2191,12 @@ var
      (' ;TX1',  ' ;TX2' ));
   var
    S, S1, S2, S3: String;
-   I, R: Integer;
-   P, PT: TThreePoints;
+   I, R, J, K, L, R2 : Integer;
+   P, PT, VT: TThreePoints;
    Params: TFaceParams;
-   Delta1: TVect;
+   Delta1, V, V2: TVect;
    Facteur: TDouble;
+   FS: PSurface;
    PX, PY: array[1..3] of Double;
 
    { tiglari }
@@ -2291,6 +2334,10 @@ var
 
   begin
    if F.GetThreePoints(P[1], P[3], P[2]) and F.LoadData then
+{
+     if BrushPrim then
+       F.GetThreePointsBP(P[1], P[3], P[2]);
+}
     begin
      if OriginBrush<>Nil then
       begin
@@ -2307,6 +2354,73 @@ var
         end;
       end;
      S:='  ';
+     { FIXME: this should be thought about }
+     if ExpandThreePoints then
+     begin
+       { wacko crap to get the vertexes }
+       { FS is first of a linked list of structures
+          specifying vertex cycles }
+       FS:=F.FaceOfPoly;
+       while Assigned(FS) do {FS is not Nil, why not say it that way?
+                              imitating vertices(of) code below) }
+       begin
+         K:=1;
+         for J:=0 to FS^.prvNbS-1 do {one more than # vertexes useed }
+         { try to find some that are almost integers }
+         begin
+           V:=FS^.prvDescS[J]^.P;  { an actual vertex }
+           if AlmostIntegral(V,V2) then
+           begin
+             if (K=2) and EqualVect(VT[1],V2) then
+               continue;
+             if (K=3) and CoLinear(VT[1],VT[2],V2) then
+               continue;
+             VT[K]:=V2;
+             K:=K+1;
+             if K>3 then break;
+           end;
+         end;
+         if K>3 then break;
+         FS:=FS^.NextF;
+       end;
+       if K>3 then {we got some nearly integral threepoints
+         so lets usem }
+       begin
+         P[1]:=VT[1];
+         { if normal would be wrong, exchange }
+         if Dot(Cross(VecDiff(VT[2],VT[1]),VecDiff(VT[3],VT[1])),F.Normale)>0 then
+         begin
+            P[2]:=VT[3]; P[3]:=VT[2];
+         end
+         else
+         begin
+           P[2]:=VT[2]; P[3]:=VT[3]
+         end
+       end
+(* We could use 1 or two integral ones if they  are found, but
+   atm I'm not convinced it's worth it.
+     else if K>1 then  { use the first integral vertex as P[1] }
+     begin
+       P[1]:=VT[1];
+       VT[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
+       VT[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
+         if Dot(Cross(VecDiff(VT[2],VT[1]),VecDiff(VT[3],VT[1])),F.Normale)>0 then
+         begin
+            P[2]:=VT[3]; P[3]:=VT[2];
+         end
+         else
+         begin
+           P[2]:=VT[2]; P[3]:=VT[3]
+         end
+     end
+*)
+     else
+       begin
+        P[2]:=VecSum(P[1],VecScale(100,VecDiff(P[2],P[1])));
+        P[3]:=VecSum(P[1],VecScale(100,VecDiff(P[3],P[1])));
+       end
+     end;
+
      for I:=1 to 3 do
       with P[I] do
        begin
@@ -2464,6 +2578,7 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  Valve220Map:=Flags and soWriteValve220<>0;
+ ExpandThreePoints:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex = 1);
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
