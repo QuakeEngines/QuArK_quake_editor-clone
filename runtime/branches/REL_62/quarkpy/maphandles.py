@@ -681,29 +681,42 @@ class VertexHandle(qhandles.GenericHandle):
                         #
                         newpoint = self.pos+delta
                         nf = new.subitem(orgfaces.index(f))
-                        tp = nf.threepoints(2)
-                        x,y = nf.axisbase()
-                        def proj1(p, x=x,y=y,v=vmax):
-                            return (p-v)*x, (p-v)*y
-                        tp = tuple(map(proj1, tp))
-                        nf.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
 
-                        newnormal = rotationaxis ^ (self.pos+delta-vmax)
-                        testnormal = rotationaxis ^ (self.pos-vmax)
-                        if newnormal:
-                            if testnormal * f.normal < 0.0:
-                                newnormal = -newnormal
+                        def pointsok(new,fixed):
+                            #
+                            # coincident not OK
+                            #
+                            if not new-fixed[0]: return 0
+                            if not new-fixed[1]: return 0
+                            #
+                            # colinear also not OK
+                            #
+                            if abs((new-fixed[0]).normalized*(new-fixed[1]).normalized)>.999999:
+                               return 0
+                            return 1
+
+                        if pointsok(newpoint,fixedpoints): 
+                            tp = nf.threepoints(2)
+                            x,y = nf.axisbase()
+                            def proj1(p, x=x,y=y,v=vmax):
+                                return (p-v)*x, (p-v)*y
+                            tp = tuple(map(proj1, tp))
+                            nf.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+
+                            newnormal = rotationaxis ^ (self.pos+delta-vmax)
+                            testnormal = rotationaxis ^ (self.pos-vmax)
+                            if newnormal:
+                                if testnormal * f.normal < 0.0:
+                                    newnormal = -newnormal
 
 
-                        if nf.normal*newnormal<0.0:
-                            nf.swapsides()
-                        x,y=nf.axisbase()
-                        def proj2(p,x=x,y=y,v=vmax):
-                            return v+p[0]*x+p[1]*y
-                        tp = tuple(map(proj2,tp))
-                        nf.setthreepoints(tp ,2)
-
- 
+                            if nf.normal*newnormal<0.0:
+                                nf.swapsides()
+                            x,y=nf.axisbase()
+                            def proj2(p,x=x,y=y,v=vmax):
+                                return v+p[0]*x+p[1]*y
+                            tp = tuple(map(proj2,tp))
+                            nf.setthreepoints(tp ,2)
  
                 # if the face is not part of the original group
                 #
@@ -1410,6 +1423,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.11.6.2  2001/04/10 06:08:32  tiglari
+#fix but whereby info of last label was showing up for label-less wrong selections
+#
 #Revision 1.11.6.1  2001/04/06 10:50:08  tiglari
 #code for better vertex dragging (from main branch)
 #
