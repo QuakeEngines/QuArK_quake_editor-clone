@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2005/01/02 15:19:27  alexander
+access files via steam service - first
+
 
 }
 
@@ -30,7 +33,7 @@ unit QkSteamFS;
 
 interface
 
-uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak;
+uses  Windows,  SysUtils, Classes, QkObjects, QkFileObjects, QkPak,Setup;
 
 type
  QSteamFSFolder = class(QPakFolder)
@@ -230,7 +233,7 @@ end;
 procedure QSteamFSFolder.LoadFile(F: TStream; FSize: Integer);
 var
 //  steamfolderitem : pointer;
-//  path:String;
+  FSModule:String;
   contentid: longword;
 
 begin
@@ -249,8 +252,8 @@ begin
          except
            Raise EErrorFmt(5714, [self.Name]);
          end;
-
-         steamfshandle:= SteamFSInit('E:/spiele/steam/steamapps/macwurst/sourcesdk/bin/FileSystem_Steam.dll',contentid);
+         FsModule:=SetupGameSet.Specifics.Values['SteamFSModule'];
+         steamfshandle:= SteamFSInit(PChar(FsModule) ,contentid);
          if steamfshandle=nil then
            Raise EErrorFmt(5712, [LoadName]); {init steam}
 
