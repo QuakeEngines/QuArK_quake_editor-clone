@@ -415,7 +415,8 @@ QQRKSRC1
         3DLight = '512'
         CheckDirectory = "HL.EXE"
         Console = "1"
-        NeedQCSG = "1"
+        NeedQCSG = "1"           //enable special form
+        FirstBuildCmd  = "QCSG1" //command that must be run first
         Form = "GameHalfLife"
         PlayerClass = "X"
         TextureFormat = ".wad3_C"
@@ -508,16 +509,17 @@ QQRKSRC1
         CD = ""
         CDDir = "Install\Data"
         Program = "sof"
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         QBSP1 = "sofbsp.EXE"
         QBSPCmd = ""
         VIS1 = "sofvis.EXE"
         VISCmd = ""
         LIGHT1 = "sofarghrad.EXE"
         LIGHTCmd = "-gamedir .. -moddir ."
-        QBSPDesc = "QBSP3"
+        QBSPDesc = "SOFBSP"
         VISDesc = "QVIS3"
         LIGHTDesc = "QRAD3"
-        BaseDir = "main"
+        BaseDir = "base"
         tmpQuArK = "tmpQuArK"
 //        Palette = "pics/colormap.pcx"
 //        Gradient = "pics/colormap.pcx"
@@ -1664,12 +1666,12 @@ QQRKSRC1
       {
         Typ = "C"
         Txt = "SOF command-line"
-        Items = "SOF"$0D"SOF  +set developer 1"
+        Items = "SOF"$0D"SOF  +set console 1"
       }
       QBSP1: =
       {
         Typ = "EP"
-        Txt = "Path to QBSP2"
+        Txt = "Path to SOFBSP"
         DefExt = "exe"
       }
       QBSPCmd: =
@@ -1679,7 +1681,7 @@ QQRKSRC1
       }
       walTrick: = { //FIXME ! is this needed ?
         Typ = "X"
-        Txt = "This version of qbsp3 wants"
+        Txt = "This version of qbsp wants"
         Cap = ".WAL texture files"
         Hint = "check this to have QuArK write both .WAL and .TGA textures (kpBSP can't read .TGA textures)"
       }
