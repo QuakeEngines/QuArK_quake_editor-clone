@@ -578,7 +578,7 @@ def loadLeakFile(m):
     import mapholes
     mapholes.LoadLinFile(m.editor, m.auxfilename)
         
-leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).|glossary.html#l")
+leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).\n\nThe thickness of the 'Leak line' that will be drawn can be changed by going to the 'Options' menu and selecting the 'Set Line Thickness' function.|glossary.html#l")
 
 
 def loadPortalFile(m):
@@ -609,7 +609,7 @@ def BrushNumClick(m):
     import mapbrushnum
     mapbrushnum.LoadBrushNums(m.editor, m.auxfilename)
     
-brushnumsMenuItem = qmenu.item("Select Brush Number",BrushNumClick,"|Tries to find brushes by number, as specified in compile tool error messages (the use of duplicators, etc. might subvert this.")
+brushnumsMenuItem = qmenu.item("Select Brush Number",BrushNumClick,"|Select Brush Number:\n\nTries to find brushes by number, as specified in compile tool error messages (the use of duplicators, etc. might subvert this).\n\nSee the infobase for more detailed explanations on how to use this function.|maped.builderrors.console.html")
 
 def onclick(m):
     for args in ((leakMenuItem,"MapHoles",".lin"),
@@ -637,7 +637,7 @@ def QuakeMenu(editor):
             if txt=="-":
                 items.append(qmenu.sep)
             else:
-                m = qmenu.item(txt, qmenuitem1click, "|The commands in this menu lets you run your map with the game. The most common commands are the first few ones, which lets you try your map as a one-step operation.\n\nBefore a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of this game, where you must tell QuArK where these programs are installed. The programs themselves are available in Build Packs, one for each game you want to make maps for, and that can be downloaded from http://www.planetquake.com/quark (page Armin's News).")
+                m = qmenu.item(txt, qmenuitem1click, "|The commands in this menu lets you run your map with the game. The most common commands are the first few ones, which lets you try your map as a one-step operation.\n\nBefore a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of the game you wish to map for, where you must tell QuArK where these build programs are installed. The programs themselves are available in Build Packs, one for each game you want to make maps for, and that can be downloaded from http://dynamic.gamespy.com/~quark/.|intro.mapeditor.menu.html#gamemenu")
                 m.info = p
                 #if isbsp and p[firstcmd]:
                 #    m.state = qmenu.disabled
@@ -661,6 +661,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.34  2003/03/24 10:34:24  tiglari
+#support for brush-number finder
+#
 #Revision 1.33  2003/03/21 05:56:26  cdunde
 #Update infobase and add links
 #
