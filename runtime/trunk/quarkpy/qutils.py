@@ -522,7 +522,10 @@ def removeFromAttr(object, attr, thing):
     if getattr(object,attr)==[]:
         delattr(object,attr)
 
-
+def hintPlusInfobaselink(hint, url):
+    if url:
+        return "%s|%s"%(hint,url)
+    return hint
 
 
 #---- import the plug-ins ----
@@ -533,6 +536,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.21  2002/05/11 02:15:41  tiglari
+#added attribute-management methods
+#
 #Revision 1.20  2002/04/12 11:25:30  tiglari
 #revert loadimages2 to loadimages  (a less well-thought-out leak hunt move ...)
 #
