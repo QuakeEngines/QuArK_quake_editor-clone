@@ -370,7 +370,7 @@ def findMiterableFaces(faces):
         
 
 def buildwallmakerimages(self, singleimage=None):
-        if not self.dup["bevel"]:
+        if not self.dup["miter"]:
             return mapdups.DepthDuplicator.buildimages(self,singleimage)
             
         if singleimage is not None and singleimage>0:
@@ -455,4 +455,7 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.1  2001/09/23 07:00:34  tiglari
+# mitered edges for wall maker duplicator
+#
 #
