@@ -1,5 +1,8 @@
+[FileVersion]
+Version=6.0
+
 [Compiler]
-A=1
+A=8
 B=0
 C=1
 D=1
@@ -41,12 +44,12 @@ ImageBase=4194304
 ExeDescription=
 
 [Directories]
-OutputDir=C:\cvsquark\runtime
-UnitOutputDir=C:\cvsquark\rubbish
+OutputDir=F:\QuArK\runtime
+UnitOutputDir=F:\QuArK\rubbish
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=$(DELPHI)\Lib\Debug
-Packages=VCL50;VCLX50;VCLSMP50;QRPT50;VCLDB50;VCLBDE50;ibevnt50;VCLDBX50;TEEUI50;TEEDB50;TEE50;TEEQR50;VCLIB50;VCLIE50;INETDB50;INET50;NMFAST50;dclocx50;dclaxserver50
+SearchPath=$(DELPHI)\Lib\Debug;F:\QuArK\source\components;F:\QuArK\source\components\jpeg;F:\QuArK\source\components\PNG;F:\QuArK\source\components\zip
+Packages=VCL50;VCLX50;VCLSMP50;QRPT50;VCLDB50;VCLBDE50;ibevnt50;VCLDBX50;TEEUI50;TEEDB50;TEE50;TEEQR50;VCLIB50;VCLIE50;INETDB50;INET50;NMFAST50;dclocx50;dclaxserver50;vcl;vclx;VclSmp
 Conditionals=
 DebugSourceDirs=
 UsePackages=0
@@ -54,11 +57,9 @@ UsePackages=0
 [Parameters]
 RunParams=
 HostApplication=
-
-[Language]
-ActiveLang=
-ProjectLang=$00000409
-RootDir=
+Launcher=
+UseLauncher=0
+DebugCWD=
 
 [Version Info]
 IncludeVerInfo=0
@@ -78,6 +79,31 @@ CodePage=1252
 [Version Info Keys]
 FileVersion=1.0.0.0
 
+[Excluded Packages]
+E:\ENTWICKLUNG\DELPHI 6\BIN\DBX60.BPL=Borland SQL Explorer UI Package
+e:\entwicklung\delphi 6\Bin\dclado60.bpl=Borland ADO DB Components
+E:\ENTWICKLUNG\DELPHI 6\BIN\DCLDB60.BPL=Borland Database Components
+e:\entwicklung\delphi 6\Bin\dclbde60.bpl=Borland BDE DB Components
+e:\entwicklung\delphi 6\Bin\DCLIB60.bpl=InterBase Data Access Components
+e:\entwicklung\delphi 6\Bin\dclcds60.bpl=Borland Base Cached ClientDataset Component
+E:\ENTWICKLUNG\DELPHI 6\BIN\DCLMID60.BPL=Borland MyBase DataAccess Components
+e:\entwicklung\delphi 6\Bin\dclbdecds60.bpl=Borland Local BDE ClientDataset Components
+C:\WINDOWS\SYSTEM\ibevnt60.bpl=Borland Interbase Event Alerter Component
+e:\entwicklung\delphi 6\Bin\dclqrt60.bpl=QuickReport Components
+e:\entwicklung\delphi 6\Bin\dcltee60.bpl=TeeChart Components
+e:\entwicklung\delphi 6\Bin\dcldss60.bpl=Borland Decision Cube Components
+e:\entwicklung\delphi 6\Bin\dcltqr60.bpl=TeeChart for QuickReport Components
+e:\entwicklung\delphi 6\Bin\dclclxdb60.bpl=Borland CLX Database Components
+E:\ENTWICKLUNG\DELPHI 6\BIN\DCLCLXSTD60.BPL=Borland CLX Standard Components
+e:\entwicklung\delphi 6\Bin\dclmcn60.bpl=Borland DataSnap Connection Components
+e:\entwicklung\delphi 6\Bin\dclsmpedit60.bpl=Borland Editor Script Enhancements
+e:\entwicklung\delphi 6\Bin\applet60.bpl=Borland Control Panel Applet Package
+e:\entwicklung\delphi 6\Bin\dclemacsedit60.bpl=Borland Editor Emacs Enhancements
+e:\entwicklung\delphi 6\Bin\dclact60.bpl=Borland ActionBar Components
+e:\entwicklung\delphi 6\Bin\dcl31w60.bpl=Delphi 1.0 Compatibility Components
+e:\entwicklung\delphi 6\Bin\dclshlctrls60.bpl=Shell Control Property and Component Editors
+e:\entwicklung\delphi 6\Bin\dclite60.bpl=Borland Integrated Translation Environment
+
 [HistoryLists\hlConditionals]
 Count=1
 Item0=Debug
@@ -87,13 +113,19 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 
 [HistoryLists\hlSearchPath]
-Count=1
-Item0=$(DELPHI)\Lib\Debug
+Count=5
+Item0=$(DELPHI)\Lib\Debug;F:\QuArK\source\components;F:\QuArK\source\components\jpeg;F:\QuArK\source\components\PNG;F:\QuArK\source\components\zip
+Item1=$(DELPHI)\Lib\Debug;F:\QuArK\source\components;F:\QuArK\source\components\jpeg;F:\QuArK\source\components\PNG
+Item2=$(DELPHI)\Lib\Debug;F:\QuArK\source\components;F:\QuArK\source\components\jpeg
+Item3=$(DELPHI)\Lib\Debug;F:\QuArK\source\components
+Item4=$(DELPHI)\Lib\Debug
 
 [HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=C:\cvsquark\rubbish
+Count=2
+Item0=F:\QuArK\rubbish
+Item1=C:\cvsquark\rubbish
 
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=C:\cvsquark\runtime
+Count=2
+Item0=F:\QuArK\runtime
+Item1=C:\cvsquark\runtime
