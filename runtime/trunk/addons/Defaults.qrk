@@ -30,6 +30,11 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.29  2000/06/05 00:15:15  alexander
+//added "StupidBuildToolKludge" flag for games (likes SoF) where the tools want to run in basedir
+//fixed wrong base dir of SoF
+//seperated NeedQCSG flag from FirstBuildCmd (is now extra flag)
+//
 //Revision 1.27  2000/06/04 15:52:52  alexander
 //added: origin default texture entry for both SoF and KingPin
 //fixed: wrong default texture for SoF
@@ -415,7 +420,7 @@ QQRKSRC1
         3DLight = '512'
         CheckDirectory = "HL.EXE"
         Console = "1"
-        NeedQCSG = "1"           //enable special form
+        SpecialCustomQuakeMenu = "CustomQuakeMenuQCSG"           //enable special form
         FirstBuildCmd  = "QCSG1" //command that must be run first
         Form = "GameHalfLife"
         PlayerClass = "X"
@@ -581,6 +586,7 @@ QQRKSRC1
         CheckDirectory = "QUAKE3.EXE"
         Console = "1"
         Form = "GameQuake3"
+        SpecialCustomQuakeMenu = "CustomQuakeMenuBSPC"           //enable special form
         TextureDef = "base_wall/basewall03"
         TriggerTextureDef = "common/trigger"
         LightFactor = '0.9'
@@ -2606,6 +2612,7 @@ QQRKSRC1
           macro = "hello"
       }
     }
+    // this is the form used when SpecialCustomQuakeMenu is not set
     CustomQuakeMenu:form =    // "customize Quake menu" box
     {
       Style = "7"
@@ -2639,6 +2646,7 @@ QQRKSRC1
       sep: = {Typ="S"}
       Shortcut: = {Typ="E" Txt="Keyboard shortcut" Hint="Keyboard shortcut as it appears in the menu (recommended: 'Ctrl+letter')"}
     }
+    // this form is used for some games when SpecialCustomQuakeMenu is set to the forms name
     CustomQuakeMenuQCSG:form =    // "customize Quake menu" box for Half-Life
     {
       Style = "7"
@@ -2674,6 +2682,48 @@ QQRKSRC1
         Txt="...additionnal parameters"
         Items="" $0D "-extra"
         Hint="-extra takes longer to compute but looks much better (it prevents 'stairsteps' between shadow and light)"
+      }
+      sep: = {Typ="S"}
+      Shortcut: = {Typ="E" Txt="Keyboard shortcut" Hint="Keyboard shortcut as it appears in the menu (recommended: 'Ctrl+letter')"}
+    }
+    // this form is used for some games when SpecialCustomQuakeMenu is set to the forms name
+    CustomQuakeMenuBSPC:form =    // "customize Quake menu" box for games with bspc
+    {
+      Style = "7"
+      Textures: = {Typ="X" Txt="first..." Cap="Prepare used textures" Hint="prepare all textures used in map and write them to a place where QBSP will find them"}
+      RunGame: = {Typ="X" Txt="finally..." Cap="Run the game" Hint="run the game when the map has been rebuilt"}
+      Pause: = {Typ="X" Cap="Console stay open" Hint="don't automatically close the console where all QBSP/VIS/LIGHT output has been written"}
+      sep: = {Typ="S"}
+      QBSP1: = {Typ="X" Txt="Rebuild the map" Cap="QBSP" Hint="this program builds the .bsp file from your map"}
+      QBSPCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-onlyents"
+        Hint="with -onlyents, read the previous version of the .bsp file and only update the entities"
+      }
+      sep: = {Typ="S"}
+      VIS1: = {Typ="X" Txt="Compute visibility list" Cap="VIS / QVIS3" Hint="required for large maps to run smoothly in Quake. For Quake 2, it is also required for QRAD3 to work properly"}
+      VISCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-fast" $0D "-level 0" $0D "-level 1" $0D "-level 2" $0D "-level 3" $0D "-level 4"
+        Hint="computation details, from fastest to compute to fastest in Quake"
+      }
+      sep: = {Typ="S"}
+      LIGHT1: = {Typ="X" Txt="Compute lights" Cap="LIGHT / QRAD3" Hint="computes lights and shadows from 'light' entities. Without this, your map looks full bright"}
+      LIGHTCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-extra"
+        Hint="-extra takes longer to compute but looks much better (it prevents 'stairsteps' between shadow and light)"
+      }
+      sep: = {Typ="S"}
+      BSPC1: = {Typ="X" Txt="Build AAS file for Bots" Cap="BSPC" Hint="Only needed if you want to play this map with bots"}
+      BSPCCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-noverbose" $0D "-bsp2aas"
+        Hint="noverbose removes the lot of detail messages"
       }
       sep: = {Typ="S"}
       Shortcut: = {Typ="E" Txt="Keyboard shortcut" Hint="Keyboard shortcut as it appears in the menu (recommended: 'Ctrl+letter')"}
