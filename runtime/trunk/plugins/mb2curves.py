@@ -757,7 +757,7 @@ The curve will be oriented w.r.t. the map view you RMB-clicked on, or, if you're
 
 If the brush vanishes without being replaced by a shape, the brush may have been too screwy a shape, or looked at from a bad angle. (My attempts to detect these conditions in advance are meeting with unexpected resistance. There is also a bug in that if you apply this to a brush after first opening the map editor, without inserting anything first, the orientations are wrong.)
 """
-  curvepop = qmenu.popup("Curves",list, hint=curvehint)
+  curvepop = qmenu.popup("Bezier Curves",list, hint=curvehint)
   if newpoly is None:
     if len(o.subitems)!=6:
       morehint= "\n\nThis item is disabled because the poly doesn't have exactly 6 faces."
@@ -804,6 +804,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2002/12/29 04:17:58  tiglari
+#transfer fixes from 6.3
+#
 #Revision 1.29.14.2  2002/12/29 02:59:28  tiglari
 #a bit of cleanup, remove failed attempt to supress centering tex coordinates
 # with threepoints call; this now down in quarkpy/bqurils:texcpfromface
