@@ -275,12 +275,16 @@ def MACRO_loadentityplugins(self):
     plugins.LoadPlugins("ENT")
     global MACRO_loadentityplugins
     MACRO_loadentityplugins = lambda: None    # next calls to loadmdleditor() do nothing
-    
+
 def MACRO_ent_convertfrom(text):
     import qeditor
     import qutils
     a = quarkx.getqctxlist()
     a.reverse()
+    # Decker - Some menuitem-captions contains a '&'-character (you know, the one which tells what mnemonic-key can be used)
+    # These '&'-characters has to be removed, for the entfn[text] to work properly.
+    import string
+    text = string.replace(text, "&", "")
     entf = entfn[text]
     if entf is not None:
         files = quarkx.filedialogbox("Select File", text, entf[0], 0)
@@ -291,11 +295,13 @@ def MACRO_ent_convertfrom(text):
                 gn = file
             entf[1](a[0].parent, file, gn)
 
-    
+
 # ----------- REVISION HISTORY ------------
 #
-#
 #$Log$
+#Revision 1.11  2001/06/13 23:01:13  aiv
+#Moved 'Convert From' stuff to python code (plugin type)
+#
 #Revision 1.10  2001/03/28 19:23:15  decker_dk
 #Added '(*.fgd)' to the filedialogbox-call.
 #
@@ -304,6 +310,4 @@ def MACRO_ent_convertfrom(text):
 #
 #Revision 1.5  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
-#
 #
