@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.12  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -239,8 +242,9 @@ uses Qk1, Undo, QkExplorer, Setup, qmath, QkGroup, Travail, QkOwnExplorer,
 
 const
  c_FileSignatureQQRK   = $4B525151;  {QQRK}
- c_FileVersionBinary     = $314E4942;  {BIN1}
- c_FileVersionText      = $31435253;  {SRC1}
+ c_FileVersionBinary   = $314E4942;  {BIN1}
+ c_FileVersionText     = $31435253;  {SRC1}
+ c_FileVersionText2    = $32435253;  {SRC2}
 
  c_FileSignatureSize = 2*SizeOf(LongInt);  { Signature + Version }
 
@@ -734,124 +738,152 @@ var
   end;
 
 begin
- ProgressIndicatorStart(5447, PSize div Granularite); try
- Ligne:=1;
- Prochain:=P+Granularite;
- Lu(0);
- if P^<>'{' then SyntaxError(5194);
- Level:=Self;
- {IgnoreLevel:=0;}
- Lu(1);
- repeat
-  while P^='}' do
-   begin
-    Lu(1);
-    {if IgnoreLevel>0 then
-     Dec(IgnoreLevel)
-    else}
-     if Level=Self then
-      begin
-       if P^<>#0 then GlobalWarning(LoadStr1(5195));
-       Self.FixupAllReferences;
-       Exit;
-      end
-     else
-      Level:=Level.FParent;
-   end;
-  I:=1;
-  while P[I] <> '=' do
-   begin
-    if P[I] in [#13, #10, #0] then SyntaxError(5197);
-    Inc(I);
-   end;
-  J:=I+1;
-  while P[I-1] in cSeperators do
-   Dec(I);
-  SetString(NameSpec, P, I);
-  Lu(J);
-  case P^ of
-   '{': begin
-         Lu(1);
-         {if IgnoreLevel=0 then}
-          Q:=ConstructQObject(NameSpec, Level)
-         {else
-          Q:=Nil};
-         {if Q=Nil then
-          Inc(IgnoreLevel)
-         else
-          begin}
-           Level.SubElements.Add(Q);
-           Level:=Q;
-          {end;}
-        end;
-   '@': begin
-         Lu(1);
-         {if IgnoreLevel=0 then}
-          Level.LoadedFileLink(NameSpec, 0);
-        end;
-   '"', '$':
-        begin
-         Arg:='';
-         repeat
-          while P^='$' do
+ ProgressIndicatorStart(5447, PSize div Granularite);
+ try
+  Ligne:=1;
+  Prochain:=P+Granularite;
+  Lu(0);
+  if P^<>'{' then SyntaxError(5194);
+  Level:=Self;
+  {IgnoreLevel:=0;}
+  Lu(1);
+  repeat
+   while P^='}' do
+    begin
+     Lu(1);
+     {if IgnoreLevel>0 then
+      Dec(IgnoreLevel)
+     else}
+      if Level=Self then
+       begin
+        if P^<>#0 then GlobalWarning(LoadStr1(5195));
+        Self.FixupAllReferences;
+        Exit;
+       end
+      else
+       Level:=Level.FParent;
+    end;
+   I:=1;
+   while P[I] <> '=' do
+    begin
+     if P[I] in [#13, #10, #0] then SyntaxError(5197);
+     Inc(I);
+    end;
+   J:=I+1;
+   while P[I-1] in cSeperators do
+    Dec(I);
+   SetString(NameSpec, P, I);
+   Lu(J);
+   case P^ of
+    '{': begin
+          Lu(1);
+          {if IgnoreLevel=0 then}
+           Q:=ConstructQObject(NameSpec, Level)
+          {else
+           Q:=Nil};
+          {if Q=Nil then
+           Inc(IgnoreLevel)
+          else
+           begin}
+            Level.SubElements.Add(Q);
+            Level:=Q;
+           {end;}
+         end;
+    '@': begin
+          Lu(1);
+          {if IgnoreLevel=0 then}
+           Level.LoadedFileLink(NameSpec, 0);
+         end;
+    '"', '$':
+         begin
+          Arg:='';
+          repeat
+           while P^='$' do
+            begin
+             Lu(1);
+             while P^ in ['0'..'9', 'a'..'f', 'A'..'F'] do
+              begin
+               Arg:=Arg+Chr((HexVal(P[0]) shl 4) or HexVal(P[1]));
+               Inc(P, 2);
+              end;
+             Lu(0);
+            end;
+           if P^<>'"' then Break;
+           P1:=P;
+           repeat
+            Inc(P);
+            case P^ of
+             '"': Break;
+             #13, #10, #0: SyntaxError(5198);
+(* 
+{decker - allow escape-characters like "\n", "\"" and "\\".
+          This implementation is not exactly C-style, as only
+          the mentioned three escape-characters are supported!}
+             '\':
+              begin
+               case P[1] of
+                'n': Arg:=Arg+#13; {convert to newline $0D character}
+                '"': Arg:=Arg+'"'; {convert to inline quote character}
+                '\': Arg:=Arg+'\'; {convert to single backslash character}
+                else {case-else}
+                 begin
+                  Arg:=Arg+P[0]; {unknown escape-sequence, use as normal backslash}
+                  Dec(P, 1); {Negate the next Inc()}
+                 end;
+               end;
+               Inc(P, 1);
+              end;
+*)
+             else {case-else}
+              Arg:=Arg+P[0];
+{/decker}
+            end;
+           until False;
+{decker - removed, to allow interpretation of escape-characters within string-quotes
+           SetString(A1, P1+1, P-P1-1);
+           Arg:=Arg+A1;
+/decker}
+           Lu(1);
+          until False;
+          {if IgnoreLevel=0 then}
+           Level.SpecificsAdd(NameSpec+'='+Arg);
+         end;
+    '''':begin
+          Arg:='';
+          Lu(1);
+          while P^<>'''' do
            begin
-            Lu(1);
-            while P^ in ['0'..'9', 'a'..'f', 'A'..'F'] do
-             begin
-              Arg:=Arg+Chr((HexVal(P[0]) shl 4) or HexVal(P[1]));
-              Inc(P, 2);
-             end;
+            P1:=P;
+            while not (P^ in (['''', #0]+cSeperators)) do
+             Inc(P);
+            SetString(A1, P1, P-P1);
+            try
+             Value:=StrToFloat(A1);
+            except
+             Raise EErrorFmt(5193, [Ligne, FmtLoadStr1(5209, [A1])]);
+            end;
+            SetLength(Arg, Length(Arg)+4);  { SizeOf(Single) }
+            Move(Value, Arg[Length(Arg)-3], 4);  { SizeOf(Single) }
             Lu(0);
            end;
-          if P^<>'"' then Break;
-          P1:=P;
-          repeat
-           Inc(P);
-           case P^ of
-            '"': Break;
-            #13, #10, #0: SyntaxError(5198);
-           end;
-          until False;
-          SetString(A1, P1+1, P-P1-1);
-          Arg:=Arg+A1;
           Lu(1);
-         until False;
-         {if IgnoreLevel=0 then}
-          Level.SpecificsAdd(NameSpec+'='+Arg);
-        end;
-   '''':begin
-         Arg:='';
-         Lu(1);
-         while P^<>'''' do
-          begin
-           P1:=P;
-           while not (P^ in (['''', #0]+cSeperators)) do
-            Inc(P);
-           SetString(A1, P1, P-P1);
-           try
-            Value:=StrToFloat(A1);
-           except
-            Raise EErrorFmt(5193, [Ligne, FmtLoadStr1(5209, [A1])]);
-           end;
-           SetLength(Arg, Length(Arg)+4);  { SizeOf(Single) }
-           Move(Value, Arg[Length(Arg)-3], 4);  { SizeOf(Single) }
-           Lu(0);
-          end;
-         Lu(1);
-         NameSpec[1]:=Chr(Ord(NameSpec[1]) or chrFloatSpec);
-         {if IgnoreLevel=0 then}
-          Level.SpecificsAdd(NameSpec+'='+Arg);
-        end;
-   '!': begin
-         Lu(1);
-         {if IgnoreLevel=0 then}
-          if not DoIncludeData(Level, Level, NameSpec) then
-           GlobalWarning(FmtLoadStr1(5643, [NameSpec]));
-        end;
-   else SyntaxError(5196);
-  end;
- until False;
- finally ProgressIndicatorStop; end;
+          NameSpec[1]:=Chr(Ord(NameSpec[1]) or chrFloatSpec);
+          {if IgnoreLevel=0 then}
+           Level.SpecificsAdd(NameSpec+'='+Arg);
+         end;
+    '!': begin
+          Lu(1);
+          {if IgnoreLevel=0 then}
+           if not DoIncludeData(Level, Level, NameSpec) then
+            GlobalWarning(FmtLoadStr1(5643, [NameSpec]));
+         end;
+    else
+     SyntaxError(5196);
+   end;
+  until False;
+ finally
+  ProgressIndicatorStop;
+ end;
 end;
 
 procedure QFileObject.WriteStandardFileHeading(TotalSize: Integer; F: TStream);
