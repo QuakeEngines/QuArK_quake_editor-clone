@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/06/05 18:38:06  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.26  2001/03/20 21:48:43  decker_dk
 Updated copyright-header
 
@@ -111,15 +114,6 @@ const
  BezierMeshCnt = 6;   { number of subdivisions on screen }
 
 type
- vec5_p = ^vec5_t;
- vec5_t = array[0..4] of scalar_t;
- vec_st_p = ^vec_st_t;
- vec_st_t = record
-             s,t: TDouble;
-            end;
- TVect5 = record
-           X, Y, Z, S, T: TDouble;
-          end;
 {beziercontrolpoints_t = array[0..2, 0..2] of vec5_t;  -- removed for generalized "quilt" support (variable number of control points)
  TBezierMeshCache = array[0..BezierMeshCnt, 0..BezierMeshCnt] of vec3_t;}
  PBezierTriangle = ^TBezierTriangle;
