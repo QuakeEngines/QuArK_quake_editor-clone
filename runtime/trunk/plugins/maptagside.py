@@ -678,7 +678,7 @@ def coplanar(f1, f2):
     return 1
   return 0
   
-def drawlinks(editor, view):
+def drawlinks2(editor, view):
   "separated linked faces drawn dotted, in blue if selected otherwise red"
   dict = getspecdict("_tag", editor.Root)
   if dict is None: return
@@ -707,6 +707,53 @@ def drawlinks(editor, view):
       for face in faces:
         drawredface(view,cv,face)
         
+def getlinkedfaces(tag, allfaces):
+  result = []
+  for face in allfaces:
+    if face.getint("_tag")==tag:
+      result.append(face)
+  return result
+
+
+#
+# makes a dict pairing the values of the tags on the faces
+#  with 1 (meaning that they're relevant tags)
+#
+def startdict(faces):
+  dict = {}
+  for face in faces:
+    if face.type==":f" and face.getint("_tag"):
+      dict[face.getint("_tag")] = 1
+  return dict
+
+def drawlinks(editor, view):
+  "if a linked face is selected, and some of the faces linked to it"
+  "  are not coplanar, all are drawn in dotted red"
+
+  dict =  startdict(editor.layout.explorer.sellist)
+  if dict:
+    #
+    # We only want to do this once, and only if there is a
+    #  tagged thing in the selection
+    #
+    allfaces = editor.Root.findallsubitems("",":f")
+  cv = view.canvas()
+  cv.pencolor = MapColor("Tag")
+  cv.penstyle = PS_DOT
+  for tag in dict.keys():
+    faces = getlinkedfaces(tag, allfaces)
+    planes = [faces[0]]
+    for face in faces[1:len(faces)]:
+      for plane in planes:
+        if coplanar(face,plane):
+          break;
+      else:
+        planes.append(face)
+    if len(planes)>1:
+      for face in faces:
+        drawredface(view,cv,face)
+    
+
 def linkfinishdrawing(editor, view, oldmore=quarkpy.qbaseeditor.BaseEditor.finishdrawing):
   "the new finishdrawning routine"
   drawlinks(editor, view)
@@ -1362,6 +1409,7 @@ def wrappopup(o, tagged):
   popup = qmenu.popup("&Wrap texture", list, None, wrappoptext)
   popup.label = 'wrappopup'
   return popup
+
 
 
 def getspecdict(spec, root):
