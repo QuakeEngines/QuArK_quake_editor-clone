@@ -26,6 +26,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.5  2001/03/14 21:10:48  decker_dk
+//Fixed a problem in the (dollar)LOG(dollar), and very very few hard-tabs
+//
 //Revision 1.4  2001/03/14 04:42:44  maleficus
 //worldspawn terrain keys added
 //
@@ -8020,12 +8023,14 @@ QQRKSRC1
     {
       mdl = "[model]"
       Help = "This is placable model for your map."
-      bbox = '-16 -16 -32 16 16 32'
-	angle: =
-	{
+//Decker 2001.03.17 - This point-entity should not have a bounding-box, as it
+//would give a wrong impression of the model
+//      bbox = '-16 -16 -32 16 16 32'
+      angle: =
+      {
 	Txt = "&"
 	Hint = "direction in which model will be oriented."
-	}
+      }
       model: =
       {
         Txt = "&"
