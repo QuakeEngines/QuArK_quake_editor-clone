@@ -584,7 +584,7 @@ def loadPortalFile(m):
     import mapportals
     mapportals.LoadPortalFile(m.editor, m.auxfilename)
         
-portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on.")
+portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on, and are up-to-date.")
 
 def prepAuxFileMenuItem(item,extkey,defext):
     editor=item.editor
@@ -651,6 +651,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.30  2003/03/19 11:06:54  tiglari
+#add commands for loading leak (pts/lin) and portal (prt) files
+#
 #Revision 1.29  2003/03/17 00:11:05  tiglari
 #Add manual leak file loading command
 #
