@@ -79,12 +79,13 @@ OF_TVSUBITEM         = 1   # all objects in a tree-view except top-level
 OF_TVINVISIBLE       = 2   # present but invisible in the tree-view
 OF_TVALREADYEXPANDED = 4   # node has been expanded once
 OF_TVEXPANDED        = 8   # node is expanded
-OF_ONDISK            = 16   # has not been loaded yet (loading is automatic when Python code reads the object's Specifics or sub-items)
-OF_FILELINK          = 32   # is a file link
-OF_WARNBEFORECHANGE  = 64   # warn the user before he makes changes
-OF_MODIFIED          = 128   # modified by the user
+OF_ONDISK            = 16  # has not been loaded yet (loading is automatic when Python code reads the object's Specifics or sub-items)
+OF_FILELINK          = 32  # is a file link
+OF_WARNBEFORECHANGE  = 64  # warn the user before he makes changes
+OF_MODIFIED          = 128 # modified by the user
 
 # values of the ';view' Specific (as text) of TreeMapGroup objects
+# !! Must match the constants in QkMapObjects.PAS !!
 VF_GRAYEDOUT        = 1    # whole group is grayed out
 VF_HIDDEN           = 2    # whole group is hidden
 VF_IGNORETOBUILDMAP = 4    # the group is ignored when writing the .map file with the SO_IGNORETOBUILD flag
@@ -92,10 +93,11 @@ VF_HIDEON3DVIEW     = 8    # not displayed on textured views
 VF_CANTSELECT       = 16   # the objects in this group can't be selected by clicking on the map view
 
 # values of the 'saveflags' Specific (as integer) of Map objects, to control how it should be saved
-SO_SELONLY        = 1     # only the selection is saved
-SO_IGNORETOBUILD  = 2     # the groups marked VF_IGNORETOBUILDMAP are not saved
-SO_DISABLEENHTEX  = 4     # don't write the "//TX1"-style comments required by TXQBSP for enhanced texture positionning
-SO_DISABLEFPCOORD = 8     # don't write floating-point coordinates in .map files, round all values
+# !! Must match the constants in QkMapObjects.PAS !!
+SO_SELONLY         = 1    # only the selection is saved
+SO_IGNORETOBUILD   = 2    # the groups marked VF_IGNORETOBUILDMAP are not saved
+SO_DISABLEENHTEX   = 4    # don't write the "//TX1"-style comments required by TXQBSP for enhanced texture positionning
+SO_DISABLEFPCOORD  = 8    # don't write floating-point coordinates in .map files, round all values
 SO_ENABLEBRUSHPRIM = 16   # enable brush primitives format
 
 # icon indexes of internal objects (to be used with quarkx.seticons)
@@ -192,7 +194,7 @@ def loadmapeditor():
     import maputils
     import mapeditor
     import mapmenus
-         
+
     #---- import the plug-ins ----
     import plugins
     plugins.LoadPlugins("MAP")
@@ -205,14 +207,14 @@ def loadmapeditor():
          loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
 
     patchload()
-    
+
     #-----------------------------
 #    loadmapeditor = lambda: None    # next calls to loadmapeditor() do nothing
     #
     # next call to loadmapeditor loads patch stuff if needed
     #
     loadmapeditor = patchload
-                                     
+
 
 
 #
@@ -437,6 +439,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2000/10/26 18:14:34  tiglari
+#added SO_BRUSHPRIM
+#
 #Revision 1.5  2000/06/09 23:39:02  aiv
 #More MD3 Support Stuff
 #
