@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2001/07/30 12:10:22  tiglari
+close plane finder methods
+
 Revision 1.46  2001/07/30 00:58:28  tiglari
 more cleanup, close plane finding support
 
@@ -324,6 +327,7 @@ type
   public
    Normal: TVect;
    Dist: TDouble;
+   Source: PChar;
    constructor Create(const nName: String; nParent: QObject; Source: PbPlane); overload;
 
    class function TypeInfo: String; override;
@@ -1706,15 +1710,44 @@ begin
   end;
 end;
 
+function PlanesClose(const Plane1, Plane2: PChar; const SurfType: Char; const Close: TDouble): boolean;
+var
+  PlanePt1, PlanePt2, PlaneNorm1, PlaneNorm2: TVect;
+begin
+  Result:=False;
+  if SurfType=bspSurfQ3 then
+  begin
+    with PQ3Plane(Plane1)^ do
+    begin
+      PlaneNorm1:=MakeVect(normal);
+      PlanePt1:=VecScale(Dist,MakeVect(normal));
+      with PQ3Plane(Plane2)^ do
+      begin
+        PlaneNorm2:=MakeVect(normal);
+        if (1-Abs(Dot(PlaneNorm1,PlaneNorm2)))/Deg2Rad<Close then
+        begin
+          PlanePt2:=VecScale(Dist,MakeVect(normal));
+          if VecLength(VecDiff(PlanePt1, PlanePt2))<1.0 then
+          begin
+            Result:=true;
+          end;
+        end
+      end;
+    end;
+  end;
+end;
+
 function QBsp.GetClosePlanes(Close:TDouble): PyObject;
 var
   I, J, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
   Planes2, Planes3: PChar;
   PlanePt, PlanePt2: TVect;
+  SurfType: Char;
 begin
   Result:=PyList_New(0);
   HalfPlaneCount:=(PlaneCount-1) div 2;
-  if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
+  SurfType:=BspSurfaceType(NeedObjectGameCode);
+  if SurfType=bspSurfQ12 then
     PlaneSize:=SizeOf(TbPlane)
   else
     PlaneSize:=SizeOf(TQ3Plane);
@@ -1722,24 +1755,16 @@ begin
   Planes2:=Planes;
   for I:=0 to HalfPlaneCount do
   begin
-    with PQ3Plane(Planes2)^ do
-    begin
-      PlanePt:=VecScale(Dist,MakeVect(normal));
       Planes3 := Planes2+PlaneInc;
       for J:=I+1 to HalfPlaneCount do
       begin
-        with PQ3Plane(Planes3)^ do
-        begin
-          PlanePt2:=VecScale(Dist,MakeVect(normal));
-          if VecLength(VecDiff(PlanePt, PlanePt2))<Close then
+          if PlanesClose(Planes2, Planes3,SurfType,Close) then
           begin
             PyList_Append(Result,PyInt_FromLong(I*2));
             Break;
           end;
-        end;
         Inc(Planes3,PlaneInc);
       end;
-    end;
     Inc(Planes2, PlaneInc);
   end;
 end;
@@ -1818,6 +1843,7 @@ begin
   begin
     VectSpec['norm']:=MakeVect(normal);
     SetFloatSpec('dist',dist);
+    Self.Source:=PChar(Source);
   end;
 end;
 
@@ -1841,27 +1867,23 @@ function TTreeBspPlane.GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
 var
   I, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
   Planes2: PChar;
-  PlanePt, PlanePt2: TVect;
+  SurfType: Char;
 begin
   Result:=PyList_New(0);
   with Bsp do
   begin
     HalfPlaneCount:=(PlaneCount-1) div 2;
-    if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
+    SurfType:=BspSurfaceType(NeedObjectGameCode);
+    if SurfType=bspSurfQ12 then
       PlaneSize:=SizeOf(TbPlane)
     else
       PlaneSize:=SizeOf(TQ3Plane);
     PlaneInc:=2*PlaneSize;
     Planes2:=Planes;
-    PlanePt:=VecScale(Dist,Normal);
     for I:=0 to HalfPlaneCount do
     begin
-      with PQ3Plane(Planes2)^ do
-      begin
-        PlanePt2:=VecScale(Dist,MakeVect(normal));
-        if VecLength(VecDiff(PlanePt, PlanePt2))<Close then
+        if PlanesClose(Source, Planes2, SurfType, Close) then
             PyList_Append(Result,PyInt_FromLong(I*2));
-      end;
       Inc(Planes2, PlaneInc);
     end;
   end;
