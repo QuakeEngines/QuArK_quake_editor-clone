@@ -133,6 +133,7 @@ class LiveBrowserDlg(LiveButtonDlg):
         self.moreaction=moreaction
                     
         self.pack=pack
+        pack.seen = 0
         
         #
         # im_func stuff needed because default values methods
@@ -145,10 +146,19 @@ class LiveBrowserDlg(LiveButtonDlg):
          # Names and list-indexes of close planes
          #
          pack = self.pack
-         pack.slist = map(lambda obj:obj.shortname, pack.collected)
-         pack.klist = map(lambda d:`d`, range(len(pack.collected)))
+         ran = range(len(pack.collected))
+         pack.slist = map(lambda obj, num:"%d) %s"%(num+1,obj.shortname), pack.collected, ran)
+         pack.klist = map(lambda d:`d`, ran)
          self.src["collected$Items"] = string.join(pack.slist, "\015")
          self.src["collected$Values"] = string.join(pack.klist, "\015")
+         if not pack.seen and len(ran)>0:
+             self.src["collected"] = '0'
+             self.chosen = '0'
+             pack.seen = 1
+         elif len(ran)==0:
+             self["collected"] = ''
+             self.chosen = ''
+         
          #
          # Note the commas, EF..1 controls take 1-tuples as data
          #
@@ -207,6 +217,9 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.6  2001/08/05 08:01:37  tiglari
+#spiff up new descendents of LiveEditDlg
+#
 #Revision 1.5  2001/08/02 02:55:49  tiglari
 #List-browser dialog (ListerDlg)
 #
