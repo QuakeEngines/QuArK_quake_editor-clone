@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/01/21 15:49:03  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.25  2000/12/11 21:36:36  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -2386,7 +2389,7 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  MJ:=CharModeJeu;
- Brush.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry);
+ Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
  if (MJ=mjQ3A) and BrushPrim then
  begin
