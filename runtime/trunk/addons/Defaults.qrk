@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.46  2000/07/28 15:09:48  alexander
+//set snapshot name
+//
 //Revision 1.45  2000/07/25 16:03:04  alexander
 //set snapshot name
 //
@@ -2857,6 +2860,25 @@ QQRKSRC1
       quark: = {
         Typ = "E R"    // Edit Read-only
         Txt = "Designed for QuArK version"
+      }
+    }
+    Skin:form =     // form on the polyhedrons page
+    {
+      Style = "1"
+      header: = {
+        Typ = "S"
+        Txt = "%s"   // caption text is found in the object put in the form
+        //Bold = "0"
+      }
+      triangles: = {
+        Typ = "E-R"      // edit, read only
+        Txt = "Triangles :"
+        Hint = "The number of triangle this component has|Number of triangles"
+      }
+      ownedby: = {
+        Typ = "E-R"
+        Txt = "Owned by :"
+        Hint = "The 'parent' component in the tree view"
       }
     }
   }
