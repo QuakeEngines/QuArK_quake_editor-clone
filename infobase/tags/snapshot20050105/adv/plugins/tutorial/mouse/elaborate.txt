@@ -1,0 +1,89 @@
+title: Elaborations
+author: tiglari
+
+The above works, except that we've lost the disablers.  We could
+arrange things so that the RMB items used the same disablers
+as the command items, but the actual conditions are a bit
+different.  For example on the RMB, the selected item is
+guaranteed to be a single face, since we're putting these
+items on the face menu.  So we can use much simpler disablers
+and revise our menu function to, say, this:
+<code>
+def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
+    "the new right-mouse for sides"
+    menu = oldfacemenu(o, editor)
+    menglueside.state = mentagside.state = mencleartag.state = qmenu.normal
+    tagged = gettagged(editor)
+    if tagged is None:
+        menglueside.state = mencleartag.state = qmenu.disabled
+    elif tagged==o:
+        mentagside.state = menglueside.state = qmenu.disabled
+    menu = [mentagside, menglueside, mencleartag]+menu
+    return menu
+</code>
+<tt>maptagside4.py</tt> contains the final version of this
+stuff so far.
+
+Here we're using menu items and click functions defined outside
+menu functions, but there is another approach that's possible
+if you don't want to also use the menu item on the main menu
+or a toolbar.  If we define the click function inside the
+menu function, we can use the default argument mechanism
+to pass the editor and the face operated on, so that for
+example the menu function might start out like this:
+<code>
+def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
+    "the new right-mouse for sides"
+    menu = oldfacemenu(o, editor)
+</code>
+<code>
+    def tagSideClick(m, face=o, editor=editor):
+        editor.tagging = Tagging()
+        editor.tagging.tagged = face
+        editor.invalidateviews()
+</code>
+This technique is used in `curvemenu' in plugins\mb2curves.py,
+and elsewhere.
+
+A final point is that the disabler calculations are sometimes
+quite complex, and produce results that are useful for the
+actual operation.  This happens for example with the
+texture-wrapping commands in the real maptagside.py.  These
+results can be passed thru to the click function either
+with the default argument mechanism:
+<code>
+    usefulInfo = complicatedFunction(o, editor)
+</code>
+<code>
+    def complexClick(m,o=o, editor=editor,usefulInfo=usefulInfo)
+        ...
+</code>
+<code>
+    menuItem = qmenu.item('Complicated Function',complexClick)
+    if usefulInfo is None:
+        menuItem.state=qmenu.disabled
+</code>
+or else by attaching thing them directly to the menu item:
+<code>
+    ...
+    menuItem = qmenu.item('Complicated Function',complexClick)
+    menuItem.usefulInfo = complicatedFunction(o, editor)
+    if isefulInfo is None:
+        menuItem.state=qmenu.disabled
+    else:
+        menuitem.usefulInfo=usefulInfo
+</code>
+If the latter technique is used, the click function can be
+defined outside of the menu function definition:
+<code>
+def compexClick(m):
+    editor=madeditor()
+    if editor is None: return
+    usefulInfo = m.usefulInfo
+    ...
+</code>
+Even tho the click function only gets one (non-default)
+argument, the menu item that was clicked on to launch
+it, this imposes no practical limitation on the amount
+of information that can be passed thru it, since there's
+no limit on what can be attached to that argument

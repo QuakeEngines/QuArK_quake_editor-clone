@@ -1,0 +1,94 @@
+title: Attributes of Internal objects of class "Face"
+author: Armin Rigo
+
+These objects are polyhedron faces. They are often found within Polyhedron objects, but use the polyhedron’s
+<tt>faces</tt> attribute instead of its <tt>subitem</tt> method to find them, because:
+<ol>
+<li>Polyhedrons don’t always use all their faces
+<li>Faces may lie outside polyhedrons, in which case they could be part of all polyhedrons within the group
+<li>In some cases, faces may be used in other contexts, e.g. as BSP faces.
+</ol>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+faceof
+</td><td>
+List of all objects that this is a face of. Usually contains a single polyhedron. This list is never empty: if the face is not used at all, <tt>faceof</tt> will contain the face itself.
+</td></tr>
+
+<tr><td class="doccode">
+vertices
+</td><td>
+Vertices for each object that this is a face of. This is a list of lists of points. It is not simply a list of points! (You should generally use <tt>verticesof</tt> instead of <tt>vertices</tt>)
+</td></tr>
+
+<tr><td class="doccode">
+normal<br>
+dist
+</td><td>
+Plane containing the face, defined by a <tt>normal</tt> vector and its <tt>dist</tt>ance to origin. The plane contains all points <tt>p</tt> for which we have <tt>p*normal==dist</tt>. These attributes are read-only; to move the plane, either use the <tt>translate</tt> method common to all "3DObject", or set the face’s "<tt>v</tt>" Specific, or call <tt>distortion</tt> below.
+</td></tr>
+
+<tr><td class="doccode">
+texturename
+</td><td>
+The name of the texture.
+</td></tr>
+
+<tr><td class="doccode">
+verticesof(obj)
+</td><td>
+List of vertices of this face, as used by the object <tt>obj</tt>, which must be in the <tt>faceof</tt> list.
+</td></tr>
+
+<tr><td class="doccode">
+threepoints(tex)<br>
+threepoints(2,texsrc)
+</td><td>
+Returns the three points defining the plane that contains the face. <tt>tex</tt> can be <tt>0</tt>, <tt>1</tt> or <tt>2</tt>. If <tt>tex</tt> is <tt>0</tt>, the points <tt>p1,p2,p3</tt> are set so that the cross product <tt>(p2-p1)^(p3-p1)</tt> points towards the outside of the polyhedron.
+If <tt>tex</tt> is <tt>1</tt> or <tt>3</tt>, <tt>p2</tt> and <tt>p3</tt> may be exchanged to reflect the texture mapping, i.e. <tt>p1</tt> maps to texture coordinates (0,0), <tt>p2</tt> maps to texture coordinates (128,0), and <tt>p3</tt> maps to (0,128).
+If <tt>tex</tt> is <tt>2</tt>, the points are moved to reflect the real texture size (if it can be loaded; otherwise a 64x64 texture is assumed) and so that they lie near the center of the face. <tt>texsrc</tt> tells where to load the texture from (see <tt>quarkx.loadtexture</tt>).
+</td></tr>
+
+<tr><td class="doccode">
+setthreepoints((p1,p2,p3), tex)<br>
+setthreepoints((p1,p2,p3), 2, texsrc)
+</td><td>
+Sets the three points defining the plane that contains the face. The position of the points also determines how the texture is mapped on the face. The second argument <tt>tex</tt> and the optional third argument <tt>texsrc</tt> are the same as for the method <tt>threepoints</tt> above.
+<br>
+<tt>setthreepoints</tt> must not be called with <tt>tex&gt;=2</tt> to change the plane containing the face, but only to move the texture on the face. This is the difference between <tt>tex==1</tt> and <tt>tex==3</tt>.
+</td></tr>
+
+<tr><td class="doccode">
+axisbase()
+</td><td>
+returns normalized vectors in the plane paralell to the face, the first
+one horizontal (makes nice coordinate system for positioning textures, etc.)
+</td></tr>
+
+<tr><td class="doccode">
+distortion(newnormal, fixpt)
+</td><td>
+Distort the face (actually it just rotates it) so that <tt>normal</tt> becomes <tt>newnormal</tt>. The rotation is done around the fixed point <tt>fixpt</tt>.
+</td></tr>
+
+<tr><td class="doccode">
+broken
+</td><td>
+<tt>True</tt> or <tt>False</tt> depending on whether the face is broken or not.
+</td></tr>
+
+<tr><td class="doccode">
+swapsides()
+</td><td>
+Exchanges the inner and outer sides of the face (<tt>normal = -normal</tt>).
+</td></tr>
+
+<tr><td class="doccode">
+extrudeprism(obj)
+</td><td>
+Returns a list of faces that make an infinite prism over the given face. <tt>obj</tt> has the same meaning as in the <tt>verticesof</tt> method.
+</td></tr>
+
+</table>

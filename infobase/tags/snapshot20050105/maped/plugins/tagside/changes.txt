@@ -1,0 +1,18 @@
+title: Changes from q5.10
+author: tiglari
+
+New commands are:
+
+<UL>
+<LI>Everything on the Linking submenu and relevant options
+<LI>Cut poly along tagged
+<LI>Merge Polys
+<LI>Project texture from tagged.
+</UL>
+
+And there is one significant change in behavior:  previously,
+the texture wrap operations copied all of the content and
+surface features as well as the texture name and alignment info;
+now they only do the latter.  I regard the earlier behavior
+as a bug rather than a feature, but if you disagree, we can
+work something out.

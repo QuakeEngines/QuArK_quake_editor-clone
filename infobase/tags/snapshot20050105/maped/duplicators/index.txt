@@ -1,0 +1,13 @@
+title: Advanced Duplicators
+subdir: basic path extruder instance
+
+Duplicators mean that if you use QuArK, you'll never need
+to make 26 copies of a complicated object, then make
+new ones when you realize that all of them ought to
+be different.  With a duplicator, you have one original,
+and when it is updated, the copies follow automatically.
+
+Although the basic function of Duplicators is to make copies,
+they can do much more and come in many varieties. First
+we talk about the 'standard duplicators', then an assortment
+of more special types.

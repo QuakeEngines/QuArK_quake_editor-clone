@@ -1,0 +1,26 @@
+title: Duplicated keys in a multi_manager
+author: Decker
+
+<b>Question:</b><br>
+How do I put in many equal keys (specifics) into a multi_manager, like this:
+<code>
+multi_manager
+   "flashlight"         "1"
+   "flashlight"         "6"
+   "flashlight"         "13"
+   "flashlight"         "19"
+</code>
+
+<b>Answer:</b><br>
+The programmers at Valve have anticipated this, and implemented a feature, where
+you can suffix the key (specific) with an <tt>#</tt> and then some unique text, so
+the many equal keys (specifics) isn't the same.
+
+Like this:
+<code>
+multi_manager
+   "flashlight#1"       "1"
+   "flashlight#2"       "6"
+   "flashlight#third"   "13"
+   "flashlight#last"    "19"
+</code>

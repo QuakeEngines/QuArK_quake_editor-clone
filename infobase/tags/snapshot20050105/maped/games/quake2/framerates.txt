@@ -1,0 +1,43 @@
+title: Framerates
+author:
+
+<b>Question:</b><br>
+How do I measure the "framerate",
+i.e. how fast my maps are displayed by Quake-2?
+
+<b>Answer:</b><br>
+[explanation from Robert]<br>
+... use the following Quake-2 console-command, or you might find yourself
+spending loads of time making a visually stunning map, only to find out
+that it cannot be played for another 5 years until Intel and their competitors
+invent a processor that can speed this level up to a playable framerate.
+
+While playing your map in Quake-2, go and stand in the spot that you would like
+to "check" and pull down the console with the tilde (~) key. Then type
+<tt>timerefresh</tt>
+ and hit the enter-key.
+
+The computer will now draw 180 frames
+while making a 360 degree pirouette with the "camera" and will measure
+the time which it needs to do that in seconds. Dividing 180 through the
+number of seconds of course leads to the desired value. The "Frames Per
+Second" or shortly "fps". This value should preferably NOT be lower as
+24 to 30 (which is considered to be the number of frames that the human
+eye can "read" in a second)
+<br> ...
+
+[explanation from Decker]<br>
+... however the
+<tt>timerefresh</tt>
+ command, isn't the best way to determine
+framerates, since that only gives a value on the spot where its executed.
+
+To get a
+more precise fps-value, you must record a demo, running around everywhere in
+your level, and then playback the demo with
+<tt>timedemo 1</tt>
+ enabled.
+
+This will give an
+overall fps-value of your entire level, and not just in one spot
+<br> ...

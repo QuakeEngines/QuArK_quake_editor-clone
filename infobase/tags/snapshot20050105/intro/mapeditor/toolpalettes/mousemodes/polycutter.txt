@@ -1,0 +1,11 @@
+title: Polyhedron cutter
+author: Decker
+
+<img border=0 align=right>polycutter.png</img>
+<i>"Like a knife through butter."</i>
+
+Mark this icon in the mouse-modes toolbox, when you want to cut polyhedrons in
+two by dragging a line through the polyhedrons.
+
+Remember you can always undo your actions if you're not satisfied with the
+result.
