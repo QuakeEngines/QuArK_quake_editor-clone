@@ -437,7 +437,7 @@ const
             'incompatible version',{ Z_VERSION_ERROR (-6) }
             '');
 const
-  z_verbose : int = 1;
+  z_verbose : int = 0;
 
 {$IFDEF DEBUG}
 procedure z_error (m : string);
