@@ -270,7 +270,6 @@ class PathDuplicatorPoint(DuplicatorManager):
 class PathDuplicator(StandardDuplicator):
 
     cuberadius = 3096
-    tmpcube = quarkpy.mapbtns.newcube(cuberadius*2, quarkx.setupsubset()["DefaultTexture"])
 
     def readvalues(self):
         self.origin = self.dup.origin
@@ -435,14 +434,12 @@ class PathDuplicator(StandardDuplicator):
                         newTile=newTile.copy()
                         newTile.translate(xax*templatesize.x)
                     list.appenditem(newTile)
-
-
-#
-#  This kind of code will create `box' shaped sections that just
-#   touch at the edges.  Can't do it by taking vertices of actual
-#   front and back faces above because these don't seem to be
-#   computed yet.
-#
+            #
+            #  Code below creates `box' shaped sections that just touch at the
+            #   edges, or are set back.  Can't do it by taking vertices of actual
+            #   front and back faces above because these don't seem to be
+            #   computed yet.
+            #
             if self.dup["squarend"]:
                  setback = self.dup["setback"]
                  if setback is None:
@@ -799,6 +796,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2001/02/26 03:26:40  tiglari
+#handle ok method fix
+#
 #Revision 1.16  2001/02/26 02:07:21  tiglari
 #all path point handles appear when main dup is selected
 #
