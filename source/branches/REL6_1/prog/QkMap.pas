@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14.2.1  2000/09/21 08:31:12  tiglari
+fixed patch-reading texture problem
+
 Revision 1.14  2000/07/30 11:21:03  tiglari
 put in pascal version of map saving flag code from mapquakemenu.py
 to make save flags apply when map is saved from  File menu.  Question:
@@ -1217,7 +1220,7 @@ begin
        if MapOptionSpecs.Values['DisableEnhTex']<>'' then
          saveflags:=saveflags or soDisableEnhTex;
        if MapOptionSpecs.Values['DisableFPCoord']<>'' then
-         saveflags:=saveflags or soDisableEnhTex;
+         saveflags:=saveflags or soDisableFPCoord;
        saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
      { TTreeMap(Racine).SauverTexte(List, Dest, IntSpec['saveflags'], HxStrings); }
