@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.123  2001/04/28 02:19:03  tiglari
+//add selection menu hotkeys
+//
 //Revision 1.122  2001/04/27 04:49:18  tiglari
 //fix bad hint about subdivides, using form inclusion
 //
@@ -404,7 +407,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.2"
+      Version = "QuArK 6.3snap042801"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2001/03/29 01:00:29  aiv
+modifable :form objects!
+
 Revision 1.49  2001/03/20 21:45:22  decker_dk
 Updated copyright-header
 
@@ -175,7 +178,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'QuArK 6.2';
+  QuArKVersion            = 'QuArK 6.3snap042801';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
