@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/07/17 22:40:46  tiglari
+q3a bsp texture scale fixed
+
 Revision 1.11  2001/07/16 10:56:06  tiglari
 inaccurate but semi-serviceable texture-viewing for Q3A bsp's
 
@@ -506,7 +509,7 @@ begin
           { This trick works because the position and tex coords are the
             first 5 fields.  If we want to drag lightmaps into it we'll
             need to go to 7, or do something different }
-          P5_1:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^);
+          P5_1:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^));
 
           P1:=MakeVect(vec3_p(Q3VertexP)^);
           PlaneDist:=Dot(NN,P1)
