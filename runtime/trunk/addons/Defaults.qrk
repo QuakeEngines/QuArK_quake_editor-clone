@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.82  2001/02/18 20:21:37  decker_dk
+//Added 'Half-Life info_decal Helper:d' to a new group 'Game specific'.
+//
 //Revision 1.81  2001/02/14 23:36:45  alexander
 //set name
 //
@@ -872,6 +875,8 @@ QQRKSRC1
         DefaultTextureOrigin = "common/origin"
         DefaultTextureClip = "common/clip"
         DefaultTextureCaulk = "common/caulk"
+        DefaultTextureScale = "0.5"
+     
 
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
