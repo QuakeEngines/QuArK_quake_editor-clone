@@ -3,6 +3,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/10/16 22:52:15  aiv
+fixed another small bug
+
 Revision 1.7  2000/10/16 22:29:29  aiv
 fixed a blatently stupid error
 
@@ -47,7 +50,7 @@ begin
   if (Result<0) or (Result>9) then
     Result:=8;
 end;
-
+{$ASSERTIONS ON}
 procedure CompressStream(var Input: TMemoryStream; var Output: TMemoryStream);
 var
   buffer: pbytef;
@@ -59,6 +62,7 @@ begin
   buffersize:=GetZBufferSize;
 
   getmem(buffer, buffersize);
+  try
   {Initialise C_STREAM}
   c_stream.avail_in := input.size;
   c_stream.next_in := pBytef(Input.memory);
@@ -77,8 +81,9 @@ begin
 
   err := deflateInit2(c_stream, clevel, Z_DEFLATED, -MAX_WBITS, DEF_MEM_LEVEL, 0);
 
-  if err <> ZIP_OK then
-    raise exception.create('Error! Zip.pas - CompressStream: DeflateInit<>ZIP_OK');
+  Assert(err=ZIP_OK, 'CompressStream: DeflateInit<>ZIP_OK');
+//  if err <> ZIP_OK then
+//    raise exception.create('Error! Zip.pas - CompressStream: DeflateInit<>ZIP_OK');
   while ((err = ZIP_OK) and (c_stream.avail_in > 0)) do begin
     if (c_stream.avail_out = 0) then begin
       output.writebuffer(buffer^, buffered_data_size);
@@ -91,8 +96,9 @@ begin
     err := deflate(c_stream, Z_NO_FLUSH);
     Inc(buffered_data_size, c_stream.total_out - uTotalOutBefore);
   end;
-  if err <> ZIP_OK then
-    raise exception.create('Error! Zip.pas - CompressStream: ' + c_stream.msg);
+//  if err <> ZIP_OK then
+//    raise exception.create('Error! Zip.pas - CompressStream: ' + c_stream.msg);
+  Assert(err=ZIP_OK, 'CompressStream: '+ c_stream.msg);
 
   c_stream.avail_in := 0;
   while (err = ZIP_OK) do begin
@@ -108,21 +114,27 @@ begin
   end;
 
   if (err = Z_STREAM_END) then
-    err := ZIP_OK { this is normal }
-  else if err <> ZIP_OK then
-    raise exception.create('Error! Zip.pas - CompressStream: ' + c_stream.msg);
+    err := ZIP_OK; { this is normal }
+//  else if err <> ZIP_OK then
+//    raise exception.create('Error! Zip.pas - CompressStream: ' + c_stream.msg);
+  Assert(err=ZIP_OK, 'CompressStream: '+ c_stream.msg);
 
   if (buffered_data_size > 0) and (err = ZIP_OK) then
     output.writebuffer(buffer^, buffered_data_size);
 
   if (err = ZIP_OK) then
     err := deflateEnd(c_stream);
-  if err <> ZIP_OK then
-    raise exception.create('Error! Zip.pas - CompressStream: ' + c_stream.msg);
+//  if err <> ZIP_OK then
+//    raise exception.create('Error! Zip.pas - CompressStream: ' + c_stream.msg);
+  Assert(err=ZIP_OK, 'CompressStream: '+ c_stream.msg);
+
+  finally
 
   freemem(buffer, buffersize);
 
+  end;
 end;
+{$ASSERTIONS OFF}
 
 end.
 
