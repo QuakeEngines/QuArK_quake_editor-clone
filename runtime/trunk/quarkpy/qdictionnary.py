@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "QuArK 6.3snap 2002ap29",
+    0: "QuArK 6.3 rc1",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -910,6 +910,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.50  2002/05/07 23:21:44  tiglari
+#new syntax error
+#
 #Revision 1.49  2002/04/28 21:28:33  tiglari
 #update version
 #
