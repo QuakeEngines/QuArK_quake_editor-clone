@@ -306,7 +306,7 @@ def projectpointtoplane(p,n1,o2,n2):
 
 def projecttex(editor,o):
   item=qmenu.item("&Project tex. from tagged",ProjTexClick,"|Projects the texture of the tagged face onto the selected one, or those in the selected item, so that a texture can be wrapped without seams over an irregular assortment of faces.\n\nTextures aren't projected onto faces that are too close to perpendicular to the projecting face.")
-  tagged=gettaggedface(editor)
+  tagged=gettaggedtexplane(editor)
 #  item.single = 0 # overrideable below, controls same-name check
   if tagged is None:
     item.state = qmenu.disabled
@@ -780,12 +780,6 @@ def TagSideClick (m):
   if editor is None: return
   tagface(sideof(m, editor), editor)
 
-
-def TagPointClick (m):
-  "tags a single point"
-  editor = mapeditor()
-  if editor is None: return
-  tagpoint(m.pos, editor)
 
 def ClearTagClick (m):
   "clears tag on menu-click"
@@ -1648,22 +1642,6 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
 quarkpy.mapentities.FaceType.menu = tagmenu
 
 
-#
-#  Ditto for the right-mouse-button menu for vertices
-#
-
-def disttotagged(editor,pos):
-  pt = gettaggedpt(editor)
-  item = qmenu.item("Distance to tagged",DistTaggedClick,"|Distance from here to the tagged point")
-  if pt is None:
-    item.state=qmenu.disabled
-  else:
-    item.dist=abs(pt-pos)
-  return item
-
-def DistTaggedClick(m):
-  quarkx.msgbox("Distance = "+`m.dist`+" units",
-    MT_INFORMATION,MB_OK)
 
 verttext = "|To use this, you need to have one side tagged and another selected.\n\nThe selected side will then be aligned parallel to the tagged side, rotating around this vertex as a fulcrum."
 def tagvertmenu(self, editor, view, oldvertmenu = quarkpy.maphandles.VertexHandle.menu.im_func):
@@ -1682,72 +1660,6 @@ def tagvertmenu(self, editor, view, oldvertmenu = quarkpy.maphandles.VertexHandl
   return menu
 
 quarkpy.maphandles.VertexHandle.menu = tagvertmenu
-
-
-#
-#  Ditto for all handles that have a position
-#
-
-def makeedge(o, editor):
-  item = quarkpy.qmenu.item("Tag Edge",MakeEdgeClick,"|This command makes a `virtual edge' between the tagged point and this one, which becomes tagged, for glueing Bezier patches to.")
-  taggedpt = gettaggedpt(editor)
-  if taggedpt is None:
-    item.state = qmenu.disabled
-  else:
-    item.tagged = taggedpt
-    item.o = o
-  return item
-
-def MakeEdgeClick(m):
-  "assumes that a point is tagged"
-  editor = mapeditor()
-  if editor is None: return
-  tagedge(m.tagged, m.o.pos, editor)
-
-def tagpointitem(editor, origin):
-  oldtag = gettaggedpt(editor)
-  if oldtag is not None and not (origin-oldtag):
-    tagv = qmenu.item("Clear tag", ClearTagClick)
-  else:
-    tagv = qmenu.item("&Tag point", TagPointClick, "|`Tags' the point below the mouse for reference in later operations of positioning and alignment.\n\nThe tagged point then appears in red.")
-    tagv.pos = origin
-    tagv.tagger = 1
-  return tagv
-
-
-def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandle.OriginItems.im_func):
-  menu = oldoriginmenu(self, editor, view)
-  if isinstance(self, quarkpy.maphandles.FaceHandle):
-    return menu        # nothing to do for faces
-
-  if len(menu)==0 or menu[0] is not qmenu.sep:
-    menu[:0] = [qmenu.sep]  # inserts a separator if necessary
-
-  if view is not None:   # Point gluing for everything
-
-    def GluePointClick(m, self=self, editor=editor, view=view):
-      tagpt = gettaggedpt(editor)
-      if tagpt is not None:
-        self.Action(editor, self.pos, tagpt, MB_NOGRID, view)
-      else:
-        tagged = gettagged(editor)
-        if tagged is not None:
-          p = self.pos
-          p = p - tagged.normal * (p*tagged.normal-tagged.dist)
-          self.Action(editor, self.pos, p, MB_NOGRID, view)
-
-    gluev = qmenu.item("&Glue to tagged", GluePointClick, "|Glue this point to the tagged point, or if a side is tagged, move this point into the plane of this side.")
-    if not anytag(editor):
-      gluev.state = qmenu.disabled
-    menu[1:1] = [gluev]
-
-  menu[1:1] = [tagpointitem(editor, self.pos),
-               makeedge(self, editor),
-               disttotagged(editor, self.pos)]
-  return menu
-
-
-quarkpy.qhandles.GenericHandle.OriginItems = originmenu
 
 
 #
@@ -1963,6 +1875,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2000/06/12 11:22:48  tiglari
+#fixed problem with texture-wrapping from paralell faces (WrapTexClick)
+#
 #Revision 1.4  2000/06/03 10:25:30  alexander
 #added cvs headers
 #
