@@ -740,7 +740,7 @@ Strings = {
     5569: "",
 	5570: "(switch back to %s game mode)",
 	5571: "'%s' is not a Quake 2 MD2 file//%d-%d should be %d-%d",
-	5572: "'%s' is a Quake 2 BSP file but is unsupported version//%d should be %d",
+    5572: "'%s' looks like a Quake-2 (or one of its game descendants) BSP file,\nbut its BSP-version is not recognized and therefore not supported.//%d should be %d",
 	5573: "QuArK does not know if '%s' is a Quake 1 or Hexen II file. Is it an Hexen II map ?",
 	5574: "Missing information : QuArK cannot determine the target game for this file//Specific 'Game' missing",
 	# 5575: "The skin path in this Model is ambiguous : several .pcx files with the same name exist in various paths. QuArK may have choosen a wrong one.",
@@ -884,6 +884,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.27  2001/01/07 13:22:05  decker_dk
+#Set Versionname.
+#
 #Revision 1.26  2001/01/02 19:29:20  decker_dk
 #Help Snippet, press ESC to close
 #
