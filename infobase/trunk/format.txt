@@ -2,8 +2,6 @@
 # Document formatting
 #
 
-#DECKER - No spacing between '%(classif)s' and <other text>, its controled in the BUILD.PY by inserting a '&nbsp;'
-
 HEADER = """<html>
 <head>
   <title>%(title)s</title>
@@ -60,7 +58,7 @@ SUBDIR_BEGIN = """
   </td><!--<td align=right><a href="#__top__">top</a>&nbsp;</td>--></tr>
 </table>"""
 SUBDIR_ITEM = """
-<p><b>%(classif)s<a href="%(htmlfile)s">%(title)s</a></b></p>"""
+<p><b>%(classif)s <a href="%(htmlfile)s">%(title)s</a></b> <span class="added">(%(updateday)s)</span></p>"""
 SUBDIR_END = """
 """
 
@@ -76,7 +74,7 @@ FILES_BEGIN = """
 </table>
 <ul>"""
 FILES_ITEM = """
-  <li><a href="#%(hrefaname)s">%(title)s</a>"""
+  <li><a href="#%(hrefaname)s">%(title)s</a> <span class="added">(%(updateday)s)</span>"""
 FILES_MIDDLE = """
 </ul><br>
 
@@ -86,7 +84,7 @@ FILE_BEGIN = """
 <a name="%(hrefaname)s"></a>
 <dt><table width=100%% border=0 cellspacing=0>
   <tr bgcolor="#E0E0E0"><td><p class="item">&nbsp;%(title)s</p></td>
-  <td align=right><i>%(author)s</i></td>
+  <td align=right><i>%(author)s - %(updateday)s</i></td>
   </td><td align=right><a href="#__top__">top</a>&nbsp;</td></tr>
 </table>
 <dd>
@@ -107,7 +105,7 @@ FILES_END = """
 SUBSUBDIR_BEGIN = """
     <ul>"""
 SUBSUBDIR_ITEM = """
-      <li>%(classif)s<a href="%(htmlfile)s">%(title)s</a>"""
+      <li>%(classif)s<a href="%(htmlfile)s">%(title)s</a> <span class="added">(%(updateday)s)</span>"""
 SUBSUBDIR_END = """
     </ul>"""
 
@@ -117,7 +115,7 @@ SUBSUBDIR_END = """
 SUBFILES_BEGIN = """
     <ul>"""
 SUBFILES_ITEM = """
-      <li><a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a>"""
+      <li><a href="%(htmlfile)s#%(hrefaname)s">%(title)s</a> <span class="added">(%(updateday)s)</span>"""
 SUBFILES_END = """
     </ul>"""
 

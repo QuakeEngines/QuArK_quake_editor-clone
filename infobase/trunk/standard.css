@@ -91,7 +91,9 @@ DD {
 }
 
 SPAN.added {
+  font-family: Small Fonts;
   font-size: 6pt;
+  color: #AAAAAA;
 }
 
 /*Below added by Armin*/

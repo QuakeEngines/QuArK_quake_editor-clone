@@ -140,6 +140,7 @@ class Folder:
                 ctime = ctime1
             kw["htmlfile"] = shortname
             kw["hrefaname"] = filename
+            kw["updateday"] = time.strftime("%d %b %Y", time.localtime(ctime1))
             self.files.append((kw, text))
             self.forgotten.remove(filename+EXTENSION)
         self.ctime = ctime
