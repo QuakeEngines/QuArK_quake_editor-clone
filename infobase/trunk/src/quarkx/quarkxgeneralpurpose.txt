@@ -133,6 +133,17 @@ runprogram(cmdline, currentdir, stdout)<br>
 runprogram(cmdline, currentdir, stdout, stderr)
 </td><td>
 Runs the program given by cmdline. currentdir is the new program’s current directory. runprogram returns a process object, as described below. If the program is a console program, and if stdout is specified, it will use this console object instead of running in its own console. If stderr is omitted, it defaults to stdout.
+<table valign=top halign=left>
+<tr><td>
+<b>Code example:</b><br>cmdline = "psp.exe"<br>
+currentdir = "C:\Programs\PSP"<br>
+quarkx.runprogram(cmdline, currentdir)
+</td>
+<td>
+ # runs the program<br>
+ # sets the programs directory
+</td></tr>
+</table>
 </td></tr>
 
 <tr><td class="doccode">
