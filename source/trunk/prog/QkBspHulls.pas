@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2002/03/30 00:53:17  tiglari
+face-construction code now works with nu texture scheme (n.b. there
+ is a bug whereby textures don't always scale correctly, seems to have
+ been there for a while)
+
 Revision 1.22  2001/08/04 09:57:19  tiglari
 move hulltype stuff into QkBspHulls, bstype stuff into QkBsp
 
@@ -342,6 +347,7 @@ var
  Q3VertexP: PQ3Vertex;
  TextureList: QTextureList;
  miptex, q12surf: boolean;
+ Norm2 : TVect;
 
  function AdjustTexScale(const V: TVect5) : TVect5;
  begin
@@ -695,7 +701,12 @@ begin
         end;
     end;
     { Some changes needed here if NuTex2 branch stuff used  }
-    Face.SetThreePoints(P1, P2, P3);
+    Norm2:=Cross(VecDiff(P2,P1), VecDiff(P3,P1));
+    Normalise(Norm2);
+    if VecLength(VecDiff(Norm2, Face.Normale)) < rien then
+      Face.SetThreePoints(P1, P2, P3)
+    else
+      Face.SetThreePoints(P1, P3, P2);
     if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
     begin
       SubElements.Remove(Face);
