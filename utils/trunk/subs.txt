@@ -1,10 +1,12 @@
-GetSousElements GetSubElements
-SousElements SubElements
-Souselements SubElements
-souselements SubElements
-SousElementsC SubElementsC
-FSousElements FSubElements
-ofTvSousElement ofTreeViewSubElement
+
+
+#GetSousElements GetSubElements
+#SousElements SubElements
+#Souselements SubElements
+#souselements SubElements
+#SousElementsC SubElementsC
+#FSousElements FSubElements
+#ofTvSousElement ofTreeViewSubElement
 
 
 #       #Done up to QkMdl and including
@@ -18,9 +20,7 @@ ofTvSousElement ofTreeViewSubElement
 #       ofSurDisque ofOnDisk
 #       TEtatObjet TObjectState
 #       EtatObjet ObjectState
-#       ToutCharger LoadAll
 #       Enregistrer1 Save1
-#       ChargerInterne LoadInternal
 #       TvParent TreeViewParent
 #       SuivantDansGroupe FollowingInGroup
 #       LibererMemoireFiches FreeMemoryFiles
@@ -67,16 +67,10 @@ ofTvSousElement ofTreeViewSubElement
 #       esCouleurGrise esGreyColor
 #       PinceauGris GreyBrush
 #       Origine Origin
-#       ChargerBsp1 LoadBsp1
-#       ChargerBsp2 LoadBsp2
 #       EnregistrerBsp1 SaveBsp1
 #       EnregistrerBsp2 SaveBsp2
 #       ReLoadStr1ucture ReLoadStructure
-#       TEntreesBsp1 TBsp1Entry
-#       TEntreesBsp2 TBsp2Entry
 #       wmMessageInterne wmInternalMessage
-#       NomEntreesBsp BspEntreeNames
-#       TEntreesBsp TBspEntry
 #       Entete Header
 #       Entrees Entry
 #       OperationDansScene OperationInScene
@@ -306,3 +300,15 @@ ofTvSousElement ofTreeViewSubElement
 #AccesFichierQ FileAccessQ
 #Ouvrir Open
 #OuvrirGroupes OpenGroups
+#ToutCharger LoadAll
+#ChargerInterne LoadInternal
+
+#TEntreesBsp1 TBsp1EntryTypes
+#TEntreesBsp2 TBsp2EntryTypes
+#NomEntreesBsp Bsp1EntryNames
+#NomEntreesBsp2 Bsp2EntryNames
+#TEnteteBsp TBsp1Header
+#PEnteteBsp PBsp1Header
+#TQ2BSP TBsp2Header
+#ChargerBsp1 LoadBsp1
+#ChargerBsp2 LoadBsp2
