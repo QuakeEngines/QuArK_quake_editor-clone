@@ -72,7 +72,7 @@ class ThreeViews2DLayout(MapLayout):
         self.ViewXZ = self.threeviews_toppanel.newmapview()
         self.ViewYZ = self.threeviews_toppanel.newmapview()
         self.ViewYZ.section = (1,0)
-
+	
         #
         # Put these three views in the view lists.
         #
@@ -109,10 +109,11 @@ class ThreeViews2DLayout(MapLayout):
         # XY view, and remove the horizontal scroll bar of the XZ view.
         #
 
-        self.sblinks.append((0, self.ViewXZ, 0, self.ViewXY))
-        self.sblinks.append((0, self.ViewYZ, 0, self.ViewXY))
-        self.ViewXY.flags = self.ViewXY.flags &~ MV_HSCROLLBAR
-
+        self.sblinks.append((0, self.ViewXY, 0, self.ViewXZ))
+        self.sblinks.append((1, self.ViewYZ, 1, self.ViewXZ))
+        self.sblinks.append((1, self.ViewXY, 0, self.ViewYZ))
+        self.ViewXZ.flags = self.ViewXZ.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
+        
 
     #
     # The following function is called when the configuration changed.
@@ -268,6 +269,8 @@ LayoutsList.append(ThreeViews2DLayout)
 #
 #
 # $Log$
-# 
-# 
+# Revision 1.1  2003/03/24 05:02:48  cdunde
+# To add new 3 view - 2D layout
 #
+# 
+# 
