@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/01/21 15:47:36  decker_dk
+Now possible to extract textures from Half-Life .BSP files, just make sure you've first selected Half-Life as
+gamemode in QuArK explorer, and likevise for Quake-1 if extracting from Quake-1 .BSP files.
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.17  2001/01/15 19:22:01  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -838,6 +843,8 @@ begin
        { read all textures from the loop }
       BaseImage:=ImageList1.Count;
       TextureTitle:=QTexture(TexLoop[0]).Name;
+      if QTexture(TexLoop[0]).Specifics.Values['shader']='1' then
+        TextureTitle:='$'+TextureTitle;
       SelectNow:=False;
       for J:=0 to TexLoop.Count-1 do
       begin
