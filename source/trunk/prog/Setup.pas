@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2002/06/09 02:17:31  tiglari
+add SoF2 gamecode
+
 Revision 1.35  2002/04/28 21:23:49  tiglari
 comment out line as suggested by Andy Vincent to stop abnormal termination
   after Python is Finalized
@@ -178,6 +181,7 @@ const
  mjQuake        = '1';
  mjHexen        = '2';
  mjHalfLife     = '3';
+ mjGenesis3D    = '4';
  {..up to '9' Quake-style games may exist..}
 
  mjQuake2       = 'A';
