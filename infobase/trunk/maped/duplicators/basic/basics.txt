@@ -1,55 +1,67 @@
-title: Basics
+title: Basic Use
 author: tiglari
 
-There are actually two 'basic' duplicators, on
-the 'duplicators & misc' item in the New Polyhedrons
-panel button menu or the New Map Items toolbox.
-Thy're both named
-`Duplicator'.  Basically what they do is make copies
-of the stuff that is inside the (smallest) group
-they're in.
-
-So to see this effect, first create a new poly, then
+The simplest duplicator for putting copies in a row
+is the 'Basic Duplicator', the first item in the
+New Polyhedrons|Duplicators & Misc toolboxlist.
+To see it at work, first create a new poly, then
 make a group over it (by hitting the `new group'
 panel button). Now, with either the group or the
-cube selected, insert the top Duplicator.  What
+cube selected, insert the Basic Duplicator.  What
 you'll now see, in an XY view, is 5 blue outlines
 of the original New Cube heading off at a 45 degree
 angle.  These are the copies of the original brush.
 
-To control what's happening, look in the tree-view,
-select the duplicator, and look at its specifics.
-The first interesting one is 'offset', which will
+To control what's happening, push the tree-view
+button in the browser panel select the newly inserted
+Basic Duplicator, and look at its specifics.
+There's 'classname', and 'copy outside', which should have
+a check to its right, we'll look into those later.
+The first one that interests us now is 'offset', which will
 be the triple of numbers '32 32 0'.  This is the
 amount, in the X, Y and Z dimensions, whereby each
 copy is displaced from the previous one.  So we
 can make the copies head out in the X direction,
 spaced at a greater distance, by changing these
-numbers to say '200 0 0'.\
+numbers to say '200 0 0'.
 
 The next number is 'count', which controls the
 number of copies, so if you only want one, set it
-to '1'.  The remaining specifics are more advanced,
-so we'll talk about them later.
+to '1'.  Count is giving us the number of copies,
+not including the original.  The remaining specifics
+are 'angle', which is not very useful, 'origin', which
+is where the duplicator is located and best controlled
+by dragging it around, and 'macro', which you should leave
+alone until you're an expert.
 
-The final point about basic duplicators is that
-they make copies of everything in their containing
-group, brushes, entities, patches etc.  So you can
-for example make a row of columns with distinct
-column, base and cap brushes by having these three
-brushes in the group, plus a duplicator.  They
-also work 'recursively', so that if a group with
-a duplicator in it contains another group with
-a duplicator in it, the results of the inner group
-will be duplicated, so that you can make a rectangular
-array of identical objects with two duplicators
-and one copy of the object.  You can also but two
-duplicators into one group, but then each does
-their thing independently, rather than one applying
-to the output of the other.
+The point of duplicators is to have any changes you make
+in the original show up automatically in the copies, so
+you should now pull the faces of the cube around a bit,
+to see the shapes of the copies change.  Also, if you drag
+the cube with respect to the duplicator, the positions
+of the copies will change.
 
-With a duplicator, you can edit the original, but
-not the copies.  However sometimes that's what you
+You also might have noticed that for each copy there is
+a little blue square.  If you drag a square with the
+moouse, you change the direction of the row and the spacing
+of the copies along it.  Look at the 'offset' specific
+while you're doing this, & you'll see that what you're doing
+is visually editing the offset.  So there's a quick way to get
+things into the arrangement you want.
+
+So far we've only been making copies of single brushes.
+But the Basic Duplicator (and many of the others)
+makes copies of everything in the group that contains
+it, including brushes, entities, and entities, except
+duplicators themselves.  So if you put two different
+brushes into the duplicator's group, you'll see them both
+being copied.  This lets you make copies of structures as
+complicated as you like.
+
+With a duplicator, you can edit the original, and see
+the changes in all the copies, but you can't make
+a change to some particular individual copy.  However
+sometimes that' is what you
 want to do (perhaps to introduce some variations
 into a bunch of things you've created).  You can
 make the copies individually editable by RMB |
@@ -57,4 +69,8 @@ Dissociate Duplicator Images on the duplicator
 (in the tree-view).  Now the duplicator is removed
 from the map and replaced by the copies it has been
 created, as freestanding individual pieces of map
-structure.
+structure.  Of course when you do this, you lose the
+advantage of having a duplicator.  With the undo facility,
+you can get the duplicator back (until you close the
+editing session), but then you'll also loose any individual
+changes you've made.
