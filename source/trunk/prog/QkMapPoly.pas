@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2002/12/22 05:51:14  tiglari
+restoring projecting points to planes, to make lighting work out
+
 Revision 1.60  2002/12/21 21:33:07  tiglari
 valve220 map-writing fix
 
@@ -2578,7 +2581,7 @@ var
 }
     begin
 
-     if (MapFormat=QetpType) or (MapFormat=V220Type) then
+     if (MapFormat=QetpType) or { (MapFormat=V220Type) } then
      begin
        F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
 
