@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/03/20 21:37:18  decker_dk
+Updated copyright-header
+
 Revision 1.10  2001/03/06 00:31:04  aiv
 more accurate on md3 linking parts...
 
@@ -82,6 +85,7 @@ type
     function TryAutoLoadParts: boolean;
     Function GetFullFilename: string;
     function GetBoneFrameForFrame(Root: QModelRoot; Frame: Integer): QModelBone;
+    procedure ChangeGameMode; virtual;
   end;
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
@@ -257,7 +261,11 @@ var
   shader_file: QObject;
   shader_texture: QPixelSet;
 begin
-  shader_filename:=copy(tex_name, 1, pos('/', tex_name)-1);
+  if pos('/', tex_name) <> 0 then
+    shader_filename:=copy(tex_name, 1, pos('/', tex_name)-1)
+  else
+    shader_filename:=copy(tex_name, 1, pos('\', tex_name)-1);
+
   result:=nil;
   if shader_filename='' then
     exit;
@@ -596,7 +604,7 @@ function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean
 var
   other_root: QModelRoot;
 begin
-  Logex('attaching %s to %s',[self.name, model.name]);
+//  Logex('attaching %s to %s',[self.name, model.name]);
   model.acces;
   other_root:=model.getRoot;
   other_root.Specifics.Values['linked_to']:=tag_name;
@@ -626,6 +634,11 @@ begin
   end;
 end;
 
+procedure QMD3File.ChangeGameMode;
+begin
+  ObjectGameCode:=mjQ3A;
+end;
+
 procedure QMd3File.LoadFile(F: TStream; Taille: Integer);
 var
   i, org, org2, j: Longint;
@@ -646,10 +659,15 @@ begin
       org:=f.position;
       f.readbuffer(head,sizeof(head));
       org2:=f.position;
-      if (head.id<>'IDP3') or (head.version<>15) then
-        raise Exception.Create('Not a valid MD3 File!');
+      if (head.id='IDP3') and (head.version=15) then
+      begin
+        ObjectGameCode:=mjQ3A;
+      end
+      else if (head.id='RDM5') and (head.version=2) then
+      begin
+        ObjectGameCode:=mjStarTrekEF;
+      end;
       Root:=Loaded_Root;
-      ObjectGameCode:=mjQ3A;
       Misc:=Root.GetMisc;
       if head.BoneFrame_num<>0 then begin
         for i:=1 to head.boneframe_num do begin

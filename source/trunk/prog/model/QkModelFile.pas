@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:37:04  decker_dk
+Updated copyright-header
+
 Revision 1.4  2001/02/28 19:03:25  aiv
 Fixed ref count prob.
 
@@ -91,9 +94,13 @@ var
   S: String;
   Skins: QSkinGroup;
 begin
-  Skins:=Component.SkinGroup;
+  if component=nil then
+    Skins:=nil
+  else
+    Skins:=Component.SkinGroup;
   Result:=QPcx.Create(Name, Skins);
-  Skins.SubElements.Add(Result);
+  if component<>nil then
+    Skins.SubElements.Add(Result);
   Result.SetFloatsSpec('Size', Size);
   S:=Spec1;
   SetLength(S, Length(Spec1) + SizeOf(TPaletteLmp));
@@ -162,7 +169,12 @@ begin
       end;
     end;
     J:=Pos('/',Path);
-    if J=0 then Break;
+    if J=0 then
+    begin
+      J:=Pos('\',Path);
+      if J = 0 then
+        Break;
+    end;
     System.Delete(Path, 1, J);
   until False;
   if warnifnotfound then
