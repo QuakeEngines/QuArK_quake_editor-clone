@@ -30,6 +30,11 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.30  2000/06/07 22:34:27  alexander
+//changed: NeedQCSG config entry and replaced it
+//by a SpecialCustomQuakeMenu entry (which specifies the form name)
+//Added: Custom Quake menu form for quake 3 with bspc
+//
 //Revision 1.29  2000/06/05 00:15:15  alexander
 //added "StupidBuildToolKludge" flag for games (likes SoF) where the tools want to run in basedir
 //fixed wrong base dir of SoF
@@ -1536,7 +1541,7 @@ QQRKSRC1
          $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
          $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
          $77CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin
+        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin (cmd=GAM, game=D)
         cmd:macro = { Typ = "M" Msg = "ADDO" }
       }
       Outp:tbbtn =
@@ -1548,7 +1553,7 @@ QQRKSRC1
          $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
          $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
          $AAA20006666666002A200666666666660006666666
-        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin
+        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin (cmd=GAM, game=D)
         cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
       Sep1: = {Typ = "S"} // separator
@@ -1652,7 +1657,7 @@ QQRKSRC1
          $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
          $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
          $77CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to SOF
+        cmd:macro = { Typ = "M" Msg = "GAME" } // switches to SOF  (cmd=GAM, game=E)
         cmd:macro = { Typ = "M" Msg = "ADDO" }
       }
       Outp:tbbtn =
@@ -1664,7 +1669,7 @@ QQRKSRC1
          $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
          $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
          $AAA20006666666002A200666666666660006666666
-        cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin
+        cmd:macro = { Typ = "M" Msg = "GAME" } // switches to SOF (cmd=GAM, game=E)
         cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
       Sep1: = {Typ = "S"} // separator
@@ -1775,7 +1780,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMa"}    // switches to Quake 3
+        cmd:macro = {Typ="M" Msg="GAMa"}    // switches to Quake 3 (cmd=GAM, game=a)
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -1787,7 +1792,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMa"}    // switches to Quake 3
+        cmd:macro = {Typ="M" Msg="GAMa"}    // switches to Quake 3 (cmd=GAM, game=a)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       Sep1: = {Typ="S"}    // separator
