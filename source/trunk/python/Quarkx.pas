@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2003/11/10 19:44:44  silverpaladin
+Fixed a problem with menus not showing up on the Toolbox menu.
+
 Revision 1.36  2003/11/10 19:12:40  silverpaladin
 Eliminated platform dependant warning
 
@@ -140,9 +143,9 @@ const
  PythonSetupString = 'import sys'#10'sys.path[:0] = ["%s", "%s\\lib"]'#10'import quarkpy';
 {$ENDIF}
  PythonRunPackage  = 'quarkpy.RunQuArK()';
- FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure Python and QuArK are correctly installed; reinstall them if required.';
+ FatalErrorText    = 'Cannot initialize the Python interpreter. QuArK cannot start. Be sure QuArK is correctly installed; reinstall it if required.';
  FatalErrorCaption = 'QuArK Python';
- PythonNotFound    = 'Python does not seem to be installed on this system. QuArK cannot start. Please download the MiniPython pack from QuArK''s home page at http://www.planetquake.com/quark.';
+ PythonNotFound    = 'Could not locate Python interpreter. QuArK cannot start.';
 
 var
  Py_None        : PyObject = Nil;
@@ -2899,7 +2902,7 @@ begin
 end;
 
 var ProbableCauseOfFatalError: array[-9..3] of PChar = (
-   {-9}    ' (Unable to initialise python module "Quarkx")',
+   {-9}    ' (Unable to initialise Python module "Quarkx")',
    {-8}    ' (Unable to find "quarkpy" directory or incorrect file versions)',
    {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
    {-6}    '',
@@ -2909,7 +2912,7 @@ var ProbableCauseOfFatalError: array[-9..3] of PChar = (
    {-2}    '',
    {-1}    '',
    { 0}    ' (No Error)',
-   { 1}    ' (Error setting up python types)',
+   { 1}    ' (Error setting up Python types)',
    { 2}    ' (Error loading dll)',
    { 3}    ' (Unable to find Python)');
 
