@@ -1641,23 +1641,30 @@ def macro_usercenter(self):
     editor.invalidateviews()
 
 qmacro.MACRO_usercenter = macro_usercenter
+
 class UserCenterHandle(CenterHandle):
+
+    hint = "Usercenter handle (Ctrl key: force to grid)||The usercenter is used to control the pivot-point for rotations and symmetry operations."
 
     def __init__(self, dup):
         pos = GetUserCenter(dup)
         CenterHandle.__init__(self, pos, dup, MapColor("Axis"))
 
-
     def drag(self, v1, v2, flags, view):
+        if flags&MB_CTRL:
+            v2 = qhandles.aligntogrid(v2, 1)
         delta = v2-v1
         dup = self.centerof.copy()
         SetUserCenter(dup, GetUserCenter(dup)+delta)
         return [self.centerof], [dup]
 
+
 # ----------- REVISION HISTORY ------------
 #
-#
 #$Log$
+#Revision 1.29  2001/08/15 17:52:42  decker_dk
+#Exception-catch for def GetUserCenter(), in case "return (box[0]+box[1])/2" fails.
+#
 #Revision 1.28  2001/08/13 17:45:46  decker_dk
 #Fixed problem where a '<huge> <small>' texture-scale caused the code to ignore further changes to the texture on the face.
 #
@@ -1735,6 +1742,4 @@ class UserCenterHandle(CenterHandle):
 #
 #Revision 1.5  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
-#
 #
