@@ -72,7 +72,7 @@ class HalfLifeRADFileMaker(StandardDuplicator):
             editor = mapeditor(SS_MAP)
             if (editor is None):    # Make sure there IS a editor available
                 return []
-            filename = (checkfilename(editor.fileobject.shortname or editor.fileobject["FileName"])) + ".RAD")
+            filename = checkfilename(editor.fileobject.shortname or editor.fileobject["FileName"]) + ".RAD"
 	    filename = filename.lower()
 
         radfilename = quarkx.outputfile("maps/"+filename)
@@ -100,6 +100,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
 #Revision 1.2  2001/10/08 20:23:15  decker_dk
 #Quick fix. Testing for 'editor' is None then 'return []'.
 #
