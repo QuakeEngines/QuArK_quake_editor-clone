@@ -5,6 +5,8 @@ Changes from 081801
 
  *Preliminary 6DX support
  *Cleanup of Crystal Space Support
+ *arg replacer added to duplicator list (see infobase
+    for usage)
  *some extruder bugs fixed
  *path dup texture bug fixed
  *'elbows' for path dup reinstated and tested
