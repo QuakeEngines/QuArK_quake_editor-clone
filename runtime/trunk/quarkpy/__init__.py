@@ -38,28 +38,43 @@ if qdictionnary.Strings[0] != quarkx.version:
 
 # the following keys will be sent to an edit box before they are seen as menu shortcut
 quarkx.editshortcuts = [
-  "Del", "Ctrl+X", "Ctrl+C", "Ctrl+V", "Left", "Right", "Home", "End", "Ctrl+Left", "Ctrl+Right",
-  "Up", "Down", "Alt+Up", "Alt+Down", "PgUp", "PgDn" ]
+    "Del",
+    "Ctrl+X",
+    "Ctrl+C",
+    "Ctrl+V",
+    "Left",
+    "Right",
+    "Home",
+    "End",
+    "Ctrl+Left",
+    "Ctrl+Right",
+    "Up",
+    "Down",
+    "Alt+Up",
+    "Alt+Down",
+    "PgUp",
+    "PgDn"
+]
 
 
 # set up the build modes for the big "GO!" button
 quarkx.buildmodes = [
-  "Complete rebuild + play",                        # 0
-  "Complete rebuild but don't start game",          # 1
-  "Fast (full-bright) rebuild + play",              # 2
-  "Prepare everything but maps + play",             # 3
-  "Complete rebuild and .pak file creation",        # 4
+#Broken!  "Complete rebuild + play",                        # 0
+#Broken!  "Complete rebuild but don't start game",          # 1
+#Broken!  "Fast (full-bright) rebuild + play",              # 2
+#Broken!  "Prepare everything but maps + play",             # 3
+#Broken!  "Complete rebuild and .pak file creation",        # 4
   "Create a .pak file with already-built maps",     # 5
   "Just play the game",                             # 6
 ]
 quarkx.buildcodes = [
-  "CP",
-  "C",
-  "FP",
-  "P",
-  "CK",
-  "K",
-  "P",
+#Broken!  "CP",  # 0
+#Broken!  "C",   # 1
+#Broken!  "FP",  # 2
+#Broken!  "P",   # 3
+#Broken!  "CK",  # 4
+  "K",   # 5
+  "P",   # 6
 ]
 
 
@@ -68,15 +83,15 @@ def RunQuArK():
 
     import qmacro
     quarkx.Setup1(qmacro.__dict__)    # don't change this !
-    
+
     import qutils
     quarkx.setupchanged = qutils.SetupChanged
     unselicons = qutils.ico_objects[0]
     selicons = qutils.ico_objects[1]
     for i in range(0, qutils.iiTotalImageCount):
         quarkx.seticons(i, selicons[i], unselicons[i])
-    quarkx.seticons(qutils.iiEntity, qutils.EntityIconSel, qutils.EntityIconUnsel)
-    quarkx.seticons(qutils.iiGroup,  qutils.GroupIconSel,  qutils.GroupIconUnsel)
+    quarkx.seticons(qutils.iiEntity,     qutils.EntityIconSel,     qutils.EntityIconUnsel)
+    quarkx.seticons(qutils.iiGroup,      qutils.GroupIconSel,      qutils.GroupIconUnsel)
     quarkx.seticons(qutils.iiDuplicator, qutils.DuplicatorIconSel, qutils.DuplicatorIconUnsel)
     quarkx.seticons(qutils.iiModelGroup, qutils.ModelGroupIconSel, qutils.ModelGroupIconUnsel)
     s = "&Contextual help"
@@ -90,11 +105,10 @@ def RunQuArK():
     quarkx.helpmenuitem(s)
 
 # ----------- REVISION HISTORY ------------
-#
-#
 #$Log$
+#Revision 1.3  2000/06/03 18:01:28  alexander
+#added cvs header
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
-#
-#
 #
