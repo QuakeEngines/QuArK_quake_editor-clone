@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/05/21 13:11:51  decker_dk
+Find new shaders and misc.
+
 }
 
 unit QkBsp;
@@ -36,7 +39,7 @@ uses
   StdCtrls, Python, PyObjects, Game;
 
 type
- TEntreesBsp1 =
+ TBsp1EntryTypes =
    (eEntities
    ,ePlanes
    ,eMipTex
@@ -53,7 +56,7 @@ type
    ,eListEdges
    ,eHulls);
 
- TEntreesBsp2 =
+ TBsp2EntryTypes =
    (lump_entities
    ,lump_planes
    ,lump_vertexes
@@ -75,8 +78,8 @@ type
    ,lump_areaportals);
 
 const
-  NoBsp1 = TEntreesBsp1(-1);
-  NoBsp2 = TEntreesBsp2(-1);
+  NoBsp1 = TBsp1EntryTypes(-1);
+  NoBsp2 = TBsp2EntryTypes(-1);
 
 type
 (*SurfaceList = ^TSurfaceList;
@@ -92,9 +95,9 @@ type
           FStructure: TTreeMapBrush;
           FVerticesRefCount: Integer;
           function GetStructure : TTreeMapBrush;
-          function GetBspEntry(E1: TEntreesBsp1; E2: TEntreesBsp2) : QFileObject;
-          procedure ChargerBsp1(F: TStream; Taille: Integer);
-          procedure ChargerBsp2(F: TStream; Taille: Integer);
+          function GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes) : QFileObject;
+          procedure LoadBsp1(F: TStream; Taille: Integer);
+          procedure LoadBsp2(F: TStream; Taille: Integer);
           procedure EnregistrerBsp1(Info: TInfoEnreg1);
           procedure EnregistrerBsp2(Info: TInfoEnreg1);
         protected
@@ -110,8 +113,8 @@ type
           procedure EtatObjet(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-          property BspEntry[E1: TEntreesBsp1; E2: TEntreesBsp2] : QFileObject read GetBspEntry;
-          function GetBspEntryData(E1: TEntreesBsp1; E2: TEntreesBsp2; var P: PChar) : Integer;
+          property BspEntry[E1: TBsp1EntryTypes; E2: TBsp2EntryTypes] : QFileObject read GetBspEntry;
+          function GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; var P: PChar) : Integer;
           procedure ReLoadStr1ucture;
           procedure CloseStructure;
           procedure VerticesAddRef(Delta: Integer);
@@ -148,7 +151,7 @@ const
  SignatureBSPHL = $1E;
 
 const
- NomEntreesBsp : array[TEntreesBsp1] of String =
+ Bsp1EntryNames : array[TBsp1EntryTypes] of String =
    ('Entities.a.bsp1'
    ,'Planes.b.bsp1'
    ,'MipTex.c.bsp1'
@@ -169,10 +172,10 @@ type
  TEntreeBsp = record
                Position, Taille: LongInt;
               end;
- PEnteteBsp = ^TEnteteBsp;
- TEnteteBsp = record
+ PBsp1Header = ^TBsp1Header;
+ TBsp1Header = record
                Signature: LongInt;
-               Entrees: array[TEntreesBsp1] of TEntreeBsp;
+               Entrees: array[TBsp1EntryTypes] of TEntreeBsp;
               end;
 
 (***********  Quake 2 .bsp format  ***********)
@@ -182,7 +185,7 @@ const
  VersionBSP2   = 38;
 
 const
- NomEntreesBsp2 : array[TEntreesBsp2] of String =
+ Bsp2EntryNames : array[TBsp2EntryTypes] of String =
    ('entities.a.bsp2'
    ,'planes.b.bsp2'
    ,'vertexes.c.bsp2'
@@ -204,9 +207,9 @@ const
    ,'areaportals.s.bsp2');
 
 type
- TQ2BSP = record
+ TBsp2Header = record
            Signature, Version: LongInt;
-           Entrees: array[TEntreesBsp2] of TEntreeBsp;
+           Entrees: array[TBsp2EntryTypes] of TEntreeBsp;
           end;
 
 (***********  QuArK objects  ***********)
@@ -269,26 +272,26 @@ begin
  or ((CompareText(Copy(S, Length(S)-5, 5), '.bsp1') = 0) and (S[Length(S)] in ['0'..'5']))];
 end;
 
-function QBsp.GetBspEntry(E1: TEntreesBsp1; E2: TEntreesBsp2) : QFileObject;
+function QBsp.GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes) : QFileObject;
 var
  Q: QObject;
  S: String;
 begin
  Acces;
  if E2=NoBsp2 then
-  S:=NomEntreesBsp[E1]
+  S:=Bsp1EntryNames[E1]
  else
   if (E1=NoBsp1) or (NeedObjectGameCode>=mjQuake2) then
-   S:=NomEntreesBsp2[E2]
+   S:=Bsp2EntryNames[E2]
   else
-   S:=NomEntreesBsp[E1];
+   S:=Bsp1EntryNames[E1];
  Q:=SousElements.FindName(S);
  if (Q=Nil) or not (Q is QFileObject) then
   Raise EError(5521);
  Result:=QFileObject(Q);
 end;
 
-function QBsp.GetBspEntryData(E1: TEntreesBsp1; E2: TEntreesBsp2; var P: PChar) : Integer;
+function QBsp.GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; var P: PChar) : Integer;
 const
  Start = Length('Data=');
 var
@@ -318,12 +321,12 @@ end;
 
  {----------------------}
 
-procedure QBsp.ChargerBsp1(F: TStream; Taille: Integer);
+procedure QBsp.LoadBsp1(F: TStream; Taille: Integer);
 var
- Entete: TEnteteBsp;
+ Entete: TBsp1Header;
  Origine: LongInt;
  P: PChar;
- E: TEntreesBsp1;
+ E: TBsp1EntryTypes;
  FaceCount, Taille1: Integer;
  ModeQ1, ModeH2: Boolean;
  Q: QObject;
@@ -339,7 +342,7 @@ begin
    or (Entete.Entrees[E].Taille<0) then
     Raise EErrorFmt(5509, [82]);
    F.Position:=Origine + Entete.Entrees[E].Position;
-   Q:=OpenFileObjectData(F, NomEntreesBsp[E], Entete.Entrees[E].Taille, Self);
+   Q:=OpenFileObjectData(F, Bsp1EntryNames[E], Entete.Entrees[E].Taille, Self);
   {if (E=eMipTex) and (Entete.Signature = SignatureBSPHL) then
     Q.SetSpecificsList.Values['TextureType']:='.wad3_C';}
    SousElements.Add(Q);
@@ -371,12 +374,12 @@ begin
   end;
 end;
 
-procedure QBsp.ChargerBsp2(F: TStream; Taille: Integer);
+procedure QBsp.LoadBsp2(F: TStream; Taille: Integer);
 var
- Entete: TQ2BSP;
+ Entete: TBsp2Header;
  Origine: LongInt;
  Q: QObject;
- E: TEntreesBsp2;
+ E: TBsp2EntryTypes;
 begin
  if Taille<SizeOf(Entete) then
   Raise EError(5519);
@@ -401,7 +404,7 @@ begin
       end;
     end;
    F.Position:=Origine + Entete.Entrees[E].Position;
-   Q:=OpenFileObjectData(F, NomEntreesBsp2[E], Entete.Entrees[E].Taille, Self);
+   Q:=OpenFileObjectData(F, Bsp2EntryNames[E], Entete.Entrees[E].Taille, Self);
    SousElements.Add(Q);
    LoadedItem(rf_Default, F, Q, Entete.Entrees[E].Taille);
   end;
@@ -419,8 +422,8 @@ begin
       F.ReadBuffer(Signature, SizeOf(Signature));
       F.Seek(-SizeOf(Signature), soFromCurrent);
       case Signature of
-       SignatureBSP, SignatureBSPHL: ChargerBsp1(F, FSize);
-       SignatureBSP2: ChargerBsp2(F, FSize);
+       SignatureBSP, SignatureBSPHL: LoadBsp1(F, FSize);
+       SignatureBSP2: LoadBsp2(F, FSize);
       else
        Raise EErrorFmt(5520, [LoadName, Signature, SignatureBSP, SignatureBSP2]);
       end;
@@ -431,11 +434,11 @@ end;
 
 procedure QBsp.EnregistrerBsp1(Info: TInfoEnreg1);
 var
- Entete: TEnteteBsp;
+ Entete: TBsp1Header;
  Origine, Fin: LongInt;
  Zero: Integer;
  Q: QObject;
- E: TEntreesBsp1;
+ E: TBsp1EntryTypes;
 begin
  with Info do begin
   DebutTravail(5450, Ord(High(E))-Ord(Low(E))+1); try
@@ -467,11 +470,11 @@ end;
 
 procedure QBsp.EnregistrerBsp2(Info: TInfoEnreg1);
 var
- Entete: TQ2Bsp;
+ Entete: TBsp2Header;
  Origine, Fin: LongInt;
  Zero: Integer;
  Q: QObject;
- E: TEntreesBsp2;
+ E: TBsp2EntryTypes;
 begin
  with Info do begin
   DebutTravail(5450, Ord(High(E))-Ord(Low(E))+1); try
