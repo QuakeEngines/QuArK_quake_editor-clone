@@ -3,6 +3,11 @@ author: tiglari, etc.
 
 Suggestions for implementation (proposer parenthesized).
 <UL>
+<LI>Preserve selected status for face & brush on vertex move (rd)
+
+<LI>Path info for file links, so that the files can be anywhere (Seth)
+
+<LI>Rescale textures on vertex drag (rd, currently in exp. plugin).
 
 <LI>Selected groups colored rather than dotted outline (option perhaps?). (rd)
 
