@@ -149,7 +149,10 @@ uses
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
   QkMd3 in 'prog\model\QkMd3.pas',
   QkQ1 in 'prog\QkQ1.pas',
-  QkQ2 in 'prog\QkQ2.pas';
+  QkQ2 in 'prog\QkQ2.pas',
+  qkskindrawobject in 'prog\model\qkskindrawobject.pas',
+  Qk3ds in 'prog\model\Qk3ds.pas',
+  Logging in 'prog\Logging.pas';
 
 {$R *.RES}
 
