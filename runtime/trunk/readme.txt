@@ -1,6 +1,39 @@
 
-                   QuArK 6.4 Snapshot 1
+                             6.4
+
+ * [decker] bot waypoint editor
  
+ * [decker] scrollbars on plugin list
+ 
+ * [rowdy] changes for compilation under D7
+ 
+                          QuArK 6.3
+
+ * [tiglari] bugs with bsp-viewing fixed
+
+ * [tiglari] add 'nolinear' form and checkmark to path duplicator; this means
+     that linear mappings will work on it properly
+
+ * [tiglari] revise wallmaker form to encourage extruded version, deprecate
+      negative polys, and suggest using sold for revision of complex forms.
+ * [tiglari] fix error-on-RMB-on-vertex-in-restricted-selection bug
+                        
+ * [tiglari] mirror-image  face|textures RMB command.
+       
+ * [tiglari] finding and fixing faces with non-integral vertices -
+      finder on search, fixer on command menus; F1 for help.
+
+ * [decker] calculation of jumppad trajectories for Q3 
+ 
+ * [tiglari] add .pts loading commands to defaults for Q1, Hx2, HL
+
+ * [tiglari] lighting problems with etp and V220 formats, pinned down with
+       great effort by quantum_red, fixed.
+
+ * [tiglari] bug with non-inverse brush arches fixed (found by quantum_red)
+
+ * [tiglari] problems with valve mapversion220 format writing fixed (ditto)
+
  * [cdunde] Meaningful movepal icons
  
  * [tiglari] fix RTCW misc_model models, many skins still AWOL dunno why
@@ -11,6 +44,10 @@
 
  * [Decker] Fixed GDI-object(s) not being released (leaked), when using 
      colors on tree-view groups (reported by Raybot).
+
+ * [decker]  bugfixes to
+       -mapbrushcurves.py, mapquakemenu.py, maptexsearch.py, mapdupspath
+          (involving 'level' flag).
 
  * [tiglari] Fix problems with texture positioning in Classic Quake
      and Quark etp mode (reported on the rust QuArK forum, argggh
@@ -30,9 +67,6 @@
  * [Decker] Map-editor's "Search and replace texture" now also works as a 
      search-for-texture in the map. Not to be confused with the "Search for 
      texture" which only searches in the texture-browser.
-
-
-                 QuArK 6.3 Release Candidate 1
 
  * [tiglari] Replace texture dialog: if just a face is selected,
     its texture is now loaded into dialog (bug report from fpbrowser)
@@ -55,7 +89,7 @@
                  
  * [tiglari] Mohaa map reading implemented, various map writing
      bugs fixed
-       
+
  * [nurail] JKII light path entities corrected
    
  * [nurail] error involving line 447 mapquakemenu hopefully fixed
@@ -70,7 +104,7 @@
                 
  * [tiglari] fix errors on opening map editor (for some people,
       not me, for reasons which I don't understand at all)
-      
+
  * [tiglari] basic Mohaa maps now compile and run.  Texture
       flags don't work yet but.  Another peculiar feature of
       Mohaa is that the maps are written into the main directory,
