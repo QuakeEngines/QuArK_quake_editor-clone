@@ -1,45 +1,33 @@
-                         QuArK 6.3d
+                          QuArK 6.3
                          
                          Dec 17, 2002
 
- Updates:
-   * bug with non-inverse brush arches fixed (found by quantum_red)
-   * problems with valve mapversion220 format fixed (ditto)
-   * black model problem for SoF2 explained as follows:
-   There are 2 forms of models - one static and one misc. In some instances
-   both of them show perfectly - in others the misc_model shows up as black. It
-   has to do with the original shader that is for that particular model. Seems
-   there is some coding in there - don't remember the line - think it was a
-   lightmap line - anyway - the shader wasnt designed for the misc_model and
-   the model shows up black. The fix is to watch which one you use and switch
-   to the other form of the model. Wish I could tell ya more.
-     [Doug Abele/CHK Shoot]
-   This should be fixed by editing the addons to lead us not into temptation.
 
+ Updates:
+   * [tiglari] bug with non-inverse brush arches fixed (found by quantum_red)
+   * [tiglari] problems with valve mapversion220 format writing fixed (ditto)
+   * [tiglari] black model problem for SoF2 explained by
+        Doug Abele (CHK Shoot); see infobase.
+   * [tiglari] restore partial Mohaa and SoF2 support
+ 
  Possible Unresolved Issues (from QuArK forums, June-Sep)
 
- * quark 6.3 Q1 mdl-viewing problems
-     can't replicate
+   * quark 6.3 Q1 mdl-viewing problems 
+       can't replicate
 
- * bsp viewing for Quake:
-     can't replicate in current version, with small maps.  Note:
-     .bsp's look different from maps, forex faces are only visible
-     from their outside, and hidden faces are deleted.  So a newbie
-     might think that .bsp viewing is messed up when it isn't.
+   * bsp viewing for Quake broken:
+       looks OK to me in current version, with small maps.  Note:
+       .bsp's look different from maps, forex faces are only visible
+       from their outside, and hidden faces are deleted.  So a newbie
+       might think that .bsp viewing is messed up when it isn't.
 
- * copy/paste causing texture misalignment:
-     can't replicate in current version
+   * copy/paste causing texture misalignment:
+       can't replicate in current version
 
                          QuArK 6.3c
                          
                      update Oct 12, 2002
 
-
- * quantum red's tex align problem with Valve 220 output
-     for Piping.ari
- * black misc_model problem for SoF2
-
-Updates
 
  * [decker] - commits to main branch shifted to rel6.3
      by tiglari 
@@ -66,7 +54,6 @@ Updates
       -mapdupspath.py
       Problem involving 'level' flag.
 
- 
  * [decker] add simple search to texture replace dlg
  
  * [cdunde] Meaningful movepal icons
