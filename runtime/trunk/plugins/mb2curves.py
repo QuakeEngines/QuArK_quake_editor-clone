@@ -27,9 +27,6 @@
 ##########################################################
 
 #$Header$
-# ----------- REVISION HISTORY ------------
-#$Log$
---- snap ----
 
 
 Info = {
@@ -358,5 +355,8 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.1  2000/05/26 23:04:17  tiglari
+#Arch-builders.  There's a bug in quark.clickform, which doesn't seem to work right until something has been dropped into the map.
+#
 #--- snap ----
 
