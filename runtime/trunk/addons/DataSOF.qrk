@@ -3,6 +3,12 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11.2.1  2000/08/26 09:57:29  tiglari
+//added sky "ny" specific to worldspawn
+//
+//Revision 1.11  2000/07/04 22:49:04  alexander
+//improved some enumerated attributes like skin and style
+//
 //Revision 1.10  2000/07/04 20:18:31  alexander
 //added SOF specific default form for quakemenu (without extract textures)
 //
@@ -83,6 +89,7 @@ QQRKSRC1
     Root = "worldspawn:b"
     worldspawn:b =
     {
+      sky = "ny"
       Border walls:g =
       {
         East wall:p =
