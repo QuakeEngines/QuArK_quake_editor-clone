@@ -20,25 +20,9 @@ Info = {
 
 
 import quarkx
-import quarkpy.mapmenus
-import quarkpy.mapentities
-import quarkpy.qmenu
-import quarkpy.mapeditor
-import quarkpy.qbaseeditor
-import quarkpy.mapcommands
-import quarkpy.mapoptions
-import quarkpy.qhandles
-import quarkpy.mapbtns
-import mapsnapobject
-import mergepolys
-from quarkpy.maputils import *
 from tagging import *
-from faceutils import *
-import maptagpoint
-import quarkpy.qtoolbar          # For all buttons.
-import maptagside                # For buttons with this in call.
-import maptexpos                 # For buttons with this in call.
-import mapmadsel                 # For buttons with this in call.
+import maptagside
+import maptexpos
 
 
 def addtoTaggedClick(m):
@@ -307,15 +291,6 @@ def texflagsClick(m):
             editor.layout.flagsclick(None)
 
 
-def zoomToMe(m):
-  editor = mapeditor()
-  m.object = editor.layout.explorer.uniquesel
-  if m.object is None:
-    quarkx.msgbox("No selection made.", MT_ERROR, MB_OK)
-    return
-  mapmadsel.ZoomToMe(m)
-
-
 
 # This defines and builds the toolbar.
 
@@ -404,10 +379,7 @@ class TagModesBar(ToolBar):
         btn19 = qtoolbar.button(texflagsClick, "Texture flag settings||Texture flag settings:\n\nThis will open the texture flag settings window. The setting of these flags, or a combination of them, gives the selected brush unique characteristics. Each setting has a 'fly over hint' to help tell you what it does.", ico_dict['ico_maped'], 22, infobaselink="intro.texturebrowser.details.html#textureflags")
 
 
-        btn20 = qtoolbar.button(zoomToMe, "Zoom to selection||Zoom to selection:\n\nThis zooms the map views in to the selection.", icons, 18, infobaselink="intro.mapeditor.menu.html#invertface")
-
-
-        return [btn0, btn2, btn3, btn4, btn5, btn1, qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, qtoolbar.sep, btn11, btn12, btn13, btn14, qtoolbar.sep, btn15, btn16, qtoolbar.sep, btn17, btn18, btn19, btn20]
+        return [btn0, btn2, btn3, btn4, btn5, btn1, qtoolbar.sep, btn6, btn7, btn8, btn9, btn10, qtoolbar.sep, btn11, btn12, btn13, btn14, qtoolbar.sep, btn15, btn16, qtoolbar.sep, btn17, btn18, btn19]
 
 
 # Now we add this toolbar, to the list of other toolbars,
@@ -425,6 +397,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.2  2003/05/09 01:01:08  cdunde
+# Added function buttons for tagtoolbar
+#
 # Revision 1.1  2003/03/15 07:19:30  cdunde
 # To add hint updates and infobase links
 #
