@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2004/11/25 00:25:51  alexander
+use maximum texture size of 128 pixels for quark to reduce mem use
+
 Revision 1.1  2004/11/07 16:24:23  alexander
 new: support for vtf file loading
 
@@ -88,9 +91,8 @@ end;
 class procedure QVTF.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
   inherited;
-  Info.FileObjectDescriptionText:=LoadStr1(5704);
-  {tbd what is this }
-  Info.FileExt:=810;
+  Info.FileObjectDescriptionText:=LoadStr1(5709);
+  Info.FileExt:=814;
   Info.WndInfo:=[wiWindow];
 end;
 
@@ -136,8 +138,9 @@ begin
       Height:=Header.Height;
       PictureStartPosition := FSize-CompressedSize;
 
+(* disabled
       {halve size until W < 128}
-      while Width > 128 do
+      while Width > 512 do
       begin
         Width := Width div 2;
         Height := Height div 2;
@@ -145,7 +148,7 @@ begin
         NumberOfPixels := NumberOfPixels div 4 ;
         PictureStartPosition := PictureStartPosition - CompressedSize;
       end;
-
+*)
       SetSize(Point(Width, Height));
 
       SetLength(RawBuffer, CompressedSize);

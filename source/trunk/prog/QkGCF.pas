@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2004/11/25 00:31:42  alexander
+first gcf access attempt
+
 
 }
 
@@ -501,8 +504,8 @@ end;
 class procedure QGCF.FileObjectClassInfo(var Info: TFileObjectClassInfo);
 begin
  inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5133);
- Info.FileExt:=778;
+ Info.FileObjectDescriptionText:=LoadStr1(5710);
+ Info.FileExt:=816;
  Info.WndInfo:=[wiOwnExplorer];
 end;
 
