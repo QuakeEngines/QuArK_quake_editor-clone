@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/06/09 23:30:36  aiv
+Added Image Constants (iiMD3Tag & iiMD3Bone)
+
 Revision 1.12  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -39,7 +42,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'Version 6.00b1';
+ QuArKVersion            = 'quarksnapshot_20000704';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
