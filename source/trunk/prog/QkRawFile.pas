@@ -228,7 +228,7 @@ var
  Q: QObject;
  Data: String;
  I: Integer;
- S1: TQStream;
+ S1: TStream;
 begin
  Data:='';
  Q:=SousElements.FindName('Data');

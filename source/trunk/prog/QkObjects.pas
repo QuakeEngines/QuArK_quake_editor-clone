@@ -79,8 +79,9 @@ const
  iiImport                = 42;
  iiPython                = 43;
  iiBezier                = 44;
+ iiSpriteFile            = 45;
 
- InternalImagesCount     = 45;
+ InternalImagesCount     = 46;
 
  ModeFichier = fmOpenRead or fmShareDenyWrite;
  ModeFichierEcr = fmOpenReadWrite or fmShareDenyWrite;
@@ -145,6 +146,7 @@ type
  TQStreamRef = record
                 Self: TQStream;
                 Position, Taille: Integer;
+ {AiV}          OnAccess: Function (Ref: PQStreamRef; var S: TStream) : Integer;
                end;
 
  TInfoEnreg1 = class
@@ -165,8 +167,6 @@ type
            private
              FSpecifics: TStringList;
              FSousElements: TQList;
-             FNode: PQStreamRef; { info about where on disk the
-              objects info is, see QkObjects.txt:delay_loading }
           {$IFDEF Debug}
              function GetSpecifics : TStringList;
              function GetSousElements : TQList;
@@ -211,6 +211,8 @@ type
              PythonObj: TPythonObj;
               { structure with Python Object fields; to make a real
                 Python object, take a pointer to this }
+             FNode: PQStreamRef; { info about where on disk the
+              objects info is, see QkObjects.txt:delay_loading }
              FParent: QObject;
              Name: String;
              constructor Create(const nName: String; nParent: QObject);
@@ -360,7 +362,7 @@ function GetHumanSpec(const SpecArg: String) : String;
 procedure CheckValidSpec(var Spec: String);
 function TrimStringList(L: TStrings; Sep: Byte) : String;
 {procedure FreeOldObjects;}
-function QStreamAddRef(Ref: PQStreamRef; var S: TQStream) : Integer;
+{AiV}function QStreamAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 {procedure QStreamRelease(Ref: TTreeNode);}
 
 function CharToPas(C: array of Byte) : String;
@@ -934,6 +936,18 @@ begin
  Inc(RefCount1);
 end;
 
+{AiV}
+Function DefaultAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
+begin
+ with Ref^ do
+  begin
+   Self.Position:=Position;
+   Self.AddRef;
+   S:=Self;
+   Result:=Taille;
+  end;
+end;
+
 function TQStream.AddRefNode(Taille: Integer): PQStreamRef;
 begin
  Inc(RefCount1);
@@ -941,6 +955,7 @@ begin
  Result^.Self:=Self;
  Result^.Position:=Seek(Taille, 1) - Taille;
  Result^.Taille:=Taille;
+ Result^.OnAccess:=DefaultAddRef;
 end;
 
 procedure TQStream.Release;
@@ -996,22 +1011,19 @@ begin
  Result:=FHandle>=0;
 end;
 
-function QStreamAddRef(Ref: PQStreamRef; var S: TQStream) : Integer;
+function QStreamAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 begin
- with Ref^ do
-  begin
-   Self.Position:=Position;
-   Self.AddRef;
-   S:=Self;
-   Result:=Taille;
-  end;
+{AiV} Result:=Ref^.OnAccess(Ref,S);
 end;
 
 procedure QStreamRelease(var Ref: PQStreamRef);
 begin
  if Ref<>Nil then
   begin
-   Ref^.Self.Release;
+   if Ref^.Self is TQStream then
+      Ref^.Self.Release
+   else
+      Ref^.Self.Free;
    Dispose(Ref);
    Ref:=Nil;
   end;
@@ -1199,7 +1211,7 @@ end;}
 
 procedure QObject.Acces;
 var
- Source: TQStream;
+ Source: TStream;
  SourceTaille: Integer;
 begin
  if (FFlags and ofSurDisque = 0) or FLoading then
@@ -1219,7 +1231,12 @@ begin
  finally FLoading:=False; end;
  FFlags:=FFlags and not ofSurDisque;
  QStreamRelease(FNode);
- finally Source.Release; end;
+{AiV} finally
+  if Source is TQStream then
+   TQStream(Source).Release
+  else
+   Source.Free;
+  end;
 
 (*Source:=Nil;
  try
@@ -1352,7 +1369,7 @@ end;*)
 
 function QObject.Copying(F: TStream; TransfertSource: Boolean) : Boolean;
 var
- Source: TQStream;
+ Source: TStream;
  SourceTaille: Integer;
 begin  { if possible, copy directly from the original file into the new one }
  Result:=False;
@@ -1370,7 +1387,12 @@ begin  { if possible, copy directly from the original file into the new one }
    F.Seek(-SourceTaille, 1);
    FNode:=TQStream(F).AddRefNode(SourceTaille);
   end;
- finally Source.Release; end;
+{AiV} finally
+  if Source is TQStream then
+   TQStream(Source).Release
+  else
+   Source.Free;
+  end;
 
 (*Source:=Nil;
  try

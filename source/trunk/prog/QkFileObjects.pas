@@ -207,6 +207,7 @@ function SortedFindFileName(Q: TQList; const nFileName: String) : QFileObject;
 procedure ChargerObjTexte(Self: QObject; P: PChar; Taille: Integer);
 procedure EcrireObjTexte(Self: QObject; L: TStringList; Comment: Boolean);
 function EnteteObjTexte(var P: PChar) : Boolean;
+function MakeTempFileName(const Tag: String) : String;
 
  {------------------------}
 
