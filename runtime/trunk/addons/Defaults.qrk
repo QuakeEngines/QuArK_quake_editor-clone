@@ -153,6 +153,7 @@ QQRKSRC1
         .mdl = "1"     imdl = '4'
         .pak = "1"     ipak = '5'
         .sin = "1"     isin = '5'
+        .pk3 = "1"     ipk3 = '5'
         .bsp = "1"     ibsp = '3'
         .qc  = "1"     iqc  = '8'
         .hc  = "1"     ihc  = '8'
@@ -163,10 +164,12 @@ QQRKSRC1
         .pcx = ""      ipcx = '7'
         .bmp = ""      ibmp = '7'
         .tga = ""      itga = '7'
+        .jpg = ""      ijpg = '7'
         .cin = "1"     icin = '6'
         .wav = ""
         .cfg = ""      icfg = '11'
         .qme = ""
+        .zip = ""      izip = '5'
         Form = "GeneralAssociations"
       }
       External editors:config =
@@ -2089,6 +2092,7 @@ QQRKSRC1
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}
       .pak: = {Typ="X" Cap=".pak" Txt="PACK files"}
       .sin: = {Typ="X" Cap=".sin" Txt="PACK files for Sin"}
+      .pk3: = {Typ="X" Cap=".pk3" Txt="PACK files for Quake 3"}
       .bsp: = {Typ="X" Cap=".bsp" Txt="Compiled maps"}
       .qc:  = {Typ="X" Cap=".qc"  Txt="QuakeC Code (Quake 1)"}
       .hc:  = {Typ="X" Cap=".hc"  Txt="HexenC Code (Hexen II)"}
@@ -2098,9 +2102,11 @@ QQRKSRC1
       .m8:  = {Typ="X" Cap=".m8"  Txt="Heretic II Texture file"}
       .pcx: = {Typ="X" Cap=".pcx" Txt="PCX Images (Quake 2)"}
       .tga: = {Typ="X" Cap=".tga" Txt="TGA Images"}
+      .jpg: = {Typ="X" Cap=".jpg" Txt="JPEG Images"}
       .bmp: = {Typ="X" Cap=".bmp" Txt="Standard Windows Bitmap"}
       .cin: = {Typ="X" Cap=".cin" Txt="Video (Quake 2)"}
       .wav: = {Typ="X" Cap=".wav" Txt="Sound"}
+      .zip: = {Typ="X" Cap=".zip" Txt="ZIP archives"}
       .qme: = {Typ="X" Cap=".qme" Txt="Files from QuArK version 4"}
       btn:tbbtn = {
         Typ="M"
@@ -2479,8 +2485,10 @@ QQRKSRC1
         ;incl = "NewMap"
       }
       Pak.pak = { }
+      ZIP Archive.zip = { }
       PCX Image.pcx = { ;incl = "EmptyImage" }
       TGA Image.tga = { ;incl = "EmptyImage" }
+      JPEG Image.jpg = { ;incl = "EmptyImage" }
       Windows Bitmap Image.bmp = { ;incl = "EmptyImage" }
       Text.txt = { }
       Configuration file.cfg = { }

@@ -8,6 +8,16 @@ QQRKSRC1
     HTML = "help/index.html"
   }
 
+  NewFiles.qtx =
+  {
+    ToolBox = "New files..."
+    Root = "Quake 3 file types.qtxfolder"
+    Quake 3 file types.qtxfolder =
+    {
+      Pk3.pk3 = { }
+    }
+  }
+
 // Basic Map!
 
   walltex:incl = {tex = "base_wall/basewall03"}
