@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.151  2001/07/03 02:35:13  tiglari
+//Crystal Space revisions
+//
 //Revision 1.150  2001/06/24 14:48:20  decker_dk
 //Added arg replacer
 //
@@ -1274,7 +1277,7 @@ QQRKSRC1
         DefaultTexture = "intro/wl_outbrick1a"
 
         TextureWad = "?"  // variable (the map name is used)
-        TextureFormat = ".wad3_C"
+        TextureWriteFormat = ".wad3_C"
 
         BaseDir = "data"
         tmpQuArK = "data"
