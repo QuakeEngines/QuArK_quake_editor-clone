@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/21 06:33:27  tiglari
+Split Ok button into interface & action (BuildFolders)
+
 Revision 1.9  2000/11/16 19:42:16  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -71,7 +74,7 @@ unit QuickWal;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, QkObjects, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   TB97, StdCtrls, ExtCtrls, QkForm, QkZip2;
 
 type
@@ -91,12 +94,14 @@ type
   private
   public
     Toolbox: TForm;
-    procedure BuildFolders(Base: String);
   end;
+
+function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
+procedure BuildFolders(Base: String; var Q: QObject);
 
 implementation
 
-uses QkGroup, Game, QkTextures, QkObjects, QkWad, QkExplorer,
+uses QkGroup, Game, QkTextures, QkWad, QkExplorer,
   Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
   Setup, QkQ3;
 
@@ -264,34 +269,56 @@ end;
 
 procedure TQuickWalParser.OkBtnClick(Sender: TObject);
 var
- Base : String;
+ S, Base : String;
+ Gr : QExplorerGroup;
+ E : TQkExplorer;
+ Q : QObject;
+ J : Integer;
+
 begin
  ProgressIndicatorStart(0,0);
  try
   Base:=ListBox1.Items[ListBox1.ItemIndex];
-  BuildFolders(Base);
+  E:=TQkExplorer(Toolbox.Perform(wm_InternalMessage, wp_TargetExplorer, 0));
+  if E<>Nil then
+  begin
+    Q:=nil;
+    BuildFolders(Base, Q);
+    if Q=Nil then
+     Raise EErrorFmt(5660, [S]);
+    try
+     Gr:=ClipboardGroup;
+     Gr.AddRef(+1);
+     try
+      for J:=0 to Q.SubElements.Count-1 do
+       Gr.SubElements.Add(Q.SubElements[J]);
+      if E.DropObjectsNow(Gr, LoadStr1(623), False) then
+       begin
+        Close;
+        Exit;
+       end;
+     finally
+      Gr.AddRef(-1);
+     end;
+    finally
+     Q.Free;
+    end;
+  end;
  finally
   ProgressIndicatorStop;
  end;
  MessageBeep(0);
 end;
 
-procedure TQuickWalParser.BuildFolders(Base : String);
+procedure BuildFolders(Base : String; var Q:QObject);
 var
- Gr: QExplorerGroup;
- E: TQkExplorer;
  S, Path: String;
- Q, SearchFolder, SearchResultList: QObject;
+ SearchFolder, SearchResultList: QObject;
  J, FindError: Integer;
  F: TSearchRec;
  Pak: QPakFolder;
 begin
- try
-  E:=TQkExplorer(Toolbox.Perform(wm_InternalMessage, wp_TargetExplorer, 0));
-  if E<>Nil then
-  begin
     Path:=PathAndFile(QuakeDir, Base);
-    Q:=nil;
     try
      { Find Quake-3:Arena .shader files in directory }
      S:=PathAndFile(Path, GameShadersPath);
@@ -351,30 +378,6 @@ begin
     finally
      FindClose(F);
     end;
-
-    if Q=Nil then
-     Raise EErrorFmt(5660, [S]);
-    try
-     Gr:=ClipboardGroup;
-     Gr.AddRef(+1);
-     try
-      for J:=0 to Q.SubElements.Count-1 do
-       Gr.SubElements.Add(Q.SubElements[J]);
-      if E.DropObjectsNow(Gr, LoadStr1(623), False) then
-       begin
-        Close;
-        Exit;
-       end;
-     finally
-      Gr.AddRef(-1);
-     end;
-    finally
-     Q.Free;
-    end;
-  end;
- finally
- end;
- MessageBeep(0);
 end;
 
 procedure TQuickWalParser.FormActivate(Sender: TObject);
