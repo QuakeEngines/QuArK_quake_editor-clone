@@ -578,5 +578,8 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
---- snap ----
+#Revision 1.11  2000/05/19 10:11:13  tiglari
+#added revision history, comments on use of BezierType menu
+#
+#--- snap ----
 
