@@ -111,7 +111,7 @@ def interpolateGrid(p0, p1, p2, p3, h=3, w=3):
     return cp
 
 
-def transposecp(cp):
+def transposeCp(cp):
     "returns cp transposed"
     new = map(lambda x:[],range(len(cp[0])))
     for j in range(len(new)):
@@ -123,11 +123,11 @@ def transposecp(cp):
 #
 # This seems to be needed because copy.deepcopy() non sembra functionare
 #
-def copycp(cp):
+def copyCp(cp):
     "returns a copy of the cp array"
     return map(lambda row:map(lambda v:v, row), cp)
 
-def mapcp(f, cp):
+def mapCp(f, cp):
     "returns a new cp array with f applied to each member of cp"
     return map(lambda row,f=f:map(f, row), cp)
 
@@ -159,7 +159,7 @@ def texcpFromFace(cp, face, editor):
         # note the wacko sign-flip for t
         return quarkx.vect(v.xyz + ((v-p0)*s_axis, -(v-p0)*t_axis))
 
-    return mapcp(project, cp)
+    return mapCp(project, cp)
 
 def texFromFaceToB2(b2, face, editor):
     "copies texture and scale from face to bezier"
@@ -207,8 +207,8 @@ def colmat_uv1(u,v):
 # along the columns.  The idea is to readjust the texture coordinates
 # of the bcp to compensate for distortion along the columns
 #
-def antidistort_columns(cp):
-    ncp = copycp(cp)   # this is what we return, after diddling it
+def undistortColumns(cp):
+    ncp = copyCp(cp)   # this is what we return, after diddling it
     h, w = len(cp), len(cp[0])
     for j in range(w):  # for each column
 #        squawk(" col %d"%j)
@@ -240,10 +240,10 @@ def antidistort_columns(cp):
 #    squawk(`nbcp`)
     return ncp      
       
-def antidistort_rows(cp):
-    cp = transposecp(cp)
-    cp = antidistort_columns(cp)
-    return transposecp(cp)
+def undistortRows(cp):
+    cp = transposeCp(cp)
+    cp = undistortColumns(cp)
+    return transposeCp(cp)
 
 #
 # Getting approximate tangent planes at control points.
@@ -272,7 +272,7 @@ def dpdv(cp, i, j):
   else:
     return cp[i][j+1]-cp[i][j-1]
     
-def tanaxes(cp, i, j):
+def tanAxes(cp, i, j):
   return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
   
 #
@@ -338,6 +338,9 @@ def faceTexFromCph(cph, face, editor):
 #
 #
 #$Log$
+#Revision 1.9  2000/06/25 23:48:01  tiglari
+#Function Renaming & Reorganization, hope no breakage
+#
 #Revision 1.8  2000/06/25 11:00:50  tiglari
 #fixed antidistortion crash when sum=0.  still wrong but doesn't crash
 #

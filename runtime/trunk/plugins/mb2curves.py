@@ -352,8 +352,8 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
   #
   # Now we smooth it out
   #
-  cp = antidistort_rows(cp)
-  cp = antidistort_columns(cp)
+  cp = undistortRows(cp)
+  cp = undistortColumns(cp)
   inner = quarkx.newobj('inner:b2')
   inner.cp = cp
   inner["tex"] = texface["tex"]
@@ -395,9 +395,9 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
      fcp = makecapfacecp(pd["blf"],pd["tlf"],pd["trf"],pd["brf"])
      bcp = makecapfacecp(pd["blb"],pd["tlb"],pd["trb"],pd["brb"])
 #  if lower:
-#      fcp = transposecp(fcp)
+#      fcp = transposeCp(fcp)
 #  else:
-  bcp = transposecp(bcp)
+  bcp = transposeCp(bcp)
   front = b2FromCpFace(fcp, 'front', fdict["f"], editor)
   back = b2FromCpFace(bcp,'back', fdict["b"], editor)
   if faceonly:
@@ -434,7 +434,7 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       cp2 = texcpFromFace(cp, right, editor)
       for i in range(3):
           cp[i][2]=cp2[i][2]
-  cp = antidistort_rows(cp)
+  cp = undistortRows(cp)
   inner.cp = cp
   inner["tex"] = fdict["b"]["tex"]
   if thick:
@@ -533,7 +533,7 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
             for i in range(3):
                 cp[i][8] = quarkx.vect(cp[i][8].xyz+cp3[i][2].st)
 #    squawk(`cp`)
-        cp = antidistort_rows(cp)
+        cp = undistortRows(cp)
         inner = quarkx.newobj("inner:b2")
         inner.cp = cp
         inner["tex"]=oldface["tex"]
@@ -800,6 +800,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.21  2000/06/25 23:47:01  tiglari
+#Function Renaming & Reorganization, hope no breakage
+#
 #Revision 1.19  2000/06/25 11:30:11  tiglari
 #oops, bugfix for cones & bulges for columns, some function renaming
 #

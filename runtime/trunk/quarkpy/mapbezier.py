@@ -350,7 +350,7 @@ class CPHandle(qhandles.GenericHandle):
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
                 if quarkx.keydown('S')==1: # RMB
-                    xaxis, yaxis = tanaxes(cp,i,j)
+                    xaxis, yaxis = tanAxes(cp,i,j)
                     xaxis, yaxis = -xaxis, -yaxis
                     q = cp[m][n]
                     cp[m][n]=quarkx.vect(q.x, q.y, q.z,
@@ -430,6 +430,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.21  2000/06/25 23:48:02  tiglari
+#Function Renaming & Reorganization, hope no breakage
+#
 #Revision 1.20  2000/06/14 21:19:39  tiglari
 #texture coord entry dialog fixes, drag hint shows texture coords when texture is dragged
 #
