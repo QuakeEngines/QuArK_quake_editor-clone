@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/03/12 20:34:28  aiv
+now get textures from .bsp files (Q1, H2, and any others that support textures in bsp files)
+
 Revision 1.24  2001/03/12 03:41:04  aiv
 bug fixes for entity tool.
 
@@ -1358,11 +1361,11 @@ begin
     TexFolder2:=TexFolder;
     for i:=0 to e.subelements.count-1 do
     begin
-      if (i mod TEXTURES_PER_FOLDER)=0 then
+{      if (i mod TEXTURES_PER_FOLDER)=0 then
       begin
         if (e.subelements.count-1)-i>=TEXTURES_PER_FOLDER then
         begin
-          next:=TEXTURES_PER_FOLDER;
+          next:=i + TEXTURES_PER_FOLDER;
         end
         else
         begin
@@ -1371,9 +1374,18 @@ begin
         TexFolder2:=QTextureList.Create('textures '+inttostr(i+1)+' - '+inttostr(next), TexFolder);
         TexFolder.Subelements.Add(TexFolder2);
       end;
+}
       Tex:=e.subelements[i];
+      TexFolder2:=TexFolder.FindSubObject(Tex.Name[1], QTextureList, nil);
+      if TexFolder2=nil then
+      begin
+        TexFolder2:=QTextureList.Create(Tex.Name[1], TexFolder);
+        TexFolder.Subelements.Add(TexFolder2);
+      end;
       Link:=QTextureLnk.Create(Tex.name, TexFolder2);
       Link.SpecificsAdd('b='+Name);
+      if ObjectGameCode = mjHalfLife then
+        Link.SpecificsAdd('h=@');
       Link.SpecificsAdd('s='+GetBaseDir(Self.Filename));
       TexFolder2.Subelements.Add(Link);
     end;

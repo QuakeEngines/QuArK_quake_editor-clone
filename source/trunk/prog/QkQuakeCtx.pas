@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/03/12 20:34:28  aiv
+now get textures from .bsp files (Q1, H2, and any others that support textures in bsp files)
+
 Revision 1.14  2001/03/12 03:41:04  aiv
 bug fixes for entity tool.
 
@@ -83,6 +86,7 @@ type
                procedure ObjectState(var E: TEtatObjet); override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                Procedure MakeAddonFromQctx;
+               Procedure MakeTexturesFromQctx;
                function PyGetAttr(attr: PChar) : PyObject; override;
              end;
 
@@ -331,9 +335,17 @@ begin
    Result:=PyNoResult;
 end;
 
+function qMakeTexturesFromQctx(self, args: PyObject) : PyObject; cdecl;
+begin
+   with QkObjFromPyObj(self) as QQuakeCtx do
+     MakeTexturesFromQctx;
+   Result:=PyNoResult;
+end;
+
 const
-  MethodTable: array[0..0] of TyMethodDef =
-   ((ml_name: 'makeaddonfromqctx';      ml_meth: qMakeAddonFromQctx;      ml_flags: METH_VARARGS));
+  MethodTable: array[0..1] of TyMethodDef =
+   ((ml_name: 'makeentitiesfromqctx';      ml_meth: qMakeAddonFromQctx;         ml_flags: METH_VARARGS),
+    (ml_name: 'maketexturesfromqctx';      ml_meth: qMakeTexturesFromQctx;      ml_flags: METH_VARARGS));
 
 function QQuakeCtx.PyGetAttr(attr: PChar) : PyObject;
 var
@@ -351,6 +363,156 @@ begin
   end;
 end;
 
+Procedure QQuakeCtx.MakeTexturesFromQctx;
+var
+  i,j: integer;
+  // Objects for getting bsp list
+  paks: TQList;
+  bsps: TQList;
+  Pak, ExistingAddons: QFileObject;
+  p_f: QPakFolder;
+  bsp: QBsp;
+  NewAddonsList: TQList;
+  // Objects for creating new addon
+  addonRoot: QFileObject;
+  TexRoot: QToolBox;
+  TexFolders, oldTexRoot: QObject;
+  (*
+    Get all .bsp files in & out of pak's
+  *)
+  procedure GetBSPFiles;
+  var
+    i,j: Integer;
+    dir: String;
+  begin
+    dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
+    paks:=OpenFiles(dir, ListPakFiles(dir));
+    bsps:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
+    ProgressIndicatorStart(5458,paks.count);
+    for i:=0 to paks.count-1 do
+    begin
+      ProgressIndicatorIncrement;
+      pak:=QFileObject(paks[i]);
+      try
+        pak.acces;
+      except
+        continue;
+      end;
+      p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
+      if p_f=nil then continue;
+      for j:=0 to p_f.subelements.count-1 do
+      begin
+        if p_f.subelements[j] is QBsp then
+          bsps.add(p_f.subelements[j]);
+      end;
+    end;
+    ProgressIndicatorStop;
+  end;
+  (*
+    Go through list of .bsps and create addon based on each
+  *)
+  Procedure CreateAddons;
+  var
+    i: integer;
+  begin
+    ExistingAddons:=MakeAddonsList;
+    ProgressIndicatorStart(5458,bsps.count);
+    for i:=0 to bsps.count-1 do
+    begin
+      if not (bsps[i] is QBsp) then
+        raise exception.create('Error: bsp list contains non QBSP object!');
+      bsp := QBsp(bsps[i]);
+      NewAddonsList.Add(bsp.CreateAddonFromEntities(ExistingAddons));
+      ProgressIndicatorIncrement;
+      Application.ProcessMessages;
+    end;
+    ProgressIndicatorStop;
+    ExistingAddons.AddRef(-1);
+  end;
+  Function GetObject(nname, ntypeinfo, s: String): QObject;
+  var
+    i: Integer;
+  begin
+    Result:=nil;
+    for i:=0 to FParent.SubElements.Count-1 do
+    begin
+      if FParent.SubElements[i].typeinfo = ntypeinfo then
+      begin
+        if FParent.Subelements[i].GetArg('ToolBox')=s then
+        begin
+          result:=FParent.SubElements[i];
+          break;
+        end;
+      end;
+    end;
+    if Result=nil then
+    begin
+      Result:=ConstructQObject(nname+ntypeinfo, FParent);
+      if s<>'' then
+        Result.Specifics.Add('ToolBox='+s);
+      FParent.SubElements.Add(Result);
+    end;
+  end;
+begin
+  NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
+  GetBSPFiles;
+  CreateAddons;
+
+  addonRoot:=QFileObject(FParent);
+  if addonRoot = nil then
+  begin
+    raise Exception.Create('addonRoot = nil');
+  end;
+  if addonRoot.specifics.IndexOfName('Description')=-1 then
+    addonRoot.specifics.Add(format('Description=Addon for %s',[Specifics.Values['GameDir']]));
+  (*
+    Build Textures First
+  *)
+  TexFolders:=nil;
+  TexRoot:=QToolBox(GetObject('Textures', QToolbox.TypeInfo, 'Texture Browser...'));
+  if Specifics.Values['GameDir'] <> '' then
+    BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
+
+  if TexFolders<>nil then
+  begin
+    TexFolders.Name:=Specifics.Values['GameDir']+' textures';
+    TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
+    if TexRoot.Specifics.IndexOfName('Root')=-1 then
+      TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
+    if TexRoot.SubElements.FindShortName(TexFolders.Name)=nil then
+      TexRoot.SubElements.Add(TexFolders)
+    else
+      TexFolders.free;
+    TexFolders.FParent:=TexRoot;
+  end;
+  ProgressIndicatorStart(5458,NewAddonsList.Count);
+  try
+    for i:=0 to NewAddonsList.Count-1 do
+    begin
+      (*
+        Textures from .bsps (Q1, H2)
+      *)
+      if TexFolders<>nil then
+      begin
+        oldTexRoot:=NewAddonsList.Items1[i].FindSubObject('Textures', QToolBox, nil);
+        if oldTexRoot<>nil then
+        begin
+          for j:=0 to oldTexRoot.Subelements.Count-1 do
+          begin
+            TexFolders.Subelements.Add(oldTexRoot.Subelements[j].Clone(TexFolders, false));
+          end;
+        end;
+      end;
+    end;
+  finally
+    ProgressIndicatorStop;
+  end;
+  NewAddonsList.free;
+  bsps.free;
+  paks.free;
+  ExplorerFromObject(FParent).Refresh;
+end;
+
 Procedure QQuakeCtx.MakeAddonFromQctx;
 var
   i,j,k,l: integer;
@@ -364,7 +526,7 @@ var
   NewAddonsList: TQList;
   // Objects for creating new addon
   addonRoot: QFileObject;
-  TBX, TexRoot: QToolBox;
+  TBX: QToolBox;
   entityTBX: QToolBoxGroup;
   entityTBX_2: QToolBoxGroup;
   Group: QToolBoxGroup;
@@ -372,7 +534,7 @@ var
   Objects: TQList;
   entityForms:QFormContext;
   OldForm, Form: QFormCfg;
-  OldFormEl, FormEl, TexFolders, oldTexRoot: QObject;
+  OldFormEl, FormEl: QObject;
   (*
     Get all .bsp files in & out of pak's
   *)
@@ -468,26 +630,6 @@ begin
   EntityTBX_2:=EntityTBX;
   entityForms:=QFormContext(GetObject('Entity forms', QFormContext.Typeinfo, ''));
   (*
-    Build Textures First
-  *)
-  TexFolders:=nil;
-  TexRoot:=QToolBox(GetObject('Textures', QToolbox.TypeInfo, 'Texture Browser...'));
-  if Specifics.Values['GameDir'] <> '' then
-    BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
-
-  if TexFolders<>nil then
-  begin
-    TexFolders.Name:=Specifics.Values['GameDir']+' textures';
-    TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
-    if TexRoot.Specifics.IndexOfName('Root')=-1 then
-      TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
-    if TexRoot.SubElements.FindShortName(TexFolders.Name)=nil then
-      TexRoot.SubElements.Add(TexFolders)
-    else
-      TexFolders.free;
-    TexFolders.FParent:=TexRoot;
-  end;
-  (*
     Now build entities & include any textures found in .bsp files
   *)
   ProgressIndicatorStart(5458,NewAddonsList.Count);
@@ -567,20 +709,6 @@ begin
         end;
       end;
       Objects.Clear;
-      (*
-        Textures from .bsps (Q1, H2)
-      *)
-      if TexFolders<>nil then
-      begin
-        oldTexRoot:=NewAddonsList.Items1[i].FindSubObject('Textures', QToolBox, nil);
-        if oldTexRoot<>nil then
-        begin
-          for j:=0 to oldTexRoot.Subelements.Count-1 do
-          begin
-            TexFolders.Subelements.Add(oldTexRoot.Subelements[j].Clone(TexFolders, false));
-          end;
-        end;
-      end;
     end;
     Objects.Free;
 
