@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.227  2004/05/21 06:14:49  cdunde
+//To alphabetize game menu and config forms.
+//
 //Revision 1.226  2004/05/21 01:09:24  cdunde
 //To add support for Sylphis game engine. Code by Harry Kalogirou.
 //
@@ -1927,7 +1930,7 @@ QQRKSRC1
         PakFormat = "*.COL"
         ExtraCmdLine = " -gamedir %s"
         RunMapCmdLine = " -map %s.cmap"
-        AddOns = "DataSylphis.qrk"
+        AddOns = "DataSylphis.qrk"$0D"Sylphis_autogen.qrk"
         Console = "1"
         Form = "GameSylphis"
       }
