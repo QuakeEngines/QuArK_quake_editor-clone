@@ -10,3 +10,4 @@ desc: howdoesquarkstackuptoothermapeditors
 desc: whydoesntquarkhavethisreallycoolfeature
 desc: whenwillquarksupportmyfavoritegame
 desc: doineedpythondist
+desc: doesquarkrunonlinux

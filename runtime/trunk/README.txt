@@ -43,24 +43,21 @@ http://www.planetquake.com/quark/
 2. Where can I get QuArK?
 -------------------------
 
-QuArK is available as a free download.  Every couple of weeks, we do a
-development snapshot, and these are available from
-http://quark.sf.net/ as a .zip file.  If you want the Windows
-executable, you'll be looking for a file such as
-`quark-win32-<date>.zip`.
-
-Occasionally, we do a release, which comes as an executable
-installation program and marks a non-trivial increment in
-functionality or stability.  Once again, you'll probably be looking
-for a file such as `quark-win32-<version>.exe`.  These releases are
-always noted on the front page of the QuArK website.
+QuArK for 32-bit Windows is available as a free download from the 
+QuArK website as an executable installer or as a zip archive.
 
 Source archives are also available, or you could use anonymous cvs to
-checkout the sources from the SourceForge cvs repository (our project
+checkout the sources from our SourceForge cvs repository (our project
 name is `quark`).
+
+Development snapshots are available every couple of weeks from 
+http://quark.sourceforge.net/
 
 3. How do I install QuArK?
 --------------------------
+
+3.1. Installation on Windows
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you downloaded a release with an installation program, you need to
 run the installer and follow the on-screen instructions.
@@ -70,6 +67,15 @@ directory somewhere on your hard disk.
 
 If you downloaded the source code, please see the relevant Infobase
 pages for instructions for building QuArK.
+
+3.2. Installation on GNU Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For installation instructions for GNU Linux systems, please see:
+
+http://quark.sourceforge.net/infobase/intro.quarkonlinux.installing.html
+
+If you require further assistance, please see the next section.
 
 4. How do I get help?
 ---------------------

@@ -45,6 +45,7 @@ ftp&gt; open upload.sourceforge.net
 ftp&gt; binary
 ftp&gt; put quark-src-6.4.1beta3.zip
 ftp&gt; put quark-help-6.4.1beta3.zip
+ftp&gt; put quark-win32-6.4.1beta3.zip
 ftp&gt; quit</code></li>
 <li>Use PSFTP to download your <tt>quark-win32-6.4.1beta3.zip</tt> to your
 own computer.
@@ -91,7 +92,7 @@ flushed every 24 hours.</li>
 
 Once you've finished doing the release, it would probably be a good
 idea to update the main QuArK website and to post an announcement to the
-quark, quark-news and quark-python mailing lists, as well as adding
-links to the snapshot webpage.
+quark and quark-news mailing lists, as well as adding links to the
+snapshot webpage.
 
 TODO: Add instructions for actually using the SourceForge release system.

@@ -4,3 +4,4 @@ subdir: basicknowledge
 subdir: configuration
 subdir: mapeditor
 subdir: texturebrowser
+subdir: quarkonlinux

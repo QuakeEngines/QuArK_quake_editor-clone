@@ -78,13 +78,24 @@ $ md5sum quark-win32-20070831.zip > quark-win32-20070831.zip.md5
 to add the new snapshot.  Use the text editor of your choice - I
 generally use Emacs.
 
+You should also e-mail a release announcement to the development
+mailing list (<a href="mailto:quark-python@yahoogroups.com">quark-python@yahoogroups.com</a>),
+something along the lines of:
+
+<code>Subject: Snapshots 20070831
+
+New QuArK snapshots are now available from
+http://quark.sourceforge.net/
+ 
+- Compiled Infobase:
+http://quark.sourceforge.net/download/quark-help-20070831.zip
+- Full source code with Python 2.2.3:
+http://quark.sourceforge.net/download/quark-src-20070831.zip
+- Win32 binaries with Python 2.2.3:
+http://quark.sourceforge.net/download/quark-win32-20070831.zip
+</code>
+
 It's also a good idea only to have four snapshots on the site at a
 time, so as to be sure not to exceed the storage quota.  So delete the
 oldest snapshots if you need to.
 </ol>
-
-Ideally, snapshots would eventually have an NSIS installer for the
-binary release.
-
-TODO: write a script to automate the above process fully and upload it to
-the shell server.  Make it a cron job?
