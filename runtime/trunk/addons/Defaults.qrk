@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.141  2001/06/05 12:38:44  tiglari
+//final value elaborations
+//
 //Revision 1.140  2001/06/05 09:38:42  tiglari
 //more development of incrementing in duplicators
 //
@@ -1529,7 +1532,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "By default, Mouse Free Zoom is Shift-Middle-mouse-button"$0D"Enter a negative value to reverse 'In' and 'Out' directions"
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       HandlesDelay: =
       {
         Txt = "Delay to display handles"
@@ -1630,7 +1633,7 @@ QQRKSRC1
       BuildPgm9:  = {t_GameBuildPgm=!}
       BuildArgs9: = {t_GameBuildArgs=!}
       BuildCheck9:= {t_GameBuildCheck=!}
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       MapCommentsPrefix: = {
         Typ="E"
         Txt=".MAP comments prefix"
@@ -1717,7 +1720,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAM1"}    // switches to Quake 1
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1740,7 +1743,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -1797,7 +1800,7 @@ QQRKSRC1
              $0D "Necromancer"
              $0D "Assassin"
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1820,7 +1823,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -1872,7 +1875,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMA"}    // switches to Quake 2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1900,7 +1903,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -1952,7 +1955,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMB"}    // switches to Hr2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -1975,7 +1978,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2021,7 +2024,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAM3"}    // switches to Half-Life
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2049,7 +2052,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2101,7 +2104,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMC"}    // switches to Sin
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2124,7 +2127,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2171,7 +2174,7 @@ QQRKSRC1
         cmd:macro = { Typ = "M" Msg = "GAMD" } // switches to KingPin (cmd=GAM, game=D)
         cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2199,7 +2202,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       walTrick: = {
         Typ = "X"
@@ -2252,7 +2255,7 @@ QQRKSRC1
         cmd:macro = { Typ = "M" Msg = "GAME" } // switches to SOF (cmd=GAM, game=E)
         cmd:macro = { Typ = "M" Msg = "OUTP" }
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2280,7 +2283,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       walTrick: = { //FIXME ! is this needed ?
         Typ = "X"
@@ -2338,7 +2341,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMa"}    // switches to Quake 3 (cmd=GAM, game=a)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2371,7 +2374,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2424,7 +2427,7 @@ QQRKSRC1
         cmd:macro = {Typ="M" Msg="GAMb"}    // switches to StarTrek (cmd=GAM, game=b)
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2457,7 +2460,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2503,7 +2506,7 @@ QQRKSRC1
         cmd:macro = { Typ = "M" Msg = "GAMc" } // switches to CrystalSpace (cmd=GAM, game=c)
         cmd:macro = { Typ = "M" Msg = "OUTP" } // opens "Output directories" dialog box
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
       DefaultTexture: =
       {
@@ -2516,7 +2519,7 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
-      sep:        = {Typ="S"}
+      sep:        = {Typ="S" Txt=""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
@@ -2639,6 +2642,7 @@ QQRKSRC1
       Sep1: =
       {
         Typ = "S"    // Separator
+        Txt = ""
       }
       InvertedColors: =
       {
@@ -2694,6 +2698,7 @@ QQRKSRC1
       Sep1: =
       {
         Typ = "S"    // Separator
+        Txt = ""
       }
       InvertedColors: =
       {
@@ -2777,14 +2782,14 @@ QQRKSRC1
        Open: = {HotKeyForm = !}
        Save: = {HotKeyForm = !}
        Close: = {HotKeyForm = !}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt=""}
        Cut: = {HotKeyForm = !}
        Copy: = {HotKeyForm = !}
        Delete: = {HotKeyForm = !}
        Undo: = {HotKeyForm = !}
        Redo: = {HotKeyForm = !}
        Duplicate: = {HotKeyForm = !}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt=""}
        Remove: = {HotKeyForm = !}
        Select Parent: = {HotKeyForm = !}
        Collapse Tree: = {AlphaKeyForm = ! Hint="Prevent collapse of treeview on climb with Parent key."$0D" Key must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
@@ -2793,7 +2798,7 @@ QQRKSRC1
        Select Previous: = {HotKeyForm = !}
        Same Type = {AlphaKeyForm = ! Hint="When this key is depressed, prev/next selection must be of same type" $0D
                      " Must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt=""}
        Insert: = {HotKeyForm = !}
        Tag Side: = {HotKeyForm = !}
        Clear Tags: = {HotKeyForm = !}
@@ -2805,7 +2810,7 @@ QQRKSRC1
        Unrestrict Selection: = {HotKeyForm = !}
        Restrict to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
-       sep:={Typ="S"}
+       sep:={Typ="S" Txt=""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
     MapMouse:form =
@@ -2824,7 +2829,7 @@ QQRKSRC1
       Middle:      = { Txt = "Middle mouse button" MouseForm = ! }
       MiddleShift: = { Txt = "Middle button with Shift key" MouseForm = ! }
       MiddleCtrl:  = { Txt = "Middle button with Ctrl key" MouseForm = ! }
-      sep:={Typ="S"}
+      sep:={Typ="S" Txt=""}
       LeftDrag:        = { Txt = "Left button dragging" MDragForm = ! }
       LeftDragShift:   = { Txt = "Left dragging with Shift" MDragForm = ! }
       LeftDragCtrl:    = { Txt = "Left dragging with Ctrl" MDragForm = ! }
@@ -2850,16 +2855,16 @@ QQRKSRC1
       Style = "3"
       Gamma: = {Txt="Gamma correction" Typ="EF1" Hint="Gamma correction to display texture (1=darker, 2=lighter)"}
       MarsCaption: = {Txt="Window captions" Typ="X" Cap="Colorful"}
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       AutoFocus: = {Txt="Activate windows on mouseover" Typ="X" Cap="AutoFocus" Hint="if checked, the focus (active window) follows the mouse between windows (e.g. in the map editor)"}
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       sep: = {Typ="S" Txt="Button and object icon colors"}
       Unsel: = {Typ="X" Txt="If not selected" Cap="display blue icons" Hint="Check this to display blue icons instead of brown ones for 'unselected' icons"}
       Sel: =   {Typ="X" Txt="If selected"     Cap="display blue icons" Hint="Uncheck this to display brown icons instead of blue ones for 'selected' icons"}
       IconPath: = {Typ="CL" Txt="Icon size"   Values="images\\"$0D"lgicons\\"  Items="Normal"$0D"Large (LGIcons needed !)" Hint="Large icons require you to download first the 'LGIcons' pack from the web site."}
       sep: = {Typ="S" Bold="0" Txt="(restart QuArK to reload icons with the new colors"}
       sep: = {Typ="S" Bold="0" Txt="  and size after you made changes here)"}
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       MppTopBtns: = {Typ="X" Txt="Multi-pages panels" Cap="Buttons above"}
     }
     GeneralMemory:form =
@@ -2880,7 +2885,7 @@ QQRKSRC1
     {
       Style = "3"
       Info: = {Typ="S" Txt="External editors to called from QuArK"}
-      Info2: = {Typ="S"}
+      Info2: = {Typ="S" Txt=""}
       .pcx: = { Txt="PCX images" externaledit = ! }
       .tga: = { Txt="TGA images" externaledit = ! }
       .bmp: = { Txt="BMP images" externaledit = ! }
@@ -2909,7 +2914,7 @@ QQRKSRC1
       Font2: = {Typ="F" Txt="Operators" Cap="+ - * / < > = !"}
       Font4: = {Typ="F" Txt="Comments" Cap="// Comments"}
       Font6: = {Typ="F" Txt="Brackets" Cap="{   }"}
-      Sep1: = {Typ="S"}
+      Sep1: = {Typ="S" Txt=""}
       Enabled: = {Typ="X" Txt="Code Syntax Highlighting" Cap="Enabled"}
     }
     General3DView:form =
@@ -2931,7 +2936,7 @@ QQRKSRC1
         Values=  "8"$0D  "7"$0D "6"$0D "5"$0D "4"$0D"3"
         Hint="A lower value uses less memory for texture-images,"$0D"but will also decrease the texture quality in the 3D-views"
       }
-      Sep0: = {Typ="S"}
+      Sep0: = {Typ="S" Txt=""}
       L0: = {Typ="S" Txt="---- 3DFX card owners only ----"}
       //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
       TwoMonitors: = {
@@ -2946,7 +2951,7 @@ QQRKSRC1
       FogDensity: = {Txt="Fog density" Typ="EF1" Min='1' Hint="Fog density. Try yourself to see what it does."}
       FogColor: = {Txt="Fog color" Typ="LI" Hint="Fog color (recommended : either black or white)"}
       TranspFactor: = {Txt="Isometric transparent fraction" Typ="EF1" Hint="For non-perspective views : if nonzero, a part of what is behind the 1st cutting plane is still visible (transparent)"}
-      Sep2: = {Typ="S"}
+      Sep2: = {Typ="S" Txt=""}
       L1: = {Typ="S" Txt="---- Software driver only ----"}
       SoftQuality: = {
         Txt="Software image quality"
@@ -2962,14 +2967,14 @@ QQRKSRC1
         Values =     "0"        $0D     "1"       $0D     "2"
         Hint = "Slowest: High details   Fastest: Low details"
       }
-      Sep2c: = {Typ="S"}
+      Sep2c: = {Typ="S" Txt=""}
       L5: = {Typ="S" Txt="Mouse sensitivity (neg. numbers invert direction)"}
       MouseWalk:     = {Typ="EF1" Txt="  walk forward/backward"}
       MouseHLook:    = {Typ="EF1" Txt="  look left/right"}
       MouseVLook:    = {Typ="EF1" Txt="  look up/down"}
       MouseSideStep: = {Typ="EF1" Txt="  sidestep left/right"}
       MouseUpDown:   = {Typ="EF1" Txt="  move up/down"}
-      Sep2b: = {Typ="S"}
+      Sep2b: = {Typ="S" Txt=""}
       L4: = {Typ="S" Txt="Keyboard settings"}
       KeyForward:    = {Typ="K" Txt="  forward"}
       KeyBack:       = {Typ="K" Txt="  backward"}
@@ -2984,7 +2989,7 @@ QQRKSRC1
       KeyDown:       = {Typ="K" Txt="  move down"}
       KeyRun:        = {Typ="K" Txt="  run"}
       KeyStep:       = {Typ="K" Txt="  sidestep"}
-      Sep3: = {Typ="S"}
+      Sep3: = {Typ="S" Txt=""}
       L3: = {Typ="S" Txt="Keyboard movement dynamics"}
       Speed: = {Txt="Movement speed" Typ="EF1" Hint="How fast you move, in pixels/second"}
       RunSpeed: = {Txt="Running speed" Typ="EF1" Hint="How fast you move when you hold down the run key, in pixels/second"}
@@ -2995,7 +3000,7 @@ QQRKSRC1
     GeneralOpenGL:form =
     {
       Style = "3"
-      Sep0: = {Typ="S"}
+      Sep0: = {Typ="S" Txt=""}
       L0: = {Typ="S" Txt="---- OpenGL 1.1 hardware owners only ----"}
       Mode: = {
         Txt="Use OpenGL for..."
@@ -3015,7 +3020,7 @@ QQRKSRC1
       }
       L0: = {Typ="S" Bold="0" Txt="To change overall light brightness, see the"}
       L0: = {Typ="S" Bold="0" Txt="configuration page for each game."}
-      Sep0: = {Typ="S"}
+      Sep0: = {Typ="S" Txt=""}
       L0: = {Typ="S" Txt="---- troubleshooting options ----"}
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
@@ -3029,7 +3034,7 @@ QQRKSRC1
     {
       Style = "3"
       t: = {Typ="S" Txt="File extensions Association"}
-      t: = {Typ="S"}
+      t: = {Typ="S" Txt=""}
       t: = {Typ="S" Bold="0" Txt="Check the file types to associate with QuArK, then click"}
       btn:tbbtn = {
         Typ="M"
@@ -3126,7 +3131,7 @@ QQRKSRC1
         Txt = "Auto-Save"
         Cap = "before running game"
       }
-      sep: = {Typ="S"}
+      sep: = {Typ="S" Txt=""}
       DefPoly: = {
         Typ     = "C"
         Txt     = "Default brush-entity size"
@@ -3150,7 +3155,7 @@ QQRKSRC1
         Min = '1'
         Max = '90'
       }
-      //sep: = {Typ="S"}
+      //sep: = {Typ="S" Txt=""}
       //BezierCenterX: = {
       //  Txt = "Bezier center offset (X)"
       //  Typ = "EF1"
@@ -3292,14 +3297,14 @@ QQRKSRC1
       }
     }
     usercenterform:incl = {
-      usercenter: = {Txt="&" Typ="EF03" Hint="Drag this with the handle"}
+      usercenter: = {Typ="EF03" Hint="Drag this with the handle"}
       centering: =
-       {Txt= "&" Typ="P" Macro="usercenter" Cap="push" Hint="Push to add a user center"}
+       {Typ="P" Macro="usercenter" Cap="push" Hint="Push to add a user center"}
     }
     dup plane:form = {
-      P1:= {Txt="&" Typ="EF03"}
-      P2:= {Txt="&" Typ="EF03"}
-      P3:= {Txt="&" Typ="EF03"}
+      P1:= {Typ="EF03"}
+      P2:= {Typ="EF03"}
+      P3:= {Typ="EF03"}
     }
     Default:g:form =      // form that applies when editing groups
     {
@@ -3314,15 +3319,15 @@ QQRKSRC1
           _color = ""          // the button deletes this Specific
         }
       }
-      usercenterform = !      
-      sep1:  = {Typ="S"}
+      usercenterform = !
+      sep1:  = {Typ="S" Txt=""}
       neg:   = {Txt="Neg. polys" Cap="Negative" Typ="X" Hint="polyhedrons in negative groups dig the map"}
-      sep1:  = {Typ="S"}
-      ;view: = {Txt="&" Typ="X01"  Cap="Grayed out"         Hint="the whole group is displayed grayed out"}
-      ;view: = {Txt="&" Typ="X02"  Cap="Hidden"             Hint="the group is hidden from map views"}
-      ;view: = {Txt="&" Typ="X08"  Cap="Hidden on textured" Hint="the group is hidden from textured views"}
-      ;view: = {Txt="&" Typ="X016" Cap="Can't select"       Hint="can't select objects in this group with mouse clicks"}
-      ;view: = {Txt="&" Typ="X04"  Cap="Ignore to build"    Hint="ignored while building the map"}
+      sep1:  = {Typ="S" Txt=""}
+      ;view: = {Typ="X01"  Cap="Grayed out"         Hint="the whole group is displayed grayed out"}
+      ;view: = {Typ="X02"  Cap="Hidden"             Hint="the group is hidden from map views"}
+      ;view: = {Typ="X08"  Cap="Hidden on textured" Hint="the group is hidden from textured views"}
+      ;view: = {Typ="X016" Cap="Can't select"       Hint="can't select objects in this group with mouse clicks"}
+      ;view: = {Typ="X04"  Cap="Ignore to build"    Hint="ignored while building the map"}
     }
     outform:incl = // include for dups with out
     {
@@ -3333,9 +3338,9 @@ QQRKSRC1
       increment suffix: = {Txt="increment" Typ="X" Hint="If this is checked, target, targetname, killtarget values ending in a sequence of digits are incremented"}
       increment all target: ={Txt="incr. all targ." Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are incremented"}
       incrementable specifics: = {Txt="incrementable" Typ="E" Hint="List here additional specifics to be incremented"}
-      final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics"$0D"for different final values associated with different bases,"$0D"list them base1:val base2:val2"}
-      increment by = {Txt="&" Typ="E" Hint="size of increment" }
-      incre_lip = {Txt="&" Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
+      final_target = {Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics"$0D"for different final values associated with different bases,"$0D"list them base1:val base2:val2"}
+      increment by = {Typ="E" Hint="size of increment" }
+      incre_lip = {Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
     }
     Default:d:form =    // form that applies when editing duplicators
     {
@@ -3344,46 +3349,46 @@ QQRKSRC1
 
     Default:p:form = // form for polys
     {
-       neg: = {Txt="&" Typ="X" Hint="if checked, brush is negative"}
+       neg: = {Typ="X" Hint="if checked, brush is negative"}
     }
     linearform:incl = {
-//       scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling" }
-//       angles: = {Txt="&" Typ="E"  Hint="Pitch Roll Yaw Angles" $ 0D " (Rotation around Y X Z axes, in order)" }
-//       matrix: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
-       linear: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " You probably don't want to edit this directly;" $0D " hit the 'Edit Linear' button below"}
+//       scale: = {Typ="EF03"  Hint="X Y Z axis scaling" }
+//       angles: = {Typ="E"  Hint="Pitch Roll Yaw Angles" $ 0D " (Rotation around Y X Z axes, in order)" }
+//       matrix: = {Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
+       linear: = {Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " You probably don't want to edit this directly;" $0D " hit the 'Edit Linear' button below"}
        linedit: = {
          Txt="Edit Linear" Typ="P" Macro="linedit" Cap="push" Hint="Push to edit the matrix in the linear specific" $0D "  (Under Construction)"}
     }
-   
+
     dup lin:form =
     {
       outform = !
-      offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
-      count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
-      offset dup: = {Txt="&" Typ="X" Hint="If this is checked, image is located at dup.origin-images center+offset" $0D " It's meant for New Copy One duplicator"}
-      item center: = {Txt="&" Typ="X" Hint="If this is checked, if there is a 'linear' specific, each item in the" $0D " group is rotated around its own center (can be" $0D " usercenter) rather than the duplicator."}
+      offset: = {Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
+      count: = {Typ="E" Hint="Number of instances generated"}
+      offset dup: = {Typ="X" Hint="If this is checked, image is located at dup.origin-images center+offset" $0D " It's meant for New Copy One duplicator"}
+      item center: = {Typ="X" Hint="If this is checked, if there is a 'linear' specific, each item in the" $0D " group is rotated around its own center (can be" $0D " usercenter) rather than the duplicator."}
       linearform = !
       serialform = !
     }
-  
+
     dup basic:form =
     {
       outform = !
-      offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
-      count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
-      angle: = {Txt="&" Typ="E" Hint="Not sure how this one works ..."}
+      offset: = {Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
+      count: = {Typ="E" Hint="Number of instances generated"}
+      angle: = {Typ="E" Hint="Not sure how this one works ..."}
       serialform = !
     }
-  
+
     dup radial:form =
     {
       Help = "Brushes placed inside this will be replicated around the axis," $0D " which can be tilted."
-      count: = {Txt = "&" Hint = "Number of copies"}
-      around: = {Txt = "&" Typ = "EF1"
+      count: = {Hint = "Number of copies"}
+      around: = {Typ = "EF1"
                  Hint = "Degrees around axis for each copy"}
-      spiral: = {Txt = "&" Typ = "EF2"
+      spiral: = {Typ = "EF2"
                  Hint = "displacement along and out from axis, per copy"}
-      axis: = {Txt = "&" Typ = "EF3"
+      axis: = {Typ = "EF3"
                 Hint = "axis for copies"}
 //      buttons: = {
 //        Txt = "align"
@@ -3396,37 +3401,37 @@ QQRKSRC1
 //        Hint3 = "Align to Z Axis"
 //      }
       linearform = !
-      macro: = {Txt = "&" Typ = "ESR"
+      macro: = {Typ = "ESR"
                  Hint = "Don't you worry about this"}
     }
 
     capdetails:form =
     {
-      faceonly:  = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
-      nofront    = {Txt="&" Typ="X" Hint="if checked, front face is not produced"}
-      noback:    = {Txt="&" Typ="X" Hint="if checked, back face is not produced"}
-      noinner    = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
-      noouter:   = {Txt="&" Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
-      leftside:  = {Txt="&" Typ="X" Hint="if checked, left side is produced"}
-      rightside: = {Txt="&" Typ="X" Hint="if checked, right side is produced"}
+      faceonly:  = {Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
+      nofront    = {Typ="X" Hint="if checked, front face is not produced"}
+      noback:    = {Typ="X" Hint="if checked, back face is not produced"}
+      noinner    = {Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
+      noouter:   = {Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
+      leftside:  = {Typ="X" Hint="if checked, left side is produced"}
+      rightside: = {Typ="X" Hint="if checked, right side is produced"}
     }
     subdivideform:incl =
     {
-      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate 2^n+1 control points along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds, also big patches might not show in Q3)"}
-    }     
+      subdivide:  = {Typ="EF1"  Hint="integer value, generate 2^n+1 control points along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds, also big patches might not show in Q3)"}
+    }
     brushsubdivideform:incl =
     {
-      subdivide:  = {Txt="&" Typ="EF1"  Hint="integer value, generate 2^n brushes along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds ...)"}
-    }     
+      subdivide:  = {Typ="EF1"  Hint="integer value, generate 2^n brushes along the curve"$0D"  (Gives better approx to circle, but beware of R-speeds ...)"}
+    }
     dup cap:form =
     {
-      inverse:    = {Txt="&" Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
-      lower:      = {Txt="&" Typ="X"    Hint="if checked, the whole thing is upside-down"}
-      onside:     = {Txt="&" Typ="X"    Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
-      thick:      = {Txt="&" Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inverse:    = {Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
+      lower:      = {Typ="X"    Hint="if checked, the whole thing is upside-down"}
+      onside:     = {Typ="X"    Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
+      thick:      = {Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
       subdivideform = !
-      stretchtex: = {Txt="&" Typ="X"    Hint="if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
-      open:       = {Txt="&" Typ="X"    Hint="if checked, front and back are open"}
+      stretchtex: = {Typ="X"    Hint="if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
+      open:       = {Typ="X"    Hint="if checked, front and back are open"}
       more: = {
         Typ="B"
         Txt="details"
@@ -3434,28 +3439,28 @@ QQRKSRC1
         Form="capdetails:form"
         Hint="specifics for more detailed control over generation of patches"
       }
-      macro: = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+      macro: = {Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     beveldetails:form =
     {
-      faceonly: = {Txt="&" Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
-      notop     = {Txt="&" Typ="X" Hint="if checked, top face is not produced"}
-      nobottom: = {Txt="&" Typ="X" Hint="if checked, bottom face is not produced"}
-      noinner   = {Txt="&" Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
-      noouter:  = {Txt="&" Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
-      leftend:  = {Txt="&" Typ="X" Hint="if checked, left end is produced"}
-      rightend: = {Txt="&" Typ="X" Hint="if checked, right end is produced"}
+      faceonly: = {Typ="X" Hint="if checked, only the top and bottom faces are produced, no inner curve"}
+      notop     = {Typ="X" Hint="if checked, top face is not produced"}
+      nobottom: = {Typ="X" Hint="if checked, bottom face is not produced"}
+      noinner   = {Typ="X" Hint="if checked, inner face is not produced (thick bevels only)"}
+      noouter:  = {Typ="X" Hint="if checked, outer face is not produced (thick bevels only)"}
+      leftend:  = {Typ="X" Hint="if checked, left end is produced"}
+      rightend: = {Typ="X" Hint="if checked, right end is produced"}
     }
     dup bevel:form =
     {
-      inverse:    = {Txt="&" Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
-      lower:      = {Txt="&" Typ="X"    Hint="if checked, the whole thing is upside-down"}
-      standup:    = {Txt="&" Typ="X"    Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
-      left:       = {Txt="&" Typ="X"    Hint="if checked, curve goes from back to left side rather than back to right side"}
-      thick:      = {Txt="&" Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inverse:    = {Typ="X"    Hint="if checked, concave surface of curve is outer and has texture"}
+      lower:      = {Typ="X"    Hint="if checked, the whole thing is upside-down"}
+      standup:    = {Typ="X"    Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
+      left:       = {Typ="X"    Hint="if checked, curve goes from back to left side rather than back to right side"}
+      thick:      = {Typ="EF1"  Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
       subdivideform = !
-      stretchtex: = {Txt="&" Typ="X"    Hint="if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
-      open:       = {Txt="&" Typ="X"    Hint="if checked, top and bottom are open"}
+      stretchtex: = {Typ="X"    Hint="if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
+      open:       = {Typ="X"    Hint="if checked, top and bottom are open"}
       more: = {
         Typ="B"
         Txt="details"
@@ -3463,18 +3468,18 @@ QQRKSRC1
         Form="beveldetails:form"
         Hint="specifics for more detailed control over generation of patches"
       }
-      macro: = {Txt="&" Typ="ESR" Hint = "This one is not for you, Saruman"}
+      macro: = {Typ="ESR" Hint = "This one is not for you, Saruman"}
     }
     dup column:form =
     {
-      inverse:    = {Txt="&" Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
-      thick:      = {Txt="&" Typ="EF1"   Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inverse:    = {Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
+      thick:      = {Typ="EF1"   Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
       subdivideform = !
-      circle:     = {Txt="&" Typ="X" }
-      stretchtex: = {Txt="&" Typ="X"     Hint="if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
-      open:       = {Txt="&" Typ="X"     Hint="if checked, top and bottom are open"}
-      funnel:     = {Txt="&" Typ="EF002" Hint="if specified, first number is expand factor for top, second for bottom."$0D"e.g. 0 1 for upward pointing cone"}
-      bulge:      = {Txt="&" Typ="EF002" Hint="height, width of bulge, proportional, .5 1=straight"}
+      circle:     = {Typ="X" }
+      stretchtex: = {Typ="X"     Hint="if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
+      open:       = {Typ="X"     Hint="if checked, top and bottom are open"}
+      funnel:     = {Typ="EF002" Hint="if specified, first number is expand factor for top, second for bottom."$0D"e.g. 0 1 for upward pointing cone"}
+      bulge:      = {Typ="EF002" Hint="height, width of bulge, proportional, .5 1=straight"}
       more: = {
         Typ="B"
         Txt="details"
@@ -3482,104 +3487,100 @@ QQRKSRC1
         Form="beveldetails:form"
         Hint="specifics for more detailed control over generation of patches"
       }
-      macro: = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+      macro: = {Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushcap:form =
     {
-      inverse:   = {Txt="&" Typ="X"   Hint="if checked, concave surface of curve is outer and has texture"}
-      lower:     = {Txt="&" Typ="X"   Hint="if checked, the whole thing is upside-down"}
-      onside:    = {Txt="&" Typ="X"   Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
-      thick:     = {Txt="&" Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
-      inner:     = {Txt="&" Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
-      grid:      = {Txt="&" Typ="X"   Hint="if checked, vertex points are forced to grid"}
+      inverse:   = {Typ="X"   Hint="if checked, concave surface of curve is outer and has texture"}
+      lower:     = {Typ="X"   Hint="if checked, the whole thing is upside-down"}
+      onside:    = {Typ="X"   Hint="if checked, curve goes front-to-back instead of top-to-bottom "}
+      thick:     = {Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner:     = {Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
+      grid:      = {Typ="X"   Hint="if checked, vertex points are forced to grid"}
       brushsubdivideform = !
-      macro:     = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+      macro:     = {Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushbevel:form =
     {
-      inverse:   = {Txt="&" Typ="X"   Hint="if checked, concave surface of curve is outer and has texture"}
-      left:      = {Txt="&" Typ="X"   Hint="if checked, curve goes from back to left side rather than back to right side"}
-      lower:     = {Txt="&" Typ="X"   Hint="if checked, the whole thing is upside-down"}
-      standup:   = {Txt="&" Typ="X"   Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
-      thick:     = {Txt="&" Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
-      inner:     = {Txt="&" Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
-      grid:      = {Txt="&" Typ="X"   Hint="if checked, vertex points are forced to grid"}
+      inverse:   = {Typ="X"   Hint="if checked, concave surface of curve is outer and has texture"}
+      left:      = {Typ="X"   Hint="if checked, curve goes from back to left side rather than back to right side"}
+      lower:     = {Typ="X"   Hint="if checked, the whole thing is upside-down"}
+      standup:   = {Typ="X"   Hint="if checked, curve goes top-to-bottom instead of front-to-back"}
+      thick:     = {Typ="EF1" Hint="if a nonzero value is given, an enclosed curve with thickness is produced"}
+      inner:     = {Typ="X"   Hint="if checked, inner approximation is used; otherwise outer"}
+      grid:      = {Typ="X"   Hint="if checked, vertex points are forced to grid"}
       brushsubdivideform = !
-      macro:     = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+      macro:     = {Typ="ESR" Hint="This one is not for you, Saruman"}
     }
     dup brushcolumn:form =
     {
-      inverse:   = {Txt="&" Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
+      inverse:   = {Typ="X"     Hint="if checked, concave surface of curve is outer and has texture"}
       brushsubdivideform = !
-      circle:    = {Txt="&" Typ="X" }
-      funnel:    = {Txt="&" Typ="EF002" Hint="if specified, first number is expand factor for top, second for bottom."$0D"e.g. 0 1 for upward pointing cone"}
-      bulge:     = {Txt="&" Typ="EF002" Hint="height, width of bulge, proportional, .5 1=straight"}
-      macro:     = {Txt="&" Typ="ESR"   Hint="This one is not for you, Saruman"}
+      circle:    = {Typ="X" }
+      funnel:    = {Typ="EF002" Hint="if specified, first number is expand factor for top, second for bottom."$0D"e.g. 0 1 for upward pointing cone"}
+      bulge:     = {Typ="EF002" Hint="height, width of bulge, proportional, .5 1=straight"}
+      macro:     = {Typ="ESR"   Hint="This one is not for you, Saruman"}
     }
     dup path:form =
     {
-      target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
-      squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
-      setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
+      target: = {Typ="E"     Hint="should be managed automatically"}
+      squarend: = {Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
+      setback:  = {Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
       instances: =
-       {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an instance duplicator"}
+       {Typ="P" Macro="instances" Cap="push" Hint="Push to add an instance duplicator"}
     }
     dup path_point:form =
     {
-      level: = {Txt="&" Typ="X"      Hint="if checked, following path segment doesn't rotate (may cause non-fitting joins)"}
-      target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
-      targetname: = {Txt="&" Typ="E" Hint="should be managed automatically"}
+      level: = {Typ="X"      Hint="if checked, following path segment doesn't rotate (may cause non-fitting joins)"}
+      target: = {Typ="E"     Hint="should be managed automatically"}
+      targetname: = {Typ="E" Hint="should be managed automatically"}
 //      linearform = !
-      no instance: = {Txt="&" Typ="X"      Hint="if checked, no instance is generated (instance dup only)"}
+      no instance: = {Typ="X"      Hint="if checked, no instance is generated (instance dup only)"}
     }
     dup instance:form =
     {
-      track: =  {Txt="&" Typ="X" Hint="If checked, instances rotate to follow path angles"}
-      target: = {Txt="&" Typ="E" Hint="should be managed automatically"}
+      track: =  {Typ="X" Hint="If checked, instances rotate to follow path angles"}
+      target: = {Typ="E" Hint="should be managed automatically"}
       usercenterform = !
     }
     dup stair:form =
     {
-      steps:      = {Txt="&"            Hint="number of steps in the staircase"}
-      sameheight: = {Txt="&" Typ="X"    Hint="if all steps should have the same height"$0D"or all aligned to the bottom"}
-      macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
+      steps:      = {           Hint="number of steps in the staircase"}
+      sameheight: = {Typ="X"    Hint="if all steps should have the same height"$0D"or all aligned to the bottom"}
+      macro:      = {Typ="ESR"  Hint="This one is not for you, Saruman"}
     }
     dup hlinfodecal:form =
     {
       Help = "Type your word(s) into the 'text'-specific,"$0D"check that the texture-names exist."
-      text:        = {Txt="&"           Hint="The text to be converted into infodecals" }
-      wildchar:    = {Txt="&"           Hint="A single character in the texture-names, thats replaced by a character from the text-string" }
-      tex_upper:   = {Txt="&" Typ="ET"  Hint="Texture-name of uppercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
-      tex_lower:   = {Txt="&" Typ="ET"  Hint="Texture-name of lowercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
-      tex_numeric: = {Txt="&" Typ="ET"  Hint="Texture-name of numeric characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
-      macro:       = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+      text:        = {          Hint="The text to be converted into infodecals" }
+      wildchar:    = {          Hint="A single character in the texture-names, thats replaced by a character from the text-string" }
+      tex_upper:   = {Typ="ET"  Hint="Texture-name of uppercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
+      tex_lower:   = {Typ="ET"  Hint="Texture-name of lowercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
+      tex_numeric: = {Typ="ET"  Hint="Texture-name of numeric characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
+      macro:       = {Typ="ESR" Hint="This one is not for you, Saruman"}
     }
 
     dup extruder:form = {
       type: =
       {
-        Txt="&"
         Typ="CL"
         Items="hollow"  $0D "solid" $0D "autobox" $0D "patches"
-        Values="t" $0D "b" $0D "ab" $ 0D "p" 
+        Values="t" $0D "b" $0D "ab" $ 0D "p"
       }
       edge: =
       {
-        Txt="&"
         Typ="EF1"
         Hint="length of patch-connecting edge in pipe mode"
       }
       inverse: =
       {
-        Txt="&"
         Typ="X"
-        Hint="If checked, texture shown on outside rather than inside." $0D "  Only meaningful for patch type."        
+        Hint="If checked, texture shown on outside rather than inside." $0D "  Only meaningful for patch type."
       }
       open: =
       {
-        Txt="&"
         Typ="X"
-        Hint="If checked, open line rather than closed loop." $0D "  Only meaningful for patch and pipe types."        
+        Hint="If checked, open line rather than closed loop." $0D "  Only meaningful for patch and pipe types."
       }
 
 //      texture specs: =
@@ -3764,7 +3765,7 @@ QQRKSRC1
         Txt = "Form"
         Typ = "E"
         Hint = "Form to open when button is pressed"
-      }      
+      }
       info3: = {Typ="S" Txt=" ---- Python Macro Button (P) specific ----"}
       Macro: = {
         Txt = "Macro"
@@ -3798,7 +3799,7 @@ QQRKSRC1
         Typ = "E"
         Hint = "Caption of checkbox"
       }
-    }      
+    }
     ToolBox:form =      // form that applies when editing .qtx objects
     {
       Style = "3"
@@ -3808,7 +3809,7 @@ QQRKSRC1
         Typ = "E"
         Hint = "data in this object appears in this toolbox"
       }
-      sep1: = {Typ="S"}
+      sep1: = {Typ="S" Txt=""}
       info2: = {Typ="S" Txt="Optional window settings"}
       pos: = {
         Typ = "EF4"
@@ -3825,7 +3826,7 @@ QQRKSRC1
         Txt = "caption color"
         Hint = "rightmost gradient caption color (leftmost color is always black for toolboxes)"
       }
-      sep2: = {Typ="S"}
+      sep2: = {Typ="S" Txt=""}
       info3: = {Typ="S" Txt="Open the toolbox to edit the content."}
       root: = {Typ="!"}  // prevents "root" from being displayed at all
       target: = {Typ="!"}
@@ -3879,12 +3880,12 @@ QQRKSRC1
       sep:           = {Typ="S" Txt="---- Menu Item / Output ----"}
       Shortcut:      = {Typ="E" Txt="Keyboard shortcut" Hint="Keyboard shortcut as it appears in the menu (recommended: 'Ctrl+letter')"}
       Pause:         = {Typ="X" Txt="When build has finished..." Cap="Console stay open" Hint="Don't automatically close the console where all build-program's output has been written"}
-      sep:           = {Typ="S"}
+      sep:           = {Typ="S" Txt=""}
       sep:           = {Typ="S" Txt="---- Before build / After build ----"}
       ExportMapFile: = {Typ="X" Txt="First..."                  Cap="Export new .MAP file"    Hint=""}
       Textures:      = {Typ="X" Txt="Then..."                   Cap="Prepare used textures"   Hint="Prepare all textures used in map and write"$0D"them to a place where the build-programs will find them"}
       RunGame:       = {Typ="X" Txt="After successful build..." Cap[]="Run [::Game] with map" Hint="Run the game when the map has been rebuilt"}
-      sep:           = {Typ="S"}
+      sep:           = {Typ="S" Txt=""}
       sep:           = {Typ="S" Txt="---- Build Programs Enable/Disable Sequence ----"}
       sep:           = {Typ="S" Txt[]="1st program '[::BuildPgm1] [::BuildArgs1]'"}
       BuildPgm1:     = {CustomBuildPgm=!}
@@ -3930,6 +3931,7 @@ QQRKSRC1
       }
       sep: = {
         Typ="S"
+        Txt=""
       }
       plug-in: = {
         Typ = "E R"    // Edit Read-only
@@ -4481,7 +4483,7 @@ QQRKSRC1
             }
           }
         }
-                
+
       }
       Shape Builders.qtxfolder =
       {
@@ -4852,7 +4854,7 @@ QQRKSRC1
     //      }
     //    }
     //  }
-      sep1:tbbtn = {Typ="S"}    // separator line
+      sep1:tbbtn = {Typ="S" Txt=""}    // separator line
       group:tbbtn = {
         Typ  = "C"     // object creation
         Hint = "new group"
@@ -4913,7 +4915,7 @@ QQRKSRC1
           ToolBox = "New map items..."
           Shortcut = "Ins"
         }
-        sep1:tbbtn = {Typ="S"}
+        sep1:tbbtn = {Typ="S" Txt=""}
         tex:tbbtn = {
           Cap = "Select texture..."
           Typ = "M"
@@ -4924,7 +4926,7 @@ QQRKSRC1
           Typ = "M"
           Msg = "MOV"
         }
-        sep2:tbbtn = {Typ="S"}
+        sep2:tbbtn = {Typ="S" Txt=""}
         subp:tbbtn = {
           Cap = "Subtract polyhedrons"
           Typ = "M"
@@ -4949,7 +4951,7 @@ QQRKSRC1
           Typ  = "X"   // Check boX
           Path = "Map:Options:DeleteFaces"
         }
-        sep1:tbbtn = {Typ="S"}
+        sep1:tbbtn = {Typ="S" Txt=""}
         cfg:tbbtn = {
           Typ  = "M"
           Cap  = "&Configuration..."
@@ -4979,7 +4981,7 @@ QQRKSRC1
           cmd:macro = {;copy="FastLIGHTBuild"}  // do the FastLIGHTBuild:incl command (below)
           cmd:macro = {;incl="RunGame1"}        // do the RunGame1:incl command (below)
         }
-        sep1:tbbtn = {Typ="S"}
+        sep1:tbbtn = {Typ="S" Txt=""}
         tex1:tbbtn = {
           Cap = "&Prepare used textures"
           Typ = "M"
@@ -4997,7 +4999,7 @@ QQRKSRC1
           Cap[] = "&Run [::Game]"
           ;incl = "RunGame1"
         }
-        sep2:tbbtn = {Typ="S"}
+        sep2:tbbtn = {Typ="S" Txt=""}
         bsp1:tbbtn = {
           Cap = "&QBSP (.bsp file creation)"
           Typ = "+"
@@ -5012,7 +5014,7 @@ QQRKSRC1
           Cap = "&LIGHT (light projection)"
           ;copy = "LIGHTBuild"
         }
-        sep3:tbbtn = {Typ="S"}
+        sep3:tbbtn = {Typ="S" Txt=""}
         ents:tbbtn = {
           Cap = "QBSP - only &entities"
           Typ = "+"
@@ -5067,7 +5069,7 @@ QQRKSRC1
                $98772772278888099877722FFFF8880987777FF8777FF809877FF0887777FF09
                $8FF8808777FF889988FF8077FF8899999988F8FF889999999999888899999999
       }
-      sep1:tbbtn = {Typ="S"}    // separator line
+      sep1:tbbtn = {Typ="S" Txt=""}    // separator line
       undo:tbbtn = {
         Typ  = "M"
         Msg  = "MURD"
@@ -5096,7 +5098,7 @@ QQRKSRC1
                 $999100000000A0F9900999009990A0000000AA0F99099909990AA0000000AAA0F909990990AAA0000000AAA00909990900AAA0000000AAAA0F
                 $9999990AAAA0000000AAAAA0F99990AAAAA0000000AAAAAA0F990AAAAAA0000000AAAAAAA0F0AAAAAAA0000000AAAAAAAA0AAAAAAAA0000000
       }
-      sep2:tbbtn = {Typ="S"}    // separator line
+      sep2:tbbtn = {Typ="S" Txt=""}    // separator line
       lock:tbbtn = {
         Typ  = "X"   // configuration checkbox
         Path = "Map:Options:PagesLocked"
