@@ -281,7 +281,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
         face["tex"]=fdict["b"]["tex"]
         texface.distortion(face.normal,curve[i])
         face.setthreepoints(texface.threepoints(2),2)
-        
+        face = texface.copy()
         if left:
             face.swapsides()
         if not inverse:
@@ -703,6 +703,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2001/02/25 04:46:49  tiglari
+#new specifics for brush&patch arch&bevel
+#
 #Revision 1.6  2001/02/25 02:00:34  tiglari
 #fixed texture placement bug, changed default subdiv to 2, moved forms
 # to defaults.qrk because of memory release problem.
