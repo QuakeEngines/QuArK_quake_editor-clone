@@ -397,14 +397,14 @@ class PathDuplicator(StandardDuplicator):
             def vtxshift(vtx,mat=mat,orig=thisorigin):
                 return mat*vtx+orig
 
-            if tile:
+            if tile or self.dup["squarend"]:
                 startseg=endseg=0
                 for vtx in map(vtxshift,rimvtxes):
                     frontproj=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
                     startseg=max(startseg,(frontproj-thisorigin)*xax)
                     backproj=projectpointtoplane(vtx,xax,nextorigin,back[0].normal)
                     endseg=min(endseg,(backproj-nextorigin)*xax)
-
+            if tile:
                 tileableLength=abs(pathdist)-startseg+endseg
                 tileTimes=int(tileableLength/templatesize.x)
                 for i in range(tileTimes):
@@ -424,14 +424,22 @@ class PathDuplicator(StandardDuplicator):
 #   front and back faces above because these don't seem to be
 #   computed yet.
 #
-#            if startseg:
-#                for face in front:
-#                    face.translate(xax*startseg)
-#                    face.distortion(-xax,thisorigin+xax*startseg)
-#            if endseg:
-#                for face in back:
-#                    face.translate(xax*endseg)
-#                    face.distortion(xax,nextorigin+xax*endseg)
+            if self.dup["squarend"]:
+                 setback = self.dup["setback"]
+                 if setback is None:
+                     setback=0
+                 else:
+                     setback,=setback
+                 if startseg:
+                     start=xax*(startseg+setback)
+                     for face in front:
+                         face.translate(start)
+                         face.distortion(-xax,thisorigin+start)
+                 if endseg:
+                     end=xax*(endseg-setback)
+                     for face in back:
+                         face.translate(end)
+                         face.distortion(xax,nextorigin+end)
 
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + [list]
@@ -763,6 +771,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13  2001/02/22 21:47:57  tiglari
+#stuff in a Tile subitem of the duplicator (top level) will now be tiled
+#
 #Revision 1.12  2001/02/22 03:37:37  tiglari
 #more spiffup, also code for calculating start and end of maximal nonoverlapping
 #flat-end path segments
