@@ -20,6 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 
 unit Setup;
 
@@ -35,7 +40,8 @@ const
  mjQuake2   = 'A';
  mjHeretic2 = 'B';
  mjSin      = 'C';
- mjKingPin  = 'D';   {/mac}
+ mjKingPin  = 'D';
+ mjSOF      = 'E';
  mjQ3A      = 'a';
 
  mjAny       = #1;
