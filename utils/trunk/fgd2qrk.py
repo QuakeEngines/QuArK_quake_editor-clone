@@ -6,7 +6,7 @@
 
 import string, time, os, sys
 
-FGD_FILENAME = "tf15.fgd"
+FGD_FILENAME = "halflife.fgd"
 
 
 
@@ -85,7 +85,7 @@ class KeyFlags(Key):
         s = ""
         nl = "" # no first newline
         for value, desc in self.m_flags:
-            s = s + nl + Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { typ=\"X" + value + "\" cap=\"" + desc +"\" hint=\"\" }"
+            s = s + nl + Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { txt=\"&\" typ=\"X" + value + "\" cap=\"" + desc +"\" hint=\"\" }"
             nl = "\n" # newline for all others...
         return s
 
@@ -98,17 +98,36 @@ class KeyChoices(Key):
         self.m_choices = self.m_choices + [(value, desc)]
 
     def GenerateForm(self, indent):
-        s = Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { typ=\"C\" txt=\"&\" hint=\"" + self.m_desc + "\""
-        s = s + "\n" + Indents(indent+1) + "items ="
-        qrknl = "   "
-        for value, desc in self.m_choices:
-            s = s + "\n" + Indents(indent+2) + qrknl + "\"" + desc + "\""
-            qrknl = "$0D"
-        s = s + "\n" + Indents(indent+1) + "values ="
-        qrknl = "   "
-        for value, desc in self.m_choices:
-            s = s + "\n" + Indents(indent+2) + qrknl + "\"" + value + "\""
-            qrknl = "$0D"
+        s = Indents(indent) + self.m_keyname + ":" + Indents(1) + "= { txt=\"&\" typ=\"C\" hint=\"" + self.m_desc + "\""
+
+        if (len(self.m_choices) > 10):
+            # Vertical list of choices (more than 10)
+            s = s + "\n" + Indents(indent+1) + "items ="
+            qrknl = "   "
+            for value, desc in self.m_choices:
+                s = s + "\n" + Indents(indent+2) + qrknl + "\"" + desc + "\""
+                qrknl = "$0D"
+            s = s + "\n" + Indents(indent+1) + "values="
+            qrknl = "   "
+            for value, desc in self.m_choices:
+                s = s + "\n" + Indents(indent+2) + qrknl + "\"" + value + "\""
+                qrknl = "$0D"
+        else:
+            # Horizontal list of choices (10 or less)
+            spaces = "                                                                                                       "
+            qrknl = ""
+            s = s + "\n" + Indents(indent+1) + "items ="
+            for value, desc in self.m_choices:
+                s = s + qrknl + "\"" + desc + "\""
+                s = s + spaces[:(max(len(value), len(desc)) - len(desc))]
+                qrknl = "$0D "
+            qrknl = ""
+            s = s + "\n" + Indents(indent+1) + "values="
+            for value, desc in self.m_choices:
+                s = s + qrknl + spaces[:(max(len(value), len(desc)) - len(value))]
+                s = s + "\"" + value + "\""
+                qrknl = "$0D "
+
         s = s + "\n" + Indents(indent) + "}"
         return s
 
@@ -576,4 +595,7 @@ run(FGD_FILENAME)
 
 #
 # $Log$
+# Revision 1.1  2000/12/15 21:56:58  decker_dk
+# First version
+#
 #
