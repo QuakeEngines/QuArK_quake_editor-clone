@@ -1179,6 +1179,9 @@ begin
      if MessageDlg(LoadStr1(5647), mtInformation, mbOkCancel, 0) = mrOk then
       RemoveAssociations;
 
+  { FOCU } Ord('F')+256*Ord('O')+65536*Ord('C')+16777216*Ord('U'):
+     SetFocus;
+
  else
   { GAMx } if Cmd and $00FFFFFF = Ord('G')+256*Ord('A')+65536*Ord('M') then
      ChangeGameMode(Chr(Cmd shr 24), True)

@@ -255,30 +255,34 @@ class BaseLayout:
             if BaseLayout.CurrentOpenGLOwner is self:
                 self.close3Dwindow(floating, qopengl.glview)
                 qopengl.clearviewdeps()
-            if timerclose:
-                floating.toback()
-                quarkx.settimer(qopengl.deadtest, None, 10000)
+            #if timerclose:
+            #    floating.toback()
+            #    quarkx.settimer(qopengl.deadtest, None, 10000)
         BaseLayout.CurrentOpenGLOwner = None
 
     def toggleOpenGLwindow(self, menu):
-        ###"Opens/closes the OpenGL window."
-        "Opens the OpenGL window."
+        "Opens/closes the OpenGL window."
         import qopengl
         if self is BaseLayout.CurrentOpenGLOwner:
-            ###qopengl.close()
-            qopengl.open()
+            if qopengl.offscreen:
+                qopengl.open(self.editor)
+                nstate = qtoolbar.selected
+            else:
+                qopengl.open(self.editor, bkgnd = 2)
+                nstate = 0
         else:
             if BaseLayout.CurrentOpenGLOwner is not None:
                 BaseLayout.CurrentOpenGLOwner.releaseOpenGL()
-            qopengl.open()
+            qopengl.open(self.editor)
             view = qopengl.glview
             self.editor.setupview(view)
             if not (view in self.views):
                 self.views.append(view)
             self.update3Dviews(view)
-            self.buttons["opengl"].state = qtoolbar.selected
-            quarkx.update(self.editor.form)
+            nstate = qtoolbar.selected
             BaseLayout.CurrentOpenGLOwner = self
+        self.buttons["opengl"].state = nstate
+        quarkx.update(self.editor.form)
 
     def closefull3DFX(self, floating):
         view = floating.mainpanel.controls()[0]

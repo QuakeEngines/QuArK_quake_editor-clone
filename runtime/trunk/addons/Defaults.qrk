@@ -110,7 +110,7 @@ QQRKSRC1
         ColorBits = '0'
         DepthBits = '16'
         Fog = "1"
-        VCorrection = '1'
+        VCorrection = '0.92'
         Lights = "1"
         Ambient = '0.4'
         Form = "GeneralOpenGL"

@@ -615,7 +615,10 @@ begin
    else
     if (MapViewProj is TCameraCoordinates)
     and (SetupSubSet(ssGeneral, 'OpenGL').Specifics.Values['Mode']<>'') then
-     FScene:=TGLSceneProxy.Create
+     begin
+      ClickForm(GetParentPyForm(Self));   { used by qmacro.MACRO_OpenGL }
+      FScene:=TGLSceneProxy.Create;
+     end
     else
      FScene:=T3DFXSceneObject.Create(ViewMode=vmSolidcolor);
    ReadSetupInformation(NeedSetup);
@@ -2598,10 +2601,27 @@ begin
  end;
 end;
 
+function mWaitForOpenGL(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  if PyControlF(self)^.QkControl<>Nil then
+   with PyControlF(self)^.QkControl as TPyMapView do
+    if Scene is TGLSceneObject then
+     begin
+      TGLSceneObject(Scene).Ready:=False;
+      PostMessage(Handle, wm_MessageInterne, wp_OpenGL, 0);
+     end;
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
  {------------------------}
 
 const
- MethodTable: array[0..13] of TyMethodDef =
+ MethodTable: array[0..14] of TyMethodDef =
   ((ml_name: 'proj';            ml_meth: mProj;            ml_flags: METH_VARARGS),
    (ml_name: 'space';           ml_meth: mSpace;           ml_flags: METH_VARARGS),
    (ml_name: 'vector';          ml_meth: mVector;          ml_flags: METH_VARARGS),
@@ -2615,7 +2635,8 @@ const
    (ml_name: 'drawgrid';        ml_meth: mDrawGrid;        ml_flags: METH_VARARGS),
    (ml_name: 'setrange';        ml_meth: mSetRange;        ml_flags: METH_VARARGS),
    (ml_name: 'setprojmode';     ml_meth: mSetProjMode;     ml_flags: METH_VARARGS),
-   (ml_name: 'full3DFX';        ml_meth: mFull3DFX;        ml_flags: METH_VARARGS));
+   (ml_name: 'full3DFX';        ml_meth: mFull3DFX;        ml_flags: METH_VARARGS),
+   (ml_name: 'waitforopengl';   ml_meth: mWaitForOpenGL;   ml_flags: METH_VARARGS));
 
 function GetMapViewObject(self: PyObject; attr: PChar) : PyObjectPtr;
 begin

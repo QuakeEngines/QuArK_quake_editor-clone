@@ -163,9 +163,9 @@ def MACRO_helpmenu(text):
 # Macro called to open the OpenGL window in background
 #
 
-def MACRO_OpenGL():
-    import qopengl
-    qopengl.open(bkgnd=1, force=1)
+def MACRO_OpenGL(minx, miny):
+    import qopengl, qeditor
+    qopengl.open(qeditor.mapeditor(), minx, miny, bkgnd=1)  #, force=1)
 
 
 #

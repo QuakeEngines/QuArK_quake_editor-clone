@@ -153,14 +153,14 @@ var
  CurrentGLSceneObject: TGLSceneObject = Nil;
 {VersionGLSceneObject: Integer;}
 
-procedure NeedGLSceneObject;
+procedure NeedGLSceneObject(MinX, MinY: Integer);
 begin
- if CurrentGLSceneObject=Nil then
-  begin
-   Py_XDECREF(CallMacroEx(EmptyTuple, 'OpenGL'));
+{if CurrentGLSceneObject=Nil then
+  begin}
+   Py_XDECREF(CallMacroEx(Py_BuildValueX('ii', [MinX, MinY]), 'OpenGL'));
    PythonCodeEnd;
    if CurrentGLSceneObject=Nil then Raise EAbort.Create('Python failure in OpenGL view creation');
-  end;
+ {end;}
 end;
 
  {------------------------}
@@ -372,7 +372,7 @@ procedure TGLSceneProxy.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: Str
     var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single; FOG_COLOR, FrameColor: TColorRef);
 begin
 {MasterVersion:=VersionGLSceneObject-1;
- MasterUpdate;} NeedGLSceneObject;
+ MasterUpdate;} NeedGLSceneObject(0,0);
  if not (nCoord is TCameraCoordinates) then
   Raise InternalE('OpenGL does not support non-perspective views (yet)');
  ProxyWnd:=Wnd; 
@@ -565,7 +565,7 @@ end;}
 
 function TGLSceneProxy.StartBuildScene;
 begin
- {MasterUpdate;} NeedGLSceneObject;
+ {MasterUpdate;} NeedGLSceneObject(0,0);
  Result:=CurrentGLSceneObject.StartBuildScene(VertexSize);
 end;
 
@@ -685,7 +685,7 @@ end;
 
 procedure TGLSceneProxy.Render3DView;
 begin
- NeedGLSceneObject;
+ NeedGLSceneObject((ScreenX+7) and not 7, (ScreenY+3) and not 3);
  if CurrentGLSceneObject.Ready then
   CurrentGLSceneObject.RenderOpenGL(Self, False)
  else
@@ -693,20 +693,24 @@ begin
 end;
 
 procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
+var
+ SX, SY: Integer;
 begin
  if not Assigned(gl) then Exit;
  {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
 {gl.wglMakeCurrent(DC,RC);
  Err(49);}
- if Source.ScreenX>ScreenX then Source.ScreenX:=ScreenX;
- if Source.ScreenY>ScreenY then Source.ScreenY:=ScreenY;
- gl.glViewport(0, 0, Source.ScreenX, Source.ScreenY);
+ SX:=Source.ScreenX;
+ SY:=Source.ScreenY;
+ if SX>ScreenX then SX:=ScreenX;
+ if SY>ScreenY then SY:=ScreenY;
+ gl.glViewport(0, 0, SX, SY);
  Err(50);
  with TCameraCoordinates(Source.Coord) do
   begin
    gl.glMatrixMode(GL_PROJECTION);
    gl.glLoadIdentity;
-   gl.gluPerspective(VCorrection2*VAngleDegrees, Source.ScreenX/Source.ScreenY, FarDistance * kDistFarToShort, FarDistance);
+   gl.gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
    if PitchAngle<>0 then
     gl.glRotatef(PitchAngle * (180/pi), -1,0,0);
    gl.glRotatef(HorzAngle * (180/pi), 0,-1,0);
