@@ -764,7 +764,7 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             # Code 4 for NuTex
                             #
-                            nf.setthreepoints(tp ,4)
+                            nf.setthreepoints(tp ,2)
 
  
  
@@ -1643,6 +1643,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.26  2001/07/24 00:04:48  tiglari
+#more comments for texture-L RMB menu items
+#
 #Revision 1.25  2001/06/14 12:17:36  tiglari
 #note last 3d view clicked on in mouseclicked
 #
