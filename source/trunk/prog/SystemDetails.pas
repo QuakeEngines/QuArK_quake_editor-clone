@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/02/14 20:45:10  aiv
+Added Logging of Python version.
+
 Revision 1.2  2001/02/11 22:26:44  aiv
 Added CVS Headers
 
@@ -1146,7 +1149,8 @@ end;
 procedure TDisplay.GetInfo;
 var
   rk :string;
-  idata,bdata :pchar;
+  bdata :pchar;
+  idata:integer;
   sl :tstringlist;
   i :integer;
   DevMode : TDevMode;
@@ -1367,10 +1371,8 @@ begin
               end;
             if ValueExists(rvHardware+'.'+rvHWMem) then
               try
-                idata:=stralloc(255);
                 readbinarydata(rvHardware+'.'+rvHWMem,idata,4);
-                FMemory.Add(inttostr(integer(idata)));
-                strdispose(idata);
+                FMemory.Add(inttostr(idata));
               except
               end;
             closekey;
