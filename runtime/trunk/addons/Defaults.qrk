@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.93  2001/03/07 20:01:36  tiglari
+//path_point specifics
+//
 //Revision 1.92  2001/03/04 11:21:08  decker_dk
 //Minor fix for dup stair
 //
@@ -3804,6 +3807,7 @@ QQRKSRC1
             origin      = "96 96 0"
             targetname  = "dpath1"
             target      = "dpath2"
+            level       = "1"
           }
           PathDup.Point:d =
           {
