@@ -24,6 +24,7 @@ import quarkpy.maphandles
 import quarkpy.mapentities
 import quarkpy.qhandles
 import quarkpy.mapbtns
+import quarkpy.dlgclasses
 import math
 StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 DuplicatorManager = quarkpy.mapduplicator.DuplicatorManager
@@ -310,6 +311,23 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
             editor.layout.explorer.sellist = [center] + pathlist
             editor.invalidateviews()
 
+        def retarget1click(m, self=self, editor=editor):
+            group = self.centerof.parent
+            previous = self.centerof
+            i=1
+            undo = quarkx.action()
+            for item in group.subitems:
+                if item["macro"]=='dup path_point':
+                    targetname = MakeUniqueTargetname()+'.'+`i`
+                    i=i+1
+                    undo.setspec(previous,"target",targetname)
+                    undo.setspec(item,"targetname",targetname)
+                    previous=item
+            undo.setspec(previous,"target","dpathX")
+            editor.ok(undo, 'retarget path corners')
+            editor.layout.explorer.uniquesel=self.centerof
+            editor.invalidateviews()
+    
         def positionfollowing1click(m, self=self, editor=editor):
             class pack:
                   "stick stuff here"
@@ -404,13 +422,15 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
         menulist = [qmenu.item("Insert after",  after1click)]
         if (self.pathdupmaster == 0):
 
-            # if it is not the PathDup, then it must be a PathDupCorner, and two more menuitems are available
+            # if it is not the PathDup, then it must be a PathDupCorner, and several more menuitems are available
             menulist.append(qmenu.item("Insert before", before1click))
             menulist.append(qmenu.item("Remove",        remove1click))
             menulist.append(qmenu.item("Select main dup",   selectdup1click, "|Select main duplicator (making all path points visible)"))
             menulist.append(qmenu.item("Select tail", selecttail1click, "Multi-select this & the following path points"))
             menulist.append(qmenu.item("Position following", positionfollowing1click, "|Position following path points relative to this one, making new ones if necessary"))
         
+        else:
+            menulist.append(qmenu.item("Retarget Path", retarget1click, "Set target/targetname specifics, following subitem order"))
         menulist.append(qmenu.item("Toggle speeddraw",  speeddraw1click))
 
         return menulist
@@ -995,6 +1015,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22.2.1  2001/03/11 22:09:48  tiglari
+#position/add path points with set angles
+#
 #Revision 1.22  2001/03/08 06:23:26  tiglari
 #menu item to select duplicator on path point handles
 #
