@@ -42,21 +42,25 @@ typedef struct {
 
 #ifndef GCC
 #include <windows.h>
+#ifdef _MSC_VER
+#define __attribute__(x)           __declspec(dllexport) WINAPI
+#else
 #define __attribute__(x)           WINAPI __declspec(dllexport)
+#endif
 #endif
 
 
-__attribute__((__stdcall__)) void grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info);
-__attribute__((__stdcall__)) void softgLoadFrameBuffer(int *buffer, int format);
-__attribute__((__stdcall__)) void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c);
-__attribute__((__stdcall__)) void grBufferClear(int reserved1, int reserved2, int reserved3);
-__attribute__((__stdcall__)) void grTexDownloadTable(int reserved1, int reserved2, void *table);
-__attribute__((__stdcall__)) void grGlideInit();
-__attribute__((__stdcall__)) void grClipWindow(int left, int top, int right, int bottom);
-__attribute__((__stdcall__)) int grSstWinOpen(int reserved1, int reserved2, int reserved3, int reserved4, int reserved5, int reserved6, int reserved7);
-__attribute__((__stdcall__)) void grSstWinClose();
-__attribute__((__stdcall__)) int softgQuArK();
-__attribute__((__stdcall__)) void grConstantColorValue(FxU32 color);
-//__attribute__((__stdcall__)) void grFogColorValue(FxU32 color);
-__attribute__((__stdcall__)) void guColorCombineFunction(int mode);
-__attribute__((__stdcall__)) void grHints(int mode, int value);
+void __attribute__((__stdcall__)) grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info);
+void __attribute__((__stdcall__)) softgLoadFrameBuffer(int *buffer, int format);
+void __attribute__((__stdcall__)) grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c);
+void __attribute__((__stdcall__)) grBufferClear(int reserved1, int reserved2, int reserved3);
+void __attribute__((__stdcall__)) grTexDownloadTable(int reserved1, int reserved2, void *table);
+void __attribute__((__stdcall__)) grGlideInit();
+void __attribute__((__stdcall__)) grClipWindow(int left, int top, int right, int bottom);
+int  __attribute__((__stdcall__)) grSstWinOpen(int reserved1, int reserved2, int reserved3, int reserved4, int reserved5, int reserved6, int reserved7);
+void __attribute__((__stdcall__)) grSstWinClose();
+int  __attribute__((__stdcall__)) softgQuArK();
+void __attribute__((__stdcall__)) grConstantColorValue(FxU32 color);
+//void __attribute__((__stdcall__)) grFogColorValue(FxU32 color);
+void __attribute__((__stdcall__)) guColorCombineFunction(int mode);
+void __attribute__((__stdcall__)) grHints(int mode, int value);

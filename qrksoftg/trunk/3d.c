@@ -206,8 +206,8 @@ void FillCurrentPalette()
   texturepaletteok = 1;
 }
 
-__attribute__((__stdcall__))
-int softgQuArK(void)
+int __attribute__((__stdcall__))
+softgQuArK(void)
 {
 	return SOFTG_QUARK_VERSION_NUMBER;
 }
@@ -296,8 +296,8 @@ void setschemecolor(void)
     FreeFullPalette();
 }
 
-__attribute__((__stdcall__))
-void grConstantColorValue(FxU32 color)
+void __attribute__((__stdcall__))
+grConstantColorValue(FxU32 color)
 {
 	schemecolor = color & 0xFFFFFF;
 	if (unifiedpalette)
@@ -309,8 +309,8 @@ void grConstantColorValue(FxU32 color)
 	}
 }
 
-__attribute__((__stdcall__))
-void guColorCombineFunction(int mode)
+void __attribute__((__stdcall__))
+guColorCombineFunction(int mode)
 {
 	if (unifiedpalette)
 	{
@@ -325,8 +325,8 @@ void guColorCombineFunction(int mode)
 }
 
 
-__attribute__((__stdcall__))
-void grHints(int mode, int value)
+void __attribute__((__stdcall__))
+grHints(int mode, int value)
 {
 	if (!mode)	  // GR_HINT_STWHINT
 	{
@@ -346,8 +346,8 @@ void grHints(int mode, int value)
 	}
 }
 
-__attribute__((__stdcall__))
-void grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info)
+void __attribute__((__stdcall__))
+grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info)
 {
   int texwbits, texhbits;
   int size1=8-info->largeLod;
@@ -416,8 +416,8 @@ void setunifiedpalette(int n)
 #define framepixel(i)	fullpalette[*((FxU16*)(framebufferex+i))]
 
 
-__attribute__((__stdcall__))
-void softgLoadFrameBuffer(int *buffer, int format)
+void __attribute__((__stdcall__))
+softgLoadFrameBuffer(int *buffer, int format)
 {
   static FxU32* framebufferex;
   int i,j,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10, bufferline, end;
@@ -513,8 +513,8 @@ void softgLoadFrameBuffer(int *buffer, int format)
 #define VERYSMALL(value)  ((value)<EPSILON && (value)>-EPSILON)
 
 
-__attribute__((__stdcall__))
-void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
+void __attribute__((__stdcall__))
+grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
 {
   grVertex_t *d, *a2, *b2, *c2;
   grTmuVertex_t deltah, deltav, cur, cur2;
@@ -1016,8 +1016,8 @@ void grDrawTriangle(grVertex_t *a, grVertex_t *b, grVertex_t *c)
   }
 }
 
-__attribute__((__stdcall__))
-void grBufferClear(int reserved1, int reserved2, int reserved3)
+void __attribute__((__stdcall__))
+grBufferClear(int reserved1, int reserved2, int reserved3)
 {
   memset(framebuffer, 0, framecount*4);
 }
@@ -1029,8 +1029,8 @@ void grBufferClear(int reserved1, int reserved2, int reserved3)
   memcpy(&fogtable, table, sizeof(fogtable));
 }*/
 
-__attribute__((__stdcall__))
-void grTexDownloadTable(int reserved1, int reserved2, void *table)
+void __attribute__((__stdcall__))
+grTexDownloadTable(int reserved1, int reserved2, void *table)
 {
   if (unifiedpalette)
   {
@@ -1045,8 +1045,8 @@ void grTexDownloadTable(int reserved1, int reserved2, void *table)
   }
 }
 
-__attribute__((__stdcall__))
-void grGlideInit()
+void __attribute__((__stdcall__))
+grGlideInit()
 {
   int i;
 
@@ -1059,8 +1059,8 @@ void grGlideInit()
   setunifiedpalette(0);
 }
 
-__attribute__((__stdcall__))
-void grClipWindow(int left, int top, int right, int bottom)
+void __attribute__((__stdcall__))
+grClipWindow(int left, int top, int right, int bottom)
 {
   if (framebuffer)
     free(framebuffer);
@@ -1072,16 +1072,16 @@ void grClipWindow(int left, int top, int right, int bottom)
   framebuffer = (FxU32*)malloc(framecount*4);
 }
 
-__attribute__((__stdcall__))
-int grSstWinOpen(int reserved1, int reserved2, int reserved3, 
+int __attribute__((__stdcall__))
+grSstWinOpen(int reserved1, int reserved2, int reserved3, 
  int reserved4, int reserved5, int reserved6, int reserved7)
 {
   grClipWindow(0,0,640,480);
   return 1;
 }
 
-__attribute__((__stdcall__))
-void grSstWinClose()
+void __attribute__((__stdcall__))
+grSstWinClose()
 {
   free(framebuffer);
   framebuffer=0;
@@ -1098,7 +1098,7 @@ void grSstWinClose()
 
 
 #ifndef GCC
-BOOL WINAPI __declspec(dllexport) LibMain(HINSTANCE hDLLInst, DWORD fdwReason, LPVOID lpvReserved)
+BOOL __attribute__((__stdcall__)) LibMain(HINSTANCE hDLLInst, DWORD fdwReason, LPVOID lpvReserved)
 {
     return TRUE;
 }
