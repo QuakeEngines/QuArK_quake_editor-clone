@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.11  2000/07/04 22:49:04  alexander
+//improved some enumerated attributes like skin and style
+//
 //Revision 1.10  2000/07/04 20:18:31  alexander
 //added SOF specific default form for quakemenu (without extract textures)
 //
@@ -83,6 +86,7 @@ QQRKSRC1
     Root = "worldspawn:b"
     worldspawn:b =
     {
+      sky = "ny"
       Border walls:g =
       {
         East wall:p =
@@ -7296,7 +7300,7 @@ QQRKSRC1
     }
     func_breakable_brush:form =
     {
-      help ="A breakable brush which has chunk size and type based upon the size and type of the brush."$0D"material values"$0D" 0 - MAT_NONE, (defaults to stone)"$0D" 1 - MAT_BRICK_BROWN,"$0D" 2 - MAT_BRICK_DBROWN,"$0D" 3 - MAT_BRICK_LBROWN,"$0D" 4 - MAT_BRICK_LGREY,"$0D" 5 - MAT_BRICK_DGREY,"$0D" 6 - MAT_BRICK_RED,"$0D" 7 - MAT_GLASS,"$0D" 8 - MAT_METAL_LGREY,"$0D" 9 - MAT_METAL_DGREY,"$0D"10 - MAT_METAL_RUSTY,"$0D"11 - MAT_METAL_SHINY,"$0D"12 - MAT_ROCK_BROWN,"$0D"13 - MAT_ROCK_LBROWN,"$0D"14 - MAT_ROCK_DBROWN,"$0D"15 - MAT_ROCK_LGREY,"$0D"16 - MAT_ROCK_DGREY,"$0D"17 - MAT_WOOD_LBROWN,"$0D"18 - MAT_WOOD_DBROWN,"$0D"19 - MAT_WOOD_LGREY,"$0D"20 - MAT_WOOD_DGREY,"$0D"21 - MAT_WALL_BLACK,"$0D"22 - MAT_WALL_BROWN,"$0D"23 - MAT_WALL_DARKBROWN,"$0D"24 - MAT_WALL_LIGHTBROWN,"$0D"25 - MAT_WALL_GREY,"$0D"26 - MAT_WALL_DARKGREY,"$0D"27 - MAT_WALL_LIGHTGREY,"$0D"28 - MAT_WALL_GREEN,"$0D"29 - MAT_WALL_ORANGE,"$0D"30 - MAT_WALL_RED,"$0D"31 - MAT_WALL_WHITE,"$0D"32 - MAT_ROCK_FLESH,"$0D"33 - MAT_WALL_STRAW,"$0D"34 - MAT_ROCK_SNOW,"$0D"surfacetype values"$0D"0 - defaults to stone... sorry Jersey { "$0D"14 - wood"$0D"17 - stone			"$0D"28 - metal"$0D"35 - blood (how does blood break? I don't know.)"$0D"37 - glass"$0D"40 - paper"
+      help ="A breakable brush which has chunk size and type based upon the size and type of the brush."$0D"material values"$0D" 0 - MAT_NONE, (defaults to stone)"$0D" 1 - MAT_BRICK_BROWN,"$0D" 2 - MAT_BRICK_DBROWN,"$0D" 3 - MAT_BRICK_LBROWN,"$0D" 4 - MAT_BRICK_LGREY,"$0D" 5 - MAT_BRICK_DGREY,"$0D" 6 - MAT_BRICK_RED,"$0D" 7 - MAT_GLASS,"$0D" 8 - MAT_METAL_LGREY,"$0D" 9 - MAT_METAL_DGREY,"$0D"10 - MAT_METAL_RUSTY,"$0D"11 - MAT_METAL_SHINY,"$0D"12 - MAT_ROCK_BROWN,"$0D"13 - MAT_ROCK_LBROWN,"$0D"14 - MAT_ROCK_DBROWN,"$0D"15 - MAT_ROCK_LGREY,"$0D"16 - MAT_ROCK_DGREY,"$0D"17 - MAT_WOOD_LBROWN,"$0D"18 - MAT_WOOD_DBROWN,"$0D"19 - MAT_WOOD_LGREY,"$0D"20 - MAT_WOOD_DGREY,"$0D"21 - MAT_WALL_BLACK,"$0D"22 - MAT_WALL_BROWN,"$0D"23 - MAT_WALL_DARKBROWN,"$0D"24 - MAT_WALL_LIGHTBROWN,"$0D"25 - MAT_WALL_GREY,"$0D"26 - MAT_WALL_DARKGREY,"$0D"27 - MAT_WALL_LIGHTGREY,"$0D"28 - MAT_WALL_GREEN,"$0D"29 - MAT_WALL_ORANGE,"$0D"30 - MAT_WALL_RED,"$0D"31 - MAT_WALL_WHITE,"$0D"32 - MAT_ROCK_FLESH,"$0D"33 - MAT_WALL_STRAW,"$0D"34 - MAT_ROCK_SNOW,"$0D"surfacetype values"$0D"0 - defaults to stone... sorry Jersey { "$0D"14 - wood"$0D"17 - stone                     "$0D"28 - metal"$0D"35 - blood (how does blood break? I don't know.)"$0D"37 - glass"$0D"40 - paper"
       spawnflags: =
       {
         Typ  = "X1"
@@ -7401,7 +7405,7 @@ QQRKSRC1
       lip: =
       {
         Txt = "&"
-        Hint = "-	override the default 4 pixel lip remaining at end of move"
+        Hint = "-       override the default 4 pixel lip remaining at end of move"
       }
       soundname: =
       {
@@ -7595,7 +7599,7 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "-	damage to inflict when blocked (2 default)"
+        Hint = "-       damage to inflict when blocked (2 default)"
       }
       health: =
       {
@@ -7605,7 +7609,7 @@ QQRKSRC1
       lip: =
       {
         Txt = "&"
-        Hint = "-	lip remaining at end of move (8 default)"
+        Hint = "-       lip remaining at end of move (8 default)"
       }
       message: =
       {
@@ -7771,7 +7775,7 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "-	damage to inflict when blocked (2 default)"
+        Hint = "-       damage to inflict when blocked (2 default)"
       }
       health: =
       {
@@ -8130,7 +8134,7 @@ QQRKSRC1
       health: =
       {
         Txt = "&"
-        Hint = "- item to be added to player's inventory when this func_player_item is used 1-SFE_FLASHPACK 2-SFE_C4	3-SFE_LIGHT_GOGGLES 5-SFE_MEDKIT 6-SFE_GRENADE"
+        Hint = "- item to be added to player's inventory when this func_player_item is used 1-SFE_FLASHPACK 2-SFE_C4    3-SFE_LIGHT_GOGGLES 5-SFE_MEDKIT 6-SFE_GRENADE"
       }
     }
     func_pushkillbox:form =
@@ -8251,7 +8255,7 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "-	damage to inflict when blocked (2 default)"
+        Hint = "-       damage to inflict when blocked (2 default)"
       }
       soundname: =
       {
@@ -8343,7 +8347,7 @@ QQRKSRC1
       dmg: =
       {
         Txt = "&"
-        Hint = "- default	2"
+        Hint = "- default       2"
       }
       soundname: =
       {
@@ -8436,7 +8440,7 @@ QQRKSRC1
       lip: =
       {
         Txt = "&"
-        Hint = "-	lip remaining at end of move (0 default)"
+        Hint = "-       lip remaining at end of move (0 default)"
       }
       soundName: =
       {
@@ -26660,7 +26664,7 @@ QQRKSRC1
       Pathtarget: =
       {
         Txt = "&"
-        Hint = "gets used when an entity that has	this path_corner targeted touches it"
+        Hint = "gets used when an entity that has       this path_corner targeted touches it"
       }
       Target: =
       {
@@ -27652,7 +27656,7 @@ QQRKSRC1
       sounds: =
       {
         Txt = "&"
-        Hint = "1=secret,  2=	beep beep, 3=	large switch  4= ? "
+        Hint = "1=secret,  2=   beep beep, 3=   large switch  4= ? "
         Typ = "C"
         Items = "1"$0D"2"$0D"3"
         values = "1"$0D"2"$0D"3"
