@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2003/08/21 14:27:40  peter-b
+Revised fix for module search path bug.  Now appends when using separate Python, overrides with bundled Python.
+
 Revision 1.34  2003/08/21 14:01:49  peter-b
 Fix for module search path bug.
 
@@ -2461,6 +2464,8 @@ end;{/AiV}
 function xHeapStatus(self, args: PyObject) : PyObject; cdecl;
 begin
  try
+ // SilverPaladin - 10/25/03 - Eliminated platform dependant warning
+ {$IFDEF WINDOWS}
   with GetHeapStatus do
     with ConstructQObject('heapstatus', Nil) do
     begin
@@ -2477,6 +2482,25 @@ begin
       SpecificsAdd('HeapErrorCode='+IntToStr(HeapErrorCode));
       Py_INCREF(Result);
     end;
+  {$ELSE}
+    // Not supported on non Win32 platforms.
+    // Enter all 0's
+    with ConstructQObject('heapstatus', Nil) do
+    begin
+      Result:=@PythonObj;
+      SpecificsAdd('TotalAddrSpace=0');
+      SpecificsAdd('TotalUncommitted=0');
+      SpecificsAdd('TotalCommitted=0');
+      SpecificsAdd('TotalAllocated=0');
+      SpecificsAdd('TotalFree=0');
+      SpecificsAdd('FreeSmall=0');
+      SpecificsAdd('FreeBig=0');
+      SpecificsAdd('Unused=0');
+      SpecificsAdd('Overhead=0');
+      SpecificsAdd('HeapErrorCode=0');
+      Py_INCREF(Result);
+    end;
+  {$ENDIF}
  except
   EBackToPython;
   Result:=Nil;
