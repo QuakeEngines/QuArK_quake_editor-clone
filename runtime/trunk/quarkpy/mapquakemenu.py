@@ -68,7 +68,7 @@ def CreateCheckFileExtensionArray(instring):
 def ExtensionFromFilter(filter):
     startex = string.rfind(filter,'|*.')
     return filter[startex+2:]
-    
+
 
 class BuildPgmConsole(qquake.BatchConsole):
     "StdOut console for programs that build files."
@@ -251,7 +251,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     texwarninglist = ""
     gameneedwad = setup["GameNeedWad"]
 
-    
+
     for mapfileobject, root, buildmode in maplist:
 
         if buildmode["ExportMapFile"]:
@@ -436,9 +436,10 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
                     # Search and replace any user-variable
                     newcmdline = cmdline
-                    newcmdline = string.replace(newcmdline, "%mappath%", argument_mappath)
-                    newcmdline = string.replace(newcmdline, "%mapfile%", argument_mapfile)
-                    newcmdline = string.replace(newcmdline, "%file%",    argument_file)
+                    newcmdline = string.replace(newcmdline, "%mappath%",  argument_mappath)
+                    newcmdline = string.replace(newcmdline, "%mapfile%",  argument_mapfile)
+                    newcmdline = string.replace(newcmdline, "%file%",     argument_file)
+                    newcmdline = string.replace(newcmdline, "%basepath%", setup["Directory"])
 
                     # If user-variable were not replaced, automatically append map-filename
                     if (newcmdline == cmdline):
@@ -579,6 +580,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.22  2001/09/24 22:24:27  tiglari
+#checks moved into RebuildandRun, made conditional on ExportMapFile
+#
 #Revision 1.21  2001/07/24 02:42:40  tiglari
 #.hmf extension when 6dx maps committed
 #
