@@ -2,8 +2,8 @@ title: Brush Primitives
 author: tiglari
 
 'Brush primitives' is the new brush format used by GtkRadiant.
-Other than a bit of extra wrapping around the brush, its main
-new feature (for now at any rate) is an improved method of
+Other than some extra braces and a 'Brushdef' in the text of the format,
+its main new feature (for now at any rate) is an improved method of
 expressing the texture-mapping over the 5 'shift scale rotate'
 numbers that come after the texture name in the old
 representation.
@@ -16,12 +16,14 @@ after the threeponts info, and before the texture name:
 What these are is the top two rows of the 'homogeneous matrix'
 mapping the plane of the face, under a special coordinate system
 we will get to in a moment, into the texture plane (so it's sort
-of the reverse of how QuArK etp works).  Erm, what's a homogeneous
-matrix you might ask.
+of the reverse of how QuArK etp and tv6 work, since these most directly
+represent the mapping from the texture plane onto the face).
+Erm, what's a homogeneous matrix you might ask.
 
 It is 3x3 matrix whose bottom row is (0 0 1).  If you multiply
 a homogeneous matrix by a column vector whose z coordinate is
-1, you'll see that the equations are exactly those for a
+1, 
+you'll see that the equations are exactly those for a
 linear mapping followed by a translation: the first two numbers
 of the top two rows give a 2x2 matrix describing the linear
 transformation, and the last number give a column vector to

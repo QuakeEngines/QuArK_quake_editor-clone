@@ -53,3 +53,10 @@ eliminated.
 
 A final point is that there is are methods TFace.SetThreePointsEnhEx and
 TFace.RevertToEnhTex, callable from Python by enhrevert, just in case.
+
+The last thing that had to be done to make the new scheme work properly was
+in the TFace.Deplacement method. which applies linear transformations to
+faces, where the code setting the mirror bit is removed, since it is no
+longer necessary.  The first version of the new scheme had a problem in
+that I didn't check for the InverseOrientation property (the linear mapping
+mirror-flips things), so that the brushes all got turned inside out).
