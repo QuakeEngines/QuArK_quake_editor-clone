@@ -267,6 +267,7 @@ def smallerbevelbox(box, thick):
     rf = gap("tlf", "trf")
     rb = gap("tlb", "trb")
     lb = gap("tlf", "tlb")
+    zip = quarkx.vect(0,0,0)
     box2 = {}
     for (corner, delta) in (("blf",zip), ("blb",lb),
             ("tlf",zip), ("tlb",lb), ("trf",rf), ("trb",rb),
@@ -800,6 +801,10 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2000/06/26 22:54:58  tiglari
+#renaming: antidistort_rows/columns->undistortRows/Colunmns,
+#tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
+#
 #Revision 1.21  2000/06/25 23:47:01  tiglari
 #Function Renaming & Reorganization, hope no breakage
 #
