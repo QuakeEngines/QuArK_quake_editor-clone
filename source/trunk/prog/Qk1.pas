@@ -20,11 +20,13 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/01/21 15:48:01  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.15  2001/01/15 19:19:21  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -299,7 +301,7 @@ uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, About, Running,
   Output1, QkTreeView, Quarkx, PyProcess, Console, Python,
   {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
-  EdSceneObject, QkObjectClassList;
+  EdSceneObject, QkObjectClassList, QkApplPaths;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -2155,7 +2157,7 @@ end;
 
 procedure TForm1.Registering1Click(Sender: TObject);
 begin
- HTMLDoc(ApplicationPath+'help\register.html');
+ HTMLDoc(GetApplicationPath()+'help\register.html');
 end;
 
 end.

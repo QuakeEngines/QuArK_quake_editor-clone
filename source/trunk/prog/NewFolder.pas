@@ -20,16 +20,15 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
-
-
 }
 
 
@@ -69,7 +68,7 @@ type
 implementation
 
 uses Game, Qk1, Setup, QkGroup, QkObjects, QkFileObjects, Undo, Quarkx,
-  PyImages, ToolBoxGroup;
+  PyImages, ToolBoxGroup, QkApplPaths;
 
 {$R *.DFM}
 
@@ -79,7 +78,7 @@ begin
  MarsCap.ActiveEndColor:=clYellow;
  UpdateMarsCap;
  OpenGlobalImageList(ListView1);
- SaveDialog1.FileName:=ApplicationPath+'*.qrk';
+ SaveDialog1.FileName:=GetApplicationPath()+'*.qrk';
  DisplayAddOnsList(ListView1);
 end;
 
@@ -127,7 +126,7 @@ begin
    SaveDialog1.Filter:=LoadStr1(772)+'|'+LoadStr1(774);
    SaveDialog1.Title:=LoadStr1(5257);
    if not SaveDialog1.Execute then Exit;
-   if CompareText(ExtractFilePath(SaveDialog1.FileName), ApplicationPath) <> 0 then
+   if CompareText(ExtractFilePath(SaveDialog1.FileName), GetApplicationPath()) <> 0 then
     Raise EError(5596);
    Target:=BuildFileRoot(SaveDialog1.FileName, Nil);
    Target.AddRef(+1);

@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/10/16 22:39:33  aiv
+modifications for pylogging.pas
+
 Revision 1.1  2000/10/11 19:04:22  aiv
 Initial Release
 
@@ -27,7 +30,7 @@ const
 
 implementation
 
-uses QkObjects, Setup;
+uses QkObjects, Setup, QkApplPaths;
 
 var
   LogFile: TextFile;
@@ -43,8 +46,8 @@ begin
   if LogOpened then
     exit;
   {$I-}
-  Setup.InitApplicationPath;
-  AssignFile(LogFile, AppendSlash(Setup.ApplicationPath)+LOG_FILENAME);
+  SetApplicationPath('.');
+  AssignFile(LogFile, GetApplicationPath()+LOG_FILENAME);
   rewrite(LogFile);
   LogOpened:=true;
   LogEx('Quark started at %s',[DateTimeToStr(now)]);

@@ -24,6 +24,16 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2000/11/25 20:51:33  decker_dk
+- Misc. small code cleanups
+- Replaced the names:
+ = ofTvInvisible       -> ofTreeViewInvisible
+ = ofTvAlreadyExpanded -> ofTreeViewAlreadyExpanded
+ = ofTvExpanded        -> ofTreeViewExpanded
+ = ofSurDisque         -> ofNotLoadedToMemory
+ = ModeFichier         -> fmOpenReadOnly_ShareDenyWrite
+ = ModeFichierEcr      -> fmOpenReadWrite_ShareDenyWrite
+
 Revision 1.18  2000/11/16 19:42:17  decker_dk
 - Modified Convex's texture-fileextension alias code, so it won't conflict
 with the rest of the existing code.
@@ -70,8 +80,8 @@ Allow other than PAK#.PAK files
 
 Revision 1.8  2000/04/14 17:29:00  alexander
 fixed: crash, when loading alias files
-
 }
+
 unit Game;
 
 interface
@@ -144,7 +154,7 @@ procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
 function PathAndFile(const Path, FileName: String) : String;
-function GetDLLDirectory: String;
+(*function GetDLLDirectory: String;*)
 procedure BuildCorrectFileName(var S: String);
 function GettmpQuArK : String;
 function BaseOutputPath : String;
@@ -178,7 +188,7 @@ implementation
 {$R *.DFM}
 
 uses QkPak, Setup, QkUnknown, QkTextures, Travail, ToolBox1, QkImages, Qk1,
-  Game2, QkQuakeCtx, Config, Output1, Quarkx, PyImages;
+  Game2, QkQuakeCtx, Config, Output1, Quarkx, PyImages, QkApplPaths;
 
 var
  GameFiles: TQList = Nil;
@@ -368,12 +378,14 @@ begin
   end;
 end;
 
+(*DECKER
 function GetDLLDirectory: String;
 const
  DLL_SUBDIRECTORY = 'dlls';
 begin
- Result:=PathAndFile(ApplicationPath, DLL_SUBDIRECTORY);
+ Result:=PathAndFile(GetApplicationPath(), DLL_SUBDIRECTORY);
 end;
+/DECKER*)
 
 function GettmpQuArK : String;
 var
@@ -441,7 +453,7 @@ begin
  Nom1:=QuakeDir;
  GetDir(0, CurDir);
  try
-  ChDir(PathAndFile(ApplicationPath, ''));
+  ChDir(GetApplicationPath());
   NomChemin:=ExpandFileName(Nom1);
  finally
   ChDir(CurDir);

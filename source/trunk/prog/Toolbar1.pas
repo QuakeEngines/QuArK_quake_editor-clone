@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/01/21 15:50:45  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.6  2001/01/15 19:22:36  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -511,7 +514,7 @@ var
  FileOp: TSHFILEOPSTRUCT;
  sFrom, sTo: String;
 begin
- sFrom:=ApplicationPath+'*.*';
+ sFrom:=GetApplicationPath()+'*.*';
  sTo:=TargetPath;
  FillChar(FileOp, SizeOf(FileOp), 0);
  FileOp.hwnd:=ValidParentForm(Sender).Handle;

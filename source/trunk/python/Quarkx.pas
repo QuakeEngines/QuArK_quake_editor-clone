@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/01/21 15:51:46  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.11  2000/12/07 19:47:30  decker_dk
 Some layout changes. I like columns, specially when there is lots of data.
 
@@ -117,7 +120,8 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF VER90} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
-     PyForms, QkPixelSet, Bezier, PyLogging, QkObjectClassList;
+     PyForms, QkPixelSet, Bezier, PyLogging, QkObjectClassList,
+     QkApplPaths;
 
  {-------------------}
 
@@ -572,7 +576,7 @@ begin
     end;
   Bitmap:=TBitmap.Create;
   try
-   S:=ExtractFilePath(ApplicationPath)+StrPas(FileName);
+   S:=GetApplicationPath()+StrPas(FileName);
    Ok:=FileExists(S);
    if Ok then
     try
@@ -1937,9 +1941,7 @@ begin
       P:=PyString_AsString(s);
       if (P<>Nil) and (P^<>#0) then
        begin
-        ApplicationPath:=P;
-        if ApplicationPath[Length(ApplicationPath)]<>'\' then
-         ApplicationPath:=ApplicationPath+'\';
+        SetApplicationPath(P);
        end;
      end;
     InitSetup;   { reload setup }
@@ -2447,7 +2449,7 @@ begin
  PyDict_SetItemString(QuarkxDict, 'version', m);
  Py_DECREF(m);
 
- m:=PyString_FromString(PChar(ApplicationPath));
+ m:=PyString_FromString(PChar(GetApplicationPath()));
  if m=Nil then
   Exit;
  PyDict_SetItemString(QuarkxDict, 'exepath', m);
@@ -2735,11 +2737,11 @@ begin
    I:=InitializePython;
    if I>0 then FatalError(I);
 
-   InitApplicationPath;
+   SetApplicationPath(ExtractFilePath(Application.Exename));
 
    if not InitializeQuarkx then FatalError(-9);
 
-   S:=ExtractFilePath(ApplicationPath);
+   S:=GetApplicationPath();
    if (Length(S)>0) and (S[Length(S)]='\') then
     SetLength(S, Length(S)-1);
    for I:=Length(S) downto 1 do

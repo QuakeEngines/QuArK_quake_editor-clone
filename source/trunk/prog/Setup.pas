@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/01/21 15:50:28  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.19  2001/01/15 19:22:20  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -99,7 +102,6 @@ added comment
 
 Revision 1.4  2000/05/04 23:56:01  alexander
 added: game enumeration for Soldier of Fortune "E"
-
 }
 
 unit Setup;
@@ -166,7 +168,7 @@ type
             end;
 
 var
- ApplicationPath: String;
+{DECKER ApplicationPath: String;}
  SetupSet: TSetupSetArray;
 {--CONVEX-- support for multiple texture formats}
  TexExtensions : TStringList = NIL;
@@ -185,7 +187,7 @@ const  { for SetupChanged }
  {------------------------}
 
 procedure InitSetup;
-procedure InitApplicationPath;
+(*procedure InitApplicationPath;*)
 procedure SetupChanged(Level: Integer);
 function SetupSubSet(Root: TSetupSet; SubSet: String) : QObject;
 function SetupSubSetEx(Root: TSetupSet; SubSet: String; Create: Boolean) : QObject;
@@ -227,7 +229,7 @@ implementation
 
 uses QkMapObjects, Travail, Game, QkGroup, QkForm, Qk1,
      ToolBox1, Toolbar1, QkQuakeCtx, Quarkx, Python,
-     PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList;
+     PyObjects, PyForms, Qk3D, EdSceneObject, QkObjectClassList, QkApplPaths;
 
 const
  SetupFileName    = 'Setup.qrk';
@@ -289,7 +291,7 @@ begin
         S:=Copy(S,13,MaxInt);
         if S='' then Continue;
         if (S[1]<>'\') and (Pos(':',S)=0) then
-         S:=ApplicationPath+S;
+         S:=GetApplicationPath()+S;
         CurrentIncludePath:=CurrentIncludePath + ';' + S;
        end;
      end;
@@ -302,7 +304,7 @@ begin
   GetIncludePath:=CurrentIncludePath
  else
   try
-   CurrentIncludePath:=ApplicationPath;
+   CurrentIncludePath:=GetApplicationPath();
    BrowsePath(SetupQrk);
    Result:=CurrentIncludePath;
   finally
@@ -477,6 +479,7 @@ begin
      end;
 end;
 
+(*DECKER
 procedure InitApplicationPath;
 var
  Z: array[0..MAX_PATH] of Char;
@@ -491,12 +494,8 @@ begin
    if ApplicationPath[I]<>'\' then
     ApplicationPath:=ApplicationPath+'\';
   end;
-(*{$IFDEF Debug}
- if Application.ExeName='C:\DELPHI\EXE\QUARK5.EXE' then
-  ApplicationPath:='d:\delphi\program2\quake\qk5c\';
-  //ApplicationPath:='d:\delphi\program2\quake\install\quark\';
- {$ENDIF}*)
 end;
+/DECKER*)
 
 procedure InitSetup;
 var
@@ -514,7 +513,7 @@ begin
 {SetupSet[ssTempData]:=QConfig.Create(SetupSetName[ssTempData], Nil);
  SetupSet[ssTempData].AddRef(+1);}
  DefaultsFileName1:='';
-{ SetupFileName1:=ApplicationPath+SetupFileName;  { default }
+{ SetupFileName1:=GetApplicationPath()+SetupFileName;  { default }
 
   { loads Defaults.qrk }
  try
@@ -731,14 +730,14 @@ end;
 
 procedure SaveSetupNow;
 begin
- SaveSetup(rf_AsText, ApplicationPath);   { save as text }
+ SaveSetup(rf_AsText, GetApplicationPath());   { save as text }
 end;
 (*var
  s: PyObject;
  Path: String;
  P: PChar;
 begin
- Path:=ApplicationPath;
+ Path:=GetApplicationPath();
  s:=PyDict_GetItemString(QuarkxDict, 'exepath');
  if s<>Nil then
   begin
@@ -1047,10 +1046,10 @@ end;
 {function GetIncludePath: String;
 begin
  if SetupSet[ssGeneral]=Nil then
-  Result:=ApplicationPath
+  Result:=GetApplicationPath()
  else
   Result:=SetupSet[ssGeneral].Specifics.Values['IncludePath+']
-   + ApplicationPath;
+   + GetApplicationPath();
 end;}
 
 function InternalVersion : Single;
