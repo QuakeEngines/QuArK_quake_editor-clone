@@ -20,7 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 unit QkTga;
 
 interface
@@ -57,7 +61,15 @@ type
                XOrigin, YOrigin: Word;
                Width, Height: Word;
                bpp: Byte;
-               Flags: Byte;
+               Flags: Byte;   {|x|x|0R1|OR0|AB3|AB2|AB1|AB0|}
+                              { x : unused, set to 0
+                                OR1 OR0 : Image origin
+                                 0   0    bottom left
+                                 0   1    bottom right
+                                 1   0    top left
+                                 1   1    top right
+                                AB3..AB0 : number of Alpha Bits (8)
+                              }
               end;
 
  {------------------------}
@@ -141,14 +153,14 @@ begin
       J:=ScanW*Header.Height;       { total byte count for storage }
       SetLength(Data, Length(Spec1)+J);
       if Header.Flags and tgaTopDown <> 0 then
-       begin
-        ScanLine:=PChar(Data)+Length(Data)-ScanW;
-        sScanW:=-ScanW;
-       end
-      else
-       begin
+       begin {picture origin is at top left}
         ScanLine:=PChar(Data)+Length(Spec1);
         sScanW:=ScanW;
+       end
+      else
+       begin {picture origin is at bottom left}
+        ScanLine:=PChar(Data)+Length(Data)-ScanW;
+        sScanW:=-ScanW;
        end;
       case Header.TypeCode of
        1,2: begin
@@ -298,26 +310,35 @@ var
  LineWidth, J, K: Integer;
  ScanLine, AlphaScanLine: PChar;
  PSD: TPixelSetDescription;
- LineBuffer: PChar;
+ PBaseLineBuffer,PLineBuffer: PChar;
  SourceRGB: PRGB;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
       PSD:=Description; try
 
-      FillChar(Header, SizeOf(Header), 0);
+      Header.ExtraData:=0;    {0=no image id field}
+      Header.ColorMapType:=0; {0=no color map included}
+      Header.ColorMapType:=0; { set to 0 when no color map }
+      Header.ColorMapLen:=0;  { set to 0 when no color map }
+      Header.ColorMapBpp:=0;  { set to 0 when no color map }
+      Header.XOrigin:=0;
+      Header.YOrigin:=0;
       if PSD.Format=psf8bpp then
        begin
+        {#####FIXME: this is not really supported since
+        we never write a colormap (yet)! }
         Header.TypeCode:=1;
         Header.bpp:=8;
+        Header.Flags:=0; {no alpha and bottom left start of image}
        end
       else
        begin
-        Header.TypeCode:=2;
+        Header.TypeCode:=2; {uncompressed true color image}
         if PSD.AlphaBits=psa8bpp then
          begin
           Header.bpp:=32;
-          Header.Flags:=8;  { tgaAlphaBits }
+          Header.Flags:= 8; { 8 tgaAlphaBits and bottom left start of image}
          end
         else
          Header.bpp:=24;
@@ -329,27 +350,28 @@ begin
        end;
       F.WriteBuffer(Header, SizeOf(Header));
 
-       { writes the image data }
+      { writes the image data }
       LineWidth:=Header.Width * (Header.bpp div 8);  { bytes per line }
       ScanLine:=PSD.StartPointer;
       if Header.bpp=32 then  { alpha ? }
        begin
         AlphaScanLine:=PSD.AlphaStartPointer;
-        GetMem(LineBuffer, LineWidth); try
-        for J:=1 to Header.Height do
+        GetMem(PBaseLineBuffer, LineWidth); try
+        for J:=1 to Header.Height do {iterate lines}
          begin
+          PLineBuffer:=PBaseLineBuffer;
           SourceRGB:=PRGB(ScanLine);
           for K:=0 to Header.Width-1 do   { mix color and alpha line-by-line }
            begin
-            PRGB(LineBuffer)^:=SourceRGB^; Inc(SourceRGB);
-            LineBuffer[3]:=AlphaScanLine[K];
-            Inc(LineBuffer, 4);
+            PRGB(PLineBuffer)^:=SourceRGB^; Inc(SourceRGB);
+            PLineBuffer[3]:=AlphaScanLine[K]; {inject alpha after RGB}
+            Inc(PLineBuffer, 4);
            end;
-          F.WriteBuffer(LineBuffer^, LineWidth);
+          F.WriteBuffer(PBaseLineBuffer^, LineWidth);
           Inc(ScanLine, PSD.ScanLine);   { TGA format is bottom-up, and so is PSD }
           Inc(AlphaScanLine, PSD.AlphaScanLine);
          end;
-        finally FreeMem(LineBuffer); end;
+        finally FreeMem(PBaseLineBuffer); end;
        end
       else  { no alpha data }
        for J:=1 to Header.Height do
@@ -369,3 +391,5 @@ end;
 initialization
   RegisterQObject(QTga, 'l');
 end.
+
+
