@@ -1,3 +1,4 @@
 title: Add-Ons
 
-x
+There is old but still up-to-date information about this topic at
+<html><a href="http://www.planetquake.com/quark/armin/q5tech.html">this page.</a>
