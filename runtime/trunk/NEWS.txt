@@ -11,6 +11,7 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####    Quake Army Knife 6.4 Changelog
+
  * [alexander]: QuArK understands now how to access Steam directly.
      (Steam must be running for that). Some new configuration entries have
      to be set up for steam access.
