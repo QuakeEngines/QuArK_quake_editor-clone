@@ -180,8 +180,11 @@ def shared_vertices(vtxlists):
 def vtxlistdict(facedict,o):
     "returns a dict in which the keys are associated with vertex-lists"
     result = {}
-    for key in facedict.keys():
-        result[key]=facedict[key].verticesof(o)
+    try:
+        for key in facedict.keys():
+            result[key]=facedict[key].verticesof(o)
+    except (AttributeError):
+        return None
     return result
 
 
@@ -258,20 +261,20 @@ def archline(pd, a, b, c, d):
     "returns 5-tuple with middle halfway between b and c"
     return [pd[a], pd[b], (pd[b]+pd[c])/2, pd[c], pd[d]]
 
-def cp_from_rows(row0, row2):
+def cpFromRows(row0, row2):
     "makes cp from top & bottom rows & fills in middle"
     cp = [row0, None, row2]
     cp[1] = map(lambda x, y:(x+y)/2, cp[0], cp[2]) 
     return cp
 
 def archcurve(pd):
-    cp = cp_from_rows(archline(pd, "blf", "tlf", "trf", "brf"),
+    cp = cpFromRows(archline(pd, "blf", "tlf", "trf", "brf"),
                       archline(pd, "blb", "tlb", "trb", "brb"))
     return cp
 
 
 def makeseam(row0, row2, texface, name):
-     cp = cp_from_rows(row0, row2)
+     cp = cpFromRows(row0, row2)
      seam = quarkx.newobj(name+":b2")
      seam["tex"] = texface["tex"]
      seam.cp = texcp_from_face(cp, texface, None)
@@ -399,7 +402,7 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       pd = pointdict_hflip(pd)
 
   def bevelcurve(pd):
-      return cp_from_rows([pd["tlb"],pd["trb"],pd["trf"]],
+      return cpFromRows([pd["tlb"],pd["trb"],pd["trf"]],
                         [pd["blb"],pd["brb"],pd["brf"]])
   cp = bevelcurve(pd)          
   length = lengthof(cp[0],3)
@@ -448,14 +451,14 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
   if open:
       return [inner]   
   if inverse:
-      tcp = cp_from_rows([pd["tlb"], pd["trb"], pd["trf"]],
+      tcp = cpFromRows([pd["tlb"], pd["trb"], pd["trf"]],
                          [pd["trb"], pd["trb"], pd["trf"]])
-      bcp = cp_from_rows([pd["brf"], pd["brb"], pd["blb"]],
+      bcp = cpFromRows([pd["brf"], pd["brb"], pd["blb"]],
                          [pd["brf"], pd["brb"], pd["brb"]])
   else:
-      tcp = cp_from_rows([pd["trf"], pd["trb"], pd["tlb"]],
+      tcp = cFromRows([pd["trf"], pd["trb"], pd["tlb"]],
                          [pd["tlf"], pd["tlf"], pd["tlb"]])
-      bcp = cp_from_rows([pd["blb"], pd["brb"], pd["brf"]],
+      bcp = cpFromRows([pd["blb"], pd["brb"], pd["brf"]],
                          [pd["blb"], pd["blf"], pd["blf"]])
   top = b2fromface(tcp,"top",fdict["u"],editor)
   bottom = b2fromface(bcp,"bottom",fdict["d"],editor)
@@ -465,6 +468,53 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
   if faceonly:
     return [top, bottom]
   return [inner, top, bottom]
+
+
+def circleLine(p0, p1, p2, p3):
+    return [(p0+p1)/2, p1, (p1+p2)/2, p2, (p2+p3)/2, p3,
+            (p3+p0)/2, p0, (p0+p1)/2]
+            
+
+def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0):
+    "makes a bevel/inverse bevel on the basis of brush o"
+    o.rebuildall()
+    fdict = facedict(o)
+    if fdict is None:
+        return
+    pd = pointdict(vtxlistdict(fdict,o))
+    cp = cpFromRows(circleLine(pd["trf"], pd["tlf"], pd["tlb"], pd["trb"]),
+                    circleLine(pd["brf"], pd["blf"], pd["blb"], pd["brb"]))
+    oldface = fdict["b"]
+    cp = texcp_from_face(cp, oldface, editor)
+    if not stretchtex:
+        for (facekey, corner) in (("r", "trb"),("f", "trf"),("l","tlf")):
+            newface=oldface.copy()
+            newface.setthreepoints(oldface.threepoints(2),2)
+            newface.distortion(fdict[facekey].normal,pd[corner])
+            oldface = newface
+        cp3 = interpolateGrid(pd["tlf"], pd["tlb"], pd["blf"], pd["blb"])
+        cp3 = texcp_from_face(cp3, oldface, editor)
+        for i in range(3):
+            cp[i][8] = quarkx.vect(cp[i][8].xyz+cp3[i][2].st)
+#    squawk(`cp`)
+        cp = antidistort_rows(cp)
+
+    inner = quarkx.newobj("inner:b2")
+    inner.cp = cp
+    inner["tex"]=fdict["b"]["tex"]
+    if inverse:
+       inner.swapsides()
+    return [inner]
+
+
+def images(buildfn, args):
+    if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
+        return apply(buildfn, args)
+    else:
+        try:
+            return apply(buildfn, args)
+        except:
+            return []
 
 class CapDuplicator(StandardDuplicator):
 
@@ -478,7 +528,7 @@ class CapDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return capimages(o, editor, inverse, lower, open, thick, faceonly, stretchtex)
+         return images(capimages, [o, editor, inverse, lower, open, thick, faceonly, stretchtex])
 
 
 class BevelDuplicator(StandardDuplicator):
@@ -494,11 +544,27 @@ class BevelDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return bevelimages(o, editor, inverse, left, open, thick, faceonly, stretchtex)
+           return images(bevelimages, (o, editor, inverse, left, open, thick, faceonly, stretchtex))
+
+class ColumnDuplicator(StandardDuplicator):
+
+  def buildimages(self, singleimage=None):
+    if singleimage is not None and singleimage>0:
+      return []
+    editor = mapeditor()
+    inverse, open, thick, stretchtex, = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "open", "thick", "stretchtex",))
+    if thick:
+      thick, = thick
+    list = self.sourcelist()
+    for o in list:
+      if o.type==":p": # just grab the first one, who cares
+           return images(columnimages, (o, editor, inverse, open, thick, stretchtex))
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
   "dup bevel":   BevelDuplicator,
+  "dup column":  ColumnDuplicator
 })
 
 
@@ -534,7 +600,15 @@ def curvemenu(o, editor, view):
       else:
         editor.ok(undo, "make right corner")
       
-
+  def makecolumn(m, o=o, editor=editor):
+      dup = quarkx.newobj("column:d")
+      dup["macro"]="dup column"
+      dup["open"]=1  # since this is normally rounding a corner with wall & ceiling"
+      dup.appenditem(m.newpoly)
+      undo=quarkx.action()
+      undo.exchange(o, dup)
+      editor.ok(undo, "make column")
+      
   disable = (len(o.subitems)!=6)
 
   newpoly = perspectiveRename(o, view)
@@ -579,6 +653,9 @@ If the textures on the two adjoining walls of the room are properly aligned, the
     finishitem(item)
     list.append(item)
 
+  colitem = qmenu.item("C&olumn", makecolumn, "Make a column")
+  finishitem(colitem)
+  list.append(colitem)
 
   curvehint = """|Commands for making curves out of brushes.
 
@@ -633,6 +710,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2000/06/19 11:46:22  tiglari
+#Fixes to texture alignment on arches
+#
 #Revision 1.13  2000/06/17 09:42:53  tiglari
 #yet another texture scale fix (upper arches de-borked again...
 #

@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.35  2000/06/17 07:28:10  tiglari
+//stretchtex flag for arch/cap and bevel
+//
 //Revision 1.34  2000/06/14 04:38:54  tiglari
 //Added `faceonly' specific for arches & bevels.
 //
@@ -2586,6 +2589,19 @@ QQRKSRC1
                Hint = "if checked, top and bottom are open"}
       faceonly: = {Txt="&" Typ="X"
                Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "This one is not for you, Saruman"}
+    }
+    dup column:form =
+    {
+      inverse: = {Txt="&" Typ="X"
+               Hint = "if checked, concave surface of curve is outer and has texture"}
+      thick: = {Txt ="&" Typ="EF1"
+                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      stretchtex: = {Txt="&" Typ="X"
+               Hint = "if checked, texture on back is stretched to cover entire column." $0D "Otherwise complex things are done so that if" $0D "the the texture on the back face is wrapped around the brush," $0D "this wrapping will also appear aroudn the column"}
+      open: = {Txt="&" Typ="X"
+               Hint = "if checked, top and bottom are open"}
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
