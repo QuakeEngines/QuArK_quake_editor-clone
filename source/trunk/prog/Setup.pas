@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.9  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -86,6 +89,9 @@ type
  TListeCouleurs =
   (lcVueXZ, lcVueXY, lcSelXZ, lcSelXY, lcOutOfView, lcAxes, lcGridXZ, lcGridXY, lcGridLines,
    lcBrushEntity, lcDuplicator, lcTag, lcGrayImage, lcBSP, lcDigger, lcBezier);
+ TModelColors =
+  (mcVueXZ, mcVueXY, mcSelXZ, mcSelXY, mcOutOfView, mcAxes, mcGridXZ, mcGridXY, mcGridLines,
+   mcTag, mcGrayImage, mcLinear, mcVertices);
  TSetupSet =
   (ssGeneral, ssGames, ssMap, ssModel, ssToolbars{, ssTempData});
  TSetupSetArray = array[TSetupSet] of QObject;
@@ -149,6 +155,7 @@ procedure ChangeGameMode(nMode: Char; Confirm: Boolean);
 procedure ChangeGameModeStr(const nMode: String; Confirm: Boolean);
 function GetGameCode(const nMode: String) : Char;
 function MapColors(L: TListeCouleurs) : TColor;
+function ModelColors(L: TModelColors) : TColor;
 {function GetIncludePath: String;}
 function InternalVersion : Single;
 function GameModeOk(nMode: Char) : Boolean;
@@ -781,6 +788,27 @@ const
 function MapColors(L: TListeCouleurs) : TColor;
 begin
  Result:=SetupSubSet(ssMap, 'Colors').IntSpec[MapColorNames[L]];
+end;
+
+const
+  ModelColorNames: array[TModelColors] of String =
+  ('ViewXZ',
+   'ViewXY',
+   'SelXZ',
+   'SelXY',
+   'Gray',
+   'Axis',
+   'GridXZ',
+   'GridXY',
+   'GridLines',
+   'Tag',
+   'GrayImage',
+   'Linear',
+   'Vertices');
+
+function ModelColors(L: TModelColors) : TColor;
+begin
+ Result:=SetupSubSet(ssModel, 'Colors').IntSpec[ModelColorNames[L]];
 end;
 
 function CharModeJeu: Char;
