@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-        0: "quarksnapshot_20000925",
+        0: "quarksnapshot_20001015",
 	1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
 	2: "&New %s",
@@ -252,6 +252,7 @@ Strings = {
 	804: "Quake 3 Shaders (*.shader)|*.shader",
  	805: "Quake 3 .md3 file (*.md3)|*.md3",
 	806: "SoF Texture (*.m32)|*.m32",
+	807: "3d studio file (*.3ds)|*.3ds",
 
 	809: "Invalid version number in Quake's original Progs.dat",
 
@@ -543,6 +544,7 @@ Strings = {
         5175: "Shader list (Quake 3)",
         5176: ".md3 file",
         5177: "M32 Texture (SoF)",
+        5178: "3d studio file",
 
         5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
 	5184: "'%s' is not a QuArK-5 file",
@@ -765,7 +767,7 @@ Strings = {
 	5599: "QuArK must switch to %s game mode, but it cannot do so now because you are working in a ToolBox. You need to copy this data outside the toolbox before you can work on it. When copying textures, copy them using the standard 'Copy' command and then use 'Paste as...' to convert it to another game.",
 	5600: "This file is already registered as an Add-on",
 	5601: "Save this file in the QuArK Explorer ?\n\nFor organization purposes, this option lets you pack your files into a single .qrk file. If you answer No, QuArK will let you save your file normally.",
-	# 5602: "Structure error : Missing 'Typ' for '%s' in the form data.",
+	5602: "'%s' is a BSP file (version %d) that\n cannot (yet) be loaded by QuArK.",
 	5603: "Cannot access the WAVE sound output. There is probably another sound currently played//waveOutOpen failed",
 	5604: "Cannot access the WAVE sound output. Internal error//waveOutPrepareHeader failed",
 	5605: "'%s' is not a WAV file//%d should be %d",
@@ -878,6 +880,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.23  2000/09/25 00:11:19  alexander
+#set name
+#
 #Revision 1.22  2000/09/14 17:59:17  decker_dk
 #Altered msg #5505
 #
