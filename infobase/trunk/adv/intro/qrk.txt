@@ -115,7 +115,7 @@ might be specified as:
 <html></pre>
 
 All this and some more stuff that I haven't seen exemplified is
-prescribed in the function ChargerObjTexte (Load Object Text)
+prescribed in the function ConstructObjsFromText
 in the file QkFileObject.
 
  * sections on the major components of the major kinds of
