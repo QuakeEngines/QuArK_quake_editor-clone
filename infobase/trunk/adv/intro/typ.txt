@@ -67,6 +67,42 @@ LIGHT1: = { Typ="EP" Txt="Path to QRAD3" DefExt="exe" }
 </td></tr>
 
 <tr><td align=center>
+EP<br>
+specifics<br>
+</td><td valign=top>
+<b>This is a list of specifics that effect the path<br>
+handling for the Typ="EP" above</b>.
+</td><td>
+<pre>
+1) <b>Typ="EP"</b> opens the file browser window.
+2) <b>Txt="Path to QBSP"</b> gives the title at the top of the window.
+3) <b>DefExt="md2; map; pcx"</b> sets the type of file/files to accept.
+4) <b>BasePath="$Game"</b> sets the Directory that the browser window
+                           will start with.
+                      $Game will be converted to the game
+                           directory... for example "C:\Quake2".
+5) <b>CutPath="$Game\?\"</b> will be cut off the beginning of the
+                           full path string.
+                      $Game is the same as above.
+                      ? means that there HAS to be a directory.
+                      * means that there may or may not be a
+                           directory and only stands for ONE
+                           directory. For example
+               "$Game\?\sprites\*\" accepts all of the following:
+                           C:\Quake2\baseq2\sprites\abc.spr
+                           C:\Quake2\xyz\sprites\xyz\abc.spr
+                      but not:
+                           C:\Quake2\baseq2\sprites\a\b\c\abc.spr
+6) <b>DirSep="/"</b> Quake games use '/' as path separator. Using this
+                   this  specific will convert all the "\" to "/".
+7) <b>AugPath="../ "</b>  will augment the modified path and add ../ to
+                           it at the beginning. The DirSep specific 
+                           above does not effect this specific,
+                           so proper coding should be used.
+</pre>
+</td></tr>
+
+<tr><td align=center>
 X&lt;value&gt;
 </td><td valign=top>
 <b>Checkbox</b>, which sets the bits according to &lt;value&gt;.<br>
