@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/03/28 20:28:00  tiglari
+remove \ from in front of disk folders
+
 Revision 1.32  2001/03/20 21:42:44  decker_dk
 Updated copyright-header
 
@@ -357,6 +360,9 @@ begin
  if CompareText(ExtractFileExt(Name), '.jpg') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
  else
+ if CompareText(ExtractFileExt(Name), '.png') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base)
+ else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then
   begin
    if Loaded=Nil then
@@ -422,6 +428,9 @@ begin
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.jpg') = 0 then
+  Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
+ else
+ if CompareText(ExtractFileExt(Name), '.png') = 0 then
   Link1(ResultFolder, FolderName, Copy(Name, 1, Length(Name)-4), 'a', Base, Index)
  else
  if CompareText(ExtractFileExt(Name), '.shader') = 0 then

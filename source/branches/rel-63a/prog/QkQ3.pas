@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2002/05/05 10:21:16  tiglari
+Reading editable surfaceparms from MOHAA shaders
+
 Revision 1.21  2001/03/20 21:44:19  decker_dk
 Updated copyright-header
 
@@ -249,7 +252,11 @@ begin
        try
          Result:=NeedGameFile(S+'.tga') as QPixelSet;
        except
-         Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+         try
+           Result:=NeedGameFile(S+'.jpg') as QPixelSet;
+         except
+           Result:=NeedGameFile(S+'.png') as QPixelSet;
+         end
        end;
      end
      else
@@ -266,7 +273,11 @@ begin
      try
        Result:=NeedGameFile(Name+'.tga') as QPixelSet;
      except
-       Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+       try
+         Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
+       except
+         Result:=NeedGameFile(Name+'.png') as QPixelSet;
+       end
      end;
    except
      Result:=NIL
