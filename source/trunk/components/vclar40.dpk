@@ -26,7 +26,7 @@ package VCLAR40;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl50;
+  vcl40;
 
 contains
   TB97 in 'Tb97.pas',
@@ -36,11 +36,6 @@ contains
   SyntaxMemo in 'SyntaxMemo.pas',
   CursorScrollBox in 'CursorScrollBox.pas',
   marsCap in 'Marscap.pas',
-  SmArrowBtn in 'SmArrowBtn.pas',
-  ZipMstr in 'zip\ZipMstr.pas',
-  ZCallBck in 'zip\ZCallBck.pas',
-  ZIPDLL in 'zip\ZipDll.pas',
-  ZipMsg in 'zip\ZipMsg.pas',
-  UNZDLL in 'zip\UnzDll.pas';
+  SmArrowBtn in 'SmArrowBtn.pas';
 
 end.
