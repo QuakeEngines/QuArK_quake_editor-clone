@@ -27,6 +27,10 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-01-30   [CS] Added four new entities for Counter-Strike (Thanks to Necro & Lestat)
+//
+// 2000-01-17   [SB] Added Sabaneta 2050 entities and texture-links (Thanks to Jorge "ChackO" Santos)
+//
 // 2000-01-16   [HL] Changed 'monster_satchelcharge' entity name to 'monster_satchel'
 //
 // 2000-01-02	[CS] Updated texture-links for Counter-Strike beta5
@@ -319,7 +323,7 @@ QQRKSRC1
 		env_beam:e			= { origin = "0 0 0" ;desc = "Energy Beam Effect" }
 		env_beverage:e			= { origin = "0 0 0" ;desc = "Beverage Dispenser" }
 		env_blood:e			= { origin = "0 0 0" ;desc = "Blood Effects" }
-		env_bubbles:b			= { angle = "360"    ;desc = "Bubble Volume" t_triggerpoly = ! }
+                env_bubbles:b                   = { angle = "360"    ;desc = "Bubble Volume" ;incl = "trigpoly" }
 //Undocumented	env_debris:?			= { origin = "0 0 0" ;desc = "???" }
 		env_explosion:e			= { origin = "0 0 0" ;desc = "Explosion" }
 		env_fade:e			= { origin = "0 0 0" ;desc = "Screen Fade" }
@@ -349,9 +353,9 @@ QQRKSRC1
 		func_guntarget:b		= { 			;desc = "Moving platform" ;incl = "defpoly" }
 		func_healthcharger:b		= { 			;desc = "Wall health recharger" ;incl = "defpoly" }
 		func_illusionary:b		= { 			;desc = "Fake Wall/Light" ;incl = "defpoly" }
-		func_ladder:b			= { 			;desc = "Ladder" t_triggerpoly = ! }
-		func_monsterclip:b		= { 			;desc = "Monster clip brush" t_triggerpoly = ! }
-		func_mortar_field:b		= { 			;desc = "Mortar Field" t_triggerpoly = ! }
+                func_ladder:b                   = {                     ;desc = "Ladder" ;incl = "trigpoly" }
+                func_monsterclip:b              = {                     ;desc = "Monster clip brush" ;incl = "trigpoly" }
+                func_mortar_field:b             = {                     ;desc = "Mortar Field" ;incl = "trigpoly" }
 		func_pendulum:b			= { 			;desc = "Swings back and forth" t_originpoly = ! }
 		func_plat:b			= { 			;desc = "Elevator" ;incl = "defpoly" }
 		func_platrot:b			= { 			;desc = "Moving Rotating platform" t_originpoly = ! }
@@ -360,7 +364,7 @@ QQRKSRC1
 		func_rot_button:b		= { 			;desc = "Rotating Button" t_originpoly = ! }
 		func_rotating:b			= { 			;desc = "Rotating Object" t_originpoly = ! }
 		func_tank:b			= { angle = "360"	;desc = "Brush Gun Turret" t_originpoly = ! yawrate="300" yawrange="90" yawtolerance="15" pitchtolerance="5" persistence="1" bullet="1" }
-		func_tankcontrols:b		= { 			;desc = "Turret Control Volume" t_triggerpoly = ! }
+                func_tankcontrols:b             = {                     ;desc = "Turret Control Volume" ;incl = "trigpoly" }
 		func_tanklaser:b		= { angle = "360"	;desc = "Brush Laser Turret" t_originpoly = ! yawrate="300" yawrange="90" yawtolerance="15" pitchtolerance="5" persistence="1" bullet="1" }
 		func_tankmortar:b		= { angle = "360" 	;desc = "Brush Mortar Turret" t_originpoly = ! yawrate="300" yawrange="90" yawtolerance="15" pitchtolerance="5" persistence="1" bullet="1" }
 		func_tankrocket:b		= { angle = "360"	;desc = "Brush Rocket Turret" t_originpoly = ! yawrate="300" yawrange="90" yawtolerance="15" pitchtolerance="5" persistence="1" bullet="1" }
@@ -368,7 +372,7 @@ QQRKSRC1
 		func_trackchange:b		= { 			;desc = "Train track changing platform" t_originpoly = ! }
 		func_tracktrain:b		= { 			;desc = "Track Train" t_originpoly = ! }
 		func_train:b			= { 			;desc = "Moving platform" ;incl = "defpoly" }
-		func_traincontrols:b		= { 			;desc = "Train Control Volume" t_triggerpoly = ! }
+                func_traincontrols:b            = {                     ;desc = "Train Control Volume" ;incl = "trigpoly" }
 		func_wall:b			= { 			;desc = "Moving wall" ;incl = "defpoly" }
 		func_wall_toggle:b		= { 			;desc = "Toggleable geometry" ;incl = "defpoly" }
 		func_water:b			= { angle = "360"	;desc = "Liquid" ;incl = "defpoly" }
@@ -451,23 +455,23 @@ QQRKSRC1
 	}
 	Trigger_ entities.qtxfolder = {
 		trigger_auto:e			= { origin = "0 0 0" 	;desc = "Trigger auto (trigger once when level starts)" }
-		trigger_autosave:b		= { 			;desc = "Trigger auto-save" t_triggerpoly = ! }
+                trigger_autosave:b              = {                     ;desc = "Trigger auto-save" ;incl = "trigpoly" }
 		trigger_camera:e		= { angle = "360" origin = "0 0 0" ;desc = "Trigger camera" }
-		trigger_cdaudio:b		= { 			;desc = "Trigger CD audio" t_triggerpoly = ! }
-		trigger_changelevel:b		= { 			;desc = "Trigger change level" t_triggerpoly = ! }
+                trigger_cdaudio:b               = {                     ;desc = "Trigger CD audio" ;incl = "trigpoly" }
+                trigger_changelevel:b           = {                     ;desc = "Trigger change level" ;incl = "trigpoly" }
 		trigger_changetarget:e		= { origin = "0 0 0" 	;desc = "Trigger change target" }
 		trigger_counter:e		= { origin = "0 0 0" 	;desc = "Trigger counter (point-entity)" }
-		trigger_counter:b		= { origin = "0 0 0" 	;desc = "Trigger counter (brush-entity)" t_triggerpoly = ! }
-		trigger_endsection:b		= { 			;desc = "Trigger end-section" t_triggerpoly = ! }
-		trigger_gravity:b		= { 			;desc = "Trigger gravity" gravity="1.0" t_triggerpoly = ! }
-		trigger_hurt:b			= { 			;desc = "Trigger player hurt" t_triggerpoly = ! }
-		trigger_monsterjump:b		= { 			;desc = "Trigger monster jump" t_triggerpoly = ! }
-		trigger_multiple:b		= { 			;desc = "Trigger multiple" t_triggerpoly = ! }
-		trigger_once:b			= { 			;desc = "Trigger once" t_triggerpoly = ! }
-		trigger_push:b			= { angle = "360"  	;desc = "Trigger player push" t_triggerpoly = ! }
+                trigger_counter:b               = { origin = "0 0 0"    ;desc = "Trigger counter (brush-entity)" ;incl = "trigpoly" }
+                trigger_endsection:b            = {                     ;desc = "Trigger end-section" ;incl = "trigpoly" }
+                trigger_gravity:b               = {                     ;desc = "Trigger gravity" gravity="1.0" ;incl = "trigpoly" }
+                trigger_hurt:b                  = {                     ;desc = "Trigger player hurt" ;incl = "trigpoly" }
+                trigger_monsterjump:b           = {                     ;desc = "Trigger monster jump" ;incl = "trigpoly" }
+                trigger_multiple:b              = {                     ;desc = "Trigger multiple" ;incl = "trigpoly" }
+                trigger_once:b                  = {                     ;desc = "Trigger once" ;incl = "trigpoly" }
+                trigger_push:b                  = { angle = "360"       ;desc = "Trigger player push" ;incl = "trigpoly" }
 		trigger_relay:e			= { origin = "0 0 0" 	;desc = "Trigger relay" }
-		trigger_teleport:b		= { 			;desc = "Trigger teleport" t_triggerpoly = ! }
-		trigger_transition:b		= { 			;desc = "Trigger transition area" t_triggerpoly = ! }
+                trigger_teleport:b              = {                     ;desc = "Trigger teleport" ;incl = "trigpoly" }
+                trigger_transition:b            = {                     ;desc = "Trigger transition area" ;incl = "trigpoly" }
 	}
 	Xen_ entities.qtxfolder = {
 		xen_hair:e			= { origin = "0 0 0" angle = "360" ;desc = "Xen Hair"  }
@@ -507,7 +511,7 @@ QQRKSRC1
 		game_team_master:e		= { origin = "0 0 0" ;desc = "Team based master/relay" teamindex="-1" }
 		game_team_set:e			= { origin = "0 0 0" ;desc = "Sets team of game_team_master" }
 		game_text:e			= { origin = "0 0 0" ;desc = "HUD text message" x="-1" y="-1" color="100 100 100" color2="240 110 0" fadein="1.5" fadeout="0.5" holdtime="1.2" fxtime="0.25" channel="1" }
-		game_zone_player:b		= { origin = "0 0 0" ;desc = "Player in/out of a zone trigger" t_triggerpoly = ! }
+                game_zone_player:b              = { origin = "0 0 0" ;desc = "Player in/out of a zone trigger" ;incl = "trigpoly" }
 	}
     }
   }
@@ -554,9 +558,9 @@ QQRKSRC1
 
 	OP4 Func_ entities.qtxfolder = {
 		op4mortar:e 			= { origin="0 0 0" ;desc="Op4 Mortar" }
-		func_op4mortarcontroller:b 	= { 		;desc="Op4 Mortar Controller" t_triggerpoly = ! }
+                func_op4mortarcontroller:b      = {             ;desc="Op4 Mortar Controller" ;incl = "trigpoly" }
 		func_tank_of:b 			= { angle="360" ;desc="Brush Gun Turret" t_originpoly = ! yawrate="30" yawrange="180" yawtolerance="15" pitchtolerance="5" spritescale="1" firerate="1" persistence="1" enemytype="1" }
-		func_tankcontrols_of:b 		= { 		;desc="Tank controls" t_triggerpoly = ! }
+                func_tankcontrols_of:b          = {             ;desc="Tank controls" ;incl = "trigpoly" }
 		func_tanklaser_of:b 		= { angle="360" ;desc="Brush Laser Turret" t_originpoly = ! yawrate="30" yawrange="180" yawtolerance="15" pitchtolerance="5" spritescale="1" firerate="1" persistence="1" enemytype="1" }
 		func_tankrocket_of:b 		= { angle="360" ;desc="Brush Rocket Turret" t_originpoly = ! yawrate="30" yawrange="180" yawtolerance="15" pitchtolerance="5" spritescale="1" firerate="1" persistence="1" enemytype="1" }
 		func_tankmortar_of:b 		= { angle="360" ;desc="Brush Mortar Turret" t_originpoly = ! yawrate="30" yawrange="180" yawtolerance="15" pitchtolerance="5" spritescale="1" firerate="1" persistence="1" enemytype="1" }
@@ -611,9 +615,9 @@ QQRKSRC1
 	}
 
 	OP4 Trigger_ entities.qtxfolder = {
-		trigger_geneworm_hit:b	= { ;desc="Trigger GeneWorm Hit" t_triggerpoly = ! }
+                trigger_geneworm_hit:b  = { ;desc="Trigger GeneWorm Hit" ;incl = "trigpoly" }
 		trigger_playerfreeze:e 	= { origin="0 0 0" ;desc="Trigger Player Freeze" }
-		trigger_xen_return:b 	= { ;desc="Return To Earth (self-tele)" t_triggerpoly = ! }
+                trigger_xen_return:b    = { ;desc="Return To Earth (self-tele)" ;incl = "trigpoly" }
 	}
     }
 //-  }
@@ -635,13 +639,13 @@ QQRKSRC1
     	TFC Entities.qtxfolder = {
 		info_tfdetect:e		= { origin = "0 0 0" ;desc = "Detection entity" }
 		info_tfgoal:e		= { origin = "0 0 0" ;desc = "info_tfgoal Point-entity" }
-		info_tfgoal:b		= { origin = "0 0 0" ;desc = "info_tfgoal Brush-entity" t_triggerpoly = ! }
-		i_t_g:b			= { origin = "0 0 0" ;desc = "info_tfgoal Brush-entity" t_triggerpoly = ! }
+                info_tfgoal:b           = { origin = "0 0 0" ;desc = "info_tfgoal Brush-entity" ;incl = "trigpoly" }
+                i_t_g:b                 = { origin = "0 0 0" ;desc = "info_tfgoal Brush-entity" ;incl = "trigpoly" }
 		info_tfgoal_timer:e	= { origin = "0 0 0" ;desc = "" }
 		item_tfgoal:e		= { origin = "0 0 0" angle = "360" ;desc = "Player pickable/dropable item (Typically a flag)" }
 	}
 	TFC Brush Entities.qtxfolder = {
-		func_nobuild:b		= { ;desc = "Area where engineer can't build" t_triggerpoly = ! }
+                func_nobuild:b          = { ;desc = "Area where engineer can't build" ;incl = "trigpoly" }
 	}
     	TFC Armor Entities.qtxfolder = {
 		item_armor1:e 		= { origin = "0 0 0" angle = "360" ;desc = "Green armor (100)" respawn_delay="5" }
@@ -686,19 +690,27 @@ QQRKSRC1
 	CS Player Starts.qtxfolder = {
 		info_player_start:e		= { origin = "0 0 0" angle = "360" ;desc = "Counter-terrorist start" }
 		info_player_deathmatch:e	= { origin = "0 0 0" angle = "360" ;desc = "Terrorist start" }
-		func_buyzone:b 			= { ;desc="Buy zone" team="0" t_triggerpoly = ! }
+                func_buyzone:b                  = { ;desc="Buy zone" team="0" ;incl = "trigpoly" }
 	}
 	CS Hostage.qtxfolder = {
 		hostage_entity:e 		= { origin = "0 0 0" angle = "360" ;desc = "Hostage" gravity="1" model="models/scientist.mdl" }
-		func_hostage_rescue:b		= { ;desc = "Hostage rescue zone" t_triggerpoly = ! }
+                func_hostage_rescue:b           = { ;desc = "Hostage rescue zone" ;incl = "trigpoly" }
 		info_hostage_rescue:e		= { origin = "0 0 0"               ;desc = "Hostage rescue point" }
 	}
 	CS Defusion.qtxfolder = {
 		info_bomb_target:e		= { origin = "0 0 0"               ;desc = "Bomb target point" }
-		func_bomb_target:b		= { ;desc = "Bomb target zone" t_triggerpoly = ! }
+                func_bomb_target:b              = { ;desc = "Bomb target zone" ;incl = "trigpoly" }
 		infodecal:e			= { origin = "0 0 0"		   ;desc = "Target Decal #1" texture = "{TARGET" }
 		infodecal:e			= { origin = "0 0 0"		   ;desc = "Target Decal #2" texture = "{TARGET2" }
 	}
+        CS Assassination.qtxfolder = {
+                func_vip_safetyzone:b   = { ;desc="VIP safety zone" ;incl = "trigpoly" }
+        }
+        CS Escape.qtxfolder = {
+                func_escapezone:b       = { ;desc="Terrorist escape zone" ;incl = "trigpoly" }
+                armoury_entity:e        = { origin="0 0 0" ;desc="Items in the armoury" count="1" }
+                info_map_parameters:e   = { origin="0 0 0" ;desc="Miscellaneous mapping parameters" bombradius="500" }
+        }
 	CS Camera.qtxfolder = {
 		func_button:b			= { angle = "360"	;desc = "Camera activate/deactivate" ;incl = "defpoly" spawnflags="32" }
 		trigger_camera:e		= { angle = "360" origin = "0 0 0" ;desc = "Camera" }
@@ -726,10 +738,10 @@ QQRKSRC1
 		jail_team_master:e	= { origin = "0 0 0" 		;desc = "Jail team master" teamindex = "-1" }
 	}
 	JB Areas.qtxfolder = {
-		trigger_armory:b 	= { origin = "0 0 0"		;desc = "Armory" t_triggerpoly = ! }
-		trigger_jail:b 		= { origin = "0 0 0"		;desc = "Mark a player as being in jail" t_triggerpoly = ! }
-		trigger_jail_release:b	= { origin = "0 0 0"		;desc = "Prisoner release" t_triggerpoly = ! }
-		func_nobuild:b		= { origin = "0 0 0"		;desc = "Safe area" t_triggerpoly = ! }
+                trigger_armory:b        = { origin = "0 0 0"            ;desc = "Armory" ;incl = "trigpoly" }
+                trigger_jail:b          = { origin = "0 0 0"            ;desc = "Mark a player as being in jail" ;incl = "trigpoly" }
+                trigger_jail_release:b  = { origin = "0 0 0"            ;desc = "Prisoner release" ;incl = "trigpoly" }
+                func_nobuild:b          = { origin = "0 0 0"            ;desc = "Safe area" ;incl = "trigpoly" }
 	}
     }
 //-  }
@@ -887,6 +899,33 @@ QQRKSRC1
 	}
     }
 //-  }
+
+//-  Sabaneta 2050.qtx =
+//-  {
+//-    ToolBox = "New map items..."
+//-    Root = "Sabaneta 2050 Entities.qtxfolder"
+
+    Sabaneta 2050 Entities.qtxfolder =
+    {
+      SB Required Entities.qtxfolder =
+      {
+        info_game_sabaneta:e    = { ;desc = "Sabaneta 2050 Game Entity" }
+        info_map_rush:e         = { ;desc = "This entity defines a rush map" }
+        info_player_observer:e  = { origin = "0 0 0" angle = "360" ;desc = "Team Selection (Initial Spawn Entity)" }
+      }
+      SB Cops.qtxfolder =
+      {
+        info_player_team1:e     = { origin = "0 0 0" angle = "360" ;desc = "Cops start point" }
+        presidente_uno:e        = { origin = "0 0 0" angle = "360" ;desc = "Cops Commander" gravity = "1" }
+      }
+      SB Convicts.qtxfolder =
+      {
+        info_player_team2:e     = { origin = "0 0 0" angle = "360" ;desc = "Convicts start point" }
+        presidente_dos:e        = { origin = "0 0 0" angle = "360" ;desc = "Convicts Commander" gravity = "1" }
+      }
+    }
+//-  }
+
 
    } //- Modifications.qtxfolder
   } //- Modifications.qtx
@@ -12494,6 +12533,42 @@ QQRKSRC1
 			values ="0"$0D"1"$0D"2"
 		}
 	}
+        armoury_entity:form = {
+                bbox = '-16 -16 0 16 16 16'
+                item: = { typ="C" hint="Item"
+                        items="weapon_mp5"$0D
+                              "weapon_tmp"$0D
+                              "weapon_p90"$0D
+                              "weapon_mac10"$0D
+                              "weapon_ak47"$0D
+                              "weapon_sg552"$0D
+                              "weapon_m4a1"$0D
+                              "weapon_aug"$0D
+                              "weapon_scout"$0D
+                              "weapon_g3sg1"$0D
+                              "weapon_awp"$0D
+                              "weapon_m3"$0D
+                              "weapon_xm1014"$0D
+                              "weapon_m249"$0D
+                              "weapon_flashbang"$0D
+                              "weapon_hegrenade"$0D
+                              "item_kevlar"$0D
+                              "item_assaultsuit"
+                        values= "0"$0D "1"$0D "2"$0D "3"$0D "4"$0D "5"$0D "6"$0D "7"$0D "8"$0D "9"$0D
+                               "10"$0D"11"$0D"12"$0D"13"$0D"14"$0D"15"$0D"16"$0D"17"
+                }
+                count: = { txt="&" Hint="Count" }
+        }
+        info_map_parameters:form = {
+                buying: = { typ="C" hint="Weapon_Buying"
+                        items="Both teams can buy guns"$0D
+                              "Only CT's can buy guns"$0D
+                              "Only T's can buy guns"$0D
+                              "Neither CT's nor T's can buy guns"
+                        values="0"$0D"1"$0D"2"$0D"3"
+                }
+                bombradius: = { txt="&" hint="Bomb Radius" }
+        }
 
 //
 // Jailbreak
@@ -13128,6 +13203,17 @@ QQRKSRC1
 	item_special_salina:form = { t_player = ! }
 	info_capture_suit:form = { t_player = ! }
 	info_capture_salina:form = { t_player = ! }
+
+//
+// Sabaneta 2050
+//
+        info_game_sabaneta:form = { Help = "This entity verifies if the map is for SB2050" }
+        info_map_rush:form = { Help = "This entity defines if the map is for rush mode" }
+        info_player_observer:form = { Help = "This entity defines the player spawn starting point,"$0D"when he connects to the map. (The black room, with the rotating SB2050)" }
+        info_player_team1:form = { t_player = ! }
+        info_player_team2:form = { t_player = ! }
+        presidente_uno:form = { t_player = ! }
+        presidente_dos:form = { t_player = ! }
 
 /////////////////////
   }
@@ -18950,6 +19036,54 @@ QQRKSRC1
         roof_panel1.wl = { t_wie_kamikazi_pack1 = ! }
         wood_floor4.wl = { t_wie_kamikazi_pack1 = ! }
         dirt_3.wl = { t_wie_kamikazi_pack1 = ! }
+      }
+    }
+  }
+
+  SBTextures.qtx =
+  {
+    ToolBox = "Texture Browser..."
+    Root = "Sabaneta 2050 Textures.qtxfolder"
+
+	// Raw definition of WAD3 files
+        t_sb_decals:incl = { s = "sabaneta" d = "decals" h = "C" }
+        t_sb_general:incl = { s = "sabaneta" d = "general" h = "C" }
+        t_sb_misc:incl = { s = "sabaneta" d = "misc" h = "C" }
+
+    Sabaneta 2050 Textures.qtxfolder =
+    {
+      decals.txlist =
+      {
+        sb_pdv_decal.wl = { t_sb_decals = ! }
+      }
+      general.txlist =
+      {
+        scroll_arenisca.wl = { t_sb_general = ! }
+        scroll_rails.wl = { t_sb_general = ! }
+        scroll_roc.wl = { t_sb_general = ! }
+        scroll_tunnel.wl = { t_sb_general = ! }
+        sb_convict_door.wl = { t_sb_general = ! }
+        sb_logo_tex.wl = { t_sb_general = ! }
+        cont_azul_back.wl = { t_sb_general = ! }
+        cont_azul_lado2.wl = { t_sb_general = ! }
+        pared_azul_viej.wl = { t_sb_general = ! }
+        pared_roja_viej.wl = { t_sb_general = ! }
+        par_azul_ext1.wl = { t_sb_general = ! }
+        sb_tabla.wl = { t_sb_general = ! }
+        sb_asfalto.wl = { t_sb_general = ! }
+        sb_p_lad_1.wl = { t_sb_general = ! }
+        sb_pi_roc_1.wl = { t_sb_general = ! }
+        cont_petroleum.wl = { t_sb_general = ! }
+        sb_old_wood.wl = { t_sb_general = ! }
+        !petroleo.wl = { t_sb_general = ! }
+        sb_tanque1.wl = { t_sb_general = ! }
+        sb_tanque2.wl = { t_sb_general = ! }
+      }
+      misc.txlist =
+      {
+        sb_crane_usg.wl = { t_sb_misc = ! }
+        Foto01.wl = { t_sb_misc = ! }
+        Foto11.wl = { t_sb_misc = ! }
       }
     }
   }
