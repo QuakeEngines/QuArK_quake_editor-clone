@@ -46,6 +46,8 @@ type
     WndObject: PyWindow;
     PythonMacro: String;
     PopupMenuShowing, Released: Boolean;
+    ci_Hourglass: Boolean;
+    ci_obj: PyObject;
     {DSorting: Boolean;  { sorting map views }
     procedure wmMenuSelect(var Msg: TMessage); message wm_MenuSelect;
     procedure wmInitMenuPopup(var Msg: TMessage); message wm_InitMenuPopup;
@@ -110,7 +112,7 @@ uses PyMenus, PyToolbars, PyObjects, Setup, Qk1,
 
  {-------------------}
 
-function ClickItem(obj: PyObject; Hourglass: Boolean; nForm: TPyForm) : Boolean;
+function ClickItemNow(obj: PyObject; Hourglass: Boolean; nForm: TPyForm) : Boolean;
 var
  callback, arglist, callresult: PyObject;
 begin
@@ -140,6 +142,22 @@ begin
     Py_DECREF(callback);
    end;
   end;
+end;
+
+function ClickItem(obj: PyObject; Hourglass: Boolean; nForm: TPyForm) : Boolean;
+begin
+ if nForm<>Nil then
+  begin
+   Result:=PyObject_HasAttrString(obj, 'onclick');
+   if not Result then Exit;
+   Py_XDECREF(nForm.ci_obj);
+   nForm.ci_obj:=obj;
+   Py_INCREF(obj);
+   nForm.ci_Hourglass:=Hourglass;
+   PostMessage(nForm.Handle, wm_MessageInterne, wp_ClickItem, 0);
+  end
+ else
+  Result:=ClickItemNow(obj, Hourglass, Nil);
 end;
 
  {-------------------}
@@ -1129,6 +1147,12 @@ begin
                        if (Components[I] is TPythonExplorer) and TPythonExplorer(Components[I]).CanBeTargetted then
                         Msg.Result:=LongInt(Components[I]);
  {wp_SortMapViews: SortMapViews(Self);}
+  wp_ClickItem: if ci_obj<>Nil then
+                 begin
+                  ClickItemNow(ci_obj, ci_Hourglass, Self);
+                  Py_DECREF(ci_obj);
+                  ci_obj:=Nil;
+                 end;
  else
   inherited;
  end;
