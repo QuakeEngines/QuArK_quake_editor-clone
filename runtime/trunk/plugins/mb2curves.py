@@ -7,15 +7,15 @@
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
- 
+
 ########################################################
 #
 #                          Curves Plugin
 #                          v1.0, May 2000
-#                      works with Quark 6.0b2        
+#                      works with Quark 6.0b2
 #
 #
-#                    by tiglari@hexenworld.com     
+#                    by tiglari@hexenworld.com
 #
 #   You may freely distribute modified & extended versions of
 #   this plugin as long as you give due credit to tiglari &
@@ -156,7 +156,7 @@ def capImages(o, editor, inverse=0, lower=0, onside=0, open=0, thick=0, faceonly
     return
   #
   # make dictionary of points, 'bottom left front' etc.
-  # this one's name is short because we refer to it so often  
+  # this one's name is short because we refer to it so often
   #
   if onside:
       fdict = facedict_rflip(facedict_rflip(facedict_rflip(fdict)))
@@ -293,7 +293,7 @@ def bevelImages(o, editor, inverse=0, lower=0, left=0, standup=0, open=0, thick=
   def bevelcurve(pd):
       return cpFrom2Rows([pd["tlb"],pd["trb"],pd["trf"]],
                         [pd["blb"],pd["brb"],pd["brf"]])
-  cp = bevelcurve(pd)          
+  cp = bevelcurve(pd)
   length = lengthof(cp[0],3)
   inner = quarkx.newobj('inner:b2')
   cp = texcpFromFace(cp, fdict["b"], editor)
@@ -359,7 +359,7 @@ def bevelImages(o, editor, inverse=0, lower=0, left=0, standup=0, open=0, thick=
   if lower:
      inner.swapsides()
   if open:
-      return [inner]   
+      return [inner]
   if inverse:
       tcp = cpFrom2Rows([pd["tlb"], pd["trb"], pd["trf"]],
                          [pd["trb"], pd["trb"], pd["trf"]])
@@ -404,7 +404,7 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
     if fdict is None:
         return
     pdo = pointdict(vtxlistdict(fdict,o))
-    
+
     if funnel is not None:
 
         def warpbox(pd, pdo=pdo,funnel=funnel):
@@ -415,17 +415,17 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
                 for p in (p0, p1, p2, p3):
                     pd2[p] = c+funnel[i]*(pd[p]-c)
             return pd2
-            
+
         pd = warpbox(pdo)
     else:
         pd = pdo
-                                       
+
 
     def curveCp(pd, bulge=bulge):
         cp = cpFrom2Rows(circleLine(pd["trf"], pd["tlf"], pd["tlb"], pd["trb"]),
                         circleLine(pd["brf"], pd["blf"], pd["blb"], pd["brb"]),bulge)
         return cp
-        
+
     cp = curveCp(pd)
 
     def makeTube (cp, pd, oldface, pdo=pdo, fdict=fdict, stretchtex=stretchtex, subfunc=subfunc, subdivide=subdivide,editor=editor):
@@ -480,12 +480,12 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
         if noouter:
             inners.remove(inner)
         return inners+seams
-        
+
     if open:
        if inverse:
           inner.swapsides()
        return [inner]
-        
+
 
     if inverse:
 
@@ -493,9 +493,9 @@ def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
             # first not used, passed to reduce index confusion
             def halfSquare(hr): # hr=half-row excluding center
                 return [hr[1], hr[1], hr[2], hr[3], hr[3]]
-             
+
             return halfSquare(row[:4]), halfSquare(row[4:8])
-            
+
         def faces(circline, borderfunc, name, texface, subdivide=subdivide,subfunc=subfunc):
             out0, out1 = borderfunc(circline)
             b2a = b2From2Rows(out0, circline[0:5],texface,name+'0',subdivide=subdivide,subfunc=subfunc)
@@ -630,7 +630,7 @@ def curvemenu(o, editor, view):
         editor.ok(undo, "make cap")
       editor.invalidateviews()
 
-  
+
   def makebevel(m, o=o, editor=editor):
       dup = quarkx.newobj("bevel:d")
       dup["macro"]="dup bevel"
@@ -645,7 +645,7 @@ def curvemenu(o, editor, view):
         editor.ok(undo, "make left corner")
       else:
         editor.ok(undo, "make right corner")
-      
+
   def makecolumn(m, o=o, editor=editor):
       dup = quarkx.newobj("column:d")
       dup["macro"]="dup column"
@@ -654,7 +654,7 @@ def curvemenu(o, editor, view):
       undo=quarkx.action()
       undo.exchange(o, dup)
       editor.ok(undo, "make column")
-      
+
   disable = (len(o.subitems)!=6)
 
   newpoly = perspectiveRename(o, view)
@@ -672,7 +672,7 @@ def curvemenu(o, editor, view):
           item.o=o
           item.newpoly = newpoly
           item.view = view
-          
+
   for (menname, mapname, inv) in (("&Arch", "arch",  1), ("&Cap", "cap", 0)):
     item = qmenu.item(menname, makecap)
     item.inverse = inv
@@ -714,7 +714,7 @@ When the duplicator is selected, the entity page provides a variety of specifics
 The curve will be oriented w.r.t. the map view you RMB-clicked on, or, if you're RMB-ing on the treeview, the most recent mapview you clicked in.
 
 If the brush vanishes without being replaced by a shape, the brush may have been too screwy a shape, or looked at from a bad angle. (My attempts to detect these conditions in advance are meeting with unexpected resistance. There is also a bug in that if you apply this to a brush after first opening the map editor, without inserting anything first, the orientations are wrong.)
-"""      
+"""
   curvepop = qmenu.popup("Curves",list, hint=curvehint)
   if newpoly is None:
     if len(o.subitems)!=6:
@@ -735,11 +735,17 @@ def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
     #
     # cf FIXME in maphandles.CenterHandle.menu
     #
-    try:
-        view = editor.layout.clickedview
-    except:
-        view = None
-    return  [curvemenu(o, editor, view)]+oldmenu(o, editor)
+
+    beziersupport = quarkx.setupsubset()["BezierPatchSupport"]
+    if (beziersupport is not None) and (beziersupport == "1"):
+        # only allow the curves-submenu, if the game-mode supports bezierpatches
+        try:
+            view = editor.layout.clickedview
+        except:
+            view = None
+        return  [curvemenu(o, editor, view)]+oldmenu(o, editor)
+    else:
+        return  oldmenu(o, editor)
 
 #
 # This trick of redefining things in modules you're based
@@ -756,6 +762,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28  2001/02/25 04:46:49  tiglari
+#new specifics for brush&patch arch&bevel
+#
 #Revision 1.27  2001/02/14 10:08:58  tiglari
 #extract perspective stuff to quarkpy.perspective.py
 #
