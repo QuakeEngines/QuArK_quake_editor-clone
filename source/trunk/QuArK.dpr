@@ -157,7 +157,8 @@ uses
   EdOpenGL in '3dfx\EdOpenGL.pas',
   EdDirect3D in '3dfx\EdDirect3D.pas',
   Ed3DEditors in '3dfx\Ed3DEditors.pas',
-  EdSceneObject in '3dfx\EdSceneObject.pas';
+  EdSceneObject in '3dfx\EdSceneObject.pas',
+  OsFolder in 'prog\OsFolder.pas';
 
 {$R *.RES}
 
