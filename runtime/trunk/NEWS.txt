@@ -19,6 +19,9 @@ $Id$
       Make Detail for setting multiple poly and face texture flag
       to detail and related Infobase update.
 
+ * [Nazar-cdunde]: Updates to Q3 and JK2 Data.qrk files to display
+      models in views, including custom and file selection windows.
+
  * [SilverPaladin]: Improved the compiling menu for The-WildWest 
       Maps.  Q3Map2 2.5.11 or newer is recommended.  Updated the 
       Wild-West support for the version 1.5 release.
