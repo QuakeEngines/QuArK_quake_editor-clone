@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2002/04/02 21:05:20  tiglari
+close event handle
+
 Revision 1.32  2001/10/14 10:13:32  tiglari
 Live Pointer Hunt: rollback to version of 2001-10-02
 
@@ -2052,7 +2055,7 @@ begin
   FindClose(Rec);
  end;
  H:=CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
- CloseHandle(H);
+// CloseHandle(H);
 end;
 
 function GetFileRoot(Q: QObject) : QFileObject;
