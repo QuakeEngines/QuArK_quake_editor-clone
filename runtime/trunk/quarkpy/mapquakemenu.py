@@ -344,10 +344,13 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                 console = BuildPgmConsole_Advanced
 
                 # Check first Default build-tool directory
-                cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
-                if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
-                    # Success, use this build-tool!
-                    cmdline = cmdline2
+                try:
+                    cmdline2 = setup["BuildPgmsDir"] + "\\" + cmdline
+                    if (not quarkx.getfileattr(cmdline2)==FA_FILENOTFOUND):
+                        # Success, use this build-tool!
+                        cmdline = cmdline2
+                except:
+                    pass
 
                 if (not cmdline) or (quarkx.getfileattr(cmdline)==FA_FILENOTFOUND):
                     desc = setup["BuildDesc%d" % pgrmnbr] or cmdline or pgrmx
@@ -514,6 +517,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.10  2000/10/09 18:18:02  decker_dk
+#Build-Tool Controllers
+#
 #Revision 1.9  2000/07/24 23:58:11  alexander
 #added: .lin file processing for bspc leaks
 #
