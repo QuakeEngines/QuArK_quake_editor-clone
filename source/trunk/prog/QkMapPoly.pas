@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.53  2002/05/02 20:57:55  tiglari
+Fix for broken mirror duplicators (and probably other things not yet reported)
+
 Revision 1.52  2002/04/27 10:33:03  tiglari
 SetThreePointsT now erases 'm' specific (now-unneeded mirrror bit)
 
@@ -4251,7 +4254,7 @@ end;
 
 procedure TFace.Deplacement(const PasGrille: TDouble);
 var
- Pt, PTex: array[1..3] of TVect;
+ Pt, PTex, TexV: array[1..3] of TVect;
  I: Integer;
  OldOrg, NewOrg, InfoClic: TVect;
  f: TDouble;
@@ -4325,12 +4328,13 @@ begin
      Pt[I]:=VecSum(Pt[I],InfoClic);
      PTex[I]:=VecSum(PTex[I],InfoClic);
     end;
- {Shouldn't be needed because we're already
-   adjusting the texture }
+ { Might need to flip the face normals }
    if InverseOrientation then
     begin
      SetThreePoints(Pt[1], Pt[3], Pt[2]);
-     TextureMirror:=not TextureMirror;
+     { don't need this anymore cuz were gonna set
+       the textures newstyle
+       TextureMirror:=not TextureMirror; }
     end
    else
 
