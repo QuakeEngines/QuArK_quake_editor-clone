@@ -17,6 +17,13 @@ import math
 import quarkx
 from maputils import *
 
+#
+# Here should go things of general utility for managing
+#  quadratic bezier patches
+# 
+
+
+
 within45 = math.cos(deg2rad*45)
 
 def iseven(num):
@@ -124,9 +131,10 @@ def mapcp(f, cp):
     "returns a new cp array with f applied to each member of cp"
     return map(lambda row,f=f:map(f, row), cp)
 
-def texcp_from_b2(cp, cp2):
+def texcpFromCp(cp, cp2):
+    "tex coords of 2nd cp net are transferred to first"
     if len(cp)!=len(cp2) or len(cp[0])!=len(cp2[0]):
-      quarkx.msgbox("texcp_from_b2 dimension mismatch",2,4)
+      quarkx.msgbox("transferTexcp dimension mismatch",2,4)
       return
     def maprow(row, row2):
         return map(lambda v, v2:quarkx.vect(v.xyz+v2.st), row, row2)
@@ -138,7 +146,7 @@ def texcp_from_b2(cp, cp2):
 #  the face, the three points p0, p1, p2 should get the patch .st
 #  coordinates (0,0), (1,0) and (0, 1) respectively.
 #
-def texcp_from_face(cp, face, editor):
+def texcpFromFace(cp, face, editor):
     "returns a copy of cp with the texture-scale of the face projected"
 #    p0, p1, p2 = face.threepoints(2,editor.TexSource)
     p0, p1, p2 = face.threepoints(2)
@@ -153,10 +161,36 @@ def texcp_from_face(cp, face, editor):
 
     return mapcp(project, cp)
 
-def b2tex_from_face(b2, face, editor):
+def texFromFaceToB2(b2, face, editor):
     "copies texture and scale from face to bezier"
     b2["tex"] = face["tex"]
-    b2.cp = texcp_from_face(b2.cp, face, editor)
+    b2.cp = texcpFromFace(b2.cp, face, editor)
+
+def b2FromCpFace(cp, name, face, editor):
+    b2 = quarkx.newobj(name+':b2')
+    b2.cp =  texcpFromFace(cp, face, editor)
+    b2["tex"]=face["tex"]
+    return b2
+
+def cpFrom2Rows(row0, row2, bulge=None):
+    "makes cp from top & bottom rows & fills in middle"
+    if bulge is None:
+      bulge=(0.5, 1.0)
+    cp = [row0, None, row2]
+    cp[1] = map(lambda x, y, h=bulge[0]:h*x+(1-h)*y, cp[0], cp[2]) 
+    if bulge[1]!=1:
+        c=reduce(lambda x,y:x+y,cp[1])/float(len(cp[1]))
+        cp[1]=map(lambda v,c=c,b=bulge[1]:c+b*(v-c), cp[1])
+    return cp
+
+
+def b2From2Rows(row0, row2, texface, name, bulge=None):
+     cp = cpFrom2Rows(row0, row2, bulge)
+     b2 = quarkx.newobj(name+":b2")
+     b2["tex"] = texface["tex"]
+     b2.cp = texcpFromFace(cp, texface, None)
+     return b2
+
 
 #
 # If u and v are images of the parameter axes, this matrix
@@ -211,10 +245,102 @@ def antidistort_rows(cp):
     cp = antidistort_columns(cp)
     return transposecp(cp)
 
+#
+# Getting approximate tangent planes at control points.
+#
+
+#
+# The idea here is that at odd-numbered and quilt-end points, you
+#  take the actual derivatives, at intermedient end points you
+#  take the average of the derivative in and the derivative out.
+#  
+def dpdu(cp, i, j):
+  h = len(cp)
+  if i==0:
+    return 2*(cp[1][j]-cp[0][j])
+  elif i==h-1:
+    return 2*(cp[i][j]-cp[i-1][j])
+  else:
+    return (cp[i+1][j]-cp[i-1][j])
+    
+def dpdv(cp, i, j):
+  w = len(cp[0])
+  if j==0:
+    return 2*(cp[i][j+1]-cp[i][j])
+  elif j==w-1:
+    return 2*(cp[i][j]-cp[i][j-1])
+  else:
+    return cp[i][j+1]-cp[i][j-1]
+    
+def tanaxes(cp, i, j):
+  return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
+  
+#
+#  Derivative matrix for parameter->space mappings and
+#    parameter->plane mappings, at corners.
+#  Not defined at non-corners due to greater complexity and/or
+#    ill-definition (crinkles=no deriv at even-indexed cp's)
+#
+def d5(cp, (i, j)):
+    dSdu = dSdv = None
+    if i==0:
+        dSdu = cp[1][j]-cp[0][j]
+    elif i==len(cp)-1:
+        dSdu = cp[i][j]-cp[i-1][j]
+    if j==0:
+        dSdv = cp[i][1]-cp[i][0]
+    elif j==len(cp[0])-1:
+        dSdv = cp[i][j]-cp[i][j-1]
+    return dSdu, dSdv  
+    
+
+def faceTexFromCph(cph, face, editor):
+    "projects texture-scale at cp handle to face, returning copy of face"
+    b2 = cph.b2
+    d5du, d5dv = d5(b2.cp, cph.ij)
+    #
+    # Derivatives of parameter->space and parameter->tex maps.
+    # S for space, T for texture (cap so diff from patch coords)
+    #
+    dSdp = colmat_uv1(d5du.xyz, d5dv.xyz)
+    dTdp = colmat_uv1((d5du.s, d5du.t, 1),
+                      (d5dv.s, d5dv.t, 1))
+    Mat = dSdp*~dTdp
+    #
+    # This mapping is the texture scale & offset (differential
+    #   of texture->space mapping)
+    #
+    def mapping(t3, offset=b2.cp[0][0], Mat=Mat):
+        texoffset = quarkx.vect(offset.s, offset.t, 0)
+        return Mat*(quarkx.vect(t3)-texoffset)+quarkx.vect(offset.xyz)
+    #
+    # Apply the texture differential to origin & two axes of texture
+    #   space.  Note wierdass sign-reversal (beaucoup de tah, Bill)
+    #
+    texp = map(mapping,((0,0,0),(1,0,0),(0,-1,0)))
+    #
+    # Now first project the texture onto a face tangent to the patch,
+    #   then project it onto the face we want.
+    #
+#    new = quarkx.newobj("face:f")
+    new = face.copy()
+    new.setthreepoints(texp,1)
+    new["tex"]=b2["tex"]
+    new.setthreepoints(texp,2,editor.TexSource)
+    #
+    # Prolly time to do some mass reorganization of utilities
+    #
+    from plugins.maptagside import projecttexfrom
+    return projecttexfrom(new, face)
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.8  2000/06/25 11:00:50  tiglari
+#fixed antidistortion crash when sum=0.  still wrong but doesn't crash
+#
 #Revision 1.7  2000/06/22 22:38:37  tiglari
 #added interpolateGrid (replacing an unused fn with a goofy name)
 #

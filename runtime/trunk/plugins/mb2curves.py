@@ -53,9 +53,27 @@ from quarkpy.maputils import *
 import quarkpy.mapbezier
 from quarkpy.b2utils import *
 
-from quarkpy.mapbezier import texcp_from_b2
-from quarkpy.mapbezier import b2tex_from_face
+#############################
+#
+#  MAJOR SECTIONS
+#
+#
+#  - perspective stuff: renaming faces based on perspective
+#      in map view, dictionaries of faces & vertices
+#
+#  - image builders: implementation of buildimages for the
+#      shape-builders
+#
+#  - duplicators: the duplicator code
+#
+#  - menus
+#
 
+
+#  -- Perspective Stuff --
+#
+
+#
 #
 # return X, Y, Z axes:
 #  X to right on screen
@@ -80,13 +98,13 @@ def perspectiveAxes(view=None):
 # return front, back, left, right, top, bottom w.r.t. view
 #  perspective if possible, otherwise None.
 #
-def perspectiveFacedict(o, view):
+def perspectiveFaceDict(o, view):
   faces = o.subitems
   if len(faces)!=6:
     return None
   axes = perspectiveAxes(view)
   pool = faces[:]
-  facedict = {}
+  faceDict = {}
   for (label, ax, dir) in (('f',1,1),('b',1,-1),('u',2,1),('d',2,-1),
                          ('r',0,1),('l',0,-1)):
     chosenface = pool[0]
@@ -96,11 +114,11 @@ def perspectiveFacedict(o, view):
       if face.normal*axis>chosendot:
         chosenface=face
         chosendot=face.normal*axis
-    facedict[label]=chosenface
+    faceDict[label]=chosenface
     pool.remove(chosenface)
-  return facedict
+  return faceDict
   
-def facedict(o):
+def faceDict(o):
   result = {}
   for (key, name) in (('f','front'),('b','back'),('u','up'),('d','down'),
                       ('r','right'),('l','left')):
@@ -109,7 +127,7 @@ def facedict(o):
 
 def perspectiveRename(o, view):
   "renames the faces of a 6-face polyhedron in accord with perspective of last-clicked-on view"
-  dict = perspectiveFacedict(o, view)
+  dict = perspectiveFaceDict(o, view)
   if dict is None:
     return None
   newpoly = quarkx.newobj(o.name)
@@ -177,12 +195,12 @@ def shared_vertices(vtxlists):
   return first 
 
 
-def vtxlistdict(facedict,o):
+def vtxlistdict(faceDict,o):
     "returns a dict in which the keys are associated with vertex-lists"
     result = {}
     try:
-        for key in facedict.keys():
-            result[key]=facedict[key].verticesof(o)
+        for key in faceDict.keys():
+            result[key]=faceDict[key].verticesof(o)
     except (AttributeError):
         return None
     return result
@@ -206,6 +224,12 @@ def pointdict_hflip(pd):
         pd2[key2] = pd[key]
     return pd2
   
+#
+# -- Image builders
+#
+#    many of these below should probably be stuck inside
+#    the appropriate cap/bevel/columnImages method
+#
 
 def makearchfacecp(bl, tl, tr, br):
     mid = (tl+tr)/2.0
@@ -221,12 +245,6 @@ def makecapfacecp(bl, tl, tr, br):
           [bl, (bl+bm)/2.0, (tm+bm)/2.0, (bm+br)/2.0, br],
           [bl, tl, tm, tr, br]]
     return cp
-
-def b2FromFace(cp, name, face, editor):
-    b2 = quarkx.newobj(name+':b2')
-    b2.cp =  texcp_from_face(cp, face, editor)
-    b2["tex"]=face["tex"]
-    return b2
 
 
 def smallerarchbox(box, thick):
@@ -278,16 +296,6 @@ def archline(pd, a, b, c, d):
     "returns 5-tuple with middle halfway between b and c"
     return [pd[a], pd[b], (pd[b]+pd[c])/2, pd[c], pd[d]]
 
-def cpFrom2Rows(row0, row2, bulge=None):
-    "makes cp from top & bottom rows & fills in middle"
-    if bulge is None:
-      bulge=(0.5, 1.0)
-    cp = [row0, None, row2]
-    cp[1] = map(lambda x, y, h=bulge[0]:h*x+(1-h)*y, cp[0], cp[2]) 
-    if bulge[1]!=1:
-        c=reduce(lambda x,y:x+y,cp[1])/float(len(cp[1]))
-        cp[1]=map(lambda v,c=c,b=bulge[1]:c+b*(v-c), cp[1])
-    return cp
 
 def archcurve(pd):
     cp = cpFrom2Rows(archline(pd, "blf", "tlf", "trf", "brf"),
@@ -295,30 +303,13 @@ def archcurve(pd):
     return cp
 
 
-def b2From2Rows(row0, row2, texface, name, bulge=None):
-     cp = cpFrom2Rows(row0, row2, bulge)
-     b2 = quarkx.newobj(name+":b2")
-     b2["tex"] = texface["tex"]
-     b2.cp = texcp_from_face(cp, texface, None)
-     return b2
-
-def yflip(face):
-    (p0, p1, p2) = face.threepoints(2)
-    p2 = p0-(p2-p0)
-    face.setthreepoints((p0, p1, p2), 2)
-
-def xflip(face):
-    (p0, p1, p2) = face.threepoints(2)
-    p1 = p0-(p1-p0)
-    face.setthreepoints((p0, p1, p2), 2)
-
-def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretchtex=0):
+def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretchtex=0):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
   # Make dictionary of faces u/d/f/b/r/l
   #
   o.rebuildall()
-  fdict = facedict(o)
+  fdict = faceDict(o)
   if fdict is None:
     return
   #
@@ -339,7 +330,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
   #
   # project cps from face to patch (flat projection, distorted)
   #
-  cp = texcp_from_face(cp, texface, editor)
+  cp = texcpFromFace(cp, texface, editor)
   #
   # adjust down sides if wanted
   #
@@ -355,7 +346,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
           newside = texface.copy()
           newside.setthreepoints(texface.threepoints(2),2)
           newside.distortion(side.normal, pd[fulcrum])
-          cp2 = texcp_from_face(cp, newside, editor)
+          cp2 = texcpFromFace(cp, newside, editor)
           for index in range(3):
               cp[index][edge]=cp2[index][edge]
   #
@@ -370,7 +361,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
       pd2 = smallerarchbox(pd, thick)
       cp2 = archcurve(pd2)
       inner2=quarkx.newobj("inner2:b2")
-      cp2 = texcp_from_b2(cp2, cp)
+      cp2 = texcpFromCp(cp2, cp)
       inner2.cp = cp2
       inner2["tex"] = inner["tex"]
       #
@@ -407,16 +398,16 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
 #      fcp = transposecp(fcp)
 #  else:
   bcp = transposecp(bcp)
-  front = b2FromFace(fcp, 'front', fdict["f"], editor)
-  back = b2FromFace(bcp,'back', fdict["b"], editor)
+  front = b2FromCpFace(fcp, 'front', fdict["f"], editor)
+  back = b2FromCpFace(bcp,'back', fdict["b"], editor)
   if faceonly:
     return [front, back]
   return [inner, front, back]
 
-def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stretchtex=0):
+def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stretchtex=0):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
-  fdict = facedict(o)
+  fdict = faceDict(o)
   if fdict is None:
     return
   pd = pointdict(vtxlistdict(fdict,o))
@@ -429,7 +420,7 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
   cp = bevelcurve(pd)          
   length = lengthof(cp[0],3)
   inner = quarkx.newobj('inner:b2')
-  cp = texcp_from_face(cp, fdict["b"], editor)
+  cp = texcpFromFace(cp, fdict["b"], editor)
   right = fdict["b"].copy()
   if not stretchtex:
       #
@@ -440,7 +431,7 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
           right.distortion(fdict["l"].normal,pd["brb"])
       else:
           right.distortion(fdict["r"].normal,pd["brb"])
-      cp2 = texcp_from_face(cp, right, editor)
+      cp2 = texcpFromFace(cp, right, editor)
       for i in range(3):
           cp[i][2]=cp2[i][2]
   cp = antidistort_rows(cp)
@@ -450,7 +441,7 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       pd2 = smallerbevelbox(pd, thick)
       cp2 = bevelcurve(pd2)
       inner2=quarkx.newobj("inner2:b2")
-      inner2.cp = texcp_from_b2(cp2, cp)
+      inner2.cp = texcpFromCp(cp2, cp)
       inner2["tex"]=inner["tex"]
       tseam = b2From2Rows([pd["trf"], pd["trb"], pd["tlb"]],
                        [pd2["trf"], pd2["trb"], pd2["tlb"]],
@@ -482,8 +473,8 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
                          [pd["tlf"], pd["tlf"], pd["tlb"]])
       bcp = cpFrom2Rows([pd["blb"], pd["brb"], pd["brf"]],
                          [pd["blb"], pd["blf"], pd["blf"]])
-  top = b2FromFace(tcp,"top",fdict["u"],editor)
-  bottom = b2FromFace(bcp,"bottom",fdict["d"],editor)
+  top = b2FromCpFace(tcp,"top",fdict["u"],editor)
+  bottom = b2FromCpFace(bcp,"bottom",fdict["d"],editor)
   if left:
     top.swapsides()
     bottom.swapsides()
@@ -496,10 +487,10 @@ def circleLine(p0, p1, p2, p3):
     return [(p0+p1)/2, p1, (p1+p2)/2, p2, (p2+p3)/2, p3,
             (p3+p0)/2, p0, (p0+p1)/2]
 
-def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,1), funnel=None):
+def columnImages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,1), funnel=None):
     "makes a column on the basis of brush o"
     o.rebuildall()
-    fdict = facedict(o)
+    fdict = faceDict(o)
     if fdict is None:
         return
     pdo = pointdict(vtxlistdict(fdict,o))
@@ -529,8 +520,8 @@ def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
 
     def makeTube (cp, pd, oldface, pdo=pdo, fdict=fdict, stretchtex=stretchtex, editor=editor):
         cp2 = interpolateGrid(pdo["tlb"], pdo["trb"], pdo["blb"], pdo["brb"], 3, 9)
-        cp2 = texcp_from_face(cp2, oldface, editor)
-        cp = texcp_from_b2(cp, cp2)
+        cp2 = texcpFromFace(cp2, oldface, editor)
+        cp = texcpFromCp(cp, cp2)
         if not stretchtex:
             for (facekey, corner) in (("r", "trb"),("f", "trf"),("l","tlf")):
                 newface=oldface.copy()
@@ -538,7 +529,7 @@ def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
                 newface.distortion(fdict[facekey].normal,pdo[corner])
                 oldface = newface
             cp3 = interpolateGrid(pdo["tlf"], pdo["tlb"], pdo["blf"], pdo["blb"])
-            cp3 = texcp_from_face(cp3, oldface, editor)
+            cp3 = texcpFromFace(cp3, oldface, editor)
             for i in range(3):
                 cp[i][8] = quarkx.vect(cp[i][8].xyz+cp3[i][2].st)
 #    squawk(`cp`)
@@ -555,10 +546,10 @@ def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
         cp2 = curveCp(pd2)
         inner2 = makeTube(cp2, pd2, fdict["f"])
         tcp = cpFrom2Rows(cp[0],cp2[0])
-        top = b2FromFace(tcp,"top",fdict["u"],editor)
+        top = b2FromCpFace(tcp,"top",fdict["u"],editor)
         top.swapsides()
         bcp = cpFrom2Rows(cp[2], cp2[0])
-        bottom = b2FromFace(bcp,"bottom",fdict["d"],editor)
+        bottom = b2FromCpFace(bcp,"bottom",fdict["d"],editor)
         inner2.swapsides()
         return [inner,inner2,top,bottom]
         
@@ -599,7 +590,6 @@ def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0, bulge=(.5,
         return [inner, top, bottom]
 
 
-
 def images(buildfn, args):
     if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
         return apply(buildfn, args)
@@ -608,6 +598,10 @@ def images(buildfn, args):
             return apply(buildfn, args)
         except:
             return []
+
+#
+#  --- Duplicators ---
+#
 
 class CapDuplicator(StandardDuplicator):
 
@@ -621,7 +615,7 @@ class CapDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-         return images(capimages, (o, editor, inverse, lower, open, thick, faceonly, stretchtex))
+         return images(capImages, (o, editor, inverse, lower, open, thick, faceonly, stretchtex))
 
 
 class BevelDuplicator(StandardDuplicator):
@@ -637,7 +631,7 @@ class BevelDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-           return images(bevelimages, (o, editor, inverse, left, open, thick, faceonly, stretchtex))
+           return images(bevelImages, (o, editor, inverse, left, open, thick, faceonly, stretchtex))
 
 class ColumnDuplicator(StandardDuplicator):
 
@@ -649,12 +643,10 @@ class ColumnDuplicator(StandardDuplicator):
       ("inverse", "open", "thick", "stretchtex", "bulge", "funnel"))
     if thick:
       thick, = thick
-    if bulge is None:
-      bulge = (.5, 1.0)
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-           return images(columnimages, (o, editor, inverse, open, thick, stretchtex, bulge,funnel))
+           return images(columnImages, (o, editor, inverse, open, thick, stretchtex, bulge,funnel))
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
@@ -662,6 +654,9 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup column":  ColumnDuplicator
 })
 
+#
+#  --- Menus ---
+#
 
 def curvemenu(o, editor, view):
 

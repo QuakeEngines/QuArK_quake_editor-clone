@@ -144,92 +144,6 @@ def quilt_addcol(cp,(i,j)):
           mid,b2midcp(mid,qt3,arc[2])]
 
 
-#
-# Getting approximate tangent planes at control points.
-#
-
-#
-# The idea here is that at odd-numbered and quilt-end points, you
-#  take the actual derivatives, at intermedient end points you
-#  take the average of the derivative in and the derivative out.
-#  
-def dpdu(cp, i, j):
-  h = len(cp)
-  if i==0:
-    return 2*(cp[1][j]-cp[0][j])
-  elif i==h-1:
-    return 2*(cp[i][j]-cp[i-1][j])
-  else:
-    return (cp[i+1][j]-cp[i-1][j])
-    
-def dpdv(cp, i, j):
-  w = len(cp[0])
-  if j==0:
-    return 2*(cp[i][j+1]-cp[i][j])
-  elif j==w-1:
-    return 2*(cp[i][j]-cp[i][j-1])
-  else:
-    return cp[i][j+1]-cp[i][j-1]
-    
-def tanaxes(cp, i, j):
-  return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
-  
-#
-#  Derivative matrix for parameter->space mappings and
-#    parameter->plane mappings, at corners.
-#  Not defined at non-corners due to greater complexity and/or
-#    ill-definition (crinkles=no deriv at even-indexed cp's)
-#
-def d5(cp, (i, j)):
-    dSdu = dSdv = None
-    if i==0:
-        dSdu = cp[1][j]-cp[0][j]
-    elif i==len(cp)-1:
-        dSdu = cp[i][j]-cp[i-1][j]
-    if j==0:
-        dSdv = cp[i][1]-cp[i][0]
-    elif j==len(cp[0])-1:
-        dSdv = cp[i][j]-cp[i][j-1]
-    return dSdu, dSdv  
-    
-
-def projpatch2face(cph, face, editor):
-    "projects texture-scale at cp handle to face, returning copy of face"
-    b2 = cph.b2
-    d5du, d5dv = d5(b2.cp, cph.ij)
-    #
-    # Derivatives of parameter->space and parameter->tex maps.
-    # S for space, T for texture (cap so diff from patch coords)
-    #
-    dSdp = colmat_uv1(d5du.xyz, d5dv.xyz)
-    dTdp = colmat_uv1((d5du.s, d5du.t, 1),
-                      (d5dv.s, d5dv.t, 1))
-    Mat = dSdp*~dTdp
-    #
-    # This mapping is the texture scale & offset (differential
-    #   of texture->space mapping)
-    #
-    def mapping(t3, offset=b2.cp[0][0], Mat=Mat):
-        texoffset = quarkx.vect(offset.s, offset.t, 0)
-        return Mat*(quarkx.vect(t3)-texoffset)+quarkx.vect(offset.xyz)
-    #
-    # Apply the texture differential to origin & two axes of texture
-    #   space.  Note wierdass sign-reversal (beaucoup de tah, Bill)
-    #
-    texp = map(mapping,((0,0,0),(1,0,0),(0,-1,0)))
-    #
-    # Now first project the texture onto a face tangent to the patch,
-    #   then project it onto the face we want.
-    #
-    new = quarkx.newobj("face:f")
-    new.setthreepoints(texp,1)
-    new["tex"]=b2["tex"]
-    new.setthreepoints(texp,2,editor.TexSource)
-    #
-    # Prolly time to do some mass reorganization of utilities
-    #
-    from plugins.maptagside import projecttexfrom
-    return projecttexfrom(new, face)
     
 #
 # Handles for control points.
@@ -328,7 +242,7 @@ class CPHandle(qhandles.GenericHandle):
         thicken = qmenu.popup("Thicken",[addrow, addcol])
         
         def projtexclick(m, self=self, editor=editor):
-          new = projpatch2face(self,m.tagged,editor)
+          new = faceTexFromCph(self,m.tagged,editor)
           undo = quarkx.action()
           undo.exchange(m.tagged, new)
           editor.ok(undo, "proj tex 2 tagged face")
@@ -474,7 +388,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menu.im_func):
 
     def projtexclick(m, o=o, editor=editor):
         new = o.copy()
-        b2tex_from_face(new, m.tagged, editor)
+        texFromFaceToB2(new, m.tagged, editor)
         undo = quarkx.action()
         undo.exchange(o, new)
         editor.ok(undo,"project texture from tagged")
@@ -516,6 +430,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20  2000/06/14 21:19:39  tiglari
+#texture coord entry dialog fixes, drag hint shows texture coords when texture is dragged
+#
 #Revision 1.19  2000/05/29 21:43:08  tiglari
 #Project texture to tagged added
 #
