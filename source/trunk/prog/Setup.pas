@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/08/25 17:57:52  decker_dk
+Comment about possible bug. Look for FIXME
+
 Revision 1.11  2000/08/21 20:45:13  aiv
 Added ModelColor
 
@@ -114,6 +117,8 @@ type
 var
  ApplicationPath: String;
  SetupSet: TSetupSetArray;
+{--CONVEX-- support for multiple texture formats}
+ TexExtensions : TStringList = NIL;
 
 const  { for SetupChanged }
  scInit      = 0;
@@ -146,6 +151,8 @@ procedure MakeAssociations(Config: Qobject);
 procedure RefreshAssociations(Forced: Boolean);
 procedure RemoveAssociations;
 function AssociationWithQuArK(const FileExt: String) : Boolean;
+
+procedure StoreTexExtensions; {--CONVEX--}
 
  {------------------------}
 
@@ -281,6 +288,33 @@ begin
  if Result=Nil then
   Raise EErrorFmt(5205, [SetupSetName[Root]+':'+SubSet]);
 end;
+
+{--CONVEX-begin--}
+procedure StoreTexExtensions;
+var
+ C:Char;
+ Idx : Byte;
+ S, SubStr : String;
+begin
+  S := SetupGameSet.Specifics.Values['TextureFormat'];
+  if TexExtensions <> NIL then TexExtensions.Free;
+  TexExtensions := TStringList.Create;
+  Idx := 1;
+  while Idx <= Length(S) do
+  begin
+    SubStr := '';
+    C := #0;
+    while (C <> ' ') and (C <> ',') and (Idx <= Length(S)) do
+    begin
+      C := S[Idx];
+      if (C <> ' ') and (C <> ',') then
+        SubStr := SubStr + C;
+      Inc (Idx);
+    end;
+    TexExtensions.Add (SubStr);
+  end;
+end;
+{--CONVEX-end--}
 
 function SetupGameSet : QObject;
 begin
@@ -523,6 +557,7 @@ begin
 
   { sends the reset message to all windows }
  PosteMessageFiches(wp_SetupChanged, Level);
+ StoreTexExtensions; {--Convex--}
  if Level = scInit then Exit;
 
   { sends the reset message to Python }
@@ -913,6 +948,7 @@ begin
  if S='' then
   Raise EErrorFmt(5542, [CharModeJeu+nMode]);
  ChangeGameModeStr(S, Confirm);
+ StoreTexExtensions; {--Convex--}
 end;
 
 function GameModeOk(nMode: Char) : Boolean;

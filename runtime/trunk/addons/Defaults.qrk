@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.54  2000/09/10 13:01:23  alexander
+//set name
+//
 //Revision 1.53  2000/09/04 21:20:28  tiglari
 //additions to dup column specifics, for more options
 //
@@ -671,7 +674,7 @@ QQRKSRC1
         TriggerTextureDef = "common/trigger"
         LightFactor = '0.9'
         3DLight = '512'
-        TextureFormat = ".tga"
+        TextureFormat = ".tga,.jpg"
         TextureShaders = "scripts/quark.shader"
       }
     }

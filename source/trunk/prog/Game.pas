@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.14  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -100,7 +103,8 @@ type
                 PaletteLmp: TPaletteLmp;
                 RefCount: Integer;
                 GameName: String[19];
-                TextureExt: String[11];
+                {TextureExt: String[11];}
+                TextureExt: String[255]; {--CONVEX-- : more space needed!}
                 UnifiedPalette: Boolean;
                {AddOns: QFileObject;}
                 case Integer of
@@ -160,6 +164,11 @@ var
 // SourceBases: TStringList;
  GameBuffer1: PGameBuffer;
  FreeGBList: TList = Nil;
+
+{--CONVEX-begin--}
+  LastAliasName   : String; { last aliased filename }
+  LastAliasIndex  : Byte = 0; { last alias-extension index }
+{--CONVEX-end--}
 
  {------------------------}
 
@@ -460,23 +469,70 @@ begin
  Dirs.Add(SetupGameSet.Specifics.Values['BaseDir']);
 end;
 
+{--Convex-begin--}
+procedure RestartAliasing;
+begin
+  LastAliasName := '';
+  LastAliasIndex := 0;
+end;
+
+function IsTextureFile (const FileName: String) : Boolean;
+var
+  I : Byte;
+begin
+  for I := 0 to TexExtensions.Count-1 do
+  begin
+    if (CompareText(ExtractFileExt(FileName), TexExtensions.Strings[i])=0) then
+    begin // file is a texture if its extension is listed in GameBuffer
+      Result := true;
+      Exit;
+    end;
+  end;
+  Result := false;
+end;
+
 function FileAlias(const FileName: String) : String;
 begin   { returns an alternate file name to lookup this file }
-  { Alternate Texture File Type (.jpg / .tga)...}
+  if (IsTextureFile(FileName)) then // texture filename aliasing
+  begin
+    if (CompareText (FileName, LastAliasName)<>0) then
+    begin
+      LastAliasName := FileName;
+      LastAliasIndex := 0;
+    end;
+    if LastAliasIndex >= TexExtensions.Count then { no alias found }
+    begin
+      Result := '';
+      LastAliasIndex := 0;
+    end
+    else
+    begin
+      Result := ChangeFileExt (FileName, TexExtensions.Strings[LastAliasIndex]);
+      Inc (LastAliasIndex);
+    end;
+  end else
+  begin   // needed file is not a texture
+    Result := '';
+  end;
+(*  { Alternate Texture File Type (.jpg / .tga)...}
  if (CharModeJeu>=mjQ3A) and (CompareText(ExtractFileExt(FileName), '.tga') = 0) then
     { if its quake3 then a .tga file can exist as a .jpg file too }
   Result:=ChangeFileExt(FileName,'.jpg')
  else
-  Result:='';   { no other aliases }
+  Result:='';   { no other aliases } *)
 end;
+{--Convex-end--}
 
 function DisplayAlias(const FileName: String) : String;
 begin
+ Result := '';
+ while (Result <> '') do
  Result:=FileAlias(FileName);
  if Result='' then
   Result:=FileName
  else
   Result:=FmtLoadStr1(5700, [FileName, Result]);    { "<filename> or <alias>" }
+  { FIXME: needs to be changed for multiple aliases }
 end;
 
 function NeedGameFile(const FileName: String) : QFileObject;
@@ -512,49 +568,57 @@ begin
  Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAlias(FileName), BaseDir]);
 end;
 
+{--Convex-begin-- : multi-alias texture file search }
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 var
  NomChemin, NomComplet: String;
  Alias: String;
  NoMoreAlias: Boolean;
  TempResult: QFileObject;
-
-{DECKER-begin}
-{FoundIt: Boolean; removed by Armin}
  GetPakNames: TGetPakNames;
-{DECKER-end}
-
-(*procedure FoundInFile(Q: QObject);
-  var
-   I: Integer;
-  begin  { move Q to the last position of GameFiles }
-   if (GameFiles.Count>0) and (GameFiles.Last=Q) then
-    Exit;  { already done, just quit }
-   I:=GameFiles.IndexOf(Q);
-   if I<0 then
-    GameFiles.Add(Q)
-   else
-    GameFiles.Move(I, GameFiles.Count-1);
-  end;*)
-
+  CDSearch : Boolean;
 begin
- Alias:=FileAlias(FileName);
- NomChemin:=PathAndFile(QuakeDir, BaseDir);
- if GameFiles=Nil then
-  GameFiles:=TQList.Create;
+  Result := NIL;
+  if GameFiles=Nil then GameFiles:=TQList.Create;
+  CDSearch := false;
+  while (true) do
+  begin
+    if (not CDSearch) then
+      NomChemin:=PathAndFile(QuakeDir, BaseDir)
+   else
+    begin
+      NomChemin:=SetupGameSet.Specifics.Values['CDDir'];
+      if (NomChemin='') then
+        Exit;
+      NomChemin:=PathAndFile(PathAndFile(SetupGameSet.Specifics.Values['CD'],  NomChemin), BaseDir);
+    end;
 
- repeat
-   { looks in .pak files }
-{DECKER-begin}
-{
-  NomComplet:=GetPakZero(NomChemin, True);
-  while GetNextPakName(True, NomComplet, True) do
-}
- {FoundIt := FALSE;}
-  GetPakNames:=TGetPakNames.Create; try
+    NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
+
+    RestartAliasing;
+    NoMoreAlias := false;
+    while (not NoMoreAlias) do
+begin
+      { Buffer search }
+      Result := SortedFindFileName (GameFiles, NomComplet);
+      if (Result <> NIL) then Exit; // found it
+ Alias:=FileAlias(FileName);
+      NoMoreAlias := Alias = '';
+      NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+    end;
+
+    NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
+    Alias := FileName;
+    RestartAliasing;
+    NoMoreAlias := false;
+    while (not NoMoreAlias) do
+    begin
+      {PAKfile search}
+      NoMoreAlias := Alias = '';
+      GetPakNames:=TGetPakNames.Create;
+      try
   GetPakNames.CreatePakList(NomChemin, True);
   while GetPakNames.GetPakName(True, NomComplet, True) do
-{DECKER-end}
    if not IsPakTemp(NomComplet) then  { ignores QuArK's own temporary .pak's }
     begin
      Result:=SortedFindFileName(GameFiles, NomComplet);
@@ -565,66 +629,48 @@ begin
        GameFiles.Add(Result);
        GameFiles.Sort(ByFileName);
       end;
-     TempResult:=Result.FindFile(FileName);
-     if TempResult<>Nil then
-      begin
-       Result:=TempResult;
-       Exit;   { found it }
-      end;
-     if Alias<>'' then
-      begin   { look for the alias }
        TempResult:=Result.FindFile(Alias);
        if TempResult<>Nil then
         begin
          Result:=TempResult;
-         Exit;   { found it as alias }
-        end;
+            Exit;   { found it }
       end;
     end;
-{DECKER-begin}
   finally
     GetPakNames.Destroy;
   end;
-{DECKER-end}
+      Alias := FileAlias (FileName);
+      NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+    end;
 
-  NoMoreAlias:=Alias='';
   NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
-
-  repeat
-    { looks for it from the buffer }
-   Result:=SortedFindFileName(GameFiles, NomComplet);
-   if Result<>Nil then
-    Exit;   { found it }
-
-    { looks for it on the disk }
+    RestartAliasing;
+    NoMoreAlias := false;
+    while (not NoMoreAlias) do
+    begin
+      { Disk search }
    if FileExists(NomComplet) then
-    begin    { found it }
+      begin
      Result:=ExactFileLink(NomComplet, Nil, True);
      Result.Flags:=Result.Flags or ofWarnBeforeChange;
      GameFiles.Add(Result);
      GameFiles.Sort(ByFileName);
      Exit;
     end;
-   if NoMoreAlias then
-    Break;   { no alias or alias already searched for }
-
+      Alias := FileAlias (FileName);
+      NoMoreAlias := Alias = '';
    NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
-   NoMoreAlias:=True;
-  until False;   { try again with the alias }
+    end;
 
-  Result:=Nil;
   if not LookInCD then
-   Exit;   { not found at all or don't look on the CD }
-  LookInCD:=False;
+      Exit;
 
-   { looks on the CD }
-  NomChemin:=SetupGameSet.Specifics.Values['CDDir'];
-  if NomChemin='' then
-   Exit;   { no CD to look in }
-  NomChemin:=PathAndFile(PathAndFile(SetupGameSet.Specifics.Values['CD'],
-   NomChemin), BaseDir);
- until False;
+    { CD search }
+    LookInCD := false;
+    CDSearch := true;
+  end;
 end;
+{--Convex-end--}
 
  {------------------------}
 
