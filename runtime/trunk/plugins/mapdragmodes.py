@@ -115,10 +115,45 @@ class CubeMakerDragObject(parent):
 
 def CubeCut(editor, face, choicefn=lambda face,n1: -abs(face.normal*n1)):
     n = face.normal
+    sellist = editor.layout.explorer.sellist
+    if len(sellist)==1 and sellist[0].type==':f' and len(sellist[0].faceof):
+        #
+        # Special : if a face is selected, we build a special structure to fake
+        # the cutting of this face in two.
+        #
+        # First normalize the face texture.
+        #
+        center = n * face.dist
+        v = orthogonalvect(n, editor.layout.views[0])
+        #
+        # Do it !
+        #
+        undo = quarkx.action()
+        for poly in sellist[0].faceof:
+            newgroup = quarkx.newobj(poly.shortname+':g')
+            undo.put(poly.parent, newgroup, poly)
+            for f in poly.subitems:
+                undo.move(f, newgroup)
+            for sign in (-128,128):
+                newpoly = quarkx.newobj("piece:p")
+                for spec,arg in poly.dictspec.items():
+                    newpoly[spec] = arg
+                newface = sellist[0].copy()
+                newpoly.appenditem(newface)
+                newface = quarkx.newobj("cut:f")
+                newface.texturename = quarkpy.mapbtns.textureof(editor)
+                newface.setthreepoints((center, center + v * sign, center + (n^v) * 128), 0)
+                newpoly.appenditem(newface)
+                undo.put(newgroup, newpoly)
+            undo.exchange(poly, None)
+        undo.exchange(sellist[0], None)
+        editor.ok(undo, "cut face in two")
+        return
+    
     sellist = editor.visualselection()
     if len(sellist)==0:
         sellist = [editor.Root]
-    if len(sellist)==1 and sellist[0].type==':g':
+    elif len(sellist)==1 and sellist[0].type==':g':
         #
         # Special : if a group is selected, we just insert the new face in the group.
         # First ask the user if he agrees...
@@ -219,7 +254,7 @@ def CubeCut(editor, face, choicefn=lambda face,n1: -abs(face.normal*n1)):
 class CubeCutter(parent):
     "Cuts polyhedrons in two parts along the line drawn."
 
-    Hint = "cut polyhedrons and GROUPS in two||After you click this button, you can draw lines on the map with the mouse, and any polyhedron touching this line will be cut in two parts along it. This is a quick way to make complex shapes out of a single polyhedron. You can for example draw 3 lines in a wall to make the contour of a passage, and then just delete the middle polyhedron to actually make the hole.\n\nAs an advanced feature, if you select a group and try to cut it in two parts, instead of cutting each polyhedron in two individually, QuArK will give you the option of making two copies of the whole group with the cutting plane as a shared face in each group. This lets you consider the cutting plane as a unique face and later move or rotate it to reshape all polyhedrons in the group at once."
+    Hint = "cut faces, polyhedrons and groups in two||After you click this button, you can draw lines on the map with the mouse, and any polyhedron touching this line will be cut in two parts along it. This is a quick way to make complex shapes out of a single polyhedron. You can for example draw 3 lines in a wall to make the contour of a passage, and then just delete the middle polyhedron to actually make the hole.\n\nAdvanced features : if you select a face, it will be cut in two but not the other faces of the polyhedron (using \"face sharing\" techniques); and if you select a group, instead of cutting each polyhedron in two individually, QuArK will give you the option of making two copies of the whole group with the cutting plane as a shared face in each group. This lets you consider the cutting plane as a unique face and later move or rotate it to reshape all polyhedrons in the group at once."
 
     def __init__(self, view, x, y, redcolor, todo):
         parent.__init__(self, view, x, y, redcolor, todo)
