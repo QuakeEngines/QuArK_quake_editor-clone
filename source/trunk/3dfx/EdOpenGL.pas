@@ -24,6 +24,14 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/12/11 21:36:05  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
 Revision 1.14  2000/12/07 19:47:59  decker_dk
 - Changed the code in Glide.PAS and GL1.PAS, to more understandable
 and readable code (as seen in Python.PAS), which isn't as subtle to
@@ -42,8 +50,10 @@ unit EdOpenGL;
 
 interface
 
-uses Windows, SysUtils, Classes, Forms,
-     GL1, QkObjects, Ed3DFX, qmath, PyMath, PyMath3D;
+uses Windows, Classes,
+     qmath, PyMath, PyMath3D,
+     GL1,
+     EdSceneObject;
 
 {$IFDEF Debug}
  {---$OPTIMIZATION OFF}
@@ -140,13 +150,17 @@ type
 
  {------------------------}
 
-procedure Free3DEditor;
+procedure CloseOpenGLEditor;
+procedure FreeOpenGLEditor;
 
  {------------------------}
 
 implementation
 
-uses Quarkx, QkMapPoly, Setup, QkPixelSet, Python, QkForm, PyMapView;
+uses SysUtils, Forms,
+     Quarkx, Setup,
+     Python, PyMapView,
+     QkObjects, QkMapPoly, QkPixelSet, QkForm;
 
  {------------------------}
 
@@ -191,17 +205,21 @@ end;
 
  {------------------------}
 
-procedure Free3DEditor;
+procedure CloseOpenGLEditor;
 begin
-  Free3DFXEditor;
+end;
+
+procedure FreeOpenGLEditor;
+begin
   UnloadOpenGl;
+  TTextureManager.FreeNonVisibleTextures;
 end;
 
 procedure FreeOpenGLTexture(Tex: PTexture3);
 begin
   if (Tex^.OpenGLName<>0) and OpenGlLoaded then
   begin
-    {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-101); {$ENDIF}
+    {$IFDEF DebugGLErr} Err(-101); {$ENDIF}
     glDeleteTextures(1, Tex^.OpenGLName);
     {$IFDEF DebugGLErr} Err(101); {$ENDIF}
   end;
@@ -223,772 +241,6 @@ type
               st: array[0..1] of Single;
               xyz: vec3_t;
              end;
-
- {------------------------}
-
-procedure TGLSceneObject.ReleaseResources;
-var
- I, J: Integer;
- NameArray, CurrentName: ^GLuint;
-begin
-  CurrentGLSceneObject:=Nil;
-  RenderingTextureBuffer.Free;
-  RenderingTextureBuffer:=Nil;
-
-  { mark proxy GL views as needing a complete rebuild }
-  for I:=0 to Screen.FormCount-1 do
-    with Screen.Forms[I] do
-      for J:=0 to ComponentCount-1 do
-        if Components[J] is TPyMapView then
-          with TPyMapView(Components[J]) do
-            if Scene is TGLSceneProxy then
-              Perform(wm_InternalMessage, wp_PyInvalidate, 0);
-
-  with TTextureManager.GetInstance do
-  begin
-    GetMem(NameArray, Textures.Count*SizeOf(GLuint));
-    try
-      CurrentName:=NameArray;
-
-      for I:=0 to Textures.Count-1 do
-      begin
-        with PTexture3(Textures.Objects[I])^ do
-          if OpenGLName<>0 then
-          begin
-            CurrentName^:=OpenGLName;
-            Inc(CurrentName);
-            OpenGLName:=0;
-          end;
-      end;
-
-      if OpenGlLoaded and (CurrentName<>NameArray) then
-      begin
-        glDeleteTextures((PChar(CurrentName)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
-        {$IFDEF DebugGLErr} Err(102); {$ENDIF}
-      end;
-    finally
-      FreeMem(NameArray);
-    end;
-  end;
-
-  if RC<>0 then
-  begin
-    if OpenGlLoaded then
-    begin
-      wglMakeCurrent(0,0);
-      wglDeleteContext(RC);
-    end;
-    RC:=0;
-  end;
-
-  if GLDC<>0 then
-  begin
-    ReleaseDC(DestWnd, GLDC);
-    GLDC:=0;
-  end;
-end;
-
-destructor TGLSceneObject.Destroy;
-begin
-  HackIgnoreErrors:=True;
-  try
-    ReleaseResources;
-    inherited;
-  finally
-    HackIgnoreErrors:=False;
-  end;
-end;
-
-procedure TGLSceneObject.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
-    var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
-var
- pfd: TPixelFormatDescriptor;
- pfi: Integer;
- nFogColor: GLfloat4;
- FarDistance: TDouble;
- Setup: QObject;
- Fog: Boolean;
-begin
-  ReleaseResources;
-  if not OpenGlLoaded() then
-  begin
-    if not ReloadOpenGl() then
-      Raise EErrorFmt(4868, [GetLastError]);
-  end;
-
- {$IFDEF Debug}
-  if not (nCoord is TCameraCoordinates) then
-    Raise InternalE('TCameraCoordinates expected');
- {$ENDIF}
-  FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
-  Coord:=nCoord;
-  FullScreen:=False;
-  TTextureManager.AddScene(Self, False);
-  TTextureManager.GetInstance.FFreeTexture:=FreeOpenGLTexture;
-
-  Setup:=SetupSubSet(ssGeneral, 'OpenGL');
-  VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
-  Fog:=Setup.Specifics.Values['Fog']<>'';
-  AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
-  if Setup.Specifics.Values['GLLists']<>'' then
-    DisplayLists:=0
-  else
-    DisplayLists:=-1;
-  FDisplayLights:=Setup.Specifics.Values['Lights']<>'';
-  LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
-  LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
-  LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
-  GLDC:=GetDC(Wnd);
-  if Wnd<>DestWnd then
-  begin
-    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
-    FillChar(pfd, SizeOf(pfd), 0);
-    pfd.nSize:=SizeOf(pfd);
-    pfd.nversion:=1;
-    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
-    pfd.iPixelType:=pfd_Type_RGBA;
-    if DoubleBuffered then
-      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
-    if Setup.Specifics.Values['SupportsGDI']<>'' then
-      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
-    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
-    if pfd.cColorBits<=0 then
-      pfd.cColorBits:=GetDeviceCaps(GLDC, BITSPIXEL);
-    pfd.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
-    pfd.iLayerType:=pfd_Main_Plane;
-    pfi:=ChoosePixelFormat(GLDC, @pfd);
-    if not SetPixelFormat(GLDC, pfi, @pfd) then
-      Raise EErrorFmt(4869, ['SetPixelFormat']);
-    DestWnd:=Wnd;
-  end;
-  RC:=wglCreateContext(GLDC);
-  if RC=0 then
-    Raise EErrorFmt(4869, ['wglCreateContext']);
-
-  { set up OpenGL }
-  wglMakeCurrent(GLDC,RC);
-  Err(0);
-  UnpackColor(FogColor, nFogColor);
-  glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
- // glClearDepth(1);
-  glEnable(GL_DEPTH_TEST);
- {glDepthFunc(GL_LEQUAL);}
- // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  glEdgeFlag(0);
-  Err(1);
-
-  { set up texture parameters }
- (* glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
- {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
- {glShadeModel(GL_FLAT);} *)
-  glEnable(GL_TEXTURE_2D);
-  Err(2);
-
- {Inc(VersionGLSceneObject);}
-  CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
-  if not Ready then
-    PostMessage(Wnd, wm_InternalMessage, wp_OpenGL, 0);
-
-  { set up fog }
-  if Fog then
-  begin
-    glFogi(GL_FOG_MODE, GL_EXP2);
-   {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
-    glFogf(GL_FOG_END, FarDistance);}
-    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance * 100000);
-    glFogfv(GL_FOG_COLOR, nFogColor);
-    glEnable(GL_FOG);
-    Err(3);
-  end;
-end;
-
-procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
-begin
-  if DoubleBuffered then
-    Windows.SwapBuffers(GLDC);
-end;
-
-procedure TGLSceneProxy.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
-    var FullScreen, AllowsGDI: Boolean; FogDensity: Single; FogColor, FrameColor: TColorRef);
-begin
- {MasterVersion:=VersionGLSceneObject-1;
-  MasterUpdate;} NeedGLSceneObject(0,0);
-  if not (nCoord is TCameraCoordinates) then
-    Raise InternalE('OpenGL does not support non-perspective views (yet)');
-  ProxyWnd:=Wnd;
-  Coord:=nCoord;
-  nFrameColor:=FrameColor;
-  FullScreen:=False;
-  TTextureManager.AddScene(Self, False);
-end;
-
-procedure TGLSceneProxy.Copy3DView(SX,SY: Integer; DC: HDC);
-var
- L, R, T, B: Integer;
- bmiHeader: TBitmapInfoHeader;
- BmpInfo: TBitmapInfo absolute bmiHeader;
- Bits: Pointer;
- FrameBrush: HBrush;
- Rc: TRect;
-
-  procedure Frame(X,Y,W,H: Integer);
-  var
-    Rect: TRect;
-  begin
-    if FrameBrush=0 then
-      FrameBrush:=CreateSolidBrush(nFrameColor);
-    Rect:=Bounds(X,Y,W,H);
-    FillRect(DC, Rect, FrameBrush);
-  end;
-
-begin
-  if (CurrentGLSceneObject=Nil) or not CurrentGLSceneObject.FReady then
-  begin
-    Rc:=Rect(0,0,SX,SY);
-    FrameBrush:=CreateHatchBrush(HS_DIAGCROSS, $808080);
-    SetBkColor(DC, $000000);
-    FillRect(DC, Rc, FrameBrush);
-    DeleteObject(FrameBrush);
-    Exit;
-  end;
-
-  L:=0;
-  R:=(ScreenX+3) and not 3;
-  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
-  with bmiHeader do
-  begin
-    biSize:=SizeOf(TBitmapInfoHeader);
-    biPlanes:=1;
-    biBitCount:=24;
-    biWidth:=R-L;
-    biHeight:=ScreenY;
-  end;
-
-  B:=bmiHeader.biWidth*bmiHeader.biHeight;
-  GetMem(Bits, B*3);
-  try
-    if B>0 then
-    begin
-      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
-      Err(999);
-
-      { we have to swap the bytes (RGB --> BGR)...}
-      asm
-       push esi
-       push edi
-       mov eax, [B]
-       mov esi, [Bits]
-       lea edi, [esi+2*eax]
-       add edi, eax
-
-       @loop:
-        mov eax, [esi]   {R2B1G1R1}
-        mov edx, [esi+4] {G3R3B2G2}
-        bswap eax
-        xchg al, dh
-        ror eax, 8
-        mov [esi], eax
-
-        mov eax, [esi+8] {B4G4R4B3}
-        bswap edx
-        xchg al, dh
-        bswap eax
-        bswap edx
-        rol eax, 8
-        mov [esi+4], edx
-        mov [esi+8], eax
-
-        add esi, 12
-        cmp esi, edi
-       jne @loop
-
-       pop edi
-       pop esi
-      end;
-    end;
-
-    L:=(SX-bmiHeader.biWidth) div 2;
-    T:=(SY-bmiHeader.biHeight) div 2;
-    R:=L+bmiHeader.biWidth;
-    B:=T+bmiHeader.biHeight;
-    FrameBrush:=0;
-    try
-      if L>0 then  Frame(0, T, L, B-T);
-      if T>0 then  Frame(0, 0, SX, T);
-      if R<SX then Frame(R, T, SX-R, B-T);
-      if B<SY then Frame(0, B, SX, SY-B);
-    finally
-      if FrameBrush<>0 then
-        DeleteObject(FrameBrush);
-    end;
-    SetDIBitsToDevice(DC, L, T, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,0, bmiHeader.biHeight, Bits, BmpInfo, 0);
-  finally
-    FreeMem(Bits);
-  end;
-end;
-
-procedure TGLSceneObject.ClearScene;
-var
- PL: PLightList;
-begin
-  inherited;
-
-  while Assigned(Lights) do
-  begin
-    PL:=Lights;
-    Lights:=PL^.Next;
-    Dispose(PL);
-  end;
-
-  if DisplayLists>0 then
-  begin
-    if OpenGlLoaded then
-    begin
-      {$IFDEF DebugGLErr} Err(-172); {$ENDIF}
-      glDeleteLists(1, DisplayLists);
-      {$IFDEF DebugGLErr} Err(172); {$ENDIF}
-    end;
-    DisplayLists:=0;
-  end;
-end;
-
-procedure TGLSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
-var
- PL: PLightList;
-begin
-  New(PL);
-
-  PL^.Next:=Lights;
-  Lights:=PL;
-
-  PL^.Position[0]:=Position.X;
-  PL^.Position[1]:=Position.Y;
-  PL^.Position[2]:=Position.Z;
-
-  PL^.Brightness:=Brightness;
-  PL^.Brightness2:=Brightness*Brightness;
-
-  PL^.Color:={SwapColor(Color)} Color and $FFFFFF;
-
-  PL^.Min[0]:=Position.X-Brightness;
-  PL^.Min[1]:=Position.Y-Brightness;
-  PL^.Min[2]:=Position.Z-Brightness;
-
-  PL^.Max[0]:=Position.X+Brightness;
-  PL^.Max[1]:=Position.Y+Brightness;
-  PL^.Max[2]:=Position.Z+Brightness;
-end;
-
-procedure TGLSceneBase.SetViewRect(SX, SY: Integer);
-begin
-  if SX<1 then SX:=1;
-  if SY<1 then SY:=1;
-  ScreenX:=SX;
-  ScreenY:=SY;
-end;
-
-function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
-begin
- {PW:=Nil;}
-  VertexSize:=SizeOf(TVertex3D);
-  Result:=bmOpenGL;
-  if RenderingTextureBuffer=Nil then
-    RenderingTextureBuffer:=TMemoryStream.Create;
-end;
-
-procedure TGLSceneObject.EndBuildScene;
-begin
-  RenderingTextureBuffer.Free;
-  RenderingTextureBuffer:=Nil;
-end;
-
-{procedure TGLSceneProxy.MasterUpdate;
-var
- I: Integer;
-begin
- NeedGLSceneObject;
- if VersionGLSceneObject<>MasterVersion then
-  begin
-   for I:=0 to Textures.Count-1 do
-    with PTexture3(Textures.Objects[I])^ do
-     OpenGLName:=0;
-   MasterVersion:=VersionGLSceneObject;
-  end;
-end;}
-
-function TGLSceneProxy.StartBuildScene;
-begin
-  {MasterUpdate;} NeedGLSceneObject(0,0);
-  Result:=CurrentGLSceneObject.StartBuildScene(VertexSize);
-end;
-
-procedure TGLSceneProxy.EndBuildScene;
-begin
-  {$IFDEF Debug}
-  if CurrentGLSceneObject=Nil then
-    raise InternalE('proxy: EndBuildScene');
-  {$ENDIF}
-  CurrentGLSceneObject.EndBuildScene;
-end;
-
-procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
-begin
-  with Texture^ do
-  begin
-    ScaleS:=TexW*( 1/EchelleTexture);
-    ScaleT:=TexH*(-1/EchelleTexture);
-  end;
-end;
-
-procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
-begin
-  with Skin^ do
-  begin
-    ScaleS:=1/TexW;
-    ScaleT:=1/TexH;
-  end;
-end;
-
-procedure TGLSceneBase.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
-begin
-  ScaleS:=1;
-  ScaleT:=1;
-end;
-
-procedure TGLSceneBase.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
-begin
-  with PVertex3D(PV)^ do
-  begin
-    if HiRes then
-    begin
-      with PVect(Source)^ do
-      begin
-        xyz[0]:=X;
-        xyz[1]:=Y;
-        xyz[2]:=Z;
-      end;
-    end
-    else
-      xyz:=vec3_p(Source)^;
-
-    st[0]:=ns;
-    st[1]:=nt;
-  end;
-end;
-
-procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
-var
- PList: PSurfaces;
- Count: Integer;
- Buffer, BufEnd: ^GLuint;
- BufResident: ^GLboolean;
-begin
-  {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-103); {$ENDIF}
-  if not SolidColors then
-  begin
-    Count:=0;
-    PList:=ListSurfaces;
-    while Assigned(PList) do
-    begin
-      PList^.ok:=(Transparent in PList^.Transparent) and (PList^.Texture^.OpenGLName<>0);
-      if PList^.ok then
-        Inc(Count);
-      PList:=PList^.Next;
-    end;
-
-    if Count>0 then
-    begin
-      GetMem(Buffer, Count*(SizeOf(GLuint)+SizeOf(GLboolean)));
-      try
-        BufEnd:=Buffer;
-        PList:=ListSurfaces;
-        while Assigned(PList) do
-        begin
-          if PList^.ok then
-          begin
-            BufEnd^:=PList^.Texture^.OpenGLName;
-            Inc(BufEnd);
-          end;
-          PList:=PList^.Next;
-        end;
-        PChar(BufResident):=PChar(BufEnd);
-        glAreTexturesResident(Count, Buffer^, BufResident^);
-
-        {$IFDEF DebugGLErr} Err(103); {$ENDIF}
-        PList:=ListSurfaces;
-        while Assigned(PList) do
-        begin
-          if PList^.ok then
-          begin
-            PList^.ok:=False;
-            if BufResident^<>0 then
-              RenderPList(PList, Transparent, DisplayLights, SourceCoord);
-            Inc(BufResident);
-          end;
-          PList:=PList^.Next;
-        end;
-      finally
-        FreeMem(Buffer);
-      end;
-    end;
-  end;
-
-  PList:=ListSurfaces;
-  while Assigned(PList) do
-  begin
-    if Transparent in PList^.Transparent then
-    begin
-      if SolidColors or not PList^.ok then
-        RenderPList(PList, Transparent, DisplayLights, SourceCoord);
-    end;
-    PList:=PList^.Next;
-  end;
-end;
-
-procedure TGLSceneObject.Render3DView;
-begin
-  RenderOpenGL(Self, FDisplayLights and Assigned(Lights));
-end;
-
-procedure TGLSceneProxy.Render3DView;
-begin
-  NeedGLSceneObject((ScreenX+7) and not 7, (ScreenY+3) and not 3);
-  if CurrentGLSceneObject.Ready then
-    CurrentGLSceneObject.RenderOpenGL(Self, False)
-  else
-    InvalidateRect(ProxyWnd, Nil, True);
-end;
-
-procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
-var
- SX, SY: Integer;
-begin
-  if not OpenGlLoaded then
-    Exit;
-  {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
- {wglMakeCurrent(DC,RC);
-  Err(49);}
-  SX:=Source.ScreenX;
-  SY:=Source.ScreenY;
-  if SX>ScreenX then SX:=ScreenX;
-  if SY>ScreenY then SY:=ScreenY;
-  glViewport(0, 0, SX, SY);
-  {$IFDEF DebugGLErr} Err(50); {$ENDIF}
-  with TCameraCoordinates(Source.Coord) do
-  begin
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity;
-    gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
-    if PitchAngle<>0 then
-      glRotatef(PitchAngle * (180/pi), -1,0,0);
-    glRotatef(HorzAngle * (180/pi), 0,-1,0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity;
-    glRotatef(120, -1,1,1);
-    with Camera do
-      glTranslatef(-X, -Y, -Z);
-  end;
-  {$IFDEF DebugGLErr} Err(51); {$ENDIF}
-  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
-  {$IFDEF DebugGLErr} Err(52); {$ENDIF}
-  CurrentAlpha:=0;
-  FillChar(Currentf, SizeOf(Currentf), 0);
-  RenderTransparentGL(Source.FListSurfaces, False, DisplayLights, Source.Coord);
-  {$IFDEF DebugGLErr} Err(53); {$ENDIF}
-  RenderTransparentGL(Source.FListSurfaces, True,  DisplayLights, Source.Coord);
-  {$IFDEF DebugGLErr} Err(54); {$ENDIF}
-  glFlush;
-  {$IFDEF DebugGLErr} Err(55); {$ENDIF}
- {wglMakeCurrent(0,0);}
-end;
-
-procedure TGLSceneProxy.BuildTexture(Texture: PTexture3);
-begin
-  {$IFDEF Debug}
-  if CurrentGLSceneObject=Nil then
-    raise InternalE('proxy: BuildTexture');
-  {$ENDIF}
-  CurrentGLSceneObject.BuildTexture(Texture);
-end;
-
-procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
-var
- TexData: PChar;
- MemSize, W, H, J: Integer;
- Source, Dest: PChar;
- PaletteEx: array[0..255] of LongInt;
-{BasePalette: Pointer;}
- PSD, PSD2: TPixelSetDescription;
- GammaBuf: Pointer;
-begin
-  if Texture^.OpenGLName=0 then
-  begin
-    {$IFDEF DebugGLErr}
-    if OpenGlLoaded then
-      Err(-104);
-    {$ENDIF}
-
-    GetwhForTexture(Texture^.info, W, H);
-    MemSize:=W*H*4;
-
-    if RenderingTextureBuffer.Size < MemSize then
-      RenderingTextureBuffer.SetSize(MemSize);
-
-    TexData:=RenderingTextureBuffer.Memory;
-
-    PSD2.Init;
-    {PSD2.AlphaBits:=psaNoAlpha;}
-    PSD:=GetTex3Description(Texture^);
-
-    try
-      PSD2.Size.X:=W;
-      PSD2.Size.Y:=H;
-      PSDConvert(PSD2, PSD, ccTemporary);
-
-      Source:=PSD2.StartPointer;
-      Dest:=TexData;
-      GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
-
-      if PSD2.Format = psf24bpp then
-      begin
-        { Make a gamma-corrected copy of the 24-bits (RGB) texture to TexData-buffer }
-        for J:=1 to H do
-        begin
-          asm
-           push esi
-           push edi
-           push ebx
-           mov ecx, [W]             { get the width, and put it into ecx-register, for the 'loop' to work with }
-           mov esi, [Source]        { get the Source-pointer, and put it into esi-register }
-           mov edi, [Dest]          { get the Dest-pointer, and put it into edi-register }
-           mov ebx, [GammaBuf]      { get the GammaBuf-pointer, and put it into ebx-register }
-           cld
-           xor edx, edx             { clear the edx-register value (edx-high-register must be zero!) }
-
-           @xloop:
-            mov dl, [esi+2]         { copy 'Red' byte from source to edx-low-register }
-            mov al, [ebx+edx]   {R} { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
-            mov dl, [esi+1]         { copy 'Green' byte from source to edx-low-register }
-            mov ah, [ebx+edx]   {G} { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
-            stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
-            mov dl, [esi]           { copy 'Blue' byte  from source to edx-low-register }
-            mov al, [ebx+edx]   {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
-            stosb                   { store the single-byte eax-low-register value to dest which edi-register points to, and increment edi with 1 }
-            add esi, 3              { increment source-pointer, the esi-register with 3 }
-           loop @xloop              { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
-
-           mov [Dest], edi          { put the now incremented edi-register value, back as the Dest-pointer }
-           pop ebx
-           pop edi
-           pop esi
-          end;
-
-          Inc(Source, PSD2.ScanLine);
-        end;
-      end
-      else
-      begin
-        { Make a gamma-corrected RGBA-palette with 256 entries, from an RGB-palette.
-          Note that the Alpha-value (of RGBA) will never be used, as it contains
-          un-initialized values. }
-        asm
-         push edi
-         push esi
-         push ebx
-         mov esi, [PSD2.ColorPalette] { get the RGB-palette-pointer, and put it into esi-register }
-         add esi, 3*255               { increment esi-register, so it points at the last palette-entry }
-         lea edi, [PaletteEx]         { load PaletteEx-pointer to the edi-register }
-         mov ebx, [GammaBuf]          { get the GammaBuf-pointer, and put it into ebx-register }
-         mov ecx, 255                 { there are 256 entries in the palette, load ecx-register to act as a counter }
-         xor edx, edx                 { clear the edx-register value (edx-high-register must be zero!) }
-
-         @Loop1:
-          mov dl, [esi+2]             { copy 'Blue' byte from source to edx-low-register }
-          mov ah, [ebx+edx]   {B}     { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-high-register }
-          shl eax, 8                  { shift eax-register 8 bits to the left, effectually multiplying it with 256 }
-          mov dl, [esi+1]             { copy 'Green' byte from source to edx-low-register }
-          mov ah, [ebx+edx]   {G}     { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
-          mov dl, [esi]               { copy 'Red' byte from source to edx-low-register }
-          mov al, [ebx+edx]   {R}     { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
-          mov [edi+4*ecx], eax        { store the four-byte eax-register to PaletteEx-pointer + (4 * ecx-register value) }
-          sub esi, 3                  { subtract 3 from esi-register, moving backwards in the RGB-palette entries }
-          dec ecx                     { decrement ecx-register counter with 1, and set the sign-flag if decrements beyond 0 }
-         jns @Loop1                   { jump to Loop1 if the decrement did not set the sign-flag }
-
-         pop ebx
-         pop esi
-         pop edi
-        end;
-
-        { Make a gamma-corrected copy of the 256-color-texture to a 24-bits (RGB) TexData-buffer,
-          using the RGBA-palette for RGB-color lookup. }
-        for J:=1 to H do
-        begin
-          asm
-           push edi
-           push esi
-           push ebx
-           mov ecx, [W]               { get the width, and put it into ecx-register, for the 'loop' to work with }
-           mov esi, [Source]          { get the Source-pointer, and put it into esi-register }
-           mov edi, [Dest]            { get the Dest-pointer, and put it into edi-register }
-           lea ebx, [PaletteEx]       { get the RGBA-palette-pointer, and put it into ebx-register }
-           cld
-           xor edx, edx               { clear the edx-register value (edx-high-register must be zero!) }
-
-           @xloop:
-            mov dl, [esi]             { copy the 'palette-index' byte from source to edx-low-register }
-            mov eax, [ebx+4*edx]      { get the RGBA-color from the RGBA-palette, and put it into eax-register }
-            stosw                     { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
-            shr eax, 16               { shift eax-register 16 bits to the right, effectually dividing it by 65536 }
-            stosb                     { store the single-byte eax-low-register value to dest which edi-register points to, and increment edi with 1 }
-            inc esi                   { increment source-pointer, the esi-register with 1 }
-           loop @xloop                { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
-
-           mov [Dest], edi            { put the now incremented edi-register value, back as the Dest-pointer }
-           pop ebx
-           pop esi
-           pop edi
-          end;
-
-          Inc(Source, PSD2.ScanLine);
-        end;
-      end;
-    finally
-      PSD.Done;
-      PSD2.Done;
-    end;
-
-   {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
-    glGenTextures(1, Texture^.OpenGLName);
-    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
-    if Texture^.OpenGLName=0 then
-      Raise InternalE('out of texture numbers');
-    glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
-    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
-    {$IFDEF DebugGLErr} Err(106); {$ENDIF}
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    {$IFDEF DebugGLErr} Err(107); {$ENDIF}
-  end;
-end;
-
-procedure TGLSceneObject.LoadCurrentTexture(Tex: PTexture3);
-begin
-  {$IFDEF Debug}
-  if Tex^.OpenGLName=0 then
-    Raise InternalE('LoadCurrentTexture: texture not loaded');
-  {$ENDIF}
-  {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-108); {$ENDIF}
-  glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
-  {$IFDEF DebugGLErr} Err(108); {$ENDIF}
-end;
 
 type
  PP3D = ^TP3D;
@@ -1013,8 +265,11 @@ begin
   end;
 end;
 
-procedure LightAtPoint(var Point1: TP3D; SubList: PLightList; const Currentf: GLfloat4;
-                       const LightParams: TLightParams; const NormalePlan: vec3_t);
+procedure LightAtPoint(var Point1: TP3D;
+                       SubList: PLightList;
+                       const Currentf: GLfloat4;
+                       const LightParams: TLightParams;
+                       const NormalePlan: vec3_t);
 var
  LP: PLightList;
  Light: array[0..2] of TDouble;
@@ -1123,8 +378,12 @@ begin
   end;
 end;
 
-procedure RenderQuad(PV1, PV2, PV3, PV4: PVertex3D; var Currentf: GLfloat4;
-  LP: PLightList; const NormalePlan: vec3_t; Dist: scalar_t; const LightParams: TLightParams);
+procedure RenderQuad(PV1, PV2, PV3, PV4: PVertex3D;
+                     var Currentf: GLfloat4;
+                     LP: PLightList;
+                     const NormalePlan: vec3_t;
+                     Dist: scalar_t;
+                     const LightParams: TLightParams);
 const
  StandardSectionSize = 77.0;
  SectionsI = 8;
@@ -1305,8 +564,11 @@ begin
   end;
 end;
 
-procedure RenderQuadStrip(PV: PVertex3D; VertexCount: Integer; var Currentf: GLfloat4;
-  LP: PLightList; const LightParams: TLightParams);
+procedure RenderQuadStrip(PV: PVertex3D;
+                          VertexCount: Integer;
+                          var Currentf: GLfloat4;
+                          LP: PLightList;
+                          const LightParams: TLightParams);
 var
  LP1: PLightList;
  I: Integer;
@@ -1330,6 +592,614 @@ begin
    glVertex3fv(Point.v.xyz);
   end;
  glEnd;
+end;
+
+ {------------------------}
+
+procedure TGLSceneBase.SetViewRect(SX, SY: Integer);
+begin
+  if SX<1 then SX:=1;
+  if SY<1 then SY:=1;
+  ScreenX:=SX;
+  ScreenY:=SY;
+end;
+
+procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
+begin
+  with Texture^ do
+  begin
+    ScaleS:=TexW*( 1/EchelleTexture);
+    ScaleT:=TexH*(-1/EchelleTexture);
+  end;
+end;
+
+procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+begin
+  with Skin^ do
+  begin
+    ScaleS:=1/TexW;
+    ScaleT:=1/TexH;
+  end;
+end;
+
+procedure TGLSceneBase.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
+begin
+  ScaleS:=1;
+  ScaleT:=1;
+end;
+
+procedure TGLSceneBase.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
+begin
+  with PVertex3D(PV)^ do
+  begin
+    if HiRes then
+    begin
+      with PVect(Source)^ do
+      begin
+        xyz[0]:=X;
+        xyz[1]:=Y;
+        xyz[2]:=Z;
+      end;
+    end
+    else
+      xyz:=vec3_p(Source)^;
+
+    st[0]:=ns;
+    st[1]:=nt;
+  end;
+end;
+
+ {------------------------}
+
+procedure TGLSceneObject.ReleaseResources;
+var
+ I, J: Integer;
+ NameArray, NameAreaWalker: ^GLuint;
+begin
+  CurrentGLSceneObject:=Nil;
+  RenderingTextureBuffer.Free;
+  RenderingTextureBuffer:=Nil;
+
+  { mark proxy GL views as needing a complete rebuild }
+  for I:=0 to Screen.FormCount-1 do
+    with Screen.Forms[I] do
+      for J:=0 to ComponentCount-1 do
+        if Components[J] is TPyMapView then
+          with TPyMapView(Components[J]) do
+            if Scene is TGLSceneProxy then
+              Perform(wm_InternalMessage, wp_PyInvalidate, 0);
+
+  with TTextureManager.GetInstance do
+  begin
+    GetMem(NameArray, Textures.Count*SizeOf(GLuint));
+    try
+      NameAreaWalker:=NameArray;
+
+      for I:=0 to Textures.Count-1 do
+      begin
+        with PTexture3(Textures.Objects[I])^ do
+          if OpenGLName<>0 then
+          begin
+            NameAreaWalker^:=OpenGLName;
+            Inc(NameAreaWalker);
+            OpenGLName:=0;
+          end;
+      end;
+
+      if OpenGlLoaded and (NameAreaWalker<>NameArray) then
+      begin
+        glDeleteTextures((PChar(NameAreaWalker)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
+        {$IFDEF DebugGLErr} Err(102); {$ENDIF}
+      end;
+    finally
+      FreeMem(NameArray);
+    end;
+  end;
+
+  if RC<>0 then
+  begin
+    if OpenGlLoaded then
+    begin
+      wglMakeCurrent(0,0);
+      wglDeleteContext(RC);
+    end;
+    RC:=0;
+  end;
+
+  if GLDC<>0 then
+  begin
+    ReleaseDC(DestWnd, GLDC);
+    GLDC:=0;
+  end;
+end;
+
+destructor TGLSceneObject.Destroy;
+begin
+  HackIgnoreErrors:=True;
+  try
+    ReleaseResources;
+    inherited;
+  finally
+    HackIgnoreErrors:=False;
+  end;
+end;
+
+procedure TGLSceneObject.Init(Wnd: HWnd;
+                              nCoord: TCoordinates;
+                              const LibName: String;
+                              var FullScreen, AllowsGDI: Boolean;
+                              FogDensity: Single;
+                              FogColor, FrameColor: TColorRef);
+var
+ pfd: TPixelFormatDescriptor;
+ pfi: Integer;
+ nFogColor: GLfloat4;
+ FarDistance: TDouble;
+ Setup: QObject;
+ Fog: Boolean;
+begin
+  ReleaseResources;
+  { have the OpenGL DLL already been loaded? }
+  if not OpenGlLoaded() then
+  begin
+    { try to load the OpenGL DLL, and set pointers to its functions }
+    if not ReloadOpenGl() then
+      Raise EErrorFmt(4868, [GetLastError]);
+  end;
+
+ {$IFDEF Debug}
+  if not (nCoord is TCameraCoordinates) then
+    Raise InternalE('TCameraCoordinates expected');
+ {$ENDIF}
+  FarDistance:=(nCoord as TCameraCoordinates).FarDistance;
+  Coord:=nCoord;
+  FullScreen:=False;
+  TTextureManager.AddScene(Self, False);
+  TTextureManager.GetInstance.FFreeTexture:=FreeOpenGLTexture;
+
+  Setup:=SetupSubSet(ssGeneral, 'OpenGL');
+  VCorrection2:=2*Setup.GetFloatSpec('VCorrection',1);
+  Fog:=Setup.Specifics.Values['Fog']<>'';
+  AllowsGDI:=Setup.Specifics.Values['AllowsGDI']<>'';
+  if Setup.Specifics.Values['GLLists']<>'' then
+    DisplayLists:=0
+  else
+    DisplayLists:=-1;
+  FDisplayLights:=Setup.Specifics.Values['Lights']<>'';
+  LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
+  LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
+  LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
+  GLDC:=GetDC(Wnd);
+  if Wnd<>DestWnd then
+  begin
+    DoubleBuffered:=Setup.Specifics.Values['DoubleBuffer']<>'';
+    FillChar(pfd, SizeOf(pfd), 0);
+    pfd.nSize:=SizeOf(pfd);
+    pfd.nversion:=1;
+    pfd.dwflags:=pfd_Support_OpenGl or pfd_Draw_To_Window;
+    pfd.iPixelType:=pfd_Type_RGBA;
+    if DoubleBuffered then
+      pfd.dwflags:=pfd.dwflags or pfd_DoubleBuffer;
+    if Setup.Specifics.Values['SupportsGDI']<>'' then
+      pfd.dwflags:=pfd.dwflags or pfd_Support_GDI;
+    pfd.cColorBits:=Round(Setup.GetFloatSpec('ColorBits', 0));
+    if pfd.cColorBits<=0 then
+      pfd.cColorBits:=GetDeviceCaps(GLDC, BITSPIXEL);
+    pfd.cDepthBits:=Round(Setup.GetFloatSpec('DepthBits', 16));
+    pfd.iLayerType:=pfd_Main_Plane;
+    pfi:=ChoosePixelFormat(GLDC, @pfd);
+    if not SetPixelFormat(GLDC, pfi, @pfd) then
+      Raise EErrorFmt(4869, ['SetPixelFormat']);
+    DestWnd:=Wnd;
+  end;
+  RC:=wglCreateContext(GLDC);
+  if RC=0 then
+    Raise EErrorFmt(4869, ['wglCreateContext']);
+
+  { set up OpenGL }
+  wglMakeCurrent(GLDC,RC);
+  Err(0);
+  UnpackColor(FogColor, nFogColor);
+  glClearColor(nFogColor[0], nFogColor[1], nFogColor[2], 1);
+ // glClearDepth(1);
+  glEnable(GL_DEPTH_TEST);
+ {glDepthFunc(GL_LEQUAL);}
+ // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  glEdgeFlag(0);
+  Err(1);
+
+  { set up texture parameters }
+ (* glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+ {glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+ {glShadeModel(GL_FLAT);} *)
+  glEnable(GL_TEXTURE_2D);
+  Err(2);
+
+ {Inc(VersionGLSceneObject);}
+  CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
+  if not Ready then
+    PostMessage(Wnd, wm_InternalMessage, wp_OpenGL, 0);
+
+  { set up fog }
+  if Fog then
+  begin
+    glFogi(GL_FOG_MODE, GL_EXP2);
+   {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
+    glFogf(GL_FOG_END, FarDistance);}
+    glFogf(GL_FOG_DENSITY, FogDensity/FarDistance * 100000);
+    glFogfv(GL_FOG_COLOR, nFogColor);
+    glEnable(GL_FOG);
+    Err(3);
+  end;
+end;
+
+procedure TGLSceneObject.Copy3DView(SX,SY: Integer; DC: HDC);
+begin
+  if DoubleBuffered then
+    Windows.SwapBuffers(GLDC);
+end;
+
+procedure TGLSceneObject.ClearScene;
+var
+ PL: PLightList;
+begin
+  inherited;
+
+  while Assigned(Lights) do
+  begin
+    PL:=Lights;
+    Lights:=PL^.Next;
+    Dispose(PL);
+  end;
+
+  if DisplayLists>0 then
+  begin
+    if OpenGlLoaded then
+    begin
+      {$IFDEF DebugGLErr} Err(-172); {$ENDIF}
+      glDeleteLists(1, DisplayLists);
+      {$IFDEF DebugGLErr} Err(172); {$ENDIF}
+    end;
+    DisplayLists:=0;
+  end;
+end;
+
+procedure TGLSceneObject.AddLight(const Position: TVect; Brightness: Single; Color: TColorRef);
+var
+ PL: PLightList;
+begin
+  New(PL);
+
+  PL^.Next:=Lights;
+  Lights:=PL;
+
+  PL^.Position[0]:=Position.X;
+  PL^.Position[1]:=Position.Y;
+  PL^.Position[2]:=Position.Z;
+
+  PL^.Brightness:=Brightness;
+  PL^.Brightness2:=Brightness*Brightness;
+
+  PL^.Color:={SwapColor(Color)} Color and $FFFFFF;
+
+  PL^.Min[0]:=Position.X-Brightness;
+  PL^.Min[1]:=Position.Y-Brightness;
+  PL^.Min[2]:=Position.Z-Brightness;
+
+  PL^.Max[0]:=Position.X+Brightness;
+  PL^.Max[1]:=Position.Y+Brightness;
+  PL^.Max[2]:=Position.Z+Brightness;
+end;
+
+function TGLSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
+begin
+ {PW:=Nil;}
+  VertexSize:=SizeOf(TVertex3D);
+  Result:=bmOpenGL;
+  if RenderingTextureBuffer=Nil then
+    RenderingTextureBuffer:=TMemoryStream.Create;
+end;
+
+procedure TGLSceneObject.EndBuildScene;
+begin
+  RenderingTextureBuffer.Free;
+  RenderingTextureBuffer:=Nil;
+end;
+
+procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
+var
+ PList: PSurfaces;
+ Count: Integer;
+ Buffer, BufEnd: ^GLuint;
+ BufResident: ^GLboolean;
+begin
+  {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-103); {$ENDIF}
+  if not SolidColors then
+  begin
+    Count:=0;
+    PList:=ListSurfaces;
+    while Assigned(PList) do
+    begin
+      PList^.ok:=(Transparent in PList^.Transparent) and (PList^.Texture^.OpenGLName<>0);
+      if PList^.ok then
+        Inc(Count);
+      PList:=PList^.Next;
+    end;
+
+    if Count>0 then
+    begin
+      GetMem(Buffer, Count*(SizeOf(GLuint)+SizeOf(GLboolean)));
+      try
+        BufEnd:=Buffer;
+        PList:=ListSurfaces;
+        while Assigned(PList) do
+        begin
+          if PList^.ok then
+          begin
+            BufEnd^:=PList^.Texture^.OpenGLName;
+            Inc(BufEnd);
+          end;
+          PList:=PList^.Next;
+        end;
+        PChar(BufResident):=PChar(BufEnd);
+        glAreTexturesResident(Count, Buffer^, BufResident^);
+
+        {$IFDEF DebugGLErr} Err(103); {$ENDIF}
+        PList:=ListSurfaces;
+        while Assigned(PList) do
+        begin
+          if PList^.ok then
+          begin
+            PList^.ok:=False;
+            if BufResident^<>0 then
+              RenderPList(PList, Transparent, DisplayLights, SourceCoord);
+            Inc(BufResident);
+          end;
+          PList:=PList^.Next;
+        end;
+      finally
+        FreeMem(Buffer);
+      end;
+    end;
+  end;
+
+  PList:=ListSurfaces;
+  while Assigned(PList) do
+  begin
+    if Transparent in PList^.Transparent then
+    begin
+      if SolidColors or not PList^.ok then
+        RenderPList(PList, Transparent, DisplayLights, SourceCoord);
+    end;
+    PList:=PList^.Next;
+  end;
+end;
+
+procedure TGLSceneObject.Render3DView;
+begin
+  RenderOpenGL(Self, FDisplayLights and Assigned(Lights));
+end;
+
+procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
+var
+ SX, SY: Integer;
+begin
+  if not OpenGlLoaded then
+    Exit;
+  {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
+ {wglMakeCurrent(DC,RC);
+  Err(49);}
+  SX:=Source.ScreenX;
+  SY:=Source.ScreenY;
+  if SX>ScreenX then SX:=ScreenX;
+  if SY>ScreenY then SY:=ScreenY;
+  glViewport(0, 0, SX, SY);
+  {$IFDEF DebugGLErr} Err(50); {$ENDIF}
+  with TCameraCoordinates(Source.Coord) do
+  begin
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity;
+    gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
+    if PitchAngle<>0 then
+      glRotatef(PitchAngle * (180/pi), -1,0,0);
+    glRotatef(HorzAngle * (180/pi), 0,-1,0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity;
+    glRotatef(120, -1,1,1);
+    with Camera do
+      glTranslatef(-X, -Y, -Z);
+  end;
+  {$IFDEF DebugGLErr} Err(51); {$ENDIF}
+  glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
+  {$IFDEF DebugGLErr} Err(52); {$ENDIF}
+  CurrentAlpha:=0;
+  FillChar(Currentf, SizeOf(Currentf), 0);
+  RenderTransparentGL(Source.FListSurfaces, False, DisplayLights, Source.Coord);
+  {$IFDEF DebugGLErr} Err(53); {$ENDIF}
+  RenderTransparentGL(Source.FListSurfaces, True,  DisplayLights, Source.Coord);
+  {$IFDEF DebugGLErr} Err(54); {$ENDIF}
+  glFlush;
+  {$IFDEF DebugGLErr} Err(55); {$ENDIF}
+ {wglMakeCurrent(0,0);}
+end;
+
+procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
+var
+ TexData: PChar;
+ MemSize, W, H, J: Integer;
+ Source, Dest: PChar;
+ PaletteEx: array[0..255] of LongInt;
+{BasePalette: Pointer;}
+ PSD, PSD2: TPixelSetDescription;
+ GammaBuf: Pointer;
+begin
+  if Texture^.OpenGLName=0 then
+  begin
+    {$IFDEF DebugGLErr}
+    if OpenGlLoaded then
+      Err(-104);
+    {$ENDIF}
+
+    GetwhForTexture(Texture^.info, W, H);
+    MemSize:=W*H*4;
+
+    if RenderingTextureBuffer.Size < MemSize then
+      RenderingTextureBuffer.SetSize(MemSize);
+
+    TexData:=RenderingTextureBuffer.Memory;
+
+    PSD2.Init;
+    {PSD2.AlphaBits:=psaNoAlpha;}
+    PSD:=GetTex3Description(Texture^);
+
+    try
+      PSD2.Size.X:=W;
+      PSD2.Size.Y:=H;
+      PSDConvert(PSD2, PSD, ccTemporary);
+
+      Source:=PSD2.StartPointer;
+      Dest:=TexData;
+      GammaBuf:=@(TTextureManager.GetInstance.GammaBuffer);
+
+      if PSD2.Format = psf24bpp then
+      begin
+        { Make a gamma-corrected copy of the 24-bits (RGB) texture to TexData-buffer }
+        for J:=1 to H do
+        begin
+          asm
+           push esi
+           push edi
+           push ebx
+           mov ecx, [W]             { get the width, and put it into ecx-register, for the 'loop' to work with }
+           mov esi, [Source]        { get the Source-pointer, and put it into esi-register }
+           mov edi, [Dest]          { get the Dest-pointer, and put it into edi-register }
+           mov ebx, [GammaBuf]      { get the GammaBuf-pointer, and put it into ebx-register }
+           cld
+           xor edx, edx             { clear the edx-register value (edx-high-register must be zero!) }
+
+           @xloop:
+            mov dl, [esi+2]         { copy 'Red' byte from source to edx-low-register }
+            mov al, [ebx+edx]   {R} { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
+            mov dl, [esi+1]         { copy 'Green' byte from source to edx-low-register }
+            mov ah, [ebx+edx]   {G} { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
+            stosw                   { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
+            mov dl, [esi]           { copy 'Blue' byte  from source to edx-low-register }
+            mov al, [ebx+edx]   {B} { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-low-register }
+            stosb                   { store the single-byte eax-low-register value to dest which edi-register points to, and increment edi with 1 }
+            add esi, 3              { increment source-pointer, the esi-register with 3 }
+           loop @xloop              { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
+
+           mov [Dest], edi          { put the now incremented edi-register value, back as the Dest-pointer }
+           pop ebx
+           pop edi
+           pop esi
+          end;
+
+          Inc(Source, PSD2.ScanLine);
+        end;
+      end
+      else
+      begin
+        { Make a gamma-corrected RGBA-palette with 256 entries, from an RGB-palette.
+          Note that the Alpha-value (of RGBA) will never be used, as it contains
+          un-initialized values. }
+        asm
+         push edi
+         push esi
+         push ebx
+         mov esi, [PSD2.ColorPalette] { get the RGB-palette-pointer, and put it into esi-register }
+         add esi, 3*255               { increment esi-register, so it points at the last palette-entry }
+         lea edi, [PaletteEx]         { load PaletteEx-pointer to the edi-register }
+         mov ebx, [GammaBuf]          { get the GammaBuf-pointer, and put it into ebx-register }
+         mov ecx, 255                 { there are 256 entries in the palette, load ecx-register to act as a counter }
+         xor edx, edx                 { clear the edx-register value (edx-high-register must be zero!) }
+
+         @Loop1:
+          mov dl, [esi+2]             { copy 'Blue' byte from source to edx-low-register }
+          mov ah, [ebx+edx]   {B}     { copy the gamma-corrected 'Blue'-byte from gammabuf to eax-high-register }
+          shl eax, 8                  { shift eax-register 8 bits to the left, effectually multiplying it with 256 }
+          mov dl, [esi+1]             { copy 'Green' byte from source to edx-low-register }
+          mov ah, [ebx+edx]   {G}     { copy the gamma-corrected 'Green'-byte from gammabuf to eax-high-register }
+          mov dl, [esi]               { copy 'Red' byte from source to edx-low-register }
+          mov al, [ebx+edx]   {R}     { copy the gamma-corrected 'Red'-byte from gammabuf to eax-low-register }
+          mov [edi+4*ecx], eax        { store the four-byte eax-register to PaletteEx-pointer + (4 * ecx-register value) }
+          sub esi, 3                  { subtract 3 from esi-register, moving backwards in the RGB-palette entries }
+          dec ecx                     { decrement ecx-register counter with 1, and set the sign-flag if decrements beyond 0 }
+         jns @Loop1                   { jump to Loop1 if the decrement did not set the sign-flag }
+
+         pop ebx
+         pop esi
+         pop edi
+        end;
+
+        { Make a gamma-corrected copy of the 256-color-texture to a 24-bits (RGB) TexData-buffer,
+          using the RGBA-palette for RGB-color lookup. }
+        for J:=1 to H do
+        begin
+          asm
+           push edi
+           push esi
+           push ebx
+           mov ecx, [W]               { get the width, and put it into ecx-register, for the 'loop' to work with }
+           mov esi, [Source]          { get the Source-pointer, and put it into esi-register }
+           mov edi, [Dest]            { get the Dest-pointer, and put it into edi-register }
+           lea ebx, [PaletteEx]       { get the RGBA-palette-pointer, and put it into ebx-register }
+           cld
+           xor edx, edx               { clear the edx-register value (edx-high-register must be zero!) }
+
+           @xloop:
+            mov dl, [esi]             { copy the 'palette-index' byte from source to edx-low-register }
+            mov eax, [ebx+4*edx]      { get the RGBA-color from the RGBA-palette, and put it into eax-register }
+            stosw                     { store the two-byte (word) eax value to dest which edi-register points to, and increment edi with 2 }
+            shr eax, 16               { shift eax-register 16 bits to the right, effectually dividing it by 65536 }
+            stosb                     { store the single-byte eax-low-register value to dest which edi-register points to, and increment edi with 1 }
+            inc esi                   { increment source-pointer, the esi-register with 1 }
+           loop @xloop                { decrement ecx-register with 1, and continue to loop if ecx value is bigger than zero }
+
+           mov [Dest], edi            { put the now incremented edi-register value, back as the Dest-pointer }
+           pop ebx
+           pop esi
+           pop edi
+          end;
+
+          Inc(Source, PSD2.ScanLine);
+        end;
+      end;
+    finally
+      PSD.Done;
+      PSD2.Done;
+    end;
+
+   {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
+    glGenTextures(1, Texture^.OpenGLName);
+    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
+    if Texture^.OpenGLName=0 then
+      Raise InternalE('out of texture numbers');
+    glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
+    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
+    {$IFDEF DebugGLErr} Err(106); {$ENDIF}
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    {$IFDEF DebugGLErr} Err(107); {$ENDIF}
+  end;
+end;
+
+procedure TGLSceneObject.LoadCurrentTexture(Tex: PTexture3);
+begin
+  {$IFDEF Debug}
+  if Tex^.OpenGLName=0 then
+    Raise InternalE('LoadCurrentTexture: texture not loaded');
+  {$ENDIF}
+  {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-108); {$ENDIF}
+  glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
+  {$IFDEF DebugGLErr} Err(108); {$ENDIF}
 end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
@@ -1502,5 +1372,175 @@ begin
 end;
 
  {------------------------}
+
+procedure TGLSceneProxy.Init(Wnd: HWnd;
+                             nCoord: TCoordinates;
+                             const LibName: String;
+                             var FullScreen, AllowsGDI: Boolean;
+                             FogDensity: Single;
+                             FogColor, FrameColor: TColorRef);
+begin
+ {MasterVersion:=VersionGLSceneObject-1;
+  MasterUpdate;} NeedGLSceneObject(0,0);
+  if not (nCoord is TCameraCoordinates) then
+    Raise InternalE('OpenGL does not support non-perspective views (yet)');
+  ProxyWnd:=Wnd;
+  Coord:=nCoord;
+  nFrameColor:=FrameColor;
+  FullScreen:=False;
+  TTextureManager.AddScene(Self, False);
+end;
+
+procedure TGLSceneProxy.Copy3DView(SX,SY: Integer; DC: HDC);
+var
+ L, R, T, B: Integer;
+ bmiHeader: TBitmapInfoHeader;
+ BmpInfo: TBitmapInfo absolute bmiHeader;
+ Bits: Pointer;
+ FrameBrush: HBrush;
+ Rc: TRect;
+
+  procedure Frame(X,Y,W,H: Integer);
+  var
+    Rect: TRect;
+  begin
+    if FrameBrush=0 then
+      FrameBrush:=CreateSolidBrush(nFrameColor);
+    Rect:=Bounds(X,Y,W,H);
+    FillRect(DC, Rect, FrameBrush);
+  end;
+
+begin
+  if (CurrentGLSceneObject=Nil) or not CurrentGLSceneObject.FReady then
+  begin
+    Rc:=Rect(0,0,SX,SY);
+    FrameBrush:=CreateHatchBrush(HS_DIAGCROSS, $808080);
+    SetBkColor(DC, $000000);
+    FillRect(DC, Rc, FrameBrush);
+    DeleteObject(FrameBrush);
+    Exit;
+  end;
+
+  L:=0;
+  R:=(ScreenX+3) and not 3;
+  FillChar(bmiHeader, SizeOf(bmiHeader), 0);
+  with bmiHeader do
+  begin
+    biSize:=SizeOf(TBitmapInfoHeader);
+    biPlanes:=1;
+    biBitCount:=24;
+    biWidth:=R-L;
+    biHeight:=ScreenY;
+  end;
+
+  B:=bmiHeader.biWidth*bmiHeader.biHeight;
+  GetMem(Bits, B*3);
+  try
+    if B>0 then
+    begin
+      glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
+      Err(999);
+
+      { we have to swap the bytes (RGB --> BGR)...}
+      asm
+       push esi
+       push edi
+       mov eax, [B]
+       mov esi, [Bits]
+       lea edi, [esi+2*eax]
+       add edi, eax
+
+       @loop:
+        mov eax, [esi]   {R2B1G1R1}
+        mov edx, [esi+4] {G3R3B2G2}
+        bswap eax
+        xchg al, dh
+        ror eax, 8
+        mov [esi], eax
+
+        mov eax, [esi+8] {B4G4R4B3}
+        bswap edx
+        xchg al, dh
+        bswap eax
+        bswap edx
+        rol eax, 8
+        mov [esi+4], edx
+        mov [esi+8], eax
+
+        add esi, 12
+        cmp esi, edi
+       jne @loop
+
+       pop edi
+       pop esi
+      end;
+    end;
+
+    L:=(SX-bmiHeader.biWidth) div 2;
+    T:=(SY-bmiHeader.biHeight) div 2;
+    R:=L+bmiHeader.biWidth;
+    B:=T+bmiHeader.biHeight;
+    FrameBrush:=0;
+    try
+      if L>0 then  Frame(0, T, L, B-T);
+      if T>0 then  Frame(0, 0, SX, T);
+      if R<SX then Frame(R, T, SX-R, B-T);
+      if B<SY then Frame(0, B, SX, SY-B);
+    finally
+      if FrameBrush<>0 then
+        DeleteObject(FrameBrush);
+    end;
+    SetDIBitsToDevice(DC, L, T, bmiHeader.biWidth, bmiHeader.biHeight, 0,0,0, bmiHeader.biHeight, Bits, BmpInfo, 0);
+  finally
+    FreeMem(Bits);
+  end;
+end;
+
+{procedure TGLSceneProxy.MasterUpdate;
+var
+ I: Integer;
+begin
+ NeedGLSceneObject;
+ if VersionGLSceneObject<>MasterVersion then
+  begin
+   for I:=0 to Textures.Count-1 do
+    with PTexture3(Textures.Objects[I])^ do
+     OpenGLName:=0;
+   MasterVersion:=VersionGLSceneObject;
+  end;
+end;}
+
+function TGLSceneProxy.StartBuildScene;
+begin
+  {MasterUpdate;} NeedGLSceneObject(0,0);
+  Result:=CurrentGLSceneObject.StartBuildScene(VertexSize);
+end;
+
+procedure TGLSceneProxy.EndBuildScene;
+begin
+  {$IFDEF Debug}
+  if CurrentGLSceneObject=Nil then
+    raise InternalE('proxy: EndBuildScene');
+  {$ENDIF}
+  CurrentGLSceneObject.EndBuildScene;
+end;
+
+procedure TGLSceneProxy.Render3DView;
+begin
+  NeedGLSceneObject((ScreenX+7) and not 7, (ScreenY+3) and not 3);
+  if CurrentGLSceneObject.Ready then
+    CurrentGLSceneObject.RenderOpenGL(Self, False)
+  else
+    InvalidateRect(ProxyWnd, Nil, True);
+end;
+
+procedure TGLSceneProxy.BuildTexture(Texture: PTexture3);
+begin
+  {$IFDEF Debug}
+  if CurrentGLSceneObject=Nil then
+    raise InternalE('proxy: BuildTexture');
+  {$ENDIF}
+  CurrentGLSceneObject.BuildTexture(Texture);
+end;
 
 end.

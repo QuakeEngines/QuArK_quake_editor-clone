@@ -24,6 +24,13 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/12/07 19:47:59  decker_dk
+- Changed the code in Glide.PAS and GL1.PAS, to more understandable
+and readable code (as seen in Python.PAS), which isn't as subtle to
+function-pointer changes, as the old code was. This modification also
+had impact on Ed3DFX.PAS and EdOpenGL.PAS, which now does not have any
+prefixed 'qrkGlide_API' or 'qrkOpenGL_API' pointer-variables for DLL calls.
+
 Revision 1.5  2000/11/11 17:56:52  decker_dk
 Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
 
@@ -1253,7 +1260,7 @@ begin
 
     @softgQuArK:=GetProcAddress(GlideLib, softgQuArK_Identifier_FuncName);
     if Assigned(softgQuArK) then
-      qrkGlideVersion:=softgQuArK {Decker - Hu? I don't understand how a proc-address also can be a version-number??}
+      qrkGlideVersion:=softgQuArK()
     else
       qrkGlideVersion:=HardwareGlideVersion;
 
