@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.131  2001/05/06 08:04:16  tiglari
+//remove instance dup from toolbox, simply path dup path point forms
+//
 //Revision 1.130  2001/05/06 06:00:28  tiglari
 //change angles Typ in linearform to E
 //
@@ -430,7 +433,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap042801"
+      Version = "QuArK 6.3snap050701"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

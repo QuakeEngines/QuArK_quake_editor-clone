@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2001/04/28 02:42:21  tiglari
+update version
+
 Revision 1.50  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -178,7 +181,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'QuArK 6.3snap042801';
+  QuArKVersion            = 'QuArK 6.3snap050701';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
