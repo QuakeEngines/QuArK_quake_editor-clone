@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/04/18 18:47:57  arigo
+Quake 3 : auto export shaders
+
 }
 
 unit QkTextures;
@@ -935,6 +938,16 @@ begin
        Link:=NeedGameFileBase(S, Q2TexPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
        Link.AddRef(+1);
        Link.Acces;  { we found the linked texture }
+       {mac tiglari =- FIXME: we should have these flags
+          read directly from the text file in the .pak
+          rather than having to put this info into datakp.qrk}
+       if CharModeJeu=mjKingPin then
+        begin
+           Link.Specifics.Add('Contents='+Specifics.Values['c']);
+           Link.Specifics.Add('Flags='+Specifics.Values['f']);
+           Link.Specifics.Add('Value='+Specifics.Values['v']);
+        end;
+        {/mac tiglari}
        Break;
       end;
     end;
