@@ -3,13 +3,19 @@
 Python macros available for direct call by QuArK
 """
 #
-#tbd: concat strings, readonly attribute, forms for specific data types
+#tbd: concat strings
+#     readonly
+#     halfgridsnap
+#     forms for specific data types
 #
 #$Header$
 #
 #
 #
 #$Log$
+#Revision 1.7  2004/12/01 21:48:29  alexander
+#preliminary hammer files parsed
+#
 #
 #
 
@@ -26,6 +32,9 @@ class Key:
 
     def SetDesc(self, desc):
         self.m_desc = desc
+
+    def AddDesc(self, desc):
+        self.m_desc += desc
 
     def SetDefaultValue(self, defvalue):
         self.m_defaultvalue = defvalue
@@ -60,6 +69,17 @@ class KeyString(Key):
         return s
 
 class KeyNumeric(Key):
+    def __init__(self):
+        Key.__init__(self)
+
+    def GenerateForm(self, indent):
+        s = quarkx.newobj(self.m_keyname + ":")
+        s["txt"] = "&"
+        s["hint"] = self.m_desc
+        indent.appenditem(s)
+        return None
+
+class KeyBool(Key):
     def __init__(self):
         Key.__init__(self)
 
@@ -145,6 +165,9 @@ class Entity:
 
     def SetDesc(self, desc):
         self.m_desc = desc
+
+    def AddDesc(self, desc):
+        self.m_desc += desc
 
     def SetSize(self, sizeargs):
         if (len(sizeargs) == 6):
@@ -257,6 +280,14 @@ def CreateClass(token):
         theEntity = PointEntity()
     elif (token.lower() == "baseclass"):
         theEntity = InheritEntity()
+    elif (token.lower() == "keyframeclass"):
+        theEntity = PointEntity()
+    elif (token.lower() == "moveclass"):
+        theEntity = PointEntity()
+    elif (token.lower() == "pointclass"):
+        theEntity = PointEntity()
+    elif (token.lower() == "filterclass"):
+        theEntity = PointEntity()
     else:
         raise "Unknown @-token:", token
 
@@ -297,7 +328,7 @@ def BeginClassname(token):
 
 def AddClassnameDesc(token):
     global theEntity
-    theEntity.SetDesc(token)
+    theEntity.AddDesc(token)
 
 def EndClassname(token):
     global currentclassname
@@ -337,22 +368,26 @@ def AddKeyType(token):
     elif (token == "choices"):
         theKey = KeyChoices()
     elif (token == "void"):
-        theKey = KeyString()
+        theKey = KeyString()       #tbd 
     elif (token == "vector"):
-        theKey = KeyString()
+        theKey = KeyString()       #tbd 
     elif (token == "vecline"):
-        theKey = KeyString()
+        theKey = KeyString()       #tbd 
+    elif (token == "axis"):
+        theKey = KeyString()       #tbd 
     elif (token == "sidelist"):
-        theKey = KeyString()
+        theKey = KeyString()       #tbd 
     elif (token == "material"):
-        theKey = KeyString()
+        theKey = KeyString()       #tbd 
+    elif (token == "bool"):
+        theKey = KeyBool()       #tbd 
     else:
         raise "Unknown KeyType-token:", token
     theKey.SetKeyname(currentkeyname)
 
 def AddKeyDesc(token):
     global theKey
-    theKey.SetDesc(token)
+    theKey.AddDesc(token)
 
 def AddKeyDefa(token):
     global theKey
@@ -441,7 +476,6 @@ def readentirefile(file):
             filecontents = filecontents + line + "\n"
     f.close()
     return filecontents
-
 TYPE_UNKNOWN    = 0
 TYPE_NUMERIC    = 1
 TYPE_STRING     = 2
@@ -456,6 +490,7 @@ TYPE_SPLITTER_PRNTSHS_E = 16    # ')'
 TYPE_SPLITTER_COMMA     = 17    # ','
 TYPE_INPUT     = 18    # 'input'
 TYPE_OUTPUT     = 19    # 'input'
+TYPE_SPLITTER_PLUS     = 20    # '+'
 
 toktypes={
 0  :'TYPE_UNKNOWN',        
@@ -471,12 +506,13 @@ toktypes={
 16 :'TYPE_SPLITTER_PRNTSHS_E',
 17 :'TYPE_SPLITTER_COMMA',
 18 :'TYPE_INPUT',
-19 :'TYPE_OUTPUT'}
+19 :'TYPE_OUTPUT',
+20 :'TYPE_SPLITTER_PLUS'}
 
 
 CHARS_NUMERIC  = "-0123456789."
 CHARS_STRING   = "\""
-CHARS_SPLITTER = "@:=[](),"
+CHARS_SPLITTER = "@:=[](),+"
 
 def getnexttoken(srcstring):
     def nextnonwhitespace(srcstring):
@@ -529,6 +565,8 @@ def getnexttoken(srcstring):
             token_is = TYPE_SPLITTER_PRNTSHS_E
         elif (token == ","):
             token_is = TYPE_SPLITTER_COMMA
+        elif (token == "+"):
+            token_is = TYPE_SPLITTER_PLUS
     else:
         token, srcstring = gettoken(srcstring)
         if (token == 'input'):
@@ -561,9 +599,11 @@ statediagram =                                                                  
                                                                                                 \
 ,'STATE_CLASSNAME2'     :[(TYPE_SPLITTER_COLON     ,'STATE_CLASSNAME3'     ,None)               \
                          ,(TYPE_SPLITTER_SQUARE_B  ,'STATE_KEYSBEGIN'      ,None)             ] \
-,'STATE_CLASSNAME3'     :[(TYPE_STRING             ,'STATE_CLASSNAME4'     ,AddClassnameDesc) ] \
                                                                                                 \
-,'STATE_CLASSNAME4'     :[(TYPE_SPLITTER_SQUARE_B  ,'STATE_KEYSBEGIN'      ,None)             ] \
+,'STATE_CLASSNAME3'     :[(TYPE_STRING             ,'STATE_CLASSNAME3'     ,AddClassnameDesc)   \
+                         ,(TYPE_SPLITTER_PLUS      ,'STATE_CLASSNAME3'     ,None)               \
+                         ,(TYPE_SPLITTER_SQUARE_B  ,'STATE_KEYSBEGIN'      ,None)             ] \
+                                                                                                \
                                                                                                 \
 ,'STATE_KEYSBEGIN'      :[(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
@@ -597,9 +637,9 @@ statediagram =                                                                  
                                                                                                 \
 ,'STATE_VALUEFLAG4'     :[(TYPE_NUMERIC            ,'STATE_VALUEFLAGS2'    ,AddKeyFlagDefa)   ] \
                                                                                                 \
-,'STATE_VALUE'          :[(TYPE_STRING             ,'STATE_VALUE2'         ,AddKeyDesc)       ] \
-                                                                                                \
-,'STATE_VALUE2'         :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
+,'STATE_VALUE'          :[(TYPE_STRING             ,'STATE_VALUE'          ,AddKeyDesc)         \
+                         ,(TYPE_SPLITTER_PLUS      ,'STATE_VALUE'          ,None)               \
+                         ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_COLON     ,'STATE_VALUE3'         ,None)               \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
@@ -617,8 +657,9 @@ statediagram =                                                                  
                          ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
                          ,(TYPE_OUTPUT             ,'STATE_OUTPUTBEGIN'    ,None)             ] \
                                                                                                 \
-,'STATE_VALUE5'         :[(TYPE_STRING             ,'STATE_VALUE6'         ,None)             ] \
-,'STATE_VALUE6'         :[(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
+,'STATE_VALUE5'         :[(TYPE_STRING             ,'STATE_VALUE5'         ,None)               \
+                         ,(TYPE_SPLITTER_PLUS      ,'STATE_VALUE5'         ,None)               \
+                         ,(TYPE_SYMBOL             ,'STATE_KEYBEGIN'       ,BeginKey)           \
                          ,(TYPE_SPLITTER_SQUARE_E  ,'STATE_UNKNOWN'        ,EndClassname)       \
                          ,(TYPE_SPLITTER_EQUAL     ,'STATE_CHOICES'        ,None)               \
                          ,(TYPE_INPUT              ,'STATE_INPUTBEGIN'     ,None)               \
@@ -650,6 +691,7 @@ def makeqrk(root, filename, gamename):
         # Figure out, if the token_is type is expected or not
         expectedtypes = []
         newstate = None
+        defaultstate=None
         typestates = statediagram[state]
         for type, nextstate, func in typestates:
             if (type == token_is):
@@ -698,6 +740,9 @@ quarkpy.qentbase.RegisterEntityConverter("Worldcraft .fgd file", "Worldcraft .fg
 
 #
 #$Log$
+#Revision 1.7  2004/12/01 21:48:29  alexander
+#preliminary hammer files parsed
+#
 #Revision 1.6  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5
