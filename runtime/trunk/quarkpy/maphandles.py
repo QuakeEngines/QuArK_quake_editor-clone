@@ -989,7 +989,7 @@ def viewsingleface(editor, view, face):
     view.info = {"type": "2D",
                  "matrix": ~ quarkx.matrix(v, v^n, -n),
                  "bbox": quarkx.boundingboxof([face] + map(lambda h: h.pos, view.handles)),
-                 "scale": 0.01,
+                 "scale": oldscale, #DECKER
                  "custom": singlefacezoom,
                  "origin": origin,
                  "noclick": None,
