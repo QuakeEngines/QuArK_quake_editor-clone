@@ -30,6 +30,10 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.10  2002/12/30 01:48:21  tiglari
+//remove 'use integral vertices as threepoints' map option (confusing, unnecessary,
+//  since non-integral face finder-fixer does the job better)
+//
 //Revision 1.192.2.9  2002/12/24 12:04:53  tiglari
 //add PTS loading to Q1, Hx2, HL build defaults
 //
@@ -4438,6 +4442,7 @@ QQRKSRC1
           _color = ""          // the button deletes this Specific
         }
       }
+      nonintegral = {Txt="nonintegral" Typ="X" Hint="Contained nonintegral faces won't be found by nonintegral face-finder."}
       usercenterform = !
       sep1:  = {Typ="S" Txt = ""}
       neg:   = {Txt="Neg. polys" Cap="Negative" Typ="X" Hint="polyhedrons in negative groups dig the map"}
