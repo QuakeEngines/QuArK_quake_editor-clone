@@ -18,6 +18,7 @@ import qmenu
 import qhandles
 from maputils import *
 import mapcommands
+import mapselection
 import mapbtns
 from mapentities import CallManager
 
@@ -36,11 +37,11 @@ def EscClick(m):
         editor.layout.explorer.uniquesel = None
 
 
-EditMenuCmds = [qmenu.item("Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected."),
-                qmenu.sep,
+EditMenuCmds = [#qmenu.item("Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected."),
+                #qmenu.sep,
                 qmenu.popup("View Group", [], ViewGroup1click, "options for groups")]
 EditMenuShortcuts = {}
-MapHotKeyList("Remove",  EditMenuCmds[0], EditMenuShortcuts)
+#MapHotKeyList("Remove",  EditMenuCmds[0], EditMenuShortcuts)
 
 
 #
@@ -135,6 +136,9 @@ def BuildMenuBar(editor):
     Commands1, sc2 = mapcommands.CommandsMenu()
     sc1.update(sc2)   # merge shortcuts
 
+    Selection1, sc2 = mapselection.SelectionMenu()
+    sc1.update(sc2)   # merge shortcuts
+
     Quake1, sc2 = mapquakemenu.QuakeMenu(editor)
     sc1.update(sc2)   # merge shortcuts
 
@@ -145,7 +149,7 @@ def BuildMenuBar(editor):
     sc1.update(sc2)   # merge shortcuts
 
     return [File1, Layout1, Edit1, quarkx.toolboxmenu,
-     Search1, Commands1, Quake1, Tools1, Options1], sc1
+     Search1, Commands1, Selection1, Quake1, Tools1, Options1], sc1
 
 
 
@@ -408,6 +412,9 @@ def BaseMenu(sellist, editor):
 #
 #
 #$Log$
+#Revision 1.6  2001/03/20 07:59:40  tiglari
+#customizable hot key support
+#
 #Revision 1.5  2001/01/26 19:07:04  decker_dk
 #Clamped the scalefactors for keyboard zoom-modification to in:100 and out:0.01.
 #
