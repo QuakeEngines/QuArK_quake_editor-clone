@@ -243,7 +243,7 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
             for face in oldlist:
                 newface=face.copy()
                 newface.setthreepoints((vtx, vtx2, point),0)
-                if colinear([vtx, vtx2, point]):
+#                if colinear([vtx, vtx2, point]):
 #                   debug('colinear: '+`vtx`+' '+`vtx2`+' '+`point`)
                 newface['tex']=CaulkTexture()
                 newlist.append(newface)
@@ -527,7 +527,7 @@ def buildwallmakerimages(self, singleimage=None):
                         if poly.broken:
                             newface.swapsides()
                         poly.rebuildall()
-                        if poly.broken:
+#                        if poly.broken:
 #                            debug('fuck, still busted')
         list = []
         for item in wallgroup.subitems:
@@ -545,6 +545,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.7  2002/05/18 22:38:31  tiglari
+# remove debug statement
+#
 # Revision 1.6  2001/10/08 10:42:47  tiglari
 # solid mode added, group structure preserved when dissociated
 #
