@@ -152,12 +152,12 @@ def filesformap(map):
     return [map+".bsp", map+mapholes]
 
 
-def FirstBuildCmd():
-    setup = quarkx.setupsubset()
-    if setup["FirstBuildCmd"]:
-        return setup["FirstBuildCmd"]
-    else:
-        return "QBSP1"
+#def FirstBuildCmd():
+#    setup = quarkx.setupsubset()
+#    if setup["FirstBuildCmd"]:
+#        return setup["FirstBuildCmd"]
+#    else:
+#        return "QBSP1"
 
 
 def qmenuitem1click(m):
@@ -166,7 +166,7 @@ def qmenuitem1click(m):
     if m.info["SelOnly"] and not len(editor.layout.explorer.sellist):
         quarkx.msgbox(Strings[223], MT_ERROR, MB_OK)
         return
-    if MapOption("AutoCheckMap", SS_MAP) and m.info[FirstBuildCmd()]:
+    if MapOption("AutoCheckMap", SS_MAP):
         import mapsearch
         if mapsearch.CheckMap() == 0:
             return
@@ -181,29 +181,29 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     #
     # Turn the "extracted" to lowercase.
     #
-
     for i in range(len(extracted)):
         extracted[i] = string.lower(extracted[i])
 
     #
     # First, extract all textures and compute .map file names.
     #
-
     if editor is None:
         texsrc = None
     else:
         texsrc = editor.TexSource
+
     setup = quarkx.setupsubset()
     newlist = []
     textures = {}
     texwarning = 0
     texwarninglist = ""
     gameneedwad = setup["GameNeedWad"]
+
     for mapfileobject, root, buildmode in maplist:
         map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
         mapinfo = {"map": map}
-#DECKER        if buildmode["QCSG1"] or buildmode["QBSP1"] or buildmode["VIS1"] or buildmode["LIGHT1"] or buildmode["BSPC1"]:
-        if buildmode["BuildPgm1"] or\
+        if buildmode["ExportMapFile"] or\
+           buildmode["BuildPgm1"] or\
            buildmode["BuildPgm2"] or\
            buildmode["BuildPgm3"] or\
            buildmode["BuildPgm4"] or\
@@ -212,7 +212,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
            buildmode["BuildPgm7"] or\
            buildmode["BuildPgm8"] or\
            buildmode["BuildPgm9"]:
-#DECKER
             bspfile = quarkx.outputfile("maps/%s.bsp" % map)
             if bspfile in extracted:
                 continue
@@ -281,7 +280,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     #
     # Precompute a few variables.
     #
-
     tmpquark = quarkx.outputfile("")
     if tmpquark[-1]=='\\':
         tmpquark = tmpquark[:-1]
@@ -297,7 +295,6 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
             extracted.append(string.lower(hxstrfile))
         except:
             pass
-    firstcmd = FirstBuildCmd()
 
     if runquake or len(extracted):
         if runquake:    # if we have to run the game
@@ -492,7 +489,7 @@ def QuakeMenu(editor):
     sc = {}
     isbsp = "Bsp" in editor.fileobject.classes   # some items don't apply for BSP files
     gamename = quarkx.setupsubset().shortname
-    firstcmd = FirstBuildCmd()
+    #firstcmd = FirstBuildCmd()
     sourcename = "UserData %s.qrk" % gamename
     ud = LoadPoolObj(sourcename, quarkx.openfileobj, sourcename)
     ud = ud.findname("Menu.qrk")
@@ -504,9 +501,10 @@ def QuakeMenu(editor):
             else:
                 m = qmenu.item(txt, qmenuitem1click, "|The commands in this menu lets you run your map with the game. The most common commands are the first few ones, which lets you try your map as a one-step operation.\n\nBefore a map can be played, it must be compiled (translated into a .bsp file). This is done by other programs that QuArK will call for you. See the Configuration dialog box, under the page of this game, where you must tell QuArK where these programs are installed. The programs themselves are available in Build Packs, one for each game you want to make maps for, and that can be downloaded from http://www.planetquake.com/quark (page Armin's News).")
                 m.info = p
-                if isbsp and p[firstcmd]:
-                    m.state = qmenu.disabled
-                elif p["Shortcut"]:
+                #if isbsp and p[firstcmd]:
+                #    m.state = qmenu.disabled
+                #elif p["Shortcut"]:
+                if p["Shortcut"]:
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
@@ -519,6 +517,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.12  2000/10/26 18:15:45  tiglari
+#Enable Brush Primitives support
+#
 #Revision 1.11  2000/10/19 19:00:42  decker_dk
 #Fix if 'BuildPgmsDir' was not filled out
 #
