@@ -247,6 +247,8 @@ Strings = {
 	802: "C Files (*.c)|*.c",
 	803: "C Header Files (*.h)|*.h",
 	804: "Quake 3 Shaders (*.shader)|*.shader",
+#	805: "Quake 3 .md3 file (*.md3)|*.md3", -- not ready yet!
+	806: "SoF Texture (*.m32)|*.m32",
 
 	809: "Invalid version number in Quake's original Progs.dat",
 
@@ -536,6 +538,8 @@ Strings = {
 	5173: "C File",
 	5174: "C Header File",
         5175: "Shader list (Quake 3)",
+#        5176: ".md3 file", -- not ready yet 
+        5177: "M32 Texture (SoF)",
 
         5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",  
 	5184: "'%s' is not a QuArK-5 file",
@@ -745,7 +749,7 @@ Strings = {
 	5587: "Impossible to create the directory '%s'. Be sure you entered the path to %s correctly in the configuration dialog box//Error code %d",
 	5588: "Texture '%s' not found.",
 	5589: "%d textures written to '%s'.",
-	5590: "%d textures written to '%s'.\n%d textures came from animations or from shaders.",
+	5590: "%d textures written to '%s', including %d animated textures.",
 	5591: "Choose the file(s) to link to",
 	5592: "Choose the file(s) to import",
 	5593: "'%s' is not a Quake1 MDL file//%d-%d should be %d-%d",
