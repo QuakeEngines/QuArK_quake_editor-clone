@@ -45,13 +45,13 @@ import quarkpy.mapeditor
 import quarkpy.mapcommands
 import quarkpy.mapoptions
 import quarkpy.maphandles
-import quarkpy.dlgclasses
+#import quarkpy.dlgclasses
 import quarkpy.mapduplicator
 StandardDuplicator = quarkpy.mapduplicator.StandardDuplicator
 from quarkpy.maputils import *
 
-import quarkpy.mapbezier
-from quarkpy.b2utils import *
+#import quarkpy.mapbezier
+#from quarkpy.b2utils import *
 
 #############################
 #
@@ -69,6 +69,26 @@ from quarkpy.b2utils import *
 #  - menus
 #
 
+#
+# Temp from maputils to help run with older quark versions
+# 
+#
+def matrix_u_v(u,v):
+    return quarkx.matrix((u.x, v.x, 0),
+                         (u.y, v.y, 0),
+                         (u.z, v.z, 1))
+                         
+def intersectionPoint2d(p0, d0, p1, d1):
+    "intersection in 2D plane, point, direction"
+    for v in p0, d0, p1, d1:
+        if v.z != 0.0:
+            return None
+    det = d0.x*d1.y-d1.x*d0.y
+    if det==0.0:
+        return 0  # lines paralell
+    s = (p0.y*d1.x - p1.y*d1.x - d1.y*p0.x +d1.y*p1.x)/det
+    return p0+s*d0
+        
 
 #  -- Perspective Stuff --
 #
@@ -797,9 +817,9 @@ If the textures on the two adjoining walls of the room are properly aligned, the
     finishitem(item)
     list.append(item)
 
-  colitem = qmenu.item("C&olumn", makecolumn, "Make a column")
-  finishitem(colitem)
-  list.append(colitem)
+#  colitem = qmenu.item("C&olumn", makecolumn, "Make a column")
+#  finishitem(colitem)
+#  list.append(colitem)
 
   curvehint = """|Commands for making curves out of brushes.
 
@@ -908,6 +928,9 @@ quarkpy.mapentities.registerPyForm("dup brushcolumn", brushcolumnstring)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.2  2001/01/03 20:10:40  tiglari
+#added outer circle approximation
+#
 #Revision 1.1  2001/01/02 07:56:49  tiglari
 #brush curves, adapted from mb2curves.py.  Columns still produces patches,
 #only provides `inner' approximation to arcs,  'outer' prolly better, coming next,
