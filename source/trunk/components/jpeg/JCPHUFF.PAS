@@ -117,6 +117,8 @@ var
   ci, tbl : int;
   compptr : jpeg_component_info_ptr;
 begin
+  // Initialize variables
+  tbl := 0;
   entropy := phuff_entropy_ptr (cinfo^.entropy);
 
   entropy^.cinfo := cinfo;
@@ -894,7 +896,8 @@ var
   htblptr : ^JHUFF_TBL_PTR;
   did : array[0..NUM_HUFF_TBLS-1] of boolean;
 begin
-  entropy := phuff_entropy_ptr (cinfo^.entropy);
+  // Initialize variables
+  tbl := 0;  entropy := phuff_entropy_ptr (cinfo^.entropy);
 
   { Flush out buffered data (all we care about is counting the EOB symbol) }
   emit_eobrun(entropy);

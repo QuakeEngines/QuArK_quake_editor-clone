@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.71  2003/08/12 15:53:11  silverpaladin
+Fixed an index out of bounds error in find sub elements by insuring index is < count
+
 Revision 1.70  2002/05/16 09:07:40  tiglari
 Update version to 6.4 alpha (no diff from 6,3 yet)
 
@@ -223,6 +226,8 @@ Find new shaders and misc.
 unit QkObjects;
 
 interface
+
+{$I DelphiVer.inc}
 
 uses Windows, SysUtils, Messages, Classes, Clipbrd,
      Controls, Graphics, Forms, qmath, Menus,
@@ -518,10 +523,10 @@ type
   public
     function Add(Q: QObject) : Integer;
     procedure Delete(I: Integer);
-    {$IFDEF VER90}
+    {$IFDEF CompiledWithDelphi2}
       {$DEFINE NOVIRTUALCLEAR}
     {$ENDIF}
-    {$IFDEF VER100}
+    {$IFDEF CompiledWithDelphi3}
       {$DEFINE NOVIRTUALCLEAR}
     {$ENDIF}
     {$IFDEF NOVIRTUALCLEAR}
@@ -1244,7 +1249,7 @@ end;
 
 destructor QObject.Destroy;
 var
-  I,a: Integer;
+  I: Integer;
 begin
   {$IFDEF Debug}
   I:=g_MemQObject.IndexOf(Self);
@@ -1258,14 +1263,8 @@ begin
 
   for I:=0 to FSubElements.Count-1 do
   begin
-    if FSubElements[I].FParent=Self then
-    begin
-      if (FSubElements[I].PythonObj.ob_refcnt > 1) then
-      begin
-        a:=i; // Dummy statement just for easy breakpoint placement
-      end;
-      FSubElements[I].FParent:=Nil;
-    end;
+    if FSubElements[I].FParent=Self
+    then FSubElements[I].FParent:=Nil;  // Put break point here with Break When Condition: FSubElements[I].PythonObj.ob_refcnt > 1
   end;
 
   FSubElements.Free;

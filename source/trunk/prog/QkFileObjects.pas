@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2003/08/12 15:49:53  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
 Revision 1.35  2003/07/21 04:50:02  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -2060,7 +2063,9 @@ begin
  finally
   FindClose(Rec);
  end;
- H:=CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
+ // No comments as to why close handle is commented out...
+ // H:=
+ CreateEvent(Nil, False, False, PChar(Format(TagAtom, [GetCurrentProcessId])));
 // CloseHandle(H);
 end;
 
@@ -2256,10 +2261,6 @@ begin
 end;
 
 function qOpeninWindow(self, args: PyObject) : PyObject; cdecl;
-var
- alt: PChar;
- astext: PyObject;
- Format: Integer;
 begin
  try
   with QkObjFromPyObj(self) as QFileObject do

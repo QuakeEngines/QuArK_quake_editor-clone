@@ -64,7 +64,7 @@ type
     rows_to_go : JDIMENSION;    { counts rows remaining in image }
 
     { Height of an input row group for each component. }
-    rowgroup_height : array[0..MAX_COMPONENTS-1] of int;
+    rowgroup_height : array[0..MAX_COMPONENTS-1] of uint;
 
     { These arrays save pixel expansion factors so that int_expand need not
       recompute them each time.  They are unused for other upsampling methods.}

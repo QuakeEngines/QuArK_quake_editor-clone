@@ -19,6 +19,7 @@ unit DirectDraw;
 
 interface
 
+{$I DelphiVer.inc}
 {$MINENUMSIZE 4}
 {$ALIGN ON}
 
@@ -139,14 +140,10 @@ type
 // Delphi 5 can't handle interface in variant records
 // so we have to use pointers instead (which can be type-casted into interfaces):
 
-{$IFDEF VER130}
-  PDirectDrawSurface = Pointer;              
-{$ELSE}
-{$IFDEF VER140}                // D6, TP 14
+{$IFDEF Delphi5-6}
   PDirectDrawSurface = Pointer;
 {$ELSE}
   PDirectDrawSurface = IDirectDrawSurface;
-{$ENDIF}
 {$ENDIF}
 
 (*

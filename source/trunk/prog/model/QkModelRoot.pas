@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:37:04  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/02/28 19:03:25  aiv
 Fixed ref count prob.
 
@@ -55,7 +58,6 @@ type
   private
     FCurrentComponentObj: QComponent;
     procedure SetCurrentComponent(nComponent: QComponent);
-    Procedure MergeCurrentWithComp(Comp: QComponent);
   public
     class function TypeInfo: String; override;
     function Triangles(var P: PComponentTris) : Integer;
@@ -132,10 +134,6 @@ const
 function Max(a,b: Longint): Longint;
 begin
   if a>b then result:=a else result:=b;
-end;
-
-Procedure QModelRoot.MergeCurrentWithComp(Comp: QCOmponent);
-begin
 end;
 
 destructor QModelRoot.Destroy;

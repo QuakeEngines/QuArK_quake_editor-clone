@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2003/08/12 16:04:50  silverpaladin
+Added bullet proofing around qrkGlideState which was causing access violations when NIL.
+
 Revision 1.25  2001/10/19 11:30:36  tiglari
 live pointer hunt.
 
@@ -1178,7 +1181,6 @@ const
  oe_Bottom = 4;
 var
  nColor: FxU32;
- P: PSurfaces;
  NeedTex, PrevChanged: Boolean;
  ScrDiff, ScrTotal: Byte;
  SourceEdge, LastEdge: Byte;

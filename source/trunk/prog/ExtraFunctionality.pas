@@ -23,15 +23,22 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2003/08/12 15:14:46  silverpaladin
+Added Pre-Delphi6  multi platform support routines.
+
 }
 
 unit ExtraFunctionality;
 
 interface
+
+{$I DelphiVer.inc}
+
 uses SysUtils;
 function ConvertPath(const s: string):string;
 
-{$ifndef VER140} // Pre-dates Delphi 6
+
+{$ifndef Delphi6Over} // Pre-dates Delphi 6
 
 // IncludeTrailingPathDelimiter returns the path with a PathDelimiter
 //  ('/' or '\') at the end.  This function is MBCS enabled.
@@ -55,7 +62,7 @@ begin
   {$ENDIF}
 end;
 
-{$ifndef VER140} // Pre-dates Delphi 6
+{$ifndef Delphi6Over} // Pre-dates Delphi 6
 function IncludeTrailingPathDelimiter(const S: string): string;
 begin
   Result := S;

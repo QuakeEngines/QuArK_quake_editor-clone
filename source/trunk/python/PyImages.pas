@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2002/04/12 11:44:54  tiglari
+oops, that last commit was wrong, reverting
+
 Revision 1.11  2001/10/26 12:36:49  tiglari
 live pointer hunt (cleaning up some of my own mess)
 
@@ -48,6 +51,8 @@ Updated copyright-header
 unit PyImages;
 
 interface
+
+{$I DelphiVer.inc}
 
 uses Windows, Messages, SysUtils, Classes, Graphics, CommCtrl, Python,
      QkObjects, Controls, Forms, ComCtrls, PyControls, QkForm, qmath;
@@ -166,11 +171,11 @@ var
      I: Integer;}
  DC: HDC;
  OldBmp: HBitmap;
-{$IFNDEF VER90}
+{$IFNDEF CompiledWithDelphi2}
  Bmp: TBitmap;
 {$ENDIF}
 begin
-{$IFNDEF VER90}
+{$IFNDEF CompiledWithDelphi2}
  Bmp:=TBitmap.Create; try
  Bmp.Width:=Bitmap.Width;
  Bmp.Height:=Bitmap.Height;
@@ -217,7 +222,7 @@ begin
    Images[False]:=TList.Create;
    Images[True]:=TList.Create;
   end;
-{$IFNDEF VER90}
+{$IFNDEF CompiledWithDelphi2}
  finally Bmp.Free; end;
 {$ENDIF}
 end;

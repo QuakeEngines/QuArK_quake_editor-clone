@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2002/03/07 19:14:32  decker_dk
+Removed QLvFileObject, as it was just another name for QFileObject.
+Removed QImages, as it was just another name for QImage
+
 Revision 1.21  2001/03/20 21:43:04  decker_dk
 Updated copyright-header
 
@@ -103,11 +107,12 @@ Find new shaders and misc.
 unit QkWad;
 
 interface
+{$I DelphiVer.inc}
 
-{$IFNDEF VER90} // D2
+{$IFNDEF CompiledWithDelphi2}
   {$DEFINE DontNeedImgListDCU}
 {$ENDIF}
-{$IFNDEF VER100} // D3
+{$IFNDEF CompiledWithDelphi3}
   {$DEFINE DontNeedImgListDCU}
 {$ENDIF}
 
@@ -934,12 +939,12 @@ begin
          ImageList_Add(ImageList1.Handle, Tex.Handle, 0)
         else}
         begin
-        (*{$IFNDEF VER90}
+        (*{$IFNDEF CompiledWithDelphi2}
           UpdateWindow(ListView1.Handle);
           LockWindowUpdate(ListView1.Handle); try
           {$ENDIF}
           ImageList1.Add(Tex, Nil);
-          {$IFNDEF VER90}
+          {$IFNDEF CompiledWithDelphi2}
           finally LockWindowUpdate(0); end;
           ValidateRect(ListView1.Handle, Nil);
           {$ENDIF}*)

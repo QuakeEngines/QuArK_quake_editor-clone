@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2003/08/12 03:06:48  silverpaladin
+Test commit.  Added a blank line.
+
 Revision 1.13  2002/05/13 11:30:43  tiglari
 remove contributors (no longer representative), add sourceforge URL
 
@@ -146,9 +149,6 @@ begin
   Version.Caption := QuarkVersion;
   {$IFDEF Debug}
   Version.Caption := Version.Caption + '  DEBUG - BETA VERSION ONLY';
-  {$ENDIF}
-  {$IFNDEF VER90}
-//  Label9.Free;
   {$ENDIF}
   ProgramIcon.Picture.Icon.Handle := LoadImage(HInstance, 'MAINICON', image_Icon, 0, 0, 0);
   Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');

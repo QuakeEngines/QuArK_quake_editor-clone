@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2002/12/31 04:10:54  rowdy
+added support for Delphi 7
+
 Revision 1.13  2002/06/06 22:44:23  tiglari
 add & set g_CxScreen, g_CyScreen for dual monitor problems (info from
  quantum_red and Decker)
@@ -65,21 +68,10 @@ unit SystemDetails;
 
 interface
 
+{$I DelphiVer.inc}
+
 uses
   SysUtils, Windows, Classes, Registry;
-
-{$IFDEF VER150}
-  {$DEFINE D4PLUS} // Rowdy for Delphi 7
-{$ENDIF}
-{$IFDEF VER140}
-  {$DEFINE D4PLUS} // Rowdy for Delphi 6
-{$ENDIF}
-{$IFDEF VER130}
-  {$DEFINE D4PLUS}
-{$ENDIF}
-{$IFDEF VER120}
-  {$DEFINE D4PLUS}
-{$ENDIF}
 
 const
 SM_CXVIRTUALSCREEN   =	78;
@@ -92,7 +84,7 @@ g_CxScreen, g_CyScreen: Integer;
 Procedure LogSystemDetails;
 
 type
-  {$IFDEF D4PLUS}
+  {$IFDEF Delphi4orNewerCompiler}
      TLargInt = _LARGE_INTEGER;
   {$ELSE}
      TLargInt = TLargeInteger;
@@ -345,9 +337,11 @@ implementation
 uses ShlObj, Logging;
 
 var
-  IsNT,Is95,Is98,Is2000,IsOSR2: Boolean;
+  IsNT, Is95, Is2000 : Boolean;
   WindowsUser, MachineName: string;
-  Platform: TPlatformType;
+  // These are not currently used.
+  // Is98, IsOSR2: Boolean;
+  // Platform: TPlatformType;
 var
   VLevel, VFamily, VModel, VStepping, VTyp :Byte;
   VFeatures :LongInt;
@@ -697,7 +691,7 @@ begin
   if not QueryPerformanceFrequency(Freq) then
     exit;
   QueryPerformanceCounter(PerfCount);
-  {$IFDEF D4PLUS}
+  {$IFDEF Delphi4orNewerCompiler}
   Target:=PerfCount+(Freq*Iterations);
   {$ELSE}
   Target.QuadPart:=PerfCount.QuadPart+(Freq.QuadPart*Iterations);
@@ -705,7 +699,7 @@ begin
   StartTimer;
   repeat
     QueryPerformanceCounter(PerfCount);
-  {$IFDEF D4PLUS}
+  {$IFDEF Delphi4orNewerCompiler}
   until (PerfCount>=Target);
   {$ELSE}
   until (PerfCount.QuadPart>=Target.QuadPart);
@@ -1667,7 +1661,7 @@ begin
             readbinarydata(rvDXVersionNT,bdata^,4);
             FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
           except
-            {$IFDEF D4PLUS}
+            {$IFDEF Delphi4orNewerCompiler}
             try
               readbinarydata(rvDXVersionNT,bdata^,8);
               FVersion:=inttostr(lo(integer(bdata^)))+'.'+inttostr(hi(integer(bdata^)));
@@ -1897,15 +1891,17 @@ end;
 initialization
   IsNT:=IsOSNT;
   Is95:=IsOS95;
-  Is98:=IsOS98;
   Is2000:=IsOS2000;
-  IsOSR2:=IsOSOSR2;
   WindowsUser:=GetUser;
   MachineName:=GetMachine;
-  Platform:=GetPlatform;
   if IsNT then
     ClassKey:='SYSTEM\CurrentControlSet\Control\Class'
   else
     ClassKey:='SYSTEM\CurrentControlSet\Services\Class';
+    
+  // These are not currently used.
+  // Is98:=IsOS98;
+  // IsOSR2:=IsOSOSR2;
+  // Platform:=GetPlatform;
 end.
 

@@ -17,8 +17,8 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
 
 resourcestring
-  {$INCLUDE English.TXT}
-
+  {$I English.TXT}
+  {$I DelphiVer.inc}
 {Portable Graphics Network implementation}
 type
   {Encoding filter}
@@ -260,7 +260,7 @@ uses
   PNGZLIB, Math;
 
 { Delphi 3 missing function }
-{.$IFDEF VER100}
+{.$IFDEF CompiledWithDelphi3}
 Procedure ReplaceTime(Var D:TDateTime; T:TDateTime);
  begin
   D:=D+T; // this work for PNGImage only !

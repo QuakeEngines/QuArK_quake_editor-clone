@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/05/09 18:54:01  aiv
+fix for retail cs.
+
 Revision 1.2  2000/09/10 14:05:21  alexander
 added cvs headers
 
@@ -18,7 +21,7 @@ function CheckFileExists(const Path, CheckFile: String) : Boolean;
 
 implementation
 
-uses SysUtils, {$IFDEF VER90} ShellObj, OLE2; {$ELSE} ShlObj, ActiveX; {$ENDIF}
+uses SysUtils, {$IFDEF CompiledWithDelphi2} ShellObj, OLE2; {$ELSE} ShlObj, ActiveX; {$ENDIF}
 
 function CheckFileExists(const Path, CheckFile: String) : Boolean;
 var
@@ -112,7 +115,7 @@ begin
   S:=S+'\';
  S:=S+#0+CheckFile;
  BrowseInfo.lParam:=LongInt(PChar(S));
- pidlFolder:=SHBrowseForFolder( {$IFDEF VER90} @ {$ENDIF} BrowseInfo);
+ pidlFolder:=SHBrowseForFolder( {$IFDEF CompiledWithDelphi2} @ {$ENDIF} BrowseInfo);
  S:='';
  if pidlFolder<>Nil then
   begin

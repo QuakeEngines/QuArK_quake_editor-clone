@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2003/08/12 16:15:33  silverpaladin
+Fixed some hint for variables that were left in after the code was commented out.
+Fixed form name for GK1's form
+
 Revision 1.31  2003/07/21 04:47:03  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -112,6 +116,8 @@ unit Quarkx;
 
 interface
 
+{$I DelphiVer.inc}
+
 uses Windows, Messages, ShellApi, SysUtils, ExtraFunctionality, Python, Forms,
      Menus;
 
@@ -177,7 +183,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Qk1, PyFormCfg, QkQuakeCtx, PyFloating, PyMapView, qmath,
      PyMath, PyCanvas, PyUndo, qmatrices, QkMapObjects, QkTextures,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
-     Console, Game, {$IFDEF VER90} ShellObj, {$ELSE} ShlObj, {$ENDIF}
+     Console, Game, {$IFDEF CompiledWithDelphi2} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
      QkApplPaths, MapError;

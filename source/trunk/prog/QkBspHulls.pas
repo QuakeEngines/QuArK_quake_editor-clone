@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2003/02/04 23:49:47  tiglari
+Englishification: prvNbS -> prvVertexCount
+
 Revision 1.25  2002/12/25 21:21:57  tiglari
 check for degenerate tex scale before flipping mirrored texture
 
@@ -199,8 +202,8 @@ type
 
   }
 
- PLEdge = ^TLEdge;
  TLEdge = LongInt;
+ PLEdge = ^TLEdge;
  PEdge = ^TEdge;
  TEdge = record
           Vertex0, Vertex1: Word;
@@ -364,6 +367,10 @@ var
 
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
+ // Initialize variables
+ PChar(LEdge) := #0;
+ PlaneDist := 0;
+ cEdges := 0;
  HullNum:=Index;
  FBsp:=nBsp;
  FBsp.AddRef(+1);

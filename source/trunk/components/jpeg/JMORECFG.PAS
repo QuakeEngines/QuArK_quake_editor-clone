@@ -9,6 +9,7 @@ Unit JmoreCfg;
 interface
 
 {$I jconfig.inc}
+{$I DelphiVer.inc}
 
 {$IFDEF FPC}  { Free Pascal Compiler }
     type
@@ -18,8 +19,16 @@ interface
       ushort = Word;
       long = longint;
 {$ELSE}
+{$IFDEF Delphi4orNewerCompiler}
+  type
+    int = Integer;
+    uInt = Integer;
+    short = SmallInt;
+    ushort = Word;
+    long = longint;
+{$ELSE}
 {$IFDEF WIN32}
-  { Delphi 2.0 }
+  { Delphi 3.0 and earlier }
   type
     int = Integer;
     uInt = Cardinal;
@@ -42,6 +51,7 @@ interface
       ushort = Word;
       long = longint;
     {$ENDIF}
+  {$ENDIF}
 {$ENDIF}
 {$ENDIF}
 type

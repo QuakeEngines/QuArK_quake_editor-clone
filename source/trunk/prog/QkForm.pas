@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/06/05 18:39:10  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.12  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -64,6 +67,8 @@ added cvs headers
 unit QkForm;
 
 interface
+
+{$I DelphiVer.inc}
 
 {$DEFINE NoMarsCaption}
 
@@ -157,7 +162,7 @@ type
                  AppCaption: String;
                 end;
 
-{$IFDEF VER90}
+{$IFDEF CompiledWithDelphi2}
   TCustomForm = TForm;
 {$ENDIF}
 

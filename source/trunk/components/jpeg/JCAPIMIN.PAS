@@ -163,6 +163,10 @@ begin
 
   err := cinfo^.err;
   client_data := cinfo^.client_data; { ignore Purify complaint here }
+  // This next line is here only to kill the hint.
+  if (client_data <> client_data) then Exit;
+
+
   MEMZERO(cinfo, SIZEOF(jpeg_compress_struct));
   cinfo^.err := err;
   cinfo^.is_decompressor := FALSE;

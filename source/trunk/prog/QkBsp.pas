@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.55  2003/08/12 15:49:31  silverpaladin
+Added ExtraFunctionality to the uses so that platform independant routines are available for pre-Delphi 6 versions.
+
 Revision 1.54  2003/07/21 04:50:02  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -1775,12 +1778,8 @@ end;
 
 procedure Qbsp.GetPlanes(var L: TQList);
 var
-  p: QObject;
-  S: String;
   I, PlaneSize: Integer;
   Planes2: PChar;
-  norm: vec3_t;
-  dist: scalar_t;
   Q: QObject;
 begin
   if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
@@ -1801,11 +1800,9 @@ end;
 
 function QBsp.GetNodes : QObject;
 var
-  Nodes: PChar;
   Stats: TNodeStats;
   bspkind: Char;
 begin
-  Result:=Nil;
   bspkind:=BspType(GameCode);
   case bspkind of
       bspTypeQ1:
@@ -1832,10 +1829,10 @@ end;
 
 function QBsp.GetBspNode(Node: PChar; const Name:String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
 var
-  First, Second: TTreeBspNode;
   TreePlane: TTreeBspPlane;
   FirstStats, SecStats: TNodeStats; { stats from children }
   NodeWrapper: BspNode;
+
   procedure AddChild(Parent: TTreeBspNode; child: Integer; const Name: String; var Stats: TNodeStats);
   var
     TreeNode: TTreeBspNode;
@@ -1913,7 +1910,6 @@ function QBsp.GetClosePlanes(Close:TDouble): PyObject;
 var
   I, J, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
   Planes2, Planes3: PChar;
-  PlanePt, PlanePt2: TVect;
   SurfType: Char;
 begin
   Result:=PyList_New(0);
@@ -2048,7 +2044,7 @@ end;
 
 function TTreeBspPlane.GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
 var
-  I, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
+  I, PlaneInc, HalfPlaneCount: Integer;
   Planes2: PChar;
   SurfType: Char;
 begin
@@ -2101,7 +2097,6 @@ const
 function TTreeBspPlane.PyGetAttr(attr: PChar) : PyObject;
 var
   I: Integer;
-  L: PyObject;
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
@@ -2270,7 +2265,7 @@ end;
 procedure TTreeBspNode.GetFaces(var L : PyObject);
 var
   FirstLFace: PChar;
-  LFaceCount, LFaceIndex: Integer;
+  LFaceIndex: Integer;
 begin
    if Specifics.Values['leaf']='' then
    begin
@@ -2280,7 +2275,7 @@ begin
    with PQ3Leaf(Source)^ do
    begin
      { leaffaces are integer sized in both Q2/Q3 }
-     LFaceCount:=Bsp.GetBspEntryData(NoBsp1,lump_leaffaces,eBsp3_leaffaces, FirstLFace)   div SizeOf(Integer);
+     Bsp.GetBspEntryData(NoBsp1,lump_leaffaces,eBsp3_leaffaces, FirstLFace);
      for LFaceIndex:=first_leafface to first_leafface+num_leaffaces do
      begin
         PyList_Append(L,PyInt_FromLong(LFaceIndex));
@@ -2289,9 +2284,11 @@ begin
 end;
 
 function TTreeBspNode.PyGetAttr(attr: PChar) : PyObject;
+(*  No node methods yet, so we don' need this
 var
   I: Integer;
   L: PyObject;
+*)
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2003/08/12 15:37:45  silverpaladin
+Wrapped Message box in version check for d5 compatability
+
 Revision 1.26  2003/07/21 05:03:18  nerdiii
 Typ "EP" update. I also removed the * joker
 
@@ -95,6 +98,8 @@ added cvs headers
 unit FormCfg;
 
 interface
+
+{$I DelphiVer.inc}
 
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
@@ -1465,7 +1470,7 @@ begin
                            Conv:=Copy(Conv,I,Length(Conv));
                            S:=Copy(S,I,Length(S));
                          end else begin
-                           {$ifndef VER140} // Pre-dates Delphi 6
+                           {$ifdef Delphi1-5}
                            Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)),0);
                            {$else}
                            Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
@@ -1474,7 +1479,7 @@ begin
                          end;
                        end;
                      end else begin
-                       {$ifndef VER140} // Pre-dates Delphi 6
+                       {$ifdef Delphi1-5}
                        Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)),0);
                        {$else}
                        Application.MessageBox(PAnsiChar(FmtLoadStr1(5656,[ConvOriginal,SOriginal])),PAnsiChar(LoadStr1(3500)));
