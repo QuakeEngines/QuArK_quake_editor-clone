@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2003/12/30 03:08:10  cdunde
+//To add model viewin in 3D views and selection window features
+//
 //Revision 1.8  2002/06/14 22:33:59  tiglari
 //bad spawnflags fix by ut_fourdays for func_door/rotating
 //
@@ -2352,101 +2355,119 @@ QQRKSRC1
         weapon_gauntlet:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "One-handed chainsaw-like weapon. Uses no ammo."
         }
         weapon_machinegun:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "A weak multiple rounds fired weapon. Uses ammo_bullets. Model is broken, don't use."
         }
         weapon_shotgun:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Doubled barreled weapon with short range power.Uses ammo_shells."
         }
         weapon_grenadelauncher:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Canister style explosive launcher. Uses ammo_grenades."
         }
         weapon_rocketlauncher:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Impact explosive projectile weapon. Uses ammo_rockets."
         }
         weapon_lightning:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Electric stimulator. :P. Uses ammo_lightning."
         }
         weapon_railgun:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Long distance very powerful weapon. Uses ammo_slugs."
         }
         weapon_plasmagun:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Short range multiple shots fired weapons decent power. Uses ammo_cells."
         }
         weapon_bfg:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Does this really need a explanation? Uses ammo_bfg."
         }
         weapon_grapplinghook:e =
         {
           origin = "0 0 0"
+          angle = "360"
           wait = "10"
           ;desc = "Pully and wire used for propelling oneself to higher elevation. Not used in game."
         }
         ammo_bullets:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_machinegun."
         }
         ammo_shells:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_shotgun."
         }
         ammo_grenades:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_grenadelauncher."
         }
         ammo_rockets:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_rocketlauncher."
         }
         ammo_lightning:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_lightning."
         }
         ammo_slugs:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_railgun."
         }
         ammo_cells:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_plasmagun."
         }
         ammo_bfg:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Ammo used with weapon_bfg."
         }
       }
@@ -2470,22 +2491,26 @@ QQRKSRC1
         misc_portal_camera:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "This is the view seen through a portal. Must target a target_postion."
         }
         misc_portal_surface:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "This will turn the closet face of a brush to this entity into a portal and project the view of the misc_portal_camera onto face."
         }
         misc_teleporter_dest:e =
         {
           origin = "0 0 0"
+          angle = "360"
           targetname = "[auto]"
           ;desc = "Point of teleportation. Is targeted by a trigger_teleporter."
         }
         // Maleficus: This is more logical in "Misc" Folder
         misc_model:e =
         {
+          angle = "360"
           origin = "0 0 0"
           ;desc = "This can be used to place models in a map."
         }
@@ -2494,11 +2519,13 @@ QQRKSRC1
       {
         func_bobbing:b =
         {
+          angle = "360"
           ;incl = "defpoly"
           ;desc = "Used to create linear motion in a solid entity."
         }
         func_button:b =
         {
+          angle = "360"
           ;incl = "defpoly"
           ;desc = "Just a button."
         }
@@ -2522,6 +2549,7 @@ QQRKSRC1
 //        }
         func_plat:b =
         {
+          angle = "360"
           ;incl = "defpoly"
           ;desc = "Used to lift the player in the air with a brush. Bots don't use well!"
         }
@@ -2538,10 +2566,12 @@ QQRKSRC1
         func_train:b =
         {
           t_originpoly = !
+          angle = "360"
           ;desc = "Used with path_corner to move a brush in a given path of direction."
         }
         func_pendulum:b =
         {
+          angle = "360"
           ;incl = "defpoly"
           ;desc = "This is a poly that swings back and forth."
         }
@@ -2556,16 +2586,19 @@ QQRKSRC1
         holdable_medkit:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Used to restore players heath when activated."
         }
         holdable_teleporter:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Used to teleport the playr to a random info_player_deathmatch when activated."
         }
         path_corner:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Used with func_train to make a brush move in a certain direction."
         }
       }
@@ -2574,66 +2607,79 @@ QQRKSRC1
         item_armor_body:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Red armor equal to 100 points of armor."
         }
         item_armor_combat:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Yellow armor equal to 50 points of armor."
         }
         item_armor_shard:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Armor shard equal to 5 points of armor."
         }
         item_enviro:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Battle Suit power-up."
         }
         item_flight:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Flight power-up. Bots can't use this."
         }
         item_haste:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Speed power-up."
         }
         item_invis:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Invisiblity power-up."
         }
         item_quad:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Sheesh everyone should know this."
         }
         item_regen:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Regen power-up."
         }
         item_health_small:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Green cross bubble equal to 5 points of health."
         }
         item_health:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Yellow cross bubble equal to 25 points of health."
         }
         item_health_large:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Gold cross bubble equal to 50 points of health."
         }
         item_health_mega:e =
         {
           origin = "0 0 0"
+          angle = "360"
           ;desc = "Blue M bubble equal to 100 points of health."
         }
       }
@@ -7184,6 +7230,13 @@ QQRKSRC1
     {
       Help = "This is where a player spawns into the game at. Not used in game. Use info_player_deathmatch instead."
       t_player_size = !
+	mdl = "models/players/sarge/upper.md3"
+      md3_autolink = "1"
+      :u_torso = "Frame 125"
+      :u_rshoulder = "Frame 125"
+      :l_legs = "Frame 170"
+      :h_cigar = "Frame 1"
+      :h_head = "Frame 1"
 	angle: =
       {
         Txt = "&"
@@ -8041,11 +8094,6 @@ QQRKSRC1
 //Decker 2001.03.17 - This point-entity should not have a bounding-box, as it
 //would give a wrong impression of the model
 //      bbox = '-16 -16 -32 16 16 32'
-      angle: =
-      {
-	Txt = "&"
-	Hint = "direction in which model will be oriented."
-      }
       model: =
       {
         t_modelbrowser = !
