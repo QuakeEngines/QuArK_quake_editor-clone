@@ -3,6 +3,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/10/16 22:14:39  aiv
+zip files now handled entirely in pascal (no dlls!)
+
 Revision 1.5  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -30,8 +33,9 @@ Function GetZBufferSize: Integer;
 begin
   Result:=Round(SetupSubSet(ssGeneral, 'Memory').
     GetFloatSpec('CompressionBufferSize', 16));
-  if Result<=16 then Result:=16;
-  Result:=16*1024 // Convert from KB to B.
+  if Result<16 then
+    Result:=16;
+  Result:=Result*1024 // Convert from KB to B.
 end;
 
 Function GetZLevel: Integer;
