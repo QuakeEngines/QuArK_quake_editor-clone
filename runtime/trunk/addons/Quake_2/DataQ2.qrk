@@ -19,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.4  2001/06/08 20:16:34  decker_dk
+//Small HTTP-URL change.
+//
 //Revision 1.3  2001/04/23 18:39:23  decker_dk
 //Modified translucent/transparent (Thanks to Gary A. Chojnowski <noxia@cityisp.net>)
 //
@@ -5711,7 +5714,7 @@ QQRKSRC1
     {
       Help = "Target a target_string with this. The default is to be a time o"
        "f day clock."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6262,7 +6265,7 @@ QQRKSRC1
     {
       Help = "A timer. When the time is up, the timer triggers all of its targ"
        "ets, and then starts over. These can be used but not touched."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6527,7 +6530,7 @@ QQRKSRC1
     target_blaster:form =
     {
       Help = "Fires a blaster bolt in the set direction when triggered."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6571,7 +6574,7 @@ QQRKSRC1
     target_changelevel:form =
     {
       Help = "Changes level to map when fired."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6601,7 +6604,7 @@ QQRKSRC1
     {
       Help = "Triggered by a trigger_crosslevel elsewhere within a unit.  If m"
        "ultiple triggers are checked, all must be true."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
         Txt = "&"
@@ -6669,7 +6672,7 @@ QQRKSRC1
     {
       Help = "Once this trigger is touched/used, any target_crosslevel_target"
        " with the same trigger number is automatically fired."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
         Txt = "&"
@@ -6746,7 +6749,7 @@ QQRKSRC1
     {
       Help = "When triggered, this initiates a level-wide earthquake.  All pla"
        "yers and monsters are affected."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6766,7 +6769,7 @@ QQRKSRC1
     target_explosion:form =
     {
       Help = "Spawns an explosion temporary entity when used."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6786,7 +6789,7 @@ QQRKSRC1
     target_goal:form =
     {
       Help = "Counts a goal completed."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6822,7 +6825,7 @@ QQRKSRC1
     target_secret:form =
     {
       Help = "Counts a secret found."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6834,7 +6837,7 @@ QQRKSRC1
     {
       Help = "When triggered, fires a laser. You can either set a target or a"
        " direction."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -6903,7 +6906,7 @@ QQRKSRC1
     target_lightramp:form =
     {
       Help = "This makes the light fade in/out."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
         Txt = "&"
@@ -6937,7 +6940,7 @@ QQRKSRC1
     {
       Help = "Set target to the type of entity you want spawned. Useful for s"
        "pawning monsters and gibs."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       angle: =
       {
         Txt = "&"
@@ -6964,7 +6967,7 @@ QQRKSRC1
     {
       Help = "Normal sounds play each time the target is used.  The reliable f"
        "lag can be set for crucial voiceovers."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
         Txt = "&"
@@ -7016,7 +7019,7 @@ QQRKSRC1
     target_splash:form =
     {
       Help = "Creates a particle splash effect when used."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       sounds: =
       {
         Txt = "&"
@@ -7047,7 +7050,7 @@ QQRKSRC1
     {
       Help = "This is the relay between a func_clock and the target_characters that act as the "
         "display"
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       team: =
       {
         Txt = "&"
@@ -7062,7 +7065,7 @@ QQRKSRC1
     target_temp_entity:form =
     {
       Help = "Fire an origin based temp entity event to the clients."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       style: =
       {
         Txt = "&"
@@ -7077,7 +7080,7 @@ QQRKSRC1
     trigger_always:form =
     {
       Help = "This trigger will always fire.  It is activated by the world."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       target =
       {
         Txt = "&"
@@ -7113,7 +7116,7 @@ QQRKSRC1
     trigger_elevator:form =
     {
       Help = "Use this if you need an elevator that stops at different heights"
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -7183,7 +7186,7 @@ QQRKSRC1
     {
       Help = "A relay trigger that only fires it's targets if player has the p"
        "roper key.  Use - item - to specify the required key."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       item: =
       {
         Txt = "&"
@@ -7348,7 +7351,7 @@ QQRKSRC1
     trigger_relay:form =
     {
       Help = "This fixed size trigger cannot be touched, it can only be fired by other events."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
@@ -7363,7 +7366,7 @@ QQRKSRC1
     light:form =
     {
       Help = "invisible light source"
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       light: =
       {
         Txt = "&"
@@ -7469,7 +7472,7 @@ QQRKSRC1
     path_corner:form =
     {
       Help = "Path_corner is a point something travels to."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       spawnflags: =
       {
         Txt = "&"
@@ -7498,7 +7501,7 @@ QQRKSRC1
     {
       Help = "Makes this the target of a monster and it will head here when fi"
        "rst activated before going after the activator."
-      bbox = '-8 -8 -8 8 8 8'
+      //bbox = '-8 -8 -8 8 8 8'
       targetname: =
       {
         Txt = "&"
