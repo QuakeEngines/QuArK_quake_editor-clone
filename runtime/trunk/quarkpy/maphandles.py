@@ -42,7 +42,10 @@ class CenterHandle(qhandles.CenterHandle):
         #  should be cleaned up (view as 3rd parameter to entity
         #  menus, perhaps?)
         #
-        editor.layout.clickedview = view
+        try:
+            editor.layout.clickedview = view
+        except:
+            editor.layout.clickedview = None
         return mapentities.CallManager("menu", self.centerof, editor) + self.OriginItems(editor, view)
 
 class IconHandle(qhandles.IconHandle):
@@ -1081,6 +1084,10 @@ def singlefacezoom(view, center=None):
 #
 #
 #$Log$
+#Revision 1.6  2000/06/16 10:44:54  tiglari
+#CenterHandle menu function adds clickedview to editor.layout
+#(for support of perspective-driven curve creation in mb2curves.py)
+#
 #Revision 1.5  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
