@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/06/12 18:41:59  decker_dk
+more control on shaders being valid
+
 Revision 1.10  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -177,6 +180,8 @@ var
  I: Integer;
  S: String;
  ValidStage: QPixelSet;
+ Size: TPoint;
+ V: array [1..2] of Single;
 begin
  Acces;
  Result:=Nil;
@@ -223,6 +228,16 @@ begin
    Result:=NeedGameFile(Name+'.jpg') as QPixelSet;
   end;
  end;
+ {tiglari: giving shaders a size.  a presumably
+  horrible place to do it, but doesn't work when
+  shaders are being loaded }
+ if Result<>Nil then
+ begin
+   Size:=Result.GetSize;
+   V[1]:=Size.X; V[2]:=Size.Y;
+   SetFloatsSpec('Size',V);
+ end
+ {/tiglari}
 end;
 
 (*procedure QShader.DataUpdate;
@@ -417,6 +432,7 @@ var
  Stage: QShaderStage;
  I, LineNumber: Integer;
  Comment: Boolean;
+ V: array[1..2] of Single;
 
   procedure SyntaxError;
   begin
@@ -556,6 +572,12 @@ begin
        until False;
        Inc(Source);   { skip the closing brace }
        { Shader.DataUpdate;   { shader ready }
+       { tiglari:  tried to give it a real
+         size here but failed.  Now in DefaultImage }
+
+        V[1]:=128; V[2]:=128;
+        SetFloatsSpec('Size',V);
+        {/tiglari}
 
         { progress bar stuff }
        while Source>=NextStep do
