@@ -75,6 +75,19 @@ def flatContainedWithin(list1, list2):
 def nextInList(list, current, incr=1):
     return list[(current+incr)%len(list)]
 
+def faceCenter(face, poly):
+    vtxes = face.verticesof(poly)
+    return reduce(lambda x,y:x+y, vtxes)/len(vtxes)
+
+#
+# a perp to the edge made by vtx indexed i and the following vtx, in
+#  the face of the poly, pointing into the poly)
+#
+def perpFromVtx(i, face, poly):
+    vtxes = face.verticesof(poly)
+    vtx = vtxes[i]
+    vtx2 = vtxes[(i+1)%len(vtxes)]
+    return (face.normal^(vtx2-vtx)).normalized    
 
 def parentnames(o):
 #    debug('p1')
@@ -145,20 +158,11 @@ def findEdgePoints(f1, f2):
                     if colinear([vtxlist1[i], nexti, vtxlist2[j]]):
                         prevj=nextInList(vtxlist2,j,-1)
                         if colinear([vtxlist1[i], nexti, prevj]):
-                            if overlapEdge(vtxlist1[i], nexti, vtxlist2[(j-1)%len(vtxlist2)], vtxlist2[j]):
+                            if overlapEdge(vtxlist1[i], nexti, prevj, vtxlist2[j]):
                                 return (poly1, i), (poly2, (j-1)%len(vtxlist2))
-                            else:
-                                debug('no overlap: '+parentnames(f1)+' '+parentnames(f2))
+#                            else:
+#                                debug('no overlap: '+parentnames(f1)+' '+parentnames(f2))
                                 
-
-#
-# previous code requiring edge coincidence
-#
-#            for i in range(len(vtxlist1)):
-#                for j in  range(len(vtxlist2)):
-#                    if not (vtxlist1[i]-vtxlist2[j]): # the two faces share a vertex
-#                        if not (nextInList(vtxlist1,i,1)-nextInList(vtxlist2,j,-1)):
-#                            return (poly1, i), (poly2, (j-1)%len(vtxlist2))
 
 
 def findAdjoiningFace(poly, face, i):
@@ -190,11 +194,6 @@ def findSharedVertex(face1, face2, poly):
 def faceCenter(face, poly):
     vtxes = face.verticesof(poly)
     return reduce(lambda x,y:x+y, vtxes)/len(vtxes)
-
-#    center = quarkx.vect(0,0,0)
-#    for vtx in face.verticesof(poly):
-#        center = center+vtx
-#    return center/len(face.verticesof(poly))
 
 
 #
@@ -386,10 +385,7 @@ def findMiterableFaces(faces):
                 ((poly1, i1), (poly2, i2)) = edgepoints
                 if poly1.type==":f" or poly2.type==":f":
                     continue
-                if not fdict.has_key(face1):
-                    fdict[face1] = {}
-                fdict2 = fdict[face1]
-                fdict2[face2] = edgepoints
+                fdict[(face1, face2)] = edgepoints
     return fdict
 
 #class NewWallMaker(mapdups.DepthDuplicator):
@@ -440,37 +436,82 @@ def buildwallmakerimages(self, singleimage=None):
                 newgroup.appenditem(wall)
             wallgroup.appenditem(newgroup)
         faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
-#        debug('filtered '+`len(faces)`)
-        oldlist = []
-        newlist = []
+        replacedict = {}
+        donefaces = {}
         if self.dup["nobevel"]!='1':
             miterfaces = findMiterableFaces(faces)
-            for face1 in miterfaces.keys():
-                for face2 in miterfaces[face1].keys():
-    #                ((poly1, i1), (poly2, i2)) = miterfaces[face1][face2]
-    #                debug('faces %s %s'%(face1.name, face2.name))
-    #                debug('polys %s %s'%(poly1.name, poly2.name))
-                    edgepoints = miterfaces[face1][face2]
-                    old, new = miterEdgeFaces(face1, face2, edgepoints)
-                    oldlist = oldlist+old
-                    newlist = newlist+new
+            #
+            # miterfaces is a dictionary indexed by pairs of faces.  Each
+            #  pairset occurs once.  The order in which the members of the
+            #  pairset is listed in the pair is arbitrary
+            #
+#            debug('%d miterfaces'%len(miterfaces.keys()))
+            for (face1, face2) in miterfaces.keys():
+                #
+                # this is the format of the entries in miterfaces, poly
+                # being the poly of the face, i the index of the first
+                # vertex where the two faces adjoin
+                #
+                # ((poly1, i1), (poly2, i2)) = miterfaces[face1][face2]
+                #
+#                debug('face 1 %s'%parentnames(face1))
+#                debug('face 2 %s'%parentnames(face2))
+                edgepoints = miterfaces[(face1, face2)]
+                #
+                # old is a list of faces in the map which need to be mitered,
+                #  first the miterable edge adjoining face1, then the one
+                #  adjoining face2
+                #
+                old, new = miterEdgeFaces(face1, face2, edgepoints)
+                def checkface(i, face, (poly, vi), donefaces=donefaces, new=new):
+                    if donefaces.has_key((face,vi)):
+                        #
+                        # the new new should be the one that makes
+                        #  the most acute angle to face
+                        #
+                        vtxes = face.verticesof(poly)
+                        vtx = vtxes[vi]
+                        vtx2 = vtxes[(vi+1)%len(vtxes)]
+                        xaxis = (face.normal^(vtx2-vtx)).normalized
+                        yaxis = face.normal
+                        def getangle(newface, span=(vtx-vtx2),
+                               xaxis=(vtx2-vtx^face.normal).normalized,
+                               yaxis=face.normal):
+                            newvec = (newface.normal^span).normalized
+                            return math.atan2(yaxis*newvec, xaxis*newvec)
+                        newang = getangle(new[i])
+                        oldang = getangle(donefaces[(face,vi)])
+#                        debug('angles %.2f, %.2f'%(newang/deg2rad,oldang/deg2rad))
+                        if newang<oldang: # don't do this replacement
+                            return 0
+                    donefaces[(face, vi)]=new[i]            
+                    return 1
+                
+                faces = (face1, face2)
+                #
+                # Now we try to specify the replacements we want, avoiding
+                #  mitered faces that will stick in to the volume
+                #
+                for i in range(len(old)):
+                    if checkface(i, faces[i], edgepoints[i]):
+                        replacedict[old[i]]=new[i]
+
             #
             # seems awkward but doesnt work other wayz
             #
             polylist=wallgroup.findallsubitems("",":p")
             for poly in polylist:
-                for i in range(len(oldlist)):
-                    for face in poly.subitems:
-                        if face is oldlist[i]:
-                            poly.removeitem(face)
-                            newface = newlist[i].copy()
-                            poly.appenditem(newface)
-                            poly.rebuildall()
-                            if poly.broken:
-                                newface.swapsides()
-                            poly.rebuildall()
-                            if poly.broken:
-                                debug('fuck, still busted')
+                for face in poly.subitems:
+                    if replacedict.has_key(face):
+                        poly.removeitem(face)
+                        newface = replacedict[face]
+                        poly.appenditem(newface)
+                        poly.rebuildall()
+                        if poly.broken:
+                            newface.swapsides()
+                        poly.rebuildall()
+                        if poly.broken:
+                            debug('fuck, still busted')
         return [wallgroup]
         
 mapdups.WallMaker.buildimages = buildwallmakerimages
@@ -484,6 +525,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.3  2001/10/01 06:20:31  tiglari
+# improve overlapping & colinear edge detection
+#
 # Revision 1.2  2001/09/23 08:56:57  tiglari
 # oops, replace 'bevel' with 'miter' in wallmaker stuff
 #
