@@ -103,6 +103,7 @@ def ListAngleSpecs(entity):
         h = [("angle", h2D)]    # "angle" is 2D
     h.append(("angles", h3D))   # "angles" is 3D
     h.append(("mangle", h3D))   # "mangle" is 3D
+    h.append(("movedir", h3D))   # "mangle" is 3D
     return h
 
 def entitylinear(entity, matrix):
@@ -635,6 +636,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.30  2003/03/23 07:31:18  tiglari
+#make trigger-target line thickness configurable
+#
 #Revision 1.29  2003/02/13 15:56:53  cdunde
 #To add Cancel Selections function to RMB menu.
 #
