@@ -594,6 +594,8 @@ QQRKSRC1
         AutoSave = '10'
         AutoSaveRun = "1"
         LinearWarning = "1"
+        BezierCenterX = '-32'
+        BezierCenterY = '-32'
         Form = "MapBuilding"
       }
       Layouts:config =
@@ -2185,6 +2187,19 @@ QQRKSRC1
         Min = '1'
         Max = '90'
       }
+      sep: = {Typ="S"}
+	BezierCenterX: = {
+	  Txt = "Bezier center offset (X)"
+	  Typ = "EF1"
+	  Min = '-64'
+	  Max = '64'
+	}
+	BezierCenterY: = {
+	  Txt = "Bezier center offset (Y)"
+	  Typ = "EF1"
+	  Min = '-64'
+	  Max = '64'
+	}
     }
     MdlBuilding:form =
     {
