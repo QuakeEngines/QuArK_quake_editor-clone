@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/06/05 18:42:56  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.4  2001/03/20 21:35:21  decker_dk
 Updated copyright-header
 }
@@ -271,7 +274,13 @@ begin
        if ColorT1>0 then
         begin
          TexBits:=PByte(PSD.StartPointer);
+(*Decker 2002.02.25
+         {Decker - Removed this single statement, as data has already been
+          allocated in the assigment from PSDToDIB() further up. Nor Could I
+          see where LightPatch used its newly allocated data, in the following
+          statements of this function.}
          LightPatch.AllocData;
+/Decker 2002.02.25*)
          Echelle := TotalW div 2;
          Base    := Echelle*Echelle*Echelle;
          Echelle := Base*2 div ColorT1 + 1;

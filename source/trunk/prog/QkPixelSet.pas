@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/12/30 08:59:45  tiglari
+add signature to decl of PSDConvert
+
 Revision 1.10  2001/06/05 18:41:26  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -140,15 +143,39 @@ uses Controls, Dialogs, Quarkx, QkTextures, CCode, QkExplorer;
 procedure TPixelSetDescription.Init;
 begin
  FillChar(Self, SizeOf(TPixelSetDescription), 0);
+
+ {Decker 2002.02.25 - Can't use FillChar() on these member-variables.
+  NIL is not equal to zero in Delphi!}
+ Data := Nil;
+ AlphaData := Nil;
+ ColorPalette := Nil;
+
+ {Decker 2002.02.25 - Don't know the value of an empty set, so I do the
+  better thing: Initializing it properly.}
+ Allocated := [];
 end;
 
 procedure TPixelSetDescription.Done;
 begin
- if Allocated <> [] then
+  if psaData in Allocated then
   begin
-   if psaData in Allocated then begin FreeMem(Data); Data:=Nil; Exclude(Allocated, psaData); end;
-   if psaAlpha in Allocated then begin FreeMem(AlphaData); AlphaData:=Nil; Exclude(Allocated, psaAlpha); end;
-   if psaPalette in Allocated then begin Dispose(ColorPalette); ColorPalette:=Nil; Exclude(Allocated, psaPalette); end;
+    FreeMem(Data);
+    Data:=Nil;
+    Exclude(Allocated, psaData);
+  end;
+
+  if psaAlpha in Allocated then
+  begin
+    FreeMem(AlphaData);
+    AlphaData:=Nil;
+    Exclude(Allocated, psaAlpha);
+  end;
+
+  if psaPalette in Allocated then
+  begin
+    Dispose(ColorPalette);
+    ColorPalette:=Nil;
+    Exclude(Allocated, psaPalette);
   end;
 end;
 
@@ -170,18 +197,30 @@ end;
 
 procedure TPixelSetDescription.AllocData;
 begin
+{$IFDEF DEBUG}
+ if (psaData in Allocated) and (Data <> nil) then {Decker 2002.02.25 - Check for multiple function calls, which don't clean up memory}
+   raise InternalE('TPixelSetDescription.AllocData(). Data is not NIL. Possible Memory Leak?');
+{$ENDIF}
  GetMem(Data, Abs(ScanLine)*Size.Y);
  Include(Allocated, psaData);
 end;
 
 procedure TPixelSetDescription.AllocAlpha;
 begin
+{$IFDEF DEBUG}
+ if (psaAlpha in Allocated) and (AlphaData <> nil) then {Decker 2002.02.25 - Check for multiple function calls, which don't clean up memory}
+   raise InternalE('TPixelSetDescription.AllocAlpha(). AlphaData is not NIL. Possible Memory Leak?');
+{$ENDIF}
  GetMem(AlphaData, Abs(AlphaScanLine)*Size.Y);
  Include(Allocated, psaAlpha);
 end;
 
 procedure TPixelSetDescription.AllocPalette;
 begin
+{$IFDEF DEBUG}
+ if (psaPalette in Allocated) and (ColorPalette <> nil) then {Decker 2002.02.25 - Check for multiple function calls, which don't clean up memory}
+   raise InternalE('TPixelSetDescription.AllocPalette(). ColorPalette is not NIL. Possible Memory Leak?');
+{$ENDIF}
  New(ColorPalette);
  Include(Allocated, psaPalette);
 end;
