@@ -19,5 +19,5 @@ only done a few recent ones, mostly that I've been responsible for.
   for dissociating texture positioning from face-positioning.
   <br>only applies to QkMapPoly.pas
 <LI> <B>Q3ABSPM</B> only for QkBsp.pas, QkBspHull.pas: Q3A Bsp
-reading
+reading.  Now s/b closed, it's stuff is on the main branch.
 </B>
