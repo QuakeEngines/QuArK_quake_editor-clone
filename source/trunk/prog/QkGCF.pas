@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/01/02 15:19:27  alexander
+access files via steam service - first
+
 Revision 1.6  2004/12/28 02:36:02  alexander
 gcf dll static linkage against hllib
 
@@ -109,6 +112,46 @@ var
   GCFNumSubElements   : function   (pkgfile: PChar): Integer; stdcall;
   GCFGetSubElement    : function   (pkgfile: PChar;index : Longword): PChar; stdcall;
   GCFSubElementName   : function   (pkgfile: PChar): PChar; stdcall;
+
+procedure Fatal(x:string);
+begin
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);
+end;
+
+function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
+begin
+   result:= GetProcAddress(DLLHandle, APIFuncname);
+   if result=Nil then
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
+end;
+
+procedure initdll;
+begin
+  if Hgcfwrap = 0 then
+  begin
+    Hgcfwrap := LoadLibrary('dlls/QuArKGCF.dll');
+    if Hgcfwrap >= 32 then { success }
+    begin
+      APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
+      if APIVersion<>RequiredGCFAPI then
+        Fatal('dlls/QuArKGCF.dll API version mismatch');
+      GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
+      GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
+      GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
+      GCFCloseElement := InitDllPointer(Hgcfwrap, 'GCFCloseElement');
+      GCFReadFile     := InitDllPointer(Hgcfwrap, 'GCFReadFile');
+      GCFFileSize     := InitDllPointer(Hgcfwrap, 'GCFFileSize');
+      GCFElementIsFolder  := InitDllPointer(Hgcfwrap, 'GCFElementIsFolder');
+      GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
+      GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
+      GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
+    end
+    else
+      Fatal('dlls/QuArKGCF.dll not found');
+  end;
+end;
+
 
  {------------ QGCFFolder ------------}
 
@@ -212,6 +255,7 @@ var
   gcfelement,subgcfelement  : PChar;
   nsubelements,i : Longword;
 begin
+  initdll;
   case ReadFormat of
     1: begin  { as stand-alone file }
          gcfhandle:= GCFOpen(PChar(LoadName));
@@ -310,38 +354,8 @@ begin
 end;
 
  {------------------------}
-procedure Fatal(x:string);
-begin
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
-end;
-
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
-begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
-end;
 
 initialization
-  Hgcfwrap := LoadLibrary('dlls/QuArKGCF.dll');
-  if Hgcfwrap >= 32 then { success }
-  begin
-    APIVersion      := InitDllPointer(Hgcfwrap, 'APIVersion');
-    if APIVersion<>RequiredGCFAPI then
-      Fatal('dlls/QuArKGCF.dll API version mismatch');
-    GCFOpen         := InitDllPointer(Hgcfwrap, 'GCFOpen');
-    GCFClose        := InitDllPointer(Hgcfwrap, 'GCFClose');
-    GCFOpenElement  := InitDllPointer(Hgcfwrap, 'GCFOpenElement');
-    GCFCloseElement := InitDllPointer(Hgcfwrap, 'GCFCloseElement');
-    GCFReadFile     := InitDllPointer(Hgcfwrap, 'GCFReadFile');
-    GCFFileSize     := InitDllPointer(Hgcfwrap, 'GCFFileSize');
-    GCFElementIsFolder  := InitDllPointer(Hgcfwrap, 'GCFElementIsFolder');
-    GCFNumSubElements   := InitDllPointer(Hgcfwrap, 'GCFNumSubElements');
-    GCFGetSubElement    := InitDllPointer(Hgcfwrap, 'GCFGetSubElement');
-    GCFSubElementName   := InitDllPointer(Hgcfwrap, 'GCFSubElementName');
-  end;
-
   {tbd is the code ok to be used ?  }
   RegisterQObject(QGCF, 's');
   RegisterQObject(QGCFFolder, 'a');

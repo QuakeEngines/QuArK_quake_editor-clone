@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2005/01/04 17:26:09  alexander
+steam environment configuration added
+
 Revision 1.2  2005/01/02 16:44:52  alexander
 use setup value for file system module
 
@@ -74,9 +77,7 @@ end;
 
 var
 // binding to c dll
-  Hsteamfswrap  : HINST;
-  Htier0        : HINST;
-  Hvstdlib      : HINST;
+  Hsteamfswrap  : HINST=0;
 
 // c signatures
 
@@ -116,6 +117,61 @@ var
   SteamFSFindFinish : procedure (pff : Pointer);
   SteamFSFindName   : function  (pff : Pointer): Pchar ; stdcall;//returns name
   SteamFSFindIsDir  : function  (pff : Pointer): longword ; stdcall;//returns 0 if no dir
+
+
+
+procedure Fatal(x:string);
+begin
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);
+end;
+
+function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
+begin
+   result:= GetProcAddress(DLLHandle, APIFuncname);
+   if result=Nil then
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKSteamFS.dll');
+end;
+
+procedure initdll;
+var
+ Htier0  : HINST;
+ Hvstdlib  : HINST;
+begin
+  if Hsteamfswrap = 0 then
+  begin
+    Htier0 := LoadLibrary('tier0.dll');
+    if Htier0 < 32 then
+      Fatal('tier0.dll not found');
+
+    Hvstdlib := LoadLibrary('vstdlib.dll');
+    if Hvstdlib < 32 then
+      Fatal('vstdlib.dll not found');
+
+
+
+    Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
+    if Hsteamfswrap >= 32 then { success }
+    begin
+      APIVersion      := InitDllPointer(Hsteamfswrap, 'APIVersion');
+      if APIVersion <> RequiredSTEAMFSAPI then
+         Fatal('dlls/QuArKSteamFS.dll api version mismatch');
+      SteamFSInit            := InitDllPointer(Hsteamfswrap, 'SteamFSInit');
+      SteamFSTerm            := InitDllPointer(Hsteamfswrap, 'SteamFSTerm');
+      SteamFSOpen            := InitDllPointer(Hsteamfswrap, 'SteamFSOpen');
+      SteamFSClose           := InitDllPointer(Hsteamfswrap, 'SteamFSClose');
+      SteamFSSize            := InitDllPointer(Hsteamfswrap, 'SteamFSSize');
+      SteamFSRead            := InitDllPointer(Hsteamfswrap, 'SteamFSRead');
+      SteamFSFindFirst       := InitDllPointer(Hsteamfswrap, 'SteamFSFindFirst');
+      SteamFSFindNext        := InitDllPointer(Hsteamfswrap, 'SteamFSFindNext');
+      SteamFSFindFinish      := InitDllPointer(Hsteamfswrap, 'SteamFSFindFinish');
+      SteamFSFindName        := InitDllPointer(Hsteamfswrap, 'SteamFSFindName');
+      SteamFSFindIsDir       := InitDllPointer(Hsteamfswrap, 'SteamFSFindIsDir');
+    end
+    else
+      Fatal('dlls/QuArKSteamFS.dll not found');
+  end;
+end;
 
 
  {------------ QSteamFSFolder ------------}
@@ -253,6 +309,7 @@ var
   contentid: longword;
 
 begin
+  initdll;
   case ReadFormat of
     1: begin  { as stand-alone file }
          try
@@ -435,43 +492,8 @@ begin
 end;
 
  {------------------------}
-procedure Fatal(x:string);
-begin
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
-end;
-
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
-begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKSteamFS.dll');
-end;
 
 initialization
-  //Htier0 := LoadLibrary('tier0.dll');
-  //Hvstdlib := LoadLibrary('vstdlib.dll');
-
-
-  Hsteamfswrap := LoadLibrary('dlls/QuArKSteamFS.dll');
-  if Hsteamfswrap >= 32 then { success }
-  begin
-    APIVersion      := InitDllPointer(Hsteamfswrap, 'APIVersion');
-    if APIVersion <> RequiredSTEAMFSAPI then
-      Fatal('dlls/QuArKSteamFS.dll API version mismatch');
-    SteamFSInit            := InitDllPointer(Hsteamfswrap, 'SteamFSInit');
-    SteamFSTerm            := InitDllPointer(Hsteamfswrap, 'SteamFSTerm');
-    SteamFSOpen            := InitDllPointer(Hsteamfswrap, 'SteamFSOpen');
-    SteamFSClose           := InitDllPointer(Hsteamfswrap, 'SteamFSClose');
-    SteamFSSize            := InitDllPointer(Hsteamfswrap, 'SteamFSSize');
-    SteamFSRead            := InitDllPointer(Hsteamfswrap, 'SteamFSRead');
-    SteamFSFindFirst       := InitDllPointer(Hsteamfswrap, 'SteamFSFindFirst');
-    SteamFSFindNext        := InitDllPointer(Hsteamfswrap, 'SteamFSFindNext');
-    SteamFSFindFinish      := InitDllPointer(Hsteamfswrap, 'SteamFSFindFinish');
-    SteamFSFindName        := InitDllPointer(Hsteamfswrap, 'SteamFSFindName');
-    SteamFSFindIsDir       := InitDllPointer(Hsteamfswrap, 'SteamFSFindIsDir');
-  end;
-
   {tbd is the code ok to be used ?  }
   RegisterQObject(QSteamFS, 's');
   RegisterQObject(QSteamFSFolder, 'a');

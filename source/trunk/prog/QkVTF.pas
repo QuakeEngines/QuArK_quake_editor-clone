@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2004/12/28 02:25:22  alexander
+dll api changed : allow selection of mip level
+
 Revision 1.5  2004/12/27 11:01:58  alexander
 added versioning in dll interface (QuArKVTF.dll)
 cleanup
@@ -82,6 +85,51 @@ var
   vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger): Integer; stdcall;
 
 
+
+procedure Fatal(x:string);
+begin
+  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
+  ExitProcess(0);
+end;
+
+function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
+begin
+   result:= GetProcAddress(DLLHandle, APIFuncname);
+   if result=Nil then
+     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKGCF.dll');
+end;
+
+procedure initdll;
+var
+ Htier0  : HINST;
+ Hvstdlib  : HINST;
+begin
+  if HQuArKVTF = 0 then
+  begin
+    Htier0 := LoadLibrary('tier0.dll');
+    if Htier0 < 32 then
+      Fatal('tier0.dll not found');
+
+    Hvstdlib := LoadLibrary('vstdlib.dll');
+    if Hvstdlib < 32 then
+      Fatal('vstdlib.dll not found');
+
+
+    HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
+    if HQuArKVTF >= 32 then { success }
+    begin
+      APIVersion      := InitDllPointer(HQuArKVTF, 'APIVersion');
+      if APIVersion<>RequiredVTFAPI then
+        Fatal('dlls/QuArKVTF.dll API version mismatch');
+      vtf_to_mem := InitDllPointer(HQuArKVTF, 'vtf_to_mem');
+      vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
+    end
+    else
+      Fatal('dlls/QuArKVTF.dll not found');
+  end;
+end;
+
+
 class function QVTF.TypeInfo: String;
 begin
  TypeInfo:='.vtf';
@@ -111,6 +159,7 @@ var
   NumberOfPixels,mip: Integer;
   Width,Height,MipLevels:Integer;
 begin
+  initdll;
   case ReadFormat of
     1: begin  { as stand-alone file }
 
@@ -235,32 +284,8 @@ end;
 
 {-------------------}
 
-procedure Fatal(x:string);
-begin
-  Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
-  ExitProcess(0);
-end;
-
-function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
-begin
-   result:= GetProcAddress(DLLHandle, APIFuncname);
-   if result=Nil then
-     Fatal('API Func "'+APIFuncname+ '" not found in dlls/QuArKVTF.dll');
-end;
-
 
 initialization
-  HQuArKVTF := LoadLibrary('dlls/QuArKVTF.dll');
-  if HQuArKVTF >= 32 then { success }
-  begin
-    APIVersion      := InitDllPointer(HQuArKVTF, 'APIVersion');
-    if APIVersion<>RequiredVTFAPI then
-      Fatal('dlls/QuArKVTF.dll API version mismatch');
-    vtf_to_mem := InitDllPointer(HQuArKVTF, 'vtf_to_mem');
-    vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
-  end;
-
-
   {tbd is the code ok to be used ?  }
   RegisterQObject(QVTF, 'v');
 end.
