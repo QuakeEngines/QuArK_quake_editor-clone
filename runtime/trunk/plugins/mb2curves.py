@@ -195,6 +195,15 @@ def pointdict_vflip(pd):
         key2 = "%s%s%s"%(flipdict[key[0]],key[1],key[2])
         pd2[key2] = pd[key]
     return pd2
+
+def pointdict_hflip(pd):
+    "flips the pointdict left-to-right"
+    flipdict = {'l':'r', 'r':'l'}        
+    pd2 = {}
+    for key in pd.keys():
+        key2 = "%s%s%s"%(key[0],flipdict[key[1]],key[2])
+        pd2[key2] = pd[key]
+    return pd2
   
 
 def makearchfacecp(bl, tl, tr, br):
@@ -218,7 +227,7 @@ def b2fromface(cp, name, face, editor):
     b2["tex"]=face["tex"]
     return b2
 
-def makecap(o, editor, inverse=0, lower=0, open=0, thick=0):
+def capimages(o, editor, inverse=0, lower=0, open=0, thick=0):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
   # Make dictionary of faces u/d/f/b/r/l
@@ -246,27 +255,16 @@ def makecap(o, editor, inverse=0, lower=0, open=0, thick=0):
   #  of the same size, then transfer the tex coordinates
   #  to the arch curve (this reduces distortion).
   #
-  bcp = cp_from_4pts(pd["blf"], pd["brf"], pd["blb"], pd["brb"],3,5)
-  #
-  # more distortion reduction
-  #
   if inverse:
-    cp, bcp = transposecp(cp), transposecp(bcp)
+    cp = transposecp(cp)
   #
-  # This makes a `flat projection', bigtime distortion
+  # project cps from face to patch (flat projection, distorted)
   #
-  bcp = texcp_from_face(bcp, fdict["d"], editor)
+  cp = texcp_from_face(cp, fdict["d"], editor)
   #
   # Now we smooth it out
   #
-  bcp = antidistort_columns(bcp, cp)
-  #
-  # Now transfer the texture coordinates to the main cp array
-  #
-  cp = texcp_from_b2(cp, bcp)
-  #
-  # and finally make the thing
-  #
+  cp = antidistort_columns(cp)
   inner = quarkx.newobj('inner:b2')
   inner.cp = cp
   inner["tex"] = fdict["d"]["tex"]
@@ -288,6 +286,42 @@ def makecap(o, editor, inverse=0, lower=0, open=0, thick=0):
   back = b2fromface(bcp,'back', fdict["b"], editor)
   return [inner, front, back]
 
+def bevelimages(o, editor, inverse=0, left=0, sidetex=0, open=0, thick=0):
+  "makes a bevel/inverse bevel on the basis of brush o"
+  o.rebuildall()
+  fdict = facedict(o)
+  if fdict is None:
+    return
+  pd = pointdict(vtxlistdict(fdict,o))
+  if left:
+      pd = pointdict_hflip(pd)
+  cp = [[pd["trf"],pd["trb"],pd["tlb"]],
+        None,
+       [pd["brf"],pd["brb"],pd["blb"]]]
+  cp[1] = map(lambda x, y:(x+y)/2, cp[0], cp[2])
+  length = lengthof(cp[0],3)
+  inner = quarkx.newobj('inner:b2')
+  cp = texcp_from_face(cp, fdict["b"], editor)
+  right = fdict["b"].copy()
+  #
+  # FIXME: this 3points stuff below shouldn't be needed, but is.
+  #
+  right.setthreepoints(fdict["b"].threepoints(2),2)
+  if left:
+    right.distortion(fdict["l"].normal,pd["brb"])
+  else:
+    right.distortion(fdict["r"].normal,pd["brb"])
+  cp2 = texcp_from_face(cp, right, editor)
+  for i in range(3):
+    cp[i][0]=cp2[i][0]
+  cp = antidistort_rows(cp)
+  inner.cp = cp
+  inner["tex"] = fdict["b"]["tex"]
+  if left:
+    inner.swapsides()
+  return [inner]   
+
+  return []
 
 class CapDuplicator(StandardDuplicator):
 
@@ -299,50 +333,117 @@ class CapDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return makecap(o, editor, inverse, lower, open, thick)
+        return capimages(o, editor, inverse, lower, open, thick)
+
+
+class BevelDuplicator(StandardDuplicator):
+
+  def buildimages(self, singleimage=None):
+    if singleimage is not None and singleimage>0:
+      return []
+    editor = mapeditor()
+    inverse, left, sidetex, open, thick = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "left", "sidetex", "open", "thick"))
+    list = self.sourcelist()
+    for o in list:
+      if o.type==":p": # just grab the first one, who cares
+        return bevelimages(o, editor, inverse, left, open, thick)
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
-#  "dup bevel":   BevelDuplicator,
+  "dup bevel":   BevelDuplicator,
 })
 
 def curvemenu(o, editor):
 
   def makecap(m, o=o, editor=editor):
-    dup = quarkx.newobj("arch:d")
-    dup["macro"]="dup cap"
-    if m.inverse:
+      dup = quarkx.newobj("arch:d")
+      dup["macro"]="dup cap"
+      if m.inverse:
+        dup["inverse"]=1
+#      newpoly = perspective_rename(o)
+      dup.appenditem(m.newpoly)
+      undo=quarkx.action()
+      undo.exchange(o, dup)
+      if m.inverse:
+        editor.ok(undo, "make arch")
+      else:
+        editor.ok(undo, "make cap")
+      editor.invalidateviews()
+
+  
+  def makebevel(m, o=o, editor=editor):
+      dup = quarkx.newobj("bevel:d")
+      dup["macro"]="dup bevel"
       dup["inverse"]=1
-#    newpoly = perspective_rename(o)
-    dup.appenditem(m.newpoly)
-    undo=quarkx.action()
-    undo.exchange(o, dup)
-    if m.inverse:
-      editor.ok(undo, "make arch")
-    else:
-      editor.ok(undo, "make cap")
-    editor.invalidateviews()
+      if m.left:
+        dup["left"]=1
+      dup["open"]=1  # since this is normally rounding a corner with wall & ceiling"
+      dup.appenditem(m.newpoly)
+      undo=quarkx.action()
+      undo.exchange(o, dup)
+      if m.left:
+        editor.ok(undo, "make left corner")
+      else:
+        editor.ok(undo, "make right corner")
+      
 
   disable = (len(o.subitems)!=6)
 
   newpoly = perspective_rename(o)
   list = []
+
+  def finishitem(item, disable=disable, o=o, newpoly=newpoly):
+      disablehint = "This item is disabled because the brush doesn't have 6 faces."
+      if disable:
+          item.state=qmenu.disabled
+          try:
+              item.hint=item.hint + "\n\n" + disablehint
+          except (AttributeError):
+              item.hint="|" + disablehint
+      else:
+          item.o=o
+          item.newpoly = newpoly
+
   for (name, inv) in (("&Arch", 1), ("&Cap", 0)):
     item = qmenu.item(name, makecap)
     item.inverse = inv
-    if disable:
-        item.state=qmenu.disabled
-        try:
-            hint=item.hint
-        except (AttributeError):
-            item.hint="|"
-        item.hint = item.hint + "\n\nThis item is disabled because the brush doesn't have 6 faces."
-    else:
-        item.o=o
-        item.newpoly = newpoly
+    finishitem(item)
     list.append(item)
-    
-  curvepop = qmenu.popup("Curves",list, hint="|Commands for making curves out of brushes.\nOrientiation will be w.r.t. the last mapview clicked on, that is, the one you're clicked in unless you're clicking in the tree view.\n\nThe brush must have six faces, be reasonably boxy, and looked on squarely in the view you're clicking on.  If the brush vanishes without being replaced by a shape, the brush may have been too screwy a shape, or looked at from a bad angle. (My attempts to detect these conditions in advance are meeting with unexpected resistance.\n\nThere is also a bug in that if you apply this to a brush after first opening the map editor, without inserting anything first, the orientations are wrong.)")
+
+  cornerhint = """|Makes a smooth curve from the %s side of the brush to the back.
+
+The texture is taken from the back wall, and sized across the curve (compressed a bit) to align with this texture as wrapped onto the %s wall.
+
+To make a rounded corner, put a brush into a corner, project the texture of one of the room walls onto the paralell & `kissing' face of the brush, arrange the camera/view so you're looking square on at the brush and this face is the back one, then and RMB|Curves|right/left corner depending on whether the room-wall you're next to is to the right or the left.
+
+If the textures on the two adjoining walls of the room are properly aligned, the texture on the curve will be too (compressed a bit, but not so as to make much of a difference).
+"""
+
+
+  for (name, left, hint) in (("&Left corner", 1, cornerhint%("left","left")),
+                       ("&Right corner", 0, cornerhint%("right","right"))):
+    item = qmenu.item(name, makebevel)
+    item.inverse = 1
+    item.left = left
+    item.hint = hint
+    finishitem(item)
+    list.append(item)
+
+
+  curvehint = """|Commands for making curves out of brushes.
+
+The brush must be roughly a box, with the usual six sides.  The curve is implemented as a `duplicator' containing the brush, which determines the overall shape of the brush.
+
+To resize the curve, select the brush in the treeview, and manipulate the sides in the usual manner (when the brush itself is selected, the curve becomes invisible).
+
+When the duplicator is selected, the entity page provides a variety of specifics that can be manipulated to convert from an `arch' to a `cap' (by unchecking 'inverse'), and much else besides.
+
+The curve will be oriented w.r.t. the map view you RMB-clicked on, or, if you're RMB-ing on the treeview, the most recent mapview you clicked in.
+
+If the brush vanishes without being replaced by a shape, the brush may have been too screwy a shape, or looked at from a bad angle. (My attempts to detect these conditions in advance are meeting with unexpected resistance. There is also a bug in that if you apply this to a brush after first opening the map editor, without inserting anything first, the orientations are wrong.)
+"""      
+  curvepop = qmenu.popup("Curves",list, hint=curvehint)
   if newpoly is None:
     if len(o.subitems)!=6:
       morehint= "\n\nThis item is disabled because the poly doesn't have exactly 6 faces."
@@ -376,6 +477,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2000/06/04 03:23:50  tiglari
+#reduced/eliminated distortion on arch/cap curve face
+#
 #Revision 1.4  2000/06/03 13:01:25  tiglari
 #fixed arch duplicator maploading problem, hopefully, also
 #arch duplicator map writing problem
