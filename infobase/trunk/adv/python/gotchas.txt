@@ -1,0 +1,61 @@
+title: Gotchas
+author: tiglari
+format: html
+
+<P>
+<strong>Quarkx functions & None</strong>:  
+If you write something like:
+<pre>  
+    if quarkx.function():
+      blah
+      blah
+</pre>
+<p>   
+  expecting blah blah to not execute when function()
+  returns None as a value, you'll probably get a bizarre
+  run-time error.  Instead write:
+   
+<p><pre>
+    if quarkx.function() is not None:
+      blah
+      blah
+</pre>
+<p>
+This is because most of the Python objects implemented in
+Delphi do not explicitely support 'truth' evaluation.
+Armin thought the Python core would detect it but it
+seems it just tries to do the evaluation anyway, thus
+calling a Nil function. Everything in Python can be true
+or false, including the Delphi-defined objects -- at least
+the Python core expects it so, and the Delphi code doesn't
+do it right :-(  So always explicitely compare with None.
+
+<P><strong>vector equality</strong>:&nbsp;
+Don't try to compare Quarkx vectors with equality,
+rather test their difference for being zero.  Armin discusses
+this in the 
+<ref> src/quarkx
+&nbsp;document.
+
+<P><strong>tuples & assigment</strong>:&nbsp;
+Python has a concept of
+`tuple', which is a sequence of numbers whose members can't
+be changed (they're `immutable').  1-element tuples are
+written with a comma after them, which leads to wierd
+looking things like:
+<pre>
+  mytuple = mynumber,
+</pre>
+<p>
+and
+<pre>
+  mynumber, = mytuple
+</pre>
+<p>
+This latter is an example of `tuple assignment', if the right
+hand side of an assignemt is a tuple, then on the left hand side
+you can put a tuple-expression, and the appropriate assignments
+will get made to its variables.<P>
+These commas are a bit unusual and easy to miss at first, and
+since many of the most useful specifics in dialog boxes
+are of tuple-type, missing them can lead to a lot of frustration.
