@@ -1,5 +1,5 @@
 QQRKSRC1
-// This file has been written by QuArK QuArK 6.3snap 2002feb28
+// This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: UserData SoF2.qrk
 
 {
@@ -75,6 +75,1111 @@ QQRKSRC1
       {
         origin = "0 0 0"
         fixedscale = "1"
+      }
+    }
+    New Polyhedrons: =
+    {
+      New Polyhedrons.qtxfolder =
+      {
+        Basic polyhedrons.qtxfolder =
+        {
+          fixedscale = "1"
+          cube:p =
+          {
+            ;desc = "cube to put in the map and then resize and reshape"
+            east:f =
+            {
+              v = '64 0 0 64 128 0 64 0 128'
+              tex = "[auto]"
+            }
+            west:f =
+            {
+              v = '-64 0 0 -64 0 128 -64 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            north:f =
+            {
+              v = '0 64 0 0 64 128 128 64 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            south:f =
+            {
+              v = '0 -64 0 128 -64 0 0 -64 128'
+              tex = "[auto]"
+            }
+            up:f =
+            {
+              v = '0 0 64 128 0 64 0 128 64'
+              tex = "[auto]"
+            }
+            down:f =
+            {
+              v = '0 0 -64 0 128 -64 128 0 -64'
+              tex = "[auto]"
+              m = "1"
+            }
+          }
+          platform:p =
+          {
+            ;desc = "a flat cube for ground and ceiling"
+            face:f =
+            {
+              v = '-128 0 -32 -128 0 96 -128 128 -32'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '128 0 -32 128 128 -32 128 0 96'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -128 -32 128 -128 -32 0 -128 96'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 128 -32 0 128 96 128 128 -32'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -32 0 128 -32 128 0 -32'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -16 128 0 -16 0 128 -16'
+              tex = "[auto]"
+            }
+          }
+          wall:p =
+          {
+            ;desc = "a vertical wall in the X direction"
+            face:f =
+            {
+              v = '-128 0 0 -128 0 128 -128 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '128 0 0 128 128 0 128 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 0 0 128 0 0 0 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 16 0 0 16 128 128 16 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -128 0 128 -128 128 0 -128'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 128 128 0 128 0 128 128'
+              tex = "[auto]"
+            }
+          }
+          wall:p =
+          {
+            ;desc = "a vertical wall in the Y direction"
+            face:f =
+            {
+              v = '0 0 0 0 0 128 0 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '16 0 0 16 128 0 16 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -128 0 128 -128 0 0 -128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 128 0 0 128 128 128 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -128 0 128 -128 128 0 -128'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 128 128 0 128 0 128 128'
+              tex = "[auto]"
+            }
+          }
+        }
+        Complex polyhedrons.qtxfolder =
+        {
+          fixedscale = "1"
+          prism, 6 sides:p =
+          {
+            ;desc = "a prism with a hexagonal base"
+            face:f =
+            {
+              v = '0 -128 0 128 -128 0 0 -128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 128 0 0 128 128 128 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -0.00002 -128 0 128 -128 128 -0.00002 -128'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -0.00002 128 128 -0.00002 128 0 128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '147.80160 -0.00002 0 221.70250 128 0 147.80160 -0.00002 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-147.80170 -0.00002 0 -147.80170 -0.00002 128 -73.90089 128
+                0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '147.80170 -0.00002 0 73.90087 128 0 147.80170 -0.00002 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-147.80170 -0.00002 0 -147.80170 -0.00002 128 -221.70250 128
+                0'
+              tex = "[auto]"
+              m = "1"
+            }
+          }
+          prism, 8 sides:p =
+          {
+            ;desc = "a prism with an octogonal base"
+            face:f =
+            {
+              v = '-181.01930 0 0 -181.01930 0 128 -309.01930 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '181.01920 0 0 53.01929 128 0 181.01920 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '789.01930 608 0 917.01930 736 0 789.01930 608 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '426.98070 608 0 426.98070 608 128 554.98070 736 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -128 0 128 -128 128 0 -128'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 128 128 0 128 0 128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-128 0 0 -128 0 128 -128 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '128 0 0 128 128 0 128 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -128 0 128 -128 0 0 -128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 128 0 0 128 128 128 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+          }
+          prism, 10 sides:p =
+          {
+            ;desc = "a prism with a decagonal base"
+            face:f =
+            {
+              v = '0.00002 -128 0 128 -128 0 0.00002 -128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0.00002 128 0 0.00002 128 128 128 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0.00002 0 -128 0.00002 128 -128 128 0 -128'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0.00002 0 128 128 0 128 0.00002 128 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0.00002 158.21670 0 0.00002 158.21670 128 128 251.21410 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0.00002 -158.21670 0 128 -65.21923 0 0.00002 -158.21670 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-134.58710 0 0 -134.58710 0 128 -92.99741 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '134.58710 0 0 176.17680 128 0 134.58710 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '134.58720 0 0 92.99746 128 0 134.58720 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-134.58710 0 0 -134.58710 0 128 -176.17680 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0.00002 158.21670 0 0.00002 158.21670 128 128 65.21912 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0.00002 -158.21670 0 128 -251.21410 0 0.00002 -158.21670 128'
+              tex = "[auto]"
+            }
+          }
+          cuboctahedron:p =
+          {
+            ;desc = "a kind of cube with cut corners"
+            face:f =
+            {
+              v = '-64 0 0 -64 0 128 -64 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '64 0 0 64 128 0 64 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -64 0 128 -64 0 0 -64 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 64 0 0 64 128 128 64 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -64 0 128 -64 128 0 -64'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 64 128 0 64 0 128 64'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -1248 1376 128 -1248 1248 0 -1120 1248'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -1248 -1120 128 -1248 -1248 0 -1120 -992'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -1248 -1120 128 -1248 -992 0 -1120 -992'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -1248 1376 128 -1248 1504 0 -1120 1248'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -1248 -1376 0 -1120 -1248 128 -1248 -1504'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -1248 -1376 0 -1120 -1248 128 -1248 -1248'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -1248 1120 0 -1120 992 128 -1248 1248'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -1248 1120 0 -1120 992 128 -1248 992'
+              tex = "[auto]"
+              m = "1"
+            }
+          }
+          rombobicuboctahedron:p =
+          {
+            ;desc = "a rough sphere"
+            face:f =
+            {
+              v = '-136 0 0 -136 0 128 -136 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '136 0 0 136 128 0 136 0 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -136 0 128 -136 0 0 -136 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 136 0 0 136 128 128 136 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 -136 0 128 -136 128 0 -136'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 0 136 128 0 136 0 128 136'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 247.45350 0 0 120.70240 128 128 119.45350 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 247.45360 0 0 120.70250 128 128 375.45360 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-247.45360 0 0 -120.70250 0 128 -375.45370 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '535.45360 288 0 663.45360 416 0 408.70250 288 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '535.45360 288 0 663.45360 416 0 662.20470 288 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '40.54627 288 0 -86.20483 288 128 168.54630 416 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-247.45370 0 0 -374.20480 0 128 -375.45370 128 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-288 -1024 480 -160 -1024 352 -288 -896 480'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 -1024 1216 128 -1024 1216 0 -896 1088'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 0 192 128 0 320 0 128 192'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '0 0 192 128 0 192 0 128 320'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-480 288 0 -480 288 128 -608 416 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '480 288 0 608 416 0 480 288 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-96 288 0 -224 416 0 -96 288 128'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '96 288 0 96 288 128 224 416 0'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-288 -1024 95.99998 -288 -896 95.99998 -160 -1024 -32.00002'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -1024 832 0 -896 704 128 -1024 832'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-288 -1024 -480 -288 -896 -480 -160 -1024 -352'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '0 -1024 -1216 0 -896 -1088 128 -1024 -1216'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-288 535.45350 0 -288 662.20460 128 -160 407.45360 0'
+              tex = "[auto]"
+              m = "1"
+            }
+          }
+          cone, 8 sides:p =
+          {
+            ;desc = "a cone with an octogonal base"
+            face:f =
+            {
+              v = '-480.00020 375.48830 -25.59972 -352.00020 247.48830 -25.59972
+                -480.00020 479.99990 102.40030'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-480.00020 584.51160 -25.59972 -480.00020 480 102.40030 -352.00020
+                456.51170 -25.59972'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '584.51110 479.99980 -25.59972 712.51110 607.99980 -25.59972
+                479.99960 479.99980 102.40030'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-0.00015 104.51130 -25.59972 -0.00015 -0.00034 102.40030 127.99980
+                232.51130 -25.59972'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-0.00015 -0.00021 -25.59972 -0.00015 127.99980 -25.59972 127.99980
+                -0.00021 -25.59972'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '-73.90103 -0.00021 -25.59972 -0.00015 -0.00021 102.40030 -73.90103
+                127.99980 -25.59972'
+              tex = "[auto]"
+              m = "1"
+            }
+            face:f =
+            {
+              v = '73.90060 -0.00021 -25.59972 73.90060 127.99980 -25.59972 -0.00015
+                -0.00021 102.40030'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-0.00015 -73.90097 -25.59972 127.99980 -73.90097 -25.59972 -0.00015
+                -0.00021 102.40030'
+              tex = "[auto]"
+            }
+            face:f =
+            {
+              v = '-0.00015 73.90067 -25.59972 -0.00015 -0.00021 102.40030 127.99980
+                73.90067 -25.59972'
+              tex = "[auto]"
+              m = "1"
+            }
+          }
+        }
+        Duplicators & misc.qtxfolder =
+        {
+          fixedscale = "1"
+          Basic Duplicator:d =
+          {
+            ;desc = "basic duplicator, to make several copies of an object"
+            origin = "0 0 0"
+            offset = "32 32 0"
+            count = "5"
+            angle = ""
+            out = "1"
+            macro = "dup basic"
+          }
+          Copy One:d =
+          {
+            ;desc = "this version makes just one copy that you can move elsewh"
+             "ere"
+            origin = "0 0 0"
+            offset = "64 64 0"
+            angle = ""
+            out = "1"
+            macro = "dup basic"
+          }
+          New Copy One:d =
+          {
+            ;desc = "experimental enhanced version, image is located at dup or"
+             "igin, and more"
+            origin = "64 64 0"
+            offset = "0 0 0"
+            out = "1"
+            offset dup = "1"
+            macro = "dup lin"
+          }
+          Linear Duplicator:d =
+          {
+            ;desc = "enhanced version : can apply linear mappings (mirror, zoo"
+             "m, etc)"
+            origin = "0 0 0"
+            offset = "32 32 0"
+            count = "3"
+            out = "1"
+            item center = "1"
+            linear = "1 0 0 0 1 0 0 0 1"
+            macro = "dup lin"
+          }
+          Mirror X:d =
+          {
+            ;desc = "X-axis mirror"
+            out = "1"
+            origin = "0 0 0"
+            macro = "dup symx"
+          }
+          Mirror Y:d =
+          {
+            ;desc = "Y-axis mirror"
+            out = "1"
+            origin = "0 0 0"
+            macro = "dup symy"
+          }
+          Mirror Z:d =
+          {
+            ;desc = "Z-axis mirror"
+            out = "1"
+            origin = "0 0 0"
+            macro = "dup symz"
+          }
+          Mirror XYZ:d =
+          {
+            ;desc = "XYZ-axes toggleable mirror"
+            out = "1"
+            origin = "0 0 0"
+            x = "X"
+            macro = "dup symxyz"
+          }
+          Mirror XY:d =
+          {
+            ;desc = "X- and Y-axis mirrors (one original and three images)"
+            out = "1"
+            origin = "0 0 0"
+            macro = "dup symxy"
+          }
+          Radial:d =
+          {
+            ;desc = "Copies around an axis"
+            origin = "0 0 0"
+            count = "2"
+            around = '180'
+            spiral = '0 0'
+            axis = '0 0 1'
+            macro = "dup radial"
+            new cube:p =
+            {
+              east:f =
+              {
+                v = '192 0 0 192 128 0 192 0 128'
+                tex = "[auto]"
+              }
+              west:f =
+              {
+                v = '64 0 0 64 -128 0 64 0 128'
+                tex = "[auto]"
+              }
+              north:f =
+              {
+                v = '128 64 0 0 64 0 128 64 128'
+                tex = "[auto]"
+              }
+              south:f =
+              {
+                v = '128 -64 0 256 -64 0 128 -64 128'
+                tex = "[auto]"
+              }
+              up:f =
+              {
+                v = '128 0 64 256 0 64 128 128 64'
+                tex = "[auto]"
+              }
+              down:f =
+              {
+                v = '128 0 -64 256 0 -64 128 -128 -64'
+                tex = "[auto]"
+              }
+            }
+          }
+          Digger:d =
+          {
+            ;desc = "polyhedrons inside are 'negative' and dig the map"
+            ;incl = "defpoly"
+            macro = "digger"
+          }
+          Hollow Maker:d =
+          {
+            ;desc = "polyhedrons inside are automatically made hollow"
+            ;incl = "defpoly"
+            macro = "hollow maker"
+            depth = "8"
+          }
+          Wall Maker:d =
+          {
+            ;desc = "build walls based on a polyhedron shape"
+            ;incl = "defpoly"
+            macro = "wall maker"
+            depth = "8"
+          }
+          Path Duplicator:g =
+          {
+            ;desc = "corridor maker, easy creation of connected corridors"
+            Path Duplicator:d =
+            {
+              origin = "0 0 0"
+              macro = "dup path"
+              target = "dpath1"
+              speeddraw = "0"
+              scaletexture = "0"
+              Template:g =
+              {
+                cube:p =
+                {
+                  east:f =
+                  {
+                    v = '64 0 0 64 128 0 64 0 128'
+                    tex = "[auto]"
+                  }
+                  west:f =
+                  {
+                    v = '-64 0 0 -64 0 128 -64 128 0'
+                    tex = "[auto]"
+                    m = "1"
+                  }
+                  north:f =
+                  {
+                    v = '0 64 0 0 64 128 128 64 0'
+                    tex = "[auto]"
+                    m = "1"
+                  }
+                  south:f =
+                  {
+                    v = '0 -64 0 128 -64 0 0 -64 128'
+                    tex = "[auto]"
+                  }
+                  up:f =
+                  {
+                    v = '0 0 64 128 0 64 0 128 64'
+                    tex = "[auto]"
+                  }
+                  down:f =
+                  {
+                    v = '0 0 -64 0 128 -64 128 0 -64'
+                    tex = "[auto]"
+                    m = "1"
+                  }
+                }
+                cube:p =
+                {
+                  neg = "1"
+                  east:f =
+                  {
+                    v = '64 0 0 64 128 0 64 0 128'
+                    tex = "[auto]"
+                  }
+                  west:f =
+                  {
+                    v = '-64 0 0 -64 0 128 -64 128 0'
+                    tex = "[auto]"
+                    m = "1"
+                  }
+                  north:f =
+                  {
+                    v = '0 32 0 0 32 128 128 32 0'
+                    tex = "[auto]"
+                    m = "1"
+                  }
+                  south:f =
+                  {
+                    v = '0 -32 0 128 -32 0 0 -32 128'
+                    tex = "[auto]"
+                  }
+                  up:f =
+                  {
+                    v = '0 0 32 128 0 32 0 128 32'
+                    tex = "[auto]"
+                  }
+                  down:f =
+                  {
+                    v = '0 0 -32 0 128 -32 128 0 -32'
+                    tex = "[auto]"
+                    m = "1"
+                  }
+                }
+              }
+            }
+            PathDup.Point:d =
+            {
+              macro = "dup path_point"
+              origin = "96 96 0"
+              targetname = "dpath1"
+              target = "dpath2"
+              level = "1"
+            }
+            PathDup.Point:d =
+            {
+              macro = "dup path_point"
+              origin = "192 96 0"
+              targetname = "dpath2"
+              target = "dpath3"
+            }
+            PathDup.Point:d =
+            {
+              macro = "dup path_point"
+              origin = "192 192 0"
+              targetname = "dpath3"
+              target = "dpathX"
+            }
+          }
+          Extruder:d =
+          {
+            origin = "0 0 0"
+            side = '0 -1 0'
+            edge = '8'
+            type = "t"
+            circ_show = "1"
+            tex = "[auto]"
+            _closed = "1"
+            macro = "dup extruder"
+            spine:g =
+            {
+              rib:g =
+              {
+                point:g =
+                {
+                  where = '64 -64'
+                }
+                point:g =
+                {
+                  where = '64 64'
+                }
+                point:g =
+                {
+                  where = '-64 64'
+                }
+                point:g =
+                {
+                  where = '-64 -64'
+                }
+              }
+              rib:g =
+              {
+                location = '96 0 0'
+              }
+            }
+          }
+          ArgReplacer:d =
+          {
+            ;desc = "Arg Replacer : Search and Replaces %keyword% in spec/args"
+            macro = "arg replacer"
+          }
+        }
+        Shape Builders.qtxfolder =
+        {
+          fixedscale = "1"
+          Brush Arch/Cap Maker:d =
+          {
+            ;desc = "build a brush-based arch or cap from a cubic polyhedron s"
+             "hape"
+            macro = "dup brushcap"
+            inverse = "1"
+            subdivide = '2'
+            cube:p =
+            {
+              ;desc = "cube to put in the map and then resize and reshape"
+              right:f =
+              {
+                v = '64 0 0 64 128 0 64 0 128'
+                tex = "[auto]"
+              }
+              left:f =
+              {
+                v = '-64 0 0 -64 0 128 -64 128 0'
+                tex = "[auto]"
+                m = "1"
+              }
+              back:f =
+              {
+                v = '0 64 0 0 64 128 128 64 0'
+                tex = "[auto]"
+                m = "1"
+              }
+              front:f =
+              {
+                v = '0 -64 0 128 -64 0 0 -64 128'
+                tex = "[auto]"
+              }
+              up:f =
+              {
+                v = '0 0 64 128 0 64 0 128 64'
+                tex = "[auto]"
+              }
+              down:f =
+              {
+                v = '0 0 -64 0 128 -64 128 0 -64'
+                tex = "[auto]"
+                m = "1"
+              }
+            }
+          }
+          Brush Bevel Maker:d =
+          {
+            ;desc = "build brush-based bevel-corner from a cubic polyhedron sh"
+             "ape"
+            macro = "dup brushbevel"
+            inverse = "1"
+            subdivide = '2'
+            left = "1"
+            open = "1"
+            cube:p =
+            {
+              ;desc = "cube to put in the map and then resize and reshape"
+              right:f =
+              {
+                v = '64 0 0 64 128 0 64 0 128'
+                tex = "[auto]"
+              }
+              left:f =
+              {
+                v = '-64 0 0 -64 0 128 -64 128 0'
+                tex = "[auto]"
+                m = "1"
+              }
+              back:f =
+              {
+                v = '0 64 0 0 64 128 128 64 0'
+                tex = "[auto]"
+                m = "1"
+              }
+              front:f =
+              {
+                v = '0 -64 0 128 -64 0 0 -64 128'
+                tex = "[auto]"
+              }
+              up:f =
+              {
+                v = '0 0 64 128 0 64 0 128 64'
+                tex = "[auto]"
+              }
+              down:f =
+              {
+                v = '0 0 -64 0 128 -64 128 0 -64'
+                tex = "[auto]"
+                m = "1"
+              }
+            }
+          }
+          Staircase Maker:d =
+          {
+            ;desc = "build a staircase from a cubic polyhedron shape"
+            macro = "dup stair"
+            steps = "8"
+            sameheight = ""
+            cube:p =
+            {
+              ;desc = "cube to put in the map and then resize and reshape"
+              right:f =
+              {
+                v = '64 0 0 64 128 0 64 0 128'
+                tex = "[auto]"
+              }
+              left:f =
+              {
+                v = '-64 0 0 -64 0 128 -64 128 0'
+                tex = "[auto]"
+                m = "1"
+              }
+              back:f =
+              {
+                v = '0 64 0 0 64 128 128 64 0'
+                tex = "[auto]"
+                m = "1"
+              }
+              front:f =
+              {
+                v = '0 -64 0 128 -64 0 0 -64 128'
+                tex = "[auto]"
+              }
+              up:f =
+              {
+                v = '0 0 64 128 0 64 0 128 64'
+                tex = "[auto]"
+              }
+              down:f =
+              {
+                v = '0 0 -64 0 128 -64 128 0 -64'
+                tex = "[auto]"
+                m = "1"
+              }
+            }
+          }
+        }
+        Game specific.qtxfolder =
+        {
+          fixedscale = "1"
+          Half-Life infodecal Helper:d =
+          {
+            ;desc = "Write words and sentences using infodecals"
+            text = "HALFLIFE"
+            wildchar = "@"
+            tex_upper = "{CAPS@"
+            tex_lower = " "
+            tex_numeric = "{MED#S@"
+            origin = "0 0 0"
+            offset = "12 0 0"
+            macro = "dup hlinfodecal"
+          }
+          Half-Life .RAD File Maker:d =
+          {
+            ;desc = "Helps you store texture lighting values (LIGHTS.RAD or <m"
+             "apname>.RAD)"
+            macro = "dup hlradfilemaker"
+          }
+        }
+        Tools.qtxfolder =
+        {
+          fixedscale = "1"
+          plane duplicator:d =
+          {
+            ;desc = "'duplicator' for making a 3 ponit plane"
+            P1 = '0 64 0'
+            P2 = '64 -64 0'
+            P3 = '-64 -64 0'
+            macro = "dup plane"
+          }
+        }
       }
     }
   }
