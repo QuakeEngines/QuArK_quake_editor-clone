@@ -231,7 +231,7 @@ class CPHandle(qhandles.GenericHandle):
         thicken = qmenu.popup("Thicken",[addrow, addcol])
         
         
-        return [texcp,thicken] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp,thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -278,7 +278,7 @@ class CPHandle(qhandles.GenericHandle):
 
     def drag(self, v1, v2, flags, view):
 
-        
+        # tiglari   
         def movepoints(b2, i, j, self=self, view=view):
             #
             #  movecol & moverow are part of what's probably
@@ -313,6 +313,7 @@ class CPHandle(qhandles.GenericHandle):
 #                   if i==0 or i==b2.h-1:
                        return map(lambda i,j=j:(i, j), range(self.w))
             return (i,j),
+        # /tiglari
 
         delta = v2-v1
         if not (flags&MB_CTRL):
@@ -322,7 +323,7 @@ class CPHandle(qhandles.GenericHandle):
             new = self.b2.copy()
             cp = map(list, self.b2.cp)
             i, j = self.ij
-            indexes = movepoints(self.b2, i, j)
+            indexes = movepoints(self.b2, i, j)        # tiglari 
 #            squawk("%s:%s"%(self.b2.H, self.b2.W))
 #            squawk(`indexes`)
             for m,n in indexes:
@@ -363,3 +364,8 @@ class CenterHandle(maphandles.CenterHandle):
         ##pos = quarkx.vect(pos.x + c_x, pos.y+c_y, pos.z)
         maphandles.CenterHandle.__init__(self, pos, centerof, 0x202020, 1)
 
+    # tiglari
+    def menu(self, editor, view):
+
+        return mapentities.CallManager("menu", self.centerof, editor)
+    # /tiglari
