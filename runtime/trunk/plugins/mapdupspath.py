@@ -323,7 +323,7 @@ class PathDuplicator(StandardDuplicator):
         templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
 
         tile = templategroup.findname("Tile:g")
-        if tile:
+        if tile is not None:
             templategroup.removeitem(tile)
 
         templatefront=getNormalFaces(templategroup.findallsubitems("",":f"),
@@ -333,7 +333,7 @@ class PathDuplicator(StandardDuplicator):
             for vtxes in face.vertices:
                 for vtx in vtxes:
                     rimvtxes.append(vtx)
-               
+
 #        # -- If SCALETEXTURES is on, use the linear() operation
 #        if (self.scaletex != 0):
 #           scalematrix = quarkx.matrix((2048/templatescale,0,0), (0,1,0), (0,0,1))
@@ -376,7 +376,7 @@ class PathDuplicator(StandardDuplicator):
             list.translate(neworigin, 0)
             list.linear(neworigin, mat)
             front, back = getends(list,xax)
-            
+
             for face in front:
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
                face.translate(thisorigin-center,0)
@@ -397,14 +397,14 @@ class PathDuplicator(StandardDuplicator):
             def vtxshift(vtx,mat=mat,orig=thisorigin):
                 return mat*vtx+orig
 
-            if tile or self.dup["squarend"]:
+            if (tile is not None) or self.dup["squarend"]:
                 startseg=endseg=0
                 for vtx in map(vtxshift,rimvtxes):
                     frontproj=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
                     startseg=max(startseg,(frontproj-thisorigin)*xax)
                     backproj=projectpointtoplane(vtx,xax,nextorigin,back[0].normal)
                     endseg=min(endseg,(backproj-nextorigin)*xax)
-            if tile:
+            if tile is not None:
                 tileableLength=abs(pathdist)-startseg+endseg
                 tileTimes=int(tileableLength/templatesize.x)
                 for i in range(tileTimes):
@@ -416,7 +416,7 @@ class PathDuplicator(StandardDuplicator):
                         newTile=newTile.copy()
                         newTile.translate(xax*templatesize.x)
                     list.appenditem(newTile)
-                    
+
 
 #
 #  This kind of code will create `box' shaped sections that just
@@ -771,6 +771,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.14  2001/02/23 03:41:51  tiglari
+#square end and setback
+#
 #Revision 1.13  2001/02/22 21:47:57  tiglari
 #stuff in a Tile subitem of the duplicator (top level) will now be tiled
 #
