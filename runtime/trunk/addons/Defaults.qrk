@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.111  2001/03/22 20:24:31  tiglari
+//path-following rotation for instances
+//
 //Revision 1.110  2001/03/20 22:48:26  tiglari
 //Meatball402's instance duplicator
 //
@@ -2604,9 +2607,10 @@ QQRKSRC1
     }
     HotKeyForm:incl =
     {
-      Txt = "&"
+      Txt = "&R" // Read-only but use the 'Specific-name' for label
       Typ = "E"
-      Hint = "If map editor has started, new assignment will apply on next Quark restart."$0D" Otherwise when map editor is started"
+      Hint = "If map-editor has started, new assignment will apply on"
+          $0D"next QuArK restart. Otherwise when map-editor is started."
     }
     MouseForm:incl =       // ":incl" objects can be included in other objects (see below)
     {
