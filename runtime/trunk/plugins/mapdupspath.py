@@ -806,7 +806,7 @@ def macro_instances(self):
     editor=mapeditor()
     if editor is None: return
     dup = editor.layout.explorer.uniquesel
-    if not dup: return
+    if dup is None: return
     undo = quarkx.action()
     new=dup.copy()
     new.shortname = 'Instance duplicator'
@@ -836,6 +836,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.36  2001/04/01 00:09:36  tiglari
+#usercenter for matrices on path points for instance duplicator
+#
 #Revision 1.35  2001/03/31 10:18:16  tiglari
 #revise instance duplicator to use usercenter specific
 #
