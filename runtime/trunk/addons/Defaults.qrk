@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.147  2001/06/17 21:23:42  tiglari
+//commented out elbow (old instances) button on path dup till it works
+//
 //Revision 1.146  2001/06/17 03:05:04  aiv
 //set all seperators to "" that require it
 //
@@ -482,7 +485,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap052101"
+      Version = "QuArK 6.3snap061801"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.54  2001/06/05 18:41:26  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.53  2001/05/21 12:04:46  tiglari
 update version
 
@@ -187,7 +190,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'QuArK 6.3snap052101';
+  QuArKVersion            = 'QuArK 6.3snap061801';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
