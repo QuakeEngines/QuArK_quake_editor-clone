@@ -1,6 +1,4 @@
 title: Introduction to QuArK
 subdir: faq
+subdir: basicknowledge
 
-Please see
-<html><a href="http://www.planetquake.com/quark/help/basicknowledge.html">this page</a>
- for the basic information about QuArK.
