@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 }
 unit QkObjects;
 
@@ -84,8 +87,10 @@ const
  iiPython                = 43;
  iiBezier                = 44;
  iiSpriteFile            = 45;
+ iiMD3Tag                = 46;
+ iiMD3Bone               = 47;
 
- InternalImagesCount     = 46;
+ InternalImagesCount     = 48;
 
  ModeFichier    = fmOpenRead      or fmShareDenyWrite;
  ModeFichierEcr = fmOpenReadWrite or fmShareDenyWrite;
