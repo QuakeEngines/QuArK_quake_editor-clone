@@ -20,6 +20,11 @@
      most nearly facing face is.  Dragging of handles stays as
      before.
 
+ * [Decker] Map-editor's "Search and replace texture" now also works as a 
+     search-for-texture in the map. Not to be confused with the "Search for 
+     texture" which only searches in the texture-browser.
+
+
                  QuArK 6.3 Release Candidate 1
 
  * [tiglari] Replace texture dialog: if just a face is selected,
