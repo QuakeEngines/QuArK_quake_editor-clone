@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2003/08/31 13:26:55  nerdiii
+Floating point to String precision inc. from 1 to 2
+
 Revision 1.16  2003/08/12 16:00:56  silverpaladin
 Modified Normalise so that zero length vectors are returned unmodified rather than just blowing up.
 
@@ -102,7 +105,10 @@ type
  vec_st_p = ^vec_st_t;
  vec_st_t = record
              s,t: TDouble;
-            end;
+            end; 
+ TVect4 = record
+           X, Y, Z, D: TDouble;
+          end;
  TVect5 = record
            X, Y, Z, S, T: TDouble;
           end;

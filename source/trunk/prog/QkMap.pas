@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2002/12/22 05:52:46  tiglari
+restoring projecting points to planes, to make lighting work out
+
 Revision 1.49  2002/12/21 09:25:13  tiglari
 steamline v220 map-reading
 
@@ -781,6 +784,26 @@ expected one.
    ReadSymbol(sBracketRight);
    ReadSymbolForceToText:=False;
  end;
+ 
+ function ReadVect7(theLastSymbolForceToText: Boolean): TVect5;
+ begin
+   ReadSymbol(sBracketLeft);
+   Result.X:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Y:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Z:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.S:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.T:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   ReadSymbol(sNumValueToken);
+   ReadSymbol(sNumValueToken);
+   ReadSymbolForceToText:=theLastSymbolForceToText;
+   ReadSymbol(sBracketRight);
+   ReadSymbolForceToText:=False;
+ end;
 
  {Rowdy}
  function ReadVect5(theLastSymbolForceToText: Boolean): TVect5;
@@ -801,6 +824,22 @@ expected one.
    ReadSymbolForceToText:=False;
  end;
  {/Rowdy}
+ 
+ function ReadVect4(theLastSymbolForceToText: Boolean): TVect4;
+ begin
+   ReadSymbol(sBracketLeft);
+   Result.X:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Y:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.Z:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   Result.D:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   ReadSymbolForceToText:=theLastSymbolForceToText;
+   ReadSymbol(sBracketRight);
+   ReadSymbolForceToText:=False;
+ end;
 
  procedure ReadQ3PatchDef;
  var
@@ -857,6 +896,68 @@ expected one.
 
      B.ControlPoints:=MeshBuf1;
      B.AutoSetSmooth;
+   finally
+     FreeMem(MeshBuf1.CP);
+   end;
+ end;
+ 
+ 
+ procedure ReadPatchDef3;
+ var
+   I, J: Integer;
+ begin
+   ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+   ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+   {$IFDEF TexUpperCase}
+   S:=LowerCase(S);
+   {$ENDIF}
+   Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+   B:=TBezier.Create(LoadStr1(261), EntiteBezier); // 261 = "bezier"
+   EntiteBezier.SubElements.Add(B); //&&&
+   B.NomTex:=S;   { here we get the texture-name }
+
+   ReadSymbol(sStringToken); // lparen follows texture
+
+   // now comes 5 numbers which tell how many control points there are
+   // use ReadVect5 which is the same as ReadVect but expects 5 numbers
+   // and we only need the X and Y values
+   V5:=ReadVect7(False);
+   // X tells us how many lines of control points there are (height)
+   // Y tells us how many control points on each line (width)
+
+
+   MeshBuf1.W := Round(V5.X);
+   MeshBuf1.H := Round(V5.Y);
+
+   GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+   try
+     ReadSymbol(sBracketLeft); // lparen follows vect5
+     for I:=0 to MeshBuf1.W-1 do
+     begin
+       pCP1:=MeshBuf1.CP;
+       Inc(pCP1, I);
+       ReadSymbol(sBracketLeft); // read the leading lparen for the line
+       for J:=1 to MeshBuf1.H do
+       begin
+         V5:=ReadVect5(False);
+         pCP1^[0]:=V5.X;
+         pCP1^[1]:=V5.Y;
+         pCP1^[2]:=V5.Z;
+         pCP1^[3]:=V5.S;
+         pCP1^[4]:=V5.T;
+         Inc(pCP1, MeshBuf1.W);
+       end;
+       ReadSymbol(sBracketRight); // read the trailing rparen for the line
+     end;
+     ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+     ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+
+     B.ControlPoints:=MeshBuf1;
+     B.AutoSetSmooth;
+     end;     
    finally
      FreeMem(MeshBuf1.CP);
    end;
@@ -935,6 +1036,95 @@ expected one.
   ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
  end;
 
+ procedure ReadBrushDef3;
+ var
+   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
+   Denom : Double;
+   texname : String;
+   Plane : TVect4;
+   normal : TVect;
+   dist : double;
+   texparm : TFaceParams;
+   Matrix : TMatrixTransformation;
+ begin
+  ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
+  EntitePoly.SubElements.Add(P);
+  ContentsFlags:=0;
+  while SymbolType <> sCurlyBracketRight do  { read the faces }
+  begin
+    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+    Inc(FaceNum);
+
+    Plane := ReadVect4(False);
+    ReadSymbol(sBracketLeft);
+
+    normal.X := Plane.X;
+    normal.Y := Plane.Y;
+    normal.Z := Plane.Z;
+    dist := -Plane.D;
+
+    R1 := ReadVect(False);
+    R2 := ReadVect(False);
+
+    V[1] := R1;
+    V[2] := R2;
+
+    ReadSymbolForceToText:=true;
+    ReadSymbol(sBracketRight);
+    texname := S;
+    ReadSymbolForceToText:=false;
+
+    ReadSymbol(sTokenForcedToString);
+    v[3].x := NumericValue;
+    ReadSymbol(sNumValueToken);
+    v[3].y := NumericValue;
+    ReadSymbol(sNumValueToken);
+    v[3].z := NumericValue;
+
+    ReadSymbol(sNumValueToken);
+
+    Surface:=TFace.Create(LoadStr1(139), P);
+    P.SubElements.Add(Surface);
+    Surface.SetThreePoints(V[1], V[3], V[2]);
+
+    texparm[1] := 0;
+    texparm[2] := 0;
+    texparm[3] := 0;
+    texparm[4] := 0;
+    texparm[5] := 0;
+    Surface.SetFaceFromParams(normal, dist, texparm);
+    if not Surface.LoadData then
+      ShowMessage('LoadData failure');
+
+    Denom:=R1.X*R2.Y-R1.Y*R2.X;
+    P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
+    P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
+    P0.Z:=0.0;
+    P1.X:=(-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z)/Denom; {-a13*a22+a22+a12*a23}
+    P1.Y:=-(R1.X*R2.Z-R1.Z*R2.X+R2.X)/Denom;  {-(a11*a23-a13*a21+a21)}
+    P1.Z:=0.0;
+    P2.X:=(R1.Y*R2.Z+R1.Y-R1.Z*R2.Y)/Denom;  {a12*a23+a12-a13*a22}
+    P2.Y:=-(-R1.Z*R2.X+R1.X*R2.Z+R1.X)/Denom; {-(-a13*a21+a11*a23+a11)}
+    P2.Z:=0.0;
+    { Convert to map space }
+    GetAxisBase(Surface.Normale, TexS, TexT);
+    {GetAxisBase(normal, TexS, TexT);    }
+    Tex0:=VecScale(Surface.Dist, Surface.Normale);
+    ZVect.X:=0; ZVect.Y:=0; ZVect.Z:=1;
+    Matrix:=MatrixFromCols(TexS, TexT, ZVect);
+    P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
+    P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
+    P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
+
+    Q2Tex:=Q2Tex or (Pos('/',texname)<>0);
+    Surface.NomTex:=texname;   { here we get the texture-name }
+    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
+  end;
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+ end;
 
  procedure ReadSinSurfaceFlags;
  begin
@@ -1314,6 +1504,19 @@ begin
                end;
                ReadQ3PatchDef(); {DECKER - moved to local-procedure to increase readability}
              end
+             else if LowerCase(s)='patchdef3' then
+             begin
+              { Armin: a patchDef2 means it is a Quake 3 map }
+              { Result:=mjQ3A;}
+              { Armin: create the MapStructureB group if not already done }
+               if EntiteBezier=Nil then
+               begin
+                 MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+                 Racine.SubElements.Add(MapStructureB);
+                 EntiteBezier:=MapStructureB;
+               end;
+               ReadPatchDef3(); {DECKER - moved to local-procedure to increase readability}
+             end
              else if LowerCase(s)='brushdef' then
              begin
               { tiglari: a brushDef means it is a Quake 3 map -
@@ -1321,6 +1524,10 @@ begin
                 not any more, anyone could write tools to support it
                 in a brush-based game }
                ReadQ3BrushDef(); {DECKER - moved to local-procedure to increase readability}
+             end
+             else if LowerCase(s)='brushdef3' then
+             begin
+                 ReadBrushDef3();
              end
              else
                raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]); // "patchDef2" expected
@@ -1516,7 +1723,10 @@ begin
       if Result=mjHexen then
         Result:=mjQuake;
       if CharModeJeu=mjTorque then
-        Result:=mjTorque;
+        Result:=mjTorque; 
+      if CharModeJeu=mjSylphis then
+       Result:=mjSylphis
+
     end;
     mjQ3A:
     { FIXME:  barf coding, the idea is that  if Q3a mode

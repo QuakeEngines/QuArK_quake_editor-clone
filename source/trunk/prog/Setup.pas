@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2003/07/21 04:42:40  nerdiii
+Linux compatibility ( '/' '\' )
+
 Revision 1.38  2002/12/30 18:07:35  decker_dk
 Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
 
@@ -206,6 +209,7 @@ const
  mjJK2          = 'f';  { Jedi Knight II - Jedi Outcast }
  mjTorque       = 'g';
  mjSOF2         = 'h';  { Soldier of Fortune II }
+ mjSylphis      = 'i';  { Sylphis }
 
  mjAny          = #1;
  mjNotQuake2    = #2;
