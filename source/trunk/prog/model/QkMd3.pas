@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2003/08/12 16:11:53  silverpaladin
+Added ExtraFunctionality to uses for access to Pre-Delphi6  multi platform support routines.
+
 Revision 1.17  2003/07/21 04:52:21  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -469,6 +472,11 @@ var
 begin
   org:=fs.position;
   fs.readbuffer(mhead, sizeof(mhead));
+  
+  // SilverPaladin - 08/28/2003 - Skip past the remainder of the header...
+  // Required for RtCW and other games that have a head larger than the TMD3Mesh
+  // component allows for.
+  fs.Seek(mhead.HeaderSize - sizeof(mhead), 1);
 
   //-----------------------------------------------------------
   //-- LOAD SKINS + GET SIZE OF FIRST
