@@ -9955,7 +9955,357 @@ QQRKSRC1
 		life: = { Txt="&" Hint="Life (seconds 0 = infinite)" }
 		BoltWidth: = { Txt="&" Hint="Width of beam (pixels*0.1 0-255)" }
 		NoiseAmplitude: = { Txt="&" Hint="Amount of noise (0-255)" }
-		texture: = { Txt="&"  Hint="Sprite Name (sprites/laserbeam.spr)" }
+        texture: = { Txt="&"  Hint="Sprite Name (sprites/laserbeam.spr)"
+typ="C"
+items=
+"bolt1.spr"$0D
+"laserbeam.spr"$0D
+"lgtning.spr"$0D
+"plasma.spr"$0D
+"smoke.spr"$0D
+"xbeam1.spr"$0D
+"xbeam2.spr"$0D
+"xbeam3.spr"$0D
+"xbeam4.spr"$0D
+"xbeam5.spr"$0D
+"xenobeam.spr"$0D
+"zbeam1.spr"$0D
+"zbeam2.spr"$0D
+"zbeam3.spr"$0D
+"zbeam4.spr"$0D
+"zbeam5.spr"$0D
+"zbeam6.spr"
+values=
+"sprites/bolt1.spr"$0D          // Lightning Bolt (anim)
+"sprites/laserbeam.spr"$0D      // Thick Laser Beam
+"sprites/lgtning.spr"$0D        // Electric Lightning Beam (anim)
+"sprites/plasma.spr"$0D         // Plasma Beam (anim)
+"sprites/smoke.spr"$0D          // Smoke Beam (anim)
+"sprites/xbeam1.spr"$0D         // Beam
+"sprites/xbeam2.spr"$0D         // Beam
+"sprites/xbeam3.spr"$0D         // Beam
+"sprites/xbeam4.spr"$0D         // Beam
+"sprites/xbeam5.spr"$0D         // Beam
+"sprites/xenobeam.spr"$0D       // Beam Large Yellow
+"sprites/zbeam1.spr"$0D         // Beam
+"sprites/zbeam2.spr"$0D         // Beam
+"sprites/zbeam3.spr"$0D         // Beam
+"sprites/zbeam4.spr"$0D         // Beam
+"sprites/zbeam5.spr"$0D         // Beam
+"sprites/zbeam6.spr"            // Beam
+
+//***************
+//                              Typ="C"
+//                              Items =
+//      "320_logo"$0D
+//      "320_pain"$0D
+//      "320_train"$0D
+//      "320hud1"$0D
+//      "320hud2"$0D
+//      "320hud3"$0D
+//      "320hud4"$0D
+//      "640_logo"$0D
+//      "640_pain"$0D
+//      "640_train"$0D
+//      "640hud1"$0D
+//      "640hud2"$0D
+//      "640hud3"$0D
+//      "640hud4"$0D
+//      "640hud5"$0D
+//      "640hud6"$0D
+//      "640hud7"$0D
+//      "640hud8"$0D
+//      "640hud9"$0D
+//      "aexplo"$0D
+//      "agrunt1"$0D
+//      "animglow01"$0D
+//      "arrow1"$0D
+//      "b-tele1"$0D
+//      "ballsmoke"$0D
+//      "bexplo"$0D
+//      "bhit"$0D
+//      "bigspit"$0D
+//      "blast"$0D
+//      "blood"$0D
+//      "blooddrop"$0D
+//      "bloodspray"$0D
+//      "blueflare1"$0D
+//      "blueflare2"$0D
+//      "bluejet1"$0D
+//      "bm1"$0D
+//      "bolt1"$0D
+//      "bubble"$0D
+//      "c-tele1"$0D
+//      "cexplo"$0D
+//      "cnt1"$0D
+//      "crosshairs"$0D
+//      "d-tele1"$0D
+//      "dexplo"$0D
+//      "dot"$0D
+//      "e-tele1"$0D
+//      "eexplo"$0D
+//      "enter1"$0D
+//      "exit1"$0D
+//      "explode1"$0D
+//      "explode2"$0D
+//      "fexplo"$0D
+//      "fexplo1"$0D
+//      "fire"$0D
+//      "flare1"$0D
+//      "flare2"$0D
+//      "flare3"$0D
+//      "flare4"$0D
+//      "flare5"$0D
+//      "flare6"$0D
+//      "gargeye1"$0D
+//      "gexplo"$0D
+//      "glow01"$0D
+//      "glow02"$0D
+//      "glow03"$0D
+//      "glow04"$0D
+//      "glow05"$0D
+//      "gwave1"$0D
+//      "hexplo"$0D
+//      "hotglow"$0D
+//      "laserbeam"$0D
+//      "laserdot"$0D
+//      "lgtning"$0D
+//      "logo"$0D
+//      "mommablob"$0D
+//      "mommaspit"$0D
+//      "mommaspout"$0D
+//      "moths"$0D
+//      "mushroom"$0D
+//      "muz1"$0D
+//      "muz2"$0D
+//      "muz3"$0D
+//      "muz4"$0D
+//      "muz5"$0D
+//      "muz6"$0D
+//      "muz7"$0D
+//      "muz8"$0D
+//      "muzzleflash"$0D
+//      "muzzleflash1"$0D
+//      "muzzleflash2"$0D
+//      "muzzleflash3"$0D
+//      "nhth1"$0D
+//      "oriented"$0D
+//      "plasma"$0D
+//      "poison"$0D
+//      "portal1"$0D
+//      "redflare1"$0D
+//      "redflare2"$0D
+//      "richo1"$0D
+//      "richo2"$0D
+//      "rjet1"$0D
+//      "rope"$0D
+//      "sdrip1"$0D
+//      "shockwave"$0D
+//      "small_logo"$0D
+//      "smoke"$0D
+//      "spark1"$0D
+//      "spotlight01"$0D
+//      "spotlight02"$0D
+//      "spotlight03"$0D
+//      "spotlight04"$0D
+//      "steam1"$0D
+//      "stmbal1"$0D
+//      "streak"$0D
+//      "tele1"$0D
+//      "tinyspit"$0D
+//      "vp_parallel"$0D
+//      "vp_parallel_oriented"$0D
+//      "wallpuff"$0D
+//      "wdrip2"$0D
+//      "white"$0D
+//      "wsplash3"$0D
+//      "wxplo1"$0D
+//      "xbeam1"$0D
+//      "xbeam2"$0D
+//      "xbeam3"$0D
+//      "xbeam4"$0D
+//      "xbeam5"$0D
+//      "xenobeam"$0D
+//      "xffloor"$0D
+//      "xfire"$0D
+//      "xfire2"$0D
+//      "xfireball3"$0D
+//      "xflare1"$0D
+//      "xflare2"$0D
+//      "xflare3"$0D
+//      "xsmoke1"$0D
+//      "xsmoke3"$0D
+//      "xsmoke4"$0D
+//      "xspark1"$0D
+//      "xspark2"$0D
+//      "xspark3"$0D
+//      "xspark4"$0D
+//      "xssmke1"$0D
+//      "yelflare1"$0D
+//      "yelflare2"$0D
+//      "zbeam1"$0D
+//      "zbeam2"$0D
+//      "zbeam3"$0D
+//      "zbeam4"$0D
+//      "zbeam5"$0D
+//      "zbeam6"$0D
+//      "zerogxplode"
+//                              Values =
+//      "sprites/320_logo.spr"$0D
+//      "sprites/320_pain.spr"$0D
+//      "sprites/320_train.spr"$0D
+//      "sprites/320hud1.spr"$0D
+//      "sprites/320hud2.spr"$0D
+//      "sprites/320hud3.spr"$0D
+//      "sprites/320hud4.spr"$0D
+//      "sprites/640_logo.spr"$0D
+//      "sprites/640_pain.spr"$0D
+//      "sprites/640_train.spr"$0D
+//      "sprites/640hud1.spr"$0D
+//      "sprites/640hud2.spr"$0D
+//      "sprites/640hud3.spr"$0D
+//      "sprites/640hud4.spr"$0D
+//      "sprites/640hud5.spr"$0D
+//      "sprites/640hud6.spr"$0D
+//      "sprites/640hud7.spr"$0D
+//      "sprites/640hud8.spr"$0D
+//      "sprites/640hud9.spr"$0D
+//      "sprites/aexplo.spr"$0D         // Explosion
+//      "sprites/agrunt1.spr"$0D        // AlienGrunt (anim)
+//      "sprites/animglow01.spr"$0D     // Glow (anim)
+//      "sprites/arrow1.spr"$0D         // Up-pointing arrow x 2
+//      "sprites/b-tele1.spr"$0D        // Blue teleport (anim)
+//      "sprites/ballsmoke.spr"$0D      // Smoke (anim)
+//      "sprites/bexplo.spr"$0D         // Explosion (anim)
+//      "sprites/bhit.spr"$0D           // Tiny Sparkle (Blood?) (anim)
+//      "sprites/bigspit.spr"$0D        // Spit (anim)
+//      "sprites/blast.spr"$0D          // Explosion (anim)
+//      "sprites/blood.spr"$0D          // Tiny Sparkle (Blood?) (anim)
+//      "sprites/blooddrop.spr"$0D      // Tiny Sparkle (Blood?) (anim)
+//      "sprites/bloodspray.spr"$0D     // Large blood spray (anim)
+//      "sprites/blueflare1.spr"$0D     // LensFlare Large Blue
+//      "sprites/blueflare2.spr"$0D     // LensFlare Small Blue
+//      "sprites/bluejet1.spr"$0D       // Jetstream blue (anim)
+//      "sprites/bm1.spr"$0D            // Bubbles? (anim)
+//      "sprites/bolt1.spr"$0D          // Lightning Bolt (anim)
+//      "sprites/bubble.spr"$0D         // Air-Bubble (for Water)
+//      "sprites/c-tele1.spr"$0D        // Yellow teleport (anim)
+//      "sprites/cexplo.spr"$0D         // Explosion (anim)
+//      "sprites/cnt1.spr"$0D           // Green teleport? (anim)
+//      "sprites/crosshairs.spr"$0D
+//      "sprites/d-tele1.spr"$0D        // Red/Yellow teleport (anim)
+//      "sprites/dexplo.spr"$0D         // Explosion (anim)
+//      "sprites/dot.spr"$0D            // White small dot
+//      "sprites/e-tele1.spr"$0D        // Orange teleport (anim)
+//      "sprites/eexplo.spr"$0D         // Explosion (anim)
+//      "sprites/enter1.spr"$0D         // Orange/Green teleport (anim)
+//      "sprites/exit1.spr"$0D          // Green/Yellow teleport (anim)
+//      "sprites/explode1.spr"$0D       // Explosion (anim)
+//      "sprites/explode2.spr"$0D       // Explosion (anim)
+//      "sprites/fexplo.spr"$0D         // Explosion (anim)
+//      "sprites/fexplo1.spr"$0D        // Explosion (anim)
+//      "sprites/fire.spr"$0D           // Fire (candle?) (anim)
+//      "sprites/flare1.spr"$0D         // LensFlare Large
+//      "sprites/flare2.spr"$0D         // LensFlare Oval
+//      "sprites/flare3.spr"$0D         // LensFlare Medium
+//      "sprites/flare4.spr"$0D         // Blinking LensFlare Yellow (anim)
+//      "sprites/flare5.spr"$0D         // Blinking LensFlare Yellow (anim)
+//      "sprites/flare6.spr"$0D         // Sparkling LensFlare Green (anim)
+//      "sprites/gargeye1.spr"$0D       // Red Eye of Garg-Alien
+//      "sprites/gexplo.spr"$0D         // Explosion (anim)
+//      "sprites/glow01.spr"$0D         // LensFlare Large
+//      "sprites/glow02.spr"$0D         // LensFlare Large
+//      "sprites/glow03.spr"$0D         // LensFlare Large
+//      "sprites/glow04.spr"$0D         // LensFlare Large
+//      "sprites/glow05.spr"$0D         // black
+//      "sprites/gwave1.spr"$0D         // Red/Yellow Alienlike Fire (anim)
+//      "sprites/hexplo.spr"$0D         // Explosion (anim)
+//      "sprites/hotglow.spr"$0D        // LensFlare Large Orange
+//      "sprites/laserbeam.spr"$0D      // Thick Laser Beam
+//      "sprites/laserdot.spr"$0D       // RPG Laserdot
+//      "sprites/lgtning.spr"$0D        // Electric Lightning Beam (anim)
+//      "sprites/logo.spr"$0D           // HALF-LIFE/Valve/Sierra logos (anim)
+//      "sprites/mommablob.spr"$0D      // Blob? (anim)
+//      "sprites/mommaspit.spr"$0D      // Spit (anim)
+//      "sprites/mommaspout.spr"$0D     // Spit (anim)
+//      "sprites/moths.spr"$0D          // Tiny Sparkle (moths?) (anim)
+//      "sprites/mushroom.spr"$0D       // Explosion (anim)
+//      "sprites/muz1.spr"$0D           // MuzzleFlash (anim)
+//      "sprites/muz2.spr"$0D           // MuzzleFlash
+//      "sprites/muz3.spr"$0D           // MuzzleFlash
+//      "sprites/muz4.spr"$0D           // MuzzleFlash
+//      "sprites/muz5.spr"$0D           // MuzzleFlash
+//      "sprites/muz6.spr"$0D           // MuzzleFlash
+//      "sprites/muz7.spr"$0D           // MuzzleFlash
+//      "sprites/muz8.spr"$0D           // MuzzleFlash
+//      "sprites/muzzleflash.spr"$0D    // MuzzleFlash (anim)
+//      "sprites/muzzleflash1.spr"$0D   // MuzzleFlash (anim)
+//      "sprites/muzzleflash2.spr"$0D   // MuzzleFlash (anim)
+//      "sprites/muzzleflash3.spr"$0D   // MuzzleFlash
+//      "sprites/nhth1.spr"$0D          // Energy Bolt (anim)
+//      "sprites/oriented.spr"$0D       // eh?
+//      "sprites/plasma.spr"$0D         // Plasma Beam (anim)
+//      "sprites/poison.spr"$0D         // Poison Cloud (anim)
+//      "sprites/portal1.spr"$0D        // Portal teleport (anim)
+//      "sprites/redflare1.spr"$0D      // LensFlare Large
+//      "sprites/redflare2.spr"$0D      // LensFlare Small
+//      "sprites/richo1.spr"$0D         // MuzzleFlash
+//      "sprites/richo2.spr"$0D         // Missile Smoke (anim)
+//      "sprites/rjet1.spr"$0D          // Rocket Exhaust (anim)
+//      "sprites/rope.spr"$0D           // Rope
+//      "sprites/sdrip1.spr"$0D         // WaterDrop (anim)
+//      "sprites/shockwave.spr"$0D      // Shockwave
+//      "sprites/small_logo.spr"$0D     // HALF-LIFE/Valve/Sierra logos Small (anim)
+//      "sprites/smoke.spr"$0D          // Smoke Beam (anim)
+//      "sprites/spark1.spr"$0D         // Electrical Sparkle (anim)
+//      "sprites/spotlight01.spr"$0D    // Spotlight
+//      "sprites/spotlight02.spr"$0D    // Spotlight
+//      "sprites/spotlight03.spr"$0D    // black
+//      "sprites/spotlight04.spr"$0D    // black
+//      "sprites/steam1.spr"$0D         // Steam Puff (anim)
+//      "sprites/stmbal1.spr"$0D        // Steam Ball (anim)
+//      "sprites/streak.spr"$0D         // Shockwave
+//      "sprites/tele1.spr"$0D          // Orange teleport (anim)
+//      "sprites/tinyspit.spr"$0D       // Spit (anim)
+//      "sprites/vp_parallel.spr"$0D    // eh?
+//      "sprites/vp_parallel_oriented.spr"$0D // eh?
+//      "sprites/wallpuff.spr"$0D       // WallScar
+//      "sprites/wdrip2.spr"$0D         // WaterDrops (anim)
+//      "sprites/white.spr"$0D          // white
+//      "sprites/wsplash3.spr"$0D       // WaterSplash (anim)
+//      "sprites/wxplo1.spr"$0D         // WaterExplosion (anim)
+//      "sprites/xbeam1.spr"$0D         // Beam
+//      "sprites/xbeam2.spr"$0D         // Beam
+//      "sprites/xbeam3.spr"$0D         // Beam
+//      "sprites/xbeam4.spr"$0D         // Beam
+//      "sprites/xbeam5.spr"$0D         // Beam
+//      "sprites/xenobeam.spr"$0D       // Beam Large Yellow
+//      "sprites/xffloor.spr"$0D        // Fire Large (anim)
+//      "sprites/xfire.spr"$0D          // Fire Puff (anim)
+//      "sprites/xfire2.spr"$0D         // Fire Explosion Ball (anim)
+//      "sprites/xfireball3.spr"$0D     // Fire Ball (anim)
+//      "sprites/xflare1.spr"$0D        // LensFlare large (anim)
+//      "sprites/xflare2.spr"$0D        // Foggy LensFlare Large (anim)
+//      "sprites/xflare3.spr"$0D        // Fuzzy LensFlare Large (anim)
+//      "sprites/xsmoke1.spr"$0D        // Smoke Ball (anim)
+//      "sprites/xsmoke3.spr"$0D        // Smoke Steam Dense (anim)
+//      "sprites/xsmoke4.spr"$0D        // Smoke Puff (anim)
+//      "sprites/xspark1.spr"$0D        // Foggy Sparkle Blue (anim)
+//      "sprites/xspark2.spr"$0D        // Sparkle (anim)
+//      "sprites/xspark3.spr"$0D        // Sparkling (anim)
+//      "sprites/xspark4.spr"$0D        // Foggy Sparkle Yellow (anim)
+//      "sprites/xssmke1.spr"$0D        // Smoke Steam Light (anim)
+//      "sprites/yelflare1.spr"$0D      // LensFlare Large
+//      "sprites/yelflare2.spr"$0D      // LensFlare Small
+//      "sprites/zbeam1.spr"$0D         // Beam
+//      "sprites/zbeam2.spr"$0D         // Beam
+//      "sprites/zbeam3.spr"$0D         // Beam
+//      "sprites/zbeam4.spr"$0D         // Beam
+//      "sprites/zbeam5.spr"$0D         // Beam
+//      "sprites/zbeam6.spr"$0D         // Beam
+//      "sprites/zerogxplode.spr"       // Explosion (anim)
+//***************
+}
 		TextureScroll: = { Txt="&" Hint="Texture Scroll Rate (0-100)" }
 		framerate: = { Txt="&" Hint="Frames per 10 seconds" }
 		framestart: = { Txt="&" Hint="Starting Frame" }
