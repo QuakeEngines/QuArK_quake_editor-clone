@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/03/05 09:21:21  tiglari
+Q3 lump names filled in
+
 Revision 1.16  2001/03/04 17:02:45  aiv
 fixed 'origin' adding bug in entity wizard.
 
@@ -173,7 +176,7 @@ type
           FStructure: TTreeMapBrush;
           FVerticesRefCount: Integer;
           function GetStructure : TTreeMapBrush;
-          function GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes) : QFileObject;
+          function GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes) : QFileObject;
           procedure LoadBsp1(F: TStream; StreamSize: Integer);
           function DetermineGameCodeForBsp1() : Char;
           procedure LoadBsp2(F: TStream; StreamSize: Integer);
@@ -193,8 +196,8 @@ type
           procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-          property BspEntry[E1: TBsp1EntryTypes; E2: TBsp2EntryTypes] : QFileObject read GetBspEntry;
-          function GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; var P: PChar) : Integer;
+          property BspEntry[E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes] : QFileObject read GetBspEntry;
+          function GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes; var P: PChar) : Integer;
           procedure ReLoadStructure;
           procedure CloseStructure;
           procedure VerticesAddRef(Delta: Integer);
@@ -420,7 +423,7 @@ begin
   ];
 end;
 
-function QBsp.GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes) : QFileObject;
+function QBsp.GetBspEntry(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes) : QFileObject;
 var
  Q: QObject;
  S: String;
@@ -430,8 +433,11 @@ begin
   if E2=NoBsp2 then
     S:=Bsp1EntryNames[E1]
   else
-  if (E1=NoBsp1) or (NeedObjectGameCode>=mjQuake2) then
+  if (E1=NoBsp1) or (E3=NoBsp3) or ((NeedObjectGameCode>=mjQuake2) and (NeedObjectGameCode<mjQ3A)) then
     S:=Bsp2EntryNames[E2]
+  else
+  if (E1=NoBsp1) or (E2=NoBsp2) or (NeedObjectGameCode=mjQ3A) or (NeedObjectGameCode=mjStarTrekEF) then
+    S:=Bsp3EntryNames[E3]
   else
     S:=Bsp1EntryNames[E1];
 
@@ -442,14 +448,14 @@ begin
   Result := QFileObject(Q);
 end;
 
-function QBsp.GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; var P: PChar) : Integer;
+function QBsp.GetBspEntryData(E1: TBsp1EntryTypes; E2: TBsp2EntryTypes; E3: TBsp3EntryTypes; var P: PChar) : Integer;
 const
  Start = Length('Data=');
 var
  Q: QObject;
  S: String;
 begin
- Q:=BspEntry[E1, E2];
+ Q:=BspEntry[E1, E2, E3];
  Q.Acces;
  S:=Q.GetSpecArg('Data');
  P:=PChar(S)+Start;
@@ -467,7 +473,7 @@ begin
  if (Code >= mjQuake2) {or (Code = mjHalfLife)} then
   Result := Nil
  else
-  Result := BspEntry[eMipTex, NoBsp2];
+  Result := BspEntry[eMipTex, NoBsp2, NoBsp3];
 end;
 
  {----------------------}
@@ -514,8 +520,8 @@ begin
     { determine map game : Quake 1 or Hexen II }
   FFlags := FFlags and not ofNotLoadedToMemory;  { to prevent infinite loop on "Acces" }
 
-  FaceCount := GetBspEntryData(eSurfaces, NoBsp2, P) div SizeOf(TbSurface);
-  Taille1   := GetBspEntryData(eHulls, NoBsp2, P);
+  FaceCount := GetBspEntryData(eSurfaces, NoBsp2, NoBsp3, P) div SizeOf(TbSurface);
+  Taille1   := GetBspEntryData(eHulls, NoBsp2, NoBsp3,P);
 
   ModeQ1 := CheckQ1Hulls(PHull(P), Taille1, FaceCount);
   ModeH2 := CheckH2Hulls(PHullH2(P), Taille1, FaceCount);
@@ -692,7 +698,7 @@ begin
     { write .bsp entries }
     for E:=Low(E) to High(E) do
     begin
-      Q := BspEntry[E, NoBsp2];
+      Q := BspEntry[E, NoBsp2, NoBsp3];
       Header.Entries[E].EntryPosition := Info.F.Position;
 
       Q.SaveFile1(Info);   { save in non-QuArK file format }
@@ -734,7 +740,7 @@ begin
     { write .bsp entries }
     for E:=Low(E) to High(E) do
     begin
-      Q := BspEntry[NoBsp1, E];
+      Q := BspEntry[NoBsp1, E, NoBsp3];
       Header.Entries[E].EntryPosition := Info.F.Position;
 
       Q.SaveFile1(Info);   { save in non-QuArK file format }
@@ -821,7 +827,7 @@ begin
     Raise EError(5637);
    FVerticesRefCount:=0;
    ProgressIndicatorStart(0,0); try
-   Count:=GetBspEntryData(eVertices, lump_vertexes, PChar(P)) div SizeOf(vec3_t);
+   Count:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
    ReallocMem(FVertices, Count*SizeOf(TVect));
    Dest:=PVect(FVertices);
    for I:=1 to Count do
@@ -837,7 +843,7 @@ begin
     end;
    FStructure:=TTreeMapBrush.Create('', Self);
    FStructure.AddRef(+1);
-   Q:=BspEntry[eEntities, lump_entities];
+   Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
    Q.Acces;
    ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
    finally ProgressIndicatorStop; end;
@@ -861,7 +867,7 @@ begin
    finally
     Dest.Free;
    end;
-   Q:=BspEntry[eEntities, lump_entities];
+   Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
    Q.Acces;
    Action(Q, TSpecificUndo.Create(LoadStr1(614), 'Data', S, sp_Auto, Q));
   end;
@@ -1139,7 +1145,7 @@ var
   dir_nfo : QQuakeCtx;
 begin
   FileObject.Acces;
-  e:=QBsp(FileObject).GetBspEntry(eEntities, lump_entities);
+  e:=QBsp(FileObject).GetBspEntry(eEntities, lump_entities, eBsp3_entities);
   if e=nil then
   begin
     raise Exception.Create('No Entities in BSP');

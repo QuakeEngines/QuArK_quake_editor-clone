@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.6  2001/01/21 15:48:25  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -238,7 +243,7 @@ begin
    mjQuake2, mjHeretic2: Size1:=SizeOf(THullQ2);
   else Exit;
   end;
-  I:=FBsp.GetBspEntryData(eHulls, lump_models, P);
+  I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
   Delta:=Size1*Succ(Index);
   if I<Delta then
    Raise EErrorFmt(5635, [1]);
@@ -267,17 +272,17 @@ begin
    TextureList:=Nil
   else
    begin
-    TextureList:=FBsp.BspEntry[eMipTex, NoBsp2] as QTextureList;
+    TextureList:=FBsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
     TextureList.Acces;
    end;
-  if FBsp.GetBspEntryData(eSurfaces, lump_faces, PChar(Faces)) < (FirstFace+NbFaces)*SizeOf(TbSurface) then
+  if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SizeOf(TbSurface) then
    Raise EErrorFmt(5635, [2]);
   Inc(PChar(Faces), Pred(FirstFace) * SizeOf(TbSurface));
-  cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, LEdges)   div SizeOf(TLEdge);
-  cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     Edges)    div SizeOf(TEdge);
-  cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   TexInfo)  div cTexInfo;
-  cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    Planes)   div SizeOf(TbPlane);
-  cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  Vertices) div SizeOf(vec3_t);
+  cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, eBsp3_surfedges,  LEdges)   div SizeOf(TLEdge);
+  cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     eBsp3_edges,      Edges)    div SizeOf(TEdge);
+  cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
+  cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
+  cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  eBsp3_vertexes,   Vertices) div SizeOf(vec3_t);
   Vertices:=PChar(FBsp.FVertices);
 
   Faces2:=Faces;
@@ -486,10 +491,10 @@ var
 begin
  if (FBsp=Nil) or (SurfaceList=Nil) then Exit;
 
- FBsp.GetBspEntryData(eSurfaces, lump_faces, PChar(Faces));
+ FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
  Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
- FBsp.GetBspEntryData(eListEdges, lump_surfedges, LEdges);
- FBsp.GetBspEntryData(eEdges, lump_edges, Edges);
+ FBsp.GetBspEntryData(eListEdges, lump_surfedges, eBsp3_surfedges, LEdges);
+ FBsp.GetBspEntryData(eEdges, lump_edges, eBsp3_edges, Edges);
  Vertices:=PChar(FBsp.FVertices);
 
  if Info.SelectedBrush<>0 then
