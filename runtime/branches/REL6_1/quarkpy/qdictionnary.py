@@ -764,7 +764,7 @@ Strings = {
 	5599: "QuArK must switch to %s game mode, but it cannot do so now because you are working in a ToolBox. You need to copy this data outside the toolbox before you can work on it. When copying textures, copy them using the standard 'Copy' command and then use 'Paste as...' to convert it to another game.",
 	5600: "This file is already registered as an Add-on",
 	5601: "Save this file in the QuArK Explorer ?\n\nFor organization purposes, this option lets you pack your files into a single .qrk file. If you answer No, QuArK will let you save your file normally.",
-	# 5602: "Structure error : Missing 'Typ' for '%s' in the form data.",
+	5602: "'%s' is a BSP file (version %d) that\n cannot (yet) be loaded by QuArK.",
 	5603: "Cannot access the WAVE sound output. There is probably another sound currently played//waveOutOpen failed",
 	5604: "Cannot access the WAVE sound output. Internal error//waveOutPrepareHeader failed",
 	5605: "'%s' is not a WAV file//%d should be %d",
@@ -877,6 +877,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.18.2.2  2000/09/10 14:39:14  alexander
+#set name
+#
 #Revision 1.18.2.1  2000/09/01 01:49:09  alexander
 #set name
 #
