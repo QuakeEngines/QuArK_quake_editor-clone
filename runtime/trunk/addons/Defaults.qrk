@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.136  2001/05/21 12:06:32  tiglari
+//update version
+//
 //Revision 1.135  2001/05/12 23:06:05  tiglari
 //add  'item center' flag to linear duplicator for new linear fixpoint behavior
 //
@@ -3281,6 +3284,11 @@ QQRKSRC1
       centering: =
        {Txt= "&" Typ="P" Macro="usercenter" Cap="push" Hint="Push to add a user center"}
     }
+    dup plane:form = {
+      P1:= {Txt="&" Typ="EF03"}
+      P2:= {Txt="&" Typ="EF03"}
+      P3:= {Txt="&" Typ="EF03"}
+    }
     Default:g:form =      // form that applies when editing groups
     {
       Style = "2"
@@ -4502,6 +4510,16 @@ QQRKSRC1
           macro = "dup hlinfodecal"
         }
       }
+      Tools.qtxfolder =
+      {
+        plane duplicator:d = {
+          ;desc = "'duplicator' for making a 3 ponit plane"
+          P1 = '0 64 0'
+          P2 = '64 -64 0'
+          P3 = '-64 -64 0'
+          macro = "dup plane"
+        }
+      }
     }
   }
 
@@ -4778,7 +4796,6 @@ QQRKSRC1
   }
 
     //   --- TOOL BARS ---
-
   Tool bars.qrk =
   {
     Main.toolbar =
