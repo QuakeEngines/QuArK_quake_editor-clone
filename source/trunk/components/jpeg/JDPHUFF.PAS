@@ -11,7 +11,7 @@ Unit JdpHuff;
 { Original: jdphuff.c ; Copyright (C) 1995-1997, Thomas G. Lane. }
 
 interface
-
+{$I DelphiVer.inc}
 {$I jconfig.inc}
 
 uses
@@ -765,10 +765,15 @@ var
   num_newnz : int;
   newnz_pos : array[0..DCTSIZE2-1] of int;
 var
-  pos : int;
-var
-  nb, look : int; {register}
+  pos: int;
+  nb, look: int; {register}
 begin
+  {$ifdef Delphi6orNewerCompiler}
+  // Initialize Variables (Creates hint in D5 needed to block hint in D6)
+  Num_NewNz := 0;
+  Block := NIL;
+  {$endif}
+
   entropy := phuff_entropy_ptr (cinfo^.entropy);
   Se := cinfo^.Se;
   p1 := 1 shl cinfo^.Al;	{ 1 in the bit position being coded }
