@@ -376,9 +376,9 @@ class BezierType(EntityManager):
             undo.exchange(o, new)
             editor.ok(undo, "Swap Sides")
 
-        Tex1 = qmenu.item("&Texture...", mapbtns.texturebrowser, "choose texture for patch")
+        Tex1 = qmenu.item("Choose &Texture...", mapbtns.texturebrowser, "choose texture for patch")
 
-        texpop = qmenu.popup("&Texture on Patch",[Tex1])
+        texpop = qmenu.popup("&Texture",[Tex1])
         texpop.label="texpop"
         swap = qmenu.item("&Swap sides",swapclick,"Flip visible side of patch")
 
@@ -584,6 +584,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2000/07/24 12:48:39  tiglari
+#reorganization of bezier texture menu
+#
 #Revision 1.17  2000/07/24 09:09:23  tiglari
 #Put Texture.. (choose) and Texture Flags into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
 #
