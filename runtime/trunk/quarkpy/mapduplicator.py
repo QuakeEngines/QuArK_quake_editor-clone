@@ -262,21 +262,21 @@ class StandardDuplicator(DuplicatorManager):
             if self.dup["increment suffix"]:
                 if i==count-1:
                     for item in list:
-                        for spec in self.final_specs.keys():
-                            if item[spec]!="" or item[spec] is not None:
-                                val = self.final_specs[spec]
-                                if val=="None":
-                                    item[spec]=""
-                                #
-                                # dictionary
-                                #
-                                elif type(val)==type({}):
-                                   debug('last '+`item[spec]`)
-                                   base, index = get_suffix(item[spec])
-                                   if val.has_key(base):
-                                       item[spec]=val[base]
-                                else:
-                                    item[spec]=val
+                        for item2 in poolitems(item):
+                            for spec in self.final_specs.keys():
+                                if item2[spec]!="" or item2[spec] is not None:
+                                    val = self.final_specs[spec]
+                                    if val=="None":
+                                        item2[spec]=""
+                                    #
+                                    # dictionary
+                                    #
+                                    elif type(val)==type({}):
+                                       base, index = get_suffix(item2[spec])
+                                       if val.has_key(base):
+                                           item2[spec]=val[base]
+                                    else:
+                                        item2[spec]=val
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -397,6 +397,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2001/06/05 12:38:02  tiglari
+#final value elaborations
+#
 #Revision 1.17  2001/06/05 09:41:15  tiglari
 #more development of incrementing in duplicators, custom
 # increment idea & some code by subnoodle (Sam)
