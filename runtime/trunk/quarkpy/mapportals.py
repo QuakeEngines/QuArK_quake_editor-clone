@@ -102,6 +102,7 @@ def LoadPortalFile(editor, filename):
     #  numbers are one-sided; we ignore them, and quit when they appear.
     #
     while index<len(data):
+        pos = string.find(data[index],'(')
         line = data[index]
         numbers = string.split(line[:pos])
         if len(numbers)<3:
@@ -138,6 +139,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.3  2003/03/19 11:27:47  tiglari
+#remove debug statement
+#
 #Revision 1.2  2003/03/19 11:26:15  tiglari
 #expand info in dialog box
 #
