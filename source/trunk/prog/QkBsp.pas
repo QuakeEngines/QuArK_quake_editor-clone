@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2001/07/30 00:58:28  tiglari
+more cleanup, close plane finding support
+
 Revision 1.45  2001/07/29 08:03:09  tiglari
 bugfixes, cleanup
 
@@ -315,6 +318,8 @@ type
               end;
 
 
+ QBsp = class;
+
  TTreeBspPlane = class(TTreeMapGroup)
   public
    Normal: TVect;
@@ -322,10 +327,9 @@ type
    constructor Create(const nName: String; nParent: QObject; Source: PbPlane); overload;
 
    class function TypeInfo: String; override;
+   function GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
    function PyGetAttr(attr: PChar) : PyObject; override;
  end;
-
- QBsp = class;
 
  TTreeBspNode = class(TTreeMapGroup)
   public
@@ -382,6 +386,7 @@ type
           procedure GetPlanes(var L: TQList);
           function GetNodes: QObject;
           function GetQ3Node(Node: PQ3Node; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
+          function GetClosePlanes(Close:TDouble): PyObject;
         end;
 
 type
@@ -1265,10 +1270,30 @@ begin
  end;
 end;
 
+function qGetClosePlanes(self, args: PyObject) : PyObject; cdecl;
+var
+ r: Single;
+begin
+ try
+   if not PyArg_ParseTupleX(args, 'f', [@r]) then
+     Exit;
+   with QkObjFromPyObj(self) as QBsp do
+   begin
+         Result:=GetClosePlanes(r);
+         Exit;
+   end;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+
 const
- MethodTable: array[0..1] of TyMethodDef =
+ MethodTable: array[0..2] of TyMethodDef =
   ((ml_name: 'reloadstructure';  ml_meth: qReloadStructure;  ml_flags: METH_VARARGS),
-   (ml_name: 'closestructure';   ml_meth: qCloseStructure;   ml_flags: METH_VARARGS));
+   (ml_name: 'closestructure';   ml_meth: qCloseStructure;   ml_flags: METH_VARARGS),
+   (ml_name: 'closeplanes';   ml_meth: qGetClosePlanes;   ml_flags: METH_VARARGS));
 
 function QBsp.PyGetAttr(attr: PChar) : PyObject;
 var
@@ -1681,6 +1706,45 @@ begin
   end;
 end;
 
+function QBsp.GetClosePlanes(Close:TDouble): PyObject;
+var
+  I, J, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
+  Planes2, Planes3: PChar;
+  PlanePt, PlanePt2: TVect;
+begin
+  Result:=PyList_New(0);
+  HalfPlaneCount:=(PlaneCount-1) div 2;
+  if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
+    PlaneSize:=SizeOf(TbPlane)
+  else
+    PlaneSize:=SizeOf(TQ3Plane);
+  PlaneInc:=2*PlaneSize;
+  Planes2:=Planes;
+  for I:=0 to HalfPlaneCount do
+  begin
+    with PQ3Plane(Planes2)^ do
+    begin
+      PlanePt:=VecScale(Dist,MakeVect(normal));
+      Planes3 := Planes2+PlaneInc;
+      for J:=I+1 to HalfPlaneCount do
+      begin
+        with PQ3Plane(Planes3)^ do
+        begin
+          PlanePt2:=VecScale(Dist,MakeVect(normal));
+          if VecLength(VecDiff(PlanePt, PlanePt2))<Close then
+          begin
+            PyList_Append(Result,PyInt_FromLong(I*2));
+            Break;
+          end;
+        end;
+        Inc(Planes3,PlaneInc);
+      end;
+    end;
+    Inc(Planes2, PlaneInc);
+  end;
+end;
+
+
 function bspSurfaceType(const BspType : Char) : Char;
 begin
   if BspType=BspTypeQ3 then
@@ -1773,6 +1837,61 @@ begin
   end;
 end;
 
+function TTreeBspPlane.GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
+var
+  I, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
+  Planes2: PChar;
+  PlanePt, PlanePt2: TVect;
+begin
+  Result:=PyList_New(0);
+  with Bsp do
+  begin
+    HalfPlaneCount:=(PlaneCount-1) div 2;
+    if BspSurfaceType(NeedObjectGameCode)=bspSurfQ12 then
+      PlaneSize:=SizeOf(TbPlane)
+    else
+      PlaneSize:=SizeOf(TQ3Plane);
+    PlaneInc:=2*PlaneSize;
+    Planes2:=Planes;
+    PlanePt:=VecScale(Dist,Normal);
+    for I:=0 to HalfPlaneCount do
+    begin
+      with PQ3Plane(Planes2)^ do
+      begin
+        PlanePt2:=VecScale(Dist,MakeVect(normal));
+        if VecLength(VecDiff(PlanePt, PlanePt2))<Close then
+            PyList_Append(Result,PyInt_FromLong(I*2));
+      end;
+      Inc(Planes2, PlaneInc);
+    end;
+  end;
+end;
+
+function qGetNearPlanes(self, args: PyObject) : PyObject; cdecl;
+var
+ r: Single;
+ bsp: PyObject;
+begin
+ try
+   if not PyArg_ParseTupleX(args, 'fO', [@r, @bsp]) then
+     Exit;
+   with QkObjFromPyObj(self) as TTreeBspPlane do
+   begin
+     Result:=GetNearPlanes(r,QBsp(QkObjFromPyObj(bsp)));
+     Exit;
+   end;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
+
+
+const
+ PlaneMethodTable: array[0..0] of TyMethodDef =
+  ((ml_name: 'nearplanes';   ml_meth: qGetNearPlanes;   ml_flags: METH_VARARGS));
+
 function TTreeBspPlane.PyGetAttr(attr: PChar) : PyObject;
 var
   I: Integer;
@@ -1780,7 +1899,13 @@ var
 begin
   Result:=inherited PyGetAttr(attr);
   if Result<>Nil then Exit;
-    { No method table, so that part omitted }
+  for I:=Low(PlaneMethodTable) to High(PlaneMethodTable) do
+    if StrComp(attr, PlaneMethodTable[I].ml_name) = 0 then
+    begin
+      Result:=PyCFunction_New(PlaneMethodTable[I], @PythonObj);
+      Exit;
+     end;
+
   case attr[0] of
    'd': if StrComp(attr, 'dist') = 0 then
        begin
