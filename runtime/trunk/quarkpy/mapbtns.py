@@ -107,7 +107,6 @@ def dropitemnow(editor, newitem):
     dropitemsnow(editor, [newitem], Strings[616])
 
 
-
 def applytexture(editor, texname):
     undo = quarkx.action()
     for s in editor.layout.explorer.sellist:
@@ -235,7 +234,18 @@ def mapbuttonclick(self):
     "Drop a new map object from a button."
     editor = mapeditor()
     if editor is None: return
-    dropitemsnow(editor, map(lambda x: x.copy(), self.dragobject))
+    def processObject(object):
+        object=object.copy()
+        scale = quarkx.setupsubset()["DefaultTextureScale"]
+        if scale:
+            scale = eval(scale)
+            for face in object.findallsubitems("",":f"):
+                texp = face.threepoints(2)
+                p0 = texp[0]
+                v1, v2 = (texp[1]-p0)*scale, (texp[2]-p0)*scale
+                face.setthreepoints((p0,p0+v1,p0+v2),2)
+        return object
+    dropitemsnow(editor, map(processObject, self.dragobject))
 
 
 
@@ -680,6 +690,12 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.8  2001/01/27 18:24:53  decker_dk
+#Renamed 'TextureDef' -> 'DefaultTexture'
+#Renamed 'TriggerTextureDef' -> 'DefaultTextureTrigger'
+#Added functionality to replace '[trigger]', '[clip]', '[origin]' and '[caulk]' texturenames.
+#Changed the ';incl' function. Now it accepts values; "poly,trigger,clip,origin", and more than one can be specified to include, for instance a 'poly' and an 'origin' cube.
+#
 #Revision 1.7  2000/12/31 23:59:44  tiglari
 #fixed adjust texture to fit face button problem (introduced by botched tab elimination)
 #
