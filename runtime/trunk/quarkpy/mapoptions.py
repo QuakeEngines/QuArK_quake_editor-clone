@@ -109,7 +109,7 @@ class LineThickDlg(SimpleCancelDlgBox):
         Typ = "EF1"
         Hint = "Needn't be an integer."
         }
-        close:py = {Txt="" }
+        cancel:py = {Txt="" }
     }
     """
 
@@ -194,6 +194,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.5  2003/03/21 10:56:08  tiglari
+#support for line-thickness specified by mapoption
+#
 #Revision 1.4  2001/08/28 22:43:54  tiglari
 #'Adjust angles automatically' renamed to `Quantize angles'
 #
