@@ -441,7 +441,7 @@ class XYZDialog(SimpleCancelDlgBox):
         }
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
-        cancel:py = { }
+        cancel:py = {Txt="" }
       }
     """
 
@@ -481,7 +481,7 @@ class CustomGridDlgBox(SimpleCancelDlgBox):
         }
         sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
-        cancel:py = { }
+        cancel:py = {Txt="" }
       }
     """
 
@@ -541,7 +541,7 @@ class CustomZoomDlgBox(SimpleCancelDlgBox):
         info: = {Typ="S" Bold="0" Txt="or press and hold down both buttons together."}
         //sep: = {Typ="S" Txt=" "}    // some space
         sep: = {Typ="S" Txt=""}    // a separator line
-        cancel:py = { }     // the cancel button
+        cancel:py = {Txt="" }     // the cancel button
       }
     """
 
@@ -1463,6 +1463,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.7  2001/06/16 03:20:48  tiglari
+#add Txt="" to separators that need it
+#
 #Revision 1.6  2001/03/02 19:35:02  decker_dk
 #Changed Help2()/Help3() to direct to the infobase files.
 #

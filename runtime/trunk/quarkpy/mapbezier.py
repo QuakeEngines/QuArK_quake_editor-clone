@@ -68,7 +68,7 @@ class CornerTexPos(dlgclasses.LiveEditDlg):
 
 
 
-        exit:py = { }
+        exit:py = { Txt="" }
     }
     """
 
@@ -99,7 +99,7 @@ class CPTexPos(dlgclasses.LiveEditDlg):
         
         sep: = { Typ="S" Txt=""}
 
-        exit:py = { }
+        exit:py = {Txt="" }
     }
     """
 
@@ -910,6 +910,9 @@ qbaseeditor.BaseEditor.finishdrawing = pickfinishdrawing
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.35  2001/06/16 03:20:48  tiglari
+#add Txt="" to separators that need it
+#
 #Revision 1.34  2001/02/07 18:40:47  aiv
 #bezier texture vertice page started.
 #

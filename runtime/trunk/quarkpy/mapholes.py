@@ -40,7 +40,7 @@ class LinesDlg(qmacro.dialogbox):
         sep: = {Typ="S" Bold="0" Txt="There is a hole in your map."}
         sep: = {Typ="S" Bold="0" Txt="Use the red line to locate it,"}
         sep: = {Typ="S" Bold="0" Txt="and then click Ok below."}
-        close:py = { }
+        close:py = {Txt="" }
       }
     """
 
@@ -172,5 +172,8 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

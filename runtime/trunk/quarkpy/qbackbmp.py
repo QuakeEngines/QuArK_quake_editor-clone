@@ -40,8 +40,8 @@ class BackBmpDlg(qmacro.dialogbox):
         center: = {Typ="EF3" Txt="Coordinates of the center"}
         scale: = {Typ="EF1" Txt="Scale"}
         sep: = {Typ="S" Txt=""}
-        ok:py = { }
-        no:py = { }
+        ok:py = {Txt="" }
+        no:py = { Txt=""}
       }
     """
 
@@ -94,6 +94,9 @@ class BackBmpDlg(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.3  2001/06/16 03:20:48  tiglari
+#add Txt="" to separators that need it
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
