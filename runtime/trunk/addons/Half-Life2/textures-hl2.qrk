@@ -11,7 +11,13 @@ QQRKSRC1
     ToolBox = "Texture Browser..."
     Root = "HL2 Textures.qtxfolder"
 
-    t_hl2:incl =      {  v="source materials.gcf" path="hl2/materials/"}
+    //access via steam (steam must be running)
+    t_hl2:incl =      {  v="220.SteamFS" path="hl2/materials/"}
+
+    //access via gcf file loader (steam must not be running in online mode)
+    //t_hl2:incl =      {  v="source materials.gcf" path="hl2/materials/"}
+
+    //plain file access
     //t_hl2:incl =    {  v="tmpQuArK/materials_from_source_materials"}
 
     HL2 Textures.qtxfolder =

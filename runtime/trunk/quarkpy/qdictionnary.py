@@ -277,6 +277,7 @@ Strings = {
     815: "Valve Material File  (*.vmt)|*.vmt",
     816: "Steam Cache File  (*.gcf)|*.gcf",
     817: "Valve Map File  (*.vmf)|*.vmf",
+    818: "Steam FS (*.SteamFS)|*.SteamFS",
 
     2368: "Skins",
     2369: "Frames",
@@ -909,16 +910,16 @@ Strings = {
     # alexander would like to reserve 5703 .. 5725 for HL2 :-)
     5703: "%s contains an unsupported format (width %d, height %d, format %d)",
     5704: "no vtf file",
-    5705: "QuArkVTF.dll not found, QuArK need this to load VTF Textures",
-    5706: "QuArkSteamFS.dll not found",
+    5705: "QuArKVTF.dll not found, QuArK need this to load VTF Textures",
+    5706: "QuArKGCF.dll not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "%s not found in %s",
     5709: "VTF file",
     5710: "GCF file",
     5711: "GCF folder",
-    5712: 'reserved for hl2',
-    5713: 'reserved for hl2',
-    5714: 'reserved for hl2',
+    5712: 'cannot initialize Steam Service filesystem Access, remember to set up the environment: \nset SteamAppUser, set SteamAppId,set Path to steam.dll  ',
+    5713: 'steam file system',
+    5714: 'bad content id: %s',
     5715: 'reserved for hl2',
     5716: 'reserved for hl2',
     5717: 'reserved for hl2',
@@ -971,6 +972,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.63  2004/12/27 10:58:39  alexander
+#changed some hl2 messages
+#
 #Revision 1.62  2004/12/22 11:37:40  rowdy
 #Rowdy - first pass of support for Doom 3
 #

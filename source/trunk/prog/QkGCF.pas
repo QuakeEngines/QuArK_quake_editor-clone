@@ -1,6 +1,6 @@
 (**************************************************************************
-QuArK -- Quake Army Knife -- 3D game editor
-Copyright (C) Armin Rigo
+QkGCF.pas access gcf giles for -- Quake Army Knife -- 3D game editor
+Copyright (C) Alexander Haarer
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2004/12/28 02:36:02  alexander
+gcf dll static linkage against hllib
+
 Revision 1.5  2004/12/27 11:00:39  alexander
 gcf access working
 added versioning in dll interface (QuArKSteamFS.dll)

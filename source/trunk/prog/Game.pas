@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2004/12/27 10:56:23  alexander
+dont load gcf every time again
+
 Revision 1.31  2004/12/22 11:42:16  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -673,6 +676,7 @@ var
  PakFile: QFileObject;
  GetPakNames: TGetPakNames;
  CDSearch: Boolean;
+ mem: TMemoryStream;
 begin
   Result := NIL;
   if (GameFiles=Nil) then
@@ -718,6 +722,32 @@ begin
       end;
       FilenameAlias := FileAlias(FileName);
     end;
+
+    {HL2 steam access}
+    if AnsiEndsStr('.SteamFS', BaseDir) then
+    begin
+      RestartAliasing;
+      PakFile:=SortedFindFileName(GameFiles, BaseDir);
+      if (PakFile=Nil) then
+      begin  { open steam  if not already opened }
+
+{tbd this is probably wrong}
+        PakFile:=BuildFileRoot(BaseDir,nil);
+        PakFile.Flags:=PakFile.Flags or ofNotLoadedToMemory;
+        mem := TMemoryStream.Create;
+        PakFile.Open(TQStream(mem), 0);
+        PakFile.Acces;
+{// tbd this is probably wrong}
+
+        PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
+        GameFiles.Add(PakFile);
+        GameFiles.Sort(ByFileName);
+      end;
+      Result:=PakFile.FindFile( FileName );
+      if (Result<>Nil) then
+        Exit; { found it }
+    end;
+
 
     {HL2 gcf access}
     if FileExists(AbsolutePath) and AnsiEndsStr('.gcf', AbsolutePath) then
