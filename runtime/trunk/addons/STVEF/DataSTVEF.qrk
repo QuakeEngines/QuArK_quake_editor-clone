@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.3  2001/04/17 23:36:42  tiglari
+//merge in entity changes from REL_62 branch
+//
 //
 //Revision 1.1.6.1  2001/04/15 02:59:57  tiglari
 //add brushes to trigger and func entities; change type to :b
@@ -20135,6 +20138,56 @@ QQRKSRC1
           ;desc = ""
         }
       }
+      team.qtxfolder =
+      {
+        Blue Team.qtxfolder =
+        {
+          team_CTF_blueflag:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Blue Team Flag"
+          }
+          team_CTF_blueplayer:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Blue Team Spawnpoint"
+          }
+          team_CTF_bluespawn:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Blue Team respawning point"
+          }
+        }
+        Red Team.qtxfolder =
+        {
+          team_CTF_redflag:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Team Flag"
+          }
+          team_CTF_redplayer:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Team Spawnpoint"
+          }
+          team_CTF_redspawn:e =
+          {
+            origin = "0 0 0"
+            ;desc = "Red Team respawning point"
+          }
+
+        }
+        misc_model_breakable:e =
+        {
+           ;desc = "flag holder; flag must be offset to show flagpole"
+           origin = "0 0 0"
+           model = "models/powerups/trek/flag_base.md3"
+           autobound = "1"
+           mins  = "-10 -10 0"
+           maxs = "10 10 7"
+        }
+
+      }
     }
   }
   
@@ -22940,6 +22993,34 @@ QQRKSRC1
     weapon_scavenger_rifle:form =
     {
       help =""
+    }
+    angleform:incl =
+    {
+       angle:= {Txt="&"}
+    }
+    team_CTF_redflag:form =
+    {
+      angleform = !
+    }
+    team_CTF_redplayer:form =
+    {
+      angleform = !
+    }
+    team_CTF_redspawn:form =
+    {
+      angleform = !
+    }
+    team_CTF_blueflag:form =
+    {
+      angleform = !
+    }
+    team_CTF_blueplayer:form =
+    {
+      angleform = !
+    }
+    team_CTF_bluespawn:form =
+    {
+      angleform = !
     }
     worldspawn:form =
     {
