@@ -1,4 +1,43 @@
-                         QuArK 6.3
+                         QuArK 6.3c
+                         
+                     update Oct 12, 2002
+
+
+Still Unresolved Issues (from QuArK forums, June-Sep)
+ * quark 6.3 Q1 mdl-viewing problems
+ * quantum red's tex align problem with Valve 220 output
+     for Piping.ari
+ * black misc_model problem for SoF2
+ * bsp viewing for Quake
+ * copy/paste causing texture misalignment
+
+Updates
+
+ * [decker] - commits to main branch shifted to rel6.3
+     by tiglari 
+
+      -  mapbrushcurves.py
+      Fixed a problem, where the bevelImage() could end up using a
+      face without a texture-name attached. Look for "DECKER
+      2002-08-09"
+
+      - perspective.py
+      A minor consistency correction for facedict_*flip()
+
+      - mapquakemenu.py
+      Fixed problem, when "warning about missing textures and do you
+      want to continue" never continued regarding pressing OK or
+      Cancel. The if-statement checked for MR_YES and not MR_OK.
+
+      - maptexsearch.py
+      A minor correction. Appended an ellipsis ("...") to the
+      menu-item, to indicate that additional action is required, in
+      the dialog-box which pops up, when this menu-item is
+      activated.
+      
+      -mapdupspath.py
+      Problem involving 'level' flag.
+
  
  * [decker] add simple search to texture replace dlg
  
