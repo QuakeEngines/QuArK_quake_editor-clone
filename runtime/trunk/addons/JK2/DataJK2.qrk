@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2002/04/04 17:52:09  decker_dk
+//Preliminary Jedi Knight II QuArK data-files
+//
 
 {
   QuArKProtected = "1"
@@ -37,14 +40,14 @@ QQRKSRC1
      $D3C7C7AB9BA78B77876B579F5B53
     ShaderFiles: =
     {
-      scripts/shaderlist.txt =
+      shaders/shaderlist.txt =
       {
         Data =
             "// Created by QuArK"$0D0A
             "// All shaders are extracted to a single file called 'quark.shader'"$0D0A
             "quark"$0D0A
       }
-      scripts/shaderlist.txt =     // 2nd case: if there is no shader in the map
+      shaders/shaderlist.txt =     // 2nd case: if there is no shader in the map
       {
         Data =
             "// Created by QuArK"$0D0A
@@ -82,15 +85,10 @@ QQRKSRC1
     }
   }
 
-// Basic Map! With some modifications by Maleficus!
   NewMap:incl =
   {
     Game = "JK2"
     Root = "worldspawn:b"
-
-// Maleficus: gotta show all those newbie mappers how to caulk! :)
-// Its best to caulk ALL unseen faces! This reduces compile times, and the size
-// of the .bsp file
 
     worldspawn:b =
     {
@@ -101,32 +99,33 @@ QQRKSRC1
           west:f =
           {
             v = '256 192 -96 256 96 -96 256 192 0'
-            tex = "general_structure/archstone2lt"
+            tex = "doomgiver/wall1green"
+            tv = '0 0 48 0 0 -48'
           }
           east:f =
           {
             v = '272 -192 -96 272 -64 -96 272 -192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           south:f =
           {
             v = '256 -192 -96 288 -192 -96 256 -192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           north:f =
           {
             v = '272 192 -96 240 192 -96 272 192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           down:f =
           {
             v = '256 192 -96 288 192 -96 256 64 -96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           up:f =
           {
             v = '256 -192 96 288 -192 96 256 -64 96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
         }
         West wall:p =
@@ -134,32 +133,33 @@ QQRKSRC1
           west:f =
           {
             v = '-272 192 -96 -272 64 -96 -272 192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           east:f =
           {
             v = '-256 -192 -96 -256 -96 -96 -256 -192 0'
-            tex = "general_structure/archstone2lt"
+            tex = "doomgiver/wall1green"
+            tv = '0 0 48 0 0 -48'
           }
           south:f =
           {
             v = '-272 -192 -96 -240 -192 -96 -272 -192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           north:f =
           {
             v = '-256 192 -96 -288 192 -96 -256 192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           down:f =
           {
             v = '-272 192 -96 -240 192 -96 -272 64 -96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           up:f =
           {
             v = '-272 -192 96 -240 -192 96 -272 -64 96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
         }
         North wall:p =
@@ -167,32 +167,33 @@ QQRKSRC1
           west:f =
           {
             v = '-256 208 -96 -256 176 -96 -256 208 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           east:f =
           {
             v = '256 192 -96 256 224 -96 256 192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           south:f =
           {
             v = '-256 192 -96 -128 192 -96 -256 192 0'
-            tex = "general_structure/archstone2lt"
+            tex = "doomgiver/wall1green"
+            tv = '0 0 64 0 0 -48'
           }
           north:f =
           {
             v = '256 208 -96 128 208 -96 256 208 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           down:f =
           {
             v = '-256 208 -96 -128 208 -96 -256 176 -96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           up:f =
           {
             v = '-256 192 96 -128 192 96 -256 224 96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
         }
         South wall:p =
@@ -200,32 +201,33 @@ QQRKSRC1
           west:f =
           {
             v = '-256 -192 -96 -256 -224 -96 -256 -192 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           east:f =
           {
             v = '256 -208 -96 256 -176 -96 256 -208 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           south:f =
           {
             v = '-256 -208 -96 -128 -208 -96 -256 -208 32'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           north:f =
           {
             v = '256 -192 -96 128 -192 -96 256 -192 0'
-            tex = "general_structure/archstone2lt"
+            tex = "doomgiver/wall1green"
+            tv = '0 0 64 0 0 -48'
           }
           down:f =
           {
             v = '-256 -192 -96 -128 -192 -96 -256 -224 -96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           up:f =
           {
             v = '-256 -208 96 -128 -208 96 -256 -176 96'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
         }
         Sky:p =
@@ -233,32 +235,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "sky/d-day2"
+            tex = "skies/space"
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "sky/d-day2"
+            tex = "skies/space"
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "sky/d-day2"
+            tex = "skies/space"
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "sky/d-day2"
+            tex = "skies/space"
           }
           down:f =
           {
             v = '432 0 96 560 0 96 432 -128 96'
-            tex = "sky/d-day2"
+            tex = "skies/space"
           }
           up:f =
           {
             v = '432 0 112 560 0 112 432 128 112'
-            tex = "sky/d-day2"
+            tex = "skies/space"
           }
         }
         Floor:p =
@@ -266,32 +268,33 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           down:f =
           {
             v = '432 0 -112 560 0 -112 432 -128 -112'
-            tex = "common/caulk"
+            tex = "system/caulk"
           }
           up:f =
           {
             v = '432 0 -96 560 0 -96 432 128 -96'
-            tex = "misc_outside/nu_grass_set1"
+            tex = "doomgiver/floord"
+            tv = '-192 -688 -192 -560 -96 -688'
           }
         }
       }
@@ -328,12 +331,12 @@ QQRKSRC1
   {
     ORIGIN:p =
     {
-      east:f = { v = '8 0 0 8 64 0 8 0 64' tex = "common/origin" }
-      west:f = { v = '-8 0 0 -8 -64 0 -8 0 64' tex = "common/origin" }
-      north:f = { v = '0 8 0 -64 8 0 0 8 64' tex = "common/origin" }
-      south:f = { v = '0 -8 0 64 -8 0 0 -8 64' tex = "common/origin" }
-      up:f = { v = '0 0 24 64 0 24 0 64 24' tex = "common/origin" }
-      down:f = { v = '0 0 -24 64 0 -24 0 -64 -24' tex = "common/origin" }
+      east:f = { v = '8 0 0 8 64 0 8 0 64' tex = "system/origin" }
+      west:f = { v = '-8 0 0 -8 -64 0 -8 0 64' tex = "system/origin" }
+      north:f = { v = '0 8 0 -64 8 0 0 8 64' tex = "system/origin" }
+      south:f = { v = '0 -8 0 64 -8 0 0 -8 64' tex = "system/origin" }
+      up:f = { v = '0 0 24 64 0 24 0 64 24' tex = "system/origin" }
+      down:f = { v = '0 0 -24 64 0 -24 0 -64 -24' tex = "system/origin" }
     }
     poly:p =
     {
