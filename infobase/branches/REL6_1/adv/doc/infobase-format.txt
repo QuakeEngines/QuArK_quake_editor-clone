@@ -1,0 +1,33 @@
+title: Information Base Syntax
+author: Armin Rigo
+
+All ".txt" files in the infobase are formatted as follow : first, a list of keyword-value pairs, ended with a blank line, and followed by the text itself. For example :
+
+<p><pre>
+title: This is the title of what this file contains.
+author: Your Name
+subdir: list subdirectories
+subdir: can be done on several lines
+desc: list files
+desc: without ".txt" extension
+</pre>
+
+The text follows the blank line.
+
+The most common keywords are given in this example. Notice that "subdir" and "desc" only make sense in the file "index.txt", while "author" is only used in the opposite case. Other keywords might be parsed in the future. Also note that all file names should be lowercase.
+
+The text itself is formatted paragraph-by-paragraph, with at least one blank line between paragraphs (a single end-of-line is not considered as separating two paragraphs). Paragraphs starting with <p> are assumed to be HTML, so can contain usual HTML formatting commands. Other paragraphs are assumed to be pure text, and all special characters are translated, so that if you type <strong> in a text paragraph, the browser will really display the text <strong> !
+
+A special command is <ref> : if a line starts with these 5 characters, the remaining of the line is supposed to be a path to another file of the InfoBase directory, relative to the root. It will be replaced by an HTML link to that file. Note that it may be inside a paragraph as far as it's on its own line, so that you can type for example :
+
+<p><pre>
+See
+&lt;ref&gt; src/pas/bezier/quadmath
+ for more information.
+</pre>
+
+Notice the space at the beginning of the third line.
+
+A line may also begin with <text> or <html>, which force the current line to be interpreted as text or html, respectively, regardless of the current paragraph mode.
+
+The keyword "format: html" will force the whole text to be interpreted as HTML. It will be dumped to the output .html file as is. In this mode the only processed command is <ref>.
