@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/06/23 20:35:54  alexander
+fixed potential pak file corruption on write .m32
+optimized memory usage and speed for load of .m32
+
 Revision 1.5  2000/06/10 15:20:14  alexander
 added: texture flag loading and saving for SoF
 
@@ -274,8 +278,8 @@ begin
 
        ReadRGBA(f, rgb, a, hi, wi);
 
-       specificsadd(rgb);
-       specificsadd(a);
+       specifics.add(rgb);
+       specifics.add(a);
 
        SpecificsAdd(format('Contents=%d',[content]));
        SpecificsAdd(format('Flags=%d',[flags]));
