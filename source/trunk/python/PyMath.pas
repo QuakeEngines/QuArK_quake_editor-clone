@@ -1889,6 +1889,22 @@ end;
 const
  COERCEDFROMFLOAT : Reel = -1E308;
 
+function PyVectST_S(v1: PyObject) : Reel;
+begin
+ if PyVect(v1)^.ST then
+  Result:=PyVectST(v1)^.TexS
+ else
+  Result:=0;
+end;
+
+function PyVectST_T(v1: PyObject) : Reel;
+begin
+ if PyVect(v1)^.ST then
+  Result:=PyVectST(v1)^.TexT
+ else
+  Result:=0;
+end;
+
 function VectorAdd(v1, v2: PyObject) : PyObject;
 var
  W1, W2: TVect;
@@ -1902,10 +1918,12 @@ begin
   if (W1.Y = COERCEDFROMFLOAT)
   or (W2.Y = COERCEDFROMFLOAT) then
    Raise EError(4443);
-  if PyVect(v1)^.ST and PyVect(v2)^.ST then
-   Result:=MakePyVect5(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z,
-                       PyVectST(v1)^.TexS+PyVectST(v2)^.TexS,
-                       PyVectST(v1)^.TexT+PyVectST(v2)^.TexT)
+  if PyVect(v1)^.ST or PyVect(v2)^.ST then
+   begin
+    Result:=MakePyVect5(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z,
+                        PyVectST_S(v1)+PyVectST_S(v2),
+                        PyVectST_T(v1)+PyVectST_T(v2));
+   end
   else
    Result:=MakePyVect3(W1.X+W2.X, W1.Y+W2.Y, W1.Z+W2.Z);
  except
@@ -1927,10 +1945,10 @@ begin
   if (W1.Y = COERCEDFROMFLOAT)
   or (W2.Y = COERCEDFROMFLOAT) then
    Raise EError(4443);
-  if PyVect(v1)^.ST and PyVect(v2)^.ST then
+  if PyVect(v1)^.ST or PyVect(v2)^.ST then
    Result:=MakePyVect5(W1.X-W2.X, W1.Y-W2.Y, W1.Z-W2.Z,
-                       PyVectST(v1)^.TexS-PyVectST(v2)^.TexS,
-                       PyVectST(v1)^.TexT-PyVectST(v2)^.TexT)
+                       PyVectST_S(v1)-PyVectST_S(v2),
+                       PyVectST_T(v1)-PyVectST_T(v2))
   else
    Result:=MakePyVect3(W1.X-W2.X, W1.Y-W2.Y, W1.Z-W2.Z);
  except

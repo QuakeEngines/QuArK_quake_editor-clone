@@ -85,12 +85,13 @@ type
              procedure PreDessinerSel; override;
              procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
              procedure EtatObjet(var E: TEtatObjet); override;
-             
+              
               { use the properties below to read/write control points. }
              property QuiltSize: TPoint read GetQuiltSize write SetQuiltSize;
              property ControlPoints: TBezierMeshBuf5 read GetControlPoints write SetControlPoints;
              procedure AutoSetSmooth;  { guess the 'smooth' specific based on current control points }
              
+             function GetOrigin(var Pt: TVect) : Boolean; override;
              procedure AnalyseClic(Liste: PyObject); override;
              function PyGetAttr(attr: PChar) : PyObject; override;
              function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
@@ -713,11 +714,35 @@ begin
  finally TriList.Free; FreeMem(Triangles); end;
 end;
 
- { assign patches their icon }
+ { assign to patches their icon }
 procedure TBezier.EtatObjet;
 begin
  inherited;
  E.IndexImage:=iiBezier;
+end;
+
+ { "center" of a patch }
+function TBezier.GetOrigin(var Pt: TVect) : Boolean;
+var
+ cp: TBezierMeshBuf5;
+ I, Cnt: Integer;
+ Center: TVect;
+begin
+ cp:=ControlPoints;
+ Cnt:=cp.W*cp.H;
+ Result:=Cnt>0;
+ if not Result then Exit;
+ Center:=Origine;
+ for I:=1 to Cnt do
+  begin
+   Center.X:=Center.X+cp.CP^[0];
+   Center.Y:=Center.Y+cp.CP^[1];
+   Center.Z:=Center.Z+cp.CP^[2];
+   Inc(cp.CP);
+  end;
+ Pt.X:=Center.X/Cnt;
+ Pt.Y:=Center.Y/Cnt;
+ Pt.Z:=Center.Z/Cnt;
 end;
 
  { mouse click detection }

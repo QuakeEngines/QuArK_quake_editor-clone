@@ -200,6 +200,7 @@ Strings = {
 	624: "auto. delete unused faces and polys",
         625: "resize texture",
         626: "image resize or conversion",
+        627: "bezier reshape",
 
 	720: "Press a key or select one in the list :",
 	721: "Key mapping for special actions",

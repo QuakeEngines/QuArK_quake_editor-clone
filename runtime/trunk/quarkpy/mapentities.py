@@ -352,6 +352,32 @@ class FaceType(EntityManager):
         return h + [Tex1] + mapmenus.MenuTexFlags(editor) + [qmenu.sep, Force1]
 
 
+class BezierType(EntityManager):
+    "Bezier Patches"
+
+    def handles(o, editor, view):
+        import mapbezier
+        #
+        # Bezier handles : one per control point
+        #
+        h = []
+        cp = o.cp
+        for j in range(len(cp)):
+            cpline = cp[j]
+            for i in range(len(cpline)):
+                c1 = cpline[i]
+                h.append(mapbezier.CPHandle(c1, o, (i,j)))
+        
+        #
+        # Add a center handle
+        #
+        pos = o.origin
+        if pos is not None:
+            h.append(mapbezier.CenterHandle(pos, o))
+        
+        return h
+
+
 #
 # Mappings between Internal Objects types and Entity Manager classes.
 #
@@ -362,7 +388,8 @@ Mapping = {
     ":g": GroupType(),
     ":b": BrushEntityType(),
     ":p": PolyhedronType(),
-    ":f": FaceType()  }
+    ":f": FaceType(),
+    ":b2": BezierType() }
 
 #
 # Use the function below to call a method of the Entity Manager classes.

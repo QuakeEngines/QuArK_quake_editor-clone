@@ -41,7 +41,7 @@ ExeDescription=
 
 [Directories]
 OutputDir=c:\temp\delphiexe
-SearchPath=c:\delphi\program4
+SearchPath=components\zip;components\jpeg
 Conditionals=Debug
 
 [Parameters]
