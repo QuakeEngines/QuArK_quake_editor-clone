@@ -18,4 +18,6 @@ only done a few recent ones, mostly that I've been responsible for.
 <LI> <B>NuTex2</B>: an newer experimental branch for testing schemes
   for dissociating texture positioning from face-positioning.
   <br>only applies to QkMapPoly.pas
+<LI> <B>Q3ABSPM</B> only for QkBsp.pas, QkBspHull.pas: Q3A Bsp
+reading
 </B>
