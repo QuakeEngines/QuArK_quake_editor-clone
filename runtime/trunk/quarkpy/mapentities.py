@@ -8,6 +8,7 @@ Map Editor Entities manager
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#$Header$
 
 
 import quarkx
@@ -353,13 +354,17 @@ class FaceType(EntityManager):
         return h + [Tex1] + mapmenus.MenuTexFlags(editor) + [qmenu.sep, Force1]
 
 
+#
+# Probably only this function should be put on the bezier menu
+# here, for the others use the technique employed for
+# project texture from tagged in mapbezier
+#
 class BezierType(EntityManager):
     "Bezier Patches"
 
     # tiglari
     def menu(o, editor):
         import mapmenus
-        import mapbezier
 
         def swapclick(m, o=o, editor=editor):
             new = o.copy()
@@ -368,9 +373,11 @@ class BezierType(EntityManager):
             undo.exchange(o, new)
             editor.ok(undo, "Swap Sides")
 
+
         swap = qmenu.item("&Swap sides",swapclick,"Flip visible side of patch")
-        
+
         return [swap]
+        
     # /tiglari
 
 
@@ -567,3 +574,9 @@ def LoadEntityForm(sl):
             if len(flist):
                 formobj = flist[-1]
     return formobj
+
+
+# ----------- REVISION HISTORY ------------
+#$Log$
+--- snap ----
+
