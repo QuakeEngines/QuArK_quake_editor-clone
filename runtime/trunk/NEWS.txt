@@ -13,6 +13,12 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
 
+ * [Harry Kalogirou]: Support for Sylphis as a game engine also
+      write support for PNG images, added parser for new map files,
+      added support for loading map files made for the latest Quake3
+      and Doom3 engine based games. Also a small fix for handling MD3
+      models(especially for RTCW).
+
  * [Rowdy/cdunde]: Corrected handling of comments for shaders to
       fix problem of them not showing up in the Texture Browser.
 
