@@ -1449,6 +1449,9 @@ def Help2():
 def Help3():
     htmldoc("help/intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
+def Help4():
+    htmldoc("http://dynamic.gamespy.com/~quark/") # Takes the user to QuArk's official web page
+
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1478,6 +1481,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.13  2002/06/11 08:59:45  tiglari
+#oops restore beginning part of initial comment
+#
 #Revision 1.12  2002/06/10 21:23:02  tiglari
 #Remove html from overhasty cut-and-paste
 #

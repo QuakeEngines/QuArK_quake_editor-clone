@@ -103,9 +103,15 @@ def RunQuArK():
     s = "&FAQ"
     qmacro.helpfn[s] = "Help3"
     quarkx.helpmenuitem(s)
+    s = "&QuArk web site"
+    qmacro.helpfn[s] = "Help4"
+    quarkx.helpmenuitem(s)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2001/03/02 19:34:34  decker_dk
+#Uncommented some broken big-GO! choices, due to the new build-tool controllers functionality.
+#
 #Revision 1.3  2000/06/03 18:01:28  alexander
 #added cvs header
 #
