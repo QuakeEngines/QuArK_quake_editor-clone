@@ -5,7 +5,7 @@
 # FOUND IN FILE "COPYING.TXT"
 #
 #$Header$
- 
+
 Info = {
    "plug-in":       "Radial Duplicator",
    "desc":          "Replicate objects around an axis",
@@ -27,7 +27,7 @@ from quarkpy.maphandles import MapRotateHandle
 
 class AxisHandle(MapRotateHandle):
   "a rotating handle that controls a normalized vector spec"
-  
+
   def __init__(self, center, dup, spec, scale1):
       axis = quarkx.vect(dup[spec])
       MapRotateHandle.__init__(self, center, axis, scale1, quarkpy.qhandles.mapicons[11])
@@ -97,30 +97,34 @@ class RadialDuplicator(StandardDuplicator):
         # A linear matrix can apply cumulatively to the images
         #
 #        dupmat = buildLinearMatrix(self.dup)
-        
+
         if self.dup["linear"] is not None:
             dupmat = self.dup["linear"]
         else:
            dupmat = '1 0 0 0 1 0 0 0 1'
         dupmat = quarkx.matrix(dupmat)
         cummat = quarkx.matrix('1 0 0 0 1 0 0 0 1')
-        for i in range(0, count):
-            group=quarkx.newobj('radial %d:g'%i)
-            for item in list:
-                group.appenditem(item.copy())
-            result.append(group)
-            group.linear(templateorigin,cummat) 
-            cummat = dupmat*cummat
-            angle = i*around*deg2rad
-            matrix = tiltmat*matrix_rot_z(angle)
-            shift = upward*axis*i
-            group.linear(origin,matrix)
-            group.translate(shift)
-            center=quarkpy.maphandles.GetUserCenter(group)
-            radvec = perptonormthru(origin,center,axis).normalized            
-            radvec = matrix*radvec
-            shift = -i*outward*radvec
-            group.translate(shift)
+        try:
+            for i in range(0, count):
+                group=quarkx.newobj('radial %d:g'%i)
+                for item in list:
+                    group.appenditem(item.copy())
+                result.append(group)
+                group.linear(templateorigin,cummat)
+                cummat = dupmat*cummat
+                angle = i*around*deg2rad
+                matrix = tiltmat*matrix_rot_z(angle)
+                shift = upward*axis*i
+                group.linear(origin,matrix)
+                group.translate(shift)
+                center=quarkpy.maphandles.GetUserCenter(group)
+                radvec = perptonormthru(origin,center,axis).normalized
+                radvec = matrix*radvec
+                shift = -i*outward*radvec
+                group.translate(shift)
+        except:
+            # Catch math-computation errors and return nothing if so
+            result = []
 
         return result
 
@@ -131,3 +135,6 @@ class RadialDuplicator(StandardDuplicator):
 quarkpy.mapduplicator.DupCodes.update({
   "dup radial":     RadialDuplicator,
 })
+
+# ----------- REVISION HISTORY ------------
+#$Log$
