@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/03/20 21:46:48  decker_dk
+Updated copyright-header
+
 Revision 1.27  2001/03/18 00:38:14  aiv
 Misc Cleanups and Fixes
 
@@ -256,7 +259,7 @@ implementation
 
 uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
      Undo, Quarkx, PyForms, QkObjectClassList, ToolBox1,
-     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1;
+     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1, QkFormCfg;
 
 {$R *.DFM}
 

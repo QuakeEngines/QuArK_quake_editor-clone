@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/03/20 21:46:29  decker_dk
+Updated copyright-header
+
 Revision 1.10  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -225,7 +228,7 @@ implementation
 uses QkFileObjects, qmath, Setup, Qk1, Toolbar1, ToolBox1,
      TbUndoMenu, Undo, ObjProp, Config, Game, Dialogs,
      QkMacro, FormCfg, Running, Output1, PyImages, Quarkx,
-     QkExplorer, PyMapView, PyToolbars, PyControls;
+     QkExplorer, PyMapView, PyToolbars, PyControls, QkFormCfg;
 
 const
  ActiveFontColor    = clWhite;

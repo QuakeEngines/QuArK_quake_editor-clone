@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/03/20 21:41:41  decker_dk
+Updated copyright-header
+
 Revision 1.8  2001/01/30 19:11:11  decker_dk
 Changed to GetApplicationPath().
 
@@ -124,7 +127,7 @@ procedure ExecuteObjectMacros(Sender: TComponent; Obj: QObject);
 implementation
 
 uses Game, Setup, QkExplorer, ToolBox1, QkMacro, QkInclude, Running,
-     FormCfg, Quarkx, QkObjectClassList;
+     FormCfg, Quarkx, QkObjectClassList, QkFormCfg;
 
 const
  typSeparator    = 'S';

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/03/20 21:44:19  decker_dk
+Updated copyright-header
+
 Revision 1.16  2001/03/15 20:50:55  aiv
 split up get entities and get textures
 
@@ -88,13 +91,6 @@ type
                function PyGetAttr(attr: PChar) : PyObject; override;
              end;
 
- QFormContext = class(QQuakeCtx)
-             protected
-               function GetConfigStr1: String; override;
-             public
-               class function TypeInfo: String; override;
-               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-             end;
  {------------------------}
 
 function GetQuakeContext: TQList;
@@ -110,7 +106,7 @@ implementation
 
 uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
      ToolBoxGroup, ExtraFunctionality, Game, QkMapObjects, FormCfg, QkExplorer,
-     QkForm, Travail;
+     QkForm, Travail, QkFormCfg;
 
  {------------------------}
 
@@ -724,27 +720,6 @@ end;
 
  {------------------------}
 
-class function QFormContext.TypeInfo;
-begin
- TypeInfo:='.fctx';
-end;
-
-function QFormContext.GetConfigStr1: String;
-begin
- Result:='FormContext';
-end;
-
-class procedure QFormContext.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.FileObjectDescriptionText:=LoadStr1(5179);
-{Info.FileExt:=779;
- Info.WndInfo:=[wiWindow];}
-end;
-
- {------------------------}
-
 initialization
   RegisterQObject(QQuakeCtx, 'a');
-  RegisterQObject(QFormContext, 'a');
 end.

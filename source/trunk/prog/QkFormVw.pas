@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:46:29  decker_dk
+Updated copyright-header
+
 Revision 1.4  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -40,7 +43,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkForm, QkObjects, QkFileObjects, TB97, FormCfg;
+  QkForm, QkObjects, QkFileObjects, TB97, extctrls;
 
 type
   QFormObject = class(QFileObject)
@@ -59,14 +62,14 @@ type
     function AssignObject(Q: QFileObject; State: TFileObjectWndState) : Boolean; override;
     function GetConfigStr : String; override;
   public
-    Editor: TFormCfg;
+    Editor: TCustomPanel;
   end;
 
  {------------------------}
 
 implementation
 
-uses QkQuakeCtx;
+uses QkQuakeCtx, FormCfg, QkFormCfg;
 
 {$R *.DFM}
 
@@ -106,13 +109,16 @@ begin
       if Editor=Nil then
        begin
         Editor:=TFormCfg.Create(Self);
-        Editor.Left:=Width;
-        Editor.Parent:=Self;
-        Editor.AllowEdit:=True;
-        Editor.AddRemaining:=True;
-        Editor.ActionChanging:=609;
-        Editor.ActionDeleting:=610;
-        Editor.Align:=alClient;
+        with Editor as TFormCfg do
+        begin
+        {Editor.}Left:=Width;
+        {Editor.}Parent:=Self;
+        {Editor.}AllowEdit:=True;
+        {Editor.}AddRemaining:=True;
+        {Editor.}ActionChanging:=609;
+        {Editor.}ActionDeleting:=610;
+        {Editor.}Align:=alClient;
+        end;
        end;
       L:=BuildQuakeCtxObjects(QFormCfg, (FileObject as QFormObject).GetConfigStr1); try
       if L.Count=0 then
@@ -125,7 +131,7 @@ begin
       List:=TQList.Create; try
       List.Add(FileObject);
       List.Add(Nil);
-      Editor.SetFormCfg(List, Q as QFormCfg);
+      (Editor as TFormCfg).SetFormCfg(List, Q as QFormCfg);
       finally List.Free; end;
       finally L.Free; end;
      {ObjectChanged:=False;}
@@ -138,7 +144,7 @@ procedure TFQFormVw.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  inherited;
  if Editor<>Nil then
-  Editor.SetFormCfg(Nil, Nil);
+  (Editor as TFormCfg).SetFormCfg(Nil, Nil);
 end;
 
 end.

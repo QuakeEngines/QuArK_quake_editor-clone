@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:41:57  decker_dk
+Updated copyright-header
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
@@ -45,7 +48,7 @@ procedure DynamicTextureToolbar(Tex: TWinControl; nLinks: TList);
 
 implementation
 
-uses Setup, FormCfg, Undo, Quarkx;
+uses Setup, FormCfg, Undo, Quarkx, QkFormCfg;
 
 const
  txName = '_FORMTex';

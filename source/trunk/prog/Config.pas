@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/03/20 21:48:43  decker_dk
+Updated copyright-header
+
 Revision 1.3  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -100,7 +103,7 @@ function ShowAltConfigDlg(Racine: QObject; const Titre: String; NewObjList: TQLi
 
 implementation
 
-uses Qk1, Game, Quarkx, QkGroup, QkTreeView;
+uses Qk1, Game, Quarkx, QkGroup, QkTreeView, QkFormCfg;
 
 {$R *.DFM}
 

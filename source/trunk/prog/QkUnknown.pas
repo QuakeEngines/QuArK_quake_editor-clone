@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/03/20 21:43:27  decker_dk
+Updated copyright-header
+
 Revision 1.9  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -52,13 +55,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, QkObjects, QkFileObjects, QkExplorer, StdCtrls,
-  Menus, TB97, QkForm;
+  Menus, TB97, QkForm, QkFormVw;
 
 type
- QInternal = class(QObject)
-             public
-               class function TypeInfo: String; override;
-             end;
  QUnknown = class(QFileObject)
             protected
               function OpenWindow(nOwner: TComponent) : TQForm1; override;
@@ -96,13 +95,6 @@ implementation
 uses Quarkx, QkObjectClassList;
 
 {$R *.DFM}
-
- {------------------------}
-
-class function QInternal.TypeInfo;
-begin
-  Result:=':';
-end;
 
  {------------------------}
 
@@ -187,6 +179,5 @@ end;
  {------------------------}
 
 begin
-  RegisterQObject(QInternal, 'a');
   RegisterQObject(QUnknown, ' ');
 end.

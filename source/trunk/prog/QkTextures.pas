@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/03/20 21:43:41  decker_dk
+Updated copyright-header
+
 Revision 1.32  2001/03/05 11:00:54  tiglari
 change for q3bsp support
 
@@ -321,7 +324,7 @@ implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
-  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkUnknown,
+  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkFormCfg,
   QkQ1 ,QkQ2, QkObjectClassList;
 
 {$R *.DFM}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2001/03/20 21:45:22  decker_dk
+Updated copyright-header
+
 Revision 1.48  2001/03/10 01:14:24  tiglari
 version fix
 
@@ -205,8 +208,8 @@ const
   iiQme                   = 28;
   iiToolbar               = 29;
   iiToolbarButton         = 30;
- {iiFrameGroup            = 31;
-  iiSkinGroup             = 32;
+  iiInternal              = 31;
+{  iiSkinGroup             = 32;
   iiSkin                  = 33;}
   iiFrame                 = 34;
   iiComponent             = 35;
@@ -222,8 +225,11 @@ const
   iiSpriteFile            = 45;
   iiModelTag              = 46;
   iiModelBone             = 47;
+  iiFormElement           = 48;
+  iiForm                  = 49;
+  iiFormContext           = 50;
 
-  InternalImagesCount     = 48;
+  InternalImagesCount     = 51;
 
   fmOpenReadOnly_ShareDenyWrite  = fmOpenRead      or fmShareDenyWrite;
   fmOpenReadWrite_ShareDenyWrite = fmOpenReadWrite or fmShareDenyWrite;
@@ -548,7 +554,7 @@ implementation
 
 uses
   {$IFDEF Debug} MemTester, {$ENDIF}
-  QkObjectClassList, QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1;
+  QkObjectClassList, QkFileObjects, QkExplorer, Travail, PyObjects, PyImages, Quarkx, Qk1, Logging;
 
  {------------------------}
 
@@ -1205,7 +1211,6 @@ begin
     Exit;
 
   Inc(PythonObj.ob_refcnt, Delta);
-
   if PythonObj.ob_refcnt<=0 then
   begin
     {$IFDEF Debug}

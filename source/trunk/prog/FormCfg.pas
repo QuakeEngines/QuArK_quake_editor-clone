@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/03/28 19:24:17  decker_dk
+Checks for Txt="&", Txt="&E" (editable) and Txt="&R" (readonly) types.
+
 Revision 1.13  2001/03/20 21:48:05  decker_dk
 Updated copyright-header
 
@@ -56,7 +59,7 @@ interface
 uses SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
      QkObjects, qmath, Windows, ComCtrls, Messages, TB97, Dialogs,
      Menus, CommCtrl, EnterEditCtrl, QkForm, Game, BrowseForFolder,
-     CursorScrollBox, Spin, SmArrowBtn;
+     CursorScrollBox, Spin, SmArrowBtn, QkFormCfg;
 
 const
  wp_InternalEdit = 96;
@@ -70,7 +73,6 @@ const
 
 type
  TFormCfg = class;
- QFormCfg = class;
 
  TCommonSpec = (csNowhere, csEverywhere, csSomewhere, csDiffers);
 
@@ -166,6 +168,7 @@ type
               OnNeedGameInfo: TNeedGameInfoEvent;
               procedure SetFormCfg(nLinks: TList; nForm: QFormCfg);
               destructor Destroy; override;
+              constructor Create(AOwner: TComponent); override;
               property LinkedObjects: TQList read Links;
               function GetBitSpec(const Spec: String; Value: Integer) : TCheckBoxState;
               function ToggleBitSpec(const Spec: String; Value: Integer; ClearZero: Boolean) : TCheckBoxState;
@@ -173,10 +176,6 @@ type
               function GetSingleName(var nName: String) : TCommonSpec;
               procedure InternalMenuCommand(Cmd: Integer);  { cmd_xxx }
               property OriginalForm: QFormCfg read FOriginalForm;
-            end;
- QFormCfg = class(QObject)
-            public
-              class function TypeInfo: String; override;
             end;
 
  {------------------------}
@@ -1547,6 +1546,12 @@ begin
   end;
 end;
 
+constructor TFormCfg.Create(AOwner: TComponent);
+begin
+  inherited;
+  PopupForm:=nil;
+end;
+
 procedure TFormCfg.wmInternalMessage(var Msg: TMessage);
 const
  TopMargin    = 1;
@@ -2898,6 +2903,8 @@ end;
 
 procedure TFormCfg.ClosePopupForm;
 begin
+ if PopupForm = nil then
+   exit;
  if PopupForm is TToolBoxForm then
   TToolBoxForm(PopupForm).CancelSelectEvent
  else
@@ -2908,13 +2915,4 @@ end;
 
  {------------------------}
 
-class function QFormCfg.TypeInfo: String;
-begin
- TypeInfo:=':form';
-end;
-
- {------------------------}
-
-initialization
-  RegisterQObject(QFormCfg, 'a');
 end.
