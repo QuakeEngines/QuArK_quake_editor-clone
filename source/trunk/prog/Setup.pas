@@ -77,15 +77,16 @@ const
  instance have a mixture of file-formats like .WADs _and_ .SHADERS.
  Of cause this will only allow up to 32 different games, but shouldn't that
  be enough? }
- mjQuake    = '1';
- mjHexen    = '2';
- mjHalfLife = '3';
- mjQuake2   = 'A';
- mjHeretic2 = 'B';
- mjSin      = 'C';
- mjKingPin  = 'D';
- mjSOF      = 'E';
- mjQ3A      = 'a';
+ mjQuake      = '1';
+ mjHexen      = '2';
+ mjHalfLife   = '3';
+ mjQuake2     = 'A';
+ mjHeretic2   = 'B';
+ mjSin        = 'C';
+ mjKingPin    = 'D';
+ mjSOF        = 'E';
+ mjQ3A        = 'a';
+ mjStarTrekEF = 'b';
 
  mjAny       = #1;
  mjNotQuake2 = #2;
