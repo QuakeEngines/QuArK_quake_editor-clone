@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/01/30 19:10:12  decker_dk
+Added a function FindAndAddFilesOfMask(), which hopefully should make the future ./Addons with sub-directories per supported game, easier to make/search through.
+Modified FormActivate() so it will search for *.QRK files in four places.
+Changed to GetApplicationPath().
+
 Revision 1.5  2001/01/07 13:21:05  decker_dk
 Resized the dialog.
 
@@ -63,7 +68,7 @@ type
 
 implementation
 
-uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths;
+uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
 

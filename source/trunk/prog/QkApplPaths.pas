@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2001/01/30 19:10:30  decker_dk
+Created to control the application-paths and sub-directories in a feasible manner. I'm here thinking about directory-names with spaces in them, and the possible conflict that has on CVS-repository.
+
 }
 
 unit QkApplPaths;
@@ -67,7 +70,7 @@ type
 
 implementation
 
-uses SysUtils, Windows, Setup;
+uses SysUtils, Windows, Setup, ExtraFunctionality;
 
 var
   ApplicationPath : String; {must always contain trailing backslash}
