@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.115  2001/03/29 21:03:27  tiglari
+//extruder support
+//
 //Revision 1.114  2001/03/29 05:51:31  tiglari
 //add forms for duplicators, change duplicator toolbox to name Basic
 // and Linear Duplicators.
@@ -558,6 +561,7 @@ QQRKSRC1
         Unrestrict Selection = "Ctrl+U"
         Restrict to Selection = "Alt+R"
         Brush Subtraction =  "Ctrl+B"
+        Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
     }
@@ -991,6 +995,7 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
+        StupidBuildToolKludge = "1"
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -2692,6 +2697,8 @@ QQRKSRC1
        Unrestrict Selection: = {HotKeyForm = !}
        Restrict to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
+       sep:={Typ="S"}
+       Game Menu:= {Txt="&R" Typ="ESR"}
     }
     MapMouse:form =
     {
