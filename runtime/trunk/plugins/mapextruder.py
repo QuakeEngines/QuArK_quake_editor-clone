@@ -1245,110 +1245,118 @@ def adjust_points(data, points, j, names):
 # Attaches the sides to the brushes
 #
 def attach_sides(data, j, brush, bottom, cycle, names, texpos):
-#  squawk("%d, %d"%(len(cycle),len(names)))
-#  squawk("j: %s"%j)
-  xaxis, yaxis, zaxis = axes = data.Axes(j-1)
-  frontcycle=adjust_points(data, cycle, j-1, names)
-  backcycle=adjust_points(data, cycle, j, names) 
-  last = frontcycle[-1]
-#  squawk('cycle: '+ `cycle`)
-#  squawk(`names`)
-#  squawk('front: '+ `frontcycle`)
-#  squawk('back: '+ `backcycle`)
-#  squawk('last: %s; first: %s'%(last, frontcycle[0]))
-  for i in range(len(cycle)):
-      pos = frontcycle[i]
-      pos2 = backcycle[i]
-      new = bottom.copy()
-      short = new.shortname = names[i-1]
-      p0, p1, p2 = bottom.threepoints(0)
-      norm = bottom.normal
-#      squawk("pos: %s; last: %s"%(pos, last))
-      diff = last-pos
-      if not diff:
-#          squawk('no diff at: '+`i`)    
-#          squawk('last: '+`last`)
-#          squawk('pos: '+`pos`)
-          continue
-#      squawk('diff: '+`diff`)
-#      squawk("z: %s, d: %s"%(zaxis,diff))
-      gap = pos2-pos
-#      squawk(`gap^diff`)
-      norm = -(gap^diff).normalized
-      new.distortion(norm, pos)
+  #  squawk("%d, %d"%(len(cycle),len(names)))
+  #  squawk("j: %s"%j)
+    xaxis, yaxis, zaxis = axes = data.Axes(j-1)
+    frontcycle=adjust_points(data, cycle, j-1, names)
+    backcycle=adjust_points(data, cycle, j, names) 
+    last = frontcycle[-1]
+  #  squawk('cycle: '+ `cycle`)
+  #  squawk(`names`)
+  #  squawk('front: '+ `frontcycle`)
+  #  squawk('back: '+ `backcycle`)
+  #  squawk('last: %s; first: %s'%(last, frontcycle[0]))
+    for i in range(len(cycle)):
+        pos = frontcycle[i]
+        pos2 = backcycle[i]
+        new = bottom.copy()
+        short = new.shortname = names[i-1]
+        p0, p1, p2 = bottom.threepoints(0)
+        norm = bottom.normal
+  #      squawk("pos: %s; last: %s"%(pos, last))
+        diff = last-pos
+        if not diff:
+  #          squawk('no diff at: '+`i`)    
+  #          squawk('last: '+`last`)
+  #          squawk('pos: '+`pos`)
+            continue
+  #      squawk('diff: '+`diff`)
+  #      squawk("z: %s, d: %s"%(zaxis,diff))
+        gap = pos2-pos
+  #      squawk(`gap^diff`)
+        norm = -(gap^diff).normalized
+        new.distortion(norm, pos)
 
-      if texpos is not None:
-          org = data.PathPos(j-1)
-          name = "%s:g"%new.shortname
-#          squawk(name)
-          side = texpos.findname(name)
-          if side is not None:
-#              squawk('side')
-              p0 = restore(side["p0"],axes,org, new)
-              p1 = restore(side["p1"],axes,org, new)
-              p2 = restore(side["p2"],axes,org, new)
- 
-              new.setthreepoints((p0, p1, p2),4)
-              new["tex"] = side["tex"]
-      brush.appenditem(new)
-      last = pos
+        if texpos is not None:
+            org = data.PathPos(j-1)
+            name = "%s:g"%new.shortname
+  #          squawk(name)
+            side = texpos.findname(name)
+            if side is not None:
+  #              squawk('side')
+                p0 = restore(side["p0"],axes,org, new)
+                p1 = restore(side["p1"],axes,org, new)
+                p2 = restore(side["p2"],axes,org, new)
+                new.setthreepoints((p0, p1, p2),4)
+                new["tex"] = side["tex"]
+        if new.shortname[:5]=='inner':
+            new["tex"]=CaulkTexture()
+        brush.appenditem(new)
+        last = pos
 
 #
 # makes the brushes
 #
 def make_brushes(dup, cycles, names, limit=0):
-  data = ExtruderDupData(dup)
-  texpos = dup.findname("texinfo:g")
-  brushes = []
-  if limit:
-    pathlength=limit
-  else:
-    pathlength = len(data.PathPoints())
-  org = prev_org = data.Org()
-  xaxis, yaxis, prev_z = axes = data.Axes()
-  front = quarkx.newobj("front:f")
-  front.setthreepoints((org, org+xaxis, org+yaxis),0)
-  front["tex"] = dup["tex"]
-  front.setthreepoints((org, org+128*xaxis, org+128*yaxis), 2)
-  for j in range(1, pathlength):
-      group = quarkx.newobj("cor_seg_%d:g"%j)
-      curr_org = data.PathPos(j)
-      extension = abs(curr_org-prev_org)
-      back = front.copy()
-      back.swapsides()
-      back.translate(data.PathPos(j)-org)
-      back.shortname = "back"
-      p0, p1, p2 = back.threepoints(0)
-      if j<pathlength-1:
-        zaxis = data.Zaxis(j)
-        mat=matrix_rot_u2v(prev_z, (zaxis+prev_z).normalized)
-        norm = mat*prev_z
-        back.distortion(norm, p0)
-        prev_z = zaxis
-      else:
-        back.distortion(prev_z,p0)
-      for i in range(len(cycles)):
-        brush = quarkx.newobj("brush:p")
-        brush.appenditem(back.copy()), brush.appenditem(front.copy())
-        attach_sides(data, j, brush, front, cycles[i], names[i], texpos)
-        group.appenditem(brush)
-      org = curr_org
-      front=back
-      front.swapsides()
-      brushes.append(group)
-  return brushes 
+    data = ExtruderDupData(dup)
+    texpos = dup.findname("texinfo:g")
+    brushes = []
+    if limit:
+        pathlength=limit
+    else:
+        pathlength = len(data.PathPoints())
+    org = prev_org = data.Org()
+    xaxis, yaxis, prev_z = axes = data.Axes()
+    front = quarkx.newobj("front:f")
+    front.setthreepoints((org, org+xaxis, org+yaxis),0)
+    front["tex"] = dup["tex"]
+    front.setthreepoints((org, org+128*xaxis, org+128*yaxis), 2)
+    for j in range(1, pathlength):
+        group = quarkx.newobj("cor_seg_%d:g"%j)
+        curr_org = data.PathPos(j)
+        extension = abs(curr_org-prev_org)
+        back = front.copy()
+        back.swapsides()
+        back.translate(data.PathPos(j)-org)
+        back.shortname = "back"
+        p0, p1, p2 = back.threepoints(0)
+        if j<pathlength-1:
+            zaxis = data.Zaxis(j)
+            mat=matrix_rot_u2v(prev_z, (zaxis+prev_z).normalized)
+            norm = mat*prev_z
+            back.distortion(norm, p0)
+            prev_z = zaxis
+        else:
+            back.distortion(prev_z,p0)
+        for i in range(len(cycles)):
+            brush = quarkx.newobj("brush:p")
+            backside = back.copy()
+            frontside = front.copy()
+            if j<pathlength-1:
+                backside["tex"]=CaulkTexture()
+            if j>1:
+                frontside["tex"]=CaulkTexture()
+            brush.appenditem(backside), brush.appenditem(frontside)
+            attach_sides(data, j, brush, front, cycles[i], names[i], texpos)
+            group.appenditem(brush)
+        org = curr_org
+        front=back.copy()
+        front.shortname = "front"
+        front.swapsides()
+        brushes.append(group)
+    return brushes 
   
 
 #
 # Used by make_patches below, rethink prolly called for
 #
 def restore(postuple, axes, org, face=None):
-      x, y, z = postuple
-      pos = x*axes[0]+y*axes[1]+z*axes[2]
-      if face is not None:
+    x, y, z = postuple
+    pos = x*axes[0]+y*axes[1]+z*axes[2]
+    if face is not None:
         norm = face.normal
         return projectpointtoplane(pos+org,norm,face.dist*norm,norm)
-      else:        
+    else:        
         return pos+org
 
 def make_patches(dup, points, limit=0, editor=None):
@@ -1369,18 +1377,18 @@ def make_patches(dup, points, limit=0, editor=None):
     inverse = dup["inverse"]
     numpoints = len(points)
     if limit:
-      pathlength=limit
+        pathlength=limit
     else:
-      pathlength = len(data.PathPoints())
+        pathlength = len(data.PathPoints())
     prev_org = dup.origin
     if dup["open"]:
-      dopoints = numpoints-1
+        dopoints = numpoints-1
     else:
-      dopoints = numpoints
+        dopoints = numpoints
     prev_pos = range(numpoints)
     xaxis, yaxis, prev_z = axes = data.Axes()
     for k in range(numpoints):
-      prev_pos[k] = prev_org+xaxis*points[k].x+yaxis*points[k].y
+        prev_pos[k] = prev_org+xaxis*points[k].x+yaxis*points[k].y
     prev_pos.append(prev_pos[0])
     #
     # we look at the end-point of the segment
@@ -2867,6 +2875,10 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.7  2001/05/06 10:16:32  tiglari
+#changes to get revert to dup working, hole punching on dup RMB
+# as well as former-dup-group RMB
+#
 #Revision 1.6  2001/05/05 10:02:11  tiglari
 #patch mode supported for extruder
 #
