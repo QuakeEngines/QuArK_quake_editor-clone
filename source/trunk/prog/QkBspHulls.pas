@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/07/27 11:30:26  tiglari
+bsp study: plane viewing, some prep for node-viewing
+
 Revision 1.19  2001/07/22 09:57:29  tiglari
 SOF bsp viewing (non-optimized, most of face record unknown)
 
@@ -88,12 +91,6 @@ uses Windows, SysUtils, Classes, QkObjects, QkMapObjects, QkBsp,
      qmath, QkFileObjects;
 
 type
- TIntegerPair = record
-                 first, second : Integer;
-                end;
- TBoundBox = record
-              Min, Max: vec3_t;
-             end;
  PHull = ^THull;
  THull = record
           Bound: TBoundBox;
