@@ -116,7 +116,7 @@ def nextClick(m,editor=None):
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
-removeItem = qmenu.item("&Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected.")
+removeItem = qmenu.item("&Cancel Selections", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected.")
 parentItem = qmenu.item("Select &Parent", parentClick, "|Selects parent.  Parent is collapsed in treeview unless '%s' is depressed."%collapse)
 childItem = qmenu.item("Select &Child", childClick, "Selects first child")
 nextItem = qmenu.item("Select &Next", nextClick, "|Selects next item in group, cycling\n depress '%s' to constrain to next of same type."%same)
@@ -167,6 +167,10 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.5  2002/05/13 10:35:57  tiglari
+# support frozen selections (don't change until another frozen selection is made,
+# or they are cancelled with ESC or unfreeze selection)
+#
 # Revision 1.4  2001/05/04 06:36:53  tiglari
 # Accelerators added to selection menu
 #
