@@ -57,6 +57,13 @@ class MapEditor(BaseEditor):
             Root = self.fileobject['Root']
             if Root is not None:
                 self.Root = self.fileobject.findname(Root)
+        errors = quarkx.getmaperror();
+        if errors:
+            errors = string.splitfields(errors, '\\n')
+            debug('Map Reading Errors: face and brush numbering starting from 0, hulls from 1:')
+            for error in errors:
+                debug(' '+error)
+            quarkx.msgbox('there were errors reading the map; check the console',2,4)
         self.AutoSave(0)
 
     def CloseRoot(self):
@@ -292,5 +299,8 @@ def autosave(editor):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
