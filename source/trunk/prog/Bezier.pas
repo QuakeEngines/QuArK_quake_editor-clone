@@ -30,6 +30,8 @@ uses Windows, SysUtils, Classes, Python, qmath, qmatrices, PyMath, QkObjects,
 
  {------------------------}
 
+{ $DEFINE TexUpperCase}
+
 const
  BezierMeshCnt = 6;   { number of subdivisions on screen }
 
@@ -85,7 +87,10 @@ type
              procedure PreDessinerSel; override;
              procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
              procedure EtatObjet(var E: TEtatObjet); override;
-              
+
+             procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
+             procedure SauverTexteBezier(Target: TStrings);
+             
               { use the properties below to read/write control points. }
              property QuiltSize: TPoint read GetQuiltSize write SetQuiltSize;
              property ControlPoints: TBezierMeshBuf5 read GetControlPoints write SetControlPoints;
@@ -853,6 +858,60 @@ begin
   end;
  { smooth }
  Specifics.Values['smooth']:='1';
+end;
+
+ { finds Bezier patches }
+procedure TBezier.ListeEntites(Entites: TQList; Cat: TEntityChoice);
+begin
+ if ecBezier in Cat then
+  Entites.Add(Self);
+end;
+
+ { save as text for .map files }
+procedure TBezier.SauverTexteBezier(Target: TStrings);
+var
+ cp: TBezierMeshBuf5;
+ I, J, K, R: Integer;
+ S: String;
+ Value: PSingle;
+begin
+ cp:=ControlPoints;
+ if (cp.W>1) and (cp.H>1) then
+  begin   { ignore Bezier lines (with only 1 row or 1 column of control points) }
+   Target.Add(' {');
+   Target.Add('  patchDef2');
+   Target.Add('  {');
+   {$IFDEF TexUpperCase}
+   Target.Add('   ' + UpperCase(NomTex));
+   {$ELSE}
+   Target.Add('   ' + NomTex);
+   {$ENDIF}
+   Target.Add(Format('   ( %d %d 0 0 0 )', [cp.H, cp.W]));
+   Target.Add('(');
+   Value:=@cp.CP^[0];
+   for J:=1 to cp.H do
+    begin
+     S:='( ';
+     for I:=1 to cp.W do
+      begin
+       S:=S+'( ';
+       for K:=1 to 5 do
+        begin
+         R:=Round(Value^);
+         if {WriteIntegers or} (Abs(Value^-R) < rien) then
+          S:=S+IntToStr(R)+' '
+         else
+          S:=S+FloatToStrF(Value^, ffFixed, 20, 5)+' ';
+         Inc(Value);
+        end;
+       S:=S+') ';
+      end;
+     Target.Add(S+')');
+    end;
+   Target.Add(')');
+   Target.Add('  }');
+   Target.Add(' }');
+  end;
 end;
 
  {------------------------}

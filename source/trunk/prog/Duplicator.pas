@@ -46,7 +46,7 @@ type
                  function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                  function GetFormName : String; override;
                  procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
-                 procedure ListeEntites(Entites: TQList); override;
+                 procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                  procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                  procedure AddTo3DScene; override;
                  function PyGetAttr(attr: PChar) : PyObject; override;
@@ -262,12 +262,12 @@ begin
   (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListePolyedres(Polyedres, Negatif, Flags or soDirectDup, Brushes);
 end;
 
-procedure TDuplicator.ListeEntites(Entites: TQList);
+procedure TDuplicator.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 var
  I: Integer;
 begin
  for I:=0 to PyObject_Length(BuildImages)-1 do
-  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites);
+  (QkObjFromPyObj(PyList_GetItem(FCache, I)) as TTreeMap).ListeEntites(Entites, Cat);
 end;
 
 procedure TDuplicator.SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);

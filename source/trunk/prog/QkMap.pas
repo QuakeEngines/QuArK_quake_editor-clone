@@ -716,6 +716,8 @@ begin
         begin
           if LowerCase(s)<>'patchdef2' then
             raise EErrorFmt(254, [NoLigne, LoadStr1(260)]); // "patchDef2" expected
+         { Armin: a patchDef2 means it is a Quake 3 map }
+          Result:=mjQ3A;
          { Armin: create the MapStructureB group if not already done }
           if EntiteBezier=Nil then
            begin
@@ -755,15 +757,7 @@ begin
             Lire(sParenthese1); // lparen follows vect5
             for I:=1 to MeshBuf1.H do
               begin
-                if I=1 then
-                  Lire(sParenthese1) // first line: just read the leading lparen
-                else
-                  begin
-                    // second and subsequent line: read the trailing rparen on the preceding line, then the
-                    // leading lparen on this line
-                    Lire(sParenthese2);
-                    Lire(sparenthese1);
-                  end;
+                Lire(sParenthese1); // read the leading lparen for the line
                 for J:=1 to MeshBuf1.W do
                   begin
                     V5:=LireVect5(False);
@@ -774,8 +768,8 @@ begin
                     pCP1^[4]:=V5.T;
                     Inc(pCP1);
                   end;
+                Lire(sParenthese2); // read the trailing rparen for the line
               end;
-            Lire(sParenthese2);  { final rparen at the end of the last control points line }
             Lire(sParenthese2);  { rparen which finishes all the lines of control points }
             Lire(sAccolade2);    { rbrace which finishes the patchDef2 }
             Lire(sAccolade2);    { rbrace which finishes the brush }

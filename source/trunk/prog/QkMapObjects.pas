@@ -57,6 +57,7 @@ const
 
 type
  TBBoxInfo = array[0..6] of Single;
+ TEntityChoice = set of (ecEntity, ecBrushEntity, ecBezier);
  TTreeMap = class;
  TTreeMapClass = class of TTreeMap;
  TTreeMap = class(Q3DObject)   { all objects in a map }
@@ -85,7 +86,7 @@ type
               function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; virtual;
              {function VisuallySelected : Boolean; virtual;}
               procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); virtual;
-              procedure ListeEntites(Entites: TQList); virtual;
+              procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); virtual;
               procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); virtual;
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
@@ -136,7 +137,7 @@ type
                     procedure PreDessinerSel; override;
                     procedure Dessiner; override;
                     procedure Deplacement(const PasGrille: Reel); override;
-                    procedure ListeEntites(Entites: TQList); override;
+                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                     procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                     function GetFormName : String; override;
                    {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
@@ -156,7 +157,7 @@ type
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                    property ViewFlags: Integer read GetViewFlags write SetViewFlags;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
-                   procedure ListeEntites(Entites: TQList); override;
+                   procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                    procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    procedure AddTo3DScene; override;
                    procedure AnalyseClic(Liste: PyObject); override;
@@ -172,7 +173,7 @@ type
                    class function TypeInfo: String; override;
                    procedure EtatObjet(var E: TEtatObjet); override;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
-                   procedure ListeEntites(Entites: TQList); override;
+                   procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                    procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
                    function GetFormName : String; override;
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
@@ -1149,9 +1150,10 @@ begin
   end;
 end;*)
 
-procedure TTreeMapEntity.ListeEntites(Entites: TQList);
+procedure TTreeMapEntity.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 begin
- Entites.Add(Self);
+ if ecEntity in Cat then
+  Entites.Add(Self);
 end;
 
 procedure TTreeMapEntity.SauverTexte;
@@ -2032,12 +2034,12 @@ begin
   Negatif.Delete(I);
 end;
 
-procedure TTreeMapGroup.ListeEntites(Entites: TQList);
+procedure TTreeMapGroup.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 var
  I: Integer;
 begin
  for I:=0 to SousElements.Count-1 do
-  TTreeMap(SousElements[I]).ListeEntites(Entites);
+  TTreeMap(SousElements[I]).ListeEntites(Entites, Cat);
 end;
 
 procedure TTreeMapGroup.SauverTexte;
@@ -2114,9 +2116,10 @@ begin
   inherited ListePolyedres(Polyedres, Negatif, Flags and not soDirectDup, Brushes-1);
 end;
 
-procedure TTreeMapBrush.ListeEntites(Entites: TQList);
+procedure TTreeMapBrush.ListeEntites(Entites: TQList; Cat: TEntityChoice);
 begin
- Entites.Add(Self);
+ if ecBrushEntity in Cat then
+  Entites.Add(Self);
  inherited;
 end;
 
@@ -2157,6 +2160,11 @@ begin
        end;
    for I:=0 to Polyedres.Count-1 do
     TPolyedre(Polyedres[I]).SauverTextePolyedre(Texte, OriginBrush, Flags);
+   { proceed with Bezier patches }
+   Polyedres.Clear;
+   ListeEntites(Polyedres, [ecBezier]);
+   for I:=0 to Polyedres.Count-1 do
+    TBezier(Polyedres[I]).SauverTexteBezier(Texte);
    finally Polyedres.Free; end;
   end;
  Texte.Add('}');
@@ -2209,7 +2217,15 @@ begin
        else if StrComp(attr, 'listentities')=0 then
         begin
          Entites:=TQList.Create; try
-         ListeEntites(Entites);
+         ListeEntites(Entites, [ecEntity, ecBrushEntity]);
+         Result:=QListToPyList(Entites);
+         finally Entites.Free; end;
+         Exit;
+        end
+       else if StrComp(attr, 'listbeziers')=0 then
+        begin
+         Entites:=TQList.Create; try
+         ListeEntites(Entites, [ecBezier]);
          Result:=QListToPyList(Entites);
          finally Entites.Free; end;
          Exit;
