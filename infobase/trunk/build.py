@@ -530,10 +530,12 @@ def run(filewriter):
     print "-"*50
     # recursively write everything to disk
     root.writefiles(root, filewriter)
+    print "-"*50
     for filename in string.split(root.kw.get("extrafiles_text", "")):
         filewriter(filename, [open(filename, "r").read()])
     for filename in string.split(root.kw.get("extrafiles_binary", "")):
         filewriter(filename, [open(filename, "rb").read()], "wb")
+    print "-"*50
     root.forgotten = []
     root.viewforgotten()
 
@@ -548,6 +550,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.17  2001/07/25 19:17:02  decker_dk
+# Added exception-handling when opening files thats missing.
+#
 # Revision 1.16  2001/02/28 19:54:10  tiglari
 # removed extraarg from ref in findref
 #
