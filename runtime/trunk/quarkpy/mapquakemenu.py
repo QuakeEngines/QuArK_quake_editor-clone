@@ -575,24 +575,39 @@ def Customize1Click(mnu):
 
 def loadLeakFile(m):
     import mapholes
-    mapholes.LoadLinFile(m.editor, m.holefilename)
+    mapholes.LoadLinFile(m.editor, m.auxfilename)
         
-def leakMenuItem(editor):
-    item = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
+leakMenuItem = qmenu.item("Load Leak&file",loadLeakFile,hint="|Loads the leak file, if there is one.\n\nYou are responsible for making sure that the leak file actually belongs to the map you're working on (the build tools will delete previous leak files after a successful compile, but it is still possible to get confused, if you start a new map with the same name as an older one with a leak).")
+
+
+def loadPortalFile(m):
+    import mapportals
+    mapportals.LoadPortalFile(m.editor, m.auxfilename)
+        
+portalsMenuItem = qmenu.item("Load Portal&file",loadPortalFile,hint="|Loads the portals file, if there is one.\n\nYou are responsible for making sure that the portals (probably .prt) file actually belongs to the map you're working on.")
+
+def prepAuxFileMenuItem(item,extkey,defext):
+    editor=item.editor
     mapfileobject = editor.fileobject
     map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
     mapfilename = quarkx.outputfile('')+'maps\\'+map
-    holeextension = quarkx.setupsubset()["MapHoles"]
-    if not holeextension:
-        holeextension='.lin'
-    holefilename = mapfilename+holeextension
-    if quarkx.getfileattr(holefilename)==FA_FILENOTFOUND:
+    auxextension = quarkx.setupsubset()[extkey]
+    if not auxextension:
+        auxextension=defext
+    auxfilename = mapfilename+auxextension
+    if quarkx.getfileattr(auxfilename)==FA_FILENOTFOUND:
         item.state = qmenu.disabled
     else:
+        item.state = qmenu.normal
         item.editor = editor
-        item.holefilename = holefilename
-    return item
-    
+        item.auxfilename = auxfilename
+
+
+def onclick(m):
+    for args in ((leakMenuItem,"MapHoles",".pts"),
+                 (portalsMenuItem,"MapPortals",".prt")):
+      apply(prepAuxFileMenuItem,args)
+
 def QuakeMenu(editor):
     "The Quake menu, with its shortcuts."
 
@@ -621,16 +636,24 @@ def QuakeMenu(editor):
                     sc[p["Shortcut"]] = m
                 items.append(m)
         items.append(qmenu.sep)
-        items.append(leakMenuItem(editor))
+        for item in (leakMenuItem, portalsMenuItem):
+            item.editor=editor
+            items.append(item)
         items.append(qmenu.sep)
         items.append(qmenu.item("&Customize menu...", Customize1Click, "customizes this menu"))
-    Quake1 = qmenu.popup("&"+gamename, items)
+    Quake1 = qmenu.popup("&"+gamename, items, onclick)
     Quake1.state = not len(items) and qmenu.disabled
     return Quake1, sc
+
+
+import mapportals
 
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.29  2003/03/17 00:11:05  tiglari
+#Add manual leak file loading command
+#
 #Revision 1.28  2003/01/06 22:24:02  tiglari
 #check leak files for having actual content before registering build error
 #
