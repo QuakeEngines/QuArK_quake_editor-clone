@@ -140,7 +140,9 @@ iiCfgFile               = 41
 iiImport                = 42
 iiPython                = 43
 iiBezier                = 44
-iiTotalImageCount       = 45
+#Sprite File Support
+iiSprFile		= 45
+iiTotalImageCount       = 46
 
 
 def LoadIconSet(filename, width, transparencypt=(0,0)):
