@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.1  2002/05/23 09:03:14  tiglari
+fix texture positioning problems with Classic Quake and Quark etp
+
 Revision 1.56  2002/05/07 23:22:51  tiglari
 fix bugs in Mohaa surface property writing
 
@@ -1138,20 +1141,24 @@ var
   end;
 
 begin
+(*
   Plan:=PointsToPlane(Normale);
   case Plan of
    'X' : Axis := MakeVect(1, 0, 0);
    'Y' : Axis := MakeVect(0, 1, 0);
    'Z' : Axis := MakeVect(0, 0, 1);
   end;
-
+ *)
+ 
   F.GetThreePointsT(P0, P1, P2);
   Origin:=MakeVect(0,0,0);
+  (*
   PP0:=ProjectPointToPlane(P0, Axis, Origin, Axis);
   PP1:=ProjectPointToPlane(P1, Axis, Origin, Axis);
   PP2:=ProjectPointToPlane(P2, Axis, Origin, Axis);
-  D1:= VecDiff(PP1, PP0);
-  D2:= VecDiff(PP2, PP0);
+  *)
+  D1:= VecDiff(P1, P0);
+  D2:= VecDiff(P2, P0);
   Normalise(D1, S1);
   Normalise(D2, S2);
   S1:=S1/128;
@@ -1159,7 +1166,7 @@ begin
   { probably can be optimized }
 
   Mat:= MatriceInverse(MatrixFromCols(D1, D2,Cross(D1,D2)));
-  PP0:= MatrixMultByVect(Mat,PP0);
+  PP0:= MatrixMultByVect(Mat,P0);
 
 
   write4vect(D1, -PP0.X/S1, S);
