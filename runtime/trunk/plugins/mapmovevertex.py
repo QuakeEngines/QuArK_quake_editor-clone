@@ -219,7 +219,7 @@ def rotateFace(face, mvtx, delta, pivot, pivot2):
     # Well I could have piled up three maps, and not
     #  used the pcoords variable, but I didn't!
     #
-    newpoints = map(proj2plane, (map(unproj, pcoords)))
+    newpoints = tuple(map(proj2plane, (map(unproj, pcoords))))
     face.setthreepoints(newpoints,3)
     
 
@@ -233,11 +233,9 @@ def moveFaces(faces, mvtx, delta, poly, locklist, freezelist, sloppy=None):
     "returns the moving old, new faces, of poly , with mvtx moved by delta"
     result = []
     old = []
-    debug('moving faces of '+poly.shortname)
     for face in faces:
         if face in freezelist:
             continue
-        debug('  moving '+face.shortname)
         newface = face.copy()
         norm = face.normal
         facelocked = []
@@ -258,7 +256,7 @@ def moveFaces(faces, mvtx, delta, poly, locklist, freezelist, sloppy=None):
                 #  seems to work.
                 #
                 if (vtxh.poly is poly and abs(vtxh.pos-vtx)<.1):
-                    facelocked.append(vtx)
+                    facelocked.append(vtxh.pos)
                     #
                     # we only use this if only one vertex is locked
                     #
@@ -860,3 +858,6 @@ def circledragto(self, x, y, flags, olddragto=quarkpy.qhandles.SideStepDragObjec
 quarkpy.qhandles.SideStepDragObject.dragto = circledragto
 
 # $Log$
+# Revision 1.1  2001/04/01 22:45:31  tiglari
+# initial commit
+#
