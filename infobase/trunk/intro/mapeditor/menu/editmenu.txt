@@ -27,7 +27,7 @@ selected a group in the tree view.
 <i>Texture flags</i>. Only some games have this menuitem. See Face-flags window
 for a description.
 
-<hr>
+<a name="viewgroup"></a><hr>
 
 <img border=0 align=right>viewgroup.png</img>
 If you have a group selected in the tree view, you can specify different
