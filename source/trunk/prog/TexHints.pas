@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:41:41  decker_dk
+Updated copyright-header
+
 Revision 1.4  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -96,20 +99,27 @@ begin
     nRect.Top:=Rect.Top;
     nRect.Right:=nRect.Left;
     nRect.Bottom:=nRect.Top;
-    ProgressIndicatorStart(0,0); try
-    while S<>'' do
-     begin
-      J:=Pos(';', S);
-      if J=0 then J:=Length(S)+1;
-      Tex:=GlobalFindTexture(Copy(S, 1, J-1), Nil).LoadPixelSet;
-      Size:=Tex.GetSize;
-      Inc(nRect.Right, Size.X+1);
-      if nRect.Bottom-nRect.Top < Size.Y then
-       nRect.Bottom:=nRect.Top + Size.Y;
-      L.Add(Tex);
-      System.Delete(S, 1, J);
-     end;
-    finally ProgressIndicatorStop; end;
+    ProgressIndicatorStart(0,0);
+    try
+      while S<>'' do
+       begin
+        J:=Pos(';', S);
+        if J=0 then J:=Length(S)+1;
+        Tex:=GlobalFindTexture(Copy(S, 1, J-1), Nil);
+        if Tex<>Nil then
+        begin
+          Tex.LoadPixelSet;
+          Size:=Tex.GetSize;
+          Inc(nRect.Right, Size.X+1);
+          if nRect.Bottom-nRect.Top < Size.Y then
+           nRect.Bottom:=nRect.Top + Size.Y;
+          L.Add(Tex);
+        end;
+        System.Delete(S, 1, J);
+       end;
+    finally
+      ProgressIndicatorStop;
+    end;
     if nRect.Right=nRect.Left then Abort;
     Textures:=L;
     L:=Nil;
