@@ -11,7 +11,7 @@
 Info = {
    "plug-in":       "Stairmaker plugin",
    "desc":          "Making stairs from brushes",
-   "date":          "200x-xx-xx",
+   "date":          "2001-02-20",
    "author":        "decker",
    "author e-mail": "decker@planetquake.com",
    "quark":         "Version 6.2"
@@ -40,11 +40,10 @@ from quarkpy.perspective import *
 
 class StairDuplicator(StandardDuplicator):
 
-  def makeStairs(self, o, steps=8, sameheight=0):
+  def makeStairs(self, o, steps=8, sameheight=""):
     result = []
     faces = faceDict(o)
     if len(faces)==6:
-      print "makeStairs()"
       frontnormal = faces['f'].normal
       backnormal = faces['b'].normal
       frontdist = faces['f'].dist
@@ -72,7 +71,7 @@ class StairDuplicator(StandardDuplicator):
         poly.appenditem(face)
 
         face = faces['d'].copy()
-        if sameheight:
+        if sameheight != "":
           face.translate(-downnormal * (updowninterval * step))
         poly.appenditem(face)
 
@@ -93,11 +92,10 @@ class StairDuplicator(StandardDuplicator):
     editor = mapeditor()
     steps,   sameheight, = map(lambda spec, self=self: self.dup[spec],
      ("steps", "sameheight"))
-    print steps, sameheight, int(steps), int(sameheight)
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return self.makeStairs(o, int(steps), int(sameheight))
+        return self.makeStairs(o, int(steps), sameheight)
 
 
 quarkpy.mapduplicator.DupCodes.update({
@@ -114,7 +112,7 @@ def curvemenu(o, editor, view):
       dup = quarkx.newobj("Stair Maker:d")
       dup["macro"]="dup stair"
       dup["steps"]="8"
-      dup["sameheight"]="0"
+      dup["sameheight"]=""
       dup.appenditem(m.newpoly)
       undo=quarkx.action()
       undo.exchange(o, dup)
@@ -174,6 +172,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.2  2001/02/14 10:08:58  tiglari
+#extract perspective stuff to quarkpy.perspective.py
+#
 #Revision 1.1  2001/02/04 11:52:01  decker_dk
 #Stair making plugin
 #
