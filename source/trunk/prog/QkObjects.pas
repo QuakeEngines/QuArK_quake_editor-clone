@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.24  2000/09/10 13:00:01  alexander
 set name
 
@@ -76,7 +79,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'quarksnapshot_20000910';
+ QuArKVersion            = 'quarksnapshot_20000925';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;
