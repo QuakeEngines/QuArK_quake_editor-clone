@@ -52,8 +52,8 @@ $ cp -r runtime/ quark-src-20070831/
 $ cp -r micro-python22/ quark-src-20070831/</code></li>
 <li>Put together the files for the Windows binary snapshot.
 <code>$ cp ~/QuArK.exe quark-win32-20070831
-$ cp source/COPYING>txt quark-win32-20070831/
-$ cp runtime/* quark-win32-20070831/
+$ cp source/COPYING.txt quark-win32-20070831/
+$ cp -r runtime/ quark-win32-20070831/
 $ rm -f quark-win32-20070831/dlls/d3dxas.dll
 $ rm -f quark-win32-20070831/dlls/readme.txt
 $ cp micro-python22/dlls/python.dll quark-win32-20070821/dlls/
