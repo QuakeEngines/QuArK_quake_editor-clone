@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13.2.1  2000/09/21 08:37:26  tiglari
+fix for SOF default flags problem
+
 Revision 1.13  2000/07/21 20:01:33  decker_dk
 Correctly Save HalfLife WAD3s
 
@@ -2092,10 +2095,6 @@ var
         which can be overridden in the faces, Sin is the most
         complex. }
 
-     if MJ=mjSin then
-      { tiglari: in Sin, we write to the map individual
-         flag positions that are different from the default..
-         messy! }
       begin
         Q := GlobalFindTexture(F.NomTex,Nil);
         if Q<>Nil then
