@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/03/20 21:34:29  decker_dk
+Updated copyright-header
+
 Revision 1.4  2000/12/07 19:47:30  decker_dk
 Some layout changes. I like columns, specially when there is lots of data.
 }
@@ -281,7 +284,7 @@ implementation
 
 uses
 {$IFDEF Debug} QkObjects, {$ENDIF}
-     Windows;
+     Windows, Registry;
 
  {-------------------}
 
@@ -351,6 +354,28 @@ const
 
  {-------------------}
 
+function try_alternative_python_version: string;
+var
+  R: TRegistry;
+  v: string;
+  installed: boolean;
+begin
+  result:='';
+  R:=TRegistry.Create;
+  try
+    R.RootKey:=HKEY_LOCAL_MACHINE;
+    installed:=R.KeyExists('\Software\Python\PythonCore\CurrentVersion');
+    if installed then begin
+      R.OpenKey('\Software\Python\PythonCore\CurrentVersion', false);
+      v:=R.ReadString('');
+      R.OpenKey('\Software\Python\PythonCore\'+v+'\Dll', false);
+      Result:=R.ReadString('');
+    end;
+  finally
+    R.free;
+  end;
+end;
+
 function InitializePython : Integer;
 type
  PPointer = ^Pointer;
@@ -359,11 +384,18 @@ var
  I: Integer;
  Lib: THandle;
  P: Pointer;
+ dll: string;
 begin
- Result:=2;
- Lib:=LoadLibrary('PYTHON15.DLL');
+ Result:=3;
+{ dll:=try_alternative_python_version;
+ Lib:=0;
+ if dll<>'' then
+   Lib:=LoadLibrary(pchar(dll));
+ if Lib=0 then}
+   Lib:=LoadLibrary('PYTHON15.DLL');
  if Lib=0 then
   Exit;
+ Result:=2;
  for I:=Low(PythonProcList) to High(PythonProcList) do
   begin
    P:=GetProcAddress(Lib, PythonProcList[I].Name);

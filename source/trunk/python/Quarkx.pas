@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/03/20 21:34:13  decker_dk
+Updated copyright-header
+
 Revision 1.16  2001/02/23 19:27:37  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -2405,7 +2408,7 @@ const
    (ml_name: 'needgamefile';    ml_meth: xNeedGameFile;   ml_flags: METH_VARARGS),
    (ml_name: 'wait';            ml_meth: xWait;           ml_flags: METH_VARARGS),
    (ml_name: 'exit';            ml_meth: xExit;           ml_flags: METH_VARARGS),
-   (ml_name: 'log';             ml_meth: xLog;        ml_flags: METH_VARARGS),{AiV}
+   (ml_name: 'log';             ml_meth: xLog;            ml_flags: METH_VARARGS),{AiV}
    (ml_Name: Nil;               ml_meth: Nil));
 
  {-------------------}
@@ -2722,13 +2725,30 @@ begin
  Result.Update;
 end;
 
+var ProbableCauseOfFatalError: array[-9..3] of PChar = (
+   {-9}    ' (Unable to initialise python module "Quarkx")',
+   {-8}    ' (Unable to find "quarkpy" directory)',
+   {-7}    ' (Unable to find or execute "quarkpy.__init__.py", function "RunQuArK()")',
+   {-6}    '',
+   {-5}    '',
+   {-4}    '',
+   {-3}    '',
+   {-2}    '',
+   {-1}    '',
+   { 0}    ' (No Error)',
+   { 1}    ' (Error setting up python types)',
+   { 2}    ' (Error loading dll)',
+   { 3}    ' (Unable to find Python)');
+
+
 procedure FatalError(Err: Integer);
 var
- P: PChar;
+  P: PChar;
+  X: Array[0..65535] of char;
 begin
  while Screen.FormCount>0 do
   Screen.Forms[0].Free;
- if Err=2 then
+ if Err=3 then
   P:=PythonNotFound
  else
   begin
@@ -2737,8 +2757,11 @@ begin
     PythonCodeEnd;
    P:=FatalErrorText;
   end;
+ StrCat(X, P);
+ StrCat(X, ProbableCauseOfFatalError[err]);
  ShowConsole(True);
- Windows.MessageBox(0, P, FatalErrorCaption, MB_TASKMODAL);
+ Windows.MessageBox(0, X, FatalErrorCaption, MB_TASKMODAL);
+ Log(strPas(x)+ ' Error Code '+IntToStr(Err));
  ExitProcess(Err);
 end;
 
