@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
+
 program QuArK;
 
 uses
@@ -168,7 +174,7 @@ uses
 begin
   Application.Initialize;
   Application.Title:='Quake Army Knife';
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TForm1, g_Form1);
   Application.Run;
 
 (* In case of compile error  "Missing $ENDIF",
