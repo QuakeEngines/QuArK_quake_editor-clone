@@ -540,7 +540,10 @@ class DefaultDrawEntityLines:
         if org1.visible:
             L1 = entity["light"]
             L2 = entity["_light"]
-            if L1 or L2:
+            # Rowdy: cdunde reported that Torque uses falloff1 (minimum radius) and falloff2
+            #        (maximum radius) for lights, and does not have a 'light' specific
+            L3 = entity["falloff2"]
+            if L1 or L2 or L3:
                 try:
                     if L1:
                         radius = float(L1)
@@ -549,10 +552,22 @@ class DefaultDrawEntityLines:
                                 color = quakecolor(quarkx.vect(entity["_color"]))
                             except:
                                 pass
-                    else:
+                    elif L2:
                         L2 = readfloats(L2)
                         radius = L2[3]
                         color = makeRGBcolor(L2[0], L2[1], L2[2])
+                    else:
+                        radius = float(L3)
+                        if entity["_color"]:
+                            try:
+                                color = quakecolor(quarkx.vect(entity["_color"]))
+                            except:
+                                pass
+
+                        #L3 = readfloats(L3)
+                        #radius = L3[3]
+                        #color = makeRGBcolor(L3[0], L3[1], L3[2])
+
                     lightfactor, = quarkx.setupsubset()["LightFactor"]
                     radius = radius * view.scale(org) * lightfactor
                     cv = view.canvas()
@@ -636,6 +651,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.31  2004/12/19 09:56:44  alexander
+#movedir specific gets angle maphandle
+#
 #Revision 1.30  2003/03/23 07:31:18  tiglari
 #make trigger-target line thickness configurable
 #
