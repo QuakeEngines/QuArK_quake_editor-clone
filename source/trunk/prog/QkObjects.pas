@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2001/03/09 09:30:57  tiglari
+update version
+
 Revision 1.46  2001/02/25 11:19:12  tiglari
 reset snapshot #
 
@@ -167,7 +170,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'Quark 6.2';
+  QuArKVersion            = 'QuArK 6.2';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
