@@ -1362,11 +1362,8 @@ begin
  SetupProperties;
  if Form<>Nil then
   begin
-   if not NeedInitControls then
-    begin
-     NeedInitControls:=True;
-     PostMessage(Handle, wm_MessageInterne, wp_InitControls, 0);
-    end;
+   NeedInitControls:=True;
+   PostMessage(Handle, wm_MessageInterne, wp_InitControls, 0);
   end
  else
   begin
@@ -1567,6 +1564,7 @@ begin
     end;
   wp_InitControls:
    begin
+    if not NeedInitControls then Exit;
     NeedInitControls:=False;
     if EditTogether=Nil then
      begin

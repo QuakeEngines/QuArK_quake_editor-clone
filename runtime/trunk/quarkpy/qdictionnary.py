@@ -9,7 +9,7 @@ Dictionnary of all strings used within the program
 #
 
 Strings = {
-        0: "Version 5.11",
+        0: "Version 6.00b1",
 	1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
 	2: "&New %s",

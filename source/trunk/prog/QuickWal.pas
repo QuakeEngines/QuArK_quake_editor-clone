@@ -186,7 +186,7 @@ var
  Q, Q1: QObject;
  J, DosError: Integer;
  F: TSearchRec;
- Pak: QPak;
+ Pak: QPakFolder;
 begin
  DebutTravail(0,0); try
  Base:=ListBox1.Items[ListBox1.ItemIndex];
@@ -201,7 +201,7 @@ begin
    try
     while DosError=0 do
      begin
-      Pak:=LienFichierExact(PathAndFile(Path, F.Name), Nil, False) as QPak;
+      Pak:=LienFichierExact(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
       Pak.AddRef(+1); try
       Pak.Acces;
       Q1:=Pak.GetFolder(Q2TexPath);

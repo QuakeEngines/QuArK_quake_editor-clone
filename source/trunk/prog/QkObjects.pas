@@ -32,7 +32,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
- QuArKVersion            = 'Version 5.11';
+ QuArKVersion            = 'Version 6.00b1';
 
  iiUnknownFile           = 0;
  iiExplorerGroup         = 1;

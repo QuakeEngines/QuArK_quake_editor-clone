@@ -88,10 +88,10 @@ type
                    end;
  PSurface3D = ^TSurface3D;
  TSurface3D = record
-               Normale: vec3_t;          { not defined if Bezier }
-               Dist: scalar_t;           { not defined if Bezier }
+               Normale: vec3_t;          { not defined if GL_TRI_STRIP }
+               Dist: scalar_t;           { not defined if GL_TRI_STRIP }
                AnyInfo: TSurfaceAnyInfo;
-               VertexCount: Integer;     { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
+               VertexCount: Integer;    { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
               end;
  PTexture3 = ^TTexture3;
@@ -450,7 +450,11 @@ begin
    while Assigned(P) do
     begin
      if P^.Texture<>Nil then
-      P^.Texture^.ok:=False;
+      begin
+       if ReallyAll then
+        ReallocMem(P^.Texture^.info.data, 0);
+       P^.Texture^.ok:=False;
+      end;
      P:=P^.Next;
     end;
   end;
@@ -1597,7 +1601,7 @@ var
        Normale[0]:=DeltaV.X*dd;
        Normale[1]:=DeltaV.Y*dd;
        Normale[2]:=DeltaV.Z*dd;
-       Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+       Dist:=vp0^[0]*Normale[0] + vp0^[1]*Normale[1] + vp0^[2]*Normale[2];
        if nRadius2>Radius2 then
         AnyInfo.Radius:=Sqrt(nRadius2)
        else
@@ -2209,11 +2213,7 @@ begin
     gr.grGlideShutdown;
    UnloadGlide;
   end;
- if (TextureManager<>Nil) and TextureManager.CanFree then
-  begin
-   TextureManager.Free;
-   TextureManager:=Nil;
-  end;
+ LibererMemoireTextures;
 end;
 
 procedure GammaCorrection(Value: Reel);
