@@ -84,8 +84,9 @@ def b2midcp(p0, m, p2):
 
 
 
-def cp_from_4pts(p0, p1, p2, p3, h=3, w=3):
+def interpolateGrid(p0, p1, p2, p3, h=3, w=3):
     "makes a bezier from the four points"
+    "p0, ..., p1 top row, p2,..., p3 bottom"
     cp = []
     h, w = float(h), float(w)
     H, W = h-1, w-1
@@ -212,6 +213,9 @@ def antidistort_rows(cp):
 #
 #
 #$Log$
+#Revision 1.6  2000/06/12 11:20:45  tiglari
+#Redid antidistort_columns, added antidistort_rows
+#
 #Revision 1.5  2000/06/04 03:21:25  tiglari
 #distortion reduction (elimination) for `rolled up' columns
 #
