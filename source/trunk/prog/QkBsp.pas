@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2001/07/19 11:12:47  tiglari
+fixed bugs i previous updates
+
 Revision 1.34  2001/07/16 10:57:43  tiglari
 support for displaying Q3A .bsp's
 
@@ -769,7 +772,10 @@ begin
             cVersionBspQ3: { Quake-3 }
             begin
               LoadBsp3(F, StreamSize);
-              ObjectGameCode := mjQ3A
+              if CharModeJeu<mjQ3A then
+                ObjectGameCode := mjQ3A
+              else
+                ObjectGameCode := CharModeJeu;
             end;
 
             else {version unknown}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2001/07/19 11:12:47  tiglari
+fixed bugs i previous updates
+
 Revision 1.14  2001/07/18 03:50:31  tiglari
 Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
  PSommet, TTableauFSommets, PTableauFSommets
@@ -318,7 +321,7 @@ begin
    mjQuake, mjHalfLife:  Size1:=SizeOf(THull);
    mjHexen:              Size1:=SizeOf(THullH2);
    mjQuake2, mjHeretic2: Size1:=SizeOf(THullQ2);
-   mjQ3A:                Size1:=SizeOf(THullQ3);
+   mjQ3A, mjStarTrekEF:   Size1:=SizeOf(THullQ3);
   else Exit;
   end;
   I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
@@ -345,7 +348,7 @@ begin
                FirstFace:=Face_id;
                cTexInfo:=SizeOf(TTexInfoQ2);
               end;
-   mjQ3A: with PHullQ3(P)^ do
+   mjQ3A, mjStarTrekEF: with PHullQ3(P)^ do
               begin
                NbFaces:=Face_num;
                FirstFace:=Face_id;
