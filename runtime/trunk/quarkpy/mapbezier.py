@@ -26,10 +26,11 @@ class CPHandle(qhandles.GenericHandle):
     undomsg = Strings[627]
     hint = "reshape bezier patch (Ctrl key: force control point to grid)||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
-    def __init__(self, pos, b2, ij):
+    def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
         self.b2 = b2
         self.ij = ij
+        self.color = color #DECKER
 
     def draw(self, view, cv, draghandle=None):
         if self.ij == (0,0):
@@ -40,6 +41,7 @@ class CPHandle(qhandles.GenericHandle):
         if p.visible:
             cv.reset()
             #cv.brushcolor = MapColor("Bezier")
+            cv.brushcolor = self.color #DECKER
             cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
     def drawcpnet(self, view, cv, cp=None):
@@ -124,3 +126,28 @@ class CenterHandle(maphandles.CenterHandle):
     def __init__(self, pos, centerof):
         maphandles.CenterHandle.__init__(self, pos, centerof, 0x202020, 1)
 
+#DECKER - added, so its possible to move the entire bezier
+# However, I don't know if this is the way to do it properly ;-/ But it seems to work
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        if not (flags&MB_CTRL):
+            delta = qhandles.aligntogrid(delta, 0)
+        self.draghint = vtohint(delta)
+        if delta or (flags&MB_REDIMAGE):
+            new = self.centerof.copy()
+            cp = map(list, self.centerof.cp)
+            for j in range(len(cp)):
+                cpline = cp[j]
+                for i in range(len(cpline)):
+                    p = cpline[i]
+                    s, t = p.tex_s, p.tex_t   # save texture coords
+                    p = p + delta
+                    if flags&MB_CTRL:
+                        p = qhandles.aligntogrid(p, 0)
+                    cp[j][i] = self.newpos = quarkx.vect(p.x, p.y, p.z, s, t)
+            new.cp = cp
+            new = [new]
+        else:
+            self.newpos = None
+            new = None
+        return [self.centerof], new

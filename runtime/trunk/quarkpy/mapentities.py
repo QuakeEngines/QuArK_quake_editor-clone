@@ -91,7 +91,7 @@ class EntityManager:
 
 #
 # A function to determine which Specifics in a Quake entity
-# are to be considered as 2D or 3D angles. 
+# are to be considered as 2D or 3D angles.
 #
 
 def ListAngleSpecs(entity):
@@ -176,7 +176,7 @@ class GroupType(EntityManager):
         def subspecs(m, group=o, editor=editor):
             editor.layout.explorer.sellist = group.subitems
             editor.layout.mpp.viewpage(1)
-            
+
         import mapbtns
         Spec1 = qmenu.item("Common &specifics...", subspecs, "Specifics/Args of sub-items")
         Spec1.state = qmenu.default
@@ -360,25 +360,40 @@ class BezierType(EntityManager):
         #
         # Bezier handles : one per control point
         #
+        colors = [[0xF00000, 0xD00000, 0xB00000, 0x900000, 0x700000],   #DECKER
+                  [0x00F000, 0x00D000, 0x00B000, 0x009000, 0x007000],
+                  [0x0000F0, 0x0000D0, 0x0000B0, 0x000090, 0x000070],
+                  [0xF0F000, 0xD0D000, 0xB0B000, 0x909000, 0x707000],
+                  [0x00F0F0, 0x00D0D0, 0x00B0B0, 0x009090, 0x007070],
+                  [0xF000F0, 0xD000D0, 0xB000B0, 0x900090, 0x700070],
+                  [0xF0F0F0, 0xD0D0D0, 0xB0B0B0, 0x909090, 0x707070]]
+        colj = 0 #DECKER
         h = []
         cp = o.cp
         for j in range(len(cp)):
+            coli = 0 #DECKER
             cpline = cp[j]
             for i in range(len(cpline)):
                 c1 = cpline[i]
                 # makes a list of couples (projected position, handle object)
-                h.append((view.proj(c1), mapbezier.CPHandle(c1, o, (i,j))))
+                h.append((view.proj(c1), mapbezier.CPHandle(c1, o, (i,j), colors[colj][coli]))) #DECKER
+                #DECKER - I have no idea how to make the below more "hardcore", so I resolve to basic addition coding
+                coli = coli + 1 #DECKER
+                if coli > 4: coli = 0 #DECKER
+            colj = colj + 1 #DECKER
+            if colj > 6: colj = 0 #DECKER
+
         h.sort()  # sort on Z-order, nearest first
         h.reverse()  # we have to draw back handles first, so reverse the order
         h = map(lambda x: x[1], h)  # extract the 2nd component of all couples (i.e., keep only handle objects)
-        
+
         #
         # Add a center handle
         #
         pos = o.origin
         if pos is not None:
             h.append(mapbezier.CenterHandle(pos, o))
-        
+
         return h
 
 
