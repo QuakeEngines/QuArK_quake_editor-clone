@@ -77,9 +77,11 @@ def MakeAxes3(x):
     return x, y, (y^x).normalized
     
 def NewAxes(prevaxes, newx):
-    mat=matrix_rot_v2u(newx,prevaxes[0])
-    return newx, mat*prevaxes[1], mat*prevaxes[2]
-
+    try:
+        mat=matrix_rot_v2u(newx,prevaxes[0])
+        return newx, mat*prevaxes[1], mat*prevaxes[2]
+    except:  # no angle
+        return prevaxes
 def MakeUniqueTargetname():
     import time
     return "t" + time.strftime("%Y%m%d%H%M%S", time.gmtime(time.time()))
@@ -667,6 +669,10 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2001/02/08 10:44:27  tiglari
+#Fixed problems with paths going up & down.
+# Replaced subtraction code with end-face movement/distortion.
+#
 #Revision 1.4  2001/02/04 11:51:45  decker_dk
 #Some cleanup
 #
