@@ -494,6 +494,7 @@ QQRKSRC1
         AddOns = "DataQ3.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
+        PakFormat = "PAK#.PK3"
         CheckDirectory = "QUAKE3.EXE"
         Console = "1"
         Form = "GameQuake3"
