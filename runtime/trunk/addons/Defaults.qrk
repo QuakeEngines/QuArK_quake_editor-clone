@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.107  2001/03/20 10:58:56  tiglari
+//hotkey fix (now in General)
+//
 //Revision 1.106  2001/03/20 08:04:09  tiglari
 //customizable hot key support
 //
@@ -958,7 +961,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = ""
+        BuildArgs1 = "-moddir .."
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-vis -saveprt"
