@@ -29,12 +29,12 @@ def getEditorSelection(editor=None):
 def EscClick(m):
     editor = mapeditor(SS_MAP)
     if editor is None: return
-    if editor.layout.mpp.n:
-        editor.layout.mpp.viewpage(0)
+    #if editor.layout.mpp.n:
+        #editor.layout.mpp.viewpage(0)
     else:
+        editor.layout.mpp.viewpage(0)
         editor.layout.explorer.uniquesel = None
     delAttr(editor,'frozenselection')
-
 
 def UnfreezeClick(m):
     editor = mapeditor(SS_MAP)
