@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/03/05 18:40:29  decker_dk
+Misc. corrections.
+
 Revision 1.5  2001/03/02 19:35:55  decker_dk
 Physical Memory Total logged too.
 
@@ -1815,6 +1818,7 @@ begin
   begin
     aLog(-1,'SysLog> '+s.strings[i]);
   end;
+  s.free;
 end;
 
 initialization
