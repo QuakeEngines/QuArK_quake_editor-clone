@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/02/04 02:46:13  tiglari
+fixed problem with shaderfile loading (blocking was wrong)
+
 Revision 1.23  2001/02/04 01:43:14  tiglari
 dynamic/static; merge/non merge flags for texture-list building
 
@@ -121,6 +124,7 @@ type
     CancelBtn: TToolbarButton97;
     DynamicCheckBox: TCheckBox;
     MergeCheckBox: TCheckBox;
+    ShaderListCheckBox: TCheckBox;
     procedure CancelBtnClick(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
@@ -133,9 +137,10 @@ type
 
 function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 procedure BuildTextureFolders(Base: String; var Q: QObject);
-procedure BuildDynamicFolders(Base: String; var Q: QObject; merged: boolean);
-procedure BuildStaticFolders(Base: String; var Q: QObject; merged: boolean);
-procedure MergeTextureFolders(Base: String; var Q: QObject);
+procedure BuildDynamicFolders(Base: String; var Q: QObject; merged, allshaders: boolean);
+procedure BuildStaticFolders(Base: String; var Q: QObject; merged, allshaders: boolean);
+procedure MergeTextureFolders(Base: String; var Q: QObject; allshaders: boolean);
+function GameShaderList : String;
 
 implementation
 
@@ -184,6 +189,13 @@ begin
   for I:=0 to List2.Count-1 do
     List.Add(List2[I]);
   Result:=List;
+end;
+
+function GameShaderList : String;
+begin
+  Result:=SetupGameSet.Specifics.Values['ShaderList'];
+  if Result='' then
+    Result:='scripts/shaderlist.txt'
 end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject; overload
@@ -544,7 +556,7 @@ begin
 end;
 
 
-function ParsePakShaderFiles(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject; ShaderFiles: TStringList) : QObject;
+function ParsePakShaderFiles(Pak: QPakFolder; const Base, FolderName: String; DestFolder:QObject; ShaderList, FoundShaders: TStringList) : QObject;
 var
  I, Index: Integer;
  Q, Loaded: QObject;
@@ -556,10 +568,12 @@ begin
   begin
     Q:=Pak.SubElements[I];
     Index:=0;
-    if ShaderFiles.IndexOf(Q.Name)<0 then
+    if (ShaderList.Count>0) and (ShaderList.IndexOf(Q.Name)<0) then
+      continue;
+    if FoundShaders.IndexOf(Q.Name)<0 then
     begin
       LinkShaderFolder(Result, Q.Name+'.shader', FolderName, Base, Q);
-      ShaderFiles.Add(Q.Name);
+      FoundShaders.Add(Q.Name);
     end
   end;
 end;
@@ -671,7 +685,7 @@ begin
 end;
 
 
-function ParseShaderFiles(const Path, Base, FolderName: String; DestFolder:QObject; ShaderList: TStringList) : QObject;
+function ParseShaderFiles(const Path, Base, FolderName: String; DestFolder:QObject; ShaderList, FoundShaders: TStringList) : QObject;
 var
  F: TSearchRec;
  I, FindError: Integer;
@@ -684,13 +698,14 @@ begin
     try
       while FindError=0 do
       begin
+        ShortName:=FileNameOnly(F.Name);
         if F.Attr and faDirectory = 0 then
+        if (ShaderList.Count=0) or (ShaderList.IndexOf(ShortName)>=0) then
         begin
           Loaded:=Nil;
           try
-            ShortName:=FileNameOnly(F.Name);
             if CompareText(ExtractFileExt(F.Name), '.shader') = 0 then
-              ShaderList.Add(ShortName);
+              FoundShaders.Add(ShortName);
             while LinkShaderFolder(Result, F.Name, FolderName, Base, Loaded) do
             begin
               Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
@@ -728,7 +743,7 @@ var
  E : TQkExplorer;
  Q : QObject;
  J : Integer;
- merged : Boolean;
+ merged, allshaders : Boolean;
 begin
  ProgressIndicatorStart(0,0);
  try
@@ -738,10 +753,11 @@ begin
   begin
     Q:=nil;
     merged:=MergeCheckBox.state=cbChecked;
+    allshaders:=ShaderListCheckBox.state=cbUnChecked;
     if DynamicCheckBox.State=cbChecked then
-      BuildDynamicFolders(Base, Q, merged)
+      BuildDynamicFolders(Base, Q, merged, allshaders)
     else
-      BuildStaticFolders(Base, Q, merged);
+      BuildStaticFolders(Base, Q, merged, allshaders);
     if Q=Nil then
      Raise EErrorFmt(5660, [S]);
      try
@@ -775,7 +791,7 @@ begin
     Parental.SubElements.Add(Folder);
 end;
 
-procedure BuildDynamicFolders(Base : String; var Q:QObject; merged: Boolean);
+procedure BuildDynamicFolders(Base : String; var Q:QObject; merged, allshaders: Boolean);
 var
   OsF : QObject;
 begin
@@ -785,11 +801,13 @@ begin
   OsF.Specifics.Values['path']:=Base;
   if not merged then
     OsF.Specifics.Values['build']:='1';
+  if allshaders then
+    OsF.Specifics.Values['allshaders']:='1';
   ShowMessage('To see the contents of the new dynamic folder, restart Quark')
   {MergeTextureFolders(Base, OsF)}
 end;
 
-procedure BuildStaticFolders(Base : String; var Q:QObject; merged: Boolean);
+procedure BuildStaticFolders(Base : String; var Q:QObject; merged, allshaders: Boolean);
 var
   TxF : QObject;
 begin
@@ -798,7 +816,7 @@ begin
   Q.SubElements.Add(TxF);
   TxF.Specifics.Values['path']:=Base;
   if merged then
-    MergeTextureFolders(Base, QObject(TxF))
+    MergeTextureFolders(Base, QObject(TxF), allshaders)
   else
     BuildTextureFolders(Base, TxF)
 end;
@@ -881,22 +899,53 @@ begin
     end;
 end;
 
-procedure MergeTextureFolders(Base : String; var Q:QObject);
+procedure GetShaderList(Base : String; var List: TStringList);
+var
+  F : TextFile;
+  P : Integer;
+  FileName,S : String;
+begin
+  FileName:=PathandFile(QuakeDir,Base+'/'+GameShaderList);
+  List:=TStringList.Create;
+  if not FileExists(FileName) then
+    Exit;
+  AssignFile(F,FileName);
+  Reset(F);
+  while not Eof(F) do
+  begin
+    Readln(F,S);
+    P:=Pos('//',S);
+    if P=0 then
+      P:=Length(S)+1;
+    S:=Trim(Copy(S,1,P-1));
+    if Length(S)>0 then
+      List.Add(S);
+  end;
+  CloseFile(F);
+end;
+
+
+
+procedure MergeTextureFolders(Base : String; var Q:QObject; allshaders: boolean);
 var
   S, Path: String;
   SearchFolder : QObject;
   Pak: QPakFolder;
-  PakList, ShaderList: TStringList;
+  PakList, ShaderList, FoundShaders: TStringList;
   I: Integer;
 begin
   Path:=PathAndFile(QuakeDir, Base);
-  ShaderList:=TStringList.Create;
-
+  FoundShaders:=TStringList.Create;
+  if not allshaders then
+    GetShaderList(Base,ShaderList)
+  else
+    ShaderList:=TStringList.Create; { empty one ignored }
+    
   { Get Shaders }
   try
      { Find Quake-3:Arena .shader files in directory }
      S:=PathAndFile(Path, GameShadersPath);
-     Q:=ParseShaderFiles(S, Base, '', Q, ShaderList);
+     Q:=ParseShaderFiles(S, Base, '', Q, ShaderList, FoundShaders);
   except
      (*do nothing*)
   end;
@@ -920,7 +969,7 @@ begin
            SearchFolder:=Pak.GetFolder(GameShadersPath);
          if SearchFolder<>Nil then
          begin
-           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList);
+           Q:=ParsePakShaderFiles(SearchFolder as QPakFolder, Base, '', Q, ShaderList, FoundShaders);
          end;
         except
          (*do nothing*)
@@ -994,8 +1043,6 @@ begin
  MarsCap.ActiveBeginColor:=clGreen;
  MarsCap.ActiveEndColor:=clYellow;
  UpdateMarsCap;
- DynamicCheckBox.State:=cbChecked;
- MergeCheckBox.State:=cbChecked;
 end;
 
 end.

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/02/04 01:41:00  tiglari
+changed visibility of QOsFolder.ReadFolder
+
 Revision 1.7  2001/02/01 20:46:26  decker_dk
 added revision history
 
@@ -72,12 +75,14 @@ end;
 procedure QOsFolder.ReadFolder;
 var
  Base : String;
+ allshaders : boolean;
 begin
   Base:=Specifics.Values['path'];
+  allshaders:=Specifics.Values['allshaders']='1';
   if Specifics.Values['build']='1' then
     BuildTextureFolders(Base, QObject(Self))
   else
-    MergeTextureFolders(Base, QObject(Self));
+    MergeTextureFolders(Base, QObject(Self), allshaders);
 end;
 
 function QOsFolder.WriteSubElements;
