@@ -583,13 +583,6 @@ def intersection_vect(l1, l2):
         break
   return shared
        
-def cyclenext(i, len):
-  j = i+1
-  if j == len:
-    return 0
-  else:
-    return j
-    
   
 def oppositeedge(vtx, i, b):
   "returns (op1, op2, width) tuple, or 0, indexes of opposite vertices"
@@ -1369,7 +1362,9 @@ def tagpopup(editor, o):
           removefromtagged,
           selecttagged,
           mencleartag]
-  return qmenu.popup("&More Tagging", list, None, "More commands for managing tags")
+  tagpop = qmenu.popup("&More Tagging", list, None, "More commands for managing tags")
+  tagpop.label = 'tagpop'
+  return tagpop
 
 wrappoptext = "More commands and options"
 wraptaggedtext = "|Wraps texture from selected side, which is in a chain of tagged sides, across the rest of the chain, scaling the texture to eliminate seams.\n\nIf side is flanked by two on the tagged list, wrapping goes in direction of whichever was first pushed onto the tagged list.\n\nSomewhat limited, since it requires each side to share two vertices with the next, and tends to fail for complicated multi-brush wraps, probably because tests for vertex-sharing are unduly stringent.  I will be working on making them less restrictive."
@@ -1630,7 +1625,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   projtex.text = "Project from tagged"
   texpop.items = texpop.items + [projtex,wrappop]
   menu[:0] = [#extendtolinked(editor, o),
-              gluemenuitem("Tag &side",TagSideClick,o,tagtext),
+              gluemenuitem("&Tag face",TagSideClick,o,tagtext),
 #              addtotagged,
               glueitem,
               tagpop,
@@ -1881,6 +1876,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2000/07/25 15:55:24  alexander
+#fixed: right clicking in the background python crash
+#
 #Revision 1.7  2000/07/24 09:12:49  tiglari
 #Put texture-wrap & projection into a submenu labelled 'texpop', for texture menu cleanup as suggested by Brian Audette
 #
