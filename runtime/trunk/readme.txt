@@ -1,4 +1,7 @@
 
+ * [Decker] Fixed GDI-object(s) not being released (leaked), when using 
+     colors on tree-view groups.
+
                    QuArK 6.4 Snapshot 1
 
  * [tiglari] Fix problems with texture positioning in Classic Quake
