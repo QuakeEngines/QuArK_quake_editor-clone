@@ -12,6 +12,45 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [alexander]: HL2 Support started. I changed quite a lot of files:
+       runtime/addons/Defaults.qrk-//hl2 support started
+       runtime/addons/Half-Life2/entities-hl2-cs.qrk-//first useable versions, added rcs headers
+       runtime/addons/Half-Life2/entities-hl2-dm.qrk-//first useable versions, added rcs headers
+       runtime/addons/Half-Life2/entities-hl2.qrk-//first useable versions, added rcs headers
+       runtime/addons/Half-Life2/models-hl2.qrk-//first useable versions,cvs headers added
+       runtime/plugins/entfgd2qrk.py-#removed bloody duplicated rcs headers again
+       runtime/plugins/entfgd2qrk.py-#no default angle specifics
+       runtime/plugins/entfgd2qrk.py-#can parse hl2 and hl2 mp hammer files now
+       runtime/quarkpy/mapentities.py-#movedir specific gets angle maphandle
+       runtime/quarkpy/qdictionnary.py-#added format names for hl2
+       runtime/quarkpy/qdictionnary.py-#added vtf format name
+       runtime/quarkpy/qdictionnary.py-#new messages for gcf files
+       runtime/quarkpy/qdictionnary.py-#new: support for vtf file loading
+       source/dllsource/dxtdecode/dxtdec.c-hl2 support started
+       source/dllsource/dxtdecode/dxtdecode.def-;hl2 support started
+       source/dllsource/dxtdecode/Makefile-#hl2 support started
+       source/dllsource/gcfwrap/dxtdec.c-hl2 support started
+       source/Makefile-#added makefile to build quark with the help of gmake
+       source/prog/Game.pas-first gcf access attempt
+       source/prog/QkGCF.pas-first gcf access attempt
+       source/prog/QkImages.pas-hl2 support started
+       source/prog/QkMapObjects.pas-support for HL2 input and output type specifics (input#specificname)
+       source/prog/QkMapObjects.pas-save in HL2 map format when MapFormat is configured to HL2
+       source/prog/QkMapPoly.pas-default lightrmap scale export
+       source/prog/QkMapPoly.pas-save in HL2 map format when MapFormat is configured to HL2
+       source/prog/QkTextures.pas-hl2 support started
+       source/prog/QkVTF.pas-changed vtf loading to use QuArKVTF.dll
+       source/prog/QkVTF.pas-added format names for hl2
+       source/prog/QkVTF.pas-new: support for vtf file loading
+       source/prog/Setup.pas-hl2 support started
+       source/QuArK.dpr-added a form for gcf browsing, added files for HL2 support
+
+ * [alexander]: removed unnecessary resampling and gamma conversion for open gl true color textures
+
+ * [alexander]: source/prog/QkMap.pas fixed malformed comment line with 0D inside fooling D5 and not D6
+ 
+ * [alexander]: source/prog/Game2.pas-fixed missing use clause
+ 
  * [cdunde]: Created GameCodeList.txt file to keep track of codes.
 
  * [peter-b]: Intercept "no attribute 'wraplist'" Python error when
