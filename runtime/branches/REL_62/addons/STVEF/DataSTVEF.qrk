@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.1  2001/02/11 11:24:48  decker_dk
+//Moved from addons directory
+//
 //Revision 1.1  2000/10/15 16:49:12  alexander
 //rename StarTrek EF to STVEF
 //
@@ -19325,52 +19328,42 @@ QQRKSRC1
       }
       trigger.qtxfolder =
       {
-        trigger_visible:e =
+        trigger_visible:b =
         {
-          origin = "0 0 0"
+          ;incl = "defpoly"
           ;desc = ""
         }
-        trigger_once:e =
+        trigger_once:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
+          ;incl = "defpoly"
         }
-        trigger_teleport:e =
+        trigger_teleport:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        trigger_hurt:e =
+        trigger_hurt:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        trigger_push:e =
+        trigger_push:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        trigger_multiple:e =
+        trigger_multiple:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
+          ;incl = "defpoly"
         }
-        trigger_formation:e =
+        trigger_formation:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        trigger_location:e =
+        trigger_location:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        trigger_entdist:e =
+        trigger_entdist:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
       }
       target.qtxfolder =
@@ -19587,51 +19580,41 @@ QQRKSRC1
       }
       func.qtxfolder =
       {
-        func_plat:e =
+        func_plat:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_door:e =
+        func_door:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
-          angle = "360"
+          ;incl = "defpoly"
         }
-        func_wall:e =
+        func_wall:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_usable:e =
+        func_usable:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_stasis_door:e =
+        func_stasis_door:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_breakable:e =
+        func_breakable:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_bobbing:e =
+        func_bobbing:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_train:e =
+        func_train:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
-        func_static:e =
+        func_static:b =
         {
-          origin = "0 0 0"
-          ;desc = ""
+          ;incl = "defpoly"
         }
       }
       info.qtxfolder =
