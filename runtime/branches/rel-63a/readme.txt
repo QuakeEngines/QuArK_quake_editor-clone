@@ -1,4 +1,42 @@
+
+                      QuArK 6.3d update
+                    
+                         Dec 29, 2002
+ 
+ 
+  Problems addressed:
+
+   * Console errors with restricted selections and vertex-dragging
+   
+   * Texture alignment with arches and bevels.
+   
+   * Aligning textures onto 'mirrored walls', e.g. the guide boxes
+      of the wall-maker, with the 'to mirror' texture wrapping option.
+ 
+   * For the above 2, see the arch_texalign_test.qrk file included.
+       I haven't tested all the positional variants of the arches
+       and bevels yet; w/b good if people extended the test .qrk.
+ 
+  New features:
+  
+   * when the selection is frozen, radiant-style brush and face-movement
+       is enabled (quickest apparent fix to movement bugs)
+       
+   * mirror-image  face|textures RMB command (yes, I know new features
+       aren't supposed to appear in bugfix updates, but this one seemed
+       egregiously missing'
+       
+   
+  Remaining Issues:
+  
+   * software 3d view becomes unresponsive after long use; sometimes
+      opening OGL window revives it; sometimes not (prolly can't fix).
+      
+   * Kingpin animated textures with animation length > 2 don't work.
+      (can't fix without finding my KP CD). 
+
                           QuArK 6.3d
+
 
                          
                          Dec 25, 2002
