@@ -403,6 +403,9 @@ def BaseMenu(sellist, editor):
       editor.ForceEverythingToGrid, "|This command forces the selected object(s) to the grid. It snaps their center to the nearest grid point.\n\nNote that for a polyhedron, this forces its center to the grid, not all its faces. For cubic polyhedron, you may need to divide the grid size by two before you get the expected results.")
     Force1.state = not editor.gridstep and qmenu.disabled
 
+
+    Cancel1 = qmenu.item("&Cancel Selections", mapselection.EscClick, "cancel all items selected")
+    #Cut1.cmd = "cut"
     Cut1 = qmenu.item("&Cut", editor.editcmdclick, "cut this to the clipboard")
     Cut1.cmd = "cut"
     Copy1 = qmenu.item("Cop&y", editor.editcmdclick, "copy this to the clipboard")
@@ -410,12 +413,15 @@ def BaseMenu(sellist, editor):
     Delete1 = qmenu.item("&Delete", editor.editcmdclick, "delete this")
     Delete1.cmd = "del"
 
-    return [Force1, qmenu.sep, Cut1, Copy1, Delete1]
+    return [Force1, qmenu.sep, Cancel1, qmenu.sep, Cut1, Copy1, Delete1]
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.8  2001/07/27 11:32:57  tiglari
+#bsp study: special commands menu when bsp is loaded
+#
 #Revision 1.7  2001/04/28 02:21:04  tiglari
 #move 'remove' to mapselection.py, add selection menu therefrom
 #
