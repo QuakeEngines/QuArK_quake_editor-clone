@@ -22,11 +22,11 @@ See also http://www.planetquake.com/quark
 **************************************************************************)
 
 {
-
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
 }
 
 
@@ -39,14 +39,14 @@ uses
   StdCtrls, QkForm, ExtCtrls;
 
 type
+  PHelpPopup = ^THelpPopup;
   THelpPopup = class(TQkForm)
     Memo1: TMemo;
     procedure FormDeactivate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Déclarations privées }
   public
@@ -68,6 +68,9 @@ uses Quarkx, TB97;
 const
  BlueColor = $D0A000;
 
+var
+ CurrentActiveHelpPopup: PHelpPopup;
+
 procedure HelpPopup(const HelpText: String);
 var
  P: TPoint;
@@ -76,17 +79,29 @@ var
  R: TRect;
 begin
  Application.Hint:='';
- F:=THelpPopup.Create(Application);
+{DECKER-todo
+ if (CurrentActiveHelpPopup<>nil) then
+  F:=CurrentActiveHelpPopup^
+ else
+  F:=THelpPopup.Create(Application);
+ CurrentActiveHelpPopup:=@F;
+}
+ F:=THelpPopup.Create(Application); {DECKER-todo}
  with F do
   begin
    Caption:=LoadStr1(288);
    MarsCap.ActiveBeginColor:=BlueColor;
    MarsCap.ActiveEndColor:=clWhite;
    UpdateMarsCap;
-   L:=TStringList.Create; try
-   L.Text:=HelpText;
-   Memo1.Lines.Assign(L);
-   finally L.Free; end;
+   L:=TStringList.Create;
+   try
+    L.Text:=HelpText;
+    Memo1.Lines.Assign(L);
+    Memo1.SelStart:=0; { Set caret position to top-most, so the user can use the arrow-keys to scroll down/up with. }
+    Memo1.SelLength:=0;
+   finally
+    L.Free;
+   end;
    if GetCursorPos(P) then
     begin
      Dec(P.X, Width div 2);
@@ -96,12 +111,14 @@ begin
       P.X:=R.Right - Width;
      if P.Y+Height > R.Bottom then
       P.Y:=R.Bottom - Height;
-     if P.X<R.Left then P.X:=R.Left;
-     if P.Y<R.Top then P.Y:=R.Top;
+     if P.X<R.Left then
+      P.X:=R.Left;
+     if P.Y<R.Top then
+      P.Y:=R.Top;
      Left:=P.X;
-     Top:=P.Y; 
+     Top:=P.Y;
     end;
-   Color:=MiddleColor(BlueColor, ColorToRGB(clWindow), 0.25);
+//   Color:=MiddleColor(BlueColor, ColorToRGB(clWindow), 0.25);
    Show;
   end;
 end;
@@ -110,19 +127,20 @@ end;
 
 procedure THelpPopup.FormDeactivate(Sender: TObject);
 begin
- Close;
+ Close; {DECKER-todo}
 end;
 
 procedure THelpPopup.FormResize(Sender: TObject);
 begin
  Invalidate;
- Memo1.SetBounds(2,2, ClientWidth-4, ClientHeight-4);
+ Memo1.SetBounds(0,0, ClientWidth, ClientHeight);
 end;
 
 procedure THelpPopup.FormPaint(Sender: TObject);
 var
  W, H: Integer;
 begin
+(*
  W:=ClientWidth-1;
  H:=ClientHeight-1;
  with Canvas do
@@ -146,21 +164,29 @@ begin
    LineTo(W,1);
    LineTo(1,1);}
   end;
+*)
 end;
 
 procedure THelpPopup.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  Action:=caFree;
+{DECKER-todo
+ CurrentActiveHelpPopup:=nil;
+}
 end;
 
-procedure THelpPopup.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure THelpPopup.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
  if Key = vk_Escape then
   begin
    Key:=0;
    Close;
   end;
+end;
+
+initialization
+begin
+ CurrentActiveHelpPopup:=nil;
 end;
 
 end.
