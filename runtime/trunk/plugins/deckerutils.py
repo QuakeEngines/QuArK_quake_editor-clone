@@ -70,3 +70,23 @@ def NewXYZCube(x,y,z,tex):
     p.appenditem(f)
 
     return p
+
+def RegisterInToolbox(toolboxname, qtxfolder, obj):
+# FIXME - Make so ':form' also can be added somewhere.
+    for t in quarkx.findtoolboxes(toolboxname):
+        for f in t[1].subitems:
+            if (f.shortname == qtxfolder):
+                # If object already is in toolbox, don't put it in again!
+                o = f.findname(obj.name)
+                if (o is None):
+                    print "--adding"
+                    f.appenditem(obj)
+                return
+        # Did not find a qtxfolder, create one
+        newf = quarkx.newobj(qtxfolder+".qctx")
+        print "--f"
+        newf.appenditem(obj)
+        print "--folder"
+        t[1].parent.appenditem(newf)
+        print "--folderadded"
+        return
