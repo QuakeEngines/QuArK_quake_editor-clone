@@ -1,0 +1,257 @@
+QQRKSRC1
+// This file has been written by QuArK QuArK 6.4 alpha
+// It's the text version of file: DataHL2.qrk
+
+{
+  QuArKProtected = "1"
+  NewFiles.qtx =
+  {
+    ToolBox = "New files..."
+    Root = "Halflife2 file types.qtxfolder"
+    Halflife2 file types.qtxfolder =
+    {
+      Texture Wad.wad =
+      {
+      }
+    }
+  }
+  walltex:incl =
+  {
+    tex = "brick/brickwall001a"
+  }
+  floortex:incl =
+  {
+    tex = "stone/stonefloor011a"
+  }
+  ceiltex:incl =
+  {
+    tex = "skybox/sky_wasteland02lf"
+  }
+  NewMap:incl =
+  {
+    Game = "Half-Life2"
+    Root = "worldspawn:b"
+    worldspawn:b =
+    {
+      maxpropscreenwidth = "-1"
+      skyname = "sky_wasteland02"
+      newunit = "0"
+      gametitle = "0"
+      startdark = "0"
+      message = ""
+      chaptertitle = ""
+      Border walls:g =
+      {
+        East wall:p =
+        {
+          west:f =
+          {
+            v = '256 0 272 256 -128 272 256 0 400'
+            tex = "brick/brickwall001a"
+          }
+          east:f =
+          {
+            v = '272 0 272 272 128 272 272 0 400'
+            tex = "brick/brickwall001a"
+          }
+          south:f =
+          {
+            v = '432 -192 272 560 -192 272 432 -192 400'
+            tex = "brick/brickwall001a"
+          }
+          north:f =
+          {
+            v = '432 192 272 304 192 272 432 192 400'
+            tex = "brick/brickwall001a"
+          }
+          down:f =
+          {
+            v = '432 0 -96 560 0 -96 432 -128 -96'
+            tex = "brick/brickwall001a"
+          }
+          up:f =
+          {
+            v = '432 0 96 560 0 96 432 128 96'
+            tex = "brick/brickwall001a"
+          }
+        }
+        West wall:p =
+        {
+          west:f =
+          {
+            v = '-272 0 272 -272 -128 272 -272 0 400'
+            tex = "brick/brickwall001a"
+          }
+          east:f =
+          {
+            v = '-256 0 272 -256 128 272 -256 0 400'
+            tex = "brick/brickwall001a"
+          }
+          south:f =
+          {
+            v = '432 -192 272 560 -192 272 432 -192 400'
+            tex = "brick/brickwall001a"
+          }
+          north:f =
+          {
+            v = '432 192 272 304 192 272 432 192 400'
+            tex = "brick/brickwall001a"
+          }
+          down:f =
+          {
+            v = '432 0 -96 560 0 -96 432 -128 -96'
+            tex = "brick/brickwall001a"
+          }
+          up:f =
+          {
+            v = '432 0 96 560 0 96 432 128 96'
+            tex = "brick/brickwall001a"
+          }
+        }
+        North wall:p =
+        {
+          west:f =
+          {
+            v = '-256 0 272 -256 -128 272 -256 0 400'
+            tex = "brick/brickwall001a"
+          }
+          east:f =
+          {
+            v = '256 0 272 256 128 272 256 0 400'
+            tex = "brick/brickwall001a"
+          }
+          south:f =
+          {
+            v = '432 192 272 560 192 272 432 192 400'
+            tex = "brick/brickwall001a"
+          }
+          north:f =
+          {
+            v = '432 208 272 304 208 272 432 208 400'
+            tex = "brick/brickwall001a"
+          }
+          down:f =
+          {
+            v = '432 0 -96 560 0 -96 432 -128 -96'
+            tex = "brick/brickwall001a"
+          }
+          up:f =
+          {
+            v = '432 0 96 560 0 96 432 128 96'
+            tex = "brick/brickwall001a"
+          }
+        }
+        South wall:p =
+        {
+          west:f =
+          {
+            v = '-256 0 272 -256 -128 272 -256 0 400'
+            tex = "brick/brickwall001a"
+          }
+          east:f =
+          {
+            v = '256 0 272 256 128 272 256 0 400'
+            tex = "brick/brickwall001a"
+          }
+          south:f =
+          {
+            v = '432 -208 272 560 -208 272 432 -208 400'
+            tex = "brick/brickwall001a"
+          }
+          north:f =
+          {
+            v = '432 -192 272 304 -192 272 432 -192 400'
+            tex = "brick/brickwall001a"
+          }
+          down:f =
+          {
+            v = '432 0 -96 560 0 -96 432 -128 -96'
+            tex = "brick/brickwall001a"
+          }
+          up:f =
+          {
+            v = '432 0 96 560 0 96 432 128 96'
+            tex = "brick/brickwall001a"
+          }
+        }
+        Sky:p =
+        {
+          west:f =
+          {
+            v = '-256 0 272 -256 -128 272 -256 0 400'
+            tex = "skybox/sky_wasteland02lf"
+          }
+          east:f =
+          {
+            v = '256 0 272 256 128 272 256 0 400'
+            tex = "skybox/sky_wasteland02lf"
+          }
+          south:f =
+          {
+            v = '432 -192 272 560 -192 272 432 -192 400'
+            tex = "skybox/sky_wasteland02lf"
+          }
+          north:f =
+          {
+            v = '432 192 272 304 192 272 432 192 400'
+            tex = "skybox/sky_wasteland02lf"
+          }
+          down:f =
+          {
+            v = '432 0 96 560 0 96 432 -128 96'
+            tex = "skybox/sky_wasteland02lf"
+          }
+          up:f =
+          {
+            v = '432 0 112 560 0 112 432 128 112'
+            tex = "skybox/sky_wasteland02lf"
+          }
+        }
+        Floor:p =
+        {
+          west:f =
+          {
+            v = '-256 0 272 -256 -128 272 -256 0 400'
+            tex = "stone/stonefloor011a"
+          }
+          east:f =
+          {
+            v = '256 0 272 256 128 272 256 0 400'
+            tex = "stone/stonefloor011a"
+          }
+          south:f =
+          {
+            v = '432 -192 272 560 -192 272 432 -192 400'
+            tex = "stone/stonefloor011a"
+          }
+          north:f =
+          {
+            v = '432 192 272 304 192 272 432 192 400'
+            tex = "stone/stonefloor011a"
+          }
+          down:f =
+          {
+            v = '432 0 -112 560 0 -112 432 -128 -112'
+            tex = "stone/stonefloor011a"
+          }
+          up:f =
+          {
+            v = '432 0 -96 560 0 -96 432 128 -96'
+            tex = "stone/stonefloor011a"
+          }
+        }
+      }
+      info_player_start:e =
+      {
+        origin = "-144 0 -72"
+        angles = "0 0 0"
+      }
+    }
+  }
+  Half-Life2 setup.qctx =
+  {
+    Game = "Half-Life2"
+    HTML = "help/index.html"
+    SFSkills = '256 512 1024 2048'
+  }
+}
