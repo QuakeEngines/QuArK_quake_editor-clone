@@ -26,6 +26,7 @@
 #
 ##########################################################
 
+
 #$Header$
 
 
@@ -255,7 +256,7 @@ def projecttexfrom(source, goal):
   newface.setthreepoints((p,pt1,pt2),1)
   newface.texturename=source.texturename
   if newface.normal*goal.normal<0:
-    newface.swapsides()
+     newface.swapsides()
 #    (p1, p2, p3) = newface.threepoints(1)
 #    squawk("swapping")
 #    newface.setthreepoints((p1,-p2,-p3),1)
@@ -847,6 +848,28 @@ def wraptex(orig, side):
     return newside
 
 
+def MirrorFlipTexClick(m):
+    editor = mapeditor()
+    if editor is None: return
+    side = editor.layout.explorer.uniquesel
+    if side is None:
+        return
+    #
+    # this seems like an awkward technique, & I'd sort of
+    #  like to dispense with the swapsides_leavetex() method,
+    #  but I can't get anything else to work, and maybe
+    #  this method is a slight speed optimization anyway,
+    #  for invisible walls of some of the duplicators.
+    #
+    newside=side.copy()
+    newside.swapsides_leavetex()
+    newside=projecttexfrom(side,newside)
+    newside.swapsides_leavetex()
+    undo=quarkx.action()
+    undo.exchange(side, newside)
+    editor.ok(undo,"mirror flip texture")
+
+
 def AlignTexClick(m):
   "wraps texture from tagged to selected side"
   "uses wraptex to do the real work"
@@ -860,6 +883,10 @@ def AlignTexClick(m):
       if m.mirror:
           tagged=tagged.copy()
           tagged.swapsides()
+# version needed with wrong swapsides (not equiv to 63c)
+#          tagged2=tagged.copy()
+#          tagged2.swapsides()
+#          tagged = projecttexfrom(tagged, tagged2)
   except:  pass
   try:
       abutt = m.abuttype
@@ -871,11 +898,21 @@ def AlignTexClick(m):
   undo = quarkx.action()
 #  debug('what abut')
   if m.abuttype == 1:
-    newside = wraptex(tagged, side)
+    side2=side.copy()
+    if tomirroritem.state==qmenu.checked:
+       side2.swapsides()   
+    newside = wraptex(tagged, side2)
+    if tomirroritem.state==qmenu.checked:
+       newside.swapsides()   
   else:
-    debug('abut 0')
+#    debug('abut 0')
     newside=side.copy()
+    if tomirroritem.state==qmenu.checked:
+       newside.swapsides()   
     newside = projecttexfrom(tagged, newside)
+    if tomirroritem.state==qmenu.checked:
+       newside.swapsides()   
+      
   undo.exchange(side, newside)
   editor.ok(undo, ActionString)
   if checkshifttagged.state == qmenu.checked:
@@ -1259,6 +1296,9 @@ wraptext = "|Wraps from tagged, around pillar in direction of selected, scaling 
 aspecttext = "|If checked, aspect ratio of textures is preserved when texture is scaled wrapping around multiple sides (pillar and multi-wrap).\n\n Click to toggle check."
 checkaspectratio = qmenu.item("Preserve aspect ratio", ToggleCheck, aspecttext)
 
+tomirrortext = "|If checked, texture is mirrored so as to look good when wrapped/projected to a wall-maker brush-face, etc."
+tomirroritem = qmenu.item("To mirror", ToggleCheck,tomirrortext)
+
 selecttaggedtext = "Tagged items become multi-selection"
 
 shifttagtext = "|If checked, selected side becomes tagged side after `wrap texture from tagged' operation.\n\n  Click to toggle check."
@@ -1311,6 +1351,7 @@ def wrappopup(o, tagged):
           wraptagged,
           qmenu.sep,
           checkaspectratio,
+#          tomirroritem,
           requestmultiplier,
           checkshifttagged
          ]
@@ -1514,6 +1555,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   glueitem = gluemenuitem("&Glue to tagged", GlueSideClick, o, gluetext)
   glueitem.label = 'glue'
   snapitem = mapsnapobject.parentSnapPopup(o,editor)
+  mirrorflipitem = gluemenuitem("Mirror flip &tex", MirrorFlipTexClick, o, "Flip tex to mirror-image")
   linktotagged = gluemenuitem("&Link face to tagged", LinkFaceClick, o, "|Links face to tagged for the `glue to linked' command.\n\nNormally the `Glue to tagged' command with the `link on glue' option set should be used instead of this command, because this command doesn't move the face to what it gets linked to, and so doesn't test for broken polys.")
 #  aligntex = gluemenuitem("&Wrap texture from tagged", AlignTexClick, o, aligntext)
   tagpop = tagpopup(editor, o)
@@ -1547,7 +1589,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   texpop = findlabelled(menu,'texpop')
   projtex = projecttex(editor,o)
   projtex.text = "Project from tagged"
-  texpop.items = texpop.items + [projtex,wrappop]
+  texpop.items = texpop.items + [projtex,mirrorflipitem,wrappop]
   menu[:0] = [#extendtolinked(editor, o),
               gluemenuitem("&Tag face",TagSideClick,o,tagtext),
 #              addtotagged,
@@ -1830,6 +1872,16 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.20.2.4  2003/01/01 05:08:33  tiglari
+#remove debug comments
+#
+#Revision 1.20.2.3  2002/12/30 05:04:13  tiglari
+#remove 'to mirror' option - doesn't seem to be necessary
+#
+#Revision 1.20.2.2  2002/05/19 05:06:12  tiglari
+#Put Select tagged faces command on selection menu
+#
+
 #Revision 1.21  2002/05/18 22:38:31  tiglari
 #remove debug statement
 #
