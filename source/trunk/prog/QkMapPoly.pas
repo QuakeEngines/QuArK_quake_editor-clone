@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/03/20 21:45:22  decker_dk
+Updated copyright-header
+
 Revision 1.28  2001/02/17 06:06:13  tiglari
 removed matrixmult(by vect)
 
@@ -977,7 +980,7 @@ begin
       Pts[J].X:=Round(x);
       Pts[J].Y:=Round(y);
      end;
-   Polygon(Info.DC, Pts, NbPts);       
+   Polygon(Info.DC, Pts, NbPts);
   end
  else
   begin
@@ -987,6 +990,58 @@ begin
    CCoord.Polygon95(Pts2, NbPts, Dot(S^.F.Normale, CCoord.VectorEye(S^.prvDescS[0]^.P))<0);
   end;
 end;
+
+{ The idea here is to project the threepoints onto the plane
+  with the closest normal to the face, then normalize &
+  pull out the scale & shift info }
+procedure WC202MapParams(const Normale: TVect; const V: TThreePoints; Mirror: Boolean; var S: String);
+var
+  Plan: Char;
+  Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2 : TVect;
+  S1, S2 : Double;
+
+  procedure write4vect(const V: TVect; D : Double; var S: String);
+  begin
+     S:=S+' [ ';
+     S:=S+FloatToStrF(V.X, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(V.Y, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(V.Z, ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(D, ffFixed, 20, 5)+' ';
+     S:=S+'] ';
+  end;
+
+begin
+  Plan:=PointsToPlane(Normale);
+  case Plan of
+   'X' : Axis := MakeVect(1, 0, 0);
+   'Y' : Axis := MakeVect(0, 1, 0);
+   'Z' : Axis := MakeVect(0, 0, 1);
+  end;
+
+  P0:=V[1];
+  if Mirror then
+  begin
+    P2:=V[2]; P1:=V[3]
+  end
+  else
+  begin
+    P2:=V[3]; P1:=V[2];
+  end;
+  Origin:=MakeVect(0,0,0);
+  PP0:=ProjectPointToPlane(P0, Axis, Origin, Axis);
+  PP1:=ProjectPointToPlane(P1, Axis, Origin, Axis);
+  PP2:=ProjectPointToPlane(P2, Axis, Origin, Axis);
+  D1:= VecDiff(PP1, PP0);
+  D2:= VecDiff(PP2, PP0);
+  Normalise(D1, S1);
+  Normalise(D2, S2);
+  write4vect(D1, 0, S);
+  write4vect(D2, 0, S);
+  S:=S+' '+FloatToStrF(S1/128, ffFixed, 20, 5);
+  S:=S+' '+FloatToStrF(S2/128, ffFixed, 20, 5);
+
+end;
+
 
 procedure ApproximateParams(const Normale: TVect; const V: TThreePoints; var Params: TFaceParams; Mirror: Boolean);
 var
@@ -1027,7 +1082,7 @@ begin
    S:=Sin(A);
    C:=Cos(A);
   {PX[2]:=Sqrt(Sqr(PX[2])+Sqr(PY[2]));}
-   PX[2]:=PX[2]*C + PY[2]*S; 
+   PX[2]:=PX[2]*C + PY[2]*S;
    Params[3]:=A*(180/pi);
 
    PX[3]:=PX[3]-PX[1];
@@ -2039,7 +2094,7 @@ var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers, BrushPrim : Boolean;
+ WriteIntegers, BrushPrim, WC202Map : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2060,6 +2115,7 @@ var
      end;
 }     S:=S+') ';
     end;
+
 
   procedure WriteFace(F: TFace);
   const
@@ -2266,21 +2322,24 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if not ((MJ=mjQ3A) and BrushPrim) then
+       if WC202Map then
        begin
-       ApproximateParams(Normale, P, Params, TextureMirror);
-       for I:=1 to 2 do
-        S:=S+' '+IntToStr(Round(Params[I]));
-       for I:=3 to 5 do
-        begin
-         R:=Round(Params[I]);
-         if Abs(R-Params[I])<rien then
-          S:=S+' '+IntToStr(R)
-         else
-          S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
-        end;
+        WC202MapParams(Normale, P, TextureMirror,S);
+       end else if not ((MJ=mjQ3A) and BrushPrim) then
+       begin
+         ApproximateParams(Normale, P, Params, TextureMirror);
+         for I:=1 to 2 do
+           S:=S+' '+IntToStr(Round(Params[I]));
+         for I:=3 to 5 do
+         begin
+           R:=Round(Params[I]);
+           if Abs(R-Params[I])<rien then
+             S:=S+' '+IntToStr(R)
+           else
+             S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
+         end;
        end;
-      end;
+     end;
      if MJ=mjHexen then
       S:=S+' -1'
      else
@@ -2369,7 +2428,7 @@ var
          end;
        end;
 
-     if Flags and soDisableEnhTex = 0 then
+     if (Flags and soDisableEnhTex = 0) and (not WC202Map) then
       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
@@ -2379,6 +2438,7 @@ begin
  if Info.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
+ WC202Map:=Flags and soEnableWC202<>0;
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
