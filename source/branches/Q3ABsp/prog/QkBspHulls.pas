@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10.4.1  2001/07/14 01:52:24  tiglari
+start adapting TBSPHull.CreateHull for Q3A hull creation
+
 Revision 1.10  2001/06/05 18:38:47  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -260,8 +263,9 @@ var
  HullType: Char;
  Delta, Size1: Integer;
  S: String;
- I, J, NoVert, NoVert2{, TexInfo_id}, SurfaceSize: Integer;
+ I, J, NoVert, NoVert2{, TexInfo_id}, SurfaceSize, FaceType: Integer;
  Faces, Faces2: PbSurface;
+ Q3Faces, Q3Faces2: PbQ3Surface;
  LEdges, Edges, Vertices, TexInfo, Planes, P: PChar;
  cLEdges, cEdges, cVertices, cTexInfo, cPlanes: Integer;
  LEdge: PLEdge;
@@ -332,31 +336,51 @@ begin
     TextureList.Acces;
    end;
   if HullType<mjQ3A then
-    SurfaceSize:=SizeOf(TbSurface)
-  else
-    SurfaceSize:=Sizeof(TbQ3Surface);
-  if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
-   Raise EErrorFmt(5635, [2]);
-  Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
-  if HullType<mjQ3A then
   begin
+    SurfaceSize:=SizeOf(TbSurface);
+    if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
+       Raise EErrorFmt(5635, [2]);
+    Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
     cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3,  LEdges)   div SizeOf(TLEdge);
     cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     NoBsp3,      Edges)    div SizeOf(TEdge);
     cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
+  end else
+  begin
+    SurfaceSize:=Sizeof(TbQ3Surface);
+    if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Q3Faces)) < (FirstFace+NbFaces)*SurfaceSize then
+      Raise EErrorFmt(5635, [2]);
+    Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
   end;
   cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
   cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  eBsp3_vertexes,   Vertices) div SizeOf(vec3_t);
   Vertices:=PChar(FBsp.FVertices);
 
-  Faces2:=Faces;
   Size1:=0;
-  for I:=1 to NbFaces do
-   begin
-    Inc(PChar(Faces2), SizeOf(TbSurface));
-    if Faces2^.ledge_id + Faces2^.ledge_num > cLEdges then
-     Raise EErrorFmt(5635, [3]);
-    Inc(Size1, TailleBaseSurface+Faces2^.ledge_num*SizeOf(PSommet));
-   end;
+  { for each face in the brush, reserve space for a Surface }
+  if HullType<mjQ3A then
+  begin
+    Faces2:=Faces;
+    for I:=1 to NbFaces do
+    begin
+      Inc(PChar(Faces2), SurfaceSize);
+      if Faces2^.ledge_id + Faces2^.ledge_num > cLEdges then
+        Raise EErrorFmt(5635, [3]);
+      Inc(Size1, TailleBaseSurface+Faces2^.ledge_num*SizeOf(PSommet));
+    end;
+  end
+  else
+  begin
+    Q3Faces2:=Q3Faces;
+    for I:=1 to NbFaces do
+    begin
+      Inc(PChar(Q3Faces2), SurfaceSize);
+      if Q3Faces2^.Face_Type=1 then
+      begin
+        {FIXME : check for face additions }
+        Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PSommet));
+      end;
+    end;
+  end;
   GetMem(SurfaceList, Size1);
   PChar(Surface1):=SurfaceList;
 
@@ -364,23 +388,42 @@ begin
 
   for I:=1 to NbFaces do
    begin
-    Inc(PChar(Faces), SizeOf(TbSurface));
-    PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge);
+    if HullType<mjQ3A then
+    begin
+      Inc(PChar(Faces), SurfaceSize);
+      PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge)
+    end
+    else
+    begin
+      Inc(PChar(Q3Faces), SurfaceSize);
+    end;
     Surface1^.Source:=Self;
     Surface1^.NextF:=Nil;
-    Surface1^.prvNbS:=Faces^.ledge_num;
-
-    if Faces^.Plane_id >= cPlanes then
-     begin
-      Inc(InvFaces); LastError:='Err Plane_id'; Continue;
-     end;
-    with PbPlane(Planes + Faces^.Plane_id * SizeOf(TbPlane))^ do
-     begin
-      NN.X:=normal[0];
-      NN.Y:=normal[1];
-      NN.Z:=normal[2];
-      PlaneDist:=dist;
-     end;
+    if HullType<mjQ3A then
+    begin
+      Surface1^.prvNbS:=Faces^.ledge_num;
+      if Faces^.Plane_id >= cPlanes then
+      begin
+        Inc(InvFaces); LastError:='Err Plane_id'; Continue;
+      end;
+      with PbPlane(Planes + Faces^.Plane_id * SizeOf(TbPlane))^ do
+      begin
+        NN.X:=normal[0];
+        NN.Y:=normal[1];
+        NN.Z:=normal[2];
+        PlaneDist:=dist;
+      end;
+    end
+    else
+    begin
+      with Q3Faces^ do
+      begin
+        Surface1^.prvNbS:=Vertex_num;
+        NN.X:=Normal[0];
+        NN.Y:=Normal[1];
+        NN.Z:=Normal[2];
+      end
+    end;
     {TexInfo_id:=Faces^.TexInfo_id;}
 
     PChar(Dest):=PChar(Surface1)+TailleBaseSurface;
