@@ -113,6 +113,7 @@ Strings = {
     264: "Map beziers",
     # /Rowdy
     265: "unexpected surface attribute",
+    266: "Sorry, Doom 3 version 2 maps are not currently supported.",
 
     288: "Help snippet - (press ESC to close window)",
     289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.|intro.mapeditor.menu.html#optionsmenu",
@@ -270,6 +271,8 @@ Strings = {
     810: "PNG image (*.png)|*.png",
     811: "Tribes 2 VL2 Files (*.vl2)|*.vl2",
     812: "Tribes 2 CS-script Files (*.cs)|*.cs",
+
+    813: "Doom 3 Pak Files (*.pk4)|*.pk4",
 
     2368: "Skins",
     2369: "Frames",
@@ -542,6 +545,7 @@ Strings = {
     5143: "Model",
     5144: ".mdl file",
     5145: ".md2 file",
+    5146: "Doom 3 Pak",
     5155: "Quake Context",
     5156: "Tool bar",
     5157: ".wav Sound",
@@ -646,7 +650,7 @@ Strings = {
     5385: "%s palette",
     # 5386: "You cannot change this palette directly here. Do you want to open the file that contains the %s ?",
     5386: "You cannot change this palette directly here",
-    5387: "%s texture - %d × %d",
+    5387: "%s texture - %d x %d",
     5388: "Texture Flags",
     5389: "Groups",
     5390: "Flags",
@@ -902,7 +906,30 @@ Strings = {
     5706: "gcfwrap.dll not found",
     5707: "gcf file %s cannot be opened. Corrupt ?",
     5708: "%s not found in %s",
-    
+
+    # Rowdy would like to reserve 5750..5769 for Doom 3 :-)
+
+    5750: "Material '%s' has no image to display",
+    # 5751: reserved
+    # 5752: reserved
+    # 5753: reserved
+    # 5754: reserved
+    # 5755: reserved
+    # 5756: reserved
+    # 5757: reserved
+    # 5758: reserved
+    # 5759: reserved
+    # 5760: reserved
+    # 5761: reserved
+    # 5762: reserved
+    # 5763: reserved
+    # 5764: reserved
+    # 5765: reserved
+    # 5766: reserved
+    # 5767: reserved
+    # 5768: reserved
+    # 5769: reserved
+
 # Negative numbers are never used directly by QUARK5.EXE.
 
     -101: "Cannot drop this item into a map.",
@@ -921,6 +948,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.57  2004/11/18 18:15:49  alexander
+#new messages for gcf files
+#
 #Revision 1.56  2004/11/07 16:24:22  alexander
 #new: support for vtf file loading
 #
