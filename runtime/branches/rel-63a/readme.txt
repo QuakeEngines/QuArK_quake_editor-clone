@@ -1,15 +1,33 @@
+                         QuArK 6.3d
+                         
+                         Dec 17, 2002
+
+ Updates:
+   * bug with non-inverse brush arches fixed (found by quantum_red)
+   * problems with valve mapversion220 format fixed (ditto)
+   * black model problem for SoF2 explained as follows:
+   There are 2 forms of models - one static and one misc. In some instances
+   both of them show perfectly - in others the misc_model shows up as black. It
+   has to do with the original shader that is for that particular model. Seems
+   there is some coding in there - don't remember the line - think it was a
+   lightmap line - anyway - the shader wasnt designed for the misc_model and
+   the model shows up black. The fix is to watch which one you use and switch
+   to the other form of the model. Wish I could tell ya more.
+     [Doug Abele/CHK Shoot]
+
+ Still Unresolved Issues (from QuArK forums, June-Sep)
+ * quark 6.3 Q1 mdl-viewing problems
+ * bsp viewing for Quake
+ * copy/paste causing texture misalignment
+
                          QuArK 6.3c
                          
                      update Oct 12, 2002
 
 
-Still Unresolved Issues (from QuArK forums, June-Sep)
- * quark 6.3 Q1 mdl-viewing problems
  * quantum red's tex align problem with Valve 220 output
      for Piping.ari
  * black misc_model problem for SoF2
- * bsp viewing for Quake
- * copy/paste causing texture misalignment
 
 Updates
 
