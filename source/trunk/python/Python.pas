@@ -246,6 +246,7 @@ function PyObject_NEW(t: PyTypeObject) : PyObject;
 function Py_BuildValueX(fmt: PChar; Args: array of const) : PyObject;
 function Py_BuildValueDD(v1, v2: Double) : PyObject;
 function Py_BuildValueDDD(v1, v2, v3: Double) : PyObject;
+function Py_BuildValueD5(v1, v2, v3, v4, v5: Double) : PyObject;
 function Py_BuildValueODD(v1: PyObject; v2, v3: Double) : PyObject;
 function PyArg_ParseTupleX(src: PyObject; fmt: PChar; AllArgs: array of const) : LongBool;
 {function PyArg_ParseTupleAndKeywordsX(arg, kwdict: PyObject; fmt: PChar; var kwlist: PChar; AllArgs: array of const) : LongBool;
@@ -462,6 +463,13 @@ type
  F = function(fmt: PChar; v1, v2, v3: Double) : PyObject; cdecl;
 begin
  Result:=F(Py_BuildValue)('ddd', v1, v2, v3);
+end;
+
+function Py_BuildValueD5(v1, v2, v3, v4, v5: Double) : PyObject;
+type
+ F = function(fmt: PChar; v1, v2, v3, v4, v5: Double) : PyObject; cdecl;
+begin
+ Result:=F(Py_BuildValue)('ddddd', v1, v2, v3, v4, v5);
 end;
 
 function Py_BuildValueODD(v1: PyObject; v2, v3: Double) : PyObject;
