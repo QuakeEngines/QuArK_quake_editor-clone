@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.65  2000/10/28 19:28:34  decker_dk
+//Some more comments reg. user-variables for build-tool controllers
+//
 //Revision 1.64  2000/10/27 20:42:28  decker_dk
 //Crystal Space .QRK files
 //
@@ -1913,7 +1916,7 @@ QQRKSRC1
         Txt = "Quake 3 CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
-        CheckFile = "INSTALL\DATA\BASEQ3\PAK0.PAK"
+        CheckFile = "INSTALL\DATA\BASEQ3\PAK0.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -2002,7 +2005,7 @@ QQRKSRC1
         Txt = "StarTrek Voyager Elite Force CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed StarTrek minimally, this is the drive of the CD-ROM."
-        CheckFile = "Setup\BASEEF\PAK0.PAK"
+        CheckFile = "SETUP\BASEEF\PAK0.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
