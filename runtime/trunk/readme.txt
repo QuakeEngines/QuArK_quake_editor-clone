@@ -1,7 +1,18 @@
+                 Patch3 to QuArK Snapshot of 2002ap29
 
-                Patch 2  to QuArK Snapshot of 2002ap20
+   
+ * [nurail] error involving line 447 mapquakemenu hopefully fixed
+
+ * [rtdtheprof] torque maps read correctly
+
+ * [tiglari] Mohaa maps should now be written correctly (not read, yet). 
+
+
+                Patch 2  to QuArK Snapshot of 2002ap29
                 
- * [tiglari] mirror duplicators are supposed to work now.
+ * [tiglari] mirror duplicators are supposed to work now.  This is
+    really a fix to new texture positioning scheme, the underlying
+    problem might have been having other repercussions.
 
 
                 Pattch 1 to QuArK Snapshot of 2002ap20
