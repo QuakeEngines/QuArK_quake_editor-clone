@@ -6,4 +6,5 @@ desc: memory
 desc: quakec
 desc: fileassociations
 desc: externaleditors
+desc: multimon
 
