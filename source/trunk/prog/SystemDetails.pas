@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2002/06/06 22:44:23  tiglari
+add & set g_CxScreen, g_CyScreen for dual monitor problems (info from
+ quantum_red and Decker)
+
 Revision 1.12  2002/04/01 10:01:52  tiglari
 changes to make QuArK compile under Delphi 6 Personal
 
@@ -64,6 +68,9 @@ interface
 uses
   SysUtils, Windows, Classes, Registry;
 
+{$IFDEF VER150}
+  {$DEFINE D4PLUS} // Rowdy for Delphi 7
+{$ENDIF}
 {$IFDEF VER140}
   {$DEFINE D4PLUS} // Rowdy for Delphi 6
 {$ENDIF}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2002/04/01 10:03:34  tiglari
+changes to make QuArK compile under Delphi 6 Personal (by Rowdy)
+
 Revision 1.4  2001/03/20 21:48:43  decker_dk
 Updated copyright-header
 
@@ -79,11 +82,16 @@ end;
 procedure Resample; cdecl; assembler;
 asm
  pop ebp
+ {$IFDEF VER150}
+  // Rowdy - added for Delphi 7
+ {$I RESIZER_DELPHI6.ASM}
+ {$ELSE}
  {$IFDEF VER140}
   // Rowdy - added for Delphi 6
  {$I RESIZER_DELPHI6.ASM}
  {$ELSE}
  {$I RESIZER.ASM}
+ {$ENDIF}
  {$ENDIF}
 end;
 
