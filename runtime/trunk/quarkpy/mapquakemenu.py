@@ -205,9 +205,11 @@ def qmenuitem1click(m):
         quarkx.msgbox(Strings[223], MT_ERROR, MB_OK)
         return
     if MapOption("AutoCheckMap", SS_MAP):
-        import mapsearch
-        if mapsearch.CheckMap() == 0:
-            return
+        setup = quarkx.setupsubset()
+        if setup["NoMapChecks"]!="1":
+            import mapsearch
+            if mapsearch.CheckMap() == 0:
+                return
     if m.info["RunGame"]:
         editor.layout.closeOpenGL()
     RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
@@ -555,6 +557,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.19  2001/03/18 12:17:26  decker_dk
+#Fixed FindSingleExtension() so it also reads the last extension at end-of-line.
+#
 #Revision 1.18  2001/03/15 20:53:53  tiglari
 #fix for no action build control parameters (Q1/H2)
 #
