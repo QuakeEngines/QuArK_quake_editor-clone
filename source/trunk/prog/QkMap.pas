@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.43  2002/05/07 09:12:04  tiglari
+prevent reversion to Quake mode when loading Torque maps (Desmond Fletcher)
+
 Revision 1.42  2002/04/30 12:27:49  tiglari
 Removed switch to Q3A mode when brushdef encountered: any game
  could have a brush-primitives-reading tool written for it.
@@ -1025,6 +1028,72 @@ expected one.
   { /tiglari }
  end;
 
+ { sort of like Sin, but simpler; we just read the flags without
+   bothering to check that they're not the same as the defaults }
+
+ procedure ReadMohaaSurfaceParms;
+ var
+   Val: String;
+ begin
+   while SymbolType=sStringToken do
+   begin // the +/- surfaceparms
+     if (S[1] = '+') or (S[1] = '-') then // read 'surfaceparm' and then a surfaceparm
+     begin
+       if (Copy(S,2,Length(S)-1)='surfaceparm') then
+       begin
+         if S[1]='+' then
+           Val:='1'
+         else
+           Val:='0';
+         ReadSymbol(sStringToken);
+         if Symboltype=sStringToken then
+         begin
+           Surface.Specifics.Values['_esp_'+S]:=Val
+         end;
+         ReadSymbol(sStringToken);
+       end;
+     end
+     else
+     // surfaceLight (int), surfaceColor (3f), surfaceAngle (int), tesselation (1f)
+     if S='surfaceLight' then
+     begin
+       ReadSymbol(sStringToken);
+       Surface.Specifics.Values['surfaceLight']:=S;
+       ReadSymbol(sNumValueToken);
+     end
+     else
+     if S='surfaceColor' then
+     begin
+       ReadSymbol(sStringToken);
+       ThreeSing[0]:=NumericValue;
+       ReadSymbol(sNumValueToken);
+       ThreeSing[1]:=NumericValue;
+       ReadSymbol(sNumValueToken);
+       ThreeSing[2]:=NumericValue;
+       ReadSymbol(sNumValueToken);
+       Surface.SetFloatsSpec('surfaceColor',ThreeSing);
+     end
+     else
+     if S='surfaceAngle' then
+     begin
+       ReadSymbol(sStringToken);
+       Surface.Specifics.Values['surfaceAngle']:=S;
+       ReadSymbol(sNumValueToken);
+     end
+     else
+     if s='tesselation' then
+     begin
+       ReadSymbol(sStringToken);
+       Surface.SetFloatSpec('tesselation',NumericValue);
+       ReadSymbol(sNumValueToken);
+     end
+     else
+       Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(265)]);  // unexpected surface attribute
+
+   end;
+ end;
+
+
  procedure ReadSquareTex4 (var Axis : TVect; var Shift : Double);
  begin
    ReadSymbol(sSquareBracketLeft);
@@ -1275,7 +1344,7 @@ begin
                 if SymbolType<>sNumValueToken then
                  Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
                 else
-                 begin  { Quake 2 : importe les trois champs }
+                 begin  { Quake 2, Heretic2 and Mohaa : read the three fields }
                   ContentsFlags:=NumericValue1;
                   Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
                   Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
@@ -1283,6 +1352,8 @@ begin
                   Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
                   ReadSymbol(sNumValueToken);
                   Result:=mjNotQuake1;
+                  if SymbolType=sStringToken then // Mohaa
+                    ReadMohaaSurfaceParms
                  end;
                end
               else
