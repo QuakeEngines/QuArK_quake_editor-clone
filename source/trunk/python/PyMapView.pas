@@ -46,6 +46,7 @@ const
   vfNoScrollBar  = $10;
   vfTopRedLine   = $20;
   vfBottomRedLine= $40;
+  vfSkinView     = $80;
 
   vfInitialFlags    = vfHScrollBar or vfVScrollBar or vfCrossDrag;
  {vfFlagsInvalidate = vfAxis;}
@@ -66,6 +67,7 @@ const
   dmDontDrawSel  = 64;
   dmRedrawFaces  = 128;
   dmComputePolys = 256;
+  dm2donly       = 512;
 
   crCrossHS      = 1;
   crCursorFirst  = 8;
@@ -2235,6 +2237,8 @@ begin
    Include(Info.ModeDessin, mdColorFixed);
   if flags and dmRedrawFaces <> 0 then
    Include(Info.ModeDessin, mdRedrawFaces);
+  if CurrentMapView.flags and vfskinview <> 0 then
+   Include(Info.ModeDessin, md2donly);
   try
    if flags and ({dmForeground or} dmBackground) = 0 then
     if (CurrentMapView.ViewMode=vmWireframe)

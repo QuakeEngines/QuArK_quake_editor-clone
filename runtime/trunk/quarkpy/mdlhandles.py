@@ -29,6 +29,7 @@ import qmenu
 
 vertexdotcolor = 0
 
+vfSkinView = 0x80
 
 
 #
@@ -279,8 +280,10 @@ def buildskinvertices(editor, view, component):
                  "custom": skinzoom,
                  "bbox": quarkx.boundingboxof(map(lambda h: h.pos, view.handles)),
                  "noclick": None,
-                 "mousemode": None }
+                 "mousemode": None
+                 }
     skinzoom(view, org)
+    view.flags = view.flags | vfSkinView;
     editor.setupview(view, drawsingleskin, 0)
     
       
@@ -417,6 +420,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.5  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
 #Revision 1.4  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #

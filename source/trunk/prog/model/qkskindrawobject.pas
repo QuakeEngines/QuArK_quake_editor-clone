@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/02/01 22:00:56  aiv
+Remove Vertex code now in python.
+
 Revision 1.2  2001/01/21 15:51:31  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -93,6 +96,7 @@ var
   pa, pa_o: PPointProj;
 begin
   if not(CCoord is T2DCoordinates) then exit;
+  if not (md2dOnly in Info.ModeDessin) then exit;
   c:=QComponent(Self.FParent);
   if (c = nil) or not(c is QComponent) then
     Raise Exception.Create('QSkinDrawObject.Dessiner - Internal Error: C');

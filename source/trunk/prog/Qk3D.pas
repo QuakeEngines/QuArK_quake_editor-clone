@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/11/26 19:08:33  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.5  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -93,7 +99,7 @@ type
  TDisplacementMode = (mdDisplacement, mdStrongDisplacementGrid, mdDisplacementGrid, mdLinear, mdLineaireCompat,
                      mdImageDuplicator, mdImageDuplicatorGrid, mdInflate, {mdInflateFace,}
                      mdVectorAngles);
- TModeDessin = set of (mdTraversalSelected, mdColorFixed, mdRedrawFaces, mdComputePolys, mdComputingPolys);
+ TModeDessin = set of (mdTraversalSelected, mdColorFixed, mdRedrawFaces, mdComputePolys, mdComputingPolys, md2dOnly);
 {TModeDeplTextures = (mdtAucun, mdtTranslations);}
 
  TDrawInfo = record
