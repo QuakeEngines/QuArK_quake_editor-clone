@@ -107,8 +107,8 @@ class StandardDuplicator(DuplicatorManager):
                 item.translate(self.origin-self.sourcecenter)
         if self.offset:
             item.translate(self.offset)
-        if self.matrix:
-            item.linear(self.origin, self.matrix)
+#        if self.matrix:
+#            item.linear(self.origin, self.matrix)
         return [item]
 
     def buildimages(self, singleimage=None):
@@ -130,10 +130,10 @@ class StandardDuplicator(DuplicatorManager):
         else:
             offset = cumoffset
         try:
-            if self.matrix2 is not None:
+            if self.matrix is not None:
                 for item in list:
                     center = maphandles.GetUserCenter(item)
-                    item.linear(center, self.matrix2)
+                    item.linear(center, self.matrix)
         except (AttributeError):
             pass
         for i in range(count):
@@ -147,12 +147,12 @@ class StandardDuplicator(DuplicatorManager):
             #  - and stores the new list back in "list".
             list = reduce(lambda x,y: x+y, map(lambda item, fn=self.do: fn(item.copy()), list), [])
             try:
-                if self.matrix2 is not None:
+                if self.matrix is not None:
                     for item in list:
                         center = maphandles.GetUserCenter(item)
                         if item["usercenter"]:
                             center=center+cumoffset
-                        item.linear(center, self.matrix2)
+                        item.linear(center, self.matrix)
             except (AttributeError):
                 pass
             if (singleimage is None) or (i==singleimage):
@@ -275,6 +275,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2001/05/08 21:14:15  tiglari
+#hollowmaker/wallmaker fixed
+#
 #Revision 1.8  2001/05/06 08:07:26  tiglari
 #remove debug
 #
