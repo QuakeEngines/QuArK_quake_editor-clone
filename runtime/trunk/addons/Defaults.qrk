@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.133  2001/05/11 09:37:41  tiglari
+//linear specific edit button added to linearform (scale & rotate must die,
+//  but not quite yet)
+//
 //Revision 1.132  2001/05/07 08:55:04  tiglari
 //update version
 //
@@ -3308,9 +3312,10 @@ QQRKSRC1
        neg: = {Txt="&" Typ="X" Hint="if checked, brush is negative"}
     }
     linearform:incl = {
-       scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling" }
-       angles: = {Txt="&" Typ="E"  Hint="Pitch Roll Yaw Angles" $ 0D " (Rotation around Y X Z axes, in order)" }
-       matrix: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
+//       scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling" }
+//       angles: = {Txt="&" Typ="E"  Hint="Pitch Roll Yaw Angles" $ 0D " (Rotation around Y X Z axes, in order)" }
+//       matrix: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
+       linear: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " You probably don't want to edit this directly;" $0D " hit the 'Edit Linear' button below"}
        linedit: = {
          Txt="Edit Linear" Typ="P" Macro="linedit" Cap="push" Hint="Push to edit the matrix in the linear specific" $0D "  (Under Construction)"}
     }
