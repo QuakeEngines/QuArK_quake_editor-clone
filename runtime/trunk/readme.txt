@@ -1,3 +1,10 @@
+6.4.0 alpha 2
+=============
+
+ * [SilverPaladin]: Fixed the error that caused all Toolbox window
+      Edit and Toolboxes menus not to work.
+
+
 6.4.0 alpha 1
 =============
 
