@@ -75,7 +75,7 @@ class GameConsole(BatchConsole):
                 flst.append((fobj.name, fobj.copy()))
         for f in filelist:
             flst.append((f, None))
-        self.filelist = flst
+        self.filelistdata = flst
         self.pakfile = quarkx.outputpakfile(forcepak)
 
         dir = setup["Directory"]
@@ -101,7 +101,7 @@ class GameConsole(BatchConsole):
         if writeto:
             pak = quarkx.newfileobj(writeto)
             pak["temp"] = "1"
-            for qname, qobj in self.filelist:
+            for qname, qobj in self.filelistdata:
                 nopak = qname[:1]=='*'
                 if nopak:
                     qname = qname[1:]
@@ -111,10 +111,12 @@ class GameConsole(BatchConsole):
                         qobj = quarkx.openfileobj(quarkx.outputfile(qname))
                     except:
                         err = ": ignored"
-                print "/" + qname + err
                 if qobj is not None:
                     if nopak:
-                        qobj.savefile(quarkx.outputfile(qname))
+                        if quarkx.getfileattr(quarkx.outputfile(qname))>-1: #DECKER - do not overwrite something that already is there!
+                            err = ": exists"                                #DECKER
+                        else:                                               #DECKER
+                            qobj.savefile(quarkx.outputfile(qname))
                     else:
                         type1 = string.upper(qobj.type)
                         if type1:
@@ -128,11 +130,12 @@ class GameConsole(BatchConsole):
                         folder = pak.getfolder(qname[:i])
                         qobj.shortname = qname[i:]
                         folder.appenditem(qobj)
+                print "/" + qname + err
             pak.filename = writeto
             pak.savefile()
         else:
             writeto = quarkx.outputfile("")
-            for qname, qobj in self.filelist:
+            for qname, qobj in self.filelistdata:
                 if qname[:1]=='*':
                     qname = qname[1:]
                 fname = quarkx.outputfile(qname)
@@ -141,10 +144,13 @@ class GameConsole(BatchConsole):
                     if quarkx.getfileattr(fname)==-1:
                         err = ": ignored"
                 else:
-                    qobj.savefile(fname)
+                    if quarkx.getfileattr(fname)>-1:    #DECKER - do not overwrite something that already is there!
+                        err = ": exists"                #DECKER
+                    else:                               #DECKER
+                        qobj.savefile(fname)
                 print "/" + qname + err
         print "Files stored in %s" % writeto
-        del self.filelist
+        del self.filelistdata
 
         if not self.cmdline:
             print "Operation finished."
@@ -179,7 +185,7 @@ class GameConsole(BatchConsole):
     def close(self):
         BatchConsole.close(self)
         try:
-            del self.filelist
+            del self.filelistdata
         except:
             pass
         try:
