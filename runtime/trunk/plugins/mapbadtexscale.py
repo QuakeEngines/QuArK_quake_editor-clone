@@ -30,6 +30,7 @@ import quarkpy.mapmenus
 import quarkpy.mapcommands
 import quarkpy.dlgclasses
 from quarkpy import guiutils
+from quarkpy import guiutils
 
 import mapmadsel
 import quarkx
@@ -248,3 +249,6 @@ quarkpy.mapsearch.items.append(qmenu.item('Find Bad Tex Scale', badClick,
  "|This finds faces whose texture axes are almost parallel"))
 
 #$Log$
+#Revision 1.1  2002/04/01 08:31:48  tiglari
+#modelled on mapmicrobrush.py, but some stuff abstracted into quarkpy.guiutils
+#
