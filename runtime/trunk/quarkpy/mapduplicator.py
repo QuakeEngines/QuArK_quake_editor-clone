@@ -149,7 +149,25 @@ class StandardDuplicator(DuplicatorManager):
             for spec in self.dup.dictspec.keys():
                 if self.dup[spec]!="":
                     if string.find(spec,'final_')==0:
-                        self.final_specs[spec[6:]]=self.dup[spec]
+                        spec2=spec[6:]
+                        val = self.dup[spec]
+                        #
+                        # value specifies a different final value
+                        #   for each incrementable base
+                        #
+                        if string.find(val,':')>=0:
+                            dict = {}
+                            pairs = string.split(val)
+                            for pair in pairs:
+                                attr, val = string.split(pair,":")
+                                attr, val = string.strip(attr), string.strip(val)
+                                dict[attr]=val
+                            self.final_specs[spec2]=dict
+                        #
+                        # ordinary, one value
+                        #
+                        else:
+                            self.final_specs[spec2]=val
                 if string.find(spec,'incre_')==0:
                     spec2=spec[6:]
                     self.incre_specs[spec2]=int(self.dup[spec])
@@ -245,13 +263,20 @@ class StandardDuplicator(DuplicatorManager):
                 if i==count-1:
                     for item in list:
                         for spec in self.final_specs.keys():
-                            if item[spec]!="":
+                            if item[spec]!="" or item[spec] is not None:
                                 val = self.final_specs[spec]
                                 if val=="None":
                                     item[spec]=""
-                                    debug('nuke')
+                                #
+                                # dictionary
+                                #
+                                elif type(val)==type({}):
+                                   debug('last '+`item[spec]`)
+                                   base, index = get_suffix(item[spec])
+                                   if val.has_key(base):
+                                       item[spec]=val[base]
                                 else:
-                                    item[spec]=self.final_specs[spec]
+                                    item[spec]=val
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -372,6 +397,10 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2001/06/05 09:41:15  tiglari
+#more development of incrementing in duplicators, custom
+# increment idea & some code by subnoodle (Sam)
+#
 #Revision 1.16  2001/05/27 11:14:31  tiglari
 #fixed another final target bug
 #

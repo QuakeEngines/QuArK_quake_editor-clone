@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.140  2001/06/05 09:38:42  tiglari
+//more development of incrementing in duplicators
+//
 //Revision 1.139  2001/05/27 01:08:14  tiglari
 //change 'serialize' to 'increment' for the duplicators as suggested by Decker
 //
@@ -3330,7 +3333,7 @@ QQRKSRC1
       increment suffix: = {Txt="increment" Typ="X" Hint="If this is checked, target, targetname, killtarget values ending in a sequence of digits are incremented"}
       increment all target: ={Txt="incr. all targ." Typ="X" Hint="If this is checked, all specifics containing the word 'target' in their name are incremented"}
       incrementable specifics: = {Txt="incrementable" Typ="E" Hint="List here additional specifics to be incremented"}
-      final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics" }
+      final_target = {Txt="&" Typ="E" Hint="Value of 'target' for last image, 'None' for no value" $0D " add 'final_killtarget' etc. for other incrementable specifics"$0D"for different final values associated with different bases,"$0D"list them base1:val base2:val2"}
       increment by = {Txt="&" Typ="E" Hint="size of increment" }
       incre_lip = {Txt="&" Typ="E" Hint="a custom increment for the specific 'lip'.  Make more on this model" $0D "Overrides 'increment by', and the specific is automatically made incrementable" }
     }
