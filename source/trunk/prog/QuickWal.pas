@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/03/20 21:42:44  decker_dk
+Updated copyright-header
+
 Revision 1.31  2001/03/09 00:01:31  aiv
 added texture linking to entity tool.
 
@@ -1057,7 +1060,9 @@ begin
      S:=PathAndFile(Path, GameTexturesPath);
      if FolderFilter then
        S:=PathAndFile(S,Filter);
-     Q:=ParseTextureFolders(S, Base, Filter+'/', Q);
+     if Filter<>'' then
+       Filter:=Filter+'/';
+     Q:=ParseTextureFolders(S, Base, Filter, Q);
   except
      (*do nothing*)
   end;
