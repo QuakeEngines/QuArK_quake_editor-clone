@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.241  2005/01/04 17:22:10  alexander
+//steam environment configuration added
+//
 //Revision 1.240  2005/01/02 16:51:49  alexander
 //use setup value for file system module
 //
@@ -1261,7 +1264,7 @@ QQRKSRC1
         Code = "k" // Hardcoded value in Setup.PAS
 
 
-        Directory = "e:\spiele\steam"
+        Directory = "e:/spiele/steam"
         SteamFSModule = "E:/spiele/steam/steamapps/<steam user name>/sourcesdk/bin/FileSystem_Steam.dll"
         SteamAppUser = "<your steam username>"
         SteamAppId = "211"
@@ -1269,17 +1272,18 @@ QQRKSRC1
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
-        AddOns = "DataHL2.qrk"
-        BuildPgmsDir="E:\spiele\steam\SteamApps\<steam username>\sourcesdk\bin"
+        AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"
 
+        BuildPgmsDir="E:/spiele/steam/SteamApps/<steam user name>/sourcesdk/bin"
         BuildPgm1  = "vbsp.exe"
-        BuildArgs1 = ""
+        BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
         BuildCheck1= ""
         BuildPgm2  = "vvis.exe"
-        BuildArgs2 = ""
+        BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
         BuildCheck2= ""
         BuildPgm3  = "vrad.exe"
-        BuildArgs3 = ""
+        BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+
 
         DefaultTexture = "Brick/brickwall001a"
         DefaultTextureTrigger = "Tools/toolstrigger"
@@ -1295,7 +1299,7 @@ QQRKSRC1
 
 
         MapHoles = ".pts"
-        ExtraCmdLine = "-game %s"
+       // ExtraCmdLine = "-game %s"
         RunMapCmdLine = " +map %s"
 
 
@@ -2644,7 +2648,8 @@ QQRKSRC1
         $0D"%file%     - Gives the map's path and filename without extension"
         $0D"%mappath%  - Gives the map's path with ending backslash"
         $0D"%mapfile%  - Gives the map's path and filename with .MAP extension"
-        $0D"%basepath% - Gives the directory of the game (see Game Settings above)"
+        $0D"%basepath% - Gives the base directory of the game (see Game Settings above)"
+        $0D"%gamedir%  - Gives the game directory of the game (see Game Settings above)"
         $0D
         $0D"Examples:"
         $0D"  BSPC.EXE -bps2aas %file%.BSP -output %mappath%"

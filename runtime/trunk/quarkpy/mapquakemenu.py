@@ -461,6 +461,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
                     newcmdline = newcmdline.replace("%mapfile%",  argument_mapfile)
                     newcmdline = newcmdline.replace("%file%",     argument_file)
                     newcmdline = newcmdline.replace("%basepath%", setup["Directory"])
+                    newcmdline = newcmdline.replace("%gamedir%", setup["tmpQuArK"])
                     newcmdline = newcmdline.replace("%quarkpath%", quarkx.exepath)
                     if setup["BuildPgmsDir"] is not None:
                        newcmdline = newcmdline.replace("%buildpgmsdir%", setup["BuildPgmsDir"])
@@ -662,6 +663,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.38  2004/01/08 08:54:33  cdunde
+#To commit changes for peter-b
+#
 #Revision 1.37  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5
