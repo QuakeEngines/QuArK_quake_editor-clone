@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.104  2001/03/16 17:09:22  maleficus
+//saveprt added for q3 vlight
+//
 //Revision 1.103  2001/03/16 16:01:18  maleficus
 //q3(T)a map limits now set to the limits of q3map
 //
@@ -906,7 +909,6 @@ QQRKSRC1
       {
         Game = "Quake 3"
         Code = "a" // Hardcoded value in Setup.PAS
-	  MapLimit = '65536 65536 65536'
         Program = "Quake3.EXE +set sv_pure 0"
 
         Directory = "\Quake3"
@@ -914,6 +916,8 @@ QQRKSRC1
 
         CD = ""
         CDDir = "Install\Data"
+
+        MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
 
@@ -942,7 +946,6 @@ QQRKSRC1
         DefaultTextureCaulk = "common/caulk"
         DefaultTextureScale = "0.5"
 
-
         TextureFormat = ".tga"                  // primary texture fileextension
         TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
@@ -954,7 +957,7 @@ QQRKSRC1
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
         RunMapCmdLine = " +devmap %s"
-        AddOns = "DataQ3.qrk"
+        AddOns = "DataQ3.qrk"$0D"Q3ArchLib.qrk"$0D"Q3models.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
         PakFormat = "*.PK3"
@@ -963,8 +966,6 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-
-//        MapLimit = '8192 8192 8192'
       }
       STVEF:config =
       {
@@ -3533,7 +3534,7 @@ QQRKSRC1
             }
           }
         }
-      }      
+      }
       Pak.pak = { }
       ZIP Archive.zip = { }
       PCX Image.pcx = { ;incl = "EmptyImage" }
