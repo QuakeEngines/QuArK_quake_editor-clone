@@ -29,7 +29,9 @@ TEXT_TO_HTML_NBSP[" "] = "&nbsp;"
 def text2html(text):
     return string.join(map(TEXT_TO_HTML.get, text), "")
 
-def text2html_nbsp(text):
+def text2html_nbsp(text, maxlen=999):
+    if (len(text) > maxlen):
+        text = text[:maxlen] + "..."
     return string.join(map(TEXT_TO_HTML_NBSP.get, text), "")
 
 def path2html(path):
@@ -43,7 +45,7 @@ def climbpath(curpath, relpath):
        newpath = string.join(curpath,'/')+relpath
 #       print 'NEWPATH '+`newpath`
        return newpath
-  
+
 
 def relpath(curpath, relpath):
     if relpath[0]!='.':
@@ -53,7 +55,7 @@ def relpath(curpath, relpath):
     elif relpath[1:3]=='./':
        track = string.split(curpath,'/')
        return climbpath(track[:-2],relpath[2:])
-       
+
 def findref(root, path, fkw):
 #    print 'FKW: '+`fkw["path"]`
     path = relpath(fkw["path"], path)
@@ -86,12 +88,16 @@ def procpic(kw, path):  #tiglari
     f.close()
     kw["forgotten"].remove(path)
     return img
-    
+
 def processtext(root, text, data, kw):
     currentpara = None
     TEXT = 1
     HTML = 2
-    variableformat = (string.lower(kw.get("format", ""))!="html")
+#+ Those lines with "#+" are included, so the proper </p> tag is added always,
+#+ else the formatting won't be proper... It will look bad actually :-/ So better
+#+ remember to add those </p> tags, when doing your own <html>!! /Decker
+    p_tag_added = 0 #+
+    variableformat = (string.lower(kw.get("format", "")) != "html")
     for line in text:
         test = string.lower(line)
         if test[:6]=="<text>":
@@ -102,16 +108,46 @@ def processtext(root, text, data, kw):
             line = line[6:]
         else:
             lineconvert = None
+
         test = string.strip(test)
         if not test:
             # this line is empty
             currentpara = None
+            if (p_tag_added > 0):               #+
+                line = "</p>"                   #+
+                p_tag_added = p_tag_added - 1   #+
+
+#! It would be great, if we could implement start _and_ end tags. Something like;
+#! "and if you look at <ref> ../dir/file </ref>, then it would" - having these
+#! tags directly _in_ the text. /Decker
+
         elif test[:5]=="<ref>":
             # this line is a reference
             line = findref(root, string.strip(string.strip(line)[5:]), kw)
         elif test[:5]=="<pic>": #tiglari
             # this line is an image
             line = procpic(kw, string.strip(string.strip(line)[5:]))
+
+        # Tags to turn on/off html-conversion
+        elif test[:9]=="<html on>": # Decker
+            currentpara = HTML
+            variableformat = 0
+            line=line[10:]
+        elif test[:10]=="<html off>": # Decker
+            currentpara = None
+            variableformat = (string.lower(kw.get("format", "")) != "html")
+            line=line[11:]
+
+        # Tags to turn on/off code-text which is preformattet
+        elif test[:6]=="<code>": # Decker
+            currentpara = HTML
+            variableformat = 0
+            line="<div class=\"doccode\"><pre>"
+        elif test[:7]=="</code>": # Decker
+            currentpara = None
+            variableformat = (string.lower(kw.get("format", "")) != "html")
+            line="</pre></div>"
+
         elif variableformat:
             if test[:3]=="<p>" or currentpara==HTML:
                 # this line is direct HTML, no formatting
@@ -122,11 +158,15 @@ def processtext(root, text, data, kw):
                 # this line is text
                 if lineconvert != HTML:
                     line = text2html(line)
-                if currentpara!=TEXT:
+                if currentpara != TEXT:
                     line = "<p>" + line
+                    p_tag_added = p_tag_added + 1   #+
                     currentpara = TEXT
+
         data.append(line)
 
+    for ptags in range(p_tag_added):    #+
+        data.append("</p>")             #+
 
 def parse(file):
     f = open(file, "r")
@@ -142,77 +182,94 @@ def parse(file):
             kw[key] = value
         else:
             kw[key] = data+"\n"+value
-    return kw, f.readlines(), os.stat(file)[9]
-
+    return kw, f.readlines(), os.stat(file)[8] # Decker - changed from [9] to [8] to get the right file-modification-date on Win2K
 
 class Folder:
 
     def __init__(self, path, classif, parents, prev=None):
+        self.prev = prev
+        self.parents = parents
         self.path = path
 #        print 'Path: '+self.path
         self.classif = classif
-        if classif: #DECKER
+        if classif: # Decker
             shortname = string.join(map(lambda s: s+".", classif), "") + "&nbsp;"
-        else: #DECKER
-            shortname = "" #DECKER - Make the 'index.html' title _not_ prefixed with a single space
+        else: # Decker
+            shortname = "" # Decker - Make the 'index.html' title _not_ prefixed with a single space
         print shortname,
-        self.kw, self.text, ctime = parse(self.path+"index"+EXTENSION)
+        self.kw, self.text, lastmodifydate = parse(self.path + "index" + EXTENSION)
         s = self.kw["title"]
         print s
         self.kw["htmltitle"] = text2html_nbsp(s)
+        self.kw["htmltitleshort"] = text2html_nbsp(s, 25) # Decker - Try to prevent text-wrapping, so make it max 25 characters long
         self.kw["classif"] = shortname
         self.kw["path"] = path
         if not classif:
             shortname = "index.html"
         else:
-#            shortname = string.join(filter(None, string.split(self.path, "/"))+["html"], ".")
             shortname = path2html(path)
         self.kw["htmlfile"] = shortname
+        self.kw["navprev"] = NAVNOPREV
+        self.kw["navup"]   = NAVNOUP
+        self.kw["navnext"] = NAVNONEXT
         if parents:
             self.kw["parenthtmlfile"] = parents[-1].kw["htmlfile"]
+            self.kw["navup"] = NAVUP % parents[-1].kw
+        # Recusivee into sub-folders
         self.folders = []
-        self.forgotten = map(string.lower, os.listdir("./"+self.path))
-        self.forgotten.remove("index"+EXTENSION)
+        self.forgotten = map(string.lower, os.listdir("./" + self.path))
+        self.forgotten.remove("index" + EXTENSION)
         self.kw["forgotten"] = self.forgotten
         self.kw["next"]=""
         self.kw["nextfooter"] = ""
         htmlpath = path2html(path)
         previous = None
-        if prev:
-            nextref = 'Next:&nbsp;<a href="%s">%s</a>'%(htmlpath,self.kw['title'])
-            prev.kw["headerlvl"] = prev.kw["headerlvl"]+'<br>'+nextref
-#            prev.kw["nextfooter"] = '<a href="%s">next</a>'%htmlpath
-            prev.kw["nextfooter"] = nextref
         for foldername in string.split(self.kw.get("subdir", "")):
-            folder = Folder(path+foldername+"/", classif+(str(len(self.folders)+1),), parents+(self,), previous)
-            if folder.ctime > ctime:
-                ctime = folder.ctime
+            folder = Folder(path + foldername + "/", classif + (str(len(self.folders) + 1),), parents + (self,), previous)
+            if folder.lastmodifydate > lastmodifydate:
+                lastmodifydate = folder.lastmodifydate
             self.folders.append(folder)
             self.forgotten.remove(foldername)
             previous = folder
         self.files = []
         for filename in string.split(self.kw.get("desc", "")):
-            kw, text, ctime1 = parse(self.path+filename+EXTENSION)
-            if ctime1>ctime:
-                ctime = ctime1
+            kw, text, lastmodifydate1 = parse(self.path + filename + EXTENSION)
+            if lastmodifydate1 > lastmodifydate:
+                lastmodifydate = lastmodifydate1
             kw["htmlfile"] = shortname
             kw["hrefaname"] = filename
-            kw["updateday"] = time.strftime("%d %b %Y", time.localtime(ctime1))
+            kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate1))
             kw["path"] = path  # tiglari
             self.files.append((kw, text))
-            self.forgotten.remove(filename+EXTENSION)
-        self.ctime = ctime
-        self.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(ctime))
+            self.forgotten.remove(filename + EXTENSION)
+        self.lastmodifydate = lastmodifydate
+        self.kw["updateday"] = time.strftime("%d %b %Y", time.localtime(lastmodifydate))
+        # Setup backwards navigation links
         if not parents:
             lvl = MAINHEADERLVL
         else:
             lvl = SUBHEADERLVL
             for folder in parents:
                 lvl = lvl + HEADERLVL % folder.kw
-#        if self.kw["next"]:
-#                print 'NEXT'
-#                lvl = lvl + 'Next: <a href="%s">%s</a>'%(path2html(self.kw["next"]),self.kw["next"])
         self.kw["headerlvl"] = lvl
+
+    def navigation(self):
+        # Setup navigation links (Prev-Up-Next) # Decker
+        try:
+            prev = self.parents[-1]
+            i = len(prev.folders) - 1
+            while (i >= 0 and prev.folders[i] != self):
+                i = i - 1
+            if (i > 0):
+                prev = prev.folders[i - 1]
+                while (len(prev.folders) > 0):
+                    prev = prev.folders[-1]
+            prev.kw["navnext"] = NAVNEXT % self.kw
+            self.kw["navprev"] = NAVPREV % prev.kw
+        except:
+            pass
+        for folder in self.folders:
+            folder.navigation()
 
     def writefiles(self, root, filewriter):
         print self.kw["htmlfile"], "  [%s]" % self.kw["title"]
@@ -259,11 +316,19 @@ class Folder:
             folder.viewforgotten()
 
 
+def defaultwriter(filename, data, writemode="w"):
+    # write the target file
+    f = open("output/"+filename, writemode)
+    f.writelines(data)
+    f.close()
+
 def run(filewriter):
     # load format file
     execfile("format"+EXTENSION, globals(), globals())
     # recursively load everything in memory
     root = Folder("", (), ())
+    print "-"*50
+    root.navigation() # Decker
     print "-"*50
     # recursively write everything to disk
     root.writefiles(root, filewriter)
@@ -275,16 +340,15 @@ def run(filewriter):
     root.viewforgotten()
 
 
-def defaultwriter(filename, data, writemode="w"):
-    # write the target file
-    f = open("output/"+filename, writemode)
-    f.writelines(data)
-    f.close()
 
 run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.6  2000/10/19 20:06:39  tiglari
+# relative paths (./,../) for <pic> and <ref>
+# cross-links to next added to output
+#
 # Revision 1.5  2000/10/18 16:39:34  tiglari
 # added image-handling facility, preliminary
 #

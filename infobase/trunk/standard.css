@@ -1,121 +1,119 @@
-body {
+BODY {
   background-color: #FFFFFF;
-  margin: 0;
-  font-family: Verdana, Arial;
+  margin: 1;
+  font-family: MS Sans Serif, Arial;
   font-size: 10pt;
   color: #000000;
 }
-
-p {
-  font-family: Verdana, Arial;
+P {
+  font-family: MS Sans Serif, Arial;
   font-size: 10pt;
   color: #000000;
+  margin-left: 10;
+  margin-right: 10;
 }
-p.sm {
+P.sm {
   font-size: 8pt;
 }
-
 A:link {
-  color: #3090EF;
+  color: #3060c0;
   text-decoration: none;
-  font-weight: bold;
-  font-family: Verdana, Arial;
+  font-family: MS Sans Serif, Arial;
 }
-
 A:visited {
-  color: #246cb2;
+  color: #1050a0;
   text-decoration: none;
-  font-weight: bold;
-  font-family: Verdana, Arial;
+  font-family: MS Sans Serif, Arial;
 }
-
-/*Below added by Decker@post1.tele.dk*/
-
 .sm {
-  font-family: Verdana, Arial;
+  font-family: MS Sans Serif, Arial;
   font-size: 8pt;
   color: #000000;
 }
-
 .warning {
   font-size: 12pt; color: #FF0000;
 }
-
 .topheadline {
-  font-family: Verdana, Arial;
+  font-family: MS Sans Serif, Arial;
   font-size: 24pt;
   font-weight: bold;
-  /*text-decoration: underline;*/
 }
-p.headline {
+P.headline {
   text-align: left;
   font-weight: bold;
   font-size: 14pt;
 }
-p.subheadline {
-  text-decoration: underline;
+P.subheadline {
+  text-align: left;
   font-weight: bold;
+  font-size: 12pt;
 }
-p.subsubheadline {
+P.subsubheadline {
+  text-align: left;
   font-weight: bold;
+  font-size: 10pt;
+}
+TR.headline {
+  background: #E0E0E0;
 }
 UL {
-  font-family: Verdana, Arial;
+  font-family: MS Sans Serif, Arial;
   font-size: 10pt;
   color: #000000;
 }
-TH {
-  font-family: Verdana, Arial;
-  font-size: 10pt;
-  color: #000000;
+UL.section {
+  list-style: none;
+  margin-left: 10;
+  margin-top: 5;
+  margin-bottom: 5;
 }
-TD {
-  font-family: Verdana, Arial;
-  font-size: 10pt;
-  color: #000000;
+UL.subsection, UL.index {
+  list-style: none;
+  margin-top: 5;
+  margin-bottom: 5;
 }
-DL {
-  font-family: Verdana, Arial;
+TH, TD, DL, DD, OL {
+  font-family: MS Sans Serif, Arial;
   font-size: 10pt;
   color: #000000;
 }
 DT {
-  font-family: Verdana, Arial;
+  font-family: MS Sans Serif, Arial;
   font-size: 10pt;
   color: #00F0000;
 }
-DD {
-  font-family: Verdana, Arial;
-  font-size: 10pt;
-  color: #000000;
-}
-
 SPAN.added {
+/* For the "(01 jan 2000)" texts */
   font-family: Small Fonts;
   font-size: 6pt;
   color: #AAAAAA;
 }
-
-OL {
-  font-family: Verdana, Arial;
-  font-size: 10pt;
+SPAN.q_a {
+/* (Q)uestion and (A)nswers */
+  font-family: MS Sans Serif, Arial;
+  font-size: 12pt;
+  font-weight: bold;
   color: #000000;
 }
-
 .doccode {
   font-family: Courier New, Courier;
   font-size: 10pt;
   color: #000088;
+  margin-left: 20;
 }
-
-/*Below added by Armin*/
-
-pre {
+DIV.sections {
+  margin: 10, 10, 10, 10;
+}
+.navdisable {
+  color: #A0A0A0;
+}
+.navenable {
+}
+PRE {
   font-family: Fixed;
 }
-
-p.item {
-  font-family: Verdana, Arial;
+P.item {
+  font-family: MS Sans Serif, Arial;
   font-weight: bold;
 }
 
