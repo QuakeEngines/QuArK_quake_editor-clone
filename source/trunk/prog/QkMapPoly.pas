@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.33  2001/04/05 12:34:03  tiglari
+Add 'axisbase' method to face (for getting 2 nice axes for the face)
+
 Revision 1.32  2001/04/01 06:52:07  tiglari
 don't recenter threepoints option added
 
@@ -1008,7 +1011,7 @@ end;
   with the closest normal to the face, then normalize &
   pull out the scale & shift info }
 
-procedure WC202MapParams(const Normale: TVect; const F: TFace; var S: String);
+procedure Valve220MapParams(const Normale: TVect; const F: TFace; var S: String);
 var
   Plan: Char;
   Axis, P0, P1, P2, PP0, PP1, PP2, Origin, D1, D2 : TVect;
@@ -2113,7 +2116,7 @@ var
  MJ: Char;
  J: Integer;
  Q: QObject;
- WriteIntegers, BrushPrim, WC202Map : Boolean;
+ WriteIntegers, BrushPrim, Valve220Map : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2341,9 +2344,9 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if WC202Map then
+       if Valve220Map then
        begin
-        WC202MapParams(Normale, F, S);
+        Valve220MapParams(Normale, F, S);
        end else if not ((MJ=mjQ3A) and BrushPrim) then
        begin
          ApproximateParams(Normale, P, Params, TextureMirror);
@@ -2447,7 +2450,7 @@ var
          end;
        end;
 
-     if (Flags and soDisableEnhTex = 0) and (not WC202Map) then
+     if (Flags and soDisableEnhTex = 0) and (not Valve220Map) then
       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
@@ -2457,7 +2460,7 @@ begin
  if Info.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
- WC202Map:=Flags and soEnableWC202<>0;
+ Valve220Map:=Flags and soWriteValve220<>0;
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');

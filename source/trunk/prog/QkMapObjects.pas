@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2001/03/30 22:14:51  tiglari
+enabling for WC33 (mapversion 202) map format
+
 Revision 1.27  2001/03/20 21:45:22  decker_dk
 Updated copyright-header
 
@@ -137,7 +140,7 @@ const
  soDisableEnhTex     = $00000004;
  soDisableFPCoord    = $00000008;
  soEnableBrushPrim   = $00000010;
- soEnableWC202       = $00000020;
+ soWriteValve220     = $00000020;
 
  soDirectDup         = $04000000;
  soBSP               = $08000000;
@@ -2381,7 +2384,7 @@ begin
  begin
   I := GetFirstEntityNo;
   if Specifics.Values['mapversion']='220' then
-    Flags:=Flags + soEnableWC202
+    Flags:=Flags + soWriteValve220;
  end
  else
   I := GetNextEntityNo;
