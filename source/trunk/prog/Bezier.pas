@@ -26,20 +26,21 @@ unit Bezier;
 interface
 
 uses Windows, SysUtils, Classes, Python, qmath, qmatrices, PyMath, QkObjects,
-     Setup, QkMapObjects, QkMapPoly, Qk3D;
+     Quarkx, Setup, QkMapObjects, QkMapPoly, Qk3D;
 
  {------------------------}
 
 const
- BezierMeshCnt = 6;
+ BezierMeshCnt = 6;   { number of subdivisions on screen }
 
 type
+ vec5_p = ^vec5_t;
  vec5_t = array[0..4] of scalar_t;
  TVect5 = record
            X, Y, Z, S, T: Reel;
           end;
- beziercontrolpoints_t = array[0..2, 0..2] of vec5_t;
- TBezierMeshCache = array[0..BezierMeshCnt, 0..BezierMeshCnt] of vec3_t;
+{beziercontrolpoints_t = array[0..2, 0..2] of vec5_t;  -- removed for generalized "quilt" support (variable number of control points)
+ TBezierMeshCache = array[0..BezierMeshCnt, 0..BezierMeshCnt] of vec3_t;}
  PBezierTriangle = ^TBezierTriangle;
  TBezierTriangle = record
                     PP: array[0..2] of TVect;
@@ -47,25 +48,49 @@ type
                     zmax: Single;
                     FrontFacing: Boolean;
                    end;
- PBezierTriangleList = ^TBezierTriangleList;
- TBezierTriangleList = array[0..2*BezierMeshCnt*BezierMeshCnt-1] of TBezierTriangle;
+{PBezierTriangleList = ^TBezierTriangleList;   -- quilt
+ TBezierTriangleList = array[0..2*BezierMeshCnt*BezierMeshCnt-1] of TBezierTriangle;}
+ PBezierControlPoints3 = {^TBezierControlPoints3;} vec3_p;
+ TBezierControlPoints3 = {array of} vec3_t;  { variable-sized }
+ PBezierControlPoints5 = {^TBezierControlPoints5;} vec5_p;
+ TBezierControlPoints5 = {array of} vec5_t;  { variable-sized }
+ PBezierMeshBuf3 = ^TBezierMeshBuf3;
+ TBezierMeshBuf3 = record
+                    W, H: Integer;  { number of points stored in buffer }
+                    CP: PBezierControlPoints3;
+                   end;
+ PBezierMeshBuf5 = ^TBezierMeshBuf5;
+ TBezierMeshBuf5 = record
+                    W, H: Integer;  { number of points stored in buffer }
+                    CP: PBezierControlPoints5;
+                   end;
 
+type
  TBezier = class(TTexturedTreeMap)
            protected
-             MeshCache: TBezierMeshCache;
+             FMeshCache: TBezierMeshBuf3;
              procedure BuildMeshCache;
-             function GetControlPoints: beziercontrolpoints_t;
-             procedure SetControlPoints(const cp: beziercontrolpoints_t);
-             procedure ListBezierTriangles(var Triangles: TBezierTriangleList; TriList: TList);
+             function GetQuiltSize: TPoint;  { "quilt" : n times m connected Bezier patches. }
+                                    { n or m can be 0 (then the quilt is reduced to a line). }
+             procedure SetQuiltSize(const nSize: TPoint);
+             function GetControlPoints: TBezierMeshBuf5;
+             procedure SetControlPoints(const Buf: TBezierMeshBuf5);
+             function ListBezierTriangles(var Triangles: PBezierTriangle; TriList: TList) : Integer;
            public
              class function TypeInfo: String; override;
-             procedure FixupReference; override;
+             destructor Destroy; override;
+             {procedure FixupReference; override;}
              procedure Deplacement(const PasGrille: Reel); override;
              procedure Dessiner; override;
              procedure PreDessinerSel; override;
+             procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
              procedure EtatObjet(var E: TEtatObjet); override;
-              { use the property below to read/write control points. }
-             property ControlPoints: beziercontrolpoints_t read GetControlPoints write SetControlPoints;
+             
+              { use the properties below to read/write control points. }
+             property QuiltSize: TPoint read GetQuiltSize write SetQuiltSize;
+             property ControlPoints: TBezierMeshBuf5 read GetControlPoints write SetControlPoints;
+             procedure AutoSetSmooth;  { guess the 'smooth' specific based on current control points }
+             
              procedure AnalyseClic(Liste: PyObject); override;
              function PyGetAttr(attr: PChar) : PyObject; override;
              function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
@@ -118,7 +143,7 @@ implementation
   *
   * The vectors 'dg/du' and 'dg/dv' can also be used to compute (by cross
   * product) a vector orthogonal to the surface at a given point.
-  *  
+  *
   *****)
 
  { Various versions of the Bezier line formula }
@@ -146,8 +171,8 @@ begin
  Result.Z := p0[2]*f0 + p1[2]*f1 + p2[2]*f2;
 end;
 
- { Inverse the orientation (up and down sides) }
-procedure InverseControlPointsOrientation(var cp: beziercontrolpoints_t);
+(* { Inverse the orientation (up and down sides) }
+procedure InverseControlPointsOrientation(var cp: TBezierMeshBuf5);
 var
  buf: vec5_t;
 begin
@@ -155,77 +180,200 @@ begin
  buf:=cp[1,0]; cp[1,0]:=cp[0,1]; cp[0,1]:=buf;
  buf:=cp[2,0]; cp[2,0]:=cp[0,2]; cp[0,2]:=buf;
  buf:=cp[2,1]; cp[2,1]:=cp[1,2]; cp[1,2]:=buf;
-end;
+end; *)
 
  {------------------------}
 
- { Returns the control points of a Bezier object }
-function TBezier.GetControlPoints;
 const
  DefaultPatchSize = 64;
-var
- Data: array[0..3*3*5-1] of Single absolute Result;
- I, J: Integer;
+ dps0 = 0;
+ dps1 = DefaultPatchSize div 2;
+ dps2 = DefaultPatchSize;
+ DefaultBezierControlPoints: array[0..2, 0..2] of vec5_t =
+  (((dps0, dps0, 0, dps0, dps0), (dps1, dps0, 0, dps1, dps0), (dps2, dps0, 0, dps2, dps0)),
+   ((dps0, dps1, 0, dps0, dps1), (dps1, dps1, 0, dps1, dps1), (dps2, dps1, 0, dps2, dps1)),
+   ((dps0, dps2, 0, dps0, dps2), (dps1, dps2, 0, dps1, dps2), (dps2, dps2, 0, dps2, dps2)));
+
+ {------------------------}
+
+(*function AllocBezierBuf3(W, H: Integer) : PBezierMeshBuf3;
 begin
- {$IFDEF Debug}
- if SizeOf(Data)<>SizeOf(beziercontrolpoints_t) then
-  Raise InternalE('GetControlPoints');
- {$ENDIF}
- if GetFloatsSpec('v', Data) then Exit;  { normal case: read the 'v' specific }
- Acces;  { maybe the object was not loaded }
- if GetFloatsSpec('v', Data) then Exit;  { try again }
- { specific not found or invalid: build a default result }
- for J:=0 to 2 do
-  for I:=0 to 2 do
-   begin
-    Result[J, I, 0]:=I*(DefaultPatchSize div 2);
-    Result[J, I, 1]:=J*(DefaultPatchSize div 2);
-    Result[J, I, 2]:=0;
-    Result[J, I, 3]:=I*(DefaultPatchSize div 2);
-    Result[J, I, 4]:=J*(DefaultPatchSize div 2);
-   end;
+ GetMem(Result, BezierMeshBuf3BaseSize + W*H*SizeOf(vec3_t));
+ Result^.W:=W;
+ Result^.H:=H;
 end;
 
- { Changes the control points and update the cache }
+function AllocBezierBuf5(W, H: Integer) : PBezierMeshBuf5;
+begin
+ GetMem(Result, BezierMeshBuf3BaseSize + W*H*SizeOf(vec5_t));
+ Result^.W:=W;
+ Result^.H:=H;
+end;*)
+
+ {------------------------}
+
+destructor TBezier.Destroy;
+begin
+ FreeMem(FMeshCache.CP);  { free the cache memory if needed }
+ inherited;
+end;
+
+ { Returns the quilt size }
+function TBezier.GetQuiltSize;
+var
+ S: String;
+ V: array[1..2] of Reel;
+begin
+ Result.X:=1;  { default value }
+ Result.Y:=1;
+ S:=Specifics.Values['cnt'];
+ if S='' then Exit;
+ try
+  LireValeurs(S, V);
+ except
+  Exit;
+ end;
+ Result.X:=Round(V[1]);
+ Result.Y:=Round(V[2]);
+end;
+
+ { Changes the quilt size }
+procedure TBezier.SetQuiltSize;
+var
+ S: String;
+begin
+ ReallocMem(FMeshCache.CP, 0);   { first invalidates the cache }
+ if (nSize.X=1) and (nSize.Y=1) then
+  S:=''  { default size : delete 'cnt' }
+ else
+  S:=IntToStr(nSize.X)+' '+IntToStr(nSize.Y);
+ Specifics.Values['cnt']:=S;
+end;
+
+ { Returns the control points of a Bezier object }
+function TBezier.GetControlPoints;
+var
+ S, Spec: String;
+ ExpectedLength: Integer;
+begin
+ with GetQuiltSize do
+  begin
+   Result.W:=X*2+1;
+   Result.H:=Y*2+1;
+  end;
+ ExpectedLength:=Length('v=') + Result.W*Result.H*SizeOf(vec5_t);
+ Spec:=FloatSpecNameOf('v');
+ S:=GetSpecArg(Spec);  { normal case: read the 'v' specific }
+ if Length(S)<>ExpectedLength then
+  begin
+   Acces;  { maybe the object was not loaded }
+   S:=GetSpecArg(Spec);  { try again }
+   if Length(S)<>ExpectedLength then
+    begin
+     { specific not found or invalid: returns a default result }
+     Result.W:=1;
+     Result.H:=1;
+     Result.CP:=@DefaultBezierControlPoints;
+     Exit;
+    end;
+  end;
+ Result.CP:=PBezierControlPoints5(PChar(S)+Length('v='));
+end;
+
+ { Changes the control points and invalidates the cache }
 procedure TBezier.SetControlPoints;
 var
- Data: array[0..3*3*5-1] of Single absolute cp;
+ S: String;
+ L: Integer;
 begin
+ if not Odd(Buf.W) or not Odd(Buf.H) then
+  raise InternalE('SetControlPoints: odd size expected');
  Acces;
- SetFloatsSpec('v', Data);
- BuildMeshCache;
+ ReallocMem(FMeshCache.CP, 0);   { first invalidates the cache }
+ SetQuiltSize(Point(Buf.W div 2, Buf.H div 2));  { set quilt size }
+ S:=FloatSpecNameOf('v');
+ Specifics.Values[S]:='';   { delete old 'v' Specific }
+ L:=Buf.W*Buf.H*SizeOf(vec5_t);
+ SetLength(S, Length('v=') + L);   { make room for 'v=....' in S }
+ S[2]:='=';
+ Move(Buf.CP^, S[3], L);    { copy the data over the '....' in S }
+ Specifics.Add(S);          { add this as new Specific }
 end;
 
- { Build a cache containing the 3D coordinates of a 6x6 grid
+ { Build a cache containing the 3D coordinates of a 6x6 grid (or more for quilts)
     that approximates the patch shape }
 procedure TBezier.BuildMeshCache;
 const
  Delta = 1.0/BezierMeshCnt;
+ AlmostOne = 1.0 - Delta/2;
 var
- cp: beziercontrolpoints_t;
- I, J: Integer;
+ cp: TBezierMeshBuf5;
+ I, I0, J, CurJ: Integer;
  u, v: Reel;
  p0, p1, p2: TVect;
+ Dest: vec3_p;
+
+  function GetVect(I,J: Integer) : TVect;
+  var
+   P: vec5_p;
+  begin
+   P:=cp.CP;
+   Inc(P, J*cp.W+I);
+   Result.X:=P^[0];
+   Result.Y:=P^[1];
+   Result.Z:=P^[2];
+  end;
+
+  function GetVPoint(I: Integer) : TVect;
+  begin
+   if v=0 then
+    Result:=GetVect(I, CurJ)
+   else
+    Result:=BezierLine3(v, GetVect(I, CurJ), GetVect(I, CurJ+1), GetVect(I, CurJ+2));
+  end;
+
 begin
  cp:=ControlPoints;
- v:=0;
- for J:=0 to BezierMeshCnt do
+ { I guess some comments would be welcome in the code below... }
+ FMeshCache.W:=(cp.W div 2)*BezierMeshCnt+1;
+ FMeshCache.H:=(cp.H div 2)*BezierMeshCnt+1;
+ ReallocMem(FMeshCache.CP, FMeshCache.W*FMeshCache.H*SizeOf(vec3_t));
+ Dest:=@FMeshCache.CP^[0];
+ v:=0; CurJ:=0;
+ for J:=0 to FMeshCache.H-1 do
   begin
-   p0:=BezierLine53(v, cp[0,0], cp[1,0], cp[2,0]);
-   p1:=BezierLine53(v, cp[0,1], cp[1,1], cp[2,1]);
-   p2:=BezierLine53(v, cp[0,2], cp[1,2], cp[2,2]);
-   u:=0;
-   for I:=0 to BezierMeshCnt do
+   p2:=GetVPoint(0);
+   I0:=2;
+   while I0<cp.W do
     begin
-     with BezierLine3(u, p0, p1, p2) do
-      begin
-       MeshCache[J,I,0]:=X;
-       MeshCache[J,I,1]:=Y;
-       MeshCache[J,I,2]:=Z;
-      end;
-     u:=u+Delta;
+     p0:=p2;
+     p1:=GetVPoint(I0-1);
+     p2:=GetVPoint(I0);
+     Inc(I0, 2);
+     u:=0;
+     for I:=0 to BezierMeshCnt-1 do
+      with BezierLine3(u, p0, p1, p2) do
+       begin
+        Dest^[0]:=X;
+        Dest^[1]:=Y;
+        Dest^[2]:=Z;
+        Inc(Dest);
+        u:=u+Delta;
+       end;
+    end;
+   with p2 do
+    begin
+     Dest^[0]:=X;
+     Dest^[1]:=Y;
+     Dest^[2]:=Z;
+     Inc(Dest);
     end;
    v:=v+Delta;
+   if v>=AlmostOne then
+    begin
+     v:=0;
+     Inc(CurJ, 2);
+    end;
   end;
 end;
 
@@ -234,90 +382,140 @@ begin
  TypeInfo:=':b2';  { type extension of Quadratic (degree 2) Bezier patches }
 end;
 
-procedure TBezier.FixupReference;
+(*procedure TBezier.FixupReference;
 begin
  Acces;
  BuildMeshCache;  { rebuild the cache when something changed inside the object }
+end;*)
+
+procedure TBezier.OpDansScene;
+begin
+  { invalidates the cache when something changed inside the object }
+ ReallocMem(FMeshCache.CP, 0);
+ inherited;
 end;
 
  { Movement of the patch under translations, inflations, and linear mappings }
 procedure TBezier.Deplacement(const PasGrille: Reel);
-const
- DerIdx1: array[0..2] of Integer = (0,0,1);
- DerIdx2: array[0..2] of Integer = (1,2,2);
 var
- cp, ncp: beziercontrolpoints_t;
+ cp, ncp: TBezierMeshBuf5;
  I, J: Integer;
  InfoClic, V, dgdu, dgdv: TVect;
  F: Reel;
+ Source, Dest, P1, P2: vec5_p;
+ Transpose: Boolean;
 begin
  cp:=ControlPoints;
+ Transpose:=InverseOrientation;  { linear mapping that inverses the orientation }
+ if Transpose then
+  begin
+   ncp.W:=cp.H;
+   ncp.H:=cp.W;
+  end
+ else
+  begin
+   ncp.W:=cp.W;
+   ncp.H:=cp.H;
+  end;
+ GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t)); try
+ Source:=cp.CP;
+ Dest:=ncp.CP;
  InfoClic:=Info.Clic;
- for J:=0 to 2 do
-  for I:=0 to 2 do
-   begin
-    V.X:=cp[J,I,0];
-    V.Y:=cp[J,I,1];
-    V.Z:=cp[J,I,2];
-    if Info.ModeDeplacement=mdInflate then
-     begin
-      { "inflate" the patch by moving each control point by the specified
-        number of pixels in a direction orthogonal to the surface. }
-      dgdu.X:=cp[J, DerIdx2[I], 0] - cp[J, DerIdx1[I], 0];
-      dgdu.Y:=cp[J, DerIdx2[I], 1] - cp[J, DerIdx1[I], 1];
-      dgdu.Z:=cp[J, DerIdx2[I], 2] - cp[J, DerIdx1[I], 2];
-      dgdv.X:=cp[DerIdx2[J], I, 0] - cp[DerIdx1[J], I, 0];
-      dgdv.Y:=cp[DerIdx2[J], I, 1] - cp[DerIdx1[J], I, 1];
-      dgdv.Z:=cp[DerIdx2[J], I, 2] - cp[DerIdx1[J], I, 2];
-      InfoClic:=Cross(dgdu, dgdv);
-      try
-       F:=Info.ClicZ/Sqrt(Sqr(InfoClic.X)+Sqr(InfoClic.Y)+Sqr(InfoClic.Z));
-       InfoClic.X:=InfoClic.X*F;
-       InfoClic.Y:=InfoClic.Y*F;
-       InfoClic.Z:=InfoClic.Z*F;
-      except
-       InfoClic:=Origine;   { ignore points with no normal vector }
-      end;
-     end
-    else
-     if Info.ModeDeplacement <= mdDeplacementGrille then
+ for J:=0 to cp.H-1 do
+  begin
+   if Transpose then
+    begin
+     Dest:=ncp.CP;
+     Inc(Dest, J);
+    end;
+   for I:=0 to cp.W-1 do
+    begin
+     V.X:=Source^[0];
+     V.Y:=Source^[1];
+     V.Z:=Source^[2];
+     if Info.ModeDeplacement=mdInflate then
       begin
-       V.X:=V.X-InfoClic.X;
-       V.Y:=V.Y-InfoClic.Y;
-       V.Z:=V.Z-InfoClic.Z;
-       if Info.ModeDeplacement in [mdLineaire, mdLineaireCompat] then
-        TransformationLineaire(V);  { linear mapping }
-      end;
-   { else
-      translation by InfoClic, done below }
-    ncp[J,I,0]:=V.X+InfoClic.X;
-    ncp[J,I,1]:=V.Y+InfoClic.Y;
-    ncp[J,I,2]:=V.Z+InfoClic.Z;
-   end;
- if InverseOrientation then  { linear mapping that inverses the orientation }
-  InverseControlPointsOrientation(ncp);
+       { "inflate" the patch by moving each control point by the specified
+         number of pixels in a direction orthogonal to the surface. }
+       P1:=Source; if I>0 then Dec(P1);
+       P2:=Source; if I<cp.W-1 then Inc(P2);
+       dgdu.X:=P2^[0] - P1^[0];
+       dgdu.Y:=P2^[1] - P1^[1];
+       dgdu.Z:=P2^[2] - P1^[2];
+       P1:=Source; if J>0 then Dec(P1, cp.W);
+       P2:=Source; if J<cp.H-1 then Inc(P2, cp.W);
+       dgdv.X:=P2^[0] - P1^[0];
+       dgdv.Y:=P2^[1] - P1^[1];
+       dgdv.Z:=P2^[2] - P1^[2];
+       InfoClic:=Cross(dgdu, dgdv);
+       try
+        F:=Info.ClicZ/Sqrt(Sqr(InfoClic.X)+Sqr(InfoClic.Y)+Sqr(InfoClic.Z));
+        InfoClic.X:=InfoClic.X*F;
+        InfoClic.Y:=InfoClic.Y*F;
+        InfoClic.Z:=InfoClic.Z*F;
+       except
+        InfoClic:=Origine;   { ignore points with no normal vector }
+       end;
+      end
+     else
+      if Info.ModeDeplacement <= mdDeplacementGrille then
+       begin
+        V.X:=V.X-InfoClic.X;
+        V.Y:=V.Y-InfoClic.Y;
+        V.Z:=V.Z-InfoClic.Z;
+        if Info.ModeDeplacement in [mdLineaire, mdLineaireCompat] then
+         TransformationLineaire(V);  { linear mapping }
+       end;
+    { else
+       translation by InfoClic, done below }
+     Dest^[0]:=V.X+InfoClic.X;
+     Dest^[1]:=V.Y+InfoClic.Y;
+     Dest^[2]:=V.Z+InfoClic.Z;
+     Inc(Source);
+     if Transpose then
+      Inc(Dest, ncp.W)
+     else
+      Inc(Dest);
+    end;
+  end;
  ControlPoints:=ncp;
+ finally FreeMem(ncp.CP); end;
 end;
 
  { Draw the Bezier patch on map views }
 procedure TBezier.Dessiner;
 var
- PP, PP2: array[0..BezierMeshCnt, 0..BezierMeshCnt] of TPointProj;
+ PP, PP2, P, Dest: PPointProj;
  I, J: Integer;
  V: TVect;
  OldPen, NewPen: HPen;
+ Source: vec3_p;
 begin
- for J:=0 to BezierMeshCnt do
-  for I:=0 to BezierMeshCnt do
-   begin
-    V.X:=MeshCache[J,I,0];
-    V.Y:=MeshCache[J,I,1];
-    V.Z:=MeshCache[J,I,2];
-    PP[J,I]:=CCoord.Proj(V);
-    CCoord.CheckVisible(PP[J,I]);
-     { transpose the PP matrix }
-    PP2[I,J]:=PP[J,I];
-   end;
+ if not Assigned(FMeshCache.CP) then
+  BuildMeshCache;
+ GetMem(PP, FMeshCache.W*FMeshCache.H*(SizeOf(TPointProj)*2)); try
+ PP2:=PP;
+ Inc(PP2, FMeshCache.W*FMeshCache.H);
+ Source:=FMeshCache.CP;
+ Dest:=PP;
+ for J:=0 to FMeshCache.H-1 do
+  begin
+   P:=PP2;
+   Inc(P, J);
+   for I:=0 to FMeshCache.W-1 do
+    begin
+     V.X:=Source^[0];
+     V.Y:=Source^[1];
+     V.Z:=Source^[2];
+     Inc(Source);
+     Dest^:=CCoord.Proj(V);
+     CCoord.CheckVisible(Dest^);
+      { transpose the PP matrix }
+     P^:=Dest^;
+     Inc(Dest);
+     Inc(P, FMeshCache.H);
+    end;
+  end;
 
  if Info.PinceauSelection<>0 then
   begin
@@ -329,13 +527,20 @@ begin
  OldPen:=SelectObject(Info.DC, NewPen);
  SetROP2(Info.DC, R2_CopyPen);
  try
-  { draw the horizontal lines first }
-  for J:=0 to BezierMeshCnt do
-   CCoord.Polyline95f(PP[J], BezierMeshCnt+1);
+  { draw the horizontal lines followed by the vertical lines }
+  P:=PP;
+  for J:=1 to FMeshCache.H do
+   begin
+    CCoord.Polyline95f(P^, FMeshCache.W);
+    Inc(P, FMeshCache.W);
+   end;
 
    { now draw the vertical lines }
-  for I:=0 to BezierMeshCnt do
-   CCoord.Polyline95f(PP2[I], BezierMeshCnt+1);
+  for I:=1 to FMeshCache.W do
+   begin
+    CCoord.Polyline95f(P^, FMeshCache.H);
+    Inc(P, FMeshCache.H);
+   end;
 
  finally
   SelectObject(Info.DC, OldPen);
@@ -344,6 +549,7 @@ begin
   else
    DeleteObject(NewPen);
  end;
+ finally FreeMem(PP); end;
 end;
 
 { to sort triangles in Z order }
@@ -359,61 +565,94 @@ begin
 end;
 
 { used by TBezier.PreDessinerSel and others : triangle listing }
-procedure TBezier.ListBezierTriangles(var Triangles: TBezierTriangleList; TriList: TList);
+function TBezier.ListBezierTriangles(var Triangles: PBezierTriangle; TriList: TList) : Integer;
  { if TriList is non-nil, compute the 'zmax' fields of the triangle list and put
     a Z-order-sorted list of the triangles into TriList;
    if TriList is nil, don't compute any projection at all. }
 var
- PP: array[0..BezierMeshCnt, 0..BezierMeshCnt] of TPointProj;
+ PP, Dest: PPointProj;
  I, J: Integer;
  TriPtr: PBezierTriangle;
  V, W, Normale: TVect;
+ S1,S2,S3,S4: vec3_p;  { 4 corners of a small square }
 begin
+ if not Assigned(FMeshCache.CP) then
+  BuildMeshCache;
+
+  { count triangles }
+ Result:=(FMeshCache.H-1)*(FMeshCache.W-1)*2;
+ if Result=0 then
+  Exit;
+ 
+ PP:=Nil; try
  if Assigned(TriList) then
-  for J:=0 to BezierMeshCnt do
-   for I:=0 to BezierMeshCnt do
+  begin
+   GetMem(PP, FMeshCache.W*FMeshCache.H*SizeOf(TPointProj));
+   S1:=FMeshCache.CP;
+   Dest:=PP;
+   for I:=1 to FMeshCache.W*FMeshCache.H do
     begin
-     V.X:=MeshCache[J,I,0];
-     V.Y:=MeshCache[J,I,1];
-     V.Z:=MeshCache[J,I,2];
-     PP[J,I]:=CCoord.Proj(V);
-     CCoord.CheckVisible(PP[J,I]);
+     V.X:=S1^[0];
+     V.Y:=S1^[1];
+     V.Z:=S1^[2];
+     Inc(S1);
+     Dest^:=CCoord.Proj(V);
+     CCoord.CheckVisible(Dest^);
+     Inc(Dest);
     end;
+  end;
 
   { make triangles }
- TriPtr:=@Triangles[0];
- for J:=0 to BezierMeshCnt-1 do
-  for I:=0 to BezierMeshCnt-1 do
-   begin
-    { subdivide each small square into two triangles }
-    TriPtr^.PP[0].X:=MeshCache[J,I,0];   TriPtr^.PP[0].Y:=MeshCache[J,I,1];   TriPtr^.PP[0].Z:=MeshCache[J,I,2];
-    TriPtr^.PP[1].X:=MeshCache[J+1,I,0]; TriPtr^.PP[1].Y:=MeshCache[J+1,I,1]; TriPtr^.PP[1].Z:=MeshCache[J+1,I,2];
-    TriPtr^.PP[2].X:=MeshCache[J,I+1,0]; TriPtr^.PP[2].Y:=MeshCache[J,I+1,1]; TriPtr^.PP[2].Z:=MeshCache[J,I+1,2];
-    if Assigned(TriList) then
-     begin
-      TriPtr^.Pts[0]:=PP[J,I];
-      TriPtr^.Pts[1]:=PP[J+1,I];
-      TriPtr^.Pts[2]:=PP[J,I+1];
-     end;
-    Inc(TriPtr);
+ ReallocMem(Triangles, Result*SizeOf(TBezierTriangle));
+ TriPtr:=Triangles;
+ S1:=FMeshCache.CP;
+ S2:=S1; Inc(S2);
+ S3:=S1; Inc(S3, FMeshCache.W);    { S1 S2 }
+ S4:=S2; Inc(S4, FMeshCache.W);    { S3 S4 }
+ Dest:=PP;
+ for J:=0 to FMeshCache.H-2 do
+  begin
+   for I:=0 to FMeshCache.W-2 do
+    begin
+     { subdivide each small square into two triangles }
+     TriPtr^.PP[0].X:=S1^[0]; TriPtr^.PP[0].Y:=S1^[1]; TriPtr^.PP[0].Z:=S1^[2];
+     TriPtr^.PP[1].X:=S3^[0]; TriPtr^.PP[1].Y:=S3^[1]; TriPtr^.PP[1].Z:=S3^[2];
+     TriPtr^.PP[2].X:=S2^[0]; TriPtr^.PP[2].Y:=S2^[1]; TriPtr^.PP[2].Z:=S2^[2];
+     if Assigned(TriList) then
+      begin
+       TriPtr^.Pts[0]:=Dest^;
+       Inc(Dest);
+       TriPtr^.Pts[2]:=Dest^;
+       Inc(Dest, FMeshCache.W-1);
+       TriPtr^.Pts[1]:=Dest^;
+      end;
+     Inc(TriPtr);
 
-    TriPtr^.PP[0].X:=MeshCache[J+1,I,0];   TriPtr^.PP[0].Y:=MeshCache[J+1,I,1];   TriPtr^.PP[0].Z:=MeshCache[J+1,I,2];
-    TriPtr^.PP[1].X:=MeshCache[J+1,I+1,0]; TriPtr^.PP[1].Y:=MeshCache[J+1,I+1,1]; TriPtr^.PP[1].Z:=MeshCache[J+1,I+1,2];
-    TriPtr^.PP[2].X:=MeshCache[J,I+1,0];   TriPtr^.PP[2].Y:=MeshCache[J,I+1,1];   TriPtr^.PP[2].Z:=MeshCache[J,I+1,2];
-    if Assigned(TriList) then
-     begin
-      TriPtr^.Pts[0]:=PP[J+1,I];
-      TriPtr^.Pts[1]:=PP[J+1,I+1];
-      TriPtr^.Pts[2]:=PP[J,I+1];
-     end; 
-    Inc(TriPtr);
-   end;
+     TriPtr^.PP[0].X:=S3^[0]; TriPtr^.PP[0].Y:=S3^[1]; TriPtr^.PP[0].Z:=S3^[2];
+     TriPtr^.PP[1].X:=S4^[0]; TriPtr^.PP[1].Y:=S4^[1]; TriPtr^.PP[1].Z:=S4^[2];
+     TriPtr^.PP[2].X:=S2^[0]; TriPtr^.PP[2].Y:=S2^[1]; TriPtr^.PP[2].Z:=S2^[2];
+     if Assigned(TriList) then
+      begin
+       TriPtr^.Pts[0]:=Dest^;
+       Inc(Dest);
+       TriPtr^.Pts[1]:=Dest^;
+       Dec(Dest, FMeshCache.W);
+       TriPtr^.Pts[2]:=Dest^;
+      end; 
+     Inc(TriPtr);
+     Inc(S1); Inc(S2); Inc(S3); Inc(S4);
+    end;
+   Inc(Dest);
+   Inc(S1); Inc(S2); Inc(S3); Inc(S4);
+  end;
+ finally FreeMem(PP); end;
 
  if Assigned(TriList) then
   begin
-   TriPtr:=@Triangles[0];
-   for I:=Low(Triangles) to High(Triangles) do
+   TriList.Capacity:=Result;
+   for I:=1 to Result do
     begin
+     Dec(TriPtr);
       { compute the planes containing each triangle to determine if it's viewed from the front or the back }
      V.X:=TriPtr^.PP[2].X-TriPtr^.PP[1].X;
      V.Y:=TriPtr^.PP[2].Y-TriPtr^.PP[1].Y;
@@ -430,7 +669,6 @@ begin
      if CCoord.NearerThan(TriPtr^.zmax, TriPtr^.Pts[1].oow) then TriPtr^.zmax:=TriPtr^.Pts[1].oow;
      if CCoord.NearerThan(TriPtr^.zmax, TriPtr^.Pts[2].oow) then TriPtr^.zmax:=TriPtr^.Pts[2].oow;
      TriList.Add(TriPtr);
-     Inc(TriPtr);
     end;
     { sort the list in Z order }
    TriList.Sort(@BezierTriangleSort);
@@ -442,12 +680,12 @@ procedure TBezier.PreDessinerSel;
 var
  FrontFacing, WasFront: Boolean;
  CDC: TCDC;
- Triangles: TBezierTriangleList;
- TriPtr: PBezierTriangle;
+ Triangles, TriPtr: PBezierTriangle;
  I: Integer;
  TriList: TList;
 begin
   { build a list of triangles and sort it in Z order }
+ Triangles:=Nil;
  TriList:=TList.Create; try
  ListBezierTriangles(Triangles, TriList);
 
@@ -472,7 +710,7 @@ begin
   end;
 
  finally CloseComponentDC(CDC); end;
- finally TriList.Free; end;
+ finally TriList.Free; FreeMem(Triangles); end;
 end;
 
  { assign patches their icon }
@@ -485,18 +723,18 @@ end;
  { mouse click detection }
 procedure TBezier.AnalyseClic(Liste: PyObject);
 var
- Triangles: TBezierTriangleList;
- TriPtr: PBezierTriangle;
- I, PrevL, L: Integer;
+ Triangles, TriPtr: PBezierTriangle;
+ TriCount, I, PrevL, L: Integer;
  W1, W2, Normale: TVect;
  d0, d1, dv, f: Reel;
 begin
- ListBezierTriangles(Triangles, Nil);
+ Triangles:=Nil; try
+ TriCount:=ListBezierTriangles(Triangles, Nil);
  W2.X:=Info.Clic2.X - Info.Clic.X;
  W2.Y:=Info.Clic2.Y - Info.Clic.Y;
  W2.Z:=Info.Clic2.Z - Info.Clic.Z;
- TriPtr:=@Triangles[0];
- for I:=Low(Triangles) to High(Triangles) do
+ TriPtr:=Triangles;
+ for I:=1 to TriCount do
   begin
    PrevL:=2;
    L:=0;
@@ -534,6 +772,62 @@ begin
     end;
    Inc(TriPtr);
   end;
+ finally FreeMem(Triangles); end;
+end;
+
+ { guess the 'smooth' specific based on current control points }
+procedure TBezier.AutoSetSmooth;
+var
+ cp: TBezierMeshBuf5;
+ I, J: Integer;
+ P: vec5_p;
+ v1, v2, v3: vec5_t;
+begin
+ cp:=ControlPoints;
+ if (cp.W<5) and (cp.H<5) then
+  Exit;   { not a real quilt, just one patch or one line }
+ for J:=0 to cp.H-1 do  { horizontal checks }
+  begin
+   P:=cp.CP;
+   Inc(P, J*cp.W+1);
+   for I:=2 to cp.W div 2 do
+    begin
+     v1:=P^;
+     Inc(P);
+     v2:=P^;
+     Inc(P);
+     v3:=P^;
+     if (Abs(v3[0]-2*v2[0]+v1[0])>rien2)
+     or (Abs(v3[1]-2*v2[1]+v1[1])>rien2)
+     or (Abs(v3[2]-2*v2[2]+v1[2])>rien2) then
+      begin   { not smooth }
+       Specifics.Values['smooth']:='';
+       Exit;
+      end;
+    end;
+  end;
+ for I:=0 to cp.W-1 do  { vertical checks }
+  begin
+   P:=cp.CP;
+   Inc(P, I+cp.W);
+   for J:=2 to cp.H div 2 do
+    begin
+     v1:=P^;
+     Inc(P, cp.W);
+     v2:=P^;
+     Inc(P, cp.W);
+     v3:=P^;
+     if (Abs(v3[0]-2*v2[0]+v1[0])>rien2)
+     or (Abs(v3[1]-2*v2[1]+v1[1])>rien2)
+     or (Abs(v3[2]-2*v2[2]+v1[2])>rien2) then
+      begin   { not smooth }
+       Specifics.Values['smooth']:='';
+       Exit;
+      end;
+    end;
+  end;
+ { smooth }
+ Specifics.Values['smooth']:='1';
 end;
 
  {------------------------}
@@ -541,7 +835,7 @@ end;
  { Python attribute reading }
 function TBezier.PyGetAttr(attr: PChar) : PyObject;
 var
- cp: beziercontrolpoints_t;
+ cp: TBezierMeshBuf5;
  I, J: Integer;
  o: PyObject;
 begin
@@ -551,15 +845,18 @@ begin
   'c': if StrComp(attr, 'cp') = 0 then
         begin  { get control points }
          cp:=ControlPoints;
-         Result:=PyTuple_New(3);
+         Result:=PyTuple_New(cp.H);
          try
-          for J:=0 to 2 do
+         for J:=0 to cp.H-1 do
            begin
-            o:=PyTuple_New(3);  { make a tuple of 3 3-tuples of vectors }
+            o:=PyTuple_New(cp.W);  { make a tuple of h w-tuples of vectors }
             PyTuple_SetItem(Result, J, o);
-            for I:=0 to 2 do
-             PyTuple_SetItem(o, I, MakePyVect5(
-                             cp[J,I,0], cp[J,I,1], cp[J,I,2], cp[J,I,3], cp[J,I,4]));
+            for I:=0 to cp.W-1 do
+             begin
+              PyTuple_SetItem(o, I, MakePyVect5(
+                              cp.CP^[0], cp.CP^[1], cp.CP^[2], cp.CP^[3], cp.CP^[4]));
+              Inc(cp.CP);
+             end;
            end;
          except
           Py_DECREF(Result);
@@ -573,35 +870,73 @@ end;
  { Python attribute writing }
 function TBezier.PySetAttr(attr: PChar; value: PyObject) : Boolean;
 var
- cp: beziercontrolpoints_t;
+ cp, oldcp: TBezierMeshBuf5;
  I, J: Integer;
- cpv: array[0..2, 0..2] of PyVect;
+ GotOldCp: Boolean;
+ pLine, cpv: PyObject;
+ Dest, P: vec5_p;
 begin
  Result:=inherited PySetAttr(attr, value);
  if not Result then
   case attr[0] of
    'c': if StrComp(attr, 'cp') = 0 then
          begin  { set control points }
-          if not PyArg_ParseTupleX(value, '(O!O!O!)(O!O!O!)(O!O!O!):"cp" attribute', [
-           @TyVect_Type, @cpv[0,0], @TyVect_Type, @cpv[0,1], @TyVect_Type, @cpv[0,2],
-           @TyVect_Type, @cpv[1,0], @TyVect_Type, @cpv[1,1], @TyVect_Type, @cpv[1,2],
-           @TyVect_Type, @cpv[2,0], @TyVect_Type, @cpv[2,1], @TyVect_Type, @cpv[2,2]]) then
-            Exit;
-          cp:=ControlPoints;
-          for J:=0 to 2 do
-           for I:=0 to 2 do
-            with cpv[J,I]^ do
+          GotOldCp:=False;
+          cp.H:=PyObject_Length(value);
+          if cp.H<0 then Exit;
+          Dest:=Nil;
+          cp.CP:=Nil; try
+          for J:=0 to cp.H-1 do
+           begin
+            pLine:=PySequence_GetItem(value, J);
+            if pLine=Nil then Exit;
+            I:=PyObject_Length(pLine);
+            if I<0 then Exit;
+            if J=0 then
              begin
-              cp[J,I,0]:=V.X;   { copy control points }
-              cp[J,I,1]:=V.Y;
-              cp[J,I,2]:=V.Z;
-              if ST then  { copy ST if present in the vectors }
+              cp.W:=I;
+              GetMem(cp.CP, cp.W*cp.H*SizeOf(vec5_t));
+              Dest:=cp.CP;
+             end
+            else
+             if cp.W<>I then
+              Raise EError(4460);
+            for I:=0 to cp.W-1 do
+             begin
+              cpv:=PySequence_GetItem(pLine, I);
+              if cpv=Nil then Exit;
+              if cpv^.ob_type<>@TyVect_Type then
+               Raise EError(4441);
+              with PyVect(cpv)^ do
                begin
-                cp[J,I,3]:=PyVectST(cpv[J,I])^.TexS;
-                cp[J,I,4]:=PyVectST(cpv[J,I])^.TexT;
+                Dest^[0]:=V.X;   { copy control points }
+                Dest^[1]:=V.Y;
+                Dest^[2]:=V.Z;
+                if ST then  { copy ST if present in the vectors }
+                 begin
+                  Dest^[3]:=PyVectST(cpv)^.TexS;
+                  Dest^[4]:=PyVectST(cpv)^.TexT;
+                 end
+                else
+                 begin  { query old ST value }
+                  if not GotOldCp then
+                   begin
+                    oldcp:=ControlPoints;
+                    if (oldcp.W<>cp.W) or (oldcp.H<>cp.H) then
+                     raise EError(4460);  { cannot use old value if resizing the matrix }
+                    GotOldCp:=True;
+                   end;
+                  P:=oldcp.CP;
+                  Inc(P, J*oldcp.W+I);
+                  Dest^[3]:=P^[3];
+                  Dest^[4]:=P^[4];
+                 end;
                end;
+              Inc(Dest);
              end;
-          ControlPoints:=cp;  { save them }
+           end;
+          ControlPoints:=cp;  { save new control points }
+          finally FreeMem(cp.CP); end;
           Result:=True;
           Exit;
          end;
