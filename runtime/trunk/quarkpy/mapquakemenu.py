@@ -379,9 +379,9 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
     elif texcount is not None:
         target = setup["TextureWad"] or setup["Q2TexPath"]
-        quarkx.msgbox(target,2,4)
+#        quarkx.msgbox(target,2,4)
         target = quarkx.outputfile(target)
-        quarkx.msgbox(target,2,4)
+#        quarkx.msgbox(target,2,4)
         c1,c2 = texcount
         if c1<c2:
             msg = Strings[5590] % (c2, target, c2-c1)
@@ -469,6 +469,11 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.7  2000/06/07 22:29:19  alexander
+#changed: use the setup entry "SpecialCustomQuakeMenu" instead of
+#         the NEEDQCSG flag to select a form for custom quake menus
+#fixed: check now if aas file was built at all
+#
 #Revision 1.6  2000/06/05 00:11:27  alexander
 #fixed history
 #
