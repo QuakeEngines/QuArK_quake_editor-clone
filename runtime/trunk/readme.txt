@@ -1,3 +1,6 @@
+ * [dannsdinosaurs]:  Heretic II Add-on Data, Added DEATHMATCH spawnflag to all weapons & ammo. Added
+      NOT DEATHMATCH to doors, levers, buttons, puzzle pieces.
+
  * [peter-b]: Revision of the way Python version & DLL path are logged
 
  * [peter-b]: Bundled Python upgrade to 2.2.3
