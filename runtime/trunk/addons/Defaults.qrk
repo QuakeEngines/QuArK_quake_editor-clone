@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.229  2004/11/08 22:47:42  alexander
+//hl2 support started
+//
 //Revision 1.228  2004/06/02 21:29:59  cdunde
 //To up date for Sylphis_autogen.qrk addon
 //
@@ -2077,21 +2080,21 @@ QQRKSRC1
 
         Program = "HL2.EXE -console -dev -zone 1024 +set sv_cheats 1"
 
-        Directory = "\Sierra\Half-Life2"
-        CheckDirectory = "HL2.EXE"
+        Directory = "e:\spiele\steam\steamapps"
+        CheckDirectory = "..\steam.exe"
 
         MapCommentsPrefix = "//"
-        OutputMapFormat = "Valve 220"
+        OutputMapFormat = "HL2"
 
-        BuildPgm1  = "HLCSG.EXE"
+        BuildPgm1  = "vbsp.exe"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP"
-        BuildPgm2  = "HLBSP.EXE"
+        BuildCheck1= ""
+        BuildPgm2  = "vvis.exe"
         BuildArgs2 = ""
-        BuildCheck2= "+BSP,+PRT,-PTS{LoadLinFile}"
-        BuildPgm3  = "HLVIS.EXE"
+        BuildCheck2= ""
+        BuildPgm3  = "vrad.exe"
         BuildArgs3 = ""
-        BuildPgm4  = "HLRAD.EXE"
+        BuildPgm4  = ""
         BuildArgs4 = ""
 
         DefaultTexture = "FIFTIES_WALL14Y"
@@ -2104,7 +2107,7 @@ QQRKSRC1
         WateryTex = "!"
         TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
-        TexturesPath = "hl2/materials/"
+        //TexturesPath = "root/hl2/materials/"
 
         BaseDir = "hl2"
         tmpQuArK = "hl2"
@@ -2120,8 +2123,8 @@ QQRKSRC1
         AddOns = "DataHL2.qrk"
 //      AddOns = "BaseData.qrk"
 
-        AlwaysPak = ""
-        PakExt = ".pak"
+        PakExt = ".gcf"
+        PakFormat = "*.gcf"
         LightFactor = '0.9'
         3DLight = '512'
         Console = "1"
@@ -4544,7 +4547,7 @@ QQRKSRC1
       Program: = {
         Typ = "C"     // combo box
         Txt = "Half-Life2 command-line"
-        Items = "HL2.EXE"
+        Items = "../steam.exe"
              $0D"HL2.EXE -console -dev -zone 1024 +set sv_cheats 1"
         t_ProgramHint=!
       }
@@ -4553,7 +4556,13 @@ QQRKSRC1
         Txt = "Directory of Half-Life 2"
         Typ = "ED"      // Edit Directory
         Hint = "Path to the game executable"
-        CheckFile = "HL2.EXE"
+        CheckFile = "../steam.exe"
+      }
+      BaseDir: =
+      {
+        Txt = "Steam User Name "
+        Typ = "ET"      // Edit Directory
+        Hint = "In this directory the map files are generated to"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -4564,7 +4573,7 @@ QQRKSRC1
                $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
                $666000407787877866608777777777784448444844487F785C77CF77CC487778
                $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
         cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
       }
       Outp:tbbtn =
@@ -4576,7 +4585,7 @@ QQRKSRC1
                $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
                $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
                $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
         cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
       }
       sep: = {Typ="S" Txt = ""}

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2003/11/10 19:32:59  silverpaladin
+Fixed a problem with menus not showing up on the Toolbox menu.
+
 Revision 1.20  2003/08/13 04:26:21  silverpaladin
 final changes to gk1's TG_Form vs TForm1.  Added a couple jpg modules and a reference to default.qrk for easy access
 
@@ -186,7 +189,9 @@ uses
   MapError in 'prog\MapError.pas',
   QkTribes2 in 'prog\QkTribes2.pas',
   JPEGLib in 'components\JPEG\jpeglib.pas',
-  JmoreCfg in 'components\jpeg\JMORECFG.PAS';
+  JmoreCfg in 'components\jpeg\JMORECFG.PAS',
+  QkVTF in 'prog\QkVTF.pas',
+  QkGCF in 'prog\QkGCF.pas';
 
 {$R *.RES}
 
