@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/02/28 19:03:25  aiv
+Fixed ref count prob.
+
 Revision 1.8  2001/02/23 02:14:27  aiv
 more on md3 linking
 
@@ -236,7 +239,7 @@ begin
   if shader_filename='' then
     exit;
   if shader_filename='textures' then begin
-    // use tiglaris code in quickwal.pas ...  how ? ....
+    // use tiglaris code in quickwal.pas ... how ? ....
     exit;
   end;
   shader_filename:=SetupGameSet.Specifics.Values['ShadersPath']+shader_filename+'.shader';

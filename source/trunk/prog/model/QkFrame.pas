@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/02/28 19:03:25  aiv
+Fixed ref count prob.
+
 Revision 1.7  2001/02/23 02:29:33  aiv
 more on md3 linking (a fix)
 
@@ -88,6 +91,20 @@ begin
   begin
     for k:=0 to 2 do
       p^[k]:=p^[k] + vec[k]{ + pos[k]};
+    inc(p);
+  end;
+end;
+
+procedure ScaleVecs(var vec_out: vec3_p; count: Integer; scale: double);
+var
+  p: vec3_p;
+  j,k: Integer;
+begin
+  p:=vec_out;
+  for j:=1 to count do
+  begin
+    for k:=0 to 2 do
+      p^[k]:=p^[k] * scale;
     inc(p);
   end;
 end;
@@ -213,9 +230,10 @@ var
   o_tag,s_tag: QModelTag;
   myRoot, modelRoot: QModelRoot;
   m,m1: PMatrixTransformation;
-  x: vec3_p;
+  x, x1: vec3_p;
   new: vec3_p;
   s0: string;
+//  sc: double;
 begin
   result:=0;
   s_tag:=nil; o_tag:=nil;
@@ -252,8 +270,17 @@ begin
     s_Tag.GetRotMatrix(m);
     o_Tag.GetRotMatrix(m1);
     bf.GetQ3A_Position(x);
-    TranslateVecs(vec3_t_add(vec3_t_sub(s_Tag.GetPosition^, o_tag.getPosition^),X^), P, Result);
+    if bf2<>nil then begin
+      bf2.GetQ3A_Position(x1);
+//      sc:=bf2.GetQ3A_Scale;
+    end else begin
+      getmem(x1, sizeof(vec3_t));
+      fillchar(x1^, sizeof(vec3_t), #0);
+//      sc:=0;
+    end;
+    TranslateVecs(vec3_t_sub(vec3_t_sub(s_Tag.GetPosition^, o_tag.getPosition^), vec3_t_sub(X1^,X^)), P, Result);
     RotateVecs(MultiplieMatrices(M^,M1^), P, Result);
+//    ScaleVecs(P, Result, sc-bf.GetQ3A_Scale);
     if Specifics.IndexOfName(S0)<>-1 then
       Specifics.Delete(Specifics.IndexofName(S0));
     Specifics.Add(S);

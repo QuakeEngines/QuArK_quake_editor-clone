@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2001/02/28 19:03:25  aiv
+Fixed ref count prob.
+
 Revision 1.12  2001/02/23 02:14:27  aiv
 more on md3 linking
 
@@ -801,6 +804,7 @@ begin
     if CurrentFrame=Nil then
       Goto PreExit;
   end;
+
   FCurrentFrameCount:=FCurrentFrameObj.GetVertices(FCurrentFrame);
   GetMem(ProjPts, FCurrentFrameCount * SizeOf(TPointProj));
   try
