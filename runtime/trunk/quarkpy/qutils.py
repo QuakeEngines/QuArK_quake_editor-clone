@@ -347,39 +347,31 @@ def DuplicatorIconSel(dup):
 # Variable icons handlers for groups
 #
 
-ico_objects_group_set1={
+def GroupIconUnsel(grp, ico_objects_group_set={
   (0,0):ico_objects[0][32],
   (0,1):ico_objects[0][13],
   (4,0):ico_objects[0][33],
-  (4,1):ico_objects[0][31]}
-
-def GroupIconUnsel(grp):
+  (4,1):ico_objects[0][31]}):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
-            return ico_objects_group_set1[view&4, not (view&~4)]
+            return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
     return ico_objects[0][13]
 
-ico_objects_group_set2={
+def GroupIconSel(grp, ico_objects_group_set={
   (0,0):ico_objects[1][32],
   (0,1):ico_objects[1][13],
   (4,0):ico_objects[1][33],
-  (4,1):ico_objects[1][31]}
-  
-def GroupIconSel(grp):
+  (4,1):ico_objects[1][31]}):
     if grp[";view"]:
         try:
             view = int(grp[";view"])
-            return ico_objects_group_set2[view&4, not (view&~4)]
+            return ico_objects_group_set[view&4, not (view&~4)]
         except:
             pass
     return ico_objects[1][13]
-
-del ico_objects_group_set1
-del ico_objects_group_set2
-
 #
 # Variable icons handlers for Model objects
 #
@@ -508,6 +500,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.17  2001/10/22 11:27:26  tiglari
+#clean up some leak tracking stuff
+#
 #Revision 1.16  2001/10/22 10:28:20  tiglari
 #live pointer hunt, revise icon loading
 #
