@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.244  2005/02/03 00:11:08  cdunde
+//Light coverage feature not working for Torque, so needed to add item" LightFactor" and default setting to Torque:config form for that part of quarkpy/mapentities.py def drawentitylines funtion to work.
+//
 //Revision 1.243  2005/01/21 17:44:33  alexander
 //allow file selection for hl2 filesystem dll
 //
@@ -1295,6 +1298,7 @@ QQRKSRC1
         DefaultTextureTrigger = "Tools/toolstrigger"
         DefaultTextureOrigin = "Tools/toolsorigin"
         DefaultTextureClip = "Tools/toolsclip"
+        DefaultTextureScale = "0.25"
         EnableTransparency = ""
         TextureWad = "?"     // variable (the map name is used)
         GameNeedWad = "1"

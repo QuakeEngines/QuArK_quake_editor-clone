@@ -15,6 +15,16 @@ QQRKSRC1
       }
     }
   }
+  Default forms.qctx =
+  {
+  
+    Default:f:form =
+    {
+      notexsubform=!
+      lightmapscale:  = {Txt="&" Typ="E"  Hint="no clue"}
+    }
+  }
+
   NewMap:incl =
   {
     Game = "Half-Life2"

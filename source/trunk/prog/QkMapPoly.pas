@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.77  2005/01/11 02:12:24  alexander
+extended the getopacity function to allow also rendermode and renderamt processing for hl2 brushes
+
 Revision 1.76  2004/12/21 09:05:04  alexander
 default lightrmap scale export
 
@@ -2489,6 +2492,7 @@ var
  MJ: Char;
  J: Integer;
  Q: QObject;
+ S:String;
  { BrushPrim, Valve220Map : Boolean }
  WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
  MapFormat: MapFormatTypes;
@@ -3056,7 +3060,9 @@ begin
    WriteFace(PSurface(Faces[J])^.F);
    if MapFormat=HL2Type then
    begin
-     Brush.Add('  "lightmapscale" "16"');
+     S:=PSurface(Faces[J])^.F.Specifics.values['lightmapscale'];
+     if S<>'' then
+       Brush.Add('  "lightmapscale" "'+S+'"');
      Brush.Add(' }');
    end
   end
