@@ -83,7 +83,7 @@ def MACRO_hint(form, text=None):
     if not isinstance(form.info, qbaseeditor.BaseEditor):
         return
     return form.info.showhint(text)
-        
+
 
 #
 # Macro called to build a map (when the big GO! button is pressed).
@@ -274,18 +274,21 @@ def MACRO_makeaddonfromfgd(self):
     import qutils
     a = quarkx.getqctxlist()
     a.reverse()
-    files = quarkx.filedialogbox("Select FGD File", "*.fgd", ["WorldCraft Data File","*.fgd"], 0)
+    files = quarkx.filedialogbox("Select FGD File", "*.fgd", ["WorldCraft Data File (*.fgd)", "*.fgd"], 0)
     file = files[0]
     gn = a[0]["GameDir"]
     if (gn is None) or (gn == ""):
         gn = file
     qfgd2qrk.makeqrk(a[0].parent, file, gn)
-    
+
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.9  2001/03/15 21:09:01  aiv
+#moved .fgd reading to menu, sepearted texture & entity reading
+#
 #Revision 1.5  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
