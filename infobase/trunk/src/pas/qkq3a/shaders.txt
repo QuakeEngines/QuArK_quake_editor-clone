@@ -77,7 +77,7 @@ correctly with shaders : when viewed from inside a texture list, they display
 their default best-possible image, but they can also be expanded in the tree
 (as you would open a group) to reveal their QShaderItem sub-images.
 
-QShader itself overrides the function 'OuvrirFenetre' ('OpenWindow' in english)
+QShader itself overrides the function 'OpenWindow'
 so that when one clicks on a shader in the texture browser it displays a list
 of its QShaderItems. This is done by a form "TFQShader" overriding "TQForm2",
 similarly to "TFQWad", which displays the list of textures inside a QWad

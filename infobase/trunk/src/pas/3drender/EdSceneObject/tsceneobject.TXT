@@ -1,38 +1,35 @@
 title: The 'TSceneObject' class
 author: Decker
 
-Let me see, if I can explain what this class is all about. Mind you, I have not understanded it completly, so
-parts of this look-through explanation may be completly wrong.
+Let me see, if I can explain what this class is all about. Mind you, I have not
+understanded it completly, so parts of this look-through explanation may be
+completly wrong.
 
-The idea of
-<tt>
-TSceneObject
-</tt>
-is to encapsulate the complex data structures and 3D-render API calls, in a general class interface for QuArK to use.
+The idea of <tt>TSceneObject</tt> is to encapsulate the complex data structures
+and 3D-render API calls, in a general class interface for QuArK to use.
 
-It does not contain any code for a specific 3D-render, so one has to inherit from it and create a specialized class.
+It does not contain any code for a specific 3D-render, so one has to inherit
+from it and create a specialized class.
 
 The main function calls into this abstract class are the following:
 
-<code>
-procedure Init( ... ); virtual; abstract;
-procedure BuildScene( ... );
-procedure Render3DView; virtual; abstract;
-procedure AddPolyFace( ... );
-procedure AddModel( ... );
-procedure AddBezier( ... );
-procedure AddLight( ... ); virtual;
-</code>
+<tt>procedure Init( ... ); virtual; abstract;</tt>
 
-<head>
-procedure Init( ... ); virtual; abstract;
-</head>
-
-This function must; initialize the window, setup default data-structures and options, and ready the 3D-render API calls
-by for instance load a DLL.
+This function must; initialize the window, setup default data-structures and
+options, and ready the 3D-render API calls by for instance load a DLL.
 
 It is not defined in the TSceneObject class, as can be seen on the
-<tt>
-abstract
-</tt>
-keyword. So all classes that inherit from TSceneObject, must define the contents of this function.
+<tt>abstract</tt> keyword. So all classes that inherit from TSceneObject, must
+define the contents of this function.
+
+<tt>procedure BuildScene( ... );</tt>
+
+<tt>procedure Render3DView; virtual; abstract;</tt>
+
+<tt>procedure AddPolyFace( ... );</tt>
+
+<tt>procedure AddModel( ... );</tt>
+
+<tt>procedure AddBezier( ... );</tt>
+
+<tt>procedure AddLight( ... ); virtual;</tt>
