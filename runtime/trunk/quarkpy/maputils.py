@@ -330,10 +330,59 @@ def CaulkTexture():
         return quarkx.setupsubset()["DefaultTexture"]
 
 
+#
+# returns n points, lying on the warped circle inscribed
+#  in the quadrilateral defined by the four points
+#  (tangent at the midpoints of the edges)
+#
+def warpedCircleFrom4Points(n, points):
+    #
+    # get the corners
+    #
+    corners=[]
+    for i in range(4):
+        corner=points[i]
+        corners.append((corner, (points[i-1]-corner)/2, (points[(i+1)%4]-corner)/2))
+    #
+    # make angle & corner from angle (degrees)
+    #
+    def angle_corner(angle, corners=corners):
+        if angle<90:
+            return angle, corners[0]
+        elif angle<180:
+            return angle-90, corners[1]
+        elif angle<270:
+            return angle-180, corners[2]
+        else:
+            return angle-270, corners[3]
+    #
+    # get angles
+    #
+    angle_incr=360/n
+    circle=[corners[0][0]+corners[0][1]]
+    cum_angle=0.0
+    for i in range(1,n):
+        cum_angle=cum_angle+angle_incr
+        angle, corner = angle_corner(cum_angle)
+        #
+        # get point in quarter-circle resting in
+        #   the axes
+        #
+        point = quarkx.vect(1.0-math.sin(angle*deg2rad), 1.0-math.cos(angle*deg2rad), 0)
+        #
+        # get linear matrix for mapping
+        #
+        mat = matrix_u_v(corner[1], corner[2])
+        circle.append(corner[0]+mat*point)
+    return circle    
+    
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.18  2001/05/13 01:07:58  tiglari
+#disable buildLinearMapping, add CaulkTexture()
+#
 #Revision 1.17  2001/05/12 18:59:56  tiglari
 #remove buildLinearMatrix
 #
