@@ -133,7 +133,7 @@ def texcpclick(m):
         src["Coords"] = cp[i][j].s, cp[i][j].t
 
     def action(self, pack=pack):
-        cp, (i, j), b2 = copyCp(pack.b2.cp),   pack.ij, pack.b2
+        cp, (i, j), b2 = copycp(pack.b2.cp),   pack.ij, pack.b2
         s, t = self.src["Coords"]
         os, ot = cp[i][j].st
         ds, dt = s-os, t-ot
@@ -285,10 +285,15 @@ class CPHandle(qhandles.GenericHandle):
 
     def menu(self, editor, view):
 
-        texcp = qmenu.item("Texture Coordinates",texcpclick)
-        texcp.h, texcp.editor = self, editor
         i, j = self.ij
         cp = self.b2.cp
+
+        patchmenu = mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+
+        texcp = qmenu.item("Texture Coordinates",texcpclick)
+        texcp.h, texcp.editor = self, editor
+        texpop = findlabelled(patchmenu,'texpop')
+        texpop.items[:0] = [texcp, qmenu.sep]
 
         def thickenclick(m,self=self,editor=editor):
           new = self.b2.copy()
@@ -358,7 +363,7 @@ class CPHandle(qhandles.GenericHandle):
         tagpt = gettaggedpt(editor)
 
         def glueclick(m, editor=editor,tagpt=tagpt,b2=self.b2,(i,j)=self.ij):
-            cp=copyCp(b2.cp)
+            cp=copycp(b2.cp)
             if quarkx.keydown('S'):
               cp[i][j]=tagpt
             else:
@@ -402,7 +407,7 @@ class CPHandle(qhandles.GenericHandle):
              joinitem.hint=joinitem.hint+"\n\nTo enable this menu item, tag a non-corner edge point of one patch, and RMB on a non-corner edge point of another"
 
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [texcp, mesh, joinitem, glue] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [mesh, joinitem, glue] + patchmenu
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -627,7 +632,7 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
 
         CornerTexPos(quarkx.clickform,'cornertexpos',editor,setup,action)
     
-    cornertex = qmenu.item("Texture at &corners",cornertexclick,"|A dialog for positioning textures by specifying the texture coordinates of the corners of the patch")
+    cornertex = qmenu.item("Position by &corners",cornertexclick,"|A dialog for positioning textures by specifying the texture coordinates of the corners of the patch")
         
 
     old = oldmenu(o, editor)
