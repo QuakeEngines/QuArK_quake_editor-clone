@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/03/18 01:35:48  tiglari
+wc33 map format read (not fully tested, offsets might be off)
+
 Revision 1.28  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -1014,7 +1017,7 @@ expected one.
   PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
  begin
    (* find projections of threepoints on the texture plane*)
-   PP0:=VecSum(VecScale(-UShift, UAxis),VecScale(-VShift, VAxis));
+   PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
    PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
     { note p.i.t.a sign-flip }
    PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
