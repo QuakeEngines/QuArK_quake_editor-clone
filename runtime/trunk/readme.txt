@@ -1,7 +1,45 @@
 
-                   QuArK Snapshot 050701
+             QuArK Snapshot 050701 - patch4
 
+ Patch 4 updates
+ 
+  *beginning of 'linear' (matrix) specific editor.
+    try out with New Copy One duplicator, push button
+    to call up editing dialog.
+    
+  *linear duplicators changed to so that linear
+    mappings apply around 'usercenter' of each item
+    in their group, rather than duplicator location
 
+     -- group
+          |
+          ---- linear duplicator
+          |
+          ----- group: if this group has a usercenter,
+          |        and the dup has a linear specific,
+          |        the mapping will apply with the
+          |        usercenter as fixed point
+          |        
+          ------group: ditto for this one (each around
+                  its own center, seems wierd but
+                  features of the code make it tricky
+                  to do otherwise).
+           
+ Patch 3 updates
+ 
+  *defaults.qrk for the commercial counterstrike/hl
+     expansion, you also need the new .exe on the
+     'latest' page for this.
+
+ Patch 2 updates
+
+  *Hollowmaker/Wallmaker bug fixed
+
+ Patch1 updates 
+
+  *debug writing 'left' to console bug fixed
+
+ 
  Changes from  Snapshot 042801
  
   *Dragging on RMB blocked.  If anyone wants it back, an option
