@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56  2002/05/07 23:22:51  tiglari
+fix bugs in Mohaa surface property writing
+
 Revision 1.55  2002/05/05 10:21:53  tiglari
 writing MOHAA maps
 
@@ -2328,7 +2331,7 @@ var
    { tiglari }
    rval : Single; { for Value/lightvalue }
    Q: QPixelSet;
-   Mirror: Boolean;
+   Mirror, EtpMirror: Boolean;
    type
      FlagDef = record
       name: Pchar;
@@ -2465,6 +2468,23 @@ var
        F.GetThreePointsBP(P[1], P[3], P[2]);
 }
     begin
+
+     if MapFormat=QetpType then
+     begin
+       F.SimulateEnhTex(P[1], P[3], P[2], EtpMirror); {doesn't scale}
+
+{
+       if EtpMirror then
+       begin
+         V:=P[2];
+         P[2]:=P[3];
+         P[3]:=V;
+       end;
+}
+
+     end;
+
+
      if OriginBrush<>Nil then
       begin
        Delta1:=OriginBrush^;
@@ -2599,7 +2619,8 @@ var
         Valve220MapParams(Normale, F, S);
        end else if not (MapFormat=BPType) then
        begin
-         SimulateEnhTex(PT[1], PT[2], PT[3], Mirror); {doesn't scale}
+         SimulateEnhTex(PT[1], PT[3], PT[2], Mirror); {doesn't scale}
+
          ApproximateParams(Normale, PT, Params, Mirror); {does scale}
          for I:=1 to 2 do
            S:=S+' '+IntToStr(Round(Params[I]));
@@ -2755,7 +2776,7 @@ var
      end;
 
      if (MapFormat=QetpType) then
-       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
+       S:=S+TxField[(MJ>='A') and (MJ<='Z'), EtpMirror];
 
      Brush.Add(S);
     end;
@@ -3763,7 +3784,7 @@ var
 begin
   if LoadData and GetFloatsSpec('tv',TexV) then
   begin
-    GetThreePointsT(V1, V3, V2);
+    GetThreePointsT(V1, V2, V3);
     V1b.X:=V2.X-V1.X;
     V1b.Y:=V2.Y-V1.Y;
     V1b.Z:=V2.Z-V1.Z;
@@ -3772,13 +3793,18 @@ begin
     V2b.Z:=V3.Z-V1.Z;
     R:=Dot(Cross(V1b, V2b), Normale);
     if R > rien2 then
-    begin
-      Mirror:=False;
-    end
+      Mirror:=False
+     else
+     begin
+       V1b:=V2;
+       V2:=V3;
+       V3:=V1b;
+       Mirror:=True;
+     end;
   end
   else
   begin
-    GetThreePoints(V1, V3, V2);
+    GetThreePoints(V1, V2, V3);
     Mirror:=TextureMirror;
   end;
 end;
