@@ -1,8 +1,9 @@
 
- * [Decker] Fixed GDI-object(s) not being released (leaked), when using 
-     colors on tree-view groups.
-
                    QuArK 6.4 Snapshot 1
+
+
+ * [Decker] Fixed GDI-object(s) not being released (leaked), when using 
+     colors on tree-view groups (reported by Raybot).
 
  * [tiglari] Fix problems with texture positioning in Classic Quake
      and Quark etp mode (reported on the rust QuArK forum, argggh

@@ -1,5 +1,7 @@
                          QuArK 6.3
 
+ * [Decker/Raybot] resource leak fix
+
  * [tiglari] remove partial Mohaa support (lod terrain can't be supported
      without more info) to a Mohaa support addon.
 
