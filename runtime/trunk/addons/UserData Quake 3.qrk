@@ -1,5 +1,5 @@
 QQRKSRC1
-// This file has been written by QuArK Version 6.00b1
+// This file has been written by QuArK quarksnapshot_20000702
 // It's the text version of file: UserData Quake 3.qrk
 
 {
@@ -68,13 +68,13 @@ QQRKSRC1
     {
       Txt = "&GO ! (textures+build+Quake)"
       Shortcut = "Ctrl+R"
-      Textures = "1"
       QBSP1 = "1"
       VIS1 = "1"
       LIGHT1 = "1"
       LIGHTCmd = "-extra"
       RunGame = "1"
       BSPCCmd = "-bsp2aas"
+      Textures = "1"
     }
     item: =
     {
