@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/01/21 06:38:45  tiglari
+PrepareForExpand on viewed QObject before expansion
+
 Revision 1.9  2000/11/26 19:08:33  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -743,7 +746,6 @@ begin
  else
   El.Acces;
  ProgressIndicatorStart(5446, El.SubElements.Count);
- El.PrepareForExpand;
  try
   for I:=0 to El.SubElements.Count-1 do
    begin
