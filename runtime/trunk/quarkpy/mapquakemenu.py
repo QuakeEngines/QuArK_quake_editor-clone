@@ -39,7 +39,7 @@ def CreateCheckFileExtensionArray(instring):
         if (not instring[:1] in gExt_Controllers):
             return None, None
         # Find next char not in 'gExt_ValidExtChars', or end-of-line
-        ext = ""
+        ext = instring
         for i in range(1, len(instring)):
             if (instring[i] not in gExt_ValidExtChars):
                 ext = instring[0:i]
@@ -555,6 +555,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.18  2001/03/15 20:53:53  tiglari
+#fix for no action build control parameters (Q1/H2)
+#
 #Revision 1.17  2001/03/14 19:20:49  decker_dk
 #Functionality for '-ext{action}'... which is not documented yet!
 #
