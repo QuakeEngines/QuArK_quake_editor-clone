@@ -1,0 +1,154 @@
+QQRKSRC1
+// This file has been written by QuArK Version 5.2
+// It's the text version of file: UserData Heretic II.qrk
+
+{
+  Description = "Custom configuration file for Heretic II."
+  MapObjPanel.qrk =
+  {
+    cube: =
+    {
+      new cube:p =
+      {
+        east:f =
+        {
+          v = '64 0 0 64 128 0 64 0 128'
+          tex = "[auto]"
+        }
+        west:f =
+        {
+          v = '-64 0 0 -64 -128 0 -64 0 128'
+          tex = "[auto]"
+        }
+        north:f =
+        {
+          v = '0 64 0 -128 64 0 0 64 128'
+          tex = "[auto]"
+        }
+        south:f =
+        {
+          v = '0 -64 0 128 -64 0 0 -64 128'
+          tex = "[auto]"
+        }
+        up:f =
+        {
+          v = '0 0 64 128 0 64 0 128 64'
+          tex = "[auto]"
+        }
+        down:f =
+        {
+          v = '0 0 -64 128 0 -64 0 -128 -64'
+          tex = "[auto]"
+        }
+      }
+    }
+    light: =
+    {
+      light:e =
+      {
+        origin = "0 0 0"
+        light = "300"
+      }
+    }
+  }
+  Menu.qrk =
+  {
+    item: =
+    {
+      Txt = "&GO ! (textures+build+Heretic II)"
+      Shortcut = "Ctrl+R"
+      Textures = "1"
+      QBSP1 = "1"
+      VIS1 = "1"
+      LIGHT1 = "1"
+      LIGHTCmd = "-extra"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "Quic&kGO ! (fast QVIS and QRAD)"
+      Shortcut = "Ctrl+K"
+      Textures = "1"
+      QBSP1 = "1"
+      VIS1 = "1"
+      VISCmd = "-fast"
+      LIGHT1 = "1"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "&Fastest (full bright)"
+      Shortcut = "Ctrl+F"
+      Textures = "1"
+      QBSP1 = "1"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "Fastest on &selection only"
+      Shortcut = "Ctrl+P"
+      SelOnly = "1"
+      Textures = "1"
+      QBSP1 = "1"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&Prepare used textures"
+      Textures = "1"
+    }
+    item: =
+    {
+      Txt = "&Complete rebuild"
+      QBSP1 = "1"
+      VIS1 = "1"
+      LIGHT1 = "1"
+      LIGHTCmd = "-extra"
+      Pause = "1"
+    }
+    item: =
+    {
+      Txt = "&Run Heretic II"
+      RunGame = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "&QBSP3 (.bsp file creation)"
+      QBSP1 = "1"
+      Pause = "1"
+    }
+    item: =
+    {
+      Txt = "&QVIS3 (visibility list)"
+      VIS1 = "1"
+      VISCmd = "-level 4"
+      Pause = "1"
+    }
+    item: =
+    {
+      Txt = "&QRAD3 (light projection)"
+      LIGHT1 = "1"
+      LIGHTCmd = "-extra"
+      Pause = "1"
+    }
+    item: =
+    {
+      Txt = "-"
+    }
+    item: =
+    {
+      Txt = "QBSP - only &entities"
+      QBSP1 = "1"
+      QBSPCmd = "-onlyents"
+      Pause = "1"
+    }
+  }
+}
