@@ -20,6 +20,7 @@ Map Duplicator abstract classes.
 
 from maputils import *
 import maphandles
+import mapentities
 
 
 # Variable icons for Duplicator objects
@@ -85,6 +86,7 @@ class StandardDuplicator(DuplicatorManager):
         else:
             self.offset = None
         self.matrix = None
+        self.matrix2 = maphandles.buildLinearMatrix(self.dup)
 
     def applylinear(self, matrix, direct=0):
         s = self.dup["offset"]
@@ -111,7 +113,17 @@ class StandardDuplicator(DuplicatorManager):
             count = int(self.dup["count"])
         except:
             count = 1
+        cumoffset = quarkx.vect(0,0,0)
+        if self.dup["offset"]:
+            offset = quarkx.vect(self.dup["offset"])
+        else:
+            offset = cumoffset
+        if self.matrix2:
+            for item in list:
+                center = maphandles.GetUserCenter(item)
+                item = item.linear(center, self.matrix2)
         for i in range(count):
+            cumoffset = offset+cumoffset
             self.imagenumber = i
             # the following line :
             #  - makes copies of the items in "list";
@@ -120,6 +132,10 @@ class StandardDuplicator(DuplicatorManager):
             #  - removes all None objects;
             #  - and stores the new list back in "list".
             list = reduce(lambda x,y: x+y, map(lambda item, fn=self.do: fn(item.copy()), list), [])
+            if self.matrix2:
+                for item in list:
+                    center = maphandles.GetUserCenter(item)+cumoffset
+                    item = item.linear(center, self.matrix2)
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -240,6 +256,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2001/03/21 21:19:09  tiglari
+#custom origin (center for groups) duplicator support
+#
 #Revision 1.3  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
