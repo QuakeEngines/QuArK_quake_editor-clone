@@ -23,12 +23,6 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
-Revision 1.59  2001/10/11 11:34:57  tiglari
-Live Pointer Cleanup. (g_MemQObject)
-
-Revision 1.58  2001/10/10 11:59:29  tiglari
-Add finalization section to free QFileList
-
 Revision 1.57  2001/08/06 00:18:24  tiglari
 update version
 
@@ -202,7 +196,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
      Controls, Graphics, Forms, qmath, Menus,
      CommCtrl, Python;
 
-{$DEFINE ShareSpecMem}
+{DEFINE ShareSpecMem}
 
 const
   QuArKVersion            = 'QuArK 6.3snap080601';
@@ -571,17 +565,17 @@ function InternalE(const Hint: String) : Exception;
 procedure ReleaseStream(S: TStream);
 procedure ClearObjectManager;
 
-var QFileList: TStringList;
-
 {$IFDEF Debug}
 var g_MemQObject: TList;
-
 procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
-procedure Clear_g_MemQObject;
-
 {$ENDIF}
+
+type
+  PStringArray = ^TStringArray;
+  TStringArray = array[0..99] of String;
+
  {------------------------}
 
 implementation
@@ -592,11 +586,9 @@ uses
 
  {------------------------}
 
-type
-  PStringArray = ^TStringArray;
-  TStringArray = array[0..99] of String;
 
 var
+  QFileList: TStringList;
 {$IFDEF ShareSpecMem}
   CommonSpecifics: TList = Nil;
 {$ENDIF}
@@ -3222,14 +3214,6 @@ begin
     if MessageBox(0, 'Some objects were not correctly freed. This is a bug. Do you want to write a data report (DATADUMP.TXT) ?', 'DEBUGGING - BETA VERSION', mb_YesNo) = idYes then
       DataDump;
 end;
-
-procedure Clear_g_MemQObject;
-begin
-  while g_MemQObject.Count<>0 do
-    g_MemQObject.Destroy;
-  g_MemQObject.Free;
-end;
-
 {$ENDIF}
 
  {------------------------}
@@ -3244,6 +3228,6 @@ initialization
   {$ENDIF}
 
 finalization
-  { QFileList.Free;}
+  QFileList.Free;
 
 end.
