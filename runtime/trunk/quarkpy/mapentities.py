@@ -14,6 +14,7 @@ Map Editor Entities manager
 import quarkx
 from maputils import *
 import maphandles
+import mapoptions
 
 #
 # Classes that implement operations on all types of Map Objects,
@@ -512,7 +513,8 @@ class DefaultDrawEntityLines:
         org2 = ObjectOrigin(entity)
         if org2 is not None:
             cv = view.canvas()
-            cv.penwidth = 2 # DECKER - Make this a configurable size
+#            cv.penwidth = 2 # DECKER - Make this a configurable size
+            cv.penwidth = mapoptions.getThinLineThickness()
             cv.pencolor = color
 # DECKER - These font settings are commented out at the moment
 #           cv.fontname =               # DECKER - Make this configurable
@@ -554,7 +556,8 @@ class DefaultDrawEntityLines:
                     radius = radius * view.scale(org) * lightfactor
                     cv = view.canvas()
                     cv.pencolor = color
-                    cv.penwidth = 2 # DECKER - Make this a configurable size
+#                    cv.penwidth = 2 # DECKER - Make this a configurable size
+                    cv.penwidth = mapoptions.getThinLineThickness()
                     cv.brushstyle = BS_CLEAR
                     cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
                 except:
@@ -632,6 +635,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29  2003/02/13 15:56:53  cdunde
+#To add Cancel Selections function to RMB menu.
+#
 #Revision 1.28  2001/08/16 20:09:29  decker_dk
 #Put 'Add user center' menuitem on Treeview Group's context-menu. Its more visible there.
 #
