@@ -1,4 +1,4 @@
-title: Return To Castle Wolfenstein
+title: Return to Castle Wolfenstein
 
 One issue is that in the official tools release, many of the skins
 for the misc_model models are missing; they can be collected from:

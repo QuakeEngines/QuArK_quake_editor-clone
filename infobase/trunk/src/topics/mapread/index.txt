@@ -35,7 +35,7 @@ make sense of the Content, Surface, Value fields
 <LI>Variations caused by the propoerties of the standard compile tools, such
 as that the new HL tools understand the Valve 220 map format but not
 Brush Primtives, while the reverse is true for the GtkRadiant tools for Q3A
-and RTCW.
+and RtCW.
 </UL>
 The overall strategy is to try to use the first kind of information, but not
 the second, to determine identity of the game, to the extent that this
