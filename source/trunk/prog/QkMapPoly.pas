@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.78  2005/02/06 21:11:35  alexander
+able to set lightmapscale value on a face for hl2
+
 Revision 1.77  2005/01/11 02:12:24  alexander
 extended the getopacity function to allow also rendermode and renderamt processing for hl2 brushes
 
@@ -521,6 +524,31 @@ const
 
 type
  TThreePoints = array[1..3] of TVect;
+
+ {------------------------}
+
+function FindGameDecimalPlaces: integer;
+begin
+ // Rowdy: 17-Feb-2005 it seems that Torque wants more decimal places in .map files,
+ //        something to do with an idiosyncracy in Torque's map2dif utility that
+ //        converts a .map file written by QuArK to a .dif file (?) that Torque
+ //        can use.  cdunde has done some comprehensive testing with Lee Davies
+ //        (thanx guys!) and the results are inconclusive, but in order to make
+ //        QuArK play a bit nicer with Torque, or at least with map2dif, this
+ //        little hack was orchestrated so that each game has a configurable number
+ //        of decimal places for polys written to .map files.  The old (hard-coded)
+ //        default was 5, so we drop back to that if we read something we don't
+ //        understand.  The range is set from 1 to 40 - less than 1 (i.e. 0 (i.e.
+ //        integers)) should still be controlled by the existing option to write
+ //        only integers to .map files (see the Configutation window), anything
+ //        more than 40 decimal places is ludicrously insanely stupendously
+ //        silly :-P  So there.  Does this make the longest single comment in the
+ //        QuArK source???  Anyway, this function is called from a couple of
+ //        places, common code blah blah blah
+ Result := Trunc(SetupGameSet.GetFloatSpec('BrushDecimalPlaces', 5));
+ if Result = 0 then
+  Result := 5;
+end;
 
  {------------------------}
 
@@ -1213,28 +1241,32 @@ var
   S1, S2, UOff, VOff : Double;
   Dot22, Dot23, Dot33, Mdet,aa, bb, dd : Double; // from zoner's
   QV0, QV1, UAxis, VAxis : TVect; // from Zoners
+  BrushDecimalPlaces: integer;
 
   procedure write4vect(const V: TVect; D : Double; var S: String);
   begin
-     S:=S+' [ ';
-     S:=S+FloatToStrF(V.X, ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(V.Y, ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(V.Z, ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(D, ffFixed, 20, 5)+' ';
-     S:=S+'] ';
+    S:=S+' [ ';
+    S:=S+FloatToStrF(V.X, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Y, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Z, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(D, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+'] ';
   end;
 
   procedure write4vectHL2(const V: TVect; D : Double; var S: String);
   begin
-     S:=S+'[';
-     S:=S+FloatToStrF(V.X, ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(V.Y, ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(V.Z, ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(D, ffFixed, 20, 5);
-     S:=S+']';
+    S:=S+'[';
+    S:=S+FloatToStrF(V.X, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Y, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(V.Z, ffFixed, 20, BrushDecimalPlaces)+' ';
+    S:=S+FloatToStrF(D, ffFixed, 20, BrushDecimalPlaces);
+    S:=S+']';
   end;
 
 begin
+  // Rowdy: this is an attempt to write more decimal places (but configurable) to
+  //        help Torque mappers
+  BrushDecimalPlaces := FindGameDecimalPlaces;
 
   Plan:=PointsToPlane(Normale);
   case Plan of
@@ -1343,10 +1375,10 @@ begin
 
     S:=S+#13#10'  "uaxis" "';
     write4vectHL2(QV0, UOff, S);
-    S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5)+'"';
+    S:=S+' '+FloatToStrF(S1, ffFixed, 20, BrushDecimalPlaces)+'"';
     S:=S+#13#10'  "vaxis" "';
     write4vectHL2(QV1, VOff, S);
-    S:=S+' '+FloatToStrF(S2, ffFixed, 20, 5)+'"';
+    S:=S+' '+FloatToStrF(S2, ffFixed, 20, BrushDecimalPlaces)+'"';
   end
   else
   begin
@@ -1364,9 +1396,9 @@ begin
   S2:=1.0/S2;
 
   S:=S+' 0 ';
-  S:=S+' '+FloatToStrF(S1, ffFixed, 20, 5);
+  S:=S+' '+FloatToStrF(S1, ffFixed, 20, BrushDecimalPlaces);
   { sign flip engineered into Scale }
-  S:=S+' '+FloatToStrF(S2, ffFixed, 20, 5);
+  S:=S+' '+FloatToStrF(S2, ffFixed, 20, BrushDecimalPlaces);
   end;
 
 end;
@@ -2496,6 +2528,7 @@ var
  { BrushPrim, Valve220Map : Boolean }
  WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
  MapFormat: MapFormatTypes;
+ BrushDecimalPlaces: integer;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2505,14 +2538,14 @@ var
 }
     begin
      S:=S+'( ';
-     S:=S+FloatToStrF(P[1], ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(P[2], ffFixed, 20, 5)+' ';
-     S:=S+FloatToStrF(P[3], ffFixed, 20, 5)+' ';
+     S:=S+FloatToStrF(P[1], ffFixed, 20, BrushDecimalPlaces)+' ';
+     S:=S+FloatToStrF(P[2], ffFixed, 20, BrushDecimalPlaces)+' ';
+     S:=S+FloatToStrF(P[3], ffFixed, 20, BrushDecimalPlaces)+' ';
 
      {     for I:=1 to 3 do
      begin
        R:=P[I]/EchelleTexture;
-       S:=S+FloatToStrF(R, ffFixed, 20, 5)+' ';
+       S:=S+FloatToStrF(R, ffFixed, 20, BrushDecimalPlaces)+' ';
      end;
 }     S:=S+') ';
     end;
@@ -2795,19 +2828,19 @@ var
         if WriteIntegers or (Abs(X-R) < rien) then
          S:=S+IntToStr(R)+' '
         else
-         S:=S+FloatToStrF(X, ffFixed, 20, 5)+' ';
+         S:=S+FloatToStrF(X, ffFixed, 20, BrushDecimalPlaces)+' ';
         R:=Round(Y);
 
         if WriteIntegers or (Abs(Y-R) < rien) then
          S:=S+IntToStr(R)+' '
         else
-         S:=S+FloatToStrF(Y, ffFixed, 20, 5)+' ';
+         S:=S+FloatToStrF(Y, ffFixed, 20, BrushDecimalPlaces)+' ';
         R:=Round(Z);
 
         if WriteIntegers or (Abs(Z-R) < rien) then
          S:=S+IntToStr(R)
         else
-         S:=S+FloatToStrF(Z, ffFixed, 20, 5);
+         S:=S+FloatToStrF(Z, ffFixed, 20, BrushDecimalPlaces);
 
         if MapFormat=HL2Type then
           S:=S+')'
@@ -2873,7 +2906,7 @@ var
               if Abs(R-Params[I])<rien then
                 S:=S+' '+IntToStr(R)
               else
-                S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, 5);
+                S:=S+' '+FloatToStrF(Params[I], ffFixed, 20, BrushDecimalPlaces);
             end;
         end;
        end;{case MapFormat}
@@ -3027,6 +3060,10 @@ var
   end;
 
 begin
+ // Rowdy: this is an attempt to write more decimal places (but configurable) to
+ //        help Torque mappers
+ BrushDecimalPlaces := FindGameDecimalPlaces;
+
  if g_DrawInfo.ConstruirePolyedres and not CheckPolyhedron then Exit;
  { these means brutally round off the threepoints, whatever they are }
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};

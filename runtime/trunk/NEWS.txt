@@ -12,6 +12,13 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [Rowdy/cdunde]: Mainly to play nice with Torque's map2dif utility, an
+      option has been added to the game configuration window for each game
+      to specify the number of decimal places to use when writing floating
+      point values to .map files.  Most games work with the default value
+      of 5, Torque/map2dif requires more (and is defaulted to 16).  Ranges
+      from 1 to 40.
+
  * [alexander]: HL2 Releated Enhancements
       - loading of .vmf (hammer map files) is available
       - CS-Source textures complete

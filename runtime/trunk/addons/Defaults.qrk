@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.245  2005/02/06 21:11:33  alexander
+//able to set lightmapscale value on a face for hl2
+//
 //Revision 1.244  2005/02/03 00:11:08  cdunde
 //Light coverage feature not working for Torque, so needed to add item" LightFactor" and default setting to Torque:config form for that part of quarkpy/mapentities.py def drawentitylines funtion to work.
 //
@@ -1044,6 +1047,7 @@ QQRKSRC1
         Form = "Game6DX"
         LightFactor = '0.9'
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       Crystal Space:config =
@@ -1090,6 +1094,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameCrystalSpace"
         PlayerClass = "X"
+        BrushDecimalPlaces = '5'
       }
 
       Doom 3:config =
@@ -1158,6 +1163,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        BrushDecimalPlaces = '5'
       }
 
       Genesis3D:config =
@@ -1207,6 +1213,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
+        BrushDecimalPlaces = '5'
       }
 
       Half-Life:config =
@@ -1265,6 +1272,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHalfLife"
         PlayerClass = "X"
+        BrushDecimalPlaces = '5'
       }
 
       Half-Life2:config =
@@ -1320,6 +1328,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameHalfLife2"
         PlayerClass = "X"
+        BrushDecimalPlaces = '5'
       }
 
       Heretic II:config =
@@ -1368,6 +1377,7 @@ QQRKSRC1
         Form = "GameHeretic2"
         LightFactor = '0.9'
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       Hexen II:config =
@@ -1420,6 +1430,7 @@ QQRKSRC1
         3DLight = '640'
         HxStrings = "strings.txt"
         PlayerClass = "1"
+        BrushDecimalPlaces = '5'
       }
 
       JA:config =
@@ -1482,6 +1493,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
+        BrushDecimalPlaces = '5'
       }
 
       JK2:config =
@@ -1547,6 +1559,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
+        BrushDecimalPlaces = '5'
       }
 
       KingPin:config =
@@ -1601,6 +1614,7 @@ QQRKSRC1
         Form = "GameKingPin"
         LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       MOHAA:config =
@@ -1669,6 +1683,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
       //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        BrushDecimalPlaces = '5'
       }
 
       Quake 1:config =
@@ -1718,6 +1733,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameQuake1"
         PlayerClass = "X"
+        BrushDecimalPlaces = '5'
       }
 
       Quake 2:config =
@@ -1771,6 +1787,7 @@ QQRKSRC1
         Form = "GameQuake2"
         LightFactor = '0.9'
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       Quake 3:config =
@@ -1837,6 +1854,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        BrushDecimalPlaces = '5'
       }
 
       RTCW:config =
@@ -1906,6 +1924,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        BrushDecimalPlaces = '5'
       }
 
       Sin:config =
@@ -1957,6 +1976,7 @@ QQRKSRC1
         Form = "GameSin"
         LightFactor = '0.9'
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       SOF:config =
@@ -2008,6 +2028,7 @@ QQRKSRC1
         Form = "GameSOF"
         LightFactor = '0.90000'
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       SoF2:config =
@@ -2073,6 +2094,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
+        BrushDecimalPlaces = '5'
       }
 
       STVEF:config =
@@ -2136,6 +2158,7 @@ QQRKSRC1
         Form = "GameSTVEF"
         LightFactor = '0.9'
         3DLight = '512'
+        BrushDecimalPlaces = '5'
       }
 
       Sylphis:config =
@@ -2174,6 +2197,7 @@ QQRKSRC1
         AddOns = "DataSylphis.qrk"$0D"Sylphis_autogen.qrk"
         Console = "1"
         Form = "GameSylphis"
+        BrushDecimalPlaces = '5'
       }
 
       Torque:config =
@@ -2239,6 +2263,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         //   PlayerClass = "X"
+        BrushDecimalPlaces = '16'
       }
 
       WildWest:config =
@@ -2308,6 +2333,7 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+        BrushDecimalPlaces = '5'
       }
     }
 
@@ -2847,6 +2873,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
     //sep:        = {Typ="S" Txt = ""}
     //sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
     //t_GameBuildPgms=!
@@ -2914,6 +2947,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -3001,6 +3041,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -3075,6 +3122,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       EnableTransparency: =
       {
@@ -3191,6 +3245,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       EnableTransparency: =
       {
         Txt = "In OpenGL window, enable transparency (slow!)"
@@ -3280,6 +3341,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -3361,6 +3429,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -3439,6 +3514,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -3519,6 +3601,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -3594,6 +3683,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -3680,6 +3776,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -3754,6 +3857,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -3835,6 +3945,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -3922,6 +4039,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -4001,6 +4125,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -4077,6 +4208,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -4152,6 +4290,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -4237,6 +4382,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -4324,6 +4476,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
@@ -4430,6 +4589,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darke"
          "r scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep: =
       {
@@ -4910,6 +5076,13 @@ QQRKSRC1
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
+      }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
@@ -4988,6 +5161,13 @@ QQRKSRC1
         Txt = "Game Light saturation"
         Typ = "EF1"
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      BrushDecimalPlaces: = {
+        Txt = "No. of Decimal Places for Brushes"
+        Typ = "EF1"
+        Hint="Set for the number of Decimals to write to the map file."$0D"This applies to brushes only, the default is 5 places."
+        Min = '1'
+        Max = '40'
       }
       sep:        = {Typ="S" Txt = ""}
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
