@@ -304,7 +304,8 @@ def archcurve(pd):
     return cp
 
 
-def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretchtex=0):
+def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0,
+    stretchtex=0, nofront=0, noback=0, noinner=0, noouter=0, (subdivide,)=1):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
   # Make dictionary of faces u/d/f/b/r/l
@@ -356,31 +357,48 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
   cp = undistortRows(cp)
   cp = undistortColumns(cp)
   inner = quarkx.newobj('inner:b2')
+  cp = subdivideRows(subdivide,cp)
   inner.cp = cp
   inner["tex"] = texface["tex"]
   if thick:
       pd2 = smallerarchbox(pd, thick)
       cp2 = archcurve(pd2)
-      inner2=quarkx.newobj("inner2:b2")
+      cp2 = subdivideRows(subdivide,cp2)
+      inner.shortname = "outer"
+      inner2=quarkx.newobj("inner:b2")
       cp2 = texcpFromCp(cp2, cp)
       inner2.cp = cp2
       inner2["tex"] = inner["tex"]
       #
       # seams
       #
-      fseam = b2From2Rows(archline(pd, "brf", "trf", "tlf", "blf"),
-                       archline(pd2,"brf", "trf", "tlf", "blf"),
-                       fdict["f"], "front")
-      bseam = b2From2Rows(archline(pd, "blb", "tlb", "trb", "brb"),
-                       archline(pd2,"blb", "tlb", "trb", "brb"),
-                       fdict["b"], "back")
+      seams = []
+      if not open:
+          if not nofront:
+              fseam = b2From2Rows(archline(pd, "brf", "trf", "tlf", "blf"),
+                           archline(pd2,"brf", "trf", "tlf", "blf"),
+                          fdict["f"], "front")
+              fseam.cp = subdivideRows(subdivide,fseam.cp)
+              seams.append(fseam)
+          if not noback:
+              bseam = b2From2Rows(archline(pd, "blb", "tlb", "trb", "brb"),
+                           archline(pd2,"blb", "tlb", "trb", "brb"),
+                           fdict["b"], "back")
+              bseam.cp = subdivideRows(subdivide,bseam.cp)
+              seams.append(bseam)
       if lower:
         inner.swapsides()
         bseam.swapsides()
         fseam.swapsides()
       else:
         inner2.swapsides()
-      return [inner, inner2, fseam, bseam]
+      inners = []
+      if not faceonly:
+          if not noouter:
+              inners.append(inner)
+          if not noinner:
+              inners.append(inner2)
+      return inners + seams
   # end if thick
 
 #  if lower:
@@ -399,13 +417,19 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
 #      fcp = transposeCp(fcp)
 #  else:
   bcp = transposeCp(bcp)
-  front = b2FromCpFace(fcp, 'front', fdict["f"], editor)
-  back = b2FromCpFace(bcp,'back', fdict["b"], editor)
+  faces = []
+  if not nofront:
+      front = b2FromCpFace(fcp, 'front', fdict["f"], editor)
+      faces.append(front)
+  if not noback:
+      back = b2FromCpFace(bcp,'back', fdict["b"], editor)
+      faces.append(back)
   if faceonly:
-    return [front, back]
-  return [inner, front, back]
+      return faces
+  return [inner]+faces
 
-def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stretchtex=0):
+def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0,
+  faceonly=0, stretchtex=0, notop=0, nobottom=0, noinner=0, noouter=0, (subdivide,)=1):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
   fdict = faceDict(o)
@@ -435,14 +459,15 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       cp2 = texcpFromFace(cp, right, editor)
       for i in range(3):
           cp[i][2]=cp2[i][2]
-  cp = undistortRows(cp)
+  cp = subdivideRows(subdivide,undistortRows(cp))
   inner.cp = cp
   inner["tex"] = fdict["b"]["tex"]
   if thick:
+      inner.shortname="outer"
       pd2 = smallerbevelbox(pd, thick)
       cp2 = bevelcurve(pd2)
-      inner2=quarkx.newobj("inner2:b2")
-      inner2.cp = texcpFromCp(cp2, cp)
+      inner2=quarkx.newobj("inner:b2")
+      inner2.cp = texcpFromCp(subdivideRows(subdivide,cp2), cp)
       inner2["tex"]=inner["tex"]
       tseam = b2From2Rows([pd["trf"], pd["trb"], pd["tlb"]],
                        [pd2["trf"], pd2["trb"], pd2["tlb"]],
@@ -450,14 +475,27 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       bseam = b2From2Rows([pd["blb"], pd["brb"], pd["brf"]],
                        [pd2["blb"], pd2["brb"], pd2["brf"]],
                         fdict["d"],"bottom")
+      tseam.cp = subdivideRows(subdivide, tseam.cp)
+      bseam.cp = subdivideRows(subdivide, bseam.cp)
       if left:
           inner.swapsides()
           tseam.swapsides()
           bseam.swapsides()
       else:
           inner2.swapsides()
-
-      return [inner, inner2, tseam, bseam]
+      seams = [tseam, bseam]
+      if notop:
+          seams.remove(tseam)
+      if nobottom:
+          seams.remove(bseam)
+      if faceonly:
+         return seams
+      inners = [inner, inner2]
+      if noinner:
+          inners.remove(inner2)
+      if noouter:
+          inners.remove(inner)
+      return inners+seams
   if left:
     inner.swapsides()
   if inverse:
@@ -470,18 +508,23 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
       bcp = cpFrom2Rows([pd["brf"], pd["brb"], pd["blb"]],
                          [pd["brf"], pd["brb"], pd["brb"]])
   else:
-      tcp = cpFrom2Rows([pd["trf"], pd["trb"], pd["tlb"]],
-                         [pd["tlf"], pd["tlf"], pd["tlb"]])
-      bcp = cpFrom2Rows([pd["blb"], pd["brb"], pd["brf"]],
-                         [pd["blb"], pd["blf"], pd["blf"]])
+      tcp = subdivideRows(subdivide,cpFrom2Rows([pd["trf"], pd["trb"], pd["tlb"]],
+                         [pd["tlf"], pd["tlf"], pd["tlb"]]))
+      bcp = subdivideRows(subdivide,cpFrom2Rows([pd["blb"], pd["brb"], pd["brf"]],
+                         [pd["blb"], pd["blf"], pd["blf"]]))
   top = b2FromCpFace(tcp,"top",fdict["u"],editor)
   bottom = b2FromCpFace(bcp,"bottom",fdict["d"],editor)
   if left:
     top.swapsides()
     bottom.swapsides()
+  faces = [bottom, top]
+  if notop:
+      faces.remove(top)
+  if nobottom:
+      faces.remove(bottom)
   if faceonly:
-    return [top, bottom]
-  return [inner, top, bottom]
+    return faces
+  return [inner] + faces
 
 
 def circleLine(p0, p1, p2, p3):
@@ -610,13 +653,18 @@ class CapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, open, thick, faceonly, stretchtex = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"], self.dup["faceonly"], self.dup["stretchtex"]
+    inverse, lower, open, thick, faceonly, stretchtex, nofront, noback, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "open", "thick", "faceonly", "stretchtex",
+         "nofront", "noback", "noinner", "noouter", "subdivide"))
     if thick:
       thick, = thick
+    if subdivide is None:
+        subdivide=1,
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-         return images(capImages, (o, editor, inverse, lower, open, thick, faceonly, stretchtex))
+         return images(capImages, (o, editor, inverse, lower, open, thick,
+           faceonly, stretchtex, nofront, noback, noinner, noouter, subdivide))
 
 
 class BevelDuplicator(StandardDuplicator):
@@ -625,14 +673,18 @@ class BevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, left, sidetex, open, thick, faceonly, stretchtex = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "left", "sidetex", "open", "thick", "faceonly", "stretchtex"))
+    inverse, left, sidetex, open, thick, faceonly, stretchtex, notop, nobottom, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "left", "sidetex", "open", "thick", "faceonly", "stretchtex",
+         "notop", "nobottom", "noinner", "noouter", "subdivide"))
     if thick:
       thick, = thick
     list = self.sourcelist()
+    if subdivide is None:
+        subdivide=1,
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-           return images(bevelImages, (o, editor, inverse, left, open, thick, faceonly, stretchtex))
+           return images(bevelImages, (o, editor, inverse, left, open, thick,
+              faceonly, stretchtex, notop, nobottom, noinner, noouter, subdivide))
 
 class ColumnDuplicator(StandardDuplicator):
 
@@ -801,6 +853,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.24  2000/07/26 11:37:31  tiglari
+#thick arch/bevel bugz fixed
+#
 #Revision 1.23  2000/06/30 11:01:06  tiglari
 #fixed thick bevel bug
 #
