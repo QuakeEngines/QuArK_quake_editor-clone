@@ -261,9 +261,13 @@ def thinClick(m):
     MicroKillDlg(quarkx.clickform, 'microkill', editor, setup, action, onclosing)
 
 
-quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick))
+quarkpy.mapsearch.items.append(qmenu.item('Find &Microbrushes', thinClick,
+ "|This identifies brushes that are suspiciously small, at least in one dimension."))
 
 #$Log$
+#Revision 1.2  2001/02/11 08:04:15  tiglari
+#comments added, some cosmetics
+#
 #Revision 1.1  2001/02/11 06:44:17  tiglari
 #Version 1
 #
