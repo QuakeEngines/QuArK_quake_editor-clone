@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2001/07/31 11:00:35  tiglari
+add Deg2Rad as const
+
 Revision 1.14  2001/07/30 12:09:26  tiglari
 vector length function
 
@@ -203,9 +206,12 @@ end;
 
 procedure Normalise(var V: TVect);
 var
- F: TDouble;
+ F,S: TDouble;
 begin
- F:=1/Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
+ S:=Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
+ if (S = 0) then
+   exit;
+ F:=1/S;
  V.X:=V.X*F;
  V.Y:=V.Y*F;
  V.Z:=V.Z*F;
@@ -217,6 +223,8 @@ var
 begin
  S:=Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
  F:=1/S;
+ if (S = 0) then
+   exit;
  V.X:=V.X*F;
  V.Y:=V.Y*F;
  V.Z:=V.Z*F;
