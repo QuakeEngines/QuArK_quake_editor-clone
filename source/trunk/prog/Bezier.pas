@@ -277,8 +277,8 @@ begin
    if Length(S)<>ExpectedLength then
     begin
      { specific not found or invalid: returns a default result }
-     Result.W:=1;
-     Result.H:=1;
+     Result.W:=3;
+     Result.H:=3;
      Result.CP:=@DefaultBezierControlPoints;
      Exit;
     end;
@@ -1026,7 +1026,7 @@ begin
          cp:=ControlPoints;
          Result:=PyTuple_New(cp.H);
          try
-         for J:=0 to cp.H-1 do
+          for J:=0 to cp.H-1 do
            begin
             o:=PyTuple_New(cp.W);  { make a tuple of h w-tuples of vectors }
             PyTuple_SetItem(Result, J, o);
