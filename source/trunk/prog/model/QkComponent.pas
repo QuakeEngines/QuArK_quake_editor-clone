@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/02/23 02:14:27  aiv
+more on md3 linking
+
 Revision 1.11  2001/02/18 20:03:46  aiv
 attaching models to tags almost finished
 
@@ -487,6 +490,7 @@ begin
   else
     Result:=L[N] as QFrame;
   finally
+    L.Clear;
     L.Free;
   end;
 end;
@@ -511,6 +515,7 @@ begin
   else
     Result:=L[N] as QImages;
   finally
+    L.Clear;
     L.Free;
   end;
 end;
@@ -974,7 +979,7 @@ begin
   end;
 
 PreExit:
-  inherited;
+//  inherited;
   
 end;
 

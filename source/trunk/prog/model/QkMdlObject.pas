@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkMdlObject;
@@ -42,6 +45,7 @@ type
     procedure ChercheExtremites(var Min, Max: TVect); override;
     procedure Dessiner; override;
     procedure AnalyseClic(Liste: PyObject); override;
+//    procedure FixupReference; override;
   end;
 
 implementation
@@ -63,6 +67,11 @@ function QMdlObject.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
   Result:=ieResult[not (Q is QSkinDrawObject)];
 end;
+
+{procedure QMdlObject.FixupReference;
+begin
+  PythonObj.ob_refcnt:=0;
+end;                        }
 
 procedure QMdlObject.AddTo3DScene;
 var

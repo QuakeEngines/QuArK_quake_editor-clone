@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/23 02:29:33  aiv
+more on md3 linking (a fix)
+
 Revision 1.6  2001/02/23 02:14:27  aiv
 more on md3 linking
 
@@ -222,11 +225,12 @@ begin
   if myRoot<>modelRoot then
   begin
     currentFrame:=modelRoot.GetComponentFromIndex(0).CurrentFrame;
-    if currentFrame=nil then exit;
-    bf:=QModelBone(modelRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QModelBone, nil));
-    bf2:=QModelBone(myRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(GetFloatSpec('index',1))), QModelBone, nil));
-    o_tag:=bf2.Tag(myRoot.Specifics.Values['linked_to']);
-    s_tag:=bf.Tag(myRoot.Specifics.Values['linked_to']);
+    if currentFrame<>nil then begin
+      bf:=QModelBone(modelRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(currentFrame.GetFloatSpec('index',1))), QModelBone, nil));
+      bf2:=QModelBone(myRoot.getmisc.FindSubObject('Bone Frame '+inttostr(Round(GetFloatSpec('index',1))), QModelBone, nil));
+      o_tag:=bf2.Tag(myRoot.Specifics.Values['linked_to']);
+      s_tag:=bf.Tag(myRoot.Specifics.Values['linked_to']);
+    end;
   end;
   S:=GetSpecArg(FloatSpecNameOf('Vertices'));
   if S='' then
@@ -237,23 +241,23 @@ begin
     Exit;
   end;
   PChar(P):=PChar(S) + VertSpec;
-    if (s_tag<>nil)and(o_tag<>nil)and(bf<>nil)and(bf2<>nil) then
-    begin
-      S0:=FloatSpecNameOf('NewVertices');
-      S:=S0+'=';
-      SetLength(S, Length('NewVertices=')+SizeOf(vec3_t)*Result);
-      PChar(New):=PChar(S)+Length('NewVertices=');
-      Move(P^, New^, Result*SizeOf(Vec3_T));
-      P:=New;
-      s_Tag.GetRotMatrix(m);
-      o_Tag.GetRotMatrix(m1);
-      TranslateVecs(vec3_t_add(vec3_t_sub(s_Tag.GetPosition^, o_tag.getPosition^),X^), P, Result);
-      bf.GetQ3A_Position(x);
-      RotateVecs(MultiplieMatrices(M^,M1^), P, Result);
-      if Specifics.IndexOfName(S0)<>-1 then
-        Specifics.Delete(Specifics.IndexofName(S0));
-      Specifics.Add(S);
-    end;
+  if (s_tag<>nil)and(o_tag<>nil)and(bf<>nil)and(bf2<>nil) then
+  begin
+    S0:=FloatSpecNameOf('NewVertices');
+    S:=S0+'=';
+    SetLength(S, Length('NewVertices=')+SizeOf(vec3_t)*Result);
+    PChar(New):=PChar(S)+Length('NewVertices=');
+    Move(P^, New^, Result*SizeOf(Vec3_T));
+    P:=New;
+    s_Tag.GetRotMatrix(m);
+    o_Tag.GetRotMatrix(m1);
+    bf.GetQ3A_Position(x);
+    TranslateVecs(vec3_t_add(vec3_t_sub(s_Tag.GetPosition^, o_tag.getPosition^),X^), P, Result);
+    RotateVecs(MultiplieMatrices(M^,M1^), P, Result);
+    if Specifics.IndexOfName(S0)<>-1 then
+      Specifics.Delete(Specifics.IndexofName(S0));
+    Specifics.Add(S);
+  end;
 end;
 
 Procedure QFrame.RemoveVertex(index: Integer);

@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/02/23 02:14:27  aiv
+more on md3 linking
+
 Revision 1.5  2001/02/14 20:46:28  aiv
 Fixed Loading of Shaders used by md3 files.
 
@@ -65,7 +68,6 @@ type
     Function Tag(nname: string): QModelTag;
     class function TypeInfo: String; override;
     procedure ObjectState(var E: TEtatObjet); override;
-    Procedure DrawBBox;
     procedure Dessiner; override;
     Function GetEndOffset(var endpoint: vec3_p): boolean;
     Function GetEndPoint(var endpoint: vec3_p): boolean;
@@ -277,38 +279,6 @@ begin
   Result.Z:=vec^[2];
 end;
 
-Procedure QModelBone.DrawBBox;
-var
-  ok: boolean;
-  pt_start, pt_end: TPointProj;
-  NewPen, DeletePen, OldPen: HPen;
-  CDC: TCDC;
-  mins, maxs: vec3_p;
-begin
-  GetQ3A_Mins(mins);
-  GetQ3A_Maxs(maxs);
-  pt_start:=CCoord.Proj(vec3_to_tvect(mins));
-  pt_end:=CCoord.Proj(vec3_to_tvect(maxs));
-  DeletePen:=CreatePen(ps_Solid, 0, clGreen);
-  NewPen:=DeletePen;
-  OldPen:=Info.BlackBrush;
-  Info.BlackBrush:=NewPen;
-  SetupComponentDC(CDC);
-  SelectObject(Info.DC, Info.BlackBrush);
-
-  CCoord.Line95(pt_start, pt_end);
-
-  CloseComponentDC(CDC);
-  if OldPen<>0 then begin
-    SelectObject(Info.DC, OldPen);
-    Info.BlackBrush:=OldPen;
-    if DeletePen<>0 then
-      DeleteObject(DeletePen);
-  end;
-
-  inherited;
-end;
-
 procedure QModelBone.Dessiner;
 var
   start_point, end_point: vec3_p;
@@ -317,10 +287,6 @@ var
   NewPen, DeletePen, OldPen: HPen;
   CDC: TCDC;
 begin
-  if IntSpec['q3a_style']=1 then begin
-    DrawBBox;
-    exit;
-  end;
   ok:=GetStartEnd(start_point, end_point);
   if not ok then
     exit;

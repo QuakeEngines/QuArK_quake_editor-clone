@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/02/14 20:46:28  aiv
+Fixed Loading of Shaders used by md3 files.
+
 Revision 1.2  2000/10/11 19:01:08  aiv
 Small updates
 
@@ -52,6 +55,7 @@ begin
     end;
     Root.SubElements.Add(Result);
   finally
+    L.Clear;
     L.Free;
   end;
 end;

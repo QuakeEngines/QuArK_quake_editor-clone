@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/23 02:14:27  aiv
+more on md3 linking
+
 Revision 1.6  2001/02/18 20:03:46  aiv
 attaching models to tags almost finished
 
@@ -43,6 +46,7 @@ type
     procedure SetFrames(index: Integer);
     procedure SetFramesByName(s: string);
     procedure Dessiner; override;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -111,6 +115,12 @@ Procedure QModelRoot.MergeCurrentWithComp(Comp: QCOmponent);
 begin
 end;
 
+destructor QModelRoot.Destroy;
+begin
+  FCurrentComponentObj.AddRef(-1);
+  inherited;
+end;
+
 procedure QModelRoot.SetFrames(index: Integer);
 var
   l: TQList;
@@ -119,6 +129,8 @@ begin
   l:=BuildComponentList;
   for i:=0 to l.count-1 do
     QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromIndex(index);
+  l.clear;
+  l.free;
 end;
 
 procedure QModelRoot.setFramesByName(s: string);
@@ -129,6 +141,8 @@ begin
   l:=BuildComponentList;
   for i:=0 to l.count-1 do
     QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(s);
+  l.clear;
+  l.free;
 end;
 
 procedure QModelRoot.CheckComponentFrames;
@@ -148,6 +162,7 @@ begin
     c:=QComponent(l.Items1[i]);
     f:=c.BuildFrameList;
     needed_framecount:=Max(needed_framecount, f.count-1);
+    f.clear;
     f.free;
   end;
   for i:=0 to l.count-1 do begin
@@ -167,8 +182,11 @@ begin
       end;
       ProgressIndicatorStop;
     end;
+    f.clear;
     f.free;
   end;
+  l.clear;
+  l.free;
 end;
 
 class function QModelRoot.TypeInfo;
@@ -184,6 +202,7 @@ begin
   try
     FindAllSubObjects('', QComponent, Nil, list);
   except
+    list.clear;
     list.Free;
     Raise;
   end;
@@ -274,6 +293,7 @@ begin
     else
       Result:=L[N] as QComponent;
   finally
+    L.Clear;
     L.Free;
   end;
 end;
@@ -302,7 +322,7 @@ begin
   if CurrentComponent=nil then
     CurrentComponent:=GetComponentFromIndex(0);
   for i:=0 to SubElements.Count-1 do begin
-    if SubElements.Items1[i].Typeinfo = QComponent.Typeinfo then
+    if SubElements.Items1[i] is QComponent then
       QComponent(SubElements.Items1[i]).Dessiner;
   end;
 end;

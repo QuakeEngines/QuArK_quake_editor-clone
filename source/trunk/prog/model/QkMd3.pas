@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/02/23 02:14:27  aiv
+more on md3 linking
+
 Revision 1.7  2001/02/18 20:03:46  aiv
 attaching models to tags almost finished
 
@@ -260,7 +263,7 @@ begin
         exit;
       end;
     end;
-  except
+  finally
   end;
 end;
 
@@ -536,6 +539,7 @@ begin
       z_result:=z_result and AttachModelToTagFromFilename(tag.name, fname);
     end;
   end;
+  TagList.Clear;
   TagList.Free;
   result:=z_result;
 end;
@@ -689,6 +693,7 @@ begin
             end;
           end;
         finally
+          Components.clear;
           Components.free;
         end;
       end;
