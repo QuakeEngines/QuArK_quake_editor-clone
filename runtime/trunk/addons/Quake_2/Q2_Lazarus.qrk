@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.7  2003/09/24 08:20:57  cdunde
+// To add custom model viewing in editor feature
+//
 // Revision 1.6  2003/05/01 16:24:39  cdunde
 // To up date for new file search feature for custom models
 //
@@ -15034,6 +15037,11 @@ $0D"For that use 3Dmodel above."
       {
         txt = "&"
         hint = "Startframe>first frame #"
+      }
+      framenumbers: =
+      {
+        txt = "&"
+        hint = "Framenumbers># add'l frames"
       }
       solidstate: =
       {
