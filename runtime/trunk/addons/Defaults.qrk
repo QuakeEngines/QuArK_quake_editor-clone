@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.182  2002/04/17 12:42:12  decker_dk
+//Updated MOHAA:config to use MOHAATool's compile-programs.
+//
 //Revision 1.181  2002/04/09 17:49:53  decker_dk
 //Fixed gamecode in GameTorque:form from "GAMd" to "GAMg".
 //Fixed typo in Quake 3:config; "Brush Primitivez" to "Brush Primitives".
@@ -1482,7 +1485,7 @@ QQRKSRC1
       {
         Game = "RTCW"
         Code = "d" // Hardcoded value in Setup.PAS
-        Program = "WOLFSP.EXE +set sv_pure 0"
+        Program = "WOLFMP.EXE +set sv_pure 0"
 
         Directory = "\Return To Castle Wolfenstin"
         CheckDirectory = "WOLFSP.EXE"
@@ -1502,11 +1505,12 @@ QQRKSRC1
         BuildPgm2  = "Q3MAP.EXE"
         BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
         BuildPgm3  = "Q3MAP.EXE"
-        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
-        BuildPgm4  = "BSPC.EXE"
-        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-        BuildCheck4= "+AAS"
-
+        BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vlight "$22"%file%"$22
+        BuildPgm4 = "BSPC.EXE"
+        BuildArgs4 = "-threads 1 -ext _b0 -cfg %buildpgmsdir%\aascfg_sm.c -bsp2aas ..\%output%\%file%.bsp -output ..\%output%\maps"
+//        BuildCheck4= "+AAS"  // it's actually _b0.aas
+        BuildPgm5 = "BSPC.EXE"
+        BuildArgs5 = "-threads 1 -ext _b1 -cfg %buildpgmsdir%\aascfg_lg.c -bsp2aas %basepath%\%output%\%file%.bsp -output ..\%output%\maps"
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
@@ -1531,7 +1535,8 @@ QQRKSRC1
 
         Palette = ":pics/colormap.pcx"
         ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +devmap %s"
+        RunMapCmdLine = " +devmap %s" // won't work, but open console and
+                                      //   run the map by /spmap <mapname> in the console
         AddOns = "DataRTCW.qrk"$0D"Q3ArchLib.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"

@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2002/02/05 18:32:38  decker_dk
+//Corrected default room textures, and converted GTKRadiant's Wolf_Entites.def file to this file.
+//
 //Revision 1.1  2001/12/05 20:38:04  decker_dk
 //Added RTCW (Return To Castle Wolfenstein)
 //
@@ -236,32 +239,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "skies/newclouds"
+            tex = "skies/a_skybox"
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "skies/newclouds"
+            tex = "skies/a_skybox"
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "skies/newclouds"
+            tex = "skies/a_skybox"
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "skies/newclouds"
+            tex = "skies/a_skybox"
           }
           down:f =
           {
             v = '432 0 96 560 0 96 432 -128 96'
-            tex = "skies/newclouds"
+            tex = "skies/a_skybox"
           }
           up:f =
           {
             v = '432 0 112 560 0 112 432 128 112'
-            tex = "skies/newclouds"
+            tex = "skies/a_skybox"
           }
         }
         Floor:p =
@@ -298,14 +301,25 @@ QQRKSRC1
           }
         }
       }
-      info_player_deathmatch:e =
+      info_player_start:e =
       {
         origin = "-144 0 -64"
         angle = "360"
       }
+      info_player_deathmatch:e =
+      {
+        origin = "144 0 -64"
+        angle = "0"
+      }
       light:e =
       {
-        origin = "0 0 0"
+        origin = "144 0 0"
+        light = "300"
+        _color = "1 1 1"
+      }
+      light:e =
+      {
+        origin = "-144 0 0"
         light = "300"
         _color = "1 1 1"
       }
