@@ -5,6 +5,9 @@ QQRKSRC1
 // $Header$
 //
 // $Log$
+// Revision 1.10  2003/10/27 07:52:45  cdunde
+// To add sound selection feature to func_train entity
+//
 // Revision 1.9  2003/10/08 08:50:52  cdunde
 // To add file selection feature to target_speaker fuction
 //
@@ -1646,6 +1649,39 @@ QQRKSRC1
   }
   Entity Forms.fctx =
   {
+    // Definition of "includes"
+
+    t_soundbrowser:incl =
+      {
+        txt = "&"
+        Typ = "EP"
+        BasePath = "$Game\tmpQuArK\sound"
+        CutPath = "$Game\?\?\"
+        DefExt = "wav"
+        DirSep = "/"
+      }
+
+    t_3Dmodelbrowser:incl = 
+      {
+        Txt = "3D Model"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+      }
+
+    t_usermodelbrowser:incl = 
+      {
+        Txt = "usermodel"
+        Typ = "EP"
+        BasePath = "$Game\baseq2"
+        CutPath = "$Game\?\"
+        DefExt = "md2"
+        DirSep = "/"
+        AugPath = "../"
+      }
+
     t_Appearflags:incl =
     {
       spawnflags: =
@@ -1886,6 +1922,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -1913,6 +1950,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -2036,7 +2074,8 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
-        hint = "_ambient>global light-RGB or level"
+        Typ = "LN"
+        hint = "_ambient>global light-RGB or level TEST"
       }
       _sun_light: =
       {
@@ -2046,6 +2085,7 @@ QQRKSRC1
       _sun_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_sun_color>s1 RGB color"
       }
       _sun_target: =
@@ -2076,6 +2116,7 @@ QQRKSRC1
       _sun_ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_sun_ambient>all minlite-RGB or level"
       }
       _sun_surface: =
@@ -2091,6 +2132,7 @@ QQRKSRC1
       _sun2_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_sun2_color>s2 RGB color"
       }
       _sun2_target: =
@@ -2126,6 +2168,7 @@ QQRKSRC1
       _sun3_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_sun3_color>s3 RGB color"
       }
       _sun3_target: =
@@ -2161,6 +2204,7 @@ QQRKSRC1
       _sun4_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_sun4_color>s4 RGB color"
       }
       _sun4_target: =
@@ -2949,8 +2993,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -3011,8 +3062,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -3027,6 +3085,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -3054,6 +3113,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -3180,6 +3240,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -3207,6 +3268,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -3268,8 +3330,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -3325,8 +3394,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -3341,6 +3417,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -3368,6 +3445,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -3424,8 +3502,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -3487,8 +3572,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -3514,6 +3606,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -3541,6 +3634,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -3794,6 +3888,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -3821,6 +3916,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -4037,6 +4133,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -4064,6 +4161,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -4211,6 +4309,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -4238,6 +4337,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -4587,6 +4687,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -4614,6 +4715,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -4954,6 +5056,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -4981,6 +5084,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -5313,6 +5417,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -5340,6 +5445,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -5512,6 +5618,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -5539,6 +5646,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -5861,6 +5969,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -5888,6 +5997,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -6087,6 +6197,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -6114,6 +6225,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -6327,6 +6439,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -6354,6 +6467,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -6492,6 +6606,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -6519,6 +6634,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -6571,6 +6687,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -6598,6 +6715,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -6799,6 +6917,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -6826,6 +6945,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -6998,6 +7118,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -7025,6 +7146,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -7139,8 +7261,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       turn_rider: =
       {
@@ -7268,8 +7397,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       turn_rider: =
       {
@@ -7287,6 +7423,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -7314,6 +7451,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -7428,8 +7566,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       turn_rider: =
       {
@@ -7546,8 +7691,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       turn_rider: =
       {
@@ -7570,6 +7722,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -7597,6 +7750,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -7864,6 +8018,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -7891,6 +8046,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -8157,6 +8313,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -8184,6 +8341,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -8298,8 +8456,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       health: =
       {
@@ -8437,19 +8602,15 @@ QQRKSRC1
       }
       noise: =
       {
-        txt = "&"
-        Typ = "EP"
-        BasePath = "$Game\tmpQuArK\sound"
-        CutPath = "$Game\?\?\"
-        DefExt = "wav"
-        DirSep = "/"
-        hint = "The file selection button ... to the right"$0D
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
            "lets you pick the sound you want by clicking on it."$0D
            "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
            "and place your .wav files there. You can also create"$0D
            "sub-folders within the 'sound' folder to group your files."$0D
            $0D"Right clicking on the sound file will let you play it."$0D
-           $0D"The path is set so it will work if put into a .pak file."
+           "The path is set so it will work if put into a .pak file."
       }
       health: =
       {
@@ -8487,6 +8648,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -8514,6 +8676,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -8758,6 +8921,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -8785,6 +8949,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -8989,6 +9154,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -9016,6 +9182,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -9079,6 +9246,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -9106,6 +9274,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -9333,6 +9502,7 @@ QQRKSRC1
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -9360,6 +9530,7 @@ QQRKSRC1
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -13218,12 +13389,7 @@ $0D"Click on this Help Book for more details."
       HTML = "help/intro.mapeditor.menu.html#optionsmenu"
       3Dmodel: =
       {
-        Txt = "3D Model"
-        Typ = "EP"
-        BasePath = "$Game\baseq2"
-        CutPath = "$Game\?\"
-        DefExt = "md2"
-        DirSep = "/"
+        t_3Dmodelbrowser = !
         hint = "Type in the model path or use the file browser button to the right."
 $0D"This is a custom model for QuArK 3d views only."
 $0D"It only uses the 0 skin and will not show in the actual game."
@@ -13339,13 +13505,7 @@ $0D"For that use usermodel below."
       }
       usermodel: =
       {
-        Txt = "usermodel"
-        Typ = "EP"
-        BasePath = "$Game\baseq2"
-        CutPath = "$Game\?\"
-        DefExt = "md2"
-        DirSep = "/"
-        AugPath = "../"
+        t_usermodelbrowser = !
         hint = "Type in the model path or use the file browser button to the right."
 $0D"This is a custom model for the actual game play only."
 $0D"It will not show in QuArK's 3D views."
@@ -14569,6 +14729,7 @@ $0D"For that use 3Dmodel above."
     {
       bbox = '-16 -16 -24 16 16 32'
       mdl = "[3Dmodel]"
+      frame1 = "[Frame]"
       mdlbase = "baseq2"
       help = "This allows you to use your own custom entity 3D-models."
 $0D"Used for special effects, you can control which model frames"
@@ -14578,16 +14739,16 @@ $0D"Click on this Help Book for more details."
 
       3Dmodel: =
       {
-        Txt = "3D Model"
-        Typ = "EP"
-        BasePath = "$Game\baseq2"
-        CutPath = "$Game\?\"
-        DefExt = "md2"
-        DirSep = "/"
+        t_3Dmodelbrowser = !
         hint = "Type in the model path or use the file browser button to the right."
 $0D"This is a custom model for QuArK 3d views only."
 $0D"It will not show in the actual game."
 $0D"For that use usermodel below."
+      }
+      frame: =
+      {
+        txt = "&"
+        hint = "Frame>frame number. This is the skin that will actually be used in the game."
       }
       spawnflags: =
       {
@@ -14687,13 +14848,7 @@ $0D"For that use usermodel below."
       }
       usermodel: =
       {
-        Txt = "usermodel"
-        Typ = "EP"
-        BasePath = "$Game\baseq2"
-        CutPath = "$Game\?\"
-        DefExt = "md2"
-        DirSep = "/"
-        AugPath = "../"
+        t_usermodelbrowser = !
         hint = "Type in the model path or use the file browser button to the right."
 $0D"This is a custom model for the actual game play only."
 $0D"It will not show in QuArK's 3D views."
@@ -14744,8 +14899,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
     }
     t_MTrain:incl =
@@ -14849,7 +15011,7 @@ $0D"For that use 3Dmodel above."
       }
       usermodel: =
       {
-        txt = "&"
+        t_usermodelbrowser = !
         hint = "Usermodel>model (path/file.md2)"
       }
       startframe: =
@@ -14895,8 +15057,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pitch_speed: =
       {
@@ -14927,12 +15096,7 @@ $0D"Click on this Help Book for more details."
 
       3Dmodel: =
       {
-        Txt = "3D Model"
-        Typ = "EP"
-        BasePath = "$Game\baseq2"
-        CutPath = "$Game\?\"
-        DefExt = "md2"
-        DirSep = "/"
+        t_3Dmodelbrowser = !
         hint = "Type in the model path or use the file browser button to the right."
 $0D"This is a custom model for QuArK 3d views only."
 $0D"It will not show in the actual game."
@@ -15037,13 +15201,7 @@ $0D"For that use usermodel below."
       }
       usermodel: =
       {
-        Txt = "usermodel"
-        Typ = "EP"
-        BasePath = "$Game\baseq2"
-        CutPath = "$Game\?\"
-        DefExt = "md2"
-        DirSep = "/"
-        AugPath = "../"
+        t_usermodelbrowser = !
         hint = "Type in the model path or use the file browser button to the right."
 $0D"This is a custom model for the actual game play only."
 $0D"It will not show in QuArK's 3D views."
@@ -15097,8 +15255,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pitch_speed: =
       {
@@ -19702,8 +19867,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
     }
     target_blaster:form =
@@ -20070,8 +20242,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>new noise"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       pathtarget: =
       {
@@ -20255,6 +20434,7 @@ $0D"For that use 3Dmodel above."
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -20282,6 +20462,7 @@ $0D"For that use 3Dmodel above."
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -20774,6 +20955,7 @@ $0D"For that use 3Dmodel above."
       color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "color>fade color"
       }
       alpha: =
@@ -20853,8 +21035,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound to play"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
     }
     target_fog:form =
@@ -20902,6 +21091,7 @@ $0D"For that use 3Dmodel above."
       fog_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "Fog_color>RGB color"
       }
       fog_model: =
@@ -21773,6 +21963,7 @@ $0D"For that use 3Dmodel above."
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -21800,6 +21991,7 @@ $0D"For that use 3Dmodel above."
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -21878,8 +22070,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound to play"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       distance: =
       {
@@ -22078,8 +22277,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       volume: =
       {
@@ -22675,19 +22881,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        Typ = "EP"
-        BasePath = "$Game\tmpQuArK\sound"
-        CutPath = "$Game\?\?\"
-        DefExt = "wav"
-        DirSep = "/"
-        hint = "The file selection button ... to the right"$0D
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
            "lets you pick the sound you want by clicking on it."$0D
            "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
            "and place your .wav files there. You can also create"$0D
            "sub-folders within the 'sound' folder to group your files."$0D
            $0D"Right clicking on the sound file will let you play it."$0D
-           $0D"The path is set so it will work if put into a .pak file."
+           "The path is set so it will work if put into a .pak file."
       }
       attenuation: =
       {
@@ -23386,6 +23588,7 @@ $0D"For that use 3Dmodel above."
       fog_color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "Fog_color>RGB color"
       }
       fog_model: =
@@ -24423,8 +24626,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>custom sound"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
     }
     trigger_scales:form =
@@ -24538,8 +24748,15 @@ $0D"For that use 3Dmodel above."
       }
       noise: =
       {
-        txt = "&"
-        hint = "Noise>sound (path/file.wav)"
+        t_soundbrowser = !
+        hint = "wav file to play."$0D$0D
+           "The file selection button ... to the right"$0D
+           "lets you pick the sound you want by clicking on it."$0D
+           "Create a sub-folder named 'sound' in your tmpQuArk folder"$0D
+           "and place your .wav files there. You can also create"$0D
+           "sub-folders within the 'sound' folder to group your files."$0D
+           $0D"Right clicking on the sound file will let you play it."$0D
+           "The path is set so it will work if put into a .pak file."
       }
       target: =
       {
@@ -24884,6 +25101,7 @@ $0D"For that use 3Dmodel above."
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -24911,6 +25129,7 @@ $0D"For that use 3Dmodel above."
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
@@ -25027,6 +25246,7 @@ $0D"For that use 3Dmodel above."
       _ambient: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_ambient>minlight-RGB or absolute"
       }
       light: =
@@ -25054,6 +25274,7 @@ $0D"For that use 3Dmodel above."
       _color: =
       {
         txt = "&"
+        Typ = "LN"
         hint = "_color>tex light RGB color"
       }
       _focus: =
