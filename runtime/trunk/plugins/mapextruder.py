@@ -455,7 +455,8 @@ class ExtruderDupData:
      except (AttributeError):
        start = 1
        zaxis = self.Zaxis()
-       side = quarkx.vect(dup["side"])
+#       side = quarkx.vect(dup["side"])
+       side = orthogonalvect(zaxis)
        yaxis = (side^zaxis).normalized
        xaxis = (zaxis^yaxis)
      last = len(self.PathPoints())-1
@@ -1289,7 +1290,7 @@ def attach_sides(data, j, brush, bottom, cycle, names, texpos):
 def make_brushes(dup, cycles, names, limit=0):
     data = ExtruderDupData(dup)
     texpos = dup.findname("texinfo:g")
-    debug('brushes '+`texpos`)
+#    debug('brushes '+`texpos`)
     brushes = []
     if limit:
         pathlength=limit
@@ -2021,13 +2022,14 @@ class ExtruderDuplicator(StandardDuplicator):
     # This `side' thing is needed to make the rotation angles
     #  define anything, maybe there will be twist factors
     #
-    sidehandle = AxisHandle(org, dup, "side", scale)
+#    sidehandle = AxisHandle(org, dup, "side", scale)
 
-    h = axishandles + [sidehandle]
+#    h = axishandles + [sidehandle]
+#    h = axishandles
 
     chandles = extruderchandles(dup,editor,view)
 
-    return h + chandles + DuplicatorManager.handles(self, editor, view)
+    return axishandles + chandles + DuplicatorManager.handles(self, editor, view)
 
   def buildimages(self, singleimage=None):
     if singleimage is not None and singleimage>0:
@@ -2894,6 +2896,9 @@ def ExtrudeClick(btn):
 
 
 #$Log$
+#Revision 1.12  2001/07/08 00:27:35  tiglari
+#'short' specific; fix angle-to-next and path-point dialog bugs
+#
 #Revision 1.11  2001/06/17 21:10:57  tiglari
 #fix button captions
 #
