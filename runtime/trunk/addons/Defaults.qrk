@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.210  2003/04/08 06:02:37  cdunde
+//To update dup stair:form for plugins/mapstair.py changes
+//
 //Revision 1.209  2003/03/19 22:22:36  tiglari
 //specify holes file for HL
 //
@@ -4788,7 +4791,7 @@ QQRKSRC1
     {
       steps:      = {Txt="&"            Hint="number of steps in the staircase"}
       sameheight: = {Txt="&" Typ="X"    Hint="if all steps should have the same height"$0D"or all aligned to the bottom"}
-      oldstyle: = {Txt="&" Typ="X"    Hint="the original style staircase"}
+      old style:  = {Txt="&" Typ="X"    Hint="||if this is checked, then old-style column-stair is generated."$0D"Not recommended, due to overdraw and t-juncts" $0D "" $0D "Credits to foo, quakin, plan b and other quake3world editing forum stalwarts."}
       macro:      = {Txt="&" Typ="ESR"  Hint="This one is not for you, Saruman"}
     }
     dup hlinfodecal:form =
