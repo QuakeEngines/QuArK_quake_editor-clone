@@ -14,21 +14,21 @@
 Info = {
    "plug-in":       "Mitered Edge Plugin",
    "desc":          "Make nice mitered edges where 2 faces join to make a surface",
-   "date":          "5 Sept 2001",
+   "date":          "5 Sept 2001 -> 26 Jan 2003",
    "author":        "tiglari",
    "author e-mail": "tiglari@planetquake.com",
    "quark":         "Quark 6.3" }
 
 
-from tagging import *
 
+import quarkx
+from quarkpy.maputils import *
 import quarkpy.mapentities
 import quarkpy.qmovepal
 import quarkpy.mapduplicator
 import mapdups
-from mapextruder import make_edge
-#from maptagside import colinear
-from mapdupspath import evaluateDuplicators
+import mapextruder
+import tagging
 
 #
 # These should go to maputils someday
@@ -263,7 +263,7 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
         edge = (vtx2-vtx)
         plane1 = edge^f1.normal
         plane2 = edge^f2.normal
-        mitredir = make_edge(plane2, -plane1)
+        mitredir = mapextruder.make_edge(plane2, -plane1)
         mat = matrix_rot_u2v(mitredir, plane1)
         if mat is None:
             return [face1, face2], [face1, face2]
@@ -301,7 +301,7 @@ def mitrefacemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
     "the new right-mouse menu for polys"
     menu = oldmenu(o, editor)
     
-    tagged = gettagged(editor)
+    tagged = tagging.gettagged(editor)
     
     edgepoints = findEdgePoints(o, tagged)
     
@@ -337,20 +337,25 @@ def makePrism(f, p, wallwidth):
     walls = f.extrudeprism(p)
     for wall in walls:
         wall.texturename=f.texturename
+        f.shortname='wallside'
     inner = f.copy()
-    inner["ext_inner"]='1'
+#    inner["ext_inner"]='1'
+    inner.shortname='inner'
     inner.swapsides()
     outer = f.copy()
-#    outer['tex']=CaulkTexture()
+#    outer['ext_outer']='1'
+    outer.shortname='outer'
     n = f.normal
     n = n.normalized
     outer.translate(abs(wallwidth)*n)
     newp = quarkx.newobj(f.shortname+" wall:p")
     #
     # it's important than the inner one be first (to find
-    #   it quickly later)
+    #   it quickly later), but something reverses the order (!!!)
+    #   so drop them in backwards
     #
     for face in [inner, outer] + walls:
+ #   for face in walls + [outer, inner]:
         newp.appenditem(face)
     for face in newp.faces:
         for poly in face.faceof:
@@ -378,6 +383,23 @@ def wallsFromPoly(plist, wallwidth=None):
         return result
 
 
+#
+# This code depends on all the games using Content Flag = 134217728 for detail
+#   Someday we'll need something more general
+#
+# Perhaps there should be a 'detail' attribute for polys, so that if a poly
+#   was set detail, then all its faces would be written that way in the map,
+#   as controlled by the gamecodes in the .exe, or something.
+#
+def setDetail(face):
+    contents = face['Contents']
+    if contents==None:
+        contents = 0
+    else:
+        contents = int(contents)
+    face['Contents'] = `contents | 134217728`
+
+
 def findMiterableFaces(faces):
     fdict = {}
     for fi1 in range(len(faces)):
@@ -395,10 +417,16 @@ def findMiterableFaces(faces):
                 fdict[(face1, face2)] = edgepoints
     return fdict
 
-#class NewWallMaker(mapdups.DepthDuplicator):
-#    "Extrude the polyhedrons in the group."
-        
+def setViewFlag(group, flag):
+    viewflags = group[';view']
+    if viewflags == None:
+        viewflags = 0
+    else:
+        viewflags = int(viewflags)
+    viewflags = viewflags | flag
+    group[';view'] = str(viewflags)
 
+        
 def buildwallmakerimages(self, singleimage=None):
         if not (self.dup["miter"] or self.dup["extrude"] or self.dup["solid"]):
             return mapdups.DepthDuplicator.buildimages(self,singleimage)
@@ -410,40 +438,83 @@ def buildwallmakerimages(self, singleimage=None):
         except:
             print "Note: Invalid Duplicator Specific/Args."
             return
-#        wallgroups = mapdups.DepthDuplicator.buildimages(self, singleimage)
+        #
+        # The way all this works is roughly as follows:
+        #   The sourcelist is the list of things (polys, groups, whatever)
+        #      immediately contained within the duplicator
+        #   We make a list of copies of its elements, and add these to
+        #      a new group (wallgroup)
+        #   The we do all kinds of complicated stuff to the elements of the
+        #      list and their subitems, and since these things are all subitems
+        #      of wallgroup, the effects show up there.
+        #   Finally, the subitems of wallgroup are returned as the images, so
+        #      that the organization of the input is preserved in the output,
+        #      even tho faces have been replaced by brushes, etc. etc.
+        #   One elaboration on this is that in caulkull wallmakers, the return
+        #      list is two groups, detail and hull, each preserving the structure
+        #      of the input (but with 'plugs' getting carved out of the detail
+        #      but not the hull)
+        #
 
-        polys2 = self.sourcelist()
-        polys=[]
-        for poly in polys2:
-            polys.append(poly.copy())
+        sourcecopy=[]
+        for item in self.sourcelist():
+            sourcecopy.append(item.copy())
+        #
+        # quick exit for fast redesign, but not when images are
+        #   being dissociated
+        #
+        if self.dup["solid"]=='1' and singleimage is None:
+#            for item in sourcecopy:
+#                for face in item.findallsubitems("",":f"):
+#                   face['inverse']='1'
+            return sourcecopy
+        if singleimage is not None:
+            sourcegroup = quarkx.newobj('source:g')
+            for poly in sourcecopy:
+                sourcegroup.appenditem(poly.copy())
+            setViewFlag(sourcegroup,VF_HIDDEN | VF_IGNORETOBUILDMAP | VF_CANTSELECT | VF_HIDEON3DVIEW)
+            for spec in self.dup.dictspec.keys():
+                sourcegroup[spec]=self.dup[spec]
         #
         # we won't return this group as a value, but we need it to use
         #  our trick for preserving the tree structure.
         #
         wallgroup = quarkx.newobj("wallgroup:g")
-        if self.dup["solid"]=='1':
-            return polys
-        for poly in polys:
-            wallgroup.appenditem(poly)
-        polys = reduce(lambda x,y:x+y,map(lambda i:i.findallsubitems("",":p"),polys))
-#        negatives = filter(lambda p:p["neg"]=='1', polys)
-#        polys = filter(lambda p:p["neg"]!='1', polys)
-        polys2 = []
+        for item in sourcecopy:
+            wallgroup.appenditem(item)
+        caulkhull = self.dup["caulkhull"]
+        caulktexture = CaulkTexture()
+        #
+        # perhaps we should scan the tree and build these lists then, rather
+        #  than make a list and sift it.
+        #
+        allpolys = wallgroup.findallsubitems("",":p")
+        #
+        # The ones that will have walls extruded from them
+        #
+        polys = []
+        #
+        # the ones that make holes
+        #
         negatives = []
         plugs = []
-        for item in polys:
-            if item["neg"]=='1':
+        for item in allpolys:
+            if  item["plug"]=='1':
+                pass
+            elif item["neg"]=='1':
                 negatives.append(item)
-            elif item["plug"]=='1':
-                negplug=item.copy()
-                negplug['neg']='1'
-                negatives.append(negplug)
-                plugs.append(item)
             else:
-                polys2.append(item)
-        polys=polys2
+                polys.append(item)
         depth=int(self.dup["depth"])
+        #
+        # make the walls
+        #
         wallgroups = map(lambda item:item.subitems, wallsFromPoly(polys, depth))
+        #
+        # cut away the portals.  it would probably be better to write code to
+        #  do this directly on the basis of overlapping faces, rather than
+        #  going thru poly subtraction, but me too stupid and lazy.
+        #
         for i in range(len(polys)):
             walls = wallgroups[i]
             newwalls = []
@@ -463,6 +534,9 @@ def buildwallmakerimages(self, singleimage=None):
                                 for bface in brush.subitems[:2]:
                                     bface.translate(10*bface.normal)
                                 wallbits=brush.subtractfrom(wallbits)
+                                #
+                                # face-order gets messed up by subtraction
+                                #
                                 break
                 newwalls = newwalls+wallbits   
             for hole in negatives:
@@ -473,9 +547,8 @@ def buildwallmakerimages(self, singleimage=None):
             parent.appenditem(newgroup)
             for wall in newwalls:
                 newgroup.appenditem(wall)
-#            for plug in plugs:
-#                newgroup.appenditem(plug.copy())
-        faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
+  #      faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
+        faces = wallgroup.findallsubitems("inner",":f")
         replacedict = {}
         donefaces = {}
         if self.dup["miter"]=='1':
@@ -552,13 +625,156 @@ def buildwallmakerimages(self, singleimage=None):
                         poly.rebuildall()
                         if poly.broken:
                             debug('fuck, still busted')
-        list = []
-        for item in wallgroup.subitems:
-            list.append(item)
-        return list
+ 
+            #
+            # Now generate the caulk hull if wanted
+            #
+            if caulkhull!=None:
+                caulkdepth = int(caulkhull)
+                if self.dup['caulksetback']!=None:
+                    caulksetback = eval(self.dup['caulksetback'])
+                else:
+                    caulksetback = 0
+                #
+                # This depends on findallsubitems producing the same
+                #   order in the list from the same structure of the
+                #   item (seems to work).  wallgroup will be the caulk hull,
+                #   wallgroup_detail the detail
+                #
+                wallgroup_detail = wallgroup.copy()
+                polylist_detail=wallgroup_detail.findallsubitems("",":p")
+                #
+                # using indexes so can access both lists
+                #
+                for i in range(len(polylist)):
+                    poly = polylist[i]
+                    poly_detail = polylist_detail[i]
+                    #
+                    # remove the plugs from the caulkhull
+                    #
+                    if poly['plug']=='1':
+                        poly.parent.removeitem(poly)
+                        continue
+                    #
+                    # get the inner face ('.faces' attribute doesn't preserve
+                    #  subitem order; shared faces won't arise in this context
+                    #
+                    inner = poly.findname("inner:f")
+                    #
+                    # if it's already caulked, delete it from the detail
+                    #
+                    if inner['tex']==caulktexture:
+                        poly_detail.parent.removeitem(poly_detail)
+                    inner['tex'] = caulktexture
+                    if caulksetback:
+                        inner.translate(-caulksetback*inner.normal)
+                    outer = poly.findname("outer:f")
+                    outer.translate((caulkdepth-depth)*outer.normal)
+                    outer["tex"] = CaulkTexture()
+                    if not poly_detail.broken:
+                        for face in poly_detail.subitems:
+                            #
+                            # set detail flag here
+                            #
+                            if face.shortname=='outer':
+                                face['tex']=caulktexture
+                            setDetail(face)
+                plugs = []
+                for item in polylist_detail:
+                    if item['plug']=='1':
+                        plugs.append(item)
+                for plug in plugs:
+                   negplug = plug.copy()
+                   negplug['neg']=1
+                   for poly in polylist_detail:
+#                       if poly==plug:
+#                          debug('poly is plug')
+                       if poly!=plug and plug.intersects(poly):
+                           polybits = [poly]
+                           polybits = negplug.subtractfrom(polybits)
+                           polygroup = quarkx.newobj(poly.shortname+':g')
+                           for bit in polybits:
+                               polygroup.appenditem(bit.copy())
+                               
+                           parent = poly.parent
+                           parent.removeitem(poly)
+                           parent.appenditem(polygroup)
+                   #
+                   # negative plugs just cut the hole, 
+                   #
+                   if plug['neg']!=1:
+                      parent.appenditem(plug.copy())
         
+        
+        #
+        # if relevant, build the hull and detail groups
+        #
+        if self.dup['miter']=='1' and self.dup['caulkhull']!=None:
+            hull = quarkx.newobj('hull:g')
+            for item in wallgroup.subitems:
+                wallgroup.removeitem(item)
+                hull.appenditem(item)
+            detail = quarkx.newobj('detail:g')
+            for item in wallgroup_detail.subitems:
+                wallgroup_detail.removeitem(item)
+                detail.appenditem(item) 
+            if self.dup['showcaulk']=='1':
+                setViewFlag(detail,VF_HIDEON3DVIEW)
+            else:
+                setViewFlag(hull,VF_HIDEON3DVIEW)
+            setViewFlag(hull,VF_CANTSELECT)
+            setViewFlag(detail,VF_CANTSELECT)
+            list = [detail, hull]
+        #
+        # otherwise output
+        #
+        else:
+            output = quarkx.newobj('output:g')
+            setViewFlag(output,VF_CANTSELECT)
+            for item in wallgroup.subitems:
+                wallgroup.removeitem(item)
+                output.appenditem(item)
+            list = [output]
+        if singleimage is not None:
+            list.append(sourcegroup)
+        return list
+
+ 
 mapdups.WallMaker.buildimages = buildwallmakerimages
         
+
+
+def groupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
+    menu = oldmenu(o, editor)
+    sourcegroup = o.findname("source:g")
+    if sourcegroup is not None and sourcegroup['macro']=='wall maker':
+    
+        def revertClick(m, o=o,editor=editor,source=sourcegroup):
+            #
+            # reversion adds ' (1)' to the name, so we drop the
+            #   last four characters
+            #
+            newdup = quarkx.newobj(o.shortname[:-4]+':d')
+            newdup.copyalldata(source)
+            #
+            # cancel the hiding/cantselect flags of the data group
+            #
+            newdup[';view'] = None
+            undo=quarkx.action()
+            undo.exchange(o, newdup)
+            editor.ok(undo,'revert to wall maker')
+        
+        revertitem = qmenu.item('Revert Walls to Duplicator',revertClick,"|This group was created from a wall maker duplicator.\nThis menu item will restore the original ducplicator and its data,\nfor convenient editing")
+        menu = [revertitem]+menu   
+
+    return menu
+
+quarkpy.mapentities.GroupType.menu = groupmenu
+        
+    
+    
+
+
 #
 #quarkpy.mapduplicator.DupCodes.update({
 #  "new wall maker":       NewWallMaker,})
@@ -568,6 +784,9 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.6.6.5  2003/01/14 20:41:35  tiglari
+# remove extra copy of plug
+#
 # Revision 1.6.6.4  2003/01/11 21:27:54  tiglari
 # add 'plugs' to extruded walls
 #
