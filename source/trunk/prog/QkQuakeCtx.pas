@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/04/23 23:14:03  aiv
+pretty much changed all entity maker code
+
 Revision 1.19  2001/04/22 16:05:01  aiv
 free bsps when finished with them, and other fixes.
 
@@ -82,7 +85,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects;
+  QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects, Logging;
 
 type
  QQuakeCtx = class(QFormObject)
@@ -327,6 +330,7 @@ begin
     Result.add(ExactFileLink(dir+'\'+f.name, nil, false));
     f_e:=FindNext(F);
   end;
+  FindClose(f);
 end;
 
 function qMakeAddonFromQctx(self, args: PyObject) : PyObject; cdecl;
@@ -532,11 +536,8 @@ var
   count: Integer;
   tb: string;
   ext: string;
-  // Objects for getting bsp list
-  bsps: TQList;
-  ExistingAddons: QFileObject;
-  bsp: QBsp;
-  NewAddonsList: TQList;
+  e_lump: String;
+//  NewAddonsList: TQList;
   text_entities, e_sl: TStringList;
   // Objects for creating new addon
   addonRoot: QFileObject;
@@ -551,23 +552,41 @@ var
   opt_tbx: QToolBoxGroup;
   entities: TQList;
   (*
+
+  *)
+  procedure GetEntities;
+  var
+    bsps: TQList;
+    bsp: QBsp;
+    e: QObject;
+  begin
+    BSPs:=GetAllBSPsFiles;
+    ProgressIndicatorStart(5458,bsps.count);
+    e_lump:='';
+    while bsps.count<>0 do
+    begin
+//      if not (bsps[0] is QBsp) then
+  //      raise exception.create('Error: bsp list contains non QBSP object!');
+      bsp := QBsp( bsps[0] );
+      bsp.Acces;
+      e_lump:=e_lump + bsp.GetEntityLump();
+      bsps.Delete(0);
+      ProgressIndicatorIncrement;
+      Application.ProcessMessages;
+    end;
+    bsps.free;
+    ProgressIndicatorStop;
+  end;
+
+  (*
     Go through list of .bsps and create addon based on each
   *)
   Procedure CreateAddons;
+  var
+    ExistingAddons: QFileObject;
   begin
     ExistingAddons:=MakeAddonsList;
-    ProgressIndicatorStart(5458,bsps.count);
-    while bsps.count<>0 do
-    begin
-      if not (bsps[0] is QBsp) then
-        raise exception.create('Error: bsp list contains non QBSP object!');
-      bsp := QBsp(bsps[0]);
-      bsp.CreateStringListFromEntities(ExistingAddons, text_entities);
-      ProgressIndicatorIncrement;
-      Application.ProcessMessages;
-      bsps.Delete(0);
-    end;
-    ProgressIndicatorStop;
+    StringListFromEntityLump(e_lump, ExistingAddons, text_entities);
     ExistingAddons.AddRef(-1);
   end;
 
@@ -601,10 +620,9 @@ var
   end;
 begin
   text_entities:=TStringList.Create;
-  NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
-  BSPs:=GetAllBSPsFiles;
+  //NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
+  GetEntities;
   CreateAddons;
-  bsps.free;
   count:=text_entities.count;
 
   addonRoot:=QFileObject(FParent);
@@ -617,7 +635,7 @@ begin
   (*
     Now build entities found in .bsp files
   *)
-  ProgressIndicatorStart(5458,NewAddonsList.Count);
+//  ProgressIndicatorStart(5458,NewAddonsList.Count);
   try
     if text_entities.count>0 then // don't create new folders if entities don't exist
     begin

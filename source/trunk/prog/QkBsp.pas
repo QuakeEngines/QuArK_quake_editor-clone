@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/04/23 23:14:02  aiv
+pretty much changed all entity maker code
+
 Revision 1.31  2001/04/16 00:37:33  tiglari
 extract entity lumps from .bsp's in pakfolder
 
@@ -264,6 +267,8 @@ type
   end;
 
  {------------------------}
+
+Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
 
 implementation
 
@@ -1239,9 +1244,8 @@ begin
   Result:=S;
 end;
 
-Function QBsp.CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
+Function StringListFromEntityLump(e_lump: String; ExistingAddons: QFileObject; var Found: TStringList): Integer;
 var
-  e: QObject;
   S: String;
   specList: TStringList;
   e_sl, f_sl: TStringList;
@@ -1249,14 +1253,7 @@ var
   Addons: QFileObject;
   bFound: Boolean;
 begin
-  Acces;
-  e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
-  if e=nil then
-  begin
-    raise Exception.Create('No Entities in BSP');
-  end;
-  e.acces;
-  S:=e.Specifics.Values['Data'];
+  S:=e_lump;
   (*
     Convert Entities in bsp to stringlists & remove "worldspawn" and "light" and
     pre-existing entities now.
@@ -1301,6 +1298,19 @@ begin
       inc(result);
     end;
   end;
+end;
+
+Function QBsp.CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
+var
+  e: QObject;
+begin
+  Acces;
+  e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
+  if e=nil then
+  begin
+    raise Exception.Create('No Entities in BSP');
+  end;
+  e.acces;
 end;
 
 Function QBsp.GetTextureFolder: QObject;
