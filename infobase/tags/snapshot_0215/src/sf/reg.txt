@@ -1,0 +1,12 @@
+title: Registering at SourceForge
+author: Armin Rigo
+
+Connect to the
+<html><a href="http://sourceforge.net">SourceForge</a>
+and register yourself as a new user. Then contact a project administrator (currenlty
+<html>arigo@<!---->planetquake.com or Alexander@<!---->users.sourceforge.net
+) and give your login name so that we can add you to the quark project members list.
+
+Follow the instructions given in the file
+<html><a href="http://asp.planetquake.com/dl/dl.asp?quark/source/ssh-pack.zip">ssh-pack.zip</a>
+to configure WinCVS for non-anonymous access to the repository.

@@ -1,0 +1,72 @@
+title: BSP - Binary Space Partition
+author: Decker
+desc: error_parsing
+
+This page lists various encountered errors, that may occur during the BSP map-compiling phase.
+
+All QuArK supported games, are know to use a BSP map-compiling phase:
+
+<html><center><table border=1 cellspacing=0 width=50%><tr><th align=left>Game</th><th align=left>Possible program-names</th></tr>
+
+<html><tr><td>
+Quake-1
+<html></td><td>
+QBSP.EXE, TXQBSP.EXE
+<html></td></tr>
+
+<html><tr><td>
+Hexen-2
+<html></td><td>
+QBSP.EXE, HXBSP06.EXE
+<html></td></tr>
+
+<html><tr><td>
+Quake-2
+<html></td><td>
+QBSP3.EXE, TXQBSP39.EXE
+<html></td></tr>
+
+<html><tr><td>
+Heretic-2
+<html></td><td>
+QBSP3.EXE, TXQBSP39.EXE
+<html></td></tr>
+
+<html><tr><td>
+Half-Life
+<html></td><td>
+BSP.EXE, HLBSP.EXE
+<html></td></tr>
+
+<html><tr><td>
+Sin
+<html></td><td>
+QBSP3.EXE
+<html></td></tr>
+
+<html><tr><td>
+Kingpin
+<html></td><td>
+KPBSP.EXE
+<html></td></tr>
+
+<html><tr><td>
+Quake-3:Arena
+<html></td><td>
+Q3MAP.EXE
+<html></td></tr>
+
+<html><tr><td>
+Soldier of Fortune
+<html></td><td>
+SOFBSP.EXE
+<html></td></tr>
+
+<html><tr><td>
+Star Trek:Voyager - Elite Force
+<html></td><td>
+Q3MAP.EXE
+<html></td></tr>
+
+<html></table></center>
+

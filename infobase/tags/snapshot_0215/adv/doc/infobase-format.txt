@@ -1,0 +1,79 @@
+title: Information Base Syntax
+author: Armin Rigo
+
+All ".txt" files in the infobase are formatted as follow : first, a list of keyword-value pairs, ended with a blank line, and
+followed by the text itself. For example:
+
+<code>
+title: This is the title of what this file contains.
+author: Your Name
+subdir: list subdirectories
+subdir: can be done on several lines
+desc: list files
+desc: without ".txt" extension
+
+The text follows the blank line.
+</code>
+
+The most common keywords are given in this example. Notice that "subdir" and "desc" only make sense in the file "index.txt",
+while "author" is only used in the opposite case. Other keywords might be parsed in the future. Also note that all file names
+should be lowercase.
+
+The text itself is formatted paragraph-by-paragraph, with at least one blank line between paragraphs (a single end-of-line is
+not considered as separating two paragraphs). Paragraphs starting with <p> are assumed to be HTML, so can contain usual HTML
+formatting commands. Other paragraphs are assumed to be pure text, and all special characters are translated, so that if you
+type <strong> in a text paragraph, the browser will really display the text <strong>!
+
+A special command is <ref>: if a line starts with these 5 characters, the remaining of the line is supposed to be a path to
+another file of the InfoBase directory, relative to the root. It will be replaced by an HTML link to that file. Note that it
+may be inside a paragraph as far as it's on its own line, so that you can type for example:
+
+<code>
+See
+&lt;ref&gt; adv/doc/infobase-format
+for more information.
+</code>
+
+The example will produce this line:
+
+See
+<ref> adv/doc/infobase-format
+for more information.
+
+If you want something other than the section title to appear in the
+text, separate it from the file-name with '\':
+<code>
+See
+&lt;ref&gt; adv/doc/infobase-format \ format stuff
+for more information.
+</code>
+
+Further special commands are <pic>, <rsc> and <zip>.  If a line starts
+with <pic>, the rest of the line in interpreted as the name of a graphic.
+If it starts with <rsc>, the rest of it is just put into quotes, so that
+it can for example be the source-value of an <img> element specifying
+height, width, etc.
+
+<P>If a line starts with <tt><zip></tt>, then the following material is taken as
+the name of an `archive'.  Archives are treated in a special way due to
+the disinclination of web-hosting to allow direct downloading of .zip
+files from ordinary web-pages. Archives are expected to appear in the
+subfolder <tt>zips</tt>.  How they are processed depends on whether
+<TT>BUILD.PY</TT> is launched with the command-line argument
+<tt>-local</tt> or not.  If it is, then the archive file is copied
+into the a subfolder <tt>zips</tt> in <tt>output</tt>, and a suitable
+link generated.  If it isn't (the default), then no copying happens,
+and the link is prefixed by the value of the string <tt>ZIPLOC</tt>
+specified at the top of <tt>format.txt</tt>.  The archives are then
+to be uploaded to the appropriate server independently of the operations
+of this script (but they should all be sitting in the <tt>zips</tt>
+folder).</P>
+
+A line may also begin with <text> or <html>, which force the current line to be interpreted as text or html, respectively,
+regardless of the current paragraph mode.
+
+The keyword
+<html><tt>format: html</tt>
+ will force the whole text to be interpreted as HTML. It will be dumped to the output .html file as
+is. In this mode the only processed command are the `line starters' <ref>,
+<zip>, etc.

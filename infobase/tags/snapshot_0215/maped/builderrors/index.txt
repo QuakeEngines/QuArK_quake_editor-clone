@@ -1,0 +1,20 @@
+title: Map compiling errors
+subdir: csg
+subdir: bsp
+subdir: vis
+subdir: rad
+
+Here you will find information, gathered from various places, about map compiling errors.
+
+Usually the build sequence, which result in a final .BSP file from a .MAP file, are split into phases;
+
+<html><ol>
+<html><li>BSP - take the .MAP textfile and calculate a fullbright, non optimized .BSP file.
+<html><li>VIS - optimizes the .BSP file, so the game's graphics-engine does not have to draw everything.
+<html><li>RAD - calculate (colored-)lights in the .BSP file, using information from the BSP and VIS phases.
+<html></ol>
+
+However, not all QuArK supported games uses the same build phases. Some might contain more or fewer phases, and maybe also in a different sequence.
+
+If you have any questions, problems or find solutions regarding these topics, please post them in the
+<html><a href="http://www.planetquake.com/quark/forums.shtml">QuArK forum/mailing-list</a>.

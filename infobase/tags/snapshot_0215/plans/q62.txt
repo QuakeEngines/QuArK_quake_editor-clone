@@ -1,0 +1,61 @@
+title: Quark 6.2
+author: tiglari, etc.
+format: html
+
+Red means stuff that should defintely be done for release.
+
+
+<UL>
+<LI><font color=#ff0000>Q3(T)A Model display:</font> (Andy/Maleficus)
+<br>basically done, except that textures aren't being shown.
+<LI>OsFolders: (tiglari) load up resources from disk by specified paths 
+     etc.
+<BR>status:  basically done.  editing of folder properties not yet
+   implemented, maybe delay til 6.3
+<LI><font color=#FF0000>Bezier Page:</font> (Andy)
+<br>status: bug with undo; texture itself isn't being shown,
+starting scale too big.
+<LI>
+  Write Brush Primitives: (tiglari)
+    <BR>status: done 
+<LI>
+  <FONT color=red> Path duplicator</FONT>: (decker, tiglari)
+   <BR>status: orientation bug fixed by math remake, texture
+     positioning not quite there yet.
+<LI>
+  CTF duplicator: (tiglari)
+<BR>   status: envisioned, seems like it might be easy
+
+<LI> <FONT color=#FF0000>  Brush curve duplicator:</FONT> (tiglari)
+<BR>   status: partially done; texture positioning needed.
+`thick' to be delayed to 6.3.
+
+<LI>  Stairway duplicator: (decker)
+<BR>    status: done, further developments envisioned.
+
+<LI>  Microbrush H/K: (tiglari) find and destroy them
+<BR>   status: done
+
+<LI>  STVEF support: (Alex)
+<BR>   status: done
+
+<LI>  Q3TA support: (Maleficus, Andy)
+<BR>    status: done 
+
+<LI>  Drag & Drop imprecision bug: (tiglari)
+<BR>    status: possibly fixed.
+
+<LI>  Model editor: (Andy)
+<BR>    status: pre-alpha Q1/2
+
+<LI>  `texture pinning': (tiglari)
+<br> status: done
+
+<LI>  bezier CP `picking': (tiglar).  Pick a subset of the Cps
+of a bezier and drag, linear map. etc only them
+<br> status: done
+
+<LI>  sprites etc. display: (Andy).  display assorted minor
+resources.  Full Adquedit functionlity by 6.3?
+<br> status: ?
+</UL>
