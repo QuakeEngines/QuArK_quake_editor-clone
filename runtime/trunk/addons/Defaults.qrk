@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.175  2002/03/23 09:43:30  tiglari
+//add SupportsBrushPrim flag to game config form and Quake3 defaults
+//
 //Revision 1.174  2002/02/26 23:24:01  tiglari
 //update version
 //
@@ -785,6 +788,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
 
+        OutputMapFormat = "Quark etp"
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,+PRT"
@@ -831,6 +835,7 @@ QQRKSRC1
         CheckDirectory = "H2.EXE"
 
         MapCommentsPrefix = "//"
+        OutputMapFormat = "Quark etp"
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
@@ -884,6 +889,7 @@ QQRKSRC1
         CDDir = "Install\Data"
 
         MapCommentsPrefix = ";"
+        OutputMapFormat = "Quark etp"
 
         BuildPgm1  = "TXQBSP3.EXE"
         BuildArgs1 = ""
@@ -979,6 +985,7 @@ QQRKSRC1
         CheckDirectory = "HL.EXE"
 
         MapCommentsPrefix = "//"
+        OutputMapFormat = "Valve 220"
 
         BuildPgm1  = "HLCSG.EXE"
         BuildArgs1 = ""
@@ -1037,6 +1044,7 @@ QQRKSRC1
         CDDir = "Setup\Data"
 
         MapCommentsPrefix = ";"
+        OutputMapFormat = "Quark etp"
 
         BuildPgm1  = "QBSP3.EXE"
         BuildArgs1 = ""
@@ -1086,6 +1094,7 @@ QQRKSRC1
         CDDir = "Install\Data"
 
         MapCommentsPrefix = ";"
+        OutputMapFormat = "Classic Quake"
 
         BuildPgm1  = "KPBSP.EXE"
         BuildArgs1 = ""
@@ -1138,6 +1147,7 @@ QQRKSRC1
         CDDir = "Install\Data"
 
         MapCommentsPrefix = ";"
+        OutputMapFormat = "Classic Quake"
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "SOFBSP.EXE"
@@ -1184,6 +1194,7 @@ QQRKSRC1
         CheckDirectory = ""
 
         MapCommentsPrefix = ";"
+        OutputMapFormat = "Quark etp"
 
         TexturesPath = "textures/"
         Q2TexFlags = "1"
@@ -1229,7 +1240,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-
+        OutputMapFormat = "Brush Primitivez"
         StupidBuildToolKludge = "1" //those guys should get shot for that
         SupportsBrushPrim = "1"
         BuildPgm1  = "Q3MAP.EXE"
@@ -1292,6 +1303,7 @@ QQRKSRC1
         CDDir = "Setup\BaseEF"
 
         MapCommentsPrefix = "//"
+        OutputMapFormat="Classic Quake"
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
@@ -1349,6 +1361,7 @@ QQRKSRC1
         CheckDirectory = "WALKTEST.EXE"
 
         MapCommentsPrefix = "//"
+        OutputMapFormat="Classic Quake"
 
         BuildPgm1 = "MAP2CS.EXE"
         BuildArgs1 = "%mapfile% %file%.zip c:\map2cs\map2cs.cfg"
@@ -1397,6 +1410,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
+        OutputMapFormat="Brush Primitives"
 
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP.EXE"
@@ -1460,6 +1474,7 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
+        OutputMapFormat="Classic Quake"
 
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP.EXE"
@@ -1884,7 +1899,16 @@ QQRKSRC1
       Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
       BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
-      SupportsBrushPrim:={Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
+      OutputMapFormat: = {
+        Txt = "Output Map Format"
+        Typ = "C"
+        Items = "Classic Quake"
+               $0D "Quark etp"
+               $0D "Valve 220"
+               $0D "Brush Primitives"
+        Hint="These are set for the game's reccommended build tools.  If you don't have these," $0D " Classic Quake1/2/3 will function at a minimal level"
+      }
+//      Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
       sep:        = {Typ="S" Txt="1st program"}
       BuildPgm1:  = {t_GameBuildPgm=!}
       BuildArgs1: = {t_GameBuildArgs=!}
@@ -3466,7 +3490,7 @@ QQRKSRC1
       //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
       TwoMonitors: = {
         Txt="Second monitor on 3DFX"
-        Typ="CL"
+        Typ="CL" 
         Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
         Values = "" $0D "1" $0D "2"
         Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
@@ -3639,9 +3663,9 @@ QQRKSRC1
       AutoCheckMap:             = {Typ="X" Txt="When building the map"          Cap="Perform checks first"                 }
       IgnoreToBuild:            = {Typ="X" Txt="   ``"                          Cap="Ignore groups marked so"              }
       DisableMapComments:       = {Typ="X" Txt="   ``"                          Cap="Don't write comments in .map files"   }
-      DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
+//      DisableEnhTex:            = {Typ="X" Txt="   ``"                          Cap="Don't write //TX# in .map files"      }
       DisableFPCoord:           = {Typ="X" Txt="   ``"                          Cap="Don't write floating-point coords"    }
-      EnableBrushBrim:          = {Typ="X" Txt="   ``"                          Cap="Brush primitives in maps (Q3A only)"  }
+//      EnableBrushBrim:          = {Typ="X" Txt="   ``"                          Cap="Brush primitives in maps (Q3A only)"  }
     }
     MapBuilding:form =
     {
