@@ -2,7 +2,7 @@
 
 $prefabs_imageroot = "http://www.planetquake.com/quark/userprefabs/";
 #$prefabs_imageroot = "http://millennium/userprefabs/";
-$prefabs_fileroot  = "http://dl.fileplanet.com/dl/dl.asp?quark/userprefabs/";
+$prefabs_fileroot  = "http://www.fileplanet.com/dl.aspx?/planetquake/quark/userprefabs/";
 
 $prefabs_headers = array(
 #                     sub-folder    Full-Name                           32x32-game-icon
@@ -87,6 +87,12 @@ $prefabs_database = array(
 )
 # ---
 ,array("quake2"
+  ,array("2003-05-11", ""
+    ,"Door1-ByDataKiller.jpg"
+    ,"Door1-ByDataKiller.zip"
+    ,"DataKiller"
+    ,"Door1-ByDataKiller"
+  )
   ,array("2001-11-14", ""
     ,"alphabet.gif"
     ,"alphabet.zip"
