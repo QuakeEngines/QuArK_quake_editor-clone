@@ -1,9 +1,17 @@
 
+                       QuArK 6.3e update 2
+
+    * [tiglari] add 'nolinear' form and checkmark to path duplicator; this means
+       that linear mappings will work on it properly
+       
+    * [tiglari] revise wallmaker form to encourage extruded version, deprecate
+        negative polys, and suggest using sold for revision of complex forms.
+
                        QuArK 6.3e update 1
                        
                         Jan 01, 2003
                         
-    * fix error-on-RMB-on-vertex-in-restricted-selection bug
+    * [tiglari] fix error-on-RMB-on-vertex-in-restricted-selection bug
                         
 
 
