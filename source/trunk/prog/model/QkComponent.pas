@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/03/06 00:31:04  aiv
+more accurate on md3 linking parts...
+
 Revision 1.13  2001/02/28 19:03:25  aiv
 Fixed ref count prob.
 
@@ -139,10 +142,12 @@ begin
         f.specificsadd(FloatSpecNameOf('Vertices='));
       end;
       fg.subelements.add(f);
+
 //      CurrentFrame.SelUnique:=False;
       CurrentFrame:=f;
+      CurrentFrame.Flags := CurrentFrame.Flags or ofTreeViewSubElement;
 //      CurrentFrame.SelUnique:=True;
-      Result:=pyNoResult;//GetPyObj(CurrentFrame);
+      Result:=GetPyObj(CurrentFrame);
     end;
   except
     EBackToPython;
@@ -1228,7 +1233,8 @@ begin
         end;
         Inc(Dest);
       end;
-      Specifics.Delete(Specifics.IndexofName(Spec1));
+      if Specifics.IndexofName(Spec1)<>-1 then
+        Specifics.Delete(Specifics.IndexofName(Spec1));
       Specifics.Add(S);
       Result:=True;
       Exit;
