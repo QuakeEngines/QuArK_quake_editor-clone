@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.15  2003/01/14 20:42:35  tiglari
+//add plug attribute to brushes
+//
 //Revision 1.192.2.14  2003/01/08 23:08:39  tiglari
 //AlwaysWriteThreeFields support
 //
@@ -3914,12 +3917,6 @@ QQRKSRC1
     MapAuxKeys:form =
     {
        Style = "7"
-       Select Faces: = {
-         Txt = "&R" Typ = "R"
-         Hint = "If this key is down, a mouseclick will select only faces."$0D
-         "If map-editor has started, new assignment will apply on"
-          $0D"next QuArK restart. Otherwise when map-editor is started."
-       }
        Select Faces: = {
          Txt = "&R" Typ = "R"
          Hint = "If this key is down, a mouseclick will select only faces."$0D
