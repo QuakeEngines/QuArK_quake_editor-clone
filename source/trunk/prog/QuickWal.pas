@@ -24,6 +24,23 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/11/16 19:42:16  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.8  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -44,6 +61,11 @@ added link creation for .m32 files with link type "l"
 added cvs header
 
 }
+
+{This unit build qtexfolders from directory structure, as
+ when the `make texture links ...' button is pressed in the
+ texture toolbox window }
+
 unit QuickWal;
 
 interface
@@ -69,6 +91,7 @@ type
   private
   public
     Toolbox: TForm;
+    procedure BuildFolders(Base: String);
   end;
 
 implementation
@@ -241,17 +264,29 @@ end;
 
 procedure TQuickWalParser.OkBtnClick(Sender: TObject);
 var
+ Base : String;
+begin
+ ProgressIndicatorStart(0,0);
+ try
+  Base:=ListBox1.Items[ListBox1.ItemIndex];
+  BuildFolders(Base);
+ finally
+  ProgressIndicatorStop;
+ end;
+ MessageBeep(0);
+end;
+
+procedure TQuickWalParser.BuildFolders(Base : String);
+var
  Gr: QExplorerGroup;
  E: TQkExplorer;
- S, Base, Path: String;
+ S, Path: String;
  Q, SearchFolder, SearchResultList: QObject;
  J, FindError: Integer;
  F: TSearchRec;
  Pak: QPakFolder;
 begin
- ProgressIndicatorStart(0,0);
  try
-  Base:=ListBox1.Items[ListBox1.ItemIndex];
   E:=TQkExplorer(Toolbox.Perform(wm_InternalMessage, wp_TargetExplorer, 0));
   if E<>Nil then
   begin
@@ -338,7 +373,6 @@ begin
     end;
   end;
  finally
-  ProgressIndicatorStop;
  end;
  MessageBeep(0);
 end;
