@@ -23,6 +23,13 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/06/14 18:53:57  decker_dk
+- Inverted the use of TXT="&" in .QRK files. Now if it does not exist it defaults to TXT="&",
+but if you don't want a caption-text to appear, you must explicitly write TXT="".
+See [FormCfg.PAS] TFormCfg.wmInternalMessage() comments for reason.
+- Moved the FullMatch check '('+name+')' to DoIncludeData so it can be used in .QRK files too.
+Added functionality to include one's name-equal. To be used in the Half-Life .QRK files soon.
+
 Revision 1.16  2001/06/05 18:38:28  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -1165,16 +1172,24 @@ end;
 
 procedure TFormCfg.PyMacroClick(Sender: TObject);
 var
- FormObj: QObject;
- S: String;
+  FormObj: QObject;
+  S: String;
 begin
- FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
- with FormObj do
+  FormObj:=Form.SubElements[(Sender as TControl).Tag-1];
+  with FormObj do
   begin
-   S:=Specifics.Values['Macro'];
-   if S<>'' then
+    S:=Specifics.Values['Macro'];
+    if S<>'' then
     begin
       Py_XDECREF(CallMacro(@PythonObj, S))
+    end
+    else
+    begin
+      S:=Specifics.Values['Code'];
+      if S<>'' then
+      begin
+        PyRun_SimpleString(PChar(S))
+      end
     end;
   end;
 end;

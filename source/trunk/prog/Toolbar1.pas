@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/06/05 18:42:10  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.10  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -129,7 +132,7 @@ procedure ExecuteObjectMacros(Sender: TComponent; Obj: QObject);
 implementation
 
 uses Game, Setup, QkExplorer, ToolBox1, QkMacro, QkInclude, Running,
-     FormCfg, Quarkx, QkObjectClassList, QkFormCfg;
+     FormCfg, Quarkx, QkObjectClassList, QkFormCfg, Python;
 
 const
  typSeparator    = 'S';
@@ -142,6 +145,9 @@ const
  typMacro        = '+';    { multiple commands (the commands must be included as ":macro" objects) }
  typOpenNew      = 'N';
  typExecute      = 'G';
+
+ typCode         = 'P';
+
 {typFormSwitch   = 'F';}
 {typInstallation = 'I';}
 {typOperation    = 'O';}
@@ -586,6 +592,15 @@ begin
     end;
   typMenu:
     Exit;
+  typCode:
+    begin
+      Spec:=Specifics.Values['Code'];
+      if Spec<>'' then
+      begin
+        PyRun_SimpleString(PChar(Spec));
+        Exit;
+      end
+    end;
   typMacro:
     begin
      I:=StrToIntDef(Specifics.Values['count'], 1);
