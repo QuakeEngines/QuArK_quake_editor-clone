@@ -4,8 +4,15 @@
 
  Changes from  Snapshot 042801
  
+  *instance duplicator removed from toolbox, pushing
+    'instance' drops it into path dup, where it
+    dumps things at the path points.  linear stuff
+    removed from path point forms, prolly not useful
+    New Copy One does that stuff better.
   *extruder functionality extended (significant stuff
-     still not working right)
+     still not working right).  After Dissociate Images,
+     Extruder Stuff | Punch Inner/Outer to put holes in
+     marked things.
   *New Copy One duplicator, implementing ideas of Rolf
      Hulsbergen (better than Instance Dup, for many
      purposes): drop NCO into group like ordinary
