@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+
+Revision 1.10  2001/06/05 18:38:47  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.9  2001/03/20 21:46:48  decker_dk
 Updated copyright-header
 
@@ -59,6 +63,9 @@ uses Windows, SysUtils, Classes, QkObjects, QkMapObjects, QkBsp,
      qmath, QkFileObjects;
 
 type
+ TIntegerPair = record
+                 first, second : Integer;
+                end;
  TBoundBox = record
               Min, Max: vec3_t;
              end;
@@ -83,7 +90,14 @@ type
             Origin: vec3_t;
             HeadNode, Face_id, Face_num: LongInt;
            end;
-
+ PHullQ3 = ^THullQ3;
+ THullQ3 = record
+            Bound: TBoundBox;
+           { Origin: vec3_t;
+           { HeadNode, Face_id, Face_num: LongInt; }
+            Face_id, Face_num: Integer;
+            Brush_id, Brush_num: Integer;
+           end;
  PbPlane = ^TbPlane;
  TbPlane = record
             normal: vec3_t;
@@ -98,13 +112,43 @@ type
               LightStyles: array[0..3] of Char;
               LightMap: LongInt;
              end;
+
+ PbQ3Surface = ^TbQ3Surface;
+ TbQ3Surface = record
+                TexInfo_id: Integer;
+                Effect_id: Integer;
+                Face_Type: Integer; { 1=polygon, 2=patch, 3=mesh, 4=billboard }
+                Vertex_id, Vertex_num, Meshvert_id, Meshvert_num : Integer;
+                Lightmap_id : Integer;
+                Lm_Start, Lm_Size : TIntegerPair;
+                Lm_Origin, Lm_S, Lm_T : vec3_t;
+                Normal: vec3_t;
+                PatchDim: TIntegerPair;
+               end;
+   { q3map code :
+      int texture  Texture index.
+      int effect  Index into lump 12 (Effects), or -1.
+      int type  Face type. 1=polygon, 2=patch, 3=mesh, 4=billboard
+      int vertex  Index of first vertex.
+      int n_vertexes  Number of vertices.
+      int meshvert  Index of first meshvert.
+      int n_meshverts  Number of meshverts.
+      int lm_index  Lightmap index.
+      int[2] lm_start  Corner of this face's lightmap image in lightmap.
+      int[2] lm_size  Size of this face's lightmap image in lightmap.
+      float[3] lm_origin  World space origin of lightmap.
+      float[2][3] lm_vecs  World space lightmap s and t unit vectors.
+      float[3] normal  Surface normal.
+      int[2] size  Patch dimensions.
+
+  }
+
  PLEdge = ^TLEdge;
  TLEdge = LongInt;
  PEdge = ^TEdge;
  TEdge = record
           Vertex0, Vertex1: Word;
          end;
-
  PTexInfoVecs = ^TTexInfoVecs;
  TTexInfoVecs = array[0..1, 0..3] of scalar_t;
  PTexInfo = ^TTexInfo;
@@ -120,6 +164,13 @@ type
                value: Integer;                 // light emission, etc
                texture: array[0..31] of Byte;  // texture name (textures/*.wal)
                nexttexinfo: Integer;           // for animations, -1 = end of chain
+              end;
+
+ PTexInfoQ3 = ^ TTexInfoQ3;
+ TTexInfoQ3 = record
+                texture: array[0..62] of Byte;
+                flags: Integer;
+                content: Integer;
               end;
 
 type
@@ -149,8 +200,7 @@ function CheckH2Hulls(Hulls: PHullH2; Size, FaceCount: Integer) : Boolean;
 
 implementation
 
-uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList;
-
+uses QkMapPoly, Setup, qmatrices, QkWad, Quarkx, PyMath, Qk3D, QkObjectClassList, Dialogs;
  {------------------------}
 
 function CheckQ1Hulls(Hulls: PHull; Size, FaceCount: Integer) : Boolean;
@@ -216,8 +266,9 @@ var
  HullType: Char;
  Delta, Size1: Integer;
  S: String;
- I, J, NoVert, NoVert2{, TexInfo_id}: Integer;
+ I, J, NoVert, NoVert2{, TexInfo_id}, SurfaceSize, FaceType: Integer;
  Faces, Faces2: PbSurface;
+ Q3Faces, Q3Faces2: PbQ3Surface;
  LEdges, Edges, Vertices, TexInfo, Planes, P: PChar;
  cLEdges, cEdges, cVertices, cTexInfo, cPlanes: Integer;
  LEdge: PLEdge;
@@ -229,23 +280,37 @@ var
  InvFaces: Integer;
  LastError: String;
  P1, P2, P3, NN: TVect;
+ P5_1, P5_2, P5_3: TVect5;
  PlaneDist: TDouble;
+ dist: vec3_t;
+ texcoord: vec2_t;
+ Q3Vertex: TQ3Vertex;
+ Q3VertexP: PQ3Vertex;
  TextureList: QTextureList;
+ NonFaces: Integer;
+
+ function AdjustTexScale(const V: TVect5) : TVect5;
+ begin
+   Result:=V;
+   Result.S:=Result.S;
+   Result.T:=Result.T;
+ end;
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
  HullNum:=Index;
  FBsp:=nBsp;
  FBsp.AddRef(+1);
  FBsp.VerticesAddRef(+1);
-
  try
   InvFaces:=0;
   cTexInfo:=0;
+  NonFaces:=0;
   HullType:=FBsp.NeedObjectGameCode;
   case HullType of
    mjQuake, mjHalfLife:  Size1:=SizeOf(THull);
    mjHexen:              Size1:=SizeOf(THullH2);
    mjQuake2, mjHeretic2: Size1:=SizeOf(THullQ2);
+   mjQ3A:                Size1:=SizeOf(THullQ3);
   else Exit;
   end;
   I:=FBsp.GetBspEntryData(eHulls, lump_models, eBsp3_models, P);
@@ -272,7 +337,13 @@ begin
                FirstFace:=Face_id;
                cTexInfo:=SizeOf(TTexInfoQ2);
               end;
-  end;
+   mjQ3A: with PHullQ3(P)^ do
+              begin
+               NbFaces:=Face_num;
+               FirstFace:=Face_id;
+               cTexInfo:=SizeOf(TTexInfoQ3);
+              end;
+   end;
   if HullType>=mjQuake2 then
    TextureList:=Nil
   else
@@ -280,25 +351,57 @@ begin
     TextureList:=FBsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
     TextureList.Acces;
    end;
-  if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SizeOf(TbSurface) then
-   Raise EErrorFmt(5635, [2]);
-  Inc(PChar(Faces), Pred(FirstFace) * SizeOf(TbSurface));
-  cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, eBsp3_surfedges,  LEdges)   div SizeOf(TLEdge);
-  cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     eBsp3_edges,      Edges)    div SizeOf(TEdge);
+  if HullType<mjQ3A then
+  begin
+    SurfaceSize:=SizeOf(TbSurface);
+    if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces)) < (FirstFace+NbFaces)*SurfaceSize then
+       Raise EErrorFmt(5635, [2]);
+    Inc(PChar(Faces), Pred(FirstFace) * SurfaceSize);
+    cLEdges  :=FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3,  LEdges)   div SizeOf(TLEdge);
+    cEdges   :=FBsp.GetBspEntryData(eEdges,     lump_edges,     NoBsp3,      Edges)    div SizeOf(TEdge);
+  end else
+  begin
+    SurfaceSize:=Sizeof(TbQ3Surface);
+    if FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Q3Faces)) < (FirstFace+NbFaces)*SurfaceSize then
+      Raise EErrorFmt(5635, [2]);
+    Inc(PChar(Q3Faces), Pred(FirstFace) * SurfaceSize);
+  end;
   cTexInfo :=FBsp.GetBspEntryData(eTexInfo,   lump_texinfo,   eBsp3_texinfo,    TexInfo)  div cTexInfo;
   cPlanes  :=FBsp.GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
-  cVertices:=FBsp.GetBspEntryData(eVertices,  lump_vertexes,  eBsp3_vertexes,   Vertices) div SizeOf(vec3_t);
+  { FBsp.FVertices, VertexCount are previously computed
+    by FBsp.GetStructure }
   Vertices:=PChar(FBsp.FVertices);
+  cVertices:=FBsp.VertexCount;
 
-  Faces2:=Faces;
   Size1:=0;
-  for I:=1 to NbFaces do
-   begin
-    Inc(PChar(Faces2), SizeOf(TbSurface));
-    if Faces2^.ledge_id + Faces2^.ledge_num > cLEdges then
-     Raise EErrorFmt(5635, [3]);
-    Inc(Size1, TailleBaseSurface+Faces2^.ledge_num*SizeOf(PSommet));
-   end;
+  { for each face in the brush, reserve space for a Surface }
+  if HullType<mjQ3A then
+  begin
+    Faces2:=Faces;
+    for I:=1 to NbFaces do
+    begin
+      Inc(PChar(Faces2), SurfaceSize);
+      if Faces2^.ledge_id + Faces2^.ledge_num > cLEdges then
+        Raise EErrorFmt(5635, [3]);
+      Inc(Size1, TailleBaseSurface+Faces2^.ledge_num*SizeOf(PSommet));
+    end;
+  end
+  else
+  begin
+    Q3Faces2:=Q3Faces;
+    for I:=1 to NbFaces do
+    begin
+      Inc(PChar(Q3Faces2), SurfaceSize);
+      if Q3Faces2^.Face_Type=1 then
+      begin
+        {FIXME : check for face additions as above}
+        Inc(Size1, TailleBaseSurface+Q3Faces2^.Vertex_num*SizeOf(PSommet));
+      end
+      else
+        Inc(NonFaces);
+        { we'll be wanting to do something smarter with patches etc }
+    end;
+  end;
   GetMem(SurfaceList, Size1);
   PChar(Surface1):=SurfaceList;
 
@@ -306,28 +409,51 @@ begin
 
   for I:=1 to NbFaces do
    begin
-    Inc(PChar(Faces), SizeOf(TbSurface));
-    PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge);
+    if HullType<mjQ3A then
+    begin
+      Inc(PChar(Faces), SurfaceSize);
+      PChar(LEdge):=LEdges + Faces^.ledge_id * SizeOf(TLEdge)
+    end
+    else
+    begin
+      Inc(PChar(Q3Faces), SurfaceSize);
+      if Q3Faces^.Face_Type<>1 then
+        Continue;
+    end;
     Surface1^.Source:=Self;
     Surface1^.NextF:=Nil;
-    Surface1^.prvNbS:=Faces^.ledge_num;
-
-    if Faces^.Plane_id >= cPlanes then
-     begin
-      Inc(InvFaces); LastError:='Err Plane_id'; Continue;
-     end;
-    with PbPlane(Planes + Faces^.Plane_id * SizeOf(TbPlane))^ do
-     begin
-      NN.X:=normal[0];
-      NN.Y:=normal[1];
-      NN.Z:=normal[2];
-      PlaneDist:=dist;
-     end;
+    if HullType<mjQ3A then
+    begin
+      Surface1^.prvNbS:=Faces^.ledge_num;
+      if Faces^.Plane_id >= cPlanes then
+      begin
+        Inc(InvFaces); LastError:='Err Plane_id'; Continue;
+      end;
+      with PbPlane(Planes + Faces^.Plane_id * SizeOf(TbPlane))^ do
+      begin
+        NN.X:=normal[0];
+        NN.Y:=normal[1];
+        NN.Z:=normal[2];
+        PlaneDist:=dist;
+      end;
+    end
+    else
+    begin
+      with Q3Faces^ do
+      begin
+        Surface1^.prvNbS:=Vertex_num;
+        NN.X:=Normal[0];
+        NN.Y:=Normal[1];
+        NN.Z:=Normal[2];
+        { fill in PlaneDist later }
+      end
+    end;
     {TexInfo_id:=Faces^.TexInfo_id;}
 
     PChar(Dest):=PChar(Surface1)+TailleBaseSurface;
+    if HullType<mjQ3A then
     for J:=1 to Faces^.ledge_num do
-     begin
+    begin
       NoEdge:=LEdge^;
       Inc(PChar(LEdge), SizeOf(TLEdge));
       if NoEdge < 0 then
@@ -355,99 +481,159 @@ begin
       if NoVert>=UsedVertex then
        UsedVertex:=NoVert+1;
       Dest^:=PSommet(Vertices + NoVert * SizeOf(TVect));
-     {if Abs(Dot(Dest^^.P, NN) - Planedist) > rien then
-       begin
-        TexInfo_id:=MaxInt;
-        Break;
-       end;}
       Inc(Dest);
-     end;
+    end
+    else
+    with Q3Faces^ do
+    begin
+     { the vertexes are stored in the vertex lump in consecutive
+       order as they are used by each face.  Since we need a QuArK
+       Vertex (Sommet) table like that constructed in FBsp.GetStructure,
+       we use it for the vertexes, but use direct access to the bsp
+       structure for the texture position information }
+      for J:=1 to Vertex_num do
+      begin
+        Dest^:=PSommet(Vertices+(Vertex_id+J-1)*SizeOf(TVect));
+        Q3VertexP:=PQ3Vertex(FBsp.Q3Vertices+(Vertex_id+J-1)*SizeOf(TQ3Vertex));
+        dist:=Q3VertexP^.Normal;
+        if J=1 then
+        begin
+          { This trick works because the position and tex coords are the
+            first 5 fields.  If we want to drag lightmaps into it we'll
+            need to go to 7, or do something different }
+          P5_1:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^));
+          P1:=MakeVect(vec3_p(Q3VertexP)^);
+          PlaneDist:=Dot(NN,P1)
+        end
+        else if J=2 then
+          P5_2:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^))
+        else if J=3 then
+          P5_3:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^));
+        Inc(Dest);
+      end;
+    end;
     if UsedVertex>cVertices then
      Raise EErrorFmt(5635, [6]);
 
      { load texture infos }
-    if Faces^.TexInfo_id >= cTexInfo then
-     begin
-      Inc(InvFaces);
-     {if TexInfo_id = MaxInt then
-       LastError:='Err Point Off Plane'
-      else}
-       LastError:='Err TexInfo_id';
-      Continue;
-     end;
-    if HullType>=mjQuake2 then
-     with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
-      begin
-       S:=CharToPas(texture);
-       BspVecs:=@vecs;
-      end
-    else
-     with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
-      begin
-       BspVecs:=@vecs;
-       if miptex>=TextureList.SubElements.Count then
+    if HullType<mjQ3A then
+    begin
+      if Faces^.TexInfo_id >= cTexInfo then
+       begin
+        Inc(InvFaces);
+       {if TexInfo_id = MaxInt then
+         LastError:='Err Point Off Plane'
+        else}
+         LastError:='Err TexInfo_id';
+        Continue;
+       end;
+      if HullType>=mjQ3A then
+        with PTexInfoQ3(TexInfo+Q3Faces^.TexInfo_id*SizeOf(TTexInfoQ3))^ do
         begin
-         Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
+          S:=CharToPas(texture);
+          { get flags & contents }
+        end
+      else
+      if HullType>=mjQuake2 then
+       with PTexInfoQ2(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfoQ2))^ do
+        begin
+         S:=CharToPas(texture);
+         BspVecs:=@vecs;
+        end
+      else
+       with PTexInfo(TexInfo + Faces^.TexInfo_id * SizeOf(TTexInfo))^ do
+        begin
+         BspVecs:=@vecs;
+         if miptex>=TextureList.SubElements.Count then
+          begin
+           Inc(InvFaces); LastError:=FmtLoadStr1(5639,[miptex]); Continue;
+          end;
+         S:=TextureList.SubElements[miptex].Name;
         end;
-       S:=TextureList.SubElements[miptex].Name;
-      end;
 
-        (** Equations to solve :     with (s,s0)=vecs[0] and (t,t0)=vecs[1]
+          (** Equations to solve :     with (s,s0)=vecs[0] and (t,t0)=vecs[1]
 
-              s*P1 + s0 = 0       s*P2 + s0 = 128     s*P3 + s0 = 0
-              t*P1 + t0 = 0       t*P2 + t0 = 0       t*P3 + t0 = -128
+                s*P1 + s0 = 0       s*P2 + s0 = 128     s*P3 + s0 = 0
+                t*P1 + t0 = 0       t*P2 + t0 = 0       t*P3 + t0 = -128
 
-            with P1, P2, P3 in the plane PlaneInfo = (n,d).
-            We must solve (s*p,t*p) = (s1,t1).
+              with P1, P2, P3 in the plane PlaneInfo = (n,d).
+              We must solve (s*p,t*p) = (s1,t1).
 
-              s.x*p.x + s.y*p.y + s.z*p.z = s1
-              t.x*p.x + t.y*p.y + t.z*p.z = t1
-              n.x*p.x + n.y*p.y + n.z*p.z = d
-        **)
-    g_DrawInfo.Matrice[1,1]:=bspvecs^[0,0];
-    g_DrawInfo.Matrice[1,2]:=bspvecs^[0,1];
-    g_DrawInfo.Matrice[1,3]:=bspvecs^[0,2];
-    g_DrawInfo.Matrice[2,1]:=bspvecs^[1,0];
-    g_DrawInfo.Matrice[2,2]:=bspvecs^[1,1];
-    g_DrawInfo.Matrice[2,3]:=bspvecs^[1,2];
-    g_DrawInfo.Matrice[3,1]:=NN.X;
-    g_DrawInfo.Matrice[3,2]:=NN.Y;
-    g_DrawInfo.Matrice[3,3]:=NN.Z;
-    g_DrawInfo.Matrice:=MatriceInverse(g_DrawInfo.Matrice);
-    P1.X:=-bspvecs^[0,3];
-    P1.Y:=-bspvecs^[1,3];
-    P1.Z:=PlaneDist;
-    TransformationLineaire(P1);
-    P2.X:=EchelleTexture-bspvecs^[0,3];
-    P2.Y:=-bspvecs^[1,3];
-    P2.Z:=PlaneDist;
-    TransformationLineaire(P2);
-    P3.X:=-bspvecs^[0,3];
-    P3.Y:=-EchelleTexture-bspvecs^[1,3];
-    P3.Z:=PlaneDist;
-    TransformationLineaire(P3);
+                s.x*p.x + s.y*p.y + s.z*p.z = s1
+                t.x*p.x + t.y*p.y + t.z*p.z = t1
+                n.x*p.x + n.y*p.y + n.z*p.z = d
+          **)
+      g_DrawInfo.Matrice[1,1]:=bspvecs^[0,0];
+      g_DrawInfo.Matrice[1,2]:=bspvecs^[0,1];
+      g_DrawInfo.Matrice[1,3]:=bspvecs^[0,2];
+      g_DrawInfo.Matrice[2,1]:=bspvecs^[1,0];
+      g_DrawInfo.Matrice[2,2]:=bspvecs^[1,1];
+      g_DrawInfo.Matrice[2,3]:=bspvecs^[1,2];
+      g_DrawInfo.Matrice[3,1]:=NN.X;
+      g_DrawInfo.Matrice[3,2]:=NN.Y;
+      g_DrawInfo.Matrice[3,3]:=NN.Z;
+      g_DrawInfo.Matrice:=MatriceInverse(g_DrawInfo.Matrice);
+      P1.X:=-bspvecs^[0,3];
+      P1.Y:=-bspvecs^[1,3];
+      P1.Z:=PlaneDist;
+      TransformationLineaire(P1);
+      P2.X:=EchelleTexture-bspvecs^[0,3];
+      P2.Y:=-bspvecs^[1,3];
+      P2.Z:=PlaneDist;
+      TransformationLineaire(P2);
+      P3.X:=-bspvecs^[0,3];
+      P3.Y:=-EchelleTexture-bspvecs^[1,3];
+      P3.Z:=PlaneDist;
+      TransformationLineaire(P3);
+    end
+    else
+    begin {Q3 texture info}
+     { The idea is to take the 3 5-vecs collected earlier and convert
+       them to etp 3points P1-P3 }
+      SolveForThreePoints(P5_1, P5_2, P5_3, P1, P2, P3);
+        with PTexInfoQ3(TexInfo+Q3Faces^.TexInfo_id*SizeOf(TTexInfoQ3))^ do
+        begin
+          S:=CharToPas(texture);
+          { strip off leading texture/ }
+          S:=Copy(S,10,Length(S)-9);
+          { get flags & contents }
+        end
+
+    end;
 
     Face:=TFace.Create(IntToStr(I), Self);
     SubElements.Add(Face);
-    if Faces^.side<>0 then
-     with Face do
-      begin
-       Normale.X:=-NN.X;
-       Normale.Y:=-NN.Y;
-       Normale.Z:=-NN.Z;
-       Dist:=-PlaneDist;
-      end
-     else
-      with Face do
-       begin
-        Normale:=NN;
-        Dist:=PlaneDist;
-       end;
+    if HullType<mjQ3A then
+    begin
+      if Faces^.side<>0 then
+         with Face do
+         begin
+           Normale.X:=-NN.X;
+           Normale.Y:=-NN.Y;
+           Normale.Z:=-NN.Z;
+           Dist:=-PlaneDist;
+         end
+      else
+        with Face do
+        begin
+          Normale:=NN;
+          Dist:=PlaneDist;
+        end;
+    end else
+    begin
+        with Face do
+        begin
+          Normale:=NN;
+        {  Dist:=PlaneDist;  }
+        end;
+    end;
+    { NuTex format doesn't work here, not sure why.
+      To compile with normal main branch, use SetThreePointsEx }
     if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
-     begin
+    begin
       SubElements.Remove(Face);
       Inc(InvFaces); LastError:='Err degenerate'; Continue;
-     end;
+    end;
     Face.Specifics.Add(CannotEditFaceYet+'=1');
     Surface1^.F:=Face;
     Face.LinkSurface(Surface1);
@@ -455,6 +641,11 @@ begin
     PChar(Surface1):=PChar(Dest);
    end;
 
+ { FIXME : This is a stopgap, when it is improved, Dialogs should
+   be removed from the implementation uses statement }
+
+ if NonFaces>0 then
+    ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
   if InvFaces>0 then
    GlobalWarning(FmtLoadStr1(5638, [Index, InvFaces, LastError]));
  except
@@ -496,12 +687,20 @@ var
 begin
  if (FBsp=Nil) or (SurfaceList=Nil) then Exit;
 
- FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
- Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
- FBsp.GetBspEntryData(eListEdges, lump_surfedges, eBsp3_surfedges, LEdges);
- FBsp.GetBspEntryData(eEdges, lump_edges, eBsp3_edges, Edges);
- Vertices:=PChar(FBsp.FVertices);
-
+ if FBsp.NeedObjectGameCode<mjQ3A then
+ begin
+   FBsp.GetBspEntryData(eSurfaces, lump_faces, eBsp3_faces, PChar(Faces));
+   Inc(PChar(Faces), FirstFace * SizeOf(TbSurface));
+   FBsp.GetBspEntryData(eListEdges, lump_surfedges, NoBsp3, LEdges);
+   FBsp.GetBspEntryData(eEdges, lump_edges, NoBsp3, Edges);
+   Vertices:=PChar(FBsp.FVertices);
+ end
+ else
+ begin
+   { Whatever Happens to draw Q3A bsp's ... }
+   inherited;
+   Exit;
+ end;
  if g_DrawInfo.SelectedBrush<>0 then
   begin
    NewPen:=g_DrawInfo.SelectedBrush;
