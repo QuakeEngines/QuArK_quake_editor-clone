@@ -377,7 +377,21 @@ class BaseLayout:
         for btn in plist:
             count = count + 1
             if count<=9:
-                btn.hint = "<%d> %s" % (count, btn.hint)
+                # See also qbaseeditor.BaseEditor.initquickkeys
+                #
+                # Split up the hint, into its components delimited by a "|".
+                hintstrings = string.split(btn.hint, "|");
+                # Then alter the first flyover-hint, suffix with a "(keyboard shortcut..)" string.
+                hintstrings[0] = "%s\n(keyboard shortcut: '%d')" % (hintstrings[0], count) # To indicate what is a shortcut-key
+                # Put it all together again as a string, with the "|" delimiter
+                try:
+                    def hintprefix(hint):
+                        return "|"+hint
+                    concathints = reduce(lambda x,y: x+y, map(hintprefix, hintstrings[1:]))
+                except:
+                    concathints = ""
+                # Give the modified hint-string back to btn.hint
+                btn.hint = hintstrings[0] + concathints
         self.mpp = MultiPanesPanel(panel, plist, 0)
         self.mpp.lock = qtoolbar.button(maptogglebtn, "lock the current page||When this button is activated, QuArK no longer automatically switches between the pages when you select or unselect objects.", ico_maped, 9)
         self.mpp.lock.mode = self.MODE
@@ -592,6 +606,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.5  2000/12/17 09:43:41  decker_dk
+#Some comments about menu settings, as the indexes are hardcoded!
+#
 #Revision 1.4  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
