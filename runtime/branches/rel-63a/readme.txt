@@ -1,9 +1,10 @@
                           QuArK 6.3
                          
-                         Dec 17, 2002
+                         Dec 22, 2002
 
 
  Updates:
+   * [tiglari] bsp-viewing problem with mirror-imaged textures fixed
    * [tiglari] bug with non-inverse brush arches fixed (found by quantum_red)
    * [tiglari] problems with valve mapversion220 format writing fixed (ditto)
    * [tiglari] black model problem for SoF2 explained by
@@ -16,10 +17,8 @@
        can't replicate
 
    * bsp viewing for Quake broken:
-       looks OK to me in current version, with small maps.  Note:
-       .bsp's look different from maps, forex faces are only visible
-       from their outside, and hidden faces are deleted.  So a newbie
-       might think that .bsp viewing is messed up when it isn't.
+      fixed a problem with faces where textures have been
+      mirror-imaged, but maybe there are more problems?
 
    * copy/paste causing texture misalignment:
        can't replicate in current version
