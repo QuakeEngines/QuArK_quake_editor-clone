@@ -27,6 +27,10 @@ QQRKSRC1
 // Please see file TECHINFO.TXT for more information
 // about this file format.
 
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+
 {
   QuArKProtected = "1"
   Description = "Main configuration file"
@@ -462,7 +466,7 @@ QQRKSRC1
         Console = "1"
         Form = "GameKingPin"
         TextureDef = "bricks/b_cp_v10x"
-        TriggerTextureDef = "bricks/b_cp_v10x" //FIXME
+        TriggerTextureDef = "common/0_trigger"
         LightFactor = '0.90000'
         3DLight = '512'
         walTrick = "1"
