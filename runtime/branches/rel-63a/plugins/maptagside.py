@@ -26,6 +26,7 @@
 #
 ##########################################################
 
+
 #$Header$
 
 
@@ -1809,8 +1810,31 @@ for menitem, keytag in [(mentagside, "Tag Side"),
     MapHotKey(keytag,menitem,quarkpy.mapcommands)
 
 
+menselecttagged = quarkpy.qmenu.item("Select Tagged Faces",SelectTaggedClick,"|The things now tagged will become a multiple selection")
+
+def selectionclick(menu, oldselect=quarkpy.mapselection.onclick):
+    oldselect(menu)
+    editor = mapeditor()
+    if editor is None: return
+    list = gettaggedlist(editor)
+    if list is None:
+        menselecttagged.state=qmenu.disabled
+    else:
+        menselecttagged.taglist = list
+     
+quarkpy.mapselection.onclick = selectionclick
+quarkpy.mapselection.items.append(menselecttagged)
+
+for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
+
+    MapHotKey(keytag,menitem,quarkpy.mapselection)
+
 # ----------- REVISION HISTORY ------------
 #$Log$
+
+#Revision 1.21  2002/05/18 22:38:31  tiglari
+#remove debug statement
+#
 #Revision 1.20  2002/03/30 06:33:33  tiglari
 #improve F1 help for texture wrap multiplier (face RMB|Textures menu)
 #
