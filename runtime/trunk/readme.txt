@@ -4,6 +4,7 @@
 Changes from 052101
 
  4 Users:
+  *texture search button in texture browser
   *storeable 3d camera positions
     - add them on the 3d view eye handles & background
         RMB menus
