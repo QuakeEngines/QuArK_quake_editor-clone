@@ -63,6 +63,8 @@ def dropitemsnow(editor, newlist, text=Strings[544], center="S"):
         recenter = MapOption("Recenter")
         if center != "+" or recenter:
             bbox = quarkx.boundingboxof(newlist)
+            if bbox is None: #DECKER
+                bbox = (quarkx.vect(-1,-1,-1),quarkx.vect(1,1,1)) #DECKER create a minimum bbox, in case a ;incl="defpoly" is added to an object in prepareobjecttodrop()
             if not (bbox is None):
                 if type(center)==type(""):
                     if recenter:
