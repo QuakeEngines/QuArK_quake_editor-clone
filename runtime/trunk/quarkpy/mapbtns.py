@@ -144,8 +144,9 @@ def prepareobjecttodrop(editor, obj):
 
     # replace the textures "[auto]", "[trigger]", "[clip]", "[origin]" and "[caulk]"
     tex = textureof(editor)
+    debug('replacing')
     obj.replacetex("[auto]", tex)
-
+    debug('replaced')
     try:
         tex_for_trigger = quarkx.setupsubset()["DefaultTextureTrigger"]
         obj.replacetex("[trigger]", tex_for_trigger)
@@ -524,11 +525,14 @@ def moveselection(editor, text, offset=None, matrix=None, origin=None, inflate=N
             #
             origin = editor.interestingpoint()
             if origin is None:
-                bbox = quarkx.boundingboxof(items)
-                if bbox is None:
-                    origin = quarkx.vect(0,0,0)
+                if len(items)==1 and items[0]["usercenter"]:
+                    origin=quarkx.vect(items[0]["usercenter"])
                 else:
-                    origin = (bbox[0]+bbox[1])*0.5
+                    bbox = quarkx.boundingboxof(items)
+                    if bbox is None:
+                        origin = quarkx.vect(0,0,0)
+                    else:
+                        origin = (bbox[0]+bbox[1])*0.5
 
         direct = (len(items)==1) and (items[0].type == ':d')    # Duplicators
         undo = quarkx.action()
@@ -690,6 +694,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.9  2001/02/20 08:05:21  tiglari
+#DefaultTextureScale implemented
+#
 #Revision 1.8  2001/01/27 18:24:53  decker_dk
 #Renamed 'TextureDef' -> 'DefaultTexture'
 #Renamed 'TriggerTextureDef' -> 'DefaultTextureTrigger'
