@@ -139,6 +139,8 @@ var
     {Test: TImageInfo;
      Bmp: TBitmap;
      I: Integer;}
+ DC: HDC;
+ OldBmp: HBitmap;
 {$IFNDEF VER90}
  Bmp: TBitmap;
 {$ENDIF}
@@ -165,7 +167,12 @@ begin
    else
     begin
      Handle:=ImageList_Create(cx, IHeight, ILC_COLORDDB or ILC_MASK, IWidth div cx, 2);
-     BkgndColor:=Bitmap.Canvas.Pixels[MaskX, MaskY];
+     {BkgndColor:=Bitmap.Canvas.Pixels[MaskX, MaskY];}
+     DC:=CreateCompatibleDC(0);
+     OldBmp:=SelectObject(DC, Bitmap.Handle);
+     BkgndColor:=GetPixel(DC, MaskX, MaskY);
+     SelectObject(DC, OldBmp);
+     DeleteDC(DC);
      ImageList_AddMasked(Handle, Bitmap.Handle, BkgndColor);
     end;
 
