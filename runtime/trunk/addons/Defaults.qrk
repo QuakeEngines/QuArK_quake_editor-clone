@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.91  2001/03/04 06:42:46  tiglari
+//radial duplicator support
+//
 //Revision 1.90  2001/03/02 19:34:18  decker_dk
 //Made a 'Shape Builders' folder.
 //
@@ -3841,7 +3844,7 @@ QQRKSRC1
           ;desc = "build a staircase from a cubic polyhedron shape"
           macro = "dup stair"
           steps = "8"
-          sameheight = "0"
+          sameheight = ""
           t_shapebuilder_cube = !
         }
       }
