@@ -179,8 +179,9 @@ class CPHandle(qhandles.GenericHandle):
                     ip=i-2
                 else:
                     ip=i+2
-                if math.fabs((b2.cp[j][b2.W]-b2.cp[j][0]).normalized*view.vector(self.pos).normalized)>within45:
-                    return 1
+                gap = b2.cp[j][b2.W]-b2.cp[j][0]
+                if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
+                        return 1
                 return 0
                 
             def moverow(self=self, b2=b2, i=i, j=j, view=view):
@@ -188,17 +189,18 @@ class CPHandle(qhandles.GenericHandle):
                     jp=j-2
                 else:
                     jp=j+2
-                if math.fabs((b2.cp[b2.H][i]-b2.cp[0][i]).normalized*view.vector(self.pos).normalized)>within45:
+                gap = b2.cp[b2.H][i]-b2.cp[0][i]
+                if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
                     return 1
                 return 0
             
             if quarkx.keydown('\022')==1:
                 if moverow():
 #                    if j==0 or j==b2.W:
-                        return map(lambda j,i=i:(i, j),range(b2.W+1))
+                        return map(lambda j,i=i:(i, j),range(b2.H+1))
                 elif movecol():
 #                   if i==0 or i==b2.H:
-                       return map(lambda i,j=j:(i, j), range(b2.H+1))
+                       return map(lambda i,j=j:(i, j), range(b2.W+1))
             return (i,j),
 
         delta = v2-v1
@@ -210,13 +212,15 @@ class CPHandle(qhandles.GenericHandle):
             cp = map(list, self.b2.cp)
             i, j = self.ij
             indexes = movepoints(self.b2, i, j)
+#            squawk("%s:%s"%(self.b2.H, self.b2.W))
 #            squawk(`indexes`)
             for m,n in indexes:
                 p = cp[n][m] + delta
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
                 cp[n][m] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
-            if self.b2["smooth"]:
+            if 0:
+#            if self.b2["smooth"]:
                 # keep the patch smoothness
                 def makesmooth(di,dj,i=i,j=j,cp=cp):
                     p = 2*cp[j+dj][i+di] - cp[j][i]
