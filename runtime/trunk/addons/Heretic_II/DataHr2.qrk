@@ -5,12 +5,21 @@ QQRKSRC1
 // ----------- REVISION HISTORY ------------
 //$Log$
 //
-//Revision 1.41 2003/04/3 16:37:00 dannj
+//Revision 1.42 2003/06/15 dannj
+//Added ANGLE field to a heap of monsters
+//Added SKINNUM to obj_bookopen (now two types)
+//Added SKINNUM to obj_bush2 (now two types)
+//Added SKINNUM to obj_web (now two types)
+//Minor change to TRIGGER_COUNT
+//Fixed MDL paths for Banneronpole and Banner
+//Removed DEGREES & DAMAGE from func_door_rotating (DISTANCE & DMG used instead)
+//
+//Revision 1.41 2003/04/3 dannj
 //Fixed 'current_0' and 'current_180' direction descriptions
 //Added ANIMATE flag to floor torch
 //Fixed material types for exploding trains
 //
-//Revision 1.4  2003/03/9 21:51:00  dannj
+//Revision 1.4  2003/03/9 dannj
 //Added Whirlwind defensive spell (for Heretic II update version 1.06)
 //Added ANIMATE flag to wall torch
 //Added FORCE_ONCE flag to trigger_push
@@ -6490,6 +6499,7 @@ QQRKSRC1
        {
          origin = "0 0 0"
          ;desc = "The Trial Beastie"
+         angle = "0"
        }
      }
      Active Brushes (breakable, func).qtxfolder = {
@@ -6858,6 +6868,7 @@ QQRKSRC1
          origin = "0 0 0"
          ;desc = "An open book"
          angle = "0"
+         skinnum = "1"
        }
        obj_bottle1:e =
        {
@@ -7498,12 +7509,12 @@ QQRKSRC1
        obj_banner:e =
        {
          origin = "0 0 0"
-         ;desc = "A banner on a pole sticking out of a wall."
          angle = "0"
        }
        obj_banneronpole:e =
        {
          origin = "0 0 0"
+         ;desc = "A banner on a pole sticking out of a wall."
          angle = "0"
        }
        obj_throne:e =
@@ -9246,7 +9257,7 @@ QQRKSRC1
     }
     func_door_rotating:form =
     {
-     Help = "You need to have an origin brush as part of this entity.  The center of that brush will be"
+     Help = "You need to have an origin brush as part of this entity.  The door rotates around the origin."
      HTML = "help/hr2/g_func.htm#func_door_rotating"
      angle: =
         {Txt = "&" Hint = "determines the opening direction"
@@ -9259,12 +9270,6 @@ QQRKSRC1
        }
      abslight: =
         {Txt = "&" Typ = "L 3" Hint = "color-selection button"}
-     damage: =
-        {Txt = "&" Hint = "no hint yet1"
-       }
-     degrees: =
-        {Txt = "&" Hint = "no hint yet1"
-       }
      delay: =
         {Txt = "&" Hint = "delay between triggering and action."
        }
@@ -11277,6 +11282,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="spawnflags for monster behavio" $0D " DEFAULTS" $0D "  mintel                 = 1" $0D "  melee_range            = -6" $0D "  missile_range          = 102" $0D "  min_missile_range      = 3" $0D "  bypass_missile_chance  = 2" $0D "  jump_chance            = 0 (flying, no jump" $0D "  wakeup_distance        = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11358,6 +11366,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                  = 1" $0D "  melee_range             = 10" $0D "  missile_range           = 40" $0D "  min_missile_range       = 10" $0D "  bypass_missile_chance   = 2" $0D "  jump_chance             = 2" $0D "  wakeup_distance         = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11400,6 +11411,9 @@ QQRKSRC1
      bbox = '-16 -16 -24 16 16 16 1'
      HTML = "help/hr2/m_ogle.htm#monster_ogle"
      mdl = "models/monsters/ogle/tris.fm"
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11540,6 +11554,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                    = 1" $0D "  melee_range                = -6" $0D "  missile_range            = 51" $0D "  min_missile_range        = 3" $0D "  bypass_missile_chance    = 8" $0D "  jump_chance                = 5" $0D "  wakeup_distance            = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11604,6 +11621,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                    = 1" $0D "  melee_range                = " $0D "  missile_range            = 51" $0D "  min_missile_range        = " $0D "  bypass_missile_chance    = 60/missile p.e.; 0 mele" $0D "  jump_chance                = 5" $0D "  wakeup_distance            = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11785,6 +11805,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                    = 2" $0D "  melee_range                = 10" $0D "  missile_range            = 102" $0D "  min_missile_range        = 6" $0D "  bypass_missile_chance    = 3" $0D "  jump_chance                = 2" $0D "  wakeup_distance            = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11903,6 +11926,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                    = 2" $0D "  melee_range                = 10" $0D "  missile_range            = 51" $0D "  min_missile_range        = 20" $0D "  bypass_missile_chance    = 5" $0D "  jump_chance                = 3" $0D "  wakeup_distance            = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -11957,6 +11983,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                    = 2" $0D "  melee_range                = 4" $0D "  missile_range            = 51" $0D "  min_missile_range        = 4" $0D "  bypass_missile_chance    = 2" $0D "  jump_chance                = 10" $0D "  wakeup_distance            = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -12026,6 +12055,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                    = 3" $0D "  melee_range               = -7" $0D "  missile_range             = 51" $0D "  min_missile_range         = 4" $0D "  bypass_missile_chance     = " $0D "  jump_chance               = 4" $0D "  wakeup_distance           = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -12090,6 +12122,9 @@ QQRKSRC1
       Form="monster_iq:form"
       Hint="specifics for monster behavio" $0D " DEFAULTS" $0D "  mintel                     = 3" $0D "  melee_range                = 3" $0D "  missile_range              = 51" $0D "  min_missile_range          = 4" $0D "  bypass_missile_chance      = 3" $0D "  jump_chance                = 4" $0D "  wakeup_distance            = 102" $0D " NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1"
     }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      spawnflags: =
        {Txt="&"
         Typ="X1"
@@ -12182,6 +12217,9 @@ QQRKSRC1
      health: =
         {Txt = "&" Hint = "how much damage needed to kill."
        }
+     angle: =
+        {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
+       }
      scripttarget: =
         {Txt = "&" Hint = "value is a string, used by scripts as a `handle' for manipulating the entity."
        }
@@ -12210,10 +12248,10 @@ QQRKSRC1
     }
     obj_banner:form =
     {
-     Help = "A banner on a pole sticking out of a wall."
+     Help = "A banner on a wall."
      bbox = '-8 -28 -30 8 28 30 1'
      HTML = "help/hr2/g_obj.htm#obj_banneronpole"
-     mdl = "models/objects/banner/newwall/tris.fmobj_banneronpole:"
+     mdl = "models/objects/banner/wall/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
@@ -12235,18 +12273,19 @@ QQRKSRC1
      skinnum: =
         {Txt = "&" Hint = "default 0 = blue"
       Typ="C"
-      Items="1) red"
-      values="1"
+      Items="0) Blue" $0D "1) Red"
+      values="0" $0D "1"
        }
      spawnflags: =
        {Txt="&"
         Typ="X2"
         Cap="ANIMATE"
-        Hint="makes it flutter in the breeze, just like a...banne"}
+        Hint="makes it flutter in the breeze, just like a...banner"}
     }
     obj_banneronpole:form =
     {
-     Help = "No help yet"
+     Help = "A banner on a pole sticking out of a wall."
+     mdl = "models/objects/banner/onpole/tris.fm"
      angle: =
         {Txt = "&" Hint = "the direction it faces.  For 3D orientation use angles."
        }
@@ -12269,7 +12308,7 @@ QQRKSRC1
        {Txt="&"
         Typ="X2"
         Cap="ANIMATE"
-        Hint="makes it flutter in the breeze, just like a...banne"}
+        Hint="makes it flutter in the breeze, just like a...banner"}
     }
     obj_barrel:form =
     {
@@ -12562,6 +12601,12 @@ QQRKSRC1
        }
      abslight: =
         {Txt = "&" Typ = "L 3" Hint = "color-selection button"}
+     skinnum: =
+        {Txt = "&" Hint = "default 1 = Diagram"
+      Typ="C"
+      Items="1) Diagram" $0D "2) Skulls"
+      values="1" $0D "2"
+       }
      scale: =
         {Txt = "&" Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
        }
@@ -12710,6 +12755,12 @@ QQRKSRC1
        }
      abslight: =
         {Txt = "&" Typ = "L 3" Hint = "color-selection button"}
+     skinnum: =
+        {Txt = "&" Hint = "default 0 = Bare"
+      Typ="C"
+      Items="0) Bare" $0D "1) Green"
+      values="0" $0D "1"
+       }
      scale: =
         {Txt = "&" Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
        }
@@ -16913,6 +16964,12 @@ QQRKSRC1
      angle: =
         {Txt = "&" Hint = "the direction it starts out pointing" $0D "  use angles Y Z X for a 3D angle"
        }
+     skinnum: =
+        {Txt = "&" Hint = "default 0 = Cobwebs"
+      Typ="C"
+      Items="0) Cobwebs" $0D "1) Classic Web"
+      values="0" $0D "1"
+       }
     }
     obj_wheelbarrow:form =
     {
@@ -17820,11 +17877,8 @@ QQRKSRC1
      targetname: =
         {Txt = "&" Hint = "is triggered if entity with matching target fires, or deleted if entity with matching killtarget fires."
        }
-     cnt: =
-        {Txt = "&" Hint = "counting things"
-       }
      count: =
-        {Txt = "&" Hint = "number of triggers need for unordered, number-" $0D " for ordered counter, who knows why..."
+        {Txt = "&" Hint = "Number of times it needs to be triggered to fire"
        }
      delay: =
         {Txt = "&" Hint = "delay between triggering and action."
