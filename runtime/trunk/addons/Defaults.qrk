@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.97  2001/03/10 01:29:21  tiglari
+//Crystal Space and STVEF added to Quake Context list
+//
 //Revision 1.96  2001/03/09 09:32:24  tiglari
 //update version
 //
@@ -3271,9 +3274,15 @@ QQRKSRC1
       }
       GetEntitiesBtn: =
       {
-    Typ = "P"
-    Cap = "Get Entities for this game"
-    Macro = "makeaddon"
+        Typ = "P"
+        Cap = "Get Entities for this game"
+        Macro = "makeaddon"
+      }
+      GetEntitiesBtn: =
+      {
+        Typ = "P"
+        Cap = "Get entities from .fgd file"
+        Macro = "makeaddonfromfgd"
       }
     }
     FormContext:form =

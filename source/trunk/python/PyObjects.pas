@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/02/23 19:27:37  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.6  2001/01/21 15:51:46  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -92,9 +97,10 @@ function qFindAllSubItems(self, args: PyObject) : PyObject; cdecl;
 function qCopyAllData(self, args: PyObject) : PyObject; cdecl;
 function qLoadText(self, args: PyObject) : PyObject; cdecl;
 function qGetIcon(self, args: PyObject) : PyObject; cdecl;
+function qRefreshTV(self, args: PyObject) : PyObject; cdecl;
 
 const
- PyObjMethodTable: array[0..15] of TyMethodDef =
+ PyObjMethodTable: array[0..16] of TyMethodDef =
   ((ml_name: 'subitem';         ml_meth: qSubItem;         ml_flags: METH_VARARGS),
    (ml_name: 'findname';        ml_meth: qFindName;        ml_flags: METH_VARARGS),
    (ml_name: 'findshortname';   ml_meth: qFindShortName;   ml_flags: METH_VARARGS),
@@ -110,13 +116,14 @@ const
    (ml_name: 'findallsubitems'; ml_meth: qFindAllSubItems; ml_flags: METH_VARARGS),
    (ml_name: 'copyalldata';     ml_meth: qCopyAllData;     ml_flags: METH_VARARGS),
    (ml_name: 'loadtext';        ml_meth: qLoadText;        ml_flags: METH_VARARGS),
-   (ml_name: 'geticon';         ml_meth: qGetIcon;         ml_flags: METH_VARARGS));
+   (ml_name: 'geticon';         ml_meth: qGetIcon;         ml_flags: METH_VARARGS),
+   (ml_name: 'refreshtv';       ml_meth: qRefreshTV;       ml_flags: METH_VARARGS));
 
  {-------------------}
 
 implementation
 
-uses Quarkx, QkFileObjects, QkObjectClassList;
+uses Quarkx, QkFileObjects, QkObjectClassList, QkExplorer;
 
  {-------------------}
 
@@ -849,6 +856,24 @@ begin
  end;
 end;
 
+function qRefreshTV(self, args: PyObject) : PyObject; cdecl;
+var
+ Q: QObject;
+ E: TQkExplorer;
+begin
+ try
+  Result:=PyNoResult;
+  Q:=QkObjFromPyObj(self);
+  if Q=nil then
+    exit;
+  E:=ExplorerFromObject(Q);
+  if E<>nil then
+    E.Refresh;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
  {-------------------}
 
 end.

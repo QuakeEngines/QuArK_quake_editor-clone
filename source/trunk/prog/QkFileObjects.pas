@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.22  2001/01/30 19:11:34  decker_dk
 Changed to GetApplicationPath().
 Changed LienFichierQObject() so it now uses an QApplPaths-object, to ask for sub-directories to search in.
@@ -2175,10 +2180,27 @@ begin
  end;
 end;
 
+function qOpeninWindow(self, args: PyObject) : PyObject; cdecl;
+var
+ alt: PChar;
+ astext: PyObject;
+ Format: Integer;
+begin
+ try
+  with QkObjFromPyObj(self) as QFileObject do
+    OpenStandAloneWindow(Nil, False);
+  Result:=PyNoResult;
+ except
+  EBackToPython;
+  Result:=Nil;
+ end;
+end;
+
 const
- MethodTable: array[0..1] of TyMethodDef =
+ MethodTable: array[0..2] of TyMethodDef =
   ((ml_name: 'savefile';    ml_meth: qSaveFile;    ml_flags: METH_VARARGS),
-   (ml_name: 'conversion';  ml_meth: qConversion;  ml_flags: METH_VARARGS));
+   (ml_name: 'conversion';  ml_meth: qConversion;  ml_flags: METH_VARARGS),
+   (ml_name: 'openinnewwindow'; ml_meth: qOpeninWindow; ml_flags: METH_VARARGS));
 
 function QFileObject.PyGetAttr(attr: PChar) : PyObject;
 var
