@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.51  2004/05/21 01:11:10  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
 Revision 1.50  2002/12/22 05:52:46  tiglari
 restoring projecting points to planes, to make lighting work out
 
@@ -957,7 +960,7 @@ expected one.
 
      B.ControlPoints:=MeshBuf1;
      B.AutoSetSmooth;
-     end;     
+//     end;     
    finally
      FreeMem(MeshBuf1.CP);
    end;
