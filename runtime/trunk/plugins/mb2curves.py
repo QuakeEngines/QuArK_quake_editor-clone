@@ -255,7 +255,7 @@ def smallerarchbox(box, thick):
     bd = thick*(box["brb"]-box["trb"]).normalized
     box2 = {}
     for (corner, delta) in (("blf",fi), ("blb",bi),
-            ("tlf",fi+fd), ("tlb",fd+bd), ("trf",fd-fi), ("trb",bd-bi),
+            ("tlf",fi+fd), ("tlb",fi+bd), ("trf",fd-fi), ("trb",bd-bi),
             ("brf",-fi), ("brb",-bi)):
         box2[corner]=box[corner]+delta
     return box2
@@ -270,8 +270,8 @@ def smallerbevelbox(box, thick):
     zip = quarkx.vect(0,0,0)
     box2 = {}
     for (corner, delta) in (("blf",zip), ("blb",lb),
-            ("tlf",zip), ("tlb",lb), ("trf",rf), ("trb",rb),
-            ("brf",rf), ("brb",rb)):
+            ("tlf",zip), ("tlb",lb), ("trf",rf), ("trb",rb+lb),
+            ("brf",rf), ("brb",rb+lb)):
         box2[corner]=box[corner]+delta
     return box2
 
@@ -801,6 +801,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2000/06/30 11:01:06  tiglari
+#fixed thick bevel bug
+#
 #Revision 1.22  2000/06/26 22:54:58  tiglari
 #renaming: antidistort_rows/columns->undistortRows/Colunmns,
 #tanaxes->tanAxes, copy/map/transposecp->copy/map/transposeCP
