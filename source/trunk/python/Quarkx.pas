@@ -20,7 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 unit Quarkx;
 
 interface
@@ -1300,7 +1304,7 @@ begin
      Raise EErrorFmt(4450, ['TreeMap']);
     with TTreeMap(Q) do
      begin
-      ToutCharger;
+      LoadAll;
       FindTextures(L);
      end;
    end;
@@ -1350,7 +1354,7 @@ begin
       if Q is Q3DObject then
        with Q3DObject(Q) do
         begin
-         ToutCharger;
+         LoadAll;
          ChercheExtremites(Min, Max);
         end; 
      end;
