@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.44  2002/05/07 23:23:46  tiglari
+Mohaa map reading
+
 Revision 1.43  2002/05/07 09:12:04  tiglari
 prevent reversion to Quake mode when loading Torque maps (Desmond Fletcher)
 
@@ -1139,10 +1142,14 @@ expected one.
      Normalise(TexNorm);
      PlanePoint:=VecScale(Dist, Normale);
      (* could perhaps be optimized by 'partial evaluation' *)
-     NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
-     NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
-     NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-     SetThreePointsEx(NP0,NP1,NP2,Normale);
+     try
+       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
+       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
+       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
+       SetThreePointsEx(NP0,NP1,NP2,Normale);
+     except
+       ShowMessage('Problem with texture scale in Brush '+IntToStr(Entite.SubElements.Count)+' in entity '+IntToStr(HullNum+1));
+     end;
   end;
  end;
 
