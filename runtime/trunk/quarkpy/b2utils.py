@@ -26,10 +26,46 @@ def linearcomb(C, P):
  "linear combination"
  return reduce(lambda x,y:x+y, map(lambda p,c:c*p,C,P))
 
+def extend_distance_by(v1, v2, ext):
+  "v1 plus distance from v1 to v2 times ext"
+  return v1 + ext*(v2-v1)
+
+
 #
 # Some useful things for Quadratic Beziers
 #
 
+def rowofcp(cp, i):
+    return cp[i]
+    
+def colofcp(cp, j):
+    return map(lambda row,j=j:row[j], cp)
+    
+def lengthof(line, divs):
+    if divs<0:
+      return
+    sum=0
+    for i in range((len(line)-1)/2):
+      k = 2*i
+      sum=sum+lengthofseg(line[k], line[k+1], line[k+2], divs)
+    return sum
+    
+#
+# If this were going to get out into generally applying non-UI
+#   routines, it might be worth shifting it into delphi.
+#
+def lengthofseg(p0, p1, p2, divs):
+    "approximates length of b2 line segment, splitting into 2^divs segments"
+    if divs == 0:
+       return abs(p2-p0)
+    else:
+       m = b2midpoint(p0, p1, p2)
+       q1 = b2qtpoint(p0, p1, p2)
+       q3 = b2qt3point(p0, p2, p2)
+       m0 = b2midcp(p0, q1, m)
+       m1 = b2midcp(m, q3, p2)
+       return lengthofseg(p0, m0, m, divs-1)+lengthofseg(m, m1, p2, divs-1)
+       
 def b2midpoint(p0, p1, p2):
   "midpoint of the b2 line for the three points"
   return 0.25*p0 + 0.5*p1 + 0.25*p2
@@ -136,16 +172,9 @@ def colmat_uv1(u,v):
 # along the columns.  The idea is to readjust the texture coordinates
 # of the bcp to compensate for distortion along the columns
 #
-def antidistort_columns(bcp, cp):
-#    squawk('anti')
-    h, w = len(bcp), len(bcp[0])
-    if h!=len(cp) or w!= len(cp[0]):
-        #
-        # this prints out a msg in developer mode
-        #
-        squawk('antidistort columns cp/bcp mismatch')
-        return bcp
-    nbcp = copycp(bcp)   # this is what we return, after diddling it
+def antidistort_columns(cp):
+    ncp = copycp(cp)   # this is what we return, after diddling it
+    h, w = len(cp), len(cp[0])
     for j in range(w):  # for each column
 #        squawk(" col %d"%j)
         #
@@ -161,7 +190,7 @@ def antidistort_columns(bcp, cp):
         #
         # now rearrange texture cp's of bcp
         #
-        start, end = bcp[0][j], bcp[h-1][j]
+        start, end = cp[0][j], cp[h-1][j]
         texstart, texend = map(lambda v:quarkx.vect(v.s, v.t, 0), (start,end))
         texgap = texend-texstart
         #
@@ -170,16 +199,22 @@ def antidistort_columns(bcp, cp):
 #        squawk('rockin')
         for i in range(1,h-1):
             s, t, x = (texstart + (lengths[i-1]/sum)*texgap).tuple
-            nbcp[i][j]=quarkx.vect(bcp[i][j].xyz+(s, t))
+            ncp[i][j]=quarkx.vect(cp[i][j].xyz+(s, t))
 #    squawk(`nbcp`)
-    return nbcp      
+    return ncp      
       
-
+def antidistort_rows(cp):
+    cp = transposecp(cp)
+    cp = antidistort_columns(cp)
+    return transposecp(cp)
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.5  2000/06/04 03:21:25  tiglari
+#distortion reduction (elimination) for `rolled up' columns
+#
 #Revision 1.4  2000/06/03 18:01:28  alexander
 #added cvs header
 #
