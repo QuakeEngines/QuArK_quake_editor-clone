@@ -1,0 +1,98 @@
+title: Additionnal attributes of Tree view controls (Explorers)
+author: Armin Rigo
+
+Tree views are created by a panel’s newexplorer() method. They are screen controls that display a hierarchical view of Internal
+QuArK Objects. Any number of objects in a tree view can be selected (they appear in blue), but only one can have the focus (a
+rectangle of dots around it). Note that if the object with the focus is in a closed group, the group itself will be displayed
+with the rectangle of dots, but the focus stays on the correct object. Objects are not considered selected themselves if they
+are into a group that is already selected; in this case, they are displayed with a blue border instead of a blue
+background.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+focus
+</td><td>
+This is the object that has the focus. (read-write)
+</td></tr>
+
+<tr><td class="doccode">
+focussel
+</td><td>
+This is the same as focus, but only if this object is selected. An object can have the focus without being selected. In this case, focussel is None. (read-only)
+</td></tr>
+
+<tr><td class="doccode">
+sellist
+</td><td>
+List of selected objects. (read-write)
+</td></tr>
+
+<tr><td class="doccode">
+uniquesel
+</td><td>
+The unique selected object, if exactly one is selected. Setting uniquesel to an object will unselect all the other objects. Setting uniquesel to None will unselect everything.
+</td></tr>
+
+<tr><td class="doccode">
+flags
+</td><td>
+Flags. See qeditor.EF_XXX
+</td></tr>
+
+<tr><td class="doccode">
+onselchange
+</td><td>
+Callback function. Called whenever the list of selected items changes. Single argument: the tree view object itself.
+</td></tr>
+
+<tr><td class="doccode">
+onrootchange
+</td><td>
+Callback function. Called as onrootchange(treeview, old, new) when a root (top-level) object changes, in response to direct actions or undo or redo. old is the old root, and new is the root that replaces it. We can have old==new if, for example, only the name changed.
+</td></tr>
+
+<tr><td class="doccode">
+onmenu
+</td><td>
+A menu (list of menu items) or a callback function. This is the pop-up menu to display when the user right-click on an object. If set to a callback function (which is recommended), it is called with the tree view as single argument, and should examine the tree view’s sellist to return a menu corresponding to the currently selected objects.
+</td></tr>
+
+<tr><td class="doccode">
+ondrop
+</td><td>
+Callback function. Called as ondrop(treeview, newlist, text) to drop the objects given in the list newlist into the tree view. text is the description of the action, as displayed in the Undo/Redo box. If the items cannot be dropped, the function should return 0 (which makes QuArK beep); otherwise, it should return 1.
+</td></tr>
+
+<tr><td class="doccode">
+oninsert
+</td><td>
+Callback function. Called when the user drops objects on the tree view with the mouse to prepare the new objects for the drop. Called with two arguments: the tree view and the list of new objects. The callback function can modify the list if it wishes. It can return 0 to cancel the operation.
+</td></tr>
+
+<tr><td class="doccode">
+clear()
+</td><td>
+Clears the tree view contents.
+</td></tr>
+
+<tr><td class="doccode">
+addroot(obj)
+</td><td>
+Adds a root to the tree view contents. Tree views may have multiple roots, like in the New Items toolbox.
+</td></tr>
+
+<tr><td class="doccode">
+selchanged()
+</td><td>
+Informs the tree view that some of its items where selected or unselected. This is only required if you change the selection state of the objects with their own attributes, e.g. selected or togglesel(). In response to selchanged(), the tree view will repaint itself and call onselchange.
+</td></tr>
+
+<tr><td class="doccode">
+expand(obj)
+expand(obj,0)
+</td><td>
+Expands (resp. collapses) the group object obj.
+</td></tr>
+
+</table>

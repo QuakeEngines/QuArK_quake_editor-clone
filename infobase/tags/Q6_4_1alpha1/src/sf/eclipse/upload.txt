@@ -1,0 +1,47 @@
+title: Uploading Files
+author: Rowdy / cdunde
+
+<table width=100% cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td align=left>
+<i>Committing Files:</i>
+
+<b>Commit</b> a file means that you are uploading it.
+
+To upload a file, right-click it, on the popup menu go to <b>Team</b> and then select <b>Commit...</b>.
+
+Note also the <b>Synchronize with Repository</b> option - this compares your local files with the files on the CVS server and shows you graphically the differences.
+
+Just to reiterate, before you commit anything using Eclipse, make sure you <b>ALWAYS</b> 
+go to the resource perspective, right-click on the modules you are 
+going to commit (you can hold down the Ctrl key on the keyboard and 
+left-click to select multiple files/directories), and <b>select Refresh</b>. 
+Eclipse doesn't know that you have changed anything outside of Eclipse 
+unless you tell it to refresh.
+
+When you see what has changed (a ">" will be added in front of the 
+directories and files that have changed), select everything that has 
+changed (you can select each module, e.g. "source", "infobase" if you 
+like), right-click again, select "Team" from the popup menu, and from 
+the submenu select "Synchronize with Repository...".
+
+That will compare your files with those in the repository, and show you 
+any changes you have made that are outgoing, changes other people have 
+committed that are incoming, and any conflicts (where someone has 
+committed a file that you have also modified).
+
+You can then select to commit all your outgoing changes, update all 
+incoming changes, and you can double-click each conflicting file to see 
+where the conflicts are, and to update your local file with changes made 
+in the repository before you commit your file.
+</td>
+<td align=right>
+<img>committing_a_new_file.png</img>
+</td></tr>
+</table>
+
+<i>General Comments:</i>
+
+If this information is of use, and a positive response is received about using 
+Eclipse to access the QuArK source, Rowdy will probably expand on this with a 
+few more examples, and hints on using Eclipse.

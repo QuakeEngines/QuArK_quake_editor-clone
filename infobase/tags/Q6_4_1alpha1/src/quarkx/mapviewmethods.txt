@@ -1,0 +1,111 @@
+title: Methods of Map View controls
+author: Armin Rigo
+
+Map Views are the most important type of screen control in QuArK. Each Map View can display 3D objects under various projection
+types. Objects can be displayed in wireframe, solid, or textured.
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+setprojmode("3D")<br>
+setprojmode("2D", matrix)<br>
+setprojmode("2D", matrix, range)
+</td><td>
+Sets the projection type. In 3D (perspective), display parameters like the field of view are controlled by the current setup (see the attribute setup below). In 2D (flat), you must give the matrix used for projection. In this mode, proj(vect) is the same as matrix*vect, but a little more efficient. There are functions to build standard projection matrices in the module qeditor.py. The matrix must have a positive determinant, or else you will get a quarkx.error with message Invalid floating point operation. If range is specified and is False, the scroll bar range and position is left unchanged (see setrange and screencenter).
+</td></tr>
+
+<tr><td class="doccode">
+proj(vect)<br>
+proj(x,y,z)
+</td><td>
+Projects a point in 3D space onto the map view surface using the current projection attributes. The result is a “ projected vector ”. See above for more informations about projected vectors. Important: you must not use the resulting vector’s x and y attributes to make drawings before you check that the point is really visible (i.e. in front of the camera) by reading the vector’s visible attribute.
+</td></tr>
+
+<tr><td class="doccode">
+space(vect)<br>
+space(x,y,z)
+</td><td>
+Reverse operation. Returns the 3D point that would be projected to the screen coordinates x,y,z.
+</td></tr>
+
+<tr><td class="doccode">
+vector(from)
+</td><td>
+Returns a vector based on the current projection mode: if from is a point in 3D space (as a vector object), this function returns a vector from this point in the direction of the camera. If from is a string, it can be one of:
+"x": returns a vector in the direction of the screen x axis
+"y": returns a vector in the direction of the screen y axis
+"z": returns vector(quarkx.vect(0,0,0)), which is the screen z axis on 2D (non-perspective) views
+"0": returns the null vector
+</td></tr>
+
+<tr><td class="doccode">
+setdepth(min,max)
+</td><td>
+Sets the minimum and maximum depth that are considered visible. Depending on the drawing mode, the parts of the map that are outside these limits may be grayed out or hidden. The values must be given as projected points’ z coordinates. In perspective mode, these values cannot be changed: the minimum depth is fixed to “ very near the camera ”, and the maximum depth corresponds to the “ far distance ”. setdepth calls invalidate() unless you specify the same values as the ones already set.
+</td></tr>
+
+<tr><td class="doccode">
+drawmap(obj)<br>
+drawmap(obj, flags)<br>
+drawmap(obj, flags, color)
+</td><td>
+Draws the object obj and all its sub-objects. How the objects are really drawn depends on the flags, listed in qeditor.DM_XXX. See qeditor.py and mapeditor.py for more information about drawing map parts.
+</td></tr>
+
+<tr><td class="doccode">
+solidimage()<br>
+solidimage(texsrc)
+</td><td>
+In solid and textured modes, the map parts drawn with drawmap are stored in a buffer and the image is only really computed and displayed when solidimage() is called. Call this after you have drawn the solid map parts but before you draw the wireframe ones. texsrc is an optional alternate place to look for textures (e.g. in the opened .BSP file).
+</td></tr>
+
+<tr><td class="doccode">
+canvas()
+</td><td>
+Returns a Canvas in which you can draw. This lets you add lines and pictures over the usual map display. Important: the map view may be configured for black-on-white or white-on-black display. In the first case, pencolor is initialized to black and brushcolor to white; in the second case, these initial colors are inversed. You should never directly set pencolor or brushcolor to black or white, but you should save and reuse their initial colors. If you don’t do this, you would possibly draw lines with the same color as the background. Note: solid and texured modes are always considered white-on-black.
+</td></tr>
+
+<tr><td class="doccode">
+clicktarget(obj, x, y)
+</td><td>
+Finds all objects that belong to obj and that are concerned by a mouse click at coordinates x,y. Only finds objects between the minimum and maximum depths in depth. Returns a list of tuples (projpt, obj, extra), where projpt is the projected point where the mouse clicked, obj is the target object, and extra, if not None, is a second target object (for clicks on polyhedrons, obj is the polyhedrons and extra is the exact face on which we clicked). The list is not sorted; using its sort method will sort it in the order from nearest to farthest, because tuples are first sorted according to their first item, and projected vectors compare according to their distance to the camera.
+</td></tr>
+
+<tr><td class="doccode">
+scrollto(x,y)
+</td><td>
+Sets the scroll bars position to (x,y). If x or y is None, the position of the corresponding scroll bar is not changed.
+</td></tr>
+
+<tr><td class="doccode">
+setrange(x,y)<br>
+setrange(x,y, center)
+</td><td>
+Sets the scroll bars range. center is the 3D point that should be at the center of the full visible range (default 0 0 0).
+</td></tr>
+
+<tr><td class="doccode">
+drawgrid(vx, vy, color)<br>
+drawgrid(vx, vy, color, flags_n)<br>
+drawgrid(vx, vy, color, flags_n, color2)<br>
+drawgrid(vx, vy, color, flags_n, color2, origin)
+</td><td>
+Draws a grid using dots of color color. One grid dots is put at each of the 3D positions i*vx+j*vy, where i and j range over the integers. Grids cannot be drawn on perspective views (ask me if you need this feature). flags can be a set of DG_XXX flags (see qeditor.py). To highlight every nth grid line, add n to flags and set the highlight color in color2. origin is the 3D point from which the grid display begins (by default 0 0 0).
+</td></tr>
+
+<tr><td class="doccode">
+scale()<br>
+scale(point)
+</td><td>
+Returns the current projection scaling factor. In 2D projection modes, this is always the scale value given to setprojmode. In 3D projection mode, the scaling factor is computed at the given point. If no point is given in 3D mode, or if the computation fails for another reason, scale returns 1.0.
+</td></tr>
+
+<tr><td class="doccode">
+full3DFX(1)<br>
+full3DFX(0)<br>
+full3DFX(-1)
+</td><td>
+When called with 1 as parameter, this Map View image is sent to the full- screen 3DFX display. If two monitors are connected on the computer, the full-screen 3DFX image can be displayed together with the normal 2D image; otherwise, as long as the user doesn't press Esc or click a mouse button, he cannot do anything else. full3DFX only works with a true 3DFX card, not with the Software emulation; use a maximized window instead. Note that some features of common Map Views do not apply in full-screen 3DFX. For example, the user cannot (yet?) use the mouse on 3DFX screens, and no wireframe lines can be rendered (yet?). In general, consider the full-screen 3DFX mode as for viewing only, not editing. This method returns 0 in case of error. With one monitor, it returns 1 but only after the user finished walking in the view. With two monitors, it immediately returns 2. In the latter case only it makes sense to call full3DFX with the other parameter values: 0 to turn off the display on the second monitor, or -1 to query the current full-screen status.
+</td></tr>
+
+</table>
