@@ -28,5 +28,30 @@ methods I don't understand.
 
 The fundamental duplicator classes and methods are defined in
 quarkpy.duplicator.py, and are exploited so as to produce most of the
-ordinary copying duplicators in plugins.mapdups.py.
+ordinary copying duplicators in plugins.mapdups.py.  The base class is
+DuplicatorManager, with the following methods:
+<UL>
+<LI>buildimages: not defined to do anything useful in the base class
+<LI>applylinear: this ought to specify how to operate on the duplicator's
+data when the linear mapping specified by the matrix argument is applied;
+specifying this is ignored for many of the shape-building duplicators (it's
+complicated, nobody seems to be howling about the omission)
+<LI>sourcelist: explained in the comments.  This method will normally
+be called by buildimages.
+<LI>siblingexluded: explained in comments
+<LI>dataformname: this method is used by code elsewhere (such as
+in quarkpy.mapentities.py) to figure out what form to to use to display
+the duplicator's specifics on the specifics page of the multi-pages-panel.
+See 'dup lin:form' in defaults.qrk for an example.
+<LI>handles: returns a handle to drag the thing around with.
+<UL>
+Many of the shape builders (path duplicator in plugins.mapdupspath.py)
+are defined as descendents of DuplicatorManager, and probably some of
+the others such as the brush and patch curve-builders should have been.
+
+Duplicators that make copies are however mostly descendents of
+StandardDuplicator, which, unfortunately for people who want to learn
+how the code works, gotten monstrously complicated due to the
+series trigger-targeting, progressive linear mapping and other facilities
+that got engineered in.
 
