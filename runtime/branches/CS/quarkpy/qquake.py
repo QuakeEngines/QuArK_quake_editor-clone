@@ -21,6 +21,35 @@ import string
 def BuildConsole():
     return quarkx.setupsubset()["Console"]
 
+#df<-******************************************************
+class CmdConsole(qconsole.console):
+    "StdOut console for commandline programs."
+
+    def __init__(self, cmdline, currentdir, next):
+        qconsole.console.__init__(self, SILVER)
+        self.cmdline = cmdline
+        self.currentdir = currentdir
+        self.next = next
+        
+    def close(self):
+        try:
+            fn = self.next.run
+        except:
+            return
+        del self.next
+        fn()
+        #qconsole.console.close(self)
+          
+    def goon(self, reserved):
+        self.close()
+        
+    def run(self):
+        if BuildConsole():
+            qconsole.runprogram(self.cmdline, self.currentdir, self)
+        else:
+            qconsole.runprogram(self.cmdline, self.currentdir).onexit(self.goon)
+    
+#df->******************************************************
 
 class BatchConsole(qconsole.console):
     "StdOut console for programs that run in batch."
@@ -87,8 +116,14 @@ class GameConsole(BatchConsole):
             cmdline = ""
         else:
             format = setup["ExtraCmdLine"]
-            customdir = quarkx.outputfile()  # get the current tmpQuArK directory
-            cmdline = program + " " + format % customdir
+            # Pete Mistich
+    	    sourcenameP = setup["Game"]
+            if sourcenameP == "CrystalSpace":
+		cmdline = program + " "
+	    else:
+		customdir = quarkx.outputfile()  # get the current tmpQuArK directory
+            	cmdline = program + " " + format % customdir
+            # Pete Mistich 
             if map is not self.NO_MAP:
                 cmdline = cmdline + setup["RunMapCmdLine"] % map
         BatchConsole.__init__(self, cmdline, dir, next)

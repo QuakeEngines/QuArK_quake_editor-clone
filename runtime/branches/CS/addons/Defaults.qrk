@@ -492,6 +492,44 @@ QQRKSRC1
         3DLight = '512'
         TextureFormat = ".tga"
       }
+      //pm CrystalSpace *******************************************	
+      CrystalSpace:config =
+      {
+        Game = "CrystalSpace"
+        Code = "b"
+        Directory = "/quark2cs_511/"
+	// CD = ""
+        // CDDir = "Install\Data"
+        Program = "walktest.exe"
+        MAP2CS1 = "MAP2CS.EXE"
+        MAP2CSCmd = ""
+        MAP2CSDesc = "MAP2CS"
+        MAP2CSCFG1 = "MAP2CS.EXE"
+        MAP2CSCFGDesc = "MAP2CSCFG"
+        TextureDef = "intro/wl_outbrick1a"
+	BaseDir = "base"
+        tmpQuArK = "data"
+	TextureWad = "?"  // variable (the map name is used)
+        //GameNeedWad = "1"
+        Palette = ":pics/colormap.pcx"
+	//Gradient = "pics/colormap.pcx"
+        //ExtractFiles = "pics/colormap.pcx"
+        Q2TexPath = "textures/"
+        Q2TexFlags = "1"
+        ExtraCmdLine = " %s"
+        RunMapCmdLine = " %s"
+        AddOns = "DataCS.qrk"
+        AlwaysPak = ""
+        PakExt = ".csz"
+	LightFactor = '0.90000'
+        3DLight = '512'
+        CheckDirectory = "WALKTEST.EXE"
+        Console = "1"
+        Form = "GameCrystalSpace"
+	PlayerClass = "X"  
+        TextureFormat = ".wad3_C"
+      } 
+      //pm CrystalSpace *******************************************
     }
     Map:config =
     {
@@ -1583,6 +1621,108 @@ QQRKSRC1
         Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
       }
     }
+    GameCrystalSpace:form =
+    {
+      Style = "3"
+      Directory: =
+      {
+        Txt = "Directory of CrystalSpace"
+        Typ = "ED"
+        Hint = "Path to the game executable"
+        CheckFile = "WALKTEST.EXE"
+      }
+      AddOns:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC11011111166602444045555
+         $4866602C2AA478887866602C4A24787F78666022AC48778878666022CC4788887866
+         $6000407787877866608777777777784448444844487F785C77CF77CC4877785CC7C7
+         $77CC488880055555555548870666608888888800666666666666666666
+        cmd:macro =
+        {
+          Typ = "M"
+          Msg = "GAMb"
+        }
+        cmd:macro =
+        {
+          Typ = "M"
+          Msg = "ADDO"
+        }
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0FA
+         $0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AAA220FBB003
+         $22022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A0022002A200666002A
+         $AAA20006666666002A200666666666660006666666
+        cmd:macro =
+        {
+          Typ = "M"
+          Msg = "GAMb"
+        }
+        cmd:macro =
+        {
+          Typ = "M"
+          Msg = "OUTP"
+        }
+      }
+      Sep1: =
+      {
+        Typ = "S"
+      }
+      Program: =
+      {
+        Typ = "C"
+        Txt = "CrystalSpace command-line"
+        Items = "Walktest"
+      }
+      MAP2CS1: =
+      {
+        Typ = "EP"
+        Txt = "Path to MAP2CS"
+        DefExt = "exe"
+      }
+      MAP2CSCmd: =
+      {
+        Typ = "E"
+        Txt = "...command-line parameters"
+      }
+      MAP2CSCFG1: =
+      {
+        Typ = "EP"
+        Txt = "Path to MAP2CS CFG"
+        DefExt = "cfg"
+      }
+      Console: =
+      {
+        Typ = "X"
+        Txt = "Run these programs..."
+        Cap = "in QuArK's console"
+      }
+      Sep2: =
+      {
+        Typ = "S"
+      }
+      TextureDef: =
+      {
+        Txt = "Default texture"
+        Typ = "ET"
+        Hint = "Default texture when inserting polyhedrons in maps"
+        GameCfg = "CrystalSpace"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darke"
+         "r scenes."
+      }
+    } 
     MapColors:form =
     {
       Style = "7"       // gray form instead of white one
@@ -2239,7 +2379,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Crystal Space"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
@@ -2370,6 +2510,56 @@ QQRKSRC1
       sep: = {Typ="S" Txt=" "}    // some space
       info: = {Typ="S" Txt="This is a separator line in the menu."}
     }
+    //pm CrystalSpace *******************************************
+   CustomQuakeMenuMAP2CS:form =
+    {
+      Style = "7"
+      RunGame: =
+      {
+        Typ = "X"
+        Txt = "finally..."
+        Cap = "Run Quake"
+        Hint = "run Quake (or Hexen II or Quake 2) when the map has been rebui"
+         "lt"
+      }
+      Pause: =
+      {
+        Typ = "X"
+        Cap = "Console stay open"
+        Hint = "don't automatically close the console where all QBSP/VIS/LIGHT"
+         " output has been written"
+      }
+      sep: =
+      {
+        Typ = "S"
+      }
+      MAP2CS1: =
+      {
+        Typ = "X"
+        Txt = "Makes Zip File"
+        Cap = "MAP2CS"
+        Hint = "None For Now "
+      }
+      MAP2CSCmd: =
+      {
+        Typ = "C"
+        Txt = "...additionnal parameters"
+        Items = $0D
+        Hint = "None Sorry"
+      }
+      sep: =
+      {
+        Typ = "S"
+      }
+      Shortcut: =
+      {
+        Typ = "E"
+        Txt = "Keyboard shortcut"
+        Hint = "Keyboard shortcut as it appears in the menu (recommended: 'Ctr"
+         "l+letter')"
+      }
+    } 
+    //pm CrystalSpace *******************************************
     PluginInfo:form =
     {
       Style = "2"

@@ -42,6 +42,17 @@ class BspConsole(qquake.BatchConsole):
             qquake.BatchConsole.close(self)
             return 1
 
+#df<-**************************************************************************
+#see qconsole.py, qquake.py (Batch may work better for MAPWALK)
+class Map2CSConsole(qquake.BatchConsole):
+    "StdOut console for non-bsp programs." 
+    def __init__(self, cmdline, currentdir, next):
+        qquake.BatchConsole.__init__(self, cmdline, currentdir, next)
+
+    def close(self):
+        qquake.BatchConsole.close(self)
+        return 1    
+#df->***************************************************************************    
 
 
 class QBSPConsole(BspConsole):
@@ -137,12 +148,12 @@ def qmenuitem1click(m):
             return
     if m.info["RunGame"]:
         editor.layout.closeOpenGL()
-    RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor,
-      m.info["RunGame"], m.text, 0, [], "", None)
-
-
-def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile, defaultbsp):
-
+    RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor, m.info["RunGame"], m.info["MAP2CS1"], m.text, 0, [], "", None)    
+#df<-**************************************************************************
+#RebuildAndRun([(editor.fileobject, editor.Root, m.info)], editor, m.info["MAP2CS1"], m.text, 0, [], "", None)
+      
+def RebuildAndRun(maplist, editor, runquake, runmap2cs, text, forcepak, extracted, cfgfile, defaultbsp):
+#def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile, defaultbsp):
     #
     # Turn the "extracted" to lowercase.
     #
@@ -263,6 +274,22 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
             map = qquake.GameConsole.DONT_RUN
         next = qquake.GameConsole(map, extracted, cfgfile, forcepak, next)
 
+# Df modifedied by pm *******************************************************
+#this is for map2cs (commandline works)  
+    if runmap2cs:             
+        mapfileobject = editor.fileobject
+        map = string.lower(checkfilename(mapfileobject["FileName"] or mapfileobject.shortname))
+        mapfile = "./maps/" + map + ".map"
+        map2cszfile = map + ".csz"
+        mapcfg = "../map2cs.cfg"
+        Cmd = mapfile + " " + map2cszfile + " " + mapcfg
+        cmdline = setup["MAP2CS1"]
+        cmdline = '"%s"' % cmdline
+        cmdline = cmdline + " " + Cmd
+        next = Map2CSConsole(cmdline, tmpquark, next) 
+# Df modifedied by pm *******************************************************
+
+
     #
     # Loop through the maps to rebuild.
     #
@@ -301,6 +328,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         if buildmode[firstcmd]:    # if we have to run QBSP
             hxstr = writemapfile(root, map, buildmode["SelOnly"], mapinfo["wad"], hxstr)
 
+    hxstr = writemapfile(root, map, buildmode["SelOnly"], mapinfo["wad"], hxstr)
     if hxstr:
         hxf = quarkx.newfileobj("hxstr.txt")
         hxf["Data"] = hxstr
@@ -353,6 +381,11 @@ def Customize1Click(mnu):
     else:
         form1 = "CustomQuakeMenu"
     gamename = setup.shortname
+    # Pete Mistich ************************************************************
+    sourcenameP = "%s" % gamename
+    if sourcenameP == 'CrystalSpace':
+        form1 = "CustomQuakeMenuMAP2CS"
+    # Pete Mistich ************************************************************
     group = quarkx.newobj("%s menu:config"%gamename)
     sourcename = "UserData %s.qrk" % gamename
     file = LoadPoolObj(sourcename, quarkx.openfileobj, sourcename)
