@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2001/03/05 21:45:47  tiglari
+different getbspentry
+
 Revision 1.18  2001/03/05 11:02:32  tiglari
 q3 bsp editing support, entities OK, map structure not there yet
 
@@ -871,7 +874,10 @@ begin
    FStructure.AddRef(+1);
    Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
    Q.Acces;
-   ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
+   if CharModeJeu>=mjQ3A then
+      ShowMessage('Sorry, no bsp editing for this game')
+   else
+     ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
    finally ProgressIndicatorStop; end;
   end;
  GetStructure:=FStructure;
@@ -1001,7 +1007,10 @@ end;
 procedure TFQBsp.Button1Click(Sender: TObject);
 begin
  with ValidParentForm(Self) as TQkForm do
-  ProcessEditMsg(edOpen);
+  if CharModeJeu>=mjQ3a then
+    ShowMessage('Sorry, no bsp viewing for this game yet')
+  else
+    ProcessEditMsg(edOpen);
 end;
 
 type
