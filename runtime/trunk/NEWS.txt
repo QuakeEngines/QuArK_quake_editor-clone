@@ -13,6 +13,8 @@ $Id$
         #####    Quake Army Knife 6.4 Changelog
 
  * [alexander]: HL2 Releated Enhancements
+      - loading of .vmf (hammer map files) is available
+      - CS-Source textures complete
       - QuArK Loads HL2 models and render yellow transparent boxes with the
         models size and orientation in the open gl viever. Note that lights
         must be enabled an a light entity must be in the map to make this work.
@@ -54,7 +56,7 @@ $Id$
       - preparations for this splitting access via Steam and via HLLib
       - GCF DLL has now static linkage against HLLib
  
- * [alexander]: Fixes for HL2/Source supported
+ * [alexander]: Fixes for HL2/Source support
       - Fixes for GCF file handling
       - Configuration changes to handle HL2 textures
 
