@@ -24,6 +24,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
 Revision 1.4  2000/04/14 09:50:17  arigo
 more TGA flips fix
 
@@ -186,7 +192,7 @@ begin
             end;
           end;
        9,10: begin
-            SetLength(Buffer, FSize-SizeOf(Header)-Header.ExtraData);
+            SetLength(Buffer, FSize-SizeOf(Header)-Header.ExtraData-TaillePalette); {Tim Smith}
             F.ReadBuffer(Pointer(Buffer)^, Length(Buffer));
             J:=Header.Height;
             Dest:=ScanLine;
