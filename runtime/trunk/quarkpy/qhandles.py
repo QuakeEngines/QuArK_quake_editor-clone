@@ -855,6 +855,7 @@ class HandleDragObject(RedImageDragObject):
         RedImageDragObject.__init__(self, view, x, y, view.proj(handle.pos).z, redcolor)
         self.pt0 = handle.pos
         self.handle = handle
+        handle.start_drag(view, x, y)
 
     def buildredimages(self, x, y, flags):
         pt1 = self.view.space(x, y, self.z0)
@@ -1285,8 +1286,9 @@ def MouseClicked(editor, view, x, y, s, handle):
                 return flags+result
         if view.info.has_key("noclick"):
             return flags
-        for h in view.handles:
-            h.leave(editor)
+        if not "M" in s:
+            for h in view.handles:
+                h.leave(editor)
         return flags+"1"
 
     if view.info["type"]=="3D":
@@ -1467,13 +1469,16 @@ def findnextobject(choice):
     return choice[0][1]
 
 
-def findlastsel(choice):
+def findlastsel(choice,keep=0):
     #
     # Find the last selected object in the choice.
     #
     for i in range(len(choice), 0, -1):
         if choice[i-1][1].selected:
-            return i
+            if keep:
+                return i-1
+            else:
+                return i
     return 0
 
 
@@ -1538,6 +1543,11 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.7  2001/04/08 02:39:37  tiglari
+#usercenters now update recursively thru subobjects.  If this proves to
+# be too slow for large objects, maybe it could be optimized to happen only
+# at the beginning and the end of the drag.
+#
 #Revision 1.6  2001/04/08 00:40:31  tiglari
 #'usercenter' specific updated on CenterHandle drag
 #

@@ -760,6 +760,113 @@ class CyanLHandle(qhandles.GenericHandle):
          "enlarge or distort 2nd texture axis", "rotate texture")[n] +   \
          "||Use the 4 handles at the corners of this 'L' to scroll or rotate the texture on the face.\n\nThe center of the 'L' lets you scroll the texture; the two ends lets you enlarge and distort the texture in the corresponding directions; the 4th point lets you rotate the texture."
 
+    def menu(self, editor, view):
+        return [qmenu.item('Hello',None)]
+
+    def menu(self,editor,view):
+        from plugins.tagging import *
+
+        norm=self.face.normal
+        facepoint=self.face.dist*norm
+
+        x, y = self.face.axisbase()
+
+        def toAxisBase(p,org,x=x,y=y,z=norm):
+            diff = p-org
+            return quarkx.vect(diff*x, diff*y, diff*z)
+            
+        #
+        # Also projects onto plane
+        #
+        def fromAxisBase(p, org, x=x, y=y):
+            return org+p.x*x+p.y*y
+
+        def onFace(p,norm=norm, facepoint=facepoint):
+            if norm*(facepoint-p)<.0001:
+                return 1
+            else:
+                return 0
+
+        def toFace(p,norm=norm, facepoint=facepoint):
+            return projectpointtoplane(p,norm,facepoint,norm) 
+       
+        #
+        # Glue to tagged point
+        #
+        tagged=gettaggedpt(editor)
+        if tagged is not None:       
+            taggedonface = onFace(tagged)
+        else:
+            taggedonface=0
+            
+        def glueClick(m,tagged=tagged,self=self,editor=editor,toFace=toFace):
+            tagged=toFace(tagged)
+            p1, p2, p3, p4 = self.tp4
+            newface = self.face.copy()
+            #
+            # assumes that menuitem is disabled for n=3
+            #
+            if self.n==0:
+                diff = p1-tagged
+                newface.setthreepoints((tagged,p2-diff,p3-diff),2)
+            elif self.n==1:
+                newface.setthreepoints((p1,tagged,p3),2)
+            elif self.n==2:
+                newface.setthreepoints((p1,p2,tagged),2)
+            undo=quarkx.action()
+            undo.exchange(self.face,newface)
+            editor.ok(undo,'Glue to Tagged')
+            
+            
+        glueitem = qmenu.item('Glue to tagged',glueClick)
+        if not taggedonface or self.n==3:
+            glueitem.state=qmenu.disabled
+            
+        #
+        # Align to tagged edge (by rotation, to the one
+        #   that's closest to being aligned)
+        #
+        edge = gettaggededge(editor)
+        
+        def alignClick(m,self=self,edge=edge,editor=editor,
+                       toAxisBase=toAxisBase,fromAxisBase=fromAxisBase):
+            p1, p2, p3, p4 = self.tp4
+            def proj1(p,org=p1,toAxisBase=toAxisBase):
+                return toAxisBase(p,org)
+            p2, p3 = proj1(p2), proj1(p3)
+            edge = toAxisBase(edge[1], edge[0])
+            def toAngle(p):
+                p = p.normalized
+                return math.atan2(p.y, p.x)
+            edgeang, p2ang, p3ang = tuple(map(toAngle, (edge, p2, p3)))
+            #
+            # Find the smallest angle that will rotate the threepoints
+            #  into alignment
+            #
+            rotang=2*math.pi
+            for edgeang0 in edgeang, -edgeang:
+                for p2ang0 in p2ang, p3ang:
+                    diffang = edgeang0-p2ang0
+                    if abs(rotang)>abs(diffang):
+                        rotang=diffang
+            rotmat = matrix_rot_z(rotang)
+            def convert(p,org=p1,rotmat=rotmat,fromAxisBase=fromAxisBase):
+                p = rotmat*p
+                return  fromAxisBase(p,org)
+            p2, p3 = convert(p2), convert(p3)
+            newface=self.face.copy()
+            newface.setthreepoints((p1,p2,p3),2)
+            undo = quarkx.action()
+            undo.exchange(self.face, newface)
+            editor.ok(undo, "Align Texture")
+
+        alignitem = qmenu.item('Align to tagged edge',alignClick)
+        if edge is None:
+            alignitem.state=qmenu.disabled
+
+        return [glueitem, alignitem]
+
+
     def drag(self, v1, v2, flags, view):
         view.invalidate(1)
         self.dynp4 = None
@@ -827,6 +934,7 @@ class CyanLHandle0(CyanLHandle):
     def __init__(self, tp4, face, texsrc, handles):
         CyanLHandle.__init__(self, 0, tp4, face, texsrc)
         self.friends = handles
+
 
     def draw(self, view, cv, draghandle=None):
         dyn = (draghandle is self) or (draghandle in self.friends)
@@ -1110,6 +1218,12 @@ def ClickOnView(editor, view, x, y):
     return view.clicktarget(editor.Root, x, y)
 
 
+def wantPoly():
+    return quarkx.keydown('P')==1
+
+def wantFace():
+    return quarkx.keydown('F')==1
+
 def MouseClicked(self, view, x, y, s, handle):
     "Mouse Click on a Map view."
 
@@ -1129,9 +1243,16 @@ def MouseClicked(self, view, x, y, s, handle):
         choice = ClickOnView(self, view, x, y)
          # this is the list of polys & entities we clicked on
         if len(choice):
+            wantpoly = wantPoly()
+            wantface = wantFace()
             choice.sort()   # list of (clickpoint,object) tuples - sort by depth
             last = qhandles.findlastsel(choice)
-            if ("M" in s) and last:    # if Menu, we try to keep the currently selected objects
+            #
+            # Note: dropping 'and last' from below seems to deliver
+            #   background menu on RMB when nothing is selected, seems
+            #   better
+            #
+            if ("M" in s):    # if Menu, we try to keep the currently selected objects
                 return flags
             if "T" in s:    # if Multiple selection request
                 obj = qhandles.findnextobject(choice)
@@ -1140,8 +1261,17 @@ def MouseClicked(self, view, x, y, s, handle):
                     self.layout.explorer.focus = obj
                 self.layout.explorer.selchanged()
             else:
+                if wantface or wantpoly:
+                    keep=1
+                else:
+                    keep=0
+                last = qhandles.findlastsel(choice,keep)
                 if last:  last = last - len(choice)
-                self.layout.explorer.uniquesel = choice[last][1]
+                if wantface:
+                    self.layout.explorer.uniquesel = choice[last][2]
+                else:
+                    self.layout.explorer.uniquesel = choice[last][1]
+
         else:
             if not ("T" in s):    # clear current selection
                 self.layout.explorer.uniquesel = None
@@ -1425,6 +1555,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.20  2001/04/17 03:18:01  tiglari
+#attempt to fix vertex-drag crash
+#
 #Revision 1.19  2001/04/10 08:54:42  tiglari
 #remove debug statements from vertex dragging code
 #
