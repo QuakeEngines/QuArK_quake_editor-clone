@@ -284,6 +284,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
         curve2, texface2 = makestuff(pd2, fdict)
         base=quarkx.newobj('front:f')
         base.setthreepoints((curve[0],curve2[0],curve[0]+depth),0)
+        base["tex"]=fdict["r"]["tex"]
         if not inner:
             brush=quarkx.newobj('brush:p')
             capper=texface.copy()
@@ -310,6 +311,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
             brushes.append(brush)
      
         side=quarkx.newobj('side:f')
+        side["tex"]=fdict["b"]["tex"]
         side.setthreepoints((curve[subdivide],curve[subdivide]+depth,curve2[subdivide]),0)
         if left:
             base.swapsides()
@@ -654,6 +656,10 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#
+#Revision 1.11  2001/04/16 12:32:39  tiglari
+#thick supported for arches and bevels
+#
 #Revision 1.10  2001/04/10 08:56:25  tiglari
 #add force vertexes to grid (grid specific); some preliminary steps towards
 # implementing 'thick'
