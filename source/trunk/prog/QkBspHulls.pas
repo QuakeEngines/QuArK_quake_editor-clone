@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/07/16 10:56:06  tiglari
+inaccurate but semi-serviceable texture-viewing for Q3A bsp's
+
 
 Revision 1.10  2001/06/05 18:38:47  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
@@ -125,7 +128,8 @@ type
                 Normal: vec3_t;
                 PatchDim: TIntegerPair;
                end;
-   { q3map code :
+   { texture item structure from Kekoa Proudfoot Unofficial Quake3 Map
+       Specs:
       int texture  Texture index.
       int effect  Index into lump 12 (Effects), or -1.
       int type  Face type. 1=polygon, 2=patch, 3=mesh, 4=billboard
@@ -292,9 +296,10 @@ var
  function AdjustTexScale(const V: TVect5) : TVect5;
  begin
    Result:=V;
-   Result.S:=Result.S;
-   Result.T:=Result.T;
+  { Result.S:=Result.S; }
+   Result.T:=-Result.T;
  end;
+
 begin
  inherited Create(FmtLoadStr1(5406, [Index]), nParent);
  HullNum:=Index;
@@ -501,7 +506,8 @@ begin
           { This trick works because the position and tex coords are the
             first 5 fields.  If we want to drag lightmaps into it we'll
             need to go to 7, or do something different }
-          P5_1:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^));
+          P5_1:=AdjustTexScale(MakeVect5(vec5_p(Q3VertexP)^);
+
           P1:=MakeVect(vec3_p(Q3VertexP)^);
           PlaneDist:=Dot(NN,P1)
         end
@@ -627,17 +633,17 @@ begin
         {  Dist:=PlaneDist;  }
         end;
     end;
-    { NuTex format doesn't work here, not sure why.
-      To compile with normal main branch, use SetThreePointsEx }
+    { Some changes needed here if NuTex2 branch stuff used  }
     if not Face.SetThreePointsEx(P1, P2, P3, Face.Normale) then
     begin
       SubElements.Remove(Face);
       Inc(InvFaces); LastError:='Err degenerate'; Continue;
     end;
+    Face.NomTex:=S;
+    Face.SetThreePointsUserTex(P1,P2,P3,nil);
     Face.Specifics.Add(CannotEditFaceYet+'=1');
     Surface1^.F:=Face;
     Face.LinkSurface(Surface1);
-    Face.NomTex:=S;
     PChar(Surface1):=PChar(Dest);
    end;
 
