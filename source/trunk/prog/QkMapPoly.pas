@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/07/21 20:01:33  decker_dk
+Correctly Save HalfLife WAD3s
+
 Revision 1.12  2000/07/18 19:37:59  decker_dk
 Englishification - Big One This Time...
 
@@ -2083,9 +2086,12 @@ var
       S:=S+' -1'
      else
      if MJ=mjSin then
-      { tiglari: in Sin, we write to the map individual
-         flag positions that are different from the default..
-         messy! }
+     { tiglari: Sin/KP/SOF/Q2 code below manages the content/
+        flags/value information in textures.  It's complicated
+        because there is in general default info in the textures
+        which can be overridden in the faces, Sin is the most
+        complex. }
+
       begin
         Q := GlobalFindTexture(F.NomTex,Nil);
         if Q<>Nil then
@@ -2122,10 +2128,10 @@ var
            S:=S+' nonlitvalue '+FloatToStrF(rval, ffFixed, 7, 2);
         finally Q.AddRef(-1); end;
         end
-     { /tiglari }
-     else  {tiglari: kp seems to need field values
-               written into the map }
-      if MJ=mjKingPin then
+     else  { kp seems to need field values
+               written into the map.  Alex write code to
+               put the c, f, v flags into the texture link }
+      if (MJ=mjKingPin) then
       begin
        Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
        if Q<>Nil then Q.Acces;              { load it (but not the texture it points to !) }
@@ -2133,9 +2139,24 @@ var
        S2:=CheckFieldDefault('Flags','f', Q);
        S3:=CheckFieldDefault('Value','v', Q);
        S:=S+' '+S1+' '+S2+' '+S3;
-      end {\tiglari}
+       end
+      else {for me, SOF seems to behave like Q2, but for other
+        people, default flags seem to be written into the map
+        to work, so that's what happens here }
+      if (MJ=mjSOF) then
+       begin
+        Q := GlobalFindTexture(F.NomTex,Nil);  { find the Texture Link object }
+        if Q<>Nil then Q:=Q.LoadPixelSet;      { load it, since the default flags
+                are in the actual texture, not the link.) }
+        S1:=CheckFieldDefault('Contents','Contents', Q);
+        S2:=CheckFieldDefault('Flags','Flags', Q);
+        S3:=CheckFieldDefault('Value','Value', Q);
+        S:=S+' '+S1+' '+S2+' '+S3;
+       end
      else
-      if MJ>=mjQuake2 then
+      { and in Q2, default flags get written into the map
+        automatically, no wuccaz (<- wuccin furries) }
+      {\tiglari}
        begin
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
