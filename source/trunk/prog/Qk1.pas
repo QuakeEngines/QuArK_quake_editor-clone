@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.17  2001/01/30 19:11:10  decker_dk
 Changed to GetApplicationPath().
 
@@ -207,6 +212,8 @@ type
     Viewconsole1: TMenuItem;
     N13: TMenuItem;
     Go1: TMenuItem;
+    ConvertFrom1: TMenuItem;
+    Worldcraftfgdfile1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Close1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
@@ -241,6 +248,7 @@ type
     procedure Viewconsole1Click(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure Registering1Click(Sender: TObject);
+    procedure Worldcraftfgdfile1Click(Sender: TObject);
   private
     IdleJobs: PIdleJob;
     {DefaultTbCount,} OpenFilterIndex: Integer;
@@ -304,7 +312,7 @@ uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, About, Running,
   Output1, QkTreeView, Quarkx, PyProcess, Console, Python,
   {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
-  EdSceneObject, QkObjectClassList, QkApplPaths;
+  EdSceneObject, QkObjectClassList, QkApplPaths, QkQuakeCtx;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -2164,6 +2172,23 @@ end;
 procedure TForm1.Registering1Click(Sender: TObject);
 begin
  HTMLDoc(GetApplicationPath()+'help\register.html');
+end;
+
+procedure TForm1.Worldcraftfgdfile1Click(Sender: TObject);
+var
+  Q: QObject;
+begin
+  Showmessage('                             !!!!    NOTE    !!!!               '#10#13+
+              '   This is not always 100% accurate and will duplicate  '#10#13+
+              '      existing entities and possibly miss some out.     '#10#13#10#13+
+              'You may need to handedit the .qrk file. For help with this,'#13#10+
+              '      feel free to ask questions at the QuArK forum:      '#10#13#10#13+
+              '   http://groups.yahoo.com/group/quark/messages    '#10#13);
+  News1Click(Sender);
+  Q:=QQuakeCtx.Create('Game Directories', NeedExplorerRoot);
+  Q.Flags := Q.Flags or ofTreeViewSubElement;
+  NeedExplorerRoot.Subelements.Add(Q);
+  CallMacro(@NeedExplorerRoot.PythonObj, 'makeaddonfromfgd');
 end;
 
 end.
