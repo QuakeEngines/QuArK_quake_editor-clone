@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/02/07 19:28:43  decker_dk
+Fixed problem in ReadSymbol() case '"', where introducing begin-end's created a wrongly statement-sequence. Always ALWAYS remember to put begin-ends at multiple if-statements!!!
+
 Revision 1.24  2001/01/28 17:25:52  decker_dk
 Made QMapFile.SaveFile() use the function 'CommentMapLine(string)' to write the .MAP comment-header.
 
@@ -777,6 +780,76 @@ expected one.
    end;
  end;
 
+
+ procedure ReadQ3BrushDef;
+ var
+   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
+   Denom : Double;
+   Matrix : TMatrixTransformation;
+ begin
+  ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+  P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
+  EntitePoly.SubElements.Add(P);
+  ContentsFlags:=0;
+  while SymbolType <> sCurlyBracketRight do  { read the faces }
+  begin
+    TxCommand:=#0; { Reset the QuArK-special '//TX1' '//TX2' indicator to not-found }
+    V[1]:=ReadVect(False);
+    V[2]:=ReadVect(False);
+    V[3]:=ReadVect(False);
+    ReadSymbol(sBracketLeft);
+    R1:=ReadVect(False);
+    R2:=ReadVect(False);
+    ReadSymbolForceToText:=true;
+    ReadSymbol(sBracketRight);
+    ReadSymbolForceToText:=false;
+    Surface:=TFace.Create(LoadStr1(139), P);
+    P.SubElements.Add(Surface);
+    Surface.SetThreePoints(V[1], V[3], V[2]);
+    { get 3points expressed in AxisBase coordinates
+       (see infobase|Src|Topics|Scale|Brush primitives) }
+    Denom:=R1.X*R2.Y-R1.Y*R2.X;
+    P0.X:=-R1.Z*R2.Y+R1.Y*R2.Z/Denom;
+    P0.Y:=R1.X*R2.Z-R1.Z*R2.X/Denom;
+    P0.Z:=0.0;
+    P1.X:=-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z/Denom;
+    P1.Y:=R1.X*R2.Z-R1.Z*R2.X+R2.X/Denom;
+    P1.Z:=0.0;
+    P2.X:=R1.Y*R2.Z+R1.Y-R1.Z*R2.Y/Denom;
+    P2.Y:=-R1.Z*R2.X+R1.X*R2.Z+R1.X/Denom;
+    P2.Z:=0.0;
+    { Convert to map space }
+    GetAxisBase(Surface.Normale, TexS, TexT);
+    Tex0:=VecScale(Surface.Dist, Surface.Normale);
+    ZVect.X:=0; ZVect.Y:=0; ZVect.Z:=1;
+    Matrix:=MatrixFromCols(TexS, TexT, ZVect);
+    P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
+    P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
+    P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
+    Surface.SetThreePointsUserTex(p0,P1,p2,nil);
+
+    Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+    Surface.NomTex:=S;   { here we get the texture-name }
+    ReadSymbol(sTokenForcedToString);
+    if SymbolType=sNumValueToken then
+    begin
+      NumericValue1:=Round(NumericValue);
+      ReadSymbol(sNumValueToken);
+      ContentsFlags:=NumericValue1;
+      Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
+      Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
+      ReadSymbol(sNumValueToken);
+      Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
+      ReadSymbol(sNumValueToken);
+      Result:=mjNotQuake1;
+    end
+  end;
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+  ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+ end;
+
+
  procedure ReadSinSurfaceFlags;
  begin
    { tiglari[, sin surf info reading }
@@ -1040,6 +1113,12 @@ begin
                  EntiteBezier:=MapStructureB;
                end;
                ReadQ3PatchDef(); {DECKER - moved to local-procedure to increase readability}
+             end
+             else if LowerCase(s)='brushdef' then
+             begin
+              { tiglari: a brushDef means it is a Quake 3 map }
+               Result:=mjQ3A;
+               ReadQ3BrushDef(); {DECKER - moved to local-procedure to increase readability}
              end
              else
                raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(260)]); // "patchDef2" expected
