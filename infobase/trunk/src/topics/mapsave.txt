@@ -18,8 +18,9 @@ The relevant object hierarchy is:
 TTreeMap 
   TTreeMapSpec (can have writeable specifics)
      TTreeMapGroup (can have sub-polys/beziers)
-        TReeMapBrush (brush entity)
+        TTreeMapBrush (brush entity)
      TTreeMapEntity
+        TDuplicator (hmm, also can have sub-stuff)
   TTexturedTreeMap
      TFace
      TBezier
