@@ -1,5 +1,9 @@
 #! /usr/bin/env python
 
+#
+#  $Header$
+#
+
 import string, htmlentitydefs, time, os
 
 EXTENSION = ".txt"
@@ -47,6 +51,17 @@ def findref(root, path):
             raise "Reference not found : " + path0
     return REFDIR % root.kw
 
+
+def procpic(kw, path):  #tiglari
+    picrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
+    img = '<img src="%s">'%picrl
+    data = open(kw["path"]+path,"rb").read()
+    f = open("output/"+picrl, "wb")
+    f.write(data)
+    f.close()
+    kw["forgotten"].remove(path)
+    return img
+    
 def processtext(root, text, data, kw):
     currentpara = None
     TEXT = 1
@@ -69,6 +84,9 @@ def processtext(root, text, data, kw):
         elif test[:5]=="<ref>":
             # this line is a reference
             line = findref(root, string.strip(string.strip(line)[5:]))
+        elif test[:5]=="<pic>": #tiglari
+            # this line is an image
+            line = procpic(kw, string.strip(string.strip(line)[5:]))
         elif variableformat:
             if test[:3]=="<p>" or currentpara==HTML:
                 # this line is direct HTML, no formatting
@@ -106,6 +124,7 @@ class Folder:
 
     def __init__(self, path, classif, parents):
         self.path = path
+#        print 'Path: '+self.path
         self.classif = classif
         if classif: #DECKER
             shortname = string.join(map(lambda s: s+".", classif), "") + "&nbsp;"
@@ -117,6 +136,7 @@ class Folder:
         print s
         self.kw["htmltitle"] = text2html_nbsp(s)
         self.kw["classif"] = shortname
+        self.kw["path"] = path
         if not classif:
             shortname = "index.html"
         else:
@@ -127,6 +147,7 @@ class Folder:
         self.folders = []
         self.forgotten = map(string.lower, os.listdir("./"+self.path))
         self.forgotten.remove("index"+EXTENSION)
+        self.kw["forgotten"] = self.forgotten
         for foldername in string.split(self.kw.get("subdir", "")):
             folder = Folder(path+foldername+"/", classif+(str(len(self.folders)+1),), parents+(self,))
             if folder.ctime > ctime:
@@ -141,6 +162,7 @@ class Folder:
             kw["htmlfile"] = shortname
             kw["hrefaname"] = filename
             kw["updateday"] = time.strftime("%d %b %Y", time.localtime(ctime1))
+            kw["path"] = path  # tiglari
             self.files.append((kw, text))
             self.forgotten.remove(filename+EXTENSION)
         self.ctime = ctime
@@ -221,3 +243,7 @@ def defaultwriter(filename, data, writemode="w"):
     f.close()
 
 run(defaultwriter)
+
+#
+# $Log$
+#
