@@ -102,7 +102,7 @@ class FindTargetDlg (quarkpy.dlgclasses.LiveEditDlg):
     """
 
     def inspect(self):
-        index = eval(self.chosen)
+        index = eval(self.src["found"])
         #
         # FIXME: dumb hack, revise mapmadsel
         #
@@ -151,6 +151,7 @@ def findClick(m, spec=None, val=None):
         "stick stuff in this"
     pack.slist = []
     pack.klist = []
+    pack.seen = 0
         
     def setup(self, pack=pack, editor=editor, spec=spec, val=val):
         self.pack=pack
@@ -171,27 +172,27 @@ def findClick(m, spec=None, val=None):
             
         if self.src['value']:
             targetted = getSpecVal(spec,self.src['value'], editor)            
-            pack.slist = map(lambda obj:"%s:%s"%(obj.parent.shortname,obj.shortname), targetted)
+            pack.slist = map(lambda obj,num:"%s:%s (%d)"%(obj.parent.shortname,obj.shortname,num), targetted, range(len(targetted)))
             pack.klist = map(lambda d:`d`, range(len(targetted)))
 
             #
             #  wtf doesn't this work, item loads but function is trashed
             #
-    #        self.src["found"] = pack.klist[0]
+             
             self.src["found$Items"] = string.join(pack.slist, "\015")
             self.src["found$Values"] = string.join(pack.klist, "\015")
             self.src["num"]=len(pack.klist),
+            if not pack.seen:
+                pack.seen = 1
+                self.src["found"] = '0'
+                self.chosen = '0'
             pack.found = targetted
 
     #
     # When data is entered, this gets executed.
     #
     def action(self, pack=pack, editor=editor):
-        src = self.src
-        #
-        # note what's been chosen
-        #
-        self.chosen = src["found"]
+        pass
 
     #
     # Cleanup when dialog closes (not needed if no mess has
@@ -258,3 +259,6 @@ quarkpy.mapentities.BrushEntityType.menu = brushmenu
 
 
 #$Log$
+#Revision 1.1  2002/05/18 05:21:39  tiglari
+#Suggestion by quantum_red
+#
