@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/01/21 15:47:04  decker_dk
+updated with misc. comments and cleaned up code
+
 Revision 1.11  2001/01/15 19:19:42  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -119,9 +122,29 @@ type
    ,lump_areas
    ,lump_areaportals);
 
+ TBsp3EntryTypes =
+   (eBsp3_entities
+   ,eBsp3_unknown01
+   ,eBsp3_unknown02
+   ,eBsp3_unknown03
+   ,eBsp3_unknown04
+   ,eBsp3_unknown05
+   ,eBsp3_unknown06
+   ,eBsp3_unknown07
+   ,eBsp3_unknown08
+   ,eBsp3_unknown09
+   ,eBsp3_unknown10
+   ,eBsp3_unknown11
+   ,eBsp3_unknown12
+   ,eBsp3_unknown13
+   ,eBsp3_unknown14
+   ,eBsp3_unknown15
+   ,eBsp3_unknown16);
+
 const
   NoBsp1 = TBsp1EntryTypes(-1);
   NoBsp2 = TBsp2EntryTypes(-1);
+  NoBsp3 = TBsp3EntryTypes(-1);
 
 type
 (*SurfaceList = ^TSurfaceList;
@@ -141,6 +164,7 @@ type
           procedure LoadBsp1(F: TStream; StreamSize: Integer);
           function DetermineGameCodeForBsp1() : Char;
           procedure LoadBsp2(F: TStream; StreamSize: Integer);
+          procedure LoadBsp3(F: TStream; StreamSize: Integer);
           procedure SaveBsp1(Info: TInfoEnreg1);
           procedure SaveBsp2(Info: TInfoEnreg1);
         protected
@@ -233,7 +257,6 @@ const
 
  cVersionBspQ2        = $00000026; {Quake-2 .BSP}
  cVersionBspDK        = $00000029; {Daikatana .BSP}
- cVersionBspQ3        = $0000002E; {Quake-3 .BSP}
 
 const
  Bsp2EntryNames : array[TBsp2EntryTypes] of String =
@@ -266,6 +289,42 @@ type
            Entries: array[TBsp2EntryTypes] of TBspEntries;
           end;
 
+(***********  Quake-3 .bsp format  ***********)
+
+const
+ // Quake-3 .BSPs, uses the same signature as Quake-2 .BSPs!
+
+ cVersionBspQ3        = $0000002E; {Quake-3 .BSP}
+
+const
+ Bsp3EntryNames : array[TBsp3EntryTypes] of String =
+   (              {Actuall a 'FilenameExtension' - See TypeInfo()}
+    'entities'    + '.a.bsp3'   // eBsp3_entities
+   ,'unknown01'   + '.b.bsp3'   // eBsp3_unknown01
+   ,'unknown02'   + '.c.bsp3'   // eBsp3_unknown02
+   ,'unknown03'   + '.d.bsp3'   // eBsp3_unknown03
+   ,'unknown04'   + '.e.bsp3'   // eBsp3_unknown04
+   ,'unknown05'   + '.f.bsp3'   // eBsp3_unknown05
+   ,'unknown06'   + '.g.bsp3'   // eBsp3_unknown06
+   ,'unknown07'   + '.h.bsp3'   // eBsp3_unknown07
+   ,'unknown08'   + '.i.bsp3'   // eBsp3_unknown08
+   ,'unknown09'   + '.j.bsp3'   // eBsp3_unknown09
+   ,'unknown10'   + '.k.bsp3'   // eBsp3_unknown10
+   ,'unknown11'   + '.l.bsp3'   // eBsp3_unknown11
+   ,'unknown12'   + '.m.bsp3'   // eBsp3_unknown12
+   ,'unknown13'   + '.n.bsp3'   // eBsp3_unknown13
+   ,'unknown14'   + '.o.bsp3'   // eBsp3_unknown14
+   ,'unknown15'   + '.p.bsp3'   // eBsp3_unknown15
+   ,'unknown16'   + '.q.bsp3'   // eBsp3_unknown16
+   );
+
+type
+ TBsp3Header = record
+           Signature: LongInt;
+           Version: LongInt;
+           Entries: array[TBsp3EntryTypes] of TBspEntries;
+          end;
+
 (***********  FAKK .bsp format  ***********)
 const
   cSignatureBspFAKK = $4B4B4146; {"FAKK" 4-letter header, which HW:FAKK contains}
@@ -286,12 +345,18 @@ type
   QBsp2   = class(QFileObject)  protected class function TypeInfo: String; override; end;
   QBsp2a  = class(QZText)       protected class function TypeInfo: String; override; end;
 
+  QBsp3   = class(QFileObject)  protected class function TypeInfo: String; override; end;
+  QBsp3a  = class(QZText)       protected class function TypeInfo: String; override; end;
+
 class function QBsp1 .TypeInfo; begin TypeInfo:='.bsp1';                       end;
 class function QBsp1a.TypeInfo; begin TypeInfo:='.a.bsp1'; {'Entities.a.bsp1'} end;
 class function QBsp1c.TypeInfo; begin TypeInfo:='.c.bsp1'; {'MipTex.c.bsp1'}   end;
 
 class function QBsp2 .TypeInfo; begin TypeInfo:='.bsp2';                       end;
 class function QBsp2a.TypeInfo; begin TypeInfo:='.a.bsp2'; {'entities.a.bsp2'} end;
+
+class function QBsp3 .TypeInfo; begin TypeInfo:='.bsp3';                       end;
+class function QBsp3a.TypeInfo; begin TypeInfo:='.a.bsp3'; {'entities.a.bsp3'} end;
 
  {------------------------}
 
@@ -494,6 +559,45 @@ begin
   end;
 end;
 
+procedure QBsp.LoadBsp3(F: TStream; StreamSize: Integer);
+var
+ Header: TBsp3Header;
+ Origine: LongInt;
+ Q: QObject;
+ E: TBsp3EntryTypes;
+begin
+  if StreamSize < SizeOf(Header) then
+    Raise EError(5519);
+
+  Origine:=F.Position;
+  F.ReadBuffer(Header, SizeOf(Header));
+
+  for E:=Low(E) to High(E) do
+  begin
+    if Header.Entries[E].EntrySize < 0 then
+      Raise EErrorFmt(5509, [84]);
+
+    if Header.Entries[E].EntrySize = 0 then
+      Header.Entries[E].EntryPosition := SizeOf(Header)
+    else
+    begin
+      if Header.Entries[E].EntryPosition < SizeOf(Header) then
+        Raise EErrorFmt(5509, [85]);
+
+      if Header.Entries[E].EntryPosition+Header.Entries[E].EntrySize > StreamSize then
+      begin
+        Header.Entries[E].EntrySize := StreamSize - Header.Entries[E].EntryPosition;
+        GlobalWarning(LoadStr1(5641));
+      end;
+    end;
+
+    F.Position:=Origine + Header.Entries[E].EntryPosition;
+    Q:=OpenFileObjectData(F, Bsp3EntryNames[E], Header.Entries[E].EntrySize, Self);
+    SubElements.Add(Q);
+    LoadedItem(rf_Default, F, Q, Header.Entries[E].EntrySize);
+  end;
+end;
+
 procedure QBsp.LoadFile(F: TStream; StreamSize: Integer);
 { (Comment by Decker 2001-01-21)
  Loads 4 bytes of signature, and 4 bytes of version, to determine what type of
@@ -537,7 +641,11 @@ begin
             end;
 
             cVersionBspQ3: { Quake-3 }
-              Raise EErrorFmt(5602, [LoadName, Version]);
+//              Raise EErrorFmt(5602, [LoadName, Version]);
+            begin
+              LoadBsp3(F, StreamSize);
+              ObjectGameCode := mjQ3A
+            end;
 
             else {version unknown}
               Raise EErrorFmt(5572, [LoadName, Version, cVersionBspQ2]);
@@ -858,4 +966,7 @@ initialization
 
   RegisterQObject(QBsp2,  ' ');
   RegisterQObject(QBsp2a, 'a');
+
+  RegisterQObject(QBsp3,  ' ');
+  RegisterQObject(QBsp3a, 'a');
 end.
