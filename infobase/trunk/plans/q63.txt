@@ -121,7 +121,11 @@ probably over-strains the present code structure).
 <li>Object snapper: (tiglari, idea from quantum red)
 <br> align/move object w.r.t. face so that face and
 a face of the object are paralell.
-<br>status: started, planned to finish for 6.3
+<br>status: done
+
+<li>Object slider enhancement: (tiglari)
+<br>Now moves object over plane and along normal.
+<br>status: done.
 
 <li>Map reconstructor for Q3: (tiglari)
 <br>This might be easier to do well for Q3 engine
