@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2004/01/05 22:01:43  silverpaladin
+TrySavingNow was changed to display a warning if it fails rather than raising an error message.  Then if something like an MD3 is referenced in a qrk file, the rest of the qrk file can still be saved without erroring out.
+
 Revision 1.9  2003/07/21 04:52:21  nerdiii
 Linux compatibility ( '/' '\' )
 
@@ -77,7 +80,7 @@ type
 
 implementation
 
-uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths;
+uses Game, QkFileObjects, Setup, QkObjects, PyImages, Travail, QkApplPaths, ExtraFunctionality;
 
 {$R *.DFM}
 
