@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/02/23 19:26:21  decker_dk
+Small changes (which hopefully does not break anything)
+SuivantDansGroupe => NextInGroup
+TrimStringList => StringListConcatWithSeparator
+
 Revision 1.13  2001/02/01 20:46:42  decker_dk
 Can read a Quake-3/STVEF .BSP file, but only the entity-list can be displayed for now.
 
@@ -195,7 +200,9 @@ type
 type
   TFQBsp = class(TQForm1)
     Button1: TButton;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
   protected
@@ -209,7 +216,8 @@ type
 implementation
 
 uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
-     Undo, Quarkx, PyForms, QkObjectClassList;
+     Undo, Quarkx, PyForms, QkObjectClassList, ToolBox1,
+     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging;
 
 {$R *.DFM}
 
@@ -956,6 +964,260 @@ procedure TFQBsp.Button1Click(Sender: TObject);
 begin
  with ValidParentForm(Self) as TQkForm do
   ProcessEditMsg(edOpen);
+end;
+
+type
+  QInternalObject = class(QObject)
+  public
+    class Function TypeInfo: String; Override;
+  end;
+
+class Function QInternalObject.TypeInfo: String;
+begin
+  Result:=':';
+end;
+
+(*
+convert this:
+
+{
+"worldtype" "2"
+"sounds" "6"
+"classname" "worldspawn"
+"wad" "gfx/base.wad"
+"message" "the Slipgate Complex"
+}
+{
+"classname" "info_player_start"
+"origin" "480 -352 88"
+"angle" "90"
+}
+
+into a stringlist for each entity (entity = { ... } )
+*)
+Function EntityTextToStringList(S0: String): TStringList;
+var
+  S, Spec, Arg: String;
+  I: Integer;
+  Es, E1: TStringList;
+  function GetClassname(S: TStringList): string;
+  begin
+    result:=S.Values['classname'];
+  end;
+  procedure CreateFullEntity(S: TStringList);
+  var
+    E: TStringList;
+    cn: String;
+    z: integer;
+  begin
+    cn:=GetClassname(S);
+    E:=nil;
+    for z:=0 to Result.count-1 do
+      if Result.Strings[z]=cn then
+        E:=TStringList(Result.Objects[z]);
+    if E=nil then
+    begin
+      E:=TStringList.Create;
+      Result.AddObject(cn, E);
+    end;
+    for z:=0 to S.count-1 do
+    begin
+      if E.IndexOfName(S.names[z]) = -1 then
+        E.Add(S.Strings[z]);
+    end;
+  end;
+begin
+  E1:=nil;
+  Result:=TStringList.Create;
+  for i:=1 to length(S0) do
+    if (S0[i]<>#13) and (S0[i]<>#10) then
+      S:=S+S0[i];
+  i:=1;
+  Es:=TStringlist.Create;
+  while i<length(S)+1 do
+  begin
+    case s[i] of
+      '{': E1:=TStringlist.Create;
+      '"': begin
+        Spec:='';
+        Arg:='';
+        while true do
+        begin
+          inc(i);
+          if s[i] = '"' then
+            break;
+          Spec:=Spec+s[i];
+        end;
+        while s[i]='"' do
+          inc(i);
+        inc(i);
+        while s[i]='"' do
+          inc(i);
+        while true do
+        begin
+          if s[i] = '"' then
+            break;
+          arg:=arg+s[i];
+          inc(i);
+        end;
+        E1.Add(Spec+'='+Arg);
+      end;
+      '}': Es.AddObject('', E1);
+    end;
+    inc(i);
+  end;
+  for i:=Es.Count-1 downto 0 do
+  begin
+    CreateFullEntity(TStringList(Es.Objects[i]));
+    TStringList(Es.Objects[i]).Free;
+    Es.Delete(i);
+  end;
+  Es.Free;
+end;
+
+function IsAllNumbers(arg: string): Boolean;
+const
+  Numbers = '0123456789-.';
+var
+  i: integer;
+begin
+  result:=true;
+  for i:=1 to length(arg) do
+    result:=result and (System.pos(arg[i], Numbers)<>0);
+end;
+
+function IsNumbersSeperated(arg: string): Integer;
+const
+  Numbers = '0123456789-. ';
+var
+  i: integer;
+  b: boolean;
+begin
+  b:=true;
+  for i:=1 to length(arg) do
+    b:=b and (System.pos(arg[i], Numbers)<>0);
+  result:=0;
+  if b then
+    for i:=1 to length(arg) do
+      if arg[i]=' ' then
+        result:=result+1;
+end;
+
+function GuessArgType(spec, arg: string): String; // returns
+begin
+  Result:='E';
+  if spec='color' then Result:='L' else
+  if spec='origin' then Result:='EF3' else
+  if IsAllNumbers(arg) then result:='EF' else
+  if IsNumbersSeperated(arg)<>0 then Result:='EF'+IntToStr(IsNumbersSeperated(arg));
+end;
+
+procedure TFQBsp.Button2Click(Sender: TObject);
+var
+  e: QObject;
+  z: QZText;
+  S, ext: String;
+  specList: TStringList;
+  e_sl: TStringList;
+  i,J: Integer;
+
+  addonRoot: QFileObject;
+  TBX: QToolBox;
+  entityTBX: QToolBoxGroup;
+  entityTBX_2: QToolBoxGroup;
+  Entity: QObject;
+  eSpec: QObject;
+  eForm: QFormCfg;
+  entityForms:QQuakeCtx;
+  dir_nfo : QQuakeCtx;
+begin
+  FileObject.Acces;
+  e:=QBsp(FileObject).GetBspEntry(eEntities, lump_entities);
+  if e=nil then
+  begin
+    raise Exception.Create('No Entities in BSP');
+  end;
+  z:=QZText(e);
+  S:=z.GetArg('Data');
+  (*
+    Build Addon Root
+  *)
+  addonRoot:=BuildFileRoot('new addon.qrk', nil);
+  addonRoot.Filename:='';
+  addonRoot.SpecificsAdd('Description=(insert addon desctiption here)');
+  (*
+    Build Directory Infos
+  *)
+  dir_nfo := QQuakeCtx.Create('addon directory infos', addonRoot);
+  dir_nfo.SpecificsAdd('Game='+GetGameName(FileObject.ObjectGameCode));
+  addonRoot.SubElements.Add(dir_nfo);
+  (*
+    Build Toolboxes
+  *)
+  TBX:=QToolBox.Create('Toolbox Folders', addonRoot);
+  addonRoot.Subelements.Add(TBX);
+  TBX.Specifics.Add('ToolBox=New map items...');
+  EntityTBX:=QToolBoxGroup.Create(Format('%s', [FileObject.Name]), TBX);
+  TBX.Subelements.Add(EntityTBX);
+  TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
+  EntityTBX_2:=QToolBoxGroup.Create(Format('%s entities',[FileObject.Name]), EntityTBX);
+  EntityTBX_2.SpecificsAdd(format(';desc=Created from %s',[FileObject.GetFullName]));
+  EntityTBX.Subelements.Add(EntityTBX_2);
+  (*
+    Convert {...} entites to :e entities
+  *)
+  specList:=EntityTextToStringList(S);
+  for i:=0 to specList.count-1 do
+  begin
+    e_sl:=TStringList(SpecList.Objects[i]);
+    ext:=':e';
+    if e_sl.IndexOfName('model')<>-1 then
+    begin
+      if e_sl.Values['model'][1]='*' then
+      begin
+        ext:=':b';
+      end
+    end;
+    Entity:=ConstructQObject(e_sl.Values['classname']+ext, EntityTBX_2);
+    for j:=0 to e_sl.count-1 do
+    begin
+      if e_sl.Names[j] = 'classname' then continue // remove classname specific
+      else if (e_sl.Names[j] = 'model') and (e_sl.Values['model'][1]='*') then continue; // remove model specifics if it points to a BSP model
+      Entity.SpecificsAdd(e_sl.Strings[j]);
+    end;
+    Entity.SpecificsAdd(';desc=(insert description here)');
+    if ext=':b' then
+      Entity.SpecificsAdd(';incl=defpoly');
+    EntityTBX_2.SubElements.Add(Entity);
+  end;
+  speclist.free;
+  (*
+    Create forms for each entity & guess type for each spec
+  *)
+  entityForms:=QQuakeCtx.Create('Entity forms', addonRoot);
+  addonRoot.SubElements.Add(entityForms);
+  for i:=0 to EntityTBX_2.Subelements.Count-1 do
+  begin
+    Entity:=TTreeMapEntity(EntityTBX_2.SubElements[i]);
+    eForm:=QFormCfg.Create(Entity.Name, entityForms);
+    entityForms.Subelements.Add(eForm);
+    for j:=Entity.Specifics.Count-1 downto 0 do
+    begin
+      if Entity.Specifics.Names[j][1]=';' then continue; // skip ;desc, ;incl etc
+      eSpec:=QInternalObject.Create(Entity.Specifics.Names[j], eForm);
+      eSpec.SpecificsAdd('txt=&');
+      eSpec.SpecificsAdd('hint=(insert hint here)');
+      eSpec.SpecificsAdd('typ='+GuessArgType(Entity.Specifics.Names[j], Entity.Specifics.Values[Entity.Specifics.Names[j]]));
+      Entity.Specifics.Delete(J);
+      eForm.SubElements.Add(eSpec);
+    end;
+    if Entity.TypeInfo = ':e' then
+      Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
+  end;
+  (*
+    Open file in window
+  *)
+  addonRoot.OpenStandAloneWindow(Nil, False);
 end;
 
 initialization
