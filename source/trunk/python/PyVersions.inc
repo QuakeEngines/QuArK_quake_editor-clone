@@ -15,6 +15,9 @@
 
 {$ELSE}
 (* Otherwise, sets PYTHON15 by default (for backwards compatibility): *)
+{$IFDEF PYTHON23_OR_HIGHER}
+{$DEFINE PYTHON22_OR_HIGHER}
+{$ENDIF}
 {$IFDEF PYTHON22_OR_HIGHER}
 {$DEFINE PYTHON21_OR_HIGHER}
 {$ENDIF}
