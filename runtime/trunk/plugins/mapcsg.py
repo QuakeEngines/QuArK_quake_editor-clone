@@ -334,12 +334,15 @@ def FaceSub1click(m):
 
 #--- add the new menu items into the "Commands" menu ---
 
-CSG1 = quarkpy.qmenu.item("&Brush subtraction", CSG1click, "|Brush subtraction is the process of 'digging' a hole with the shape of a given polyhedron.Design a polyhedron with the shape of the hole, move it at the location where you expect a hole (that is, it must overlap at least one other polyhedron), and select this command. The polyhedrons that overlap this one will be 'digged'. If necessary, you can then remove the hole-shaped polyhedron.\n\nNote that all polyhedrons are always convex : this means that the polyhedrons you are digging into will usually be broken into several smaller pieces, each convex. To prevent these extra polyhedrons to make your map too complex, use a Negative polyhedron (a button bottom left after you selected a polyhedron), or a Digger (from the New Items window).\n\nThere are other features that also lets you make holes; the most useful is probably the polyhedron cutter (button 'cut polyhedrons in two', top)\n\n"
- + "If you select several polyhedrons, the last one subtracts in the other ones only (instead of in the whole world). You can use a group instead of a polyhedron as subtracter.")
-FaceSub1 = quarkpy.qmenu.item("&Face Sharing subtraction", FaceSub1click, "|A special version of the previous command, 'Brush subtraction'. The small broken pieces will be designed to share common faces, so that you can still resize the broken polyhedron as a whole without having to resize each piece. This command, however, may produce a result that gets a bit confusing.")
-ExtWall1 = quarkpy.qmenu.item("&Extrude walls", ExtWall1click, "|Extrudes walls from the faces, deletes the poly(s).") #DECKER Code by tiglari
-Hollow1 = quarkpy.qmenu.item("&Make hollow", Hollow1click, "|Makes the selected polyhedron or polyhedrons hollow. If several touching polyhedrons are selected, the whole shape they define will be made hollow.\n\nYou can set the wall width by clicking on the button 'change toolbar settings', under 'inflate/deflate by'. A positive value means extruded polyhedrons, a negative value means digged polyhedrons.")
-Intersect1 = quarkpy.qmenu.item("&Intersection", Intersect1click, "|Computes the intersection of two or more overlapping polyhedrons.")
+CSG1 = quarkpy.qmenu.item("&Brush subtraction", CSG1click, "|Brush subtraction:\n\nThis function will subtract one brush from another.\n\nFirst select the brush you want the subtraction to occur on.\nNext select the brush that should be subtracted from the first.\nThen you activate this menu item, or press the accellerator key CTRL+B.\n\nSee the infobase for more detail and other ways to use this function.|intro.mapeditor.menu.html#brushsubtraction")
+
+FaceSub1 = quarkpy.qmenu.item("&Face Sharing subtraction", FaceSub1click, "|Face Sharing subtraction:\n\nA special version of the previous command, 'Brush subtraction'. The small broken pieces will be designed to share common faces, so that you can still resize the broken polyhedron as a whole without having to resize each piece. This command, however, may produce a result that gets a bit confusing.|intro.mapeditor.menu.html#facesharesubtract")
+
+ExtWall1 = quarkpy.qmenu.item("&Extrude walls", ExtWall1click, "|Extrude walls:\n\nThis extrudes walls from the faces, deletes the poly(s).|intro.mapeditor.menu.html#facesharesubtract") #DECKER Code by tiglari
+
+Hollow1 = quarkpy.qmenu.item("&Make hollow", Hollow1click, "|Make hollow:\n\nMakes the selected polyhedron or polyhedrons hollow. If several touching polyhedrons are selected, the whole shape they define will be made hollow.\n\nYou can set the wall width by clicking on the button 'change toolbar settings', under 'inflate/deflate by'. A positive value means extruded polyhedrons, a negative value means digged polyhedrons.|intro.mapeditor.menu.html#facesharesubtract")
+
+Intersect1 = quarkpy.qmenu.item("&Intersection", Intersect1click, "|Intersection:\n\nComputes the intersection of two or more overlapping polyhedrons.\n\nThis is basically a kind of brush adding function. It will try to create a new polyhedron which occupy the common area of the selected polyhedrons.|intro.mapeditor.menu.html#facesharesubtract")
 
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(CSG1)
@@ -360,6 +363,9 @@ quarkpy.mapentities.PolyhedronType.menubegin = newmenubegin
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2001/03/29 20:57:45  tiglari
+# added 2nd subtraction routime, some tests
+#
 # Revision 1.4  2001/03/20 08:02:16  tiglari
 # customizable hot key support
 #

@@ -1297,14 +1297,14 @@ def TaggedWrapClick(m):
 #  for the texture-fitting operations)
 #
 
-tagtext = "|`Tags' a side for reference in later operations of positioning and alignment.\n\nThe tagged side then appears in red."
+tagtext = "|Tag side:\n\n`Tags' a side for reference in later operations of positioning and alignment.\n\nThe tagged side then appears in red.|intro.mapeditor.menu.html#commandsmenu"
 
 gluetext = "Moves & aligns this side to the tagged one"
 gluepttext = "Moves this side to the tagged point"
 
-aligntext = "|Copies the texture from the tagged face to this one, wrapping around a shared edge with proper alignment.\n\nThis is only really supposed work when the faces abutt at an edge, although it sometimes works more generally."
-mirroraligntext = "|Like aligntex, but wraps from a mirror-image of the face.\n\nUseful for aligning textures with bezier curves from the shape-generators"
-wraptext = "|Wraps from tagged, around pillar in direction of selected, scaling to eliminate seams.\n\nWon't work if the edges to be wrapped around aren't all paralell, and scales texture minimally to fit.  `preserve aspect ration' option controls whether one or both texture dimensions are scaled.\n\n  Beta Version"
+aligntext = "|Wrap texture from tagged:\n\nCopies the texture from the tagged face to this one, wrapping around a shared edge with proper alignment.\n\nThis is only really supposed work when the faces abutt at an edge, although it sometimes works more generally.|intro.mapeditor.menu.html#commandsmenu"
+mirroraligntext = "|Like aligntex, but wraps from a mirror-image of the face.\n\nUseful for aligning textures with bezier curves from the shape-generators|intro.mapeditor.menu.html#commandsmenu"
+wraptext = "|Wraps from tagged, around pillar in direction of selected, scaling to eliminate seams.\n\nWon't work if the edges to be wrapped around aren't all paralell, and scales texture minimally to fit.  `preserve aspect ration' option controls whether one or both texture dimensions are scaled.\n\n  Beta Version|intro.mapeditor.menu.html#commandsmenu"
 
 aspecttext = "|If checked, aspect ratio of textures is preserved when texture is scaled wrapping around multiple sides (pillar and multi-wrap).\n\n Click to toggle check."
 checkaspectratio = qmenu.item("Preserve aspect ratio", ToggleCheck, aspecttext)
@@ -1832,12 +1832,12 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
   except AttributeError: pass
 
 mentagside  = qmenu.item("&Tag side", TagSideClick, tagtext)
-mencleartag = qmenu.item("&Clear Tag", ClearTagClick, "Clears tag")
-menglueside = qmenu.item("&Glue to Tagged", GlueSideClick, "Moves & aligns sel. side to tagged side")
-menaddtotagged = qmenu.item("&Add to tagged", AddtoTaggedClick, "Adds side to tagged list")
+mencleartag = qmenu.item("&Clear Tag", ClearTagClick, "|Clear Tag:\n\nClears (cancels) all the tags that have been set.|intro.mapeditor.menu.html#commandsmenu")
+menglueside = qmenu.item("&Glue to Tagged", GlueSideClick, "|Glue to Tagged:\n\nMoves & aligns the selected side to tagged side.|intro.mapeditor.menu.html#commandsmenu")
+menaddtotagged = qmenu.item("&Add to tagged", AddtoTaggedClick, "|Add to tagged:\n\nAdds side to tagged list.|intro.mapeditor.menu.html#commandsmenu")
 menaligntex = qmenu.item("&Wrap texture from tagged", AlignTexClick, aligntext)
-menlinksel  = qmenu.item("&Link selected",LinkSelClick,"Link the selected faces")
-#mengluelinked = qmenu.item("Gl&ue linked",GlueLinkedClick,"Glue linked faces to the selected one")
+menlinksel  = qmenu.item("&Link selected",LinkSelClick,"|Link selected:\n\nLink the selected faces.\n\nWhat the Link selection command then does is 'link' all of the selected faces so that if one is moved, you will be invited to move all the others with it.\n\nSee the infobase for more on how to select items and activate this function.|intro.mapeditor.menu.html#commandsmenu")
+#mengluelinked = qmenu.item("Gl&ue linked",GlueLinkedClick,"|Glue linked:\n\nGlue linked faces to the selected one.|intro.mapeditor.menu.html#commandsmenu")
 
 quarkpy.mapcommands.items.append(qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(mentagside)
@@ -1885,6 +1885,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.24  2003/03/15 06:56:56  cdunde
+#To add hint updates and infobaselinks
+#
 #Revision 1.23  2003/01/03 07:50:42  tiglari
 #transfer texture-mirror, swapsides_leavetex from rel-63a brancy
 #

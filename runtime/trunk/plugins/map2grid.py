@@ -178,13 +178,16 @@ def TFTGclick (m):
 
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(
-  quarkpy.qmenu.item("Tricky force to grid...", TFTGclick, "Repairs off-the-grid maps"))
+  quarkpy.qmenu.item("Tricky force to grid...", TFTGclick, "|Tricky force to grid:\n\nRepairs maps that are off-the-grid.|intro.mapeditor.menu.html#commandsmenu"))
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.3  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

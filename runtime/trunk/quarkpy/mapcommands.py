@@ -20,7 +20,7 @@ def newitem1click(m):
     quarkx.opentoolbox("New map items...")
 
 
-NewItem1 = qmenu.item("&Insert map item...", newitem1click, "opens the 'New Map items' window")
+NewItem1 = qmenu.item("&Insert map item...", newitem1click, "|Opens the 'New Map items' window:\n\nThis window contains all objects thats possible to use in the map-views and dataform-display. |intro.mapeditor.misctools.html#newmapitem")
 
 
 #
@@ -43,6 +43,9 @@ def CommandsMenu():
 #
 #
 #$Log$
+#Revision 1.4  2001/04/28 02:22:08  tiglari
+#add 'insert' shortcut loader
+#
 #Revision 1.3  2001/03/20 07:59:40  tiglari
 #customizable hot key support
 #

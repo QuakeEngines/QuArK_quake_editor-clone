@@ -419,14 +419,14 @@ class BaseLayout:
         self.zoombar = ZoomBar(self.views, CompassPanel.newrightpanel(16,0), self.MODE)
 
         if ico_maped[0][0].size[1] <= 16:
-            NewItem = [qtoolbar.button(self.NewItem1Click, "new item", ico_objects, iiNewFolder)]
+            NewItem = [qtoolbar.button(self.NewItem1Click, "New item||New item:\n\nThis window contains all objects thats possible to use in the map-views and dataform-display.|intro.mapeditor.misctools.html#newmapitem", ico_objects, iiNewFolder)]
         else:
             NewItem = []
-        Trash = qtoolbar.button(self.editor.editcmdclick, "delete selected item", ico_maped, 2)
+        Trash = qtoolbar.button(self.editor.editcmdclick, "Delete selected item, just drag & drop||Delete selected item|intro.mapeditor.misctools.html#trashcan", ico_maped, 2)
         Trash.cmd = "del"
         Trash.ondrop = self.editor.trash1drop
-        Undo = qtoolbar.macrobtn("MURD", "multiple undo/redo", ico_maped, 6)
-        NewGroup = qtoolbar.button(self.editor.editcmdclick, "new group", ico_maped, 16)
+        Undo = qtoolbar.macrobtn("MURD", "Multiple undo/redo||Multiple undo/redo:\n\nThe icon will open up the undo/redo display. |intro.mapeditor.misctools.html#undoredo", ico_maped, 6)
+        NewGroup = qtoolbar.button(self.editor.editcmdclick, "New group||New group:\n\nCreates a new group in the tree-view, where you can place other objects in, so they are neatly grouped together.|intro.mapeditor.misctools.html#newgroup", ico_maped, 16)
         NewGroup.cmd = "newgroup"
         bb = CompassPanel.newbtnpanel(NewItem + [Trash, Undo, NewGroup])
         bb.margins = (2,1)
@@ -608,6 +608,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.10  2003/03/21 05:57:05  cdunde
+#Update infobase and add links
+#
 #Revision 1.8  2003/02/01 02:13:22  cdunde
 #Add items to grid selection
 #

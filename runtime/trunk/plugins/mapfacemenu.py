@@ -247,12 +247,17 @@ def LookAtMe(m):
 
 #--- add the new menu items into the "Commands" menu ---
 
-ForceAngle1 = quarkpy.qmenu.item("&Adjust angle", ForceAngle)
-Orientation1 = quarkpy.qmenu.item("&Orientation...", Orientation)
-DeleteSide1 = quarkpy.qmenu.item("&Delete face", deleteside)
-MakeCone1 = quarkpy.qmenu.item("&Cone over face", makecone)
-SwapSides1 = quarkpy.qmenu.item("&Swap face sides", swapsides)
-LookAt1 = quarkpy.qmenu.item("Look &At", LookAtMe, "|An open 3D view shifts to look at this face head on.\n (SHIFT to look at the face from the back)")
+ForceAngle1 = quarkpy.qmenu.item("&Adjust angle", ForceAngle,"|Adjust angle:\n\nThis is only active when you have selected a face. This will bring the angle of the face on the polyhedron, to the nearest angle by which you specified in the 'Building'.|intro.mapeditor.menu.html#orientation")
+
+Orientation1 = quarkpy.qmenu.item("&Orientation...", Orientation,"|Orientation:\n\nThis is only active when you have selected a face. It will bring up a window where you can edit some attribures about the face.\n\nHowever, its not recommended that you do it this way, unless you know what you're doing!|intro.mapeditor.menu.html#orientation")
+
+DeleteSide1 = quarkpy.qmenu.item("&Delete face", deleteside,"|Delete face:\n\nAs it says. However, deleting a face will very likely make a polyhedron invalid.|intro.mapeditor.menu.html#orientation")
+
+MakeCone1 = quarkpy.qmenu.item("&Cone over face", makecone,"|Cone over face:\n\nThis will create a new set of faces in style as a cone, over the selected face. The number of new faces will be the number of edges the selected face has.|intro.mapeditor.menu.html#orientation")
+
+SwapSides1 = quarkpy.qmenu.item("&Swap face sides", swapsides,"|Swap face sides:\n\nWill swap the face inside-out. Do not use this, unless you really want to!|intro.mapeditor.menu.html#orientation")
+
+LookAt1 = quarkpy.qmenu.item("Look &At", LookAtMe, "|Look At:\n\nAn open 3D view shifts to look at this face head on.\n (SHIFT to look at the face from the back)|intro.mapeditor.menu.html#orientation")
 
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(Orientation1)
@@ -295,6 +300,9 @@ quarkpy.mapentities.FaceType.menu = newmenu
 #
 #
 # $Log$
+# Revision 1.5  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.4  2001/06/16 03:29:36  tiglari
 # add Txt="" to separators that need it
 #

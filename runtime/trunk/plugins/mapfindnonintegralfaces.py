@@ -176,7 +176,7 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Non-integral Faces', findNonInt
  "|Find Non-integral Faces:\n\nThis finds faces that don't have integral threepoints.\n\nUse integralize Selected Faces on the command menu to try to automatically fix them.\n\nIf you want a particular group to be allowed to contain faces with non-integral threepoints, give it a nonintegral specific with a value such as 1.|intro.mapeditor.menu.html#searchmenu"))
 
 quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integralizeFaces,
- "|If faces without integral threepoints have enough integral vertices to be used as threepoints, changes the face to use them (also forces nearly integral ones).\n\nSelects the ones it changes, for checking.\n\nUse Find Non-integral Faces on the search menu to find suitable victims.\n\nResearch and fix the remaining ones by hand."))
+ "|Integralize Selected Faces:\n\nIf faces without integral threepoints have enough integral vertices to be used as threepoints, changes the face to use them (also forces nearly integral ones).\n\nSelects the ones it changes, for checking.\n\nUse Find Non-integral Faces on the search menu to find suitable victims.\n\nResearch and fix the remaining ones by hand.|intro.mapeditor.menu.html#orientation"))
 
 
 
@@ -184,6 +184,9 @@ quarkpy.mapcommands.items.append(qmenu.item('Integralize Selected Faces', integr
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.4  2003/03/21 06:28:52  cdunde
+# To correct typo error
+#
 # Revision 1.2  2003/01/02 22:36:26  tiglari
 # transferred from rel-c63a branch
 #

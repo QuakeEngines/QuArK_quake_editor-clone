@@ -2,7 +2,7 @@ title: New group
 author: Decker
 
 <img border=0 align=right>newgroup.png</img>
-Creates a new group in in the tree-view, where you can place other objects in,
+Creates a new group in the tree-view, where you can place other objects in,
 so they are neatly grouped together.
 
 Once you have created a group, you can keep your mouse-cursor in the dataform

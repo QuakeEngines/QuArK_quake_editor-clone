@@ -239,7 +239,7 @@ def dissociate1click(m):
     editor.ok(undo, "dissociate images")
 
 
-dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click,'|If the duplicator is an "out" duplicator, and there are others (immediately) in the group, they will all be dissociated together.')
+dissociate = quarkpy.qmenu.item("Dissociate Duplicator images", dissociate1click,"|Dissociate Duplicator images:\n\nOnly active when you have selected a duplicator. This will create actural copies of the duplicator-object(s), and remove the duplicator itself.\n\nIf the duplicator is an 'out' duplicator, and there are others (immediately) in the group, they will all be dissociated together.|intro.mapeditor.menu.html#disdupimages")
 
 
 #
@@ -301,12 +301,15 @@ quarkpy.mapduplicator.DupCodes.update({
 def resetTextureCycleClick(m):
     quarkpy.mapduplicator.Dup_Tex_Dicts={}
 
-quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCycleClick,"|Reload files specifying texture cycles for duplicators"))
+quarkpy.mapcommands.items.append(qmenu.item("Reset Texture Cycle",resetTextureCycleClick,"|Reset Texture Cycle:\n\nReload files specifying texture cycles for duplicators.|intro.mapeditor.menu.html#disdupimages"))
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.11  2001/10/22 10:15:48  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.10  2001/09/23 07:00:34  tiglari
 # mitered edges for wall maker duplicator
 #

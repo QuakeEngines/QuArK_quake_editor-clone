@@ -462,11 +462,15 @@ def MakePrismClick(m):
 
 # Register the replace texture menu item
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep) # separator
-quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClick))
+quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClick, "|Make Prism:\n\nThis opens a dialog window for your input to create a prism of various types as well as texture selection.|intro.mapeditor.menu.html#makeprism"))
 
 #----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.10  2003/02/01 01:04:41  cdunde
+# Reactivate ramp selection and add script
+# to remove newly created broken polys and faces.
+#
 # Revision 1.8  2001/06/17 21:10:57  tiglari
 # fix button captions
 #
