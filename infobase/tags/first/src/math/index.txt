@@ -1,0 +1,5 @@
+title: Math Background
+subdir: linear
+
+Map editing involves a substantial 3d math, here is some
+brief discussion of various aspects of the background.
