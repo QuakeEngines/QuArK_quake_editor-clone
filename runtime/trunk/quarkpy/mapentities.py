@@ -358,9 +358,11 @@ class FaceType(EntityManager):
         Tex1 = qmenu.item("&Choose Texture...", mapbtns.texturebrowser, "choose texture for face")
         texpop = qmenu.popup("&Texture",[Tex1]+ mapmenus.MenuTexFlags(editor))
         texpop.label = 'texpop'
+        import mapselection
+        Cancel1 = qmenu.item("&Cancel Selections", mapselection.EscClick, "cancel all items selected")
         Force1 = qmenu.item("&Force center to grid", editor.ForceEverythingToGrid, "force to grid")
         Force1.state = not editor.gridstep and qmenu.disabled
-        return h + [texpop, qmenu.sep, Force1]
+        return h + [texpop, qmenu.sep, Cancel1, qmenu.sep, Force1]
 
 
 #
@@ -630,6 +632,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28  2001/08/16 20:09:29  decker_dk
+#Put 'Add user center' menuitem on Treeview Group's context-menu. Its more visible there.
+#
 #Revision 1.27  2001/04/10 08:52:57  tiglari
 #remove CustomObjectOrigin
 #
