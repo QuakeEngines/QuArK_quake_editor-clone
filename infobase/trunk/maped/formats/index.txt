@@ -18,7 +18,7 @@ whether the texture should be mirror-imaged or not.  This gives full
 flexibility in positioning textures, but <I>may</I> be associated with
 some small errors in vertex positioning (it's not certain that this is
 really a problem in output maps).
-<LI>Valve 230: Valve's enhancement of Classic Quake.
+<LI>Valve 220: Valve's enhancement of Classic Quake.
 <LI>Brush Primitives: Id's enhancement of Classic Quake, for Q3 and RCTW
 (will probably be supported for any games that GtkRadiant comes to support).
 </UL>
