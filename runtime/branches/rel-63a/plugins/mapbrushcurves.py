@@ -402,6 +402,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0
     else:
         base, side = map(makeFace, ("l","f"))
     base.shortname, side.shortname = "base", "side"
+    base["tex"]=fdict["b"]["tex"]
     for i in range(subdivide):
         brush = quarkx.newobj('bevelImage brush'+`i`+':p') # DECKER 2002-08-09: A more descriptive name for debugging. The previous made it a bit confusing to read in .MAP comments.
         brush.appenditem(base)
@@ -669,6 +670,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.13.6.1  2002/10/11 10:57:45  tiglari
+#updates by Decker, transferred from main branch
+#
 #Revision 1.14  2002/08/09 09:59:02  decker_dk
 #Fixed a problem, where the bevelImage() could end up using a face without a
 #texture-name attached. Look for "DECKER 2002-08-09"
