@@ -830,6 +830,7 @@ class BTLinHandlesManager(qhandles.LinHandlesManager):
         return quarkx.vect(p.x/w, p.y/h, 0.0)
 
     def linear(self, sender, obj, center, matrix):
+        debug('lin')
         if obj.type==":b3":
             obj.vst = sender.dynst = map(self.p2t, map(lambda v,center=center,matrix=matrix: matrix*(v-center)+center, map(self.t2p, obj.vst)))
         else:
@@ -1268,7 +1269,6 @@ def viewsinglebezier(view, layout, patch):
                 if v.x>xmax: xmax=v.x
                 if v.y<ymin: ymin=v.y
                 if v.y>ymax: ymax=v.y
-            debug(`view`)
             destx, desty = view.clientarea
             scale = (destx-35) / ((xmax-xmin+0.05)*w)
             scaley = (desty-35) / ((ymax-ymin+0.05)*h)
@@ -1307,16 +1307,20 @@ def viewsinglebezier(view, layout, patch):
             manager = BTLinHandlesManager(MapColor("Linear"),
                   (quarkx.vect(w*xmin,h*ymin,0),quarkx.vect(w*xmax,h*ymax,0)), [patch])
             manager.scale = w,h
-            if layout.editor.linearbox:
-                minimal = None
-            else:
-                minimal = (view, layout.editor.gridstep or 32)
-            h1 = manager.BuildHandles(minimal=minimal)
-            getdrawmap1 = lambda patch=patch: (patch, qhandles.refreshtimertex)
-            for i in h1:
-                i.getdrawmap = getdrawmap1
-            mainhandle.friends = mainhandle.friends + h1
-            view.handles = h2 + h1
+#
+# Linear mapping in bez box, can't make it work
+#
+#            if layout.editor.linearbox:
+#                minimal = None
+#            else:
+#                minimal = (view, layout.editor.gridstep or 32)
+#            h1 = manager.BuildHandles(minimal=minimal)
+#            getdrawmap1 = lambda patch=patch: (patch, qhandles.refreshtimertex)
+#            for i in h1:
+#                i.getdrawmap = getdrawmap1
+#            mainhandle.friends = mainhandle.friends + h1
+#            view.handles = h2 + h1
+            view.handles = h2
             view.background = tex, quarkx.vect(0,0,0), 1.0
             view.screencenter = mainhandle.getcenter()
             return 1
@@ -1331,6 +1335,9 @@ def singlebezierzoom(view):
 #
 #
 #$Log$
+#Revision 1.9  2001/02/25 11:22:51  tiglari
+#bezier page support, transplanted with permission from CryEd (CryTek)
+#
 #Revision 1.8  2001/02/07 18:40:47  aiv
 #bezier texture vertice page started.
 #
