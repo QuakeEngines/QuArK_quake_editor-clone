@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2005/01/27 21:05:22  alexander
+we can load a vmf map now, ignoring the entities
+
 Revision 1.1  2005/01/27 00:16:13  alexander
 added vmf file loading (brushes only)
 
@@ -53,7 +56,6 @@ type
 
  {------------------------}
 
-//function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 
  {------------------------}
 
@@ -67,7 +69,7 @@ uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
  {------------------------}
 
 
-function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
+function ReadEntityList(Root: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 const
  cSeperators = [' ', #13, #10, Chr(vk_Tab)];
  cExponentChars = ['E', 'e'];
@@ -92,20 +94,16 @@ var
  NumericValue: Double;
  P: TPolyhedron;
  Surface: TFace;
- I, ContentsFlags: Integer;
  WorldSpawn: Boolean;
- Entite, EntitePoly: TTreeMapSpec;
- L: TStringList;
+ Entities, MapStructure : TTreeMapGroup;
+
  LineNoBeingParsed: Integer;
  Juste13,  ReadSymbolForceToText: Boolean;
- HullNum, BrushNum, FaceNum: Integer;
- HullList: TList;
+ BrushNum, FaceNum: Integer;
  Source, Prochain: PChar;
- Entities, MapStructure : TTreeMapGroup;
  Params: TFaceParams;
  InvPoly, InvFaces: Integer;
  TxCommand: Char;
- SpecIndex: integer;
  UAxis, VAxis : TVect;
  UShift, VShift: Double;
 
@@ -347,21 +345,18 @@ procedure WC33Params;
        NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
        SetThreePointsEx(NP0,NP1,NP2,Normale);
      except
-       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum)+' in hull '+IntToStr(HullNum+1));
+       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum));
      end;
   end;
  end;
 
- procedure ReadHL2Solid;
+ procedure ReadHL2Solid(parentgroup: TTreeMapSpec);
  // tbd , visgroups, entities, groups
  type
    t_vectarray = array [1..3] of TVect;
    t_txarray = array [1..5] of double;
  var
-//   R1, R2, TexS, TexT, Tex0, P0, P1, P2, ZVect : TVect;
    V : t_vectarray ;
-//   Denom : Double;
-//   Matrix : TMatrixTransformation;
    u_txdata,v_txdata :  t_txarray;
 
   //"(-512 0 64) (0 0 64) (0 -512 64)"
@@ -406,10 +401,10 @@ procedure WC33Params;
 
   ReadSymbol(sStringToken); // solid
   ReadSymbol(sCurlyBracketLeft);
+  Inc(BrushNum);
 
-  P:=TPolyhedron.Create(LoadStr1(138), EntitePoly);
-  EntitePoly.SubElements.Add(P);
-  ContentsFlags:=0;
+  P:=TPolyhedron.Create(LoadStr1(138), parentgroup);
+  parentgroup.SubElements.Add(P);
 
   // read solid attributes
   while SymbolType=sStringQuotedToken do
@@ -547,10 +542,18 @@ procedure WC33Params;
  end;
 
 
- procedure ReadHL2Entity;
+ procedure ReadHL2Entity(parentgroup: TTreeMapSpec);
+ var
+   Entity : TTreeMapSpec;
+   SpecificList: TStringList;
+   classname: String;
  begin
+   entity := nil;
    ReadSymbol(sStringToken);
    ReadSymbol(sCurlyBracketLeft);
+   SpecificList:=TStringList.Create;
+   SpecificList.Clear;
+
 
    // read attributes of entity
    while SymbolType<>sCurlyBracketRight do
@@ -560,10 +563,11 @@ procedure WC33Params;
      begin
        S1:=S;
        ReadSymbol(sStringQuotedToken);
-       if (S1='classname') and (S='worldspawn') then
+       if (S1='classname')  then
        begin
-
+          classname:=S;
        end;
+       SpecificList.Add(S1+'='+S);
        ReadSymbol(sStringQuotedToken);
      end
      else
@@ -596,11 +600,23 @@ procedure WC33Params;
          end
          else
            if (SymbolType = sStringToken) and (LowerCase(s)='solid') then
-             ReadHL2Solid
+           begin
+             Entity:=TTreeMapBrush.Create(classname, parentgroup);
+             parentgroup.SubElements.Add(Entity);
+             ReadHL2Solid(Entity);
+           end
            else
              raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
 
    end; //while SymbolType<>sCurlyBracketRight
+
+   if entity = nil then
+   begin
+     Entity:=TTreeMapEntity.Create(classname, parentgroup);
+     parentgroup.SubElements.Add(Entity);
+   end;
+
+   Entity.Specifics.Assign(SpecificList);
    ReadSymbol(sCurlyBracketRight);
 
  end;
@@ -650,11 +666,8 @@ procedure WC33Params;
      ReadSymbol(sStringQuotedToken);
      if (S1='classname') and (S='worldspawn') then
      begin
-       Entite:=Racine;
-       EntitePoly:=MapStructure;
        WorldSpawn:=True;
-       HullNum:=0;
-       Racine.Name:=ClassnameWorldspawn;
+       Root.Name:=ClassnameWorldspawn;
      end;
      ReadSymbol(sStringQuotedToken);
 
@@ -665,7 +678,7 @@ procedure WC33Params;
 
      while SymbolType = sStringToken do  {read a brush}
        if LowerCase(s)='solid' then
-         ReadHL2Solid
+         ReadHL2Solid(MapStructure)
        else
          if LowerCase(s)='group' then
            ReadHL2GenericHierarchy
@@ -708,14 +721,13 @@ begin
     InvFaces:=0;
     Juste13:=False;
     {FinDeLigne:=False;}
-    HullList:=Nil;
-    L:=TStringList.Create;
+//    L:=TStringList.Create;
     try   { L and HullList get freed by finally, regardless of exceptions }
      WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
-     Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
-     Racine.SubElements.Add(Entities);
-     MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Racine);
-     Racine.SubElements.Add(MapStructure);
+     Entities:=TTreeMapGroup.Create(LoadStr1(136), Root);
+     Root.SubElements.Add(Entities);
+     MapStructure:=TTreeMapGroup.Create(LoadStr1(137), Root);
+     Root.SubElements.Add(MapStructure);
      {Rowdy}
      ReadSymbol(sEOF);
      while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
@@ -758,7 +770,7 @@ begin
                  else
                    //found string entity
                    if CompareText(S,'entity')=0 then
-                     ReadHL2Entity
+                     ReadHL2Entity(Entities)
                    else
                      //found string hidden
                      if CompareText(S,'hidden')=0 then
@@ -768,38 +780,13 @@ begin
 
      end;
 
-
-
-
-      { Remove the spec/arg "mapversion" from worldspawn,
-      since QuArK will write it depending on whether the
-      game config is set to write this format }
-      SpecIndex := L.IndexOfName('mapversion');
-      if (SpecIndex >= 0) then
-        L.Delete(SpecIndex);
-
-      {Entite.Item.Text:=Classname;}
-       Entite.Specifics.Assign(L);
-      {Entite.SpecificsChange;}
-
-
-     if HullList<>Nil then
-      for I:=0 to HullList.Count-1 do
-       begin
-        EntitePoly:=TTreeMapSpec(HullList[I]);
-        if EntitePoly<>Nil then
-         EntitePoly.SubElements.Add(TBSPHull.CreateHull(BSP, I, EntitePoly as TTreeMapGroup));
-       end;
-
     if not WorldSpawn then
        Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(255)]);
 
     finally
-       L.Free;
-       HullList.Free;
     end;
 
-    Racine.FixupAllReferences;
+    Root.FixupAllReferences;
   finally
     ProgressIndicatorStop;
   end;
