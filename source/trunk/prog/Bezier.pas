@@ -496,71 +496,161 @@ end;
  { Draw the Bezier patch on map views }
 procedure TBezier.Dessiner;
 var
- PP, PP2, P, Dest: PPointProj;
+ PP, P, Dest: PPointProj;
  I, J: Integer;
  V: TVect;
- OldPen, NewPen: HPen;
+ NewPen, VisChecked: Boolean;
  Source: vec3_p;
+ ScrAnd: Byte;
+ PointBuffer, PtDest1, PtDest2: PPoint;
+ CountBuffer, CountDest: PInteger;
+ Pt: TPoint;
 begin
  if not Assigned(FMeshCache.CP) then
   BuildMeshCache;
- GetMem(PP, FMeshCache.W*FMeshCache.H*(SizeOf(TPointProj)*2)); try
- PP2:=PP;
- Inc(PP2, FMeshCache.W*FMeshCache.H);
- Source:=FMeshCache.CP;
+ J:=FMeshCache.W*FMeshCache.H*SizeOf(TPointProj);
+ if CCoord.FastDisplay then
+  Inc(J, FMeshCache.W*FMeshCache.H*(2*SizeOf(TPoint)) + (FMeshCache.W+FMeshCache.H)*SizeOf(Integer))
+ else
+  Inc(J, FMeshCache.H*SizeOf(TPointProj));
+ GetMem(PP, J); try
  Dest:=PP;
+ Source:=FMeshCache.CP;
  for J:=0 to FMeshCache.H-1 do
-  begin
-   P:=PP2;
-   Inc(P, J);
-   for I:=0 to FMeshCache.W-1 do
-    begin
-     V.X:=Source^[0];
-     V.Y:=Source^[1];
-     V.Z:=Source^[2];
-     Inc(Source);
-     Dest^:=CCoord.Proj(V);
-     CCoord.CheckVisible(Dest^);
-      { transpose the PP matrix }
-     P^:=Dest^;
-     Inc(Dest);
-     Inc(P, FMeshCache.H);
-    end;
-  end;
+  for I:=0 to FMeshCache.W-1 do
+   begin
+    V.X:=Source^[0];
+    V.Y:=Source^[1];
+    V.Z:=Source^[2];
+    Inc(Source);
+    Dest^:=CCoord.Proj(V);
+    Inc(Dest);
+   end;
 
+ VisChecked:=False;
+ NewPen:=False;
  if Info.PinceauSelection<>0 then
   begin
-   NewPen:=Info.PinceauSelection;
-  {OldROP:=SetROP2(Info.DC, R2_CopyPen);}
+   {OldPen:=}SelectObject(Info.DC, Info.PinceauSelection);
+   {OldROP:=}SetROP2(Info.DC, R2_CopyPen);
   end
  else
-  NewPen:=CreatePen(ps_Solid, 0, MapColors(lcBezier));
- OldPen:=SelectObject(Info.DC, NewPen);
- SetROP2(Info.DC, R2_CopyPen);
- try
-  { draw the horizontal lines followed by the vertical lines }
-  P:=PP;
-  for J:=1 to FMeshCache.H do
-   begin
-    CCoord.Polyline95f(P^, FMeshCache.W);
-    Inc(P, FMeshCache.W);
-   end;
-
-   { now draw the vertical lines }
-  for I:=1 to FMeshCache.W do
-   begin
-    CCoord.Polyline95f(P^, FMeshCache.H);
-    Inc(P, FMeshCache.H);
-   end;
-
- finally
-  SelectObject(Info.DC, OldPen);
-  if Info.PinceauSelection<>0 then
-  {SetROP2(Info.DC, OldROP)}
+  if (Info.Restrictor=Nil) or (Info.Restrictor=Self) then   { True if object is not to be greyed out }
+   if Info.ModeAff>0 then
+    begin
+     ScrAnd:=os_Back or os_Far;
+     for I:=1 to FMeshCache.W*FMeshCache.H do
+      begin
+       Dec(Dest);
+       CCoord.CheckVisible(Dest^);
+       ScrAnd:=ScrAnd and Dest^.OffScreen;
+      end;
+     VisChecked:=True;
+     if ScrAnd<>0 then
+      begin
+       if (Info.ModeAff=2) or (ScrAnd and CCoord.HiddenRegions <> 0) then
+        Exit;
+       SelectObject(Info.DC, Info.PinceauGris);
+       SetROP2(Info.DC, Info.MaskR2);
+      end
+     else
+      NewPen:=True;
+    end
+   else
+    NewPen:=True
   else
-   DeleteObject(NewPen);
- end;
+   begin   { Restricted }
+    SelectObject(Info.DC, Info.PinceauGris);
+    SetROP2(Info.DC, Info.MaskR2);
+   end;
+ if NewPen then
+  begin
+   SelectObject(Info.DC, CreatePen(ps_Solid, 0, MapColors(lcBezier)));
+   SetROP2(Info.DC, R2_CopyPen);
+  end;
+
+ if CCoord.FastDisplay then
+  begin  { "fast" drawing method, can directly use PolyPolyline }
+    { fill the count buffer }
+   PChar(CountBuffer):=PChar(PP) + FMeshCache.W*FMeshCache.H*SizeOf(TPointProj);
+   CountDest:=CountBuffer;
+   for I:=1 to FMeshCache.W do
+    begin
+     CountDest^:=FMeshCache.H;
+     Inc(CountDest);
+    end;
+   for J:=1 to FMeshCache.H do
+    begin
+     CountDest^:=FMeshCache.W;
+     Inc(CountDest);
+    end;
+
+    { collect the X,Y of all control points into the PointBuffer }
+   PChar(PointBuffer):=PChar(CountDest);
+   PtDest1:=PointBuffer;
+   Inc(PtDest1, FMeshCache.W*FMeshCache.H);
+   P:=PP;
+   for J:=0 to FMeshCache.H-1 do
+    begin
+     PtDest2:=PointBuffer;
+     Inc(PtDest2, J);
+     for I:=0 to FMeshCache.W-1 do
+      begin
+       with P^ do
+        begin
+         Pt.X:=Round(x);
+         Pt.Y:=Round(y);
+        end;
+       Inc(P);
+       PtDest1^:=Pt;
+       PtDest2^:=Pt;
+       Inc(PtDest1);
+       Inc(PtDest2, FMeshCache.H);
+      end;
+    end;
+
+    { draw it ! }
+   PolyPolyline(Info.DC, PointBuffer^, CountBuffer^, FMeshCache.H+FMeshCache.W);
+  end
+ else
+  begin  { "slow" drawing method, if visibility checking is required (e.g. 3D views) }
+   if not VisChecked then
+    begin
+     Dest:=PP;
+     for I:=1 to FMeshCache.W*FMeshCache.H do
+      begin
+       CCoord.CheckVisible(Dest^);
+       Inc(Dest);
+      end;
+    end;
+   
+    { draw the horizontal lines first }
+   Dest:=PP;
+   for J:=1 to FMeshCache.H do
+    begin
+     CCoord.Polyline95f(Dest^, FMeshCache.W);
+     Inc(Dest, FMeshCache.W);
+    end;
+
+    { now draw the vertical lines }
+   for I:=0 to FMeshCache.W-1 do
+    begin
+     P:=PP;
+     Inc(P, I);
+     for J:=0 to FMeshCache.H-1 do
+      begin    { put on column of control points in a row }
+       Dest^:=P^;
+       Inc(Dest);
+       Inc(P, FMeshCache.W);
+      end;
+     Dec(Dest, FMeshCache.H);
+     CCoord.Polyline95f(Dest^, FMeshCache.H);
+    end;
+  end;
+ 
  finally FreeMem(PP); end;
+ if NewPen then
+  DeleteObject(SelectObject(Info.DC, Info.PinceauNoir));
 end;
 
 { to sort triangles in Z order }

@@ -100,7 +100,7 @@ type
     procedure Polygon95(var Pts; NbPts: Integer; CCW: Boolean);
     procedure Polygon95f(var Pts; NbPts: Integer; CCW: Boolean);
     procedure Polyline95(var Pts; NbPts: Integer);
-    procedure Polyline95f(var Pts; NbPts: Integer);
+    procedure Polyline95f(const Pts; NbPts: Integer);
     procedure Rectangle3D(const V1, V2, V3: TVect; Fill: Boolean);
     function MakePyVectPtf(const P: TPointProj) : PyVect;
      { screen dimension changing }
@@ -1141,11 +1141,11 @@ begin
  Polyline95f(Pts, NbPts);
 end;
 
-procedure TCoordinates.Polyline95f(var Pts; NbPts: Integer);
+procedure TCoordinates.Polyline95f(const Pts; NbPts: Integer);
 var
  I: Integer;
- Pt: ^TPointProj;
- Dest: ^TPoint;
+ Pt: PPointProj;
+ Dest, PtBuffer: PPoint;
  P1, P2: TPointProj;
  OffScr: Boolean;
 begin
@@ -1174,7 +1174,8 @@ begin
   end
  else
   begin
-   Dest:=@Pts;
+   GetMem(PtBuffer, NbPts*SizeOf(TPoint));
+   Dest:=PtBuffer;
    for I:=1 to NbPts do
     begin
      with Pt^ do
@@ -1185,7 +1186,8 @@ begin
      Inc(Pt);
      Inc(Dest);
     end;
-   Windows.Polyline(Info.DC, Pts, NbPts);
+   Windows.Polyline(Info.DC, PtBuffer^, NbPts);
+   FreeMem(PtBuffer);
   end;
 end;
 
