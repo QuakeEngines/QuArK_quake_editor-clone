@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/04/20 10:43:33  arigo
+JPeg writing fixes
+
 Revision 1.8  2000/04/19 01:29:16  tiglari
 removed kp flag stuff due to suckage
 
@@ -109,6 +112,8 @@ type
                  function Description : TPixelSetDescription; override;
                  function SetDescription(const PSD: TPixelSetDescription;
                                          Confirm: TSDConfirm) : Boolean; override;
+                 function GetSize : TPoint; override;
+                 procedure SetSize(const nSize: TPoint); override;
                  function LoadPixelSet : QPixelSet; override;
                  class function TypeInfo: String; override;
                  destructor Destroy; override;
@@ -882,6 +887,16 @@ function QTextureLnk.SetDescription(const PSD: TPixelSetDescription;
                                     Confirm: TSDConfirm) : Boolean;
 begin
  Result:=LoadPixelSet.SetDescription(PSD, Confirm);
+end;
+
+function QTextureLnk.GetSize : TPoint;
+begin
+ Result:=LoadPixelSet.GetSize;
+end;
+
+procedure QTextureLnk.SetSize(const nSize: TPoint);
+begin
+ LoadPixelSet.SetSize(nSize);
 end;
 
 procedure QTextureLnk.BreakLink;

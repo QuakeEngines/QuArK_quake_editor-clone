@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/04/18 18:47:57  arigo
+Quake 3 : auto export shaders
+
 Revision 1.4  2000/04/14 09:50:17  arigo
 more TGA flips fix
 
@@ -455,7 +458,11 @@ var
  V: array[1..2] of Single;
 begin
  if not LoadPixelSet.GetFloatsSpec('Size', V) then
-  Raise EErrorFmt(5534, ['Size']);
+  begin
+   Acces;   { Maybe the object was not loaded ? Try again. }
+   if not LoadPixelSet.GetFloatsSpec('Size', V) then
+    Raise EErrorFmt(5534, ['Size']);
+  end;
  Result.X:=Round(V[1]);
  Result.Y:=Round(V[2]);
 end;
@@ -464,6 +471,7 @@ procedure QPixelSet.SetSize(const nSize: TPoint);
 var
  V: array[1..2] of Single;
 begin
+ Acces;
  V[1]:=nSize.X;
  V[2]:=nSize.Y;
  SetFloatsSpec('Size', V);
