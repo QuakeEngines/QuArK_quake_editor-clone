@@ -176,7 +176,7 @@ def zoomToMe(m):
     editor = mapeditor()
     m.object = editor.layout.explorer.uniquesel
     if m.object is None:
-        quarkx.msgbox("You must select a single item\nto use this function.", MT_ERROR, MB_OK)
+        quarkx.msgbox("You must select a single item\nor group to use this function.", MT_ERROR, MB_OK)
         return
     else:
         mapmadsel.ZoomToMe(m)

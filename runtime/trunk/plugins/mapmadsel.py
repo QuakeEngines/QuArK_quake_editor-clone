@@ -159,6 +159,10 @@ def ZoomToMe(m):
 
     else:
         zoomToMeFunc(editor,m.object)
+
+quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("Look and Zoom in 3D views", "3Dzoom", (1,1),
+      hint="|Look and Zoom in 3D views:\n\nWhen this menu item is checked, it will zoom in on the selection(s) in all of the 3D views with the first click of the\n' Zoom to selection' button. With a second click of the button, it will center the selection(s) in the 3D views.\n\nWhen unchecked, it will only look in the selection(s) direction from the current camera position.|intro.mapeditor.menu.html#optionsmenu"))
+
         
 def zoomToMeFunc(editor,object):
     #
@@ -169,6 +173,7 @@ def zoomToMeFunc(editor,object):
     if scale1 is not None:
         layout.editor.setscaleandcenter(scale1, center1)
     #
+    # find my spot -  new cdunde
     # 3d views
     #
     views = filter(lambda v:v.info["type"]=="3D", editor.layout.views)
@@ -179,7 +184,11 @@ def zoomToMeFunc(editor,object):
         center = between(quarkx.boundingboxof([object]))
         dir = (center-pos).normalized
         pitch, yaw = vec2rads(dir)
+        if MapOption("3Dzoom"):
+            pos = dir
         view.cameraposition = pos, yaw, pitch
+        print quarkx.boundingboxof([object])
+        print view.cameraposition
     editor.invalidateviews()
 
 
@@ -1010,6 +1019,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.25  2003/04/07 14:01:13  cdunde
+# Multiple selections-fix error, add warning with instructions and keep Cancel Selections active.
+#
 # Revision 1.24  2003/03/28 02:54:40  cdunde
 # To update info and add infobase links.
 #

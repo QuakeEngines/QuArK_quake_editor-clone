@@ -43,6 +43,8 @@ the FPS-game. Uncheck this if you want your entire map build.
 
 <i>Silent Glue Linked on Drag</i>. When this option is checked, when something is dragged, faces linked to its faces will be dragged along too.
 
+<i>Look and Zoom in 3D views</i>. When this menu item is checked, it will zoom in on the selection(s) in all of the 3D views with the first click of the 'Zoom to selection' button. With a second click of the button, it will center the selection(s) in the 3D views. When unchecked, it will only look in the selection(s) direction from the current camera position.
+
 <i>No Selection in Map Views</i>. When this menu item is checked, selection in the map views is prevented. This is useful when touring with the 3d viewer, to prevent selecting things accidentally.
 
 <i>Developer Mode</i>. In this mode, some extra items appear on the menu, to help with debugging, etc.
