@@ -1,7 +1,6 @@
 QQRKSRC1
 // Configuration file for Quake 2
 
-
 //    This file contains :
 //
 //    * List of Quake 2 textures
@@ -20,6 +19,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2001/03/20 21:56:49  decker_dk
+//Added log-header / misc.
+//
 //Revision 1.1  2001/02/11 11:08:40  decker_dk
 //Moved from addons directory
 //
@@ -85,7 +87,8 @@ QQRKSRC1
                 }
       Contents:={Cap="slime"          Typ="X16"        Hint="mildly damaging"}
       Contents:={Cap="lava"           Typ="X8"         Hint="very damaging"}
-      Contents:={Cap="window"         Typ="X2"         Hint="translucent (the opposite face of windows are not drawn)"}
+      Contents:={Cap="window"         Typ="X2"         Hint="transparent (the opposite face of windows are not drawn)"}
+      Contents:={Cap="translucent"    Typ="X268435456" Hint="translucent (allows light to pass, not vision - e.g. use for water)"}
       Contents:={Cap="mist"           Typ="X64"        Hint="non-solid window (Player can walk through it)"}
       Contents:={Cap="origin"         Typ="X16777216"  Hint="use as centrepoint, for rotating objects only"}
       Contents:={Cap="playerclip"     Typ="X65536"     Hint="Stops Players from passing through"}
@@ -112,8 +115,8 @@ QQRKSRC1
       Flags:   ={Cap="slick"          Typ="X2"         Hint="slidy surface"}
       Flags:   ={Cap="sky"            Typ="X4"         Hint="sky -can be used with 'light'"}
       Flags:   ={Cap="warping"        Typ="X8"         Hint="turbulent water warp (for 64x64 textures only)"}
-      Flags:   ={Cap="trans33"        Typ="X16"        Hint="translucent, 33% (more see-through than 50%)"}
-      Flags:   ={Cap="trans66"        Typ="X32"        Hint="translucent, 66% (less see-through than 50%)"}
+      Flags:   ={Cap="trans33"        Typ="X16"        Hint="transparent, 33% (more see-through than 50%)"}
+      Flags:   ={Cap="trans66"        Typ="X32"        Hint="transparent, 66% (less see-through than 50%)"}
       Flags:   ={Cap="flowing"        Typ="X64"        Hint="flow direction towards angle 0"}
       Flags:   ={Cap="nodraw"         Typ="X128"       Hint="for clip textures and trigger textures"}
 
