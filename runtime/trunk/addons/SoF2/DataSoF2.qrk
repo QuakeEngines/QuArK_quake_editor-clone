@@ -90,33 +90,33 @@ QQRKSRC1
           west:f =
           {
             v = '256 192 -96 256 96 -96 256 192 0'
-            tex = "doomgiver/wall1green"
+            tex = "jordan/wall_stucco02"
             tv = '0 0 48 0 0 -48'
           }
           east:f =
           {
             v = '272 -192 -96 272 -64 -96 272 -192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           south:f =
           {
             v = '256 -192 -96 288 -192 -96 256 -192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           north:f =
           {
             v = '272 192 -96 240 192 -96 272 192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           down:f =
           {
             v = '256 192 -96 288 192 -96 256 64 -96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           up:f =
           {
             v = '256 -192 96 288 -192 96 256 -64 96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
         }
         West wall:p =
@@ -124,33 +124,33 @@ QQRKSRC1
           west:f =
           {
             v = '-272 192 -96 -272 64 -96 -272 192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           east:f =
           {
             v = '-256 -192 -96 -256 -96 -96 -256 -192 0'
-            tex = "doomgiver/wall1green"
+            tex = "jordan/wall_stucco02"
             tv = '0 0 48 0 0 -48'
           }
           south:f =
           {
             v = '-272 -192 -96 -240 -192 -96 -272 -192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           north:f =
           {
             v = '-256 192 -96 -288 192 -96 -256 192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           down:f =
           {
             v = '-272 192 -96 -240 192 -96 -272 64 -96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           up:f =
           {
             v = '-272 -192 96 -240 -192 96 -272 -64 96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
         }
         North wall:p =
@@ -158,33 +158,33 @@ QQRKSRC1
           west:f =
           {
             v = '-256 208 -96 -256 176 -96 -256 208 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           east:f =
           {
             v = '256 192 -96 256 224 -96 256 192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           south:f =
           {
             v = '-256 192 -96 -128 192 -96 -256 192 0'
-            tex = "doomgiver/wall1green"
+            tex = "jordan/wall_stucco02"
             tv = '0 0 64 0 0 -48'
           }
           north:f =
           {
             v = '256 208 -96 128 208 -96 256 208 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           down:f =
           {
             v = '-256 208 -96 -128 208 -96 -256 176 -96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           up:f =
           {
             v = '-256 192 96 -128 192 96 -256 224 96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
         }
         South wall:p =
@@ -192,33 +192,33 @@ QQRKSRC1
           west:f =
           {
             v = '-256 -192 -96 -256 -224 -96 -256 -192 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           east:f =
           {
             v = '256 -208 -96 256 -176 -96 256 -208 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           south:f =
           {
             v = '-256 -208 -96 -128 -208 -96 -256 -208 32'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           north:f =
           {
             v = '256 -192 -96 128 -192 -96 256 -192 0'
-            tex = "doomgiver/wall1green"
+            tex = "jordan/wall_stucco02"
             tv = '0 0 64 0 0 -48'
           }
           down:f =
           {
             v = '-256 -192 -96 -128 -192 -96 -256 -224 -96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           up:f =
           {
             v = '-256 -208 96 -128 -208 96 -256 -176 96'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
         }
         Sky:p =
@@ -226,32 +226,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "skies/space"
+            tex = "skies/air3_up"
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "skies/space"
+            tex = "skies/air3_up"
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "skies/space"
+            tex = "skies/air3_up"
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "skies/space"
+            tex = "skies/air3_up"
           }
           down:f =
           {
             v = '432 0 96 560 0 96 432 -128 96'
-            tex = "skies/space"
+            tex = "skies/air3_up"
           }
           up:f =
           {
             v = '432 0 112 560 0 112 432 128 112'
-            tex = "skies/space"
+            tex = "skies/air3_up"
           }
         }
         Floor:p =
@@ -259,32 +259,32 @@ QQRKSRC1
           west:f =
           {
             v = '-256 0 272 -256 -128 272 -256 0 400'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           east:f =
           {
             v = '256 0 272 256 128 272 256 0 400'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           south:f =
           {
             v = '432 -192 272 560 -192 272 432 -192 400'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           north:f =
           {
             v = '432 192 272 304 192 272 432 192 400'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           down:f =
           {
             v = '432 0 -112 560 0 -112 432 -128 -112'
-            tex = "system/caulk"
+            tex = "tools/_caulk"
           }
           up:f =
           {
             v = '432 0 -96 560 0 -96 432 128 -96'
-            tex = "doomgiver/floord"
+            tex = "jordan/floor_bunker"
             tv = '-192 -688 -192 -560 -96 -688'
           }
         }
@@ -829,8 +829,1179 @@ QQRKSRC1
       }
     }
   }
+
+//<MODEL FORMS>
+    t_models_form:form =
+    {
+      model: = { typ="C" txt="chunks"
+      items=
+        "chunks/aqualid/aqualid.md3"$0D
+        "chunks/bar/bar.md3"$0D
+        "chunks/basket_sq/basket_sq.md3"$0D
+        "chunks/body_parts/chunk_torso.md3"$0D
+        "chunks/body_parts/head.md3"$0D
+        "chunks/canbase/canbase.md3"$0D
+        "chunks/candle/candle.md3"$0D
+        "chunks/canlid/canlid.md3"$0D
+        "chunks/cart_bev/cart_bev.md3"$0D
+        "chunks/cart_food/cart.md3"$0D
+        "chunks/cart_food/tray.md3"$0D
+        "chunks/clipboard/clipboard.md3"$0D
+        "chunks/copier_chunks/copier_chunk.md3"$0D
+        "chunks/cpu_chunk/cpu_chunk.md3"$0D
+        "chunks/dish/dish.md3"$0D
+        "chunks/dishbase/dishbase.md3"$0D
+        "chunks/fabric/fabric_big.md3"$0D
+        "chunks/fabric/fabric_med.md3"$0D
+        "chunks/fabric/fabric_med_purp.md3"$0D
+        "chunks/fabric/fabric_med_wht.md3"$0D
+        "chunks/fabric/fabric_small.md3"$0D
+        "chunks/fabric/fabric_small_wht.md3"$0D
+        "chunks/fern/fern_ledge.md3"$0D
+        "chunks/fish/fish.md3"$0D
+        "chunks/flag/flag.md3"$0D
+        "chunks/flag_blue/flag_blue.md3"$0D
+        "chunks/flag_red/flag_red.md3"$0D
+        "chunks/glass/glass_big.md3"$0D
+        "chunks/glass/glass_med.md3"$0D
+        "chunks/glass/glass_small.md3"$0D
+        "chunks/ice/ice_big.md3"$0D
+        "chunks/ice/ice_med.md3"$0D
+        "chunks/ice/ice_small.md3"$0D
+        "chunks/katana/katana.md3"$0D
+        "chunks/keyboard_chunks/keyboard_chunk1.md3"$0D
+        "chunks/keyboard_chunks/keyboard_chunk2.md3"$0D
+        "chunks/keyboard_chunks/keyboard_chunk_small.md3"$0D
+        "chunks/lantern_long/lantern_long.md3"$0D
+        "chunks/leaf/leaf.md3"$0D
+        "chunks/lid/lid.md3"$0D
+        "chunks/metal/metal_big.md3"$0D
+        "chunks/metal/metal_med.md3"$0D
+        "chunks/metal/metal_small.md3"$0D
+        "chunks/micro1/micro1.md3"$0D
+        "chunks/micro2/micro2.md3"$0D
+        "chunks/micro3/micro3.md3"$0D
+        "chunks/micro4/micro4.md3"$0D
+        "chunks/micro5/micro5.md3"$0D
+        "chunks/monitor_cart_chunks/cart_wheel.md3"$0D
+        "chunks/monitor_cart_chunks/monitor_cart_chunk1.md3"$0D
+        "chunks/monitor_chunks/monitor_chunk_lrg.md3"$0D
+        "chunks/monitor_chunks/monitor_chunk_med.md3"$0D
+        "chunks/monitor_front/monitor_front.md3"$0D
+        "chunks/paper/paper.md3"$0D
+        "chunks/paper/paper_mag1.md3"$0D
+        "chunks/paper/paper_mag2.md3"$0D
+        "chunks/paper/paper_mag3.md3"$0D
+        "chunks/phone_chunks/phone_chunk1.md3"$0D
+        "chunks/phone_chunks/phone_chunk2.md3"$0D
+        "chunks/poolchair/poolchair.md3"$0D
+        "chunks/rebreather/rebreather.md3"$0D
+        "chunks/rock/rock_big.md3"$0D
+        "chunks/rock/rock_med.md3"$0D
+        "chunks/rock/rock_small.md3"$0D
+        "chunks/rubber/rubber_big.md3"$0D
+        "chunks/rubber/rubber_med.md3"$0D
+        "chunks/rubber/rubber_small.md3"$0D
+        "chunks/sam_missle/sam_missle.md3"$0D
+        "chunks/smalllid/smalllid.md3"$0D
+        "chunks/spatula/spatula.md3"$0D
+        "chunks/spoon/spoon.md3"$0D
+        "chunks/sunglasses/sunglass1.md3"$0D
+        "chunks/sunglasses/sunglass2.md3"$0D
+        "chunks/sunglasses/sunglass3.md3"$0D
+        "chunks/temp/com_equip_popup.md3"$0D
+        "chunks/temp/truck_personnel.md3"$0D
+        "chunks/temp/truck_personnel_1.md3"$0D
+        "chunks/temp/truck_personnel_2.md3"$0D
+        "chunks/temp/wheelchair.md3"$0D
+        "chunks/tray/tray.md3"$0D
+        "chunks/truck_chunks/truck_axle_chunk.md3"$0D
+        "chunks/truck_chunks/truck_back_chunk.md3"$0D
+        "chunks/truck_chunks/truck_cab_chunk.md3"$0D
+        "chunks/truck_chunks/truck_fender_chunk.md3"$0D
+        "chunks/truck_chunks/truck_hood_chunk.md3"$0D
+        "chunks/truck_chunks/truck_wheel_chunk.md3"$0D
+        "chunks/tv/tv.md3"$0D
+        "chunks/wood/wood_big.md3"$0D
+        "chunks/wood/wood_med.md3"$0D
+        "chunks/wood/wood_small.md3"$0D
+        "chunks/wood/wood_splinter.md3"$0D
+        "chunks/wood/wood_splinter3.md3"$0D
+        "chunks/wood/wood_splinter4.md3"$0D
+        "chunks/wood/wood_splinter5.md3"$0D
+        "chunks/wood/wood_splinter6.md3"
+      values=
+        "/models/chunks/aqualid/aqualid.md3"$0D
+        "/models/chunks/bar/bar.md3"$0D
+        "/models/chunks/basket_sq/basket_sq.md3"$0D
+        "/models/chunks/body_parts/chunk_torso.md3"$0D
+        "/models/chunks/body_parts/head.md3"$0D
+        "/models/chunks/canbase/canbase.md3"$0D
+        "/models/chunks/candle/candle.md3"$0D
+        "/models/chunks/canlid/canlid.md3"$0D
+        "/models/chunks/cart_bev/cart_bev.md3"$0D
+        "/models/chunks/cart_food/cart.md3"$0D
+        "/models/chunks/cart_food/tray.md3"$0D
+        "/models/chunks/clipboard/clipboard.md3"$0D
+        "/models/chunks/copier_chunks/copier_chunk.md3"$0D
+        "/models/chunks/cpu_chunk/cpu_chunk.md3"$0D
+        "/models/chunks/dish/dish.md3"$0D
+        "/models/chunks/dishbase/dishbase.md3"$0D
+        "/models/chunks/fabric/fabric_big.md3"$0D
+        "/models/chunks/fabric/fabric_med.md3"$0D
+        "/models/chunks/fabric/fabric_med_purp.md3"$0D
+        "/models/chunks/fabric/fabric_med_wht.md3"$0D
+        "/models/chunks/fabric/fabric_small.md3"$0D
+        "/models/chunks/fabric/fabric_small_wht.md3"$0D
+        "/models/chunks/fern/fern_ledge.md3"$0D
+        "/models/chunks/fish/fish.md3"$0D
+        "/models/chunks/flag/flag.md3"$0D
+        "/models/chunks/flag_blue/flag_blue.md3"$0D
+        "/models/chunks/flag_red/flag_red.md3"$0D
+        "/models/chunks/glass/glass_big.md3"$0D
+        "/models/chunks/glass/glass_med.md3"$0D
+        "/models/chunks/glass/glass_small.md3"$0D
+        "/models/chunks/ice/ice_big.md3"$0D
+        "/models/chunks/ice/ice_med.md3"$0D
+        "/models/chunks/ice/ice_small.md3"$0D
+        "/models/chunks/katana/katana.md3"$0D
+        "/models/chunks/keyboard_chunks/keyboard_chunk1.md3"$0D
+        "/models/chunks/keyboard_chunks/keyboard_chunk2.md3"$0D
+        "/models/chunks/keyboard_chunks/keyboard_chunk_small.md3"$0D
+        "/models/chunks/lantern_long/lantern_long.md3"$0D
+        "/models/chunks/leaf/leaf.md3"$0D
+        "/models/chunks/lid/lid.md3"$0D
+        "/models/chunks/metal/metal_big.md3"$0D
+        "/models/chunks/metal/metal_med.md3"$0D
+        "/models/chunks/metal/metal_small.md3"$0D
+        "/models/chunks/micro1/micro1.md3"$0D
+        "/models/chunks/micro2/micro2.md3"$0D
+        "/models/chunks/micro3/micro3.md3"$0D
+        "/models/chunks/micro4/micro4.md3"$0D
+        "/models/chunks/micro5/micro5.md3"$0D
+        "/models/chunks/monitor_cart_chunks/cart_wheel.md3"$0D
+        "/models/chunks/monitor_cart_chunks/monitor_cart_chunk1.md3"$0D
+        "/models/chunks/monitor_chunks/monitor_chunk_lrg.md3"$0D
+        "/models/chunks/monitor_chunks/monitor_chunk_med.md3"$0D
+        "/models/chunks/monitor_front/monitor_front.md3"$0D
+        "/models/chunks/paper/paper.md3"$0D
+        "/models/chunks/paper/paper_mag1.md3"$0D
+        "/models/chunks/paper/paper_mag2.md3"$0D
+        "/models/chunks/paper/paper_mag3.md3"$0D
+        "/models/chunks/phone_chunks/phone_chunk1.md3"$0D
+        "/models/chunks/phone_chunks/phone_chunk2.md3"$0D
+        "/models/chunks/poolchair/poolchair.md3"$0D
+        "/models/chunks/rebreather/rebreather.md3"$0D
+        "/models/chunks/rock/rock_big.md3"$0D
+        "/models/chunks/rock/rock_med.md3"$0D
+        "/models/chunks/rock/rock_small.md3"$0D
+        "/models/chunks/rubber/rubber_big.md3"$0D
+        "/models/chunks/rubber/rubber_med.md3"$0D
+        "/models/chunks/rubber/rubber_small.md3"$0D
+        "/models/chunks/sam_missle/sam_missle.md3"$0D
+        "/models/chunks/smalllid/smalllid.md3"$0D
+        "/models/chunks/spatula/spatula.md3"$0D
+        "/models/chunks/spoon/spoon.md3"$0D
+        "/models/chunks/sunglasses/sunglass1.md3"$0D
+        "/models/chunks/sunglasses/sunglass2.md3"$0D
+        "/models/chunks/sunglasses/sunglass3.md3"$0D
+        "/models/chunks/temp/com_equip_popup.md3"$0D
+        "/models/chunks/temp/truck_personnel.md3"$0D
+        "/models/chunks/temp/truck_personnel_1.md3"$0D
+        "/models/chunks/temp/truck_personnel_2.md3"$0D
+        "/models/chunks/temp/wheelchair.md3"$0D
+        "/models/chunks/tray/tray.md3"$0D
+        "/models/chunks/truck_chunks/truck_axle_chunk.md3"$0D
+        "/models/chunks/truck_chunks/truck_back_chunk.md3"$0D
+        "/models/chunks/truck_chunks/truck_cab_chunk.md3"$0D
+        "/models/chunks/truck_chunks/truck_fender_chunk.md3"$0D
+        "/models/chunks/truck_chunks/truck_hood_chunk.md3"$0D
+        "/models/chunks/truck_chunks/truck_wheel_chunk.md3"$0D
+        "/models/chunks/tv/tv.md3"$0D
+        "/models/chunks/wood/wood_big.md3"$0D
+        "/models/chunks/wood/wood_med.md3"$0D
+        "/models/chunks/wood/wood_small.md3"$0D
+        "/models/chunks/wood/wood_splinter.md3"$0D
+        "/models/chunks/wood/wood_splinter3.md3"$0D
+        "/models/chunks/wood/wood_splinter4.md3"$0D
+        "/models/chunks/wood/wood_splinter5.md3"$0D
+        "/models/chunks/wood/wood_splinter6.md3"
+      }
+      model: = { typ="C" txt="objects"
+      items=
+        "objects/Airport/box_cart.md3"$0D
+        "objects/Airport/box_cart_buggy.md3"$0D
+        "objects/Airport/box_cart_open.md3"$0D
+        "objects/Airport/gift_stand.md3"$0D
+        "objects/Airport/giftstore_candy.md3"$0D
+        "objects/Airport/luggage_cart.md3"$0D
+        "objects/Airport/magazine_stand.md3"$0D
+        "objects/Airport/parachute.md3"$0D
+        "objects/Airport/parachute_1.md3"$0D
+        "objects/Airport/parachute_2.md3"$0D
+        "objects/Airport/phone.md3"$0D
+        "objects/Airport/postcard_stand.md3"$0D
+        "objects/Airport/steps.md3"$0D
+        "objects/Airport/sunglass_stand.md3"$0D
+        "objects/Airport/sunglasses.md3"$0D
+        "objects/Airport/wand_detector.md3"$0D
+        "objects/Armory/airtank.md3"$0D
+        "objects/Armory/airtank_1.md3"$0D
+        "objects/Armory/airtank_2.md3"$0D
+        "objects/Armory/ak74_armory.md3"$0D
+        "objects/Armory/ak74_nb.md3"$0D
+        "objects/Armory/dummy.md3"$0D
+        "objects/Armory/flippers.md3"$0D
+        "objects/Armory/knife_armory.md3"$0D
+        "objects/Armory/m4_armory.md3"$0D
+        "objects/Armory/m60_armory.md3"$0D
+        "objects/Armory/mask.md3"$0D
+        "objects/Armory/rebreather.md3"$0D
+        "objects/Armory/rebreather_1.md3"$0D
+        "objects/Armory/rebreather_2.md3"$0D
+        "objects/Armory/rope.md3"$0D
+        "objects/Armory/rope_1.md3"$0D
+        "objects/Armory/rope_2.md3"$0D
+        "objects/Armory/virus.md3"$0D
+        "objects/Colombia/furniture/chair_col.md3"$0D
+        "objects/Colombia/furniture/chair_col_1.md3"$0D
+        "objects/Colombia/furniture/chair_col_2.md3"$0D
+        "objects/Colombia/furniture/table_col.md3"$0D
+        "objects/Colombia/furniture/table_col_1.md3"$0D
+        "objects/Colombia/jungle/fern_ledge.md3"$0D
+        "objects/Colombia/jungle/fern_lrg01.md3"$0D
+        "objects/Colombia/jungle/fern_lrg01_1.md3"$0D
+        "objects/Colombia/jungle/fern_lrg01_2.md3"$0D
+        "objects/Colombia/jungle/fern_sm01.md3"$0D
+        "objects/Colombia/jungle/grass.md3"$0D
+        "objects/Colombia/jungle/grass2.md3"$0D
+        "objects/Colombia/jungle/grass2sm.md3"$0D
+        "objects/Colombia/jungle/grass_clump.md3"$0D
+        "objects/Colombia/jungle/grass_clumpsm.md3"$0D
+        "objects/Colombia/jungle/grass_tall.md3"$0D
+        "objects/Colombia/jungle/plant_4leafs.md3"$0D
+        "objects/Colombia/jungle/plant_lrg01.md3"$0D
+        "objects/Colombia/jungle/plant_lrg01_1.md3"$0D
+        "objects/Colombia/jungle/plant_lrg01_2.md3"$0D
+        "objects/Colombia/jungle/plant_stalk.md3"$0D
+        "objects/Colombia/jungle/rock01.md3"$0D
+        "objects/Colombia/jungle/rock02.md3"$0D
+        "objects/Colombia/jungle/tree02.md3"$0D
+        "objects/Colombia/jungle/tree02_1.md3"$0D
+        "objects/Colombia/jungle/tree02_2.md3"$0D
+        "objects/Colombia/jungle/tree02_rmg.md3"$0D
+        "objects/Colombia/jungle/tree02_rmg_1.md3"$0D
+        "objects/Colombia/jungle/tree02_rmg_2.md3"$0D
+        "objects/Colombia/jungle/tree06.md3"$0D
+        "objects/Colombia/jungle/tree06_1.md3"$0D
+        "objects/Colombia/jungle/tree06_2.md3"$0D
+        "objects/Colombia/jungle/tree06_rmg.md3"$0D
+        "objects/Colombia/jungle/tree06_rmg_1.md3"$0D
+        "objects/Colombia/jungle/tree06_rmg_2.md3"$0D
+        "objects/Colombia/jungle/tree08.md3"$0D
+        "objects/Colombia/jungle/tree08_1.md3"$0D
+        "objects/Colombia/jungle/tree08_2.md3"$0D
+        "objects/Colombia/jungle/tree08_3.md3"$0D
+        "objects/Colombia/jungle/tree08rmg.md3"$0D
+        "objects/Colombia/jungle/tree08rmg_1.md3"$0D
+        "objects/Colombia/jungle/tree08rmg_2.md3"$0D
+        "objects/Colombia/jungle/tree08rmg_3.md3"$0D
+        "objects/Colombia/jungle/tree09.md3"$0D
+        "objects/Colombia/jungle/tree09_1.md3"$0D
+        "objects/Colombia/jungle/tree09_2.md3"$0D
+        "objects/Colombia/jungle/tree09_3.md3"$0D
+        "objects/Colombia/jungle/tree09rmg.md3"$0D
+        "objects/Colombia/jungle/tree09rmg_1.md3"$0D
+        "objects/Colombia/jungle/tree09rmg_2.md3"$0D
+        "objects/Colombia/jungle/tree09rmg_3.md3"$0D
+        "objects/Colombia/jungle/tree_sidehill.md3"$0D
+        "objects/Colombia/jungle/tree_sidehill_1.md3"$0D
+        "objects/Colombia/jungle/tree_sidehill_2.md3"$0D
+        "objects/Colombia/jungle/treetest.md3"$0D
+        "objects/Colombia/lights/hanging_light.md3"$0D
+        "objects/Colombia/lights/hanging_light_1.md3"$0D
+        "objects/Colombia/lights/hanging_light_2.md3"$0D
+        "objects/Colombia/market/basket.md3"$0D
+        "objects/Colombia/market/basket_1.md3"$0D
+        "objects/Colombia/market/basket_2.md3"$0D
+        "objects/Colombia/market/basket_cloth.md3"$0D
+        "objects/Colombia/market/basket_cloth_1.md3"$0D
+        "objects/Colombia/market/basket_cloth_2.md3"$0D
+        "objects/Colombia/market/basket_food.md3"$0D
+        "objects/Colombia/market/basket_food_1.md3"$0D
+        "objects/Colombia/market/basket_food_2.md3"$0D
+        "objects/Colombia/market/boxfruit.md3"$0D
+        "objects/Colombia/market/boxfruit_1.md3"$0D
+        "objects/Colombia/market/boxfruit_2.md3"$0D
+        "objects/Colombia/market/boxfruit_empty.md3"$0D
+        "objects/Colombia/market/boxfruit_empty_1.md3"$0D
+        "objects/Colombia/market/boxfruit_empty_2.md3"$0D
+        "objects/Colombia/market/chair.md3"$0D
+        "objects/Colombia/market/chair_1.md3"$0D
+        "objects/Colombia/market/chair_2.md3"$0D
+        "objects/Colombia/market/pots1.md3"$0D
+        "objects/Colombia/market/pots1_1.md3"$0D
+        "objects/Colombia/market/pots1_2.md3"$0D
+        "objects/Colombia/market/pots2.md3"$0D
+        "objects/Colombia/market/pots2_1.md3"$0D
+        "objects/Colombia/market/pots2_2.md3"$0D
+        "objects/Colombia/market/pots3.md3"$0D
+        "objects/Colombia/market/pots3_1.md3"$0D
+        "objects/Colombia/market/pots3_2.md3"$0D
+        "objects/Colombia/market/sawhorse.md3"$0D
+        "objects/Colombia/market/sawhorse_1.md3"$0D
+        "objects/Colombia/market/sawhorse_2.md3"$0D
+        "objects/Colombia/misc/claymore.md3"$0D
+        "objects/Colombia/misc/com_equip_phone.md3"$0D
+        "objects/Colombia/misc/com_equip_popup.md3"$0D
+        "objects/Colombia/misc/com_equip_sdish.md3"$0D
+        "objects/Colombia/misc/flowerbox1.md3"$0D
+        "objects/Colombia/misc/flowerbox1_empty.md3"$0D
+        "objects/Colombia/misc/flowerbox2.md3"$0D
+        "objects/Colombia/misc/flowerbox2_empty.md3"$0D
+        "objects/Colombia/misc/flowerbox3.md3"$0D
+        "objects/Colombia/misc/flowerbox3_empty.md3"$0D
+        "objects/Colombia/misc/flowerpot_big.md3"$0D
+        "objects/Colombia/misc/flowerpot_big2.md3"$0D
+        "objects/Colombia/misc/flowerpot_big2_1.md3"$0D
+        "objects/Colombia/misc/flowerpot_big2_2.md3"$0D
+        "objects/Colombia/misc/flowerpot_big_1.md3"$0D
+        "objects/Colombia/misc/flowerpot_big_2.md3"$0D
+        "objects/Colombia/misc/flowerpot_med.md3"$0D
+        "objects/Colombia/misc/flowerpot_med_1.md3"$0D
+        "objects/Colombia/misc/flowerpot_med_2.md3"$0D
+        "objects/Colombia/misc/flowerpot_small.md3"$0D
+        "objects/Colombia/misc/flowerpot_small_1.md3"$0D
+        "objects/Colombia/misc/flowerpot_small_2.md3"$0D
+        "objects/Colombia/misc/statue.md3"$0D
+        "objects/Colombia/misc/tire.md3"$0D
+        "objects/Colombia/misc/tire_1.md3"$0D
+        "objects/Colombia/misc/tire_2.md3"$0D
+        "objects/Colombia/vehicles/jeep.md3"$0D
+        "objects/Colombia/vehicles/jeep_bombed.md3"$0D
+        "objects/Colombia/vehicles/jeep_dm.md3"$0D
+        "objects/Colombia/vehicles/truck_black_temp.md3"$0D
+        "objects/Colombia/vehicles/truck_black_temp_1.md3"$0D
+        "objects/Colombia/vehicles/truck_black_temp_2.md3"$0D
+        "objects/Colombia/vehicles/truck_flatbed.md3"$0D
+        "objects/Colombia/vehicles/truck_personnel.md3"$0D
+        "objects/Colombia/vehicles/truck_personnel_1.md3"$0D
+        "objects/Colombia/vehicles/truck_personnel_2.md3"$0D
+        "objects/Common/SAM/missile/missle.md3"$0D
+        "objects/Common/ashtray.md3"$0D
+        "objects/Common/barrels/barrel_hk.md3"$0D
+        "objects/Common/beam.md3"$0D
+        "objects/Common/body_bag.md3"$0D
+        "objects/Common/candleholder.md3"$0D
+        "objects/Common/desklamp1.md3"$0D
+        "objects/Common/desklamp1_1.md3"$0D
+        "objects/Common/desklamp1_2.md3"$0D
+        "objects/Common/desklamp2.md3"$0D
+        "objects/Common/desklamp2_1.md3"$0D
+        "objects/Common/desklamp2_2.md3"$0D
+        "objects/Common/doorhandle/handle.md3"$0D
+        "objects/Common/faucet.md3"$0D
+        "objects/Common/forklift/forklift.md3"$0D
+        "objects/Common/glass.md3"$0D
+        "objects/Common/handcart/handcart.md3"$0D
+        "objects/Common/handcart/handcart_lrg.md3"$0D
+        "objects/Common/lantern.md3"$0D
+        "objects/Common/lantern_1.md3"$0D
+        "objects/Common/lantern_2.md3"$0D
+        "objects/Common/payphone.md3"$0D
+        "objects/Common/phone.md3"$0D
+        "objects/Common/poolball.md3"$0D
+        "objects/Common/rope/rope.md3"$0D
+        "objects/Common/rope/rope_1.md3"$0D
+        "objects/Common/rope/rope_2.md3"$0D
+        "objects/Common/sandbag_corner.md3"$0D
+        "objects/Common/sandbag_end.md3"$0D
+        "objects/Common/sandbag_section.md3"$0D
+        "objects/Common/search_light.md3"$0D
+        "objects/Common/shoes.md3"$0D
+        "objects/Common/shoes_1.md3"$0D
+        "objects/Common/shoes_2.md3"$0D
+        "objects/Common/sink_faucet.md3"$0D
+        "objects/Common/sprinkler.md3"$0D
+        "objects/Common/sprinkler_1.md3"$0D
+        "objects/Common/sprinkler_2.md3"$0D
+        "objects/Common/taxi.md3"$0D
+        "objects/Common/taxi_cab.md3"$0D
+        "objects/Common/test.md3"$0D
+        "objects/Common/toilet.md3"$0D
+        "objects/Common/toilet_1.md3"$0D
+        "objects/Common/toilet_2.md3"$0D
+        "objects/Common/toilet_damaged.md3"$0D
+        "objects/Common/toolkit.md3"$0D
+        "objects/Common/tracklight.md3"$0D
+        "objects/Common/tracklight_1.md3"$0D
+        "objects/Common/trash_can_empty.md3"$0D
+        "objects/Common/trash_can_lid.md3"$0D
+        "objects/Common/trash_can_lid_1.md3"$0D
+        "objects/Common/trash_can_lid_2.md3"$0D
+        "objects/Common/trash_can_nolid.md3"$0D
+        "objects/Common/trash_can_nolid_1.md3"$0D
+        "objects/Common/trash_can_nolid_2.md3"$0D
+        "objects/Common/trucksandbag.md3"$0D
+        "objects/Common/tv.md3"$0D
+        "objects/Common/tv_1.md3"$0D
+        "objects/Common/tv_2.md3"$0D
+        "objects/Common/urinal.md3"$0D
+        "objects/Common/urinal_1.md3"$0D
+        "objects/Common/urinal_2.md3"$0D
+        "objects/Common/yugo.md3"$0D
+        "objects/Finca/cars/hummer.md3"$0D
+        "objects/Finca/cars/limo.md3"$0D
+        "objects/Finca/cars/luxurysedan.md3"$0D
+        "objects/Finca/furniture/bar_stool.md3"$0D
+        "objects/Finca/furniture/chair_finca.md3"$0D
+        "objects/Finca/furniture/masterchair_finca.md3"$0D
+        "objects/Finca/furniture/oak_table.md3"$0D
+        "objects/Finca/furniture/poolside_chair.md3"$0D
+        "objects/Finca/furniture/poolside_foot_stool.md3"$0D
+        "objects/Finca/furniture/poolside_table.md3"$0D
+        "objects/Finca/furniture/sundial.md3"$0D
+        "objects/Finca/lamps/desklamp1.md3"$0D
+        "objects/Finca/lamps/desklamp2.md3"$0D
+        "objects/Finca/lamps/floorlamp1.md3"$0D
+        "objects/Finca/lamps/floorlamp2.md3"$0D
+        "objects/Finca/lamps/lightbulb1.md3"$0D
+        "objects/Finca/lamps/lightbulb2.md3"$0D
+        "objects/Finca/lamps/wall_light1.md3"$0D
+        "objects/Finca/lamps/wall_light2.md3"$0D
+        "objects/Finca/lamps/wall_light3.md3"$0D
+        "objects/Finca/misc/bear_rug.md3"$0D
+        "objects/Finca/misc/bowling_ball.md3"$0D
+        "objects/Finca/misc/bowling_pin.md3"$0D
+        "objects/Finca/misc/bust.md3"$0D
+        "objects/Finca/misc/closed_book.md3"$0D
+        "objects/Finca/misc/coffee_cup.md3"$0D
+        "objects/Finca/misc/coffee_cup_1.md3"$0D
+        "objects/Finca/misc/coffee_cup_2.md3"$0D
+        "objects/Finca/misc/katana.md3"$0D
+        "objects/Finca/misc/moose.md3"$0D
+        "objects/Finca/misc/open_book.md3"$0D
+        "objects/Finca/misc/steer_horns.md3"$0D
+        "objects/Finca/misc/wine_bottle.md3"$0D
+        "objects/Hongkong/baskets_pots/basket_efx.md3"$0D
+        "objects/Hongkong/baskets_pots/basket_single_cover.md3"$0D
+        "objects/Hongkong/baskets_pots/basket_single_food.md3"$0D
+        "objects/Hongkong/baskets_pots/basket_single_open.md3"$0D
+        "objects/Hongkong/baskets_pots/basket_single_oval.md3"$0D
+        "objects/Hongkong/baskets_pots/basket_single_over.md3"$0D
+        "objects/Hongkong/baskets_pots/baskets_stack.md3"$0D
+        "objects/Hongkong/baskets_pots/baskets_stack_lrg.md3"$0D
+        "objects/Hongkong/baskets_pots/baskets_stack_single.md3"$0D
+        "objects/Hongkong/baskets_pots/baskets_stack_square.md3"$0D
+        "objects/Hongkong/baskets_pots/bucket_handles.md3"$0D
+        "objects/Hongkong/baskets_pots/pot_lrg.md3"$0D
+        "objects/Hongkong/electric_chair.md3"$0D
+        "objects/Hongkong/lights/cell.md3"$0D
+        "objects/Hongkong/misc/mahi.md3"$0D
+        "objects/Hongkong/misc/stoplight.md3"$0D
+        "objects/Hongkong/misc/tire_dock.md3"$0D
+        "objects/Hongkong/misc/tuna.md3"$0D
+        "objects/Hongkong/misc/vase.md3"$0D
+        "objects/Hongkong/paper_lanterns/lantern_long.md3"$0D
+        "objects/Hongkong/paper_lanterns/lantern_short.md3"$0D
+        "objects/Hongkong/paper_lanterns/pagoda_lrg.md3"$0D
+        "objects/Hongkong/paper_lanterns/pagoda_sm.md3"$0D
+        "objects/Hongkong/paper_lanterns/plantern.md3"$0D
+        "objects/Hongkong/prison/bed.md3"$0D
+        "objects/Hongkong/prison/clipboard.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bag_bentdown.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bag_bentup.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bag_single.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bags_stack.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bags_stack_lrg.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bags_stacklow.md3"$0D
+        "objects/Hongkong/rice_bags/rice_bags_stacklow_lrg.md3"$0D
+        "objects/Hongkong/vehicles/car_hk.md3"$0D
+        "objects/Hongkong/vehicles/truck_flatbed.md3"$0D
+        "objects/Hongkong/vehicles/truck_hk.md3"$0D
+        "objects/Hospital/carts/cart_2tray.md3"$0D
+        "objects/Hospital/carts/cart_2tray_items.md3"$0D
+        "objects/Hospital/carts/cart_2tray_items2.md3"$0D
+        "objects/Hospital/carts/cart_beverage.md3"$0D
+        "objects/Hospital/carts/cart_food.md3"$0D
+        "objects/Hospital/carts/cart_medical.md3"$0D
+        "objects/Hospital/carts/monitor_cart.md3"$0D
+        "objects/Hospital/carts/monitor_cart_1.md3"$0D
+        "objects/Hospital/carts/monitor_cart_2.md3"$0D
+        "objects/Hospital/misc/ambulance.md3"$0D
+        "objects/Hospital/misc/bed.md3"$0D
+        "objects/Hospital/misc/drip_stand.md3"$0D
+        "objects/Hospital/misc/firetruck.md3"$0D
+        "objects/Hospital/misc/gurney.md3"$0D
+        "objects/Hospital/misc/microscope.md3"$0D
+        "objects/Hospital/misc/office_chair.md3"$0D
+        "objects/Hospital/misc/office_chair_1.md3"$0D
+        "objects/Hospital/misc/office_chair_2.md3"$0D
+        "objects/Hospital/misc/spray_bottle.md3"$0D
+        "objects/Hospital/misc/test_tube_1.md3"$0D
+        "objects/Hospital/misc/test_tube_2.md3"$0D
+        "objects/Hospital/misc/test_tube_3.md3"$0D
+        "objects/Hospital/misc/test_tube_4.md3"$0D
+        "objects/Hospital/misc/test_tube_tray.md3"$0D
+        "objects/Hospital/misc/wall_machine.md3"$0D
+        "objects/Hospital/misc/wheelchair.md3"$0D
+        "objects/Jordan/misc/cpu.md3"$0D
+        "objects/Jordan/misc/keyboard.md3"$0D
+        "objects/Jordan/misc/keyboard_1.md3"$0D
+        "objects/Jordan/misc/keyboard_2.md3"$0D
+        "objects/Jordan/misc/monitor.md3"$0D
+        "objects/Jordan/misc/monitor_1.md3"$0D
+        "objects/Jordan/misc/monitor_2.md3"$0D
+        "objects/Kamchatka/deadtree_med.md3"$0D
+        "objects/Kamchatka/limb_1.md3"$0D
+        "objects/Kamchatka/limb_2.md3"$0D
+        "objects/Kamchatka/misc/chem_suit.md3"$0D
+        "objects/Kamchatka/tree2.md3"$0D
+        "objects/Kamchatka/tree2_1.md3"$0D
+        "objects/Kamchatka/tree2_2.md3"$0D
+        "objects/Kamchatka/tree2_rmg.md3"$0D
+        "objects/Kamchatka/tree2_rmg_1.md3"$0D
+        "objects/Kamchatka/tree2_rmg_2.md3"$0D
+        "objects/Kamchatka/tree_lrg.md3"$0D
+        "objects/Kamchatka/tree_lrg_1.md3"$0D
+        "objects/Kamchatka/tree_lrg_2.md3"$0D
+        "objects/Kamchatka/tree_lrg_rmg.md3"$0D
+        "objects/Kamchatka/tree_lrg_rmg_1.md3"$0D
+        "objects/Kamchatka/tree_lrg_rmg_2.md3"$0D
+        "objects/Kamchatka/tree_med.md3"$0D
+        "objects/Kamchatka/tree_med_1.md3"$0D
+        "objects/Kamchatka/tree_med_2.md3"$0D
+        "objects/Kamchatka/tree_med_rmg.md3"$0D
+        "objects/Kamchatka/tree_med_rmg_1.md3"$0D
+        "objects/Liner/furniture/galley_chair.md3"$0D
+        "objects/Liner/furniture/galley_chair_1.md3"$0D
+        "objects/Liner/furniture/galley_chair_2.md3"$0D
+        "objects/Liner/furniture/sink.md3"$0D
+        "objects/Liner/lights/wall_light.md3"$0D
+        "objects/Liner/lights/wall_light2.md3"$0D
+        "objects/Liner/misc/ax.md3"$0D
+        "objects/Liner/misc/ax_1.md3"$0D
+        "objects/Liner/misc/ax_2.md3"$0D
+        "objects/Liner/misc/big_pot.md3"$0D
+        "objects/Liner/misc/big_pot_1.md3"$0D
+        "objects/Liner/misc/big_pot_2.md3"$0D
+        "objects/Liner/misc/big_pot_nolid.md3"$0D
+        "objects/Liner/misc/big_pot_nolid_1.md3"$0D
+        "objects/Liner/misc/big_pot_nolid_2.md3"$0D
+        "objects/Liner/misc/cart_tray.md3"$0D
+        "objects/Liner/misc/cart_tray_1.md3"$0D
+        "objects/Liner/misc/cart_tray_2.md3"$0D
+        "objects/Liner/misc/coffee_maker.md3"$0D
+        "objects/Liner/misc/coffee_maker_1.md3"$0D
+        "objects/Liner/misc/coffee_maker_2.md3"$0D
+        "objects/Liner/misc/coffee_pot.md3"$0D
+        "objects/Liner/misc/control_1.md3"$0D
+        "objects/Liner/misc/extinguisher.md3"$0D
+        "objects/Liner/misc/extinguisher_1.md3"$0D
+        "objects/Liner/misc/extinguisher_2.md3"$0D
+        "objects/Liner/misc/foodtray.md3"$0D
+        "objects/Liner/misc/frying_pan.md3"$0D
+        "objects/Liner/misc/headphones.md3"$0D
+        "objects/Liner/misc/life_preserver.md3"$0D
+        "objects/Liner/misc/monitor.md3"$0D
+        "objects/Liner/misc/mop.md3"$0D
+        "objects/Liner/misc/mop_bucket.md3"$0D
+        "objects/Liner/misc/phone.md3"$0D
+        "objects/Liner/misc/pot.md3"$0D
+        "objects/Liner/misc/pot_nolid.md3"$0D
+        "objects/Liner/misc/raft.md3"$0D
+        "objects/Liner/misc/spatula.md3"$0D
+        "objects/Liner/misc/throttle.md3"$0D
+        "objects/Liner/misc/valve2.md3"$0D
+        "objects/Liner/misc/wood_spoon.md3"$0D
+        "objects/Liner/toilet/toilet.md3"$0D
+        "objects/Liner/toilet/toilet_open.md3"$0D
+        "objects/Prague/furniture/table_long.md3"$0D
+        "objects/Prague/furniture/table_round.md3"$0D
+        "objects/Prague/furniture/umbrella.md3"$0D
+        "objects/Prague/misc/big_chandelier.md3"$0D
+        "objects/Prague/misc/knife_prague.md3"$0D
+        "objects/Prague/misc/m1911a1_prague.md3"$0D
+        "objects/Prague/misc/med_chandelier.md3"$0D
+        "objects/Prague/misc/pra3_chandelier.md3"$0D
+        "objects/Prague/misc/pra3_chandelier_broken.md3"$0D
+        "objects/Prague/misc/statue.md3"$0D
+        "objects/Shop/misc/copy_machine.md3"$0D
+        "objects/Shop/misc/helipad_lights.md3"$0D
+        "objects/Shop/misc/helipad_lights_1.md3"$0D
+        "objects/Shop/misc/helipad_lights_2.md3"
+      values=
+        "/models/objects/Airport/box_cart.md3"$0D
+        "/models/objects/Airport/box_cart_buggy.md3"$0D
+        "/models/objects/Airport/box_cart_open.md3"$0D
+        "/models/objects/Airport/gift_stand.md3"$0D
+        "/models/objects/Airport/giftstore_candy.md3"$0D
+        "/models/objects/Airport/luggage_cart.md3"$0D
+        "/models/objects/Airport/magazine_stand.md3"$0D
+        "/models/objects/Airport/parachute.md3"$0D
+        "/models/objects/Airport/parachute_1.md3"$0D
+        "/models/objects/Airport/parachute_2.md3"$0D
+        "/models/objects/Airport/phone.md3"$0D
+        "/models/objects/Airport/postcard_stand.md3"$0D
+        "/models/objects/Airport/steps.md3"$0D
+        "/models/objects/Airport/sunglass_stand.md3"$0D
+        "/models/objects/Airport/sunglasses.md3"$0D
+        "/models/objects/Airport/wand_detector.md3"$0D
+        "/models/objects/Armory/airtank.md3"$0D
+        "/models/objects/Armory/airtank_1.md3"$0D
+        "/models/objects/Armory/airtank_2.md3"$0D
+        "/models/objects/Armory/ak74_armory.md3"$0D
+        "/models/objects/Armory/ak74_nb.md3"$0D
+        "/models/objects/Armory/dummy.md3"$0D
+        "/models/objects/Armory/flippers.md3"$0D
+        "/models/objects/Armory/knife_armory.md3"$0D
+        "/models/objects/Armory/m4_armory.md3"$0D
+        "/models/objects/Armory/m60_armory.md3"$0D
+        "/models/objects/Armory/mask.md3"$0D
+        "/models/objects/Armory/rebreather.md3"$0D
+        "/models/objects/Armory/rebreather_1.md3"$0D
+        "/models/objects/Armory/rebreather_2.md3"$0D
+        "/models/objects/Armory/rope.md3"$0D
+        "/models/objects/Armory/rope_1.md3"$0D
+        "/models/objects/Armory/rope_2.md3"$0D
+        "/models/objects/Armory/virus.md3"$0D
+        "/models/objects/Colombia/furniture/chair_col.md3"$0D
+        "/models/objects/Colombia/furniture/chair_col_1.md3"$0D
+        "/models/objects/Colombia/furniture/chair_col_2.md3"$0D
+        "/models/objects/Colombia/furniture/table_col.md3"$0D
+        "/models/objects/Colombia/furniture/table_col_1.md3"$0D
+        "/models/objects/Colombia/jungle/fern_ledge.md3"$0D
+        "/models/objects/Colombia/jungle/fern_lrg01.md3"$0D
+        "/models/objects/Colombia/jungle/fern_lrg01_1.md3"$0D
+        "/models/objects/Colombia/jungle/fern_lrg01_2.md3"$0D
+        "/models/objects/Colombia/jungle/fern_sm01.md3"$0D
+        "/models/objects/Colombia/jungle/grass.md3"$0D
+        "/models/objects/Colombia/jungle/grass2.md3"$0D
+        "/models/objects/Colombia/jungle/grass2sm.md3"$0D
+        "/models/objects/Colombia/jungle/grass_clump.md3"$0D
+        "/models/objects/Colombia/jungle/grass_clumpsm.md3"$0D
+        "/models/objects/Colombia/jungle/grass_tall.md3"$0D
+        "/models/objects/Colombia/jungle/plant_4leafs.md3"$0D
+        "/models/objects/Colombia/jungle/plant_lrg01.md3"$0D
+        "/models/objects/Colombia/jungle/plant_lrg01_1.md3"$0D
+        "/models/objects/Colombia/jungle/plant_lrg01_2.md3"$0D
+        "/models/objects/Colombia/jungle/plant_stalk.md3"$0D
+        "/models/objects/Colombia/jungle/rock01.md3"$0D
+        "/models/objects/Colombia/jungle/rock02.md3"$0D
+        "/models/objects/Colombia/jungle/tree02.md3"$0D
+        "/models/objects/Colombia/jungle/tree02_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree02_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree02_rmg.md3"$0D
+        "/models/objects/Colombia/jungle/tree02_rmg_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree02_rmg_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree06.md3"$0D
+        "/models/objects/Colombia/jungle/tree06_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree06_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree06_rmg.md3"$0D
+        "/models/objects/Colombia/jungle/tree06_rmg_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree06_rmg_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree08.md3"$0D
+        "/models/objects/Colombia/jungle/tree08_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree08_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree08_3.md3"$0D
+        "/models/objects/Colombia/jungle/tree08rmg.md3"$0D
+        "/models/objects/Colombia/jungle/tree08rmg_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree08rmg_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree08rmg_3.md3"$0D
+        "/models/objects/Colombia/jungle/tree09.md3"$0D
+        "/models/objects/Colombia/jungle/tree09_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree09_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree09_3.md3"$0D
+        "/models/objects/Colombia/jungle/tree09rmg.md3"$0D
+        "/models/objects/Colombia/jungle/tree09rmg_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree09rmg_2.md3"$0D
+        "/models/objects/Colombia/jungle/tree09rmg_3.md3"$0D
+        "/models/objects/Colombia/jungle/tree_sidehill.md3"$0D
+        "/models/objects/Colombia/jungle/tree_sidehill_1.md3"$0D
+        "/models/objects/Colombia/jungle/tree_sidehill_2.md3"$0D
+        "/models/objects/Colombia/jungle/treetest.md3"$0D
+        "/models/objects/Colombia/lights/hanging_light.md3"$0D
+        "/models/objects/Colombia/lights/hanging_light_1.md3"$0D
+        "/models/objects/Colombia/lights/hanging_light_2.md3"$0D
+        "/models/objects/Colombia/market/basket.md3"$0D
+        "/models/objects/Colombia/market/basket_1.md3"$0D
+        "/models/objects/Colombia/market/basket_2.md3"$0D
+        "/models/objects/Colombia/market/basket_cloth.md3"$0D
+        "/models/objects/Colombia/market/basket_cloth_1.md3"$0D
+        "/models/objects/Colombia/market/basket_cloth_2.md3"$0D
+        "/models/objects/Colombia/market/basket_food.md3"$0D
+        "/models/objects/Colombia/market/basket_food_1.md3"$0D
+        "/models/objects/Colombia/market/basket_food_2.md3"$0D
+        "/models/objects/Colombia/market/boxfruit.md3"$0D
+        "/models/objects/Colombia/market/boxfruit_1.md3"$0D
+        "/models/objects/Colombia/market/boxfruit_2.md3"$0D
+        "/models/objects/Colombia/market/boxfruit_empty.md3"$0D
+        "/models/objects/Colombia/market/boxfruit_empty_1.md3"$0D
+        "/models/objects/Colombia/market/boxfruit_empty_2.md3"$0D
+        "/models/objects/Colombia/market/chair.md3"$0D
+        "/models/objects/Colombia/market/chair_1.md3"$0D
+        "/models/objects/Colombia/market/chair_2.md3"$0D
+        "/models/objects/Colombia/market/pots1.md3"$0D
+        "/models/objects/Colombia/market/pots1_1.md3"$0D
+        "/models/objects/Colombia/market/pots1_2.md3"$0D
+        "/models/objects/Colombia/market/pots2.md3"$0D
+        "/models/objects/Colombia/market/pots2_1.md3"$0D
+        "/models/objects/Colombia/market/pots2_2.md3"$0D
+        "/models/objects/Colombia/market/pots3.md3"$0D
+        "/models/objects/Colombia/market/pots3_1.md3"$0D
+        "/models/objects/Colombia/market/pots3_2.md3"$0D
+        "/models/objects/Colombia/market/sawhorse.md3"$0D
+        "/models/objects/Colombia/market/sawhorse_1.md3"$0D
+        "/models/objects/Colombia/market/sawhorse_2.md3"$0D
+        "/models/objects/Colombia/misc/claymore.md3"$0D
+        "/models/objects/Colombia/misc/com_equip_phone.md3"$0D
+        "/models/objects/Colombia/misc/com_equip_popup.md3"$0D
+        "/models/objects/Colombia/misc/com_equip_sdish.md3"$0D
+        "/models/objects/Colombia/misc/flowerbox1.md3"$0D
+        "/models/objects/Colombia/misc/flowerbox1_empty.md3"$0D
+        "/models/objects/Colombia/misc/flowerbox2.md3"$0D
+        "/models/objects/Colombia/misc/flowerbox2_empty.md3"$0D
+        "/models/objects/Colombia/misc/flowerbox3.md3"$0D
+        "/models/objects/Colombia/misc/flowerbox3_empty.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_big.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_big2.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_big2_1.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_big2_2.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_big_1.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_big_2.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_med.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_med_1.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_med_2.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_small.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_small_1.md3"$0D
+        "/models/objects/Colombia/misc/flowerpot_small_2.md3"$0D
+        "/models/objects/Colombia/misc/statue.md3"$0D
+        "/models/objects/Colombia/misc/tire.md3"$0D
+        "/models/objects/Colombia/misc/tire_1.md3"$0D
+        "/models/objects/Colombia/misc/tire_2.md3"$0D
+        "/models/objects/Colombia/vehicles/jeep.md3"$0D
+        "/models/objects/Colombia/vehicles/jeep_bombed.md3"$0D
+        "/models/objects/Colombia/vehicles/jeep_dm.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_black_temp.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_black_temp_1.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_black_temp_2.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_flatbed.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_personnel.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_personnel_1.md3"$0D
+        "/models/objects/Colombia/vehicles/truck_personnel_2.md3"$0D
+        "/models/objects/Common/SAM/missile/missle.md3"$0D
+        "/models/objects/Common/ashtray.md3"$0D
+        "/models/objects/Common/barrels/barrel_hk.md3"$0D
+        "/models/objects/Common/beam.md3"$0D
+        "/models/objects/Common/body_bag.md3"$0D
+        "/models/objects/Common/candleholder.md3"$0D
+        "/models/objects/Common/desklamp1.md3"$0D
+        "/models/objects/Common/desklamp1_1.md3"$0D
+        "/models/objects/Common/desklamp1_2.md3"$0D
+        "/models/objects/Common/desklamp2.md3"$0D
+        "/models/objects/Common/desklamp2_1.md3"$0D
+        "/models/objects/Common/desklamp2_2.md3"$0D
+        "/models/objects/Common/doorhandle/handle.md3"$0D
+        "/models/objects/Common/faucet.md3"$0D
+        "/models/objects/Common/forklift/forklift.md3"$0D
+        "/models/objects/Common/glass.md3"$0D
+        "/models/objects/Common/handcart/handcart.md3"$0D
+        "/models/objects/Common/handcart/handcart_lrg.md3"$0D
+        "/models/objects/Common/lantern.md3"$0D
+        "/models/objects/Common/lantern_1.md3"$0D
+        "/models/objects/Common/lantern_2.md3"$0D
+        "/models/objects/Common/payphone.md3"$0D
+        "/models/objects/Common/phone.md3"$0D
+        "/models/objects/Common/poolball.md3"$0D
+        "/models/objects/Common/rope/rope.md3"$0D
+        "/models/objects/Common/rope/rope_1.md3"$0D
+        "/models/objects/Common/rope/rope_2.md3"$0D
+        "/models/objects/Common/sandbag_corner.md3"$0D
+        "/models/objects/Common/sandbag_end.md3"$0D
+        "/models/objects/Common/sandbag_section.md3"$0D
+        "/models/objects/Common/search_light.md3"$0D
+        "/models/objects/Common/shoes.md3"$0D
+        "/models/objects/Common/shoes_1.md3"$0D
+        "/models/objects/Common/shoes_2.md3"$0D
+        "/models/objects/Common/sink_faucet.md3"$0D
+        "/models/objects/Common/sprinkler.md3"$0D
+        "/models/objects/Common/sprinkler_1.md3"$0D
+        "/models/objects/Common/sprinkler_2.md3"$0D
+        "/models/objects/Common/taxi.md3"$0D
+        "/models/objects/Common/taxi_cab.md3"$0D
+        "/models/objects/Common/test.md3"$0D
+        "/models/objects/Common/toilet.md3"$0D
+        "/models/objects/Common/toilet_1.md3"$0D
+        "/models/objects/Common/toilet_2.md3"$0D
+        "/models/objects/Common/toilet_damaged.md3"$0D
+        "/models/objects/Common/toolkit.md3"$0D
+        "/models/objects/Common/tracklight.md3"$0D
+        "/models/objects/Common/tracklight_1.md3"$0D
+        "/models/objects/Common/trash_can_empty.md3"$0D
+        "/models/objects/Common/trash_can_lid.md3"$0D
+        "/models/objects/Common/trash_can_lid_1.md3"$0D
+        "/models/objects/Common/trash_can_lid_2.md3"$0D
+        "/models/objects/Common/trash_can_nolid.md3"$0D
+        "/models/objects/Common/trash_can_nolid_1.md3"$0D
+        "/models/objects/Common/trash_can_nolid_2.md3"$0D
+        "/models/objects/Common/trucksandbag.md3"$0D
+        "/models/objects/Common/tv.md3"$0D
+        "/models/objects/Common/tv_1.md3"$0D
+        "/models/objects/Common/tv_2.md3"$0D
+        "/models/objects/Common/urinal.md3"$0D
+        "/models/objects/Common/urinal_1.md3"$0D
+        "/models/objects/Common/urinal_2.md3"$0D
+        "/models/objects/Common/yugo.md3"$0D
+        "/models/objects/Finca/cars/hummer.md3"$0D
+        "/models/objects/Finca/cars/limo.md3"$0D
+        "/models/objects/Finca/cars/luxurysedan.md3"$0D
+        "/models/objects/Finca/furniture/bar_stool.md3"$0D
+        "/models/objects/Finca/furniture/chair_finca.md3"$0D
+        "/models/objects/Finca/furniture/masterchair_finca.md3"$0D
+        "/models/objects/Finca/furniture/oak_table.md3"$0D
+        "/models/objects/Finca/furniture/poolside_chair.md3"$0D
+        "/models/objects/Finca/furniture/poolside_foot_stool.md3"$0D
+        "/models/objects/Finca/furniture/poolside_table.md3"$0D
+        "/models/objects/Finca/furniture/sundial.md3"$0D
+        "/models/objects/Finca/lamps/desklamp1.md3"$0D
+        "/models/objects/Finca/lamps/desklamp2.md3"$0D
+        "/models/objects/Finca/lamps/floorlamp1.md3"$0D
+        "/models/objects/Finca/lamps/floorlamp2.md3"$0D
+        "/models/objects/Finca/lamps/lightbulb1.md3"$0D
+        "/models/objects/Finca/lamps/lightbulb2.md3"$0D
+        "/models/objects/Finca/lamps/wall_light1.md3"$0D
+        "/models/objects/Finca/lamps/wall_light2.md3"$0D
+        "/models/objects/Finca/lamps/wall_light3.md3"$0D
+        "/models/objects/Finca/misc/bear_rug.md3"$0D
+        "/models/objects/Finca/misc/bowling_ball.md3"$0D
+        "/models/objects/Finca/misc/bowling_pin.md3"$0D
+        "/models/objects/Finca/misc/bust.md3"$0D
+        "/models/objects/Finca/misc/closed_book.md3"$0D
+        "/models/objects/Finca/misc/coffee_cup.md3"$0D
+        "/models/objects/Finca/misc/coffee_cup_1.md3"$0D
+        "/models/objects/Finca/misc/coffee_cup_2.md3"$0D
+        "/models/objects/Finca/misc/katana.md3"$0D
+        "/models/objects/Finca/misc/moose.md3"$0D
+        "/models/objects/Finca/misc/open_book.md3"$0D
+        "/models/objects/Finca/misc/steer_horns.md3"$0D
+        "/models/objects/Finca/misc/wine_bottle.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/basket_efx.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/basket_single_cover.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/basket_single_food.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/basket_single_open.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/basket_single_oval.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/basket_single_over.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/baskets_stack.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/baskets_stack_lrg.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/baskets_stack_single.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/baskets_stack_square.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/bucket_handles.md3"$0D
+        "/models/objects/Hongkong/baskets_pots/pot_lrg.md3"$0D
+        "/models/objects/Hongkong/electric_chair.md3"$0D
+        "/models/objects/Hongkong/lights/cell.md3"$0D
+        "/models/objects/Hongkong/misc/mahi.md3"$0D
+        "/models/objects/Hongkong/misc/stoplight.md3"$0D
+        "/models/objects/Hongkong/misc/tire_dock.md3"$0D
+        "/models/objects/Hongkong/misc/tuna.md3"$0D
+        "/models/objects/Hongkong/misc/vase.md3"$0D
+        "/models/objects/Hongkong/paper_lanterns/lantern_long.md3"$0D
+        "/models/objects/Hongkong/paper_lanterns/lantern_short.md3"$0D
+        "/models/objects/Hongkong/paper_lanterns/pagoda_lrg.md3"$0D
+        "/models/objects/Hongkong/paper_lanterns/pagoda_sm.md3"$0D
+        "/models/objects/Hongkong/paper_lanterns/plantern.md3"$0D
+        "/models/objects/Hongkong/prison/bed.md3"$0D
+        "/models/objects/Hongkong/prison/clipboard.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bag_bentdown.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bag_bentup.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bag_single.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bags_stack.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bags_stack_lrg.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bags_stacklow.md3"$0D
+        "/models/objects/Hongkong/rice_bags/rice_bags_stacklow_lrg.md3"$0D
+        "/models/objects/Hongkong/vehicles/car_hk.md3"$0D
+        "/models/objects/Hongkong/vehicles/truck_flatbed.md3"$0D
+        "/models/objects/Hongkong/vehicles/truck_hk.md3"$0D
+        "/models/objects/Hospital/carts/cart_2tray.md3"$0D
+        "/models/objects/Hospital/carts/cart_2tray_items.md3"$0D
+        "/models/objects/Hospital/carts/cart_2tray_items2.md3"$0D
+        "/models/objects/Hospital/carts/cart_beverage.md3"$0D
+        "/models/objects/Hospital/carts/cart_food.md3"$0D
+        "/models/objects/Hospital/carts/cart_medical.md3"$0D
+        "/models/objects/Hospital/carts/monitor_cart.md3"$0D
+        "/models/objects/Hospital/carts/monitor_cart_1.md3"$0D
+        "/models/objects/Hospital/carts/monitor_cart_2.md3"$0D
+        "/models/objects/Hospital/misc/ambulance.md3"$0D
+        "/models/objects/Hospital/misc/bed.md3"$0D
+        "/models/objects/Hospital/misc/drip_stand.md3"$0D
+        "/models/objects/Hospital/misc/firetruck.md3"$0D
+        "/models/objects/Hospital/misc/gurney.md3"$0D
+        "/models/objects/Hospital/misc/microscope.md3"$0D
+        "/models/objects/Hospital/misc/office_chair.md3"$0D
+        "/models/objects/Hospital/misc/office_chair_1.md3"$0D
+        "/models/objects/Hospital/misc/office_chair_2.md3"$0D
+        "/models/objects/Hospital/misc/spray_bottle.md3"$0D
+        "/models/objects/Hospital/misc/test_tube_1.md3"$0D
+        "/models/objects/Hospital/misc/test_tube_2.md3"$0D
+        "/models/objects/Hospital/misc/test_tube_3.md3"$0D
+        "/models/objects/Hospital/misc/test_tube_4.md3"$0D
+        "/models/objects/Hospital/misc/test_tube_tray.md3"$0D
+        "/models/objects/Hospital/misc/wall_machine.md3"$0D
+        "/models/objects/Hospital/misc/wheelchair.md3"$0D
+        "/models/objects/Jordan/misc/cpu.md3"$0D
+        "/models/objects/Jordan/misc/keyboard.md3"$0D
+        "/models/objects/Jordan/misc/keyboard_1.md3"$0D
+        "/models/objects/Jordan/misc/keyboard_2.md3"$0D
+        "/models/objects/Jordan/misc/monitor.md3"$0D
+        "/models/objects/Jordan/misc/monitor_1.md3"$0D
+        "/models/objects/Jordan/misc/monitor_2.md3"$0D
+        "/models/objects/Kamchatka/deadtree_med.md3"$0D
+        "/models/objects/Kamchatka/limb_1.md3"$0D
+        "/models/objects/Kamchatka/limb_2.md3"$0D
+        "/models/objects/Kamchatka/misc/chem_suit.md3"$0D
+        "/models/objects/Kamchatka/tree2.md3"$0D
+        "/models/objects/Kamchatka/tree2_1.md3"$0D
+        "/models/objects/Kamchatka/tree2_2.md3"$0D
+        "/models/objects/Kamchatka/tree2_rmg.md3"$0D
+        "/models/objects/Kamchatka/tree2_rmg_1.md3"$0D
+        "/models/objects/Kamchatka/tree2_rmg_2.md3"$0D
+        "/models/objects/Kamchatka/tree_lrg.md3"$0D
+        "/models/objects/Kamchatka/tree_lrg_1.md3"$0D
+        "/models/objects/Kamchatka/tree_lrg_2.md3"$0D
+        "/models/objects/Kamchatka/tree_lrg_rmg.md3"$0D
+        "/models/objects/Kamchatka/tree_lrg_rmg_1.md3"$0D
+        "/models/objects/Kamchatka/tree_lrg_rmg_2.md3"$0D
+        "/models/objects/Kamchatka/tree_med.md3"$0D
+        "/models/objects/Kamchatka/tree_med_1.md3"$0D
+        "/models/objects/Kamchatka/tree_med_2.md3"$0D
+        "/models/objects/Kamchatka/tree_med_rmg.md3"$0D
+        "/models/objects/Kamchatka/tree_med_rmg_1.md3"$0D
+        "/models/objects/Liner/furniture/galley_chair.md3"$0D
+        "/models/objects/Liner/furniture/galley_chair_1.md3"$0D
+        "/models/objects/Liner/furniture/galley_chair_2.md3"$0D
+        "/models/objects/Liner/furniture/sink.md3"$0D
+        "/models/objects/Liner/lights/wall_light.md3"$0D
+        "/models/objects/Liner/lights/wall_light2.md3"$0D
+        "/models/objects/Liner/misc/ax.md3"$0D
+        "/models/objects/Liner/misc/ax_1.md3"$0D
+        "/models/objects/Liner/misc/ax_2.md3"$0D
+        "/models/objects/Liner/misc/big_pot.md3"$0D
+        "/models/objects/Liner/misc/big_pot_1.md3"$0D
+        "/models/objects/Liner/misc/big_pot_2.md3"$0D
+        "/models/objects/Liner/misc/big_pot_nolid.md3"$0D
+        "/models/objects/Liner/misc/big_pot_nolid_1.md3"$0D
+        "/models/objects/Liner/misc/big_pot_nolid_2.md3"$0D
+        "/models/objects/Liner/misc/cart_tray.md3"$0D
+        "/models/objects/Liner/misc/cart_tray_1.md3"$0D
+        "/models/objects/Liner/misc/cart_tray_2.md3"$0D
+        "/models/objects/Liner/misc/coffee_maker.md3"$0D
+        "/models/objects/Liner/misc/coffee_maker_1.md3"$0D
+        "/models/objects/Liner/misc/coffee_maker_2.md3"$0D
+        "/models/objects/Liner/misc/coffee_pot.md3"$0D
+        "/models/objects/Liner/misc/control_1.md3"$0D
+        "/models/objects/Liner/misc/extinguisher.md3"$0D
+        "/models/objects/Liner/misc/extinguisher_1.md3"$0D
+        "/models/objects/Liner/misc/extinguisher_2.md3"$0D
+        "/models/objects/Liner/misc/foodtray.md3"$0D
+        "/models/objects/Liner/misc/frying_pan.md3"$0D
+        "/models/objects/Liner/misc/headphones.md3"$0D
+        "/models/objects/Liner/misc/life_preserver.md3"$0D
+        "/models/objects/Liner/misc/monitor.md3"$0D
+        "/models/objects/Liner/misc/mop.md3"$0D
+        "/models/objects/Liner/misc/mop_bucket.md3"$0D
+        "/models/objects/Liner/misc/phone.md3"$0D
+        "/models/objects/Liner/misc/pot.md3"$0D
+        "/models/objects/Liner/misc/pot_nolid.md3"$0D
+        "/models/objects/Liner/misc/raft.md3"$0D
+        "/models/objects/Liner/misc/spatula.md3"$0D
+        "/models/objects/Liner/misc/throttle.md3"$0D
+        "/models/objects/Liner/misc/valve2.md3"$0D
+        "/models/objects/Liner/misc/wood_spoon.md3"$0D
+        "/models/objects/Liner/toilet/toilet.md3"$0D
+        "/models/objects/Liner/toilet/toilet_open.md3"$0D
+        "/models/objects/Prague/furniture/table_long.md3"$0D
+        "/models/objects/Prague/furniture/table_round.md3"$0D
+        "/models/objects/Prague/furniture/umbrella.md3"$0D
+        "/models/objects/Prague/misc/big_chandelier.md3"$0D
+        "/models/objects/Prague/misc/knife_prague.md3"$0D
+        "/models/objects/Prague/misc/m1911a1_prague.md3"$0D
+        "/models/objects/Prague/misc/med_chandelier.md3"$0D
+        "/models/objects/Prague/misc/pra3_chandelier.md3"$0D
+        "/models/objects/Prague/misc/pra3_chandelier_broken.md3"$0D
+        "/models/objects/Prague/misc/statue.md3"$0D
+        "/models/objects/Shop/misc/copy_machine.md3"$0D
+        "/models/objects/Shop/misc/helipad_lights.md3"$0D
+        "/models/objects/Shop/misc/helipad_lights_1.md3"$0D
+        "/models/objects/Shop/misc/helipad_lights_2.md3"
+      }
+      model: = { typ="C" txt="pick_ups"
+      items=
+        "pick_ups/ammo_20_lrg.md3"$0D
+        "pick_ups/ammo_20_smll.md3"$0D
+        "pick_ups/ammo_40_lrg.md3"$0D
+        "pick_ups/ammo_40_smll.md3"$0D
+        "pick_ups/ammo_45_lrg.md3"$0D
+        "pick_ups/ammo_45_smll.md3"$0D
+        "pick_ups/ammo_50_lrg.md3"$0D
+        "pick_ups/ammo_50_smll.md3"$0D
+        "pick_ups/ammo_556_lrg.md3"$0D
+        "pick_ups/ammo_556_smll.md3"$0D
+        "pick_ups/ammo_762_lrg.md3"$0D
+        "pick_ups/ammo_762_smll.md3"$0D
+        "pick_ups/ammo_9mm_lrg.md3"$0D
+        "pick_ups/ammo_9mm_smll.md3"$0D
+        "pick_ups/ammo_belt_lrg.md3"$0D
+        "pick_ups/ammo_belt_smll.md3"$0D
+        "pick_ups/ammo_mm1_lrg.md3"$0D
+        "pick_ups/ammo_mm1_smll.md3"$0D
+        "pick_ups/ammo_rpg7_lrg.md3"$0D
+        "pick_ups/ammo_rpg7_smll.md3"$0D
+        "pick_ups/ammo_shotgun_lrg.md3"$0D
+        "pick_ups/ammo_shotgun_smll.md3"$0D
+        "pick_ups/anm14_lrg.md3"$0D
+        "pick_ups/anm14_smll.md3"$0D
+        "pick_ups/armor_large.md3"$0D
+        "pick_ups/armor_medium.md3"$0D
+        "pick_ups/armor_small.md3"$0D
+        "pick_ups/briefcase_silver.md3"$0D
+        "pick_ups/f1_lrg.md3"$0D
+        "pick_ups/f1_smll.md3"$0D
+        "pick_ups/health_lrg.md3"$0D
+        "pick_ups/health_smll.md3"$0D
+        "pick_ups/l2a2_lrg.md3"$0D
+        "pick_ups/l2a2_smll.md3"$0D
+        "pick_ups/m15_lrg.md3"$0D
+        "pick_ups/m15_smll.md3"$0D
+        "pick_ups/m67_lrg.md3"$0D
+        "pick_ups/m67_smll.md3"$0D
+        "pick_ups/m84_lrg.md3"$0D
+        "pick_ups/m84_smll.md3"$0D
+        "pick_ups/mdn11_lrg.md3"$0D
+        "pick_ups/mdn11_smll.md3"$0D
+        "pick_ups/mp_universal_pickup.md3"$0D
+        "pick_ups/rmg_book.md3"$0D
+        "pick_ups/rmg_briefcase.md3"$0D
+        "pick_ups/rmg_discs.md3"$0D
+        "pick_ups/rmg_documents.md3"$0D
+        "pick_ups/rmg_tnt.md3"$0D
+        "pick_ups/smohg92_lrg.md3"$0D
+        "pick_ups/smohg92_smll.md3"
+      values=
+        "/models/pick_ups/ammo_20_lrg.md3"$0D
+        "/models/pick_ups/ammo_20_smll.md3"$0D
+        "/models/pick_ups/ammo_40_lrg.md3"$0D
+        "/models/pick_ups/ammo_40_smll.md3"$0D
+        "/models/pick_ups/ammo_45_lrg.md3"$0D
+        "/models/pick_ups/ammo_45_smll.md3"$0D
+        "/models/pick_ups/ammo_50_lrg.md3"$0D
+        "/models/pick_ups/ammo_50_smll.md3"$0D
+        "/models/pick_ups/ammo_556_lrg.md3"$0D
+        "/models/pick_ups/ammo_556_smll.md3"$0D
+        "/models/pick_ups/ammo_762_lrg.md3"$0D
+        "/models/pick_ups/ammo_762_smll.md3"$0D
+        "/models/pick_ups/ammo_9mm_lrg.md3"$0D
+        "/models/pick_ups/ammo_9mm_smll.md3"$0D
+        "/models/pick_ups/ammo_belt_lrg.md3"$0D
+        "/models/pick_ups/ammo_belt_smll.md3"$0D
+        "/models/pick_ups/ammo_mm1_lrg.md3"$0D
+        "/models/pick_ups/ammo_mm1_smll.md3"$0D
+        "/models/pick_ups/ammo_rpg7_lrg.md3"$0D
+        "/models/pick_ups/ammo_rpg7_smll.md3"$0D
+        "/models/pick_ups/ammo_shotgun_lrg.md3"$0D
+        "/models/pick_ups/ammo_shotgun_smll.md3"$0D
+        "/models/pick_ups/anm14_lrg.md3"$0D
+        "/models/pick_ups/anm14_smll.md3"$0D
+        "/models/pick_ups/armor_large.md3"$0D
+        "/models/pick_ups/armor_medium.md3"$0D
+        "/models/pick_ups/armor_small.md3"$0D
+        "/models/pick_ups/briefcase_silver.md3"$0D
+        "/models/pick_ups/f1_lrg.md3"$0D
+        "/models/pick_ups/f1_smll.md3"$0D
+        "/models/pick_ups/health_lrg.md3"$0D
+        "/models/pick_ups/health_smll.md3"$0D
+        "/models/pick_ups/l2a2_lrg.md3"$0D
+        "/models/pick_ups/l2a2_smll.md3"$0D
+        "/models/pick_ups/m15_lrg.md3"$0D
+        "/models/pick_ups/m15_smll.md3"$0D
+        "/models/pick_ups/m67_lrg.md3"$0D
+        "/models/pick_ups/m67_smll.md3"$0D
+        "/models/pick_ups/m84_lrg.md3"$0D
+        "/models/pick_ups/m84_smll.md3"$0D
+        "/models/pick_ups/mdn11_lrg.md3"$0D
+        "/models/pick_ups/mdn11_smll.md3"$0D
+        "/models/pick_ups/mp_universal_pickup.md3"$0D
+        "/models/pick_ups/rmg_book.md3"$0D
+        "/models/pick_ups/rmg_briefcase.md3"$0D
+        "/models/pick_ups/rmg_discs.md3"$0D
+        "/models/pick_ups/rmg_documents.md3"$0D
+        "/models/pick_ups/rmg_tnt.md3"$0D
+        "/models/pick_ups/smohg92_lrg.md3"$0D
+        "/models/pick_ups/smohg92_smll.md3"
+      }
+      model: = { typ="C" txt="players"
+      items=
+        "players/sarge/head.md3"$0D
+        "players/sarge/head_1.md3"$0D
+        "players/sarge/head_2.md3"$0D
+        "players/sarge/lower.md3"$0D
+        "players/sarge/lower_1.md3"$0D
+        "players/sarge/lower_2.md3"$0D
+        "players/sarge/upper.md3"$0D
+        "players/sarge/upper_1.md3"$0D
+        "players/sarge/upper_2.md3"
+      values=
+        "/models/players/sarge/head.md3"$0D
+        "/models/players/sarge/head_1.md3"$0D
+        "/models/players/sarge/head_2.md3"$0D
+        "/models/players/sarge/lower.md3"$0D
+        "/models/players/sarge/lower_1.md3"$0D
+        "/models/players/sarge/lower_2.md3"$0D
+        "/models/players/sarge/upper.md3"$0D
+        "/models/players/sarge/upper_1.md3"$0D
+        "/models/players/sarge/upper_2.md3"
+      }
+      model: = { typ="C" txt="weapons"
+      items=
+        "weapons/ak74/ak74_muzzle_model.md3"$0D
+        "weapons/grenade_handle.md3"$0D
+        "weapons/shells/shell_40mm.md3"$0D
+        "weapons/shells/shell_40mm_empty.md3"$0D
+        "weapons/shells/shell_brass.md3"$0D
+        "weapons/shells/shell_brass_hires.md3"$0D
+        "weapons/shells/shell_brass_large.md3"$0D
+        "weapons/shells/shell_brass_large_hires.md3"$0D
+        "weapons/shells/shell_brass_small.md3"$0D
+        "weapons/shells/shell_brass_small_hires.md3"$0D
+        "weapons/shells/shell_shotgun.md3"$0D
+        "weapons/shells/shell_shotgun_hires.md3"
+      values=
+        "/models/weapons/ak74/ak74_muzzle_model.md3"$0D
+        "/models/weapons/grenade_handle.md3"$0D
+        "/models/weapons/shells/shell_40mm.md3"$0D
+        "/models/weapons/shells/shell_40mm_empty.md3"$0D
+        "/models/weapons/shells/shell_brass.md3"$0D
+        "/models/weapons/shells/shell_brass_hires.md3"$0D
+        "/models/weapons/shells/shell_brass_large.md3"$0D
+        "/models/weapons/shells/shell_brass_large_hires.md3"$0D
+        "/models/weapons/shells/shell_brass_small.md3"$0D
+        "/models/weapons/shells/shell_brass_small_hires.md3"$0D
+        "/models/weapons/shells/shell_shotgun.md3"$0D
+        "/models/weapons/shells/shell_shotgun_hires.md3"
+      }
+    }
+
+//</MODEL FORMS>
+
+
   Entity Forms.fctx =
   {
+    t_model:incl = {
+      model: = { Txt = " "
+        Typ = "B"
+        Cap = "models..."
+        form ="t_models_form:form"
+        hint ="Available .MD3 files"
+      }
+    }
     item_*****:form =
     {
       help = "DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION."$0D"Th"
@@ -1070,12 +2241,22 @@ QQRKSRC1
     {
       help = "this model is inserted into the bsp file"$0D22"model"$22"       "
        " arbitrary .md3 file to display"
-      bbox = '-16 -16 -16 16 16 16'
+      angle: =
+      {
+        Txt = "&"
+        Hint = "direction in which model will be oriented."
+      }
+      model: =
+      {
+        Txt = "&"
+        Hint = "Path and name of a model to use."
+      }
       spawnflags: =
       {
         typ = "X1"
         cap = "RMG"
       }
+      t_model = !
     }
     misc_G2model:form =
     {
