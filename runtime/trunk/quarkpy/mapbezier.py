@@ -54,7 +54,7 @@ def texcpclick(m):
     pack.ij, pack.b2 = h.ij, h.b2
 
     def setup(self, pack=pack):
-        cp, (i, j), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
+        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
         src = self.src
 #        squawk("two")
         p = cp[j][i]
@@ -63,7 +63,7 @@ def texcpclick(m):
         src["Coords"] = cp[j][i].s, cp[j][i].t
 
     def action(self, pack=pack):
-        cp, (i, j), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
+        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
         s, t = self.src["Coords"]
         cpji = cp[j][i]
         if self.src["global"]:
@@ -76,6 +76,7 @@ def texcpclick(m):
               squawk(`cp[j0][i0]`)
         else:
           cp[j][i] = quarkx.vect(cpji.xyz + (s, t))
+#          squawk(`cp[j][i]`)
         new = b2.copy()
         new.cp = cp
         undo=quarkx.action()
@@ -94,26 +95,46 @@ within45 = math.cos(deg2rad*45)
 def iseven(num):
   return not divmod(num,2)[1]
 
-  
+#
+# needed cuz vector math returns 3-vectors, shud be fixed.
+#
+def coefficients(P, C):
+ x = y = z = s = t = 0.0
+ for i in range(len(P)):
+   x = x+C[i]*(P[i].x) 
+   y = y+C[i]*(P[i].y)
+   z = z+C[i]*(P[i].z)
+   s = s+C[i]*(P[i].s) 
+   t = t+C[i]*(P[i].t)
+#
+# BUGGED:  5-tuple vector-builder produces 3-vector
+#
+ result = quarkx.vect(x, y, z, s, t)
+# squawk("result5: %s"%result)
+ return result
+   
 def b2midpoint(p0, p1, p2):
   "midpoint of the b2 line for the three points"
 #  squawk("points: %s %s %s"%(p0, p1, p2))
-  result = .25*p0 + .5*p1 + .25*p2
+#  result = 0.25*p0 + 0.5*p1 + 0.25*p2
+  result = coefficients((p0, p1, p2),(0.25, 0.5, 0.25))
 #  squawk(`result`)
   return result
   
 def b2qtpoint(p0, p1, p2):
   "1 quarter point of the b2 line for the three points"
-  return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
+#  return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
+  return coefficients((p0, p1, p2), (9/16.0, 3/8.0, 1/16.0))
 
 def b2qt3point(p0, p1, p2):
   "2 quarter point of the b2 line for the three points"
-  return (1/16.0)*p0+(3/8.0)*p1+(9/16.0)*p2
+#  return (1/16.0)*p0+(3/8.0)*p1+(9/16.0)*p2
+  return coefficients((p0, p1, p2), (1/16.0, 3/8.0, 9/16.0))
 
 def b2midcp(p0, m, p2):
   "cp to get b2 line from p0 to p2 passing thru m"
-  return 2.0*m-.5*(p0+p2)
-  
+#  return 2.0*m-.5*(p0+p2)
+  return coefficients((p0, m, p2), (-0.5, 2.0, -0.5))
 
 #
 # copy.deepcopy() doesn't seem to work
@@ -131,7 +152,7 @@ def copyquilt(quilt):
 #  the new even coordinate cp, & the new odd coordinate cp's are
 #  chosen to get the line to pass thru the 1/4 and 3/4 points.
 #
-def quilt_addrow(cp,(j,i)):
+def quilt_addrow(cp,(i,j)):
   "returns a new quit with two patch-rows replacing the ith one"
   ncp = copyquilt(cp)
   md, q1, q3 = [], [], []
@@ -152,12 +173,14 @@ def quilt_addrow(cp,(j,i)):
   return ncp
 
 
-def quilt_addcol(cp,(j,i)):
+def quilt_addcol(cp,(i,j)):
   "returns a new quit with two patch-rows replacing the ith one"
   ncp = copyquilt(cp)
   for row in ncp:
      arc = row[j-1],row[j],row[j+1]
+#     squawk("arc: %s"%(arc,))
      mid = apply(b2midpoint, arc)
+#     squawk("mid: %s"%mid)
      qt1 = apply(b2qtpoint, arc)
      qt3 = apply(b2qt3point, arc)
      row[j:j+1]=[b2midcp(arc[0],qt1, mid),
@@ -208,7 +231,6 @@ class CPHandle(qhandles.GenericHandle):
         i, j = self.ij
         
         def thickenclick(m,self=self,editor=editor):
-          j, i = self.ij   # i is row index unlike Armin's code
           new = self.b2.copy()
           new.cp = m.thicken(self.b2.cp, self.ij)
           undo = quarkx.action()
@@ -217,13 +239,13 @@ class CPHandle(qhandles.GenericHandle):
 
 
         addrow = qmenu.item("Add Row",thickenclick,"|Adds a row to the mesh")
-        if iseven(j):
+        if iseven(i):
           addrow.state=qmenu.disabled
         else:
           addrow.thicken=quilt_addrow
           
         addcol = qmenu.item("Add Column",thickenclick,"|Adds a column to the mesh")
-        if iseven(i):
+        if iseven(j):
           addcol.state=qmenu.disabled
         else:
           addcol.thicken=quilt_addcol
@@ -276,9 +298,10 @@ class CPHandle(qhandles.GenericHandle):
         self.drawcpnet(view, cv, oldcp)
         return oldcp
 
+    # converting to standard ij
     def drag(self, v1, v2, flags, view):
 
-        # tiglari   
+        # tiglari 
         def movepoints(b2, i, j, self=self, view=view):
             #
             #  movecol & moverow are part of what's probably
@@ -286,33 +309,30 @@ class CPHandle(qhandles.GenericHandle):
             #   whether they're going away from the viewer
             #
             def movecol(self=self, b2=b2, i=i, j=j, view=view):
-                if i==self.w-1:
-                    ip=i-2
+                if j==self.j-1:
+                    jp=j-2
                 else:
-                    ip=i+2
-                gap = b2.cp[j][self.w-1]-b2.cp[j][0]
+                    jp=j+2
+                gap = b2.cp[i][self.w-1]-b2.cp[i][0]
                 if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
                         return 1
                 return 0
                 
             def moverow(self=self, b2=b2, i=i, j=j, view=view):
-                if j==self.h-1:
-                    jp=j-2
+                if i==self.h-1:
+                    ip=i-2
                 else:
-                    jp=j+2
-                gap = b2.cp[self.h-1][i]-b2.cp[0][i]
+                    ip=i+2
+                gap = b2.cp[self.h-1][j]-b2.cp[0][j]
                 if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
                     return 1
                 return 0
             
             if quarkx.keydown('\020')==1: #SHIFT
-#                if moverow():
-#                    if j==0 or j==b2.w-1:
-                        return map(lambda j,i=i:(i, j),range(self.h))
+                 return map(lambda i,j=j:(i, j),range(self.h))
             if quarkx.keydown('\021')==1: #CTRL
-#                   if i==0 or i==b2.h-1:
-                       return map(lambda i,j=j:(i, j), range(self.w))
-            return (i,j),
+                 return map(lambda j,i=i:(i, j), range(self.w))
+            return (i, j),
         # /tiglari
 
         delta = v2-v1
@@ -323,26 +343,26 @@ class CPHandle(qhandles.GenericHandle):
             new = self.b2.copy()
             cp = map(list, self.b2.cp)
             i, j = self.ij
-            indexes = movepoints(self.b2, i, j)        # tiglari 
+            indexes = movepoints(self.b2, i, j)        # tiglari, need to unswap 
 #            squawk("%s:%s"%(self.b2.H, self.b2.W))
 #            squawk(`indexes`)
             for m,n in indexes:
-                p = cp[n][m] + delta
+                p = cp[m][n] + delta
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
-                cp[n][m] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
+                cp[m][n] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
 #            if 0:
             if self.b2["smooth"]:
                 # keep the patch smoothness
                 def makesmooth(di,dj,i=i,j=j,cp=cp):
-                    p = 2*cp[j+dj][i+di] - cp[j][i]
-                    cp[j+dj+dj][i+di+di] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
-                if i&1:
-                    if i>2: makesmooth(-1,0)
-                    if i+2<len(cp[0]): makesmooth(1,0)
+                    p = 2*cp[i+di][j+dj] - cp[i][j]
+                    cp[i+di+di][j+dj+dj] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
                 if j&1:
                     if j>2: makesmooth(0,-1)
-                    if j+2<len(cp): makesmooth(0,1)
+                    if j+2<len(cp[0]): makesmooth(0, 1)
+                if i&1:
+                    if i>2: makesmooth(-1,0)
+                    if i+2<len(cp): makesmooth(1,0)
             new.cp = self.newcp = cp
             new = [new]
         else:
