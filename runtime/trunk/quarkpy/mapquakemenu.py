@@ -65,6 +65,11 @@ def CreateCheckFileExtensionArray(instring):
 
 
 
+def ExtensionFromFilter(filter):
+    startex = string.rfind(filter,'|*.')
+    return filter[startex+2:]
+    
+
 class BuildPgmConsole(qquake.BatchConsole):
     "StdOut console for programs that build files."
 
@@ -163,8 +168,15 @@ def writemapfile(root, mapname, selonly, wadfile, hxstr=None):
         saveflags = saveflags | SO_ENABLEBRUSHPRIM
     if selonly:
         saveflags = saveflags | SO_SELONLY
-    m = quarkx.newfileobj(mapname+'.map')
-    m.filename = quarkx.outputfile("maps/%s.map" % mapname)
+    setup = quarkx.setupsubset()
+    mapfiltercode = setup["MapFilter"]
+    if mapfiltercode:
+        mapext=ExtensionFromFilter(Strings[eval(mapfiltercode)])
+    else:
+        mapext='.map'
+    mapfullname=mapname+mapext
+    m = quarkx.newfileobj(mapfullname)
+    m.filename = quarkx.outputfile("maps/%s" % mapfullname)
     worldspawn = root.copy(1)   # preserve selection while copying
     m["Root"] = worldspawn.name
     m.setint("saveflags", saveflags)
@@ -557,6 +569,9 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.20  2001/07/19 12:00:17  tiglari
+#support disabling mapchecks in game config files
+#
 #Revision 1.19  2001/03/18 12:17:26  decker_dk
 #Fixed FindSingleExtension() so it also reads the last extension at end-of-line.
 #
