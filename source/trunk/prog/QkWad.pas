@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/05/21 13:11:50  decker_dk
+Find new shaders and misc.
+
 }
 
 unit QkWad;
@@ -33,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkFileObjects, TB97, QkObjects, StdCtrls, ExtCtrls, ComCtrls, CommCtrl,
-  QkListView, QkTextures, Game, QkForm, QkPixelSet, ImgList;
+  QkListView, QkTextures, Game, QkForm, QkPixelSet, ImgList{, ImgList};
 
 type
  QWad = class(QLvFileObject)
