@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13.2.2  2000/10/15 19:59:32  alexander
+merged back sof flag fix
+
 Revision 1.13.2.1  2000/09/21 08:37:26  tiglari
 fix for SOF default flags problem
 
@@ -2172,8 +2175,8 @@ var
           S:=S+' '+S1+' '+S2+' '+S3;
          end;
        end;
-
-     if Flags and soDisableEnhTex = 0 then
+     { kludge, for radiant readability }
+     if (MJ<>mjQ3A) and (Flags and soDisableEnhTex = 0) then
       S:=S+TxField[(MJ>='A') and (MJ<='Z'), F.TextureMirror];
      Brush.Add(S);
     end;
