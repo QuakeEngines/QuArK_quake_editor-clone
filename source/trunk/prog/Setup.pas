@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/06/05 18:41:51  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.23  2001/03/20 21:42:24  decker_dk
 Updated copyright-header
 
@@ -141,11 +144,16 @@ const
  mjQuake      = '1';
  mjHexen      = '2';
  mjHalfLife   = '3';
+ {..up to '9' Quake-style games may exist..}
+
  mjQuake2     = 'A';
  mjHeretic2   = 'B';
  mjSin        = 'C';
  mjKingPin    = 'D';
  mjSOF        = 'E';
+ {..space for more Quake-2 style games..}
+ mj6DX        = 'Z';
+
  mjQ3A        = 'a';
  mjStarTrekEF = 'b';
  mjCrystalSpace = 'c';
