@@ -83,8 +83,6 @@ class MapLayout(BaseLayout):
         self.faceform = None
         self.faceview = None
         self.faceflags = None
-        self.bezierform = None
-        self.bezierview = None
 
 
     def readtoolbars(self, config):
@@ -183,21 +181,14 @@ class MapLayout(BaseLayout):
         return fp
 
     def bs_bezierform(self, panel):
-        import qhandles
-        
         fp = panel.newpanel()
-        TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
-        ts1Btn = qtoolbar.button(self.resettexscale, "reset 1:1 texture scale|resets 'scales' and 'angles'", ico_maped, 17)
-        ts1Btn.adjust = 0
-        ts2Btn = qtoolbar.button(self.resettexscale, "adjust texture to fit the bezier", ico_maped, 18)
-        ts2Btn.adjust = 1
-        ts3Btn = qtoolbar.button(self.resettexscale, "adjust texture on face but keep scaling to a minimum|adjust texture with minimum scaling", ico_maped, 24)
-        ts3Btn.adjust = 2
         bezierzoombtn = qtoolbar.menubutton(getzoommenu, "choose zoom factor", ico_maped, 14)
         bezierzoombtn.near = 1
-        self.buttons.update({"bezierzoom": bezierzoombtn})
-        tp = fp.newtoppanel(142)
-        btnp = tp.newbottompanel(ico_maped_y,0).newbtnpanel([bezierzoombtn, qtoolbar.smallgap, TexBtn, ts1Btn, ts2Btn, ts3Btn])
+        TexBtn = qtoolbar.button(mapbtns.texturebrowser, "choose texture", ico_maped, 1)
+        self.buttons["bezierzoom"] = bezierzoombtn
+        tp = fp.newtoppanel(70)
+        btnp = tp.newbottompanel(23,0).newbtnpanel([bezierzoombtn, qtoolbar.smallgap, TexBtn, qtoolbar.smallgap] + self.texflags("bezier patch"))
+#        btnp = tp.newbottompanel(23,0).newbtnpanel([bezierzoombtn, TexBtn] + self.texflags("bezier patch"))
         btnp.margins = (0,0)
         self.bezierform = tp.newdataform()
         self.bezierform.header = 0
@@ -205,9 +196,11 @@ class MapLayout(BaseLayout):
         self.bezierform.setdata([], quarkx.getqctxlist(':form', "Bezier")[-1])
         self.bezierform.onchange = self.bezierformchange
         self.bezierview = fp.newmapview()
+        # bezierzoombtn.views = [self.bezierview]
+        self.bezierview.color = NOCOLOR
         bezierzoombtn.views = [self.bezierview]
         return fp
-        
+
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
         page1 = qtoolbar.button(self.filldataform, "General parameters about the selected object(s)|Specifics/Arg", ico_objects, iiEntity)
@@ -217,7 +210,7 @@ class MapLayout(BaseLayout):
         page3 = qtoolbar.button(self.fillfaceform, "Parameters about the selected face(s)|faces", ico_objects, iiFace)
         page3.pc = [self.bs_faceform(panel)]
         page3.needangle = 1
-        page4 = qtoolbar.button(self.fillbezierform, "Parameters about the selected bezier", ico_objects, iiBezier)
+        page4 = qtoolbar.button(self.fillbezierform, Strings[-459], ico_objects, iiBezier)#, Strings[-409])
         page4.pc = [self.bs_bezierform(panel)]
         return [page1, page2, page3, page4], mppages
 
@@ -240,8 +233,6 @@ class MapLayout(BaseLayout):
                 self.mpp.viewpage(2)
             elif fs.type == ':f':
                 self.mpp.viewpage(3)
-            elif fs.type == ':b2':
-                self.mpp.viewpage(4)
 
     def filldataform(self, reserved):
         import mapentities
@@ -426,6 +417,16 @@ class MapLayout(BaseLayout):
                     flist.append(f)
         return flist
 
+    def getbezierlists(self):
+        "Find all selected Bézier patches."
+        blist = []
+        b2list = []
+        for s in self.explorer.sellist:
+            for b in s.findallsubitems("",':b2'):
+                if not (b in b2list):
+                    b2list.append(b)
+        return blist+b2list
+
 
     def zoomface1click(self, facezoombtn):
         flist = self.getfacelists()
@@ -541,59 +542,6 @@ class MapLayout(BaseLayout):
         quarkx.update(self.editor.form)
 
 
-    def selectedbeziers(self):
-        "Find all selected beziers."
-	flist = []
-	for s in self.explorer.sellist:
-	     for f in s.findallsubitems("", ':b2'):   # find all beziers
-	           if not (f in flist):
-	               flist.append(f)
-        return flist
-        
-    def fillbezierform(self, reserved):
-        q = quarkx.newobj(':')   # internal object
-        self.bezierview.handles = []
-        self.bezierview.ondraw = None
-        self.bezierview.onmouse = self.polyviewmouse
-        self.bezierview.color = NOCOLOR
-        self.bezierview.invalidate(1)
-        bezierzoombtn = self.buttons["bezierzoom"]
-        bezierzoombtn.state = qtoolbar.disabled
-        bezier_list = self.selectedbeziers();
-        if len(bezier_list)==0:
-            cap = " (no bezier selected) "
-        elif len(bezier_list)==1:
-            if maphandles.viewsinglebezier(self.editor, self.bezierview, bezier_list[0]):
-                bezierzoombtn.state = 0
-            cap = " Selected Bezier "
-        else:
-            cap = " %d beziers selected " % len(flist)
-        q["header"] = cap
-        if self.bezierview.ondraw is None:
-            self.bezierview.ondraw = self.polyviewdraw
-            self.bezierview.hint = "|click to select texture"
-        else:
-            self.faceview.hint = ""
-        texlist = quarkx.texturesof(bezier_list)
-        texhint = "TEX?"
-        for tex in texlist:
-            texhint = texhint + tex + ";"
-        if len(texlist)<=1:
-            if len(texlist):
-                cap = texlist[0]
-            else:
-                cap = ""
-            texlist = quarkx.texturesof([self.editor.Root])  # all textures in the map
-        else:
-            cap = Strings[179] % len(texlist)
-        q["texture"] = cap
-        q["oldtex"] = cap
-        q["texture$Items"] = quarkx.list2lines(texlist)
-        q["texture$Hint"] = texhint
-        multiple = "?"
-        self.bezierform.setdata(q, self.bezierform.form)
-        quarkx.update(self.editor.form)
-
     def faceformchange(self, src):
         flist = self.getfacelists()
         undo = quarkx.action()
@@ -665,27 +613,73 @@ class MapLayout(BaseLayout):
             txt = Strings[597]
         self.editor.ok(undo, txt)
 
+
+    def fillbezierform(self, reserved):
+        self.bezierview.handles = []
+        self.bezierview.ondraw = None
+        self.bezierview.onmouse = self.polyviewmouse
+        self.bezierview.invalidate(1)
+        self.bezierview.info = None
+        bezierzoombtn = self.buttons["bezierzoom"]
+        bezierzoombtn.state = qtoolbar.disabled
+        blist = self.getbezierlists()
+        # quarkx.update(self.editor.form)  -- done below
+
+        q = quarkx.newobj(':')   # internal object
+        if len(blist)==0:
+            cap = Strings[128]
+        elif len(blist)==1:
+            if maphandles.viewsinglebezier(self.bezierview, self, blist[0]):
+                bezierzoombtn.state = 0
+            cap = Strings[126]
+        else:
+            cap = Strings[127] % len(blist)
+        if self.bezierview.ondraw is None:
+            self.bezierview.ondraw = self.polyviewdraw
+            self.bezierview.hint = "|click to select texture"
+        else:
+            self.bezierview.hint = ""
+        q["header"] = cap
+        texlist = quarkx.texturesof(blist)
+        texhint = "TEX?"
+        for tex in texlist:
+            texhint = texhint + tex + ";"
+        if len(texlist)<=1:
+            if len(texlist):
+                cap = texlist[0]
+            else:
+                cap = ""
+            texlist = quarkx.texturesof([self.editor.Root])  # all textures in the map
+        else:
+            cap = Strings[179] % len(texlist)
+        q["texture"] = cap
+        q["oldtex"] = cap
+        q["texture$Items"] = quarkx.list2lines(texlist)
+        q["texture$Hint"] = texhint
+
+        self.bezierform.setdata(q, self.bezierform.form)
+        quarkx.update(self.editor.form)
+
+
     def bezierformchange(self, src):
-        bezier_list = self.selectedbeziers()
+        blist = self.getbezierlists()
         undo = quarkx.action()
 
         q = src.linkedobjects[0]
-        norg = q["origin"]
-        if norg is not None:
-            norg = quarkx.vect(norg)   # tuple->vect
         ntex = q["texture"]
+        if ntex is None: ntex = ""
         applycount = 0
-        if (ntex is not None) and (ntex!="") and (ntex!=q["oldtex"]):
-            for bezier in bezier_list:
+        if ntex!=q["oldtex"]:
+            for b in blist:
                 # this implicitely uses the 'undo' variable
-                applycount = applycount + bezier.replacetex("", ntex, 1)
+                applycount = applycount + b.replacetex(None, ntex, 1)
         if applycount:
             if applycount>1:
                 txt = Strings[547] % applycount
             else:
                 txt = Strings[546]
         else:
-            txt = Strings[597]
+            txt = Strings[628]
         self.editor.ok(undo, txt)
 
 

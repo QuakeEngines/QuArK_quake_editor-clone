@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-    0: "quarksnapshot_20010215",
+    0: "quarksnapshot_20010225",
     1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
     2: "&New %s",
@@ -29,6 +29,9 @@ Strings = {
     99: "Paste &into group",
     113: "nothing to undo",
 
+    126: " Selected patch ",
+    127: " %d patches sel. ",
+    128: " (no bezier patch) ",
     129: " (no face selected) ",
     130: "parent only",
         131: "%d polyhedron(s)",
@@ -208,6 +211,7 @@ Strings = {
     625: "resize texture",
     626: "image resize or conversion",
     627: "bezier reshape",
+    628: "move bezier texture",
 
     720: "Press a key or select one in the list :",
     721: "Key mapping for special actions",
@@ -883,12 +887,21 @@ Strings = {
     #-102: "\nNote: to use a bitmap as a texture, you must first convert the bitmap into a texture : in the Texture Browser, choose 'Paste Special' instead of 'Paste'.",
     -103: "%d texture(s) could not be found. Are you sure you want to continue ?",
     -104: "This command uses OpenGL. Note that if you get a black screen it probably means you are looking at a part of your map where there is no light. In case of trouble (or to disable light computation) see the OpenGL section of the configuration dialog box and try again.\n\nIt is recommended to save your work first. Ok to load OpenGL now ?",
+
+    -409: "Bézier",
+
+    -459: "Parameters about the selected Bézier patch(es)|bezier patches",
+
+
 }
 
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.33  2001/02/23 19:28:30  decker_dk
+#KB to bytes, due to change in QkUnknown.PAS
+#
 #Revision 1.32  2001/02/14 23:34:59  alexander
 #set name
 #

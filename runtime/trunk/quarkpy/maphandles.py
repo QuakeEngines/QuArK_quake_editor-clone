@@ -814,6 +814,160 @@ class CyanLHandle0(CyanLHandle):
         cv.penwidth = 3
         cv.line(pt[0], pt[1])
 
+#
+# A version of LinHandlesManager for Bezier texture.
+#
+
+class BTLinHandlesManager(qhandles.LinHandlesManager):
+    "Linear Box manager for Bezier texture."
+
+    def t2p(self, p):
+        w,h = self.scale
+        return quarkx.vect(p.x*w, p.y*h, 0.0)
+
+    def p2t(self, p):
+        w,h = self.scale
+        return quarkx.vect(p.x/w, p.y/h, 0.0)
+
+    def linear(self, sender, obj, center, matrix):
+        if obj.type==":b3":
+            obj.vst = sender.dynst = map(self.p2t, map(lambda v,center=center,matrix=matrix: matrix*(v-center)+center, map(self.t2p, obj.vst)))
+        else:
+            def maprow(p,center=center,matrix=matrix,self=self):
+                t = self.t2p(quarkx.vect(p.s, p.t, 0.0))
+                t = self.p2t(matrix*(t-center)+center)
+                return quarkx.vect(p.xyz + (t.x, t.y))
+            tcp = []
+            for row in obj.cp:
+                tcp.append(map(maprow, row))
+            obj.cp = sender.dynst = tcp
+
+    def translate(self, sender, obj, delta, forcetogrid):
+        if obj.type==":b3":
+            obj.vst = sender.dynst = map(self.p2t, map(lambda v,delta=delta: v+delta, map(self.t2p, obj.vst)))
+        else:
+            def maprow(p, delta=delta, self=self):
+                t = self.t2p(quarkx.vect(p.s, p.t, 0.0))
+                t = self.p2t(t+delta)
+                return quarkx.vect(p.xyz + (t.x, t.y))
+            tcp = []
+            for row in obj.cp:
+                tcp.append(map(maprow, row))
+            obj.cp = sender.dynst = tcp
+            
+
+class CyanBezier2Handle(qhandles.GenericHandle):
+    "Texture moving of Bézier patches : cyan L vertices."
+
+    undomsg = Strings[628]
+    hint = "the shape is the fraction of the texture to map to the Bezier patch"
+
+    def __init__(self, (i,j), cp, b2, scale):
+        self.scale = scale
+        qhandles.GenericHandle.__init__(self, self.t2p(cp[i][j]))
+        self.b2 = b2
+        self.ij = (i,j)
+        self.hint = "Control Point (%d, %d)"%(i,j)
+        self.cp = cp
+        self.colormask = WHITE
+        self.color = WHITE
+
+    def t2p(self, p):
+        w,h = self.scale
+        return quarkx.vect(p.s*w, p.t*h, 0.0)
+
+    def p2t(self, p, q):
+        w,h = self.scale
+        return quarkx.vect(q.xyz +(p.x/w, p.y/h))
+
+    def drag(self, v1, v2, flags, view):
+        view.invalidate(1)
+        self.dynst = None
+        delta = v2-v1
+        if not (flags&MB_CTRL):
+            delta = qhandles.aligntogrid(delta, 0)
+
+        if flags&MB_CTRL:
+            delta = qhandles.aligntogrid(self.pos + delta, 1) - self.pos
+        if delta or (flags&MB_REDIMAGE):
+            new = self.b2.copy()
+            cp = map(list, self.b2.cp)
+            i, j = self.ij
+            w,h = self.scale
+            td = quarkx.vect(0,0,0,delta.x/w,delta.y/h)
+            moverow = (quarkx.keydown('\022')==1)  # ALT
+            movecol = (quarkx.keydown('\020')==1)  # SHIFT
+            from mapbezier import pointsToMove
+            indexes = pointsToMove(moverow, movecol, i, j, len(cp), len(cp[0]))
+            for m,n in indexes:
+                cp[m][n] = cp[m][n]+td
+                new.cp =cp
+            
+
+        if new:
+            self.dynst = new.cp
+        return [self.b2], [new]
+
+    def getdrawmap(self):
+        return self.b2, qhandles.refreshtimertex
+
+    def getcenter(self):
+        cp = self.cp
+        m, n = len(cp)-1, len(cp[0])-1
+        return self.t2p(0.25*(cp[0][0]+cp[m][0]+cp[0][n]+cp[m][n]))
+
+
+
+class CyanBezier2Handle0(CyanBezier2Handle):
+    "Texture moving of Bézier patches : cyan L base."
+
+    def __init__(self, cp, b2, handles, scale):
+        CyanBezier2Handle.__init__(self, (0,0), cp, b2, scale)
+        self.friends = handles
+
+    def draw(self, view, cv, draghandle=None):
+        dyn = (draghandle is self) or (draghandle in self.friends)
+        if dyn:
+            pencolor = RED
+            try:
+                cp = draghandle.dynst
+            except (AttributeError):
+                cp = None
+        else:
+            cp = None
+        if cp is None:
+            pencolor = 0xF0CAA6
+            cp = self.cp
+        pt = []
+        for row in cp:
+            pt.append(map(view.proj, map(self.t2p, row)))
+        m, n = len(cp), len(cp[0])
+        # draw the cyan shape
+        cv.reset()
+        def line(frm, to, bold, cv=cv, pencolor=pencolor):
+            cv.pencolor = BLACK
+            cv.penwidth = (3,5)[bold]
+            cv.line(frm, to)
+            cv.pencolor = pencolor
+            cv.penwidth = (1,3)[bold]
+            cv.line(frm, to)
+        # vertical thin lines
+        for i in range(m-1):
+            for j in range(1, n-1):
+                line(pt[i][j], pt[i+1][j], 0)
+        # horizontal thin lines
+        for i in range(1,m-1):
+            for j in range(n-1):
+                line(pt[i][j], pt[i][j+1], 0)
+        # vertical bold lines
+        for i in range(m-1):
+            for j in (0,n-1):
+                line(pt[i][j], pt[i+1][j], 1)
+        # horizontal bold lines
+        for i in (0,m-1):
+            for j in range(n-1):
+                line(pt[i][j], pt[i][j+1], 1)
+
 
 
 #
@@ -1084,66 +1238,102 @@ def singlefacezoom(view, center=None):
 # Single bezier map view display for the Multi-Pages Panel.
 #
 
-def viewsinglebezier(editor, view, bezier):
-    "Special code to view a single face with handles to move the texture."
-
-    def drawsinglebezier(view, bezier=bezier, editor=editor):
-        view.drawmap(bezier)   # textured face
-        view.solidimage(editor.TexSource)
-        view.drawmap(bezier, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
-        editor.finishdrawing(view)
-        # end of drawsinglebezier
-
-    origin = bezier.origin
-    if origin is None: return
-
-    h = mapentities.CallManager("tex_handles", bezier, editor, view)
-    
-    view.handles = qhandles.FilterHandles(h, SS_MAP)
-
-#DECKER - begin
-    #FIXME - Put a check for an option-switch here, so people can choose which they want (fixed-zoom/scroll, or reseting-zoom/scroll)
-    oldx, oldy, doautozoom = 0, 0, 0
-    try:
-        oldorigin = view.info["origin"]
-        if not abs(origin - oldorigin):
-            oldscale = view.info["scale"]
-            if oldscale is None:
-                doautozoom = 1
-            oldx, oldy = view.scrollbars[0][0], view.scrollbars[1][0]
+def viewsinglebezier(view, layout, patch):
+    cpts = patch.cp
+    if cpts is None:
+        return
+    texlist = quarkx.texturesof([patch])
+    ed = mapeditor()
+    if len(texlist)==1:
+#        tex = quarkx.loadtexture(texlist[0], layout.editor.TexSource)
+        tex = quarkx.loadtexture(texlist[0], ed.TexSource)
+        try:
+            tex = tex.disktexture
+            w,h = tex["Size"]
+        except:
+            pass
         else:
-            doautozoom = 1
-    except:
-        doautozoom = 1
+            if type==':b3':
+                vst = patch.vst
+            else:
+                vst = []
+                for row in patch.cp:
+                    for p in row:
+                        vst.append(quarkx.vect(p.s, p.t, 0))
+            matrix = quarkx.matrix((1,0,0), (0,1,0), (0,0,1))
+            xmin = xmax = vst[0].x
+            ymin = ymax = vst[0].y
+            for v in vst[1:]:
+                if v.x<xmin: xmin=v.x
+                if v.x>xmax: xmax=v.x
+                if v.y<ymin: ymin=v.y
+                if v.y>ymax: ymax=v.y
+            debug(`view`)
+            destx, desty = view.clientarea
+            scale = (destx-35) / ((xmax-xmin+0.05)*w)
+            scaley = (desty-35) / ((ymax-ymin+0.05)*h)
+            if scaley<scale: scale=scaley
+            if scale<0.01: scale=0.01
+            if scale>1.0: scale=1.0
 
-    if doautozoom:
-        oldscale = 0.01
-#DECKER - end
+            view.setprojmode("2D", matrix*scale)
+            view.info = {"type": "2D",
+                   "matrix": matrix,
+                   "scale": scale,
+                   "custom": singlebezierzoom,
+                   "noclick": None,
+                   "mousemode": None }
+            def draw1(view, finish=layout.editor.finishdrawing, w=w, h=h):
+                pt = view.space(quarkx.vect(0,0,0))
+                pt = view.proj(quarkx.vect(math.floor(pt.x), math.floor(pt.y), 0))
+                #view.canvas().painttexture(tex, (pt.x,pt.y)+view.clientarea, 0)
+                view.drawgrid(quarkx.vect(w*view.info["scale"],0,0), quarkx.vect(0,h*view.info["scale"],0), MAROON, DG_LINES, 0, quarkx.vect(0,0,0))
+                finish(view)
+            view.ondraw = draw1
+            view.onmouse = layout.editor.mousemap
+            cp = patch.cp
+            h2 = []
+            m, n = len(cp), len(cp[0])
+            for i in range(m):
+                for j in range(n):
+                    h2.append(CyanBezier2Handle((i,j), cp, patch, (w, h)))
+            mainhandle = CyanBezier2Handle0(cp, patch, h2, (w,h))
+            h2 = [mainhandle] + h2
 
-    view.flags = view.flags &~ (MV_HSCROLLBAR | MV_VSCROLLBAR)
-    view.viewmode = "tex"
-    view.info = {"type": "2D",
-                 "matrix": matrix_rot_z(math.pi),
-                 "bbox": quarkx.boundingboxof([bezier] + map(lambda h: h.pos, view.handles)),
-                 "scale": oldscale, #DECKER
-                 "custom": singlefacezoom,
-                 "origin": origin,
-                 "noclick": None,
-                 "mousemode": None }
-    view.flags = view.flags | qhandles.vfSkinView;
-    singlefacezoom(view, origin)
-    if doautozoom: #DECKER
-        singlefaceautozoom(view, bezier) #DECKER
-    editor.setupview(view, drawsinglebezier, 0)
-    if (oldx or oldy) and not doautozoom: #DECKER
-        view.scrollto(oldx, oldy) #DECKER
-    return 1
+
+            #
+            # Display a linear mapping box.
+            #
+            manager = BTLinHandlesManager(MapColor("Linear"),
+                  (quarkx.vect(w*xmin,h*ymin,0),quarkx.vect(w*xmax,h*ymax,0)), [patch])
+            manager.scale = w,h
+            if layout.editor.linearbox:
+                minimal = None
+            else:
+                minimal = (view, layout.editor.gridstep or 32)
+            h1 = manager.BuildHandles(minimal=minimal)
+            getdrawmap1 = lambda patch=patch: (patch, qhandles.refreshtimertex)
+            for i in h1:
+                i.getdrawmap = getdrawmap1
+            mainhandle.friends = mainhandle.friends + h1
+            view.handles = h2 + h1
+            view.background = tex, quarkx.vect(0,0,0), 1.0
+            view.screencenter = mainhandle.getcenter()
+            return 1
+
+def singlebezierzoom(view):
+    sc = view.screencenter
+    view.setprojmode("2D", view.info["matrix"]*view.info["scale"], 0)
+    view.screencenter = sc
     
     
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.8  2001/02/07 18:40:47  aiv
+#bezier texture vertice page started.
+#
 #Revision 1.7  2000/06/17 07:32:06  tiglari
 #a slight change to clickedview
 #

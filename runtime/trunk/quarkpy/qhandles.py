@@ -584,8 +584,12 @@ class LinCornerHandle(LinearHandle):
     undomsg = Strings[528]
     hint = "zoom / rotate (Ctrl key: either zoom or rotate)||This handle lets you rotate and scale the selected object(s).\n\nIf you move the handle in the direction of or away from the center, you will zoom the objects and make them smaller or larger. If you move the handle around the center, the objects rotate. Hold down the Ctrl key to prevent zooming and rotation to occur simultaneously."
 
-    def __init__(self, center, pos1, mgr):
+    def __init__(self, center, pos1, mgr, realpoint=None):
         LinearHandle.__init__(self, pos1, mgr)
+        if realpoint is None:
+            self.pos0 = pos1
+        else:
+            self.pos0 = realpoint
         self.center = center - (pos1-center)
         self.cursor = CR_CROSSH
 
@@ -1330,12 +1334,28 @@ class LinHandlesManager:
         self.bmax = quarkx.vect(bmax1)
         self.list = list
 
-    def BuildHandles(self, center=None):
+    def BuildHandles(self, center=None, minimal=None):
         "Build a list of handles to put around the box for linear distortion."
 
         if center is None:
             center = 0.5 * (self.bmin + self.bmax)
         self.center = center
+        if minimal is not None:
+            view, grid = minimal
+            closeto = view.space(view.proj(center) + quarkx.vect(-99,-99,0))
+            distmin = 1E99
+            mX, mY, mZ = self.bmin.tuple
+            X, Y, Z = self.bmax.tuple
+            for x in (X,mX):
+                for y in (Y,mY):
+                    for z in (Z,mZ):
+                        ptest = quarkx.vect(x,y,z)
+                        dist = abs(ptest-closeto)
+                        if dist<distmin:
+                            distmin = dist
+                            pmin = ptest
+            f = -grid * view.scale(pmin)
+            return [LinCornerHandle(self.center, view.space(view.proj(pmin) + quarkx.vect(f, f, 0)), self, pmin)]
         h = []
         for side in (self.bmin, self.bmax):
             for dir in (0,1,2):
@@ -1510,6 +1530,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.4  2001/02/07 18:40:47  aiv
+#bezier texture vertice page started.
+#
 #Revision 1.3  2000/10/10 07:37:12  tiglari
 #support for circlestrafe selection
 #
