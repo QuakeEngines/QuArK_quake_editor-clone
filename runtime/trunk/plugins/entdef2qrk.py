@@ -422,7 +422,7 @@ def getwholeline(srcstring):
         token = token + srcstring[i]
         i = i + 1
     i = i + 1
-    if (token == "*/"):
+    if (token[-2:] == "*/"):
         token_is = TYPE_EOC
     else:
         token_is = TYPE_STRING
@@ -539,6 +539,9 @@ quarkpy.qentbase.RegisterEntityConverter("QERadiant .def file", "QERadiant .def 
 
 #
 #$Log$
+#Revision 1.3  2002/02/05 18:32:58  decker_dk
+#Corrected a problem with debug() calls
+#
 #Revision 1.2  2001/12/02 09:57:45  decker_dk
 #Removing 'os' from the import list, and some other minor fixes.
 #
