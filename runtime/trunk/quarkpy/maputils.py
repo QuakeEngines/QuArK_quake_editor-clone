@@ -295,6 +295,11 @@ def read2vec(vals):
        return None, None
     return eval(strings[0]), eval(strings[1])
 
+def readNvec(vals):
+    if vals is None:
+       return None
+    strings = string.split(vals)
+    return tuple(map(lambda str:eval(str), strings))
 
 def buildLinearMatrix(dup):
     linear = dup["matrix"]
@@ -318,6 +323,9 @@ def buildLinearMatrix(dup):
 #
 #
 #$Log$
+#Revision 1.15  2001/05/06 06:02:19  tiglari
+#Support angles Typ E in buildLinearMatrix (so that angles handle will work)
+#
 #Revision 1.14  2001/04/17 23:29:07  tiglari
 #texture-rescaling bug fix (fixedscale="1" added to objects when they're
 #dragged to the panel, removed when inserted to the map, blocks
