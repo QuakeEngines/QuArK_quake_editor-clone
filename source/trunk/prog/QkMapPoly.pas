@@ -23,6 +23,14 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2001/05/20 23:51:34  tiglari
+change map-writing method for bp, valve220, & when tx comment writing is
+ disabled: near-integral vertexes corrected to integrals are used as threepoints
+ if available, otherwise 3point arms are multiplied by a factor of 100 before
+ rounding off.  Should this be under control of yet another flag?  Don't
+ see any real need for this (if tx codes aren't written, then regular tex
+ info is used, not threepoints).
+
 Revision 1.35  2001/04/23 11:33:39  tiglari
 automatic suppression of TX in brush prim mode (makes Radiant barf)
 
@@ -2578,7 +2586,7 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  BrushPrim:=Flags and soEnableBrushPrim<>0;
  Valve220Map:=Flags and soWriteValve220<>0;
- ExpandThreePoints:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex = 1);
+ ExpandThreePoints:=BrushPrim or Valve220Map or (Flags and soDisableEnhTex!=0);
  MJ:=CharModeJeu;
  Brush.Add(CommentMapLine(Ancestry));
  Brush.Add(' {');
