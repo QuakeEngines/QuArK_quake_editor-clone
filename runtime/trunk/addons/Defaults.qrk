@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.39  2000/06/27 11:03:49  tiglari
+//detail content flag reinstated
+//
 //Revision 1.38  2000/06/25 10:56:23  tiglari
 //column cone & bulge support
 //
@@ -98,8 +101,8 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "Version 6.00b1"
-      InternalVersion = '6.0001'
+      Version = "quarksnapshot_20000702"
+      InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
       RecentFiles = ""
@@ -584,6 +587,7 @@ QQRKSRC1
         CD = ""
         CDDir = "Install\Data"
         Program = "Quake3 +set sv_pure 0"
+        StupidBuildToolKludge = "1" //those guys should get shot for that
         QBSP1 = "Q3MAP.EXE"
         QBSPCmd = ""
         VIS1 = "Q3MAP.EXE"
