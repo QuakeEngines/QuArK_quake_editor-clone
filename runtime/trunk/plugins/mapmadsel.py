@@ -1,4 +1,4 @@
- 
+
 ########################################################
 #
 #                      Mad Selector Plugin
@@ -53,7 +53,6 @@ import quarkpy.dlgclasses
 import maptagside
 import faceutils
 from quarkpy.maputils import *
-
 
 
 types = {
@@ -203,9 +202,18 @@ def selectMeFunc(editor, object):
     # is there an easier way to do this? line below wrecks buttons
     #
 #    editor.layout.mpp.viewpage(btn)
+
+# To stop error and give instructions.
+    if object.treeparent is None:
+        return
+
     Spec1 = qmenu.item("", quarkpy.mapmenus.set_mpp_page, "")
     Spec1.page = 0
-    quarkpy.mapmenus.set_mpp_page(Spec1) 
+    quarkpy.mapmenus.set_mpp_page(Spec1)
+
+
+
+
     current = object.treeparent
     if current is None:
         return
@@ -232,7 +240,6 @@ def stashitem(o):
 def StashMe(m):
   editor = mapeditor()
   if editor is None: return
-  menrestsel.state=qmenu.normal
   editor.marker = m.object
   
 def getstashed(e):
@@ -766,6 +773,7 @@ class BrowseListDlg(quarkpy.dlgclasses.LiveBrowserDlg):
           Hint1 = "Open the tree-view to the chosen one"
           Hint2 = "Zoom to the chosen one"
           Hint3 = "Both open and Zoom to the chosen one"
+          
         }
 
         num: = {
@@ -790,19 +798,26 @@ class BrowseListDlg(quarkpy.dlgclasses.LiveBrowserDlg):
         zoomToMeFunc(editor,self.chosen)
 
     def both(self, editor):
+        if self is None:
+            quarkx.msgbox("No selection has been made\n\nYou must first select\nan item in the list\nfor this function to work.", MT_ERROR, MB_OK)
         zoomToMeFunc(editor,self.chosen)
         selectMeFunc(editor,self.chosen)
 
 def macro_browselist(self, index=0):
     editor = mapeditor()
-    if editor is None: return
-    elif index==1:
-        editor.dlg_browselist.open(editor)
-    elif index==2:
-        editor.dlg_browselist.zoom(editor)
-    elif index==3:
-        editor.dlg_browselist.open(editor)
-        editor.dlg_browselist.zoom(editor)
+
+    if len(editor.layout.explorer.sellist)>1:
+# cdunde-To give warning and instructions.
+        quarkx.msgbox("The whole group is selected.\n\nYou must first select\na spacific item in the list\nfor this function to work.", MT_ERROR, MB_OK)
+    else:
+        if editor is None: return
+        elif index==1:
+            editor.dlg_browselist.open(editor)
+        elif index==2:
+            editor.dlg_browselist.zoom(editor)
+        elif index==3:
+            editor.dlg_browselist.open(editor)
+            editor.dlg_browselist.zoom(editor)
         
         
 quarkpy.qmacro.MACRO_browselist = macro_browselist
@@ -816,7 +831,7 @@ def browseListFunc(editor, list):
     class pack:
         "stick stuff here"
     pack.collected=list
-    
+
     def action(self,editor=editor):
         editor.layout.explorer.sellist=[self.chosen]
         editor.invalidateviews()
@@ -831,6 +846,7 @@ def linredmenu(self, editor, view):
     def browseSelClick(m, editor=editor):
         browseListFunc(editor, editor.layout.explorer.sellist)
 
+
     item = qmenu.item('&Browse Selection',browseSelClick,browseHelpString)
     return [item]
     
@@ -840,9 +856,10 @@ def multreemenu(sellist, editor, oldmenu=quarkpy.mapmenus.MultiSelMenu):
 
     def browseSelClick(m,editor=editor,sellist=sellist):
         browseListFunc(editor,sellist)
+
         
     item = qmenu.item('&Browse Selection', browseSelClick,browseHelpString)
-    
+
     return [item]+oldmenu(sellist, editor)
     
 quarkpy.mapmenus.MultiSelMenu = multreemenu
@@ -851,7 +868,7 @@ def browseMulClick(m):
     editor=mapeditor()
     if editor is None: return
     browseListFunc(editor, editor.layout.explorer.sellist)
-    
+
 ########################################
 #
 # selection menu items
@@ -883,7 +900,6 @@ def invertFaceSelClick(m):
 meninvertfacesel = quarkpy.qmenu.item("&Invert Face Selection", invertFaceSelClick, "|Invert Face Selection:\n\nThis is for polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces.|intro.mapeditor.menu.html#invertface")
 
 menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict to Selection:\n\nRestrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups I Some Item I Restrict' on the right mouse menu for polys, etc.|intro.mapeditor.menu.html#invertface")
-menrestsel.state=quarkpy.qmenu.disabled
 
 menextsel = quarkpy.qmenu.item("&Extend Selection from Face", ExtendSelClick, exttext)
  
@@ -900,7 +916,6 @@ def menunrestrictenable(editor):
     menunrestrict.state=qmenu.disabled
   else:
     menunrestrict.state=qmenu.normal
-
 
 for menitem, keytag in [(menextsel, "Extend Selection"),
                         (menunrestrict, "Unrestrict Selection"),
@@ -932,18 +947,24 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     if filter(lambda x:x.type==':f', sellist):
         meninvertfacesel.state=qmenu.normal
     if len(sellist)>1:
-        browseItem.state=qmenu.normal
+#cdunde-to keep Cancel Selection active
+        browseItem.state=quarkpy.mapselection.removeItem.state=qmenu.normal
     else:
         browseItem.state=qmenu.disabled
     if len(sellist)==1:
         menrestsel.state=qmenu.normal
+#cdunde-to toggel each other
+    if menunrestrict.state==qmenu.normal:
+        menrestsel.state=qmenu.disabled
     sel = editor.layout.explorer.uniquesel
     marked = getstashed(editor)
     if marked is None:
         clearItem.state=qmenu.disabled
     else:
         clearItem.state=qmenu.normal
+
     if sel is None: return
+
 #
 #  this stuff isn't working right; canned
 #
@@ -989,6 +1010,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.24  2003/03/28 02:54:40  cdunde
+# To update info and add infobase links.
+#
 # Revision 1.23  2003/03/25 09:41:46  tiglari
 # fix enablement bugs
 #
