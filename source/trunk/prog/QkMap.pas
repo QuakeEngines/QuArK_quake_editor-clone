@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/03/20 21:50:54  decker_dk
+Updated copyright-header
+
 Revision 1.30  2001/03/20 07:44:05  tiglari
 wc33 reading offset fix
 
@@ -1008,7 +1011,7 @@ expected one.
   U/V Axis/Shift are straight from the 4-vectors, param[3]
   is rot which is ignored (implicit from the axes), while
   param[4,5] are UV scales. (Zoner's HL tools source,
-  textures.cpp *)
+  textures.cpp) *)
 
  procedure WC33Params;
  var
@@ -1308,7 +1311,7 @@ begin
           end;
         end;
 
-       {Decker}
+(*       {Decker}
        if (WC33map) then
        begin
          { Remove the spec/arg "mapversion" from worldspawn,
@@ -1318,6 +1321,7 @@ begin
            L.Delete(SpecIndex);
        end;
        {/Decker}
+*)
 
       {Entite.Item.Text:=Classname;}
        Entite.Specifics.Assign(L);
