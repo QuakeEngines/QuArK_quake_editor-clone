@@ -505,14 +505,14 @@ class BaseEditor:
         if flags & MB_DRAGEND:
             if self.dragobject is not None:
                 try:
-                 last,x,y=self.dragobject.lastdrag
-                 debug('last yes')
-                 self.dragobject.ok(self, x, y, flags)
-                 self.dragobject = None
+                    last,x,y=self.dragobject.lastdrag
+                    debug('last yes')
+                    self.dragobject.ok(self, x, y, flags)
+                    self.dragobject = None
                 except:
-                 debug('last no')
-                 self.dragobject.ok(self, x, y, flags)
-                 self.dragobject = None
+                    debug('last no')
+                    self.dragobject.ok(self, x, y, flags)
+                    self.dragobject = None
 
         #
         # Are we simply moving the mouse over the view ?
@@ -520,35 +520,53 @@ class BaseEditor:
 
         elif flags & MB_MOUSEMOVE:
             if handle is None:
-                s = view.info["type"] + " view"
                 min, max = view.depth
                 list = map(quarkx.ftos, self.aligntogrid(view.space(quarkx.vect(x, y, min))).tuple + self.aligntogrid(view.space(quarkx.vect(x, y, max))).tuple)
                 tag = 0
                 if list[0]==list[3]: tag = 1
                 if list[1]==list[4]: tag = tag + 2
                 if list[2]==list[5]: tag = tag + 4
-                if tag==6:
-                    s = s + " y:" + list[1] + " z:" + list[2] #DECKER
-                elif tag==5:
-                    s = s + " x:" + list[0] + " z:" + list[2] #DECKER
-                elif tag==3:
-                    s = s + " x:" + list[0] + " y:" + list[1] #DECKER
-            else:
-#DECKER - begin Show width/height/depth of selected polyhedron(s)
                 try:
+                    # Show width/height/depth of selected polyhedron(s),
+                    # but only when the mousepointer is inside the selection
+                    mousepoint = quarkx.vect(float(list[0]), float(list[1]), float(list[2]))
                     objlist = self.layout.explorer.sellist
+                    if (len(objlist) == 1) and (objlist[0].type == ":f"):
+                        # if is single face selected, then use parent poly
+                        objlist = [ objlist[0].parent ]
                     polylistlist = map(lambda x: x.findallsubitems("", ":p", ":g"), objlist)
                     polylist = reduce(lambda a,b: a+b, polylistlist)
-                    if len(polylist) > 1:
-                        s = "Polys size"
-                    else:
-                        s = "Poly size"
+                    if (len(polylist) < 1):
+                        raise
                     box = quarkx.boundingboxof(polylist)
-                    selsize = box[1] - box[0]
-                    s = s + " w:" + quarkx.ftos(selsize.x) + " h:" + quarkx.ftos(selsize.z) + " d:" + quarkx.ftos(selsize.y)
+                    if   tag==6: point = quarkx.vect(box[0].x, mousepoint.y, mousepoint.z)
+                    elif tag==5: point = quarkx.vect(mousepoint.x, box[0].y, mousepoint.z)
+                    elif tag==3: point = quarkx.vect(mousepoint.x, mousepoint.y, box[0].z)
+                    if  (box[0].x <= point.x) and (box[1].x >= point.x) \
+                    and (box[0].y <= point.y) and (box[1].y >= point.y) \
+                    and (box[0].z <= point.z) and (box[1].z >= point.z):
+                        if len(polylist) > 1:
+                            s = "Polys size"
+                        else:
+                            s = "Poly size"
+                        selsize = box[1] - box[0]
+                        s = s + " w:" + quarkx.ftos(selsize.x) \
+                            +   " h:" + quarkx.ftos(selsize.z) \
+                            +   " d:" + quarkx.ftos(selsize.y)
+
+                        # Just for kicks, we append the mouse-position
+                        if   tag==6: s = s + " (" + list[1] + "," + list[2] + ")"
+                        elif tag==5: s = s + " (" + list[0] + "," + list[2] + ")"
+                        elif tag==3: s = s + " (" + list[0] + "," + list[1] + ")"
+                    else:
+                        raise
                 except:
-                    s = quarkx.getlonghint(handle.hint) #DECKER if all else fail, get the normal hint-text
-#DECKER - end
+                    s = view.info["type"] + " view"
+                    if   tag==6: s = s + " y:" + list[1] + " z:" + list[2]
+                    elif tag==5: s = s + " x:" + list[0] + " z:" + list[2]
+                    elif tag==3: s = s + " x:" + list[0] + " y:" + list[1]
+            else:
+                s = quarkx.getlonghint(handle.hint)
             self.showhint(s)
 
         #
@@ -815,6 +833,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.6  2001/02/12 09:35:34  tiglari
+#fix for drag imprecision bug
+#
 #Revision 1.5  2001/01/26 19:07:45  decker_dk
 #initquickkeys. Comment about where to find relevant code-information, to understand whats going on.
 #
