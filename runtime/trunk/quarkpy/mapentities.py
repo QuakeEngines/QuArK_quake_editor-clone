@@ -366,7 +366,11 @@ class BezierType(EntityManager):
             cpline = cp[j]
             for i in range(len(cpline)):
                 c1 = cpline[i]
-                h.append(mapbezier.CPHandle(c1, o, (i,j)))
+                # makes a list of couples (projected position, handle object)
+                h.append((view.proj(c1), mapbezier.CPHandle(c1, o, (i,j))))
+        h.sort()  # sort on Z-order, nearest first
+        h.reverse()  # we have to draw back handles first, so reverse the order
+        h = map(lambda x: x[1], h)  # extract the 2nd component of all couples (i.e., keep only handle objects)
         
         #
         # Add a center handle
