@@ -1,0 +1,13 @@
+title: V...
+author:
+format: html
+
+<dl>
+<dt><a name="valvesoftware">    </a>Valve Software      <dd>Software company. Creator of Half-Life. <a href="http://www.valvesoftware.com">http://www.valvesoftware.com</a>.
+<dt><a name="vertex">           </a>Vertex              <dd>A single corner of a polyhedron. A dice has 8 vertexes.<br>
+                                                            <pic>dice.gif
+<dt><a name="vertexes">         </a>Vertexes            <dd>Plural of <a href="#vertex">vertex</a>.
+<dt><a name="visgroup">         </a>Visgroup            <dd>A function in other editors to hide/show parts of the level, when designing it. In QuArK the function is associated with a <a href="#group">group</a> in the tree-view.
+<dt><a name="visgroups">        </a>Visgroups           <dd>Plural of <a href="#visgroup">visgroup</a>.
+<dt><a name="void">             </a>Void                <dd>The <i>nothingness</i> that is outside your level. If you have a <a href="#leak">leak</a> out to the void, you will see the <a href="#hom">HOM</a> effect there.
+</dl>

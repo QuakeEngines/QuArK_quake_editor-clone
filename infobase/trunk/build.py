@@ -86,9 +86,9 @@ def procpic(kw, path):  #tiglari
     f = open("output/"+picrl, "wb")
     f.write(data)
     f.close()
-    kw["forgotten"].remove(path)
+#    kw["forgotten"].remove(path)
     return img
-    
+
 def procrsc(kw, path):  #tiglari
     rscrl = string.join(filter(None, string.split(kw["path"], "/"))+[path], ".")
     data = open(kw["path"]+path,"rb").read()
@@ -97,7 +97,7 @@ def procrsc(kw, path):  #tiglari
     f.close()
     kw["forgotten"].remove(path)
     return '"%s"'%rscrl
-    
+
 def processtext(root, text, data, kw):
     currentpara = None
     TEXT = 1
@@ -303,15 +303,47 @@ class Folder:
                         data.append(SUBSUBDIR_ITEM % subfolder.kw)
                     data.append(SUBSUBDIR_END % folder.kw)
                 if folder.files:
-                    data.append(SUBFILES_BEGIN % folder.kw)
-                    for subfiles in folder.files:
-                        data.append(SUBFILES_ITEM % subfiles[0])
-                    data.append(SUBFILES_END % folder.kw)
+                    if len(folder.files) < 11:
+                        data.append(SUBFILES_BEGIN % folder.kw)
+                        for subfiles in folder.files:
+                            data.append(SUBFILES_ITEM % subfiles[0])
+                        data.append(SUBFILES_END % folder.kw)
+                    else:
+                        # If more than 10 files, put into two columns
+                        data.append(SUBFILES_TABLEBEGIN);
+                        data.append(SUBFILES_BEGIN % folder.kw)
+                        cnt = 0
+                        for subfiles in folder.files:
+                            if cnt == ((len(folder.files)+1) / 2):
+                                data.append(SUBFILES_END % folder.kw)
+                                data.append(SUBFILES_TABLEMIDDLE);
+                                data.append(SUBFILES_BEGIN % folder.kw)
+                            data.append(SUBFILES_ITEM % subfiles[0])
+                            cnt = cnt + 1
+                        data.append(SUBFILES_END % folder.kw)
+                        data.append(SUBFILES_TABLEEND);
             data.append(SUBDIR_END % self.kw)
         if self.files:
             data.append(FILES_BEGIN % self.kw)
-            for kw, text in self.files:
-                data.append(FILES_ITEM % kw)
+            if len(self.files) < 11:
+                data.append(FILES_ITEMBEGIN % self.kw)
+                for kw, text in self.files:
+                    data.append(FILES_ITEM % kw)
+                data.append(FILES_ITEMEND % self.kw)
+            else:
+                # If more than 10 files, put into two columns
+                data.append(SUBFILES_TABLEBEGIN);
+                data.append(FILES_ITEMBEGIN % self.kw)
+                cnt = 0
+                for kw, text in self.files:
+                    if cnt == ((len(self.files)+1) / 2):
+                        data.append(FILES_ITEMEND % self.kw)
+                        data.append(SUBFILES_TABLEMIDDLE);
+                        data.append(FILES_ITEMBEGIN % self.kw)
+                    data.append(FILES_ITEM % kw)
+                    cnt = cnt + 1
+                data.append(FILES_ITEMEND % self.kw)
+                data.append(SUBFILES_TABLEEND);
             data.append(FILES_MIDDLE % self.kw)
             for kw, text in self.files:
                 data.append(FILE_BEGIN % kw)
@@ -358,6 +390,14 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.8  2000/10/29 03:04:04  tiglari
+# added <rsc> (resource) tag to get a resource renamed & shifted into the output
+# in the same style as <pic>, but only the quoted new name is returned into
+# the doc, so that the thing can be part of a normal <img > etc. tag. eg:
+#  ...<img src=
+# <rsc>coolpic.jpg
+# width=200 height=100>...
+#
 # Revision 1.7  2000/10/24 19:43:13  decker_dk
 # Prev/Up/Next navigation, new CSS and misc. changes.
 #

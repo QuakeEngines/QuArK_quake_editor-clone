@@ -1,14 +1,14 @@
 BODY {
-  background-color: #FFFFFF;
+  background-color: #010101;
   margin: 1;
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
 }
 P {
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
   margin-left: 10;
   margin-right: 10;
 }
@@ -16,19 +16,19 @@ P.sm {
   font-size: 8pt;
 }
 A:link {
-  color: #3060c0;
+  color: #C0A030;
   text-decoration: none;
   font-family: MS Sans Serif, Arial;
 }
 A:visited {
-  color: #1050a0;
+  color: #E0A050;
   text-decoration: none;
   font-family: MS Sans Serif, Arial;
 }
 .sm {
   font-family: MS Sans Serif, Arial;
   font-size: 8pt;
-  color: #000000;
+  color: #FFFFFF;
 }
 .warning {
   font-size: 12pt; color: #FF0000;
@@ -54,12 +54,12 @@ P.subsubheadline {
   font-size: 10pt;
 }
 TR.headline {
-  background: #E0E0E0;
+  background: #404040;
 }
 UL {
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
 }
 UL.section {
   list-style: none;
@@ -75,24 +75,24 @@ UL.subsection, UL.index {
 TH, TD, OL {
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
 }
 DL {
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
 }
 DT {
   font-weight: bold;
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
   margin: 5, 20, 0, 20; /* this because of Netscape4 - Decker */
 }
 DD {
   font-family: MS Sans Serif, Arial;
   font-size: 10pt;
-  color: #000000;
+  color: #FFFFFF;
   margin: 0, 20, 0, 70; /* this because of Netscape4 - Decker */
 }
 SPAN.added {
@@ -106,12 +106,12 @@ SPAN.q_a {
   font-family: MS Sans Serif, Arial;
   font-size: 12pt;
   font-weight: bold;
-  color: #000000;
+  color: #FFFFFF;
 }
 .doccode {
   font-family: Courier New, Courier;
   font-size: 10pt;
-  color: #000088;
+  color: #888800;
   margin-left: 20;
 }
 DIV.sections {
@@ -130,6 +130,6 @@ P.item {
   font-weight: bold;
 }
 TT {
-  color: #880000;
+  color: #008888;
 }
 

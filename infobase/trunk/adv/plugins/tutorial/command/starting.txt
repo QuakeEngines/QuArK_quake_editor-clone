@@ -1,10 +1,11 @@
 title: Getting Noticed
 author: tiglari
 
-<P>To get noticed by the mapeditor, the name of a plugin
+To get noticed by the mapeditor, the name of a plugin
 must start with `map' (the code that handles this is
-<tt>loadmapeditor()</tt> in <tt>quarkpy\qutils.py</tt>).
+<html><tt>loadmapeditor()</tt> in
+<html><tt>quarkpy\qutils.py</tt>).
 So we can shift the regular version of maptagside out of
 the way by renaming it to say `tagside.py', and then
 start a new file `maptagside.py' with our favorite
-text editor.<P>
+text editor.

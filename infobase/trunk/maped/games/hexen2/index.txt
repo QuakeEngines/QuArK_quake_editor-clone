@@ -1,1 +1,5 @@
 title: Hexen-2
+
+If you have any questions regarding this topic, problems or find solutions, please post them in the
+<html><a href="http://www.egroups.com/group/quark">http://www.egroups.com/group/quark</a>
+ mailing-list.

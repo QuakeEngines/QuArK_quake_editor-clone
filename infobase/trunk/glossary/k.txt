@@ -1,0 +1,7 @@
+title: K...
+author:
+format: html
+
+<dl>
+<dt><a name="kingpin">  </a>Kingpin     <dd>[KP] (game) Based upon the <a href="#quake2">Quake-2</a> graphics engine.
+</dl>

@@ -39,4 +39,3 @@ desc: mapviewmethods
 desc: attributesmapview
 desc: objectsmodeleditor
 
-<html><b>Notice!</b> Much formatting are still required. Only; '3D Vector objects', 'Attributes of Internal objects of "3D object"', 'Additional attributs of Data form controls', 'Attributes of Internal objects of class "Duplicator"' and 'Attributes of Internal objects of class "Face"' have been formattet with <span class="doccode">&lt;span class="doccode"&gt;...&lt;/span&gt;</span>. (e.q. only the first 5 filenames in the directory! Not the <i>Index</i>.)

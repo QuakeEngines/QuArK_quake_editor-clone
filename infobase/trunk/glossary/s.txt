@@ -1,0 +1,10 @@
+title: S...
+author:
+format: html
+
+<dl>
+<dt><a name="sin">                      </a>SiN                                 <dd>[SIN] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ritual.com">Ritual Entertainment</a>. Based upon the <a href="#quake2">Quake-2</a> graphics engine.
+<dt><a name="sof">                      </a>Soldier of Fortune                  <dd>[SOF] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ravensoft.com">Raven Software</a>. Based upon the <a href="#quake2">Quake-2</a> graphics engine.
+<dt><a name="specific">                 </a>Specific                            <dd>(key) In QuArK, an entity's key/value pairs are called specifics/args. See also <a href="#argument">argument</a>.
+<dt><a name="startrekvoyagereliteforce"></a>Star Trek:Voyager-Elite Force       <dd>[STV-EF] (game) A <a href="#fps">FPS-game</a> by <a href="http://www.ravensoft.com">Raven Software</a>. Based upon the <a href="#quake3">Quake-3:Arena</a> graphics engine.
+</dl>

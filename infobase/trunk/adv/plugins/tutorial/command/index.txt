@@ -1,14 +1,18 @@
 title: Putting a Command on a Menu
 desc: starting import action menu register
- 
-<P>A plugin needs to do four things:
-<OL Type=1>
-<LI> Get noticed by Quark
-<LI> Import resources from the rest of the program
-<LI> Define the actions that the plugin will perform
-<LI> Provide menu commands, buttons or some other facility for
-     the user to initiate the actions
-</OL>
+
+A plugin needs to do four things:
+
+<html><OL>
+<html><LI>
+Get noticed by QuArK
+<html><LI>
+Import resources from the rest of the program
+<html><LI>
+Define the actions that the plugin will perform
+<html><LI>
+Provide menu commands, buttons or some other facility for the user to initiate the actions
+<html></OL>
+
 And it should also register itself. So we'll do these five
 things in turn.
-</P>

@@ -26,11 +26,11 @@ geometry, some kind of grasp of 3D math concepts such as normal vectors
 and dot products is likely to help, tho there are certainly things
 you can do without knowing anything about that kind of stuff.
 I might try writing up a quickly intro to Object-Oriented
-Programming and Quark-relevant 3D-math, if I got some indication
+Programming and QuArK-relevant 3D-math, if I got some indication
 that this would be helpful.
 
-If you've done a bit of programming & want to dive right in without
-reading anythng at all about Python first, it might be useful to know that
+If you've done a bit of programming & want to dive right in, without
+reading anything at all about Python first, it might be useful to know that
 Python uses `whitespace formatting' for grouping, rather than
 brackets:  all the statements in a block after an if-statement
 should be indented further back than the if-statement, and by the
@@ -43,13 +43,13 @@ And of course you will need to consult
 <ref>src/quarkx
 , the guide to the facilities that Delphi provides for Python.
 This is certainly not an introduction, but does present all the basic
-facilities that Quark provides to the Python code, and as you get
+facilities that QuArK provides to the Python code, and as you get
 more experience  writing plugins, you will be able to figure out more
 just by browsing it.  Don't worry if it seems like a completely
-impenetrable thicket at first! 
+impenetrable thicket at first!
 And if you get stuck or think you've found a mistake
 (it's been done before :)), don't hesitate
-to post a query to the 
+to post a query to the
 <html><A HREF="http://www.egroups.com/list/quark-python">quark-python discussion list</A>,
 or email directly to
 <html><A HREF="mailto:tiglari@hexenworld.net">tiglari@hexenworld.net</A>.
