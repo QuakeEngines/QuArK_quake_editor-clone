@@ -104,6 +104,76 @@ def getends(group,x_axis):
     list = group.findallsubitems("",":f")
     return getNormalFaces(list,-x_axis), getNormalFaces(list,x_axis)
 
+#
+# Position following path points
+#
+class PositionFollowingDlg (quarkpy.dlgclasses.LiveEditDlg):
+    #
+    # dialog layout
+    #
+
+    endcolor = AQUA
+    size = (210,250)
+    dfsep = 0.50
+
+    dlgdef = """
+        {
+        Style = "9"
+        Caption = "Position Following"
+
+        sep: = {Typ="S" Txt=" "} 
+
+        number: =
+        {
+        Txt = "Number"
+        Typ = "EF1"
+        Hint = "How many of the following path points to position" $0D " (new ones will be made if needed)"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+        angles: = 
+        {
+        Txt = "First Pitch Yaw"
+        Typ = "EQ"
+        Hint = "Pitch Yaw angles to next, in degrees, map space"
+        }
+        
+        sep: = {Typ="S" Txt=" "} 
+
+        more_angles: = 
+        {
+        Txt = "More Pitch Yaw"
+        Typ = "EQ"
+        Hint = "Pitch Yaw angles for remaining, in degrees, relative to previous"
+        }
+
+        sep: = {Typ="S" Txt=" "} 
+
+        distance: = 
+         {
+         Txt = "Distance"
+         Typ = "EU"
+         Hint = "Distance to next, in units"
+         }
+
+ 
+         sep: = {Typ="S" Txt=" "} 
+
+        shifttail: = 
+         {
+         Txt = "Shift Tail"
+         Typ = "X"
+         Hint = "If checked, remaining points are moved to retain distance w.r.t last in moved series"
+         }
+
+         sep: = {Typ="S" Txt=" "} 
+
+         exit:py = { }
+    }
+    """
+
+
 class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
 
     def __init__(self, origin, centerof, pathdupmaster=0):
@@ -134,6 +204,20 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
         new["target"] = original["target"]
         new["targetname"] = original["targetname"]
         return new
+
+    #
+    # For decent org., I wanted this to be a method of
+    #  PathPointDuplicator, but couldn't get it to
+    #  work.
+    #
+    def sourcelist2(self):
+        myself = self.centerof
+        list = []
+        if (myself.parent is not None):
+            for item in myself.parent.subitems:
+                if item!=myself and (item.type!=':d' or quarkpy.mapduplicator.DupManager(item).siblingincluded(myself)):
+                    list.append(item)
+        return list
 
     def menu(self, editor, view):
 
@@ -216,17 +300,117 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
             
  
         def selectdup1click(m, self=self, editor=editor):
-            debug('gonna')
             editor.layout.explorer.uniquesel = self.mainpathdup
-            debug('done')
             editor.invalidateviews()
             
+        def selecttail1click(m, self=self, editor=editor):
+            center = self.centerof
+            list = self.sourcelist2()
+            pathlist = plugins.deckerutils.GetEntityChain(self.centerof["target"], list)
+            editor.layout.explorer.sellist = [center] + pathlist
+            editor.invalidateviews()
+
+        def positionfollowing1click(m, self=self, editor=editor):
+            class pack:
+                  "stick stuff here"
+            
+            def setup(self,handle=self, pack=pack):
+                list = handle.sourcelist2()
+                if self.src["number"] is None:
+                    self.src["number"] = 1,
+                pathlist = plugins.deckerutils.GetEntityChain(handle.centerof["target"], list)
+                thisorigin = handle.centerof.origin
+                if pathlist:
+                    nextorigin = pathlist[0].origin
+                    dist = nextorigin-thisorigin
+                    normdist = dist.normalized
+                    self.src["distance"] = "%.2f"%abs(dist)
+                    xax, yax, zax = (quarkx.vect(1,0,0),
+                                    quarkx.vect(0,1,0),
+                                    quarkx.vect(0,0,1))
+                    pitch = "%.1f"%(math.asin(normdist*zax)/deg2rad) 
+                    yaw = "%.1f"%(math.atan2(normdist*yax, normdist*xax)/deg2rad)
+                    self.src["angles"] = pitch+' '+yaw
+                pack.list=pathlist    
+                pack.thisorigin=thisorigin
+            
+            def action(self, handle=self, editor=editor, pack=pack):
+                if self.src["distance"]:
+                    distance = eval(self.src["distance"])
+                else:
+                    distance = 0
+                pitch, yaw = read2vec(self.src["angles"])
+                if not distance or pitch is None:
+                    return
+                list = pack.list
+                vangle = quarkx.vect(1,0,math.sin(pitch*deg2rad)).normalized
+                normdist = matrix_rot_z(yaw*deg2rad)*vangle
+                undo=quarkx.action()
+                if list:
+                    next = list[0]
+                    new = next.copy()
+                else:
+                    new = handle.centerof.copy()
+                    new["targetname"] = MakeUniqueTargetname()+'.0'
+                    undo.setspec(handle.centerof,"target",new["targetname"])
+                shift = pack.thisorigin+distance*normdist-new.origin
+                new.translate(shift)
+                if list:
+                    undo.exchange(next, new)
+                else:
+                    undo.put(handle.centerof.parent,new)
+                number, = self.src["number"]
+                pitch2, yaw2 = read2vec(self.src["more_angles"])
+                for i in range(1, number):
+                    shift = None
+                    if pitch2 is None:
+                        continue
+                    pitch = pitch+pitch2
+                    yaw = yaw+yaw2
+                    vangle=quarkx.vect(1,0,math.sin(pitch*deg2rad)).normalized
+                    normdist = matrix_rot_z(yaw*deg2rad)*vangle
+                    if i>=len(list):
+                        new2 = new.copy()
+                        #
+                        # clock doesn't tick fast enough to give unique names
+                        #
+                        new2["targetname"] = MakeUniqueTargetname()+'.'+`i`
+                        undo.setspec(new,"target",new2["targetname"])
+                    else:
+                        new2 = list[i].copy()
+                    shift=new.origin+distance*normdist-new2.origin
+                    new2.translate(shift)
+                    if i>=len(list):
+                        list.append(new2)
+                        undo.put(new.parent, new2)
+                    else:                    
+                        undo.exchange(list[i],new2)
+                    new = new2
+
+                if self.src["shifttail"] and shift is not None:
+                   for i in range(number,len(list)):
+                       new = list[i].copy()
+                       new.translate(shift)
+                       undo.exchange(list[i], new)
+                       
+
+                editor.ok(undo, "Move following path point(s)")
+                editor.layout.explorer.uniquesel=handle.centerof 
+       
+            PositionFollowingDlg(quarkx.clickform, 'positionfollowing', editor, setup, action)
+                  
+             
+
         menulist = [qmenu.item("Insert after",  after1click)]
         if (self.pathdupmaster == 0):
+
             # if it is not the PathDup, then it must be a PathDupCorner, and two more menuitems are available
             menulist.append(qmenu.item("Insert before", before1click))
             menulist.append(qmenu.item("Remove",        remove1click))
-            menulist.append(qmenu.item("Select dup",   selectdup1click, "Select main duplicator (making all path points visible)"))
+            menulist.append(qmenu.item("Select main dup",   selectdup1click, "|Select main duplicator (making all path points visible)"))
+            menulist.append(qmenu.item("Select tail", selecttail1click, "Multi-select this & the following path points"))
+            menulist.append(qmenu.item("Position following", positionfollowing1click, "|Position following path points relative to this one, making new ones if necessary"))
+        
         menulist.append(qmenu.item("Toggle speeddraw",  speeddraw1click))
 
         return menulist
@@ -267,6 +451,15 @@ class PathDuplicatorPoint(DuplicatorManager):
     def handles(self, editor, view):
         hndl = PathDuplicatorPointHandle(self.dup.origin, self.dup)
         return [hndl]
+
+    def sourcelist2(self):
+        myself = self.dup
+        list = []
+        if (myself.parent is not None):
+            for item in myself.parent.subitems:
+                if item!=myself and (item.type!=':d' or quarkpy.mapduplicator.DupManager(item).siblingincluded(myself)):
+                    list.append(item)
+        return list
 
 class PathDuplicator(StandardDuplicator):
 
@@ -802,6 +995,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.22  2001/03/08 06:23:26  tiglari
+#menu item to select duplicator on path point handles
+#
 #Revision 1.21  2001/03/07 20:00:13  tiglari
 #specific for rotation suppression
 #
