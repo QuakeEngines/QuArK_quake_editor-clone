@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.118  2001/03/31 13:04:09  tiglari
+//usercenter for groups (for rotation)
+//
 //Revision 1.117  2001/03/31 10:14:57  tiglari
 //remove origin dup from toolboxes, add support for usercenter specific
 // & button to add it (linked commits to maphandles,py, mapdupspath.py)
@@ -1002,7 +1005,6 @@ QQRKSRC1
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
-        StupidBuildToolKludge = "1"
 
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
@@ -3234,7 +3236,7 @@ QQRKSRC1
     linearform:incl = {
        scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling (instance dup only)" }
        angles: = {Txt="&" Typ="EF03"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
-       linear: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
+       matrix: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
     }
    
     dup lin:form =
