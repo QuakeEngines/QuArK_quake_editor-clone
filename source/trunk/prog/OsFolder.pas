@@ -67,7 +67,10 @@ var
  Base : String;
 begin
   Base:=Specifics.Values['path'];
-  BuildFolders(Base, QObject(Self));
+  if Specifics.Values['build']='1' then
+    BuildTextureFolders(Base, QObject(Self))
+  else
+    MergeTextureFolders(Base, QObject(Self));
 end;
 
 function QOsFolder.WriteSubElements;
