@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/07/21 01:48:07  tiglari
+add/use functions & values defining classes of games
+
 Revision 1.25  2001/06/21 17:34:33  decker_dk
 Added preliminary support for 6DX.
 
@@ -165,11 +168,6 @@ const
  mjNotQuake2 = #2;
  mjNotQuake1 = #255;
 
- bspTypeQ1 =     '1';
- bspTypeQ2 =     'A';
- bspTypeQ3 =     'a';
- bspTypeHx =    '2';
-
 
 type
  TListeCouleurs =
@@ -231,8 +229,6 @@ procedure MakeAssociations(Config: Qobject);
 procedure RefreshAssociations(Forced: Boolean);
 procedure RemoveAssociations;
 function AssociationWithQuArK(const FileExt: String) : Boolean;
-function BspType(mj : Char) : Char; overload;
-function BspType : Char; overload;
 function UsesMiptex : boolean; overload;
 function UsesMiptex(mj : Char) : boolean; overload;
 procedure StoreTexExtensions; {--CONVEX--}
@@ -888,26 +884,6 @@ end;
 
 { this should probably be done by direct lookup of codes
   in the game config files }
-
-function BspType : Char; overload;
-begin
-  Result:=BspType(CharModeJeu);
-end;
-
-function BspType(mj : Char) : Char;
-begin
- if mj=mjHexen then
-   Result:=bspTypeHx
- else if (mj>='1') and (mj<='9') then
-   Result:=bspTypeQ1
- else if (mj>='A') and (mj<='E') then
-   Result:=bspTypeQ2
- else if (mj>'a') and (mj<='z') then
-   Result:=bspTypeQ3
- {FIXME: a dubious step for dealing with the 'any' codes}
- else
-   Result:=mj
-end;
 
 { probably should also be done by direct lookup
   from setup files }
