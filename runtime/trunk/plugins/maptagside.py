@@ -547,7 +547,8 @@ def colinear(list):
  for v in list[2:]:
    if v0 - v:
  #    if not samelinenorm(line, (v0-v).normalized):
-     if norm-(v-v0).normalized:
+#     if norm-(v-v0).normalized:
+     if abs(norm-(v-v0).normalized)>0.0001:
         return 0
  return 1
 
@@ -1887,6 +1888,10 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2000/07/30 03:29:10  tiglari
+#`wrap from tagged mirror' added to texture|wrapping, for easier texturing
+#with arches & bevels
+#
 #Revision 1.9  2000/07/29 02:07:57  tiglari
 #minor internal fiddles
 #
