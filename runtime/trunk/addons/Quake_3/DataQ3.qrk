@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.8  2002/06/14 22:33:59  tiglari
+//bad spawnflags fix by ut_fourdays for func_door/rotating
+//
 //Revision 1.8  2002/06/12 23:03:12  4days
 //corrected spawnflags for func_rotating and func_door
 //
@@ -2810,6 +2813,15 @@ QQRKSRC1
     t_weapon_size:incl = { bbox = '-16 -16 -16 16 16 16' }
     t_teleport_size:incl = { bbox = '-32 -32 -4 32 32 4' }
     t_item_size:incl = { bbox = '-16 -16 -16 16 16 16' }
+
+    t_modelbrowser:incl = {
+            Typ = "EP"
+            DefExt = "md3"
+            BasePath = "$Game\baseq3"
+            CutPath = "$Game\?\models"
+            DirSep = "/"
+            AugPath = "models"
+      }
 
     t_model:incl = {
       model: = { Txt = " "
@@ -6225,6 +6237,7 @@ QQRKSRC1
     }
     func_bobbing:form =
     {
+      mdl = "[model2]"
       Help = "This makes a object bob up and down.(Use the the spawnflags to make it bob in a different direction)"
       speed: =
       {
@@ -6243,6 +6256,7 @@ QQRKSRC1
       }
       model2: =
       {
+        t_modelbrowser = !
         Txt = "&"
         Hint = "Path and name of a model."
       }
@@ -6305,6 +6319,7 @@ QQRKSRC1
     }
     func_button:form =
     {
+      mdl = "[model2]"
       Help = "This is something the player can push to trigger something."
       angle: =
       {
@@ -6348,6 +6363,7 @@ QQRKSRC1
       }
       model2: =
       {
+        t_modelbrowser = !
         Txt = "&"
 	Hint = "Path and name of a model."
       }
@@ -6380,6 +6396,7 @@ QQRKSRC1
     }
     func_door:form =
     {
+      mdl = "[model2]"
       Help = "This is a door."
       angle: =
       {
@@ -6424,6 +6441,7 @@ QQRKSRC1
       }
       model2: =
       {
+        t_modelbrowser = !
         Txt = "&"
         Hint = "Path and name of a model to use for door."
       }
@@ -6480,6 +6498,7 @@ QQRKSRC1
     }
     func_pendulum:form =
     {
+      mdl = "[model2]"
       Help = "This is a object that swings back and forth."
       angle: =
       {
@@ -6523,6 +6542,7 @@ QQRKSRC1
       }
 	model2: =
       {
+        t_modelbrowser = !
 	Txt = "&"
 	Hint = "Path and name of a model to use."
       }
@@ -6550,6 +6570,7 @@ QQRKSRC1
     }
     func_plat:form =
     {
+      mdl = "[model2]"
       Help = "This a moving brush that lifts the player up or down."
       speed: =
       {
@@ -6593,6 +6614,7 @@ QQRKSRC1
       }
 	model2: =
       {
+        t_modelbrowser = !
 	Txt = "&"
 	Hint = "Path and name of a model to use."
       }
@@ -6620,6 +6642,7 @@ QQRKSRC1
     }
     func_rotating:form =
     {
+      mdl = "[model2]"
       Help = "Use this to make a brush rotate."
       speed: =
       {
@@ -6633,6 +6656,7 @@ QQRKSRC1
       }
       model2: =
       {
+        t_modelbrowser = !
         Txt = "&"
         Hint = "This is the path and name of a model to use with this func."
       }
@@ -6740,6 +6764,7 @@ QQRKSRC1
     }
     func_train:form =
     {
+      mdl = "[model2]"
       Help = "This is a moving brush that follows path_corners."
       speed: =
       {
@@ -6774,6 +6799,7 @@ QQRKSRC1
       }
 	model2: =
       {
+        t_modelbrowser = !
 	Txt = "&"
 	Hint = "This is the path and name of a model to use with this func."
       }
@@ -6827,9 +6853,11 @@ QQRKSRC1
     }
     func_static:form =
     {
+      mdl = "[model2]"
       Help = "This is the disappering wall trick."
 	model2: =
       {
+        t_modelbrowser = !
 	Txt = "&"
 	Hint = "This is the path and name of a model to use with this func."
       }
@@ -8020,6 +8048,7 @@ QQRKSRC1
       }
       model: =
       {
+        t_modelbrowser = !
         Txt = "&"
         Hint = "Path and name of a model to use."
       }
