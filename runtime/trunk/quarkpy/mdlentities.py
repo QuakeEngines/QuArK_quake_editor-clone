@@ -32,7 +32,8 @@ MT_GROUP       = 0      # generic group
 MT_FRAMEGROUP  = 1
 MT_SKINGROUP   = 2
 MT_SKIN        = 3      # not used
-
+MT_TAGGROUP    = 4      # AiV
+MT_BONEGROUP   = 5      # AiV
 
 #
 # Entity Manager base class, followed by subclasses.
@@ -124,7 +125,24 @@ class FrameType(EntityManager):
 class SkinType(EntityManager):
     "Model Skin."
 
+# AiV
 
+class TagGroupType(EntityManager):
+    "Tag Group."
+
+class BoneGroupType(EntityManager):
+    "Bone Group."
+
+class TagType(EntityManager):
+    "Tag"
+
+    def handlesopt(o, editor):
+        vtx = o.position
+        map(mdlhandles.VertexHandle, vtx)
+
+class BoneType(EntityManager):
+    "Bone"
+# /AiV
 
 #
 # Mappings between Internal Objects types and Entity Manager classes.
@@ -133,9 +151,14 @@ class SkinType(EntityManager):
 Mapping = {
     ":mc": ComponentType(),
     ":mf": FrameType(),
-    ".pcx": SkinType() }
+    ".pcx": SkinType(),
+# AiV
+    ".jpg": SkinType(),
+    ":tag": TagType(),
+    ":bf": BoneType() }
+#/AiV
 
-Generics = [GroupType(), FrameGroupType(), SkinGroupType()]
+Generics = [GroupType(), FrameGroupType(), SkinGroupType(), SkinGroupType(), TagGroupType(), BoneGroupType()]  # AiV
 
 #
 # Use the function below to call a method of the Entity Manager classes.
@@ -179,5 +202,8 @@ def LoadEntityForm(sl):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

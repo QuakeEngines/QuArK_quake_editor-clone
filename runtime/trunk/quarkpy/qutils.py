@@ -145,7 +145,9 @@ iiPython                = 43
 iiBezier                = 44
 #Sprite File Support
 iiSprFile               = 45
-iiTotalImageCount       = 46
+iiMD3Tag                = 46
+iiMD3Bone               = 47
+iiTotalImageCount       = 48
 
 
 def LoadIconSet(filename, width, transparencypt=(0,0)):
@@ -434,6 +436,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #Revision 1.3  2000/05/26 23:13:37  tiglari
 #Changed patch support loading (loadmapeditor) so that it is loaded when you open a map whose game has shaders
 #

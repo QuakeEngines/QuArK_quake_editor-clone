@@ -250,7 +250,7 @@ Strings = {
 	802: "C Files (*.c)|*.c",
 	803: "C Header Files (*.h)|*.h",
 	804: "Quake 3 Shaders (*.shader)|*.shader",
-#	805: "Quake 3 .md3 file (*.md3)|*.md3", -- not ready yet!
+ 	805: "Quake 3 .md3 file (*.md3)|*.md3",
 	806: "SoF Texture (*.m32)|*.m32",
 
 	809: "Invalid version number in Quake's original Progs.dat",
@@ -541,7 +541,7 @@ Strings = {
 	5173: "C File",
 	5174: "C Header File",
         5175: "Shader list (Quake 3)",
-#        5176: ".md3 file", -- not ready yet 
+        5176: ".md3 file",
         5177: "M32 Texture (SoF)",
 
         5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",  
@@ -877,5 +877,8 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.13  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

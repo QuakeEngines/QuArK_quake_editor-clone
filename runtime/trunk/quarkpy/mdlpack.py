@@ -40,6 +40,21 @@ def UnpackModel(model):
     skins["type"] = mdlentities.MT_SKINGROUP
     component.appenditem(skins)
     skins = [skins, skins, "Skin group:m", mdlentities.MT_SKINGROUP]
+    #
+    # AiV
+    #
+    tags = quarkx.newobj("Tags:m")
+    tags["type"] = mdlentities.MT_TAGGROUP
+    component.appenditem(tags)
+    tags = [tags, tags, "Tag group:m", mdlentities.MT_TAGGROUP]
+
+    bones = quarkx.newobj("Bones:m")
+    bones["type"] = mdlentities.MT_BONEGROUP
+    component.appenditem(bones)
+    bones = [bones, bones, "Bone group:m", mdlentities.MT_BONEGROUP]
+    #
+    # /AiV
+    #
     frames = quarkx.newobj("Frames:m")
     frames["type"] = mdlentities.MT_FRAMEGROUP
     component.appenditem(frames)
@@ -48,8 +63,14 @@ def UnpackModel(model):
         model.removeitem(obj)
         if obj.type == '.pcx':    # skin
             targets = skins
+        elif obj.type == '.jpg':    # skin
+            targets = skins
         elif obj.type == ':mf':   # frame
             targets = frames
+        elif obj.type == ':bf':   # bone frame [Q3A]
+            targets = bones
+        elif obj.type == ':tag':   # tag [Q3A]
+            targets = tags
         else:
             root.appenditem(obj)
             continue           # unknown type
@@ -89,6 +110,24 @@ def PackModel(model):
     for skin in skins:
         root.appenditem(skin.copy())
 
+    skins = c.findallsubitems("", '.jpg')
+    for skin in skins:
+        root.appenditem(skin.copy())
+
+    # 
+    # Bone Frames (AiV)
+    #
+    bones = c.findallsubitems("", ':bf')
+    for bone in bones:
+        root.appenditem(bone.copy())
+
+    # 
+    # Tags (AiV)
+    #
+    Tags = c.findallsubitems("", ':tag')
+    for Tag in Tags:
+        root.appenditem(Tag.copy())
+
     #
     # List the Component's Frames
     #
@@ -104,5 +143,8 @@ def PackModel(model):
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
