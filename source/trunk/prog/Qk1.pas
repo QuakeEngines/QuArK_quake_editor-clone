@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.23  2001/10/10 10:28:56  tiglari
+attempt to eliminate live pointer error by freeing QObjectClassList on program shutdown
+
 Revision 1.22  2001/06/13 22:54:07  aiv
 Moved 'Convert From' stuff to python code (plugin type)
 
@@ -1431,6 +1434,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearGameBuffers(False);
  ClearPool(True);
  QObjectClassList.Free;
+ QFileList.Free;
 end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
