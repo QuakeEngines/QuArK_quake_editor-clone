@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2000/10/15 16:01:27  alexander
+set name
+
 Revision 1.26  2000/09/24 23:57:50  alexander
 set name
 
@@ -278,6 +281,7 @@ type
              property SetSpecificsList: TStringList read FSpecifics write FSpecifics;
              property SubElements: TQList read {$IFDEF Debug} GetSubElements; {$ELSE} FSubElements; {$ENDIF}
              property SubElementsC: TQList read FSubElements;
+             function Ancestry: String;
              procedure AddRef(Delta: Integer);
                { incr/decr Py reference count, frees if 0 }
              procedure Acces;
@@ -1357,6 +1361,35 @@ begin
   Result:=FSpecifics;
 end;
 
+function QObject.Pedigree;
+var
+  Parent:QObject;
+  I: Integer;
+  Ind: String;
+  Sue: TQlist;
+label bail;
+ begin
+  Parent:= GetTvParent;
+  if Parent<>Nil then
+  begin
+    Sue:=Parent.SubElements;
+    for I:=0 to Sue.Count-1 do
+    begin
+      if Sue[I]=self then
+      begin
+        Ind:=IntToStr(I);
+        goto bail;
+      end;
+    end;
+    bail:
+    if Parent.GetTvParent<>Nil then {don't bother with worldspawn }
+      Result:=Parent.Pedigree+'|'+Name+'.'+Ind
+    else
+    Result:=Name+'.'+Ind;
+  end else
+    Result:=Name;
+end;
+
 function QObject.GetSubElements : TQList;
 begin
   {alex}
@@ -2195,6 +2228,36 @@ begin
   FFlags:=FFlags or ofTreeViewSubElement;
  FParent:=nParent;
 end;
+
+function QObject.Ancestry: String;
+var
+  Parent:QObject;
+  I: Integer;
+  Ind: String;
+  Sue: TQlist;
+label bail;
+ begin
+  Parent:= GetTvParent;
+  if Parent<>Nil then
+  begin
+    Sue:=Parent.SubElements;
+    for I:=0 to Sue.Count-1 do
+    begin
+      if Sue[I]=self then
+      begin
+        Ind:=IntToStr(I);
+        goto bail;
+      end;
+    end;
+    bail:
+    if Parent.GetTvParent<>Nil then {don't bother with worldspawn }
+      Result:=Parent.Ancestry+'|'+Name+'.'+Ind
+    else
+    Result:=Name+'.'+Ind;
+  end else
+    Result:=Name;
+end;
+
 
 procedure QObject.SetSelMult;
   procedure OpenGroups(Groupe: QObject);
