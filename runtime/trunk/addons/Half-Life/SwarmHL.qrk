@@ -41,7 +41,7 @@ QQRKSRC1
         Mission Ents.qtxfolder =
         {
                 swarm_map_data:e = { ;desc="Swarm Map Data"
-                        scenarioorder = "0"
+                        scenarioorder = "1"
                         numrounds = "1"
                 }
                 swarm_scenario:e = { ;desc="Swarm Sceanrio"
@@ -107,17 +107,19 @@ QQRKSRC1
         }
         Spawn Points.qtxfolder =
         {
-                swarm_spawnpt_human:e           = { t_orig_ang=! ;desc="Generic Human Spawn" }
-                swarm_spawnpt_hgrunt:e          = { t_orig_ang=! ;desc="Grunt Spawn"         }
-                swarm_spawnpt_hassassin:e       = { t_orig_ang=! ;desc="Assassin Spawn"      }
-                swarm_spawnpt_hscientist:e      = { t_orig_ang=! ;desc="Scientist Spawn"     }
-                swarm_spawnpt_hcommander:e      = { t_orig_ang=! ;desc="Commander Spawn"     }
+                  swarm_spawn_point:e             = { t_orig_ang=! ;desc="Swarm Spawn Point" }
 
-                swarm_spawnpt_xen:e             = { t_orig_ang=! ;desc="Generic Xen Spawn" }
-                swarm_spawnpt_atripod:e         = { t_orig_ang=! ;desc="Xen Grunt Spawn"   }
-                swarm_spawnpt_agarg:e           = { t_orig_ang=! ;desc="Gargantua Spawn"   }
-                swarm_spawnpt_aslave:e          = { t_orig_ang=! ;desc="Slave Spawn"       }
-                swarm_spawnpt_acontroller:e     = { t_orig_ang=! ;desc="Controller Spawn"  }
+//                swarm_spawnpt_human:e           = { t_orig_ang=! ;desc="Generic Human Spawn" }
+//                swarm_spawnpt_hgrunt:e          = { t_orig_ang=! ;desc="Grunt Spawn"         }
+//                swarm_spawnpt_hassassin:e       = { t_orig_ang=! ;desc="Assassin Spawn"      }
+//                swarm_spawnpt_hscientist:e      = { t_orig_ang=! ;desc="Scientist Spawn"     }
+//                swarm_spawnpt_hcommander:e      = { t_orig_ang=! ;desc="Commander Spawn"     }
+//
+//                swarm_spawnpt_xen:e             = { t_orig_ang=! ;desc="Generic Xen Spawn" }
+//                swarm_spawnpt_atripod:e         = { t_orig_ang=! ;desc="Xen Grunt Spawn"   }
+//                swarm_spawnpt_agarg:e           = { t_orig_ang=! ;desc="Gargantua Spawn"   }
+//                swarm_spawnpt_aslave:e          = { t_orig_ang=! ;desc="Slave Spawn"       }
+//                swarm_spawnpt_acontroller:e     = { t_orig_ang=! ;desc="Controller Spawn"  }
         }
         Trigger.qtxfolder =
         {
@@ -163,18 +165,11 @@ QQRKSRC1
         t_Weapon:incl = {
                 bbox = '-16 -16 0 16 16 32'
                 t_targetname = !
-	}
+		}
 
         t_SwarmBase:incl = {
                 // Which scenario this swarm entity belongs to.
-                scenarioid: = { Txt="&" Typ="C" Hint="Scenario"
-                        items = "0"
-                             $0D"1"
-                             $0D"2"
-                             $0D"3"
-                             $0D"4"
-                             $0D"5"
-                }
+                scenarioid: = { Txt="&" Typ="C" Hint="Scenario"}
         }
         t_SwarmTeam:incl = {
                 t_SwarmBase = !
@@ -191,30 +186,34 @@ QQRKSRC1
                 spawnflags: = { typ="X4"  cap="Reset Counter"     hint="Completing Mission will reset counter." }
                 spawnflags: = { typ="X8"  cap="Reset On Complete" hint="Reset Mission when destination reached." }
                 spawnflags: = { typ="X16" cap="Auto Return"       hint="Automatically return object to start location when touched by player on objects team." }
+                spawnflags: = { typ="X32" cap="Drop to Ground"       hint="Dropt to ground when spawning?" }
 
                 // Points to award team when mission is completed.
                 teampoints: = { txt="&" hint="Team Points" }
 
                 // Bonus time for completing mission.
                 timebonus: = { txt="&" hint="Time Bonus" }
+
+                // Which scenario this swarm entity belongs to.
+                nextscenario: = { Txt="&" Typ="C" Hint="Next Scenario" }
         }
 
-        t_SwarmSpawnPt:incl = {
-                t_targetname = !
-                t_SwarmTeam = !
-
-                spawnflags: = { typ="X1" cap="Allowed allied teams" hint="Allow teams to Ally"                                       }
-                spawnflags: = { typ="X2" cap="Missions Only"        hint="Require a mission targeted at this spwan point to use it." }
-        }
-        t_SwarmHumanPt:incl = {
-                t_SwarmSpawnPt = !
-                bbox = '-16 -16 -36 16 16 36'
-                teamname: = { txt="&" hint="Team Name" }
-        }
-        t_SwarmXenPt:incl = {
-                t_SwarmSpawnPt = !
-                teamname: = { txt="&" hint="Team Name" }
-        }
+//        t_SwarmSpawnPt:incl = {
+//                t_targetname = !
+//                t_SwarmTeam = !
+//
+//                spawnflags: = { typ="X1" cap="Allowed allied teams" hint="Allow teams to Ally"                                       }
+//                spawnflags: = { typ="X2" cap="Missions Only"        hint="Require a mission targeted at this spwan point to use it." }
+//        }
+//        t_SwarmHumanPt:incl = {
+//                t_SwarmSpawnPt = !
+//                bbox = '-16 -16 -36 16 16 36'
+//                teamname: = { txt="&" hint="Team Name" }
+//        }
+//        t_SwarmXenPt:incl = {
+//                t_SwarmSpawnPt = !
+//                teamname: = { txt="&" hint="Team Name" }
+//        }
 
 
 //
@@ -380,17 +379,48 @@ QQRKSRC1
                 droppedvolume:  = { txt="&" hint="Killed Volume"  }
         }
 
-        swarm_spawnpt_human:form        = { t_SwarmHumanPt = ! }
-        swarm_spawnpt_hgrunt:form       = { t_SwarmHumanPt = ! }
-        swarm_spawnpt_hassassin:form    = { t_SwarmHumanPt = ! }
-        swarm_spawnpt_hscientist:form   = { t_SwarmHumanPt = ! }
-        swarm_spawnpt_hcommander:form   = { t_SwarmHumanPt = ! }
+        swarm_spawn_point:form = {
+                t_targetname = !
+                t_SwarmTeam = !
+                bbox = '-32 -32 -64 32 32 64'
 
-        swarm_spawnpt_xen:form          = { t_SwarmXenPt = ! bbox = '-32 -32 -64 32 32 64' }
-        swarm_spawnpt_atripod:form      = { t_SwarmXenPt = ! bbox = '-32 -32 -32 32 32 32' }
-        swarm_spawnpt_agarg:form        = { t_SwarmXenPt = ! bbox = '-32 -32 -64 32 32 64' }
-        swarm_spawnpt_aslave:form       = { t_SwarmXenPt = ! bbox = '-16 -16 -36 16 16 36' }
-        swarm_spawnpt_acontroller:form  = { t_SwarmXenPt = ! bbox = '-32 -32 -32 32 32 32' }
+                spawnflags: = { typ="X1" cap="Allowed allied teams" hint="Allow teams to Ally"                                       }
+                spawnflags: = { typ="X2" cap="Missions Only"        hint="Require a mission targeted at this spwan point to use it." }
+
+                // Limit choice of player to one class.
+                escortclass: = { txt="&" typ="C"
+                        items ="Any"
+                            $0D"Human Grunt"
+                            $0D"Assassin"
+                            $0D"Scientist"
+                            $0D"Commander"
+                            $0D"Xen Grunt"
+                            $0D"Slave"
+                            $0D"Gargantua"
+                            $0D"Controller"
+                        values="0"
+                            $0D"1"
+                            $0D"2"
+                            $0D"3"
+                            $0D"4"
+                            $0D"5"
+                            $0D"6"
+                            $0D"7"
+                            $0D"8"
+                }
+        }
+
+//        swarm_spawnpt_human:form        = { t_SwarmHumanPt = ! }
+//        swarm_spawnpt_hgrunt:form       = { t_SwarmHumanPt = ! }
+//        swarm_spawnpt_hassassin:form    = { t_SwarmHumanPt = ! }
+//        swarm_spawnpt_hscientist:form   = { t_SwarmHumanPt = ! }
+//        swarm_spawnpt_hcommander:form   = { t_SwarmHumanPt = ! }
+
+//        swarm_spawnpt_xen:form          = { t_SwarmXenPt = ! bbox = '-32 -32 -64 32 32 64' }
+//        swarm_spawnpt_atripod:form      = { t_SwarmXenPt = ! bbox = '-32 -32 -32 32 32 32' }
+//        swarm_spawnpt_agarg:form        = { t_SwarmXenPt = ! bbox = '-32 -32 -64 32 32 64' }
+//        swarm_spawnpt_aslave:form       = { t_SwarmXenPt = ! bbox = '-16 -16 -36 16 16 36' }
+//        swarm_spawnpt_acontroller:form  = { t_SwarmXenPt = ! bbox = '-32 -32 -32 32 32 32' }
 
         swarm_trigger_regen:form = {
                 t_targetname = !
