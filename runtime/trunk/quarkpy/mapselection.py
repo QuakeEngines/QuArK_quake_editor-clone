@@ -106,11 +106,11 @@ def nextClick(m,editor=None):
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
-removeItem = qmenu.item("Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected.")
-parentItem = qmenu.item("Select Parent", parentClick, "|Selects parent.  Parent is collapsed in treeview unless '%s' is depressed."%collapse)
-childItem = qmenu.item("Select Child", childClick, "Selects first child")
-nextItem = qmenu.item("Select Next", nextClick, "|Selects next item in group, cycling\n depress '%s' to constrain to next of same type."%same)
-prevItem = qmenu.item("Select Previous", nextClick, "|Selects previous item in group, cycling\n depress '%s' to constrain to previous of same type."%same)
+removeItem = qmenu.item("&Remove selection", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected.")
+parentItem = qmenu.item("Select &Parent", parentClick, "|Selects parent.  Parent is collapsed in treeview unless '%s' is depressed."%collapse)
+childItem = qmenu.item("Select &Child", childClick, "Selects first child")
+nextItem = qmenu.item("Select &Next", nextClick, "|Selects next item in group, cycling\n depress '%s' to constrain to next of same type."%same)
+prevItem = qmenu.item("Select Pre&vious", nextClick, "|Selects previous item in group, cycling\n depress '%s' to constrain to previous of same type."%same)
 nextItem.succ = getNext
 prevItem.succ = getPrevious
 
@@ -140,10 +140,13 @@ def SelectionMenu():
     MapHotKeyList("Select Next", nextItem, shortcuts)
     MapHotKeyList("Select Previous", prevItem, shortcuts)
 
-    return qmenu.popup("Selection", items, onclick), shortcuts
+    return qmenu.popup("Selectio&n", items, onclick), shortcuts
 
 
 # $Log$
+# Revision 1.3  2001/05/03 05:35:17  tiglari
+# fixed selection menu crash bug (failure to test for 'is not None')
+#
 # Revision 1.2  2001/04/30 10:57:42  tiglari
 # added child, key mods for next/prev of same type, treeview control
 #
