@@ -65,7 +65,8 @@ def relpath(curpath, relpath):
 def findref(root, path, name, fkw, extraargs):
 #   print 'FKW: ' + `fkw["path"]`
 
-    def ref(refnormal, refwithname, kw, name=name, extraargs):
+#    def ref(refnormal, refwithname, kw, name=name, extraargs):
+    def ref(refnormal, refwithname, kw, name=name):
         if name == "":
             return refnormal % kw
         else:
@@ -544,6 +545,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.15  2001/02/28 19:12:25  decker_dk
+# Added <g>...</g> Glossary-links. Though not the best method.
+#
 # Revision 1.14  2001/02/25 16:38:22  decker_dk
 # Added <act> </act> functionality
 #
