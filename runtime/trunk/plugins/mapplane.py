@@ -44,8 +44,21 @@ class PlaneHandle(quarkpy.maphandles.CenterHandle):
             p0,p1,p2,p3=self.pozzies()
             tagplane((p1,p2,p3),editor)
 
-        item = qmenu.item("Tag Plane",tagplane)
-        return [item]+oldmenu
+        def glueplane(m, self=self, editor=editor):
+            p1,p2,p3=editor.tagging.taggedplane
+            plane=self.centerof
+            undo=quarkx.action()
+            for (spec,val) in (("P1", p1), ("P2",p2), ("P3",p3)):
+                 undo.setspec(plane,spec,val.tuple)                 
+            editor.ok(undo,"Glue plane to tagged")            
+
+        tagitem = qmenu.item("Tag Plane",tagplane)
+        glueitem = qmenu.item("Glue to tagged plane", glueplane)
+
+        tagged = gettaggedplane(editor)
+        if tagged is None:
+            glueitem.state=qmenu.disabled
+        return [tagitem, glueitem]+oldmenu
 
     def pozzies(self):
         def getpos(spec,dup=self.dup):
@@ -145,7 +158,53 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup plane":  PlaneDuplicator,
 })
 
-        
+#
+# Make a 3point plane from a tagged plane
+#
+
+#
+# Probably not useful, but here it is anyway
+#
+def make3points(m):
+    editor=mapeditor()
+    if editor is None: return
+    #
+    # gettaggedplane returns a face, we want the points,
+    #  assumes item disabled if taggedplane nexistepas
+    #
+    p1,p2,p3=editor.tagging.taggedplane
+    plane = quarkx.newobj("plane duplicator:d")
+    plane["macro"]="dup plane"
+    for (spec,val) in (("P1", p1), ("P2",p2), ("P3",p3)):
+         debug('spec '+spec+'; val: '+`val`)
+         plane[spec]=val.tuple
+    undo=quarkx.action()
+    sel = editor.layout.explorer.uniquesel
+    parent=sel.treeparent
+    while not parent.acceptitem(plane):
+       parent=parent.treeparent
+    undo.put(parent,plane,sel)
+    editor.ok(undo,"Create 3point plane")
+    editor.layout.explorer.uniquesel=plane
+
+planeItem = qmenu.item("Plane from tagged points", make3points)
+
+def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
+    editor=mapeditor()
+    if editor is None: return
+    plane=gettaggedplane(editor)
+    if plane is None:
+       planeItem.state=qmenu.disabled
+    else:
+       planeItem.state=qmenu.normal
+      
+#quarkpy.mapcommands.onclick = commandsclick
+
+#quarkpy.mapcommands.items.append(planeItem)
+
 
 #$Log$
+#Revision 1.1  2001/05/25 12:27:15  tiglari
+#tagged plane support
+#
 #
