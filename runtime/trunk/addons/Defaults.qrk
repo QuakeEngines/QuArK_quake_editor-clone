@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.185  2002/04/30 05:30:15  tiglari
+//STVEF info now runs Brush Primitives using the standard tools
+// (STVEF GDK 1.2)
+//
 //Revision 1.184  2002/04/28 21:27:40  tiglari
 //update version
 //
@@ -1560,7 +1564,6 @@ QQRKSRC1
 //        Program = "MOHAA.EXE +set sv_pure 0"
         Program = "mohaa +set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1"
 
-
         Directory = "\MOHAA"
         CheckDirectory = "MOHAA.EXE"
 
@@ -1636,17 +1639,14 @@ QQRKSRC1
         MapCommentsPrefix = "//"
         OutputMapFormat="Classic Quake"
 
-        StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
-        BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = "-game "$22"jk2"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
+        StupidBuildToolKludge = ""
+        BuildPgm1  = "SOF2MAP.EXE"
+        BuildArgs1 = "-bsp "$22"%file%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-game "$22"jk2"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
-        BuildPgm3  = "Q3MAP.EXE"
-        BuildArgs3 = "-game "$22"jk2"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
-        BuildPgm4  = "BSPC.EXE"
-        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-        BuildCheck4= "+AAS"
+        BuildPgm2  = "SOF2MAP.EXE"
+        BuildArgs2 = "-vis "$22"%file%"$22
+        BuildPgm3  = "SOF2MAP.EXE"
+        BuildArgs3 = "-light "$22"%file%"$22
 
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
