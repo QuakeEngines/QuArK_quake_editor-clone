@@ -121,7 +121,6 @@ def entitylinear(entity, matrix):
             return
 
 
-
 class EntityType(EntityManager):
     "Quake non-brush Entities"
 
@@ -480,7 +479,9 @@ Mapping = {
     ":b": BrushEntityType(),
     ":p": PolyhedronType(),
     ":f": FaceType(),
-    ":b2": BezierType() }
+    ":b2": BezierType(),
+    
+    }
 
 #
 # Use the function below to call a method of the Entity Manager classes.
@@ -632,6 +633,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.28.6.1  2003/02/13 16:01:45  cdunde
+#To add Cancel Selections function to RMB menu.
+#
 #Revision 1.28  2001/08/16 20:09:29  decker_dk
 #Put 'Add user center' menuitem on Treeview Group's context-menu. Its more visible there.
 #
