@@ -211,7 +211,7 @@ procedure CloseAll3DView;
 
 implementation
 
-uses PyCanvas, QkTextures, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
+uses PyCanvas, QkTextures, QkPixelSet, Game, PyForms, FullScreenWnd, FullScr1, RedLines, Qk1,
      EdOpenGL;
 
 procedure CloseAll3DView;
@@ -651,26 +651,49 @@ var
  center: PyVect;
  scale: Single;
  S: String;
- R: TRect;
+ R, Dest: TRect;
  P1: TPointProj;
- W, H: TDouble;
+ X, Y, W, H: TDouble;
+ Q: QPixelSet;
+ PSD: TPixelSetDescription;
+ obj: PyObject;
 begin
- if not PyArg_ParseTupleX(FBackground, 'sO!f:background', [@filename, @TyVect_Type, @center, @scale]) then
+ if not PyArg_ParseTupleX(FBackground, 'OO!f:background', [@obj, @TyVect_Type, @center, @scale]) then
   Exit;
+ if obj^.ob_type = @TyObject_Type then
+  begin
+   Q:=QkObjFromPyObj(obj) as QPixelSet;
+   S:='TEX?'+Q.Name+Q.TypeInfo;
+  end
+ else
+  begin
+   filename:=PyString_AsString(obj);
+   if filename=Nil then Exit;
+   S:=StrPas(filename);
+   Q:=Nil;
+  end;
  if BackgroundImage=Nil then
   begin
    New(BackgroundImage);
    FillChar(BackgroundImage^, SizeOf(TBackgroundImage), 0);
   end;
- S:=StrPas(filename);
  with BackgroundImage^ do
   begin
    if Filename <> S then
     begin
      Bitmap.Free;
      Bitmap:=Nil;
-     Bitmap:=TBitmap.Create;
-     Bitmap.LoadFromFile(S);
+     if Q<>Nil then
+      begin
+       PSD:=Q.Description; try
+       Bitmap:=PSD.GetBitmapImage;
+       finally PSD.Done; end;
+      end
+     else
+      begin
+       Bitmap:=TBitmap.Create;
+       Bitmap.LoadFromFile(S);
+      end;
      Filename:=S;
     end;
    if MapViewProj=Nil then
@@ -683,13 +706,39 @@ begin
      P1:=MapViewProj.Proj(center^.V);
      scale:=scale * MapViewProj.ScalingFactor(@center^.V);
     end;
-   W:=scale * 0.5 * Bitmap.Width;
-   H:=scale * 0.5 * Bitmap.Height;
-   R.Left:=Round(P1.X - W);
-   R.Top:=Round(P1.Y - H);
-   R.Right:=Round(P1.X + W);
-   R.Bottom:=Round(P1.Y + H);
-   Canvas.StretchDraw(R, Bitmap);
+   if Q=Nil then
+    begin
+     W:=scale * 0.5 * Bitmap.Width;
+     H:=scale * 0.5 * Bitmap.Height;
+     R.Left:=Round(P1.X - W);
+     R.Top:=Round(P1.Y - H);
+     R.Right:=Round(P1.X + W);
+     R.Bottom:=Round(P1.Y + H);
+     Canvas.StretchDraw(R, Bitmap);
+    end
+   else
+    if GetClipBox(Canvas.Handle, Dest) <> ERROR then
+     begin
+      W:=scale * Bitmap.Width;
+      H:=scale * Bitmap.Height;
+      while P1.X > Dest.Left do P1.X:=P1.X-W;
+      while P1.Y > Dest.Top  do P1.Y:=P1.Y-H;
+      Y:=P1.Y;
+      while Y < Dest.Bottom do
+       begin
+        X:=P1.X;
+        while X < Dest.Right do
+         begin
+          R.Left:=Round(X);
+          R.Top:=Round(Y);
+          R.Right:=Round(X+W);
+          R.Bottom:=Round(Y+H);
+          Canvas.StretchDraw(R, Bitmap);
+          X:=X+W;
+         end;
+        Y:=Y+H;
+       end;
+     end;
   end;
 end;
 
