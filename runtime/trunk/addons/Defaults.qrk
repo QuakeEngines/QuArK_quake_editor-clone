@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.41  2000/07/03 23:15:10  alexander
+//set snapshot version
+//
 //Revision 1.40  2000/07/03 22:41:38  alexander
 //fixed: models beeing not compiled in the bsp (activated stupidbuildtoolkludge flag)
 //
@@ -2625,6 +2628,31 @@ QQRKSRC1
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
+    dup arenafilemaker:form =
+    {
+        help ="put one in your map to create a .arena script automatically"
+        bots: =
+        {
+          Txt = "&"
+          Hint = "bots that are default for this map"
+        }
+        longname: =
+        {
+          Txt = "&"
+          Hint = "This name will be shown in Quake 3"
+        }
+        fraglimit: =
+        {
+          Txt = "&"
+          Typ = "EF1"
+          Hint = "default fraglimit for map"
+        }
+        type: =
+        {
+          Txt = "&"
+          Hint = "ffa tourney etc."
+        }
+      }
     QuakeCtx:form =     // form that applies when editing .qctx objects
     {
       Style = "3"
