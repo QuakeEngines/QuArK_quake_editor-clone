@@ -18,3 +18,5 @@ Some of the more powerfull functions are:
 <li>Cut, Copy, Paste and Move.
 <li>Change colors on groups, to illustrate different things.
 </ul>
+
+If you wish to enlarge or reduce the Tree-view height, there is a hidden 'drag line' at the very top of the Tree-view, just below the compass. When your curser changes to two bars, with arrows above and below them, you can then hold the left mouse button down and drag the Tree-view to the height you desire.
