@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2002/04/12 11:47:46  tiglari
+more corrections from cleaning up image-leak-tracking stuff
+
 Revision 1.24  2002/04/12 11:23:48  tiglari
 add examine method to enable inspecting objects from Python in delphi
 remove the extra xloadimages methods
@@ -2856,11 +2859,11 @@ var
  S: String;
  I: Integer;
  Splash: TForm;
- Reminder: THandle;
+ Disclaimer: THandle;
 begin
  Splash:=OpenSplashScreen;
  try
-  Reminder:=ReminderThread(Splash);
+  Disclaimer:=DisclaimerThread(Splash);
   try
   {InitConsole;}
    I:=InitializePython;
@@ -2891,9 +2894,9 @@ begin
    if PyRun_SimpleString(PythonRunPackage)<>0 then FatalError(-7);
    PythonCodeEnd;
    PythonUpdateAll;
-   WaitForSingleObject(Reminder, 10000);
+   WaitForSingleObject(Disclaimer, 10000);
   finally
-   CloseHandle(Reminder);
+   CloseHandle(Disclaimer);
   end;
  finally
   Splash.Release;
