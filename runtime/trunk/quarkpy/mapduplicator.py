@@ -93,7 +93,6 @@ class StandardDuplicator(DuplicatorManager):
         else:
             self.offset = None
         self.matrix = None
-        self.matrix2 = maphandles.buildLinearMatrix(self.dup)
 
     def applylinear(self, matrix, direct=0):
         s = self.dup["offset"]
@@ -275,6 +274,10 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2001/05/12 10:14:24  tiglari
+#disable old--style dup=fixpoint behavior, install usercenter as fixpoint
+#  behavior
+#
 #Revision 1.9  2001/05/08 21:14:15  tiglari
 #hollowmaker/wallmaker fixed
 #
