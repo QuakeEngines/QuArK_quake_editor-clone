@@ -1,51 +1,22 @@
 
-                      QuArK 6.3d update
-                    
-                         Dec 29, 2002
- 
- 
-  Problems addressed:
+                      QuArK 6.3e Provisional Release
+                      
+                          Jan 01, 2003
+                        
+ This provisional release doesn't have much new stuff from the second
+ update of 6.3d, but it's very tricky stuff involving texture-positioning
+ and mirror-imaging.  There's also a new feature, finding and fixing
+ non-integral faces (finder on seach menu, fixer on command menu) that
+ I think is important enough to break feature-freeze for.
 
-   * Console errors with restricted selections and vertex-dragging
-   
-   * Texture alignment with arches and bevels.
-   
-   * Aligning textures onto 'mirrored walls', e.g. the guide boxes
-      of the wall-maker, with the 'to mirror' texture wrapping option.
- 
-   * For the above 2, see the arch_texalign_test.qrk file included.
-       I haven't tested all the positional variants of the arches
-       and bevels yet; w/b good if people extended the test .qrk.
- 
-  New features:
-  
-   * when the selection is frozen, radiant-style brush and face-movement
-       is enabled (quickest apparent fix to movement bugs)
-       
-   * mirror-image  face|textures RMB command (yes, I know new features
-       aren't supposed to appear in bugfix updates, but this one seemed
-       egregiously missing'
-       
-   
-  Remaining Issues:
-  
-   * software 3d view becomes unresponsive after long use; sometimes
-      opening OGL window revives it; sometimes not (prolly can't fix).
-      
-   * Kingpin animated textures with animation length > 2 don't work.
-      (can't fix without finding my KP CD). 
-
-                          QuArK 6.3d
-
-
-                         
-                         Dec 25, 2002
-                         
-                         
  Installation and Use:
  
    * You must have either the 'Minipy' installed, or Python 1.5.2.
    
+   * DO NOT install this by unzipping over a previous version of QuArK;
+      this does require some annoying reconfiguration, but the subtle
+      bugs that result from mixing versions are FAR WORSE.
+
    * After clicking on quark.exe, select the game you want to edit from
       the 'games' menu, then 'configure' to set the paths to the game
       directory and the location of the build-tools.
@@ -57,10 +28,44 @@
       
    * See the QuArK infobase (on the QuArK site) for more details.
    
-                         
- Real and Possible Unresolved Issues (from QuArK forums, June-Sep)
+   * If you're trying it out an a project done with QuArK 6.2 or
+      earlier, back up your original work, and experiment on a copy.
+      
+  New features (all tiglari):
+  
+   * when the selection is frozen, radiant-style brush and face-movement
+       is enabled (quickest apparent fix to movement and vertex-selection
+       bugs bugs)
+       
+   * mirror-image  face|textures RMB command (yes, I know new features
+       aren't supposed to appear in bugfix updates, but this one seemed
+       egregiously missing)
+       
+   * finding and fixing faces with non-integral vertices - finder on
+       search, fixer on command menus; F1 for help.
+ 
+  Problems addressed:
+  
+    *subtle problems in swapsides method causing problems with extruded/mitred
+      wallmaker, as well as quantum_red's sloping_hallway.qrk.
 
-   * hole-finder on Search menu finds leaks when there aren't
+    *various debugging messages removed from console output
+
+    * Console errors with restricted selections and vertex-dragging
+   
+    * Texture alignment with arches and bevels.
+   
+    * Aligning textures onto 'mirrored walls', e.g. the guide boxes
+      of the wall-maker, with the 'to mirror' texture wrapping option.
+ 
+    * For the above 2, see the arch_texalign_test.qrk file included.
+       I haven't tested all the positional variants of the arches
+       and bevels yet; w/b good if people extended the test .qrk.
+ 
+ 
+ Real and Possible Unresolved Issues (from QuArK forums, June-Dec 2002)
+
+   * hole-finder on Search menu finds leaks when there aren't (real)
    
    * very likely still a significant memory leak - save your work often!
    
@@ -69,9 +74,26 @@
 
    * copy/paste causing texture misalignment?
        can't replicate in current version
+       
+   * software 3d view becomes unresponsive after long use; sometimes
+      opening OGL window revives it; sometimes not (prolly can't fix;
+      is this associated with resource leak?
+      
+   * Kingpin animated textures with animation length > 2 don't work.
+      since these don't appear in the original game, this is perhaps
+      a 'lost extra feature' (from quark511qta) rather than a bug as
+      such.
 
-
- Updates:
+   * Linear duplicator doesn't interact properly with face-sharing;
+      basic is fine.
+      
+   * extruder and radial duplicators still don't have applylinear methods.
+   
+                          QuArK 6.3d
+                         Dec 25, 2002
+                         
+                         
+                           Updates:
    * [tiglari] add .pts loading commands to defaults for Q1, Hx2, HL
    * [tiglari] lighting problems with etp and V220 formats, pinned down with
        great effort by quantum_red, fixed.
