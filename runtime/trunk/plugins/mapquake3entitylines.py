@@ -10,7 +10,7 @@
 
 Info = {
    "plug-in":       "Quake-3 Arrow Extensions",
-   "desc":          "Displays axis for rotating entities",
+   "desc":          "Displays axis for rotating entities and jump-archs for push-entities. Note: RED-colored jump-archs indicates that the jump isn't correctly calculated, due to either non-default gravity or too low an arch.",
    "date":          "2 jan 2001",
    "author":        "Decker",
    "author e-mail": "decker@post1.tele.dk",
@@ -225,6 +225,9 @@ quarkpy.mapentities.EntityLinesMapping.update({
 # ----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.2  2002/12/28 14:03:54  decker_dk
+# Added some jump-arch kindof entity-lines for 'trigger_push' and 'target_push'. Some of the math ain't correct.
+#
 # Revision 1.1  2001/01/30 19:20:30  decker_dk
 # Basically a copy of mapquake2entitylines.py
 #
