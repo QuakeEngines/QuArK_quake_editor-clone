@@ -24,7 +24,7 @@ See also http://www.planetquake.com/quark
 program QuArK;
 
 uses
-{$IFDEF Debug} MemTester in 'Prog\MemTester.pas', {$ENDIF}
+  MemTester in 'Prog\MemTester.pas',
   Forms,
   QkObjects in 'Prog\QkObjects.pas',
   Qk1 in 'Prog\Qk1.pas' {Form1},
@@ -147,7 +147,9 @@ uses
   QkModelTag in 'prog\model\QkModelTag.pas',
   QkQkl in 'prog\model\QkQkl.pas',
   QkSkinGroup in 'prog\model\QkSkinGroup.pas',
-  QkMd3 in 'prog\model\QkMd3.pas';
+  QkMd3 in 'prog\model\QkMd3.pas',
+  QkQ1 in 'prog\QkQ1.pas',
+  QkQ2 in 'prog\QkQ2.pas';
 
 {$R *.RES}
 

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/08/25 17:57:24  decker_dk
+Layout indenting
+
 Revision 1.4  2000/07/21 20:01:33  decker_dk
 Correctly Save HalfLife WAD3s
 
@@ -44,7 +47,8 @@ unit QkHL;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkTextures, QkWad;
+     QkObjects, QkFileObjects, QkTextures, QkWad
+     ,QkQ1;
 
 type
  QTextureHL = class(QTexture1)

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/08/20 10:50:45  aiv
+Fixed 'Uses' clause for new model files
+
 Revision 1.5  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -41,7 +44,8 @@ unit QkHr2;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkTextures, QkMd2;
+     QkObjects, QkFileObjects, QkTextures, QkMd2
+     ,QkQ2;
 
 type
  QM8  = class(QTexture2)

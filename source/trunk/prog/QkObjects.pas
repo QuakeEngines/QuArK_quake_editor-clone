@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2000/09/10 13:00:01  alexander
+set name
+
 Revision 1.23  2000/09/09 14:30:32  alexander
 fixed GetSousElements bug when acessing a subobject of an object whose file is not yet loaded
 
@@ -404,9 +407,9 @@ function NeedClassOfType(const nTypeInfo: String) : QObjectClass;
 function FileAccessQ(const theFilename: String; Mode: TModeAcces) : TQStream;
 procedure LoadedItem(Format: Integer; F: TStream; Q: QObject; Size: Integer);
 function FloatSpecNameOf(const Name: String) : String;
-function GetHumanSpec(const SpecArg: String) : String;
+{function GetHumanSpec(const SpecArg: String) : String;}
 procedure CheckValidSpec(var Spec: String);
-function TrimStringList(L: TStrings; Sep: Byte) : String;
+function TrimStringList(theStringList: TStrings; theStringSeperator: Byte) : String;
 {procedure FreeOldObjects;}
 {AiV}function QStreamAddRef(Ref: PQStreamRef; var S: TStream) : Integer;
 {procedure QStreamRelease(Ref: TTreeNode);}
@@ -1162,7 +1165,7 @@ end;
 
  {------------------------}
 
-constructor QObject.Create;
+constructor QObject.Create(const nName: String; nParent: QObject);
 begin
  {$IFDEF Debug}
 (*if QObjectClassList.IndexOfObject(TObject(ClassType))<0 then
@@ -1543,7 +1546,7 @@ begin
         D.Icon:=Nil;
        end;
      end;
-    PythonCodeEnd; 
+    PythonCodeEnd;
    end;
  D.Flags:=0;
 end;
@@ -1607,9 +1610,12 @@ type
 
 procedure QObject.LoadInternal(F: TStream; FSize: Integer);
 begin
- FLoading:=True; try
- LoadFile(F, FSize);
- finally FLoading:=False; end;
+ FLoading:=True;
+ try
+  LoadFile(F, FSize);
+ finally
+  FLoading:=False;
+ end;
 end;
 
 procedure QObject.FileCrashRecoverHack;
@@ -1834,18 +1840,21 @@ var
 begin
  try
   Q:=LienFichierQObject(nName, Self, False);
-  Q.AddRef(+1); try
-  if Q.FParent<>Self then
-   begin
-    GlobalWarning(FmtLoadStr1(5225, [nName]));
-    Modified;
-   end
-  else
-   begin
-    Q.Flags:=Q.Flags or ofWarnBeforeChange;
-    SubElements.Add(Q);
-   end;
-  finally Q.AddRef(-1); end; 
+  Q.AddRef(+1);
+  try
+   if Q.FParent<>Self then
+    begin
+     GlobalWarning(FmtLoadStr1(5225, [nName]));
+     Modified;
+    end
+   else
+    begin
+     Q.Flags:=Q.Flags or ofWarnBeforeChange;
+     SubElements.Add(Q);
+    end;
+  finally
+   Q.AddRef(-1);
+  end;
  except
   on EQObjectFileNotFound do  { file link target not found }
    begin
@@ -1871,9 +1880,12 @@ begin
   Q.Open(TQStream(F), Size)
  else
   begin
-   Q.FLoading:=True; try
-   Q.LoadFile(F, Size);
-   finally Q.FLoading:=False; end;
+   Q.FLoading:=True;
+   try
+    Q.LoadFile(F, Size);
+   finally
+    Q.FLoading:=False;
+   end;
   end;
  Q.FixupReference;
  F.Position:=nEnd;
@@ -1904,26 +1916,26 @@ end;
 
 function PackedStrToInt(const S: String) : Integer;
 var
- Taille: Integer;
+ ByteSize: Integer;
 begin
- Taille:=Length(S);
- if Taille>SizeOf(Result) then
-  Taille:=SizeOf(Result);
+ ByteSize:=Length(S);
+ if ByteSize>SizeOf(Result) then
+  ByteSize:=SizeOf(Result);
  Result:=0;
- Move(S[1], Result, Taille);
+ Move(S[1], Result, ByteSize);
 end;
 
 function IntToPackedStr(Value: Integer) : String;
 var
- Taille: Integer;
+ ByteSize: Integer;
 begin
 {if Value=0 then
   Result:=''
  else}
   begin
-   Taille:=RequiredBytesToContainValue(Value);
-   SetLength(Result, Taille);
-   Move(Value, Result[1], Taille);
+   ByteSize:=RequiredBytesToContainValue(Value);
+   SetLength(Result, ByteSize);
+   Move(Value, Result[1], ByteSize);
   end;
 end;
 
@@ -1956,7 +1968,7 @@ begin
    begin
     if Format=rf_Siblings then Exit;
     Raise InternalE('Enregistrer '+GetFullName+' '+IntToStr(Format));
-   end; 
+   end;
  {BuildReferences;}
   ProgressIndicatorStart(5442, SubElements.Count+1); try
   FileItemCount:=Specifics.Count + SubElements.Count;
@@ -2059,7 +2071,7 @@ begin
   F.Position:=Size;
   finally FreeMem(FileItemInfo); end;
   finally ProgressIndicatorStop; end;
- end; 
+ end;
 end;
 
 procedure QObject.ReadUnformatted(F: TStream; Size: Integer);
@@ -2339,6 +2351,7 @@ begin
  Result[1]:=Chr(Ord(Result[1]) or chrFloatSpec);
 end;
 
+(*
 function GetHumanSpec(const SpecArg: String) : String;
 var
  P: Integer;
@@ -2351,6 +2364,7 @@ begin
  if Result<>'' then
   Result[1]:=Chr(Ord(Result[1]) and not chrFloatSpec);
 end;
+*)
 
 procedure CheckValidSpec(var Spec: String);
 const
@@ -2372,45 +2386,40 @@ begin
     Raise EErrorFmt(5565, ['//']);
 end;
 
-function TrimStringList(L: TStrings; Sep: Byte) : String;
+function TrimStringList(theStringList: TStrings; theStringSeperator: Byte) : String;
 var
  S1: String;
- I, Taille: Integer;
+ I, ResultingStringLength: Integer;
  P: PChar;
 begin
- Taille:=0;
- for I:=0 to L.Count-1 do
-  Inc(Taille, Length(L[I])+1);
- if Taille<=1 then
+ ResultingStringLength:=0;
+ { compute the maximum length of returning string }
+ for I:=0 to theStringList.Count-1 do
+  Inc(ResultingStringLength, Length(theStringList[I])+1);
+ { if zero, return empty string }
+ if ResultingStringLength<=1 then
   Result:=''
  else
+ begin
+  SetLength(Result, ResultingStringLength-1);
+  P:=PChar(Result);
+  { concatenate strings from stringlist into returning string,
+    and put a seperator between each. }
+  for I:=0 to theStringList.Count-1 do
   begin
-   SetLength(Result, Taille-1);
-   P:=PChar(Result);
-   for I:=0 to L.Count-1 do
-    begin
-     S1:=L[I];
-     if S1<>'' then
-      begin
-       Move(S1[1], P^, Length(S1));
-       Inc(P, Length(S1));
-      end;
-     P^:=Chr(Sep);
-     Inc(P);
-    end;
-   Dec(P);
-   P^:=#0;
+   S1:=theStringList[I];
+   if S1<>'' then
+   begin
+    Move(S1[1], P^, Length(S1));
+    Inc(P, Length(S1));
+   end;
+   P^:=Chr(theStringSeperator);
+   Inc(P);
   end;
+  Dec(P);
+  P^:=#0;
+ end;
 end;
-(*var
- I: Integer;
-begin
- Result:=L.Text;
- I:=Length(Result);
- while (I>0) and (Result[I] in [#10,#13]) do
-  Dec(I);
- SetLength(Result, I);
-end;*)
 
 function QObject.GetFloatSpec(const Name: String; const Default: Single) : Single;
 var

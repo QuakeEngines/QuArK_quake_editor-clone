@@ -24,6 +24,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2000/08/22 11:41:18  tiglari
+transfer of 'q' specific from QTextureLnk to Shader, for supporting image
+specification in .qrk files
+
 Revision 1.21  2000/07/21 20:01:33  decker_dk
 Correctly Save HalfLife WAD3s
 
@@ -111,12 +115,14 @@ type
                TexW, TexH: LongInt;
                BitsSource: String;
               end;}
-
+(*
  TQ1Miptex = packed record
               Nom: array[0..15] of Byte;
               W,H: LongInt;
               Indexes: array[0..3] of LongInt;
              end;
+*)
+(*
  TCompactTexName = array[0..31] of Byte;
  TQ2Miptex = packed record
               Nom: TCompactTexName;
@@ -125,6 +131,7 @@ type
               Animation: TCompactTexName;
               Flags, Contents, Value: LongInt;
              end;
+*)
  QTextureFile = class;
  QTexture = class(QPixelSet)  { QTexture objects are QPixelSet objects with a bit more texture-ish data, e.g. an associated game and scaled-down images }
             protected
@@ -194,6 +201,7 @@ type
                   procedure ListDependencies(L: TStringList); override;
                 end;
  QTextureFileClass = class of QTextureFile;
+(*
  QTexture1 = class(QTextureFile)
              protected
                procedure ChargerFin(F: TStream; TailleRestante: Integer); virtual;
@@ -208,6 +216,8 @@ type
                function BaseGame : Char; override;
                class function CustomParams : Integer; override;
              end;
+*)
+(*
  QTexture2 = class(QTextureFile)
              protected
                procedure Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt;
@@ -225,6 +235,7 @@ type
                function BaseGame : Char; override;
                function GetTexName : String; override;
              end;
+*)
 
 type
   TFQTexture = class(TQForm1)
@@ -274,8 +285,12 @@ type
 
 {procedure Q1MiptexToQ2(const Source: TQ1Miptex; var Dest: TQ2Miptex);
 procedure Q2MiptexToQ1(const Source: TQ2Miptex; var Dest: TQ1Miptex);}
+(*
 function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
+*)
+(*
 function CheckQ2MiptexEx(const Header: TQ2Miptex; HSize, FileSize: Integer; Offsets: PLongInt; Flags: Integer) : Integer;
+*)
 {procedure TexImageToDIBits(W: Integer; const Image: String; var Bits);}
 
 {procedure SizeDownTextureList(FreeSize: Integer);
@@ -301,7 +316,8 @@ implementation
 
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
-  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkUnknown;
+  CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkUnknown
+  ,QkQ1 ,QkQ2;
 
 {$R *.DFM}
 
@@ -376,6 +392,7 @@ procedure Q2MiptexToQ1(const Source: TQ2Miptex; var Dest: TQ1Miptex);
 begin
 end;}
 
+(*
 function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
 var
  I, J: Integer;
@@ -414,7 +431,9 @@ begin
   end;
  Result:=MaxSize;
 end;
+*)
 
+(*
 function CheckQ2MiptexEx(const Header: TQ2Miptex; HSize, FileSize: Integer; Offsets: PLongInt; Flags: Integer) : Integer;
 var
  ErrWal2M8: Boolean;
@@ -472,6 +491,7 @@ begin
   GlobalWarning(LoadStr1(5671));
  Result:=MaxSize;
 end;
+*)
 
 (*procedure TexImageToDIBits(W: Integer; const Image: String; var Bits);
 var
@@ -1667,10 +1687,12 @@ begin
  Result:=4;
 end;
 
+(*
 class function QTexture1.CustomParams : Integer;
 begin
  Result:=4 or cpFixedOpacity;
 end;
+*)
 
 procedure QTextureFile.SetTexOpacity;
 begin
@@ -1759,6 +1781,7 @@ end;
 
  {------------------------}
 
+(*
 class function QTexture1.TypeInfo: String;
 begin
  TypeInfo:='.wad_D';
@@ -1769,6 +1792,7 @@ begin
  inherited;
  Info.NomClasseEnClair:=LoadStr1(5131);
 end;
+*)
 
 (*procedure QTexture1.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
 var
@@ -1781,6 +1805,7 @@ begin
  LoadFormat:=1;
 end;*)
 
+(*
 procedure QTexture1.ChargerFin(F: TStream; TailleRestante: Integer);
 begin
 end;
@@ -1851,7 +1876,7 @@ begin
     begin
      Next:=Name+#13;
      Next[2]:=Succ(Next[2]);
-    end; 
+    end;
    if Name[2] in ['0'..'9'] then   { first sequence }
     case Seq of
      0: Result:= Next +   A  + Zero;
@@ -1879,9 +1904,11 @@ function QTexture1.BaseGame;
 begin
  Result:=mjNotQuake2;
 end;
+*)
 
  {------------------------}
 
+(*
 class function QTexture2.TypeInfo: String;
 begin
  TypeInfo:='.wal';
@@ -1923,7 +1950,7 @@ begin
  Result.Value   :=StrToIntDef(Specifics.Values['Value'], 0);
 end;
 
-(*procedure QTexture2.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
+(-*procedure QTexture2.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
 var
  Header: TQ2Miptex;
 begin
@@ -1932,7 +1959,7 @@ begin
   Raise EErrorFmt(5514, [Nom, 2]);
  Source.Seek(-SizeOf(Header), soFromCurrent);
  LoadFormat:=1;
-end;*)
+end;*-)
 
 procedure QTexture2.Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt;
            NomTex, AnimTex: PChar);
@@ -2082,6 +2109,7 @@ begin
    Result:=S+Copy(Result, J+1, MaxInt);
   end;
 end;
+*)
 
  {------------------------}
 
@@ -2469,6 +2497,11 @@ end;
 
 initialization
   RegisterQObject(QTextureLnk, 'a');
+(*
   RegisterQObject(QTexture1, 'a');
+*)
+(*
   RegisterQObject(QTexture2, 'n');
+*)
 end.
+

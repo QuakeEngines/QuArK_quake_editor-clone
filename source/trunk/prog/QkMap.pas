@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/08/20 11:16:47  aiv
+Removed (not req'd)
+
 Revision 1.14  2000/07/30 11:21:03  tiglari
 put in pascal version of map saving flag code from mapquakemenu.py
 to make save flags apply when map is saved from  File menu.  Question:
@@ -121,7 +124,8 @@ function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QB
 implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
-  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy};
+  Qk3D, QkBspHulls, Undo, Game, Quarkx, PyForms, QkPixelSet {Rowdy}, Bezier {/Rowdy}
+  ,QkQ2;
 
 {$R *.DFM}
 
