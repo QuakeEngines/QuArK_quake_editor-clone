@@ -81,7 +81,7 @@ class MakeTexMultDlg (quarkpy.qmacro .dialogbox):
     # dialog layout
     #
 
-    size = (130, 75)
+    size = (160, 75)
     dfsep = 0.6       # separation at 40% between labels and edit boxes
     dlgflags = FWF_KEEPFOCUS
 
@@ -94,7 +94,7 @@ class MakeTexMultDlg (quarkpy.qmacro .dialogbox):
         {
         Txt = "Multiplier:"
         Typ = "EF1"
-        Hint = "Needn't be an integer; if it's 0, no multiplier is set"
+        Hint = "Enter how many times you want the"$0D" texture pattern repeated as it is wrapped."$0D"You can also use decimals like .5 for half."$0D"If you enter 0, the multiplier is not set"$0D" and will have no effect."
         }
         close:py = {Txt="" }
     }
@@ -695,7 +695,11 @@ def ClearTagClick (m):
     "clears tag on menu-click"
     editor = mapeditor()
     if editor is None: return
-    cleartag(editor)
+    if gettaggedlist(editor) is None and gettagged(editor) is None:
+        quarkx.msgbox("No Tagged items exist.\n\nNothing done.", MT_ERROR, MB_OK)
+        return
+    else:
+        cleartag(editor)
 
 
 #
@@ -784,7 +788,7 @@ def AddtoTaggedClick(m):
   taglist = gettaggedlist(editor)
   side = editor.layout.explorer.uniquesel
   if side is not None:
-      addtotaggedfaces(side, editor)
+    addtotaggedfaces(side, editor)
 
 def RemovefromTaggedClick(m):
   "expects the selected face to be attached to m as .side"
@@ -869,8 +873,17 @@ def MirrorFlipTexClick(m):
     editor = mapeditor()
     if editor is None: return
     side = editor.layout.explorer.uniquesel
-    if side is None:
+    try:
+        sides = [m.side]
+    except (AttributeError):
+        sides = editor.layout.explorer.sellist
+    if (len(sides) < 1):
+        quarkx.msgbox("No selection has been made\n\nYou must first select a single face\nof a single brush to flip its texture", MT_ERROR, MB_OK)
         return
+    for side in sides:
+        if (side.type != ":f"):
+            quarkx.msgbox("You have selected a brush or multipal brushes\n\nYou need to select a single face of a\nsingle brush to be able to flip its texture", MT_ERROR, MB_OK)
+            return
     #
     # this seems like an awkward technique, & I'd sort of
     #  like to dispense with the swapsides_leavetex() method,
@@ -893,8 +906,19 @@ def AlignTexClick(m):
   editor = mapeditor()
   if editor is None: return
   side = editor.layout.explorer.uniquesel
+  tagged = gettaggedplane(editor)
+
   if side is None:
-      return
+    quarkx.msgbox("Either no selection has been made or\nyou have selected more than one face\n\nYou must select and tag only one face of a\nbrush and then select another one to wrap to", MT_ERROR, MB_OK)
+    return
+  if tagged is None:
+    quarkx.msgbox("Nothing done\n\nEither you have not tagged a face\nor you have tagged more than one\n(if so, all tags will be removed)\n\nYou must first select and tag only one face\nand then select another one to wrap to", MT_ERROR, MB_OK)
+    cleartag(editor)
+    return
+  if side == tagged:
+    quarkx.msgbox("Nothing done\n\nYou have selected the tagged face\nSelect another face to wrap to", MT_ERROR, MB_OK)
+    return
+
   tagged = gettagged(editor)
   try:
       if m.mirror:
@@ -1283,11 +1307,14 @@ def nextface(v1, v2, faces):
          return None
 
 def TaggedWrapClick(m):
+  editor = mapeditor()
   side = m.wraplist[0]
   (p1, p2, p3) = side.threepoints(2)
   shift = m.texorigshift
   side.setthreepoints((p1+shift, p2+shift, p3+shift), 2)
   PillarWrapClick(m)
+
+
 
 
 # -----------------------------------------------------
@@ -1308,7 +1335,7 @@ gluepttext = "Moves this side to the tagged point"
 
 aligntext = "|Wrap texture from tagged:\n\nCopies the texture from the tagged face to this one, wrapping around a shared edge with proper alignment.\n\nThis is only really supposed work when the faces abutt at an edge, although it sometimes works more generally.|intro.mapeditor.menu.html#commandsmenu"
 mirroraligntext = "|Like aligntex, but wraps from a mirror-image of the face.\n\nUseful for aligning textures with bezier curves from the shape-generators|intro.mapeditor.menu.html#commandsmenu"
-wraptext = "|Wraps from tagged, around pillar in direction of selected, scaling to eliminate seams.\n\nWon't work if the edges to be wrapped around aren't all paralell, and scales texture minimally to fit.  `preserve aspect ration' option controls whether one or both texture dimensions are scaled.\n\n  Beta Version|intro.mapeditor.menu.html#commandsmenu"
+wraptext = "|Wraps from the tagged face, around pillar in direction of selected, scaling to eliminate seams.\n\nWon't work if the edges to be wrapped around aren't all paralell, and scales texture minimally to fit.  `preserve aspect ratio' option controls whether one or both texture dimensions are scaled.|maped.plugins.tagside.html#texture"
 
 aspecttext = "|If checked, aspect ratio of textures is preserved when texture is scaled wrapping around multiple sides (pillar and multi-wrap).\n\n Click to toggle check."
 checkaspectratio = qmenu.item("Preserve aspect ratio", ToggleCheck, aspecttext)
@@ -1529,6 +1556,8 @@ def LinkSelClick(m):
   faces = mapeditor().layout.explorer.sellist
   for face in faces:
     face.setint("_tag",tag)
+    quarkx.msgbox("Selected items are now linked.", MT_CONFIRMATION, MB_OK)
+
 
 def breaksharedface(e,o):
   faceitem = qmenu.item("&Break shared face",BreakFaceClick,"|Breaks a shared face into independent faces that are linked. (So that for example they can have different textures, or the same texture differently aligned)")
@@ -1579,7 +1608,7 @@ def tagmenu(o, editor, oldfacemenu = quarkpy.mapentities.FaceType.menu.im_func):
   wrappop = wrappopup(o, tagged)
   linkpopup = qmenu.popup("&Linking",
      [      selectmenuitem(o,"&Glue linked",GlueLinkedClick,"|Glue to this face all faces that are linked to it.\n\n (This one stays still; the others move.)\n\nSince linked sides are supposed to be coplanar, if they aren't they're drawn in dotted red lines."),
-      selectmenuitem(o,"&Select linked faces",SelectClick,"Select all faces linked to this face.\n\nSo that you can for example select all the faces linked this one, and drag or shear them as a multiselection, rather than first move one and then glue the others to it."),
+      selectmenuitem(o,"&Select linked faces",SelectClick,"|Select all faces linked to this face.\n\nSo that you can for example select all the faces linked this one, and drag or shear them as a multiselection, rather than first move one and then glue the others to it."),
       selectmenuitem(o,"&Unlink face",UnlinkFaceClick,"|Unlink this face from the ones it's linked to"),
       selectmenuitem(o,"Unlink &all",UnlinkAllClick,"|Unlink all the faces linked to this from each other"),
       linktotagged
@@ -1894,6 +1923,9 @@ for menitem, keytag in [(menselecttagged, "Select Tagged Faces")]:
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29  2003/03/28 02:54:40  cdunde
+#To update info and add infobase links.
+#
 #Revision 1.28  2003/03/26 03:31:43  cdunde
 #To update info and make infobase link
 #
