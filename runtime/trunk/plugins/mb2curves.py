@@ -66,27 +66,25 @@ from quarkpy.mapbezier import b2tex_from_face
 #    default side-on view.  All the sign-flips & axis swapping
 #    is kinda confusing.
 #
-def perspective_axes():
- #
- # FIXME, clickform doesn't work until you've inserted something
- #
- try:
-     view = quarkx.clickform.focus  # gets the mapview clicked on
-     x, z = view.vector("x"), -view.vector("y")
+def perspectiveAxes(view=None):
+    try:
+        if view is None:
+            view = quarkx.clickform.focus  # gets the mapview clicked on
+        x, z = view.vector("x"), -view.vector("y")
 #  axes = view.vector("x"), -view.vector(view.screencenter), -view.vector("y")
-     return map(lambda v:v.normalized, (x, (x^z), z))
- except:
-     return map(lambda t:quarkx.vect(t), ((1,0,0), (0,-1,0), (0,0,1)))
+        return map(lambda v:v.normalized, (x, (x^z), z))
+    except:
+        return map(lambda t:quarkx.vect(t), ((1,0,0), (0,-1,0), (0,0,1)))
 
 #
 # return front, back, left, right, top, bottom w.r.t. view
 #  perspective if possible, otherwise None.
 #
-def perspective_facedict(o):
+def perspectiveFacedict(o, view):
   faces = o.subitems
   if len(faces)!=6:
     return None
-  axes = perspective_axes()
+  axes = perspectiveAxes(view)
   pool = faces[:]
   facedict = {}
   for (label, ax, dir) in (('f',1,1),('b',1,-1),('u',2,1),('d',2,-1),
@@ -109,9 +107,9 @@ def facedict(o):
     result[key]=o.findshortname(name)
   return result
 
-def perspective_rename(o):
+def perspectiveRename(o, view):
   "renames the faces of a 6-face polyhedron in accord with perspective of last-clicked-on view"
-  dict = perspective_facedict(o)
+  dict = perspectiveFacedict(o, view)
   if dict is None:
     return None
   newpoly = quarkx.newobj(o.name)
@@ -470,14 +468,14 @@ quarkpy.mapduplicator.DupCodes.update({
   "dup bevel":   BevelDuplicator,
 })
 
-def curvemenu(o, editor):
+
+def curvemenu(o, editor, view):
 
   def makecap(m, o=o, editor=editor):
       dup = quarkx.newobj(m.mapname+":d")
       dup["macro"]="dup cap"
       if m.inverse:
         dup["inverse"]=1
-#      newpoly = perspective_rename(o)
       dup.appenditem(m.newpoly)
       undo=quarkx.action()
       undo.exchange(o, dup)
@@ -506,10 +504,10 @@ def curvemenu(o, editor):
 
   disable = (len(o.subitems)!=6)
 
-  newpoly = perspective_rename(o)
+  newpoly = perspectiveRename(o, view)
   list = []
 
-  def finishitem(item, disable=disable, o=o, newpoly=newpoly):
+  def finishitem(item, disable=disable, o=o, view=view, newpoly=newpoly):
       disablehint = "This item is disabled because the brush doesn't have 6 faces."
       if disable:
           item.state=qmenu.disabled
@@ -520,7 +518,8 @@ def curvemenu(o, editor):
       else:
           item.o=o
           item.newpoly = newpoly
-
+          item.view = view
+          
   for (menname, mapname, inv) in (("&Arch", "arch",  1), ("&Cap", "cap", 0)):
     item = qmenu.item(menname, makecap)
     item.inverse = inv
@@ -576,15 +575,19 @@ If the brush vanishes without being replaced by a shape, the brush may have been
 #   assigned as a value.
 #
 def newpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_func):
-  "the new right-mouse menu for polys"
-  return  [curvemenu(o, editor)]+oldmenu(o, editor)
+    "the new right-mouse perspective menu for polys"
+    #
+    # cf FIXME in maphandles.CenterHandle.menu
+    #
+    view = editor.layout.clickedview
+    return  [curvemenu(o, editor, view)]+oldmenu(o, editor)
 
 #
 # This trick of redefining things in modules you're based
 #  on and importing things from is something you couldn't
 #  even think about doing in C++...
 #
-# It's actually deprecated in the Python programming books
+# It's actually warned against in the Python programming books
 #  -- can produce hard-to-understand code -- but can do cool
 #  stuff.
 #
@@ -594,6 +597,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2000/06/16 06:02:42  tiglari
+#fixed coordinate handedness screwup in floating map veiews
+#
 #Revision 1.9  2000/06/16 05:11:31  tiglari
 #fixed antidistortion on arch underside, which got broken
 #
