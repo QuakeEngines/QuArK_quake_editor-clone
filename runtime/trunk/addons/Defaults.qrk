@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.174  2002/02/26 23:24:01  tiglari
+//update version
+//
 //Revision 1.173  2002/02/24 13:44:24  decker_dk
 //Update version to "QuArK 6.3snap 2002feb24"
 //Added MOHAA (Medal Of Honor:Allied Assault)
@@ -1228,6 +1231,7 @@ QQRKSRC1
         MapCommentsPrefix = "//"
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
+        SupportsBrushPrim = "1"
         BuildPgm1  = "Q3MAP.EXE"
         BuildArgs1 = "-moddir .."
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
@@ -1880,6 +1884,7 @@ QQRKSRC1
       Console:    = {Typ="X" Txt="Run these build-programs..." Cap="in QuArK's console"}
       BuildPgmsDir:={Typ="ED" Txt="Default directory of build-programs" Hint="This directory is searched to find a build-program,"$0D"if the build-program does not have an absolute path specified."}
       StupidBuildToolKludge:={Typ="X" Txt="Run tools from base directory" Hint="When this is checked, the tools are run in the base directory,"$0D" on maps in tmpquark"}
+      SupportsBrushPrim:={Typ="X" Txt="Tools support brush primitives" Hint="When this is checked, if use brush primitives map option is also checked,"$0D" maps will be written in brush primitives format"}
       sep:        = {Typ="S" Txt="1st program"}
       BuildPgm1:  = {t_GameBuildPgm=!}
       BuildArgs1: = {t_GameBuildArgs=!}
