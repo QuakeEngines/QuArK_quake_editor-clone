@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2004/12/19 10:39:01  alexander
+//first useable versions, added rcs headers
+//
 //
 {
   QuArKProtected = "1"
@@ -1005,6 +1008,10 @@ QQRKSRC1
           health = "5"
           fragility = "100"
           surfacetype = "0"
+          upperleft = "0 0 0"
+          upperright = "0 0 0"
+          lowerright = "0 0 0"
+          lowerleft = "0 0 0"
         }
         func_conveyor:b =
         {
@@ -13962,7 +13969,11 @@ QQRKSRC1
         txt = "&"
         hint = "Fragility"
       }
-      surfacetype: =
+      upperleft: = {txt = "&" hint = "corner for positioning of broken glass"}
+      upperright: = {txt = "&" hint = "corner for positioning of broken glass"}
+      lowerright: = {txt = "&" hint = "corner for positioning of broken glass"}
+      lowerleft: = {txt = "&" hint = "corner for positioning of broken glass"}
+      surfacetype: = 
       {
         txt = "&"
         hint = "Surface Type"
