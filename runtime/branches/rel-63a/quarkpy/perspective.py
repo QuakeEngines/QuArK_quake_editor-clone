@@ -67,7 +67,7 @@ def perspectiveFaceDict(o, view):
         faceDict[label]=chosenface
         pool.remove(chosenface)
     return faceDict
-  
+
 def faceDict(o):
     result = {}
     for (key, name) in (('f','front')
@@ -120,7 +120,7 @@ def pointdict(dict):
   points = {}
   front, up, left = dict["f"], dict["u"], dict["l"]
 #  squawk('ful')
-  topfront = shared_vertices([front, up]) 
+  topfront = shared_vertices([front, up])
 #  squawk('tf')
   topleft = shared_vertices([left, up])
   points["tlf"], points["trf"], points["tlb"]=splitpoints(topfront, topleft)
@@ -132,7 +132,7 @@ def pointdict(dict):
   bottomback = shared_vertices([down, back])
   rightback = shared_vertices([right, back])
   points["brb"], points["trb"], points["blb"] = splitpoints(rightback, bottomback)
-  return points  
+  return points
 
 
 #
@@ -150,7 +150,7 @@ def shared_vertices(vtxlists):
            second.append(vtx)
            break
     first=second
-  return first 
+  return first
 
 
 def vtxlistdict(faceDict,o):
@@ -168,7 +168,7 @@ def vtxlistdict(faceDict,o):
 
 def pointdict_vflip(pd):
     "flips the pointdict upside down"
-    flipdict = {'t':'b', 'b':'t'}        
+    flipdict = {'t':'b', 'b':'t'}
     pd2 = {}
     for key in pd.keys():
         key2 = "%s%s%s"%(flipdict[key[0]],key[1],key[2])
@@ -177,13 +177,13 @@ def pointdict_vflip(pd):
 
 def pointdict_hflip(pd):
     "flips the pointdict left-to-right"
-    flipdict = {'l':'r', 'r':'l'}        
+    flipdict = {'l':'r', 'r':'l'}
     pd2 = {}
     for key in pd.keys():
         key2 = "%s%s%s"%(key[0],flipdict[key[1]],key[2])
         pd2[key2] = pd[key]
     return pd2
-  
+
 def pointdict_rflip(pd):
     "rotates pointdict so that front becomes top"
     pd2 = {}
@@ -202,7 +202,7 @@ def facedict_rflip(fd):
     fd2['d']=fd['b']
     fd2['f']=fd['d']
     return fd2
-    
+
 def facedict_spin(fd):
     fd2 = {}
     for key in ('u', 'd'):
@@ -212,38 +212,38 @@ def facedict_spin(fd):
     fd2['r']=fd['l']
     fd2['l']=fd['r']
     return fd2
-    
+
 def facedict_fflip(fd):
     "flips facedict front-back"
     fd2 = {}
-    for key in ('u', 'd','r','l'):
+    for key in ('u','d','r','l'):
         fd2[key]=fd[key]
     fd2['f']=fd['b']
     fd2['b']=fd['f']
     return fd2
-    
+
 def facedict_hflip(fd):
     "flips the facedict left-to-right"
     fd2 = {}
-    for key in fd.keys():
-        if key=='l':
-           fd2['r']=fd[key]
-        elif key=='r':
-           fd2['l']=fd[key]
-        else:
-           fd2[key]=fd[key]
+    for key in ('f','b','u','d'):
+        fd2[key]=fd[key]
+    fd2['r']=fd['l']
+    fd2['l']=fd['r']
     return fd2
-  
+
 def facedict_vflip(fd):
     "flips the facedict upside-down"
     fd2 = {}
-    for key in fd.keys():
-        if key=='u':
-           fd2['d']=fd[key]
-        elif key=='d':
-           fd2['u']=fd[key]
-        else:
-           fd2[key]=fd[key]
+    for key in ('f','b','r','l'):
+        fd2[key]=fd[key]
+    fd2['u']=fd['d']
+    fd2['d']=fd['u']
     return fd2
 
 #$Log$
+#Revision 1.2  2002/08/09 10:00:11  decker_dk
+#A minor consistency correction for facedict_*flip()
+#
+#Revision 1.1  2001/02/14 10:06:47  tiglari
+#extracted from mb2curves, etc
+#

@@ -321,7 +321,7 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
     if texwarning:
         errtext = Strings[-103] % texwarning
         errtext = errtext + "\n\n" + texwarninglist
-        if quarkx.msgbox(errtext, MT_WARNING, MB_OK_CANCEL) != MR_YES:
+        if quarkx.msgbox(errtext, MT_WARNING, MB_OK_CANCEL) != MR_OK:
             return
 
     texcount = None
@@ -596,6 +596,14 @@ def QuakeMenu(editor):
 #
 #
 #$Log$
+#Revision 1.27  2002/08/09 10:01:45  decker_dk
+#Fixed problem, when "warning about missing textures and do you want to continue"
+#never continued regarding pressing OK or Cancel. The if-statement checked for MR_YES
+#and not MR_OK.
+#
+#Revision 1.26  2002/05/07 09:13:02  tiglari
+#prevent error when no default dir for buildpgms is specified (diagnosis and fix by nurail)
+#
 #Revision 1.25  2002/04/28 11:41:32  tiglari
 #New command line argument substitutions (for RTCW)
 #
