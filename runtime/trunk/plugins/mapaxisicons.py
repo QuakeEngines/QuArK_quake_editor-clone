@@ -1,3 +1,15 @@
+"""   QuArK  -  Quake Army Knife
+
+Plug-in which rebuild all views.
+"""
+#
+# Copyright (C) 1996-99 Armin Rigo
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+
+#$Header$
+
 
 Info = {
    "plug-in":       "Display axis icons",
@@ -156,4 +168,10 @@ quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 #   to learn how to stop this.  The images persist only in the view that's actually being
 #   dragged on, but flicker in the others, which looks unprofessional, whereas the
 #   red line is rock solid.
+#
+
+
+# ----------- REVISION HISTORY ------------
+#
+#$Log$
 #
