@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10.4.5  2001/07/15 08:00:33  tiglari
+non-faces discarded before display,
+
 Revision 1.10.4.4  2001/07/15 06:17:42  tiglari
 oops wrong version committed previously
 
@@ -284,8 +287,12 @@ var
  InvFaces: Integer;
  LastError: String;
  P1, P2, P3, NN: TVect;
+ P5_1, P5_2, P5_3: TVect5;
  PlaneDist: TDouble;
  dist: vec3_t;
+ texcoord: vec2_t;
+ Q3Vertex: TQ3Vertex;
+ Q3VertexP: PQ3Vertex;
  TextureList: QTextureList;
  NonFaces: Integer;
 begin
@@ -294,10 +301,10 @@ begin
  FBsp:=nBsp;
  FBsp.AddRef(+1);
  FBsp.VerticesAddRef(+1);
-
  try
   InvFaces:=0;
   cTexInfo:=0;
+  NonFaces:=0;
   HullType:=FBsp.NeedObjectGameCode;
   case HullType of
    mjQuake, mjHalfLife:  Size1:=SizeOf(THull);
@@ -479,21 +486,34 @@ begin
     else
     with Q3Faces^ do
     begin
-     { P:=PChar(Vertices+Vertex_id*SizeOf(TVect)); }
      { the vertexes are stored in the vertex lump in consecutive
-       order as they are used by each face }
+       order as they are used by each face.  Since we need a QuArK
+       Vertex (Sommet) table like that constructed in FBsp.GetStructure,
+       we use it for the vertexes, but use direct access to the bsp
+       structure for the texture position information }
       for J:=1 to Vertex_num do
       begin
         Dest^:=PSommet(Vertices+(Vertex_id+J-1)*SizeOf(TVect));
+        Q3VertexP:=PQ3Vertex(FBsp.Q3Vertices+(Vertex_id+J-1)*SizeOf(TQ3Vertex));
         if J=1 then
         begin
           P1:=Dest^.P;
+          { This trick works because the position and tex coords are the
+            first 5 fields.  If we want to drag lightmaps into it we'll
+            need to go to 7, or do something different }
+          P5_1:=MakeVect5(vec5_p(Q3VertexP)^);
           PlaneDist:=Dot(NN,P1)
         end
         else if J=2 then
-          P2:=Dest^.P
+        begin
+          P2:=Dest^.P;
+          P5_2:=MakeVect5(vec5_p(Q3VertexP)^);
+        end
         else
+        begin
           P3:=Dest^.P;
+          P5_3:=MakeVect5(vec5_p(Q3VertexP)^);
+        end;
         Inc(Dest);
       end;
     end;
@@ -563,6 +583,11 @@ begin
       P3.Y:=-EchelleTexture-bspvecs^[1,3];
       P3.Z:=PlaneDist;
       TransformationLineaire(P3);
+    end
+    else
+    begin {Q3 texture info}
+     { The idea is to take the 3 5-vecs collected earlier and convert
+       them to etp 3points P1-P3 }
     end;
 
     Face:=TFace.Create(IntToStr(I), Self);
