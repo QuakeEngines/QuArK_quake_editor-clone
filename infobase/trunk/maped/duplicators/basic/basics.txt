@@ -28,11 +28,12 @@ numbers to say '200 0 0'.
 The next number is 'count', which controls the
 number of copies, so if you only want one, set it
 to '1'.  Count is giving us the number of copies,
-not including the original.  The remaining specifics
-are 'angle', which is not very useful, 'origin', which
-is where the duplicator is located and best controlled
-by dragging it around, and 'macro', which you should leave
-alone until you're an expert.
+not including the original.
+
+Following that is 'angle'. This rotates each copy of the duplicated object by that amount in degrees from each copy's center, or origin, point. A positive number will rotate it counter clock wise and a negative number will rotate it clockwise. This creates a circular pattern of the duplicated object. They can then be made to create a stair step pattern by moving any of the solid blue handles up or down. The smaller the number used for 'angle' the bigger the circumference of the circular pattern becomes, because the rotation of each copy's center is less, and visa versa. This can also be done with the 'red ball' handle.
+
+The 'origin' specific, is where the duplicator is located and best controlled
+by dragging it around, and 'macro', which you should leave alone until you're an expert.
 
 The point of duplicators is to have any changes you make
 in the original show up automatically in the copies, so
@@ -43,7 +44,7 @@ of the copies will change.
 
 You also might have noticed that for each copy there is
 a little blue square.  If you drag a square with the
-moouse, you change the direction of the row and the spacing
+mouse, you change the direction of the row and the spacing
 of the copies along it.  Look at the 'offset' specific
 while you're doing this, & you'll see that what you're doing
 is visually editing the offset.  So there's a quick way to get
@@ -61,14 +62,14 @@ complicated as you like.
 With a duplicator, you can edit the original, and see
 the changes in all the copies, but you can't make
 a change to some particular individual copy.  However
-sometimes that' is what you
+sometimes that is what you
 want to do (perhaps to introduce some variations
 into a bunch of things you've created).  You can
 make the copies individually editable by RMB |
 Dissociate Duplicator Images on the duplicator
 (in the tree-view).  Now the duplicator is removed
 from the map and replaced by the copies it has been
-created, as freestanding individual pieces of map
+creating, as freestanding individual pieces of map
 structure.  Of course when you do this, you lose the
 advantage of having a duplicator.  With the undo facility,
 you can get the duplicator back (until you close the

@@ -17,7 +17,7 @@ So if you want each object to be spun 15 degrees around the
 Z axis, but left the same on the others, '0 0 15' will do it.
 
 There are two more specifics, matrix and linear.  Neither
-of these is likely to be useful to the average mapper, but
+of these are likely to be useful to the average mapper, but
 here's a quick explanation anyway.  Scaling and rotation are
 particular kinds of 'linear transformatioms', which are
 distortions of space (and or the objects in them) that can

@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.218  2003/09/18 03:00:37  cdunde
+//To add texture selection feature
+//
 //Revision 1.217  2003/08/31 21:15:52  silverpaladin
 //Minor change to the WildWest game launch line
 //
@@ -4788,7 +4791,7 @@ QQRKSRC1
       outform = !
       offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
       count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
-      angle: = {Txt="&" Typ="E" Hint="Not sure how this one works ..."}
+      angle: = {Txt="&" Typ="E" Hint="Rotates the duplicated object by"$0D"that amount in degrees from its center"$0D"creating a circular pattern"$0D"A positive number for counterclockwise,"$0D"A negative number for clockwise"}
       serialform = !
     }
 

@@ -2,7 +2,7 @@ title: Incrementing Specifics
 author: tiglari
 
 Suppose you want to make a row of lights, each with its own switch.  The triggers
-will have 'target' specific, the targets a 'targetname' specific, put for the
+will have 'target' specific, the targets a 'targetname' specific, but for the
 thing to work, they will need to be different in each copy.  This can be acheived
 by activating the incrementation facility for specifics.  The first step is to
 check the duplicator's 'increment' specific.  Then choose as target and targetname

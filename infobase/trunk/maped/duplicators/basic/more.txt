@@ -1,20 +1,20 @@
 title: More Duplicators
 author: tiglari
 
-There are six more Standard Duplicators beyond the Basic
+There are seven more Standard Duplicators beyond the Basic
 Duplicator.  One of them, the Linear Duplicator, is
 an enhanced version of the Basic Duplicator; we'll talk
-about it last.  Then there is Copy One and 4 mirror
+about it last.  Then there is Copy One and 5 mirror
 duplicators.
 
 Copy One makes a single copy, which you can put where you
 want.  If you want to make a small number of copies, and
 put them in assorted places (perhaps a few crates scattered
-around in a room), you can put a several Copy One duplicators
+around in a room), you can put several Copy One duplicators
 into the same group; each will make its own copies of the
-things in the group,which you can locate with the blue
+things in the group, which you can locate with the blue
 handles (notice however that if several duplicators are
-right in the same group, they don't copy each other).
+located in the same group, they don't copy each other).
 
 Copy One is fine for making small numbers of copies, but for
 larger numbers, the more complex Instance Duplicator would
