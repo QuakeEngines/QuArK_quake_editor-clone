@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.177  2002/03/26 22:18:27  tiglari
+//add experimental commented out UseIntegralVertexes flag
+//
 //Revision 1.176  2002/03/26 10:21:02  tiglari
 //remove DisableEnhTex, BrushPrim from Map Options,
 //add OutputMapFormat to game config
@@ -1526,6 +1529,70 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+      }
+      JK2:config =
+      {
+        Game = "JK2"
+        Code = "f" // Hardcoded value in Setup.PAS
+        Program = "JK2MP.EXE +set sv_pure 0"
+
+        Directory = "\Star Wars JK II Jedi Outcast\GameData"
+        CheckDirectory = "JK2MP.EXE"
+
+        CD = ""
+        CDDir = ""
+
+        MapLimit = '65536 65536 65536'
+
+        MapCommentsPrefix = "//"
+        OutputMapFormat="Classic Quake"
+
+        StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
+        BuildPgm1  = "Q3MAP.EXE"
+        BuildArgs1 = "-game "$22"jk2"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
+        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm2  = "Q3MAP.EXE"
+        BuildArgs2 = "-game "$22"jk2"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
+        BuildPgm3  = "Q3MAP.EXE"
+        BuildArgs3 = "-game "$22"jk2"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
+        BuildPgm4  = "BSPC.EXE"
+        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+        BuildCheck4= "+AAS"
+
+        TexturesPath = "textures/"
+        ShadersPath = "shaders/"
+        Q2TexFlags = "1"
+
+        BezierPatchSupport = "1" // this game supports bezier-patches
+        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
+
+        DefaultTexture = "yavin/woodwall_moss"
+        DefaultTextureTrigger = "system/trigger"
+        DefaultTextureOrigin = "system/origin"
+        DefaultTextureClip = "system/clip"
+        DefaultTextureCaulk = "system/caulk"
+        DefaultTextureScale = "0.5"
+
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
+        TextureWriteFormat = ".tga"
+        TextureShaders = "shaders/quark.shader"
+
+        BaseDir = "base"
+        tmpQuArK = "tmpQuArK"
+
+        Palette = ":pics/colormap.pcx"
+        ExtraCmdLine = "+set fs_game %s"
+        RunMapCmdLine = " +devmap %s"
+        AddOns = "DataJK2.qrk"$0D"Q3ArchLib.qrk"
+        AlwaysPak = ""
+        PakExt = ".pk3"
+        PakFormat = "*.PK3"
+        Console = "1"
+        Form = "GameJK2"
+        LightFactor = '0.9'
+        3DLight = '512'
+        PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
       }
     }
 
@@ -3080,6 +3147,84 @@ QQRKSRC1
       sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
       t_GameBuildPgms=!
     }
+    GameJK2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "JK2 command-line"
+        Items = "JK2MP.EXE +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Jedi Knight 2"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "JK2MP.EXE"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMf"}    // switches to JK2 (cmd=GAM, game=f)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMf"}    // switches to JK2 (cmd=GAM, game=f)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "JK2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "JK2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "JK2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "JK2"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "JK2"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
 
     MapColors:form =
     {
@@ -3496,7 +3641,7 @@ QQRKSRC1
       //FullScreen: = {Txt="3DFX Full-screen options" Typ="X" Cap="Full-screen" Hint="If not checked, the 3DFX card display is copied in a window"}
       TwoMonitors: = {
         Txt="Second monitor on 3DFX"
-        Typ="CL" 
+        Typ="CL"
         Items  = "I've only one monitor" $0D "3DFX monitor at left" $0D "3DFX monitor at right"
         Values = "" $0D "1" $0D "2"
         Hint="If you have two monitors (two screens), you can connect one on the 3DFX card and one on the 2D card"
@@ -4259,7 +4404,7 @@ QQRKSRC1
       Game: = {
         Txt = "Based on game"
         Typ = "CL"
-        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"
+        Items = "Quake 1"$0D"Quake 2"$0D"Hexen II"$0D"Heretic II"$0D"Half-Life"$0D"Sin"$0D"KingPin"$0D"SOF"$0D"Quake 3"$0D"STVEF"$0D"Crystal Space"$0D"RTCW"$0D"MOHAA"$0D"JK2"
         Hint = "the game this TC is based on"
       }
       SourceDir: = {
