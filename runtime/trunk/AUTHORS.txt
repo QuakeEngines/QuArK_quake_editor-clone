@@ -43,8 +43,8 @@ The contributing developers of QuArK
 - Marco Leise
         e-mail:         Marco.Leise@gmx.de
 
-- "cdunde"
-        e-mail:         cdunde1@attbi.com
+- Bob "cdunde" Jarrett
+        e-mail:         cdunde1@comcast.net
 
 - "DG"
         e-mail:         david@fielden.com.au
