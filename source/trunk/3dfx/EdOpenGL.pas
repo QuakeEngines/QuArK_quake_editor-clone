@@ -698,6 +698,8 @@ begin
  {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
 {gl.wglMakeCurrent(DC,RC);
  Err(49);}
+ if Source.ScreenX>ScreenX then Source.ScreenX:=ScreenX;
+ if Source.ScreenY>ScreenY then Source.ScreenY:=ScreenY;
  gl.glViewport(0, 0, Source.ScreenX, Source.ScreenY);
  Err(50);
  with TCameraCoordinates(Source.Coord) do
