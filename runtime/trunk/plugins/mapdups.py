@@ -64,10 +64,6 @@ class LinearDuplicator(StandardDuplicator):
         s = self.dup["linear"]
         if s:
             self.matrix = quarkx.matrix(s)
-        #
-        # New matrix for use with rot/scale buttons.
-        #
-        self.matrix2 = buildLinearMatrix(self.dup)
 
     def applylinear(self, matrix, direct=0):
         s = self.dup["linear"]
@@ -271,6 +267,9 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 #
 # $Log$
+# Revision 1.5  2001/04/08 02:44:15  tiglari
+# fix conflict
+#
 # Revision 1.4  2001/04/06 06:00:35  tiglari
 # fixed a messed up change to Linear Duplicator readavalues
 #
