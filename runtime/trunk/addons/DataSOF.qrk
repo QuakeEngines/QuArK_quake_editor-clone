@@ -3,6 +3,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.9  2000/07/02 00:56:41  alexander
+//added skynames in wordspawn form
+//
 //Revision 1.8  2000/06/08 19:33:47  alexander
 //added ainame tag to worldspawn
 //
@@ -15,6 +18,8 @@ QQRKSRC1
 
 
 {
+  QuArKProtected = "1"
+  Description = "Base Soldier of Fortune data"
   NewFiles.qtx =
   {
     ToolBox = "New files..."
@@ -144,7 +149,50 @@ QQRKSRC1
     }
   }
 
-
+  Default forms.qctx =
+  {
+    // this form is used for some games when SpecialCustomQuakeMenu is set to the forms name
+    CustomQuakeMenuSOF:form =    // "customize Quake menu" box for games with bspc
+    {
+      Style = "7"
+      RunGame: = {Typ="X" Txt="finally..." Cap="Run the game" Hint="run the game when the map has been rebuilt"}
+      Pause: = {Typ="X" Cap="Console stay open" Hint="don't automatically close the console where all QBSP/VIS/LIGHT output has been written"}
+      sep: = {Typ="S"}
+      QBSP1: = {Typ="X" Txt="Rebuild the map" Cap="QBSP" Hint="this program builds the .bsp file from your map"}
+      QBSPCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-onlyents"
+        Hint="with -onlyents, read the previous version of the .bsp file and only update the entities"
+      }
+      sep: = {Typ="S"}
+      VIS1: = {Typ="X" Txt="Compute visibility list" Cap="VIS / QVIS3" Hint="required for large maps to run smoothly in Quake. For Quake 2, it is also required for QRAD3 to work properly"}
+      VISCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-fast" $0D "-level 0" $0D "-level 1" $0D "-level 2" $0D "-level 3" $0D "-level 4"
+        Hint="computation details, from fastest to compute to fastest in Quake"
+      }
+      sep: = {Typ="S"}
+      LIGHT1: = {Typ="X" Txt="Compute lights" Cap="LIGHT / QRAD3" Hint="computes lights and shadows from 'light' entities. Without this, your map looks full bright"}
+      LIGHTCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-extra"
+        Hint="-extra takes longer to compute but looks much better (it prevents 'stairsteps' between shadow and light)"
+      }
+      sep: = {Typ="S"}
+      BSPC1: = {Typ="X" Txt="Build AAS file for Bots" Cap="BSPC" Hint="Only needed if you want to play this map with bots"}
+      BSPCCmd: = {
+        Typ="C"
+        Txt="...additional parameters"
+        Items="" $0D "-noverbose" $0D "-bsp2aas"
+        Hint="noverbose removes the lot of detail messages"
+      }
+      sep: = {Typ="S"}
+      Shortcut: = {Typ="E" Txt="Keyboard shortcut" Hint="Keyboard shortcut as it appears in the menu (recommended: 'Ctrl+letter')"}
+    }
+  }
   SOF setup.qctx =
   {
     Game = "SOF"
