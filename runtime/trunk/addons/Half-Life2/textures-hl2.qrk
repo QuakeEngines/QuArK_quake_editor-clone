@@ -11,7 +11,7 @@ QQRKSRC1
     ToolBox = "Texture Browser..."
     Root = "HL2 Textures.qtxfolder"
 
-    t_hl2:incl =      {  v="source materials.gcf"}
+    t_hl2:incl =      {  v="source materials.gcf" path="hl2/materials/"}
     //t_hl2:incl =    {  v="tmpQuArK/materials_from_source_materials"}
 
     HL2 Textures.qtxfolder =

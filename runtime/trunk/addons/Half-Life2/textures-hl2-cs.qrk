@@ -7,15 +7,12 @@ QQRKSRC1
 //
 // Team Fortress Classic
 //
-
-
-
   HL2 CS Textures.qtx =
   {
     ToolBox = "Texture Browser..."
     Root = "HL2 CS.qtxfolder"
 
-    t_hl2cs:incl =      {  v="counter-strike source shared.gcf"}
+    t_hl2cs:incl =      {  v="counter-strike source shared.gcf" path="cstrike/materials/"}
     //t_hl2cs:incl =    {  v="tmpQuArK/materials_from_cs_source_shared"}
 
 
@@ -26,7 +23,7 @@ QQRKSRC1
          					{
 
 										brick/brickfloor001a.wl  = { t_hl2cs=! }
-										brick/brickwall003a.wl  = { t_hl2cs=! }
+										brick/brickwall003d.wl  = { t_hl2cs=! }
 										brick/brickwall021a.wl  = { t_hl2cs=! }
 										brick/brickwall021a_normal.wl  = { t_hl2cs=! }
 									}

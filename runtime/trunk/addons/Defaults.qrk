@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.237  2004/12/27 12:28:18  alexander
+//set textures path for hl2 to "hl2/materials"
+//set name of game directory form entry
+//
 //Revision 1.236  2004/12/27 06:27:00  rowdy
 //minor enhancements to Doom 3 support - fixed the ceiling texture in the default room, re-added textures/common/* (to make some activities slightly easier), improved Doom3 menu to allow exporting .map files
 //
@@ -1276,7 +1280,7 @@ QQRKSRC1
         WateryTex = "!"
         TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
-        TexturesPath = "hl2/materials/"
+        //TexturesPath = "hl2/materials/"
 
 
         MapHoles = ".pts"

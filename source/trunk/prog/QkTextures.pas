@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2004/12/22 11:42:15  rowdy
+Rowdy - first pass of support for Doom 3
+
 Revision 1.38  2004/11/08 22:47:43  alexander
 hl2 support started
 
@@ -1107,7 +1110,12 @@ begin
       S:=Specifics.Values[StdGameTextureLinks[I].LinkSpecificChar];
       if S<>'' then
       begin   { standard link }
-        Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+        // for hl2 we need individual paths
+        if CharModeJeu=mjHL2 then
+          Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet
+        else
+          Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+
         Link.AddRef(+1);
         Link.Acces;  { we found the linked texture }
 {start --- kingpin texture flag hack}
