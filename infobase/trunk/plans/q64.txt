@@ -27,14 +27,11 @@ list are done.
 > 
 </code>
 
+<li>bot waypoint editor: (decker)
+<br>status: limited implementation as plugin.
+
 <li>Flexible vertex movement: (tiglari)
 <br>status: some ideas about how to do it.
-
-<li>Radiant-style dragging, with frozen selections: (tiglari)
-<br>The justification for this is that I think it might be fast
-and convenient in certain cirucmstances. (Also a 'how it was done'
-story might be a good QuArK-Python tutorial on handling mouse stuff.)
-<br>status: <strong>done</strong>
 
 <li>Targetted and targetter finder: (tiglari)
 <br> suggestion by quantum_red.
@@ -42,6 +39,10 @@ story might be a good QuArK-Python tutorial on handling mouse stuff.)
 
 <li>Mixed-face contents finder: (tiglari)
 <br> suggestion by funkiedamouse.
+
+<li>More flexible greyout: (suggestion by quantum red)
+<br>Provide an option so that things are selectable when
+visible in only one view.
 
 <li>Patch bend mode: (tiglari)
 <br>Or something like it, and other patch-handling extensions.
@@ -78,7 +79,7 @@ Suggested additions are:
 What about L-join options?
 
 <li>Radiant-style Regioning: (?)
-<br>Hide and don't save everything not in the rectangle.
+<br>Hide and don't write to map everything not in the rectangle.
 
 <li>Tag side plugin: (tiglari)
 <br>More flexibility for wrap across tagged.

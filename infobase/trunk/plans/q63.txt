@@ -145,5 +145,17 @@ some previous cleanup by Decker.
 <li>Fixed problem with 2-monitor usage of QuArK:
 <br>breakthru insights from quantum_red and Decker.
 
+<li>Radiant-style dragging, with frozen selections: (tiglari)
+<br>The justification for this is that I think it might be fast
+and convenient in certain cirucmstances. (Also a 'how it was done'
+story might be a good QuArK-Python tutorial on handling mouse stuff.)
+<br>status: <strong>done</strong>
+
 <li>Basic SoF2 support: (tiglari, CHK Shoot)
+
+<li>jump-pad trajectory calculator: (decker)
+
+<li>non-integral face finder-fixer: (tiglari)
+
+<li>liner mappings work on path duplicator: (tiglari)
 </ul>
