@@ -347,10 +347,12 @@ class FaceType(EntityManager):
             Spec1.page = 3
             Spec1.state = qmenu.default
             h.append(Spec1)
-        Tex1 = qmenu.item("&Texture...", mapbtns.texturebrowser, "choose texture for face")
+        Tex1 = qmenu.item("&Choose Texture...", mapbtns.texturebrowser, "choose texture for face")
+        texpop = qmenu.popup("&Texture",[Tex1]+ mapmenus.MenuTexFlags(editor))
+        texpop.label = 'texpop'
         Force1 = qmenu.item("&Force center to grid", editor.ForceEverythingToGrid, "force to grid")
         Force1.state = not editor.gridstep and qmenu.disabled
-        return h + [Tex1] + mapmenus.MenuTexFlags(editor) + [qmenu.sep, Force1]
+        return h + [texpop, qmenu.sep, Force1]
 
 
 #
@@ -580,6 +582,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2000/07/16 07:56:26  tiglari
+#bezier menu -> menubegin
+#
 #Revision 1.15  2000/06/04 03:22:28  tiglari
 #texture choice item for b2 menu
 #
