@@ -279,6 +279,8 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
         quarkx.setupsubset(SS_MAP, "Options")["MakePrism_Stair"]        = self.src["stair"]
         quarkx.setupsubset(SS_MAP, "Options")["MakePrism_Ramp"]         = self.src["ramp"]
 
+        z_axis = quarkx.vect(0,0,1)
+        
         # Create the prism
         if slice:
             p = quarkx.newobj("n-prism:g");
@@ -286,16 +288,16 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
             p = quarkx.newobj("n-prism:p");
 
         # Create the top and bottom face
+        up = quarkx.newobj("up:f")
+        up["v"] = (-uorx+offsetX,-uory+offsetY,height, 128-uorx+offsetX,-uory+offsetY,height, -uorx+offsetX,128-uory+offsetY,height)
+        up["tex"] = tex
+        down = quarkx.newobj("down:f")
+        down["v"] = (-dorx,128-dory,-height, 128-dorx,128-dory,-height, -dorx,-dory,-height)
+        down["tex"] = tex
+        # attach in simplest case
         if (slice and shareface and not stair) or not slice:
-                f = quarkx.newobj("up:f")
-                f["v"] = (-uorx+offsetX,-uory+offsetY,height, 128-uorx+offsetX,-uory+offsetY,height, -uorx+offsetX,128-uory+offsetY,height)
-                f["tex"] = tex
-                p.appenditem(f)
-
-                f = quarkx.newobj("down:f")
-                f["v"] = (-dorx,128-dory,-height, 128-dorx,128-dory,-height, -dorx,-dory,-height)
-                f["tex"] = tex
-                p.appenditem(f)
+                p.appenditem(up)
+                p.appenditem(down)
 
         # Create the sides
         angle = math.pi/2
@@ -377,14 +379,19 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
                     p1.appenditem(f)
 
                 if (not shareface and not stair) or stair:
-                    f = quarkx.newobj("up:f")
-                    f["v"] = (v7.x+offsetX,v7.y+offsetY,v7.z-caseup, v8.x+offsetX,v8.y+offsetY,v8.z-caseup-slantup, v4.x+offsetX,v4.y+offsetY,v4.z-caseup)
-                    f["tex"] = tex
+#                    f = quarkx.newobj("up:f")
+#                    f["v"] = (v7.x+offsetX,v7.y+offsetY,v7.z, v8.x+offsetX,v8.y+offsetY,v8.z, v4.x+offsetX,v4.y+offsetY,v4.z)
+#                    f["tex"] = tex
+                    f = up.copy()
+                    if stair:
+                       f.translate(-caseup*z_axis)
                     p1.appenditem(f)
 
-                    f = quarkx.newobj("down:f")
-                    f["v"] = (v5.x,v5.y,v5.z+casedown, v2.x,v2.y,v2.z+casedown, v6.x,v6.y,v6.z+casedown-slantdown)
-                    f["tex"] = tex
+
+#                    f = quarkx.newobj("down:f")
+#                    f["v"] = (v5.x,v5.y,v5.z+casedown, v2.x,v2.y,v2.z+casedown, v6.x,v6.y,v6.z+casedown-slantdown)
+#                    f["tex"] = tex
+                    f = down.copy()
                     p1.appenditem(f)
 
                 p.appenditem(p1);
@@ -430,6 +437,9 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClic
 #----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.5  2001/01/27 18:25:29  decker_dk
+# Renamed 'TextureDef' -> 'DefaultTexture'
+#
 # Revision 1.4  2000/12/19 21:07:42  decker_dk
 # Ax2Grind's MapMakePrism.py changes
 #
