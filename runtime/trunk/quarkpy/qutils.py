@@ -186,6 +186,10 @@ def LoadIconSet(filename, width, transparencypt=(0,0)):
         return (unsel, sel)
 
 
+#
+# equiv to LoadIconSet, just calls a different loadimages
+#  to help in leak-tracking
+#
 def LoadIconSet2(filename, width, transparencypt=(0,0)):
     "Load a set of bitmap files and returns a tuple of image lists."
 
@@ -282,10 +286,10 @@ ico_dict = {}
 #  any purpose (lots of code gets clunkier, no benefit)
 #
 # Default icons for the objects
-ico_objects = LoadIconSet2("images\\objects", 16)
+ico_objects = LoadIconSet("images\\objects", 16)
 
 # Generic editor icons
-ico_editor = LoadIconSet2("images\\editor", 16)
+ico_editor = LoadIconSet("images\\editor", 16)
 
 #
 # Variable icons handlers for Quake entities
@@ -504,6 +508,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.16  2001/10/22 10:28:20  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.15  2001/10/16 11:40:34  tiglari
 #live pointer hunt, delete some stuff after use, very provisional
 #
