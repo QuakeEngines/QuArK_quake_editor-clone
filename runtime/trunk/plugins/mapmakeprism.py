@@ -134,7 +134,7 @@ class MakePrismDlg(quarkpy.qmacro.dialogbox):
             }
 
 
-            sep: = { Typ = "S" }
+            sep: = { Typ ="S" Txt=""}
 
             MakePrism:py = {Txt="" }
 
@@ -431,6 +431,9 @@ quarkpy.mapcommands.items.append(quarkpy.qmenu.item("&Make Prism", MakePrismClic
 #----------- REVISION HISTORY ------------
 #
 # $Log$
+# Revision 1.8  2001/06/17 21:10:57  tiglari
+# fix button captions
+#
 # Revision 1.7  2001/03/07 20:16:16  tiglari
 # removed ramp checkbox (for now, till it works)
 #
