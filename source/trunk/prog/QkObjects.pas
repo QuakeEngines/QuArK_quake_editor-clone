@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.61  2001/10/14 10:07:21  tiglari
+Live Pointer Hunt: rollback of finalizings, & free QFileList
+
 Revision 1.57  2001/08/06 00:18:24  tiglari
 update version
 
@@ -963,7 +966,9 @@ end;
 
 destructor TQStream.Destroy;
 begin
-  if FHandle>=0 then
+  { I'm assuming here that valid filehandles will be greater
+    than zero, since TemporaryClose sets fhandle to 0 }
+  if FHandle>0 then
     FileClose(FHandle);
 end;
 
@@ -1031,7 +1036,8 @@ begin
     begin
       if Temporary then
       begin
-        TemporaryClose;
+        if FHandle>0 then
+          TemporaryClose;
         DeleteFile(QFileList[I]);
       end;
       QFileList.Delete(I);
