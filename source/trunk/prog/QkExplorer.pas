@@ -26,6 +26,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/11/26 19:08:33  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.8  2000/11/25 20:51:33  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -737,6 +743,7 @@ begin
  else
   El.Acces;
  ProgressIndicatorStart(5446, El.SubElements.Count);
+ El.PrepareForExpand;
  try
   for I:=0 to El.SubElements.Count-1 do
    begin
