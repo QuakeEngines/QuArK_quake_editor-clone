@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2001/03/20 21:43:04  decker_dk
+Updated copyright-header
+
 Revision 1.7  2001/03/18 01:34:34  tiglari
 ProjectPointToPlane added (adapted from quarkpy.maputils)
 
@@ -70,7 +73,8 @@ type
 
 function Cross(const V1, V2: TVect) : TVect;
 function Dot(const V1, V2: TVect) : TDouble;
-procedure Normalise(var V: TVect);
+procedure Normalise(var V: TVect); overload;
+procedure Normalise(var V: TVect; var S: Double); overload;
 function AngleXY(const X, Y: TDouble) : TDouble;
 procedure ReadValues(const S1: String; var Vals: array of TDouble);
 function ReadVector(const S: String) : TVect;
@@ -90,6 +94,7 @@ function vtocol255(const R,G,B: TDouble) : TColor;
 procedure NormaliseCol1(var V: TVect);
 {function sReadIntegers(const S1: String; Int: PLongInt; MaxCount: Integer) : Integer;
 function sWriteIntegers(Int: PLongInt; Count: Integer) : String;}
+function MakeVect(X, Y, Z : Double) : TVect;
 function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
@@ -158,6 +163,17 @@ var
  F: TDouble;
 begin
  F:=1/Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
+ V.X:=V.X*F;
+ V.Y:=V.Y*F;
+ V.Z:=V.Z*F;
+end;
+
+procedure Normalise(var V: TVect; var S: Double);
+var
+ F : TDouble;
+begin
+ S:=Sqrt(Sqr(V.X)+Sqr(V.Y)+Sqr(V.Z));
+ F:=1/S;
  V.X:=V.X*F;
  V.Y:=V.Y*F;
  V.Z:=V.Z*F;
@@ -760,6 +776,13 @@ begin
    V.Y:=V.Y/Max;
    V.Z:=V.Z/Max;
   end;
+end;
+
+function MakeVect(X, Y, Z : Double) : TVect;
+begin
+  Result.X:=X;
+  Result.Y:=Y;
+  Result.Z:=Z;
 end;
 
 function VecDiff(const V, W : TVect) : TVect;
