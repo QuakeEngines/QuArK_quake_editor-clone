@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/03/20 21:43:04  decker_dk
+Updated copyright-header
+
 Revision 1.19  2001/02/23 19:26:21  decker_dk
 Small changes (which hopefully does not break anything)
 SuivantDansGroupe => NextInGroup
@@ -171,6 +174,8 @@ const
   cZIP_HEADER   = $04034B50;
   cCFILE_HEADER = $02014B50;
   cEOCD_HEADER  = $06054B50;
+  quark_zip_comment = 'by QuArK';
+  quark_zip_comment_temp = quark_zip_comment + ' (temporary)';
 
 implementation
 
@@ -348,7 +353,7 @@ var
   Repertoire: TMemoryStream;
   Origine, Fin, sig: LongInt;
   EOCDHeader: TEndOfCentralDir;
-  quark_zip_comment: string;
+  comment: string;
 begin
   with Info do begin
     case Format of
@@ -358,8 +363,16 @@ begin
         { write .pak entries }
         Repertoire:=TMemoryStream.Create;
         try
-          quark_zip_comment:='by QuArK';
-          EOCDHeader:=BuildEOCD(0, 0, 0, 0, 0, 0, Length(quark_zip_comment));
+          if Specifics.Values['temp']<>'' then
+          begin
+            comment:=quark_zip_comment_temp;
+          end
+          else
+          begin
+            comment:=quark_zip_comment;
+          end;
+
+          EOCDHeader:=BuildEOCD(0, 0, 0, 0, 0, 0, Length(comment));
 
           WritePakEntries(Info, Origine, '', Fin, Repertoire, @EOCDHeader);
 
@@ -371,7 +384,7 @@ begin
           sig:=cEOCD_HEADER;
           F.WriteBuffer(sig, 4);
           F.WriteBuffer(EOCDHeader, sizeof(TEndOfCentralDir));
-          F.WriteBuffer(quark_zip_comment[1], Length(quark_zip_comment));
+          F.WriteBuffer(comment[1], Length(comment));
         finally
           Repertoire.Free;
         end;
@@ -442,7 +455,15 @@ begin
       f.readbuffer(eocd, sizeof(eocd));
       if eocd.disk_no<>0 then
         raise Exception.CreateFmt('File "%s" cannot be loaded: it is spanned across several disks', [LoadName]);
-
+      if eocd.zipfilecomment_len <> 0 then
+      begin
+        setlength(dummystring, eocd.zipfilecomment_len);
+        f.readbuffer(dummystring[1], eocd.zipfilecomment_len);
+        if dummystring = quark_zip_comment_temp then
+        begin
+          Specifics.Values['temp']:= '1';
+        end;
+      end;
       f.seek(org, soFromBeginning); {beginning of 'file'}
       f.seek(eocd.offset_cd, soFromCurrent);
       files:=TMemoryStream.Create;    {ms for central directory}
