@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2001/01/30 19:11:10  decker_dk
+Changed to GetApplicationPath().
+
 Revision 1.19  2000/11/25 20:51:33  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -663,6 +666,24 @@ begin
     FilenameAlias := FileName;
     while (FilenameAlias <> '') do
     begin
+      { Disk search }
+      AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+      if FileExists(AbsolutePathAndFilename) then
+      begin
+        Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
+        Result.Flags:=Result.Flags or ofWarnBeforeChange;
+        GameFiles.Add(Result);
+        GameFiles.Sort(ByFileName);
+        Exit; { found it }
+      end;
+      FilenameAlias := FileAlias(FileName);
+    end;
+
+
+    RestartAliasing;
+    FilenameAlias := FileName;
+    while (FilenameAlias <> '') do
+    begin
       { PAKfile search }
       AbsolutePathAndFilename:=ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
       GetPakNames:=TGetPakNames.Create;
@@ -687,23 +708,6 @@ begin
         end;
       finally
         GetPakNames.Destroy;
-      end;
-      FilenameAlias := FileAlias(FileName);
-    end;
-
-    RestartAliasing;
-    FilenameAlias := FileName;
-    while (FilenameAlias <> '') do
-    begin
-      { Disk search }
-      AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
-      if FileExists(AbsolutePathAndFilename) then
-      begin
-        Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
-        Result.Flags:=Result.Flags or ofWarnBeforeChange;
-        GameFiles.Add(Result);
-        GameFiles.Sort(ByFileName);
-        Exit; { found it }
       end;
       FilenameAlias := FileAlias(FileName);
     end;
