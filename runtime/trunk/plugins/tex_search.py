@@ -34,18 +34,18 @@ def tex_search(s):
             if (string.find (n, s)!=-1):
                 result = result + [tx]
     return result
-    
+
 def findsearchtoolbox():
     tbx_list = quarkx.findtoolboxes("Texture Browser...")
     for tbx in tbx_list:
         if (tbx[1].name == "Searched.qtxfolder") and (tbx[1]["SearchBox"]=="1"):
-            return tbx[1].findname("Searched Texures.txlist") 
+            return tbx[1].findname("Searched Texures.txlist")
     return None
 
 def tex_doit(s):
     tbx = findsearchtoolbox()
     if tbx is None:
-        raise "Searched.qtxfolder not found!"    
+        raise "Searched.qtxfolder not found!"
     for tex in tbx.subitems:
         tbx.removeitem(tex)
     tex = tex_search(s)
@@ -53,11 +53,11 @@ def tex_doit(s):
         x = t.copy();
         x.flags = x.flags | qutils.OF_TVSUBITEM
         tbx.appenditem(x)
-    quarkx.opentoolbox("Texture Browser...", None)   
+    quarkx.opentoolbox("Texture Browser...", None)
 
 class TextureSearchDlg(quarkpy.qmacro.dialogbox):
     # Dialog layout
-    size = (290, 110)
+    size = (290, 117)
     dfsep = 0.4     # separation at 40% between labels and edit boxes
     dlgflags = FWF_KEEPFOCUS + FWF_NORESIZE
 
@@ -70,16 +70,16 @@ class TextureSearchDlg(quarkpy.qmacro.dialogbox):
                          Typ = "E"
                          Hint= "Enter full or partial texture name" $0D " Results appear in 'searched textures' folder at top of toolbox"
                      }
-                     Sep: = { Typ = "S" Txt = ""}
-                     Search:py = { Txt = "" }
-                     close:py = { Txt = "" }
+                     Sep: = {Typ="S" Txt=" "}
+                     Search:py = {Txt=""}
+                     close:py = {Txt=""}
                  } """
 
     def __init__(self, form):
         # Create the data source
         src = quarkx.newobj(":")
         src["searchfor"] = ""
-	
+
         # Create the dialog form and the buttons
         quarkpy.qmacro.dialogbox.__init__(self, form, src,
             close = quarkpy.qtoolbar.button(self.close,"close this box",ico_editor, 0,"Close"),
@@ -95,9 +95,12 @@ class TextureSearchDlg(quarkpy.qmacro.dialogbox):
         tex_doit(tex)
         self.close(btn)
         return
-        
+
 def openbox():
     f = quarkx.newform("temp")
-    TextureSearchDlg(f)  
+    TextureSearchDlg(f)
 
 # $Log$
+# Revision 1.3  2001/06/19 20:59:03  aiv
+# added cvs headers + small bug fix
+#

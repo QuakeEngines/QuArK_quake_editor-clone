@@ -143,7 +143,6 @@ class SearchByName(SearchDlg):
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-        sep: = {Typ="S" Txt=" "}
         ok:py = { }
         cancel:py = { }
       }
@@ -195,7 +194,6 @@ class SearchBySpec(SearchDlg):
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-        sep: = {Typ="S"}
         ok:py = { }
         cancel:py = { }
       }
@@ -240,6 +238,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
+# Revision 1.6  2001/10/08 22:44:09  tiglari
+# revert to original and redo indent fix and separators
+#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #

@@ -67,12 +67,8 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
         }
         sep: = {Typ="S" Txt=" "}
 
-        ReplaceAll:py = {Txt="" }
-
-        sep: = {
-          Typ = "S"
-        }
-        close:py = {Txt="" }
+        ReplaceAll:py = {Txt=""}
+        close:py = {Txt=""}
       }
     """
 
@@ -217,6 +213,9 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Replace textures", ReplaceTe
 #
 #
 # $Log$
+# Revision 1.5  2001/06/17 21:21:18  tiglari
+# re-fix button captions, there are tabs in this file, need to be cleared out
+#
 # Revision 1.3  2001/01/27 18:25:29  decker_dk
 # Renamed 'TextureDef' -> 'DefaultTexture'
 #
