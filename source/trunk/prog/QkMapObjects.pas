@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2002/03/27 00:24:49  tiglari
+delete/write mapversion 220 specific as needed (removed when map
+ read, added back in if written out in V220 format).
+
 Revision 1.36  2002/03/26 22:21:59  tiglari
 support UseIntegralVertexes flag
 
@@ -529,9 +533,16 @@ end;
 procedure TTreeMap.Deplacement(const PasGrille: TDouble);
 var
  I: Integer;
+ SubElement : TTreeMap;
 begin
- for I:=0 to SubElements.Count-1 do
-  TTreeMap(SubElements[I]).Deplacement(PasGrille);
+  for I:=0 to SubElements.Count-1 do
+  begin
+    SubElement:=TTreeMap(SubElements[I]);
+    if SubElement is TTreeMapSpec then
+      if SubElement.Specifics.Values['nolinear']<>'' then
+        continue;
+    SubElement.Deplacement(PasGrille);
+  end;
 end;
 
 (*function TTreeMap.AjouterRef(Liste: TList; Niveau: Integer) : Integer;
