@@ -740,7 +740,7 @@ class MapLayout(BaseLayout):
             form = flist[-1]
             ff = quarkx.clickform.newfloating(0, "Face Flags")
             x1,y1,x2,y2 = quarkx.screenrect()
-            ff.windowrect = (x2-200, y2-370, x2-20, y2-100)
+            ff.windowrect = (x2-200, y1+100, x2-20, y2-20) #Decker 2002-04-07: Make the window bigger, as there are so many faceflags for Q2/SOF/SIN/KP!
             ff.onclose = self.faceflagsclose
             ff.begincolor = GREEN
             ff.endcolor = OLIVE
@@ -818,6 +818,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.7  2001/10/22 10:24:32  tiglari
+#live pointer hunt, revise icon loading
+#
 #Revision 1.6  2001/03/01 19:14:40  decker_dk
 #changed bs_additionalpages() so it checks 'BezierPatchSupport' for the bezier-page.
 #
