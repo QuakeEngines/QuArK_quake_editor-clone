@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/06/05 18:41:51  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.9  2001/03/20 21:41:57  decker_dk
 Updated copyright-header
 
@@ -1238,6 +1241,7 @@ var
   i :integer;
   DevMode : TDevMode;
   Found: Boolean;
+  l_hdc: HDC;
 const
   rkVideoHardware = {HKEY_LOCAL_MACHINE\}'HARDWARE\DEVICEMAP\VIDEO';
   rvVideoKey1 = '\Device\Video0';
@@ -1263,11 +1267,13 @@ const
     rvVideoBiosDate = 'VideoBiosDate';
     rvVideoBiosVersion = 'VideoBiosVersion';
 begin
-  FHorzRes:=GetDeviceCaps(GetDC(0),windows.HORZRES);
-  FVertRes:=GetDeviceCaps(GetDC(0),windows.VERTRES);
-  FColorDepth:=GetDeviceCaps(GetDC(0),BITSPIXEL);
+  l_hdc := GetDC(0); {Remember to call ReleaseDC() - as written in the Win32 API documentation}
 
-  case GetDeviceCaps(GetDC(0),windows.TECHNOLOGY) of
+  FHorzRes:=GetDeviceCaps(l_hdc,windows.HORZRES);
+  FVertRes:=GetDeviceCaps(l_hdc,windows.VERTRES);
+  FColorDepth:=GetDeviceCaps(l_hdc,BITSPIXEL);
+
+  case GetDeviceCaps(l_hdc,windows.TECHNOLOGY) of
     DT_PLOTTER:    FTechnology:='Vector Plotter';
     DT_RASDISPLAY: FTechnology:='Raster Display';
     DT_RASPRINTER: FTechnology:='Raster Printer';
@@ -1277,132 +1283,134 @@ begin
     DT_DISPFILE:   FTechnology:='Display File';
   end;
 
-  FHorzSize:=GetDeviceCaps(GetDC(0),HORZSIZE);
-  FVertSize:=GetDeviceCaps(GetDC(0),VERTSIZE);
-  FPixelWidth:=GetDeviceCaps(GetDC(0),ASPECTX);
-  FPixelHeight:=GetDeviceCaps(GetDC(0),ASPECTY);
-  FPixelDiagonal:=GetDeviceCaps(GetDC(0),ASPECTXY);
+  FHorzSize:=GetDeviceCaps(l_hdc,HORZSIZE);
+  FVertSize:=GetDeviceCaps(l_hdc,VERTSIZE);
+  FPixelWidth:=GetDeviceCaps(l_hdc,ASPECTX);
+  FPixelHeight:=GetDeviceCaps(l_hdc,ASPECTY);
+  FPixelDiagonal:=GetDeviceCaps(l_hdc,ASPECTXY);
 
   FCurveCaps:=[];
-  if GetDeviceCaps(GetDC(0),windows.CURVECAPS)<>CC_NONE then
+  if GetDeviceCaps(l_hdc,windows.CURVECAPS)<>CC_NONE then
   begin
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_CIRCLES)=CC_CIRCLES then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_CIRCLES)=CC_CIRCLES then
       FCurveCaps:=FCurveCaps+[ccCircles];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_PIE)=CC_PIE then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_PIE)=CC_PIE then
       FCurveCaps:=FCurveCaps+[ccPieWedges];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_CHORD)=CC_CHORD then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_CHORD)=CC_CHORD then
       FCurveCaps:=FCurveCaps+[ccChords];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_ELLIPSES)=CC_ELLIPSES then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_ELLIPSES)=CC_ELLIPSES then
       FCurveCaps:=FCurveCaps+[ccEllipses];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_WIDE)=CC_WIDE then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_WIDE)=CC_WIDE then
       FCurveCaps:=FCurveCaps+[ccWideBorders];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_STYLED)=CC_STYLED then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_STYLED)=CC_STYLED then
       FCurveCaps:=FCurveCaps+[ccStyledBorders];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_WIDESTYLED)=CC_WIDESTYLED then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_WIDESTYLED)=CC_WIDESTYLED then
       FCurveCaps:=FCurveCaps+[ccWideStyledBorders];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_INTERIORS)=CC_INTERIORS then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_INTERIORS)=CC_INTERIORS then
       FCurveCaps:=FCurveCaps+[ccInteriors];
-    if (GetDeviceCaps(GetDC(0),windows.CURVECAPS) and CC_ROUNDRECT)=CC_ROUNDRECT then
+    if (GetDeviceCaps(l_hdc,windows.CURVECAPS) and CC_ROUNDRECT)=CC_ROUNDRECT then
       FCurveCaps:=FCurveCaps+[ccRoundedRects];
   end;
 
   FLineCaps:=[];
-  if GetDeviceCaps(GetDC(0),windows.LINECAPS)<>LC_NONE then
+  if GetDeviceCaps(l_hdc,windows.LINECAPS)<>LC_NONE then
   begin
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_POLYLINE)=LC_POLYLINE then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_POLYLINE)=LC_POLYLINE then
       FLineCaps:=FLineCaps+[lcPolylines];
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_MARKER)=LC_MARKER then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_MARKER)=LC_MARKER then
       FLineCaps:=FLineCaps+[lcMarkers];
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_POLYMARKER)=LC_POLYMARKER then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_POLYMARKER)=LC_POLYMARKER then
       FLineCaps:=FLineCaps+[lcMultipleMarkers];
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_WIDE)=LC_WIDE then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_WIDE)=LC_WIDE then
       FLineCaps:=FLineCaps+[lcWideLines];
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_STYLED)=LC_STYLED then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_STYLED)=LC_STYLED then
       FLineCaps:=FLineCaps+[lcStyledLines];
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_WIDESTYLED)=LC_WIDESTYLED then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_WIDESTYLED)=LC_WIDESTYLED then
       FLineCaps:=FLineCaps+[lcWideStyledLines];
-    if (GetDeviceCaps(GetDC(0),windows.LINECAPS) and LC_INTERIORS)=LC_INTERIORS then
+    if (GetDeviceCaps(l_hdc,windows.LINECAPS) and LC_INTERIORS)=LC_INTERIORS then
       FLineCaps:=FLineCaps+[lcInteriors];
   end;
 
   FPolygonCaps:=[];
-  if GetDeviceCaps(GetDC(0),POLYGONALCAPS)<>PC_NONE then
+  if GetDeviceCaps(l_hdc,POLYGONALCAPS)<>PC_NONE then
   begin
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_POLYGON)=PC_POLYGON then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_POLYGON)=PC_POLYGON then
       FPolygonCaps:=FPolygonCaps+[pcAltFillPolygons];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_RECTANGLE)=PC_RECTANGLE then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_RECTANGLE)=PC_RECTANGLE then
       FPolygonCaps:=FPolygonCaps+[pcRectangles];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_WINDPOLYGON)=PC_WINDPOLYGON then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WINDPOLYGON)=PC_WINDPOLYGON then
       FPolygonCaps:=FPolygonCaps+[pcWindingFillPolygons];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_SCANLINE)=PC_SCANLINE then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_SCANLINE)=PC_SCANLINE then
       FPolygonCaps:=FPolygonCaps+[pcSingleScanlines];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_WIDE)=PC_WIDE then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WIDE)=PC_WIDE then
       FPolygonCaps:=FPolygonCaps+[pcWideBorders];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_STYLED)=PC_STYLED then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_STYLED)=PC_STYLED then
       FPolygonCaps:=FPolygonCaps+[pcStyledBorders];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_WIDESTYLED)=PC_WIDESTYLED then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_WIDESTYLED)=PC_WIDESTYLED then
       FPolygonCaps:=FPolygonCaps+[pcWideStyledBorders];
-    if (GetDeviceCaps(GetDC(0),POLYGONALCAPS) and PC_INTERIORS)=PC_INTERIORS then
+    if (GetDeviceCaps(l_hdc,POLYGONALCAPS) and PC_INTERIORS)=PC_INTERIORS then
       FPolygonCaps:=FPolygonCaps+[pcInteriors];
   end;
 
   FRasterCaps:=[];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_BANDING)=RC_BANDING then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BANDING)=RC_BANDING then
     FRasterCaps:=FRasterCaps+[rcRequiresBanding];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_BITBLT)=RC_BITBLT then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BITBLT)=RC_BITBLT then
     FRasterCaps:=FRasterCaps+[rcTranserBitmaps];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_BITMAP64)=RC_BITMAP64 then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_BITMAP64)=RC_BITMAP64 then
     FRasterCaps:=FRasterCaps+[rcBitmaps64K];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_DI_BITMAP)=RC_DI_BITMAP then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_DI_BITMAP)=RC_DI_BITMAP then
     FRasterCaps:=FRasterCaps+[rcSetGetDIBits];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_DIBTODEV)=RC_DIBTODEV then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_DIBTODEV)=RC_DIBTODEV then
     FRasterCaps:=FRasterCaps+[rcSetDIBitsToDevice];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_FLOODFILL)=RC_FLOODFILL then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_FLOODFILL)=RC_FLOODFILL then
     FRasterCaps:=FRasterCaps+[rcFloodfills];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_GDI20_OUTPUT)=RC_GDI20_OUTPUT then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_GDI20_OUTPUT)=RC_GDI20_OUTPUT then
     FRasterCaps:=FRasterCaps+[rcWindows2xFeatures];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_PALETTE)=RC_PALETTE then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_PALETTE)=RC_PALETTE then
     FRasterCaps:=FRasterCaps+[rcPaletteBased];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_SCALING)=RC_SCALING then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_SCALING)=RC_SCALING then
     FRasterCaps:=FRasterCaps+[rcScaling];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_STRETCHBLT)=RC_STRETCHBLT then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_STRETCHBLT)=RC_STRETCHBLT then
     FRasterCaps:=FRasterCaps+[rcStretchBlt];
-  if (GetDeviceCaps(GetDC(0),windows.RASTERCAPS) and RC_STRETCHDIB)=RC_STRETCHDIB then
+  if (GetDeviceCaps(l_hdc,windows.RASTERCAPS) and RC_STRETCHDIB)=RC_STRETCHDIB then
     FRasterCaps:=FRasterCaps+[rcStretchDIBits];
 
   FTextCaps:=[];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_OP_CHARACTER)=TC_OP_CHARACTER then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_OP_CHARACTER)=TC_OP_CHARACTER then
     FTextCaps:=FTextCaps+[tcCharOutPrec];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_OP_STROKE)=TC_OP_STROKE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_OP_STROKE)=TC_OP_STROKE then
     FTextCaps:=FTextCaps+[tcStrokeOutPrec];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_CP_STROKE)=TC_CP_STROKE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CP_STROKE)=TC_CP_STROKE then
     FTextCaps:=FTextCaps+[tcStrokeClipPrec];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_CR_90)=TC_CR_90 then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CR_90)=TC_CR_90 then
     FTextCaps:=FTextCaps+[tcCharRotation90];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_CR_ANY)=TC_CR_ANY then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_CR_ANY)=TC_CR_ANY then
     FTextCaps:=FTextCaps+[tcCharRotationAny];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_SF_X_YINDEP)=TC_SF_X_YINDEP then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SF_X_YINDEP)=TC_SF_X_YINDEP then
     FTextCaps:=FTextCaps+[tcScaleIndependent];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_SA_DOUBLE)=TC_SA_DOUBLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_DOUBLE)=TC_SA_DOUBLE then
     FTextCaps:=FTextCaps+[tcDoubledCharScaling];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_SA_INTEGER)=TC_SA_INTEGER then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_INTEGER)=TC_SA_INTEGER then
     FTextCaps:=FTextCaps+[tcIntMultiScaling];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_SA_CONTIN)=TC_SA_CONTIN then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SA_CONTIN)=TC_SA_CONTIN then
     FTextCaps:=FTextCaps+[tcAnyMultiExactScaling];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_EA_DOUBLE)=TC_EA_DOUBLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_EA_DOUBLE)=TC_EA_DOUBLE then
     FTextCaps:=FTextCaps+[tcDoubleWeightChars];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_IA_ABLE)=TC_IA_ABLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_IA_ABLE)=TC_IA_ABLE then
     FTextCaps:=FTextCaps+[tcItalics];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_UA_ABLE)=TC_UA_ABLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_UA_ABLE)=TC_UA_ABLE then
     FTextCaps:=FTextCaps+[tcUnderlines];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and  TC_SO_ABLE)=TC_SO_ABLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and  TC_SO_ABLE)=TC_SO_ABLE then
     FTextCaps:=FTextCaps+[tcStrikeouts];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_RA_ABLE)=TC_RA_ABLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_RA_ABLE)=TC_RA_ABLE then
     FTextCaps:=FTextCaps+[tcRasterFonts];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_VA_ABLE)=TC_VA_ABLE then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_VA_ABLE)=TC_VA_ABLE then
     FTextCaps:=FTextCaps+[tcVectorFonts];
-  if (GetDeviceCaps(GetDC(0),windows.TEXTCAPS) and TC_SCROLLBLT)=TC_SCROLLBLT then
+  if (GetDeviceCaps(l_hdc,windows.TEXTCAPS) and TC_SCROLLBLT)=TC_SCROLLBLT then
     FTextCaps:=FTextCaps+[tcNoScrollUsingBlts];
+
+  ReleaseDC(0, l_hdc);
 
   sl:=tstringlist.create;
   FAdapter.Clear;
