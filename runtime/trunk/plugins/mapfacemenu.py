@@ -193,6 +193,57 @@ def swapsides(m):
     undo.ok(editor.Root, "swap sides")
 
 
+def vec2rads(v):
+    "returns pitch, yaw, in radians"
+    v = v.normalized
+    import math
+    pitch = -math.sin(v.z)
+    yaw = math.atan2(v.y, v.x)
+    return pitch, yaw
+
+def find3DView(editor):
+    views = []
+    for v in editor.layout.views:
+        if v.info["type"]=="3D":
+            views.append(v)
+    if views == []:
+        return
+    return views[0]
+
+def LookAtMe(m):
+    editor=mapeditor()
+    face = editor.layout.explorer.uniquesel
+    if quarkx.keydown('\020')==1: # shift is down
+        reverse = 1
+    else:
+        reverse = 0
+    clickview = quarkx.clickform.focus 
+    #
+    # clickform doesn't seem to work for floating 3d windows
+    #  so we just take the first.
+    #
+    if clickview is not None and clickview.info["type"]=="3D":
+        view = clickview
+    else:
+        view = find3DView(editor)
+        if view is None:
+            quarkx.msgbox("Need an open 3D view for this one!",
+               MT_ERROR,MB_OK)
+            return
+    #
+    # Should have a 3D view here
+    #
+    pos, yaw, pitch = view.cameraposition
+    dist = abs(pos - face.origin)
+    if reverse:
+        norm = -face.normal
+    else:
+        norm = face.normal
+    newpos = face.origin+dist*(norm)
+    pitch, yaw = vec2rads(-norm)
+    view.cameraposition = newpos, yaw, pitch
+    editor.invalidateviews()
+    
 
 #--- add the new menu items into the "Commands" menu ---
 
@@ -200,7 +251,8 @@ ForceAngle1 = quarkpy.qmenu.item("&Adjust angle", ForceAngle)
 Orientation1 = quarkpy.qmenu.item("&Orientation...", Orientation)
 DeleteSide1 = quarkpy.qmenu.item("&Delete face", deleteside)
 MakeCone1 = quarkpy.qmenu.item("&Cone over face", makecone)
-SwapSides1 = quarkpy.qmenu.item("Swap face sides", swapsides)
+SwapSides1 = quarkpy.qmenu.item("&Swap face sides", swapsides)
+LookAt1 = quarkpy.qmenu.item("Look &At", LookAtMe, "|An open 3D view shifts to look at this face head on.\n (SHIFT to look at the face from the back)")
 
 quarkpy.mapcommands.items.append(quarkpy.qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(Orientation1)
@@ -208,6 +260,7 @@ quarkpy.mapcommands.items.append(ForceAngle1)
 quarkpy.mapcommands.items.append(DeleteSide1)
 quarkpy.mapcommands.items.append(MakeCone1)
 quarkpy.mapcommands.items.append(SwapSides1)
+quarkpy.mapcommands.items.append(LookAt1)
 
 
 def newclick(popup, oldclick = quarkpy.mapcommands.onclick):
@@ -220,6 +273,7 @@ def newclick(popup, oldclick = quarkpy.mapcommands.onclick):
     DeleteSide1.state = faceonly
     MakeCone1.state = faceonly
     SwapSides1.state = faceonly
+    LookAt1.state = faceonly
     oldclick(popup)
 
 quarkpy.mapcommands.onclick = newclick
@@ -232,7 +286,7 @@ def newmenu(o, editor, oldmenu = quarkpy.mapentities.FaceType.menu.im_func):
     Orientation1.state = 0
     DeleteSide1.state = 0
     MakeCone1.state = 0
-    return oldmenu(o, editor) + [Orientation1, DeleteSide1, MakeCone1]
+    return oldmenu(o, editor) + [Orientation1, DeleteSide1, MakeCone1, LookAt1]
 
 quarkpy.mapentities.FaceType.menu = newmenu
 
@@ -241,6 +295,9 @@ quarkpy.mapentities.FaceType.menu = newmenu
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #
