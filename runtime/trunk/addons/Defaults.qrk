@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.32  2000/06/12 11:14:39  tiglari
+//Bevel duplicator form added
+//
 //Revision 1.31  2000/06/10 10:00:35  alexander
 //fixed: switching to kingpin game when selecting addons or output dirs in the SoF config dialog
 //
@@ -2564,11 +2567,11 @@ QQRKSRC1
       inverse: = {Txt="&" Typ="X"
                Hint = "if checked, concave surface of curve is outer and has texture"}
       left: = {Txt="&" Typ="X"
-               Hint = "if checked, the whole thing is upside-down"}
+               Hint = "if checked, curve goes from back to left side rather than back to right side"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
       open: = {Txt="&" Typ="X"
-               Hint = "if chcked, front and back are open"}
+               Hint = "if checked, top and bottom are open"}
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
