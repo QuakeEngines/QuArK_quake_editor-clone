@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.58  2001/10/10 11:59:29  tiglari
+Add finalization section to free QFileList
+
 Revision 1.57  2001/08/06 00:18:24  tiglari
 update version
 
@@ -572,6 +575,7 @@ procedure DebugCheck;
 {function DebugError: Exception;}
 procedure DataDump;
 {$ENDIF}
+procedure Clear_g_MemQObject;
 
  {------------------------}
 
@@ -3214,6 +3218,13 @@ begin
       DataDump;
 end;
 {$ENDIF}
+
+procedure Clear_g_MemQObject;
+begin
+  while g_MemQObject.Count<>0 do
+    g_MemQObject.Destroy;
+  g_MemQObject.Free;
+end;
 
  {------------------------}
 
