@@ -1,3 +1,8 @@
+{
+$Header$
+----------- REVISION HISTORY ------------
+$Log$
+}
 unit SystemDetails;
 
 interface
