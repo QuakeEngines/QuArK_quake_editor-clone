@@ -476,10 +476,14 @@ class BrushCapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "lower", "thick", "inner", "subdivide"))
+    inverse, lower, onside, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "onside", "thick", "inner", "subdivide"))
     if thick:
       thick, = thick
+    if not onside:
+      standup="1"
+    else:
+      standup=None
     if subdivide is None:
         subdivide=1,
     list = self.sourcelist()
@@ -505,8 +509,8 @@ class BrushCapDuplicator(StandardDuplicator):
            o2.removeitem(o2.findallsubitems('right',':f')[0])
            o1.appenditem(face), o2.appenditem(face2)
            
-           im1 = images(bevelImages, (o1, editor, inverse, 0, lower, 1, thick, inner, subdivide))
-           im2 = images(bevelImages, (o2, editor, inverse, 1, lower, 1, thick, inner, subdivide))
+           im1 = images(bevelImages, (o1, editor, inverse, 0, lower, standup, thick, inner, subdivide))
+           im2 = images(bevelImages, (o2, editor, inverse, 1, lower, standup, thick, inner, subdivide))
 
            return im1+im2
 
@@ -516,8 +520,8 @@ class BrushBevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, left, thick,  inner, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "left", "thick", "inner", "subdivide"))
+    inverse, lower, left, standup, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "left", "standup", "thick", "inner", "subdivide"))
     if thick:
         thick, = thick
     list = self.sourcelist()
@@ -525,7 +529,7 @@ class BrushBevelDuplicator(StandardDuplicator):
         subdivide=1,
     for o in list:
         if o.type==":p": # just grab the first one, who cares
-            return images(bevelImages, (o, editor, inverse, left, 0, 0, thick, inner, subdivide))
+            return images(bevelImages, (o, editor, inverse, left, lower, standup, thick, inner, subdivide))
 
 class BrushColumnDuplicator(StandardDuplicator):
 
@@ -699,6 +703,10 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.6  2001/02/25 02:00:34  tiglari
+#fixed texture placement bug, changed default subdiv to 2, moved forms
+# to defaults.qrk because of memory release problem.
+#
 #Revision 1.5  2001/02/17 23:12:45  tiglari
 #texture positioning done
 #

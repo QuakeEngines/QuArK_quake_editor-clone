@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.86  2001/02/25 02:01:57  tiglari
+//brush curve forms added
+//
 //Revision 1.85  2001/02/23 03:42:24  tiglari
 //form for dup path, supporting square end and setback
 //
@@ -3074,6 +3077,8 @@ QQRKSRC1
                Hint = "if checked, concave surface of curve is outer and has texture"}
       lower: = {Txt="&" Typ="X"
                Hint = "if checked, the whole thing is upside-down"}
+      onside: = {Txt="&" Typ="X"
+               Hint = "if checked, curve goes front-to-back instead of top-to-bottom "}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
       subdivide: = {Txt ="&" Typ="EF1"
@@ -3113,6 +3118,10 @@ QQRKSRC1
     {
       inverse: = {Txt="&" Typ="X"
                Hint = "if checked, concave surface of curve is outer and has texture"}
+      lower: = {Txt="&" Typ="X"
+               Hint = "if checked, the whole thing is upside-down"}
+      standup: = {Txt="&" Typ="X"
+               Hint = "if checked, curve goes top-to-bottom instead of front-to-back"}
       left: = {Txt="&" Typ="X"
                Hint = "if checked, curve goes from back to left side rather than back to right side"}
       thick: = {Txt ="&" Typ="EF1"
@@ -3168,6 +3177,8 @@ QQRKSRC1
                Hint = "if checked, concave surface of curve is outer and has texture"}
       lower: = {Txt="&" Typ="X"
                Hint = "if checked, the whole thing is upside-down"}
+      onside: = {Txt="&" Typ="X"
+               Hint = "if checked, curve goes front-to-back instead of top-to-bottom "}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
       inner: = {Txt="&" Typ="X"
@@ -3183,6 +3194,10 @@ QQRKSRC1
                Hint = "if checked, concave surface of curve is outer and has texture"}
       left: = {Txt="&" Typ="X"
                Hint = "if checked, curve goes from back to left side rather than back to right side"}
+      lower: = {Txt="&" Typ="X"
+               Hint = "if checked, the whole thing is upside-down"}
+      standup: = {Txt="&" Typ="X"
+               Hint = "if checked, curve goes top-to-bottom instead of front-to-back"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
       inner: = {Txt="&" Typ="X"

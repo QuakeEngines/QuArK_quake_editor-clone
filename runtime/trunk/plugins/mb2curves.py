@@ -144,7 +144,7 @@ def archcurve(pd):
     return cp
 
 
-def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0,
+def capImages(o, editor, inverse=0, lower=0, onside=0, open=0, thick=0, faceonly=0,
     stretchtex=0, nofront=0, noback=0, noinner=0, noouter=0, (subdivide,)=1):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
@@ -158,6 +158,8 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0,
   # make dictionary of points, 'bottom left front' etc.
   # this one's name is short because we refer to it so often  
   #
+  if onside:
+      fdict = facedict_rflip(facedict_rflip(facedict_rflip(fdict)))
   pd = pointdict(vtxlistdict(fdict,o))
   if lower:
       pd = pointdict_vflip(pd)
@@ -273,13 +275,17 @@ def capImages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0,
       return faces
   return [inner]+faces
 
-def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0,
+def bevelImages(o, editor, inverse=0, lower=0, left=0, standup=0, open=0, thick=0,
   faceonly=0, stretchtex=0, notop=0, nobottom=0, noinner=0, noouter=0, (subdivide,)=1):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
   fdict = faceDict(o)
   if fdict is None:
     return
+  if standup:
+      fdict = facedict_rflip(fdict)
+  if lower:
+      fdict = facedict_fflip(fdict)
   pd = pointdict(vtxlistdict(fdict,o))
   if left:
       pd = pointdict_hflip(pd)
@@ -328,6 +334,11 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0,
           bseam.swapsides()
       else:
           inner2.swapsides()
+      if lower:
+          inner.swapsides()
+          inner2.swapsides()
+          tseam.swapsides()
+          bseam.swapsides()
       seams = [tseam, bseam]
       if notop:
           seams.remove(tseam)
@@ -345,6 +356,8 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0,
     inner.swapsides()
   if inverse:
     inner.swapsides()
+  if lower:
+     inner.swapsides()
   if open:
       return [inner]   
   if inverse:
@@ -360,6 +373,9 @@ def bevelImages(o, editor, inverse=0, left=0, open=0, thick=0,
   top = b2FromCpFace(tcp,"top",fdict["u"],editor)
   bottom = b2FromCpFace(bcp,"bottom",fdict["d"],editor)
   if left:
+    top.swapsides()
+    bottom.swapsides()
+  if lower:
     top.swapsides()
     bottom.swapsides()
   faces = [bottom, top]
@@ -537,8 +553,8 @@ class CapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, open, thick, faceonly, stretchtex, nofront, noback, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "lower", "open", "thick", "faceonly", "stretchtex",
+    inverse, lower, onside, open, thick, faceonly, stretchtex, nofront, noback, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "onside", "open", "thick", "faceonly", "stretchtex",
          "nofront", "noback", "noinner", "noouter", "subdivide"))
     if thick:
       thick, = thick
@@ -547,7 +563,7 @@ class CapDuplicator(StandardDuplicator):
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-         return images(capImages, (o, editor, inverse, lower, open, thick,
+         return images(capImages, (o, editor, inverse, lower, onside, open, thick,
            faceonly, stretchtex, nofront, noback, noinner, noouter, subdivide))
 
 
@@ -557,8 +573,8 @@ class BevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, left, sidetex, open, thick, faceonly, stretchtex, notop, nobottom, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "left", "sidetex", "open", "thick", "faceonly", "stretchtex",
+    inverse, lower, left, standup, sidetex, open, thick, faceonly, stretchtex, notop, nobottom, noinner, noouter, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "left", "standup", "sidetex", "open", "thick", "faceonly", "stretchtex",
          "notop", "nobottom", "noinner", "noouter", "subdivide"))
     if thick:
       thick, = thick
@@ -567,7 +583,7 @@ class BevelDuplicator(StandardDuplicator):
         subdivide=1,
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-           return images(bevelImages, (o, editor, inverse, left, open, thick,
+           return images(bevelImages, (o, editor, inverse, lower, left, standup, open, thick,
               faceonly, stretchtex, notop, nobottom, noinner, noouter, subdivide))
 
 class ColumnDuplicator(StandardDuplicator):
@@ -740,6 +756,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.27  2001/02/14 10:08:58  tiglari
+#extract perspective stuff to quarkpy.perspective.py
+#
 #Revision 1.26  2000/09/04 21:29:03  tiglari
 #added lots of specifics to column generator, fixed column & arch bugs
 #
