@@ -24,6 +24,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/10/15 15:58:44  alexander
+correct error message for v46 bsp files
+
+Revision 1.7  2000/07/18 19:37:58  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.6  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -192,6 +198,7 @@ type
 const
  SignatureBSP2 = $50534249;
  VersionBSP2   = 38;
+ VersionBSP3   = 46;
 
 const
  Bsp2EntryNames : array[TBsp2EntryTypes] of String =
@@ -394,8 +401,10 @@ begin
   Raise EError(5519);
  Origine:=F.Position;
  F.ReadBuffer(Header, SizeOf(Header));
- if Header.Version<>VersionBSP2 then
-  Raise EErrorFmt(5572, [LoadName, Header.Version, VersionBSP2]);
+
+ case Header.Version of
+   VersionBSP2:
+   begin
  for E:=Low(E) to High(E) do
   begin
    if Header.Entrees[E].Taille<0 then
@@ -418,6 +427,15 @@ begin
    LoadedItem(rf_Default, F, Q, Header.Entrees[E].Taille);
   end;
  ObjectGameCode:=CurrentQuake2Mode;
+   end; {bspversion versionquake 2}
+
+   VersionBSP3:
+   begin
+     Raise EErrorFmt(5602,[LoadName, Header.Version]);
+   end;
+   else
+     Raise EErrorFmt(5572, [LoadName, Header.Version, VersionBSP2]);
+  end;    {case bsp version}
 end;
 
 procedure QBsp.LoadFile(F: TStream; FSize: Integer);
