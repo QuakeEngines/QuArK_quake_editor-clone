@@ -21,6 +21,7 @@ import qmenu
 import qtoolbar
 import qhandles
 import qmacro
+import time
 
 import qbasemgr
 from qeditor import *
@@ -503,8 +504,15 @@ class BaseEditor:
 
         if flags & MB_DRAGEND:
             if self.dragobject is not None:
-                self.dragobject.ok(self, x, y, flags)
-                self.dragobject = None
+                try:
+                 last,x,y=self.dragobject.lastdrag
+                 debug('last yes')
+                 self.dragobject.ok(self, x, y, flags)
+                 self.dragobject = None
+                except:
+                 debug('last no')
+                 self.dragobject.ok(self, x, y, flags)
+                 self.dragobject = None
 
         #
         # Are we simply moving the mouse over the view ?
@@ -550,6 +558,7 @@ class BaseEditor:
         elif flags & MB_DRAGGING:
             if self.dragobject is not None:
                 self.dragobject.dragto(x, y, flags)
+                self.dragobject.lastdrag=time.clock(),x,y
                 if self.dragobject.hint is not None:
                     self.showhint(self.dragobject.hint)
                 try:
@@ -806,6 +815,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.5  2001/01/26 19:07:45  decker_dk
+#initquickkeys. Comment about where to find relevant code-information, to understand whats going on.
+#
 #Revision 1.4  2000/09/03 01:37:35  tiglari
 #Possible fix/amelioration of drag problem (drag-end problem moved to top ov mousemap)
 #
