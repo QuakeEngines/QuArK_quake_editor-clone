@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2002/05/25 18:29:21  decker_dk
+Missed a semicolon.
+
 Revision 1.19  2002/05/13 10:18:45  tiglari
 Add Bilinear filtering option for textures in OGL view
 
@@ -242,10 +245,10 @@ end;
 
 procedure UnpackColor(Color: TColorRef; var v: GLfloat4);
 begin
-  v[0]:=((Color       ) and $FF) * (1/255.0);
-  v[1]:=((Color shr  8) and $FF) * (1/255.0);
-  v[2]:=((Color shr 16) and $FF) * (1/255.0);
-  v[3]:=((Color shr 24) and $FF) * (1/255.0);
+  v[0]:=((Color       ) and $FF) {* (1}/255.0{)};
+  v[1]:=((Color shr  8) and $FF) {* (1}/255.0{)};
+  v[2]:=((Color shr 16) and $FF) {* (1}/255.0{)};
+  v[3]:=((Color shr 24) and $FF) {* (1}/255.0{)};
 end;
 
  {------------------------}
@@ -261,7 +264,7 @@ type
  PP3D = ^TP3D;
  TP3D = record
          v: TVertex3D;
-         l: array[0..2] of GLfloat;
+         light_rgb: array[0..3] of GLfloat;
         end;
 
 procedure Interpole(var Dest: TP3D; const De, A: TP3D; f: Single);
@@ -269,14 +272,14 @@ var
  f1: Single;
 begin
   f1:=1-f;
-  with Dest.v do
+  //with Dest.v do
   begin
-    xyz[0]:=De.v.xyz[0]*f1 + A.v.xyz[0]*f;
-    xyz[1]:=De.v.xyz[1]*f1 + A.v.xyz[1]*f;
-    xyz[2]:=De.v.xyz[2]*f1 + A.v.xyz[2]*f;
+    Dest.v.xyz[0]:=De.v.xyz[0]*f1 + A.v.xyz[0]*f;
+    Dest.v.xyz[1]:=De.v.xyz[1]*f1 + A.v.xyz[1]*f;
+    Dest.v.xyz[2]:=De.v.xyz[2]*f1 + A.v.xyz[2]*f;
 
-    st[0]:=De.v.st[0]*f1 + A.v.st[0]*f;
-    st[1]:=De.v.st[1]*f1 + A.v.st[1]*f;
+    Dest.v.st[0]:=De.v.st[0]*f1 + A.v.st[0]*f;
+    Dest.v.st[1]:=De.v.st[1]*f1 + A.v.st[1]*f;
   end;
 end;
 
@@ -293,50 +296,53 @@ var
  Dist1, DistToSource: TDouble;
  K: Integer;
 begin
-  with Point1 do
+  //with Point1 do
   begin
     LP:=SubList;
     Light[0]:=0;
     ColoredLights:=False;
     while Assigned(LP) do
     begin
-      with LP^ do
+      //with LP^ do
       begin
-        LP:=SubLightList;
+        //LP:=LP^.SubLightList;
 
-        if  (v.xyz[0]>Min[0]) and (v.xyz[0]<Max[0])
-        and (v.xyz[1]>Min[1]) and (v.xyz[1]<Max[1])
-        and (v.xyz[2]>Min[2]) and (v.xyz[2]<Max[2]) then
+        if  (Point1.v.xyz[0]>LP^.Min[0]) and (Point1.v.xyz[0]<LP^.Max[0])
+        and (Point1.v.xyz[1]>LP^.Min[1]) and (Point1.v.xyz[1]<LP^.Max[1])
+        and (Point1.v.xyz[2]>LP^.Min[2]) and (Point1.v.xyz[2]<LP^.Max[2]) then
         begin
-          Incoming[0]:=Position[0]-v.xyz[0];
-          Incoming[1]:=Position[1]-v.xyz[1];
-          Incoming[2]:=Position[2]-v.xyz[2];
+          Incoming[0]:=LP^.Position[0]-Point1.v.xyz[0];
+          Incoming[1]:=LP^.Position[1]-Point1.v.xyz[1];
+          Incoming[2]:=LP^.Position[2]-Point1.v.xyz[2];
           DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
-          if DistToSource<Brightness2 then
+          if DistToSource<LP^.Brightness2 then
           begin
             if DistToSource < rien then
               Dist1:=1E10
             else
             begin
               DistToSource:=Sqrt(DistToSource);
-              Dist1:=(Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos * (Incoming[0]*NormalePlan[0] + Incoming[1]*NormalePlan[1] + Incoming[2]*NormalePlan[2]) / DistToSource);
+              Dist1:=(LP^.Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos * (Incoming[0]*NormalePlan[0] + Incoming[1]*NormalePlan[1] + Incoming[2]*NormalePlan[2]) / DistToSource);
             end;
 
-            if Color = $FFFFFF then
+            if LP^.Color = $FFFFFF then
             begin
               Light[0]:=Light[0] + Dist1;
               if not ColoredLights then
               begin
                 if Light[0]>=LightParams.BrightnessSaturation then
                 begin   { saturation }
-                  Move(Currentf, l, SizeOf(l));
+                  Move(Currentf, Point1.light_rgb, SizeOf(GLfloat)*3{SizeOf(Point1.light_rgb)});
                   Exit;
-                end
-                else
-                  Continue;
+                end;
+                //else
+                //  Continue;
+              end
+              else
+              begin
+                Light[1]:=Light[1] + Dist1;
+                Light[2]:=Light[2] + Dist1;
               end;
-              Light[1]:=Light[1] + Dist1;
-              Light[2]:=Light[2] + Dist1;
             end
             else
             begin
@@ -347,20 +353,20 @@ begin
                 ColoredLights:=True;
               end;
 
-              if Color and $FF = $FF then
+              if LP^.Color and $FF = $FF then
                 Light[0]:=Light[0] + Dist1
               else
-                Light[0]:=Light[0] + Dist1 * (Color and $FF) * (1/$100);
+                Light[0]:=Light[0] + Dist1 * (LP^.Color and $FF) * (1/$100);
 
-              if (Color shr 8) and $FF = $FF then
+              if (LP^.Color shr 8) and $FF = $FF then
                 Light[1]:=Light[1] + Dist1
               else
-                Light[1]:=Light[1] + Dist1 * ((Color shr 8) and $FF) * (1/$100);
+                Light[1]:=Light[1] + Dist1 * ((LP^.Color shr 8) and $FF) * (1/$100);
 
-              if Color shr 16 = $FF then
+              if LP^.Color shr 16 = $FF then
                 Light[2]:=Light[2] + Dist1
               else
-                Light[2]:=Light[2] + Dist1 * (Color shr 16) * (1/$100);
+                Light[2]:=Light[2] + Dist1 * (LP^.Color shr 16) * (1/$100);
             end;
 
            {if  (Light[0]>=LightParams.BrightnessSaturation)
@@ -372,23 +378,27 @@ begin
             end;}
           end;
         end;
+
+        LP:=LP^.SubLightList;
       end;
     end;
 
     if ColoredLights then
     begin
+      Point1.light_rgb[3]:=Currentf[3];
       for K:=0 to 2 do
         if Light[K] >= LightParams.BrightnessSaturation then
-          l[K]:=Currentf[K]
+          Point1.light_rgb[K]:=Currentf[K]
         else
-          l[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K];
+          Point1.light_rgb[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K];
     end
     else
     begin
       Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
-      l[0]:=Light[0] * Currentf[0];
-      l[1]:=Light[0] * Currentf[1];
-      l[2]:=Light[0] * Currentf[2];
+      Point1.light_rgb[0]:=Light[0] * Currentf[0];
+      Point1.light_rgb[1]:=Light[0] * Currentf[1];
+      Point1.light_rgb[2]:=Light[0] * Currentf[2];
+      Point1.light_rgb[3]:=Currentf[3];
     end;
   end;
 end;
@@ -410,7 +420,7 @@ var
  SubList: PLightList;
  LPP: ^PLightList;
  DistToSource, Dist1: TDouble;
- l: array[0..2] of GLfloat;
+ light: array[0..3] of GLfloat;
 begin
  SubList:=Nil;
  LPP:=@SubList;
@@ -440,31 +450,35 @@ begin
  if SubList=Nil then
   begin
    {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-121); {$ENDIF}
-   l[0]:=LightParams.ZeroLight * Currentf[0];
-   l[1]:=LightParams.ZeroLight * Currentf[1];
-   l[2]:=LightParams.ZeroLight * Currentf[2];
-   glColor3fv(l);
+   light[0]:=LightParams.ZeroLight * Currentf[0];
+   light[1]:=LightParams.ZeroLight * Currentf[1];
+   light[2]:=LightParams.ZeroLight * Currentf[2];
+{DECKER 2003.03.13}
+   light[3]:=Currentf[3];
+   //glColor3fv(light);
+   glColor4fv(light);
+{/DECKER}
    {$IFDEF DebugGLErr} Err(121); {$ENDIF}
    glBegin(GL_QUADS);
-   with PV1^ do
+   //with PV1^ do
     begin
-     glTexCoord2fv(st);
-     glVertex3fv(xyz);
+     glTexCoord2fv(PV1^.st);
+     glVertex3fv(PV1^.xyz);
     end;
-   with PV2^ do
+   //with PV2^ do
     begin
-     glTexCoord2fv(st);
-     glVertex3fv(xyz);
+     glTexCoord2fv(PV2^.st);
+     glVertex3fv(PV2^.xyz);
     end;
-   with PV3^ do
+   //with PV3^ do
     begin
-     glTexCoord2fv(st);
-     glVertex3fv(xyz);
+     glTexCoord2fv(PV3^.st);
+     glVertex3fv(PV3^.xyz);
     end;
-   with PV4^ do
+   //with PV4^ do
     begin
-     glTexCoord2fv(st);
-     glVertex3fv(xyz);
+     glTexCoord2fv(PV4^.st);
+     glVertex3fv(PV4^.xyz);
     end;
    glEnd;
    {$IFDEF DebugGLErr} Err(122); {$ENDIF}
@@ -557,17 +571,19 @@ begin
      I:=0;
      while I<=SectionsI do
       begin
-       with Points[J,I] do
+       //with Points[J,I] do
         begin
-         glColor3fv(l);
-         glTexCoord2fv(v.st);
-         glVertex3fv(v.xyz);
+         //glColor3fv(light_rgb);
+         glColor4fv(Points[J,I].light_rgb);
+         glTexCoord2fv(Points[J,I].v.st);
+         glVertex3fv(Points[J,I].v.xyz);
         end;
-       with Points[J+StepJ,I] do
+       //with Points[J+StepJ,I] do
         begin
-         glColor3fv(l);
-         glTexCoord2fv(v.st);
-         glVertex3fv(v.xyz);
+         //glColor3fv(light_rgb);
+         glColor4fv(Points[J+StepJ,I].light_rgb);
+         glTexCoord2fv(Points[J+StepJ,I].v.st);
+         glVertex3fv(Points[J+StepJ,I].v.xyz);
         end;
        Inc(I, StepI);
       end;
@@ -602,7 +618,8 @@ begin
    Inc(PV);
    LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
    Inc(vec3_p(PV));
-   glColor3fv(Point.l);
+   //glColor3fv(Point.light_rgb);
+   glColor4fv(Point.light_rgb);
    glTexCoord2fv(Point.v.st);
    glVertex3fv(Point.v.xyz);
   end;
@@ -621,28 +638,28 @@ end;
 
 procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
-  with Texture^ do
+  //with Texture^ do
   begin
-    ScaleS:=TexW*( 1/EchelleTexture);
-    ScaleT:=TexH*(-1/EchelleTexture);
+    ScaleS:=Texture^.TexW*( 1/EchelleTexture);
+    ScaleT:=Texture^.TexH*(-1/EchelleTexture);
   end;
 end;
 
 procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
-  with Skin^ do
+  //with Skin^ do
   begin
-    ScaleS:=1/TexW;
-    ScaleT:=1/TexH;
+    ScaleS:=1/Skin^.TexW;
+    ScaleT:=1/Skin^.TexH;
   end;
 end;
 
 procedure TGLSceneBase.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
-  with Skin^ do
+  //with Skin^ do
   begin
-    ScaleS:=1/TexW;
-    ScaleT:=1/TexH;
+    ScaleS:=1/Skin^.TexW;
+    ScaleT:=1/Skin^.TexH;
   end;
 end;
 
@@ -748,6 +765,8 @@ begin
   end;
 end;
 
+
+
 procedure TGLSceneObject.Init(Wnd: HWnd;
                               nCoord: TCoordinates;
                               const LibName: String;
@@ -829,6 +848,9 @@ begin
   glEnable(GL_DEPTH_TEST);
  {glDepthFunc(GL_LEQUAL);}
  // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+{DECKER 2003.03.12}
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
+{/DECKER}
   glEdgeFlag(0);
   Err(1);
 
@@ -946,7 +968,20 @@ var
  BufResident: ^GLboolean;
 begin
   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-103); {$ENDIF}
-  if not SolidColors then
+
+{DECKER 2003.03.12}
+  // Found on "http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08"
+  if Transparent=true then
+  begin
+    glEnable(GL_BLEND);
+  end
+  else
+  begin
+    glDisable(GL_BLEND);
+  end;
+{/DECKER}
+
+  {DECKER 2003-03-12 if not SolidColors then}
   begin
     Count:=0;
     PList:=ListSurfaces;
@@ -1000,7 +1035,7 @@ begin
   begin
     if Transparent in PList^.Transparent then
     begin
-      if SolidColors or not PList^.ok then
+      if {DECKER 2003-03-12 SolidColors or} not PList^.ok then
         RenderPList(PList, Transparent, DisplayLights, SourceCoord);
     end;
     PList:=PList^.Next;
@@ -1273,6 +1308,7 @@ begin
        end;
 
        PV:=PVertex3D(Surf);
+//DisplayLights:=false;{}{}{}
        if DisplayLights then
        begin
          if AnyInfo.DisplayList=0 then
