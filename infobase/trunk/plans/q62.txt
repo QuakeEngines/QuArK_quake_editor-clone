@@ -96,8 +96,9 @@ radially around a tiltable axis, with 'spiral' attributes.
 <br> Shift+RMB during drag to swivel around selected
 object.
 
-<li>MipTex Extraction: (tiglari,Andy)
+<li>MipTex Extraction: (Andy)
 <br>Get the add-on builder to handle Q1, Hx2 properly
+<br>status: done.
 
 <li>Vertex Movement: (tiglari)
 <br>less drifting of non-drug vertexes when a vertex is dragged.
@@ -105,5 +106,8 @@ object.
 <li>Form-editing: (Andy)
 <br>status: editing only - no create
 
+<li>Rectangle selection of everything: (tiglari)
+<br>selects groups and brush entities if all of their
+sub-objects are also selected.
 </ul>
 
