@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.7  2000/05/20 14:10:25  decker_dk
 Some more englishification
 
@@ -52,7 +55,7 @@ interface
 uses SysUtils, Classes, QkObjects, QkFileObjects, QkImages, Setup;
 
 const
- GamesWithTopDownTgaFiles = [mjKingPin];
+ GamesWithTopDownTgaFiles = [];{no game seem to need this}
 
 type
  QTga = class(QImages)
