@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2003/03/16 01:18:48  tiglari
+higher python version defs now in Python/PyVersions.inc
+
 Revision 1.9  2003/03/06 22:23:46  tiglari
 Py 2.x compatibility: to compile for Py2.2 set flag PYTHON22_OR_HIGHER
 in projects options;  this flag is also utilized in Python/Pymath.pas so shouldn't
@@ -56,6 +59,8 @@ Some layout changes. I like columns, specially when there is lots of data.
 unit Python;
 
 interface
+
+uses QkApplPaths, Logging;
 
  {-------------------}
 
@@ -286,6 +291,7 @@ var
 
 Py_Initialize: procedure; cdecl;
 Py_Finalize: procedure; cdecl;
+Py_GetVersion: function : PChar; cdecl;
 PyRun_SimpleString: function (P: PChar) : Integer; cdecl;
 //PyRun_String: function (str: PChar; start: Integer; Globals, Locals: PyObject) : PyObject; cdecl;
 //Py_CompileString: function (str, filename: PChar; start: Integer) : PyObject; cdecl;
@@ -411,12 +417,13 @@ uses
  {-------------------}
 
 const
-  PythonProcList: array[0..54] of record
+  PythonProcList: array[0..55] of record
                                     Variable: Pointer;
                                     Name: PChar;
                                   end =
   ( (Variable: @@Py_Initialize;              Name: 'Py_Initialize'             ),
-    (Variable: @@Py_Finalize;                Name: 'Py_Finalize'        ),
+    (Variable: @@Py_Finalize;                Name: 'Py_Finalize'               ),
+    (Variable: @@Py_GetVersion;              Name: 'Py_GetVersion'             ),
     (Variable: @@PyRun_SimpleString;         Name: 'PyRun_SimpleString'        ),
 //  (Variable: @@Py_CompileString;           Name: 'Py_CompileString'          ),
     (Variable: @@Py_InitModule4;             Name: 'Py_InitModule4'            ),
@@ -520,8 +527,14 @@ var
   Lib: THandle;
   P: Pointer;
   dll: string;
+  s: string;
 begin
   Result:=3;
+{$IFDEF PYTHON_BUNDLED}
+// Python's bundled with QuArK, so look for python.dll in the Dlls directory
+  Lib:=LoadLibrary(PChar(GetApplicationDllPath()+'python.dll'));
+{$ELSE}
+// Python isn't bundled with QuArK, so look on system
 // dll:=try_alternative_python_version;
   Lib:=0;
 {$IFDEF PYTHON20_OR_HIGHER}
@@ -542,6 +555,7 @@ begin
   if Lib=0 then
     Lib:=LoadLibrary('PYTHON15.DLL');
 {$ENDIF}
+{$ENDIF}
   if Lib=0 then
     Exit;
   Result:=2;
@@ -553,6 +567,9 @@ begin
     PPointer(PythonProcList[I].Variable)^:=P;
   end;
   Py_Initialize;
+  s:=Py_GetVersion;
+  aLog(LOG_PYTHONSOURCE,'Version '+s);
+  aLog(LOG_PYTHONSOURCE,'');
   Result:=1;
 
  { tiglari:
