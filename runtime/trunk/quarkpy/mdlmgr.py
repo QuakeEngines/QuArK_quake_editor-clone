@@ -68,6 +68,7 @@ class ModelLayout(BaseLayout):
         skin = qtoolbar.button(self.fillskinform, "Parameters about the selected skin", ico_objects, iiPcx)
         skin.pc = [self.bs_skinform(panel)]
         return [skin], mppages
+#        return [], mppages
 
     def bs_userobjects(self, panel):
         "A panel with user-defined model objects."
@@ -184,6 +185,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.5  2000/10/11 19:07:47  aiv
+#Bones, and some kinda skin vertice viewer
+#
 #Revision 1.4  2000/08/21 21:33:04  aiv
 #Misc. Changes / bugfixes
 #

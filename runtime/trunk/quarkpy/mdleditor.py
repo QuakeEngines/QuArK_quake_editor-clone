@@ -33,12 +33,13 @@ class ModelEditor(BaseEditor):
     HandlesModule = mdlhandles
     MouseDragMode = mdlhandles.RectSelDragObject
 
+    picked = [ ]
+ 
     def OpenRoot(self):
         Root = self.fileobject['Root']
         if Root is not None:
             Root = self.fileobject.findname(Root)
         self.Root = Root
-        self.vsellist = [ ]
         self.lock_x = 0
         self.lock_y = 0
         self.lock_z = 0
@@ -46,6 +47,9 @@ class ModelEditor(BaseEditor):
             c.info = { }
             c.filltris = [(WHITE,(WHITE,GRAY))]*len(c.triangles)
 
+    def CloseRoot(self):
+        picked = [ ]
+                
     def ListComponents(self):
         return self.Root.findallsubitems("", ':mc')   # find all components
 
@@ -141,6 +145,9 @@ def commonhandles(self, redraw=1):
 #
 #
 #$Log$
+#Revision 1.4  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #

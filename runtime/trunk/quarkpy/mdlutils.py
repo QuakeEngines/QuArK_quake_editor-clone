@@ -48,16 +48,43 @@ def invalidateviews():
   if editor is None: return
   editor.invalidateviews(1)
 
+
+#
+#  Find a triangle based on vertex indexs
+#
+def findTriangle(comp, v1, v2, v3):
+  tris = comp.triangles
+  index = -1
+  for tri in tris:
+    index = index + 1
+    b = 0
+    for c in tri:
+      if ((c[0] == v1) | (c[0] == v2) | (c[0] == v3)):
+        b = b + 1
+      else:
+        b = 0
+    if b==3:
+      return index
+  return None
+      
+
+#
+# Remove a triangle from a given component
+#
+def removeTriangle_v3(comp, v1, v2, v3):
+  removeTriangle(comp, findTriangle(comp, v1,v2,v3))
+  
+  
 #
 # Remove a triangle from a given component
 #
 def removeTriangle(comp, index):
   if (index is None):
     return
-  newcomp = comp.copy()
-  old_tris = newcomp.triangles
+  new_comp = comp.copy()
+  old_tris = new_comp.triangles
   tris = old_tris[:index] + old_tris[index+1:]
-  newcomp.triangles = tris
+  new_comp.triangles = tris
   undo = quarkx.action()
   undo.exchange(comp, new_comp)
   mapeditor().ok(undo, "remove triangle")
@@ -70,8 +97,9 @@ def removeTriangle(comp, index):
 def addframe(comp):
   if (comp is None):
     return
-  newcomp = comp.copy()
-  f = newcomp.addframe() # easier - done in delphi code :-)
+  new_comp = comp.copy()
+  f = new_comp.addframe() # easier - done in delphi code :-)
+  f.refreshtv()
   undo = quarkx.action()
   undo.exchange(comp, new_comp)
   mapeditor().ok(undo, "add frame")
@@ -91,8 +119,8 @@ def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
     return
   tris = comp.triangles
   tris = tris + [((v1,s1,t1),(v2,s2,t2),(v3,s3,t3))]
-  newcomp = comp.copy()
-  newcomp.triangle = tris
+  new_comp = comp.copy()
+  new_comp.triangles = tris
 
   undo = quarkx.action()
   undo.exchange(comp, new_comp)
@@ -105,8 +133,8 @@ def addtriangle(comp,v1,v2,v3,s1,t1,s2,t2,s3,t3):
 def addvertex(comp, org):
   if (comp is None) or (org is None):
     return
-  newcomp = comp.copy()
-  frames = newcomp.findallsubitems("", ':mf')   # find all frames
+  new_comp = comp.copy()
+  frames = new_comp.findallsubitems("", ':mf')   # find all frames
   for frame in frames: 
     vtxs = frame.vertices
     vtxs = vtxs + [org]
@@ -240,6 +268,9 @@ class MdlUserDataPanel(UserDataPanel):
 #
 #
 #$Log$
+#Revision 1.6  2001/02/01 22:03:15  aiv
+#RemoveVertex Code now in Python
+#
 #Revision 1.5  2000/10/11 19:07:47  aiv
 #Bones, and some kinda skin vertice viewer
 #

@@ -67,9 +67,15 @@ class VertexHandle(qhandles.GenericHandle):
             addvertex(editor.Root.currentcomponent, self.pos)
         def removevertex1click(m, self=self, editor=editor, view=view):
             removevertex(editor.Root.currentcomponent, self.index)
-
+	def pick_vertex(m, self=self, editor=editor, view=view):
+	    if self.index not in editor.picked:
+              editor.picked = editor.picked + [ self.index ]
+            else:
+              editor.picked.remove(self.index)
+              
         return [qmenu.item("&Add Vertex Here", addhere1click, "add vertex to component"),
                 qmenu.item("&Remove Vertex", removevertex1click, "removes a vertex from the component"),
+                qmenu.item("&Pick Vertex", pick_vertex, "picks a vertex for creating triangles"),
                 qmenu.sep,
                 qmenu.item("&Force to grid", forcegrid1click,"force vertex to grid")] + self.OriginItems(editor, view)
 
@@ -77,6 +83,11 @@ class VertexHandle(qhandles.GenericHandle):
         p = view.proj(self.pos)
         if p.visible:
             cv.setpixel(p.x, p.y, vertexdotcolor)
+            editor = mapeditor()
+            if editor is not None:
+              if self.index in editor.picked:
+                cv.pencolor = WHITE
+                cv.rectangle(p.x-3, p.y-3, p.x+3, p.y+3)
 
     def drag(self, v1, v2, flags, view):
         p0 = view.proj(self.pos)
@@ -100,10 +111,6 @@ class VertexHandle(qhandles.GenericHandle):
           new.vertices = vtxs
         return [self.frame], [new]
 
-    def click(self, editor):
-        if quarkx.keydown('\020')==1: #SHIFT
-          editor.vsellist = editor.vsellist + [self]
-          return "S"
 
 class SkinHandle(qhandles.GenericHandle):
   "Skin Handle for s / t positioning"
@@ -253,7 +260,7 @@ def buildskinvertices(editor, view, component):
     def drawsingleskin(view, component=component, editor=editor):
         view.color = BLACK
         view.drawmap(component.skindrawobject)
-        view.solidimage(component.currentskin)
+#        view.solidimage(component.currentskin)
         view.drawmap(component.skindrawobject, DM_REDRAWFACES|DM_OTHERCOLOR, 0x2584C9)   # draw the face contour
         editor.finishdrawing(view)
         # end of drawsingleskin
@@ -418,6 +425,9 @@ def MouseClicked(self, view, x, y, s, handle):
 #
 #
 #$Log$
+#Revision 1.7  2001/02/07 18:40:47  aiv
+#bezier texture vertice page started.
+#
 #Revision 1.6  2001/02/05 20:03:12  aiv
 #Fixed stupid bug when displaying texture vertices
 #
