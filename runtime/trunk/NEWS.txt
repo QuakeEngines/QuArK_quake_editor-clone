@@ -12,12 +12,13 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [cdunde]: Created GameCodeList.txt file to keep track of codes.
+
  * [peter-b]: Intercept "no attribute 'wraplist'" Python error when
       trying to wrap around pillar with incorrect selection.
 
  * [cdunde]: Upgraded the map grid scale plugin to add more grid
       scale placement functions and marker lines for more accuracy.
-
 
  * [Harry Kalogirou]: Support for Sylphis as a game engine also
       write support for PNG images, added parser for new map files,
