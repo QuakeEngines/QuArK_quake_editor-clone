@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.58  2000/10/09 18:16:11  decker_dk
+//Build-Tool Controllers (and commented CrystalSpace)
+//
 //Revision 1.57  2000/09/25 00:09:28  alexander
 //set name
 //
@@ -815,7 +818,7 @@ QQRKSRC1
         MiddleShift = ""
         MiddleCtrl  = "-"
         LeftDrag        = "RS"
-        LeftDragShift   = ""
+        LeftDragShift   = "C"
         LeftDragCtrl    = "RST"
         RightDrag       = "S"
         RightDragShift  = "Z"
@@ -946,7 +949,7 @@ QQRKSRC1
         MiddleShift = ""
         MiddleCtrl  = "-"
         LeftDrag        = "RS"
-        LeftDragShift   = ""
+        LeftDragShift   = "C"
         LeftDragCtrl    = "RST"
         RightDrag       = "S"
         RightDragShift  = "Z"
@@ -2325,6 +2328,7 @@ QQRKSRC1
            $0D"Zoom In rect. / sidestep"
            $0D"Zoom Out rect. / sidestep"
            $0D"Mouse Free Zoom"
+           $0D"Circle Strafe Selection"
       Values = ""
             $0D"RS"
             $0D"RST"
@@ -2334,6 +2338,7 @@ QQRKSRC1
             $0D"R+"
             $0D"R-"
             $0D"Z"
+            $0D"C"
     }
     MapMouse:form =
     {
