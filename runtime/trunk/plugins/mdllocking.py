@@ -9,6 +9,9 @@ of vertices
 # FOUND IN FILE "COPYING.TXT"
 #
 
+#
+# $Header$
+
 Info = {
    "plug-in":       "Axis Locking",
    "desc":          "Axis Locking",
@@ -70,3 +73,7 @@ class AxisLockBar(ToolBar):
 #quarkpy.mdlcommands.shortcuts["Shift+Z"] = Lock_Z
 
 quarkpy.mdltools.toolbars["tb_AxisLock"] = AxisLockBar
+
+# ----------- REVISION HISTORY ------------
+# $Log$
+#
