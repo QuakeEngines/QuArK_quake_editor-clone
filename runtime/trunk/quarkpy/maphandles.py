@@ -1567,7 +1567,7 @@ def macro_usercenter(self):
     editor=mapeditor()
     if editor is None: return
     dup = editor.layout.explorer.uniquesel
-    if not dup: return
+    if dup is None: return
     undo = quarkx.action()
     from mapentities import ObjectOrigin
     tup = ObjectOrigin(dup).tuple
@@ -1593,6 +1593,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.22  2001/05/06 06:03:38  tiglari
+#add Edge Handle
+#
 #Revision 1.21  2001/04/26 22:45:03  tiglari
 #face-only selection & texture L RMB
 #
