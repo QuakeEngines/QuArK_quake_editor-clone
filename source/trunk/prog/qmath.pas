@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/06/05 18:41:26  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.9  2001/03/30 22:11:37  tiglari
 makevect & 2-place normalize (puts scaling factor into var par)
 
@@ -73,6 +76,7 @@ type
  scalar_t = Single;
  vec3_p = ^vec3_t;
  vec3_t = packed array[0..2] of scalar_t;
+ vec2_t = packed array[0..1] of scalar_t;
 
 function Cross(const V1, V2: TVect) : TVect;
 function Dot(const V1, V2: TVect) : TDouble;
