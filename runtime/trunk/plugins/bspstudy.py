@@ -177,7 +177,7 @@ def CheckPlanesClick(m):
         self.chosen = src["closeplanes"]
         plane = self.pack.closeones[eval(self.chosen)]
         self.pack.plane=plane
-        debug('norm '+`plane.normal`+' dist '+`plane.dist`)
+#        debug('norm '+`plane.normal`+' dist '+`plane.dist`)
         src["normal"]=plane.normal.tuple
         src["dist"]=plane.dist,
         #
@@ -203,16 +203,25 @@ def CheckPlanesClick(m):
     ClosePlanesDlg(quarkx.clickform, 'closeplanes', editor, setup, action, onclosing)
 
     
-def NodesClick(m):
-    editor=mapeditor()
-    root = editor.Root
-    nodes = root.parent.nodes
-    nodes.shortname='Nodes (%s)'%nodes['children']
-    undo=quarkx.action()
-    undo.put(root,nodes)
-    editor.ok(undo, 'get nodes')
-    editor.layout.explorer.uniquesel=nodes
-   
+def NodesClick(m,editor=None):
+    if editor is None:
+        editor=mapeditor()
+    if editor is None:
+        return
+    try:
+        nodes=editor.nodes
+        quarkx.msgbox("Nodes already gotten",2,4)
+        editor.layout.explorer.uniquesel=nodes
+    except:
+        root = editor.Root
+        nodes = root.parent.nodes
+        nodes.shortname='Nodes (%s)'%nodes['children']
+        undo=quarkx.action()
+        undo.put(root,nodes)
+        editor.ok(undo, 'get nodes')
+        editor.layout.explorer.uniquesel=nodes
+        editor.nodes=nodes
+  
 planesitem=qmenu.item('Get Planes',PlanesClick)
 nodesitem=qmenu.item('Get Nodes',NodesClick)
 planecheckitem=qmenu.item('Check Planes',CheckPlanesClick)
@@ -267,12 +276,13 @@ class NearPlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
 
         buttons: = {
           Typ = "PM"
-          Num = "2"
+          Num = "3"
           Macro = "nearplanes"
-          Caps = "SC"
+          Caps = "SCN"
           Txt = "Actions:"
           Hint1 = "Show the chosen one"
           Hint2 = "Collect faces lying on the chosen one"
+          Hint3 = "Find nodes split by the chosen one"
         }
 
         num: = {
@@ -300,6 +310,11 @@ class NearPlanesDlg (quarkpy.dlgclasses.LiveEditDlg):
         plane = self.pack.nearones[index]
         collectFacesClickFunc(None,plane,self.editor)
 
+    def findsplit(self):
+        editor=self.editor
+        debug('PLANE '+`self.pack.plane.num`)
+        findSplitNodes(self.editor,self.pack.plane)
+
 def macro_nearplanes(self, index=0):
     editor = mapeditor()
     if editor is None: return
@@ -307,9 +322,32 @@ def macro_nearplanes(self, index=0):
         editor.nearplanesdlg.inspect()
     elif index==2:
         editor.nearplanesdlg.collect()
-        debug('dunnit')
+    elif index==3:
+        editor.nearplanesdlg.findsplit()
+ 
         
 quarkpy.qmacro.MACRO_nearplanes = macro_nearplanes
+
+def findSplitNodes(editor, plane):
+    try:
+        node=editor.nodes
+    except (AttributeError):
+        NodesClick(None,editor)
+        node=editor.nodes
+    list=[]
+    findsplitnodes2(node, plane, list)
+    editor.invalidateviews()
+    mapmadsel.browseListFunc(editor,list)
+
+def findsplitnodes2(node, plane, list,n=0):
+    if plane.num == node.plane.num:
+        list.append(node)
+#        debug('append '+`node.plane.num`+'; '+`plane.num`)
+    for item in node.subitems:
+        if item.type==":bspnode":
+            if item.leaf!=1:
+                findsplitnodes2(item, plane, list,n+1)
+
 
 def getNearPlanes(close, plane, editor):
     indexes = plane.nearplanes(close,editor.Root.parent)
@@ -393,12 +431,10 @@ def nearPlanesClickFunc(m,o,editor):
             NearPlanesDlg(quarkx.clickform, 'nearplanes', editor, setup, action, onclosing)
 
 def collectFacesClickFunc(m,o,editor):
-            debug('collect '+o.name)
             faces = editor.Root.findallsubitems("",":f")
             dist, normal = o.dist, o.normal
             planept = dist*normal
             coplanar=[]
-            debug('okay')
             i=0
             for face in faces:
               try:
@@ -426,13 +462,16 @@ class PlaneType(quarkpy.mapentities.EntityManager):
         def collectFacesClick(m,o=o,editor=editor):
             collectFacesClickFunc(m,o,editor)
      
-            
-            
         def nearPlanesClick(m,o=o,editor=editor):
             nearPlanesClickFunc(m,o,editor)
 
-        nearItem = qmenu.item("Near Planes",nearPlanesClick)
-        return [qmenu.item("Collect Faces",collectFacesClick), nearItem]
+        def splitNodesClick(m,o=o,editor=editor):
+            findSplitNodes(editor,o)
+            
+        collectItem=qmenu.item("Select Faces",collectFacesClick,"|Select the faces lying on this plane")
+        nearItem = qmenu.item("Near Planes",nearPlanesClick,"|Find the planes near this one")
+        splitItem = qmenu.item("Split Nodes",splitNodesClick,"|Find the nodes split by this plane")
+        return [collectItem, nearItem, splitItem]
         
 class HullType(quarkpy.mapentities.GroupType):
     "Bsp Hulls (models)"
