@@ -11,8 +11,8 @@ Info = {
    "plug-in":       "Path Duplicator",
    "desc":          "BETA! Path Duplicator",
    "date":          "3 feb 01",
-   "author":        "Decker",
-   "author e-mail": "decker@planetquake.com",
+   "author":        "Decker, also tiglari",
+   "author e-mail": "decker@planetquake.com, tiglari@hexenworld.net",
    "quark":         "Version 6.2"
 }
 
@@ -70,7 +70,11 @@ def evaluateDuplicators(group):
                 group.removeitem(index)
                 group.insertitem(index, new)
 
-
+#
+#  Two ways of making axes that don't `twist'.  This leads to the
+#    section not joining properly, but maybe something can be done
+#    about this someday (with curved `elbows', for example)
+#
 def MakeAxes2(x):
     xn=x.normalized
     if abs(xn*quarkx.vect(0,1,0))<.1:
@@ -103,11 +107,12 @@ def MakeUniqueTargetname():
     import time
     return "t" + time.strftime("%Y%m%d%H%M%S", time.gmtime(time.time()))
 
+
+SMALL=0.001
+
 def getNormalFaces(faces, axis):
     def normalFace(face,axis=axis):
-        SMALL=0.001
-        if abs(face.normal*axis-1)<SMALL:
-            return 1
+        return abs(face.normal*axis-1)<SMALL
     return filter(normalFace,faces)
 
 def getends(group,x_axis):
@@ -300,6 +305,19 @@ class PathDuplicator(StandardDuplicator):
         templatebbox = quarkx.boundingboxof([templategroup])
         templatesize = templatebbox[1] - templatebbox[0]
 
+
+        templatefront=getNormalFaces(templategroup.findallsubitems("",":f"),
+                                     quarkx.vect(1,0,0))
+        rimvtxes=[]
+        for face in templatefront:
+#            debug('face: '+`face.name`)
+            for vtxes in face.vertices:
+#                debug(' cycle')
+                for vtx in vtxes:
+#                    debug('  '+`vtx`)
+                    rimvtxes.append(vtx)
+               
+
         # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
         if self.speed == 1:
            del templategroup
@@ -365,13 +383,6 @@ class PathDuplicator(StandardDuplicator):
                face.translate(thisorigin-center,0)
                if i>0:
                    face.distortion(-joinnorm,thisorigin)
-                   #
-                   # calculates where `straight' segment would begin
-                   #   (for elbows and tiling)
-                   #
-                   for vtxes in face.vertices:
-                       for vtx in vtxes:
-                           startseg=max(startseg,-xax*(vtx-thisorigin))
             for face in back:
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
                face.translate(nextorigin-center,0)
@@ -379,14 +390,37 @@ class PathDuplicator(StandardDuplicator):
                    nextx=(pathlist[i+2].origin-nextorigin).normalized
                    joinnorm=((xax+nextx)/2).normalized
                    face.distortion(joinnorm,nextorigin)
+
+            #
+            # find out where flat-ended segments would end if they
+            #   are to just touch at the corners
+            #
+            def vtxshift(vtx,mat=mat,orig=thisorigin):
+                return mat*vtx+orig
+
+            startseg=endseg=0
+            for vtx in map(vtxshift,rimvtxes):
+                frontproj=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
+                startseg=max(startseg,(frontproj-thisorigin)*xax)
+                backproj=projectpointtoplane(vtx,xax,nextorigin,back[0].normal)
+                endseg=min(endseg,(backproj-nextorigin)*xax)
+
+
 #
-#  If we make elbows, this kind of code will position the faces
+#  This kind of code will create `box' shaped sections that just
+#   touch at the edges.  Can't do it by taking vertices of actual
+#   front and back faces above because these don't seem to be
+#   computed yet.
 #
-#            nustart=thisorigin+xax*startseg
 #            if startseg:
 #                for face in front:
 #                    face.translate(xax*startseg)
-#                    face.distortion(-xax,nustart)
+#                    face.distortion(-xax,thisorigin+xax*startseg)
+#            if endseg:
+#                for face in back:
+#                    face.translate(xax*endseg)
+#                    face.distortion(xax,nextorigin+xax*endseg)
+
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + [list]
             del list
