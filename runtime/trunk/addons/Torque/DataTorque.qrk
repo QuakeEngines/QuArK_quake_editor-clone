@@ -1,6 +1,25 @@
 QQRKSRC1
-// This file has been written by QuArK QuArK 6.4 alpha
+// Configuration file for Torque
+// This file has been written by QuArK QuArK 6.4 alpha 
 // It's the text version of file: DataTorque.qrk
+ 
+//$Header$: /cvsroot/quark/runtime/addons/Torque/DataTorque.qrk,v 1.2 2004/12/22/ 09:18:44 cdunde Exp $
+// ----------- REVISION HISTORY ------------   
+//$Log$
+//Revision 1.2  2004/12/22/ 09:18:44 cdunde
+//To add Color-picker function for all lights.
+//
+//Revision 1.1  2002/04/08 11:02:16  tiglari   
+//Add support for Torque (from Desmond Fletcher)   
+//   
+//Revision 0.1 2001/10/31 16:00:00 fletcher   
+//First build of Torque entities   
+//   
+// ----------- MANUAL REVISION HISTORY ------------   
+//   
+// 2001-10-31  Started history   
+//
+//
 
 {
   QuArKProtected = "1"
@@ -333,18 +352,20 @@ QQRKSRC1
       ambient_color: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Ambient color (RGB)"
       }
       emergency_ambient_color: =
       {
         txt = "&"
+        Typ = "L[3]"
         hint = "Emergency ambient color (RGB)"
       }
       mapversion: =
       {
         txt = "&"
         hint = "Set this to a value of '220',"$0D"if you want QuArK to write i"
-         "n WorldCraft 3.3 .MAP format"
+         "n WorldCraft 3.3 .MAP format"$0D"Leave blank when using the -q <2 or 3> switch for Quake style maps"
       }
     }
     detail:form =
