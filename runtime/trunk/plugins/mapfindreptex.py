@@ -21,8 +21,8 @@
 
 
 Info = {
-   "plug-in":       "Find and Replace textures",
-   "desc":          "Find/Replace textures dialog box, available from the Search menu.",
+   "plug-in":       "Search and replace textures",
+   "desc":          "Search/replace textures dialog box, available from the Search menu.",
    "date":          "17 oct 98",
    "author":        "Tim Smith & Armin Rigo",
    "author e-mail": "",
@@ -35,38 +35,40 @@ import quarkpy.qtoolbar
 import quarkpy.mapsearch
 from quarkpy.maputils import *
 
-class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
+class SearchReplaceTextureDlg(quarkpy.qmacro.dialogbox):
 
     #
     # dialog layout
     #
 
-    size = (300, 190)
+    size = (300, 240)
     dfsep = 0.4        # separation at 40% between labels and edit boxes
     dlgflags = FWF_KEEPFOCUS
 
     dlgdef = """
       {
         Style = "15"
-        Caption = "Replace textures"
+        Caption = "Search/replace textures"
+        sep: = {Typ="S" Txt="By leaving the 'Replace with texture' blank or"}
+        sep: = {Typ="S" Txt="equal to the 'Search for texture', this will"}
+        sep: = {Typ="S" Txt="only perform a search-and-select-objects."}
         sep: = {Typ="S" Txt=" "}
         fromtex: = {
-          Txt = " Replace texture :"
+          Txt = "Search for texture:"
           Typ = "ET"
           SelectMe = "1"
         }
         totex: = {
-          Txt = " With texture :"
+          Txt = "Replace with texture:"
           Typ = "ET"
         }
         scope: = {
           Typ = "CL"
-          Txt = "Replace textures in"
+          Txt = "Search in:"
           Items = "%s"
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-
         ReplaceAll:py = {Txt=""}
         close:py = {Txt=""}
       }
@@ -82,62 +84,64 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
         # General initialization of some local values
         #
 
-        self .editor = editor
+        self.editor = editor
         uniquesel = editor.layout.explorer.uniquesel
-        self .sellist = self .editor .visualselection ()
+        self.sellist = self.editor.visualselection()
 
         #
         # Create the data source
         #
 
-        src = quarkx .newobj (":")
+        src = quarkx.newobj(":")
 
         #
         # Based on the textures in the selections, initialize the
         # from and to textures
         #
 
-        if len (self .sellist) == 0:
-            texlist = quarkx .texturesof (editor .Root .findallsubitems ("", ':f'))
+        if len(self.sellist) == 0:
+            texlist = quarkx.texturesof(editor.Root.findallsubitems("", ':f'))
         elif uniquesel is not None and uniquesel.type==":f":
-            texlist = quarkx. texturesof ([uniquesel])
+            texlist = quarkx.texturesof([uniquesel])
         else:
-            texlist = quarkx .texturesof (self .sellist);
-        if len (texlist) == 0:
-            texlist .append (quarkx .setupsubset () ["DefaultTexture"])
-        src ["fromtex"] = texlist [0]
-        src ["totex"] = texlist [0]
+            texlist = quarkx.texturesof(self.sellist);
+        if len(texlist) == 0:
+            texlist.append(quarkx.setupsubset()["DefaultTexture"])
+        src["fromtex"] = texlist[0]
+        src["totex"] = texlist[0]
 
         #
         # Based on the selection, populate the range combo box
         #
 
-        if len (self .sellist) == 0:
-            src ["scope"] = "W"
-            src ["scope$Items"] = "Whole map"
-            src ["scope$Values"] = "W"
+        if len(self.sellist) == 0:
+            src["scope"] = "W"
+            src["scope$Items"] = "Whole map"
+            src["scope$Values"] = "W"
         else:
-            src ["scope"] = "S"
-            src ["scope$Items"] = "Selection\nWhole map"
-            src ["scope$Values"] = "S\nW"
+            src["scope"] = "S"
+            src["scope$Items"] = "Selection\nWhole map"
+            src["scope$Values"] = "S\nW"
 
         #
         # Create the dialog form and the buttons
         #
 
         quarkpy.qmacro.dialogbox.__init__(self, form, src,
-           close = quarkpy.qtoolbar.button(
-              self.close,
-              "close this box",
-              ico_editor, 0,
-              "Close"),
-           ReplaceAll = quarkpy.qtoolbar.button(
-              self.ReplaceAll,
-              "replace all textures",
-              ico_editor, 2,
-              "Replace All"))
+           close      = quarkpy.qtoolbar.button(self.close, "Close this box", ico_editor, 0, "Close", 1),
+           ReplaceAll = quarkpy.qtoolbar.button(self.ReplaceAll, "Search/replace textures", ico_editor, 2, "Search/replace", 1)
+        )
 
 
+    def deepsearch(self, objs, find, newsellist):
+        # Performs a recursive search of ':f' objects, and appends them to a list
+        for o in objs:
+            if o.type == ':f':
+                if o.texturename == find:
+                    newsellist.append(o)
+            else:
+                if len(o.subitems) > 0:
+                    self.deepsearch(o.subitems, find, newsellist)
 
     def ReplaceAll(self, btn):
 
@@ -151,71 +155,89 @@ class ReplaceTextureDlg (quarkpy.qmacro .dialogbox):
         # read back data from the dialog box
         #
 
-        whole = self .src ["scope"] == "W"
-        find = self .src ["fromtex"]
-        replace = self .src ["totex"]
-        if not find or not replace:
-            quarkx .msgbox ("Please specify a both texture names", MT_ERROR, MB_OK)
+        whole = self.src["scope"] == "W"
+        find = self.src["fromtex"]
+        replace = self.src["totex"]
+        if not find:
+            quarkx.msgbox("Please specify texture name to search for.", MT_ERROR, MB_OK)
             return
-
-        #
-        # do the changes
-        #
-
-        changes = 0
-        undo = quarkx .action()
 
         list = None
         if whole:
-            list = self .editor .Root .findallsubitems("", ':f')
+            list = self.editor.Root.findallsubitems("", ':f')
         else:
-            list = self .sellist
-        for o in list: # loop through the list
-            changes = changes + o .replacetex (find, replace, 1)
-        txt = None
-        if changes:
-            txt = "%d textures replaced" % changes
-            mb = MB_OK_CANCEL
-        else:
-            txt = "No textures replaced"
-            mb = MB_CANCEL
-        result = quarkx .msgbox (txt, MT_INFORMATION, mb)
+            list = self.sellist
 
-        #
-        # commit or cancel the undo action
-        #
+        if not replace or replace == find:
+            # No replace texture-name have been given. Then it must just be a "Search" the user intended.
+            newsellist = []
+            self.deepsearch(list, find, newsellist)
 
-        if result == MR_OK:
-            undo .ok (self .editor .Root, "replace textures")   # note: calling undo.ok() when nothing has actually been done is the same as calling undo.cancel()
-            #
-            # Sorry, we have to close the dialog box, because the selection changed.
-            # Allowing the user to make multiple replacements in the selection before committing them all
-            #  would be a bit more complicated.
-            #
-            self .close()
+            # Set views to the new selection
+            self.editor.layout.explorer.sellist = newsellist
+
+            # Notify the user, we're finished searching
+            txt = "%d faces selected" % len(newsellist)
+            result = quarkx.msgbox(txt, MT_INFORMATION, MB_OK)
+
+            # Close the search-dialogbox
+            self.close()
         else:
-            undo .cancel()
+            #
+            # do the changes
+            #
+            changes = 0
+            undo = quarkx.action()
+
+            for o in list: # loop through the list
+                changes = changes + o.replacetex(find, replace, 1)
+            txt = None
+            if changes:
+                txt = "%d textures replaced" % changes
+                mb = MB_OK_CANCEL
+            else:
+                txt = "No textures replaced"
+                mb = MB_CANCEL
+            result = quarkx.msgbox(txt, MT_INFORMATION, mb)
+
+            #
+            # commit or cancel the undo action
+            #
+
+            if result == MR_OK:
+                undo.ok(self.editor.Root, "replace textures")   # note: calling undo.ok() when nothing has actually been done is the same as calling undo.cancel()
+                #
+                # Sorry, we have to close the dialog box, because the selection changed.
+                # Allowing the user to make multiple replacements in the selection before committing them all
+                #  would be a bit more complicated.
+                #
+                self.close()
+            else:
+                undo.cancel()
 
 #
 # Function to start the replace dialog
 #
-        
-def ReplaceTextClick (m):
-    editor = mapeditor ()
-    if editor is None: return
-    ReplaceTextureDlg (quarkx.clickform, editor)
+
+def SearchReplaceTexClick(m):
+    editor = mapeditor()
+    if editor is None:
+        return
+    SearchReplaceTextureDlg(quarkx.clickform, editor)
 
 #
 # Register the replace texture menu item
 #
 
-quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Replace textures", ReplaceTextClick))
+quarkpy.mapsearch.items.append(quarkpy.qmenu.item("Search/replace textures...", SearchReplaceTexClick))
 
 
 # ----------- REVISION HISTORY ------------
-#
-#
 # $Log$
+# Revision 1.7  2002/05/16 03:05:41  tiglari
+# If just a face is selected, the texture on the face is loaded into the dialog
+#  (bug report from fpbrowser)
+#
 # Revision 1.6  2002/04/07 12:46:06  decker_dk
 # Pretty separator.
 #
@@ -227,7 +249,4 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Replace textures", ReplaceTe
 #
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
-#
-#
-#
 #
