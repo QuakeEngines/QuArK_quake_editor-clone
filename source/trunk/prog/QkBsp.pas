@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.49  2001/08/04 09:57:19  tiglari
+move hulltype stuff into QkBspHulls, bstype stuff into QkBsp
+
 Revision 1.48  2001/07/31 10:59:25  tiglari
 speed up close plane finding, a lot (needobjectgamecode is very slow,
  since it accesses object specifics)
@@ -303,14 +306,25 @@ type
             dist: scalar_t;
            end;
 
+ { Note: although PbPlane (for Q1/Q2) and  TQ3Plane
+   are different, we can access both as
+   PQ3Plane/PbPlane(PcharPointer)^ because their
+   structure is the same up to flags which we don't
+   yet care about }
 
- PQ12Node = ^TQ12Node;
- TQ12Node = record
+ PQ1Node = ^TQ1Node;
+ TQ1Node = record
              plane: LongWord; { plane index (uint32) }
-             firstchild: Integer; {child indices, neg if leaf }
-             secondchild: Integer;
-             mins: array [0..2] of Integer; {bbox}
-             maxs: array [0..2] of Integer;
+             firstchild, secondchild: Short; {child indices, neg if leaf }
+             mins, maxs: array [0..2] of SmallInt; {bbox}
+             first_face, num_faces: WORD;
+           end;
+
+ PQ2Node = ^TQ2Node;
+ TQ2Node = record
+             plane: LongWord; { plane index (uint32) }
+             firstchild, secondchild: Integer; {child indices, neg if leaf }
+             mins, maxs: array [0..2] of SmallInt; {bbox}
              first_face, num_faces: WORD;
            end;
 
@@ -320,16 +334,33 @@ type
             plane: Integer; { plane index }
             firstchild: Integer; {child indices, neg if leaf }
             secondchild: Integer;
-            mins: array [0..2] of integer; {bbox}
-            maxs: array [0..2] of integer;
+            mins, maxs: array [0..2] of integer; {bbox}
            end;
+
+ { This is an intermediate 'wrapper-like' class
+   for accessing the nodes in the various bsp
+   trees in a common format.
+
+   An alternative technique would be to define read
+   only properties that accessed & delivered from
+   the original data structure without creating a
+   full intermediate record }
+
+ BspNode = class
+   public
+     Source: PChar;
+     Plane: Integer;
+     firstchild: Integer; {child indices, neg if leaf }
+     secondchild: Integer;
+     mins, maxs: array [0..2] of integer; {bbox}
+     constructor Create(SourcePtr: PChar; GameCode: Char); overload;
+    end;
 
   PQ1Leaf = ^TQ1Leaf;
   TQ1Leaf = record
             contents: Integer; { or of all brush info }
             visofs: Integer; { cluster index (?) }
-            mins: array [0..2] of Single; {bbox}
-            maxs: array [0..2] of Single;
+            mins, maxs: array [0..2] of SmallInt; {bbox}
             first_leafface, num_leaffaces: WORD;
             first_leafbrush, num_leafbrushes: WORD;
            end;
@@ -339,8 +370,7 @@ type
             contents: LongWord; { or of all brush info }
             cluster: Integer; { cluster index }
             area: Integer; { areaportal area }
-            mins: array [0..2] of Single; {bbox}
-            maxs: array [0..2] of Single;
+            mins, maxs: array [0..2] of SmallInt; {bbox}
             first_leafface, num_leaffaces: WORD;
             first_leafbrush, num_leafbrushes: WORD;
            end;
@@ -349,11 +379,19 @@ type
  TQ3Leaf = record
             cluster: Integer; { cluster index }
             area: Integer; { areaportal area }
-            mins: array [0..2] of integer; {bbox}
-            maxs: array [0..2] of integer;
+            mins, maxs: array [0..2] of integer; {bbox}
             first_leafface, num_leaffaces: Integer;
             first_leafbrush, num_leafbrushes: Integer;
            end;
+
+ { leaf version of bspnode }
+ BspLeaf = class
+   public
+     mins, maxs: array [0..2] of integer; {bbox}
+     num_leaffaces: Integer;
+     Source: PChar;
+     constructor Create(SourcePtr: PChar; GameCode: Char);
+   end;
 
  TNodeStats = record
                faces : Integer; { total # faces contaied }
@@ -385,8 +423,8 @@ type
    Bsp: QBsp;
    Plane: TTreeBspPlane;
    Leaf: boolean;
-   constructor Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats); overload;
-   constructor Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats); overload;
+   constructor Create(const nName: String; nParent: QObject; NodeSource: BspNode; var Stats: TNodeStats); overload;
+   constructor Create(const nName: String; nParent: QObject; Source: BspLeaf; var Stats: TNodeStats); overload;
 
    class function TypeInfo: String; override;
    procedure GetFaces(var L: PyObject);
@@ -416,8 +454,8 @@ type
          {FSurfaces: PSurfaceList;}
           FVertices: PVertexList;
           Q3Vertices, Planes, FirstNode, FirstLeaf: PChar;
-          VertexCount, PlaneCount, LeafCount: Integer;
-          PlaneSize, LeafSize: Integer;
+          VertexCount, PlaneCount, LeafCount, NodeCount: Integer;
+          PlaneSize, LeafSize, NodeSize: Integer;
           NonFaces: Integer;
           GameCode: Char;
           constructor Create(const nName: String; nParent: QObject); overload;
@@ -440,7 +478,7 @@ type
           function GetEntityLump : String;
           procedure GetPlanes(var L: TQList);
           function GetNodes: QObject;
-          function GetQ3Node(Node: PQ3Node; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
+          function GetBspNode(Node: PChar; const Name: String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
           function GetClosePlanes(Close:TDouble): PyObject;
         end;
 
@@ -1699,44 +1737,54 @@ end;
 
 function QBsp.GetNodes : QObject;
 var
-  NodeCount: Integer;
   Nodes: PChar;
   Stats: TNodeStats;
+  bspkind: Char;
 begin
   Result:=Nil;
-  if bspSurfaceType(NeedObjectGameCode)=bspTypeQ3 then
-  begin
-      NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     FirstNode)   div SizeOf(TQ3Node);
-      LeafSize:=SizeOf(TQ3Leaf);
-      LeafCount:= GetBspEntryData(eLeaves,    lump_leafs,    eBsp3_leafs,     FirstLeaf)   div LeafSize;
-     { ShowMessage('Nodes: '+IntToStr(NodeCount)); }
-      Result:=GetQ3Node(PQ3Node(FirstNode), 'Root Node', Nil, Stats);
-  end else
-  begin
-    ShowMessage('Node viewing not yet supported for this game');
-    Exit;
+  bspkind:=BspType(GameCode);
+  case bspkind of
+      bspTypeQ1:
+       begin
+         NodeSize:=SizeOf(TQ1Node);
+         LeafSize:=SizeOf(TQ1Leaf);
+       end;
+      bspTypeQ2:
+       begin
+         NodeSize:=SizeOf(TQ2Node);
+         LeafSize:=SizeOf(TQ2Leaf);
+       end;
+     bspTypeQ3:
+       begin
+         NodeSize:=SizeOf(TQ3Node);
+         LeafSize:=SizeOf(TQ3Leaf);
+       end
   end;
+  NodeCount:= GetBspEntryData(eNodes,    lump_nodes,    eBsp3_nodes,     FirstNode)   div NodeSize;
+  LeafCount:= GetBspEntryData(eLeaves,    lump_leafs,    eBsp3_leafs,     FirstLeaf)   div LeafSize;
+     { ShowMessage('Nodes: '+IntToStr(NodeCount)); }
+  Result:=GetBspNode(FirstNode, 'Root Node', Nil, Stats);
 end;
 
-function QBsp.GetQ3Node(Node: PQ3Node; const Name:String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
+function QBsp.GetBspNode(Node: PChar; const Name:String; Parent: QObject; var Stats: TNodeStats) : TTreeBspNode;
 var
   First, Second: TTreeBspNode;
   TreePlane: TTreeBspPlane;
   FirstStats, SecStats: TNodeStats; { stats from children }
-
+  NodeWrapper: BspNode;
   procedure AddChild(Parent: TTreeBspNode; child: Integer; const Name: String; var Stats: TNodeStats);
   var
     TreeNode: TTreeBspNode;
     PLeaf: PChar;
   begin
     if child>0 then
-      TreeNode:=GetQ3Node( PQ3Node(FirstNode+child*SizeOf(TQ3Node)),Name, Parent, Stats)
+      TreeNode:=GetBspNode(FirstNode+child*NodeSize,Name, Parent, Stats)
     else
     begin
       { add 1, so that first child index is 0 (Max McQuires
         Q2 Bsp Format description on www.flipcode.com) }
       PLeaf:=FirstLeaf-(child+1)*LeafSize;
-      TreeNode:=TTreeBspNode.Create(Name, Parent, PQ3Leaf(PLeaf), Stats);
+      TreeNode:=TTreeBspNode.Create(Name, Parent, BspLeaf.Create(PLeaf,GameCode), Stats);
       TreeNode.Source:=PLeaf;
     end;
     if Copy(Name,1,5)='First' then
@@ -1746,10 +1794,9 @@ var
   end;
 
 begin
-  Result:=TTreeBspNode.Create(Name, Parent, Node, Stats);
-
-  Result.Source := PChar(Node);
-  with Node^ do
+  NodeWrapper:=BspNode.Create(Node,GameCode);
+  Result:=TTreeBspNode.Create(Name, Parent, NodeWrapper, Stats);
+  with NodeWrapper do
   begin
     TreePlane:=TTreeBspPlane.Create('Plane '+IntToStr(plane), Result, PbPlane(Planes+plane*Planesize), plane);
     Result.SubElements.Add(TreePlane);
@@ -1933,17 +1980,6 @@ begin
  TypeInfo:=':bspplane';
 end;
 
-constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Node; var Stats: TNodeStats);
-begin
-  inherited Create(nName, nParent);
-  with Source^ do
-  begin
-    VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
-    VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
-  end;
-  Leaf:=false
-end;
-
 function TTreeBspPlane.GetNearPlanes(Close: TDouble; Bsp: QBsp): PyObject;
 var
   I, PlaneSize, PlaneInc, HalfPlaneCount: Integer;
@@ -1954,7 +1990,7 @@ begin
   with Bsp do
   begin
     HalfPlaneCount:=(PlaneCount-1) div 2;
-    SurfType:=BspSurfaceType(NeedObjectGameCode);
+    SurfType:=BspSurfaceType(GameCode);
     if SurfType=bspSurfQ12 then
       PlaneSize:=SizeOf(TbPlane)
     else
@@ -2028,9 +2064,116 @@ begin
   end;
 end;
 
-constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: PQ3Leaf; var Stats: TNodeStats);
+
+constructor BspNode.Create(SourcePtr: PChar; GameCode: Char);
+var
+  SourceQ1: TQ1Node;
+  SourceQ2: TQ2Node;
+  SourceQ3: TQ3Node;
+  bspkind: Char;
+  I: Integer;
 begin
-  with Source^ do
+  Source:=SourcePtr;
+  bspkind:=BspType(GameCode);
+  case bspkind of
+   bspTypeQ1:
+     begin
+       SourceQ1:=PQ1Node(Source)^;
+       Plane:=SourceQ1.Plane;
+       FirstChild:=SourceQ1.FirstChild;
+       SecondChild:=SourceQ1.SecondChild;
+       for I:=0 to 2 do
+       begin
+         mins[I]:=SourceQ1.mins[I];
+         maxs[I]:=SourceQ1.maxs[I];
+       end
+     end;
+   bspTypeQ2:
+     begin
+       SourceQ2:=PQ2Node(Source)^;
+       Plane:=SourceQ2.Plane;
+       FirstChild:=SourceQ2.FirstChild;
+       SecondChild:=SourceQ2.SecondChild;
+       for I:=0 to 2 do
+       begin
+         mins[I]:=SourceQ2.mins[I];
+         maxs[I]:=SourceQ2.maxs[I];
+       end
+     end;
+   bspTypeQ3:
+     begin
+       SourceQ3:=PQ3Node(Source)^;
+       Plane:=SourceQ3.Plane;
+       FirstChild:=SourceQ3.FirstChild;
+       SecondChild:=SourceQ3.SecondChild;
+       for I:=0 to 2 do
+       begin
+         mins[I]:=SourceQ3.mins[I];
+         maxs[I]:=SourceQ3.maxs[I];
+       end
+     end
+  end;
+end;
+
+constructor BspLeaf.Create(SourcePtr: PChar; GameCode: Char);
+var
+  SourceQ1: TQ1Leaf;
+  SourceQ2: TQ2Leaf;
+  SourceQ3: TQ3Leaf;
+  bspkind: Char;
+  I: Integer;
+begin
+  Source:=SourcePtr;
+  bspkind:=BspType(GameCode);
+  case bspkind of
+   bspTypeQ1:
+     begin
+       SourceQ1:=PQ1Leaf(Source)^;
+       for I:=0 to 2 do
+       num_leaffaces:=SourceQ1.num_leaffaces;
+       begin
+          mins[I]:=SourceQ1.mins[I];
+         maxs[I]:=SourceQ1.maxs[I];
+       end
+     end;
+   bspTypeQ2:
+     begin
+       SourceQ2:=PQ2Leaf(Source)^;
+       num_leaffaces:=SourceQ2.num_leaffaces;
+       for I:=0 to 2 do
+       begin
+         mins[I]:=SourceQ2.mins[I];
+         maxs[I]:=SourceQ2.maxs[I];
+       end
+     end;
+   bspTypeQ3:
+     begin
+       SourceQ3:=PQ3Leaf(Source)^;
+       num_leaffaces:=SourceQ3.num_leaffaces;
+       for I:=0 to 2 do
+       begin
+         mins[I]:=SourceQ3.mins[I];
+         maxs[I]:=SourceQ3.maxs[I];
+       end
+     end;
+  end
+end;
+
+constructor TTreeBspNode.Create(const nName: String; nParent: QObject; NodeSource: BspNode; var Stats: TNodeStats);
+begin
+  inherited Create(nName, nParent);
+  Source:=NodeSource.Source;
+  with NodeSource do
+  begin
+    VectSpec['mins']:=MakeVect(mins[0], mins[1], mins[2]);
+    VectSpec['maxs']:=MakeVect(maxs[0], maxs[1], maxs[2]);
+  end;
+  Leaf:=false
+end;
+
+constructor TTreeBspNode.Create(const nName: String; nParent: QObject; Source: BspLeaf; var Stats: TNodeStats);
+begin
+  with Source do
   begin
     if num_leaffaces=0 then
       inherited Create(nName+' (empty leaf)', nParent)
