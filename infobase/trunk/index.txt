@@ -6,7 +6,7 @@ subdir: src
 subdir: plans
 subdir: glossary
 extrafiles_text: standard.css
-extrafiles_binary: quarkicon.gif
+extrafiles_binary: quarkicon.png
 
 <strong>Welcome to QuArK's Information Base</strong>
 

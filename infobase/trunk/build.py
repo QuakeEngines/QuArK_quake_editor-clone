@@ -31,6 +31,7 @@ def text2html(text):
     # Fix a problem with "&lt;" "&gt;" becomming "&amp;lt;" "&amp;gt;"
     newtext = string.replace(newtext, "&amp;lt;",   "&lt;")
     newtext = string.replace(newtext, "&amp;gt;",   "&gt;")
+    # Hmmm? Lets fix "&nbsp;" too
     newtext = string.replace(newtext, "&amp;nbsp;", "&nbsp;")
     return newtext
 
@@ -596,6 +597,9 @@ run(defaultwriter)
 
 #
 # $Log$
+# Revision 1.12  2001/02/15 19:43:16  decker_dk
+# Recoded the BUILD.PY to support somewhat basic-HTML.
+#
 # Revision 1.11  2000/11/12 06:31:50  tiglari
 # <REF> file \ name
 # <ZIP> file.zip

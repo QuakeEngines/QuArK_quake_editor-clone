@@ -24,7 +24,7 @@ HEADER_BEGIN = """
 <table width=100%% border=0 cellspacing=0>
   <tr>
     <td width=213>
-      <a href="http://www.planetquake.com/quark"><img src="quarkicon.gif" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
+      <a href="http://www.planetquake.com/quark"><img src="quarkicon.png" width=213 height=90 border=0 alt="Go to QuArK Web Site"></a>
     </td>
     <td width=70%% align=center>
       <div class="topheadline">%(title)s</div>
