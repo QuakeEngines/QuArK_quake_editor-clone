@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/05/04 23:56:01  alexander
+added: game enumeration for Soldier of Fortune "E"
+
 }
 
 unit Setup;
@@ -34,6 +37,8 @@ uses Windows, SysUtils, Classes, Graphics, Forms, Dialogs, Controls, Reg2,
      QkObjects, qmath, QkFileObjects;
 
 const
+{FIXME: This should not be constants, but read from
+ the games config: entry }
  mjQuake    = '1';
  mjHexen    = '2';
  mjHalfLife = '3';
