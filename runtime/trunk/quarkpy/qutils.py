@@ -96,6 +96,7 @@ SO_SELONLY        = 1     # only the selection is saved
 SO_IGNORETOBUILD  = 2     # the groups marked VF_IGNORETOBUILDMAP are not saved
 SO_DISABLEENHTEX  = 4     # don't write the "//TX1"-style comments required by TXQBSP for enhanced texture positionning
 SO_DISABLEFPCOORD = 8     # don't write floating-point coordinates in .map files, round all values
+SO_ENABLEBRUSHPRIM = 16   # enable brush primitives format
 
 # icon indexes of internal objects (to be used with quarkx.seticons)
 iiUnknownFile           = 0
@@ -436,6 +437,9 @@ plugins.LoadPlugins("Q_")
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2000/06/09 23:39:02  aiv
+#More MD3 Support Stuff
+#
 #Revision 1.4  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
