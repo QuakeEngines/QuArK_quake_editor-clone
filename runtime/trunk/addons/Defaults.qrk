@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.219  2003/09/19 20:45:44  cdunde
+//Update duplicator spacific help
+//
 //Revision 1.218  2003/09/18 03:00:37  cdunde
 //To add texture selection feature
 //
@@ -1690,22 +1693,19 @@ QQRKSRC1
         OutputMapFormat="Brush Primitives"
         AlwaysWriteThreeFields = "1"
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
-        BuildPgm1  = "Q3MAP2.EXE"
         BuildPgmsDir = "c:\Progra~1\Return~1\Radiant"
-// RtCW BuildArgs1 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
-        BuildArgs1 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest "$22"%mapfile%"$22
+        BuildPgm1  = "Q3MAP2.EXE"
+        BuildArgs1 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -bsp -meta "$22"%mapfile%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP2.EXE"
         BuildArgs2 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vis -saveprt "$22"%mapfile%"$22
-// RtCW BuildArgs2 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
         BuildPgm3  = "Q3MAP2.EXE"
-        BuildArgs3 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vlight "$22"%mapfile%"$22
-// RtCW BuildArgs3 = "-game "$22"wolf"$22" -fs_basepath "$22"%basepath%"$22" -vlight "$22"%file%"$22
-        BuildPgm4 = "BSPC.EXE"
-        BuildArgs4 = "-threads 1 -ext _b0 -cfg %buildpgmsdir%\aascfg_sm.c -bsp2aas ..\%output%\%file%.bsp -output ..\%output%\maps"
-//        BuildCheck4= "+AAS"  // it's actually _b0.aas
-        BuildPgm5 = "BSPC.EXE"
-        BuildArgs5 = "-threads 1 -ext _b1 -cfg %buildpgmsdir%\aascfg_lg.c -bsp2aas %basepath%\%output%\%file%.bsp -output ..\%output%\maps"
+        BuildArgs3 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -light -bounce 10 -fast -samples 3 -thresh 0.3 "$22"%mapfile%"$22
+        BuildPgm4  = "Q3MAP2.EXE"
+        BuildArgs4 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest "$22"%mapfile%"$22
+        BuildCheck4= "+BSP,-LIN{LoadLinFile}"
+        BuildPgm5  = "Q3MAP2.EXE"
+        BuildArgs5 = "-game wolf -fs_basepath "$22"%basepath%."$22" -fs_game WildWest -vlight "$22"%mapfile%"$22
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
         Q2TexFlags = "1"
