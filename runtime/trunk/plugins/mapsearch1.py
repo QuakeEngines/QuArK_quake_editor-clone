@@ -59,27 +59,28 @@ class SearchDlg(quarkpy.qmacro.dialogbox):
             src ["scope$Items"] = "Selection\nWhole map"
             src ["scope$Values"] = "S\nW"
 
-            src["kind"] = "e,b"
-            slist = ["All entities"]
-            klist = ["e,b"]
-            for key, value in quarkpy.mapentities.Mapping.items():
-                klist.append(key[1:])
-                if value.__class__.__doc__:
-                    slist.append(value.__class__.__doc__)
-                else:
-                    slist.append("'%s' objects" % key)
-            slist.append("All objects")
-            klist.append(string.join(klist[1:], ","))
-            src["kind$Items"] = string.join(slist, "\015")
-            src["kind$Values"] = string.join(klist, "\015")
+        src["kind"] = "e,b"
+        slist = ["All entities"]
+        klist = ["e,b"]
+        for key, value in quarkpy.mapentities.Mapping.items():
+            klist.append(key[1:])
+            if value.__class__.__doc__:
+                slist.append(value.__class__.__doc__)
+            else:
+                slist.append("'%s' objects" % key)
+        slist.append("All objects")
+        klist.append(string.join(klist[1:], ","))
+        src["kind$Items"] = string.join(slist, "\015")
+        src["kind$Values"] = string.join(klist, "\015")
 
-            for key, value in self.src_backup.items():
-                src[key]=value
+        for key, value in self.src_backup.items():
+            src[key]=value
 
-            quarkpy.qmacro.dialogbox.__init__(self, quarkx.clickform, src,
-              ok = qtoolbar.button(self.search, "search for the given classname", ico_editor, 1, " Search ", 1),
-              cancel = qtoolbar.button(self.close, "close this box", ico_editor, 0, " Cancel ", 1))
-            self.editor = editor
+
+        quarkpy.qmacro.dialogbox.__init__(self, quarkx.clickform, src,
+          ok = qtoolbar.button(self.search, "search for the given classname", ico_editor, 1, " Search ", 1),
+          cancel = qtoolbar.button(self.close, "close this box", ico_editor, 0, " Cancel ", 1))
+        self.editor = editor
 
     def search(self, reserved):
         quarkx.globalaccept()
@@ -142,9 +143,9 @@ class SearchByName(SearchDlg):
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-        sep: = {Typ="S" Txt=""}
-        ok:py = {Txt="" }
-        cancel:py = {Txt="" }
+        sep: = {Typ="S" Txt=" "}
+        ok:py = { }
+        cancel:py = { }
       }
     """
 
@@ -194,9 +195,9 @@ class SearchBySpec(SearchDlg):
           Values = "%s"
         }
         sep: = {Typ="S" Txt=" "}
-        sep: = {Typ="S" Txt=""}
-        ok:py = {Txt="" }
-        cancel:py = {Txt="" }
+        sep: = {Typ="S"}
+        ok:py = { }
+        cancel:py = { }
       }
     """
 
@@ -239,12 +240,6 @@ quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Broken polys and faces", Bro
 #
 #
 # $Log$
-# Revision 1.4  2001/06/16 06:33:30  tiglari
-# fix indent problem (prolly from tabs discrepancy)
-#
-# Revision 1.3  2001/06/16 03:19:05  tiglari
-# add Txt="" to separators that need it
-#
 # Revision 1.2  2000/06/03 10:25:30  alexander
 # added cvs headers
 #
