@@ -506,11 +506,11 @@ class BaseEditor:
             if self.dragobject is not None:
                 try:
                     last,x,y=self.dragobject.lastdrag
-                    debug('last yes')
+#                    debug('last yes')
                     self.dragobject.ok(self, x, y, flags)
                     self.dragobject = None
                 except:
-                    debug('last no')
+#                    debug('last no')
                     self.dragobject.ok(self, x, y, flags)
                     self.dragobject = None
 
@@ -833,6 +833,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.7  2001/02/18 20:22:12  decker_dk
+#Changed 'show brush width/height/depth', so mouse have to be inside the selection, and not on a handle. Also fixed the problem of not showing w/h/d when a single face were selected.
+#
 #Revision 1.6  2001/02/12 09:35:34  tiglari
 #fix for drag imprecision bug
 #
