@@ -12,6 +12,8 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [peter-b]: Intercept "no attribute 'wraplist'" Python error when
+      trying to wrap around pillar with incorrect selection.
 
  * [Harry Kalogirou]: Support for Sylphis as a game engine also
       write support for PNG images, added parser for new map files,
@@ -19,18 +21,19 @@ $Id$
       and Doom3 engine based games. Also a small fix for handling MD3
       models(especially for RTCW).
 
- * [Rowdy/cdunde]: Corrected handling of comments for shaders to
-      fix problem of them not showing up in the Texture Browser.
+ * [Rowdy/cdunde]: Corrected handling of comments for shaders to fix
+      problem of them not showing up in the Texture Browser.
+
 
 6.4.0 beta 1
 ============
 
- * [cdunde]: New HotKey (Tab) and Options menu function,
-      Rebuild 3D views (actually all views) in case of a lockup.
-      This clears up all textured views, may need multiple attempts.
+ * [cdunde]: New HotKey (Tab) and Options menu function, Rebuild 3D
+      views (actually all views) in case of a lockup.  This clears up
+      all textured views, may need multiple attempts.
 
- * [cdunde]: New HotKey (Alt+A) for Options menu function,
-      Axis XYZ letter indicator in view windows.
+ * [cdunde]: New HotKey (Alt+A) for Options menu function, Axis XYZ
+      letter indicator in view windows.
 
 
 6.4.0 alpha 3

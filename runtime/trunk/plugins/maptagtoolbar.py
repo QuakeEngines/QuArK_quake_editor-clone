@@ -223,6 +223,9 @@ def pillarWrapClick(m):
     quarkx.msgbox("Nothing done\n\nYou have selected the tagged face\nSelect a face beside it to wrap to.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
     return
   maptagside.pillarwrapdisabler(m, tagged, o)
+  if not ("wraplist" in dir(m)):
+    quarkx.msgbox("Nothing done\n\nYou must select one of the faces next to the tagged face on the same brush as the tagged face.\n\nSee the button F1 help for more info.", MT_ERROR, MB_OK)
+    return
   maptagside.PillarWrapClick(m)
 
 
@@ -398,6 +401,9 @@ quarkpy.maptools.toolbars["tb_tagmodes"] = TagModesBar
 
 # ----------- REVISION HISTORY ------------
 # $Log$
+# Revision 1.5  2004/01/24 16:28:39  cdunde
+# To reset defaults for toolbars
+#
 # Revision 1.4  2003/07/15 07:51:38  cdunde
 # Remove unneeded seperators to shorten toolbar for screen size.
 #
