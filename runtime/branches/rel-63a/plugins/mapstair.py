@@ -41,69 +41,76 @@ from quarkpy.perspective import *
 class StairDuplicator(StandardDuplicator):
 
   def makeStairs(self, o, steps=8, sameheight="", oldstyle=""):
-    result = []
-    faces = faceDict(o)
-    if len(faces)==6:
-      points = pointdict(vtxlistdict(faces,o))
-      frontnormal = faces['f'].normal
-      backnormal = faces['b'].normal
-      frontdist = faces['f'].dist
-      backdist = faces['b'].dist
-      frontbacklength = abs((frontnormal*frontdist) - (backnormal*backdist))
-      frontbackinterval = frontbacklength/steps
+      result = []
+      #
+      # rebuildall() is needed in order for the pointdict function
+      #  below to work, when a map with the dup is loaded up
+      #  (treacherous bug, doesn't appear when dup is introduced
+      #  into map, only when it's loaded).
+      #
+      o.rebuildall()
+      faces = faceDict(o)
+      if len(faces)==6:
+          points = pointdict(vtxlistdict(faces,o))
+          frontnormal = faces['f'].normal
+          backnormal = faces['b'].normal
+          frontdist = faces['f'].dist
+          backdist = faces['b'].dist
+          frontbacklength = abs((frontnormal*frontdist) - (backnormal*backdist))
+          frontbackinterval = frontbacklength/steps
 
-      upnormal = faces['u'].normal
-      downnormal = faces['d'].normal
-      updist = faces['u'].dist
-      downdist = faces['d'].dist
-      updownlength = abs((upnormal*updist) - (downnormal*downdist))
-      updowninterval = updownlength/steps
+          upnormal = faces['u'].normal
+          downnormal = faces['d'].normal
+          updist = faces['u'].dist
+          downdist = faces['d'].dist
+          updownlength = abs((upnormal*updist) - (downnormal*downdist))
+          updowninterval = updownlength/steps
 
-      for step in range(steps):
-        poly = quarkx.newobj("stairstep %d:p" % step)
+          for step in range(steps):
+              poly = quarkx.newobj("stairstep %d:p" % step)
 
-        face = faces['l'].copy()
-        poly.appenditem(face)
-        face = faces['r'].copy()
-        poly.appenditem(face)
+              face = faces['l'].copy()
+              poly.appenditem(face)
+              face = faces['r'].copy()
+              poly.appenditem(face)
 
-        face = faces['u'].copy()
-        face.translate(-upnormal * (updowninterval * (steps - step - 1)))
-        poly.appenditem(face)
+              face = faces['u'].copy()
+              face.translate(-upnormal * (updowninterval * (steps - step - 1)))
+              poly.appenditem(face)
 
-        face = faces['d'].copy()
-        if sameheight != "":
-          face.translate(-downnormal * (updowninterval * step))
-        poly.appenditem(face)
-        down = face
+              face = faces['d'].copy()
+              if sameheight != "":
+                 face.translate(-downnormal * (updowninterval * step))
+              poly.appenditem(face)
+              down = face
 
-        face = faces['f'].copy()
-        face.translate(-frontnormal * (frontbackinterval * step))
-        poly.appenditem(face)
+              face = faces['f'].copy()
+              face.translate(-frontnormal * (frontbackinterval * step))
+              poly.appenditem(face)
 
-        face = faces['b'].copy()
-        face.translate(-backnormal * (frontbackinterval * (steps - step - 1)))
-        poly.appenditem(face)
-        back = face
+              face = faces['b'].copy()
+              face.translate(-backnormal * (frontbackinterval * (steps - step - 1)))
+              poly.appenditem(face)
+              back = face
 
-        result.append(poly)
-        #debug('oldstyle: %s'%oldstyle)
+              result.append(poly)
+              #debug('oldstyle: %s'%oldstyle)
 
-        if sameheight!="1" and oldstyle!="1":
-            #
-            # the 'back' goes from the upper back of the stairstep to the
-            #   lower back of the whole thing.
-            # the 'down' goes from the the bottom of the visible front of the
-            #   stairstep to the lower back of the whole thing
-            #
-            #debug('here')
-            upperback = points["trb"] - backnormal * frontbackinterval * (steps - step - 1) - upnormal * (updowninterval * (steps - step - 1))
-            back.setthreepoints((upperback, points["brb"], points["blb"]),0)
-            lowerfront = points["trb"] - backnormal * frontbackinterval * (steps-step) - upnormal*updowninterval*(steps-step)
-            down.setthreepoints((lowerfront, points["blb"], points["brb"]),0)
-        
-        
-    return result
+              if sameheight!="1" and oldstyle!="1":
+                  #
+                  # the 'back' goes from the upper back of the stairstep to the
+                  #   lower back of the whole thing.
+                  # the 'down' goes from the the bottom of the visible front of the
+                  #   stairstep to the lower back of the whole thing
+                  #
+                  #debug('here')
+                  upperback = points["trb"] - backnormal * frontbackinterval * (steps - step - 1) - upnormal * (updowninterval * (steps - step - 1))
+                  back.setthreepoints((upperback, points["brb"], points["blb"]),0)
+                  lowerfront = points["trb"] - backnormal * frontbackinterval * (steps-step) - upnormal*updowninterval*(steps-step)
+                  down.setthreepoints((lowerfront, points["blb"], points["brb"]),0)
+
+
+      return result
 
   def buildimages(self, singleimage=None):
     if singleimage is not None and singleimage>0:
@@ -192,13 +199,14 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
-#Revision 1.3.14.2  2003/04/08 06:26:07  cdunde
-#finish needed changes to activate  'oldstyle' specific - by cdunde
+#Revision 1.5  2003/04/09 00:59:02  cdunde
+#To comment out debugs
 #
-#Revision 1.3.14.1  2003/02/04 09:39:21  tiglari
+#Revision 1.4  2003/04/08 06:07:33  cdunde
 #tris/overdraw-efficient fan-style stair, as suggested by foo, quakin' and Plan B
 #on the quake3world editing forum.  For old non-equal-height stair, use
-#'oldstyle' checkbox specific
+#'oldstyle' checkbox specific - by tiglari
+#finish needed changes to activate  'oldstyle' specific - by cdunde
 #
 #Revision 1.3  2001/03/03 19:26:59  decker_dk
 #Minor problem fixed.
