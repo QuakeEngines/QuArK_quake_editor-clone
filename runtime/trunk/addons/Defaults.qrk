@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.124  2001/04/28 02:41:06  tiglari
+//update version
+//
 //Revision 1.123  2001/04/28 02:19:03  tiglari
 //add selection menu hotkeys
 //
@@ -585,8 +588,11 @@ QQRKSRC1
         Duplicate= "Ctrl+D"
         Remove= "Esc"
         Select Parent="Home"
+        Collapse Tree="S"
+        Select Child="End"
         Select Next="PgDn"
         Select Previous="PgUp"
+        Same Type="S"
         Insert = "Ins"
         Tag Side = "Ctrl+T"
         Clear Tags = "Alt+C"
@@ -2665,6 +2671,11 @@ QQRKSRC1
       Hint = "If map-editor has started, new assignment will apply on"
           $0D"next QuArK restart. Otherwise when map-editor is started."
     }
+   AlphaKeyForm:incl =
+    {
+      Txt = "&R" // Read-only but use the 'Specific-name' for label
+      Typ = "R"
+    }
     MouseForm:incl =       // ":incl" objects can be included in other objects (see below)
     {
       Typ = "CL"      // Combobox List
@@ -2725,8 +2736,12 @@ QQRKSRC1
        sep:={Typ="S"}
        Remove: = {HotKeyForm = !}
        Select Parent: = {HotKeyForm = !}
+       Collapse Tree: = {AlphaKeyForm = ! Hint="Prevent collapse of treeview on climb with Parent key."$0D" Key must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
+       Select Child: = {HotKeyForm = !}
        Select Next: = {HotKeyForm = !}
        Select Previous: = {HotKeyForm = !}
+       Same Type = {AlphaKeyForm = ! Hint="When this key is depressed, prev/next selection must be of same type" $0D
+                     " Must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
        sep:={Typ="S"}
        Insert: = {HotKeyForm = !}
        Tag Side: = {HotKeyForm = !}
