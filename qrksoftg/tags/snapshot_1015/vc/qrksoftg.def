@@ -1,0 +1,15 @@
+LIBRARY QRKSOFTG
+EXPORTS
+softgQuArK@0                = softgQuArK
+grGlideInit@0               = grGlideInit
+grSstWinOpen@28             = grSstWinOpen
+grSstWinClose@0             = grSstWinClose
+grTexSource@16              = grTexSource
+grDrawTriangle@12           = grDrawTriangle
+grBufferClear@12            = grBufferClear
+grTexDownloadTable@12       = grTexDownloadTable
+grClipWindow@16             = grClipWindow
+grConstantColorValue@4      = grConstantColorValue
+guColorCombineFunction@4    = guColorCombineFunction
+grHints@8                   = grHints
+softgLoadFrameBuffer@8      = softgLoadFrameBuffer
