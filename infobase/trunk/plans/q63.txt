@@ -13,7 +13,8 @@ author: tiglari, etc.
 
 <li>FAKK2 support: ?
 
-<li>fix flakey hot key behavior (CTRL-W, forex)
+<li>fix flakey hot key behavior: ? (CTRL-W, forex); make hot-keys
+user-definable via a config menu as suggested by ax2grind
 
 <li>Face-selection modes: (tiglari)
 <br>status: interface design being discussed on QuArK board
