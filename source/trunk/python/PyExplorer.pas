@@ -20,7 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 unit PyExplorer;
 
 interface
@@ -90,7 +94,7 @@ begin
  FOnInsert:=PyNoResult;
  ExplorerObject:=NewControl(TyExplorer_Type, Self);
  AllowEditing:=aeUndo;
- ToutChargerAuto:=True;  { FIXME }
+ LoadAllAuto:=True;  { FIXME }
 end;
 
 destructor TPythonExplorer.Destroy;
@@ -166,7 +170,7 @@ begin
  if Op in [muEnd, muOneEnd] then
   begin
    SelectionChanging;
-   if ToutChargerAuto then
+   if LoadAllAuto then
     begin
      InvPoly:=0;
      InvFaces:=0;
