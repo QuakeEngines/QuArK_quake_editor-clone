@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -38,7 +41,7 @@ unit QkHr2;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Dialogs, Controls,
-     QkObjects, QkFileObjects, QkTextures, QkMdl;
+     QkObjects, QkFileObjects, QkTextures, QkMd2;
 
 type
  QM8  = class(QTexture2)
@@ -64,7 +67,7 @@ type
 
 implementation
 
-uses Game, Setup, Quarkx, QkMdlObjects;
+uses Game, Setup, Quarkx, QkMdlObject;
 
 const
  MIP_VERSION = 2;
