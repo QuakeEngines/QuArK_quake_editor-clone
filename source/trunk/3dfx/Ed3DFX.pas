@@ -31,7 +31,8 @@ uses Windows, SysUtils, Classes, qmath, QkObjects, QkMapPoly, QkMdlObjects,
 
  {------------------------}
 
-{ $DEFINE DebugLOG} 
+{ $DEFINE DebugLOG}
+{ $DEFINE DebugSOFTLIMITS}
 
 const
  MinW = 64.0;
@@ -87,10 +88,10 @@ type
                    end;
  PSurface3D = ^TSurface3D;
  TSurface3D = record
-               Normale: vec3_t;
-               Dist: scalar_t;
+               Normale: vec3_t;          { not defined if Bezier }
+               Dist: scalar_t;           { not defined if Bezier }
                AnyInfo: TSurfaceAnyInfo;
-               VertexCount: SmallInt;
+               VertexCount: Integer;     { < 0 for a Bezier's GL_TRI_STRIP (OpenGL only) }
                AlphaColor: FxU32;
               end;
  PTexture3 = ^TTexture3;
@@ -131,11 +132,12 @@ type
    procedure EndBuildScene; virtual;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel); virtual; abstract;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); virtual; abstract;
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
    procedure BuildTexture(Texture: PTexture3); virtual; abstract;
  public
-   PolyFaces, ModelInfo: TList;
+   PolyFaces, ModelInfo, BezierInfo: TList;
    BlendColor: TColorRef;
    ViewEntities: TViewEntities;
    TranspFactor: Single;
@@ -172,6 +174,7 @@ type
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
    procedure PostBuild(nVertexList, nVertexList2: TList); override;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
@@ -248,7 +251,7 @@ function GetTex3Description(const Tex3: TTexture3) : TPixelSetDescription;
 
 implementation
 
-uses QkFileObjects, Quarkx, CCode, FullScr1, Travail;
+uses QkFileObjects, Quarkx, CCode, FullScr1, Travail, Bezier;
 
  {------------------------}
 
@@ -1137,6 +1140,7 @@ begin
  inherited;
  PolyFaces:=TList.Create;
  ModelInfo:=TList.Create;
+ BezierInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
 end;
 
@@ -1144,6 +1148,7 @@ destructor TSceneObject.Destroy;
 begin
  ClearScene;
  TTextureManager.RemoveScene(Self);
+ BezierInfo.Free;
  ModelInfo.Free;
  PolyFaces.Free;
  TemporaryStuff.Free;
@@ -1171,6 +1176,7 @@ begin
   end;
  PolyFaces.Clear;
  ModelInfo.Clear;
+ BezierInfo.Clear;
  TemporaryStuff.Clear;
 end;
 
@@ -1208,6 +1214,8 @@ begin
  PolyFaces.Add(TObject(nColor));
  ModelInfo.Add(Nil);
  ModelInfo.Add(TObject(nColor));
+ BezierInfo.Add(Nil);
+ BezierInfo.Add(TObject(nColor));
 end;
 
 procedure TSceneObject.SwapBuffers;
@@ -1475,6 +1483,27 @@ begin
   end;
 end;
 
+procedure T3DFXSceneObject.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+var
+ w, h: Integer;
+begin
+ with Texture^ do
+  begin
+   w:=256;
+   h:=256;
+   case info.aspectratio of
+    GR_ASPECT_8x1: h:=32;
+    GR_ASPECT_4x1: h:=64;
+    GR_ASPECT_2x1: h:=128;
+    GR_ASPECT_1x2: w:=128;
+    GR_ASPECT_1x4: w:=64;
+    GR_ASPECT_1x8: w:=32;
+   end;
+   ScaleS:=w;
+   ScaleT:=h;
+  end;
+end;
+
 procedure TSceneObject.BuildScene(DC: HDC; AltTexSrc: QObject);
 const
  LargeurBarre = 256;
@@ -1501,10 +1530,13 @@ var
  v3p: array[0..2] of vec3_p;
  nRadius2, Radius2: FxFloat;
  FirstPoint: TVect;
- CurrentColor: FxU32;
+ CurrentColor, ObjectColor: FxU32;
  TextureManager: TTextureManager;
  Mode: TBuildMode;
  VertexSize, VertexSize3m: Integer;
+ BezierBuf: TBezierMeshBuf3;
+ BControlPoints: TBezierMeshBuf5;
+ stBuffer, st: vec_st_p;
 {PalWarning: TPaletteWarning;}
 
   procedure AddSurfaceRef(const S: String; SurfSize: Integer; tmp: Pointer);
@@ -1525,6 +1557,56 @@ var
      TexNames.AddObject(S, TObject(PList));
     end;
    Inc(PList^.SurfSize, SurfSize);
+  end;
+
+  procedure SmallBezierTriangle(i1,i2,i3: Integer);
+  var
+   vp0, vp1, vp2: vec3_p;
+   stp: vec_st_p;
+   v2, v3, DeltaV: TVect;
+   dd, Radius2, nRadius2: Reel;
+  begin
+   PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+   vp0:=BezierBuf.CP; Inc(vp0,i1); stp:=st; Inc(stp,i1);
+   WriteVertex(PV, vp0, stp^.s * CorrW, stp^.t * CorrH, False);
+   Inc(PV, VertexSize);
+   vp1:=BezierBuf.CP; Inc(vp1,i2); stp:=st; Inc(stp,i2);
+   WriteVertex(PV, vp1, stp^.s * CorrW, stp^.t * CorrH, False);
+   Inc(PV, VertexSize);
+   vp2:=BezierBuf.CP; Inc(vp2,i3); stp:=st; Inc(stp,i3);
+   WriteVertex(PV, vp2, stp^.s * CorrW, stp^.t * CorrH, False);
+   Inc(PV, VertexSize);
+   
+   v2.X:=vp1^[0] - vp0^[0];
+   v2.Y:=vp1^[1] - vp0^[1];
+   v2.Z:=vp1^[2] - vp0^[2];
+   v3.X:=vp2^[0] - vp0^[0];
+   v3.Y:=vp2^[1] - vp0^[1];
+   v3.Z:=vp2^[2] - vp0^[2];
+   DeltaV:=Cross(v3, v2);
+   dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
+   if dd<rien then
+    Dec(PList^.SurfSize, VertexSize3m)
+   else
+    begin
+     dd:=1/Sqrt(dd);
+     Radius2:=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
+     nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
+     with Surf3D^ do
+      begin
+       Normale[0]:=DeltaV.X*dd;
+       Normale[1]:=DeltaV.Y*dd;
+       Normale[2]:=DeltaV.Z*dd;
+       Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+       if nRadius2>Radius2 then
+        AnyInfo.Radius:=Sqrt(nRadius2)
+       else
+        AnyInfo.Radius:=Sqrt(Radius2);
+       VertexCount:=3;
+       AlphaColor:=ObjectColor;
+      end;
+     Inc(PChar(Surf3D), VertexSize3m);
+    end;
   end;
 
 begin
@@ -1586,7 +1668,32 @@ begin
           nVertexList2.Add(CVertex);
           Inc(CVertex);
          end;
-       end;  
+       end;
+     end;
+   end;
+ I:=0;
+ while I<BezierInfo.Count do
+  begin
+   Dest:=BezierInfo[I];
+   if Dest=Nil then
+    Inc(I,2)
+   else
+    with TBezier(Dest) do
+     begin
+      Inc(I);
+      if Mode<>bmOpenGL then
+       begin
+        BezierBuf:=GetMeshCache;
+        AddSurfaceRef(NomTex, ((BezierBuf.H-1)*(BezierBuf.W-1)*2)*VertexSize3m, Nil);
+        for J:=1 to BezierBuf.W*BezierBuf.H do
+         begin
+          nVertexList2.Add(BezierBuf.CP);
+          Inc(BezierBuf.CP);
+         end;
+       end
+      else   { bmOpenGL }
+       with GetMeshCache do
+        AddSurfaceRef(NomTex, (H-1)*(SizeOf(TSurface3D)+2*W*(VertexSize+SizeOf(vec3_t))), Nil);
      end;
    end;
  NewTextures:=0;
@@ -1892,6 +1999,91 @@ begin
          end;
        end;
       PList^.tmp:=Surf3D;
+     end;
+   end;
+
+ CurrentColor:=$FFFFFF;
+ I:=0;
+ while I<BezierInfo.Count do
+  begin
+   Dest:=BezierInfo[I];
+   if Dest=Nil then
+    begin
+     CurrentColor:=FxU32(BezierInfo[I+1]);
+     Inc(I,2);
+    end
+   else
+    with TBezier(Dest) do
+     begin
+      Inc(I);
+      S:=NomTex;
+      if not TexNames.Find(S, J) then
+       {$IFDEF Debug}Raise InternalE('TexNames.Find.3'){$ENDIF};
+      PList:=PSurfaces(TexNames.Objects[J]);
+      if PList^.Surf=Nil then
+       begin
+        GetMem(PList^.Surf, PList^.SurfSize);
+        Surf3D:=PList^.Surf;
+       end
+      else
+       Surf3D:=PList^.tmp;
+      ObjectColor:=CurrentColor or
+         (GetFaceOpacity(PList^.Texture^.DefaultAlpha{, TextureManager.TexOpacityInfo}) shl 24);
+      Include(PList^.Transparent, ObjectColor and $FF000000 <> $FF000000);
+
+      stScaleBezier(PList^.Texture, CorrW, CorrH);
+      BezierBuf:=GetMeshCache;
+      BControlPoints:=ControlPoints;
+      GetMem(stBuffer, BezierBuf.W*BezierBuf.H*SizeOf(vec_st_t)); try
+      st:=stBuffer;
+      for L:=0 to BezierBuf.H-1 do
+       for K:=0 to BezierBuf.H-1 do
+        begin
+         st^:=TriangleSTCoordinates(BControlPoints, K, L);
+         Inc(st);
+        end;
+      
+      st:=stBuffer;
+      if Mode=bm3DFX then
+       for L:=0 to BezierBuf.H-2 do
+        begin
+         for K:=0 to BezierBuf.W-2 do
+          begin
+           SmallBezierTriangle(0, BezierBuf.W, 1);
+           SmallBezierTriangle(BezierBuf.W, BezierBuf.W+1, 1);
+           Inc(BezierBuf.CP); Inc(st);
+          end;
+         Inc(BezierBuf.CP); Inc(st);
+        end
+      else   { bmOpenGL }
+       for L:=0 to BezierBuf.H-2 do
+        begin
+         with Surf3D^ do
+          begin
+           AnyInfo.DisplayList:=0;
+           VertexCount:=-(2*BezierBuf.W);
+           AlphaColor:=ObjectColor;
+          end;
+         PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+         bb:=L*(1/BezierMeshCnt);
+         for K:=0 to BezierBuf.W-1 do
+          begin
+           aa:=K*(1/BezierMeshCnt);
+           WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
+           Inc(PV, VertexSize);
+           vec3_p(PV)^:=OrthogonalVector(aa,bb);
+           Inc(vec3_p(PV));
+           Inc(BezierBuf.CP, BezierBuf.W); Inc(st, BezierBuf.W);
+           WriteVertex(PV, BezierBuf.CP, st^.s*CorrW, st^.t*CorrH, False);
+           Inc(PV, VertexSize);
+           vec3_p(PV)^:=OrthogonalVector(aa,bb+1/BezierMeshCnt);
+           Inc(vec3_p(PV));
+           Dec(BezierBuf.CP, BezierBuf.W-1); Dec(st, BezierBuf.W-1);
+          end;
+         PChar(Surf3D):=PChar(PV);
+        end;
+      finally FreeMem(stBuffer); end;
+      PList^.tmp:=PSurface3D(Surf3D);
      end;
    end;
 
@@ -2928,7 +3120,7 @@ begin
             for I:=0 to N-1 do
              with VList[I] do
               begin
-           {$IFDEF Debug}
+           {$IFDEF DebugSOFTLIMITS}
                if x<LocalViewRectLeft then Raise InternalE('N:LocalViewRectLeft');
                if y<LocalViewRectTop then Raise InternalE('N:LocalViewRectTop');
                if x>LocalViewRectRight then Raise InternalE('N:LocalViewRectRight');

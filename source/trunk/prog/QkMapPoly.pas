@@ -127,6 +127,7 @@ type
                       property TextureMirror: Boolean read GetTextureMirror write SetTextureMirror;
                       function PyGetAttr(attr: PChar) : PyObject; override;
                       function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
+                      function GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;   { 0 - 255 }
                     end;
 
  TFace     = class(TTexturedTreeMap)
@@ -183,7 +184,6 @@ type
                procedure UnlinkSurface(S: PSurface);
                function Retourner : Boolean;
                procedure AddTo3DScene; override;
-               function GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;   { 0 - 255 }
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
              end;
@@ -4167,7 +4167,7 @@ begin
   end;
 end;
 
-function TFace.GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;
+function TTexturedTreeMap.GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;
 var
  S: String;
 begin

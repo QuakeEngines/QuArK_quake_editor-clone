@@ -57,6 +57,7 @@ type
    ScreenX, ScreenY: Integer;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
+   procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
  public
    procedure SetViewRect(SX, SY: Integer); override;
@@ -461,7 +462,7 @@ begin
  finally if FrameBrush<>0 then DeleteObject(FrameBrush); end;
  SetDIBitsToDevice(DC, L, T,
   bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
-  0,bmiHeader.biHeight, Bits, BmpInfo, dib_RGB_Colors);
+  0,bmiHeader.biHeight, Bits, BmpInfo, 0);
  finally FreeMem(Bits); end;
 end;
 
@@ -574,6 +575,12 @@ begin
    ScaleS:=1/TexW;
    ScaleT:=1/TexH;
   end;
+end;
+
+procedure TGLSceneBase.stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+begin
+ ScaleS:=1;
+ ScaleT:=1;
 end;
 
 procedure TGLSceneBase.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
@@ -884,6 +891,102 @@ begin
   end;
 end;
 
+procedure LightAtPoint(var Point1: TP3D; SubList: PLightList; const Currentf: GLfloat4;
+                       const LightParams: TLightParams; const NormalePlan: vec3_t);
+var
+ LP: PLightList;
+ Light: array[0..2] of Reel;
+ ColoredLights, Saturation: Boolean;
+ Incoming: vec3_t;
+ Dist1, DistToSource: Reel;
+ K: Integer;
+begin
+ with Point1 do
+  begin
+   LP:=SubList;
+   Light[0]:=0;
+   ColoredLights:=False;
+   Saturation:=False;
+   while Assigned(LP) do
+    with LP^ do
+     begin
+      LP:=SousListe;
+      if  (v.xyz[0]>Min[0]) and (v.xyz[0]<Max[0])
+      and (v.xyz[1]>Min[1]) and (v.xyz[1]<Max[1])
+      and (v.xyz[2]>Min[2]) and (v.xyz[2]<Max[2]) then
+       begin
+        Incoming[0]:=Position[0]-v.xyz[0];
+        Incoming[1]:=Position[1]-v.xyz[1];
+        Incoming[2]:=Position[2]-v.xyz[2];
+        DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
+        if DistToSource<Brightness2 then
+         begin
+          DistToSource:=Sqrt(DistToSource);
+          Dist1:=(Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos*(Incoming[0]*NormalePlan[0]+Incoming[1]*NormalePlan[1]+Incoming[2]*NormalePlan[2])/DistToSource);
+          if Color = $FFFFFF then
+           begin
+            Light[0]:=Light[0] + Dist1;
+            if not ColoredLights then
+             if Light[0]>=LightParams.BrightnessSaturation then
+              begin
+               Saturation:=True;
+               Break;
+              end
+             else
+              Continue;
+            Light[1]:=Light[1] + Dist1;
+            Light[2]:=Light[2] + Dist1;
+           end
+          else
+           begin
+            if not ColoredLights then
+             begin
+              Light[1]:=Light[0];
+              Light[2]:=Light[0];
+              ColoredLights:=True;
+             end;
+            if Color and $FF = $FF then
+             Light[0]:=Light[0] + Dist1
+            else
+             Light[0]:=Light[0] + Dist1 * (Color and $FF) * (1/$100);
+            if (Color shr 8) and $FF = $FF then
+             Light[1]:=Light[1] + Dist1
+            else
+             Light[1]:=Light[1] + Dist1 * ((Color shr 8) and $FF) * (1/$100);
+            if Color shr 16 = $FF then
+             Light[2]:=Light[2] + Dist1
+            else
+             Light[2]:=Light[2] + Dist1 * (Color shr 16) * (1/$100);
+           end;
+         {if  (Light[0]>=LightParams.BrightnessSaturation)
+          and (Light[1]>=LightParams.BrightnessSaturation)
+          and (Light[2]>=LightParams.BrightnessSaturation) then
+           begin
+            Saturation:=True;
+            Break;
+           end;}
+         end;
+       end;
+     end;
+   if Saturation then
+    Move(Currentf, l, SizeOf(l))
+   else
+    if ColoredLights then
+     for K:=0 to 2 do
+      if Light[K]>=LightParams.BrightnessSaturation then
+       l[K]:=Currentf[K]
+      else
+       l[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K]
+    else
+     begin
+      Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
+      l[0]:=Light[0] * Currentf[0];
+      l[1]:=Light[0] * Currentf[1];
+      l[2]:=Light[0] * Currentf[2];
+     end;
+  end;
+end;
+
 procedure RenderQuad(PV1, PV2, PV3, PV4: PVertex3D; var Currentf: GLfloat4;
   LP: PLightList; const NormalePlan: vec3_t; Dist: scalar_t; const LightParams: TLightParams);
 const
@@ -891,15 +994,12 @@ const
  SectionsI = 8;
  SectionsJ = 8;
 var
- I, J, K, StepI, StepJ: Integer;
+ I, J, StepI, StepJ: Integer;
  Points: array[0..SectionsJ, 0..SectionsI] of TP3D;
  f, fstep: Single;
  SubList: PLightList;
  LPP: ^PLightList;
- Light1, DistToSource, Dist1: Reel;
- Light: array[0..2] of Reel;
- ColoredLights, Saturation: Boolean;
- Incoming: vec3_t;
+ DistToSource, Dist1: Reel;
  l: array[0..2] of GLfloat;
 begin
  SubList:=Nil;
@@ -1028,91 +1128,10 @@ begin
     begin
      I:=0;
      while I<=SectionsI do
-      with Points[J,I] do
-       begin
-        LP:=SubList;
-        Light[0]:=0;
-        ColoredLights:=False;
-        Saturation:=False;
-        while Assigned(LP) do
-         with LP^ do
-          begin
-           LP:=SousListe;
-           if  (v.xyz[0]>Min[0]) and (v.xyz[0]<Max[0])
-           and (v.xyz[1]>Min[1]) and (v.xyz[1]<Max[1])
-           and (v.xyz[2]>Min[2]) and (v.xyz[2]<Max[2]) then
-            begin
-             Incoming[0]:=Position[0]-v.xyz[0];
-             Incoming[1]:=Position[1]-v.xyz[1];
-             Incoming[2]:=Position[2]-v.xyz[2];
-             DistToSource:=Sqr(Incoming[0])+Sqr(Incoming[1])+Sqr(Incoming[2]);
-             if DistToSource<Brightness2 then
-              begin
-               DistToSource:=Sqrt(DistToSource);
-               Dist1:=(Brightness - DistToSource) * ((1.0-kScaleCos) + kScaleCos*(Incoming[0]*NormalePlan[0]+Incoming[1]*NormalePlan[1]+Incoming[2]*NormalePlan[2])/DistToSource);
-               if Color = $FFFFFF then
-                begin
-                 Light[0]:=Light[0] + Dist1;
-                 if not ColoredLights then
-                  if Light[0]>=LightParams.BrightnessSaturation then
-                   begin
-                    Saturation:=True;
-                    Break;
-                   end
-                  else
-                   Continue;
-                 Light[1]:=Light[1] + Dist1;
-                 Light[2]:=Light[2] + Dist1;
-                end
-               else
-                begin
-                 if not ColoredLights then
-                  begin
-                   Light[1]:=Light[0];
-                   Light[2]:=Light[0];
-                   ColoredLights:=True;
-                  end;
-                 if Color and $FF = $FF then
-                  Light[0]:=Light[0] + Dist1
-                 else
-                  Light[0]:=Light[0] + Dist1 * (Color and $FF) * (1/$100);
-                 if (Color shr 8) and $FF = $FF then
-                  Light[1]:=Light[1] + Dist1
-                 else
-                  Light[1]:=Light[1] + Dist1 * ((Color shr 8) and $FF) * (1/$100);
-                 if Color shr 16 = $FF then
-                  Light[2]:=Light[2] + Dist1
-                 else
-                  Light[2]:=Light[2] + Dist1 * (Color shr 16) * (1/$100);
-                end;
-              {if  (Light[0]>=LightParams.BrightnessSaturation)
-               and (Light[1]>=LightParams.BrightnessSaturation)
-               and (Light[2]>=LightParams.BrightnessSaturation) then
-                begin
-                 Saturation:=True;
-                 Break;
-                end;}
-              end;
-            end;
-          end;
-        if Saturation then
-         Move(Currentf, l, SizeOf(l))
-        else
-         if ColoredLights then
-          for K:=0 to 2 do
-           if Light[K]>=LightParams.BrightnessSaturation then
-            l[K]:=Currentf[K]
-           else
-            l[K]:=(LightParams.ZeroLight + Light[K]*LightParams.LightFactor) * Currentf[K]
-         else
-          begin
-           Light[0]:=LightParams.ZeroLight + Light[0]*LightParams.LightFactor;
-           l[0]:=Light[0] * Currentf[0];
-           l[1]:=Light[0] * Currentf[1];
-           l[2]:=Light[0] * Currentf[2];
-          end;
-        Inc(I, StepI);
-       end;
+      begin
+       LightAtPoint(Points[J,I], SubList, Currentf, LightParams, NormalePlan);
+       Inc(I, StepI);
+      end;
      Inc(J, StepJ);
     end;
    J:=0;
@@ -1143,13 +1162,40 @@ begin
   end;
 end;
 
+procedure RenderQuadStrip(PV: PVertex3D; VertexCount: Integer; var Currentf: GLfloat4;
+  LP: PLightList; const LightParams: TLightParams);
+var
+ LP1: PLightList;
+ I: Integer;
+ Point: TP3D;
+begin
+ LP1:=LP;
+ while Assigned(LP1) do
+  begin
+   LP1^.SousListe:=LP1^.Suivant;
+   LP1:=LP1^.SousListe;
+  end;
+ gl.glBegin(GL_TRIANGLE_STRIP);
+ for I:=1 to VertexCount do
+  begin
+   Point.v:=PV^;
+   Inc(PV);
+   LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
+   Inc(vec3_p(PV));
+   gl.glColor3fv(Point.l);
+   gl.glTexCoord2fv(Point.v.st);
+   gl.glVertex3fv(Point.v.xyz);
+  end;
+ gl.glEnd;
+end;
+
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
  Surf: PSurface3D;
  SurfEnd: PChar;
  PV, PVBase, PV2, PV3: PVertex3D;
  NeedTex, NeedColor: Boolean;
- I: Integer;
+ I, Sz: Integer;
 begin
  NeedTex:=True;
  Surf:=PList^.Surf;
@@ -1159,7 +1205,7 @@ begin
    begin
     Inc(Surf);
     if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-    and SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
+    and ((VertexCount<0) or SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist)) then
      begin
       if AlphaColor<>CurrentAlpha then
        begin
@@ -1195,17 +1241,22 @@ begin
             gl.glColor4fv(Currentf);
             {$IFDEF DebugGLErr} Err(112); {$ENDIF}
            end;
-         PVBase:=PV;
-         if not Odd(VertexCount) then
-          Inc(PV);
-         for I:=0 to (VertexCount-3) div 2 do
-          begin
-           PV2:=PV;
-           Inc(PV);
-           PV3:=PV;
-           Inc(PV);
-           RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
-          end;
+         if VertexCount>=0 then
+          begin  { normal polygon }
+           PVBase:=PV;
+           if not Odd(VertexCount) then
+            Inc(PV);
+           for I:=0 to (VertexCount-3) div 2 do
+            begin
+             PV2:=PV;
+             Inc(PV);
+             PV3:=PV;
+             Inc(PV);
+             RenderQuad(PVBase, PV2, PV3, PV, Currentf, Lights, Normale, Dist, LightParams);
+            end;
+          end
+         else    { strip }
+          RenderQuadStrip(PV, -VertexCount, Currentf, Lights, LightParams);
         {Inc(PV);}
          if DisplayLists<>-1 then
           begin
@@ -1260,18 +1311,30 @@ begin
           {$IFDEF DebugGLErr} Err(115); {$ENDIF}
          end;
         {$IFDEF DebugGLErr} Err(-116); {$ENDIF}
-        gl.glBegin(GL_POLYGON);
-        for I:=1 to VertexCount do
+        if VertexCount>=0 then
+         begin
+          gl.glBegin(GL_POLYGON);
+          Sz:=SizeOf(TVertex3D);
+         end
+        else
+         begin
+          gl.glBegin(GL_TRIANGLE_STRIP);
+          Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
+         end;
+        for I:=1 to Abs(VertexCount) do
          begin
           gl.glTexCoord2fv(PV^.st);
           gl.glVertex3fv(PV^.xyz);
-          Inc(PV);
+          Inc(PChar(PV), Sz);
          end;
         gl.glEnd;
         {$IFDEF DebugGLErr} Err(116); {$ENDIF}
        end;
      end;
-    Inc(PVertex3D(Surf), VertexCount);
+    if VertexCount>=0 then
+     Inc(PVertex3D(Surf), VertexCount)
+    else
+     Inc(PChar(Surf), VertexCount*(-(SizeOf(TVertex3D)+SizeOf(vec3_t))));
    end;
  PList^.ok:=True;
 end;
