@@ -15,7 +15,8 @@ $Id$
 
 6.4.0 alpha 4
 =============
- * [Decker-cdunde]: New HotKey (Alt-D) and Selection menu function,            Make Detail for setting multiple poly and face texture flag
+ * [Decker-cdunde]: New HotKey (Alt-D) and Selection menu function,
+      Make Detail for setting multiple poly and face texture flag
       to detail and related Infobase update.
 
  * [SilverPaladin]: Improved the compiling menu for The-WildWest 
