@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.200  2002/12/25 21:27:26  tiglari
+//shift Genesis3D to the  bottom of the games list
+//
 //Revision 1.199  2002/12/25 21:25:07  tiglari
 //add pts loading to Q1, Hx2, HL
 //
@@ -1708,7 +1711,7 @@ QQRKSRC1
         BuildArgs3 = "-light"
         BuildPgm4  = "SOF2MAP.EXE"
         BuildArgs4 = "-all"
-        
+
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
@@ -1744,7 +1747,7 @@ QQRKSRC1
         3DLight = '512'
         PakExtra1 = ".nav"  // PAK extra files into pak file (ie maps/mapname.nav)
       }
-      
+
       SoF2:config =
       {
         Game = "SoF2"
@@ -1772,7 +1775,7 @@ QQRKSRC1
         BuildArgs3 = "-light"
         BuildPgm4  = "SOF2MAP.EXE"
         BuildArgs4 = "-all"
-        
+
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
@@ -4166,7 +4169,7 @@ QQRKSRC1
       L0: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
       L0: = {Typ="S" Txt="---- troubleshooting options ----"}
-      Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }  
+      Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
@@ -5177,7 +5180,7 @@ QQRKSRC1
         Txt = "Plug-in name"
       }
       desc: = {
-        Typ = "E R"    // Edit Read-only
+        Typ = "M R"    // Memo/Multiline-text Read-only
         Txt = "Description"
       }
       date: = {
