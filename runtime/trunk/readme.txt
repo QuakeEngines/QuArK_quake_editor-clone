@@ -1,31 +1,33 @@
 
 
+ * [peter-b]: Python bundling
 
-  * [cdunde, tiglari]: mapstairs problems; fixed bug and added 'old style'
-     flag.
+ * [cdunde, tiglari]: mapstairs problems; fixed bug and added 'old
+      style' flag.
 
-  * [dannj] Heretic2 data: Fixed material types for trains, added ANIMATE
-       flag for floor torch, fixed current direction descriptions, added
-       angle specifics for lots of entities and more.
+ * [dannj] Heretic2 data: Fixed material types for trains, added
+      ANIMATE flag for floor torch, fixed current direction
+      descriptions, added angle specifics for lots of entities and
+      more.
 
+6.4  alpha snapshot Mar 29 2003
+===============================
 
-                     6.4  alpha snapshot Mar 29 2003
+ There are quite a lot of new features here, one of the most
+ noteworthy is that many of the help popup windows have a button in
+ them which will call up the relevant infobase page.  This feature was
+ conceived and implemented by cdunde, with some help from Andy Vincent
+ and tiglari.  To use the new feature, you need to unzip the infobase
+ (downloadable help file) into a subfolder of your QuArK folder called
+ `help'.  For best results, use the most recent one, linked to from
+ whereever you downloaded this from.
 
- There are quite a lot of new features here, one of the most noteworthy
- is that many of the help popup windows have a button in them which will
- call up the relevant infobase page.  This feature was conceived and
- implemented by cdunde, with some help from Andy Vincent and tiglari.
- To use the new feature, you need to unzip the infobase  (downloadable
- help file) into a subfolder of your QuArK folder called `help'.  For
- best results, use the most recent one, linked to from whereever you
- downloaded this from.
+ Other additions include display of transparency in Q2 and other
+ games, loading portal files, and a brush-from number-finder.  Here's
+ the list, complete except for whatever I've forgotten: 
 
- Other additions include display of transparency in Q2 and other games,
- loading portal files, and a brush-from number-finder.  Here's the list,
- complete except for whatever I've forgotten:
- 
-
- * [tiglari] select tagged faces menu item enable bug fixed (bug noted by cdunde)
+ * [tiglari] select tagged faces menu item enable bug fixed (bug noted
+      by cdunde)
 
  * [tiglari] brush-from-number finder (on build menu)
 
@@ -37,14 +39,15 @@
  
  * [tiglari] loading of portal files
  
- * [tiglari] option for specifying thickness of lines overdrawn
-      on map (holes and portals currently supported)
+ * [tiglari] option for specifying thickness of lines overdrawn on map
+      (holes and portals currently supported)
  
  * [marco leise] more GL modes supported
 
  * [tiglari, cdunde] various selection menu enabler logic bugs fixed
 
- * [tiglari] select tagged faces menu item enable bug fixed (bug noted by cdunde)
+ * [tiglari] select tagged faces menu item enable bug fixed (bug noted
+      by cdunde)
 
  * [tiglari] brush-from-number finder (on build menu)
 
@@ -56,12 +59,12 @@
  
  * [tiglari] loading of portal files
  
- * [tiglari] option for specifying thickness of lines overdrawn
-      on map (holes and portals currently supported)
+ * [tiglari] option for specifying thickness of lines overdrawn on map
+      (holes and portals currently supported)
 
- * [tiglari] writes genesis3d maps in map format, with texture coordinates
-     diddled so that they will hopefully be correct when imported into
-     Genesis3d editors.
+ * [tiglari] writes genesis3d maps in map format, with texture
+      coordinates diddled so that they will hopefully be correct when
+      imported into Genesis3d editors.
  
  * [decker] transparency
  
@@ -78,9 +81,9 @@
 
  * [decker] bot waypoint editor, preliminary
 
- * [tiglari] writes genesis3d maps in map format, with texture coordinates
-     diddled so that they will hopefully be correct when imported into
-     Genesis3d editors.
+ * [tiglari] writes genesis3d maps in map format, with texture
+      coordinates diddled so that they will hopefully be correct when
+      imported into Genesis3d editors.
  
  * [decker] transparency
  
@@ -90,30 +93,33 @@
  
  * [cdunde] tagging toolbar
  
- * [cdunde, Andy, tiglari] F1 help can now load a page from the
-      infobase, which must be in help/ subfolder of QuArK directory
+ * [cdunde, Andy, tiglari] F1 help can now load a page from
+      the infobase, which must be in help/ subfolder of QuArK
+      directory
       
  * [tiglari] enhancements to wall maker
 
- * [decker] bot waypoint editor, preliminary
->>>>>>> 1.52
+ * [decker] bot waypoint editor, preliminary >>>>>>> 1.52
  
  * [decker] scrollbars on plugin list
  
  * [rowdy] changes for compilation under D7
  
  * [tiglari] to compile an .exe to use Python 2.2, add
-    PYTHON22_OR_BETTER to the Project Conditional Defines.
+      PYTHON22_OR_BETTER to the Project Conditional Defines.
     
-                          QuArK 6.3
+QuArK 6.3
+=========
 
  * [tiglari] bugs with bsp-viewing fixed
 
- * [tiglari] add 'nolinear' form and checkmark to path duplicator; this means
-     that linear mappings will work on it properly
+ * [tiglari] add 'nolinear' form and checkmark to path duplicator;
+      this means that linear mappings will work on it properly
 
- * [tiglari] revise wallmaker form to encourage extruded version, deprecate
-      negative polys, and suggest using sold for revision of complex forms.
+ * [tiglari] revise wallmaker form to encourage extruded version,
+      deprecate negative polys, and suggest using sold for revision of
+      complex forms.
+
  * [tiglari] fix error-on-RMB-on-vertex-in-restricted-selection bug
                         
  * [tiglari] mirror-image  face|textures RMB command.
@@ -125,52 +131,54 @@
  
  * [tiglari] add .pts loading commands to defaults for Q1, Hx2, HL
 
- * [tiglari] lighting problems with etp and V220 formats, pinned down with
-       great effort by quantum_red, fixed.
+ * [tiglari] lighting problems with etp and V220 formats, pinned down
+      with great effort by quantum_red, fixed.
 
- * [tiglari] bug with non-inverse brush arches fixed (found by quantum_red)
+ * [tiglari] bug with non-inverse brush arches fixed (found by
+      quantum_red)
 
- * [tiglari] problems with valve mapversion220 format writing fixed (ditto)
+ * [tiglari] problems with valve mapversion220 format writing fixed
+      (ditto)
 
  * [cdunde] Meaningful movepal icons
  
- * [tiglari] fix RTCW misc_model models, many skins still AWOL dunno why
+ * [tiglari] fix RTCW misc_model models, many skins still AWOL dunno
+      why
 
  * [ut_fourdays] bad spawnflag fix for func_door/rotating
 
  * [quantum_red,Decker,tiglari] fix dual screen monitor problem
 
- * [Decker] Fixed GDI-object(s) not being released (leaked), when using 
-     colors on tree-view groups (reported by Raybot).
+ * [Decker] Fixed GDI-object(s) not being released (leaked), when
+      using colors on tree-view groups (reported by Raybot).
 
- * [decker]  bugfixes to
-       -mapbrushcurves.py, mapquakemenu.py, maptexsearch.py, mapdupspath
-          (involving 'level' flag).
+ * [decker]  bugfixes to -mapbrushcurves.py, mapquakemenu.py,
+      maptexsearch.py, mapdupspath (involving 'level' flag).
 
  * [tiglari] Fix problems with texture positioning in Classic Quake
-     and Quark etp mode (reported on the rust QuArK forum, argggh
-     what was I smoking when I wrote that code ...)
+      and Quark etp mode (reported on the rust QuArK forum, argggh
+      what was I smoking when I wrote that code ...)
                  
- * [tiglari] Improve many of the search dialogs (thin faces, microbrushes,
-     bad texture scales, targetting/ed, bsp study, browse multiple selection)
-     so that they start with the first item on the list loaded and ready to
-     go, and don't chose the first of two items with identical names.
+ * [tiglari] Improve many of the search dialogs (thin faces,
+      microbrushes, bad texture scales, targetting/ed, bsp study,
+      browse multiple selection) so that they start with the first
+      item on the list loaded and ready to go, and don't chose the
+      first of two items with identical names.
 
  * [tiglari] Radiant-style dragging for frozen selections (if
-     drag starts inside brush/patch but not on a handle, the
-     whole thing is drug, if drag starts outside of brush,
-     most nearly facing face is.  Dragging of handles stays as
-     before.
+      drag starts inside brush/patch but not on a handle, the whole
+      thing is drug, if drag starts outside of brush, most nearly
+      facing face is.  Dragging of handles stays as before.
 
- * [Decker] Map-editor's "Search and replace texture" now also works as a 
-     search-for-texture in the map. Not to be confused with the "Search for 
-     texture" which only searches in the texture-browser.
+ * [Decker] Map-editor's "Search and replace texture" now also works
+      as a search-for-texture in the map. Not to be confused with the
+      "Search for texture" which only searches in the texture-browser.
 
- * [tiglari] Replace texture dialog: if just a face is selected,
-    its texture is now loaded into dialog (bug report from fpbrowser)
+ * [tiglari] Replace texture dialog: if just a face is selected, its
+      texture is now loaded into dialog (bug report from fpbrowser)
 
  * [tiglari] some Valve 220 map reading errors now recorded in the
-    console (bad texture scale info)
+      console (bad texture scale info)
 
  * [tiglari] Bezier patches selectable from back as well as front
   
@@ -181,12 +189,12 @@
       faces, curves and entities
       
  * [tiglari] 'frozen selection': Shift-LMB like Radiant select,
-      selection doesn't change until another frozen selection is
-      made, selection is changed in tree-view, or deselected with
-      ESC or Unfreeze selection
+   selection doesn't change until another frozen selection is made,
+   selection is changed in tree-view, or deselected with ESC or
+   Unfreeze selection
                  
- * [tiglari] Mohaa map reading implemented, various map writing
-     bugs fixed
+ * [tiglari] Mohaa map reading implemented, various map writing bugs
+      fixed
 
  * [nurail] JKII light path entities corrected
    
@@ -194,23 +202,23 @@
 
  * [rtdtheprof] torque maps read correctly
 
- * [tiglari] Mohaa maps should now be written correctly (not read, yet). 
+ * [tiglari] Mohaa maps should now be written correctly (not read,
+      yet). 
                 
  * [tiglari] mirror duplicators are supposed to work now.  This is
-    really a fix to new texture positioning scheme, the underlying
-    problem might have been having other repercussions.
+       really a fix to new texture positioning scheme, the underlying
+       problem might have been having other repercussions.
                 
- * [tiglari] fix errors on opening map editor (for some people,
-      not me, for reasons which I don't understand at all)
+ * [tiglari] fix errors on opening map editor (for some people, not
+      me, for reasons which I don't understand at all)
 
- * [tiglari] basic Mohaa maps now compile and run.  Texture
-      flags don't work yet but.  Another peculiar feature of
-      Mohaa is that the maps are written into the main directory,
-      since the engine seems to have trouble with tmpquark.  This
-      may change.
+ * [tiglari] basic Mohaa maps now compile and run.  Texture flags
+   don't work yet but.  Another peculiar feature of Mohaa is that the
+   maps are written into the main directory, since the engine seems to
+   have trouble with tmpquark.  This may change.
 
-
-                QuArK Snapshot of 2002ap29
+QuArK Snapshot of 2002ap29
+==========================
                 
  * [Decker, tiglari] improved RTCW support
  
@@ -222,130 +230,118 @@
  
  * [Rowdy] make it compile in Delphi 6
 
- * [tiglari]
-    On search menu, 'find bad tex scale' item that locates faces with
-     axes almost parallel or too small (the settable parameters; I'm
-     open to suggestion as to what the default values should actually
-     be).
+ * [tiglari] On search menu, 'find bad tex scale' item that locates
+      faces with axes almost parallel or too small (the settable
+      parameters; I'm open to suggestion as to what the default values
+      should actually be).
 
- * [tiglari]
-   `Move containing' item on the vertex RMB that moves the parent item
-     selected from the submenu so that the vertex becomes on-grid
+ * [tiglari] `Move containing' item on the vertex RMB that moves the
+      parent item selected from the submenu so that the vertex becomes
+      on-grid
 
- * [tiglari]
-    Better F1 help for the 'texture wrap multiplier' menu item on the
-     face RMB|Textures submenu
+ * [tiglari] Better F1 help for the 'texture wrap multiplier' menu
+      item on the face RMB|Textures submenu
      
- * [tiglari]
-    fix groups hidden/greyed icon change (report by off_by_two)
+ * [tiglari] fix groups hidden/greyed icon change (report by
+      off_by_two)
 
- * [tiglari]
-    change map-writing system so that format is specified in game
-    config rather than Map|Option flags.
+ * [tiglari] change map-writing system so that format is specified in
+      game config rather than Map|Option flags.
 
-  This snapshot is distributed also as a patch that can be overwritten
-  on the 2002feb28 snapshot.
+This snapshot is distributed also as a patch that can be overwritten
+on the 2002feb28 snapshot.
   
-
-               QuArK Snapshot of 2002feb28
+QuArK Snapshot of 2002feb28
+===========================
            
- * [Andy]
-    .md3 skins can hopefully be loaded from paths with
-    forward slashes
+ * [Andy] .md3 skins can hopefully be loaded from paths with forward
+      slashes
 
- * [Decker/tiglari]
-    a memory leak involving the display of textures
-    in the multi-pages panel has hopefully been fixed
+ * [Decker/tiglari] a memory leak involving the display of textures in
+      the multi-pages panel has hopefully been fixed
     
- * [tiglari]
-    memory-use tracker.  To use it, first check Developer mode in
-    the options menu, then restart QuArk.  On the command menu will
-    appear an item 'heapstatus', click it to get a display of how
-    much memory has been allocated, and on a second click, how much
-    this has changed.  The undo stack seems to consume about 1500 bytes
-    for a simple brush move; I set this to 0 for leak hunting.
+ * [tiglari] memory-use tracker.  To use it, first check Developer
+      mode in the options menu, then restart QuArk.  On the command
+      menu will appear an item 'heapstatus', click it to get a display
+      of how much memory has been allocated, and on a second click,
+      how much this has changed.  The undo stack seems to consume
+      about 1500 bytes for a simple brush move; I set this to 0 for
+      leak hunting.
 
-           QuArK Snapshot of 2002feb24
+QuArK Snapshot of 2002feb24
+===========================
 
- * [Decker]
-   Added some Medal of Honor:Allied Assault support. Not much,
-   as the buildtools for maps (.BSP files and such) have not yet 
-   been released, nor have entity-describtions.
+ * [Decker] Added some Medal of Honor:Allied Assault support. Not
+      much, as the buildtools for maps (.BSP files and such) have not
+      yet been released, nor have entity-describtions.
 
- * [Decker]
-   The buildtools-setup for Return to Castle Wolfenstein is now
-   configured for GTKRadiant's Q3MAP.EXE program.
+ * [Decker] The buildtools-setup for Return to Castle Wolfenstein is
+      now configured for GTKRadiant's Q3MAP.EXE program.
 
- * [Andy/Decker]
-   Added .PNG images file support, though only 8-bits/paletted
-   images shown in QuArK's texture-browser. This means that any
-   24-bits .PNG images will not show correctly in QuArK.
-   (Programmers note: Duplicated ZLib code. Should try to only
-   use source\components\zip, and eliminate the need for 
-   source\components\PNGZlib.PAS and source\components\*.OBJ)
+ * [Andy/Decker] Added .PNG images file support, though only
+      8-bits/paletted images shown in QuArK's texture-browser. This
+      means that any 24-bits .PNG images will not show correctly in
+      QuArK. (Programmers note: Duplicated ZLib code. Should try to
+      only use source\components\zip, and eliminate the need for
+      source\components\PNGZlib.PAS and source\components\*.OBJ)
 
- * [Andy/Decker]
-   Added Tribes 2 .VL2 and .CS-script files support. Note that 
-   .VL2 files are actually .ZIP files, just like .PK3 files are,
-   so if you're not happy with the way QuArK handles .VL2 files,
-   you can use WinZIP or any other ZIP-utility. And .CS files 
-   are just plain text-files, so use your favorite "NotePad"-
-   editor.
+ * [Andy/Decker] Added Tribes 2 .VL2 and .CS-script files
+      support. Note that .VL2 files are actually .ZIP files, just like
+      .PK3 files are, so if you're not happy with the way QuArK
+      handles .VL2 files, you can use WinZIP or any other
+      ZIP-utility. And .CS files are just plain text-files, so use
+      your favorite "NotePad"-editor.
 
+QuArK Snapshot of 2002jan06
+===========================
 
-           QuArK Snapshot of 2002jan06
-
- * [Decker]
-   Added Return to Castle Wolfenstein game-support, though
-   the buildtools-setup for RTCW isn't configured properly
-   yet.
-
- * [Decker]
-   Maybe fixed the problem, of endlessly occuring dialog-
-   boxes, which asked if QuArK should save modified files
-   now. Usually this happened, when using the "Create new
-   texture-links" in the Texture Browser, and just continued
-   to work within QuArK. (See revision 1.29 of Qk1.PAS)
+ * [Decker] Added Return to Castle Wolfenstein game-support, though
+      the buildtools-setup for RTCW isn't configured properly yet.
 
 
-           Patch2 to O80601 Snapshot
+ * [Decker] Maybe fixed the problem, of endlessly occuring dialog-
+      boxes, which asked if QuArK should save modified files
+      now. Usually this happened, when using the "Create new
+      texture-links" in the Texture Browser, and just continued to
+      work within QuArK. (See revision 1.29 of Qk1.PAS)
+
+Patch2 to O80601 Snapshot
+=========================
 
  * 'hlradfilemaker' duplicator plugin.
 
  * 'symxyz' duplicator with toggleable axes.
 
- * 'Adjust Angles Automatically' Menu Option and
-   'Auto-Adjust Normal' Map option renamed to
-   `Quantize angles'
+ * 'Adjust Angles Automatically' Menu Option and 'Auto-Adjust Normal'
+   Map option renamed to `Quantize angles'
 
- * usercenters now transform with containing groups under
-     linear mapping
+ * usercenters now transform with containing groups under linear
+   mapping
 
  * Q3A CDROM config now works.
 
- * fix bugs in snap object (separation, when selected or
-     tagged face is horizontal)
+ * fix bugs in snap object (separation, when selected or tagged face
+   is horizontal)
 
- * refurbish slide poly etc plugin; now works wrt tagged
-     plane as well as tagged edge
+ * refurbish slide poly etc plugin; now works wrt tagged plane as well
+   as tagged edge
 
  * Some Half-Life config fixes (see DataHL.qrk changelog)
 
 
-           Patch1 to 080601 Snaphsot
+Patch1 to 080601 Snaphsot
+=========================
 
- * reset texture cycle command, so that the texture
-   cycle files can be edited, and results seen in the
-   same editing session
+ * reset texture cycle command, so that the texture cycle files can be
+   edited, and results seen in the same editing session
 
- *'snap object to tagged' menu item: if a face is tagged,
-   select a face, then a parental object from the menu,
-   then 'snap object to tagged'.  Object will move and
-   rotate that selected face is oriented parallel to
-   tagged one, with specified separation.
+ * 'snap object to tagged' menu item: if a face is tagged, select a
+   face, then a parental object from the menu, then 'snap object to
+   tagged'.  Object will move and rotate that selected face is
+   oriented parallel to tagged one, with specified separation.
 
-
-           QuArK Snapshot of 080601
+QuArK Snapshot of 080601
+========================
 
 Changes from 070901:
 
