@@ -361,6 +361,7 @@ var
  Repertoire: TMemoryStream;
  Origine, Fin, sig: LongInt;
  eHeader: TEndOfCentralDir;
+ quark_zip_id: string;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
@@ -370,7 +371,7 @@ begin
        { write .pak entries }
       Repertoire:=TMemoryStream.Create;
       try
-        eHeader:=BuildEOCD(0,0,0,0,0,0,0);
+        eHeader:=BuildEOCD(0,0,0,0,0,0,8);
         EcrireEntreesPak(Info, Origine, '', Fin, Repertoire,@eHeader);
         eHeader.offset_CD:=F.Position;
         Repertoire.Seek(0,soFromBeginning);
@@ -378,6 +379,8 @@ begin
         sig:=EOCD_HEADER;
         F.WriteBuffer(sig,4);
         F.WriteBuffer(eHeader,sizeof(TEndOfCentralDir));
+        quark_zip_id:='by QuArK';
+        F.WriteBuffer(quark_zip_id[1], 8);
 //        freemem(@eHeader);
       finally
         Repertoire.Free;
