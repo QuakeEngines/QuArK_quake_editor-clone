@@ -1,3 +1,11 @@
+# QuArK  -  Quake Army Knife
+#
+# Copyright (C) 2001 The Quark Community
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+#$Header$
+
 Info = {
    "plug-in":       "Texture Search",
    "desc":          "searches textures",
@@ -16,3 +24,5 @@ def TextureSearchClick(m):
     tex_search.TextureSearchDlg(quarkx.clickform)
     
 quarkpy.mapsearch.items.append(quarkpy.qmenu.item("&Search for Texture", TextureSearchClick))
+
+# $Log$

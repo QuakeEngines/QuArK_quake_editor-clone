@@ -1,3 +1,11 @@
+# QuArK  -  Quake Army Knife
+#
+# Copyright (C) 2001 The Quark Community
+# THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
+# FOUND IN FILE "COPYING.TXT"
+#
+#$Header$
+
 Info = {
    "plug-in":       "Texture Search",
    "desc":          "searches textures",
@@ -60,7 +68,7 @@ class TextureSearchDlg(quarkpy.qmacro.dialogbox):
                      {
                          Txt = "Search for:"
                          Typ = "E"
-                         Hint= "Enter full or partial texture name" $0D " Results appear in 'searched textures' folder at top of toolbox"}
+                         Hint= "Enter full or partial texture name" $0D " Results appear in 'searched textures' folder at top of toolbox"
                      }
                      Sep: = { Typ = "S" Txt = ""}
                      Search:py = { Txt = "" }
@@ -91,3 +99,5 @@ class TextureSearchDlg(quarkpy.qmacro.dialogbox):
 def openbox():
     f = quarkx.newform("temp")
     TextureSearchDlg(f)  
+
+# $Log$
