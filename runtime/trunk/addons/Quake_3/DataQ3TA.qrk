@@ -1,11 +1,14 @@
 QQRKSRC1
-//
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
 // This is the first release of the Team Arena Data file. v1.0
 // By Maleficus.
 // 26*1*00, 9.46
-//
+
 {
-Description = "Team Arena data - By: Maleficus"
+  Description = "Team Arena data - By: Maleficus"
   Game Context.qctx =
   {
     Game = "Quake 3"
@@ -3669,7 +3672,7 @@ Description = "Team Arena data - By: Maleficus"
           terrain = "1"
           ;desc = "Used in Team Arena as a terrain entity. Read the terrain ma"
            "nual!!"
-        } 
+        }
       }
     }
   }
