@@ -282,7 +282,7 @@ var
 {P: ^GrVertex;
  I: Integer;}
 begin
- System.Assign(F, 'c:\windows\bureau\test.dat');
+ System.Assign(F, 'quark.log');
  Append(F);
 {P:=@VList;
  Writeln(F, N);
@@ -3113,7 +3113,7 @@ begin
             if NeedTex then
              begin
               TGlideState(gr.State).NeedTex(PList^.Texture);
-            {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PTex^.Texture^.startAddress,8)+'='+PTex^.TexName; {$ENDIF}
+            {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
               NeedTex:=False;
              end;
 
