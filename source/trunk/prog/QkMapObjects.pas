@@ -26,6 +26,14 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/12/11 21:36:36  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
 Revision 1.15  2000/11/26 19:08:32  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -75,9 +83,9 @@ unit QkMapObjects;
 
 interface
 
-uses Windows, SysUtils, Classes, Graphics, QkObjects, qmath,
-     QkExplorer, QkFileObjects, QkForm, qmatrices, CommCtrl,
-     Menus, Controls, Qk3D, QkModel, QkFrame, QkMdlObject, QkComponent, Python;
+uses Windows, SysUtils, Classes, Menus, Controls, Graphics, CommCtrl,
+     QkObjects, qmath, QkExplorer, QkFileObjects, QkForm, qmatrices,
+     Qk3D, QkModel, QkFrame, QkMdlObject, QkComponent, Python;
 
 {$DEFINE RemoveEmptySpecs}
 
@@ -268,8 +276,9 @@ const
 implementation
 
 uses Setup, QkMapPoly, Undo, FormCfg,
-     Game, QkMacro, Ed3DFX, Quarkx, PyMath,
-     PyMapView, PyObjects, QkImages, Bezier;
+     Game, QkMacro, Quarkx, PyMath,
+     PyMapView, PyObjects, QkImages, Bezier,
+     EdSceneObject;
 
  {------------------------}
 
@@ -1207,7 +1216,7 @@ begin
      ResultatAnalyseClic(Liste, Pts, Nil);
     end;
   end;
- inherited; 
+ inherited;
 end;
 
 (*procedure TTreeMapEntity.OperationInScene(Aj: TAjScene; PosRel: Integer);
@@ -1236,6 +1245,8 @@ end;
 
 procedure TTreeMapEntity.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 begin
+ Texte.Add(Comment[(CharModeJeu>='A') and (CharModeJeu<='Z')]+' Entity '+IntToStr(GetNextEntityNo));
+
  SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  Texte.Add('}');
 end;
@@ -2168,10 +2179,12 @@ begin
    T:=TTreeMap(SubElements[I]);
    if (Flags and soSelOnly = 0) or ControleSelection(T) then
    begin
-    if (T is TTreeMapEntity) or (T is TTreeMapBrush) then
+(*
+    if (T is TTreeMapEntity) then
      begin
-      Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(GetNextEntityNo));
+      Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' EntityA '+IntToStr(GetNextEntityNo));
      end;
+*)
     T.SaveAsText(Negatif, Texte, Flags, HxStrings);
    end;
   end;
@@ -2254,7 +2267,10 @@ begin
  { If this is the first time we're called, soOutsideWorldspawn is not set,
    and we have to reset the entity-numbering-scheme to zero (zero = worldspawn) }
  if (Flags and soOutsideWorldspawn = 0) then
-  Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(GetFirstEntityNo));
+  I := GetFirstEntityNo
+ else
+  I := GetNextEntityNo;
+ Texte.Add(Comment[(MJ>='A') and (MJ<='Z')]+' Entity '+IntToStr(I));
 
  SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  if Flags and soBSP = 0 then

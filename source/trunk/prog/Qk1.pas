@@ -25,6 +25,14 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/12/11 21:36:36  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
 Revision 1.12  2000/11/25 20:51:33  decker_dk
 - Misc. small code cleanups
 - Replaced the names:
@@ -182,7 +190,6 @@ type
     Viewconsole1: TMenuItem;
     N13: TMenuItem;
     Go1: TMenuItem;
-    Registering1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure Close1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
@@ -278,8 +285,9 @@ implementation
 
 uses Undo, Travail, QkQuakeC, Setup, Config, ToolBox1, Game, QkOwnExplorer,
   QkTextures, ObjProp, qmath, TbUndoMenu, QkInclude, About, Running,
-  Output1, QkTreeView, Quarkx, Ed3DFX, PyProcess, Console, Python,
-  {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D;
+  Output1, QkTreeView, Quarkx, PyProcess, Console, Python,
+  {$IFDEF Debug} MemTester, {$ENDIF} PyMapView, PyForms, Qk3D,
+  EdSceneObject;
 
 {$R *.DFM}
 {$R ICONES\ICONES.RES}
@@ -1454,7 +1462,7 @@ end;
 
 procedure TForm1.FreeNonUsedObjects;
 begin
- FreeNonVisibleTextures;
+ TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
  DestroyGameBuffers;
 end;

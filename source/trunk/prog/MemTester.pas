@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -37,13 +40,13 @@ interface
 uses Windows;
 
 (*** THIS FILE IS ONLY USED IN THE DEBUG VERSION OF THE PROJECT ***)
-
-{ $DEFINE MemTesterDiff}
+(*
+{$DEFINE MemTesterDiff}
 {$DEFINE MemTesterX}
 {$DEFINE MemResourceViewer}
-{ $DEFINE MemHeavyListings}
-{ $DEFINE MemTrackAddress}
-
+{$DEFINE MemHeavyListings}
+{$DEFINE MemTrackAddress}
+*)
 const
  DifferenceAttendue = 105;
  TrackMemoryAddress1 = $019e0000;

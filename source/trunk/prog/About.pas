@@ -26,6 +26,14 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/12/11 21:36:36  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
 Revision 1.4  2000/11/27 22:11:26  aiv
 Code Formatted
 
@@ -87,16 +95,19 @@ var
   Code, Code2, Code3: Byte;
 begin
   Result := False;
-  if Length(S) > 2 then begin
+  if Length(S) > 2 then
+  begin
     Code := 43;
     Code2 := 1;
-    for I := 1 to Length(S) do begin
+    for I := 1 to Length(S) do
+    begin
       Code3 := Code2;
       Code2 := Code;
       Code := ((Ord(S[I]) - 32) + Code2 - Code3 + 140) mod 95;
       S[I] := Chr(Code + 32);
     end;
-    if (Code2 = 21) and (Code = 7) then begin
+    if (Code2 = 21) and (Code = 7) then
+    begin
       SetLength(S, Length(S) - 2);
       DecodeEnregistrement := True;
     end;
@@ -112,8 +123,7 @@ begin
   {$IFNDEF VER90}
   Label9.Free;
   {$ENDIF}
-  ProgramIcon.Picture.Icon.Handle := LoadImage(HInstance, 'MAINICON',
-    image_Icon, 0, 0, 0);
+  ProgramIcon.Picture.Icon.Handle := LoadImage(HInstance, 'MAINICON', image_Icon, 0, 0, 0);
   Image1.Picture.Bitmap.LoadFromResourceName(HInstance, 'QUARKLOGO');
 
   Caption := LoadStr1(5612);
@@ -122,8 +132,7 @@ begin
   SetFormIcon(iiQuArK);
 
   Memo1.Text :=
-
-  'QuArK comes with ABSOLUTELY NO WARRANTY; for details, see below. '
+      'QuArK comes with ABSOLUTELY NO WARRANTY; for details, see below. '
     + 'This is free software, and you are welcome to redistribute it under certain conditions; '
     + 'for details, see below.'#13#10#13#10
     + 'QuArK is protected by the GNU General Public License; text below is part of this Licence. '
@@ -155,7 +164,6 @@ begin
     + #13#10#13#10
     + 'You may charge a fee for the physical act of transferring a copy, and '
     + 'you may at your option offer warranty protection in exchange for a fee.';
-
 end;
 
 procedure TAboutBox.OKButtonClick(Sender: TObject);
@@ -164,7 +172,8 @@ var
   Reg: TRegistry;
 begin
   S := Edit1.Text;
-  if DecodeEnregistrement(S) then begin
+  if DecodeEnregistrement(S) then
+  begin
     {with Form1 do
       begin
        PanelQM1.Free;
@@ -250,21 +259,26 @@ var
   S: string;
   Reg: TRegistry2;
 begin
-  Reg := TRegistry2.Create; try
+  Reg := TRegistry2.Create;
+  try
     Reg.RootKey := HKEY_CURRENT_USER;
     Info^.TextSize := 10;
     Info^.Delay := MAX_DELAY;
     S := 'QuArK comes with ABSOLUTELY NO WARRANTY; this is free software, and you are welcome '
-      + 'to redistribute it under certain conditions. For details, see ''?'', ''About''.';
+       + 'to redistribute it under certain conditions. For details, see ''?'', ''About''.';
     if Reg.ReadOpenKey('\Software\Armin Rigo\QuakeMap')
-      and Reg.ReadString('Registered', S) then begin
-      if DecodeEnregistrement(S) then begin
+    and Reg.ReadString('Registered', S) then
+    begin
+      if DecodeEnregistrement(S) then
+      begin
         S := 'Registered to ' + S;
         Info^.TextSize := 18;
         Info^.Delay := MIN_DELAY;
       end;
     end;
-  finally Reg.Free; end;
+  finally
+    Reg.Free;
+  end;
   {$IFDEF Debug}
   if S <> 'Registered to -- NOT REGISTERED !' then
     Info^.Delay := MAX_DELAY;
@@ -303,7 +317,8 @@ end;
 
 procedure TAboutBox.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if Event <> 0 then begin
+  if Event <> 0 then
+  begin
     SetEvent(Event);
     CloseHandle(Event);
   end;
