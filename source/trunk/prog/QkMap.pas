@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2001/02/17 06:10:12  tiglari
+nonfunctional brush primitives reading (syntax OK, but brushes broken)
+
 Revision 1.25  2001/02/07 19:28:43  decker_dk
 Fixed problem in ReadSymbol() case '"', where introducing begin-end's created a wrongly statement-sequence. Always ALWAYS remember to put begin-ends at multiple if-statements!!!
 
@@ -807,17 +810,20 @@ expected one.
     Surface:=TFace.Create(LoadStr1(139), P);
     P.SubElements.Add(Surface);
     Surface.SetThreePoints(V[1], V[3], V[2]);
+    if not Surface.LoadData then
+      ShowMessage('LoadData failure');
+     { set relevant attributes }
     { get 3points expressed in AxisBase coordinates
        (see infobase|Src|Topics|Scale|Brush primitives) }
     Denom:=R1.X*R2.Y-R1.Y*R2.X;
-    P0.X:=-R1.Z*R2.Y+R1.Y*R2.Z/Denom;
-    P0.Y:=R1.X*R2.Z-R1.Z*R2.X/Denom;
+    P0.X:=(-R1.Z*R2.Y+R1.Y*R2.Z)/Denom;      {-a13*a22+a12*a23}
+    P0.Y:=-(R1.X*R2.Z-R1.Z*R2.X)/Denom;       {-(a11*a23-a13*a21)}
     P0.Z:=0.0;
-    P1.X:=-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z/Denom;
-    P1.Y:=R1.X*R2.Z-R1.Z*R2.X+R2.X/Denom;
+    P1.X:=(-R1.Z*R2.Y+R2.Y+R1.Y*R2.Z)/Denom; {-a13*a22+a22+a12*a23}
+    P1.Y:=-(R1.X*R2.Z-R1.Z*R2.X+R2.X)/Denom;  {-(a11*a23-a13*a21+a21)}
     P1.Z:=0.0;
-    P2.X:=R1.Y*R2.Z+R1.Y-R1.Z*R2.Y/Denom;
-    P2.Y:=-R1.Z*R2.X+R1.X*R2.Z+R1.X/Denom;
+    P2.X:=(R1.Y*R2.Z+R1.Y-R1.Z*R2.Y)/Denom;  {a12*a23+a12-a13*a22}
+    P2.Y:=-(-R1.Z*R2.X+R1.X*R2.Z+R1.X)/Denom; {-(-a13*a21+a11*a23+a11)}
     P2.Z:=0.0;
     { Convert to map space }
     GetAxisBase(Surface.Normale, TexS, TexT);
@@ -827,10 +833,10 @@ expected one.
     P0:=VecSum(MatrixMultByVect(Matrix,P0),Tex0);
     P1:=VecSum(MatrixMultByVect(Matrix,P1),Tex0);
     P2:=VecSum(MatrixMultByVect(Matrix,P2),Tex0);
-    Surface.SetThreePointsUserTex(p0,P1,p2,nil);
 
     Q2Tex:=Q2Tex or (Pos('/',S)<>0);
     Surface.NomTex:=S;   { here we get the texture-name }
+    Surface.SetThreePointsUserTex(P0,P1,P2,nil);
     ReadSymbol(sTokenForcedToString);
     if SymbolType=sNumValueToken then
     begin
