@@ -220,62 +220,69 @@ def useableby(face, poly):
 
 def mergepoly(editor,o):
 
-  def noncoplanar(poly, face):
-    for f in poly.faces:
-      if coplanar(f, face):
-        return 0
-    return 1
+    def noncoplanar(poly, face):
+        debug('face '+`face.name`)
+        for f in poly.faces:
+            debug(' f '+`f.name`)
+            if coplanar2(f, face):
+                debug(' coplanar')
+                return 0
+        return 1
 
-  item = qmenu.item("Merge Polys",MergePolyClick,"|This command can merge two brushes which `kiss' at a face, meaning that the faces have the same location, orientation, size and shape, but are oriented in opposite directions.\n\nTo use it, tag one of the kissing faces, then select the brush that contains the other.  If this menu item becomes enabled, the operation is then supposed to be able to combine the two brushes into one.  The selected brush will be `dominant', in that the resulting brush will be in its position of the group structure, and its textures and higher shared faces will be retained where relevant.\n\nIf the operation will change the overall shape, or create an invalid brush, this menu item is supposed to remain disabled.")
-  item.state=qmenu.disabled
-  tagged=gettagged(editor)
-  if tagged is None or len(tagged.faceof)!=1:
+    item = qmenu.item("Merge Polys",MergePolyClick,"|This command can merge two brushes which `kiss' at a face, meaning that the faces have the same location, orientation, size and shape, but are oriented in opposite directions.\n\nTo use it, tag one of the kissing faces, then select the brush that contains the other.  If this menu item becomes enabled, the operation is then supposed to be able to combine the two brushes into one.  The selected brush will be `dominant', in that the resulting brush will be in its position of the group structure, and its textures and higher shared faces will be retained where relevant.\n\nIf the operation will change the overall shape, or create an invalid brush, this menu item is supposed to remain disabled.")
+    item.state=qmenu.disabled
+    tagged=gettagged(editor)
+    if tagged is None or len(tagged.faceof)!=1:
+        return item
+    #
+    # find a kissing face, if there is one.
+    #
+    for face in o.faces:
+        if len(face.faceof)!=1 or not coplanar(face,tagged): continue
+        if face.normal*tagged.normal>0: continue
+        if same_vertices(face,tagged): 
+            item.tagged=tagged
+            item.face=face
+            new = quarkx.newobj(o.name)
+            for oldface in o.subitems: # not faces, we don't mess with shared faces
+                debug('consider '+oldface.name)
+                if oldface==face or oldface.type!=":f": continue
+                new.appenditem(oldface.copy())
+                debug(' copied')
+  #
+            # the merged poly will be in o's group, so we need to copy
+            # all the faces.  any facees used by the tagged faces's
+            # poly that are actually used by o will not be ok.
+            #
+            for tagface in tagged.faceof[0].faces:
+                debug('consider tagged '+tagface.name)
+                if noncoplanar(o,tagface): # ys
+                    new.appenditem(tagface.copy())
+                    debug(' copied')
+                    #
+                    # If it can be added to o and still be used by
+                    # o, then it changes the shape of o and merger 
+                    # should not be enabled
+                    #
+                    editor.layout.explorer.sellist=[tagface]
+          #          squawk("testing useability")
+                    if useableby(tagface, o):  # if it can be added to
+          #             squawk("passed")
+                       return item
+            item.state=qmenu.normal
+            item.result = new
+            item.o = o
+            item.tagged = tagged
+      #      squawk("dunda crap")
     return item
-  #
-  # find a kissing face, if there is one.
-  #
-  for face in o.faces:
-    if len(face.faceof)!=1 or not coplanar(face,tagged): continue
-    if face.normal*tagged.normal>0: continue
-    if same_vertices(face,tagged): 
-      item.tagged=tagged
-      item.face=face
-      new = quarkx.newobj(o.name)
-      for oldface in o.subitems: # not faces, we don't mess with shared faces
-        if oldface==face or oldface.type!=":f": continue
-        new.appenditem(oldface.copy())
-      #
-      # the merged poly will be in o's group, so we need to copy
-      # all the faces.  any facees used by the tagged faces's
-      # poly that are actually used by o will not be ok.
-      #
-      for tagface in tagged.faceof[0].faces:
-        if noncoplanar(o,tagface): # ys
-          new.appenditem(tagface.copy())
-          #
-          # If it can be added to o and still be used by
-          # o, then it changes the shape of o and merger 
-          # should not be enabled
-          #
-          editor.layout.explorer.sellist=[tagface]
-#          squawk("testing useability")
-          if useableby(tagface, o):  # if it can be added to
-#             squawk("passed")
-             return item
-      item.state=qmenu.normal
-      item.result = new
-      item.o = o
-      item.tagged = tagged
-#      squawk("dunda crap")
-  return item
   
 def MergePolyClick(m):
- editor=mapeditor()
- if editor is None: return
- undo = quarkx.action()
- undo.exchange(m.o, m.result)
- undo.exchange(m.tagged.faceof[0], None)
- editor.ok(undo,"merge polys")
+    editor=mapeditor()
+    if editor is None: return
+    undo = quarkx.action()
+    undo.exchange(m.o, m.result)
+    undo.exchange(m.tagged.faceof[0], None)
+    editor.ok(undo,"merge polys")
 
 
 #
@@ -667,6 +674,13 @@ def sideof (m, editor):
     return tagged[0]
 
 
+def coplanar2(f1, f2):
+    o1 = f1.dist*f1.normal
+    o2 = f2.dist*f2.normal
+    if (not (f1.normal-f2.normal)) or (not(f1.normal+f2.normal)):
+        if not f1.normal*(o2-o1):
+            return 1
+    return 0
 
 def coplanar(f1, f2):
   (p1, p2, p3) = f1.threepoints(0)
@@ -1888,6 +1902,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11  2001/02/25 23:32:25  tiglari
+#attempt to make wrap across tagged faces more robust
+#
 #Revision 1.10  2000/07/30 03:29:10  tiglari
 #`wrap from tagged mirror' added to texture|wrapping, for easier texturing
 #with arches & bevels
