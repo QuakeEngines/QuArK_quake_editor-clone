@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2004/12/22 11:42:15  rowdy
+Rowdy - first pass of support for Doom 3
+
 Revision 1.40  2004/12/19 10:03:19  alexander
 support for HL2 input and output type specifics (input#specificname)
 they will be generated as connection list for HL2
@@ -1204,7 +1207,7 @@ procedure TTreeMapSpec.SaveAsTextSpecArgs(Dest, HxStrings: TStrings; Flags: Inte
 const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
- MJ, S, Msg, LineStart: String;
+ MJ, S, Msg, LineStart,outputname: String;
  P1, I, J, P, hashpos: Integer;
  typedspecs:Bool;
  DoneNameSpecific: boolean; // Rowdy: for Doom 3
@@ -1283,7 +1286,17 @@ begin
 
      hashpos:=Pos('output#',S);
      if hashpos <> 0 then
-       Dest.Add('   "'+Copy(S, 8, P-8)+'" "'+Msg+'"');
+     begin
+       outputname:=Copy(S, 8, P-8);
+       for i := length(outputname) downto 1 do
+       begin
+         if outputname[i] in ['0'..'9'] then
+           setlength(outputname,i-1)
+         else
+           break;
+       end;
+       Dest.Add('   "'+outputname+'" "'+Msg+'"');
+     end;
 
    end;
    Dest.Add('  }');
