@@ -865,7 +865,9 @@ def AddtoTaggedClick(m):
   "expects the selected face to be attached to m as .side"
   editor = mapeditor()
   if editor is None: return
-  addtotaggedfaces(m.side, editor)  
+  side = editor.layout.explorer.uniquesel
+  if side:
+      addtotaggedfaces(side, editor)  
  
 def RemovefromTaggedClick(m):
   "expects the selected face to be attached to m as .side"
@@ -1815,6 +1817,7 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
   oldcommand(menu)
   editor = mapeditor()
   if editor is None: return
+  menaddtotagged.state=qmenu.disabled
   selection = editor.layout.explorer.sellist
   if isfaces(selection):
      menlinksel.state = qmenu.normal
@@ -1847,6 +1850,8 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
       menglueside.state = qmenu.disabled
     menaligntex.state = qmenu.disabled
   else:
+    if isoneface(selection) and selection[0] is not tagged:
+       menaddtotagged.state=qmenu.normal
     mencleartag.state = qmenu.normal
     menglueside.state = len(selection)==0 and qmenu.disabled
     if face is None or tagged is face:
@@ -1862,32 +1867,48 @@ def commandsclick(menu, oldcommand=quarkpy.mapcommands.onclick):
 mentagside  = qmenu.item("&Tag side", TagSideClick, tagtext)
 mencleartag = qmenu.item("&Clear Tag", ClearTagClick, "Clears tag")
 menglueside = qmenu.item("&Glue to Tagged", GlueSideClick, "Moves & aligns sel. side to tagged side")
+menaddtotagged = qmenu.item("&Add to tagged", AddtoTaggedClick, "Adds side to tagged list")
 menaligntex = qmenu.item("&Wrap texture from tagged", AlignTexClick, aligntext)
 menlinksel  = qmenu.item("&Link selected",LinkSelClick,"Link the selected faces")
 #mengluelinked = qmenu.item("Gl&ue linked",GlueLinkedClick,"Glue linked faces to the selected one")
 
-
 quarkpy.mapcommands.items.append(qmenu.sep)   # separator
 quarkpy.mapcommands.items.append(mentagside)
-quarkpy.mapcommands.shortcuts["Ctrl+T"] = mentagside
 quarkpy.mapcommands.items.append(mencleartag)
-quarkpy.mapcommands.shortcuts["Alt+C"] = mencleartag
 quarkpy.mapcommands.items.append(menglueside)
-quarkpy.mapcommands.shortcuts["Ctrl+G"] = menglueside
 quarkpy.mapcommands.items.append(menaligntex)
-quarkpy.mapcommands.shortcuts["Ctrl+W"] = menaligntex
+quarkpy.mapcommands.items.append(menaddtotagged)
 quarkpy.mapcommands.items.append(menlinksel)
-quarkpy.mapcommands.shortcuts["Ctrl+L"] = menlinksel
 #
 # de trop on the menu, methinks
 #quarkpy.mapcommands.items.append(mengluelinked)
 #quarkpy.mapcommands.shortcuts["Alt+L"] = mengluelinked
 
-
 quarkpy.mapcommands.onclick = commandsclick
+
+HotKeys = quarkx.setupsubset(SS_MAP,"HotKeys")
+
+for menitem, keytag in [(mentagside, "Tag Side"),
+                        (mencleartag, "Clear Tags"),
+                        (menglueside, "Glue Side"),
+                        (menaligntex, "Align Texture"),
+                        (menaddtotagged, "Add to Tagged"),
+                        (menlinksel, "Link Selection")]:
+
+    hotkey = HotKeys[keytag]
+    if hotkey:
+        quarkpy.mapcommands.shortcuts[hotkey] = menitem
+ 
+#
+# needed to prevent mem leak
+#
+del HotKeys
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11  2001/02/25 23:32:25  tiglari
+#attempt to make wrap across tagged faces more robust
+#
 #Revision 1.10  2000/07/30 03:29:10  tiglari
 #`wrap from tagged mirror' added to texture|wrapping, for easier texturing
 #with arches & bevels
