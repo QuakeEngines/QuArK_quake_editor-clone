@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.167  2001/09/23 08:56:17  tiglari
+//oops, replace 'bevel' with 'miter' in wallmaker stuff
+//
 //Revision 1.166  2001/09/23 07:01:44  tiglari
 //mitered edges for wall maker duplicator
 //
@@ -3828,6 +3831,12 @@ QQRKSRC1
          Txt="&"
          Typ="X"
          Hint="If this is checked, corners will be mitered" $0D " outsides of shapes may need touching up"
+      }
+      extrude: =
+      {
+         Txt="&"
+         Typ="X"
+         Hint="If this is checked, walls will be extruded, but corners will not be mitered" $0D " outsides of shapes may need touching up"
       }
       depth: =
       {
