@@ -71,12 +71,12 @@ def perspective_axes():
  # FIXME, clickform doesn't work until you've inserted something
  #
  try:
-  view = quarkx.clickform.focus  # gets the mapview clicked on
-  x, z = view.vector("x"), -view.vector("y")
+     view = quarkx.clickform.focus  # gets the mapview clicked on
+     x, z = view.vector("x"), -view.vector("y")
 #  axes = view.vector("x"), -view.vector(view.screencenter), -view.vector("y")
-  return map(lambda v:v.normalized, (x, (x^z), z))
+     return map(lambda v:v.normalized, (x, (x^z), z))
  except:
-  return map(lambda t:quarkx.vect(t), ((1,0,0), (0,1,0), (0,0,1)))
+     return map(lambda t:quarkx.vect(t), ((1,0,0), (0,-1,0), (0,0,1)))
 
 #
 # return front, back, left, right, top, bottom w.r.t. view
@@ -594,6 +594,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2000/06/16 05:11:31  tiglari
+#fixed antidistortion on arch underside, which got broken
+#
 #Revision 1.8  2000/06/14 04:41:18  tiglari
 #Added `faceonly' specific for arches & bevels.
 #
