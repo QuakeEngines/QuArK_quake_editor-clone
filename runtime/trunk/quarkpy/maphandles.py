@@ -1162,6 +1162,8 @@ class CyanBezier2Handle0(CyanBezier2Handle):
                 line(pt[i][j], pt[i][j+1], 1)
 
 
+class EyePositionMap(qhandles.EyePosition):
+      pass
 
 #
 # Functions to build common lists of handles.
@@ -1193,7 +1195,7 @@ def BuildHandles(editor, ex, view):
     #
     for v in editor.layout.views:
         if (v is not view) and (v.info["type"] == "3D"):
-            h.append(qhandles.EyePosition(view, v))
+            h.append(EyePositionMap(view, v))
             h.append(MapEyeDirection(view, v))
     return qhandles.FilterHandles(h, SS_MAP)
 
@@ -1593,6 +1595,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.23  2001/05/12 10:12:22  tiglari
+#fix usercenter button macro bug (add 'is None' ...)
+#
 #Revision 1.22  2001/05/06 06:03:38  tiglari
 #add Edge Handle
 #
