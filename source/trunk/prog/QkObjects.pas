@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.62  2001/12/30 09:59:57  tiglari
+alter TQStream release code to prevent an error, depends on 0 not being
+a valid FHandle value.  I don't really know what's going on with the
+TemporaryClose stuff.
+
 Revision 1.61  2001/10/14 10:07:21  tiglari
 Live Pointer Hunt: rollback of finalizings, & free QFileList
 
@@ -199,10 +204,10 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
      Controls, Graphics, Forms, qmath, Menus,
      CommCtrl, Python;
 
-{DEFINE ShareSpecMem}
+{$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'QuArK 6.3snap080601';
+  QuArKVersion            = 'QuArK 6.3snap 2002jan06';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;

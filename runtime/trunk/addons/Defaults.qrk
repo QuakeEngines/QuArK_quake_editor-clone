@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.170  2001/12/05 20:38:57  decker_dk
+//Added RTCW (Return To Castle Wolfenstein)
+//
 //Revision 1.169  2001/10/08 10:41:25  tiglari
 //solid mode added to wallmaker
 //
@@ -554,7 +557,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3snap080601"
+      Version = "QuArK 6.3snap 2002jan06"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
