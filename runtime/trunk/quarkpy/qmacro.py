@@ -84,7 +84,7 @@ def MACRO_hint(form, text=None):
     if not isinstance(form.info, qbaseeditor.BaseEditor):
         return
     return form.info.showhint(text)
-
+        
 
 #
 # Macro called to build a map (when the big GO! button is pressed).
@@ -103,19 +103,21 @@ def MACRO_buildmaps(maps, mode, extracted, cfgfile="", defaultbsp=None):
     runquake = "P" in code
     build = quarkx.newobj(":")
 
-#Broken!    if "C" in code:                #
-#Broken!        build["Textures"] = "1"    # Complete rebuild
-#Broken!        build["QCSG1"] = "1"       #
-#Broken!        build["QBSP1"] = "1"
-#Broken!        build["VIS1"] = "1"
-#Broken!        build["LIGHT1"] = "1"
-#Broken!        build["LIGHTCmd"] = "-extra"
-#Broken!    elif "F" in code:              #
-#Broken!        build["Textures"] = "1"    # Fast rebuild
-#Broken!        build["QCSG1"] = "1"       #
-#Broken!        build["QBSP1"] = "1"
-#Broken!    else:                          #
-#Broken!        pass                       # Don't build maps
+    if "C" in code:                #
+        build["Textures"] = "1"    # Complete rebuild
+        build["QCSG1"] = "1"       #
+        build["QBSP1"] = "1"
+        build["VIS1"] = "1"
+        build["LIGHT1"] = "1"
+        build["LIGHTCmd"] = "-extra"
+
+    elif "F" in code:              #
+        build["Textures"] = "1"    # Fast rebuild
+        build["QCSG1"] = "1"       #
+        build["QBSP1"] = "1"
+
+    else:                          #
+        pass                       # Don't build maps
                                    #
     maplist = []
     for map in maps:
@@ -249,6 +251,13 @@ class dialogbox:
 def MACRO_pybutton(pybtn):
     dlg = dialogboxes[pybtn["sendto"]]
     return dlg.info.buttons[pybtn.shortname]
+
+def MACRO_makeaddon(self):
+    import qutils
+    a = quarkx.getqctxlist()
+    a.reverse()
+    qutils.debug( a[0].name )
+    a[0].makeaddonfromqctx();
 
 # ----------- REVISION HISTORY ------------
 #

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2001/01/21 15:49:48  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.8  2001/01/15 19:21:27  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -54,7 +57,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  QkObjects, QkFileObjects, TB97, QkFormVw;
+  QkObjects, QkFileObjects, TB97, QkFormVw, Python, PyObjects;
 
 type
  QQuakeCtx = class(QFormObject)
@@ -64,8 +67,17 @@ type
                class function TypeInfo: String; override;
                procedure ObjectState(var E: TEtatObjet); override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+               Procedure MakeAddonFromQctx;
+               function PyGetAttr(attr: PChar) : PyObject; override;
              end;
 
+ QFormContext = class(QQuakeCtx)
+             protected
+               function GetConfigStr1: String; override;
+             public
+               class function TypeInfo: String; override;
+               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
+             end;
  {------------------------}
 
 function GetQuakeContext: TQList;
@@ -79,7 +91,8 @@ function OpacityToFlags(Flags: Integer; Alpha: Integer) : Integer;
 
 implementation
 
-uses Setup, QkGroup, Quarkx, QkObjectClassList;
+uses Setup, QkGroup, Quarkx, QkObjectClassList, QuickWal, QkPak, QkBSP, ToolBox1,
+     ToolBoxGroup, ExtraFunctionality, Game, QkMapObjects, FormCfg;
 
  {------------------------}
 
@@ -270,8 +283,240 @@ begin
  Info.WndInfo:=[wiWindow];}
 end;
 
+Function OpenFiles(dir: String; L: TStringList): TQList;
+var
+  i: Integer;
+begin
+  Result:=TQList.Create;
+  For i:=0 to l.count-1 do
+  begin
+    Result.Add(ExactFileLink(dir+'\'+l.strings[i], nil, false));
+  end;
+end;
+
+Function FindFiles(dir, filter: String): TQList;
+var
+  f: TSearchRec;
+  f_e: Integer;
+begin
+  Result:=TQList.Create;
+  f_e:=FindFirst(filter, faAnyFile, F);
+  while f_e=0 do
+  begin
+    Result.add(ExactFileLink(dir+'\'+f.name, nil, false));
+    f_e:=FindNext(F);
+  end;
+end;
+
+function qMakeAddonFromQctx(self, args: PyObject) : PyObject; cdecl;
+begin
+   with QkObjFromPyObj(self) as QQuakeCtx do
+     MakeAddonFromQctx;
+   Result:=PyNoResult;
+end;
+
+const
+  MethodTable: array[0..0] of TyMethodDef =
+   ((ml_name: 'makeaddonfromqctx';      ml_meth: qMakeAddonFromQctx;      ml_flags: METH_VARARGS));
+
+function QQuakeCtx.PyGetAttr(attr: PChar) : PyObject;
+var
+  I: Integer;
+begin
+  Result:=inherited PyGetAttr(attr);
+  if Result<>Nil then Exit;
+  for I:=Low(MethodTable) to High(MethodTable) do
+  begin
+    if StrComp(attr, MethodTable[I].ml_name) = 0 then
+    begin
+      Result:=PyCFunction_New(MethodTable[I], @PythonObj);
+      Exit;
+    end;
+  end;
+end;
+
+Procedure QQuakeCtx.MakeAddonFromQctx;
+var
+  i,j,k,l: integer;
+  tb: string;
+  // Objects for getting bsp list
+  paks: TQList;
+  bsps: TQList;
+  Pak, ExistingAddons: QFileObject;
+  p_f: QPakFolder;
+  bsp: QBsp;
+  NewAddonsList: TQList;
+  // Objects for creating new addon
+  addonRoot: QFileObject;
+  TBX: QToolBox;
+  entityTBX: QToolBoxGroup;
+  entityTBX_2: QToolBoxGroup;
+  Group: QToolBoxGroup;
+  OldEntity, Entity: TTreeMapSpec;
+  Entities, Forms: TQList;
+  entityForms:QFormContext;
+  OldForm, Form: QFormCfg;
+  OldFormEl, FormEl: QObject;
+  (*
+    Get all .bsp files in & out of pak's
+  *)
+  procedure GetBSPFiles;
+  var
+    i,j: Integer;
+    dir: String;
+  begin
+    dir:=IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir'];
+    paks:=OpenFiles(dir, ListPakFiles(dir));
+    bsps:=FindFiles(dir+'\maps', IncludeTrailingBackslash(QuakeDir)+Specifics.Values['GameDir']+'\maps\*.bsp');
+    for i:=0 to paks.count-1 do
+    begin
+      pak:=QFileObject(paks[i]);
+      pak.acces;
+      p_f:=QPakFolder(pak.FindSubObject('maps', QPakFolder, QPakFolder));
+      if p_f=nil then continue;
+      for j:=0 to p_f.subelements.count-1 do
+      begin
+        if p_f.subelements[j] is QBsp then
+          bsps.add(p_f.subelements[i]);
+      end;
+    end;
+  end;
+  (*
+    Go through list of .bsps and create addon based on each
+  *)
+  Procedure CreateAddons;
+  var
+    i: integer;
+  begin
+    ExistingAddons:=MakeAddonsList;
+    for i:=0 to bsps.count-1 do
+    begin
+      if not (bsps[i] is QBsp) then
+        raise exception.create('Error: bsp list contains non QBSP object!');
+      bsp := QBsp(bsps[i]);
+      NewAddonsList.Add(bsp.CreateAddonFromEntities(ExistingAddons));
+    end;
+    ExistingAddons.AddRef(-1);
+  end;
+begin
+  NewAddonsList:=TQList.Create; // a list of AddonRoot (.qrk objects)
+  GetBSPFiles;
+  CreateAddons;
+
+  addonRoot:=QFileObject(FParent);
+  if addonRoot = nil then
+  begin
+    raise Exception.Create('addonRoot = nil');
+  end;
+
+  TBX:=QToolBox.Create('Toolbox Folders', addonRoot);
+  addonRoot.Subelements.Add(TBX);
+  TBX.Specifics.Add('ToolBox=New map items...');
+  EntityTBX:=QToolBoxGroup.Create(Format('%s', [Specifics.Values['GameDir']]), TBX);
+  TBX.Subelements.Add(EntityTBX);
+  TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
+  EntityTBX_2:=QToolBoxGroup.Create(Format('%s entities',[Specifics.Values['GameDir']]), EntityTBX);
+  EntityTBX_2.SpecificsAdd(format(';desc=Created for %s',[Specifics.Values['GameDir']]));
+  EntityTBX.Subelements.Add(EntityTBX_2);
+  entityForms:=QFormContext.Create('Entity forms', addonRoot);
+  addonRoot.SubElements.Add(entityForms);
+  
+  for i:=0 to NewAddonsList.Count-1 do
+  begin
+    Entities:=TQList.Create;
+    NewAddonsList.Items1[i].FindAllSubObjects('', TTreeMapSpec, QObject, Entities);
+    for j:=0 to Entities.Count-1 do
+    begin
+      OldEntity:=TTreeMapSpec(Entities.Items1[j]);
+      Entity:=TTreeMapSpec(EntityTBX_2.FindSubObject(OldEntity.Name, TTreeMapSpec, QObject));
+      if (Entity = nil) then
+      begin
+        if pos('_',OldEntity.name)<>0 then
+        begin
+          tb:=copy(OldEntity.name, 1,pos('_', OldEntity.Name))+'* entities';
+          Group:=QToolboxGroup(EntityTBX_2.SubElements.FindName(tb+EntityTBX_2.typeinfo));
+          if (Group = nil) then
+          begin
+            Group:=QToolBoxGroup.Create(tb, EntityTBX_2);
+            EntityTBX_2.Subelements.add(Group);
+          end
+        end
+        else
+        begin
+          Group:=EntityTBX_2;
+        end;
+        Entity:=TTreeMapSpec(ConstructQObject(OldEntity.GetFullName, Group));
+        Group.SubElements.Add(Entity);
+      end;
+      for k:=0 to OldEntity.Specifics.Count-1 do
+      begin
+        if Entity.Specifics.IndexOfName(OldEntity.Specifics.Names[k])=-1 then
+        begin
+          Entity.Specifics.Add(OldEntity.Specifics[k]);
+        end;
+      end;
+    end;
+    Entities.Free;
+    Forms:=TQList.Create;
+    NewAddonsList.Items1[i].FindAllSubObjects('', QFormCfg, QObject, Forms);
+    for j:=0 to Forms.Count-1 do
+    begin
+      OldForm:=QFormCfg(Forms.Items1[j]);
+      Form:=QFormCfg(entityForms.FindSubObject(OldForm.Name, QFormCfg, QObject));
+      if (Form = nil) then
+      begin
+        Form:=QFormCfg(ConstructQObject(OldForm.GetFullName, entityForms));
+        entityForms.SubElements.Add(Form);
+      end;
+      for k:=0 to OldForm.Subelements.Count-1 do
+      begin
+        OldFormEl:=OldForm.Subelements[k];
+        FormEl:=Form.FindSubObject(OldFormEl.Name, QObject, QObject);
+        if FormEl=nil then
+        begin
+          FormEl:=ConstructQObject(OldFormEl.GetFullName, Form);
+          Form.Subelements.Add(FormEl);
+        end;
+        for l:=0 to OldFormEl.Specifics.Count-1 do
+        begin
+          if FormEl.Specifics.IndexOfName(OldFormEl.Specifics.Names[l])=-1 then
+          begin
+            FormEl.Specifics.Add(OldFormEl.Specifics[l]);
+          end;
+        end;
+      end;
+    end;
+    Forms.Free;
+  end;
+
+  NewAddonsList.free;
+  bsps.free;
+  paks.free;
+end;
+
+ {------------------------}
+
+class function QFormContext.TypeInfo;
+begin
+ TypeInfo:='.fctx';
+end;
+
+function QFormContext.GetConfigStr1: String;
+begin
+ Result:='FormContext';
+end;
+
+class procedure QFormContext.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+begin
+ inherited;
+ Info.FileObjectDescriptionText:=LoadStr1(5179);
+{Info.FileExt:=779;
+ Info.WndInfo:=[wiWindow];}
+end;
+
  {------------------------}
 
 initialization
   RegisterQObject(QQuakeCtx, 'a');
+  RegisterQObject(QFormContext, 'a');
 end.

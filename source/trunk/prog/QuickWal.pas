@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/02/19 19:15:22  decker_dk
+Reordered the dialog, and wrote better(?) hints for the dynamic/merged/shaderlist checkboxes.
+
 Revision 1.28  2001/02/08 21:53:49  tiglari
 exception catching around shaderlist.txt reading
 
@@ -153,6 +156,7 @@ procedure BuildDynamicFolders(Base: String; var Q: QObject; merged, allshaders: 
 procedure BuildStaticFolders(Base: String; var Q: QObject; merged, allshaders: boolean; Filter: String);
 procedure MergeTextureFolders(Base: String; var Q: QObject; allshaders: boolean; Filter: String);
 function GameShaderList : String;
+function ListPakFiles(const Path: String) : TStringList;
 
 implementation
 

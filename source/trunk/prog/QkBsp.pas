@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.21  2001/03/08 21:57:42  tiglari
+switch to Q2 from Q3A mode when loading Q2 .bsp
+
 Revision 1.20  2001/03/06 22:16:53  tiglari
 head off attempt to view Q3A bsp
 
@@ -106,7 +109,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkObjects, QkFileObjects, TB97, ComCtrls, QkForm, QkMapObjects, qmath,
-  StdCtrls, Python, PyObjects, Game;
+  StdCtrls, Python, PyObjects, Game, QkUnknown;
 
 type
  TBsp1EntryTypes =
@@ -213,6 +216,7 @@ type
           function GetAltTextureSrc : QObject;
           procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
           function PyGetAttr(attr: PChar) : PyObject; override;
+          Function CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
         end;
 
 type
@@ -1017,17 +1021,6 @@ begin
     ProcessEditMsg(edOpen);
 end;
 
-type
-  QInternalObject = class(QObject)
-  public
-    class Function TypeInfo: String; Override;
-  end;
-
-class Function QInternalObject.TypeInfo: String;
-begin
-  Result:=':';
-end;
-
 (*
 convert this:
 
@@ -1163,11 +1156,11 @@ begin
   if IsNumbersSeperated(arg)<>0 then Result:='EF'+IntToStr(IsNumbersSeperated(arg));
 end;
 
-procedure TFQBsp.Button2Click(Sender: TObject);
+Function QBsp.CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
 var
   e: QObject;
   z: QZText;
-  S, ext: String;
+  S, ext, tb: String;
   specList: TStringList;
   e_sl: TStringList;
   i,J: Integer;
@@ -1180,11 +1173,14 @@ var
   Entity: QObject;
   eSpec: QObject;
   eForm: QFormCfg;
-  entityForms:QQuakeCtx;
+  entityForms:QFormContext;
   dir_nfo : QQuakeCtx;
+  opt_tbx: QToolBoxGroup;
+  Addons: QFileObject;
+  entities: TQList;
 begin
-  FileObject.Acces;
-  e:=QBsp(FileObject).GetBspEntry(eEntities, lump_entities, eBsp3_entities);
+  Acces;
+  e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
   if e=nil then
   begin
     raise Exception.Create('No Entities in BSP');
@@ -1196,12 +1192,12 @@ begin
   *)
   addonRoot:=BuildFileRoot('new addon.qrk', nil);
   addonRoot.Filename:='';
-  addonRoot.SpecificsAdd('Description=(insert addon desctiption here)');
+  addonRoot.SpecificsAdd('Description=(insert addon description here)');
   (*
     Build Directory Infos
   *)
   dir_nfo := QQuakeCtx.Create('addon directory infos', addonRoot);
-  dir_nfo.SpecificsAdd('Game='+GetGameName(FileObject.ObjectGameCode));
+  dir_nfo.SpecificsAdd('Game='+GetGameName(ObjectGameCode));
   addonRoot.SubElements.Add(dir_nfo);
   (*
     Build Toolboxes
@@ -1209,19 +1205,24 @@ begin
   TBX:=QToolBox.Create('Toolbox Folders', addonRoot);
   addonRoot.Subelements.Add(TBX);
   TBX.Specifics.Add('ToolBox=New map items...');
-  EntityTBX:=QToolBoxGroup.Create(Format('%s', [FileObject.Name]), TBX);
+  EntityTBX:=QToolBoxGroup.Create(Format('%s', [Name]), TBX);
   TBX.Subelements.Add(EntityTBX);
   TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
-  EntityTBX_2:=QToolBoxGroup.Create(Format('%s entities',[FileObject.Name]), EntityTBX);
-  EntityTBX_2.SpecificsAdd(format(';desc=Created from %s',[FileObject.GetFullName]));
+  EntityTBX_2:=QToolBoxGroup.Create(Format('%s entities',[Name]), EntityTBX);
+  EntityTBX_2.SpecificsAdd(format(';desc=Created from %s',[GetFullName]));
   EntityTBX.Subelements.Add(EntityTBX_2);
   (*
     Convert {...} entites to :e entities
   *)
   specList:=EntityTextToStringList(S);
+  Addons:=ExistingAddons;
   for i:=0 to specList.count-1 do
   begin
     e_sl:=TStringList(SpecList.Objects[i]);
+    if uppercase(e_sl.Values['classname']) = 'WORLDSPAWN' then
+      continue;
+    if uppercase(e_sl.Values['classname']) = 'LIGHT' then
+      continue;
     ext:=':e';
     if e_sl.IndexOfName('model')<>-1 then
     begin
@@ -1230,6 +1231,8 @@ begin
         ext:=':b';
       end
     end;
+    if Addons.FindSubObject(e_sl.Values['classname'], QObject, QObject)<>nil then
+      continue;
     Entity:=ConstructQObject(e_sl.Values['classname']+ext, EntityTBX_2);
     for j:=0 to e_sl.count-1 do
     begin
@@ -1240,24 +1243,46 @@ begin
     Entity.SpecificsAdd(';desc=(insert description here)');
     if ext=':b' then
       Entity.SpecificsAdd(';incl=defpoly');
-    EntityTBX_2.SubElements.Add(Entity);
+    if pos('_',Entity.name)<>0 then
+    begin
+      tb:=copy(Entity.name, 1,pos('_', Entity.Name))+'* entities';
+      opt_tbx:=QToolboxGroup(EntityTBX_2.SubElements.FindName(tb+EntityTBX_2.typeinfo));
+      if (opt_tbx = nil) then
+      begin
+        opt_tbx:=QToolBoxGroup.Create(tb, EntityTBX_2);
+        EntityTBX_2.Subelements.add(opt_tbx);
+        Entity.FParent:=opt_tbx;
+        opt_tbx.SubElements.Add(Entity);
+      end
+      else
+      begin
+        Entity.FParent:=opt_tbx;
+        opt_tbx.SubElements.Add(Entity);
+      end;
+    end
+    else
+    begin
+      EntityTBX_2.SubElements.Add(Entity);
+    end;
   end;
   speclist.free;
   (*
     Create forms for each entity & guess type for each spec
   *)
-  entityForms:=QQuakeCtx.Create('Entity forms', addonRoot);
+  entityForms:=QFormContext.Create('Entity forms', addonRoot);
   addonRoot.SubElements.Add(entityForms);
-  for i:=0 to EntityTBX_2.Subelements.Count-1 do
+  entities:=TQList.Create;
+  EntityTBX_2.FindAllSubObjects('',TTreeMapSpec, QObject, Entities);
+  for i:=0 to entities.Count-1 do
   begin
-    Entity:=TTreeMapEntity(EntityTBX_2.SubElements[i]);
+    Entity:=TTreeMapEntity(entities[i]);
     eForm:=QFormCfg.Create(Entity.Name, entityForms);
     entityForms.Subelements.Add(eForm);
     hasOrigin:=false;
     for j:=Entity.Specifics.Count-1 downto 0 do
     begin
       if Entity.Specifics.Names[j][1]=';' then continue; // skip ;desc, ;incl etc
-      eSpec:=QInternalObject.Create(Entity.Specifics.Names[j], eForm);
+      eSpec:=QInternal.Create(Entity.Specifics.Names[j], eForm);
       if uppercase(Entity.Specifics.Names[j])='ORIGIN' then
         hasOrigin:=true;
       eSpec.SpecificsAdd('txt=&');
@@ -1269,10 +1294,20 @@ begin
     if (Entity.TypeInfo = ':e') and (hasOrigin) then
       Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
   end;
-  (*
-    Open file in window
-  *)
-  addonRoot.OpenStandAloneWindow(Nil, False);
+  entities.free;
+  Result:=AddonRoot;
+end;
+
+procedure TFQBsp.Button2Click(Sender: TObject);
+var
+  AddonRoot: QFileObject;
+  Addons: QFileObject;
+begin
+  Addons:=MakeAddOnsList;
+  AddonRoot:=QBsp(FileObject).CreateAddonFromEntities(Addons);
+  Addons.AddRef(-1);
+  if AddonRoot<>nil then
+    AddonRoot.OpenStandAloneWindow(Nil, False);
 end;
 
 initialization

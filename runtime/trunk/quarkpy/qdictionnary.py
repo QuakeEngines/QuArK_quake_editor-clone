@@ -557,6 +557,7 @@ Strings = {
     5176: ".md3 file",
     5177: "M32 Texture (SoF)",
     5178: "3d studio file",
+    5179: "Form Context",
 
     5183: "File corruption in '%s'. You can try to continue to load it, but Warning ! This will likely cause serious troubles like mess in the object trees !\n\nThis error message may be displayed several times per file.\n\nReally continue ?",
     5184: "'%s' is not a QuArK-5 file",
@@ -899,6 +900,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.35  2001/02/27 20:29:03  decker_dk
+#Item 5590 rewritten due to shaders.
+#
 #Revision 1.34  2001/02/25 11:22:51  tiglari
 #bezier page support, transplanted with permission from CryEd (CryTek)
 #
