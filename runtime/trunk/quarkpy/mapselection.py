@@ -146,16 +146,17 @@ def onclick(menu):
     removeItem.state=parentItem.state=childItem.state=qmenu.disabled
     nextItem.state=prevItem.state=freezeItem.state=unfreezeItem.state=qmenu.disabled
     if editor is not None:
-        if editor.layout.explorer.uniquesel is not None:
-            removeItem.state=parentItem.state=childItem.state=qmenu.normal
-            nextItem.state=prevItem.state=freezeItem.state=qmenu.normal
+        uniquesel = editor.layout.explorer.uniquesel 
+        if uniquesel is not None:
+            removeItem.state=nextItem.state=prevItem.state=qmenu.normal
+            if len(uniquesel.subitems)>0:
+                childItem.state = qmenu.normal
+            if uniquesel.treeparent is not None:
+                parentItem.state=qmenu.normal
             if getAttr(editor,'frozenselection') is None:
                 freezeItem.state=qmenu.normal
-                unfreezeItem.state=qmenu.disabled
             else:
-                freezeItem.state=qmenu.disabled
                 unfreezeItem.state=qmenu.normal
-        else: return
 
 def SelectionMenu():
     "The Selection menu, with its shortcuts."
@@ -172,6 +173,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.12  2003/03/26 03:21:31  cdunde
+# To fix runtime error and gray out all menu items if no selection is made.
+#
 # Revision 1.11  2003/03/25 10:16:52  tiglari
 # re-fix enablement bugs
 #
