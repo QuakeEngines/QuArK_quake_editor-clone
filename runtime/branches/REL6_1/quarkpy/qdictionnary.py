@@ -12,7 +12,7 @@ Dictionnary of all strings used within the program
 
 
 Strings = {
-        0: "REL6_1-pre-3",
+        0: "Release 6.1",
 	1: "  QuArK - Quake Army Knife      %s    by Armin Rigo     -  logo McKay & Brian",
 
 	2: "&New %s",
@@ -877,6 +877,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.18.2.4  2000/10/30 22:14:56  alexander
+#set name
+#
 #Revision 1.18.2.3  2000/10/15 20:06:10  alexander
 #merged bsp v46 error message fix
 #

@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.46.2.5  2000/11/06 18:53:16  decker_dk
+//+devmap for Quake3
+//
 //Revision 1.46.2.4  2000/10/30 22:12:58  alexander
 //set name
 //
@@ -135,7 +138,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "REL6_1-pre-3"
+      Version = "Release 6.1"
       InternalVersion = '6.00011'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
