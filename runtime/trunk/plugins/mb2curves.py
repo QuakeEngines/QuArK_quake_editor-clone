@@ -222,7 +222,7 @@ def makecapfacecp(bl, tl, tr, br):
           [bl, tl, tm, tr, br]]
     return cp
 
-def b2fromface(cp, name, face, editor):
+def b2FromFace(cp, name, face, editor):
     b2 = quarkx.newobj(name+':b2')
     b2.cp =  texcp_from_face(cp, face, editor)
     b2["tex"]=face["tex"]
@@ -253,6 +253,23 @@ def smallerbevelbox(box, thick):
     for (corner, delta) in (("blf",zip), ("blb",lb),
             ("tlf",zip), ("tlb",lb), ("trf",rf), ("trb",rb),
             ("brf",rf), ("brb",rb)):
+        box2[corner]=box[corner]+delta
+    return box2
+
+def smallercolumnbox(box, thick):
+    "returns a box for cp;i,m, thick smaller than input box"
+    def gap(goal, source, box=box, thick=thick):
+        return thick*(box[goal]-box[source]).normalized
+    f = gap("tlf", "trf")
+    b = gap("tlb", "trb")
+    l = gap("tlf", "tlb")
+    r = gap("trf", "trb")
+    box2 = {}
+    for (corner, delta) in (
+          ("tlf",-f-l), ("blf",-f-l),
+          ("tlb",-b+l), ("blb",-b+l),
+          ("trf",f-r), ("brf",f-r),
+          ("trb",b+r), ("brb",b+r)):
         box2[corner]=box[corner]+delta
     return box2
 
@@ -385,8 +402,8 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretc
 #      fcp = transposecp(fcp)
 #  else:
   bcp = transposecp(bcp)
-  front = b2fromface(fcp, 'front', fdict["f"], editor)
-  back = b2fromface(bcp,'back', fdict["b"], editor)
+  front = b2FromFace(fcp, 'front', fdict["f"], editor)
+  back = b2FromFace(bcp,'back', fdict["b"], editor)
   if faceonly:
     return [front, back]
   return [inner, front, back]
@@ -460,8 +477,8 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stret
                          [pd["tlf"], pd["tlf"], pd["tlb"]])
       bcp = cpFromRows([pd["blb"], pd["brb"], pd["brf"]],
                          [pd["blb"], pd["blf"], pd["blf"]])
-  top = b2fromface(tcp,"top",fdict["u"],editor)
-  bottom = b2fromface(bcp,"bottom",fdict["d"],editor)
+  top = b2FromFace(tcp,"top",fdict["u"],editor)
+  bottom = b2FromFace(bcp,"bottom",fdict["d"],editor)
   if left:
     top.swapsides()
     bottom.swapsides()
@@ -482,28 +499,52 @@ def columnimages(o, editor, inverse=0, open=0, thick=0, stretchtex=0):
     if fdict is None:
         return
     pd = pointdict(vtxlistdict(fdict,o))
-    cp = cpFromRows(circleLine(pd["trf"], pd["tlf"], pd["tlb"], pd["trb"]),
-                    circleLine(pd["brf"], pd["blf"], pd["blb"], pd["brb"]))
-    oldface = fdict["b"]
-    cp = texcp_from_face(cp, oldface, editor)
-    if not stretchtex:
-        for (facekey, corner) in (("r", "trb"),("f", "trf"),("l","tlf")):
-            newface=oldface.copy()
-            newface.setthreepoints(oldface.threepoints(2),2)
-            newface.distortion(fdict[facekey].normal,pd[corner])
-            oldface = newface
-        cp3 = interpolateGrid(pd["tlf"], pd["tlb"], pd["blf"], pd["blb"])
-        cp3 = texcp_from_face(cp3, oldface, editor)
-        for i in range(3):
-            cp[i][8] = quarkx.vect(cp[i][8].xyz+cp3[i][2].st)
+
+    def curveCp(pd):
+        cp = cpFromRows(circleLine(pd["trf"], pd["tlf"], pd["tlb"], pd["trb"]),
+                        circleLine(pd["brf"], pd["blf"], pd["blb"], pd["brb"]))
+        return cp
+        
+    cp = curveCp(pd)
+
+    def makeTube (cp, pd, oldface, fdict=fdict, editor=editor, stretchtex=stretchtex):
+        cp2 = interpolateGrid(pd["tlf"], pd["tlb"], pd["blf"], pd["blb"], 3, 9)
+        cp2 = texcp_from_face(cp2, oldface, editor)
+        cp = texcp_from_b2(cp, cp2)
+        if not stretchtex:
+            for (facekey, corner) in (("r", "trb"),("f", "trf"),("l","tlf")):
+                newface=oldface.copy()
+                newface.setthreepoints(oldface.threepoints(2),2)
+                newface.distortion(fdict[facekey].normal,pd[corner])
+                oldface = newface
+            cp3 = interpolateGrid(pd["tlf"], pd["tlb"], pd["blf"], pd["blb"])
+            cp3 = texcp_from_face(cp3, oldface, editor)
+            for i in range(3):
+                cp[i][8] = quarkx.vect(cp[i][8].xyz+cp3[i][2].st)
 #    squawk(`cp`)
         cp = antidistort_rows(cp)
+        inner = quarkx.newobj("inner:b2")
+        inner.cp = cp
+        inner["tex"]=oldface["tex"]
+        return inner
 
-    inner = quarkx.newobj("inner:b2")
-    inner.cp = cp
-    inner["tex"]=fdict["b"]["tex"]
+    inner = makeTube(cp, pd, fdict["b"])
+ 
+    if thick:
+        pd2 = smallercolumnbox(pd, thick)
+        cp2 = curveCp(pd2)
+        inner2 = makeTube(cp2, pd2, fdict["f"])
+        tcp = cpFromRows(cp[0],cp2[0])
+        top = b2FromFace(tcp,"top",fdict["u"],editor)
+        top.swapsides()
+        bcp = cpFromRows(cp[2], cp2[0])
+        bottom = b2FromFace(bcp,"bottom",fdict["d"],editor)
+        inner2.swapsides()
+        return [inner,inner2,top,bottom]
+        
     if inverse:
        inner.swapsides()
+
     return [inner]
 
 
@@ -710,6 +751,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.15  2000/06/22 22:39:40  tiglari
+#added support for columns (and pipes)
+#
 #Revision 1.14  2000/06/19 11:46:22  tiglari
 #Fixes to texture alignment on arches
 #
