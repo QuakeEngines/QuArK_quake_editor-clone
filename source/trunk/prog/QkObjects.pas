@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.63  2002/01/06 10:36:48  decker_dk
+update version to "QuArK 6.3snap 2002jan06"
+
 Revision 1.62  2001/12/30 09:59:57  tiglari
 alter TQStream release code to prevent an error, depends on 0 not being
 a valid FHandle value.  I don't really know what's going on with the
@@ -207,7 +210,7 @@ uses Windows, SysUtils, Messages, Classes, Clipbrd,
 {$DEFINE ShareSpecMem}
 
 const
-  QuArKVersion            = 'QuArK 6.3snap 2002jan06';
+  QuArKVersion            = 'QuArK 6.3snap 2002feb24';
 
   iiUnknownFile           = 0;
   iiExplorerGroup         = 1;
@@ -1201,6 +1204,11 @@ begin
 
   Name:=nName;
   FParent:=nParent;
+
+{$IFDEF Debug}
+  PythonObj.ob_refcnt := 0;
+{$ENDIF}
+
 (*if Self is QFileObject then
     PythonObj.ob_type:=@TyFileObject_Type
   else*)
@@ -1212,7 +1220,7 @@ end;
 
 destructor QObject.Destroy;
 var
-  I: Integer;
+  I,a: Integer;
 begin
   {$IFDEF Debug}
   I:=g_MemQObject.IndexOf(Self);
@@ -1227,7 +1235,13 @@ begin
   for I:=0 to FSubElements.Count-1 do
   begin
     if FSubElements[I].FParent=Self then
+    begin
+      if (FSubElements[I].PythonObj.ob_refcnt > 1) then
+      begin
+        a:=i; // Dummy statement just for easy breakpoint placement
+      end;
       FSubElements[I].FParent:=Nil;
+    end;
   end;
 
   FSubElements.Free;
@@ -1247,6 +1261,12 @@ begin
     Exit;
 
   Inc(PythonObj.ob_refcnt, Delta);
+{$IFDEF Debug}
+  if PythonObj.ob_refcnt>1 then
+  begin
+    Inc(PythonObj.ob_refcnt, 0); // Dummy statement just for breakpoint placement
+  end;
+{$ENDIF}
   if PythonObj.ob_refcnt<=0 then
   begin
     {$IFDEF Debug}
