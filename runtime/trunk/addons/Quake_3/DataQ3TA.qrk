@@ -3661,10 +3661,43 @@ Description = "Team Arena data - By: Maleficus"
           ;desc = "Neutral Obelisk. For Harvester ONLY!!!"
         }
       }
+	Terrain Entities.qtxfolder =
+	{
+	  func_group:e =
+	  {
+	  origin = "0 0 0"
+	  ;desc = "Used in Team Arena as a terrain entity. Read the terrain manual!!"
+	  }
+      }
     }
   }
   Entity Forms.qctx =
   {
+    func_group:form =
+    {
+	Help = "This is NOT a normal entity! This is used to group brushes, patches and such"
+	" together to make terrain. Read the manual for tips on how to use this entity!!"
+	alphamap: =
+	{
+	  Txt = "&"
+	  Hint = "This is the path/name of the art file used to map textures on the terrain surface."
+	}
+	layers: =
+	{
+	  Txt = "&"
+	  Hint = "An interger value that is the # of unique root shaders used on the terrain."
+	}
+	shader: =
+	{
+	  Txt = "&"
+	  Hint = "This is the path to the metashader used to assign textures to the terrain entity."
+	}
+	terrain: =
+	{
+	  Txt = "&"
+	  Hint = "This is the on/off flag. When set to one, entity becomes a terrain entity."
+	}
+    }
     ammo_nails:form =
     {
       Help = "This is the ammo for the nailgun. NOTE: About the gametype key -"
