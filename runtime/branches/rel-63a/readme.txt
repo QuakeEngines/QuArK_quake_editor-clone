@@ -4,6 +4,7 @@
 
 
  Updates:
+   * [tiglari] add .pts loading commands to defaults for Q1, Hx2, HL
    * [tiglari] lighting problems with etp and V220 formats, pinned down with
        great effort by quantum_red, fixed.
    * [tiglari] bsp-viewing problem with mirror-imaged textures fixed
