@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.113  2001/03/29 01:27:19  aiv
+//modifable :form objects!
+//
 //Revision 1.112  2001/03/28 19:23:45  decker_dk
 //In HotKeyForm:incl, changed from Txt="&" (editable) to Txt="&R" (readonly).
 //
@@ -3192,11 +3195,42 @@ QQRKSRC1
       ;view: = {Txt="&" Typ="X016" Cap="Can't select"       Hint="can't select objects in this group with mouse clicks"}
       ;view: = {Txt="&" Typ="X04"  Cap="Ignore to build"    Hint="ignored while building the map"}
     }
+    outform:incl = // include for dups with out
+    {
+      out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
+    }
     Default:d:form =    // form that applies when editing duplicators
     {
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
     }
 
+    Default:p:form = // form for polys
+    {
+       neg: = {Txt="&" Typ="X" Hint="if checked, brush is negative"}
+    }
+    linearform:incl = {
+       scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling (instance dup only)" }
+       angles: = {Txt="&" Typ="EF03"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
+       linear: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
+    }
+    
+   
+    dup lin:form =
+    {
+      outform = !
+      offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
+      count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
+      linearform = !
+    }
+  
+    dup basic:form =
+    {
+      outform = !
+      offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
+      count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
+      angle: = {Txt="&" Typ="E" Hint="Not sure how this one works ..."}
+    }
+  
     dup radial:form =
     {
       Help = "Brushes placed inside this will be replicated around the axis," $0D " which can be tilted."
@@ -3217,6 +3251,7 @@ QQRKSRC1
 //        Hint2 = "Align to Y Axis"
 //        Hint3 = "Align to Z Axis"
 //      }
+      linearform = !
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "Don't you worry about this"}
     }
@@ -3340,8 +3375,7 @@ QQRKSRC1
       level: = {Txt="&" Typ="X"      Hint="if checked, following path segment doesn't rotate (may cause non-fitting joins)"}
       target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
       targetname: = {Txt="&" Typ="E" Hint="should be managed automatically"}
-      scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling (instance dup only)" }
-      angles: = {Txt="&" Typ="EF03"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
+      linearform = !
       no instance: = {Txt="&" Typ="X"      Hint="if checked, no instance is generated (instance dup only)"}
     }
     dup instance:form =
@@ -3981,7 +4015,7 @@ QQRKSRC1
       }
       Duplicators & misc.qtxfolder =
       {
-        Duplicator:d =
+        Basic Duplicator:d =
         {
           ;desc = "basic duplicator, to make several copies of an object"
           origin = "0 0 0"
@@ -4000,7 +4034,7 @@ QQRKSRC1
           out = "1"
           macro = "dup basic"
         }
-        Duplicator:d =
+        Linear Duplicator:d =
         {
           ;desc = "enhanced version : can apply linear mappings (mirror, zoom, etc)"
           origin = "0 0 0"
