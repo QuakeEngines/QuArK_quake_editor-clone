@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.50  2000/09/01 11:12:55  tiglari
+//Put some bevel specifics onto a details button in the form.
+//
 //Revision 1.49  2000/09/01 00:49:02  alexander
 //merged in tiglaris default sof sky fix from rel6_1 branch
 //
@@ -2606,6 +2609,23 @@ QQRKSRC1
     {
       out: = {Txt="copy objects" Cap="outside" Typ="X" Hint="if checked, the duplicator or digger works with objects besides instead of only inside"}
     }
+    capdetails:form =
+    {
+      faceonly: = {Txt="&" Typ="X"
+               Hint = "if checked, only the top and bottom faces are produced, no inner curve"}
+      nofront = {Txt="&" Typ="X"
+               Hint = "if checked, front face is not produced"}
+      noback: = {Txt="&" Typ="X"
+               Hint = "if checked, back face is not produced"}
+      noinner = {Txt="&" Typ="X"
+               Hint = "if checked, inner face is not produced (thick bevels only)"}
+      noouter: = {Txt="&" Typ="X"
+               Hint = "if checked, outer face is not produced (thick bevels only)"}
+      leftside: = {Txt="&" Typ="X"
+               Hint = "if checked, left side is produced"}
+      rightside: = {Txt="&" Typ="X"
+               Hint = "if checked, right side is produced"}
+    }
     dup cap:form =
     {
       inverse: = {Txt="&" Typ="X"
@@ -2618,8 +2638,13 @@ QQRKSRC1
                Hint = "if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open: = {Txt="&" Typ="X"
                Hint = "if checked, front and back are open"}
-      faceonly: = {Txt="&" Typ="X"
-               Hint = "if checked, only the front and back faces are produced, no inner curve"}
+      more: = {
+       Typ="B"
+       Txt="details"
+       Cap="Push"
+       Form="capdetails:form"
+       Hint="specifics for more detailed control over generation of patches"
+      }
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
