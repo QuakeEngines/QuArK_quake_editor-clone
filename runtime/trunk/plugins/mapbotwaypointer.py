@@ -6,6 +6,8 @@
 #
 #$Header$
 
+## Fredrick_vamstad@hotmail.com
+
 Info = {
    "plug-in":       "Bot Waypointer",
    "desc":          "Bot Waypointer",
@@ -19,6 +21,7 @@ import sys
 import struct
 import quarkx
 import quarkpy.qmacro
+import quarkpy.mapmenus
 from quarkpy.qeditor import *
 from quarkpy.mapduplicator import *
 from quarkpy.qhandles import *
@@ -434,20 +437,267 @@ quarkpy.qmacro.MACRO_botwaypointer_savefile = macro_botwaypointer_savefile
 #
 #
 #
+colors = [0xB00000,
+          0x00B000,
+          0x0000B0,
+          0xB0B000,
+          0x00B0B0,
+          0xB000B0,
+          0xB0B0B0]
+
+def FindEntityByTargetname(name, list):
+    for e in list:
+        if (e["targetname"] == name):
+            return e
+    return None
+
+def ShortestRouteTree(view, cv, obj, waypoints, cnt=0):
+    if (cnt >= 90):
+        # a simple test to ensure we don't get into an endless loop
+        print "Possible cyclic path:", cnt, obj["targetname"], waypoints
+        if (cnt >= 100):
+            # stop traversing
+            return 1
+
+    pp2 = view.proj(obj.origin)
+    for spec in obj.dictspec.keys():
+        if (spec[0:4] == "via_"):
+            viaobj = FindEntityByTargetname(string.split(spec, "_")[1], obj.treeparent.subitems)
+            if (viaobj is not None):
+                routes = string.split(obj[spec], ";")
+
+                # Use only those waypoint-names, which exists in both lists ('routes' and 'waypoints').
+                def isinlist(wp, routes=routes):
+                    if wp in routes:
+                        return 1
+                    return 0
+                theseroutes = filter(isinlist, waypoints)
+
+                # Remove from the 'waypoints' list, those waypoint-names who also exists in the 'theseroutes' list.
+                def isnotinlist(wp, theseroutes=theseroutes):
+                    if wp in theseroutes:
+                        return 0
+                    return 1
+                newwaypoints = filter(isnotinlist, waypoints)
+                waypoints = newwaypoints
+
+                # If there are any waypoint-names in 'theseroutes' list, traverse them too.
+                if (len(theseroutes) > 0):
+                    cv.line(view.proj(viaobj.origin), pp2)
+                    if (ShortestRouteTree(view, cv, viaobj, theseroutes, cnt+1) != 0):
+                        return 1
+    return 0
+
+#
+#
+#
+def FindSelectedOne(list):
+    for e in list:
+        if (e.selected):
+            return e
+    return None
+
+#
+#
+#
 class BotWaypointerPointHandle(CenterHandle):
 
-    def __init__(self, botwaypointpath, pos, centerof, color=RED, caninvert=0):
+    def __init__(self, points_to_list, routes_to_list, pos, centerof, color=RED, caninvert=0):
         CenterHandle.__init__(self, pos, centerof, color, caninvert)
-        self.botwaypointpath = botwaypointpath
-        self.hint = "'"+centerof["targetname"]+"' is this ones targetname."
+        self.points_to_list = points_to_list
+        self.routes_to_list = routes_to_list
+        self.hint = "'"+centerof["targetname"]+"' = targetname.||The black thin arrows, shows which other waypoints this one directly points to, by using its 'target##' specifics.\n\nThe thick colored lines illustrates its nearest neighbours, which are used for the shortest-path-matrix, by using its 'via_wp###_to' specifics."
 
     def draw(self, view, cv, draghandle=None):
-        if (self.botwaypointpath is not None):
-            Arrow(cv, view, self.botwaypointpath.origin, self.pos)
-        CenterHandle.draw(self, view, cv, draghandle=None)
+        myparent = self.centerof.treeparent
+        myself = self.centerof
+        if (myself.selected):
+            myparent["lastwaypointorigin"] = myself["origin"]
+        if (myparent["shortestpathdisplay"] == "1"):
+            if (myself.selected):
+                nextclr = 0
+                for spec in myself.dictspec.keys():
+                    if (spec[0:4] == "via_"):
+                        cv.pencolor = colors[nextclr]
+                        nextclr = (nextclr + 1) % 6
+                        viaobj = FindEntityByTargetname(string.split(spec, "_")[1], myparent.subitems)
+                        if (viaobj is not None):
+                            pp2 = view.proj(viaobj.origin)
+                            cv.penwidth = 3
+                            cv.line(view.proj(self.pos), pp2)
+                            cv.penwidth = 1
+                            via_routes = string.split(myself[spec], ";")
+                            if (ShortestRouteTree(view, cv, viaobj, via_routes) != 0):
+                                raise "Possible cyclic path"
+                           #for wp in via_routes:
+                           #    obj = FindEntityByTargetname(wp, myparent.subitems)
+                           #    if (obj is not None):
+                           #        cv.line(view.proj(obj.origin), pp2)
+        else:
+            if (self.routes_to_list is not None):
+                cv.penwidth = 3
+                nextclr = 0
+                pp2 = view.proj(self.pos)
+                for route_to in self.routes_to_list:
+                    cv.pencolor = colors[nextclr]
+                    nextclr = (nextclr + 1) % 6
+                    cv.line(view.proj(route_to), pp2)
+        if (self.points_to_list is not None):
+            cv.pencolor = 0
+            cv.penwidth = 1
+            for point_to in self.points_to_list:
+                Arrow(cv, view, self.pos, point_to)
+        CenterHandle.draw(self, view, cv, draghandle)
+
 
     def menu(self, editor, view):
-        return []
+
+        def AddTwoWayClick(m, self=self, editor=editor):
+            myparent = self.centerof.treeparent
+            myself   = self.centerof
+            theSelected = FindSelectedOne(myparent.subitems)
+            if (theSelected is not None):
+                undo = quarkx.action()
+
+                try:
+                    use_specname = None
+                    use_num = 0
+                    for spec in theSelected.dictspec.keys():
+                        if (spec[:6] == "target" and spec != "targetname"):
+                            if (theSelected[spec] == myself["targetname"]):
+                                raise "already exist"
+                            if (theSelected[spec] is None or theSelected[spec] == ""):
+                                use_specname = spec
+                            use_num = max(use_num, int(spec[6:]))
+                    if (use_specname is None):
+                        use_specname = "target" + str(use_num + 1)
+                    undo.setspec(theSelected, use_specname, myself["targetname"])
+                except:
+                    pass
+
+                try:
+                    use_specname = None
+                    use_num = 0
+                    for spec in myself.dictspec.keys():
+                        if (spec[:6] == "target" and spec != "targetname"):
+                            if (myself[spec] == theSelected["targetname"]):
+                                raise "already exist"
+                            if (myself[spec] is None or myself[spec] == ""):
+                                use_specname = spec
+                            use_num = max(use_num, int(spec[6:]))
+                    if (use_specname is None):
+                        use_specname = "target" + str(use_num + 1)
+                    undo.setspec(myself, use_specname, theSelected["targetname"])
+                except:
+                    pass
+
+                undo.ok(editor.Root, "add two-way target")
+                editor.invalidateviews()
+
+        def AddOneWayClick(m, self=self, editor=editor):
+            myparent = self.centerof.treeparent
+            myself   = self.centerof
+            theSelected = FindSelectedOne(myparent.subitems)
+            if (theSelected is not None):
+                undo = quarkx.action()
+
+                try:
+                    use_specname = None
+                    use_num = 0
+                    for spec in theSelected.dictspec.keys():
+                        if (spec[:6] == "target" and spec != "targetname"):
+                            if (theSelected[spec] == myself["targetname"]):
+                                raise "already exist"
+                            if (theSelected[spec] is None or theSelected[spec] == ""):
+                                use_specname = spec
+                            use_num = max(use_num, int(spec[6:]))
+                    if (use_specname is None):
+                        use_specname = "target" + str(use_num + 1)
+                    undo.setspec(theSelected, use_specname, myself["targetname"])
+                except:
+                    pass
+
+                undo.ok(editor.Root, "add two-way target")
+                editor.invalidateviews()
+
+        def RemTwoWayClick(m, self=self, editor=editor):
+            myparent = self.centerof.treeparent
+            myself   = self.centerof
+            theSelected = FindSelectedOne(myparent.subitems)
+            if (theSelected is not None):
+                undo = quarkx.action()
+                for spec in theSelected.dictspec.keys():
+                    if (theSelected[spec] == myself["targetname"]):
+                        undo.setspec(theSelected, spec, None)
+                for spec in myself.dictspec.keys():
+                    if (myself[spec] == theSelected["targetname"]):
+                        undo.setspec(myself, spec, None)
+                undo.ok(editor.Root, "remove two-way target")
+                editor.invalidateviews()
+
+        def RemOneWayClick(m, self=self, editor=editor):
+            myparent = self.centerof.treeparent
+            myself   = self.centerof
+            theSelected = FindSelectedOne(myparent.subitems)
+            if (theSelected is not None):
+                undo = quarkx.action()
+                for spec in theSelected.dictspec.keys():
+                    if (theSelected[spec] == myself["targetname"]):
+                        undo.setspec(theSelected, spec, None)
+                undo.ok(editor.Root, "remove one-way target")
+                editor.invalidateviews()
+
+        def ShortestPathDisplayClick(m, self=self, editor=editor):
+            myparent = self.centerof.treeparent
+            shortestpathdisplay = not int(myparent["shortestpathdisplay"])
+            m.state = quarkpy.qmenu.checked and shortestpathdisplay
+            myparent["shortestpathdisplay"] = str(shortestpathdisplay)
+            editor.invalidateviews()
+
+        myparent = self.centerof.treeparent
+
+        menu_add_twoway = quarkpy.qmenu.item("Add two-way target",    AddTwoWayClick, "|stuff to type here...")
+        menu_add_oneway = quarkpy.qmenu.item("Add one-way target",    AddOneWayClick, "|stuff to type here...")
+        menu_rem_twoway = quarkpy.qmenu.item("Remove two-way target", RemTwoWayClick, "|stuff to type here...")
+        menu_rem_oneway = quarkpy.qmenu.item("Remove one-way target", RemOneWayClick, "|stuff to type here...")
+
+        theSelected = FindSelectedOne(myparent.subitems)
+
+        # Enable/disable menu-items depending on the state and spec/args of the two in question.
+        if (theSelected is None or theSelected == self.centerof):
+            menu_add_twoway.state = quarkpy.qmenu.disabled
+            menu_add_oneway.state = quarkpy.qmenu.disabled
+            menu_rem_twoway.state = quarkpy.qmenu.disabled
+            menu_rem_oneway.state = quarkpy.qmenu.disabled
+        else:
+            # Figure out, who targets who.
+            myself_targetname       = self.centerof["targetname"]
+            theselected_targetname  = theSelected["targetname"]
+            i_target_selected   = 0
+            selected_targets_me = 0
+            for spec in self.centerof.dictspec.keys():
+                if (spec[:6] == "target" and self.centerof[spec] == theselected_targetname):
+                    i_target_selected = 1
+                    break
+            for spec in theSelected.dictspec.keys():
+                if (spec[:6] == "target" and theSelected[spec] == myself_targetname):
+                    selected_targets_me = 1
+                    break
+            menu_add_twoway.state = not (not i_target_selected or not selected_targets_me) and quarkpy.qmenu.disabled
+            menu_add_oneway.state = not (not selected_targets_me)                          and quarkpy.qmenu.disabled
+            menu_rem_twoway.state = not (i_target_selected and selected_targets_me)        and quarkpy.qmenu.disabled
+            menu_rem_oneway.state = not (selected_targets_me)                              and quarkpy.qmenu.disabled
+
+        # Set up 'shortest path display' menuitem-checkbox
+        menu_shortestpath = quarkpy.qmenu.item("Shortest-path display", ShortestPathDisplayClick, "|stuff to type here...")
+        try:
+            shortestpathdisplay = int(myparent["shortestpathdisplay"])
+        except:
+            shortestpathdisplay = 0
+        myparent["shortestpathdisplay"] = str(shortestpathdisplay)
+        menu_shortestpath.state = quarkpy.qmenu.checked and shortestpathdisplay
+
+        return [menu_add_twoway, menu_add_oneway, menu_rem_twoway, menu_rem_oneway, qmenu.sep, menu_shortestpath]
 
 #
 #
@@ -459,19 +709,47 @@ class BotWaypointerPoint(DuplicatorManager):
 
     def handles(self, editor, view):
         myparent = self.dup.treeparent
+        myself = self.dup
         hndls = []
+
+        # Examine the spec/args for directly associated waypoints to myself
+        points_to_list = []
+        routes_to_list = []
+        to_list = []
+        for spec in myself.dictspec.keys():
+            if (spec[:6] == "target" and myself[spec] is not None and myself[spec] != ""):
+                points_to = FindEntityByTargetname(myself[spec], myparent.subitems)
+                if (points_to is not None):
+                    points_to_list.append(points_to.origin)
+                    if (points_to not in to_list):
+                        to_list.append(points_to)
+            if (spec[:4] == "via_" and myself[spec] is not None and myself[spec] != ""):
+                routes_to = FindEntityByTargetname(string.split(spec, "_")[1], myparent.subitems)
+                if (routes_to is not None):
+                    routes_to_list.append(routes_to.origin)
+                    if (routes_to not in to_list):
+                        to_list.append(points_to)
+
+        # First add the selected handle, so it will be drawn first (z-order of drawn lines)
+        hndls.append(BotWaypointerPointHandle(points_to_list, routes_to_list, self.dup.origin, self.dup))
+
+        # Then append those found in the spec/args.
+        def createhandle(o):
+            return BotWaypointerPointHandle(None, None, o.origin, o)
+        hndls = hndls + map(createhandle, to_list)
+
+        # Lastly show also the rest within a sphere of 512 units
         for obj in myparent.subitems:
-            # only those within 512 units
+            if (obj in hndls):
+                # Don't take objects with twice!
+                continue
             if abs(obj.origin - self.dup.origin) < 512:
-                i = 0
-                lineobj = None
-                while (i<10):
-                    if (self.dup["target"+str(i)] == obj["targetname"]):
-                        lineobj = self.dup
-                        break
-                    i = i + 1
-                hndls.append(BotWaypointerPointHandle(lineobj, obj.origin, obj))
+                # Only those within 512 units
+                hndls.append(BotWaypointerPointHandle(None, None, obj.origin, obj))
+
+        # And return the list of handles
         return hndls
+
 
 #
 #
@@ -479,13 +757,101 @@ class BotWaypointerPoint(DuplicatorManager):
 class BotWaypointer(StandardDuplicator):
 
     def buildimages(self, singleimage=None):
-        pass
+        # Don't allow dissociate images to work
+        if (singleimage is not None):
+            return []
+        # Local function to create dummy entity, so the waypoints become visible in the 2D-views
+        # without the need to have this duplicator selected.
+        def makeentitiy(obj):
+            newobj = quarkx.newobj("info_waypoint:e")
+            newobj["origin"] = str(obj.origin)
+            newobj.translate(quarkx.vect(0, 0, 0)) # damn - if this isn't here, the entities will not show in the views
+            return newobj
+        # Create the list of dummy entities
+        botwaypointerpointentities = map(makeentitiy, self.dup.subitems)
+        return botwaypointerpointentities
 
     def handles(self, editor, view):
-        def makehandle(obj, self=self):
+        def makehandle(obj):
             return quarkpy.qhandles.CenterHandle(obj.origin, obj)
         botwaypointerpointhandles = map(makehandle, self.dup.subitems)
         return botwaypointerpointhandles
+
+#
+#
+#
+def NewWaypointTargetname(list):
+    MaxNum = 0
+    for e in list:
+        if (e["targetname"][:2] == "wp"):
+            Num = int(e["targetname"][2:])
+            if (Num > MaxNum):
+                MaxNum = Num
+    MaxNum = MaxNum + 1
+    MaxTargetname = "wp" + str(MaxNum)
+
+    return MaxTargetname
+
+#
+#
+#
+def PasteBotWaypointClick(m):
+    editor = mapeditor()
+    if (editor is None):
+        return
+    # Check that the correct object is in the ClipBoard
+    clipboard = quarkx.pasteobj(1)
+    if ((len(clipboard) != 1) or (clipboard[0]["macro"] != "dup botwaypointerpoint")):
+        quarkx.msgbox("Clipboard does not contain exactly one 'dup botwaypointerpoint' entity.", MT_ERROR, MB_OK)
+        return
+    # Find our master 'Bot Waypointer' (must be only one named like that)
+    masters = editor.Root.findallsubitems("Bot Waypointer", ':d')
+    if (len(masters) != 1):
+        if (len(masters) > 1):
+            quarkx.msgbox("A single 'Bot Waypointer' entity could not be determined. Please remove or rename the ones you are not editing for to something else.", MT_ERROR, MB_OK)
+        else:
+            quarkx.msgbox("Could not find a 'Bot Waypointer' entity. May it have been renamed to something else?", MT_ERROR, MB_OK)
+        return
+    master = masters[0]
+
+    #
+    newobj = clipboard[0].copy()
+    x, y, z = m.pos.x, m.pos.y, m.pos.z
+    mx, my, mz = tuple(string.split(master["lastwaypointorigin"]))
+    if   m.view.info["type"] == "XY": z = string.atof(mz)
+    elif m.view.info["type"] == "XZ": y = string.atof(my)
+    elif m.view.info["type"] == "YZ": x = string.atof(mx)
+    newobj["origin"] = str(editor.aligntogrid(quarkx.vect(x, y, z)))
+    newobj.translate(quarkx.vect(0, 0, 0)) # damn - if this isn't here, the entity will not show in the views
+    newobj["targetname"] = NewWaypointTargetname(master.subitems)
+
+    undo = quarkx.action()
+    undo.put(master, newobj, None)
+    undo.setspec(master, "lastwaypointorigin", newobj["origin"])
+    undo.ok(editor.Root, "paste waypoint")
+    editor.layout.actionmpp()
+
+#
+#
+#
+def backmenu(editor, view=None, origin=None, oldbackmenu=quarkpy.mapmenus.BackgroundMenu):
+    # Build the normal context-menu
+    menu = oldbackmenu(editor, view, origin)
+    # Create a new menu-item, and store the cursor's origin in it.
+    menupastebotwaypoint = quarkpy.qmenu.item("&Paste waypoint", PasteBotWaypointClick, "|To paste a bot waypoint, you must first have copied (CTRL+C) a single 'dup botwaypointerpoint' entity into the clipboard.\n\nThis action also creates a new targetname for the waypoint, and keeps it aligned with the previous waypoint selected.")
+    menupastebotwaypoint.pos = origin
+    menupastebotwaypoint.view = view
+    # If there is nothing to paste, disable the menu (note: it could be anything in the clipboard,
+    # but we'll test agains that once the user actully performs the action)
+    if ((quarkx.pasteobj(0) == 0) or (view is None) or (origin is None)):
+        menupastebotwaypoint.state = quarkpy.qmenu.disabled
+    # Create a sub-menu that contains the Bot waypointer special menuitems
+    popup = quarkpy.qmenu.popup("&Bot waypointer", [menupastebotwaypoint])
+    # Put the new sub-menu on top of the context-menu list, and return the lot...
+    menu[:0] = [popup]
+    return menu
+
+quarkpy.mapmenus.BackgroundMenu = backmenu
 
 #
 #
@@ -496,4 +862,7 @@ quarkpy.mapduplicator.DupCodes.update({
 })
 
 # ----------- REVISION HISTORY ------------
-#$Log$
+# $Log$
+# Revision 1.1  2002/06/11 17:12:57  decker_dk
+# A Bot waypoint-editor. At the moment only works for HPBBot(Half-Life) and LTK/ACEBot(Quake-2)
+#
