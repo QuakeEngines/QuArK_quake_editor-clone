@@ -32,7 +32,6 @@ import maphandles
 # Call them with CallManager().
 #
 
-
 def ObjectOrigin(o):
     "Returns the origin of the map object o, or the center of its bounding box."
     pos = o.origin
@@ -46,6 +45,13 @@ def ObjectOrigin(o):
         pos = 0.5*(box[0]+box[1])
     return pos
 
+
+def ObjectCustomOrigin(o):
+    if o.type=="g":
+        for item in o.subitems:
+            if item["macro"]=="dup origin":
+                return item.origin
+    return ObjectOrigin(o)
 
 #
 # Entity Manager base class, followed by subclasses.
@@ -622,6 +628,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2001/02/07 18:40:47  aiv
+#bezier texture vertice page started.
+#
 #Revision 1.22  2001/01/10 20:25:53  tiglari
 #fix bug in registerPyForm
 #

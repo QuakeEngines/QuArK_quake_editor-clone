@@ -142,6 +142,14 @@ class StandardDuplicator(DuplicatorManager):
         return h
 
 
+class OriginDuplicator(DuplicatorManager):
+    "Origin for centering of groups"
+    
+    Icon = (ico_mapdups, 0)
+
+    def buildimages(self, singleimage=None):
+        return []
+
 
 class CenterDupHandle(maphandles.IconHandle):
 
@@ -228,10 +236,13 @@ def DupManager(dup):
     return mgr
 
 
-DupCodes = { }    # see mapdups.py
+DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #Revision 1.2  2000/05/26 23:11:36  tiglari
 #tried to fix `no drag' bug (select/release dup without dragging it sometimes causes problems)
 #
