@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2002/04/19 22:37:37  aiv
+Free 'Pool' in finalization of unit
+
 Revision 1.26  2002/04/12 22:08:24  tiglari
 Reminder -> Disclaimer
 
@@ -167,7 +170,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Console, Game, {$IFDEF VER90} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
      PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
-     QkApplPaths;
+     QkApplPaths, MapError;
 
  {-------------------}
 
@@ -2164,6 +2167,17 @@ begin
   end;
 end;
 
+function xGetMapError(self, args: PyObject) : PyObject; cdecl;
+begin
+ try
+  Result:=PyString_FromString(PChar(g_MapError.Text));
+ except
+  EBackToUser;
+  Result:=Nil;
+ end;
+end;
+
+
 function xGetShortHint(self, args: PyObject) : PyObject; cdecl;
 var
  s: PChar;
@@ -2431,7 +2445,7 @@ begin
 end;
 
 const
- MethodTable: array[0..68] of TyMethodDef =
+ MethodTable: array[0..69] of TyMethodDef =
   ((ml_name: 'Setup1';          ml_meth: xSetup1;         ml_flags: METH_VARARGS),
    (ml_name: 'newobj';          ml_meth: xNewObj;         ml_flags: METH_VARARGS),
    (ml_name: 'newfileobj';      ml_meth: xNewFileObj;     ml_flags: METH_VARARGS),
@@ -2440,6 +2454,7 @@ const
    (ml_name: 'lines2list';      ml_meth: xLines2List;     ml_flags: METH_VARARGS),
    (ml_name: 'list2lines';      ml_meth: xList2Lines;     ml_flags: METH_VARARGS),
    (ml_name: 'truncstr';        ml_meth: xTruncStr;       ml_flags: METH_VARARGS),
+   (ml_name: 'getmaperror';     ml_meth: xGetMapError;    ml_flags: METH_VARARGS),
    (ml_name: 'getshorthint';    ml_meth: xGetShortHint;   ml_flags: METH_VARARGS),
    (ml_name: 'getlonghint';     ml_meth: xGetLongHint;    ml_flags: METH_VARARGS),
    (ml_name: 'action';          ml_meth: xAction;         ml_flags: METH_VARARGS),
