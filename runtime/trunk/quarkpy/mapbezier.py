@@ -62,8 +62,13 @@ def texcpclick(m):
 #        squawk("%.2f, %.2f"%(cp[j][i].s, cp[j][i].t))
         src["Coords"] = cp[j][i].s, cp[j][i].t
 
+    #
+    # As yet unreconstructed j i reversal here (j=row, i=column,
+    #   nonstandardly
+    #
     def action(self, pack=pack):
-        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
+#        cp, (j, i), b2 = map(list, pack.b2.cp), pack.ij, pack.b2
+        cp, (j, i), b2 = copyquilt(pack.b2.cp),   pack.ij, pack.b2
         s, t = self.src["Coords"]
         cpji = cp[j][i]
         if self.src["global"]:
@@ -75,6 +80,7 @@ def texcpclick(m):
               cp[j0][i0] = cp[j0][i0]+diff
         else:
           cp[j][i] = quarkx.vect(cpji.xyz + (s, t))
+        squawk(`cp`)
         new = b2.copy()
         new.cp = cp
         undo=quarkx.action()
@@ -166,6 +172,40 @@ def quilt_addcol(cp,(i,j)):
      row[j:j+1]=[b2midcp(arc[0],qt1, mid),
           mid,b2midcp(mid,qt3,arc[2])]
 
+
+#
+# Getting approximate tangent planes at control points.
+#
+
+#
+# The idea here is that at odd-numbered and quilt-end points, you
+#  take the actual derivatives, at intermedient end points you
+#  take the average of the derivative in and the derivative out.
+#  
+def dpdu(cp, i, j):
+  h = len(cp)
+  if i==0:
+    return 2*(cp[1][j]-cp[0][j])
+  elif i==h-1:
+    return 2*(cp[i][j]-cp[i-1][j])
+  else:
+    return (cp[i+1][j]-cp[i-1][j])
+    
+def dpdv(cp, i, j):
+  w = len(cp[0])
+  if j==0:
+    return 2*(cp[i][j+1]-cp[i][j])
+  elif j==w-1:
+    return 2*(cp[i][j]-cp[i][j-1])
+  else:
+    return cp[i][j+1]-cp[i][j-1]
+    
+def tanaxes(cp, i, j):
+  return dpdu(cp, i, j).normalized, dpdv(cp, i, j).normalized
+  
+  
+
+
 #
 # Handles for control points.
 #
@@ -175,7 +215,7 @@ class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
     undomsg = Strings[627]
-    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Ctrl/Shift key: move whole row (same hue)/column.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
+    hint = "reshape bezier patch (Ctrl key: force control point to grid)\n  Ctrl/Shift key: move whole row (same hue)/column.\n  Z key: move everything.  \n Alt: shift texture instead.||This is one of the control points of the selected Bezier patch. Moving this control points allows you to distort the shape of the patch. Control points can be seen as 'attractors' for the 'sheet of paper' Bezier patch."
 
     def __init__(self, pos, b2, ij, color): #DECKER
         qhandles.GenericHandle.__init__(self, pos)
@@ -322,9 +362,13 @@ class CPHandle(qhandles.GenericHandle):
                 return 0
             
             if quarkx.keydown('\020')==1: #SHIFT
-                 return map(lambda i,j=j:(i, j),range(self.h))
+                return map(lambda i,j=j:(i, j),range(self.h))
             if quarkx.keydown('\021')==1: #CTRL
-                 return map(lambda j,i=i:(i, j), range(self.w))
+                return map(lambda j,i=i:(i, j), range(self.w))
+            if quarkx.keydown('Z'):
+                def row(i,self=self):
+                    return map(lambda j,i=i:(i,j),range(self.w))
+                return reduce(lambda x,y:x+y, map(row,range(self.h))) 
             return (i, j),
         # /tiglari
 
@@ -343,7 +387,15 @@ class CPHandle(qhandles.GenericHandle):
                 p = cp[m][n] + delta
                 if flags&MB_CTRL:
                     p = qhandles.aligntogrid(p, 0)
-                cp[m][n] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
+                if quarkx.keydown('\022'): # RMB
+                    xaxis, yaxis = tanaxes(cp,i,j)
+                    xaxis, yaxis = -xaxis, -yaxis
+                    q = cp[m][n]
+                    td = (v2-v1)/128
+                    cp[m][n]=quarkx.vect(q.x, q.y, q.z,
+                              q.s+td*yaxis, q.t+td*xaxis)
+                else:
+                   cp[m][n] = quarkx.vect(p.x, p.y, p.z)  # discards texture coords
 #            if 0:
             if self.b2["smooth"]:
                 # keep the patch smoothness
