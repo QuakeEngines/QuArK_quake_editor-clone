@@ -1,0 +1,2814 @@
+QQRKSRC1
+// Configuration file for Quake 1
+
+
+//    This file contains :
+//
+//    * List of Quake 1 entities
+//      By: Kasper Kystol Andersen (SpaceDog) <spacedog@get2net.dk>
+//      And: Brian Wagener <bhw5401@garnet.acns.fsu.edu>
+//
+//    * List of Quake 1 textures
+//      By: Kasper Kystol Andersen (SpaceDog) <spacedog@get2net.dk>
+//
+//    Thanks, Kasper and Brian.   - Armin -
+//
+//    See comments in file Defaults.qrk.
+
+//$Header$
+// ----------- REVISION HISTORY ------------
+//$Log$
+//Revision 1.1  2001/02/11 11:07:05  decker_dk
+//Moved from addons directory
+//
+
+{
+  QuArKProtected = "1"
+  Description = "Base Quake 1 data"
+
+//  RunGame:incl =
+//  {
+//    Typ = "G"
+//    CheckFileCfg = ":Program"
+//    Exec[] = "[::Program] -game [~gamedir] +map [~map]"
+//    Dir[] = "[::Directory]"
+//  }
+
+  Quake 1 setup.qctx =
+  {
+    Game = "Quake 1"
+    HTML = "help\index.html"
+    SFSkills = '256 512 1024 2048'   // must be 4 or 6 values : easy/medium/hard/deathm.[/coop/single]
+    CreateFiles: =
+    {
+      Quake.rc = {
+        Data =
+               "// This file has been created by QuArK - Quake Army Knife"
+         $0D$0A"//"
+         $0D$0A"// For more info about QuArK please see the home page at :"
+         $0D$0A"//"
+         $0D$0A"//      http://www.planetquake.com/quark"
+         $0D$0A"//"
+         $0D$0A"//"
+         $0D$0A"//                                   -- Armin Rigo"
+         $0D$0A
+         $0D$0A"exec default.cfg"
+         $0D$0A"exec config.cfg"
+         $0D$0A"exec autoexec.cfg"
+         $0D$0A"echo"
+         $0D$0A"echo "$22" "$80$81$81$81$81$82" Quake Army Knife 5 "$80$81$81$81$81$82$22
+         $0D$0A"echo"
+         $0D$0A"exec quark.cfg"
+         $0D$0A"stuffcmds"
+      }
+    }
+//    DrawMap: =
+//    {
+//      Spec = "light"
+//      Circle: = {center[]="[~origin]" radius[]="[~light]*0.9"}
+//    }
+//    Textured: =
+//    {
+//      Bkgnd      = $03      // gray        (color indices in the Quake palette)
+//      Normal     = $FF      // rose-brown
+//      GroupSel   = $0F      // white
+//      UniqueSel  = $6F      // yellow
+//      HiddenSel  = $6B      // orange
+//      Duplicator = $D2      // blue
+//      Model      = $00      // black (for the lines)
+//      ModelNoSkin= $05      // gray
+//    }
+  }
+
+  NewFiles.qtx =
+  {
+    ToolBox = "New files..."
+    Root = "Quake 1 file types.qtxfolder"
+    Quake 1 file types.qtxfolder =
+    {
+      QuakeC.qc = { }
+      Texture Wad.wad = { }
+    }
+  }
+
+  NewEntities.qtx =         // Quake 1 entities
+  {
+    ToolBox = "New map items..."      // the same name as in Defaults.qrk
+    Root = "Quake1 Entities.qtxfolder"
+    Quake1 Entities.qtxfolder =
+    {
+	Doors & lifts.qtxfolder =
+	{
+	func_door:b =
+	{
+	angle = "360"
+	;desc = "Door"
+	;incl = "defpoly"
+	}
+	func_door_secret:b =
+	{
+	angle = "360"
+	;desc = "A door that is triggered to open"
+	;incl = "defpoly"
+	}
+	func_wall:b =
+	{
+	;desc = "Just a solid wall if not inhibitted"
+	;incl = "defpoly"
+	}
+	func_button:b =
+	{
+	angle = "360"
+	;desc = "A button"
+	;incl = "defpoly"
+	}
+	func_train:b =
+	{
+	angle = "360"
+	;desc = "A platform (moves along a train)"
+	;incl = "defpoly"
+	}
+	func_plat:b =
+	{
+	;desc = "A lift/elevator"
+	;incl = "defpoly"
+	}
+	func_bossgate:b =
+	{
+	;desc = "This bmodel disappears when player has all the episode sigils"
+	;incl = "defpoly"
+	}
+	func_episodegate:b =
+	{
+	;desc = "Appears if episode has been completed so we cant reenter it"
+	;incl = "defpoly"
+	}
+	func_illusionary:b =
+	{
+	;desc = "Entity that looks solid but lets you walk right through it"
+	;incl = "defpoly"
+	}
+	}
+
+	Triggers.qtxfolder =
+	{
+	trigger_teleport:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Teleporter (all trigger_tags are trigger by walkover"
+	;incl = "defpoly"
+	}
+	trigger_changelevel:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Changes to another level"
+	;incl = "defpoly"
+	}
+	trigger_counter:e =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Counter"
+	}
+	trigger_setskill:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Changes Skill level"
+	;incl = "defpoly"
+	}
+	trigger_once:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Triggers action only once"
+	;incl = "defpoly"
+	}
+	trigger_multiple:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "trigger action (can be triggered more than once)"
+	;incl = "defpoly"
+	}
+	trigger_onlyregistered:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Only triggers if game is registered (registered == 1)"
+	;incl = "defpoly"
+	}
+	trigger_secret:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "trigger action and award secret credit"
+	;incl = "defpoly"
+	}
+	trigger_monsterjump:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "walking monsters that touch this will jump"
+	;incl = "defpoly"
+	}
+	trigger_hurt:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "any object touching this will be hurt"
+	;incl = "defpoly"
+	}
+	trigger_push:b =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "pushes player in any direction (like a windtunnel)"
+	;incl = "defpoly"
+	}
+	trigger_relay:e =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "allow delayed/multiple actions from one trigger"
+	}
+	}
+
+	Lights.qtxfolder =
+	{
+	light:e =
+	{
+	origin = "0 0 0"
+        light = "200"
+	;desc = "A projected light (no visible light source)"
+	}
+	light_torch_small_walltorch:e =
+	{
+	origin = "0 0 0"
+	;desc = "Short wallTorch"
+	}
+	light_flame_large_yellow:e =
+	{
+	origin = "0 0 0"
+	;desc ="Large yellow flame ball"
+	}
+	light_flame_small_yellow:e =
+	{
+	origin = "0 0 0"
+	;desc = "Small yellow flame ball"
+	}
+	light_flame_small_white:e =
+	{
+	origin = "0 0 0"
+	;desc = "Small white flame ball"
+	}
+	light_fluoro:e =
+	{
+	origin = "0 0 0"
+	;desc = "light: makes steady fluoroscent humming"
+	}
+	light_fluorospark:e =
+	{
+	origin = "0 0 0"
+	;desc = "light: makes sparking, broken fluoroscent sound"
+	}
+	light_globe:e =
+	{
+	origin = "0 0 0"
+	;desc = "sphere globe light"
+	}
+	}
+
+	Ambient sounds.qtxfolder =
+	{
+	ambient_drip:e =
+	{
+	origin = "0 0 0"
+	;desc = "Dripping sound"
+	}
+	ambient_drone:e =
+	{
+	origin = "0 0 0"
+	;desc = "engine/machinery sound"
+	}
+	ambient_comp_hum:e =
+	{
+	origin = "0 0 0"
+	;desc = "computer background sounds"
+	}
+	ambient_swamp1:e =
+	{
+	origin = "0 0 0"
+	;desc = "frogs croaking"
+	}
+	ambient_swamp2:e =
+	{
+	origin = "0 0 0"
+	;desc = "slightly different sounding frogs croaking"
+	}
+	ambient_flouro_buzz:e =
+	{
+	origin = "0 0 0"
+	;desc = "Buzzing sound"
+	}
+	ambient_light_buzz:e =
+	{
+	origin = "0 0 0"
+	;desc = "as above just with a lower volume"
+	}
+	ambient_suck_wind:e =
+	{
+	origin = "0 0 0"
+	;desc = "Wind sound"
+	}
+	ambient_thunder:e =
+	{
+	origin = "0 0 0"
+	;desc = "Thunder"
+	}
+	}
+
+	Misc.qtxfolder =
+	{
+	air_bubbles:e =
+	{
+	origin = "0 0 0"
+	;desc = "Rising bubbles"
+	}
+	event_lightning:e =
+	{
+	origin = "0 0 0"
+	;desc = "Used to kill Chton: Shareware Boss"
+	}
+	info_intermission:e =
+	{
+	origin = "0 0 0"
+	mangle = "0 0 0"
+	;desc = "Cameras position during intermissions"
+	}
+	info_null:e =
+	{
+	origin = "0 0 0"
+	;desc = "Used as a positional target for spotlights"
+	}
+	info_notnull:e =
+	{
+	origin = "0 0 0"
+	;desc = "Used as a positional target for Lightning"
+	}
+	info_teleport_destination:e =
+	{
+	origin = "0 0 0"
+	;desc = "gives coords for a teleport destination"
+        targetname = "[auto]"
+        angle = "360"
+	}
+	misc_fireball:e =
+	{
+	origin = "0 0 0"
+	;desc = "Small fireball (used with lava)"
+	}
+	misc_explobox:e =
+	{
+	origin = "0 0 0"
+	;desc = "Nuclear Container (Explodes upon being shoot, harms player)"
+	}
+	misc_explobox2:e =
+	{
+	origin = "0 0 0"
+	;desc = "small nuclear comtainer"
+	}
+	trap_spikeshooter:e =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Shoots spikes (Nails)"
+	}
+	path_corner:e =
+	{
+	origin = "0 0 0"
+	;desc = "Used to define path for func_train platforms"
+	}
+	misc_teleporttrain:e =
+	{
+	origin = "0 0 0"
+	;desc = "Used for the final boss"
+	}
+	trap_shooter:e =
+	{
+	origin = "0 0 0"
+	angle = "360"
+	;desc = "Continuously fires spikes"
+	}
+	}
+
+	Items.qtxfolder =
+	{
+	item_health:e =
+	{
+	origin = "0 0 0"
+	;desc = "Medkit"
+	}
+	item_health:e =
+	{
+	origin = "0 0 0"
+	;desc = "Megahealth (100%)"
+	}
+	item_artifact_envirosuit:e =
+	{
+	origin = "0 0 0"
+	;desc = "Enviromental protection suit"
+	}
+	item_artifact_super_damage:e =
+	{
+	origin = "0 0 0"
+	;desc = "Quad Damage"
+	}
+	item_artifact_invulnerability:e =
+	{
+	origin = "0 0 0"
+	;desc = "Pentagram of protection"
+	}
+	item_artifact_invisibility:e =
+	{
+	origin = "0 0 0"
+	;desc = "Ring of shadows"
+	}
+	item_armor1:e =
+	{
+	origin = "0 0 0"
+	;desc = "Green Armor"
+	}
+	item_armor2:e =
+	{
+	origin = "0 0 0"
+	;desc = "Yellow Armor"
+	}
+	item_armorInv:e =
+	{
+	origin = "0 0 0"
+	;desc = "Red Armor"
+	}
+	item_key1:e =
+	{
+	origin = "0 0 0"
+	;desc = "Silver Key"
+	}
+	item_key2:e =
+	{
+	origin = "0 0 0"
+	;desc = "Gold Key"
+	}
+	item_sigil:e =
+	{
+	origin = "0 0 0"
+	;desc = "Any Rune"
+	}
+	}
+
+	Weapons & Ammo.qtxfolder =
+	{
+	weapon_supershotgun:e =
+	{
+	origin = "0 0 0"
+	}
+	weapon_nailgun:e =
+	{
+	origin = "0 0 0"
+	}
+	weapon_supernailgun:e =
+	{
+	origin = "0 0 0"
+	}
+	weapon_grenadelauncher:e =
+	{
+	origin = "0 0 0"
+	}
+	weapon_rocketlauncher:e =
+	{
+	origin = "0 0 0"
+	}
+	weapon_lightning:e =
+	{
+	origin = "0 0 0"
+	;desc = "Thunderbolt Cannon"
+	}
+	item_shells:e =
+	{
+	origin = "0 0 0"
+	;desc = "ammo for both Shotgun & SuperShotgun"
+	}
+	item_spikes:e =
+	{
+	origin = "0 0 0"
+	;desc = "ammo for both Perforator & Super Perforator"
+	}
+	item_rockets:e =
+	{
+	origin = "0 0 0"
+	;desc = "ammo for both Grenade/Rocket Launcher"
+	}
+	item_cells:e =
+	{
+	origin = "0 0 0"
+	;desc = "ammo for Thunder Bolt"
+	}
+	}
+
+	Monsters.qtxfolder =
+	{
+	monster_army:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Grunt"
+	}
+	monster_dog:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Attack Dog"
+	}
+	monster_ogre:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Ogre"
+	}
+	monster_knight:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Knight"
+	}
+	monster_zombie:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Zombie"
+	}
+	monster_wizard:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Scragg (Wizard)"
+	}
+	monster_demon1:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Fiend (Demon)"
+	}
+	monster_shambler:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Shambler"
+	}
+	monster_boss:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Chton (Shareware Boss)"
+	}
+	monster_enforcer:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Medium Guard"
+	}
+	monster_fish:e =
+ 	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Killer Fish"
+	}
+	monster_hell_knight:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Medium Knight"
+	}
+	monster_oldone:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = ""
+	}
+	monster_shalrath:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = ""
+	}
+	monster_tarbaby:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = ""
+	}
+	}
+
+	Player Starts.qtxfolder =
+	{
+	info_player_start:e =
+      {
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "This is where the Player Starts"
+      }
+	info_player_deathmatch:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "A deathmatch start (more than one allowed)"
+	}
+	info_player_coop:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "A coop player start (more than one allowed)"
+	}
+	info_player_start2:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Only used on the start map for return point"
+	}
+	testplayerstart:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Used to temporarly change the info_player_start"
+	}
+	}
+	}
+
+	Entity forms.qctx =    // here are the forms used to edit the Specifics of entities in the map.
+	{
+					// Doors & lifts
+	func_door:form =
+	{
+	Help = "If two doors touch, they are assumed to be connected and operate as a unit." $0D $0D "TOGGLE causes the door to wait in both the start and end for a trigger event." $0D $0D "START_OPEN causes the door to to move to its destination when spawned, and operate in reverse." $0D "It is used to temporarly or permanently close off an area when triggered." $0D $0D "Key doors allways have 'wait' set to '-1'."
+   	spawnflags:=
+	{Txt="&"
+	Typ="X1"
+	Cap="Start Open"
+	Hint="causes the door to move to its destination when spawned."
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X4"
+	Cap="Door Don't Link"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X8"
+	Cap="Gold Key"
+	Hint="You will need the Gold Key to open the door"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X16"
+	Cap="Silver Key"
+	Hint="You will need the Silver Key to open the door"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X32"
+	Cap="Toggle"
+	Hint="Causes the door to wait in both the start and end states for a trigger event"
+	}
+	targetname:=
+	{Txt="&"
+	Typ="E"
+	Hint="if set, no touch field will be spawned and a remote button or trigger field activates the door."
+	}
+  	 message:=
+  	 {Txt="&"
+  	 Typ="E"
+  	 Hint="Is printed when a door is touched, only if its a triggered door that hasn't been fired yet"
+   	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Determines the opening direction"
+   	}
+   	health:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="If set, the door must be shot to open."
+   	}
+   	speed:=
+   	{Txt="&"
+   	Typ="E"
+  	 Hint="Movement speed. (default 100)"
+  	 }
+   	wait:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="How long the door waits before returning (3 Default, -1 never return)."
+   	}
+   	lip:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Lip remaining after opening(8 Default)."
+   	}
+   	dmg:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Damage to inflict on player when blocking the door (2 Default)."
+   	}
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="0) no sound" $0D "1) stone" $0D "2) base" $0D "3) stone metal" $0D "4) screechy metal"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	Hint="Sounds it makes while moving"
+	}
+	}
+
+	func_door_secret:form =
+	{
+	Help = "Basic secret door, Slides back, then to the side." $0D $0D "If a secret door has a targetname, it will only be opened by it button or trigger, not by damage"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Open once"
+	Hint="The door will not close again when it has been opened"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="1st left"
+	Hint="1st move is left of arrow"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X4"
+	Cap="1st down"
+	Hint="1st move is down from arrow"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X8"
+	Cap="No shot"
+	Hint="Make's door only openable with trigger."
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X16"
+	Cap="Always shot"
+	Hint="Even if targeted, its shootable"
+	}
+   	targetname:=
+	{Txt="&"
+	Typ="E"
+	Hint="if set, no touch field will be spawned and a remote button or trigger field activates the door."
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Determines the opening direction"
+   	}
+   	health:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="If set, the door must be shot to open."
+   	}
+   	speed:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Movement speed. (default 100)"
+  	 }
+   	wait:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="How long the door waits before returning (3 Default, -1 never return)."
+   	}
+   	lip:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Lip remaining after opening(8 Default)."
+   	}
+   	dmg:=
+  	 {Txt="&"
+  	 Typ="E"
+   	Hint="Damage to inflict on player when blocking the door (2 Default)."
+   	}
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="1) medieval" $0D "2) metal" $0D "3) base"
+	values=	"1"	$0D	"2"	$0D	"3"
+	}
+	}
+
+	func_wall:form =
+	{
+	Help = "This is just a solid wall if not inhibitted" $0D $0D "That can be made to appear in certain skills and modes" $0D $0D "And can be made to have switchable texture"
+   	targetname:=
+   	{Txt="&"
+   	Typ="E"
+   	hint="Used to trigger or kill a wall"
+   	}
+	}
+
+	func_button:form =
+	{
+	Help = "When a button is touched, it move some distance in the direction of it's angle, triggers all of its targets" $0D "waits some time then returns to it's original position where it can be triggered again."
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="0) steam metal" $0D "1) wooden clunk" $0D "2) metallic click" $0D "3) in-out"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"
+	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+	Hint="targetname of what should be triggered"
+	}
+   	lip:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="How much the button will stick out when pressed(Default 4 pixels)"
+	}
+   	speed:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Speed of movement(Default 40)"
+   	}
+   	wait:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="How long before it can be pushed again (default 1 '-1 never return)"
+   	}
+   	health:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="If set to greater than zero must be shot to be triggered."
+   	}
+  	}
+   
+	func_train:form =
+	{
+	Help = "Trains are moving platforms that players can ride." $0D "The targets origin specifies the min point of the train at each corner." $0D "The train spawns at the first target it is positing at." $0D "if the train is the target of a button or trigger, it will not begin moving until triggered."
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="1) ratchet metal"
+	values=	"1"
+	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+   	Hint=""
+	}
+   	targetname:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Use if train is activated by trigger, note train will not start by player's presence"
+   	}
+   	speed:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Default 100"
+   	}
+   	message:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Message displayed when triggered"
+   	}
+   	dmg:=
+   	{Txt="E"
+   	Typ="E"
+   	Hint="Amount of damage inflicted when player gets in way of the train."
+   	}
+	}
+
+	func_plat:form =
+	{
+	Help = "Plats are always drawn in the extended position, so they will light correctly." $0D "if the plat is the target of a trigger or a button, it will start out disabled in the extended position until its triggered." $0D "when it will lower and become a normal plat." $0D $0D "If the 'height' key is set, that will determine the amount the plat moves, instead of being" $0D "implicitly determined by the models height."
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Plat low trigger"
+	Hint=""
+	}
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="1) base fast" $0D "2) chain slow"
+	values=	"1"	$0D	"2"
+	}
+	height: =
+	{Txt="&"
+   	Typ="E"
+   	Hint="How high it will rise. (Note plat is drawn extended)"
+	}
+   	speed:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Default 100"
+   	}
+	}
+
+	func_bossgate:form =
+	{
+	Help = "This bmodel disappears when player has all of the episode sigils"
+	}
+
+	func_episodegate:form =
+	{
+	Help = "This bmodel will appear if the episode has already been completed, so players can't reenter it."
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="E1"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="E2"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X4"
+	Cap="E3"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X8"
+	Cap="E4"
+	Hint=""
+	}
+	}
+
+	func_illusionary:form =
+	{
+	Help = "A simple entity that looks solid but lets you walk through it"
+	}
+
+
+				//Triggers
+
+	trigger_teleport:form =
+	{
+	Help = "Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set" $0D "the 'target' field, and create an object with a 'targetname' field that matches" $0D $0D "If the 'trigger_teleport' has a targetname, it will only teleport entities when it has been fired."
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Player only"
+	Hint="Only allows players to use teleport, not monsters"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="Silent"
+	Hint=""
+	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of the info_teleport_destination the player should be teleported to."
+	}
+   	targetname:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Allows teleport to be triggered on"
+   	}
+	}
+
+	trigger_changelevel:form =
+	{
+	Help = "When the player touches this, he gets sent to the map listed in the 'map' variable. Unless the NO_INTERMISSION" $0D "flag is set, the view will go to the inf_intermission spotand display stats."
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="No intermission"
+	Hint=""
+	}
+   	map:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="What map to change to."
+	}
+   	}
+
+	trigger_counter:form =
+	{
+	Help = "Acts as an intermediary for an action that takes multiple inputs." $0D $0D "If nomessage is not set, it will print '1more..' etc when triggered and 'sequence complete' when finished." $0D $0D "After the counter has been triggered 'count' times (default 2), it will fire all of its targets and remove itself."
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="No message"
+	Hint=""
+	}
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of this entity ex. 'Count1'"
+	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of the entity/ies thats this one should trigger ex. 'tcount1'"
+	}
+	count: =
+	{Txt="&"
+   	Typ="E"
+	Hint="How many buttons/triggers should be activated before this will activate"
+	}
+   	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="1) secret sound" $0D "2) Beep Beep"  $0D "3) Large Switch" $0D "4) No sound"
+	values=	"1"	$0D	"2"  $0D "3" $0D "4"
+	}
+	}
+
+	trigger_setskill:form =
+	{
+	Help = "Sets skill level to the value of 'message'" $0D $0D "Only used on start map"
+	message: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Skill level"
+	}
+	}
+
+	trigger_once:form =
+	{
+	Help = "Variable sized trigger. Triggers once, then removes itself." $0D "You must set the key 'target' to the name of another object in the level that has a matching name"
+   	spawnflags:=
+   	{Txt="&"
+   	Typ="X1"
+   	Cap="No touch"
+   	Hint="Makes trigger only triggerable by other triggers"
+   	}
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="1) secret" $0D "2) beep beep" $0D "3) large switch" $0D "4)"
+	values=	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	}
+	target: =
+	{Txt="&"
+	typ="E"
+	Hint="The 'targetname' of another object"
+	}
+   	targetname:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="If 'health' is set, the trigger must be killed to activate."
+   	}
+	killtarget:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Removes object with targetname"
+   	}
+	}
+
+	trigger_multiple:form =
+	{
+	Help = "Variable sized repeatble trigger. Must be targeted at one or more entities." $0D "NOTOUCH has been obsoleted by trigger_relay."
+	spawnflags:=
+	{Txt="&"
+	Typ="X1"
+	Cap="No touch"
+	Hint=""
+	}
+	sounds:=
+	{Txt="&"
+	Typ="C"
+	Items="1) secret" $0D "2) beep beep" $0D "3) large switch" $0D "4)No sound"
+	values=	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	}
+	target:=
+	{Txt="&"
+   	Typ="E"
+	Hint=""
+	}
+	delay:=
+	{Txt="&"
+   	Typ="E"
+	Hint="How long it should wait before firing after it has been activated"
+	}
+	wait:=
+	{Txt="&"
+   	Typ="E"
+	Hint="How long there should go before it can be activated again(Default 2)"
+	}
+	message:=
+	{Txt="&"
+   	Typ="E"
+	Hint="Text to display when activated"
+	}
+   	health:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="If 'health' is set, the trigger must be killed to activate each time."
+   	}
+	}
+
+	trigger_onlyregistered:form =
+	{
+	Help = "Only fires if playing the registered version, otherwise prints the 'message'"
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items=""
+	values=""
+	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+	Hint=""
+	}
+	message: =
+	{Txt="&"
+   	Typ="E"
+	Hint=""
+	}
+	}
+
+	trigger_secret:form =
+	{
+	Help = "secret counter trigger"
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items=""
+	values=""
+	}
+	message: =
+	{Txt="&"
+   	Typ="E"
+	Hint=""
+	}
+	}
+
+	trigger_monsterjump:form =
+	{
+	Help = "Walking monsters that touch this will jump in the direction of the trigger's angle"
+	speed: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The speed thrown forward (default 200)"
+	}
+	height: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The speed thrown upwards."
+	}
+	}
+
+	trigger_hurt:form =
+	{
+	Help = "Any object touching this will be hurt"
+	dmg: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Set 'dmg' to damage amount (Default 5)"
+	}
+	}
+
+	trigger_push:form =
+	{
+	Help = "Pushes the Player:"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Push Once"
+	Hint="Pushes once only"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Direction of push"
+   	}
+   	speed:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="How much force, Note player can only oppose a force of 12"
+	}
+	}
+
+	trigger_relay:form =
+	{
+	Help = "This fixed size trigger can't be touched, it can only be fired by other events."
+	sounds: =
+	{Txt="&"
+	Typ="C"
+	Items="1) secret" $0D "2) beep beep" $0D "3) large switch" $0D "4)No sound"
+	values=	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+	Hint=""
+	}
+	delay: =
+	{Txt="&"
+   	Typ="E"
+	Hint="How long it should wait before targeting trigger is activated"
+	}
+	message: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Text to display when activated"
+	}
+   	killtarget:=
+   	{Txt="&"
+   	Typ="E"
+	Hint="Removes target object"
+	}
+	}
+
+				//Lights
+
+	light:form =
+	{
+	help = "Non-displayed light" $0D "Default light value is 300" $0D "If targeted it will toggle between on or off" $0D "If 'target' and 'angle' is set, the light is projected" $0D "In the directionof the target as a cone of the size" $0D "set by angle"
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Start Off"
+	Hint="use a trigger to activate the light"
+	}
+	light: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Light Value"
+	}
+   	target:=
+	{Txt="&"
+   	Typ="E"
+	Hint="What light is pointed at"
+   	}
+   	angle:=
+	{Txt="&"
+   	Typ="E"
+	Hint="Angle of light beam"
+	}
+	}
+
+	light_torch_small_walltorch:form =
+	{
+	Help = "Short WallTorch" $0D "Default light calue is 200"
+	bbox='-10 -10 -20 10 10 20'
+	mdl="progs/flame.mdl"
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	light: =
+	{Txt="&"
+	Hint="How much it should light up"
+	}
+	}
+
+	light_flame_large_yellow:form =
+	{
+	Help = "Large yellow flame ball"
+	bbox='-10 -10 -12 12 12 18'
+	mdl="progs/flame2.mdl"
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	light: =
+	{Txt="&"
+   Typ="E"
+	Hint="How much it should light up"
+	}
+	}
+
+	light_flame_small_yellow:form =
+	{
+	Help = "Small yellow flame ball"
+	bbox='-8 -8 -8 8 8 8'
+	mdl="progs/flame2.mdl"
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Start Off"
+	Hint="if set, it must be triggered to light up"
+	}
+	light: =
+	{Txt="&"
+   Typ="E"
+	Hint="How much it should light up"
+	}
+	}
+
+	light_flame_small_white:form =
+	{
+	Help = "Small white flame ball"
+	bbox='-10 -10 -40 10 10 40'
+	mdl="progs/flame2.mdl"
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Start Off"
+	Hint="It must be triggered to light up"
+	}
+	light: =
+	{Txt="&"
+   Typ="E"
+	Hint="How much it should light up"
+	}
+	}
+
+	light_fluoro:form =
+	{
+	Help = "Non-Displayed light. Default light value is 300" $0D "If targeted, it will toggle between on or off" $0D "Makes steady fluorescent humming sound."
+	bbox='-8 -8 -8 8 8 8'
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Start Off"
+	Hint="It must be trigger to light up"
+	}
+	light: =
+	{Txt="&"
+   Typ="E"
+	Hint="How much it should light up"
+	}
+	}
+
+	light_fluorospark:form =
+	{
+	Help = "Non-Displayed light. Default is light is 300" $0D "Makes sparking, broken fluorescent sound."
+	bbox='-8 -8 -8 8 8 8'
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	light: =
+	{Txt="&"
+   	Typ="E"
+	Hint="How much it should light up"
+	}
+	}
+
+	light_globe:form =
+	{
+	Help = "Sphere globe light. Default is 300"
+	bbox='-8 -8 -8 8 8 8'
+	mdl="progs/s_light.spr"
+	style: =
+	{Txt="&"
+	Typ="C"
+	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	}
+	light: =
+	{Txt="&"
+   	Typ="E"
+	Hint="How much it should light up"
+	}
+	}
+
+			// Ambient Sounds
+
+	ambient_drip:form =
+	{
+	Help = "Dripping sound"
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_drone:form =
+	{
+	Help = "Engine/Machinery sound"
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_comp_hum:form =
+	{
+	Help = "Computer background sounds"
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_swamp1:form =
+	{
+	Help = "Frogs Croaking"
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_swamp2:form =
+	{
+	Help = "Slightly different soundin of Frogs Croaking"
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_fluoro_buzz:form =
+	{
+	Help = ""
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_light_buzz:form =
+	{
+	Help = ""
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_suck_wind:form =
+	{
+	Help = ""
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	ambient_thunder:form =
+	{
+	Help = ""
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+			//Misc
+
+	air_bubbles:form =
+	{
+	Help = "Testing air bubbles."
+	bbox='-8 -8 -8 8 8 8'
+	mdl="progs/s_bubble.spr"
+	}
+
+	event_lightning:form =
+	{
+	Help = "Just for boss level"
+	targetname: =
+	{Txt="&"
+	Hint=""
+	}
+	}
+
+	info_intermission:form =
+	{
+	Help = "This is the camera point for the intermission." $0D "Use 'mangle' instead of angle, so you can set pitch or roll as well as yaw. 'pitch, roll, yaw'"
+	mangle: =
+	{Txt="&"
+	Hint="Angles for the intermission"
+	}
+	}
+
+	info_null:form =
+	{
+	Help = "Use for positional target for spotlights. etc."
+	}
+
+	info_notnull:form =
+	{
+	Help = "Use for positional target for 'event_lightning' entity."
+	}
+
+	info_teleport_destination:form =
+	{
+	Help = "This is the destination marker for a teleporter." $0D "It should have a 'targetname' field with the same value as a" $0D "teleporter's 'target' field"
+	bbox='-8 -8 -8 8 8 32'
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="name of a teleporters 'targetname'"
+	}
+	}
+
+	misc_fireball:form =
+	{
+	Help = "This is the balls the jump up from the lava."
+	speed: =
+	{Txt="&"
+   Typ="E"
+	Hint="How high the Lava Balls should jump"
+	}
+	}
+
+	misc_explobox:form =
+	{
+	Help = "Nuclear Container (explodes upon being shot, harms player)"
+	bbox='0 0 0 32 32 64'
+	mdl="maps/b_explob.bsp"
+	}
+
+	misc_explobox2:form =
+	{
+	Help = "Smaller exploding Box, (REGISTERED ONLY)"
+	bbox='0 0 0 32 32 32'
+	mdl="maps/b_exbox2.bsp"
+	}
+
+	trap_spikeshooter:form =
+	{
+	Help = "When triggered, fires a spike in the direcrtion set in QuakeEd." $0D "Laser is only for REGISTERED"
+	bbox='-8 -8 -8 8 8 8'
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="superspike"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="laser"
+	Hint=""
+	}
+	targetname: =
+	{Txt="&"
+	Hint=""
+	}
+   	wait:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Time between shots"
+	}
+   	}
+
+	path_corner:form =
+	{
+	Help = "Monsters/Train will continue to moving towards the next target corner"
+	bbox='-8 -8 -8 8 8 8'
+	target: =
+	{Txt="&"
+	Hint=""
+	}
+	targetname: =
+	{Txt="&"
+	Hint=""
+	}
+   	wait:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="How long Monster or Train will wait when reaching corner(-1 means stop)"
+	}
+	}
+
+	misc_teleporttrain:form =
+	{
+	Help = "This is used for the final Boss"
+	bbox='-8 -8 -8 8 8 8'
+	}
+
+	trap_shooter:form =
+	{
+	Help = "Continuously fires spikes."
+	bbox='-8 -8 -8 8 8 8'
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="superspike"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="laser"
+	Hint=""
+	}
+	wait: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Time between shots(Default 1)"
+	}
+	nextthink: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Delay before firing first spike, sow multiple shooters can be stagered."
+	}
+	}
+
+			//Items
+
+	item_health:form =
+	{
+	Help = "Health box, normally gives 25 points." $0D "Rotten box heals 5-10 points" $0D "Megahealth will add 100 health, the rot you down" $0D "to your maximum health limmith, one point per second."
+	bbox='0 0 0 32 32 56'
+	mdl="maps/b_bh25.bsp"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="rotten"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="megahealth"
+	Hint=""
+	}
+	}
+
+	item_health:form =
+	{
+	Help = "Health box, normally gives 25 points." $0D "Rotten box heals 5-10 points" $0D "Megahealth will add 100 health, the rot you down" $0D "to your maximum health limmith, one point per second."
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="rotten"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="megahealth"
+	Hint=""
+	}
+	}
+
+	item_artifact_envirosuit:form =
+	{
+	Help = "Player takes no damage from water or slime for 30 seconds"
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/suit.mdl"
+	}
+
+	item_artifact_super_damage:form =
+	{
+	Help = "The next attack from the player will do x4 damage"
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/quaddama.mdl"
+	}
+
+	item_artifact_invulnerability:form =
+	{
+	Help = "Player is invulnerable for 30 seconds"
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/invulner.mdl"
+	}
+
+	item_artifact_invisibility:form =
+	{
+	Help = "Player is invisible for 30 seconds"
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/invisbl.mdl"
+	}
+
+	item_armor1:form =
+	{
+	Help = "This is the Green Armor"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/armor.mdl"
+	}
+
+	item_armor2:form =
+	{
+	Help = "This is the Yellow Armor"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/armor.mdl"
+	mdlskin='1'
+	}
+
+	item_armorInv:form =
+	{
+	Help = "This is the Red Armor"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/armor.mdl"
+	mdlskin='2'
+	}
+
+	item_key1:form =
+	{
+	Help = "SILVER KEY" $0D "in order for keys to work you must set your maps" $0D "worldtype to one of the following:" $0D "0) medieval" $0D "1) metal" $0D "3) base"
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/w_s_key.mdl"
+	}
+
+	item_key2:form =
+	{
+	Help = "GOLD KEY" $0D "In order for keys to work you must set your maps" $0D "worldtype to one of the following:" $0D "0) medieval" $0D "1) metal" $0D "3) base"
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/w_g_key.mdl"
+	}
+
+	item_sigil:form =
+	{
+	Help = "End of level sigil, pick up to end episode and return to jrstart."
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/end1.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="E1"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="E2"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X4"
+	Cap="E3"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X8"
+	Cap="E4"
+	Hint=""
+	}
+	}
+
+			//Weapons & ammo
+
+	weapon_supershotgun:form =
+	{
+	Help = "Uses item_shells"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/g_shot.mdl"
+	}
+
+	weapon_nailgun:form =
+	{
+	Help = "Uses item_spikes"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/g_nail.mdl"
+	}
+
+	weapon_supernailgun:form =
+	{
+	Help = "Uses item_spikes"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/g_nail2.mdl"
+	}
+
+	weapon_grenadelauncher:form =
+	{
+	Help = "Uses item_rockets"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/g_rock.mdl"
+	}
+
+	weapon_rocketlauncher:form =
+	{
+	Help = "Uses item_rockets"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/g_rock2.mdl"
+	}
+
+	weapon_lightning:form =
+	{
+	Help = "Uses item_cells"
+	bbox='-16 -16 0 16 16 32'
+	mdl="progs/g_light.mdl"
+	}
+
+	item_shells:form =
+	{
+	Help = "Ammo for weapon_supershotgun"
+	bbox='0 0 0 32 32 56'
+	mdl="maps/b_shell0.bsp"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="big"
+	Hint="Big Box of Shells"
+	}
+	}
+
+	item_spikes:form =
+	{
+	Help = "Ammo for Nail & SuperNailGun"
+	bbox='0 0 0 32 32 56'
+	mdl="maps/b_nail0.bsp"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="big"
+	Hint="Big Box of Spikes"
+	}
+	}
+
+	item_rockets:form =
+	{
+	Help = "Ammo for Grenade & RocketLauncher"
+	bbox='0 0 0 32 32 56'
+	mdl="maps/b_rock0.bsp"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="big"
+	Hint="Big Box of Rockets"
+	}
+	}
+
+	item_cells:form =
+	{
+	Help = "Ammo for ThunderBolt"
+	bbox='0 0 0 32 32 56'
+	mdl="maps/b_batt0.bsp"
+	}
+
+			//Monsters
+
+	monster_army:form =
+	{
+	Help = "This is the Grunt"
+	bbox='-16 -16 -24 16 16 40'
+	mdl="progs/soldier.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_dog:form =
+	{
+	Help = "This is the Attack Dog"
+	bbox='-32 -32 -24 32 32 40'
+	mdl="progs/dog.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_ogre:form =
+	{
+	help = "This is the ogre"
+	bbox='-32 -32 -24 32 32 64'
+	mdl="progs/ogre.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_knight:form =
+	{
+	Help = "This is the Knight"
+	bbox='-16 -16 -24 16 16 40'
+	mdl="progs/knight.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_zombie:form =
+	{
+	Help = "This is the Zombie" $0D "If crusified, stick the bounding box 12 pixels back into a wall to look right."
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/zombie.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Crucified"
+	Hint=""
+	}
+	spawnflags: =
+	{Txt="&"
+	Typ="X2"
+	Cap="ambush"
+	Hint=""
+	}
+	}
+
+	monster_wizard:form =
+	{
+	Help = "This is the Scragg"
+	bbox='-16 -16 -24 16 16 40'
+	mdl="progs/wizard.mdl"
+	Spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_demon1:form =
+	{
+	Help = "This is the Fiend"
+	bbox='-32 -32 -24 32 32 64'
+	mdl="progs/demon.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_shambler:form =
+	{
+	Help = "This is the Shambler"
+	bbox='-32 -32 -24 32 32 64'
+	mdl="progs/shambler.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_boss:form =
+	{
+	Help = "Cthon (Boss of Shareware version)"
+	bbox='-128 -128 -24 128 128 256'
+	mdl="progs/boss.mdl"
+	targetname: =
+	{Txt="&"
+	Hint=""
+	}
+	}
+
+	monster_enforcer:form =
+	{
+	Help = "This is the Enforcer"
+	bbox='-16 -16 -24 16 16 40'
+	mdl="progs/enforcer.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_fish:form =
+	{
+	Help = "This is a killer fish"
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/fish.mdl"
+	spawbflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_hell_knight:form =
+	{
+	Help = "This a stonger knight"
+	bbox='-16 -16 -24 16 16 40'
+	mdl="progs/hknight.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_oldone:form =
+	{
+	Help = " ??? "
+	bbox='-16 -16 -24 16 16 32'
+	mdl="progs/oldone.mdl"
+	}
+
+	monster_shalrath:form =
+	{
+	Help = " ??? "
+	bbox='-32 -32 -24 32 32 48'
+	mdl="progs/shalrath.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+	monster_tarbaby:form =
+	{
+	Help = " ??? "
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/tarbaby.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint=""
+	}
+	}
+
+			//Player Starts
+
+	info_player_start:form =
+	{
+	Help = "The normal player start for a level"
+        //HTML = "help\q1\playerstarts.html#info_player_start"
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/player.mdl"
+	}
+
+	info_player_deathmatch:form =
+	{
+	Help = "Potential spawning positions for deathmatch games."
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/player.mdl"
+        mdlopacity='0.5'   // half transparent
+	}
+
+	info_player_coop:form =
+	{
+	Help = "Potentioal spawning positions for CoOp games"
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/player.mdl"
+	}
+
+	info_player_start2:form =
+	{
+	Help = "Only used on start map for the return point from an episode"
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/player.mdl"
+	}
+
+	testplayerstart:form =
+	{
+	Help = "Used to temporarly change the 'info_player_start'"
+	bbox='-16 -16 -24 16 16 24'
+	mdl="progs/player.mdl"
+	}
+   }
+  }
+
+
+  walltex:incl= {tex="bricka2_2"}        // Default texture for walls
+  floortex:incl={tex="woodflr1_5"}      // Default texture for floor
+  ceiltex:incl= {tex="sky1"}           // Default texture for ceiling (sky)
+  NewMap:incl =          // the map has all its data (there is a whole room to start with)
+  {
+    Game = "Quake 1"
+    Root = "worldspawn:b"
+    worldspawn:b =
+    {
+      Border walls:g =
+      {
+        East wall:p =
+        {
+          west:f =  { v = '256 0 272 256 -128 272 256 0 400'       walltex = ! }
+          east:f =  { v = '272 0 272 272 128 272 272 0 400'        walltex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' walltex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        West wall:p =
+        {
+          west:f =  { v = '-272 0 272 -272 -128 272 -272 0 400'    walltex = ! }
+          east:f =  { v = '-256 0 272 -256 128 272 -256 0 400'     walltex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' walltex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        North wall:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    walltex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        walltex = ! }
+          south:f = { v = '432 192 272 560 192 272 432 192 400'    walltex = ! }
+          north:f = { v = '432 208 272 304 208 272 432 208 400'    walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        South wall:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    walltex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        walltex = ! }
+          south:f = { v = '432 -208 272 560 -208 272 432 -208 400' walltex = ! }
+          north:f = { v = '432 -192 272 304 -192 272 432 -192 400' walltex = ! }
+          down:f =  { v = '432 0 -96 560 0 -96 432 -128 -96'       walltex = ! }
+          up:f =    { v = '432 0 96 560 0 96 432 128 96'           walltex = ! }
+        }
+        Sky:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    ceiltex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        ceiltex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' ceiltex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    ceiltex = ! }
+          down:f =  { v = '432 0 96 560 0 96 432 -128 96'          ceiltex = ! }
+          up:f =    { v = '432 0 112 560 0 112 432 128 112'        ceiltex = ! }
+        }
+        Floor:p =
+        {
+          west:f =  { v = '-256 0 272 -256 -128 272 -256 0 400'    floortex = ! }
+          east:f =  { v = '256 0 272 256 128 272 256 0 400'        floortex = ! }
+          south:f = { v = '432 -192 272 560 -192 272 432 -192 400' floortex = ! }
+          north:f = { v = '432 192 272 304 192 272 432 192 400'    floortex = ! }
+          down:f =  { v = '432 0 -112 560 0 -112 432 -128 -112'    floortex = ! }
+          up:f =    { v = '432 0 -96 560 0 -96 432 128 -96'        floortex = ! }
+        }
+      }
+      info_player_start:e =
+      {
+        origin = "-144 0 -72"
+        angle = "360"
+      }
+    }
+  }
+
+   //
+   // See file DataQ2.qrk for comments about new entities.
+   //
+
+
+    //
+    //   ***   TEXTURES   ***   Thanks Kasper !
+    //
+
+  Textures.qtx =        // the textures !
+  {
+    ToolBox = "Texture Browser..."
+    Root = "id Software Textures.qtxfolder"
+    id Software Textures.qtxfolder =
+    {
+      Base.wad =        // ".wad" files ? Yes but it's only for the display
+      {
+        tech02_2.wl={s="id1" b="e2m1"}      // ".wl" means texture link
+        tech02_3.wl={s="id1" b="e4m1"}      // it has these Specifics :
+        tech02_5.wl={s="id1" b="e2m1"}      //  "s" for source path under the Quake directory
+        tech02_6.wl={s="id1" b="e2m1"}      //  "b" for a source .bsp file that contains this texture
+        tech02_7.wl={s="id1" b="e2m1"}      //  "n" is for texture name (if you have to assign another
+        tech03_1.wl={s="id1" b="e3m1"}      //       name to the original texture, see window03*.wl)
+        tech03_2.wl={s="id1" b="e3m1"}
+        tech04_1.wl={s="id1" b="e1m1"}
+        tech04_2.wl={s="id1" b="e1m1"}
+        tech04_3.wl={s="id1" b="start"}
+        tech04_4.wl={s="id1" b="e3m1"}
+        tech04_5.wl={s="id1" b="e2m1"}
+        tech04_6.wl={s="id1" b="dm3"}
+        tech04_7.wl={s="id1" b="e2m1"}
+        tech04_8.wl={s="id1" b="e2m1"}
+        tech05_1.wl={s="id1" b="e2m1"}
+        tech05_2.wl={s="id1" b="e2m1"}
+        tech06_1.wl={s="id1" b="e2m1"}
+        tech06_2.wl={s="id1" b="e2m1"}
+        tech07_1.wl={s="id1" b="dm3"}
+        tech07_2.wl={s="id1" b="e1m1"}
+        tech08_1.wl={s="id1" b="start"}
+        tech08_2.wl={s="id1" b="e3m1"}
+        tech09_3.wl={s="id1" b="start"}
+        tech09_4.wl={s="id1" b="e3m1"}
+        tech10_3.wl={s="id1" b="e1m1"}
+        tech11_1.wl={s="id1" b="e2m1"}
+        tech11_2.wl={s="id1" b="start"}
+        tech12_1.wl={s="id1" b="e2m1"}
+        tech13_2.wl={s="id1" b="e4m1"}
+        tech14_1.wl={s="id1" b="e4m1"}
+        tech14_2.wl={s="id1" b="e4m1"}
+        tlight08.wl={s="id1" b="start"}
+        twall1_1.wl={s="id1" b="e1m1"}
+        twall1_2.wl={s="id1" b="e1m1"}
+        twall1_4.wl={s="id1" b="e4m1"}
+        twall2_3.wl={s="id1" b="e1m1"}
+        twall3_1.wl={s="id1" b="e1m1"}
+      }
+
+	Brick.wad =
+	{
+		bricka2_1.wl={s="id1" b="start"}
+		bricka2_2.wl={s="id1" b="start"}
+		bricka2_4.wl={s="id1" b="e4m3"}
+		bricka2_6.wl={s="id1" b="dm1"}
+		church1_2.wl={s="id1" b="start"}
+		city1_4.wl={s="id1" b="start"}
+		city2_1.wl={s="id1" b="e1m5"}
+		city2_2.wl={s="id1" b="e4m4"}
+		city2_3.wl={s="id1" b="e4m8"}
+		city2_5.wl={s="id1" b="e2m3"}
+		city2_6.wl={s="id1" b="e4m3"}
+		city2_7.wl={s="id1" b="e1m5"}
+		city2_8.wl={s="id1" b="e1m5"}
+		city4_1.wl={s="id1" b="dm5"}
+		city4_2.wl={s="id1" b="e2m3"}
+		city4_5.wl={s="id1" b="e2m3"}
+		city4_6.wl={s="id1" b="start"}
+		city4_7.wl={s="id1" b="start"}
+		city4_8.wl={s="id1" b="e2m7"}
+		city5_1.wl={s="id1" b="e1m5"}
+		city5_2.wl={s="id1" b="e4m3"}
+		city5_8.wl={s="id1" b="e1m5"}
+		city6_7.wl={s="id1" b="e4m3"}
+		city6_8.wl={s="id1" b="e2m3"}
+		city8_2.wl={s="id1" b="e2m7"}
+		ground1_8.wl={s="id1" b="e2m7"}
+		rock1_2.wl={s="id1" b="e1m4"}
+		rock3_2.wl={s="id1" b="e2m7"}
+		rock3_7.wl={s="id1" b="e2m2"}
+		rock3_8.wl={s="id1" b="e2m3"}
+		rock3_8*.wl={s="id1" b="end" n="rock3_8"}   // alternate texture
+		rock4_1.wl={s="id1" b="start"}
+		rock4_2.wl={s="id1" b="e1m5"}
+		rock5_2.wl={s="id1" b="end"}
+		stone1_3.wl={s="id1" b="e1m2"}
+		stone1_5.wl={s="id1" b="e4m3"}
+		wall11_2.wl={s="id1" b="e2m4"}
+		wall11_6.wl={s="id1" b="e2m7"}
+		wall14_5.wl={s="id1" b="e2m2"}
+		wall3_4.wl={s="id1" b="e4m6"}
+		wall5_4.wl={s="id1" b="e4m8"}
+		wbrick1_4.wl={s="id1" b="e2m6"}
+		wbrick1_5.wl={s="id1" b="start"}
+		wgrass1_1.wl={s="id1" b="e2m2"}
+		wgrnd1_8.wl={s="id1" b="e2m6"}
+		wiz1_4.wl={s="id1" b="start"}
+		wswamp1_4.wl={s="id1" b="e1m3"}
+		wswamp2_1.wl={s="id1" b="e1m2"}
+		wswamp2_2.wl={s="id1" b="e1m2"}
+		wwall1_1.wl={s="id1" b="e2m7"}
+	}
+
+	Crate.wad =
+	{
+		+0_box_side.wl={s="id1" b="b_explob"}
+		+0_box_top.wl={s="id1" b="b_exbox2"}
+		+0_med100.wl={s="id1" b="b_bh100"}
+		+0_med25.wl={s="id1" b="b_bh25"}
+		+0_med25s.wl={s="id1" b="b_bh25"}
+		+1_box_side.wl={s="id1" b="b_explob"}
+		+1_box_top.wl={s="id1" b="b_exbox2"}
+		+1_med100.wl={s="id1" b="b_bh100"}
+		+1_med25.wl={s="id1" b="b_bh25"}
+		+1_med25s.wl={s="id1" b="b_bh25"}
+		+2_med100.wl={s="id1" b="b_bh100"}
+		+2_med25.wl={s="id1" b="b_bh25"}
+		+3_med100.wl={s="id1" b="b_bh100"}
+		+3_med25.wl={s="id1" b="b_bh25"}
+		batt0sid.wl={s="id1" b="b_batt1"}
+		batt0top.wl={s="id1" b="b_batt0"}
+		batt1sid.wl={s="id1" b="b_batt0"}
+		batt1top.wl={s="id1" b="b_batt1"}
+		crate0_side.wl={s="id1" b="e1m1"}
+		crate0_top.wl={s="id1" b="e1m1"}
+		crate1_side.wl={s="id1" b="e1m2"}
+		crate1_top.wl={s="id1" b="e1m2"}
+		med100.wl={s="id1" b="b_bh100"}
+		med3_0.wl={s="id1" b="b_bh10"}
+		med3_1.wl={s="id1" b="b_bh10"}
+		nail0sid.wl={s="id1" b="b_nail0"}
+		nail0top.wl={s="id1" b="b_nail0"}
+		nail1sid.wl={s="id1" b="b_nail1"}
+		nail1top.wl={s="id1" b="b_nail1"}
+		rock0sid.wl={s="id1" b="b_rock0"}
+		rock1sid.wl={s="id1" b="b_rock1"}
+		rockettop.wl={s="id1" b="b_batt0"}
+		shot0sid.wl={s="id1" b="b_shell0"}
+		shot0top.wl={s="id1" b="b_shell0"}
+		shot1sid.wl={s="id1" b="b_shell1"}
+		shot1top.wl={s="id1" b="b_shell1"}
+
+	}
+	Door.wad =
+	{
+		*teleport.wl={s="id1" b="start"}
+		adoor01_2.wl={s="id1" b="e1m5"}
+		adoor02_2.wl={s="id1" b="e1m5"}
+		adoor03_2.wl={s="id1" b="e2m3"}
+		adoor03_3.wl={s="id1" b="e1m5"}
+		adoor03_4.wl={s="id1" b="e4m2"}
+		adoor03_5.wl={s="id1" b="e2m3"}
+		adoor03_6.wl={s="id1" b="e1m5"}
+		adoor09_1.wl={s="id1" b="e4m7"}
+		adoor09_2.wl={s="id1" b="e1m2"}
+		arch7.wl={s="id1" b="e4m2"}
+		carch02.wl={s="id1" b="e4m4"}
+		carch04_1.wl={s="id1" b="e4m3"}
+		carch04_2.wl={s="id1" b="e1m5"}
+		church7.wl={s="id1" b="e4m2"}
+		door01_2.wl={s="id1" b="e1m4"}
+		door02_1.wl={s="id1" b="e1m1"}
+		door02_2.wl={s="id1" b="e1m4"}
+		door02_3.wl={s="id1" b="e3m1"}
+		door02_7.wl={s="id1" b="e4m1"}
+		door03_2.wl={s="id1" b="e1m4"}
+		door03_3.wl={s="id1" b="e2m2"}
+		door03_4.wl={s="id1" b="e2m6"}
+		door03_5.wl={s="id1" b="e2m2"}
+		door04_1.wl={s="id1" b="e1m2"}
+		door04_2.wl={s="id1" b="start"}
+		door05_2.wl={s="id1" b="e1m3"}
+		door05_3.wl={s="id1" b="e1m2"}
+		dr01_1.wl={s="id1" b="e3m4"}
+		dr01_2.wl={s="id1" b="e3m2"}
+		dr02_1.wl={s="id1" b="e1m6"}
+		dr02_2.wl={s="id1" b="e3m2"}
+		dr03_1.wl={s="id1" b="e3m7"}
+		dr05_2.wl={s="id1" b="e3m6"}
+		dr07_1.wl={s="id1" b="e1m6"}
+		edoor01_1.wl={s="id1" b="e1m1"}
+		enter01.wl={s="id1" b="e1m5"}
+		exit01.wl={s="id1" b="e2m3"}
+		warch05.wl={s="id1" b="e2m5"}
+		wenter01.wl={s="id1" b="e1m2"}
+		wexit01.wl={s="id1" b="e2m2"}
+	}
+	Electric.wad =
+	{
+		+0slip.wl={s="id1" b="start"}
+		+1slip.wl={s="id1" b="start"}
+		+2slip.wl={s="id1" b="start"}
+		+3slip.wl={s="id1" b="start"}
+		+4slip.wl={s="id1" b="start"}
+		+5slip.wl={s="id1" b="start"}
+		+6slip.wl={s="id1" b="start"}
+		comp1_1.wl={s="id1" b="e1m1"}
+		comp1_2.wl={s="id1" b="e1m1"}
+		comp1_3.wl={s="id1" b="e1m1"}
+		comp1_4.wl={s="id1" b="e1m1"}
+		comp1_5.wl={s="id1" b="e1m1"}
+		comp1_6.wl={s="id1" b="e1m1"}
+		comp1_7.wl={s="id1" b="dm3"}
+		comp1_8.wl={s="id1" b="e2m1"}
+		plat_side1.wl={s="id1" b="e1m1"}
+		plat_stem.wl={s="id1" b="e1m1"}
+		plat_top1.wl={s="id1" b="e1m1"}
+		sfloor4_5.wl={s="id1" b="start"}
+		sfloor4_7.wl={s="id1" b="e4m1"}
+		sfloor4_8.wl={s="id1" b="dm3"}
+		slip1.wl={s="id1" b="start"}
+		slip2.wl={s="id1" b="e3m1"}
+		sliplite.wl={s="id1" b="start"}
+		slipside.wl={s="id1" b="start"}
+		tech01_1.wl={s="id1" b="start"}
+		tech01_2.wl={s="id1" b="dm3"}
+		tech01_3.wl={s="id1" b="e4m1"}
+		tech01_5.wl={s="id1" b="e2m1"}
+		tech01_6.wl={s="id1" b="start"}
+		tech01_7.wl={s="id1" b="e1m1"}
+		tech01_9.wl={s="id1" b="e1m1"}
+		tech02_1.wl={s="id1" b="e4m1"}
+		tele_top.wl={s="id1" b="e4m1"}
+		twall2_1.wl={s="id1" b="e1m1"}
+		twall2_2.wl={s="id1" b="e1m1"}
+		twall2_5.wl={s="id1" b="e1m1"}
+		twall2_6.wl={s="id1" b="e1m1"}
+		twall5_1.wl={s="id1" b="e1m1"}
+		twall5_2.wl={s="id1" b="e4m1"}
+		twall5_3.wl={s="id1" b="e1m1"}
+
+	}
+	Enviroment.wad =
+	{
+		*04awater1.wl={s="id1" b="e2m3"}
+		*04mwat1.wl={s="id1" b="e3m5"}
+		*04mwat2.wl={s="id1" b="e3m3"}
+		*04water1.wl={s="id1" b="e1m2"}
+		*04water2.wl={s="id1" b="e1m5"}
+		*lava1.wl={s="id1" b="start"}
+		*slime.wl={s="id1" b="e1m4"}
+		*slime0.wl={s="id1" b="e1m1"}
+		*slime1.wl={S="ID1" b="e4m7"}
+		*water0.wl={s="id1" b="e1m1"}
+		*water1.wl={s="id1" b="e2m1"}
+		*water2.wl={s="id1" b="start"}
+		sky1.wl={s="id1" b="start"}
+		sky4.wl={s="id1" b="e1m1"}
+
+	}
+	Floor.wad =
+	{
+		afloor1_3.wl={s="id1" b="dm5"}
+		afloor1_4.wl={s="id1" b="dm5"}
+		afloor1_8.wl={s="id1" b="dm5"}
+		afloor3_1.wl={s="id1" b="e1m5"}
+		azfloor1_1.wl={s="id1" b="e2m3"}
+		elwall2_4.wl={s="id1" b="e3m6"}
+		floor01_5.wl={s="id1" b="e2m5"}
+		metal5_2*.wl={s="id1" b="e1m7" n="metal5_2"}
+		metal5_4*.wl={s="id1" b="start" n="metal5_4"}
+		sfloor1_2.wl={s="id1" b="e3m1"}
+		sfloor4_1.wl={s="id1" b="e2m1"}
+		sfloor4_2.wl={s="id1" b="start"}
+		sfloor4_6.wl={s="id1" b="e4m1"}
+		wall9_8.wl={s="id1" b="start"}
+		woodflr1_5.wl={s="id1" b="e4m5"}
+
+	}
+	Grim.wad =
+	{
+		altar1_1.wl={s="id1" b="e4m5"}
+		altar1_3.wl={s="id1" b="e1m2"}
+		altar1_4.wl={s="id1" b="e4m6"}
+		altar1_6.wl={s="id1" b="e1m2"}
+		altar1_7.wl={s="id1" b="e1m2"}
+		altar1_8.wl={s="id1" b="e4m6"}
+		altarb_1.wl={s="id1" b="e2m6"}
+		altarb_2.wl={s="id1" b="e1m3"}
+		altarc_1.wl={s="id1" b="e2m6"}
+		bodiesa2_1.wl={s="id1" b="dm1"}
+		bodiesa2_4.wl={s="id1" b="dm1"}
+		bodiesa3_1.wl={s="id1" b="dm1"}
+		bodiesa3_2.wl={s="id1" b="dm1"}
+		bodiesa3_3.wl={s="id1" b="dm1"}
+		dem4_1.wl={s="id1" b="start"}
+		dem4_4.wl={s="id1" b="e1m6"}
+		dem5_3.wl={s="id1" b="e1m2"}
+		demc4_4.wl={s="id1" b="e2m3"}
+		dung01_1.wl={s="id1" b="e4m7"}
+		dung02_5.wl={s="id1" b="dm1"}
+		grave02_1.wl={s="id1" b="e4m3"}
+		grave02_2.wl={s="id1" b="e4m3"}
+		grave02_3.wl={s="id1" b="e4m3"}
+		grave02_4.wl={s="id1" b="e4m3"}
+		grave02_5.wl={s="id1" b="e4m3"}
+		grave02_6.wl={s="id1" b="e4m3"}
+		grave02_7.wl={s="id1" b="e4m3"}
+		met5_3.wl={s="id1" b="dm2"}
+		metalt1_2.wl={s="id1" b="e3m2"}
+		metalt1_7.wl={s="id1" b="e3m3"}
+		metalt2_8.wl={s="id1" b="e1m6"}
+		muh_bad.wl={s="id1" b="e1m8"}
+
+	}
+	Light.wad =
+	{
+		+0light01.wl={s="id1" b="start"}
+		+1light01.wl={s="id1" b="start"}
+		+2light01.wl={s="id1" b="start"}
+		ceil1_1.wl={s="id1" b="e2m1"}
+		light1_1.wl={s="id1" b="e4m4"}
+		light1_2.wl={s="id1" b="e2m7"}
+		light1_3.wl={s="id1" b="e3m5"}
+		light1_4.wl={s="id1" b="e1m6"}
+		light1_5.wl={s="id1" b="e1m6"}
+		light1_7.wl={s="id1" b="e1m6"}
+		light1_8.wl={s="id1" b="e3m4"}
+		light3_3.wl={s="id1" b="e3m2"}
+		light3_5.wl={s="id1" b="e3m3"}
+		light3_6.wl={s="id1" b="e1m8"}
+		light3_7.wl={s="id1" b="e1m8"}
+		light3_8.wl={s="id1" b="e1m8"}
+		metal5_8*.wl={s="id1" b="dm4" n="metal5_8"}
+		sfloor4_4.wl={s="id1" b="e3m1"}
+		tlight01_2.wl={s="id1" b="e2m1"}
+		tlight01.wl={s="id1" b="e1m1"}
+		tlight02.wl={s="id1" b="start"}
+		tlight03.wl={s="id1" b="e2m1"}
+		tlight05.wl={s="id1" b="e4m1"}
+		tlight07.wl={s="id1" b="start"}
+		tlight09.wl={s="id1" b="e4m1"}
+		tlight10.wl={s="id1" b="e1m1"}
+		tlight11.wl={s="id1" b="e1m1"}
+
+	}
+	Metal.wad =
+	{
+		cop1_1.wl={s="id1" b="start"}
+		cop1_2.wl={s="id1" b="e1m6"}
+		cop1_8.wl={s="id1" b="e1m7"}
+		cop2_2.wl={s="id1" b="e3m2"}
+		cop2_3.wl={s="id1" b="e1m7"}
+		cop2_4.wl={s="id1" b="e1m5"}
+		cop2_5.wl={s="id1" b="e2m7"}
+		cop2_6.wl={s="id1" b="e1m6"}
+		cop3_2.wl={s="id1" b="e2m3"}
+		ecop1_1.wl={s="id1" b="e1m1"}
+		ecop1_8.wl={s="id1" b="e4m1"}
+		emetal1_3.wl={s="id1" b="e2m1"}
+		lgmetal.wl={s="id1" b="e1m8"}
+		lgmetal2.wl={s="id1" b="e3m7"}
+		lgmetal3.wl={s="id1" b="e1m7"}
+		lgmetal4.wl={s="id1" b="e3m5"}
+		m5_3.wl={s="id1" b="start"}
+		m5_5.wl={s="id1" b="start"}
+		m5_8.wl={s="id1" b="start"}
+		met5_1.wl={s="id1" b="start"}
+		met5_2.wl={s="id1" b="e1m6"}
+		metal1_1.wl={s="id1" b="e1m8"}
+		metal1_2.wl={s="id1" B="e1m6"}
+		metal1_3.wl={s="id1" b="e1m6"}
+		metal1_4.wl={s="id1" b="start"}
+		metal1_5.wl={s="id1" b="e4m7"}
+		metal1_6.wl={s="id1" b="e2m3"}
+		metal1_7.wl={s="id1" b="e1m5"}
+		metal2_1.wl={s="id1" b="e2m3"}
+		metal2_2.wl={s="id1" b="e1m5"}
+		metal2_3.wl={s="id1" b="e3m3"}
+		metal2_4.wl={s="id1" b="e1m5"}
+		metal2_5.wl={s="id1" b="e1m6"}
+		metal2_6.wl={s="id1" b="e1m6"}
+		metal2_7.wl={s="id1" b="e2m3"}
+		metal2_8.wl={s="id1" b="e2m3"}
+		metal3_2.wl={s="id1" b="e3m6"}
+		metal4_2.wl={s="id1" b="e1m6"}
+		metal4_3.wl={s="id1" b="e1m6"}
+		metal4_4.wl={s="id1" b="e1m5"}
+		metal4_5.wl={s="id1" b="e1m6"}
+		metal4_6.wl={s="id1" b="e1m7"}
+		metal4_7.wl={s="id1" b="e2m7"}
+		metal4_8.wl={s="id1" b="e3m3"}
+		metal5_1.wl={s="id1" b="start"}
+		metal5_2.wl={s="id1" b="e2m5"}
+		metal5_4.wl={s="id1" b="e4m6"}
+		metal5_5.wl={s="id1" b="e2m5"}
+		metal5_8.wl={s="id1" b="e2m5"}
+		metalt1_1.wl={s="id1" b="start"}
+		metalt2_1.wl={s="id1" b="e1m6"}
+		metalt2_2.wl={s="id1" b="e1m8"}
+		metalt2_3.wl={s="id1" b="e1m6"}
+		metalt2_4.wl={s="id1" b="e3m7"}
+		metalt2_5.wl={s="id1" b="e1m6"}
+		metalt2_6.wl={s="id1" b="e1m6"}
+		metalt2_7.wl={s="id1" b="e3m2"}
+		metflor2_1.wl={s="id1" b="e3m6"}
+		mmetal1_1.wl={s="id1" b="e1m5"}
+		mmetal1_2.wl={s="id1" b="e1m6"}
+		mmetal1_3.wl={s="id1" b="e3m4"}
+		mmetal1_5.wl={s="id1" b="e1m6"}
+		mmetal1_6.wl={s="id1" b="dm2"}
+		mmetal1_7.wl={s="id1" b="e1m6"}
+		mmetal1_8.wl={s="id1" b="e1m6"}
+		nmetal2_1.wl={s="id1" b="e1m6"}
+		nmetal2_6.wl={s="id1" b="e1m6"}
+		slipbotsd.wl={s="id1" b="start"}
+		sliptopsd.wl={s="id1" b="start"}
+		wizmet1_2.wl={s="id1" b="start"}
+		wizmet1_3.wl={s="id1" b="start"}
+		wizmet1_5.wl={s="id1" b="e2m7"}
+		wmet1_1.wl={s="id1" b="e4m5"}
+		wmet2_1.wl={S="id1" b="e1m2"}
+		wmet2_2.wl={s="id1" b="e2m4"}
+		wmet2_3.wl={s="id1" b="e1m4"}
+		wmet2_4.wl={s="id1" b="e2m7"}
+		wmet2_6.wl={s="id1" b="e2m5"}
+		wmet3_1.wl={s="id1" b="start"}
+		wmet3_3.wl={s="id1" B="e3m6"}
+		wmet3_4.wl={s="id1" b="e3m6"}
+		wmet4_2.wl={s="id1" b="e4m5"}
+		wmet4_3.wl={s="id1" b="e1m2"}
+		wmet4_4.wl={s="id1" b="start"}
+		wmet4_5.wl={s="id1" b="e1m2"}
+		wmet4_6.wl={s="id1" b="e1m3"}
+		wmet4_7.wl={s="id1" b="e1m3"}
+		wmet4_8.wl={s="id1" b="e1m3"}
+
+	}
+	Paving.wad =
+	{
+		+0slipbot.wl={s="id1" b="start"}
+		+0sliptop.wl={s="id1" b="start"}
+		city6_3.wl={s="id1" b="e4m3"}
+		city6_4.wl={s="id1" b="e1m5"}
+		cop1_3.wl={s="id1" b="e1m8"}
+		cop1_4.wl={s="id1" b="e2m3"}
+		cop1_5.wl={s="id1" b="e1m5"}
+		cop1_6.wl={s="id1" b="start"}
+		cop1_7.wl={s="id1" b="e1m6"}
+		cop2_1.wl={s="id1" b="e2m3"}
+		cop3_1.wl={s="id1" b="e1m5"}
+		cop4_3.wl={s="id1" b="e1m6"}
+		cop4_5.wl={s="id1" b="e3m7"}
+		ecop1_4.wl={s="id1" b="e1m1"}
+		ecop1_6.wl={s="id1" b="e1m1"}
+		ecop1_7.wl={s="id1" b="e2m1"}
+		key01_3.wl={s="id1" b="e1m1"}
+		key03_3.wl={s="id1" b="e1m6"}
+		plat_top1*.wl={s="id1" b="e1m5" n="plat_top1"}
+		plat_top2.wl={s="id1" b="e1m3"}
+		tech10_1.wl={s="id1" b="start"}
+		wall16_7.wl={s="id1" b="e1m3"}
+		wall9_3.wl={s="id1" b="e2m5"}
+		wiz1_1.wl={s="id1" b="e1m2"}
+		wizmet1_1.wl={s="id1" b="start"}
+		wizmet1_4.wl={s="id1" b="e2m6"}
+		wizmet1_6.wl={s="id1" b="e2m2"}
+		wizmet1_7.wl={s="id1" b="e1m2"}
+		wizmet1_8.wl={s="id1" b="start"}
+		wkey02_3.wl={s="id1" b="e2m5"}
+
+	}
+	Rune.wad =
+	{
+		arrow_m.wl={s="id1" b="e1m4"}
+		cop3_4.wl={s="id1" b="start"}
+		metal5_3.wl={s="id1" b="start"}
+		metal6_1.wl={s="id1" b="e1m6"}
+		metal6_2.wl={s="id1" b="e1m6"}
+		metal6_3.wl={s="id1" b="e1m4"}
+		metal6_4.wl={s="id1" b="start"}
+		rune_a.wl={s="id1" b="e1m6"}
+		rune1_1.wl={s="id1" b="dm2"}
+		rune1_4.wl={s="id1" b="e3m2"}
+		rune1_5.wl={s="id1" b="dm2"}
+		rune1_6.wl={s="id1" b="e1m6"}
+		rune1_7.wl={s="id1" b="e1m6"}
+		rune2_1.wl={s="id1" b="e1m6"}
+		rune2_2.wl={s="id1" b="e1m6"}
+		rune2_3.wl={s="id1" b="start"}
+		rune2_4.wl={s="id1" b="e1m6"}
+		rune2_5.wl={s="id1" b="e3m2"}
+		switch_1.wl={s="id1" b="start"}
+
+	}
+	Switch.wad =
+      {
+        +0basebtn.wl={s="id1" b="e1m1"}
+        +0butn.wl={s="id1" b="e1m6"}
+        +0butnn.wl={s="id1" b="e1m6"}
+        +0button.wl={s="id1" b="e1m2"}
+        +0floorsw.wl={s="id1" b="e1m2"}
+        +0mtlsw.wl={s="id1" b="e2m6"}
+        +0planet.wl={s="id1" b="e1m1"}
+        +0shoot.wl={s="id1" b="e1m2"}
+        +1basebtn.wl={s="id1" b="e1m1"}
+        +1butn.wl={s="id1" b="e1m6"}
+        +1butnn.wl={s="id1" b="e1m6"}
+        +1button.wl={s="id1" b="e1m2"}
+        +1floorsw.wl={s="id1" b="e1m2"}
+        +1mtlsw.wl={s="id1" b="e2m6"}
+        +1planet.wl={s="id1" b="e1m1"}
+        +1shoot.wl={s="id1" b="e1m2"}
+        +2butn.wl={s="id1" b="e1m6"}
+        +2butnn.wl={s="id1" b="e1m6"}
+        +2button.wl={s="id1" b="e1m2"}
+        +2floorsw.wl={s="id1" b="e1m2"}
+        +2mtlsw.wl={s="id1" b="e2m6"}
+        +2planet.wl={s="id1" b="e1m1"}
+        +2shoot.wl={s="id1" b="e1m2"}
+        +3butn.wl={s="id1" b="e1m6"}
+        +3butnn.wl={s="id1" b="e1m6"}
+        +3button.wl={s="id1" b="e1m2"}
+        +3floorsw.wl={s="id1" b="e1m2"}
+        +3mtlsw.wl={s="id1" b="e2m6"}
+        +3planet.wl={s="id1" b="e1m1"}
+        +3shoot.wl={s="id1" b="e1m2"}
+        +abasebtn.wl={s="id1" b="e1m1"}
+        +abutn.wl={s="id1" b="e1m6"}
+        +abutnn.wl={s="id1" b="e1m6"}
+        +abutton.wl={s="id1" b="e1m2"}
+        +afloorsw.wl={s="id1" b="e1m2"}
+        +amtlsw.wl={s="id1" b="e2m6"}
+        +ashoot.wl={s="id1" b="e1m2"}
+        azswitch3.wl={s="id1" b="e4m2"}
+        basebutn3.wl={s="id1" b="e1m1"}
+        key01_1.wl={s="id1" b="e2m1"}
+        key01_2.wl={s="id1" b="e2m1"}
+        key02_1.wl={s="id1" b="e1m5"}
+        key02_2.wl={s="id1" b="e1m5"}
+        key03_1.wl={s="id1" b="e1m8"}
+        key03_2.wl={s="id1" b="e1m6"}
+        mswtch_2.wl={s="id1" b="e3m2"}
+        mswtch_3.wl={s="id1" b="e1m6"}
+        mswtch_4.wl={s="id1" b="e1m6"}
+        swtch1_1.wl={s="id1" b="e1m4"}
+        wkey02_1.wl={s="id1" b="e1m3"}
+        wkey02_2.wl={s="id1" b="e1m2"}
+        wswitch1.wl={s="id1" b="e3m4"}
+        z_exit.wl={s="id1" b="start"}
+      }
+	Walls.wad =
+	{
+		azwall1_5.wl={s="id1" b="e2m3"}
+		ceiling1_3.wl={s="id1" b="start"}
+		ceiling5.wl={s="id1" b="e4m4"}
+		city3_2.wl={s="id1" b="e4m3"}
+		city3_4.wl={s="id1" b="e2m3"}
+		city5_3.wl={s="id1" b="e1m5"}
+		city5_4.wl={s="id1" b="e1m5"}
+		city5_6.wl={s="id1" b="e1m5"}
+		city5_7.wl={s="id1" b="e1m5"}
+		citya1_1.wl={s="id1" b="e1m5"}
+		column01_3.wl={s="id1" b="e4m5"}
+		column01_4.wl={s="id1" b="e2m5"}
+		column1_2.wl={s="id1" b="e1m5"}
+		column1_4.wl={s="id1" b="e4m7"}
+		column1_5.wl={s="id1" b="e1m5"}
+		elwall1_1.wl={s="id1" b="e1m6"}
+		exit02_2.wl={s="id1" b="e1m2"}
+		exit02_3.wl={s="id1" b="e2m2"}
+		grave01_1.wl={s="id1" b="e4m3"}
+		grave01_3.wl={s="id1" b="e4m3"}
+		grave03_1.wl={s="id1" b="e4m3"}
+		grave03_2.wl={s="id1" b="e2m6"}
+		grave03_3.wl={s="id1" b="e4m3"}
+		grave03_4.wl={s="id1" b="e4m3"}
+		grave03_5.wl={s="id1" b="e4m3"}
+		grave03_6.wl={s="id1" b="e4m3"}
+		grave03_7.wl={s="id1" b="e4m3"}
+		ground1_1.wl={s="id1" b="e3m1"}
+		ground1_2.wl={s="id1" b="e1m1"}
+		ground1_5.wl={s="id1" b="e2m1"}
+		ground1_6.wl={s="id1" b="e1m1"}
+		ground1_7.wl={s="id1" b="dm3"}
+		sfloor3_2.wl={s="id1" b="dm3"}
+		stone1_7.wl={s="id1" b="e2m4"}
+		unwall1_8.wl={s="id1" b="e2m3"}
+		uwall1_2.wl={s="id1" b="e1m1"}
+		uwall1_3.wl={s="id1" b="e4m8"}
+		uwall1_4.wl={s="id1" b="e4m3"}
+		vine1_2.wl={s="id1" b="e1m4"}
+		wall14_6.wl={s="id1" b="e2m7"}
+		wceiling5.wl={s="id1" b="e2m2"}
+		wgrnd1_5.wl={s="id1" b="e1m3"}
+		wgrnd1_6.wl={s="id1" b="e1m4"}
+		wswamp1_2.wl={s="id1" b="e1m2"}
+
+	}
+	Windows.wad =
+	{
+		carch03.wl={s="id1" b="e1m5"}
+		ceiling4.wl={s="id1" b="e4m7"}
+		wceiling4.wl={s="id1" b="e2m5"}
+		window01_1.wl={s="id1" b="e2m5"}
+		window01_2.wl={s="id1" b="e2m2"}
+		window01_3.wl={s="id1" b="e2m2"}
+		window01_4.wl={s="id1" b="e4m6"}
+		window02_1.wl={s="id1" b="start"}
+		window03.wl={s="id1" b="e1m2"}
+		window03*.wl={s="id1" b="e4m2" n="window03"}   // alternate texture
+		window1_2.wl={s="id1" b="e4m3"}
+		window1_3.wl={s="id1" b="e1m5"}
+		window1_4.wl={s="id1" b="e4m8"}
+		wizwin1_2.wl={s="id1" b="e2m2"}
+		wizwin1_8.wl={s="id1" b="e2m5"}
+
+	}
+	Wood.wad =
+	{
+		az1_6.wl={s="id1" b="e2m3"}
+		azwall3_1.wl={s="id1" b="e4m3"}
+		azwall3_2.wl={s="id1" b="e4m3"}
+		city1_7.wl={s="id1" b="e4m3"}
+		dung01_2.wl={s="id1" b="dm1"}
+		dung01_3.wl={s="id1" b="e4m8"}
+		dung01_4.wl={s="id1" b="dm1"}
+		dung01_5.wl={s="id1" b="e2m4"}
+		dung02_1.wl={s="id1" b="dm1"}
+		metal5_6.wl={s="id1" b="e1m2"}
+		wizwood1_2.wl={s="id1" b="e2m6"}
+		wizwood1_3.wl={s="id1" b="start"}
+		wizwood1_4.wl={s="id1" b="e1m2"}
+		wizwood1_5.wl={s="id1" b="start"}
+		wizwood1_6.wl={s="id1" b="e2m4"}
+		wizwood1_7.wl={s="id1" b="e1m3"}
+		wizwood1_8.wl={s="id1" b="start"}
+		wood1_1.wl={s="id1" b="start"}
+		wood1_5.wl={s="id1" b="e4m4"}
+		wood1_7.wl={s="id1" b="e4m2"}
+		wood1_8.wl={s="id1" b="e2m3"}
+		woodflr1_2.wl={s="id1" b="e1m5"}
+		woodflr1_4.wl={s="id1" b="e1m2"}
+		wwood1_5.wl={s="id1" b="e2m2"}
+		wwood1_7.wl={s="id1" b="e2m2"}
+
+	}
+	Extra.wad =
+	{
+		black.wl={s="id1" b="e1m2"}
+		clip.wl={s="id1" b="start"}
+		dopeback.wl={s="id1" b="e2m3"}
+		dopefish.wl={s="id1" b="e2m3"}
+		quake.wl={s="id1" b="start"}
+		raven.wl={s="id1" b="e2m7"}
+		skill0.wl={s="id1" b="start"}
+		skill1.wl={s="id1" b="start"}
+		skill2.wl={s="id1" b="start"}
+		skill3.wl={s="id1" b="start"}
+		trigger.wl={s="id1" b="start"}
+	}
+    }
+  }
+}
+
