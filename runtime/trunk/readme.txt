@@ -1,3 +1,16 @@
+           Patch1 to 080601 Snaphsot
+
+ * reset texture cycle command, so that the texture
+   cycle files can be edited, and results seen in the
+   same editing session
+   
+ *'snap object to tagged' menu item: if a face is tagged,
+   select a face, then a parental object from the menu,
+   then 'snap object to tagged'.  Object will move and
+   rotate that selected face is oriented parallel to
+   tagged one, with specified separation.
+
+
            QuArK Snapshot of 080601
 
 Changes from 070901:
