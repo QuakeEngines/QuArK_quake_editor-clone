@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/06/05 18:38:06  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.5  2001/03/29 01:00:29  aiv
 modifable :form objects!
 
@@ -321,7 +324,9 @@ begin
  SetupQrk:=Nil;
  if not IsModal then
   begin
+   g_ConfigDlg.Panel1.Free;
    g_ConfigDlg:=Nil;
+//   g_ConfigDlg.Free;
    SavePositionTb('Config', False, Explorer);
   end;
 end;

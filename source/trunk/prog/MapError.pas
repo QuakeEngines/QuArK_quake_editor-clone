@@ -31,9 +31,13 @@ end;
 function TMapError.Text: String;
 begin
   Result:=S;
+  S:='';
 end;
 
+initialization
+
+g_MapError:=TMapError.Create;
+g_MapError.Clear();
+
 end.
 
-
-end.

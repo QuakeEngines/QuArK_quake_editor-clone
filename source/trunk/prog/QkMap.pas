@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.46  2002/05/15 00:08:38  tiglari
+Record Map Errors for possible write to console or elsewhere
+
 Revision 1.45  2002/05/14 21:24:50  tiglari
 comment on bad texture scale while reading valve 220 maps
 
@@ -1166,6 +1169,7 @@ begin
     Result:=mjQuake;     { Into Result is but info about what game the map is for }
     Q2Tex:=False;
     WC33map:=False; {Decker}
+    g_MapError.Clear;
     ReadSymbolForceToText:=False;    { ReadSymbol is not to expect text}
     LineNoBeingParsed:=1;
     InvPoly:=0;
@@ -1174,7 +1178,6 @@ begin
    {FinDeLigne:=False;}
     HullList:=Nil;
     L:=TStringList.Create;
-    g_MapError:=TMapError.Create;
     try   { L and HullList get freed by finally, regardless of exceptions }
      WorldSpawn:=False;  { we haven't seen the worldspawn entity yet }
      Entities:=TTreeMapGroup.Create(LoadStr1(136), Racine);
