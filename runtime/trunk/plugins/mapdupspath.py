@@ -306,17 +306,6 @@ class PathDuplicator(StandardDuplicator):
         templatesize = templatebbox[1] - templatebbox[0]
 
 
-        templatefront=getNormalFaces(templategroup.findallsubitems("",":f"),
-                                     quarkx.vect(1,0,0))
-        rimvtxes=[]
-        for face in templatefront:
-#            debug('face: '+`face.name`)
-            for vtxes in face.vertices:
-#                debug(' cycle')
-                for vtx in vtxes:
-#                    debug('  '+`vtx`)
-                    rimvtxes.append(vtx)
-               
 
         # If SPEEDDRAW specific is set to one, we'll only use a single cube to make the path.
         if self.speed == 1:
@@ -333,6 +322,18 @@ class PathDuplicator(StandardDuplicator):
         templatescale = min(templatesize.x, templatesize.y)/3
         templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
 
+        tile = templategroup.findname("Tile:g")
+        if tile:
+            templategroup.removeitem(tile)
+
+        templatefront=getNormalFaces(templategroup.findallsubitems("",":f"),
+                                     quarkx.vect(1,0,0))
+        rimvtxes=[]
+        for face in templatefront:
+            for vtxes in face.vertices:
+                for vtx in vtxes:
+                    rimvtxes.append(vtx)
+               
 #        # -- If SCALETEXTURES is on, use the linear() operation
 #        if (self.scaletex != 0):
 #           scalematrix = quarkx.matrix((2048/templatescale,0,0), (0,1,0), (0,0,1))
@@ -375,8 +376,6 @@ class PathDuplicator(StandardDuplicator):
             list.translate(neworigin, 0)
             list.linear(neworigin, mat)
             front, back = getends(list,xax)
-            startseg = 0
-            endseg = pathdist
             
             for face in front:
                center = projectpointtoplane(thisorigin,face.normal,face.dist*face.normal,face.normal)
@@ -398,13 +397,26 @@ class PathDuplicator(StandardDuplicator):
             def vtxshift(vtx,mat=mat,orig=thisorigin):
                 return mat*vtx+orig
 
-            startseg=endseg=0
-            for vtx in map(vtxshift,rimvtxes):
-                frontproj=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
-                startseg=max(startseg,(frontproj-thisorigin)*xax)
-                backproj=projectpointtoplane(vtx,xax,nextorigin,back[0].normal)
-                endseg=min(endseg,(backproj-nextorigin)*xax)
+            if tile:
+                startseg=endseg=0
+                for vtx in map(vtxshift,rimvtxes):
+                    frontproj=projectpointtoplane(vtx,xax,thisorigin,front[0].normal)
+                    startseg=max(startseg,(frontproj-thisorigin)*xax)
+                    backproj=projectpointtoplane(vtx,xax,nextorigin,back[0].normal)
+                    endseg=min(endseg,(backproj-nextorigin)*xax)
 
+                tileableLength=abs(pathdist)-startseg+endseg
+                tileTimes=int(tileableLength/templatesize.x)
+                for i in range(tileTimes):
+                    if i==0:
+                        newTile=tile.copy()
+                        newTile.linear(quarkx.vect(0,0,0),mat)
+                        newTile.translate(thisorigin+(startseg+templatesize.x*0.5)*xax)
+                    else:
+                        newTile=newTile.copy()
+                        newTile.translate(xax*templatesize.x)
+                    list.appenditem(newTile)
+                    
 
 #
 #  This kind of code will create `box' shaped sections that just
@@ -751,6 +763,10 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2001/02/22 03:37:37  tiglari
+#more spiffup, also code for calculating start and end of maximal nonoverlapping
+#flat-end path segments
+#
 #Revision 1.10  2001/02/21 06:34:22  tiglari
 #a bit of cleanup, some preliminaries for elbows and tiling
 #
