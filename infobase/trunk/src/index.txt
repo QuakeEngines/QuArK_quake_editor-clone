@@ -4,4 +4,6 @@ subdir: quarkx
 
 This section discusses QuArK programming.
 
-<p>Remember you can get the source code of QuArK from <a href="http://www.planetquake.com/quark/armin/">here</a>.
+QuArK is written partly in Delphi and partly in Python, and available under the GNU General Public Licence -- see 
+<ref> src/sf
+.
