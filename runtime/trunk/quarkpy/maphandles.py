@@ -821,16 +821,17 @@ class PropGlueDlg (SimpleCancelDlgBox):
     # __init__ initialize the object
     #
 
-    def __init__(self, form, action, initialvalue=None):
+    def __init__(self, form, action):
 
     #
     # General initialization of some local values
     #
 
         src = quarkx.newobj(":")
-        if initialvalue is not None:
-           src["prop"]=initialvalue,
-        self.initialvalue=initialvalue
+        initialvalue = quarkx.setupsubset(SS_MAP, "Options")["PropTexGlue"]
+        if initialvalue is None:
+            initialvalue = 1,
+        src["prop"]=initialvalue
         self.action=action
         SimpleCancelDlgBox.__init__(self, form, src)
 
@@ -839,8 +840,8 @@ class PropGlueDlg (SimpleCancelDlgBox):
     #   name is provided
     #
     def datachange(self, df):
-        if self.src["prop"]!=(self.initialvalue,):
-            self.close()
+        quarkx.setupsubset(SS_MAP, "Options")["PropTexGlue"] = self.src["prop"]
+        self.close()
  
 
     #
@@ -1024,7 +1025,7 @@ class CyanLHandle(qhandles.GenericHandle):
             editor.ok(undo,'Proportional Glue to Tagged')
  
         def propGlueClick(m, action=action):
-            PropGlueDlg(quarkx.clickform,action,1)
+            PropGlueDlg(quarkx.clickform,action)
         
         propglueitem = qmenu.item('Proportional glue',propGlueClick)
         propglueitem.state=qmenu.disabled
@@ -1745,6 +1746,9 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.31  2001/09/24 10:15:19  tiglari
+#proportional glue for CyanLHandles
+#
 #Revision 1.30  2001/08/16 20:09:15  decker_dk
 #Support for snap-to-grid in UserCenterHandle drag.
 #Specific hint for a UserCenterHandle.
