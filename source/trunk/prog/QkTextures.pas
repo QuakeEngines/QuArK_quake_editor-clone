@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/03/02 19:36:20  decker_dk
+Have split WriteAllTextures() into smaller portions.
+
 Revision 1.30  2001/01/27 18:23:44  decker_dk
 Removed the key 'Q3ShaderPath', as it is replaced with 'ShadersPath'.
 Renamed the key 'Q2TexPath' to 'TexturesPath'.
@@ -1169,7 +1172,7 @@ begin
           Bsp:=NeedGameFileBase(Arg, 'maps/'+S+'.bsp') as QBsp;
           Bsp.AddRef(+1);
           try
-            TexList:=Bsp.BspEntry[eMipTex, NoBsp2] as QTextureList;
+            TexList:=Bsp.BspEntry[eMipTex, NoBsp2, NoBsp3] as QTextureList;
             TexList.AddRef(+1);
             try
               TexList.Acces;
