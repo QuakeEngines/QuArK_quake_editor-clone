@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.29  2001/12/05 20:39:52  decker_dk
+Ensure that TForm1.SavePendingFiles() isn't called endlessly, before the user
+have a change to answer the question.
+
 Revision 1.28  2001/10/20 02:11:47  tiglari
 live pointer hunt: redo shutdown macro
 
@@ -1457,6 +1461,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  st:='hi';
  s:=PyString_FromString(PChar(st));
  CallMacro(s, 'shutdown');
+ Application.UnHookMainWindow(WindowHook);
  end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
