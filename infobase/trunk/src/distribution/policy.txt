@@ -22,7 +22,7 @@ N.B. that version numbers are in the format
 <tt>#.#.#state#</tt> where 'state' can be one of 'rel', 'beta', or
 'alpha'.  The numbers before the current state are the major and minor
 versions, and the number after the state is the release number at that
-version/state. Examples:<ul><li><tt>6.4.0alpha1</tt></li>
+version/state. Examples:<ul><li><tt>6.4.0alpha1</tt>. Note also that version numbers should be <strong>unique</strong>.</li>
 <li><tt>6.3.0rel4</tt></li></ul>
 </li>
 <li>Snapshots are released on QuArK's SourceForge webspace (
