@@ -52,7 +52,7 @@ def parentClick(m,editor=None):
     editor, sel = getEditorSelection(editor)
     if sel is None: return
     parent = sel.treeparent
-    if parent is not None:
+    if parent.name!="worldspawn:b":
         explorer = editor.layout.explorer
         explorer.uniquesel = parent
         if quarkx.keydown(collapse)!=1:
@@ -116,17 +116,22 @@ def nextClick(m,editor=None):
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
-removeItem = qmenu.item("&Cancel Selections", EscClick, "|'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.")
-parentItem = qmenu.item("Select &Parent", parentClick, "|Selects parent.  Parent is collapsed in treeview unless '%s' is depressed."%collapse)
-childItem = qmenu.item("Select &Child", childClick, "Selects first child")
-nextItem = qmenu.item("Select &Next", nextClick, "|Selects next item in group, cycling\n depress '%s' to constrain to next of same type."%same)
-prevItem = qmenu.item("Select Pre&vious", nextClick, "|Selects previous item in group, cycling\n depress '%s' to constrain to previous of same type."%same)
+removeItem = qmenu.item("&Cancel Selections", EscClick, "|Cancel Selections:\n\n'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.|intro.mapeditor.menu.html#selectionmenu")
+
+parentItem = qmenu.item("Select &Parent", parentClick, "|Select Parent:\n\n  The Parent is collapsed in the treeview unless '%s' is depressed.|intro.mapeditor.menu.html#selectionmenu"%collapse)
+
+childItem = qmenu.item("Select &Child", childClick, "|Select Child:\n\nSelects first child.|intro.mapeditor.menu.html#selectionmenu")
+
+nextItem = qmenu.item("Select &Next", nextClick, "|Select Next:\n\nThis selects the next item in the group.\n\nCycling - Depress '%s' to constrain your selection to the next item of the same type.|intro.mapeditor.menu.html#selectionmenu"%same)
+
+prevItem = qmenu.item("Select Pre&vious", nextClick, "|Select Previous:\n\nSelects the previous item in the group.\n\nCycling - Depress '%s' to constrain your selection to the next item of the same type.|intro.mapeditor.menu.html#selectionmenu"%same)
 nextItem.succ = getNext
 prevItem.succ = getPrevious
 
-freezetext = "|If the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it."
+freezetext = "|Freeze/Unfreeze Selection:\n\nIf the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it.|intro.mapeditor.menu.html#selectionmenu"
 
 unfreezeItem = qmenu.item("Unfreeze Selection", UnfreezeClick, freezetext)
+
 freezeItem = qmenu.item("Freeze Selection", FreezeClick, freezetext)
 
 #
@@ -138,21 +143,18 @@ shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    prevItem.state=nextItem.state=parentItem.state=childItem.state=qmenu.disabled
-    freezeItem.state = unfreezeItem.state = removeItem.state=qmenu.disabled
+    prevItem.state=nextItem.state=parentItem.state=qmenu.disabled
+    removeItem.state=qmenu.disabled
     if editor is not None:
-        uniquesel = editor.layout.explorer.uniquesel 
-        if uniquesel is not None:
-            prevItem.state=nextItem.state=qmenu.normal
-            if len(uniquesel.subitems)>0:
-                childItem.state = qmenu.normal
-            if uniquesel.treeparent:
-                parentItem.state=qmenu.normal
+        if editor.layout.explorer.uniquesel is not None:
+            prevItem.state=nextItem.state=parentItem.state=qmenu.normal
             removeItem.state=qmenu.normal
-            if getAttr(editor,'frozenselection') is None:
-                freezeItem.state=qmenu.normal
-            else:
-                unfreezeItem.state=qmenu.normal
+        if getAttr(editor,'frozenselection') is None:
+            freezeItem.state=qmenu.normal
+            unfreezeItem.state=qmenu.disabled
+        else:
+            freezeItem.state=qmenu.disabled
+            unfreezeItem.state=qmenu.normal
 
 
 def SelectionMenu():
@@ -170,6 +172,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.9  2003/03/25 08:28:27  tiglari
+# fix enabler and select parent logic
+#
 # Revision 1.8  2003/02/09 06:11:01  cdunde
 # Discription update and HotKey name change
 #
