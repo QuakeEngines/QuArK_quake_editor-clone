@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.76  2004/12/21 09:05:04  alexander
+default lightrmap scale export
+
 Revision 1.75  2004/11/30 00:14:57  alexander
 fixed texture scaling problem for HL2
 
@@ -5353,7 +5356,9 @@ begin
  Integer(Addr(Result.Color)^) := Integer(0);
  Result.Mode := 0;
 {DECKER 2003.03.12}
- if CharModeJeu = mjHalfLife then
+ case CharModeJeu of
+ mjHalfLife,
+ mjHL2:
  begin
    // OMG! This is so slow, but hopefully a little faster than the below
    // while-loop, if the end-user don't want to see transparency in the OpenGL window.
@@ -5391,13 +5396,13 @@ begin
            if S<>'' then
             Result.Value:=StrToIntDef(S,255); // If conversion to integer fails, make sure "no transparency" is the default (100% opaque = 255)
            if (result.mode=4) and (result.value<>0) then result.value:=255
-           else if (result.Mode=5) and (result.Value=255) then result.Value:=254; //<- dirty hack... a value of 255 is always drawn 'solid' :/  
+           else if (result.Mode=5) and (result.Value=255) then result.Value:=254; //<- dirty hack... a value of 255 is always drawn 'solid' :/
          end;
        end;
        exit;
      end;
    end;
- end
+ end; // hl1
  else
 {/DECKER}
  begin
@@ -5408,6 +5413,7 @@ begin
      Result.Mode:=2;
    end;
  end;
+ end; //case
 end;
 
 procedure TFace.AnalyseClic(Liste: PyObject);
