@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.116  2001/03/30 22:20:35  tiglari
+//explanatory line for buildmenu hotkeys
+//
 //Revision 1.115  2001/03/29 21:03:27  tiglari
 //extruder support
 //
@@ -3224,7 +3227,11 @@ QQRKSRC1
        angles: = {Txt="&" Typ="EF03"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
        linear: = {Txt="&" Typ="E"  Hint="A matrix for an arbitrary linear transformation" $0D " (if you don't know what this is, use" $0D "scale & angles instead)."}
     }
-    
+    usercenterform:incl = {
+      usercenter: = {Txt="&" Typ="EF03" Hint="Drag this with the handle"}
+      centering: =
+       {Txt= "&" Typ="P" Macro="usercenter" Cap="push" Hint="Push to add a user center"}
+    }
    
     dup lin:form =
     {
@@ -3392,7 +3399,8 @@ QQRKSRC1
     dup instance:form =
     {
       track: =  {Txt="&" Typ="X" Hint="If checked, instances rotate to follow path angles"}
-      target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
+      target: = {Txt="&" Typ="E" Hint="should be managed automatically"}
+      usercenterform = !
     }
     dup stair:form =
     {
@@ -4181,12 +4189,13 @@ QQRKSRC1
           macro = "wall maker"
           depth = "8"
         }
-        Origin Duplicator:d =
-        {
-          ;desc = "a center point for various kinds of groups"
-           origin        = "0 0 0"
-           macro = "dup origin"
-        }
+//  UserCenterHandle stuff better, methinks
+//        Origin Duplicator:d =
+//        {
+//          ;desc = "a center point for various kinds of groups"
+//           origin        = "0 0 0"
+//           macro = "dup origin"
+//        }
         Path Duplicator:g =
         {
           ;desc = "corridor maker, easy creation of connected corridors"
