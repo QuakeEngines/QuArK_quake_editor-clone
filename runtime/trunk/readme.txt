@@ -3,6 +3,7 @@
 
 Changes from 052101
 
+ 4 Users:
   *storeable 3d camera positions
     - add them on the 3d view eye handles & background
         RMB menus
@@ -16,7 +17,6 @@ Changes from 052101
     - cycle the ones in a group with prev/next +
         'C' depressed (should be made user-configurable)
     - find camera positions dialog on search menu
-  *entity conversion (fgd->qrk) tools pythonified
   *group selection movement commands (swap & align,
    suggested by Alan Donald and quantum_red)
   *due north path duplicator bug fixed
@@ -53,6 +53,29 @@ Changes from 052101
          etc.
     b) use tag plane command after tagging an edge
                 
+ Under the hood:
+   *entity conversion (fgd->qrk) tools pythonified
+   *'Code Code' specific for toolbarbuttons (tbbtn) and 
+     the python buttons (Typ="P" only).
+   
+    Example for tbbtn:
+   
+     search1:tbbtn = {
+       Typ = "P"
+       Cap = "Search"
+       Code = "import plugins.tex_search; plugins.tex_search.openbox()"
+     }
+   
+     GetEntitiesBtn: =
+     {
+       Typ = "P"
+       Cap = "Get entities for this game"
+       Code = "import quarkx; quarkx.beep()"
+     }
+   
+   will execute the python string in the Code specifics.
+   
+
                63 Snapshot 052101
 
  Changes from 050701:
