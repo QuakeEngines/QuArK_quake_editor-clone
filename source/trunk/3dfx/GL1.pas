@@ -648,6 +648,7 @@ type
   glEndList: procedure; stdcall;
   glCallList: procedure (list: GLuint); stdcall;
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
+  glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
 
 (*
 ** Utility routines from GLU32.DLL
@@ -674,7 +675,7 @@ function OpenGlLoaded : Boolean;
 implementation
 
 const
- GlRoutines : array[0..36] of PChar =
+ GlRoutines : array[0..37] of PChar =
   ('wglMakeCurrent',
    'wglDeleteContext',
    'wglCreateContext',
@@ -712,7 +713,8 @@ const
    'glNewList',
    'glEndList',
    'glCallList',
-   'glDeleteLists');
+   'glDeleteLists',
+   'glReadPixels');
  GluRoutines : array[0..0] of PChar =
   ('gluPerspective'
   {'gluBuild2DMipmaps'});

@@ -25,7 +25,8 @@ unit EdOpenGL;
 
 interface
 
-uses Windows, SysUtils, Classes, GL1, QkObjects, Ed3DFX, qmath, PyMath, PyMath3D;
+uses Windows, SysUtils, Classes, Forms,
+     GL1, QkObjects, Ed3DFX, qmath, PyMath, PyMath3D;
 
 {$IFDEF Debug}
  {---$OPTIMIZATION OFF}
@@ -51,12 +52,21 @@ type
                  ZeroLight, BrightnessSaturation, LightFactor: scalar_t;
                 end;
 
- TGLSceneObject = class(TSceneObject)
+ TGLSceneBase = class(TSceneObject)
+ protected
+   ScreenX, ScreenY: Integer;
+   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
+   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
+   procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
+ public
+   procedure SetViewRect(SX, SY: Integer); override;
+ end;
+
+ TGLSceneObject = class(TGLSceneBase)
  private
    DestWnd: HWnd;
    GLDC: HDC;
    RC: HGLRC;
-   ScreenX, ScreenY: Integer;
    CurrentAlpha: LongInt;
    Currentf: GLfloat4;
    RenderingTextureBuffer: TMemoryStream;
@@ -69,11 +79,9 @@ type
  protected
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
-   procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel); override;
-   procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel); override;
-   procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
-   procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
-   procedure RenderTransparentGL(Transparent: Boolean);
+   procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
+   procedure RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
+   procedure RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
    procedure ReleaseResources;
    procedure BuildTexture(Texture: PTexture3); override;
  public
@@ -82,11 +90,26 @@ type
     var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single;
     FOG_COLOR, FrameColor: TColorRef); override;
    procedure ClearScene; override;
-   procedure SetViewRect(SX, SY: Integer); override;
    procedure Render3DView; override;
    procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); override;
-   property DisplayLights: Boolean read FDisplayLights write FDisplayLights;
+ end;
+
+ TGLSceneProxy = class(TGLSceneBase)
+ private
+  {MasterVersion: Integer;}
+   nFrameColor: TColorRef;
+ protected
+   function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
+   procedure EndBuildScene; override;
+   procedure BuildTexture(Texture: PTexture3); override;
+  {procedure MasterUpdate;}
+ public
+   procedure Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
+    var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single;
+    FOG_COLOR, FrameColor: TColorRef); override;
+   procedure Render3DView; override;
+   procedure Copy3DView(SX,SY: Integer; DC: HDC); override;
  end;
 
  {------------------------}
@@ -97,7 +120,7 @@ procedure Free3DEditor;
 
 implementation
 
-uses Quarkx, QkMapPoly, Setup, QkPixelSet;
+uses Quarkx, QkMapPoly, Setup, QkPixelSet, Python, QkForm, PyMapView;
 
  {------------------------}
 
@@ -119,6 +142,22 @@ begin
   end;
  if S<>'' then
   Raise EErrorFmt(4870, [S, Pos]);
+end;
+
+ {------------------------}
+
+var
+ CurrentGLSceneObject: TGLSceneObject = Nil;
+{VersionGLSceneObject: Integer;}
+
+procedure NeedGLSceneObject;
+begin
+ if CurrentGLSceneObject=Nil then
+  begin
+   Py_XDECREF(CallMacroEx(EmptyTuple, 'OpenGL'));
+   PythonCodeEnd;
+   if CurrentGLSceneObject=Nil then Abort;
+  end;
 end;
 
  {------------------------}
@@ -160,11 +199,22 @@ type
 
 procedure TGLSceneObject.ReleaseResources;
 var
- I: Integer;
+ I, J: Integer;
  NameArray, CurrentName: ^GLuint;
 begin
+ CurrentGLSceneObject:=Nil;
  RenderingTextureBuffer.Free;
  RenderingTextureBuffer:=Nil;
+
+ { mark proxy GL views as needing a complete rebuild }
+ for I:=0 to Screen.FormCount-1 do
+  with Screen.Forms[I] do
+   for J:=0 to ComponentCount-1 do
+    if Components[J] is TPyMapView then
+     with TPyMapView(Components[J]) do
+      if Scene is TGLSceneProxy then
+       Perform(wm_MessageInterne, wp_PyInvalidate, 0);
+
  with TTextureManager.GetInstance do
   begin
    GetMem(NameArray, Textures.Count*SizeOf(GLuint)); try
@@ -184,10 +234,13 @@ begin
     end;
    finally FreeMem(NameArray); end;
   end;
- if (RC<>0) and Assigned(gl) then
+ if RC<>0 then
   begin
-   gl.wglMakeCurrent(0,0);
-   gl.wglDeleteContext(RC);
+   if Assigned(gl) then
+    begin
+     gl.wglMakeCurrent(0,0);
+     gl.wglDeleteContext(RC);
+    end;
    RC:=0;
   end;
  if GLDC<>0 then
@@ -237,7 +290,7 @@ begin
   DisplayLists:=0
  else
   DisplayLists:=-1;
- DisplayLights:=Setup.Specifics.Values['Lights']<>'';
+ FDisplayLights:=Setup.Specifics.Values['Lights']<>'';
  LightParams.ZeroLight:=Setup.GetFloatSpec('Ambient', 0.2);
  LightParams.BrightnessSaturation:=SetupGameSet.GetFloatSpec('3DLight', 256/0.5);
  LightParams.LightFactor:=(1.0-LightParams.ZeroLight)/LightParams.BrightnessSaturation;
@@ -288,6 +341,9 @@ begin
  gl.glEnable(GL_TEXTURE_2D);
  Err(2);
 
+{Inc(VersionGLSceneObject);}
+ CurrentGLSceneObject:=Self;  { at this point the scene object is more or less initialized }
+
   { set up fog }
  if Fog then
   begin
@@ -307,12 +363,113 @@ begin
   Windows.SwapBuffers(GLDC);
 end;
 
+procedure TGLSceneProxy.Init(Wnd: HWnd; nCoord: TCoordinates; const LibName: String;
+    var FullScreen, AllowsGDI: Boolean; FOG_DENSITY: Single; FOG_COLOR, FrameColor: TColorRef);
+begin
+{MasterVersion:=VersionGLSceneObject-1;
+ MasterUpdate;} NeedGLSceneObject;
+ if not (nCoord is TCameraCoordinates) then
+  Raise InternalE('OpenGL does not support non-perspective views (yet)');
+ Coord:=nCoord;
+ nFrameColor:=FrameColor;
+ FullScreen:=False;
+ TTextureManager.AddScene(Self, False);
+end;
+
+procedure TGLSceneProxy.Copy3DView(SX,SY: Integer; DC: HDC);
+var
+ L, R, T, B: Integer;
+ bmiHeader: TBitmapInfoHeader;
+ BmpInfo: TBitmapInfo absolute bmiHeader;
+ Bits: Pointer;
+ FrameBrush: HBrush;
+
+  procedure Frame(X,Y,W,H: Integer);
+  var
+   Rect: TRect;
+  begin
+   if FrameBrush=0 then
+    FrameBrush:=CreateSolidBrush(nFrameColor);
+   Rect:=Bounds(X,Y,W,H);
+   FillRect(DC, Rect, FrameBrush);
+  end;
+
+begin
+ L:=0;
+ R:=(ScreenX+3) and not 3;
+ FillChar(bmiHeader, SizeOf(bmiHeader), 0);
+ with bmiHeader do
+  begin
+   biSize:=SizeOf(TBitmapInfoHeader);
+   biPlanes:=1;
+   biBitCount:=24;
+   biWidth:=R-L;
+   biHeight:=ScreenY;
+  end;
+
+ B:=bmiHeader.biWidth*bmiHeader.biHeight;
+ GetMem(Bits, B*3); try
+ if B>0 then
+  begin
+   gl.glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
+   Err(999);
+
+   { we have to swap the bytes (RGB --> BGR)...}
+   asm
+    push esi
+    push edi
+    mov eax, [B]
+    mov esi, [Bits]
+    lea edi, [esi+2*eax]
+    add edi, eax
+
+    @loop:
+     mov eax, [esi]   {R2B1G1R1}
+     mov edx, [esi+4] {G3R3B2G2}
+     bswap eax
+     xchg al, dh
+     ror eax, 8
+     mov [esi], eax
+
+     mov eax, [esi+8] {B4G4R4B3}
+     bswap edx
+     xchg al, dh
+     bswap eax
+     bswap edx
+     rol eax, 8
+     mov [esi+4], edx
+     mov [esi+8], eax
+
+     add esi, 12
+     cmp esi, edi
+    jne @loop
+
+    pop edi
+    pop esi
+   end;
+  end;
+
+ L:=(SX-bmiHeader.biWidth) div 2;
+ T:=(SY-bmiHeader.biHeight) div 2;
+ R:=L+bmiHeader.biWidth;
+ B:=T+bmiHeader.biHeight;
+ FrameBrush:=0; try
+ if L>0 then  Frame(0, T, L, B-T);
+ if T>0 then  Frame(0, 0, SX, T);
+ if R<SX then Frame(R, T, SX-R, B-T);
+ if B<SY then Frame(0, B, SX, SY-B);
+ finally if FrameBrush<>0 then DeleteObject(FrameBrush); end;
+ SetDIBitsToDevice(DC, L, T,
+  bmiHeader.biWidth, bmiHeader.biHeight, 0,0,
+  0,bmiHeader.biHeight, Bits, BmpInfo, 0);
+ finally FreeMem(Bits); end;
+end;
+
 procedure TGLSceneObject.ClearScene;
 var
  PL: PLightList;
 begin
  inherited;
- {$IFDEF DebugGLErr} if Assigned(gl) then Err(-172); {$ENDIF}
  while Assigned(Lights) do
   begin
    PL:=Lights;
@@ -323,6 +480,7 @@ begin
   begin
    if Assigned(gl) then
     begin
+     {$IFDEF DebugGLErr} Err(-172); {$ENDIF}
      gl.glDeleteLists(1, DisplayLists);
      {$IFDEF DebugGLErr} Err(172); {$ENDIF}
     end;
@@ -351,7 +509,7 @@ begin
  PL^.Max[2]:=Position.Z+Brightness;
 end;
 
-procedure TGLSceneObject.SetViewRect(SX, SY: Integer);
+procedure TGLSceneBase.SetViewRect(SX, SY: Integer);
 begin
  if SX<1 then SX:=1;
  if SY<1 then SY:=1;
@@ -374,7 +532,33 @@ begin
  RenderingTextureBuffer:=Nil;
 end;
 
-procedure TGLSceneObject.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel);
+{procedure TGLSceneProxy.MasterUpdate;
+var
+ I: Integer;
+begin
+ NeedGLSceneObject;
+ if VersionGLSceneObject<>MasterVersion then
+  begin
+   for I:=0 to Textures.Count-1 do
+    with PTexture3(Textures.Objects[I])^ do
+     OpenGLName:=0;
+   MasterVersion:=VersionGLSceneObject;
+  end;
+end;}
+
+function TGLSceneProxy.StartBuildScene;
+begin
+ {MasterUpdate;} NeedGLSceneObject;
+ Result:=CurrentGLSceneObject.StartBuildScene(VertexSize);
+end;
+
+procedure TGLSceneProxy.EndBuildScene;
+begin
+ {$IFDEF Debug} if CurrentGLSceneObject=Nil then raise InternalE('proxy: EndBuildScene'); {$ENDIF}
+ CurrentGLSceneObject.EndBuildScene;
+end;
+
+procedure TGLSceneBase.stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: Reel);
 begin
  with Texture^ do
   begin
@@ -383,7 +567,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel);
+procedure TGLSceneBase.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: Reel);
 begin
  with Skin^ do
   begin
@@ -392,7 +576,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
+procedure TGLSceneBase.WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean);
 begin
  with PVertex3D(PV)^ do
   begin
@@ -410,7 +594,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.RenderTransparentGL(Transparent: Boolean);
+procedure TGLSceneObject.RenderTransparentGL(ListSurfaces: PSurfaces; Transparent, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
  PList: PSurfaces;
  Count: Integer;
@@ -421,7 +605,7 @@ begin
  if not SolidColors then
   begin
    Count:=0;
-   PList:=FListSurfaces;
+   PList:=ListSurfaces;
    while Assigned(PList) do
     begin
      PList^.ok:=(Transparent in PList^.Transparent) and (PList^.Texture^.OpenGLName<>0);
@@ -433,7 +617,7 @@ begin
     begin
      GetMem(Buffer, Count*(SizeOf(GLuint)+SizeOf(GLboolean))); try
      BufEnd:=Buffer;
-     PList:=FListSurfaces;
+     PList:=ListSurfaces;
      while Assigned(PList) do
       begin
        if PList^.ok then
@@ -446,44 +630,55 @@ begin
      PChar(BufResident):=PChar(BufEnd);
      gl.glAreTexturesResident(Count, Buffer^, BufResident^);
      {$IFDEF DebugGLErr} Err(103); {$ENDIF}
-     PList:=FListSurfaces;
+     PList:=ListSurfaces;
      while Assigned(PList) do
       begin
        if PList^.ok then
         begin
          PList^.ok:=False;
          if BufResident^<>0 then
-          RenderPList(PList, Transparent);
-         Inc(BufResident); 
+          RenderPList(PList, Transparent, DisplayLights, SourceCoord);
+         Inc(BufResident);
         end;
        PList:=PList^.Next;
       end;
      finally FreeMem(Buffer); end;
     end;
   end;
- PList:=FListSurfaces;
+ PList:=ListSurfaces;
  while Assigned(PList) do
   begin
    if Transparent in PList^.Transparent then
     if SolidColors or not PList^.ok then
-     RenderPList(PList, Transparent);
+     RenderPList(PList, Transparent, DisplayLights, SourceCoord);
    PList:=PList^.Next;
   end;
 end;
 
 procedure TGLSceneObject.Render3DView;
 begin
+ RenderOpenGL(Self, FDisplayLights and Assigned(Lights));
+end;
+
+procedure TGLSceneProxy.Render3DView;
+begin
+ NeedGLSceneObject;
+ CurrentGLSceneObject.RenderOpenGL(Self, False);
+end;
+
+procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boolean);
+begin
  if not Assigned(gl) then Exit;
- {$IFDEF DebugGLErr} if Assigned(gl) then Err(-50); {$ENDIF}
+ {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
 {gl.wglMakeCurrent(DC,RC);
  Err(49);}
- gl.glViewport(0, 0, ScreenX, ScreenY);
+ gl.glViewport(0, 0, Source.ScreenX, Source.ScreenY);
  Err(50);
- with TCameraCoordinates(Coord) do
+ with TCameraCoordinates(Source.Coord) do
   begin
    gl.glMatrixMode(GL_PROJECTION);
    gl.glLoadIdentity;
-   gl.gluPerspective(VCorrection2*VAngleDegrees, ScreenX/ScreenY, FarDistance * kDistFarToShort, FarDistance);
+   gl.gluPerspective(VCorrection2*VAngleDegrees, Source.ScreenX/Source.ScreenY, FarDistance * kDistFarToShort, FarDistance);
    if PitchAngle<>0 then
     gl.glRotatef(PitchAngle * (180/pi), -1,0,0);
    gl.glRotatef(HorzAngle * (180/pi), 0,-1,0);
@@ -498,13 +693,19 @@ begin
  Err(52);
  CurrentAlpha:=0;
  FillChar(Currentf, SizeOf(Currentf), 0);
- RenderTransparentGL(False);
+ RenderTransparentGL(Source.FListSurfaces, False, DisplayLights, Source.Coord);
  Err(53);
- RenderTransparentGL(True);
+ RenderTransparentGL(Source.FListSurfaces, True, DisplayLights, Source.Coord);
  Err(54);
  gl.glFlush;
  Err(55);
 {gl.wglMakeCurrent(0,0);}
+end;
+
+procedure TGLSceneProxy.BuildTexture(Texture: PTexture3);
+begin
+ {$IFDEF Debug} if CurrentGLSceneObject=Nil then raise InternalE('proxy: BuildTexture'); {$ENDIF}
+ CurrentGLSceneObject.BuildTexture(Texture);
 end;
 
 procedure TGLSceneObject.BuildTexture(Texture: PTexture3);
@@ -637,6 +838,7 @@ begin
   {gl.gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
    gl.glGenTextures(1, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
+   if Texture^.OpenGLName=0 then Raise InternalE('out of texture numbers');
    gl.glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
    gl.glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
@@ -941,7 +1143,7 @@ begin
   end;
 end;
 
-procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
+procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
 var
  Surf: PSurface3D;
  SurfEnd: PChar;
@@ -957,7 +1159,7 @@ begin
    begin
     Inc(Surf);
     if ((AlphaColor and $FF000000 = $FF000000) xor TransparentFaces)
-    and Coord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
+    and SourceCoord.PositiveHalf(Normale[0], Normale[1], Normale[2], Dist) then
      begin
       if AlphaColor<>CurrentAlpha then
        begin
@@ -972,7 +1174,7 @@ begin
         NeedTex:=False;
        end;
       PV:=PVertex3D(Surf);
-      if DisplayLights and Assigned(Lights) then
+      if DisplayLights then
        if AnyInfo.DisplayList=0 then
         begin
          UnpackColor(AlphaColor, Currentf);

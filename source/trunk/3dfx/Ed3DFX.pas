@@ -153,7 +153,7 @@ type
    procedure BuildScene(DC: HDC; AltTexSrc: QObject);
    procedure Render3DView; virtual; abstract;
    procedure SwapBuffers(Synch: Boolean; DC: HDC); virtual;
-   procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual;
+   procedure Copy3DView(SX,SY: Integer; DC: HDC); virtual; abstract;
    function ChangeQuality(nQuality: Integer) : Boolean; virtual;
    procedure SetColor(nColor: TColorRef);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
@@ -377,6 +377,9 @@ destructor TTextureManager.Destroy;
 var
  I: Integer;
 begin
+ {$IFDEF Debug}
+ if not CanFree then raise InternalE('texturemanager.destroy: still in use');
+ {$ENDIF}
  for I:=Textures.Count-1 downto 0 do
   FreeTexture(PTexture3(Textures.Objects[I]));
  FTextures.Free;
@@ -1211,10 +1214,6 @@ procedure TSceneObject.SwapBuffers;
 begin
 end;
 
-procedure TSceneObject.Copy3DView;
-begin
-end;
-
  {------------------------}
 
 constructor T3DFXSceneObject.Create(nSolidColors: Boolean);
@@ -2018,8 +2017,11 @@ begin
     gr.grGlideShutdown;
    UnloadGlide;
   end;
- TextureManager.Free;
- TextureManager:=Nil;
+ if (TextureManager<>Nil) and TextureManager.CanFree then
+  begin
+   TextureManager.Free;
+   TextureManager:=Nil;
+  end;
 end;
 
 procedure GammaCorrection(Value: Reel);

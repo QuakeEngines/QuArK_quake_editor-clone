@@ -18,11 +18,12 @@ INTERFACE
 
 Uses Sysutils,Classes, Dialogs;
 
-  function GetCRC(Filename:String):Longint;
-  PROCEDURE CalcCRC32 (p:  pointer; nbyte:  WORD; VAR CRCvalue:  LongInt);
-  PROCEDURE CalcFileCRC32 (FromName:  STRING; VAR CRCvalue:  LongInt;
+{ Simplified by Armin for use by Delphi (which is 32-bits) }
+(*function GetCRC(Filename:String):Longint;*)
+  PROCEDURE CalcCRC32 (p:  pointer; nbyte:  {WORD}Integer; VAR CRCvalue:  LongInt);
+(*PROCEDURE CalcFileCRC32 (FromName:  STRING; VAR CRCvalue:  LongInt;
               VAR IOBuffer:  pointer;  BufferSize:  WORD; VAR TotalBytes:  LongInt;
-              VAR error:  WORD);
+              VAR error:  WORD);*)
 
 IMPLEMENTATION
 
@@ -97,10 +98,10 @@ IMPLEMENTATION
     $B40BBE37, $C30C8EA1, $5A05DF1B, $2D02EF8D);
 
 
-  TYPE
+(*TYPE
     buffer = ARRAY[1..65521] OF BYTE;  {largest buffer that can be}
-                                       {allocated on heap         }
-  PROCEDURE CalcCRC32 (p:  pointer; nbyte:  WORD; VAR CRCvalue:  LongInt);
+                                       {allocated on heap         }*)
+  PROCEDURE CalcCRC32 (p:  pointer; nbyte:  {WORD}Integer; VAR CRCvalue:  LongInt);
    {The following is a little cryptic (but executes very quickly).
     The algorithm is as follows:
       1.  exclusive-or the input byte with the low-order portion of
@@ -110,6 +111,20 @@ IMPLEMENTATION
           Table[INDEX]
       4.  repeat steps 1 through 3 for all bytes}
   var
+    Finish: PChar;
+    CurrentValue: LongInt;
+  BEGIN
+    CurrentValue:=CRCvalue;
+    Finish:=PChar(p) + nbyte;
+    while PChar(p) < Finish do
+     begin
+      CurrentValue := (CurrentValue SHR 8)  XOR
+                  Table[ Ord(PChar(p)^) XOR (CurrentValue AND $000000FF) ];
+      Inc(PChar(p));
+     end;
+    CRCvalue:=CurrentValue;
+  END {CalcCRC32};
+(*var
     i:  integer;
     q:  ^buffer;
   BEGIN
@@ -159,5 +174,5 @@ IMPLEMENTATION
     CalcFileCRC32 (Filename, crc, pbuffer, sizeof(pbuffer), total, error);
     //freemem(pbuffer);
     result:=crc;
-  end;
+  end;*)
 END {CRC}.

@@ -482,11 +482,19 @@ end;
 function xNewForm(self, args: PyObject) : PyObject; cdecl;
 var
  Temp: TPyForm;
+ s: PChar;
 begin
  try
+  Result:=Nil;
+  s:=Nil;
+  if not PyArg_ParseTupleX(args, '|s', [@s]) then
+   Exit;
   Temp:=TPyForm.Create(Application);
  {Temp.Show;}
-     Form1.Enabled:=False;
+  if s=Nil then
+   Form1.Enabled:=False   { special trick for the installer of QuArK }
+  else
+   Temp.Caption:=s;
      //DefWindowProc(Form1.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
   Result:=Temp.WindowObject;
   Py_INCREF(Result);

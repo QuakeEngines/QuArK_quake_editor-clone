@@ -3,7 +3,7 @@
 Map and Model editor Layout managers.
 """
 #
-# Copyright (C) 1996-99 Armin Rigo
+# Copyright (C) 1996-2000 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
@@ -27,6 +27,8 @@ ModesHint = "|Each view can be set to one of three rendering modes :\n\nWirefram
 class BaseLayout:
     "An abstract base class for Map and Model Editor screen layouts."
 
+    CurrentOpenGLOwner = "NEVER"
+
     def __init__(self):
         # debug("Creation of layout '%s'" % self.__class__.__name__)
         self.clearrefs()
@@ -45,7 +47,6 @@ class BaseLayout:
         self.hintcontrol = None
         self.hinttext = ""
         self.compass = None
-        self.openglwnd = None
 
    # def __del__(self):
    #     debug("Destruction of layout '%s'" % self.__class__.__name__)
@@ -53,22 +54,25 @@ class BaseLayout:
     def destroyscreen(self, form):
         "Closes everything on the screen and clears all references."
 
-        setup = quarkx.setupsubset(self.MODE, "Layouts")
-        config = setup.findshortname(self.shortname)
-        if config is None:
-            config = quarkx.newobj(self.shortname+":config")
-            setup.appenditem(config)
-        self.writeconfig(config)
-        writetoolbars(self, config)
+        try:
+            setup = quarkx.setupsubset(self.MODE, "Layouts")
+            config = setup.findshortname(self.shortname)
+            if config is None:
+                config = quarkx.newobj(self.shortname+":config")
+                setup.appenditem(config)
+            self.writeconfig(config)
+            writetoolbars(self, config)
 
-        for c in form.floatings():           c.close()
-        for c in form.mainpanel.controls():  c.close()
-        for c in form.toolbars():            c.close()
-        form.mainpanel.sections = ((),())
-        if self.explorer != None: self.explorer.clear()
-        if self.mpp      != None: self.mpp.clear()
-        self.clearrefs()
-        del self.editor
+            self.releaseOpenGL(1)
+        finally:
+            for c in form.floatings():           c.close()
+            for c in form.mainpanel.controls():  c.close()
+            for c in form.toolbars():            c.close()
+            form.mainpanel.sections = ((),())
+            if self.explorer != None: self.explorer.clear()
+            if self.mpp      != None: self.mpp.clear()
+            self.clearrefs()
+            del self.editor
 
 
     def setupchanged(self, level):
@@ -188,7 +192,7 @@ class BaseLayout:
                 common = test
         for m in menu.items[0:3]:
             m.state = (m.mode == common) and qmenu.radiocheck
-        menu.items[4].state = (self.openglwnd is not None) and qmenu.checked
+        #menu.items[4].state = (self is BaseLayout.CurrentOpenGLOwner) and qmenu.checked
         for m in menu.items[7:10]:
             m.state = (m.mode == (self.editor.drawmode&DM_MASKOOV)) and qmenu.radiocheck
         menu.items[11].state = (self.leftpanel.align=="right") and qmenu.checked
@@ -210,8 +214,9 @@ class BaseLayout:
         self.leftpanel.align = ("right", "left")[self.leftpanel.align=="right"]
 
         
-    def close3Dwindow(self, floating):
-        view = floating.info
+    def close3Dwindow(self, floating, view=None):
+        if view is None:
+            view = floating.info
         if view in self.views:
             self.views.remove(view)
             self.update3Dviews()
@@ -232,57 +237,48 @@ class BaseLayout:
         self.update3Dviews(view)
 
     def closeOpenGL(self):
-        if self.openglwnd is not None:
-            self.openglwnd.close()
+        if BaseLayout.CurrentOpenGLOwner != "NEVER":
+            import qopengl
+            qopengl.close()
 
-    def closeOpenGLwnd(self, floating):
-        self.openglwnd = None
-        self.close3Dwindow(floating)
-        self.buttons["opengl"].state = 0
-        quarkx.update(self.editor.form)
-        #r = apply(rectabs2rel, floating.windowrect)
-        r = floating.windowrect
-        r = r[:2] + floating.rect
-        setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
-        setup["WndRect"] = r
-        setup["Warning"] = ""
+    def releaseOpenGL(self, timerclose=0):
+        # tells the current layout manager to stop using the OpenGL view
+        if BaseLayout.CurrentOpenGLOwner is not self:
+            if not timerclose: return
+            if BaseLayout.CurrentOpenGLOwner is not None: return
+        else:
+            self.buttons["opengl"].state = 0
+            quarkx.update(self.editor.form)
+        import qopengl
+        floating = qopengl.wnd
+        if floating is not None:
+            if BaseLayout.CurrentOpenGLOwner is self:
+                self.close3Dwindow(floating, qopengl.glview)
+                qopengl.clearviewdeps()
+            if timerclose:
+                floating.toback()
+                quarkx.settimer(qopengl.deadtest, None, 10000)
+        BaseLayout.CurrentOpenGLOwner = None
 
     def toggleOpenGLwindow(self, menu):
-        "Opens/closes the OpenGL window."
-        if self.openglwnd is None:
-            setup = quarkx.setupsubset(SS_GENERAL, "OpenGL")
-            if setup["Warning"]:
-                if quarkx.msgbox("WARNING: This special 3D mode should only be used if your computer has a 3D OpenGL-accelerated card. You should NOT use it if you have no 3D card at all (use QuArK's software drivers instead), nor if you have a supported 3DFX card (use QuArK's Glide mode instead, from the Configuration dialog box). If you choose to continue, and if the 3D view comes in full-screen, DON'T USE THE MOUSE or you might blindly click anywhere on the hidden 2D screen.\n\nSee also the configuration box, 'OpenGL' page. TNT card owners or NT users : you might have to disable Double Buffering.\n\nAre you sure you want to continue ?", MT_WARNING, MB_YES|MB_NO) != MR_YES:
-                    return
-            floating = quarkx.clickform.newfloating(FWF_NOESCCLOSE, "OpenGL 3D")
-            r = setup["WndRect"]
-            if type(r)==type(()):
-                #floating.windowrect = apply(rectrel2abs, r)
-                floating.windowrect = r
-                floating.rect = r[2:]
-            #else:
-            #    w,h = floating.rect
-            #    if w*3<h*4:
-            #        w = h*4/3
-            #    else:
-            #        h = w*3/4
-            #    floating.rect = w,h
-            view = floating.mainpanel.newmapview()
-            view.info = {"type": "3D"}
-            view.viewmode = "opengl"
-            setprojmode(view)
+        ###"Opens/closes the OpenGL window."
+        "Opens the OpenGL window."
+        import qopengl
+        if self is BaseLayout.CurrentOpenGLOwner:
+            ###qopengl.close()
+            qopengl.open()
+        else:
+            if BaseLayout.CurrentOpenGLOwner is not None:
+                BaseLayout.CurrentOpenGLOwner.releaseOpenGL()
+            qopengl.open()
+            view = qopengl.glview
             self.editor.setupview(view)
-            floating.info = view
-            floating.onclose = self.closeOpenGLwnd
-            self.openglwnd = floating
-            floating.show()
             if not (view in self.views):
                 self.views.append(view)
             self.update3Dviews(view)
             self.buttons["opengl"].state = qtoolbar.selected
             quarkx.update(self.editor.form)
-        else:
-            self.openglwnd.close()
+            BaseLayout.CurrentOpenGLOwner = self
 
     def closefull3DFX(self, floating):
         view = floating.mainpanel.controls()[0]

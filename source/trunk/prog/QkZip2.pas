@@ -266,7 +266,7 @@ var
  crc,OrgSize,Size,pos: Longint;
  cdir:TFileHeader;
  sig:Longint;
- tFilename:String;
+{tFilename:String;}
 begin
  Acces;
  DebutTravail(5442, SousElements.Count); try
@@ -297,14 +297,17 @@ begin
        Q.Enregistrer1(tInfo);   { save in non-QuArK file format }
        tInfo.Free;
 
+       {CRC Hack -- removed by Armin
        TempStream.Seek(0,soFromBeginning);
-
-       {CRC Hack}
        tFilename:=MakeTempFilename(TagToDelete);
        TempStream.SaveToFile(tFilename);
        crc:=GetCRC(tFilename);
        deletefile(tFilename);
-       {/CRC Hack}
+        /CRC Hack}
+
+       crc:=$FFFFFFFF;
+       CalcCRC32(TempStream.Memory, TempStream.Size, crc);
+       crc:=not crc;
 
        TempStream.Seek(0,soFromBeginning);
 
@@ -407,7 +410,7 @@ var
  ex,Chemin, CheminPrec,fn: String;
  Q: QObject;
  FH: TFileHeader;
- sig,org,Size:Longint;
+ {sig,}org,Size:Longint;
  files: TMemoryStream;
  EoSig,s,nEnd: Longint;
  eocd: TEndOfCentralDir;

@@ -43,7 +43,6 @@ type
 
 function UpdateMenu(Menu: HMenu; List: PyObject; Callbacks: TList; FreeUnused: Boolean; sc, sci: PyObject; MenuBar, Recursive: Boolean) : Boolean;
 function FindMenuItem(Menu, PopupMenu: HMenu; var Info: TOldMenuItemInfo) : Boolean;
-procedure ClickMenuItem(obj: PyObject; Hourglass: Boolean; nForm: TPyForm);
 
 implementation
 
@@ -318,12 +317,6 @@ begin
     end;
   end;
  Result:=False;
-end;
-
-procedure ClickMenuItem(obj: PyObject; Hourglass: Boolean; nForm: TPyForm);
-begin
- if ClickItem(obj, Hourglass, nForm) then
-  PythonCodeEnd;
 end;
 
 end.

@@ -444,7 +444,7 @@ begin
  else
   ClearGameBuffer1;
  if (Level>=scAddOns) or (Level=scGame) then
-  LibererMemoireTextures; 
+  LibererMemoireTextures;
 
   { initializes QuArK depending on the setup information }
  Info.DefWhiteOnBlack:=SetupSubSet(ssMap, 'Colors').Specifics.Values['InvertedColors']<>'';

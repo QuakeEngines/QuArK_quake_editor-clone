@@ -3,7 +3,7 @@
 Python macros available for direct call by QuArK
 """
 #
-# Copyright (C) 1996-99 Armin Rigo
+# Copyright (C) 1996-2000 Armin Rigo
 # THIS FILE IS PROTECTED BY THE GNU GENERAL PUBLIC LICENCE
 # FOUND IN FILE "COPYING.TXT"
 #
@@ -157,6 +157,16 @@ helpfn = {}
 def MACRO_helpmenu(text):
     import qeditor
     getattr(qeditor, helpfn[text])()
+
+
+#
+# Macro called to open the OpenGL window in background
+#
+
+def MACRO_OpenGL():
+    import qopengl
+    qopengl.open(bkgnd=1)
+
 
 #
 #    ---- Dialog Boxes ----
