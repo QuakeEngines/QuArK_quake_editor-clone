@@ -203,16 +203,24 @@ class MapLayout(BaseLayout):
 
     def bs_additionalpages(self, panel):
         "Builds additional pages for the multi-pages panel."
+        thesepages = []
         page1 = qtoolbar.button(self.filldataform, "General parameters about the selected object(s)|Specifics/Arg", ico_objects, iiEntity)
         page1.pc = [self.bs_dataform(panel)]
+        thesepages.append(page1)
         page2 = qtoolbar.button(self.fillpolyform, "Parameters about the selected polyhedron(s)|polyhedrons", ico_objects, iiPolyhedron)
         page2.pc = [self.bs_polyform(panel)]
+        thesepages.append(page2)
         page3 = qtoolbar.button(self.fillfaceform, "Parameters about the selected face(s)|faces", ico_objects, iiFace)
         page3.pc = [self.bs_faceform(panel)]
         page3.needangle = 1
-        page4 = qtoolbar.button(self.fillbezierform, Strings[-459], ico_objects, iiBezier)#, Strings[-409])
-        page4.pc = [self.bs_bezierform(panel)]
-        return [page1, page2, page3, page4], mppages
+        thesepages.append(page3)
+        # only show the bezier-page, if the game supports bezierpatches
+        beziersupport = quarkx.setupsubset()["BezierPatchSupport"]
+        if (beziersupport is not None) and (beziersupport == "1"):
+            page4 = qtoolbar.button(self.fillbezierform, Strings[-459], ico_objects, iiBezier)#, Strings[-409])
+            page4.pc = [self.bs_bezierform(panel)]
+            thesepages.append(page4)
+        return thesepages, mppages
 
     def bs_userobjects(self, panel):
         "A panel with user-defined map objects."
@@ -806,6 +814,9 @@ mppages = []
 #
 #
 #$Log$
+#Revision 1.5  2001/02/25 11:22:51  tiglari
+#bezier page support, transplanted with permission from CryEd (CryTek)
+#
 #Revision 1.3  2001/01/02 19:29:51  decker_dk
 #Small changes in hint-descriptions
 #
