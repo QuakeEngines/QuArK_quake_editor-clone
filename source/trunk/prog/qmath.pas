@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2004/05/21 01:11:11  cdunde
+To add support for Sylphis game engine. Code by Harry Kalogirou.
+
 Revision 1.17  2003/08/31 13:26:55  nerdiii
 Floating point to String precision inc. from 1 to 2
 
@@ -121,6 +124,7 @@ procedure Normalise(var V: TVect; var S: Double); overload;
 function AngleXY(const X, Y: TDouble) : TDouble;
 procedure ReadValues(const S1: String; var Vals: array of TDouble);
 function ReadVector(const S: String) : TVect;
+function ReadVec3(const S: String) : vec3_t;
 function ReadNumValueEx(const S: String) : TDouble;
 function ftos(const F: TDouble) : String;
 function ftos0(const F: TDouble) : String;
@@ -391,6 +395,17 @@ begin
  Result.Y:=Lu[2];
  Result.Z:=Lu[3];
 end;
+
+function ReadVec3(const S: String) : vec3_t;
+var
+ Lu: array[1..3] of TDouble;
+begin
+ ReadValues(S, Lu);
+ Result[0]:=Lu[1];
+ Result[1]:=Lu[2];
+ Result[2]:=Lu[3];
+end;
+
 
 function ReadNumValueEx(const S: String) : TDouble;
 var
