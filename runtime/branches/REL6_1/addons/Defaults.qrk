@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.46.2.4  2000/10/30 22:12:58  alexander
+//set name
+//
 //Revision 1.46.2.3  2000/09/10 14:38:30  alexander
 //set name
 //
@@ -642,7 +645,7 @@ QQRKSRC1
         Q2TexFlags = "1"
         ShadersPath = "scripts/"
         ExtraCmdLine = "+set fs_game %s"
-        RunMapCmdLine = " +map %s"
+        RunMapCmdLine = " +devmap %s"
         AddOns = "DataQ3.qrk"
         AlwaysPak = ""
         PakExt = ".pk3"
