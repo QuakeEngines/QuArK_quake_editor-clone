@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/02/11 22:38:24  aiv
+Removed PyLogging.pas - use Quarkx.log(...) to log stuff.
+
 Revision 1.13  2001/01/30 19:12:14  decker_dk
 Changed to GetApplicationPath().
 
@@ -123,7 +126,7 @@ uses Classes, Dialogs, Graphics, CommCtrl, ExtCtrls, Controls,
      Undo, QkGroup, Qk3D, PyTravail, ToolBox1, Config, PyProcess,
      Console, Game, {$IFDEF VER90} ShellObj, {$ELSE} ShlObj, {$ENDIF}
      Output1, About, Reg2, SearchHoles, QkMapPoly, HelpPopup1,
-     PyForms, QkPixelSet, Bezier, PyLogging, QkObjectClassList,
+     PyForms, QkPixelSet, Bezier, Logging, QkObjectClassList,
      QkApplPaths;
 
  {-------------------}
