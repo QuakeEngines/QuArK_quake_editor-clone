@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.30  2001/10/12 11:03:16  tiglari
+Live Pointer Hunt (non-Debug build)
+
 Revision 1.29  2001/10/12 09:11:19  tiglari
 Live Pointer Hunt
 
@@ -156,26 +159,27 @@ const
  instance have a mixture of file-formats like .WADs _and_ .SHADERS.
  Of cause this will only allow up to 32 different games, but shouldn't that
  be enough? }
- mjQuake      = '1';
- mjHexen      = '2';
- mjHalfLife   = '3';
+ mjQuake        = '1';
+ mjHexen        = '2';
+ mjHalfLife     = '3';
  {..up to '9' Quake-style games may exist..}
 
- mjQuake2     = 'A';
- mjHeretic2   = 'B';
- mjSin        = 'C';
- mjKingPin    = 'D';
- mjSOF        = 'E';
+ mjQuake2       = 'A';
+ mjHeretic2     = 'B';
+ mjSin          = 'C';
+ mjKingPin      = 'D';
+ mjSOF          = 'E';  { Soldier Of Fortune }
  {..space for more Quake-2 style games..}
- mj6DX        = 'Z';
+ mj6DX          = 'Z';
 
- mjQ3A        = 'a';
- mjStarTrekEF = 'b';
+ mjQ3A          = 'a';  { Quake-3:Arena / Quake-3:Team Arena }
+ mjStarTrekEF   = 'b';  { Star Trek:Voyager - Elite Force }
  mjCrystalSpace = 'c';
+ mjRTCW         = 'd';  { Return To Castle Wolfenstein }
 
- mjAny       = #1;
- mjNotQuake2 = #2;
- mjNotQuake1 = #255;
+ mjAny          = #1;
+ mjNotQuake2    = #2;
+ mjNotQuake1    = #255;
 
 
 type
