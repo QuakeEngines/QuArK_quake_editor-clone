@@ -242,7 +242,11 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
             newlist=[]
             for face in oldlist:
                 newface=face.copy()
-                newface.setthreepoints((vtx, vtx2, point),0)
+                diff2 = (vtx2-vtx).normalized
+                norm = (diff2^(point-vtx)).normalized
+                diff3 = norm^diff2
+                newface.setthreepoints((vtx, vtx+128*diff2, vtx+128*diff3),0)
+#                newface["plan"] = 'A'
 #                if colinear([vtx, vtx2, point]):
 #                   debug('colinear: '+`vtx`+' '+`vtx2`+' '+`point`)
                 newface['tex']=CaulkTexture()
@@ -254,6 +258,8 @@ def miterEdgeFaces(f1, f2, ((poly1, i1), (poly2, i2)), local_faces=[]):
     if not matched:
         newface1 = face1.copy()
         newface2 = face2.copy()
+#        newface1["plan"] = 'B1'
+#        newface2["plan"] = 'B2'
         edge = (vtx2-vtx)
         plane1 = edge^f1.normal
         plane2 = edge^f2.normal
@@ -335,6 +341,7 @@ def makePrism(f, p, wallwidth):
     inner["ext_inner"]='1'
     inner.swapsides()
     outer = f.copy()
+#    outer['tex']=CaulkTexture()
     n = f.normal
     n = n.normalized
     outer.translate(abs(wallwidth)*n)
@@ -419,8 +426,22 @@ def buildwallmakerimages(self, singleimage=None):
         for poly in polys:
             wallgroup.appenditem(poly)
         polys = reduce(lambda x,y:x+y,map(lambda i:i.findallsubitems("",":p"),polys))
-        negatives = filter(lambda p:p["neg"]=='1', polys)
-        polys = filter(lambda p:p["neg"]!='1', polys)
+#        negatives = filter(lambda p:p["neg"]=='1', polys)
+#        polys = filter(lambda p:p["neg"]!='1', polys)
+        polys2 = []
+        negatives = []
+        plugs = []
+        for item in polys:
+            if item["neg"]=='1':
+                negatives.append(item)
+            elif item["plug"]=='1':
+                negplug=item.copy()
+                negplug['neg']='1'
+                negatives.append(negplug)
+                plugs.append(item)
+            else:
+                polys2.append(item)
+        polys=polys2
         depth=int(self.dup["depth"])
         wallgroups = map(lambda item:item.subitems, wallsFromPoly(polys, depth))
         for i in range(len(polys)):
@@ -452,6 +473,8 @@ def buildwallmakerimages(self, singleimage=None):
             parent.appenditem(newgroup)
             for wall in newwalls:
                 newgroup.appenditem(wall)
+            for plug in plugs:
+                newgroup.appenditem(plug.copy())
         faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
         replacedict = {}
         donefaces = {}
@@ -545,6 +568,10 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.6.6.3  2003/01/04 04:35:50  tiglari
+# remove swapsides_leavetex() optimization - it makes bad texture scales
+#  that create problems for some build tools
+#
 # Revision 1.6.6.2  2003/01/01 05:09:14  tiglari
 # reinstate swapsides_leavetex as an optimization
 #
