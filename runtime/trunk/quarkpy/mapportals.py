@@ -112,7 +112,6 @@ def LoadPortalFile(editor, filename):
     # And now show the dialog to make them go awayS
     #
 
-    debug(`portals`)
     PortalsDlg(editor.form, editor)
     editor.Portals = portals
     editor.invalidateviews()
@@ -139,6 +138,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.2  2003/03/19 11:26:15  tiglari
+#expand info in dialog box
+#
 #Revision 1.1  2003/03/19 11:07:52  tiglari
 #first version, only tested for Q1
 #
