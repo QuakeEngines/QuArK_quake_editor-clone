@@ -19,6 +19,8 @@
 #
 # Builds an NSIS installer for QuArK
 #
+# $Id$
+#
 
 #---------------#
 # QuArK Version #
@@ -40,31 +42,42 @@
 
 !include "MUI.nsh" # Uses NSIS Modern UI
 
-!define MUI_PRODUCT "QuArK"
-!define MUI_VERSION "${QRK_MAJOR_VER}.${QRK_MINOR_VER} ${QRK_STATE} ${QRK_RELEASE}"
-!define MUI_NAME "Quake Army Knife ${MUI_VERSION}"
+!define QRK_VERSION "${QRK_MAJOR_VER}.${QRK_MINOR_VER} ${QRK_STATE} ${QRK_RELEASE}"
+!define QRK_NAME "QuArK ${QRK_VERSION}"
 !define QRK_OUTFILE "quark-win32-${QRK_MAJOR_VER}.${QRK_MINOR_VER}${QRK_STATE}${QRK_RELEASE}.exe"
-!define MUI_HEADERBITMAP "install_header.bmp"
-!define MUI_SPECIALBITMAP "install_splash.bmp"
 
+Var STARTMENU_FOLDER
+
+Name "${QRK_NAME}"
 OutFile ${QRK_OUTFILE}
 InstallDir "$PROGRAMFILES\QuArK"
 InstallDirRegKey HKLM "SOFTWARE\${MUI_PRODUCT}" "INSTDIR"
-LicenseData "license.rtf"
 
-!define MUI_WELCOMEPAGE
-!define MUI_LICENSEPAGE
-!define MUI_DIRECTORYPAGE
-!define MUI_STARTMENUPAGE
-  !define MUI_STARTMENUPAGE_DEFAULTFOLDER "QuArK"
-!define MUI_FINISHPAGE
-  !define MUI_FINISHPAGE_NOAUTOCLOSE
-  !define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
-  !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\readme.txt"
-!define MUI_UNINSTALLER
-!define MUI_UNCONFIRMPAGE
+!define MUI_HEADERIMAGE_BITMAP "install_header.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "install_splash.bmp"
+!define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of the Quake Army Knife (QuArK), an editor for games with a Quake-like engine.\r\n\r\n"
+!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
+!define MUI_STARTMENUPAGE_REGISTRY_KEY "SOFTWARE\QuArK"
+!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "STARTMENUDIR"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "QuArK"
+!define MUI_FINISHPAGE_NOAUTOCLOSE
+!define MUI_FINISHPAGE_RUN "$INSTDIR\QuArK.exe"
+!define MUI_FINISHPAGE_RUN_TEXT "Run QuArK"
+!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\readme.txt"
+!define MUI_FINISHPAGE_LINK "Visit the QuArK website"
+!define MUI_FINISHPAGE_LINK_LOCATION http://www.planetquake.com/quark
 
-!define MUI_TEXT_WELCOME_INFO_TEXT "This wizard will guide you through the installation of the Quake Army Knife (QuArK), an editor for games with a Quake-like engine.\r\n\r\n"
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "license.rtf"
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_STARTMENU "QuArK" $STARTMENU_FOLDER
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+
 !insertmacro MUI_LANGUAGE "English"
 
 Function .onInit
@@ -80,28 +93,29 @@ Section "QuArK" SectionQuArK
   SetOutPath "$INSTDIR"
 
   # Create Shortcuts  
-  !insertmacro MUI_STARTMENU_WRITE_BEGIN
-   SetOutPath "$STARTMENU\Programs\$9"
-    CreateShortCut "$OUTDIR\QuArK.lnk" "$INSTDIR\QuArK.exe" "" "" "" "" "" "Quake Army Knife"
-    CreateShortCut "$OUTDIR\QuArK Readme.lnk" "$INSTDIR\readme.txt"
-    CreateShortCut "$OUTDIR\Uninstall QuArK.lnk" "$INSTDIR\uninstall.exe"
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN "QuArK"
 
-    WriteRegStr HKLM "SOFTWARE\${MUI_PRODUCT}" "STARTMENUDIR" $OUTDIR
+    Push $R0
+    StrCpy $R0 $STARTMENU_FOLDER
+    CreateShortCut "$R0\QuArK.lnk" "$INSTDIR\QuArK.exe" "" "" "" "" "" "Quake Army Knife"
+    CreateShortCut "$R0\QuArK Readme.lnk" "$INSTDIR\readme.txt"
+    CreateShortCut "$R0\Uninstall QuArK.lnk" "$INSTDIR\uninstall.exe"
+    Pop $R0
 
   !insertmacro MUI_STARTMENU_WRITE_END
 
   WriteUninstaller "uninstall.exe"
 
   # Write info for Add/Remove Programs
-  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" \
-	"Quake Army Knife ${MUI_VERSION} (remove only)"
-  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\uninstall.exe"
-  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "InstallLocation" "$INSTDIR"
-  WriteRegDWORD "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "NoModify" 1
-  WriteRegDWORD "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "NoRepair" 1
+  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "DisplayName" \
+	"Quake Army Knife ${QRK_VERSION} (remove only)"
+  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "UninstallString" "$INSTDIR\uninstall.exe"
+  WriteRegStr "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "InstallLocation" "$INSTDIR"
+  WriteRegDWORD "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "NoModify" 1
+  WriteRegDWORD "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK" "NoRepair" 1
   
   # Write other registry info
-  WriteRegStr HKLM "SOFTWARE\${MUI_PRODUCT}" "INSTDIR" $INSTDIR
+  WriteRegStr HKLM "SOFTWARE\QuArK" "INSTDIR" $INSTDIR
 
   # Install files
   SetOutPath $INSTDIR
@@ -118,8 +132,6 @@ Section "QuArK" SectionQuArK
   File "quark\QuArK.exe"
 SectionEnd
 
-!insertmacro MUI_SECTIONS_FINISHHEADER
-
 #-------------#
 # Uninstaller #
 #-------------#
@@ -129,7 +141,8 @@ Section "Uninstall"
 
   # Delete Shortcuts
   Push $R0
-  ReadRegStr $R0 HKLM "SOFTWARE\${MUI_PRODUCT}" "STARTMENUDIR"
+  !insertmacro MUI_STARTMENU_GETFOLDER "QuArK" $R0
+  StrCpy $R0 "$SMPROGRAMS\$R0"
   Delete "$R0\QuArK.lnk"
   Delete "$R0\QuArK Readme.lnk"
   Delete "$R0\Uninstall QuArK.lnk"
@@ -151,8 +164,8 @@ Section "Uninstall"
   RMDIR /r "$INSTDIR\lgicons"
   RMDIR /r "$INSTDIR\addons"
 
-  DeleteRegKey "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}"
-  DeleteRegKey "HKLM" "SOFTWARE\${MUI_PRODUCT}"
+  DeleteRegKey "HKLM" "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\QuArK"
+  DeleteRegKey "HKLM" "SOFTWARE\QuArK"
 
   RMDIR $INSTDIR
 SectionEnd
