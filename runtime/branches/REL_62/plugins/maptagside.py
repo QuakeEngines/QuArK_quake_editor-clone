@@ -221,11 +221,8 @@ def useableby(face, poly):
 def mergepoly(editor,o):
 
     def noncoplanar(poly, face):
-        debug('face '+`face.name`)
         for f in poly.faces:
-            debug(' f '+`f.name`)
             if coplanar2(f, face):
-                debug(' coplanar')
                 return 0
         return 1
 
@@ -245,20 +242,16 @@ def mergepoly(editor,o):
             item.face=face
             new = quarkx.newobj(o.name)
             for oldface in o.subitems: # not faces, we don't mess with shared faces
-                debug('consider '+oldface.name)
                 if oldface==face or oldface.type!=":f": continue
                 new.appenditem(oldface.copy())
-                debug(' copied')
   #
             # the merged poly will be in o's group, so we need to copy
             # all the faces.  any facees used by the tagged faces's
             # poly that are actually used by o will not be ok.
             #
             for tagface in tagged.faceof[0].faces:
-                debug('consider tagged '+tagface.name)
                 if noncoplanar(o,tagface): # ys
                     new.appenditem(tagface.copy())
-                    debug(' copied')
                     #
                     # If it can be added to o and still be used by
                     # o, then it changes the shape of o and merger 
@@ -1902,6 +1895,9 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11.6.1  2001/04/15 02:55:37  tiglari
+#fix merge polys problem (creating broken results)
+#
 #Revision 1.11  2001/02/25 23:32:25  tiglari
 #attempt to make wrap across tagged faces more robust
 #
