@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.201  2002/12/29 12:43:18  decker_dk
+//Altered the PluginInfo:form to use the new Memo-field type.
+//
 //Revision 1.200  2002/12/25 21:27:26  tiglari
 //shift Genesis3D to the  bottom of the games list
 //
@@ -4705,6 +4708,7 @@ QQRKSRC1
       squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
       setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
       level: = {Txt="&" Typ="X"     Hint="if checked, rotation on two axes won't twist a segment, but also they won't join smoothly."}
+      nolinear: = {Txt="&" Typ="X"     Hint="Must be checked for linear mappings to work on the duplicator."}
       elbows: =
        {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an elbow duplicator"}
     }
@@ -4760,19 +4764,19 @@ QQRKSRC1
       {
          Txt="&"
          Typ="X"
-         Hint="If this is checked, corners will be mitered" $0D " outsides of shapes may need touching up"
+         Hint="If this is checked, corners will be mitered; best for final build." $0D "Outsides of shapes may need touching up."
       }
       extrude: =
       {
          Txt="&"
          Typ="X"
-         Hint="If this is checked, walls will be extruded, but corners will not be mitered" $0D " outsides of shapes may need touching up"
+         Hint="If this is checked, walls will be extruded, but corners will not be mitered" $0D "If neither this nor mitered is checked,negative polys will be used;" $0D " it is best to avoid them."
       }
      solid: =
       {
          Txt="&"
          Typ="X"
-         Hint="If this is checked, brushes are made solid, no wall made." $0D " (simpler processing for quicker editing)"
+         Hint="If this is checked, brushes are made solid, no wall made." $0D " Best for fast reshaping of complex forms, then uncheck again to restore interiors."
       }
       depth: =
       {
@@ -5622,6 +5626,7 @@ QQRKSRC1
             target        = "dpath1"
             speeddraw     = "0"
             scaletexture  = "0"
+            nolinear      = "1"
             Template:g =
             {
               cube:p =
