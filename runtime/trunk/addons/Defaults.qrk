@@ -25,6 +25,10 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.114  2001/03/29 05:51:31  tiglari
+//add forms for duplicators, change duplicator toolbox to name Basic
+// and Linear Duplicators.
+//
 //Revision 1.113  2001/03/29 01:27:19  aiv
 //modifable :form objects!
 //
@@ -539,7 +543,7 @@ QQRKSRC1
         Copy = "Ctrl+C"
         Paste ="Ctrl+V"
         Delete="Del"
-        Undo = "Undo1"
+        Undo = "Ctrl+Z"
         Redo = "Shift+Ctrl+Z"
         Duplicate= "Ctrl+D"
         Remove= "Esc"
@@ -2614,7 +2618,7 @@ QQRKSRC1
     HotKeyForm:incl =
     {
       Txt = "&R" // Read-only but use the 'Specific-name' for label
-      Typ = "E"
+      Typ = "R"
       Hint = "If map-editor has started, new assignment will apply on"
           $0D"next QuArK restart. Otherwise when map-editor is started."
     }
@@ -3398,6 +3402,40 @@ QQRKSRC1
       tex_lower:   = {Txt="&" Typ="ET"  Hint="Texture-name of lowercase characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
       tex_numeric: = {Txt="&" Typ="ET"  Hint="Texture-name of numeric characters."$0D"Put the 'wildchar'-character in position where it should be replaced by a character from the text-string" }
       macro:       = {Txt="&" Typ="ESR" Hint="This one is not for you, Saruman"}
+    }
+
+    dup extruder:form = {
+      type: =
+      {
+        Txt="&"
+        Typ="CL"
+        Items="hollow"  $0D "solid" $0D "autobox"
+        Values="t" $0D "b" $0D "ab" 
+      }
+      edge: =
+      {
+        Txt="&"
+        Typ="EF1"
+        Hint="length of patch-connecting edge in pipe mode"
+      }
+
+//      texture specs: =
+//      {
+//        Typ="B"
+//        Txt="texture"
+//        Cap="Push"
+//        Form="corridor texture:form"
+//        Hint="Texturing specifics"
+//      }
+//      auxiliary specs: =
+//      {
+//        Typ="B"
+//        Txt="auxiliary"
+//        Cap="Push"
+//        Form="corridor auxiliary:form"
+//        Hint="Some extra specs for special functions."
+//      }
+
     }
 
     QuakeCtx:form =     // form that applies when editing .qctx objects
@@ -4236,6 +4274,34 @@ QQRKSRC1
             target      = "dpathX"
           }
         }
+        Extruder:d = {
+          origin = "0 0 0"
+//          axis = '1 0 0'
+          side = '0 -1 0'
+          edge = '8'
+          type = "t"
+          circ_show = "1"
+          tex = "[auto]"
+          _closed = "1"
+          macro =  "dup extruder"
+          spine:g =
+          {
+            rib:g = {
+              point:g = {where = '64 -64'}
+              point:g = {where = '64 64'}
+              point:g = {where = '-64 64'}
+              point:g = {where = '-64 -64'}
+//              point:g = {where = '0 32'}
+//              point:g = {where = '90 32'}
+//              point:g = {where = '180 32'}
+//              point:g = {where = '270 32'}
+            }
+            rib:g = {
+              location = '96 0 0'
+            }
+          }
+        }
+                
       }
       Shape Builders.qtxfolder =
       {
