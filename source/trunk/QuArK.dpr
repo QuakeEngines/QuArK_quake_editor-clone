@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2001/06/12 18:31:34  decker_dk
+Forgot a global-prefix to 'g_Form1'
+Added revision-log.
+
 }
 
 program QuArK;
@@ -167,7 +171,9 @@ uses
   QkApplPaths in 'prog\QkApplPaths.pas',
   ExtraFunctionality in 'prog\ExtraFunctionality.pas',
   SystemDetails in 'prog\SystemDetails.pas',
-  QkFormCfg in 'prog\QkFormCfg.pas';
+  QkFormCfg in 'prog\QkFormCfg.pas',
+  QkPNG in 'prog\QkPng.pas',
+  QkTribes2 in 'prog\QkTribes2.pas';
 
 {$R *.RES}
 
