@@ -346,6 +346,9 @@ class CenterHandle(GenericHandle):
         if delta or (flags&MB_REDIMAGE):
             new = self.centerof.copy()
             new.translate(delta, g1)
+            if self.centerof["usercenter"]:
+                center = quarkx.vect(self.centerof["usercenter"])
+                new["usercenter"]=(center+delta).tuple
             new = [new]
         else:
             new = None
@@ -1530,6 +1533,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.5  2001/02/25 11:22:51  tiglari
+#bezier page support, transplanted with permission from CryEd (CryTek)
+#
 #Revision 1.4  2001/02/07 18:40:47  aiv
 #bezier texture vertice page started.
 #
