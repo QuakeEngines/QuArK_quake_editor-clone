@@ -150,7 +150,6 @@ class StandardDuplicator(DuplicatorManager):
                     center = maphandles.GetUserCenter(item)
                     if item["usercenter"]:
                         center=center+cumoffset
-                    debug(' center '+`center`)
                     item.linear(center, self.matrix2)
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
@@ -272,6 +271,11 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.7  2001/05/06 03:03:21  tiglari
+#add 'offset dup' support, if ="1", then dup origin-sourcelist center is added to offset
+#  this is for (new) Copy One duplicator, use of angle handle with this
+#  breaks it for some unknown reason.
+#
 #Revision 1.6  2001/04/06 06:23:42  tiglari
 #hopefully got linear mapping around UserCenter working for standard duplicators
 #
