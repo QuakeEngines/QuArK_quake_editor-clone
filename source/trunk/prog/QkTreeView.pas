@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2002/06/05 15:52:14  decker_dk
+Fix for the increasing GDI-object count, found by Raymond (raybotlst@raybot.net)
+Note: it seems there's other places as well, we need to check.
+
 Revision 1.10  2002/01/06 10:36:23  decker_dk
 Moved deletion of MyTVPlusSign and MyTVMinusSign down to the unit's finalization section, as
 tiglari's experiment on solving the memory-leak problem, caused another problem: The plus and minus bitmaps were
@@ -1148,7 +1152,7 @@ begin
       begin
        Q.Acces;
        Inc(Result, 1+CountVisibleItems(Q.SubElements, 0));
-      end; 
+      end;
    end;
   end;
 end;
@@ -1159,6 +1163,14 @@ var
  S: String;
  F: TCustomForm;
 begin
+{Decker 2002-04-24}
+  if inv1=True then
+  begin
+    inv1:=False;
+    VertScrollBar.Range:=CountVisibleItems(Roots, ofTreeViewSubElement)*MyTVLineStep;
+    Repaint;
+  end;
+{/Decker 2002-04-24}
  case Msg.wParam of
   wp_ContentsChanged:
     begin
