@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.13  2003/01/06 23:11:18  tiglari
+//defaults for wall maker altered again, hints enhanced
+//
 //Revision 1.192.2.12  2003/01/02 22:30:51  tiglari
 //add nolinear specific to path dup to make linear mappings work
 //update wallmaker form+prefab to encourage extruded version
@@ -1352,6 +1355,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat = "Brush Primitives"
+        AlwaysWriteThreeFields = "1"
         StupidBuildToolKludge = "1" //those guys should get shot for that
         SupportsBrushPrim = "1"
         BuildPgm1  = "Q3MAP.EXE"
@@ -1415,6 +1419,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Brush Primitives"
+        AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" //those guys should get shot for that
         BuildPgm1  = "Q3MAP.EXE"
@@ -1585,6 +1590,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Brush Primitives"
+        AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP.EXE"
@@ -1652,6 +1658,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Classic Quake"
+        AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "SOF2MAP.EXE"
@@ -1717,6 +1724,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Classic Quake"
+        AlwaysWriteThreeFields = "1"
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "SOF2MAP.EXE"
@@ -1782,6 +1790,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
         OutputMapFormat="Classic Quake"
+        AlwaysWriteThreeFields = "1"
         EditableSurfaceParms="1"
 
         StupidBuildToolKludge = ""

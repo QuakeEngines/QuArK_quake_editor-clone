@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.12  2003/01/06 20:37:07  tiglari
+Always write the three fields, for appropriate games, even if they're all 0
+ (GtkRadiant wants it that way, as well as the mohaa tools)
+
 Revision 1.56.2.11  2003/01/05 02:05:10  tiglari
 make threepoints in CylendreDeFace method more symmetrical, to prevent
  problems with texture scales (detected by quantum_red)
@@ -2424,7 +2428,10 @@ var
  Q: QObject;
  { BrushPrim, Valve220Map : Boolean }
  WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
+ // FIXME: if these were set at the map writing routine it might be
+ //    a (slight) optimization
  MapFormat: MapFormatTypes;
+ AlwaysWriteThreeFields: boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
 {
@@ -2854,11 +2861,10 @@ var
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
         S3:=F.Specifics.Values['Value'];
-(*       Q3A tools now require them; why not write them all the time?
-        if (S1<>'') or (S2<>'') or (S3<>'' or)
-        or (MJ=mjMOHAA)or  then {Decker - write face-flags when MOHAA}
-*)
-        if true then
+         if (S1<>'') or (S2<>'') or (S3<>'')
+           or AlwaysWriteThreefields  then {Decker - write face-flags when MOHAA;
+             tiglari - and now all Q3 engine games, since GtkRadiant wants them
+             we need the condition because this code gets run for all games }
         begin
           if S1='' then S1:='0';
           if S2='' then S2:='0';
@@ -2924,6 +2930,7 @@ begin
  { these means brutally round off the threepoints, whatever they are }
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  MapFormat:=GetMapFormatType;
+ AlwaysWriteThreeFields:=(SetupGameSet.Specifics.Values['AlwaysWriteThreeFields']<>'');
 {
  UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
  ExpandThreePoints:=WriteIntegers and UseIntegralVertices;

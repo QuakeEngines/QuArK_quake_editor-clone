@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.67  2003/01/06 20:34:03  tiglari
+Always write the three fields, for appropriate games, even if they're all 0
+ (GtkRadiant wants it that way, as well as the mohaa tools)
+
 Revision 1.66  2003/01/05 03:36:17  tiglari
 Genesis3D support, with peculiar sign-flips and coordinate rounding
 
@@ -2440,7 +2444,7 @@ var
  J: Integer;
  Q: QObject;
  { BrushPrim, Valve220Map : Boolean }
- WriteIntegers, UseIntegralVertices, ExpandThreePoints : Boolean;
+ WriteIntegers, UseIntegralVertices, ExpandThreePoints, AlwaysWriteThreeFields : Boolean;
  MapFormat: MapFormatTypes;
 
     procedure write3vect(const P: array of Double; var S: String);
@@ -2871,11 +2875,10 @@ var
         S1:=F.Specifics.Values['Contents'];
         S2:=F.Specifics.Values['Flags'];
         S3:=F.Specifics.Values['Value'];
-(* Now we're gonna always write the zeros, because GtkRadiant wants
-   them there too, as well as the mohaoo tools
-        if (S1<>'') or (S2<>'') or (S3<>'')
-        or (MJ=mjMOHAA) then {Decker - write face-flags when MOHAA}
-*)
+         if (S1<>'') or (S2<>'') or (S3<>'')
+           or AlwaysWriteThreefields  then {Decker - write face-flags when MOHAA;
+             tiglari - and now all Q3 engine games, since GtkRadiant wants them
+             we need the condition because this code gets run for all games }
         if true then
         begin
           if S1='' then S1:='0';
@@ -2942,6 +2945,7 @@ begin
  { these means brutally round off the threepoints, whatever they are }
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  MapFormat:=GetMapFormatType;
+ AlwaysWriteThreeFields:=(SetupGameSet.Specifics.Values['AlwaysWriteThreeFields']<>'');
 {
  UseIntegralVertices:=(MapFormat=BPType) or (MapFormat=V220Type) or (Flags and soDisableEnhTex<>0);
  ExpandThreePoints:=WriteIntegers and UseIntegralVertices;
