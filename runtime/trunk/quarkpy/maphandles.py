@@ -314,6 +314,21 @@ class PolyHandle(CenterHandle):
 
 
 
+#
+# if vtxes contains a point close to the line thru v along axis, return
+#  it, otherwise v+axis
+#
+def getotherfixed(v, vtxes, axis):
+    for v2 in vtxes:
+        if not (v-v2):
+            continue;
+        perp = perptonormthru(v2,v,axis.normalized)
+        if abs(perp)<.05:
+            debug('found otther')
+            return v2
+    return v+axis
+
+
 class VertexHandle(qhandles.GenericHandle):
     "A polyhedron vertex."
 
@@ -566,7 +581,7 @@ class VertexHandle(qhandles.GenericHandle):
                 # if this face is part of the original group
                 #
                 if f in orgfaces:
-
+                    debug('f: '+f.shortname)
                     #
                     # if the point is on the face
                     #
@@ -621,7 +636,8 @@ class VertexHandle(qhandles.GenericHandle):
                             # the most distant point
                             #
                             rotationaxis = mvlist [0] - mvlist [1]
-                            fixedpoints = vmax, vmax+rotationaxis
+                            otherfixed =getotherfixed(vmax, mvlist, rotationaxis)
+                            fixedpoints = vmax, otherfixed
                   
                         #
                         # otherwise, we are draging one
@@ -658,7 +674,8 @@ class VertexHandle(qhandles.GenericHandle):
                             #
                             else:
                                 rotationaxis = (vmax - self .pos) ^ f .normal
-                                fixedpoints = vmax, vmax+rotationaxis
+                                otherfixed =getotherfixed(vmax, vlist, rotationaxis)
+                                fixedpoints = vmax, otherfixed
 
                         #
                         # apply the rotation axis to the face (requires that
@@ -666,27 +683,30 @@ class VertexHandle(qhandles.GenericHandle):
                         #
                         newpoint = self.pos+delta
                         nf = new.subitem(orgfaces.index(f))
+                        tp = nf.threepoints(2)
+                        x,y = nf.axisbase()
+                        def proj1(p, x=x,y=y,v=vmax):
+                            return (p-v)*x, (p-v)*y
+                        tp = tuple(map(proj1, tp))
+                        nf.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
+
                         newnormal = rotationaxis ^ (self.pos+delta-vmax)
                         testnormal = rotationaxis ^ (self.pos-vmax)
-
                         if newnormal:
                             if testnormal * f.normal < 0.0:
                                 newnormal = -newnormal
-                            nf.distortion(newnormal.normalized, vmax)
-#                            smallcorrection = nf.normal * (self.pos+delta) - nf.dist
-#                            nf.translate(nf.normal * smallcorrection)
 
-                        nf2 = nf.copy()
-                        nf2.setthreepoints((newpoint,fixedpoints[0],fixedpoints[1]),0)
-                        if nf2.normal*nf.normal<0.0:
-                           nf2.swapsides
-                        def project(p,along=nf2.normal,at=newpoint):
-                            return projectpointtoplane(p,along,at,along)
-                        ntp=tuple(map(project,nf.threepoints(2)))
-                        nf2.setthreepoints(ntp,2)
-                        nf = nf2
 
-                #
+                        if nf.normal*newnormal<0.0:
+                            nf.swapsides()
+                        x,y=nf.axisbase()
+                        def proj2(p,x=x,y=y,v=vmax):
+                            return v+p[0]*x+p[1]*y
+                        tp = tuple(map(proj2,tp))
+                        nf.setthreepoints(tp ,2)
+
+ 
+ 
                 # if the face is not part of the original group
                 #
 
@@ -1395,6 +1415,13 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.13.2.3  2001/04/04 10:30:17  tiglari
+#find more fixed points, clean up code
+#
+#Revision 1.13.2.2  2001/04/03 08:54:51  tiglari
+#more vertex drag anti-drift.  Very convoluted,if it helps, it needs to be
+# cleaned up.
+#
 #Revision 1.15  2001/04/02 21:09:44  tiglari
 #fixes to getusercenter, ntp tuple-hood
 #
