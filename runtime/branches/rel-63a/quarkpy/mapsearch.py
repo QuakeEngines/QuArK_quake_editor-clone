@@ -95,7 +95,7 @@ def onclick(menu):
 
 def SearchMenu():
     "The Search menu, with its shortcuts."
-    sholes1 = qmenu.item("&Holes in map", sholes1click, "|Searches for a hole in your map.\n\nA map must not contain any hole, that is, there must be no path from 'inside' to 'outside' the map. All entities must be completely enclosed by polyhedrons. With this command, QuArK will search for such holes, and if it finds one, it displays an arrow that starts from an entity and goes outside through a hole or a gap. Generally, the end of the arrow is exactly in the hole.\n\nNote that the path found by QuArK is maybe not the most direct way to reach the hole, and there are maybe other holes in your map.")
+    sholes1 = qmenu.item("&Holes in map (buggy)", sholes1click, "|Searches for a hole in your map.\n\nA map must not contain any hole, that is, there must be no path from 'inside' to 'outside' the map. All entities must be completely enclosed by polyhedrons. With this command, QuArK will search for such holes, and if it finds one, it displays an arrow that starts from an entity and goes outside through a hole or a gap. Generally, the end of the arrow is exactly in the hole.\n\nNote that the path found by QuArK is maybe not the most direct way to reach the hole, and there are maybe other holes in your map.  Unfortunately this command often detects holes that aren't there; the compile tools are the authoritative hole-test.")
     if len(checkitems)>1:
         allchecks = [qmenu.item("&ALL CHECKS", CheckMap, "perform all map checks")]
     else:
@@ -107,5 +107,8 @@ def SearchMenu():
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #
