@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
 Revision 1.19  2000/12/11 21:36:05  decker_dk
 - Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
 - Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
@@ -104,6 +109,7 @@ type
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
+   procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
    procedure PostBuild(nVertexList, nVertexList2: TList); override;
    procedure RenderPList(PList: PSurfaces; TransparentFaces: Boolean);
@@ -607,6 +613,27 @@ begin
 end;
 
 procedure T3DFXSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+var
+ w, h: Integer;
+begin
+  with Skin^ do
+  begin
+    w:=256;
+    h:=256;
+    case info.aspectratio of
+      GR_ASPECT_8x1: h:=32;
+      GR_ASPECT_4x1: h:=64;
+      GR_ASPECT_2x1: h:=128;
+      GR_ASPECT_1x2: w:=128;
+      GR_ASPECT_1x4: w:=64;
+      GR_ASPECT_1x8: w:=32;
+    end;
+    ScaleS:=w/TexW;
+    ScaleT:=h/TexH;
+  end;
+end;
+
+procedure T3DFXSceneObject.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 var
  w, h: Integer;
 begin

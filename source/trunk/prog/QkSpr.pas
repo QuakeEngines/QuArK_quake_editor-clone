@@ -5,6 +5,9 @@ unit QkSpr;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2001/01/21 15:50:08  decker_dk
+Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
+
 Revision 1.10  2001/01/15 19:21:42  decker_dk
 Replaced the name: NomClasseEnClair -> FileObjectDescriptionText
 
@@ -29,7 +32,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   QkForm, QkFileObjects, QSplitter, StdCtrls, ComCtrls, ExtCtrls, TB97,
-  QkObjects, Quarkx, Game, Setup, Menus, QkImages;
+  QkObjects, Quarkx, Game, Setup, Menus, QkImages, Sprite;
 
 type
   THLSprHeader = packed record // Half Life Sprite
@@ -72,14 +75,16 @@ type
     procedure ObjectState(var E: TEtatObjet); override;
     function OpenWindow(nOwner: TComponent) : TQForm1; override;
     procedure LoadFile(F: TStream; FSize: Integer); override;
-    procedure LoadQ1Spr(fs:TStream; PPPalette:PGameBuffer);
-    procedure LoadHLSpr(Fs:TStream);
+    procedure LoadQ1Spr(fs:TStream; PPPalette:PGameBuffer; Sprite: QSprite);
+    procedure LoadHLSpr(Fs:TStream; Sprite: QSprite);
     Procedure WriteQ1Spr(F:TStream);
     Procedure WriteHLSpr(F:TStream);
     procedure SaveFile(Info: TInfoEnreg1); override;
-    function Loaded_Frame(Root: QSprFile; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
-    function Loaded_FrameFile(Root: QSprFile; const Name: String) : QImages;
+    function Loaded_Frame(Root: QObject; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
+    function Loaded_FrameFile(Root: QObject; const Name: String) : QImages;
     procedure GetWidthHeight(var size:TPoint);
+    function GetSprite: QSprite;
+    Function CreateSpriteObject: QSprite;
   end;
   QSp2File = class(QSprFile)
   public
@@ -132,16 +137,17 @@ uses QkPcx, QkTextures, QkObjectClassList;
 
 function QSprFile.IsExplorerItem(Q: QObject) : TIsExplorerItem;
 begin
- if (Q is QPcx) then
-   Result:=ieResult[True]
- else
+// if (Q is QSprite) then
+//   Result:=ieResult[True]
+// else
    Result:=[];
 end;
 
 procedure QSprFile.LoadFile(F: TStream; FSize: Integer);
 var
-ID_SPRHEADER,head,ver,org:Longint;
-pgb:PGameBuffer;
+  ID_SPRHEADER,head,ver,org:Longint;
+  pgb:PGameBuffer;
+  spr: QSprite;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -152,13 +158,14 @@ begin
         raise Exception.CreateFmt('Sprite Signiture = %d, Should be: %d',[head,ID_SPRHEADER]);
       f.ReadBuffer(ver,4);
       f.seek(org,soFromBeginning);
+      spr:=getsprite;
       if (ver=1) then begin
           pgb:=GameBuffer(mjQuake);
           f.seek(org,soFromBeginning); // something happens to f after gamebuffer is called, so i reset the position to org.
-          LoadQ1Spr(f, pgb);
+          LoadQ1Spr(f, pgb, spr);
         end
       else if (ver=2)  then
-        LoadHLSpr(f)
+        LoadHLSpr(f, spr)
       else
         raise Exception.CreateFmt('Sprite Version %d UnSupported, Versions Supported: 1 (Quake 1), and 2 (Half-Life)',[ver]);
       end;
@@ -166,7 +173,7 @@ begin
   end;
 end;
 
-procedure QSprFile.LoadQ1Spr(fs:TStream; PPPalette:PGameBuffer);
+procedure QSprFile.LoadQ1Spr(fs:TStream; PPPalette:PGameBuffer; Sprite: QSprite);
 var
   dst:TQ1SprHeader;
   group,ID_SPRHeader,i,j,pos,nopics{,noframes}:longint;
@@ -198,7 +205,7 @@ begin
       fs.ReadBuffer(width,4);
       fs.ReadBuffer(height,4);
       J:=Fs.Position;
-      Loaded_Frame(Self, format('Frame %d',[i]), [width,height], p, DeltaW, apalette,pout);
+      Loaded_Frame(Sprite, format('Frame %d',[i]), [width,height], p, DeltaW, apalette,pout);
       Fs.Position:=J;
       for J:=1 to height do begin
         Fs.ReadBuffer(P^, width);
@@ -214,7 +221,7 @@ begin
         fs.ReadBuffer(width,4);
         fs.ReadBuffer(height,4);
         Pos:=Fs.Position;
-        Loaded_Frame(Self, format('Frame %d',[i]), [width,height], p, DeltaW, apalette,pout);
+        Loaded_Frame(Sprite, format('Frame %d',[i]), [width,height], p, DeltaW, apalette,pout);
         Fs.Position:=Pos;
         for Pos:=1 to height do begin
           Fs.ReadBuffer(P^, width);
@@ -225,7 +232,7 @@ begin
   end;
 end;
 
-procedure QSprFile.LoadHLSpr(Fs:TStream);
+procedure QSprFile.LoadHLSpr(Fs:TStream; Sprite: QSprite);
 var
   dst:THLSprHeader;
   ID_SPRHEADER, i, w, h, lint, lint2, J:Longint;
@@ -265,7 +272,7 @@ begin
     fs.ReadBuffer(W,4);
     fs.ReadBuffer(H,4);
     J:=Fs.Position;
-    Loaded_Frame(Self, format('Frame %d',[i]), [w,h], p, DeltaW, apalette,pout);
+    Loaded_Frame(Sprite, format('Frame %d',[i]), [w,h], p, DeltaW, apalette,pout);
     Fs.Position:=J;
     for J:=1 to h do begin
       Fs.ReadBuffer(P^, w);
@@ -281,6 +288,7 @@ var
   w,h,z:Longint;
   P:PChar;
   SkinObj : QImage;
+  Spr: QSprite;
   pt:TPoint;
 begin
   z:= 0;
@@ -302,8 +310,11 @@ begin
   f.Writebuffer(cnt,4);
   f.WriteBuffer(z,4);
   f.WriteBuffer(z,4);
+  Spr:= GetSprite;
+  if (Spr = nil) then
+    raise Exception.Create('Sprite object not found!');
   for i:=1 to cnt do begin
-    SkinObj:=QImage(SubElements[i-1]);
+    SkinObj:=QImage(spr.SubElements[i-1]);
     SkinObj.NotTrueColor;
     pt:=SkinObj.GetSize;
     f.WriteBuffer(z,4);
@@ -329,14 +340,39 @@ begin
     result:=b;
 end;
 
+const
+  SpriteName: String = 'Sprite';
+Function QSprFile.CreateSpriteObject: QSprite;
+begin
+  result:=QSprite.Create(SpriteName,Self);
+  Subelements.add(Result);
+end;
+
+Function QSprFile.getSprite: QSprite;
+var
+  Obj : QObject;
+begin
+  Obj:=FindSubObject(SpriteName, QSprite, nil);
+  if Obj=nil then
+    result:=CreateSpriteObject // if not found then create it.
+//  else if not(Obj is QSprite) then
+//    result:=CreateSpriteObject // ???
+  else
+    result:=QSprite(Obj);
+end;
+
 procedure QSprFile.GetWidthHeight(var size:TPoint);
 var
  SizeTemp:TPoint;
  WTemp,HTemp,i:Longint;
+ Spr: QSprite;
 begin
   WTemp:=0;HTemp:=0;
-  for i:=0 to  SubElements.Count-1 do begin
-    SizeTemp:=QPcx(SubElements.Items[i]).GetSize;
+  Spr:= GetSprite;
+  if (Spr = nil) then
+    raise Exception.Create('Sprite object not found!');
+  for i:=0 to  spr.SubElements.Count-1 do begin
+    SizeTemp:=QPcx(spr.SubElements.Items[i]).GetSize;
     WTemp:=Max(SizeTemp.X,WTemp);
     HTemp:=Max(SizeTemp.X,HTemp);
   end;
@@ -354,6 +390,7 @@ var
   bt:Byte;
   pt:TPoint;
   Pal:TPaletteLmp;
+  Spr: QSprite;
 begin
   z:= 0;
   ID_SPRHeader:=(ord('P') shl 24)+(ord('S')shl 16)+(ord('D') shl 8)+ord('I');
@@ -379,7 +416,10 @@ begin
   f.WriteBuffer(z,4);
   typ:=256;
   f.WriteBuffer(typ,2);
-  SkinObj:=QImage(SubElements[0]); // use palette of first image for sprite.
+  Spr := GetSprite;
+  if (Spr = nil) then
+    raise Exception.Create('Sprite object not found!');
+  SkinObj:=QImage(Spr.SubElements[0]); // use palette of first image for sprite.
   SkinObj.NotTrueColor;
   skinobj.GetPalette1(pal);
   for i:=0 to 255 do begin
@@ -390,7 +430,7 @@ begin
   end;
 
   for i:=1 to cnt do begin
-    SkinObj:=QImage(SubElements[i-1]);
+    SkinObj:=QImage(Spr.SubElements[i-1]);
     SkinObj.NotTrueColor;
     pt:=SkinObj.GetSize;
     f.WriteBuffer(z,4);
@@ -520,10 +560,10 @@ begin
   inherited;
   Info.FileObjectDescriptionText:=LoadStr1(5171);
   Info.FileExt:=799;
-  Info.WndInfo:=[wiOwnExplorer];
+  Info.WndInfo:=[];
 end;
 
-function QSprFile.Loaded_Frame(Root: QSprFile; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
+function QSprFile.Loaded_Frame(Root: QObject; const Name: String; const Size: array of Single; var P: PChar; var DeltaW: Integer; pal:TPaletteLmp; var palout:String) : QImages;
 const
   Spec1 = 'Pal=';
   Spec2 = 'Image1=';
@@ -548,7 +588,7 @@ begin
   Result.Specifics.Add(S);
 end;
 
-function QSprFile.Loaded_FrameFile(Root: QSprFile; const Name: String) : QImages;
+function QSprFile.Loaded_FrameFile(Root: QObject; const Name: String) : QImages;
 var
  Path: String;
  J: Integer;
@@ -735,10 +775,10 @@ end;
 
 procedure TQSprForm.playClick(Sender: TObject);
 var
-  s:QSprFile;
+  s:QSprite;
   ps:QPcx;
 begin
-  s:=QSprFile(FileObject);
+  s:=QSprFile(FileObject).getSprite;
   case TComponent(Sender).Tag of
     -100: index:=0;
      100: index:=s.SubElements.count-1;

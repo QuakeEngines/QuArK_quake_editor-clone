@@ -159,7 +159,8 @@ uses
   Ed3DEditors in '3dfx\Ed3DEditors.pas',
   EdSceneObject in '3dfx\EdSceneObject.pas',
   OsFolder in 'prog\OsFolder.pas',
-  QkObjectClassList in 'prog\QkObjectClassList.pas';
+  QkObjectClassList in 'prog\QkObjectClassList.pas',
+  Sprite in 'prog\Sprite.pas';
 
 {$R *.RES}
 

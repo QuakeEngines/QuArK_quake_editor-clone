@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
 }
 
 unit EdDirect3D;
@@ -53,6 +58,7 @@ type
     procedure EndBuildScene; override;
     procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
+    procedure stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); override;
     procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); override;
  //   procedure BuildTexture(Texture: PTexture3); override;
@@ -165,6 +171,15 @@ begin
 end;
 
 procedure TDirect3DSceneObject.stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
+begin
+  with Skin^ do
+  begin
+    ScaleS:=1/TexW;
+    ScaleT:=1/TexH;
+  end;
+end;
+
+procedure TDirect3DSceneObject.stScaleSprite(Skin: PTexture3; var ScaleS, ScaleT: TDouble);
 begin
   with Skin^ do
   begin

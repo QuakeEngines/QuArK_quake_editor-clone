@@ -24,6 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/12/30 15:22:19  decker_dk
+- Moved TSceneObject and TTextureManager from Ed3DFX.pas into EdSceneObject.Pas
+- Created Ed3DEditors.pas which contains close/free calls
+- Created EdDirect3D.pas with minimal contents
+
 }
 
 unit EdSceneObject;
@@ -33,7 +38,7 @@ interface
 uses Windows, Classes,  
      Game, PyMath, qmath, Bezier,
      QkObjects, QkPixelSet, QkComponent, QkMapPoly,
-     Glide;
+     Glide, Sprite;
 
  {------------------------}
 
@@ -59,6 +64,14 @@ type
                   StaticSkin: Boolean;
                   VertexCount: Integer;
                   Vertices: vec3_p;
+                end;
+ PSpriteInfo = ^TSpriteInfo;
+ TSpriteInfo = record
+                  Base: QSprite;
+                  Alpha: Byte;
+                  VertexCount: Integer;
+                  Vertices: vec3_p;
+                  Width, Height: Integer;
                 end;
 
  TSurfaceAnyInfo = record
@@ -109,13 +122,14 @@ type
  protected
    Coord: TCoordinates;
    FListSurfaces: PSurfaces;
-   PolyFaces, ModelInfo, BezierInfo: TList;
+   PolyFaces, ModelInfo, BezierInfo, SpriteInfo: TList;
    procedure ClearPList;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; virtual; abstract;
    procedure EndBuildScene; virtual;
    procedure stScalePoly(Texture: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
    procedure stScaleModel(Skin: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
    procedure stScaleBezier(Texture: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
+   procedure stScaleSprite(Texture: PTexture3; var ScaleS, ScaleT: TDouble); virtual; abstract;
    procedure WriteVertex(PV: PChar; Source: Pointer; const ns,nt: Single; HiRes: Boolean); virtual; abstract;
    procedure PostBuild(nVertexList, nVertexList2: TList); virtual;
    procedure BuildTexture(Texture: PTexture3); virtual; abstract;
@@ -145,6 +159,7 @@ type
    procedure SetColor(nColor: TColorRef);
    procedure AddPolyFace(const a_PolyFace: PSurface);
    procedure AddModel(const a_Model: PModel3DInfo);
+   procedure AddSprite(const a_Sprite: PSpriteInfo);
    procedure AddBezier(const a_Bezier: TBezier);
    procedure AddLight(const Position: TVect; Brightness: Single; Color: TColorRef); virtual;
    property ListSurfaces: PSurfaces read FListSurfaces;
@@ -218,6 +233,7 @@ begin
  PolyFaces:=TList.Create;
  ModelInfo:=TList.Create;
  BezierInfo:=TList.Create;
+ SpriteInfo:=TList.Create;
  TemporaryStuff:=TQList.Create;
 end;
 
@@ -227,6 +243,7 @@ begin
  TTextureManager.RemoveScene(Self);
  BezierInfo.Free;
  ModelInfo.Free;
+ SpriteInfo.Free;
  PolyFaces.Free;
  TemporaryStuff.Free;
  inherited;
@@ -251,8 +268,22 @@ begin
      Inc(I);
     end;
   end;
+ I:=0;
+ while I < SpriteInfo.Count do
+  begin
+   Ptr:=SpriteInfo[I];
+   if Ptr=Nil then
+    Inc(I,2)
+   else
+    begin
+     PSpriteInfo(Ptr).Base.AddRef(-1);
+     FreeMem(Ptr);
+     Inc(I);
+    end;
+  end;
  PolyFaces.Clear;
  ModelInfo.Clear;
+ SpriteInfo.Clear;
  BezierInfo.Clear;
  TemporaryStuff.Clear;
 end;
@@ -289,6 +320,11 @@ begin
   ModelInfo.Add(a_Model);
 end;
 
+procedure TSceneObject.AddSprite(const a_Sprite: PSpriteInfo);
+begin
+  SpriteInfo.Add(a_Sprite);
+end;
+
 procedure TSceneObject.AddBezier(const a_Bezier: TBezier);
 begin
   BezierInfo.Add(a_Bezier);
@@ -308,6 +344,8 @@ begin
  ModelInfo.Add(TObject(nColor));
  BezierInfo.Add(Nil);
  BezierInfo.Add(TObject(nColor));
+ SpriteInfo.Add(Nil);
+ SpriteInfo.Add(TObject(nColor));
 end;
 
 procedure TSceneObject.SwapBuffers;
@@ -359,6 +397,7 @@ var
   PolySurface: PSurface;
   Model3DInfo: PModel3DInfo;
   OneBezier:   TBezier;
+  xSpriteInfo: PSpriteInfo;
 
   procedure AddSurfaceRef(const a_TexName: String; a_SurfSize: Integer; a_Tmp: Pointer);
   var
@@ -538,6 +577,33 @@ begin
        Inc(I); { Increment to get the next element }
      end;
 
+     I:=0;
+     while I<SpriteInfo.Count do
+     begin
+       xSpriteInfo:=PSpriteInfo(SpriteInfo[I]);
+       if xSpriteInfo=Nil then
+       begin
+         { If it points to a nil-pointer, then the next element is a color
+           element, which we have to ignore. Thats why we increment with 1 here }
+         Inc(I);
+       end
+       else
+       begin
+         AddSurfaceRef(xSpriteInfo^.Base.GetSkinDescr, 2 * VertexSize3m, xSpriteInfo^.Base.Skin0);
+         if nVertexList2<>Nil then
+         begin
+           CVertex:=xSpriteInfo^.Vertices;
+           for J:=0 to xSpriteInfo^.VertexCount-1 do
+           begin
+             nVertexList2.Add(CVertex);
+             Inc(CVertex);
+           end;
+         end;
+       end;
+
+       Inc(I); { Increment to get the next element }
+     end;
+        
      I:=0;
      while I<BezierInfo.Count do
      begin
@@ -934,6 +1000,109 @@ begin
 
                VertexCount:=3;
                AlphaColor:=CurrentColor or (ModelAlpha shl 24);
+             end;
+
+             Inc(PChar(Surf3D), VertexSize3m);
+           end;
+         end;
+
+         PList^.tmp:=Surf3D;
+       end;
+
+       Inc(I);
+     end;
+   end;
+
+   CurrentColor:=$FFFFFF;
+   I:=0;
+   while I<SpriteInfo.Count do
+   begin
+     xSpriteInfo:=PSpriteInfo(SpriteInfo[I]);
+     if xSpriteInfo=Nil then
+     begin
+       CurrentColor:=FxU32(SpriteInfo[I+1]);
+       Inc(I,2);
+     end
+     else
+     begin
+       with xSpriteInfo^ do
+       begin
+         if not TexNames.Find(Base.GetSkinDescr, J) then
+          {$IFDEF Debug}Raise InternalE('TexNames.Find.4'){$ENDIF};
+
+         PList:=PSurfaces(TexNames.Objects[J]);
+         if PList^.Surf=Nil then
+         begin
+           GetMem(PList^.Surf, PList^.SurfSize);
+           Surf3D:=PList^.Surf;
+         end
+         else
+           Surf3D:=PList^.tmp;
+
+         Include(PList^.Transparent, Alpha<>255);
+
+         stScaleSprite(PList^.Texture, CorrW, CorrH);
+
+         for J:=1 to Base.Triangles(CTris) do
+         begin
+           PV:=PChar(Surf3D)+SizeOf(TSurface3D);
+           for L:=0 to 2 do
+           begin
+             with CTris^[L] do
+             begin
+               if VertexNo >= VertexCount then
+                 Raise EError(5667);
+
+               v3p[L]:=Vertices;
+               Inc(v3p[L], VertexNo);
+
+               WriteVertex(PV, v3p[L], st.s * CorrW, st.t * CorrH, False);
+
+               Inc(PV, VertexSize);
+             end;
+           end;
+
+           Inc(CTris);
+
+           v2.X:=v3p[1]^[0] - v3p[0]^[0];
+           v2.Y:=v3p[1]^[1] - v3p[0]^[1];
+           v2.Z:=v3p[1]^[2] - v3p[0]^[2];
+
+           v3.X:=v3p[2]^[0] - v3p[0]^[0];
+           v3.Y:=v3p[2]^[1] - v3p[0]^[1];
+           v3.Z:=v3p[2]^[2] - v3p[0]^[2];
+
+           DeltaV:=Cross(v3, v2);
+           dd:=Sqr(DeltaV.X)+Sqr(DeltaV.Y)+Sqr(DeltaV.Z);
+           if dd<rien then
+             Dec(PList^.SurfSize, VertexSize3m)
+           else
+           begin
+             dd:=1/Sqrt(dd);
+
+             Radius2 :=Sqr(v2.X)+Sqr(v2.Y)+Sqr(v2.Z);
+             nRadius2:=Sqr(v3.X)+Sqr(v3.Y)+Sqr(v3.Z);
+
+             with Surf3D^ do
+             begin
+               Normale[0]:=DeltaV.X*dd;
+               Normale[1]:=DeltaV.Y*dd;
+               Normale[2]:=DeltaV.Z*dd;
+
+               Dist:=v3p[0]^[0]*Normale[0] + v3p[0]^[1]*Normale[1] + v3p[0]^[2]*Normale[2];
+
+               if Mode=bm3DFX then
+               begin
+                 if nRadius2>Radius2 then
+                   AnyInfo.Radius:=Sqrt(nRadius2)
+                 else
+                   AnyInfo.Radius:=Sqrt(Radius2);
+               end
+               else
+                 AnyInfo.DisplayList:=0;
+
+               VertexCount:=3;
+               AlphaColor:=CurrentColor or (Alpha shl 24);
              end;
 
              Inc(PChar(Surf3D), VertexSize3m);
