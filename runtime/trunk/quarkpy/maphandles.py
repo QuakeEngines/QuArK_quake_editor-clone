@@ -855,7 +855,7 @@ class BTLinHandlesManager(qhandles.LinHandlesManager):
             for row in obj.cp:
                 tcp.append(map(maprow, row))
             obj.cp = sender.dynst = tcp
-            
+
 
 class CyanBezier2Handle(qhandles.GenericHandle):
     "Texture moving of Bézier patches : cyan L vertices."
@@ -903,9 +903,9 @@ class CyanBezier2Handle(qhandles.GenericHandle):
             for m,n in indexes:
                 cp[m][n] = cp[m][n]+td
                 new.cp =cp
-            
 
-        if new:
+
+        if new is not None:
             self.dynst = new.cp
         return [self.b2], [new]
 
@@ -1335,6 +1335,9 @@ def singlebezierzoom(view):
 #
 #
 #$Log$
+#Revision 1.10  2001/02/28 09:46:43  tiglari
+#linear mapping handles removed from bez page
+#
 #Revision 1.9  2001/02/25 11:22:51  tiglari
 #bezier page support, transplanted with permission from CryEd (CryTek)
 #
