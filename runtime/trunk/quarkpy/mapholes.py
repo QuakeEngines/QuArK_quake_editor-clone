@@ -21,6 +21,7 @@ import qmacro
 import qtoolbar
 from maputils import *
 import mapeditor
+import mapoptions
 
 
 
@@ -148,7 +149,7 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
         points = editor.LinesThroughHole
         cv = view.canvas()
         cv.pencolor = MapColor("Tag")
-        cv.penwidth = 3
+        cv.penwidth = mapoptions.getLineThickness()
         if len(points)==1:
             pt0 = view.proj(points[0])
             if pt0.visible:
@@ -172,6 +173,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 #
 #
 #$Log$
+#Revision 1.5  2003/03/19 22:27:10  tiglari
+#remove debug; there was no parsing error in this file (previous commit mistaken)
+#
 #Revision 1.4  2003/03/19 22:23:35  tiglari
 #fix bug in parsing
 #

@@ -15,6 +15,7 @@ import qmacro
 import qtoolbar
 from maputils import *
 import mapeditor
+import mapoptions
 
 
 class PortalsDlg(qmacro.dialogbox):
@@ -123,7 +124,7 @@ def DrawLines(editor, view, oldFinishDrawing = mapeditor.MapEditor.finishdrawing
         Portals = editor.Portals
         cv = view.canvas()
         cv.pencolor = MapColor("Duplicator")
-        cv.penwidth = 3
+        cv.penwidth = mapoptions.getLineThickness()
         for portal in Portals:
             pt0 = view.proj(portal[-1])
             for i in range(len(portal)):
@@ -139,6 +140,9 @@ mapeditor.MapEditor.finishdrawing = DrawLines
 
 
 #$Log$
+#Revision 1.4  2003/03/19 22:24:10  tiglari
+#fix bug in parsing
+#
 #Revision 1.3  2003/03/19 11:27:47  tiglari
 #remove debug statement
 #

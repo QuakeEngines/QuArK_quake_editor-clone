@@ -68,6 +68,10 @@ def Options1Click(menu):
                 item.state = (quarkx.setupsubset(SS_MAP, "Options").getint("TexAntiScroll")==tas) and qmenu.radiocheck
             except:
                 pass
+        if item == lineThicknessItem:
+            item.thick = getLineThickness()
+            item.text = "Set Line Thickness (%1.0f)"%item.thick
+        
 
 def toggleitem(txt, toggle, sendupdate=(1,1), sset=(SS_MAP,"Options"), hint=None):
     item = qmenu.item(txt, ToggleOption, hint)
@@ -85,6 +89,67 @@ def texantiscroll(txt, mode, hint="|In QuArK, the textures are attached to polyh
     item = qmenu.item(txt, TasOption, hint)
     item.tas = mode
     return item
+
+
+class LineThickDlg(SimpleCancelDlgBox):
+    #
+    # dialog layout
+    #
+    size = (160, 75)
+    dfsep = 0.7 
+    
+    dlgdef = """
+    {
+        Style = "9"
+        Caption = "Line Thickness Dialog"
+
+        thick: =
+        {
+        Txt = "Line Thickness:"
+        Typ = "EF1"
+        Hint = "Needn't be an integer."
+        }
+        close:py = {Txt="" }
+    }
+    """
+
+    def __init__(self, form, editor, m):
+    
+        src = quarkx.newobj(":")
+        thick =  quarkx.setupsubset(SS_MAP,"Options")['linethickness']
+        if thick:
+            thick=eval(thick)
+        else:
+            thick=3
+        src["thick"] = thick,
+        self.src = src
+        SimpleCancelDlgBox.__init__(self,form,src)
+
+    def ok(self):
+        pass
+        thick = self.src['thick']    
+        if thick is not None:
+            thick, = thick
+            if thick==3:
+                quarkx.setupsubset(SS_MAP,"Options")['linethickness']=""
+            else:
+                quarkx.setupsubset(SS_MAP,"Options")['linethickness']="%4.2f"%thick
+
+def getLineThickness():
+     thick =  quarkx.setupsubset(SS_MAP,"Options")['linethickness']
+     if thick:
+         return eval(thick)
+     else:
+         return 3
+     
+def setLineThick(m):
+    editor = mapeditor()
+    if editor is None:
+        return
+    debug('set')
+    LineThickDlg(quarkx.clickform, editor, m)
+    
+lineThicknessItem = qmenu.item("Set Line Thickness (3)",setLineThick,"|Set the thickness of certain lines that are drawn on the map, such as leak lines, portals, and targetting arrows.")
 
 
 #
@@ -111,7 +176,8 @@ items = [
     texantiscroll("Sticky textures", 1),
     texantiscroll("Axis-sticky textures", 2),
     toggleitem("&Don't center L-square","DontCenterThreePoints", (0,0),
-      hint="|If this item is on, threepoints aren't re-centered on face in texture positioning.")
+      hint="|If this item is on, threepoints aren't re-centered on face in texture positioning."),
+    lineThicknessItem
     ]
 shortcuts = { }
 
@@ -128,6 +194,9 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.4  2001/08/28 22:43:54  tiglari
+#'Adjust angles automatically' renamed to `Quantize angles'
+#
 #Revision 1.3  2001/04/01 06:50:33  tiglari
 #don't recenter threepoints option added
 #
