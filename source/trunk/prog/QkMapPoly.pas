@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/09/24 23:55:41  alexander
+committed tiglaris texture flag fix
+
 Revision 1.13  2000/07/21 20:01:33  decker_dk
 Correctly Save HalfLife WAD3s
 
@@ -2180,6 +2183,7 @@ begin
  if Info.ConstruirePolyedres and not CheckPolyhedron then Exit;
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  MJ:=CharModeJeu;
+ Brush.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry);
  Brush.Add(' {');
  if Info.ConstruirePolyedres then
   for J:=0 to Faces.Count-1 do
