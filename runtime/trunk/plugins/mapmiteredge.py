@@ -393,7 +393,7 @@ def findMiterableFaces(faces):
         
 
 def buildwallmakerimages(self, singleimage=None):
-        if not self.dup["miter"]:
+        if not (self.dup["miter"] or self.dup["extrude"]):
             return mapdups.DepthDuplicator.buildimages(self,singleimage)
             
         if singleimage is not None and singleimage>0:
@@ -407,6 +407,8 @@ def buildwallmakerimages(self, singleimage=None):
 
         polys = self.sourcelist()
         polys = reduce(lambda x,y:x+y,map(lambda i:i.findallsubitems("",":p"),polys))
+        negatives = filter(lambda p:p["neg"]=='1', polys)
+        polys = filter(lambda p:p["neg"]!='1', polys)
         depth=int(self.dup["depth"])
         wallgroups = map(lambda item:item.subitems, wallsFromPoly(polys, depth))
         wallgroup = quarkx.newobj("wallgroup:g")
@@ -431,6 +433,8 @@ def buildwallmakerimages(self, singleimage=None):
                                 wallbits=brush.subtractfrom(wallbits)
                                 break
                 newwalls = newwalls+wallbits   
+            for hole in negatives:
+                newwalls=hole.subtractfrom(newwalls)
             newgroup=quarkx.newobj(polys[i].shortname+':g')
             for wall in newwalls:
                 newgroup.appenditem(wall)
@@ -438,7 +442,7 @@ def buildwallmakerimages(self, singleimage=None):
         faces = filter(lambda f:f["ext_inner"]=='1', wallgroup.findallsubitems("",":f"))
         replacedict = {}
         donefaces = {}
-        if self.dup["nobevel"]!='1':
+        if self.dup["miter"]=='1':
             miterfaces = findMiterableFaces(faces)
             #
             # miterfaces is a dictionary indexed by pairs of faces.  Each
@@ -525,6 +529,11 @@ mapdups.WallMaker.buildimages = buildwallmakerimages
 
 #
 # $Log$
+# Revision 1.4  2001/10/07 00:43:59  tiglari
+# caulk-exposing bug supposedly fixed (by a considerable reorganizing
+# of the mitering process, using a dictionary instead of successive list
+# replacements)
+#
 # Revision 1.3  2001/10/01 06:20:31  tiglari
 # improve overlapping & colinear edge detection
 #
