@@ -1,15 +1,21 @@
 
-             QuArK Snapshot 050701 - patch5
+             QuArK Snapshot 052101 
 
- Patch 4 updates
- 
+ Changes from 050701:
+
+  *Bsp opening bug in 050701 fixed
+  *Map writing altered for brush primitives, Valve mapversion
+    220, and 'No TX comments' mode so that if integral or
+    almost integral vertexes for a face are found, they are
+    used as its threepoints.  This enables better export
+    of maps to editors and tools that don't support fp
+    coordinates.
+  *'thin face' finder added (similar to microbrush h/k);
+     detect & remove suspiciously thin faces.
   *when an 'out' duplicator is dissociated, all
     other 'out' dups in its immediate group are
     dissociated also
-
- Patch 4 updates
- 
-  *caulk of hidden faces added to brush curves
+  *caulk of hidden faces added to brush curves & extruder
     (default tex used for games w/o a caulk texture)
   *wrong shape for non-inner non-inverse cap/bevels
     fixed (missing faces added)
@@ -37,19 +43,9 @@
                   to do otherwise).
            
     old behavior can be restored by unchecking 'item center'.
-           
- Patch 3 updates
- 
-  *defaults.qrk for the commercial counterstrike/hl
-     expansion, you also need the new .exe on the
-     'latest' page for this.
-
- Patch 2 updates
-
+  *support for the commercial counterstrike/hl
+     expansion.
   *Hollowmaker/Wallmaker bug fixed
-
- Patch1 updates 
-
   *debug writing 'left' to console bug fixed
 
  
