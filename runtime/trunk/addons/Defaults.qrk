@@ -1670,7 +1670,7 @@ QQRKSRC1
         // WildWest game add on by SilverPaladin (Capt. Queeg to WildWest folk)
         Game = "WildWest"
         Code = "w" // Hardcoded value in Setup.PAS
-        Program = "WOLFMP.EXE +set sv_pure 0 "
+        Program = "WOLFMP.EXE +set sv_pure 0 +set fs_game WildWest "
 
         Directory = "C:\Progra~1\Return~1\"
         CheckDirectory = "WildWest.EXE"
