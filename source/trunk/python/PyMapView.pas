@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/06/05 18:43:13  decker_dk
+Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
+
 Revision 1.13  2001/03/20 21:34:49  decker_dk
 Updated copyright-header
 }
@@ -2300,7 +2303,10 @@ begin
     or (CurrentMapView.Drawing and dfBuilding = 0) then
      begin
       if CurrentMapView.Drawing and dfNoGDI = 0 then
-       Q3DObject(Root).Dessiner;
+       if (Restr<>Nil) and (Flags and vfHidden<>0) then
+         Q3DObject(Restr).Dessiner
+       else
+        Q3DObject(Root).Dessiner;
      end
     else
      begin
