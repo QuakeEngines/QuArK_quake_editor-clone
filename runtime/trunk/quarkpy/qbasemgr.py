@@ -366,8 +366,8 @@ class BaseLayout:
         ico_maped=ico_dict['ico_maped']
         self.explorer = panel.newexplorer()
         self.explorer.flags = EF_AUTOFOCUS
-        self.explorer.hint = "||This is the list of everything in your map : entities, polyhedrons, groups, etc. You should consider it as the best way to organize your map so that you can later easily find what you are looking for. Use groups (the button above) to organize your map.\n\nFor more information about the available object types, see the tutorials."
-        page0 = qtoolbar.button(None, "List of all objects|tree view", ico_maped, 8)
+        self.explorer.hint = "Data displays||Data displays:\n\nThese are the various displays to help you build and organize your map.\n\nThere are five specific displays, they are:\n\nTree-view (hierarchy-view)\nSpecifics/Args-view\nPolyhedron-view\nFace-view\n3D-view\n\nFor a detailed description and use of these displays, see the infobase documents.|intro.mapeditor.dataforms.html"
+        page0 = qtoolbar.button(None, "Tree-view (hierarchy-view)||Tree-view (hierarchy-view):\n\nThis view displays a  list of everything in your map : entities, polyhedrons, groups, etc.\n\n You should consider it as the best way to organize your map so that you can easily find what you are looking for.\n\nUse groups (the button above) to organize your map.\nFor more information about the available object types, see the tutorials.\n\nAlso see the infobase for a more detailed description and use of this view display.|intro.mapeditor.dataforms.html#treeview", ico_maped, 8)
         page0.pc = [self.explorer]
         plist, mppages = self.bs_additionalpages(panel)
         plist.insert(0, page0)
@@ -607,6 +607,9 @@ class MPPage:
 #
 #
 #$Log$
+#Revision 1.8  2003/02/01 02:13:22  cdunde
+#Add items to grid selection
+#
 #Revision 1.7  2001/10/22 10:26:17  tiglari
 #live pointer hunt, revise icon loading
 #

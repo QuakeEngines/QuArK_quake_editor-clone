@@ -657,7 +657,7 @@ class Compass:
         if ImageWrapper(self, "compass", "images\\compass.bmp", 96):
             self.ctrl = panel.newimagectrl(self.Images[0])
             self.ctrl.onclick = self.CompassClick
-            self.ctrl.hint = "Rotate the views||The Compass lets you rotate the map views and view your map from any angle. This is why QuArK displays only two views by default, and not three, unlike most other 3D editors.\n\nSee the Layouts menu for other screen layouts. See the configuration dialog box to show or hide the angle and axis indications."
+            self.ctrl.hint = "View Y-axis rotation||View Y-axis rotation:\n\nThe Compass lets you rotate the map views on the Y-axis and view your map from any angle. This is why QuArK displays only two views by default, and not three, unlike most other 3D editors.\n\nSee the Layouts menu for other screen layouts.\n\nSee the configuration dialog box to show or hide the angle and axis indications.|intro.mapeditor.compass.html#yaxis"
             if result is not None:
                 result.append(self.ctrl)
         else:
@@ -801,7 +801,7 @@ class ZoomBar:
             self.ctrl = panel.newimagectrl(self.Images[0])
             self.ctrl.onclick = self.ZoomClick
             self.ctrl.ondraw = self.ZoomDraw
-            self.ctrl.hint = "Zoom in/out"
+            self.ctrl.hint = hintPlusInfobaselink("View zoom||View zoom:\n\nThis zooms the map views in and out.", "intro.mapeditor.compass.html#zoom")
             if result is not None:
                 result.append(self.ctrl)
 
@@ -886,7 +886,7 @@ class VBar:
             self.ctrl = panel.newimagectrl(self.Images[0])
             self.ctrl.onclick = self.VBarClick
             self.ctrl.ondraw = self.VBarDraw
-            self.ctrl.hint = "View up/down"
+            self.ctrl.hint = hintPlusInfobaselink("View X-axis rotation||View X-axis rotation:\n\nThis rotates the map views on the X-axis.", "intro.mapeditor.compass.html#xaxis")
             if result is not None:
                 result.append(self.ctrl)
 
@@ -1452,6 +1452,9 @@ def Help3():
 def Help4():
     htmldoc("http://dynamic.gamespy.com/~quark/") # Takes the user to QuArK's official web page
 
+def Help5():
+    htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
+
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1481,6 +1484,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.15  2003/03/10 20:20:44  decker_dk
+#It is QuArK - (Qu)ake (Ar)my (K)nife, and not "QuArk".
+#
 #Revision 1.14  2003/02/15 02:01:26  cdunde
 #To add QuArk web site link to Help menu
 #

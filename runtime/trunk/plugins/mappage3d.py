@@ -44,7 +44,7 @@ class Page3D(MPPage):
         quarkpy.qhandles.z_recenter(self.mppview3d, list)
 
     def button(self):
-        pagebtn = qtoolbar.button(self.fill3dview, "3D view|3D view", ico_dict['ico_maped'], 21)
+        pagebtn = qtoolbar.button(self.fill3dview, "3D view||3D view:\n\nThis displays a 3D texture view of the selected objects.\n\nSee the infobase for more detail.|intro.mapeditor.dataforms.html#3dview", ico_dict['ico_maped'], 21)
         pagebtn.pc = [self.bs_3Dview(self.panel)]
         return pagebtn
 
@@ -58,6 +58,9 @@ mppages.append(Page3D)
 #
 #
 # $Log$
+# Revision 1.4  2001/10/22 10:14:25  tiglari
+# live pointer hunt, revise icon loading
+#
 # Revision 1.3  2001/01/26 19:08:02  decker_dk
 # Fix hint-problem introduced by change in [QBaseMgr.PY] bs_multipagespanel
 #

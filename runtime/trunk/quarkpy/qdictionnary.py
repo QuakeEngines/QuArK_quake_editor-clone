@@ -114,7 +114,7 @@ Strings = {
     265: "unexpected surface attribute",
 
     288: "Help snippet - (press ESC to close window)",
-    289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.",
+    289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.|intro.mapeditor.menu.html#optionsmenu",
 
     384: "Impossible to create the file :\n\n%s",
     385: "QuArK failed to open the file :\n\n%s",
@@ -910,6 +910,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.52  2002/05/16 09:09:15  tiglari
+#Update version to 6.4 alpha (no diff from 6,3 yet)
+#
 #Revision 1.51  2002/05/13 11:32:30  tiglari
 #update version
 #
