@@ -277,7 +277,7 @@ def makeseam(row0, row2, texface, name):
      seam.cp = texcp_from_face(cp, texface, None)
      return seam
 
-def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0):
+def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0, stretchtex=0):
   "makes a 'cap' (or arch) on the basis of brush o"
   #
   # Make dictionary of faces u/d/f/b/r/l
@@ -293,6 +293,9 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0):
   pd = pointdict(vtxlistdict(fdict,o))
   if lower:
       pd = pointdict_vflip(pd)
+      texface = fdict["d"]
+  else:
+      texface = fdict["u"]
   #
   # make the basic inner curved face, a 3x5 quilt
   #
@@ -300,15 +303,34 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0):
   #
   # project cps from face to patch (flat projection, distorted)
   #
-  cp = texcp_from_face(cp, fdict["d"], editor)
+  cp = texcp_from_face(cp, fdict["u"], editor)
+  #
+  # adjust down sides if wanted
+  #
+  if not stretchtex:
+      for side, fulcrum, edge in ((fdict["r"], "trf", 0), (fdict["l"], "tlf", 4)):
+          #
+          # FIXME: this 3points stuff below shouldn't be needed, but is.
+          #
+          newside = texface.copy()
+          newside.setthreepoints(fdict["u"].threepoints(2),2)
+          newside.distortion(side.normal, pd[fulcrum])
+          cp2 = texcp_from_face(cp, newside, editor)
+          for index in range(3):
+#              if lower:
+                  cp[index][edge]=cp2[index][edge]
+#              else:
+#                  cp[edge][index]=cp2[edge][index]
   #
   # Now we smooth it out
   #
-  cp = antidistort_columns(cp)
-  cp = antidistort_rows(cp)
+  if lower:
+      cp = antidistort_rows(cp)
+  else:
+      cp = antidistort_columns(cp)
   inner = quarkx.newobj('inner:b2')
   inner.cp = cp
-  inner["tex"] = fdict["d"]["tex"]
+  inner["tex"] = texface["tex"]
   if thick:
       pd2 = smallerarchbox(pd, thick)
       cp2 = archcurve(pd2)
@@ -356,7 +378,7 @@ def capimages(o, editor, inverse=0, lower=0, open=0, thick=0, faceonly=0):
     return [front, back]
   return [inner, front, back]
 
-def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0):
+def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0, stretchtex=0):
   "makes a bevel/inverse bevel on the basis of brush o"
   o.rebuildall()
   fdict = facedict(o)
@@ -374,17 +396,18 @@ def bevelimages(o, editor, inverse=0, left=0, open=0, thick=0, faceonly=0):
   inner = quarkx.newobj('inner:b2')
   cp = texcp_from_face(cp, fdict["b"], editor)
   right = fdict["b"].copy()
-  #
-  # FIXME: this 3points stuff below shouldn't be needed, but is.
-  #
-  right.setthreepoints(fdict["b"].threepoints(2),2)
-  if left:
-    right.distortion(fdict["l"].normal,pd["brb"])
-  else:
-    right.distortion(fdict["r"].normal,pd["brb"])
-  cp2 = texcp_from_face(cp, right, editor)
-  for i in range(3):
-    cp[i][2]=cp2[i][2]
+  if not stretchtex:
+      #
+      # FIXME: this 3points stuff below shouldn't be needed, but is.
+      #
+      right.setthreepoints(fdict["b"].threepoints(2),2)
+      if left:
+          right.distortion(fdict["l"].normal,pd["brb"])
+      else:
+          right.distortion(fdict["r"].normal,pd["brb"])
+      cp2 = texcp_from_face(cp, right, editor)
+      for i in range(3):
+          cp[i][2]=cp2[i][2]
   cp = antidistort_rows(cp)
   inner.cp = cp
   inner["tex"] = fdict["b"]["tex"]
@@ -439,13 +462,13 @@ class CapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, open, thick, faceonly = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"], self.dup["faceonly"]
+    inverse, lower, open, thick, faceonly, stretchtex = self.dup["inverse"], self.dup["lower"], self.dup["open"], self.dup["thick"], self.dup["faceonly"], self.dup["stretchtex"]
     if thick:
       thick, = thick
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return capimages(o, editor, inverse, lower, open, thick, faceonly)
+        return capimages(o, editor, inverse, lower, open, thick, faceonly, stretchtex)
 
 
 class BevelDuplicator(StandardDuplicator):
@@ -454,14 +477,14 @@ class BevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, left, sidetex, open, thick, faceonly = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "left", "sidetex", "open", "thick", "faceonly"))
+    inverse, left, sidetex, open, thick, faceonly, stretchtex = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "left", "sidetex", "open", "thick", "faceonly", "stretchtex"))
     if thick:
       thick, = thick
     list = self.sourcelist()
     for o in list:
       if o.type==":p": # just grab the first one, who cares
-        return bevelimages(o, editor, inverse, left, open, thick, faceonly)
+        return bevelimages(o, editor, inverse, left, open, thick, faceonly, stretchtex)
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup cap":     CapDuplicator,
@@ -597,6 +620,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.11  2000/06/16 10:48:26  tiglari
+#Fixed perspective-driven builder problems
+#
 #Revision 1.10  2000/06/16 06:02:42  tiglari
 #fixed coordinate handedness screwup in floating map veiews
 #
