@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/07/18 13:46:10  alexander
+set snapshot name
+
 Revision 1.16  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -253,7 +256,7 @@ type
                { does actual full read-in }
              procedure LoadInternal(F: TStream; FSize: Integer);
              function GetObjectSize(Loaded: TQStream; LoadNow: Boolean) : Integer;
-             procedure EtatObjet(var E: TEtatObjet); virtual;
+             procedure ObjectState(var E: TEtatObjet); virtual;
              procedure DisplayDetails(SelIcon: Boolean; var D: TDisplayDetails); virtual;
              property Flags: Byte read FFlags write FFlags;
               { properties concerning display in a tree-view }
@@ -287,7 +290,7 @@ type
                  the clipboard.  If no non-Quark rep, does nothing }
              function TopLevel : Boolean;
              procedure LoadedFileLink(const nName: String; ErrorMsg: Integer);
-             procedure OpDansScene(Aj: TAjScene; PosRel: Integer); virtual;
+             procedure OperationInScene(Aj: TAjScene; PosRel: Integer); virtual;
              function GetObjectMenu(Control: TControl) : TPopupMenu; dynamic;
              {property NodeLoadInfo: PQStreamRef read FNode;}
              class function TypeInfo: String; virtual; abstract;
@@ -1401,12 +1404,12 @@ begin
    Source.Release;
  end;
  BuildReferences;
- DebutTravail(5442, SubElements.Count);
+ ProgressIndicatorStart(5442, SubElements.Count);
 end;
 
 procedure QObject.CloseCopying;
 begin
- FinTravail;
+ ProgressIndicatorStop;
  if FFlags and ofSurDisque <> 0 then
   Raise EError(5513);
  if (FFlags and ofTvNode <> 0) or (FNode = Nil) then
@@ -1473,7 +1476,7 @@ begin  { if possible, copy directly from the original file into the new one }
  Result:=True;
 end;
 
-procedure QObject.EtatObjet;
+procedure QObject.ObjectState;
 begin  { note: QFileObject.EtatObject doesn't call "inherited" }
  E.IndexImage:=iiUnknown;
  E.MarsColor:=clNavy;
@@ -1484,7 +1487,7 @@ var
  E: TEtatObjet;
  args: PyObject;
 begin
- EtatObjet(E);
+ ObjectState(E);
  if SelIcon then
   D.Icon:=Nil
  else
@@ -1922,7 +1925,7 @@ begin
     Raise InternalE('Enregistrer '+GetFullName+' '+IntToStr(Format));
    end; 
  {BuildReferences;}
-  DebutTravail(5442, SubElements.Count+1); try
+  ProgressIndicatorStart(5442, SubElements.Count+1); try
   FileItemCount:=Specifics.Count + SubElements.Count;
   if FileItemCount > qsShortSizeMax then
    begin
@@ -1987,7 +1990,7 @@ begin
      ItemInfo^.Code:=Size;
     Inc(ItemInfo);
    end;
-  ProgresTravail;
+  ProgressIndicatorIncrement;
   for I:=0 to SubElements.Count-1 do
    begin
     Q:=SubElements[I];
@@ -2013,7 +2016,7 @@ begin
        ItemInfo^.Code:=qsBitSubObject or Size;
      end;
     Inc(ItemInfo);
-    ProgresTravail;
+    ProgressIndicatorIncrement;
    end;
   if Length(ExtraSizes)>0 then
    F.WriteBuffer(ExtraSizes[1], Length(ExtraSizes));
@@ -2022,7 +2025,7 @@ begin
   F.WriteBuffer(FileItemInfo^, FileItemCount * SizeOf(TFileItemInfo));
   F.Position:=Size;
   finally FreeMem(FileItemInfo); end;
-  finally FinTravail; end;
+  finally ProgressIndicatorStop; end;
  end; 
 end;
 
@@ -2517,7 +2520,7 @@ begin
  TopLevel:=not Odd(FFlags);
 end;
 
-procedure QObject.OpDansScene(Aj: TAjScene; PosRel: Integer);
+procedure QObject.OperationInScene(Aj: TAjScene; PosRel: Integer);
 var
  I: Integer;
  T{, T2}: QObject;
@@ -2526,7 +2529,7 @@ begin
  case Aj of
   asRetire:
     for I:=0 to SubElementsC.Count-1 do
-     SubElementsC[I].OpDansScene(Aj, PosRel+1);
+     SubElementsC[I].OperationInScene(Aj, PosRel+1);
  end;
  if PosRel=0 then
   case Aj of
@@ -2537,12 +2540,12 @@ begin
  case Aj of
   asAjoute, asDeplace2:
     for I:=0 to SubElementsC.Count-1 do
-     SubElementsC[I].OpDansScene(Aj, PosRel+1);
+     SubElementsC[I].OperationInScene(Aj, PosRel+1);
   asModifieParent:
    if WorkingExplorer<>Nil then
     begin
      for I:=0 to SubElementsC.Count-1 do
-      SubElementsC[I].OpDansScene(asModifieFrere, MaxInt);
+      SubElementsC[I].OperationInScene(asModifieFrere, MaxInt);
      if PosRel = -1 then
       WorkingExplorer.ControlerEtatNoeud(Self);
     end;

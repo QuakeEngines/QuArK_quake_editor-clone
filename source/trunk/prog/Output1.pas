@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.6  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -393,7 +396,7 @@ begin
   begin
    FileList:=TStringList.Create; try
    FileList.Text:=InternalSpecs.Specifics.Values['AddToPack'];
-   DebutTravail(5456, 2); try
+   ProgressIndicatorStart(5456, 2); try
    for I:=0 to FileList.Count-1 do
     begin
      S:=FileList[I];
@@ -404,9 +407,9 @@ begin
         PakFile.AddFileWithPath(FileList[I], ExactFileLink(S, Nil, False), False);
       end;
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
    PakFile.SaveInFile(rf_Default, PakFileName);
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
    finally FileList.Free; end;
   end;
  finally PakFile.AddRef(-1); end;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -131,7 +134,7 @@ begin
 
       XSize:=Header.Xmax - Header.Xmin + 1;
       YSize:=Header.Ymax - Header.Ymin + 1;
-      DebutTravail(5448, YSize); try
+      ProgressIndicatorStart(5448, YSize); try
       V[1]:=XSize;
       V[2]:=YSize;
       SetFloatsSpec('Size', V);
@@ -197,7 +200,7 @@ begin
           ScanLine[I]:=#0;  { fills with zeroes }
           Inc(I);
          end;
-        ProgresTravail;
+        ProgressIndicatorIncrement;
        end;
       Specifics.Add(Data);  { "Data=xxxxx" }
 
@@ -207,7 +210,7 @@ begin
       SetLength(Data, Length(Spec2)+pcxTaillePalette);
       F.ReadBuffer(Data[Length(Spec2)+1], pcxTaillePalette);
       SpecificsAdd(Data);  { "Pal=xxxxx" }
-      finally FinTravail; end;
+      finally ProgressIndicatorStop; end;
      end;
  else inherited;
  end;
@@ -229,7 +232,7 @@ begin
       FillChar(Header, SizeOf(Header), 0);
       Header.Signature:=pcxSignature;
       Size:=GetSize;
-      DebutTravail(5449, Size.Y); try
+      ProgressIndicatorStart(5449, Size.Y); try
       Header.Xmax:=Size.X-1;
       Header.Ymax:=Size.Y-1;
       Header.hres:=Size.X;   { why not, it's how Quake 2 .pcx are made }
@@ -274,7 +277,7 @@ begin
            OutBuffer:=OutBuffer+Chr(Byte1);
          end;
         F.WriteBuffer(OutBuffer[1], Length(OutBuffer));
-        ProgresTravail;
+        ProgressIndicatorIncrement;
        end;
 
        { writes the palette }
@@ -284,7 +287,7 @@ begin
       if Length(Data)-Length('Pal=') < pcxTaillePalette then
        Raise EErrorFmt(5534, ['Pal']);
       F.WriteBuffer(Data[Length('Pal=')+1], pcxTaillePalette);
-      finally FinTravail; end;
+      finally ProgressIndicatorStop; end;
      end;
  else inherited;
  end;

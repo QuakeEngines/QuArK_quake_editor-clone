@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -46,14 +49,14 @@ type
                  private
                   {FDescriptionLeft: Integer;}
                  protected
-                   function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+                   function OpenWindow(nOwner: TComponent) : TQForm1; override;
                  public
                    class function TypeInfo: String; override;
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-                   procedure EtatObjet(var E: TEtatObjet); override;
+                   procedure ObjectState(var E: TEtatObjet); override;
                    procedure DisplayDetails(SelIcon: Boolean; var D: TDisplayDetails); override;
                    class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-                  {procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+                  {procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
                    function GetDescription(DC: HDC; Q: QObject; var S: String) : Integer;}
                  end;
 
@@ -78,7 +81,7 @@ uses Quarkx;
 
  {------------------------}
 
-function QToolBoxGroup.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QToolBoxGroup.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQToolBoxGroup.Create(nOwner);
 end;
@@ -96,7 +99,7 @@ begin
  Info.WndInfo:=[wiSameExplorer];
 end;
 
-procedure QToolBoxGroup.EtatObjet(var E: TEtatObjet);
+procedure QToolBoxGroup.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiNewFolder;
@@ -113,7 +116,7 @@ begin
  Result:=ieResult[True];
 end;
 
-(*procedure QToolBoxGroup.OpDansScene(Aj: TAjScene; PosRel: Integer);
+(*procedure QToolBoxGroup.OperationInScene(Aj: TAjScene; PosRel: Integer);
 begin
  FDescriptionLeft:=0;
  inherited;

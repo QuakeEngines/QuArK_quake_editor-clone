@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -44,12 +47,12 @@ uses
 type
  QImage  = class(QPixelSet)
            protected
-             function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+             function OpenWindow(nOwner: TComponent) : TQForm1; override;
             {procedure PasteImageDC(NeededGame: Char; DC: HDC; W,H: Integer);}
              procedure SetQuakeImageData(const Lmp: TPaletteLmp; const Data: String; W,H: Integer);
            public
              function TestConversionType(I: Integer) : QFileObjectClass; override;
-             procedure EtatObjet(var E: TEtatObjet); override;
+             procedure ObjectState(var E: TEtatObjet); override;
              function IsTrueColor : Boolean;
              procedure NotTrueColor;
             {function GetSize : TPoint;}
@@ -191,12 +194,12 @@ end;
 
  {------------------------}
 
-function QImages.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QImages.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQImages.Create(nOwner);
 end;
 
-procedure QImages.EtatObjet(var E: TEtatObjet);
+procedure QImages.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPcx;
@@ -741,7 +744,7 @@ var
  PSD: TPixelSetDescription;
  Temp: QImages;
 begin
- DebutTravail(0,0); try
+ ProgressIndicatorStart(0,0); try
  PSD:=Description; try
  if not PSDConvert(NewPSD, PSD, ccConfirm) then Abort;
  Temp:=QBmp.Create('', Nil); try
@@ -749,7 +752,7 @@ begin
  Undo.Action(Self, TSetSpecificsUndo.Create(LoadStr1(626), Temp.Specifics, Self));
  finally Temp.Free; end;
  finally NewPSD.Done; PSD.Done; end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
  {------------------------}
@@ -928,7 +931,7 @@ var
  NewPSD: TPixelSetDescription;
  Size: array[1..2] of TDouble;
 begin
- LireValeurs(EditSize.Text, Size);
+ ReadValues(EditSize.Text, Size);
  NewPSD.Init;
  NewPSD.Size.X:=Round(Size[1]);
  NewPSD.Size.Y:=Round(Size[2]);

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.8  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -47,20 +50,20 @@ uses
 type
  QWad = class(QLvFileObject)
         protected
-          function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+          function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
           function TestConversionType(I: Integer) : QFileObjectClass; override;
           function ConversionFrom(Source: QFileObject) : Boolean; override;
-          procedure EtatObjet(var E: TEtatObjet); override;
+          procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
         end;
  QTextureList = class(QWad)
                 protected
-                 {function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;}
+                 {function OpenWindow(nOwner: TComponent) : TQForm1; override;}
                   procedure SaveFile(Info: TInfoEnreg1); override;
                   procedure LoadFile(F: TStream; FSize: Integer); override;
                 public
@@ -102,12 +105,12 @@ const
  SignatureWad2 = $32444157;   { 'WAD2' }
 
 type
- TEnteteWad = record
+ TWadHeader = record
                Signature: LongInt;   { 'WAD2' }
-               NbEntrees, PosRep: LongInt;
+               NoOfFileEntries, PosRep: LongInt;
               end;
- PEntreeRep = ^TEntreeRep;
- TEntreeRep = record
+ PWadFileRec = ^TWadFileRec;
+ TWadFileRec = record
                Position, Taille, Idem: LongInt;
                InfoType, Compression: Char;
                Dummy: Word;
@@ -124,12 +127,12 @@ begin
  Result:='.wad';
 end;
 
-function QWad.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QWad.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQWad.Create(nOwner);
 end;
 
-procedure QWad.EtatObjet(var E: TEtatObjet);
+procedure QWad.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiWad;
@@ -163,12 +166,12 @@ end;
 
 (*procedure QWad.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
 var
- Header: TEnteteWad;
+ Header: TWadHeader;
 begin
  Source.ReadBuffer(Header, SizeOf(Header));
  if Header.Signature<>SignatureWad2 then
   Raise EErrorFmt(5505, [Nom, Header.Signature, SignatureWad2]);
- if Header.PosRep + Header.NbEntrees*SizeOf(TEntreeRep) > SourceTaille then
+ if Header.PosRep + Header.NoOfFileEntries*SizeOf(TWadFileRec) > SourceTaille then
   Raise EErrorFmt(5186, [Nom]);
  Source.Seek(-SizeOf(Header), soFromCurrent);
  LoadFormat:=1;
@@ -176,9 +179,9 @@ end;*)
 
 procedure QWad.LoadFile(F: TStream; FSize: Integer);
 var
- Header: TEnteteWad;
+ Header: TWadHeader;
  I: Integer;
- Entrees, P: PEntreeRep;
+ Entrees, P: PWadFileRec;
  Origine: LongInt;
  Q: QObject;
  Prefix: String;
@@ -196,8 +199,8 @@ begin
         Prefix:='.wad3_'
        else
         Raise EErrorFmt(5505, [LoadName, Header.Signature, SignatureWad2]);
-      I:=Header.NbEntrees * SizeOf(TEntreeRep);
-      if (I<0) or (Header.PosRep<SizeOf(TEnteteWad)) then
+      I:=Header.NoOfFileEntries * SizeOf(TWadFileRec);
+      if (I<0) or (Header.PosRep<SizeOf(TWadHeader)) then
        Raise EErrorFmt(5509, [71]);
       if Header.PosRep + I > FSize then
        Raise EErrorFmt(5186, [LoadName]);
@@ -206,7 +209,7 @@ begin
       F.Position:=Origine + Header.PosRep;
       F.ReadBuffer(Entrees^, I);
       P:=Entrees;
-      for I:=1 to Header.NbEntrees do
+      for I:=1 to Header.NoOfFileEntries do
        begin
         if (P^.Position+P^.Taille > FSize)
         or (P^.Position<SizeOf(Header))
@@ -226,8 +229,8 @@ end;
 
 procedure QWad.SaveFile(Info: TInfoEnreg1);
 var
- Header: TEnteteWad;
- Entree: TEntreeRep;
+ Header: TWadHeader;
+ Entree: TWadFileRec;
  Repertoire: TMemoryStream;
  Origine, Fin: LongInt;
  I, Zero: Integer;
@@ -245,7 +248,7 @@ begin
 
        { write .wad entries }
       Repertoire:=TMemoryStream.Create; try
-      Header.NbEntrees:=0;
+      Header.NoOfFileEntries:=0;
       for I:=0 to SubElements.Count-1 do
        begin
         FillChar(Entree, SizeOf(Entree), 0);
@@ -284,8 +287,8 @@ begin
         Zero:=0;
         F.WriteBuffer(Zero, (-Entree.Taille) and 3);  { align to 4 bytes }
         Repertoire.WriteBuffer(Entree, SizeOf(Entree));
-        Inc(Header.NbEntrees);
-        ProgresTravail;
+        Inc(Header.NoOfFileEntries);
+        ProgressIndicatorIncrement;
        end;
 
        { write directory }
@@ -329,7 +332,7 @@ begin
  Result:='.txlist';
 end;
 
-{function QTextureList.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+{function QTextureList.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQWad.Create(nOwner);
 end;}
@@ -477,7 +480,7 @@ begin
           end;
          end; 
         Inc(P);
-        ProgresTravail;
+        ProgressIndicatorIncrement;
        end;
 
        { update directory }

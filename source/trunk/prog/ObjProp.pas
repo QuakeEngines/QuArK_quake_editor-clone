@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:42  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -205,7 +208,7 @@ begin
  Gr.AddRef(+1); try
  if ListBox1.ItemIndex>=0 then
   begin
-   DebutTravail(5457, List.Count); try
+   ProgressIndicatorStart(5457, List.Count); try
    for I:=0 to List.Count-1 do
     if List[I] is QPixelSet then
      QPixelSet(List[I]).LoadPixelSet
@@ -220,9 +223,9 @@ begin
       if not QFileObject(Gr.SubElements[Gr.SubElements.Add(ConvertClass.Create(List[I].Name, Gr))])
              .ConversionFrom(QFileObject(List[I])) then
        Raise EError(5538);
-     ProgresTravail;
+     ProgressIndicatorIncrement;
     end;
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
    if Gr.SubElements.Count=0 then Exit;
   end
  else

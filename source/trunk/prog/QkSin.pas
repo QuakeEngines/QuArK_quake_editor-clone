@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -255,7 +258,7 @@ var
       Header.trans_mag :=GetFloatSpec('trans_mag', 0.0);
     { tiglari: revising rep to string
 	  GetFloatsSpec('color', Header.color); }
-      LireValeurs(Specifics.Values['color'], Cl);
+      ReadValues(Specifics.Values['color'], Cl);
     { tiglari: this looks real dumb, is there a cast construction or something
        that could be used instead? }
       for I:=0 to 2 do

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.3  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -118,7 +121,7 @@ type
               constructor CreateHull(nBsp: QBSP; Index: Integer; nParent: QObject);
               destructor Destroy; override;
               class function TypeInfo: String; override;
-              procedure EtatObjet(var E: TEtatObjet); override;
+              procedure ObjectState(var E: TEtatObjet); override;
               function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
               procedure Dessiner; override;
              {function SingleLevel: Boolean; override;}
@@ -639,7 +642,7 @@ begin
  TypeInfo:=':bsphull';
 end;
 
-procedure TBSPHull.EtatObjet;
+procedure TBSPHull.ObjectState;
 begin
  inherited;
  E.IndexImage:=iiComponent;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.11  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -145,8 +148,8 @@ type
                   function GetObjectGameCode: Char;
                   procedure SetObjectGameCode(nCode: Char);
                 protected
-                  function OuvrirFenetre(nOwner: TComponent) : TQForm1; dynamic;
-                  function ObtenirFenetre(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
+                  function OpenWindow(nOwner: TComponent) : TQForm1; dynamic;
+                  function ObtainWindow(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
                   function ReadStandardFileHeading(Source: TStream; var SourceTaille: Integer) : Integer;
                   procedure WriteStandardFileHeading(TotalSize: Integer; F: TStream);
                   procedure LoadFile(F: TStream; FSize: Integer); override;
@@ -160,8 +163,8 @@ type
                   ReadFormat: Integer;
                   destructor Destroy; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); virtual;
-                  procedure EtatObjet(var E: TEtatObjet); override;
-                  function OuvrirDansFenetre(nParent: TWinControl) : TQForm1;
+                  procedure ObjectState(var E: TEtatObjet); override;
+                  function OpenInWindow(nParent: TWinControl) : TQForm1;
                   procedure OpenStandAloneWindow(ParentPanel: TWinControl; FullParentPanel: Boolean);
                   function EnumObjectWindow(var F: TQForm1) : Boolean;
                   procedure TrySavingNow;
@@ -172,7 +175,7 @@ type
                   procedure CopyToClipboard;
                  {function FindSubObject(const nName: String; WantClass: QObjectClass) : QObject;}
                   function CreateOwnExplorer(nOwner: TComponent) : TWinControl; dynamic;
-                  procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+                  procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
                   function LoadSibling(const nName: String) : QFileObject;
                   function FindFile(const nName: String) : QFileObject; dynamic;
                   procedure CloseUndo;
@@ -680,7 +683,7 @@ end;
 
 procedure ConstructObjsFromText(Self: QObject; P: PChar; PSize: Integer);
 const
- Separateurs = [#13, #10, ' ', #9];
+ cSeperators = [#13, #10, ' ', #9];
  Granularite = 8192;
 var
  NameSpec, Arg, A1: String;
@@ -695,11 +698,11 @@ var
    Inc(P, Delta);
    while P>Prochain do
     begin
-     ProgresTravail;
+     ProgressIndicatorIncrement;
      Inc(Prochain, Granularite);
     end;
    repeat
-    while P^ in Separateurs do
+    while P^ in cSeperators do
      begin
       if P^ in [#13, #10] then Inc(Ligne);
       Inc(P);
@@ -731,7 +734,7 @@ var
   end;
 
 begin
- DebutTravail(5447, PSize div Granularite); try
+ ProgressIndicatorStart(5447, PSize div Granularite); try
  Ligne:=1;
  Prochain:=P+Granularite;
  Lu(0);
@@ -762,7 +765,7 @@ begin
     Inc(I);
    end;
   J:=I+1;
-  while P[I-1] in Separateurs do
+  while P[I-1] in cSeperators do
    Dec(I);
   SetString(NameSpec, P, I);
   Lu(J);
@@ -822,7 +825,7 @@ begin
          while P^<>'''' do
           begin
            P1:=P;
-           while not (P^ in (['''', #0]+Separateurs)) do
+           while not (P^ in (['''', #0]+cSeperators)) do
             Inc(P);
            SetString(A1, P1, P-P1);
            try
@@ -848,7 +851,7 @@ begin
    else SyntaxError(5196);
   end;
  until False;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure QFileObject.WriteStandardFileHeading(TotalSize: Integer; F: TStream);
@@ -1050,7 +1053,7 @@ begin
   else
    try  { target is removeable - we COPY the file there }
     I:=F.Size;
-    DebutTravail(5450, I div Granularite + 1); try
+    ProgressIndicatorStart(5450, I div Granularite + 1); try
     TargetFile:=TFileStream.Create(AlternateFile, fmCreate); try
     F.Position:=0;
     while I>0 do
@@ -1058,11 +1061,11 @@ begin
       J:=I;
       if J>Granularite then J:=Granularite;
       TargetFile.CopyFrom(F, J);
-      ProgresTravail;
+      ProgressIndicatorIncrement;
       Dec(I, J);
      end; 
     finally TargetFile.Free; end;
-    finally FinTravail; end;
+    finally ProgressIndicatorStop; end;
   (*FileOp.Wnd:=Form1.Handle;
     FileOp.wFunc:=FO_COPY;
     FileOp.pFrom:=PChar(TempFile);
@@ -1136,7 +1139,7 @@ var
 begin
  Level.Acces;
 {Level.BuildReferences;}
- DebutTravail(5443, Level.SubElements.Count+1); try
+ ProgressIndicatorStart(5443, Level.SubElements.Count+1); try
  for J:=0 to Level.Specifics.Count-1 do
   begin
    S:=Level.Specifics[J];
@@ -1251,7 +1254,7 @@ begin
      end;
    L.Add(Arg);
   end;
- ProgresTravail;
+ ProgressIndicatorIncrement;
  for J:=0 to Level.SubElements.Count-1 do
   begin
    Q:=Level.SubElements[J];
@@ -1264,9 +1267,9 @@ begin
      ConvertObjsToTextWithComment(Q, L, Indent+'  ');
      L.Add(Indent + '}');
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure ConvertObjsToText(Self: QObject; L: TStringList; Comment: Boolean);
@@ -1416,7 +1419,7 @@ begin
  Info.DefaultExt:=Copy(Info.NomClasseEnClair, 2, MaxInt);
 end;
 
-procedure QFileObject.EtatObjet(var E: TEtatObjet);
+procedure QFileObject.ObjectState(var E: TEtatObjet);
 begin
  E.IndexImage:=iiUnknownFile;
  E.MarsColor:=clNavy;
@@ -1439,7 +1442,7 @@ procedure QFileObject.Go1(maplist, extracted: PyObject; var FirstMap: String; QC
 begin
 end;
 
-function QFileObject.ObtenirFenetre(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
+function QFileObject.ObtainWindow(nOwner: TComponent; State: TFileObjectWndState) : TQForm1;
 var
  I: Integer;
  Obj: TComponent;
@@ -1451,7 +1454,7 @@ begin
    if (Obj is TQForm1) and TQForm1(Obj).AssignObject(Self, State) then
     begin
      Result:=TQForm1(Obj);
-     EtatObjet(E);
+     ObjectState(E);
      Result.MarsCap.ActiveEndColor:=E.MarsColor;
      Result.UpdateMarsCap;
      Exit;
@@ -1460,7 +1463,7 @@ begin
  if State=cmOwnExplorer then
   Result:=TQFormExplorer.Create(nOwner)
  else
-  Result:=OuvrirFenetre(nOwner);
+  Result:=OpenWindow(nOwner);
  if (Result=Nil) or not Result.AssignObject(Self, State) then
  {Raise EErrorFmt(5201, [Name]);}
  {Result:=Nil;}
@@ -1476,17 +1479,17 @@ begin
     Result:=TFQUnknown.Create(nOwner);
    Result.ForcedAssignObject(Self, State);
   end;
- EtatObjet(E);
+ ObjectState(E);
  Result.MarsCap.ActiveEndColor:=E.MarsColor;
  Result.UpdateMarsCap;
 end;
 
-function QFileObject.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QFileObject.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=Nil;
 end;
 
-function QFileObject.OuvrirDansFenetre(nParent: TWinControl) : TQForm1;
+function QFileObject.OpenInWindow(nParent: TWinControl) : TQForm1;
 var
  Info: TFileObjectClassInfo;
 begin
@@ -1496,7 +1499,7 @@ begin
    Result:=Nil;  { never open }
    Exit;
   end;
- Result:=ObtenirFenetre(nParent, cmNone);
+ Result:=ObtainWindow(nParent, cmNone);
  if Result=Nil then Exit;
  Result.BorderStyle:=bsNone;
  Result.Parent:=nParent;
@@ -1514,7 +1517,7 @@ var
  Maximize: Boolean;
 begin
  AddRef(+1); try
- DebutTravail(5452, 0); try
+ ProgressIndicatorStart(5452, 0); try
  FileObjectClassInfo(Info);
  if wiForm1 in Info.WndInfo then
   begin
@@ -1532,7 +1535,7 @@ begin
     else
      WndState:=cmOwnExplorer;
     Maximize:=Maximize or (wiMaximize in Info.WndInfo);
-    F:=ObtenirFenetre(Application, WndState);
+    F:=ObtainWindow(Application, WndState);
     if F=Nil then Exit;
    {WindowPlacement.ShowCmd:=sw_ShowNormal;}
     F.Attach(ParentPanel);
@@ -1564,7 +1567,7 @@ begin
     Raise EErrorFmt(5201, [Name+TypeInfo])
    else
     Raise EErrorFmt(5202, [Name+TypeInfo]);
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  finally AddRef(-1); end;
 end;
 
@@ -1881,7 +1884,7 @@ begin
  Result:=Q as QFileObject;
 end;
 
-procedure QFileObject.OpDansScene(Aj: TAjScene; PosRel: Integer);
+procedure QFileObject.OperationInScene(Aj: TAjScene; PosRel: Integer);
 var
  F: TQForm1;
  Extra: TCustomForm;
@@ -2173,7 +2176,7 @@ begin
   else
    Q.CurrentlySaved:=cs_Explorer;}
  Caption:=FileObject.Name;
- FFileObject.EtatObjet(E);
+ FFileObject.ObjectState(E);
  SetFormIcon(E.IndexImage);
 end;
 

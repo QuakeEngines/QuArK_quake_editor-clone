@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.10  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -100,7 +103,7 @@ type
                procedure ConstruireSommets;
                procedure ConstruireReduire;
                function CheckPolyhedron: Boolean;
-               procedure EtatObjet(var E: TEtatObjet); override;
+               procedure ObjectState(var E: TEtatObjet); override;
                function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
               {function EnumFaces(var F: TFace) : Boolean;}
                procedure SauverTextePolyedre(Brush: TStrings; OriginBrush: PVect; Flags: Integer);
@@ -111,7 +114,7 @@ type
                function CentrePolyedre : TVect;
                function GetOrigin(var Pt: TVect) : Boolean; override;
                procedure AnalyseClic(Liste: PyObject); override;
-               procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+               procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
                procedure ChercheExtremites(var Min, Max: TVect); override;
                procedure InvalidatePolyhedron(Aj: TAjScene);
                function GetPolyhedronError : String;
@@ -169,7 +172,7 @@ type
                class function TypeInfo: String; override;
               {procedure PostDessinerSel; override;}
               {procedure PostDessinerSel1;}
-               procedure EtatObjet(var E: TEtatObjet); override;
+               procedure ObjectState(var E: TEtatObjet); override;
               {function VecteurNormal : TVect;}
                procedure SetThreePoints(const V1, V2, V3: TVect);
                function GetThreePoints(var V1, V2, V3: TVect) : Boolean;
@@ -188,7 +191,7 @@ type
                procedure Deplacement(const PasGrille: TDouble); override;
                procedure Distortion(const nNormal, FixPoint: TVect);
                procedure DistortionPoint(const Fix1, Fix2, Src, Dest: TVect);
-               procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+               procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
               {property VertexCount[Cmpo: Integer] : Integer read GetVertexCount;
                property Vertex[Cmpo, I: Integer] : TVect read GetVertex;}
                procedure SetFaceFromParams(const nNormale: TVect; nDist: TDouble; const TexParams: TFaceParams);
@@ -1068,7 +1071,7 @@ begin
  TypeInfo:=':p';
 end;
 
-procedure TPolyedre.EtatObjet;
+procedure TPolyedre.ObjectState;
 begin
  inherited;
 {if (FFlags and ofSurDisque <> 0) or CheckPolyhedron then}
@@ -2474,7 +2477,7 @@ begin
  inherited;
 end;
 
-procedure TPolyedre.OpDansScene(Aj: TAjScene; PosRel: Integer);
+procedure TPolyedre.OperationInScene(Aj: TAjScene; PosRel: Integer);
 begin
  inherited;
  InvalidatePolyhedron(Aj);
@@ -3057,7 +3060,7 @@ begin
   end
  else
   try
-   Normale:=LireVecteur(S);
+   Normale:=ReadVector(S);
    Normalise(Normale);
   {Dist:=Dist+Dot(TPolyedre(FParent).CentrePolyedre, Normale);}
   except
@@ -3071,7 +3074,7 @@ begin
  TypeInfo:=':f';
 end;
 
-procedure TFace.EtatObjet;
+procedure TFace.ObjectState;
 begin
  inherited;
 (*if {(GetForm4(Self)=Nil)
@@ -3735,7 +3738,7 @@ begin
   Specifics.Values['m']:='';
 end;
 
-procedure TFace.OpDansScene(Aj: TAjScene; PosRel: Integer);
+procedure TFace.OperationInScene(Aj: TAjScene; PosRel: Integer);
 {var
  P: PSurface;}
 begin

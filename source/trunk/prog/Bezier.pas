@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.14  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -103,8 +106,8 @@ type
              procedure Deplacement(const PasGrille: TDouble); override;
              procedure Dessiner; override;
              procedure PreDessinerSel; override;
-             procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
-             procedure EtatObjet(var E: TEtatObjet); override;
+             procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
+             procedure ObjectState(var E: TEtatObjet); override;
              procedure AddTo3DScene; override;
              procedure ChercheExtremites(var Min, Max: TVect); override;
 
@@ -346,7 +349,7 @@ begin
  S:=Specifics.Values['cnt'];
  if S='' then Exit;
  try
-  LireValeurs(S, V);
+  ReadValues(S, V);
  except
   Exit;
  end;
@@ -505,7 +508,7 @@ begin
  BuildMeshCache;  { rebuild the cache when something changed inside the object }
 end;*)
 
-procedure TBezier.OpDansScene;
+procedure TBezier.OperationInScene;
 begin
   { invalidates the cache when something changed inside the object }
  ReallocMem(FMeshCache.CP, 0);
@@ -1042,7 +1045,7 @@ begin
 end;
 
  { assign to patches their icon }
-procedure TBezier.EtatObjet;
+procedure TBezier.ObjectState;
 begin
  inherited;
  E.IndexImage:=iiBezier;

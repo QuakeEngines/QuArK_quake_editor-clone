@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -95,7 +98,7 @@ begin
     nRect.Top:=Rect.Top;
     nRect.Right:=nRect.Left;
     nRect.Bottom:=nRect.Top;
-    DebutTravail(0,0); try
+    ProgressIndicatorStart(0,0); try
     while S<>'' do
      begin
       J:=Pos(';', S);
@@ -108,7 +111,7 @@ begin
       L.Add(Tex);
       System.Delete(S, 1, J);
      end;
-    finally FinTravail; end;
+    finally ProgressIndicatorStop; end;
     if nRect.Right=nRect.Left then Abort;
     Textures:=L;
     L:=Nil;

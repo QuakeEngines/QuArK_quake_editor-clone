@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.5  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -167,7 +170,7 @@ type
  QMdlObject = class(Q3DObject)
               public
                 class function TypeInfo: String; override;
-                procedure EtatObjet(var E: TEtatObjet); override;
+                procedure ObjectState(var E: TEtatObjet); override;
                 function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                 function PackedVersion : QPackedModel;
                {function UnpackedVersion : QMdlObject;}
@@ -184,7 +187,7 @@ type
           public
             class function TypeInfo: String; override;
             destructor Destroy; override;
-            procedure EtatObjet(var E: TEtatObjet); override;
+            procedure ObjectState(var E: TEtatObjet); override;
             function GetVertices(var P: vec3_p) : Integer;
             procedure ChercheExtremites(var Min, Max: TVect); override;
             function PyGetAttr(attr: PChar) : PyObject; override;
@@ -205,7 +208,7 @@ type
                 procedure CouleurDessin(var C: TColor);
               public
                 class function TypeInfo: String; override;
-                procedure EtatObjet(var E: TEtatObjet); override;
+                procedure ObjectState(var E: TEtatObjet); override;
                 destructor Destroy; override;
                 function Triangles(var P: PComponentTris) : Integer;
                 function GetSkinDescr(Static: Boolean) : String;
@@ -220,7 +223,7 @@ type
                 function BuildFrameList : TQList;
                 function BuildSkinList : TQList;
                 function QuickSetSkin(nSkin: QImages; const StaticBase: String) : QComponent;
-               {procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;}
+               {procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;}
                 procedure ChercheExtremites(var Min, Max: TVect); override;
                 function MergeVertices(Frames: TQList) : Boolean;
                {procedure PreDessinerSel; override;}
@@ -296,7 +299,7 @@ begin
  TypeInfo:=':m';
 end;
 
-procedure QMdlObject.EtatObjet(var E: TEtatObjet);
+procedure QMdlObject.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiModelGroup;
@@ -433,7 +436,7 @@ begin
  TypeInfo:=':mf';
 end;
 
-procedure QFrame.EtatObjet(var E: TEtatObjet);
+procedure QFrame.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiFrame;
@@ -573,7 +576,7 @@ end;
 var
  GlobalSkinCounter: Integer;
 
-procedure QComponent.EtatObjet(var E: TEtatObjet);
+procedure QComponent.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiComponent;
@@ -675,7 +678,7 @@ begin
  TypeInfo:=':mp';
 end;
 
-{procedure QComponent.OpDansScene(Aj: TAjScene; PosRel: Integer);
+{procedure QComponent.OperationInScene(Aj: TAjScene; PosRel: Integer);
 begin
  inherited;
  if Aj in [asAjoute, asModifie, asDeplace2] then
@@ -809,7 +812,7 @@ begin
      Raise EErrorFmt(2433, ['VertexCount']);
   end;
  if VertexCount<=0 then Exit;  { no frames or no vertices }
- DebutTravail(503, Frames.Count+3); try
+ ProgressIndicatorStart(503, Frames.Count+3); try
  Bits:=TBits.Create; try
  Bits.Size:=VertexCount*(VertexCount-1) div 2;
  for I:=0 to Frames.Count-1 do
@@ -831,7 +834,7 @@ begin
       Inc(CVertK);
      until CVertK=CVertJ;
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
  GetMem(VertexMap, SizeOf(Integer)*VertexCount); try
  B:=0;
@@ -858,7 +861,7 @@ begin
   end;
  if nVertexCount = VertexCount then Exit;  { no changes }
  Bits.Size:=0;
- ProgresTravail;
+ ProgressIndicatorIncrement;
 
  S:=GetSpecArg(Spec1);
  UniqueString(S);
@@ -877,7 +880,7 @@ begin
 
  for I:=0 to VertexCount-1 do
   VertexMap^[VertexMap^[I]]:=I; 
- ProgresTravail;
+ ProgressIndicatorIncrement;
 
  for I:=0 to Frames.Count-1 do
   begin
@@ -903,10 +906,10 @@ begin
    FrameObj.Specifics.Values[FloatSpecNameOf(Spec2)]:='';
    FrameObj.Specifics.Add(S);
   end;
- ProgresTravail;
+ ProgressIndicatorIncrement;
  finally FreeMem(VertexMap); end;
  finally Bits.Free; end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  Result:=True;
 end;
 
@@ -959,7 +962,7 @@ begin
   begin
    C:=clNone;
    try
-    C:=vtocol(LireVecteur(S));
+    C:=vtocol(ReadVector(S));
    except
     {rien}
    end;

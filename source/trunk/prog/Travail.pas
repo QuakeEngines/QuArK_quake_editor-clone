@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -39,7 +42,7 @@ uses
   ComCtrls, StdCtrls, ExtCtrls;
 
 type
-  PTravail = ^TTravail;
+  PProgressIndicator = ^TProgressIndicator;
   TFormTravail = class(TForm)
     Panel1: TPanel;
     LabelProgress: TLabel;
@@ -51,22 +54,22 @@ type
     PositionInt: Integer;
   public
   end;
-  TTravail = record
-              Suivant: PTravail;
+  TProgressIndicator = record
+              NextProgressIndicator: PProgressIndicator;
               Form: TFormTravail;
               Ignore, Texte: Integer;
               Debut: LongInt;
-              Pos0, Position, Pas, Max: Double;
+              Pos0, Position, IncrementStep, Max: Double;
              end;
 
 {$IFDEF DebugTTT}
-var TravailCnt: Integer;
+var ProgressIndicatorCount: Integer;
 {$ENDIF}
 
-procedure DebutTravail(NoTexte, Total: Integer);
-procedure ChangeMaxTravail(nPosition, Total: Integer);
-procedure ProgresTravail;
-procedure FinTravail;
+procedure ProgressIndicatorStart(NoTexte, Total: Integer);
+procedure ProgressIndicatorChangeMax(nPosition, Total: Integer);
+procedure ProgressIndicatorIncrement;
+procedure ProgressIndicatorStop;
 
  {------------------------}
 
@@ -77,20 +80,20 @@ uses QkObjects, Quarkx;
 {$R *.DFM}
 
 const
- BarMax = 100;
+ cBarMax = 100;
 
 var
- FTravail: PTravail = Nil;
+ FTravail: PProgressIndicator = Nil;
  Ignore1: Integer = 0;
 
  {------------------------}
 
-procedure DebutTravail(NoTexte, Total: Integer);
+procedure ProgressIndicatorStart(NoTexte, Total: Integer);
 var
- P: PTravail;
+ P: PProgressIndicator;
  Range: Double;
 begin
- {$IFDEF DebugTTT} Inc(TravailCnt); {$ENDIF}
+ {$IFDEF DebugTTT} Inc(ProgressIndicatorCount); {$ENDIF}
  if Total<=1 then
   begin
    if FTravail=Nil then
@@ -104,10 +107,10 @@ begin
    Exit;
   end;
  if FTravail=Nil then
-  Range:=BarMax
+  Range:=cBarMax
  else
   begin
-   Range:=FTravail^.Pas;
+   Range:=FTravail^.IncrementStep;
    if Range < 1.5 then
     begin  { too small steps }
      Inc(FTravail^.Ignore);
@@ -117,32 +120,32 @@ begin
  New(P);
  with P^ do
   begin
-   Suivant:=FTravail;
+   NextProgressIndicator:=FTravail;
    FTravail:=P;
    Ignore:=0;
-   if Suivant=Nil then
+   if NextProgressIndicator=Nil then
     begin
      Form:=Nil;
      Debut:=GetTickCount;
      Pos0:=0;
-     Max:=BarMax;
+     Max:=cBarMax;
      Texte:=NoTexte;
      Screen.Cursor:=crHourglass;
     end
    else
     begin
-     Form:=Suivant^.Form;
-     Debut:=Suivant^.Debut;
-     Pos0:=Suivant^.Position;
+     Form:=NextProgressIndicator^.Form;
+     Debut:=NextProgressIndicator^.Debut;
+     Pos0:=NextProgressIndicator^.Position;
      Max:=Pos0+Range;
-     Texte:=Suivant^.Texte;
+     Texte:=NextProgressIndicator^.Texte;
     end;
    Position:=Pos0;
-   Pas:=Range/Total;
+   IncrementStep:=Range/Total;
   end;
 end;
 
-procedure ProgresTravail;
+procedure ProgressIndicatorIncrement;
 var
  Temps: Integer;
  Arrivee, Stop: Boolean;
@@ -156,7 +159,7 @@ begin
   begin
    if Ignore=0 then
     begin
-     Position:=Position+Pas;
+     Position:=Position+IncrementStep;
      if Position>Max then
       Position:=Max;
     end;  
@@ -164,7 +167,7 @@ begin
    if Arrivee then
     begin
      Temps:=Integer(GetTickCount)-Debut;
-     if (Temps<375) or (Temps < (1300/BarMax)*Position) then
+     if (Temps<375) or (Temps < (1300/cBarMax)*Position) then
       Exit;
 
      Form:=TFormTravail.Create(Application);
@@ -208,11 +211,14 @@ begin
   end;
 end;
 
-procedure FinTravail;
+procedure ProgressIndicatorStop;
 var
- P: PTravail;
+ P: PProgressIndicator;
 begin
- {$IFDEF DebugTTT} Dec(TravailCnt); try {$ENDIF}
+{$IFDEF DebugTTT}
+ Dec(ProgressIndicatorCount);
+ try
+{$ENDIF}
  if FTravail=Nil then
   begin
    if Ignore1>0 then
@@ -228,40 +234,42 @@ begin
      Dec(Ignore);
      Exit;
     end;
-   if Suivant=Nil then
+   if NextProgressIndicator=Nil then
     begin
      Form.Free;
      Screen.Cursor:=crDefault;
     end
    else
-    Suivant^.Form:=Form;
-   P:=Suivant;
+    NextProgressIndicator^.Form:=Form;
+   P:=NextProgressIndicator;
   end;
  Dispose(FTravail);
  FTravail:=P;
  if (FTravail=Nil) and (Ignore1=0) then
   Screen.Cursor:=crDefault;
- {$IFDEF DebugTTT} finally
-  if (TravailCnt=0) and (Screen.Cursor<>crDefault) then
+{$IFDEF DebugTTT}
+ finally
+  if (ProgressIndicatorCount=0) and (Screen.Cursor<>crDefault) then
    Abort;
-  end; {$ENDIF}
+ end;
+{$ENDIF}
 end;
 
-procedure ChangeMaxTravail;
+procedure ProgressIndicatorChangeMax;
 var
- nPas, mPosition: Double;
+ nIncrementStep, mPosition: Double;
 begin
  if (FTravail=Nil) or (Ignore>0) then
   Exit;
  with FTravail^ do
   begin
-   nPas:=(Max-Pos0)/Total;
+   nIncrementStep:=(Max-Pos0)/Total;
    if nPosition<0 then
-    mPosition:=(Position-Pos0)*(nPas/Pas)
+    mPosition:=(Position-Pos0)*(nIncrementStep/IncrementStep)
    else
-    mPosition:=nPosition*nPas;
+    mPosition:=nPosition*nIncrementStep;
    Position:=Pos0 + mPosition;
-   Pas:=nPas;
+   IncrementStep:=nIncrementStep;
   end;
 end;
 

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.8  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -106,7 +109,7 @@ type
               function GetFormName : String; virtual;
              {function AjouterRef(Liste: TList; Niveau: Integer) : Integer; override;}
              {procedure RefreshColor(Plan: Pointer); virtual;}
-              procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+              procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
              { function GetObjectMenu(Control: TControl) : TPopupMenu; override;
               function GetTMMenuState(Item: Integer) : Integer; dynamic;}
               procedure SetSelFocus; dynamic;
@@ -141,10 +144,10 @@ type
                     function GetBBoxInfo(var BBox: TBBoxInfo) : Boolean;
                   public
                     class function TypeInfo: String; override;
-                    procedure EtatObjet(var E: TEtatObjet); override;
+                    procedure ObjectState(var E: TEtatObjet); override;
                     procedure AnalyseClic(Liste: PyObject); override;
                     procedure FixupReference; override;
-                   {procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;}
+                   {procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;}
                     function GetOrigin(var Pt: TVect) : Boolean; override;
                     property Origin: TVect read FOrigin write SetOrigin;
                     property HasOrigin: Boolean read FHasOrigin;
@@ -168,7 +171,7 @@ type
                    SelectedIndex: Integer;
                    procedure Dessiner; override;
                    class function TypeInfo: String; override;
-                   procedure EtatObjet(var E: TEtatObjet); override;
+                   procedure ObjectState(var E: TEtatObjet); override;
                    function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                    property ViewFlags: Integer read GetViewFlags write SetViewFlags;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
@@ -186,7 +189,7 @@ type
                  public
                    Form4: TQkForm;
                    class function TypeInfo: String; override;
-                   procedure EtatObjet(var E: TEtatObjet); override;
+                   procedure ObjectState(var E: TEtatObjet); override;
                    procedure ListePolyedres(Polyedres, Negatif: TQList; Flags: Integer; Brushes: Integer); override;
                    procedure ListeEntites(Entites: TQList; Cat: TEntityChoice); override;
                    procedure SauverTexte(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings); override;
@@ -347,7 +350,7 @@ begin
   Result:=False
  else
   try
-   Pt:=LireVecteur(S);
+   Pt:=ReadVector(S);
    Result:=True;
   except
    Result:=False;
@@ -458,7 +461,7 @@ procedure TTreeMap.SetSelFocus;
 begin
 end;
 
-procedure TTreeMap.OpDansScene;
+procedure TTreeMap.OperationInScene;
 begin
  if PosRel=0 then
   begin
@@ -742,7 +745,7 @@ begin
       end;
    3: try
        S:=Specifics.Values[S];
-       with CalculeMAngle(LireVecteur(S)) do
+       with CalculeMAngle(ReadVector(S)) do
         begin
          Rapport:=LongueurVectNormal/pProjZ;
          V.X:=Origin.X+X*Rapport;
@@ -838,7 +841,7 @@ end;
        end;
     3: begin
         Chaine:=Specifics.Values[Spec];
-        Dest:=LireVecteur(Chaine);
+        Dest:=ReadVector(Chaine);
         Dest.X:=Round(AngleXY(Sqrt(Sqr(V.X)+Sqr(V.Y)), V.Z) * (-180/pi));
         Dest.Y:=AnglePlat;
         Specifics.Values[Spec]:=vtos(Dest);
@@ -1064,7 +1067,7 @@ begin
    else
     C:=clBlack;
    try
-    C:=vtocol(LireVecteur(S));
+    C:=vtocol(ReadVector(S));
    except
     {rien}
    end;
@@ -1078,7 +1081,7 @@ begin
  TypeInfo:=':e';
 end;
 
-procedure TTreeMapEntity.EtatObjet;
+procedure TTreeMapEntity.ObjectState;
 begin
  inherited;
  E.IndexImage:=iiEntity;
@@ -1108,13 +1111,13 @@ begin
  FHasOrigin:=S<>'';
  if FHasOrigin then
   try
-  {Nouveau:=LireVecteur(S);
+  {Nouveau:=ReadVector(S);
    Result:=Result
     or (Nouveau.X<>Origin.X)
     or (Nouveau.Y<>Origin.Y)
     or (Nouveau.Z<>Origin.Z);
    FOrigin:=Nouveau;}
-   FOrigin:=LireVecteur(S);
+   FOrigin:=ReadVector(S);
   except
    FHasOrigin:=False;
   end;
@@ -1147,7 +1150,7 @@ begin
  inherited; 
 end;
 
-(*procedure TTreeMapEntity.OpDansScene(Aj: TAjScene; PosRel: Integer);
+(*procedure TTreeMapEntity.OperationInScene(Aj: TAjScene; PosRel: Integer);
 var
  TreeView1: TMapExplorer;
 begin
@@ -1747,7 +1750,7 @@ begin
        S:=Specifics.Values['_light'];
        if S='' then Exit;
        try
-        LireValeurs(S, L4);
+        ReadValues(S, L4);
        except
         Exit;
        end;
@@ -1761,7 +1764,7 @@ begin
        if S<>'' then
         begin
          try
-          LireValeurs(S, L3);
+          ReadValues(S, L3);
           Color:=Round(255*L3[1]) or (Round(255*L3[2]) shl 8) or (Round(255*L3[3]) shl 16);
          except
           {rien}
@@ -1871,7 +1874,7 @@ begin
  TypeInfo:=':g';
 end;
 
-procedure TTreeMapGroup.EtatObjet;
+procedure TTreeMapGroup.ObjectState;
 begin
  inherited;
  E.IndexImage:=iiGroup;
@@ -2112,7 +2115,7 @@ begin
  TypeInfo:=':b';
 end;
 
-procedure TTreeMapBrush.EtatObjet;
+procedure TTreeMapBrush.ObjectState;
 begin
  inherited;
  E.IndexImage:=iiBrush;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -59,9 +62,9 @@ function Cross(const V1, V2: TVect) : TVect;
 function Dot(const V1, V2: TVect) : TDouble;
 procedure Normalise(var V: TVect);
 function AngleXY(const X, Y: TDouble) : TDouble;
-procedure LireValeurs(const S1: String; var Vals: array of TDouble);
-function LireVecteur(const S: String) : TVect;
-function LireReelEx(const S: String) : TDouble;
+procedure ReadValues(const S1: String; var Vals: array of TDouble);
+function ReadVector(const S: String) : TVect;
+function ReadNumValueEx(const S: String) : TDouble;
 function ftos(const F: TDouble) : String;
 function ftos0(const F: TDouble) : String;
 function ftos1(const F: TDouble) : String;
@@ -270,7 +273,7 @@ begin
   end;
 end;
 
-procedure LireValeurs(const S1: String; var Vals: array of TDouble);
+procedure ReadValues(const S1: String; var Vals: array of TDouble);
 var
  P, I: Integer;
  S: String;
@@ -289,17 +292,17 @@ begin
  Vals[High(Vals)]:=StrToFloat(Trim(S));
 end;
 
-function LireVecteur(const S: String) : TVect;
+function ReadVector(const S: String) : TVect;
 var
  Lu: array[1..3] of TDouble;
 begin
- LireValeurs(S, Lu);
+ ReadValues(S, Lu);
  Result.X:=Lu[1];
  Result.Y:=Lu[2];
  Result.Z:=Lu[3];
 end;
 
-function LireReelEx(const S: String) : TDouble;
+function ReadNumValueEx(const S: String) : TDouble;
 var
  S1, S2: String;
  P: Integer;
@@ -391,7 +394,7 @@ var
  V: array[0..3] of TDouble;
  XMax, YMax: Integer;
 begin
- LireValeurs(S, V);
+ ReadValues(S, V);
  XMax:=TailleMaximaleEcranX;
  Result.Left:=Round(V[0]*XMax);
  Result.Right:=Round(V[2]*XMax);

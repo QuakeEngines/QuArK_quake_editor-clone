@@ -266,7 +266,7 @@ begin
         try
          if not Hourglass then
           begin
-           DebutTravail(0,0);
+           ProgressIndicatorStart(0,0);
            Hourglass:=True;
           end;
          UpdateMenu(PopupHandle, obj, Callbacks, FreeUnused, sc, sci, MenuBar, True);
@@ -294,7 +294,7 @@ begin
   finally Tags.Free; end;
  finally
   if Hourglass then
-   FinTravail;
+   ProgressIndicatorStop;
  {Py_XDECREF(HelpMenu);}
  end;
 end;

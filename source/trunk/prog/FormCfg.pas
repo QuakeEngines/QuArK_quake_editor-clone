@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.7  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -1213,7 +1216,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- LireValeurs(Edit.Text, Values);
+ ReadValues(Edit.Text, Values);
  {Direction := (Sender as TSmallArrowButtons).Direction; }
  case Direction of
   sabDirectionUp: Values[2] := Values[2]+1;
@@ -1233,7 +1236,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- LireValeurs(Edit.Text, Values);
+ ReadValues(Edit.Text, Values);
  Values[2] := Values[2]+1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1246,7 +1249,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- LireValeurs(Edit.Text, Values);
+ ReadValues(Edit.Text, Values);
  Values[2] := Values[2]-1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1259,7 +1262,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- LireValeurs(Edit.Text, Values);
+ ReadValues(Edit.Text, Values);
  Values[1] := Values[1]-1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1272,7 +1275,7 @@ var
 begin
  Edit := FindUpDownEdit((Sender as TControl).Tag);
  AnyControlEnter(Sender);
- LireValeurs(Edit.Text, Values);
+ ReadValues(Edit.Text, Values);
  Values[1] := Values[1]+1;
  Edit.Text := ftos(Values[1])+' '+ftos(Values[2]);
  SetArg(Sender, Edit.Text);
@@ -1951,7 +1954,7 @@ begin
                           if (Length(S)>=3) and (S[3]='4') then
                            begin
                             if J=0 then
-                             LireValeurs(Spec, Lu4)
+                             ReadValues(Spec, Lu4)
                             else
                              begin
                               Lu4[1]:=Valeurs[0];
@@ -1963,7 +1966,7 @@ begin
                           else
                            begin
                             if J=0 then
-                             ValeursV:=LireVecteur(Spec)
+                             ValeursV:=ReadVector(Spec)
                             else
                              begin
                               ValeursV.X:=Valeurs[0];

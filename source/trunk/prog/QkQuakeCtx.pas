@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -50,7 +53,7 @@ type
                function GetConfigStr1: String; override;
              public
                class function TypeInfo: String; override;
-               procedure EtatObjet(var E: TEtatObjet); override;
+               procedure ObjectState(var E: TEtatObjet); override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
              end;
 
@@ -240,7 +243,7 @@ begin
  Result:='QuakeCtx';
 end;
 
-procedure QQuakeCtx.EtatObjet(var E: TEtatObjet);
+procedure QQuakeCtx.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiQCtx;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.5  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -67,7 +70,7 @@ type
                     procedure LoadFile(F: TStream; FSize: Integer); override;
                     procedure SetWriteString(const WriteString: String);
                     function GetDataInfo : TRawDataInfo; virtual; abstract;
-                    function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+                    function OpenWindow(nOwner: TComponent) : TQForm1; override;
                   public
                     function GetReadStream(var S: TStream) : Integer;
                   end;
@@ -177,7 +180,7 @@ end;
 
  {------------------------}
 
-function QRawFileObject.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QRawFileObject.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQRawFile.Create(nOwner);
 end;

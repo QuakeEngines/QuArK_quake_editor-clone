@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -125,7 +128,7 @@ begin
    end;
   end;
  Update;
- DebutTravail(5458, ListView1.Items.Count); try
+ ProgressIndicatorStart(5458, ListView1.Items.Count); try
  for I:=0 to ListView1.Items.Count-1 do
   with ListView1.Items[I] do
    try
@@ -137,14 +140,14 @@ begin
     MakeVisible(False);
     ListView1.Repaint;
     finally Q.AddRef(-1); end;
-    ProgresTravail;
+    ProgressIndicatorIncrement;
    except
     on EAbort do Break;
     else
      {rien};
    end;
  finally
-  FinTravail;
+  ProgressIndicatorStop;
   ListView1.Font.Color:=clWindowText;
  end;
 end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/04/24 09:54:54  arigo
+Q3 shaders, once more
+
 Revision 1.6  2000/04/22 08:56:48  arigo
 Problems with texture sizes fixed
 
@@ -106,7 +109,7 @@ type
                function SetDescription(const PSD: TPixelSetDescription;
                                        Confirm: TSDConfirm) : Boolean; virtual; abstract;
                function LoadPixelSet : QPixelSet; virtual;
-               procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+               procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
                procedure Paint(DC: HDC; X, Y: Integer);
                function PyGetAttr(attr: PChar) : PyObject; override;
                procedure ListDependencies(L: TStringList); virtual;
@@ -516,7 +519,7 @@ begin
  Result:=Self;
 end;
 
-procedure QPixelSet.OpDansScene(Aj: TAjScene; PosRel: Integer);
+procedure QPixelSet.OperationInScene(Aj: TAjScene; PosRel: Integer);
 var
  Lnk: QTextureLnk;
  WE: TQkExplorer;

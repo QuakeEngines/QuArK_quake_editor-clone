@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -194,7 +197,7 @@ function stomx(const S: String) : TMatrixTransformation;
 var
  V: array[1..{12}9] of TDouble;
 begin
- LireValeurs(S, V);
+ ReadValues(S, V);
  Result:=TMatrixTransformation(V);
 end;
 

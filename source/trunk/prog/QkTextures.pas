@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.19  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.18  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -119,7 +122,7 @@ type
  QTextureFile = class;
  QTexture = class(QPixelSet)  { QTexture objects are QPixelSet objects with a bit more texture-ish data, e.g. an associated game and scaled-down images }
             protected
-              function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+              function OpenWindow(nOwner: TComponent) : TQForm1; override;
             public
              {function Load~Texture : QTextureFile; virtual; abstract;
               function Build-Q1Header : TQ1Miptex;
@@ -147,7 +150,7 @@ type
                  function LoadPixelSet : QPixelSet; override;
                  class function TypeInfo: String; override;
                  destructor Destroy; override;
-                 procedure EtatObjet(var E: TEtatObjet); override;
+                 procedure ObjectState(var E: TEtatObjet); override;
                  class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                  procedure BreakLink;
                  function BaseGame : Char; override;
@@ -160,7 +163,7 @@ type
                   function prvGetTexImage(I: Integer) : String;}
                  {function prvGetTexPalette(Lmp: PPaletteLmp; BmpInfoBuffer: PBitmapInfo256) : PBitmapInfo256;}
                 protected
-                 {function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;}
+                 {function OpenWindow(nOwner: TComponent) : TQForm1; override;}
                   procedure CheckTexName(const nName: String);
                 public
                   function GetTexImage(I: Integer) : String;
@@ -169,7 +172,7 @@ type
                   function GetTexName : String; dynamic;
                   function GetTexOpacity : Integer; virtual; abstract;  { 0-255 }
                   procedure SetTexOpacity(Alpha: Integer); dynamic;
-                  procedure EtatObjet(var E: TEtatObjet); override;
+                  procedure ObjectState(var E: TEtatObjet); override;
                   function CheckAnim(Seq: Integer) : String; virtual; abstract;
                   function ConvertFrom(Source: QPixelSet; Flags: Integer) : Boolean; override;
                   function LoadPaletteLmp(var Lmp: PPaletteLmp) : Boolean;
@@ -596,11 +599,11 @@ begin
    I:=3
   else
    I:=0;
-  DebutTravail(5453, I); try
+  ProgressIndicatorStart(5453, I); try
   TexListS:=TStringList.Create;
   Anim:=TStringList.Create;
   try
-   DebutTravail(5453, L.Count); try
+   ProgressIndicatorStart(5453, L.Count); try
    TexFormat1:=GetRegisteredQObject(SetupGameSet.Specifics.Values['TextureFormat']);
    if (TexFormat1=Nil) or not TexFormat1.InheritsFrom(QPixelSet) then
     raise EError(5688);
@@ -645,9 +648,9 @@ begin
        end;
       Warning:=False;     { 'texture not found' should not be displayed on dependencies }
      until Anim.Count=0;   { loop until "Anim" is empty }
-     ProgresTravail;
+     ProgressIndicatorIncrement;
     end;
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
   finally
    Anim.Free;
    TexListS.Free;
@@ -655,7 +658,7 @@ begin
 
   if Op>0 then
    begin
-    ProgresTravail;
+    ProgressIndicatorIncrement;
     needColormap:=False;
     with SetupGameSet.Specifics do
      begin
@@ -705,7 +708,7 @@ begin
        end;
       finally Anim.Free; end;
      end;
-    ProgresTravail;
+    ProgressIndicatorIncrement;
     if L.Count>0 then    { do not attempt to write any texture-related file if no texture is to be written }
      if TexWad<>'' then
       begin   { write a .wad file }
@@ -727,7 +730,7 @@ begin
       end
      else
       begin   { write several texture files (.wal, .m8, .swl, .tga...) }
-       DebutTravail(5453, TexList.Count); try
+       ProgressIndicatorStart(5453, TexList.Count); try
        ShaderFile:=Nil; try
        WriteTo:=OutputFile(Q2TexPath);
        for I:=0 to TexList.Count-1 do
@@ -773,7 +776,7 @@ begin
              needColormap:=True;
             end;
           end;
-         ProgresTravail;
+         ProgressIndicatorIncrement;
         end;
        with SetupGameSet.Specifics do
         begin   { shaders stuff }
@@ -817,10 +820,10 @@ begin
            finally Q.AddRef(-1); end;
           end;
         end;
-       finally FinTravail; end;
+       finally ProgressIndicatorStop; end;
       end;
    end;
-  finally FinTravail; end;
+  finally ProgressIndicatorStop; end;
  except
   TexList.Free;
   Raise;
@@ -916,7 +919,7 @@ begin
   Result:=TestConversionImages(I);
 end;
 
-function QTexture.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QTexture.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQTexture.Create(nOwner);
 end;
@@ -974,7 +977,7 @@ begin
  TypeInfo:='.wl';
 end;
 
-procedure QTextureLnk.EtatObjet(var E: TEtatObjet);
+procedure QTextureLnk.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiTextureLnk;
@@ -1255,7 +1258,7 @@ begin
  SetLength(Data, Length('Image#=')+NewPSD.Size.X*NewPSD.Size.Y);
  NewPSD.Data:=PChar(Data)+Length('Image#=');
 
- DebutTravail(5449, 4); try
+ ProgressIndicatorStart(5449, 4); try
  Result:=PSDConvert(NewPSD, PSD, Confirm);
  if not Result then Exit;
 
@@ -1272,7 +1275,7 @@ begin
   begin
    if not ScaleDown(W, H) then Break;
    if I<=4 then
-    ProgresTravail;
+    ProgressIndicatorIncrement;
    Data1:='Image' + ImgCodes[I] + '=';
    SetLength(Data1, Length('Image#=') + W*H);
    Resample(NewPSD.ColorPalette, NewPSD.Data,
@@ -1285,7 +1288,7 @@ begin
  if NewPSD.AlphaBits=psaGlobalAlpha then
   SetTexOpacity(NewPSD.GlobalAlphaValue);
 
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  finally NewPSD.Done; end;
 end;
 
@@ -1418,7 +1421,7 @@ begin
    SamplingW:=-((Size.X+3) and not 3);
   end;
 
- DebutTravail(5449, 4); try
+ ProgressIndicatorStart(5449, 4); try
  V[1]:=W;
  V[2]:=H;
  SetFloatsSpec('Size', V);
@@ -1430,9 +1433,9 @@ begin
    Specifics.Values['Image'+ImgCodes[I]]:=Data;
    if not ScaleDown(W,H) then Break;
    if I<4 then
-    ProgresTravail;
+    ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end; *)
 
 procedure QTextureFile.ResizeTexture(const Size: TPoint);
@@ -1489,7 +1492,7 @@ begin  { build dependencies based on animations }
  L.Text:=L.Text+S;
 end;
 
-procedure QTextureFile.EtatObjet(var E: TEtatObjet);
+procedure QTextureFile.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiTexture;
@@ -2381,7 +2384,7 @@ begin
         S:=Format('%d %d', [X, Y]);
        if InputQuery(LoadStr1(5674), LoadStr1(5675), S) then
         begin
-         LireValeurs(S, Size);
+         ReadValues(S, Size);
          QTextureFile(FileObject).ResizeTexture(Point(Round(Size[1]), Round(Size[2])));
         end;
       end;

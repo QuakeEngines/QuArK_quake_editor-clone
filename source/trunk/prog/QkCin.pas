@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -73,7 +76,7 @@ type
           function GetDataInfo : TRawDataInfo; override;
         public
           class function TypeInfo: String; override;
-          procedure EtatObjet(var E: TEtatObjet); override;
+          procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
 
@@ -548,7 +551,7 @@ begin
  Result:='.cin';
 end;
 
-procedure QCin.EtatObjet(var E: TEtatObjet);
+procedure QCin.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiCin;

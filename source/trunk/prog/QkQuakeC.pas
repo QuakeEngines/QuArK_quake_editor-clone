@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -48,11 +51,11 @@ const
 type
  QQuakeC = class(QText)
            protected
-             function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+             function OpenWindow(nOwner: TComponent) : TQForm1; override;
            public
              class function TypeInfo: String; override;
              function TestConversionType(I: Integer) : QFileObjectClass; override;
-             procedure EtatObjet(var E: TEtatObjet); override;
+             procedure ObjectState(var E: TEtatObjet); override;
              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
              procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
            end;
@@ -166,7 +169,7 @@ var
  OutFileName: String;
 begin
  if L.Count=0 then Exit;
- DebutTravail(0,0); try
+ ProgressIndicatorStart(0,0); try
  ModeJeu:=CharModeJeu;
  if not (ModeJeu in [mjQuake, mjHexen]) then
   Raise EError(5654);
@@ -220,7 +223,7 @@ begin
  end;
  finally Source.Free; end;
  finally SL.Free; end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
  {------------------------}
@@ -230,12 +233,12 @@ begin
  Result:='.qc';
 end;
 
-function QQuakeC.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QQuakeC.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQQuakeC.Create(nOwner);
 end;
 
-procedure QQuakeC.EtatObjet(var E: TEtatObjet);
+procedure QQuakeC.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiQuakeC;

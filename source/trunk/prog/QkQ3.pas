@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.13  2000/07/06 02:47:58  alexander
 attempt to improve shader handling
 
@@ -69,13 +72,13 @@ type
         public
          class function TypeInfo: String; override;
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-         procedure EtatObjet(var E: TEtatObjet); override;
+         procedure ObjectState(var E: TEtatObjet); override;
         end;
   Q_HFile = class(QCfgFile)
         public
          class function TypeInfo: String; override;
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-         procedure EtatObjet(var E: TEtatObjet); override;
+         procedure ObjectState(var E: TEtatObjet); override;
         end;
   Q3Pak = class(QZipPak)
         public
@@ -88,7 +91,7 @@ type
               {procedure DataUpdate;}
               function DumpString : String;
               function DefaultImage : QPixelSet;
-              {procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;}
+              {procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;}
               function GetSize : TPoint; override;
               procedure SetSize(const nSize: TPoint); override;
               function Description : TPixelSetDescription; override;
@@ -121,7 +124,7 @@ implementation
 
 uses Game, Travail;
 
-procedure Q_HFile.EtatObjet(var E: TEtatObjet);
+procedure Q_HFile.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiText;
@@ -140,7 +143,7 @@ begin
  Info.FileExt:=803;
 end;
 
-procedure Q_CFile.EtatObjet(var E: TEtatObjet);
+procedure Q_CFile.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiText;
@@ -330,7 +333,7 @@ begin
  Result:=Result + '}'#13#10#13#10;
 end;
 
-(*procedure QShader.OpDansScene(Aj: TAjScene; PosRel: Integer);
+(*procedure QShader.OperationInScene(Aj: TAjScene; PosRel: Integer);
 begin
  inherited;
  if Aj=asModifie then
@@ -531,7 +534,7 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      DebutTravail(5453, FSize div ProgressStep); try
+      ProgressIndicatorStart(5453, FSize div ProgressStep); try
       SetLength(Data, FSize);
       Source:=PChar(Data);
       F.ReadBuffer(Source^, FSize);  { read the whole file at once }
@@ -616,11 +619,11 @@ begin
         { progress bar stuff }
        while Source>=NextStep do
         begin
-         ProgresTravail;
+         ProgressIndicatorIncrement;
          Inc(NextStep, ProgressStep);
         end;
       until False;
-      finally FinTravail; end;
+      finally ProgressIndicatorStop; end;
      end;
  else inherited;
  end;

@@ -5,6 +5,9 @@ unit QkSpr;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.6  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -54,8 +57,8 @@ type
          function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
          class function TypeInfo: String; override;
          class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-         procedure EtatObjet(var E: TEtatObjet); override;
-         function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+         procedure ObjectState(var E: TEtatObjet); override;
+         function OpenWindow(nOwner: TComponent) : TQForm1; override;
          procedure LoadFile(F: TStream; FSize: Integer); override;
          procedure DoQ1Spr(fs:TStream; PPPalette:PGameBuffer);
          procedure DoQ2Spr(Fs: TStream);
@@ -488,7 +491,7 @@ begin
  end;
 end;
 
-function QSprFile.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QSprFile.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TQSprForm.Create(nOwner);
 end;
@@ -498,7 +501,7 @@ begin
  Result:='.spr';
 end;
 
-procedure QSprFile.EtatObjet(var E: TEtatObjet);
+procedure QSprFile.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiSpriteFile;

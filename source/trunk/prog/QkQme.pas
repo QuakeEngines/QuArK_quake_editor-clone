@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -49,12 +52,12 @@ type
  QQme = class(QFileObject)
         private
         protected
-          function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+          function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
           class function TypeInfo: String; override;
-          procedure EtatObjet(var E: TEtatObjet); override;
+          procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
           procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
@@ -623,12 +626,12 @@ begin
  Result:='.qme';
 end;
 
-function QQme.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QQme.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQQme.Create(nOwner);
 end;
 
-procedure QQme.EtatObjet(var E: TEtatObjet);
+procedure QQme.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiQme;
@@ -701,14 +704,14 @@ var
  I: Integer;
 begin
  Acces;
- DebutTravail(175, SubElements.Count); try
+ ProgressIndicatorStart(175, SubElements.Count); try
  for I:=0 to SubElements.Count-1 do
   begin
    if SubElements[I] is QFileObject then
     QFileObject(SubElements[I]).Go1(maplist, extracted, FirstMap, QCList);
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
  {------------------------}

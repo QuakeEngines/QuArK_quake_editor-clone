@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -494,7 +497,7 @@ var
            S:=Item.Specifics.Values['_color'];
            if S<>'' then
             try
-             C:=vtocol(LireVecteur(S));
+             C:=vtocol(ReadVector(S));
             except
              {rien}
             end;

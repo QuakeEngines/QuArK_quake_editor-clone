@@ -135,13 +135,13 @@ begin
       arglist:=Py_BuildValueX('(O)', [obj]);
       if arglist=Nil then Exit;
       if Options and cioHourglass <> 0 then
-       DebutTravail(0,0);
+       ProgressIndicatorStart(0,0);
       try
        callresult:=PyEval_CallObject(callback, arglist);
        Py_XDECREF(callresult);
       finally
        if Options and cioHourglass <> 0 then
-        FinTravail;
+        ProgressIndicatorStop;
        Py_DECREF(arglist);
       end;
      end;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.10  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -52,11 +55,11 @@ uses
 type
  QMap = class(QFileObject)
         protected
-          function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+          function OpenWindow(nOwner: TComponent) : TQForm1; override;
         public
           function TestConversionType(I: Integer) : QFileObjectClass; override;
           function ConversionFrom(Source: QFileObject) : Boolean; override;
-          procedure EtatObjet(var E: TEtatObjet); override;
+          procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function GetOutputMapFileName : String;
           procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
@@ -100,7 +103,7 @@ type
 
  {------------------------}
 
-function OuvrirListeEntites(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
+function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 
  {------------------------}
 
@@ -113,7 +116,7 @@ uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
 
  {------------------------}
 
-function QMap.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QMap.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
   Result:=NewPyForm(Self)
@@ -121,7 +124,7 @@ begin
   Result:=TFQMap.Create(nOwner);
 end;
 
-procedure QMap.EtatObjet(var E: TEtatObjet);
+procedure QMap.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiMap;
@@ -187,27 +190,36 @@ end;
 
  {------------------------}
 
-function OuvrirListeEntites(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
+function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 const
- Separateurs = [' ', #13, #10, Chr(vk_Tab)];
+ cSeperators = [' ', #13, #10, Chr(vk_Tab)];
  Granularite = 8192;
  FinDeLigne = False;
 type
- TSymbole = (sEOF, sAccolade1, sAccolade2, sChaine,
-             sParenthese1, sParenthese2, sValeur, sNomTex, sTexteInattendu);
+ TSymbols = (sEOF,
+             sBracketLeft,
+             sBracketRight,
+             sCurlyBracketLeft,
+             sCurlyBracketRight,
+             sSquareBracketLeft,
+             sSquareBracketRight,
+             sStringToken,
+             sStringQuotedToken,
+             sNumValueToken,
+             sTokenForcedToString);
 var
- Symbole: TSymbole;
+ SymbolType: TSymbols;
  S, S1, Classname: String;
- Valeur: Double;
+ NumericValue: Double;
  V: array[1..3] of TVect;
  P: TPolyedre;
  Surface: TFace;
- I, J, K, Valeur1, ContentsFlags: Integer;
+ I, J, K, NumericValue1, ContentsFlags: Integer;
  WorldSpawn: Boolean;
  Entite, EntitePoly: TTreeMapSpec;
  L: TStringList;
  NoLigne: Integer;
- Juste13{, FinDeLigne}, Q2Tex, LireTexte: Boolean;
+ Juste13{, FinDeLigne}, Q2Tex, ReadSymbolForceToText: Boolean;
  HullNum: Integer;
  HullList: TList;
  Source, Prochain: PChar;
@@ -436,38 +448,38 @@ var
  { /tiglari}
 
 
- {  Lire(Attendu : TSymbole) below reads the next token, and checks
+ {  ReadSymbol(Attendu : TSymbols) below reads the next token, and checks
     whether the previous is what Attendu says it should have been.
-    This can also be checked by examining Symbole, if there are
+    This can also be checked by examining SymbolType, if there are
     several possibilities.
 
-    "Symbole" contains the kind of token just read :
-    "sTexteInattendu": a string token, whose value is in "S"
-    "sChaine": a quote-delimited string, whose value is in "S"
-    "sValeur": a floating-point value, found in "Valeur"
+    "SymbolType" contains the kind of token just read :
+    "sStringToken": a string token, whose value is in "S"
+    "sStringQuotedToken": a quote-delimited string, whose value is in "S"
+    "sNumValueToken": a floating-point value, found in "NumericValue"
 
-Call the procedure "Lire()" to get the next token. The argument to the
+Call the procedure "ReadSymbol()" to get the next token. The argument to the
 procedure is the current token kind again; useful to read e.g. three
 floating-point values :
 
-   FirstValue:=Valeur;
-   Lire(sValeur);
-   SecondValue:=Valeur;
-   Lire(sValeur);
-   ThirdValue:=Valeur;
-   Lire(sValeur);
+   FirstValue:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   SecondValue:=NumericValue;
+   ReadSymbol(sNumValueToken);
+   ThirdValue:=NumericValue;
+   ReadSymbol(sNumValueToken);
 
-This way, the procedure "Lire" checks that the kind of token was really the
+This way, the procedure "ReadSymbol" checks that the kind of token was really the
 expected one.
 }
 
 
- procedure Lire(Attendu: TSymbole);
+ procedure ReadSymbol(Attendu: TSymbols);
  var
   C: Char;
   Arret: Boolean;
 
-   procedure TexteInattendu;
+   procedure ReadStringToken;
    begin
     S:='';
     repeat
@@ -475,44 +487,48 @@ expected one.
      C:=Source^;
      if C=#0 then Break;
      Inc(Source);
-    until C in Separateurs;
+    until C in cSeperators;
     if (C=#13) or ((C=#10) {and not Juste13}) then
      Inc(NoLigne);
     Juste13:=C=#13;
-    Symbole:=sTexteInattendu;
+    SymbolType:=sStringToken;
    end;
 
  begin
   repeat
-   if (Symbole<>Attendu) and (Attendu<>sEOF) then
+   if (SymbolType<>Attendu) and (Attendu<>sEOF) then
     Raise EErrorFmt(254, [NoLigne, LoadStr1(248)]);
    repeat
     C:=Source^;
     if C=#0 then
      begin
-      Symbole:=sEOF;
+      SymbolType:=sEOF;
       Exit;
      end;
     Inc(Source);
     if (C=#13) or ((C=#10) and not Juste13) then
      Inc(NoLigne);
     Juste13:=C=#13;
-   until not (C in Separateurs);
+   until not (C in cSeperators);
    while Source>Prochain do
     begin
-     ProgresTravail;
+     ProgressIndicatorIncrement;
      Inc(Prochain, Granularite);
     end;
-   if LireTexte then
+   if ReadSymbolForceToText then
     begin
-     TexteInattendu;
-     Symbole:=sNomTex;
+     ReadStringToken;
+     SymbolType:=sTokenForcedToString;
      Exit;
     end;
    Arret:=True;
    case C of
-    '{': Symbole:=sAccolade1;
-    '}': Symbole:=sAccolade2;
+    '(': SymbolType:=sBracketLeft;
+    ')': SymbolType:=sBracketRight;
+    '{': SymbolType:=sCurlyBracketLeft;
+    '}': SymbolType:=sCurlyBracketRight;
+    '[': SymbolType:=sSquareBracketLeft;
+    ']': SymbolType:=sSquareBracketRight;
     '"': begin
           S:='';
           repeat
@@ -529,12 +545,10 @@ expected one.
            if (C='"') and not FinDeLigne then Break;
            S:=S+C;
           until False;
-          Symbole:=sChaine;
+          SymbolType:=sStringQuotedToken;
          end;
-    '(': Symbole:=sParenthese1;
-    ')': Symbole:=sParenthese2;
     '-','0'..'9': if (C='-') and not (Source^ in ['0'..'9','.']) then
-                   TexteInattendu
+                   ReadStringToken
                   else
                    begin
                     S:='';
@@ -544,13 +558,13 @@ expected one.
                      if C=#0 then Break;
                      Inc(Source);
                     until not (C in ['0'..'9','.']);
-                    if (C=#0) or (C in Separateurs) then
+                    if (C=#0) or (C in cSeperators) then
                      begin
                       if (C=#13) or ((C=#10) {and not Juste13}) then
                        Inc(NoLigne);
                       Juste13:=C=#13;
-                      Valeur:=StrToFloat(S);
-                      Symbole:=sValeur;
+                      NumericValue:=StrToFloat(S);
+                      SymbolType:=sNumValueToken;
                      end
                     else
                      Raise EErrorFmt(254, [NoLigne, LoadStr1(251)]);
@@ -575,52 +589,122 @@ expected one.
          else
           Raise EErrorFmt(254, [NoLigne, LoadStr1(248)]);
     else
-     TexteInattendu;
+     ReadStringToken;
    end;
   until Arret;
  end;
 
- function LireVect(Dernier: Boolean): TVect;
+ function ReadVect(Dernier: Boolean): TVect;
  begin
-  Lire(sParenthese1);
-  Result.X:=Valeur;
-  Lire(sValeur);
-  Result.Y:=Valeur;
-  Lire(sValeur);
-  Result.Z:=Valeur;
-  Lire(sValeur);
-  LireTexte:=Dernier;
-  Lire(sParenthese2);
-  LireTexte:=False;
+  ReadSymbol(sBracketLeft);
+  Result.X:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  Result.Y:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  Result.Z:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  ReadSymbolForceToText:=Dernier;
+  ReadSymbol(sBracketRight);
+  ReadSymbolForceToText:=False;
  end;
 
  {Rowdy}
- function LireVect5(Dernier: Boolean): TVect5;
+ function ReadVect5(Dernier: Boolean): TVect5;
  begin
-  Lire(sParenthese1);
-  Result.X:=Valeur;
-  Lire(sValeur);
-  Result.Y:=Valeur;
-  Lire(sValeur);
-  Result.Z:=Valeur;
-  Lire(sValeur);
-  Result.S:=Valeur;
-  Lire(sValeur);
-  Result.T:=Valeur;
-  Lire(sValeur);
-  LireTexte:=Dernier;
-  Lire(sParenthese2);
-  LireTexte:=False;
+  ReadSymbol(sBracketLeft);
+  Result.X:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  Result.Y:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  Result.Z:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  Result.S:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  Result.T:=NumericValue;
+  ReadSymbol(sNumValueToken);
+  ReadSymbolForceToText:=Dernier;
+  ReadSymbol(sBracketRight);
+  ReadSymbolForceToText:=False;
  end;
  {/Rowdy}
 
+ procedure ReadQ3PatchDef;
+ var
+   I, J: Integer;
+ begin
+ { Armin: a patchDef2 means it is a Quake 3 map }
+  Result:=mjQ3A;
+ { Armin: create the MapStructureB group if not already done }
+  if EntiteBezier=Nil then
+   begin
+    MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
+    Racine.SubElements.Add(MapStructureB);
+    EntiteBezier:=MapStructureB;
+   end;
+
+  ReadSymbol(sStringToken); // lbrace follows "patchDef2"
+
+  ReadSymbol(sCurlyBracketLeft); // texture follows lbrace
+
+  {$IFDEF TexUpperCase}
+  S:=LowerCase(S);
+  {$ENDIF}
+  Q2Tex:=Q2Tex or (Pos('/',S)<>0);
+
+  ReadSymbol(sStringToken); // lparen follows texture
+
+  // now comes 5 numbers which tell how many control points there are
+  // use ReadVect5 which is the same as ReadVect but expects 5 numbers
+  // and we only need the X and Y values
+  V5:=ReadVect5(False);
+  // X tells us how many lines of control points there are (height)
+  // Y tells us how many control points on each line (width)
+
+  B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
+  EntiteBezier.SubElements.Add(B); //&&&
+  B.NomTex:=S;   { here we get the texture-name }
+
+  MeshBuf1.W := Round(V5.X);
+  MeshBuf1.H := Round(V5.Y);
+
+  GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
+  try
+    ReadSymbol(sBracketLeft); // lparen follows vect5
+    for I:=0 to MeshBuf1.W-1 do
+      begin
+        pCP1:=MeshBuf1.CP;
+        Inc(pCP1, I);
+        ReadSymbol(sBracketLeft); // read the leading lparen for the line
+        for J:=1 to MeshBuf1.H do
+          begin
+            V5:=ReadVect5(False);
+            pCP1^[0]:=V5.X;
+            pCP1^[1]:=V5.Y;
+            pCP1^[2]:=V5.Z;
+            pCP1^[3]:=V5.S;
+            pCP1^[4]:=V5.T;
+            Inc(pCP1, MeshBuf1.W);
+          end;
+        ReadSymbol(sBracketRight); // read the trailing rparen for the line
+      end;
+    ReadSymbol(sBracketRight);  { rparen which finishes all the lines of control points }
+    ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the patchDef2 }
+    ReadSymbol(sCurlyBracketRight);    { rbrace which finishes the brush }
+
+    B.ControlPoints:=MeshBuf1;
+    B.AutoSetSmooth;
+  finally
+    FreeMem(MeshBuf1.CP);
+  end;
+ end;
+
 begin
- DebutTravail(5451, Length(SourceFile) div Granularite); try
+ ProgressIndicatorStart(5451, Length(SourceFile) div Granularite); try
  Source:=PChar(SourceFile);
  Prochain:=Source+Granularite;   { point at which progress marker will be ticked}
  Result:=mjQuake;     { Into Result is but info about what game the map is for }
  Q2Tex:=False;
- LireTexte:=False;    { Lire is not to expect text}
+ ReadSymbolForceToText:=False;    { ReadSymbol is not to expect text}
  NoLigne:=1;
  InvPoly:=0;
  InvFaces:=0;
@@ -641,27 +725,27 @@ begin
    *  Racine.SubElements.Add(MapStructureB);
    *)
   {/Rowdy}
-  Lire(sEOF);
-  while Symbole<>sEOF do { when Lire's arg is sEOF, it's not really `expected'.
+  ReadSymbol(sEOF);
+  while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
                 The first real char ought to be {.  If it is, it
-                will become C in Lire, and Symbole will sAccolade1 }
+                will become C in ReadSymbol, and SymbolType will sCurlyBracketLeft }
 
    begin
-   { if the thing just read wasn't {, the Lire call will bomb.
+   { if the thing just read wasn't {, the ReadSymbol call will bomb.
      Otherwise, it will pull in the next chunk (which ought to be
-     a quoted string), and set Symbole to the type of what it got. }
-    Lire(sAccolade1);
+     a quoted string), and set SymbolType to the type of what it got. }
+    ReadSymbol(sCurlyBracketLeft);
     L.Clear;
     Classname:='';
     HullNum:=-1;
     { pull in the quoted-string attribute-value pairs }
-    while Symbole=sChaine do
+    while SymbolType=sStringQuotedToken do
      begin
-      S1:=S;  { S is where Lire sticks quoted strings }
+      S1:=S;  { S is where ReadSymbol sticks quoted strings }
      {FinDeLigne:=True;}
-      Lire(sChaine);
+      ReadSymbol(sStringQuotedToken);
      {FinDeLigne:=False;}
-      if Symbole=sChaine then
+      if SymbolType=sStringQuotedToken then
        { SpecClassname is `classname', defined in QKMapObjects }
        if CompareText(S1, SpecClassname)=0 then
         {$IFDEF ClassnameLowerCase}
@@ -681,7 +765,7 @@ begin
             HullNum:=-1;
           end;
         end;
-      Lire(sChaine);
+      ReadSymbol(sStringQuotedToken);
      end;
     if Classname = ClassnameWorldspawn then
      begin
@@ -699,7 +783,7 @@ begin
      end
     else
      begin
-      if (Symbole<>sAccolade1) and (HullNum=-1) then
+      if (SymbolType<>sCurlyBracketLeft) and (HullNum=-1) then
        Entite:=TTreeMapEntity.Create(Classname, Entities)
       else
        Entite:=TTreeMapBrush.Create(Classname, Entities);
@@ -722,79 +806,16 @@ begin
        end;
      end
     else
-     while Symbole=sAccolade1 do  {read a brush}
+     while SymbolType=sCurlyBracketLeft do  {read a brush}
       begin
-       Lire(sAccolade1);
+       ReadSymbol(sCurlyBracketLeft);
        {Rowdy}
        // Q3A might have 'patchDef2'
-       if Symbole=sTexteInattendu then
+       if SymbolType=sStringToken then
         begin
           if LowerCase(s)<>'patchdef2' then
             raise EErrorFmt(254, [NoLigne, LoadStr1(260)]); // "patchDef2" expected
-         { Armin: a patchDef2 means it is a Quake 3 map }
-          Result:=mjQ3A;
-         { Armin: create the MapStructureB group if not already done }
-          if EntiteBezier=Nil then
-           begin
-            MapStructureB:=TTreeMapGroup.Create(LoadStr1(264), Racine);
-            Racine.SubElements.Add(MapStructureB);
-            EntiteBezier:=MapStructureB;
-           end;
-          
-          Lire(sTexteInattendu); // lbrace follows "patchDef2"
-
-          Lire(sAccolade1); // texture follows lbrace
-
-          {$IFDEF TexUpperCase}
-          S:=LowerCase(S);
-          {$ENDIF}
-          Q2Tex:=Q2Tex or (Pos('/',S)<>0);
-
-          Lire(sTexteInattendu); // lparen follows texture
-
-          // now comes 5 numbers which tell how many control points there are
-          // use LireVect5 which is the same as LireVect but expects 5 numbers
-          // and we only need the X and Y values
-          V5:=LireVect5(False);
-          // X tells us how many lines of control points there are (height)
-          // Y tells us how many control points on each line (width)
-
-          B:=TBezier.Create(LoadStr1(261),EntiteBezier); // 261 = "bezier"
-          EntiteBezier.SubElements.Add(B); //&&&
-          B.NomTex:=S;   { here we get the texture-name }
-
-          MeshBuf1.W := Round(V5.X);
-          MeshBuf1.H := Round(V5.Y);
-
-          GetMem(MeshBuf1.CP, MeshBuf1.W * MeshBuf1.H * SizeOf(vec5_t));
-          try
-            Lire(sParenthese1); // lparen follows vect5
-            for I:=0 to MeshBuf1.W-1 do
-              begin
-                pCP1:=MeshBuf1.CP;
-                Inc(pCP1, I);
-                Lire(sParenthese1); // read the leading lparen for the line
-                for J:=1 to MeshBuf1.H do
-                  begin
-                    V5:=LireVect5(False);
-                    pCP1^[0]:=V5.X;
-                    pCP1^[1]:=V5.Y;
-                    pCP1^[2]:=V5.Z;
-                    pCP1^[3]:=V5.S;
-                    pCP1^[4]:=V5.T;
-                    Inc(pCP1, MeshBuf1.W);
-                  end;
-                Lire(sParenthese2); // read the trailing rparen for the line
-              end;
-            Lire(sParenthese2);  { rparen which finishes all the lines of control points }
-            Lire(sAccolade2);    { rbrace which finishes the patchDef2 }
-            Lire(sAccolade2);    { rbrace which finishes the brush }
-
-            B.ControlPoints:=MeshBuf1;
-            B.AutoSetSmooth;
-          finally
-            FreeMem(MeshBuf1.CP);
-          end;
+          ReadQ3PatchDef(); {DECKER - moved to local-procedure to increase readability}
         end
        else
         begin
@@ -802,12 +823,12 @@ begin
        P:=TPolyedre.Create(LoadStr1(138), EntitePoly);
        EntitePoly.SubElements.Add(P);
        ContentsFlags:=0;
-       while Symbole <> sAccolade2 do  { read the faces }
+       while SymbolType <> sCurlyBracketRight do  { read the faces }
         begin
          TxCommand:=#0;
-         V[1]:=LireVect(False);
-         V[2]:=LireVect(False);
-         V[3]:=LireVect(True);
+         V[1]:=ReadVect(False);
+         V[2]:=ReadVect(False);
+         V[3]:=ReadVect(True);
          Surface:=TFace.Create(LoadStr1(139), P);
          P.SubElements.Add(Surface);
          Surface.SetThreePoints(V[1], V[3], V[2]);
@@ -816,31 +837,31 @@ begin
          {$ENDIF}
          Q2Tex:=Q2Tex or (Pos('/',S)<>0);
          Surface.NomTex:=S;   { here we get the texture-name }
-         Lire(sNomTex);
+         ReadSymbol(sTokenForcedToString);
          for I:=1 to 5 do
           begin
-           Params[I]:=Valeur;
-           Lire(sValeur);
+           Params[I]:=NumericValue;
+           ReadSymbol(sNumValueToken);
           end;
-         if Symbole=sValeur then
+         if SymbolType=sNumValueToken then
           begin
-           Valeur1:=Round(Valeur);
-           Lire(sValeur);
-           if Symbole<>sValeur then
+           NumericValue1:=Round(NumericValue);
+           ReadSymbol(sNumValueToken);
+           if SymbolType<>sNumValueToken then
             Result:=mjHexen  { Hexen II : ignore la luminosité de radiation }
            else
             begin  { Quake 2 : importe les trois champs }
-             ContentsFlags:=Valeur1;
-             Surface.Specifics.Values['Contents']:=IntToStr(Valeur1);
-             Surface.Specifics.Values['Flags']:=IntToStr(Round(Valeur));
-             Lire(sValeur);
-             Surface.Specifics.Values['Value']:=IntToStr(Round(Valeur));
-             Lire(sValeur);
+             ContentsFlags:=NumericValue1;
+             Surface.Specifics.Values['Contents']:=IntToStr(NumericValue1);
+             Surface.Specifics.Values['Flags']:=IntToStr(Round(NumericValue));
+             ReadSymbol(sNumValueToken);
+             Surface.Specifics.Values['Value']:=IntToStr(Round(NumericValue));
+             ReadSymbol(sNumValueToken);
              Result:=mjNotQuake1;
             end;
           end
          else
-          if Symbole=sTexteInattendu then
+          if SymbolType=sStringToken then
            begin  { Sin : extra surface flags as text }
             Result:=mjSin;
             { tiglari[, sin surf info reading }
@@ -865,40 +886,40 @@ begin
             end;
               Contents:=StrToInt(Q.Specifics.Values['Contents']);
               Flags:=StrToInt(Q.Specifics.Values['Flags']);
-            while Symbole=sTexteInattendu do
+            while SymbolType=sStringToken do
              begin  { verbose but fast, c.f. QkSin: QTextureSin.LoadFile }
               if s = 'color' then  { three following values }
                begin
-                Lire(sTexteInattendu);
-                ThreeSing[0] := Valeur;
-                S1 := FloatToStrF(Valeur,ffFixed,7,2);
-                Lire(sValeur);
-                ThreeSing[1] := Valeur;
-                S1 := S1+' '+FloatToStrF(Valeur,ffFixed,7,2);
-                Lire(sValeur);
-                ThreeSing[2] := Valeur;
-                S1 := S1+' '+FloatToStrF(Valeur,ffFixed,7,2);
-                Lire(sValeur);
+                ReadSymbol(sStringToken);
+                ThreeSing[0] := NumericValue;
+                S1 := FloatToStrF(NumericValue,ffFixed,7,2);
+                ReadSymbol(sNumValueToken);
+                ThreeSing[1] := NumericValue;
+                S1 := S1+' '+FloatToStrF(NumericValue,ffFixed,7,2);
+                ReadSymbol(sNumValueToken);
+                ThreeSing[2] := NumericValue;
+                S1 := S1+' '+FloatToStrF(NumericValue,ffFixed,7,2);
+                ReadSymbol(sNumValueToken);
                 Surface.SpecificsAdd('color='+S1);
 {                Surface.SetFloatsSpec('color', ThreeSing);  }
                end
               else if s = 'directstyle' then { following string value }
                begin
-                Lire(sTexteInattendu);
+                ReadSymbol(sStringToken);
                 Surface.SpecificsAdd('directstyle='+s);
-                Lire(sTexteInattendu);
+                ReadSymbol(sStringToken);
                end
               else if (S[1] = '+') or (S[1] = '-') then  { no following value }
                begin
                  SetSinFlag(); { one big momma of a procedure }
-                 Lire(sTexteInattendu);
+                 ReadSymbol(sStringToken);
              end
               else
                begin  { 1 following value, get it and act }
                 S1:=S;
-                Lire(sTexteInAttendu);
-                LastValue:=Valeur;
-                Lire(sValeur);
+                ReadSymbol(sStringToken);
+                LastValue:=NumericValue;
+                ReadSymbol(sNumValueToken);
                 case S1[1] of
                   'a' : if S1 = 'animtime' then
                           begin
@@ -961,7 +982,7 @@ begin
             SetFaceFromParams(Normale, Dist, Params);
           end;
         end;
-       Lire(sAccolade2);
+       ReadSymbol(sCurlyBracketRight);
        if not P.CheckPolyhedron then
         Inc(InvPoly)
        else
@@ -1008,7 +1029,7 @@ begin
    {Entite.Item.Text:=Classname;}
     Entite.Specifics.Assign(L);
    {Entite.SpecificsChange;}
-    Lire(sAccolade2);
+    ReadSymbol(sCurlyBracketRight);
    end;
   if HullList<>Nil then
    for I:=0 to HullList.Count-1 do
@@ -1025,7 +1046,7 @@ begin
   HullList.Free;
  end;
  Racine.FixupAllReferences;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  if (Result=mjQuake) and Q2Tex then
   Result:=mjNotQuake1;
  case Result of
@@ -1068,7 +1089,7 @@ begin
       F.ReadBuffer(Source[1], FSize);
       Racine:=TTreeMapBrush.Create('', Self);
       Racine.AddRef(+1); try
-      ModeJeu:=OuvrirListeEntites(Racine, Source, Nil);
+      ModeJeu:=ReadEntityList(Racine, Source, Nil);
       SubElements.Add(Racine);
       Specifics.Values['Root']:=Racine.Name+Racine.TypeInfo;
       ObjectGameCode:=ModeJeu;

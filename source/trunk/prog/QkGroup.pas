@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -48,10 +51,10 @@ uses
 type
  QExplorerGroup = class(QFileObject)
                   protected
-                    function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+                    function OpenWindow(nOwner: TComponent) : TQForm1; override;
                   public
                     class function TypeInfo: String; override;
-                    procedure EtatObjet(var E: TEtatObjet); override;
+                    procedure ObjectState(var E: TEtatObjet); override;
                     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                     procedure CopierObjets(Complet: Boolean);
                     procedure ReadObjectStream(F: TStream);
@@ -220,12 +223,12 @@ begin
  Result:='.qrk';
 end;
 
-function QExplorerGroup.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QExplorerGroup.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQGroup.Create(nOwner);
 end;
 
-procedure QExplorerGroup.EtatObjet(var E: TEtatObjet);
+procedure QExplorerGroup.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiExplorerGroup;
@@ -424,14 +427,14 @@ var
  I: Integer;
 begin
  Acces;
- DebutTravail(175, SubElements.Count); try
+ ProgressIndicatorStart(175, SubElements.Count); try
  for I:=0 to SubElements.Count-1 do
   begin
    if SubElements[I] is QFileObject then
     QFileObject(SubElements[I]).Go1(maplist, extracted, FirstMap, QCList);
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
  {------------------------}

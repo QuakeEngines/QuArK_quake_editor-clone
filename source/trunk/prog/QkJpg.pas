@@ -2,6 +2,9 @@
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.8  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -43,7 +46,7 @@ implementation
 
 procedure progress(percent: Integer);
 begin
-  ProgresTravail;
+  ProgressIndicatorIncrement;
 end;
 
 class function QJpeg.CustomParams : Integer;
@@ -77,9 +80,9 @@ begin
       if Specifics.Values['Data']='' then
         Raise;
       SaveUnformatted(bmp);
-      DebutTravail(5450,100); try
+      ProgressIndicatorStart(5450,100); try
       FileWrap.Save(bmp, f,90, progress);
-      finally FinTravail; end;
+      finally ProgressIndicatorStop; end;
       exit;
     end;
     Header.bfType:=bmpSignature;
@@ -91,9 +94,9 @@ begin
       Raise EErrorFmt(5534, ['Image1']);
     bmp.WriteBuffer(PChar(Data)[Length('Image1=')], BmpInfo.bmiHeader.biSizeImage);
     bmp.seek(0,soFromBeginning);
-    DebutTravail(5450,100); try
+    ProgressIndicatorStart(5450,100); try
     FileWrap.Save(bmp, f,90, progress);
-    finally FinTravail; end;
+    finally ProgressIndicatorStop; end;
     finally bmp.free; end;
     finally filewrap.free; end;
     end;
@@ -149,14 +152,14 @@ var
 begin
  case ReadFormat of
   1: begin  { as stand-alone file }
-      DebutTravail(5452,100); try
+      ProgressIndicatorStart(5452,100); try
       bmp:=TMemoryStream.Create; try
       FileWrap:=TJpegFileWrapper.Create(nil); try
       FileWrap.Load(F, bmp, 0, progress);
       GetPaletteAndDataFromBmp(bmp);
       finally FileWrap.Free; end;
       finally bmp.free; end;
-      finally FinTravail; end;
+      finally ProgressIndicatorStop; end;
      end;
  else inherited;
  end;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.8  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -96,7 +99,7 @@ type
             public
               class function TypeInfo: String; override;
               function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
-              procedure EtatObjet(var E: TEtatObjet); override;
+              procedure ObjectState(var E: TEtatObjet); override;
             end;
 
 var
@@ -174,7 +177,7 @@ begin
  TypeInfo:=':config';
 end;
 
-procedure QConfig.EtatObjet(var E: TEtatObjet);
+procedure QConfig.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  if TvParent=Nil then
@@ -349,13 +352,13 @@ begin
  if Q is QFileObject then
   begin       
    Q.Acces;
-   DebutTravail(5445, Q.SubElements.Count); try
+   ProgressIndicatorStart(5445, Q.SubElements.Count); try
    for I:=0 to Q.SubElements.Count-1 do
     begin
      BrowseConfig(Q.SubElements[I]);
-     ProgresTravail;
+     ProgressIndicatorIncrement;
     end; 
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
   end
  else
   if Q is QConfig then
@@ -481,7 +484,7 @@ begin
  else
   ClearGameBuffer1;
  if (Level>=scAddOns) or (Level=scGame) then
-  LibererMemoireTextures;
+  FreeNonVisibleTextures;
 
   { initializes QuArK depending on the setup information }
  Info.DefWhiteOnBlack:=SetupSubSet(ssMap, 'Colors').Specifics.Values['InvertedColors']<>'';

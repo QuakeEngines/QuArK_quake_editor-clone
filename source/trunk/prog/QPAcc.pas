@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -41,44 +44,44 @@ uses Classes, SysUtils;
 
 type
  TType = (
-        tInconnu
-       ,tStr
-       ,tReel
-       ,tVecteur
-       ,tPtr
+        tVoid
+       ,tString
+       ,tNumValue
+       ,tVector
+       ,tPointer
        ,tObjData
-       ,tFrPtr
+       ,tFrPointer
  );
- TSymbole = (
-        symInconnu
+ TSymbols = (
+        symUnknown
        ,symType
        ,symIdent
        ,symVariable
        ,symObjVar
-       ,symDeuxPoints
-       ,symPointVirgule
-       ,symPoint
-       ,symAffecte
-       ,symVirgule
-       ,symPlus
-       ,symMoins
-       ,symFois
-       ,symDivise
+       ,symColon
+       ,symSemiColon
+       ,symPeriod
+       ,symAssign
+       ,symComma
+       ,symAdd
+       ,symSubtract
+       ,symMultiply
+       ,symDivide
        ,symAnd
        ,symOr
        ,symNot
-       ,symLogOr
-       ,symLogAnd
-       ,symEgal
+       ,symLogicalOr
+       ,symLogicalAnd
+       ,symEqual
        ,symDifferent
-       ,symPlusPetit
-       ,symPlusGrand
-       ,symPlusPetitOuEgal
-       ,symPlusGrandOuEgal
-       ,symAccolade1
-       ,symAccolade2
-       ,symParenthese1
-       ,symParenthese2
+       ,symLessThan
+       ,symGreaterThan
+       ,symLessOrEqualTo
+       ,symGreaterOrEqualTo
+       ,symCurlyBracketLeft
+       ,symCurlyBracketRight
+       ,symBracketLeft
+       ,symBracketRight
        ,symLOCAL
        ,symBIND
        ,symAUTOEXEC
@@ -87,13 +90,13 @@ type
        ,symWHILE
        ,symDO
        ,symRETURN
-       ,symReel
-       ,symChaine
-       ,symVecteur
+       ,symNumValue
+       ,symChain
+       ,symVector
        ,symEOF
        ,symDollar
-       ,symCrochet1
-       ,symCrochet2
+       ,symSquareBracketLeft
+       ,symSquareBracketRight
  );
 
 const
@@ -101,7 +104,7 @@ const
  VersionProgsDat = 6;
  MotsClefs: array[symLOCAL..symRETURN] of String =
   ('LOCAL', 'BIND', 'AUTOEXEC', 'IF', 'ELSE', 'WHILE', 'DO', 'RETURN');
- NomsTypes: array[tInconnu..tPtr] of String =
+ NomsTypes: array[tVoid..tPointer] of String =
   ('VOID', 'STRING', 'FLOAT', 'VECTOR', 'ENTITY');
 
 type
@@ -184,7 +187,7 @@ var
  SymboleReel_AsLong: LongInt absolute SymboleReel;
  SymboleVecteur: Vecteur;
  VarLocales, VarGlobales, VarObjet: TStringList;
- Symbole: TSymbole;
+ SymbolType: TSymbols;
  SymboleVar: TVarStruct;
  SymboleType: TType;
  Commentaires, VariableEstLocale, VariableObjet: Boolean;
@@ -292,7 +295,7 @@ var
    Datas.Write(V, 4*3);
   end;
 
-  PROCEDURE Lire(Attendu : TSymbole);
+  PROCEDURE ReadSymbol(Attendu : TSymbols);
 
     PROCEDURE Trim;
     var
@@ -325,26 +328,26 @@ var
       end;
     END;
 
-    PROCEDURE Lu(nSymbole : TSymbole);
+    PROCEDURE Lu(nSymbole : TSymbols);
 
     BEGIN
-     Symbole:=nSymbole;
+     SymbolType:=nSymbole;
      INC(PL);
     END;
 
-    PROCEDURE Lu2(Sym1, Sym2 : TSymbole);
+    PROCEDURE Lu2(Sym1, Sym2 : TSymbols);
 
     BEGIN
      IF PL[1]='=' THEN
       BEGIN
-       Symbole:=Sym2;
+       SymbolType:=Sym2;
        INC(PL, 2);
       END
      ELSE
       Lu(Sym1);
     END;
 
-    FUNCTION LireReel : Single;
+    FUNCTION ReadNumValue : Single;
 
     VAR
      Echelle : Single;
@@ -382,10 +385,10 @@ var
    VarL: TStringList;
 
   BEGIN
-   IF (Symbole<>Attendu) AND (Attendu<>symInconnu) THEN
+   IF (SymbolType<>Attendu) AND (Attendu<>symUnknown) THEN
     ErreurEx(FmtLoadStr1(4097, [
      LoadStr1(4160+Ord(Attendu)),
-     LoadStr1(4160+Ord(Symbole))]));
+     LoadStr1(4160+Ord(SymbolType))]));
    WHILE (PL^=#0) AND (LigneCourante < Patch.Count) DO
     BEGIN
      Ligne:=Patch[LigneCourante];
@@ -410,19 +413,19 @@ var
                           SymboleMot:=SymboleMot+PL^;
                           INC(PL);
                          UNTIL NOT (PL^ IN ['a'..'z','A'..'Z','0'..'9','_']);
-                         Symbole:=Low(MotsClefs);
-                         while (Symbole<=High(MotsClefs)) and (CompareText(SymboleMot, MotsClefs[Symbole])<>0) do
-                          Inc(Symbole);
-                         if Symbole>High(MotsClefs) then
+                         SymbolType:=Low(MotsClefs);
+                         while (SymbolType<=High(MotsClefs)) and (CompareText(SymboleMot, MotsClefs[SymbolType])<>0) do
+                          Inc(SymbolType);
+                         if SymbolType>High(MotsClefs) then
                           begin
                            SymboleType:=Low(NomsTypes);
                            while (SymboleType<=High(NomsTypes)) and (CompareText(SymboleMot, NomsTypes[SymboleType])<>0) do
                             Inc(SymboleType);
                            if SymboleType<=High(NomsTypes) then
-                            Symbole:=symType
+                            SymbolType:=symType
                            else
                             begin
-                             Symbole:=symVariable;
+                             SymbolType:=symVariable;
                              VariableEstLocale:=(VarLocales<>Nil) and VarLocales.Find(SymboleMot, I);
                              if VariableEstLocale then
                               SymboleVar.AsObject:=VarLocales.Objects[I]
@@ -445,63 +448,63 @@ var
                                    SymboleVar.AsObject:=VarL.Objects[I]
                                   else
                                    begin
-                                    Symbole:=symIdent;
-                                    SymboleVar.InfoType:=tInconnu;
+                                    SymbolType:=symIdent;
+                                    SymboleVar.InfoType:=tVoid;
                                    end;
                                  end;
                                if SymboleVar.InfoType=tObjData then
-                                Symbole:=symObjVar;
+                                SymbolType:=symObjVar;
                               end;
                             end;
                           end;
                         END;
     '0'..'9' : BEGIN
-                Symbole:=symReel;
-                SymboleReel:=LireReel;
+                SymbolType:=symNumValue;
+                SymboleReel:=ReadNumValue;
                END;
-    ';' : Lu(symPointVirgule);
-    '{' : Lu(symAccolade1);
-    '}' : Lu(symAccolade2);
-    ':' : Lu(symDeuxPoints);
-    '=' : Lu2(symAffecte, symEgal);
-    '+' : Lu(symPlus);
+    ';' : Lu(symSemiColon);
+    '{' : Lu(symCurlyBracketLeft);
+    '}' : Lu(symCurlyBracketRight);
+    ':' : Lu(symColon);
+    '=' : Lu2(symAssign, symEqual);
+    '+' : Lu(symAdd);
     '-' : IF PL[1] IN ['0'..'9'] THEN
            BEGIN
-            Symbole:=symReel;
-            SymboleReel:=LireReel;
+            SymbolType:=symNumValue;
+            SymboleReel:=ReadNumValue;
            END
           ELSE
-           Lu(symMoins);
-    '*' : Lu(symFois);
-    '/' : Lu(symDivise);
+           Lu(symSubtract);
+    '*' : Lu(symMultiply);
+    '/' : Lu(symDivide);
     '&' : BEGIN
            Lu(symAnd);
            IF PL^='&' THEN
-            Lu(symLogAnd);
+            Lu(symLogicalAnd);
           END;
     '|' : BEGIN
            Lu(symOr);
            IF PL^='|' THEN
-            Lu(symLogOr);
+            Lu(symLogicalOr);
           END;
     '!' : Lu2(symNot, symDifferent);
-    '<' : Lu2(symPlusPetit, symPlusPetitOuEgal);
-    '>' : Lu2(symPlusGrand, symPlusGrandOuEgal);
-    '(' : Lu(symParenthese1);
-    ')' : Lu(symParenthese2);
-    '.' : Lu(symPoint);
-    ',' : Lu(symVirgule);
+    '<' : Lu2(symLessThan, symLessOrEqualTo);
+    '>' : Lu2(symGreaterThan, symGreaterOrEqualTo);
+    '(' : Lu(symBracketLeft);
+    ')' : Lu(symBracketRight);
+    '.' : Lu(symPeriod);
+    ',' : Lu(symComma);
     '''': BEGIN
            INC(PL);
            Trim;
            FOR I:=1 TO 3 DO
             BEGIN
-             SymboleVecteur[I]:=LireReel;
+             SymboleVecteur[I]:=ReadNumValue;
              Trim;
             END;
            IF PL^<>'''' THEN
             Erreur(4098);
-           Lu(symVecteur);
+           Lu(symVector);
           END;
     '"' : BEGIN
            INC(PL);
@@ -557,13 +560,13 @@ var
                SymboleMot:=SymboleMot+PL^;
              INC(PL);
             END;
-           Lu(symChaine);
+           Lu(symChain);
           END;
     '$': Lu(symDollar);
-    '[': Lu(symCrochet1);
-    ']': Lu(symCrochet2);
+    '[': Lu(symSquareBracketLeft);
+    ']': Lu(symSquareBracketRight);
     #0 : begin
-          Symbole:=symEOF;
+          SymbolType:=symEOF;
           Exit;
          end;
     ELSE Erreur(4100);
@@ -575,12 +578,12 @@ var
   begin
    Result.T:=SymboleType;
    Result.NbArg:=-1;
-   Lire(symType);
-   if Symbole=symParenthese1 then
+   ReadSymbol(symType);
+   if SymbolType=symBracketLeft then
     begin
-     Lire(symParenthese1);
+     ReadSymbol(symBracketLeft);
      Result.NbArg:=0;
-     if Symbole<>symParenthese2 then
+     if SymbolType<>symBracketRight then
       repeat
        if Result.NbArg=8 then
         Erreur(4117);
@@ -588,23 +591,23 @@ var
        with Result.Arg[Result.NbArg] do
         begin
          T:=SymboleType;
-         Lire(symType);
-         if (T=tInconnu) and (Symbole=symParenthese1) then
+         ReadSymbol(symType);
+         if (T=tVoid) and (SymbolType=symBracketLeft) then
           begin
-           Lire(symParenthese1);
-           Lire(symParenthese2);
-           T:=tFrPtr;
+           ReadSymbol(symBracketLeft);
+           ReadSymbol(symBracketRight);
+           T:=tFrPointer;
           end;
          Nom:=SymboleMot;
         end;
-       if Symbole in [symVariable, symObjVar] then
-        Lire(symInconnu)
+       if SymbolType in [symVariable, symObjVar] then
+        ReadSymbol(symUnknown)
        else
-        Lire(symIdent);
-       if Symbole=symParenthese2 then Break;
-       Lire(symVirgule);
+        ReadSymbol(symIdent);
+       if SymbolType=symBracketRight then Break;
+       ReadSymbol(symComma);
       until False;
-     Lire(symParenthese2);
+     ReadSymbol(symBracketRight);
     end;
   end;
 
@@ -686,25 +689,25 @@ VAR
    F       : TFrame;
 
   BEGIN
-   Lire(symParenthese1);
+   ReadSymbol(symBracketLeft);
    NbArg:=0;
-   IF Symbole<>symParenthese2 THEN
+   IF SymbolType<>symBracketRight THEN
     REPEAT
      if NbArg=8 then
       Erreur(4117);
      INC(NbArg);
-     IF Symbole=symObjVar THEN
+     IF SymbolType=symObjVar THEN
       WITH Args[NbArg] DO
        BEGIN
         P:=SymboleVar.Pos;
         Flags:=[];
         T:=tObjData;
-        Lire(symObjVar);
+        ReadSymbol(symObjVar);
        END
      ELSE
       Expression(Args[NbArg]);
-     IF Symbole=symParenthese2 THEN Break;
-     Lire(symVirgule);
+     IF SymbolType=symBracketRight THEN Break;
+     ReadSymbol(symComma);
     UNTIL False;
    if ChargerFrame(PosAppel, F)>0 then
     begin
@@ -733,13 +736,13 @@ VAR
    for I:=NbArg+1 to 2 do
     Args[I].P:=0;
    Coder($33+NbArg, PosAppel, Args[1].P, Args[2].P);
-   Lire(symParenthese2);
+   ReadSymbol(symBracketRight);
   END;
 
   PROCEDURE chk(const E : TExpr; T : TType);
 
   BEGIN
-   IF (E.T<>tInconnu) and (T<>tInconnu) and (E.T<>T) THEN
+   IF (E.T<>tVoid) and (T<>tVoid) and (E.T<>T) THEN
     Erreur(4101);
   END;
 
@@ -770,8 +773,8 @@ VAR
 
          BEGIN
           F:=SymboleVar;
-          Lire(symVariable);
-          IF Symbole=symParenthese1 THEN
+          ReadSymbol(symVariable);
+          IF SymbolType=symBracketLeft THEN
            BEGIN
             IF Assigned(ResultatAppel) AND
              ((ResultatAppel^.P=1)
@@ -788,7 +791,7 @@ VAR
             CoderAppel(F.Pos);
             ResultatAppel:=@Result;
             Result.P:=1;
-            Result.T:=tInconnu;
+            Result.T:=tVoid;
            {Result.Flags:=[];
             Coder(Affecte[False, F^.TypeExpr], 1, NDatas, 0);
             Result.P:=NDatas;
@@ -817,7 +820,7 @@ VAR
           ELSE
            BEGIN
             Result.P:=F.Pos;
-            Result.T:=tFrPtr;
+            Result.T:=tFrPointer;
            END;
           Result.Flags:=[];
          END;
@@ -826,28 +829,28 @@ VAR
          St : TVarStruct;
 
         BEGIN
-         CASE Symbole OF
-          symVariable    : if SymboleVar.InfoType=tFrPtr then
+         CASE SymbolType OF
+          symVariable    : if SymboleVar.InfoType=tFrPointer then
                             Appel
                            else
                             BEGIN
                              Result.P:=SymboleVar.Pos;
                              Result.T:=SymboleVar.InfoType;
                              Result.Flags:=[fPeutAffecter];
-                             Lire(symVariable);
+                             ReadSymbol(symVariable);
                             END;
-          symReel        : BEGIN
-                            St.InfoType:=tReel;
+          symNumValue        : BEGIN
+                            St.InfoType:=tNumValue;
                             St.Sys:=0;
                             St.Pos:=EcrireReel(SymboleReel);
                             St.Nom:=Immediate;
                             NDataDef.Write(St, SizeOf(St));
                             Result.P:=St.Pos;
-                            Result.T:=tReel;
+                            Result.T:=tNumValue;
                             Result.Flags:=[];
-                            Lire(symReel);
+                            ReadSymbol(symNumValue);
                            END;
-          symChaine      : BEGIN
+          symChain      : BEGIN
                             SymboleReel_AsLong:=EcrireChaine(SymboleMot);
                            {IF ObjChaine^.Immediat=0 THEN
                              BEGIN
@@ -855,40 +858,40 @@ VAR
                               Datas.Write(SymboleReel, 4);
                               INC(NDatas);
                              END;}
-                            St.InfoType:=tStr;
+                            St.InfoType:=tString;
                             St.Sys:=0;
                             St.Pos:={ObjChaine^.Immediat} EcrireReel(SymboleReel);
                             St.Nom:=Immediate;
                             NDataDef.Write(St, SizeOf(St));
                             Result.P:=St.Pos;
-                            Result.T:=tStr;
+                            Result.T:=tString;
                             Result.Flags:=[];
-                            Lire(symChaine);
+                            ReadSymbol(symChain);
                            END;
-          symVecteur     : BEGIN
-                            St.InfoType:=tVecteur;
+          symVector     : BEGIN
+                            St.InfoType:=tVector;
                             St.Sys:=0;
                             St.Pos:=EcrireVecteur(SymboleVecteur);
                             St.Nom:=Immediate;
                             NDataDef.Write(St, SizeOf(St));
                             Result.P:=St.Pos;
-                            Result.T:=tVecteur;
+                            Result.T:=tVector;
                             Result.Flags:=[];
-                            Lire(symVecteur);
+                            ReadSymbol(symVector);
                            END;
-          symParenthese1 : BEGIN
-                            Lire(symParenthese1);
+          symBracketLeft : BEGIN
+                            ReadSymbol(symBracketLeft);
                             Expression(Result);
-                            Lire(symParenthese2);
+                            ReadSymbol(symBracketRight);
                            END;
           symDollar : BEGIN
-                       Lire(symDollar);
-                       if not (Symbole in [symIdent, symVariable, symObjVar]) then
+                       ReadSymbol(symDollar);
+                       if not (SymbolType in [symIdent, symVariable, symObjVar]) then
                         Erreur(4113);
                        SymboleReel:=MdlFrames.IndexOf(SymboleMot);
                        if SymboleReel<0 then
                         Erreur(4113);
-                       Symbole:=symReel;
+                       SymbolType:=symNumValue;
                        ExprFinal(Result);
                       END;
           symIdent : ErreurEx(FmtLoadStr1(4114, [SymboleMot]));
@@ -902,13 +905,13 @@ VAR
 
        BEGIN
         ExprFinal(Result);
-        WHILE Symbole=symPoint DO
+        WHILE SymbolType=symPeriod DO
          BEGIN
-          IF Result.T<>tPtr THEN
+          IF Result.T<>tPointer THEN
            Erreur(4103);
           Result.P:=Immediat(Result);
           VariableObjet:=True;
-          Lire(symPoint);
+          ReadSymbol(symPeriod);
           VariableObjet:=False;
           Result.P2:=SymboleVar.Pos;
          {Datas.Position:=4*LongInt(Result.P2);
@@ -921,19 +924,19 @@ VAR
             ObjDataDef.Read(L, 4);
             L:=0;
            end;
-          Lire(symObjVar);
+          ReadSymbol(symObjVar);
           Result.T:=TType(Lo(L));}
           ObjDataDef.Position:=SizeOf(St);
           while (ObjDataDef.Read(St, SizeOf(St)) = SizeOf(St))
             and (StrIComp(@Chaines[St.Nom+1], PChar(SymboleMot))<>0) do
-           St.InfoType:=tInconnu;
-          Lire(symObjVar);
+           St.InfoType:=tVoid;
+          ReadSymbol(symObjVar);
           Result.T:=St.InfoType;
           CASE Result.T OF
-           tVecteur : Result.Instr:=$19;
-           tStr     : Result.Instr:=$1A;
-           tPtr     : Result.Instr:=$1B;
-           tFrPtr   : Result.Instr:=$1D;
+           tVector : Result.Instr:=$19;
+           tString     : Result.Instr:=$1A;
+           tPointer     : Result.Instr:=$1B;
+           tFrPointer   : Result.Instr:=$1D;
            ELSE       Result.Instr:=$18;
           END;
           Result.Flags:=[fInstr, fPeutAffecter];
@@ -941,19 +944,19 @@ VAR
        END;
 
       BEGIN
-       IF Symbole=symNot THEN
+       IF SymbolType=symNot THEN
         BEGIN
-         Lire(symNot);
+         ReadSymbol(symNot);
          ExprNot(Result);
          Result.P:=Immediat(Result);
          CASE Result.T OF
-          tStr   : Result.Instr:=$2E;
-          tPtr   : Result.Instr:=$2F;
-          tFrPtr : Result.Instr:=$30;
+          tString   : Result.Instr:=$2E;
+          tPointer   : Result.Instr:=$2F;
+          tFrPointer : Result.Instr:=$30;
           ELSE     Result.Instr:=$2C;
          END;
          Result.P2:=0;
-         Result.T:=tReel;
+         Result.T:=tNumValue;
          Result.Flags:=[fInstr];
         END
        ELSE
@@ -966,43 +969,43 @@ VAR
 
      BEGIN
       ExprFoisDivise(Result);
-      WHILE Symbole IN [symFois, symDivise] DO
+      WHILE SymbolType IN [symMultiply, symDivide] DO
        BEGIN
         Result.P:=Immediat(Result);
-        Divise:=Symbole=symDivise;
-        Lire(symInconnu);
+        Divise:=SymbolType=symDivide;
+        ReadSymbol(symUnknown);
         ExprFoisDivise(E);
         IF Divise THEN
          BEGIN
-          chk(E,tReel);
-          chk(Result,tReel);
+          chk(E,tNumValue);
+          chk(Result,tNumValue);
           Result.Instr:=$05;
          END
         ELSE
-         IF Result.T=tVecteur THEN
-          IF E.T=tVecteur THEN
+         IF Result.T=tVector THEN
+          IF E.T=tVector THEN
            BEGIN
             Result.Instr:=$02;
-            Result.T:=tReel;
+            Result.T:=tNumValue;
            END
           ELSE
            BEGIN
-            chk(E,tReel);
+            chk(E,tNumValue);
             Result.Instr:=$04;
            END
          ELSE
           BEGIN
-           chk(Result,tReel);
-           IF E.T=tVecteur THEN
+           chk(Result,tNumValue);
+           IF E.T=tVector THEN
             BEGIN
              Result.Instr:=$03;
-             Result.T:=tVecteur;
+             Result.T:=tVector;
             END
            ELSE
             BEGIN
-             chk(E,tReel);
+             chk(E,tNumValue);
              Result.Instr:=$01;
-             Result.T:=tReel;
+             Result.T:=tNumValue;
             END;
           END;
         Result.P2:=Immediat(E);
@@ -1016,28 +1019,28 @@ VAR
 
     BEGIN
      ExprPlusMoins(Result);
-     WHILE (Symbole IN [symPlus, symMoins])
-      or ((Symbole = symReel) and (SymboleReel<0)) DO
+     WHILE (SymbolType IN [symAdd, symSubtract])
+      or ((SymbolType = symNumValue) and (SymboleReel<0)) DO
       BEGIN
        Result.P:=Immediat(Result);
-       if Symbole <> symMoins then
-        IF Result.T=tVecteur THEN
+       if SymbolType <> symSubtract then
+        IF Result.T=tVector THEN
          Result.Instr:=$07
         ELSE
          BEGIN
-          chk(Result,tReel);
+          chk(Result,tNumValue);
           Result.Instr:=$06;
          END
        else
-        IF Result.T=tVecteur THEN
+        IF Result.T=tVector THEN
          Result.Instr:=$09
         ELSE
          BEGIN
-          chk(Result,tReel);
+          chk(Result,tNumValue);
           Result.Instr:=$08;
          END;
-       if Symbole<>symReel then
-        Lire(symInconnu);
+       if SymbolType<>symNumValue then
+        ReadSymbol(symUnknown);
        ExprPlusMoins(E);
        chk(E, Result.T);
        Result.P2:=Immediat(E);
@@ -1051,40 +1054,40 @@ VAR
 
    BEGIN
     ExprComparaison(Result);
-    WHILE Symbole IN [symEgal, symDifferent, symPlusPetit, symPlusPetitOuEgal,
-    symPlusGrand, symPlusGrandOuEgal] DO
+    WHILE SymbolType IN [symEqual, symDifferent, symLessThan, symLessOrEqualTo,
+    symGreaterThan, symGreaterOrEqualTo] DO
      BEGIN
       Result.P:=Immediat(Result);
       WITH Result DO
-       CASE Symbole OF
-        symEgal : CASE T OF
-                   tVecteur : Instr:=$0B;
-                   tStr     : Instr:=$0C;
-                   tPtr     : Instr:=$0D;
-                   tFrPtr   : Instr:=$0E;
+       CASE SymbolType OF
+        symEqual : CASE T OF
+                   tVector : Instr:=$0B;
+                   tString     : Instr:=$0C;
+                   tPointer     : Instr:=$0D;
+                   tFrPointer   : Instr:=$0E;
                    ELSE Instr:=$0A;
                   END;
         symDifferent : CASE T OF
-                        tVecteur : Instr:=$10;
-                        tStr     : Instr:=$11;
-                        tPtr     : Instr:=$12;
-                        tFrPtr   : Instr:=$13;
+                        tVector : Instr:=$10;
+                        tString     : Instr:=$11;
+                        tPointer     : Instr:=$12;
+                        tFrPointer   : Instr:=$13;
                         ELSE Instr:=$0F;
                        END;
-        symPlusPetit : Instr:=$16;
-        symPlusGrand : Instr:=$17;
-        symPlusPetitOuEgal : Instr:=$14;
-        symPlusGrandOuEgal : Instr:=$15;
+        symLessThan : Instr:=$16;
+        symGreaterThan : Instr:=$17;
+        symLessOrEqualTo : Instr:=$14;
+        symGreaterOrEqualTo : Instr:=$15;
        END;
       IF Result.Instr>=$14 THEN
-       chk(Result,tReel);
-      Lire(symInconnu);
+       chk(Result,tNumValue);
+      ReadSymbol(symUnknown);
       ExprComparaison(E);
       chk(E, Result.T);
       Result.P2:=Immediat(E);
       Transm(E, @Result);
       Result.Flags:=[fInstr];
-      Result.T:=tReel;
+      Result.T:=tNumValue;
      END;
    END;
 
@@ -1093,29 +1096,29 @@ VAR
 
   BEGIN
    ExprEtOu(Cible);
-   WHILE Symbole IN [symOr, symAnd, symLogOr, symLogAnd] DO
+   WHILE SymbolType IN [symOr, symAnd, symLogicalOr, symLogicalAnd] DO
     BEGIN
-    {chk(Cible,tReel);}
+    {chk(Cible,tNumValue);}
      Cible.P:=Immediat(Cible);
      WITH Cible DO
-      CASE Symbole OF
+      CASE SymbolType OF
        symOr     : Instr:=$41;
        symAnd    : Instr:=$40;
-       symLogOr  : Instr:=$3F;
-       symLogAnd : Instr:=$3E;
+       symLogicalOr  : Instr:=$3F;
+       symLogicalAnd : Instr:=$3E;
       END;
-     Lire(symInconnu);
+     ReadSymbol(symUnknown);
      ExprEtOu(E);
-    {chk(E,tReel);}
+    {chk(E,tNumValue);}
      Cible.P2:=Immediat(E);
      Transm(E, @Cible);
      Cible.Flags:=[fInstr];
     END;
-   IF Symbole=symAffecte THEN
+   IF SymbolType=symAssign THEN
     BEGIN
      IF NOT (fPeutAffecter IN Cible.Flags) THEN
       Erreur(4104);
-     Lire(symAffecte);
+     ReadSymbol(symAssign);
      Expression(E);
      chk(E, Cible.T);
      IF fInstr IN Cible.Flags THEN
@@ -1164,21 +1167,21 @@ VAR
   BEGIN
    Result:=0;
    VL0:=Nil; try
-   Ouvert:=Symbole=symAccolade1;
+   Ouvert:=SymbolType=symCurlyBracketLeft;
    if Ouvert then
-    Lire(symAccolade1);
+    ReadSymbol(symCurlyBracketLeft);
    REPEAT
     PVirg:=True;
-    CASE Symbole OF
-     symPointVirgule : ;
-     symAccolade2 : if Ouvert then Break;
+    CASE SymbolType OF
+     symSemiColon : ;
+     symCurlyBracketRight : if Ouvert then Break;
     {symDiese : BEGIN
-                 Lire(symDiese);
+                 ReadSymbol(symDiese);
                  R:=SymboleReel;
-                 Lire(symReel);
+                 ReadSymbol(symNumValue);
                  F:=SymboleFunc;
-                 Lire(symAppel);
-                 St.InfoType:=tReel;
+                 ReadSymbol(symAppel);
+                 St.InfoType:=tNumValue;
                  St.Sys:=0;
                  St.Pos:=EcrireReel(R);
                  St.Nom:=Immediate;
@@ -1186,10 +1189,10 @@ VAR
                  Coder($3C, St.Pos, F^.Pos, 0);
                 END;}
      symIF    : BEGIN
-                 Lire(symIF);
-                 Lire(symParenthese1);
+                 ReadSymbol(symIF);
+                 ReadSymbol(symBracketLeft);
                  Expression(E);
-                 Lire(symParenthese2);
+                 ReadSymbol(symBracketRight);
                  E.P:=Immediat(E);
                  ResultatAppel:=Nil;
                  Pos1:=NQCode;
@@ -1197,18 +1200,18 @@ VAR
                  Inc(Result, CompilerBloc);
                  QCodeSeek(Pos1, +4);
                  Pos1:=NQCode-Pos1;
-                 if Symbole=symPointVirgule then
-                  Lire(symPointVirgule);
-                 IF Symbole=symELSE THEN
+                 if SymbolType=symSemiColon then
+                  ReadSymbol(symSemiColon);
+                 IF SymbolType=symELSE THEN
                   INC(Pos1);
                  ControleInt(Pos1);
                  QCode.Write(Pos1, 2);
                  QCodeSeek(NQCode, 0);
-                 IF Symbole=symELSE THEN
+                 IF SymbolType=symELSE THEN
                   BEGIN
                    Pos1:=NQCode;
                    Coder($3D, 0, 0, 0);
-                   Lire(symELSE);
+                   ReadSymbol(symELSE);
                    Inc(Result, CompilerBloc);
                    QCodeSeek(Pos1, +2);
                    Pos1:=NQCode-Pos1;
@@ -1219,11 +1222,11 @@ VAR
                  PVirg:=False;
                 END;
      symWHILE : BEGIN
-                 Lire(symWHILE);
+                 ReadSymbol(symWHILE);
                  Pos1:=NQCode;
-                 Lire(symParenthese1);
+                 ReadSymbol(symBracketLeft);
                  Expression(E);
-                 Lire(symParenthese2);
+                 ReadSymbol(symBracketRight);
                  E.P:=Immediat(E);
                  ResultatAppel:=Nil;
                  Pos2:=NQCode;
@@ -1240,13 +1243,13 @@ VAR
                  PVirg:=False;
                 END;
      symDO    : BEGIN
-                 Lire(symDO);
+                 ReadSymbol(symDO);
                  Pos1:=NQCode;
                  Inc(Result, CompilerBloc);
-                 Lire(symWHILE);
-                 Lire(symParenthese1);
+                 ReadSymbol(symWHILE);
+                 ReadSymbol(symBracketLeft);
                  Expression(E);
-                 Lire(symParenthese2);
+                 ReadSymbol(symBracketRight);
                  E.P:=Immediat(E);
                  ResultatAppel:=Nil;
                  Dec(Pos1, NQCode);
@@ -1254,8 +1257,8 @@ VAR
                  Coder($31, E.P, Pos1, 0);
                 END;
      symRETURN: BEGIN
-                 Lire(symRETURN);
-                 if Symbole<>symPointVirgule then
+                 ReadSymbol(symRETURN);
+                 if SymbolType<>symSemiColon then
                   begin
                    Expression(E);
                    Coder($2B, Immediat(E), 0, 0);
@@ -1264,7 +1267,7 @@ VAR
                  else
                   Coder($2B, 0, 0, 0);
                 END;
-     symAccolade1: begin
+     symCurlyBracketLeft: begin
                     Inc(Result, CompilerBloc);
                     ResultatAppel:=Nil;
                     PVirg:=False;
@@ -1277,20 +1280,20 @@ VAR
                   VarLocales.Assign(VL0);
                   VarLocales.Sorted:=True;
                  end;
-                Lire(symLocal);
+                ReadSymbol(symLocal);
                 Inc(Result, DefVar(VarLocales, TypeEtendu));
                end;
     ELSE BEGIN
           Expression(E);
           E.P:=Immediat(E);
-          IF (Symbole=symParenthese1) AND (E.T=tFrPtr) THEN
+          IF (SymbolType=symBracketLeft) AND (E.T=tFrPointer) THEN
            CoderAppel(E.P);
           ResultatAppel:=Nil;
          END;
     END;
     if not Ouvert then Exit;
     if PVirg then
-     Lire(symPointVirgule);
+     ReadSymbol(symSemiColon);
    {ResultatAppels.DeleteAll;}
    UNTIL False;
    finally
@@ -1300,7 +1303,7 @@ VAR
       VarLocales:=VL0;
      end;
    end;
-   Lire(symAccolade2);
+   ReadSymbol(symCurlyBracketRight);
   END;
 
   function DefVar(L: TStringList; const T: TTypeEtendu) : Integer;
@@ -1329,15 +1332,15 @@ VAR
     end
    else
     begin
-     Variable.InfoType:=tFrPtr;
+     Variable.InfoType:=tFrPointer;
      Taille:=1;
     end;
-   if (Symbole=symVariable)
+   if (SymbolType=symVariable)
    and (VariableEstLocale xor (L=VarGlobales)) then
     begin
      if Variable.InfoType <> SymboleVar.InfoType then
       Erreur(4105);
-     if (Variable.InfoType=tFrPtr) and (ChargerFrame(SymboleVar.Pos, F)>0) then
+     if (Variable.InfoType=tFrPointer) and (ChargerFrame(SymboleVar.Pos, F)>0) then
       begin
       {if F.Code<0 then
         Erreur(4106);}
@@ -1348,21 +1351,21 @@ VAR
          Erreur(4108);
       end;
      Variable:=SymboleVar;
-     Lire(symVariable);
+     ReadSymbol(symVariable);
      Variable.Nom:=0;
     end
    else
     begin
      Definir;
-     if Symbole in [symVariable, symObjVar] then
-      Lire(symInconnu)
+     if SymbolType in [symVariable, symObjVar] then
+      ReadSymbol(symUnknown)
      else
-      Lire(symIdent);
+      ReadSymbol(symIdent);
      Datas.Position:=4*LongInt(NDatas);
      Datas.Write(Zero, 4*Taille);
-     if Variable.InfoType = tVecteur then
+     if Variable.InfoType = tVector then
       begin
-       Variable.InfoType:=tReel;
+       Variable.InfoType:=tNumValue;
        S:=SymboleMot;
        SymboleMot:=S + '_x';
        Definir;
@@ -1378,22 +1381,22 @@ VAR
       Inc(NDatas, Taille);
     end;
    Result:=Taille;
-   if Symbole = symAffecte then
+   if SymbolType = symAssign then
     begin
-     Lire(symAffecte);
+     ReadSymbol(symAssign);
      if T.NbArg<0 then
       case T.T of
-       tStr: begin
+       tString: begin
               LongInt(Pointer(@V[1])^):=EcrireChaine(SymboleMot);
-              Lire(symChaine);
+              ReadSymbol(symChain);
              end;
-       tReel: begin
+       tNumValue: begin
                V[1]:=SymboleReel;
-               Lire(symReel);
+               ReadSymbol(symNumValue);
               end;
-       tVecteur: begin
+       tVector: begin
                   V:=SymboleVecteur;
-                  Lire(symVecteur);
+                  ReadSymbol(symVector);
                  end;
        else Erreur(4109);
       end
@@ -1406,7 +1409,7 @@ VAR
          SymboleVar.Pos:=NDatas;
          Inc(NDatas);
          Datas.Write(I, 4);
-         SymboleVar.InfoType:=tFrPtr;
+         SymboleVar.InfoType:=tFrPointer;
          VarLocales.AddObject('INHERITED', SymboleVar.AsObject);
          SymboleVar.Nom:=EcrireChaine('inherited_' + SymboleMot);
          NDataDef.Write(SymboleVar, SizeOf(SymboleVar));
@@ -1436,9 +1439,9 @@ VAR
          VarLocales.AddObject(T.Arg[I].Nom, SymboleVar.AsObject);
          SymboleVar.Nom:=EcrireChaine(T.Arg[I].Nom);
          NDataDef.Write(SymboleVar, SizeOf(SymboleVar));
-         if SymboleVar.InfoType = tVecteur then
+         if SymboleVar.InfoType = tVector then
           begin
-           SymboleVar.InfoType:=tReel;
+           SymboleVar.InfoType:=tNumValue;
            VarLocales.AddObject(T.Arg[I].Nom+'_x', SymboleVar.AsObject);
            SymboleVar.Nom:=EcrireChaine(T.Arg[I].Nom+'_x');
            NDataDef.Write(SymboleVar, SizeOf(SymboleVar));
@@ -1454,35 +1457,35 @@ VAR
         end;
        VarLocales.Sorted:=True;
 
-       if (Symbole=symCrochet1) and (F.NbArguments=0) then
+       if (SymbolType=symSquareBracketLeft) and (F.NbArguments=0) then
         begin
-         Lire(symCrochet1);
-         if Symbole=symReel then
+         ReadSymbol(symSquareBracketLeft);
+         if SymbolType=symNumValue then
           begin
            V[2]:=SymboleReel;
-           Lire(symReel);
+           ReadSymbol(symNumValue);
           end
          else
           begin
-           Lire(symDollar);
-           if not (Symbole in [symIdent, symVariable, symObjVar]) then
+           ReadSymbol(symDollar);
+           if not (SymbolType in [symIdent, symVariable, symObjVar]) then
             Erreur(4113);
            I:=MdlFrames.IndexOf(SymboleMot);
            if I<0 then
             Erreur(4113);
            V[2]:=I;
-           Lire(symInconnu);
+           ReadSymbol(symUnknown);
           end;
          I:=NDatas;
          Inc(NDatas);
          Datas.Write(V[2], 4);
-         Lire(symVirgule);
-         if Symbole=symVariable then
+         ReadSymbol(symComma);
+         if SymbolType=symVariable then
           begin
-           if SymboleVar.InfoType<>tFrPtr then
+           if SymboleVar.InfoType<>tFrPointer then
             Erreur(4111);
            Coder($3C, I, SymboleVar.Pos, 0);
-           Lire(symVariable);
+           ReadSymbol(symVariable);
           end
          else
           begin
@@ -1492,12 +1495,12 @@ VAR
            Datas.Write(Zero, 4);
            Coder($3C, I, Variable.Pos, 0);
            Variable.Pos:=SymboleVar.Pos;
-           if Symbole=symObjVar then
-            Lire(symObjVar)
+           if SymbolType=symObjVar then
+            ReadSymbol(symObjVar)
            else
-            Lire(symIdent);
+            ReadSymbol(symIdent);
           end;
-         Lire(symCrochet2);
+         ReadSymbol(symSquareBracketRight);
         end;
 
        ResultatAppel:=Nil;
@@ -1517,9 +1520,9 @@ VAR
      Datas.Write(V, 4*Taille);
     end
    else
-    if Symbole=symVirgule then
+    if SymbolType=symComma then
      begin
-      Lire(symVirgule);
+      ReadSymbol(symComma);
       Inc(Result, DefVar(L, T));
      end;
   end;
@@ -1530,21 +1533,21 @@ VAR
    L: LongInt;
    C: Char;
   begin
-   Lire(symPoint);
+   ReadSymbol(symPeriod);
    T:=SymboleType;
-   Lire(symType);
-   if Symbole=symParenthese1 then
+   ReadSymbol(symType);
+   if SymbolType=symBracketLeft then
     begin
-     Lire(symParenthese1);
-     if Symbole<>symParenthese2 then
+     ReadSymbol(symBracketLeft);
+     if SymbolType<>symBracketRight then
       repeat
-       Lire(symType);
-       Lire(symInconnu);
-       if Symbole=symParenthese2 then Break;
-       Lire(symVirgule);
+       ReadSymbol(symType);
+       ReadSymbol(symUnknown);
+       if SymbolType=symBracketRight then Break;
+       ReadSymbol(symComma);
       until False;
-     Lire(symParenthese2);
-     T:=tFrPtr;
+     ReadSymbol(symBracketRight);
+     T:=tFrPointer;
     end;
    repeat
     SymboleVar.InfoType:=T;
@@ -1568,10 +1571,10 @@ VAR
     VarObjet.AddObject(SymboleMot, SymboleVar.AsObject);
     Inc(NDatas);
     Datas.Write(L, 4);
-    if T=tVecteur then
+    if T=tVector then
      for C:='x' to 'z' do
       begin
-       SymboleVar.InfoType:=tReel;
+       SymboleVar.InfoType:=tNumValue;
        SymboleVar.Pos:=L;
        SymboleVar.Nom:=EcrireChaine(SymboleMot+'_'+C);
        ObjDataDef.Write(SymboleVar, 8);
@@ -1583,9 +1586,9 @@ VAR
        Datas.Write(L, 4);
        Inc(L);
       end;
-    Lire(symInconnu);
-    if Symbole<>symVirgule then Break;
-    Lire(symVirgule);
+    ReadSymbol(symUnknown);
+    if SymbolType<>symComma then Break;
+    ReadSymbol(symComma);
    until False;
   end;
 
@@ -1593,21 +1596,21 @@ VAR
   var
    F: TFrame;
   begin
-   Lire(symBIND);
+   ReadSymbol(symBIND);
    Touches.Add(#255 + SymboleMot);
-   Lire(symChaine);
-   Lire(symVirgule);
+   ReadSymbol(symChain);
+   ReadSymbol(symComma);
    Touches.Add(SymboleMot);
-   Lire(symChaine);
-   Lire(symVirgule);
-   if Symbole<>symVariable then
+   ReadSymbol(symChain);
+   ReadSymbol(symComma);
+   if SymbolType<>symVariable then
     begin
      Touches.Add(SymboleMot);
-     Lire(symChaine);
+     ReadSymbol(symChain);
     end
    else
     begin
-     if SymboleVar.InfoType<>tFrPtr then
+     if SymboleVar.InfoType<>tFrPointer then
       Erreur(4111);
      if ChargerFrame(SymboleVar.Pos, F)>0 then
       begin
@@ -1643,7 +1646,7 @@ VAR
        Inc(NoImpulse);
       end;
      Patch.Add('inherited(); };');
-     Lire(symVariable);
+     ReadSymbol(symVariable);
      Inc(NoImpulse);
     end;
   end;
@@ -1653,17 +1656,17 @@ VAR
    F: TFrame;
    Chaine: String;
   begin
-   Lire(symAUTOEXEC);
+   ReadSymbol(symAUTOEXEC);
    Chaine:='';
    repeat
-    if Symbole<>symVariable then
+    if SymbolType<>symVariable then
      begin
       Chaine:=Chaine+SymboleMot;
-      Lire(symChaine);
+      ReadSymbol(symChain);
      end
     else
      begin
-      if SymboleVar.InfoType<>tFrPtr then
+      if SymboleVar.InfoType<>tFrPointer then
        Erreur(4111);
       if ChargerFrame(SymboleVar.Pos, F)>0 then
        begin
@@ -1680,11 +1683,11 @@ VAR
        + ') { ' + SymboleMot + '(); self.impulse=0; };';
       Patch.Add('inherited(); };');
       Chaine:=Chaine+'impulse '+IntToStr(NoImpulse);
-      Lire(symVariable);
+      ReadSymbol(symVariable);
       Inc(NoImpulse);
      end;
-    if Symbole<>symVirgule then Break;
-    Lire(symVirgule);
+    if SymbolType<>symComma then Break;
+    ReadSymbol(symComma);
    until False;
    Touches.Add(Chaine);
   end;
@@ -1694,10 +1697,10 @@ VAR
    S, Nouveau: String;
    Espace: Integer;
   begin
-   Lire(symDollar);
+   ReadSymbol(symDollar);
    S:=PL;
    PL:=StrEnd(PL);
-   if (Symbole in [symIdent, symVariable, symObjVar])
+   if (SymbolType in [symIdent, symVariable, symObjVar])
    and (CompareText(SymboleMot, 'frame')=0) then
     repeat
      S:=Trim(S);
@@ -1711,10 +1714,10 @@ VAR
       Erreur(....);}
      MdlFrames.Add(Nouveau);
     until False;
-   Symbole:=symPointVirgule;
+   SymbolType:=symSemiColon;
   end;
 
-  function LireEntree(Numero: Integer) : String;
+  function ReadEntry(Numero: Integer) : String;
   var
    T: Integer;
   begin
@@ -1820,7 +1823,7 @@ begin
  Source.ReadBuffer(Header, SizeOf(Header));
  if Header.Version <> VersionProgsDat then
   Raise EError(809);
- Chaines:=LireEntree(5);
+ Chaines:=ReadEntry(5);
  GetMem(Vars, Pred(Header.Entrees[2].Nb)*SizeOf(TVarStruct));
  Datas:=TMemoryStream.Create;
  ObjDataDef:=TMemoryStream.Create;
@@ -1858,18 +1861,18 @@ begin
    VarGlobales.Sorted:=True;
    VarObjet.Sorted:=True;
    Immediate:=EcrireChaine(tcImmediate[TypeCode]);
-   Lire(symInconnu);
-   while Symbole<>symEOF do
+   ReadSymbol(symUnknown);
+   while SymbolType<>symEOF do
     begin
-     case Symbole of
+     case SymbolType of
       symType: DefVar(VarGlobales, TypeEtendu);
-      symPoint: DefObjVar;
+      symPeriod: DefObjVar;
       symBIND: DefCodeImpulse;
       symAUTOEXEC: DefCodeAutoexec;
       symDollar: DefMdlFrames;
       else Erreur(4110);
      end;
-     Lire(symPointVirgule);
+     ReadSymbol(symSemiColon);
     end;
    EcrireResultat;
   finally

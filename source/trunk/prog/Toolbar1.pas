@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.3  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -50,7 +53,7 @@ type
              public
                function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
                class function TypeInfo: String; override;
-               procedure EtatObjet(var E: TEtatObjet); override;
+               procedure ObjectState(var E: TEtatObjet); override;
                class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                function CreateToolbar(nOwner: TQkForm; nTag: Integer) : TToolbar97;
              end;
@@ -69,7 +72,7 @@ type
                    public
                      class function TypeInfo: String; override;
                      function CreateButton(nOwner: TWinControl; nParent: TWinControl; ShortCuts: TStringList) : TControl;
-                     procedure EtatObjet(var E: TEtatObjet); override;
+                     procedure ObjectState(var E: TEtatObjet); override;
                    end;
 
  {------------------------}
@@ -364,7 +367,7 @@ begin
   Result:=[];
 end;
 
-procedure QToolbar.EtatObjet(var E: TEtatObjet);
+procedure QToolbar.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiToolbar;
@@ -697,7 +700,7 @@ begin
  Result:=':tbbtn';
 end;
 
-procedure QToolbarButton.EtatObjet(var E: TEtatObjet);
+procedure QToolbarButton.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiToolbarButton;

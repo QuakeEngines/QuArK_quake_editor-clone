@@ -5,6 +5,9 @@ unit QkZip2;
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.10  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -66,13 +69,13 @@ type
 //                procedure RecGO1(const SubPath: String; extracted: PyObject);
               protected
                 procedure EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream; eocd: PEndOfCentralDir);
-//                function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+//                function OpenWindow(nOwner: TComponent) : TQForm1; override;
                 procedure SaveFile(Info: TInfoEnreg1); override;
                 procedure LoadFile(F: TStream; FSize: Integer); override;
 //                procedure SortPakFolder;
               public
                 class function TypeInfo: String; override;
-//                procedure EtatObjet(var E: TEtatObjet); override;
+//                procedure ObjectState(var E: TEtatObjet); override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
 //                function CreateOwnExplorer(nOwner: TComponent) : TWinControl; override;
                 function FindFile(const PakPath: String) : QFileObject; override;
@@ -87,7 +90,7 @@ type
           public
              class function TypeInfo: String; override;
              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-             procedure EtatObjet(var E: TEtatObjet); override;
+             procedure ObjectState(var E: TEtatObjet); override;
           end;
 
 const
@@ -152,9 +155,9 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@pathbase]) then
    Exit;
-  DebutTravail(0,0); try
+  ProgressIndicatorStart(0,0); try
   Result:=PyInt_FromLong((QkObjFromPyObj(self) as QZipFolder).ExtractTo(pathbase));
-  finally FinTravail; end;
+  finally ProgressIndicatorStop; end;
  except
   EBackToPython;
   Result:=Nil;
@@ -248,7 +251,7 @@ var
  v: PyObject;
 begin
  Acces;
- DebutTravail(175, SubElements.Count); try
+ ProgressIndicatorStart(175, SubElements.Count); try
  for I:=0 to SubElements.Count-1 do
   begin
    Q:=SubElements[I];
@@ -264,9 +267,9 @@ begin
       S:=OutputFile(S);
       QFileObject(Q).SaveInFile(rf_Default, S);
      end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
      }
 procedure QZipFolder.EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream; eocd: PEndOfCentralDir);
@@ -284,7 +287,7 @@ var
 {tFilename:String;}
 begin
  Acces;
- DebutTravail(5442, SubElements.Count); try
+ ProgressIndicatorStart(5442, SubElements.Count); try
  Info1:=TPakSibling.Create; try
  Info1.BaseFolder:=Chemin;
  Info1.Folder:=Self;
@@ -361,12 +364,12 @@ begin
        Info.F.CopyFrom(T2,0);       {Write Actual File Date ( Compressed ) }
        T2.Free;
     end;
-    ProgresTravail;
+    ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
       {
-function QZipFolder.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QZipFolder.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQPak.Create(nOwner);
 end;
@@ -454,7 +457,7 @@ begin
        files:=TMemoryStream.Create;    {ms for central directory}
        files.CopyFrom(f,eocd.size_cd); {read in central dir}
        files.seek(0,sofrombeginning);
-       DebutTravail(5450, eocd.no_entries);
+       ProgressIndicatorStart(5450, eocd.no_entries);
        for i:=1 to eocd.no_entries do begin
          files.readbuffer(s,4); // Signiture
          if s<>CFILE_HEADER then
@@ -508,10 +511,10 @@ begin
 
            Q.FNode^.OnAccess:=ZipAddRef;
          end;
-         ProgresTravail;
+         ProgressIndicatorIncrement;
        end;
        SortPakFolder;
-       FinTravail;
+       ProgressIndicatorStop;
      end;
    else inherited;
  end;
@@ -536,7 +539,7 @@ begin
  Result:='.zipfolder';
 end;
           {
-procedure QZipFolder.EtatObjet(var E: TEtatObjet);
+procedure QZipFolder.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPakFolder;
@@ -700,7 +703,7 @@ begin
  Info.WndInfo:=[wiOwnExplorer];
 end;
 
-procedure QZipPak.EtatObjet(var E: TEtatObjet);
+procedure QZipPak.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPak;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -44,19 +47,19 @@ uses
 type
  QText   = class(QFileObject)
            protected
-             function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+             function OpenWindow(nOwner: TComponent) : TQForm1; override;
            public
              class function TypeInfo: String; override;
              function TestConversionType(I: Integer) : QFileObjectClass; override;
              function ConversionFrom(Source: QFileObject) : Boolean; override;
-             procedure EtatObjet(var E: TEtatObjet); override;
+             procedure ObjectState(var E: TEtatObjet); override;
              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
              procedure CopyExtraData(var HasText: Boolean); override;
            end;
  QCfgFile = class(QText)
             public
               class function TypeInfo: String; override;
-              procedure EtatObjet(var E: TEtatObjet); override;
+              procedure ObjectState(var E: TEtatObjet); override;
               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
             end;
  QZText   = class(QText)
@@ -129,12 +132,12 @@ begin
  Result:='.txt';
 end;
 
-function QText.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QText.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQText.Create(nOwner);
 end;
 
-procedure QText.EtatObjet(var E: TEtatObjet);
+procedure QText.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiText;
@@ -214,7 +217,7 @@ begin
  Result:='.cfg';
 end;
 
-procedure QCfgFile.EtatObjet(var E: TEtatObjet);
+procedure QCfgFile.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiCfgFile;

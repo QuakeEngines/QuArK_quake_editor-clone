@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -44,7 +47,7 @@ uses
 type
   QFormObject = class(QFileObject)
                 protected
-                  function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+                  function OpenWindow(nOwner: TComponent) : TQForm1; override;
                   function GetConfigStr1 : String; virtual; abstract;
                 end;
 
@@ -71,7 +74,7 @@ uses QkQuakeCtx;
 
  {------------------------}
 
-function QFormObject.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QFormObject.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQFormVw.Create(nOwner);
 end;

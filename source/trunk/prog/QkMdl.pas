@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -48,11 +51,11 @@ uses
 type
  QModel = class(QFileObject)
           protected
-            function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+            function OpenWindow(nOwner: TComponent) : TQForm1; override;
           public
             function TestConversionType(I: Integer) : QFileObjectClass; override;
             function ConversionFrom(Source: QFileObject) : Boolean; override;
-            procedure EtatObjet(var E: TEtatObjet); override;
+            procedure ObjectState(var E: TEtatObjet); override;
             class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
             function GetRoot : QModelGroup;
             procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
@@ -114,7 +117,7 @@ uses Setup, Quarkx, PyForms, qmath, QkPcx, Undo, Travail, QkTextures;
 
  {------------------------}
 
-function QModel.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QModel.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
   Result:=NewPyForm(Self)
@@ -122,7 +125,7 @@ begin
   Result:=TFQMdl.Create(nOwner);
 end;
 
-procedure QModel.EtatObjet(var E: TEtatObjet);
+procedure QModel.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiModel;
@@ -602,7 +605,7 @@ begin
  with Info do case Format of
   1: begin  { as stand-alone file }
       Root:=Saving_Root; try
-      DebutTravail(502, Root.SubElements.Count); try
+      ProgressIndicatorStart(502, Root.SubElements.Count); try
 
       Position0:=F.Position;
       FillChar(mdl, SizeOf(mdl), 0);
@@ -675,7 +678,7 @@ begin
             F.WriteBuffer(P^, mdl.skinwidth);
            end;
           Inc(I);
-          ProgresTravail;
+          ProgressIndicatorIncrement;
          end;
         Inc(mdl.numskins);
        end;
@@ -945,7 +948,7 @@ begin
            F.WriteBuffer(Frame, SizeOf(Frame));
            F.WriteBuffer(FrSourcePts^, Taille1);
            Inc(I);
-           ProgresTravail;
+           ProgressIndicatorIncrement;
           end;
          Inc(mdl.numframes);
         end;
@@ -977,7 +980,7 @@ begin
       end;
 
       finally L.Free; end;
-      finally FinTravail; end;
+      finally ProgressIndicatorStop; end;
       finally Root.AddRef(-1); end;
      end;
  else inherited;
@@ -1385,7 +1388,7 @@ begin
        end;
 
       try
-       DebutTravail(502, Root.SubElements.Count); try
+       ProgressIndicatorStart(502, Root.SubElements.Count); try
        Position0:=F.Position;
        FillChar(mdl, SizeOf(mdl), 0);
        F.WriteBuffer(mdl, SizeOf(mdl));
@@ -1410,7 +1413,7 @@ begin
             Raise EErrorFmt(2433, ['SkinSize']);
           PasToChar(Z, SkinObj.Name+SkinObj.TypeInfo);
           F.WriteBuffer(Z, MAX_SKINNAME);
-          ProgresTravail;
+          ProgressIndicatorIncrement;
           Inc(mdl.num_skins);
          end;
        if mdl.skinwidth=0 then
@@ -1564,7 +1567,7 @@ begin
             end;
 
            F.WriteBuffer(FrameData^, mdl.framesize);
-           ProgresTravail;
+           ProgressIndicatorIncrement;
            Inc(mdl.num_frames);
           end;
 
@@ -1578,7 +1581,7 @@ begin
        F.WriteBuffer(GlCmds.List^, mdl.num_glcmds*4);
        finally GlCmds.Free; end;
 
-       finally FinTravail; end;
+       finally ProgressIndicatorStop; end;
       finally
        Root.AddRef(-1);
       end;

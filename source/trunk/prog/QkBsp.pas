@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.5  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -107,7 +110,7 @@ type
           procedure EnregistrerBsp1(Info: TInfoEnreg1);
           procedure EnregistrerBsp2(Info: TInfoEnreg1);
         protected
-          function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+          function OpenWindow(nOwner: TComponent) : TQForm1; override;
           procedure SaveFile(Info: TInfoEnreg1); override;
           procedure LoadFile(F: TStream; FSize: Integer); override;
         public
@@ -116,7 +119,7 @@ type
           property Structure: TTreeMapBrush read GetStructure;
           destructor Destroy; override;
           class function TypeInfo: String; override;
-          procedure EtatObjet(var E: TEtatObjet); override;
+          procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
           function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
           property BspEntry[E1: TBsp1EntryTypes; E2: TBsp2EntryTypes] : QFileObject read GetBspEntry;
@@ -240,7 +243,7 @@ begin
  Result:='.bsp';
 end;
 
-function QBsp.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QBsp.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  if nOwner=Application then
   Result:=NewPyForm(Self)
@@ -248,7 +251,7 @@ begin
   Result:=TFQBsp.Create(nOwner);
 end;
 
-procedure QBsp.EtatObjet(var E: TEtatObjet);
+procedure QBsp.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiBsp;
@@ -447,7 +450,7 @@ var
  E: TBsp1EntryTypes;
 begin
  with Info do begin
-  DebutTravail(5450, Ord(High(E))-Ord(Low(E))+1); try
+  ProgressIndicatorStart(5450, Ord(High(E))-Ord(Low(E))+1); try
   Origine:=F.Position;
   F.WriteBuffer(Header, SizeOf(Header));  { updated later }
 
@@ -461,7 +464,7 @@ begin
     Dec(Header.Entrees[E].Position, Origine);
     Zero:=0;
     F.WriteBuffer(Zero, (-Header.Entrees[E].Taille) and 3);  { align to 4 bytes }
-    ProgresTravail;
+    ProgressIndicatorIncrement;
    end;
 
    { update header }
@@ -470,7 +473,7 @@ begin
   Header.Signature:=SignatureBSP;
   F.WriteBuffer(Header, SizeOf(Header));
   F.Position:=Fin;
-  finally FinTravail; end;
+  finally ProgressIndicatorStop; end;
  end;
 end;
 
@@ -483,7 +486,7 @@ var
  E: TBsp2EntryTypes;
 begin
  with Info do begin
-  DebutTravail(5450, Ord(High(E))-Ord(Low(E))+1); try
+  ProgressIndicatorStart(5450, Ord(High(E))-Ord(Low(E))+1); try
   Origine:=F.Position;
   F.WriteBuffer(Header, SizeOf(Header));  { updated later }
 
@@ -497,7 +500,7 @@ begin
     Dec(Header.Entrees[E].Position, Origine);
     Zero:=0;
     F.WriteBuffer(Zero, (-Header.Entrees[E].Taille) and 3);  { align to 4 bytes }
-    ProgresTravail;
+    ProgressIndicatorIncrement;
    end;
 
    { update header }
@@ -507,7 +510,7 @@ begin
   Header.Version:=VersionBSP2;
   F.WriteBuffer(Header, SizeOf(Header));
   F.Position:=Fin;
-  finally FinTravail; end;
+  finally ProgressIndicatorStop; end;
  end;
 end;
 
@@ -534,11 +537,11 @@ end;
 
 procedure QBsp.CloseStructure;
 begin
-(* DebutTravail(0,0); try
+(* ProgressIndicatorStart(0,0); try
  FStructure.AddRef(-1);
  FStructure:=Nil;
  VerticesAddRef(0);
- finally FinTravail; end; *)
+ finally ProgressIndicatorStop; end; *)
  if FStructure<>Nil then
   begin
    SetPoolObj('', @FStructure.PythonObj);
@@ -567,7 +570,7 @@ begin
    if FVertices<>Nil then
     Raise EError(5637);
    FVerticesRefCount:=0;
-   DebutTravail(0,0); try
+   ProgressIndicatorStart(0,0); try
    Count:=GetBspEntryData(eVertices, lump_vertexes, PChar(P)) div SizeOf(vec3_t);
    ReallocMem(FVertices, Count*SizeOf(TVect));
    Dest:=PVect(FVertices);
@@ -586,8 +589,8 @@ begin
    FStructure.AddRef(+1);
    Q:=BspEntry[eEntities, lump_entities];
    Q.Acces;
-   OuvrirListeEntites(FStructure, Q.Specifics.Values['Data'], Self);
-   finally FinTravail; end;
+   ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
+   finally ProgressIndicatorStop; end;
   end;
  GetStructure:=FStructure;
 end;

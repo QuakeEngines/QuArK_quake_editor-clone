@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.5  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -476,13 +479,13 @@ begin
     if source.name='Tool bars' then
      source.name:='Tool bars';
     {$ENDIF}*)
-    DebutTravail(5444, Source.SubElements.Count); try
+    ProgressIndicatorStart(5444, Source.SubElements.Count); try
     for I:=0 to Source.SubElements.Count-1 do
      begin
       BrowseToolBoxes(Source.SubElements[I], SingleName, Roots);
-      ProgresTravail;
+      ProgressIndicatorIncrement;
      end;
-    finally FinTravail; end;
+    finally ProgressIndicatorStop; end;
    end;
 end;
 
@@ -504,7 +507,7 @@ var
  FirstTime: Boolean;
 begin
  Caption:=ToolBoxName;
- DebutTravail(5440, 0); try
+ ProgressIndicatorStart(5440, 0); try
  SetupInfo.AddRef(-1);
  SetupInfo:=Nil;
  FirstTime:=Explorer=Nil;
@@ -532,7 +535,7 @@ begin
  BrowseToolBoxes(SetupQrk, ToolBoxName, ToolBoxList);
  finally SetupQrk.AddRef(-1); end;
 
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 
 (*FirstPrivate:=ToolBoxList.Count;
   { looks for the same data in the currently loaded file }
@@ -540,13 +543,13 @@ begin
   BrowseToolBoxes(Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
 
   { adds the toolboxes found }
- DebutTravail(5440, ToolBoxList.Count+1); try
+ ProgressIndicatorStart(5440, ToolBoxList.Count+1); try
 {NodeToSelect:=Nil;}
  SetupInfo:=QToolBox.Create('', Nil);
  SetupInfo.AddRef(+1);
  for I:=0 to ToolBoxList.Count-1 do
   try
-   ProgresTravail;
+   ProgressIndicatorIncrement;
    Q:=ToolBoxList[I] as QToolBox;
    for J:=0 to Q.Specifics.Count-1 do
     begin
@@ -564,7 +567,7 @@ begin
     Form1.AppException(Self, E);
   end;
  finally ToolBoxList.Free; end;
- ProgresTravail;
+ ProgressIndicatorIncrement;
   { setup default position and various parameters }
  I:=Round(SetupInfo.GetFloatSpec('Left', 0));
  if I>0 then
@@ -590,7 +593,7 @@ begin
 {if SetupInfo.Specifics.Values['Bkgnd']<>'' then
   PanelBig.Color:=SetupInfo.IntSpec['Bkgnd'];}
  Explorer.SetMarsCaption(Self);
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  if Explorer.{Selected:=NodeToSelect;} EffacerSelection then
   Explorer.SelectionChanging;
  if FirstTime then

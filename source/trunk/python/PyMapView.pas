@@ -3019,9 +3019,9 @@ begin
                 Q:=QkObjFromPyObj(value);
                 if (Q=Nil) or not (Q is TTreeMap) then
                  Raise EErrorFmt(4438, ['mapobject']);
-                DebutTravail(0,0); try
+                ProgressIndicatorStart(0,0); try
                 CheckTreeMap(TTreeMap(Q));
-                finally FinTravail; end;
+                finally ProgressIndicatorStop; end;
                 Root.AddRef(-1);
                 Root:=TTreeMap(Q);
                 Root.AddRef(+1);

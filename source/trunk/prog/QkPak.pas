@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.7  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -51,13 +54,13 @@ type
                 procedure RecGO1(const SubPath: String; extracted: PyObject);
               protected
                 procedure EcrireEntreesPak(Info: TInfoEnreg1; Origine: LongInt; const Chemin: String; TailleNom: Integer; Repertoire: TStream);
-                function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+                function OpenWindow(nOwner: TComponent) : TQForm1; override;
                 procedure SaveFile(Info: TInfoEnreg1); override;
                 procedure LoadFile(F: TStream; FSize: Integer); override;
                 procedure SortPakFolder;
               public
                 class function TypeInfo: String; override;
-                procedure EtatObjet(var E: TEtatObjet); override;
+                procedure ObjectState(var E: TEtatObjet); override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                 function CreateOwnExplorer(nOwner: TComponent) : TWinControl; override;
                 function FindFile(const PakPath: String) : QFileObject; override;
@@ -73,13 +76,13 @@ type
          {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
         public
           class function TypeInfo: String; override;
-          procedure EtatObjet(var E: TEtatObjet); override;
+          procedure ObjectState(var E: TEtatObjet); override;
           class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
         end;
  QImport = class(QPakFolder)
            public
              class function TypeInfo: String; override;
-             procedure EtatObjet(var E: TEtatObjet); override;
+             procedure ObjectState(var E: TEtatObjet); override;
              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
            end;
  TPakExplorer = {class(TFileExplorer)
@@ -150,12 +153,12 @@ begin
  Result:='.pakfolder';
 end;
 
-function QPakFolder.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QPakFolder.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQPak.Create(nOwner);
 end;
 
-procedure QPakFolder.EtatObjet(var E: TEtatObjet);
+procedure QPakFolder.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPakFolder;
@@ -356,7 +359,7 @@ var
  Info1: TPakSibling;
 begin
  Acces;
- DebutTravail(5442, SubElements.Count); try
+ ProgressIndicatorStart(5442, SubElements.Count); try
  Info1:=TPakSibling.Create; try
  Info1.BaseFolder:=Chemin;
  Info1.Folder:=Self;
@@ -386,9 +389,9 @@ begin
      Repertoire.WriteBuffer(PChar(S)^, TailleNom);
      Repertoire.WriteBuffer(Entree, SizeOf(Entree));
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure QPakFolder.SaveFile(Info: TInfoEnreg1);
@@ -561,7 +564,7 @@ var
  v: PyObject;
 begin
  Acces;
- DebutTravail(175, SubElements.Count); try
+ ProgressIndicatorStart(175, SubElements.Count); try
  for I:=0 to SubElements.Count-1 do
   begin
    Q:=SubElements[I];
@@ -577,9 +580,9 @@ begin
       S:=OutputFile(S);
       QFileObject(Q).SaveInFile(rf_Default, S);
      end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure QPakFolder.Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList);
@@ -595,9 +598,9 @@ begin
   Result:=Nil;
   if not PyArg_ParseTupleX(args, 's', [@pathbase]) then
    Exit;
-  DebutTravail(0,0); try
+  ProgressIndicatorStart(0,0); try
   Result:=PyInt_FromLong((QkObjFromPyObj(self) as QPakFolder).ExtractTo(pathbase));
-  finally FinTravail; end;
+  finally ProgressIndicatorStop; end;
  except
   EBackToPython;
   Result:=Nil;
@@ -645,7 +648,7 @@ begin
  Result:='.pak';
 end;
 
-procedure QPak.EtatObjet(var E: TEtatObjet);
+procedure QPak.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiPak;
@@ -666,7 +669,7 @@ begin
  Result:='.import';
 end;
 
-procedure QImport.EtatObjet(var E: TEtatObjet);
+procedure QImport.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiImport;
@@ -761,9 +764,9 @@ begin
        if Result then
         begin
          Update;
-         DebutTravail(0,0); try
+         ProgressIndicatorStart(0,0); try
          Count:=QPakFolder(FileObject).ExtractTo(Path);
-         finally FinTravail; end;
+         finally ProgressIndicatorStop; end;
          MessageDlg(FmtLoadStr1(5663, [Count, Path]), mtInformation, [mbOk], 0);
         end;  
       end;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.7  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -65,7 +68,7 @@ type
    {function AfficherObjet(Parent, Enfant: QObject) : Integer; override;}
   (*procedure InvalidatePaintBoxes(ModifSel: Integer); override;*)
    {procedure DoubleClic; override;}
-  (*procedure OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer); override;*)
+  (*procedure OperationInScene(Q: QObject; Aj: TAjScene; PosRel: Integer); override;*)
   public
   (*function MsgUndo(Op: TMsgUndo; Data: Pointer) : Pointer; override;*)
    {procedure MAJAffichage(Q: QFileObject); override;}
@@ -197,7 +200,7 @@ type
     procedure MenuCopyAs;
 {$IFDEF Debug} procedure DataDump1Click(Sender: TObject); {$ENDIF}
     function ProcessCmdLine(Counter: Integer) : Integer;
-    procedure LibererMemoireFiches(Sender: TObject);
+    procedure FreeNonVisibleForms(Sender: TObject);
   protected
     procedure AppIdle(Sender: TObject; var Done: Boolean);
    {procedure AppRestore(Sender: TObject);}
@@ -232,7 +235,7 @@ type
     procedure AppException(Sender: TObject; E: Exception);
     function GetEmptyMenu : TPopupMenu;
     function GetObjMenu(Control: TControl; Extra: Boolean) : TPopupMenu;
-    procedure LibererMaxMemoire;
+    procedure FreeNonUsedObjects;
   end;
 
 var
@@ -416,7 +419,7 @@ begin
  HelpMenu.Items.Add(Item);
  Item:=TMenuItem.Create(Self);
  Item.Caption:='Free some memory (for DEBUG only)';
- Item.OnClick:=LibererMemoireFiches;
+ Item.OnClick:=FreeNonVisibleForms;
  HelpMenu.Items.Add(Item);
  {$ENDIF}
 
@@ -608,7 +611,7 @@ begin
   end;
 end;*)
 
-(*procedure TQrkExplorer.OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer);
+(*procedure TQrkExplorer.OperationInScene(Q: QObject; Aj: TAjScene; PosRel: Integer);
 var
  F: TQForm1;
 begin
@@ -1389,7 +1392,7 @@ begin
  SavePendingFiles(False);
 end;
 
-procedure TForm1.LibererMemoireFiches;
+procedure TForm1.FreeNonVisibleForms;
 var
  I: Integer;
  F: TForm;
@@ -1402,10 +1405,10 @@ begin
   end;
 end;
 
-procedure TForm1.LibererMaxMemoire;
+procedure TForm1.FreeNonUsedObjects;
 begin
- LibererMemoireTextures;
- LibererMemoireFiches(Nil);
+ FreeNonVisibleTextures;
+ FreeNonVisibleForms(Nil);
  DestroyGameBuffers;
 end;
 
@@ -1659,7 +1662,7 @@ end;
 
 procedure TForm1.wmCompacting(var Msg: TMessage);
 begin
- LibererMaxMemoire;
+ FreeNonUsedObjects;
 end;
 
 procedure TForm1.wmRenderFormat(var Msg: TMessage);

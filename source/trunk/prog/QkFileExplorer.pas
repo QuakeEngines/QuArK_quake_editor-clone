@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.4  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -58,7 +61,7 @@ type
                   procedure ObjectModified(Q: QObject);
                   procedure ObjectRemoved(Q: QObject);
                 protected
-                 {procedure OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer); override;}
+                 {procedure OperationInScene(Q: QObject; Aj: TAjScene; PosRel: Integer); override;}
                   procedure wmInternalMessage(var Msg: TMessage); message wm_InternalMessage;
                   procedure wmDropFiles(var Msg: TMessage); message wm_DropFiles;
                   function ReopensWindow(Q: QFileObject) : Boolean;
@@ -101,7 +104,7 @@ uses Undo, Qk1, QkListView, Quarkx;
 
  {------------------------}
 
-(*procedure TQkExplorer2.OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer);
+(*procedure TQkExplorer2.OperationInScene(Q: QObject; Aj: TAjScene; PosRel: Integer);
 var
  F: TQForm1;
 begin
@@ -216,7 +219,7 @@ begin
   end;
  FElSousFiche:=Q;
  if ElSousFiche<>Nil then
-  FFiche:=ElSousFiche.OuvrirDansFenetre(ViewPanel);
+  FFiche:=ElSousFiche.OpenInWindow(ViewPanel);
  if Fiche<>Nil then
   begin
    if MarsColors<>Nil then

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.13  2000/07/09 13:20:42  decker_dk
 Englishification and a little layout
 
@@ -283,7 +286,7 @@ procedure ClearGameBuffers;
 begin
  Form1.SavePendingFiles(CanCancel);
  CloseToolBoxes;
- DebutTravail(0,0); try
+ ProgressIndicatorStart(0,0); try
  DelayDeleteGameBuffer(GameBuffer1);
  GameBuffer1:=Nil;
  GameFiles.Free;
@@ -292,7 +295,7 @@ begin
  // SourceBases.Free;
  // SourceBases:=Nil;
  {ClearTextureList;}
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure ClearGameBuffer1;
@@ -566,13 +569,7 @@ begin
      if TempResult<>Nil then
       begin
        Result:=TempResult;
-{DECKER-begin}
        Exit;   { found it }
-(*
-       FoundIt:=TRUE;
-       break;
-*)
-{DECKER-end}
       end;
      if Alias<>'' then
       begin   { look for the alias }
@@ -580,18 +577,14 @@ begin
        if TempResult<>Nil then
         begin
          Result:=TempResult;
-{DECKER-begin}
          Exit;   { found it as alias }
-(*
-         FoundIt:=TRUE;
-         break;
-*)
-{DECKER-end}
         end;
       end;
     end;
 {DECKER-begin}
-  finally GetPakNames.Destroy; end;
+  finally
+    GetPakNames.Destroy;
+  end;
 {DECKER-end}
 
   NoMoreAlias:=Alias='';
@@ -644,7 +637,11 @@ type
 function GetGammaValue: TDouble;
 begin
  Result:=SetupSubSet(ssGeneral, 'Display').GetFloatSpec('Gamma', 11/8);
- if Result<1.0 then Result:=1.0 else if Result>20.0 then Result:=20.0;
+ if Result<1.0 then
+   Result:=1.0
+ else
+   if Result>20.0 then
+     Result:=20.0;
  Result:=1/Result;
 end;
 
@@ -658,7 +655,8 @@ end;
 function Gamma(B: Byte; var Buf: TGammaBuffer) : Integer;
 begin
  Result:=Buf.Map[B];
- if Result>=0 then Exit;
+ if Result>=0 then
+   Exit;
  Result:=Round(Exp(Ln(B*(1.0/255))*Buf.Factor)*255);
  Buf.Map[B]:=Result;
 end;
@@ -723,35 +721,38 @@ begin
 
  InitGammaBuffer(FG);
 
- GetMem(Log, SizeOf(TLogPalette)+255*SizeOf(TPaletteEntry)); try
- Log^.palVersion:=$300;
- Log^.palNumEntries:=256;
- for I:=0 to 255 do
-  with Log^.palPalEntry[I], BmpInfo.bmiColors[I] do
-   begin
-    peRed:=Gamma(Lmp[I,0], FG);     {lmp[i,0]:=pered;}
-    rgbRed:=peRed;
-    peGreen:=Gamma(Lmp[I,1], FG);   {lmp[i,1]:=pegreen;}
-    rgbGreen:=peGreen;
-    peBlue:=Gamma(Lmp[I,2], FG);    {lmp[i,2]:=peblue;}
-    rgbBlue:=peBlue;
-    peFlags:=0;
-    rgbReserved:=0;
-   end;
- if Assigned(Palette) then
-  Palette^:=CreatePalette(Log^);
- if Assigned(PaletteReelle) then
-  begin
+ GetMem(Log, SizeOf(TLogPalette)+255*SizeOf(TPaletteEntry));
+ try
+   Log^.palVersion:=$300;
+   Log^.palNumEntries:=256;
    for I:=0 to 255 do
-    with Log^.palPalEntry[I] do
+    with Log^.palPalEntry[I], BmpInfo.bmiColors[I] do
      begin
-      peRed:=Lmp[I,0];
-      peGreen:=Lmp[I,1];
-      peBlue:=Lmp[I,2];
+      peRed:=Gamma(Lmp[I,0], FG);     {lmp[i,0]:=pered;}
+      rgbRed:=peRed;
+      peGreen:=Gamma(Lmp[I,1], FG);   {lmp[i,1]:=pegreen;}
+      rgbGreen:=peGreen;
+      peBlue:=Gamma(Lmp[I,2], FG);    {lmp[i,2]:=peblue;}
+      rgbBlue:=peBlue;
+      peFlags:=0;
+      rgbReserved:=0;
      end;
-   PaletteReelle^:=CreatePalette(Log^);
-  end;
- finally FreeMem(Log); end;
+   if Assigned(Palette) then
+    Palette^:=CreatePalette(Log^);
+   if Assigned(PaletteReelle) then
+    begin
+     for I:=0 to 255 do
+      with Log^.palPalEntry[I] do
+       begin
+        peRed:=Lmp[I,0];
+        peGreen:=Lmp[I,1];
+        peBlue:=Lmp[I,2];
+       end;
+     PaletteReelle^:=CreatePalette(Log^);
+    end;
+ finally
+   FreeMem(Log);
+ end;
 end;
 
 function GameBuffer(NeededGame: Char) : PGameBuffer;
@@ -789,24 +790,27 @@ begin
     else
      begin
       PaletteFile:=NeedGameFile(S);
-      PaletteFile.AddRef(+1); try
-      PaletteFile.Acces;
-      if PaletteFile is QImages then
-       begin
-        QImages(PaletteFile).NotTrueColor;
-        QImages(PaletteFile).GetPalette1(Lmp);
-       end
-      else
-       begin
-        S:=PaletteFile.GetSpecArg('Data');
-        I:=Length(S)-Start;
-        if I<0 then
-         I:=0
-        else if I>SizeOf(Lmp) then
-         I:=SizeOf(Lmp);
-        Move(PChar(S)[Start], Lmp, I);
-       end;
-      finally PaletteFile.AddRef(-1); end;
+      PaletteFile.AddRef(+1);
+      try
+        PaletteFile.Acces;
+        if PaletteFile is QImages then
+         begin
+          QImages(PaletteFile).NotTrueColor;
+          QImages(PaletteFile).GetPalette1(Lmp);
+         end
+        else
+         begin
+          S:=PaletteFile.GetSpecArg('Data');
+          I:=Length(S)-Start;
+          if I<0 then
+           I:=0
+          else if I>SizeOf(Lmp) then
+           I:=SizeOf(Lmp);
+          Move(PChar(S)[Start], Lmp, I);
+         end;
+      finally
+        PaletteFile.AddRef(-1);
+      end;
      end;
    New(GameBuffer1);
    GameBuffer1^.RefCount:=1;
@@ -925,7 +929,7 @@ end;*)
  J: Integer;
  PSrc, PDest: PChar;
 begin
- DebutTravail(5448, 0); try
+ ProgressIndicatorStart(5448, 0); try
  Game:=GameBuffer(NeededGame);
  with Game^.BmpInfo.bmiHeader do
   begin
@@ -1001,7 +1005,7 @@ begin
  end;
 
  finally DeleteObject(Dest); end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;*)
 
 function GetQPaletteColor(const BitmapInfo: TBitmapInfo256; I: Integer) : TColorRef;
@@ -1018,7 +1022,7 @@ begin
 end;
 
 const
- CaracFichDOS = ['a'..'z', 'A'..'Z', '0'..'9',       '.',
+ cDOSFilenameValidChars = ['a'..'z', 'A'..'Z', '0'..'9',       '.',
   '$', '%', '''', '-', '_', '@', '{', '}', '~', '`', '!', '#', '(', ')'];
 
 procedure BuildCorrectFileName(var S: String);
@@ -1026,7 +1030,7 @@ var
  I: Integer;
 begin
  for I:=Length(S) downto 1 do
-  if not (S[I] in CaracFichDOS) then
+  if not (S[I] in cDOSFilenameValidChars) then
    System.Delete(S, I, 1);
  if S='' then
   S:=LoadStr1(180);
@@ -1040,23 +1044,29 @@ var
  I: Integer;
  Q, AddOns: QObject;
 begin
- AddOns:=MakeAddonsList; try
- L:=TStringList.Create; try
- L.Text:=SetupGameSet.Specifics.Values['AddOns'];
- for I:=0 to L.Count-1 do
-  with ListView1.Items.Add do
-   begin
-    Caption:=L[I];
-    Q:=AddOns.SubElements.FindName(L[I]);
-    ImageIndex:=LoadGlobalImageList(Q);
-    if Q<>Nil then
-     begin
-      Q.Acces;
-      SubItems.Add(Q.Specifics.Values['Description']);
-     end;
+ AddOns:=MakeAddonsList;
+ try
+   L:=TStringList.Create;
+   try
+     L.Text:=SetupGameSet.Specifics.Values['AddOns'];
+     for I:=0 to L.Count-1 do
+      with ListView1.Items.Add do
+       begin
+        Caption:=L[I];
+        Q:=AddOns.SubElements.FindName(L[I]);
+        ImageIndex:=LoadGlobalImageList(Q);
+        if Q<>Nil then
+         begin
+          Q.Acces;
+          SubItems.Add(Q.Specifics.Values['Description']);
+         end;
+       end;
+   finally
+     L.Free;
    end;
- finally L.Free; end;
- finally AddOns.AddRef(-1); end;
+ finally
+   AddOns.AddRef(-1);
+ end;
 end;
 
 
@@ -1067,19 +1077,22 @@ var
  I: Integer;
  Remove: String;
 begin
- SousRep:=TStringList.Create; try
- if FindFirst(PathAndFile(Rep, '*.*'), faAnyFile, S) = 0 then
-  repeat
-   if S.Attr and faDirectory = 0 then
-    DeleteFile(PathAndFile(Rep, S.Name))
-   else
-    if (S.Name<>'.') and (S.Name<>'..') then
-     SousRep.Add(S.Name);
-  until FindNext(S)<>0;
- FindClose(S);
- for I:=0 to SousRep.Count-1 do
-  ClearAllFilesRec(PathAndFile(Rep, SousRep[I]));
- finally SousRep.Free; end;
+ SousRep:=TStringList.Create;
+ try
+   if FindFirst(PathAndFile(Rep, '*.*'), faAnyFile, S) = 0 then
+    repeat
+     if S.Attr and faDirectory = 0 then
+      DeleteFile(PathAndFile(Rep, S.Name))
+     else
+      if (S.Name<>'.') and (S.Name<>'..') then
+       SousRep.Add(S.Name);
+    until FindNext(S)<>0;
+   FindClose(S);
+   for I:=0 to SousRep.Count-1 do
+    ClearAllFilesRec(PathAndFile(Rep, SousRep[I]));
+ finally
+   SousRep.Free;
+ end;
  Remove:=Rep;
  if Remove<>'' then
   begin
@@ -1116,7 +1129,7 @@ function GameModelPath : String;
 begin
  Result:=SetupGameSet.Specifics.Values['MdlPath'];
  if Result='' then
-  Result:='progs/'; 
+  Result:='progs/';
 end;
 
  {------------------------}
@@ -1132,7 +1145,7 @@ begin
    Free;
   end;
  if R=mrOk then
-  UpdateSetup(scAddOns); 
+  UpdateSetup(scAddOns);
 end;
 
 procedure TGameCfgDlg.FormCreate(Sender: TObject);
@@ -1180,11 +1193,14 @@ var
 begin
  if ListView1.Tag<>0 then
   begin
-   L:=TStringList.Create; try
-   for I:=0 to ListView1.Items.Count-1 do
-    L.Add(ListView1.Items[I].Caption);
-   S:=TrimStringList(L, $0D);
-   finally L.Free; end;
+   L:=TStringList.Create;
+   try
+     for I:=0 to ListView1.Items.Count-1 do
+      L.Add(ListView1.Items[I].Caption);
+     S:=TrimStringList(L, $0D);
+   finally
+     L.Free;
+   end;
    SetupGameSet.Specifics.Values['AddOns']:=S;
    ModalResult:=mrOk;
   end

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -506,7 +509,7 @@ begin
  Liste:=TMemoryStream.Create;
  try
   Init;
-  DebutTravail(172, 9999);
+  ProgressIndicatorStart(172, 9999);
   try
    Sources.Seek(0,soFromBeginning);
    Sources0:=0;
@@ -529,13 +532,13 @@ begin
      else
       if Sources.Size>=4096 then
        begin
-        ChangeMaxTravail(Sources0 div 4096, Sources.Size div 4096);
-        ProgresTravail;
+        ProgressIndicatorChangeMax(Sources0 div 4096, Sources.Size div 4096);
+        ProgressIndicatorIncrement;
         Compteur:=DebutCompteur;
        end;
     end;
   finally
-   FinTravail;
+   ProgressIndicatorStop;
    Pointer(TamponInterne):=Liste.Memory;
    for Compteur:=Liste.Size div SizeOf(TInfo)-1 downto 0 do
     with TamponInterne^[Compteur].Poly do

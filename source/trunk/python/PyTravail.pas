@@ -44,7 +44,7 @@ begin
  try
   if PyList_GetItem(self,0)=Py_None then
    Raise EError(4451);
-  ProgresTravail;
+  ProgressIndicatorIncrement;
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -57,7 +57,7 @@ begin
  try
   if PyList_GetItem(self,0)<>Py_None then
    begin
-    FinTravail;
+    ProgressIndicatorStop;
     PyList_SetItem(self,0, PyNoResult);
    end;
   Result:=PyNoResult;
@@ -77,7 +77,7 @@ begin
    Exit;
   if PyList_GetItem(self,0)=Py_None then
    Raise EError(4451);
-  ChangeMaxTravail(-1, nCount);
+  ProgressIndicatorChangeMax(-1, nCount);
   PyList_SetItem(self,0, PyInt_FromLong(nCount));
  except
   EBackToPython;
@@ -120,7 +120,7 @@ begin
    PyDict_SetItemString(dict, MethodTable[I].ml_name, obj);
    Py_DECREF(obj);
   end;
- DebutTravail(nText, nCount);
+ ProgressIndicatorStart(nText, nCount);
 end;
 
  {-------------------}

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/06/10 09:17:53  alexander
 added cvs header
 
@@ -179,12 +182,12 @@ type
             public
               function PyGetAttr(attr: PChar) : PyObject; override;
               Procedure GetPosition(var v: vec3_p);
-              procedure EtatObjet(var E: TEtatObjet); override;
+              procedure ObjectState(var E: TEtatObjet); override;
               class function TypeInfo: String; override;
             end;
  QMD3BoneFrame = class(QComponent)
             public
-              procedure EtatObjet(var E: TEtatObjet); override;
+              procedure ObjectState(var E: TEtatObjet); override;
               class function TypeInfo: String; override;
             end;
  QMd3File = class(QModelFile)
@@ -229,7 +232,7 @@ begin
   end;
 end;
 
-procedure QMD3Tag.EtatObjet(var E: TEtatObjet);
+procedure QMD3Tag.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiMD3Tag;
@@ -245,7 +248,7 @@ begin
  Result:=':bf';
 end;
 
-procedure QMD3BoneFrame.EtatObjet(var E: TEtatObjet);
+procedure QMD3BoneFrame.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiMD3Bone;

@@ -31,7 +31,7 @@ type
  QPyMacro = class(QObject)
             public
               class function TypeInfo: String; override;
-              procedure EtatObjet(var E: TEtatObjet); override;
+              procedure ObjectState(var E: TEtatObjet); override;
               function RunMacro(const Macro: String) : Boolean;
               function RunMacro1(const Macro: String) : PyObject;
             end;
@@ -49,7 +49,7 @@ begin
  Result:=':py';
 end;
 
-procedure QPyMacro.EtatObjet;
+procedure QPyMacro.ObjectState;
 begin
  inherited;
  E.IndexImage:=iiPython;
@@ -60,11 +60,11 @@ function QPyMacro.RunMacro(const Macro: String) : Boolean;
 var
  o: PyObject;
 begin
- DebutTravail(0,0); try
+ ProgressIndicatorStart(0,0); try
  o:=RunMacro1(Macro);
  Result:=o<>Nil;
  Py_XDECREF(o);
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  PythonCodeEnd;
 end;
 

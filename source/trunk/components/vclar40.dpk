@@ -22,11 +22,11 @@ package VCLAR40;
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $00400000}
+{$IMAGEBASE $400000}
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl40;
+  vcl50;
 
 contains
   TB97 in 'Tb97.pas',
@@ -36,6 +36,11 @@ contains
   SyntaxMemo in 'SyntaxMemo.pas',
   CursorScrollBox in 'CursorScrollBox.pas',
   marsCap in 'Marscap.pas',
-  SmArrowBtn in 'SmArrowBtn.pas';
+  SmArrowBtn in 'SmArrowBtn.pas',
+  ZipMstr in 'zip\ZipMstr.pas',
+  ZCallBck in 'zip\ZCallBck.pas',
+  ZIPDLL in 'zip\ZipDll.pas',
+  ZipMsg in 'zip\ZipMsg.pas',
+  UNZDLL in 'zip\UnzDll.pas';
 
 end.

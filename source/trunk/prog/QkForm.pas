@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.6  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -1172,7 +1175,7 @@ begin
      PostMessage(Handle, wm_InternalMessage, wp_CloseWindow, 0);
 
   { FREE } Ord('F')+256*Ord('R')+65536*Ord('E')+16777216*Ord('E'):
-     Form1.LibererMaxMemoire;
+     Form1.FreeNonUsedObjects;
 
   { 3DFR } Ord('3')+256*Ord('D')+65536*Ord('F')+16777216*Ord('R'):
      CloseAll3DView;

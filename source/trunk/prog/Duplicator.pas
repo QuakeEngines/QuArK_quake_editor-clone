@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.3  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -50,9 +53,9 @@ type
                public
                  class function TypeInfo: String; override;
                  property Images: PyObject read BuildImages write SetCache;
-                 procedure EtatObjet(var E: TEtatObjet); override;
+                 procedure ObjectState(var E: TEtatObjet); override;
                  destructor Destroy; override;
-                 procedure OpDansScene(Aj: TAjScene; PosRel: Integer); override;
+                 procedure OperationInScene(Aj: TAjScene; PosRel: Integer); override;
                  procedure ChercheExtremites(var Min, Max: TVect); override;
                  procedure Dessiner; override;
                  function IsExplorerItem(Q: QObject) : TIsExplorerItem; override;
@@ -78,7 +81,7 @@ begin
  TypeInfo:=':d';
 end;
 
-procedure TDuplicator.EtatObjet(var E: TEtatObjet);
+procedure TDuplicator.ObjectState(var E: TEtatObjet);
 begin
  inherited;
  E.IndexImage:=iiDuplicator;
@@ -156,7 +159,7 @@ begin
  Result:=FCache;
 end;
 
-procedure TDuplicator.OpDansScene(Aj: TAjScene; PosRel: Integer);
+procedure TDuplicator.OperationInScene(Aj: TAjScene; PosRel: Integer);
 begin
  if FCache<>Nil then
   begin

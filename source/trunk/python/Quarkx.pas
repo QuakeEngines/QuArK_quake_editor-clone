@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/16 16:33:39  decker_dk
+Englishification
+
 Revision 1.6  2000/07/09 13:19:28  decker_dk
 Englishification and a little layout
 
@@ -196,7 +199,7 @@ begin
       begin
        if not DT then
         begin
-         DebutTravail(0,0);
+         ProgressIndicatorStart(0,0);
          DT:=True;
         end;
        Pool.Delete(I);
@@ -213,7 +216,7 @@ begin
     end;
    finally
     if DT then
-     FinTravail;
+     ProgressIndicatorStop;
    end;
   end;
  Result:=True;
@@ -995,7 +998,7 @@ begin
     args:=PyTuple_GetItem(args, 0);
     if args^.ob_type = PyString_Type then
      begin
-      Result:=MakePyVect(LireVecteur(PyString_AsString(args)));
+      Result:=MakePyVect(ReadVector(PyString_AsString(args)));
       Exit;
      end;
    end;
@@ -2431,14 +2434,14 @@ begin
    arglist:=Py_BuildValueX('(O)', [self]);
    if arglist=Nil then Exit;
    if Hourglass then
-    DebutTravail(0,0);
+    ProgressIndicatorStart(0,0);
    try
     callresult:=PyEval_CallObject(fnt, arglist);
     Result:=callresult<>Nil;
     Py_XDECREF(callresult);
    finally
     if Hourglass then
-     FinTravail;
+     ProgressIndicatorStop;
     Py_DECREF(arglist);
    end;
    PythonCodeEnd;
@@ -2460,12 +2463,12 @@ begin
    if PyCallable_Check(value) then
     begin
      if Hourglass then
-      DebutTravail(0,0);
+      ProgressIndicatorStart(0,0);
      try
       Result:=PyEval_CallObject(value, args);
      finally
       if Hourglass then
-       FinTravail;
+       ProgressIndicatorStop;
      end;
      PythonCodeEnd;
     end
@@ -2500,11 +2503,11 @@ begin
   fnt:=PyDict_GetItemString(MacrosDict, PChar('MACRO_'+fntname));
   if fnt=Nil then Exit;
   if Hourglass then
-   DebutTravail(0,0);
+   ProgressIndicatorStart(0,0);
   Result:=PyEval_CallObject(fnt, args);
  finally
   if Hourglass then
-   FinTravail;
+   ProgressIndicatorStop;
   Py_DECREF(args);
  end;
 end;

@@ -241,7 +241,7 @@ procedure TwoMonitorsDeactivation;
 procedure Close3DEditor;
 procedure Free3DFXEditor;
 procedure GammaCorrection(Value: TDouble);
-procedure LibererMemoireTextures;
+procedure FreeNonVisibleTextures;
 procedure GetwhForTexture(const info: GrTexInfo; var w,h: Integer);
 function SwapColor(Col: GrColor_t) : GrColor_t;
 function ComputeMeanColor(const PSD: TPixelSetDescription) : FxU32;
@@ -492,7 +492,7 @@ begin
  Result:=Scenes.Count=0;
 end;
 
-procedure LibererMemoireTextures;
+procedure FreeNonVisibleTextures;
 begin
  if TextureManager<>Nil then
   begin
@@ -1722,7 +1722,7 @@ begin
    Gauche:=0;
    Brush:=0;
    if DC=HDC(-1) then
-    DebutTravail(5454, NewTextures)
+    ProgressIndicatorStart(5454, NewTextures)
    else
     if DC<>0 then
      begin
@@ -1756,7 +1756,7 @@ begin
          begin
           {Inc(NewTexCount);
           if NewTexCount>NewTextures then Raise InternalE('NewTexCount>NewTextures');}
-          ProgresTravail;
+          ProgressIndicatorIncrement;
          end
         else
          if DC<>0 then
@@ -1771,7 +1771,7 @@ begin
      end;
    finally
     if DC=HDC(-1) then
-     FinTravail;
+     ProgressIndicatorStop;
     if Brush<>0 then
      DeleteObject(Brush);
    end;
@@ -2142,7 +2142,7 @@ begin
  Result:=False;
  if (gr=Nil) or (gr.State=Nil) or ((LibName<>'') and (gr.LibName<>LibName)) then
   begin
-   DebutTravail(0,0); try
+   ProgressIndicatorStart(0,0); try
    Free3DFXEditor;
    if LibName='' then
     Raise EError(4867);
@@ -2170,7 +2170,7 @@ begin
    if Assigned(gr.grDepthMask) then
     gr.grDepthMask(FXTRUE);
    ClearBuffers(0);
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
    gr.State:=TGlideState.Create;
   end;
  if gr.Version<HardwareGlideVersion then
@@ -2213,7 +2213,7 @@ begin
     gr.grGlideShutdown;
    UnloadGlide;
   end;
- LibererMemoireTextures;
+ FreeNonVisibleTextures;
 end;
 
 procedure GammaCorrection(Value: TDouble);

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/06/03 10:46:49  alexander
+added cvs headers
+
 
 }
 
@@ -99,7 +102,7 @@ var
  Btn: TToolbarButton97;
  Panel: TWinControl;
 begin
- DebutTravail(0,0); try
+ ProgressIndicatorStart(0,0); try
  with nOwner.ClientRect do
   begin
    ClipRect.TopLeft:=nOwner.ClientToScreen(TopLeft);
@@ -138,7 +141,7 @@ begin
    Parent:=nOwner;
    Unlink;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure DynamicPaletteToolbar(Pal: TToolbar97; nLink: QObject; const nSpec: String);

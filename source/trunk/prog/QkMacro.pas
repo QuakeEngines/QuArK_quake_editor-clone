@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:50  decker_dk
+Englishification
+
 Revision 1.3  2000/07/09 13:20:43  decker_dk
 Englishification and a little layout
 
@@ -278,12 +281,12 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
      if S='' then
       Width:=2
      else
-      Width:=Round(LireReelEx(S));
+      Width:=Round(ReadNumValueEx(S));
      S:=Q.Specifics.Values['color'];
      if S='' then
       Color:=MapColors(lcAxes)
      else
-      Color:=vtocol(LireVecteur(S));
+      Color:=vtocol(ReadVector(S));
      SelectPen:=SelectObject(Info.DC,
       CreatePen(ps_Solid, Width, Color));
     end;
@@ -341,9 +344,9 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
      end;
     if CompareText(Q.Name, 'Circle')=0 then
      begin
-      V1:=LireVecteur(Q.Specifics.Values['center']);
+      V1:=ReadVector(Q.Specifics.Values['center']);
       Pt1:=Proj(V1);
-      R:=LireReelEx(Q.Specifics.Values['radius']);
+      R:=ReadNumValueEx(Q.Specifics.Values['radius']);
       J:=Round(R*pProjZ);
       Pen:=SelectPen;
       Ellipse(Info.DC, Pt1.X-J, Pt1.Y-J, Pt1.X+J, Pt1.Y+J);
@@ -352,9 +355,9 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
      end;
     if CompareText(Q.Name, 'Arrow')=0 then
      begin
-      V1:=LireVecteur(Q.Specifics.Values['from']);
+      V1:=ReadVector(Q.Specifics.Values['from']);
       Pt1:=Proj(V1);
-      V2:=LireVecteur(Q.Specifics.Values['to']);
+      V2:=ReadVector(Q.Specifics.Values['to']);
       Pt2:=Proj(V2);
       Pt3.X:=Pt2.X-Pt1.X;
       Pt3.Y:=Pt2.Y-Pt1.Y;
@@ -364,7 +367,7 @@ procedure DrawMapMacros(Entity: QObject; Macros, Entities: TQList);
       if S='' then
        J:=5
       else
-       J:=Round(LireReelEx(S));
+       J:=Round(ReadNumValueEx(S));
       R:=J/R;
       Pt4.X:=Pt2.X-Round(R*(Pt3.X+Pt3.Y));
       Pt4.Y:=Pt2.Y-Round(R*(Pt3.Y-Pt3.X));

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -49,7 +52,7 @@ type
              end;
  QUnknown = class(QFileObject)
             protected
-              function OuvrirFenetre(nOwner: TComponent) : TQForm1; override;
+              function OpenWindow(nOwner: TComponent) : TQForm1; override;
              {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
              {procedure SaveFile(Format: Integer; F: TStream); override;}
              {procedure LoadFile(F: TStream; FSize: Integer); override;}
@@ -99,7 +102,7 @@ begin
  Result:='';
 end;
 
-function QUnknown.OuvrirFenetre(nOwner: TComponent) : TQForm1;
+function QUnknown.OpenWindow(nOwner: TComponent) : TQForm1;
 begin
  Result:=TFQUnknown.Create(nOwner);
 end;

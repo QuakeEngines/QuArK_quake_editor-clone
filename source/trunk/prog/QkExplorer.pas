@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.4  2000/06/03 10:46:49  alexander
 added cvs headers
 
@@ -91,7 +94,7 @@ type
    {function AfficherObjet(Parent, Enfant: QObject) : Integer; virtual;}
    {procedure PreSelection(Spec: Integer); virtual;
     procedure PostSelection(Spec: Integer); virtual;}
-   {procedure OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer); virtual;}
+   {procedure OperationInScene(Q: QObject; Aj: TAjScene; PosRel: Integer); virtual;}
     function GroupeSelection : QExplorerGroup;
    {function CopyToOutside(Gr: QExplorerGroup) : QExplorerGroup; dynamic;}
     function DropTargetDragFlags : Integer;
@@ -285,7 +288,7 @@ begin
    end
   else
    AnnuleUndos;
- Q.OpDansScene(Aj, 0);
+ Q.OperationInScene(Aj, 0);
  I:=0;
  repeat
   if not Odd(Q.Flags) then
@@ -293,7 +296,7 @@ begin
   Q:=Q.FParent;
   if Q=Nil then Break;
   Dec(I);
-  Q.OpDansScene(asModifieParent, I);
+  Q.OperationInScene(asModifieParent, I);
  until False;
 end;
 (*var
@@ -325,14 +328,14 @@ begin
     AnnuleUndos;
    if not ParentOnly then
     begin
-     CurrentExplorer.OpDansScene(Q, Aj, 0);
+     CurrentExplorer.OperationInScene(Q, Aj, 0);
      Q:=Q.TvParent;
     end;
    I:=0;
    while Q<>Nil do
     begin
      Dec(I);
-     CurrentExplorer.OpDansScene(Q, asModifieParent, I);
+     CurrentExplorer.OperationInScene(Q, asModifieParent, I);
      Q:=Q.TvParent;
     end;
   end;
@@ -419,7 +422,7 @@ end;
    Q: QObject;
   begin
    T.Acces;
-   DebutTravail(5446, T.SubElements.Count); try
+   ProgressIndicatorStart(5446, T.SubElements.Count); try
    T.SelMult:=smSousSelVide;
    T.Flags:=T.Flags and not ofTvExpanded;
    ControlerEtatNoeud(T);
@@ -429,9 +432,9 @@ end;
       Q:=Items[I];
       if Odd(Q.Flags) then   { if ofTreeViewSubElement is set }
        Parcourir(Q);
-      ProgresTravail;
+      ProgressIndicatorIncrement;
      end;
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
   end;*
 
 begin
@@ -516,7 +519,7 @@ begin
   end;
  if (ItemInfo.mask and (TVIF_IMAGE or TVIF_SELECTEDIMAGE)) <> 0 then
   begin
-   Test.EtatObjet(E);
+   Test.ObjectState(E);
    ItemInfo.iImage := E.IndexImage;
    ItemInfo.iSelectedImage := E.IndexImage;
   end;
@@ -590,7 +593,7 @@ begin
  else
   if El.Flags and ofSurDisque <> 0 then
    Exit;
- DebutTravail(5446, El.SubElements.Count); try
+ ProgressIndicatorStart(5446, El.SubElements.Count); try
  for I:=0 to El.SubElements.Count-1 do
   begin
    Q:=El.SubElements[I];
@@ -600,10 +603,10 @@ begin
      SelMult:=smSousSelVide;
      Flags:=Flags and not ofTvExpanded;
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
  ControlerEtatNoeud(El);
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure TQkExplorer.AjouterElement(El: QObject{; nParent, nInsert: TTreeNode});
@@ -650,7 +653,7 @@ begin
    if NodeParent=Nil then Raise InternalE('NodeParent=Nil');
    G:=QObject(NodeParent.Data);
    if G=Nil then Raise InternalE('NodeParent.Data=Nil');
-   DebutTravail(0,0); try
+   ProgressIndicatorStart(0,0); try
    BrowseNode:=NodeParent.GetFirstChild;
    for I:=0 to G.SubElements.Count-1 do
     begin
@@ -674,7 +677,7 @@ begin
    Node.Data:=Result;
    Result.SetNode(Node, NodeParent);
    ControlerEtatNoeud(Result);
-   finally FinTravail; end;
+   finally ProgressIndicatorStop; end;
   end;
 end;*)
 
@@ -702,7 +705,7 @@ begin
   El.AccesRec
  else
   El.Acces;
- DebutTravail(5446, El.SubElements.Count); try
+ ProgressIndicatorStart(5446, El.SubElements.Count); try
  for I:=0 to El.SubElements.Count-1 do
   begin
    Q:=El.SubElements[I];
@@ -723,9 +726,9 @@ begin
       {ControlerEtatNoeud(Q);}
       end;
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
  El.Flags:=El.Flags or ofTvAlreadyExpanded;
 end;
 
@@ -765,7 +768,7 @@ begin
    and (State and TVIS_EXPANDEDONCE <> 0) then
     Exit;   { item has already been opened once }
   end;
- DebutTravail(5446, El.SubElements.Count); try
+ ProgressIndicatorStart(5446, El.SubElements.Count); try
  for I:=0 to El.SubElements.Count-1 do
   begin
    Q:=El.SubElements[I];
@@ -776,7 +779,7 @@ begin
      if (Q.Flags and ofSurDisque <> 0)
      and (ieListView in El.IsExplorerItem(Q)) then
       begin  { delayed add - only an empty, "cut"ted node is added now }
-       Q.EtatObjet(E);
+       Q.ObjectState(E);
        with Items.AddChildObject(Node, Q.Name, Nil) do
         begin
          Cut:=True;
@@ -786,9 +789,9 @@ begin
      else
       AjouterElement(Q, Node, Nil);
     end;
-   ProgresTravail;
+   ProgressIndicatorIncrement;
   end;
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 end;
 
 procedure TQkExplorer.Collapsed(Sender: TObject; Node: TTreeNode);
@@ -1285,7 +1288,7 @@ begin
  end;
 end;
 
-(*procedure TQkExplorer.OpDansScene(Q: QObject; Aj: TAjScene; PosRel: Integer);
+(*procedure TQkExplorer.OperationInScene(Q: QObject; Aj: TAjScene; PosRel: Integer);
 var
  I: Integer;
  T: QObject;
@@ -1304,7 +1307,7 @@ begin
  case Aj of
   asRetire:
     for I:=0 to Q.SubElements.Count-1 do
-     OpDansScene(Q.SubElements[I], Aj, PosRel+1);
+     OperationInScene(Q.SubElements[I], Aj, PosRel+1);
  end;
  if PosRel=0 then
   case Aj of
@@ -1346,11 +1349,11 @@ begin
  case Aj of
   asAjoute, asDeplace2:
     for I:=0 to Q.SubElements.Count-1 do
-     OpDansScene(Q.SubElements[I], Aj, PosRel+1);
+     OperationInScene(Q.SubElements[I], Aj, PosRel+1);
   asModifieParent:
    begin
     for I:=0 to Q.SubElements.Count-1 do
-     OpDansScene(Q.SubElements[I], asModifieFrere, MaxInt);
+     OperationInScene(Q.SubElements[I], asModifieFrere, MaxInt);
     if PosRel = -1 then
      ControlerEtatNoeud(Q);
    end;

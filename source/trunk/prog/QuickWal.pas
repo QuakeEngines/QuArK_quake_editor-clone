@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/09 13:20:44  decker_dk
+Englishification and a little layout
+
 Revision 1.6  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -239,7 +242,7 @@ var
  F: TSearchRec;
  Pak: QPakFolder;
 begin
- DebutTravail(0,0);
+ ProgressIndicatorStart(0,0);
  try
   Base:=ListBox1.Items[ListBox1.ItemIndex];
   E:=TQkExplorer(Toolbox.Perform(wm_InternalMessage, wp_TargetExplorer, 0));
@@ -322,7 +325,7 @@ begin
     end;
    end;
  finally
-  FinTravail;
+  ProgressIndicatorStop;
  end;
  MessageBeep(0);
 end;

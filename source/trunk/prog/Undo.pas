@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/16 16:34:51  decker_dk
+Englishification
+
 Revision 1.3  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -1379,7 +1382,7 @@ procedure TMultipleUndo.DoUndo;
 var
  I: Integer;
 begin
- DebutTravail(509, ToDo.Count); try
+ ProgressIndicatorStart(509, ToDo.Count); try
  I:=0;
  try
   while I<ToDo.Count do
@@ -1391,7 +1394,7 @@ begin
       TUndoObject(ToDo[I]).DoUndo;
       Inc(I);
      end;
-    ProgresTravail;
+    ProgressIndicatorIncrement;
    end;
  except
   while I>0 do
@@ -1403,7 +1406,7 @@ begin
  end;
  for I:=0 to ToDo.Count div 2 - 1 do
   ToDo.Exchange(I, ToDo.Count-1-I);
- finally FinTravail; end;
+ finally ProgressIndicatorStop; end;
 {$IFDEF Debug}
  DebugCheck;
 {$ENDIF}
