@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkMdl;
@@ -148,7 +151,7 @@ begin
       else begin
         if (mdl.id<>SignatureMdl) or (mdl.version<>VersionMdl) then
           if ((mdl.id=SignatureHLMdl) or (mdl.id=SignatureHLMdlS))and(mdl.version=VersionHLMdl) then
-            Raise EErrorFmt(5503, [LoadName])
+            Raise EErrorFmt(5503, [LoadName]) {FIXME: Load HL Model Here}
           else
             Raise EErrorFmt(5593, [LoadName, mdl.id, mdl.version, SignatureMdl, VersionMdl]);
         mdl_ra.numstverts:=mdl.numverts;
@@ -157,7 +160,10 @@ begin
         { setup Root }
       Root:=Loaded_Root;
       C:=Loaded_Component(Root, '');
-      ObjectGameCode:=mjQuake;
+      if RA then
+        ObjectGameCode:=mjHexen
+      else
+        ObjectGameCode:=mjQuake;
       Root.Specifics.Values['seamtrick']:='1';
       Size[1]:=mdl.synctype;
       Size[2]:=mdl.flags;
