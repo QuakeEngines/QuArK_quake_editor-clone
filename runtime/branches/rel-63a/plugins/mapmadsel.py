@@ -880,7 +880,7 @@ def invertFaceSelClick(m):
     editor.invalidateviews()
     
 
-meninvertfacesel = quarkpy.qmenu.item("&Invert Face Selection", invertFaceSelClick, "For polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces")
+meninvertfacesel = quarkpy.qmenu.item("&Invert Face Selection", invertFaceSelClick, "|For polys containing faces that are currently selected, deselect these and select the other, currently unselected, faces")
 menrestsel = quarkpy.qmenu.item("&Restrict to Selection", RestSelClick,"|Restrict selections to within the current restrictor group, if any, which you can set with by clicking `Containing Groups|Some Item|Restrict' on the right mouse menu for polys, etc. ")
 menrestsel.state=quarkpy.qmenu.disabled
 
@@ -985,6 +985,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.18.2.2  2002/05/19 05:09:07  tiglari
+# Hot key for Zoom to selection
+#
 
 # Revision 1.18.2.1  2002/05/18 22:45:55  tiglari
 # remove debug statements
