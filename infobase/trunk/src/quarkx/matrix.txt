@@ -17,7 +17,7 @@ Sum, difference, or negation of matrices
 <tr><td class="doccode">
 m*n
 </td><td>
-Matricial product
+Matrix product
 </td></tr>
 
 <tr><td class="doccode">
@@ -86,6 +86,12 @@ A copy of the matrix (note: no “ () ”)
 m.cols
 </td><td>
 A tuple of three vectors whose value are the three columns of the matrix
+</td></tr>
+
+<tr><td class="doccode">
+m.transposed
+</td><td>
+copy of m, transposed (rows<->columns))
 </td></tr>
 
 <tr><td class="doccode">
