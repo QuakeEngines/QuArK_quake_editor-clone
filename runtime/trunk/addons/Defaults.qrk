@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.238  2004/12/28 02:17:52  alexander
+//allow individual texture paths for hl2
+//
 //Revision 1.237  2004/12/27 12:28:18  alexander
 //set textures path for hl2 to "hl2/materials"
 //set name of game directory form entry
@@ -1403,7 +1406,7 @@ QQRKSRC1
         Code = "l" // Hardcoded value in Setup.PAS
         Program = "JASP.EXE +set sv_pure 0"
 
-        Directory = "\Wild_Force\"
+        Directory = "\JediAcademy\"
         CheckDirectory = "JASP.EXE"
 
         CD = ""
@@ -1417,14 +1420,11 @@ QQRKSRC1
 
         StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "Q3MAP2.EXE"
-        BuildArgs1 = "-bsp"
-        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
+        BuildArgs1 = "-game ja -fs_basepath "$22"E:/Games/JediAcademy/"$22" -meta"
         BuildPgm2  = "Q3MAP2.EXE"
-        BuildArgs2 = "-vis -saveprt"
+        BuildArgs2 = "-game ja -fs_basepath "$22"E:/Games/JediAcademy/"$22" -vis -saveprt"
         BuildPgm3  = "Q3MAP2.EXE"
-        BuildArgs3 = "-light"
-        BuildPgm4  = "Q3MAP2.EXE"
-        BuildArgs4 = "-all"
+        BuildArgs3 = "-game ja -fs_basepath "$22"E:/Games/Wild_Force/"$22" -light -fast"
 
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
@@ -1433,7 +1433,7 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "yavin/woodwall_moss"
+        DefaultTexture = "imperial/wall_3"
         DefaultTextureTrigger = "system/trigger"
         DefaultTextureOrigin = "system/origin"
         DefaultTextureClip = "system/clip"
