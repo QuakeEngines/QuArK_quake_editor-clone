@@ -110,6 +110,8 @@ items = [
     texantiscroll("Default texture movement", 0),
     texantiscroll("Sticky textures", 1),
     texantiscroll("Axis-sticky textures", 2),
+    toggleitem("&Don't center L-square","DontCenterThreePoints", (0,0),
+      hint="|If this item is on, threepoints aren't re-centered on face in texture positioning.")
     ]
 shortcuts = { }
 
@@ -126,5 +128,8 @@ def OptionsMenu():
 #
 #
 #$Log$
+#Revision 1.2  2000/06/02 16:00:22  alexander
+#added cvs headers
+#
 #
 #

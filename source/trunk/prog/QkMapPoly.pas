@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2001/03/31 04:25:36  tiglari
+WC33 (mapversion 220) map writing
+
 Revision 1.30  2001/03/30 22:17:36  tiglari
 some wc33(202) map writing, untested, tex offsets not yet handled
 
@@ -3243,38 +3246,40 @@ begin
  TexP[3].X:=(TexP[3].X-TexP[1].X)*CorrH;
  TexP[3].Y:=(TexP[3].Y-TexP[1].Y)*CorrH;
  TexP[3].Z:=(TexP[3].Z-TexP[1].Z)*CorrH;
-
- TexP[4]:=CentreFace;
- CorrW:=1;
- for I:=1 to 3 do
-  begin
-   TexP[4].X:=TexP[4].X-TexP[I].X*CorrW;
-   TexP[4].Y:=TexP[4].Y-TexP[I].Y*CorrW;
-   TexP[4].Z:=TexP[4].Z-TexP[I].Z*CorrW;
-   CorrW:=0.3;
-  end;
- CorrW:=Sqr(TexP[2].X)+Sqr(TexP[2].Y)+Sqr(TexP[2].Z);
- if CorrW>rien2 then
-  begin
-   W:=Round(Dot(TexP[4], TexP[2])/CorrW);
-   if W<>0 then
-    begin
-     TexP[1].X:=TexP[1].X+W*TexP[2].X;
-     TexP[1].Y:=TexP[1].Y+W*TexP[2].Y;
-     TexP[1].Z:=TexP[1].Z+W*TexP[2].Z;
-    end;
-  end;
- CorrH:=Sqr(TexP[3].X)+Sqr(TexP[3].Y)+Sqr(TexP[3].Z);
- if CorrH>rien2 then
-  begin
-   H:=Round(Dot(TexP[4], TexP[3])/CorrH);
-   if H<>0 then
-    begin
-     TexP[1].X:=TexP[1].X+H*TexP[3].X;
-     TexP[1].Y:=TexP[1].Y+H*TexP[3].Y;
-     TexP[1].Z:=TexP[1].Z+H*TexP[3].Z;
-    end;
-  end;
+ if SetupSubSet(ssMap,'Options').Specifics.Values['DontCenterThreePoints']<>'1' then
+ begin
+   TexP[4]:=CentreFace;
+   CorrW:=1;
+   for I:=1 to 3 do
+   begin
+     TexP[4].X:=TexP[4].X-TexP[I].X*CorrW;
+     TexP[4].Y:=TexP[4].Y-TexP[I].Y*CorrW;
+     TexP[4].Z:=TexP[4].Z-TexP[I].Z*CorrW;
+     CorrW:=0.3;
+   end;
+   CorrW:=Sqr(TexP[2].X)+Sqr(TexP[2].Y)+Sqr(TexP[2].Z);
+   if CorrW>rien2 then
+   begin
+     W:=Round(Dot(TexP[4], TexP[2])/CorrW);
+     if W<>0 then
+     begin
+       TexP[1].X:=TexP[1].X+W*TexP[2].X;
+       TexP[1].Y:=TexP[1].Y+W*TexP[2].Y;
+       TexP[1].Z:=TexP[1].Z+W*TexP[2].Z;
+     end;
+   end;
+   CorrH:=Sqr(TexP[3].X)+Sqr(TexP[3].Y)+Sqr(TexP[3].Z);
+   if CorrH>rien2 then
+   begin
+     H:=Round(Dot(TexP[4], TexP[3])/CorrH);
+     if H<>0 then
+     begin
+       TexP[1].X:=TexP[1].X+H*TexP[3].X;
+       TexP[1].Y:=TexP[1].Y+H*TexP[3].Y;
+       TexP[1].Z:=TexP[1].Z+H*TexP[3].Z;
+     end;
+   end;
+ end;
  V1:=TexP[1];
  V2.X:=TexP[2].X+TexP[1].X;
  V2.Y:=TexP[2].Y+TexP[1].Y;
