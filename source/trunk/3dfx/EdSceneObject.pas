@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:38:21  decker_dk
+Updated copyright-header
+
 Revision 1.2  2001/01/22 00:11:02  aiv
 Beginning of support for sprites in 3d view
 
@@ -1931,4 +1934,8 @@ begin
  end;
 end;
 
+initialization
+
+finalization
+ TextureManager.Free;
 end.
