@@ -1,4 +1,5 @@
-
+ * [peter-b]: Build Infobase on case-sensitive operating systems
+      (such as Linux)
 
  * [peter-b]: Python bundling
 
