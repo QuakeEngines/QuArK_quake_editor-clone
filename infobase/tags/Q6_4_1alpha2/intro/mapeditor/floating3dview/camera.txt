@@ -1,0 +1,15 @@
+title: Camera Position
+author: Decker
+
+<img border=0 align=right>camera.png</img>
+Once you have created a new 3D-window, a 'eye'-icon will appear in your
+map-views, showing where the camera are positioned in the level, and in what
+direction its pointing.
+
+You can move this camera around, and adjust its direction-handle, just like any
+other entity. However the camera won't be a visible object in the
+<ref>../dataforms/treeview </ref>, since it only exist when a 3D-window are
+open.
+
+If you have more than one 3D-window opened, there will also be more 'eye'-icons
+in your map-views. One per 3D-window.

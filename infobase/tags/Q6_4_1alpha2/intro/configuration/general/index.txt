@@ -1,0 +1,10 @@
+title: General
+desc: display
+desc: 3dview
+desc: opengl
+desc: memory
+desc: quakec
+desc: fileassociations
+desc: externaleditors
+desc: multimon
+

@@ -1,0 +1,28 @@
+title: Duplicator Combinations
+author: tiglari
+
+Various kinds of effects can be produced by using
+more than one duplicator in a combination.
+There are two kinds.
+
+First, more than one (standard) duplicator can be put into
+the same group.  What will happen then is that each will
+produce copies according to its own type and specifics.
+So if you want for example to arrange the copies in
+a cross shape, along the X and Y axes, you could use
+four basic duplicators, with offsets '256 0 0', '-256 0 0',
+'0 256 0' and '0 -256 0'.
+
+The second is more interesting.  A standard duplicator makes
+copies of everything in the group that contains it.  What
+if one of those things is itself a group with a duplicator?
+It turns out that the pattern made by the lower duplicator gets
+copied by the higher one, so that for example we can make not only
+rows, but grids.  So for example to make a grid with 5 rows and
+10 columns, you could use 2 Basic Duplicators, one with count
+5, arranging things down the Y axis, and another with count 10,
+arranging them down the X axis.
+
+We can use this technique to get the effects of some additional
+Mirror-type duplicators.  For example if we wanted an XYZ mirroring,
+we could use a Z Mirror and and XY Mirror.

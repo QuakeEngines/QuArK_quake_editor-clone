@@ -1,0 +1,15 @@
+title: Advanced stuff
+desc: wallhollowmaker
+desc: grouptechniques
+desc: creatingholes
+desc: duplicators
+desc: facesharing
+
+This is the fourth and final part, which guides you through the methods and
+functions of creating a map in QuArK's map-editor. You should have read
+<ref> ../starting \ the first part </ref>,
+<ref> ../polyhedrons \ second part </ref> and
+<ref> ../entities \ third part </ref> before going through this fourth part.
+
+The advanced stuff is optional, but learning these can help you set up your
+maps faster than normal.

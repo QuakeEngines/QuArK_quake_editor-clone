@@ -1,0 +1,4 @@
+title: Bezier.pas
+desc: quadmath paste
+
+This file contains all the Delphi part of the code related to Quake 3's Quadratic Bezier patches.

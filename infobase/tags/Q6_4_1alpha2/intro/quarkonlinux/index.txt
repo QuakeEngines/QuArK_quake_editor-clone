@@ -1,0 +1,6 @@
+title: QuArK on GNU Linux systems
+subdir: installing
+desc: compilation
+
+QuArK does run on platforms other than Windows!  This is where to find
+information and tips for installing and using QuArK on GNU Linux.

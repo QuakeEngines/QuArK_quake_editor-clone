@@ -1,0 +1,40 @@
+title: Specifics
+author: tiglari
+
+<img border=0 align=right>specifics.png</img>
+The RMB menu currently at least offers only two basic
+shapes (arch/cap, bevel) in two orientations each, but
+the 'duplicators' that implement these shapes have a
+considerable number of specifics that implement variations.
+You can see what these
+<ref> intro/mapeditor/dataforms/specsargsview \ specifics </ref> do by making
+an arch and experimenting.
+
+If you uncheck the 'inverse' specific for example,
+the arch will turn into a 'cap'.  In general, inverse shapes are concave,
+non-inverse their convex counterparts.
+
+Another important specific is 'subdiv'; it's value is a number,
+2 upon creation, that determines the number of segments each
+arch-half or bevel is divided into.  2 seems to be the minimum
+to provide a half-decent appearance; more will of course
+imply more polys.  Also there's 'inner'.  There are two ways
+of approximating an arc with straight edges, the edges can
+lie inside or outside the curve of the arc.  Outside is
+the default, checking 'inner' switches to the inner method.
+
+Another useful one is 'lower'.  This flips the arch upside-down,
+so that the curved surface is a U that you can walk over.
+Lower arches take their texture from their bottom ('down')
+rather than their top ('up') faces.
+
+Also there's 'onside' for caps and arches, and 'standup' for
+bevels.  Note that these change the face that the texture comes
+off, so for an 'onside' cap/arch, it will be the back face,
+for a 'standup' bevel, the top.
+
+All of these shapes are good candidates for being 'detail'
+in games that support this; since the faces of the brushes
+are all ultimately copies of faces in the guide brush,
+specifics such as 'detail' (along with lightvalue, etc.)
+will be copied from the appropriate face of the guide-brush.

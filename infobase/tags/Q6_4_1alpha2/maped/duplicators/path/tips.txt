@@ -1,0 +1,32 @@
+title: Tips & Tricks
+author: greeze@europa.com
+
+I wanted to share this idea I had for a (possibly) different use for 
+the path duplicator.  Maybe everyone already does this, but just in 
+case...
+
+I used to think of the path duplicator as a tool for constructing 
+hallways or piping or other symmetrical extruded objects.  But it 
+also works very well for constructing non-symmetrical things like 
+rooms.  
+
+For example, instead of using symmetrical, closed objects for your 
+template (like the shape of an "O"), try cutting your template in 
+half down the middle (so that it's now shaped like a parenthesis) and 
+constructing your tunnel out of two halves.  This makes it very easy 
+to widen your tunnel as you go, or have it open up seamlessly into a 
+room.  In fact, using this method, you can use your template to 
+create an entire oddly-shaped room by extruding the template all the 
+way around in a loop.  Drop in a ceiling and a floor and voila!  You 
+have yourself an oddly shaped room with almost no work at all.
+
+You can create some really cool rooms this way if you get creative 
+with the template.  For example, try making your template into the 
+shape of a capital "E" and extruding that in a loop.  Suddenly you 
+have a room with a walkway around the edge.
+
+Anyway, this is how I've taken to making all my maps these days.  I 
+keep a set of stylized cross-section prefabs that are all multiples 
+of the same size and can be used in different areas of the map.  I 
+hope this comes as news to at least a few people.  It has certainly 
+made map-making a lot more fun for me.

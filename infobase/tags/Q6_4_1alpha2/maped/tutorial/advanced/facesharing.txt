@@ -1,0 +1,87 @@
+title: Face Sharing
+author: <a href="mailto:quickdeath@planethalflife.com">QuickDeath</a>
+
+QuArK supports the advanced feature of "sharing" a face among several
+polyhedrons (NOTE: the term "polyhedron" and "brush" are interchangeable.  Many
+editors use the term "brush" while QuArK uses "polyhedron" or simply "a poly").
+
+Please note that face sharing requires the use of "groups".  If you don't know
+how to use QuArK's group feature, you need to
+<ref> ./grouptechniques \ review the basics </ref>.  Before we get into face
+sharing, we also need to review some Quake-engine basics.
+
+<u>Defining a world...</u>
+
+Quake-engine based games are comprised of polys.  To define a poly, you need to
+define a number of planes.  As we all remember from geometry, a plane is
+a flat, 2-dimensional object that has infinte length and width.
+
+A poly in Quake is the intersection of a bunch of planes.  A simple cube is
+defined by the intersection of six planes.  Two planes define the top and
+bottom of the cube while four more planes define the four sides.  Imagine a
+house of cards.  A single "room" of this house would consist of one card face
+down on the table, four cards for each side and one card on top.  Now imagine
+these cards as planes.  The inside of this "room" (the place where all six of
+the planes intersect) creates a poly.
+
+QuArK gives you individual access to the planes, or "faces", that define a
+poly. As we all know, you place textures on these faces to build your level.
+What you can also do is "share" a face among multiple polys.  If two (or more)
+polys share the same face, you define the texture scaling and position once on
+that shared face and every poly using that face will have a smooth texture
+flow.
+
+<u>Putting Face Sharing to work</u>
+
+Imagine 3 polys in a row (part of a room).  The middle one is the same height
+as the ones to the left and right, but it's bottom is raised up. It's an entry
+way into a hallway.  Here's the view if you're facing the 3 walls:
+
+<center><img>front.png</img></center>
+
+Assume we use the same texture for the "front" of these polys (the side that is
+facing us), we'll have to position the texture on the second and third polys
+very carefully so it flows nicely across the entire wall.  Looking at the 3
+polys from above, we'd see:
+
+<center><img>top1.png</img></center>
+
+All 3 of these polys share 2 planes.  If we look at the above view the "front"
+and "back" faces of all 3 polys run along the same plane:
+
+<center><img>top2.png</img></center>
+
+To keep things simple, we'll just worry about the "front" plane.
+
+Create a new group.  We'll call the group "Wall1" and move all 3 polys into the
+group.  Your treeview should look something like this:
+
+<center><img border=1>tree1.png</img></center>
+
+Now open up the first poly to show all of the faces and move the "front" face
+to the top of the group (determing the face to move is easiest by just
+selecting it in the editor).  You move the face by grabbing it with a
+right-click and dragging it to the top of the group (outside the poly).  We'll
+assume the face to move is the one QuArK calls "south".  After moving the
+"south" face, your treeview should now look something like this:
+
+<center><img border=1>tree2.png</img></center>
+
+Now open up the face list of the second and third poly's and delete the front
+face of each of those -- this will <i>usually</i> be the same face (i.e.
+"south") as the first one, but not always.  Select the face in the editor to be
+sure.
+
+The "south" face is now the "front" face that all of the three polys share.
+Define your texture for that face and you're all set!  No problems with texture
+alignment because it's one face -- the texture is just pasted across the entire
+face!
+
+<center><img>facesharing.png</img></center>
+
+This technique is also handy if you have a floor that is composed of multiple
+polys (because of the shape of the room -- non-convex).  Assuming all of these
+polys are at the same height, put all of them in a group and share the side
+facing "up".  Now when you want change the floor texture, change it on the one
+floor face and the entire floor (across all of the polys) changes since they're
+all sharing that face (plane).
