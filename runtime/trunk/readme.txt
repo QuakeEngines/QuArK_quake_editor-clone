@@ -21,7 +21,8 @@ Changes from 052101
    suggested by Alan Donald and quantum_red)
   *due north path duplicator bug fixed
   *menu promotion/demotion added to the basic distribution
-  *incrementable specifics added to basic and linear duplicators.
+  *incrementable specifics added to basic, linear, symx/y/z
+    and Copy/New Copy One duplicators.
      - If 'increment' specific is checked, then target,
          targetname and killtarget specifics ending in
          a string of digits have the digid string incremented
@@ -41,8 +42,10 @@ Changes from 052101
      - if 'incre_lip' has a value, then that value is
          used to increment the 'lip' speciric, likewise
          incre_<spec> for any other choice of <spec>.
+     - for (New) Copy One, each duplictor needs a different
+         'increment by' value (otherwise crosstalk).
 
-     Limitation: Doesn't work for New Copy One and
+     Limitation: Doesn't work for symxy and
        Radial duplicators (yet; if you want it to,
        holler).
   *corrections to the 'vertex movement' plugin (this is
