@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/11/23 19:06:44  decker_dk
+Removed one FindFirst in the ListFiles procedure.
+
 Revision 1.16  2000/11/19 15:31:50  decker_dk
 - Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
 Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
@@ -828,8 +831,11 @@ begin
               end;
              Lu(0);
             end;
-           if P^<>'"' then Break;
+           if P^<>'"' then
+            Break;
+(*decker
            P1:=P;
+/decker*)
            repeat
             Inc(P);
             case P^ of
@@ -1643,7 +1649,7 @@ end;}
 
 {procedure QFileObject.LienFichier(const theFilename: String);
 begin
- FFlags:=FFlags or (ofLienFichier or ofSurDisque);
+ FFlags:=FFlags or (ofLienFichier or ofNotLoadedToMemory);
  Filename:=ExpandFileName(theFilename);
 end;}
 

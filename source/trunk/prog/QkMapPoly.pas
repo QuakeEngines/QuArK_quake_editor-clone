@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.22  2000/11/19 15:31:49  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.21  2000/11/04 04:14:50  tiglari
 replaced ArcTan2 with locally defined ATan2
 
@@ -1106,7 +1120,7 @@ end;
 procedure TPolyedre.ObjectState;
 begin
  inherited;
-{if (FFlags and ofSurDisque <> 0) or CheckPolyhedron then}
+{if (FFlags and ofNotLoadedToMemory <> 0) or CheckPolyhedron then}
  if PolyhedronState<>psError then
   E.IndexImage:=iiPolyhedron
  else
@@ -2010,9 +2024,11 @@ var
  WriteIntegers, BrushPrim : Boolean;
 
     procedure write3vect(const P: array of Double; var S: String);
+{
     var
      I: Integer;
      R: Double;
+}
     begin
      S:=S+'( ';
      S:=S+FloatToStrF(P[1], ffFixed, 20, 5)+' ';
@@ -3941,7 +3957,7 @@ procedure TFace.OperationInScene(Aj: TAjScene; PosRel: Integer);
  P: PSurface;}
 begin
  inherited;
- if Flags and ofSurDisque = 0 then
+ if Flags and ofNotLoadedToMemory = 0 then
   if Aj in [asRetire, asDeplace1, asModifie, asAjoute, asDeplace2] then
    begin
    {if Aj in [asRetire, asDeplace1, asModifie] then
@@ -3964,7 +3980,7 @@ end;
 
 destructor TFace.Destroy;
 begin
- if (Flags and ofSurDisque <> 0) or (Specifics.Values[TmpFaceSpec]='') then
+ if (Flags and ofNotLoadedToMemory <> 0) or (Specifics.Values[TmpFaceSpec]='') then
   DestroyFace;
  inherited;
 end;

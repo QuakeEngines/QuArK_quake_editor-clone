@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/11/19 15:31:50  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.6  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -412,7 +426,7 @@ begin
   Q.Acces;
  Roots.Add(Q);
  Q.SelMult:=smNonSel;
- Q.Flags:=Q.Flags and not (ofTreeViewSubElement or ofTvInvisible) or ofTvExpanded;
+ Q.Flags:=Q.Flags and not (ofTreeViewSubElement or ofTreeViewInvisible) or ofTreeViewExpanded;
  ControlerEtatNoeud(Q);
  ContentsChanged(True);
 end;
@@ -427,7 +441,7 @@ end;
    T.Acces;
    ProgressIndicatorStart(5446, T.SubElements.Count); try
    T.SelMult:=smSousSelVide;
-   T.Flags:=T.Flags and not ofTvExpanded;
+   T.Flags:=T.Flags and not ofTreeViewExpanded;
    ControlerEtatNoeud(T);
    with T.SubElements do
     for I:=0 to Count-1 do
@@ -446,7 +460,7 @@ begin
  Q.Acces;
  Roots.Add(Q);
  Q.SelMult:=smNonSel;
- Q.Flags:=Q.Flags and not (ofTreeViewSubElement or ofTvInvisible) or ofTvExpanded;
+ Q.Flags:=Q.Flags and not (ofTreeViewSubElement or ofTreeViewInvisible) or ofTreeViewExpanded;
  Result:=Q.AjouterElement(Items, Nil, Nil);
  SetItemBold(Result);
  ControlerEtatNoeud(Q);
@@ -567,21 +581,21 @@ begin
      if (ieDisplay in Info) and (FParent<>El) then
       Raise InternalE('FParent<>El');
      {$ENDIF}
-     Flags:=Flags and not (ofTreeViewSubElement or ofTvInvisible)
+     Flags:=Flags and not (ofTreeViewSubElement or ofTreeViewInvisible)
       or Ord(ieDisplay in Info);
      if ieInvisible in Info then
-      Flags:=Flags or ofTvInvisible;
-    {C:=C or (Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement);}
+      Flags:=Flags or ofTreeViewInvisible;
+    {C:=C or (Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement);}
     end;
   end;
 (*if El.Flags and ofTvNode <> 0 then
   with El.GetNode do
    begin
     HasChildren:=C;
-    if El.Flags and ofTvExpanded <> 0 then
+    if El.Flags and ofTreeViewExpanded <> 0 then
      Expand(False);
    end;*)
- if El.Flags and ofTvExpanded <> 0 then
+ if El.Flags and ofTreeViewExpanded <> 0 then
   Expanding(El);  
 end;
 
@@ -590,11 +604,11 @@ var
  I: Integer;
  Q: QObject;
 begin
- El.Flags:=El.Flags and not ofTvAlreadyExpanded;
+ El.Flags:=El.Flags and not ofTreeViewAlreadyExpanded;
  if Charger then
   El.AccesRec
  else
-  if El.Flags and ofSurDisque <> 0 then
+  if El.Flags and ofNotLoadedToMemory <> 0 then
    Exit;
  ProgressIndicatorStart(5446, El.SubElements.Count); try
  for I:=0 to El.SubElements.Count-1 do
@@ -604,7 +618,7 @@ begin
    with Q do
     begin
      SelMult:=smSousSelVide;
-     Flags:=Flags and not ofTvExpanded;
+     Flags:=Flags and not ofTreeViewExpanded;
     end;
    ProgressIndicatorIncrement;
   end;
@@ -661,7 +675,7 @@ begin
    for I:=0 to G.SubElements.Count-1 do
     begin
      Result:=G.SubElements[I];
-     if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+     if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       begin
        if (BrowseNode=Node) and (Node.Text=Result.Name) then
         Break;
@@ -703,7 +717,7 @@ var
  I: Integer;
  Q: QObject;
 begin
- if El.Flags and ofTvAlreadyExpanded <> 0 then Exit;
+ if El.Flags and ofTreeViewAlreadyExpanded <> 0 then Exit;
  if LoadAllAuto then
   El.AccesRec
  else
@@ -712,9 +726,9 @@ begin
  for I:=0 to El.SubElements.Count-1 do
   begin
    Q:=El.SubElements[I];
-   if Q.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+   if Q.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
     begin
-     if (Q.Flags and ofSurDisque <> 0)
+     if (Q.Flags and ofNotLoadedToMemory <> 0)
      and (ieListView in El.IsExplorerItem(Q)) and not LoadAllAuto then
       begin  { delayed add - only an empty, "cut"ted node is added now }
        if CuttedNodes=Nil then
@@ -732,18 +746,18 @@ begin
    ProgressIndicatorIncrement;
   end;
  finally ProgressIndicatorStop; end;
- El.Flags:=El.Flags or ofTvAlreadyExpanded;
+ El.Flags:=El.Flags or ofTreeViewAlreadyExpanded;
 end;
 
 procedure TQkExplorer.Accessing(El: QObject);
 begin
- El.Flags:=El.Flags and not ofTvExpanded;
+ El.Flags:=El.Flags and not ofTreeViewExpanded;
  AjouterElement(El);
 end;
 
 procedure TQkExplorer.DisplayDetails(ParentSel: Boolean; Item: QObject; var Etat: TDisplayDetails);
 begin
- if (Item.Flags and ofSurDisque = 0)
+ if (Item.Flags and ofNotLoadedToMemory = 0)
  and (CuttedNodes<>Nil) and (CuttedNodes.IndexOf(Item)>=0) then
   begin
    CuttedNodes.Remove(Item);
@@ -761,7 +775,7 @@ var
  E: TEtatObjet;
 begin
  El:=ValidObject(Node);
- El.Flags:=El.Flags or ofTvExpanded;
+ El.Flags:=El.Flags or ofTreeViewExpanded;
  with Item do
   begin
    hItem:=Node.ItemId;
@@ -775,11 +789,11 @@ begin
  for I:=0 to El.SubElements.Count-1 do
   begin
    Q:=El.SubElements[I];
-   if Q.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+   if Q.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
     begin
      if Q.Flags and ofTvNode <> 0 then
       Q.GetNode.Delete;
-     if (Q.Flags and ofSurDisque <> 0)
+     if (Q.Flags and ofNotLoadedToMemory <> 0)
      and (ieListView in El.IsExplorerItem(Q)) then
       begin  { delayed add - only an empty, "cut"ted node is added now }
        Q.ObjectState(E);
@@ -800,7 +814,7 @@ end;
 procedure TQkExplorer.Collapsed(Sender: TObject; Node: TTreeNode);
 begin
  with ValidObject(Node) do
-  Flags:=Flags and not ofTvExpanded;
+  Flags:=Flags and not ofTreeViewExpanded;
  Node.Collapse(True);
 end;
 
@@ -916,7 +930,7 @@ end;
 procedure TQkExplorer.SelectionnerInterne(Q: QObject);
 begin
  while (Q<>Nil)
- and (Q.Flags and (ofTvNode or ofTvInvisible) <> ofTvNode) do
+ and (Q.Flags and (ofTvNode or ofTreeViewInvisible) <> ofTvNode) do
   Q:=Q.TvParent;
  if Q=Nil then
   Selected:=Nil
@@ -1005,7 +1019,7 @@ var
   begin
    if Q1=Stop then Exit;
    ExpandNow(Q1.FParent);
-   if Q1.FParent.Flags and ofTvExpanded = 0 then
+   if Q1.FParent.Flags and ofTreeViewExpanded = 0 then
     ToggleExpanding(Q1.FParent);
   end;
 begin
@@ -1672,7 +1686,7 @@ var
 begin
  nInsererAvant:=Nil;
  T:=TMFocus;
- while (T<>Nil) and (T.Flags and ofTvInvisible <> 0) do
+ while (T<>Nil) and (T.Flags and ofTreeViewInvisible <> 0) do
   T:=T.TvParent;
  if T<>Nil then
   begin
@@ -1724,7 +1738,7 @@ begin
  if (nParent=Nil) or (AllowEditing=aeNo) then Exit;
  nParent.Acces;
  if nParent.SubElements.Count=0 then
-  nParent.Flags:=nParent.Flags or ofTvExpanded;
+  nParent.Flags:=nParent.Flags or ofTreeViewExpanded;
  DebutAction;
  for I:=0 to Gr.SubElements.Count-1 do
   begin

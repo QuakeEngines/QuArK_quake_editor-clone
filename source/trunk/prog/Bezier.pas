@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/11/19 15:31:51  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.16  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -1138,29 +1152,32 @@ procedure TBezier.SwapSides;
 var
  cp, ncp: TBezierMeshBuf5;
  I, J, K: Integer;
- F: TDouble;
- Source, Dest, P1, P2: vec5_p;
+{ F: TDouble;}
+ Source, Dest{, P1, P2}: vec5_p;
 begin
  cp:=ControlPoints;
  ncp.H:=cp.W;
  ncp.W:=cp.H;
- GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t)); try
- Source:=cp.CP;
- Dest:=ncp.CP;
- for J:=0 to cp.H-1 do
-  begin
-   Dest:=ncp.CP;
-   Inc(Dest, J);
-   for I:=0 to cp.W-1 do
-    begin
-     for K:=0 to 4 do
-      Dest^[K]:=Source^[K];
-     Inc(Source);
-     Inc(Dest, ncp.W)
-    end;
-  end;
- ControlPoints:=ncp;
- finally FreeMem(ncp.CP); end;
+ GetMem(ncp.CP, ncp.W*ncp.H*SizeOf(vec5_t));
+ try
+  Source:=cp.CP;
+{  Dest:=ncp.CP;}
+  for J:=0 to cp.H-1 do
+   begin
+    Dest:=ncp.CP;
+    Inc(Dest, J);
+    for I:=0 to cp.W-1 do
+     begin
+      for K:=0 to 4 do
+       Dest^[K]:=Source^[K];
+      Inc(Source);
+      Inc(Dest, ncp.W)
+     end;
+   end;
+  ControlPoints:=ncp;
+ finally
+  FreeMem(ncp.CP);
+ end;
 end;
 
  { guess the 'smooth' specific based on current control points }
@@ -1304,9 +1321,11 @@ end;
  { Python methods }
 
 function fSwapSides(self, args: PyObject) : PyObject; cdecl;
+{
 var
  Buf, cp : TBezierMeshBuf5;
  I, J : Integer;
+}
 begin
  try
   with QkObjFromPyObj(self) as TBezier do

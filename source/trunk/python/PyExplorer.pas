@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/07/09 13:19:27  decker_dk
+Englishification and a little layout
+
 Revision 1.2  2000/05/14 20:27:53  alexander
 ToutChargerAuto -> LoadAllAuto
 
@@ -338,7 +341,7 @@ begin
   if not PyArg_ParseTupleX(args, 'O!|O', [@TyObject_Type, @obj, @expd]) then
    Exit;
   Q:=QkObjFromPyObj(obj);
-  if (Q<>Nil) and ((Q.Flags and ofTvExpanded<>0) xor ((expd=Nil) or PyObject_IsTrue(expd))) then
+  if (Q<>Nil) and ((Q.Flags and ofTreeViewExpanded<>0) xor ((expd=Nil) or PyObject_IsTrue(expd))) then
     with PyControlF(self)^ do
      if QkControl<>Nil then
       with QkControl as TPythonExplorer do

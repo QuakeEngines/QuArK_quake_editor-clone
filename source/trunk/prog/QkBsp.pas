@@ -24,6 +24,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2000/11/19 15:31:51  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.8  2000/10/15 15:58:44  alexander
 correct error message for v46 bsp files
 
@@ -370,7 +384,7 @@ begin
  else
   begin
      { determine map game : Quake 1 or Hexen II }
-   FFlags:=FFlags and not ofSurDisque;  { to prevent infinite loop on "Acces" }
+   FFlags:=FFlags and not ofNotLoadedToMemory;  { to prevent infinite loop on "Acces" }
    FaceCount:=GetBspEntryData(eSurfaces, NoBsp2, P) div SizeOf(TbSurface);
    Taille1:=GetBspEntryData(eHulls, NoBsp2, P);
    ModeQ1:=CheckQ1Hulls(PHull(P), Taille1, FaceCount);

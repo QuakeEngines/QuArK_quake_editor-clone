@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.4  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -247,12 +250,12 @@ function GetFirstTvChild(Item: QObject) : QObject;
 var
  J: Integer;
 begin
- if Item.Flags and ofSurDisque = 0 then
+ if Item.Flags and ofNotLoadedToMemory = 0 then
   with Item.SubElements do
    for J:=0 to Count-1 do
     begin
      Result:=QObject(Item.SubElements[J]);
-     if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+     if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       Exit;
     end;
  Result:=Nil;
@@ -269,10 +272,10 @@ begin
    I:=0;
   end
  else
-  if Source.Flags and ofSurDisque = 0 then
+  if Source.Flags and ofNotLoadedToMemory = 0 then
    begin
     L:=Source.SubElements;
-    if Source.Flags and ofTvExpanded <> 0 then
+    if Source.Flags and ofTreeViewExpanded <> 0 then
      I:=0
     else
      I:=MaxInt-1;
@@ -287,7 +290,7 @@ begin
    for J:=I to L.Count-1 do
     begin
      Result:=QObject(L[J]);
-     if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+     if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       Exit;
     end;
    Result:=Source;
@@ -329,9 +332,9 @@ begin
  while I>=0 do
   begin
    Result:=QObject(L[I]);
-   if Result.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+   if Result.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
     begin
-     if Result.Flags and ofTvExpanded = 0 then
+     if Result.Flags and ofTreeViewExpanded = 0 then
       Exit;
      Source:=Result;
      L:=Result.SubElementsC;
@@ -401,7 +404,7 @@ var
    for J:=0 to List.Count-1 do
     begin
      Item:=QObject(List[J]);
-     if Item.Flags and (ofTreeViewSubElement or ofTvInvisible) = Expected then
+     if Item.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = Expected then
       begin
        Result:=True;
        R.Top:=Y;
@@ -479,7 +482,7 @@ var
          Image1:=PyImage1(Etat.Icon);
          if (Image1=Nil)
          or not ImageList_DrawEx(Image1^.ImageList^.Handle, Image1^.Index,
-          DC, X,Y, 16,16, BkColor, BkColor, Mode[Item.Flags and ofSurDisque <> 0]) then
+          DC, X,Y, 16,16, BkColor, BkColor, Mode[Item.Flags and ofNotLoadedToMemory <> 0]) then
            begin
             R.Left:=X;
             R.Right:=X+16;
@@ -562,7 +565,7 @@ var
         Etat.Flags:=Etat.Flags or eoParentSel;
        if Expected=0 then
         SelectObject(DC, Font);
-       if (Item.Flags and ofTvExpanded <> 0)
+       if (Item.Flags and ofTreeViewExpanded <> 0)
        and DisplayItems(X+MyTVIndent, Item.SubElements, ofTreeViewSubElement, Etat.Flags) then
         Sign:=MinusDC
        else
@@ -686,7 +689,7 @@ begin
    PostMessage(Handle, wm_InternalMessage, wp_SelectionChanged, 0);
    SelChangedMsg:=True;
    Q:=TMFocus;
-   if (Q<>Nil) and (Q.Flags and ofSurDisque <> 0) then
+   if (Q<>Nil) and (Q.Flags and ofNotLoadedToMemory <> 0) then
     Accessing(Q);
   end;
 end;
@@ -731,7 +734,7 @@ begin
    if J<>OldJ then
     FFocusList[I]:=TObject(J);
    Result:=QObject(Test);
-   if NoExpand and (Result.Flags and ofTvExpanded = 0) then Exit;
+   if NoExpand and (Result.Flags and ofTreeViewExpanded = 0) then Exit;
    Result.Acces;
    L:=Result.SubElements;
   end;
@@ -1096,7 +1099,7 @@ begin
  Result:=False;
  while Odd(Q.Flags) do
   begin
-   if Q.Flags and ofTvInvisible <> 0 then Exit;
+   if Q.Flags and ofTreeViewInvisible <> 0 then Exit;
    Test:=Q.FParent;
    if (Test=Nil) or (Test.SubElements.IndexOf(Q)<0) then Exit;
    Q:=Test;
@@ -1113,9 +1116,9 @@ begin
  for I:=0 to L.Count-1 do
   begin
    Q:=QObject(L[I]);
-   case (Q.Flags and (ofTvExpanded or ofTreeViewSubElement or ofTvInvisible)) or Ignore of
+   case (Q.Flags and (ofTreeViewExpanded or ofTreeViewSubElement or ofTreeViewInvisible)) or Ignore of
     ofTreeViewSubElement: Inc(Result);
-    ofTreeViewSubElement or ofTvExpanded:
+    ofTreeViewSubElement or ofTreeViewExpanded:
       begin
        Q.Acces;
        Inc(Result, 1+CountVisibleItems(Q.SubElements, 0));
@@ -1184,7 +1187,7 @@ end;
 
 procedure TMyTreeView.SelectOneChild(Q: QObject);
 begin
- if Q.FParent.Flags and ofTvExpanded = 0 then
+ if Q.FParent.Flags and ofTreeViewExpanded = 0 then
   ToggleExpanding(Q.FParent);
  TMSelUnique:=Q;
  UpdateView;
@@ -1317,7 +1320,7 @@ begin
      SelChanged:=True;
     end;
   end;
-{if (DropTarget<>Nil) and (DropTarget.Flags and ofSurDisque <> 0) then
+{if (DropTarget<>Nil) and (DropTarget.Flags and ofNotLoadedToMemory <> 0) then
   Accessing(DropTarget);}
  if TMFocus<>DropTarget then
   begin
@@ -1500,7 +1503,7 @@ end;
 
 procedure TMyTreeView.Accessing(Q: QObject);
 begin
- Q.Flags:=Q.Flags and not ofTvExpanded;
+ Q.Flags:=Q.Flags and not ofTreeViewExpanded;
  Q.Acces;
 end;
 
@@ -1514,17 +1517,17 @@ var
  I: Integer;
  Test, Last: QObject;
 begin
- Q.Flags:=Q.Flags xor ofTvExpanded;
+ Q.Flags:=Q.Flags xor ofTreeViewExpanded;
  Last:=Nil;
- if Q.Flags and ofTvExpanded <> 0 then
+ if Q.Flags and ofTreeViewExpanded <> 0 then
   begin
    Expanding(Q);
    for I:=0 to Q.SubElements.Count-1 do
     begin
      Test:=QObject(Q.SubElements[I]);
-     if Test.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+     if Test.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       begin
-       Test.Flags:=Test.Flags and not ofTvExpanded;
+       Test.Flags:=Test.Flags and not ofTreeViewExpanded;
        Last:=Test;
       end;
     end;
@@ -1553,7 +1556,7 @@ begin
  if not Result then
   begin
    Inc(Index);
-   if Test.Flags and ofTvExpanded <> 0 then
+   if Test.Flags and ofTreeViewExpanded <> 0 then
     begin
      Test.Acces;
      Inc(Level);
@@ -1635,7 +1638,7 @@ begin
    if Q.SelMult<>smSousSelVide then
     begin
      Q.SelMult:=smSousSelVide;
-     if Q.Flags and ofSurDisque = 0 then
+     if Q.Flags and ofNotLoadedToMemory = 0 then
       ClearSelection1(Q.SubElements);
     end;
   end;
@@ -1732,7 +1735,7 @@ procedure TMyTreeView.KeyDown(var Key: Word; Shift: TShiftState);
   begin
    Item:=GetFocused1(True);
    if Item=Nil then Exit;
-   if (GetFirstTvChild(Item)<>Nil) and (Item.Flags and ofTvExpanded <> 0) then
+   if (GetFirstTvChild(Item)<>Nil) and (Item.Flags and ofTreeViewExpanded <> 0) then
     ToggleExpanding(Item)
    else
     if Move then
@@ -1755,7 +1758,7 @@ procedure TMyTreeView.KeyDown(var Key: Word; Shift: TShiftState);
    if Item=Nil then Exit;
    Next:=GetFirstTvChild(Item);
    if Next<>Nil then
-    if Item.Flags and ofTvExpanded = 0 then
+    if Item.Flags and ofTreeViewExpanded = 0 then
      ToggleExpanding(Item)
     else
      if Move then
@@ -1772,12 +1775,12 @@ procedure TMyTreeView.KeyDown(var Key: Word; Shift: TShiftState);
    Test: QObject;
   begin
    if GetFirstTvChild(Q)=Nil then Exit;
-   Q.Flags:=Q.Flags or ofTvExpanded;
+   Q.Flags:=Q.Flags or ofTreeViewExpanded;
    Expanding(Q);
    for I:=0 to Q.SubElements.Count-1 do
     begin
      Test:=QObject(Q.SubElements[I]);
-     if Test.Flags and (ofTreeViewSubElement or ofTvInvisible) = ofTreeViewSubElement then
+     if Test.Flags and (ofTreeViewSubElement or ofTreeViewInvisible) = ofTreeViewSubElement then
       ExpandAllRec(Test);
     end;
   end;

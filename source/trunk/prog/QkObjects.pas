@@ -24,6 +24,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.31  2000/11/19 15:31:49  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.30  2000/11/04 04:18:22  tiglari
 Put in proper declaration (protected) for QObject.Pedigree
 
@@ -147,18 +161,18 @@ const
 
  InternalImagesCount     = 48;
 
- ModeFichier    = fmOpenRead      or fmShareDenyWrite;
- ModeFichierEcr = fmOpenReadWrite or fmShareDenyWrite;
+ fmOpenReadOnly_ShareDenyWrite    = fmOpenRead      or fmShareDenyWrite;
+ fmOpenReadWrite_ShareDenyWrite = fmOpenReadWrite or fmShareDenyWrite;
 
- ofTreeViewSubElement     = $01;   { all objects in a tree-view except top-level (don't change value, must be 1) }
- ofTvInvisible       = $02;   { present but invisible in the tree-view }
- ofTvAlreadyExpanded = $04;   { node has been expanded once }
- ofTvExpanded        = $08;   { node is expanded }
- ofSurDisque         = $10;
- ofFileLink          = $20;
- ofWarnBeforeChange  = $40;
- ofModified          = $80;
- ofCloneFlags        = $FF{-ofTvNode};
+ ofTreeViewSubElement      = $01;   { all objects in a tree-view except top-level (don't change value, must be 1) }
+ ofTreeViewInvisible       = $02;   { present but invisible in the tree-view }
+ ofTreeViewAlreadyExpanded = $04;   { node has been expanded once }
+ ofTreeViewExpanded        = $08;   { node is expanded }
+ ofNotLoadedToMemory       = $10;
+ ofFileLink                = $20;
+ ofWarnBeforeChange        = $40;
+ ofModified                = $80;
+ ofCloneFlags              = $FF{-ofTvNode};
 
 {of2TvNodeSel        = $01;
  ofCloneFlags2 = $FF;}
@@ -753,9 +767,9 @@ begin
      Exit;
     end;
    if maUnique in Mode then
-    Result:=TQStream.Create(FullName, ModeFichierEcr)
+    Result:=TQStream.Create(FullName, fmOpenReadWrite_ShareDenyWrite)
    else
-    Result:=TQStream.Create(FullName, ModeFichier);
+    Result:=TQStream.Create(FullName, fmOpenReadOnly_ShareDenyWrite);
    QFileList.AddObject(FullName, Result);
   end;
 {Result.AddRef;}
@@ -771,7 +785,8 @@ begin
  for I:=QObjectClassList.Count-1 downto 0 do
   begin
    S:=QObjectClassList[I];
-   if S[1]='a' then Continue;
+   if S[1]='a' then
+    Continue;
    C:=QObjectClass(QObjectClassList.Objects[I]);
    if C.InheritsFrom(QFileObject) then
     begin
@@ -797,7 +812,8 @@ begin
  for I:=QObjectClassList.Count-1 downto 0 do
   begin
    S:=QObjectClassList[I];
-   if S[1]='a' then Continue;
+   if S[1]='a' then
+    Continue;
    C:=QObjectClass(QObjectClassList.Objects[I]);
    if C.InheritsFrom(QFileObject) then
     begin
@@ -1036,10 +1052,15 @@ begin
  Dec(RefCount1);
  if RefCount1<=0 then
   begin
-   {$IFDEF Debug} if RefCount1<0 then Raise InternalE('QStream.RefCount1'); {$ENDIF}
+{$IFDEF Debug}
+   if RefCount1<0 then
+    Raise InternalE('QStream.RefCount1');
+{$ENDIF}
    I:=QFileList.IndexOfObject(Self);
    if I<0 then
-    {$IFDEF Debug} Raise InternalE('QStream.Release') {$ENDIF}
+{$IFDEF Debug}
+    Raise InternalE('QStream.Release')
+{$ENDIF}
    else
     begin
      if Temporary then
@@ -1071,14 +1092,16 @@ begin
  I:=QFileList.IndexOfObject(Self);
  if I<0 then
   begin
-   {$IFDEF Debug} Raise InternalE('ReopenAs'); {$ENDIF}
+{$IFDEF Debug}
+   Raise InternalE('ReopenAs');
+{$ENDIF}
    Result:=False;
    Exit;
   end;
  QFileList.Delete(I);
   { rename stream }
  QFileList.AddObject(FileName, Self);
- FHandle:=FileOpen(FileName, ModeFichier);
+ FHandle:=FileOpen(FileName, fmOpenReadOnly_ShareDenyWrite);
  Result:=FHandle>=0;
 end;
 
@@ -1092,9 +1115,9 @@ begin
  if Ref<>Nil then
   begin
    if Ref^.Self is TQStream then
-      Ref^.Self.Release
+     Ref^.Self.Release
    else
-      Ref^.Self.Free;
+     Ref^.Self.Free;
    Dispose(Ref);
    Ref:=Nil;
   end;
@@ -1187,11 +1210,11 @@ end;
 
 constructor QObject.Create(const nName: String; nParent: QObject);
 begin
- {$IFDEF Debug}
+{$IFDEF Debug}
 (*if QObjectClassList.IndexOfObject(TObject(ClassType))<0 then
   Raise InternalE('Unregistered QObjectClass');*)
  MemQObject.Add(Self);
- {$ENDIF}
+{$ENDIF}
  Name:=nName;
  FParent:=nParent;
 (*if Self is QFileObject then
@@ -1206,11 +1229,12 @@ destructor QObject.Destroy;
 var
  I: Integer;
 begin
- {$IFDEF Debug}
+{$IFDEF Debug}
  I:=MemQObject.IndexOf(Self);
- if I<0 then Raise InternalE('QObject.Destroy');
+ if I<0 then
+  Raise InternalE('QObject.Destroy');
  MemQObject.Delete(I);
- {$ENDIF}
+{$ENDIF}
 {if FFlags and ofTvNode = 0 then}
   QStreamRelease(FNode);
  for I:=0 to FSubElements.Count-1 do
@@ -1219,23 +1243,25 @@ begin
     FParent:=Nil;
  FSubElements.Free;
  FSpecifics.Free;
- {$IFDEF Debug}
+{$IFDEF Debug}
 (*if FFlags and ofFileLink <> 0 then
   for I:=0 to QFileList.Count-1 do
    if TQStream(QFileList.Objects[I]).Root=Self then
     Raise InternalE('QStream.Root=(Freed)'+Name);*)
- {$ENDIF}
+{$ENDIF}
 end;
 
 procedure QObject.AddRef(Delta: Integer);
 begin
- if Self=Nil then Exit;
-{if Name='basear1' then
-  Name:='basear1';}
+ if Self=Nil then
+  Exit;
  Inc(PythonObj.ob_refcnt, Delta);
  if PythonObj.ob_refcnt<=0 then
   begin
-   {$IFDEF Debug} if PythonObj.ob_refcnt<0 then Raise InternalE('QObject.RefCount1'); {$ENDIF}
+{$IFDEF Debug}
+   if PythonObj.ob_refcnt<0 then
+    Raise InternalE('QObject.RefCount1');
+{$ENDIF}
    Free;
   end;
 end;
@@ -1271,7 +1297,7 @@ var
  S: TQStream;
  ddl: Boolean;
 begin
- if (FFlags and ofSurDisque <> 0) and not FLoading then
+ if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
   begin  { optimization only : tags the source stream as "DisableDelayLoading",
            which means that subobjects will be immediately loaded in LoadedItem
            instead of by the recursive LoadAll call below. }
@@ -1305,9 +1331,9 @@ end;}
 procedure QObject.Acces;
 var
  Source: TStream;
- SourceTaille: Integer;
+ SourceSize: Integer;
 begin
- if (FFlags and ofSurDisque = 0) or FLoading then
+ if (FFlags and ofNotLoadedToMemory = 0) or FLoading then
   begin
   {if (FFlags and ofTvNode = 0) and (FNode<>Nil) then
     QStreamRelease(FNode);}
@@ -1318,15 +1344,15 @@ begin
 
  if FNode=Nil then
   Raise InternalE('Acces:FNode=Nil');
- SourceTaille:=QStreamAddRef(FNode, Source);
+ SourceSize:=QStreamAddRef(FNode, Source);
  try
   FLoading:=True;
   try
-   LoadFile(Source, SourceTaille);
+   LoadFile(Source, SourceSize);
   finally
    FLoading:=False;
   end;
-  FFlags:=FFlags and not ofSurDisque;
+  FFlags:=FFlags and not ofNotLoadedToMemory;
   QStreamRelease(FNode);
  finally {AiV}
   if Source is TQStream then
@@ -1345,10 +1371,10 @@ begin
      Raise EError(5507);
     S:=(Self as QFileObject).Filename;
     Source:=FileAccessQ(S, []);
-    SourceTaille:=Source.Size;
+    SourceSize:=Source.Size;
    end;
-  LoadFile(Source, SourceTaille);
-  FFlags:=FFlags and not ofSurDisque;
+  LoadFile(Source, SourceSize);
+  FFlags:=FFlags and not ofNotLoadedToMemory;
   QStreamRelease(FNode);
  finally
   if Source<>Nil then
@@ -1391,13 +1417,13 @@ end;
 function QObject.GetSpecifics : TStringList;
 begin
   {alex}
-  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
   begin
-     AccesRec;
+    AccesRec;
   end;
   {/alex ######### FIXME ! i think this is needed , and thus it should be
    enabled always !!!!!}
-  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
     Raise InternalE('GetSpecifics');
   Result:=FSpecifics;
 end;
@@ -1405,13 +1431,13 @@ end;
 function QObject.GetSubElements : TQList;
 begin
   {alex}
-  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
   begin
-     AccesRec;
+    AccesRec;
   end;
   {/alex ######### FIXME ! i think this is needed , and thus it should be
    enabled always !!!!!}
-  if (FFlags and ofSurDisque <> 0) and not FLoading then
+  if (FFlags and ofNotLoadedToMemory <> 0) and not FLoading then
     Raise InternalE('GetSubElements');
   Result:=FSubElements;
 end;
@@ -1427,7 +1453,7 @@ var
 begin
  Result:=BaseSize;
   { adds the size of the data not yet loaded }
- if FFlags and ofSurDisque <> 0 then
+ if FFlags and ofNotLoadedToMemory <> 0 then
   if (Loaded<>Nil) and (FNode<>Nil) and (PQStreamRef(FNode)^.Self=Loaded) then
    if LoadNow then
     Acces   { load data }
@@ -1444,7 +1470,7 @@ begin
   Inc(Result, Length(Specifics[I])+SpecSize);
  for I:=0 to SubElements.Count-1 do
   Inc(Result, SubElements[I].GetObjectSize(Loaded, LoadNow));
-(*if (FFlags and ofSurDisque <> 0) and Loaded then
+(*if (FFlags and ofNotLoadedToMemory <> 0) and Loaded then
   if FNode=Nil then  { add the size of the not already loaded data }
    begin     { from a not yet opened file }
     if FFlags and ofFileLink = 0 then Exit;  { error }
@@ -1463,7 +1489,7 @@ var
  SourceTaille: Integer;
 begin
  Result:=False;  { no automated copy }
- if FFlags and ofSurDisque = 0 then
+ if FFlags and ofNotLoadedToMemory = 0 then
   begin
    if (FFlags and ofTvNode = 0) and (FNode<>Nil) then
     QStreamRelease(FNode);
@@ -1484,7 +1510,7 @@ begin
   else
    SourceTaille:=QStreamAddRef(FNode, Source);
   LoadFile(Source, SourceTaille);
-  FFlags:=FFlags and not ofSurDisque;
+  FFlags:=FFlags and not ofNotLoadedToMemory;
   QStreamCopying(FNode, F);
  finally
   if Source<>Nil then
@@ -1497,14 +1523,14 @@ end;
 procedure QObject.CloseCopying;
 begin
  ProgressIndicatorStop;
- if FFlags and ofSurDisque <> 0 then
+ if FFlags and ofNotLoadedToMemory <> 0 then
   Raise EError(5513);
  if (FFlags and ofTvNode <> 0) or (FNode = Nil) then
   Exit;  { object is too much loaded to be unloadable }
  with PQStreamRef(FNode)^ do
   if StreamSize=-1 then
    StreamSize:=Self.Position - Position;  { update the size info }
- FFlags:=FFlags or ofSurDisque;
+ FFlags:=FFlags or ofNotLoadedToMemory;
  SubElements.Clear;
  Specifics.Clear;
 end;*)
@@ -1515,26 +1541,27 @@ var
  SourceTaille: Integer;
 begin  { if possible, copy directly from the original file into the new one }
  Result:=False;
- if FFlags and ofSurDisque = 0 then
+ if FFlags and ofNotLoadedToMemory = 0 then
   Exit;  { already called "Acces", original source no more available }
 
  if FNode=Nil then
   Raise InternalE('Copying:FNode=Nil');
- SourceTaille:=QStreamAddRef(FNode, Source); try
- if SourceTaille>0 then
-  F.CopyFrom(Source, SourceTaille);   { copy data directly }
- if TransfertSource and (F is TQStream) then
-  begin  { if the target is a TQStream, it can be used to replace the original source }
-   QStreamRelease(FNode);
-   F.Seek(-SourceTaille, soFromCurrent);
-   FNode:=TQStream(F).AddRefNode(SourceTaille);
-  end;
-{AiV} finally
+ SourceTaille:=QStreamAddRef(FNode, Source);
+ try
+  if SourceTaille>0 then
+   F.CopyFrom(Source, SourceTaille);   { copy data directly }
+  if TransfertSource and (F is TQStream) then
+   begin  { if the target is a TQStream, it can be used to replace the original source }
+    QStreamRelease(FNode);
+    F.Seek(-SourceTaille, soFromCurrent);
+    FNode:=TQStream(F).AddRefNode(SourceTaille);
+   end;
+ finally {AiV}
   if Source is TQStream then
    TQStream(Source).Release
   else
    Source.Free;
-  end;
+ end;
 
 (*Source:=Nil;
  try
@@ -1717,96 +1744,99 @@ begin
    Exit;
   end;
  if FileItemCount=0 then Exit;  { no data }
- GetMem(FileItemInfo, Size); try
- F.ReadBuffer(FileItemInfo^, Size);  { read file item infos }
+ GetMem(FileItemInfo, Size);
+ try
+  F.ReadBuffer(FileItemInfo^, Size);  { read file item infos }
 
- Info:=FileItemInfo;
- Size:=0;
- ExtraSize:=0;
- for I:=1 to FileItemCount do
-  begin   { scan the file item infos }
-   Inc(Size, Info^.NameSize);
-   if (Info^.Code and qsSizeMask) > qsShortSizeMax then
-    Inc(ExtraSize, Info^.Code and qsLongSizeMask);
-   Inc(Info);
-  end;
+  Info:=FileItemInfo;
+  Size:=0;
+  ExtraSize:=0;
+  for I:=1 to FileItemCount do
+   begin   { scan the file item infos }
+    Inc(Size, Info^.NameSize);
+    if (Info^.Code and qsSizeMask) > qsShortSizeMax then
+     Inc(ExtraSize, Info^.Code and qsLongSizeMask);
+    Inc(Info);
+   end;
 
- Inc(DeltaPos, Size);
- if DeltaPos > FSize then
-  Raise EErrorFmt(5509, [53]);
- SetLength(Names, Size);
- F.ReadBuffer(Names[1], Size);  { read the names }
+  Inc(DeltaPos, Size);
+  if DeltaPos > FSize then
+   Raise EErrorFmt(5509, [53]);
+  SetLength(Names, Size);
+  F.ReadBuffer(Names[1], Size);  { read the names }
 
- if ExtraSize=0 then
-  ExtraSizes:=''
- else
-  begin   { read the extra sizes }
-   Dec(FSize, ExtraSize);
-   I:=FSize-DeltaPos;  { stored at the end of the data block }
-   if I<0 then
-    Raise EErrorFmt(5509, [54]);
-   F.Seek(I, soFromCurrent);
-   SetLength(ExtraSizes, ExtraSize);
-   J:=F.Read(ExtraSizes[1], ExtraSize);
-   if J<ExtraSize then
-    begin
-     FileCrashRecoverHack;
-     Hack:=True;
-     FillChar(ExtraSizes[J+1], ExtraSize-J, $FF);
-     Dec(I, ExtraSize-J);
-    end;
-   F.Seek(-ExtraSize-I, soFromCurrent);  { come back }
-  end;
+  if ExtraSize=0 then
+   ExtraSizes:=''
+  else
+   begin   { read the extra sizes }
+    Dec(FSize, ExtraSize);
+    I:=FSize-DeltaPos;  { stored at the end of the data block }
+    if I<0 then
+     Raise EErrorFmt(5509, [54]);
+    F.Seek(I, soFromCurrent);
+    SetLength(ExtraSizes, ExtraSize);
+    J:=F.Read(ExtraSizes[1], ExtraSize);
+    if J<ExtraSize then
+     begin
+      FileCrashRecoverHack;
+      Hack:=True;
+      FillChar(ExtraSizes[J+1], ExtraSize-J, $FF);
+      Dec(I, ExtraSize-J);
+     end;
+    F.Seek(-ExtraSize-I, soFromCurrent);  { come back }
+   end;
 
- Info:=FileItemInfo;
- NamePtr:=PChar(Names);
- ExtraSize:=1;
- for I:=1 to FileItemCount do  { read actual data }
-  begin
-   SetString(Name, NamePtr, Info^.NameSize);  { name }
-   Inc(NamePtr, Info^.NameSize);
-   Size:=Info^.Code and qsSizeMask;
-   if Size > qsShortSizeMax then
-    begin  { long sizes are stored in ExtraSizes }
-     Size:=0;
-     J:=Info^.Code and qsLongSizeMask;
-     if J > SizeOf(Size) then
-      Raise EErrorFmt(5509, [55]);
-     Move(ExtraSizes[ExtraSize], Size, J);
-     Inc(ExtraSize, J);
-    end;
+  Info:=FileItemInfo;
+  NamePtr:=PChar(Names);
+  ExtraSize:=1;
+  for I:=1 to FileItemCount do  { read actual data }
+   begin
+    SetString(Name, NamePtr, Info^.NameSize);  { name }
+    Inc(NamePtr, Info^.NameSize);
+    Size:=Info^.Code and qsSizeMask;
+    if Size > qsShortSizeMax then
+     begin  { long sizes are stored in ExtraSizes }
+      Size:=0;
+      J:=Info^.Code and qsLongSizeMask;
+      if J > SizeOf(Size) then
+       Raise EErrorFmt(5509, [55]);
+      Move(ExtraSizes[ExtraSize], Size, J);
+      Inc(ExtraSize, J);
+     end;
 
-   Inc(DeltaPos, Size);
-   if DeltaPos > FSize then    {Raise EErrorFmt(5509, [56])}
-    begin
-     if not Hack then
-      begin
-       FileCrashRecoverHack;
-       Hack:=True;
-      end;
-     Size:=FSize-(DeltaPos-Size);
-     DeltaPos:=FSize;
-    end;
+    Inc(DeltaPos, Size);
+    if DeltaPos > FSize then    {Raise EErrorFmt(5509, [56])}
+     begin
+      if not Hack then
+       begin
+        FileCrashRecoverHack;
+        Hack:=True;
+       end;
+      Size:=FSize-(DeltaPos-Size);
+      DeltaPos:=FSize;
+     end;
 
-   if Info^.Code and qsBitSubObject = 0 then
-    begin  { a Specific/Arg pair }
-     SetLength(Name, Info^.NameSize+1+Size);
-     Name[Info^.NameSize+1]:='=';
-     F.ReadBuffer(Name[Info^.NameSize+2], Size);
-     SpecificsAdd(Name);
-    end
-   else
-    if Info^.Code <> qsCodeFileLink then
-     begin  { a sub-objects }
-      Q:=ConstructQObject(Name, Self);
-      FSubElements.Add(Q);
-      LoadedItem(rf_Private, F, Q, Size);
+    if Info^.Code and qsBitSubObject = 0 then
+     begin  { a Specific/Arg pair }
+      SetLength(Name, Info^.NameSize+1+Size);
+      Name[Info^.NameSize+1]:='=';
+      F.ReadBuffer(Name[Info^.NameSize+2], Size);
+      SpecificsAdd(Name);
      end
     else
-     LoadedFileLink(Name, 0);
-   Inc(Info);
-  end;
- finally FreeMem(FileItemInfo); end;
+     if Info^.Code <> qsCodeFileLink then
+      begin  { a sub-objects }
+       Q:=ConstructQObject(Name, Self);
+       FSubElements.Add(Q);
+       LoadedItem(rf_Private, F, Q, Size);
+      end
+     else
+      LoadedFileLink(Name, 0);
+    Inc(Info);
+   end;
+ finally
+  FreeMem(FileItemInfo);
+ end;
 end;
 
 function QObject.DirectDataAccess(var S: TStream; var Size: Integer) : Boolean;
@@ -1818,71 +1848,84 @@ var
  Name: String;
 begin
 {$IFDEF Debug}
- if Flags and ofSurDisque = 0 then
+ if Flags and ofNotLoadedToMemory = 0 then
   Raise InternalE('DirectDataAccess');
 {$ENDIF}
  Result:=False;
- Taille:=QStreamAddRef(FNode, F); try
- if Self is QFileObject then
-  ReadFormat:=QFileObject(Self).ReadFormat
- else
-  ReadFormat:=rf_Private;
- if ReadFormat>=rf_Default then
-  begin
-    { direct raw access allowed only for objects of type Unknown }
-   QFileObject(Self).FileObjectClassInfo(Info1);
-   if not Info1.Unformatted then Exit;
-   Size:=Taille;
-  end
- else
-  begin   { special code : try to access the content of the Data= specific directly from the stream }
-   if ReadFormat<>rf_Private then Exit;
-   FileItemCount:=0;
-   try
-    F.ReadBuffer(FileItemCount, 1);
-   except
-    Exit;
-   end;
-   if FileItemCount <> 1 then Exit;
-   DeltaPos:=1+SizeOf(TFileItemInfo);
-   if DeltaPos > Taille then Exit;
-   F.ReadBuffer(Info, SizeOf(TFileItemInfo));  { read single file item info }
-   if Info.Code and qsBitSubObject <> 0 then Exit;
-
-   {Size:=Info.NameSize;}
-   ExtraSize:=0;
-   if (Info.Code and qsSizeMask) > qsShortSizeMax then
-    ExtraSize:=Info.Code and qsLongSizeMask;
-   Inc(DeltaPos, {Size}Info.NameSize);
-   if DeltaPos > Taille then Exit;
-   SetLength(Name, {Size}Info.NameSize);
-   F.ReadBuffer(Name[1], {Size}Info.NameSize);  { read the single name }
-   if Name<>'Data' then Exit;
-
-   if ExtraSize=0 then
-    Size:=Info.Code and qsSizeMask
-   else
-    begin   { read the extra size }
-     Dec(Taille, ExtraSize);
-     J:=Taille-DeltaPos;  { stored at the end of the data block }
-     if J<0 then Exit;
-     F.Seek(J, soFromCurrent);
-     Size:=0;
-     if ExtraSize > SizeOf(Size) then Exit;
-     if F.Read(Size, ExtraSize) < ExtraSize then Exit;
-     F.Seek(-ExtraSize-J, soFromCurrent);  { come back }
+ Taille:=QStreamAddRef(FNode, F);
+ try
+  if Self is QFileObject then
+   ReadFormat:=QFileObject(Self).ReadFormat
+  else
+   ReadFormat:=rf_Private;
+  if ReadFormat>=rf_Default then
+   begin
+     { direct raw access allowed only for objects of type Unknown }
+    QFileObject(Self).FileObjectClassInfo(Info1);
+    if not Info1.Unformatted then
+     Exit;
+    Size:=Taille;
+   end
+  else
+   begin   { special code : try to access the content of the Data= specific directly from the stream }
+    if ReadFormat<>rf_Private then
+     Exit;
+    FileItemCount:=0;
+    try
+     F.ReadBuffer(FileItemCount, 1);
+    except
+     Exit;
     end;
+    if FileItemCount <> 1 then
+     Exit;
+    DeltaPos:=1+SizeOf(TFileItemInfo);
+    if DeltaPos > Taille then
+     Exit;
+    F.ReadBuffer(Info, SizeOf(TFileItemInfo));  { read single file item info }
+    if Info.Code and qsBitSubObject <> 0 then
+     Exit;
 
-   Inc(DeltaPos, Size);
-   if DeltaPos > Taille then Exit;
-  end;
+    {Size:=Info.NameSize;}
+    ExtraSize:=0;
+    if (Info.Code and qsSizeMask) > qsShortSizeMax then
+     ExtraSize:=Info.Code and qsLongSizeMask;
+    Inc(DeltaPos, {Size}Info.NameSize);
+    if DeltaPos > Taille then
+     Exit;
+    SetLength(Name, {Size}Info.NameSize);
+    F.ReadBuffer(Name[1], {Size}Info.NameSize);  { read the single name }
+    if Name<>'Data' then
+     Exit;
+
+    if ExtraSize=0 then
+     Size:=Info.Code and qsSizeMask
+    else
+     begin   { read the extra size }
+      Dec(Taille, ExtraSize);
+      J:=Taille-DeltaPos;  { stored at the end of the data block }
+      if J<0 then
+       Exit;
+      F.Seek(J, soFromCurrent);
+      Size:=0;
+      if ExtraSize > SizeOf(Size) then
+       Exit;
+      if F.Read(Size, ExtraSize) < ExtraSize then
+       Exit;
+      F.Seek(-ExtraSize-J, soFromCurrent);  { come back }
+     end;
+
+    Inc(DeltaPos, Size);
+    if DeltaPos > Taille then
+     Exit;
+   end;
 
   { everything went right; the data is now at the current position in F. }
- S:=F;
- F:=Nil;
- Result:=True;
-
- finally ReleaseStream(F); end;
+  S:=F;
+  F:=Nil;
+  Result:=True;
+ finally
+  ReleaseStream(F);
+ end;
 end;
 
 procedure QObject.LoadedFileLink(const nName: String; ErrorMsg: Integer);
@@ -1945,7 +1988,7 @@ end;
 procedure QObject.Open;
 begin
  FNode:=F.AddRefNode(Taille);
- FFlags:=FFlags or ofSurDisque;
+ FFlags:=FFlags or ofNotLoadedToMemory;
 end;
 
 function RequiredBytesToContainValue(T: Integer) : Integer;
@@ -2209,7 +2252,7 @@ end;
 procedure QObject.SetNode(nNode, ParentNode: TTreeNode);
 begin
  {$IFDEF Debug}
- if FFlags and ofSurDisque <> 0 then Raise InternalE('SetNode');
+ if FFlags and ofNotLoadedToMemory <> 0 then Raise InternalE('SetNode');
  {$ENDIF}
  FNode:=nNode;
  FFlags:=(FFlags or (ofTreeViewSubElement or ofTvNode)) xor Ord(ParentNode=Nil);
@@ -2363,7 +2406,7 @@ function QObject.Clone(nParent: QObject; CopySel: Boolean) : QObject;
 begin
  Result:=QObjectClass(ClassType).Create(Name, nParent);
  try
- {if (FFlags and ofSurDisque <> 0) and not QStreamCanClone(Self, FNode) then
+ {if (FFlags and ofNotLoadedToMemory <> 0) and not QStreamCanClone(Self, FNode) then
    Acces;   { cannot use QStreamClone }
   Result.Flags:=(FFlags and ofCloneFlags) or ofModified;
   if CopySel then
@@ -2371,7 +2414,7 @@ begin
  {Result.Flags2:=FFlags2 and ofCloneFlags2;}
   if Result is QFileObject then
    QFileObject(Result).ReadFormat:=QFileObject(Self).ReadFormat;
-  if FFlags and ofSurDisque = 0 then
+  if FFlags and ofNotLoadedToMemory = 0 then
    Result.CopyAllData(Self, CopySel)  { data already loaded }
   else
    begin
@@ -2722,10 +2765,10 @@ end;
 
 function QObject.IsClosed: Boolean;
 begin
- Result:=Flags and ofTvExpanded = 0;
+ Result:=Flags and ofTreeViewExpanded = 0;
  if Result and (SubElementsC.Count=0) then
   begin
-   Flags:=Flags or ofTvExpanded;
+   Flags:=Flags or ofTreeViewExpanded;
    Result:=False;
   end;
 end;

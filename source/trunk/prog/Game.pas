@@ -24,6 +24,23 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2000/11/16 19:42:17  decker_dk
+- Modified Convex's texture-fileextension alias code, so it won't conflict
+with the rest of the existing code.
+- Introduced a 'TextureFileExtensions' specific, which will contain the
+texture-fileextension aliases, for COnvex's code.
+- Implemented solution for extracting texture-links from .PK3 files
+('.pakfolder' vs '.zipfolder' problem)
+- Replaced the function-names:
+  = Q2TexPath    -> GameTexturesPath
+  = Q3ShaderPath -> GameShadersPath
+- Cleaned up some code here and there.
+- Corrected problem with QTextureFile.LoadPaletteInfo not initializing an
+PGameBuffer totally. Hmm? May have introduced problem with color-palette
+in other windows than the texture-browser-detail.
+- Found the place in QkWAD.PAS where the common size of the textures, in the
+texture-browser, are controlled/set. Useful for 32x32, 128x128 and so scaling.
+
 Revision 1.17  2000/09/18 01:29:43  alexander
 proper indenting
 
@@ -247,7 +264,10 @@ begin
    for I:=FreeGBList.Count-1 downto 0 do
     begin
      B:=PGameBuffer(FreeGBList[I]);
-     {$IFDEF Debug} if B^.RefCount<>0 then Raise InternalE('SizeDownGameFiles'); {$ENDIF}
+{$IFDEF Debug}
+     if B^.RefCount<>0 then
+      Raise InternalE('SizeDownGameFiles');
+{$ENDIF}
      DeleteObject(B^.Palette);
      DeleteObject(B^.PaletteReelle);
     {B^.AddOns.AddRef(-1);}
@@ -295,7 +315,10 @@ begin
    Dec(B^.RefCount);
    if B^.RefCount<=0 then
     begin
-     {$IFDEF Debug} if B^.RefCount<0 then Raise InternalE('DelayDeleteGameBuffer'); {$ENDIF}
+{$IFDEF Debug}
+     if B^.RefCount<0 then
+      Raise InternalE('DelayDeleteGameBuffer');
+{$ENDIF}
      if FreeGBList=Nil then
       FreeGBList:=TList.Create;
      FreeGBList.Add(B);

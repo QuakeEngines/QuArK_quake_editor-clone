@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.6  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -248,7 +251,7 @@ begin
  Q:=SubElements.FindName('Data');
  if Q<>Nil then
   begin
-   if Q.Flags and ofSurDisque <> 0 then
+   if Q.Flags and ofNotLoadedToMemory <> 0 then
     begin
      if Q.DirectDataAccess(S, Result) then
       Exit;

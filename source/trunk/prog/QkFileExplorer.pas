@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/07/18 19:37:59  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.5  2000/07/16 16:34:50  decker_dk
 Englishification
 
@@ -413,7 +416,7 @@ var
    if Roots.IndexOf(Q)<0 then
     begin
      if not TagMe(Q.FParent) then Exit;
-     if Q.FParent.Flags and ofTvExpanded = 0 then
+     if Q.FParent.Flags and ofTreeViewExpanded = 0 then
       ToggleExpanding(Q.FParent);
     end;
    Result:=True;

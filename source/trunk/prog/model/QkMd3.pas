@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2000/10/11 19:01:08  aiv
+Small updates
+
 }
 
 unit QkMd3;
@@ -397,7 +400,7 @@ begin
   with Info do begin
     case Format of
       rf_Siblings: begin  { write the skin files }
-        if Flags and ofSurDisque <> 0 then
+        if Flags and ofNotLoadedToMemory <> 0 then
           Exit;
         Root:=Saving_Root;
         Info.TempObject:=Root;
