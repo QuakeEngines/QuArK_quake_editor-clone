@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.48  2002/03/27 00:24:49  tiglari
+delete/write mapversion 220 specific as needed (removed when map
+ read, added back in if written out in V220 format).
+
 Revision 1.47  2002/03/26 22:20:51  tiglari
 support UseIntegralVertexes flag
 
@@ -45,6 +49,7 @@ Revision 1.41  2001/07/08 02:25:22  tiglari
 change map writing so that integral vertices are used as threepoints in
  bp, valve220 and disabledenhtex mode, forcing with explansion when
  writing fixed point is disabled
+
 
 Revision 1.40  2001/07/07 09:43:05  tiglari
 bp & wc220 formats now write fp coordinates unless this is explicitly disabled
@@ -299,6 +304,14 @@ type
                       function GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;   { 0 - 255 }
                     end;
 
+ { The entire treatment of texture-positiong is somewhat crufty, since
+   the original scheme was to code this into the threepoints, but this
+   creates problems, so they're being coded as a 6-vector specific called
+   tv (the texture axes in the 'axis-base' coordinate system used in
+   GtkRadiant, but with threepoint 0 as the origin, which gets translated
+   in and out of the original scheme, which should presumably be
+   abolished some sunny day. }
+
  TFace     = class(TTexturedTreeMap)
              private
               { données internes pour gestion polyèdre }
@@ -332,6 +345,9 @@ type
                function GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
                procedure SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
                function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               procedure RevertToEnhTex;
+               procedure SimulateEnhTex(var V1, V2, V3: TVect; var Mirror: boolean);
                function LoadData : Boolean;
               {procedure UpdateSpecifics;}
               {function CheckFace : Boolean;}
@@ -355,7 +371,7 @@ type
                procedure AddTo3DScene; override;
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
-             end;
+            end;
 
 const
  TailleBaseSurface = SizeOf(TSurface)-SizeOf(TFVertexTable);
@@ -2295,7 +2311,7 @@ var
    { tiglari }
    rval : Single; { for Value/lightvalue }
    Q: QPixelSet;
-
+   Mirror: Boolean;
    type
      FlagDef = record
       name: Pchar;
@@ -2564,7 +2580,8 @@ var
         Valve220MapParams(Normale, F, S);
        end else if not (MapFormat=BPType) then
        begin
-         ApproximateParams(Normale, P, Params, TextureMirror);
+         SimulateEnhTex(PT[1], PT[2], PT[3], Mirror); {doesn't scale}
+         ApproximateParams(Normale, PT, Params, Mirror); {does scale}
          for I:=1 to 2 do
            S:=S+' '+IntToStr(Round(Params[I]));
          for I:=3 to 5 do
@@ -3382,6 +3399,7 @@ end;
 
  {------------------------}
 
+{ gets the ordinary threepoints, no texture pos crap }
 function TFace.GetThreePoints(var V1, V2, V3: TVect) : Boolean;
 var
  V: array[1..9] of Single;
@@ -3395,23 +3413,117 @@ begin
   end;
 end;
 
-function TFace.GetThreePointsT;
+function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
 begin
- if TextureMirror then
-  Result:=GetThreePoints(V1, V3, V2)
- else
-  Result:=GetThreePoints(V1, V2, V3);
+  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
 end;
 
-procedure TFace.SetThreePointsT;
+{ returns the tv-defined threepoints if they exist, otherwise the
+  standard-ones as flipped by texture-mirror }
+function TFace.GetThreePointsT(var V1, V2, V3: TVect) : boolean;
+var
+  TexV: array[1..6] of Single;
+  P0, P1, P2, T1, T2, T3, TexS, TexT, V : TVect;
 begin
+  if LoadData and GetFloatsSpec('tv',TexV) and GetThreepoints(P0, P1, P2) then
+  begin
+      GetAxisBase(Normale, TexS, TexT);
+      T1:=MakeVect(TexV[1], TexV[2], 0);
+      T2:=MakeVect(TexV[3], TexV[4], 0);
+      T3:=MakeVect(TexV[5], TexV[6], 0);
+      V1:=Tex2FaceCoords(T1, P0, TexS, TexT);
+      V2:=Tex2FaceCoords(T2, P0, TexS, TexT);
+      V3:=Tex2FaceCoords(T3, P0, TexS, TexT);
+      Result:=true;
+      Exit;
+  end;
+  if TextureMirror then
+    Result:=GetThreePoints(V1, V3, V2)
+  else
+    Result:=GetThreePoints(V1, V2, V3);
+end;
+
+{ sets the tv specific }
+procedure TFace.SetThreePointsT(const V1, V2, V3: TVect);
+var
+  TexS, TexT, P0, P1, P2, T1, T2, T3, T : TVect;
+  V: array[1..6] of Single;
+begin
+(*
  if TextureMirror then
   SetThreePoints(V1, V3, V2)
  else
   SetThreePoints(V1, V2, V3);
+*)
+  if Loaddata and GetThreePoints(P0, P1, P2) then
+  begin
+    GetAxisBase(Normale,TexS,TexT);
+    T1:=CoordShift(V1, P0, texS, texT);
+    T2:=CoordShift(V2, P0, texS, texT);
+    T3:=CoordShift(V3, P0, texS, texT);
+    V[1]:=T1.X; V[2]:=T1.Y;
+    V[3]:=T2.X; V[4]:=T2.Y;
+    V[5]:=T3.X; V[6]:=T3.Y;
+    SetFloatsSpec('tv', V);
+  end;
 end;
 
 function TFace.SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+(*  older version, didn't return useful boolean value
+begin
+  SetThreePointsT(V1, V2, V3);
+end;
+*)
+var
+ V1b, V2b: TVect;
+ R: TDouble;
+begin
+ V1b.X:=V2.X-V1.X;
+ V1b.Y:=V2.Y-V1.Y;
+ V1b.Z:=V2.Z-V1.Z;
+ V2b.X:=V3.X-V1.X;
+ V2b.Y:=V3.Y-V1.Y;
+ V2b.Z:=V3.Z-V1.Z;
+ R:=Dot(Cross(V1b, V2b), nNormale);
+ SetThreePointsT(V1, V2, V3);
+ if (R > rien2) or (R < -rien2) then
+   Result:=True
+ else
+   Result:=False;
+end;
+
+(* original etp scheme, kept for comparison etc
+function TFace.SetThreePointsEx_etp(const V1, V2, V3, nNormale: TVect) : Boolean;
+var
+ V1b, V2b: TVect;
+ R: TDouble;
+begin
+ Result:=True;
+ V1b.X:=V2.X-V1.X;
+ V1b.Y:=V2.Y-V1.Y;
+ V1b.Z:=V2.Z-V1.Z;
+ V2b.X:=V3.X-V1.X;
+ V2b.Y:=V3.Y-V1.Y;
+ V2b.Z:=V3.Z-V1.Z;
+ R:=Dot(Cross(V1b, V2b), nNormale);
+ if R > rien2 then
+  begin
+   SetThreePoints(V1, V2, V3);
+   TextureMirror:=False;
+  end
+ else
+  if R < -rien2 then
+   begin
+    SetThreePoints(V1, V3, V2);
+    TextureMirror:=True;
+   end
+  else
+   Result:=False;
+end;
+
+*)
+
+function TFace.SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
 var
  V1b, V2b: TVect;
  R: TDouble;
@@ -3518,6 +3630,7 @@ begin
  V3.Z:=TexP[3].Z+TexP[1].Z;
 end;
 
+
 procedure TFace.SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
 var
  CorrW, CorrH: TDouble;
@@ -3533,6 +3646,69 @@ begin
  P3.Z:=(V3.Z-V1.Z)/CorrH + V1.Z;
  SetThreePointsEx(V1, P2, P3, Normale);
 end;
+
+(* original etp version, kept for comparsion, note call of
+   SetThreePointsEx_etp, which was SetThreePOintsEx
+procedure TFace.SetThreePointsUserTex_etp(const V1, V2, V3: TVect; AltTexSrc: QObject);
+var
+ CorrW, CorrH: TDouble;
+ P2, P3: TVect;
+begin
+ if not LoadData then Exit;
+ UserTexScale(AltTexSrc, CorrW, CorrH);
+ P2.X:=(V2.X-V1.X)/CorrW + V1.X;
+ P2.Y:=(V2.Y-V1.Y)/CorrW + V1.Y;
+ P2.Z:=(V2.Z-V1.Z)/CorrW + V1.Z;
+ P3.X:=(V3.X-V1.X)/CorrH + V1.X;
+ P3.Y:=(V3.Y-V1.Y)/CorrH + V1.Y;
+ P3.Z:=(V3.Z-V1.Z)/CorrH + V1.Z;
+ SetThreePointsEx_etp(V1, P2, P3, Normale);
+end;
+*)
+
+procedure TFace.RevertToEnhTex;
+var
+  TexV: array[1..6] of Single;
+  TexP: array[1..3] of TVect;
+begin
+  if LoadData and GetFloatsSpec('tv',TexV) then
+  begin
+    GetThreePointsT(TexP[1], TexP[2], TexP[3]);
+    SetThreePointsEnhEx(TexP[1], TexP[2], TexP[3], Normale);
+    Specifics.Values['tv']:='';
+  end;
+end;
+
+{ returns etp threepoints and mirror bit }
+procedure TFace.SimulateEnhTex(var V1, V2, V3: TVect; var Mirror: boolean);
+var
+  TexV: array[1..6] of Single;
+  TexP: array[1..3] of TVect;
+  V1b, V2b: TVect;
+  R: TDouble;
+begin
+  if LoadData and GetFloatsSpec('tv',TexV) then
+  begin
+    GetThreePointsT(V1, V3, V2);
+    V1b.X:=V2.X-V1.X;
+    V1b.Y:=V2.Y-V1.Y;
+    V1b.Z:=V2.Z-V1.Z;
+    V2b.X:=V3.X-V1.X;
+    V2b.Y:=V3.Y-V1.Y;
+    V2b.Z:=V3.Z-V1.Z;
+    R:=Dot(Cross(V1b, V2b), Normale);
+    if R > rien2 then
+    begin
+      Mirror:=False;
+    end
+  end
+  else
+  begin
+    GetThreePoints(V1, V3, V2);
+    Mirror:=TextureMirror;
+  end;
+end;
+
 
 {function TFace.InitVect : Boolean;
 begin
@@ -4055,7 +4231,7 @@ end;
 
 procedure TFace.Deplacement(const PasGrille: TDouble);
 var
- Pt: array[1..3] of TVect;
+ Pt, PTex: array[1..3] of TVect;
  I: Integer;
  OldOrg, NewOrg, InfoClic: TVect;
  f: TDouble;
@@ -4112,28 +4288,35 @@ begin
          end;
         end;
     end;
+   GetThreePointsT(PTex[1],PTex[2],PTex[3]);
    for I:=1 to 3 do
     begin
      if (g_DrawInfo.ModeDeplacement > mdDisplacementGrid)
      and (g_DrawInfo.ModeDeplacement <> mdInflate) then
       begin
-       Pt[I].X:=Pt[I].X-InfoClic.X;
-       Pt[I].Y:=Pt[I].Y-InfoClic.Y;
-       Pt[I].Z:=Pt[I].Z-InfoClic.Z;
+       Pt[I]:=VecDiff(Pt[I],InfoClic);
+       PTex[I]:=VecDiff(PTex[I],InfoClic);
        if g_DrawInfo.ModeDeplacement in [mdLinear, mdLineaireCompat] then
-        TransformationLineaire(Pt[I]);
+       begin
+         TransformationLineaire(Pt[I]);
+         TransformationLineaire(PTex[I]);
+       end
       end;
-     Pt[I].X:=Pt[I].X+InfoClic.X;
-     Pt[I].Y:=Pt[I].Y+InfoClic.Y;
-     Pt[I].Z:=Pt[I].Z+InfoClic.Z;
+     Pt[I]:=VecSum(Pt[I],InfoClic);
+     PTex[I]:=VecSum(PTex[I],InfoClic);
     end;
+{ Shouldn't be needed because we're already
+   adjusting the texture 
    if InverseOrientation then
     begin
      SetThreePoints(Pt[1], Pt[3], Pt[2]);
      TextureMirror:=not TextureMirror;
     end
    else
+}
     SetThreePoints(Pt[1], Pt[2], Pt[3]);
+   { adjust texture }
+   SetThreePointsT(PTex[1], PTex[2], PTex[3]);
   end;
 end;
 
@@ -4809,6 +4992,16 @@ begin
  end;
 end;
 
+function fRevertToEnhTex(self, args: PyObject) : PyObject; cdecl;
+begin
+  with QkObjFromPyObj(self) as TFace do
+   begin
+    Acces;
+    RevertToEnhTex;
+   end;
+  Result:=PyNoResult;
+end;
+
 function fDistortion(self, args: PyObject) : PyObject; cdecl;
 var
  v1, v2: PyVect;
@@ -4906,10 +5099,6 @@ begin
  end;
 end;
 
-function Tex2FaceCoords(P, P0, TexS, TexT : TVect) : TVect;
-begin
-  Result:=VecSum(P0,VecSum(VecScale(P.X,TexS),VecScale(P.Y,TexT)));
-end;
 
 
 function fAxisBase(self, args: PyObject) : PyObject; cdecl;
@@ -4998,13 +5187,14 @@ begin
 end;
 
 const
- FaceMethodTable: array[0..6] of TyMethodDef =
+ FaceMethodTable: array[0..7] of TyMethodDef =
   ((ml_name: 'verticesof';    ml_meth: fVerticesOf;    ml_flags: METH_VARARGS),
    (ml_name: 'distortion';    ml_meth: fDistortion;    ml_flags: METH_VARARGS),
    (ml_name: 'threepoints';   ml_meth: fThreePoints;   ml_flags: METH_VARARGS),
    (ml_name: 'setthreepoints';ml_meth: fSetThreePoints;ml_flags: METH_VARARGS),
    (ml_name: 'swapsides';     ml_meth: fSwapSides;     ml_flags: METH_VARARGS),
    (ml_name: 'axisbase';     ml_meth: fAxisBase;  ml_flags: METH_VARARGS),
+   (ml_name: 'enhrevert';     ml_meth: fRevertToEnhTex;  ml_flags: METH_VARARGS),
    (ml_name: 'extrudeprism';  ml_meth: fExtrudePrism;  ml_flags: METH_VARARGS));
 
 function TFace.PyGetAttr(attr: PChar) : PyObject;
