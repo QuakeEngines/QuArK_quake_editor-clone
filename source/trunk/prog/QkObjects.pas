@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2001/02/02 08:17:57  tiglari
+updated version #
+
 Revision 1.40  2001/01/29 19:24:58  tiglari
 removed priorityadd, fixed bug in locatesubelement
 
@@ -2035,6 +2038,7 @@ begin
       Inc(ItemInfo);
      end;
     ProgressIndicatorIncrement;
+    if WriteSubElements then
     for I:=0 to SubElements.Count-1 do
      begin
       Q:=SubElements[I];
