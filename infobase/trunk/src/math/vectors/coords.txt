@@ -17,8 +17,10 @@ In QuArK python, the dot product is represented
 by the '*' symbol, so that if u and v are vectors,
 'u*v' will be their dot product, a number.  If you
 crank through the definition, you can work out that
-the dot product obeys applicable instances of the
-associative and commutative laws, such as:
+the dot product obeys many (but not quite all)
+applicable instances of the
+associative and commutative laws, such as (where u and v are
+vectors, and a is a number):
 <code>
 u*v = v*u
 a*(u*v) = (a*u)*v
@@ -110,11 +112,60 @@ using the dot product:
 <code>
 proj(u,v) = ((u*v)/abs(u))*u
 </code>
-Now suppose u happens to be of length 1.  Then abs(u) is
-1, and it follows that proj(u*v) = (u*v)*u.  But this
-means that if u is coordinate axis of a basis, then u*v
-is v's coordinate for that axis, w.r.t. the basis.
+The ability to compute these projections is something we
+can put to use in various ways. 
 
+Suppose we have a point v, and a plane defined by a point
+v and a normal vector n, and what we want to do is to
+'project' the point v to the plane along the plane's normal,
+that is, find a vector that is perpendicular to the
+plane that will take v onto a point in the plane (this
+might be part of a routine to attach an object to a face,
+for example).  Now we already have one vector (p-v) that
+will take p onto the plane, but this isn't the one we
+want because it doesn't have to be perpendicular to the
+plane.  But we can fix this by projecting (p-v) onto
+the normal.  The resulting vector will be parallel to
+the normal and therefore perpendicular to the plane,
+and the line connecting its end to v will also be
+perpendicular to the normal, so its satisfies the test
+above for being on the plane (you should try to visualize
+this too, to see intuitively that it makes sense).
+
+And since plane normals, including the output of face.normal
+in QuArK Python, are by convention of langth 1, we can drop
+the abs(u) term from the computation, and find the vector
+proj taking v onto the plane by computing:
+<code>
+proj = ((p-v)*n)*n
+</code>
+And if we want the actual point, we just add proj to v.
+
+A more general version of this is to project a point to a
+plane along any normal; that's what the procedure projectpointtoplane
+in quarkpy.maputils does.  The idea behind that code is to take
+two dot products of the plane normal, one with the vector from
+the point we're projecting from to the point that defines the
+plane, the other with the vector we're projecting along.  These
+are used to compute a ratio, by which the 'along' vector is
+multiplied to produce the projection vector.
+
+A final, easier, example is the 'perptonormthru' procedure,
+also in quarkpy.maputils.  Here the idea is that we're given
+a 'source' point, a (sort of) 'destination' point, and a normal
+vector thru the destination point.  The idea is to find vector
+that's perpendicular to the normal, going from source to a point
+on the line of that normal (so the destination)
+is only a sort-of destination.  So the idea here is to compute
+the projection of (source-dest) onto norm, then subtract that
+from (source-dest) to get the desired answer.  This procedure is
+used in various ways, for example in computing the circumference
+of prism-shaped brushes with irregular ends in the texture-wrapping
+code.
+
+And finally we come to the most general and important application.
+Suppose u is coordinate axis of a basis. Then u*v
+is v's coordinate for that axis, w.r.t. the basis.
 So out of all of this we have gotten a way to compute the
 coordinates of a vector w.r.t a new coordinate system.
 This is very convenient.  Suppose we've worked out the
