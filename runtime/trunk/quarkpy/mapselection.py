@@ -143,18 +143,21 @@ shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    prevItem.state=nextItem.state=parentItem.state=qmenu.disabled
-    removeItem.state=qmenu.disabled
+    prevItem.state=nextItem.state=parentItem.state=childItem.state=qmenu.disabled
+    freezeItem.state = unfreezeItem.state = removeItem.state=qmenu.disabled
     if editor is not None:
-        if editor.layout.explorer.uniquesel is not None:
-            prevItem.state=nextItem.state=parentItem.state=qmenu.normal
+        uniquesel = editor.layout.explorer.uniquesel 
+        if uniquesel is not None:
+            prevItem.state=nextItem.state=qmenu.normal
+            if len(uniquesel.subitems)>0:
+                childItem.state = qmenu.normal
+            if uniquesel.treeparent:
+                parentItem.state=qmenu.normal
             removeItem.state=qmenu.normal
-        if getAttr(editor,'frozenselection') is None:
-            freezeItem.state=qmenu.normal
-            unfreezeItem.state=qmenu.disabled
-        else:
-            freezeItem.state=qmenu.disabled
-            unfreezeItem.state=qmenu.normal
+            if getAttr(editor,'frozenselection') is None:
+                freezeItem.state=qmenu.normal
+            else:
+                unfreezeItem.state=qmenu.normal
 
 
 def SelectionMenu():
@@ -172,6 +175,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.10  2003/03/25 09:56:49  cdunde
+# To correct conflict and add infobase links and update
+#
 # Revision 1.9  2003/03/25 08:28:27  tiglari
 # fix enabler and select parent logic
 #
