@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.31  2000/06/10 10:00:35  alexander
+//fixed: switching to kingpin game when selecting addons or output dirs in the SoF config dialog
+//
 //Revision 1.30  2000/06/07 22:34:27  alexander
 //changed: NeedQCSG config entry and replaced it
 //by a SpecialCustomQuakeMenu entry (which specifies the form name)
@@ -505,7 +508,7 @@ QQRKSRC1
         Form = "GameKingPin"
         TextureDef = "bricks/b_cp_v10x"
         TriggerTextureDef = "common/0_trigger"
-	OriginTextureDef = "common/0_origin"
+        OriginTextureDef = "common/0_origin"
         LightFactor = '0.90000' //adjust radius around light that it shows how far the light goes
         3DLight = '512'
         walTrick = "1"
@@ -2546,7 +2549,7 @@ QQRKSRC1
     dup cap:form =
     {
       inverse: = {Txt="&" Typ="X"
-               Hint = "if checked, upper surface of curve is outer"}
+               Hint = "if checked, concave surface of curve is outer and has texture"}
       lower: = {Txt="&" Typ="X"
                Hint = "if checked, the whole thing is upside-down"}
       thick: = {Txt ="&" Typ="EF1"
@@ -2555,7 +2558,19 @@ QQRKSRC1
                Hint = "if chcked, front and back are open"}
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
-
+    }
+    dup bevel:form =
+    {
+      inverse: = {Txt="&" Typ="X"
+               Hint = "if checked, concave surface of curve is outer and has texture"}
+      left: = {Txt="&" Typ="X"
+               Hint = "if checked, the whole thing is upside-down"}
+      thick: = {Txt ="&" Typ="EF1"
+                Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      open: = {Txt="&" Typ="X"
+               Hint = "if chcked, front and back are open"}
+      macro: = {Txt = "&" Typ = "ESR"
+                 Hint = "This one is not for you, Saruman"}
     }
     QuakeCtx:form =     // form that applies when editing .qctx objects
     {
