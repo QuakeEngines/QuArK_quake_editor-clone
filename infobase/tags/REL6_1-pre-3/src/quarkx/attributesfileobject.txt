@@ -1,0 +1,45 @@
+title: Attributes common to Internal File objects
+author: Armin rigo
+format: html
+
+<p>All Internal File Objects have the following additionnal attributes.</p>
+
+<table border=1 cellspacing=0 cellpadding=4>
+
+<tr><td class="doccode">
+filename
+</td><td>
+Name of the file, if this object has been loaded directly from a file or if it will be stored in a file. Should include the full path.
+</td></tr>
+
+<tr><td class="doccode">
+tempfilename
+</td><td>
+Name of a temporary file where this data can be saved (for Auto-Save). The file name is based on the pointer address of the object: multiple reads of <span class="doccode">tempfilename</span> will return the same value, and different objects will never have the same <span class="doccode">tempfilename</span>.
+</td></tr>
+
+<tr><td class="doccode">
+savefile()<br>
+savefile(path)<br>
+savefile(path,astext)
+</td><td>
+Saves the file. If no argument is given, <span class="doccode">filename</span> must be set before. If <span class="doccode">path</span> is specified, saves a copy of the file into <span class="doccode">path</span> (which should be a full path and file name). If <span class="doccode">astext</span> is specified, it overrides the current file format and specifies whether the file must be saved in full-text or binary format.
+</td></tr>
+
+<tr><td class="doccode">
+conversion()<br>
+conversion(type)
+</td><td>
+Conversion between different object types. Mostly used for conversions between textures and images. With no argument, returns a list of all types this object can be converted to, including the current type (each one is a string giving the extension of the corresponding files with the dot); with a type argument, it attemps to convert the object to the given type.
+</td></tr>
+
+</table>
+
+<p>Subclasses of Internal File Objects don’t have more attributes. Most information is stored as Specifics-Args pairs and in subitems. Three exceptions:
+
+<p>
+<ol>
+<li>.BSP file objects have a few attributes required to load them in the map editor. See <span class="doccode">mapeditor.py</span> for more information.
+<li>.PAK and .PAKFOLDER file objects have a method <span class="doccode">extract</span>, which extracts all files and subfolders into the directory given as parameter, which is created if required, as well as a method <span class="doccode">getfolder</span> that creates a given path inside the .PAK file and returns the resulting .PAKFOLDER object.
+<li>Textures have an attribute <span class="doccode">disktexture</span> that loads and returns an actual texture object if the first texture were just a link.
+</ol>
