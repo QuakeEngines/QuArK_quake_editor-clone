@@ -30,6 +30,10 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.2  2002/05/23 22:45:15  tiglari
+//remove moddir .. from q3map command line; this lets it compile for both earlier
+// and later versions of q3map (moddir doesn't seem to work for some of them)
+//
 //Revision 1.192.2.1  2002/05/19 05:00:38  tiglari
 //Add some hot keys (absence thereof construed elastically as bugs)
 //
@@ -634,7 +638,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3 rc1"
+      Version = "QuArK 6.3 rc2"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
