@@ -214,7 +214,7 @@ implementation
 
 uses Setup, QkMapPoly, Undo, FormCfg,
      QkMdl, Game, QkMacro, Ed3DFX, Quarkx, PyMath,
-     PyMapView, PyObjects, QkImages;
+     PyMapView, PyObjects, QkImages, Bezier;
 
  {------------------------}
 

@@ -125,6 +125,8 @@ type
                       procedure FindTextures(SortedList: TStringList); override;
                       function ReplaceTexture(const Source, Dest: String; U: Boolean) : Integer; override;
                       property TextureMirror: Boolean read GetTextureMirror write SetTextureMirror;
+                      function PyGetAttr(attr: PChar) : PyObject; override;
+                      function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
                     end;
 
  TFace     = class(TTexturedTreeMap)
@@ -184,7 +186,6 @@ type
                function GetFaceOpacity(Default: Integer{; var Info: TTexOpacityInfo}) : Integer;   { 0 - 255 }
                procedure AnalyseClic(Liste: PyObject); override;
                function PyGetAttr(attr: PChar) : PyObject; override;
-               function PySetAttr(attr: PChar; value: PyObject) : Boolean; override;
              end;
 
 const
@@ -4425,12 +4426,6 @@ begin
           Result:=PyNoResult;
          Exit;
         end;
-  't': if StrComp(attr, 'texturename') = 0 then
-        begin
-         Acces;
-         Result:=PyString_FromString(PChar(NomTex));
-         Exit;
-        end;
   'v': if StrComp(attr, 'vertices') = 0 then
         begin
          S:=FaceOfPoly;
@@ -4455,7 +4450,21 @@ begin
  end;
 end;
 
-function TFace.PySetAttr(attr: PChar; value: PyObject) : Boolean;
+function TTexturedTreeMap.PyGetAttr(attr: PChar) : PyObject;
+begin
+ Result:=inherited PyGetAttr(attr);
+ if Result<>Nil then Exit;
+ case attr[0] of
+  't': if StrComp(attr, 'texturename') = 0 then
+        begin
+         Acces;
+         Result:=PyString_FromString(PChar(NomTex));
+         Exit;
+        end;
+ end;
+end;
+
+function TTexturedTreeMap.PySetAttr(attr: PChar; value: PyObject) : Boolean;
 var
  P: PChar;
 begin
