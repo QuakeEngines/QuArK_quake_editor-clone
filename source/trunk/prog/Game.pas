@@ -20,7 +20,11 @@ Contact the author Armin Rigo by e-mail: arigo@planetquake.com
 or by mail: Armin Rigo, La Cure, 1854 Leysin, Switzerland.
 See also http://www.planetquake.com/quark
 **************************************************************************)
-
+{
+$Header$
+ ----------- REVISION HISTORY ------------
+$Log$
+}
 unit Game;
 
 interface
@@ -492,6 +496,7 @@ var
  NomChemin, NomComplet: String;
  Alias: String;
  NoMoreAlias: Boolean;
+ TempResult: QFileObject;
 
 (*procedure FoundInFile(Q: QObject);
   var
@@ -527,14 +532,20 @@ begin
        GameFiles.Add(Result);
        GameFiles.Sort(ByFileName);
       end;
-     Result:=Result.FindFile(FileName);
-     if Result<>Nil then
-      Exit;   { found it }
+     TempResult:=Result.FindFile(FileName);
+     if TempResult<>Nil then
+      begin
+       Result:=TempResult;
+       Exit;   { found it }
+      end;
      if Alias<>'' then
       begin   { look for the alias }
-       Result:=Result.FindFile(Alias);
-       if Result<>Nil then
-        Exit;   { found it }
+       TempResult:=Result.FindFile(Alias);
+       if TempResult<>Nil then
+        begin
+         Result:=TempResult;
+         Exit;   { found it as alias }
+        end;
       end;
     end;
 
