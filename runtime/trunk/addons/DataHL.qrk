@@ -20013,12 +20013,12 @@ values=
         curtain2.wl = { t_cs_cs_747 = ! }
         curtain3.wl = { t_cs_cs_747 = ! }
         curtain4.wl = { t_cs_cs_747 = ! }
-        freezer_bx3.wl = { t_cs_cs_747 = ! }
+//        freezer_bx3.wl = { t_cs_cs_747 = ! }
         cstrike_airpl2.wl = { t_cs_cs_747 = ! }
         curtain1_256.wl = { t_cs_cs_747 = ! }
-        freezer_bx5.wl = { t_cs_cs_747 = ! }
+//        freezer_bx5.wl = { t_cs_cs_747 = ! }
         freezer_bx3_x4.wl = { t_cs_cs_747 = ! }
-        freezer_bx9.wl = { t_cs_cs_747 = ! }
+//        freezer_bx9.wl = { t_cs_cs_747 = ! }
         freezer_bx5_x2.wl = { t_cs_cs_747 = ! }
         freezer_bx9_x16.wl = { t_cs_cs_747 = ! }
         overhead_x4.wl = { t_cs_cs_747 = ! }
