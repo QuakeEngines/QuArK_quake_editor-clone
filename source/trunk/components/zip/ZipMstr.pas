@@ -3647,7 +3647,7 @@ begin
    OldErrMode := SetErrorMode( SEM_FAILCRITICALERRORS );   // Turn off critical errors:
 
    // Since v1.52c no exception will be raised here; moved to List() itself.
-   if NOT GetVolumeInformation( pChar( FDrive ), VolNameAry, NamLen, @FDiskSerial, SysLen, SysFlags, nil, 0 ) then
+   if NOT GetVolumeInformation( pChar( FDrive ), VolNameAry, NamLen, @FDiskSerial, DWORD(SysLen), SysFlags, nil, 0 ) then
    begin
       // W'll get this if there is a disk but it is not or wrong formatted
       // so this disk can only be used when we also want formatting.
