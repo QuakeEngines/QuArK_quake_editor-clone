@@ -27,6 +27,8 @@ QQRKSRC1
 //   This file is maintained by Decker, send bug-reports to decker@post1.tele.dk.
 //
 // History
+// 2000-03-14   [CS] Updated texture-links for Counter-Strike beta6
+//
 // 2000-02-10   [CS] Added info_vip_start
 //
 // 2000-01-30   [CS] Added four new entities for Counter-Strike (Thanks to Necro & Lestat)
@@ -18487,32 +18489,157 @@ QQRKSRC1
     Root = "CounterStrike Textures.qtxfolder"
 
 	// Raw definition of WAD3 files
-	t_cs_ajamedia:incl = { s = "cstrike" d = "ajamedia" h = "C" }
-	t_cs_cs_assault:incl = { s = "cstrike" d = "cs_assault" h = "C" }
-//REDUNDANT	t_cs_cs_dest:incl = { s = "cstrike" d = "cs_dest" h = "C" }
-	t_cs_cs_dust:incl = { s = "cstrike" d = "cs_dust" h = "C" }
-	t_cs_cstrike:incl = { s = "cstrike" d = "cstrike" h = "C" }
 	t_cs_decals:incl = { s = "cstrike" d = "decals" h = "C" }
+	t_cs_cstrike:incl = { s = "cstrike" d = "cstrike" h = "C" }
+	t_cs_cs_assault:incl = { s = "cstrike" d = "cs_assault" h = "C" }
+    t_cs_cs_747:incl = { s = "cstrike" d = "cs_747" h = "C" }
+    t_cs_as_riverside:incl = { s = "cstrike" d = "as_riverside" h = "C" }
+	t_cs_cs_dust:incl = { s = "cstrike" d = "cs_dust" h = "C" }
 	t_cs_jos:incl = { s = "cstrike" d = "jos" h = "C" }
+    t_cs_2maps:incl = { s = "cstrike" d = "2maps" h = "C" }
+    t_cs_tswad:incl = { s = "cstrike" d = "tswad" h = "C" }
 	t_cs_n0th1ng:incl = { s = "cstrike" d = "n0th1ng" h = "C" }
-	t_cs_yurik:incl = { s = "cstrike" d = "yurik" h = "C" }
-	t_cs_mr_deth:incl = { s = "cstrike" d = "mr_deth" h = "C" }
-	t_cs_prodigy:incl = { s = "cstrike" d = "prodigy" h = "C" }
-	t_cs_cs_hideout:incl = { s = "cstrike" d = "cs_hideout" h = "C" }
 	t_cs_cs_bdog:incl = { s = "cstrike" d = "cs_bdog" h = "C" }
+    t_cs_Es_frantic:incl = { s = "cstrike" d = "Es_frantic" h = "C" }
+    t_cs_ajamedia:incl = { s = "cstrike" d = "ajamedia" h = "C" }
+	t_cs_prodigy:incl = { s = "cstrike" d = "prodigy" h = "C" }
 
     CounterStrike Textures.qtxfolder =
     {
-      ajamedia.txlist =
+      decals.txlist =
       {
-        becks.wl = { t_cs_ajamedia = ! }
-        weaver.wl = { t_cs_ajamedia = ! }
+        {target.wl = { t_cs_decals = ! }
+        {target2.wl = { t_cs_decals = ! }
+        {hrpoint.wl = { t_cs_decals = ! }
+      }
+      cstrike.txlist =
+      {
+        +0CSTRIKE_IE1LT.wl = { t_cs_cstrike = ! }
+        +0CSTRIKE_SE4SW.wl = { t_cs_cstrike = ! }
+        +ACSTRIKE_IE1LT.wl = { t_cs_cstrike = ! }
+        +ACSTRIKE_SE4SW.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_CA2ST.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_FJ2DK.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_FR4CC.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_MB2GG.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_ME2RI.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_MH5TL.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_MJ2SG.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_MR2DR.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_MR2ST.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_WB6BK.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_WE1MT.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_WE4AL.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_WK4ST.wl = { t_cs_cstrike = ! }
+        -0CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_CA2ST.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_FJ2DK.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_FR4CC.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_MB2GG.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_ME2RI.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_MH5TL.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_MJ2SG.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_MR2DR.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_MR2ST.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_WB6BK.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_WE1MT.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_WE4AL.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_WK4ST.wl = { t_cs_cstrike = ! }
+        -1CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_MB2GG.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_WE1MT.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_WK4ST.wl = { t_cs_cstrike = ! }
+        -2CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
+        -3CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
+        -3CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
+        -3CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        -3CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
+        -3CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
+        -4CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
+        -4CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        -4CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
+        -4CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
+        -5CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        -5CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
+        -6CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
+        CSTRIKE_CE2XCNG.wl = { t_cs_cstrike = ! }
+        CSTRIKE_CH3TILE.wl = { t_cs_cstrike = ! }
+        CSTRIKE_CJ2BEAM.wl = { t_cs_cstrike = ! }
+        CSTRIKE_CR2PLN.wl = { t_cs_cstrike = ! }
+        CSTRIKE_DE6HORZ.wl = { t_cs_cstrike = ! }
+        CSTRIKE_DE6VERT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_DJ2OLD.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FE2GTNG.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FE2SQRS.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FE4CRGD.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FH4WTTL.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FJ2DOCK.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FP2DARK.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FP2LGHT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FP2MED.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FT2DIRT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FT2MUD.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FT3GRAS.wl = { t_cs_cstrike = ! }
+        CSTRIKE_FT4APHT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME1CLNG.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME1GRAT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME2DRST.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME2RSTW.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME4DCLN.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME4GREB.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME4METL.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME4RADR.wl = { t_cs_cstrike = ! }
+        CSTRIKE_ME7CAUT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_MJ3SHRU.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE1BXSD.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE1BXTP.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE1LGBM.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE1SMBM.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE2STRR.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE2VENT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE4FNVT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE4PNL.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE4PNLH.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE4VENT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE6TNKF.wl = { t_cs_cstrike = ! }
+        CSTRIKE_OE6TNKS.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6CLMN.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6FRAM.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6HEDR.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6PLN1.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6PLN2.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6PLN3.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6PLN4.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6WND.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WB6WND2.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WE2PPWL.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WE2RIBD.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WG1OFCE.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR4CCDR.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR4CCGG.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR4CCPN.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR4CCVT.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR4CCWD.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR4RGH.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR7PLN.wl = { t_cs_cstrike = ! }
+        CSTRIKE_WR7PLNF.wl = { t_cs_cstrike = ! }
+        {CSTRIKE_LE6LAD.wl = { t_cs_cstrike = ! }
+        {CSTRIKE_OE4VEN.wl = { t_cs_cstrike = ! }
       }
       cs_assault.txlist =
       {
-        bcontainer1.wl = { t_cs_cs_assault = ! }
-        bcontainer2.wl = { t_cs_cs_assault = ! }
-        bcontainer3.wl = { t_cs_cs_assault = ! }
         c_bldg1_2.wl = { t_cs_cs_assault = ! }
         c_bldg1_3.wl = { t_cs_cs_assault = ! }
         c_bldg2_1.wl = { t_cs_cs_assault = ! }
@@ -18532,348 +18659,469 @@ QQRKSRC1
         c_viewscreen1.wl = { t_cs_cs_assault = ! }
         c_viewscreen2.wl = { t_cs_cs_assault = ! }
         c_viewscreen3.wl = { t_cs_cs_assault = ! }
+        bcontainer1.wl = { t_cs_cs_assault = ! }
+        bcontainer2.wl = { t_cs_cs_assault = ! }
+        bcontainer3.wl = { t_cs_cs_assault = ! }
+      }
+      cs_747.txlist =
+      {
+        engine.wl = { t_cs_cs_747 = ! }
+        pl_out_tailleft.wl = { t_cs_cs_747 = ! }
+        sidelogo.wl = { t_cs_cs_747 = ! }
+        sidelogoleft.wl = { t_cs_cs_747 = ! }
+        tailwing.wl = { t_cs_cs_747 = ! }
+        tailwingleft.wl = { t_cs_cs_747 = ! }
+        pl_out_shell4a.wl = { t_cs_cs_747 = ! }
+        pl_out_taila.wl = { t_cs_cs_747 = ! }
+        planegen1.wl = { t_cs_cs_747 = ! }
+        planewing.wl = { t_cs_cs_747 = ! }
+        planewingleft.wl = { t_cs_cs_747 = ! }
+        +0cpgadg.wl = { t_cs_cs_747 = ! }
+        +0pl_light1.wl = { t_cs_cs_747 = ! }
+        +1cpgadg.wl = { t_cs_cs_747 = ! }
+        +2cpgadg.wl = { t_cs_cs_747 = ! }
+        +3cpgadg.wl = { t_cs_cs_747 = ! }
+        +Apl_light1.wl = { t_cs_cs_747 = ! }
+        -0a747plane.wl = { t_cs_cs_747 = ! }
+        -0a747plane_x4.wl = { t_cs_cs_747 = ! }
+        -1a747plane.wl = { t_cs_cs_747 = ! }
+        -1a747plane_x4.wl = { t_cs_cs_747 = ! }
+        747BR.wl = { t_cs_cs_747 = ! }
+        747BR_X4.wl = { t_cs_cs_747 = ! }
+        747BRM.wl = { t_cs_cs_747 = ! }
+        747BRW.wl = { t_cs_cs_747 = ! }
+        747DOOR.wl = { t_cs_cs_747 = ! }
+        747inv_block.wl = { t_cs_cs_747 = ! }
+        747inv_block2.wl = { t_cs_cs_747 = ! }
+        747inv_line.wl = { t_cs_cs_747 = ! }
+        747inv_line2.wl = { t_cs_cs_747 = ! }
+        747lnv.wl = { t_cs_cs_747 = ! }
+        747lnv2.wl = { t_cs_cs_747 = ! }
+        747overhead.wl = { t_cs_cs_747 = ! }
+        747planebank_x4.wl = { t_cs_cs_747 = ! }
+        747planeblank.wl = { t_cs_cs_747 = ! }
+        747wall.wl = { t_cs_cs_747 = ! }
+        747wall_x4.wl = { t_cs_cs_747 = ! }
+        aircarpet.wl = { t_cs_cs_747 = ! }
+        aircarpet_256.wl = { t_cs_cs_747 = ! }
+        babtech_ceil01.wl = { t_cs_cs_747 = ! }
+        babtech_block4.wl = { t_cs_cs_747 = ! }
+        blueback_x3.wl = { t_cs_cs_747 = ! }
+        carpet.wl = { t_cs_cs_747 = ! }
+        blueback_x4.wl = { t_cs_cs_747 = ! }
+        c3a2a_w3.wl = { t_cs_cs_747 = ! }
+        carpet2.wl = { t_cs_cs_747 = ! }
+        c3a2a_w3_x2.wl = { t_cs_cs_747 = ! }
+        chair1_x2.wl = { t_cs_cs_747 = ! }
+        chair1_x3.wl = { t_cs_cs_747 = ! }
+        carpet_256.wl = { t_cs_cs_747 = ! }
+        chair2_x2.wl = { t_cs_cs_747 = ! }
+        cockpitgadgets.wl = { t_cs_cs_747 = ! }
+        carpet2_256.wl = { t_cs_cs_747 = ! }
+        chair1_x4.wl = { t_cs_cs_747 = ! }
+        chair2_x3.wl = { t_cs_cs_747 = ! }
+        chair2_x4.wl = { t_cs_cs_747 = ! }
+        cstrike_airpl1.wl = { t_cs_cs_747 = ! }
+        curtain1.wl = { t_cs_cs_747 = ! }
+        curtain2.wl = { t_cs_cs_747 = ! }
+        curtain3.wl = { t_cs_cs_747 = ! }
+        curtain4.wl = { t_cs_cs_747 = ! }
+        freezer_bx3.wl = { t_cs_cs_747 = ! }
+        cstrike_airpl2.wl = { t_cs_cs_747 = ! }
+        curtain1_256.wl = { t_cs_cs_747 = ! }
+        freezer_bx5.wl = { t_cs_cs_747 = ! }
+        freezer_bx3_x4.wl = { t_cs_cs_747 = ! }
+        freezer_bx9.wl = { t_cs_cs_747 = ! }
+        freezer_bx5_x2.wl = { t_cs_cs_747 = ! }
+        freezer_bx9_x16.wl = { t_cs_cs_747 = ! }
+        overhead_x4.wl = { t_cs_cs_747 = ! }
+        pb_bag_b5.wl = { t_cs_cs_747 = ! }
+        pl_bad_s2.wl = { t_cs_cs_747 = ! }
+        pl_bag_5.wl = { t_cs_cs_747 = ! }
+        pl_bag_b.wl = { t_cs_cs_747 = ! }
+        pl_bag_b2.wl = { t_cs_cs_747 = ! }
+        pl_bag_b3.wl = { t_cs_cs_747 = ! }
+        pl_bag_s.wl = { t_cs_cs_747 = ! }
+        pl_baggage.wl = { t_cs_cs_747 = ! }
+        pl_black_sq.wl = { t_cs_cs_747 = ! }
+        pl_blue_sq.wl = { t_cs_cs_747 = ! }
+        pl_brd1.wl = { t_cs_cs_747 = ! }
+        pl_brd2.wl = { t_cs_cs_747 = ! }
+        pl_carpet.wl = { t_cs_cs_747 = ! }
+        pl_carpet2.wl = { t_cs_cs_747 = ! }
+        pl_carpet3.wl = { t_cs_cs_747 = ! }
+        pl_cupb1.wl = { t_cs_cs_747 = ! }
+        pl_food.wl = { t_cs_cs_747 = ! }
+        pl_mov2.wl = { t_cs_cs_747 = ! }
+        pl_out_shell_dr.wl = { t_cs_cs_747 = ! }
+        pl_food_block.wl = { t_cs_cs_747 = ! }
+        pl_out_shell1.wl = { t_cs_cs_747 = ! }
+        pl_out_shell2.wl = { t_cs_cs_747 = ! }
+        pl_out_shell3.wl = { t_cs_cs_747 = ! }
+        pl_out_shell4.wl = { t_cs_cs_747 = ! }
+        pl_out_shell5.wl = { t_cs_cs_747 = ! }
+        pl_out_tail.wl = { t_cs_cs_747 = ! }
+        pl_out_wing1.wl = { t_cs_cs_747 = ! }
+        pl_redc_4.wl = { t_cs_cs_747 = ! }
+        pl_rrw.wl = { t_cs_cs_747 = ! }
+        pl_rubber.wl = { t_cs_cs_747 = ! }
+        pl_rrw_stripe.wl = { t_cs_cs_747 = ! }
+        pl_rw.wl = { t_cs_cs_747 = ! }
+        pl_rw_2.wl = { t_cs_cs_747 = ! }
+        pl_rw_3.wl = { t_cs_cs_747 = ! }
+        pl_rw_stripe.wl = { t_cs_cs_747 = ! }
+        pl_rw2.wl = { t_cs_cs_747 = ! }
+        pl_seat_b.wl = { t_cs_cs_747 = ! }
+        pl_seat_f.wl = { t_cs_cs_747 = ! }
+        pl_seat_s.wl = { t_cs_cs_747 = ! }
+        pl_seat_t.wl = { t_cs_cs_747 = ! }
+        pl_stairs1.wl = { t_cs_cs_747 = ! }
+        pl_wind_i4.wl = { t_cs_cs_747 = ! }
+        pl_wnd_i.wl = { t_cs_cs_747 = ! }
+        pl_wnd_i2.wl = { t_cs_cs_747 = ! }
+        plane1.wl = { t_cs_cs_747 = ! }
+        plane1_x4.wl = { t_cs_cs_747 = ! }
+        plane2.wl = { t_cs_cs_747 = ! }
+        plane2_x4.wl = { t_cs_cs_747 = ! }
+        planechair1.wl = { t_cs_cs_747 = ! }
+        planechair2.wl = { t_cs_cs_747 = ! }
+        planechairback1.wl = { t_cs_cs_747 = ! }
+        planechairback2.wl = { t_cs_cs_747 = ! }
+        planered.wl = { t_cs_cs_747 = ! }
+        planeseatsideba.wl = { t_cs_cs_747 = ! }
+        planeseatsideno.wl = { t_cs_cs_747 = ! }
+        Planest1.wl = { t_cs_cs_747 = ! }
+        Planest2.wl = { t_cs_cs_747 = ! }
+        planewalkway1.wl = { t_cs_cs_747 = ! }
+        planewalkway2.wl = { t_cs_cs_747 = ! }
+        planewhite.wl = { t_cs_cs_747 = ! }
+        redback_x3.wl = { t_cs_cs_747 = ! }
+        seat2x.wl = { t_cs_cs_747 = ! }
+        seat4x.wl = { t_cs_cs_747 = ! }
+        seatbk2.wl = { t_cs_cs_747 = ! }
+        redback_x4.wl = { t_cs_cs_747 = ! }
+        seatbk4.wl = { t_cs_cs_747 = ! }
+        seatfrnt2.wl = { t_cs_cs_747 = ! }
+        seatfront4.wl = { t_cs_cs_747 = ! }
+        walkway1_x4.wl = { t_cs_cs_747 = ! }
+        walkway2_x4.wl = { t_cs_cs_747 = ! }
+        window2x.wl = { t_cs_cs_747 = ! }
+      }
+      as_riverside.txlist =
+      {
+        eddirtz1.wl = { t_cs_as_riverside = ! }
+        pavezi1.wl = { t_cs_as_riverside = ! }
+        zwood1.wl = { t_cs_as_riverside = ! }
+        zcanal3.wl = { t_cs_as_riverside = ! }
+        pavezi2.wl = { t_cs_as_riverside = ! }
+        zcanal2.wl = { t_cs_as_riverside = ! }
+        {greentree7.wl = { t_cs_as_riverside = ! }
+        !poolz1.wl = { t_cs_as_riverside = ! }
+        btgrazz1.wl = { t_cs_as_riverside = ! }
+        grazzrock1.wl = { t_cs_as_riverside = ! }
+        houze7.wl = { t_cs_as_riverside = ! }
+        houze4.wl = { t_cs_as_riverside = ! }
+        houze5.wl = { t_cs_as_riverside = ! }
+        houze6.wl = { t_cs_as_riverside = ! }
+        zwood2.wl = { t_cs_as_riverside = ! }
+        zignbus.wl = { t_cs_as_riverside = ! }
+        houzeb1.wl = { t_cs_as_riverside = ! }
+        houzeb2.wl = { t_cs_as_riverside = ! }
+        houzeb3.wl = { t_cs_as_riverside = ! }
+        houzeb4.wl = { t_cs_as_riverside = ! }
+        houzeb5.wl = { t_cs_as_riverside = ! }
+        buzh1.wl = { t_cs_as_riverside = ! }
+        buzh2.wl = { t_cs_as_riverside = ! }
+        cchz1.wl = { t_cs_as_riverside = ! }
+        cchz2.wl = { t_cs_as_riverside = ! }
+        houze8.wl = { t_cs_as_riverside = ! }
+        houze1.wl = { t_cs_as_riverside = ! }
       }
       cs_dust.txlist =
       {
-        MltryCrteSd.wl = { t_cs_cs_dust = ! }
-        MltryCrteSd2.wl = { t_cs_cs_dust = ! }
-        MltryCrteTp.wl = { t_cs_cs_dust = ! }
-      -0Sand.wl = { t_cs_cs_dust = ! }
-      -1Sand.wl = { t_cs_cs_dust = ! }
-      -2Sand.wl = { t_cs_cs_dust = ! }
-      -3Sand.wl = { t_cs_cs_dust = ! }
+        -0csSandWall.wl = { t_cs_cs_dust = ! }
+        -0Sand.wl = { t_cs_cs_dust = ! }
+        -1Sand.wl = { t_cs_cs_dust = ! }
+        -1csSandWall.wl = { t_cs_cs_dust = ! }
+        -2Sand.wl = { t_cs_cs_dust = ! }
+        -3Sand.wl = { t_cs_cs_dust = ! }
+        SandRoad.wl = { t_cs_cs_dust = ! }
+        SandTrim.wl = { t_cs_cs_dust = ! }
+        SandWllWndw.wl = { t_cs_cs_dust = ! }
         SandCCrete.wl = { t_cs_cs_dust = ! }
         SandCrtLrgSd.wl = { t_cs_cs_dust = ! }
         SandCrtLrgTp.wl = { t_cs_cs_dust = ! }
         SandCrtSmSd.wl = { t_cs_cs_dust = ! }
         SandCrtSmTp.wl = { t_cs_cs_dust = ! }
-        SandRoad.wl = { t_cs_cs_dust = ! }
-        SandRoadTgt.wl = { t_cs_cs_dust = ! }
-      -0SandRock.wl = { t_cs_cs_dust = ! }
-      -1SandRock.wl = { t_cs_cs_dust = ! }
-      -2SandRock.wl = { t_cs_cs_dust = ! }
-        SandTrim.wl = { t_cs_cs_dust = ! }
         SandWllDoor.wl = { t_cs_cs_dust = ! }
+        -0SandRock.wl = { t_cs_cs_dust = ! }
+        -1SandRock.wl = { t_cs_cs_dust = ! }
+        -2SandRock.wl = { t_cs_cs_dust = ! }
+        MltryCrteSd.wl = { t_cs_cs_dust = ! }
+        MltryCrteTp.wl = { t_cs_cs_dust = ! }
+        MltryCrteSd2.wl = { t_cs_cs_dust = ! }
+        SandRoadTgt.wl = { t_cs_cs_dust = ! }
         SandWllDoor2.wl = { t_cs_cs_dust = ! }
-        SandWllWndw.wl = { t_cs_cs_dust = ! }
         SandWllWndw2.wl = { t_cs_cs_dust = ! }
         SandWllWndw3.wl = { t_cs_cs_dust = ! }
-      -0csSandWall.wl = { t_cs_cs_dust = ! }
-      -1csSandWall.wl = { t_cs_cs_dust = ! }
         csSandWall2.wl = { t_cs_cs_dust = ! }
-      }
-      cstrike.txlist =
-      {
-      -0CSTRIKE_CA2ST.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_CA2ST.wl = { t_cs_cstrike = ! }
-        CSTRIKE_CE2XCNG.wl = { t_cs_cstrike = ! }
-        CSTRIKE_CH3TILE.wl = { t_cs_cstrike = ! }
-        CSTRIKE_CJ2BEAM.wl = { t_cs_cstrike = ! }
-        CSTRIKE_CR2PLN.wl = { t_cs_cstrike = ! }
-        CSTRIKE_DE6HORZ.wl = { t_cs_cstrike = ! }
-        CSTRIKE_DE6VERT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_DJ2OLD.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FE2GTNG.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FE2SQRS.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FE4CRGD.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FH4WTTL.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_FJ2DK.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_FJ2DK.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FJ2DOCK.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FP2DARK.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FP2LGHT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FP2MED.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_FR4CC.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_FR4CC.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
-      -3CSTRIKE_FR4GR.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FT2DIRT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FT2MUD.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FT3GRAS.wl = { t_cs_cstrike = ! }
-        CSTRIKE_FT4APHT.wl = { t_cs_cstrike = ! }
-      +0CSTRIKE_IE1LT.wl = { t_cs_cstrike = ! }
-      +ACSTRIKE_IE1LT.wl = { t_cs_cstrike = ! }
-       {CSTRIKE_LE6LAD.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
-      -3CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
-      -4CSTRIKE_MA1BL.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_MB2GG.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_MB2GG.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_MB2GG.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME1CLNG.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME1GRAT.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-      -3CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-      -4CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-      -5CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-      -6CSTRIKE_ME1PL.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME2DRST.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_ME2RI.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_ME2RI.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME2RSTW.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME4DCLN.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME4GREB.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME4METL.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME4RADR.wl = { t_cs_cstrike = ! }
-        CSTRIKE_ME7CAUT.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_MH5TL.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_MH5TL.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_MJ2SG.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_MJ2SG.wl = { t_cs_cstrike = ! }
-        CSTRIKE_MJ3SHRU.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_MR2DR.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_MR2DR.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_MR2ST.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_MR2ST.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE1BXSD.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE1BXTP.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE1LGBM.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE1SMBM.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE2STRR.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE2VENT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE4FNVT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE4PNL.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE4PNLH.wl = { t_cs_cstrike = ! }
-       {CSTRIKE_OE4VEN.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE4VENT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE6TNKF.wl = { t_cs_cstrike = ! }
-        CSTRIKE_OE6TNKS.wl = { t_cs_cstrike = ! }
-      +0CSTRIKE_SE4SW.wl = { t_cs_cstrike = ! }
-      +ACSTRIKE_SE4SW.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
-      -3CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
-      -4CSTRIKE_WA5OR.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_WB6BK.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_WB6BK.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6CLMN.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6FRAM.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6HEDR.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6PLN1.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6PLN2.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6PLN3.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6PLN4.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6WND.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WB6WND2.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_WE1MT.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_WE1MT.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_WE1MT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WE2PPWL.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WE2RIBD.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_WE4AL.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_WE4AL.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WG1OFCE.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_WK4ST.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_WK4ST.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_WK4ST.wl = { t_cs_cstrike = ! }
-      -0CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
-      -1CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
-      -2CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
-      -3CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
-      -4CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
-      -5CSTRIKE_WR3CC.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR4CCDR.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR4CCGG.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR4CCPN.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR4CCVT.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR4CCWD.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR4RGH.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR7PLN.wl = { t_cs_cstrike = ! }
-        CSTRIKE_WR7PLNF.wl = { t_cs_cstrike = ! }
-      }
-      decals.txlist =
-      {
-        {hrpoint.wl = { t_cs_decals = ! }
+        djSmartie.wl = { t_cs_cs_dust = ! }
       }
       jos.txlist =
       {
-        jbInfo.wl = { t_cs_jos = ! }
+        -0DrtPntWll.wl = { t_cs_jos = ! }
+        -1DrtPntWll.wl = { t_cs_jos = ! }
+        DrtStucco.wl = { t_cs_jos = ! }
+        DrtyConc.wl = { t_cs_jos = ! }
+        DrtyWndwA.wl = { t_cs_jos = ! }
+        -0DrtyBrkStrk.wl = { t_cs_jos = ! }
+        DrtyDblDr.wl = { t_cs_jos = ! }
+        DrtyDoor.wl = { t_cs_jos = ! }
+        DrtyTiles.wl = { t_cs_jos = ! }
+        DrtyWndw.wl = { t_cs_jos = ! }
+        DrtyMtlWll.wl = { t_cs_jos = ! }
+        -1DrtyBrk.wl = { t_cs_jos = ! }
+        -1DrtyBrkStrk.wl = { t_cs_jos = ! }
+        -0DrtyBrk.wl = { t_cs_jos = ! }
+        DrtyWndwB.wl = { t_cs_jos = ! }
+        DrtyWndwC.wl = { t_cs_jos = ! }
+        DrtyCobbleRd.wl = { t_cs_jos = ! }
+        DrtyConcMix.wl = { t_cs_jos = ! }
+        DrtyConcCln.wl = { t_cs_jos = ! }
+        DrtyConcPln.wl = { t_cs_jos = ! }
+        jbName.wl = { t_cs_jos = ! }
+        -0jbDrtyBrick1.wl = { t_cs_jos = ! }
+        -1jbDrtyBrick1.wl = { t_cs_jos = ! }
+        jbRockA.wl = { t_cs_jos = ! }
+      }
+      2maps.txlist =
+      {
+        buildbackwall.wl = { t_cs_2maps = ! }
+        bcontainer1.wl = { t_cs_2maps = ! }
+        bcontainer2.wl = { t_cs_2maps = ! }
+        bcontainer3.wl = { t_cs_2maps = ! }
+        door_garage.wl = { t_cs_2maps = ! }
+        DOCKS_BRDWNDW.wl = { t_cs_2maps = ! }
+        grassanddirtful.wl = { t_cs_2maps = ! }
+        s_storagearea1.wl = { t_cs_2maps = ! }
+        canyonscliff.wl = { t_cs_2maps = ! }
+        s_storagearea2.wl = { t_cs_2maps = ! }
+        s_streetaccess.wl = { t_cs_2maps = ! }
+        Blue.wl = { t_cs_2maps = ! }
+      }
+      tswad.txlist =
+      {
+        TSBGVENT.wl = { t_cs_tswad = ! }
+        TSCABLES.wl = { t_cs_tswad = ! }
+        TSCAUTION.wl = { t_cs_tswad = ! }
+        TSCPRFLR.wl = { t_cs_tswad = ! }
+        TSCRTESD.wl = { t_cs_tswad = ! }
+        TSCRTETP.wl = { t_cs_tswad = ! }
+        TSDOOR4.wl = { t_cs_tswad = ! }
+        TSFLRGRT.wl = { t_cs_tswad = ! }
+        TSHULL1.wl = { t_cs_tswad = ! }
+        TSHULL1A.wl = { t_cs_tswad = ! }
+        TSHULL2.wl = { t_cs_tswad = ! }
+        TSHULL4.wl = { t_cs_tswad = ! }
+        TSHULL5.wl = { t_cs_tswad = ! }
+        TSHULL7.wl = { t_cs_tswad = ! }
+        TSHULL8.wl = { t_cs_tswad = ! }
+        TSHULL9.wl = { t_cs_tswad = ! }
+        TSIBEAM.wl = { t_cs_tswad = ! }
+        TSMACMAN.wl = { t_cs_tswad = ! }
+        TSMOSS.wl = { t_cs_tswad = ! }
+        TSNOSKD.wl = { t_cs_tswad = ! }
+        TSNOSWIM.wl = { t_cs_tswad = ! }
+        TSOILY.wl = { t_cs_tswad = ! }
+        TSPLAINRED.wl = { t_cs_tswad = ! }
+        TSRFGRVL.wl = { t_cs_tswad = ! }
+        TSROOF.wl = { t_cs_tswad = ! }
+        TSSHUTTERS.wl = { t_cs_tswad = ! }
+        TSSPTS.wl = { t_cs_tswad = ! }
+        TSSPTSMSS.wl = { t_cs_tswad = ! }
+        TSVENT.wl = { t_cs_tswad = ! }
       }
       n0th1ng.txlist =
       {
         C3A1_CRATE1B.wl = { t_cs_n0th1ng = ! }
         C3A1_CRATE2B.wl = { t_cs_n0th1ng = ! }
         C3A1_CRATE3B.wl = { t_cs_n0th1ng = ! }
-        DOCKS_BRDWNDW.wl = { t_cs_n0th1ng = ! }
         DOCKS_DPLANK.wl = { t_cs_n0th1ng = ! }
-        DOCKS_RAILBRD.wl = { t_cs_n0th1ng = ! }
         DOCKS_SLD2.wl = { t_cs_n0th1ng = ! }
         DOCKS_YEL2.wl = { t_cs_n0th1ng = ! }
-      }
-      yurik.txlist =
-      {
-        ersign.wl = { t_cs_yurik = ! }
-        sadaamportrait.wl = { t_cs_yurik = ! }
-        sadaamtv.wl = { t_cs_yurik = ! }
-        ship1.wl = { t_cs_yurik = ! }
-        ship2.wl = { t_cs_yurik = ! }
-      }
-      mr_deth.txlist =
-      {
-        crate_01.wl = { t_cs_mr_deth = ! }
-        crate_02.wl = { t_cs_mr_deth = ! }
-        crate_04.wl = { t_cs_mr_deth = ! }
-        crate_05.wl = { t_cs_mr_deth = ! }
-        crate_09.wl = { t_cs_mr_deth = ! }
-        cs_iraq.wl = { t_cs_mr_deth = ! }
-        cs_tacop.wl = { t_cs_mr_deth = ! }
-        door_garage.wl = { t_cs_mr_deth = ! }
-        sign_tac_op.wl = { t_cs_mr_deth = ! }
-      }
-      prodigy.txlist =
-      {
-        crate-thanks1.wl = { t_cs_prodigy = ! }
-        crate-thanks2.wl = { t_cs_prodigy = ! }
+        DOCKS_BRDWNDW.wl = { t_cs_n0th1ng = ! }
+        DOCKS_RAILBRD.wl = { t_cs_n0th1ng = ! }
       }
       cs_bdog.txlist =
       {
-        Brick01.wl = { t_cs_cs_bdog = ! }
-        Brick02-2.wl = { t_cs_cs_bdog = ! }
-        Brick03-2.wl = { t_cs_cs_bdog = ! }
-        Brick04.wl = { t_cs_cs_bdog = ! }
-        Brick04_sm.wl = { t_cs_cs_bdog = ! }
-        Brick05-10.wl = { t_cs_cs_bdog = ! }
-        Brick05-11.wl = { t_cs_cs_bdog = ! }
-        Brick05-12.wl = { t_cs_cs_bdog = ! }
-        Brick05-2.wl = { t_cs_cs_bdog = ! }
-        Brick05-3.wl = { t_cs_cs_bdog = ! }
-        Brick05-4.wl = { t_cs_cs_bdog = ! }
-        Brick05-5.wl = { t_cs_cs_bdog = ! }
-        Brick05-6.wl = { t_cs_cs_bdog = ! }
-        Brick05-7.wl = { t_cs_cs_bdog = ! }
-        Brick05-8.wl = { t_cs_cs_bdog = ! }
-        Brick05-9.wl = { t_cs_cs_bdog = ! }
-        Brick05.wl = { t_cs_cs_bdog = ! }
-        Brick05_sm.wl = { t_cs_cs_bdog = ! }
-        Brick05b.wl = { t_cs_cs_bdog = ! }
-        Brick06.wl = { t_cs_cs_bdog = ! }
-        Brick06_sm.wl = { t_cs_cs_bdog = ! }
-        Brick07.wl = { t_cs_cs_bdog = ! }
-        Brick08.wl = { t_cs_cs_bdog = ! }
-        Brick09.wl = { t_cs_cs_bdog = ! }
-        Brick10.wl = { t_cs_cs_bdog = ! }
-        Brick11.wl = { t_cs_cs_bdog = ! }
-        Brick12.wl = { t_cs_cs_bdog = ! }
-        Brick13.wl = { t_cs_cs_bdog = ! }
-        Brick13b.wl = { t_cs_cs_bdog = ! }
-        Brick13c.wl = { t_cs_cs_bdog = ! }
-        CaseEnd.wl = { t_cs_cs_bdog = ! }
-        CaseSide.wl = { t_cs_cs_bdog = ! }
-        CaseTop.wl = { t_cs_cs_bdog = ! }
-        Ceiling01.wl = { t_cs_cs_bdog = ! }
-        CinderBlock01.wl = { t_cs_cs_bdog = ! }
-        CinderBlock01a.wl = { t_cs_cs_bdog = ! }
-        CinderBlock02.wl = { t_cs_cs_bdog = ! }
-        CinderBlock03.wl = { t_cs_cs_bdog = ! }
-        CinderBlock04.wl = { t_cs_cs_bdog = ! }
-        Concrete01-2.wl = { t_cs_cs_bdog = ! }
         Concrete01.wl = { t_cs_cs_bdog = ! }
         Concrete02.wl = { t_cs_cs_bdog = ! }
-        Concrete02a.wl = { t_cs_cs_bdog = ! }
-        Connector.wl = { t_cs_cs_bdog = ! }
-        Crate02.wl = { t_cs_cs_bdog = ! }
-        CrateSide01.wl = { t_cs_cs_bdog = ! }
-        CrateSide02.wl = { t_cs_cs_bdog = ! }
-        CrateSide03.wl = { t_cs_cs_bdog = ! }
-        CrateTop01.wl = { t_cs_cs_bdog = ! }
-        CrateTop02.wl = { t_cs_cs_bdog = ! }
-        Door01.wl = { t_cs_cs_bdog = ! }
-        Grass01.wl = { t_cs_cs_bdog = ! }
+        Brick01.wl = { t_cs_cs_bdog = ! }
+        Brick04.wl = { t_cs_cs_bdog = ! }
+        YellowBoard.wl = { t_cs_cs_bdog = ! }
+        asphalt01.wl = { t_cs_cs_bdog = ! }
+        asphalt02.wl = { t_cs_cs_bdog = ! }
+        yellowconrete.wl = { t_cs_cs_bdog = ! }
+        warehousedoor.wl = { t_cs_cs_bdog = ! }
+        ceiling.wl = { t_cs_cs_bdog = ! }
+        conretetrim.wl = { t_cs_cs_bdog = ! }
+        dumpsterside.wl = { t_cs_cs_bdog = ! }
+        dumpsterfront.wl = { t_cs_cs_bdog = ! }
+        Brick02-2.wl = { t_cs_cs_bdog = ! }
+        Brick03-2.wl = { t_cs_cs_bdog = ! }
+        asphaltdirty01.wl = { t_cs_cs_bdog = ! }
+        asphaltdirty02.wl = { t_cs_cs_bdog = ! }
+        Brick05.wl = { t_cs_cs_bdog = ! }
+        Brick05-2.wl = { t_cs_cs_bdog = ! }
+        Brick05-3.wl = { t_cs_cs_bdog = ! }
+        Concrete01-2.wl = { t_cs_cs_bdog = ! }
+        MoseyPlywood01.wl = { t_cs_cs_bdog = ! }
+        Brick06.wl = { t_cs_cs_bdog = ! }
+        CinderBlock01.wl = { t_cs_cs_bdog = ! }
+        Tracks01.wl = { t_cs_cs_bdog = ! }
         Gravel01.wl = { t_cs_cs_bdog = ! }
-        Gravel02.wl = { t_cs_cs_bdog = ! }
+        hint.wl = { t_cs_cs_bdog = ! }
+        Tracks02.wl = { t_cs_cs_bdog = ! }
+        Brick04_sm.wl = { t_cs_cs_bdog = ! }
+        Brick05_sm.wl = { t_cs_cs_bdog = ! }
+        Brick06_sm.wl = { t_cs_cs_bdog = ! }
+        Grass01.wl = { t_cs_cs_bdog = ! }
         GravelGrass01.wl = { t_cs_cs_bdog = ! }
         GravelGrass02.wl = { t_cs_cs_bdog = ! }
         GravelGrass03.wl = { t_cs_cs_bdog = ! }
         GravelGrass04.wl = { t_cs_cs_bdog = ! }
+        Brick07.wl = { t_cs_cs_bdog = ! }
+        Brick08.wl = { t_cs_cs_bdog = ! }
+        Brick09.wl = { t_cs_cs_bdog = ! }
+        Door01.wl = { t_cs_cs_bdog = ! }
+        Window01.wl = { t_cs_cs_bdog = ! }
+        WallGrit01.wl = { t_cs_cs_bdog = ! }
+        WallGrit02.wl = { t_cs_cs_bdog = ! }
+        CinderBlock02.wl = { t_cs_cs_bdog = ! }
+        CinderBlock03.wl = { t_cs_cs_bdog = ! }
+        Brick05-4.wl = { t_cs_cs_bdog = ! }
+        Brick05-5.wl = { t_cs_cs_bdog = ! }
+        Window01-1.wl = { t_cs_cs_bdog = ! }
+        Ceiling01.wl = { t_cs_cs_bdog = ! }
+        Brick05-6.wl = { t_cs_cs_bdog = ! }
+        Brick05-7.wl = { t_cs_cs_bdog = ! }
+        Brick05-8.wl = { t_cs_cs_bdog = ! }
+        Brick05-9.wl = { t_cs_cs_bdog = ! }
+        Brick10.wl = { t_cs_cs_bdog = ! }
+        Brick11.wl = { t_cs_cs_bdog = ! }
+        Brick12.wl = { t_cs_cs_bdog = ! }
+        Brick05-10.wl = { t_cs_cs_bdog = ! }
+        CinderBlock04.wl = { t_cs_cs_bdog = ! }
+        TrainSide01-1.wl = { t_cs_cs_bdog = ! }
+        TrainSide01-2.wl = { t_cs_cs_bdog = ! }
+        WheelSide01.wl = { t_cs_cs_bdog = ! }
+        WheelEnd01.wl = { t_cs_cs_bdog = ! }
         HangingLight01.wl = { t_cs_cs_bdog = ! }
+        TrainSide02-1.wl = { t_cs_cs_bdog = ! }
+        TrainSide02-2.wl = { t_cs_cs_bdog = ! }
+        Brick05-11.wl = { t_cs_cs_bdog = ! }
+        WheelSide02.wl = { t_cs_cs_bdog = ! }
+        WheelEnd02.wl = { t_cs_cs_bdog = ! }
+        TrainEnd01.wl = { t_cs_cs_bdog = ! }
+        TrainTop01.wl = { t_cs_cs_bdog = ! }
+        TrainEnd02.wl = { t_cs_cs_bdog = ! }
+        ad_Popdog.wl = { t_cs_cs_bdog = ! }
+        TrainTop02.wl = { t_cs_cs_bdog = ! }
+        Brick13.wl = { t_cs_cs_bdog = ! }
+        Crate02.wl = { t_cs_cs_bdog = ! }
+        CrateSide01.wl = { t_cs_cs_bdog = ! }
+        CrateTop01.wl = { t_cs_cs_bdog = ! }
+        Wood01.wl = { t_cs_cs_bdog = ! }
+        TrainStopperTop.wl = { t_cs_cs_bdog = ! }
+        Track1.wl = { t_cs_cs_bdog = ! }
+        Track5.wl = { t_cs_cs_bdog = ! }
+        Track4.wl = { t_cs_cs_bdog = ! }
+        Track3.wl = { t_cs_cs_bdog = ! }
+        Track2.wl = { t_cs_cs_bdog = ! }
+        Track6.wl = { t_cs_cs_bdog = ! }
+        CrateSide03.wl = { t_cs_cs_bdog = ! }
+        TrainStopper.wl = { t_cs_cs_bdog = ! }
+        Brick13b.wl = { t_cs_cs_bdog = ! }
+        LoadingBay01.wl = { t_cs_cs_bdog = ! }
+        Brick05b.wl = { t_cs_cs_bdog = ! }
+        LoadingBay02.wl = { t_cs_cs_bdog = ! }
+        Window04.wl = { t_cs_cs_bdog = ! }
+        LoadingBay03.wl = { t_cs_cs_bdog = ! }
+        Gravel02.wl = { t_cs_cs_bdog = ! }
+        CaseEnd.wl = { t_cs_cs_bdog = ! }
+        CaseSide.wl = { t_cs_cs_bdog = ! }
+        CaseTop.wl = { t_cs_cs_bdog = ! }
+        CrateSide02.wl = { t_cs_cs_bdog = ! }
+        CrateTop02.wl = { t_cs_cs_bdog = ! }
+        Window04a.wl = { t_cs_cs_bdog = ! }
+        LoadingBay02a.wl = { t_cs_cs_bdog = ! }
+        LoadingBay04.wl = { t_cs_cs_bdog = ! }
+        Window05.wl = { t_cs_cs_bdog = ! }
+        Brick13c.wl = { t_cs_cs_bdog = ! }
+        LoadingBay05.wl = { t_cs_cs_bdog = ! }
+        LoadingBay05a.wl = { t_cs_cs_bdog = ! }
+        Window01a.wl = { t_cs_cs_bdog = ! }
         Ivy01.wl = { t_cs_cs_bdog = ! }
+        Window06.wl = { t_cs_cs_bdog = ! }
+        Window07.wl = { t_cs_cs_bdog = ! }
+        CinderBlock01a.wl = { t_cs_cs_bdog = ! }
+        Brick05-12.wl = { t_cs_cs_bdog = ! }
+        TrainSide01-2a.wl = { t_cs_cs_bdog = ! }
+        s_TrainyardA.wl = { t_cs_cs_bdog = ! }
+        s_TrainyardB.wl = { t_cs_cs_bdog = ! }
         Ivy01a.wl = { t_cs_cs_bdog = ! }
         Ivy02.wl = { t_cs_cs_bdog = ! }
         Ivy03.wl = { t_cs_cs_bdog = ! }
+        Concrete02a.wl = { t_cs_cs_bdog = ! }
+        Connector.wl = { t_cs_cs_bdog = ! }
+        Window03b.wl = { t_cs_cs_bdog = ! }
+        Window03a.wl = { t_cs_cs_bdog = ! }
+        Window03c.wl = { t_cs_cs_bdog = ! }
         Ivy04.wl = { t_cs_cs_bdog = ! }
         Ivy05.wl = { t_cs_cs_bdog = ! }
         Ivy06.wl = { t_cs_cs_bdog = ! }
-        LoadingBay01.wl = { t_cs_cs_bdog = ! }
-        LoadingBay02.wl = { t_cs_cs_bdog = ! }
-        LoadingBay02a.wl = { t_cs_cs_bdog = ! }
-        LoadingBay03.wl = { t_cs_cs_bdog = ! }
-        LoadingBay04.wl = { t_cs_cs_bdog = ! }
-        LoadingBay05.wl = { t_cs_cs_bdog = ! }
-        LoadingBay05a.wl = { t_cs_cs_bdog = ! }
-        MoseyPlywood01.wl = { t_cs_cs_bdog = ! }
-        Track1.wl = { t_cs_cs_bdog = ! }
-        Track2.wl = { t_cs_cs_bdog = ! }
-        Track3.wl = { t_cs_cs_bdog = ! }
-        Track4.wl = { t_cs_cs_bdog = ! }
-        Track5.wl = { t_cs_cs_bdog = ! }
-        Track6.wl = { t_cs_cs_bdog = ! }
-        Tracks01.wl = { t_cs_cs_bdog = ! }
-        Tracks02.wl = { t_cs_cs_bdog = ! }
-        TrainEnd01.wl = { t_cs_cs_bdog = ! }
-        TrainEnd02.wl = { t_cs_cs_bdog = ! }
-        TrainSide01-1.wl = { t_cs_cs_bdog = ! }
-        TrainSide01-2.wl = { t_cs_cs_bdog = ! }
-        TrainSide01-2a.wl = { t_cs_cs_bdog = ! }
-        TrainSide02-1.wl = { t_cs_cs_bdog = ! }
-        TrainSide02-2.wl = { t_cs_cs_bdog = ! }
-        TrainStopper.wl = { t_cs_cs_bdog = ! }
-        TrainStopperTop.wl = { t_cs_cs_bdog = ! }
-        TrainTop01.wl = { t_cs_cs_bdog = ! }
-        TrainTop02.wl = { t_cs_cs_bdog = ! }
-        WallGrit01.wl = { t_cs_cs_bdog = ! }
-        WallGrit02.wl = { t_cs_cs_bdog = ! }
-        WheelEnd01.wl = { t_cs_cs_bdog = ! }
-        WheelEnd02.wl = { t_cs_cs_bdog = ! }
-        WheelSide01.wl = { t_cs_cs_bdog = ! }
-        WheelSide02.wl = { t_cs_cs_bdog = ! }
-        Window01-1.wl = { t_cs_cs_bdog = ! }
-        Window01.wl = { t_cs_cs_bdog = ! }
-        Window01a.wl = { t_cs_cs_bdog = ! }
-        Window03a.wl = { t_cs_cs_bdog = ! }
-        Window03b.wl = { t_cs_cs_bdog = ! }
-        Window03c.wl = { t_cs_cs_bdog = ! }
-        Window04.wl = { t_cs_cs_bdog = ! }
-        Window04a.wl = { t_cs_cs_bdog = ! }
-        Window05.wl = { t_cs_cs_bdog = ! }
-        Window06.wl = { t_cs_cs_bdog = ! }
-        Window07.wl = { t_cs_cs_bdog = ! }
-        Wood01.wl = { t_cs_cs_bdog = ! }
-        YellowBoard.wl = { t_cs_cs_bdog = ! }
-        ad_Popdog.wl = { t_cs_cs_bdog = ! }
-        asphalt01.wl = { t_cs_cs_bdog = ! }
-        asphalt02.wl = { t_cs_cs_bdog = ! }
-        asphaltdirty01.wl = { t_cs_cs_bdog = ! }
-        asphaltdirty02.wl = { t_cs_cs_bdog = ! }
-        ceiling.wl = { t_cs_cs_bdog = ! }
-        conretetrim.wl = { t_cs_cs_bdog = ! }
-        dumpsterfront.wl = { t_cs_cs_bdog = ! }
-        dumpsterside.wl = { t_cs_cs_bdog = ! }
-//REDUNDANT        hint.wl = { t_cs_cs_bdog = ! }
-        popdog_front_b.wl = { t_cs_cs_bdog = ! }
         popdog_front_re.wl = { t_cs_cs_bdog = ! }
-        popdog_left_b.wl = { t_cs_cs_bdog = ! }
         popdog_left_red.wl = { t_cs_cs_bdog = ! }
-        popdog_right_b.wl = { t_cs_cs_bdog = ! }
         popdog_right_re.wl = { t_cs_cs_bdog = ! }
-        s_TrainyardA.wl = { t_cs_cs_bdog = ! }
-        s_TrainyardB.wl = { t_cs_cs_bdog = ! }
-        warehousedoor.wl = { t_cs_cs_bdog = ! }
-        yellowconrete.wl = { t_cs_cs_bdog = ! }
+        popdog_front_b.wl = { t_cs_cs_bdog = ! }
+        popdog_left_b.wl = { t_cs_cs_bdog = ! }
+        popdog_right_b.wl = { t_cs_cs_bdog = ! }
       }
-      cs_hideout.txlist =
+      Es_frantic.txlist =
       {
-        HalfL01e.wl = { t_cs_cs_hideout = ! }
-        HalfL02e.wl = { t_cs_cs_hideout = ! }
-        HalfL03e.wl = { t_cs_cs_hideout = ! }
-        wallquip.wl = { t_cs_cs_hideout = ! }
+        mz_comando2.wl = { t_cs_Es_frantic = ! }
+        c_tn_m3c02.wl = { t_cs_Es_frantic = ! }
+        c_tn_m3c01.wl = { t_cs_Es_frantic = ! }
+        C_sy_m1.wl = { t_cs_Es_frantic = ! }
+        C_pv_m1.wl = { t_cs_Es_frantic = ! }
+        C_pv_18y.wl = { t_cs_Es_frantic = ! }
+        C_pv_18x.wl = { t_cs_Es_frantic = ! }
+        bl_rc_c11.wl = { t_cs_Es_frantic = ! }
+        mz_warning.wl = { t_cs_Es_frantic = ! }
+        b_sr_v30x.wl = { t_cs_Es_frantic = ! }
+        b_sr_v30v.wl = { t_cs_Es_frantic = ! }
+        b_sr_v30s.wl = { t_cs_Es_frantic = ! }
+        B_sr_26a.wl = { t_cs_Es_frantic = ! }
+        B_rc_v4y.wl = { t_cs_Es_frantic = ! }
+        b_cp_v41n.wl = { t_cs_Es_frantic = ! }
+        b_cp_v24b.wl = { t_cs_Es_frantic = ! }
+        b_cp_v24a.wl = { t_cs_Es_frantic = ! }
+        b_cp_v23aa.wl = { t_cs_Es_frantic = ! }
+        b_cp_v23a.wl = { t_cs_Es_frantic = ! }
+        b_cp_v17ab.wl = { t_cs_Es_frantic = ! }
+        MADE_BY_ME.wl = { t_cs_Es_frantic = ! }
       }
+      ajamedia.txlist =
+      {
+        weaver.wl = { t_cs_ajamedia = ! }
+        becks.wl = { t_cs_ajamedia = ! }
+      }
+      prodigy.txlist =
+      {
+        crate-thanks2.wl = { t_cs_prodigy = ! }
+        crate-thanks1.wl = { t_cs_prodigy = ! }
+      }
+
     }
   }
 
