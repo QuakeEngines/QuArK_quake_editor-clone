@@ -636,7 +636,8 @@ class BaseEditor:
                 #
                 # Create a dragobject to hold information about the current dragging
                 #
-                self.dragobject = self.HandlesModule.MouseDragging(self,view,x,y,s,handle)
+                if flags & MB_LEFTBUTTON or handle is None:
+                    self.dragobject = self.HandlesModule.MouseDragging(self,view,x,y,s,handle)
                 #
                 # If successful, immediately begin to drag
                 #
@@ -840,6 +841,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.12  2001/05/07 05:41:13  tiglari
+#oops roll back dragging change, since it disabled map view nav
+#
 #Revision 1.11  2001/05/07 00:05:33  tiglari
 #prevent RMB dragging (if anyone screams about this, it can be made
 # conditional on an option)
