@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.128  2001/05/05 10:01:25  tiglari
+//patch mode supported for extruder
+//
 //Revision 1.127  2001/05/04 09:06:49  tiglari
 //fix default texture for stvef
 //
@@ -3302,6 +3305,7 @@ QQRKSRC1
       outform = !
       offset: = {Txt="&" Typ="E" Hint="Each instances is offset X Y Z units from previous one"}
       count: = {Txt="&" Typ="E" Hint="Number of instances generated"}
+      offset dup: = {Txt="&" Typ="X" Hint="If this is checked, image is located at dup.origin-images center+offset" $0D " It's meant for New Copy One duplicator"}
       linearform = !
     }
   
@@ -4178,6 +4182,15 @@ QQRKSRC1
           angle = ""
           out = "1"
           macro = "dup basic"
+        }
+        New Copy One:d =
+        {
+          ;desc = "experimental enhanced version, image is located at dup origin, and more"
+          origin = "64 64 0"
+          offset = "0 0 0"
+          out = "1"
+          offset dup = "1"
+          macro = "dup lin"
         }
         Linear Duplicator:d =
         {
