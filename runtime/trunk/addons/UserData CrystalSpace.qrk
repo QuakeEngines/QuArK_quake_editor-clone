@@ -61,8 +61,8 @@ QQRKSRC1
     {
       Txt = "&GO ! (build+Walktest)"
       Shortcut = "Ctrl+R"
-      LIGHTCmd = "-extra"
-      MAP2CS1 = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
       RunGame = "1"
       Pause = "1"
     }
@@ -73,8 +73,8 @@ QQRKSRC1
     item: =
     {
       Txt = "&Complete rebuild"
-      LIGHTCmd = "-extra"
-      MAP2CS1 = "1"
+      ExportMapFile = "1"
+      BuildPgm1 = "1"
       Pause = "1"
     }
     item: =
