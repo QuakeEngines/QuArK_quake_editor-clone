@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2000/10/26 17:02:33  tiglari
+added soEnableBrushPrim build flag
+
 Revision 1.15  2000/10/17 20:33:21  tiglari
 Ancestry & Brush# writing
 
@@ -2212,7 +2215,7 @@ var
         else
          S:=S+FloatToStrF(Z, ffFixed, 20, 5)+' ) ';
        end;
-     if MJ=mjQ3A then
+     if (MJ=mjQ3A) and (soEnableBrushPrim<>0) then
       with F do
        begin
         GetThreePointsUserTex(PT[1], PT[2], PT[3],Nil);
@@ -2232,7 +2235,7 @@ var
        else
         S:=S+NomTex;
        {$ENDIF}
-       if not (MJ=mjQ3A) then
+       if not ((MJ=mjQ3A) and (soEnableBrushPrim<>0)) then
        begin
        ApproximateParams(Normale, P, Params, TextureMirror);
        for I:=1 to 2 do
@@ -2346,8 +2349,8 @@ begin
  WriteIntegers:= {$IFDEF WriteOnlyIntegers} True {$ELSE} Flags and soDisableFPCoord <> 0 {$ENDIF};
  MJ:=CharModeJeu;
  { Brush.Add(Comment[(MJ>='A') and (MJ<='Z')]+' '+Ancestry); }
- Brush.Add(' {'); 
- if MJ= mjQ3A then
+ Brush.Add(' {');
+ if (MJ=mjQ3A) and (soEnableBrushPrim<>0) then
  begin
   Brush.Add('brushDef');
   Brush.Add(' {');
@@ -2362,7 +2365,7 @@ begin
     if Q is TFace then
      WriteFace(TFace(Q));
    end;
- if MJ=mjQ3A then
+ if (MJ=mjQ3A) and (soEnableBrushPrim<>0) then
    Brush.Add(' }');
  Brush.Add(' }');
 end;
