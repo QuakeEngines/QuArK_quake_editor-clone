@@ -698,13 +698,13 @@ class VertexHandle(qhandles.GenericHandle):
                             nf2.distortion(newnormal.normalized, vmax)
 #                            smallcorrection = nf2.normal * (self.pos+delta) - nf.dist
 #                            nf2.translate(nf2.normal * smallcorrection)
-			    def project(p,along=nf.normal,at=newpoint):
-			        return projectpointtoplane(p,along,at,along)
-			    ntp=tuple(map(project,nf2.threepoints(2)))
+                            def project(p,along=nf.normal,at=newpoint):
+                                return projectpointtoplane(p,along,at,along)
+                            ntp=tuple(map(project,nf2.threepoints(2)))
                             #
                             # Texture Reset
                             #
-              	             nf.setthreepoints(ntp,2)
+                            nf.setthreepoints(ntp,2)
  
  
                 # if the face is not part of the original group
@@ -1415,6 +1415,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.13.2.3  2001/04/04 10:30:17  tiglari
+#find more fixed points, clean up code
+#
 #Revision 1.13.2.2  2001/04/03 08:54:51  tiglari
 #more vertex drag anti-drift.  Very convoluted,if it helps, it needs to be
 # cleaned up.
