@@ -29,6 +29,9 @@ Normal QuArK if the $DEFINEs below are changed in the obvious manner
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2003/08/12 16:14:42  silverpaladin
+Fixed some hint for variables that were left in after the code was commented out.
+
 Revision 1.11  2003/06/17 22:46:31  tiglari
 Python bundling by Peter Brett:
  - If PYTHON_BUNDLED is set, look for python.dll in the dlls directory,
@@ -541,34 +544,46 @@ var
   I: Integer;
   Lib: THandle;
   P: Pointer;
-//  dll: string;  // SilverPaladin - Commented out to clear hint
+  dll: string;  // SilverPaladin - Commented out to clear hint
+                // Peter - Put back in for re-use
   s: string;
 begin
   Result:=3;
 {$IFDEF PYTHON_BUNDLED}
 // Python's bundled with QuArK, so look for python.dll in the Dlls directory
-  Lib:=LoadLibrary(PChar(GetApplicationDllPath()+'python.dll'));
+  dll:=GetApplicationDllPath()+'python.dll';
+  Lib:=LoadLibrary(PChar(dll));
 {$ELSE}
 // Python isn't bundled with QuArK, so look on system
 // dll:=try_alternative_python_version;
   Lib:=0;
 {$IFDEF PYTHON20_OR_HIGHER}
-   Lib:=LoadLibrary('PYTHON22.DLL');
+    dll:='python23.dll';
+    Lib:=LoadLibrary(dll);
+{$IFNDEF PYTHON23_OR_HIGHER}
+    if Lib=0 then
+      dll:='python22.dll';
+      Lib:=LoadLibrary(dll);
 {$IFNDEF PYTHON22_OR_HIGHER}
-   if Lib=0 then
-     Lib:=LoadLibrary('PYTHON21.DLL');
+    if Lib=0 then
+      dll:='python21.dll';
+      Lib:=LoadLibrary('python21.dll');
 {$IFNDEF PYTHON21_OR_HIGHER}
-   if Lib=0 then
-     Lib:=LoadLibrary('PYTHON20.DLL');
+    if Lib=0 then
+      dll:='python20.dll';
+      Lib:=LoadLibrary(dll);
 {$ENDIF}
 {$ENDIF}
 // if dll<>'' then
 //   Lib:=LoadLibrary(pchar(dll));
 {$ELSE}
   if Lib=0 then
-    Lib:=LoadLibrary('PYTHON151.DLL');
+    dll:='python151.dll';
+    Lib:=LoadLibrary(dll);
   if Lib=0 then
-    Lib:=LoadLibrary('PYTHON15.DLL');
+    dll:='python15.dll';
+    Lib:=LoadLibrary(dll);
+{$ENDIF}
 {$ENDIF}
 {$ENDIF}
   if Lib=0 then
@@ -584,6 +599,7 @@ begin
   Py_Initialize;
   s:=Py_GetVersion;
   aLog(LOG_PYTHONSOURCE,'Version '+s);
+  aLog(LOG_PYTHONSOURCE,'DLL Path '+dll);
   aLog(LOG_PYTHONSOURCE,'');
   Result:=1;
 
