@@ -14,6 +14,7 @@ import quarkx
 from maputils import *
 import maphandles
 
+
 #
 # Classes that implement operations on all types of Map Objects,
 # e.g. Quake entities, groups, brush entities, duplicators, etc.
@@ -444,28 +445,28 @@ class DefaultDrawEntityLines:
    def drawentityarrow(self, entity, org, backarrow, color, view, processentities, text=None):
         org2 = ObjectOrigin(entity)
         if org2 is not None:
-      	    cv = view.canvas()
+            cv = view.canvas()
             cv.penwidth = 2 # DECKER - Make this a configurable size
             cv.pencolor = color
 # DECKER - These font settings are commented out at the moment
-#           cv.fontname =		# DECKER - Make this configurable
+#           cv.fontname =               # DECKER - Make this configurable
 #           cv.fontcolor = color
-#           cv.fontsize =		# DECKER - Make this configurable
+#           cv.fontsize =               # DECKER - Make this configurable
             if backarrow:
                 Arrow(cv, view, org2, org, text) # DECKER - When the Arrow() function can draw a text with it, we're ready for it
             else:
-           	Arrow(cv, view, org, org2, text) # DECKER - When the Arrow() function can draw a text with it, we're ready for it
-	    if MapOption("EntityLinesDispersion"): # DECKER - Make this switchable for the user!!!
+                Arrow(cv, view, org, org2, text) # DECKER - When the Arrow() function can draw a text with it, we're ready for it
+            if MapOption("EntityLinesDispersion"): # DECKER - Make this switchable for the user!!!
                 if not (entity in processentities):   # remove this to remove
-               	    processentities.append(entity)    #  recurrence in entity lines
+                    processentities.append(entity)    #  recurrence in entity lines
 
    def drawentityarrows(self, spec, arg, org, backarrow, color, view, entities, processentities, text=None):
         for e in tuple(entities):
             if e[spec]==arg:
-		self.drawentityarrow(e, org, backarrow, color, view, processentities, text)
+                self.drawentityarrow(e, org, backarrow, color, view, processentities, text)
 
    def drawentitylines(self, entity, org, view, entities, processentities):
-	color = MapColor("Axis")
+        color = MapColor("Axis")
         org1 = view.proj(org)
         if org1.visible:
             L1 = entity["light"]
@@ -492,9 +493,9 @@ class DefaultDrawEntityLines:
                     cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
                 except:
                     pass
-	if entity["target"] is not None:
-       	   self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
-	if entity["targetname"] is not None:
+        if entity["target"] is not None:
+           self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
+        if entity["targetname"] is not None:
            self.drawentityarrows("target", entity["targetname"], org, 1, color, view, entities, processentities)
            self.drawentityarrows("killtarget", entity["targetname"], org, 1, RED, view, entities, processentities)
         if entity["killtarget"] is not None:
@@ -511,9 +512,9 @@ def drawentitylines(editor, processentities, view):
     "According to the choosen game, draw additionnal lines and arrows (e.g. target to targetname)"
     entities = editor.AllEntities()
     try:
-	mgr = EntityLinesMapping[quarkx.setupsubset().shortname] # DECKER - Find a drawentitylines-mgr for this game
+        mgr = EntityLinesMapping[quarkx.setupsubset().shortname] # DECKER - Find a drawentitylines-mgr for this game
     except KeyError:
-	mgr = EntityLinesMapping["Default"] # DECKER - Hmm? Use the default manager, since there wasn't any plugin for the selected game
+        mgr = EntityLinesMapping["Default"] # DECKER - Hmm? Use the default manager, since there wasn't any plugin for the selected game
     i = 0
     while i<len(processentities):
         entity = processentities[i]
@@ -523,7 +524,7 @@ def drawentitylines(editor, processentities, view):
         org = ObjectOrigin(entity)
         if org is None:
             continue
-	mgr.drawentitylines(entity, org, view, entities, processentities) # DECKER - Call the manager
+        mgr.drawentitylines(entity, org, view, entities, processentities) # DECKER - Call the manager
 
 
 #
@@ -548,4 +549,3 @@ def LoadEntityForm(sl):
             if len(flist):
                 formobj = flist[-1]
     return formobj
-

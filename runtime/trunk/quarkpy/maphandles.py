@@ -497,7 +497,7 @@ class VertexHandle(qhandles.GenericHandle):
                 #
                 temp = dv1 - vtu1
                 if not temp:
-		    vtu1, vtu2 = vtu2, vtu1
+                    vtu1, vtu2 = vtu2, vtu1
                 temp = dv1 - vtu1
                 vtu2 = vtu2 - vtu1
                 k = (temp * vtu2) / (abs (vtu2) * abs (vtu2))

@@ -1,6 +1,6 @@
-"""   QuArK  -  Quake Army Knife
+"""   QuArK  -  Quake Army KnifeManagement of Bezier patches
 
-Management of Bezier patches
+
 """
 #
 # Copyright (C) 1996-99 Armin Rigo
@@ -16,6 +16,7 @@ import qhandles
 import maphandles
 import mapentities
 import dlgclasses
+import copy
 
 class CPTexPos(dlgclasses.LiveEditDlg):
     endcolor = AQUA
@@ -84,13 +85,90 @@ def texcpclick(m):
         self.editor.invalidateviews()
  
     CPTexPos(quarkx.clickform, 'beztexpos', editor, setup, action)
+#
+# Utility-ish functions, should probably go elsewhere
+#
+
+within45 = math.cos(deg2rad*45)
+
+def iseven(num):
+  return not divmod(num,2)[1]
+
+  
+def b2midpoint(p0, p1, p2):
+  "midpoint of the b2 line for the three points"
+#  squawk("points: %s %s %s"%(p0, p1, p2))
+  result = .25*p0 + .5*p1 + .25*p2
+#  squawk(`result`)
+  return result
+  
+def b2qtpoint(p0, p1, p2):
+  "1 quarter point of the b2 line for the three points"
+  return (9/16.0)*p0+(3/8.0)*p1+(1/16.0)*p2
+
+def b2qt3point(p0, p1, p2):
+  "2 quarter point of the b2 line for the three points"
+  return (1/16.0)*p0+(3/8.0)*p1+(9/16.0)*p2
+
+def b2midcp(p0, m, p2):
+  "cp to get b2 line from p0 to p2 passing thru m"
+  return 2.0*m-.5*(p0+p2)
+  
+
+#
+# copy.deepcopy() doesn't seem to work
+#
+def copyquilt(quilt):
+  result=[]
+  for row in quilt:
+    result.append(list(row))
+  return result
+
+#
+# The idea here is to use the bezier formulas (see comments to bezier.pas)
+#  to compute the 1/4, 1/2, 3/4 points on the bezier curve segment
+#  whose midpoint is at i (in each column), the 1/2 point becomes
+#  the new even coordinate cp, & the new odd coordinate cp's are
+#  chosen to get the line to pass thru the 1/4 and 3/4 points.
+#
+def quilt_addrow(cp,(j,i)):
+  "returns a new quit with two patch-rows replacing the ith one"
+  ncp = copyquilt(cp)
+  md, q1, q3 = [], [], []
+  #
+  # Should try to do this with maplist ...
+  #
+  # & We'll probably want a variant to do this to a whole list
+  #
+  for c in range(len(cp[0])):
+     arc = cp[i-1][c],cp[i][c],cp[i+1][c]
+     mid = apply(b2midpoint, arc)
+     md.append(mid)
+     qt1 = apply(b2qtpoint, arc)
+     qt3 = apply(b2qt3point, arc)
+     q1.append(b2midcp(cp[i-1][c],qt1, mid))
+     q3.append(b2midcp(mid,qt3,cp[i+1][c]))
+  ncp[i:i+1] = [q1, md, q3]
+  return ncp
+
+
+def quilt_addcol(cp,(j,i)):
+  "returns a new quit with two patch-rows replacing the ith one"
+  ncp = copyquilt(cp)
+  for row in ncp:
+     arc = row[j-1],row[j],row[j+1]
+     mid = apply(b2midpoint, arc)
+     qt1 = apply(b2qtpoint, arc)
+     qt3 = apply(b2qt3point, arc)
+     row[j:j+1]=[b2midcp(arc[0],qt1, mid),
+          mid,b2midcp(mid,qt3,arc[2])]
+  return ncp
 
 #
 # Handles for control points.
 #
 
-within45 = math.cos(deg2rad*45)
-
+  
 class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
@@ -104,6 +182,8 @@ class CPHandle(qhandles.GenericHandle):
         self.hint = "(%s,%s)--"%ij+self.hint
         self.color = color #DECKER
         self.cursor = CR_CROSSH
+        self.h = len(b2.cp) 
+        self.w =  len(b2.cp[0])
 
     def draw(self, view, cv, draghandle=None):
         if self.ij == (0,0):
@@ -125,9 +205,33 @@ class CPHandle(qhandles.GenericHandle):
 
         texcp = qmenu.item("Texture Coordinates",texcpclick)
         texcp.h, texcp.editor = self, editor
-
+        i, j = self.ij
         
-        return [texcp] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        def thickenclick(m,self=self,editor=editor):
+          j, i = self.ij   # i is row index unlike Armin's code
+          new = self.b2.copy()
+          new.cp = m.thicken(self.b2.cp, self.ij)
+          undo = quarkx.action()
+          undo.exchange(self.b2, new)
+          editor.ok(undo,"thicken mesh")
+
+
+        addrow = qmenu.item("Add Row",thickenclick,"|Adds a row to the mesh")
+        if iseven(j):
+          addrow.state=qmenu.disabled
+        else:
+          addrow.thicken=quilt_addrow
+          
+        addcol = qmenu.item("Add Column",thickenclick,"|Adds a column to the mesh")
+        if iseven(i):
+          addcol.state=qmenu.disabled
+        else:
+          addcol.thicken=quilt_addcol
+          
+        thicken = qmenu.popup("Thicken",[addrow, addcol])
+        
+        
+        return [texcp,thicken] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -173,34 +277,41 @@ class CPHandle(qhandles.GenericHandle):
         return oldcp
 
     def drag(self, v1, v2, flags, view):
+
+        
         def movepoints(b2, i, j, self=self, view=view):
+            #
+            #  movecol & moverow are part of what's probably
+            #   a bad  idea for moving columns or rows based on
+            #   whether they're going away from the viewer
+            #
             def movecol(self=self, b2=b2, i=i, j=j, view=view):
-                if i==b2.W:
+                if i==self.w-1:
                     ip=i-2
                 else:
                     ip=i+2
-                gap = b2.cp[j][b2.W]-b2.cp[j][0]
+                gap = b2.cp[j][self.w-1]-b2.cp[j][0]
                 if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
                         return 1
                 return 0
                 
             def moverow(self=self, b2=b2, i=i, j=j, view=view):
-                if j==b2.H:
+                if j==self.h-1:
                     jp=j-2
                 else:
                     jp=j+2
-                gap = b2.cp[b2.H][i]-b2.cp[0][i]
+                gap = b2.cp[self.h-1][i]-b2.cp[0][i]
                 if gap and math.fabs(gap.normalized*view.vector(self.pos).normalized)>within45:
                     return 1
                 return 0
             
-            if quarkx.keydown('\022')==1:
-                if moverow():
-#                    if j==0 or j==b2.W:
-                        return map(lambda j,i=i:(i, j),range(b2.H+1))
-                elif movecol():
-#                   if i==0 or i==b2.H:
-                       return map(lambda i,j=j:(i, j), range(b2.W+1))
+            if quarkx.keydown('\020')==1: #SHIFT
+#                if moverow():
+#                    if j==0 or j==b2.w-1:
+                        return map(lambda j,i=i:(i, j),range(self.h))
+            if quarkx.keydown('\021')==1: #CTRL
+#                   if i==0 or i==b2.h-1:
+                       return map(lambda i,j=j:(i, j), range(self.w))
             return (i,j),
 
         delta = v2-v1

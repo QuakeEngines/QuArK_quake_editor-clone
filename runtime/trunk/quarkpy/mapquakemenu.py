@@ -332,7 +332,9 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
 
     elif texcount is not None:
         target = setup["TextureWad"] or setup["Q2TexPath"]
+        quarkx.msgbox(target,2,4)
         target = quarkx.outputfile(target)
+        quarkx.msgbox(target,2,4)
         c1,c2 = texcount
         if c1<c2:
             msg = Strings[5590] % (c2, target, c2-c1)
