@@ -12,6 +12,7 @@ Various Map editor utilities.
 
 
 
+
 import quarkx
 from qeditor import *
 from qdictionnary import Strings
@@ -293,6 +294,10 @@ def read2vec(vals):
 #
 #
 #$Log$
+#
+#Revision 1.9  2001/03/12 23:08:57  tiglari
+#read2vec for path dup enhancements
+#
 #Revision 1.8  2001/03/04 06:41:15  tiglari
 #arbitrary axis rot matrix-producer added
 #
