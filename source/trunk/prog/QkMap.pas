@@ -26,6 +26,20 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2000/11/19 15:31:49  decker_dk
+- Added 'ImageListTextureDimension' and 'ImageListLoadNoOfTexAtEachCall' to
+Defaults.QRK, for manipulating the TextureBrowser-TextureLists.
+- Modified TFQWad.PopulateListView, so it reads the above settings.
+- Changed two 'goto bail' statements to 'break' statements, in QkObjects.
+- Found the problem in the .MAP exporting entity-numbering, and corrected it.
+- Changed the '|' delimiting character in QObject.Ancestry to '->', as I think
+it will be more readable in the .MAP file.
+- Replaced the function-names:
+  = SauverTexte         -> SaveAsText
+  = SauverTextePolyedre -> SaveAsTextPolygon
+  = SauverTexteBezier   -> SaveAsTextBezier
+  = SauverSpec          -> SaveAsTextSpecArgs
+
 Revision 1.19  2000/10/26 18:12:40  tiglari
 fixed bug with a build flag (disableFP vs. Enhanced Tex mixup)
 
@@ -220,6 +234,7 @@ end;
 function ReadEntityList(Racine: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
 const
  cSeperators = [' ', #13, #10, Chr(vk_Tab)];
+ cExponentChars = ['E', 'e'];
  Granularite = 8192;
  FinDeLigne = False;
 type
@@ -572,25 +587,40 @@ expected one.
     '-','0'..'9': if (C='-') and not (Source^ in ['0'..'9','.']) then
                    ReadStringToken
                   else
-                   begin
+                  begin
                     S:='';
                     repeat
-                     S:=S+C;
-                     C:=Source^;
-                     if C=#0 then Break;
-                     Inc(Source);
+                      S:=S+C;
+                      C:=Source^;
+                      if C=#0 then
+                        Break;
+                      Inc(Source);
                     until not (C in ['0'..'9','.']);
+
+                    { Did we encounter a exponent-value? Something like: "1.322e-12"
+                      Then continue to read the characters }
+                    if (C in cExponentChars) then
+                    begin
+                      repeat
+                        S:=S+C;
+                        C:=Source^;
+                        if C=#0 then
+                          Break;
+                        Inc(Source);
+                      until not (C in ['0'..'9','-','+']);
+                    end;
+
                     if (C=#0) or (C in cSeperators) then
-                     begin
+                    begin
                       if (C=#13) or ((C=#10) {and not Juste13}) then
                        Inc(LineNoBeingParsed);
                       Juste13:=C=#13;
                       NumericValue:=StrToFloat(S);
                       SymbolType:=sNumValueToken;
-                     end
+                    end
                     else
                      Raise EErrorFmt(254, [LineNoBeingParsed, LoadStr1(251)]);
-                   end;
+                  end;
     '/', ';':
          if (C=';') or (Source^='/') then
           begin
