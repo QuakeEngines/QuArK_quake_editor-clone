@@ -2,7 +2,7 @@ title: Options menu
 author: Decker
 
 <img border=0 align=right>options.png</img>
-<i>Grid scale in 2D views</i>&nbsp;. These functions allow you to display a scale of the current grid setting in any one, combination, or all of the 2D views of the Editor. If&nbsp;' All 2D views '&nbsp; is checked, it will deactivate this menu's individual items.
+<i>Grid scale in 2D views</i>&nbsp;. These functions allow you to display a scale and tick mark guides of the current grid setting in any one, combination, or all of the 2D views of the Editor. You can also center any one or combination of the scales for each view. If&nbsp;' All 2D views '&nbsp; or&nbsp;' all scales centered '&nbsp; is checked, it will deactivate this menu's individual items.
 
 <i>Delete unused faces & polys</i>. If this is unchecked, you will be able to
 make invalid polyhedrons/faces. Always keep this marked, so QuArK will warn
@@ -50,6 +50,8 @@ the FPS-game. Uncheck this if you want your entire map build.
 <i>No Selection in Map Views</i>. When this menu item is checked, selection in the map views is prevented. This is useful when touring with the 3d viewer, to prevent selecting things accidentally.
 
 <i>Developer Mode</i>. In this mode, some extra items appear on the menu, to help with debugging, etc.
+
+<i>Rebuild 3D views</i>&nbsp;. This rebuilds the 3D views (actually all views) in case of a lockup. You may have to do this a few times to clear the views up. The easiest way is to just push the HotKey 'Tab' untill the views unlock and clear up.
 
 <i>Axis XYZ letter indicator in view windows</i>. This display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.
 
