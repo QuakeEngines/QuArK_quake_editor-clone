@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.192  2002/05/13 12:02:37  tiglari
+//update version
+//
 //Revision 1.191  2002/05/13 10:34:52  tiglari
 //support frozen selections (don't change until another frozen selection is made,
 //or they are cancelled with ESC or unfreeze selection)
@@ -625,7 +628,7 @@ QQRKSRC1
   {
     General:config =     // ":config" objects are displayed in the Configuration dialog box
     {
-      Version = "QuArK 6.3 rc1"
+      Version = "QuArK 6.4 alpha"
       InternalVersion = '6.2'
       TextureBrowser = "Texture Browser..."
       NewMapItems = "New Map Items..."
