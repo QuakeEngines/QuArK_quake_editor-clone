@@ -1,0 +1,63 @@
+title: Selection menu
+author: tiglari
+
+<img border=0 align=right>selection.png</img>
+
+<i>Cancel Selections.</i> (or by pressing its HotKey) Will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.
+
+<i>Make Detail.</i> (or by pressing its HotKeys) Will set the texture flag for the selected items to 'detail' so as to be ignored during the bsp file build to reduce the size of that game file. You can select any poly, face, side or combinaition. Once you have selected them hold the Alt key and press the D key to set all of their detail flags to active. If you still have them selected and press the Alt+D keys a second time, it will deactivate their detail flags, making it a toggle switch type function. Also, if you have a brush with just one or two faces already set for detail then by selecting the brush and using the Alt+D hot key, it will invert their settings. The detail face(s) will become inactive and all the others will be set to detail. 
+
+<i>Select parent.</i> If something is selected, switches the selection to
+that thing's parent in the map structure.  For example if a face is selected,
+the selection will change to the face's parent brush (or group, if the face
+is shared between the brushes of a group).
+
+<i>Select child.</i> If something is selected, switches the selection to that
+thing's first child.
+
+<i>Select next/previous.</i> If something is selected, these commands
+switch the selection to the next or previous sibling of that thing
+in the tree-view.
+
+<i>Freeze selection.</i>  Sometimes, when you are working on a brush
+or a patch, it is annoyingly easy to loose the selection by accidently
+clicking in the wrong place in the map.  This command 'freezes' the selection
+so that that can't happen.  You can also freeze the selection by left-clicking
+with the <Shift> key down.  Frozen selections can be changed in the treeview,
+or by <Shift>-left-clicking, and can be removed & unfrozen with <ESC>,
+or just unfrozen with Unfreeze selection below.
+
+<i>Unfreeze selection.</i>  If the selection is frozen, this command
+unfreezes it, so that selection works by simple left-clicking again.
+
+<i>Select tagged faces(s).</i>  If there are multiple tagged faces, this command
+turns them into a multiple selection of those faces (which can be dragged
+together, or manipulated in other ways).
+
+<a name="invertface"></a>
+<i>Invert face selection.</i> If a face or faces are selected, this changes
+the selection to the currently non-selected faces in the same brush(es).
+
+<i>Extend selection from face.</i> If a face is selected, this extends
+the selection to all faces (of other brushes) that adjoin this face and
+occupy the same plane.  Useful for moving large collection of faces
+together.
+
+<i>Browse multiple selection.</i> If you have a multiple selection, this
+creates a dialog from which you can choose individual elements of the
+multiple selection to select and work on in turn.
+
+<i>Unrestrict selection.</i> Reverses the effect of Restrict to Selection,
+allowing editing of the whole map again.
+
+<i>Restrict to selection.</i> This 'restricts' the map editor to working
+only on what is selected (when the command is given).  Other material
+will either disappear or be greyed out (depending on the grey/hide out
+of view setting, or disappear entirely in the textured 3d views), and
+can't be selected.
+
+<i>Zoom to selection.</i> This zooms the map 2D views in to the selection(s). If there is a 3D view open, it will also look at or zoom to the selection(s) in that view as well. See 'Look and Zoom in 3D views' under the 'Options' menu for more detail on how it works with this function.
+
+<i>Mark selection.</i> Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view. For example you can mark a group, and then later insert a selected entity into it, or mark an entity, and later insert it into or over (in the treeview) the selected group. Reorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.
+
+<i>Clear Mark.</i> This cancels the Mark selection.

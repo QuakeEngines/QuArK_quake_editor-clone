@@ -1,0 +1,25 @@
+title: Extruder
+author: tiglari
+
+The extruder has overlapping functionality with the
+<ref>maped/duplicators/path</ref>, but lacks
+some of its features, and has additional ones of its own (it's a different
+kind of implementation, with different potential).  Some significant strengths
+of the extruder are:
+<ul>
+<li>it has 2d editing facilities (either a special 2d editing window, or
+  circumference handles in a normal view) for controlling the shape of the
+  outline, which can be a hollow or solid (including concave) pipe, a patch
+  tube, or pipe with an outside square and inside complex outine).
+<li>it has a variety of faclities for positioning path points with respect
+  to each other (rmb on the path points).
+<li>it can automatically punch holes in things that it goes thru, both for the
+  inner and the outer circumference.
+</ul>
+To texture, it, dissociate the images, arrange the textures on the first section,
+then revert it back to being a duplicator.
+
+If you want to use the extruder 2d/outline editing features in combination with
+the features of the path duplicator, you can put a one-segment extruder into
+a path-duplicator's template group, and the shape will be extruded along the
+path.

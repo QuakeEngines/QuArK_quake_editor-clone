@@ -1,0 +1,16 @@
+title: Importing
+author: tiglari
+
+What you need to import depends on what you're doing; what we'll
+need for the whole plugin is this:
+<code>
+import quarkx
+import quarkpy.mapmenus
+import quarkpy.mapentities
+import quarkpy.qmenu
+import quarkpy.mapeditor
+import quarkpy.mapcommands
+from quarkpy.maputils import *
+</code>
+We will gradually explain what all this means.
+

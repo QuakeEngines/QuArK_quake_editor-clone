@@ -1,0 +1,9 @@
+title: Enlarge/Shrink selection
+author: Decker
+
+<img border=0 align=right>enlargeshrink.png</img>
+Pressing the first button, will enlarge your selection, with the zoom-factor
+amount, specified in the <ref> ./configuration </ref>.
+
+Pressing the second button, will shrink your selection, with the zoom-factor
+amount.

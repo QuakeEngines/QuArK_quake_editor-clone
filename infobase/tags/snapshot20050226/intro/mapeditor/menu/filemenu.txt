@@ -1,0 +1,22 @@
+title: File menu
+author: Decker
+
+<img border=0 align=right>file.png</img>
+<i>Open</i> works just as in the QuArK-Explorer. You can open any file with
+this, to apply it to your <g>project</g>.
+
+<i>Save</i> will save your current project to an <g>.QRK</g> file.
+
+<i>Save in QuArK Explorer</i>. Use this if you want to add this map to your
+current project. This way, you can have multiple revisions of a single map, in
+a single project. Just remember to give them a sensible name, so you can
+distinguish them. At the moment (QuArK v5.7), the map editor will automatically
+close itself when you use this menuitem.
+
+<i>Save as file</i>. If you want to export just this map to a <g>.MAP</g> or
+<g>.QKM</g> file, select this menuitem.
+
+<i>Save all</i> will save all opened files. This includes the current project
+and modified <g>add-on</g> data files.
+
+<i>Close</i> will close the map editor.
