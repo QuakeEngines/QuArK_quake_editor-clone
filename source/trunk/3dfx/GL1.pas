@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2002/04/04 18:01:27  decker_dk
+Added wglSwapBuffers - dated 2002.02.26.
+
 Revision 1.6  2001/03/20 21:38:02  decker_dk
 Updated copyright-header
 
@@ -629,7 +632,7 @@ var
   glClearColor: procedure (red, green, blue, alpha: GLclampf); stdcall;
   glClearDepth: procedure (depth: GLclampd); stdcall;
   glEnable: procedure (cap : GLenum); stdcall;
- {glDisable: procedure (cap : GLenum); stdcall;}
+  glDisable: procedure (cap : GLenum); stdcall;
   glDepthFunc: procedure (func: GLenum); stdcall;
   glHint: procedure (target: GLenum; mode: GLenum); stdcall;
   glEdgeFlag: procedure (flag: GLboolean); stdcall;
@@ -647,7 +650,10 @@ var
   glClear: procedure (mask: GLbitfield); stdcall;
   glBegin: procedure (mode: GLenum); stdcall;
   glEnd: procedure; stdcall;
- {glColor3f: procedure (red, green, blue: GLfloat); stdcall;}
+{DECKER 2003.03.13 - removed again
+  glColor3f: procedure (red, green, blue: GLfloat); stdcall; //Decker 2003.03.13 - Added
+  glColor4f: procedure (red, green, blue, alpha: GLfloat); stdcall; //Decker 2003.03.13 - Added
+/DECKER}
   glColor3fv: procedure (var v); stdcall;
   glColor4fv: procedure (var v); stdcall;
   glTexCoord2fv: procedure (var v); stdcall;
@@ -663,6 +669,7 @@ var
   glCallList: procedure (list: GLuint); stdcall;
   glDeleteLists: procedure (list: GLuint; range: GLsizei); stdcall;
   glReadPixels: procedure (x, y: GLint; width, height: GLsizei; format, typ: GLenum; var pixels); stdcall;
+  glBlendFunc: procedure (sfactor: GLint; dfactor: GLint) stdcall; {Decker 2003.03.12 - Added}
 
   (*
   ** Utility routines from GLU32.DLL
@@ -677,7 +684,7 @@ procedure UnloadOpenGl;
 implementation
 
 const
-  OpenGL32DLL_FuncList : array[0..38] of {Decker 2002.02.26 - Increased}
+  OpenGL32DLL_FuncList : array[0..40] of //Decker 2003.03.13 - modified
     record
       FuncPtr: Pointer;
       FuncName: PChar;
@@ -689,7 +696,7 @@ const
    ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
    ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
    ,(FuncPtr: @@glEnable;              FuncName: 'glEnable'              )
-  {,(FuncPtr: @@glDisable;             FuncName: 'glDisable'             )}
+   ,(FuncPtr: @@glDisable;             FuncName: 'glDisable'             )
    ,(FuncPtr: @@glDepthFunc;           FuncName: 'glDepthFunc'           )
    ,(FuncPtr: @@glHint;                FuncName: 'glHint'                )
    ,(FuncPtr: @@glEdgeFlag;            FuncName: 'glEdgeFlag'            )
@@ -707,7 +714,10 @@ const
    ,(FuncPtr: @@glClear;               FuncName: 'glClear'               )
    ,(FuncPtr: @@glBegin;               FuncName: 'glBegin'               )
    ,(FuncPtr: @@glEnd;                 FuncName: 'glEnd'                 )
-  {,(FuncPtr: @@glColor3f;             FuncName: 'glColor3f'             )}
+{DECKER 2003.03.13 - Removed again
+   ,(FuncPtr: @@glColor3f;             FuncName: 'glColor3f'             ) //Decker 2003.03.13 - Added
+   ,(FuncPtr: @@glColor4f;             FuncName: 'glColor4f'             ) //Decker 2003.03.13 - Added
+/DECKER}
    ,(FuncPtr: @@glColor3fv;            FuncName: 'glColor3fv'            )
    ,(FuncPtr: @@glColor4fv;            FuncName: 'glColor4fv'            )
    ,(FuncPtr: @@glTexCoord2fv;         FuncName: 'glTexCoord2fv'         )
@@ -722,7 +732,9 @@ const
    ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
    ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )
    ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
-   ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          ) );
+   ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          )
+   ,(FuncPtr: @@glBlendFunc;           FuncName: 'glBlendFunc'           ) //Decker 2003.03.12 - Added
+ );
 
   Glu32DLL_FuncList : array[0..0] of
     record
