@@ -317,9 +317,9 @@ def bestaxes(n, view):
   v1 = orthogonalvect(n, view)
   v2 = (n^v1).normalized
   return v1, v2
-    
 
-    
+
+
 def Arrow(canvas, view, p1, p2, text=None):
     "Draws an arrow from the 3D point p1 to the 3D point p2."
 
@@ -1205,7 +1205,7 @@ class ToolBar:
     def __init__(self, layout, form):
         self.tb = form.newtoolbar(self.Caption, self.buildbuttons(layout), 1)
     #     self.tb.onshowhide = self.visiblechanged
-    # 
+    #
     # def visiblechanged(self, tb, layout=None):
     #     try:
     #         btn = self.triggerbtn
@@ -1404,7 +1404,10 @@ def htmldoc(doc):
         else:
             quarkx.msgbox("No help document available.", MT_ERROR, MB_OK)
             return
-    quarkx.htmldoc(quarkx.exepath + doc)
+    if (doc[:7] == "http://" or doc[:7] == "HTTP://"):
+        quarkx.htmldoc(doc)
+    else:
+        quarkx.htmldoc(quarkx.exepath + doc)
 
 
 
@@ -1419,7 +1422,7 @@ def Help2():
     htmldoc(None)
 
 def Help3():
-    htmldoc("help\\faq.html")
+    htmldoc("help\\faq\\index.html")
 
 
 #
@@ -1450,6 +1453,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.3  2000/08/21 21:33:04  aiv
+#Misc. Changes / bugfixes
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
