@@ -12,10 +12,16 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+ * [Nazar]: Added additional support for JA (Jedi Academy) with full lists of all textures,
+   shaders and all singleplayer entities as well as a partial list of multiplayer entities.
+   Setup a new path in the Defaults.qrk file for game and command lines for the map
+   compiler file q3map2.exe.
+
  * [alexander]:
    introduced new PointSpecHandle which allows to have additional 3d control points on entities.
    which specifics are used for these points is controlled similar to the angle specific list.
    This is needed to support ladders and breakable security glass in HL2
+
  * [alexander]:
     allow individual texture paths for hl2
     vtf dll api changed , can select mip level now
