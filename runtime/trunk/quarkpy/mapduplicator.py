@@ -85,7 +85,7 @@ def get_suffix(s):
     return s[:l-j], s[l-j:l]
 
 def poolitems(item):
-    return item.findallsubitems("",":b")+item.findallsubitems("",":e")
+    return item.findallsubitems("",":b")+item.findallsubitems("",":e")+item.findallsubitems("",":d")
 
 def pool_specs(list):
     specs = {}
@@ -201,7 +201,7 @@ class StandardDuplicator(DuplicatorManager):
             for item2 in poolitems(item):
                 for spec in self.incrementable:
                     val = item2[spec]
-                    if val is not None:
+                    if val is not None and val!="":
                         if is_digit(val[len(val)-1]):
                             base, index = get_suffix(val)
                             width = len(index)
@@ -397,6 +397,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2001/06/05 21:11:35  tiglari
+#final values now work on things embedded in groups
+#
 #Revision 1.18  2001/06/05 12:38:02  tiglari
 #final value elaborations
 #
