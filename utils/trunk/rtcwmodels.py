@@ -1,8 +1,12 @@
 #
-# Python 1.5.x
+# Python 1.5.1/2
 #
 # Generates a t_models_form:form object for RTCW, adaptable to other games.
-#  The models must first be extracted from the .pk3 into a folder.
+#  The .md3 files should come from a (Gtk)Radiant distribution.  For
+#  Wolf, only mapobjects get md3 files (in the .pak appear .mdc files,
+#  which QuArK and the tools don't seem to process).
+#
+# usage: start Python; from rtcwmodels import doit; doit()
 #
 #
 import os
@@ -15,17 +19,20 @@ import glob
 #
 #
 
+   
 def doit():
-    getmodpaths('e:/rtcwmod/models', 'modlist.txt')
+    getmodpaths('e:/rtcwmod/models/mapobjects', 'modlist.txt')
 
 
 def traverse(root, mods):
     paths=os.listdir(root)
     for path in paths:
-        mods=mods + glob.glob(root+'/'+path+'/*.mdc')
+#        print('globbing '+`path`)
+        if path[-4:]=='.md3':
+            mods.append(root+'/'+path)
     for path in paths:
         if os.path.isdir(root+'/'+path):
-            mod = traverse(root+'/'+path,mods)
+            mods = traverse(root+'/'+path,mods)
     return mods
 
 #
@@ -37,13 +44,11 @@ def getmodpaths(root,out):
     paths = os.listdir(root)
     start=len(root)+1
     moddict = {}
-#    for path in paths:
-#        print('path: '+path)
-#        mods = glob.glob(root+'/'+path+'/*.mdc')
     for path in paths:
         print('top path: '+path)
         if os.path.isdir(root+'/'+path):
             mods = traverse(root+'/'+path, [])
+        print('mods: '+`len(mods)`)
         moddict[path]=mods
     keys = moddict.keys()
     keys.sort()
@@ -71,7 +76,7 @@ def getmodpaths(root,out):
            else:
                output.write('        "')
                nonfirst = 1
-           output.write('/models/'+mod[start:])
+           output.write('/models/mapobjects/'+mod[start:])
        output.write('"\n      }\n')
     output.write('    }\n')
     output.close()       
