@@ -208,6 +208,7 @@ def thinClick(m):
         "stick stuff in this"
     pack.useless=useless
     pack.thin=thin
+    pack.seen = 0
       
     #
     # This loads the relevant data into the dialog, gets
@@ -225,15 +226,22 @@ def thinClick(m):
         #
         # Names and list-indexes of thin brushes
         #
-        pack.slist = map(lambda obj:obj.shortname, pack.useless)
-        pack.klist = map(lambda d:`d`, range(len(pack.useless)))
+        ran = range(len(pack.useless))
+        pack.slist = map(lambda obj, d:"%d) %s"%(d+1, obj.shortname), pack.useless, ran)
+        pack.klist = map(lambda d:`d`, ran)
 
-        #
-        #  wtf doesn't this work, item loads but function is trashed
-        #
-#        self.src["useless"] = pack.klist[0]
         self.src["useless$Items"] = string.join(pack.slist, "\015")
         self.src["useless$Values"] = string.join(pack.klist, "\015")
+        #
+        # load the first value
+        #
+        if (not pack.seen) and len(ran)>0:
+            self.src["useless"] = '0'
+            self.chosen = '0'
+            pack.seen = 1
+        elif len(ran)==0:
+            self.src["useless"] = ''
+            self.chosen = ''
         #
         # Note the commas, EF..1 controls take 1-tuples as data
         #
@@ -279,6 +287,9 @@ quarkpy.mapsearch.items.append(qmenu.item('Find &Thin Faces', thinClick,
   "|This identifies brushes with faces that are suspiciously thin."))
 
 #$Log$
+#Revision 1.3  2001/06/17 21:10:56  tiglari
+#fix button captions
+#
 #Revision 1.2  2001/06/16 03:19:47  tiglari
 #add Txt="" to separators that need it
 #

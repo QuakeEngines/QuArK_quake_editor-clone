@@ -171,9 +171,10 @@ def findClick(m, spec=None, val=None):
                 self.src['value']=val
             
         if self.src['value']:
-            targetted = getSpecVal(spec,self.src['value'], editor)            
-            pack.slist = map(lambda obj,num:"%s:%s (%d)"%(obj.parent.shortname,obj.shortname,num), targetted, range(len(targetted)))
-            pack.klist = map(lambda d:`d`, range(len(targetted)))
+            targetted = getSpecVal(spec,self.src['value'], editor)
+            ran = range(len(targetted))
+            pack.slist = map(lambda obj,num:"%d) %s:%s"%(num+1, obj.parent.shortname,obj.shortname), targetted, ran)
+            pack.klist = map(lambda d:`d`, ran)
 
             #
             #  wtf doesn't this work, item loads but function is trashed
@@ -182,10 +183,13 @@ def findClick(m, spec=None, val=None):
             self.src["found$Items"] = string.join(pack.slist, "\015")
             self.src["found$Values"] = string.join(pack.klist, "\015")
             self.src["num"]=len(pack.klist),
-            if not pack.seen:
+            if not pack.seen and len(ran)>0:
                 pack.seen = 1
                 self.src["found"] = '0'
                 self.chosen = '0'
+            elif len(ran)==0:
+                self.src["found"] = ''
+                self.chosen = ''
             pack.found = targetted
 
     #
@@ -259,6 +263,10 @@ quarkpy.mapentities.BrushEntityType.menu = brushmenu
 
 
 #$Log$
+#Revision 1.2  2002/05/20 11:07:54  tiglari
+#fix bug whereby if all targetted items had the same name, the first one
+#  of that name would be selected.  Also now preloading with first element works
+#
 #Revision 1.1  2002/05/18 05:21:39  tiglari
 #Suggestion by quantum_red
 #
