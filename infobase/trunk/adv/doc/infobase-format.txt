@@ -84,6 +84,12 @@ Some special tags, that <tt>build.py</tt> checks for:
       <tt>zips</tt> folder).
   <br>Notice that the ending &lt;/zip&gt;-tag must be on the same line as the
       start-tag!
+<dt>&lt;g&gt; <i>any word(s) to glossary</i> &lt;/g&gt;
+  <dd>To make a, somewhat useful glossary, you can use these tags to indicate
+      that the word (actually only the first letter of the word, for the moment)
+      links to the glossary.
+  <br>Notice that the ending &lt;/g&gt;-tag must be on the same line as the
+      start-tag!
 <dt>&lt;act&gt; <i>1st menuaction</i> | <i>2nd menuaction</i> | <i>etc.</i> &lt;/act&gt;
   <dd>To indicate a series of menu-actions, the user should perform to activate
       or execute something, you can use these tags.
@@ -150,6 +156,12 @@ for i in range(0,9):
 &lt;img align=right border=2&gt; quark.gif &lt;/img&gt;
 </td><td>
 <img align=right border=2> quark.gif </img>
+</td></tr>
+
+<tr><td nowrap>
+This is a link to the &lt;g&gt;QuArK&lt;/g&gt; glossary.
+</td><td>
+This is a link to the <g>QuArK</g> glossary.
 </td></tr>
 
 <tr><td nowrap>
