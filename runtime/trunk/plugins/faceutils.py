@@ -71,6 +71,7 @@ def coplanar(f1, f2, opp=1):
     "if opp==0, face normals must point in same direction"
     o1 = f1.dist*f1.normal
     o2 = f2.dist*f2.normal
+#    debug('coplanar')
     if not f1.normal*(o2-o1):
         if not f1.normal-f2.normal:
             return 1
@@ -80,6 +81,9 @@ def coplanar(f1, f2, opp=1):
     
 
 #$Log$
+#Revision 1.2  2001/04/15 06:05:52  tiglari
+#add coplanar function
+#
 #Revision 1.1  2001/04/01 04:43:48  tiglari
 #initial commit
 #       
