@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2002/03/26 22:21:59  tiglari
+support UseIntegralVertexes flag
+
 Revision 1.39  2002/03/26 10:16:40  tiglari
 Englishification: TPolyedre->TPolyhedron
 
@@ -1341,17 +1344,15 @@ begin
           end;
         end;
 
-(*       {Decker}
        if (WC33map) then
        begin
          { Remove the spec/arg "mapversion" from worldspawn,
-           since QuArK does not write WC3.3 versions of the .MAP format }
+           since QuArK will write it depending on whether the
+           game config is set to write this format }
          SpecIndex := L.IndexOfName('mapversion');
          if (SpecIndex >= 0) then
            L.Delete(SpecIndex);
        end;
-       {/Decker}
-*)
 
       {Entite.Item.Text:=Classname;}
        Entite.Specifics.Assign(L);

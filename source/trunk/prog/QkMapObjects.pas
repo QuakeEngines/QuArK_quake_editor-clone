@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.36  2002/03/26 22:21:59  tiglari
+support UseIntegralVertexes flag
+
 Revision 1.35  2002/03/26 10:12:26  tiglari
 get rid of soDisableEnhTex,  soEnableBrushPrim (obsoleted by OutputMapFormat)
 
@@ -2417,6 +2420,8 @@ begin
   else }if (Specifics.Values['mapversion']='6DX') or (Specifics.Values[';mapversion']='6DX') then
     Flags:=Flags + soWrite6DXHierarky;
 
+  if GetMapFormatType=V220Type then
+    Specifics.Values['mapversion']:='220';
   I := GetFirstEntityNo;
  end
  else

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.47  2002/03/26 22:20:51  tiglari
+support UseIntegralVertexes flag
+
 Revision 1.46  2002/03/26 10:17:51  tiglari
 Englishification: TPolyedre->TPolyhedron
   and
@@ -192,6 +195,16 @@ const
  CannotEditFaceYet = '!';
 
 type
+
+
+ MapFormatTypes = (
+     CQType, { Classic Quake1/2/3 }
+     QetpType,  { Quark Enhanced Texture Positioning }
+     V220Type,  { Valve Mapformat 220 }
+     BPType     { Brush Primitives }
+  );
+
+
  PVertex = ^TVertex;
  TVertex = record
             P: TVect;
@@ -369,6 +382,8 @@ procedure DessinPolygoneFace(S: PSurface);
 
 procedure RechercheAdjacents(Concerne, Source: PyObject; Simple, Double: Boolean);
 procedure GetAxisBase(const Normal0: TVect; var texS, texT: TVect);
+function GetMapFormatType : MapFormatTypes;
+
  {------------------------}
 
 implementation
@@ -381,13 +396,6 @@ const
 
 type
  TThreePoints = array[1..3] of TVect;
-
- MapFormatTypes = (
-     CQType, { Classic Quake1/2/3 }
-     QetpType,  { Quark Enhanced Texture Positioning }
-     V220Type,  { Valve Mapformat 220 }
-     BPType     { Brush Primitives }
-  );
 
  {------------------------}
 
