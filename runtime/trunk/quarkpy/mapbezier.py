@@ -19,12 +19,13 @@ import mapentities
 import dlgclasses
 
 from plugins.tagging import *
+import plugins.maptagpoint
 from b2utils import *
 
 class CPTexPos(dlgclasses.LiveEditDlg):
     endcolor = AQUA
     size = (100,100)
-    dfsep = 0.50
+    dfsep = 0.5
 
     dlgdef = """
         {
@@ -161,10 +162,63 @@ def quilt_delcol(cp, (i,j)):
         
 
 #
+#   The counterclockwise traversal of the edges
+#     supports using arithmetic to figure out how
+#     to `rotate' things for patch-merger
+#
+P_FRONT = 0   # first column of patch
+P_TOP = 1     # last row of patch 
+P_BACK = 2    # last column of patch
+P_BOTTOM = 3  # row 0 of patch
+
+
+def RotateCpCounter1(cp):
+    "returns a cp net where the old P_BACK is now P_TOP"
+    ncp = []
+    h = len(cp)
+    w = len(cp[0])
+    for j in range(w):
+        ncp.append(map(lambda i,cp=cp,k=w-j-1:cp[i][k],range(h)))
+    return ncp
+
+def RotateCpCounter2(cp):
+    ncp = []
+    h = len(cp)
+    for i in range(h):
+      row = cp[h-i-1]
+      row = list(row)
+      row.reverse()
+      ncp.append(row)
+    return ncp
+
+def RotateCpCounter(i, cp):
+    if i==0:
+        return copyCp(cp)
+    i=i%4
+    if i==0:
+        return copyCp(cp)
+    if i==1:
+        return RotateCpCounter1(cp)
+    if i==2:
+        return RotateCpCounter2(cp)
+    if i==3:
+        return RotateCpCounter1(RotateCpCounter2(cp))
+        
+def joinCp((tp1,X), cp1, (tp2,Y), cp2):
+    "returns cp1 extended to include cp2, assumes preconditions"
+#    squawk(`tp1-P_BACK`)
+    cp1 = RotateCpCounter(P_BACK-tp1, cp1)
+    cp2 = RotateCpCounter(P_FRONT-tp2, cp2)
+#    squawk(`cp1`)
+#    squawk(`cp2`)
+    ncp = map(lambda row1, row2,cp1=cp1,cp2=cp2:row1+row2[1:], cp1, cp2)
+    return RotateCpCounter(tp1-P_BACK, ncp)
+
+#
 # Handles for control points.
 #
 
-  
+
 class CPHandle(qhandles.GenericHandle):
     "Bezier Control point."
 
@@ -207,6 +261,25 @@ class CPHandle(qhandles.GenericHandle):
             return 0
         return 1
         
+    def type(self):
+        "(type, dim); type=P_FRONT etc"
+        "None; not an edge"
+        i, j = self.ij
+        cp = self.b2.cp
+        h = len(cp)
+        w = len(cp[0])
+        if 0<i<h-1:
+            if j==0:
+                return P_FRONT, h
+            if j==w-1:
+                return P_BACK, h 
+        if 0<j<w-1:
+            if i==0:
+                return P_BOTTOM, w
+            if i==h-1:
+                return P_TOP, w            
+
+
     #
     # Things that are only sensible for particular control points
     #  should go here, things that are sensible for the whole patch
@@ -268,7 +341,7 @@ class CPHandle(qhandles.GenericHandle):
         else:
           addrow.thicken=quilt_addrow
           delrow.state=qmenu.disabled
-        if len(cp)<4:
+        if len(cp)<4 or i==0 or i==len(cp)-1:
           delrow.state=qmenu.disabled
           
         addcol = qmenu.item("Add Column",thickenclick,"|Adds a column to the mesh")
@@ -279,25 +352,11 @@ class CPHandle(qhandles.GenericHandle):
         else:
           addcol.thicken=quilt_addcol
           delcol.state=qmenu.disabled
-        if len(cp[0])<4:
+        if len(cp[0])<4 or j==0 or j==len(cp[0])-1:
           delcol.state=qmenu.disabled
           
         mesh = qmenu.popup("Mesh",[addrow, addcol, delrow, delcol])
         
-        def projtexclick(m, self=self, editor=editor):
-          new = faceTexFromCph(self,m.tagged,editor)
-          undo = quarkx.action()
-          undo.exchange(m.tagged, new)
-          editor.ok(undo, "proj tex 2 tagged face")
-          cleartag(editor)
-          
-          
-        projtex = qmenu.item("&Project Texture to tagged", projtexclick, "|Just an interim measure for testing things")
-        tagged = gettaggedface(editor)
-        if tagged is None or not self.iscorner():
-           projtex.state=qmenu.disabled
-        else:
-           projtex.tagged = tagged
         
         tagpt = gettaggedpt(editor)
 
@@ -317,19 +376,36 @@ class CPHandle(qhandles.GenericHandle):
         glue = qmenu.item("&Glue to tagged point", glueclick)
         if tagpt is None:
             glue.state=qmenu.disabled
+        
+        def JoinClick(m,self=self, editor=editor):
+            b2 = self.b2
+            tb2 = m.tagged.b2
+#            ncp = map(lambda row1, row2,b2=b2,tb2=tb2:row1+row2[1:],tb2.cp,b2.cp)
+            ncp = joinCp(m.tagtype,tb2.cp,m.selftype,b2.cp)
+            new =tb2.copy()
+            new.cp = ncp
+            undo = quarkx.action()
+            undo.exchange(tb2, new)
+            undo.exchange(b2,None)
+            editor.ok(undo,'Join Patches')
+            editor.invalidateviews()
 
-#        def lenclick(m, cp=cp, i=i, j=j):
-#            row = colofcp(cp, i)
-#            squawk(`row`)
-#            length = lengthof(row, 1)
-#            squawk(`length`)
-#        
-#        length = qmenu.item("Length", lenclick)
-
-    
+        joinitem = qmenu.item("&Join patch to tagged",JoinClick,"|Combine tagged patch and this one into one quilt")
+        joinitem.state=qmenu.disabled
+        tagged = gettaggedb2cp(editor)
+        if tagged is not None:
+            tagtype = tagged.type()
+            selftype = self.type()
+            if tagtype is not None and selftype is not None:
+                if tagtype[1]==selftype[1]:
+                    joinitem.state=qmenu.normal
+                    joinitem.tagtype, joinitem.selftype = tagtype, selftype
+                    joinitem.tagged = tagged
+        if joinitem.state==qmenu.disabled:
+             joinitem.hint=joinitem.hint+"\n\nTo enable this menu item, tag a non-corner edge point of one patch, and RMB on a non-corner edge point of another"
 
 #        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-        return [texcp, mesh, projtex, glue] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp, mesh, joinitem, glue] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -424,6 +500,28 @@ class CPHandle(qhandles.GenericHandle):
         return [self.b2], new
 
 #
+# getting tag point to actually tag the bezier control point.
+#
+def tagB2CpClick(m):
+    editor = mapeditor()
+    if editor is None: return
+    tagb2cp(m.o, editor)
+
+def originmenu(self, editor, view, oldoriginmenu = quarkpy.qhandles.GenericHandle.OriginItems.im_func):
+  menu = oldoriginmenu(self, editor, view)
+  if isinstance(self, CPHandle):
+      for item in menu:
+          try:
+              if item.tagger:
+                  item.onclick = tagB2CpClick
+                  item.o = self
+          except (AttributeError):
+              pass
+  return menu
+  
+quarkpy.qhandles.GenericHandle.OriginItems = originmenu
+
+#
 # Stuff that's meaningful for the whole patch should go here
 #
 def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
@@ -443,10 +541,29 @@ def newb2menu(o, editor, oldmenu=mapentities.BezierType.menubegin.im_func):
     else:
        projtex.tagged = tagged
 
+    def rotclick(m, o=o, editor=editor):
+        ncp = RotateCpCounter(-1,o.cp)
+        new = o.copy()
+        new.cp = ncp
+        undo=quarkx.action()
+        undo.exchange(o, new)
+        editor.ok(undo,"Spin")
+        editor.invalidateviews()
 
+    spin = qmenu.item("Rotate",rotclick)
     
+    def unwarpclick(m,o=o,editor=editor):
+        new=o.copy()
+        new.cp = undistortColumns(undistortRows(o.cp))
+        undo=quarkx.action()
+        undo.exchange(o, new)
+        editor.ok(undo,"unwarp")
+        
+        
+    unwarp = qmenu.item("Unwarp texture", unwarpclick, "|Tries to reduce texture scale changes within patch, keeping corner points the same.")
+     
 
-    return  [projtex]+oldmenu(o, editor)
+    return  [projtex, unwarp]+oldmenu(o, editor)
 
 mapentities.BezierType.menubegin = newb2menu
 
@@ -473,6 +590,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.24  2000/07/16 07:58:11  tiglari
+#bezier menu -> menubegin; mesh thinning
+#
 #Revision 1.23  2000/07/04 11:04:23  tiglari
 #fixed patch thicken bug (copycp->copyCp)
 #
