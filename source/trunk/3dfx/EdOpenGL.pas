@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/03/20 21:38:21  decker_dk
+Updated copyright-header
+
 Revision 1.17  2001/01/22 00:11:02  aiv
 Beginning of support for sprites in 3d view
 
@@ -113,6 +116,7 @@ type
    LightParams: TLightParams;
    procedure LoadCurrentTexture(Tex: PTexture3);
  protected
+   Bilinear: boolean;
    function StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode; override;
    procedure EndBuildScene; override;
    procedure RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
@@ -833,6 +837,10 @@ begin
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
  {glShadeModel(GL_FLAT);} *)
+  if SetupSubSet(ssGeneral,'OpenGL').Specifics.Values['Bilinear']<>'' then
+     Bilinear:=true
+  else
+     Bilinear:=false;
   glEnable(GL_TEXTURE_2D);
   Err(2);
 
@@ -1202,8 +1210,16 @@ begin
     {$IFDEF DebugGLErr} Err(106); {$ENDIF}
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    if Bilinear then
+    begin
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    end
+    else
+    begin
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    end
     {$IFDEF DebugGLErr} Err(107); {$ENDIF}
   end;
 end;
