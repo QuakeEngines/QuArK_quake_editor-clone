@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.50  2001/08/05 05:41:35  tiglari
+support bsp cruising for q1,2,3, by using intermediary BspNode, BspLeaf
+ classes to shift data from the bsp itself into QBspNode.
+
 Revision 1.49  2001/08/04 09:57:19  tiglari
 move hulltype stuff into QkBspHulls, bstype stuff into QkBsp
 
@@ -553,8 +557,9 @@ type
 const
  cSignatureBspQ2DKQ3  = $50534249; {"IBSP" 4-letter header, which Quake-2, Daikatana and Quake-3:Arena contains}
  cSignatureSin        = 1347633746;
+
  cVersionBspQ2        = $00000026; {Quake-2 .BSP}
- cVersionSin          = 1;
+ cVersionSin          = $00000001; {Sin .BSP}
  cVersionBspDK        = $00000029; {Daikatana .BSP}
 
 const
@@ -591,9 +596,12 @@ type
 (***********  Quake-3 .bsp format  ***********)
 
 const
- // Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
+ // Note: Quake-3 and STVEF .BSPs, uses the same signature as Quake-2 .BSPs!
+
+ cSignatureBspJK2     = $50534252; {"RBSP" 4-letter header, which Jedi Knight II contains}
 
  cVersionBspQ3        = $0000002E; {Quake-3 or STVEF .BSP}
+ cVersionBspJK2       = $00000001; {JK2 .BSP}
 
 const
  Bsp3EntryNames : array[TBsp3EntryTypes] of String =
@@ -1024,6 +1032,15 @@ begin
             else {version unknown}
               Raise EErrorFmt(5572, [LoadName, Version, cVersionBspQ2]);
           end;
+        end;
+
+        cSignatureBspJK2: { Jedi Knight II }
+        begin
+          LoadBsp3(F, StreamSize); {Decker - try using the Q3 .BSP loader for JK2 maps}
+          if CharModeJeu<mjQ3A then
+            ObjectGameCode := mjQ3A
+          else
+            ObjectGameCode := CharModeJeu;
         end;
 
       else
