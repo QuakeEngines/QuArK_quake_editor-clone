@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.234  2004/12/26 23:54:25  cdunde
+//To put Doom 3 in proper game order on Games menu and config section.
+//
 //Revision 1.233  2004/12/22 11:37:40  rowdy
 //Rowdy - first pass of support for Doom 3
 //
@@ -2881,6 +2884,92 @@ QQRKSRC1
       t_GameBuildPgms=!
     }
 
+    GameDoom3:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Doom 3 command-line"
+        Items = "Doom3.EXE +set sv_pure 0"
+        t_ProgramHint=!
+      }
+      Directory: =
+      {
+        Txt = "Directory of Doom 3"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path to the game executable"
+        CheckFile = "DOOM3.EXE"
+      }
+      CD: =
+      {
+        Txt = "Doom 3 CD-ROM drive"
+        Typ = "ED"      // Edit Directory
+        Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
+        CheckFile = "Doom3\base\pak000.pk4"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Doom 3 (cmd=GAM, game=j)
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Doom 3 (cmd=GAM, game=j)
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Doom 3"
+      }
+      DefaultTextureCaulk: =
+      {
+        t_DefaultTextureCaulk = !
+        GameCfg = "Doom 3"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
     GameHalfLife:form =
     {
       Style = "3"
@@ -2944,6 +3033,104 @@ QQRKSRC1
       {
         t_DefaultTextureOrigin = !
         GameCfg = "Half-Life"
+      }
+      3DLight: =
+      {
+        Txt = "Game Light saturation"
+        Typ = "EF1"
+        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
+      }
+      EnableTransparency: =
+      {
+        Txt = "In OpenGL window, enable transparency (slow!)"
+        Typ = "X"
+        Hint = "When checked, brush-entities that has their"
+            $0D"'rendermode' and 'renderamt' set to transparency,"
+            $0D"will be drawn transparent in the OpenGL window - "
+            $0D"though NOT exactly drawn as in-game."
+            $0D
+            $0D"Notice! When enabled the OpenGL window may"
+            $0D"be very slow to update itself, when changing"
+            $0D"the scenery."
+      }
+      sep:        = {Typ="S" Txt = ""}
+      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
+      t_GameBuildPgms=!
+    }
+
+    GameHalfLife2:form =
+    {
+      Style = "3"
+      sep: = {Typ="S" Txt="---- Game Settings ----"}
+      Program: = {
+        Typ = "C"     // combo box
+        Txt = "Half-Life2 command-line"
+        t_ProgramHint=!
+        Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
+      }
+      Directory: =
+      {
+        Txt = "SteamApps Directory"
+        Typ = "ED"      // Edit Directory
+        Hint = "Path where all the gcf files are"
+        CheckFile = "../steam.exe"
+      }
+      tmpQuArK: =
+      {
+        Txt = ""
+        Typ = "C"   // combo box    
+        Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
+        Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
+                $0D"<Steam User Name>/half-life 2/hl2"
+                $0D"<Steam User Name>/counter-strike source/cstrike"
+      }
+      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
+      {
+        Typ = "+"
+        Txt = "Installed Add-ons"
+        Cap = "Add-ons..."
+        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
+               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
+               $666000407787877866608777777777784448444844487F785C77CF77CC487778
+               $5CC7C777CC488880055555555548870666608888888800666666666666666666
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
+      }
+      Outp:tbbtn =
+      {
+        Typ = "+"
+        Txt = "Paths and files to create"
+        Cap = "Output directories..."
+        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
+               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
+               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
+               $0022002A200666002AAAA20006666666002A200666666666660006666666
+        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
+        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
+      }
+      sep: = {Typ="S" Txt = ""}
+      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
+      DefaultTexture: =
+      {
+        t_DefaultTexture = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureTrigger: =
+      {
+        t_DefaultTextureTrigger = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureClip: =
+      {
+        t_DefaultTextureClip = !
+        GameCfg = "Half-Life2"
+      }
+      DefaultTextureOrigin: =
+      {
+        t_DefaultTextureOrigin = !
+        GameCfg = "Half-Life2"
       }
       3DLight: =
       {
@@ -4742,288 +4929,6 @@ QQRKSRC1
       {
         t_DefaultTextureCaulk = !
         GameCfg = "WildWest"
-      }
-      3DLight: =
-      {
-        Txt = "Game Light saturation"
-        Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
-      }
-      sep:        = {Typ="S" Txt = ""}
-      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      t_GameBuildPgms=!
-    }
-
-    GameHalfLife2:form =
-    {
-      Style = "3"
-      sep: = {Typ="S" Txt="---- Game Settings ----"}
-      Program: = {
-        Typ = "C"     // combo box
-        Txt = "Half-Life2 command-line"
-        t_ProgramHint=!
-        Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
-      }
-      Directory: =
-      {
-        Txt = "SteamApps Directory"
-        Typ = "ED"      // Edit Directory
-        Hint = "Path where all the gcf files are"
-        CheckFile = "../steam.exe"
-      }
-      tmpQuArK: =
-      {
-        Txt = ""
-        Typ = "C"   // combo box    
-        Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
-        Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
-                $0D"<Steam User Name>/half-life 2/hl2"
-                $0D"<Steam User Name>/counter-strike source/cstrike"
-      }
-      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
-      {
-        Typ = "+"
-        Txt = "Installed Add-ons"
-        Cap = "Add-ons..."
-        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
-               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
-               $666000407787877866608777777777784448444844487F785C77CF77CC487778
-               $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
-        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
-      }
-      Outp:tbbtn =
-      {
-        Typ = "+"
-        Txt = "Paths and files to create"
-        Cap = "Output directories..."
-        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
-               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
-               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
-               $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
-        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
-      }
-      sep: = {Typ="S" Txt = ""}
-      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      DefaultTexture: =
-      {
-        t_DefaultTexture = !
-        GameCfg = "Half-Life2"
-      }
-      DefaultTextureTrigger: =
-      {
-        t_DefaultTextureTrigger = !
-        GameCfg = "Half-Life2"
-      }
-      DefaultTextureClip: =
-      {
-        t_DefaultTextureClip = !
-        GameCfg = "Half-Life2"
-      }
-      DefaultTextureOrigin: =
-      {
-        t_DefaultTextureOrigin = !
-        GameCfg = "Half-Life2"
-      }
-      3DLight: =
-      {
-        Txt = "Game Light saturation"
-        Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
-      }
-      EnableTransparency: =
-      {
-        Txt = "In OpenGL window, enable transparency (slow!)"
-        Typ = "X"
-        Hint = "When checked, brush-entities that has their"
-            $0D"'rendermode' and 'renderamt' set to transparency,"
-            $0D"will be drawn transparent in the OpenGL window - "
-            $0D"though NOT exactly drawn as in-game."
-            $0D
-            $0D"Notice! When enabled the OpenGL window may"
-            $0D"be very slow to update itself, when changing"
-            $0D"the scenery."
-      }
-      sep:        = {Typ="S" Txt = ""}
-      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      t_GameBuildPgms=!
-    }
-
-    GameHalfLife2:form =
-    {
-      Style = "3"
-      sep: = {Typ="S" Txt="---- Game Settings ----"}
-      Program: = {
-        Typ = "C"     // combo box
-        Txt = "Half-Life2 command-line"
-        t_ProgramHint=!
-        Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
-      }
-      Directory: =
-      {
-        Txt = "SteamApps Directory"
-        Typ = "ED"      // Edit Directory
-        Hint = "Path where all the gcf files are"
-        CheckFile = "../steam.exe"
-      }
-      tmpQuArK: =
-      {
-        Txt = ""
-        Typ = "C"   // combo box    
-        Hint = "e.g. <Steam User Name>/counter-strike source/cstrike"
-        Items =    "<Steam User Name>/half-life 2 deathmatch/hl2mp"
-                $0D"<Steam User Name>/half-life 2/hl2"
-                $0D"<Steam User Name>/counter-strike source/cstrike"
-      }
-      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
-      {
-        Typ = "+"
-        Txt = "Installed Add-ons"
-        Cap = "Add-ons..."
-        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
-               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
-               $666000407787877866608777777777784448444844487F785C77CF77CC487778
-               $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
-        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
-      }
-      Outp:tbbtn =
-      {
-        Typ = "+"
-        Txt = "Paths and files to create"
-        Cap = "Output directories..."
-        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
-               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
-               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
-               $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMk"}    // switches to Half-Life2
-        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
-      }
-      sep: = {Typ="S" Txt = ""}
-      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      DefaultTexture: =
-      {
-        t_DefaultTexture = !
-        GameCfg = "Half-Life2"
-      }
-      DefaultTextureTrigger: =
-      {
-        t_DefaultTextureTrigger = !
-        GameCfg = "Half-Life2"
-      }
-      DefaultTextureClip: =
-      {
-        t_DefaultTextureClip = !
-        GameCfg = "Half-Life2"
-      }
-      DefaultTextureOrigin: =
-      {
-        t_DefaultTextureOrigin = !
-        GameCfg = "Half-Life2"
-      }
-      3DLight: =
-      {
-        Txt = "Game Light saturation"
-        Typ = "EF1"
-        Hint = "Currently only for the OpenGL viewer. Larger values make darker scenes."
-      }
-      EnableTransparency: =
-      {
-        Txt = "In OpenGL window, enable transparency (slow!)"
-        Typ = "X"
-        Hint = "When checked, brush-entities that has their"
-            $0D"'rendermode' and 'renderamt' set to transparency,"
-            $0D"will be drawn transparent in the OpenGL window - "
-            $0D"though NOT exactly drawn as in-game."
-            $0D
-            $0D"Notice! When enabled the OpenGL window may"
-            $0D"be very slow to update itself, when changing"
-            $0D"the scenery."
-      }
-      sep:        = {Typ="S" Txt = ""}
-      sep:        = {Typ="S" Txt="---- Build Programs Execution Sequence ----"}
-      t_GameBuildPgms=!
-    }
-
-    GameDoom3:form =
-    {
-      Style = "3"
-      sep: = {Typ="S" Txt="---- Game Settings ----"}
-      Program: = {
-        Typ = "C"     // combo box
-        Txt = "Doom 3 command-line"
-        Items = "Doom3.EXE +set sv_pure 0"
-        t_ProgramHint=!
-      }
-      Directory: =
-      {
-        Txt = "Directory of Doom 3"
-        Typ = "ED"      // Edit Directory
-        Hint = "Path to the game executable"
-        CheckFile = "DOOM3.EXE"
-      }
-      CD: =
-      {
-        Txt = "Doom 3 CD-ROM drive"
-        Typ = "ED"      // Edit Directory
-        Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
-        CheckFile = "Doom3\base\pak000.pk4"
-      }
-      AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
-      {
-        Typ = "+"
-        Txt = "Installed Add-ons"
-        Cap = "Add-ons..."
-        Icon = $666008881111111866604441999799916660CCC1101111116660244404555548
-               $66602C2AA478887866602C4A24787F78666022AC48778878666022CC47888878
-               $666000407787877866608777777777784448444844487F785C77CF77CC487778
-               $5CC7C777CC488880055555555548870666608888888800666666666666666666
-        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Doom 3 (cmd=GAM, game=j)
-        cmd:macro = {Typ="M" Msg="ADDO"}    // opens Add-ons configuration dialog box
-      }
-      Outp:tbbtn =
-      {
-        Typ = "+"
-        Txt = "Paths and files to create"
-        Cap = "Output directories..."
-        Icon = $666660000066666666660232AA20666660003332ABA0206602303332ABB0
-               $FA0603303332ABB0FBA003303332AAB0FBB0033033222AA0FBB0033022AA
-               $A220FBB00322022AA2022AA002AA2022002AA2A00AAAA20022AAAA20602A
-               $0022002A200666002AAAA20006666666002A200666666666660006666666
-        cmd:macro = {Typ="M" Msg="GAMj"}    // switches to Doom 3 (cmd=GAM, game=j)
-        cmd:macro = {Typ="M" Msg="OUTP"}    // opens "Output directories" dialog box
-      }
-      sep: = {Typ="S" Txt = ""}
-      sep: = {Typ="S" Txt="---- Map-editor Settings ----"}
-      DefaultTexture: =
-      {
-        t_DefaultTexture = !
-        GameCfg = "Doom 3"
-      }
-      DefaultTextureTrigger: =
-      {
-        t_DefaultTextureTrigger = !
-        GameCfg = "Doom 3"
-      }
-      DefaultTextureClip: =
-      {
-        t_DefaultTextureClip = !
-        GameCfg = "Doom 3"
-      }
-      DefaultTextureOrigin: =
-      {
-        t_DefaultTextureOrigin = !
-        GameCfg = "Doom 3"
-      }
-      DefaultTextureCaulk: =
-      {
-        t_DefaultTextureCaulk = !
-        GameCfg = "Doom 3"
       }
       3DLight: =
       {
