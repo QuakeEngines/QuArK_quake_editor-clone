@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.189  2002/05/07 09:30:46  tiglari
+//JKII Updates from nurail
+//
 //Revision 1.188  2002/05/04 10:13:57  tiglari
 //EditableSurfaceParms flag for Mohaa
 //
@@ -687,6 +690,7 @@ QQRKSRC1
         WndRect = '0 0 640 480'
         DoubleBuffer = "1"
         SupportsGDI = ""
+        Bilinear = "1"
         AllowsGDI = "1"
         GLLists = "1"
         ColorBits = '0'
@@ -813,6 +817,14 @@ QQRKSRC1
         Invert Face Selection = "Ctrl+I"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
+      }
+      AuxKeys:config =
+      {
+        Select Faces  = "F"
+        Select Brushes = "B"
+        Select Curves = "C"
+        Select Entities = "E"
+        Form = "MapAuxKeys"
       }
     }
     Games:config =
@@ -3675,6 +3687,40 @@ QQRKSRC1
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
+    MapAuxKeys:form =
+    {
+       Style = "7"
+       Select Faces: = {
+         Txt = "&R" Typ = "R"
+         Hint = "If this key is down, a mouseclick will select only faces."$0D
+         "If map-editor has started, new assignment will apply on"
+          $0D"next QuArK restart. Otherwise when map-editor is started."
+       }
+       Select Faces: = {
+         Txt = "&R" Typ = "R"
+         Hint = "If this key is down, a mouseclick will select only faces."$0D
+         "If map-editor has started, new assignment will apply on"
+          $0D"next QuArK restart. Otherwise when map-editor is started."
+       }
+       Select Brushes: = {
+         Txt = "&R" Typ = "R"
+         Hint = "If this key is down, a mouseclick will select only brushes."$0D
+         "If map-editor has started, new assignment will apply on"
+          $0D"next QuArK restart. Otherwise when map-editor is started."
+       }
+       Select Curves: = {
+         Txt = "&R" Typ = "R"
+         Hint = "If this key is down, a mouseclick will select only curves (beziers)."$0D
+         "If map-editor has started, new assignment will apply on"
+          $0D"next QuArK restart. Otherwise when map-editor is started."
+       }
+       Select Entities: = {
+         Txt = "&R" Typ = "R"
+         Hint = "If this key is down, a mouseclick will select only entities (point and brush)."$0D
+         "If map-editor has started, new assignment will apply on"
+          $0D"next QuArK restart. Otherwise when map-editor is started."
+       }
+    }
     MapMouse:form =
     {
       Style = "7"
@@ -3884,6 +3930,7 @@ QQRKSRC1
       L0: = {Typ="S" Bold="0" Txt="configuration page for each game."}
       Sep0: = {Typ="S" Txt = ""}
       L0: = {Typ="S" Txt="---- troubleshooting options ----"}
+      Bilinear: = { Typ="X" Txt="Bilinear Filtering" Cap="Enabled" }  
       DoubleBuffer: = { Typ="X" Txt="Double buffering" Cap="Enabled" }
       SupportsGDI:  = { Typ="X" Txt="'Supports GDI' flag" Cap="Enabled" }
       AllowsGDI:    = { Typ="X" Txt="Over-the-scene lines+icons" Cap="Enabled" }
