@@ -118,7 +118,6 @@ uses
   ToolBoxGroup in 'Prog\ToolBoxGroup.pas' {FQToolBoxGroup},
   HelpPopup1 in 'Prog\HelpPopup1.pas' {HelpPopup},
   GL1 in '3DFX\GL1.pas',
-  EdOpenGL in '3DFX\EdOpenGL.pas',
   QkTga in 'Prog\QkTga.pas',
   QkPixelSet in 'prog\QkPixelSet.pas',
   Bezier in 'prog\Bezier.pas',
@@ -154,7 +153,11 @@ uses
   Qk3ds in 'prog\model\Qk3ds.pas',
   Logging in 'prog\Logging.pas',
   PyLogging in 'python\PyLogging.pas',
-  EdTListP2 in '3dfx\EdTListP2.pas';
+  EdTListP2 in '3dfx\EdTListP2.pas',
+  EdOpenGL in '3dfx\EdOpenGL.pas',
+  EdDirect3D in '3dfx\EdDirect3D.pas',
+  Ed3DEditors in '3dfx\Ed3DEditors.pas',
+  EdSceneObject in '3dfx\EdSceneObject.pas';
 
 {$R *.RES}
 

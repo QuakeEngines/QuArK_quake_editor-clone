@@ -2,6 +2,14 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/12/11 21:36:59  decker_dk
+- Added comments to some assembly sections in Ed3DFX.PAS and EdOpenGL.PAS.
+- Made TSceneObject's: PolyFaces, ModelInfo and BezierInfo protected, and
+added 3 functions to add stuff to them; AddPolyFace(), AddModel() and
+AddBezier(). This modification have impact on Bezier.PAS, QkMapObjects.PAS,
+QkComponent.PAS and QkMapPoly.PAS.
+- Misc. other changes.
+
 Revision 1.4  2000/11/26 19:09:00  decker_dk
 - Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
 - Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
@@ -76,7 +84,8 @@ type
 
 implementation
 
-uses Ed3dfx, PyMapView, quarkx, travail, pyobjects, QkModelRoot;
+uses PyMapView, quarkx, travail, pyobjects, QkModelRoot,
+     EdSceneObject;
 
 var
   GlobalSkinCounter: Integer;

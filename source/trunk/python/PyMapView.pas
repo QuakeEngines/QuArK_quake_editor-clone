@@ -25,11 +25,12 @@ unit PyMapView;
 
 interface
 
-uses Windows, Messages, SysUtils, Classes, Controls, Graphics,
+uses Windows, Messages, SysUtils, Classes, Forms, Controls, Graphics,
      Dialogs, Quarkx, QkExplorer, Python, QkObjects, PyObjects,
      PyControls, QkForm, CursorScrollBox, Qk3D, QkMapObjects,
-     qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls, Ed3DFX,
-     Forms;
+     qmath, PyMath, PyMath3D, Setup, Travail, ExtCtrls,
+     EdSceneObject, Ed3DEditors, Ed3DFX;
+
 
 type
   TMapViewMode = (vmWireframe, vmSolidcolor, vmTextured, vmOpenGL);
@@ -66,13 +67,13 @@ const
   dmRedrawFaces  = 128;
   dmComputePolys = 256;
 
-  crCrossHS    = 1;
-  crCursorFirst     = 8;
-  crCrossH     = 8;
-  crLinearV    = 9;
-  crLeftArrow  = 10;
-  crRightArrow = 11;
-  crCursorLast      = 11;
+  crCrossHS      = 1;
+  crCursorFirst  = 8;
+  crCrossH       = 8;
+  crLinearV      = 9;
+  crLeftArrow    = 10;
+  crRightArrow   = 11;
+  crCursorLast   = 11;
 
 type
   TKey3D = (keyForward, keyBack, keyLeft, keyRight,
@@ -221,7 +222,7 @@ begin
    for J:=0 to ComponentCount-1 do
     if Components[J] is TPyMapView then
      TPyMapView(Components[J]).SetViewMode(vmWireframe);
- Free3DEditor;
+ Free3DEditors;
 end;
 
  {------------------------}
@@ -368,7 +369,7 @@ begin
       else
        begin
         Scene.ClearFrame;
-        TwoMonitorsActivation;
+        Do3DFXTwoMonitorsActivation;
         DC:=0;
        end;
      end;
@@ -454,6 +455,7 @@ begin
      DynamicQuality:=StrToIntDef(Specifics.Values['DynamicQuality'], 0);
      T3DFXSceneObject(Scene).SoftBufferFormat:=SoftQuality;
     end;
+
    if MapViewProj is TCameraCoordinates then
     begin
      VAngle:=GetFloatSpec('VAngle', 45);
@@ -462,6 +464,7 @@ begin
      else
       if VAngle>80 then
        VAngle:=80;
+
      with TCameraCoordinates(MapViewProj) do
       begin
        FarDistance:=GetFloatSpec('FarDistance', 1500);
@@ -472,8 +475,10 @@ begin
        MinDistance:=Minoow / GetFloatSpec('DarkFactor', 1);
       end;
     end;
+
   {FullScreen:=Specifics.Values['FullScreen']<>'';}
    SecondMonitor:=Chr(IntSpec['TwoMonitors']);
+
    if Scene<>Nil then
     begin
      if Specifics.Values['Entities']='' then
@@ -483,16 +488,21 @@ begin
        ve1:=veBoxes
       else
        ve1:=veModels;
+
      if Scene.ViewEntities<>ve1 then
       Drawing:=Drawing or dfRebuildScene;  { must reload 3D scene with or without entities }
+
      Scene.ViewEntities:=ve1;
      Scene.TranspFactor:=GetFloatSpec('TranspFactor', 0.3);
+
      try
       Scene.ErrorMsg:='';
       AllowsGDI:=True;
+
       Scene.Init(Self.Handle, MapViewProj, Specifics.Values['Lib'],
        FullScreen, AllowsGDI, GetFloatSpec('FogDensity', 1) * FOG_DENSITY_1,
        IntSpec['FogColor'], IntSpec['FrameColor']);
+
       if AllowsGDI then
        Drawing:=Drawing and not dfNoGDI
       else
@@ -501,6 +511,7 @@ begin
       on E: Exception do
        Scene.ErrorMsg:=GetExceptionMessage(E);
      end;
+
      if FullScreen and (Scene.ErrorMsg='') then
       begin
      (*if GetFloatsSpec('FullScreenSize', Size)
@@ -508,12 +519,15 @@ begin
         SetScreenSize(Round(Size[1]), Round(Size[2]))
        else
         SetScreenSize(ScreenSizeX, ScreenSizeY);*)
-       GammaCorrection(GetFloatSpec('FullScreenGamma', 1));
+       Set3DFXGammaCorrection(GetFloatSpec('FullScreenGamma', 1));
        Perform(wm_InternalMessage, wp_PyInvalidate, 0);
       end;
+
      SetScreenSize(ClientWidth, ClientHeight);
     end;
+
   {Focus3D:=Focus3D;}
+
    for K:=Low(K) to High(K) do
     FKey3D[K]:=IntSpec['Key'+Key3DTexts[K]];
   end;
@@ -1220,7 +1234,7 @@ begin
  Result:=False;
 end;
 
-{ $DEFINE POSITIONLOG}
+{xyz $ DEFINE POSITIONLOG}
 function TPyMapView.DoKey3D(Key: Word) : Boolean;
 const
  NumTickCounts = 7;
@@ -1248,41 +1262,57 @@ var
   function Test(var v1: TDouble; KPlus, KMinus: TKey3D; Max: TDouble; Zero: Boolean) : Boolean;
   begin
    Result:=True;
+
    if (KMinus in KeySet) and not (KPlus in KeySet) then
-    begin
+   begin
      v1:=v1-Max*FRAMETIME*Accel[keyRun in KeySet];
-     if v1<-Max then v1:=-Max else if v1>0 then v1:=0;
-    end
+     if v1<-Max then
+       v1:=-Max
+     else
+       if v1>0 then
+         v1:=0;
+   end
    else
-    if (KPlus in KeySet) and not (KMinus in KeySet) then
+   begin
+     if (KPlus in KeySet) and not (KMinus in KeySet) then
      begin
-      v1:=v1+Max*FRAMETIME*Accel[keyRun in KeySet];
-      if v1>Max then v1:=Max else if v1<0 then v1:=0;
+       v1:=v1+Max*FRAMETIME*Accel[keyRun in KeySet];
+       if v1>Max then
+         v1:=Max
+       else
+         if v1<0 then
+           v1:=0;
      end
-    else
+     else
      begin
-      Result:=False;
-      if Zero then
-       v1:=0;
+       Result:=False;
+       if Zero then
+         v1:=0;
      end;
+   end;
   end;
 
 begin
  Result:=False;
+
  if not (MapViewProj is TCameraCoordinates) or (Animation<>Nil) then
   Exit;
+
  if Key=vk_Escape then
   begin
-   Close3DEditor;
+   Close3DEditors;
    Result:=True;
    Exit;
   end;
+
  if GetKey3D(Key, K1) then
   begin
    Result:=True;
    Update;
+
    for K:=Low(K) to High(K) do
     GetAsyncKeyState(FKey3D[K]);
+
    with ConfigSrc do
     begin
      Speed[False]:=GetFloatSpec('Speed', 200);
@@ -1291,10 +1321,14 @@ begin
      Accel[False]:=1/(GetFloatSpec('AccelDelay', 0.75)+1E-10);
      Accel[True]:=1/(GetFloatSpec('RunAccelDelay', 0.25)+1E-10);
     end;
+
    FillChar(v, SizeOf(v), 0);
+
    if FRAMETIME=0 then
     FRAMETIME:=1/15;
+
    NumTicks:=0;
+
    if ViewMode=vmWireframe then
     begin
      DC:=GetDC(Handle);
@@ -1311,6 +1345,7 @@ begin
      BackBuffer:=0;
      OldBmp:=0;
      Brush:=0;
+
      if not FullScreen then
       begin
        if Scene.ChangeQuality(DynamicQuality) then
@@ -1320,26 +1355,30 @@ begin
      else
       begin
        Scene.ClearFrame;
-       TwoMonitorsActivation;
+       Do3DFXTwoMonitorsActivation;
        DC:=0;
       end;
     end;
+
    try
     {$IFDEF POSITIONLOG}
     System.Assign(F, 'c:\windows\bureau\positions.txt');
     Rewrite(F);
     {$ENDIF}
+
     repeat
      KeySet:=[];
      for K:=Low(K) to High(K) do
       if GetAsyncKeyState(FKey3D[K]) and $8001 <> 0 then
        Include(KeySet, K);
-     if KeySet<=Modifier3DKeys then Break;
+     if KeySet<=Modifier3DKeys then
+      Break;
 
      if NumTicks<NumTickCounts then
       Inc(NumTicks)
      else
       Move(TickCounts[1], TickCounts[0], SizeOf(TickCounts)-SizeOf(LongInt));
+
      repeat
       TickCounts[NumTicks-1]:=GetTickCount;
       if (NumTicks=1) or (TickCounts[NumTicks-2] <> TickCounts[NumTicks-1]) then
@@ -1347,6 +1386,7 @@ begin
       { too fast ? }
       Sleep(1);
      until False;
+
      if NumTicks>=MinTickCounts then
       begin
        FRAMETIME:=(1/1000)*(TickCounts[NumTicks-1]-TickCounts[0])/(NumTicks-1);
@@ -1354,6 +1394,7 @@ begin
         FRAMETIME:=MAXFRAMETIME;
       end;
 
+     { get the current position and angles from the camera }
      with TCameraCoordinates(MapViewProj) do
       begin
        nHorzAngle:=HorzAngle;
@@ -1361,15 +1402,23 @@ begin
        nEye:=Camera;
       end;
 
-     Test(v[1], keyForward, keyBack, Speed[keyRun in KeySet], True);
-     LR:=Test(v[2], keyStepRight, keyStepLeft, Speed[keyRun in KeySet], False);
-     Test(v[3], PyMapView.keyUp, PyMapView.keyDown, Speed[keyRun in KeySet], True);
+     { compute the distance (TDouble), each pair-of-keys produce, if they are active in the KeySet }
+     Test(    v[1], keyForward,      keyBack,           Speed[keyRun in KeySet], True);
+     LR:=Test(v[2], keyStepRight,    keyStepLeft,       Speed[keyRun in KeySet], False);
+     Test(    v[3], PyMapView.keyUp, PyMapView.keyDown, Speed[keyRun in KeySet], True);
+
+     { if the strafe-on/off-key is active, then interprent Left/Right-key movements as StepLeft/StepRight }
      if keyStep in KeySet then
       LR:=LR or Test(v[2], keyRight, keyLeft, Speed[keyRun in KeySet], False)
      else
+      { no strafe, interprent Left/Right-keys as horizontal-rotation-distance (Yaw) }
       Test(v[4], keyLeft, keyRight, RotateSpeed, True);
+
+     { if no strafe-keys were active, then set the distance (TDouble) to zero. E.q. no strafe-movement at all }
      if not LR then
       v[2]:=0;
+
+     { should the pitch-angle be reset, or should we compute a new pitch-rotation-distance from the ViewUp/ViewDown-keys }
      if keyViewCenter in KeySet then
       begin
        nPitchAngle:=0;
@@ -1378,6 +1427,7 @@ begin
      else
       Test(v[5], keyViewUp, keyViewDown, RotateSpeed, True);
 
+     { if there were an horizontal-rotation-distance, compute the new nHorzAngle }
      if v[4]<>0 then
       begin
        nHorzAngle:=nHorzAngle+v[4]*FRAMETIME;
@@ -1388,6 +1438,7 @@ begin
          nHorzAngle:=nHorzAngle+2*pi;
       end;
 
+     { if there were an pitch-rotation-distance, compute the new nPitchAngle }
      if v[5]<>0 then
       begin
        nPitchAngle:=nPitchAngle+v[5]*FRAMETIME;
@@ -1402,6 +1453,7 @@ begin
      Writeln(F, FRAMETIME:8:4, GetTickCount:10, v[1]:12:4, v[2]:11:4, v[3]:11:4);
      {$ENDIF}
 
+     { do we have to change the position-in-3D-space? }
      if (v[1]<>0) or (v[2]<>0) or (v[3]<>0) then
       begin
        CameraVectors(nHorzAngle, nPitchAngle, 0.9, Look, Right, Down);
@@ -1410,6 +1462,7 @@ begin
        nEye.Z:=nEye.Z + FRAMETIME * (v[1]*Look.Z + v[2]*Right.Z - v[3]*Down.Z);
       end;
 
+     { set camera to updated position and angles }
      with TCameraCoordinates(MapViewProj) do
       begin
        Camera:=nEye;
@@ -1417,7 +1470,8 @@ begin
        PitchAngle:=nPitchAngle;
        ResetCamera;
       end;
-      
+
+     { draw the view with the updated camera }
      if ViewMode = vmWireframe then
       begin
        FillRect(SrcDC, GetClientRect, Brush);
@@ -1436,6 +1490,7 @@ begin
      while PeekMessage(Msg, Handle, WM_KEYFIRST, WM_KEYLAST, PM_REMOVE) do ;
      while PeekMessage(Msg, Handle, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do ;
     until False;
+
     {$IFDEF POSITIONLOG}
     Close(F);
     {$ENDIF}
@@ -1448,11 +1503,14 @@ begin
       Canvas.Handle:=0;
       DeleteDC(SrcDC);
      end;
+
     if DC<>0 then
      ReleaseDC(Handle, DC);
+
     Canvas.Handle:=0;
     FEntityForms.Free;
     FEntityForms:=Nil;
+
     if ViewMode<>vmWireframe then
      begin
       if Scene.ChangeQuality(SoftQuality) then
@@ -1460,6 +1518,7 @@ begin
       Invalidate;
      end;
    end;
+
    CameraMoved;
    Perform(CM_CURSORCHANGED, 0, 0);
   end;
@@ -1478,7 +1537,7 @@ begin
    Z[0]:=Chr(Key);
    Z[1]:=#0;
    Py_XDECREF(GetPythonValue(FOnKey, Py_BuildValueX('Osi', [MapViewObject, @Z, Flags or mbKeyDown]), True));
-  end; 
+  end;
  Key:=0;
 end;
 
@@ -1750,7 +1809,7 @@ begin
         Pen:=SelectObject(DC, CreatePen(PS_SOLID, 0, Color));
        PolyPolyline(DC, PointArray^, P2^, K);
        DeleteObject(SelectObject(DC, Pen));
-      end; 
+      end;
     end;
    finally FreeMem(PointArray); end;
   end
@@ -1818,7 +1877,7 @@ begin
      OpenTwoMonitorsDlg(Self, SecondMonitor='1')
     else
      begin
-      TwoMonitorsDeactivation;
+      Do3DFXTwoMonitorsDeactivation;
       TwoMonitorsDlg.Free;
      end;
   end
@@ -2081,7 +2140,7 @@ begin
       DisplayHPos:=PyInt_AsLong(objX);
      if objY<>Py_None then
       DisplayVPos:=PyInt_AsLong(objY);
-    end;  
+    end;
   Result:=PyNoResult;
  except
   EBackToPython;
@@ -2556,7 +2615,7 @@ begin
        if FullScreen then
         begin
          Scene.SwapBuffers(False, DC);
-         TwoMonitorsActivation;
+         Do3DFXTwoMonitorsActivation;
         end
        else
         Scene.Copy3DView(ClientWidth, ClientHeight, DC);
@@ -2701,96 +2760,81 @@ begin
      Result:=PyCFunction_New(MethodTable[I], self);
      Exit;
     end;
+
+  Result:=PyNoResult;
   with PyControlF(self)^ do
    case attr[0] of
     'a': if StrComp(attr, 'animation')=0 then
           begin
            if QkControl<>Nil then
-            Result:=PyInt_FromLong(Ord((QkControl as TPyMapView).Animation<>Nil))
-           else
-            Result:=PyNoResult;
+            Result:=PyInt_FromLong(Ord((QkControl as TPyMapView).Animation<>Nil));
            Exit;
           end;
     'c': if StrComp(attr, 'cameraposition')=0 then
           begin
            if QkControl<>Nil then
-            Result:=(QkControl as TPyMapView).BuildCameraPosition
-           else
-            Result:=PyNoResult;
+            Result:=(QkControl as TPyMapView).BuildCameraPosition;
            Exit;
           end
-         else if StrComp(attr, 'color')=0 then
+         else
+         if StrComp(attr, 'color')=0 then
           begin
            if QkControl<>Nil then
-            Result:=PyInt_FromLong((QkControl as TPyMapView).BoxColor)
-           else
-            Result:=PyNoResult;
+            Result:=PyInt_FromLong((QkControl as TPyMapView).BoxColor);
            Exit;
           end
-         else if StrComp(attr, 'cursor')=0 then
+         else
+         if StrComp(attr, 'cursor')=0 then
           begin
            if QkControl<>Nil then
-            Result:=PyInt_FromLong((QkControl as TPyMapView).Cursor)
-           else
-            Result:=PyNoResult;
+            Result:=PyInt_FromLong((QkControl as TPyMapView).Cursor);
            Exit;
           end;
     'd': if StrComp(attr, 'darkcolor')=0 then
           begin
            if QkControl<>Nil then
-            Result:=PyInt_FromLong((QkControl as TPyMapView).CouleurFoncee)
-           else
-            Result:=PyNoResult;
+            Result:=PyInt_FromLong((QkControl as TPyMapView).CouleurFoncee);
            Exit;
           end
-         else if StrComp(attr, 'depth')=0 then
+         else
+         if StrComp(attr, 'depth')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
              if MapViewProj<>Nil then
-              begin
-               Result:=Py_BuildValueDD(MapViewProj.MinDistance, MapViewProj.MaxDistance);
-               Exit;
-              end;
-           Result:=PyNoResult;
+              Result:=Py_BuildValueDD(MapViewProj.MinDistance, MapViewProj.MaxDistance);
            Exit;
           end;
     'f': if StrComp(attr, 'flags')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
-             Result:=PyInt_FromLong(Flags)
-           else
-            Result:=PyNoResult;
+             Result:=PyInt_FromLong(Flags);
            Exit;
           end;
-        {else if StrComp(attr, 'full3DFX')=0 then
+        {else
+         if StrComp(attr, 'full3DFX')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
-             Result:=PyInt_FromLong(Ord(FullScreen))
-           else
-            Result:=PyNoResult;
+             Result:=PyInt_FromLong(Ord(FullScreen));
            Exit;
           end;}
     'h': if StrComp(attr, 'handlecursor')=0 then
           begin
            if QkControl<>Nil then
-            Result:=PyInt_FromLong((QkControl as TPyMapView).HandleCursor)
-           else
-            Result:=PyNoResult;
+            Result:=PyInt_FromLong((QkControl as TPyMapView).HandleCursor);
            Exit;
           end;
     'r': if StrComp(attr, 'redlines')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
-             Result:=Py_BuildValueX('ff', [RedLines[0], RedLines[1]])
-           else
-            Result:=PyNoResult;
+             Result:=Py_BuildValueX('ff', [RedLines[0], RedLines[1]]);
            Exit;
           end
-         else if StrComp(attr, 'redlinesrect')=0 then
+         else
+         if StrComp(attr, 'redlinesrect')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -2798,10 +2842,8 @@ begin
               R:=ClientRect;
               R.Top:=Round(R.Bottom*RedLines[0]);
               R.Bottom:=Round(R.Bottom*RedLines[1]);
-              Result:=Py_BuildValueX('iiii', [0, R.Top, R.Right, R.Bottom])
-             end
-           else
-            Result:=PyNoResult;
+              Result:=Py_BuildValueX('iiii', [0, R.Top, R.Right, R.Bottom]);
+             end;
            Exit;
           end;
     's': if StrComp(attr, 'scrollbars')=0 then
@@ -2810,38 +2852,33 @@ begin
             with QkControl as TPyMapView do
              Result:=Py_BuildValueX('((iii)(iii))',
               [DisplayHPos, DisplayHPos+ClientWidth,  HorzScrollBar.Range,
-               DisplayVPos, DisplayVPos+ClientHeight, VertScrollBar.Range])
-           else
-            Result:=PyNoResult;
+               DisplayVPos, DisplayVPos+ClientHeight, VertScrollBar.Range]);
            Exit;
           end
-         else if StrComp(attr, 'screencenter')=0 then
+         else
+         if StrComp(attr, 'screencenter')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
-             Result:=MakePyVect(CentreEcran)
-           else
-            Result:=PyNoResult;
+             Result:=MakePyVect(CentreEcran);
            Exit;
           end
-         else if StrComp(attr, 'setup')=0 then
+         else
+         if StrComp(attr, 'setup')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
-             Result:=GetPyObj(ConfigSrc)
-           else
-            Result:=PyNoResult;
+             Result:=GetPyObj(ConfigSrc);
            Exit;
           end;
     'v': if StrComp(attr, 'viewmode')=0 then
           begin
            if QkControl<>Nil then
-            Result:=PyString_FromString(MapViewStr[(QkControl as TPyMapView).ViewMode])
-           else
-            Result:=PyNoResult;
+            Result:=PyString_FromString(MapViewStr[(QkControl as TPyMapView).ViewMode]);
            Exit;
           end;
    end;
+
   Attr1:=GetMapViewObject(self, attr);
   if Attr1=Nil then
    Result:=GetControlAttr(self, attr, 'mapview')
@@ -2850,6 +2887,7 @@ begin
     Result:=Attr1^;
     Py_INCREF(Result);
    end;
+
  except
   EBackToPython;
   Result:=Nil;
@@ -2910,7 +2948,8 @@ begin
            Result:=0;
            Exit;
           end
-         else if StrComp(attr, 'color')=0 then
+         else
+         if StrComp(attr, 'color')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -2922,7 +2961,8 @@ begin
            Result:=0;
            Exit;
           end
-         else if StrComp(attr, 'cursor')=0 then
+         else
+         if StrComp(attr, 'cursor')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -2941,12 +2981,13 @@ begin
                 CouleurFoncee:=nFlags;
                 if ViewMode = vmWireframe then
                  Invalidate;
-               end;  
+               end;
              end;
            Result:=0;
            Exit;
           end
-         else if StrComp(attr, 'depth')=0 then
+         else
+         if StrComp(attr, 'depth')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -2981,7 +3022,8 @@ begin
            Result:=0;
            Exit;
           end;
-        {else if StrComp(attr, 'full3DFX')=0 then
+        {else
+         if StrComp(attr, 'full3DFX')=0 then
           begin
            if QkControl<>Nil then
             with QkControl as TPyMapView do
@@ -3067,7 +3109,8 @@ begin
            Result:=0;
            Exit;
           end
-         else if StrComp(attr, 'screencenter')=0 then
+         else
+         if StrComp(attr, 'screencenter')=0 then
           begin
            if value^.ob_type <> @TyVect_Type then
             Raise EError(4441);
@@ -3090,6 +3133,7 @@ begin
            Exit;
           end;
    end;
+
   Attr1:=GetMapViewObject(self, attr);
   if Attr1=Nil then
    Result:=SetControlAttr(self, attr, value)
@@ -3100,6 +3144,7 @@ begin
     Py_INCREF(value);
     Result:=0;
    end;
+
  except
   EBackToPython;
   Result:=-1;
