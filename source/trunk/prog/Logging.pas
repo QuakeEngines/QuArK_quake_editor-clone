@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2001/02/07 19:28:19  decker_dk
+Given correct argument to SetApplicationPath().
+
 Revision 1.3  2001/01/30 19:11:10  decker_dk
 Changed to GetApplicationPath().
 
@@ -65,7 +68,7 @@ begin
   if LogOpened then
     exit;
   {$I-}
-  SetApplicationPath(Application.ExeName);
+  SetApplicationPath(ExtractFilePath(Application.Exename));
   AssignFile(LogFile, GetApplicationPath()+LOG_FILENAME);
   rewrite(LogFile);
   LogOpened:=true;
