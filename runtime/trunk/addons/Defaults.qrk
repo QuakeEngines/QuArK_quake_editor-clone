@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.181  2002/04/09 17:49:53  decker_dk
+//Fixed gamecode in GameTorque:form from "GAMd" to "GAMg".
+//Fixed typo in Quake 3:config; "Brush Primitivez" to "Brush Primitives".
+//
 //Revision 1.180  2002/04/08 21:07:14  tiglari
 //fixed torque gamecode
 //
@@ -1555,17 +1559,17 @@ QQRKSRC1
         MapCommentsPrefix = "//"
         OutputMapFormat="Classic Quake"
 
-        StupidBuildToolKludge = "" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
+        StupidBuildToolKludge = ""
         BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = "-game "$22"mohaa"$22" -fs_basepath "$22"%basepath%"$22" "$22"%file%"$22
+        BuildArgs1 = "-gamedir "$22"%basepath%"$22" "$22"%file%"$22
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-game "$22"mohaa"$22" -fs_basepath "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
-        BuildPgm3  = "Q3MAP.EXE"
-        BuildArgs3 = "-game "$22"mohaa"$22" -fs_basepath "$22"%basepath%"$22" -light "$22"%file%"$22
-        BuildPgm4  = "BSPC.EXE"
-        BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-        BuildCheck4= "+AAS"
+        BuildArgs2 = "-gamedir "$22"%basepath%"$22" -vis -saveprt "$22"%file%"$22
+        BuildPgm3  = "MOHLIGHT.EXE"
+        BuildArgs3 = "-gamedir "$22"%basepath%"$22" "$22"%file%"$22
+      //BuildPgm4  = "BSPC.EXE"
+      //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
+      //BuildCheck4= "+AAS"
 
         TexturesPath = "textures/"
         ShadersPath = "scripts/"
@@ -1574,7 +1578,7 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "xlab_wall/xconcrete_c53b"
+        DefaultTexture = "general_structure/archstone2lt"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureOrigin = "common/origin"
         DefaultTextureClip = "common/clip"
@@ -1600,7 +1604,7 @@ QQRKSRC1
         Form = "GameMOHAA"
         LightFactor = '0.9'
         3DLight = '512'
-        PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
+      //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
       JK2:config =
       {
