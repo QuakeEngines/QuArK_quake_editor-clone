@@ -103,8 +103,21 @@ class LiveEditDlg (placepersistent_dialogbox):
             self.onclosing(self)
         placepersistent_dialogbox.onclose(self,dlg)
 
+#
+# A specialization of LiveEditDlg for running dialogs
+#   with PM-style buttons
+#
+class LiveButtonDlg(LiveEditDlg):
 
-class ListerDlg(LiveEditDlg):
+    def __init__(self, label, editor, setup, action, onclosing=None):
+        setattr(editor,'dlg_'+label,self)
+        LiveEditDlg.__init__(self,quarkx.clickform,label,editor,setup,action,onclosing)
+
+    def onclose(self,dlg):
+        delattr(self.editor,'dlg_'+self.label)
+        LiveEditDlg.onclose(self,dlg)
+
+class LiveBrowserDlg(LiveButtonDlg):
 
     endcolor = AQUA
     size = (220,160)
@@ -119,22 +132,15 @@ class ListerDlg(LiveEditDlg):
             
         self.moreaction=moreaction
                     
-        self.dlglabel='dlg_'+label
         self.pack=pack
         
         #
         # im_func stuff needed because default values methods
         #
-        LiveEditDlg.__init__(self, quarkx.clickform, label, editor, self.presetup.im_func, self.preaction.im_func, onclosing)
+        LiveButtonDlg.__init__(self, label, editor, self.presetup.im_func, self.preaction.im_func, onclosing)
         
 
     def presetup(self):
-         #
-         # Part of the convolution for the buttons, to communicate
-         #  which objects methods should be called when one pushed.
-         # Cleaned up in onclosing below.
-         #
-         setattr(self.editor, self.dlglabel, self)
          #
          # Names and list-indexes of close planes
          #
@@ -154,9 +160,6 @@ class ListerDlg(LiveEditDlg):
         self.chosen=self.pack.collected[eval(self.src["collected"])]
         if self.moreaction is not None:
             self.moreaction(self)
-
-    def def_onclosing(self):
-        delattr(self.editor, self.dlglabel)
     
 #
 # Like dialog box but with possiblity of specifying
@@ -204,6 +207,9 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.5  2001/08/02 02:55:49  tiglari
+#List-browser dialog (ListerDlg)
+#
 #Revision 1.4  2000/10/10 07:57:53  tiglari
 #added onclosing support to LiveEditDlg (used in vertex movement dialog,
 # seems like a good idea).
