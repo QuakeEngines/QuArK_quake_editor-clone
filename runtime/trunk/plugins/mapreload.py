@@ -33,14 +33,22 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
         module: =
         {
         Txt = "reload:"
-        Typ = "E"
-        Hint = "Angle from tagged face, in degrees"
+        Typ = "EP"
+        DefExt = "py"
+        BasePath = "C:\quark\plugins"
+        DirSep = "."
+        CutPath = "C:\?\\"
+        Hint = "Type in the name of the module (.py file),"$0D
+               "preceded with its folder name,"$0D
+               "(ex. plugins.mapreload) the .py is optional,"$0D
+               "or just use the file browser ... to the right."$0D
         }
 
         sep: = { Typ="S" Txt=" " }
 
         close:py = {Txt="" }
         cancel:py = {Txt="" }
+
     }
     """
 
@@ -55,13 +63,13 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
     #
 
         self.editor = editor
-        
         src = quarkx.newobj(":")
         self.src = src
         self.action = action
         self.form = form
         self.src["module"] = quarkx.setupsubset(SS_MAP, "Options")["ReloadModule"]
-          
+
+
     #
     # Create the dialog form and the buttons
     #
@@ -74,7 +82,7 @@ class ReloadDlg (quarkpy.qmacro .dialogbox):
             "Reload"),
         cancel = quarkpy.qtoolbar.button(
             self.cancel,
-            "Ah forget it",
+            "Cancel & close window",
             ico_editor, 0,
             "Cancel"))
 
@@ -105,7 +113,7 @@ def ReloadClick(m):
     module = self.src["module"]
     quarkx.setupsubset(SS_MAP, "Options")["ReloadModule"] = module
 
-    command = "reload(%s)"%module
+    command = string.replace("reload(%s)"%module, ".py", "")
     eval(command)
     
   editor=mapeditor()
@@ -124,6 +132,9 @@ if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
 #
 #
 # $Log$
+# Revision 1.6  2003/05/11 16:03:20  cdunde
+# To correct cancel console error
+#
 # Revision 1.5  2003/03/28 02:54:40  cdunde
 # To update info and add infobase links.
 #
