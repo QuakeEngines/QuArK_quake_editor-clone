@@ -145,11 +145,19 @@ function OpenToolBox(const ToolBoxName: String) : TToolBoxForm;
 var
  ToolBox1: TForm;
  I: Integer;
+ FilteredToolBoxName: String; { To store Toolboxname without any "&" in it. /Decker }
 begin
+ FilteredToolBoxName := ToolBoxName;
+ I := Pos('&', FilteredToolBoxName);
+ if (I>0) then
+ begin
+  Delete(FilteredToolBoxName, I, 1);
+ end;
+
  for I:=0 to Screen.FormCount-1 do
   begin
    ToolBox1:=Screen.Forms[I];
-   if (ToolBox1 is TToolBoxForm) and (CompareText(TToolBoxForm(ToolBox1).GetToolBoxSingleName, ToolBoxName)=0) then
+   if (ToolBox1 is TToolBoxForm) and (CompareText(TToolBoxForm(ToolBox1).GetToolBoxSingleName, FilteredToolBoxName)=0) then
     begin
      Result:=TToolBoxForm(ToolBox1);  { was already opened }
      Exit;
@@ -158,7 +166,7 @@ begin
   { open the new ToolBox now }
  Result:=TToolBoxForm.Create(Application);
  try
-  Result.BrowseToolBox(ToolBoxName);
+  Result.BrowseToolBox(FilteredToolBoxName);
  except
   Result.Free;    { error opening ToolBox }
   Raise;
