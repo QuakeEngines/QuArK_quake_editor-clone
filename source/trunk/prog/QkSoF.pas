@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/06/24 16:40:14  alexander
+cosmetic fixes
+
 Revision 1.6  2000/06/23 20:35:54  alexander
 fixed potential pak file corruption on write .m32
 optimized memory usage and speed for load of .m32
@@ -72,7 +75,7 @@ Var
   zero : byte;
 begin
   zero:=0;
-  while tilloffset > InitialStreamPos - F.position do
+  while tilloffset > F.position - InitialStreamPos do
     F.WriteBuffer(zero, 1);
 end;
 
