@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2002/12/30 18:07:36  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
 Revision 1.31  2002/04/12 11:51:17  tiglari
 leak hunt:  Finalize Python on form close (this squashes all the imagelist
  leaks, and some others)
@@ -179,7 +182,7 @@ type
     procedure ReplaceRoot(Old, New: QObject); override;
   end;
 
-  TForm1 = class(TQkForm)
+  Tg_Form1 = class(TQkForm)
     Panel2: TPanel;
     topdock: TDock97;
     ToolbarMenu1: TToolbar97;
@@ -343,7 +346,7 @@ type
   end;
 
 var
-  g_Form1: TForm1;
+  g_Form1: Tg_Form1;
   g_Form1Handle: HWnd;
 
  {------------------------}
@@ -384,7 +387,7 @@ begin
  Action(Explorer.Roots[0], U);
 end;*)
 
-procedure TForm1.ClearExplorer;
+procedure Tg_Form1.ClearExplorer;
 var
  Q: QFileObject;
 begin
@@ -416,7 +419,7 @@ begin
  end;
 end;
 
-procedure TForm1.SetExplorerRoot(Root: QFileObject);
+procedure Tg_Form1.SetExplorerRoot(Root: QFileObject);
 begin
  ClearExplorer;
  Explorer.AddRoot(Root);
@@ -424,7 +427,7 @@ begin
 {Timer1Timer(Nil);}
 end;
 
-function TForm1.NeedExplorerRoot : QExplorerGroup;
+function Tg_Form1.NeedExplorerRoot : QExplorerGroup;
 begin
  if Explorer.Roots.Count=0 then
   begin
@@ -434,7 +437,7 @@ begin
  Result:=Explorer.Roots[0] as QExplorerGroup;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure Tg_Form1.FormCreate(Sender: TObject);
 var
  Item: TMenuItem;
  I, J: Integer;
@@ -538,7 +541,7 @@ begin
  StatusBar1.SimpleText:=FmtLoadStr1(1, [QuarkVersion]);}
 end;
 
-procedure TForm1.cmSysColorChange(var Msg: TWMSysCommand);
+procedure Tg_Form1.cmSysColorChange(var Msg: TWMSysCommand);
 var
  C: TColor;
 begin
@@ -558,7 +561,7 @@ begin
   F.Perform(WM_NCACTIVATE, 1, 0);
 end;*)
 
-procedure TForm1.AppIdle;
+procedure Tg_Form1.AppIdle;
 var
  P, Q: PIdleJob;
 begin
@@ -632,7 +635,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TForm1.AbortIdleJob(nControl: TObject);
+procedure Tg_Form1.AbortIdleJob(nControl: TObject);
 var
  P: ^PIdleJob;
  Q: PIdleJob;
@@ -647,7 +650,7 @@ begin
  Dispose(Q);
 end;
 
-procedure TForm1.StartIdleJob(nEvent: TIdleJobEvent; nControl: TObject);
+procedure Tg_Form1.StartIdleJob(nEvent: TIdleJobEvent; nControl: TObject);
 var
  I: Integer;
  P: PIdleJob;
@@ -673,20 +676,20 @@ begin
 end;
 
 {$IFDEF Debug}
-procedure TForm1.DataDump1Click;
+procedure Tg_Form1.DataDump1Click;
 begin
  DataDump;
 end;
 {$ENDIF}
 
-procedure TForm1.AppActivate(Sender: TObject);
+procedure Tg_Form1.AppActivate(Sender: TObject);
 begin
  if Screen.ActiveForm<>Nil then
   PostMessage(Screen.ActiveForm.Handle, wm_InternalMessage,
    wp_AppActivate, 1);
 end;
 
-procedure TForm1.AppDeactivate(Sender: TObject);
+procedure Tg_Form1.AppDeactivate(Sender: TObject);
 begin
  if Screen.ActiveForm<>Nil then
   PostMessage(Screen.ActiveForm.Handle, wm_InternalMessage,
@@ -797,12 +800,12 @@ begin
  MAJAffichage(Explorer.TMSelUnique as QFileObject);
 end;*)
 
-procedure TForm1.Close1Click(Sender: TObject);
+procedure Tg_Form1.Close1Click(Sender: TObject);
 begin
  ValidParentForm(FileMenu.PopupComponent as TControl).Close;
 end;
 
-procedure TForm1.Edit1Click(Sender: TObject);
+procedure Tg_Form1.Edit1Click(Sender: TObject);
 var
  Form: TQkForm;
  Flags: Integer;
@@ -842,13 +845,13 @@ begin
  MenuCopyAs;
 end;
 
-procedure TForm1.EditMacroClick(Sender: TObject);
+procedure Tg_Form1.EditMacroClick(Sender: TObject);
 begin
  with ValidParentForm(EditMenu.PopupComponent as TControl) as TQkForm do
   MacroCommand((Sender as TMenuItem).Tag);
 end;
 
-procedure TForm1.wmInternalMessage(var Msg: TMessage);
+procedure Tg_Form1.wmInternalMessage(var Msg: TMessage);
 begin
  if (Explorer<>Nil) and not Explorer.ProcessMessage(Self, Msg) then
   case Msg.wParam of
@@ -925,7 +928,7 @@ begin
  ClearExplorer;
 end;*)
 
-procedure TForm1.File1Click(Sender: TObject);
+procedure Tg_Form1.File1Click(Sender: TObject);
 var
  Info: TFileObjectClassInfo;
  FileObject: QFileObject;
@@ -994,7 +997,7 @@ begin
   CallMacro(GetEmptyTuple,'loadentityplugins');
 end;
 
-procedure TForm1.WindowMenuPopup(Sender: TObject);
+procedure Tg_Form1.WindowMenuPopup(Sender: TObject);
 var
  I, Total: Integer;
  Obj: TComponent;
@@ -1048,7 +1051,7 @@ begin
 {Minimize1.Enabled:=Active.BorderStyle<>bsSizeToolWin;}
 end;
 
-procedure TForm1.MainWindow1Click(Sender: TObject);
+procedure Tg_Form1.MainWindow1Click(Sender: TObject);
 var
  Obj: TQForm1;
 begin
@@ -1059,7 +1062,7 @@ begin
   ActivateNow(Obj);   { a "TQForm1" window }
 end;
 
-procedure TForm1.Minimize1Click(Sender: TObject);
+procedure Tg_Form1.Minimize1Click(Sender: TObject);
 var
  F: TCustomForm;
 begin
@@ -1072,13 +1075,13 @@ begin
    TToolBoxForm(F).MarsCaption1.ApplicationName:=''}
 end;
 
-procedure TForm1.EditMenuItemClick(Sender: TObject);
+procedure Tg_Form1.EditMenuItemClick(Sender: TObject);
 begin
  with ValidParentForm(EditMenu.PopupComponent as TControl) as TQkForm do
   ProcessEditMsg((Sender as TMenuItem).Tag);
 end;
 
-function TForm1.WindowHook(var Msg: TMessage) : Boolean;
+function Tg_Form1.WindowHook(var Msg: TMessage) : Boolean;
 var
  Form: TForm;
 {SaveFocus: HWnd;}
@@ -1113,7 +1116,7 @@ begin
  end;
 end;
 
-procedure TForm1.ReadSetupInformation;
+procedure Tg_Form1.ReadSetupInformation;
 begin
  FileMenu.Tag:=0;
  if Level>=scToolbars then
@@ -1174,7 +1177,7 @@ begin
  finally Roots.Free; end;
 end;*)
 
-function TForm1.LoadToolBoxList(SetupQrk: QObject) : Integer;
+function Tg_Form1.LoadToolBoxList(SetupQrk: QObject) : Integer;
 var
  Roots: TQList;
  I, J: Integer;
@@ -1217,12 +1220,12 @@ begin
  finally Roots.Free; end;
 end;
 
-procedure TForm1.ToolBoxClick(Sender: TObject);
+procedure Tg_Form1.ToolBoxClick(Sender: TObject);
 begin
  ShowToolBox((Sender as TMenuItem).Caption);
 end;
 
-procedure TForm1.News1Click(Sender: TObject);
+procedure Tg_Form1.News1Click(Sender: TObject);
 var
  Info: TFileObjectClassInfo;
  FileObject: QFileObject;
@@ -1274,7 +1277,7 @@ begin
  finally Gr.Free; end;
 end;
 
-procedure TForm1.Open1Click(Sender: TObject);
+procedure Tg_Form1.Open1Click(Sender: TObject);
 var
  OpenDialog1: TOpenDialog;
  Info: TFileObjectClassInfo;
@@ -1324,7 +1327,7 @@ begin
  finally OpenDialog1.Free; end;
 end;
 
-procedure TForm1.OpenAFile(const FileName: String; ReadOnly: Boolean);
+procedure Tg_Form1.OpenAFile(const FileName: String; ReadOnly: Boolean);
 var
  L: TStringList;
  FileObject: QFileObject;
@@ -1351,7 +1354,7 @@ begin
  AddToRecentFiles(FileName);
 end;
 
-procedure TForm1.Save1Click(Sender: TObject);
+procedure Tg_Form1.Save1Click(Sender: TObject);
 var
  F: TCustomForm;
 begin
@@ -1360,7 +1363,7 @@ begin
   (Sender as TMenuItem).Tag);
 end;
 
-procedure TForm1.Save(AskName: Integer);
+procedure Tg_Form1.Save(AskName: Integer);
 var
  Dup: QFileObject;
 begin
@@ -1408,7 +1411,7 @@ begin
   end;
 end;*)
 
-procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure Tg_Form1.FormClose(Sender: TObject; var Action: TCloseAction);
 var
  I: Integer;
  F: TForm;
@@ -1451,7 +1454,7 @@ begin
   DeleteTempFiles;
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure Tg_Form1.FormDestroy(Sender: TObject);
 var
    s: PyObject;
    st: string;
@@ -1472,7 +1475,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  Application.UnHookMainWindow(WindowHook);
  end;
 
-procedure TForm1.Saveentryasfile1Click(Sender: TObject);
+procedure Tg_Form1.Saveentryasfile1Click(Sender: TObject);
 var
  Q: QObject;
 begin
@@ -1513,7 +1516,7 @@ begin
   end;
 end;*)
 
-procedure TForm1.Saveall1Click(Sender: TObject);
+procedure Tg_Form1.Saveall1Click(Sender: TObject);
 var
  I: Integer;
  F: TForm;
@@ -1527,7 +1530,7 @@ begin
  SavePendingFiles(False);
 end;
 
-procedure TForm1.FreeNonVisibleForms;
+procedure Tg_Form1.FreeNonVisibleForms;
 var
  I: Integer;
  F: TForm;
@@ -1540,7 +1543,7 @@ begin
   end;
 end;
 
-procedure TForm1.FreeNonUsedObjects;
+procedure Tg_Form1.FreeNonUsedObjects;
 begin
  TTextureManager.FreeNonVisibleTextures;
  FreeNonVisibleForms(Nil);
@@ -1550,7 +1553,7 @@ end;
 var
   g_IsInSavePendingFiles: boolean = false;
 
-procedure TForm1.SavePendingFiles(CanCancel: Boolean);
+procedure Tg_Form1.SavePendingFiles(CanCancel: Boolean);
 const
  Buttons: array[Boolean] of TMsgDlgButtons =
   ([mbYes, mbNo], mbYesNoCancel);
@@ -1592,7 +1595,7 @@ begin
   end;
 end;
 
-procedure TForm1.Saveinnewentry1Click(Sender: TObject);
+procedure Tg_Form1.Saveinnewentry1Click(Sender: TObject);
 var
  ParentForm: TCustomForm;
  F: TQForm1;
@@ -1650,7 +1653,7 @@ begin
  Explorer.TMSelUnique:=Dest;
 end;
 
-procedure TForm1.MenuCopyAs;
+procedure Tg_Form1.MenuCopyAs;
 var
  QL: TList;
  Q: QObject;
@@ -1712,7 +1715,7 @@ begin
  end;
 end;
 
-procedure TForm1.CopyAsClick(Sender: TObject);
+procedure Tg_Form1.CopyAsClick(Sender: TObject);
 var
  List: TList;
  Q: QObject;
@@ -1768,7 +1771,7 @@ begin
  end;
 end;
 
-procedure TForm1.FormActivate(Sender: TObject);
+procedure Tg_Form1.FormActivate(Sender: TObject);
 begin
  OnActivate:=Nil;
  DragAcceptFiles(Handle, True);
@@ -1776,7 +1779,7 @@ begin
   StartIdleJob(ProcessCmdLine, Self);
 end;
 
-function TForm1.ProcessCmdLine(Counter: Integer) : Integer;
+function Tg_Form1.ProcessCmdLine(Counter: Integer) : Integer;
 begin
  Inc(Counter);
  if Counter>ParamCount then
@@ -1791,7 +1794,7 @@ begin
  Result:=Counter;
 end;
 
-procedure TForm1.wmDropFiles(var Msg: TMessage);
+procedure Tg_Form1.wmDropFiles(var Msg: TMessage);
 var
  I: Integer;
  Z: array[0..MAX_PATH] of Char;
@@ -1805,12 +1808,12 @@ begin
  end;
 end;
 
-procedure TForm1.wmCompacting(var Msg: TMessage);
+procedure Tg_Form1.wmCompacting(var Msg: TMessage);
 begin
  FreeNonUsedObjects;
 end;
 
-procedure TForm1.wmRenderFormat(var Msg: TMessage);
+procedure Tg_Form1.wmRenderFormat(var Msg: TMessage);
 var
  Gr: QExplorerGroup;
 begin
@@ -1823,7 +1826,7 @@ begin
   end;
 end;
 
-procedure TForm1.wmRenderAllFormats(var Msg: TMessage);
+procedure Tg_Form1.wmRenderAllFormats(var Msg: TMessage);
 var
  Gr: QExplorerGroup;
 begin
@@ -1836,14 +1839,14 @@ begin
   end;
 end;
 
-procedure TForm1.wmDestroyClipboard(var Msg: TMessage);
+procedure Tg_Form1.wmDestroyClipboard(var Msg: TMessage);
 begin
  g_DelayedClipboardGroup.AddRef(-1);
  g_DelayedClipboardGroup:=Nil;
  g_LargeDataInClipboard:=False;
 end;
 
-procedure TForm1.RecentFileClick(Sender: TObject);
+procedure Tg_Form1.RecentFileClick(Sender: TObject);
 var
  L: TStringList;
  I: Integer;
@@ -1858,12 +1861,12 @@ begin
  OpenAFile(FileName, False);
 end;
 
-procedure TForm1.GameSwitch1Click(Sender: TObject);
+procedure Tg_Form1.GameSwitch1Click(Sender: TObject);
 begin
  ChangeGameMode(Chr((Sender as TMenuItem).Tag), False);
 end;
 
-procedure TForm1.Games1Click(Sender: TObject);
+procedure Tg_Form1.Games1Click(Sender: TObject);
 var
  I: Integer;
  C: Char;
@@ -1875,17 +1878,17 @@ begin
  Go1.Enabled:=Explorer.Roots.Count>0;
 end;
 
-procedure TForm1.Go1Click(Sender: TObject);
+procedure Tg_Form1.Go1Click(Sender: TObject);
 begin
  NeedExplorerRoot.GO((Sender as TMenuItem).Tag);
 end;
 
-procedure TForm1.AppException(Sender: TObject; E: Exception);
+procedure Tg_Form1.AppException(Sender: TObject; E: Exception);
 begin
  MessageException(E, '%s', [mbOk]);
 end;
 
-function TForm1.MessageException(E: Exception; const Info: String; Buttons: TMsgDlgButtons) : TModalResult;
+function Tg_Form1.MessageException(E: Exception; const Info: String; Buttons: TMsgDlgButtons) : TModalResult;
 var
  B: TButton;
 {P: Integer;}
@@ -1929,7 +1932,7 @@ begin
   end;
 end;
 
-procedure TForm1.AppExceptionMore(Sender: TObject);
+procedure Tg_Form1.AppExceptionMore(Sender: TObject);
 const
  DlgW  = 372;
  MemoH = 160;
@@ -1948,7 +1951,7 @@ begin
    Msg:=Hint;
   end;
  L:=TStringList.Create; try
- L.Add(FmtLoadStr1(4616, [QuarkVersion, ExceptAddr, @TForm1.AppException]));
+ L.Add(FmtLoadStr1(4616, [QuarkVersion, ExceptAddr, @Tg_Form1.AppException]));
  P:=Pos('//', Msg);
  if P=0 then
   L.Add(Msg+'.')
@@ -1976,7 +1979,7 @@ begin
  finally L.Free; end;
 end;
 
-procedure TForm1.PasteObj1Click(Sender: TObject);
+procedure Tg_Form1.PasteObj1Click(Sender: TObject);
 var
  Gr: QExplorerGroup;
 {I: Integer;}
@@ -1996,7 +1999,7 @@ begin
  finally Gr.AddRef(-1); end;
 end;
 
-procedure TForm1.Options2Click(Sender: TObject);
+procedure Tg_Form1.Options2Click(Sender: TObject);
 begin
  ShowConfigDlg('Games:'+SetupGameSet.Name);
 end;
@@ -2009,7 +2012,7 @@ begin
   inherited;
 end;*)
 
-procedure TForm1.AppShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
+procedure Tg_Form1.AppShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
 var
  I, Code: Integer;
 begin
@@ -2065,7 +2068,7 @@ begin
   end;
 end;
 
-procedure TForm1.AppHint(Sender: TObject);
+procedure Tg_Form1.AppHint(Sender: TObject);
 var
  S: String;
  nForm: TForm;
@@ -2086,7 +2089,7 @@ begin
  Result:=True;
 end;
 *)
-function TForm1.GetEmptyMenu : TPopupMenu;
+function Tg_Form1.GetEmptyMenu : TPopupMenu;
 var
  C: TComponent;
  I: Integer;
@@ -2105,7 +2108,7 @@ begin
   end;
 end;
 
-function TForm1.GetObjMenu(Control: TControl; Extra: Boolean) : TPopupMenu;
+function Tg_Form1.GetObjMenu(Control: TControl; Extra: Boolean) : TPopupMenu;
 var
  Q: TList;
  I, Flags: Integer;
@@ -2132,7 +2135,7 @@ begin
  ObjSep1.Visible:=Extra;
 end;
 
-procedure TForm1.Makefilelink1Click(Sender: TObject);
+procedure Tg_Form1.Makefilelink1Click(Sender: TObject);
 var
  OpenDialog1: TOpenDialog;
  FileObject: QFileObject;
@@ -2180,7 +2183,7 @@ begin
   PostMessage(Handle, wm_InternalMessage, wp_UpdateInternals, ui_Logo);
 end;*)
 
-procedure TForm1.Importfromfile1Click(Sender: TObject);
+procedure Tg_Form1.Importfromfile1Click(Sender: TObject);
 var
  Target: TQkExplorer;
 begin
@@ -2190,7 +2193,7 @@ begin
  Makefilelinks1.Enabled:=Target<>Nil;
 end;
 
-procedure TForm1.About1Click(Sender: TObject);
+procedure Tg_Form1.About1Click(Sender: TObject);
 begin
  with TAboutBox.Create(Application) do
   try
@@ -2200,22 +2203,22 @@ begin
   end;
 end;
 
-procedure TForm1.Addons1Click(Sender: TObject);
+procedure Tg_Form1.Addons1Click(Sender: TObject);
 begin
  GameCfgDlg;
 end;
 
-procedure TForm1.Outputdirectories1Click(Sender: TObject);
+procedure Tg_Form1.Outputdirectories1Click(Sender: TObject);
 begin
  OutputDirDlg;
 end;
 
-procedure TForm1.Viewconsole1Click(Sender: TObject);
+procedure Tg_Form1.Viewconsole1Click(Sender: TObject);
 begin
  ShowConsole(True);
 end;
 
-procedure TForm1.HelpMenuItemClick(Sender: TObject);
+procedure Tg_Form1.HelpMenuItemClick(Sender: TObject);
 var
  s: PyObject;
 begin
@@ -2231,12 +2234,12 @@ begin
  end;
 end;
 
-procedure TForm1.Registering1Click(Sender: TObject);
+procedure Tg_Form1.Registering1Click(Sender: TObject);
 begin
  HTMLDoc(GetApplicationPath()+'help\register.html');
 end;
 
-procedure TForm1.ConvertFrom1Item1Click(Sender: TObject);
+procedure Tg_Form1.ConvertFrom1Item1Click(Sender: TObject);
 var
   s: PyObject;
   Q: QObject;
