@@ -49,6 +49,7 @@ import quarkpy.qhandles
 import quarkpy.mapbtns
 from quarkpy.maputils import *
 from tagging import *
+from faceutils import *
 
 import maptagpoint
 
@@ -668,13 +669,16 @@ def sideof (m, editor):
 
 
 
-def coplanar(f1, f2):
-  (p1, p2, p3) = f1.threepoints(0)
-  (q1, q2, q3) = f2.threepoints(0)
-  n = f1.normal
-  if n*(q1-p1) == 0:
-    return 1
-  return 0
+#
+# old, zap this a few months after 041501
+#
+#def coplanar2(f1, f2):
+#  (p1, p2, p3) = f1.threepoints(0)
+#  (q1, q2, q3) = f2.threepoints(0)
+#  n = f1.normal
+#  if n*(q1-p1) == 0:
+#    return 1
+#  return 0
   
 def drawlinks2(editor, view):
   "separated linked faces drawn dotted, in blue if selected otherwise red"
@@ -1899,6 +1903,9 @@ for menitem, keytag in [(mentagside, "Tag Side"),
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.12  2001/03/20 08:02:16  tiglari
+#customizable hot key support
+#
 #Revision 1.11.2.1  2001/03/11 22:08:15  tiglari
 #customizable hot keys
 #
