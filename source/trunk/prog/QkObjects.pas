@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.72  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.71  2003/08/12 15:53:11  silverpaladin
 Fixed an index out of bounds error in find sub elements by insuring index is < count
 
@@ -905,9 +908,14 @@ end;
 procedure TQList.Clear;
 var
   I: Integer;
+  QO: QObject;
 begin
-  for I:=Count-1 downto 0 do
-    QObject(List^[I]).AddRef(-1);
+  // SilverPaladin - 12/01/03 - Clearing is done from end down now with a assigned check
+  for I:=Count-1 downto 0
+  do begin
+    QO := QObject(List^[I]);
+    if Assigned(QO) then QO.AddRef(-1);
+  end;
   inherited Clear;
 end;
 
@@ -951,8 +959,12 @@ begin
   for I:=0 to Count-1 do
   begin
     Result:=QObject(List^[I]);
-    if CompareText(Result.GetFullName, nName) = 0 then
-      Exit;
+    // SilverPaladin - 12/01/03 - Added an assigned check to bullet proof against
+    // access violations.
+    if not(Assigned(Result))
+    then Break; // Quite the loop go on to Result := Nil;
+    if CompareText(Result.GetFullName, nName) = 0
+    then Exit; // Exit out at current selection, it is the one we want.
   end;
   Result:=Nil;
 end;
@@ -1643,18 +1655,24 @@ var
   Q: QObject;
 begin
   { no call to Acces }
-  for I:=0 to Parent.SubElementsC.Count-1 do
-  begin
+  for I:=Parent.SubElementsC.Count-1 downto 0
+  do begin
     Q:=Parent.SubElementsC[I];
-    Q.FixupReference;
-    BrowseFixupRef(Q);
+    if (Assigned(Q) and (Q.Name <> ''))
+    then begin
+      Q.FixupReference;
+      BrowseFixupRef(Q);
+    end;
   end;
 end;
 
 procedure QObject.FixupAllReferences;
 begin
-  FixupReference;
-  BrowseFixupRef(Self);
+  try
+    FixupReference;
+    BrowseFixupRef(Self);
+  except
+  end;
 end;
 
 {procedure QObject.BuildReferences;
