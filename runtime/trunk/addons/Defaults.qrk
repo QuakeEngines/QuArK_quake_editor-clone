@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.164  2001/08/16 20:08:50  decker_dk
+//Added support for 'dup hlradfilemaker' plugin.
+//
 //Revision 1.163  2001/08/15 17:50:40  decker_dk
 //Added a 'dup symxyz' with toggleable axes.
 //
@@ -729,6 +732,7 @@ QQRKSRC1
         Restrict to Selection = "Alt+R"
         Brush Subtraction =  "Ctrl+B"
         Browse Multiple Selection = "Alt+B"
+        Invert Face Selection = "Ctrl+I"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -1184,7 +1188,7 @@ QQRKSRC1
         CheckDirectory = "QUAKE3.EXE"
 
         CD = ""
-        CDDir = "Install\Data"
+        CDDir = "\Quake3\baseq3"
 
         MapLimit = '65536 65536 65536'
 
@@ -2517,7 +2521,7 @@ QQRKSRC1
         Txt = "Quake 3 CD-ROM drive"
         Typ = "ED"      // Edit Directory
         Hint = "If you installed Quake 3 minimally, this is the drive of the CD-ROM."
-        CheckFile = "INSTALL\DATA\BASEQ3\PAK0.PK3"
+        CheckFile = "Quake3\BASEQ3\PAK0.PK3"
       }
       AddOns:tbbtn =       // button (don't forget :tbbtn for all the action buttons !)
       {
@@ -3012,6 +3016,7 @@ QQRKSRC1
        Restrict to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
        Browse Multiple Selection = {HotKeyForm = !}
+       Invert Face Selection = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
@@ -3300,7 +3305,7 @@ QQRKSRC1
       NoScrollBars:             = {Typ="X" Txt="Map view scroll"                Cap="Hide scroll bars"                     }
       CrossCursor:              = {Typ="X" Txt="Mouse cursor"                   Cap="Cross-like cursor"                    }
       HideMouseDrag:            = {Typ="X" Txt="   ``"                          Cap="Hidden while dragging"                }
-      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Auto adjust normal"                   }
+      AutoAdjustNormal:         = {Typ="X" Txt="Polyhedron editing"             Cap="Quantize angles"                       }
       PagesLocked:              = {Typ="X" Txt="Multi-pages panel"              Cap="Locked"                               }
       TexPanelActive:           = {Typ="X" Txt="   ``"                          Cap="Show texture"                         }
       TexPanelLight:            = {Typ="X" Txt="   ``"                          Cap="Light gradient"                       }
