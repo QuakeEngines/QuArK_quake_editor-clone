@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.25  2001/03/06 00:26:39  aiv
+fixed 4-legged player bug
+
 Revision 1.24  2001/02/23 02:21:39  aiv
 more on md3 linking
 
@@ -1764,7 +1767,7 @@ begin
      FileObj1:=NeedGameFile(MdlPath)
    else
      FileObj1:=NeedGameFileBase(MdlBase, MdlPath);
-   if not (FileObj1 is QModel) then
+   if (FileObj1 = nil) or not (FileObj1 is QModel) then
      Exit;
 
    Mdl:=QModel(FileObj1);
