@@ -1,0 +1,11 @@
+title: About this bot edit addon
+author: Fredrick
+
+<img align=right>install.jpg</img>
+The addon was made for letting people make/edit waypoints for their bot without being confused, like when
+you are waypointing a huge map with alot of different waypoints, like camping, sniper-waypoints etc.
+
+Although, this is a very new project, and there are probably alot of work needed to be done before we are satisfied
+with it. This version curently supports HPB-bot for Half-Life, but the final goal is to support multiple bots and games!
+
+Remember to activate the addon before you use it!
