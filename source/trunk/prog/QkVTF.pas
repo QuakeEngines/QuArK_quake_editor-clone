@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2004/11/07 16:24:23  alexander
+new: support for vtf file loading
+
 
 }
 
@@ -93,6 +96,7 @@ end;
 
 procedure QVTF.LoadFile(F: TStream; FSize: Integer);
 const
+
   ImageSpec = 'Image1=';
   AlphaSpec = 'Alpha=';
 
@@ -104,7 +108,8 @@ var
   AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
   Source, DestAlpha, DestImg,pSource, pDestAlpha, pDestImg: PChar;
   I,J: Integer;
-  CompressedSize,NumberOfPixels: Integer;
+  CompressedSize,NumberOfPixels,PictureStartPosition: Integer;
+  Width,Height:Integer;
 begin
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -126,19 +131,34 @@ begin
         Raise EErrorFmt(5703, [LoadName, Header.Width, Header.Height, Header.Format]);
       end;
 
-      SetSize(Point(Header.Width, Header.Height));
+      {chose a size to pass to quark}
+      Width:=Header.Width;
+      Height:=Header.Height;
+      PictureStartPosition := FSize-CompressedSize;
+
+      {halve size until W < 128}
+      while Width > 128 do
+      begin
+        Width := Width div 2;
+        Height := Height div 2;
+        CompressedSize := CompressedSize div 4 ;
+        NumberOfPixels := NumberOfPixels div 4 ;
+        PictureStartPosition := PictureStartPosition - CompressedSize;
+      end;
+
+      SetSize(Point(Width, Height));
 
       SetLength(RawBuffer, CompressedSize);
       SetLength(DecodedBuffer, NumberOfPixels * 4);
 
-      F.Seek(FSize-CompressedSize, soFromBeginning	  );
+      F.Seek(PictureStartPosition, soFromBeginning	  );
 
       F.ReadBuffer(Pointer(RawBuffer)^, Length(RawBuffer));
 
       if @extract_dxt <> nil then
         case  Header.Format of
-          13 : extract_dxt(1,PChar(RawBuffer), Header.Width, Header.Height, PChar(DecodedBuffer) );
-          15 : extract_dxt(5,PChar(RawBuffer), Header.Width, Header.Height, PChar(DecodedBuffer) );
+          13 : extract_dxt(1,PChar(RawBuffer), Width, Height, PChar(DecodedBuffer) );
+          15 : extract_dxt(5,PChar(RawBuffer), Width, Height, PChar(DecodedBuffer) );
         end
       else
         Raise EError(5705);
@@ -155,13 +175,13 @@ begin
       Source:=PChar(DecodedBuffer)+ NumberOfPixels*4;
       DestImg:=PChar(ImgData)+Length(ImageSpec);
       DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
-      for J:=1 to Header.Height do
+      for J:=1 to Height do
       begin
-        Dec(Source,  4 * Header.Width);
+        Dec(Source,  4 * Width);
         pSource:=Source;
         pDestImg:=DestImg;
         pDestAlpha:=DestAlpha;
-        for I:=1 to Header.Width do
+        for I:=1 to Width do
         begin
           PRGB(pDestImg)^[0]:=PRGB(pSource)^[2];  { rgb }
           PRGB(pDestImg)^[1]:=PRGB(pSource)^[1];  { rgb }
@@ -171,8 +191,8 @@ begin
           Inc(pDestImg, 3);
           Inc(pDestAlpha);
         end;
-        Inc(DestImg, 3 * Header.Width);
-        Inc(DestAlpha, Header.Width);
+        Inc(DestImg, 3 * Width);
+        Inc(DestAlpha, Width);
       end;
 
       Specifics.Add(ImgData);
