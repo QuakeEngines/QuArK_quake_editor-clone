@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:42:44  decker_dk
+Updated copyright-header
+
 Revision 1.2  2000/06/03 10:46:49  alexander
 added cvs headers
 }
@@ -51,8 +54,8 @@ implementation
 
 function TRegistry2.ReadString;
 var
-  Len: Integer;
-  DataType: Integer;
+  Len: Cardinal;
+  DataType: Cardinal;
   Courant: String;
 begin
   Result:=False;
@@ -91,8 +94,8 @@ end;
 
 function TRegistry2.ReadInteger;
 var
-  Courant, Len: Integer;
-  DataType: Integer;
+  Courant: Integer;
+  DataType, Len: Cardinal;
 begin
  Len:=SizeOf(Courant);
  DataType := REG_NONE;
