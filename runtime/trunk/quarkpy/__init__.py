@@ -103,12 +103,15 @@ def RunQuArK():
     s = "&FAQ"
     qmacro.helpfn[s] = "Help3"
     quarkx.helpmenuitem(s)
-    s = "&QuArk web site"
+    s = "&QuArK web site"
     qmacro.helpfn[s] = "Help4"
     quarkx.helpmenuitem(s)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.5  2003/02/15 02:01:58  cdunde
+#To add QuArk web site link to Help menu
+#
 #Revision 1.4  2001/03/02 19:34:34  decker_dk
 #Uncommented some broken big-GO! choices, due to the new build-tool controllers functionality.
 #

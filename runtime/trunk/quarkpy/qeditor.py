@@ -1450,7 +1450,7 @@ def Help3():
     htmldoc("help/intro.html") # Assumes the infobase have been installed in the ./HELP folder
 
 def Help4():
-    htmldoc("http://dynamic.gamespy.com/~quark/") # Takes the user to QuArk's official web page
+    htmldoc("http://dynamic.gamespy.com/~quark/") # Takes the user to QuArK's official web page
 
 
 #
@@ -1481,6 +1481,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.14  2003/02/15 02:01:26  cdunde
+#To add QuArk web site link to Help menu
+#
 #Revision 1.13  2002/06/11 08:59:45  tiglari
 #oops restore beginning part of initial comment
 #
