@@ -3,79 +3,16 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.2  2004/12/23 10:02:46  alexander
+//cvs headers added
+//
 //
 
 {
 
     t_models_hl2_form:form =
     {
-      model: =
-      { 
-        typ="C"
-        txt="A models"
-        items=
-          "Advisor.mdl"
-          $0D"airboat.mdl"
-          $0D"Airboatgun.mdl"
-          $0D"alyx.mdl"
-          $0D"alyxmask.mdl"
-          $0D"Alyx_animations.mdl"
-          $0D"alyx_EmpTool_prop.mdl"
-          $0D"Alyx_gestures.mdl"
-          $0D"Alyx_postures.mdl"
-          $0D"Ambient_citadel_paths.mdl"
-          $0D"AntLion.mdl"
-          $0D"antlion_guard.mdl"
-        values=
-          "models/Advisor.mdl"
-          $0D"models/airboat.mdl"
-          $0D"models/Airboatgun.mdl"
-          $0D"models/alyx.mdl"
-          $0D"models/alyxmask.mdl"
-          $0D"models/Alyx_animations.mdl"
-          $0D"models/alyx_EmpTool_prop.mdl"
-          $0D"models/Alyx_gestures.mdl"
-          $0D"models/Alyx_postures.mdl"
-          $0D"models/Ambient_citadel_paths.mdl"
-      }
 
-      model: = 
-      { 
-        typ="C"
-        txt="B models"
-        items=
-          "Barnacle.mdl"
-          $0D"Barney.mdl"
-          $0D"BarneyHelmet.mdl"
-          $0D"BarneyHelmet_faceplate.mdl"
-          $0D"Barney_animations.mdl"
-          $0D"Barney_gestures.mdl"
-          $0D"Barney_postures.mdl"
-          $0D"blackout.mdl"
-          $0D"breen.mdl"
-          $0D"breen_anims.mdl"
-          $0D"breen_gestures.mdl"
-          $0D"breen_monitor.mdl"
-          $0D"breen_postures.mdl"
-          $0D"brokenglass_piece.mdl"
-          $0D"buggy.mdl"
-        values=
-          "models/Barnacle.mdl"
-          $0D"models/Barney.mdl"
-          $0D"models/BarneyHelmet.mdl"
-          $0D"models/BarneyHelmet_faceplate.mdl"
-          $0D"models/Barney_animations.mdl"
-          $0D"models/Barney_gestures.mdl"
-          $0D"models/Barney_postures.mdl"
-          $0D"models/blackout.mdl"
-          $0D"models/breen.mdl"
-          $0D"models/breen_anims.mdl"
-          $0D"models/breen_gestures.mdl"
-          $0D"models/breen_monitor.mdl"
-          $0D"models/breen_postures.mdl"
-          $0D"models/brokenglass_piece.mdl"
-          $0D"models/buggy.mdl"
-      }
       model: = 
       { 
         typ="C"
@@ -4267,13 +4204,22 @@ QQRKSRC1
 
     t_modelselect:incl =
     {
+      mdl = "[model]"
+      mdlbase = "220.SteamFS/hl2"
+      mdlopacity = "0.5"
+      mdlrendermode = "2"
+      model: =
+      { 
+        Txt = "Model"
+        hint ="Model File Name"
+      }
       model: =
       { 
         Txt = " "
         Typ = "B"
         Cap = "models..."
         form ="t_models_hl2_form:form"
-        hint ="Available Models"
+        hint ="Browse Models"
       }
     }
      
