@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.18  2001/06/17 00:01:59  aiv
+'Code' specific in toolbarbuttons and python buttons will be executed when clicked.
+
 Revision 1.17  2001/06/14 18:53:57  decker_dk
 - Inverted the use of TXT="&" in .QRK files. Now if it does not exist it defaults to TXT="&",
 but if you don't want a caption-text to appear, you must explicitly write TXT="".
@@ -1714,11 +1717,12 @@ begin
         - Now I've turned it around: If there are no 'TXT', then use default;
           which is "use the specific-name as caption-text". So if you don't want
           the default, you need to write TXT="" (e.g. set TXT to an empty string) }
-        if (IndexOfName('Txt') = -1) then
+        if (IndexOfName('Txt') = -1)
+        and not ((Form.SubElements[I] is QPyMacro) or (Form.SubElements[I] is QToolbarButton)) then
           S:='&E'
         else
+          S:=Values['Txt'];
 {/Decker}
-        S:=Values['Txt'];
         if S<>'' then
          begin
           { check for 'editable specific label'. Txt="&" or Txt="&E" }
