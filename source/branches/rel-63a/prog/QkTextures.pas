@@ -23,6 +23,12 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.37  2002/12/30 18:07:35  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
+Revision 1.36  2002/03/07 19:16:25  decker_dk
+Removed QImages, as it was just another name for QImage
+
 Revision 1.35  2001/06/05 18:41:26  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -536,7 +542,7 @@ var
       ProgressIndicatorStart(5453, L.Count);
       try
         { Figure out what (file-)format the textures should be written in }
-        TexFormat1:=GetRegisteredQObject(SetupGameSet.Specifics.Values['TextureWriteFormat']);
+        TexFormat1:=RequestClassOfType(SetupGameSet.Specifics.Values['TextureWriteFormat']);
         if (TexFormat1=Nil) or not TexFormat1.InheritsFrom(QPixelSet) then
           raise EError(5688);
         TexFormat:=QPixelSetClass(TexFormat1);

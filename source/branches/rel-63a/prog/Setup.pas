@@ -23,6 +23,15 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2002/12/30 18:07:35  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
+Revision 1.37  2002/12/18 00:49:17  tiglari
+Add Genesis3D code
+
+Revision 1.36  2002/06/09 02:17:31  tiglari
+add SoF2 gamecode
+
 Revision 1.35  2002/04/28 21:23:49  tiglari
 comment out line as suggested by Andy Vincent to stop abnormal termination
   after Python is Finalized
@@ -178,6 +187,7 @@ const
  mjQuake        = '1';
  mjHexen        = '2';
  mjHalfLife     = '3';
+ mjGenesis3D    = '4';
  {..up to '9' Quake-style games may exist..}
 
  mjQuake2       = 'A';
@@ -195,8 +205,8 @@ const
  mjMOHAA        = 'e';  { Medal Of Honor:Allied Assault }
  mjJK2          = 'f';  { Jedi Knight II - Jedi Outcast }
  mjTorque       = 'g';
- mjSoF2         = 'h';  { Soldier of Fortune II }
- 
+ mjSOF2         = 'h';  { Soldier of Fortune II }
+
  mjAny          = #1;
  mjNotQuake2    = #2;
  mjNotQuake1    = #255;
@@ -1093,7 +1103,7 @@ var
  QClassInfo: TFileObjectClassInfo;
  Description: String;
 begin
- QClassPtr:=GetRegisteredQObject('.'+Ext);
+ QClassPtr:=RequestClassOfType('.'+Ext);
  Description:=Ext;
  if (QClassPtr<>Nil) and (QClassPtr.InheritsFrom(QFileObject)) then
   begin

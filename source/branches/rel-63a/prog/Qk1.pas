@@ -23,6 +23,13 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2002/12/30 18:07:36  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
+Revision 1.31  2002/04/12 11:51:17  tiglari
+leak hunt:  Finalize Python on form close (this squashes all the imagelist
+ leaks, and some others)
+
 Revision 1.30  2002/01/07 08:31:20  tiglari
 Unhook the main window
 
@@ -1460,7 +1467,7 @@ begin  { the link to FormDestroy is made in FormCreate }
  end;
  ClearGameBuffers(False);
  ClearPool(True);
- QObjectClassList.Free;
+// QObjectClassList.Free;
  st:='hi';
  s:=PyString_FromString(PChar(st));
  CallMacro(s, 'shutdown');
