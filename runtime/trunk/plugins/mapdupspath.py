@@ -32,21 +32,6 @@ ObjectOrigin = quarkpy.mapentities.ObjectOrigin
 
 
 #
-# matrix for rotation taking v onto u
-#
-def matrix_rot_v2u(u,v):
-  axis = v^u
-  if axis:
-    axis = axis.normalized
-    return quarkpy.qhandles.UserRotationMatrix(axis, u, v, 0)
-  else:
-    matrix = quarkx.matrix("1 0 0 0 1 0 0 0 1")
-    if v*u > 0:
-      return matrix
-    else:
-      return ~matrix
-
-#
 # destructive, do to copies
 #
 def evaluateDuplicators(group):
@@ -98,7 +83,7 @@ def MakeAxes3(x):
 
 def NewAxes(prevaxes, newx):
     try:
-        mat=matrix_rot_v2u(newx,prevaxes[0])
+        mat=matrix_rot_u2v(prevaxes[0],newx)
         return newx, mat*prevaxes[1], mat*prevaxes[2]
     except:  # no angle
         return prevaxes
@@ -797,6 +782,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.19  2001/02/27 07:08:02  tiglari
+#center tiles along path segments
+#
 #Revision 1.18  2001/02/27 05:33:07  tiglari
 #fixed storage problem (map object created in class definition)
 #
