@@ -167,6 +167,18 @@ def MACRO_OpenGL(minx, miny):
     qopengl.open(qeditor.mapeditor(), minx, miny, bkgnd=1)  #, force=1)
 
 
+def cleardefs():
+    pass
+
+def MACRO_shutdown(text):
+    quitfile=open(quarkx.exepath+'quit.txt','w')
+    quitfile.write('quitting\n')
+    del qutils.ico_objects
+    del qutils.ico_editor
+    cleardefs(quitfile)
+    quitfile.write('done\n')
+    quitfile.close()
+    
 #
 #    ---- Dialog Boxes ----
 #
@@ -269,6 +281,7 @@ def MACRO_makeaddon_tex(self):
     a[i].maketexturesfromqctx();
 
 entfn = {}
+
 def MACRO_loadentityplugins(self):
     import plugins
     plugins.LoadPlugins("ENT")
@@ -298,6 +311,9 @@ def MACRO_ent_convertfrom(text):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.13  2001/07/27 11:31:47  tiglari
+#bsp study: plane viewing, faces in treeview
+#
 #Revision 1.12  2001/06/18 20:30:12  decker_dk
 #Replace all '&'-characters with nothing, for menuitem-captions used as indexes into python-style dictionaries.
 #

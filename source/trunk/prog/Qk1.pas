@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2001/10/16 11:39:05  tiglari
+live pointer hunt, macro to delete some stuff on Python shutdown
+
 Revision 1.26  2001/10/10 11:56:16  tiglari
 Oops, reinstate the freeing of QObjectClassList; this is getting
 embarrassing
@@ -1435,6 +1438,9 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
+var
+   s: PyObject;
+   st: string;
 begin  { the link to FormDestroy is made in FormCreate }
  try
   SaveSetupNow;
@@ -1445,7 +1451,10 @@ begin  { the link to FormDestroy is made in FormCreate }
  ClearGameBuffers(False);
  ClearPool(True);
  QObjectClassList.Free;
- Py_XDECREF(CallMacroEx(Py_BuildValueX('', []), 'shutdown'));end;
+ st:='hi';
+ s:=PyString_FromString(PChar(st));
+ CallMacro(s, 'shutdown');
+ end;
 
 procedure TForm1.Saveentryasfile1Click(Sender: TObject);
 var
