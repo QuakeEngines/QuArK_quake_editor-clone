@@ -806,14 +806,111 @@ class PathDuplicator(StandardDuplicator):
        
         return DuplicatorManager.handles(self, editor, view) + [PathDuplicatorPointHandle(self.dup.origin, self.dup, 1)]+pathHandles
 
+#
+# Inspired by a suggestion by Meatball402 on the the
+#  Quake3World forum (for gtkradiant).
+#
+
+class InstanceDuplicator(PathDuplicator):
+    def buildimages(self, singleimage=None):
+
+        if len(self.dup.subitems)==0:
+            return
+
+
+        try:
+            self.readvalues()
+        except:
+            print "Note: Invalid Duplicator Specific/Args."
+            return
+
+        pathlist = plugins.deckerutils.GetEntityChain(self.target, self.sourcelist2())
+        #pathlist.insert(0, self.dup)
+
+            
+        templategroup = self.sourcelist()
+        templatebbox = quarkx.boundingboxof([templategroup])
+        templatesize = templatebbox[1] - templatebbox[0]
+
+        if (singleimage is None and self.speed != 1):
+           viewabletemplategroup = templategroup.copy()
+           viewabletemplategroup[";view"] = str(VF_IGNORETOBUILDMAP)  # Do not send this to .MAP file
+           newobjs = [viewabletemplategroup]
+        else:
+           newobjs = []
+        templatescale = min(templatesize.x, templatesize.y)/3
+        templategroup.translate(-ObjectOrigin(templategroup), 0)    # Move it to (0,0,0)
+
+        count = len(pathlist)
+        for i in range(count):
+            if (singleimage is not None): # Speed up Dissociate images processing
+               if (singleimage >= count):
+                  return [] # Nothing more to send back!
+               else:
+                  i = singleimage
+
+            list = templategroup.copy()
+            thisorigin = pathlist[i].origin
+            if not pathlist[i]["no instance"]:
+                linear = pathlist[i]["linear"]
+                if linear:
+                    matrix = quarkx.matrix(linear)
+                else:
+                    matrix = quarkx.matrix('1 0 0 0 1 0 0 0 1')
+                list.translate(thisorigin)
+                scale = pathlist[i]["scale"]
+                if scale is not None:
+                    matrix = quarkx.matrix('%.2f 0 0 0 %.2f 0 0 0 %.2f'%scale)*matrix
+                angles = pathlist[i]["angles"]
+                if angles is not None:
+                    angles = map(lambda a:a*deg2rad, angles)
+                    matrix = matrix_rot_y(angles[0])*matrix_rot_x(angles[1])*matrix_rot_z(angles[2])*matrix
+                list.linear(thisorigin, matrix)
+
+                if (singleimage is None) or (i==singleimage):
+                    newobjs = newobjs + [list]
+            del list
+            if (i==singleimage): # Speed up Dissociate images processing
+                break
+        return newobjs
+
+
+def macro_instances(self):
+    editor=mapeditor()
+    if editor is None: return
+    dup = editor.layout.explorer.uniquesel
+    if not dup: return
+    undo = quarkx.action()
+    new=dup.copy()
+    new.shortname = 'Instance duplicator'
+    new["macro"] = 'dup instance'
+    for item in new.subitems[:]:
+        new.removeitem(item)
+    new.translate(quarkx.vect(64, -64, 0))
+    undo.put(dup.parent, new, dup)
+    editor.ok(undo,"add instance duplicator")
+    editor.layout.explorer.uniquesel=new
+
+    
+
+
+
+
+quarkpy.qmacro.MACRO_instances = macro_instances
+    
+
 
 quarkpy.mapduplicator.DupCodes.update({
   "dup path":       PathDuplicator,
   "dup path_point": PathDuplicatorPoint,
+  "dup instance":   InstanceDuplicator,
 })
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.27  2001/03/20 09:19:23  tiglari
+#Nuke some old code
+#
 #Revision 1.26  2001/03/20 08:02:16  tiglari
 #customizable hot key support
 #

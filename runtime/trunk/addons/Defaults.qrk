@@ -25,6 +25,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.109  2001/03/20 21:51:54  decker_dk
+//Updated copyright-header
+//
 //Revision 1.108  2001/03/20 15:49:34  maleficus
 //quark will now tell q3map to support whatever mod folder the map file was called from.
 //This requires the latest version of q3map to work properly.
@@ -3318,12 +3321,18 @@ QQRKSRC1
     {
       squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
       setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
+      instances: =
+       {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an instance duplicator"}
     }
     dup path_point:form =
     {
       level: = {Txt="&" Typ="X"      Hint="if checked, following path segment doesn't rotate (may cause non-fitting joins)"}
       target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
       targetname: = {Txt="&" Typ="E" Hint="should be managed automatically"}
+      scale: = {Txt="&" Typ="EF03"  Hint="X Y Z axis scaling (instance dup only)" }
+      angles: = {Txt="&" Typ="EF03"  Hint="Pitch Roll Yaw Angles (instance dup only)" $ 0D " (Rotation around Y X Z axes, in order)" }
+      no instance: = {Txt="&" Typ="X"      Hint="if checked, no instance is generated (instance dup only)"}
+  
     }
     dup stair:form =
     {
@@ -3970,6 +3979,44 @@ QQRKSRC1
             macro       = "dup path_point"
             origin      = "192 192 0"
             targetname  = "dpath3"
+            target      = "dpathX"
+          }
+        }
+        Instance Duplicator:g =
+        {
+          ;desc = "Multiple instances at chosen places, with linear transformation"
+          Instance Duplicator:d =
+          {
+            origin        = "0 0 0"
+            macro         = "dup instance"
+            target        = "dpath1"
+//            speeddraw     = "0"
+//            scaletexture  = "0"
+            Template:g =
+            {
+              cube:p =
+              {
+                east:f  = { v = ' 64   0   0   64 128   0   64   0 128' tex = "[auto]" }
+                west:f  = { v = '-64   0   0  -64   0 128  -64 128   0' tex = "[auto]" m = "1" }
+                north:f = { v = '  0  64   0    0  64 128  128  64   0' tex = "[auto]" m = "1" }
+                south:f = { v = '  0 -64   0  128 -64   0    0 -64 128' tex = "[auto]" }
+                up:f    = { v = '  0   0  64  128   0  64    0 128  64' tex = "[auto]" }
+                down:f  = { v = '  0   0 -64    0 128 -64  128   0 -64' tex = "[auto]" m = "1" }
+              }
+            }
+          }
+          PathDup.Point:d =
+          {
+            macro       = "dup path_point"
+            origin      = "160 160 0"
+            targetname  = "dpath1"
+            target      = "dpath2"
+          }
+          PathDup.Point:d =
+          {
+            macro       = "dup path_point"
+            origin      = "160 320 0"
+            targetname  = "dpath2"
             target      = "dpathX"
           }
         }
