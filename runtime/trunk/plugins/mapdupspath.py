@@ -103,24 +103,16 @@ def MakeUniqueTargetname():
     import time
     return "t" + time.strftime("%Y%m%d%H%M%S", time.gmtime(time.time()))
 
+def getNormalFaces(faces, axis):
+    def normalFace(face,axis=axis):
+        SMALL=0.001
+        if abs(face.normal*axis-1)<SMALL:
+            return 1
+    return filter(normalFace,faces)
 
-def getends(group,x_axis):  # tiglari's
-    front=[]
-    back=[]
-    SMALL=0.001
-    debug('ready')
-    for face in group.findallsubitems("",":f"):
-        dotprod=face.normal*x_axis
-#            debug('normal')
-        if abs(dotprod-1)<SMALL:
-#               debug(' back '+face.shortname)
-           back.append(face)
-        elif abs(dotprod+1)<SMALL:
-#               debug(' front '+face.shortname)
-           front.append(face)
-    return front, back
-
-
+def getends(group,x_axis):
+    list = group.findallsubitems("",":f")
+    return getNormalFaces(list,-x_axis), getNormalFaces(list,x_axis)
 
 class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
 
@@ -725,6 +717,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.10  2001/02/21 06:34:22  tiglari
+#a bit of cleanup, some preliminaries for elbows and tiling
+#
 #Revision 1.9  2001/02/20 21:31:38  tiglari
 #textures tile from start of path (still messes at elbows, this probably
 # needs fullon elbow segments to deal with)
