@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.198  2002/12/18 00:52:37  tiglari
+//Preliminary crap Genesis3D support, copy of Q1
+//
 //Revision 1.197  2002/06/18 11:51:49  tiglari
 //fix SOF2 gamecode
 //
@@ -874,7 +877,7 @@ QQRKSRC1
         OutputMapFormat = "Quark etp"
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,+PRT"
+        BuildCheck1= "+BSP,+PRT,-PTS{LoadLinFile}"
         BuildPgm2  = "RVIS.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "ARGHLITE.EXE"
@@ -919,7 +922,7 @@ QQRKSRC1
 
         MapCommentsPrefix = "//"
 
-        OutputMapFormat = "Quark etp"
+        OutputMapFormat = "Classic Quake"
         BuildPgm1  = "TXQBSP.EXE"
         BuildArgs1 = ""
         BuildCheck1= "+BSP,+PRT"
@@ -970,7 +973,7 @@ QQRKSRC1
 
         BuildPgm1  = "QBSP.EXE"
         BuildArgs1 = ""
-        BuildCheck1= "+BSP,+PRT"
+        BuildCheck1= "+BSP,+PRT,-PTS{LoadLinFile}"
         BuildPgm2  = "VIS.EXE"
         BuildArgs2 = ""
         BuildPgm3  = "LIGHT.EXE"
@@ -1123,7 +1126,7 @@ QQRKSRC1
         BuildCheck1= "+BSP"
         BuildPgm2  = "HLBSP.EXE"
         BuildArgs2 = ""
-        BuildCheck2= "+BSP,+PRT"
+        BuildCheck2= "+BSP,+PRT,-PTS{LoadLinFile}"
         BuildPgm3  = "HLVIS.EXE"
         BuildArgs3 = ""
         BuildPgm4  = "HLRAD.EXE"
