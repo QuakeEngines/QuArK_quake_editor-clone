@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.188  2002/05/04 10:13:57  tiglari
+//EditableSurfaceParms flag for Mohaa
+//
 //Revision 1.187  2002/05/03 17:27:00  decker_dk
 //Fixes to the JK2 compile-tool, as discovered by 'nurail'.
 //
@@ -1629,6 +1632,7 @@ QQRKSRC1
         3DLight = '512'
       //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
+
       JK2:config =
       {
         Game = "JK2"
@@ -1644,17 +1648,19 @@ QQRKSRC1
         MapLimit = '65536 65536 65536'
 
         MapCommentsPrefix = "//"
-        OutputMapFormat="Brush Primitives"
+        OutputMapFormat="Classic Quake"
 
-        StupidBuildToolKludge = "1" // OMG. This SOF2MAP.EXE is stupid...!
+        StupidBuildToolKludge = "1" // GTKRadiant's Q3MAP.EXE seems to work, when '-game wolf' and -fs_basepath <gamepath>' are applied.
         BuildPgm1  = "SOF2MAP.EXE"
-        BuildArgs1 = "-bsp %mapfile%"
+        BuildArgs1 = "-bsp"
         BuildCheck1= "+BSP,-LIN{LoadLinFile}"
         BuildPgm2  = "SOF2MAP.EXE"
-        BuildArgs2 = "-vis %mapfile%"
+        BuildArgs2 = "-vis -saveprt"
         BuildPgm3  = "SOF2MAP.EXE"
-        BuildArgs3 = "-light %mapfile%"
-
+        BuildArgs3 = "-light"
+        BuildPgm4  = "SOF2MAP.EXE"
+        BuildArgs4 = "-all"
+        
         TexturesPath = "textures/"
         ShadersPath = "shaders/"
         Q2TexFlags = "1"
