@@ -146,11 +146,12 @@ too many entanglements.
 
 Returning to the mere functioning of our plugin, another problem is
 that when we do tag a side, we see no indication of what we
-have done, in unfavorable contrast to Quark 4, where the tagged side
+have done, in unfavorable contrast to actual Quark, where the tagged side
 acquires a little red square.  And also the interface invites us to
 perform actions that then produce error messages, such as trying to
 glue when there's nothing to glue to, rather than indicating at
-any moment what the sensible things to do are.
+any moment what the sensible things to do are, and also there
+are no hints or help.
 
 Finally, the whole thing is rather clunky, we have to select faces, and then
 go to the command menu to tag and glue them, and wouldn't it be better
