@@ -181,7 +181,7 @@ def d5(cp, (i, j)):
     if j==0:
         dSdv = cp[i][1]-cp[i][0]
     elif j==len(cp[0])-1:
-        dSdv = cp[i][j]-cp[i-1][j]
+        dSdv = cp[i][j]-cp[i][j-1]
     return dSdu, dSdv  
     
 
@@ -193,48 +193,35 @@ def projpatch2face(cph, face, editor):
     # Derivatives of parameter->space and parameter->tex maps.
     # S for space, T for texture (cap so diff from patch coords)
     #
-    squawk(`d5du`)
-    squawk(`d5dv`)
     dSdp = colmat_uv1(d5du.xyz, d5dv.xyz)
-    squawk(`dSdp`)
     dTdp = colmat_uv1((d5du.s, d5du.t, 1),
                       (d5dv.s, d5dv.t, 1))
-    squawk(`dTdp`)
     Mat = dSdp*~dTdp
-    squawk("Mat: %s"%Mat)
-
     #
     # This mapping is the texture scale & offset (differential
     #   of texture->space mapping)
     #
     def mapping(t3, offset=b2.cp[0][0], Mat=Mat):
         texoffset = quarkx.vect(offset.s, offset.t, 0)
-        squawk(`Mat*(quarkx.vect(t3)-texoffset)`)
         return Mat*(quarkx.vect(t3)-texoffset)+quarkx.vect(offset.xyz)
     #
     # Apply the texture differential to orign & two axes of texture
     #   space.  Note wierdass sign-reversal (beaucoup de tah, Bill)
     #
-    squawk('defmap')
     texp = map(mapping,((0,0,0),(1,0,0),(0,-1,0)))
     #
     # Now first project the texture onto a face tangent to the patch,
     #   then project it onto the one we want.
     #
-    squawk('map')
     new = quarkx.newobj("face:f")
-    squawk('new')
     new.setthreepoints(texp,1)
-    squawk('nedw2')
     new["tex"]=b2["tex"]
-    new.setthreepoints(texp,2)
-    squawk('set')
+    new.setthreepoints(texp,2,editor.TexSource)
     #
     # Prolly time to do some mass reorganization of utilities
     #
     from plugins.maptagside import projecttexfrom
-    projecttexfrom(new, face)
-    
+    return projecttexfrom(new, face)
     
 #
 # Handles for control points.
@@ -295,18 +282,6 @@ class CPHandle(qhandles.GenericHandle):
         texcp.h, texcp.editor = self, editor
         i, j = self.ij
         
-        #
-        # doesn't work yet
-        #
-        def wraptexclick(m, self=self, editor=editor):
-            p0, p1, p2 = m.tagged.threepoints(2,editor.TexSource)
-            dmds, dmdt = (p1-p0)/128.0, (p2-p0)/128.0  # div to shift to patch scale
-            dM = quarkx.matrix((dmds.x, dmds.y, 0),
-                               (dmdt.x, dmdt.y, 0),
-                               (0,      0,      1))
-            b2, (i, j) = self.b2, self.ij
-            squawk('oik')
-            squawk(`d5(b2.cp, i, j)[0]`)
 
         def thickenclick(m,self=self,editor=editor):
           new = self.b2.copy()
@@ -345,8 +320,7 @@ class CPHandle(qhandles.GenericHandle):
         thicken = qmenu.popup("Thicken",[addrow, addcol])
         
         def projtexclick(m, self=self, editor=editor):
-          new = m.tagged.copy()
-          projpatch2face(self,new,editor)
+          new = projpatch2face(self,m.tagged,editor)
           undo = quarkx.action()
           undo.exchange(m.tagged, new)
           editor.ok(undo, "proj tex 2 tagged face")
@@ -360,8 +334,8 @@ class CPHandle(qhandles.GenericHandle):
         else:
            projtex.tagged = tagged
         
-        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
-#        return [texcp, thicken, projtex] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+#        return [texcp, thicken] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
+        return [texcp, thicken, projtex] + [qmenu.sep] + mapentities.CallManager("menu", self.b2, editor)+self.OriginItems(editor, view)
     
     def drawcpnet(self, view, cv, cp=None):
         #
@@ -540,6 +514,9 @@ class CenterHandle(maphandles.CenterHandle):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.18  2000/05/26 23:12:34  tiglari
+#More patch manipulation facilities
+#
 #Revision 1.17  2000/05/19 10:08:09  tiglari
 #Added texture projection, redid some bezier utilties
 #
