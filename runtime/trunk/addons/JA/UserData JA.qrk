@@ -85,8 +85,10 @@ QQRKSRC1
       Txt = "&GO ! (textures+build+JA)"
       Shortcut = "Ctrl+R"
       ExportMapFile = "1"
-      BuildPgm4 = "1"
       RunGame = "1"
+      BuildPgm3 = "1"
+      BuildPgm2 = "1"
+      BuildPgm1 = "1"
     }
     item: =
     {
