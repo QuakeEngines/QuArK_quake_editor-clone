@@ -61,7 +61,7 @@ class placepersistent_dialogbox(qmacro.dialogbox):
 
 class LiveEditDlg (placepersistent_dialogbox):
 
-    def __init__(self, form, label, editor, setup, action):
+    def __init__(self, form, label, editor, setup, action, onclosing=None):
 
     #
     # General initialization of some local values
@@ -73,6 +73,7 @@ class LiveEditDlg (placepersistent_dialogbox):
         self.src = src
         self.action = action
         self.setup = setup
+        self.onclosing = onclosing
         self.form = form
         self.setup(self)
         
@@ -94,7 +95,13 @@ class LiveEditDlg (placepersistent_dialogbox):
     def datachange(self, dlg):
        quarkx.globalaccept()
        self.action(self)
+       self.setup(self)
        self.df.setdata(self.src, self.f)
+
+    def onclose(self,dlg):
+        if self.onclosing is not None:
+            self.onclosing(self)
+        placepersistent_dialogbox.onclose(self,dlg)
 
 #
 # Like dialog box but with possiblity of specifying
@@ -142,6 +149,9 @@ class locatable_dialog_box(qmacro.dialogbox):
 #
 #
 #$Log$
+#Revision 1.3  2000/06/03 18:01:28  alexander
+#added cvs header
+#
 #Revision 1.2  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
