@@ -1,0 +1,9 @@
+title: How is QuArK different from other map editors?
+author: Gryphon
+
+One of the primary differences QuArK has from other editors is that it allows users to edit more than one aspect of games like
+Quake, Quake 2, Hexen II, etc. Versatile, it allows you to use one tool to edit textures, manipulate models, organize .PAK
+files and create maps, among many other things.
+
+In the past, another interesting difference was that QuArK had a distinctive 2-view format in regards to looking at your map.
+It still retains this as a default, but now, allows you to choose other formats that might be better suited for your needs.
