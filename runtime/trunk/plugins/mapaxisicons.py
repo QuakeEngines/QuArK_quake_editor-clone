@@ -12,6 +12,7 @@ import quarkx
 import quarkpy.mapoptions
 from quarkpy.maputils import *
 from quarkpy.qhandles import *
+from quarkpy.qutils import *
 
 
 #
@@ -40,8 +41,14 @@ from quarkpy.qhandles import *
 #  so we'll just use the long version below insted:
 #
 
-quarkpy.mapoptions.items.append(quarkpy.mapoptions.toggleitem("&Axis XYZ letter indicator in view windows", "AxisXYZ", (1,1),
-      hint="|Axis XYZ letter indicator in view windows:\n\nThis display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.|intro.mapeditor.menu.html#optionsmenu"))
+
+XYZitem = quarkpy.mapoptions.toggleitem("&Axis XYZ letter indicator in view windows", "AxisXYZ", (1,1),
+      hint="|Axis XYZ letter indicator in view windows:\n\nThis display s the X Y or Z indicator letter per view to associate the rotation menu buttons. These are for reference only and are not selectable with the mouse.|intro.mapeditor.menu.html#optionsmenu")
+
+quarkpy.mapoptions.items.append(XYZitem)
+for menitem, keytag in [(XYZitem, "AxisXYZ")]:
+    MapHotKey(keytag,menitem,quarkpy.mapoptions)
+
 
 #
 # Get the actual icons, no reason to do this more than once.
@@ -81,6 +88,7 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
     # Below ties this function to the toggel button
     #  in the Option menu.
     #
+
 
     if not MapOption("AxisXYZ"):return
 
@@ -140,7 +148,8 @@ def newfinishdrawing(editor, view, oldfinish=quarkpy.qbaseeditor.BaseEditor.fini
 
 
 quarkpy.qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-    
+
+
 #
 # There is still the problem that when the view is panned, the old image is not erased, we
 #   need to find out how the red lines are drawn, and how grey-out-of-view really works,

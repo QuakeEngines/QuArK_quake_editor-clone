@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.223  2004/01/16 21:41:46  cdunde
+//To standardize all Basic Polyhedrons and add a new one
+//
 //Revision 1.222  2004/01/16 14:52:01  cdunde
 //To add new polyhedron shapes
 //
@@ -913,7 +916,8 @@ QQRKSRC1
         Invert Face Selection = "Ctrl+I"
         Freeze Selection = "Alt+F"
         Unfreeze Selection = "Alt+U"
-        Make Detail ="Alt+D"
+        Make Detail = "Alt+D"
+        AxisXYZ = "Alt+A"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -4156,6 +4160,7 @@ QQRKSRC1
        Unfreeze Selection: = {HotKeyForm = !}
        Invert Face Selection: = {HotKeyForm = !}
        Make Detail: = {HotKeyForm = !}
+       AxisXYZ: = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
