@@ -8,7 +8,7 @@ unit TB97;
   Toolbar97 version 1.53
 
   by Jordan Russell
-  email:      jordanr7@aol.com 
+  email:      jordanr7@aol.com
   home page:  http://members.aol.com/jordanr7
 
   *PLEASE NOTE*  Before making any bug reports please first verify you are
@@ -785,6 +785,9 @@ begin
   end;
 end;
 
+{$WARNINGS OFF}
+// MakeObjectInstance and FreeObjectInstance have been depreciated as of D6
+// They will be dropped in later versions.  We will need to correct this...
 function InstallNewWindowProc (const AID: Integer; const AForm: TForm;
   const NewProc: TWndMethod; const NewHook: TWindowHook): Pointer;
 { Installs a new window procedure on the specified form that overrides the
@@ -845,6 +848,8 @@ begin
         end;
       end;
 end;
+{$WARNINGS ON}
+
 
 function GetMDIParent (const Form: TForm): TForm;
 { Returns the parent of the specified MDI child form. But, if Form isn't a

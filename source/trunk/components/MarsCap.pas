@@ -687,7 +687,9 @@ begin
   ReAlignSystemButtons;
 end;
 
-
+{$WARNINGS OFF}
+// MakeObjectInstance and FreeObjectInstance have been depreciated as of D6
+// They will be dropped in later versions.  We will need to correct this...
 procedure TMarsCaption.HookWindowProc;
 begin
   FOldWindowProc := TFarProc(GetWindowLong(FParentHandle, GWL_WNDPROC));
@@ -700,6 +702,7 @@ begin
   SetWindowLong(FParentHandle, GWL_WNDPROC, LongInt(FOldWindowProc));
   FreeObjectInstance(FNewWindowProc);
 end;
+{$WARNINGS ON}
 
 procedure TMarsCaption.CallOldWindowProc(var Msg: TMessage);
 begin
