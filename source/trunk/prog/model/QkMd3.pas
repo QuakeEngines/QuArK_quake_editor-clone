@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/02/14 20:46:28  aiv
+Fixed Loading of Shaders used by md3 files.
+
 Revision 1.5  2001/01/21 15:51:16  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -30,7 +33,7 @@ interface
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, qmath, QkTextures, PyMath, Python, QkFileObjects, Dialogs, QkPcx,
      QkModelFile, QkModelRoot, QkFrame, QkComponent, QkMdlObject, QkModelTag, QkModelBone,
-     QkMiscGroup;
+     QkMiscGroup, QkFrameGRoup, qmatrices;
 
 type
   QMd3File = class(QModelFile)
@@ -42,6 +45,7 @@ type
     class function TypeInfo: String; override;
     class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
     function Loaded_ShaderFile(Comp: QComponent; tex_name: string): QImage;
+    function AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
   end;
   TMD3Header = packed record
     id: array[1..4] of char;       //id of file, always "IDP3"
@@ -147,9 +151,7 @@ type
      Triangle_Start, TexVec_Start & Vertex_Start are the number of bytes in the file from the start of the mesh header to the
      start of the triangle, texvec and vertex data (in that order).
   }
-  TMD3Skin = packed record
-    Name: array[1..68] of char; //name of skin used by mesh
-  end;
+  TMD3Skin = packed array[1..68] of char; //name of skin used by mesh
   {
      Name holds the name of the texture, relative to the baseq3 path.
      Q3 has a peculiar way of handling textures..
@@ -196,7 +198,7 @@ type
 
 implementation
 
-uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset;
+uses QuarkX, Setup, QkObjectClassList, game, qkq3, qkpixelset, logging;
 
 class function QMd3File.TypeInfo;
 begin
@@ -223,6 +225,10 @@ begin
   result:=nil;
   if shader_filename='' then
     exit;
+  if shader_filename='textures' then begin
+    // use tiglaris code in quickwal.pas ...  how ? ....
+    exit;
+  end;
   shader_filename:=SetupGameSet.Specifics.Values['ShadersPath']+shader_filename+'.shader';
   shader_texturename:=copy(tex_name, 1, pos('.', tex_name)-1);
 
@@ -291,7 +297,8 @@ begin
   size.y:=0;
   for i:=1 to mhead.skin_Num do begin
     fs.readbuffer(tex, sizeof(tex));
-    base_tex_name:=trim(string(tex.Name));
+    if tex[1]=#0 then tex[1]:='m';
+    base_tex_name:=trim(string(tex));
     Skin:=Loaded_ShaderFile(Comp, base_tex_name);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
@@ -395,6 +402,118 @@ begin
       result:=result+s[i];
 end;
 
+function vec3_t_add(v1,v2: vec3_t): vec3_t;
+var
+  i: integer;
+begin
+  for i:=0 to 2 do
+    result[i]:=v1[i]+v2[i];
+end;
+
+function vec3_t_sub(v1,v2: vec3_t): vec3_t;
+var
+  i: integer;
+begin
+  for i:=0 to 2 do
+    result[i]:=v1[i]-v2[i];
+end;
+
+function vec3_t_negate(v1: vec3_t): vec3_t;
+var
+  i: integer;
+begin
+  for i:=0 to 2 do
+    result[i]:=-v1[i];
+end;
+
+function AddMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransformation;
+var
+ I,J: Integer;
+begin
+ for J:=1 to 3 do
+  begin
+   for I:=1 to {4} 3 do
+    Result[J,I]:=M1[J,I]+M2[J,I];
+  end;
+end;
+
+function SubMatrices(const M1, M2: TMatrixTransformation) : TMatrixTransformation;
+var
+ I,J: Integer;
+begin
+ for J:=1 to 3 do
+  begin
+   for I:=1 to {4} 3 do
+    Result[J,I]:=M1[J,I]-M2[J,I];
+  end;
+end;
+
+function NegateMatrices(const M1: TMatrixTransformation) : TMatrixTransformation;
+var
+ I,J: Integer;
+begin
+ for J:=1 to 3 do
+  begin
+   for I:=1 to {4} 3 do
+    Result[J,I]:=-M1[J,I];
+  end;
+end;
+
+function QMd3File.AttachModelToTag(Tag_Name: string; model: QModelFile): boolean;
+var
+  other_root: QModelRoot;
+  other_miscgroup: QMiscGroup;
+  other_has_same_tag: boolean;
+  other_tag: QModelTag;
+  new_component: QComponent;
+  new_frames: QFramegroup;
+  i: integer;
+  self_tag: QModelTag;
+  s_matrix, o_matrix: PMatrixTransformation;
+begin
+  Logex('attaching %s to %s',[self.name, model.name]);
+  result:=false;
+  self_tag:=QModelTag(getroot.GetMisc.FindSubObject(Tag_Name, QModelTag, QObject));
+  if self_tag = nil then
+  begin
+    exit;
+  end;
+  model.acces;
+  other_root:=model.getRoot;
+  other_tag:=QModelTag(other_root.GetMisc.FindSubObject(Tag_Name, QModelTag, QObject));
+  other_has_same_tag := (other_tag<>nil);
+  if not other_has_same_tag then
+  begin
+    exit; // otherside tag doesn't exist
+  end;
+  self_tag.GetRotMatrix(s_matrix);
+  other_tag.GetRotMatrix(o_matrix);
+  if (s_matrix = nil) or (o_matrix = nil) then exit;
+  for i:=0 to other_root.subelements.count-1 do
+  begin
+    if other_root.subelements[i] is QComponent then
+    begin
+      new_component:=QComponent(other_root.subelements[i].clone(getroot, false));
+      new_component.name:='*'+extractfilename(model.name)+' - '+new_component.name;
+      new_component.specifics.values['from_other_model']:='1';
+      new_component.rotateframes(s_matrix^);
+      new_component.translateframes(vec3_t_sub(self_tag.getposition^,other_tag.getposition^));
+      getroot.subelements.add(new_component);
+    end;
+  end;
+end;
+
+function _3vec3t_to_matrix(t: TMD3Tag): TMatrixTransformation;
+var
+  i,j: integer;
+begin
+  for i:=1 to 3 do begin
+    result[i][1]:=t.rotation[i][0];
+    result[i][2]:=t.rotation[i][1];
+    result[i][3]:=t.rotation[i][2];
+  end;
+end;
+
 procedure QMd3File.LoadFile(F: TStream; Taille: Integer);
 var
   i, org, org2: Longint;
@@ -426,6 +545,8 @@ begin
           fillchar(tag, sizeof(tag), #0);
           f.readbuffer(tag,sizeof(tag));
           OTag:=QModelTag.Create(beforezero(tag.name), Misc);
+          OTag.SetPosition(Tag.position);
+          OTag.SetRotMatrix(_3vec3t_to_matrix(Tag));
           Misc.SubElements.Add(OTag);
         end;
         f.seek(org2, sofrombeginning);

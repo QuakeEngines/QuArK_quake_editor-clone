@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2001/02/01 22:00:56  aiv
+Remove Vertex code now in python.
+
 Revision 1.4  2001/01/21 15:51:31  decker_dk
 Moved RegisterQObject() and those things, to a new unit; QkObjectClassList.
 
@@ -35,6 +38,7 @@ type
     function BuildComponentList : TQList;
     procedure CheckComponentFrames;
     procedure SetFrames(index: Integer);
+    procedure SetFramesByName(s: string);
     procedure Dessiner; override;
   end;
 
@@ -99,6 +103,16 @@ begin
   l:=BuildComponentList;
   for i:=0 to l.count-1 do
     QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromIndex(index);
+end;
+
+procedure QModelRoot.setFramesByName(s: string);
+var
+  l: TQList;
+  i: Integer;
+begin
+  l:=BuildComponentList;
+  for i:=0 to l.count-1 do
+    QComponent(l.Items1[i]).CurrentFrame:=QComponent(l.Items1[i]).GetFrameFromName(s);
 end;
 
 procedure QModelRoot.CheckComponentFrames;

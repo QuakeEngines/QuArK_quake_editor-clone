@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2001/02/17 06:04:26  tiglari
+some additional functions
+
 Revision 1.5  2001/02/17 01:29:01  tiglari
 transpose function added
 
@@ -72,6 +75,8 @@ function MatriceTranspose(const M: TMatrixTransformation) : TMatrixTransformatio
 function MatrixMultByVect(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
 function MatrixFromCols(const V1, V2, V3 : TVect) : TMatrixTransformation;
 function Determinant(const Matrice: TMatrixTransformation) : TDouble;
+function VectByMatrix(const Matrice : TMatrixTransformation; const V: TVect) : TVect; overload;
+function VectByMatrix(const Matrice : TMatrixTransformation; const V: vec3_t) : vec3_t; overload;
 
  {------------------------}
 
@@ -241,5 +246,17 @@ begin
 end;
 
  {------------------------}
+
+function VectByMatrix(const Matrice : TMatrixTransformation; const V: TVect) : TVect;
+begin
+  Result:=MatrixMultByVect(Matrice, V);
+end;
+
+function VectByMatrix(const Matrice : TMatrixTransformation; const V: vec3_t) : vec3_t;
+begin
+   Result[0]:=Matrice[1,1]*V[0]+Matrice[1,2]*V[1]+Matrice[1,3]*V[2]{+Matrice[1,4]};
+   Result[1]:=Matrice[2,1]*V[0]+Matrice[2,2]*V[1]+Matrice[2,3]*V[2]{+Matrice[2,4]};
+   Result[2]:=Matrice[3,1]*V[0]+Matrice[3,2]*V[1]+Matrice[3,3]*V[2]{+Matrice[3,4]};
+end;
 
 end.

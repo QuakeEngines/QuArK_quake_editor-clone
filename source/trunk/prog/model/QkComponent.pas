@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/02/14 20:46:28  aiv
+Fixed Loading of Shaders used by md3 files.
+
 Revision 1.9  2001/02/01 22:00:56  aiv
 Remove Vertex code now in python.
 
@@ -39,7 +42,8 @@ interface
 
 uses Windows, SysUtils, Classes, QkObjects, Qk3D, QkForm, Graphics,
      QkImages, qmath, QkTextures, PyMath, Python, dialogs, QkMdlObject,
-     QkFrame, QkFrameGroup, QkSkinGroup, QkBoneGroup, QkSkinDrawObject;
+     QkFrame, QkFrameGroup, QkSkinGroup, QkBoneGroup, QkSkinDrawObject,
+     qmatrices;
 
 const
   MDL_GROUP_FRAME = 1;
@@ -100,15 +104,81 @@ type
     Function FindRoot: QObject;
     function GetOriginOfComponent(mode: Integer): TVect;
     function FindRefFrame: QFrame;
+    Procedure TranslateFrames(vec: vec3_t);
+    Procedure RotateFrames(matrice: TMatrixTransformation);
   end;
 
 implementation
 
 uses PyMapView, quarkx, travail, pyobjects, QkModelRoot,
-     EdSceneObject, QkObjectClassList;
+     EdSceneObject, QkObjectClassList, logging;
 
 var
   GlobalSkinCounter: Integer;
+
+procedure QComponent.TranslateFrames(vec: vec3_t);
+var
+  Frames: TQList;
+  Frame: QFrame;
+  p, p_org: vec3_p;
+  S0,s:String;
+  i,j,c: integer;
+  Dest: vec3_p;
+begin
+  Frames:=BuildFrameList;
+  logex('%s: translating by %f %f %f',[name, vec[0],vec[1],vec[2]]);
+  for i:=0 to Frames.count-1 do
+  begin
+    Frame:=QFrame(Frames[i]);
+    c:=Frame.GetVertices(p_org);
+    p:=p_org;
+    S0:=FloatSpecNameOf('Vertices');
+    S:=S0+'=';
+    SetLength(S, Length(S)+SizeOf(vec3_t)*c);
+    PChar(Dest):=PChar(S)+Length(S0+'=');
+    for j:=1 to c do
+    begin
+      Dest^[0]:=p^[0] + vec[0];
+      Dest^[1]:=p^[1] + vec[1];
+      Dest^[2]:=p^[2] + vec[2];
+      inc(p);
+      inc(Dest);
+    end;
+    Frame.Specifics.Delete(Frame.Specifics.IndexOfName(S0));
+    Frame.SpecificsAdd(S);
+  end;
+end;
+
+procedure QComponent.RotateFrames(matrice: TMatrixTransformation);
+var
+  Frames: TQList;
+  Frame: QFrame;
+  p, p_org: vec3_p;
+  S0,s:String;
+  i,j,c: integer;
+  Dest: vec3_p;
+begin
+  Frames:=BuildFrameList;
+  logex('%s: rotating around %s',[name, mxtos(matrice)]);
+  for i:=0 to Frames.count-1 do
+  begin
+    Frame:=QFrame(Frames[i]);
+    c:=Frame.GetVertices(p_org);
+    p:=p_org;
+    S0:=FloatSpecNameOf('Vertices');
+    S:=S0+'=';
+    SetLength(S, Length(S)+SizeOf(vec3_t)*c);
+    PChar(Dest):=PChar(S)+Length(S0+'=');
+    for j:=1 to c do
+    begin
+      Dest^:=VectByMatrix(matrice, p^);
+      inc(p);
+      inc(Dest);
+    end;
+    Frame.Specifics.Delete(Frame.Specifics.IndexOfName(S0));
+    Frame.SpecificsAdd(S);
+  end;
+end;
 
 function qAddFrame(self, args: PyObject) : PyObject; cdecl;
 var
