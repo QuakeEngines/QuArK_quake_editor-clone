@@ -1,5 +1,5 @@
 title: Standard Duplicators
-desc: basics more combinations linear
+desc: basics more combinations linear increment
 
 Standard duplicators make copies of the brushes of the
 group they're in, arranged in patterns depending on which

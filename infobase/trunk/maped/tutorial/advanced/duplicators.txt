@@ -18,28 +18,33 @@ duplicated.
 Again, to use this duplicator properly, you must
 <ref> ./grouptechniques \ use groups</ref>!
 
-<b>Note</b> that when duplicating, everything is duplicated, including any
-targetname/target specifics any entities have. If you need to have different
-targetname/target in the copies, you should see if a
-<ref> maped/plugins \ plug-in </ref> can do it for you.
+<b>Note</b> that when duplicating, by default everything is duplicated, including
+anytargetname/target specifics any entities have. If you need to have different
+targetname/target in the copies, you should check whether the 
+incrementable specifics described in <ref>maped/duplicators/basic/increment</ref>,
+or the <ref>maped/plugins/argreplacer</ref> plugin,
+or perhaps some other  <ref> maped/plugins \ plug-in </ref> not available
+at the time of writing, is more suitable for your purposes.
 
 </td></tr>
 <tr><td>
 
 <img width=341 height=128 align=right>image42.png</img>
-There are two types of the duplicator.
+<br>There are two basic types of duplicator:
 
 <ul>
 <li>A basic one, which is usually used to create simple straight duplications.
     E.q. staircases or a row of columns.
-<li>An enhanced one, which can apply linear rotations and scaling among other
-    things. E.q. round staircases, enlarging or shrinking brushes.
+<li>An enhanced ('linear') one, which can apply linear rotations and scaling among other
+    things. E.q. round staircases, enlarging or shrinking brushes.  This is
+    the basis for various further types.
 </ul>
 
 </td></tr>
 <tr><td>
 
 <img width=335 height=314 align=right>image41.png</img>
+<br>
 In the image to the right, multiple things are shown:
 
 <ul>
@@ -54,12 +59,13 @@ In the image to the right, multiple things are shown:
     duplicator must make.
 </ul>
 
-The Copy-One and Mirror macro-objects works in quite the same way as the
+The (New) Copy-One and Mirror macro-objects work similarly to the enhanced
 duplicator, but they are specialized to only make one copy.
 
 <ul>
 <li>Copy-One will create a copy of your master-objects, and allow you to place
-    the copy somewhere else.
+    the copy somewhere else. New Copy-One has additional features making it
+    more suitable for making multiple copies with irregular spacing.
 <li>Mirror &lt;an axis&gt; creates a copy of your master-objects, and mirror
     them along the axis specified, at the origin of the Mirror macro-object in
     the 2D-view.
@@ -67,7 +73,8 @@ duplicator, but they are specialized to only make one copy.
 
 It is possible to put a duplicator macro-object, into a sub-group of another
 duplicator, and so on. This way, you can, for instance, create multiple lines
-of a row of columns on many floors.
+of a row of columns on many floors.  See <ref>maped/duplicators</ref> for more
+details, and additional types of duplicator.
 
 </td></tr>
 </table>

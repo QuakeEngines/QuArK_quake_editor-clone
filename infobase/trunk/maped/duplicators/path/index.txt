@@ -1,6 +1,7 @@
 title: Path Duplicator
 desc: basics 
 desc: tiles
+desc: elbows
 desc: tips
 
 The Path Duplicator is one of the most sophisticated
@@ -10,5 +11,6 @@ corridors, and paths, by giving you independent
 control over the cross-sectional shape of the
 structures, as well as the path it takes (so it's
 sort of like an 'extrusion' function in a 3D modelling
-program).
+program).  It overlaps in functionality with the
+<ref>maped/duplicators/extruder</ref>.
 
