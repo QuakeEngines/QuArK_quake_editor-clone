@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2001/07/18 03:51:23  tiglari
+Englishification: Sommet->Vertex in MaxFSommets, nSommet(s), TSommet,
+ PSommet, TTableauFSommets, PTableauFSommets
+
 Revision 1.9  2001/06/05 18:43:29  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -245,6 +249,7 @@ function VectorAbsolute(v1: PyObject) : PyObject; cdecl;
 function VectorNonZero(v1: PyObject) : Integer; cdecl;
 function VectorXor(v1, v2: PyObject) : PyObject; cdecl;
 function VectorCoerce(var v1, v2: PyObject) : Integer; cdecl;
+function Point2Vect(Point: TPointProj) : TVect;
 
 const
  VectNumbers: TyNumberMethods =
@@ -2554,6 +2559,15 @@ begin
  OSVersion.dwOSVersionInfoSize:=SizeOf(OSVersion);
  g_DrawInfo.WindowsNT:=GetVersionEx(OSVersion) and (OSVersion.dwPlatformId=VER_PLATFORM_WIN32_NT);
 end;
+
+
+function Point2Vect(Point: TPointProj) : TVect;
+begin
+  Result.X:=Point.x;
+  Result.Y:=Point.y;
+  Result.Z:=0;
+end;
+
 
 initialization
   CheckWindowsNT;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2002/04/13 01:24:09  tiglari
+leak hunt: free the checktimer
+
 Revision 1.6  2001/06/05 18:43:47  decker_dk
 Prefixed interface global-variables with 'g_', so its clearer that one should not try to find the variable in the class' local/member scope, but in global-scope maybe somewhere in another file.
 
@@ -173,7 +176,7 @@ function CreateButton(Owner: TComponent; Parent: TWinControl; Canvas: TCanvas; L
 
 implementation
 
-uses Quarkx, PyForms, FormCfg, QkExplorer, PyObjects;
+uses Quarkx, PyForms, FormCfg, QkExplorer, PyObjects, SystemDetails;
 
 const
  BtnMarginX = 6;
@@ -592,7 +595,7 @@ begin
              if not IsRectEmpty(nRect) then
               QkToolbar.FloatingRightX:=nRect.Right-nRect.Left
              else
-              QkToolbar.FloatingRightX:=GetSystemMetrics(sm_CxScreen);
+              QkToolbar.FloatingRightX:=GetSystemMetrics(g_CxScreen);
             end;
            Exit;
           end;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2001/03/20 21:38:02  decker_dk
+Updated copyright-header
+
 Revision 1.2  2000/09/10 14:04:24  alexander
 added cvs headers
 }
@@ -61,7 +64,7 @@ procedure OpenTwoMonitorsDlg(nView: TPyMapView; Left: Boolean);
 
 implementation
 
-uses PyForms;
+uses PyForms, SystemDetails;
 
 {$R *.DFM}
 
@@ -79,7 +82,7 @@ begin
  Owner:=GetParentPyForm(nView);
  if Owner=Nil then Owner:=Application;
  TwoMonitorsDlg:=TTwoMonitorsDlg.Create(Owner);
- VSize:=GetSystemMetrics(sm_CyScreen);
+ VSize:=GetSystemMetrics(g_CyScreen);
  VMargin:=VSize div VMarginFrac;
  TwoMonitorsDlg.Top:=VMargin;
  TwoMonitorsDlg.Height:=VSize-2*VMargin;
@@ -90,7 +93,7 @@ begin
   end
  else
   begin
-   TwoMonitorsDlg.Left:=GetSystemMetrics(sm_CxScreen)-1;
+   TwoMonitorsDlg.Left:=GetSystemMetrics(g_CxScreen)-1;
    TwoMonitorsDlg.Cursor:=crRightArrow;
   end;
  TwoMonitorsDlg.Src:=nView;
