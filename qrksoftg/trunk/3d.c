@@ -377,7 +377,7 @@ void grTexSource(int tmu, int startAddress, int evenOdd, grTexInfo_t *info)
     while (p<end)
     {
       FxU16 value = *p;
-      *p++ = (value<<13) | ((value&0x0780)<<2) | ((value&0xF000)>>7);
+      *p++ = ((value<<11)&0xE000) | ((value&0x0780)<<2) | ((value&0xF000)>>7);
     }
     info->format = GR_TEXFMT_RGB_443;
   }
