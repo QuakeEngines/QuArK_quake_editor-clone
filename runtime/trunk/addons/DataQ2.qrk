@@ -151,7 +151,7 @@ QQRKSRC1
     {
       Texture.wal = { ;incl="EmptyTexture" }
       CIN Video.cin = { }
-      
+
     }
   }
 
@@ -226,6 +226,10 @@ QQRKSRC1
         origin = "-144 0 -72"
         angle = "360"
       }
+      light:e = {
+        origin = "0 0 0"
+        light = "400"
+      }
     }
   }
 
@@ -278,7 +282,7 @@ QQRKSRC1
 		e3u3/metal23_4.wl	={w="baseq2"}
 		e2u2/metal27_1.wl	={w="baseq2"}
         e2u2/metal28_1.wl	={w="baseq2"}
-        e2u2/metal29_2.wl	={w="baseq2"} 
+        e2u2/metal29_2.wl	={w="baseq2"}
         e2u1/metal32_2.wl	={w="baseq2"}
         e3u1/palmet1_1.wl	={w="baseq2"}
         e3u1/palmet3_1.wl	={w="baseq2"}
@@ -318,8 +322,8 @@ QQRKSRC1
         e2u1/cindr8_2.wl  ={w="baseq2"}
         e1u3/cin_flr1_1.wl  ={w="baseq2"}
         e1u3/cin_flr1_2.wl  ={w="baseq2"}
-                       
-      }                
+
+      }
       Computer.txlist =      // each texture page is a ".txlist" object
       {
         // computer
@@ -420,7 +424,7 @@ QQRKSRC1
         e1u1/wincomp3_5.wl  ={w="baseq2"}
         e1u1/wincomp3_7.wl  ={w="baseq2"}
 
-      }                
+      }
       Crate.txlist =      // each texture page is a ".txlist" object
       {
         // crate
@@ -462,7 +466,7 @@ QQRKSRC1
         e1u3/wbox3_4.wl     ={w="baseq2"}
         e1u3/wbox3_5.wl     ={w="baseq2"}
 
-      }                
+      }
       Doors.txlist =      // each texture page is a ".txlist" object
       {
         // doors
@@ -533,7 +537,7 @@ QQRKSRC1
         e1u2/subdr2_2.wl    ={w="baseq2"}
         e1u2/subdr3_1.wl    ={w="baseq2"}
         e1u2/subdr3_2.wl    ={w="baseq2"}
-                         
+
       }
       Dupes.qtxfolder = {
       Dupes1.txlist =      // each texture page is a ".txlist" object
@@ -651,7 +655,7 @@ QQRKSRC1
         e2u3/ceil1_4.wl     ={w="baseq2"}
         e3u3/ceil1_4.wl     ={w="baseq2"}
 
-      }                
+      }
       Dupes2.txlist =      // each texture page is a ".txlist" object
       {
         // dupes-2
@@ -762,7 +766,7 @@ QQRKSRC1
         e3u3/c_met7_2.wl    ={w="baseq2"}
         e3u3/c_met8_2.wl    ={w="baseq2"}
 
-      }                
+      }
       Dupes3.txlist =      // each texture page is a ".txlist" object
       {
         // dupes-3
@@ -876,7 +880,7 @@ QQRKSRC1
         e3u1/laserside.wl   ={w="baseq2"}
         e2u3/laserside.wl   ={w="baseq2"}
 
-      }                
+      }
       Dupes4.txlist =      // each texture page is a ".txlist" object
       {
         // dupes-4
@@ -991,7 +995,7 @@ QQRKSRC1
         e2u1/rocks22_1.wl   ={w="baseq2"}
         e3u1/rocks22_1.wl   ={w="baseq2"}
 
-      }                
+      }
       Dupes5.txlist =      // each texture page is a ".txlist" object
       {
         // dupes-5
@@ -1105,7 +1109,7 @@ QQRKSRC1
         e2u2/yellow1_6.wl   ={w="baseq2"}
 
       }
-      }                
+      }
       Electric.txlist =      // each texture page is a ".txlist" object
       {
         // electric
@@ -1175,7 +1179,7 @@ QQRKSRC1
         e1u3/wires2_1.wl    ={w="baseq2"}
         e1u3/wires2_2.wl    ={w="baseq2"}
 
-      }                
+      }
       Enviroment.txlist =      // each texture page is a ".txlist" object
       {
         // enviroment
@@ -1229,8 +1233,8 @@ QQRKSRC1
         e3u3/water7.wl      ={w="baseq2"}
         e1u1/water8.wl      ={w="baseq2"}
         e1u3/yelfield.wl    ={w="baseq2"}
-                         
-      }                
+
+      }
       Floor.txlist =      // each texture page is a ".txlist" object
       {
         // floor
@@ -1322,7 +1326,7 @@ QQRKSRC1
         e1u3/wstfl2_5.wl    ={w="baseq2"}
         e1u3/wstfl2_6.wl    ={w="baseq2"}
 
-      }                
+      }
       Grate.txlist =      // each texture page is a ".txlist" object
       {
         // grate
@@ -1417,7 +1421,7 @@ QQRKSRC1
         e1u1/wgrate1_8.wl   ={w="baseq2"}
         e1u3/wngle1_2.wl    ={w="baseq2"}
 
-      }                
+      }
       Light.txlist =      // each texture page is a ".txlist" object
       {
         // light
@@ -1525,7 +1529,7 @@ QQRKSRC1
         e2u3/wstlt1_8.wl    ={w="baseq2"}
         e1u1/wsupprt1_14.wl ={w="baseq2"}
 
-      }                
+      }
       Machine.txlist =      // each texture page is a ".txlist" object
       {
         // machine
@@ -1557,7 +1561,7 @@ QQRKSRC1
         e1u1/wplat1_2.wl    ={w="baseq2"}
         e2u1/wplat1_3.wl    ={w="baseq2"}
 
-      }                
+      }
       Metal1.txlist =      // each texture page is a ".txlist" object
       {
         // metal-1
@@ -1657,7 +1661,7 @@ QQRKSRC1
         e1u1/wsupprt1_5.wl  ={w="baseq2"}
         e1u1/wsupprt1_6.wl  ={w="baseq2"}
 
-      }                
+      }
       Metal2.txlist =      // each texture page is a ".txlist" object
       {
         // metal-2
@@ -1740,7 +1744,7 @@ QQRKSRC1
         e1u3/wmtal9_2.wl    ={w="baseq2"}
         e1u3/wmtal9_3.wl    ={w="baseq2"}
 
-      }                
+      }
       Mine.txlist =      // each texture page is a ".txlist" object
       {
         // mine
@@ -1773,7 +1777,7 @@ QQRKSRC1
         e2u1/minlt1_2.wl    ={w="baseq2"}
         e2u1/minlt1_3.wl    ={w="baseq2"}
 
-      }                
+      }
       Misc.txlist =      // each texture page is a ".txlist" object
       {
         // misc
@@ -1856,7 +1860,7 @@ QQRKSRC1
         e1u3/turret8_1.wl   ={w="baseq2"}
         e1u3/turret9_1.wl   ={w="baseq2"}
 
-      }                
+      }
       Ornament.txlist =      // each texture page is a ".txlist" object
       {
         // ornament
@@ -1893,7 +1897,7 @@ QQRKSRC1
         e1u1/sign1_2.wl     ={w="baseq2"}
         e1u2/sym6_2.wl      ={w="baseq2"}
 
-      }                
+      }
       Power.txlist =      // each texture page is a ".txlist" object
       {
         // power
@@ -1966,7 +1970,7 @@ QQRKSRC1
         e2u3/thinm1_3.wl    ={w="baseq2"}
         e2u3/thinm2_3.wl    ={w="baseq2"}
 
-      }                
+      }
       Roof.txlist =      // each texture page is a ".txlist" object
       {
         // roof
@@ -1998,7 +2002,7 @@ QQRKSRC1
         e1u1/wtroof4_6.wl   ={w="baseq2"}
         e1u1/wtroof4_8.wl   ={w="baseq2"}
 
-      }                
+      }
       Sign.txlist =      // each texture page is a ".txlist" object
       {
         // sign
@@ -2060,8 +2064,8 @@ QQRKSRC1
         e1u1/yellow1_2.wl   ={w="baseq2"}
         e1u1/yellow1_4.wl   ={w="baseq2"}
         e1u1/yellow1_6.wl   ={w="baseq2"}
-                         
-      }                
+
+      }
       Similar.txlist =      // each texture page is a ".txlist" object
       {
         // similar
@@ -2240,7 +2244,7 @@ QQRKSRC1
         e2u3/sewer1.wl      ={w="baseq2"}
         e3u2/troof3_2.wl    ={w="baseq2"}
 
-      }                
+      }
       Switch.txlist =      // each texture page is a ".txlist" object
       {
         // switch
@@ -2297,7 +2301,7 @@ QQRKSRC1
         e2u3/pyramid2.wl    ={w="baseq2"}
         e2u3/pyramid3.wl    ={w="baseq2"}
 
-      }                
+      }
       Wall.txlist =      // each texture page is a ".txlist" object
       {
         // wall
@@ -2401,7 +2405,7 @@ QQRKSRC1
         e1u1/wswall1_1.wl   ={w="baseq2"}
         e1u1/wswall1_2.wl   ={w="baseq2"}
 
-      }                
+      }
       Waste.txlist =      // each texture page is a ".txlist" object
       {
         // waste
@@ -2476,7 +2480,7 @@ QQRKSRC1
         e2u3/rmtl37_1.wl    ={w="baseq2"}
         e2u3/rmtl37_2.wl    ={w="baseq2"}
 
-      }                
+      }
       Window.txlist =      // each texture page is a ".txlist" object
       {
         // window
@@ -2500,7 +2504,7 @@ QQRKSRC1
         e3u1/wndw01_4.wl    ={w="baseq2"}
         e3u1/wndw01_5.wl    ={w="baseq2"}
 
-      }                
+      }
       Extra.txlist =      // each texture page is a ".txlist" object
       {
         // extra
@@ -2545,7 +2549,7 @@ QQRKSRC1
         e1u1/trigger.wl     ={w="baseq2"}
         e2u1/w_white.wl     ={w="baseq2"}
         e3u3/xsky1.wl       ={w="baseq2"}
-      }	
+      }
     }
    }
 
@@ -5824,7 +5828,7 @@ QQRKSRC1
         Hint = "It will just keep trying to close and crush you. No matter what."
       }
       spawnflags: =
-      { 
+      {
         Txt = "&"
         Typ = "X8"
         Cap = "NOMONSTER"
@@ -7514,7 +7518,7 @@ QQRKSRC1
       {
         Txt = "&"
         Hint = "Give this a name so it can be targeted by entities and path_corners."
-      }      
+      }
       spawnflags: =
       {
         Txt = "&"
