@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.42  2000/07/04 17:24:59  alexander
+//added default form for dup arenafilemaker
+//
 //Revision 1.41  2000/07/03 23:15:10  alexander
 //set snapshot version
 //
@@ -577,6 +580,7 @@ QQRKSRC1
         CheckDirectory = "sof.EXE"
         Console = "1"
         Form = "GameSOF"
+        SpecialCustomQuakeMenu = "CustomQuakeMenuSOF"  //enable special form
         TextureDef = "armory/1_2_subfloor_1"
         TriggerTextureDef = "armory/trigger"
         OriginTextureDef = "armory/origin"
@@ -2628,31 +2632,6 @@ QQRKSRC1
       macro: = {Txt = "&" Typ = "ESR"
                  Hint = "This one is not for you, Saruman"}
     }
-    dup arenafilemaker:form =
-    {
-        help ="put one in your map to create a .arena script automatically"
-        bots: =
-        {
-          Txt = "&"
-          Hint = "bots that are default for this map"
-        }
-        longname: =
-        {
-          Txt = "&"
-          Hint = "This name will be shown in Quake 3"
-        }
-        fraglimit: =
-        {
-          Txt = "&"
-          Typ = "EF1"
-          Hint = "default fraglimit for map"
-        }
-        type: =
-        {
-          Txt = "&"
-          Hint = "ffa tourney etc."
-        }
-      }
     QuakeCtx:form =     // form that applies when editing .qctx objects
     {
       Style = "3"
