@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.153  2001/07/08 00:26:25  tiglari
+//'short' specific for extruder
+//
 //Revision 1.152  2001/07/04 11:56:13  uid21314
 //TextureFormat -> TextureWriteFormat for Crystal Space
 //
@@ -3695,8 +3698,9 @@ QQRKSRC1
       target: = {Txt="&" Typ="E"     Hint="should be managed automatically"}
       squarend: = {Txt="&" Typ="X"     Hint="if checked, path segments have squared, disconnnected ends, rather than joining at `elbows'"}
       setback:  = {Txt="&" Typ="EF001" Hint="if squarend is checked, this specifies how far back the segment ends are pulled" $0D "back from elbow-joins"}
-//      elbows: =
-//       {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an elbow duplicator"}
+      level: = {Txt="&" Typ="X"     Hint="if checked, rotation on two axes won't twist a segment, but also they won't join smoothly."}
+      elbows: =
+       {Txt= "&" Typ="P" Macro="instances" Cap="push" Hint="Push to add an elbow duplicator"}
     }
     dup path_point:form =
     {
@@ -3708,6 +3712,7 @@ QQRKSRC1
     }
     dup instance:form =
     {
+      level: = {Txt="&" Typ="X"     Hint="if checked, rotation on two axes won't twist a segment."}
       track: =  {Txt="&" Typ="X" Hint="If checked, instances rotate to follow path angles"}
       target: = {Txt="&" Typ="E" Hint="should be managed automatically"}
       usercenterform = !
@@ -4674,7 +4679,7 @@ QQRKSRC1
           }
         }
         ArgReplacer:d = {
-	  ;desc = "Arg Replacer : Search and Replaces %keyword% in spec/args"
+      ;desc = "Arg Replacer : Search and Replaces %keyword% in spec/args"
           macro = "arg replacer"
         }
       }
