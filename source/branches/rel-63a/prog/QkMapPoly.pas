@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.56.2.7  2002/12/29 02:56:42  tiglari
+add norecenter version of getthreepointsusertex, with threepoints method option
+ (2nd go at suppressing centering when needed)
+
 Revision 1.56.2.6  2002/12/28 23:50:30  tiglari
 faces with _fixed specific never center L-square
 
@@ -392,7 +396,7 @@ type
                function GetThreePointsT(var V1, V2, V3: TVect) : Boolean;
                function GetThreePointsUserTex(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;
                procedure SetThreePointsUserTex(const V1, V2, V3: TVect; AltTexSrc: QObject);
-               function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
+               function GetThreePointsUserTexNoRecenter(var V1, V2, V3: TVect; AltTexSrc: QObject) : Boolean;             function SetThreePointsEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                function SetThreePointsEnhEx(const V1, V2, V3, nNormale: TVect) : Boolean;
                procedure RevertToEnhTex;
                procedure SimulateEnhTex(var V1, V2, V3: TVect; var Mirror: boolean);
