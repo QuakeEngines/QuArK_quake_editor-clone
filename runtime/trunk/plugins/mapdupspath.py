@@ -717,7 +717,7 @@ class PathDuplicator(StandardDuplicator):
         else:
            newobjs = []
         templatescale = min(templatesize.x, templatesize.y)/3
-        templategroup.translate(ObjectOrigin(templategroup) * -1, 0)    # Move it to (0,0,0)
+        templategroup.translate(-ObjectOrigin(templategroup) * -1, 0)    # Move it to (0,0,0)
 
         # -- If SCALETEXTURES is on, use the linear() operation
         if (self.scaletex != 0):
@@ -841,6 +841,9 @@ class InstanceDuplicator(PathDuplicator):
            newobjs = []
         templatescale = min(templatesize.x, templatesize.y)/3
         templategroup.translate(-ObjectCustomOrigin(templategroup), 0)    # Move it to (0,0,0)
+        for item in templategroup.subitems[:]:
+            if item.type==":d" and item["macro"]=="dup origin":
+                templategroup.removeitem(item)
 
         count = len(pathlist)
         for i in range(count):
@@ -909,6 +912,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.29  2001/03/21 21:20:30  tiglari
+#custom origin for instance dup.  doesn't seem to work right with path
+#
 #Revision 1.28  2001/03/20 22:46:37  tiglari
 #Meatball402's instance duplicator
 #
