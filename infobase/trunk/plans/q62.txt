@@ -26,8 +26,8 @@ starting scale too big.
   CTF duplicator: (tiglari)
 <BR>   status: envisioned, seems like it might be easy
 
-<LI> <FONT color=#FF0000>  Brush curve duplicator:</FONT> (tiglari)
-<BR>   status: partially done; texture positioning needed (being difficult).
+<LI> Brush curve duplicator: (tiglari)
+<BR>   status: texture positioning done;
 `thick' to be delayed to 6.3.
 
 <LI>  Stairway duplicator: (decker)

@@ -62,10 +62,20 @@ from quarkpy.perspective import *
 #  - image builders: implementation of buildimages for the
 #      shape-builders
 #
-#  - duplicators: the duplicator code
+ 
+
+
+
 #
-#  - menus
+# the underlying equation is matrix*invect=outvect
+#   as colums, uses tr(M*N)=tr(M)*tr(N) transpositionfact
 #
+def matrixFromMap(v1, v2, v3, w1, w2, w3):
+    invect = quarkx.matrix(v1,v2,v3)
+    outvect = quarkx.matrix(w1,w2,w3)
+    if abs(invect)==0:
+        return None
+    return (~invect*outvect).transposed
 
 #
 # Temp from maputils to help run with older quark versions
@@ -142,7 +152,17 @@ def outerArcLine(n, p0, p1, p2):
     points = map (lambda v,mat=mat,d=p1:d+mat*v, points)
     return points
     
+    
+def arcLength(points):
+    length=0.0
+    for i in range(len(points)-1):
+        length=length+abs(points[i+1]-points[i])
+    return length
 
+#
+# These three won't be used until or unless the `thick'
+#   variants are implemented.
+#
 def smallerarchbox(box, thick):
     "returns a box for arch, thick smaller than input box"
     fi = thick*(box["brf"]-box["blf"]).normalized
@@ -211,6 +231,48 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
     else:
         curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
 #    squawk(`curve`)
+#    compression = arcLength((curve[0],pd["trb"],curve[len(curve)-1]))/arcLength(curve)
+    cornerlength=arcLength((curve[0],pd["trb"],curve[len(curve)-1]))
+#    squawk('compression: '+`compression`)
+    #
+    # get line of equal length of curve, in back face plane
+    #
+    span = (pd["trb"]-pd["tlb"]).normalized
+    depth = pd["tlb"]-pd["brb"]
+    cross = span^depth
+#    texline = (arcLength(curve)/cornerlength)*span
+    texmat = matrixFromMap(depth, cross, span*cornerlength, depth, cross, span*arcLength(curve)) 
+#    squawk(`texmat`)
+    #
+    # make texture source face
+    #
+    texface = fdict["b"].copy()
+    texface.linear(curve[0],texmat)
+    texface.swapsides()
+#    #
+#    # get 2 texpoints according to the tex scale of the
+#    #  actual back face
+#    #
+#    def texpoint(v, texface=texface):
+#        return texCoords(v, texface.threepoints(2), 128)
+#    texpoints = map(texpoint, [pd["tlb"], pd["blb"]])
+#    #
+#    # now rotate this tex face around a right-back pivot parallel
+#    #   to right face
+#    #
+#    texface.distortion(fdict["r"].normal,pd["trb"])
+#    #
+#    # get the tex coordinates now appropriate to trf
+#    #
+#    texpoints.append(texCoords(pd["trf"],texface.threepoints(2),128))
+#    #
+#    # now solve for threepoints, except adjusted for the actual
+##    #
+#    texp=solveForThreepoints((pd["tlb"], texpoints[0]),
+#                             (pd["blb"], texpoints[1]),
+#                             (pd["tlb"]+texline, texpoints[2]))
+#    texface.distortion(fdict["b"].normal,pd["trb"])
+#    texface.setthreepoints(texp,2)
     brushes = []
     #
     #  Generate the brushes
@@ -230,12 +292,21 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
     else:
         pivot=pd["tlf"]
     depth = pd["tlb"]-pd["blb"]
+    if left:
+        texface.swapsides()
+    if not inverse:
+        texface.swapsides()
+    if lower:
+        texface.swapsides()
     for i in range(subdivide):
         brush = quarkx.newobj('brush'+`i`+':p')
         brush.appenditem(base)
         face=quarkx.newobj('face'+`i`+':f')
         face.setthreepoints((curve[i],curve[i+1],curve[i]+depth),0)
         face["tex"]=fdict["b"]["tex"]
+        texface.distortion(face.normal,curve[i])
+        face.setthreepoints(texface.threepoints(2),2)
+        
         if left:
             face.swapsides()
         if not inverse:
@@ -247,6 +318,7 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
         brush.appenditem(top.copy())
         if i<final:
             div=quarkx.newobj('div'+`i`+':f')
+            div["tex"]=fdict["b"]["tex"]
             div.setthreepoints((pivot, pivot+depth, curve[i+1]),0)
             if left:
                 div.swapsides()
@@ -706,6 +778,9 @@ quarkpy.mapentities.registerPyForm("dup brushcolumn", brushcolumnstring)
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.4  2001/02/14 10:08:58  tiglari
+#extract perspective stuff to quarkpy.perspective.py
+#
 #Revision 1.3  2001/01/03 21:38:00  tiglari
 #remove column from menu, add someutils to help it work with older q v ersions
 #
