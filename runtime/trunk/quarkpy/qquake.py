@@ -90,7 +90,10 @@ class GameConsole(BatchConsole):
         else:
             format = setup["ExtraCmdLine"]
             customdir = quarkx.outputfile()  # get the current tmpQuArK directory
-            cmdline = program + " " + format % customdir
+            if format:
+                cmdline = program + " " + format % customdir
+            else:
+			    cmdline = program
             if map is not self.NO_MAP:
                 cmdline = cmdline + setup["RunMapCmdLine"] % map
         BatchConsole.__init__(self, cmdline, dir, next)
@@ -198,6 +201,9 @@ class GameConsole(BatchConsole):
 #
 #
 #$Log$
+#Revision 1.5  2001/06/21 17:34:12  decker_dk
+#quarkx.openconfigdlg()
+#
 #Revision 1.4  2000/06/02 16:00:22  alexander
 #added cvs headers
 #
