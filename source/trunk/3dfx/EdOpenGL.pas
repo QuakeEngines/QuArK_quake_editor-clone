@@ -24,11 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.13  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
 Revision 1.12  2000/09/10 14:04:24  alexander
 added cvs headers
-
-
-
 }
 
 unit EdOpenGL;
@@ -149,7 +149,7 @@ begin
  S:='';
  for I:=1 to 25 do
   begin
-   J:=qrkOpenGL_API.glGetError;
+   J:=glGetError;
    if J = GL_NO_ERROR then Break;
    S:=S+' '+IntToStr(J);
   end;
@@ -183,10 +183,10 @@ end;
 
 procedure FreeOpenGLTexture(Tex: PTexture3);
 begin
- if (Tex^.OpenGLName<>0) and Assigned(qrkOpenGL_API) then
+ if (Tex^.OpenGLName<>0) and OpenGlLoaded then
   begin
-   {$IFDEF DebugGLErr} if Assigned(qrkOpenGL_API) then Err(-101); {$ENDIF}
-   qrkOpenGL_API.glDeleteTextures(1, Tex^.OpenGLName);
+   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-101); {$ENDIF}
+   glDeleteTextures(1, Tex^.OpenGLName);
    {$IFDEF DebugGLErr} Err(101); {$ENDIF}
   end;
 end;
@@ -241,9 +241,9 @@ begin
         Inc(CurrentName);
         OpenGLName:=0;
        end;
-    if Assigned(qrkOpenGL_API) and (CurrentName<>NameArray) then
+    if OpenGlLoaded and (CurrentName<>NameArray) then
      begin
-      qrkOpenGL_API.glDeleteTextures((PChar(CurrentName)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
+      glDeleteTextures((PChar(CurrentName)-PChar(NameArray)) div SizeOf(GLuint), NameArray^);
       {$IFDEF DebugGLErr} Err(102); {$ENDIF}
      end;
    finally
@@ -252,10 +252,10 @@ begin
   end;
  if RC<>0 then
   begin
-   if Assigned(qrkOpenGL_API) then
+   if OpenGlLoaded then
     begin
-     qrkOpenGL_API.wglMakeCurrent(0,0);
-     qrkOpenGL_API.wglDeleteContext(RC);
+     wglMakeCurrent(0,0);
+     wglDeleteContext(RC);
     end;
    RC:=0;
   end;
@@ -333,31 +333,31 @@ begin
     Raise EErrorFmt(4869, ['SetPixelFormat']);
    DestWnd:=Wnd;
   end;
- RC:=qrkOpenGL_API.wglCreateContext(GLDC);
+ RC:=wglCreateContext(GLDC);
  if RC=0 then
   Raise EErrorFmt(4869, ['wglCreateContext']);
 
   { set up OpenGL }
- qrkOpenGL_API.wglMakeCurrent(GLDC,RC);
+ wglMakeCurrent(GLDC,RC);
  Err(0);
  UnpackColor(FOG_COLOR, FogColor);
- qrkOpenGL_API.glClearColor(FogColor[0], FogColor[1], FogColor[2], 1);
-// qrkOpenGL_API.glClearDepth(1);
- qrkOpenGL_API.glEnable(GL_DEPTH_TEST);
-{qrkOpenGL_API.glDepthFunc(GL_LEQUAL);}
-// qrkOpenGL_API.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
- qrkOpenGL_API.glEdgeFlag(0);
+ glClearColor(FogColor[0], FogColor[1], FogColor[2], 1);
+// glClearDepth(1);
+ glEnable(GL_DEPTH_TEST);
+{glDepthFunc(GL_LEQUAL);}
+// glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+ glEdgeFlag(0);
  Err(1);
 
   { set up texture parameters }
-(* qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
- qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-{qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
- qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
- qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
- qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-{qrkOpenGL_API.glShadeModel(GL_FLAT);} *)
- qrkOpenGL_API.glEnable(GL_TEXTURE_2D);
+(* glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+ glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+{glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+ glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);}
+ glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+ glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+{glShadeModel(GL_FLAT);} *)
+ glEnable(GL_TEXTURE_2D);
  Err(2);
 
 {Inc(VersionGLSceneObject);}
@@ -368,12 +368,12 @@ begin
   { set up fog }
  if Fog then
   begin
-   qrkOpenGL_API.glFogi(GL_FOG_MODE, GL_EXP2);
-  {qrkOpenGL_API.glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
-   qrkOpenGL_API.glFogf(GL_FOG_END, FarDistance);}
-   qrkOpenGL_API.glFogf(GL_FOG_DENSITY, FOG_DENSITY/FarDistance * 100000);
-   qrkOpenGL_API.glFogfv(GL_FOG_COLOR, FogColor);
-   qrkOpenGL_API.glEnable(GL_FOG);
+   glFogi(GL_FOG_MODE, GL_EXP2);
+  {glFogf(GL_FOG_START, FarDistance * kDistFarToShort);
+   glFogf(GL_FOG_END, FarDistance);}
+   glFogf(GL_FOG_DENSITY, FOG_DENSITY/FarDistance * 100000);
+   glFogfv(GL_FOG_COLOR, FogColor);
+   glEnable(GL_FOG);
    Err(3);
   end;
 end;
@@ -445,7 +445,7 @@ begin
  try
   if B>0 then
    begin
-    qrkOpenGL_API.glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
+    glReadPixels(0, 0, bmiHeader.biWidth, bmiHeader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, Bits^);
     Err(999);
 
     { we have to swap the bytes (RGB --> BGR)...}
@@ -518,10 +518,10 @@ begin
   end;
  if DisplayLists>0 then
   begin
-   if Assigned(qrkOpenGL_API) then
+   if OpenGlLoaded then
     begin
      {$IFDEF DebugGLErr} Err(-172); {$ENDIF}
-     qrkOpenGL_API.glDeleteLists(1, DisplayLists);
+     glDeleteLists(1, DisplayLists);
      {$IFDEF DebugGLErr} Err(172); {$ENDIF}
     end;
    DisplayLists:=0;
@@ -647,7 +647,7 @@ var
  Buffer, BufEnd: ^GLuint;
  BufResident: ^GLboolean;
 begin
- {$IFDEF DebugGLErr} if Assigned(qrkOpenGL_API) then Err(-103); {$ENDIF}
+ {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-103); {$ENDIF}
  if not SolidColors then
   begin
    Count:=0;
@@ -675,7 +675,7 @@ begin
         PList:=PList^.Next;
        end;
       PChar(BufResident):=PChar(BufEnd);
-      qrkOpenGL_API.glAreTexturesResident(Count, Buffer^, BufResident^);
+      glAreTexturesResident(Count, Buffer^, BufResident^);
       {$IFDEF DebugGLErr} Err(103); {$ENDIF}
       PList:=ListSurfaces;
       while Assigned(PList) do
@@ -722,32 +722,32 @@ procedure TGLSceneObject.RenderOpenGL(Source: TGLSceneBase; DisplayLights: Boole
 var
  SX, SY: Integer;
 begin
- if not Assigned(qrkOpenGL_API) then Exit;
+ if not OpenGlLoaded then Exit;
  {$IFDEF DebugGLErr} Err(-50); {$ENDIF}
-{qrkOpenGL_API.wglMakeCurrent(DC,RC);
+{wglMakeCurrent(DC,RC);
  Err(49);}
  SX:=Source.ScreenX;
  SY:=Source.ScreenY;
  if SX>ScreenX then SX:=ScreenX;
  if SY>ScreenY then SY:=ScreenY;
- qrkOpenGL_API.glViewport(0, 0, SX, SY);
+ glViewport(0, 0, SX, SY);
  Err(50);
  with TCameraCoordinates(Source.Coord) do
   begin
-   qrkOpenGL_API.glMatrixMode(GL_PROJECTION);
-   qrkOpenGL_API.glLoadIdentity;
-   qrkOpenGL_API.gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity;
+   gluPerspective(VCorrection2*VAngleDegrees, SX/SY, FarDistance * kDistFarToShort, FarDistance);
    if PitchAngle<>0 then
-    qrkOpenGL_API.glRotatef(PitchAngle * (180/pi), -1,0,0);
-   qrkOpenGL_API.glRotatef(HorzAngle * (180/pi), 0,-1,0);
-   qrkOpenGL_API.glMatrixMode(GL_MODELVIEW);
-   qrkOpenGL_API.glLoadIdentity;
-   qrkOpenGL_API.glRotatef(120, -1,1,1);
+    glRotatef(PitchAngle * (180/pi), -1,0,0);
+   glRotatef(HorzAngle * (180/pi), 0,-1,0);
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity;
+   glRotatef(120, -1,1,1);
    with Camera do
-    qrkOpenGL_API.glTranslatef(-X, -Y, -Z);
+    glTranslatef(-X, -Y, -Z);
   end;
  Err(51);
- qrkOpenGL_API.glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
+ glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT); { clear screen }
  Err(52);
  CurrentAlpha:=0;
  FillChar(Currentf, SizeOf(Currentf), 0);
@@ -755,9 +755,9 @@ begin
  Err(53);
  RenderTransparentGL(Source.FListSurfaces, True, DisplayLights, Source.Coord);
  Err(54);
- qrkOpenGL_API.glFlush;
+ glFlush;
  Err(55);
-{qrkOpenGL_API.wglMakeCurrent(0,0);}
+{wglMakeCurrent(0,0);}
 end;
 
 procedure TGLSceneProxy.BuildTexture(Texture: PTexture3);
@@ -778,7 +778,7 @@ var
 begin
  if Texture^.OpenGLName=0 then
   begin
-   {$IFDEF DebugGLErr} if Assigned(qrkOpenGL_API) then Err(-104); {$ENDIF}
+   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-104); {$ENDIF}
    GetwhForTexture(Texture^.info, W, H);
    MemSize:=W*H*4;
    if RenderingTextureBuffer.Size < MemSize then
@@ -897,18 +897,18 @@ begin
     PSD2.Done;
    end;
 
-  {qrkOpenGL_API.gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
-   qrkOpenGL_API.glGenTextures(1, Texture^.OpenGLName);
+  {gluBuild2DMipmaps(GL_TEXTURE_2D, 3, W, H, GL_RGBA, GL_UNSIGNED_BYTE, TexData^);}
+   glGenTextures(1, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(104); {$ENDIF}
    if Texture^.OpenGLName=0 then Raise InternalE('out of texture numbers');
-   qrkOpenGL_API.glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
+   glBindTexture(GL_TEXTURE_2D, Texture^.OpenGLName);
    {$IFDEF DebugGLErr} Err(105); {$ENDIF}
-   qrkOpenGL_API.glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
+   glTexImage2D(GL_TEXTURE_2D, 0, 3, W, H, 0, GL_RGB, GL_UNSIGNED_BYTE, TexData^);
    {$IFDEF DebugGLErr} Err(106); {$ENDIF}
-   qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-   qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   qrkOpenGL_API.glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    {$IFDEF DebugGLErr} Err(107); {$ENDIF}
   end;
 end;
@@ -919,8 +919,8 @@ begin
  if Tex^.OpenGLName=0 then
   Raise InternalE('LoadCurrentTexture: texture not loaded');
  {$ENDIF}
- {$IFDEF DebugGLErr} if Assigned(qrkOpenGL_API) then Err(-108); {$ENDIF}
- qrkOpenGL_API.glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
+ {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-108); {$ENDIF}
+ glBindTexture(GL_TEXTURE_2D, Tex^.OpenGLName);
  {$IFDEF DebugGLErr} Err(108); {$ENDIF}
 end;
 
@@ -1085,39 +1085,39 @@ begin
   end;
  if SubList=Nil then
   begin
-   {$IFDEF DebugGLErr} if Assigned(qrkOpenGL_API) then Err(-121); {$ENDIF}
+   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-121); {$ENDIF}
    l[0]:=LightParams.ZeroLight * Currentf[0];
    l[1]:=LightParams.ZeroLight * Currentf[1];
    l[2]:=LightParams.ZeroLight * Currentf[2];
-   qrkOpenGL_API.glColor3fv(l);
+   glColor3fv(l);
    {$IFDEF DebugGLErr} Err(121); {$ENDIF}
-   qrkOpenGL_API.glBegin(GL_QUADS);
+   glBegin(GL_QUADS);
    with PV1^ do
     begin
-     qrkOpenGL_API.glTexCoord2fv(st);
-     qrkOpenGL_API.glVertex3fv(xyz);
+     glTexCoord2fv(st);
+     glVertex3fv(xyz);
     end;
    with PV2^ do
     begin
-     qrkOpenGL_API.glTexCoord2fv(st);
-     qrkOpenGL_API.glVertex3fv(xyz);
+     glTexCoord2fv(st);
+     glVertex3fv(xyz);
     end;
    with PV3^ do
     begin
-     qrkOpenGL_API.glTexCoord2fv(st);
-     qrkOpenGL_API.glVertex3fv(xyz);
+     glTexCoord2fv(st);
+     glVertex3fv(xyz);
     end;
    with PV4^ do
     begin
-     qrkOpenGL_API.glTexCoord2fv(st);
-     qrkOpenGL_API.glVertex3fv(xyz);
+     glTexCoord2fv(st);
+     glVertex3fv(xyz);
     end;
-   qrkOpenGL_API.glEnd;
+   glEnd;
    {$IFDEF DebugGLErr} Err(122); {$ENDIF}
   end
  else
   begin
-   {$IFDEF DebugGLErr} if Assigned(qrkOpenGL_API) then Err(-109); {$ENDIF}
+   {$IFDEF DebugGLErr} if OpenGlLoaded then Err(-109); {$ENDIF}
    Points[0,0].v:=PV1^;
    Points[0,SectionsI].v:=PV2^;
    Points[SectionsJ,0].v:=PV4^;
@@ -1193,25 +1193,25 @@ begin
    J:=0;
    while J<SectionsJ do
     begin
-     qrkOpenGL_API.glBegin(GL_QUAD_STRIP);
+     glBegin(GL_QUAD_STRIP);
      I:=0;
      while I<=SectionsI do
       begin
        with Points[J,I] do
         begin
-         qrkOpenGL_API.glColor3fv(l);
-         qrkOpenGL_API.glTexCoord2fv(v.st);
-         qrkOpenGL_API.glVertex3fv(v.xyz);
+         glColor3fv(l);
+         glTexCoord2fv(v.st);
+         glVertex3fv(v.xyz);
         end;
        with Points[J+StepJ,I] do
         begin
-         qrkOpenGL_API.glColor3fv(l);
-         qrkOpenGL_API.glTexCoord2fv(v.st);
-         qrkOpenGL_API.glVertex3fv(v.xyz);
+         glColor3fv(l);
+         glTexCoord2fv(v.st);
+         glVertex3fv(v.xyz);
         end;
        Inc(I, StepI);
       end;
-     qrkOpenGL_API.glEnd;
+     glEnd;
      Inc(J, StepJ);
     end;
    {$IFDEF DebugGLErr} Err(109); {$ENDIF}
@@ -1231,18 +1231,18 @@ begin
    LP1^.SousListe:=LP1^.Suivant;
    LP1:=LP1^.SousListe;
   end;
- qrkOpenGL_API.glBegin(GL_TRIANGLE_STRIP);
+ glBegin(GL_TRIANGLE_STRIP);
  for I:=1 to VertexCount do
   begin
    Point.v:=PV^;
    Inc(PV);
    LightAtPoint(Point, LP, Currentf, LightParams, vec3_p(PV)^);
    Inc(vec3_p(PV));
-   qrkOpenGL_API.glColor3fv(Point.l);
-   qrkOpenGL_API.glTexCoord2fv(Point.v.st);
-   qrkOpenGL_API.glVertex3fv(Point.v.xyz);
+   glColor3fv(Point.l);
+   glTexCoord2fv(Point.v.st);
+   glVertex3fv(Point.v.xyz);
   end;
- qrkOpenGL_API.glEnd;
+ glEnd;
 end;
 
 procedure TGLSceneObject.RenderPList(PList: PSurfaces; TransparentFaces, DisplayLights: Boolean; SourceCoord: TCoordinates);
@@ -1285,17 +1285,17 @@ begin
            Inc(DisplayLists);
            AnyInfo.DisplayList:=DisplayLists;
            {$IFDEF DebugGLErr} Err(-110); {$ENDIF}
-           qrkOpenGL_API.glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
-           if qrkOpenGL_API.glGetError <> GL_NO_ERROR then  { out of display list resources }
+           glNewList(AnyInfo.DisplayList, GL_COMPILE_AND_EXECUTE);
+           if glGetError <> GL_NO_ERROR then  { out of display list resources }
             raise EError(5693);
-           qrkOpenGL_API.glColor4fv(Currentf);
+           glColor4fv(Currentf);
            {$IFDEF DebugGLErr} Err(111); {$ENDIF}
           end
          else
           if NeedColor then
            begin
             {$IFDEF DebugGLErr} Err(-112); {$ENDIF}
-            qrkOpenGL_API.glColor4fv(Currentf);
+            glColor4fv(Currentf);
             {$IFDEF DebugGLErr} Err(112); {$ENDIF}
            end;
          if VertexCount>=0 then
@@ -1318,14 +1318,14 @@ begin
          if DisplayLists<>-1 then
           begin
            {$IFDEF DebugGLErr} Err(-113); {$ENDIF}
-           qrkOpenGL_API.glEndList;
+           glEndList;
            {$IFDEF DebugGLErr} Err(113); {$ENDIF}
           end;
         end
        else
         begin
          {$IFDEF DebugGLErr} Err(-114); {$ENDIF}
-         qrkOpenGL_API.glCallList(AnyInfo.DisplayList);
+         glCallList(AnyInfo.DisplayList);
          {$IFDEF DebugGLErr} Err(114); {$ENDIF}
         end
       (*for I:=1 to VertexCount do
@@ -1347,14 +1347,14 @@ begin
               PL:=Suivant;
              end;
           if Light>=kBrightnessSaturation then
-           qrkOpenGL_API.glColor3f(Currentf[0], Currentf[1], Currentf[2])
+           glColor3f(Currentf[0], Currentf[1], Currentf[2])
           else
            begin
             Light:=Light * (1.0/kBrightnessSaturation);
-            qrkOpenGL_API.glColor3f(Light*Currentf[0], Light*Currentf[1], Light*Currentf[2]);
+            glColor3f(Light*Currentf[0], Light*Currentf[1], Light*Currentf[2]);
            end;
-          qrkOpenGL_API.glTexCoord2fv(PV^.st);
-          qrkOpenGL_API.glVertex3fv(PV^.xyz);
+          glTexCoord2fv(PV^.st);
+          glVertex3fv(PV^.xyz);
           Inc(PV);
          end;
        end*)
@@ -1364,27 +1364,27 @@ begin
          begin
           UnpackColor(AlphaColor, Currentf);
           {$IFDEF DebugGLErr} Err(-115); {$ENDIF}
-          qrkOpenGL_API.glColor4fv(Currentf);
+          glColor4fv(Currentf);
           {$IFDEF DebugGLErr} Err(115); {$ENDIF}
          end;
         {$IFDEF DebugGLErr} Err(-116); {$ENDIF}
         if VertexCount>=0 then
          begin
-          qrkOpenGL_API.glBegin(GL_POLYGON);
+          glBegin(GL_POLYGON);
           Sz:=SizeOf(TVertex3D);
          end
         else
          begin
-          qrkOpenGL_API.glBegin(GL_TRIANGLE_STRIP);
+          glBegin(GL_TRIANGLE_STRIP);
           Sz:=SizeOf(TVertex3D)+SizeOf(vec3_t);
          end;
         for I:=1 to Abs(VertexCount) do
          begin
-          qrkOpenGL_API.glTexCoord2fv(PV^.st);
-          qrkOpenGL_API.glVertex3fv(PV^.xyz);
+          glTexCoord2fv(PV^.st);
+          glVertex3fv(PV^.xyz);
           Inc(PChar(PV), Sz);
          end;
-        qrkOpenGL_API.glEnd;
+        glEnd;
         {$IFDEF DebugGLErr} Err(116); {$ENDIF}
        end;
      end;

@@ -24,11 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
 Revision 1.3  2000/09/10 14:04:24  alexander
 added cvs headers
-
-
-
 }
 
 unit GL1;
@@ -40,23 +40,22 @@ uses Windows;
 (**************    GL.H    **************)
 
 type
- GLenum     = LongInt;
- GLboolean  = Byte;
- GLbitfield = LongInt;
- GLbyte     = ShortInt;
- GLshort    = SmallInt;
- GLint      = LongInt;
- GLsizei    = LongInt;
- GLubyte    = Byte;
- GLushort   = Word;
- GLuint     = LongInt;
- GLfloat    = Single;
- GLclampf   = Single;
- GLdouble   = Double;
- GLclampd   = Double;
+  GLenum     = LongInt;
+  GLboolean  = Byte;
+  GLbitfield = LongInt;
+  GLbyte     = ShortInt;
+  GLshort    = SmallInt;
+  GLint      = LongInt;
+  GLsizei    = LongInt;
+  GLubyte    = Byte;
+  GLushort   = Word;
+  GLuint     = LongInt;
+  GLfloat    = Single;
+  GLclampf   = Single;
+  GLdouble   = Double;
+  GLclampd   = Double;
 
 const
-
   (* AccumOp *)
 
   GL_ACCUM  = $0100;
@@ -609,9 +608,7 @@ const
   GL_CLAMP  = $2900;
   GL_REPEAT = $2901;
 
-type
- PGlRoutines = ^TGlRoutines;
- TGlRoutines = record
+var
   (*
   ** OpenGL routines from OPENGL32.DLL
   *)
@@ -646,8 +643,7 @@ type
   glTexCoord2fv: procedure (var v); stdcall;
   glVertex3fv: procedure (var v ); stdcall;
   glFlush: procedure; stdcall;
-  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei;
-    border: GLint; format, typ: GLenum; const pixels); stdcall;
+  glTexImage2D: procedure (taget: GLenum; level, components : GLint; width, height: GLsizei; border: GLint; format, typ: GLenum; const pixels); stdcall;
   glDeleteTextures: procedure (n: GLsizei; const textures); stdcall;
   glAreTexturesResident: function (n: GLsizei; const textures; var residences) : GLboolean; stdcall;
   glBindTexture: procedure (target: GLenum; texture: GLuint); stdcall;
@@ -662,133 +658,139 @@ type
   ** Utility routines from GLU32.DLL
   *)
   gluPerspective: procedure (fovy, aspect, zNear, zFar: GLdouble); stdcall;
- {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint;
-                               format: GLenum; typ: GLenum; const data): GLint; stdcall;}
+ {gluBuild2DMipmaps: function (target: GLenum; components: GLint; width, height: GLint; format: GLenum; typ: GLenum; const data): GLint; stdcall;}
 
-  (*
-  ** end of routines
-  *)
-
-  OpenGL32Lib: THandle;
-  Glu32Lib: THandle;
- end; {end-of-record}
-
-var
- qrkOpenGL_API: PGlRoutines;
-
+function OpenGlLoaded : Boolean;
 function ReloadOpenGl : Boolean;
 procedure UnloadOpenGl;
-function OpenGlLoaded : Boolean;
 
 implementation
 
 const
- GlRoutines : array[0..37] of PChar =
-  ('wglMakeCurrent',
-   'wglDeleteContext',
-   'wglCreateContext',
-   'glClearColor',
-   'glClearDepth',
-   'glEnable',
-  {'glDisable',}
-   'glDepthFunc',
-   'glHint',
-   'glEdgeFlag',
-   'glTexParameterf',
-   'glShadeModel',
-   'glFogi',
-   'glFogf',
-   'glFogfv',
-   'glGetError',
-   'glViewport',
-   'glMatrixMode',
-   'glLoadIdentity',
-   'glRotatef',
-   'glTranslatef',
-   'glClear',
-   'glBegin',
-   'glEnd',
-   'glColor3fv',
-   'glColor4fv',
-   'glTexCoord2fv',
-   'glVertex3fv',
-   'glFlush',
-   'glTexImage2D',
-   'glDeleteTextures',
-   'glAreTexturesResident',
-   'glBindTexture',
-   'glGenTextures',
-   'glNewList',
-   'glEndList',
-   'glCallList',
-   'glDeleteLists',
-   'glReadPixels');
- GluRoutines : array[0..0] of PChar =
-  ('gluPerspective'
-  {'gluBuild2DMipmaps'});
+  OpenGL32DLL_FuncList : array[0..37] of
+    record
+      FuncPtr: Pointer;
+      FuncName: PChar;
+    end =
+  ( (FuncPtr: @@wglMakeCurrent;        FuncName: 'wglMakeCurrent'        )
+   ,(FuncPtr: @@wglDeleteContext;      FuncName: 'wglDeleteContext'      )
+   ,(FuncPtr: @@wglCreateContext;      FuncName: 'wglCreateContext'      )
+   ,(FuncPtr: @@glClearColor;          FuncName: 'glClearColor'          )
+   ,(FuncPtr: @@glClearDepth;          FuncName: 'glClearDepth'          )
+   ,(FuncPtr: @@glEnable;              FuncName: 'glEnable'              )
+  {,(FuncPtr: @@glDisable;             FuncName: 'glDisable'             )}
+   ,(FuncPtr: @@glDepthFunc;           FuncName: 'glDepthFunc'           )
+   ,(FuncPtr: @@glHint;                FuncName: 'glHint'                )
+   ,(FuncPtr: @@glEdgeFlag;            FuncName: 'glEdgeFlag'            )
+   ,(FuncPtr: @@glTexParameterf;       FuncName: 'glTexParameterf'       )
+   ,(FuncPtr: @@glShadeModel;          FuncName: 'glShadeModel'          )
+   ,(FuncPtr: @@glFogi;                FuncName: 'glFogi'                )
+   ,(FuncPtr: @@glFogf;                FuncName: 'glFogf'                )
+   ,(FuncPtr: @@glFogfv;               FuncName: 'glFogfv'               )
+   ,(FuncPtr: @@glGetError;            FuncName: 'glGetError'            )
+   ,(FuncPtr: @@glViewport;            FuncName: 'glViewport'            )
+   ,(FuncPtr: @@glMatrixMode;          FuncName: 'glMatrixMode'          )
+   ,(FuncPtr: @@glLoadIdentity;        FuncName: 'glLoadIdentity'        )
+   ,(FuncPtr: @@glRotatef;             FuncName: 'glRotatef'             )
+   ,(FuncPtr: @@glTranslatef;          FuncName: 'glTranslatef'          )
+   ,(FuncPtr: @@glClear;               FuncName: 'glClear'               )
+   ,(FuncPtr: @@glBegin;               FuncName: 'glBegin'               )
+   ,(FuncPtr: @@glEnd;                 FuncName: 'glEnd'                 )
+  {,(FuncPtr: @@glColor3f;             FuncName: 'glColor3f'             )}
+   ,(FuncPtr: @@glColor3fv;            FuncName: 'glColor3fv'            )
+   ,(FuncPtr: @@glColor4fv;            FuncName: 'glColor4fv'            )
+   ,(FuncPtr: @@glTexCoord2fv;         FuncName: 'glTexCoord2fv'         )
+   ,(FuncPtr: @@glVertex3fv;           FuncName: 'glVertex3fv'           )
+   ,(FuncPtr: @@glFlush;               FuncName: 'glFlush'               )
+   ,(FuncPtr: @@glTexImage2D;          FuncName: 'glTexImage2D'          )
+   ,(FuncPtr: @@glDeleteTextures;      FuncName: 'glDeleteTextures'      )
+   ,(FuncPtr: @@glAreTexturesResident; FuncName: 'glAreTexturesResident' )
+   ,(FuncPtr: @@glBindTexture;         FuncName: 'glBindTexture'         )
+   ,(FuncPtr: @@glGenTextures;         FuncName: 'glGenTextures'         )
+   ,(FuncPtr: @@glNewList;             FuncName: 'glNewList'             )
+   ,(FuncPtr: @@glEndList;             FuncName: 'glEndList'             )
+   ,(FuncPtr: @@glCallList;            FuncName: 'glCallList'            )
+   ,(FuncPtr: @@glDeleteLists;         FuncName: 'glDeleteLists'         )
+   ,(FuncPtr: @@glReadPixels;          FuncName: 'glReadPixels'          ) );
+
+  Glu32DLL_FuncList : array[0..0] of
+    record
+      FuncPtr: Pointer;
+      FuncName: PChar;
+    end =
+  ( (FuncPtr: @@gluPerspective;        FuncName: 'gluPerspective'        )
+  {,(FuncPtr: @@gluBuild2DMipmaps;     FuncName: 'gluBuild2DMipmaps'     )});
+
+var
+  Is_OpenGL_Library_Loaded : boolean;
+
+  OpenGL32Lib: THandle;
+  Glu32Lib: THandle;
+
+ { ----------------- }
 
 function OpenGlLoaded : Boolean;
 begin
- Result:=Assigned(qrkOpenGL_API);
+  Result := Is_OpenGL_Library_Loaded;
 end;
 
 function ReloadOpenGl : Boolean;
+type
+ PPointer = ^Pointer;
 var
- LocalOpenGL_API: PGlRoutines;
  I: Integer;
- P: ^TFarProc;
+ P: Pointer;
 begin
- UnloadOpenGl;
- Result:=False;
- New(LocalOpenGL_API);
- LocalOpenGL_API^.OpenGL32Lib:=0;
- LocalOpenGL_API^.Glu32Lib:=0;
- try
-  LocalOpenGL_API^.OpenGL32Lib:=LoadLibrary('OPENGL32.DLL');
-  if LocalOpenGL_API^.OpenGL32Lib=0 then
-   Exit;
-  LocalOpenGL_API^.Glu32Lib:=LoadLibrary('GLU32.DLL');
-  if LocalOpenGL_API^.Glu32Lib=0 then
-   Exit;
-  PChar(P):=PChar(LocalOpenGL_API);
-  for I:=Low(GlRoutines) to High(GlRoutines) do
-   begin
-    P^:=GetProcAddress(LocalOpenGL_API^.OpenGL32Lib, GlRoutines[I]);
-    if P^=Nil then
-     Exit;
-    Inc(P);
-   end;
-  for I:=Low(GluRoutines) to High(GluRoutines) do
-   begin
-    P^:=GetProcAddress(LocalOpenGL_API^.Glu32Lib, GluRoutines[I]);
-    if P^=Nil then
-     Exit;
-    Inc(P);
-   end;
-  Result:=True;
- finally
-  if Result then
-   qrkOpenGL_API:=LocalOpenGL_API
-  else
-   begin
-    if LocalOpenGL_API^.Glu32Lib<>0 then
-     FreeLibrary(LocalOpenGL_API^.Glu32Lib);
-    if LocalOpenGL_API^.OpenGL32Lib<>0 then
-     FreeLibrary(LocalOpenGL_API^.OpenGL32Lib);
-    FreeMem(LocalOpenGL_API);
-   end;
- end;
+  Result := False;
+  UnloadOpenGl;
+  try
+    OpenGL32Lib := LoadLibrary('OPENGL32.DLL');
+    if OpenGL32Lib=0 then
+      Exit;
+
+    Glu32Lib := LoadLibrary('GLU32.DLL');
+    if Glu32Lib=0 then
+      Exit;
+
+    for I:=Low(OpenGL32DLL_FuncList) to High(OpenGL32DLL_FuncList) do
+    begin
+      P:=GetProcAddress(OpenGL32Lib, OpenGL32DLL_FuncList[I].FuncName);
+      if P=Nil then
+        Exit;
+      PPointer(OpenGL32DLL_FuncList[I].FuncPtr)^:=P;
+    end;
+
+    for I:=Low(Glu32DLL_FuncList) to High(Glu32DLL_FuncList) do
+    begin
+      P:=GetProcAddress(Glu32Lib, Glu32DLL_FuncList[I].FuncName);
+      if P=Nil then
+        Exit;
+      PPointer(Glu32DLL_FuncList[I].FuncPtr)^:=P;
+    end;
+
+    Is_OpenGL_Library_Loaded := True;
+    Result := True;
+  finally
+    if (not Result) then
+      UnloadOpenGL;
+  end;
 end;
 
 procedure UnloadOpenGl;
 begin
- if Assigned(qrkOpenGL_API) then
-  begin
-   FreeLibrary(qrkOpenGL_API^.Glu32Lib);
-   FreeLibrary(qrkOpenGL_API^.OpenGL32Lib);
-   FreeMem(qrkOpenGL_API);
-   qrkOpenGL_API:=Nil;
-  end;
+  if OpenGL32Lib<>0 then
+    FreeLibrary(OpenGL32Lib);
+  OpenGL32Lib := 0;
+
+  if Glu32Lib<>0 then
+    FreeLibrary(Glu32Lib);
+  Glu32Lib := 0;
+
+  Is_OpenGL_Library_Loaded := False;
 end;
 
+initialization
+  Is_OpenGL_Library_Loaded := False;
+  OpenGL32Lib := 0;
+  Glu32Lib := 0;
 end.

@@ -24,13 +24,17 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/11/26 19:07:56  decker_dk
+- Moved TListP2 from PROG\QkObjects.PAS to a new file 3DFX\EdTListP2.PAS.
+- Uncommented QObject.Pedigree, as it seems like QObject.Ancestry is the
+function to use.
+- Replaced constant 'Origine' with 'OriginVectorZero'.
+
 Revision 1.16  2000/11/11 17:56:52  decker_dk
 Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
 
 Revision 1.15  2000/09/10 13:56:38  alexander
 added cvs headers
-
-
 }
 
 unit Ed3DFX;
@@ -309,7 +313,7 @@ begin
  Writeln(F, v3.x:10:5, v3.y:10:5, v3.oow:12:8, v3.tmuvtx[0].sow:12:8, v3.tmuvtx[0].tow:12:8);
 
  System.Close(F);
- if Assigned(qrkGlide_API.grSstIdle) then qrkGlide_API.grSstIdle;
+ if Assigned(grSstIdle) then grSstIdle;
 {Append(F);
  Writeln(F, '*');
  System.Close(F);}
@@ -321,7 +325,7 @@ begin
  Append(F);
  Writeln(F, S);
  System.Close(F);
- qrkGlide_API.grSstIdle;
+ grSstIdle;
  Append(F);
  Writeln(F, '*');
  System.Close(F);
@@ -330,7 +334,7 @@ end;*)
 
 procedure ClearBuffers(Col: GrColor_t);
 begin
- qrkGlide_API.grBufferClear(Col, 0, GR_WDEPTHVALUE_FARTHEST);
+ grBufferClear(Col, 0, GR_WDEPTHVALUE_FARTHEST);
 end;
 
 function SwapColor(Col: GrColor_t) : GrColor_t;
@@ -1032,19 +1036,19 @@ type  { this is the data shared by all existing T3DFXSceneObjects }
 constructor TGlideState.Create;
 begin
  inherited;
- if qrkGlide_API.Version>=HardwareGlideVersion then
+ if qrkGlideVersion>=HardwareGlideVersion then
   begin  { first time hardware setup }
-   FMinAddress:=qrkGlide_API.grTexMinAddress(GR_TMU0);
-   FMaxAddress:=qrkGlide_API.grTexMaxAddress(GR_TMU0);
+   FMinAddress:=grTexMinAddress(GR_TMU0);
+   FMaxAddress:=grTexMaxAddress(GR_TMU0);
    FLoopAddress:=FMinAddress;
 
-   qrkGlide_API.grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
-   qrkGlide_API.grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
-   qrkGlide_API.grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
-   if Assigned(qrkGlide_API.grTexLodBiasValue) then
-    qrkGlide_API.grTexLodBiasValue(GR_TMU0, +0.5);
-   qrkGlide_API.grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
-   qrkGlide_API.grFogMode(GR_FOG_WITH_TABLE);
+   grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
+   grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
+   grTexMipMapMode(GR_TMU0, GR_MIPMAP_NEAREST, FXFALSE);
+   if Assigned(grTexLodBiasValue) then
+    grTexLodBiasValue(GR_TMU0, +0.5);
+   grTexCombineFunction(GR_TMU0, GR_TEXTURECOMBINE_DECAL);
+   grFogMode(GR_FOG_WITH_TABLE);
   end;
 end;
 
@@ -1052,7 +1056,7 @@ end;
 begin
  if not PalWarning then
   begin
-   if qrkGlide_API.Version < SoftMultiplePalettes then
+   if qrkGlideVersion < SoftMultiplePalettes then
     GlobalWarning(LoadStr1(5656));
    PalWarning:=True;
   end;
@@ -1070,12 +1074,12 @@ begin
   Raise InternalE('NeedTex: texture not loaded');
  {$ENDIF}
  if (PTex^.startAddress = GR_NULL_MIPMAP_HANDLE)
- and (qrkGlide_API.Version>=HardwareGlideVersion) then
+ and (qrkGlideVersion>=HardwareGlideVersion) then
   begin
    TextureManager:=TTextureManager.GetInstance;
     { computes destination address }
    nStartAddress:=FLoopAddress;
-   nSize:=qrkGlide_API.grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
+   nSize:=grTexTextureMemRequired(GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
    if nStartAddress+nSize > FMaxAddress then
     nStartAddress:=FMinAddress
    else
@@ -1093,7 +1097,7 @@ begin
       startAddress:=GR_NULL_MIPMAP_HANDLE;
 
     { downloads the new texture }
-   qrkGlide_API.grTexDownloadMipMap(GR_TMU0, nStartAddress,
+   grTexDownloadMipMap(GR_TMU0, nStartAddress,
     GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
    PTex^.startAddress:=nStartAddress;
    PTex^.endAddress:=FLoopAddress;
@@ -1108,10 +1112,10 @@ begin
    if PTex^.GuPalette <> TextureManager.DownloadedPalette then
     begin
      TextureManager.DownloadedPalette:=PTex^.GuPalette;
-     qrkGlide_API.grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
+     grTexDownloadTable(GR_TMU0, GR_TEXTABLE_PALETTE, TextureManager.DownloadedPalette);
     end;
   end;
- qrkGlide_API.grTexSource(GR_TMU0, PTex^.startAddress,
+ grTexSource(GR_TMU0, PTex^.startAddress,
   GR_MIPMAPLEVELMASK_BOTH, PTex^.info);
 end;
 
@@ -1125,19 +1129,19 @@ begin
   begin
    PerspectiveMode:=nPerspectiveMode;
    if nPerspectiveMode=0 then Exit;
-   if Assigned(qrkGlide_API.grHints) then
+   if Assigned(grHints) then
     if nPerspectiveMode=2 then  { flat display }
-     qrkGlide_API.grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
+     grHints(GR_HINT_STWHINT, GR_STWHINT_W_DIFF_TMU0)
     else
-     qrkGlide_API.grHints(GR_HINT_STWHINT, 0);
-   if Assigned(qrkGlide_API.guFogGenerateExp2)
-   and Assigned(qrkGlide_API.grFogTable) then
+     grHints(GR_HINT_STWHINT, 0);
+   if Assigned(guFogGenerateExp2)
+   and Assigned(grFogTable) then
   (*if nPerspectiveMode=2 then  { flat display }
      begin
      {for I:=0 to GR_FOG_TABLE_SIZE-1 do
        FogTable2D[I]:=I*(256 div GR_FOG_TABLE_SIZE);}
-      qrkGlide_API.guFogGenerateExp2(FogTable2D, 0.003);
-      qrkGlide_API.grFogTable(FogTable2D);
+      guFogGenerateExp2(FogTable2D, 0.003);
+      grFogTable(FogTable2D);
      end
     else*)
      Result:=True;
@@ -1256,38 +1260,38 @@ begin
  Coord:=nCoord;
  Open3DEditor(LibName, FullScreen);
  TTextureManager.AddScene(Self, FullScreen);
- TGlideState(qrkGlide_API.State).Init;
- Hardware3DFX:=qrkGlide_API.Version>=HardwareGlideVersion;
- if qrkGlide_API.Version>=HardwareGlideVersion then
+ TGlideState(qrkGlideState).Init;
+ Hardware3DFX:=qrkGlideVersion>=HardwareGlideVersion;
+ if qrkGlideVersion>=HardwareGlideVersion then
   HiColor:=True
  else
-  if qrkGlide_API.Version<SoftMultiplePalettes then
+  if qrkGlideVersion<SoftMultiplePalettes then
    HiColor:=False
   else
    begin
     HiColor:=not TTextureManager.GetInstance.UnifiedPalette;
-    qrkGlide_API.softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
-    HiColor:=HiColor and (qrkGlide_API.Version>=SoftTexFmt565);
+    softgLoadFrameBuffer(Nil, $100 or Ord(not HiColor));
+    HiColor:=HiColor and (qrkGlideVersion>=SoftTexFmt565);
    end;
- TGlideState(qrkGlide_API.State).Accepts16bpp:=HiColor;
+ TGlideState(qrkGlideState).Accepts16bpp:=HiColor;
 
- I:=Ord({not nCoord.FlatDisplay and} Assigned(qrkGlide_API.guFogGenerateExp2));
+ I:=Ord({not nCoord.FlatDisplay and} Assigned(guFogGenerateExp2));
  ReallocMem(FogTableCache, SizeOf(GrFogTable_t)*I);
  if I<>0 then
   begin
    if nCoord.FlatDisplay then
     FOG_DENSITY:=FOG_DENSITY*256;
-   qrkGlide_API.guFogGenerateExp2(FogTableCache^, FOG_DENSITY);
+   guFogGenerateExp2(FogTableCache^, FOG_DENSITY);
   end;
-{if Assigned(qrkGlide_API.guFogGenerateExp2)
- and Assigned(qrkGlide_API.grFogTable) then
+{if Assigned(guFogGenerateExp2)
+ and Assigned(grFogTable) then
   begin
-   qrkGlide_API.guFogGenerateExp2(FogTable, FOG_DENSITY);
-   qrkGlide_API.grFogTable(FogTable);
+   guFogGenerateExp2(FogTable, FOG_DENSITY);
+   grFogTable(FogTable);
   end;}
  FOG_COLOR:=SwapColor(FOG_COLOR);
- if Assigned(qrkGlide_API.grFogColorValue) then
-  qrkGlide_API.grFogColorValue(FOG_COLOR);
+ if Assigned(grFogColorValue) then
+  grFogColorValue(FOG_COLOR);
  VOID_COLOR:=FOG_COLOR;
  FRAME_COLOR:=SwapColor(FrameColor);
 end;
@@ -1397,7 +1401,7 @@ end;*)
 
 function T3DFXSceneObject.StartBuildScene({var PW: TPaletteWarning;} var VertexSize: Integer) : TBuildMode;
 begin
-{PW:=TGlideState(qrkGlide_API.State).PaletteWarning;}
+{PW:=TGlideState(qrkGlideState).PaletteWarning;}
  VertexSize:=SizeOf(TVertex3D);
  FBuildNo:=1;
  Result:=bm3DFX;
@@ -2162,7 +2166,7 @@ var
  hwconfig: GrHwConfiguration;
 begin
  Result:=False;
- if (qrkGlide_API=Nil) or (qrkGlide_API.State=Nil) or ((LibName<>'') and (qrkGlide_API.LibName<>LibName)) then
+ if (not GlideLoaded) or (qrkGlideState=Nil) or ((LibName<>'') and (qrkGlideLibName<>LibName)) then
   begin
    ProgressIndicatorStart(0,0);
    try
@@ -2174,13 +2178,13 @@ begin
     Result:=True;
     SetIntelPrecision;
     try
-     qrkGlide_API.grGlideInit;
-     if Assigned(qrkGlide_API.grSstQueryHardware) then
-      if not qrkGlide_API.grSstQueryHardware(hwconfig) then
+     grGlideInit;
+     if Assigned(grSstQueryHardware) then
+      if not grSstQueryHardware(hwconfig) then
        Raise EErrorFmt(4866, ['grSstQueryHardware']);
-     if Assigned(qrkGlide_API.grSstSelect) then
-      qrkGlide_API.grSstSelect(0);
-     if not qrkGlide_API.grSstWinOpen(0,
+     if Assigned(grSstSelect) then
+      grSstSelect(0);
+     if not grSstWinOpen(0,
                GR_RESOLUTION_640x480,
                GR_REFRESH_60HZ,
                GR_COLORFORMAT_ARGB,
@@ -2190,55 +2194,55 @@ begin
     finally
      RestoreIntelPrecision;
     end;
-   // qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
-    if Assigned(qrkGlide_API.grDepthBufferMode) then
-     qrkGlide_API.grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
-    if Assigned(qrkGlide_API.grDepthMask) then
-     qrkGlide_API.grDepthMask(FXTRUE);
+   // grSstControl(GR_CONTROL_DEACTIVATE);
+    if Assigned(grDepthBufferMode) then
+     grDepthBufferMode(GR_DEPTHBUFFER_WBUFFER);
+    if Assigned(grDepthMask) then
+     grDepthMask(FXTRUE);
     ClearBuffers(0);
    finally
     ProgressIndicatorStop;
    end;
-   qrkGlide_API.State:=TGlideState.Create;
+   qrkGlideState:=TGlideState.Create;
   end;
- if qrkGlide_API.Version<HardwareGlideVersion then
+ if qrkGlideVersion<HardwareGlideVersion then
   FullScreen:=False;
- if Assigned(qrkGlide_API.grSstControl) then
+ if Assigned(grSstControl) then
   if FullScreen then
-   qrkGlide_API.grSstControl(GR_CONTROL_ACTIVATE)
+   grSstControl(GR_CONTROL_ACTIVATE)
   else
    if TwoMonitorsDlg=Nil then
-    qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
+    grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
 procedure TwoMonitorsActivation;
 begin
- if GlideLoaded and Assigned(qrkGlide_API.grSstControl) then
-  qrkGlide_API.grSstControl(GR_CONTROL_ACTIVATE);
+ if GlideLoaded and Assigned(grSstControl) then
+  grSstControl(GR_CONTROL_ACTIVATE);
 end;
 
 procedure TwoMonitorsDeactivation;
 begin
- if GlideLoaded and Assigned(qrkGlide_API.grSstControl) then
-  qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
+ if GlideLoaded and Assigned(grSstControl) then
+  grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
 procedure Close3DEditor;
 begin
- if GlideLoaded and Assigned(qrkGlide_API.grSstControl) then
-  qrkGlide_API.grSstControl(GR_CONTROL_DEACTIVATE);
+ if GlideLoaded and Assigned(grSstControl) then
+  grSstControl(GR_CONTROL_DEACTIVATE);
 end;
 
 procedure Free3DFXEditor;
 begin
  if GlideLoaded then
   begin
-   qrkGlide_API.State.Free;
-   qrkGlide_API.State:=Nil;
-   if Assigned(qrkGlide_API.grSstWinClose) then
-    qrkGlide_API.grSstWinClose;
-   if Assigned(qrkGlide_API.grGlideShutdown) then
-    qrkGlide_API.grGlideShutdown;
+   qrkGlideState.Free;
+   qrkGlideState:=Nil;
+   if Assigned(grSstWinClose) then
+    grSstWinClose;
+   if Assigned(grGlideShutdown) then
+    grGlideShutdown;
    UnloadGlide;
   end;
  FreeNonVisibleTextures;
@@ -2246,8 +2250,8 @@ end;
 
 procedure GammaCorrection(Value: TDouble);
 begin
- if Assigned(qrkGlide_API.grGammaCorrectionValue) then
-  qrkGlide_API.grGammaCorrectionValue(Value);
+ if Assigned(grGammaCorrectionValue) then
+  grGammaCorrectionValue(Value);
 end;
 
  {------------------------}
@@ -2310,17 +2314,17 @@ var
 
   procedure ClearFrame1(X,Y,W,H: Integer);
   begin
-   qrkGlide_API.grClipWindow(X,Y,X+W,Y+H);
-   if not Special and Assigned(qrkGlide_API.grDepthMask) then
+   grClipWindow(X,Y,X+W,Y+H);
+   if not Special and Assigned(grDepthMask) then
     begin
      Special:=True;
-     qrkGlide_API.grDepthMask(FXFALSE);
+     grDepthMask(FXFALSE);
     end;
    ClearBuffers(FRAME_COLOR);
   end;
 
 begin
- if qrkGlide_API.Version<HardwareGlideVersion then Exit;
+ if qrkGlideVersion<HardwareGlideVersion then Exit;
  L:=ViewRect.R.Left;
  T:=ViewRect.R.Top;
  R:=ViewRect.R.Right;
@@ -2333,7 +2337,7 @@ begin
   if B<SY then ClearFrame1(0, B, SX, SY-B);
  finally
   if Special then
-   qrkGlide_API.grDepthMask(FXTRUE);
+   grDepthMask(FXTRUE);
  end;
 end;
 
@@ -2378,28 +2382,28 @@ begin
  else
   LoadV:=LoadV3D;
 
- if Assigned(qrkGlide_API.guColorCombineFunction) then
+ if Assigned(guColorCombineFunction) then
   if SolidColors then
-   qrkGlide_API.guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
+   guColorCombineFunction(GR_COLORCOMBINE_CCRGB)
   else
-   qrkGlide_API.guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
- if TGlideState(qrkGlide_API.State).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1) then
-  qrkGlide_API.grFogTable(FogTableCache^);
- if qrkGlide_API.Version>=HardwareGlideVersion then
-  qrkGlide_API.grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
+   guColorCombineFunction(GR_COLORCOMBINE_TEXTURE_TIMES_CCRGB);
+ if TGlideState(qrkGlideState).SetPerspectiveMode(Ord(CCoord.FlatDisplay)+1) then
+  grFogTable(FogTableCache^);
+ if qrkGlideVersion>=HardwareGlideVersion then
+  grClipWindow(ViewRect.R.Left, ViewRect.R.Top, ViewRect.R.Right, ViewRect.R.Bottom)
  else
-  qrkGlide_API.grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
+  grClipWindow(ViewRect.R.Left-SOFTMARGIN, ViewRect.R.Top-SOFTMARGIN, ViewRect.R.Right+SOFTMARGIN, ViewRect.R.Bottom+SOFTMARGIN);
 
  CurrentAlpha:=0;
  IteratedAlpha:=False;
-{if Assigned(qrkGlide_API.grDepthMask) then
-  qrkGlide_API.grDepthMask(FXTRUE);}
- if Assigned(qrkGlide_API.grAlphaBlendFunction) then
+{if Assigned(grDepthMask) then
+  grDepthMask(FXTRUE);}
+ if Assigned(grAlphaBlendFunction) then
   begin
-   if Assigned(qrkGlide_API.grAlphaCombine) then
-    qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE,
+   if Assigned(grAlphaCombine) then
+    grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE,
      GR_COMBINE_LOCAL_NONE, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
-   qrkGlide_API.grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
+   grAlphaBlendFunction(GR_BLEND_ONE, GR_BLEND_ZERO, GR_BLEND_ONE, GR_BLEND_ZERO);
   end;
  ClearBuffers(VOID_COLOR);
  Inc(FBuildNo);
@@ -2407,38 +2411,38 @@ begin
  FProjInfo:=@ProjInfo;}
 
  RenderTransparent(False);
-{if Assigned(qrkGlide_API.grDepthMask) then
-  qrkGlide_API.grDepthMask(FXFALSE);}
- if Assigned(qrkGlide_API.grAlphaBlendFunction) then
-  qrkGlide_API.grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
+{if Assigned(grDepthMask) then
+  grDepthMask(FXFALSE);}
+ if Assigned(grAlphaBlendFunction) then
+  grAlphaBlendFunction(GR_BLEND_SRC_ALPHA, GR_BLEND_ONE_MINUS_SRC_ALPHA, GR_BLEND_ONE, GR_BLEND_ZERO);
  RenderTransparent(True);
 
- if (qrkGlide_API.Version>=HardwareGlideVersion) and CCoord.FlatDisplay and (TranspFactor>0) then
+ if (qrkGlideVersion>=HardwareGlideVersion) and CCoord.FlatDisplay and (TranspFactor>0) then
   begin
    Inc(FBuildNo);
-   //qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA,
+   //grAlphaCombine(GR_COMBINE_FUNCTION_BLEND_LOCAL, GR_COMBINE_FACTOR_OTHER_ALPHA,
    // GR_COMBINE_LOCAL_DEPTH, GR_COMBINE_OTHER_CONSTANT, FXTRUE);
-   qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
+   grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_ONE_MINUS_LOCAL_ALPHA,
     GR_COMBINE_LOCAL_ITERATED, GR_COMBINE_OTHER_CONSTANT, FXFALSE);
    IteratedAlpha:=True;
-   //qrkGlide_API.grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA,
+   //grAlphaCombine(GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL_ALPHA,
    // GR_COMBINE_LOCAL_CONSTANT, GR_COMBINE_OTHER_ITERATED, FXFALSE);
-   //qrkGlide_API.grConstantColorValue($30FFFFFF);
+   //grConstantColorValue($30FFFFFF);
    OldMinDist:=CCoord.MinDistance;
    OldMaxDist:=CCoord.MaxDistance;
    try
     CCoord.MinDistance:=OldMinDist - (OldMaxDist-OldMinDist)*TranspFactor;
     CCoord.MaxDistance:=OldMinDist;
     InitFlatZ;
-    qrkGlide_API.grFogMode(GR_FOG_DISABLE);
-    qrkGlide_API.grDepthMask(FXFALSE);
-    qrkGlide_API.grDepthBufferFunction(GR_CMP_ALWAYS);
+    grFogMode(GR_FOG_DISABLE);
+    grDepthMask(FXFALSE);
+    grDepthBufferFunction(GR_CMP_ALWAYS);
     RenderTransparent(False);
     RenderTransparent(True);
    finally
-    qrkGlide_API.grDepthBufferFunction(GR_CMP_LESS);
-    qrkGlide_API.grDepthMask(FXTRUE);
-    qrkGlide_API.grFogMode(GR_FOG_WITH_TABLE);
+    grDepthBufferFunction(GR_CMP_LESS);
+    grDepthMask(FXTRUE);
+    grFogMode(GR_FOG_WITH_TABLE);
     CCoord.MinDistance:=OldMinDist;
     CCoord.MaxDistance:=OldMaxDist;
    end;
@@ -2865,7 +2869,7 @@ begin
  LocalViewRectTop   :=ViewRect.Top;
  LocalViewRectRight :=ViewRect.Right;
  LocalViewRectBottom:=ViewRect.Bottom;
- if (qrkGlide_API.Version<HardwareGlideVersion)
+ if (qrkGlideVersion<HardwareGlideVersion)
  and (SoftBufferFormat = SoftBufferCoarse) then
   VertexSnapper1:=VertexSnapper+0.25
  else
@@ -2897,9 +2901,9 @@ begin
               or ((((nColor shr 8) and $FF)*((MeanColor shr 8) and $FF)) and $00FF00)
               or (((((nColor shr 16) and $FF)*((MeanColor shr 16) and $FF)) and $00FF00) shl 8);
         end;
-      if Assigned(qrkGlide_API.grConstantColorValue) and (nColor<>CurrentAlpha) then
+      if Assigned(grConstantColorValue) and (nColor<>CurrentAlpha) then
        begin
-        qrkGlide_API.grConstantColorValue(nColor);
+        grConstantColorValue(nColor);
         CurrentAlpha:=nColor;
        end;
       if CCoord.FlatDisplay then
@@ -3143,7 +3147,7 @@ begin
             {$IFDEF DebugLOG} LogS:=''; {$ENDIF}
             if NeedTex then
              begin
-              TGlideState(qrkGlide_API.State).NeedTex(PList^.Texture);
+              TGlideState(qrkGlideState).NeedTex(PList^.Texture);
             {$IFDEF DebugLOG} LogS:=LogS+'------------------Tex:'+IntToHex(PList^.Texture^.startAddress,8)+'='+Plist^.TexName; {$ENDIF}
               NeedTex:=False;
              end;
@@ -3169,8 +3173,8 @@ begin
               with VList[I] do
                a:=oow * (MinW*255.0);
 
-           {qrkGlide_API.grDrawPlanarPolygonVertexList(N, VList[0]);
-           {qrkGlide_API.grDrawPolygonVertexList(N, VList[0]);}
+           {grDrawPlanarPolygonVertexList(N, VList[0]);
+           {grDrawPolygonVertexList(N, VList[0]);}
             for I:=1 to N-2 do
              begin
               {$IFDEF DebugLOG}
@@ -3180,7 +3184,7 @@ begin
               if {Abs((VList[I+1].x-VList[0].x)*(VList[I].y-VList[0].y)
                     -(VList[I+1].y-VList[0].y)*(VList[I].x-VList[0].x))
                > MinTriangleArea2} True then
-               qrkGlide_API.grDrawTriangle(VList[0], VList[I], VList[I+1])
+               grDrawTriangle(VList[0], VList[I], VList[I+1])
               else
                begin
                 {$IFDEF DebugLOG} LogS:=LogS+' dropped'; {$ENDIF}
@@ -3204,7 +3208,7 @@ begin
   begin
    biWidth:=R-L;
    biHeight:=ViewRect.R.Bottom-ViewRect.R.Top;
-   if qrkGlide_API.Version<HardwareGlideVersion then
+   if qrkGlideVersion<HardwareGlideVersion then
     begin
      Inc(biHeight, 2*SOFTMARGIN);
      if SoftBufferFormat>0 then
@@ -3248,9 +3252,9 @@ begin
 
  GetMem(Bits, bmiHeader.biWidth*bmiHeader.biHeight*3);
  try
-  if qrkGlide_API.Version>=HardwareGlideVersion then
+  if qrkGlideVersion>=HardwareGlideVersion then
    begin
-    if not qrkGlide_API.grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
+    if not grLfbLock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER, GR_LFBWRITEMODE_ANY,
           GR_ORIGIN_ANY, FXFALSE, info) then
      Raise EErrorFmt(4866, ['grLfbLock']);
     I:=bmiHeader.biHeight;
@@ -3320,10 +3324,10 @@ begin
      pop edi
      pop esi
     end;
-    qrkGlide_API.grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
+    grLfbUnlock(GR_LFB_READ_ONLY, GR_BUFFER_BACKBUFFER);
    end
   else
-   qrkGlide_API.softgLoadFrameBuffer(Bits, SoftBufferFormat);
+   softgLoadFrameBuffer(Bits, SoftBufferFormat);
   L:=(SX-bmiHeader.biWidth) div 2;
   T:=(SY-bmiHeader.biHeight) div 2;
   R:=L+bmiHeader.biWidth;
@@ -3348,10 +3352,10 @@ end;
 
 procedure T3DFXSceneObject.SwapBuffers(Synch: Boolean; DC: HDC);
 begin
- if Assigned(qrkGlide_API.grBufferSwap) then
-  qrkGlide_API.grBufferSwap(0);
- if Synch and Assigned(qrkGlide_API.grSstIdle) then
-  qrkGlide_API.grSstIdle;
+ if Assigned(grBufferSwap) then
+  grBufferSwap(0);
+ if Synch and Assigned(grSstIdle) then
+  grSstIdle;
 end;
 
 procedure T3DFXSceneObject.SetViewRect(SX, SY: Integer);
@@ -3373,7 +3377,7 @@ begin
  ViewRect.R.Top:=YMargin;
  ViewRect.R.Right:=ScreenSizeX-XMargin;
  ViewRect.R.Bottom:=ScreenSizeY-YMargin;
- if qrkGlide_API.Version>=HardwareGlideVersion then
+ if qrkGlideVersion>=HardwareGlideVersion then
   begin
   end
  else
@@ -3399,7 +3403,7 @@ end;
 
 function T3DFXSceneObject.ChangeQuality(nQuality: Integer) : Boolean;
 begin
- Result:=(qrkGlide_API.Version<HardwareGlideVersion)
+ Result:=(qrkGlideVersion<HardwareGlideVersion)
      and (SoftBufferFormat<>nQuality);
  SoftBufferFormat:=nQuality;
 end;
@@ -3420,7 +3424,7 @@ begin
     PSD2.AlphaBits:=psaNoAlpha;
     PSD:=GetTex3Description(Texture^);
     try
-     if (PSD.Format=psf24bpp) and TGlideState(qrkGlide_API.State).Accepts16bpp then
+     if (PSD.Format=psf24bpp) and TGlideState(qrkGlideState).Accepts16bpp then
       begin
        format:=GR_TEXFMT_RGB_565;
        if smallLod<>largeLod then

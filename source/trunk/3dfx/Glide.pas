@@ -24,10 +24,11 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2000/11/11 17:56:52  decker_dk
+Exchanged pointer-variable names: 'gr' with 'qrkGlide_API' and 'gl' with 'qrkOpenGL_API'
+
 Revision 1.4  2000/09/10 14:04:24  alexander
 added cvs headers
-
-
 }
 
 
@@ -650,331 +651,330 @@ const
 
  {------------------------}
 
-type
- PGlideRoutines = ^TGlideRoutines;
- TGlideRoutines = record
+var
+  (*
+  ** rendering functions
+  *)
+  (*
+  procedure grDrawLine( const v1, v2: GrVertex); stdcall;
 
-(*
-** rendering functions
-*)
-(*procedure grDrawLine( const v1, v2: GrVertex); stdcall;
+  procedure grDrawPlanarPolygon(nverts: Integer; var ilist: Integer{[]}; var vlist: GrVertex{[]}); stdcall;
 
-procedure grDrawPlanarPolygon(nverts: Integer; var ilist: Integer{[]}; var vlist: GrVertex{[]}); stdcall;
+  grDrawPlanarPolygonVertexList: procedure (nverts: Integer; var vlist: GrVertex{[]}); stdcall;
 
-grDrawPlanarPolygonVertexList: procedure (nverts: Integer; var vlist: GrVertex{[]}); stdcall;
+  procedure grDrawPoint(const pt: GrVertex); stdcall;
 
-procedure grDrawPoint(const pt: GrVertex); stdcall;
+  procedure grDrawPolygon(nverts: Integer; var ilist: Integer{[]}; var vlist: GrVertex{[]}); stdcall;
 
-procedure grDrawPolygon(nverts: Integer; var ilist: Integer{[]}; var vlist: GrVertex{[]}); stdcall;
+  grDrawPolygonVertexList: procedure (nverts: Integer; var vlist: GrVertex{[]}); stdcall;
+  *)
+  grDrawTriangle: procedure (const a, b, c: GrVertex); stdcall;
 
-grDrawPolygonVertexList: procedure (nverts: Integer; var vlist: GrVertex{[]}); stdcall;
-*)
-grDrawTriangle: procedure (const a, b, c: GrVertex); stdcall;
+  (*
+  ** buffer management
+  *)
+  grBufferClear: procedure (color: GrColor_t; alpha: GrAlpha_t; depth: FxU16); stdcall;
 
-(*
-** buffer management
-*)
-grBufferClear: procedure (color: GrColor_t; alpha: GrAlpha_t; depth: FxU16); stdcall;
+  (*
+  FX_ENTRY int FX_CALL
+  grBufferNumPending( void ); stdcall;
+  *)
+  grBufferSwap: procedure (swap_interval: Integer); stdcall;
+  (*
+  procedure
+  grRenderBuffer( GrBuffer_t buffer ); stdcall;
+  *)
 
-(*FX_ENTRY int FX_CALL
-grBufferNumPending( void ); stdcall;
-*)
-grBufferSwap: procedure (swap_interval: Integer); stdcall;
-(*
-procedure
-grRenderBuffer( GrBuffer_t buffer ); stdcall;
+  (*
+  ** error management
+  *)
+  (*
+  typedef void (*GrErrorCallbackFnc_t)( const char *string, FxBool fatal ); stdcall;
 
-(*
-** error management
-*)
-(*typedef void (*GrErrorCallbackFnc_t)( const char *string, FxBool fatal ); stdcall;
+  procedure
+  grErrorSetCallback( GrErrorCallbackFnc_t fnc ); stdcall;
+  *)
 
-procedure
-grErrorSetCallback( GrErrorCallbackFnc_t fnc ); stdcall;
+  (*
+  ** SST routines
+  *)
+  grSstIdle: procedure ; stdcall;
+  (*
+  FX_ENTRY FxU32 FX_CALL
+  grSstVideoLine( void ); stdcall;
 
-(*
-** SST routines
-*)
-grSstIdle: procedure ; stdcall;
-(*
-(*FX_ENTRY FxU32 FX_CALL
-grSstVideoLine( void ); stdcall;
+  FX_ENTRY FxBool FX_CALL
+  grSstVRetraceOn( void ); stdcall;
 
-FX_ENTRY FxBool FX_CALL
-grSstVRetraceOn( void ); stdcall;
+  FX_ENTRY FxBool FX_CALL
+  grSstIsBusy( void ); stdcall;
+  *)
+  grSstWinOpen: function (
+            hWnd: FxU32;
+            screen_resolution: GrScreenResolution_t;
+            refresh_rate: GrScreenRefresh_t;
+            color_format: GrColorFormat_t;
+            origin_location: GrOriginLocation_t;
+            nColBuffers, nAuxBuffers: Integer) : FxBool; stdcall;
 
-FX_ENTRY FxBool FX_CALL
-grSstIsBusy( void ); stdcall;
-*)
-grSstWinOpen: function (
-          hWnd: FxU32;
-          screen_resolution: GrScreenResolution_t;
-          refresh_rate: GrScreenRefresh_t;
-          color_format: GrColorFormat_t;
-          origin_location: GrOriginLocation_t;
-          nColBuffers, nAuxBuffers: Integer) : FxBool; stdcall;
+  grSstWinClose: procedure ; stdcall;
 
-grSstWinClose: procedure ; stdcall;
+  grSstControl: function (code: FxU32) : FxBool; stdcall;
 
-grSstControl: function (code: FxU32) : FxBool; stdcall;
+  grSstQueryHardware: function (var hwconfig: GrHwConfiguration) : FxBool; stdcall;
 
-grSstQueryHardware: function (var hwconfig: GrHwConfiguration) : FxBool; stdcall;
+  (*
+  function grSstQueryBoards(var hwconfig: GrHwConfiguration) : FxBool; stdcall;
 
-(*function grSstQueryBoards(var hwconfig: GrHwConfiguration) : FxBool; stdcall;
+  procedure
+  grSstOrigin(GrOriginLocation_t  origin); stdcall;
+  *)
+  grSstSelect: procedure (which_sst: Integer); stdcall;
+  (*
+  FX_ENTRY FxU32 FX_CALL
+  grSstScreenHeight( void ); stdcall;
 
-(*procedure
-grSstOrigin(GrOriginLocation_t  origin); stdcall;
-*)
-grSstSelect: procedure (which_sst: Integer); stdcall;
-(*
-FX_ENTRY FxU32 FX_CALL
-grSstScreenHeight( void ); stdcall;
+  FX_ENTRY FxU32 FX_CALL
+  grSstScreenWidth( void ); stdcall;
 
-FX_ENTRY FxU32 FX_CALL
-grSstScreenWidth( void ); stdcall;
+  FX_ENTRY FxU32 FX_CALL
+  grSstStatus( void ); stdcall;
+  *)
 
-FX_ENTRY FxU32 FX_CALL
-grSstStatus( void ); stdcall;
+  (*
+  **  Drawing Statistics
+  *)
+  (*
+  procedure
+  grSstPerfStats(GrSstPerfStats_t *pStats); stdcall;
 
-(*
-**  Drawing Statistics
-*)
-(*procedure
-grSstPerfStats(GrSstPerfStats_t *pStats); stdcall;
+  procedure
+  grSstResetPerfStats(void); stdcall;
 
-procedure
-grSstResetPerfStats(void); stdcall;
+  procedure
+  grResetTriStats(); stdcall;
 
-procedure
-grResetTriStats(); stdcall;
+  procedure
+  grTriStats(FxU32 *trisProcessed, FxU32 *trisDrawn); stdcall;
+  *)
 
-procedure
-grTriStats(FxU32 *trisProcessed, FxU32 *trisDrawn); stdcall;
+  (*
+  ** Glide configuration and special effect maintenance functions
+  *)
+  grAlphaBlendFunction: procedure (rgb_sf, rgb_df, alpha_sf, alpha_df: GrAlphaBlendFnc_t); stdcall;
 
-(*
-** Glide configuration and special effect maintenance functions
-*)
-grAlphaBlendFunction: procedure (rgb_sf, rgb_df, alpha_sf, alpha_df: GrAlphaBlendFnc_t); stdcall;
+  grAlphaCombine: procedure(fnt: GrCombineFunction_t; factor: GrCombineFactor_t;
+                  local: GrCombineLocal_t; other: GrCombineOther_t; invert: FxBool); stdcall;
+  (*
+  procedure
+  grAlphaControlsITRGBLighting( FxBool enable ); stdcall;
 
-grAlphaCombine: procedure(fnt: GrCombineFunction_t; factor: GrCombineFactor_t;
-                 local: GrCombineLocal_t; other: GrCombineOther_t; invert: FxBool); stdcall;
-(*
-procedure
-grAlphaControlsITRGBLighting( FxBool enable ); stdcall;
+  procedure
+  grAlphaTestFunction( GrCmpFnc_t function ); stdcall;
 
-procedure
-grAlphaTestFunction( GrCmpFnc_t function ); stdcall;
+  procedure
+  grAlphaTestReferenceValue( GrAlpha_t value ); stdcall;
 
-procedure
-grAlphaTestReferenceValue( GrAlpha_t value ); stdcall;
+  procedure
+  grChromakeyMode( GrChromakeyMode_t mode ); stdcall;
 
-procedure
-grChromakeyMode( GrChromakeyMode_t mode ); stdcall;
+  procedure
+  grChromakeyValue( GrColor_t value ); stdcall;
+  *)
 
-procedure
-grChromakeyValue( GrColor_t value ); stdcall;
-*)
+  grClipWindow: procedure (minx, miny, maxx, maxy: FxU32); stdcall;
 
-grClipWindow: procedure (minx, miny, maxx, maxy: FxU32); stdcall;
+  (*
+  procedure
+  grColorCombine(
+                GrCombineFunction_t function, GrCombineFactor_t factor,
+                GrCombineLocal_t local, GrCombineOther_t other,
+                FxBool invert ); stdcall;
+  *)
+  grColorMask: procedure (rgb, a: FxBool); stdcall;
+  (*
+  procedure
+  grCullMode( GrCullMode_t mode ); stdcall;
+  *)
+  grConstantColorValue: procedure (value: GrColor_t); stdcall;
+  (*
+  procedure
+  grConstantColorValue4( float a, float r, float g, float b ); stdcall;
 
-(*procedure
-grColorCombine(
-               GrCombineFunction_t function, GrCombineFactor_t factor,
-               GrCombineLocal_t local, GrCombineOther_t other,
-               FxBool invert ); stdcall;
-*)
-grColorMask: procedure (rgb, a: FxBool); stdcall;
-(*
-procedure
-grCullMode( GrCullMode_t mode ); stdcall;
-*)
-grConstantColorValue: procedure (value: GrColor_t); stdcall;
-(*
-procedure
-grConstantColorValue4( float a, float r, float g, float b ); stdcall;
+  procedure
+  grDepthBiasLevel( FxI16 level ); stdcall;
+  *)
 
-procedure
-grDepthBiasLevel( FxI16 level ); stdcall;
-*)
+  grDepthBufferFunction: procedure(func: GrCmpFnc_t); stdcall;
 
-grDepthBufferFunction: procedure(func: GrCmpFnc_t); stdcall;
+  grDepthBufferMode: procedure(mode: GrDepthBufferMode_t); stdcall;
 
-grDepthBufferMode: procedure(mode: GrDepthBufferMode_t); stdcall;
+  grDepthMask: procedure(mask: FxBool); stdcall;
 
-grDepthMask: procedure(mask: FxBool); stdcall;
+  (*
+  procedure
+  grDisableAllEffects( void ); stdcall;
 
-(*procedure
-grDisableAllEffects( void ); stdcall;
+  procedure
+  grDitherMode( GrDitherMode_t mode ); stdcall;
+  *)
 
-procedure
-grDitherMode( GrDitherMode_t mode ); stdcall;
-*)
+  grFogColorValue: procedure(fogcolor: GrColor_t); stdcall;
 
-grFogColorValue: procedure(fogcolor: GrColor_t); stdcall;
+  grFogMode: procedure (mode: GrFogMode_t); stdcall;
 
-grFogMode: procedure (mode: GrFogMode_t); stdcall;
+  grFogTable: procedure (const ft: GrFogTable_t); stdcall;
 
-grFogTable: procedure (const ft: GrFogTable_t); stdcall;
+  grGammaCorrectionValue: procedure(value: FxFloat); stdcall;
 
-grGammaCorrectionValue: procedure(value: FxFloat); stdcall;
+  (*
+  procedure
+  grSplash(float x, float y, float width, float height, FxU32 frame); stdcall;
+  *)
 
-(*procedure
-grSplash(float x, float y, float width, float height, FxU32 frame); stdcall;
+  (*
+  ** texture mapping control functions
+  *)
+  (*
+  FX_ENTRY FxU32 FX_CALL
+  grTexCalcMemRequired(
+                      GrLOD_t lodmin, GrLOD_t lodmax,
+                      GrAspectRatio_t aspect, GrTextureFormat_t fmt); stdcall;
+  *)
+  grTexTextureMemRequired : function (evenOdd: FxU32;
+                                      var info: GrTexInfo) : FxU32; stdcall;
 
-(*
-** texture mapping control functions
-*)
-(*FX_ENTRY FxU32 FX_CALL
-grTexCalcMemRequired(
-                     GrLOD_t lodmin, GrLOD_t lodmax,
-                     GrAspectRatio_t aspect, GrTextureFormat_t fmt); stdcall;
-*)
-grTexTextureMemRequired : function (evenOdd: FxU32;
-                                    var info: GrTexInfo) : FxU32; stdcall;
+  grTexMinAddress: function (tmu: GrChipID_t) : FxU32; stdcall;
 
-grTexMinAddress: function (tmu: GrChipID_t) : FxU32; stdcall;
+  grTexMaxAddress: function (tmu: GrChipID_t) : FxU32; stdcall;
 
-grTexMaxAddress: function (tmu: GrChipID_t) : FxU32; stdcall;
+  (*
+  procedure
+  grTexNCCTable( GrChipID_t tmu, GrNCCTable_t table ); stdcall;
+  *)
+  grTexSource: procedure (tmu: GrChipID_t;
+              startAddress, evenOdd: FxU32;
+              var info: GrTexInfo); stdcall;
 
-(*
-procedure
-grTexNCCTable( GrChipID_t tmu, GrNCCTable_t table ); stdcall;
-*)
-grTexSource: procedure (tmu: GrChipID_t;
-             startAddress, evenOdd: FxU32;
-             var info: GrTexInfo); stdcall;
+  grTexClampMode: procedure(tmu: GrChipID_t;
+                s_clampmode: GrTextureClampMode_t;
+                t_clampmode: GrTextureClampMode_t); stdcall;
 
-grTexClampMode: procedure(tmu: GrChipID_t;
-               s_clampmode: GrTextureClampMode_t;
-               t_clampmode: GrTextureClampMode_t); stdcall;
+  (*
+  procedure
+  grTexCombine(
+              GrChipID_t tmu,
+              GrCombineFunction_t rgb_function,
+              GrCombineFactor_t rgb_factor,
+              GrCombineFunction_t alpha_function,
+              GrCombineFactor_t alpha_factor,
+              FxBool rgb_invert,
+              FxBool alpha_invert
+              ); stdcall;
+  *)
+  grTexCombineFunction: procedure (
+                      tmu: GrChipID_t;
+                      fnc: GrTextureCombineFnc_t); stdcall;
 
-(*procedure
-grTexCombine(
-             GrChipID_t tmu,
-             GrCombineFunction_t rgb_function,
-             GrCombineFactor_t rgb_factor,
-             GrCombineFunction_t alpha_function,
-             GrCombineFactor_t alpha_factor,
-             FxBool rgb_invert,
-             FxBool alpha_invert
-             ); stdcall;
-*)
-grTexCombineFunction: procedure (
-                     tmu: GrChipID_t;
-                     fnc: GrTextureCombineFnc_t); stdcall;
+  (*procedure
+  grTexDetailControl(
+                    GrChipID_t tmu,
+                    int lod_bias,
+                    FxU8 detail_scale,
+                    float detail_max
+                    ); stdcall;
+  *)
+  grTexFilterMode: procedure (
+                  tmu: GrChipID_t;
+                  minfilter_mode: GrTextureFilterMode_t;
+                  magfilter_mode: GrTextureFilterMode_t); stdcall;
 
-(*procedure
-grTexDetailControl(
-                   GrChipID_t tmu,
-                   int lod_bias,
-                   FxU8 detail_scale,
-                   float detail_max
-                   ); stdcall;
-*)
-grTexFilterMode: procedure (
-                tmu: GrChipID_t;
-                minfilter_mode: GrTextureFilterMode_t;
-                magfilter_mode: GrTextureFilterMode_t); stdcall;
+  grTexLodBiasValue: procedure(tmu: GrChipID_t; bias: FxFloat); stdcall;
 
-grTexLodBiasValue: procedure(tmu: GrChipID_t; bias: FxFloat); stdcall;
+  grTexDownloadMipMap: procedure (tmu: GrChipID_t;
+                      startAddress, evenOdd: FxU32;
+                      var info: GrTexInfo); stdcall;
+  (*
+  procedure
+  grTexDownloadMipMapLevel( GrChipID_t        tmu,
+                            FxU32             startAddress,
+                            GrLOD_t           thisLod,
+                            GrLOD_t           largeLod,
+                            GrAspectRatio_t   aspectRatio,
+                            GrTextureFormat_t format,
+                            FxU32             evenOdd,
+                            void              *data ); stdcall;
 
-grTexDownloadMipMap: procedure (tmu: GrChipID_t;
-                     startAddress, evenOdd: FxU32;
-                     var info: GrTexInfo); stdcall;
-(*
-procedure
-grTexDownloadMipMapLevel( GrChipID_t        tmu,
+  procedure
+  grTexDownloadMipMapLevelPartial( GrChipID_t        tmu,
+                                  FxU32             startAddress,
+                                  GrLOD_t           thisLod,
+                                  GrLOD_t           largeLod,
+                                  GrAspectRatio_t   aspectRatio,
+                                  GrTextureFormat_t format,
+                                  FxU32             evenOdd,
+                                  void              *data,
+                                  int               start,
+                                  int               end ); stdcall;
+
+
+  procedure
+  ConvertAndDownloadRle( GrChipID_t        tmu,
                           FxU32             startAddress,
                           GrLOD_t           thisLod,
                           GrLOD_t           largeLod,
                           GrAspectRatio_t   aspectRatio,
                           GrTextureFormat_t format,
                           FxU32             evenOdd,
-                          void              *data ); stdcall;
+                          FxU8              *bm_data,
+                          long              bm_h,
+                          FxU32             u0,
+                          FxU32             v0,
+                          FxU32             width,
+                          FxU32             height,
+                          FxU32             dest_width,
+                          FxU32             dest_height,
+                          FxU16             *tlut); stdcall;
 
-procedure
-grTexDownloadMipMapLevelPartial( GrChipID_t        tmu,
-                                 FxU32             startAddress,
-                                 GrLOD_t           thisLod,
-                                 GrLOD_t           largeLod,
-                                 GrAspectRatio_t   aspectRatio,
-                                 GrTextureFormat_t format,
-                                 FxU32             evenOdd,
-                                 void              *data,
-                                 int               start,
-                                 int               end ); stdcall;
+  procedure
+  grCheckForRoom(FxI32 n); stdcall;
+  *)
+  grTexDownloadTable: procedure (tmu: GrChipID_t;
+                      typ: GrTexTable_t;
+                      data: Pointer); stdcall;
+  (*
+  procedure
+  grTexDownloadTablePartial( GrChipID_t   tmu,
+                            GrTexTable_t type,
+                            void         *data,
+                            int          start,
+                            int          end ); stdcall;
+  *)
+  grTexMipMapMode: procedure (tmu: GrChipID_t;
+                  mode: GrMipMapMode_t;
+                  lodBlend: FxBool); stdcall;
 
+  (*
+  procedure
+  grTexMultibase( GrChipID_t tmu,
+                  FxBool     enable ); stdcall;
 
-procedure
-ConvertAndDownloadRle( GrChipID_t        tmu,
-                        FxU32             startAddress,
-                        GrLOD_t           thisLod,
-                        GrLOD_t           largeLod,
-                        GrAspectRatio_t   aspectRatio,
-                        GrTextureFormat_t format,
-                        FxU32             evenOdd,
-                        FxU8              *bm_data,
-                        long              bm_h,
-                        FxU32             u0,
-                        FxU32             v0,
-                        FxU32             width,
-                        FxU32             height,
-                        FxU32             dest_width,
-                        FxU32             dest_height,
-                        FxU16             *tlut); stdcall;
+  procedure
+  grTexMultibaseAddress( GrChipID_t       tmu,
+                        GrTexBaseRange_t range,
+                        FxU32            startAddress,
+                        FxU32            evenOdd,
+                        GrTexInfo        *info ); stdcall;
+  *)
 
-procedure
-grCheckForRoom(FxI32 n); stdcall;
-*)
-grTexDownloadTable: procedure (tmu: GrChipID_t;
-                    typ: GrTexTable_t;
-                    data: Pointer); stdcall;
-(*
-procedure
-grTexDownloadTablePartial( GrChipID_t   tmu,
-                           GrTexTable_t type,
-                           void         *data,
-                           int          start,
-                           int          end ); stdcall;
-*)
-grTexMipMapMode: procedure (tmu: GrChipID_t;
-                 mode: GrMipMapMode_t;
-                 lodBlend: FxBool); stdcall;
-
-(*procedure
-grTexMultibase( GrChipID_t tmu,
-                FxBool     enable ); stdcall;
-
-procedure
-grTexMultibaseAddress( GrChipID_t       tmu,
-                       GrTexBaseRange_t range,
-                       FxU32            startAddress,
-                       FxU32            evenOdd,
-                       GrTexInfo        *info ); stdcall;
-
-(*
-** utility texture functions
-*)
-(*FX_ENTRY GrMipMapId_t FX_CALL
-guTexAllocateMemory(
-                    GrChipID_t tmu,
-                    FxU8 odd_even_mask,
-                    int width, int height,
-                    GrTextureFormat_t fmt,
-                    GrMipMapMode_t mm_mode,
-                    GrLOD_t smallest_lod, GrLOD_t largest_lod,
-                    GrAspectRatio_t aspect,
-                    GrTextureClampMode_t s_clamp_mode,
-                    GrTextureClampMode_t t_clamp_mode,
-                    GrTextureFilterMode_t minfilter_mode,
-                    GrTextureFilterMode_t magfilter_mode,
-                    float lod_bias,
-                    FxBool trilinear
-                    ); stdcall;
-
-FX_ENTRY FxBool FX_CALL
-guTexChangeAttributes(
-                      GrMipMapId_t mmid,
+  (*
+  ** utility texture functions
+  *)
+  (*
+  FX_ENTRY GrMipMapId_t FX_CALL
+  guTexAllocateMemory(
+                      GrChipID_t tmu,
+                      FxU8 odd_even_mask,
                       int width, int height,
                       GrTextureFormat_t fmt,
                       GrMipMapMode_t mm_mode,
@@ -982,149 +982,168 @@ guTexChangeAttributes(
                       GrAspectRatio_t aspect,
                       GrTextureClampMode_t s_clamp_mode,
                       GrTextureClampMode_t t_clamp_mode,
-                      GrTextureFilterMode_t minFilterMode,
-                      GrTextureFilterMode_t magFilterMode
+                      GrTextureFilterMode_t minfilter_mode,
+                      GrTextureFilterMode_t magfilter_mode,
+                      float lod_bias,
+                      FxBool trilinear
                       ); stdcall;
 
-procedure
-guTexCombineFunction(
-                     GrChipID_t tmu,
-                     GrTextureCombineFnc_t fnc
-                     ); stdcall;
+  FX_ENTRY FxBool FX_CALL
+  guTexChangeAttributes(
+                        GrMipMapId_t mmid,
+                        int width, int height,
+                        GrTextureFormat_t fmt,
+                        GrMipMapMode_t mm_mode,
+                        GrLOD_t smallest_lod, GrLOD_t largest_lod,
+                        GrAspectRatio_t aspect,
+                        GrTextureClampMode_t s_clamp_mode,
+                        GrTextureClampMode_t t_clamp_mode,
+                        GrTextureFilterMode_t minFilterMode,
+                        GrTextureFilterMode_t magFilterMode
+                        ); stdcall;
 
-FX_ENTRY GrMipMapId_t FX_CALL
-guTexGetCurrentMipMap( GrChipID_t tmu ); stdcall;
+  procedure
+  guTexCombineFunction(
+                      GrChipID_t tmu,
+                      GrTextureCombineFnc_t fnc
+                      ); stdcall;
 
-FX_ENTRY GrMipMapInfo * FX_CALL
-guTexGetMipMapInfo( GrMipMapId_t mmid ); stdcall;
+  FX_ENTRY GrMipMapId_t FX_CALL
+  guTexGetCurrentMipMap( GrChipID_t tmu ); stdcall;
 
-FX_ENTRY FxU32 FX_CALL
-guTexMemQueryAvail( GrChipID_t tmu ); stdcall;
+  FX_ENTRY GrMipMapInfo * FX_CALL
+  guTexGetMipMapInfo( GrMipMapId_t mmid ); stdcall;
 
-procedure
-guTexMemReset( void ); stdcall;
+  FX_ENTRY FxU32 FX_CALL
+  guTexMemQueryAvail( GrChipID_t tmu ); stdcall;
 
-procedure
-guTexDownloadMipMap(
-                    GrMipMapId_t mmid,
-                    const void *src,
-                    const GuNccTable *table
-                    ); stdcall;
+  procedure
+  guTexMemReset( void ); stdcall;
 
-procedure
-guTexDownloadMipMapLevel(
-                         GrMipMapId_t mmid,
-                         GrLOD_t lod,
-                         const void **src
-                         ); stdcall;
-procedure
-guTexSource( GrMipMapId_t id ); stdcall;
+  procedure
+  guTexDownloadMipMap(
+                      GrMipMapId_t mmid,
+                      const void *src,
+                      const GuNccTable *table
+                      ); stdcall;
 
-(*
-** linear frame buffer functions
-*)
+  procedure
+  guTexDownloadMipMapLevel(
+                          GrMipMapId_t mmid,
+                          GrLOD_t lod,
+                          const void **src
+                          ); stdcall;
+  procedure
+  guTexSource( GrMipMapId_t id ); stdcall;
+  *)
 
-grLfbLock: function (typ: GrLock_t; buffer: GrBuffer_t; writeMode: GrLfbWriteMode_t;
-           origin: GrOriginLocation_t; pixelPipeline: FxBool;
-           var info: GrLfbInfo_t) : FxBool; stdcall;
+  (*
+  ** linear frame buffer functions
+  *)
 
-grLfbUnlock: function (typ: GrLock_t; buffer: GrBuffer_t) : FxBool; stdcall;
+  grLfbLock: function (typ: GrLock_t; buffer: GrBuffer_t; writeMode: GrLfbWriteMode_t;
+            origin: GrOriginLocation_t; pixelPipeline: FxBool;
+            var info: GrLfbInfo_t) : FxBool; stdcall;
 
-(*procedure
-grLfbConstantAlpha( GrAlpha_t alpha ); stdcall;
+  grLfbUnlock: function (typ: GrLock_t; buffer: GrBuffer_t) : FxBool; stdcall;
 
-procedure
-grLfbConstantDepth( FxU16 depth ); stdcall;
+  (*
+  procedure
+  grLfbConstantAlpha( GrAlpha_t alpha ); stdcall;
 
-procedure
-grLfbWriteColorSwizzle(FxBool swizzleBytes, FxBool swapWords); stdcall;
+  procedure
+  grLfbConstantDepth( FxU16 depth ); stdcall;
 
-procedure
-grLfbWriteColorFormat(GrColorFormat_t colorFormat); stdcall;
+  procedure
+  grLfbWriteColorSwizzle(FxBool swizzleBytes, FxBool swapWords); stdcall;
 
-
-FX_ENTRY FxBool FX_CALL
-grLfbWriteRegion( GrBuffer_t dst_buffer,
-                  FxU32 dst_x, FxU32 dst_y,
-                  GrLfbSrcFmt_t src_format,
-                  FxU32 src_width, FxU32 src_height,
-                  FxI32 src_stride, void *src_data ); stdcall;
-*)
-
-{grLfbReadRegion: function (src_buffer: GrBuffer_t;
-                 src_x, src_y: FxU32;
-                 src_width, src_height: FxU32;
-                 dst_stride: FxU32; var dst_data) : FxBool; stdcall;}
+  procedure
+  grLfbWriteColorFormat(GrColorFormat_t colorFormat); stdcall;
 
 
-(*
-**  Antialiasing Functions
-*)
-(*procedure
-grAADrawLine(const GrVertex *v1, const GrVertex *v2); stdcall;
+  FX_ENTRY FxBool FX_CALL
+  grLfbWriteRegion( GrBuffer_t dst_buffer,
+                    FxU32 dst_x, FxU32 dst_y,
+                    GrLfbSrcFmt_t src_format,
+                    FxU32 src_width, FxU32 src_height,
+                    FxI32 src_stride, void *src_data ); stdcall;
 
-procedure
-grAADrawPoint(const GrVertex *pt ); stdcall;
+  grLfbReadRegion: function (src_buffer: GrBuffer_t;
+                  src_x, src_y: FxU32;
+                  src_width, src_height: FxU32;
+                  dst_stride: FxU32; var dst_data) : FxBool; stdcall;
+  *)
 
-procedure
-grAADrawPolygon(const int nverts, const int ilist[], const GrVertex vlist[]); stdcall;
+  (*
+  **  Antialiasing Functions
+  *)
+  (*
+  procedure
+  grAADrawLine(const GrVertex *v1, const GrVertex *v2); stdcall;
 
-procedure
-grAADrawPolygonVertexList(const int nverts, const GrVertex vlist[]); stdcall;
+  procedure
+  grAADrawPoint(const GrVertex *pt ); stdcall;
 
-procedure
-grAADrawTriangle(
-                 const GrVertex *a, const GrVertex *b, const GrVertex *c,
-                 FxBool ab_antialias, FxBool bc_antialias, FxBool ca_antialias
-                 ); stdcall;
+  procedure
+  grAADrawPolygon(const int nverts, const int ilist[], const GrVertex vlist[]); stdcall;
 
-(*
-** glide management functions
-*)
-grGlideInit: procedure ; stdcall;
+  procedure
+  grAADrawPolygonVertexList(const int nverts, const GrVertex vlist[]); stdcall;
 
-grGlideShutdown: procedure ; stdcall;
+  procedure
+  grAADrawTriangle(
+                  const GrVertex *a, const GrVertex *b, const GrVertex *c,
+                  FxBool ab_antialias, FxBool bc_antialias, FxBool ca_antialias
+                  ); stdcall;
+  *)
 
-(*procedure
-grGlideGetVersion( char version[80] ); stdcall;
+  (*
+  ** glide management functions
+  *)
+  grGlideInit: procedure ; stdcall;
 
-procedure
-grGlideGetState( GrState *state ); stdcall;
+  grGlideShutdown: procedure ; stdcall;
 
-procedure
-grGlideSetState( const GrState *state ); stdcall;
+  (*
+  procedure
+  grGlideGetVersion( char version[80] ); stdcall;
 
-procedure
-grGlideShamelessPlug(const FxBool on); stdcall;
-*)
-grHints: procedure (hintType: GrHint_t; hintMask: FxU32); stdcall;
-(*
-#ifdef GLIDE3
-procedure
-grParameterData(FxU32 param, FxU32 components, FxU32 type, FxI32 offset); stdcall;
+  procedure
+  grGlideGetState( GrState *state ); stdcall;
 
-procedure
-grDrawArray(FxU32 mode, FxU32 Count, void *pointers[]); stdcall;*)
+  procedure
+  grGlideSetState( const GrState *state ); stdcall;
 
-(**************    GLIDEUTL.H    **************)
+  procedure
+  grGlideShamelessPlug(const FxBool on); stdcall;
+  *)
+  grHints: procedure (hintType: GrHint_t; hintMask: FxU32); stdcall;
+  (*
+  #ifdef GLIDE3
+  procedure
+  grParameterData(FxU32 param, FxU32 components, FxU32 type, FxI32 offset); stdcall;
 
-guColorCombineFunction: procedure (fnc: GrColorCombineFnc_t); stdcall;
+  procedure
+  grDrawArray(FxU32 mode, FxU32 Count, void *pointers[]); stdcall;
+  *)
 
-guFogGenerateExp2: procedure (var fogtable: GrFogTable_t; density: FxFloat); stdcall;
+  (**************    GLIDEUTL.H    **************)
 
-(****************************)
+  guColorCombineFunction: procedure (fnc: GrColorCombineFnc_t); stdcall;
 
-softgLoadFrameBuffer: procedure (Data: Pointer; Format: Integer); stdcall;
+  guFogGenerateExp2: procedure (var fogtable: GrFogTable_t; density: FxFloat); stdcall;
 
-(*
-** end of routines
-*)
+  (****************************)
 
-  GlideLib: THandle;
-  Version: Integer;
-  LibName: String;
-  State: TObject;
-end;
+  softgLoadFrameBuffer: procedure (Data: Pointer; Format: Integer); stdcall;
+
+  (*
+  ** end of routines
+  *)
+
+  qrkGlideVersion: Integer;
+  qrkGlideLibName: String;
+  qrkGlideState: TObject;
 
 const
  SoftMultiplePalettes = 20;
@@ -1134,125 +1153,136 @@ const
  SoftwareGlideLib     = 'qrksoftg.dll';}
  SoftBufferCoarse     = 1;
 
-var
- qrkGlide_API: PGlideRoutines;
-
+function GlideLoaded : Boolean;
 function ReloadGlide(const LibName, SearchDir: String) : Boolean;
 procedure UnloadGlide;
-function GlideLoaded : Boolean;
 
 implementation
 
+type
+  TFuncRequirement =  { Specifies which DLL, the function should exist in: }
+    ( inGlide         { must exist in Glide??.DLL and QrkSoftG.DLL }
+     ,inSoftG );      { must exist in QrkSoftG.DLL }
+
 const
-{GlideLibName = 'glide2x.dll';}
- SoftwareVersionRoutine = '_softgQuArK@0';
- GlideRoutines : array[0..39] of PChar =
- ({' _grDrawPlanarPolygonVertexList@8',
-   ' _grDrawPolygonVertexList@8',}
-   ' _grDrawTriangle@12',
-   ' _grBufferClear@12',
-   ' _grBufferSwap@4',
-   ' _grSstIdle@0',
-   ' _grSstWinOpen@28',
-   ' _grSstWinClose@0',
-   ' _grSstControl@4',
-   ' _grSstQueryHardware@4',
-   ' _grSstSelect@4',
-   ' _grAlphaBlendFunction@16',
-   ' _grAlphaCombine@20',
-   ' _grClipWindow@16',
-   ' _grColorMask@8',
-   ' _grConstantColorValue@4',
-   ' _grDepthBufferFunction@4',
-   ' _grDepthBufferMode@4',
-   ' _grDepthMask@4',
-   ' _grFogColorValue@4',
-   ' _grFogMode@4',
-   ' _grFogTable@4',
-   ' _grGammaCorrectionValue@4',
-   ' _grTexTextureMemRequired@8',
-   ' _grTexMinAddress@4',
-   ' _grTexMaxAddress@4',
-   ' _grTexSource@16',
-   ' _grTexClampMode@12',
-   ' _grTexCombineFunction@8',
-   ' _grTexFilterMode@12',
-   '?_grTexLodBiasValue@8',
-   ' _grTexDownloadMipMap@16',
-   ' _grTexDownloadTable@12',
-   ' _grTexMipMapMode@12',
-   ' _grLfbLock@24',
-   ' _grLfbUnlock@8',
-  {' _grLfbReadRegion@28',}
-   ' _grGlideInit@0',
-   ' _grGlideShutdown@0',
-   ' _grHints@8',
-   ' _guColorCombineFunction@4',
-   ' _guFogGenerateExp2@8',
-   '?_softgLoadFrameBuffer@8');
+  GlideDLL_FuncList : array[0..39] of
+    record
+      FuncPtr: Pointer;
+      FuncReq: TFuncRequirement;
+      FuncName: PChar;
+    end =
+  ({(FuncPtr: @@grDrawPlanarPolygonVertexList;  FuncReq: inGlide;  FuncName: '_grDrawPlanarPolygonVertexList@8' )}
+  {,(FuncPtr: @@grDrawPolygonVertexList;        FuncReq: inGlide;  FuncName: '_grDrawPolygonVertexList@8'       )}
+    (FuncPtr: @@grDrawTriangle;                 FuncReq: inGlide;  FuncName: '_grDrawTriangle@12'               )
+   ,(FuncPtr: @@grBufferClear;                  FuncReq: inGlide;  FuncName: '_grBufferClear@12'                )
+   ,(FuncPtr: @@grBufferSwap;                   FuncReq: inGlide;  FuncName: '_grBufferSwap@4'                  )
+   ,(FuncPtr: @@grSstIdle;                      FuncReq: inGlide;  FuncName: '_grSstIdle@0'                     )
+   ,(FuncPtr: @@grSstWinOpen;                   FuncReq: inGlide;  FuncName: '_grSstWinOpen@28'                 )
+   ,(FuncPtr: @@grSstWinClose;                  FuncReq: inGlide;  FuncName: '_grSstWinClose@0'                 )
+   ,(FuncPtr: @@grSstControl;                   FuncReq: inGlide;  FuncName: '_grSstControl@4'                  )
+   ,(FuncPtr: @@grSstQueryHardware;             FuncReq: inGlide;  FuncName: '_grSstQueryHardware@4'            )
+   ,(FuncPtr: @@grSstSelect;                    FuncReq: inGlide;  FuncName: '_grSstSelect@4'                   )
+   ,(FuncPtr: @@grAlphaBlendFunction;           FuncReq: inGlide;  FuncName: '_grAlphaBlendFunction@16'         )
+   ,(FuncPtr: @@grAlphaCombine;                 FuncReq: inGlide;  FuncName: '_grAlphaCombine@20'               )
+   ,(FuncPtr: @@grClipWindow;                   FuncReq: inGlide;  FuncName: '_grClipWindow@16'                 )
+   ,(FuncPtr: @@grColorMask;                    FuncReq: inGlide;  FuncName: '_grColorMask@8'                   )
+   ,(FuncPtr: @@grConstantColorValue;           FuncReq: inGlide;  FuncName: '_grConstantColorValue@4'          )
+   ,(FuncPtr: @@grDepthBufferFunction;          FuncReq: inGlide;  FuncName: '_grDepthBufferFunction@4'         )
+   ,(FuncPtr: @@grDepthBufferMode;              FuncReq: inGlide;  FuncName: '_grDepthBufferMode@4'             )
+   ,(FuncPtr: @@grDepthMask;                    FuncReq: inGlide;  FuncName: '_grDepthMask@4'                   )
+   ,(FuncPtr: @@grFogColorValue;                FuncReq: inGlide;  FuncName: '_grFogColorValue@4'               )
+   ,(FuncPtr: @@grFogMode;                      FuncReq: inGlide;  FuncName: '_grFogMode@4'                     )
+   ,(FuncPtr: @@grFogTable;                     FuncReq: inGlide;  FuncName: '_grFogTable@4'                    )
+   ,(FuncPtr: @@grGammaCorrectionValue;         FuncReq: inGlide;  FuncName: '_grGammaCorrectionValue@4'        )
+   ,(FuncPtr: @@grTexTextureMemRequired;        FuncReq: inGlide;  FuncName: '_grTexTextureMemRequired@8'       )
+   ,(FuncPtr: @@grTexMinAddress;                FuncReq: inGlide;  FuncName: '_grTexMinAddress@4'               )
+   ,(FuncPtr: @@grTexMaxAddress;                FuncReq: inGlide;  FuncName: '_grTexMaxAddress@4'               )
+   ,(FuncPtr: @@grTexSource;                    FuncReq: inGlide;  FuncName: '_grTexSource@16'                  )
+   ,(FuncPtr: @@grTexClampMode;                 FuncReq: inGlide;  FuncName: '_grTexClampMode@12'               )
+   ,(FuncPtr: @@grTexCombineFunction;           FuncReq: inGlide;  FuncName: '_grTexCombineFunction@8'          )
+   ,(FuncPtr: @@grTexFilterMode;                FuncReq: inGlide;  FuncName: '_grTexFilterMode@12'              )
+   ,(FuncPtr: @@grTexLodBiasValue;              FuncReq: inSoftG;  FuncName: '_grTexLodBiasValue@8'             )
+   ,(FuncPtr: @@grTexDownloadMipMap;            FuncReq: inGlide;  FuncName: '_grTexDownloadMipMap@16'          )
+   ,(FuncPtr: @@grTexDownloadTable;             FuncReq: inGlide;  FuncName: '_grTexDownloadTable@12'           )
+   ,(FuncPtr: @@grTexMipMapMode;                FuncReq: inGlide;  FuncName: '_grTexMipMapMode@12'              )
+   ,(FuncPtr: @@grLfbLock;                      FuncReq: inGlide;  FuncName: '_grLfbLock@24'                    )
+   ,(FuncPtr: @@grLfbUnlock;                    FuncReq: inGlide;  FuncName: '_grLfbUnlock@8'                   )
+  {,(FuncPtr: @@grLfbReadRegion;                FuncReq: inGlide;  FuncName: '_grLfbReadRegion@28'              )}
+   ,(FuncPtr: @@grGlideInit;                    FuncReq: inGlide;  FuncName: '_grGlideInit@0'                   )
+   ,(FuncPtr: @@grGlideShutdown;                FuncReq: inGlide;  FuncName: '_grGlideShutdown@0'               )
+   ,(FuncPtr: @@grHints;                        FuncReq: inGlide;  FuncName: '_grHints@8'                       )
+   ,(FuncPtr: @@guColorCombineFunction;         FuncReq: inGlide;  FuncName: '_guColorCombineFunction@4'        )
+   ,(FuncPtr: @@guFogGenerateExp2;              FuncReq: inGlide;  FuncName: '_guFogGenerateExp2@8'             )
+   ,(FuncPtr: @@softgLoadFrameBuffer;           FuncReq: inSoftG;  FuncName: '_softgLoadFrameBuffer@8'          ) );
+
+var
+  Is_Glide_Library_Loaded : boolean;
+
+  GlideLib: THandle;
 
 function GlideLoaded : Boolean;
 begin
- Result:=Assigned(qrkGlide_API);
+  Result := Is_Glide_Library_Loaded;
 end;
 
 function ReloadGlide(const LibName, SearchDir: String) : Boolean;
+const
+  softgQuArK_Identifier_FuncName = '_softgQuArK@0'; { Function-name which identifices that it is the QRKSOFTG.DLL thats loaded }
+type
+  PPointer = ^Pointer;
 var
- LocalGlide_API: PGlideRoutines;
- I: Integer;
- P: ^TFarProc;
- softgQuArK: function : Integer; stdcall;
- S: String;
+  I: Integer;
+  P: Pointer;
+  softgQuArK: function : Integer; stdcall;
+  S: String;
 begin
- UnloadGlide;
- Result:=False;
- New(LocalGlide_API);
- LocalGlide_API^.GlideLib:=0;
- try
-  LocalGlide_API^.GlideLib:=LoadLibrary(PChar(LibName));
-  if LocalGlide_API^.GlideLib=0 then
-   begin
-    S:=SearchDir+'\'+LibName;
-    LocalGlide_API^.GlideLib:=LoadLibrary(PChar(S));
-    if LocalGlide_API^.GlideLib=0 then
-     Exit;
-   end;
-  LocalGlide_API^.LibName:=LibName;
-  @softgQuArK:=GetProcAddress(LocalGlide_API^.GlideLib, SoftwareVersionRoutine);
-  if Assigned(softgQuArK) then
-   LocalGlide_API^.Version:=softgQuArK
-  else
-   LocalGlide_API^.Version:=HardwareGlideVersion;
-  LocalGlide_API^.State:=Nil;
-  PChar(P):=PChar(LocalGlide_API);
-  for I:=Low(GlideRoutines) to High(GlideRoutines) do
-   begin
-    P^:=GetProcAddress(LocalGlide_API^.GlideLib, GlideRoutines[I]+1);
-    if (P^=Nil) and (GlideRoutines[I]^<>'?') and not Assigned(softgQuArK) then
-     Exit;
-    Inc(P);
-   end;
-  Result:=True;
- finally
-  if Result then
-   qrkGlide_API:=LocalGlide_API
-  else
-   begin
-    if LocalGlide_API^.GlideLib<>0 then
-     FreeLibrary(LocalGlide_API^.GlideLib);
-    FreeMem(LocalGlide_API);
-   end;
- end;
+  Result := False;
+  UnloadGlide;
+  try
+    GlideLib:=LoadLibrary(PChar(LibName));
+    if GlideLib=0 then
+    begin
+      S:=SearchDir+'\'+LibName;
+      GlideLib:=LoadLibrary(PChar(S));
+      if GlideLib=0 then
+        Exit;
+    end;
+
+    qrkGlideLibName:=LibName;
+    qrkGlideState:=Nil;
+
+    @softgQuArK:=GetProcAddress(GlideLib, softgQuArK_Identifier_FuncName);
+    if Assigned(softgQuArK) then
+      qrkGlideVersion:=softgQuArK {Decker - Hu? I don't understand how a proc-address also can be a version-number??}
+    else
+      qrkGlideVersion:=HardwareGlideVersion;
+
+    for I:=Low(GlideDLL_FuncList) to High(GlideDLL_FuncList) do
+    begin
+      P:=GetProcAddress(GlideLib, GlideDLL_FuncList[I].FuncName);
+      if (P=Nil) and (GlideDLL_FuncList[I].FuncReq<>inSoftG) and not Assigned(softgQuArK) then
+        Exit;
+      PPointer(GlideDLL_FuncList[I].FuncPtr)^:=P;
+    end;
+
+    Is_Glide_Library_Loaded := True;
+    Result := True;
+  finally
+    if (not Result) then
+      UnloadGlide;
+  end;
 end;
 
 procedure UnloadGlide;
 begin
- if Assigned(qrkGlide_API) then
-  begin
-   FreeLibrary(qrkGlide_API^.GlideLib);
-   FreeMem(qrkGlide_API);
-   qrkGlide_API:=Nil;
-  end;
+  if GlideLib<>0 then
+    FreeLibrary(GlideLib);
+  GlideLib := 0;
+
+  Is_Glide_Library_Loaded := False;
 end;
 
+initialization
+  Is_Glide_Library_Loaded := False;
+  GlideLib := 0;
 end.
