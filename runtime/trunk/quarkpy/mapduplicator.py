@@ -84,7 +84,11 @@ def get_suffix(s):
     return s[:l-j], s[l-j:l]
 
 def poolitems(item):
-    return item.findallsubitems("",":b")+item.findallsubitems("",":e")+item.findallsubitems("",":d")
+    # Decker: Finding all subitems of type ":d", also automatically finds subitems of type ":e"
+    #         This is a "bug" in the QuArK.EXE, caused by having the Duplicator-class inherit from
+    #         the Entity-class. Not easy to fix in the QuArK.EXE, so the solution here is to not
+    #         search for ":e" types, but have them found when searching for ":d" types.
+    return item.findallsubitems("",":b")+item.findallsubitems("",":d")  #+item.findallsubitems("",":e")
 
 def pool_specs(list):
     specs = {}
@@ -136,7 +140,7 @@ class StandardDuplicator(DuplicatorManager):
                self.sourcecenter = 0.5*(box[0]+box[1])
            else:
                self.sourcecenter = None
-        
+
         s = self.dup["offset"]
         if s:
             self.offset = quarkx.vect(s)
@@ -308,7 +312,7 @@ class StandardDuplicator(DuplicatorManager):
 #                                debug('   '+surf.texturename)
                             except:
                                 pass
-                
+
             if self.dup["increment suffix"]:
                 if i==count-1:
                     for item in list:
@@ -351,7 +355,7 @@ class StandardDuplicator(DuplicatorManager):
 
 class OriginDuplicator(DuplicatorManager):
     "Origin for centering of groups"
-    
+
     Icon = (ico_dict['ico_mapdups'], 0)
 
     def buildimages(self, singleimage=None):
@@ -447,6 +451,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.23  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
 #Revision 1.22  2001/10/22 10:24:32  tiglari
 #live pointer hunt, revise icon loading
 #
