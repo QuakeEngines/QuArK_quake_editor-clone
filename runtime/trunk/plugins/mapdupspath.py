@@ -109,6 +109,8 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
     def __init__(self, origin, centerof, pathdupmaster=0):
         quarkpy.qhandles.IconHandle.__init__(self, origin, centerof)
         self.pathdupmaster = pathdupmaster
+        self.mainpathdup=self.centerof.parent.findname("Path Duplicator:d")
+        
 
     def findpathdupcornerwith(self, list, entitykey, entitykeydata):
         for e in list:
@@ -212,11 +214,19 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                     walker["speeddraw"] = "1"
             #FIXME - How to redraw the duplicator, to reflect the change?!?
             
+ 
+        def selectdup1click(m, self=self, editor=editor):
+            debug('gonna')
+            editor.layout.explorer.uniquesel = self.mainpathdup
+            debug('done')
+            editor.invalidateviews()
+            
         menulist = [qmenu.item("Insert after",  after1click)]
         if (self.pathdupmaster == 0):
             # if it is not the PathDup, then it must be a PathDupCorner, and two more menuitems are available
             menulist.append(qmenu.item("Insert before", before1click))
             menulist.append(qmenu.item("Remove",        remove1click))
+            menulist.append(qmenu.item("Select dup",   selectdup1click, "Select main duplicator (making all path points visible)"))
         menulist.append(qmenu.item("Toggle speeddraw",  speeddraw1click))
 
         return menulist
@@ -228,6 +238,7 @@ class PathPointHandle(PathDuplicatorPointHandle):
         quarkpy.qhandles.IconHandle.__init__(self, origin, centerof)
         self.pathdupmaster = 0
         self.mainpathdup = mainpathdup
+        
 
     #
     # called at end of drag, resets selection
@@ -237,9 +248,14 @@ class PathPointHandle(PathDuplicatorPointHandle):
         editor.layout.explorer.sellist=[self.mainpathdup.dup]
         
     def menu(self, editor, view):
-#        return [qmenu.item("Fuck Me",None)]
         return PathDuplicatorPointHandle.menu(self, editor, view)
+        
+        def seldup1click(m,self=self,editor=editor):
+            editor.layout.explorer.uniqusel=self.mainpathdup
 
+        seldup = qmenu.item("Select duplicator",seldup1click,"select main duplicator (so that all path handles become visible)")
+        pointhandles = pointhandles = [seldup]
+        return pointhandles
 
 class PathDuplicatorPoint(DuplicatorManager):
 
@@ -786,6 +802,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.21  2001/03/07 20:00:13  tiglari
+#specific for rotation suppression
+#
 #Revision 1.20  2001/03/04 06:40:13  tiglari
 #changed to use arbitrary axis matrix rot from maputils
 #
