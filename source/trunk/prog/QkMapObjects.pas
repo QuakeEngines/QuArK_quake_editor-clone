@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.32  2001/07/21 04:27:24  tiglari
+map comments now not written when writing bsp's
+
 Revision 1.31  2001/06/21 17:35:07  decker_dk
 Check for 'mapformat' as well as ';mapformat', since specifics thats prefixed
 with an ';'-character won't be written to the .MAP file (which can be useful at times.)
@@ -1324,8 +1327,8 @@ end;
 
 procedure TTreeMapEntity.SaveAsText(Negatif: TQList; Texte: TStrings; Flags: Integer; HxStrings: TStrings);
 begin
- Texte.Add(CommentMapLine('Entity '+IntToStr(GetNextEntityNo)));
-
+ if Flags and soBSP=0 then
+   Texte.Add(CommentMapLine('Entity '+IntToStr(GetNextEntityNo)));
  SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  Texte.Add('}');
 end;
@@ -2407,8 +2410,8 @@ begin
  end
  else
   I := GetNextEntityNo;
- Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
-
+ if Flags and soBSP = 0 then
+   Texte.Add(CommentMapLine('Entity '+IntToStr(I)));
  SaveAsTextSpecArgs(Texte, HxStrings, Flags);
  if Flags and soBSP = 0 then
   begin
