@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/09/18 01:31:48  alexander
+added enum for startrek voyager elite force
+
 Revision 1.12  2000/08/25 17:57:52  decker_dk
 Comment about possible bug. Look for FIXME
 
@@ -87,6 +90,7 @@ const
  mjSOF        = 'E';
  mjQ3A        = 'a';
  mjStarTrekEF = 'b';
+ mjCrystalSpace = 'c';
 
  mjAny       = #1;
  mjNotQuake2 = #2;
