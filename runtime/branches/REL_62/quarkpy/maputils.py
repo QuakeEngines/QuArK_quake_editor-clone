@@ -117,6 +117,16 @@ class MapUserDataPanel(UserDataPanel):
                     return
                 if choice == MR_YES:
                     list = [group2folder(list[0])]
+        debug('cheking')
+        if list[0].type=='.qtxfolder':
+            debug(' folder')
+            for item in list[0].subitems:
+                item["fixedscale"]="1"
+        else:
+            debug(' list')
+            for item in list:
+                item["fixedscale"]="1"
+        
         UserDataPanel.drop(self, btnpanel, list, i, source)
 
 
@@ -294,6 +304,9 @@ def read2vec(vals):
 #
 #
 #$Log$
+#Revision 1.10  2001/03/18 23:59:44  tiglari
+#experimental merge
+#
 #
 #Revision 1.9  2001/03/12 23:08:57  tiglari
 #read2vec for path dup enhancements

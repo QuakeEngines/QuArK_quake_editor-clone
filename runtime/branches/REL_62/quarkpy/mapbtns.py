@@ -237,13 +237,14 @@ def mapbuttonclick(self):
     def processObject(object):
         object=object.copy()
         scale = quarkx.setupsubset()["DefaultTextureScale"]
-        if scale:
+        if scale and not object["fixedscale"]:
             scale = eval(scale)
             for face in object.findallsubitems("",":f"):
                 texp = face.threepoints(2)
                 p0 = texp[0]
                 v1, v2 = (texp[1]-p0)*scale, (texp[2]-p0)*scale
                 face.setthreepoints((p0,p0+v1,p0+v2),2)
+        object["fixedscale"]=""
         return object
     dropitemsnow(editor, map(processObject, self.dragobject))
 
@@ -690,6 +691,9 @@ def groupview1click(m):
 #
 #
 #$Log$
+#Revision 1.9  2001/02/20 08:05:21  tiglari
+#DefaultTextureScale implemented
+#
 #Revision 1.8  2001/01/27 18:24:53  decker_dk
 #Renamed 'TextureDef' -> 'DefaultTexture'
 #Renamed 'TriggerTextureDef' -> 'DefaultTextureTrigger'
