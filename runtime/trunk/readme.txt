@@ -1,5 +1,19 @@
+             
+             QuArK Snapshot 071101
+             
+Changes from 081801
 
-             QuArK Snapshot 06??01 
+ *Preliminary 6DX support
+ *Cleanup of Crystal Space Support
+ *some extruder bugs fixed
+ *path dup texture bug fixed
+ *'elbows' for path dup reinstated and tested
+    (made elbow segs by putting path dup template
+     copy into elbow template & glueing and pasting
+     do dissociated path dup; didn't leak)
+ *texture browser search bug fixed
+ 
+             QuArK Snapshot 061801 
 
 Changes from 052101
 
