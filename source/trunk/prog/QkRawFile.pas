@@ -228,23 +228,21 @@ var
  Q: QObject;
  Data: String;
  I: Integer;
- S1: TStream;
 begin
  Data:='';
  Q:=SousElements.FindName('Data');
  if Q<>Nil then
-  if Q.Flags and ofSurDisque = 0 then
-   begin
-    I:=Q.Specifics.IndexOfName('Data');
-    if I>=0 then
-     Data:=Q.Specifics[I];
-   end
-  else
-   begin
-    Result:=QStreamAddRef(Q.NodeLoadInfo, S1);
-    S:=S1;
-    Exit;
-   end;
+  begin
+   if Q.Flags and ofSurDisque <> 0 then
+    begin
+     if Q.DirectDataAccess(S, Result) then
+      Exit;
+     Q.Acces;
+    end;
+   I:=Q.Specifics.IndexOfName('Data');
+   if I>=0 then
+    Data:=Q.Specifics[I];
+  end;
  Result:=Length(Data)-Base;
  if Result<=0 then
   begin

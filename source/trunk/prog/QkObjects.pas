@@ -268,7 +268,7 @@ type
              procedure LoadedFileLink(const nName: String; ErrorMsg: Integer);
              procedure OpDansScene(Aj: TAjScene; PosRel: Integer); virtual;
              function GetObjectMenu(Control: TControl) : TPopupMenu; dynamic;
-             property NodeLoadInfo: PQStreamRef read FNode;
+             {property NodeLoadInfo: PQStreamRef read FNode;}
              class function TypeInfo: String; virtual; abstract;
                { returns `extension' of object, see QkObjects.txt:TypeInfo }
              function GetFullName: String;
@@ -279,6 +279,7 @@ type
              function IsClosed: Boolean;
              property PyNoParent: Boolean write FPyNoParent;
              procedure SpecificsAdd(S: String);
+             function DirectDataAccess(var S: TStream; var Size: Integer) : Boolean;
            end;
 
  TListP2 = class(TList)
@@ -1686,6 +1687,67 @@ begin
    Inc(Info);
   end;
  finally FreeMem(FileItemInfo); end;
+end;
+
+function QObject.DirectDataAccess(var S: TStream; var Size: Integer) : Boolean;
+var
+ F: TStream;
+ Taille, FileItemCount, ExtraSize, DeltaPos, J: Integer;
+ Info: TFileItemInfo;
+ Name: String;
+begin
+  { special code : try to access the content of the Data= specific directly from the stream }
+{$IFDEF Debug}
+ if Flags and ofSurDisque = 0 then
+  Raise InternalE('DirectDataAccess');
+{$ENDIF}
+ Result:=False;
+ Taille:=QStreamAddRef(FNode, F); try
+ FileItemCount:=0;
+ try
+  F.ReadBuffer(FileItemCount, 1);
+ except
+  Exit;
+ end;
+ if FileItemCount <> 1 then Exit;
+ DeltaPos:=1+SizeOf(TFileItemInfo);
+ if DeltaPos > Taille then Exit;
+ F.ReadBuffer(Info, SizeOf(TFileItemInfo));  { read single file item info }
+ if Info.Code and qsBitSubObject <> 0 then Exit;
+
+ {Size:=Info.NameSize;}
+ ExtraSize:=0;
+ if (Info.Code and qsSizeMask) > qsShortSizeMax then
+  ExtraSize:=Info.Code and qsLongSizeMask;
+ Inc(DeltaPos, {Size}Info.NameSize);
+ if DeltaPos > Taille then Exit;
+ SetLength(Name, {Size}Info.NameSize);
+ F.ReadBuffer(Name[1], {Size}Info.NameSize);  { read the single name }
+ if Name<>'Data' then Exit;
+
+ if ExtraSize=0 then
+  Size:=Info.Code and qsSizeMask
+ else
+  begin   { read the extra size }
+   Dec(Taille, ExtraSize);
+   J:=Taille-DeltaPos;  { stored at the end of the data block }
+   if J<0 then Exit;
+   F.Seek(J, 1);
+   Size:=0;
+   if ExtraSize > SizeOf(Size) then Exit;
+   if F.Read(Size, ExtraSize) < ExtraSize then Exit;
+   F.Seek(-ExtraSize-J, 1);  { come back }
+  end;
+
+ Inc(DeltaPos, Size);
+ if DeltaPos > Taille then Exit;
+
+  { everything went right; the data is now at the current position in F. }
+ S:=F;
+ F:=Nil;
+ Result:=True;
+
+ finally ReleaseStream(F); end;
 end;
 
 procedure QObject.LoadedFileLink(const nName: String; ErrorMsg: Integer);
