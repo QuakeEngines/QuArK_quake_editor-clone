@@ -31,6 +31,9 @@ QQRKSRC1
 // ----------- REVISION HISTORY ------------
 //
 //$Log$
+//Revision 1.105.4.3  2001/04/27 05:02:41  tiglari
+//fix bad hint about subdivides, using form inclusion
+//
 //
 //Revision 1.105.4.2  2001/04/16 12:29:09  tiglari
 //grid & thick support for brush arch/bevel
@@ -1013,7 +1016,7 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "base_wall/basewall03"
+        DefaultTexture = "cargo/walllow"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureClip = "common/clip"
         DefaultTextureOrigin = "common/origin"

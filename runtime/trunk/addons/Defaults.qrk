@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.126  2001/05/04 00:25:15  aiv
+//form and form element creation done.
+//
 //Revision 1.125  2001/04/30 10:58:55  tiglari
 //added child, key mods for next/prev of same type (look like hotkeys,
 //different implementation in quarkpy.mapselection)
@@ -1109,7 +1112,7 @@ QQRKSRC1
         BezierPatchSupport = "1" // this game supports bezier-patches
         BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
 
-        DefaultTexture = "base_wall/basewall03"
+        DefaultTexture = "cargo/walllow"
         DefaultTextureTrigger = "common/trigger"
         DefaultTextureClip = "common/clip"
         DefaultTextureOrigin = "common/origin"
