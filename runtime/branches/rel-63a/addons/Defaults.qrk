@@ -30,6 +30,9 @@ QQRKSRC1
 
 
 //$Log$
+//Revision 1.192.2.3  2002/05/24 22:17:35  tiglari
+//update version
+//
 //Revision 1.192.2.2  2002/05/23 22:45:15  tiglari
 //remove moddir .. from q3map command line; this lets it compile for both earlier
 // and later versions of q3map (moddir doesn't seem to work for some of them)
@@ -1601,72 +1604,6 @@ QQRKSRC1
         LightFactor = '0.9'
         3DLight = '512'
         PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
-      }
-      MOHAA:config =
-      {
-        Game = "MOHAA"
-        Code = "e" // Hardcoded value in Setup.PAS
-//        Program = "MOHAA.EXE +set sv_pure 0"
-        Program = "mohaa +set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1"
-
-        Directory = "\MOHAA"
-        CheckDirectory = "MOHAA.EXE"
-
-        CD = ""
-        CDDir = ""
-
-        MapLimit = '65536 65536 65536'
-
-        MapCommentsPrefix = "//"
-        OutputMapFormat="Classic Quake"
-        EditableSurfaceParms="1"
-
-        StupidBuildToolKludge = ""
-        BuildPgm1  = "Q3MAP.EXE"
-        BuildArgs1 = "-gamedir "$22"%basepath%"$22" "$22"%file%"$22
-        BuildCheck1= "+BSP,-LIN{LoadLinFile}"
-        BuildPgm2  = "Q3MAP.EXE"
-        BuildArgs2 = "-vis -gamedir "$22"%basepath%"$22" "$22"%file%"$22
-        BuildPgm3  = "MOHLIGHT.EXE"
-        BuildArgs3 = "-gamedir "$22"%basepath%"$22" "$22"%file%"$22
-      //BuildPgm4  = "BSPC.EXE"
-      //BuildArgs4 = "-bsp2aas %file%.BSP -output %mappath%"
-      //BuildCheck4= "+AAS"
-
-        TexturesPath = "textures/"
-        ShadersPath = "scripts/"
-        Q2TexFlags = "1"
-
-        BezierPatchSupport = "1" // this game supports bezier-patches
-        BezierPatchPluginPrefixes = "MB2" // Prefix of the MB2*.PY files. You can also specify the value: "MB2"$0D"MB3"$0D"MB4"
-
-        DefaultTexture = "general_structure/archstone2lt"
-        DefaultTextureTrigger = "common/trigger"
-        DefaultTextureOrigin = "common/origin"
-        DefaultTextureClip = "common/clip"
-        DefaultTextureCaulk = "common/caulk"
-        DefaultTextureScale = "0.5"
-
-        TextureFormat = ".tga"                  // primary texture fileextension
-        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
-        TextureWriteFormat = ".tga"
-        TextureShaders = "scripts/quark.shader"
-
-        BaseDir = "main"
-        tmpQuArK = "main"
-
-        Palette = ":pics/colormap.pcx"
-        ExtraCmdLine = "+set developer 1 +set thereisnomonkey 1 +set cheats 1 +set ui_console 1 +set fs_game %s"
-        RunMapCmdLine = " +map %s"
-        AddOns = "DataMOHAA.qrk"$0D"Q3ArchLib.qrk"
-        AlwaysPak = ""
-        PakExt = ".pk3"
-        PakFormat = "*.PK3"
-        Console = "1"
-        Form = "GameMOHAA"
-        LightFactor = '0.9'
-        3DLight = '512'
-      //PakExtra1 = ".aas"  // PAK extra files into pak file (ie maps/mapname.aas)
       }
 
       JK2:config =
