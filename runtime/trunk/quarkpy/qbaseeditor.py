@@ -360,6 +360,7 @@ class BaseEditor:
                 if backup is not None:
                     obj.copyalldata(backup)
 
+#        v.info["editor"] = self
         v.ondraw = draw1
         v.onmouse = self.mousemap
         v.onkey = self.keymap
@@ -502,7 +503,7 @@ class BaseEditor:
         self.fileobject['Root'] = new.name
 
 
-    def keymap(self, view, key, boolean):
+    def keymap(self, view, key, flags):
         pass
         
     def mousemap(self, view, x, y, flags, handle):
@@ -525,7 +526,6 @@ class BaseEditor:
         #
 
         elif flags & MB_MOUSEMOVE:
-            debug('left')
             if handle is None:
                 min, max = view.depth
                 list = map(quarkx.ftos, self.aligntogrid(view.space(quarkx.vect(x, y, min))).tuple + self.aligntogrid(view.space(quarkx.vect(x, y, max))).tuple)
@@ -841,6 +841,9 @@ NeedViewError = "this key only applies to a 2D map view"
 #
 #
 #$Log$
+#Revision 1.13  2001/05/07 06:58:51  tiglari
+#redo disable of object dragging with left mousebutton
+#
 #Revision 1.12  2001/05/07 05:41:13  tiglari
 #oops roll back dragging change, since it disabled map view nav
 #
