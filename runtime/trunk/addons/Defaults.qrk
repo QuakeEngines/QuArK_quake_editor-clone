@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.206  2003/02/03 08:43:27  cdunde
+//To build Model Options configuration form.
+//
 //Revision 1.205  2003/01/08 23:06:34  tiglari
 //AlwaysWriteThreeFields support
 //
@@ -841,7 +844,7 @@ QQRKSRC1
         Undo = "Ctrl+Z"
         Redo = "Shift+Ctrl+Z"
         Duplicate= "Ctrl+D"
-        Remove= "Esc"
+        Cancel Selections= "Esc"
         Select Parent="Home"
         Collapse Tree="S"        // not a true hotkey, but a modifier
         Select Child="End"
@@ -3917,7 +3920,7 @@ QQRKSRC1
        Redo: = {HotKeyForm = !}
        Duplicate: = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
-       Remove: = {HotKeyForm = !}
+       Cancel Selections: = {HotKeyForm = !}
        Select Parent: = {HotKeyForm = !}
        Collapse Tree: = {AlphaKeyForm = ! Hint="Prevent collapse of treeview on climb with Parent key."$0D" Key must be an ordinary alphabetic key, not used by 3DView|Keyboard Settings."}
        Select Child: = {HotKeyForm = !}

@@ -116,7 +116,7 @@ def nextClick(m,editor=None):
 
 same = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Same Type']
 collapse = quarkx.setupsubset(SS_GENERAL,"HotKeys")['Collapse Tree']
-removeItem = qmenu.item("&Cancel Selections", EscClick, "|The first time to press Esc, you are sent back to the 1st page; the second time, or if you where already at the 1st page, the currently selected objects are unselected.")
+removeItem = qmenu.item("&Cancel Selections", EscClick, "|'Cancel Selections', or by pressing its HotKey, will unselect all objects that are currently selected, even frozen ones, and you are sent back to the 1st page, the treeview, if you are not already there.")
 parentItem = qmenu.item("Select &Parent", parentClick, "|Selects parent.  Parent is collapsed in treeview unless '%s' is depressed."%collapse)
 childItem = qmenu.item("Select &Child", childClick, "Selects first child")
 nextItem = qmenu.item("Select &Next", nextClick, "|Selects next item in group, cycling\n depress '%s' to constrain to next of same type."%same)
@@ -124,7 +124,7 @@ prevItem = qmenu.item("Select Pre&vious", nextClick, "|Selects previous item in 
 nextItem.succ = getNext
 prevItem.succ = getPrevious
 
-freezetext = "|If the selection is 'frozen', then clicking in the map view won't change it unless the ALT key depressed, which also freezes to the new selection.\n\nOther methods of of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC will unfreeze as well as clear it."
+freezetext = "|If the selection is 'frozen', then clicking in the map view will not change it unless the ALT key is depressed, which also freezes to the new selection.\n\nOther methods of changing the selection, such as the arrow keys in the treeview, will also freeze to the new selection, but clearing with ESC or choosing the menu 'Cancel Selections' function will unfreeze as well as clear it."
 
 unfreezeItem = qmenu.item("Unfreeze Selection", UnfreezeClick, freezetext)
 freezeItem = qmenu.item("Freeze Selection", FreezeClick, freezetext)
@@ -155,7 +155,7 @@ def onclick(menu):
 def SelectionMenu():
     "The Selection menu, with its shortcuts."
 
-    MapHotKeyList("Remove", removeItem, shortcuts)
+    MapHotKeyList("Cancel Selections", removeItem, shortcuts)
     MapHotKeyList("Select Parent", parentItem, shortcuts)
     MapHotKeyList("Select Child", childItem, shortcuts)
     MapHotKeyList("Select Next", nextItem, shortcuts)
@@ -167,6 +167,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.7  2003/02/08 07:37:25  cdunde
+# To reduce Cancel selection to a one click function
+#
 # Revision 1.5  2002/05/13 10:35:57  tiglari
 # support frozen selections (don't change until another frozen selection is made,
 # or they are cancelled with ESC or unfreeze selection)
