@@ -2,6 +2,9 @@
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2001/03/06 00:25:27  aiv
+freed some memory after logging
+
 Revision 1.6  2001/03/05 18:40:29  decker_dk
 Misc. corrections.
 
@@ -232,7 +235,7 @@ type
     FTextCaps: TTextCaps;
     FMemory: TStrings;
     FChipset: TStrings;
-    FDevices: TStrings;  
+    FDevices: TStrings;
     FAdapter: TStrings;
     FDAC: TStrings;
     FAcc: TStrings;
@@ -1805,9 +1808,11 @@ begin
   s.add('PYTHON:');
   GetPythonDetails(s);
   s.add('');
+(*DECKER 2001.03.17 - we're not interested in Machine-/Username. We're not Login-Crackers!
   s.add('MACHINE:');
   GetWorkStationDetails(s);
   s.add('');
+*)
   s.add('VIDEO:');
   GetDisplayDetails(s);
   s.add('');
