@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2001/07/15 11:18:06  tiglari
+imported 5-vec stuff from TBezier, added some TVect(5)-makers
+
 Revision 1.11  2001/07/14 06:17:46  tiglari
 vec2_t added for Q3A bsp reading suppport
 
@@ -122,6 +125,7 @@ function VecDiff(const V, W : TVect) : TVect;
 function VecSum(const V, W : TVect) : TVect;
 function VecScale(const R: Double; const V: TVect) : TVect;
 function ProjectPointToPlane(const Point, Along, PlanePoint, PlaneNorm : TVect) : TVect;
+procedure SolveForThreePoints(const V1, V2, V3: TVect5; var P1, P2, P3:TVect);
 
 const
  {Origine}OriginVectorZero: TVect = (X:0; Y:0; Z:0);
@@ -856,5 +860,44 @@ begin
   Result:=VecSum(Point,VecScale(Dot1/Dot2,Along));
 end;
 
+procedure SolveForThreePoints(const V1, V2, V3: TVect5; var P1, P2, P3:TVect);
+var
+  Denom : TDouble;
+  D1, D2 : TVect;
+begin
+{ Original Python code from quarkpy.maputils.py.
+def solveForThreepoints((v1, (s1, t1)), (v2, (s2, t2)), (v3, (s3, t3))):
+    denom = s1*t2-s1*t3-t1*s2+t1*s3-s3*t2+t3*s2
+    p0x = -t2*v1.x*s3+v2.x*t1*s3-t3*s1*v2.x+t3*v1.x*s2+t2*s1*v3.x-v3.x*t1*s2
+    p0y = -t2*v1.y*s3+v2.y*t1*s3-t3*s1*v2.y+t3*v1.y*s2+t2*s1*v3.y-v3.y*t1*s2
+    p0z = -(t2*v1.z*s3-v2.z*t1*s3+t3*s1*v2.z-t3*v1.z*s2-t2*s1*v3.z+v3.z*t1*s2)
+    p0 = quarkx.vect(p0x, p0y, p0z)/denom
+    d1x = -(t2*v3.x-t2*v1.x+t3*v1.x-v3.x*t1+v2.x*t1-v2.x*t3)
+    d1y = -(t2*v3.y-t2*v1.y+t3*v1.y-v3.y*t1+v2.y*t1-v2.y*t3)
+    d1z = -(t2*v3.z-t2*v1.z+t3*v1.z-v3.z*t1+v2.z*t1-v2.z*t3)
+    d1 = quarkx.vect(d1x, d1y, d1z)/denom
+    d2x = -s1*v3.x+s1*v2.x-s3*v2.x+v3.x*s2-v1.x*s2+v1.x*s3
+    d2y = -s1*v3.y+s1*v2.y-s3*v2.y+v3.y*s2-v1.y*s2+v1.y*s3
+    d2z = -s1*v3.z+s1*v2.z-s3*v2.z+v3.z*s2-v1.z*s2+v1.z*s3
+    d2 = quarkx.vect(d2x, d2y, d2z)/denom
+    return p0, d1+p0, d2+p0
+}
+
+    Denom:= 1/(v1.s*v2.t-v1.s*v3.t-v1.t*v2.s+v1.t*v3.s-v3.s*v2.t+v3.t*v2.s);
+    P1.X:= -v2.t*v1.x*v3.s+v2.x*v1.t*v3.s-v3.t*v1.s*v2.x+v3.t*v1.x*v2.s+v2.t*v1.s*v3.x-v3.x*v1.t*v2.s;
+    P1.Y:= -v2.t*v1.y*v3.s+v2.y*v1.t*v3.s-v3.t*v1.s*v2.y+v3.t*v1.y*v2.s+v2.t*v1.s*v3.y-v3.y*v1.t*v2.s;
+    P1.Z:= -(v2.t*v1.z*v3.s-v2.z*v1.t*v3.s+v3.t*v1.s*v2.z-v3.t*v1.z*v2.s-v2.t*v1.s*v3.z+v3.z*v1.t*v2.s);
+    P1:=VecScale(Denom,P1);
+    D1.X:= -(v2.t*v3.x-v2.t*v1.x+v3.t*v1.x-v3.x*v1.t+v2.x*v1.t-v2.x*v3.t);
+    D1.Y:= -(v2.t*v3.y-v2.t*v1.y+v3.t*v1.y-v3.y*v1.t+v2.y*v1.t-v2.y*v3.t);
+    D1.Z:= -(v2.t*v3.z-v2.t*v1.z+v3.t*v1.z-v3.z*v1.t+v2.z*v1.t-v2.z*v3.t);
+    D1 := VecScale(Denom,D1);
+    P2:=VecSum(P1,D1);
+    D2.X := -v1.s*v3.x+v1.s*v2.x-v3.s*v2.x+v3.x*v2.s-v1.x*v2.s+v1.x*v3.s;
+    D2.Y := -v1.s*v3.y+v1.s*v2.y-v3.s*v2.y+v3.y*v2.s-v1.y*v2.s+v1.y*v3.s;
+    D2.Z := -v1.s*v3.z+v1.s*v2.z-v3.s*v2.z+v3.z*v2.s-v1.z*v2.s+v1.z*v3.s;
+    D2 := VecScale(Denom,D2);
+    P3:=VecSum(P1,D2);
+  end;
 end.
 
