@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2002/04/09 22:29:58  aiv
+check for jk2 game mode if loading a md3 file
+
 Revision 1.13  2002/03/07 19:17:48  decker_dk
 Removed QImages, as it was just another name for QImage
 
@@ -357,12 +360,20 @@ begin
   for i:=1 to mhead.skin_Num do begin
     fs.readbuffer(tex, sizeof(tex));
     if tex[1]=#0 then tex[1]:='m';
+
     base_tex_name:=trim(string(tex));
+    { The Raven guys seem to have used #0 as the filename-extension
+      separator for textures in their .md3's !!! }
+    if CharModeJeu=mjSoF2 then
+      if Pos(#0,base_tex_name)<>0 then
+         base_tex_name[Pos(#0,base_tex_name)]:='.';
     Skin:=Loaded_ShaderFile(Comp, base_tex_name);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.tga'), false);
     if skin=nil then
       skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.jpg'), false);
+    if skin=nil then
+      skin:=Loaded_SkinFile(Comp, ChangeFileExt(base_tex_name,'.png'), false);
     if skin=nil then begin
       t:=FmtLoadStr1(5575, [base_tex_name+' or '+ChangeFileExt(base_tex_name,'.jpg'), LoadName]);
       GlobalWarning(t);
