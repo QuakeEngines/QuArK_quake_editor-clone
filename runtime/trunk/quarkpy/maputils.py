@@ -115,6 +115,14 @@ class MapUserDataPanel(UserDataPanel):
                     return
                 if choice == MR_YES:
                     list = [group2folder(list[0])]
+
+        if list[0].type=='.qtxfolder':
+            for item in list[0].subitems:
+                item["fixedscale"]="1"
+        else:
+            for item in list:
+                item["fixedscale"]="1"
+
         UserDataPanel.drop(self, btnpanel, list, i, source)
 
 
@@ -306,6 +314,9 @@ def buildLinearMatrix(dup):
 #
 #
 #$Log$
+#Revision 1.13  2001/04/05 22:31:12  tiglari
+#buildLinearMatrix now checks matrix not linear
+#
 #Revision 1.12  2001/03/29 09:27:58  tiglari
 #scale & rotate specifics for duplicators
 #
