@@ -12,6 +12,15 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+
+ * [alexander]
+      - General (all games): textures with alpha channel are
+        rendered transparent in open gl
+      - HL2: lightmapscale has now a default of 16 
+      - HL2: dont generate duplicate classname when loading vmf
+      - HL2: save memory by checking if vtf texture has alpha at all
+        and only then generate alpha data into quarks local texture
+
 6.4.1 alpha 1
 =============
 
