@@ -11,8 +11,6 @@ Suggestions for implementation (proposer parenthesized).
 
 <LI>Selected groups colored rather than dotted outline (option perhaps?). (rd)
 
-<LI>Texture rescale on vertex drag to preserve alignment (rd)
-
 <li>Patch-based terrain builder: (tiglari)
 
 <li>Adquedit-equivalent resource display: (Seth)
@@ -27,6 +25,15 @@ face. (tiglari)
 <li>Optional plugins:
 <br>Some plugins wouldn't load unless they were 'registered'
 like addons; this would make it easier to try things out
-(tiglari)
+<br>Alternative: plugins with 'expmap', etc. prefixes which
+would only load when a 'load experimental plugins' option was
+checked.
+
+<li>Red-hot keys:
+<br>'T', 'W' etc in 3d view would select & tag/wrap etc the
+visible face they were over. (tiglari, quantum red)
+
+<li>Intersection finder:
+<br>A ripoff of the one in bobtoolz
 
 </UL>

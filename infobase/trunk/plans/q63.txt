@@ -19,16 +19,15 @@ independent manipulation.
 
 <li>Extruder: (tiglari)
 <br>generate brushes etc. from 2d outlines.
-<br>status: done (integrates with path duplicator).  In experimental
-update.
+<br>status: done (integrates with path duplicator).
 
 <li>'Instance' duplicator: (tiglari)
 <br> put copies of a structure where you want it.  Inspired
 by a suggestion by Meatball402 on Quake3World editing forum.
-<br>status: done.  in experimentgal update.
+<br>status: done.
 
 <li>User-configurable hot keys: (tiglari)
-<br>status: current ones all done, in experimental update.
+<br>status: current ones all done.
 <br>What additional ones should be added?
 
 <li>User-specifible rotation/linear mapping origin: (tiglari)
@@ -36,7 +35,8 @@ by a suggestion by Meatball402 on Quake3World editing forum.
 (as opposed say to a tagged point)
 <br>what about axis? No, wouldn't integrate with the buttons.
 <br>status: redone as handle (old origin duplicator removed
-from interface). NYI as fixpoint for linear mapping in duplicators.
+from interface).  Works as fixpoint for scale/rotate linear specifics
+in some duplicators.
 
 <li>Merge Polys: (tiglari)
 <br>bugs fixed, merge all mergeable polys in group
@@ -48,7 +48,29 @@ from interface). NYI as fixpoint for linear mapping in duplicators.
 <li> Entity Extractor: (Andy)
 <br> Entities extracted from .bsp's in many formats
     (including Q3(T)A).
-<br> Status: basically done but some apparent issues.    
+<br> Status: done, runs out of memory on some maps in some .pk3's.
+This can be worked around by extracting the .bsps to individual
+files.
+
+<li>Face-selection modes: (tiglari)
+<br>status: done, as 'F' during RMB click.
+
+<li>L-square enhancements: (tiglari, ax2grind)
+<br>status: RMB menus started.  Want more positioning
+options for the arms, such as:
+<UL>
+<LI> checkbox for relative to tagged/join of L
+<LI> end position
+<LI> arm length
+<LI> arm angle
+</UL>
+What about L-join options?
+
+<LI>Tree navigation: (tiglari, design from Decker, realdespair)
+<br> home, pg up, pg down for parent, next prev in group, cycling.
+Plus some kind of option for getting next-of-same-type in group.
+<br>status: basic stuff done, same type stuff not done (code needs
+to be rewritten at a higher level of abstraction).
 
 <li> Entity Lump Extractor: (tiglari)
 <br> extracts entity lumps from .bsp's in a .pak to independent files.
@@ -73,9 +95,9 @@ entity addons is needed.
 <br>edit the properties of pre-existing OsFolders
 
 <li>Brush-based shape-builders: (tiglari, Decker)
+<br> force-to-grid option: done.
 <br>'inner boxes' (two independently manipulable boxes, one inside
    the other, giving more control over arch shapes).
-Also should have a 'force-to-grid' option.
 <br> redo prism-builder as shape-builder.
 <br> more fancy options for stair-builder
 
@@ -93,12 +115,6 @@ Also should have a 'force-to-grid' option.
 basically a duplicator, emulating the wc thing's functionality.
 
 <li>3point cutting plane: (tiglari)
-
-<li>Face-selection modes: (tiglari)
-
-
-<li>L-square enhancements: (tiglari, ax2grind)
-
 
 <li>CTF duplicator: (tiglari)
 <br>status: started, nothing committed.
