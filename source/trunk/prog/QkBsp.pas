@@ -23,6 +23,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.52  2002/04/30 12:28:45  tiglari
+Detect RTCW and Mohaa .bsp's and proclaim inability to read them (the
+ obvious idea didn't work ...)
+
 Revision 1.51  2002/04/04 17:50:54  decker_dk
 Try to load JK2 .BSPs by using the Q3 loader. It may work, but don't bet on it.
 
@@ -481,7 +485,7 @@ type
           procedure Go1(maplist, extracted: PyObject; var FirstMap: String; QCList: TQList); override;
           function PyGetAttr(attr: PChar) : PyObject; override;
           Function GetTextureFolder: QObject;
-          Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
+          (*Function CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;*)
           function GetEntityLump : String;
           procedure GetPlanes(var L: TQList);
           function GetNodes: QObject;
@@ -1279,71 +1283,82 @@ var
  SurfType: Char;
  Pozzie: vec3_t;
 begin
- GameCode:=NeedObjectGameCode;
- SurfType:=BspSurfaceType(GameCode);
- if FStructure=Nil then
+  GameCode:=NeedObjectGameCode;
+  SurfType:=BspSurfaceType(GameCode);
+  if FStructure=Nil then
   begin
-   if FVertices<>Nil then
-    Raise EError(5637);
-   FVerticesRefCount:=0;
-   ProgressIndicatorStart(0,0); try
-   if SurfType=bspSurfQ12 then
-   begin
-      VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
-      ReallocMem(FVertices, VertexCount*SizeOf(TVect));
-      PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TbPlane);
-      PlaneSize:=SizeOf(TbPlane);
-   end
-   else
-   begin
-      VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
-      PQ3:=PQ3Vertex(Q3Vertices);
-      ReallocMem(FVertices, VertexCount*SizeOf(TQ3Vertex));
-      PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,    eBsp3_planes,     Planes)   div SizeOf(TQ3Plane);
-      PlaneSize:=Sizeof(TQ3Plane);
+    if FVertices<>Nil then
+      Raise EError(5637);
+    FVerticesRefCount:=0;
+    ProgressIndicatorStart(0,0);
+    try
+      PQ3:=Nil; {Fix for compiler-warning}
+
+      if SurfType=bspSurfQ12 then
+      begin
+        VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, PChar(P)) div SizeOf(vec3_t);
+        ReallocMem(FVertices, VertexCount*SizeOf(TVect));
+        PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,   eBsp3_planes,   Planes)   div SizeOf(TbPlane);
+        PlaneSize:=SizeOf(TbPlane);
+      end
+      else
+      begin
+        VertexCount:=GetBspEntryData(eVertices, lump_vertexes, eBsp3_vertexes, Q3Vertices) div SizeOf(TQ3Vertex);
+        PQ3:=PQ3Vertex(Q3Vertices);
+        ReallocMem(FVertices, VertexCount*SizeOf(TQ3Vertex));
+        PlaneCount:=GetBspEntryData(ePlanes,    lump_planes,   eBsp3_planes,   Planes)     div SizeOf(TQ3Plane);
+        PlaneSize:=Sizeof(TQ3Plane);
+      end;
+
+      Dest:=PVect(FVertices);
+
+      if SurfType=bspSurfQ12 then
+      begin
+        for I:=1 to VertexCount do
+        begin
+          with Dest^ do
+          begin
+            X:=P^[0];
+            Y:=P^[1];
+            Z:=P^[2];
+          end;
+          Inc(P);
+          Inc(Dest);
+        end;
+      end
+      else
+      begin
+        for I:=1 to VertexCount do
+        begin
+          with Dest^ do
+          begin
+            Pozzie:=PQ3^.Position;
+            X:=Pozzie[0];
+            Y:=Pozzie[1];
+            Z:=Pozzie[2];
+          end;
+         { is this really necessary? }
+          Inc(PQ3);
+          Inc(Dest);
+        end;
+      end;
+      FStructure:=TTreeMapBrush.Create('', Self);
+      FStructure.AddRef(+1);
+      Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
+      Q.Acces;
+   {   if CharModeJeu>=mjQ3A then
+         ShowMessage('Sorry, no bsp editing for this game')
+      else
+    }
+      NonFaces:=0;
+      ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
+      if NonFaces>0 then
+        ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
+    finally
+      ProgressIndicatorStop;
+    end;
   end;
-   Dest:=PVect(FVertices);
-   if SurfType=bspSurfQ12 then
-   for I:=1 to VertexCount do
-   begin
-     with Dest^ do
-     begin
-       X:=P^[0];
-       Y:=P^[1];
-       Z:=P^[2];
-     end;
-     Inc(P);
-     Inc(Dest);
-   end
-   else
-   for I:=1 to VertexCount do
-   begin
-     with Dest^ do
-     begin
-       Pozzie:=PQ3^.Position;
-       X:=Pozzie[0];
-       Y:=Pozzie[1];
-       Z:=Pozzie[2];
-     end;
-    { is this really necessary? }
-     Inc(PQ3);
-     Inc(Dest);
-   end;
-   FStructure:=TTreeMapBrush.Create('', Self);
-   FStructure.AddRef(+1);
-   Q:=BspEntry[eEntities, lump_entities, eBsp3_entities];
-   Q.Acces;
-{   if CharModeJeu>=mjQ3A then
-      ShowMessage('Sorry, no bsp editing for this game')
-   else
- }
-   NonFaces:=0;
-   ReadEntityList(FStructure, Q.Specifics.Values['Data'], Self);
-   if NonFaces>0 then
-     ShowMessage(IntToStr(NonFaces)+' Non-Face Surfaces Ignored');
-   finally ProgressIndicatorStop; end;
-  end;
- GetStructure:=FStructure;
+  GetStructure:=FStructure;
 end;
 
 procedure QBsp.ReLoadStructure;
@@ -1418,6 +1433,7 @@ function qGetClosePlanes(self, args: PyObject) : PyObject; cdecl;
 var
  r: Single;
 begin
+ Result:=Nil;
  try
    if not PyArg_ParseTupleX(args, 'f', [@r]) then
      Exit;
@@ -1946,6 +1962,7 @@ begin
     Result:=BspTypeQ1
 end;
 
+(*
 Function QBsp.CreateStringListFromEntities(ExistingAddons: QFileObject; var Found: TStringList): Integer;
 var
   e: QObject;
@@ -1958,6 +1975,7 @@ begin
   end;
   e.acces;
 end;
+*)
 
 Function QBsp.GetTextureFolder: QObject;
 var
@@ -2053,6 +2071,7 @@ var
  r: Single;
  bsp: PyObject;
 begin
+ Result:=Nil;
  try
    if not PyArg_ParseTupleX(args, 'fO', [@r, @bsp]) then
      Exit;
@@ -2171,10 +2190,10 @@ begin
    bspTypeQ1:
      begin
        SourceQ1:=PQ1Leaf(Source)^;
-       for I:=0 to 2 do
        num_leaffaces:=SourceQ1.num_leaffaces;
+       for I:=0 to 2 do
        begin
-          mins[I]:=SourceQ1.mins[I];
+         mins[I]:=SourceQ1.mins[I];
          maxs[I]:=SourceQ1.maxs[I];
        end
      end;
