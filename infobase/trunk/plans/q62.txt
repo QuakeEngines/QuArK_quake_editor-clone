@@ -50,4 +50,12 @@ starting scale too big.
 
 <LI>  `texture pinning': (tiglari)
 <br> status: done
+
+<LI>  bezier CP `picking': (tiglar).  Pick a subset of the Cps
+of a bezier and drag, linear map. etc only them
+<br> status: done
+
+<LI>  sprites etc. display: (Andy).  display assorted minor
+resources.  Full Adquedit functionlity by 6.3?
+<br> status: ?
 </UL>

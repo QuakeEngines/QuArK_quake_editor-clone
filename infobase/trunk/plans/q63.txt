@@ -23,5 +23,6 @@ format: html
 
 <LI> L-square enhancements: (tiglari, ax2grind)
 
+<LI>> Adquedit-level resource display: (Andy, ?)
 </UL>
 
