@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/09/25 19:35:35  decker_dk
+Set fly-over-help HintHidePause up to 15 seconds. It was normally 4 seconds, which is too short IMHO
+
 Revision 1.9  2000/07/18 19:37:58  decker_dk
 Englishification - Big One This Time...
 
@@ -468,11 +471,14 @@ begin
  GlobalDisplayWarnings;
  if IdleJobs<>Nil then
   begin
+   {Take first IdleJob in chain, and set the New-Top-IdleJobs pointer
+    to the next IdleJob of the chain - tricky tricky!}
    P:=IdleJobs;
    IdleJobs:=P^.Next;
    if not P^.Working then
     begin
      try
+      {Call this IdleJob's Event function}
       P^.Working:=True;
       try
        P^.Counter:=P^.Event(P^.Counter);
@@ -486,6 +492,8 @@ begin
      finally
       P^.Working:=False;
      end;
+     {Did the IdleJob finish its job? If so, just dispose of the element,
+      since its taken out of the IdleJobs chain anyway - tricky tricky!}
      if P^.Counter<0 then
       begin
        if P^.Control is TWinControl then
@@ -493,10 +501,15 @@ begin
        Dispose(P);
       end
      else
+      {If there were only one IdleJob in the IdleJobs chain, then set
+       this one back to the Top-IdleJobs pointer}
       if IdleJobs=Nil then
        IdleJobs:=P
       else
        begin
+        {There are more IdleJobs in the chain, do the Round-Robin technique:
+         Put the IdleJob thats just been executed, at the bottom of the
+         IdleJobs chain - tricky tricky!}
         Q:=IdleJobs;
         while Q^.Next<>Nil do
          Q:=Q^.Next;
@@ -538,6 +551,9 @@ var
 begin
  if nControl<>Nil then
   AbortIdleJob(nControl);
+ {Call the soon-to-become-idlejob's event function with count=-1, which is like
+  asking "Hey! Do you actually have so much work to do, that you should be
+  added to the IdleJobs chain?". If the answer is >=0 then its put in the chain}
  I:=nEvent(-1);
  if I>=0 then
   begin

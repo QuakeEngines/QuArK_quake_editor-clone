@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 }
 
 unit QkQ1;
@@ -112,7 +115,7 @@ end;
 
 class function QTexture1.CustomParams : Integer;
 begin
-  Result:=4 or cpFixedOpacity;
+  Result:=cp4MipIndexes or cpFixedOpacity;
 end;
 
 class function QTexture1.TypeInfo: String;

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2000/07/09 13:20:43  decker_dk
+Englishification and a little layout
+
 Revision 1.3  2000/05/21 13:11:50  decker_dk
 Find new shaders and misc.
 
@@ -111,8 +114,10 @@ begin
     end;
   wp_EditMsg:
     Msg.Result:=EditMenuCommandLv(Msg.lParam);
-  tm_BeginDrag: SetDragSource(dfOk, GroupeSelection);
- {tm_EndDrag: SetDragSource(0, Nil);}
+  tm_BeginDrag:
+    SetDragSource(dfOk, GroupeSelection);
+ {tm_EndDrag:
+    SetDragSource(0, Nil);}
  end;
  if Msg.Result=0 then
   inherited;
@@ -134,7 +139,10 @@ begin
    if Counter=-1 then
     begin
      I:=FileObject.SubElements.Count;
-     if I<4 then I:=4 else I:=(I+3) and not 3;
+     if I<4 then
+      I:=4
+     else
+      I:=(I+3) and not 3;
      ListView1.AllocBy:=I;
     end;
    try

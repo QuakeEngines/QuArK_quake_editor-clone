@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.5  2000/08/25 17:57:24  decker_dk
 Layout indenting
 
@@ -95,7 +98,7 @@ end;
 
 class function QTextureHL.CustomParams : Integer;
 begin
- Result:=4 or cpPalette;
+ Result:=cp4MipIndexes or cpPalette;
 end;
 
 function QTextureHL.BaseGame : Char;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.6  2000/08/20 10:50:45  aiv
 Fixed 'Uses' clause for new model files
 
@@ -103,7 +106,7 @@ end;
 
 class function QM8.CustomParams : Integer;
 begin
- Result:=MIPLEVELS or cpPalette or cpPower2;
+ Result:={MIPLEVELS} cp16MipIndexes or cpPalette or cpPower2;
 end;
 
 function QM8.BaseGame : Char;

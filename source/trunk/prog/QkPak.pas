@@ -26,6 +26,10 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2000/09/03 11:20:31  aiv
+archive conversion
+minor bug fixes to zip stuff
+
 Revision 1.9  2000/07/18 19:38:00  decker_dk
 Englishification - Big One This Time...
 
@@ -264,8 +268,7 @@ begin
         repeat
          J:=Pos('/', Chemin);
          if J=0 then Break;
-         nDossier:=Dossier.SubElements.FindName(
-          Copy(Chemin, 1, J-1) + '.pakfolder');
+         nDossier:=Dossier.SubElements.FindName(Copy(Chemin, 1, J-1) + '.pakfolder');
          if nDossier=Nil then
           begin
            nDossier:=QPakFolder.Create(Copy(Chemin, 1, J-1), Dossier);
@@ -480,7 +483,12 @@ function QPakFolder.GetFolder(Path: String) : QPakFolder;
 var
  I, J: Integer;
  Folder: QObject;
+ S: String;
 begin
+{}
+  S:=TypeInfo;
+  S:=S;
+{}
  Result:=Self;
  while Path<>'' do
   begin

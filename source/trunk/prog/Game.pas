@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2000/09/18 01:29:43  alexander
+proper indenting
+
 Revision 1.16  2000/09/17 15:00:17  alexander
 committed convex' generalization of texture format aliasing
 
@@ -72,8 +75,7 @@ type
     Button1: TButton;
     Button2: TButton;
     procedure FormCreate(Sender: TObject);
-    procedure ListView1Change(Sender: TObject; Item: TListItem;
-      Change: TItemChange);
+    procedure ListView1Change(Sender: TObject; Item: TListItem; Change: TItemChange);
     procedure BtnAddClick(Sender: TObject);
     procedure BtnRemoveClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
@@ -106,8 +108,8 @@ type
                 PaletteLmp: TPaletteLmp;
                 RefCount: Integer;
                 GameName: String[19];
-                {TextureExt: String[11];}
-                TextureExt: String[255]; {--CONVEX-- : more space needed!}
+                TextureExt: String[11]; {DECKER back again, as Aliases are stored in 'TextureFormats' and not 'TextureFormat'}
+                (*TextureExt: String[255]; {--CONVEX-- : more space needed!} *)
                 UnifiedPalette: Boolean;
                {AddOns: QFileObject;}
                 case Integer of
@@ -124,7 +126,6 @@ procedure DestroyGameBuffers;
 procedure ListSourceDirs(Dirs: TStrings);
 function NeedGameFile(const FileName: String) : QFileObject;
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
-function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 function PathAndFile(const Path, FileName: String) : String;
 function GetDLLDirectory: String;
 procedure BuildCorrectFileName(var S: String);
@@ -173,6 +174,9 @@ var
   LastAliasIndex  : Byte = 0; { last alias-extension index }
 {--CONVEX-end--}
 
+{ Non public-interface functions. }
+function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject; forward;
+
  {------------------------}
 
 procedure DestroyGameBuffers;
@@ -189,13 +193,12 @@ var
  Remove: Boolean;
  Q: QObject;}
 begin
- Result:=Round(SetupSubSet(ssGeneral, 'Memory').
-  GetFloatSpec('GameBufferSize', 2)* (1024*1024));
+ Result:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameBufferSize', 2)* (1024*1024));
 
- if GameFiles=Nil then Exit;
+ if GameFiles=Nil then
+  Exit;
 
- Reste:=Round(SetupSubSet(ssGeneral, 'Memory').
-  GetFloatSpec('GameFiles', 15));
+ Reste:=Round(SetupSubSet(ssGeneral, 'Memory').GetFloatSpec('GameFiles', 15));
 (*if Reste<0 then Reste:=0;
  for I:=GameFiles.Count-Reste-1 downto 0 do
   GameFiles.Delete(I);*)
@@ -258,23 +261,29 @@ end;
 
 function DuplicateGameBuffer(Source: PGameBuffer) : PGameBuffer;
 begin
- {$IFDEF Debug} if Source^.RefCount<=0 then Raise InternalE('DuplicateGameBuffer'); {$ENDIF}
- Inc(Source^.RefCount);
- Result:=Source;
+  {$IFDEF Debug}
+  if Source^.RefCount<=0 then
+    Raise InternalE('DuplicateGameBuffer');
+  {$ENDIF}
+  Inc(Source^.RefCount);
+  Result:=Source;
 end;
 
 procedure DeleteGameBuffer(B: PGameBuffer);
 begin
- if B<>Nil then
+  if B<>Nil then
   begin
-   Dec(B^.RefCount);
-   if B^.RefCount<=0 then
+    Dec(B^.RefCount);
+    if B^.RefCount<=0 then
     begin
-     {$IFDEF Debug} if B^.RefCount<0 then Raise InternalE('DeleteGameBuffer'); {$ENDIF}
-     DeleteObject(B^.Palette);
-     DeleteObject(B^.PaletteReelle);
-    {B^.AddOns.AddRef(-1);}
-     Dispose(B);
+      {$IFDEF Debug}
+      if B^.RefCount<0 then
+        Raise InternalE('DeleteGameBuffer');
+     {$ENDIF}
+      DeleteObject(B^.Palette);
+      DeleteObject(B^.PaletteReelle);
+     {B^.AddOns.AddRef(-1);}
+      Dispose(B);
     end;
   end;
 end;
@@ -294,20 +303,23 @@ begin
   end;
 end;
 
-procedure ClearGameBuffers;
+procedure ClearGameBuffers(CanCancel: Boolean);
 begin
  Form1.SavePendingFiles(CanCancel);
  CloseToolBoxes;
- ProgressIndicatorStart(0,0); try
- DelayDeleteGameBuffer(GameBuffer1);
- GameBuffer1:=Nil;
- GameFiles.Free;
- GameFiles:=Nil;
- CloseAddonsList;
- // SourceBases.Free;
- // SourceBases:=Nil;
- {ClearTextureList;}
- finally ProgressIndicatorStop; end;
+ ProgressIndicatorStart(0,0);
+ try
+  DelayDeleteGameBuffer(GameBuffer1);
+  GameBuffer1:=Nil;
+  GameFiles.Free;
+  GameFiles:=Nil;
+  CloseAddonsList;
+  // SourceBases.Free;
+  // SourceBases:=Nil;
+  {ClearTextureList;}
+ finally
+  ProgressIndicatorStop;
+ end;
 end;
 
 procedure ClearGameBuffer1;
@@ -365,12 +377,12 @@ end;
 
 function QuakeDir : String;
 begin
- QuakeDir:=SetupGameSet.Specifics.Values['Directory'];
+  QuakeDir:=SetupGameSet.Specifics.Values['Directory'];
 end;
 
 function BaseOutputPath : String;
 begin
- Result:=PathAndFile(QuakeDir, GettmpQuArK);
+  Result:=PathAndFile(QuakeDir, GettmpQuArK);
 end;
 
 function OutputFile(const FileName: String) : String;
@@ -402,58 +414,58 @@ function CDRetry(FileName: String) : Boolean;
 var
  CurDir, NomChemin, Nom1: String;
 begin
+ Result:=False;
  Nom1:=QuakeDir;
- GetDir(0, CurDir); try
- ChDir(PathAndFile(ApplicationPath, ''));
- NomChemin:=ExpandFileName(Nom1);
- finally ChDir(CurDir); end;
+ GetDir(0, CurDir);
+ try
+  ChDir(PathAndFile(ApplicationPath, ''));
+  NomChemin:=ExpandFileName(Nom1);
+ finally
+  ChDir(CurDir);
+ end;
  if CompareText(NomChemin, Nom1) <> 0 then
-  begin
+ begin
    SetupGameSet.Specifics.Values['Directory']:=NomChemin;
    Result:=True;  { retry }
    Exit;
-  end;
-
- Result:=False;
+ end;
  NomChemin:=SetupGameSet.Specifics.Values['CDDir'];
  if NomChemin='' then
   Exit;   { no CD to look in }
  Nom1:=SetupGameSet.Specifics.Values['CD'];
  if Nom1='' then
   Exit;   { no CD drive configured }
- if FileExists(
-  PathAndFile(PathAndFile(PathAndFile(Nom1,
-   NomChemin), SetupGameSet.Specifics.Values['BaseDir']), '*.*')) then
+ if FileExists(PathAndFile(PathAndFile(PathAndFile(Nom1, NomChemin), SetupGameSet.Specifics.Values['BaseDir']), '*.*')) then
   Exit;   { CD is already inserted }
- if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]),
-  mtInformation, mbOkCancel, 0) <> mrOk then Abort;
+ if MessageDlg(FmtLoadStr1(5559, [SetupGameSet.Name, FileName]), mtInformation, mbOkCancel, 0) <> mrOk then
+  Abort;
  Result:=True;
 end;
 
 function GetGameDir : String;
 var
- L: TQList;
- I, Count: Integer;
- GameDir, Error: String;
+  L: TQList;
+  I, Count: Integer;
+  GameDir, Error: String;
 begin
- Result:='';
- Count:=0;
- Error:='';
- L:=GetQuakeContext;
- for I:=0 to L.Count-1 do
+  Result:='';
+  Count:=0;
+  Error:='';
+  L:=GetQuakeContext;
+  for I:=0 to L.Count-1 do
   begin
-   GameDir:=L[I].Specifics.Values['GameDir'];
-   if GameDir<>'' then
+    GameDir:=L[I].Specifics.Values['GameDir'];
+    if GameDir<>'' then
     begin
-     Inc(Count);
-     Error:=Error+FmtLoadStr1(5618, [GameDir]);
-     Result:=GameDir;
+      Inc(Count);
+      Error:=Error+FmtLoadStr1(5618, [GameDir]);
+      Result:=GameDir;
     end;
   end;
- if Count>1 then
-  GlobalWarning(FmtLoadStr1(5625, [SetupGameSet.Name, Error]));
- if Result='' then
-  Result:=GettmpQuArK;
+  if Count>1 then
+    GlobalWarning(FmtLoadStr1(5625, [SetupGameSet.Name, Error]));
+  if Result='' then
+    Result:=GettmpQuArK;
 end;
 
 procedure ListSourceDirs(Dirs: TStrings);
@@ -462,14 +474,14 @@ var
  I: Integer;
  SourceDir: String;
 begin
- L:=GetQuakeContext;
- for I:=L.Count-1 downto 0 do
+  L:=GetQuakeContext;
+  for I:=L.Count-1 downto 0 do
   begin
-   SourceDir:=L[I].Specifics.Values['SourceDir'];
-   if SourceDir<>'' then
-    Dirs.Add(SourceDir);
+    SourceDir:=L[I].Specifics.Values['SourceDir'];
+    if SourceDir<>'' then
+      Dirs.Add(SourceDir);
   end;
- Dirs.Add(SetupGameSet.Specifics.Values['BaseDir']);
+  Dirs.Add(SetupGameSet.Specifics.Values['BaseDir']);
 end;
 
 {--Convex-begin--}
@@ -479,26 +491,28 @@ begin
   LastAliasIndex := 0;
 end;
 
-function IsTextureFile (const FileName: String) : Boolean;
+function IsTextureFile(const FileName: String) : Boolean;
 var
   I : Byte;
 begin
+  Result := False;
+  if TexExtensions.Count=0 then
+    Exit;
   for I := 0 to TexExtensions.Count-1 do
   begin
     if (CompareText(ExtractFileExt(FileName), TexExtensions.Strings[i])=0) then
-    begin // file is a texture if its extension is listed in GameBuffer
-      Result := true;
+    begin { file is a texture if its extension is listed in GameBuffer }
+      Result := True;
       Exit;
     end;
   end;
-  Result := false;
 end;
 
 function FileAlias(const FileName: String) : String;
 begin   { returns an alternate file name to lookup this file }
-  if (IsTextureFile(FileName)) then // texture filename aliasing
+  if (IsTextureFile(FileName)) then { texture filename aliasing }
   begin
-    if (CompareText (FileName, LastAliasName)<>0) then
+    if (CompareText(FileName, LastAliasName)<>0) then
     begin
       LastAliasName := FileName;
       LastAliasIndex := 0;
@@ -510,11 +524,12 @@ begin   { returns an alternate file name to lookup this file }
     end
     else
     begin
-      Result := ChangeFileExt (FileName, TexExtensions.Strings[LastAliasIndex]);
-      Inc (LastAliasIndex);
+      Result := ChangeFileExt(FileName, TexExtensions.Strings[LastAliasIndex]);
+      Inc(LastAliasIndex);
     end;
-  end else
-  begin   // needed file is not a texture
+  end
+  else
+  begin   { needed file is not a texture }
     Result := '';
   end;
 (*  { Alternate Texture File Type (.jpg / .tga)...}
@@ -528,14 +543,14 @@ end;
 
 function DisplayAlias(const FileName: String) : String;
 begin
- Result := '';
- while (Result <> '') do
- Result:=FileAlias(FileName);
- if Result='' then
-  Result:=FileName
- else
-  Result:=FmtLoadStr1(5700, [FileName, Result]);    { "<filename> or <alias>" }
-  { FIXME: needs to be changed for multiple aliases }
+  Result := '';
+  while (Result <> '') do
+    Result:=FileAlias(FileName);
+  if Result='' then
+    Result:=FileName
+  else
+    Result:=FmtLoadStr1(5700, [FileName, Result]);    { "<filename> or <alias>" }
+   { FIXME: needs to be changed for multiple aliases }
 end;
 
 function NeedGameFile(const FileName: String) : QFileObject;
@@ -544,125 +559,118 @@ var
  I: Integer;
  SourceDir: String;
 begin
- repeat
-  L:=GetQuakeContext;
-  for I:=L.Count-1 downto 0 do
-   begin
-    SourceDir:=L[I].Specifics.Values['SourceDir'];
-    if SourceDir<>'' then
-     begin
-      Result:=GetGameFileBase(SourceDir, FileName, False);
-      if Result<>Nil then
-       Exit;   { found it }
-     end;
-   end;
-  Result:=GetGameFileBase(SetupGameSet.Specifics.Values['BaseDir'], FileName, True);
- until (Result<>Nil) or not CDRetry(FileName);
- if Result=Nil then
-  Raise EErrorFmt(5560, [SetupGameSet.Name, DisplayAlias(FileName)]);
+  repeat
+    L:=GetQuakeContext;
+    for I:=L.Count-1 downto 0 do
+    begin
+      SourceDir:=L[I].Specifics.Values['SourceDir'];
+      if SourceDir<>'' then
+      begin
+        Result:=GetGameFileBase(SourceDir, FileName, False);
+        if Result<>Nil then
+          Exit;   { found it }
+      end;
+    end;
+    Result:=GetGameFileBase(SetupGameSet.Specifics.Values['BaseDir'], FileName, True);
+  until (Result<>Nil) or not CDRetry(FileName);
+  if Result=Nil then
+    Raise EErrorFmt(5560, [SetupGameSet.Name, DisplayAlias(FileName)]);
 end;
 
 function NeedGameFileBase(const BaseDir, FileName: String) : QFileObject;
 begin
- repeat
-  Result:=GetGameFileBase(BaseDir, FileName, True);
-  if Result<>Nil then Exit;
- until not CDRetry(FileName);
- Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAlias(FileName), BaseDir]);
+  repeat
+    Result:=GetGameFileBase(BaseDir, FileName, True);
+    if Result<>Nil then
+      Exit;
+  until not CDRetry(FileName);
+  Raise EErrorFmt(5561, [SetupGameSet.Name, DisplayAlias(FileName), BaseDir]);
 end;
 
 {--Convex-begin-- : multi-alias texture file search }
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 var
- NomChemin, NomComplet: String;
- Alias: String;
- NoMoreAlias: Boolean;
- TempResult: QFileObject;
+ AbsolutePath, AbsolutePathAndFilename: String;
+ FilenameAlias: String;
+ PakFile: QFileObject;
  GetPakNames: TGetPakNames;
-  CDSearch : Boolean;
+ CDSearch: Boolean;
 begin
   Result := NIL;
-  if GameFiles=Nil then GameFiles:=TQList.Create;
+  if (GameFiles=Nil) then
+    GameFiles:=TQList.Create;
   CDSearch := false;
   while (true) do
   begin
     if (not CDSearch) then
-      NomChemin:=PathAndFile(QuakeDir, BaseDir)
+      AbsolutePath:=PathAndFile(QuakeDir, BaseDir)
     else
     begin
-      NomChemin:=SetupGameSet.Specifics.Values['CDDir'];
-      if (NomChemin='') then
+      AbsolutePath:=SetupGameSet.Specifics.Values['CDDir'];
+      if (AbsolutePath='') then
         Exit;
-      NomChemin:=PathAndFile(PathAndFile(SetupGameSet.Specifics.Values['CD'],  NomChemin), BaseDir);
+      AbsolutePath:=PathAndFile(PathAndFile(SetupGameSet.Specifics.Values['CD'],  AbsolutePath), BaseDir);
     end;
 
-    NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
-
     RestartAliasing;
-    NoMoreAlias := false;
-    while (not NoMoreAlias) do
+    FilenameAlias := FileName;
+    while (FilenameAlias <> '') do
     begin
       { Buffer search }
-      Result := SortedFindFileName (GameFiles, NomComplet);
-      if (Result <> NIL) then Exit; // found it
-      Alias:=FileAlias(FileName);
-      NoMoreAlias := Alias = '';
-      NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+      AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+      Result := SortedFindFileName(GameFiles, AbsolutePathAndFilename);
+      if (Result <> NIL) then
+        Exit; { found it }
+      FilenameAlias := FileAlias(FileName);
     end;
 
-    NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
-    Alias := FileName;
     RestartAliasing;
-    NoMoreAlias := false;
-    while (not NoMoreAlias) do
+    FilenameAlias := FileName;
+    while (FilenameAlias <> '') do
     begin
-      {PAKfile search}
-      NoMoreAlias := Alias = '';
+      { PAKfile search }
+      AbsolutePathAndFilename:=ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
       GetPakNames:=TGetPakNames.Create;
       try
-        GetPakNames.CreatePakList(NomChemin, True);
-        while GetPakNames.GetPakName(True, NomComplet, True) do
-        if not IsPakTemp(NomComplet) then  { ignores QuArK's own temporary .pak's }
+        GetPakNames.CreatePakList(AbsolutePath, True);
+        while GetPakNames.GetPakName(True, AbsolutePathAndFilename, True) do
         begin
-          Result:=SortedFindFileName(GameFiles, NomComplet);
-          if Result=Nil then
-          begin  { open the .pak file if not already opened }
-            Result:=ExactFileLink(NomComplet, Nil, True);
-            Result.Flags:=Result.Flags or ofWarnBeforeChange;
-            GameFiles.Add(Result);
-            GameFiles.Sort(ByFileName);
-          end;
-          TempResult:=Result.FindFile(Alias);
-          if TempResult<>Nil then
+          if (not IsPakTemp(AbsolutePathAndFilename)) then  { ignores QuArK's own temporary .pak's }
           begin
-            Result:=TempResult;
-            Exit;   { found it }
+            PakFile:=SortedFindFileName(GameFiles, AbsolutePathAndFilename);
+            if (PakFile=Nil) then
+            begin  { open the .pak file if not already opened }
+              PakFile:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
+              PakFile.Flags:=PakFile.Flags or ofWarnBeforeChange;
+              GameFiles.Add(PakFile);
+              GameFiles.Sort(ByFileName);
+            end;
+            Result:=PakFile.FindFile(FilenameAlias);
+            if (Result<>Nil) then
+              Exit; { found it }
           end;
         end;
       finally
         GetPakNames.Destroy;
       end;
-      Alias := FileAlias (FileName);
-      NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+      FilenameAlias := FileAlias(FileName);
     end;
 
-    NomComplet:=ExpandFileName(PathAndFile(NomChemin, FileName));
     RestartAliasing;
-    NoMoreAlias := false;
-    while (not NoMoreAlias) do
+    FilenameAlias := FileName;
+    while (FilenameAlias <> '') do
     begin
       { Disk search }
-      if FileExists(NomComplet) then
+      AbsolutePathAndFilename := ExpandFileName(PathAndFile(AbsolutePath, FilenameAlias));
+      if FileExists(AbsolutePathAndFilename) then
       begin
-        Result:=ExactFileLink(NomComplet, Nil, True);
+        Result:=ExactFileLink(AbsolutePathAndFilename, Nil, True);
         Result.Flags:=Result.Flags or ofWarnBeforeChange;
         GameFiles.Add(Result);
         GameFiles.Sort(ByFileName);
-        Exit;
+        Exit; { found it }
       end;
-      Alias := FileAlias (FileName);
-      NoMoreAlias := Alias = '';
-      NomComplet:=ExpandFileName(PathAndFile(NomChemin, Alias));
+      FilenameAlias := FileAlias(FileName);
     end;
 
     if not LookInCD then
@@ -816,51 +824,54 @@ var
 begin
  ChangeGameMode(NeededGame, True);
  if GameBuffer1=Nil then
-  begin
+ begin
    FillChar(Lmp, SizeOf(Lmp), 0);
    {PaletteFile:=Nil;}
    S:=SetupGameSet.Specifics.Values['Palette'];
    if S<>'' then
-    if S[1]=':' then
+   begin
+     if S[1]=':' then
      begin
-      L:=GetQuakeContext;
-      for J:=0 to L.Count-1 do
+       L:=GetQuakeContext;
+       for J:=0 to L.Count-1 do
        begin
-        S:=L[J].Specifics.Values['Palette'];
-        if S<>'' then
+         S:=L[J].Specifics.Values['Palette'];
+         if S<>'' then
          begin
-          I:=Length(S);
-          if I>SizeOf(Lmp) then
-           I:=SizeOf(Lmp);
-          Move(PChar(S)^, Lmp, I);
+           I:=Length(S);
+           if I>SizeOf(Lmp) then
+             I:=SizeOf(Lmp);
+           Move(PChar(S)^, Lmp, I);
          end;
        end;
      end
-    else
+     else
      begin
-      PaletteFile:=NeedGameFile(S);
-      PaletteFile.AddRef(+1);
-      try
-        PaletteFile.Acces;
-        if PaletteFile is QImages then
+       PaletteFile:=NeedGameFile(S);
+       PaletteFile.AddRef(+1);
+       try
+         PaletteFile.Acces;
+         if PaletteFile is QImages then
          begin
-          QImages(PaletteFile).NotTrueColor;
-          QImages(PaletteFile).GetPalette1(Lmp);
+           QImages(PaletteFile).NotTrueColor;
+           QImages(PaletteFile).GetPalette1(Lmp);
          end
-        else
+         else
          begin
-          S:=PaletteFile.GetSpecArg('Data');
-          I:=Length(S)-Start;
-          if I<0 then
-           I:=0
-          else if I>SizeOf(Lmp) then
-           I:=SizeOf(Lmp);
-          Move(PChar(S)[Start], Lmp, I);
+           S:=PaletteFile.GetSpecArg('Data');
+           I:=Length(S)-Start;
+           if I<0 then
+             I:=0
+           else
+           if I>SizeOf(Lmp) then
+             I:=SizeOf(Lmp);
+           Move(PChar(S)[Start], Lmp, I);
          end;
-      finally
-        PaletteFile.AddRef(-1);
-      end;
+       finally
+         PaletteFile.AddRef(-1);
+       end;
      end;
+   end;
    New(GameBuffer1);
    GameBuffer1^.RefCount:=1;
   {GameBuffer1^.AddOns:=Nil;}
@@ -868,9 +879,8 @@ begin
    GameBuffer1^.TextureExt:=SetupGameSet.Specifics.Values['TextureFormat'];
    GameBuffer1^.UnifiedPalette:={PaletteFile<>Nil}SetupGameSet.Specifics.Values['UnifiedPalette']<>'';
    GameBuffer1^.PaletteLmp:=Lmp;
-   PaletteFromLmp(Lmp, GameBuffer1^.BitmapInfo,
-    @GameBuffer1^.Palette, @GameBuffer1^.PaletteReelle);
-  end;
+   PaletteFromLmp(Lmp, GameBuffer1^.BitmapInfo, @GameBuffer1^.Palette, @GameBuffer1^.PaletteReelle);
+ end;
  Result:=GameBuffer1;
 end;
 
@@ -1067,7 +1077,7 @@ function ColorIsLight(C: TColorRef) : Boolean;
 var
  C1: array[1..3] of Byte absolute C;
 begin
- Result:=3*C1[1]+6*C1[2]+C1[3] > $500;
+ Result:=3*C1[1] + 6*C1[2] + C1[3] > $500;
 end;
 
 const
@@ -1079,10 +1089,12 @@ var
  I: Integer;
 begin
  for I:=Length(S) downto 1 do
-  if not (S[I] in cDOSFilenameValidChars) then
-   System.Delete(S, I, 1);
+ begin
+   if not (S[I] in cDOSFilenameValidChars) then
+     System.Delete(S, I, 1);
+ end;
  if S='' then
-  S:=LoadStr1(180);
+   S:=LoadStr1(180);
 end;
 
  {------------------------}
@@ -1126,75 +1138,80 @@ var
  I: Integer;
  Remove: String;
 begin
- SousRep:=TStringList.Create;
- try
-   if FindFirst(PathAndFile(Rep, '*.*'), faAnyFile, S) = 0 then
-    repeat
-     if S.Attr and faDirectory = 0 then
-      DeleteFile(PathAndFile(Rep, S.Name))
-     else
-      if (S.Name<>'.') and (S.Name<>'..') then
-       SousRep.Add(S.Name);
-    until FindNext(S)<>0;
-   FindClose(S);
-   for I:=0 to SousRep.Count-1 do
-    ClearAllFilesRec(PathAndFile(Rep, SousRep[I]));
- finally
-   SousRep.Free;
- end;
- Remove:=Rep;
- if Remove<>'' then
+  SousRep:=TStringList.Create;
+  try
+    if FindFirst(PathAndFile(Rep, '*.*'), faAnyFile, S) = 0 then
+    begin
+      repeat
+        if S.Attr and faDirectory = 0 then
+          DeleteFile(PathAndFile(Rep, S.Name))
+        else
+          if (S.Name<>'.') and (S.Name<>'..') then
+            SousRep.Add(S.Name);
+      until FindNext(S)<>0;
+    end;
+    FindClose(S);
+    for I:=0 to SousRep.Count-1 do
+      ClearAllFilesRec(PathAndFile(Rep, SousRep[I]));
+  finally
+    SousRep.Free;
+  end;
+  Remove:=Rep;
+  if Remove<>'' then
   begin
-   if Remove[Length(Remove)]='\' then
-    SetLength(Remove, Length(Remove)-1);
-   {$I-}
-   RmDir(Remove);
-   {$I+}
-   IOResult;
+    if Remove[Length(Remove)]='\' then
+      SetLength(Remove, Length(Remove)-1);
+    {$I-}
+    RmDir(Remove);
+    {$I+}
+    IOResult;
   end;
 end;
 
 function CheckQuakeDir : Boolean;
 var
- CheckFile: String;
+  CheckFile: String;
 begin
- CheckFile:=PathAndFile(QuakeDir, SetupGameSet.Specifics.Values['CheckDirectory']);
- Result:=FileExists(CheckFile);
- if not Result then
-  case MessageDlg(FmtLoadStr1(5627, [SetupGameSet.Name, CheckFile]),
-   mtConfirmation, [mbOk, mbCancel, mbIgnore], 0) of
-    mrOk: begin
-          {ShowConfigDlg('Games:'+SetupGameSet.Name);}
-           ShowConfigDlg(':');
-           Abort;
-          end;
-    mrIgnore: ;
-  else
-    Abort;
+  CheckFile:=PathAndFile(QuakeDir, SetupGameSet.Specifics.Values['CheckDirectory']);
+  Result:=FileExists(CheckFile);
+  if not Result then
+  begin
+    case MessageDlg(FmtLoadStr1(5627, [SetupGameSet.Name, CheckFile]),
+                    mtConfirmation, [mbOk, mbCancel, mbIgnore], 0) of
+      mrOk: begin
+            {ShowConfigDlg('Games:'+SetupGameSet.Name);}
+              ShowConfigDlg(':');
+              Abort;
+            end;
+      mrIgnore:
+            ;
+    else
+      Abort;
+    end;
   end;
 end;
 
 function GameModelPath : String;
 begin
- Result:=SetupGameSet.Specifics.Values['MdlPath'];
- if Result='' then
-  Result:='progs/';
+  Result:=SetupGameSet.Specifics.Values['MdlPath'];
+  if Result='' then
+    Result:='progs/';
 end;
 
  {------------------------}
 
 procedure GameCfgDlg;
 var
- R: TModalResult;
+  ResultButton: TModalResult;
 begin
- with TGameCfgDlg.Create(Application) do
+  with TGameCfgDlg.Create(Application) do
   try
-   R:=ShowModal;
+    ResultButton:=ShowModal;
   finally
-   Free;
+    Free;
   end;
- if R=mrOk then
-  UpdateSetup(scAddOns);
+  if ResultButton=mrOk then
+    UpdateSetup(scAddOns);
 end;
 
 procedure TGameCfgDlg.FormCreate(Sender: TObject);
@@ -1209,17 +1226,17 @@ end;
 procedure TGameCfgDlg.ListView1Change(Sender: TObject; Item: TListItem;
   Change: TItemChange);
 begin
- BtnRemove.Enabled:=(ListView1.Selected<>Nil) and (ListView1.Selected.Index>0);
+  BtnRemove.Enabled:=(ListView1.Selected<>Nil) and (ListView1.Selected.Index>0);
 end;
 
 procedure TGameCfgDlg.BtnAddClick(Sender: TObject);
 begin
- with TAddOnsAddDlg.Create(Application) do
+  with TAddOnsAddDlg.Create(Application) do
   try
-   SrcListView:=Self.ListView1;
-   ShowModal;
+    SrcListView:=Self.ListView1;
+    ShowModal;
   finally
-   Free;
+    Free;
   end;
 end;
 

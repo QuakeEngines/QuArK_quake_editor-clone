@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2000/09/14 18:00:21  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.13  2000/08/25 18:01:47  decker_dk
 Layout indenting
 
@@ -596,28 +599,32 @@ begin
  Result:=Q;
  if FileObject=Nil then Exit;
  try
-  QObj:=Q.LoadPixelSet;
+   QObj:=Q.LoadPixelSet;
  except
-  Exit;
+   Exit;
  end;
- if not (QObj is QTextureFile) then Exit;
+ if not (QObj is QTextureFile) then
+   Exit;
  QF:=QTextureFile(QObj);
  S:=QF.CheckAnim(Seq);  { find name of candidates }
  if S<>'' then
-  begin
-   L:=TStringList.Create; try
-   L.Text:=S;
-   for I:=0 to L.Count-1 do
-    begin
-     QObj:=FileObject.SubElements.FindShortName(L[I]);
-     if (QObj<>Nil) and (QObj is QPixelSet) then
-      begin
-       Result:=QPixelSet(QObj);
-       Exit;
-      end;
-    end;
-   finally L.Free; end;
-  end;
+ begin
+   L:=TStringList.Create;
+   try
+     L.Text:=S;
+     for I:=0 to L.Count-1 do
+     begin
+       QObj:=FileObject.SubElements.FindShortName(L[I]);
+       if (QObj<>Nil) and (QObj is QPixelSet) then
+       begin
+         Result:=QPixelSet(QObj);
+         Exit;
+       end;
+     end;
+   finally
+    L.Free;
+   end;
+ end;
 end;
 
 (*procedure TFQWad.wmInternalMessage(var Msg: TMessage);
@@ -714,201 +721,212 @@ var
   end;*)
 
 begin
- if Counter<0 then
+  if Counter<0 then
   begin
-   TimerAnimation.Enabled:=False;
-   TimerAnimation.Tag:=-1;
-  {if ScreenColors<>0 then
-    ImageList1.Handle:=ImageList_Create(64,64, ILC_COLOR24, ListView1.AllocBy, 4)
-   else
-    begin}
-     ImageList1.Clear;
-     ImageList1.AllocBy:=ListView1.AllocBy;
-   {end;}
-   if FileObject.SubElements.Count=0 then
-    Result:=-1
-   else
+    TimerAnimation.Enabled:=False;
+    TimerAnimation.Tag:=-1;
+   {if ScreenColors<>0 then
+     ImageList1.Handle:=ImageList_Create(64,64, ILC_COLOR24, ListView1.AllocBy, 4)
+    else
+     begin}
+      ImageList1.Clear;
+      ImageList1.Width:=64;  {DECKER - Ahh! So this is the place to change the scale of }
+      ImageList1.Height:=64; {         the textures to 32x32, 128x128, 256x256, ... }
+      ImageList1.AllocBy:=ListView1.AllocBy;
+    {end;}
+    if FileObject.SubElements.Count=0 then
+      Result:=-1
+    else
     begin
-     if ImageTextures=Nil then
-      ImageTextures:=TQList.Create
-     else
-      ImageTextures.Clear;
-     Result:=0;
+      if ImageTextures=Nil then
+        ImageTextures:=TQList.Create
+      else
+        ImageTextures.Clear;
+      Result:=0;
     end;
-   Exit;  { quit here - we are in an idle job }
+    Exit;  { quit here - we are in an idle job }
   end;
- NewPSD.Init;
- PSD.Init;
- while Counter < FileObject.SubElements.Count do
+
+  NewPSD.Init;
+  PSD.Init;
+  while Counter < FileObject.SubElements.Count do
   begin
-   Q:=FileObject.SubElements[Counter];
-   Inc(Counter);
-   if not (Q is QPixelSet)   { ignore the non-images }
-   or (ImageTextures.IndexOf(Q)>=0) then      { already loaded }
-    Continue;
+    Q:=FileObject.SubElements[Counter];
+    Inc(Counter);
+    if not (Q is QPixelSet)   { ignore the non-images }
+    or (ImageTextures.IndexOf(Q)>=0) then      { already loaded }
+      Continue;
 
-    { build the animation loop }
-   TexLoop:=TList.Create; try
-   repeat
-    TexLoop.Add(Q);
-    Q:=AnimationNextStep(QPixelSet(Q), 0);
-    I:=TexLoop.IndexOf(Q);
-    if I>=0 then Break;   { closed the animation loop }
-   until ImageTextures.IndexOf(Q)>=0;
-   if I<0 then
-    begin  { animation loop broken }
-     while TexLoop.Count>1 do
-      TexLoop.Delete(TexLoop.Count-1);   { keep only the first texture }
-    end
-   else
-    while I>0 do
-     begin
-      Dec(I);
-      TexLoop.Delete(I);  { keep only the textures in the loop }
-     end;
-
-    { read all textures from the loop }
-   BaseImage:=ImageList1.Count;
-   NomTexture:=QTexture(TexLoop[0]).Name;
-   SelectNow:=False;
-   for J:=0 to TexLoop.Count-1 do
-    begin
-     try
-       { build the 64x64 image }
-      if Tex=Nil then
-       begin
-        Tex:=TBitmap.Create;
-        Tex.Width:=64;  {DECKER - try to figure out how to make these modifyable, so QuArK won't crash!}
-        Tex.Height:=64; {       - and actually display the images in 32x32, 128x128, 256x256 or ...}
-       end;
-      Q:=QPixelSet(TexLoop[J]).LoadPixelSet;
-      PSD.Size:=QPixelSet(Q).GetSize;
-      Reduction:=0;
-      while (PSD.Size.X>(*64*)Tex.Width) or (PSD.Size.Y>(*64*)Tex.Height) do
-       begin
-        PSD.Size.X:=PSD.Size.X div 2;
-        PSD.Size.Y:=PSD.Size.Y div 2;
-        Inc(Reduction);
-       end;
-      if J=0 then
-       case Reduction of
-        0: ;
-        1: NomTexture:=NomTexture + '  (½)';
-        2: NomTexture:=NomTexture + '  (¼)';
-       else
-           NomTexture:=NomTexture + Format('  (1/%d)', [1 shl Reduction]);
-       end;
-
-      try
-       if Reduction=0 then
-        NewPSD:=QPixelSet(Q).Description
-       else
-        if (Q is QTextureFile) and (Reduction < (QTextureFile(Q).CustomParams and cpIndexesMax)) then
-         NewPSD:=QTextureFile(Q).ScaledDownDescription(Reduction)
-        else
-         begin
-          NewPSD.Init;
-          NewPSD.Size:=PSD.Size;
-          PSD:=QPixelSet(Q).Description;
-          PSDConvert(NewPSD, PSD, ccTemporary);
-         end;
-       DC:=Tex.Canvas.Handle;
-       PatBlt(DC, 0, 0, (*64*)Tex.Width, (*64*)Tex.Height, Blackness);
-       Gauche:=((*64*)Tex.Width-NewPSD.Size.X) div 2;
-       NewPSD.Paint(DC, Gauche, (*64*)Tex.Height-NewPSD.Size.Y);
-      finally
-       NewPSD.Done;
-       PSD.Done;
-      end;
-     except
-      on E: Exception do
-       with Tex.Canvas do
+     { build the animation loop }
+    TexLoop:=TList.Create;
+    try
+      repeat
+        TexLoop.Add(Q);
+        Q:=AnimationNextStep(QPixelSet(Q), 0);
+        I:=TexLoop.IndexOf(Q);
+        if I>=0 then
+          Break;   { closed the animation loop }
+      until ImageTextures.IndexOf(Q)>=0;
+      if I<0 then
+      begin  { animation loop broken }
+        while TexLoop.Count>1 do
+          TexLoop.Delete(TexLoop.Count-1);   { keep only the first texture }
+      end
+      else
+        while I>0 do
         begin
-         PatBlt(Handle, 0,0,(*64*)Tex.Width,(*64*)Tex.Height, Whiteness);
-         Font.Name:='Small fonts';
-         Font.Size:=6;
-         ErrorMsg:=GetExceptionMessage(E);
-         R.Left:=(*3*)1;
-         R.Top:=(*5*)1;
-         R.Right:=(*62*)Tex.Width-2;
-         R.Bottom:=(*64*)Tex.Height-2;
-         DrawText(Handle, PChar(ErrorMsg), Length(ErrorMsg), R,
-          DT_NOCLIP or DT_NOPREFIX or DT_WORDBREAK);
-(*DECKER - don't change the displayed texture-name to "texture/....."
-         if J=0 then
-          NomTexture:=Q.Name;
-DECKER*)
+          Dec(I);
+          TexLoop.Delete(I);  { keep only the textures in the loop }
         end;
-     end;
-    {if ScreenColors<>0 then
-      ImageList_Add(ImageList1.Handle, Tex.Handle, 0)
-     else}
+
+       { read all textures from the loop }
+      BaseImage:=ImageList1.Count;
+      NomTexture:=QTexture(TexLoop[0]).Name;
+      SelectNow:=False;
+      for J:=0 to TexLoop.Count-1 do
       begin
-     (*{$IFNDEF VER90}
-       UpdateWindow(ListView1.Handle);
-       LockWindowUpdate(ListView1.Handle); try
-       {$ENDIF}
-       ImageList1.Add(Tex, Nil);
-       {$IFNDEF VER90}
-       finally LockWindowUpdate(0); end;
-       ValidateRect(ListView1.Handle, Nil);
-       {$ENDIF}*)
-       ImageList_Add(ImageList1.Handle, Tex.Handle, 0);
+        try
+           { build the Width x Height image }
+          if Tex=Nil then
+          begin
+            Tex:=TBitmap.Create;
+            Tex.Width:=ImageList1.Width;   {DECKER - try to figure out how to make these modifyable, so QuArK won't crash!}
+            Tex.Height:=ImageList1.Height; {       - and actually display the images in 32x32, 128x128, 256x256 or ...}
+          end;
+          Q:=QPixelSet(TexLoop[J]).LoadPixelSet;
+          PSD.Size:=QPixelSet(Q).GetSize;
+          Reduction:=0;
+          while (PSD.Size.X>(*64*)Tex.Width) or (PSD.Size.Y>(*64*)Tex.Height) do
+          begin
+            PSD.Size.X:=PSD.Size.X div 2;
+            PSD.Size.Y:=PSD.Size.Y div 2;
+            Inc(Reduction);
+          end;
+          if J=0 then
+          begin
+            case Reduction of
+             0: ;
+             1: NomTexture:=NomTexture + '  (½)';
+             2: NomTexture:=NomTexture + '  (¼)';
+            else
+                NomTexture:=NomTexture + Format('  (1/%d)', [1 shl Reduction]);
+            end;
+          end;
+
+          try
+            if Reduction=0 then
+              NewPSD:=QPixelSet(Q).Description
+            else
+            begin
+              if (Q is QTextureFile) and (Reduction < (QTextureFile(Q).CustomParams and cpIndexesMax)) then
+                NewPSD:=QTextureFile(Q).ScaledDownDescription(Reduction)
+              else
+              begin
+                NewPSD.Init;
+                NewPSD.Size:=PSD.Size;
+                PSD:=QPixelSet(Q).Description;
+                PSDConvert(NewPSD, PSD, ccTemporary);
+              end;
+            end;
+            DC:=Tex.Canvas.Handle;
+            PatBlt(DC, 0, 0, (*64*)Tex.Width, (*64*)Tex.Height, Blackness);
+            Gauche:=((*64*)Tex.Width-NewPSD.Size.X) div 2;
+            NewPSD.Paint(DC, Gauche, (*64*)Tex.Height-NewPSD.Size.Y);
+          finally
+            NewPSD.Done;
+            PSD.Done;
+          end;
+        except
+        on E: Exception do
+          with Tex.Canvas do
+          begin
+            PatBlt(Handle, 0,0,(*64*)Tex.Width,(*64*)Tex.Height, Whiteness);
+            Font.Name:='Small fonts';
+            Font.Size:=6;
+            ErrorMsg:=GetExceptionMessage(E);
+            R.Left:=(*3*)1;
+            R.Top:=(*5*)1;
+            R.Right:=(*62*)Tex.Width-2;
+            R.Bottom:=(*64*)Tex.Height-2;
+            DrawText(Handle, PChar(ErrorMsg), Length(ErrorMsg), R,
+             DT_NOCLIP or DT_NOPREFIX or DT_WORDBREAK);
+   (*DECKER - don't change the displayed texture-name to "texture/....."
+            if J=0 then
+             NomTexture:=Q.Name;
+   DECKER*)
+          end;
+        end;
+       {if ScreenColors<>0 then
+         ImageList_Add(ImageList1.Handle, Tex.Handle, 0)
+        else}
+        begin
+        (*{$IFNDEF VER90}
+          UpdateWindow(ListView1.Handle);
+          LockWindowUpdate(ListView1.Handle); try
+          {$ENDIF}
+          ImageList1.Add(Tex, Nil);
+          {$IFNDEF VER90}
+          finally LockWindowUpdate(0); end;
+          ValidateRect(ListView1.Handle, Nil);
+          {$ENDIF}*)
+          ImageList_Add(ImageList1.Handle, Tex.Handle, 0);
+        end;
+        Q:=QPixelSet(TexLoop[J]);
+        ImageTextures.Add(Q);
+        SelectNow:=SelectNow or (Q=SelectThis);
       end;
-     Q:=QPixelSet(TexLoop[J]);
-     ImageTextures.Add(Q);
-     SelectNow:=SelectNow or (Q=SelectThis);
+
+       { add the list view item }
+      if TexLoop.Count>1 then
+        NomTexture:=NomTexture+' × '+IntToStr(TexLoop.Count);
+   (*
+   {DECKER-begin - How can we detect that this "texture" is a shader?}
+      if Q is QShader then
+       NomTexture:=NomTexture+Chr(13)+'Shader';
+   {DECKER-end}
+   *)
+      Q:=QObject(TexLoop[0]);
+      Item:=ListView1.Items.Add;
+      {$IFDEF Debug}
+      if BaseImage>=ImageTextures.Count then
+        Raise InternalE('QkWad/BaseImage');
+      {$ENDIF}
+      with Item do
+      begin
+        Data:=Q;
+        ImageIndex:=BaseImage;
+        Caption:=NomTexture;
+      end;
+      if TexLoop.Count>1 then
+        TimerAnimation.Tag:=0;  { there are textures to animate }
+    finally
+      TexLoop.Free;
     end;
 
-    { add the list view item }
-   if TexLoop.Count>1 then
-    NomTexture:=NomTexture+' × '+IntToStr(TexLoop.Count);
-(*
-{DECKER-begin - How can we detect that this "texture" is a shader?}
-   if Q is QShader then
-    NomTexture:=NomTexture+Chr(13)+'Shader';
-{DECKER-end}
-*)
-   Q:=QObject(TexLoop[0]);
-   Item:=ListView1.Items.Add;
-   {$IFDEF Debug}
-   if BaseImage>=ImageTextures.Count then
-    Raise InternalE('QkWad/BaseImage');
-   {$ENDIF}
-   with Item do
+    if SelectNow then
     begin
-     Data:=Q;
-     ImageIndex:=BaseImage;
-     Caption:=NomTexture;
+      SelectListItem(Item);
+      SelectThis:=Nil;
     end;
-   if TexLoop.Count>1 then
-    TimerAnimation.Tag:=0;  { there are textures to animate }
-   finally TexLoop.Free; end;
-
-   if SelectNow then
-    begin
-     SelectListItem(Item);
-     SelectThis:=Nil;
-    end;
-   Result:=Counter;
-   Exit;  { quit here - we are in an idle job }
+    Result:=Counter;
+    Exit;  { quit here - we are in an idle job }
   end;
 
-  { texture page completely loaded }
- Tex.Free;
- Tex:=Nil;
- Gauche:=GetScrollPos(ListView1.Handle, sb_Vert);
- Item:=ListView1.Selected;
- if Item<>Nil then
-  ListView1.Selected:=Nil;
- ListView1.Arrange(arDefault);
- ListView1.Scroll(0, -2*Gauche);
- ListView1.Scroll(0, Gauche);
-{ListView1.SetFocus;}
- if Item<>Nil then
-  SelectListItem(Item);
- TimerAnimation.Enabled:=TimerAnimation.Tag=0;
- Result:=-1;  { end of the job }
+   { texture page completely loaded }
+  Tex.Free;
+  Tex:=Nil;
+  Gauche:=GetScrollPos(ListView1.Handle, sb_Vert);
+  Item:=ListView1.Selected;
+  if Item<>Nil then
+    ListView1.Selected:=Nil;
+  ListView1.Arrange(arDefault);
+  ListView1.Scroll(0, -2*Gauche);
+  ListView1.Scroll(0, Gauche);
+ {ListView1.SetFocus;}
+  if Item<>Nil then
+    SelectListItem(Item);
+  TimerAnimation.Enabled:=TimerAnimation.Tag=0;
+  Result:=-1;  { end of the job }
 end;
 
 procedure TFQWad.FormClose(Sender: TObject; var Action: TCloseAction);

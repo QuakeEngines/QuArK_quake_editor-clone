@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2000/09/18 01:30:50  alexander
+added Texture Write Format setup entry processing(needed because texture aliasing)
+
 Revision 1.23  2000/09/14 18:00:22  decker_dk
 Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
 
@@ -101,10 +104,12 @@ const
 {DefQ2TexPath  = 'textures/';}
 
 const
- cpIndexesMax = $FF;
- cpPalette    = $100;
- cpPower2     = $200;
- cpAnyHeight  = $400;
+ cp4MipIndexes  = 4;    { 4 images scaled down. 1/1, 1/2, 1/4 and 1/8 }
+ cp16MipIndexes = 16;   { 16 images? - Heretic II .M8 texture-format }
+ cpIndexesMax   = $0FF;
+ cpPalette      = $100;
+ cpPower2       = $200;
+ cpAnyHeight    = $400;
  cpFixedOpacity = $800;
  MaxImgCount  = 16;
  ImgCodes     : array[0..MaxImgCount-1] of Char = '123456789ABCDEFG';
@@ -118,23 +123,7 @@ type
                TexW, TexH: LongInt;
                BitsSource: String;
               end;}
-(*
- TQ1Miptex = packed record
-              Nom: array[0..15] of Byte;
-              W,H: LongInt;
-              Indexes: array[0..3] of LongInt;
-             end;
-*)
-(*
- TCompactTexName = array[0..31] of Byte;
- TQ2Miptex = packed record
-              Nom: TCompactTexName;
-              W,H: LongInt;
-              Indexes: array[0..3] of LongInt;
-              Animation: TCompactTexName;
-              Flags, Contents, Value: LongInt;
-             end;
-*)
+
  QTextureFile = class;
  QTexture = class(QPixelSet)  { QTexture objects are QPixelSet objects with a bit more texture-ish data, e.g. an associated game and scaled-down images }
             protected
@@ -204,41 +193,6 @@ type
                   procedure ListDependencies(L: TStringList); override;
                 end;
  QTextureFileClass = class of QTextureFile;
-(*
- QTexture1 = class(QTextureFile)
-             protected
-               procedure ChargerFin(F: TStream; TailleRestante: Integer); virtual;
-              {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
-               procedure SaveFile(Info: TInfoEnreg1); override;
-               procedure LoadFile(F: TStream; FSize: Integer); override;
-             public
-               class function TypeInfo: String; override;
-               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-               function CheckAnim(Seq: Integer) : String; override;
-               function GetTexOpacity : Integer; override;  { 0-255 }
-               function BaseGame : Char; override;
-               class function CustomParams : Integer; override;
-             end;
-*)
-(*
- QTexture2 = class(QTextureFile)
-             protected
-               procedure Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt;
-                          NomTex, AnimTex: PChar);
-              {procedure LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer); override;}
-               procedure SaveFile(Info: TInfoEnreg1); override;
-               procedure LoadFile(F: TStream; FSize: Integer); override;
-             public
-               function BuildWalFileHeader : TQ2Miptex;
-               class function TypeInfo: String; override;
-               class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
-               function CheckAnim(Seq: Integer) : String; override;
-               function GetTexOpacity : Integer; override;  { 0-255 }
-               procedure SetTexOpacity(Alpha: Integer); override;
-               function BaseGame : Char; override;
-               function GetTexName : String; override;
-             end;
-*)
 
 type
   TFQTexture = class(TQForm1)
@@ -288,12 +242,6 @@ type
 
 {procedure Q1MiptexToQ2(const Source: TQ1Miptex; var Dest: TQ2Miptex);
 procedure Q2MiptexToQ1(const Source: TQ2Miptex; var Dest: TQ1Miptex);}
-(*
-function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
-*)
-(*
-function CheckQ2MiptexEx(const Header: TQ2Miptex; HSize, FileSize: Integer; Offsets: PLongInt; Flags: Integer) : Integer;
-*)
 {procedure TexImageToDIBits(W: Integer; const Image: String; var Bits);}
 
 {procedure SizeDownTextureList(FreeSize: Integer);
@@ -304,8 +252,8 @@ function GlobalFindTexture(const TexName: String; AltSrc: QObject) : QPixelSet;
 function WriteAllTextures(L: TStringList; Op: Integer; AltTexSrc: QObject) : TQList;
 
 function TestConversionTextures(var I: Integer) : QTextureFileClass;
-function Q2TexPath : String;
-function Q3ShaderPath : String; {DECKER}
+function GameTexturesPath : String;
+function GameShadersPath : String; {DECKER}
 function ScaleDown(var W, H: Integer) : Boolean;
 
 procedure RoundTextureSize(var Size: TPoint; cp: Integer);
@@ -337,13 +285,15 @@ type
 const
  {FIXME! The mapping between game constants and these should be specified
   in the Games default entries}
+ {FIXME-further! There should not be any 'LinkSpecificChar' at all! It should be
+  so, that all supported games, uses the same specifics for the same thing! /DECKER}
  StdGameTextureLinks: array[1..5] of TStdGameTextureLink =
   ((LinkSpecificChar: 'w'; GameMode: mjQuake2),
    (LinkSpecificChar: 'm'; GameMode: mjHeretic2),
    (LinkSpecificChar: 'i'; GameMode: mjSin),
    (LinkSpecificChar: 'k'; GameMode: mjKingPin),
    (LinkSpecificChar: 'l'; GameMode: mjSOF)
-   );
+  );
 
  { The following specifics are copied when converting a texture into another
    texture format. Generally only the most general flags-related specifics can
@@ -355,7 +305,7 @@ const
 (*const
  MaxAbsoluteTexSize = 512;   { above, it is really too large } *)
 
-function Q2TexPath : String;
+function GameTexturesPath : String;
 begin
  Result:=SetupGameSet.Specifics.Values['Q2TexPath'];
 {if Result='' then
@@ -363,7 +313,7 @@ begin
 end;
 
 {DECKER}
-function Q3ShaderPath : String;
+function GameShadersPath : String;
 begin
  Result:=SetupGameSet.Specifics.Values['Q3ShaderPath'];
  if Result='' then
@@ -373,17 +323,17 @@ end;
 
 function ScaleDown(var W, H: Integer) : Boolean;
 begin
- if (W<=1) and (H<=1) then
+  if (W<=1) and (H<=1) then
   begin
-   W:=0;
-   H:=0;
-   Result:=False;
+    W:=0;
+    H:=0;
+    Result:=False;
   end
- else
+  else
   begin
-   W:=(W+1) shr 1;
-   H:=(H+1) shr 1;
-   Result:=True;
+    W:=(W+1) shr 1;
+    H:=(H+1) shr 1;
+    Result:=True;
   end;
 end;
 
@@ -394,107 +344,6 @@ end;
 procedure Q2MiptexToQ1(const Source: TQ2Miptex; var Dest: TQ1Miptex);
 begin
 end;}
-
-(*
-function CheckQ1Miptex(var Header: TQ1Miptex; FileSize: Integer) : Integer;
-var
- I, J: Integer;
- DataSize, MaxSize: Integer;
-
-  function EndPos(I: Integer) : Integer;
-  begin
-   Result:=Header.Indexes[I]+(DataSize shr (2*I));
-  end;
-
-begin
- Result:=0;
- if (Header.W<=0) or (Header.H<=0)
-{or (Header.W>MaxAbsoluteTexSize) or (Header.H>MaxAbsoluteTexSize)}
- or (Header.W and 7 <> 0) or (Header.H and 7 <> 0) then
-  Exit;
- DataSize:=Header.W*Header.H;
- MaxSize:=SizeOf(Header);
- for I:=0 to 3 do
-  if Header.Indexes[I]=0 then
-   if I=0 then
-    Header.Indexes[I]:=SizeOf(Header)
-   else
-    Header.Indexes[I]:=EndPos(I-1);
- for I:=0 to 3 do
-  begin
-   J:=EndPos(I);
-   if (Header.Indexes[I]<SizeOf(Header)) or (J>FileSize) then
-    Exit;
-   if J>MaxSize then
-    MaxSize:=J;
-   for J:=I+1 to 3 do
-    if (EndPos(I)>Header.Indexes[J])
-    and (EndPos(J)>Header.Indexes[I]) then
-     Exit;
-  end;
- Result:=MaxSize;
-end;
-*)
-
-(*
-function CheckQ2MiptexEx(const Header: TQ2Miptex; HSize, FileSize: Integer; Offsets: PLongInt; Flags: Integer) : Integer;
-var
- ErrWal2M8: Boolean;
- I, J, W, H: Integer;
- MaxSize: Integer;
- EndPos: array[0..MaxImgCount-1] of Integer;
- P, P2: PLongInt;
- ImgCount: Integer;
-begin
- Result:=0;
- if (Header.W<=0) or (Header.H<=0)
-{or (Header.W>MaxAbsoluteTexSize) or (Header.H>MaxAbsoluteTexSize)}
- or (Header.W and 7 <> 0) or ((Header.H and 7 <> 0) and (Flags and cpAnyHeight = 0)) then
-  Exit;
- ImgCount:=Flags and cpIndexesMax;
- W:=Header.W;
- H:=Header.H;
- P:=Offsets;
- for I:=0 to ImgCount-1 do
-  begin
-   EndPos[I]:=P^ + W*H;
-   Inc(P);
-   if (P^=0) or not ScaleDown(W,H) then
-    begin
-     ImgCount:=I+1;
-     Break;
-    end;
-  end;
-
- ErrWal2M8:=False;
- MaxSize:=HSize;
- P:=Offsets;
- for I:=0 to ImgCount-1 do
-  begin
-   J:=EndPos[I];
-   if (P^<HSize) or (J>FileSize) then
-    Exit;
-   if J>MaxSize then
-    MaxSize:=J;
-   P2:=P;
-   for J:=I+1 to ImgCount-1 do
-    begin
-     Inc(P2);
-     if (EndPos[I]>P2^)
-     and (EndPos[J]>P^) then
-      begin
-       if (I<4) and (J<4) then
-        Exit;
-       ErrWal2M8:=True;
-      end;
-    end;
-   Inc(P);
-  end;
- if ErrWal2M8 then
-  GlobalWarning(LoadStr1(5671));
- Result:=MaxSize;
-end;
-*)
 
 (*procedure TexImageToDIBits(W: Integer; const Image: String; var Bits);
 var
@@ -762,7 +611,7 @@ begin
       begin   { write several texture files (.wal, .m8, .swl, .tga...) }
        ProgressIndicatorStart(5453, TexList.Count); try
        ShaderFile:=Nil; try
-       WriteTo:=OutputFile(Q2TexPath);
+       WriteTo:=OutputFile(GameTexturesPath);
        for I:=0 to TexList.Count-1 do
         begin
          Tex:=QPixelSet(TexList[I]);
@@ -790,7 +639,7 @@ begin
               S:=QTextureFile(Tex).GetTexName
              else
               S:=Tex.Name;
-             S:=Q2TexPath+S+Tex.TypeInfo;
+             S:=GameTexturesPath+S+Tex.TypeInfo;
             end;
            Tex.SaveInFile(rf_Default, OutputFile(S));
            {/mac: the waltrick is also needed for kingpin
@@ -895,7 +744,7 @@ var
  Palette1: HPalette;
 begin
  Header:=Build-Q1Header;
- Data:=GetWinImage;       
+ Data:=GetWinImage;
  PaletteFromLmp(GameBuffer(NeededGame)^.PaletteLmp, BmpInfo, Nil, @Palette1);
  Result:=TBitmap.Create;
  Result.Handle:=CreateBitmap(Header.W, Header.H, 1, 8, PChar(Data));
@@ -1056,7 +905,7 @@ begin
      S:=Specifics.Values[StdGameTextureLinks[I].LinkSpecificChar];
      if S<>'' then
       begin   { standard link }
-       Link:=NeedGameFileBase(S, Q2TexPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+       Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
        Link.AddRef(+1);
        Link.Acces;  { we found the linked texture }
 {start --- kingpin texture flag hack}
@@ -1084,13 +933,13 @@ begin
         begin { shader }
          ShaderFile:=NeedGameFileBase(S, SetupGameSet.Specifics.Values['ShadersPath']+Arg) as QShaderFile;
          ShaderFile.Acces;  { load the .shader file (if not already loaded) }
-         Link:=ShaderFile.SubElements.FindShortName(Q2TexPath+TexName) as QPixelSet;
+         Link:=ShaderFile.SubElements.FindShortName(GameTexturesPath+TexName) as QPixelSet;
          if DefaultImageName<>'' then
           Link.Specifics.Values['q']:=DefaultImageName;
          if Link=Nil then Raise EErrorFmt(5698, [TexName, Arg]);
         end
        else  { direct (non-shader) }
-        Link:=NeedGameFileBase(S, Q2TexPath+TexName+'.tga') as QPixelSet;
+        Link:=NeedGameFileBase(S, GameTexturesPath+TexName+'.tga') as QPixelSet;
        Link.AddRef(+1);
        Link.Acces;  { we found the linked texture }
       end
@@ -1113,7 +962,7 @@ begin
          Arg:=Specifics.Values['s'];
          if Arg='' then
           Raise EError(5518);
-         TexList:=NeedGameFileBase(Arg, Q2TexPath+S+'.wad') as QWad;
+         TexList:=NeedGameFileBase(Arg, GameTexturesPath+S+'.wad') as QWad;
          TexList.AddRef(+1); try
          TexList.Acces;
          Link:=TexList.SubElements.FindName(TexName+Ext) as QPixelSet;
@@ -1495,41 +1344,43 @@ var
  OldSize: TPoint;
  I, J, W, H: Integer;
 begin
- OldSize:=Size;
- RoundTextureSize(OldSize, CustomParams);
- W:=OldSize.X;
- H:=OldSize.Y;
- if (Size.X<>W) or (Size.Y<>H) then
-  Raise EErrorFmt(5677, [W,H]);
+  OldSize:=Size;
+  RoundTextureSize(OldSize, CustomParams);
+  W:=OldSize.X;
+  H:=OldSize.Y;
+  if (Size.X<>W) or (Size.Y<>H) then
+    Raise EErrorFmt(5677, [W,H]);
 
- Game:=LoadPaletteInfo; try
- if not GetFloatsSpec('Size', V) then
-  Raise EErrorFmt(5504, ['Size']);
- OldSize.X:=Round(V[1]);
- OldSize.Y:=Round(V[2]);
- V[1]:=W;
- V[2]:=H;
+  Game:=LoadPaletteInfo;
+  try
+    if not GetFloatsSpec('Size', V) then
+      Raise EErrorFmt(5504, ['Size']);
+    OldSize.X:=Round(V[1]);
+    OldSize.Y:=Round(V[2]);
+    V[1]:=W;
+    V[2]:=H;
 
- DebutAction;
- BigData:=GetTexImage(0);
- for I:=0 to (CustomParams and cpIndexesMax)-1 do
-  begin
-   SetLength(Data, W*H);
-   Resample(@Game^.PaletteLmp, PChar(BigData), @Game^.PaletteLmp, PChar(Data),
-    OldSize.X, OldSize.Y, OldSize.X, W, H, W);
-   ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[I], Data, sp_Auto, Self));
-   if not ScaleDown(W,H) then
+    DebutAction;
+    BigData:=GetTexImage(0);
+    for I:=0 to (CustomParams and cpIndexesMax)-1 do
     begin
-     for J:=I+1 to (CustomParams and cpIndexesMax)-1 do
-      ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[J], '', sp_Supprime, Self));
-     Break;
+      SetLength(Data, W*H);
+      Resample(@Game^.PaletteLmp, PChar(BigData), @Game^.PaletteLmp, PChar(Data), OldSize.X, OldSize.Y, OldSize.X, W, H, W);
+      ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[I], Data, sp_Auto, Self));
+      if not ScaleDown(W,H) then
+      begin
+        for J:=I+1 to (CustomParams and cpIndexesMax)-1 do
+          ListeActions.Add(TSpecificUndo.Create('', 'Image'+ImgCodes[J], '', sp_Supprime, Self));
+        Break;
+      end;
     end;
+    SetLength(Data, 2*4);   { SizeOf(Single) }
+    Move(V, Data[1], 2*4);   { SizeOf(Single) }
+    ListeActions.Add(TSpecificUndo.Create('', FloatSpecNameOf('Size'), Data, sp_Auto, Self));
+    FinAction(Self, LoadStr1(625));
+  finally
+    DeleteGameBuffer(Game);
   end;
- SetLength(Data, 2*4);   { SizeOf(Single) }
- Move(V, Data[1], 2*4);   { SizeOf(Single) }
- ListeActions.Add(TSpecificUndo.Create('', FloatSpecNameOf('Size'), Data, sp_Auto, Self));
- FinAction(Self, LoadStr1(625));
- finally DeleteGameBuffer(Game); end;
 end;
 
 procedure QTextureFile.ListDependencies(L: TStringList);
@@ -1667,35 +1518,24 @@ end;
 
 function QTextureFile.LoadPaletteInfo : PGameBuffer;
 var
- P: PChar;
- Pal: String;
+  P: PChar;
+  Pal: String;
 begin
- Acces;
- Pal:=GetSpecArg('Pal');
- if Length(Pal) < SizeOf(TPaletteLmp) + Length('Pal=') then
-  Result:=DuplicateGameBuffer(GameBuffer(BaseGame))
- else
+  Acces;
+  Result:=DuplicateGameBuffer(GameBuffer(BaseGame));
+  Pal:=GetSpecArg('Pal');
+  if (Length(Pal) >= SizeOf(TPaletteLmp) + Length('Pal=')) then
   begin
-   New(Result);
-   Result^.RefCount:=1;
-   P:=Pointer(Pal);
-   Move(P[Length('Pal=')], Result^.PaletteLmp, SizeOf(TPaletteLmp));
-   PaletteFromLmp(Result^.PaletteLmp, Result^.BitmapInfo,
-    @Result^.Palette, @Result^.PaletteReelle);
+    P:=Pointer(Pal);
+    Move(P[Length('Pal=')], Result^.PaletteLmp, SizeOf(TPaletteLmp));
+    PaletteFromLmp(Result^.PaletteLmp, Result^.BitmapInfo, @Result^.Palette, @Result^.PaletteReelle);
   end;
 end;
 
 class function QTextureFile.CustomParams : Integer;
 begin
- Result:=4;
+ Result := cp4MipIndexes;
 end;
-
-(*
-class function QTexture1.CustomParams : Integer;
-begin
- Result:=4 or cpFixedOpacity;
-end;
-*)
 
 procedure QTextureFile.SetTexOpacity;
 begin
@@ -1781,338 +1621,6 @@ begin
    end;
   end;
 end;
-
- {------------------------}
-
-(*
-class function QTexture1.TypeInfo: String;
-begin
- TypeInfo:='.wad_D';
-end;
-
-class procedure QTexture1.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.NomClasseEnClair:=LoadStr1(5131);
-end;
-*)
-
-(*procedure QTexture1.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
-var
- Header: TQ1Miptex;
-begin
- Source.ReadBuffer(Header, SizeOf(Header));
- if not CheckQ1Miptex(Header, SourceTaille) then
-  Raise EErrorFmt(5514, [Nom, 1]);
- Source.Seek(-SizeOf(Header), soFromCurrent);
- LoadFormat:=1;
-end;*)
-
-(*
-procedure QTexture1.ChargerFin(F: TStream; TailleRestante: Integer);
-begin
-end;
-
-procedure QTexture1.LoadFile(F: TStream; FSize: Integer);
-const
- Spec1 = 'Image#=';
- PosNb = 6;
-var
- S: String;
- Header: TQ1Miptex;
- V: array[1..2] of Single;
- I: Integer;
- Base, Taille1, Max: LongInt;
-begin
- case ReadFormat of
-  1: begin  { as stand-alone file }
-      if FSize<SizeOf(Header) then
-       Raise EError(5519);
-      Base:=F.Position;
-      F.ReadBuffer(Header, SizeOf(Header));
-      Max:=CheckQ1Miptex(Header, FSize);
-      if Max=0 then
-       Raise EErrorFmt(5514, [LoadName, 1]);
-      CheckTexName(CharToPas(Header.Nom));
-      V[1]:=Header.W;
-      V[2]:=Header.H;
-      SetFloatsSpec('Size', V);
-      Taille1:=Header.W*Header.H;
-      for I:=0 to 3 do
-       begin
-        S:=Spec1;
-        S[PosNb]:=Chr(49+I);  { '1' to '4' }
-        SetLength(S, Length(Spec1)+Taille1);
-        F.Position:=Base+Header.Indexes[I];
-        F.ReadBuffer(S[Length(Spec1)+1], Taille1);
-        Specifics.Add(S);
-        Taille1:=Taille1 div 4;  { next images are scaled-down }
-       end;
-      F.Position:=Base+Max;
-      ChargerFin(F, FSize-Max);
-      F.Position:=Base+FSize;
-     end;
- else inherited;
- end;
-end;
-
-procedure QTexture1.SaveFile(Info: TInfoEnreg1);
-begin
- with Info do case Format of
-  1: SaveAsQuake1(F);  { as stand-alone file }
- else inherited;
- end;
-end;
-
-function QTexture1.CheckAnim(Seq: Integer) : String;
-var
- Zero, Next, A: String;
-begin
- Result:='';
- if (Length(Name)>=2) and (Name[1]='+') and (Name[2] in ['0'..'9', 'A'..'J', 'a'..'j']) then
-  begin
-   Zero:=Name+#13; Zero[2]:='0';
-     A :=Name+#13;   A [2]:='a';
-   if Name[2] in ['9', 'J', 'j'] then
-    Next:=''
-   else
-    begin
-     Next:=Name+#13;
-     Next[2]:=Succ(Next[2]);
-    end;
-   if Name[2] in ['0'..'9'] then   { first sequence }
-    case Seq of
-     0: Result:= Next +   A  + Zero;
-     1: Result:= Next + Zero +   A ;
-     2: Result:=   A  + Next + Zero;
-    end
-   else    { second sequence }
-    case Seq of
-     0: Result:= Next + Zero +   A ;
-     1: Result:= Zero + Next +   A ;
-     2: Result:= Next +   A  + Zero;
-    end;
-  end;
-end;
-
-function QTexture1.GetTexOpacity : Integer;
-begin
- if Copy(Name,1,1)='*' then
-  Result:=144
- else
-  Result:=255;
-end;
-
-function QTexture1.BaseGame;
-begin
- Result:=mjNotQuake2;
-end;
-*)
-
- {------------------------}
-
-(*
-class function QTexture2.TypeInfo: String;
-begin
- TypeInfo:='.wal';
-end;
-
-class procedure QTexture2.FileObjectClassInfo(var Info: TFileObjectClassInfo);
-begin
- inherited;
- Info.NomClasseEnClair:=LoadStr1(5132);
-{Info.FileExtCount:=1;}
- Info.FileExt{[0]}:=777;
-{Info.DefaultExt[0]:='wal';}
-end;
-
-function QTexture2.BuildWalFileHeader : TQ2Miptex;
-var
- Pos, Taille1: LongInt;
- I: Integer;
-begin
- FillChar(Result, SizeOf(Result), 0);   { default values }
- PasToChar(Result.Nom, GetTexName);
- with GetSize do
-  begin
-   Result.W:=X;
-   Result.H:=Y;
-  end;
- Taille1:=Result.W*Result.H;
- Pos:=SizeOf(TQ2Miptex);
- for I:=0 to 3 do
-  begin
-   Result.Indexes[I]:=Pos;   { computes Indexes as usual }
-   Inc(Pos, Taille1);
-   Taille1:=Taille1 div 4;
-  end;
- PasToChar(Result.Animation, Specifics.Values['Anim']);
-  { read flags as integer values }
- Result.Contents:=StrToIntDef(Specifics.Values['Contents'], 0);
- Result.Flags   :=StrToIntDef(Specifics.Values['Flags'], 0);
- Result.Value   :=StrToIntDef(Specifics.Values['Value'], 0);
-end;
-
-(-*procedure QTexture2.LireEnteteFichier(Source: TStream; const Nom: String; var SourceTaille: Integer);
-var
- Header: TQ2Miptex;
-begin
- Source.ReadBuffer(Header, SizeOf(Header));
- if not CheckQ2Miptex(Header, SourceTaille) then
-  Raise EErrorFmt(5514, [Nom, 2]);
- Source.Seek(-SizeOf(Header), soFromCurrent);
- LoadFormat:=1;
-end;*-)
-
-procedure QTexture2.Charger1(F: TStream; Base, Taille: Integer; const Header: TQ2Miptex; Offsets: PLongInt;
-           NomTex, AnimTex: PChar);
-const
- Spec1 = 'Image#=';
- PosNb = 6;
-var
- S: String;
- I, Taille1, Flags: Integer;
- V: array[1..2] of Single;
- W, H: Integer;
-begin
- Flags:=CustomParams;
- if CheckQ2MiptexEx(Header, F.Position-Base, Taille, Offsets, Flags)=0 then
-  Raise EErrorFmt(5514, [LoadName, 2]);
- if NomTex=Nil then
-  S:=CharToPas(Header.Nom)
- else
-  S:=NomTex;
- for I:=Length(S) downto 1 do
-  if S[I]='/' then
-   begin
-    Specifics.Add('Path='+Copy(S,1,I-1));
-    Break;
-   end;
- CheckTexName(S);
- W:=Header.W;
- H:=Header.H;
- V[1]:=W;
- V[2]:=H;
- SetFloatsSpec('Size', V);
- for I:=0 to (Flags and cpIndexesMax)-1 do
-  begin
-   S:=Spec1;
-   S[PosNb]:=ImgCodes[I];
-   Taille1:=W*H;
-   SetLength(S, Length(Spec1)+Taille1);
-   F.Position:=Base+Offsets^;
-   F.ReadBuffer(S[Length(Spec1)+1], Taille1);
-   Specifics.Add(S);
-   if not ScaleDown(W,H) then Break;
-   Inc(Offsets);
-   if Offsets^=0 then Break;
-  end;
- if AnimTex=Nil then
-  begin
-   if Header.Animation[0]<>0 then
-    Specifics.Add('Anim='+CharToPas(Header.Animation));
-  end
- else
-  if AnimTex^<>#0 then
-   Specifics.Add('Anim='+AnimTex);
- Specifics.Add('Contents='+IntToStr(Header.Contents));
- Specifics.Add('Flags='+IntToStr(Header.Flags));
- Specifics.Add('Value='+IntToStr(Header.Value));
- F.Position:=Base+Taille;
-end;
-
-procedure QTexture2.LoadFile(F: TStream; FSize: Integer);
-var
- Header: TQ2Miptex;
- Base: Integer;
-begin
- case ReadFormat of
-  1: begin  { as stand-alone file }
-      if FSize<SizeOf(Header) then
-       Raise EError(5519);
-      Base:=F.Position;
-      F.ReadBuffer(Header, SizeOf(Header));
-      Charger1(F, Base, FSize, Header, @Header.Indexes, Nil, Nil);
-     end;
- else inherited;
- end;
-end;
-
-procedure QTexture2.SaveFile(Info: TInfoEnreg1);
-var
- S: String;
- Header: TQ2Miptex;
- I: Integer;
-begin
- with Info do case Format of
-  1: begin  { as stand-alone file }
-      Header:=BuildWalFileHeader;
-      F.WriteBuffer(Header, SizeOf(Header));
-      for I:=0 to 3 do
-       begin
-        S:=GetTexImage(I);
-        F.WriteBuffer(S[1], Length(S));
-       end;
-     end;
- else inherited;
- end;
-end;
-
-function QTexture2.CheckAnim(Seq: Integer) : String;
-begin
- Result:=Specifics.Values['Anim'];
-end;
-
-function QTexture2.GetTexOpacity : Integer;
-var
- S: String;
-begin
- S:=Specifics.Values['Flags'];
- if S='' then
-  Result:=255
- else
-  Result:=OpacityFromFlags(StrToIntDef(S,0));
-end;
-
-procedure QTexture2.SetTexOpacity(Alpha: Integer);
-var
- S: String;
-begin
- if Alpha<>GetTexOpacity then
-  begin
-   S:=Specifics.Values['Flags'];
-   Alpha:=OpacityToFlags(StrToIntDef(S,0), Alpha);
-   if Alpha=0 then
-    S:=''
-   else
-    S:=IntToStr(Alpha);
-   Specifics.Values['Flags']:=S;
-  end;
-end;
-
-function QTexture2.BaseGame;
-begin
- Result:=mjNotQuake1;
-end;
-
-function QTexture2.GetTexName : String;
-var
- S: String;
- J: Integer;
-begin
- Result:=Name;
- S:=Specifics.Values['Path'];
- if S<>'' then
-  begin
-   J:=Length(Result);
-   while (J>0) and (Result[J]<>'/') do
-    Dec(J);
-   if S[Length(S)]<>'/' then
-    S:=S+'/';
-   Result:=S+Copy(Result, J+1, MaxInt);
-  end;
-end;
-*)
 
  {------------------------}
 
@@ -2238,7 +1746,7 @@ begin
      Count:=Load~Texture.ImagesCount;
      Step:=(CW-Header.W*2) div (Count+1);
      if Step<MinStep then Step:=MinStep;
-*     GetMem(Data, Header.W*Header.H); try   { no alignment problems with image 0 
+*     GetMem(Data, Header.W*Header.H); try   { no alignment problems with image 0
      X:=Step;
      W:=Header.W;
      H:=Header.H;
@@ -2276,72 +1784,80 @@ end;*)
 
 procedure TFQTexture.PaintPanel1Paint(Sender: TObject; UpdateRect: PRect);
 const
- MinStep = 8;
+  MinStep = 8;
 var
- S: String;
- DC: HDC;
- R: TRect;
- I, X, Step, Count, W, H: Integer;
- CW, CH: Integer;
- FullSize: TPoint;
- PS: QPixelSet;
- PSD: TPixelSetDescription;
+  S: String;
+  DC: HDC;
+  R: TRect;
+  I, X, Step, Count, W, H: Integer;
+  CW, CH: Integer;
+  FullSize: TPoint;
+  PS: QPixelSet;
+  PSD: TPixelSetDescription;
 begin
- if (FileObject<>Nil) and (Info<>Nil) then
-  with FileObject as QTexture do
-   begin
-    CW:=PaintPanel1.ClientWidth;
-    CH:=PaintPanel1.ClientHeight;
-    DC:=GetDC(PaintPanel1.Handle); try
-    if UpdateRect<>Nil then
-     with UpdateRect^ do
-      PatBlt(DC, Left, Top, Right-Left, Bottom-Top, Blackness);
-    SetBkColor(DC, clBlack);
-    try
-     PS:=LoadPixelSet;
-     if PS is QTextureFile then
-      Count:=QTextureFile(PS).ImagesCount
-     else
-      Count:=1;
-     PSD:=PS.Description;
-     try
-       FullSize:=PSD.Size;
-       Step:=(CW-PSD.Size.X*2) div (Count+1);
-       if Step<MinStep then Step:=MinStep;
-       X:=Step;
-       W:=PSD.Size.X;
-       H:=PSD.Size.Y;
-       for I:=0 to Count - 1 do
+  if (FileObject<>Nil) and (Info<>Nil) then
+  begin
+    with FileObject as QTexture do
+    begin
+      CW:=PaintPanel1.ClientWidth;
+      CH:=PaintPanel1.ClientHeight;
+      DC:=GetDC(PaintPanel1.Handle);
+      try
+        if UpdateRect<>Nil then
         begin
-         if I>0 then
-          begin
-           PSD.Done;
-           PSD:=(PS as QTextureFile).ScaledDownDescription(I);
+          with UpdateRect^ do begin
+            PatBlt(DC, Left, Top, Right-Left, Bottom-Top, Blackness);
           end;
-         PSD.Paint(DC, X, (CH-H) div 2);
-         Inc(X, W + Step);
-         if not ScaleDown(W,H) then Break;
         end;
-     finally
-       PSD.Done;
-     end;
-     SetTextColor(DC, clGray);
-     S:=FmtLoadStr1(5387, [Info^.GameName, FullSize.X, FullSize.Y]);
-     TextOut(DC, 5,1, PChar(S), Length(S));
-    except
-     on E: Exception do
-      begin
-       SetTextColor(DC, clSilver);
-       S:=GetExceptionMessage(E);
-       R:=PaintPanel1.ClientRect;
-       InflateRect(R, -20, -20);
-       DrawText(DC, PChar(S), Length(S), R, DT_NOCLIP or DT_WORDBREAK);
+        SetBkColor(DC, clBlack);
+        try
+          PS:=LoadPixelSet;
+          if PS is QTextureFile then
+            Count:=QTextureFile(PS).ImagesCount
+          else
+            Count:=1;
+          PSD:=PS.Description;
+          try
+            FullSize:=PSD.Size;
+            Step:=(CW-PSD.Size.X*2) div (Count+1);
+            if Step<MinStep then
+              Step:=MinStep;
+            X:=Step;
+            W:=PSD.Size.X;
+            H:=PSD.Size.Y;
+            for I:=0 to Count - 1 do
+            begin
+              if I>0 then
+              begin
+                PSD.Done;
+                PSD:=(PS as QTextureFile).ScaledDownDescription(I);
+              end;
+              PSD.Paint(DC, X, (CH-H) div 2);
+              Inc(X, W + Step);
+              if not ScaleDown(W,H) then
+                Break;
+            end;
+          finally
+            PSD.Done;
+          end;
+          SetTextColor(DC, clGray);
+          S:=FmtLoadStr1(5387, [Info^.GameName, FullSize.X, FullSize.Y]);
+          TextOut(DC, 5, 1, PChar(S), Length(S));
+        except
+          on E: Exception do
+          begin
+            SetTextColor(DC, clSilver);
+            S:=GetExceptionMessage(E);
+            R:=PaintPanel1.ClientRect;
+            InflateRect(R, -20, -20);
+            DrawText(DC, PChar(S), Length(S), R, DT_NOCLIP or DT_WORDBREAK);
+          end;
+        end;
+      finally
+        ReleaseDC(PaintPanel1.Handle, DC);
       end;
     end;
-    finally
-     ReleaseDC(PaintPanel1.Handle, DC);
-    end;
-   end;
+  end;
 end;
 
 procedure TFQTexture.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -2352,10 +1868,10 @@ begin
  Panel2.Hide;
  F:=GetParentForm(Self);
  if F<>Nil then
-  begin
+ begin
    GetPaletteToolbar(F).Free;
    GetTextureToolbar(F).Free;
-  end;
+ end;
  inherited;
  SetInfo(Nil);
 end;
@@ -2363,7 +1879,7 @@ end;
 procedure TFQTexture.SetInfo(nInfo: PGameBuffer);
 begin
  if Info<>nil then
-  DeleteGameBuffer(Info);
+   DeleteGameBuffer(Info);
  Info:=nInfo;
 end;
 
@@ -2500,11 +2016,5 @@ end;
 
 initialization
   RegisterQObject(QTextureLnk, 'a');
-(*
-  RegisterQObject(QTexture1, 'a');
-*)
-(*
-  RegisterQObject(QTexture2, 'n');
-*)
 end.
 

@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2000/09/25 19:36:28  decker_dk
+Secured gamecode 'c' for mjCrystalSpace.
+
 Revision 1.14  2000/09/18 01:31:48  alexander
 added enum for startrek voyager elite force
 
@@ -301,22 +304,29 @@ var
  Idx : Byte;
  S, SubStr : String;
 begin
-  S := SetupGameSet.Specifics.Values['TextureFormat'];
-  if TexExtensions <> NIL then TexExtensions.Free;
+  if TexExtensions<>NIL then
+   TexExtensions.Free;
   TexExtensions := TStringList.Create;
+  try
+  {DECKER - changed key from 'TextureFormat', due to possible conflicts with
+   TGameBuffer(...)TextureExt in QkTextures.PAS}
+   S := SetupGameSet.Specifics.Values['TextureFileExtensions'];
+  except
+   S := '';
+  end;
   Idx := 1;
-  while Idx <= Length(S) do
+  while (Idx <= Length(S)) do
   begin
     SubStr := '';
     C := #0;
-    while (C <> ' ') and (C <> ',') and (Idx <= Length(S)) do
+    while ((C <> ' ') and (C <> ',') and (Idx <= Length(S))) do
     begin
       C := S[Idx];
-      if (C <> ' ') and (C <> ',') then
+      if ((C <> ' ') and (C <> ',')) then
         SubStr := SubStr + C;
-      Inc (Idx);
+      Inc(Idx);
     end;
-    TexExtensions.Add (SubStr);
+    TexExtensions.Add(SubStr);
   end;
 end;
 {--CONVEX-end--}

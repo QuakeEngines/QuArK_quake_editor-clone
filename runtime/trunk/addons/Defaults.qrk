@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.68  2000/11/11 17:58:20  decker_dk
+//Compressed some text into an existing :incl, for BuildToolControllers
+//
 //Revision 1.67  2000/11/04 20:14:55  decker_dk
 //+devmap for Quake-3
 //
@@ -565,7 +568,6 @@ QQRKSRC1
         3DLight = '512'
         CheckDirectory = "HL.EXE"
         Console = "1"
-//        SpecialCustomQuakeMenu = "CustomQuakeMenuQCSG"           //enable special form
 //        FirstBuildCmd  = "QCSG1" //command that must be run first
         Form = "GameHalfLife"
         PlayerClass = "X"
@@ -689,7 +691,6 @@ QQRKSRC1
         CheckDirectory = "sof.EXE"
         Console = "1"
         Form = "GameSOF"
-//        SpecialCustomQuakeMenu = "CustomQuakeMenuSOF"  //enable special form
         TextureDef = "armory/1_2_subfloor1"
         TriggerTextureDef = "armory/trigger"
         OriginTextureDef = "armory/origin"
@@ -739,14 +740,14 @@ QQRKSRC1
         CheckDirectory = "QUAKE3.EXE"
         Console = "1"
         Form = "GameQuake3"
-//        SpecialCustomQuakeMenu = "CustomQuakeMenuBSPC"           //enable special form
         TextureDef = "base_wall/basewall03"
         TriggerTextureDef = "common/trigger"
         OriginTextureDef = "common/origin"
         ClipTextureDef = "common/clip"
         LightFactor = '0.9'
         3DLight = '512'
-        TextureFormat = ".tga,.jpg"
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
       }
@@ -789,13 +790,13 @@ QQRKSRC1
         CheckDirectory = "stvoy.exe"
         Console = "1"
         Form = "GameSTVEF"
-//        SpecialCustomQuakeMenu = "CustomQuakeMenuBSPC"           //enable special form
         TextureDef = "base_wall/basewall03"
         TriggerTextureDef = "common/trigger"
         ClipTextureDef = "common/clip"
         LightFactor = '0.9'
         3DLight = '512'
-        TextureFormat = ".tga,.jpg"
+        TextureFormat = ".tga"                  // primary texture fileextension
+        TextureFileExtensions = ".tga,.jpg"     // possible texture fileextensions
         TextureWriteFormat = ".tga"
         TextureShaders = "scripts/quark.shader"
       }

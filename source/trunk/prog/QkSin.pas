@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/09/14 18:00:22  decker_dk
+Moved QTexture1 and QTexture2 into QkQ1.PAS and QkQ2.PAS
+
 Revision 1.6  2000/07/18 19:38:01  decker_dk
 Englishification - Big One This Time...
 
@@ -108,7 +111,7 @@ end;
 
 class function QTextureSin.CustomParams : Integer;
 begin
- Result:=4 or cpPalette or cpAnyHeight;
+ Result:=cp4MipIndexes or cpPalette or cpAnyHeight;
 end;
 
 function QTextureSin.BaseGame : Char;

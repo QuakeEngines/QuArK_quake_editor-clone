@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.7  2000/07/09 13:20:44  decker_dk
 Englishification and a little layout
 
@@ -47,7 +50,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  TB97, StdCtrls, ExtCtrls, QkForm;
+  TB97, StdCtrls, ExtCtrls, QkForm, QkZip2;
 
 type
   TQuickWalParser = class(TQkForm)
@@ -70,21 +73,11 @@ type
 
 implementation
 
-uses QkGroup, Game, QkTextures, QkObjects, QkWad, QkExplorer, 
+uses QkGroup, Game, QkTextures, QkObjects, QkWad, QkExplorer,
   Quarkx, Travail, ToolBox1, QkPak, QkFileObjects, QkHL, ToolBoxGroup,
   Setup, QkQ3;
 
 {$R *.DFM}
-
-procedure TQuickWalParser.CancelBtnClick(Sender: TObject);
-begin
- Close;
-end;
-
-procedure TQuickWalParser.ListBox1Click(Sender: TObject);
-begin
- OkBtn.Enabled:=ListBox1.ItemIndex>=0;
-end;
 
 function Link1(var ResultFolder: QObject; const FolderName, Name, Spec, Arg: String) : QObject;
 begin
@@ -193,43 +186,57 @@ end;
 function ParseRec(const Path, Base, FolderName: String; DestFolder:QObject) : QObject;
 var
  F: TSearchRec;
- I, DosError: Integer;
+ I, FindError: Integer;
  L: TStringList;
  Loaded: QObject;
 begin
- Result:=DestFolder;
- L:=TStringList.Create;
- try
-  DosError:=FindFirst(PathAndFile(Path, '*.*'), faAnyFile, F);
+  Result:=DestFolder;
+  L:=TStringList.Create;
   try
-   while DosError=0 do
-    begin
-     if F.Attr and faDirectory = 0 then
+    FindError:=FindFirst(PathAndFile(Path, '*.*'), faAnyFile, F);
+    try
+      while FindError=0 do
       begin
-       Loaded:=Nil;
-       try
-        while TryToLink1(Result, F.Name, FolderName, Base, Loaded) do
-         begin
-          Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
-          Loaded.AddRef(+1);
-         end;
-       finally
-        Loaded.AddRef(-1);
-       end;
-      end
-     else
-      if (F.Name<>'.') and (F.Name<>'..') then
-       L.Add(F.Name);
-     DosError:=FindNext(F);
+        if F.Attr and faDirectory = 0 then
+        begin
+          Loaded:=Nil;
+          try
+            while TryToLink1(Result, F.Name, FolderName, Base, Loaded) do
+            begin
+              Loaded:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False);
+              Loaded.AddRef(+1);
+            end;
+          finally
+            Loaded.AddRef(-1);
+          end;
+        end
+        else
+        begin
+          {add to sub-folder list}
+          if (F.Name<>'.') and (F.Name<>'..') then
+            L.Add(F.Name);
+        end;
+        FindError:=FindNext(F);
+      end;
+    finally
+      FindClose(F);
     end;
+    {parse found sub-folders}
+    for I:=0 to L.Count-1 do
+      LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
   finally
-   FindClose(F);
+    L.Free;
   end;
-  for I:=0 to L.Count-1 do
-   LinkFolder(ParseRec(PathAndFile(Path, L[I]), Base, FolderName+L[I]+'/', nil), Result, FolderName);
- finally
-  L.Free;
- end;
+end;
+
+procedure TQuickWalParser.CancelBtnClick(Sender: TObject);
+begin
+ Close;
+end;
+
+procedure TQuickWalParser.ListBox1Click(Sender: TObject);
+begin
+ OkBtn.Enabled:=ListBox1.ItemIndex>=0;
 end;
 
 procedure TQuickWalParser.OkBtnClick(Sender: TObject);
@@ -238,7 +245,7 @@ var
  E: TQkExplorer;
  S, Base, Path: String;
  Q, SearchFolder, SearchResultList: QObject;
- J, DosError: Integer;
+ J, FindError: Integer;
  F: TSearchRec;
  Pak: QPakFolder;
 begin
@@ -247,27 +254,27 @@ begin
   Base:=ListBox1.Items[ListBox1.ItemIndex];
   E:=TQkExplorer(Toolbox.Perform(wm_InternalMessage, wp_TargetExplorer, 0));
   if E<>Nil then
-   begin
+  begin
     Path:=PathAndFile(QuakeDir, Base);
     Q:=nil;
     try
      { Find Quake-3:Arena .shader files in directory }
-     S:=PathAndFile(Path, Q3ShaderPath);
+     S:=PathAndFile(Path, GameShadersPath);
      Q:=ParseRec(S, Base, '', Q);
     except
      (*do nothing*)
     end;
     try
      { Find 'game' textures in directory }
-     S:=PathAndFile(Path, Q2TexPath);
+     S:=PathAndFile(Path, GameTexturesPath);
      Q:=ParseRec(S, Base, '', Q);
     except
      (*do nothing*)
     end;
 
-    DosError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
+    FindError:=FindFirst(PathAndFile(Path, '*'+SetupGameSet.Specifics.Values['PakExt']), faAnyFile, F);
     try
-     while DosError=0 do
+     while FindError=0 do
       begin
        Pak:=ExactFileLink(PathAndFile(Path, F.Name), Nil, False) as QPakFolder;
        Pak.AddRef(+1);
@@ -276,7 +283,10 @@ begin
         SearchResultList:=Nil;
         try
          { Find Quake-3:Arena .shader files in PK3's }
-         SearchFolder:=Pak.GetFolder(Q3ShaderPath);
+         if (Pak is QZipFolder) then
+           SearchFolder:=QZipFolder(Pak).GetFolder(GameShadersPath)
+         else
+           SearchFolder:=Pak.GetFolder(GameShadersPath);
          if SearchFolder<>Nil then
           SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
         except
@@ -284,7 +294,10 @@ begin
         end;
         try
          { Find 'game' textures in package-files }
-         SearchFolder:=Pak.GetFolder(Q2TexPath);
+         if (Pak is QZipFolder) then
+           SearchFolder:=QZipFolder(Pak).GetFolder(GameTexturesPath)
+         else
+           SearchFolder:=Pak.GetFolder(GameTexturesPath);
          if SearchFolder<>Nil then
           SearchResultList:=ParseRecPak(SearchFolder as QPakFolder, Base, '', SearchResultList);
         except
@@ -298,7 +311,7 @@ begin
        finally
         Pak.AddRef(-1);
        end;
-       DosError:=FindNext(F);
+       FindError:=FindNext(F);
       end;
     finally
      FindClose(F);
@@ -323,7 +336,7 @@ begin
     finally
      Q.Free;
     end;
-   end;
+  end;
  finally
   ProgressIndicatorStop;
  end;

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2000/07/18 19:38:01  decker_dk
+Englishification - Big One This Time...
+
 Revision 1.6  2000/07/16 16:34:51  decker_dk
 Englishification
 
@@ -161,34 +164,34 @@ const
 
 function OpenToolBox(const ToolBoxName: String) : TToolBoxForm;
 var
- ToolBox1: TForm;
- I: Integer;
- FilteredToolBoxName: String; { To store Toolboxname without any "&" in it. /Decker }
+  ToolBox1: TForm;
+  I: Integer;
+  FilteredToolBoxName: String; { To store Toolboxname without any "&" in it. /Decker }
 begin
- FilteredToolBoxName := ToolBoxName;
- I := Pos('&', FilteredToolBoxName);
- if (I>0) then
- begin
-  Delete(FilteredToolBoxName, I, 1);
- end;
-
- for I:=0 to Screen.FormCount-1 do
+  FilteredToolBoxName := ToolBoxName;
+  I := Pos('&', FilteredToolBoxName);
+  if (I>0) then
   begin
-   ToolBox1:=Screen.Forms[I];
-   if (ToolBox1 is TToolBoxForm) and (CompareText(TToolBoxForm(ToolBox1).GetToolBoxSingleName, FilteredToolBoxName)=0) then
+   Delete(FilteredToolBoxName, I, 1);
+  end;
+
+  for I:=0 to Screen.FormCount-1 do
+  begin
+    ToolBox1:=Screen.Forms[I];
+    if (ToolBox1 is TToolBoxForm) and (CompareText(TToolBoxForm(ToolBox1).GetToolBoxSingleName, FilteredToolBoxName)=0) then
     begin
-     Result:=TToolBoxForm(ToolBox1);  { was already opened }
-     Exit;
+      Result:=TToolBoxForm(ToolBox1);  { was already opened }
+      Exit;
     end;
   end;
   { open the new ToolBox now }
- Result:=TToolBoxForm.Create(Application);
- try
-  Result.BrowseToolBox(FilteredToolBoxName);
- except
-  Result.Free;    { error opening ToolBox }
-  Raise;
- end;
+  Result:=TToolBoxForm.Create(Application);
+  try
+    Result.BrowseToolBox(FilteredToolBoxName);
+  except
+    Result.Free;    { error opening ToolBox }
+    Raise;
+  end;
 end;
 
 procedure ShowToolBox(const ToolBoxName: String);
@@ -507,93 +510,104 @@ var
  FirstTime: Boolean;
 begin
  Caption:=ToolBoxName;
- ProgressIndicatorStart(5440, 0); try
- SetupInfo.AddRef(-1);
- SetupInfo:=Nil;
- FirstTime:=Explorer=Nil;
- if FirstTime then
-  begin
-   Explorer:=TTbExplorer.Create(Self);
-   Explorer.Parent:=PanelBig;
-  {Explorer.ObjToolbar:=ObjToolbar;}
-   Explorer.AllowEditing:=aeUndo;
-   Explorer.Height:=TailleMaximaleEcranY;
-  {Explorer.LoadAllAuto:=True;}
-   Explorer.CreateSplitter;
-   MarsCap.AppCaption:=LoadStr1(5441);
-   MarsCap.ActiveBeginColor:=clBlack;
-   MarsCap.ActiveEndColor:=clBlue;
-   SetFormIcon(iiToolBox);
-  end
- else
-  Explorer.ClearView;
+ ProgressIndicatorStart(5440, 0);
+ try
+  SetupInfo.AddRef(-1);
+  SetupInfo:=Nil;
+  FirstTime:=Explorer=Nil;
+  if FirstTime then
+   begin
+    Explorer:=TTbExplorer.Create(Self);
+    Explorer.Parent:=PanelBig;
+   {Explorer.ObjToolbar:=ObjToolbar;}
+    Explorer.AllowEditing:=aeUndo;
+    Explorer.Height:=TailleMaximaleEcranY;
+   {Explorer.LoadAllAuto:=True;}
+    Explorer.CreateSplitter;
+    MarsCap.AppCaption:=LoadStr1(5441);
+    MarsCap.ActiveBeginColor:=clBlack;
+    MarsCap.ActiveEndColor:=clBlue;
+    SetFormIcon(iiToolBox);
+   end
+  else
+   Explorer.ClearView;
 
- ToolBoxList:=TQList.Create; try
-
- SetupQrk:=MakeAddOnsList; try
-  { looks for toolbox data in all add-ons }
- BrowseToolBoxes(SetupQrk, ToolBoxName, ToolBoxList);
- finally SetupQrk.AddRef(-1); end;
-
- finally ProgressIndicatorStop; end;
-
-(*FirstPrivate:=ToolBoxList.Count;
-  { looks for the same data in the currently loaded file }
- if Form1.Explorer.Roots.Count>0 then
-  BrowseToolBoxes(Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
-
-  { adds the toolboxes found }
- ProgressIndicatorStart(5440, ToolBoxList.Count+1); try
-{NodeToSelect:=Nil;}
- SetupInfo:=QToolBox.Create('', Nil);
- SetupInfo.AddRef(+1);
- for I:=0 to ToolBoxList.Count-1 do
+  ToolBoxList:=TQList.Create;
   try
-   ProgressIndicatorIncrement;
-   Q:=ToolBoxList[I] as QToolBox;
-   for J:=0 to Q.Specifics.Count-1 do
-    begin
-     S:=Q.Specifics[J];
-     P:=Pos('=',S);
-     SetupInfo.Specifics.Values[Copy(S,1,P-1)]:=Copy(S,P+1,MaxInt);
+   SetupQrk:=MakeAddOnsList;
+   try
+    { looks for toolbox data in all add-ons }
+    BrowseToolBoxes(SetupQrk, ToolBoxName, ToolBoxList);
+   finally
+    SetupQrk.AddRef(-1);
+   end;
+  finally
+   ProgressIndicatorStop;
+  end;
+
+ (*FirstPrivate:=ToolBoxList.Count;
+   { looks for the same data in the currently loaded file }
+  if Form1.Explorer.Roots.Count>0 then
+   BrowseToolBoxes(Form1.Explorer.Roots[0], ToolBoxName, ToolBoxList);*)
+
+   { adds the toolboxes found }
+  ProgressIndicatorStart(5440, ToolBoxList.Count+1);
+  try
+  {NodeToSelect:=Nil;}
+   SetupInfo:=QToolBox.Create('', Nil);
+   SetupInfo.AddRef(+1);
+   for I:=0 to ToolBoxList.Count-1 do
+    try
+     ProgressIndicatorIncrement;
+     Q:=ToolBoxList[I] as QToolBox;
+     for J:=0 to Q.Specifics.Count-1 do
+      begin
+       S:=Q.Specifics[J];
+       P:=Pos('=',S);
+       SetupInfo.Specifics.Values[Copy(S,1,P-1)]:=Copy(S,P+1,MaxInt);
+      end;
+     Root:=Explorer.FindRootFromSpec(Q);
+     if Root=Nil then
+      Continue;  { no data }
+    {Node:=}Explorer.AddRoot(Root);
+    {if (I>=FirstPrivate) and (NodeToSelect=Nil) then
+      NodeToSelect:=Node;}
+    except
+     on E: Exception do
+      Form1.AppException(Self, E);
     end;
-   Root:=Explorer.FindRootFromSpec(Q);
-   if Root=Nil then Continue;  { no data }
-  {Node:=}Explorer.AddRoot(Root);
-  {if (I>=FirstPrivate) and (NodeToSelect=Nil) then
-    NodeToSelect:=Node;}
-  except
-   on E: Exception do
-    Form1.AppException(Self, E);
+  finally
+   ToolBoxList.Free;
   end;
- finally ToolBoxList.Free; end;
- ProgressIndicatorIncrement;
-  { setup default position and various parameters }
- I:=Round(SetupInfo.GetFloatSpec('Left', 0));
- if I>0 then
-  begin
-   Explorer.Align:=alLeft;
-   Explorer.Width:=I;
-   Panel2.Show;
-   Explorer.ViewPanel:=Panel2;
-  end
- else
-  begin
-   Panel2.Hide;
-   Explorer.Align:=alClient;
-   Explorer.ViewPanel:=Nil;
-  end;
- if FirstTime then
-  RestorePositionFrom('Pos', SetupInfo);
- if SetupInfo.Specifics.Values['Color']<>'' then
-  begin
-   MarsCap.ActiveEndColor:=SetupInfo.IntSpec['Color'];
-   UpdateMarsCap;
-  end;
-{if SetupInfo.Specifics.Values['Bkgnd']<>'' then
-  PanelBig.Color:=SetupInfo.IntSpec['Bkgnd'];}
- Explorer.SetMarsCaption(Self);
- finally ProgressIndicatorStop; end;
+  ProgressIndicatorIncrement;
+   { setup default position and various parameters }
+  I:=Round(SetupInfo.GetFloatSpec('Left', 0));
+  if I>0 then
+   begin
+    Explorer.Align:=alLeft;
+    Explorer.Width:=I;
+    Panel2.Show;
+    Explorer.ViewPanel:=Panel2;
+   end
+  else
+   begin
+    Panel2.Hide;
+    Explorer.Align:=alClient;
+    Explorer.ViewPanel:=Nil;
+   end;
+  if FirstTime then
+   RestorePositionFrom('Pos', SetupInfo);
+  if SetupInfo.Specifics.Values['Color']<>'' then
+   begin
+    MarsCap.ActiveEndColor:=SetupInfo.IntSpec['Color'];
+    UpdateMarsCap;
+   end;
+ {if SetupInfo.Specifics.Values['Bkgnd']<>'' then
+   PanelBig.Color:=SetupInfo.IntSpec['Bkgnd'];}
+  Explorer.SetMarsCaption(Self);
+ finally
+  ProgressIndicatorStop;
+ end;
  if Explorer.{Selected:=NodeToSelect;} EffacerSelection then
   Explorer.SelectionChanging;
  if FirstTime then
