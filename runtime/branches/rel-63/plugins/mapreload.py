@@ -113,13 +113,15 @@ menreload = qmenu.item("Reload",ReloadClick,"Reload module")
 
 if quarkx.setupsubset(SS_MAP, "Options")["Developer"]:
   quarkpy.mapcommands.items.append(menreload)
-  quarkpy.mapcommands.shortcuts["Alt+R"] = menreload
 
 
 # ----------- REVISION HISTORY ------------
 #
 #
 # $Log$
+# Revision 1.2  2000/06/03 10:25:30  alexander
+# added cvs headers
+#
 #
 #
 #
