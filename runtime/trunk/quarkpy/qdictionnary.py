@@ -105,7 +105,7 @@ Strings = {
     264: "Map beziers",
     # /Rowdy
 
-    288: "Help snippet",
+    288: "Help snippet - (press ESC to close window)",
     289: "||Red line : these red lines delimit which portion of the map are to be considered visible on the other view. The objects that are not visible on both map views are considered invisible, and if you see them on one view, they will be grayed out and not selectable with the mouse.\n\nMove these red lines if you need, for example, a quick way to select objects in a room without selecting the ceiling first every time : in this case, scroll the XZ view and/or move its red line until it is below the ceiling, so that the ceiling doesn't come in the way any more.",
 
     384: "Impossible to create the file :\n\n%s",
@@ -884,6 +884,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.25  2000/12/30 15:27:02  decker_dk
+#- Direct3D
+#
 #Revision 1.24  2000/10/15 16:09:48  alexander
 #added missing file type names for 3ds files
 #added error message for bsp file type V46
