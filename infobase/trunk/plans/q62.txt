@@ -6,10 +6,15 @@ Red means stuff that should defintely be done for release.
 
 
 <UL>
+<LI><font color=#ff0000>Q3(T)A Model display:</font> (Andy/Maleficus)
+<br>basically done, except that textures aren't being shown.
 <LI>OsFolders: (tiglari) load up resources from disk by specified paths 
      etc.
 <BR>status:  basically done.  editing of folder properties not yet
    implemented, maybe delay til 6.3
+<LI><font color=#FF0000>Bezier Page:</font> (Andy)
+<br>status: bug with undo; texture itself isn't being shown,
+starting scale too big.
 <LI>
   Write Brush Primitives: (tiglari)
     <BR>status: done 
