@@ -23,3 +23,6 @@ be brought back to the QuArK explorer when using this, so you can see that a
 new entry is added to your project. You can rename the entries by slowly
 double-clicking on them, or press the F2 key (Just like in Windows'
 File-Explorer.)
+
+Also when saving to the the QuArK explorer, you then have to save your project
+there.

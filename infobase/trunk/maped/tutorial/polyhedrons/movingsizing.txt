@@ -10,7 +10,7 @@ To size the brush, use the small blue-handles at the edges (<g>face</g>
 handles.)
 
 To distort a corner, use the <g>vertex</g>. Notice that QuArK does not distort
-just a single corner, but an edge. This is due to the internal storing of
+just a single corner, but an <g>edge</g>. This is due to the internal storing of
 faces, and in many cases ensure that your brushes are kept <g>convex</g>, which
 they must be to be used in a Quake-engine game! True vertex-manipulation does
 not exists in QuArK.
@@ -21,4 +21,5 @@ and selecting them again by clicking within the brush. Notice that the
 <ref> intro/mapeditor/dataforms/treeview </ref> will show you your new cubes,
 where you also can select them.
 
-Try also to delete and undo/redo your newly created brushes.
+Try also to delete and <ref> ../starting/undoredo \ undo/redo </ref> your
+newly created brushes.

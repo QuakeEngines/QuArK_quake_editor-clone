@@ -13,4 +13,4 @@ with. There are two types of entities:
 </ul>
 
 Brush-entities requires that at least one brush is attached to the entity, as
-shown in the image to the right.
+shown in the image.

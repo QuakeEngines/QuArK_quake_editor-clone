@@ -11,7 +11,7 @@ macro-objects; Wall Maker and Hollow Maker.
 
 Both objects can be found in the 'Duplicators & Misc.' folder.
 
-Once created, a default brush are assigned to the object, but you can of cause
+Once created, a default brush is assigned to the object, but you can of cause
 put more brushes into the Wall Maker-/Hollow Maker-object, like any other
 brush-entity or group.
 
@@ -25,18 +25,19 @@ negative-cube(s), but you only have to think about moving one.
 Depending on which of the two objects you have created; Wall maker or Hollow
 maker, the size of the room they make, are whats matters:
 
-- A Hollow maker, will take the brush(es) which are assigned to it, and create
+<ul>
+<li>A Hollow maker, will take the brush(es) which are assigned to it, and create
 a smaller room inside it.
-
-- The Wall maker, takes the size of the brush(es) for given as the room size,
+<li>The Wall maker, takes the size of the brush(es) for given as the room size,
 and then surrounds it with walls.
+</ul>
 
 </td></tr>
 <tr><td>
 
 <img width=181 height=145 align=right>image32.png</img>
-The size of the walls are determined by the specific depth, which can be
-found in both objects. To increase the thickness of the walls, increase the
+The size of the walls are determined by the specific <tt>depth</tt>, which can
+be found in both objects. To increase the thickness of the walls, increase the
 value of depth.
 
 </td></tr>

@@ -6,8 +6,10 @@ author: Decker
 
 <img width=150 height=149 align=right>image35.png</img>
 If you think, that to create a hole in a brush, you have to brush-subtract
-(carve), then think again when using QuArK! A very powerful feature in QuArK,
-is the ability to use diggers and negative polys, which only does the real
+(carve), then think again when using QuArK!
+
+A very powerful feature in QuArK,
+is the ability to use diggers and negative polys, which first does the real
 brush-subtraction when you compile your map. This lets you experiment placing a
 hole if you're not quite sure about its position, without messing with
 brush-subtraction and more brushes than necessary.

@@ -53,3 +53,6 @@ You can add new specifics to your entity, by clicking on the <tt>plus icon</tt>
 in the specifics/args view. This will give you a new line, where you have to
 rename the specific and give it an argument. You can of cause also delete a
 specific/arg by first selecting the specific and press the <tt>minus icon</tt>.
+However, some specifics might not disappear when you try to delete them. That
+is because these specifics are instructed to be available for input, and usually
+part of the entity, that the game-engine parses.

@@ -11,5 +11,5 @@ Maybe a little help on the way? Well, okay then:
 </ul>
 
 Unfortunatly you can't test it yet, because we haven't told where the player
-should start entering the map. Complete the <ref> ../entities </ref> section to
-learn how to do that.
+should start entering the map. So continue reading, to see how to place
+<g>entities</g> in your map.
