@@ -52,7 +52,8 @@ def parentClick(m,editor=None):
     editor, sel = getEditorSelection(editor)
     if sel is None: return
     parent = sel.treeparent
-    if parent.name!="worldspawn:b":
+#    if parent.name!="worldspawn:b":
+    if parent is not None:
         explorer = editor.layout.explorer
         explorer.uniquesel = parent
         if quarkx.keydown(collapse)!=1:
@@ -138,18 +139,21 @@ shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    prevItem.state=nextItem.state=parentItem.state=qmenu.disabled
-    removeItem.state=qmenu.disabled
+    prevItem.state=nextItem.state=parentItem.state=childItem.state=qmenu.disabled
+    freezeItem.state = unfreezeItem.state = removeItem.state=qmenu.disabled
     if editor is not None:
-        if editor.layout.explorer.uniquesel is not None:
-            prevItem.state=nextItem.state=parentItem.state=qmenu.normal
+        uniquesel = editor.layout.explorer.uniquesel 
+        if uniquesel is not None:
+            prevItem.state=nextItem.state=qmenu.normal
+            if len(uniquesel.subitems)>0:
+                childItem.state = qmenu.normal
+            if uniquesel.treeparent:
+                parentItem.state=qmenu.normal
             removeItem.state=qmenu.normal
-        if getAttr(editor,'frozenselection') is None:
-            freezeItem.state=qmenu.normal
-            unfreezeItem.state=qmenu.disabled
-        else:
-            freezeItem.state=qmenu.disabled
-            unfreezeItem.state=qmenu.normal
+            if getAttr(editor,'frozenselection') is None:
+                freezeItem.state=qmenu.normal
+            else:
+                unfreezeItem.state=qmenu.normal
 
 
 def SelectionMenu():
@@ -167,6 +171,10 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.5  2002/05/13 10:35:57  tiglari
+# support frozen selections (don't change until another frozen selection is made,
+# or they are cancelled with ESC or unfreeze selection)
+#
 # Revision 1.4  2001/05/04 06:36:53  tiglari
 # Accelerators added to selection menu
 #

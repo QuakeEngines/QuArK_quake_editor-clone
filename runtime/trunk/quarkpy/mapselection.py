@@ -52,7 +52,7 @@ def parentClick(m,editor=None):
     editor, sel = getEditorSelection(editor)
     if sel is None: return
     parent = sel.treeparent
-    if parent.name!="worldspawn:b":
+    if parent is not None:
         explorer = editor.layout.explorer
         explorer.uniquesel = parent
         if quarkx.keydown(collapse)!=1:
@@ -138,18 +138,21 @@ shortcuts = {}
 
 def onclick(menu):
     editor=mapeditor()
-    prevItem.state=nextItem.state=parentItem.state=qmenu.disabled
-    removeItem.state=qmenu.disabled
+    prevItem.state=nextItem.state=parentItem.state=childItem.state=qmenu.disabled
+    freezeItem.state = unfreezeItem.state = removeItem.state=qmenu.disabled
     if editor is not None:
-        if editor.layout.explorer.uniquesel is not None:
-            prevItem.state=nextItem.state=parentItem.state=qmenu.normal
+        uniquesel = editor.layout.explorer.uniquesel 
+        if uniquesel is not None:
+            prevItem.state=nextItem.state=qmenu.normal
+            if len(uniquesel.subitems)>0:
+                childItem.state = qmenu.normal
+            if uniquesel.treeparent:
+                parentItem.state=qmenu.normal
             removeItem.state=qmenu.normal
-        if getAttr(editor,'frozenselection') is None:
-            freezeItem.state=qmenu.normal
-            unfreezeItem.state=qmenu.disabled
-        else:
-            freezeItem.state=qmenu.disabled
-            unfreezeItem.state=qmenu.normal
+            if getAttr(editor,'frozenselection') is None:
+                freezeItem.state=qmenu.normal
+            else:
+                unfreezeItem.state=qmenu.normal
 
 
 def SelectionMenu():
@@ -167,6 +170,9 @@ def SelectionMenu():
 
 
 # $Log$
+# Revision 1.8  2003/02/09 06:11:01  cdunde
+# Discription update and HotKey name change
+#
 # Revision 1.7  2003/02/08 07:37:25  cdunde
 # To reduce Cancel selection to a one click function
 #
