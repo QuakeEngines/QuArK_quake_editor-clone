@@ -129,12 +129,13 @@ class StandardDuplicator(DuplicatorManager):
             offset = quarkx.vect(self.dup["offset"])
         else:
             offset = cumoffset
-        if self.matrix2:
-            for item in list:
-                center = maphandles.GetUserCenter(item)
-#                if item["usercenter"]:
-#                    center=center+offset
-                item.linear(center, self.matrix2)
+        try:
+            if self.matrix2 is not None:
+                for item in list:
+                    center = maphandles.GetUserCenter(item)
+                    item.linear(center, self.matrix2)
+        except (AttributeError):
+            pass
         for i in range(count):
             cumoffset = offset+cumoffset
             self.imagenumber = i
@@ -145,12 +146,15 @@ class StandardDuplicator(DuplicatorManager):
             #  - removes all None objects;
             #  - and stores the new list back in "list".
             list = reduce(lambda x,y: x+y, map(lambda item, fn=self.do: fn(item.copy()), list), [])
-            if self.matrix2:
-                for item in list:
-                    center = maphandles.GetUserCenter(item)
-                    if item["usercenter"]:
-                        center=center+cumoffset
-                    item.linear(center, self.matrix2)
+            try:
+                if self.matrix2 is not None:
+                    for item in list:
+                        center = maphandles.GetUserCenter(item)
+                        if item["usercenter"]:
+                            center=center+cumoffset
+                        item.linear(center, self.matrix2)
+            except (AttributeError):
+                pass
             if (singleimage is None) or (i==singleimage):
                 newobjs = newobjs + list
         del self.imagenumber
@@ -271,6 +275,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2001/05/06 08:07:26  tiglari
+#remove debug
+#
 #Revision 1.7  2001/05/06 03:03:21  tiglari
 #add 'offset dup' support, if ="1", then dup origin-sourcelist center is added to offset
 #  this is for (new) Copy One duplicator, use of angle handle with this
