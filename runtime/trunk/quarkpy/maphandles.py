@@ -1331,7 +1331,14 @@ def singlebezierzoom(view):
     view.screencenter = sc
     
 def GetUserCenter(obj):
-    uc = obj["usercenter"]
+    if type(obj) is type([]):  # obj is list
+        if len(obj)==1:
+            uc = obj[0]["usercenter"]
+        else:
+            box=quarkx.boundingboxof(obj)
+            return (box[0]+box[1])/2
+    else:
+        uc = obj["usercenter"]
     if uc is None:
         uc = mapentities.ObjectOrigin(obj).tuple
     return quarkx.vect(uc)
@@ -1373,6 +1380,9 @@ class UserCenterHandle(CenterHandle):
 #
 #
 #$Log$
+#Revision 1.12  2001/03/31 10:15:22  tiglari
+#support for usercenter specific
+#
 #Revision 1.11  2001/03/01 19:14:58  decker_dk
 #Fix for CyanBezier2Handle.drag 'if new:'. Now testing for 'if new is not None:'.
 #
