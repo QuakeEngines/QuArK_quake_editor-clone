@@ -121,12 +121,9 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
 
         def speeddraw1click(m, self=self, editor=editor, view=view):
             #
-            i = 20
             walker = self.centerof
             who_targets_me = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", walker["targetname"])
             while (who_targets_me is not None) and (who_targets_me["target"] is not None):
-                print i, walker["targetname"], who_targets_me["target"]
-                i = i - 1
                 walker = who_targets_me
                 who_targets_me = self.findpathdupcornerwith(self.centerof.parent.subitems, "target", walker["targetname"])
             if (walker["speeddraw"] is not None):
@@ -134,6 +131,7 @@ class PathDuplicatorPointHandle(quarkpy.qhandles.IconHandle):
                     walker["speeddraw"] = "0"
                 else:
                     walker["speeddraw"] = "1"
+            #FIXME - How to redraw the duplicator, to reflect the change?!?
 
         menulist = [qmenu.item("Insert after",  after1click)]
         if (self.pathdupmaster == 0):
@@ -574,6 +572,9 @@ quarkpy.mapduplicator.DupCodes.update({
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.3  2001/02/03 19:08:30  decker_dk
+#Changed path-handles to ':d'-macros, so functions can be performed on them. Like adding new path-handles.
+#
 #Revision 1.2  2001/01/27 18:25:29  decker_dk
 #Renamed 'TextureDef' -> 'DefaultTexture'
 #
