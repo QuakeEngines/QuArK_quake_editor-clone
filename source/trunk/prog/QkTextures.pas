@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2000/04/24 09:54:54  arigo
+Q3 shaders, once more
+
 Revision 1.10  2000/04/22 08:56:48  arigo
 Problems with texture sizes fixed
 
@@ -968,6 +971,17 @@ begin
        Link:=NeedGameFileBase(S, Q2TexPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
        Link.AddRef(+1);
        Link.Acces;  { we found the linked texture }
+{start --- kingpin texture flag hack}
+       {mac tiglari =- FIXME: we should have these flags
+        read directly from the text file in the .pak
+        rather than having to put this info into datakp.qrk}
+        if CharModeJeu=mjKingPin then
+         begin
+          Link.Specifics.Add('Contents='+Specifics.Values['c']);
+          Link.Specifics.Add('Flags='+Specifics.Values['f']);
+          Link.Specifics.Add('Value='+Specifics.Values['v']);
+        end;
+{end  --- kingpin texture flag hack}
        Break;
       end;
     end;
