@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.39  2004/11/25 01:25:24  alexander
+save in HL2 map format when MapFormat is configured to HL2
+
 Revision 1.38  2002/12/22 01:13:40  tiglari
 TTreeMap.Deplacement now ignores sub-elements marked 'nollinear 1'.
 This is to allow the path duplicator to work with linear mappings.
@@ -1198,7 +1201,8 @@ const
  LineStarts: array[Boolean] of String = (' "', '"');
 var
  MJ, S, Msg, LineStart: String;
- P1, I, J, P: Integer;
+ P1, I, J, P,hashpos: Integer;
+ typedspecs:Bool;
 begin
  MJ:=CharModeJeu;
  if Flags and soBsp=0 then
@@ -1211,32 +1215,65 @@ begin
  Dest.Add('{');
  LineStart:=LineStarts[Flags and soBSP <> 0];
  Dest.Add(LineStart+SpecClassname+'" "'+Name+'"');
+ typedspecs:=false;
  for J:=0 to Specifics.Count-1 do
-  begin
+ begin
    S:=Specifics[J];
-   if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
-    begin
+
+   // process untyped specifics
+   hashpos:=Pos('#', S);
+   if (hashpos=0) or (hashpos=1) then
+   begin
+     if (S<>'') and (S[1]<>';') and (Ord(S[1])<chrFloatSpec) then
+     begin
+       P:=Pos('=', S);
+       Msg:=Copy(S, P+1, 255);
+       // special processing for hxstrings
+       if (S[1]='#') and (HxStrings<>Nil) then
+       begin
+         I:=0;
+         while (I<HxStrings.Count) and (Msg<>HxStrings[I]) do
+          Inc(I);
+         if I=HxStrings.Count then
+          HxStrings.Add(Msg);
+         Msg:=IntToStr(I+1);
+         P1:=2;
+         Dec(P);
+       end
+       else
+        P1:=1;
+      {$IFDEF RemoveEmptySpecs}
+       if Msg<>'' then
+      {$ENDIF}
+        Dest.Add(LineStart+Copy(S, P1, P-1)+'" "'+Msg+'"');
+     end;
+   end
+   else
+     typedspecs:=true;
+ end;
+
+ if typedspecs and (GetMapFormatType=HL2Type)then
+ begin
+   Dest.Add('  connections');
+   Dest.Add('  {');
+   for J:=0 to Specifics.Count-1 do
+   begin
+     S:=Specifics[J];
      P:=Pos('=', S);
      Msg:=Copy(S, P+1, 255);
-     if (S[1]='#') and (HxStrings<>Nil) then
-      begin
-       I:=0;
-       while (I<HxStrings.Count) and (Msg<>HxStrings[I]) do
-        Inc(I);
-       if I=HxStrings.Count then
-        HxStrings.Add(Msg);
-       Msg:=IntToStr(I+1);
-       P1:=2;
-       Dec(P);
-      end
-     else
-      P1:=1;
-    {$IFDEF RemoveEmptySpecs}
-     if Msg<>'' then
-    {$ENDIF}
-      Dest.Add(LineStart+Copy(S, P1, P-1)+'" "'+Msg+'"');
-    end;
-  end;
+
+// not neeeded in map file
+//     hashpos:=Pos('input#',S);
+//     if hashpos <> 0 then
+//       Dest.Add('   "'+Copy(S, 7, P-7)+'" "'+Msg+'"');
+
+     hashpos:=Pos('output#',S);
+     if hashpos <> 0 then
+       Dest.Add('   "'+Copy(S, 8, P-8)+'" "'+Msg+'"');
+
+   end;
+   Dest.Add('  }');
+ end;
 end;
 
 procedure TTreeMapSpec.CouleurDessin;
