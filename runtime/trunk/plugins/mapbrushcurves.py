@@ -44,6 +44,7 @@ import quarkpy.mapentities
 import quarkpy.mapeditor
 import quarkpy.mapcommands
 import quarkpy.mapoptions
+import quarkpy.qhandles
 import quarkpy.maphandles
 #import quarkpy.dlgclasses
 import quarkpy.mapduplicator
@@ -207,7 +208,7 @@ def smallercolumnbox(box, thick):
     return box2
 
 
-def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=0, (subdivide,)=1):
+def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, grid=0, thick=0, inner=0, (subdivide,)=1):
     "makes a bevel/inverse bevel on the basis of brush o"
     #
     #  Set stuff up
@@ -223,11 +224,18 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
     if lower:
        fdict = facedict_fflip(fdict)
     subdivide = int(subdivide)
-    def makestuff(pd, fdict, subdivide=subdivide, inner=inner): 
+    def makestuff(pd, fdict, subdivide=subdivide, inner=inner, grid=grid): 
         if inner:
             curve = innerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
         else:
             curve = outerArcLine(subdivide, pd["tlb"],pd["trb"],pd["trf"])          
+        #
+        # assumes that the box points are already on the grid,
+        #  so that we only have to force the curve points
+        #
+        if grid:
+            for i in range(len(curve)):
+                curve[i]=quarkpy.qhandles.aligntogrid(curve[i],1)
     #    squawk(`curve`)
     #    compression = arcLength((curve[0],pd["trb"],curve[len(curve)-1]))/arcLength(curve)
         cornerlength=arcLength((curve[0],pd["trb"],curve[len(curve)-1]))
@@ -250,10 +258,10 @@ def bevelImages(o, editor, inverse=0, left=0, lower=0, rotate=0, thick=0, inner=
         return curve, texface
 
     pd = pointdict(vtxlistdict(fdict,o))
-    pd2 = smallerbevelbox(pd, thick)
+#    pd2 = smallerbevelbox(pd, thick)
         
     curve, texface = makestuff(pd, fdict)
-    curve2, texface2 = makestuff(pd2, fdict)
+#    curve2, texface2 = makestuff(pd2, fdict)
     
     brushes = []
     #
@@ -336,8 +344,8 @@ class BrushCapDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, onside, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "lower", "onside", "thick", "inner", "subdivide"))
+    inverse, lower, onside, grid, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "onside", "grid", "thick", "inner", "subdivide"))
     if thick:
       thick, = thick
     if not onside:
@@ -369,8 +377,8 @@ class BrushCapDuplicator(StandardDuplicator):
            o2.removeitem(o2.findallsubitems('right',':f')[0])
            o1.appenditem(face), o2.appenditem(face2)
            
-           im1 = images(bevelImages, (o1, editor, inverse, 0, lower, standup, thick, inner, subdivide))
-           im2 = images(bevelImages, (o2, editor, inverse, 1, lower, standup, thick, inner, subdivide))
+           im1 = images(bevelImages, (o1, editor, inverse, 0, lower, standup, grid, thick, inner, subdivide))
+           im2 = images(bevelImages, (o2, editor, inverse, 1, lower, standup, grid, thick, inner, subdivide))
 
            return im1+im2
 
@@ -380,8 +388,8 @@ class BrushBevelDuplicator(StandardDuplicator):
     if singleimage is not None and singleimage>0:
       return []
     editor = mapeditor()
-    inverse, lower, left, standup, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
-      ("inverse", "lower", "left", "standup", "thick", "inner", "subdivide"))
+    inverse, lower, left, standup, grid, thick, inner, subdivide = map(lambda spec,self=self:self.dup[spec],
+      ("inverse", "lower", "left", "grid", "standup", "thick", "inner", "subdivide"))
     if thick:
         thick, = thick
     list = self.sourcelist()
@@ -389,7 +397,7 @@ class BrushBevelDuplicator(StandardDuplicator):
         subdivide=1,
     for o in list:
         if o.type==":p": # just grab the first one, who cares
-            return images(bevelImages, (o, editor, inverse, left, lower, standup, thick, inner, subdivide))
+            return images(bevelImages, (o, editor, inverse, left, lower, standup, grid, thick, inner, subdivide))
 
 
 quarkpy.mapduplicator.DupCodes.update({
@@ -533,6 +541,9 @@ quarkpy.mapentities.PolyhedronType.menu = newpolymenu
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.9  2001/03/29 09:28:55  tiglari
+#scale and rotate specifics for duplicators
+#
 #Revision 1.8  2001/02/25 08:40:01  tiglari
 #`curve' faces now copy all specifics from guidebrush (esp.lightvalue for arghrad)
 #
