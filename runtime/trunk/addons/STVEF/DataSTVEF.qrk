@@ -4,6 +4,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2002/04/29 00:18:30  tiglari
+//minor polishing (Quake=>STVEF)
+//
 //Revision 1.5  2001/05/21 11:54:45  tiglari
 //added some 'holdable' entities (from Jeff Tunink)
 //
@@ -374,8 +377,8 @@ QQRKSRC1
   Toolbox Folders.qtx =
   {
     ToolBox = "Texture Browser..."
-    Root = "New Folder.qtxfolder"
-    STVEF textures and shaders.qtxfolder =
+    Root = "STVEF Textures and Shaders.qtxfolder"
+    STVEF Textures and Shaders.qtxfolder =
     {
       BaseEF.osfolder =
       {
