@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.24  2001/03/12 03:41:04  aiv
+bug fixes for entity tool.
+
 Revision 1.23  2001/03/09 21:11:56  aiv
 Misc. Bug fixes
 
@@ -245,7 +248,7 @@ implementation
 
 uses Travail, QkWad, Setup, QkText, QkMap, QkBspHulls,
      Undo, Quarkx, PyForms, QkObjectClassList, ToolBox1,
-     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging;
+     ToolBoxGroup, QkQuakeCtx, FormCFG, Logging, QkTextures, QkQ1;
 
 {$R *.DFM}
 
@@ -1162,13 +1165,40 @@ begin
   if IsNumbersSeperated(arg)<>0 then Result:='EF'+IntToStr(IsNumbersSeperated(arg));
 end;
 
+Function GetBaseDir(F: String): String;
+var
+  i: Integer;
+  slashCount: Integer;
+begin
+  if F='' then
+  begin
+    result:=GetGameDir;
+    exit;
+  end;
+  I:=Length(F)+1;
+  SlashCount:=0;
+  While SlashCount<3 do
+  begin
+    Dec(I);
+    if F[I]='\' then
+    begin
+      Inc(SlashCount);
+    end;
+  end;
+  Result:=Copy(F, I+1, length(F)-I+1);
+  SlashCount:=Pos('\', Result);
+  Result:=Copy(Result, 1, SlashCount-1);
+end;
+
 Function QBsp.CreateAddonFromEntities(ExistingAddons: QFileObject): QFileObject;
+const
+  TEXTURES_PER_FOLDER = 20;
 var
   e: QObject;
   S, ext, tb: String;
   specList: TStringList;
   e_sl: TStringList;
-  i,J: Integer;
+  i,J, next: Integer;
   hasOrigin: Boolean;
 
   addonRoot: QFileObject;
@@ -1183,6 +1213,9 @@ var
   opt_tbx: QToolBoxGroup;
   Addons: QFileObject;
   entities: TQList;
+  TexFolder, TexFolder2: QObject;
+  Link: QTextureLnk;
+  Tex: QObject;
 begin
   Acces;
   e:=GetBspEntry(eEntities, lump_entities, eBsp3_entities);
@@ -1305,6 +1338,46 @@ begin
       Entity.SpecificsAdd('Origin=0 0 0'); // Hack for map editor
   end;
   entities.free;
+  (*
+    Link to textures from .bsp file if exists
+  *)
+  e:=nil;
+  try
+  e:=GetBspEntry(eMipTex, NoBsp2, NoBsp3);
+  except
+  end;
+  if e<>nil then
+  begin
+    e.acces;
+    TBX:=QToolBox.Create('Textures', addonRoot);
+    addonRoot.Subelements.Add(TBX);
+    TBX.Specifics.Add('ToolBox=Texture Browser...');
+    TexFolder:=QToolboxGroup.Create('textures from '+GetFullName, TBX);
+    TBX.Specifics.Add('Root='+TexFolder.GetFullName);
+    TBX.Subelements.add(TexFolder);
+    TexFolder2:=TexFolder;
+    for i:=0 to e.subelements.count-1 do
+    begin
+      if (i mod TEXTURES_PER_FOLDER)=0 then
+      begin
+        if (e.subelements.count-1)-i>=TEXTURES_PER_FOLDER then
+        begin
+          next:=TEXTURES_PER_FOLDER;
+        end
+        else
+        begin
+          next:=e.subelements.count;
+        end;
+        TexFolder2:=QTextureList.Create('textures '+inttostr(i+1)+' - '+inttostr(next), TexFolder);
+        TexFolder.Subelements.Add(TexFolder2);
+      end;
+      Tex:=e.subelements[i];
+      Link:=QTextureLnk.Create(Tex.name, TexFolder2);
+      Link.SpecificsAdd('b='+Name);
+      Link.SpecificsAdd('s='+GetBaseDir(Self.Filename));
+      TexFolder2.Subelements.Add(Link);
+    end;
+  end;
   Result:=AddonRoot;
 end;
 

@@ -26,6 +26,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2001/03/12 03:41:04  aiv
+bug fixes for entity tool.
+
 Revision 1.13  2001/03/09 21:11:56  aiv
 Misc. Bug fixes
 
@@ -366,10 +369,10 @@ var
   entityTBX_2: QToolBoxGroup;
   Group: QToolBoxGroup;
   OldEntity, Entity: TTreeMapSpec;
-  Entities, Forms: TQList;
+  Objects: TQList;
   entityForms:QFormContext;
   OldForm, Form: QFormCfg;
-  OldFormEl, FormEl, TexFolders: QObject;
+  OldFormEl, FormEl, TexFolders, oldTexRoot: QObject;
   (*
     Get all .bsp files in & out of pak's
   *)
@@ -464,19 +467,45 @@ begin
   TBX.Specifics.Add('Root='+EntityTBX.GetFullName);
   EntityTBX_2:=EntityTBX;
   entityForms:=QFormContext(GetObject('Entity forms', QFormContext.Typeinfo, ''));
+  (*
+    Build Textures First
+  *)
+  TexFolders:=nil;
+  TexRoot:=QToolBox(GetObject('Textures', QToolbox.TypeInfo, 'Texture Browser...'));
+  if Specifics.Values['GameDir'] <> '' then
+    BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
+
+  if TexFolders<>nil then
+  begin
+    TexFolders.Name:=Specifics.Values['GameDir']+' textures';
+    TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
+    if TexRoot.Specifics.IndexOfName('Root')=-1 then
+      TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
+    if TexRoot.SubElements.FindShortName(TexFolders.Name)=nil then
+      TexRoot.SubElements.Add(TexFolders)
+    else
+      TexFolders.free;
+    TexFolders.FParent:=TexRoot;
+  end;
+  (*
+    Now build entities & include any textures found in .bsp files
+  *)
   ProgressIndicatorStart(5458,NewAddonsList.Count);
   try
+    Objects:=TQList.Create;
     for i:=0 to NewAddonsList.Count-1 do
     begin
       ProgressIndicatorIncrement;
-      Entities:=TQList.Create;
       NewAddonsList[i].acces;
-      NewAddonsList[i].FindAllSubObjects('', TTreemapSpec, QObject, Entities);
-      for j:=0 to Entities.Count-1 do
+      (*
+        Entities
+      *)
+      NewAddonsList[i].FindAllSubObjects('', TTreemapSpec, QObject, Objects);
+      for j:=0 to Objects.Count-1 do
       begin
-        if not(Entities[j] is TTreeMapSpec) then
+        if not(Objects[j] is TTreeMapSpec) then
           continue;
-        OldEntity:=TTreeMapSpec(Entities.Items1[j]);
+        OldEntity:=TTreeMapSpec(Objects.Items1[j]);
         Entity:=TTreeMapSpec(EntityTBX_2.FindSubObject(OldEntity.Name, TTreeMapSpec, QObject));
         if (Entity = nil) then
         begin
@@ -505,12 +534,14 @@ begin
           end;
         end;
       end;
-      Entities.Free;
-      Forms:=TQList.Create;
-      NewAddonsList.Items1[i].FindAllSubObjects('', QFormCfg, QObject, Forms);
-      for j:=0 to Forms.Count-1 do
+      Objects.Clear;
+      (*
+        Entity Forms
+      *)
+      NewAddonsList.Items1[i].FindAllSubObjects('', QFormCfg, QObject, Objects);
+      for j:=0 to Objects.Count-1 do
       begin
-        OldForm:=QFormCfg(Forms.Items1[j]);
+        OldForm:=QFormCfg(Objects.Items1[j]);
         Form:=QFormCfg(entityForms.FindSubObject(OldForm.Name, QFormCfg, QObject));
         if (Form = nil) then
         begin
@@ -535,26 +566,23 @@ begin
           end;
         end;
       end;
-      Forms.Free;
+      Objects.Clear;
+      (*
+        Textures from .bsps (Q1, H2)
+      *)
+      if TexFolders<>nil then
+      begin
+        oldTexRoot:=NewAddonsList.Items1[i].FindSubObject('Textures', QToolBox, nil);
+        if oldTexRoot<>nil then
+        begin
+          for j:=0 to oldTexRoot.Subelements.Count-1 do
+          begin
+            TexFolders.Subelements.Add(oldTexRoot.Subelements[j].Clone(TexFolders, false));
+          end;
+        end;
+      end;
     end;
-
-    TexFolders:=nil;
-    if Specifics.Values['GameDir'] <> '' then
-      BuildDynamicFolders(Specifics.Values['GameDir'], TexFolders, false, false, '');
-
-    if TexFolders<>nil then
-    begin
-      TexFolders.Name:=Specifics.Values['GameDir']+' textures';
-      TexRoot:=QToolBox(GetObject('Textures', QToolbox.TypeInfo, 'Texture Browser...'));
-      TexRoot.Flags := TexRoot.Flags or ofTreeViewSubElement;
-      if TexRoot.Specifics.IndexOfName('Root')=-1 then
-        TexRoot.SpecificsAdd('Root='+TexFolders.GetFullName);
-      if TexRoot.SubElements.FindShortName(TexFolders.Name)=nil then
-        TexRoot.SubElements.Add(TexFolders)
-      else
-        TexFolders.free;
-      TexFolders.FParent:=TexRoot;
-    end;
+    Objects.Free;
 
     TBX.Flags := TBX.flags or ofTreeViewSubElement;
     entityForms.Flags := entityForms.flags or ofTreeViewSubElement;
