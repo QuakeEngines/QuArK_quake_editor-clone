@@ -24,6 +24,9 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.20  2000/07/28 15:11:34  alexander
+set snapshot name
+
 Revision 1.19  2000/07/25 16:04:32  alexander
 set snapshot name
 
@@ -108,8 +111,8 @@ const
  iiPython                = 43;
  iiBezier                = 44;
  iiSpriteFile            = 45;
- iiMD3Tag                = 46;
- iiMD3Bone               = 47;
+ iiModelTag              = 46;
+ iiModelBone             = 47;
 
  InternalImagesCount     = 48;
 
