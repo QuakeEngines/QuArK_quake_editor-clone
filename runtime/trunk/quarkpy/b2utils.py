@@ -131,10 +131,58 @@ def colmat_uv1(u,v):
                          (u[1], v[1], 0),
                          (u[2], v[2], 1))
 
+#
+# bcp is a flat array of control points, cp an array `rolled up'
+# along the columns.  The idea is to readjust the texture coordinates
+# of the bcp to compensate for distortion along the columns
+#
+def antidistort_columns(bcp, cp):
+#    squawk('anti')
+    h, w = len(bcp), len(bcp[0])
+    if h!=len(cp) or w!= len(cp[0]):
+        #
+        # this prints out a msg in developer mode
+        #
+        squawk('antidistort columns cp/bcp mismatch')
+        return bcp
+    nbcp = copycp(bcp)   # this is what we return, after diddling it
+    for j in range(w):  # for each column
+#        squawk(" col %d"%j)
+        #
+        # get info about distances between cp's
+        #
+        lengths = []
+        sum = 0
+        for i in range(1, h):
+            dist = abs(cp[i][j]-cp[i-1][j])
+            sum = sum + dist
+            lengths.append(sum)
+#        squawk('sum')
+        #
+        # now rearrange texture cp's of bcp
+        #
+        start, end = bcp[0][j], bcp[h-1][j]
+        texstart, texend = map(lambda v:quarkx.vect(v.s, v.t, 0), (start,end))
+        texgap = texend-texstart
+        #
+        #  Now do it
+        #
+#        squawk('rockin')
+        for i in range(1,h-1):
+            s, t, x = (texstart + (lengths[i-1]/sum)*texgap).tuple
+            nbcp[i][j]=quarkx.vect(bcp[i][j].xyz+(s, t))
+#    squawk(`nbcp`)
+    return nbcp      
+      
+
+
 # ----------- REVISION HISTORY ------------
 #
 #
 #$Log$
+#Revision 1.4  2000/06/03 18:01:28  alexander
+#added cvs header
+#
 #Revision 1.3  2000/06/03 12:59:33  tiglari
 #fixed arch duplicator maploading problem, hopefully
 #
