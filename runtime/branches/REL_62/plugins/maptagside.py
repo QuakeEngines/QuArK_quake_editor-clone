@@ -901,7 +901,8 @@ def aligntexstate(aligntex, tagged, o):
   if tagged is None or o is tagged:
      aligntex.state = qmenu.disabled
      return
-  if coplanar_adjacent_sides(tagged, o):
+#  if coplanar_adjacent_sides(tagged, o):
+  if abs(tagged.normal*o.normal)>.999999:  # they are almost parallel
     aligntex.abuttype = 0
   elif intersecting_sides(tagged, o):
     aligntex.abuttype = 1
@@ -957,19 +958,28 @@ def AlignTexClick(m):
   "uses wraptex to do the real work"
   editor = mapeditor()
   if editor is None: return
-  side = sideof(m, editor)
+  side = editor.layout.explorer.uniquesel
+  if side is None:
+      return
   tagged = gettagged(editor)
   try:
       if m.mirror:
           tagged=tagged.copy()
           tagged.swapsides()
   except:  pass
+  try:
+      abutt = m.abuttype
+  except (AttributeError):
+      aligntexstate(m, tagged, side)
+  
   editor.invalidateviews()
   ActionString = "wrap texture from tagged"
   undo = quarkx.action()
+  debug('what abut')
   if m.abuttype == 1:
     newside = wraptex(tagged, side)
   else:
+    debug('abut 0')
     newside=side.copy()
     newside = projecttexfrom(tagged, newside)
   undo.exchange(side, newside)
@@ -1895,6 +1905,10 @@ quarkpy.mapcommands.onclick = commandsclick
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#
+#Revision 1.11.6.2  2001/04/15 05:45:00  tiglari
+#remove debug statements
+#
 #Revision 1.11.6.1  2001/04/15 02:55:37  tiglari
 #fix merge polys problem (creating broken results)
 #
