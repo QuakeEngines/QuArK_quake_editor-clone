@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.159  2001/07/26 09:19:15  tiglari
+//Crystal Space bezier support, 2nd build prgm
+//
 //Revision 1.158  2001/07/19 11:58:58  tiglari
 //disable mapchecks for 6dx
 //
@@ -697,11 +700,11 @@ QQRKSRC1
         Duplicate= "Ctrl+D"
         Remove= "Esc"
         Select Parent="Home"
-        Collapse Tree="S"
+        Collapse Tree="S"        // not a true hotkey, but a modifier
         Select Child="End"
         Select Next="PgDn"
         Select Previous="PgUp"
-        Same Type="S"
+        Same Type="S"            // not a true hotkey, but a modifier
         Insert = "Ins"
         Tag Side = "Ctrl+T"
         Clear Tags = "Alt+C"
@@ -713,6 +716,7 @@ QQRKSRC1
         Unrestrict Selection = "Ctrl+U"
         Restrict to Selection = "Alt+R"
         Brush Subtraction =  "Ctrl+B"
+        Browse Multiple Selection = "Alt+B"
         Game Menu = "These are set in Game Menu|Customize"
         Form = "MapHotKeys"
       }
@@ -2995,6 +2999,7 @@ QQRKSRC1
        Unrestrict Selection: = {HotKeyForm = !}
        Restrict to Selection: = {HotKeyForm = !}
        Brush Subtraction: = {HotKeyForm = !}
+       Browse Multiple Selection = {HotKeyForm = !}
        sep:={Typ="S" Txt = ""}
        Game Menu:= {Txt="&R" Typ="ESR"}
     }
