@@ -30,6 +30,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.34  2000/06/14 04:38:54  tiglari
+//Added `faceonly' specific for arches & bevels.
+//
 //Revision 1.33  2000/06/13 12:48:34  tiglari
 //revised bevel & cap/arch forms
 //
@@ -2560,8 +2563,10 @@ QQRKSRC1
                Hint = "if checked, the whole thing is upside-down"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      stretchtex: = {Txt="&" Typ="X"
+               Hint = "if checked, texture on top/bottom is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open: = {Txt="&" Typ="X"
-               Hint = "if chcked, front and back are open"}
+               Hint = "if checked, front and back are open"}
       faceonly: = {Txt="&" Typ="X"
                Hint = "if checked, only the front and back faces are produced, no inner curve"}
       macro: = {Txt = "&" Typ = "ESR"
@@ -2575,6 +2580,8 @@ QQRKSRC1
                Hint = "if checked, curve goes from back to left side rather than back to right side"}
       thick: = {Txt ="&" Typ="EF1"
                 Hint = "if a nonzero value is given, an enclosed curve with thickness is produced"}
+      stretchtex: = {Txt="&" Typ="X"
+               Hint = "if checked, texture on back is stretched to cover entire curved face." $0D "Otherwise complex things are done to make it easier to align the curve's texture with the sides."}
       open: = {Txt="&" Typ="X"
                Hint = "if checked, top and bottom are open"}
       faceonly: = {Txt="&" Typ="X"
