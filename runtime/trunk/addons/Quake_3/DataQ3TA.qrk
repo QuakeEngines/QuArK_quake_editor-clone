@@ -3663,7 +3663,7 @@ Description = "Team Arena data - By: Maleficus"
       }
 	Terrain Entities.qtxfolder =
 	{
-	  func_group:e =
+	  func_group:b =
 	  {
 	  origin = "0 0 0"
 	  ;desc = "Used in Team Arena as a terrain entity. Read the terrain manual!!"
