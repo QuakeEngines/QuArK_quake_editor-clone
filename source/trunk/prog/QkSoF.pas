@@ -24,6 +24,12 @@ See also http://www.planetquake.com/quark
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2000/05/14 15:06:56  decker_dk
+Charger(F,Taille) -> LoadFile(F,FSize)
+ToutCharger -> LoadAll
+ChargerInterne(F,Taille) -> LoadInternal(F,FSize)
+ChargerObjTexte(Q,P,Taille) -> ConstructObjsFromText(Q,P,PSize)
+
 Revision 1.2  2000/05/11 22:08:04  alexander
 added copyright header
 
@@ -98,9 +104,13 @@ begin
       ScanLine:=PSD.StartPointer;
       AlphaScanLine:=PSD.AlphaStartPointer;
       GetMem(PBaseLineBuffer, LineWidth); try
-      for J:=1 to h do begin {iterate lines}
+      for J:=1 to h do {iterate lines}
+      begin
         PLineBuffer:=PBaseLineBuffer;
         SourceRGB:=PRGB(ScanLine);
+        SourceRGB[2]:=PRGB(ScanLine)^[0];  {rgb -> bgr  }
+        SourceRGB[1]:=PRGB(ScanLine)^[1];  {rgb -> bgr  }
+        SourceRGB[0]:=PRGB(ScanLine)^[2];  {rgb -> bgr  }
         for K:=0 to W-1 do begin  { mix color and alpha line-by-line }
           PRGB(PLineBuffer)^:=SourceRGB^; Inc(SourceRGB);
           PLineBuffer[3]:=AlphaScanLine[K]; {inject alpha after RGB}
@@ -120,6 +130,8 @@ begin
  end;
 end;
 {
+
+
 header hex : 04 00 00 00
 then the pak path where the file is place .. eg pics/menus/
 then 00 to offset 204 (hex not byte) then hi lo byte height of image
@@ -187,8 +199,11 @@ begin
    Source:=PChar(Buffer)+Length(Spec1);
    Dest:=PChar(Data)+Length(Spec1);
    AlphaBuf:=PChar(alpha_buffer)+Length(Spec2);
-   for I:=1 to J do begin
-     PRGB(Dest)^:=PRGB(Source)^;  { rgb }
+   for I:=1 to J do
+   begin
+     PRGB(Dest)^[2]:=PRGB(Source)^[0];  {bgr -> rgb  }
+     PRGB(Dest)^[1]:=PRGB(Source)^[1];  {bgr -> rgb  }
+     PRGB(Dest)^[0]:=PRGB(Source)^[2];  {bgr -> rgb  }
      AlphaBuf^:=Source[3];      { alpha }
      Inc(Dest, 3);
      Inc(Source, 4);
@@ -218,9 +233,9 @@ begin
        tex:=ReadPath(F);
        SpecificsAdd(format('Texture_Path=%s',[tex]));
        F.Position:=org+$204;
-       F.ReadBuffer(hi, 2);
-       F.Position:=org+$244;
        F.ReadBuffer(wi, 2);
+       F.Position:=org+$244;
+       F.ReadBuffer(hi, 2);
        F.Position:=org+$3C8;
        V[1]:=wi;
        V[2]:=hi;
