@@ -2,11 +2,11 @@
 ########################################################
 #
 #                      Mad Selector Plugin
-#                        v1.6, August 1999
-#                works with Quark 5.11 (5.10 sort of)       
+#                        v2, August 2001
+#                     works with Quark 6.3  
 #
 #
-#        by tiglari@hexenworld.com, with advice
+#        by tiglari@planetquake.com, with advice
 #          and code snippets from Armin Rigo, and
 #         bug-reports and suggestions from decker.
 #     
@@ -15,12 +15,15 @@
 #   this plugin as long as you give due credit to tiglari &
 #   Armin Rigo. (It's free software, just like Quark itself.)
 #
-#   Please notify bugs & improvements to tiglari@hexenworld.com
+#   Please notify bugs & improvements to tiglari@planequake.com
 #
 #   Extension of selection from polys eliminated because it's a mess,
 #
-#   Lots of commands for manimpulating group structure added,
+#   Lots of commands for manipulating group structure added,
 #    also for restricting the selection.
+#
+#   Exports a facility for building popup menus giving operations
+#    on higher things in the tree (like Navigate Tree)
 #
 ###
 ##########################################################
@@ -32,7 +35,7 @@
 Info = {
    "plug-in":       "Mad Selector",
    "desc":          "Manipulating selection in various ways",
-   "date":          "10 June 1999, rev 15 April 2001",
+   "date":          "10 June 1999, rev Aug 2001",
    "author":        "tiglari",
    "author e-mail": "tiglari@planetquake.com",
    "quark":         "Version 6.3" }
@@ -62,14 +65,16 @@ types = {
     ":f": "face"  }
 
 
-
-
-
 #
 #-----------  Right-menu tree-view manipulation --------
 #
 
-def parentpopupitems(current, editor, restricted):
+#
+# for an object current, returns menu items for action
+#   upon that item.  Define this in a file importing from
+#   mapmadsel to make additional parent popup menus.
+#
+def navTreePopupItems(current, editor, restricted):
     name = current.shortname
     select = qmenu.item("&Select",SelectMe,"Select")
     stash = qmenu.item("&Mark", StashMe, "|Marking is a preliminary for the `Reorganize Tree' operations, which help to (re)organize the group-structure in the tree-view.\n\nFor example you can mark a group, and then later insert a selected entity into into it, or mark an entity, and later insert it into or over (in the treeview) the selected group.\n\nReorganize Tree operations that can't be applied sensibly to the selected and marked objects are supposed to be greyed out; if they aren't it's a bug.")
@@ -86,13 +91,16 @@ def parentpopupitems(current, editor, restricted):
 #   restrict.object = current
     return item
 
-parentSelPop = qmenu.popup("&Navigate Tree", hint = "|The submenu that appears comprises the currently selected object at the top, and below it, the map objects (polys, groups & brush entities) that are above it in the group tree-structure.\n\nIf you put the cursor over one of these, you will get a further sub-menu with relevant commands to select from.")
 
-def parentPopItems(o):
-    "makes a popup menu items list of the parents of the selected object,"
+#
+# For an object o, uses the parentpopupitems function to
+#   construct a menu of popups, one for each object over o.
+#
+def buildParentPopupList(o, parentpopupitems, editor):
     current=o
     list = []
-    editor = mapeditor()
+    if editor is None:
+        editor = mapeditor()
     restrictor = getrestrictor(editor)
     restricted = 0
   #  while current.name != "worldspawn:b":
@@ -105,14 +113,24 @@ def parentPopItems(o):
   #  list.reverse()
     return list    
 
-def parentpopup(o):
-    list = parentPopItems(o)
+
+def buildParentPopup(o,parentpopup, parentpopupitems, editor=None):
+    list = buildParentPopupList(o,parentpopupitems, editor)
     if list == []:
-        parentSelPop.state=qmenu.disabled
+        parentpopup.state=qmenu.disabled
     else:
-        parentSelPop.items = list
-    return parentSelPop
+        parentpopup.items = list
+    return parentpopup
      
+#
+# This makes a parent popup item for navigating the tree
+#   above the selected item.  Imitate in other files to
+#   make more, with replacement for navTreePopupItems.
+#
+def navTreePopup(o,editor):
+    parentSelPop = qmenu.popup("&Navigate Tree", hint = "|The submenu that appears comprises the currently selected object at the top, and below it, the map objects (polys, groups & brush entities) that are above it in the group tree-structure.\n\nIf you put the cursor over one of these, you will get a further sub-menu with relevant commands to select from.")
+    return buildParentPopup(o,parentSelPop,navTreePopupItems,editor)
+
 
 def RestrictByMe(m):
   editor = mapeditor()
@@ -393,7 +411,7 @@ def madfacemenu(o, editor, oldmenu=quarkpy.mapentities.FaceType.menu.im_func):
   menu[:0] = [qmenu.popup("&Extend Selection", 
                 [extendtolinked(editor,o),
                  extmenuitem("to Adjacent faces",ExtendSelClick,o,exttext)]),
-              parentpopup(o),
+              navTreePopup(o, editor),
               facelift(o),
               quarkpy.qmenu.sep]
   return menu  
@@ -407,14 +425,13 @@ quarkpy.mapentities.FaceType.menu = madfacemenu
 
 grptext = "|Extends the selection to all sides forming a connected sheet with any side of the brush or group.\n\nSo if you move one, they all follow."
 
-reorganizePop = qmenu.popup("&Reorganize Tree", hint="Reorganize structure of grouping tree")
-
 def reorganizePopItems(o):
     return [insertinto(o),
             insertover(o),
             insertme(o)]
 
 def restructurepopup(o):
+    reorganizePop = qmenu.popup("&Reorganize Tree", hint="Reorganize structure of grouping tree")
     reorganizePop.items = reorganizePopItems(o)
     return reorganizePop
 
@@ -423,7 +440,7 @@ def madpolymenu(o, editor, oldmenu=quarkpy.mapentities.PolyhedronType.menu.im_fu
     menu = oldmenu(o, editor)
     menu[:0] = [extmenuitem("Extend Selection",ExtendSelClick,o,grptext),
                 #stashitem(o),
-                parentpopup(o),
+                navTreePopup(o, editor),
                 restructurepopup(o),
   #              menrestsel,
                 qmenu.sep]
@@ -443,7 +460,7 @@ def madgroupmenu(o, editor, oldmenu=quarkpy.mapentities.GroupType.menu.im_func):
   menu = oldmenu(o, editor)
   menu[:0] = [#extmenuitem("Extended Selection",ExtendSelClick,o,grptext),
               #stashitem(o),
-              parentpopup(o),
+              navTreePopup(o, editor),
               restructurepopup(o),
 #              menrestsel,
               qmenu.sep]
@@ -460,7 +477,7 @@ quarkpy.mapentities.GroupType.menu = madgroupmenu
 def madbezmenu(o, editor, oldmenu=quarkpy.mapentities.BezierType.menu.im_func):
   "the new right-mouse menu for groups"
   menu = oldmenu(o, editor)
-  menu[:0] = [parentpopup(o),
+  menu[:0] = [navTreePopup(o, editor),
               restructurepopup(o),
               qmenu.sep]
   return menu  
@@ -472,7 +489,7 @@ def madentmenu(o, editor, oldmenu=quarkpy.mapentities.EntityType.menu.im_func):
   "point entity menu"
   menu = oldmenu(o, editor)
   menu[:0] = [#stashitem(o),
-              parentpopup(o),
+              navTreePopup(o, editor),
               restructurepopup(o),
 #              menrestsel,
               qmenu.sep]
@@ -484,7 +501,7 @@ quarkpy.mapentities.EntityType.menu = madentmenu
 def madbrushentmenu(o, editor, oldmenu=quarkpy.mapentities.BrushEntityType.menu.im_func):
   menu = oldmenu(o, editor)
   menu[:0] = [#stashitem(o),
-              parentpopup(o),
+              navTreePopup(o, editor),
               restructurepopup(o),
               qmenu.sep]
   return menu
@@ -895,10 +912,13 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
     else:
         clearItem.state=qmenu.normal
     if sel is None: return
-    for popup, items in ((parentSelPop, parentPopItems(sel)),
-                           (reorganizePop, reorganizePopItems(sel))):
-        popup.items = items
-        popup.state=qmenu.normal
+#
+#  this stuff isn't working right; canned
+#
+#    for popup, items in ((parentSelPop, buildParentPopupList(sel,navTreePopupItems),editor),
+#                         (reorganizePop, reorganizePopItems(sel))):
+#        popup.items = items
+#        popup.state=qmenu.normal
     stashItem.object = zoomItem.object = sel
     stashItem.state = zoomItem.state = qmenu.normal
     if menrestsel.state != qmenu.checked:
@@ -910,8 +930,11 @@ def selectionclick(menu, oldcommand=quarkpy.mapselection.onclick):
 quarkpy.mapselection.onclick = selectionclick  
 
 quarkpy.mapselection.items.append(qmenu.sep)
-quarkpy.mapselection.items.append(parentSelPop)
-quarkpy.mapselection.items.append(reorganizePop)
+#
+# Canned cuz not working
+#
+#quarkpy.mapselection.items.append(parentSelPop)
+#quarkpy.mapselection.items.append(reorganizePop)
 quarkpy.mapselection.items.append(menextsel)
 quarkpy.mapselection.items.append(browseItem)
 quarkpy.mapselection.items.append(menunrestrict)
@@ -932,6 +955,9 @@ quarkpy.mapoptions.items.append(mennosel)
 #
 #
 # $Log$
+# Revision 1.14  2001/08/02 02:51:28  tiglari
+# browse multiselection list
+#
 # Revision 1.13  2001/07/24 01:09:49  tiglari
 # clear mark command
 #
