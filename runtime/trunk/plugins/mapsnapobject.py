@@ -1,3 +1,33 @@
+########################################################
+#
+#                         Snap Object Plugin
+#                          v1.0, Aug 2001
+#                      works with Quark 6.3        
+#
+#
+#                    by tiglari@hexenworld.com     
+#
+#   You may freely distribute modified & extended versions of
+#   this plugin as long as you give due credit to tiglari &
+#   Armin Rigo. (It's free software, just like Quark itself.)
+#
+#   Please notify bugs & improvements to tiglari@planetquake.com
+#
+###
+##########################################################
+
+#$Header$
+
+
+
+Info = {
+   "plug-in":       "Snap objects",
+   "desc":          "Snapping objects to faces",
+   "date":          "6 Aug 2001",
+   "author":        "tiglari",
+   "author e-mail": "tiglari@planetquake.com",
+   "quark":         "Version 6.3" }
+
 
 import quarkx
 
@@ -306,3 +336,5 @@ def parentSnapPopup(o, editor):
 
 #quarkpy.mapentities.FaceType.menu = snapfacemenu
 
+# $Log: #
+#
