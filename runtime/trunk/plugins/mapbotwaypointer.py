@@ -728,7 +728,8 @@ class BotWaypointerPoint(DuplicatorManager):
                 if (routes_to is not None):
                     routes_to_list.append(routes_to.origin)
                     if (routes_to not in to_list):
-                        to_list.append(points_to)
+			    points_to_list.append
+			    
 
         # First add the selected handle, so it will be drawn first (z-order of drawn lines)
         hndls.append(BotWaypointerPointHandle(points_to_list, routes_to_list, self.dup.origin, self.dup))
@@ -862,7 +863,12 @@ quarkpy.mapduplicator.DupCodes.update({
 })
 
 # ----------- REVISION HISTORY ------------
+# Revision 1.3.1 2005/10/4 01:30 RiviEr
+# Fixed a bug wich had been introduced in a later release
 # $Log$
+# Revision 1.3  2003/12/18 21:51:46  peter-b
+# Removed reliance on external string library from Python scripts (second try ;-)
+#
 # Revision 1.2  2002/08/02 19:17:08  decker_dk
 # Uhm... Lots of things changed, of which I've forgotten.
 #
