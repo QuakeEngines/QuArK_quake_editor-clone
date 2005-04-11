@@ -12,9 +12,9 @@ Info = {
    "plug-in":       "Bot Waypointer",
    "desc":          "Bot Waypointer",
    "date":          "? may 2002",
-   "author":        "Decker",
+   "author":        "Decker,Peter,RiviEr",
    "author e-mail": "decker@planetquake.com",
-   "quark":         "Version 6.x"
+   "quark":         "Version 6.5"
 }
 
 import sys
@@ -529,10 +529,10 @@ class BotWaypointerPointHandle(CenterHandle):
                             via_routes = myself[spec].split(";")
                             if (ShortestRouteTree(view, cv, viaobj, via_routes) != 0):
                                 raise "Possible cyclic path"
-                           #for wp in via_routes:
-                           #    obj = FindEntityByTargetname(wp, myparent.subitems)
-                           #    if (obj is not None):
-                           #        cv.line(view.proj(obj.origin), pp2)
+                          #for wp in via_routes:
+                               #obj = FindEntityByTargetname(wp, myparent.subitems)
+                               #if (obj is not None):
+                                   #cv.line(view.proj(obj.origin), pp2)
         else:
             if (self.routes_to_list is not None):
                 cv.penwidth = 3
@@ -687,17 +687,17 @@ class BotWaypointerPointHandle(CenterHandle):
             menu_add_oneway.state = not (not selected_targets_me)                          and quarkpy.qmenu.disabled
             menu_rem_twoway.state = not (i_target_selected and selected_targets_me)        and quarkpy.qmenu.disabled
             menu_rem_oneway.state = not (selected_targets_me)                              and quarkpy.qmenu.disabled
-
+        # Removed, caused error and no logic use RiviEr
         # Set up 'shortest path display' menuitem-checkbox
-        menu_shortestpath = quarkpy.qmenu.item("Shortest-path display", ShortestPathDisplayClick, "|stuff to type here...")
-        try:
-            shortestpathdisplay = int(myparent["shortestpathdisplay"])
-        except:
+        #menu_shortestpath = quarkpy.qmenu.item("Shortest-path display DO NOT USE!", ShortestPathDisplayClick, "|stuff to type here...")
+        #try:
+            #shortestpathdisplay = int(myparent["shortestpathdisplay"])
+        #except:
             shortestpathdisplay = 0
-        myparent["shortestpathdisplay"] = str(shortestpathdisplay)
-        menu_shortestpath.state = quarkpy.qmenu.checked and shortestpathdisplay
+        #myparent["shortestpathdisplay"] = str(shortestpathdisplay)
+        #menu_shortestpath.state = quarkpy.qmenu.checked and shortestpathdisplay
 
-        return [menu_add_twoway, menu_add_oneway, menu_rem_twoway, menu_rem_oneway, qmenu.sep, menu_shortestpath]
+        #return [menu_add_twoway, menu_add_oneway, menu_rem_twoway, menu_rem_oneway, qmenu.sep, menu_shortestpath]
 
 #
 #
@@ -863,6 +863,8 @@ quarkpy.mapduplicator.DupCodes.update({
 })
 
 # ----------- REVISION HISTORY ------------
+# Revision 1.3.2 2005/11/4 01:30 RiviEr
+# Fixed possible the last bug.
 # Revision 1.3.1 2005/10/4 01:30 RiviEr
 # Fixed a bug wich had been introduced in a later release
 # $Log$
