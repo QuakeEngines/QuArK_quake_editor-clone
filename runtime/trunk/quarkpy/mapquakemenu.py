@@ -409,9 +409,9 @@ def RebuildAndRun(maplist, editor, runquake, text, forcepak, extracted, cfgfile,
         else:
             # clever tool that can run anywhere
             toolworkdir = tmpquark
-            argument_mappath = "./maps"
-            argument_mapfile = "./maps/%s.map" % map
-            argument_file    = "./maps/%s" % map
+            argument_mappath = "maps"
+            argument_mapfile = "maps/%s.map" % map
+            argument_file    = "maps/%s" % map
 
         for pgrmnbr in range(9,0,-1):
             pgrmx = "BuildPgm%d" % pgrmnbr
@@ -663,6 +663,9 @@ import mapportals
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.39  2005/01/05 12:18:35  alexander
+#introduced %gamedir% variable expansion for running tools and utilized for hl2 support
+#
 #Revision 1.38  2004/01/08 08:54:33  cdunde
 #To commit changes for peter-b
 #

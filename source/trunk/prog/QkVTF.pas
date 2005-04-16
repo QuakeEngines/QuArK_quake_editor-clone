@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/03/14 22:43:32  alexander
+textures with alpha channel are rendered transparent in open gl
+
 Revision 1.8  2005/03/14 21:53:53  alexander
 fix: save memory by checking if texture has alpha at all and only then generate alpha data into quarks local texture
 
@@ -56,7 +59,7 @@ new: support for vtf file loading
 unit QkVTF;
 
 interface
-uses Classes, QkImages, QkObjects, QkFileObjects;
+uses Classes, QkImages,QkPixelSet, QkObjects, QkFileObjects;
 
 
 
@@ -78,21 +81,23 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
 
-const RequiredVTFAPI=3;
+const RequiredVTFAPI=4;
 
 var
   HQuArKVTF   : HINST;
 
 
 // c signatures
-//DLL_EXPORT DWORD APIVersion(void)
-//DLL_EXPORT int vtf_to_mem(void* bufmem, long readlength, long iMipLevel, unsigned char *pDstImage)
-//DLL_IMPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
+// DWORD APIVersion(void)
+// int vtf_to_mem(void* bufmem, long readlength, long iMipLevel, unsigned char *pDstImage)
+// int vtf_info(void* bufmem, long readlength, int* width, int* height, int* miplevels);
+// long filesize_of_vtf(long usealpha, int iWidth, int iHeight)
+// int mem_to_vtf(void* bufmem, long length, unsigned char *pSrcImage, long usealpha, int iWidth, int iHeight)
   APIVersion : function    : Longword; stdcall;
   vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar;usealpha :longword): Integer; stdcall;
   vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger; hasalpha: PInteger): Integer; stdcall;
-
-
+  filesize_of_vtf: function (usealpha :longword; iWidth : integer; iHeight : integer):longword; stdcall;
+  mem_to_vtf : function (bufmem: Pchar; length:longword; pSrcImage :pchar; usealpha:longword; iWidth: integer; iHeight:integer):integer; stdcall;
 
 procedure Fatal(x:string);
 begin
@@ -131,6 +136,8 @@ begin
         Fatal('dlls/QuArKVTF.dll API version mismatch');
       vtf_to_mem := InitDllPointer(HQuArKVTF, 'vtf_to_mem');
       vtf_info   := InitDllPointer(HQuArKVTF, 'vtf_info');
+      filesize_of_vtf:=InitDllPointer(HQuArKVTF, 'filesize_of_vtf');
+      mem_to_vtf:=InitDllPointer(HQuArKVTF, 'mem_to_vtf');
     end
     else
       Fatal('dlls/QuArKVTF.dll not found');
@@ -214,7 +221,7 @@ begin
         Setlength(AlphaData,Length(AlphaSpec) + NumberOfPixels);     {alpha buffer}
 
         {copy and reverse the upside down RGBA image to quarks internal format}
-        {also the alpha channel is split, and R and B are exchanged}
+        {also the alpha channel is split}
         Source:=PChar(DecodedBuffer)+ NumberOfPixels*4;
         DestImg:=PChar(ImgData)+Length(ImageSpec);
         DestAlpha:=PChar(AlphaData)+Length(AlphaSpec);
@@ -281,8 +288,38 @@ begin
 end;
 
 procedure QVTF.SaveFile(Info: TInfoEnreg1);
+var
+ PSD: TPixelSetDescription;
+ filesize : longword;
+ alpha,image: Pchar;
+ hasalpha:integer;
+  AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
 begin
-  raise exception.create('Sorry, saving .vtf files is unsupported at the moment!');
+ initdll;
+
+ with Info do case Format of
+  1:
+  begin  { as stand-alone file }
+    PSD:=Description;
+    if PSD.AlphaBits=psa8bpp then
+    begin
+      Raise exception.create('alpha unsupported tbd merge to rgba');
+      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y);
+      SetLength(RawBuffer, filesize);
+      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PSD.Data,1,PSD.size.X,PSD.size.Y) then
+        Raise exception.create('mem_to_vtf fails');
+    end
+    else
+    begin
+      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y);
+      SetLength(RawBuffer, filesize);
+      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PSD.Data,0,PSD.size.X,PSD.size.Y) then
+        Raise exception.create('mem_to_vtf fails');
+    end;
+    F.WriteBuffer(Pointer(RawBuffer)^,filesize)
+  end
+ else inherited;
+ end;
 end;
 
 {-------------------}

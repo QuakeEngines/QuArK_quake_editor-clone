@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SRC_MOD)\public&quot;;&quot;$(SRC_MOD)\public\tier1&quot;;&quot;$(SRC_MOD)\utils\common&quot;;&quot;$(SRC_MOD)\public\vtf&quot;"
+				AdditionalIncludeDirectories="&quot;$(SRC_MOD)\public&quot;;&quot;$(SRC_MOD)\public\tier1&quot;;&quot;$(SRC_MOD)\utils\common&quot;;&quot;$(SRC_MOD)\public\vtf&quot;;&quot;$(SRC_MOD)\public\tier0&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -145,13 +145,13 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
 		<File
-			RelativePath="..\..\..\..\src_mod\lib\public\tier0.lib">
+			RelativePath="$(src_mod)\lib\public\tier0.lib">
 		</File>
 		<File
-			RelativePath="..\..\..\..\src_mod\lib\public\vstdlib.lib">
+			RelativePath="$(src_mod)\lib\public\vstdlib.lib">
 		</File>
 		<File
-			RelativePath="..\..\..\..\src_mod\lib\public\vtf.lib">
+			RelativePath="$(src_mod)\lib\public\vtf.lib">
 		</File>
 	</Files>
 	<Globals>

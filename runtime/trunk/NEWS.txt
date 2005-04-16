@@ -11,6 +11,11 @@ $Id$
    ########     ########## ####    #### ####         ####    ####
        #####
         #####    Quake Army Knife 6.4 Changelog
+ * [alexander] general open gl updates 
+  remove unneded copy operation for proxy views
+  more progress indicators (textures and polys)
+  can save textures as uncompressed vtf
+  can export used textures to materials folder
 
  * [cdunde]: Fix by Fredrick Vamstad for the bot way pointer.
 

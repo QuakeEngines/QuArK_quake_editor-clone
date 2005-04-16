@@ -151,10 +151,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
 		<File
-			RelativePath="..\..\..\..\src_mod\lib\public\tier0.lib">
+			RelativePath="$(src_mod)\lib\public\tier0.lib">
 		</File>
 		<File
-			RelativePath="..\..\..\..\src_mod\lib\public\vstdlib.lib">
+			RelativePath="$(src_mod)\lib\public\vstdlib.lib">
 		</File>
 	</Files>
 	<Globals>

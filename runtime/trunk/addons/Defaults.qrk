@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.247  2005/03/05 10:47:50  peter-b
+//Replaced build pgms kludge for Sylphis with t_GameBuildPgms macro
+//
 //Revision 1.246  2005/02/17 09:50:32  rowdy
 //added a per-game configuration option to specify the number of decimal places to use when writing floats to .map files, defaulted to 5 for all games except Torque, where it is defaulted to 16 (this is a hack for Torque's map2dif utility)
 //
@@ -1296,13 +1299,20 @@ QQRKSRC1
 
         BuildPgmsDir="E:/spiele/steam/SteamApps/<steam user name>/sourcesdk/bin"
         BuildPgm1  = "vbsp.exe"
-        BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+        BuildArgs1 = ""
         BuildCheck1= ""
         BuildPgm2  = "vvis.exe"
-        BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+        BuildArgs2 = ""
         BuildCheck2= ""
         BuildPgm3  = "vrad.exe"
-        BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
+        BuildArgs3 = ""
+        BuildCheck3= ""
+        BuildPgm4  = "glview.exe"
+        BuildArgs4 = ""
+        BuildCheck4= ""
+        BuildPgm5  = "bspzip.exe"
+        BuildArgs5 = ""
+        BuildCheck5= ""
 
 
         DefaultTexture = "Brick/brickwall001a"
@@ -1311,12 +1321,10 @@ QQRKSRC1
         DefaultTextureClip = "Tools/toolsclip"
         DefaultTextureScale = "0.25"
         EnableTransparency = ""
-        TextureWad = "?"     // variable (the map name is used)
-        GameNeedWad = "1"
         WateryTex = "!"
         TextureFormat = ".vtf"
         TextureWriteFormat = ".vtf"
-        //TexturesPath = "hl2/materials/"
+        TexturesPath = "materials/"
 
 
         MapHoles = ".pts"
@@ -5272,7 +5280,7 @@ QQRKSRC1
       Mode: = {
         Txt="Use OpenGL for..."
         Typ="CL"
-        Items  = "'3DGL' button only" $0D "all perspective views" $0D "(all views: not supported)"
+        Items  = "'3DGL' button only" $0D "all perspective views(experimental SceneProxy)" $0D "(all views: not supported)"
         Values = "" $0D "1" $0D "2"
       }
       Warning2: = {Typ="X" Txt="The next time..." Cap="issue a Warning"}
