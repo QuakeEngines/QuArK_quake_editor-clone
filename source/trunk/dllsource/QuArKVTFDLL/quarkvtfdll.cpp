@@ -1,4 +1,4 @@
-#define QUARKVTFDLL_API_VERSION 4
+#define QUARKVTFDLL_API_VERSION 5
 
 #include <stdlib.h>
 
@@ -142,15 +142,21 @@ DLL_EXPORT int vtf_info(void* bufmem, long readlength, int* width, int* height, 
   return 1;
 }
 
-DLL_EXPORT long filesize_of_vtf(long usealpha, int iWidth, int iHeight)
+DLL_EXPORT long filesize_of_vtf(long usealpha, int iWidth, int iHeight, int iOutformat)
 {
  
-  sLog->scope("filesize_of_vtf %lu,%d,%d\n",usealpha,iWidth,iHeight);
+  sLog->scope("filesize_of_vtf %lu,%d,%d,%s\n",usealpha,iWidth,iHeight,ImageLoader::GetName( ImageFormat(iOutformat) ));
   IVTFTexture *pTex = CreateVTFTexture();
 
   ImageFormat srcFormat = usealpha ? IMAGE_FORMAT_BGRA8888 : IMAGE_FORMAT_BGR888;
 
-  if (!pTex->Init( iWidth,iHeight, srcFormat, TEXTUREFLAGS_NOMIP||TEXTUREFLAGS_NOLOD, 1 ))
+  if (!pTex->Init( iWidth,
+                   iHeight,
+                   /*srcFormat*/ImageFormat(iOutformat),
+                   TEXTUREFLAGS_NOMIP||
+                   TEXTUREFLAGS_NOLOD || 
+                   usealpha ? TEXTUREFLAGS_EIGHTBITALPHA : 0,
+                   1 ))
   {
     sLog->msg("*** Error init VTF\n ");
     return 0;
@@ -159,14 +165,20 @@ DLL_EXPORT long filesize_of_vtf(long usealpha, int iWidth, int iHeight)
   return pTex->FileSize();
 }
 
-DLL_EXPORT int mem_to_vtf(void* bufmem, unsigned long length, unsigned char *pSrcImage, long usealpha, int iWidth, int iHeight)
+DLL_EXPORT int mem_to_vtf(void* bufmem, unsigned long length, unsigned char *pSrcImage, long usealpha, int iWidth, int iHeight,int iOutformat)
 {
-  sLog->scope("mem_to_vtf %p,%lu,%p,%d,%d,%d\n",bufmem,length,pSrcImage,usealpha,iWidth,iHeight);
+  sLog->scope("mem_to_vtf %p,%lu,%p,%d,%d,%d,%s\n",bufmem,length,pSrcImage,usealpha,iWidth,iHeight,ImageLoader::GetName( ImageFormat(iOutformat) ));
   IVTFTexture *pTex = CreateVTFTexture();
 
   ImageFormat srcFormat = usealpha ? IMAGE_FORMAT_BGRA8888 : IMAGE_FORMAT_BGR888;
 
-  if (!pTex->Init( iWidth,iHeight, srcFormat,  TEXTUREFLAGS_NOMIP||TEXTUREFLAGS_NOLOD, 1 ))
+  if (!pTex->Init( iWidth,
+                   iHeight,
+                   srcFormat,
+                   TEXTUREFLAGS_NOMIP ||
+                   TEXTUREFLAGS_NOLOD ||
+                   usealpha ? TEXTUREFLAGS_EIGHTBITALPHA : 0,
+                   1 ))
   {
     sLog->msg("*** Error init VTF\n ");
     return 0;
@@ -174,7 +186,7 @@ DLL_EXPORT int mem_to_vtf(void* bufmem, unsigned long length, unsigned char *pSr
   sLog->msg("texinit ok\n ");
 
   unsigned char *pDstImage = pTex->ImageData();
-  ImageFormat dstFormat=srcFormat;
+  ImageFormat dstFormat=ImageFormat(iOutformat);
   sLog->msg("ImageDataPtr %p ok\n ",pDstImage);
 
   if( !ImageLoader::ConvertImageFormat( pSrcImage, srcFormat,pDstImage, dstFormat, iWidth, iHeight, 0, 0 ) )
@@ -184,12 +196,17 @@ DLL_EXPORT int mem_to_vtf(void* bufmem, unsigned long length, unsigned char *pSr
   }
   sLog->msg("1stConvertImageFormat ok\n ");
 
-  //pTex->ConvertImageFormat( IMAGE_FORMAT_DXT5,0 );
-  //sLog->msg("2ndConvertImageFormat ok\n ");
-  //pTex->ComputeReflectivity( );
-  //sLog->msg("ComputeReflectivity ok\n ");
-  //pTex->ComputeAlphaFlags();
-  //sLog->msg("ComputeAlphaFlags ok\n ");
+  pTex->ConvertImageFormat( IMAGE_FORMAT_DEFAULT,false );
+  sLog->msg("2ndConvertImageFormat ok\n ");
+  pTex->ComputeReflectivity( );
+  sLog->msg("ComputeReflectivity ok\n ");
+  pTex->ComputeAlphaFlags();
+  sLog->msg("ComputeAlphaFlags ok\n ");
+  pTex->PostProcess(false);
+  sLog->msg("PostProcess ok\n ");
+  pTex->ConvertImageFormat( ImageFormat(iOutformat),false );
+  sLog->msg("3rdConvertImageFormat ok\n ");
+
 
   CUtlBuffer buf;
   buf.SetExternalBuffer( bufmem, length );

@@ -22,6 +22,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.10  2005/04/16 11:13:36  alexander
+can save non alpha textures as vtf
+can export used textures to materials folder
+
 Revision 1.9  2005/03/14 22:43:32  alexander
 textures with alpha channel are rendered transparent in open gl
 
@@ -81,11 +85,39 @@ implementation
 
 uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
 
-const RequiredVTFAPI=4;
+const RequiredVTFAPI=5;
+
+const IF_RGBA8888 = 0;
+const IF_ABGR8888= 1;
+const IF_RGB888= 2;
+const IF_BGR888= 3;
+const IF_RGB565= 4;
+const IF_I8= 5;
+const IF_IA88= 6;
+const IF_P8= 7;
+const IF_A8= 8;
+const IF_RGB888_BLUESCREEN= 9;
+const IF_BGR888_BLUESCREEN= 10;
+const IF_ARGB8888= 11;
+const IF_BGRA8888= 12;
+const IF_DXT1= 13;
+const IF_DXT3= 14;
+const IF_DXT5= 15;
+const IF_BGRX8888= 16;
+const IF_BGR565= 17;
+const IF_BGRX5551= 18;
+const IF_BGRA4444= 19;
+const IF_DXT1_ONEBITALPHA= 20;
+const IF_BGRA5551= 21;
+const IF_UV88= 22;
+const IF_UVWQ8888= 22;
+const IF_RGBA16161616F= 23;
+const IF_RGBA16161616= 24;
+const IF_UVLX8888= 25;
+const IF_LAST= 26;
 
 var
   HQuArKVTF   : HINST;
-
 
 // c signatures
 // DWORD APIVersion(void)
@@ -96,8 +128,8 @@ var
   APIVersion : function    : Longword; stdcall;
   vtf_to_mem : function ( buf: PChar; length: Integer;miplevel :longword; outbuf: PChar;usealpha :longword): Integer; stdcall;
   vtf_info   : function ( buf: PChar; length: Integer; width: PInteger ; height: PInteger;  miplevels: PInteger; hasalpha: PInteger): Integer; stdcall;
-  filesize_of_vtf: function (usealpha :longword; iWidth : integer; iHeight : integer):longword; stdcall;
-  mem_to_vtf : function (bufmem: Pchar; length:longword; pSrcImage :pchar; usealpha:longword; iWidth: integer; iHeight:integer):integer; stdcall;
+  filesize_of_vtf: function (usealpha :longword; iWidth : integer; iHeight : integer; iOutformat:integer):longword; stdcall;
+  mem_to_vtf : function (bufmem: Pchar; length:longword; pSrcImage :pchar; usealpha:longword; iWidth: integer; iHeight:integer; iOutformat:integer):integer; stdcall;
 
 procedure Fatal(x:string);
 begin
@@ -288,14 +320,46 @@ begin
 end;
 
 procedure QVTF.SaveFile(Info: TInfoEnreg1);
+type
+  PRGBA = ^TRGBA;
+  TRGBA = array[0..3] of char;
+  PRGB = ^TRGB;
+  TRGB = array[0..2] of char;
 var
- PSD: TPixelSetDescription;
- filesize : longword;
- alpha,image: Pchar;
- hasalpha:integer;
-  AlphaData,ImgData, RawBuffer, DecodedBuffer: String;
+  PSD: TPixelSetDescription;
+  filesize : longword;
+  S,RawBuffer, converted_image: String;
+  SourceImg, SourceAlpha, Dest,pSourceImg, pSourceAlpha, pDest: PChar;
+  I,J,TexFormatalpha,texformatnonalpha: Integer;
 begin
- initdll;
+  initdll;
+  texformatalpha := 15;
+  S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];
+  if S<>'' then
+  begin
+    try
+      texformatalpha:=strtoint(S);
+      if (texformatalpha < 0) or (texformatalpha > IF_LAST) then
+        texformatalpha := 15;
+    except
+      Raise exception.create('unsupported texture format, fall back to 15');
+      texformatalpha := 15;
+    end;
+  end;
+
+  texformatnonalpha := 15;
+  S:=SetupGameSet.Specifics.Values['TextureWriteSubFormat'];
+  if S<>'' then
+  begin
+    try
+      texformatnonalpha:=strtoint(S);
+      if (texformatnonalpha < 0) or (texformatnonalpha > IF_LAST) then
+        texformatnonalpha := 15;
+    except
+      Raise exception.create('unsupported texture format, fall back to 15');
+      texformatnonalpha := 15;
+    end;
+  end;
 
  with Info do case Format of
   1:
@@ -303,17 +367,61 @@ begin
     PSD:=Description;
     if PSD.AlphaBits=psa8bpp then
     begin
-      Raise exception.create('alpha unsupported tbd merge to rgba');
-      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y);
+      filesize:=filesize_of_vtf(1,PSD.size.X,PSD.size.Y,texformatalpha);
       SetLength(RawBuffer, filesize);
-      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PSD.Data,1,PSD.size.X,PSD.size.Y) then
+      SetLength(converted_image, PSD.size.X * PSD.size.Y * 4);
+
+      SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
+      SourceAlpha:=PChar(PSD.AlphaData) + PSD.size.X * PSD.size.Y;
+      Dest:=PChar(converted_image);
+      for J:=1 to PSD.size.Y do
+      begin
+        Dec(SourceImg,  3 * PSD.size.X);
+        pSourceAlpha:=SourceAlpha;
+        pSourceImg:=SourceImg;
+        pDest:=Dest;
+        for I:=1 to PSD.size.X do
+        begin
+          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[0];  { rgb }
+          PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[2];  { rgb }
+          PRGBA(pDest)^[3]:=pSourceAlpha^;          { alpha }
+          Inc(pDest, 4);
+          Inc(pSourceImg, 3);
+          Inc(pSourceAlpha);
+        end;
+        Inc(Dest, 4 * PSD.size.X);
+      end;
+
+      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),1,PSD.size.X,PSD.size.Y,texformatalpha) then
         Raise exception.create('mem_to_vtf fails');
     end
     else
     begin
-      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y);
+      filesize:=filesize_of_vtf(0,PSD.size.X,PSD.size.Y,texformatnonalpha);
       SetLength(RawBuffer, filesize);
-      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PSD.Data,0,PSD.size.X,PSD.size.Y) then
+      SetLength(converted_image, PSD.size.X * PSD.size.Y * 3);
+
+      SourceImg:=PChar(PSD.Data)+ PSD.size.X * PSD.size.Y * 3;
+      Dest:=PChar(converted_image);
+      for J:=1 to PSD.size.Y do
+      begin
+        Dec(SourceImg,  3 * PSD.size.X);
+        pSourceImg:=SourceImg;
+        pDest:=Dest;
+        for I:=1 to PSD.size.X do
+        begin
+          PRGBA(pDest)^[0]:=PRGB(pSourceImg)^[0];  { rgb }
+          PRGBA(pDest)^[1]:=PRGB(pSourceImg)^[1];  { rgb }
+          PRGBA(pDest)^[2]:=PRGB(pSourceImg)^[2];  { rgb }
+          Inc(pDest, 3);
+          Inc(pSourceImg, 3);
+        end;
+        Inc(Dest, 3 * PSD.size.X);
+      end;
+
+
+      if 0 = mem_to_vtf(Pchar(Rawbuffer),filesize, PChar(converted_image),0,PSD.size.X,PSD.size.Y,texformatnonalpha) then
         Raise exception.create('mem_to_vtf fails');
     end;
     F.WriteBuffer(Pointer(RawBuffer)^,filesize)
