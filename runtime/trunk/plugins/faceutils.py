@@ -111,7 +111,7 @@ def shared_vertices(selected_faces, all_faces):
         selected_polys = selected_face.faceof
         selected_poly = selected_polys[0]
         if selected_poly == selected_face:
-            contine # this selected face is not used
+            continue # this selected face is not used
 
         selected_vertices = selected_face.verticesof(selected_poly)
 
@@ -151,6 +151,9 @@ def shared_vertices(selected_faces, all_faces):
 
 
 #$Log$
+#Revision 1.4  2005/04/20 12:31:47  rowdy
+#added a couple of functions to check for vertices shared by adjacent faces to help with the terrain plugin
+#
 #Revision 1.3  2001/08/11 04:14:51  tiglari
 #remove debug
 #
