@@ -164,14 +164,14 @@ object AboutBox: TAboutBox
       Top = 73
       Width = 221
       Height = 13
-      Caption = 'Copyright (C) 1996-2003 Armin Rigo and others'
+      Caption = 'Copyright (C) 1996-2005 Armin Rigo and others'
     end
     object UsedCompilerLabel: TLabel
-      Left = 502
+      Left = 422
       Top = 7
       Width = 100
       Height = 11
-      Caption = 'Compiled with Delphi 5.0'
+      Caption = 'Compiled with Delphi 6.0 04/24/05'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
