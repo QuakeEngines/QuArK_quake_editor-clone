@@ -15,7 +15,15 @@ $Id$
 
 6.4.1 alpha 3
 =============
- * [alexander]
+
+ * [dannsdinosaurs]: Improvements to DataHr2.qrk file;
+    - Added pulldown menu for door messages
+    - Moved fishtrap into Commercial & Industrial folder
+    - Moved fountain fish into Statues folder
+    - Added mdl paths for info_player entities
+    - Added 'Not Deathmatch' spawnflags to trigger_once and trigger_multiple
+
+ * [alexander]:
    general(all games):
     - unneded copy operation for proxy views removed
     - more progress indicators added (textures and polys)
