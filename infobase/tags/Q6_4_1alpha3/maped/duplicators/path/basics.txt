@@ -1,0 +1,36 @@
+title: Basics
+author: tiglari
+
+When you select the path duplicator from
+New Polyhedrons|Duplicators & Misc and drop
+it into the map, you see the red 'group selected'
+square plus a lot of dotted outlines.  That's
+because a group is what has been dropped into your
+map, and therefore selected.  If you look at the
+group in the treeview, you'll see that it contains
+one Path Duplicator, and three Path Points.
+If you then select the Path Duplicator, a bunch
+of handles will become visible, one regular
+duplicator handle, and three squarish ones,
+which appear to be located at the 'bends' in
+a structure.  Drag them around & you'll see that
+this is indeed the case.
+
+Plus you can RMB on these handles to get menu items
+to remove them, and add new ones, thus getting
+lots of control over the shape of the path.
+
+The path of what?  It's actually a tube, defined
+by an ordinary positive brush and a negative one,
+you can see them by expanding the Path Duplicator
+and then inside of that the group named Template.
+What's happening is that the brushes inside the
+duplicator are taken as defining the cross-sectional
+outline of the shape we're going to make, with
+the X-direction being lengthwise.
+
+The brushes don't have to be inside of the Template
+group, and there can be duplicators there as well,
+so the cross-section could involve some complicated
+structures (it could be a row or grid of pipes,
+for example).

@@ -1,0 +1,55 @@
+title: Polyhedron-view
+author: Decker
+
+<img border=0 align=right>polyhedronview.png</img>
+When you have selected a polyhedron, you can see some information and change
+settings for it, in this view.
+
+<i>Faces</i> shows how many faces (sides) this polyhedron consists of.
+
+<i>Center</i> is the X,Y,Z coordinate in the level, where this polyhedron
+exist. You should not change this manually, unless you don't want to move the
+poly in the map-views.
+
+<i>Texture</i> shows the currently applied texture to this polyhedron, as well
+as a list of used textures in the level, so you quickly (?) can change to
+another, without opening the texture-browser.
+
+<i>Owned by</i> displays the name of the group or entity, in which this
+polyhedron exist.
+
+The icons above the texture from left to right:
+
+<table border=1 cellspacing=0 cellpadding=2>
+<tr>
+  <td valign=top align=center>
+    <i>Texture</i>
+  </td>
+  <td>
+    This icon will open the Texture browser so you can select a different
+    texture for the selected polyhedron.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Negative</i>
+  </td>
+  <td>
+    When this icon are pressed, the selected polyhedron will become a
+    <g>negative poly</g>; it will dig holes into other polys, without actually
+    doing a <g>brush-subtraction</g>.
+  </td>
+</tr>
+<tr>
+  <td valign=top align=center>
+    <i>Face-flags</i>
+  </td>
+  <td>
+    <img border=0 align=right>faceflags.png</img>
+    Some FPS-games have special face-flags to control different behaviour, like
+    transparensy, water, warping, etc. When you click this icon, a new window
+    will appear, in where you can set the flags for all faces of the selected
+    polyhedron.
+  </td>
+</tr>
+</table>

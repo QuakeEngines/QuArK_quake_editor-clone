@@ -1,0 +1,33 @@
+title: Making bevels
+author: tiglari
+
+Bevels are currently introduced on both the Curves
+and Brush Curve RMB menus for polys, just like
+arch & cap.  Presently there are two types that
+can be introduced direction, Left Corner and
+Right Corner; then varieties can be created by
+setting specifics.  The Left corner curves from the
+left side of the guide-brush to the back, the Right
+corner from
+the right side of the brush to the back.
+
+For different orientations there's lower and standup
+specifics (the latter instead of onside), also inverse
+and thick (presently only patch-based).  There's
+also subdivide, to control the quality of the
+circle-approximation, and inner for brush-arches.
+
+Texturing is similar to arches; the texture
+on the curve is projected from the back face, and onto the
+top and bottom 'flanges' from the top and bottom faces.
+In particular, suppose you want to align a texture on the
+bevel to make a smooth curve walls forming a corner?
+
+ First,
+fit a brush into the corner, and then, looking along a wall
+intothe corner, make the brush
+left or right bevel as appropriate.  Next,
+tag one of the wall-faces,  and wrap texture from tagged onto the
+other wall.  Then RMB on the back face of the bevel-builder
+(the face whose name is back), and texture|wrapping|from tagged
+mirror. (And if it's patch-based, don't forget to caulk!)

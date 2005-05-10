@@ -1,0 +1,8 @@
+title: Selecting entities
+author: Decker
+
+<img border=0 align=right>selectentity.png</img>
+When this item is selected, every entity that is inside or partly
+inside the red selection rectangle, will be selected. Notice that only
+entities will be selected, entities which have polyhedrons belonging to
+them will not be selected.
