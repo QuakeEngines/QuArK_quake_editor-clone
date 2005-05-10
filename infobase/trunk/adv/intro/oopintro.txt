@@ -26,27 +26,29 @@ characterized by the three coordinates of its center, and by its
 radius:
 
 <code>
-  class circle:
+  class Circle:
       x = 1
       y = 0
       z = 5
       r = 1.5
 </code>
 
+(Important: watch your letters, they are case sensitive.)
+
 Or you can just create the object by writing:
 
 <code>
-  class circle:
+  class Circle:
       pass
 </code>
 
 and add the data later:
 
 <code>
-  circle.x = 1
-  circle.y = 0
-  circle.z = 5
-  circle.r = 1.5
+  Circle.x = 1
+  Circle.y = 0
+  Circle.z = 5
+  Circle.r = 1.5
 </code>
 The '.' separates the name of the class itself from its 'attributes'.
 
@@ -56,8 +58,8 @@ creator, finds them harmful to programs' maintainability).  So if
 either of the above is in a file 'circles.py', in the Python
 interpreter you can write:
 <code>
->>> import circles         [you type]
->>> circles.circle.z       [ditto]
+>>> import plugins.circles         [you type]
+>>> plugins.circles.Circle.r       [ditto]
 1.5                        [Python answers]
 </code>
 
@@ -81,8 +83,10 @@ or whatever).   For example having created a circle, we might
 want to access its circumference and area; the idea is that
 we'll write things like
 <code>
-answer =  circle.circumference()
+answer =  plugins.circle.circumference()
 </code>
+(plugins because that is the folder in which the circles.py file will be located.)
+
 (Parentheses because this is going to be produced by a kind of function,
 and functions are marked in Python by parentheses.)
 
