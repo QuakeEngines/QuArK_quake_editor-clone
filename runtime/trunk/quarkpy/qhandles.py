@@ -508,7 +508,7 @@ class LinearHandle(GenericHandle):
 class LinRedHandle(LinearHandle):
     "Linear Box: Red handle at the center."
 
-    hint = "move selection (Ctrl key: force to grid)|move selection"
+    hint = "           move selection (Ctrl key: force to grid)|move selection"
 
     def __init__(self, pos, mgr):
         LinearHandle.__init__(self, pos, mgr)
@@ -1554,6 +1554,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.9  2002/05/18 09:51:56  tiglari
+#support Radiant-style dragging for frozen selections
+#
 #Revision 1.8  2001/04/26 22:45:03  tiglari
 #face-only selection & texture L RMB
 #
