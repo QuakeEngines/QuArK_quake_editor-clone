@@ -16,6 +16,9 @@ $Id$
 6.4.1 alpha 3
 =============
 
+ * [cdunde]: Fixed red wire drag objects from erasing
+    - other items in the textured 3D views when dragged.
+
  * [dannsdinosaurs]: Improvements to DataHr2.qrk file;
     - Added pulldown menu for door messages
     - Moved fishtrap into Commercial & Industrial folder
