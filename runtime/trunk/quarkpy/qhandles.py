@@ -20,6 +20,7 @@ Generic Mouse handles code.
 from qeditor import *
 from qdictionnary import Strings
 import qmenu
+import qbaseeditor
 
 
 MOUSEZOOMFACTOR = math.sqrt(2)     # with this value, the zoom factor doubles every two click
@@ -40,6 +41,8 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 
+def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
+    oldfinish(editor, view)
 
 def aligntogrid(v, mode):
     #
@@ -808,6 +811,11 @@ class RedImageDragObject(DragObject):
         return old
 
     def drawredimages(self, view, internal=0):
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            quarkx.clickform = view.owner  # Rowdys -important, gets the mapeditor
+            editor = mapeditor()           # to be used further down
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
             special, refresh = self.ricmd()
@@ -815,6 +823,16 @@ class RedImageDragObject(DragObject):
                 if internal==1:    # erase the previous image
                     for r in self.redimages:
                         view.drawmap(r, mode)
+
+## cdunde added these 4 lines 05-14-05 to stop the
+## 3d Textured view from erasing other items
+## in the view when dragging redline objects in it.
+
+                    type = view.info["type"]
+                    if type == "3D":
+                        view.repaint()
+                        editor.invalidateviews()
+
                     if self.redhandledata is not None:
                         self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
                 else:
@@ -822,9 +840,12 @@ class RedImageDragObject(DragObject):
                         view.drawmap(r, mode, self.redcolor)
                     if self.handle is not None:
                         self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
-            else:   # must redraw everything
-                if internal==2:
-                    view.invalidate()
+
+# Took these out, seem to make things worse
+#            else:   # must redraw everything
+#                if internal==2:
+#                    view.invalidate()
+
             if internal==2:    # set up a timer to update the other views as well
                 quarkx.settimer(refresh, self, 150)
 
@@ -840,10 +861,14 @@ class RedImageDragObject(DragObject):
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
-            self.view.invalidate()
-            editor.invalidateviews()
+
+# Took these out, seem to make things worse
+#            self.view.invalidate()
+#            editor.invalidateviews()
+
             return
         undo = quarkx.action()
+        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing   ## new
         for i in range(0,len(old)):
             undo.exchange(old[i], self.redimages[i])
         self.handle.ok(editor, undo, old, self.redimages)
@@ -1554,6 +1579,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.10  2005/05/12 07:19:39  cdunde
+#Fix hint blocked by cursor
+#
 #Revision 1.9  2002/05/18 09:51:56  tiglari
 #support Radiant-style dragging for frozen selections
 #
