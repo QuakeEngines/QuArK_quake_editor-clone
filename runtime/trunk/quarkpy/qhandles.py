@@ -840,11 +840,9 @@ class RedImageDragObject(DragObject):
                         view.drawmap(r, mode, self.redcolor)
                     if self.handle is not None:
                         self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
-
-# Took these out, seem to make things worse
-#            else:   # must redraw everything
-#                if internal==2:
-#                    view.invalidate()
+            else:   # must redraw everything
+                if internal==2:
+                    view.invalidate()
 
             if internal==2:    # set up a timer to update the other views as well
                 quarkx.settimer(refresh, self, 150)
@@ -861,11 +859,8 @@ class RedImageDragObject(DragObject):
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
-
-# Took these out, seem to make things worse
-#            self.view.invalidate()
-#            editor.invalidateviews()
-
+            self.view.invalidate()
+            editor.invalidateviews()
             return
         undo = quarkx.action()
         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing   ## new
@@ -1579,6 +1574,11 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.11  2005/05/15 06:01:34  cdunde
+#To fix red wire objects erasing other items in 3D Textured views
+#and commented out unnecessary dupe view invalidations,
+#used finishdrawing instead, which seems more effective
+#
 #Revision 1.10  2005/05/12 07:19:39  cdunde
 #Fix hint blocked by cursor
 #
