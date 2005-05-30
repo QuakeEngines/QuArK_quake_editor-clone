@@ -31,7 +31,7 @@ def vtx_index(vtxes, pos):
 
 def abutting_vtx(l1, l2):
   "gets the two vtx shared between l1 & l2, which are"
-  "supposed to be vertex-cyles of abutting faces"
+  "supposed to be vertex-cycles of abutting faces"
   "returns list of (el,ind) tuples, where el is from l1,"
   "and ind is its index"
   intx = []
@@ -49,6 +49,31 @@ def abutting_vtx(l1, l2):
   if pozzies[0]==0 and pozzies[1]>1:
     intx.reverse()
   return intx
+
+
+def non_abutting_vtx(l1, l2):
+  "gets the two vertexes shared between vertex list 1 (l1) & 2 (l2),"
+  " which are supposed to be vertex-cycles of abutting faces."
+  "This function returns two sets of lists."
+  "The first list is of (el,ind) tuples, where el is from l1, and ind is its index."
+  "The second list returns the index of the two vertex points that make up the shared edge."
+  intx = []
+  pozzies = []
+  i = -1
+  for el1 in l1:
+    i = i+1
+    for el2 in l2 :
+      if not (el1-el2):
+        pozzies.append(i)
+        intx.append((el1,i))
+        break
+  if len(intx) != 2:
+    return [],[]
+  if pozzies[0]==0 and pozzies[1]>1:
+    intx.reverse()
+  return intx,pozzies
+
+
 
 def intersection_vect(l1, l2):
   "for points/vectors only"
@@ -150,7 +175,63 @@ def shared_vertices(selected_faces, all_faces):
     return result
 
 
+def perimeter_edges(editor):
+    """Returns the original selected faces list as 2 new lists of faces,
+       perimeter and non-perimeter faces,
+       meaning that at least one edge (2 vertexes) is on the perimeter.
+       Also, it returns a list of all the vertex points that are on the
+       perimeter only that make up the perimeter face edges."""
+
+    selectedfacelist = editor.layout.explorer.sellist
+
+    perimfaces = []
+    non_perimfaces = []
+    perimedges = []
+    for baseface in selectedfacelist:
+        baseedges = []
+        baseedge0 = 0
+        baseedge1 = 0
+        baseedge2 = 0
+        basepoly = baseface.parent
+        bfp0, bfp1, bfp2 = baseface.verticesof(basepoly)
+        basevertices = baseface.verticesof(basepoly)
+        for compface in selectedfacelist:
+            comppoly = compface.parent
+            if basepoly == comppoly:
+                continue # we don't want to compair it to itself.
+            else:
+                compvertices = compface.verticesof(comppoly)
+                intx,pozzie = non_abutting_vtx(basevertices, compvertices)
+                if pozzie == []:
+                    continue
+                if pozzie == [0, 1]:
+                    baseedge0 = baseedge0 + 1
+                if pozzie == [1, 2]:
+                    baseedge1 = baseedge1 + 1
+                if pozzie == [0, 2]:
+                    baseedge2 = baseedge2 + 1
+        if baseedge0 == 0:
+            perimedges.append(bfp0)
+            perimedges.append(bfp1)
+        if baseedge1 == 0:
+            perimedges.append(bfp1)
+            perimedges.append(bfp2)
+        if baseedge2 == 0:
+            perimedges.append(bfp0)
+            perimedges.append(bfp2)
+        if baseedge0 and baseedge1 and baseedge2 != 0:
+            non_perimfaces.append(baseface)
+        else:
+            perimfaces.append(baseface)
+
+    return perimfaces, non_perimfaces, perimedges
+
+
+
 #$Log$
+#Revision 1.5  2005/04/20 19:00:24  cdunde
+#To fix typo error for continue
+#
 #Revision 1.4  2005/04/20 12:31:47  rowdy
 #added a couple of functions to check for vertices shared by adjacent faces to help with the terrain plugin
 #
