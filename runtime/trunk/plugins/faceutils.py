@@ -31,7 +31,7 @@ def vtx_index(vtxes, pos):
 
 def abutting_vtx(l1, l2):
   "gets the two vtx shared between l1 & l2, which are"
-  "supposed to be vertex-cycles of abutting faces"
+  "supposed to be vertex-cyles of abutting faces"
   "returns list of (el,ind) tuples, where el is from l1,"
   "and ind is its index"
   intx = []
@@ -53,8 +53,8 @@ def abutting_vtx(l1, l2):
 
 def non_abutting_vtx(l1, l2):
   "gets the two vertexes shared between vertex list 1 (l1) & 2 (l2),"
-  " which are supposed to be vertex-cycles of abutting faces."
-  "This function returns two sets of lists."
+  " which are supposed to be vertex-cyles of abutting faces."
+  "This funciton returns two sets of lists."
   "The first list is of (el,ind) tuples, where el is from l1, and ind is its index."
   "The second list returns the index of the two vertex points that make up the shared edge."
   intx = []
@@ -178,12 +178,13 @@ def shared_vertices(selected_faces, all_faces):
 def perimeter_edges(editor):
     """Returns the original selected faces list as 2 new lists of faces,
        perimeter and non-perimeter faces,
-       meaning that at least one edge (2 vertexes) is on the perimeter.
+       meaning that at least one edge (2 vertexs) is on the perimeter.
        Also, it returns a list of all the vertex points that are on the
        perimeter only that make up the perimeter face edges."""
 
     selectedfacelist = editor.layout.explorer.sellist
 
+    perimedges_tuples = []
     perimfaces = []
     non_perimfaces = []
     perimedges = []
@@ -195,37 +196,50 @@ def perimeter_edges(editor):
         basepoly = baseface.parent
         bfp0, bfp1, bfp2 = baseface.verticesof(basepoly)
         basevertices = baseface.verticesof(basepoly)
+        intedge = None, None
         for compface in selectedfacelist:
             comppoly = compface.parent
-            if basepoly == comppoly:
-                continue # we don't want to compair it to itself.
-            else:
+            if basepoly != comppoly: # we don't want to compair it to itself.
                 compvertices = compface.verticesof(comppoly)
                 intx,pozzie = non_abutting_vtx(basevertices, compvertices)
-                if pozzie == []:
-                    continue
+
                 if pozzie == [0, 1]:
                     baseedge0 = baseedge0 + 1
                 if pozzie == [1, 2]:
                     baseedge1 = baseedge1 + 1
                 if pozzie == [0, 2]:
                     baseedge2 = baseedge2 + 1
+
         if baseedge0 == 0:
-            perimedges.append(bfp0)
-            perimedges.append(bfp1)
+            if not(bfp0.tuple in perimedges_tuples):
+                perimedges.append(bfp0)
+                perimedges_tuples.append(bfp0.tuple)
+            if not(bfp1.tuple in perimedges_tuples):
+                perimedges.append(bfp1)
+                perimedges_tuples.append(bfp1.tuple)
+
         if baseedge1 == 0:
-            perimedges.append(bfp1)
-            perimedges.append(bfp2)
+            if not(bfp1.tuple in perimedges_tuples):
+                perimedges.append(bfp1)
+                perimedges_tuples.append(bfp1.tuple)
+            if not(bfp2.tuple in perimedges_tuples):
+                perimedges.append(bfp2)
+                perimedges_tuples.append(bfp2.tuple)
+
         if baseedge2 == 0:
-            perimedges.append(bfp0)
-            perimedges.append(bfp2)
+            if not(bfp0.tuple in perimedges_tuples):
+                perimedges.append(bfp0)
+                perimedges_tuples.append(bfp0.tuple)
+            if not(bfp2.tuple in perimedges_tuples):
+                perimedges.append(bfp2)
+                perimedges_tuples.append(bfp2.tuple)
+
         if baseedge0 and baseedge1 and baseedge2 != 0:
             non_perimfaces.append(baseface)
         else:
             perimfaces.append(baseface)
 
     return perimfaces, non_perimfaces, perimedges
-
 
 
 #$Log$
