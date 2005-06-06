@@ -16,6 +16,10 @@ $Id$
 6.4.1 alpha 3
 =============
 
+ * [cbxpm]: HL2 content update;
+ 		-  updated material files for HL2 / CS-Source
+		-  improved / updated HL2 build menu (several new commands).
+
  * [cdunde]: Fixed red wire drag objects from erasing
     - other items in the textured 3D views when dragged.
 

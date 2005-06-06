@@ -1,7 +1,7 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 Textures from source materials.gcf (feb/19/2005)"
+  Description = "HL2 Textures from source materials.gcf (may/13/2005)"
 
 
 
@@ -23,8 +23,8 @@ QQRKSRC1
     HL2 Textures.qtxfolder =
     {
 
-		  Brick.txlist =
-		  {
+				  Brick.txlist =
+				  {
 					Brick/brickfloor001a.wl  = { t_hl2=! }
 					Brick/brickwall001a.wl  = { t_hl2=! }
 					Brick/brickwall003a.wl  = { t_hl2=! }
@@ -106,10 +106,10 @@ QQRKSRC1
 					Brick/brickwall055b.wl  = { t_hl2=! }
 					Brick/brickwall055d.wl  = { t_hl2=! }
 					Brick/brickwall055e.wl  = { t_hl2=! }
-		  }
-      
-		  		Building.txlist =
-		  {
+				  }
+		      
+				  Building.txlist =
+				  {
 					Building_Template/Building_Skybridge_Template001a.wl  = { t_hl2=! }
 					Building_Template/Building_Skybridge_Template001b.wl  = { t_hl2=! }
 					Building_Template/Building_Skybridge_Template001c.wl  = { t_hl2=! }
@@ -389,11 +389,11 @@ QQRKSRC1
 					Building_Template/Roof_Template001a_normal.wl  = { t_hl2=! }
 					Building_Template/Roof_Template001b.wl  = { t_hl2=! }
 					Building_Template/Roof_Template001b_normal.wl  = { t_hl2=! }
-		  }
-		  
-		  Cable.txlist =
-		  {
-		  		cable/black.wl  = { t_hl2=! }
+				  }
+				  
+				  Cable.txlist =
+				  {
+					cable/black.wl  = { t_hl2=! }
 					cable/blue.wl  = { t_hl2=! }
 					cable/cable.wl  = { t_hl2=! }
 					cable/cablenormalmap.wl  = { t_hl2=! }
@@ -404,10 +404,10 @@ QQRKSRC1
 					cable/new_cable_lit.wl  = { t_hl2=! }
 					cable/red.wl  = { t_hl2=! }
 					cable/rope.wl  = { t_hl2=! }
-		  }
-		  
-		  Composite.txlist =
-		  {
+				  }
+				  
+				  Composite.txlist =
+				  {
 					Composite/buildingset040a.wl  = { t_hl2=! }
 					Composite/buildingset056a.wl  = { t_hl2=! }
 					Composite/buildingset056b.wl  = { t_hl2=! }
@@ -419,10 +419,10 @@ QQRKSRC1
 					Composite/citymap002b.wl  = { t_hl2=! }
 					Composite/citymap002c.wl  = { t_hl2=! }
 					Composite/citymap002d.wl  = { t_hl2=! }
-		  }
-		  
-		  Concrete.txlist =
-		  {
+				  }
+				  
+				  Concrete.txlist =
+				  {
 					Concrete/concreteceiling001a.wl  = { t_hl2=! }
 					Concrete/concreteceiling002a.wl  = { t_hl2=! }
 					Concrete/concreteceiling003a.wl  = { t_hl2=! }
@@ -662,10 +662,10 @@ QQRKSRC1
 					Concrete/concretewall074a.wl  = { t_hl2=! }
 					Concrete/concretewall074b.wl  = { t_hl2=! }
 					Concrete/concretewall074c.wl  = { t_hl2=! }
-		  }
-		  
-		  Console.txlist =
-		  {
+				  }
+				  
+				  Console.txlist =
+				  {
 					Console/background01.wl  = { t_hl2=! }
 					Console/background01_widescreen.wl  = { t_hl2=! }
 					Console/background02.wl  = { t_hl2=! }
@@ -683,19 +683,19 @@ QQRKSRC1
 					Console/intro.wl  = { t_hl2=! }
 					Console/loading.wl  = { t_hl2=! }
 					Console/startup_loading.wl  = { t_hl2=! }
-		  }
-		  
-		  Debug.txlist =
-		  {
+				  }
+				  
+				  Debug.txlist =
+				  {
 					Debug/debugempty.wl  = { t_hl2=! }
 					Debug/debugluxels.wl  = { t_hl2=! }
 					Debug/debugluxelsnoalpha.wl  = { t_hl2=! }
 					Debug/debugwireframe.wl  = { t_hl2=! }
 					Debug/debugworldwireframezbuffer.wl  = { t_hl2=! }
-		  }
-		  
-		  Decals.txlist =
-		  {
+				  }
+				  
+				  Decals.txlist =
+				  {
 					Decals/alienflesh/shot1.wl  = { t_hl2=! }
 					Decals/alienflesh/shot2.wl  = { t_hl2=! }
 					Decals/alienflesh/shot3.wl  = { t_hl2=! }
@@ -987,17 +987,17 @@ QQRKSRC1
 					Decals/Yblood4.wl  = { t_hl2=! }
 					Decals/Yblood5.wl  = { t_hl2=! }
 					Decals/Yblood6.wl  = { t_hl2=! }
-		  }
-		  
-		  Detail.txlist =
-		  {
+				  }
+				  
+				  Detail.txlist =
+				  {
 					Detail/detailash001a.wl  = { t_hl2=! }
 					Detail/detaildirt001a.wl  = { t_hl2=! }
 					Detail/detailsprites.wl  = { t_hl2=! }
-		  }
-		  
-		  Dev.txlist =
-		  {
+				  }
+				  
+				  Dev.txlist =
+				  {
 					Dev/bump.wl  = { t_hl2=! }
 					Dev/bump_dudv.wl  = { t_hl2=! }
 					Dev/bump_normal.wl  = { t_hl2=! }
@@ -1097,10 +1097,10 @@ QQRKSRC1
 					Dev/water_moving.wl  = { t_hl2=! }
 					Dev/water_moving_beneath.wl  = { t_hl2=! }
 					Dev/water_normal.wl  = { t_hl2=! }
-		  }
-		  
-		  Effects.txlist =
-		  {
+				  }
+				  
+				  Effects.txlist =
+				  {
 					Effects/alyxmonitor_idle.wl  = { t_hl2=! }
 					Effects/alyxmonitor_talk.wl  = { t_hl2=! }
 					Effects/ar2ground2.wl  = { t_hl2=! }
@@ -1229,10 +1229,10 @@ QQRKSRC1
 					Effects/tvscreen_noise001b.wl  = { t_hl2=! }
 					Effects/water_highlight.wl  = { t_hl2=! }
 					Effects/yellowflare.wl  = { t_hl2=! }
-		  }
-		  
-		  Engine.txlist =
-		  {
+				  }
+				  
+				  Engine.txlist =
+				  {
 					Engine/camerarendertarget.wl  = { t_hl2=! }
 					Engine/defaultcubemap.wl  = { t_hl2=! }
 					Engine/dummy.wl  = { t_hl2=! }
@@ -1242,10 +1242,10 @@ QQRKSRC1
 					Engine/normalize.wl  = { t_hl2=! }
 					Engine/rendertarget256-2.wl  = { t_hl2=! }
 					Engine/rendertarget256.wl  = { t_hl2=! }
-		  }
-		  
-		  Enviroment.txlist =
-		  {
+				  }
+				  
+				  Enviroment.txlist =
+				  {
 					Environment Maps/borealis_003.wl  = { t_hl2=! }
 					Environment Maps/d1_trainstation_05.wl  = { t_hl2=! }
 					Environment Maps/envmap001a.wl  = { t_hl2=! }
@@ -1255,10 +1255,10 @@ QQRKSRC1
 					Environment Maps/rg.wl  = { t_hl2=! }
 					Environment Maps/train_01.wl  = { t_hl2=! }
 					Environment Maps/water_wasteland05.wl  = { t_hl2=! }
-		  }
-		  
-		  Glass.txlist =
-		  {
+				  }
+				  
+				  Glass.txlist =
+				  {
 					Glass/combineglass001a.wl  = { t_hl2=! }
 					Glass/combineglass001a_mask.wl  = { t_hl2=! }
 					Glass/glasswindow001b.wl  = { t_hl2=! }
@@ -1320,10 +1320,10 @@ QQRKSRC1
 					Glass/glasswindowbreak070a_mask.wl  = { t_hl2=! }
 					Glass/glasswindowbreak070b.wl  = { t_hl2=! }
 					Glass/glasswindowbreak070b_mask.wl  = { t_hl2=! }
-		  }
-		  
-		  Halflife.txlist =
-		  {											
+				  }
+				  
+				  Halflife.txlist =
+				  {											
 					Halflife/+0metswitch1.wl  = { t_hl2=! }
 					Halflife/+0~drkmtls2.wl  = { t_hl2=! }
 					Halflife/+0~fifties_lgt2.wl  = { t_hl2=! }
@@ -1373,19 +1373,19 @@ QQRKSRC1
 					Halflife/{grate2.wl  = { t_hl2=! }
 					Halflife/{ladder2.wl  = { t_hl2=! }
 					Halflife/{rail2.wl  = { t_hl2=! }
-		  }
-		  
-		  Hlmv.txlist =
-		  {											
+				  }
+				  
+				  Hlmv.txlist =
+				  {											
 					hlmv/background.wl  = { t_hl2=! }
 					hlmv/cubemap.wl  = { t_hl2=! }
 					hlmv/debugwireframe.wl  = { t_hl2=! }
 					hlmv/floor.wl  = { t_hl2=! }
 					hlmv/gray.wl  = { t_hl2=! }
-		  }
-		  
-		  Lights.txlist =
-		  {	
+				  }
+				  
+				  Lights.txlist =
+				  {	
 					Lights/fluorescent001a.wl  = { t_hl2=! }
 					Lights/fluorescentcool001a.wl  = { t_hl2=! }
 					Lights/fluorescentcool001b.wl  = { t_hl2=! }
@@ -1398,10 +1398,10 @@ QQRKSRC1
 					Lights/white003.wl  = { t_hl2=! }
 					Lights/white004.wl  = { t_hl2=! }
 					Lights/white005.wl  = { t_hl2=! }
-		  }
-		  
-		  Matsys.txlist =
-		  {
+				  }
+				  
+				  Matsys.txlist =
+				  {
 					matsys_regressiontest/background.wl  = { t_hl2=! }
 					matsys_regressiontest/basetexture.wl  = { t_hl2=! }
 					matsys_regressiontest/cubemap.wl  = { t_hl2=! }
@@ -1409,10 +1409,10 @@ QQRKSRC1
 					matsys_regressiontest/normalmap.wl  = { t_hl2=! }
 					matsys_regressiontest/normalmap_normal.wl  = { t_hl2=! }
 					matsys_regressiontest/specularmask.wl  = { t_hl2=! }
-		  }
-		  
-		  Metal1.txlist =
-		  {
+				  }
+				  
+				  Metal1.txlist =
+				  {
 					Metal/citadel_metalwall063a.wl  = { t_hl2=! }
 					Metal/citadel_metalwall072a.wl  = { t_hl2=! }
 					Metal/citadel_metalwall072b.wl  = { t_hl2=! }
@@ -1539,11 +1539,10 @@ QQRKSRC1
 					Metal/metalpipe010a.wl  = { t_hl2=! }
 					Metal/metalpipe010a_normal.wl  = { t_hl2=! }
 					Metal/metalpipeendcap001a.wl  = { t_hl2=! }
-
-			}
-			
-			Metal2.txlist =
-		  {
+					}
+					
+					Metal2.txlist =
+				  {
 					Metal/metalrail001a.wl  = { t_hl2=! }
 					Metal/metalrail002a.wl  = { t_hl2=! }
 					Metal/metalrail003a.wl  = { t_hl2=! }
@@ -1660,10 +1659,10 @@ QQRKSRC1
 					Metal/metalwall018g.wl  = { t_hl2=! }
 					Metal/metalwall018g_normal.wl  = { t_hl2=! }
 					Metal/metalwall018h_normal.wl  = { t_hl2=! }
-			}
-			
-				Metal3.txlist =
-		  {
+					}
+					
+					Metal3.txlist =
+				  {
 					Metal/metalwall020a.wl  = { t_hl2=! }
 					Metal/metalwall021a.wl  = { t_hl2=! }
 					Metal/metalwall021b.wl  = { t_hl2=! }
@@ -1791,10 +1790,10 @@ QQRKSRC1
 					Metal/metalwall101b.wl  = { t_hl2=! }
 					Metal/metalwall101b_normal.wl  = { t_hl2=! }
 					Metal/metalwall102a.wl  = { t_hl2=! }
-		  }
-		  
-		  Models.txlist =
-		  {
+				  }
+				  
+				  Models1.txlist =
+				  {
 					Models/Airboat/Airboat001.wl  = { t_hl2=! }
 					Models/Airboat/airboat_blur02.wl  = { t_hl2=! }
 					Models/Alyx/alyxblack.wl  = { t_hl2=! }
@@ -2227,6 +2226,10 @@ QQRKSRC1
 					Models/props_building_details/courtyard_template001c_bars_dark.wl  = { t_hl2=! }
 					Models/props_building_details/Courtyard_Template002_Window.wl  = { t_hl2=! }
 					Models/props_building_details/Storefront_Template001a_Bars.wl  = { t_hl2=! }
+					}
+					
+					Models2.txlist =
+				  {
 					Models/props_c17/awning001a.wl  = { t_hl2=! }
 					Models/props_c17/awning001b.wl  = { t_hl2=! }
 					Models/props_c17/awning001c.wl  = { t_hl2=! }
@@ -2693,6 +2696,10 @@ QQRKSRC1
 					Models/props_junk/WoodCrates01a.wl  = { t_hl2=! }
 					Models/props_junk/WoodCrates02a.wl  = { t_hl2=! }
 					Models/props_junk/Wood_PalletCrate001a.wl  = { t_hl2=! }
+					}
+					
+					Models3.txlist =
+				  {
 					Models/props_lab/airlock_laser.wl  = { t_hl2=! }
 					Models/props_lab/airlock_sheet.wl  = { t_hl2=! }
 					Models/props_lab/base.wl  = { t_hl2=! }
@@ -3150,10 +3157,10 @@ QQRKSRC1
 					Models/Zombie_Fast/fast_zombie_sheet_normal.wl  = { t_hl2=! }
 					Models/Zombie_Poison/PoisonZombie_sheet.wl  = { t_hl2=! }
 					Models/Zombie_Poison/PoisonZombie_sheet_normal.wl  = { t_hl2=! }
-		  }
-		  
-		  Nature.txlist =
-		  {										
+				  }
+				  
+				  Nature.txlist =
+				  {										
 					Nature/blendcliffdirt001a_tooltexture.wl  = { t_hl2=! }
 					Nature/blendcliffgrass001a_tooltexture.wl  = { t_hl2=! }
 					Nature/blenddirtdirt001a_tooltexture.wl  = { t_hl2=! }
@@ -3261,15 +3268,22 @@ QQRKSRC1
 					Nature/seaweed002a.wl  = { t_hl2=! }
 					Nature/seaweed002a_normal.wl  = { t_hl2=! }
 					Nature/slime_normal.wl  = { t_hl2=! }
+					Nature/snowfloor001a.wl  = { t_hl2=! }
+					Nature/snowfloor002a.wl  = { t_hl2=! }
+					Nature/snowfloor003a.wl  = { t_hl2=! }
+					Nature/snowwall001a.wl  = { t_hl2=! }
+					Nature/snowwall002a.wl  = { t_hl2=! }
+					Nature/snowwall003a.wl  = { t_hl2=! }
+					Nature/snowwall004a.wl  = { t_hl2=! }
 					Nature/toxicslime001a.wl  = { t_hl2=! }
 					Nature/toxicslime002a.wl  = { t_hl2=! }
 					Nature/toxicslime003a.wl  = { t_hl2=! }
 					Nature/trash01a.wl  = { t_hl2=! }
 					Nature/treeline001a.wl  = { t_hl2=! }
-		  }
-		  
-		  Overlays.txlist =
-		  {
+				  }
+				  
+				  Overlays.txlist =
+				  {
 					Overlays/darkedge.wl  = { t_hl2=! }
 					Overlays/dirttrack01a.wl  = { t_hl2=! }
 					Overlays/dirttrack01b.wl  = { t_hl2=! }
@@ -3298,10 +3312,10 @@ QQRKSRC1
 					Overlays/tideline01a.wl  = { t_hl2=! }
 					Overlays/tideline01b.wl  = { t_hl2=! }
 					Overlays/tideline01c.wl  = { t_hl2=! }
-		  }
-		  
-		  Particle.txlist =
-		  {
+				  }
+				  
+				  Particle.txlist =
+				  {
 					particle/BillowNormalMap.wl  = { t_hl2=! }
 					particle/fire.wl  = { t_hl2=! }
 					particle/old/Sphere_DX7.wl  = { t_hl2=! }
@@ -3309,12 +3323,14 @@ QQRKSRC1
 					particle/particle_noisesphere.wl  = { t_hl2=! }
 					particle/particle_smokegrenade.wl  = { t_hl2=! }
 					particle/particle_sphere.wl  = { t_hl2=! }
+					particle/rain.wl  = { t_hl2=! }
 					particle/SmokeStackFallback.wl  = { t_hl2=! }
+					particle/snow.wl  = { t_hl2=! }
 					particle/sparkles.wl  = { t_hl2=! }
-		  }
-		  
-		  Plaster.txlist =
-		  {
+				  }
+				  
+				  Plaster.txlist =
+				  {
 					Plaster/plasterceiling002b.wl  = { t_hl2=! }
 					Plaster/plasterceiling002b_normal.wl  = { t_hl2=! }
 					Plaster/plasterceiling003a.wl  = { t_hl2=! }
@@ -3482,10 +3498,10 @@ QQRKSRC1
 					Plaster/Wallpaper003a.wl  = { t_hl2=! }
 					Plaster/Wallpaper003b.wl  = { t_hl2=! }
 					Plaster/Wallpaper005a.wl  = { t_hl2=! }
-		  }
-		  
-		  Props.txlist =
-		  {
+				  }
+				  
+				  Props.txlist =
+				  {
 					Props/acousticceiling002a.wl  = { t_hl2=! }
 					Props/carpetfloor001a.wl  = { t_hl2=! }
 					Props/carpetfloor003a.wl  = { t_hl2=! }
@@ -3635,15 +3651,15 @@ QQRKSRC1
 					Props/wooddrift001a.wl  = { t_hl2=! }
 					Props/wooddrift006a.wl  = { t_hl2=! }
 					Props/woodspool001a.wl  = { t_hl2=! }
-		  }
-		  
-		  Scripted.txlist =
-		  {
+				  }
+				  
+				  Scripted.txlist =
+				  {
 					scripted/breen_fakemonitor_.wl  = { t_hl2=! }
-		  }
-		  
-		  Shadertest.txlist =
-		  {
+				  }
+				  
+				  Shadertest.txlist =
+				  {
 					shadertest/BaseTimesLightmapTimes2Detail.wl  = { t_hl2=! }
 					shadertest/BaseTimesLightmapTimesDetail.wl  = { t_hl2=! }
 					shadertest/BaseTimesLightmapWet.wl  = { t_hl2=! }
@@ -3717,10 +3733,10 @@ QQRKSRC1
 					shadertest/WorldDiffuseBumpmap_normal.wl  = { t_hl2=! }
 					shadertest/WorldTwoTextureBlend.wl  = { t_hl2=! }
 					shadertest/WorldTwoTextureBlend_detail.wl  = { t_hl2=! }
-		  }
-		  
-		  Skybox.txlist =
-		  {
+				  }
+				  
+				  Skybox.txlist =
+				  {
 					skybox/sky_borealis01bk.wl  = { t_hl2=! }
 					skybox/sky_borealis01dn.wl  = { t_hl2=! }
 					skybox/sky_borealis01ft.wl  = { t_hl2=! }
@@ -3866,10 +3882,10 @@ QQRKSRC1
 					skybox/sky_wasteland02lf.wl  = { t_hl2=! }
 					skybox/sky_wasteland02rt.wl  = { t_hl2=! }
 					skybox/sky_wasteland02up.wl  = { t_hl2=! }
-		  }
-		  
-		  Sprites.txlist =
-		  {
+				  }
+				  
+				  Sprites.txlist =
+				  {
 					Sprites/640hud1.wl  = { t_hl2=! }
 					Sprites/640hud2.wl  = { t_hl2=! }
 					Sprites/640hud3.wl  = { t_hl2=! }
@@ -4037,10 +4053,10 @@ QQRKSRC1
 					Sprites/yellowflare.wl  = { t_hl2=! }
 					Sprites/yellowglow1.wl  = { t_hl2=! }
 					Sprites/zerogxplode.wl  = { t_hl2=! }
-		  }
-		  
-		  Stone.txlist =
-		  {
+				  }
+				  
+				  Stone.txlist =
+				  {
 					Stone/marblefloor001b.wl  = { t_hl2=! }
 					Stone/marblefloor001c.wl  = { t_hl2=! }
 					Stone/marblefloor001d.wl  = { t_hl2=! }
@@ -4127,10 +4143,10 @@ QQRKSRC1
 					Stone/stonewall051a_normal.wl  = { t_hl2=! }
 					Stone/stonewall051b.wl  = { t_hl2=! }
 					Stone/stonewall051c.wl  = { t_hl2=! }
-		  }
-		  
-		  Storefront.txlist =
-		  {
+				  }
+				  
+				  Storefront.txlist =
+				  {
 					Storefront_Template/Storefront_Template001a.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001a_normal.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001b.wl  = { t_hl2=! }
@@ -4140,15 +4156,15 @@ QQRKSRC1
 					Storefront_Template/Storefront_Template001d.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001d_mask.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001g.wl  = { t_hl2=! }
-		  }
-		  
-		  Sun.txlist =
-		  {
+				  }
+				  
+				  Sun.txlist =
+				  {
 					sun/overlay.wl  = { t_hl2=! }
-		  }
-		  
-		  Tile.txlist =
-		  {
+				  }
+				  
+				  Tile.txlist =
+				  {
 					Tile/citadel_tilewall005a.wl  = { t_hl2=! }
 					Tile/tilebreak001c.wl  = { t_hl2=! }
 					Tile/tilefloor001a.wl  = { t_hl2=! }
@@ -4208,10 +4224,10 @@ QQRKSRC1
 					Tile/tilewall009b_normal.wl  = { t_hl2=! }
 					Tile/tilewall009d.wl  = { t_hl2=! }
 					Tile/tilewall009d_normal.wl  = { t_hl2=! }
-		  }
-		  
-		  Tools.txlist =
-		  {
+				  }
+				  
+				  Tools.txlist =
+				  {
 					Tools/toolsareaportal.wl  = { t_hl2=! }
 					Tools/toolsblack.wl  = { t_hl2=! }
 					Tools/toolsblockbullets.wl  = { t_hl2=! }
@@ -4232,10 +4248,10 @@ QQRKSRC1
 					Tools/toolsskybox.wl  = { t_hl2=! }
 					Tools/toolsskyfog.wl  = { t_hl2=! }
 					Tools/toolstrigger.wl  = { t_hl2=! }
-		  }
-		  
-		  Vehicle.txlist =
-		  {
+				  }
+				  
+				  Vehicle.txlist =
+				  {
 					Vehicle/metaltrain001a.wl  = { t_hl2=! }
 					Vehicle/metaltrain001a_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain001b.wl  = { t_hl2=! }
@@ -4267,10 +4283,10 @@ QQRKSRC1
 					Vehicle/rubbertrainfloor001a_normal.wl  = { t_hl2=! }
 					Vehicle/rubbertrainfloor002a.wl  = { t_hl2=! }
 					Vehicle/rubbertrainfloor002a_normal.wl  = { t_hl2=! }
-		  }
-		  
-		  Vgui.txlist =
-		  {
+				  }
+				  
+				  Vgui.txlist =
+				  {
 					VGUI/black.wl  = { t_hl2=! }
 					VGUI/chapters/chapter1.wl  = { t_hl2=! }
 					VGUI/chapters/chapter10.wl  = { t_hl2=! }
@@ -4312,15 +4328,43 @@ QQRKSRC1
 					VGUI/resource/icon_folder_selected.wl  = { t_hl2=! }
 					VGUI/resource/icon_hlicon1.wl  = { t_hl2=! }
 					VGUI/resource/icon_hlicon2.wl  = { t_hl2=! }
+					VGUI/resource/icon_steam.wl  = { t_hl2=! }
+					VGUI/resource/icon_steam_disabled.wl  = { t_hl2=! }
+					VGUI/resource/icon_vac.wl  = { t_hl2=! }
+					VGUI/resource/logo_game.wl  = { t_hl2=! }
+					VGUI/resource/menu_hl_no_icon.wl  = { t_hl2=! }
+					VGUI/resource/menu_hl_with_icon.wl  = { t_hl2=! }
+					VGUI/resource/menu_steam_no_icon.wl  = { t_hl2=! }
+					VGUI/resource/menu_steam_with_icon.wl  = { t_hl2=! }
+					VGUI/resource/mic_meter_dead.wl  = { t_hl2=! }
+					VGUI/resource/mic_meter_live.wl  = { t_hl2=! }
+					VGUI/resource/steam_menu.wl  = { t_hl2=! }
+					VGUI/resource/steam_menu_mouseover.wl  = { t_hl2=! }
+					VGUI/screens/vgui_bg.wl  = { t_hl2=! }
+					VGUI/screens/vgui_button_disabled.wl  = { t_hl2=! }
+					VGUI/screens/vgui_button_enabled.wl  = { t_hl2=! }
+					VGUI/screens/vgui_button_hover.wl  = { t_hl2=! }
+					VGUI/screens/vgui_button_pushed.wl  = { t_hl2=! }
+					VGUI/screens/vgui_overlay.wl  = { t_hl2=! }
+					VGUI/servers/icon_bots.wl  = { t_hl2=! }
+					VGUI/servers/icon_bots_column.wl  = { t_hl2=! }
+					VGUI/servers/icon_password.wl  = { t_hl2=! }
+					VGUI/servers/icon_password_column.wl  = { t_hl2=! }
+					VGUI/servers/icon_robotron.wl  = { t_hl2=! }
+					VGUI/servers/icon_robotron_column.wl  = { t_hl2=! }
+					VGUI/timer.wl  = { t_hl2=! }
+					VGUI/white.wl  = { t_hl2=! }
+					VGUI/white_additive.wl  = { t_hl2=! }
+					VGUI/zoom.wl  = { t_hl2=! }
 					}
-					
+							
 					Voice.txlist =				
 					{
 					voice/icntlk_pl.wl  = { t_hl2=! }
 					voice/icntlk_sv.wl  = { t_hl2=! }
 					voice/speaker4.wl  = { t_hl2=! }
 					}
-					
+							
 					Wood.txlist =				
 					{
 					Wood/cabinets01a.wl  = { t_hl2=! }
@@ -4425,7 +4469,7 @@ QQRKSRC1
 					Wood/woodwall045a.wl  = { t_hl2=! }
 					Wood/woodwall045b.wl  = { t_hl2=! }
 					Wood/woodwall045c.wl  = { t_hl2=! }
-       }
+		      }
     }
   }
 }

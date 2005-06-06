@@ -65,7 +65,6 @@ QQRKSRC1
       BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
       BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
       BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
-      Textures = "1"
     }
     item: =
     {
@@ -77,7 +76,6 @@ QQRKSRC1
       ExportMapFile = "1"
       BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
       BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
-      Textures = "1"
     }
     item: =
     {
@@ -112,7 +110,6 @@ QQRKSRC1
       BuildArgs1 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
       BuildArgs2 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
       BuildArgs3 = "-game "$22"%basepath%/%gamedir%"$22" %mapfile%"
-      Textures = "1"
     }
     item: =
     {
