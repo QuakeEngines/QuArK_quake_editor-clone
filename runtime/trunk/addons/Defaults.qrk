@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.249  2005/04/17 14:45:18  alexander
+//added saving of alpha vtf
+//added configuration of output format
+//
 //Revision 1.248  2005/04/16 11:13:36  alexander
 //can save non alpha textures as vtf
 //can export used textures to materials folder
@@ -1299,7 +1303,9 @@ QQRKSRC1
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
-        AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"
+        AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D
+        "textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
+        "halflife2.qrk"$0D"hl2mp.qrk"
 
         BuildPgmsDir="E:/spiele/steam/SteamApps/<steam user name>/sourcesdk/bin"
         BuildPgm1  = "vbsp.exe"
