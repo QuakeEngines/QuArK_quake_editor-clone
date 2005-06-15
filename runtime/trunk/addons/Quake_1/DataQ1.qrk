@@ -18,11 +18,8 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
-//Revision 1.6  2005/06/15           Bengt Jardrup
-//Major revision
-//
-//Revision 1.5  2005/05/03           Bengt Jardrup
-//Added monster_ogre_marksman
+//Revision 1.5  2005/06/15 18:05:01  cdunde
+//Major updates and changes by Bengt Jardrup
 //
 //Revision 1.4  2005/03/29           Bengt Jardrup
 //Fixed bbox for item_health, spawnflags for fish/scrags and many explanations and spelling errors
