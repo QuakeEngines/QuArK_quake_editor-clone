@@ -18,6 +18,15 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2005/06/15           Bengt Jardrup
+//Major revision
+//
+//Revision 1.5  2005/05/03           Bengt Jardrup
+//Added monster_ogre_marksman
+//
+//Revision 1.4  2005/03/29           Bengt Jardrup
+//Fixed bbox for item_health, spawnflags for fish/scrags and many explanations and spelling errors
+//
 //Revision 1.3  2001/11/27 20:04:38  decker_dk
 //Fixed a little typo in func_train's dmg. Thanks to Denis Kolesnikov (dekoder@narod.ru)
 //
@@ -66,6 +75,7 @@ QQRKSRC1
          $0D$0A"echo"
          $0D$0A"exec quark.cfg"
          $0D$0A"stuffcmds"
+         $0D$0A
       }
     }
 //    DrawMap: =
@@ -107,14 +117,15 @@ QQRKSRC1
 	{
 	func_door:b =
 	{
-	angle = "360"
-	;desc = "Door"
+	angle = "0"
+	;desc = "A door"
 	;incl = "defpoly"
 	}
 	func_door_secret:b =
 	{
-	angle = "360"
-	;desc = "A door that is triggered to open"
+	angle = "0"
+	sounds = "3"
+	;desc = "A secret door"
 	;incl = "defpoly"
 	}
 	func_wall:b =
@@ -124,29 +135,30 @@ QQRKSRC1
 	}
 	func_button:b =
 	{
-	angle = "360"
+	angle = "0"
 	;desc = "A button"
 	;incl = "defpoly"
 	}
 	func_train:b =
 	{
-	angle = "360"
 	;desc = "A platform (moves along a train)"
 	;incl = "defpoly"
 	}
 	func_plat:b =
 	{
+	angle = "0"
+	sounds = "2"
 	;desc = "A lift/elevator"
 	;incl = "defpoly"
 	}
 	func_bossgate:b =
 	{
-	;desc = "This bmodel disappears when player has all the episode sigils"
+	;desc = "This bmodel disappears when player has all the episode runes"
 	;incl = "defpoly"
 	}
 	func_episodegate:b =
 	{
-	;desc = "Appears if episode has been completed so we cant reenter it"
+	;desc = "Appears if episode has been completed so player can't re-enter it"
 	;incl = "defpoly"
 	}
 	func_illusionary:b =
@@ -160,85 +172,69 @@ QQRKSRC1
 	{
 	trigger_teleport:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "Teleporter (all trigger_tags are trigger by walkover"
+	;desc = "Teleporter (all trigger_tags are triggered by walkover"
 	;incl = "defpoly"
 	}
 	trigger_changelevel:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
+	map = "start"
 	;desc = "Changes to another level"
 	;incl = "defpoly"
 	}
 	trigger_counter:e =
 	{
-	origin = "0 0 0"
-	angle = "360"
+	count = "2"
 	;desc = "Counter"
 	}
 	trigger_setskill:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "Changes Skill level"
+	message = "1"
+	;desc = "Changes skill level"
 	;incl = "defpoly"
 	}
 	trigger_once:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
 	;desc = "Triggers action only once"
 	;incl = "defpoly"
 	}
 	trigger_multiple:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "trigger action (can be triggered more than once)"
+	;desc = "Triggers action (can be triggered more than once)"
 	;incl = "defpoly"
 	}
 	trigger_onlyregistered:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "Only triggers if game is registered (registered == 1)"
+	;desc = "Only triggers if game is registered"
 	;incl = "defpoly"
 	}
 	trigger_secret:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "trigger action and award secret credit"
+	sounds = "1"
+	;desc = "Awards credit for secret"
 	;incl = "defpoly"
 	}
 	trigger_monsterjump:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "walking monsters that touch this will jump"
+	angle = "0"
+	;desc = "Walking monsters that touch this will jump"
 	;incl = "defpoly"
 	}
 	trigger_hurt:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "any object touching this will be hurt"
+	dmg = "5"
+	;desc = "Any object touching this will be hurt"
 	;incl = "defpoly"
 	}
 	trigger_push:b =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "pushes player in any direction (like a windtunnel)"
+	angle = "0"
+	speed = "1000"
+	;desc = "Pushes player in any direction (like a windtunnel)"
 	;incl = "defpoly"
 	}
 	trigger_relay:e =
 	{
-	origin = "0 0 0"
-	angle = "360"
-	;desc = "allow delayed/multiple actions from one trigger"
+	;desc = "Allows delayed/multiple actions from one trigger"
 	}
 	}
 
@@ -247,43 +243,42 @@ QQRKSRC1
 	light:e =
 	{
 	origin = "0 0 0"
-        light = "200"
-	;desc = "A projected light (no visible light source)"
+	;desc = "An unsourced light (no visible light source)"
 	}
 	light_torch_small_walltorch:e =
 	{
 	origin = "0 0 0"
-	;desc = "Short wallTorch"
+	;desc = "Short walltorch"
 	}
 	light_flame_large_yellow:e =
 	{
 	origin = "0 0 0"
-	;desc ="Large yellow flame ball"
+	;desc ="Large yellow flame"
 	}
 	light_flame_small_yellow:e =
 	{
 	origin = "0 0 0"
-	;desc = "Small yellow flame ball"
+	;desc = "Small yellow flame"
 	}
 	light_flame_small_white:e =
 	{
 	origin = "0 0 0"
-	;desc = "Small white flame ball"
+	;desc = "Small white flame"
 	}
 	light_fluoro:e =
 	{
 	origin = "0 0 0"
-	;desc = "light: makes steady fluorescent humming"
+	;desc = "Light that makes steady fluorescent humming"
 	}
 	light_fluorospark:e =
 	{
 	origin = "0 0 0"
-	;desc = "light: makes sparking, broken fluorescent sound"
+	;desc = "Light that makes sparking, broken fluorescent sound"
 	}
 	light_globe:e =
 	{
 	origin = "0 0 0"
-	;desc = "sphere globe light"
+	;desc = "Sphere globe light"
 	}
 	}
 
@@ -297,22 +292,22 @@ QQRKSRC1
 	ambient_drone:e =
 	{
 	origin = "0 0 0"
-	;desc = "engine/machinery sound"
+	;desc = "Engine/machinery sound"
 	}
 	ambient_comp_hum:e =
 	{
 	origin = "0 0 0"
-	;desc = "computer background sounds"
+	;desc = "Computer background sounds"
 	}
 	ambient_swamp1:e =
 	{
 	origin = "0 0 0"
-	;desc = "frogs croaking"
+	;desc = "Frogs croaking"
 	}
 	ambient_swamp2:e =
 	{
 	origin = "0 0 0"
-	;desc = "slightly different sounding frogs croaking"
+	;desc = "Slightly different sounding frogs croaking"
 	}
 	ambient_flouro_buzz:e =
 	{
@@ -322,7 +317,7 @@ QQRKSRC1
 	ambient_light_buzz:e =
 	{
 	origin = "0 0 0"
-	;desc = "as above just with a lower volume"
+	;desc = "Humming sound"
 	}
 	ambient_suck_wind:e =
 	{
@@ -332,7 +327,7 @@ QQRKSRC1
 	ambient_thunder:e =
 	{
 	origin = "0 0 0"
-	;desc = "Thunder"
+	;desc = "Thunder sound"
 	}
 	}
 
@@ -341,7 +336,7 @@ QQRKSRC1
 	air_bubbles:e =
 	{
 	origin = "0 0 0"
-	;desc = "Rising bubbles"
+	;desc = "Rising air bubbles"
 	}
 	event_lightning:e =
 	{
@@ -352,7 +347,7 @@ QQRKSRC1
 	{
 	origin = "0 0 0"
 	mangle = "0 0 0"
-	;desc = "Cameras position during intermissions"
+	;desc = "Camera position during intermissions"
 	}
 	info_null:e =
 	{
@@ -362,50 +357,50 @@ QQRKSRC1
 	info_notnull:e =
 	{
 	origin = "0 0 0"
-	;desc = "Used as a positional target for Lightning"
+	;desc = "Used as a positional target for 'event_lightning' entity"
 	}
 	info_teleport_destination:e =
 	{
 	origin = "0 0 0"
-	;desc = "gives coords for a teleport destination"
+	;desc = "Teleport destination"
         targetname = "[auto]"
-        angle = "360"
+        angle = "0"
 	}
 	misc_fireball:e =
 	{
 	origin = "0 0 0"
-	;desc = "Small fireball (used with lava)"
+	;desc = "This is the ball that jumps up from lava"
 	}
 	misc_explobox:e =
 	{
 	origin = "0 0 0"
-	;desc = "Nuclear Container (Explodes upon being shot, harms player)"
+	;desc = "Exploding box (explodes upon being shot, harms player)"
 	}
 	misc_explobox2:e =
 	{
 	origin = "0 0 0"
-	;desc = "small nuclear container"
+	;desc = "Small exploding box"
 	}
 	trap_spikeshooter:e =
 	{
 	origin = "0 0 0"
-	angle = "360"
-	;desc = "Shoots spikes"
+	angle = "0"
+	;desc = "Shoots a spike when triggered"
 	}
 	path_corner:e =
 	{
 	origin = "0 0 0"
-	;desc = "Used to define path for func_train platforms"
+	;desc = "Used to define a path for func_train platforms"
 	}
 	misc_teleporttrain:e =
 	{
 	origin = "0 0 0"
-	;desc = "Used for the final boss"
+	;desc = "Used to kill Shub-Niggurath"
 	}
 	trap_shooter:e =
 	{
 	origin = "0 0 0"
-	angle = "360"
+	angle = "0"
 	;desc = "Continuously fires spikes"
 	}
 	}
@@ -420,7 +415,7 @@ QQRKSRC1
 	item_health:e =
 	{
 	origin = "0 0 0"
-	;desc = "Megahealth (100%)"
+	;desc = "Megahealth (+100)"
 	}
 	item_artifact_envirosuit:e =
 	{
@@ -504,27 +499,27 @@ QQRKSRC1
 	weapon_lightning:e =
 	{
 	origin = "0 0 0"
-	;desc = "ThunderBolt"
+	;desc = "Thunderbolt"
 	}
 	item_shells:e =
 	{
 	origin = "0 0 0"
-	;desc = "ammo for both shotguns"
+	;desc = "Ammo for both shotguns"
 	}
 	item_spikes:e =
 	{
 	origin = "0 0 0"
-	;desc = "ammo for both nailguns"
+	;desc = "Ammo for both nailguns"
 	}
 	item_rockets:e =
 	{
 	origin = "0 0 0"
-	;desc = "ammo for both Grenade/Rocket Launcher"
+	;desc = "Ammo for both Grenade/Rocket Launcher"
 	}
 	item_cells:e =
 	{
 	origin = "0 0 0"
-	;desc = "ammo for Thunderbolt"
+	;desc = "Ammo for Thunderbolt"
 	}
 	}
 
@@ -547,6 +542,12 @@ QQRKSRC1
 	origin = "0 0 0"
 	angle = "0"
 	;desc = "Ogre"
+	}
+	monster_ogre_marksman:e =
+	{
+	origin = "0 0 0"
+	angle = "0"
+	;desc = "Ogre Marksman"
 	}
 	monster_knight:e =
 	{
@@ -625,11 +626,11 @@ QQRKSRC1
 	Player Starts.qtxfolder =
 	{
 	info_player_start:e =
-      {
+      	{
 	origin = "0 0 0"
 	angle = "0"
-	;desc = "This is where the Player Starts"
-      }
+	;desc = "This is where the player starts"
+      	}
 	info_player_deathmatch:e =
 	{
 	origin = "0 0 0"
@@ -646,7 +647,7 @@ QQRKSRC1
 	{
 	origin = "0 0 0"
 	angle = "0"
-	;desc = "Only used on the start map for return point"
+	;desc = "Only used in the start map for return point"
 	}
 	testplayerstart:e =
 	{
@@ -662,18 +663,18 @@ QQRKSRC1
 					// Doors & lifts
 	func_door:form =
 	{
-	Help = "If two doors touch, they are assumed to be connected and operate as a unit." $0D $0D "TOGGLE causes the door to wait in both the start and end for a trigger event." $0D $0D "START_OPEN causes the door to move to its destination when spawned, and operate in reverse." $0D "It is used to temporarily or permanently close off an area when triggered." $0D $0D "Key doors always have 'wait' set to '-1'."
+	Help = "If two doors touch, they are assumed to be connected and operate as a" $0D "unit unless the 'Don't link' is set." $0D $0D "'Toggle' makes the door wait in both the start and end for a trigger event." $0D $0D "'Start open' makes the door move to its destination when spawned and" $0D "operate in reverse. It is used to temporarily or permanently close off" $0D "an area when triggered." $0D $0D "Key doors always have 'wait' set to '-1'."
    	spawnflags:=
 	{Txt="&"
 	Typ="X1"
-	Cap="Start Open"
-	Hint="causes the door to move to its destination when spawned."
+	Cap="Start open"
+	Hint="Makes the door move to its destination when spawned"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X4"
-	Cap="Door Don't Link"
-	Hint=""
+	Cap="Don't link"
+	Hint="Makes touching doors operate independently"
 	}
 	spawnflags: =
 	{Txt="&"
@@ -691,52 +692,57 @@ QQRKSRC1
 	{Txt="&"
 	Typ="X32"
 	Cap="Toggle"
-	Hint="Causes the door to wait in both the start and end states for a trigger event"
+	Hint="Makes the door wait in both the start and end states for a trigger event"
+	}
+	target:=
+	{Txt="&"
+	Typ="E"
+	Hint=""
 	}
 	targetname:=
 	{Txt="&"
 	Typ="E"
-	Hint="if set, no touch field will be spawned and a remote button or trigger field activates the door."
+	Hint="If set, no touch field will be spawned and a remote button or trigger field activates the door"
 	}
   	 message:=
   	 {Txt="&"
   	 Typ="E"
-  	 Hint="Is printed when a door is touched, only if its a triggered door that hasn't been fired yet"
+  	 Hint="Is printed when a door is touched, but only if it's a triggered door that hasn't been fired yet"
    	}
    	angle:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Determines the opening direction"
+   	Hint="Determines the opening direction (default 0, -1 is up, -2 is down)"
    	}
    	health:=
    	{Txt="&"
    	Typ="E"
-   	Hint="If set, the door must be shot to open."
+   	Hint="If >0, must be shot to open"
    	}
    	speed:=
    	{Txt="&"
    	Typ="E"
-  	 Hint="Movement speed. (default 100)"
+  	 Hint="Movement speed (default 100)"
   	 }
    	wait:=
    	{Txt="&"
    	Typ="E"
-   	Hint="How long the door waits before returning (3 Default, -1 never return)."
+   	Hint="How long the door waits before returning (default 3, -1 never return)"
    	}
    	lip:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Lip remaining after opening (default 8)."
+   	Hint="Lip remaining after opening (default 8)"
    	}
    	dmg:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Damage to inflict on player when blocking the door (2 Default)."
+   	Hint="Damage to inflict on player when blocking the door (default 2)"
    	}
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="0) no sound" $0D "1) stone" $0D "2) base" $0D "3) stone metal" $0D "4) screechy metal"
+	Items="0)none" $0D "1)stone" $0D "2)base" $0D "3)stone chain" $0D "4)screechy metal"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"
 	Hint="Sounds it makes while moving"
 	}
@@ -744,7 +750,7 @@ QQRKSRC1
 
 	func_door_secret:form =
 	{
-	Help = "Basic secret door, Slides back, then to the side." $0D $0D "If a secret door has a targetname, it will only be opened by the button or trigger, not by damage"
+	Help = "Basic secret door; slides back, then to the side." $0D $0D "If a secret door has a targetname, it will only be opened by the button or trigger, not by damage."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
@@ -766,61 +772,67 @@ QQRKSRC1
 	spawnflags: =
 	{Txt="&"
 	Typ="X8"
-	Cap="No shot"
-	Hint="Makes door only operable with trigger."
+	Cap="No shoot"
+	Hint="Makes door only operable with trigger"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X16"
-	Cap="Always shot"
+	Cap="Always shoot"
 	Hint="Even if targeted, it's shootable"
 	}
    	targetname:=
 	{Txt="&"
 	Typ="E"
-	Hint="If set, no touch field will be spawned and a remote button or trigger field activates the door."
+	Hint="If set, no touch field will be spawned and a remote button or trigger field activates the door"
 	}
    	angle:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Determines the opening direction"
+   	Hint="Determines the opening direction (default 0, -1 is up, -2 is down)"
    	}
    	health:=
    	{Txt="&"
    	Typ="E"
-   	Hint="If set, the door must be shot to open."
+   	Hint="If >0, must be shot to open"
    	}
    	speed:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Movement speed. (default 100)"
+   	Hint="Movement speed (default 100)"
   	 }
    	wait:=
    	{Txt="&"
    	Typ="E"
-   	Hint="How long the door waits before returning (3 default, -1 never return)."
+   	Hint="How long the door waits before returning (default 5, -1 never return)"
    	}
-   	lip:=
+   	t_width:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Lip remaining after opening(8 Default)."
+   	Hint="1st move length"
+   	}
+   	t_length:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="2nd move length"
    	}
    	dmg:=
   	 {Txt="&"
   	 Typ="E"
-   	Hint="Damage to inflict on player when blocking the door (2 default)."
+   	Hint="Damage to inflict on player when blocking the door (default 2)"
    	}
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="1) medieval" $0D "2) metal" $0D "3) base"
+	Items="1)medieval" $0D "2)metal" $0D "3)base"
 	values=	"1"	$0D	"2"	$0D	"3"
+	Hint="Sounds it makes while moving"
 	}
 	}
 
 	func_wall:form =
 	{
-	Help = "This is just a solid wall if not inhibited" $0D $0D "that can be made to appear in certain skills and modes" $0D $0D "and can be made to have switchable texture"
+	Help = "This is just a solid wall if not inhibited" $0D "that can be made to appear in certain skills and modes" $0D "and can be made to have switchable texture."
    	targetname:=
    	{Txt="&"
    	Typ="E"
@@ -834,54 +846,69 @@ QQRKSRC1
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="0) steam metal" $0D "1) wooden clunk" $0D "2) metallic click" $0D "3) in-out"
+	Items="0)steam metal" $0D "1)wooden clunk" $0D "2)metallic click" $0D "3)in-out"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"
 	}
 	target: =
 	{Txt="&"
    	Typ="E"
-	Hint="targetname of what should be triggered"
+	Hint="Targetname of what should be triggered"
 	}
+	message:=
+	{Txt="&"
+   	Typ="E"
+	Hint="Message to display when activated"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Determines the pushing direction (default 0, -1 is up, -2 is down)"
+   	}
    	lip:=
    	{Txt="&"
    	Typ="E"
-   	Hint="How much the button will stick out when pressed (default 4 pixels)"
+   	Hint="How much the button will stick out when pressed (default 4)"
 	}
    	speed:=
    	{Txt="&"
    	Typ="E"
    	Hint="Speed of movement (default 40)"
    	}
+   	delay:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Delay before trigger occurs"
+   	}
    	wait:=
    	{Txt="&"
    	Typ="E"
-   	Hint="How long before it can be pushed again (default 1 '-1 never return)"
+   	Hint="How long before it can be pushed again (default 1, -1 never return)"
    	}
    	health:=
    	{Txt="&"
    	Typ="E"
-   	Hint="If set to greater than zero, must be shot to be triggered."
+   	Hint="If >0, must be shot to be triggered"
    	}
   	}
 
 	func_train:form =
 	{
-	Help = "Trains are moving platforms that players can ride." $0D "The targets origin specifies the min point of the train at each corner." $0D "The train spawns at the first target." $0D "If the train is the target of a button or trigger, it will not begin moving until triggered."
+	Help = "Trains are moving platforms that players can ride." $0D $0D "The targets origin specifies the min point of the train at each corner." $0D "The train spawns at the first target." $0D "If the train is the target of a button or trigger, it will not begin moving until triggered."
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="1) ratchet metal"
-	values=	"1"
+	Items="0)none" $0D "1)ratchet metal"
+	values="0"      $0D "1"
 	}
 	target: =
 	{Txt="&"
    	Typ="E"
-   	Hint=""
+   	Hint="First stop target"
 	}
    	targetname:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Use if train is activated by trigger, note train will not start by player's presence"
+   	Hint="Use if train is activated by trigger. Note: train will not start by player's presence"
    	}
    	speed:=
    	{Txt="&"
@@ -894,26 +921,31 @@ QQRKSRC1
    	Hint="Message displayed when triggered"
    	}
    	dmg:=
-    {Txt="&"
+    	{Txt="&"
    	Typ="E"
-   	Hint="Amount of damage inflicted when player gets in way of the train."
+   	Hint="Amount of damage inflicted when player gets in the way of the train (default 2)"
    	}
 	}
 
 	func_plat:form =
 	{
-	Help = "Plats are always drawn in the extended position, so they will light correctly." $0D "If the plat is the target of a trigger or a button, it will start disabled in the extended position until it's triggered," $0D "then it will lower and become a normal plat." $0D $0D "If the 'height' key is set, that will determine the amount the plat moves, instead of being" $0D "implicitly determined by the model's height."
+	Help = "Plats are always drawn in the extended position, so they will light correctly." $0D $0D "If the plat is the target of a trigger or a button, it will start disabled in the extended position until it's triggered," $0D "then it will lower and become a normal plat." $0D $0D "If the 'height' key is set, that will determine the amount the plat moves, instead of being" $0D "implicitly determined by the model's height."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Plat low trigger"
-	Hint=""
+	Hint="Starts plat in the up position"
 	}
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="1) base fast" $0D "2) chain slow"
+	Items="1)base fast" $0D "2)chain slow"
 	values=	"1"	$0D	"2"
+	}
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of this entity"
 	}
 	height: =
 	{Txt="&"
@@ -923,47 +955,47 @@ QQRKSRC1
    	speed:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Default 100"
+   	Hint="Default 150"
    	}
 	}
 
 	func_bossgate:form =
 	{
-	Help = "This bmodel disappears when player has all of the episode sigils"
+	Help = "This bmodel disappears when player has all of the episode runes."
 	}
 
 	func_episodegate:form =
 	{
-	Help = "This bmodel will appear if the episode has already been completed, so players can't reenter it."
+	Help = "This bmodel will appear if the episode has already been completed, so player can't re-enter it."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="E1"
-	Hint=""
+	Hint="Episode 1"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X2"
 	Cap="E2"
-	Hint=""
+	Hint="Episode 2"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X4"
 	Cap="E3"
-	Hint=""
+	Hint="Episode 3"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X8"
 	Cap="E4"
-	Hint=""
+	Hint="Episode 4"
 	}
 	}
 
 	func_illusionary:form =
 	{
-	Help = "A simple entity that looks solid but lets you walk through it"
+	Help = "A simple entity that looks solid but lets you walk through it."
 	}
 
 
@@ -971,50 +1003,50 @@ QQRKSRC1
 
 	trigger_teleport:form =
 	{
-	Help = "Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set" $0D "the 'target' field, and create an object with a 'targetname' field that matches" $0D $0D "If the 'trigger_teleport' has a targetname, it will only teleport entities when it has been triggered."
+	Help = "Any object touching this will be transported to the corresponding info_teleport_destination entity. You must set" $0D "the 'target' field, and create an object with a 'targetname' field that matches." $0D $0D "If the 'trigger_teleport' has a targetname, it will only teleport entities when it has been triggered."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Player only"
-	Hint="Only allows players to use teleport, not monsters"
+	Hint="Only allows player to use teleport, not monsters"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X2"
 	Cap="Silent"
-	Hint=""
+	Hint="No teleporter sound"
 	}
 	target: =
 	{Txt="&"
    	Typ="E"
-	Hint="The name of the info_teleport_destination the player should be teleported to."
+	Hint="The name of the info_teleport_destination the player should be teleported to"
 	}
    	targetname:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Allows teleport to be triggered on"
+   	Hint="If set, teleporter must be triggered to work"
    	}
 	}
 
 	trigger_changelevel:form =
 	{
-	Help = "When the player touches this, he gets sent to the map listed in the 'map' variable. Unless the NO_INTERMISSION" $0D "flag is set, the view will go to the info_intermission spot and display stats."
+	Help = "When the player touches this, he gets sent to the map listed in the 'map' variable. Unless the 'No intermission'" $0D "flag is set, the view will go to the info_intermission spot and display stats."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="No intermission"
-	Hint=""
+	Hint="Don't show intermission screen"
 	}
    	map:=
    	{Txt="&"
    	Typ="E"
-   	Hint="What map to change to."
+   	Hint="What map to change to"
 	}
    	}
 
 	trigger_counter:form =
 	{
-	Help = "Acts as an intermediary for an action that takes multiple inputs." $0D $0D "If nomessage is not set, it will print '1more..' etc when triggered and 'sequence complete' when finished." $0D $0D "After the counter has been triggered 'count' times (default 2), it will fire all of its targets and remove itself."
+	Help = "Acts as an intermediary for an action that takes multiple inputs." $0D $0D "If 'No message' is not set, it will print '1 more..' etc when triggered and 'sequence completed' when finished." $0D $0D "After the counter has been triggered 'count' times, it will fire all of its targets and remove itself."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
@@ -1034,82 +1066,92 @@ QQRKSRC1
 	count: =
 	{Txt="&"
    	Typ="E"
-	Hint="How many buttons/triggers should be activated before this will activate"
-	}
-   	sounds: =
-	{Txt="&"
-	Typ="C"
-	Items="1) secret sound" $0D "2) Beep Beep"  $0D "3) Large Switch" $0D "4) No sound"
-	values=	"1"	$0D	"2"  $0D "3" $0D "4"
+	Hint="How many times triggered before counter will fire (default 2)"
 	}
 	}
 
 	trigger_setskill:form =
 	{
-	Help = "Sets skill level to the value of 'message'" $0D $0D "Only used on start map"
+	Help = "Sets skill level to the value of 'message'."
 	message: =
 	{Txt="&"
-   	Typ="E"
-	Hint="Skill level"
+	Typ="C"
+	Items="0)easy" $0D "1)medium" $0D "2)hard" $0D "3)nightmare"
+	values=	"0"    $0D "1"	      $0D "2"	   $0D "3"
 	}
 	}
 
 	trigger_once:form =
 	{
-	Help = "Variable sized trigger. Triggers once, then removes itself." $0D "You must set the key 'target' to the name of another object in the level that has a matching name"
+	Help = "Variable sized trigger. Triggers once, then removes itself." $0D $0D "You must set the key 'target' to the name of another object in the level that has a matching name."
    	spawnflags:=
    	{Txt="&"
    	Typ="X1"
    	Cap="No touch"
-   	Hint="Makes trigger only triggerable by other triggers"
+   	Hint="Makes trigger only activated by other triggers"
    	}
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="1) secret" $0D "2) beep beep" $0D "3) large switch" $0D "4)"
-	values=	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	Items="0)none" $0D "1)secret" $0D "2)beep beep" $0D "3)large switch"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"
 	}
 	target: =
 	{Txt="&"
 	typ="E"
 	Hint="The 'targetname' of another object"
 	}
-   	targetname:=
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of this entity"
+	}
+	message:=
+	{Txt="&"
+   	Typ="E"
+	Hint="Message to display when activated"
+	}
+   	health:=
    	{Txt="&"
    	Typ="E"
-   	Hint="If 'health' is set, the trigger must be killed to activate."
+   	Hint="If >0, the trigger must be killed to activate"
    	}
 	killtarget:=
    	{Txt="&"
    	Typ="E"
    	Hint="Removes object with targetname"
    	}
+   	delay:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Delay before trigger occurs"
+   	}
 	}
 
 	trigger_multiple:form =
 	{
-	Help = "Variable sized repeatable trigger. Must be targeted at one or more entities." $0D "NOTOUCH has been obsoleted by trigger_relay."
+	Help = "Variable sized repeatable trigger. Must be targeted at one or more entities." $0D "'No touch' has been obsoleted by trigger_relay."
 	spawnflags:=
 	{Txt="&"
 	Typ="X1"
 	Cap="No touch"
-	Hint=""
+	Hint="Makes trigger only activated by other triggers"
 	}
 	sounds:=
 	{Txt="&"
 	Typ="C"
-	Items="1) secret" $0D "2) beep beep" $0D "3) large switch" $0D "4)No sound"
-	values=	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	Items="0)none" $0D "1)secret" $0D "2)beep beep" $0D "3)large switch"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"
 	}
 	target:=
 	{Txt="&"
    	Typ="E"
-	Hint=""
+	Hint="The 'targetname' of another object"
 	}
-	delay:=
+	targetname: =
 	{Txt="&"
    	Typ="E"
-	Hint="How long it should wait before firing after it has been activated"
+	Hint="The name of this entity"
 	}
 	wait:=
 	{Txt="&"
@@ -1119,24 +1161,28 @@ QQRKSRC1
 	message:=
 	{Txt="&"
    	Typ="E"
-	Hint="Text to display when activated"
+	Hint="Message to display when activated"
 	}
    	health:=
    	{Txt="&"
    	Typ="E"
-   	Hint="If 'health' is set, the trigger must be killed to activate each time."
+   	Hint="If >0, the trigger must be killed to activate each time"
+   	}
+	killtarget:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Removes object with targetname"
+   	}
+   	delay:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Delay before trigger occurs"
    	}
 	}
 
 	trigger_onlyregistered:form =
 	{
-	Help = "Only fires if playing the registered version, otherwise prints the 'message'"
-	sounds: =
-	{Txt="&"
-	Typ="C"
-	Items=""
-	values=""
-	}
+	Help = "Only fires if playing the registered version, otherwise prints the 'message'."
 	target: =
 	{Txt="&"
    	Typ="E"
@@ -1151,79 +1197,89 @@ QQRKSRC1
 
 	trigger_secret:form =
 	{
-	Help = "secret counter trigger"
+	Help = "Awards credit for secret."
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items=""
-	values=""
+	Items="1)secret" $0D "2)beep beep" $0D "3)large switch"
+	values="1"	$0D	"2"	$0D	"3"
 	}
 	message: =
 	{Txt="&"
    	Typ="E"
-	Hint=""
+	Hint="Message to display when touched"
 	}
 	}
 
 	trigger_monsterjump:form =
 	{
-	Help = "Walking monsters that touch this will jump in the direction of the trigger's angle"
+	Help = "Walking monsters that touch this will jump in the direction of the trigger's angle."
 	speed: =
 	{Txt="&"
    	Typ="E"
 	Hint="The speed thrown forward (default 200)"
 	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Direction of jump (default 0, -1 is up, -2 is down)"
+   	}
 	height: =
 	{Txt="&"
    	Typ="E"
-	Hint="The speed thrown upwards."
+	Hint="The speed thrown upwards (default 200)"
 	}
 	}
 
 	trigger_hurt:form =
 	{
-	Help = "Any object touching this will be hurt"
+	Help = "Any object touching this will be hurt."
 	dmg: =
 	{Txt="&"
    	Typ="E"
-	Hint="Set 'dmg' to damage amount (Default 5)"
+	Hint="Set 'dmg' to damage amount (default 5)"
 	}
 	}
 
 	trigger_push:form =
 	{
-	Help = "Pushes the Player:"
+	Help = "Pushes the player."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
-	Cap="Push Once"
+	Cap="Push once"
 	Hint="Pushes once only"
 	}
    	angle:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Direction of push"
+   	Hint="Direction of push (default 0, -1 is up, -2 is down)"
    	}
    	speed:=
    	{Txt="&"
    	Typ="E"
-   	Hint="How much force, Note player can only oppose a force of 12"
+   	Hint="How much force to use (default 1000). Note: player can only oppose a force of 12"
 	}
 	}
 
 	trigger_relay:form =
 	{
-	Help = "This fixed size trigger can't be touched, it can only be fired by other events."
+	Help = "This trigger can only be fired by other events."
 	sounds: =
 	{Txt="&"
 	Typ="C"
-	Items="1) secret" $0D "2) beep beep" $0D "3) large switch" $0D "4)No sound"
-	values=	"1"	$0D	"2"	$0D	"3"	$0D	"4"
+	Items="0)none" $0D "1)secret" $0D "2)beep beep" $0D "3)large switch"
+	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"
 	}
 	target: =
 	{Txt="&"
    	Typ="E"
 	Hint=""
+	}
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of this entity"
 	}
 	delay: =
 	{Txt="&"
@@ -1233,7 +1289,7 @@ QQRKSRC1
 	message: =
 	{Txt="&"
    	Typ="E"
-	Hint="Text to display when activated"
+	Hint="Message to display when activated"
 	}
    	killtarget:=
    	{Txt="&"
@@ -1246,174 +1302,261 @@ QQRKSRC1
 
 	light:form =
 	{
-	help = "Non-displayed light" $0D "Default light value is 300" $0D "If targeted it will toggle between on or off" $0D "If 'target' and 'angle' is set, the light is projected" $0D "In the direction of the target as a cone of the size" $0D "set by angle"
+	help = "Unsourced light (without a visible model)." $0D $0D "If targeted it will toggle between on or off." $0D "If 'target' and 'angle' is set, the light is projected" $0D "in the direction of the target as a cone of the size" $0D "set by angle."
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
-	Cap="Start Off"
-	Hint="use a trigger to activate the light"
+	Cap="Start off"
+	Hint="If set, it must be triggered to light up"
 	}
 	light: =
 	{Txt="&"
    	Typ="E"
-	Hint="Light Value"
+	Hint="Light value (default 300)"
 	}
    	target:=
 	{Txt="&"
    	Typ="E"
-	Hint="What light is pointed at"
+	Hint="What light is directed at"
    	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to toggle light on/off"
+	}
    	angle:=
 	{Txt="&"
    	Typ="E"
-	Hint="Angle of light beam"
+	Hint="Angle of light cone when directed (default 40)"
+	}
+	mangle: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Spotlight mangle (yaw pitch 0). Yaw is 0-360 degrees around the Z-axis and pitch is 90 degrees up to -90 down"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_torch_small_walltorch:form =
 	{
-	Help = "Short WallTorch" $0D "Default light value is 200"
+	Help = "Short walltorch."
 	bbox='-10 -10 -20 10 10 20'
 	mdl="progs/flame.mdl"
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
-	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
+	values=	"0"                $0D	"1"	                   $0D	"2"	              $0D	"3"	             $0D	"4"	 $0D	"5"	      $0D	"6"	               $0D	"7"	               $0D	"8"	              $0D	"9"	  $0D	"10"	               $0D	"11"
 	}
 	light: =
 	{Txt="&"
-	Hint="How much it should light up"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_flame_large_yellow:form =
 	{
-	Help = "Large yellow flame ball"
+	Help = "Large yellow flame."
 	bbox='-10 -10 -12 12 12 18'
 	mdl="progs/flame2.mdl"
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
 	}
 	light: =
 	{Txt="&"
-   Typ="E"
-	Hint="How much it should light up"
+   	Typ="E"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_flame_small_yellow:form =
 	{
-	Help = "Small yellow flame ball"
+	Help = "Small yellow flame."
 	bbox='-8 -8 -8 8 8 8'
 	mdl="progs/flame2.mdl"
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
-	}
-	spawnflags: =
-	{Txt="&"
-	Typ="X1"
-	Cap="Start Off"
-	Hint="if set, it must be triggered to light up"
 	}
 	light: =
 	{Txt="&"
-   Typ="E"
-	Hint="How much it should light up"
+   	Typ="E"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_flame_small_white:form =
 	{
-	Help = "Small white flame ball"
+	Help = "Small white flame."
 	bbox='-10 -10 -40 10 10 40'
 	mdl="progs/flame2.mdl"
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
-	}
-	spawnflags: =
-	{Txt="&"
-	Typ="X1"
-	Cap="Start Off"
-	Hint="It must be triggered to light up"
 	}
 	light: =
 	{Txt="&"
-   Typ="E"
-	Hint="How much it should light up"
+   	Typ="E"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_fluoro:form =
 	{
-	Help = "Non-Displayed light. Default light value is 300" $0D "If targeted, it will toggle between on or off" $0D "Makes steady fluorescent humming sound."
+	Help = "Light without a visible model." $0D "Makes steady fluorescent humming sound."
 	bbox='-8 -8 -8 8 8 8'
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
-	}
-	spawnflags: =
-	{Txt="&"
-	Typ="X1"
-	Cap="Start Off"
-	Hint="It must be trigger to light up"
 	}
 	light: =
 	{Txt="&"
-   Typ="E"
-	Hint="How much it should light up"
+   	Typ="E"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_fluorospark:form =
 	{
-	Help = "Non-Displayed light. Default is light is 300" $0D "Makes sparking, broken fluorescent sound."
+	Help = "Light without a visible model." $0D "Makes sparking, broken fluorescent sound."
 	bbox='-8 -8 -8 8 8 8'
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
 	}
 	light: =
 	{Txt="&"
    	Typ="E"
-	Hint="How much it should light up"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
 	light_globe:form =
 	{
-	Help = "Sphere globe light. Default is 300"
+	Help = "Sphere globe light."
 	bbox='-8 -8 -8 8 8 8'
 	mdl="progs/s_light.spr"
 	style: =
 	{Txt="&"
 	Typ="C"
-	Items="0)normal (default)" $0D "1)flicker (first variety)" $0D "2) slow strong pulse" $0D "3)candle (first variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (second variety)" $0D "7)candle (second variety)" $0D "8)candle (third variety)" $0D "9)slow strobe" $0D "10)flourescent flicker" $0D "11)slow pulse, not fading to black"
+	Items="0)normal (default)" $0D "1)flicker (1st variety)" $0D "2) slow strong pulse" $0D "3)candle (1st variety)" $0D "4)fast strobe" $0D "5)gentle pulse" $0D "6)flicker (2nd variety)" $0D "7)candle (2nd variety)" $0D "8)candle (3rd variety)" $0D "9)slow strobe" $0D "10)fluorescent flicker" $0D "11)slow pulse, not fading to black"
 	values=	"0"	$0D	"1"	$0D	"2"	$0D	"3"	$0D	"4"	$0D	"5"	$0D	"6"	$0D	"7"	$0D	"8"	$0D	"9"	$0D	"10"	$0D	"11"
 	}
 	light: =
 	{Txt="&"
    	Typ="E"
-	Hint="How much it should light up"
+	Hint="Light value (default 300)"
+	}
+   	delay:=
+	{Txt="&"
+	Typ="C"
+	Items="0)linear (default)" $0D "1)1/x" $0D "2)1/x2" $0D "3)infinite"
+	values="0"                 $0D "1"     $0D "2"      $0D	"3"
+	Hint="Attenuation"
+	}
+   	wait:=
+	{Txt="&"
+	Typ="E"
+	Hint="Fade distance (default 1.0, lower values are brighter, 0 also means 1.0)"
 	}
 	}
 
@@ -1421,55 +1564,55 @@ QQRKSRC1
 
 	ambient_drip:form =
 	{
-	Help = "Dripping sound"
+	Help = "Dripping sound."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_drone:form =
 	{
-	Help = "Engine/Machinery sound"
+	Help = "Engine/machinery sound."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_comp_hum:form =
 	{
-	Help = "Computer background sounds"
+	Help = "Computer background sounds."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_swamp1:form =
 	{
-	Help = "Frogs Croaking"
+	Help = "Frogs croaking."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_swamp2:form =
 	{
-	Help = "Slightly different sound of Frogs Croaking"
+	Help = "Slightly different sound of frogs croaking."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_fluoro_buzz:form =
 	{
-	Help = ""
+	Help = "Buzzing sound"
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_light_buzz:form =
 	{
-	Help = ""
+	Help = "Humming sound."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_suck_wind:form =
 	{
-	Help = ""
+	Help = "Wind sound."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	ambient_thunder:form =
 	{
-	Help = ""
+	Help = "Thunder sound"
 	bbox='-8 -8 -8 8 8 8'
 	}
 
@@ -1477,14 +1620,14 @@ QQRKSRC1
 
 	air_bubbles:form =
 	{
-	Help = "Testing air bubbles."
+	Help = "Rising air bubbles."
 	bbox='-8 -8 -8 8 8 8'
 	mdl="progs/s_bubble.spr"
 	}
 
 	event_lightning:form =
 	{
-	Help = "Just for Chthon level"
+	Help = "Used to kill Chthon: Shareware Boss."
 	targetname: =
 	{Txt="&"
 	Hint=""
@@ -1493,92 +1636,109 @@ QQRKSRC1
 
 	info_intermission:form =
 	{
-	Help = "This is the camera point for the intermission." $0D "Use 'mangle' instead of angle, so you can set pitch or roll as well as yaw. 'pitch, roll, yaw'"
+	Help = "This is the camera point for the intermission." $0D "Use 'mangle' instead of angle, so you can set pitch, yaw and roll." $0D $0D "Pitch is vertical angle (-90 degrees up to 90 down), 0 being horizontal and with positive values pointing down." $0D "Yaw is horizontal angle (0 to 360 degrees around the Z-axis), 0 being east and 90 being north." $0D "Roll is rotation around the direction axis (-180 to 180), 0 being straight and positive values tilting right." $0D $0D "Example: '30 135 0' means the camera is facing downwards at a 30 degree angle, straight northwest and with no tilt."
 	mangle: =
 	{Txt="&"
-	Hint="Angles for the intermission"
+	Hint="Angles for the intermission camera; 'pitch yaw roll'"
 	}
 	}
 
 	info_null:form =
 	{
-	Help = "Use for positional target for spotlights. etc."
+	Help = "Use for positional target for spotlights etc."
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of this entity"
+    	}
 	}
 
 	info_notnull:form =
 	{
 	Help = "Use for positional target for 'event_lightning' entity."
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of this entity"
+    	}
 	}
 
 	info_teleport_destination:form =
 	{
-	Help = "This is the destination marker for a teleporter." $0D "It should have a 'targetname' field with the same value as a" $0D "teleporter's 'target' field"
-	bbox='-8 -8 -8 8 8 32'
+//	Help = "This is the destination marker for a teleporter." $0D "It should have a 'targetname' field with the same value as a" $0D "teleporter's 'target' field." $0D $0D "Make sure to leave 27 units free above the bbox otherwise the teleported entity might get stuck."
+	Help = "This is the destination marker for a teleporter." $0D "It should have a 'targetname' field with the same value as a" $0D "teleporter's 'target' field." $0D $0D "Bbox is extended 27 units up to follow real QC behaviour."
+//	bbox='-8 -8 -8 8 8 32'
+	bbox='-8 -8 -8 8 8 59'
 	targetname: =
 	{Txt="&"
    	Typ="E"
-	Hint="name of a teleporter's 'targetname'"
+	Hint="Name of a teleporter's 'targetname'"
 	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Direction after teleportation (default 0, -1 is up, -2 is down)"
+   	}
 	}
 
 	misc_fireball:form =
 	{
-	Help = "This is the balls the jump up from the lava."
+	Help = "This is the ball that jumps up from the lava."
 	speed: =
 	{Txt="&"
-   Typ="E"
-	Hint="How high the Lava Balls should jump"
+   	Typ="E"
+	Hint="How high the lava ball should jump"
 	}
 	}
 
 	misc_explobox:form =
 	{
-	Help = "Nuclear Container (explodes upon being shot, harms player)"
+	Help = "Exploding box (explodes upon being shot, harms player)."
 	bbox='0 0 0 32 32 64'
 	mdl="maps/b_explob.bsp"
 	}
 
 	misc_explobox2:form =
 	{
-	Help = "Smaller exploding Box, (REGISTERED ONLY)"
+	Help = "Smaller exploding box (registered only)."
 	bbox='0 0 0 32 32 32'
 	mdl="maps/b_exbox2.bsp"
 	}
 
 	trap_spikeshooter:form =
 	{
-	Help = "When triggered, fires a spike in the direction set in QuakeEd." $0D "Laser is only for REGISTERED"
+	Help = "When triggered, fires a spike in the direction set in angle." $0D "Laser is only for registered."
 	bbox='-8 -8 -8 8 8 8'
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="superspike"
-	Hint=""
+	Hint="Double damage"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X2"
 	Cap="laser"
-	Hint=""
+	Hint="Laser instead of spike"
 	}
 	targetname: =
 	{Txt="&"
-	Hint=""
+	Hint="Used to trigger the trap"
 	}
-   	wait:=
+   	angle:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Time between shots"
-	}
+   	Hint="Angle of firing direction (default 0, -1 is up, -2 is down)"
+   	}
    	}
 
 	path_corner:form =
 	{
-	Help = "Monsters/Train will continue to moving towards the next target corner"
+	Help = "Monsters/Train will continue to moving towards the next target corner."
 	bbox='-8 -8 -8 8 8 8'
 	target: =
 	{Txt="&"
-	Hint=""
+	Hint="Next stop target"
 	}
 	targetname: =
 	{Txt="&"
@@ -1587,36 +1747,41 @@ QQRKSRC1
    	wait:=
    	{Txt="&"
    	Typ="E"
-   	Hint="How long Monster or Train will wait when reaching corner(-1 means stop)"
+   	Hint="How long monster or train will wait when reaching corner (-1 means stop)"
 	}
 	}
 
 	misc_teleporttrain:form =
 	{
-	Help = "This is used for the final Boss"
+	Help = "This is used for Shub-Niggurath."
 	bbox='-8 -8 -8 8 8 8'
 	}
 
 	trap_shooter:form =
 	{
-	Help = "Continuously fires spikes."
+	Help = "Continuously fires spikes in the direction set in angle."
 	bbox='-8 -8 -8 8 8 8'
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="superspike"
-	Hint=""
+	Hint="Double damage"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X2"
 	Cap="laser"
-	Hint=""
+	Hint="Laser instead of spike"
 	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Angle of firing direction (default 0, -1 is up, -2 is down)"
+   	}
 	wait: =
 	{Txt="&"
    	Typ="E"
-	Hint="Time between shots(Default 1)"
+	Hint="Time between shots (default 1)"
 	}
 	nextthink: =
 	{Txt="&"
@@ -1629,7 +1794,7 @@ QQRKSRC1
 
 	item_health:form =
 	{
-	Help = "Health box, normally gives 25 points." $0D "Rotten box heals 15 points" $0D "Megahealth will add 100 health, then rot you down" $0D "to your maximum health limit, one point per second."
+	Help = "Health box, normally gives 25 points." $0D "Rotten box heals 15 points." $0D "Megahealth will add 100 health, then rot you down" $0D "to your maximum health limit, one point per second."
 	bbox='0 0 0 32 32 56'
 	mdl="maps/b_bh25.bsp"
 	spawnflags: =
@@ -1648,42 +1813,46 @@ QQRKSRC1
 
 	item_artifact_envirosuit:form =
 	{
-	Help = "Player takes no damage from water or slime for 30 seconds"
+	Help = "Player takes no damage from water or slime for 30 seconds."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/suit.mdl"
 	}
 
 	item_artifact_super_damage:form =
 	{
-	Help = "The next attack from the player will do x4 damage"
+	Help = "The next attack from the player will do x4 damage."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/quaddama.mdl"
+	target: =
+	{Txt="&"
+	Hint="Fired when item is picked up"
+	}
 	}
 
 	item_artifact_invulnerability:form =
 	{
-	Help = "Player is invulnerable for 30 seconds"
+	Help = "Player is invulnerable for 30 seconds."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/invulner.mdl"
 	}
 
 	item_artifact_invisibility:form =
 	{
-	Help = "Player is invisible for 30 seconds"
+	Help = "Player is invisible for 30 seconds."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/invisbl.mdl"
 	}
 
 	item_armor1:form =
 	{
-	Help = "This is the Green Armor"
+	Help = "This is the Green Armor."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/armor.mdl"
 	}
 
 	item_armor2:form =
 	{
-	Help = "This is the Yellow Armor"
+	Help = "This is the Yellow Armor."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/armor.mdl"
 	mdlskin='1'
@@ -1691,7 +1860,7 @@ QQRKSRC1
 
 	item_armorInv:form =
 	{
-	Help = "This is the Red Armor"
+	Help = "This is the Red Armor."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/armor.mdl"
 	mdlskin='2'
@@ -1699,46 +1868,58 @@ QQRKSRC1
 
 	item_key1:form =
 	{
-	Help = "SILVER KEY" $0D "in order for keys to work you must set your maps" $0D "worldtype to one of the following:" $0D "0) medieval" $0D "1) metal" $0D "3) base"
+	Help = "Silver Key" $0D $0D "In order for keys to work you must set your map's" $0D "'worldtype' correctly (see worldspawn)."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/w_s_key.mdl"
+	target: =
+	{Txt="&"
+	Hint="Fired when item is picked up"
+	}
 	}
 
 	item_key2:form =
 	{
-	Help = "GOLD KEY" $0D "In order for keys to work you must set your maps" $0D "worldtype to one of the following:" $0D "0) medieval" $0D "1) metal" $0D "3) base"
+	Help = "Gold Key" $0D $0D "In order for keys to work you must set your map's" $0D "'worldtype' correctly (see worldspawn)."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/w_g_key.mdl"
+	target: =
+	{Txt="&"
+	Hint="Fired when item is picked up"
+	}
 	}
 
 	item_sigil:form =
 	{
-	Help = "End of level sigil, pick up to end episode and return to start."
+	Help = "End of level rune, pick up to end episode and return to start."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/end1.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="E1"
-	Hint=""
+	Hint="Episode 1"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X2"
 	Cap="E2"
-	Hint=""
+	Hint="Episode 2"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X4"
 	Cap="E3"
-	Hint=""
+	Hint="Episode 3"
 	}
 	spawnflags: =
 	{Txt="&"
 	Typ="X8"
 	Cap="E4"
-	Hint=""
+	Hint="Episode 4"
+	}
+	target: =
+	{Txt="&"
+	Hint="Fired when item is picked up"
 	}
 	}
 
@@ -1746,49 +1927,49 @@ QQRKSRC1
 
 	weapon_supershotgun:form =
 	{
-	Help = "Uses item_shells"
+	Help = "Uses item_shells."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/g_shot.mdl"
 	}
 
 	weapon_nailgun:form =
 	{
-	Help = "Uses item_spikes"
+	Help = "Uses item_spikes."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/g_nail.mdl"
 	}
 
 	weapon_supernailgun:form =
 	{
-	Help = "Uses item_spikes"
+	Help = "Uses item_spikes."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/g_nail2.mdl"
 	}
 
 	weapon_grenadelauncher:form =
 	{
-	Help = "Uses item_rockets"
+	Help = "Uses item_rockets."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/g_rock.mdl"
 	}
 
 	weapon_rocketlauncher:form =
 	{
-	Help = "Uses item_rockets"
+	Help = "Uses item_rockets."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/g_rock2.mdl"
 	}
 
 	weapon_lightning:form =
 	{
-	Help = "Uses item_cells"
+	Help = "Uses item_cells."
 	bbox='-16 -16 0 16 16 32'
 	mdl="progs/g_light.mdl"
 	}
 
 	item_shells:form =
 	{
-	Help = "Ammo for shotguns"
+	Help = "Ammo for shotguns."
 	bbox='0 0 0 32 32 56'
 	mdl="maps/b_shell0.bsp"
 	spawnflags: =
@@ -1801,7 +1982,7 @@ QQRKSRC1
 
 	item_spikes:form =
 	{
-	Help = "Ammo for nailguns"
+	Help = "Ammo for nailguns."
 	bbox='0 0 0 32 32 56'
 	mdl="maps/b_nail0.bsp"
 	spawnflags: =
@@ -1814,7 +1995,7 @@ QQRKSRC1
 
 	item_rockets:form =
 	{
-	Help = "Ammo for Grenade & RocketLauncher"
+	Help = "Ammo for Grenade & RocketLauncher."
 	bbox='0 0 0 32 32 56'
 	mdl="maps/b_rock0.bsp"
 	spawnflags: =
@@ -1827,7 +2008,7 @@ QQRKSRC1
 
 	item_cells:form =
 	{
-	Help = "Ammo for ThunderBolt"
+	Help = "Ammo for Thunderbolt."
 	bbox='0 0 0 32 32 56'
 	mdl="maps/b_batt0.bsp"
 	}
@@ -1836,59 +2017,137 @@ QQRKSRC1
 
 	monster_army:form =
 	{
-	Help = "This is the Grunt"
+	Help = "This is the Grunt."
 	bbox='-16 -16 -24 16 16 40'
 	mdl="progs/soldier.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_dog:form =
 	{
-	Help = "This is the Rottweiler"
+	Help = "This is the Rottweiler."
 	bbox='-32 -32 -24 32 32 40'
 	mdl="progs/dog.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_ogre:form =
 	{
-	help = "This is the Ogre"
+	help = "This is the Ogre."
 	bbox='-32 -32 -24 32 32 64'
 	mdl="progs/ogre.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
+	}
+	}
+
+	monster_ogre_marksman:form =
+	{
+	help = "This is the Ogre Marksman."
+	bbox='-32 -32 -24 32 32 64'
+	mdl="progs/ogre.mdl"
+	spawnflags: =
+	{Txt="&"
+	Typ="X1"
+	Cap="Ambush"
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_knight:form =
 	{
-	Help = "This is the Knight"
+	Help = "This is the Knight."
 	bbox='-16 -16 -24 16 16 40'
 	mdl="progs/knight.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_zombie:form =
 	{
-	Help = "This is the Zombie" $0D "If crucified, stick the bounding box 12 pixels back into a wall to look right."
+	Help = "This is the Zombie." $0D "If crucified, stick the bounding box 12 units back into a wall to look right."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/zombie.mdl"
 	spawnflags: =
@@ -1900,130 +2159,256 @@ QQRKSRC1
 	spawnflags: =
 	{Txt="&"
 	Typ="X2"
-	Cap="ambush"
-	Hint=""
+	Cap="Ambush"
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_wizard:form =
 	{
-	Help = "This is the Scrag"
+	Help = "This is the Scrag."
 	bbox='-16 -16 -24 16 16 40'
 	mdl="progs/wizard.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_demon1:form =
 	{
-	Help = "This is the Fiend"
+	Help = "This is the Fiend."
 	bbox='-32 -32 -24 32 32 64'
 	mdl="progs/demon.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_shambler:form =
 	{
-	Help = "This is the Shambler"
+	Help = "This is the Shambler."
 	bbox='-32 -32 -24 32 32 64'
 	mdl="progs/shambler.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_boss:form =
 	{
-	Help = "Chthon (Boss of Shareware version)"
+	Help = "This is Chthon (Boss of Shareware version)."
 	bbox='-128 -128 -24 128 128 256'
 	mdl="progs/boss.mdl"
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
 	targetname: =
 	{Txt="&"
-	Hint=""
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_enforcer:form =
 	{
-	Help = "This is the Enforcer"
+	Help = "This is the Enforcer."
 	bbox='-16 -16 -24 16 16 40'
 	mdl="progs/enforcer.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_fish:form =
 	{
-	Help = "This is the Rotfish"
+	Help = "This is the Rotfish."
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/fish.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_hell_knight:form =
 	{
-	Help = "This is the Death Knight"
+	Help = "This is the Death Knight."
 	bbox='-16 -16 -24 16 16 40'
 	mdl="progs/hknight.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_oldone:form =
 	{
-	Help = "This is Shub-Niggurath"
+	Help = "This is Shub-Niggurath."
 	bbox='-16 -16 -24 16 16 32'
 	mdl="progs/oldone.mdl"
 	}
 
 	monster_shalrath:form =
 	{
-	Help = "This is the Vore"
+	Help = "This is the Vore."
 	bbox='-32 -32 -24 32 32 48'
 	mdl="progs/shalrath.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
 	monster_tarbaby:form =
 	{
-	Help = "This is the Spawn"
+	Help = "This is the Spawn."
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/tarbaby.mdl"
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="Ambush"
-	Hint=""
+	Hint="Must see player to wake up"
+	}
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Monster direction (default 0, -1 is up, -2 is down)"
+   	}
+	target: =
+	{Txt="&"
+	Hint="Fired when monster dies"
+	}
+	targetname: =
+	{Txt="&"
+	Hint="Used to wake up monster"
 	}
 	}
 
@@ -2031,10 +2416,15 @@ QQRKSRC1
 
 	info_player_start:form =
 	{
-	Help = "The normal player start for a level"
+	Help = "The normal player start for a level."
         //HTML = "help\q1\playerstarts.html#info_player_start"
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/player.mdl"
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Player direction (default 0, -1 is up, -2 is down)"
+   	}
 	}
 
 	info_player_deathmatch:form =
@@ -2043,27 +2433,94 @@ QQRKSRC1
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/player.mdl"
         mdlopacity='0.5'   // half transparent
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Player direction (default 0, -1 is up, -2 is down)"
+   	}
 	}
 
 	info_player_coop:form =
 	{
-	Help = "Potential spawning positions for CoOp games"
+	Help = "Potential spawning positions for CoOp games."
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/player.mdl"
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Player direction (default 0, -1 is up, -2 is down)"
+   	}
 	}
 
 	info_player_start2:form =
 	{
-	Help = "Only used on start map for the return point from an episode"
+	Help = "Only used on start map for the return point from an episode."
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/player.mdl"
+   	angle:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Player direction (default 0, -1 is up, -2 is down)"
+   	}
 	}
 
 	testplayerstart:form =
 	{
-	Help = "Used to temporarily change the 'info_player_start'"
+	Help = "Used to temporarily change the 'info_player_start'."
 	bbox='-16 -16 -24 16 16 24'
 	mdl="progs/player.mdl"
+	}
+
+	worldspawn:form =
+	{
+	Help = "Global world definitions."
+	message: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Message to display at startup (map title)"
+	}
+	worldtype: =
+	{Txt="&"
+	Typ="C"
+	Items="0)medieval" $0D "1)metal" $0D "2)base"
+	values=	"0"	$0D	"1"	$0D	"2"
+	Hint = "This controls what names, sounds and models that will be used for Silver/Gold Keys"
+	}
+	sounds: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Which CD track to play"
+	}
+	wad: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Wad path definitions, use ';' as delimiter"
+	}
+	light: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Minimum light level"
+	}
+	_sunlight: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Sunlight level"
+	}
+	_sun_mangle: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Sun mangle (yaw pitch 0). Yaw is 0-360 degrees around the Z-axis and pitch is 90 degrees up to -90 down"
+	}
+	sky: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Skybox name"
+	}
+	fog: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Fog (density red green blue)"
+	}
 	}
    }
   }
@@ -2138,7 +2595,7 @@ QQRKSRC1
       info_player_start:e =
       {
         origin = "-144 0 -72"
-        angle = "360"
+        angle = "0"
       }
     }
   }
