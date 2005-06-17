@@ -15,6 +15,9 @@ $Id$
 6.4.1 alpha 4
 =============
 
+ * [cdunde]: Updated the Genesis3D and Hexen_II data.qrk files
+      - as well for corrections noted by Bengt Jardrup
+
  * [cdunde]: Major updates and changes by Bengt Jardrup
       - to the Quake_1 DataQ1.qrk file.
 
