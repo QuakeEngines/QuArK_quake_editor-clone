@@ -179,12 +179,12 @@ def perimeter_edges(editor):
     """Returns the original selected faces list as 2 new lists of faces,
        perimeter and non-perimeter faces,
        meaning that at least one edge (2 vertexs) is on the perimeter.
-       Also, it returns a list of all the vertex points that are on the
-       perimeter only that make up the perimeter face edges."""
+       Also, it returns 2 other list of all the vertex points that are
+       on the perimeter only that make up the perimeter face edges
+       and the non-perimeter points that are inside of that."""
 
     selectedfacelist = editor.layout.explorer.sellist
 
-    perimedges_tuples = []
     perimfaces = []
     non_perimfaces = []
     perimedges = []
@@ -196,10 +196,11 @@ def perimeter_edges(editor):
         basepoly = baseface.parent
         bfp0, bfp1, bfp2 = baseface.verticesof(basepoly)
         basevertices = baseface.verticesof(basepoly)
-        intedge = None, None
         for compface in selectedfacelist:
             comppoly = compface.parent
-            if basepoly != comppoly: # we don't want to compair it to itself.
+            if basepoly == comppoly:
+                continue # we don't want to compair it to itself.
+            else:
                 compvertices = compface.verticesof(comppoly)
                 intx,pozzie = non_abutting_vtx(basevertices, compvertices)
 
@@ -211,38 +212,52 @@ def perimeter_edges(editor):
                     baseedge2 = baseedge2 + 1
 
         if baseedge0 == 0:
-            if not(bfp0.tuple in perimedges_tuples):
-                perimedges.append(bfp0)
-                perimedges_tuples.append(bfp0.tuple)
-            if not(bfp1.tuple in perimedges_tuples):
-                perimedges.append(bfp1)
-                perimedges_tuples.append(bfp1.tuple)
+            perimedges.append(bfp0)
+            perimedges.append(bfp1)
 
         if baseedge1 == 0:
-            if not(bfp1.tuple in perimedges_tuples):
-                perimedges.append(bfp1)
-                perimedges_tuples.append(bfp1.tuple)
-            if not(bfp2.tuple in perimedges_tuples):
-                perimedges.append(bfp2)
-                perimedges_tuples.append(bfp2.tuple)
+            perimedges.append(bfp1)
+            perimedges.append(bfp2)
 
         if baseedge2 == 0:
-            if not(bfp0.tuple in perimedges_tuples):
-                perimedges.append(bfp0)
-                perimedges_tuples.append(bfp0.tuple)
-            if not(bfp2.tuple in perimedges_tuples):
-                perimedges.append(bfp2)
-                perimedges_tuples.append(bfp2.tuple)
+            perimedges.append(bfp0)
+            perimedges.append(bfp2)
 
         if baseedge0 and baseedge1 and baseedge2 != 0:
             non_perimfaces.append(baseface)
         else:
             perimfaces.append(baseface)
 
-    return perimfaces, non_perimfaces, perimedges
+    perimvertexs = []
+    strperimvertexs = []
+    movablevertexes = []
+    strmovablevertexes = []
+    strperimedges = []
+    for edge in perimedges:
+        strperimedges.append(str(edge))
 
+    for face in selectedfacelist:
+        polyofface = face.parent
+        for vertex in face.verticesof(polyofface):
+            if not(str(vertex) in strperimedges):
+                if not(str(vertex) in strmovablevertexes):
+                    movablevertexes.append(vertex)
+                    strmovablevertexes.append(str(vertex))
+            else:
+                if not(str(vertex) in strperimvertexs):
+                    perimvertexs.append(vertex)
+                    strperimvertexs.append(str(vertex))
+
+    return perimfaces, non_perimfaces, perimvertexs, movablevertexes
 
 #$Log$
+#Revision 1.7  2005/06/02 00:42:29  cdunde
+#Changes by Rowdy to help min. dup items in list
+#
+#Revision 1.6  2005/05/30 20:06:25  cdunde
+#Added new functions to return 2 lists, perim and non-perim faces,
+#and 1 list of the perimeter vertex only.
+#
 #Revision 1.5  2005/04/20 19:00:24  cdunde
 #To fix typo error for continue
 #
