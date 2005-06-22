@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.26  2005/01/27 00:16:13  alexander
+added vmf file loading (brushes only)
+
 Revision 1.25  2005/01/02 15:19:54  alexander
 access files via steam service - first
 
@@ -158,7 +161,7 @@ uses
   ZIP in 'prog\ZIP.pas',
   QkZip2 in 'prog\QkZip2.pas',
   QkJpg in 'prog\QkJpg.pas',
-  QkQ3 in 'prog\QkQ3.pas',
+  QkHL2mat in 'QkHL2mat.pas',
   QkText in 'prog\QkText.pas',
   QkSpr in 'prog\QkSpr.pas',
   QkSoF in 'prog\QkSoF.pas',
@@ -206,7 +209,8 @@ uses
   QkVTF in 'prog\QkVTF.pas',
   QkGCF in 'prog\QkGCF.pas',
   QkSteamFS in 'prog\QkSteamFS.pas',
-  QkVMF in 'prog\QkVMF.pas';
+  QkVMF in 'prog\QkVMF.pas',
+  QkQ3 in 'prog\QkQ3.pas';
 
 {$R *.RES}
 
