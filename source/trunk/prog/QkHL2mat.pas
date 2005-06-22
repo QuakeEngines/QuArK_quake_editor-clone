@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.1  2005/06/22 01:19:40  alexander
+added hl2 material source
+
 }
 
 unit QkHL2mat;
@@ -394,64 +397,42 @@ expected one.
  // and named objects   name { }
  // example
  // "a" { "b" "c" sub { "sa" "sb" } "d" "e" }
- procedure ReadHL2GenericHierarchy;
+
+ procedure ReadHL2Sub;
  begin
-   ReadSymbol(sStringQuotedToken);
    ReadSymbol(sCurlyBracketLeft);
-   // read attributes
-   while SymbolType<>sCurlyBracketRight do
    begin
-     if SymbolType=sStringQuotedToken then
+     while SymbolType<>sCurlyBracketRight do
      begin
-       S1:=S;
-       ReadSymbol(sStringQuotedToken);
-       S1:=S;
+       if SymbolType=sStringQuotedToken then
+         ReadSymbol(sStringQuotedToken)
+       else
        if (SymbolType = sNumValueToken)  then
          ReadSymbol(sNumValueToken)
        else
-         ReadSymbol(sStringQuotedToken);
-       end
-     else
-       if SymbolType=sStringToken then
-         ReadHL2GenericHierarchy; //descend
+         if SymbolType=sCurlyBracketLeft then
+         ReadHL2Sub; //descend
+     end;
+     ReadSymbol(sCurlyBracketRight);
    end;
-   ReadSymbol(sCurlyBracketRight);
+ end;
+ procedure ReadHL2GenericHierarchy;
+ begin
+   ReadSymbol(sStringQuotedToken);
+   ReadHL2Sub;
  end;
 
 
  procedure ReadHL2Mat;
  var
-
-
    S1: String;
-
-
  begin
 
    ReadSymbol(sStringQuotedToken);
    ReadSymbol(sCurlyBracketLeft);
-
-
    // read attributes of entity
    while SymbolType<>sCurlyBracketRight do
    begin
-
-     if (SymbolType = sStringQuotedToken) and (lowercase(s) ='lightmappedgeneric_dx9' ) then
-       ReadHL2GenericHierarchy
-     else
-
-     if (SymbolType = sStringQuotedToken) and (lowercase(s) ='lightmappedgeneric_dx8' ) then
-       ReadHL2GenericHierarchy
-     else
-
-     if (SymbolType = sStringQuotedToken) and (lowercase(s) ='unlitgeneric_dx6' ) then
-       ReadHL2GenericHierarchy
-     else
-
-     if (SymbolType = sStringQuotedToken) and (lowercase(s) ='proxies' ) then
-       ReadHL2GenericHierarchy
-     else
-
 
      if SymbolType = sStringQuotedToken then
      begin
@@ -463,16 +444,19 @@ expected one.
          ReadSymbol(sNumValueToken);
        end
        else
-       begin
-         self.Specifics.Add(S1+'='+S);
-         ReadSymbol(sStringQuotedToken);
-       end
+         if SymbolType = sStringQuotedToken then
+         begin
+           self.Specifics.Add(S1+'='+S);
+           ReadSymbol(sStringQuotedToken);
+         end
+         else
+           if SymbolType=sCurlyBracketLeft then
+             ReadHL2Sub //descend
      end
      else
        raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
 
    end; //while SymbolType<>sCurlyBracketRight
-
 
    ReadSymbol(sCurlyBracketRight);
 
@@ -483,46 +467,21 @@ begin
   case ReadFormat of
     1:
     begin  { as stand-alone file }
-      SetLength(Data, FSize);
-      Source:=PChar(Data);
-      F.ReadBuffer(Source^, FSize);  { read the whole file at once }
-      ReadSymbolForceToText:=False;
+      try
+        SetLength(Data, FSize);
+        Source:=PChar(Data);
+        F.ReadBuffer(Source^, FSize);  { read the whole file at once }
 
+        ReadSymbolForceToText:=False;
+        ReadSymbol(sEOF);
 
-
-      ReadSymbol(sEOF);
-      while SymbolType<>sEOF do { when ReadSymbol's arg is sEOF, it's not really `expected'.
-                   The first real char ought to be {.  If it is, it
-                   will become C in ReadSymbol, and SymbolType will sCurlyBracketLeft }
-      begin
-         { if the thing just read wasn't {, the ReadSymbol call will bomb.
-          Otherwise, it will pull in the next chunk (which ought to be
-          a quoted string), and set SymbolType to the type of what it got. }
-
-
+        while SymbolType<>sEOF do
           while SymbolType=sStringQuotedToken do
             ReadHL2Mat
-          {            if CompareText(S,'lightmappedGeneric')=0 then
-              ReadHL2Mat
-            else
-            if CompareText(S,'cable')=0 then
-              ReadHL2Mat
-            else
-            if CompareText(S,'Unlitgeneric')=0 then
-              ReadHL2Mat
-            else
-            if CompareText(S,'Unlittwotexture')=0 then
-              ReadHL2Mat
-            else
-            if CompareText(S,'worldvertextransition')=0 then
-              ReadHL2Mat
-            else
-              raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
-              }
+      except
+
       end;
-
     end;
-
   else
     inherited;
   end;
