@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.250  2005/06/11 01:37:27  alexander
+//seperated entity files for simpler maintenance
+//
 //Revision 1.249  2005/04/17 14:45:18  alexander
 //added saving of alpha vtf
 //added configuration of output format
@@ -1332,7 +1335,7 @@ QQRKSRC1
         DefaultTextureScale = "0.25"
         EnableTransparency = ""
         WateryTex = "!"
-        TextureFormat = ".vtf"
+        TextureFormat = ".vmt"
         TextureWriteFormat = ".vtf"
         TextureWriteSubFormat = "3"
         TextureWriteSubFormatA = "15"
