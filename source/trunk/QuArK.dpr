@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.27  2005/06/22 01:12:42  alexander
+added hl2 material source
+
 Revision 1.26  2005/01/27 00:16:13  alexander
 added vmf file loading (brushes only)
 
@@ -161,7 +164,6 @@ uses
   ZIP in 'prog\ZIP.pas',
   QkZip2 in 'prog\QkZip2.pas',
   QkJpg in 'prog\QkJpg.pas',
-  QkHL2mat in 'QkHL2mat.pas',
   QkText in 'prog\QkText.pas',
   QkSpr in 'prog\QkSpr.pas',
   QkSoF in 'prog\QkSoF.pas',
@@ -210,7 +212,8 @@ uses
   QkGCF in 'prog\QkGCF.pas',
   QkSteamFS in 'prog\QkSteamFS.pas',
   QkVMF in 'prog\QkVMF.pas',
-  QkQ3 in 'prog\QkQ3.pas';
+  QkQ3 in 'prog\QkQ3.pas',
+  QkHL2mat in 'prog\QkHL2mat.pas';
 
 {$R *.RES}
 
