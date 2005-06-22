@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.40  2004/12/28 02:17:59  alexander
+allow individual texture paths for hl2
+
 Revision 1.39  2004/12/22 11:42:15  rowdy
 Rowdy - first pass of support for Doom 3
 
@@ -343,7 +346,7 @@ implementation
 uses QkWad, QkBsp, ToolBox1, QkImages, Setup, Travail, qmath, QkPcx,
   TbPalette, TbTexture, Undo, QkExplorer, QkPak, QkQuakeCtx, Quarkx,
   CCode, PyObjects, QkHr2, QkHL, QkSin, QkQ3, QkFormCfg,
-  QkQ1 ,QkQ2, QkObjectClassList, QkD3;
+  QkQ1 ,QkQ2, QkObjectClassList, QkD3, QkHL2mat;
 
 {$R *.DFM}
 
@@ -1112,7 +1115,11 @@ begin
       begin   { standard link }
         // for hl2 we need individual paths
         if CharModeJeu=mjHL2 then
-          Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet
+        begin
+          Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+          if Link=Nil then
+            Raise EErrorFmt(5755, [TexName, Arg]);
+        end
         else
           Link:=NeedGameFileBase(S, GameTexturesPath+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
 
