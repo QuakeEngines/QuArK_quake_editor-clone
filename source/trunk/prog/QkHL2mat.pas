@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.2  2005/06/22 17:26:29  alexander
+parsing handles more cases, but not all - still alpha status
+
 Revision 1.1  2005/06/22 01:19:40  alexander
 added hl2 material source
 
@@ -34,7 +37,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, QkFileObjects, Quarkx, QkObjects, QkText,
-   QkTextures, Setup, QkWad, QkPixelSet;
+   QkTextures, Setup, QkWad, QkPixelSet,QkVTF;
 
 type
   QHL2Mat = class(QPixelSet)
@@ -43,6 +46,7 @@ type
             public
               procedure LoadFile(F: TStream; FSize: Integer); override;
               class function TypeInfo: String; override;
+              class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
               function DefaultImage : QPixelSet;
               function GetSize : TPoint; override;
               procedure SetSize(const nSize: TPoint); override;
@@ -65,70 +69,42 @@ begin
  Result:='.vmt';
 end;
 
+class procedure QHL2Mat.FileObjectClassInfo(var Info: TFileObjectClassInfo);
+begin
+ inherited;
+ Info.FileObjectDescriptionText:=LoadStr1(5716);
+ Info.FileExt:=815;
+ Info.WndInfo:=[wiWindow];
+end;
+
 function QHL2Mat.DefaultImage : QPixelSet;
 var
- S,base: String;
- Size: TPoint;
- V: array [1..2] of Single;
- p:QObject;
+ Image: QPixelSet;
+ i:integer;
+ noimage:boolean;
 begin
   Acces;
-  Result:=Nil;
-
-  S:=Specifics.Values['%tooltexture'];
-
-  if (s='') then
-    S:=Specifics.Values['$basetexture'];
-
-  if s='' then
-    S:= name;
-
-  if S<>'' then
+  noimage:=true;
+  for I:=0 to SubElements.Count-1 do
   begin
-    if (ExtractFileExt(S)='') then
+    if SubElements[I] is qpixelset then
     begin
-      try
-        p:=self;
-        repeat
-          base:=p.GetFullName;
-          p:=p.FParent;
-        until p=nil;
-        Result:=NeedGameFileBase(base, SetupGameSet.Specifics.Values['BaseDir']+
-                              '/'+
-                              SetupGameSet.Specifics.Values['TexturesPath']+
-                              s+
-                              '.vtf') as QPixelSet;
-      except
-      end
-    end
-    else
-      try
-        Result:=NeedGameFile(S) as QPixelSet;
-      except
-      end
-  end;
-
-  if (Result = NIL)
-  then
-  begin
-    try
-      Result := NeedGameFile('tools/nodraw') as QPixelSet;
-    except
-      Result:=NIL
+      image := SubElements[I] as qpixelset;
+      Result := image;
+      noimage:=false;
+      break;
     end;
   end;
-
- {tiglari: giving shaders a size.  a presumably
-  horrible place to do it, but doesn't work when
-  shaders are being loaded }
- if Result<>Nil then
- begin
-   Size:=Result.GetSize;
-   V[1]:=Size.X;
-   V[2]:=Size.Y;
-   SetFloatsSpec('Size',V);
- end
- {/tiglari}
+  if noimage then
+    Raise EErrorFmt(5695, [Name]);
+{  else
+  begin
+     Size:=Result.GetSize;
+     V[1]:=Size.X;
+     V[2]:=Size.Y;
+     SetFloatsSpec('Size',V);
+   end;
+ }
 end;
 
 
@@ -146,10 +122,14 @@ end;
 function QHL2Mat.Description : TPixelSetDescription;
 var
  Image: QPixelSet;
+ i:integer;
+ noimage:boolean;
 begin
- Image:=DefaultImage;
- if Image=Nil then Raise EErrorFmt(5695, [Name]);
- Result:=Image.Description;
+  image:=defaultimage;
+  if assigned(image ) then
+    Result := image.description
+  else
+    Raise EErrorFmt(5695, [Name]);
 end;
 
 procedure QHL2Mat.SetSize;
@@ -425,7 +405,10 @@ expected one.
 
  procedure ReadHL2Mat;
  var
-   S1: String;
+   S1,base: String;
+   VTFImage:QVTF;
+   p:QObject;
+
  begin
 
    ReadSymbol(sStringQuotedToken);
@@ -460,6 +443,28 @@ expected one.
 
    ReadSymbol(sCurlyBracketRight);
 
+  S:=Specifics.Values['%tooltexture'];
+  if (s='') then
+    S:=Specifics.Values['$basetexture'];
+
+  if s<>'' then
+  begin
+     p:=self;
+     repeat
+       base:=p.GetFullName;
+       p:=p.FParent;
+     until p=nil;
+     VTFImage:=NeedGameFileBase(base, SetupGameSet.Specifics.Values['BaseDir']+
+               '/'+
+               SetupGameSet.Specifics.Values['TexturesPath']+
+               s+
+               '.vtf') as QVTF;
+     VTFImage.Acces;
+
+     SubElements.Add(VTFImage);
+     VTFImage.fparent:=self;
+  end;
+
  end;
 
 
@@ -473,13 +478,14 @@ begin
         F.ReadBuffer(Source^, FSize);  { read the whole file at once }
 
         ReadSymbolForceToText:=False;
+        LineNoBeingParsed:=0;
         ReadSymbol(sEOF);
 
         while SymbolType<>sEOF do
           while SymbolType=sStringQuotedToken do
             ReadHL2Mat
       except
-
+         raise Exception.Create('exception on load material in line '+IntToStr(LineNoBeingParsed)+' '+filename);
       end;
     end;
   else
@@ -491,6 +497,6 @@ end;
  {------------------------}
 
 initialization
-  RegisterQObject(QHL2Mat, 'a');
+  RegisterQObject(QHL2Mat, 'v');
 end.
 
