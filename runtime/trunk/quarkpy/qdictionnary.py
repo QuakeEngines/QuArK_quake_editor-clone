@@ -927,7 +927,7 @@ Strings = {
     5713: 'steam file system',
     5714: 'bad content id: %s',
     5715: 'vmf file',
-    5716: 'reserved for hl2',
+    5716: 'VMT file',
     5717: 'reserved for hl2',
     5718: 'reserved for hl2',
     5719: 'reserved for hl2',
@@ -978,6 +978,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.68  2005/04/01 19:33:33  alexander
+#more progress indicators (textures and polys)
+#
 #Revision 1.67  2005/01/27 00:16:03  alexander
 #added vmf file loading (brushes only)
 #
