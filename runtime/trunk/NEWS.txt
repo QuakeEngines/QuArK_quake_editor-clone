@@ -12,12 +12,18 @@ $Id$
        #####
         #####    Quake Army Knife 6.4 Changelog
 
+
 6.4.1 alpha 4
 =============
+ * [alexander]: 
+     - QuArK can display HL2 Materials now
 
-*  [cbxpm]:  HL2 / Source engine content update
+ * [cbxpm]:  HL2 / Source engine content update
      - Prepared material files to be used with shaders
      - UserData Half-Life2 updated (more quick selectable entities)     
+
+ * [alexander]: 
+     - HL2 split up entity files in base, and game specific files
 
  * [cdunde]: Updated the Genesis3D and Hexen_II data.qrk files
       - as well for corrections noted by Bengt Jardrup
