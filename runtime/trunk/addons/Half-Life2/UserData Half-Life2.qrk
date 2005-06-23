@@ -50,6 +50,69 @@ QQRKSRC1
         _light = "255 255 255 300"
       }
     }
+    light_spot: =
+    {
+      light_spot:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        _light = "255 255 255 500"
+        _inner_cone = "35"
+        _cone = "45"
+        _exponent = "1"
+        _distance = "0"
+        pitch = "-90"
+      }
+    }
+    point_spotlight: =
+    {
+      point_spotlight:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        spawnflags = "3"
+        spotlightlength = "500"
+        spotlightwidth = "50"
+        rendercolor = "255 255 255"
+      }
+    }
+    infodecal: =
+    {
+      infodecal:e =
+      {
+        origin = "0 0 0"
+        LowPriority = "0"
+        fixedscale = "1"
+      }
+    }
+    prop_static: =
+    {
+      prop_static:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        fademindist = "-1"
+        fadescale = "1"
+      }
+    }
+    prop_physics: =
+    {
+      prop_physics:e =
+      {
+        origin = "0 0 0"
+        angles = "0 0 0"
+        fademindist = "-1"
+        fadescale = "1"
+      }
+    }
+    env_cubemap: =
+    {
+      env_cubemap:e =
+      {
+        origin = "0 0 0"
+        cubemapsize = "0"
+      }
+    }
   }
   Menu.qrk =
   {

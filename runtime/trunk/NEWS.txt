@@ -15,6 +15,10 @@ $Id$
 6.4.1 alpha 4
 =============
 
+*  [cbxpm]:  HL2 / Source engine content update
+     - Prepared material files to be used with shaders
+     - UserData Half-Life2 updated (more quick selectable entities)     
+
  * [cdunde]: Updated the Genesis3D and Hexen_II data.qrk files
       - as well for corrections noted by Bengt Jardrup
 

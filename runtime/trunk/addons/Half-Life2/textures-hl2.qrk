@@ -1,10 +1,11 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 Textures from source materials.gcf (may/13/2005)"
+  Description = "HL2 Textures from source materials.gcf (june/23/2005)"
 
-
-
+//
+// Materials for HL2 / HL2MP
+//
 
   HL2Textures.qtx =
   {
@@ -40,7 +41,6 @@ QQRKSRC1
 					Brick/brickwall017b.wl  = { t_hl2=! }
 					Brick/brickwall020a.wl  = { t_hl2=! }
 					Brick/brickwall021a.wl  = { t_hl2=! }
-					Brick/brickwall021a_normal.wl  = { t_hl2=! }
 					Brick/brickwall031a.wl  = { t_hl2=! }
 					Brick/brickwall031b.wl  = { t_hl2=! }
 					Brick/brickwall031d.wl  = { t_hl2=! }
@@ -68,37 +68,21 @@ QQRKSRC1
 					Brick/brickwall045k.wl  = { t_hl2=! }
 					Brick/brickwall046a.wl  = { t_hl2=! }
 					Brick/brickwall048a.wl  = { t_hl2=! }
-					Brick/brickwall048a_normal.wl  = { t_hl2=! }
 					Brick/brickwall048b.wl  = { t_hl2=! }
-					Brick/brickwall048b_normal.wl  = { t_hl2=! }
 					Brick/brickwall048c.wl  = { t_hl2=! }
-					Brick/brickwall048c_normal.wl  = { t_hl2=! }
 					Brick/brickwall048d.wl  = { t_hl2=! }
-					Brick/brickwall048d_normal.wl  = { t_hl2=! }
 					Brick/brickwall048e.wl  = { t_hl2=! }
-					Brick/brickwall048e_normal.wl  = { t_hl2=! }
 					Brick/brickwall048f.wl  = { t_hl2=! }
-					Brick/brickwall048f_normal.wl  = { t_hl2=! }
 					Brick/brickwall048g.wl  = { t_hl2=! }
-					Brick/brickwall048g_normal.wl  = { t_hl2=! }
 					Brick/brickwall048h.wl  = { t_hl2=! }
-					Brick/brickwall048h_normal.wl  = { t_hl2=! }
 					Brick/brickwall048i.wl  = { t_hl2=! }
-					Brick/brickwall048i_normal.wl  = { t_hl2=! }
 					Brick/brickwall049a.wl  = { t_hl2=! }
-					Brick/brickwall049a_normal.wl  = { t_hl2=! }
 					Brick/brickwall049b.wl  = { t_hl2=! }
-					Brick/brickwall049b_normal.wl  = { t_hl2=! }
 					Brick/brickwall049c.wl  = { t_hl2=! }
-					Brick/brickwall049c_normal.wl  = { t_hl2=! }
 					Brick/brickwall049d.wl  = { t_hl2=! }
-					Brick/brickwall049d_normal.wl  = { t_hl2=! }
 					Brick/brickwall049e.wl  = { t_hl2=! }
-					Brick/brickwall049e_normal.wl  = { t_hl2=! }
 					Brick/brickwall052b.wl  = { t_hl2=! }
 					Brick/brickwall052c.wl  = { t_hl2=! }
-					Brick/brickwall052d_normal.wl  = { t_hl2=! }
-					Brick/brickwall052e_normal.wl  = { t_hl2=! }
 					Brick/brickwall053a.wl  = { t_hl2=! }
 					Brick/brickwall053d.wl  = { t_hl2=! }
 					Brick/brickwall053e.wl  = { t_hl2=! }
@@ -213,7 +197,6 @@ QQRKSRC1
 					Building_Template/Building_Template013a.wl  = { t_hl2=! }
 					Building_Template/Building_Template013b.wl  = { t_hl2=! }
 					Building_Template/Building_Template013c.wl  = { t_hl2=! }
-					Building_Template/Building_Template013c_normal.wl  = { t_hl2=! }
 					Building_Template/Building_Template013d.wl  = { t_hl2=! }
 					Building_Template/Building_Template013e.wl  = { t_hl2=! }
 					Building_Template/Building_Template013f.wl  = { t_hl2=! }
@@ -386,9 +369,7 @@ QQRKSRC1
 					Building_Template/courtyard_template006i.wl  = { t_hl2=! }
 					Building_Template/courtyard_template006k.wl  = { t_hl2=! }
 					Building_Template/Roof_Template001a.wl  = { t_hl2=! }
-					Building_Template/Roof_Template001a_normal.wl  = { t_hl2=! }
 					Building_Template/Roof_Template001b.wl  = { t_hl2=! }
-					Building_Template/Roof_Template001b_normal.wl  = { t_hl2=! }
 				  }
 				  
 				  Cable.txlist =
@@ -428,89 +409,60 @@ QQRKSRC1
 					Concrete/concreteceiling003a.wl  = { t_hl2=! }
 					Concrete/concreteceiling004a.wl  = { t_hl2=! }
 					Concrete/concretefloor001a.wl  = { t_hl2=! }
-					Concrete/concretefloor001a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor002a.wl  = { t_hl2=! }
 					Concrete/concretefloor002b.wl  = { t_hl2=! }
 					Concrete/concretefloor003c.wl  = { t_hl2=! }
 					Concrete/concretefloor005a.wl  = { t_hl2=! }
-					Concrete/concretefloor005a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor006a.wl  = { t_hl2=! }
 					Concrete/concretefloor007a.wl  = { t_hl2=! }
-					Concrete/concretefloor007a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor008a.wl  = { t_hl2=! }
 					Concrete/concretefloor008b.wl  = { t_hl2=! }
 					Concrete/concretefloor009a.wl  = { t_hl2=! }
 					Concrete/concretefloor010a.wl  = { t_hl2=! }
 					Concrete/concretefloor010b.wl  = { t_hl2=! }
-					Concrete/concretefloor010b_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor011a.wl  = { t_hl2=! }
-					Concrete/concretefloor011a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor012a.wl  = { t_hl2=! }
-					Concrete/concretefloor012a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor013a.wl  = { t_hl2=! }
-					Concrete/concretefloor013a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor013b.wl  = { t_hl2=! }
-					Concrete/concretefloor013b_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor013c.wl  = { t_hl2=! }
-					Concrete/concretefloor013c_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor014a.wl  = { t_hl2=! }
 					Concrete/concretefloor015a.wl  = { t_hl2=! }
-					Concrete/concretefloor015a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor016a.wl  = { t_hl2=! }
-					Concrete/concretefloor016a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor018a.wl  = { t_hl2=! }
 					Concrete/concretefloor019a.wl  = { t_hl2=! }
-					Concrete/concretefloor019a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor020a.wl  = { t_hl2=! }
-					Concrete/concretefloor020a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor020b.wl  = { t_hl2=! }
 					Concrete/concretefloor022a.wl  = { t_hl2=! }
 					Concrete/concretefloor023a.wl  = { t_hl2=! }
 					Concrete/concretefloor024a.wl  = { t_hl2=! }
 					Concrete/concretefloor025a.wl  = { t_hl2=! }
-					Concrete/concretefloor025a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor026a.wl  = { t_hl2=! }
 					Concrete/concretefloor027a.wl  = { t_hl2=! }
 					Concrete/concretefloor027b.wl  = { t_hl2=! }
 					Concrete/concretefloor028a.wl  = { t_hl2=! }
-					Concrete/concretefloor028a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor028c.wl  = { t_hl2=! }
-					Concrete/concretefloor028c_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor028d.wl  = { t_hl2=! }
-					Concrete/concretefloor028d_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor030a.wl  = { t_hl2=! }
 					Concrete/concretefloor031a.wl  = { t_hl2=! }
 					Concrete/concretefloor032a.wl  = { t_hl2=! }
 					Concrete/concretefloor033a.wl  = { t_hl2=! }
-					Concrete/concretefloor033a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033b.wl  = { t_hl2=! }
-					Concrete/concretefloor033b_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033c.wl  = { t_hl2=! }
-					Concrete/concretefloor033c_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033k.wl  = { t_hl2=! }
-					Concrete/concretefloor033k_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033o.wl  = { t_hl2=! }
-					Concrete/concretefloor033o_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033p.wl  = { t_hl2=! }
-					Concrete/concretefloor033p_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033q.wl  = { t_hl2=! }
-					Concrete/concretefloor033q_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor033y.wl  = { t_hl2=! }
-					Concrete/concretefloor033y_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor034a.wl  = { t_hl2=! }
 					Concrete/concretefloor036a.wl  = { t_hl2=! }
 					Concrete/concretefloor037a.wl  = { t_hl2=! }
 					Concrete/concretefloor037a_mask.wl  = { t_hl2=! }
 					Concrete/concretefloor037b.wl  = { t_hl2=! }
-					Concrete/concretefloor037b_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor038a.wl  = { t_hl2=! }
 					Concrete/concretefloor038b.wl  = { t_hl2=! }
-					Concrete/concretefloor038b_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor039a.wl  = { t_hl2=! }
-					Concrete/concretefloor039a_normal.wl  = { t_hl2=! }
 					Concrete/concretefloor039a_specmask.wl  = { t_hl2=! }
 					Concrete/concretefloor039b.wl  = { t_hl2=! }
-					Concrete/concretefloor039b_normal.wl  = { t_hl2=! }
 					Concrete/concretestair001a.wl  = { t_hl2=! }
 					Concrete/concretestair002a.wl  = { t_hl2=! }
 					Concrete/concretestair003a.wl  = { t_hl2=! }
@@ -526,7 +478,6 @@ QQRKSRC1
 					Concrete/concretewall002c.wl  = { t_hl2=! }
 					Concrete/concretewall003a.wl  = { t_hl2=! }
 					Concrete/concretewall004a.wl  = { t_hl2=! }
-					Concrete/concretewall004a_normal.wl  = { t_hl2=! }
 					Concrete/concretewall004b.wl  = { t_hl2=! }
 					Concrete/concretewall004c.wl  = { t_hl2=! }
 					Concrete/concretewall005a.wl  = { t_hl2=! }
@@ -583,13 +534,11 @@ QQRKSRC1
 					Concrete/concretewall029a.wl  = { t_hl2=! }
 					Concrete/concretewall032a.wl  = { t_hl2=! }
 					Concrete/concretewall032b.wl  = { t_hl2=! }
-					Concrete/concretewall032b_normal.wl  = { t_hl2=! }
 					Concrete/concretewall032c.wl  = { t_hl2=! }
 					Concrete/concretewall032d.wl  = { t_hl2=! }
 					Concrete/concretewall034a.wl  = { t_hl2=! }
 					Concrete/concretewall036a.wl  = { t_hl2=! }
 					Concrete/concretewall037a.wl  = { t_hl2=! }
-					Concrete/concretewall037a_normal.wl  = { t_hl2=! }
 					Concrete/concretewall037b.wl  = { t_hl2=! }
 					Concrete/concretewall037c.wl  = { t_hl2=! }
 					Concrete/concretewall037d.wl  = { t_hl2=! }
@@ -598,7 +547,6 @@ QQRKSRC1
 					Concrete/concretewall040a.wl  = { t_hl2=! }
 					Concrete/concretewall040d.wl  = { t_hl2=! }
 					Concrete/concretewall041a.wl  = { t_hl2=! }
-					Concrete/concretewall041a_normal.wl  = { t_hl2=! }
 					Concrete/concretewall041b.wl  = { t_hl2=! }
 					Concrete/concretewall041c.wl  = { t_hl2=! }
 					Concrete/concretewall041d.wl  = { t_hl2=! }
@@ -628,7 +576,6 @@ QQRKSRC1
 					Concrete/concretewall059b.wl  = { t_hl2=! }
 					Concrete/concretewall059c.wl  = { t_hl2=! }
 					Concrete/concretewall059d.wl  = { t_hl2=! }
-					Concrete/concretewall059d_normal.wl  = { t_hl2=! }
 					Concrete/concretewall059e.wl  = { t_hl2=! }
 					Concrete/concretewall059f.wl  = { t_hl2=! }
 					Concrete/concretewall060c.wl  = { t_hl2=! }
@@ -655,10 +602,8 @@ QQRKSRC1
 					Concrete/concretewall072a.wl  = { t_hl2=! }
 					Concrete/concretewall073a.wl  = { t_hl2=! }
 					Concrete/concretewall073b.wl  = { t_hl2=! }
-					Concrete/concretewall073b_normal.wl  = { t_hl2=! }
 					Concrete/concretewall073c.wl  = { t_hl2=! }
 					Concrete/concretewall073d.wl  = { t_hl2=! }
-					Concrete/concretewall073d_normal.wl  = { t_hl2=! }
 					Concrete/concretewall074a.wl  = { t_hl2=! }
 					Concrete/concretewall074b.wl  = { t_hl2=! }
 					Concrete/concretewall074c.wl  = { t_hl2=! }
@@ -1000,11 +945,9 @@ QQRKSRC1
 				  {
 					Dev/bump.wl  = { t_hl2=! }
 					Dev/bump_dudv.wl  = { t_hl2=! }
-					Dev/bump_normal.wl  = { t_hl2=! }
 					Dev/dev_brickwall012d.wl  = { t_hl2=! }
 					Dev/dev_brickwall012e.wl  = { t_hl2=! }
 					Dev/dev_bumptest.wl  = { t_hl2=! }
-					Dev/dev_bumptest_normal.wl  = { t_hl2=! }
 					Dev/dev_camo.wl  = { t_hl2=! }
 					Dev/dev_camoenvmap.wl  = { t_hl2=! }
 					Dev/dev_ceiling.wl  = { t_hl2=! }
@@ -1056,7 +999,6 @@ QQRKSRC1
 					Dev/dev_measurewall01c.wl  = { t_hl2=! }
 					Dev/dev_measurewall01d.wl  = { t_hl2=! }
 					Dev/dev_monitor.wl  = { t_hl2=! }
-					Dev/dev_normal.wl  = { t_hl2=! }
 					Dev/dev_northwall.wl  = { t_hl2=! }
 					Dev/dev_pipes.wl  = { t_hl2=! }
 					Dev/dev_pipesbump.wl  = { t_hl2=! }
@@ -1071,7 +1013,6 @@ QQRKSRC1
 					Dev/dev_southwall.wl  = { t_hl2=! }
 					Dev/dev_stonewall001a.wl  = { t_hl2=! }
 					Dev/dev_westwall.wl  = { t_hl2=! }
-					Dev/flat_normal.wl  = { t_hl2=! }
 					Dev/graygrid.wl  = { t_hl2=! }
 					Dev/reflectivity_10.wl  = { t_hl2=! }
 					Dev/reflectivity_10b.wl  = { t_hl2=! }
@@ -1096,7 +1037,6 @@ QQRKSRC1
 					Dev/water_dudv.wl  = { t_hl2=! }
 					Dev/water_moving.wl  = { t_hl2=! }
 					Dev/water_moving_beneath.wl  = { t_hl2=! }
-					Dev/water_normal.wl  = { t_hl2=! }
 				  }
 				  
 				  Effects.txlist =
@@ -1148,7 +1088,6 @@ QQRKSRC1
 					Effects/fire_embers2.wl  = { t_hl2=! }
 					Effects/fire_embers3.wl  = { t_hl2=! }
 					Effects/fisheyelens_dudv.wl  = { t_hl2=! }
-					Effects/fisheyelens_normal.wl  = { t_hl2=! }
 					Effects/flashlight001.wl  = { t_hl2=! }
 					Effects/fleck_antlion1.wl  = { t_hl2=! }
 					Effects/fleck_antlion2.wl  = { t_hl2=! }
@@ -1199,12 +1138,10 @@ QQRKSRC1
 					Effects/splashwake3.wl  = { t_hl2=! }
 					Effects/splashwake4.wl  = { t_hl2=! }
 					Effects/strider_bulge_dudv.wl  = { t_hl2=! }
-					Effects/strider_bulge_normal.wl  = { t_hl2=! }
 					Effects/strider_dark_flare.wl  = { t_hl2=! }
 					Effects/strider_muzzle.wl  = { t_hl2=! }
 					Effects/strider_pinch_dudv.wl  = { t_hl2=! }
 					Effects/strider_pinch_dx70.wl  = { t_hl2=! }
-					Effects/strider_pinch_normal.wl  = { t_hl2=! }
 					Effects/strider_tracer.wl  = { t_hl2=! }
 					Effects/stunstick.wl  = { t_hl2=! }
 					Effects/tesla_glow.wl  = { t_hl2=! }
@@ -1273,7 +1210,6 @@ QQRKSRC1
 					Glass/glasswindow007a.wl  = { t_hl2=! }
 					Glass/glasswindow007a_mask.wl  = { t_hl2=! }
 					Glass/glasswindow008a.wl  = { t_hl2=! }
-					Glass/glasswindow008a_normal.wl  = { t_hl2=! }
 					Glass/glasswindow008d.wl  = { t_hl2=! }
 					Glass/glasswindow009a.wl  = { t_hl2=! }
 					Glass/glasswindow010a.wl  = { t_hl2=! }
@@ -1312,7 +1248,6 @@ QQRKSRC1
 					Glass/glasswindow055a.wl  = { t_hl2=! }
 					Glass/glasswindow055a_mask.wl  = { t_hl2=! }
 					Glass/glasswindow069a.wl  = { t_hl2=! }
-					Glass/glasswindow069a_normal.wl  = { t_hl2=! }
 					Glass/glasswindow070a.wl  = { t_hl2=! }
 					Glass/glasswindow070c.wl  = { t_hl2=! }
 					Glass/glasswindow070c_mask.wl  = { t_hl2=! }
@@ -1407,7 +1342,6 @@ QQRKSRC1
 					matsys_regressiontest/cubemap.wl  = { t_hl2=! }
 					matsys_regressiontest/detail.wl  = { t_hl2=! }
 					matsys_regressiontest/normalmap.wl  = { t_hl2=! }
-					matsys_regressiontest/normalmap_normal.wl  = { t_hl2=! }
 					matsys_regressiontest/specularmask.wl  = { t_hl2=! }
 				  }
 				  
@@ -1427,20 +1361,15 @@ QQRKSRC1
 					Metal/metalbar001a.wl  = { t_hl2=! }
 					Metal/metalbar001c.wl  = { t_hl2=! }
 					Metal/metalceiling005a.wl  = { t_hl2=! }
-					Metal/metalceiling005a_normal.wl  = { t_hl2=! }
 					Metal/metalceiling010a.wl  = { t_hl2=! }
 					Metal/metalcombine001.wl  = { t_hl2=! }
-					Metal/metalcombine001_normal.wl  = { t_hl2=! }
 					Metal/metalcombine002.wl  = { t_hl2=! }
 					Metal/metalcombinegrate001a.wl  = { t_hl2=! }
 					Metal/metaldoor001a.wl  = { t_hl2=! }
-					Metal/metaldoor001a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor002a.wl  = { t_hl2=! }
 					Metal/metaldoor003a.wl  = { t_hl2=! }
 					Metal/metaldoor004a.wl  = { t_hl2=! }
-					Metal/metaldoor004a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor005a.wl  = { t_hl2=! }
-					Metal/metaldoor005a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor006a.wl  = { t_hl2=! }
 					Metal/metaldoor007a.wl  = { t_hl2=! }
 					Metal/metaldoor008a.wl  = { t_hl2=! }
@@ -1450,12 +1379,10 @@ QQRKSRC1
 					Metal/metaldoor013a.wl  = { t_hl2=! }
 					Metal/metaldoor016a.wl  = { t_hl2=! }
 					Metal/metaldoor018a.wl  = { t_hl2=! }
-					Metal/metaldoor018a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor028a.wl  = { t_hl2=! }
 					Metal/metaldoor028b.wl  = { t_hl2=! }
 					Metal/metaldoor029a.wl  = { t_hl2=! }
 					Metal/metaldoor030a.wl  = { t_hl2=! }
-					Metal/metaldoor030a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor032a.wl  = { t_hl2=! }
 					Metal/metaldoor032b.wl  = { t_hl2=! }
 					Metal/metaldoor032c.wl  = { t_hl2=! }
@@ -1466,19 +1393,15 @@ QQRKSRC1
 					Metal/metaldoor039a.wl  = { t_hl2=! }
 					Metal/metaldoor041a.wl  = { t_hl2=! }
 					Metal/metaldoor042a.wl  = { t_hl2=! }
-					Metal/metaldoor042a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor042b.wl  = { t_hl2=! }
 					Metal/metaldoor043a.wl  = { t_hl2=! }
-					Metal/metaldoor043a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor044a.wl  = { t_hl2=! }
 					Metal/metaldoor045a.wl  = { t_hl2=! }
 					Metal/metaldoor046a.wl  = { t_hl2=! }
-					Metal/metaldoor046a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor052a.wl  = { t_hl2=! }
 					Metal/metaldoor053a.wl  = { t_hl2=! }
 					Metal/metaldoor055a.wl  = { t_hl2=! }
 					Metal/metaldoor059a.wl  = { t_hl2=! }
-					Metal/metaldoor059a_normal.wl  = { t_hl2=! }
 					Metal/metaldoor061a.wl  = { t_hl2=! }
 					Metal/metaldoor063a.wl  = { t_hl2=! }
 					Metal/metaldoor066a.wl  = { t_hl2=! }
@@ -1489,15 +1412,11 @@ QQRKSRC1
 					Metal/metalfence007a.wl  = { t_hl2=! }
 					Metal/metalfireescape002a.wl  = { t_hl2=! }
 					Metal/metalfloor001a.wl  = { t_hl2=! }
-					Metal/metalfloor001a_normal.wl  = { t_hl2=! }
 					Metal/metalfloor001b.wl  = { t_hl2=! }
-					Metal/metalfloor001b_normal.wl  = { t_hl2=! }
 					Metal/metalfloor002a.wl  = { t_hl2=! }
 					Metal/metalfloor003a.wl  = { t_hl2=! }
-					Metal/metalfloor003a_normal.wl  = { t_hl2=! }
 					Metal/metalfloor005a.wl  = { t_hl2=! }
 					Metal/metalfloor006a.wl  = { t_hl2=! }
-					Metal/metalfloor006a_normal.wl  = { t_hl2=! }
 					Metal/metalfloor007a.wl  = { t_hl2=! }
 					Metal/metalfloor008a.wl  = { t_hl2=! }
 					Metal/metalfloor010a.wl  = { t_hl2=! }
@@ -1526,18 +1445,13 @@ QQRKSRC1
 					Metal/metalpipe001a.wl  = { t_hl2=! }
 					Metal/metalpipe002a.wl  = { t_hl2=! }
 					Metal/metalpipe003a.wl  = { t_hl2=! }
-					Metal/metalpipe003a_normal.wl  = { t_hl2=! }
 					Metal/metalpipe005a.wl  = { t_hl2=! }
-					Metal/metalpipe005a_normal.wl  = { t_hl2=! }
 					Metal/metalpipe006a.wl  = { t_hl2=! }
 					Metal/metalpipe007a.wl  = { t_hl2=! }
 					Metal/metalpipe008a.wl  = { t_hl2=! }
 					Metal/metalpipe009a.wl  = { t_hl2=! }
-					Metal/metalpipe009a_normal.wl  = { t_hl2=! }
 					Metal/metalpipe009b.wl  = { t_hl2=! }
-					Metal/metalpipe009b_normal.wl  = { t_hl2=! }
 					Metal/metalpipe010a.wl  = { t_hl2=! }
-					Metal/metalpipe010a_normal.wl  = { t_hl2=! }
 					Metal/metalpipeendcap001a.wl  = { t_hl2=! }
 					}
 					
@@ -1558,21 +1472,14 @@ QQRKSRC1
 					Metal/metalrail013c.wl  = { t_hl2=! }
 					Metal/metalroof002a.wl  = { t_hl2=! }
 					Metal/metalroof003a.wl  = { t_hl2=! }
-					Metal/metalroof003a_normal.wl  = { t_hl2=! }
 					Metal/metalroof004a.wl  = { t_hl2=! }
-					Metal/metalroof004a_normal.wl  = { t_hl2=! }
 					Metal/metalroof005a.wl  = { t_hl2=! }
-					Metal/metalroof005a_normal.wl  = { t_hl2=! }
 					Metal/metalroof006a.wl  = { t_hl2=! }
-					Metal/metalroof006a_normal.wl  = { t_hl2=! }
 					Metal/metalroof008a.wl  = { t_hl2=! }
-					Metal/metalroof008a_normal.wl  = { t_hl2=! }
 					Metal/metalshutters001a.wl  = { t_hl2=! }
 					Metal/metalstair001a.wl  = { t_hl2=! }
 					Metal/metalstair002a.wl  = { t_hl2=! }
-					Metal/metalstair002a_normal.wl  = { t_hl2=! }
 					Metal/metalstair003a.wl  = { t_hl2=! }
-					Metal/metalstair003a_normal.wl  = { t_hl2=! }
 					Metal/metalstair004a.wl  = { t_hl2=! }
 					Metal/metalstair004b.wl  = { t_hl2=! }
 					Metal/metaltrack001a.wl  = { t_hl2=! }
@@ -1609,56 +1516,33 @@ QQRKSRC1
 					Metal/metalvent014a.wl  = { t_hl2=! }
 					Metal/metalvent015a.wl  = { t_hl2=! }
 					Metal/metalwall001a.wl  = { t_hl2=! }
-					Metal/metalwall001a_normal.wl  = { t_hl2=! }
 					Metal/metalwall001b.wl  = { t_hl2=! }
-					Metal/metalwall001b_normal.wl  = { t_hl2=! }
 					Metal/metalwall001c.wl  = { t_hl2=! }
-					Metal/metalwall001c_normal.wl  = { t_hl2=! }
 					Metal/metalwall001d.wl  = { t_hl2=! }
-					Metal/metalwall001d_normal.wl  = { t_hl2=! }
 					Metal/metalwall001f.wl  = { t_hl2=! }
-					Metal/metalwall001f_normal.wl  = { t_hl2=! }
 					Metal/metalwall002a.wl  = { t_hl2=! }
 					Metal/metalwall003a.wl  = { t_hl2=! }
 					Metal/metalwall004a.wl  = { t_hl2=! }
-					Metal/metalwall004a_normal.wl  = { t_hl2=! }
 					Metal/metalwall004c.wl  = { t_hl2=! }
-					Metal/metalwall004c_normal.wl  = { t_hl2=! }
 					Metal/metalwall004d.wl  = { t_hl2=! }
-					Metal/metalwall004d_normal.wl  = { t_hl2=! }
 					Metal/metalwall004e.wl  = { t_hl2=! }
-					Metal/metalwall004e_normal.wl  = { t_hl2=! }
 					Metal/metalwall005b.wl  = { t_hl2=! }
 					Metal/metalwall006b.wl  = { t_hl2=! }
 					Metal/metalwall012a.wl  = { t_hl2=! }
-					Metal/metalwall012a_normal.wl  = { t_hl2=! }
 					Metal/metalwall012b.wl  = { t_hl2=! }
-					Metal/metalwall012b_normal.wl  = { t_hl2=! }
 					Metal/metalwall013a.wl  = { t_hl2=! }
 					Metal/metalwall013d.wl  = { t_hl2=! }
 					Metal/metalwall014a.wl  = { t_hl2=! }
-					Metal/metalwall014a_normal.wl  = { t_hl2=! }
 					Metal/metalwall015b.wl  = { t_hl2=! }
-					Metal/metalwall015b_normal.wl  = { t_hl2=! }
 					Metal/metalwall015c.wl  = { t_hl2=! }
-					Metal/metalwall015c_normal.wl  = { t_hl2=! }
 					Metal/metalwall016a.wl  = { t_hl2=! }
-					Metal/metalwall016a_normal.wl  = { t_hl2=! }
 					Metal/metalwall017a.wl  = { t_hl2=! }
 					Metal/metalwall018a.wl  = { t_hl2=! }
-					Metal/metalwall018a_normal.wl  = { t_hl2=! }
 					Metal/metalwall018b.wl  = { t_hl2=! }
-					Metal/metalwall018b_normal.wl  = { t_hl2=! }
 					Metal/metalwall018c.wl  = { t_hl2=! }
-					Metal/metalwall018c_normal.wl  = { t_hl2=! }
-					Metal/metalwall018d_normal.wl  = { t_hl2=! }
 					Metal/metalwall018e.wl  = { t_hl2=! }
-					Metal/metalwall018e_normal.wl  = { t_hl2=! }
 					Metal/metalwall018f.wl  = { t_hl2=! }
-					Metal/metalwall018f_normal.wl  = { t_hl2=! }
 					Metal/metalwall018g.wl  = { t_hl2=! }
-					Metal/metalwall018g_normal.wl  = { t_hl2=! }
-					Metal/metalwall018h_normal.wl  = { t_hl2=! }
 					}
 					
 					Metal3.txlist =
@@ -1671,12 +1555,9 @@ QQRKSRC1
 					Metal/metalwall021e.wl  = { t_hl2=! }
 					Metal/metalwall021f.wl  = { t_hl2=! }
 					Metal/metalwall021g.wl  = { t_hl2=! }
-					Metal/metalwall021g_normal.wl  = { t_hl2=! }
 					Metal/metalwall021h.wl  = { t_hl2=! }
-					Metal/metalwall021h_normal.wl  = { t_hl2=! }
 					Metal/metalwall025a.wl  = { t_hl2=! }
 					Metal/metalwall026a.wl  = { t_hl2=! }
-					Metal/metalwall026a_normal.wl  = { t_hl2=! }
 					Metal/metalwall029a.wl  = { t_hl2=! }
 					Metal/metalwall030a.wl  = { t_hl2=! }
 					Metal/metalwall031a.wl  = { t_hl2=! }
@@ -1693,19 +1574,14 @@ QQRKSRC1
 					Metal/metalwall035a.wl  = { t_hl2=! }
 					Metal/metalwall041a.wl  = { t_hl2=! }
 					Metal/metalwall042a.wl  = { t_hl2=! }
-					Metal/metalwall042a_normal.wl  = { t_hl2=! }
 					Metal/metalwall045a.wl  = { t_hl2=! }
-					Metal/metalwall045a_normal.wl  = { t_hl2=! }
 					Metal/metalwall047a.wl  = { t_hl2=! }
-					Metal/metalwall047a_normal.wl  = { t_hl2=! }
 					Metal/metalwall048a.wl  = { t_hl2=! }
-					Metal/metalwall048a_normal.wl  = { t_hl2=! }
 					Metal/metalwall050a.wl  = { t_hl2=! }
 					Metal/metalwall052a.wl  = { t_hl2=! }
 					Metal/metalwall052b.wl  = { t_hl2=! }
 					Metal/metalwall054b.wl  = { t_hl2=! }
 					Metal/metalwall055a.wl  = { t_hl2=! }
-					Metal/metalwall055a_normal.wl  = { t_hl2=! }
 					Metal/metalwall055b.wl  = { t_hl2=! }
 					Metal/metalwall056a.wl  = { t_hl2=! }
 					Metal/metalwall056b.wl  = { t_hl2=! }
@@ -1717,60 +1593,37 @@ QQRKSRC1
 					Metal/metalwall061h.wl  = { t_hl2=! }
 					Metal/metalwall062a.wl  = { t_hl2=! }
 					Metal/metalwall063a.wl  = { t_hl2=! }
-					Metal/metalwall063a_normal.wl  = { t_hl2=! }
 					Metal/metalwall065b.wl  = { t_hl2=! }
-					Metal/metalwall065b_normal.wl  = { t_hl2=! }
 					Metal/metalwall065e.wl  = { t_hl2=! }
-					Metal/metalwall065e_normal.wl  = { t_hl2=! }
 					Metal/metalwall065f.wl  = { t_hl2=! }
-					Metal/metalwall065f_normal.wl  = { t_hl2=! }
 					Metal/metalwall066a.wl  = { t_hl2=! }
-					Metal/metalwall066a_normal.wl  = { t_hl2=! }
 					Metal/metalwall066b.wl  = { t_hl2=! }
-					Metal/metalwall066b_normal.wl  = { t_hl2=! }
 					Metal/metalwall066c.wl  = { t_hl2=! }
-					Metal/metalwall066c_normal.wl  = { t_hl2=! }
 					Metal/metalwall066e.wl  = { t_hl2=! }
-					Metal/metalwall066e_normal.wl  = { t_hl2=! }
 					Metal/metalwall066f.wl  = { t_hl2=! }
-					Metal/metalwall066f_normal.wl  = { t_hl2=! }
 					Metal/metalwall066g.wl  = { t_hl2=! }
-					Metal/metalwall066g_normal.wl  = { t_hl2=! }
 					Metal/metalwall067a.wl  = { t_hl2=! }
 					Metal/metalwall068a.wl  = { t_hl2=! }
 					Metal/metalwall069a.wl  = { t_hl2=! }
 					Metal/metalwall070a.wl  = { t_hl2=! }
-					Metal/metalwall070a_normal.wl  = { t_hl2=! }
 					Metal/metalwall070b.wl  = { t_hl2=! }
-					Metal/metalwall070b_normal.wl  = { t_hl2=! }
 					Metal/metalwall070c.wl  = { t_hl2=! }
-					Metal/metalwall070c_normal.wl  = { t_hl2=! }
 					Metal/metalwall070d.wl  = { t_hl2=! }
-					Metal/metalwall070d_normal.wl  = { t_hl2=! }
 					Metal/metalwall070e.wl  = { t_hl2=! }
-					Metal/metalwall070e_normal.wl  = { t_hl2=! }
 					Metal/metalwall070f.wl  = { t_hl2=! }
-					Metal/metalwall070f_normal.wl  = { t_hl2=! }
 					Metal/metalwall070g.wl  = { t_hl2=! }
-					Metal/metalwall070g_normal.wl  = { t_hl2=! }
 					Metal/metalwall070h.wl  = { t_hl2=! }
-					Metal/metalwall070h_normal.wl  = { t_hl2=! }
 					Metal/metalwall071a.wl  = { t_hl2=! }
 					Metal/metalwall072a.wl  = { t_hl2=! }
-					Metal/metalwall072a_normal.wl  = { t_hl2=! }
 					Metal/metalwall072b.wl  = { t_hl2=! }
-					Metal/metalwall072b_normal.wl  = { t_hl2=! }
 					Metal/metalwall072c.wl  = { t_hl2=! }
-					Metal/metalwall072c_normal.wl  = { t_hl2=! }
 					Metal/metalwall074a.wl  = { t_hl2=! }
 					Metal/metalwall074c.wl  = { t_hl2=! }
 					Metal/metalwall074d.wl  = { t_hl2=! }
 					Metal/metalwall075a.wl  = { t_hl2=! }
 					Metal/metalwall076a.wl  = { t_hl2=! }
 					Metal/metalwall077a.wl  = { t_hl2=! }
-					Metal/metalwall077a_normal.wl  = { t_hl2=! }
 					Metal/metalwall078a.wl  = { t_hl2=! }
-					Metal/metalwall078a_normal.wl  = { t_hl2=! }
 					Metal/metalwall080b.wl  = { t_hl2=! }
 					Metal/metalwall082a.wl  = { t_hl2=! }
 					Metal/metalwall082b.wl  = { t_hl2=! }
@@ -1782,13 +1635,9 @@ QQRKSRC1
 					Metal/metalwall088a.wl  = { t_hl2=! }
 					Metal/metalwall089a.wl  = { t_hl2=! }
 					Metal/metalwall090a.wl  = { t_hl2=! }
-					Metal/metalwall090a_normal.wl  = { t_hl2=! }
 					Metal/metalwall091a.wl  = { t_hl2=! }
-					Metal/metalwall091a_normal.wl  = { t_hl2=! }
 					Metal/metalwall101a.wl  = { t_hl2=! }
-					Metal/metalwall101a_normal.wl  = { t_hl2=! }
 					Metal/metalwall101b.wl  = { t_hl2=! }
-					Metal/metalwall101b_normal.wl  = { t_hl2=! }
 					Metal/metalwall102a.wl  = { t_hl2=! }
 				  }
 				  
@@ -1798,7 +1647,6 @@ QQRKSRC1
 					Models/Airboat/airboat_blur02.wl  = { t_hl2=! }
 					Models/Alyx/alyxblack.wl  = { t_hl2=! }
 					Models/Alyx/alyx_faceandhair.wl  = { t_hl2=! }
-					Models/Alyx/alyx_head_normal.wl  = { t_hl2=! }
 					Models/Alyx/alyx_sheet.wl  = { t_hl2=! }
 					Models/Alyx/emptool_glow.wl  = { t_hl2=! }
 					Models/Alyx/emptool_sheet.wl  = { t_hl2=! }
@@ -1808,7 +1656,6 @@ QQRKSRC1
 					Models/Alyx/hairbits.wl  = { t_hl2=! }
 					Models/Alyx/pupil_l.wl  = { t_hl2=! }
 					Models/Alyx/pupil_r.wl  = { t_hl2=! }
-					Models/AntLion/antlionhigh_normal.wl  = { t_hl2=! }
 					Models/AntLion/antlionhigh_sheet.wl  = { t_hl2=! }
 					Models/AntLion/antlionhigh_sheet2.wl  = { t_hl2=! }
 					Models/AntLion/antlionhigh_sheet3.wl  = { t_hl2=! }
@@ -1817,19 +1664,13 @@ QQRKSRC1
 					Models/AntLion/antlion_parts.wl  = { t_hl2=! }
 					Models/AntLion/wingblur.wl  = { t_hl2=! }
 					Models/Antlion_Guard/bodyside.wl  = { t_hl2=! }
-					Models/Antlion_Guard/bodyside_normal.wl  = { t_hl2=! }
 					Models/Antlion_Guard/legsside.wl  = { t_hl2=! }
-					Models/Antlion_Guard/legsside_normal.wl  = { t_hl2=! }
-					Models/Barnacle/barnacle_normal.wl  = { t_hl2=! }
 					Models/Barnacle/barnacle_sheet.wl  = { t_hl2=! }
 					Models/Barnacle/roots.wl  = { t_hl2=! }
 					Models/Barnacle/tongue.wl  = { t_hl2=! }
-					Models/Barney/barney_head_normal.wl  = { t_hl2=! }
 					Models/Blackout/blackout.wl  = { t_hl2=! }
 					Models/Breen/Breen_face.wl  = { t_hl2=! }
-					Models/Breen/breen_head_normal.wl  = { t_hl2=! }
 					Models/Breen/breen_sheet.wl  = { t_hl2=! }
-					Models/Breen/breen_sheet_normal.wl  = { t_hl2=! }
 					Models/Breen/eyeball_l.wl  = { t_hl2=! }
 					Models/Breen/eyeball_r.wl  = { t_hl2=! }
 					Models/Breen/mouth.wl  = { t_hl2=! }
@@ -1856,13 +1697,9 @@ QQRKSRC1
 					Models/BrokenGlass/glassbroken_solid.wl  = { t_hl2=! }
 					Models/Buggy/ammo_box.wl  = { t_hl2=! }
 					Models/Buggy/buggy001.wl  = { t_hl2=! }
-					Models/Charple/Charple1_normal.wl  = { t_hl2=! }
 					Models/Charple/Charple1_sheet.wl  = { t_hl2=! }
-					Models/Charple/Charple2_normal.wl  = { t_hl2=! }
 					Models/Charple/Charple2_sheet.wl  = { t_hl2=! }
-					Models/Charple/Charple3_normal.wl  = { t_hl2=! }
 					Models/Charple/Charple3_sheet.wl  = { t_hl2=! }
-					Models/Charple/Charple4_normal.wl  = { t_hl2=! }
 					Models/Charple/Charple4_sheet.wl  = { t_hl2=! }
 					Models/Combine_Advisor/arm.wl  = { t_hl2=! }
 					Models/Combine_Advisor/body9.wl  = { t_hl2=! }
@@ -1870,7 +1707,6 @@ QQRKSRC1
 					Models/Combine_Advisor/camera.wl  = { t_hl2=! }
 					Models/Combine_Advisor/face5.wl  = { t_hl2=! }
 					Models/Combine_Advisor/hose.wl  = { t_hl2=! }
-					Models/Combine_Advisor/lens_normal.wl  = { t_hl2=! }
 					Models/Combine_Advisor/mask.wl  = { t_hl2=! }
 					Models/Combine_apc/apc01blue.wl  = { t_hl2=! }
 					Models/Combine_apc/glass.wl  = { t_hl2=! }
@@ -1879,14 +1715,11 @@ QQRKSRC1
 					Models/Combine_Camera/combine_camera001_mask.wl  = { t_hl2=! }
 					Models/Combine_citadel/Combine_Citadel001.wl  = { t_hl2=! }
 					Models/Combine_Dropship/combine_dropship01.wl  = { t_hl2=! }
-					Models/Combine_Dropship/combine_dropship01_normal.wl  = { t_hl2=! }
 					Models/Combine_Dropship/combine_fenceglow.wl  = { t_hl2=! }
 					Models/Combine_Dropship/combine_fenceglow2.wl  = { t_hl2=! }
 					Models/Combine_Dropship/combine_fenceglowb.wl  = { t_hl2=! }
 					Models/Combine_Dropship/dropshipsheet.wl  = { t_hl2=! }
-					Models/Combine_Dropship/dropshipsheet_normal.wl  = { t_hl2=! }
 					Models/Combine_Helicopter/combine_helicopter01.wl  = { t_hl2=! }
-					Models/Combine_Helicopter/combine_helicopter01_normal.wl  = { t_hl2=! }
 					Models/Combine_Helicopter/combine_helicopter02.wl  = { t_hl2=! }
 					Models/Combine_Helicopter/combine_helicopter02_mask.wl  = { t_hl2=! }
 					Models/Combine_Helicopter/combine_helicopter_new_bladeblur.wl  = { t_hl2=! }
@@ -1894,10 +1727,8 @@ QQRKSRC1
 					Models/Combine_Helicopter/helicopter_bomb01_mask.wl  = { t_hl2=! }
 					Models/Combine_Helicopter/helicopter_prop_01.wl  = { t_hl2=! }
 					Models/Combine_Mine/combine_mine03.wl  = { t_hl2=! }
-					Models/Combine_Mine/combine_mine03_normal.wl  = { t_hl2=! }
 					Models/Combine_Room/combine_monitor001.wl  = { t_hl2=! }
 					Models/Combine_Room/combine_monitor002.wl  = { t_hl2=! }
-					Models/Combine_Room/combine_monitor002_normal.wl  = { t_hl2=! }
 					Models/Combine_Room/combine_panel001.wl  = { t_hl2=! }
 					Models/Combine_Scanner/scanner_eye.wl  = { t_hl2=! }
 					Models/Combine_Scanner/scanner_mask.wl  = { t_hl2=! }
@@ -1906,9 +1737,7 @@ QQRKSRC1
 					Models/Combine_soldier/combinesoldiersheet_mask.wl  = { t_hl2=! }
 					Models/Combine_soldier/combinesoldiersheet_prisonguard.wl  = { t_hl2=! }
 					Models/Combine_soldier/Combine_Elite.wl  = { t_hl2=! }
-					Models/Combine_soldier/Combine_Elite_normal.wl  = { t_hl2=! }
 					Models/Combine_Strider/striderdecalsheet.wl  = { t_hl2=! }
-					Models/Combine_Strider/striderdecalsheet_normal.wl  = { t_hl2=! }
 					Models/Combine_Turrets/Ceiling_turret/combine_gun003.wl  = { t_hl2=! }
 					Models/Combine_Turrets/Ceiling_turret/combine_gun003_mask.wl  = { t_hl2=! }
 					Models/Combine_Turrets/Floor_turret/combine_gun002.wl  = { t_hl2=! }
@@ -1922,7 +1751,6 @@ QQRKSRC1
 					Models/Crane_Docks/crane_chair.wl  = { t_hl2=! }
 					Models/Crow/crow01.wl  = { t_hl2=! }
 					Models/Debug/debugwhite.wl  = { t_hl2=! }
-					Models/Dog/dog_normal.wl  = { t_hl2=! }
 					Models/Dog/dog_sheet.wl  = { t_hl2=! }
 					Models/Dog/eyeglass.wl  = { t_hl2=! }
 					Models/Editor/camera_sheet.wl  = { t_hl2=! }
@@ -1936,15 +1764,12 @@ QQRKSRC1
 					Models/Effects/com_shield001a_dudv.wl  = { t_hl2=! }
 					Models/Effects/dx7portalrift.wl  = { t_hl2=! }
 					Models/Effects/fisheyelens_dudv.wl  = { t_hl2=! }
-					Models/Effects/fisheyelens_normal.wl  = { t_hl2=! }
 					Models/Effects/portalfunnel2_sheet.wl  = { t_hl2=! }
 					Models/Effects/portalfunnel_sheet.wl  = { t_hl2=! }
 					Models/Effects/portalrift.wl  = { t_hl2=! }
-					Models/Effects/portalrift_normal.wl  = { t_hl2=! }
 					Models/Effects/portalrift_sheet.wl  = { t_hl2=! }
 					Models/Effects/portal_camera_dudv.wl  = { t_hl2=! }
 					Models/Effects/portal_camera_height.wl  = { t_hl2=! }
-					Models/Effects/portal_camera_normal.wl  = { t_hl2=! }
 					Models/Effects/portal_camera_tint.wl  = { t_hl2=! }
 					Models/Effects/slimebubble_sheet.wl  = { t_hl2=! }
 					Models/Effects/splode1_sheet.wl  = { t_hl2=! }
@@ -1955,9 +1780,7 @@ QQRKSRC1
 					Models/Effects/splodeglass_sheet.wl  = { t_hl2=! }
 					Models/Effects/splode_sheet.wl  = { t_hl2=! }
 					Models/Effects/vol_light001.wl  = { t_hl2=! }
-					Models/Eli/eli_head_normal.wl  = { t_hl2=! }
 					Models/Eli/eli_sheet.wl  = { t_hl2=! }
-					Models/Eli/eli_sheet_normal.wl  = { t_hl2=! }
 					Models/Eli/eli_tex4z.wl  = { t_hl2=! }
 					Models/Eli/eyeball_l.wl  = { t_hl2=! }
 					Models/Eli/eyeball_r.wl  = { t_hl2=! }
@@ -1968,22 +1791,17 @@ QQRKSRC1
 					Models/Gibs/furniture_gibs/FurnitureWoodDrawers001a.wl  = { t_hl2=! }
 					Models/Gibs/HGibs/rib.wl  = { t_hl2=! }
 					Models/Gibs/HGibs/scapula.wl  = { t_hl2=! }
-					Models/Gibs/HGibs/scapula_normal.wl  = { t_hl2=! }
 					Models/Gibs/HGibs/Skull1.wl  = { t_hl2=! }
-					Models/Gibs/HGibs/Skull1_normal.wl  = { t_hl2=! }
 					Models/Gibs/HGibs/spine.wl  = { t_hl2=! }
-					Models/Gibs/HGibs/spine_normal.wl  = { t_hl2=! }
 					Models/Gibs/metalgibs/metal_gibs.wl  = { t_hl2=! }
 					Models/Gibs/woodgibs/woodgibs01.wl  = { t_hl2=! }
 					Models/Gibs/woodgibs/woodgibs02.wl  = { t_hl2=! }
 					Models/Gibs/woodgibs/woodgibs03.wl  = { t_hl2=! }
 					Models/Gman/eyeball_l.wl  = { t_hl2=! }
 					Models/Gman/eyeball_r.wl  = { t_hl2=! }
-					Models/Gman/gmanhirez_normal.wl  = { t_hl2=! }
 					Models/Gman/gman_briefcase.wl  = { t_hl2=! }
 					Models/Gman/gman_facehirez.wl  = { t_hl2=! }
 					Models/Gman/gman_face_map3.wl  = { t_hl2=! }
-					Models/Gman/gman_normal.wl  = { t_hl2=! }
 					Models/Gman/gman_sheet.wl  = { t_hl2=! }
 					Models/Gman/lower_teeth.wl  = { t_hl2=! }
 					Models/Gman/pupil_l.wl  = { t_hl2=! }
@@ -1991,16 +1809,12 @@ QQRKSRC1
 					Models/Gman/tongue.wl  = { t_hl2=! }
 					Models/Gman/upper_teeth.wl  = { t_hl2=! }
 					Models/Gunship/GunshipSheet.wl  = { t_hl2=! }
-					Models/Gunship/GunshipSheet_normal.wl  = { t_hl2=! }
 					Models/Gunship/prop.wl  = { t_hl2=! }
 					Models/Gunship/prop_off.wl  = { t_hl2=! }
 					Models/Headcrab/allinonebacup2.wl  = { t_hl2=! }
-					Models/Headcrab/allinonebacup2_normal.wl  = { t_hl2=! }
 					Models/HEADCRAB_BLACK/Blackcrab_sheet.wl  = { t_hl2=! }
-					Models/HEADCRAB_BLACK/Blackcrab_sheet_normal.wl  = { t_hl2=! }
 					Models/HEADCRAB_BLACK/hairs.wl  = { t_hl2=! }
 					Models/Headcrab_classic/headcrabsheet.wl  = { t_hl2=! }
-					Models/Headcrab_classic/headcrabsheet_normal.wl  = { t_hl2=! }
 					Models/Healthvial/healthvial.wl  = { t_hl2=! }
 					Models/Healthvial/healthvial_mask.wl  = { t_hl2=! }
 					Models/HEVSuit/hevsuit_sheet.wl  = { t_hl2=! }
@@ -2097,7 +1911,6 @@ QQRKSRC1
 					Models/Items/ammocrate_ar2.wl  = { t_hl2=! }
 					Models/Items/ammocrate_grenade.wl  = { t_hl2=! }
 					Models/Items/ammocrate_items.wl  = { t_hl2=! }
-					Models/Items/ammocrate_normal.wl  = { t_hl2=! }
 					Models/Items/ammocrate_rockets.wl  = { t_hl2=! }
 					Models/Items/ammocrate_smg1.wl  = { t_hl2=! }
 					Models/Items/Battery01.wl  = { t_hl2=! }
@@ -2105,12 +1918,10 @@ QQRKSRC1
 					Models/Items/boxart1.wl  = { t_hl2=! }
 					Models/Items/BoxFlares.wl  = { t_hl2=! }
 					Models/Items/BoxMRounds.wl  = { t_hl2=! }
-					Models/Items/BoxMRounds_normal.wl  = { t_hl2=! }
 					Models/Items/BoxSniperRounds.wl  = { t_hl2=! }
 					Models/Items/BoxSRounds.wl  = { t_hl2=! }
 					Models/Items/buckshot.wl  = { t_hl2=! }
 					Models/Items/car_battery01.wl  = { t_hl2=! }
-					Models/Items/car_battery01_normal.wl  = { t_hl2=! }
 					Models/Items/combine_rifle_ammo01.wl  = { t_hl2=! }
 					Models/Items/combine_rifle_ammo01_mask.wl  = { t_hl2=! }
 					Models/Items/combine_rifle_cartridge01.wl  = { t_hl2=! }
@@ -2134,9 +1945,7 @@ QQRKSRC1
 					Models/Kleiner/pupil_l.wl  = { t_hl2=! }
 					Models/Kleiner/pupil_r.wl  = { t_hl2=! }
 					Models/Kleiner/walter_face.wl  = { t_hl2=! }
-					Models/Kleiner/walter_face_normal.wl  = { t_hl2=! }
 					Models/Leech/Leech.wl  = { t_hl2=! }
-					Models/Leech/leech_normal.wl  = { t_hl2=! }
 					Models/manhack/Blur01.wl  = { t_hl2=! }
 					Models/manhack/manhackblade001.wl  = { t_hl2=! }
 					Models/manhack/manhackgib_sheet.wl  = { t_hl2=! }
@@ -2146,7 +1955,6 @@ QQRKSRC1
 					Models/Monk/eyeball_r.wl  = { t_hl2=! }
 					Models/Monk/glint.wl  = { t_hl2=! }
 					Models/Monk/grigori_head.wl  = { t_hl2=! }
-					Models/Monk/monk_head_normal.wl  = { t_hl2=! }
 					Models/Monk/monk_sheet.wl  = { t_hl2=! }
 					Models/Monk/pupil_l.wl  = { t_hl2=! }
 					Models/Monk/pupil_r.wl  = { t_hl2=! }
@@ -2157,8 +1965,6 @@ QQRKSRC1
 					Models/Mossman/fmouth.wl  = { t_hl2=! }
 					Models/Mossman/mossman_face.wl  = { t_hl2=! }
 					Models/Mossman/mossman_hair.wl  = { t_hl2=! }
-					Models/Mossman/mossman_head_normal.wl  = { t_hl2=! }
-					Models/Mossman/mossman_normal.wl  = { t_hl2=! }
 					Models/Mossman/mossman_sheet.wl  = { t_hl2=! }
 					Models/Mossman/pupil_l.wl  = { t_hl2=! }
 					Models/Mossman/pupil_r.wl  = { t_hl2=! }
@@ -2166,7 +1972,6 @@ QQRKSRC1
 					Models/Odessa/eyeball_r.wl  = { t_hl2=! }
 					Models/Odessa/hat.wl  = { t_hl2=! }
 					Models/Odessa/odessa_face.wl  = { t_hl2=! }
-					Models/Odessa/odessa_face_normal.wl  = { t_hl2=! }
 					Models/Odessa/odessa_sheet.wl  = { t_hl2=! }
 					Models/Odessa/pupil_l.wl  = { t_hl2=! }
 					Models/Odessa/pupil_r.wl  = { t_hl2=! }
@@ -2264,13 +2069,10 @@ QQRKSRC1
 					Models/props_c17/door01a_skin10.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin11.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin12.wl  = { t_hl2=! }
-					Models/props_c17/door01a_skin12_normal.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin13.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin14.wl  = { t_hl2=! }
-					Models/props_c17/door01a_skin14_normal.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin2.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin3.wl  = { t_hl2=! }
-					Models/props_c17/door01a_skin3_normal.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin4.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin5.wl  = { t_hl2=! }
 					Models/props_c17/door01a_skin6.wl  = { t_hl2=! }
@@ -2294,7 +2096,6 @@ QQRKSRC1
 					Models/props_c17/Frame002a_skin5.wl  = { t_hl2=! }
 					Models/props_c17/Frame002a_skin6.wl  = { t_hl2=! }
 					Models/props_c17/frostedglass.wl  = { t_hl2=! }
-					Models/props_c17/frostedglass_01a_normal.wl  = { t_hl2=! }
 					Models/props_c17/FurnitureBed001a.wl  = { t_hl2=! }
 					Models/props_c17/FurnitureBoiler001a.wl  = { t_hl2=! }
 					Models/props_c17/FurnitureChair001a.wl  = { t_hl2=! }
@@ -2353,7 +2154,6 @@ QQRKSRC1
 					Models/props_c17/Metalladder003.wl  = { t_hl2=! }
 					Models/props_c17/metaltruss012b.wl  = { t_hl2=! }
 					Models/props_c17/Oil_Drum001a.wl  = { t_hl2=! }
-					Models/props_c17/Oil_Drum001a_normal.wl  = { t_hl2=! }
 					Models/props_c17/Oil_Drum001c.wl  = { t_hl2=! }
 					Models/props_c17/Oil_Drum001d.wl  = { t_hl2=! }
 					Models/props_c17/Oil_Drum001e.wl  = { t_hl2=! }
@@ -2417,10 +2217,8 @@ QQRKSRC1
 					Models/props_canal/Canal_Cap001.wl  = { t_hl2=! }
 					Models/props_canal/coastmap_sheet.wl  = { t_hl2=! }
 					Models/props_canal/generator01.wl  = { t_hl2=! }
-					Models/props_canal/generator01_normal.wl  = { t_hl2=! }
 					Models/props_canal/generator02.wl  = { t_hl2=! }
 					Models/props_canal/generator02_handrails.wl  = { t_hl2=! }
-					Models/props_canal/generator02_normal.wl  = { t_hl2=! }
 					Models/props_canal/locks_large.wl  = { t_hl2=! }
 					Models/props_canal/locks_small.wl  = { t_hl2=! }
 					Models/props_canal/mattpipe_sheet.wl  = { t_hl2=! }
@@ -2444,7 +2242,6 @@ QQRKSRC1
 					Models/props_combine/breenchair_sheet.wl  = { t_hl2=! }
 					Models/props_combine/breenclock_sheet.wl  = { t_hl2=! }
 					Models/props_combine/breenconsole_sheet.wl  = { t_hl2=! }
-					Models/props_combine/breendesk_normal.wl  = { t_hl2=! }
 					Models/props_combine/breendesk_sheet.wl  = { t_hl2=! }
 					Models/props_combine/breenglobe_sheet.wl  = { t_hl2=! }
 					Models/props_combine/breenlight_sheet.wl  = { t_hl2=! }
@@ -2474,7 +2271,6 @@ QQRKSRC1
 					Models/props_combine/combine_bunker01.wl  = { t_hl2=! }
 					Models/props_combine/combine_bunker_shield01a.wl  = { t_hl2=! }
 					Models/props_combine/combine_bunker_shield01a_height.wl  = { t_hl2=! }
-					Models/props_combine/combine_bunker_shield01a_normal.wl  = { t_hl2=! }
 					Models/props_combine/combine_button01.wl  = { t_hl2=! }
 					Models/props_combine/combine_button01_mask.wl  = { t_hl2=! }
 					Models/props_combine/combine_camera001.wl  = { t_hl2=! }
@@ -2493,7 +2289,6 @@ QQRKSRC1
 					Models/props_combine/combine_door01.wl  = { t_hl2=! }
 					Models/props_combine/combine_door01_glass.wl  = { t_hl2=! }
 					Models/props_combine/combine_door01_glass_mask.wl  = { t_hl2=! }
-					Models/props_combine/combine_door01_normal.wl  = { t_hl2=! }
 					Models/props_combine/combine_emitter01.wl  = { t_hl2=! }
 					Models/props_combine/combine_emitter01_mask.wl  = { t_hl2=! }
 					Models/props_combine/combine_fence01a.wl  = { t_hl2=! }
@@ -2504,7 +2299,6 @@ QQRKSRC1
 					Models/props_combine/combine_gate_vehicle01a.wl  = { t_hl2=! }
 					Models/props_combine/combine_generator01.wl  = { t_hl2=! }
 					Models/props_combine/combine_generator01_height.wl  = { t_hl2=! }
-					Models/props_combine/combine_generator01_normal.wl  = { t_hl2=! }
 					Models/props_combine/combine_grate01a.wl  = { t_hl2=! }
 					Models/props_combine/combine_gun002.wl  = { t_hl2=! }
 					Models/props_combine/combine_gun002_mask.wl  = { t_hl2=! }
@@ -2531,7 +2325,6 @@ QQRKSRC1
 					Models/props_combine/combine_smallmonitor_sheet.wl  = { t_hl2=! }
 					Models/props_combine/combine_teleport_2.wl  = { t_hl2=! }
 					Models/props_combine/combine_tower01a.wl  = { t_hl2=! }
-					Models/props_combine/combine_tower01a_normal.wl  = { t_hl2=! }
 					Models/props_combine/combine_tower01b.wl  = { t_hl2=! }
 					Models/props_combine/combine_tower01b_mask.wl  = { t_hl2=! }
 					Models/props_combine/combine_tpplatform_sheet.wl  = { t_hl2=! }
@@ -2541,12 +2334,10 @@ QQRKSRC1
 					Models/props_combine/combine_tptrack_sheet.wl  = { t_hl2=! }
 					Models/props_combine/Combine_Train001.wl  = { t_hl2=! }
 					Models/props_combine/Combine_Train002.wl  = { t_hl2=! }
-					Models/props_combine/Combine_Train002_normal.wl  = { t_hl2=! }
 					Models/props_combine/combine_window001.wl  = { t_hl2=! }
 					Models/props_combine/dispenser_sheet.wl  = { t_hl2=! }
 					Models/props_combine/dispenser_sheet_mask.wl  = { t_hl2=! }
 					Models/props_combine/headcrabcannister01b.wl  = { t_hl2=! }
-					Models/props_combine/headcrabcannister01b_normal.wl  = { t_hl2=! }
 					Models/props_combine/health_charger001.wl  = { t_hl2=! }
 					Models/props_combine/health_charger_glass.wl  = { t_hl2=! }
 					Models/props_combine/innerpod_sheet.wl  = { t_hl2=! }
@@ -2609,7 +2400,6 @@ QQRKSRC1
 					Models/props_docks/waterdirectionalbouis.wl  = { t_hl2=! }
 					Models/props_foliage/cattails.wl  = { t_hl2=! }
 					Models/props_foliage/driftwood_01a.wl  = { t_hl2=! }
-					Models/props_foliage/driftwood_01a_normal.wl  = { t_hl2=! }
 					Models/props_foliage/ivy01.wl  = { t_hl2=! }
 					Models/props_foliage/tree_card_clump.wl  = { t_hl2=! }
 					Models/props_foliage/tree_deciduous_01a_branches.wl  = { t_hl2=! }
@@ -2691,7 +2481,6 @@ QQRKSRC1
 					Models/props_junk/TrashDumpster01a.wl  = { t_hl2=! }
 					Models/props_junk/TrashDumpster02.wl  = { t_hl2=! }
 					Models/props_junk/Vent001.wl  = { t_hl2=! }
-					Models/props_junk/Vent001_normal.wl  = { t_hl2=! }
 					Models/props_junk/wheelbarrowo1a.wl  = { t_hl2=! }
 					Models/props_junk/WoodCrates01a.wl  = { t_hl2=! }
 					Models/props_junk/WoodCrates02a.wl  = { t_hl2=! }
@@ -2810,14 +2599,12 @@ QQRKSRC1
 					Models/props_lab/workspace_sheet.wl  = { t_hl2=! }
 					Models/props_lab/workspace_wires.wl  = { t_hl2=! }
 					Models/props_lab/xencrystal_dudv.wl  = { t_hl2=! }
-					Models/props_lab/xencrystal_normal.wl  = { t_hl2=! }
 					Models/props_lab/xencrystal_sheet.wl  = { t_hl2=! }
 					Models/props_pipes/concrete_pipe001a_01.wl  = { t_hl2=! }
 					Models/props_pipes/concrete_pipe001a_02.wl  = { t_hl2=! }
 					Models/props_pipes/destroyedpipes01a.wl  = { t_hl2=! }
 					Models/props_pipes/GutterMetal01a.wl  = { t_hl2=! }
 					Models/props_pipes/InteriorPipe002a.wl  = { t_hl2=! }
-					Models/props_pipes/InteriorPipe002a_normal.wl  = { t_hl2=! }
 					Models/props_pipes/PipeMetal001a.wl  = { t_hl2=! }
 					Models/props_pipes/PipeMetal004a.wl  = { t_hl2=! }
 					Models/props_pipes/PipeMetal004b.wl  = { t_hl2=! }
@@ -2836,7 +2623,6 @@ QQRKSRC1
 					Models/props_rooftop/attic_window.wl  = { t_hl2=! }
 					Models/props_rooftop/Dome004.wl  = { t_hl2=! }
 					Models/props_rooftop/Dome005.wl  = { t_hl2=! }
-					Models/props_rooftop/Dome005_normal.wl  = { t_hl2=! }
 					Models/props_rooftop/dome_copper.wl  = { t_hl2=! }
 					Models/props_rooftop/dome_terminal_01.wl  = { t_hl2=! }
 					Models/props_rooftop/dome_terminal_02.wl  = { t_hl2=! }
@@ -2883,7 +2669,6 @@ QQRKSRC1
 					Models/props_trainstation/Traincar_bars002.wl  = { t_hl2=! }
 					Models/props_trainstation/Traincar_rack001.wl  = { t_hl2=! }
 					Models/props_trainstation/Traincar_seats001.wl  = { t_hl2=! }
-					Models/props_trainstation/Traincar_seats001_normal.wl  = { t_hl2=! }
 					Models/props_trainstation/Trainstation_Arch001.wl  = { t_hl2=! }
 					Models/props_trainstation/Trainstation_Bench001.wl  = { t_hl2=! }
 					Models/props_trainstation/Trainstation_Ceiling01.wl  = { t_hl2=! }
@@ -2929,8 +2714,6 @@ QQRKSRC1
 					Models/props_vents/borealis_vent001.wl  = { t_hl2=! }
 					Models/props_vents/borealis_vent001b.wl  = { t_hl2=! }
 					Models/props_vents/borealis_vent001c.wl  = { t_hl2=! }
-					Models/props_vents/borealis_vent001_normal.wl  = { t_hl2=! }
-					Models/props_wasteland/antlionhill_normal.wl  = { t_hl2=! }
 					Models/props_wasteland/antlionhill_sheet.wl  = { t_hl2=! }
 					Models/props_wasteland/barricade_composite01.wl  = { t_hl2=! }
 					Models/props_wasteland/boat_01.wl  = { t_hl2=! }
@@ -2944,7 +2727,6 @@ QQRKSRC1
 					Models/props_wasteland/cafeteria_tables01.wl  = { t_hl2=! }
 					Models/props_wasteland/cargo_container01.wl  = { t_hl2=! }
 					Models/props_wasteland/cargo_container01c.wl  = { t_hl2=! }
-					Models/props_wasteland/cargo_container01_normal.wl  = { t_hl2=! }
 					Models/props_wasteland/cargo_container02.wl  = { t_hl2=! }
 					Models/props_wasteland/cargo_container03.wl  = { t_hl2=! }
 					Models/props_wasteland/controlroom_001.wl  = { t_hl2=! }
@@ -2975,7 +2757,6 @@ QQRKSRC1
 					Models/props_wasteland/lighthouse_brace.wl  = { t_hl2=! }
 					Models/props_wasteland/lighthouse_fresnel_light_base.wl  = { t_hl2=! }
 					Models/props_wasteland/lighthouse_fresnel_light_dudv.wl  = { t_hl2=! }
-					Models/props_wasteland/lighthouse_fresnel_light_normal.wl  = { t_hl2=! }
 					Models/props_wasteland/lighthouse_platform.wl  = { t_hl2=! }
 					Models/props_wasteland/lighthouse_stairs.wl  = { t_hl2=! }
 					Models/props_wasteland/Light_IndustrialCluster01a.wl  = { t_hl2=! }
@@ -3008,24 +2789,18 @@ QQRKSRC1
 					Models/props_wasteland/wood_fence01a.wl  = { t_hl2=! }
 					Models/props_wasteland/wood_fence01a_skin2.wl  = { t_hl2=! }
 					Models/Roller/rollermine_glow.wl  = { t_hl2=! }
-					Models/Roller/rollermine_normal.wl  = { t_hl2=! }
 					Models/Roller/rollermine_sheet.wl  = { t_hl2=! }
 					Models/Seagull/seagull.wl  = { t_hl2=! }
 					Models/shadertest/shader2.wl  = { t_hl2=! }
-					Models/shadertest/shader2_normal.wl  = { t_hl2=! }
 					Models/shadertest/shader3.wl  = { t_hl2=! }
 					Models/shadertest/shader3_dudv.wl  = { t_hl2=! }
-					Models/shadertest/shader3_normal.wl  = { t_hl2=! }
 					Models/shadertest/shader4.wl  = { t_hl2=! }
 					Models/shadertest/shader5.wl  = { t_hl2=! }
 					Models/shadertest/shader5_dudv.wl  = { t_hl2=! }
-					Models/shadertest/shader5_normal.wl  = { t_hl2=! }
 					Models/shadertest/shieldtint0.wl  = { t_hl2=! }
 					Models/Shield_Scanner/minelayer_sheet.wl  = { t_hl2=! }
-					Models/Shield_Scanner/minelayer_sheet_normal.wl  = { t_hl2=! }
 					Models/Soldier_Stripped/soldier_stripped_comp.wl  = { t_hl2=! }
 					Models/Stalker/stalker_sheet.wl  = { t_hl2=! }
-					Models/Stalker/stalker_sheet_normal.wl  = { t_hl2=! }
 					Models/Synth/2frontlegs.wl  = { t_hl2=! }
 					Models/Synth/2vents.wl  = { t_hl2=! }
 					Models/Synth/2ventsmask.wl  = { t_hl2=! }
@@ -3064,7 +2839,6 @@ QQRKSRC1
 					Models/Vortigaunt/chefhat_sheet.wl  = { t_hl2=! }
 					Models/Vortigaunt/eyeball.wl  = { t_hl2=! }
 					Models/Vortigaunt/pupil.wl  = { t_hl2=! }
-					Models/Vortigaunt/vortigaunt_normal.wl  = { t_hl2=! }
 					Models/Vortigaunt/vortigaunt_sheet.wl  = { t_hl2=! }
 					Models/Weapons/Flare/shellside.wl  = { t_hl2=! }
 					Models/Weapons/pistol_shell/shell.wl  = { t_hl2=! }
@@ -3075,29 +2849,20 @@ QQRKSRC1
 					Models/Weapons/stinger_missile/missile side.wl  = { t_hl2=! }
 					Models/Weapons/v_357/357_sheet.wl  = { t_hl2=! }
 					Models/Weapons/V_bugbait/bugbait_inside.wl  = { t_hl2=! }
-					Models/Weapons/V_bugbait/bugbait_inside_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_bugbait/bugbait_sheet.wl  = { t_hl2=! }
 					Models/Weapons/v_crossbow/crossbow dirtmap.wl  = { t_hl2=! }
 					Models/Weapons/v_crossbow/crossbow dirtmap_glow.wl  = { t_hl2=! }
 					Models/Weapons/v_crossbow/normal_map_composite copy.wl  = { t_hl2=! }
 					Models/Weapons/v_crossbow/rebar.wl  = { t_hl2=! }
 					Models/Weapons/v_crossbow/rebar_glow.wl  = { t_hl2=! }
-					Models/Weapons/v_crossbow/rebar_normal.wl  = { t_hl2=! }
 					Models/Weapons/v_crossbow/string.wl  = { t_hl2=! }
-					Models/Weapons/v_crossbow/string_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_crowbar/crowbar_cyl.wl  = { t_hl2=! }
-					Models/Weapons/V_crowbar/crowbar_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_crowbar/head.wl  = { t_hl2=! }
-					Models/Weapons/V_crowbar/head_normal.wl  = { t_hl2=! }
-					Models/Weapons/V_grenade/black seal_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_grenade/blackseal.wl  = { t_hl2=! }
 					Models/Weapons/V_grenade/grenade body.wl  = { t_hl2=! }
 					Models/Weapons/V_grenade/grenadetop.wl  = { t_hl2=! }
 					Models/Weapons/V_grenade/handle.wl  = { t_hl2=! }
-					Models/Weapons/V_grenade/handle_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_grenade/rim.wl  = { t_hl2=! }
-					Models/Weapons/V_grenade/rim_normal.wl  = { t_hl2=! }
-					Models/Weapons/V_grenade/top_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_hand/arm.wl  = { t_hl2=! }
 					Models/Weapons/V_hand/bicep.wl  = { t_hl2=! }
 					Models/Weapons/V_hand/finger.wl  = { t_hl2=! }
@@ -3108,7 +2873,6 @@ QQRKSRC1
 					Models/Weapons/V_hand/joint.wl  = { t_hl2=! }
 					Models/Weapons/V_hand/thumb.wl  = { t_hl2=! }
 					Models/Weapons/V_hand/v_hand_sheet.wl  = { t_hl2=! }
-					Models/Weapons/V_hand/v_hand_sheet_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_IRifle/V_IRifle.wl  = { t_hl2=! }
 					Models/Weapons/V_IRifle/V_IRifle_core.wl  = { t_hl2=! }
 					Models/Weapons/V_IRifle/V_IRifle_mask.wl  = { t_hl2=! }
@@ -3116,14 +2880,10 @@ QQRKSRC1
 					Models/Weapons/V_physcannon/v_physcannon_sheet.wl  = { t_hl2=! }
 					Models/Weapons/V_physcannon/v_superphyscannon_sheet.wl  = { t_hl2=! }
 					Models/Weapons/V_pistol/v_pistol_sheet.wl  = { t_hl2=! }
-					Models/Weapons/V_pistol/v_pistol_sheet_normal.wl  = { t_hl2=! }
-					Models/Weapons/V_Rocket_launcher/flat_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_Rocket_launcher/rocket launcher sheet.wl  = { t_hl2=! }
 					Models/Weapons/V_shotgun/vshotgun_albedo.wl  = { t_hl2=! }
-					Models/Weapons/V_shotgun/Vshotgun_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_Slam/new light1.wl  = { t_hl2=! }
 					Models/Weapons/V_smg1/noise.wl  = { t_hl2=! }
-					Models/Weapons/V_smg1/smg1_normal.wl  = { t_hl2=! }
 					Models/Weapons/V_smg1/texture5.wl  = { t_hl2=! }
 					Models/Weapons/V_smg1/v_smg1_sheet.wl  = { t_hl2=! }
 					Models/Weapons/V_smg2/TEXTURE4.wl  = { t_hl2=! }
@@ -3139,24 +2899,19 @@ QQRKSRC1
 					Models/Weapons/w_annabelle/gun.wl  = { t_hl2=! }
 					Models/Weapons/w_bugbait/wbugbait_sheet.wl  = { t_hl2=! }
 					Models/Weapons/W_IRifle/W_IRifle.wl  = { t_hl2=! }
-					Models/Weapons/W_IRifle/W_IRifle_normal.wl  = { t_hl2=! }
 					Models/Weapons/W_package/Package_sheet.wl  = { t_hl2=! }
 					Models/Weapons/W_physics/w_physics_sheet.wl  = { t_hl2=! }
 					Models/Weapons/W_physics/w_physics_sheet2.wl  = { t_hl2=! }
 					Models/Weapons/W_pistol/pistol.wl  = { t_hl2=! }
 					Models/Weapons/w_rocket_launcher/w_rpg_sheet.wl  = { t_hl2=! }
 					Models/Weapons/W_shotgun/w_shotgun.wl  = { t_hl2=! }
-					Models/Weapons/W_shotgun/w_shotgun_normal.wl  = { t_hl2=! }
 					Models/Weapons/W_smg1/smg_crosshair.wl  = { t_hl2=! }
 					Models/Weapons/W_smg1/w_smg2.wl  = { t_hl2=! }
 					Models/Weapons/W_smg1/w_smg2specularmask.wl  = { t_hl2=! }
 					Models/Weapons/W_stunbaton/stunbaton.wl  = { t_hl2=! }
 					Models/Zombie_Classic/Zombie_Classic_sheet.wl  = { t_hl2=! }
-					Models/Zombie_Classic/Zombie_Classic_sheet_normal.wl  = { t_hl2=! }
 					Models/Zombie_Fast/fast_zombie_sheet.wl  = { t_hl2=! }
-					Models/Zombie_Fast/fast_zombie_sheet_normal.wl  = { t_hl2=! }
 					Models/Zombie_Poison/PoisonZombie_sheet.wl  = { t_hl2=! }
-					Models/Zombie_Poison/PoisonZombie_sheet_normal.wl  = { t_hl2=! }
 				  }
 				  
 				  Nature.txlist =
@@ -3193,11 +2948,8 @@ QQRKSRC1
 					Nature/blendtoxictoxic001a_tooltexture.wl  = { t_hl2=! }
 					Nature/blendtoxictoxic002a_tooltexture.wl  = { t_hl2=! }
 					Nature/cavewall005a.wl  = { t_hl2=! }
-					Nature/cavewall005a_normal.wl  = { t_hl2=! }
 					Nature/cliffface001a.wl  = { t_hl2=! }
-					Nature/cliffface001a_normal.wl  = { t_hl2=! }
 					Nature/cliffface002a.wl  = { t_hl2=! }
-					Nature/cliffface002a_normal.wl  = { t_hl2=! }
 					Nature/cloud001c.wl  = { t_hl2=! }
 					Nature/dirtfloor001a.wl  = { t_hl2=! }
 					Nature/dirtfloor002a.wl  = { t_hl2=! }
@@ -3210,13 +2962,9 @@ QQRKSRC1
 					Nature/dirtfloor008a.wl  = { t_hl2=! }
 					Nature/dirtfloor009c.wl  = { t_hl2=! }
 					Nature/dirtfloor011a.wl  = { t_hl2=! }
-					Nature/dirtfloor011a_normal.wl  = { t_hl2=! }
 					Nature/dirtfloor012a.wl  = { t_hl2=! }
-					Nature/dirtfloor012a_normal.wl  = { t_hl2=! }
 					Nature/dirtfloor013a.wl  = { t_hl2=! }
-					Nature/dirtfloor013a_normal.wl  = { t_hl2=! }
 					Nature/dirtwall001a.wl  = { t_hl2=! }
-					Nature/dirtwall001a_normal.wl  = { t_hl2=! }
 					Nature/grassfloor001a.wl  = { t_hl2=! }
 					Nature/grassfloor002a.wl  = { t_hl2=! }
 					Nature/grassfloor003a.wl  = { t_hl2=! }
@@ -3225,49 +2973,30 @@ QQRKSRC1
 					Nature/gravelfloor002b.wl  = { t_hl2=! }
 					Nature/gravelfloor003a.wl  = { t_hl2=! }
 					Nature/gravelfloor004a.wl  = { t_hl2=! }
-					Nature/gravelfloor004a_normal.wl  = { t_hl2=! }
 					Nature/gravelfloor005a.wl  = { t_hl2=! }
-					Nature/gravelfloor005a_normal.wl  = { t_hl2=! }
 					Nature/mudfloor001a.wl  = { t_hl2=! }
-					Nature/mudfloor001a_normal.wl  = { t_hl2=! }
 					Nature/mudfloor002a.wl  = { t_hl2=! }
-					Nature/mudfloor002a_normal.wl  = { t_hl2=! }
 					Nature/mudfloor004a.wl  = { t_hl2=! }
-					Nature/mudfloor004a_normal.wl  = { t_hl2=! }
 					Nature/mudfloor004b.wl  = { t_hl2=! }
-					Nature/mudfloor004b_normal.wl  = { t_hl2=! }
 					Nature/mudfloor005a.wl  = { t_hl2=! }
-					Nature/mudfloor005a_normal.wl  = { t_hl2=! }
 					Nature/rockfloor002a.wl  = { t_hl2=! }
 					Nature/rockfloor003a.wl  = { t_hl2=! }
-					Nature/rockfloor003a_normal.wl  = { t_hl2=! }
 					Nature/rockfloor005a.wl  = { t_hl2=! }
-					Nature/rockfloor005a_normal.wl  = { t_hl2=! }
 					Nature/rockfloor006a.wl  = { t_hl2=! }
-					Nature/rockfloor006a_normal.wl  = { t_hl2=! }
 					Nature/rockwall001a.wl  = { t_hl2=! }
-					Nature/rockwall001a_normal.wl  = { t_hl2=! }
 					Nature/rockwall003a.wl  = { t_hl2=! }
-					Nature/rockwall003a_normal.wl  = { t_hl2=! }
 					Nature/rockwall006a.wl  = { t_hl2=! }
-					Nature/rockwall006a_normal.wl  = { t_hl2=! }
 					Nature/rockwall010b.wl  = { t_hl2=! }
 					Nature/rockwall010c.wl  = { t_hl2=! }
 					Nature/rockwall010e.wl  = { t_hl2=! }
 					Nature/rockwall011d.wl  = { t_hl2=! }
-					Nature/rockwall011d_normal.wl  = { t_hl2=! }
 					Nature/rockwall011g.wl  = { t_hl2=! }
 					Nature/rockwall015a.wl  = { t_hl2=! }
-					Nature/rockwall015a_normal.wl  = { t_hl2=! }
 					Nature/sandfloor005a.wl  = { t_hl2=! }
 					Nature/sandfloor009a.wl  = { t_hl2=! }
-					Nature/sandfloor009a_normal.wl  = { t_hl2=! }
 					Nature/sandfloor009b.wl  = { t_hl2=! }
 					Nature/sandfloor010a.wl  = { t_hl2=! }
-					Nature/sandfloor010a_normal.wl  = { t_hl2=! }
 					Nature/seaweed002a.wl  = { t_hl2=! }
-					Nature/seaweed002a_normal.wl  = { t_hl2=! }
-					Nature/slime_normal.wl  = { t_hl2=! }
 					Nature/snowfloor001a.wl  = { t_hl2=! }
 					Nature/snowfloor002a.wl  = { t_hl2=! }
 					Nature/snowfloor003a.wl  = { t_hl2=! }
@@ -3332,25 +3061,19 @@ QQRKSRC1
 				  Plaster.txlist =
 				  {
 					Plaster/plasterceiling002b.wl  = { t_hl2=! }
-					Plaster/plasterceiling002b_normal.wl  = { t_hl2=! }
 					Plaster/plasterceiling003a.wl  = { t_hl2=! }
 					Plaster/plasterceiling005a.wl  = { t_hl2=! }
-					Plaster/plasterceiling005a_normal.wl  = { t_hl2=! }
 					Plaster/plasterceiling005b.wl  = { t_hl2=! }
 					Plaster/plasterceiling005d.wl  = { t_hl2=! }
-					Plaster/plasterceiling005d_normal.wl  = { t_hl2=! }
 					Plaster/plasterceiling006a.wl  = { t_hl2=! }
 					Plaster/plasterceiling007a.wl  = { t_hl2=! }
 					Plaster/plasterceiling008a.wl  = { t_hl2=! }
-					Plaster/plasterceiling008a_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall003a.wl  = { t_hl2=! }
 					Plaster/plasterwall003b.wl  = { t_hl2=! }
 					Plaster/plasterwall003d.wl  = { t_hl2=! }
 					Plaster/plasterwall005a.wl  = { t_hl2=! }
 					Plaster/plasterwall005c.wl  = { t_hl2=! }
-					Plaster/plasterwall005c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall005e.wl  = { t_hl2=! }
-					Plaster/plasterwall005e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall007a.wl  = { t_hl2=! }
 					Plaster/plasterwall007d.wl  = { t_hl2=! }
 					Plaster/plasterwall008a.wl  = { t_hl2=! }
@@ -3366,33 +3089,21 @@ QQRKSRC1
 					Plaster/plasterwall016a.wl  = { t_hl2=! }
 					Plaster/plasterwall017a.wl  = { t_hl2=! }
 					Plaster/plasterwall017c.wl  = { t_hl2=! }
-					Plaster/plasterwall017c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall017d.wl  = { t_hl2=! }
-					Plaster/plasterwall017d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall017e.wl  = { t_hl2=! }
-					Plaster/plasterwall017e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall018a.wl  = { t_hl2=! }
-					Plaster/plasterwall018a_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall018b.wl  = { t_hl2=! }
-					Plaster/plasterwall018b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall018c.wl  = { t_hl2=! }
-					Plaster/plasterwall018c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall018d.wl  = { t_hl2=! }
-					Plaster/plasterwall018d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall018e.wl  = { t_hl2=! }
-					Plaster/plasterwall018e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall020b.wl  = { t_hl2=! }
 					Plaster/plasterwall021a.wl  = { t_hl2=! }
 					Plaster/plasterwall022a.wl  = { t_hl2=! }
 					Plaster/plasterwall022c.wl  = { t_hl2=! }
-					Plaster/plasterwall022c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall022d.wl  = { t_hl2=! }
-					Plaster/plasterwall022d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall022e.wl  = { t_hl2=! }
-					Plaster/plasterwall022e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall023a.wl  = { t_hl2=! }
 					Plaster/plasterwall024b.wl  = { t_hl2=! }
-					Plaster/plasterwall024b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall026a.wl  = { t_hl2=! }
 					Plaster/plasterwall029a.wl  = { t_hl2=! }
 					Plaster/plasterwall029b.wl  = { t_hl2=! }
@@ -3404,37 +3115,23 @@ QQRKSRC1
 					Plaster/plasterwall030a.wl  = { t_hl2=! }
 					Plaster/plasterwall030b.wl  = { t_hl2=! }
 					Plaster/plasterwall030c.wl  = { t_hl2=! }
-					Plaster/plasterwall030c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall030d.wl  = { t_hl2=! }
-					Plaster/plasterwall030d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall030e.wl  = { t_hl2=! }
-					Plaster/plasterwall030e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall031b.wl  = { t_hl2=! }
 					Plaster/plasterwall032a.wl  = { t_hl2=! }
 					Plaster/plasterwall032b.wl  = { t_hl2=! }
 					Plaster/plasterwall032c.wl  = { t_hl2=! }
 					Plaster/plasterwall034a.wl  = { t_hl2=! }
-					Plaster/plasterwall034a_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall034b.wl  = { t_hl2=! }
-					Plaster/plasterwall034b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall034c.wl  = { t_hl2=! }
-					Plaster/plasterwall034c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall034d.wl  = { t_hl2=! }
-					Plaster/plasterwall034d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall034e.wl  = { t_hl2=! }
-					Plaster/plasterwall034e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall034f.wl  = { t_hl2=! }
-					Plaster/plasterwall034f_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall035a.wl  = { t_hl2=! }
-					Plaster/plasterwall035a_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall035b.wl  = { t_hl2=! }
-					Plaster/plasterwall035b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall035c.wl  = { t_hl2=! }
-					Plaster/plasterwall035c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall035d.wl  = { t_hl2=! }
-					Plaster/plasterwall035d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall035e.wl  = { t_hl2=! }
-					Plaster/plasterwall035e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall036a.wl  = { t_hl2=! }
 					Plaster/plasterwall036b.wl  = { t_hl2=! }
 					Plaster/plasterwall036d.wl  = { t_hl2=! }
@@ -3448,28 +3145,17 @@ QQRKSRC1
 					Plaster/plasterwall041a.wl  = { t_hl2=! }
 					Plaster/plasterwall042a.wl  = { t_hl2=! }
 					Plaster/plasterwall042c.wl  = { t_hl2=! }
-					Plaster/plasterwall042c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall042d.wl  = { t_hl2=! }
-					Plaster/plasterwall042d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall042e.wl  = { t_hl2=! }
-					Plaster/plasterwall042e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall043b.wl  = { t_hl2=! }
-					Plaster/plasterwall043b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall043c.wl  = { t_hl2=! }
-					Plaster/plasterwall043c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall043d.wl  = { t_hl2=! }
-					Plaster/plasterwall043d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall043e.wl  = { t_hl2=! }
-					Plaster/plasterwall043e_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall044b.wl  = { t_hl2=! }
-					Plaster/plasterwall044b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall044c.wl  = { t_hl2=! }
-					Plaster/plasterwall044c_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall044d.wl  = { t_hl2=! }
-					Plaster/plasterwall044d_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall045a.wl  = { t_hl2=! }
 					Plaster/plasterwall046b.wl  = { t_hl2=! }
-					Plaster/plasterwall046b_normal.wl  = { t_hl2=! }
 					Plaster/plasterwall046c.wl  = { t_hl2=! }
 					Plaster/plasterwall047a.wl  = { t_hl2=! }
 					Plaster/plasterwall047b.wl  = { t_hl2=! }
@@ -3488,7 +3174,6 @@ QQRKSRC1
 					Plaster/plasterwall050c.wl  = { t_hl2=! }
 					Plaster/plasterwall050d.wl  = { t_hl2=! }
 					Plaster/plasterwallpaper001a.wl  = { t_hl2=! }
-					Plaster/plasterwallpaper001a_normal.wl  = { t_hl2=! }
 					Plaster/plasterwallpaper004a.wl  = { t_hl2=! }
 					Plaster/plasterwallpaper005a.wl  = { t_hl2=! }
 					Plaster/plasterwallpaper006a.wl  = { t_hl2=! }
@@ -3593,10 +3278,8 @@ QQRKSRC1
 					Props/paperposter005a.wl  = { t_hl2=! }
 					Props/paperposter008a.wl  = { t_hl2=! }
 					Props/plasticceiling001a.wl  = { t_hl2=! }
-					Props/plasticceiling001a_normal.wl  = { t_hl2=! }
 					Props/plasticceiling002a.wl  = { t_hl2=! }
 					Props/plasticceiling003a.wl  = { t_hl2=! }
-					Props/plasticceiling003a_normal.wl  = { t_hl2=! }
 					Props/plasticexitsign001b.wl  = { t_hl2=! }
 					Props/plasticexitsign002a.wl  = { t_hl2=! }
 					Props/plasticpopmachine001a.wl  = { t_hl2=! }
@@ -3666,7 +3349,6 @@ QQRKSRC1
 					shadertest/black.wl  = { t_hl2=! }
 					shadertest/BumpmappedEnvmap.wl  = { t_hl2=! }
 					shadertest/BumpyBrick.wl  = { t_hl2=! }
-					shadertest/bumpy_normal.wl  = { t_hl2=! }
 					shadertest/Camo.wl  = { t_hl2=! }
 					shadertest/Camo_env.wl  = { t_hl2=! }
 					shadertest/camo_envmask.wl  = { t_hl2=! }
@@ -3682,7 +3364,6 @@ QQRKSRC1
 					shadertest/gooinglass.wl  = { t_hl2=! }
 					shadertest/gooinglass_env.wl  = { t_hl2=! }
 					shadertest/gooinglass_envglass.wl  = { t_hl2=! }
-					shadertest/gooinglass_normal.wl  = { t_hl2=! }
 					shadertest/jet_mask.wl  = { t_hl2=! }
 					shadertest/jet_scroll.wl  = { t_hl2=! }
 					shadertest/Lightmap.wl  = { t_hl2=! }
@@ -3699,10 +3380,8 @@ QQRKSRC1
 					shadertest/LightmappedTexture.wl  = { t_hl2=! }
 					shadertest/LightmappedTranslucentTexture.wl  = { t_hl2=! }
 					shadertest/lump.wl  = { t_hl2=! }
-					shadertest/noise_normal.wl  = { t_hl2=! }
 					shadertest/point_camera_dudv.wl  = { t_hl2=! }
 					shadertest/point_camera_height.wl  = { t_hl2=! }
-					shadertest/point_camera_normal.wl  = { t_hl2=! }
 					shadertest/shadertestdetail.wl  = { t_hl2=! }
 					shadertest/shadertest_env.wl  = { t_hl2=! }
 					shadertest/shadertest_envmask.wl  = { t_hl2=! }
@@ -3730,7 +3409,6 @@ QQRKSRC1
 					shadertest/WireFrameVertexColor.wl  = { t_hl2=! }
 					shadertest/WorldAdditiveTransEnvMapWithMaskedTexture.wl  = { t_hl2=! }
 					shadertest/WorldDiffuseBumpmap.wl  = { t_hl2=! }
-					shadertest/WorldDiffuseBumpmap_normal.wl  = { t_hl2=! }
 					shadertest/WorldTwoTextureBlend.wl  = { t_hl2=! }
 					shadertest/WorldTwoTextureBlend_detail.wl  = { t_hl2=! }
 				  }
@@ -4064,47 +3742,31 @@ QQRKSRC1
 					Stone/stonearch003b.wl  = { t_hl2=! }
 					Stone/stonearch003c.wl  = { t_hl2=! }
 					Stone/stonecolumn001a.wl  = { t_hl2=! }
-					Stone/stonecolumn001a_normal.wl  = { t_hl2=! }
 					Stone/stonefloor006a.wl  = { t_hl2=! }
-					Stone/stonefloor006a_normal.wl  = { t_hl2=! }
 					Stone/stonefloor006b.wl  = { t_hl2=! }
-					Stone/stonefloor006b_normal.wl  = { t_hl2=! }
 					Stone/stonefloor006c.wl  = { t_hl2=! }
-					Stone/stonefloor006c_normal.wl  = { t_hl2=! }
 					Stone/stonefloor006d.wl  = { t_hl2=! }
 					Stone/stonefloor006e.wl  = { t_hl2=! }
 					Stone/stonefloor006f.wl  = { t_hl2=! }
 					Stone/stonefloor006h.wl  = { t_hl2=! }
-					Stone/stonefloor006h_normal.wl  = { t_hl2=! }
 					Stone/stonefloor011a.wl  = { t_hl2=! }
-					Stone/stonefloor011a_normal.wl  = { t_hl2=! }
 					Stone/stonestair001a.wl  = { t_hl2=! }
-					Stone/stonestair001a_normal.wl  = { t_hl2=! }
 					Stone/stonewall002a.wl  = { t_hl2=! }
-					Stone/stonewall002a_normal.wl  = { t_hl2=! }
 					Stone/stonewall004a.wl  = { t_hl2=! }
-					Stone/stonewall004a_normal.wl  = { t_hl2=! }
 					Stone/stonewall005a.wl  = { t_hl2=! }
 					Stone/stonewall006a.wl  = { t_hl2=! }
-					Stone/stonewall006a_normal.wl  = { t_hl2=! }
 					Stone/stonewall006b.wl  = { t_hl2=! }
 					Stone/stonewall006c.wl  = { t_hl2=! }
 					Stone/stonewall013a.wl  = { t_hl2=! }
 					Stone/stonewall016a.wl  = { t_hl2=! }
-					Stone/stonewall016a_normal.wl  = { t_hl2=! }
 					Stone/stonewall016b.wl  = { t_hl2=! }
-					Stone/stonewall016b_normal.wl  = { t_hl2=! }
 					Stone/stonewall017a.wl  = { t_hl2=! }
 					Stone/stonewall017b.wl  = { t_hl2=! }
 					Stone/stonewall017c.wl  = { t_hl2=! }
 					Stone/stonewall020c.wl  = { t_hl2=! }
-					Stone/stonewall020c_normal.wl  = { t_hl2=! }
 					Stone/stonewall021h.wl  = { t_hl2=! }
-					Stone/stonewall021h_normal.wl  = { t_hl2=! }
 					Stone/stonewall022a.wl  = { t_hl2=! }
-					Stone/stonewall022a_normal.wl  = { t_hl2=! }
 					Stone/stonewall022b.wl  = { t_hl2=! }
-					Stone/stonewall022b_normal.wl  = { t_hl2=! }
 					Stone/stonewall024a.wl  = { t_hl2=! }
 					Stone/stonewall025a.wl  = { t_hl2=! }
 					Stone/stonewall025c.wl  = { t_hl2=! }
@@ -4118,11 +3780,8 @@ QQRKSRC1
 					Stone/stonewall036b.wl  = { t_hl2=! }
 					Stone/stonewall040f.wl  = { t_hl2=! }
 					Stone/stonewall044a.wl  = { t_hl2=! }
-					Stone/stonewall044a_normal.wl  = { t_hl2=! }
 					Stone/stonewall044b.wl  = { t_hl2=! }
-					Stone/stonewall044b_normal.wl  = { t_hl2=! }
 					Stone/stonewall044c.wl  = { t_hl2=! }
-					Stone/stonewall044c_normal.wl  = { t_hl2=! }
 					Stone/stonewall050a.wl  = { t_hl2=! }
 					Stone/stonewall050b.wl  = { t_hl2=! }
 					Stone/stonewall050c.wl  = { t_hl2=! }
@@ -4130,17 +3789,11 @@ QQRKSRC1
 					Stone/stonewall050e.wl  = { t_hl2=! }
 					Stone/stonewall050f.wl  = { t_hl2=! }
 					Stone/stonewall050g.wl  = { t_hl2=! }
-					Stone/stonewall050g_normal.wl  = { t_hl2=! }
 					Stone/stonewall050h.wl  = { t_hl2=! }
-					Stone/stonewall050h_normal.wl  = { t_hl2=! }
 					Stone/stonewall050i.wl  = { t_hl2=! }
-					Stone/stonewall050i_normal.wl  = { t_hl2=! }
 					Stone/stonewall050j.wl  = { t_hl2=! }
-					Stone/stonewall050j_normal.wl  = { t_hl2=! }
 					Stone/stonewall050k.wl  = { t_hl2=! }
-					Stone/stonewall050k_normal.wl  = { t_hl2=! }
 					Stone/stonewall051a.wl  = { t_hl2=! }
-					Stone/stonewall051a_normal.wl  = { t_hl2=! }
 					Stone/stonewall051b.wl  = { t_hl2=! }
 					Stone/stonewall051c.wl  = { t_hl2=! }
 				  }
@@ -4148,11 +3801,8 @@ QQRKSRC1
 				  Storefront.txlist =
 				  {
 					Storefront_Template/Storefront_Template001a.wl  = { t_hl2=! }
-					Storefront_Template/Storefront_Template001a_normal.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001b.wl  = { t_hl2=! }
-					Storefront_Template/Storefront_Template001b_normal.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001c.wl  = { t_hl2=! }
-					Storefront_Template/Storefront_Template001c_normal.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001d.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001d_mask.wl  = { t_hl2=! }
 					Storefront_Template/Storefront_Template001g.wl  = { t_hl2=! }
@@ -4169,61 +3819,38 @@ QQRKSRC1
 					Tile/tilebreak001c.wl  = { t_hl2=! }
 					Tile/tilefloor001a.wl  = { t_hl2=! }
 					Tile/tilefloor001b.wl  = { t_hl2=! }
-					Tile/tilefloor001b_normal.wl  = { t_hl2=! }
 					Tile/tilefloor001c.wl  = { t_hl2=! }
 					Tile/tilefloor003a.wl  = { t_hl2=! }
 					Tile/tilefloor005a.wl  = { t_hl2=! }
 					Tile/tilefloor007a.wl  = { t_hl2=! }
-					Tile/tilefloor007a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor008a.wl  = { t_hl2=! }
-					Tile/tilefloor008a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor009a.wl  = { t_hl2=! }
-					Tile/tilefloor009a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor009b.wl  = { t_hl2=! }
-					Tile/tilefloor009b_normal.wl  = { t_hl2=! }
 					Tile/tilefloor010a.wl  = { t_hl2=! }
-					Tile/tilefloor010a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor011a.wl  = { t_hl2=! }
-					Tile/tilefloor011a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor012a.wl  = { t_hl2=! }
 					Tile/tilefloor012b.wl  = { t_hl2=! }
-					Tile/tilefloor012b_normal.wl  = { t_hl2=! }
 					Tile/tilefloor013a.wl  = { t_hl2=! }
-					Tile/tilefloor013a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor016a.wl  = { t_hl2=! }
-					Tile/tilefloor016a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor018a.wl  = { t_hl2=! }
-					Tile/tilefloor018a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor019a.wl  = { t_hl2=! }
-					Tile/tilefloor019a_normal.wl  = { t_hl2=! }
 					Tile/tilefloor020a.wl  = { t_hl2=! }
 					Tile/tilefloor021a.wl  = { t_hl2=! }
-					Tile/tilefloor021a_normal.wl  = { t_hl2=! }
 					Tile/tileroof002a.wl  = { t_hl2=! }
 					Tile/tileroof003a.wl  = { t_hl2=! }
-					Tile/tileroof003a_normal.wl  = { t_hl2=! }
 					Tile/tileroof003b.wl  = { t_hl2=! }
-					Tile/tileroof003b_normal.wl  = { t_hl2=! }
 					Tile/tileroof004a.wl  = { t_hl2=! }
 					Tile/tileroof004b.wl  = { t_hl2=! }
 					Tile/tilestair001a.wl  = { t_hl2=! }
 					Tile/tilestair002a.wl  = { t_hl2=! }
 					Tile/tilewall005a.wl  = { t_hl2=! }
-					Tile/tilewall005a_normal.wl  = { t_hl2=! }
 					Tile/tilewall006a.wl  = { t_hl2=! }
 					Tile/tilewall006b.wl  = { t_hl2=! }
 					Tile/tilewall006c.wl  = { t_hl2=! }
 					Tile/tilewall006d.wl  = { t_hl2=! }
 					Tile/tilewall007e.wl  = { t_hl2=! }
-					Tile/tilewall007e_normal.wl  = { t_hl2=! }
-					Tile/tilewall008a_normal.wl  = { t_hl2=! }
-					Tile/tilewall008b_normal.wl  = { t_hl2=! }
-					Tile/tilewall008c_normal.wl  = { t_hl2=! }
-					Tile/tilewall008d_normal.wl  = { t_hl2=! }
 					Tile/tilewall009b.wl  = { t_hl2=! }
-					Tile/tilewall009b_normal.wl  = { t_hl2=! }
 					Tile/tilewall009d.wl  = { t_hl2=! }
-					Tile/tilewall009d_normal.wl  = { t_hl2=! }
 				  }
 				  
 				  Tools.txlist =
@@ -4253,23 +3880,14 @@ QQRKSRC1
 				  Vehicle.txlist =
 				  {
 					Vehicle/metaltrain001a.wl  = { t_hl2=! }
-					Vehicle/metaltrain001a_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain001b.wl  = { t_hl2=! }
-					Vehicle/metaltrain001b_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain001c.wl  = { t_hl2=! }
-					Vehicle/metaltrain001c_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain001d.wl  = { t_hl2=! }
-					Vehicle/metaltrain001d_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain001e.wl  = { t_hl2=! }
-					Vehicle/metaltrain001e_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain002a.wl  = { t_hl2=! }
-					Vehicle/metaltrain002a_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain002b.wl  = { t_hl2=! }
-					Vehicle/metaltrain002b_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain002d.wl  = { t_hl2=! }
-					Vehicle/metaltrain002d_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrain002e.wl  = { t_hl2=! }
-					Vehicle/metaltrain002e_normal.wl  = { t_hl2=! }
 					Vehicle/metaltrainglass001a.wl  = { t_hl2=! }
 					Vehicle/metaltrainglass001a_mask.wl  = { t_hl2=! }
 					Vehicle/metaltrainglass001b.wl  = { t_hl2=! }
@@ -4280,9 +3898,7 @@ QQRKSRC1
 					Vehicle/metaltrainglass002b_mask.wl  = { t_hl2=! }
 					Vehicle/metaltrainwheel001a.wl  = { t_hl2=! }
 					Vehicle/rubbertrainfloor001a.wl  = { t_hl2=! }
-					Vehicle/rubbertrainfloor001a_normal.wl  = { t_hl2=! }
 					Vehicle/rubbertrainfloor002a.wl  = { t_hl2=! }
-					Vehicle/rubbertrainfloor002a_normal.wl  = { t_hl2=! }
 				  }
 				  
 				  Vgui.txlist =
@@ -4368,7 +3984,6 @@ QQRKSRC1
 					Wood.txlist =				
 					{
 					Wood/cabinets01a.wl  = { t_hl2=! }
-					Wood/cabinets01a_normal.wl  = { t_hl2=! }
 					Wood/woodbeam001a.wl  = { t_hl2=! }
 					Wood/woodbeam002a.wl  = { t_hl2=! }
 					Wood/woodburnt001a.wl  = { t_hl2=! }
@@ -4377,7 +3992,6 @@ QQRKSRC1
 					Wood/wooddoor003a.wl  = { t_hl2=! }
 					Wood/wooddoor004a.wl  = { t_hl2=! }
 					Wood/wooddoor007a.wl  = { t_hl2=! }
-					Wood/wooddoor007a_normal.wl  = { t_hl2=! }
 					Wood/wooddoor007b.wl  = { t_hl2=! }
 					Wood/wooddoor007b_mask.wl  = { t_hl2=! }
 					Wood/wooddoor008a.wl  = { t_hl2=! }
@@ -4386,7 +4000,6 @@ QQRKSRC1
 					Wood/wooddoor012a.wl  = { t_hl2=! }
 					Wood/wooddoor013a.wl  = { t_hl2=! }
 					Wood/wooddoor014a.wl  = { t_hl2=! }
-					Wood/wooddoor014a_normal.wl  = { t_hl2=! }
 					Wood/wooddoor014b.wl  = { t_hl2=! }
 					Wood/wooddoor015a.wl  = { t_hl2=! }
 					Wood/wooddoor019a.wl  = { t_hl2=! }
@@ -4399,26 +4012,18 @@ QQRKSRC1
 					Wood/wooddoor044a.wl  = { t_hl2=! }
 					Wood/wooddoor044b.wl  = { t_hl2=! }
 					Wood/wooddoor045a.wl  = { t_hl2=! }
-					Wood/wooddoor045a_normal.wl  = { t_hl2=! }
 					Wood/wooddoor045b.wl  = { t_hl2=! }
-					Wood/wooddoor045b_normal.wl  = { t_hl2=! }
 					Wood/wooddoor046a.wl  = { t_hl2=! }
 					Wood/wooddoor048a.wl  = { t_hl2=! }
-					Wood/wooddoor048a_normal.wl  = { t_hl2=! }
 					Wood/wooddoor048b.wl  = { t_hl2=! }
 					Wood/wooddoor048b_mask.wl  = { t_hl2=! }
 					Wood/woodfloor001a.wl  = { t_hl2=! }
-					Wood/woodfloor001a_normal.wl  = { t_hl2=! }
 					Wood/woodfloor002a.wl  = { t_hl2=! }
 					Wood/woodfloor005a.wl  = { t_hl2=! }
-					Wood/woodfloor005a_normal.wl  = { t_hl2=! }
 					Wood/woodfloor006a.wl  = { t_hl2=! }
 					Wood/woodfloor006b.wl  = { t_hl2=! }
-					Wood/woodfloor006b_normal.wl  = { t_hl2=! }
 					Wood/woodfloor007a.wl  = { t_hl2=! }
-					Wood/woodfloor007a_normal.wl  = { t_hl2=! }
 					Wood/woodfloor008a.wl  = { t_hl2=! }
-					Wood/woodfloor008a_normal.wl  = { t_hl2=! }
 					Wood/woodshelf001a.wl  = { t_hl2=! }
 					Wood/woodshelf002a.wl  = { t_hl2=! }
 					Wood/woodshelf006a.wl  = { t_hl2=! }
@@ -4426,19 +4031,15 @@ QQRKSRC1
 					Wood/woodshingles002a.wl  = { t_hl2=! }
 					Wood/woodshutters001a.wl  = { t_hl2=! }
 					Wood/woodstair002a.wl  = { t_hl2=! }
-					Wood/woodstair002a_normal.wl  = { t_hl2=! }
 					Wood/woodstair002b.wl  = { t_hl2=! }
-					Wood/woodstair002b_normal.wl  = { t_hl2=! }
 					Wood/woodstair002c.wl  = { t_hl2=! }
 					Wood/woodtrack001a.wl  = { t_hl2=! }
 					Wood/woodwall002a.wl  = { t_hl2=! }
 					Wood/woodwall003a.wl  = { t_hl2=! }
 					Wood/woodwall005a.wl  = { t_hl2=! }
 					Wood/woodwall006a.wl  = { t_hl2=! }
-					Wood/woodwall006a_normal.wl  = { t_hl2=! }
 					Wood/woodwall008a.wl  = { t_hl2=! }
 					Wood/woodwall009a.wl  = { t_hl2=! }
-					Wood/woodwall009a_normal.wl  = { t_hl2=! }
 					Wood/woodwall011a.wl  = { t_hl2=! }
 					Wood/woodwall012a.wl  = { t_hl2=! }
 					Wood/woodwall014a.wl  = { t_hl2=! }
@@ -4452,9 +4053,7 @@ QQRKSRC1
 					Wood/woodwall024a.wl  = { t_hl2=! }
 					Wood/woodwall027b.wl  = { t_hl2=! }
 					Wood/woodwall027c.wl  = { t_hl2=! }
-					Wood/woodwall027c_normal.wl  = { t_hl2=! }
 					Wood/woodwall028a.wl  = { t_hl2=! }
-					Wood/woodwall028a_normal.wl  = { t_hl2=! }
 					Wood/woodwall029a.wl  = { t_hl2=! }
 					Wood/woodwall030a.wl  = { t_hl2=! }
 					Wood/woodwall030b.wl  = { t_hl2=! }
