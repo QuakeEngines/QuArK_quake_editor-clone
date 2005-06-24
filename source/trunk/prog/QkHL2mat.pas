@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.3  2005/06/23 23:41:09  alexander
+no image bug fixed
+
 Revision 1.2  2005/06/22 17:26:29  alexander
 parsing handles more cases, but not all - still alpha status
 
@@ -405,13 +408,16 @@ expected one.
 
  procedure ReadHL2Mat;
  var
-   S1,base: String;
+   S1,base,path: String;
    VTFImage:QVTF;
    p:QObject;
 
  begin
-
-   ReadSymbol(sStringQuotedToken);
+   if SymbolType = sStringQuotedToken then
+     ReadSymbol(sStringQuotedToken)
+   else
+     ReadSymbol(sStringToken);
+     
    ReadSymbol(sCurlyBracketLeft);
    // read attributes of entity
    while SymbolType<>sCurlyBracketRight do
@@ -453,10 +459,10 @@ expected one.
      repeat
        base:=p.GetFullName;
        p:=p.FParent;
+       if (p<>nil) and (p.fparent<>nil) and (p.fparent.fparent<>nil)then
+         path:=p.fparent.name+'/'+path;
      until p=nil;
-     VTFImage:=NeedGameFileBase(base, SetupGameSet.Specifics.Values['BaseDir']+
-               '/'+
-               SetupGameSet.Specifics.Values['TexturesPath']+
+     VTFImage:=NeedGameFileBase(base, path+
                s+
                '.vtf') as QVTF;
      VTFImage.Acces;
@@ -482,7 +488,7 @@ begin
         ReadSymbol(sEOF);
 
         while SymbolType<>sEOF do
-          while SymbolType=sStringQuotedToken do
+          while (SymbolType=sStringQuotedToken) or (SymbolType=sStringToken )do
             ReadHL2Mat
       except
          raise Exception.Create('exception on load material in line '+IntToStr(LineNoBeingParsed)+' '+filename);
