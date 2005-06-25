@@ -2,6 +2,8 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: base.qrk
 
+// basic (common) hl2-source entities. last changes june/25/2005 by cbxpm.
+
 {
   Game Directories.qctx =
   {
@@ -12,742 +14,11 @@ QQRKSRC1
     Root = "Common HL2 Entities.qtxfolder"
     Common HL2 Entities.qtxfolder =
     {
-      ;desc = "Created from F:\privat\sourcecode\quark\base.fgd"
-      info_* entities.qtxfolder =
-      {
-        info_npc_spawn_destination:e =
-        {
-          origin = "0 0 0"
-          ;desc = "NPC Spawn Destination. (Consult npc_template_maker help for"
-           " more info)"
-          ReuseDelay = "1"
-        }
-        info_ladder_dismount:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to handle endpoints for multiple ladders that are"
-           " too close to each other."
-        }
-        info_projecteddecal:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that projects a decal onto the world (or props). "
-           "If the decal has no target name, it will immediately apply itself "
-           "when the level is loaded. If it has a name specified, it won't app"
-           "ly until it receives the 'Activate' input."
-          Distance = "64"
-        }
-        info_no_dynamic_shadow:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Use this entity to mark surfaces that shouldn't receive dyn"
-           "amic shadows. Useful to apply to walls and floors where shadows ar"
-           "e drawn improperly, giving away the location of enemies."
-        }
-        info_player_start:e =
-        {
-          origin = "0 0 0"
-          ;desc = "This entity indicates the position and facing direction at "
-           "which the player will spawn. Any number of info_player_start entit"
-           "ies may be placed in a map for when working in cordoned-off portio"
-           "ns of the map. When multiple info_player_start entities are presen"
-           "t in a map, set the 'Master' spawnflag on one of them to indicate "
-           "which one should be used when running the entire map."
-        }
-        info_overlay:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that places an overlay on the world."
-          RenderOrder = "0"
-          StartU = "0.0"
-          EndU = "1.0"
-          StartV = "0.0"
-          EndV = "1.0"
-        }
-        info_intermission:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that defines an intermission spot where dead play"
-           "ers will float until they respawn."
-        }
-        info_landmark:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that acts as a landmark for transitions to anothe"
-           "r level. There should be a corresponding info_landmark entity in t"
-           "he next map. Entities will be transitioned to the next level relat"
-           "ive to the info_landmark entities."
-        }
-        info_null:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that's immediately removed on spawning. Useful as"
-           " a spotlight target."
-        }
-        info_target:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that does nothing. Very useful as a positioning e"
-           "ntity for other entities to refer to (i.e. the endpoint of an env_"
-           "beam)"
-        }
-        info_lighting:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can be used to change the lighting origin of"
-           " a prop_static. Set the prop_static's Lighting Origin to point at "
-           "this entity to make the prop_static light as if it was at the info"
-           "_lighting's origin. Good for prop_static entities that are embedde"
-           "d in world geometry (like rocks/windows/etc)."
-        }
-        info_teleport_destination:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that does nothing itself, but can be used to spec"
-           "ify the destination for a trigger_teleport entity. An info_target "
-           "can be used instead."
-        }
-        info_node:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A navigation node for ground moving NPCs. Navigation nodes "
-           "are baked into the nodegraph so that NPCs can move to them. Ground"
-           " nodes fall to the ground when they spawn."
-        }
-        info_node_hint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A navigation node for ground moving NPCs that includes some"
-           " context information for NPCs that are interested in it. The hint "
-           "might indicate a window that could be looked out of, or an item of"
-           " interest that could be commented on. Many hint nodes are NPC-spec"
-           "ific, so it's helpful to use naming conventions like 'Crow: Fly to"
-           " point' in the hint choices list. The angles of a hint node indica"
-           "te what direction the NPC should face to perform the hint behavior"
-           ".\n\nIt's important to understand the distinction between scripts,"
-           " such as scripted_sequence and scripted_schedule, and info_hint en"
-           "tities. Scripts summon NPCs to specific cue points to play their p"
-           "arts, while hints provide context information to the AI that they "
-           "use to perform their behaviors. Hints require code support in the "
-           "NPC, while scripts are generic and may require only animations to "
-           "play. Use a hint if the behavior is driven by the AI, use a script"
-           " if the behavior is driven by the map."
-        }
-        info_node_air:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A navigation node for flying NPCs. Air navigation nodes are"
-           " baked into the nodegraph so that NPCs can move to them. Air nodes"
-           " do not fall to the ground when they spawn."
-          nodeheight = "0"
-        }
-        info_node_air_hint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A navigation node for flying NPCs that includes some contex"
-           "t information for NPCs that are interested in it. The hint might i"
-           "ndicate a window that could be looked into, or an item of interest"
-           " that could be commented on. Many hint nodes are NPC-specific, so "
-           "it's helpful to use naming conventions like 'Crow: Fly to point' i"
-           "n the hint choices list. The angles of a hint node indicate what d"
-           "irection the NPC should face to perform the hint behavior."
-          nodeheight = "0"
-        }
-        info_hint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A hint that is not used for navigation. They don't go into "
-           "the nodegraph, nor do they fall to the ground. Use these to provid"
-           "e some spatial context for NPCs, such as 'look here if you can't f"
-           "ind the player' or 'throw rocks at this spot'."
-        }
-        info_node_link:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A dynamic connection between two navigation nodes. You spec"
-           "ify the node IDs of the start and end nodes, and then you can use "
-           "entity I/O to turn on and off the connection. This could be used t"
-           "o create or destroy a connection in the nodegraph because of some "
-           "event in your map (a bridge being created/destroyed, etc)."
-          initialstate = "1"
-        }
-        info_node_link_controller:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that controls all connections between nodes that "
-           "intersect the controller's volume. This allows for mass enabling/d"
-           "isabling of all node connections through a volume."
-          mins = "-8 -32 -36"
-          maxs = "8 32 36"
-          initialstate = "1"
-        }
-        info_node_climb:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A climb-node for AI navigation. Only usable by NPCs that ca"
-           "n climb."
-        }
-        info_constraint_anchor:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to attach constraints to a local position on"
-           " an entity. Usually constraints will attach to the center of mass "
-           "of an object. Attach the desired constraint to this entity, and th"
-           "en parent this entity to the entity you want the constraint to app"
-           "ly to."
-          massScale = "1"
-        }
-        info_mass_center:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that overrides the mass center of the target phys"
-           "ics prop, or func_physbox, by moving it to the info_mass_center's "
-           "location."
-        }
-        info_camera_link:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can use point_cameras to render images for m"
-           "aterials used by entities. To author the material, use the special"
-           " identifier _rt_Camera for the $baseTexture (or whatever texture y"
-           "ou want, like envmap, etc.) in the .vmt then connect the 'target' "
-           "field to the entity which uses that material, and the 'PointCamera"
-           "' field to the point_camera you want to have appear on that entity"
-           "'s material"
-        }
-      }
-      npc_* entities.qtxfolder =
-      {
-        npc_template_maker:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that creates NPCs. The NPCs it creates are clones"
-           " of a template NPC. NPCs are spawned around this maker's origin, o"
-           "r at specified destination points."
-          Radius = "256"
-          CriterionVisibility = "2"
-          CriterionDistance = "2"
-        }
-        npc_furniture:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used for non-NPCs that need to synchronise their "
-           "animation with an NPC in a scripted_sequence. Usually a pieceof fu"
-           "rniture or door that an NPC needs to manipulate within a scripted_"
-           "sequence."
-        }
-      }
-      other entities.qtxfolder =
-      {
-        worldspawn:b =
-        {
-          ;desc = "This is the world entity. Each map can only contain one, an"
-           "d it's automatically created for you."
-        }
-        cycler:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to display a model for testing purposes. Sho"
-           "oting it with cycle through the model's animations."
-          skin = "0"
-          sequence = "0"
-        }
-        gibshooter:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that shoots out gibs. Style of body part depends "
-           "on language type."
-        }
-        infodecal:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that places a decal on the world. If the decal ha"
-           "s no target name, it will immediately apply itself when the level "
-           "is loaded. If it has a name specified, it won't apply until it rec"
-           "eives the 'Activate' input."
-          LowPriority = "0"
-        }
-        light:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An invisible omnidirectional lightsource."
-          _distance = "0"
-        }
-      }
-      ambient_* entities.qtxfolder =
-      {
-        ambient_generic:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Universal ambient sound. Use it to play and control a singl"
-           "e sound."
-          health = "10"
-          preset = "0"
-          volstart = "0"
-          fadein = "0"
-          fadeout = "0"
-          pitch = "100"
-          pitchstart = "100"
-          spinup = "0"
-          spindown = "0"
-          lfotype = "0"
-          lforate = "0"
-          lfomodpitch = "0"
-          lfomodvol = "0"
-          cspinup = "0"
-          radius = "1250"
-          spawnflags = "48"
-        }
-      }
-      func_* entities.qtxfolder =
-      {
-        func_lod:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Brush-built model that fades out over a specified distance."
-           " Useful for creating world detail that doesn't need to be drawn fa"
-           "r away, for performance reasons."
-          DisappearDist = "2000"
-          Solid = "0"
-        }
-        func_useableladder:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A Half-Life 2 ladder. Handles player auto mount/unmount, as"
-           " well as +use to get onto the ladder. \n\nSee also 'info_ladder_di"
-           "smount', used to specify ladder auto-dismount points.\n\nNote: Thi"
-           "s entity is non-functional in Counter-Strike: Source. Use func_lad"
-           "der instead."
-          StartDisabled = "0"
-          point0 = "0 0 0"
-          point1 = "0 0 0"
-        }
-        func_ladderendpoint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to specify the endpoints of a ladder. This e"
-           "ntity is functional, but has been replaced by the easier-to-use fu"
-           "nc_useableladder entity. Left in only for backwards-compatibility!"
-           "\n\nTo be valid, a full sized player hull traced between the start"
-           " and end points must not be obstructed at level activation time. T"
-           "he angle determines in which direction the player leaves the ladde"
-           "r if the player presses the +jump button.\n\nNote: This entity is "
-           "non-functional in Counter-Strike: Source. In CS:S, use func_ladder"
-           " instead."
-        }
-        func_areaportalwindow:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An entity that can be used to optimize the visibility in a "
-           "map. If you seal off an area with them, when the viewer moves the "
-           "specified distance away from them, they will go opaque and the par"
-           "ts inside the area will not be drawn. The 'target' brush model sho"
-           "uld enclose the func_areaportal window so no parts of it are culle"
-           "d by the window. If you use the optional foreground brush model, t"
-           "hen it should enclose the 'target' brush model."
-          FadeStartDist = "128"
-          FadeDist = "512"
-          TranslucencyLimit = "0.2"
-        }
-        func_wall:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Legacy support. Use func_brush instead."
-        }
-        func_clip_vphysics:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that's considered solid to vphysics."
-        }
-        func_brush:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An brush built entity with various features."
-          Solidity = "0"
-          solidbsp = "0"
-        }
-        func_movelinear:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that moves linearly along a given distance, "
-           "in a given direction."
-          movedir = "0 0 0"
-          startposition = "0"
-          speed = "100"
-          movedistance = "100"
-          blockdamage = "0"
-        }
-        func_water_analog:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A water brush entity that moves linearly along a given dist"
-           "ance, in a given direction"
-          movedir = "0 0 0"
-          startposition = "0"
-          speed = "100"
-          movedistance = "100"
-          WaveHeight = "3.0"
-        }
-        func_rotating:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A rotating brush entity."
-          maxspeed = "100"
-          fanfriction = "20"
-          volume = "10"
-          spawnflags = "512"
-          dmg = "0"
-          solidbsp = "0"
-        }
-        func_platrot:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that moves vertically, and can rotate while "
-           "doing so."
-          spawnflags = "1"
-          speed = "50"
-          height = "0"
-          rotation = "0"
-        }
-        func_button:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that's designed to be used for a player-usea"
-           "ble button. When used by the player, it moves to a pressed positio"
-           "n."
-          movedir = "0 0 0"
-          speed = "5"
-          health = "0"
-          lip = "0"
-          sounds = "0"
-          wait = "3"
-          spawnflags = "1024"
-          locked_sound = "0"
-          unlocked_sound = "0"
-          locked_sentence = "0"
-          unlocked_sentence = "0"
-        }
-        func_rot_button:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that's designed to be used for a rotating pl"
-           "ayer-useable button. When used by the player, it rotates to a pres"
-           "sed position."
-          speed = "50"
-          health = "0"
-          sounds = "21"
-          wait = "3"
-          distance = "90"
-        }
-        func_door:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity for use as a player-useable door."
-          movedir = "0 0 0"
-        }
-        func_door_rotating:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity for use as a rotating player-useable door."
-          distance = "90"
-          solidbsp = "0"
-        }
-        func_dustmotes:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that spawns sparkling dust motes within its "
-           "volume."
-          SizeMin = "10"
-          SizeMax = "20"
-          Alpha = "255"
-        }
-        func_smokevolume:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that spawns smoke particles within its volum"
-           "e."
-          Color1 = "255 255 255"
-          Color2 = "255 255 255"
-          material = "particle/smoke_grenade1"
-          ParticleDrawWidth = "120"
-          ParticleSpacingDistance = "80"
-          DensityRampSpeed = "1"
-          RotationSpeed = "10"
-          MovementSpeed = "10"
-          Density = "1"
-        }
-        func_dustcloud:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that spawns a translucent dust cloud within "
-           "its volume."
-          Alpha = "30"
-          SizeMin = "100"
-          SizeMax = "200"
-        }
-        func_physbox:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that's physically simulated."
-          spawnflags = "524288"
-          Damagetype = "0"
-          massScale = "0"
-          damagetoenablemotion = "0"
-          forcetoenablemotion = "0"
-          health = "0"
-          preferredcarryangles = "0 0 0"
-          notsolid = "0"
-        }
-        func_areaportal:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A portal brush used to manage visibility in maps. Portals d"
-           "efine areas, which are spaces that are connected in the map. Both "
-           "sides of a portal cannot touch the same area, for example, a dough"
-           "nut shaped map would require at least two portals to divide the ma"
-           "p into two areas. A linear map could be divided into two areas wit"
-           "h a single area portal."
-          StartOpen = "0"
-        }
-        func_occluder:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A occluder brush used to manage dynamic visibility in maps."
-           " Occluders are used to dynamically determine what things are behin"
-           "d them, to prevent trying to draw them at all."
-          StartActive = "1"
-        }
-        func_breakable:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that can be broken from damage, or an input."
-          minhealthdmg = "0"
-          physdamagescale = "1.0"
-        }
-        func_breakable_surf:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A breakable surface, for partially breakable glass / tile /"
-           " etc.  All faces but the desired visible one must be marked as NOD"
-           "RAW and thatface must be 4 sided.  The material applied to the vis"
-           "ible face must be set up to be breakable."
-          health = "5"
-          fragility = "100"
-          surfacetype = "0"
-          upperleft = "0 0 0"
-          upperright = "0 0 0"
-          lowerright = "0 0 0"
-          lowerleft = "0 0 0"
-        }
-        func_conveyor:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Conveyor Belt"
-          movedir = "0 0 0"
-          speed = "100"
-        }
-        func_detail:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An entity that turns its brushes into detail brushes. Detai"
-           "l brushes do NOT contribute to visibility in the PVS. World geomet"
-           "ry is not clipped to detail brushes, so if you have a small detail"
-           " clump attached to a wall, the wall won't be cut up by the detail "
-           "brush.func_detail is great for high-frequency brush geometry that'"
-           "s visual detail only. It is also ideal for reducing map VIS time."
-        }
-        func_illusionary:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Legacy support. Use func_brush instead."
-        }
-        func_precipitation:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that creates rain and snow inside its volume"
-           "."
-          renderamt = "5"
-          rendercolor = "100 100 100"
-          preciptype = "0"
-        }
-        func_wall_toggle:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that can be toggled on/off. When off, the br"
-           "ush will be non-solid and invisible. Does not cast lightmap shadow"
-           "s."
-        }
-        func_guntarget:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "This is a moving target that moves along a path of path_tra"
-           "cks. It can be shot and killed."
-          speed = "100"
-          health = "0"
-        }
-        func_trackautochange:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An entity that works as a rotating/moving platform that wil"
-           "l carry a train to a new track. It must be larger in X-Y planar ar"
-           "ea than the train, since it must contain the train within these di"
-           "mensions in order to operate when the train is near it."
-        }
-        func_trackchange:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An entity that works as a rotating/moving platform that wil"
-           "l carry a train to a new track. It must be larger in X-Y planar ar"
-           "ea than the train, since it must contain the train within these di"
-           "mensions in order to operate when the train is near it."
-        }
-        func_tracktrain:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A moving platform that the player can ride. It follows a pa"
-           "th of path_track entities.\nNOTE: Build your train so that the fro"
-           "nt of the train is facing down the X axis. When it spawns it will "
-           "automatically rotate to face the next path_track on the path."
-        }
-        func_tanktrain:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A moving train that follows a path of path_track entities, "
-           "shoots at the player, and can be killed.\nNOTE: Build your train s"
-           "o that the front of the train is facing down the X axis. When it s"
-           "pawns it will automatically rotate to face the next path_track on "
-           "the path."
-          health = "100"
-        }
-        func_traincontrols:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "When used by the player, this entity overrides the player's"
-           " controls to let them drive a train."
-        }
-      }
+
+// env entities
+
       env_* entities.qtxfolder =
       {
-        env_zoom:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can be used to control the player's FOV. Use"
-           "ful for scenes where the player's view is being controlled, or pla"
-           "yer-usable binoculars/telescopes, etc."
-          Rate = "1.0"
-          FOV = "75"
-        }
-        env_screenoverlay:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can display and control a set of screen over"
-           "lays, to be displayed over the player's view. Useful for view effe"
-           "cts like drunkenness, or teleporter afterimages, etc."
-          OverlayTime1 = "1.0"
-          OverlayTime2 = "1.0"
-          OverlayTime3 = "1.0"
-          OverlayTime4 = "1.0"
-          OverlayTime5 = "1.0"
-          OverlayTime6 = "1.0"
-          OverlayTime7 = "1.0"
-          OverlayTime8 = "1.0"
-          OverlayTime9 = "1.0"
-          OverlayTime10 = "1.0"
-        }
-        env_texturetoggle:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that allows you to change the textures on other b"
-           "rush-built entities."
-        }
-        env_splash:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that creates a splash effect at its origin. If th"
-           "e 'find water surface' spawnflag is set, it will instead trace dow"
-           "n below itself to find the water surface on which to create splash"
-           "es."
-          scale = "8.0"
-          spawnflags = "2"
-        }
-        env_particlelight:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can be used to light the smoke particles emi"
-           "tted by env_smokestack entities. Does not light any other particle"
-           " types."
-          Color = "255 0 0"
-          Intensity = "5000"
-          directional = "0"
-        }
-        env_sun:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to control & draw a sun effect in the sky."
-          use_angles = "0"
-          pitch = "0"
-          rendercolor = "100 80 80"
-          size = "16"
-        }
-        env_lightglow:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that puts an additive glow in the world, mostly u"
-           "sed over light sources."
-          rendercolor = "255 255 255"
-          VerticalGlowSize = "30"
-          HorizontalGlowSize = "30"
-          MinDist = "500"
-          MaxDist = "2000"
-          OuterMaxDist = "0"
-          GlowProxySize = "2.0"
-        }
-        env_smokestack:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that spits out a constant stream of smoke. See pa"
-           "rticlezoo.vmf for sample usage. You can place up to two env_partic"
-           "lelight entities near the smoke stack to add ambient light to its "
-           "particles."
-          InitialState = "0"
-          BaseSpread = "20"
-          SpreadSpeed = "15"
-          Speed = "30"
-          StartSize = "20"
-          EndSize = "30"
-          Rate = "20"
-          JetLength = "180"
-          WindAngle = "0"
-          WindSpeed = "0"
-          SmokeMaterial = "particle/SmokeStack.vmt"
-          twist = "0"
-          rendercolor = "255 255 255"
-          renderamt = "255"
-        }
-        env_fade:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that controls screen fades."
-          duration = "2"
-          holdtime = "0"
-          renderamt = "255"
-          rendercolor = "0 0 0"
-        }
-        env_player_surface_trigger:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that monitors the material of the surface the pla"
-           "yer is standing on, and fires outputs whenever it changes to/from "
-           "a specific material."
-          gamematerial = "0"
-        }
-        env_tonemap_controller:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that controls the HDR tonemapping for the player."
-           " Think of it as a method of controlling the exposure of the player"
-           "'s eyes."
-        }
         env_beam:e =
         {
           origin = "0 0 0"
@@ -774,23 +45,7 @@ QQRKSRC1
           ;desc = "HL1 Legacy: Beverage Dispenser."
           health = "10"
           beveragetype = "0"
-        }
-        env_embers:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An entity used to create a volume in which to spawn fire em"
-           "bers."
-          particletype = "0"
-          density = "50"
-          lifetime = "4"
-          speed = "32"
-          rendercolor = "255 255 255"
-        }
-        env_funnel:e =
-        {
-          origin = "0 0 0"
-          ;desc = "HL1 Legacy: Large Portal Funnel"
-        }
+        }        
         env_blood:e =
         {
           origin = "0 0 0"
@@ -808,6 +63,60 @@ QQRKSRC1
           frequency = "2"
           current = "0"
         }
+        env_credits:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity to control the rolling credits."
+        }
+        env_cubemap:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that creates a sample point for the Cubic Environ"
+           "ment Map."
+          cubemapsize = "0"
+        }
+        env_dustpuff:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can emit dust puffs."
+          scale = "8"
+          speed = "16"
+          color = "128 128 128"
+        }
+        env_effectscript:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that allows you to script special visual effects "
+           "via a script file."
+          model = "models/Effects/teleporttrail.mdl"
+          scriptfile = "scripts/effects/testeffect.txt"
+        }
+        env_embers:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "An entity used to create a volume in which to spawn fire em"
+           "bers."
+          particletype = "0"
+          density = "50"
+          lifetime = "4"
+          speed = "32"
+          rendercolor = "255 255 255"
+        }
+        env_entity_igniter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that catches a target entity on fire. If the enti"
+           "ty is an animating model, it will have sprite flames attached to i"
+           "ts skeleton. Otherwise the entity will emit particle flame puffs."
+          lifetime = "10"
+        }
+        env_entity_maker:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Spawns the specified entity template at its origin. If set "
+           "to auto-spawn, it will spawn the template whenever there's room an"
+           "d the player is looking elsewhere."
+        }
         env_explosion:e =
         {
           origin = "0 0 0"
@@ -816,6 +125,238 @@ QQRKSRC1
           iRadiusOverride = "0"
           fireballsprite = "sprites/zerogxplode.spr"
           rendermode = "5"
+        }
+        env_fade:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that controls screen fades."
+          duration = "2"
+          holdtime = "0"
+          renderamt = "255"
+          rendercolor = "0 0 0"
+        }
+        env_fire:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that handles a single flame at its origin. The fl"
+           "ame causes heat 'damage' to other env_fire entities around it, and"
+           " will eventually ignite non-flaming env_fire entities nearby, caus"
+           "ing the fire to spread."
+          health = "30"
+          firesize = "64"
+          fireattack = "4"
+          firetype = "0"
+          ignitionpoint = "32"
+          damagescale = "1.0"
+        }
+        env_firesensor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that detects changes in heat nearby."
+          spawnflags = "1"
+          fireradius = "128"
+          heatlevel = "32"
+          heattime = "0"
+        }
+        env_firesource:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that provides heat to all nearby env_fire entitie"
+           "s. Cannot be extinguished."
+          fireradius = "128"
+          firedamage = "10"
+        }
+        env_fog_controller:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that controls the fog and view distance in the ma"
+           "p."
+          fogenable = "0"
+          fogblend = "0"
+          use_angles = "0"
+          fogcolor = "255 255 255"
+          fogcolor2 = "255 255 255"
+          fogdir = "1 0 0"
+          fogstart = "500.0"
+          fogend = "2000.0"
+          farz = "-1"
+        }        
+        env_funnel:e =
+        {
+          origin = "0 0 0"
+          ;desc = "HL1 Legacy: Large Portal Funnel"
+        }        
+        env_hudhint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity to control the display of HUD hints. HUD hints ar"
+           "e used to show the player what key is bound to a particular comman"
+           "d."
+        }        
+        env_laser:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that creates a laser beam between itself and a gi"
+           "ven target."
+          renderamt = "100"
+          rendercolor = "255 255 255"
+          width = "2"
+          NoiseAmplitude = "0"
+          texture = "sprites/laserbeam.spr"
+          TextureScroll = "35"
+          framestart = "0"
+          damage = "100"
+          dissolvetype = "None"
+        }        
+        env_lightglow:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that puts an additive glow in the world, mostly u"
+           "sed over light sources."
+          rendercolor = "255 255 255"
+          VerticalGlowSize = "30"
+          HorizontalGlowSize = "30"
+          MinDist = "500"
+          MaxDist = "2000"
+          OuterMaxDist = "0"
+          GlowProxySize = "2.0"
+        }        
+        env_message:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that draws a text message on player's HUDs."
+          messagevolume = "10"
+          messageattenuation = "0"
+        }        
+        env_microphone:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that acts as a microphone. It works in one of two"
+           " modes. If it has a 'Speaker' set, it picks up all sounds within t"
+           "he specified sound range, and rebroadcasts them through the Speake"
+           "r entity. In this Speaker mode, it ignores the Hears X spawnflags "
+           "and does not fire the SoundLevel output. If it has no Speaker set,"
+           " it measures the sound level at a point, and outputs the sound lev"
+           "el as a value between 0 and 1. In Measuring mode, it only hears so"
+           "unds that match the Hear X spawnflags."
+          speaker_dsp_preset = "0"
+          spawnflags = "15"
+          Sensitivity = "1"
+          SmoothFactor = "0"
+          MaxRange = "240"
+        }        
+        env_particlelight:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can be used to light the smoke particles emi"
+           "tted by env_smokestack entities. Does not light any other particle"
+           " types."
+          Color = "255 0 0"
+          Intensity = "5000"
+          directional = "0"
+        }        
+        env_particlescript:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that has special animation events that can be fir"
+           "ed by a model with an animation inside its .qc designed foruse by "
+           "this entity."
+          model = "models/Ambient_citadel_paths.mdl"
+        }        
+        env_physexplosion:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that creates an explosion at its origin. If the n"
+           "o-damage spawnflag is set, the explosion won't be visible, but wil"
+           "l apply force to any physics objects within its radius."
+          magnitude = "100"
+          radius = "0"
+          spawnflags = "1"
+        }        
+        env_physimpact:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that will cause a physics impact on another entit"
+           "y."
+          angles = "0 0 0"
+          magnitude = "100"
+          distance = "0"
+        }        
+        env_player_surface_trigger:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that monitors the material of the surface the pla"
+           "yer is standing on, and fires outputs whenever it changes to/from "
+           "a specific material."
+          gamematerial = "0"
+        }        
+         env_rotorshooter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that creates gibs when it's within the influence "
+           "of a helicopter's rotor wash."
+          shootsounds = "-1"
+          simulation = "0"
+          skin = "0"
+          rotortime = "1"
+          rotortimevariance = "0.3"
+        }       
+        env_screenoverlay:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can display and control a set of screen over"
+           "lays, to be displayed over the player's view. Useful for view effe"
+           "cts like drunkenness, or teleporter afterimages, etc."
+          OverlayTime1 = "1.0"
+          OverlayTime2 = "1.0"
+          OverlayTime3 = "1.0"
+          OverlayTime4 = "1.0"
+          OverlayTime5 = "1.0"
+          OverlayTime6 = "1.0"
+          OverlayTime7 = "1.0"
+          OverlayTime8 = "1.0"
+          OverlayTime9 = "1.0"
+          OverlayTime10 = "1.0"
+        }        
+        env_shake:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity to control screen shake on players."
+          amplitude = "4"
+          radius = "500"
+          duration = "1"
+          frequency = "2.5"
+        }        
+        env_shooter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that shoots models, or sprites, out of its origin"
+           "."
+          shootsounds = "-1"
+          simulation = "0"
+          skin = "0"
+        }        
+        env_smokestack:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that spits out a constant stream of smoke. See pa"
+           "rticlezoo.vmf for sample usage. You can place up to two env_partic"
+           "lelight entities near the smoke stack to add ambient light to its "
+           "particles."
+          InitialState = "0"
+          BaseSpread = "20"
+          SpreadSpeed = "15"
+          Speed = "30"
+          StartSize = "20"
+          EndSize = "30"
+          Rate = "20"
+          JetLength = "180"
+          WindAngle = "0"
+          WindSpeed = "0"
+          SmokeMaterial = "particle/SmokeStack.vmt"
+          twist = "0"
+          rendercolor = "255 255 255"
+          renderamt = "255"
         }
         env_smoketrail:e =
         {
@@ -836,80 +377,57 @@ QQRKSRC1
           spawnradius = "15"
           firesprite = "sprites/firetrail.spr"
           smokesprite = "sprites/whitepuff.spr"
-        }
-        env_physexplosion:e =
+        }        
+        env_soundscape:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that creates an explosion at its origin. If the n"
-           "o-damage spawnflag is set, the explosion won't be visible, but wil"
-           "l apply force to any physics objects within its radius."
-          magnitude = "100"
-          radius = "0"
-          spawnflags = "1"
+          ;desc = "An entity to control sound in an area. The active soundscap"
+           "e at any time is the last one that had line-of-sight to the player"
+           ", and was within the radius."
+          radius = "128"
+          soundscape = "Nothing"
         }
-        env_physimpact:e =
+        env_soundscape_proxy:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that will cause a physics impact on another entit"
-           "y."
-          angles = "0 0 0"
-          magnitude = "100"
-          distance = "0"
-        }
-        env_fire:e =
+          ;desc = "An entity that acts like a soundscape but gets all of its s"
+           "ound parameters from another env_soundscape entity."
+          radius = "128"
+        }        
+        env_soundscape_triggerable:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that handles a single flame at its origin. The fl"
-           "ame causes heat 'damage' to other env_fire entities around it, and"
-           " will eventually ignite non-flaming env_fire entities nearby, caus"
-           "ing the fire to spread."
-          health = "30"
-          firesize = "64"
-          fireattack = "4"
-          firetype = "0"
-          ignitionpoint = "32"
-          damagescale = "1.0"
-        }
-        env_firesource:e =
+          ;desc = "An entity that works like env_soundscape except that it wor"
+           "ks in conjunction with trigger_soundscape to determine when a play"
+           "er hears it."
+        }        
+        env_spark:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that provides heat to all nearby env_fire entitie"
-           "s. Cannot be extinguished."
-          fireradius = "128"
-          firedamage = "10"
-        }
-        env_firesensor:e =
+          ;desc = "An entity used to create sparks at its origin."
+          MaxDelay = "0"
+          Magnitude = "1"
+          TrailLength = "1"
+        }        
+        env_splash:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that detects changes in heat nearby."
-          spawnflags = "1"
-          fireradius = "128"
-          heatlevel = "32"
-          heattime = "0"
-        }
-        env_entity_igniter:e =
+          ;desc = "An entity that creates a splash effect at its origin. If th"
+           "e 'find water surface' spawnflag is set, it will instead trace dow"
+           "n below itself to find the water surface on which to create splash"
+           "es."
+          scale = "8.0"
+          spawnflags = "2"
+        }        
+        env_sprite:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that catches a target entity on fire. If the enti"
-           "ty is an animating model, it will have sprite flames attached to i"
-           "ts skeleton. Otherwise the entity will emit particle flame puffs."
-          lifetime = "10"
-        }
-        env_fog_controller:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that controls the fog and view distance in the ma"
-           "p."
-          fogenable = "0"
-          fogblend = "0"
-          use_angles = "0"
-          fogcolor = "255 255 255"
-          fogcolor2 = "255 255 255"
-          fogdir = "1 0 0"
-          fogstart = "500.0"
-          fogend = "2000.0"
-          farz = "-1"
-        }
+          ;desc = "An entity that controls the drawing of a sprite in the worl"
+           "d."
+          framerate = "10.0"
+          model = "sprites/glow01.spr"
+          GlowProxySize = "2.0"
+        }        
         env_steam:e =
         {
           origin = "0 0 0"
@@ -924,105 +442,29 @@ QQRKSRC1
           rendercolor = "255 255 255"
           JetLength = "80"
           renderamt = "255"
-        }
-        env_laser:e =
+        }        
+        env_sun:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that creates a laser beam between itself and a gi"
-           "ven target."
-          renderamt = "100"
-          rendercolor = "255 255 255"
-          width = "2"
-          NoiseAmplitude = "0"
-          texture = "sprites/laserbeam.spr"
-          TextureScroll = "35"
-          framestart = "0"
-          damage = "100"
-          dissolvetype = "None"
-        }
-        env_message:e =
+          ;desc = "An entity to control & draw a sun effect in the sky."
+          use_angles = "0"
+          pitch = "0"
+          rendercolor = "100 80 80"
+          size = "16"
+        }        
+        env_texturetoggle:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that draws a text message on player's HUDs."
-          messagevolume = "10"
-          messageattenuation = "0"
-        }
-        env_hudhint:e =
+          ;desc = "An entity that allows you to change the textures on other b"
+           "rush-built entities."
+        }        
+        env_tonemap_controller:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity to control the display of HUD hints. HUD hints ar"
-           "e used to show the player what key is bound to a particular comman"
-           "d."
-        }
-        env_shake:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to control screen shake on players."
-          amplitude = "4"
-          radius = "500"
-          duration = "1"
-          frequency = "2.5"
-        }
-        env_shooter:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that shoots models, or sprites, out of its origin"
-           "."
-          shootsounds = "-1"
-          simulation = "0"
-          skin = "0"
-        }
-        env_rotorshooter:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that creates gibs when it's within the influence "
-           "of a helicopter's rotor wash."
-          shootsounds = "-1"
-          simulation = "0"
-          skin = "0"
-          rotortime = "1"
-          rotortimevariance = "0.3"
-        }
-        env_soundscape_proxy:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that acts like a soundscape but gets all of its s"
-           "ound parameters from another env_soundscape entity."
-          radius = "128"
-        }
-        env_soundscape:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to control sound in an area. The active soundscap"
-           "e at any time is the last one that had line-of-sight to the player"
-           ", and was within the radius."
-          radius = "128"
-          soundscape = "Nothing"
-        }
-        env_soundscape_triggerable:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that works like env_soundscape except that it wor"
-           "ks in conjunction with trigger_soundscape to determine when a play"
-           "er hears it."
-        }
-        env_spark:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to create sparks at its origin."
-          MaxDelay = "0"
-          Magnitude = "1"
-          TrailLength = "1"
-        }
-        env_sprite:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that controls the drawing of a sprite in the worl"
-           "d."
-          framerate = "10.0"
-          model = "sprites/glow01.spr"
-          GlowProxySize = "2.0"
-        }
+          ;desc = "An entity that controls the HDR tonemapping for the player."
+           " Think of it as a method of controlling the exposure of the player"
+           "'s eyes."
+        }        
         env_wind:e =
         {
           origin = "0 0 0"
@@ -1034,85 +476,386 @@ QQRKSRC1
           mingustdelay = "10"
           maxgustdelay = "20"
           gustdirchange = "20"
-        }
-        env_cubemap:e =
+        }        
+        env_zoom:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that creates a sample point for the Cubic Environ"
-           "ment Map."
-          cubemapsize = "0"
-        }
-        env_dustpuff:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can emit dust puffs."
-          scale = "8"
-          speed = "16"
-          color = "128 128 128"
-        }
-        env_particlescript:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that has special animation events that can be fir"
-           "ed by a model with an animation inside its .qc designed foruse by "
-           "this entity."
-          model = "models/Ambient_citadel_paths.mdl"
-        }
-        env_effectscript:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that allows you to script special visual effects "
-           "via a script file."
-          model = "models/Effects/teleporttrail.mdl"
-          scriptfile = "scripts/effects/testeffect.txt"
-        }
-        env_microphone:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that acts as a microphone. It works in one of two"
-           " modes. If it has a 'Speaker' set, it picks up all sounds within t"
-           "he specified sound range, and rebroadcasts them through the Speake"
-           "r entity. In this Speaker mode, it ignores the Hears X spawnflags "
-           "and does not fire the SoundLevel output. If it has no Speaker set,"
-           " it measures the sound level at a point, and outputs the sound lev"
-           "el as a value between 0 and 1. In Measuring mode, it only hears so"
-           "unds that match the Hear X spawnflags."
-          speaker_dsp_preset = "0"
-          spawnflags = "15"
-          Sensitivity = "1"
-          SmoothFactor = "0"
-          MaxRange = "240"
-        }
-        env_entity_maker:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Spawns the specified entity template at its origin. If set "
-           "to auto-spawn, it will spawn the template whenever there's room an"
-           "d the player is looking elsewhere."
-        }
-        env_credits:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to control the rolling credits."
+          ;desc = "An entity that can be used to control the player's FOV. Use"
+           "ful for scenes where the player's view is being controlled, or pla"
+           "yer-usable binoculars/telescopes, etc."
+          Rate = "1.0"
+          FOV = "75"
         }
       }
+
+// filter entities
+
+      filter_* entities.qtxfolder =
+      {
+        filter_activator_class:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A filter that filters by the class name of the activator."
+        }
+        filter_activator_name:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A filter that filters by the name of the activator."
+        }
+        filter_damage_type:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A damage filter that filters by the type of damage inflicte"
+           "d. This can only be used as a damage filter, not as an activator f"
+           "ilter."
+          damagetype = "64"
+        }
+         filter_multi:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A filter that tests the activator against multiple filters."
+           " This allows you to build more complex filters, such as'Allow anyo"
+           "ne on Team 1 who is also class engineer', or 'Allow everyone excep"
+           "t classes npc_zombie and npc_headcrab'."
+          filtertype = "0"
+          Negated = "0"
+        }
+      }
+
+// func entities
+
+      func_* entities.qtxfolder =
+      {
+        func_areaportal:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A portal brush used to manage visibility in maps. Portals d"
+           "efine areas, which are spaces that are connected in the map. Both "
+           "sides of a portal cannot touch the same area, for example, a dough"
+           "nut shaped map would require at least two portals to divide the ma"
+           "p into two areas. A linear map could be divided into two areas wit"
+           "h a single area portal."
+          StartOpen = "0"
+        }
+        func_areaportalwindow:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "An entity that can be used to optimize the visibility in a "
+           "map. If you seal off an area with them, when the viewer moves the "
+           "specified distance away from them, they will go opaque and the par"
+           "ts inside the area will not be drawn. The 'target' brush model sho"
+           "uld enclose the func_areaportal window so no parts of it are culle"
+           "d by the window. If you use the optional foreground brush model, t"
+           "hen it should enclose the 'target' brush model."
+          FadeStartDist = "128"
+          FadeDist = "512"
+          TranslucencyLimit = "0.2"
+        }
+        func_breakable:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that can be broken from damage, or an input."
+          minhealthdmg = "0"
+          physdamagescale = "1.0"
+        }
+        func_breakable_surf:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A breakable surface, for partially breakable glass / tile /"
+           " etc.  All faces but the desired visible one must be marked as NOD"
+           "RAW and thatface must be 4 sided.  The material applied to the vis"
+           "ible face must be set up to be breakable."
+          health = "5"
+          fragility = "100"
+          surfacetype = "0"
+          upperleft = "0 0 0"
+          upperright = "0 0 0"
+          lowerright = "0 0 0"
+          lowerleft = "0 0 0"
+        }
+        func_brush:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "An brush built entity with various features."
+          Solidity = "0"
+          solidbsp = "0"
+        }
+        func_button:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that's designed to be used for a player-usea"
+           "ble button. When used by the player, it moves to a pressed positio"
+           "n."
+          movedir = "0 0 0"
+          speed = "5"
+          health = "0"
+          lip = "0"
+          sounds = "0"
+          wait = "3"
+          spawnflags = "1024"
+          locked_sound = "0"
+          unlocked_sound = "0"
+          locked_sentence = "0"
+          unlocked_sentence = "0"
+        }
+        func_clip_vphysics:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that's considered solid to vphysics."
+        }
+        func_conveyor:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Conveyor Belt"
+          movedir = "0 0 0"
+          speed = "100"
+        }        
+        func_detail:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "An entity that turns its brushes into detail brushes. Detai"
+           "l brushes do NOT contribute to visibility in the PVS. World geomet"
+           "ry is not clipped to detail brushes, so if you have a small detail"
+           " clump attached to a wall, the wall won't be cut up by the detail "
+           "brush.func_detail is great for high-frequency brush geometry that'"
+           "s visual detail only. It is also ideal for reducing map VIS time."
+        }
+        func_door:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity for use as a player-useable door."
+          movedir = "0 0 0"
+        }
+        func_door_rotating:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity for use as a rotating player-useable door."
+          distance = "90"
+          solidbsp = "0"
+        }
+        func_dustcloud:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that spawns a translucent dust cloud within "
+           "its volume."
+          Alpha = "30"
+          SizeMin = "100"
+          SizeMax = "200"
+        }
+        func_dustmotes:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that spawns sparkling dust motes within its "
+           "volume."
+          SizeMin = "10"
+          SizeMax = "20"
+          Alpha = "255"
+        }
+        func_guntarget:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "This is a moving target that moves along a path of path_tra"
+           "cks. It can be shot and killed."
+          speed = "100"
+          health = "0"
+        }
+        func_illusionary:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Legacy support. Use func_brush instead."
+        }
+        func_ladderendpoint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to specify the endpoints of a ladder. This e"
+           "ntity is functional, but has been replaced by the easier-to-use fu"
+           "nc_useableladder entity. Left in only for backwards-compatibility!"
+           "\n\nTo be valid, a full sized player hull traced between the start"
+           " and end points must not be obstructed at level activation time. T"
+           "he angle determines in which direction the player leaves the ladde"
+           "r if the player presses the +jump button.\n\nNote: This entity is "
+           "non-functional in Counter-Strike: Source. In CS:S, use func_ladder"
+           " instead."
+        }
+        func_lod:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Brush-built model that fades out over a specified distance."
+           " Useful for creating world detail that doesn't need to be drawn fa"
+           "r away, for performance reasons."
+          DisappearDist = "2000"
+          Solid = "0"
+        }
+        func_movelinear:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that moves linearly along a given distance, "
+           "in a given direction."
+          movedir = "0 0 0"
+          startposition = "0"
+          speed = "100"
+          movedistance = "100"
+          blockdamage = "0"
+        }
+        func_occluder:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A occluder brush used to manage dynamic visibility in maps."
+           " Occluders are used to dynamically determine what things are behin"
+           "d them, to prevent trying to draw them at all."
+          StartActive = "1"
+        }
+        func_physbox:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that's physically simulated."
+          spawnflags = "524288"
+          Damagetype = "0"
+          massScale = "0"
+          damagetoenablemotion = "0"
+          forcetoenablemotion = "0"
+          health = "0"
+          preferredcarryangles = "0 0 0"
+          notsolid = "0"
+        }
+        func_platrot:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that moves vertically, and can rotate while "
+           "doing so."
+          spawnflags = "1"
+          speed = "50"
+          height = "0"
+          rotation = "0"
+        }
+        func_precipitation:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that creates rain and snow inside its volume"
+           "."
+          renderamt = "5"
+          rendercolor = "100 100 100"
+          preciptype = "0"
+        }
+        func_rot_button:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that's designed to be used for a rotating pl"
+           "ayer-useable button. When used by the player, it rotates to a pres"
+           "sed position."
+          speed = "50"
+          health = "0"
+          sounds = "21"
+          wait = "3"
+          distance = "90"
+        }
+        func_rotating:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A rotating brush entity."
+          maxspeed = "100"
+          fanfriction = "20"
+          volume = "10"
+          spawnflags = "512"
+          dmg = "0"
+          solidbsp = "0"
+        }
+        func_smokevolume:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that spawns smoke particles within its volum"
+           "e."
+          Color1 = "255 255 255"
+          Color2 = "255 255 255"
+          material = "particle/smoke_grenade1"
+          ParticleDrawWidth = "120"
+          ParticleSpacingDistance = "80"
+          DensityRampSpeed = "1"
+          RotationSpeed = "10"
+          MovementSpeed = "10"
+          Density = "1"
+        }
+        func_tanktrain:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A moving train that follows a path of path_track entities, "
+           "shoots at the player, and can be killed.\nNOTE: Build your train s"
+           "o that the front of the train is facing down the X axis. When it s"
+           "pawns it will automatically rotate to face the next path_track on "
+           "the path."
+          health = "100"
+        }
+        func_trackautochange:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "An entity that works as a rotating/moving platform that wil"
+           "l carry a train to a new track. It must be larger in X-Y planar ar"
+           "ea than the train, since it must contain the train within these di"
+           "mensions in order to operate when the train is near it."
+        }
+        func_trackchange:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "An entity that works as a rotating/moving platform that wil"
+           "l carry a train to a new track. It must be larger in X-Y planar ar"
+           "ea than the train, since it must contain the train within these di"
+           "mensions in order to operate when the train is near it."
+        }
+        func_tracktrain:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A moving platform that the player can ride. It follows a pa"
+           "th of path_track entities.\nNOTE: Build your train so that the fro"
+           "nt of the train is facing down the X axis. When it spawns it will "
+           "automatically rotate to face the next path_track on the path."
+        }
+        func_traincontrols:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "When used by the player, this entity overrides the player's"
+           " controls to let them drive a train."
+        }
+        func_useableladder:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A Half-Life 2 ladder. Handles player auto mount/unmount, as"
+           " well as +use to get onto the ladder. \n\nSee also 'info_ladder_di"
+           "smount', used to specify ladder auto-dismount points.\n\nNote: Thi"
+           "s entity is non-functional in Counter-Strike: Source. Use func_lad"
+           "der instead."
+          StartDisabled = "0"
+          point0 = "0 0 0"
+          point1 = "0 0 0"
+        }
+        func_wall:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Legacy support. Use func_brush instead."
+        }
+        func_wall_toggle:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that can be toggled on/off. When off, the br"
+           "ush will be non-solid and invisible. Does not cast lightmap shadow"
+           "s."
+        }
+        func_water_analog:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A water brush entity that moves linearly along a given dist"
+           "ance, in a given direction"
+          movedir = "0 0 0"
+          startposition = "0"
+          speed = "100"
+          movedistance = "100"
+          WaveHeight = "3.0"
+        }
+      }
+
+// game entities
+
       game_* entities.qtxfolder =
       {
-        game_ragdoll_manager:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to control the number of ragdolls in the world, f"
-           "or performance reasons."
-          MaxRagdollCount = "-1"
-        }
-        game_weapon_manager:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to limit the number of a particular weapon t"
-           "ype in the world. Useful in places where NPCs are spawning rapidly"
-           ", dying, and dropping weapons."
-          maxpieces = "0"
-        }
         game_end:e =
         {
           origin = "0 0 0"
@@ -1133,6 +876,13 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "An entity that changes the team of the player who activates"
            " it."
+        }
+        game_ragdoll_manager:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity to control the number of ragdolls in the world, f"
+           "or performance reasons."
+          MaxRagdollCount = "-1"
         }
         game_score:e =
         {
@@ -1164,6 +914,14 @@ QQRKSRC1
           spawnflags = "480"
           FieldOfView = "-1.0"
         }
+        game_weapon_manager:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to limit the number of a particular weapon t"
+           "ype in the world. Useful in places where NPCs are spawning rapidly"
+           ", dying, and dropping weapons."
+          maxpieces = "0"
+        }
         game_zone_player:b =
         {
           ;incl = "defpoly"
@@ -1171,359 +929,246 @@ QQRKSRC1
            "."
         }
       }
-      vgui_* entities.qtxfolder =
+
+// info entities
+
+      info_* entities.qtxfolder =
       {
-        vgui_screen:e =
+        info_camera_link:e =
         {
           origin = "0 0 0"
-          ;desc = "A VGUI screen. Useful for in-world monitors."
+          ;desc = "An entity that can use point_cameras to render images for m"
+           "aterials used by entities. To author the material, use the special"
+           " identifier _rt_Camera for the $baseTexture (or whatever texture y"
+           "ou want, like envmap, etc.) in the .vmt then connect the 'target' "
+           "field to the entity which uses that material, and the 'PointCamera"
+           "' field to the point_camera you want to have appear on that entity"
+           "'s material"
+        }
+        info_constraint_anchor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to attach constraints to a local position on"
+           " an entity. Usually constraints will attach to the center of mass "
+           "of an object. Attach the desired constraint to this entity, and th"
+           "en parent this entity to the entity you want the constraint to app"
+           "ly to."
+          massScale = "1"
+        }
+        info_hint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A hint that is not used for navigation. They don't go into "
+           "the nodegraph, nor do they fall to the ground. Use these to provid"
+           "e some spatial context for NPCs, such as 'look here if you can't f"
+           "ind the player' or 'throw rocks at this spot'."
+        }
+        info_intermission:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that defines an intermission spot where dead play"
+           "ers will float until they respawn."
+        }
+        info_ladder_dismount:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity to handle endpoints for multiple ladders that are"
+           " too close to each other."
+        }
+        info_landmark:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that acts as a landmark for transitions to anothe"
+           "r level. There should be a corresponding info_landmark entity in t"
+           "he next map. Entities will be transitioned to the next level relat"
+           "ive to the info_landmark entities."
+        }
+        info_lighting:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can be used to change the lighting origin of"
+           " a prop_static. Set the prop_static's Lighting Origin to point at "
+           "this entity to make the prop_static light as if it was at the info"
+           "_lighting's origin. Good for prop_static entities that are embedde"
+           "d in world geometry (like rocks/windows/etc)."
+        }
+        info_mass_center:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that overrides the mass center of the target phys"
+           "ics prop, or func_physbox, by moving it to the info_mass_center's "
+           "location."
+        }
+        info_no_dynamic_shadow:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Use this entity to mark surfaces that shouldn't receive dyn"
+           "amic shadows. Useful to apply to walls and floors where shadows ar"
+           "e drawn improperly, giving away the location of enemies."
+        }
+        info_node:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A navigation node for ground moving NPCs. Navigation nodes "
+           "are baked into the nodegraph so that NPCs can move to them. Ground"
+           " nodes fall to the ground when they spawn."
+        }
+        info_node_air:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A navigation node for flying NPCs. Air navigation nodes are"
+           " baked into the nodegraph so that NPCs can move to them. Air nodes"
+           " do not fall to the ground when they spawn."
+          nodeheight = "0"
+        }
+        info_node_air_hint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A navigation node for flying NPCs that includes some contex"
+           "t information for NPCs that are interested in it. The hint might i"
+           "ndicate a window that could be looked into, or an item of interest"
+           " that could be commented on. Many hint nodes are NPC-specific, so "
+           "it's helpful to use naming conventions like 'Crow: Fly to point' i"
+           "n the hint choices list. The angles of a hint node indicate what d"
+           "irection the NPC should face to perform the hint behavior."
+          nodeheight = "0"
+        }
+        info_node_climb:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A climb-node for AI navigation. Only usable by NPCs that ca"
+           "n climb."
+        }
+        info_node_hint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A navigation node for ground moving NPCs that includes some"
+           " context information for NPCs that are interested in it. The hint "
+           "might indicate a window that could be looked out of, or an item of"
+           " interest that could be commented on. Many hint nodes are NPC-spec"
+           "ific, so it's helpful to use naming conventions like 'Crow: Fly to"
+           " point' in the hint choices list. The angles of a hint node indica"
+           "te what direction the NPC should face to perform the hint behavior"
+           ".\n\nIt's important to understand the distinction between scripts,"
+           " such as scripted_sequence and scripted_schedule, and info_hint en"
+           "tities. Scripts summon NPCs to specific cue points to play their p"
+           "arts, while hints provide context information to the AI that they "
+           "use to perform their behaviors. Hints require code support in the "
+           "NPC, while scripts are generic and may require only animations to "
+           "play. Use a hint if the behavior is driven by the AI, use a script"
+           " if the behavior is driven by the map."
+        }
+        info_node_link:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A dynamic connection between two navigation nodes. You spec"
+           "ify the node IDs of the start and end nodes, and then you can use "
+           "entity I/O to turn on and off the connection. This could be used t"
+           "o create or destroy a connection in the nodegraph because of some "
+           "event in your map (a bridge being created/destroyed, etc)."
+          initialstate = "1"
+        }        
+        info_node_link_controller:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that controls all connections between nodes that "
+           "intersect the controller's volume. This allows for mass enabling/d"
+           "isabling of all node connections through a volume."
+          mins = "-8 -32 -36"
+          maxs = "8 32 36"
+          initialstate = "1"
+        }        
+        info_npc_spawn_destination:e =
+        {
+          origin = "0 0 0"
+          ;desc = "NPC Spawn Destination. (Consult npc_template_maker help for"
+           " more info)"
+          ReuseDelay = "1"
+        }        
+        info_null:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that's immediately removed on spawning. Useful as"
+           " a spotlight target."
+        }        
+        info_overlay:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that places an overlay on the world."
+          RenderOrder = "0"
+          StartU = "0.0"
+          EndU = "1.0"
+          StartV = "0.0"
+          EndV = "1.0"
+        }        
+        info_player_start:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+          ;desc = "This entity indicates the position and facing direction at "
+           "which the player will spawn. Any number of info_player_start entit"
+           "ies may be placed in a map for when working in cordoned-off portio"
+           "ns of the map. When multiple info_player_start entities are presen"
+           "t in a map, set the 'Master' spawnflag on one of them to indicate "
+           "which one should be used when running the entire map."
+        }        
+        info_projecteddecal:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that projects a decal onto the world (or props). "
+           "If the decal has no target name, it will immediately apply itself "
+           "when the level is loaded. If it has a name specified, it won't app"
+           "ly until it receives the 'Activate' input."
+          Distance = "64"
+        }        
+        info_target:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that does nothing. Very useful as a positioning e"
+           "ntity for other entities to refer to (i.e. the endpoint of an env_"
+           "beam)"
+        }        
+        info_teleport_destination:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that does nothing itself, but can be used to spec"
+           "ify the destination for a trigger_teleport entity. An info_target "
+           "can be used instead."
         }
       }
-      sky_* entities.qtxfolder =
+
+// keyframe entities
+
+      keyframe_* entities.qtxfolder =
       {
-        sky_camera:e =
+        keyframe_rope:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity used to control the 3D Skybox. Its origin is used"
-           " to determine the 3D Skybox's position relative to the map. Place "
-           "this entity, in the 3D Skybox, at the point where the origin of th"
-           "e map should be."
-          scale = "16"
-          fogenable = "0"
-          fogblend = "0"
-          use_angles = "0"
-          fogcolor = "255 255 255"
-          fogcolor2 = "255 255 255"
-          fogdir = "1 0 0"
-          fogstart = "500.0"
-          fogend = "2000.0"
+          ;desc = "A node entity that marks a point in a rope. The first node "
+           "in the rope should be a move_rope, followed by 1 or more keyframe_"
+           "ropes."
         }
-      }
-      point_* entities.qtxfolder =
-      {
-        point_enable_motion_fixup:e =
+        keyframe_track:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity used to move a motion-disabled prop when it enabl"
-           "es motion. Parent this entity to the prop, and when the prop has i"
-           "ts motion enabled, it will immediately teleport to the origin of t"
-           "his entity."
+          ;desc = "Animation KeyFrame"
         }
-        point_message:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that displays a text message in the world, at its"
-           " origin."
-          radius = "128"
-          developeronly = "0"
-        }
-        point_spotlight:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to draw a spotlight. Will draw a beam when the pl"
-           "ayer views it side on, and a halo when it's facing towards the pla"
-           "yer. Unless the 'No Dynamic Light' spawnflag is checked, it will a"
-           "lso create a dynamic light wherever the end of the spotlight rests"
-           "."
-          spawnflags = "1"
-          spotlightlength = "500"
-          spotlightwidth = "50"
-          rendercolor = "255 255 255"
-        }
-        point_tesla:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that creates tesla lightning arcs around its orig"
-           "in."
-          m_SoundName = "DoSpark"
-          texture = "sprites/physbeam.vmt"
-          m_Color = "255 255 255"
-          m_flRadius = "200"
-          beamcount_min = "6"
-          beamcount_max = "8"
-          thick_min = "4"
-          thick_max = "5"
-          lifetime_min = "0.3"
-          lifetime_max = "0.3"
-          interval_min = "0.5"
-          interval_max = "2"
-        }
-        point_clientcommand:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that issues commands to the client console, as if"
-           " it was typed in by the player (if activator is a player, or the l"
-           "ocal player in single player)."
-        }
-        point_servercommand:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that issues commands to the server console."
-        }
-        point_viewcontrol:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A camera entity that controls the player's view. While it's"
-           " active, the player will see out of the camera."
-          wait = "10"
-          spawnflags = "3"
-          speed = "0"
-          acceleration = "500"
-          deceleration = "500"
-        }
-        point_template:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Turns an entity, or set of entities, into a single template"
-           " that can be instanced anywhere, and multiple times. If there are "
-           "interdependencies (entity I/O, hierarchy, or other name references"
-           ") between the entities in the template, the entities in the templa"
-           "te will have their names changed and the interdependencies will be"
-           " reconnected to the changes names. The name change format is as fo"
-           "llows: '<original name>&0000', where the 0000 will be replaced wit"
-           "h the current global template instance, so wildcard searches for '"
-           "<original name>*' will still find them.\nIf you don't want the nam"
-           "e fixup to happen, because you're only spawning the template once,"
-           " or you want inputs to trigger all instances of the template, chec"
-           "k the 'Preserve entity names' spawnflag. \nTo spawn the template i"
-           "n other places, use an env_entity_maker."
-          spawnflags = "2"
-        }
-        point_anglesensor:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that detects if another entity points in a given "
-           "direction for a period of time."
-        }
-        point_angularvelocitysensor:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that detects if another entity's angular velocity"
-           " meets or exceeds a threshold value."
-          threshold = "0"
-        }
-        point_teleport:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that teleports a target entity to this position a"
-           "nd angles. If 'Teleport Home' spawn flag is set, teleports the tar"
-           "get entity to its spawn position instead.If object is physically s"
-           "imulated, simulation is turned off when teleported."
-        }
-        point_hurt:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that does damage to all entities in a radius arou"
-           "nd itself, with a specified delay.If 'Target Entity' is specified,"
-           " the damage is only done to that entity."
-          DamageRadius = "256"
-          Damage = "5"
-          DamageDelay = "1"
-          DamageType = "0"
-        }
-        point_playermoveconstraint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that constrains players to a radius around itself"
-           ", slowing them down the closer they get to the edge of the radius."
-          radius = "256"
-          width = "75.0"
-          speedfactor = "0.15"
-        }
-        point_devshot_camera:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used by the -makedevshots system, which automatic"
-           "ally takes screenshots at the position of every devshot camera in "
-           "the level."
-          FOV = "75"
-        }
-      }
-      phys_* entities.qtxfolder =
-      {
-        phys_ragdollmagnet:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that acts like a magnet for ragdolls. Useful for "
-           "crafting exaggerated ragdoll behavior (i.e. guys falling over rail"
-           "s on death). If the Bar Magnet spawnflag is set, the magnet works "
-           "like it was a cylindrical magnet i.e. it attracts ragdolls to the "
-           "nearest point on a line."
-          radius = "512"
-          force = "5000"
-        }
-        phys_constraintsystem:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to manage a group of interacting constraints"
-           " and keep them stable. All constraints on a set of entities should"
-           " be placed in the same system, or they will fight each other durin"
-           "g simulation."
-          additionaliterations = "0"
-        }
-        phys_keepupright:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A controller that tries to keep an entity facing a particul"
-           "ar direction."
-          angularlimit = "15"
-        }
-        phys_spring:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A physically simulated spring. 'Length' is what's known as "
-           "the 'natural spring length'. This is how long the spring would be "
-           "if it was at rest (nothing hanging on it or attached). When you at"
-           "tach something to the spring, it will stretch longer than its 'nat"
-           "ural length'. The amount of stretch is determined by the 'Sprint C"
-           "onstant'. The larger the spring constant the less stretch the spri"
-           "ng."
-          length = "0"
-          constant = "50"
-          damping = "2.0"
-          relativedamping = "0.1"
-          breaklength = "0"
-        }
-        phys_hinge:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A physically simulated hinge. Use the helper to define the "
-           "axis of rotation."
-          hingefriction = "0"
-          SystemLoadScale = "1"
-        }
-        phys_ballsocket:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A constraint that keeps the position of two objects fixed, "
-           "relative to the constraint's origin. It does not affect rotation."
-        }
-        phys_constraint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A constraint that keeps the relative position and orientati"
-           "on of two objects fixed."
-          spawnflags = "1"
-        }
-        phys_pulleyconstraint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A constraint that is essentially two length constraints and"
-           " two points. Imagine it as a virtual rope connected to two objects"
-           ", each suspended from a pulley above them.The constraint keeps the"
-           " sum of the distances between the pulley points and their suspende"
-           "d objects constant."
-          addlength = "0"
-          gearratio = "1"
-          spawnflags = "1"
-        }
-        phys_slideconstraint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A constraint that constrains an entity along a line segment"
-           "."
-          spawnflags = "1"
-          slidefriction = "0"
-          SystemLoadScale = "1"
-        }
-        phys_lengthconstraint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A constraint that preserves the distance between two entiti"
-           "es. If the 'Keep Rigid' flag is set, think of it as a rod. If not,"
-           " think off it as a virtual rope."
-          addlength = "0"
-          minlength = "0"
-          attachpoint = "The position the rope attaches to object 2"
-          spawnflags = "1"
-        }
-        phys_ragdollconstraint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A constraint that fixes the position of two entities, relat"
-           "ive to this constraint's origin. Also allows for limits on the rot"
-           "ation around each axis, in the space of this constraint."
-          spawnflags = "1"
-          xmin = "-90"
-          xmax = "90"
-          ymin = "0"
-          ymax = "0"
-          zmin = "0"
-          zmax = "0"
-          xfriction = "0"
-          yfriction = "0"
-          zfriction = "0"
-        }
-        phys_convert:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Turns an arbitrary entity into a physically simulated entit"
-           "y. i.e. brush entities will behave like func_physbox, model entiti"
-           "es behave like prop_physics."
-        }
-        phys_thruster:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to apply constant acceleration to a physics "
-           "object. The force and torque is calculated using the position and "
-           "direction of the thruster as an impulse. So moving those off the o"
-           "bject's center will cause torque as well. Torque can be removed by"
-           " unchecking the 'apply torque' flag. The position of the thruster "
-           "can be forced to be at the object's center by checking to 'ignore "
-           "pos' flag."
-          force = "0"
-        }
-        phys_torque:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An angular thruster. Use it to apply angular force to an en"
-           "tity."
-          force = "0"
-        }
-        phys_motor:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that tries to spin a target entity at a particula"
-           "r speed."
-          speed = "0"
-          spinup = "1"
-          inertiafactor = "1.0"
-          spawnflags = "5"
-        }
-        phys_magnet:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that acts like a magnet, attaching metallic physi"
-           "cs objects to itself when they touch it."
-          forcelimit = "0"
-          torquelimit = "0"
-          massScale = "0"
-          maxobjects = "0"
-        }
-      }
+       }
+
+// light entities
+
       light_* entities.qtxfolder =
       {
-        light_environment:e =
+        light:e =
         {
           origin = "0 0 0"
-          ;desc = "Sets the color and angle of the light from the sun and sky."
-          pitch = "0"
-          _light = "255 255 255 200"
-          _ambient = "255 255 255 20"
-        }
-        light_spot:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An invisible and directional spotlight."
-          _inner_cone = "30"
-          _cone = "45"
-          _exponent = "1"
+          ;desc = "An invisible omnidirectional lightsource."
           _distance = "0"
-          pitch = "-90"
         }
         light_dynamic:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "An invisible lightsource that changes in some way over time"
            "."
           _light = "255 255 255 200"
@@ -1535,172 +1180,30 @@ QQRKSRC1
           spotlight_radius = "80"
           style = "0"
         }
-      }
-      shadow_* entities.qtxfolder =
-      {
-        shadow_control:e =
+        light_environment:e =
         {
-          origin = "0 0 0"
-          ;desc = "An entity to control the shadows in the map."
-          angles = "80 30 0"
-          color = "128 128 128"
-          distance = "75"
+         origin = "0 0 0"
+         angles = "0 0 0"
+          ;desc = "Sets the color and angle of the light from the sun and sky."
+          pitch = "0"
+          _light = "255 201 128 210"
+          _ambient = "103 143 184 50"
         }
-      }
-      keyframe_* entities.qtxfolder =
-      {
-        keyframe_track:e =
+        light_spot:e =
         {
           origin = "0 0 0"
-          ;desc = "Animation KeyFrame"
-        }
-        keyframe_rope:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A node entity that marks a point in a rope. The first node "
-           "in the rope should be a move_rope, followed by 1 or more keyframe_"
-           "ropes."
+          angles = "0 0 0"
+          ;desc = "An invisible and directional spotlight."
+          _inner_cone = "30"
+          _cone = "45"
+          _exponent = "1"
+          _distance = "0"
+          pitch = "-90"
         }
       }
-      move_* entities.qtxfolder =
-      {
-        move_keyframed:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Keyframed Move Behavior"
-        }
-        move_track:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Track Move Behavior"
-          WheelBaseLength = "50"
-          Damage = "0"
-          NoRotate = "0"
-        }
-        move_rope:e =
-        {
-          origin = "0 0 0"
-          ;desc = "The first node in set of nodes that are used to place ropes"
-           " in the world. It should connect to 1 or more keyframe_rope entiti"
-           "es."
-          PositionInterpolator = "2"
-        }
-      }
-      momentary_* entities.qtxfolder =
-      {
-        momentary_rot_button:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A brush entity that's designed to be used for rotating whee"
-           "ls, where the player can rotate them to arbitrary positions before"
-           " stopping."
-          speed = "50"
-          sounds = "0"
-          distance = "90"
-          returnspeed = "0"
-          spawnflags = "1057"
-          startposition = "0"
-          startdirection = "Forward"
-          solidbsp = "0"
-        }
-      }
-      prop_* entities.qtxfolder =
-      {
-        prop_door_rotating:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to place a door in the world."
-          hardware = "1"
-          ajarangles = "0 0 0"
-          spawnpos = "0"
-          distance = "90"
-          speed = "100"
-          returndelay = "-1"
-          dmg = "0"
-          health = "0"
-          forceclosed = "0"
-          spawnflags = "8192"
-        }
-        prop_detail:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Detail Prop"
-        }
-        prop_static:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A prop that doesn't move and doesn't animate."
-        }
-        prop_dynamic:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A prop that can be placed in hierarchy and can play animati"
-           "ons. It can also be configured to break when it takes enough damag"
-           "e. Note that the health of the object will be overridden by the he"
-           "alth inside the model, to ensure consistent health game-wide. If t"
-           "he model used by the prop is configured to be used as a prop_physi"
-           "cs (i.e. it should be physically simulated) then it CANNOT be used"
-           " as a prop_dynamic. Upon level load it will display a warning in t"
-           "he console and remove itself. Use a prop_physics instead."
-        }
-        prop_dynamic_override:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A prop that can be placed in hierarchy and can play animati"
-           "ons. It can also be configured to break when it takes enough damag"
-           "e.\nprop_dynamic_override is a prototyping entity only. It will al"
-           "low the use of models designed to be used as prop_physics."
-          health = "0"
-        }
-        prop_physics_override:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A prop that physically simulates as a single rigid body. It"
-           " can be constrained to other physics objects using hinges or other"
-           " constraints. It can also be configured to break when it takes eno"
-           "ugh damage. Health can be overridden on this version."
-          health = "0"
-        }
-        prop_physics:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A prop that physically simulates as a single rigid body. It"
-           " can be constrained to other physics objects using hinges or other"
-           " constraints. It can also be configured to break when it takes eno"
-           "ugh damage. Note that the health of the object will be overridden "
-           "by the health inside the model, to ensure consistent health game-w"
-           "ide. If the model used by the prop is configured to be used as a p"
-           "rop_dynamic (i.e. it should not be physically simulated) then it C"
-           "ANNOT be used as a prop_physics. Upon level load it will display a"
-           " warning in the console and remove itself. Use a prop_dynamic inst"
-           "ead."
-        }
-        prop_physics_multiplayer:e =
-        {
-          origin = "0 0 0"
-          ;desc = "This class is the same as prop_physics, except the runtime "
-           "collisions use a more bouncy method that avoids the prediction err"
-           "ors normal physics objects get."
-        }
-        prop_ragdoll:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A prop that physically simulates and can be articulated wit"
-           "h internal joints. The joint constraints are part of the physics m"
-           "odel."
-          spawnflags = "4"
-          fademindist = "-1"
-          fademaxdist = "0"
-          fadescale = "1"
-        }
-        prop_dynamic_ornament:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A way to attach one studio model to another as an ornament."
-           " It will render in the way that player/NPC weapons render."
-          solid = "0"
-        }
-      }
+
+// logic entities
+
       logic_* entities.qtxfolder =
       {
         logic_auto:e =
@@ -1712,15 +1215,11 @@ QQRKSRC1
            "ts based on what took place in a previous map."
           spawnflags = "1"
         }
-        logic_compare:e =
+        logic_autosave:e =
         {
           origin = "0 0 0"
-          ;desc = "Compares an input value to another value. If the input valu"
-           "e is less than the compare value, the OnLessThan output is fired w"
-           "ith the input value. If the input value is equal to the compare va"
-           "lue, the OnEqualTo output is fired with the input value. If the in"
-           "put value is greater than the compare value, the OnGreaterThan out"
-           "put is fired with the input value."
+          ;desc = "An entity that is used to force an autosave."
+          NewLevelUnit = "0"
         }
         logic_branch:e =
         {
@@ -1741,6 +1240,37 @@ QQRKSRC1
            "Case outputs that is connected to another entity will be picked at"
            " random and fired."
         }
+        logic_collision_pair:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can be used to enables/disable vphysics coll"
+           "isions between two target entities."
+          startdisabled = "1"
+        }
+       logic_compare:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Compares an input value to another value. If the input valu"
+           "e is less than the compare value, the OnLessThan output is fired w"
+           "ith the input value. If the input value is equal to the compare va"
+           "lue, the OnEqualTo output is fired with the input value. If the in"
+           "put value is greater than the compare value, the OnGreaterThan out"
+           "put is fired with the input value."
+        }
+        logic_lineto:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that calculates and outputs a vector from one ent"
+           "ity to another."
+        }
+        logic_measure_movement:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can measure the movement of an entity relati"
+           "ve to another entity and apply that movement to a third entity."
+          TargetScale = "1"
+          MeasureType = "0"
+        }        
         logic_multicompare:e =
         {
           origin = "0 0 0"
@@ -1748,7 +1278,17 @@ QQRKSRC1
            " same, fires an OnEqual output. If any are different, fires the On"
            "NotEqual output."
           ShouldComparetoValue = "0"
-        }
+        }        
+        logic_navigation:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that is used to set navigation properties on othe"
+           "r entities. Useful to make NPCs ignore physics props in their way "
+           "that they can easily push."
+          target = "Name of the entity to set navigation properties on."
+          spawnflags = "1"
+          navprop = "Ignore"
+        }        
         logic_relay:e =
         {
           origin = "0 0 0"
@@ -1767,55 +1307,12 @@ QQRKSRC1
            "me it fires."
           UseRandomTime = "0"
         }
-        logic_collision_pair:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can be used to enables/disable vphysics coll"
-           "isions between two target entities."
-          startdisabled = "1"
-        }
-        logic_lineto:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that calculates and outputs a vector from one ent"
-           "ity to another."
-        }
-        logic_navigation:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that is used to set navigation properties on othe"
-           "r entities. Useful to make NPCs ignore physics props in their way "
-           "that they can easily push."
-          target = "Name of the entity to set navigation properties on."
-          spawnflags = "1"
-          navprop = "Ignore"
-        }
-        logic_autosave:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that is used to force an autosave."
-          NewLevelUnit = "0"
-        }
-        logic_measure_movement:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can measure the movement of an entity relati"
-           "ve to another entity and apply that movement to a third entity."
-          TargetScale = "1"
-          MeasureType = "0"
-        }
       }
+
+// math entities
+
       math_* entities.qtxfolder =
       {
-        math_remap:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that remaps a range of input values to a given ra"
-           "nge of output values."
-          spawnflags = "1"
-          in1 = "0"
-          in2 = "1"
-        }
         math_colorblend:e =
         {
           origin = "0 0 0"
@@ -1840,40 +1337,158 @@ QQRKSRC1
           min = "0"
           max = "0"
         }
-      }
-      filter_* entities.qtxfolder =
-      {
-        filter_multi:e =
+        math_remap:e =
         {
           origin = "0 0 0"
-          ;desc = "A filter that tests the activator against multiple filters."
-           " This allows you to build more complex filters, such as'Allow anyo"
-           "ne on Team 1 who is also class engineer', or 'Allow everyone excep"
-           "t classes npc_zombie and npc_headcrab'."
-          filtertype = "0"
-          Negated = "0"
-        }
-        filter_activator_name:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A filter that filters by the name of the activator."
-        }
-        filter_activator_class:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A filter that filters by the class name of the activator."
-        }
-        filter_damage_type:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A damage filter that filters by the type of damage inflicte"
-           "d. This can only be used as a damage filter, not as an activator f"
-           "ilter."
-          damagetype = "64"
+          ;desc = "An entity that remaps a range of input values to a given ra"
+           "nge of output values."
+          spawnflags = "1"
+          in1 = "0"
+          in2 = "1"
         }
       }
-      physics_* entities.qtxfolder =
+
+// move entities
+
+      move_* entities.qtxfolder =
       {
+        move_keyframed:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Keyframed Move Behavior"
+        }
+        move_rope:e =
+        {
+          origin = "0 0 0"
+          ;desc = "The first node in set of nodes that are used to place ropes"
+           " in the world. It should connect to 1 or more keyframe_rope entiti"
+           "es."
+          PositionInterpolator = "2"
+        }
+        move_track:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Track Move Behavior"
+          WheelBaseLength = "50"
+          Damage = "0"
+          NoRotate = "0"
+        }
+      }
+
+// npc entities
+
+      npc_* entities.qtxfolder =
+      {
+        npc_furniture:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used for non-NPCs that need to synchronise their "
+           "animation with an NPC in a scripted_sequence. Usually a pieceof fu"
+           "rniture or door that an NPC needs to manipulate within a scripted_"
+           "sequence."
+        }
+        npc_template_maker:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that creates NPCs. The NPCs it creates are clones"
+           " of a template NPC. NPCs are spawned around this maker's origin, o"
+           "r at specified destination points."
+          Radius = "256"
+          CriterionVisibility = "2"
+          CriterionDistance = "2"
+        }
+      }
+
+// other entities
+
+      other entities.qtxfolder =
+      {
+        ai_speechfilter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can be used to control the idle speech patte"
+           "rns of a set of NPCs."
+          IdleModifier = "1.0"
+          NeverSayHello = "0"
+        }
+        ambient_generic:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Universal ambient sound. Use it to play and control a singl"
+           "e sound."
+          health = "10"
+          preset = "0"
+          volstart = "0"
+          fadein = "0"
+          fadeout = "0"
+          pitch = "100"
+          pitchstart = "100"
+          spinup = "0"
+          spindown = "0"
+          lfotype = "0"
+          lforate = "0"
+          lfomodpitch = "0"
+          lfomodvol = "0"
+          cspinup = "0"
+          radius = "1250"
+          spawnflags = "48"
+        }
+        cycler:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to display a model for testing purposes. Sho"
+           "oting it with cycle through the model's animations."
+          skin = "0"
+          sequence = "0"
+        }
+        gibshooter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that shoots out gibs. Style of body part depends "
+           "on language type."
+        }        
+        infodecal:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that places a decal on the world. If the decal ha"
+           "s no target name, it will immediately apply itself when the level "
+           "is loaded. If it has a name specified, it won't apply until it rec"
+           "eives the 'Activate' input."
+          LowPriority = "0"
+        }        
+        material_modify_control:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that can be used to directly control material var"
+           "s. To use it, you need to read the .vmt of the material you intend"
+           " to change. Parent this entity to a brush model entity who's mater"
+           "ial you want to control."
+        }        
+        momentary_rot_button:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A brush entity that's designed to be used for rotating whee"
+           "ls, where the player can rotate them to arbitrary positions before"
+           " stopping."
+          speed = "50"
+          sounds = "0"
+          distance = "90"
+          returnspeed = "0"
+          spawnflags = "1057"
+          startposition = "0"
+          startdirection = "Forward"
+          solidbsp = "0"
+        }        
+        path_track:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to build paths for other entities to follow."
+           " Each path_track is a node on the path, each holding the name of t"
+           "he next path_track in the path."
+          speed = "0"
+          radius = "0"
+          orientationtype = "1"
+        }        
         physics_cannister:e =
         {
           origin = "0 0 0"
@@ -1890,15 +1505,32 @@ QQRKSRC1
           rendercolor = "255 255 255"
           renderamt = "128"
           gassound = "ambient/objects/cannister_loop.wav"
-        }
-      }
-      tanktrain_* entities.qtxfolder =
-      {
-        tanktrain_aitarget:e =
+        }        
+        shadow_control:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that changes the target of a tanktrain_ai entity."
-        }
+          ;desc = "An entity to control the shadows in the map."
+          angles = "80 30 0"
+          color = "128 128 128"
+          distance = "75"
+        }        
+        sky_camera:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to control the 3D Skybox. Its origin is used"
+           " to determine the 3D Skybox's position relative to the map. Place "
+           "this entity, in the 3D Skybox, at the point where the origin of th"
+           "e map should be."
+          scale = "16"
+          fogenable = "0"
+          fogblend = "0"
+          use_angles = "0"
+          fogcolor = "255 255 255"
+          fogcolor2 = "255 255 255"
+          fogdir = "1 0 0"
+          fogstart = "500.0"
+          fogend = "2000.0"
+        }        
         tanktrain_ai:e =
         {
           origin = "0 0 0"
@@ -1906,29 +1538,466 @@ QQRKSRC1
           startsound = "vehicles/diesel_start1.wav"
           enginesound = "vehicles/diesel_turbo_loop1.wav"
           movementsound = "vehicles/tank_treads_loop1.wav"
-        }
-      }
-      path_* entities.qtxfolder =
-      {
-        path_track:e =
+        }        
+        tanktrain_aitarget:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity used to build paths for other entities to follow."
-           " Each path_track is a node on the path, each holding the name of t"
-           "he next path_track in the path."
-          speed = "0"
-          radius = "0"
-          orientationtype = "1"
-        }
-      }
-      test_* entities.qtxfolder =
-      {
+          ;desc = "An entity that changes the target of a tanktrain_ai entity."
+        }        
         test_traceline:e =
         {
           origin = "0 0 0"
           ;desc = "A debugging tool for testing tracelines."
+        }        
+        vgui_screen:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A VGUI screen. Useful for in-world monitors."
+        }        
+        water_lod_control:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to control the LOD behavior of any water in "
+           "the map. If your map has water, this entity is required."
+          cheapwaterstartdistance = "1000"
+          cheapwaterenddistance = "2000"
+        }        
+        worldspawn:b =
+        {
+          ;desc = "This is the world entity. Each map can only contain one, an"
+           "d it's automatically created for you."
         }
       }
+
+// phys entities
+
+      phys_* entities.qtxfolder =
+      {
+        phys_ballsocket:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A constraint that keeps the position of two objects fixed, "
+           "relative to the constraint's origin. It does not affect rotation."
+        }
+        phys_constraint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A constraint that keeps the relative position and orientati"
+           "on of two objects fixed."
+          spawnflags = "1"
+        }
+        phys_constraintsystem:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to manage a group of interacting constraints"
+           " and keep them stable. All constraints on a set of entities should"
+           " be placed in the same system, or they will fight each other durin"
+           "g simulation."
+          additionaliterations = "0"
+        }
+        phys_convert:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Turns an arbitrary entity into a physically simulated entit"
+           "y. i.e. brush entities will behave like func_physbox, model entiti"
+           "es behave like prop_physics."
+        }
+        phys_hinge:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A physically simulated hinge. Use the helper to define the "
+           "axis of rotation."
+          hingefriction = "0"
+          SystemLoadScale = "1"
+        }
+        phys_keepupright:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A controller that tries to keep an entity facing a particul"
+           "ar direction."
+          angularlimit = "15"
+        }
+        phys_lengthconstraint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A constraint that preserves the distance between two entiti"
+           "es. If the 'Keep Rigid' flag is set, think of it as a rod. If not,"
+           " think off it as a virtual rope."
+          addlength = "0"
+          minlength = "0"
+          attachpoint = "The position the rope attaches to object 2"
+          spawnflags = "1"
+        }
+        phys_magnet:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that acts like a magnet, attaching metallic physi"
+           "cs objects to itself when they touch it."
+          forcelimit = "0"
+          torquelimit = "0"
+          massScale = "0"
+          maxobjects = "0"
+        }        
+        phys_motor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that tries to spin a target entity at a particula"
+           "r speed."
+          speed = "0"
+          spinup = "1"
+          inertiafactor = "1.0"
+          spawnflags = "5"
+        }        
+        phys_pulleyconstraint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A constraint that is essentially two length constraints and"
+           " two points. Imagine it as a virtual rope connected to two objects"
+           ", each suspended from a pulley above them.The constraint keeps the"
+           " sum of the distances between the pulley points and their suspende"
+           "d objects constant."
+          addlength = "0"
+          gearratio = "1"
+          spawnflags = "1"
+        }        
+        phys_ragdollconstraint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A constraint that fixes the position of two entities, relat"
+           "ive to this constraint's origin. Also allows for limits on the rot"
+           "ation around each axis, in the space of this constraint."
+          spawnflags = "1"
+          xmin = "-90"
+          xmax = "90"
+          ymin = "0"
+          ymax = "0"
+          zmin = "0"
+          zmax = "0"
+          xfriction = "0"
+          yfriction = "0"
+          zfriction = "0"
+        }        
+        phys_ragdollmagnet:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that acts like a magnet for ragdolls. Useful for "
+           "crafting exaggerated ragdoll behavior (i.e. guys falling over rail"
+           "s on death). If the Bar Magnet spawnflag is set, the magnet works "
+           "like it was a cylindrical magnet i.e. it attracts ragdolls to the "
+           "nearest point on a line."
+          radius = "512"
+          force = "5000"
+        }       
+        phys_slideconstraint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A constraint that constrains an entity along a line segment"
+           "."
+          spawnflags = "1"
+          slidefriction = "0"
+          SystemLoadScale = "1"
+        }
+        phys_spring:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A physically simulated spring. 'Length' is what's known as "
+           "the 'natural spring length'. This is how long the spring would be "
+           "if it was at rest (nothing hanging on it or attached). When you at"
+           "tach something to the spring, it will stretch longer than its 'nat"
+           "ural length'. The amount of stretch is determined by the 'Sprint C"
+           "onstant'. The larger the spring constant the less stretch the spri"
+           "ng."
+          length = "0"
+          constant = "50"
+          damping = "2.0"
+          relativedamping = "0.1"
+          breaklength = "0"
+        }       
+        phys_thruster:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to apply constant acceleration to a physics "
+           "object. The force and torque is calculated using the position and "
+           "direction of the thruster as an impulse. So moving those off the o"
+           "bject's center will cause torque as well. Torque can be removed by"
+           " unchecking the 'apply torque' flag. The position of the thruster "
+           "can be forced to be at the object's center by checking to 'ignore "
+           "pos' flag."
+          force = "0"
+        }
+        phys_torque:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An angular thruster. Use it to apply angular force to an en"
+           "tity."
+          force = "0"
+        }
+      }
+
+// point entities
+
+      point_* entities.qtxfolder =
+      {
+        point_anglesensor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that detects if another entity points in a given "
+           "direction for a period of time."
+        }
+        point_angularvelocitysensor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that detects if another entity's angular velocity"
+           " meets or exceeds a threshold value."
+          threshold = "0"
+        }
+        point_clientcommand:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that issues commands to the client console, as if"
+           " it was typed in by the player (if activator is a player, or the l"
+           "ocal player in single player)."
+        }
+        point_devshot_camera:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used by the -makedevshots system, which automatic"
+           "ally takes screenshots at the position of every devshot camera in "
+           "the level."
+          FOV = "75"
+        }
+        point_enable_motion_fixup:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to move a motion-disabled prop when it enabl"
+           "es motion. Parent this entity to the prop, and when the prop has i"
+           "ts motion enabled, it will immediately teleport to the origin of t"
+           "his entity."
+        }
+        point_hurt:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that does damage to all entities in a radius arou"
+           "nd itself, with a specified delay.If 'Target Entity' is specified,"
+           " the damage is only done to that entity."
+          DamageRadius = "256"
+          Damage = "5"
+          DamageDelay = "1"
+          DamageType = "0"
+        }
+        point_message:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that displays a text message in the world, at its"
+           " origin."
+          radius = "128"
+          developeronly = "0"
+        }
+        point_playermoveconstraint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that constrains players to a radius around itself"
+           ", slowing them down the closer they get to the edge of the radius."
+          radius = "256"
+          width = "75.0"
+          speedfactor = "0.15"
+        }
+        point_servercommand:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that issues commands to the server console."
+        }
+        point_spotlight:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+          ;desc = "An entity to draw a spotlight. Will draw a beam when the pl"
+           "ayer views it side on, and a halo when it's facing towards the pla"
+           "yer. Unless the 'No Dynamic Light' spawnflag is checked, it will a"
+           "lso create a dynamic light wherever the end of the spotlight rests"
+           "."
+          spawnflags = "3"
+          spotlightlength = "500"
+          spotlightwidth = "50"
+          rendercolor = "255 255 255"
+        }
+        point_teleport:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that teleports a target entity to this position a"
+           "nd angles. If 'Teleport Home' spawn flag is set, teleports the tar"
+           "get entity to its spawn position instead.If object is physically s"
+           "imulated, simulation is turned off when teleported."
+        }
+        point_template:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Turns an entity, or set of entities, into a single template"
+           " that can be instanced anywhere, and multiple times. If there are "
+           "interdependencies (entity I/O, hierarchy, or other name references"
+           ") between the entities in the template, the entities in the templa"
+           "te will have their names changed and the interdependencies will be"
+           " reconnected to the changes names. The name change format is as fo"
+           "llows: '<original name>&0000', where the 0000 will be replaced wit"
+           "h the current global template instance, so wildcard searches for '"
+           "<original name>*' will still find them.\nIf you don't want the nam"
+           "e fixup to happen, because you're only spawning the template once,"
+           " or you want inputs to trigger all instances of the template, chec"
+           "k the 'Preserve entity names' spawnflag. \nTo spawn the template i"
+           "n other places, use an env_entity_maker."
+          spawnflags = "2"
+        }
+        point_tesla:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that creates tesla lightning arcs around its orig"
+           "in."
+          m_SoundName = "DoSpark"
+          texture = "sprites/physbeam.vmt"
+          m_Color = "255 255 255"
+          m_flRadius = "200"
+          beamcount_min = "6"
+          beamcount_max = "8"
+          thick_min = "4"
+          thick_max = "5"
+          lifetime_min = "0.3"
+          lifetime_max = "0.3"
+          interval_min = "0.5"
+          interval_max = "2"
+        }
+        point_viewcontrol:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A camera entity that controls the player's view. While it's"
+           " active, the player will see out of the camera."
+          wait = "10"
+          spawnflags = "3"
+          speed = "0"
+          acceleration = "500"
+          deceleration = "500"
+        }
+      }
+
+// prop entities
+
+      prop_* entities.qtxfolder =
+      {
+        prop_detail:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Detail Prop"
+        }
+        prop_door_rotating:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity used to place a door in the world."
+          hardware = "1"
+          ajarangles = "0 0 0"
+          spawnpos = "0"
+          distance = "90"
+          speed = "100"
+          returndelay = "-1"
+          dmg = "0"
+          health = "0"
+          forceclosed = "0"
+          spawnflags = "8192"
+        }
+        prop_dynamic:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+					fademindist = "-1"
+					fadescale = "1"
+          ;desc = "A prop that can be placed in hierarchy and can play animati"
+           "ons. It can also be configured to break when it takes enough damag"
+           "e. Note that the health of the object will be overridden by the he"
+           "alth inside the model, to ensure consistent health game-wide. If t"
+           "he model used by the prop is configured to be used as a prop_physi"
+           "cs (i.e. it should be physically simulated) then it CANNOT be used"
+           " as a prop_dynamic. Upon level load it will display a warning in t"
+           "he console and remove itself. Use a prop_physics instead."
+        }
+        prop_dynamic_ornament:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A way to attach one studio model to another as an ornament."
+           " It will render in the way that player/NPC weapons render."
+          solid = "0"
+        }
+        prop_dynamic_override:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+					fademindist = "-1"
+					fadescale = "1"
+          ;desc = "A prop that can be placed in hierarchy and can play animati"
+           "ons. It can also be configured to break when it takes enough damag"
+           "e.\nprop_dynamic_override is a prototyping entity only. It will al"
+           "low the use of models designed to be used as prop_physics."
+          health = "0"
+        }
+        prop_physics:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+					fademindist = "-1"
+					fadescale = "1"
+          ;desc = "A prop that physically simulates as a single rigid body. It"
+           " can be constrained to other physics objects using hinges or other"
+           " constraints. It can also be configured to break when it takes eno"
+           "ugh damage. Note that the health of the object will be overridden "
+           "by the health inside the model, to ensure consistent health game-w"
+           "ide. If the model used by the prop is configured to be used as a p"
+           "rop_dynamic (i.e. it should not be physically simulated) then it C"
+           "ANNOT be used as a prop_physics. Upon level load it will display a"
+           " warning in the console and remove itself. Use a prop_dynamic inst"
+           "ead."
+        }
+        prop_physics_multiplayer:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+					fademindist = "-1"
+					fadescale = "1"
+          ;desc = "This class is the same as prop_physics, except the runtime "
+           "collisions use a more bouncy method that avoids the prediction err"
+           "ors normal physics objects get."
+        }
+        prop_physics_override:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+					fademindist = "-1"
+					fadescale = "1"
+          ;desc = "A prop that physically simulates as a single rigid body. It"
+           " can be constrained to other physics objects using hinges or other"
+           " constraints. It can also be configured to break when it takes eno"
+           "ugh damage. Health can be overridden on this version."
+          health = "0"
+        }
+        prop_ragdoll:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A prop that physically simulates and can be articulated wit"
+           "h internal joints. The joint constraints are part of the physics m"
+           "odel."
+          spawnflags = "4"
+          fademindist = "-1"
+          fademaxdist = "0"
+          fadescale = "1"
+        }
+        prop_static:e =
+        {
+          origin = "0 0 0"
+          angles = "0 0 0"
+					fademindist = "-1"
+					fadescale = "1"
+          ;desc = "A prop that doesn't move and doesn't animate."
+        }
+      }
+
+// trigger entities
+
       trigger_* entities.qtxfolder =
       {
         trigger_autosave:b =
@@ -1957,20 +2026,6 @@ QQRKSRC1
            "t touches it."
           gravity = "1"
         }
-        trigger_playermovement:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "An entity that can be used to disable player's automatic du"
-           "cking/unducking when jumping."
-          spawnflags = "128"
-        }
-        trigger_soundscape:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Soundscape trigger. It is not necessary to create outputs f"
-           "or this trigger. It automatically will trigger the soundscape refe"
-           "rred to by its 'Soundscape' property."
-        }
         trigger_hurt:b =
         {
           ;incl = "defpoly"
@@ -1980,25 +2035,16 @@ QQRKSRC1
           damagetype = "0"
           damagemodel = "0"
         }
-        trigger_remove:b =
+        trigger_impact:b =
         {
           ;incl = "defpoly"
-          ;desc = "A trigger volume that removes any entities that touch it. B"
-           "e careful, removing some entities can cause instability. This is n"
-           "ot the same as killing entities. i.e. NPCs removed in this manner "
-           "will not fire their OnKilled outputs."
-        }
-        trigger_multiple:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A trigger volume that can be triggered multiple times."
-          wait = "1"
-        }
-        trigger_once:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A trigger volume that removes itself after it is triggered "
-           "once."
+          ;desc = "A trigger volume that can be told to push all physics objec"
+           "ts that are inside of it in the direction specified by this trigge"
+           "r's angles.\nAlso outputs the force at the time of impact for anyo"
+           "ne else that wants to use it."
+          Magnitude = "200"
+          noise = "0.1"
+          viewkick = "0.05"
         }
         trigger_look:b =
         {
@@ -2018,33 +2064,24 @@ QQRKSRC1
           FieldOfView = "0.9"
           Timeout = "0"
         }
-        trigger_push:b =
+        trigger_multiple:b =
         {
           ;incl = "defpoly"
-          ;desc = "A trigger volume that pushes entities that touch it."
-          pushdir = "0 0 0"
-          speed = "40"
+          ;desc = "A trigger volume that can be triggered multiple times."
+          wait = "1"
         }
-        trigger_wind:b =
+        trigger_once:b =
         {
           ;incl = "defpoly"
-          ;desc = "A trigger volume that pushes physics objects that touch it."
-          Speed = "200"
-          SpeedNoise = "0"
-          DirectionNoise = "10"
-          HoldTime = "0"
-          HoldNoise = "0"
+          ;desc = "A trigger volume that removes itself after it is triggered "
+           "once."
         }
-        trigger_impact:b =
+        trigger_playermovement:b =
         {
           ;incl = "defpoly"
-          ;desc = "A trigger volume that can be told to push all physics objec"
-           "ts that are inside of it in the direction specified by this trigge"
-           "r's angles.\nAlso outputs the force at the time of impact for anyo"
-           "ne else that wants to use it."
-          Magnitude = "200"
-          noise = "0.1"
-          viewkick = "0.05"
+          ;desc = "An entity that can be used to disable player's automatic du"
+           "cking/unducking when jumping."
+          spawnflags = "128"
         }
         trigger_proximity:b =
         {
@@ -2054,6 +2091,28 @@ QQRKSRC1
            "erDistance output will be 0 when the player is at the center point"
            ", and 1 when the player is at the radius."
           radius = "256"
+        }
+        trigger_push:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A trigger volume that pushes entities that touch it."
+          pushdir = "0 0 0"
+          speed = "40"
+        }
+        trigger_remove:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A trigger volume that removes any entities that touch it. B"
+           "e careful, removing some entities can cause instability. This is n"
+           "ot the same as killing entities. i.e. NPCs removed in this manner "
+           "will not fire their OnKilled outputs."
+        }
+        trigger_soundscape:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Soundscape trigger. It is not necessary to create outputs f"
+           "or this trigger. It automatically will trigger the soundscape refe"
+           "rred to by its 'Soundscape' property."
         }
         trigger_teleport:b =
         {
@@ -2074,38 +2133,15 @@ QQRKSRC1
            "thin the trigger_transition(s) will go to the next map.See trigger"
            "_changelevel for more info."
         }
-      }
-      ai_* entities.qtxfolder =
-      {
-        ai_speechfilter:e =
+        trigger_wind:b =
         {
-          origin = "0 0 0"
-          ;desc = "An entity that can be used to control the idle speech patte"
-           "rns of a set of NPCs."
-          IdleModifier = "1.0"
-          NeverSayHello = "0"
-        }
-      }
-      water_* entities.qtxfolder =
-      {
-        water_lod_control:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity used to control the LOD behavior of any water in "
-           "the map. If your map has water, this entity is required."
-          cheapwaterstartdistance = "1000"
-          cheapwaterenddistance = "2000"
-        }
-      }
-      material_* entities.qtxfolder =
-      {
-        material_modify_control:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity that can be used to directly control material var"
-           "s. To use it, you need to read the .vmt of the material you intend"
-           " to change. Parent this entity to a brush model entity who's mater"
-           "ial you want to control."
+          ;incl = "defpoly"
+          ;desc = "A trigger volume that pushes physics objects that touch it."
+          Speed = "200"
+          SpeedNoise = "0"
+          DirectionNoise = "10"
+          HoldTime = "0"
+          HoldNoise = "0"
         }
       }
     }

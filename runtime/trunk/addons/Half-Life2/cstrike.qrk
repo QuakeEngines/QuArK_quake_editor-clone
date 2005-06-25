@@ -2,6 +2,8 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: cstrike.qrk
 
+// entities for CS Source. updated june/25/2005 by cbxpm.
+
 {
   Toolbox Folders.qtx =
   {
@@ -10,6 +12,9 @@ QQRKSRC1
     CS Source Entities.qtxfolder =
     {
       ;desc = "Created from F:\privat\sourcecode\quark\cstrike.fgd"
+
+// filter entities
+
       filter_* entities.qtxfolder =
       {
         filter_activator_team:e =
@@ -19,8 +24,17 @@ QQRKSRC1
           filterteam = "2"
         }
       }
+
+// info entities
+
       info_* entities.qtxfolder =
       {
+        info_map_parameters:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Map parameters. Currently used only to set the C4 bomb deto"
+           "nation radius."
+        }
         info_player_counterterrorist:e =
         {
           origin = "0 0 0"
@@ -28,6 +42,12 @@ QQRKSRC1
            "ne of these needs to be placed for each team member. 20 start poin"
            "ts is typical. Should be placed at least 128 units away from each "
            "other and surrounding walls"
+        }
+        info_player_logo:e =
+        {
+          origin = "0 0 0"
+          ;desc = "This is for logo maps for demos. All players will spawn her"
+           "e, and there will be no class menu, team menu, or HUD."
         }
         info_player_terrorist:e =
         {
@@ -37,12 +57,6 @@ QQRKSRC1
            "pical. Should be placed at least 128 units away from each other an"
            "d surrounding walls."
         }
-        info_player_logo:e =
-        {
-          origin = "0 0 0"
-          ;desc = "This is for logo maps for demos. All players will spawn her"
-           "e, and there will be no class menu, team menu, or HUD."
-        }
         info_view_parameters:e =
         {
           origin = "0 0 0"
@@ -51,13 +65,10 @@ QQRKSRC1
            "er-Strike settings (eye height: 53.5, FOV: 90)."
           ViewMode = "0"
         }
-        info_map_parameters:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Map parameters. Currently used only to set the C4 bomb deto"
-           "nation radius."
-        }
       }
+
+// hostage entities
+
       hostage_* entities.qtxfolder =
       {
         hostage_entity:e =
@@ -69,6 +80,9 @@ QQRKSRC1
           HostageType = "0"
         }
       }
+
+// env entities
+
       env_* entities.qtxfolder =
       {
         env_detail_controller:e =
@@ -80,154 +94,160 @@ QQRKSRC1
           fademaxdist = "1200"
         }
       }
+
+// weapon entities
+
       weapon_* entities.qtxfolder =
       {
-        weapon_knife:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Knife"
-        }
-        weapon_flashbang:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Flashbang"
-        }
-        weapon_hegrenade:e =
-        {
-          origin = "0 0 0"
-          ;desc = "HE Grenade"
-        }
-        weapon_smokegrenade:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Smoke Grenade"
-        }
-        weapon_c4:e =
-        {
-          origin = "0 0 0"
-          ;desc = "C4 Bomb"
-        }
-        weapon_glock:e =
-        {
-          origin = "0 0 0"
-          ;desc = "9X19mm Sidearm"
-        }
-        weapon_usp:e =
-        {
-          origin = "0 0 0"
-          ;desc = "K&M .45 Tactical"
-        }
-        weapon_p228:e =
-        {
-          origin = "0 0 0"
-          ;desc = "228 Compact"
-        }
-        weapon_deagle:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Night Hawk .50C"
-        }
-        weapon_fiveseven:e =
-        {
-          origin = "0 0 0"
-          ;desc = "ES Five-Seven"
-        }
-        weapon_elite:e =
-        {
-          origin = "0 0 0"
-          ;desc = ".40 Dual Elites"
-        }
-        weapon_m3:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Leone 12 Gauge Super"
-        }
-        weapon_xm1014:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Leone YG1265 Auto Shotgun"
-        }
-        weapon_tmp:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Schmidt Machine Pistol"
-        }
-        weapon_mp5navy:e =
-        {
-          origin = "0 0 0"
-          ;desc = "K&M Sub-Machine Gun"
-        }
-        weapon_ump45:e =
-        {
-          origin = "0 0 0"
-          ;desc = "K&M UMP45"
-        }
-        weapon_p90:e =
-        {
-          origin = "0 0 0"
-          ;desc = "ES C90"
-        }
-        weapon_mac10:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Ingram MAC-10"
-        }
-        weapon_galil:e =
-        {
-          origin = "0 0 0"
-          ;desc = "IDF Defender"
-        }
         weapon_ak47:e =
         {
           origin = "0 0 0"
           ;desc = "CV-47"
-        }
-        weapon_sg552:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Krieg 552 Commando"
-        }
-        weapon_famas:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Clarion 5.56"
-        }
-        weapon_m4a1:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Maverick M4A1 Carbine"
         }
         weapon_aug:e =
         {
           origin = "0 0 0"
           ;desc = "Bullpup"
         }
-        weapon_scout:e =
+        weapon_awp:e =
         {
           origin = "0 0 0"
-          ;desc = "Schmidt Scout"
+          ;desc = "Magnum Sniper Rifle"
+        }
+        weapon_c4:e =
+        {
+          origin = "0 0 0"
+          ;desc = "C4 Bomb"
+        }
+        weapon_deagle:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Night Hawk .50C"
+        }
+        weapon_elite:e =
+        {
+          origin = "0 0 0"
+          ;desc = ".40 Dual Elites"
+        }
+        weapon_famas:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Clarion 5.56"
+        }
+        weapon_fiveseven:e =
+        {
+          origin = "0 0 0"
+          ;desc = "ES Five-Seven"
+        }
+        weapon_flashbang:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Flashbang"
         }
         weapon_g3sg1:e =
         {
           origin = "0 0 0"
           ;desc = "D3/AU-1 Semi-Auto Sniper Rifle"
+        }        
+        weapon_galil:e =
+        {
+          origin = "0 0 0"
+          ;desc = "IDF Defender"
+        }        
+        weapon_glock:e =
+        {
+          origin = "0 0 0"
+          ;desc = "9X19mm Sidearm"
+        }        
+        weapon_hegrenade:e =
+        {
+          origin = "0 0 0"
+          ;desc = "HE Grenade"
+        }        
+        weapon_knife:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Knife"
+        }        
+        weapon_m249:e =
+        {
+          origin = "0 0 0"
+          ;desc = "ES M249 Para"
+        }        
+        weapon_m3:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Leone 12 Gauge Super"
+        }        
+        weapon_m4a1:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Maverick M4A1 Carbine"
+        }        
+        weapon_mac10:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Ingram MAC-10"
+        }        
+        weapon_mp5navy:e =
+        {
+          origin = "0 0 0"
+          ;desc = "K&M Sub-Machine Gun"
+        }        
+        weapon_p228:e =
+        {
+          origin = "0 0 0"
+          ;desc = "228 Compact"
+        }        
+        weapon_p90:e =
+        {
+          origin = "0 0 0"
+          ;desc = "ES C90"
+        }
+        weapon_scout:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Schmidt Scout"
         }
         weapon_sg550:e =
         {
           origin = "0 0 0"
           ;desc = "Krieg 550 Commando"
         }
-        weapon_awp:e =
+        weapon_sg552:e =
         {
           origin = "0 0 0"
-          ;desc = "Magnum Sniper Rifle"
+          ;desc = "Krieg 552 Commando"
         }
-        weapon_m249:e =
+        weapon_smokegrenade:e =
         {
           origin = "0 0 0"
-          ;desc = "ES M249 Para"
+          ;desc = "Smoke Grenade"
+        }
+        weapon_tmp:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Schmidt Machine Pistol"
+        }
+        weapon_ump45:e =
+        {
+          origin = "0 0 0"
+          ;desc = "K&M UMP45"
+        }
+        weapon_usp:e =
+        {
+          origin = "0 0 0"
+          ;desc = "K&M .45 Tactical"
+        }
+        weapon_xm1014:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Leone YG1265 Auto Shotgun"
         }
       }
+
+// item entities
+
       item_* entities.qtxfolder =
       {
         item_defuser:e =
@@ -236,31 +256,11 @@ QQRKSRC1
           ;desc = "Defuse Kit"
         }
       }
+
+// func entities
+
       func_* entities.qtxfolder =
       {
-        func_ladder:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Ladder. Players will be able to freely along this brush, as"
-           " if it was a ladder. If you are using a model prop for the visual "
-           "representation of the ladder in the map, apply the toolsinvisiblel"
-           "adder material to the func_ladder brush."
-        }
-        func_physbox_multiplayer:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "This class is the same as func_physbox, except the runtime "
-           "collisions use a more bouncy method that avoids the prediction err"
-           "ors normal physics objects get."
-        }
-        func_buyzone:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Buy Zone. Players can buy equipment while standing in this "
-           "zone, if the zone matches their current team.\n\nA single Buy Zone"
-           " entity must be either terrorist or counter-terrorist, it cannot b"
-           "e both. Should have the toolstrigger material applied to all sides"
-        }
         func_bomb_target:b =
         {
           ;incl = "defpoly"
@@ -275,13 +275,39 @@ QQRKSRC1
            $6172652070726F766964656420746F206164642076697375616C20616E64206461
            $6D61676520656666656374732E
         }
+        func_buyzone:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Buy Zone. Players can buy equipment while standing in this "
+           "zone, if the zone matches their current team.\n\nA single Buy Zone"
+           " entity must be either terrorist or counter-terrorist, it cannot b"
+           "e both. Should have the toolstrigger material applied to all sides"
+        }
         func_hostage_rescue:b =
         {
           ;incl = "defpoly"
           ;desc = "Hostage Rescue Zone. When a hostage is led into this zone, "
            "it is marked as rescued."
         }
+				func_ladder:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Ladder. Players will be able to freely along this brush, as"
+           " if it was a ladder. If you are using a model prop for the visual "
+           "representation of the ladder in the map, apply the toolsinvisiblel"
+           "adder material to the func_ladder brush."
+        }
+        func_physbox_multiplayer:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "This class is the same as func_physbox, except the runtime "
+           "collisions use a more bouncy method that avoids the prediction err"
+           "ors normal physics objects get."
+        }
       }
+
+// point entities
+
       point_* entities.qtxfolder =
       {
         point_surroundtest:e =

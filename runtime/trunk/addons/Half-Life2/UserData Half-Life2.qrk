@@ -2,6 +2,8 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: UserData Half-Life2.qrk
 
+// Last changes june/25/2005 by cbxpm
+
 {
   Description = "Custom configuration file for Half-Life 2."
   MapObjPanel.qrk =
@@ -48,6 +50,7 @@ QQRKSRC1
       {
         origin = "0 0 0"
         _light = "255 255 255 300"
+        fixedscale = "1"
       }
     }
     light_spot: =
@@ -76,6 +79,18 @@ QQRKSRC1
         rendercolor = "255 255 255"
       }
     }
+
+    light_environment: =
+    {
+      light_environment:e =
+      {
+         origin = "0 0 0"
+         angles = "0 0 0"
+         pitch = "0"
+         _light = "255 201 128 210"
+         _ambient = "103 143 184 50"
+      }
+		}
     infodecal: =
     {
       infodecal:e =
