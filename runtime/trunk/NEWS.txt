@@ -15,11 +15,15 @@ $Id$
 
 6.4.1 alpha 4
 =============
+ 
+ * [cbxpm]:  HL2 / Source engine content update
+    -  Entity files have now alphabetical order
+
  * [alexander]: 
      - QuArK can display HL2 Materials now
 
  * [cbxpm]:  HL2 / Source engine content update
-     - Prepared material files to be used with shaders
+     - Prepared material files to work with shaders
      - UserData Half-Life2 updated (more quick selectable entities)     
 
  * [alexander]: 

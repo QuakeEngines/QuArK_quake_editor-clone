@@ -2,6 +2,8 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: halflife2.qrk
 
+// hl2sp (singleplayer) entities. last changes june/26/2005 by cbxpm.
+
 {
   Toolbox Folders.qtx =
   {
@@ -9,646 +11,191 @@ QQRKSRC1
     Root = "HL2 SP Entities.qtxfolder"
     HL2 SP Entities.qtxfolder =
     {
-      ;desc = "Created from F:\privat\sourcecode\quark\halflife2.fgd"
-      prop_* entities.qtxfolder =
+
+// ai entities
+
+      ai_* entities.qtxfolder =
       {
-        prop_combine_ball:e =
+        ai_ally_manager:e =
         {
           origin = "0 0 0"
-          ;desc = "A prop that physically simulates as a single rigid body. It"
-           " can be constrained to other physics objects using hinges or other"
-           " constraints. It can also be configured to break when it takes eno"
-           "ugh damage."
+          ;desc = "AI Ally Manager"
+          maxallies = "5"
+          maxmedics = "1"
         }
-        prop_thumper:e =
+        ai_battle_line:e =
         {
           origin = "0 0 0"
-          ;desc = "Thumper"
-          model = "models/props_combine/CombineThumper002.mdl"
-          dustscale = "Small Thumper"
+          ;desc = "Battle line"
+          Active = "0"
+          Strict = "1"
         }
-        prop_vehicle:e =
+        ai_changehintgroup:e =
         {
           origin = "0 0 0"
-          ;desc = "Studiomodel vehicle that can be driven via inputs."
+          ;desc = "Change Hint Group"
+          SearchType = "0"
+          Radius = "0.0"
+          hintlimiting = "0"
         }
-        prop_vehicle_driveable:e =
+        ai_changetarget:e =
         {
           origin = "0 0 0"
-          ;desc = "Generic driveable studiomodel vehicle."
+          ;desc = "Change Target"
         }
-        prop_vehicle_apc:e =
+        ai_citizen_response_system:e =
         {
           origin = "0 0 0"
-          ;desc = "APC with mounted guns, can only be driven by a vehicle driv"
-           "er or a npc_apcdriver."
+          ;desc = "If placed in the level, will manage citizens responses to p"
+           "layer's actions."
         }
-        prop_vehicle_jeep:e =
+        ai_goal_actbusy:e =
         {
           origin = "0 0 0"
-          ;desc = "Driveable studiomodel jeep."
-        }
-        prop_vehicle_airboat:e =
+          ;desc = "AI Goal Act Busy"
+        }        
+        ai_goal_actbusy_queue:e =
         {
           origin = "0 0 0"
-          ;desc = "Driveable studiomodel airboat."
-          model = "models/airboat.mdl"
-          vehiclescript = "scripts/vehicles/airboat.txt"
-          EnableGun = "0"
-        }
-        prop_vehicle_cannon:e =
+          ;desc = "AI Goal Act Busy Queue"
+          mustreachfront = "0"
+        }        
+        ai_goal_assault:e =
         {
           origin = "0 0 0"
-          ;desc = "Driveable studiomodel cannon."
-        }
-        prop_vehicle_crane:e =
+          ;desc = "AI Goal Assault"
+          SearchType = "0"
+          StartActive = "0"
+          AssaultCue = "1"
+        }        
+        ai_goal_follow:e =
         {
           origin = "0 0 0"
-          ;desc = "Driveable studiomodel crane."
-        }
-        prop_vehicle_prisoner_pod:e =
+          ;desc = "AI Goal Follow"
+          SearchType = "0"
+          StartActive = "0"
+          MaximumState = "1"
+          Formation = "0"
+        }        
+        ai_goal_lead:e =
         {
           origin = "0 0 0"
-          ;desc = "Combine prisoner pod that the player can ride in."
-          model = "models/vehicles/prisoner_pod.mdl"
-          vehiclescript = "scripts/vehicles/prisoner_pod.txt"
-        }
-      }
-      trigger_* entities.qtxfolder =
-      {
-        trigger_physics_trap:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A volumetric trigger that disintegrates enemies"
-          dissolvetype = "Energy"
-        }
-        trigger_weapon_dissolve:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A volumetric trigger that dissolves all weapons within it"
-        }
-        trigger_weapon_strip:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A volumetric trigger that strips combat characters of all w"
-           "eapons"
-          KillWeapons = "No"
-        }
-        trigger_waterydeath:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A trigger volume that spawns leeches around entities inside"
-           " it, and does damage to them until they die. Used to prevent playe"
-           "rs entering deep water."
-        }
-        trigger_rpgfire:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A volumetric trigger that triggers whenever an RPG is fired"
-           " within it."
-        }
-        trigger_vphysics_motion:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A volumetric trigger that affects the motion of vphysics ob"
-           "jects that touch it."
-          StartDisabled = "0"
-          SetGravityScale = "1.0"
-          SetAdditionalAirDensity = "0"
-          SetVelocityLimit = "0.0"
-          SetVelocityLimitDelta = "0.0"
-          SetVelocityScale = "1.0"
-          SetAngVelocityLimit = "0.0"
-          SetAngVelocityScale = "1.0"
-          SetLinearForce = "0.0"
-          SetLinearForceAngles = "0 0 0"
-          ParticleTrailLifetime = "4"
-          ParticleTrailStartSize = "2"
-          ParticleTrailEndSize = "3"
-        }
-      }
-      func_* entities.qtxfolder =
-      {
-        func_combine_ball_spawner:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A volumetric trigger that bestows super armor to the player"
-          spawnflags = "4096"
-          ballcount = "3"
-          minspeed = "300.0"
-          maxspeed = "600.0"
-          ballradius = "20.0"
-          balltype = "Combine Energy Ball 1"
-          ballrespawntime = "4.0f"
-        }
-        func_healthcharger:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Wall health recharger"
-        }
-        func_recharge:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Battery recharger"
-        }
-        func_vehicleclip:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Vehicle Clip"
-        }
-        func_lookdoor:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A door that moves either when looked by a targeted object o"
-           "r when a target object comes near the door.  Behavior can be eithe"
-           "r based on viewing direction or proximity alone, or on a combinati"
-           "on of both.  If inverted the doors behavior will be the opposite."
-          ProximityDistance = "0.0"
-          ProximityOffset = "0.0"
-          FieldOfView = "0.0"
-        }
-        func_tank:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Brush Gun Turret"
-          bullet = "0"
-        }
-        func_tankpulselaser:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Brush Pulse Laser"
-          PulseSpeed = "1000"
-          PulseColor = "255 0 0"
-          PulseWidth = "20"
-          PulseLife = "2"
-          PulseLag = "0.05"
-        }
-        func_tanklaser:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Brush Laser Turret"
-        }
-        func_tankrocket:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Brush Rocket Turret"
-          rocketspeed = "800"
-        }
-        func_tankairboatgun:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Airboat Gun Turret"
-        }
-        func_tankapcrocket:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "APC Rocket Turret"
-          rocketspeed = "800"
-          burstcount = "10"
-        }
-        func_tankmortar:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Brush Mortar Turret"
-          iMagnitude = "100"
-          firedelay = "2"
-          warningtime = "1"
-          firevariance = "0"
-        }
-        func_tankphyscannister:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "PhysCannister Turret"
-        }
-        func_monitor:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "A monitor that renders the view from a given point_camera e"
-           "ntity."
-        }
-      }
-      npc_* entities.qtxfolder =
-      {
-        npc_combine_camera:e =
+          ;desc = "AI Goal Lead"
+          SearchType = "0"
+        }        
+        ai_goal_lead_weapon:e =
         {
           origin = "0 0 0"
-          ;desc = "Combine security camera"
-          spawnflags = "32"
-          innerradius = "300"
-          outerradius = "450"
-          minhealthdmg = "0"
-        }
-        npc_turret_ground:e =
+          ;desc = "AI Goal Lead (Weapon). A version of the ai_goal_lead entity"
+           " that requires the player to have the specified weapon before the "
+           "Actor(s) will lead the player to their target."
+          WeaponName = "weapon_bugbait"
+          SearchType = "0"
+        }        
+        ai_goal_police:e =
         {
           origin = "0 0 0"
-          ;desc = "Combine ground turret"
-        }
-        npc_turret_ceiling:e =
+          ;desc = "AI Goal Police"
+          policeradius = "512"
+        }        
+        ai_goal_standoff:e =
         {
           origin = "0 0 0"
-          ;desc = "Combine Ceiling Turret"
-          spawnflags = "32"
-          minhealthdmg = "0"
-        }
-        npc_turret_floor:e =
+          ;desc = "AI Goal Standoff"
+          SearchType = "0"
+          StartActive = "0"
+          HintGroupChangeReaction = "1"
+          Aggressiveness = "2"
+          PlayerBattleline = "1"
+          StayAtCover = "0"
+          AbandonIfEnemyHides = "0"
+        }        
+        ai_relationship:e =
         {
           origin = "0 0 0"
-          ;desc = "Combine Floor Turret"
-        }
-        npc_vehicledriver:e =
-        {
-          origin = "0 0 0"
-          ;desc = "NPC used to drive a target vehicle."
-          drivermaxspeed = "1"
-          driverminspeed = "0"
-        }
-        npc_cranedriver:e =
-        {
-          origin = "0 0 0"
-          ;desc = "NPC used to drive cranes."
-          releasepause = "0"
-        }
-        npc_apcdriver:e =
-        {
-          origin = "0 0 0"
-          ;desc = "NPC used to drive an APC vehicle."
-          drivermaxspeed = "1"
-          driverminspeed = "0"
-        }
-        npc_rollermine:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Roller Mine"
-          startburied = "No"
-        }
-        npc_missiledefense:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Missile Defense"
-        }
-        npc_sniper:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Sniper"
+          ;desc = "AI Relationship - Sets relationships between groups of NPCs"
+           " in the AI."
+          disposition = "3"
           radius = "0"
-          misses = "0"
-          beambrightness = "100"
-          shielddistance = "64"
-          shieldradius = "48"
-        }
-        npc_antlion:e =
+          rank = "0"
+          StartActive = "0"
+          Reciprocal = "0"
+        }        
+        ai_script_conditions:e =
         {
           origin = "0 0 0"
-          ;desc = "Antlions will run away from ai_sound, type: Thumper."
-          startburrowed = "No"
-          radius = "256"
-          eludedist = "1024"
-          ignorebugbait = "No"
+          ;desc = "AI Script Conditions"
+          StartDisabled = "1"
+          MinimumState = "1"
+          MaximumState = "3"
+          ScriptStatus = "0"
+          RequiredTime = "0"
+          MinTimeout = "0"
+          MaxTimeout = "0"
+          ActorSeePlayer = "2"
+          PlayerActorProximity = "0"
+          PlayerActorFOV = "360"
+          PlayerActorFOVTrueCone = "0"
+          PlayerActorLOS = "2"
+          ActorSeeTarget = "2"
+          ActorTargetProximity = "0"
+          PlayerTargetProximity = "0"
+          PlayerTargetFOV = "360"
+          PlayerTargetFOVTrueCone = "0"
+          PlayerTargetLOS = "2"
+          PlayerBlockingActor = "2"
         }
-        npc_antlionguard:e =
+        ai_sound:e =
         {
           origin = "0 0 0"
-          ;desc = "Antlion Guard"
-          startburrowed = "No"
-          allowbark = "No"
-        }
-        npc_crow:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Crow"
-        }
-        npc_seagull:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Seagull"
-        }
-        npc_pigeon:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Pigeon"
-        }
-        npc_ichthyosaur:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Ichthyosaur. Not fully functional"
-        }
-        npc_headcrab:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Headcrab"
-        }
-        npc_headcrab_fast:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Fast Headcrab"
-        }
-        npc_headcrab_black:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Black Headcrab"
-        }
-        npc_stalker:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Stalker"
-          BeamPower = "Low"
-        }
-        npc_bullseye:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Bullseye"
-          health = "35"
-        }
-        npc_enemyfinder:e =
-        {
-          origin = "0 0 0"
-          ;desc = "EnemyFinder"
-          spawnflags = "65536"
-          FieldOfView = "0.2"
-          MinSearchDist = "0"
-          MaxSearchDist = "2048"
-          freepass_timetotrigger = "0"
-          freepass_duration = "0"
-          freepass_movetolerance = "120"
-          freepass_refillrate = "0.5"
-          freepass_peektime = "0"
-          StartOn = "1"
-        }
-        npc_citizen:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Citizen"
-          spawnflags = "262144"
-          additionalequipment = "0"
-          ammosupply = "SMG1"
-          ammoamount = "1"
-          citizentype = "Default"
-          expressiontype = "Random"
-          model = "models/humans/group01/male_01.mdl"
-          notifynavfailblocked = "0"
-        }
-        npc_barney:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Barney"
-          additionalequipment = "weapon_pistol"
-        }
-        npc_combine_s:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Combine Soldier"
-          model = "models/combine_soldier.mdl"
-        }
-        npc_launcher:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Launcher"
-          spawnflags = "65536"
-          StartOn = "0"
-          MissileModel = "models/Weapons/wscanner_grenade.mdl"
-          LaunchSound = "npc/waste_scanner/grenade_fire.wav"
-          FlySound = "ambient/objects/machine2.wav"
-          SmokeTrail = "1"
-          LaunchSmoke = "1"
-          LaunchDelay = "8"
-          LaunchSpeed = "200"
-          HomingSpeed = "0"
-          HomingStrength = "10"
-          HomingDelay = "0"
-          HomingRampUp = "0.5"
-          HomingDuration = "5"
-          HomingRampDown = "1.0"
-          Gravity = "1.0"
-          MinRange = "100"
-          MaxRange = "2048"
-          SpinMagnitude = "0"
-          SpinSpeed = "0"
-          Damage = "50"
-          DamageRadius = "200"
-        }
-        npc_vortigaunt:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Vortigaunt"
-          model = "models/vortigaunt.mdl"
-          ArmorRechargeEnabled = "1"
-        }
-        npc_spotlight:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Spotlight"
-          spawnflags = "196608"
-          health = "100"
-          YawRange = "90"
-          PitchMin = "35"
-          PitchMax = "50"
-          IdleSpeed = "2"
-          AlertSpeed = "5"
-          spotlightlength = "500"
-          spotlightwidth = "50"
-          rendercolor = "255 255 255"
-        }
-        npc_strider:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Strider"
-          disablephysics = "0"
-        }
-        npc_barnacle:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Barnacle"
-          RestDist = "16"
-        }
-        npc_combinegunship:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Combine Gunship"
-        }
-        npc_combinedropship:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Combine Dropship"
-          GunRange = "2048"
-          Invulnerable = "0"
-          CrateType = "2"
-        }
-        npc_helicopter:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Helicopter"
-          InitialSpeed = "0"
-          GracePeriod = "2.0"
-          PatrolSpeed = "0"
-        }
-        npc_heli_avoidsphere:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Helicopter avoidance sphere"
-          radius = "128"
-        }
-        npc_heli_avoidbox:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Helicopter avoidance box"
-        }
-        npc_heli_nobomb:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Helicopter bombing suppressor"
-        }
-        npc_fastzombie:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Fast Zombie"
-        }
-        npc_zombie:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Zombie"
-        }
-        npc_zombie_torso:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Zombie Torso"
-        }
-        npc_poisonzombie:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A bloated, disgusting, fluid-spurting zombie created by a p"
-           "oison headcrab."
-          crabcount = "3"
-        }
-        npc_cscanner:e =
-        {
-          origin = "0 0 0"
-          ;desc = "City Scanner"
-          spotlightlength = "500"
-          spotlightwidth = "50"
-          spotlightdisabled = "0"
-          ShouldInspect = "1"
-          OnlyInspectPlayers = "0"
-          NeverInspectPlayers = "0"
-        }
-        npc_manhack:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Manhack"
-        }
-        npc_mortarsynth:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Mortar Synth"
-        }
-        npc_metropolice:e =
-        {
-          origin = "0 0 0"
-          ;desc = "MetroPolice"
-          additionalequipment = "weapon_pistol"
-          manhacks = "0"
-          weapondrawn = "0"
-        }
-        npc_crabsynth:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Crab Synth"
-        }
-        npc_monk:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Monk"
-          additionalequipment = "weapon_annabelle"
-          HasGun = "1"
-        }
-        npc_alyx:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Alyx"
-          model = "models/alyx.mdl"
-          additionalequipment = "weapon_alyxgun"
-        }
-        npc_kleiner:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Kleiner"
-        }
-        npc_eli:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Eli Vance"
-          model = "models/eli.mdl"
-        }
-        npc_breen:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Dr Breen"
-          model = "models/breen.mdl"
-        }
-        npc_mossman:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Dr Mossman"
-        }
-        npc_gman:e =
-        {
-          origin = "0 0 0"
-          ;desc = "The G-Man"
-        }
-        npc_dog:e =
-        {
-          origin = "0 0 0"
-          ;desc = "d0g"
-        }
-        npc_maker:e =
-        {
-          origin = "0 0 0"
-          ;desc = "NPC Maker"
-          additionalequipment = "0"
-        }
-        npc_antlion_template_maker:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Antlion Template Maker"
-          spawnradius = "512"
-          vehicledistance = "1"
-          ignorebugbait = "0"
-          pool_start = "0"
-          pool_max = "0"
-          pool_regen_amount = "0"
-          pool_regen_time = "0"
+          ;desc = "This entity makes sounds or smells that can be sensed by NP"
+           "Cs, butnot by the player. This can be used to cause reactions in n"
+           "earby NPCs.\n\nSound Types\n  Combat: Will cause most NPCs to beco"
+           "me alert\n  World: Will cause most NPCs to become alert\n  Danger:"
+           " Will cause most NPCs to move away from the position of the sound\"
+           "n  Bullet Impact: \n  Carcass: \n  Meat: \n  Garbage: \n  Thumper:"
+           " causes antlions to run away briefly\n  Readiness: (Low, Medium, H"
+           "igh) Causes player companions that can hear this sound to change r"
+           "eadiness\n"
+          soundtype = "0"
         }
       }
-      info_* entities.qtxfolder =
-      {
-        info_snipertarget:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Sniper Target"
-          speed = "2"
-        }
-        info_target_gunshipcrash:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Gunship Crash Target"
-        }
-        info_apc_missile_hint:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "Something that helps APC missiles guide. If the missile can"
-           " hit the associated target entitybetween the time it takes the cur"
-           "rent enemy to enter + leave the hint, then the missile will guide "
-           "to the entity."
-        }
-        info_teleporter_countdown:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Countdown timer for the teleporter. The status of the telep"
-           "orter will appear on vgui_screen entities whose panel is 'teleport"
-           "_countdown_screen'."
-        }
-      }
+
+// env entities
+
       env_* entities.qtxfolder =
       {
+        env_alyxemp:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Special effect for the Alyx's EMP device."
+          Type = "0"
+        }
+        env_ar2explosion:e =
+        {
+          origin = "0 0 0"
+          ;desc = "AR2 explosion visual effect. Big, volume-filling brown clou"
+           "d. Does not cause damage or emit sound."
+          material = "particle/particle_noisesphere"
+        }
+        env_citadel_energy_core:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Special effect for the energy cores in citadel."
+          scale = "1"
+        }
+        env_flare:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Flare"
+          scale = "1"
+          duration = "30"
+        }
+        env_global:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity to control a game-specific global states."
+        }
         env_gunfire:e =
         {
           origin = "0 0 0"
@@ -679,42 +226,28 @@ QQRKSRC1
           Damage = "150"
           DamageRadius = "750"
           SmokeLifetime = "30"
-        }
-        env_global:e =
-        {
-          origin = "0 0 0"
-          ;desc = "An entity to control a game-specific global states."
-        }
-        env_rotorwash:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Rotorwash Effect"
-        }
-        env_ar2explosion:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AR2 explosion visual effect. Big, volume-filling brown clou"
-           "d. Does not cause damage or emit sound."
-          material = "particle/particle_noisesphere"
-        }
-        env_starfield:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Starfield effect"
-        }
-        env_flare:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Flare"
-          scale = "1"
-          duration = "30"
-        }
+        }        
         env_muzzleflash:e =
         {
           origin = "0 0 0"
           ;desc = "Muzzle Flash"
           scale = "1"
-        }
+        }        
+        env_rotorwash:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Rotorwash Effect"
+        }        
+        env_speaker:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Announcement Speaker"
+        }        
+        env_starfield:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Starfield effect"
+        }        
         env_terrainmorph:e =
         {
           origin = "0 0 0"
@@ -728,50 +261,805 @@ QQRKSRC1
           duration = "3"
           fraction = "1"
         }
-        env_speaker:e =
+      }
+
+// func entities
+
+      func_* entities.qtxfolder =
+      {
+        func_combine_ball_spawner:b =
         {
-          origin = "0 0 0"
-          ;desc = "Announcement Speaker"
+          ;incl = "defpoly"
+          ;desc = "A volumetric trigger that bestows super armor to the player"
+          spawnflags = "4096"
+          ballcount = "3"
+          minspeed = "300.0"
+          maxspeed = "600.0"
+          ballradius = "20.0"
+          balltype = "Combine Energy Ball 1"
+          ballrespawntime = "4.0f"
         }
-        env_citadel_energy_core:e =
+        func_healthcharger:b =
         {
-          origin = "0 0 0"
-          ;desc = "Special effect for the energy cores in citadel."
-          scale = "1"
+          ;incl = "defpoly"
+          ;desc = "Wall health recharger"
         }
-        env_alyxemp:e =
+        func_lookdoor:b =
         {
-          origin = "0 0 0"
-          ;desc = "Special effect for the Alyx's EMP device."
-          Type = "0"
+          ;incl = "defpoly"
+          ;desc = "A door that moves either when looked by a targeted object o"
+           "r when a target object comes near the door.  Behavior can be eithe"
+           "r based on viewing direction or proximity alone, or on a combinati"
+           "on of both.  If inverted the doors behavior will be the opposite."
+          ProximityDistance = "0.0"
+          ProximityOffset = "0.0"
+          FieldOfView = "0.0"
+        }
+        func_monitor:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "A monitor that renders the view from a given point_camera e"
+           "ntity."
+        }
+        func_recharge:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Battery recharger"
+        }
+        func_tank:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Brush Gun Turret"
+          bullet = "0"
+        }
+        func_tankairboatgun:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Airboat Gun Turret"
+        }
+        func_tankapcrocket:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "APC Rocket Turret"
+          rocketspeed = "800"
+          burstcount = "10"
+        }
+        func_tanklaser:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Brush Laser Turret"
+        }
+        func_tankmortar:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Brush Mortar Turret"
+          iMagnitude = "100"
+          firedelay = "2"
+          warningtime = "1"
+          firevariance = "0"
+        }
+        func_tankphyscannister:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "PhysCannister Turret"
+        }
+        func_tankpulselaser:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Brush Pulse Laser"
+          PulseSpeed = "1000"
+          PulseColor = "255 0 0"
+          PulseWidth = "20"
+          PulseLife = "2"
+          PulseLag = "0.05"
+        }
+        func_tankrocket:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Brush Rocket Turret"
+          rocketspeed = "800"
+        }
+        func_vehicleclip:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Vehicle Clip"
         }
       }
-      monster_* entities.qtxfolder =
+
+// info entities
+
+      info_* entities.qtxfolder =
       {
-        monster_generic:e =
+        info_apc_missile_hint:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Something that helps APC missiles guide. If the missile can"
+           " hit the associated target entitybetween the time it takes the cur"
+           "rent enemy to enter + leave the hint, then the missile will guide "
+           "to the entity."
+        }
+        info_snipertarget:e =
         {
           origin = "0 0 0"
-          ;desc = "Generic Script NPC"
-          body = "0"
+          ;desc = "Sniper Target"
+          speed = "2"
+        }
+        info_target_gunshipcrash:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Gunship Crash Target"
+        }
+        info_teleporter_countdown:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Countdown timer for the teleporter. The status of the telep"
+           "orter will appear on vgui_screen entities whose panel is 'teleport"
+           "_countdown_screen'."
         }
       }
-      generic_* entities.qtxfolder =
+
+// item entities
+
+      item_* entities.qtxfolder =
       {
+        item_ammo_357:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Box of 357 ammo"
+        }
+        item_ammo_357_large:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Large Box of 357 ammo"
+        }
+        item_ammo_ar2:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Box of AR2 ammo"
+        }
+        item_ammo_ar2_altfire:e =
+        {
+          origin = "0 0 0"
+          ;desc = "AR2 Alt-fire Round"
+        }
+        item_ammo_ar2_large:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Large Box of AR2 ammo"
+        }
+        item_ammo_crate:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Ammo Crate"
+          AmmoType = "0"
+        }
+        item_ammo_crossbow:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Box of Crossbow ammo"
+        }
+        item_ammo_pistol:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Box of Pistol ammo"
+        }
+        item_ammo_pistol_large:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Large Box of Pistol ammo"
+        }
+        item_ammo_smg1:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Box of SMG1 ammo"
+        }
+        item_ammo_smg1_grenade:e =
+        {
+          origin = "0 0 0"
+          ;desc = "SMG1 Grenade"
+        }
+        item_ammo_smg1_large:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Large Box of SMG1 ammo"
+        }
+        item_battery:e =
+        {
+          origin = "0 0 0"
+          ;desc = "HEV battery"
+        }
+        item_box_buckshot:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Box Buckshot"
+        }
+        item_dynamic_resupply:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Dynamic item"
+          spawnflags = "1"
+          DesiredHealth = "1"
+          DesiredArmor = "0.3"
+          DesiredAmmoPistol = "0.5"
+          DesiredAmmoSMG1 = "0.5"
+          DesiredAmmoSMG1_Grenade = "0.1"
+          DesiredAmmoAR2 = "0.4"
+          DesiredAmmoBuckshot = "0.5"
+          DesiredAmmoRPG_Round = "0"
+          DesiredAmmoGrenade = "0.1"
+          DesiredAmmo357 = "0"
+          DesiredAmmoCrossbow = "0"
+        }
+        item_healthcharger:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Health Charger"
+        }
+        item_healthkit:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Small Health Kit"
+        }
+        item_healthvial:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Personal Health Kit"
+        }
+        item_item_crate:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Item Crate"
+          CrateType = "0"
+          ItemClass = "item_dynamic_resupply"
+          ItemCount = "1"
+        }
+        item_rpg_round:e =
+        {
+          origin = "0 0 0"
+          ;desc = "RPG Round"
+        }
+        item_suit:e =
+        {
+          origin = "0 0 0"
+          ;desc = "HEV Suit"
+        }
+        item_suitcharger:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Battery recharger"
+        }
+      }
+
+// npc entities
+
+      npc_* entities.qtxfolder =
+      {
+        npc_alyx:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Alyx"
+          model = "models/alyx.mdl"
+          additionalequipment = "weapon_alyxgun"
+        }
+        npc_antlion:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Antlions will run away from ai_sound, type: Thumper."
+          startburrowed = "No"
+          radius = "256"
+          eludedist = "1024"
+          ignorebugbait = "No"
+        }
+        npc_antlion_template_maker:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Antlion Template Maker"
+          spawnradius = "512"
+          vehicledistance = "1"
+          ignorebugbait = "0"
+          pool_start = "0"
+          pool_max = "0"
+          pool_regen_amount = "0"
+          pool_regen_time = "0"
+        }
+        npc_antlionguard:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Antlion Guard"
+          startburrowed = "No"
+          allowbark = "No"
+        }
+        npc_apcdriver:e =
+        {
+          origin = "0 0 0"
+          ;desc = "NPC used to drive an APC vehicle."
+          drivermaxspeed = "1"
+          driverminspeed = "0"
+        }
+        npc_barnacle:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Barnacle"
+          RestDist = "16"
+        }
+        npc_barney:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Barney"
+          additionalequipment = "weapon_pistol"
+        }
+        npc_breen:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Dr Breen"
+          model = "models/breen.mdl"
+        }
+        npc_bullseye:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Bullseye"
+          health = "35"
+        }
+        npc_citizen:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Citizen"
+          spawnflags = "262144"
+          additionalequipment = "0"
+          ammosupply = "SMG1"
+          ammoamount = "1"
+          citizentype = "Default"
+          expressiontype = "Random"
+          model = "models/humans/group01/male_01.mdl"
+          notifynavfailblocked = "0"
+        }
+        npc_combine_camera:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine security camera"
+          spawnflags = "32"
+          innerradius = "300"
+          outerradius = "450"
+          minhealthdmg = "0"
+        }
+        npc_combine_s:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine Soldier"
+          model = "models/combine_soldier.mdl"
+        }
+        npc_combinedropship:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine Dropship"
+          GunRange = "2048"
+          Invulnerable = "0"
+          CrateType = "2"
+        }
+        npc_combinegunship:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine Gunship"
+        }
+        npc_crabsynth:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Crab Synth"
+        }        
+        npc_cranedriver:e =
+        {
+          origin = "0 0 0"
+          ;desc = "NPC used to drive cranes."
+          releasepause = "0"
+        }        
+        npc_crow:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Crow"
+        }        
+        npc_cscanner:e =
+        {
+          origin = "0 0 0"
+          ;desc = "City Scanner"
+          spotlightlength = "500"
+          spotlightwidth = "50"
+          spotlightdisabled = "0"
+          ShouldInspect = "1"
+          OnlyInspectPlayers = "0"
+          NeverInspectPlayers = "0"
+        }        
+        npc_dog:e =
+        {
+          origin = "0 0 0"
+          ;desc = "d0g"
+        }        
+        npc_eli:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Eli Vance"
+          model = "models/eli.mdl"
+        }        
+        npc_enemyfinder:e =
+        {
+          origin = "0 0 0"
+          ;desc = "EnemyFinder"
+          spawnflags = "65536"
+          FieldOfView = "0.2"
+          MinSearchDist = "0"
+          MaxSearchDist = "2048"
+          freepass_timetotrigger = "0"
+          freepass_duration = "0"
+          freepass_movetolerance = "120"
+          freepass_refillrate = "0.5"
+          freepass_peektime = "0"
+          StartOn = "1"
+        }        
+        npc_fastzombie:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Fast Zombie"
+        }        
+        npc_gman:e =
+        {
+          origin = "0 0 0"
+          ;desc = "The G-Man"
+        }        
+        npc_headcrab:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Headcrab"
+        }        
+        npc_headcrab_black:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Black Headcrab"
+        }        
+        npc_headcrab_fast:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Fast Headcrab"
+        }        
+        npc_heli_avoidbox:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Helicopter avoidance box"
+        }        
+        npc_heli_avoidsphere:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Helicopter avoidance sphere"
+          radius = "128"
+        }        
+        npc_heli_nobomb:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "Helicopter bombing suppressor"
+        }        
+        npc_helicopter:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Helicopter"
+          InitialSpeed = "0"
+          GracePeriod = "2.0"
+          PatrolSpeed = "0"
+        }        
+        npc_ichthyosaur:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Ichthyosaur. Not fully functional"
+        }
+        npc_kleiner:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Kleiner"
+        }
+        npc_launcher:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Launcher"
+          spawnflags = "65536"
+          StartOn = "0"
+          MissileModel = "models/Weapons/wscanner_grenade.mdl"
+          LaunchSound = "npc/waste_scanner/grenade_fire.wav"
+          FlySound = "ambient/objects/machine2.wav"
+          SmokeTrail = "1"
+          LaunchSmoke = "1"
+          LaunchDelay = "8"
+          LaunchSpeed = "200"
+          HomingSpeed = "0"
+          HomingStrength = "10"
+          HomingDelay = "0"
+          HomingRampUp = "0.5"
+          HomingDuration = "5"
+          HomingRampDown = "1.0"
+          Gravity = "1.0"
+          MinRange = "100"
+          MaxRange = "2048"
+          SpinMagnitude = "0"
+          SpinSpeed = "0"
+          Damage = "50"
+          DamageRadius = "200"
+        }        
+        npc_maker:e =
+        {
+          origin = "0 0 0"
+          ;desc = "NPC Maker"
+          additionalequipment = "0"
+        }        
+        npc_manhack:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Manhack"
+        }        
+        npc_metropolice:e =
+        {
+          origin = "0 0 0"
+          ;desc = "MetroPolice"
+          additionalequipment = "weapon_pistol"
+          manhacks = "0"
+          weapondrawn = "0"
+        }        
+        npc_missiledefense:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Missile Defense"
+        }        
+        npc_monk:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Monk"
+          additionalequipment = "weapon_annabelle"
+          HasGun = "1"
+        }
+        npc_mortarsynth:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Mortar Synth"
+          additionalequipment = "weapon_annabelle"
+          HasGun = "1"
+        }        
+        npc_mossman:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Dr Mossman"
+        }        
+        npc_pigeon:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Pigeon"
+        }        
+        npc_poisonzombie:e =
+        {
+          origin = "0 0 0"
+          ;desc = "A bloated, disgusting, fluid-spurting zombie created by a p"
+           "oison headcrab."
+          crabcount = "3"
+        }        
+        npc_rollermine:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Roller Mine"
+          startburied = "No"
+        }        
+        npc_seagull:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Seagull"
+        }        
+        npc_sniper:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Sniper"
+          radius = "0"
+          misses = "0"
+          beambrightness = "100"
+          shielddistance = "64"
+          shieldradius = "48"
+        }        
+        npc_spotlight:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Spotlight"
+          spawnflags = "196608"
+          health = "100"
+          YawRange = "90"
+          PitchMin = "35"
+          PitchMax = "50"
+          IdleSpeed = "2"
+          AlertSpeed = "5"
+          spotlightlength = "500"
+          spotlightwidth = "50"
+          rendercolor = "255 255 255"
+        }        
+        npc_stalker:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Stalker"
+          BeamPower = "Low"
+        }        
+        npc_strider:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Strider"
+          disablephysics = "0"
+        }                
+        npc_turret_ceiling:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine Ceiling Turret"
+          spawnflags = "32"
+          minhealthdmg = "0"
+        }
+        npc_turret_floor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine Floor Turret"
+        }        
+        npc_turret_ground:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine ground turret"
+        }        
+        npc_vehicledriver:e =
+        {
+          origin = "0 0 0"
+          ;desc = "NPC used to drive a target vehicle."
+          drivermaxspeed = "1"
+          driverminspeed = "0"
+        }        
+        npc_vortigaunt:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Vortigaunt"
+          model = "models/vortigaunt.mdl"
+          ArmorRechargeEnabled = "1"
+        }        
+        npc_zombie:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Zombie"
+        }        
+        npc_zombie_torso:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Zombie Torso"
+        }
+      }
+
+// other entities
+
+      other_* entities.qtxfolder =
+      {
+        aiscripted_schedule:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Issues a command to an NPC without taking the NPC out of it"
+           "s AI. This does not seize control of the NPC as a scripted_sequenc"
+           "e does"
+          m_flRadius = "0"
+          graball = "0"
+          forcestate = "0"
+          schedule = "1"
+          interruptability = "0"
+        }
+        assault_assaultpoint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "(Assault) assault point"
+          assaulttimeout = "3.0"
+          clearoncontact = "0"
+          allowdiversion = "0"
+          nevertimeout = "0"
+        }
+        assault_rallypoint:e =
+        {
+          origin = "0 0 0"
+          ;desc = "(Assault) rally point"
+          assaultdelay = "0"
+          priority = "1"
+        }
+        combine_mine:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine Land Mine"
+          bounce = "1"
+          LockSilently = "1"
+          StartDisarmed = "0"
+        }
+        cycler_actor:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Actor Cycler"
+        }
         generic_actor:e =
         {
           origin = "0 0 0"
           ;desc = "Generic Actor NPC"
           hull_name = "Human"
         }
-      }
-      cycler_* entities.qtxfolder =
-      {
-        cycler_actor:e =
+        logic_choreographed_scene:e =
         {
           origin = "0 0 0"
-          ;desc = "Actor Cycler"
+          ;desc = "Manages a choreographed scene of one or more actors."
+          busyactor = "0"
+        }
+        monster_generic:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Generic Script NPC"
+          body = "0"
+        }
+        path_corner:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Generic path point"
+          wait = "0"
+          speed = "0"
+          yaw_speed = "0"
+        }
+        path_corner_crash:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Helicopter Crash Path"
+        }
+        phys_constraintsystem:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Used to manage a group of interacting constraints and keep "
+           "them stable."
+        }
+        script_intro:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Script: Custom entity used to handle the intro sequence."
+        }
+        script_tauremoval:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Script: Custom entity used to handle the tau removal sequen"
+           "ce in coast. (unused)"
+        }
+        test_sidelist:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Test entity for Ken!"
+        }
+        vehicle_viewcontroller:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Vehicle hack to control player view"
         }
       }
+
+// player entities
+
+      player_* entities.qtxfolder =
+      {
+        player_loadsaved:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Load Auto-Saved game"
+          duration = "2"
+          holdtime = "0"
+          renderamt = "255"
+          rendercolor = "0 0 0"
+          loadtime = "0"
+        }
+        player_speedmod:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Speeds up or slows down player velocity over time (slow mo/"
+           "fast forward)"
+        }
+        player_weaponstrip:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Strips player's weapons"
+        }
+      }
+
+// point entities
+
       point_* entities.qtxfolder =
       {
         point_antlion_repellant:e =
@@ -779,6 +1067,17 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Antlion Repellant"
           repelradius = "512"
+        }
+        point_apc_controller:e =
+        {
+          origin = "0 0 0"
+          ;desc = "APC Controller"
+          yawrate = "30"
+          yawtolerance = "15"
+          pitchrate = "0"
+          pitchtolerance = "20"
+          minRange = "0"
+          maxRange = "0"
         }
         point_bugbait:e =
         {
@@ -798,18 +1097,77 @@ QQRKSRC1
           fogStart = "2048"
           fogEnd = "4096"
         }
-        point_apc_controller:e =
+      }
+
+// prop entities
+
+      prop_* entities.qtxfolder =
+      {
+        prop_combine_ball:e =
         {
           origin = "0 0 0"
-          ;desc = "APC Controller"
-          yawrate = "30"
-          yawtolerance = "15"
-          pitchrate = "0"
-          pitchtolerance = "20"
-          minRange = "0"
-          maxRange = "0"
+          ;desc = "A prop that physically simulates as a single rigid body. It"
+           " can be constrained to other physics objects using hinges or other"
+           " constraints. It can also be configured to break when it takes eno"
+           "ugh damage."
+        }
+        prop_thumper:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Thumper"
+          model = "models/props_combine/CombineThumper002.mdl"
+          dustscale = "Small Thumper"
+        }
+        prop_vehicle:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Studiomodel vehicle that can be driven via inputs."
+        }
+        prop_vehicle_airboat:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Driveable studiomodel airboat."
+          model = "models/airboat.mdl"
+          vehiclescript = "scripts/vehicles/airboat.txt"
+          EnableGun = "0"
+        }
+        prop_vehicle_apc:e =
+        {
+          origin = "0 0 0"
+          ;desc = "APC with mounted guns, can only be driven by a vehicle driv"
+           "er or a npc_apcdriver."
+        }
+        prop_vehicle_cannon:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Driveable studiomodel cannon."
+        }
+        prop_vehicle_crane:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Driveable studiomodel crane."
+        }
+        prop_vehicle_driveable:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Generic driveable studiomodel vehicle."
+        }
+        prop_vehicle_jeep:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Driveable studiomodel jeep."
+        }
+        prop_vehicle_prisoner_pod:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Combine prisoner pod that the player can ride in."
+          model = "models/vehicles/prisoner_pod.mdl"
+          vehiclescript = "scripts/vehicles/prisoner_pod.txt"
         }
       }
+
+// scripted entities
+
       scripted_* entities.qtxfolder =
       {
         scripted_sentence:e =
@@ -822,16 +1180,6 @@ QQRKSRC1
           refire = "3"
           volume = "10"
           attenuation = "0"
-        }
-        scripted_target:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Scripted Target"
-          StartDisabled = "1"
-          m_flRadius = "0"
-          MoveSpeed = "5"
-          PauseDuration = "0"
-          EffectDuration = "2"
         }
         scripted_sequence:e =
         {
@@ -859,377 +1207,82 @@ QQRKSRC1
            " 2, then waits while playing the pre-action idle animation until t"
            "he BeginSequence input is received."
         }
-      }
-      ai_* entities.qtxfolder =
-      {
-        ai_relationship:e =
+        scripted_target:e =
         {
           origin = "0 0 0"
-          ;desc = "AI Relationship - Sets relationships between groups of NPCs"
-           " in the AI."
-          disposition = "3"
-          radius = "0"
-          rank = "0"
-          StartActive = "0"
-          Reciprocal = "0"
-        }
-        ai_ally_manager:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Ally Manager"
-          maxallies = "5"
-          maxmedics = "1"
-        }
-        ai_goal_lead:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Lead"
-          SearchType = "0"
-        }
-        ai_goal_lead_weapon:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Lead (Weapon). A version of the ai_goal_lead entity"
-           " that requires the player to have the specified weapon before the "
-           "Actor(s) will lead the player to their target."
-          WeaponName = "weapon_bugbait"
-          SearchType = "0"
-        }
-        ai_goal_follow:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Follow"
-          SearchType = "0"
-          StartActive = "0"
-          MaximumState = "1"
-          Formation = "0"
-        }
-        ai_battle_line:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Battle line"
-          Active = "0"
-          Strict = "1"
-        }
-        ai_goal_standoff:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Standoff"
-          SearchType = "0"
-          StartActive = "0"
-          HintGroupChangeReaction = "1"
-          Aggressiveness = "2"
-          PlayerBattleline = "1"
-          StayAtCover = "0"
-          AbandonIfEnemyHides = "0"
-        }
-        ai_goal_police:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Police"
-          policeradius = "512"
-        }
-        ai_goal_assault:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Assault"
-          SearchType = "0"
-          StartActive = "0"
-          AssaultCue = "1"
-        }
-        ai_goal_actbusy:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Act Busy"
-        }
-        ai_goal_actbusy_queue:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Goal Act Busy Queue"
-          mustreachfront = "0"
-        }
-        ai_changetarget:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Change Target"
-        }
-        ai_changehintgroup:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Change Hint Group"
-          SearchType = "0"
-          Radius = "0.0"
-          hintlimiting = "0"
-        }
-        ai_script_conditions:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AI Script Conditions"
+          ;desc = "Scripted Target"
           StartDisabled = "1"
-          MinimumState = "1"
-          MaximumState = "3"
-          ScriptStatus = "0"
-          RequiredTime = "0"
-          MinTimeout = "0"
-          MaxTimeout = "0"
-          ActorSeePlayer = "2"
-          PlayerActorProximity = "0"
-          PlayerActorFOV = "360"
-          PlayerActorFOVTrueCone = "0"
-          PlayerActorLOS = "2"
-          ActorSeeTarget = "2"
-          ActorTargetProximity = "0"
-          PlayerTargetProximity = "0"
-          PlayerTargetFOV = "360"
-          PlayerTargetFOVTrueCone = "0"
-          PlayerTargetLOS = "2"
-          PlayerBlockingActor = "2"
-        }
-        ai_citizen_response_system:e =
-        {
-          origin = "0 0 0"
-          ;desc = "If placed in the level, will manage citizens responses to p"
-           "layer's actions."
-        }
-        ai_sound:e =
-        {
-          origin = "0 0 0"
-          ;desc = "This entity makes sounds or smells that can be sensed by NP"
-           "Cs, butnot by the player. This can be used to cause reactions in n"
-           "earby NPCs.\n\nSound Types\n  Combat: Will cause most NPCs to beco"
-           "me alert\n  World: Will cause most NPCs to become alert\n  Danger:"
-           " Will cause most NPCs to move away from the position of the sound\"
-           "n  Bullet Impact: \n  Carcass: \n  Meat: \n  Garbage: \n  Thumper:"
-           " causes antlions to run away briefly\n  Readiness: (Low, Medium, H"
-           "igh) Causes player companions that can hear this sound to change r"
-           "eadiness\n"
-          soundtype = "0"
-        }
-      }
-      assault_* entities.qtxfolder =
-      {
-        assault_rallypoint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "(Assault) rally point"
-          assaultdelay = "0"
-          priority = "1"
-        }
-        assault_assaultpoint:e =
-        {
-          origin = "0 0 0"
-          ;desc = "(Assault) assault point"
-          assaulttimeout = "3.0"
-          clearoncontact = "0"
-          allowdiversion = "0"
-          nevertimeout = "0"
-        }
-      }
-      aiscripted_* entities.qtxfolder =
-      {
-        aiscripted_schedule:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Issues a command to an NPC without taking the NPC out of it"
-           "s AI. This does not seize control of the NPC as a scripted_sequenc"
-           "e does"
           m_flRadius = "0"
-          graball = "0"
-          forcestate = "0"
-          schedule = "1"
-          interruptability = "0"
+          MoveSpeed = "5"
+          PauseDuration = "0"
+          EffectDuration = "2"
         }
       }
-      item_* entities.qtxfolder =
+
+// trigger entities
+
+      trigger_* entities.qtxfolder =
       {
-        item_dynamic_resupply:e =
+        trigger_physics_trap:b =
         {
-          origin = "0 0 0"
-          ;desc = "Dynamic item"
-          spawnflags = "1"
-          DesiredHealth = "1"
-          DesiredArmor = "0.3"
-          DesiredAmmoPistol = "0.5"
-          DesiredAmmoSMG1 = "0.5"
-          DesiredAmmoSMG1_Grenade = "0.1"
-          DesiredAmmoAR2 = "0.4"
-          DesiredAmmoBuckshot = "0.5"
-          DesiredAmmoRPG_Round = "0"
-          DesiredAmmoGrenade = "0.1"
-          DesiredAmmo357 = "0"
-          DesiredAmmoCrossbow = "0"
+          ;incl = "defpoly"
+          ;desc = "A volumetric trigger that disintegrates enemies"
+          dissolvetype = "Energy"
         }
-        item_ammo_pistol:e =
+        trigger_rpgfire:b =
         {
-          origin = "0 0 0"
-          ;desc = "Box of Pistol ammo"
+          ;incl = "defpoly"
+          ;desc = "A volumetric trigger that triggers whenever an RPG is fired"
+           " within it."
         }
-        item_ammo_pistol_large:e =
+        trigger_vphysics_motion:b =
         {
-          origin = "0 0 0"
-          ;desc = "Large Box of Pistol ammo"
+          ;incl = "defpoly"
+          ;desc = "A volumetric trigger that affects the motion of vphysics ob"
+           "jects that touch it."
+          StartDisabled = "0"
+          SetGravityScale = "1.0"
+          SetAdditionalAirDensity = "0"
+          SetVelocityLimit = "0.0"
+          SetVelocityLimitDelta = "0.0"
+          SetVelocityScale = "1.0"
+          SetAngVelocityLimit = "0.0"
+          SetAngVelocityScale = "1.0"
+          SetLinearForce = "0.0"
+          SetLinearForceAngles = "0 0 0"
+          ParticleTrailLifetime = "4"
+          ParticleTrailStartSize = "2"
+          ParticleTrailEndSize = "3"
         }
-        item_ammo_smg1:e =
+        trigger_waterydeath:b =
         {
-          origin = "0 0 0"
-          ;desc = "Box of SMG1 ammo"
+          ;incl = "defpoly"
+          ;desc = "A trigger volume that spawns leeches around entities inside"
+           " it, and does damage to them until they die. Used to prevent playe"
+           "rs entering deep water."
         }
-        item_ammo_smg1_large:e =
+        trigger_weapon_dissolve:b =
         {
-          origin = "0 0 0"
-          ;desc = "Large Box of SMG1 ammo"
+          ;incl = "defpoly"
+          ;desc = "A volumetric trigger that dissolves all weapons within it"
         }
-        item_ammo_ar2:e =
+        trigger_weapon_strip:b =
         {
-          origin = "0 0 0"
-          ;desc = "Box of AR2 ammo"
-        }
-        item_ammo_ar2_large:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Large Box of AR2 ammo"
-        }
-        item_ammo_357:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Box of 357 ammo"
-        }
-        item_ammo_357_large:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Large Box of 357 ammo"
-        }
-        item_ammo_crossbow:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Box of Crossbow ammo"
-        }
-        item_box_buckshot:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Box Buckshot"
-        }
-        item_rpg_round:e =
-        {
-          origin = "0 0 0"
-          ;desc = "RPG Round"
-        }
-        item_ammo_smg1_grenade:e =
-        {
-          origin = "0 0 0"
-          ;desc = "SMG1 Grenade"
-        }
-        item_battery:e =
-        {
-          origin = "0 0 0"
-          ;desc = "HEV battery"
-        }
-        item_healthkit:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Small Health Kit"
-        }
-        item_healthvial:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Personal Health Kit"
-        }
-        item_ammo_ar2_altfire:e =
-        {
-          origin = "0 0 0"
-          ;desc = "AR2 Alt-fire Round"
-        }
-        item_suit:e =
-        {
-          origin = "0 0 0"
-          ;desc = "HEV Suit"
-        }
-        item_ammo_crate:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Ammo Crate"
-          AmmoType = "0"
-        }
-        item_item_crate:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Item Crate"
-          CrateType = "0"
-          ItemClass = "item_dynamic_resupply"
-          ItemCount = "1"
-        }
-        item_healthcharger:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Health Charger"
-        }
-        item_suitcharger:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Battery recharger"
+          ;incl = "defpoly"
+          ;desc = "A volumetric trigger that strips combat characters of all w"
+           "eapons"
+          KillWeapons = "No"
         }
       }
+
+// weapon entities
+
       weapon_* entities.qtxfolder =
       {
-        weapon_crowbar:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Crowbar"
-        }
-        weapon_stunstick:e =
-        {
-          origin = "0 0 0"
-          ;desc = "StunStick"
-        }
-        weapon_pistol:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Pistol"
-        }
-        weapon_ar2:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Assault Rifle 2"
-        }
-        weapon_rpg:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Missile Launcher"
-        }
-        weapon_smg1:e =
-        {
-          origin = "0 0 0"
-          ;desc = "SMG1"
-        }
         weapon_357:e =
         {
           origin = "0 0 0"
-          ;desc = "357"
-        }
-        weapon_crossbow:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Crossbow"
-        }
-        weapon_shotgun:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Shotgun"
-        }
-        weapon_frag:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Frag Grenade"
-        }
-        weapon_physcannon:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Physics Cannon"
-        }
-        weapon_bugbait:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Bug bait"
+          ;desc = "357 Magnum"
         }
         weapon_alyxgun:e =
         {
@@ -1241,110 +1294,66 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "Annabelle (Grigori)"
         }
+        weapon_ar2:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Assault Rifle 2 (Pulse Rifle)"
+        }
         weapon_brickbat:e =
         {
           origin = "0 0 0"
-          ;desc = "Brickbat"
+          ;desc = "Brickbat (Unknown)"
           BrickbatType = "Rock"
         }
-      }
-      path_* entities.qtxfolder =
-      {
-        path_corner:e =
+        weapon_bugbait:e =
         {
           origin = "0 0 0"
-          ;desc = "Generic path point"
-          wait = "0"
-          speed = "0"
-          yaw_speed = "0"
+          ;desc = "Bug Bait"
         }
-        path_corner_crash:e =
+        weapon_crossbow:e =
         {
           origin = "0 0 0"
-          ;desc = "Helicopter Crash Path"
+          ;desc = "Crossbow"
         }
-      }
-      player_* entities.qtxfolder =
-      {
-        player_loadsaved:e =
+        weapon_crowbar:e =
         {
           origin = "0 0 0"
-          ;desc = "Load Auto-Saved game"
-          duration = "2"
-          holdtime = "0"
-          renderamt = "255"
-          rendercolor = "0 0 0"
-          loadtime = "0"
-        }
-        player_weaponstrip:e =
+          ;desc = "Crowbar"
+        }        
+        weapon_frag:e =
         {
           origin = "0 0 0"
-          ;desc = "Strips player's weapons"
-        }
-        player_speedmod:e =
+          ;desc = "Frag Grenade"
+        }        
+        weapon_physcannon:e =
         {
           origin = "0 0 0"
-          ;desc = "Speeds up or slows down player velocity over time (slow mo/"
-           "fast forward)"
-        }
-      }
-      logic_* entities.qtxfolder =
-      {
-        logic_choreographed_scene:e =
+          ;desc = "Physics Cannon (Gravity Gun)"
+        }        
+        weapon_pistol:e =
         {
           origin = "0 0 0"
-          ;desc = "Manages a choreographed scene of one or more actors."
-          busyactor = "0"
-        }
-      }
-      combine_* entities.qtxfolder =
-      {
-        combine_mine:e =
+          ;desc = "9mm Pistol"
+        }        
+        weapon_rpg:e =
         {
           origin = "0 0 0"
-          ;desc = "Combine Land Mine"
-          bounce = "1"
-          LockSilently = "1"
-          StartDisarmed = "0"
-        }
-      }
-      vehicle_* entities.qtxfolder =
-      {
-        vehicle_viewcontroller:e =
+          ;desc = "RPG Missile Launcher"
+        }        
+        weapon_shotgun:e =
         {
           origin = "0 0 0"
-          ;desc = "Vehicle hack to control player view"
-        }
-      }
-      phys_* entities.qtxfolder =
-      {
-        phys_constraintsystem:e =
+          ;desc = "Shotgun"
+        }        
+        weapon_smg1:e =
         {
           origin = "0 0 0"
-          ;desc = "Used to manage a group of interacting constraints and keep "
-           "them stable."
-        }
-      }
-      script_* entities.qtxfolder =
-      {
-        script_tauremoval:e =
+          ;desc = "Submachine Gun"
+        }        
+        weapon_stunstick:e =
         {
           origin = "0 0 0"
-          ;desc = "Script: Custom entity used to handle the tau removal sequen"
-           "ce in coast. (unused)"
-        }
-        script_intro:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Script: Custom entity used to handle the intro sequence."
-        }
-      }
-      test_* entities.qtxfolder =
-      {
-        test_sidelist:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Test entity for Ken!"
+          ;desc = "StunStick"
         }
       }
     }
@@ -2103,14 +2112,7 @@ QQRKSRC1
     {
       t_Targetname = !
       t_Angles = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
       dustscale: =
       {
         txt = "&"
@@ -3276,14 +3278,7 @@ QQRKSRC1
     npc_vortigaunt:form =
     {
       t_BaseNPC = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
       ArmorRechargeEnabled: =
       {
         txt = "&"
@@ -4469,14 +4464,7 @@ QQRKSRC1
     {
       t_TalkNPC = !
       t_Parentname = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
       additionalequipment: =
       {
         txt = "&"
@@ -4489,31 +4477,18 @@ QQRKSRC1
     npc_kleiner:form =
     {
       t_TalkNPC = !
+      t_modelselect = !
     }
     npc_eli:form =
     {
       t_TalkNPC = !
       t_Parentname = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
     }
     npc_breen:form =
     {
       t_TalkNPC = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
       spawnflags: =
       {
         txt = "&"
@@ -4524,10 +4499,13 @@ QQRKSRC1
     npc_mossman:form =
     {
       t_TalkNPC = !
+      t_modelselect = !
     }
     npc_gman:form =
     {
       t_TalkNPC = !
+           t_modelselect = !
+
     }
     npc_dog:form =
     {
@@ -8722,14 +8700,7 @@ QQRKSRC1
     prop_vehicle_airboat:form =
     {
       t_BaseDriveableVehicle = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
       vehiclescript: =
       {
         txt = "&"
@@ -8784,14 +8755,7 @@ QQRKSRC1
     {
       t_BaseDriveableVehicle = !
       t_Parentname = !
-      model: =
-      {
-        txt = "&"
-        hint = "World model"
-        typ = "B"
-        Cap = "models..."
-        form = "t_models_hl2_form:form"
-      }
+      t_modelselect = !
       vehiclescript: =
       {
         txt = "&"

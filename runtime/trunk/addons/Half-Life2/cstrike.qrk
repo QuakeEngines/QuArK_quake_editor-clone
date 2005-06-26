@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: cstrike.qrk
 
-// entities for CS Source. updated june/25/2005 by cbxpm.
+// CS Source entities. updated june/26/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =
@@ -11,7 +11,6 @@ QQRKSRC1
     Root = "CS Source Entities.qtxfolder"
     CS Source Entities.qtxfolder =
     {
-      ;desc = "Created from F:\privat\sourcecode\quark\cstrike.fgd"
 
 // filter entities
 
