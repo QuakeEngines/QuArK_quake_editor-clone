@@ -17,7 +17,8 @@ $Id$
 =============
  
  * [cbxpm]:  HL2 / Source engine content update
-    -  Entity files have now alphabetical order
+    -  Entity files are now alphabetically sorted
+    -  Some entities fixed / improved
 
  * [alexander]: 
      - QuArK can display HL2 Materials now
