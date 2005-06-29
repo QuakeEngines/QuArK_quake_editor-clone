@@ -12,7 +12,7 @@ Info = {
    "plug-in":       "Bot Waypointer",
    "desc":          "Bot Waypointer",
    "date":          "? may 2002",
-   "author":        "Decker,Peter,RiviEr",
+   "author":        "Decker,Peter,Fred",
    "author e-mail": "decker@planetquake.com",
    "quark":         "Version 6.5"
 }
@@ -93,7 +93,7 @@ class BotWaypointConvertHPB(BotWaypointConverter):
         f = open(filename, "rb")
 
         # Info on the 'struct' object: http://www.python.org/doc/current/lib/module-struct.html
-
+        # filetype = f.read(8) Fred
         # Read the header
         filetype = f.read(8)
         waypoint_file_version, waypoint_file_flags, number_of_waypoints = struct.unpack("iii", f.read(4*3))
@@ -183,8 +183,28 @@ class BotWaypointConvertACE(BotWaypointConverter):
         ,(6 ,"GRAPPLE"      ,"" ) \
         ,(7 ,"JUMP"         ,"" ) \
         ,(8 ,"DOOR"         ,"" ) \
+	,(99 ,"ALL"         ,"" ) \
+	,(-1 ,"INVALID"     ,"" ) \
+	,(9 ,"DANGER"       ,"" ) \
         ]
 
+
+	 # This code is not compitable with Aq2 Bot release 0.6 only 0.5.x and any LTK version
+	 #, dont mail the authour about this.
+	 # Info about the DataTypes: 
+	 # about this
+	 #,(6 ,"GRAPPLE"      ,"" ) \ Data Type
+	 #,(99 ,"ALL"         ,"" ) \ Data Type
+	 #,(-1 ,"INVALID"     ,"" ) \ Invalid Link
+         #,(9 ,"DANGER"       ,"" ) \ Danger Zone part of BotRelease a ltk successor.
+	 # "Data Type" is not used in ltk or Bot release versions, but they
+	 # are still a part of it's compressor.
+	 # data should not be ignored.
+	 # Ltk bot and Bot Release 0.5.x and higher "IF" link invalid 
+         # the editor is aware of it and dont compress the data in a invalid
+         # structure. - Fred 
+					  
+					   
     def TypeToSpec(self, master_type, obj):
         for type, spec, hint in self.m_ACE_types:
             if (type == master_type):
@@ -353,8 +373,9 @@ class BotWaypointConvertACE(BotWaypointConverter):
 
 #
 # Supported file-extension types
-#
-gBotFileExtFilter = ["Supported bot-types|*.wpt;*.ltk", "HPBBot (*.wpt)|*.wpt", "ACEBot/LTKBot (*.ltk)|*.ltk"]
+# added code for the new Bot release 0.6.0 and greater, when it is aviable
+gBotFileExtFilter = ["Supported bot-types|*.wpt;*.ltk", "HPBBot (*.wpt)|*.wpt", "LTKBot/BR 0.5.1 (*.ltk)|*.ltk"]
+#gBotFileExtFilterNew = ["Supported bot-types|*.nav", "Bot Release 0.6.x (*.nav)"]
 
 #
 # Load macro
@@ -366,7 +387,7 @@ def macro_botwaypointer_loadfile(self):
     dup = editor.layout.explorer.uniquesel
     if dup is None:
         return
-
+ 
     files = quarkx.filedialogbox("Load bot waypoint file...", "", gBotFileExtFilter, 0, "*.*")
     if len(files) == 1:
         files[0] = files[0].lower()
@@ -376,6 +397,16 @@ def macro_botwaypointer_loadfile(self):
             aObj = BotWaypointConvertACE()
         else:
             raise "File-extension not supported '"+files[0][-3:]+"'."
+
+# This is for future releases of Bot Release 0.6.0 and newer
+# Fred www.franva.org
+    #files = quarkx.filedialogbox("Load bot waypoint file...", "", gBotFileExtFilterNew, 0, "*.*")
+    #if len(files) == 1:
+        #files[0] = files[0].lower()
+        #if (files[0][-3:] == "nav"):
+            #aObj = BotWaypointConvertACE()
+        #else:
+            #raise "File-extension not supported '"+files[0][-3:]+"'."
 
         aObj.Load(files[0])
 
@@ -689,7 +720,7 @@ class BotWaypointerPointHandle(CenterHandle):
             menu_rem_oneway.state = not (selected_targets_me)                              and quarkpy.qmenu.disabled
 
         # Set up 'shortest path display' menuitem-checkbox
-        menu_shortestpath = quarkpy.qmenu.item("Shortest-path display", ShortestPathDisplayClick, "|stuff to type here...")
+        menu_shortestpath = quarkpy.qmenu.item("Path display. WARNING, this is a slow process", ShortestPathDisplayClick, "|stuff to type here...")
         try:
             shortestpathdisplay = int(myparent["shortestpathdisplay"])
         except:
@@ -863,11 +894,15 @@ quarkpy.mapduplicator.DupCodes.update({
 })
 
 # ----------- REVISION HISTORY ------------
-# Revision 1.3.2 2005/11/4 01:30 RiviEr
+# 
+# Revision 1.6.2 2005/11/4 01:30 Fred
 # Fixed possible the last bug.
-# Revision 1.3.1 2005/10/4 01:30 RiviEr
+# Revision 1.6.1 2005/10/4 01:30 Fred
 # Fixed a bug wich had been introduced in a later release
 # $Log$
+# Revision 1.6  2005/04/12 00:17:04  cdunde
+# One last fix by Fred
+#
 # Revision 1.3  2003/12/18 21:51:46  peter-b
 # Removed reliance on external string library from Python scripts (second try ;-)
 #
