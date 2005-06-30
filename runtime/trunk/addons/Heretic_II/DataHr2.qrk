@@ -4,15 +4,25 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
-//Revision 1.11  2004/06/25 16:12:52  nerdiii
-//Heretic II Add-On Update:
-//- Changed model path for OBJ_Tcheckrikbust
-//- Changed model path for Obj_lab_parts_container
-//- Changed model path for Obj_eyeball_jar
-//- Added DEATMATCH ONLY spawnflag to MISC_TELEPORTER
-//- Modified SKINNUM field in OBJ_ROPECHAIN
-//- Changed model path for OBJ_LAVAEGG
+//Revision 1.51  2005/06/27 DannJ
+//- Fixed bounding boxes for all obj_moss
+//- Added bbox for obj_banneronpole
+//- Fixed bbox for obj_banner
+//- Fixed bbox for obj_rocks2
+//- Fixed bbox for obj_shrine
+//- Fixed bbox for obj_woodpile
+//- Deleted obj_stalagmite1, 2 & 3 (they don't exist)
+//- Deleted monster_gorgon_leader (doesn't exist)
+//- Added targetname to obj_cactus4 (opens/closes when triggered)
+//- Added STYLE pull-down menu for obj_statue_tcheckrik_bust (no amulet/amulet)
 //
+//Revision 1.5  2005/04/26 04:28:44  cdunde
+//Improvements by DannJ
+//- Added pulldown menu for door messages
+//- Moved fishtrap into Commercial & Industrial folder
+//- Moved fountain fish into Statues folder
+//- Added mdl paths for info_player entities
+//- Added 'Not Deathmatch' spawnflags to trigger_once and trigger_multiple
 //
 //Revision 1.48 2004/06/22 DannJ
 //Changed model path for Tcheckrikbust
@@ -6784,11 +6794,6 @@ QQRKSRC1
           ;desc = "The gorgon"
           angle = "0"
         }
-        monster_gorgon_leader:e =
-        {
-          origin = "0 0 0"
-          ;desc = "The gorgon leader"
-        }
         monster_harpy:e =
         {
           origin = "0 0 0"
@@ -7883,24 +7888,6 @@ QQRKSRC1
         {
           origin = "0 0 0"
           ;desc = "A long pointy stalactite. These point down."
-          angle = "0"
-        }
-        obj_stalagmite1:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A big long thick stalagmite.These point up."
-          angle = "0"
-        }
-        obj_stalagmite2:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A big squat stalagmite.These point up."
-          angle = "0"
-        }
-        obj_stalagmite3:e =
-        {
-          origin = "0 0 0"
-          ;desc = "A long pointy stalagmite. These point up"
           angle = "0"
         }
       }
@@ -12814,7 +12801,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "FIREBALL"
-          Hint = "more of a poofy fireball trai"
+          Hint = "more of a poofy fireball trail"
         }
         delay: =
         {
@@ -12971,7 +12958,7 @@ QQRKSRC1
           Typ = "X2"
           Cap = "DEATHMATCH_RANDOM"
           Hint = "makes the teleporter dump you at random spawn points in deat"
-           "hmatc"
+           "hmatch"
         }
         spawnflags: =
         {
@@ -13086,21 +13073,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "WALKING"
-          Hint = "use WANDER instea"
+          Hint = "use WANDER instead"
         }
         spawnflags: =
         {
@@ -13128,7 +13115,7 @@ QQRKSRC1
           Txt = "&"
           Typ = "X64"
           Cap = "CINEMATIC"
-          Hint = "puts monster into cinematic mode for scriptin"
+          Hint = "puts monster into cinematic mode for scripting"
         }
         spawnflags: =
         {
@@ -13151,7 +13138,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will tryto cut you off when you're running and fight"
            "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+           "oing this, half not"
         }
         spawnflags: =
         {
@@ -13161,7 +13148,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -13169,7 +13156,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
         spawnflags: =
         {
@@ -13340,21 +13327,21 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X4"
           Cap = "EATING"
-          Hint = "Chomp chomp... chewie chom"
+          Hint = "Chomp chomp... chewie chomp"
         }
         spawnflags: =
         {
@@ -13377,7 +13364,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will try to cut you off when you're running and figh"
            "ting him"$0D"  Works well if there are a few monsters in a group, "
-           "half doing this, half no"
+           "half doing this, half not"
         }
         spawnflags: =
         {
@@ -13387,7 +13374,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -13395,7 +13382,7 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
         spawnflags: =
         {
@@ -13459,14 +13446,14 @@ QQRKSRC1
           Txt = "&"
           Typ = "X1"
           Cap = "AMBUSH"
-          Hint = "Will not be woken up by other monsters or shots from playe"
+          Hint = "Will not be woken up by other monsters or shots from player"
         }
         spawnflags: =
         {
           Txt = "&"
           Typ = "X2"
           Cap = "ASLEEP"
-          Hint = "will not appear until triggere"
+          Hint = "will not appear until triggered"
         }
         spawnflags: =
         {
@@ -13497,7 +13484,7 @@ QQRKSRC1
           Cap = "MELEE_LEAD"
           Hint = "Monster will tryto cut you off when you're running and fight"
            "ing him, works well if there are a few monsters in a group, half d"
-           "oing this, half no"
+           "oing this, half not"
         }
         spawnflags: =
         {
@@ -13507,7 +13494,7 @@ QQRKSRC1
           Hint = "Monster will only approach and attack from behind"$0D"  If y"
            "ou're facing the monster it will just stand there"$0D"  Once the m"
            "onster takes pain, however, it will stop this behaviour and attack"
-           " normall"
+           " normally"
         }
         spawnflags: =
         {
@@ -13515,15 +13502,8 @@ QQRKSRC1
           Typ = "X65536"
           Cap = "COWARD"
           Hint = "Monster starts off in flee mode- runs away from you when wok"
-           "en u"
+           "en up"
         }
-      }
-      monster_gorgon_leader:form =
-      {
-        Help = "The gorgon leader"
-        bbox = '-16 -16 0 16 16 32 1'
-        HTML = "help/hr2/m_gorgon.htm#monster_gorgon_leader"
-        mdl = "models/monsters/gorgon/tris.fm"
       }
       monster_harpy:form =
       {
@@ -15140,7 +15120,7 @@ QQRKSRC1
       obj_banner:form =
       {
         Help = "A banner on a wall."
-        bbox = '-8 -28 -30 8 28 30 1'
+        bbox = '-8 -44 -256 8 44 0 1'
         HTML = "help/hr2/g_obj.htm#obj_banneronpole"
         mdl = "models/objects/banner/wall/tris.fm"
         angle: =
@@ -15193,6 +15173,7 @@ QQRKSRC1
       {
         Help = "A banner on a pole sticking out of a wall."
         mdl = "models/objects/banner/onpole/tris.fm"
+        bbox = '-8 -28 -30 8 28 30 1'
         angle: =
         {
           Txt = "&"
@@ -16057,6 +16038,11 @@ QQRKSRC1
         {
           Txt = "&"
           Hint = "Adjust size: values from a about .2 thru 2.5 seem to work"
+        }
+        targetname: =
+        {
+          Txt = "&"
+          Hint = "opens/closes when triggered."
         }
         more: =
         {
@@ -18767,7 +18753,7 @@ QQRKSRC1
       obj_moss1:form =
       {
         Help = "some moss"
-        bbox = '-4 -10 -40 4 10 40 1'
+        bbox = '-4 -10 0 4 10 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss1"
         mdl = "models/objects/moss/tris.fm"
         angle: =
@@ -18804,7 +18790,7 @@ QQRKSRC1
       obj_moss2:form =
       {
         Help = "some moss"
-        bbox = '-4 -9 -40 4 9 40 1'
+        bbox = '-4 -9 0 4 9 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss2"
         mdl = "models/objects/moss/tris.fm"
         angle: =
@@ -18841,7 +18827,7 @@ QQRKSRC1
       obj_moss3:form =
       {
         Help = "some moss"
-        bbox = '-4 -15 -40 4 15 40 1'
+        bbox = '-4 -15 0 4 15 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss3"
         mdl = "models/objects/moss/tris.fm"
         angle: =
@@ -18878,7 +18864,7 @@ QQRKSRC1
       obj_moss4:form =
       {
         Help = "some moss"
-        bbox = '-4 -12 -40 4 12 40 1'
+        bbox = '-4 -12 0 4 12 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss4"
         mdl = "models/objects/moss/tris.fm"
         angle: =
@@ -18915,7 +18901,7 @@ QQRKSRC1
       obj_moss5:form =
       {
         Help = "some moss"
-        bbox = '-4 -10 -40 4 10 40 1'
+        bbox = '-4 -10 0 4 10 80 1'
         HTML = "help/hr2/g_obj.htm#obj_moss5"
         mdl = "models/objects/moss/tris.fm"
         angle: =
@@ -19730,7 +19716,7 @@ QQRKSRC1
       obj_rocks2:form =
       {
         Help = "A big rock"
-        bbox = '-9 -30 -4 9 30 4 1'
+        bbox = '-20 -30 -20 20 30 20 1'
         HTML = "help/hr2/g_obj.htm#obj_rocks2"
         mdl = "models/objects/rocks/rock2/tris.fm"
         angle: =
@@ -20369,159 +20355,6 @@ QQRKSRC1
           Hint = "if checked it uses the dark ski"
         }
       }
-      obj_stalagmite1:form =
-      {
-        Help = "A big long thick stalagmite.These point up."
-        bbox = '-32 -32 -200 32 32 0 1'
-        HTML = "help/hr2/g_obj.htm#obj_stalagmite1"
-        mdl = "models/objects/stalactite/stalact1/tris.fm"
-        angle: =
-        {
-          Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Typ = "L 3"
-          Hint = "color-selection button"
-        }
-        scale: =
-        {
-          Txt = "&"
-          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
-        }
-        more: =
-        {
-          Typ = "B"
-          Txt = "obj_targetting"
-          Cap = "Push"
-          Form = "obj_targetting:form"
-          Hint = "specifics for targetting"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X1"
-          Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X8"
-          Cap = "DARKSKIN"
-          Hint = "if checked it uses the dark ski"
-        }
-      }
-      obj_stalagmite2:form =
-      {
-        Help = "A big squat stalagmite.These point up."
-        bbox = '-32 -32 -128 32 32 0 1'
-        HTML = "help/hr2/g_obj.htm#obj_stalagmite2"
-        mdl = "models/objects/stalactite/stalact2/tris.fm"
-        angle: =
-        {
-          Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Typ = "L 3"
-          Hint = "color-selection button"
-        }
-        scale: =
-        {
-          Txt = "&"
-          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
-        }
-        more: =
-        {
-          Typ = "B"
-          Txt = "obj_targetting"
-          Cap = "Push"
-          Form = "obj_targetting:form"
-          Hint = "specifics for targetting"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X1"
-          Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X8"
-          Cap = "DARKSKIN"
-          Hint = "if checked it uses the dark ski"
-        }
-      }
-      obj_stalagmite3:form =
-      {
-        Help = "A long pointy stalagmite. These point up"
-        bbox = '-32 -32 -200 32 32 0 1'
-        HTML = "help/hr2/g_obj.htm#obj_stalagmite3"
-        mdl = "models/objects/stalactite/stalact3/tris.fm"
-        angle: =
-        {
-          Txt = "&"
-          Hint = "the direction it faces.  For 3D orientation use angles."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Hint = "colored inherent glow for models, a triple of numbers 0-255,"
-           " R B G"$0D"  color button below displays & selects visually."
-        }
-        abslight: =
-        {
-          Txt = "&"
-          Typ = "L 3"
-          Hint = "color-selection button"
-        }
-        scale: =
-        {
-          Txt = "&"
-          Hint = "Adjust size: values from about .2 thru 2.5 seem to work"
-        }
-        more: =
-        {
-          Typ = "B"
-          Txt = "obj_targetting"
-          Cap = "Push"
-          Form = "obj_targetting:form"
-          Hint = "specifics for targetting"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X1"
-          Cap = "INVULNERABLE"
-          Hint = "it can't be hur"
-        }
-        spawnflags: =
-        {
-          Txt = "&"
-          Typ = "X8"
-          Cap = "DARKSKIN"
-          Hint = "if checked it uses the dark ski"
-        }
-      }
       obj_statue_boulderfish:form =
       {
         Help = "A statue of a fish. The one which raises up a boulder."
@@ -21075,7 +20908,7 @@ QQRKSRC1
       obj_statue_sithraguard:form =
       {
         Help = "A statue of a sithra guard with spear extended"$0D" When used "
-         "the guard pulls his arm back."
+         "the guard pulls his arm back & shield appears."
         bbox = '-22 -20 -57 22 20 57 1'
         HTML = "help/hr2/g_obj.htm#obj_statue_sithraguard"
         mdl = "models/objects/statue/sithraguard/tris.fm"
@@ -21132,10 +20965,18 @@ QQRKSRC1
           Txt = "&"
           Hint = "the direction it faces.  For 3D orientation use angles."
         }
+        style: =
+        {
+          Txt = "&"
+          Hint = "default 0 = no amulet"
+          Typ = "C"
+          Items = "0) No Amulet"$0D"1) Has Amulet"
+          values = "0"$0D"1"
+        }
         targetname: =
         {
           Txt = "&"
-          Hint = "necklace appears when triggered"
+          Hint = "Amulet appears when triggered"
         }
         abslight: =
         {
@@ -21272,7 +21113,7 @@ QQRKSRC1
         targetname: =
         {
           Txt = "&"
-          Hint = " drops spear when triggered"
+          Hint = "toggles spear when triggered (starts invisible)"
         }
         angle: =
         {
@@ -22341,7 +22182,7 @@ QQRKSRC1
       obj_woodpile:form =
       {
         Help = "A pile of chopped  wood."
-        bbox = '-12 -20 -7 12 20 7 1'
+        bbox = '-12 -20 -16 12 20 16 1'
         HTML = "help/hr2/g_obj.htm#obj_woodpile"
         mdl = "models/objects/wood/tris.fm"
         angle: =
