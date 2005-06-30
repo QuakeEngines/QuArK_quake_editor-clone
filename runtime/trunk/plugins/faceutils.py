@@ -187,7 +187,7 @@ def perimeter_edges(editor):
 
     perimfaces = []
     non_perimfaces = []
-    perimedges = []
+    strperimedges = []
     for baseface in selectedfacelist:
         baseedges = []
         baseedge0 = 0
@@ -212,16 +212,16 @@ def perimeter_edges(editor):
                     baseedge2 = baseedge2 + 1
 
         if baseedge0 == 0:
-            perimedges.append(bfp0)
-            perimedges.append(bfp1)
+            strperimedges.append(str(bfp0))
+            strperimedges.append(str(bfp1))
 
         if baseedge1 == 0:
-            perimedges.append(bfp1)
-            perimedges.append(bfp2)
+            strperimedges.append(str(bfp1))
+            strperimedges.append(str(bfp2))
 
         if baseedge2 == 0:
-            perimedges.append(bfp0)
-            perimedges.append(bfp2)
+            strperimedges.append(str(bfp0))
+            strperimedges.append(str(bfp2))
 
         if baseedge0 and baseedge1 and baseedge2 != 0:
             non_perimfaces.append(baseface)
@@ -232,9 +232,6 @@ def perimeter_edges(editor):
     strperimvertexs = []
     movablevertexes = []
     strmovablevertexes = []
-    strperimedges = []
-    for edge in perimedges:
-        strperimedges.append(str(edge))
 
     for face in selectedfacelist:
         polyofface = face.parent
@@ -251,6 +248,10 @@ def perimeter_edges(editor):
     return perimfaces, non_perimfaces, perimvertexs, movablevertexes
 
 #$Log$
+#Revision 1.8  2005/06/17 05:48:40  cdunde
+#To change the perimeter_edges function method to get clean lists returns without
+#dupe vertexes and add an additional list of non-perimeter vertexes
+#
 #Revision 1.7  2005/06/02 00:42:29  cdunde
 #Changes by Rowdy to help min. dup items in list
 #
