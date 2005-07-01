@@ -194,7 +194,13 @@ def perimeter_edges(editor):
         baseedge1 = 0
         baseedge2 = 0
         basepoly = baseface.parent
-        bfp0, bfp1, bfp2 = baseface.verticesof(basepoly)
+        if len(baseface.verticesof(basepoly)) != 3:
+            editor.layout.explorer.sellist = [baseface]
+            selectedfacelist = []
+            quarkx.msgbox("You have made an\nimproper selection", MT_ERROR, MB_OK)
+            break
+        else:
+            bfp0, bfp1, bfp2 = baseface.verticesof(basepoly)
         basevertices = baseface.verticesof(basepoly)
         for compface in selectedfacelist:
             comppoly = compface.parent
@@ -248,6 +254,9 @@ def perimeter_edges(editor):
     return perimfaces, non_perimfaces, perimvertexs, movablevertexes
 
 #$Log$
+#Revision 1.9  2005/06/30 21:16:04  cdunde
+#Minor update
+#
 #Revision 1.8  2005/06/17 05:48:40  cdunde
 #To change the perimeter_edges function method to get clean lists returns without
 #dupe vertexes and add an additional list of non-perimeter vertexes
