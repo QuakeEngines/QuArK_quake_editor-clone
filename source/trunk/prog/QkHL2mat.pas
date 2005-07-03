@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2005/06/24 00:06:32  alexander
+tricky derive vtf base path from file path
+
 Revision 1.3  2005/06/23 23:41:09  alexander
 no image bug fixed
 
@@ -46,6 +49,7 @@ type
   QHL2Mat = class(QPixelSet)
             protected
               DefaultImageCache : QPixelSet;
+              ErrorText : String;
             public
               procedure LoadFile(F: TStream; FSize: Integer); override;
               class function TypeInfo: String; override;
@@ -86,6 +90,7 @@ var
  i:integer;
  noimage:boolean;
 begin
+  Result :=nil;
   Acces;
   noimage:=true;
   for I:=0 to SubElements.Count-1 do
@@ -99,7 +104,12 @@ begin
     end;
   end;
   if noimage then
-    Raise EErrorFmt(5695, [Name]);
+  begin
+    if ErrorText = '' then
+      Raise EErrorFmt(5695, [Name])
+    else
+      Raise Exception.Create(ErrorText);
+  end;
 {  else
   begin
      Size:=Result.GetSize;
@@ -125,8 +135,6 @@ end;
 function QHL2Mat.Description : TPixelSetDescription;
 var
  Image: QPixelSet;
- i:integer;
- noimage:boolean;
 begin
   image:=defaultimage;
   if assigned(image ) then
@@ -187,7 +195,7 @@ type
              sTokenForcedToString);
 var
  SymbolType: TSymbols;
- S,S1: String;
+ S: String;
  NumericValue: Double;
 
  LineNoBeingParsed: Integer;
@@ -452,19 +460,20 @@ expected one.
   S:=Specifics.Values['%tooltexture'];
   if (s='') then
     S:=Specifics.Values['$basetexture'];
+  if (s='') then
+    S:=Specifics.Values['$envmap'];
 
   if s<>'' then
   begin
      p:=self;
      repeat
-       base:=p.GetFullName;
        p:=p.FParent;
-       if (p<>nil) and (p.fparent<>nil) and (p.fparent.fparent<>nil)then
-         path:=p.fparent.name+'/'+path;
-     until p=nil;
-     VTFImage:=NeedGameFileBase(base, path+
-               s+
-               '.vtf') as QVTF;
+       if (p<>nil) and (p.fparent<>nil) and (p.fparent.fparent<>nil) and (p.fparent.fparent.fparent=nil)then
+         path:=p.fparent.name+'/'+p.name;
+     until p.FParent=nil;
+     base:=p.GetFullName;
+
+     VTFImage:=NeedGameFileBase(base, path + '/' + s + '.vtf') as QVTF;
      VTFImage.Acces;
 
      SubElements.Add(VTFImage);
@@ -491,7 +500,7 @@ begin
           while (SymbolType=sStringQuotedToken) or (SymbolType=sStringToken )do
             ReadHL2Mat
       except
-         raise Exception.Create('exception on load material in line '+IntToStr(LineNoBeingParsed)+' '+filename);
+        on E: Exception do ErrorText:= E.Message;
       end;
     end;
   else
