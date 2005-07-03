@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.41  2005/06/22 01:29:37  alexander
+user shaders for hl2
+
 Revision 1.40  2004/12/28 02:17:59  alexander
 allow individual texture paths for hl2
 
@@ -1116,7 +1119,13 @@ begin
         // for hl2 we need individual paths
         if CharModeJeu=mjHL2 then
         begin
-          Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+          try // failing to load the textures produces an exception
+            Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+GameBuffer(StdGameTextureLinks[I].GameMode)^.TextureExt) as QPixelSet;
+          except
+            // fall back to vtf file loading if default texture extension (vmt) fails
+            if Link=Nil then
+              Link:=NeedGameFileBase(S, Specifics.Values['path']+TexName+'.vtf') as QPixelSet;
+          end;
           if Link=Nil then
             Raise EErrorFmt(5755, [TexName, Arg]);
         end
