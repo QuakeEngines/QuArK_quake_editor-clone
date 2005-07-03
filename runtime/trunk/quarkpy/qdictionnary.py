@@ -928,7 +928,7 @@ Strings = {
     5714: 'bad content id: %s',
     5715: 'vmf file',
     5716: 'VMT file',
-    5717: 'reserved for hl2',
+    5717: 'Syntax error in Material file %s, line %d',
     5718: 'reserved for hl2',
     5719: 'reserved for hl2',
     5720: 'reserved for hl2',
@@ -978,6 +978,9 @@ Strings = {
 #
 #
 #$Log$
+#Revision 1.69  2005/06/23 23:30:39  alexander
+#vmt file string
+#
 #Revision 1.68  2005/04/01 19:33:33  alexander
 #more progress indicators (textures and polys)
 #
