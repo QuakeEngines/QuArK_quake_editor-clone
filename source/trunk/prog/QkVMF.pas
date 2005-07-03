@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/03/14 19:02:43  alexander
+fixed duplicate classname
+
 Revision 1.6  2005/02/06 21:39:26  alexander
 dont break on hidden solids
 
@@ -549,8 +552,8 @@ procedure WC33Params;
       S1:=S;
       ReadSymbol(sStringQuotedToken);
     end;
+    ReadSymbol(sCurlyBracketRight);
   end;
-  ReadSymbol(sCurlyBracketRight);
 
   ReadSymbol(sCurlyBracketRight);
 
