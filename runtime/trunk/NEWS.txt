@@ -16,6 +16,14 @@ $Id$
 6.4.1 alpha 4
 =============
 
+ * [alexander]: HL2
+     - fixed problem with different material path lengths (decals folder)
+     - accept $envmap  as image source in materials
+     - fixed bug that quark cant load its own exported .vmf
+     - quark trys to load a .vmf with the same name as fall
+       back if loading a material fails
+     - better exception forwarding from load material to display of image
+
  * [cdunde]: Major updates and changes by dannsdinosaurs DannJ
       - to the Heretic_II DataHr2.qrk file.
  
@@ -23,14 +31,14 @@ $Id$
     -  Entity files are now alphabetically sorted
     -  Some entities fixed / improved
 
- * [alexander]: 
+ * [alexander]: HL2
      - QuArK can display HL2 Materials now
 
  * [cbxpm]:  HL2 / Source engine content update
      - Prepared material files to work with shaders
      - UserData Half-Life2 updated (more quick selectable entities)     
 
- * [alexander]: 
+ * [alexander]: HL2
      - HL2 split up entity files in base, and game specific files
 
  * [cdunde]: Updated the Genesis3D and Hexen_II data.qrk files
