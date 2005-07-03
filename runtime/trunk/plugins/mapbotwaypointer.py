@@ -894,6 +894,7 @@ quarkpy.mapduplicator.DupCodes.update({
 })
 
 # ----------- REVISION HISTORY ------------
+#$Log$
 #
 # Revision 1.7  2005/06/29 13:04:56  cdunde
 # Fred -Fixed a bug with the waypoint savings "missing datatypes".
@@ -908,7 +909,9 @@ quarkpy.mapduplicator.DupCodes.update({
 #
 # Revision 1.4 2005/10/4 01:30 Fred
 # Fixed a bug wich had been introduced in a later release
-# $Log$
+# 
+# Revision 1.8  2005/06/29 13:35:09  cdunde
+# To try and fix version numbering.
 #
 # Revision 1.3  2003/12/18 21:51:46  peter-b
 # Removed reliance on external string library from Python scripts (second try ;-)
