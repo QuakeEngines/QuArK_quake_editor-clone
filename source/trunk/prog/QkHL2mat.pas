@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2005/07/03 20:20:41  alexander
+better exception forwarding from load material to display of image
+fixed problem with different material path lengths (decals folder)
+accept $envmap  as image source
+
 Revision 1.4  2005/06/24 00:06:32  alexander
 tricky derive vtf base path from file path
 
@@ -425,16 +430,20 @@ expected one.
      ReadSymbol(sStringQuotedToken)
    else
      ReadSymbol(sStringToken);
-     
+
    ReadSymbol(sCurlyBracketLeft);
    // read attributes of entity
    while SymbolType<>sCurlyBracketRight do
    begin
 
-     if SymbolType = sStringQuotedToken then
+     if (SymbolType = sStringQuotedToken) or (SymbolType = sStringToken) then
      begin
        S1:=S;
-       ReadSymbol(sStringQuotedToken);
+       if SymbolType = sStringToken then
+         ReadSymbol(sStringToken);
+       if SymbolType = sStringQuotedToken then
+         ReadSymbol(sStringQuotedToken);
+
        if (SymbolType = sNumValueToken)  then
        begin
            self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
@@ -457,27 +466,44 @@ expected one.
 
    ReadSymbol(sCurlyBracketRight);
 
-  S:=Specifics.Values['%tooltexture'];
-  if (s='') then
-    S:=Specifics.Values['$basetexture'];
-  if (s='') then
-    S:=Specifics.Values['$envmap'];
 
-  if s<>'' then
+  p:=self;
+  while p.FParent<>nil do
   begin
-     p:=self;
-     repeat
-       p:=p.FParent;
-       if (p<>nil) and (p.fparent<>nil) and (p.fparent.fparent<>nil) and (p.fparent.fparent.fparent=nil)then
-         path:=p.fparent.name+'/'+p.name;
-     until p.FParent=nil;
-     base:=p.GetFullName;
+    if (p<>nil) and (p.fparent<>nil) and (p.fparent.fparent<>nil) and (p.fparent.fparent.fparent=nil)then
+      path:=p.fparent.name+'/'+p.name;
+    p:=p.FParent;
+  end;
 
-     VTFImage:=NeedGameFileBase(base, path + '/' + s + '.vtf') as QVTF;
-     VTFImage.Acces;
+  S:=Specifics.Values['%tooltexture'];
+  if (s<>'') then
+    try
+      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+    except
+      VTFImage:=nil;
+    end;
 
-     SubElements.Add(VTFImage);
-     VTFImage.fparent:=self;
+  S:=Specifics.Values['$basetexture'];
+  if (VTFImage=nil) and (s<>'') then
+    try
+      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+    except
+      VTFImage:=nil;
+    end;
+
+  S:=Specifics.Values['$envmap'];
+  if (VTFImage=nil) and (s<>'') then
+    try
+      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+    except
+      VTFImage:=nil;
+    end;
+
+  if vtfImage<>nil then
+  begin
+    VTFImage.Acces;
+    SubElements.Add(VTFImage);
+    VTFImage.fparent:=self;
   end;
 
  end;

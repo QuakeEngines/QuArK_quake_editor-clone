@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.38  2004/01/05 21:57:39  silverpaladin
+TrySavingNow was changed to display a warning if it fails rather than raising an error message.  Then if something like an MD3 is referenced in a qrk file, the rest of the qrk file can still be saved without erroring out.
+
 Revision 1.37  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
@@ -250,6 +253,7 @@ type
                   procedure WriteSiblingsTo(Info1: TInfoEnreg1);
                 public
                   Filename: String;
+                  Protocol: String;
                   ReadFormat: Integer;
                   destructor Destroy; override;
                   class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); virtual;

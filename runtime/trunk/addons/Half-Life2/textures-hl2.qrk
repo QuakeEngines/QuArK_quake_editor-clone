@@ -11,7 +11,8 @@ QQRKSRC1
     Root = "HL2 Textures.qtxfolder"
 
     //access via steam (steam must be running)
-    t_hl2:incl =      {  v="220.SteamFS" path="hl2/materials/"}
+    //t_hl2:incl =      {  v="220.SteamFS" path="hl2/materials/"}
+    t_hl2:incl =      {  v="steamaccess://220" path="hl2/materials/"}
 
     //access via gcf file loader (steam must not be running in online mode)
     //t_hl2:incl =      {  v="steamapps/source materials.gcf" path="hl2/materials/"}

@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2005/01/05 15:57:53  alexander
+late dll initialization on LoadFile method
+dependent dlls are checked before
+made dll loading errors or api mismatch errors fatal because there is no means of recovery
+
 Revision 1.3  2005/01/04 17:26:09  alexander
 steam environment configuration added
 
@@ -347,7 +352,7 @@ thus we do this "on demand". i leave the code here for refence if we want to imp
          end;
          SteamFSFindFinish(steamfolderitem);
 }
-
+         self.Protocol:='steamaccess://';
        end;
     else
       inherited;
@@ -409,6 +414,8 @@ begin
         Result:=Nil
       else
         Result:=QSteamFSFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
+        if assigned(Result) then
+          Result.Protocol:=self.Protocol;
       Exit;
     end;
   end;
@@ -442,6 +449,8 @@ begin
     end;
   end;
   Result:=SubElements.FindName(PakPath) as QFileObject;
+  if assigned(Result) then
+    Result.Protocol:=self.Protocol;
 
 end;
 
@@ -474,7 +483,7 @@ end;
 
 class function QSteamFS.TypeInfo;
 begin
- Result:='.SteamFS';
+ Result:='steamaccess://';
 end;
 
 procedure QSteamFS.ObjectState(var E: TEtatObjet);
