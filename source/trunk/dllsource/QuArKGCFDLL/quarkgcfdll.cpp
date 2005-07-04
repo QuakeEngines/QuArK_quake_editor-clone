@@ -43,7 +43,7 @@ DLL_EXPORT p_packagehandle GCFOpen(char* PackageName)
 	pkg->Package= CPackageFactory::Create(PackageName);
 	if(pkg->Package == 0)
 	{
-		sLog->msg("GCFOpen Error loading %s:\nUnsupported package type.\n", PackageName);
+		sLog->msg(10,"GCFOpen Error loading %s:\nUnsupported package type.\n", PackageName);
 		delete pkg;
 		return NULL;
 	}
@@ -51,7 +51,7 @@ DLL_EXPORT p_packagehandle GCFOpen(char* PackageName)
 
 	if(!pkg->Package->Open(PackageName))
 	{
-		sLog->msg("Error loading %s:\n%s\n", PackageName, pkg->Package->GetLastError());
+		sLog->msg(10,"Error loading %s:\n%s\n", PackageName, pkg->Package->GetLastError());
 		delete pkg->Package;
 		delete pkg;
 		return NULL;
@@ -82,7 +82,7 @@ DLL_EXPORT p_packagefile GCFOpenElement(p_packagehandle pkg, char* FileName)
 
   if(p->Item == 0)
   {
-	  sLog->msg("GCFOpenFile: %s not found in package.\n", FileName);
+	  sLog->msg(10,"GCFOpenFile: %s not found in package.\n", FileName);
 	  delete p;
 	  return NULL;
   }
@@ -140,7 +140,7 @@ DLL_EXPORT unsigned long GCFReadFile(p_packagefile p ,LPBYTE lpData)
   	// Get the file's data.
    	if(!p->Package->GetFileData(static_cast<CDirectoryFile *>(p->Item), lpData))
    	{
-   		sLog->msg("Package->GetFileData:%\n",p->Package->GetLastError() );
+   		sLog->msg(10,"Package->GetFileData:%\n",p->Package->GetLastError() );
    		return 0;
    	}
     return 1;
@@ -159,7 +159,7 @@ DLL_EXPORT unsigned long GCFFileSize(p_packagefile p )
   {
 	  if(!p->Package->GetFileSize(static_cast<CDirectoryFile *>(p->Item), size))
   	{
-  		sLog->msg("Package->GetFileSize:%s\n",p->Package->GetLastError() );
+  		sLog->msg(10,"Package->GetFileSize:%s\n",p->Package->GetLastError() );
   		return 0;
   	}
     else

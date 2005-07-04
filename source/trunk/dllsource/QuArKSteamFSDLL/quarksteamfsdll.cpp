@@ -53,7 +53,7 @@ char* msgtypes[SPEW_TYPE_COUNT] ={"SPEW_MESSAGE",
                   "SPEW_LOG"};
 SpewRetval_t mySpewFunc( SpewType_t spewType, tchar const *pMsg )
 {
-  sLog->msg("%s : %s\n",msgtypes[spewType],pMsg);
+  sLog->msg(20,"%s : %s\n",msgtypes[spewType],pMsg);
   sSpewErr++;
   return SPEW_CONTINUE;
 }
@@ -81,7 +81,7 @@ void AddEnv(const char* name,const char* value,const char sep)
     oldenv=getenv(name);
     env=new char[strlen(name)+strlen(oldenv)+strlen(value)+10];
     sprintf(env,"%s=%s%c%s",name,oldenv,sep,value);
-    sLog->scope("new value: %s\n",env);
+    sLog->msg(20,"new value: %s\n",env);
     putenv(env);
     delete env;
   }  
@@ -111,45 +111,45 @@ DLL_EXPORT pfshandle SteamFSInit( const char* m_pFileSystemDLLName,
 
 	m_ConnectFactory = Sys_GetFactoryThis();
     
-  sLog->msg("Sys_LoadInterface()..");
+  sLog->msg(30,"Sys_LoadInterface()..");
 	if ( !Sys_LoadInterface(m_pFileSystemDLLName,FILESYSTEM_INTERFACE_VERSION,&pfs->m_pModule,(void**)&pfs->m_pFileSystem ) )
 	{
-	  sLog->msg("cannot load FileSystem dll %s\n",m_pFileSystemDLLName);
+	  sLog->msg(10,"cannot load FileSystem dll %s\n",m_pFileSystemDLLName);
     return NULL;
 	}
-  sLog->msg("ok\n");
+  sLog->msg(30,"ok\n");
 
-  sLog->msg("m_pFileSystem->Connect()..");
+  sLog->msg(30,"m_pFileSystem->Connect()..");
 	if ( !pfs->m_pFileSystem->Connect( m_ConnectFactory ) )
   {
-	  sLog->msg("IFileSystem::Connect failed\n");
+	  sLog->msg(10,"IFileSystem::Connect failed\n");
     return NULL;
   }
-  sLog->msg("ok\n");
+  sLog->msg(30,"ok\n");
 
-  sLog->msg("m_pFileSystem->Init()...");
+  sLog->msg(30,"m_pFileSystem->Init()...");
   if ( pfs->m_pFileSystem->Init() != INIT_OK )
   {
-	  sLog->msg("IFileSystem::Init failed\n" );
+	  sLog->msg(10,"IFileSystem::Init failed\n" );
     return NULL;
   }
-  sLog->msg("ok\n");
+  sLog->msg(30,"ok\n");
 
-  sLog->msg( "mount steam content %lu ...",contentid);
+  sLog->msg(30, "mount steam content %lu ...",contentid);
   FilesystemMountRetval_t mountresult1  = static_cast<IFileSystem*>(pfs->m_pFileSystem)->MountSteamContent( contentid );
   if(mountresult1 != FILESYSTEM_MOUNT_OK)
 	{
-		sLog->msg( "Could not mount content %lu \n",contentid);
+		sLog->msg(10, "Could not mount content %lu \n",contentid);
     return NULL;
   }
-  sLog->msg( "ok\n");
+  sLog->msg(30, "ok\n");
 
 
   pfs->m_pFileSystem->AddSearchPath( "", "MOD", PATH_ADD_TO_TAIL );
 
   if (sSpewErr != 0)
   {
-    sLog->msg( "Steam reported %d errors, but did NOT set the proper return codes ! Init Failed !\n",sSpewErr);
+    sLog->msg(10, "Steam reported %d errors, but did NOT set the proper return codes ! Init Failed !\n",sSpewErr);
     pfs->m_pFileSystem->Shutdown();
     Sys_UnloadModule( pfs->m_pModule );
     delete pfs;
