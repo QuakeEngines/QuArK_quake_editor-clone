@@ -18,11 +18,13 @@ $Id$
 
  * [alexander]: HL2
      - fixed problem with different material path lengths (decals folder)
-     - accept $envmap  as image source in materials
+     - try several entries of a material as image source: 
+       %tooltexture then  $basetexture and if that doesnt help $envmap
      - fixed bug that quark cant load its own exported .vmf
      - quark trys to load a .vmf with the same name as fall
        back if loading a material fails
      - better exception forwarding from load material to display of image
+
 
  * [cdunde]: Major updates and changes by dannsdinosaurs DannJ
       - to the Heretic_II DataHr2.qrk file.
