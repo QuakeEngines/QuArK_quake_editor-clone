@@ -24,6 +24,9 @@ $Id$
      - quark trys to load a .vmf with the same name as fall
        back if loading a material fails
      - better exception forwarding from load material to display of image
+     - reduced overall logging of dlls
+     - introduced an environment "QUARK_LOG_LEVEL" variable to increase
+       logging verbosity of quark. 
 
 
  * [cdunde]: Major updates and changes by dannsdinosaurs DannJ
