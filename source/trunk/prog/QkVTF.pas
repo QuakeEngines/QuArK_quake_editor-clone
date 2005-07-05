@@ -22,6 +22,10 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.11  2005/04/17 14:45:19  alexander
+added saving of alpha vtf
+added configuration of output format
+
 Revision 1.10  2005/04/16 11:13:36  alexander
 can save non alpha textures as vtf
 can export used textures to materials folder
@@ -83,7 +87,7 @@ type
 
 implementation
 
-uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows;
+uses SysUtils, Setup, Quarkx, QkObjectClassList, Game, windows,Logging;
 
 const RequiredVTFAPI=5;
 
@@ -133,6 +137,7 @@ var
 
 procedure Fatal(x:string);
 begin
+  LogEx(LOG_CRITICAL,'load vtf %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
   ExitProcess(0);
 end;
@@ -206,6 +211,7 @@ var
   NumberOfPixels,mip: Integer;
   Width,Height,MipLevels,HasAlpha:Integer;
 begin
+  LogEx(LOG_VERBOSE,'load vtf %s',[self.name]);
   initdll;
   case ReadFormat of
     1: begin  { as stand-alone file }
@@ -332,6 +338,7 @@ var
   SourceImg, SourceAlpha, Dest,pSourceImg, pSourceAlpha, pDest: PChar;
   I,J,TexFormatalpha,texformatnonalpha: Integer;
 begin
+  LogEx(LOG_VERBOSE,'save vtf %s',[self.name]);
   initdll;
   texformatalpha := 15;
   S:=SetupGameSet.Specifics.Values['TextureWriteSubFormatA'];

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.5  2005/07/04 18:53:20  alexander
+changed steam acces to be a protocol steamaccess://
+
 Revision 1.4  2005/01/05 15:57:53  alexander
 late dll initialization on LoadFile method
 dependent dlls are checked before
@@ -70,7 +73,7 @@ type
 
 implementation
 
-uses Quarkx, PyObjects, Game, QkObjectClassList;
+uses Quarkx, PyObjects, Game, QkObjectClassList, Logging;
 
 const RequiredSTEAMFSAPI=2;
 
@@ -127,9 +130,11 @@ var
 
 procedure Fatal(x:string);
 begin
+  LogEx(LOG_CRITICAL,'init steam %s',[x]);
   Windows.MessageBox(0, pchar(X), FatalErrorCaption, MB_TASKMODAL);
   ExitProcess(0);
 end;
+
 
 function InitDllPointer(DLLHandle: HINST;APIFuncname:PChar):Pointer;
 begin

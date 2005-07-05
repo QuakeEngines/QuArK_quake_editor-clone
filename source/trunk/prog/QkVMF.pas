@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/07/03 18:05:32  alexander
+fixed bug that quark cant load its own exported vmf
+
 Revision 1.7  2005/03/14 19:02:43  alexander
 fixed duplicate classname
 
@@ -79,7 +82,7 @@ implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
   Qk3D, QkBspHulls, Undo, Game, Quarkx,
-  QkObjectClassList, MapError;
+  QkObjectClassList, MapError,Logging;
 
 
  {------------------------}
@@ -106,7 +109,7 @@ type
  t_vectarray= array[1..3] of TVect;
 var
  SymbolType: TSymbols;
- S, S1: String;
+ S, S1,S2: String;
  NumericValue: Double;
  P: TPolyhedron;
  Surface: TFace;
@@ -522,13 +525,18 @@ procedure WC33Params;
       while (SymbolType=sStringToken)  do
       begin
         ReadSymbol(sStringToken);
+        S1:=S;
+        //Log(S);
         ReadSymbol(sCurlyBracketLeft);
         // read dispinfo attributes
         while SymbolType=sStringQuotedToken do
         begin
-          S1:=S;
+          S2:=S;
+          //Log(s);
           ReadSymbol(sStringQuotedToken);
-          S1:=S;
+          //Log(s);
+          //Log('>'+S1+'_'+S2+'='+S);
+          P.Specifics.Add(S1+'_'+S2+'='+S);
           ReadSymbol(sStringQuotedToken);
         end;
         ReadSymbol(sCurlyBracketRight);
@@ -896,23 +904,24 @@ end;
 
 procedure QVMFFile.LoadFile(F: TStream; FSize: Integer);
 var
- Racine: TTreeMapBrush;
+ Root: TTreeMapBrush;
  ModeJeu: Char;
  Source: String;
 begin
+ LogEx(LOG_VERBOSE,'load vmf file %s',[self.name]);
  case ReadFormat of
   1: begin  { as stand-alone file }
       SetLength(Source, FSize);
       F.ReadBuffer(Source[1], FSize);
-      Racine:=TTreeMapBrush.Create('', Self);
-      Racine.AddRef(+1);
+      Root:=TTreeMapBrush.Create('', Self);
+      Root.AddRef(+1);
       try
-        ModeJeu:=ReadEntityList(Racine, Source, Nil);
-        SubElements.Add(Racine);
-        Specifics.Values['Root']:=Racine.Name+Racine.TypeInfo;
+        ModeJeu:=ReadEntityList(Root, Source, Nil);
+        SubElements.Add(Root);
+        Specifics.Values['Root']:=Root.Name+Root.TypeInfo;
         ObjectGameCode:=ModeJeu;
       finally
-        Racine.AddRef(-1);
+        Root.AddRef(-1);
       end;
      end;
  else
@@ -923,17 +932,17 @@ end;
 procedure QVMFFile.SaveFile(Info: TInfoEnreg1);
 var
  Dest, HxStrings: TStringList;
- Racine: QObject;
+ Root: QObject;
  List: TQList;
  saveflags : Integer;
  MapOptionSpecs : TStringList;
 begin
  with Info do case Format of
   1: begin  { as stand-alone file }
-      Racine:=SubElements.FindName(Specifics.Values['Root']);
-      if (Racine=Nil) or not (Racine is TTreeMapBrush) then
+      Root:=SubElements.FindName(Specifics.Values['Root']);
+      if (Root=Nil) or not (Root is TTreeMapBrush) then
        Raise EError(5558);
-      Racine.LoadAll;
+      Root.LoadAll;
       HxStrings:=Nil;
       List:=TQList.Create;
       Dest:=TStringList.Create;
@@ -962,7 +971,7 @@ begin
          saveflags:=saveflags or soUseIntegralVertices;
      saveflags:=saveflags or IntSpec['saveflags']; {merge in selonly}
 
-       TTreeMap(Racine).SaveAsText(List, Dest, saveflags, HxStrings);
+       TTreeMap(Root).SaveAsText(List, Dest, saveflags, HxStrings);
        Dest.SaveToStream(F);
        if HxStrings<>Nil then
         Specifics.Values['hxstrings']:=HxStrings.Text;

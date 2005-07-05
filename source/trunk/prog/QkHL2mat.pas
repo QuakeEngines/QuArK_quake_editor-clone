@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/07/04 18:53:20  alexander
+changed steam acces to be a protocol steamaccess://
+
 Revision 1.5  2005/07/03 20:20:41  alexander
 better exception forwarding from load material to display of image
 fixed problem with different material path lengths (decals folder)
@@ -48,7 +51,7 @@ interface
 
 uses
   SysUtils, Windows, Classes, QkFileObjects, Quarkx, QkObjects, QkText,
-   QkTextures, Setup, QkWad, QkPixelSet,QkVTF;
+   QkTextures, Setup, QkWad, QkPixelSet,QkVTF,Logging;
 
 type
   QHL2Mat = class(QPixelSet)
@@ -403,33 +406,44 @@ expected one.
        if SymbolType=sStringQuotedToken then
          ReadSymbol(sStringQuotedToken)
        else
+       if (SymbolType = sStringToken)  then
+         ReadSymbol(sStringToken)
+       else
        if (SymbolType = sNumValueToken)  then
          ReadSymbol(sNumValueToken)
        else
-         if SymbolType=sCurlyBracketLeft then
-         ReadHL2Sub; //descend
+       if SymbolType=sCurlyBracketLeft then
+         ReadHL2Sub
+       else
+         raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
      end;
      ReadSymbol(sCurlyBracketRight);
    end;
  end;
  procedure ReadHL2GenericHierarchy;
  begin
-   ReadSymbol(sStringQuotedToken);
+   if SymbolType = sStringQuotedToken then
+     ReadSymbol(sStringQuotedToken)
+   else
+     ReadSymbol(sStringToken);
    ReadHL2Sub;
  end;
 
 
  procedure ReadHL2Mat;
  var
-   S1,base,path: String;
+   S1,path: String;
    VTFImage:QVTF;
    p:QObject;
 
  begin
+   VTFImage:=nil;
    if SymbolType = sStringQuotedToken then
      ReadSymbol(sStringQuotedToken)
    else
      ReadSymbol(sStringToken);
+
+   Log(LOG_VERBOSE,'material '+self.name);
 
    ReadSymbol(sCurlyBracketLeft);
    // read attributes of entity
@@ -446,18 +460,20 @@ expected one.
 
        if (SymbolType = sNumValueToken)  then
        begin
-           self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
+         self.Specifics.Add(S1+'='+FloatToStr(NumericValue));
+         Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
          ReadSymbol(sNumValueToken);
        end
        else
          if SymbolType = sStringQuotedToken then
          begin
            self.Specifics.Add(S1+'='+S);
+           Log(LOG_VERBOSE,'  attribute'+S1+' '+S);
            ReadSymbol(sStringQuotedToken);
          end
          else
            if SymbolType=sCurlyBracketLeft then
-             ReadHL2Sub //descend
+             ReadHL2Sub; //descend
      end
      else
        raise EErrorFmt(254, [LineNoBeingParsed, 'unknown thing']);
@@ -478,6 +494,7 @@ expected one.
   S:=Specifics.Values['%tooltexture'];
   if (s<>'') then
     try
+      Log(LOG_VERBOSE,'attempt %tooltexture '+S);
       VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
@@ -486,6 +503,7 @@ expected one.
   S:=Specifics.Values['$basetexture'];
   if (VTFImage=nil) and (s<>'') then
     try
+      Log(LOG_VERBOSE,'attempt $basetexture '+S);
       VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
@@ -494,6 +512,7 @@ expected one.
   S:=Specifics.Values['$envmap'];
   if (VTFImage=nil) and (s<>'') then
     try
+      Log(LOG_VERBOSE,'attempt $envmap '+S);
       VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
@@ -501,10 +520,13 @@ expected one.
 
   if vtfImage<>nil then
   begin
+    Log(LOG_VERBOSE,'image found '+S);
     VTFImage.Acces;
     SubElements.Add(VTFImage);
     VTFImage.fparent:=self;
-  end;
+  end
+  else
+    Log(LOG_WARN,'no image found in material '+self.name);
 
  end;
 
@@ -514,6 +536,7 @@ begin
     1:
     begin  { as stand-alone file }
       try
+        LogEx(LOG_VERBOSE,'load material %s',[self.name]);
         SetLength(Data, FSize);
         Source:=PChar(Data);
         F.ReadBuffer(Source^, FSize);  { read the whole file at once }
@@ -526,7 +549,11 @@ begin
           while (SymbolType=sStringQuotedToken) or (SymbolType=sStringToken )do
             ReadHL2Mat
       except
-        on E: Exception do ErrorText:= E.Message;
+        on E: Exception do
+        begin
+          ErrorText:= E.Message;
+          LogEx(LOG_WARN,'load material %s err %s',[self.Name,E.Message]);
+        end;
       end;
     end;
   else

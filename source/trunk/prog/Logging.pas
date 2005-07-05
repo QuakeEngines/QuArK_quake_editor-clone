@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.12  2005/01/26 23:25:15  alexander
+added a flush - needed for proper pre crash logging
+
 Revision 1.11  2002/04/03 00:28:07  tiglari
 Now logs whether Spec Mem Sharing is on or off (via NoShare Conditonal Define)
 
@@ -67,14 +70,23 @@ Procedure aLog(logger: integer; s: string);
 Procedure aLogEx(logger: integer; s: string; args: array of const);
 Procedure CloseLogFile;
 Procedure OpenLogFile;
-Procedure Log(s: string);
-Procedure LogEx(s: string; args: array of const);
+
+Procedure Log(s: string); overload;
+Procedure Log(level: integer ;s: string); overload;
+Procedure LogEx(s: string; args: array of const);overload;
+Procedure LogEx(level: integer ;s: string; args: array of const); overload;
 
 const
   LOG_PASCALSOURCE = 0;
   LOG_PYTHONSOURCE = 1;
   LOG_FILENAME = 'QUARK.LOG';
   LOG_PATCHFILE = 'PATCH.TXT';
+
+  LOG_CRITICAL = 10;
+  LOG_WARN = 20;
+  LOG_INFO = 30;
+  LOG_VERBOSE = 40;
+
 implementation
 
 uses QkObjects, Setup, QkApplPaths, SystemDetails;
@@ -82,6 +94,8 @@ uses QkObjects, Setup, QkApplPaths, SystemDetails;
 var
   LogFile: TextFile;
   LogOpened: boolean;
+  LogLevel:integer;
+  LogLevelEnv:string;
 
 function GetPatchVersion: String;
 var
@@ -118,6 +132,7 @@ begin
   LogOpened:=true;
   LogEx('QuArK started at %s',[DateTimeToStr(now)]);
   LogEx('QuArK version is %s',[QuarkVersion+GetPatchVersion]);
+  LogEx('Loglevel is %d',[LogLevel]);
   {$IFDEF NoShare}
   Log('Spec Mem Sharing Off');
   {$ELSE}
@@ -150,6 +165,18 @@ begin
   aLogEx(LOG_PASCALSOURCE, s, args);
 end;
 
+Procedure LogEx(level: integer;s: string; args: array of const);
+begin
+  if Loglevel>=level then
+    aLogEx(LOG_PASCALSOURCE, s, args);
+end;
+
+Procedure Log(level: integer;s: string);
+begin
+  if Loglevel>=level then
+    aLog(LOG_PASCALSOURCE, s);
+end;
+
 Procedure Log(s: string);
 begin
   aLog(LOG_PASCALSOURCE, s);
@@ -168,6 +195,13 @@ end;
 
 initialization
   LogOpened:=False;
+  LogLevel:=20;
+  LogLevelEnv:=GetEnvironmentVariable('QUARK_LOG_LEVEL');
+  if LogLevelEnv<>'' then
+    try
+      LogLevel:=StrToInt(LogLevelEnv );
+    except
+    end;
   OpenLogFile;
 finalization
   CloseLogFile;

@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.4  2002/12/30 18:07:36  decker_dk
+Renamed 'GetRegisteredQObject' to 'RequestClassOfType', and moved the 'QObjectClassList.Free' from Qk1.PAS to QkObjectClassList.PAS.
+
 Revision 1.3  2001/10/10 11:54:57  tiglari
 Move QObjectStringlist into interface section so that it can be freed in
  Qk1:TForm1.FormDestroy
@@ -54,7 +57,7 @@ implementation
 uses
  SysUtils,
  {$IFDEF Debug} MemTester, {$ENDIF}
- QkFileObjects, Quarkx;
+ QkFileObjects, Quarkx,Logging;
 
 var
  QObjectClassList: TStringList = Nil;
@@ -79,6 +82,7 @@ begin
     QObjectClassList:=TStringList.Create;
     QObjectClassList.Sorted:=True;
   end;
+  LogEx(LOG_VERBOSE,'RegisterQObject %s',[Q.TypeInfo]);
 
   QObjectClassList.AddObject(Prior+Q.TypeInfo, TObject(Q));
 end;
