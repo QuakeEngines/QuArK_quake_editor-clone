@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.35  2005/07/04 18:53:20  alexander
+changed steam acces to be a protocol steamaccess://
+
 Revision 1.34  2005/01/11 01:47:12  alexander
 for .steamfs links allow subdirectories after basedir
 
@@ -678,7 +681,7 @@ end;
 function GetGameFileBase(const BaseDir, FileName: String; LookInCD: Boolean) : QFileObject;
 var
  AbsolutePath, AbsolutePathAndFilename: String;
- FilenameAlias,name: String;
+ FilenameAlias,name,namerest: String;
  index:integer;
  PakFile: QFileObject;
  GetPakNames: TGetPakNames;
@@ -735,7 +738,10 @@ begin
     if index<>0 then
     begin
       RestartAliasing;
-      name:= Copy(BaseDir,15,length(basedir)-14);
+      name:= Copy(BaseDir,15,3);
+      namerest:= Copy(BaseDir,19,Length(Basedir)-18);
+      if namerest<>'' then
+        namerest :=namerest + '/';
 
       PakFile:=SortedFindFileName(GameFiles, BaseDir);
       if (PakFile=Nil) then
@@ -755,7 +761,7 @@ begin
         GameFiles.Add(PakFile);
         GameFiles.Sort(ByFileName);
       end;
-      Result:=PakFile.FindFile( FileName );
+      Result:=PakFile.FindFile( namerest+FileName );
       if (Result<>Nil) then
       begin
         Exit; { found it }

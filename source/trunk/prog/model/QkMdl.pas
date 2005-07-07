@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
 ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.14  2005/01/28 23:24:17  alexander
+preparations for vtx file loading
+
 Revision 1.13  2005/01/11 02:33:09  alexander
 removed obsoloet line
 
@@ -327,7 +330,7 @@ var
 begin
   Result:=nil;
   try
-    tex:= NeedGameFileBase('220.SteamFS', tex_name);
+    tex:= NeedGameFileBase('steamaccess://220', tex_name);
     if tex = nil then
       exit;
     tex.acces;
