@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.251  2005/06/22 01:22:59  alexander
+//user shaders for hl2
+//
 //Revision 1.250  2005/06/11 01:37:27  alexander
 //seperated entity files for simpler maintenance
 //
@@ -1328,7 +1331,7 @@ QQRKSRC1
         BuildCheck5= ""
 
 
-        DefaultTexture = "Brick/brickwall001a"
+        DefaultTexture = "Dev/dev_measuregeneric01b"
         DefaultTextureTrigger = "Tools/toolstrigger"
         DefaultTextureOrigin = "Tools/toolsorigin"
         DefaultTextureClip = "Tools/toolsclip"
@@ -5396,6 +5399,7 @@ QQRKSRC1
     //.qrk: = {Typ="X" Cap=".qrk" Txt="QuArK main file type"}
     //.qkm: = {Typ="X" Cap=".qkm" Txt="QuArK maps (if not in .qrk)"}
       .map: = {Typ="X" Cap=".map" Txt="Standard Quake .map files"}
+      .vmf: = {Typ="X" Cap=".vmf" Txt="Valve map format .vmf files"}
     //.qkl: = {Typ="X" Cap=".qkl" Txt="QuArK models (if not in .qrk)"}
       .md2: = {Typ="X" Cap=".md2" Txt="Standard Quake 2 Models"}
       .mdl: = {Typ="X" Cap=".mdl" Txt="Standard Quake 1 Models"}
