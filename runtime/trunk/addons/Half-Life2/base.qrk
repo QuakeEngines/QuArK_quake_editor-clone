@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: base.qrk
 
-// common hl2-source entities. last changes june/26/2005 by cbxpm.
+// common hl2-source entities. last changes july/09/2005 by cbxpm.
 
 {
   t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
@@ -54,7 +54,7 @@ QQRKSRC1
         }
         env_bubbles:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "An entity used to create a volume in which to spawn bubbles"
            "."
           density = "2"
@@ -91,7 +91,7 @@ QQRKSRC1
         }
         env_embers:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "An entity used to create a volume in which to spawn fire em"
            "bers."
           particletype = "0"
@@ -526,7 +526,7 @@ QQRKSRC1
       {
         func_areaportal:b =
         {
-          ;incl = "defpoly"
+          t_portalpoly=!
           ;desc = "A portal brush used to manage visibility in maps. Portals d"
            "efine areas, which are spaces that are connected in the map. Both "
            "sides of a portal cannot touch the same area, for example, a dough"
@@ -537,7 +537,7 @@ QQRKSRC1
         }
         func_areaportalwindow:b =
         {
-          ;incl = "defpoly"
+          t_portalpoly=!
           ;desc = "An entity that can be used to optimize the visibility in a "
            "map. If you seal off an area with them, when the viewer moves the "
            "specified distance away from them, they will go opaque and the par"
@@ -551,14 +551,14 @@ QQRKSRC1
         }
         func_breakable:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A brush entity that can be broken from damage, or an input."
           minhealthdmg = "0"
           physdamagescale = "1.0"
         }
         func_breakable_surf:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A breakable surface, for partially breakable glass / tile /"
            " etc.  All faces but the desired visible one must be marked as NOD"
            "RAW and thatface must be 4 sided.  The material applied to the vis"
@@ -573,14 +573,14 @@ QQRKSRC1
         }
         func_brush:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "An brush built entity with various features."
           Solidity = "0"
           solidbsp = "0"
         }
         func_button:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that's designed to be used for a player-usea"
            "ble button. When used by the player, it moves to a pressed positio"
            "n."
@@ -598,19 +598,19 @@ QQRKSRC1
         }
         func_clip_vphysics:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A brush entity that's considered solid to vphysics."
         }
         func_conveyor:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Conveyor Belt"
           movedir = "0 0 0"
           speed = "100"
         }        
         func_detail:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "An entity that turns its brushes into detail brushes. Detai"
            "l brushes do NOT contribute to visibility in the PVS. World geomet"
            "ry is not clipped to detail brushes, so if you have a small detail"
@@ -620,20 +620,20 @@ QQRKSRC1
         }
         func_door:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity for use as a player-useable door."
           movedir = "0 0 0"
         }
         func_door_rotating:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity for use as a rotating player-useable door."
           distance = "90"
           solidbsp = "0"
         }
         func_dustcloud:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A brush entity that spawns a translucent dust cloud within "
            "its volume."
           Alpha = "30"
@@ -642,7 +642,7 @@ QQRKSRC1
         }
         func_dustmotes:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A brush entity that spawns sparkling dust motes within its "
            "volume."
           SizeMin = "10"
@@ -651,7 +651,7 @@ QQRKSRC1
         }
         func_guntarget:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "This is a moving target that moves along a path of path_tra"
            "cks. It can be shot and killed."
           speed = "100"
@@ -659,7 +659,7 @@ QQRKSRC1
         }
         func_illusionary:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Legacy support. Use func_brush instead."
         }
         func_ladderendpoint:e =
@@ -677,7 +677,7 @@ QQRKSRC1
         }
         func_lod:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Brush-built model that fades out over a specified distance."
            " Useful for creating world detail that doesn't need to be drawn fa"
            "r away, for performance reasons."
@@ -686,7 +686,7 @@ QQRKSRC1
         }
         func_movelinear:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that moves linearly along a given distance, "
            "in a given direction."
           movedir = "0 0 0"
@@ -697,7 +697,7 @@ QQRKSRC1
         }
         func_occluder:b =
         {
-          ;incl = "defpoly"
+          t_occluderpoly=!
           ;desc = "A occluder brush used to manage dynamic visibility in maps."
            " Occluders are used to dynamically determine what things are behin"
            "d them, to prevent trying to draw them at all."
@@ -705,7 +705,7 @@ QQRKSRC1
         }
         func_physbox:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that's physically simulated."
           spawnflags = "524288"
           Damagetype = "0"
@@ -718,7 +718,7 @@ QQRKSRC1
         }
         func_platrot:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that moves vertically, and can rotate while "
            "doing so."
           spawnflags = "1"
@@ -728,7 +728,7 @@ QQRKSRC1
         }
         func_precipitation:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A brush entity that creates rain and snow inside its volume"
            "."
           renderamt = "5"
@@ -737,7 +737,7 @@ QQRKSRC1
         }
         func_rot_button:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that's designed to be used for a rotating pl"
            "ayer-useable button. When used by the player, it rotates to a pres"
            "sed position."
@@ -749,7 +749,7 @@ QQRKSRC1
         }
         func_rotating:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A rotating brush entity."
           maxspeed = "100"
           fanfriction = "20"
@@ -760,7 +760,7 @@ QQRKSRC1
         }
         func_smokevolume:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A brush entity that spawns smoke particles within its volum"
            "e."
           Color1 = "255 255 255"
@@ -775,7 +775,7 @@ QQRKSRC1
         }
         func_tanktrain:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A moving train that follows a path of path_track entities, "
            "shoots at the player, and can be killed.\nNOTE: Build your train s"
            "o that the front of the train is facing down the X axis. When it s"
@@ -785,7 +785,7 @@ QQRKSRC1
         }
         func_trackautochange:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "An entity that works as a rotating/moving platform that wil"
            "l carry a train to a new track. It must be larger in X-Y planar ar"
            "ea than the train, since it must contain the train within these di"
@@ -793,7 +793,7 @@ QQRKSRC1
         }
         func_trackchange:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "An entity that works as a rotating/moving platform that wil"
            "l carry a train to a new track. It must be larger in X-Y planar ar"
            "ea than the train, since it must contain the train within these di"
@@ -801,7 +801,7 @@ QQRKSRC1
         }
         func_tracktrain:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A moving platform that the player can ride. It follows a pa"
            "th of path_track entities.\nNOTE: Build your train so that the fro"
            "nt of the train is facing down the X axis. When it spawns it will "
@@ -809,7 +809,7 @@ QQRKSRC1
         }
         func_traincontrols:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "When used by the player, this entity overrides the player's"
            " controls to let them drive a train."
         }
@@ -827,19 +827,19 @@ QQRKSRC1
         }
         func_wall:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Legacy support. Use func_brush instead."
         }
         func_wall_toggle:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that can be toggled on/off. When off, the br"
            "ush will be non-solid and invisible. Does not cast lightmap shadow"
            "s."
         }
         func_water_analog:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A water brush entity that moves linearly along a given dist"
            "ance, in a given direction"
           movedir = "0 0 0"
@@ -922,7 +922,7 @@ QQRKSRC1
         }
         game_zone_player:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "An entity used to count the number of players within a zone"
            "."
         }
@@ -1464,7 +1464,7 @@ QQRKSRC1
         }        
         momentary_rot_button:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A brush entity that's designed to be used for rotating whee"
            "ls, where the player can rotate them to arbitrary positions before"
            " stopping."
@@ -2000,13 +2000,13 @@ QQRKSRC1
       {
         trigger_autosave:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that autosaves when the player touches it."
           NewLevelUnit = "0"
         }
         trigger_changelevel:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "An entity that triggers a level change.\nPlace an info_land"
            "mark in both maps that marks the 'same' location in each map.\nTIP"
            "S & TRICKS: To fire events in the next level, use the OnLevelChang"
@@ -2019,14 +2019,14 @@ QQRKSRC1
         }
         trigger_gravity:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that changes the gravity on any entity tha"
            "t touches it."
           gravity = "1"
         }
         trigger_hurt:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that damages entities that touch it."
           damage = "10"
           damagecap = "20"
@@ -2035,7 +2035,7 @@ QQRKSRC1
         }
         trigger_impact:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that can be told to push all physics objec"
            "ts that are inside of it in the direction specified by this trigge"
            "r's angles.\nAlso outputs the force at the time of impact for anyo"
@@ -2046,7 +2046,7 @@ QQRKSRC1
         }
         trigger_look:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "An entity used to trigger something when the player looks a"
            "t something. It fires 'OnTrigger' when the player looks at a targe"
            "t entity for the given amount of time, while within the trigger vo"
@@ -2064,26 +2064,26 @@ QQRKSRC1
         }
         trigger_multiple:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that can be triggered multiple times."
           wait = "1"
         }
         trigger_once:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that removes itself after it is triggered "
            "once."
         }
         trigger_playermovement:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "An entity that can be used to disable player's automatic du"
            "cking/unducking when jumping."
           spawnflags = "128"
         }
         trigger_proximity:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Measures the distance of the player within the trigger volu"
            "me from a given point (and within a given radius). The NearestPlay"
            "erDistance output will be 0 when the player is at the center point"
@@ -2092,14 +2092,14 @@ QQRKSRC1
         }
         trigger_push:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that pushes entities that touch it."
           pushdir = "0 0 0"
           speed = "40"
         }
         trigger_remove:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that removes any entities that touch it. B"
            "e careful, removing some entities can cause instability. This is n"
            "ot the same as killing entities. i.e. NPCs removed in this manner "
@@ -2107,14 +2107,14 @@ QQRKSRC1
         }
         trigger_soundscape:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Soundscape trigger. It is not necessary to create outputs f"
            "or this trigger. It automatically will trigger the soundscape refe"
            "rred to by its 'Soundscape' property."
         }
         trigger_teleport:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that teleports entities that touch it. Ent"
            "ities are teleported to the Remote Destination, and have their ang"
            "les set to that of the Remote Destination's. If a Local Destinatio"
@@ -2124,7 +2124,7 @@ QQRKSRC1
         }
         trigger_transition:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A volume that's used to control which entities go through t"
            "he level transition. Create one or more trigger_transitions and gi"
            "ve them the same name as the changelevel landmark. Any entities wi"
@@ -2133,7 +2133,7 @@ QQRKSRC1
         }
         trigger_wind:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that pushes physics objects that touch it."
           Speed = "200"
           SpeedNoise = "0"
