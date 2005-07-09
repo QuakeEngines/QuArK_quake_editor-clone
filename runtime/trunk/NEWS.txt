@@ -16,6 +16,10 @@ $Id$
 6.4.1 alpha 4
 =============
 
+ * [cbxpm]:  HL2
+     - Defaults.qrk: Added file association .vmf (Valve map format)
+     - DataHL2.qrk / base.qrk: Added custom polys for use with specific brush entities
+
  * [alexander]: HL2
      - fixed problem with different material path lengths (decals folder)
      - try several entries of a material as image source: 
@@ -27,7 +31,6 @@ $Id$
      - reduced overall logging of dlls
      - introduced an environment "QUARK_LOG_LEVEL" variable to increase
        logging verbosity of quark. 
-
 
  * [cdunde]: Major updates and changes by dannsdinosaurs DannJ
       - to the Heretic_II DataHr2.qrk file.
