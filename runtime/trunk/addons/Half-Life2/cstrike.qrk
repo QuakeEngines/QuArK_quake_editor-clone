@@ -12,6 +12,20 @@ QQRKSRC1
     CS Source Entities.qtxfolder =
     {
 
+// env entities
+
+      env_* entities.qtxfolder =
+      {
+        env_detail_controller:e =
+        {
+          origin = "0 0 0"
+          ;desc = "An entity that lets you control the fade distances for deta"
+           "il props."
+          fademindist = "400"
+          fademaxdist = "1200"
+        }
+      }
+
 // filter entities
 
       filter_* entities.qtxfolder =
@@ -21,6 +35,69 @@ QQRKSRC1
           origin = "0 0 0"
           ;desc = "A filter that filters by the team of the activator."
           filterteam = "2"
+        }
+      }
+
+// func entities
+
+      func_* entities.qtxfolder =
+      {
+        func_bomb_target:b =
+        {
+          t_triggerpoly=!
+          ;desc = $426F6D62205461726765742E2054686520746572726F7269737473206361
+           $6E20706C616365204334206578706C6F7369766573207768696C65207374616E64
+           $696E6720696E2074686973207A6F6E652E5C6E5C6E5768656E2074686520626F6D
+           $6220697320706C616E74656420616E64206578706C6F64657320696E7369646520
+           $7468697320617265612C2074686520426F6D624578706C6F6465206F7574707574
+           $73206172652066697265642E205468652067616D652068616E646C657320616C6C
+           $206F662074686520626F6D6220706C616E74696E6720616E642073636F72696E67
+           $206C6F67696320962074686520426F6D624578706C6F6465206F75747075747320
+           $6172652070726F766964656420746F206164642076697375616C20616E64206461
+           $6D61676520656666656374732E
+        }
+        func_buyzone:b =
+        {
+          t_triggerpoly=!
+          ;desc = "Buy Zone. Players can buy equipment while standing in this "
+           "zone, if the zone matches their current team.\n\nA single Buy Zone"
+           " entity must be either terrorist or counter-terrorist, it cannot b"
+           "e both. Should have the toolstrigger material applied to all sides"
+        }
+        func_hostage_rescue:b =
+        {
+          t_triggerpoly=!
+          ;desc = "Hostage Rescue Zone. When a hostage is led into this zone, "
+           "it is marked as rescued."
+        }
+				func_ladder:b =
+        {
+          t_ladderpoly=!
+          ;desc = "Ladder. Players will be able to freely along this brush, as"
+           " if it was a ladder. If you are using a model prop for the visual "
+           "representation of the ladder in the map, apply the toolsinvisiblel"
+           "adder material to the func_ladder brush."
+        }
+        func_physbox_multiplayer:b =
+        {
+          ;incl = "defpoly"
+          ;desc = "This class is the same as func_physbox, except the runtime "
+           "collisions use a more bouncy method that avoids the prediction err"
+           "ors normal physics objects get."
+        }
+      }
+
+// hostage entities
+
+      hostage_* entities.qtxfolder =
+      {
+        hostage_entity:e =
+        {
+          origin = "0 0 0"
+          ;desc = "Hostage. A hostage NPC will spawn at this point.\n\nThere a"
+           "re usually four hostages placed in each hostage rescue map. The mo"
+           "del for each Hostage is randomly chosen."
+          HostageType = "0"
         }
       }
 
@@ -66,31 +143,25 @@ QQRKSRC1
         }
       }
 
-// hostage entities
+// item entities
 
-      hostage_* entities.qtxfolder =
+      item_* entities.qtxfolder =
       {
-        hostage_entity:e =
+        item_defuser:e =
         {
           origin = "0 0 0"
-          ;desc = "Hostage. A hostage NPC will spawn at this point.\n\nThere a"
-           "re usually four hostages placed in each hostage rescue map. The mo"
-           "del for each Hostage is randomly chosen."
-          HostageType = "0"
+          ;desc = "Defuse Kit"
         }
       }
 
-// env entities
+// point entities
 
-      env_* entities.qtxfolder =
+      point_* entities.qtxfolder =
       {
-        env_detail_controller:e =
+        point_surroundtest:e =
         {
           origin = "0 0 0"
-          ;desc = "An entity that lets you control the fade distances for deta"
-           "il props."
-          fademindist = "400"
-          fademaxdist = "1200"
+          ;desc = "Surround Sound Test"
         }
       }
 
@@ -242,77 +313,6 @@ QQRKSRC1
         {
           origin = "0 0 0"
           ;desc = "Leone YG1265 Auto Shotgun"
-        }
-      }
-
-// item entities
-
-      item_* entities.qtxfolder =
-      {
-        item_defuser:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Defuse Kit"
-        }
-      }
-
-// func entities
-
-      func_* entities.qtxfolder =
-      {
-        func_bomb_target:b =
-        {
-          t_triggerpoly=!
-          ;desc = $426F6D62205461726765742E2054686520746572726F7269737473206361
-           $6E20706C616365204334206578706C6F7369766573207768696C65207374616E64
-           $696E6720696E2074686973207A6F6E652E5C6E5C6E5768656E2074686520626F6D
-           $6220697320706C616E74656420616E64206578706C6F64657320696E7369646520
-           $7468697320617265612C2074686520426F6D624578706C6F6465206F7574707574
-           $73206172652066697265642E205468652067616D652068616E646C657320616C6C
-           $206F662074686520626F6D6220706C616E74696E6720616E642073636F72696E67
-           $206C6F67696320962074686520426F6D624578706C6F6465206F75747075747320
-           $6172652070726F766964656420746F206164642076697375616C20616E64206461
-           $6D61676520656666656374732E
-        }
-        func_buyzone:b =
-        {
-          t_triggerpoly=!
-          ;desc = "Buy Zone. Players can buy equipment while standing in this "
-           "zone, if the zone matches their current team.\n\nA single Buy Zone"
-           " entity must be either terrorist or counter-terrorist, it cannot b"
-           "e both. Should have the toolstrigger material applied to all sides"
-        }
-        func_hostage_rescue:b =
-        {
-          t_triggerpoly=!
-          ;desc = "Hostage Rescue Zone. When a hostage is led into this zone, "
-           "it is marked as rescued."
-        }
-				func_ladder:b =
-        {
-          t_ladderpoly=!
-          ;desc = "Ladder. Players will be able to freely along this brush, as"
-           " if it was a ladder. If you are using a model prop for the visual "
-           "representation of the ladder in the map, apply the toolsinvisiblel"
-           "adder material to the func_ladder brush."
-        }
-        func_physbox_multiplayer:b =
-        {
-          ;incl = "defpoly"
-          ;desc = "This class is the same as func_physbox, except the runtime "
-           "collisions use a more bouncy method that avoids the prediction err"
-           "ors normal physics objects get."
-        }
-      }
-
-// point entities
-
-      point_* entities.qtxfolder =
-      {
-        point_surroundtest:e =
-        {
-          origin = "0 0 0"
-          ;desc = "Surround Sound Test"
         }
       }
     }
