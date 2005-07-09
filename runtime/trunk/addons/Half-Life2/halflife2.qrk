@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: halflife2.qrk
 
-// hl2sp (singleplayer) entities. last changes june/26/2005 by cbxpm.
+// hl2sp (singleplayer) entities. last changes july/09/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =
@@ -269,7 +269,7 @@ QQRKSRC1
       {
         func_combine_ball_spawner:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A volumetric trigger that bestows super armor to the player"
           spawnflags = "4096"
           ballcount = "3"
@@ -297,7 +297,7 @@ QQRKSRC1
         }
         func_monitor:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "A monitor that renders the view from a given point_camera e"
            "ntity."
         }
@@ -361,7 +361,7 @@ QQRKSRC1
         }
         func_vehicleclip:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Vehicle Clip"
         }
       }
@@ -372,7 +372,7 @@ QQRKSRC1
       {
         info_apc_missile_hint:b =
         {
-          ;incl = "defpoly"
+          t_nodrawpoly=!
           ;desc = "Something that helps APC missiles guide. If the missile can"
            " hit the associated target entitybetween the time it takes the cur"
            "rent enemy to enter + leave the hint, then the missile will guide "
@@ -721,7 +721,7 @@ QQRKSRC1
         }        
         npc_heli_avoidbox:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Helicopter avoidance box"
         }        
         npc_heli_avoidsphere:e =
@@ -732,7 +732,7 @@ QQRKSRC1
         }        
         npc_heli_nobomb:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Helicopter bombing suppressor"
         }        
         npc_helicopter:e =
@@ -1225,19 +1225,19 @@ QQRKSRC1
       {
         trigger_physics_trap:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A volumetric trigger that disintegrates enemies"
           dissolvetype = "Energy"
         }
         trigger_rpgfire:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A volumetric trigger that triggers whenever an RPG is fired"
            " within it."
         }
         trigger_vphysics_motion:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A volumetric trigger that affects the motion of vphysics ob"
            "jects that touch it."
           StartDisabled = "0"
@@ -1256,19 +1256,19 @@ QQRKSRC1
         }
         trigger_waterydeath:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A trigger volume that spawns leeches around entities inside"
            " it, and does damage to them until they die. Used to prevent playe"
            "rs entering deep water."
         }
         trigger_weapon_dissolve:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A volumetric trigger that dissolves all weapons within it"
         }
         trigger_weapon_strip:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "A volumetric trigger that strips combat characters of all w"
            "eapons"
           KillWeapons = "No"

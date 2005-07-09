@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: hl2mp.qrk
 
-// hl2mp (multiplayer) entities. last changes june/26/2005 by cbxpm.
+// hl2mp (multiplayer) entities. last changes july/09/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =

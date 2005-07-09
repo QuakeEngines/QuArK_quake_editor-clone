@@ -551,7 +551,7 @@ QQRKSRC1
         }
         func_breakable:b =
         {
-          t_nodrawpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that can be broken from damage, or an input."
           minhealthdmg = "0"
           physdamagescale = "1.0"
@@ -573,14 +573,14 @@ QQRKSRC1
         }
         func_brush:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "An brush built entity with various features."
           Solidity = "0"
           solidbsp = "0"
         }
         func_button:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that's designed to be used for a player-usea"
            "ble button. When used by the player, it moves to a pressed positio"
            "n."
@@ -603,14 +603,14 @@ QQRKSRC1
         }
         func_conveyor:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "Conveyor Belt"
           movedir = "0 0 0"
           speed = "100"
         }        
         func_detail:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "An entity that turns its brushes into detail brushes. Detai"
            "l brushes do NOT contribute to visibility in the PVS. World geomet"
            "ry is not clipped to detail brushes, so if you have a small detail"
@@ -620,20 +620,20 @@ QQRKSRC1
         }
         func_door:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity for use as a player-useable door."
           movedir = "0 0 0"
         }
         func_door_rotating:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity for use as a rotating player-useable door."
           distance = "90"
           solidbsp = "0"
         }
         func_dustcloud:b =
         {
-          t_nodrawpoly=!
+          t_triggerpoly=!
           ;desc = "A brush entity that spawns a translucent dust cloud within "
            "its volume."
           Alpha = "30"
@@ -642,7 +642,7 @@ QQRKSRC1
         }
         func_dustmotes:b =
         {
-          t_nodrawpoly=!
+          t_triggerpoly=!
           ;desc = "A brush entity that spawns sparkling dust motes within its "
            "volume."
           SizeMin = "10"
@@ -651,7 +651,7 @@ QQRKSRC1
         }
         func_guntarget:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "This is a moving target that moves along a path of path_tra"
            "cks. It can be shot and killed."
           speed = "100"
@@ -659,7 +659,7 @@ QQRKSRC1
         }
         func_illusionary:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "Legacy support. Use func_brush instead."
         }
         func_ladderendpoint:e =
@@ -677,7 +677,7 @@ QQRKSRC1
         }
         func_lod:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "Brush-built model that fades out over a specified distance."
            " Useful for creating world detail that doesn't need to be drawn fa"
            "r away, for performance reasons."
@@ -686,7 +686,7 @@ QQRKSRC1
         }
         func_movelinear:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that moves linearly along a given distance, "
            "in a given direction."
           movedir = "0 0 0"
@@ -705,7 +705,7 @@ QQRKSRC1
         }
         func_physbox:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that's physically simulated."
           spawnflags = "524288"
           Damagetype = "0"
@@ -718,7 +718,7 @@ QQRKSRC1
         }
         func_platrot:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that moves vertically, and can rotate while "
            "doing so."
           spawnflags = "1"
@@ -728,7 +728,7 @@ QQRKSRC1
         }
         func_precipitation:b =
         {
-          t_nodrawpoly=!
+          t_triggerpoly=!
           ;desc = "A brush entity that creates rain and snow inside its volume"
            "."
           renderamt = "5"
@@ -737,7 +737,7 @@ QQRKSRC1
         }
         func_rot_button:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that's designed to be used for a rotating pl"
            "ayer-useable button. When used by the player, it rotates to a pres"
            "sed position."
@@ -749,7 +749,7 @@ QQRKSRC1
         }
         func_rotating:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A rotating brush entity."
           maxspeed = "100"
           fanfriction = "20"
@@ -760,7 +760,7 @@ QQRKSRC1
         }
         func_smokevolume:b =
         {
-          t_nodrawpoly=!
+          t_triggerpoly=!
           ;desc = "A brush entity that spawns smoke particles within its volum"
            "e."
           Color1 = "255 255 255"
@@ -775,7 +775,7 @@ QQRKSRC1
         }
         func_tanktrain:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A moving train that follows a path of path_track entities, "
            "shoots at the player, and can be killed.\nNOTE: Build your train s"
            "o that the front of the train is facing down the X axis. When it s"
@@ -785,7 +785,7 @@ QQRKSRC1
         }
         func_trackautochange:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "An entity that works as a rotating/moving platform that wil"
            "l carry a train to a new track. It must be larger in X-Y planar ar"
            "ea than the train, since it must contain the train within these di"
@@ -793,7 +793,7 @@ QQRKSRC1
         }
         func_trackchange:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "An entity that works as a rotating/moving platform that wil"
            "l carry a train to a new track. It must be larger in X-Y planar ar"
            "ea than the train, since it must contain the train within these di"
@@ -801,7 +801,7 @@ QQRKSRC1
         }
         func_tracktrain:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A moving platform that the player can ride. It follows a pa"
            "th of path_track entities.\nNOTE: Build your train so that the fro"
            "nt of the train is facing down the X axis. When it spawns it will "
@@ -809,7 +809,7 @@ QQRKSRC1
         }
         func_traincontrols:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "When used by the player, this entity overrides the player's"
            " controls to let them drive a train."
         }
@@ -827,19 +827,19 @@ QQRKSRC1
         }
         func_wall:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "Legacy support. Use func_brush instead."
         }
         func_wall_toggle:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that can be toggled on/off. When off, the br"
            "ush will be non-solid and invisible. Does not cast lightmap shadow"
            "s."
         }
         func_water_analog:b =
         {
-          t_nodrawpoly=!
+          ;incl = "defpoly"
           ;desc = "A water brush entity that moves linearly along a given dist"
            "ance, in a given direction"
           movedir = "0 0 0"
@@ -1464,7 +1464,7 @@ QQRKSRC1
         }        
         momentary_rot_button:b =
         {
-          t_detailpoly=!
+          ;incl = "defpoly"
           ;desc = "A brush entity that's designed to be used for rotating whee"
            "ls, where the player can rotate them to arbitrary positions before"
            " stopping."

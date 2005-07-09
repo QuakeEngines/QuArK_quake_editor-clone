@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: cstrike.qrk
 
-// CS Source entities. updated june/26/2005 by cbxpm.
+// CS Source entities. updated july/09/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =
@@ -262,7 +262,7 @@ QQRKSRC1
       {
         func_bomb_target:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = $426F6D62205461726765742E2054686520746572726F7269737473206361
            $6E20706C616365204334206578706C6F7369766573207768696C65207374616E64
            $696E6720696E2074686973207A6F6E652E5C6E5C6E5768656E2074686520626F6D
@@ -276,7 +276,7 @@ QQRKSRC1
         }
         func_buyzone:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Buy Zone. Players can buy equipment while standing in this "
            "zone, if the zone matches their current team.\n\nA single Buy Zone"
            " entity must be either terrorist or counter-terrorist, it cannot b"
@@ -284,13 +284,13 @@ QQRKSRC1
         }
         func_hostage_rescue:b =
         {
-          ;incl = "defpoly"
+          t_triggerpoly=!
           ;desc = "Hostage Rescue Zone. When a hostage is led into this zone, "
            "it is marked as rescued."
         }
 				func_ladder:b =
         {
-          ;incl = "defpoly"
+          t_ladderpoly=!
           ;desc = "Ladder. Players will be able to freely along this brush, as"
            " if it was a ladder. If you are using a model prop for the visual "
            "representation of the ladder in the map, apply the toolsinvisiblel"
