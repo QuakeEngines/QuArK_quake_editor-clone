@@ -28,6 +28,10 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.252  2005/07/08 21:40:50  cbxpm
+//Added file association .vmf (Valve map format)
+//Changed HL2 default texture
+//
 //Revision 1.251  2005/06/22 01:22:59  alexander
 //user shaders for hl2
 //
@@ -922,6 +926,7 @@ QQRKSRC1
         .qrk = "!"     iqrk = '1'
         .qkm = "!"     iqkm = '2'
         .map = "1"     imap = '2'
+        .vmf = "1"     ivmf = '2'
         .qkl = "!"     iqkl = '4'
         .md2 = "1"     imd2 = '4'
         .mdl = "1"     imdl = '4'
