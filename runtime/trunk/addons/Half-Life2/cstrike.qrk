@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: cstrike.qrk
 
-// CS Source entities. updated july/09/2005 by cbxpm.
+// CS Source entities. updated july/11/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =
@@ -80,7 +80,7 @@ QQRKSRC1
         }
         func_physbox_multiplayer:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "This class is the same as func_physbox, except the runtime "
            "collisions use a more bouncy method that avoids the prediction err"
            "ors normal physics objects get."
