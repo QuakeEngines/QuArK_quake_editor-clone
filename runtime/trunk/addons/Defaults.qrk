@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.253  2005/07/09 20:20:00  cbxpm
+//re-edited file association .VMF
+//
 //Revision 1.252  2005/07/08 21:40:50  cbxpm
 //Added file association .vmf (Valve map format)
 //Changed HL2 default texture
@@ -1306,8 +1309,8 @@ QQRKSRC1
         Code = "k" // Hardcoded value in Setup.PAS
 
 
-        Directory = "e:/spiele/steam"
-        SteamFSModule = "E:/spiele/steam/steamapps/<steam user name>/sourcesdk/bin/FileSystem_Steam.dll"
+        Directory = "<drive>:/steam"
+        SteamFSModule = "<drive>:/steam/steamapps/<steam user name>/sourcesdk/bin/FileSystem_Steam.dll"
         SteamAppUser = "<your steam username>"
         SteamAppId = "211"
 
@@ -1318,7 +1321,7 @@ QQRKSRC1
         "textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
         "halflife2.qrk"$0D"hl2mp.qrk"
 
-        BuildPgmsDir="E:/spiele/steam/SteamApps/<steam user name>/sourcesdk/bin"
+        BuildPgmsDir="<drive>:/steam/SteamApps/<steam user name>/sourcesdk/bin"
         BuildPgm1  = "vbsp.exe"
         BuildArgs1 = ""
         BuildCheck1= ""
@@ -3190,9 +3193,9 @@ QQRKSRC1
         Typ = "C"     // combo box
         Txt = "Half-Life2 command-line"
         t_ProgramHint=!
-        Items =    "e:\spiele\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
-                $0D"e:\spiele\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
+        Items =    "<drive>:\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
+                $0D"<drive>:\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
+                $0D"<drive>:\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
       }
       SteamFSModule =
       {
