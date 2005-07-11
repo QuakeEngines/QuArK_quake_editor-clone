@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.254  2005/07/11 13:47:52  cbxpm
+//minor HL2 path corrections (replaced static drive letter with <drive>)
+//
 //Revision 1.253  2005/07/09 20:20:00  cbxpm
 //re-edited file association .VMF
 //
@@ -3193,9 +3196,9 @@ QQRKSRC1
         Typ = "C"     // combo box
         Txt = "Half-Life2 command-line"
         t_ProgramHint=!
-        Items =    "<drive>:\steam\steam.exe -dev -console -applaunch 220  -window -width 800 -height 600"
-                $0D"<drive>:\steam\steam.exe -dev -console -applaunch 240  -window -width 800 -height 600"
-                $0D"<drive>:\steam\steam.exe -dev -console -applaunch 320  -window -width 800 -height 600"
+        Items =    "e:\spiele\steam\steam.exe -applaunch 220 -dev -console -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -applaunch 240 -dev -console -window -width 800 -height 600"
+                $0D"e:\spiele\steam\steam.exe -applaunch 320 -dev -console -window -width 800 -height 600"
       }
       SteamFSModule =
       {
