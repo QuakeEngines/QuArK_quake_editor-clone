@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: halflife2.qrk
 
-// hl2sp (singleplayer) entities. last changes july/09/2005 by cbxpm.
+// hl2sp (singleplayer) entities. last changes july/11/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =
@@ -281,12 +281,12 @@ QQRKSRC1
         }
         func_healthcharger:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Wall health recharger"
         }
         func_lookdoor:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "A door that moves either when looked by a targeted object o"
            "r when a target object comes near the door.  Behavior can be eithe"
            "r based on viewing direction or proximity alone, or on a combinati"
@@ -303,35 +303,35 @@ QQRKSRC1
         }
         func_recharge:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Battery recharger"
         }
         func_tank:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Brush Gun Turret"
           bullet = "0"
         }
         func_tankairboatgun:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Airboat Gun Turret"
         }
         func_tankapcrocket:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "APC Rocket Turret"
           rocketspeed = "800"
           burstcount = "10"
         }
         func_tanklaser:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Brush Laser Turret"
         }
         func_tankmortar:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Brush Mortar Turret"
           iMagnitude = "100"
           firedelay = "2"
@@ -340,12 +340,12 @@ QQRKSRC1
         }
         func_tankphyscannister:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "PhysCannister Turret"
         }
         func_tankpulselaser:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Brush Pulse Laser"
           PulseSpeed = "1000"
           PulseColor = "255 0 0"
@@ -355,7 +355,7 @@ QQRKSRC1
         }
         func_tankrocket:b =
         {
-          ;incl = "defpoly"
+          t_detailpoly=!
           ;desc = "Brush Rocket Turret"
           rocketspeed = "800"
         }
@@ -537,6 +537,7 @@ QQRKSRC1
         npc_alyx:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Alyx"
           model = "models/alyx.mdl"
           additionalequipment = "weapon_alyxgun"
@@ -544,6 +545,7 @@ QQRKSRC1
         npc_antlion:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Antlions will run away from ai_sound, type: Thumper."
           startburrowed = "No"
           radius = "256"
@@ -553,6 +555,7 @@ QQRKSRC1
         npc_antlion_template_maker:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Antlion Template Maker"
           spawnradius = "512"
           vehicledistance = "1"
@@ -565,6 +568,7 @@ QQRKSRC1
         npc_antlionguard:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Antlion Guard"
           startburrowed = "No"
           allowbark = "No"
@@ -572,6 +576,7 @@ QQRKSRC1
         npc_apcdriver:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "NPC used to drive an APC vehicle."
           drivermaxspeed = "1"
           driverminspeed = "0"
@@ -579,30 +584,35 @@ QQRKSRC1
         npc_barnacle:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Barnacle"
           RestDist = "16"
         }
         npc_barney:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Barney"
           additionalequipment = "weapon_pistol"
         }
         npc_breen:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Dr Breen"
           model = "models/breen.mdl"
         }
         npc_bullseye:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Bullseye"
           health = "35"
         }
         npc_citizen:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Citizen"
           spawnflags = "262144"
           additionalequipment = "0"
@@ -616,6 +626,7 @@ QQRKSRC1
         npc_combine_camera:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Combine security camera"
           spawnflags = "32"
           innerradius = "300"
@@ -625,12 +636,14 @@ QQRKSRC1
         npc_combine_s:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Combine Soldier"
           model = "models/combine_soldier.mdl"
         }
         npc_combinedropship:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Combine Dropship"
           GunRange = "2048"
           Invulnerable = "0"
@@ -639,27 +652,32 @@ QQRKSRC1
         npc_combinegunship:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Combine Gunship"
         }
         npc_crabsynth:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "Crab Synth"
         }        
         npc_cranedriver:e =
         {
           origin = "0 0 0"
+					angles = "0 0 0"
           ;desc = "NPC used to drive cranes."
           releasepause = "0"
         }        
         npc_crow:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Crow"
         }        
         npc_cscanner:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "City Scanner"
           spotlightlength = "500"
           spotlightwidth = "50"
@@ -671,17 +689,20 @@ QQRKSRC1
         npc_dog:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "d0g"
         }        
         npc_eli:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Eli Vance"
           model = "models/eli.mdl"
         }        
         npc_enemyfinder:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "EnemyFinder"
           spawnflags = "65536"
           FieldOfView = "0.2"
@@ -697,26 +718,31 @@ QQRKSRC1
         npc_fastzombie:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Fast Zombie"
         }        
         npc_gman:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "The G-Man"
         }        
         npc_headcrab:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Headcrab"
         }        
         npc_headcrab_black:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Black Headcrab"
         }        
         npc_headcrab_fast:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Fast Headcrab"
         }        
         npc_heli_avoidbox:b =
@@ -727,6 +753,7 @@ QQRKSRC1
         npc_heli_avoidsphere:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Helicopter avoidance sphere"
           radius = "128"
         }        
@@ -738,6 +765,7 @@ QQRKSRC1
         npc_helicopter:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Helicopter"
           InitialSpeed = "0"
           GracePeriod = "2.0"
@@ -746,16 +774,19 @@ QQRKSRC1
         npc_ichthyosaur:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Ichthyosaur. Not fully functional"
         }
         npc_kleiner:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Kleiner"
         }
         npc_launcher:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Launcher"
           spawnflags = "65536"
           StartOn = "0"
@@ -783,17 +814,20 @@ QQRKSRC1
         npc_maker:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "NPC Maker"
           additionalequipment = "0"
         }        
         npc_manhack:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Manhack"
         }        
         npc_metropolice:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "MetroPolice"
           additionalequipment = "weapon_pistol"
           manhacks = "0"
@@ -802,11 +836,13 @@ QQRKSRC1
         npc_missiledefense:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Missile Defense"
         }        
         npc_monk:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Monk"
           additionalequipment = "weapon_annabelle"
           HasGun = "1"
@@ -814,6 +850,7 @@ QQRKSRC1
         npc_mortarsynth:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Mortar Synth"
           additionalequipment = "weapon_annabelle"
           HasGun = "1"
@@ -821,16 +858,19 @@ QQRKSRC1
         npc_mossman:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Dr Mossman"
         }        
         npc_pigeon:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Pigeon"
         }        
         npc_poisonzombie:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "A bloated, disgusting, fluid-spurting zombie created by a p"
            "oison headcrab."
           crabcount = "3"
@@ -838,17 +878,20 @@ QQRKSRC1
         npc_rollermine:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Roller Mine"
           startburied = "No"
         }        
         npc_seagull:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Seagull"
         }        
         npc_sniper:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Sniper"
           radius = "0"
           misses = "0"
@@ -859,6 +902,7 @@ QQRKSRC1
         npc_spotlight:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Spotlight"
           spawnflags = "196608"
           health = "100"
@@ -874,18 +918,21 @@ QQRKSRC1
         npc_stalker:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Stalker"
           BeamPower = "Low"
         }        
         npc_strider:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Strider"
           disablephysics = "0"
         }                
         npc_turret_ceiling:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine Ceiling Turret"
           spawnflags = "32"
           minhealthdmg = "0"
@@ -893,16 +940,19 @@ QQRKSRC1
         npc_turret_floor:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine Floor Turret"
         }        
         npc_turret_ground:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Combine ground turret"
         }        
         npc_vehicledriver:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "NPC used to drive a target vehicle."
           drivermaxspeed = "1"
           driverminspeed = "0"
@@ -910,6 +960,7 @@ QQRKSRC1
         npc_vortigaunt:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Vortigaunt"
           model = "models/vortigaunt.mdl"
           ArmorRechargeEnabled = "1"
@@ -917,11 +968,13 @@ QQRKSRC1
         npc_zombie:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Zombie"
         }        
         npc_zombie_torso:e =
         {
           origin = "0 0 0"
+          angles = "0 0 0"
           ;desc = "Zombie Torso"
         }
       }
