@@ -41,8 +41,11 @@ grid = (0,0)
 lengthnormalvect = 0
 mapicons_c = -1
 
+
 def newfinishdrawing(editor, view, oldfinish=qbaseeditor.BaseEditor.finishdrawing):
     oldfinish(editor, view)
+
+
 
 def aligntogrid(v, mode):
     #
@@ -439,7 +442,6 @@ class EyePosition(GenericHandle):
             n = self.normal
             v1 = view.vector("X").normalized * n
             v2 = view.vector("Y").normalized * n
-            #print self.normal, v1, v2
             if abs(v1)<0.3 and abs(v2)<0.3:
                 if n*view.vector(self.pos) > 0:
                     icon = 0
@@ -498,6 +500,7 @@ class LinearHandle(GenericHandle):
                     new = None
         else:
             new = None
+
         return self.mgr.list, new
 
     def linoperation(self, list, delta, g1, view):
@@ -505,6 +508,7 @@ class LinearHandle(GenericHandle):
         if matrix is None: return
         for obj in list:
             obj.linear(self.center, matrix)
+
         return 1
 
 
@@ -528,6 +532,7 @@ class LinRedHandle(LinearHandle):
         for obj in list:
             obj.translate(delta, g1 and grid[0])
         self.draghint = vtohint(delta)
+
         return delta
 
 
@@ -577,6 +582,7 @@ class LinSideHandle(LinearHandle):
             w = v.tuple
         self.draghint = "enlarge %d %%   shear %d deg." % (100.0*w[dir], math.atan2(math.sqrt(w[dir-1]*w[dir-1] + w[dir-2]*w[dir-2]), w[dir])*180.0/math.pi)
         m[dir] = v
+
         return quarkx.matrix(tuple(m))
 
        # v = self.pos - self.center
@@ -632,6 +638,7 @@ class LinCornerHandle(LinearHandle):
             if m is None: return
         if diff is None: diff = abs(npos) / abs(texp4)
         self.draghint = "rotate %d deg.   zoom %d %%" % (math.acos(m[0,0])*180.0/math.pi, 100.0*diff)
+
         return m * diff
 
 
@@ -791,8 +798,20 @@ class RedImageDragObject(DragObject):
 
     def __init__(self, view, x, y, z, redcolor):
         DragObject.__init__(self, view, x, y, z)
+        self.view = view  ## Added this for Terrain objects - cdunde 05-14-05
+        self.x = x        ## Added this for Terrain objects - cdunde 05-14-05
+        self.y = y        ## Added this for Terrain objects - cdunde 05-14-05
+        self.z = z        ## Added this for Terrain objects - cdunde 05-14-05
         self.redcolor = redcolor
         self.redhandledata = None
+## the lines below where added for the Terrain Generator
+        if mapeditor() is not None:
+            editor = mapeditor()
+        else:
+            quarkx.clickform = view.owner  # Rowdys -important, gets the editor
+            editor = mapeditor()
+        self.editor = editor
+## the lines above where added for the Terrain Generator
 
     def buildredimages(self, x, y, flags):
         return None, None   # abstract
@@ -804,6 +823,7 @@ class RedImageDragObject(DragObject):
         if flags&MB_DRAGGING:
             self.autoscroll(x,y)
         old, ri = self.buildredimages(x, y, flags)
+
         self.drawredimages(self.view, 1)
         self.redimages = ri
         if flags&MB_DRAGGING:
@@ -814,8 +834,9 @@ class RedImageDragObject(DragObject):
         if mapeditor() is not None:
             editor = mapeditor()
         else:
-            quarkx.clickform = view.owner  # Rowdys -important, gets the mapeditor
-            editor = mapeditor()           # to be used further down
+            quarkx.clickform = view.owner  # Rowdys -important, gets the editor
+            editor = mapeditor()
+
         if self.redimages is not None:
             mode = DM_OTHERCOLOR|DM_BBOX
             special, refresh = self.ricmd()
@@ -824,28 +845,55 @@ class RedImageDragObject(DragObject):
                     for r in self.redimages:
                         view.drawmap(r, mode)
 
-## cdunde added these 4 lines 05-14-05 to stop the
+## cdunde added these 3 lines 05-14-05 to stop the
 ## 3d Textured view from erasing other items
 ## in the view when dragging redline objects in it.
 
                     type = view.info["type"]
                     if type == "3D":
                         view.repaint()
-                        editor.invalidateviews()
-
+                        view.invalidate()
                     if self.redhandledata is not None:
                         self.handle.drawred(self.redimages, view, view.color, self.redhandledata)
                 else:
-                    for r in self.redimages:
-                        view.drawmap(r, mode, self.redcolor)
-                    if self.handle is not None:
-                        self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+                    if editor is None:
+
+                        for r in self.redimages:
+                            if r.name != ("redbox:p"):
+                                return
+                            else:
+                                view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+                    else:
+
+                        if editor.layout.toolbars["tb_terrmodes"] is not None:
+                            tb2 = editor.layout.toolbars["tb_terrmodes"]
+                            for b in tb2.tb.buttons:
+                                if b.state == 2:
+                                    for r in self.redimages:
+                                        if r.name != ("redbox:p"):
+                                            view.update()
+                                            return
+                                        else:
+                                            view.drawmap(r, mode, self.redcolor)
+                                    if self.handle is not None:
+                                        self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+                            for r in self.redimages:
+                                view.drawmap(r, mode, self.redcolor)
+                            if self.handle is not None:
+                                self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
+
+
             else:   # must redraw everything
                 if internal==2:
                     view.invalidate()
 
             if internal==2:    # set up a timer to update the other views as well
                 quarkx.settimer(refresh, self, 150)
+
 
     def backup(self):
         special, refresh = self.ricmd()
@@ -855,18 +903,33 @@ class RedImageDragObject(DragObject):
         special.copyalldata(self.redimages[0])
         return special, backup
 
-    def ok(self, editor, x, y, flags):   # default behaviour is to create an object out of the red image 
+
+    def ok(self, editor, x, y, flags):   # default behaviour is to create an object out of the red image
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
+
             self.view.invalidate()
             editor.invalidateviews()
             return
+
+## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
+
+        if editor.layout.toolbars["tb_terrmodes"] is not None:
+            tb2 = editor.layout.toolbars["tb_terrmodes"]
+            for b in tb2.tb.buttons:
+                if b.state == 2:
+                    qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
+                    return
+
         undo = quarkx.action()
-        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing   ## new
         for i in range(0,len(old)):
             undo.exchange(old[i], self.redimages[i])
         self.handle.ok(editor, undo, old, self.redimages)
+
+## End of above section for Terrain Generator changes
+
+        qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
 class HandleDragObject(RedImageDragObject):
@@ -1359,6 +1422,7 @@ class LinHandlesManager:
 
     def __init__(self, color, bbox, list):
         self.color = color
+        self.bbox = bbox
         bmin, bmax = bbox
         bmin1 = bmax1 = ()
         for dir in "xyz":
@@ -1408,6 +1472,7 @@ class LinHandlesManager:
                 for z in (Z,mZ):
                     h.append(LinCornerHandle(self.center, quarkx.vect(x,y,z), self))
         return h + [LinRedHandle(self.center, self)]
+
 
     def drawbox(self, view):
         "Draws the circle around all objects."
@@ -1574,6 +1639,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.12  2005/05/18 06:32:21  cdunde
+#After further testing some changes needed to be reversed.
+#
 #Revision 1.11  2005/05/15 06:01:34  cdunde
 #To fix red wire objects erasing other items in 3D Textured views
 #and commented out unnecessary dupe view invalidations,
