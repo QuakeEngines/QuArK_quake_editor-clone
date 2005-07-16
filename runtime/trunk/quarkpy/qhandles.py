@@ -798,20 +798,14 @@ class RedImageDragObject(DragObject):
 
     def __init__(self, view, x, y, z, redcolor):
         DragObject.__init__(self, view, x, y, z)
-        self.view = view  ## Added this for Terrain objects - cdunde 05-14-05
-        self.x = x        ## Added this for Terrain objects - cdunde 05-14-05
-        self.y = y        ## Added this for Terrain objects - cdunde 05-14-05
-        self.z = z        ## Added this for Terrain objects - cdunde 05-14-05
         self.redcolor = redcolor
         self.redhandledata = None
-## the lines below where added for the Terrain Generator
         if mapeditor() is not None:
             editor = mapeditor()
         else:
             quarkx.clickform = view.owner  # Rowdys -important, gets the editor
             editor = mapeditor()
         self.editor = editor
-## the lines above where added for the Terrain Generator
 
     def buildredimages(self, x, y, flags):
         return None, None   # abstract
@@ -867,25 +861,10 @@ class RedImageDragObject(DragObject):
                             self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
                     else:
-
-                        if editor.layout.toolbars["tb_terrmodes"] is not None:
-                            tb2 = editor.layout.toolbars["tb_terrmodes"]
-                            for b in tb2.tb.buttons:
-                                if b.state == 2:
-                                    for r in self.redimages:
-                                        if r.name != ("redbox:p"):
-                                            view.update()
-                                            return
-                                        else:
-                                            view.drawmap(r, mode, self.redcolor)
-                                    if self.handle is not None:
-                                        self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
-
-                            for r in self.redimages:
-                                view.drawmap(r, mode, self.redcolor)
-                            if self.handle is not None:
-                                self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
-
+                        for r in self.redimages:
+                            view.drawmap(r, mode, self.redcolor)
+                        if self.handle is not None:
+                            self.redhandledata = self.handle.drawred(self.redimages, view, self.redcolor)
 
             else:   # must redraw everything
                 if internal==2:
@@ -908,27 +887,14 @@ class RedImageDragObject(DragObject):
         self.autoscroll_stop()
         old = self.dragto(x, y, flags)
         if (self.redimages is None) or (len(old)!=len(self.redimages)):
-
             self.view.invalidate()
             editor.invalidateviews()
             return
-
-## This section added for Terrain Generator - stops broken faces - cdunde 05-19-05
-
-        if editor.layout.toolbars["tb_terrmodes"] is not None:
-            tb2 = editor.layout.toolbars["tb_terrmodes"]
-            for b in tb2.tb.buttons:
-                if b.state == 2:
-                    qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
-                    return
 
         undo = quarkx.action()
         for i in range(0,len(old)):
             undo.exchange(old[i], self.redimages[i])
         self.handle.ok(editor, undo, old, self.redimages)
-
-## End of above section for Terrain Generator changes
-
         qbaseeditor.BaseEditor.finishdrawing = newfinishdrawing
 
 
@@ -1422,7 +1388,6 @@ class LinHandlesManager:
 
     def __init__(self, color, bbox, list):
         self.color = color
-        self.bbox = bbox
         bmin, bmax = bbox
         bmin1 = bmax1 = ()
         for dir in "xyz":
@@ -1639,6 +1604,9 @@ def flat3Dview(view3d, layout, selonly=0):
 #
 #
 #$Log$
+#Revision 1.13  2005/07/12 00:39:10  cdunde
+#Minor correction.
+#
 #Revision 1.12  2005/05/18 06:32:21  cdunde
 #After further testing some changes needed to be reversed.
 #
