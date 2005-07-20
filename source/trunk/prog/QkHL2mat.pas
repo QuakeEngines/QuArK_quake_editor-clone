@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.7  2005/07/05 19:12:47  alexander
+logging to file using loglevels
+
 Revision 1.6  2005/07/04 18:53:20  alexander
 changed steam acces to be a protocol steamaccess://
 
@@ -513,6 +516,15 @@ expected one.
   if (VTFImage=nil) and (s<>'') then
     try
       Log(LOG_VERBOSE,'attempt $envmap '+S);
+      VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
+    except
+      VTFImage:=nil;
+    end;
+
+  S:=Specifics.Values['$modelmaterial'];
+  if (VTFImage=nil) and (s<>'') then
+    try
+      Log(LOG_VERBOSE,'attempt $modelmaterial '+S);
       VTFImage:=NeedGameFileBase(self.protocol+p.name, path + '/' + s + '.vtf') as QVTF;
     except
       VTFImage:=nil;
