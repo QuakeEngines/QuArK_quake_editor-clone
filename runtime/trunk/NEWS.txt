@@ -17,6 +17,7 @@ $Id$
 =============
 
  * [cbxpm]:  HL2
+		 - Added HL2-Prefabs (custom addon)
      - Defaults.qrk: Added file association .vmf (Valve map format)
      - DataHL2.qrk / base.qrk: Added custom polys for use with specific brush entities
 
