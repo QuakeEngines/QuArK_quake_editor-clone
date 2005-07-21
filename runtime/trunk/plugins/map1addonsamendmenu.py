@@ -149,8 +149,8 @@ def CreateMenuItems(self):
     cmdline = words [-1]
     path_to_program = words [ 0 : -1 ]
     currentdir = "\\".join(path_to_program)
-    words = ".".split(cmdline)
-    name =  words [0]
+    words = cmdline.split(".")
+    name =  words[0]
     name = name.replace(" ", "")
     mapfile = self.src["mapfile"]
     objfile = mapfile.replace("\\", "/")
@@ -892,6 +892,9 @@ AmendMenuCmds = [quarkpy.qmenu.popup("&Add \ Delete menu items", [], ViewAmendMe
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.2  2003/12/18 21:51:46  peter-b
+#Removed reliance on external string library from Python scripts (second try ;-)
+#
 #Revision 1.1  2003/07/04 20:01:16  cdunde
 #To add new Addons main menu item and sub-menus
 #
