@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.255  2005/07/11 18:11:49  alexander
+//calling hl2 : console setting does work only when applaunch is first param
+//
 //Revision 1.254  2005/07/11 13:47:52  cbxpm
 //minor HL2 path corrections (replaced static drive letter with <drive>)
 //
@@ -1322,7 +1325,7 @@ QQRKSRC1
         OutputMapFormat = "HL2"
         AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D
         "textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
-        "halflife2.qrk"$0D"hl2mp.qrk"
+        "halflife2.qrk"$0D"hl2mp.qrk"$0D"soundscapes-hl2.qrk"
 
         BuildPgmsDir="<drive>:/steam/SteamApps/<steam user name>/sourcesdk/bin"
         BuildPgm1  = "vbsp.exe"
