@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.28  2005/06/22 01:19:40  alexander
+added hl2 material source
+
 Revision 1.27  2005/06/22 01:12:42  alexander
 added hl2 material source
 
@@ -213,7 +216,8 @@ uses
   QkSteamFS in 'prog\QkSteamFS.pas',
   QkVMF in 'prog\QkVMF.pas',
   QkQ3 in 'prog\QkQ3.pas',
-  QkHL2mat in 'prog\QkHL2mat.pas';
+  QkHL2mat in 'prog\QkHL2mat.pas',
+  DispFace in 'prog\DispFace.pas';
 
 {$R *.RES}
 

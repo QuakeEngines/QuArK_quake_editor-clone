@@ -22,6 +22,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.9  2005/07/05 19:12:48  alexander
+logging to file using loglevels
+
 Revision 1.8  2005/07/03 18:05:32  alexander
 fixed bug that quark cant load its own exported vmf
 
@@ -82,10 +85,59 @@ implementation
 
 uses Qk1, QkQme, QkMapPoly, qmath, Travail, Setup,
   Qk3D, QkBspHulls, Undo, Game, Quarkx,
-  QkObjectClassList, MapError,Logging;
+  QkObjectClassList, MapError,Logging,DispFace;
 
 
  {------------------------}
+
+
+(* The wc3.3 220 map format texture rep is quite close
+  to the texinfo_t data structure used by qbsp.  This
+  consists of 2 axes lying in one of the three planes
+  normal to the axes, plus offsets, & the formula for
+  computing the texture coordinate of a point xyz on
+  a face is:
+   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
+   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
+  (Max McGuire's Quake2 BSP file format tutorial on
+   www.flipcode.com)
+
+  However wc3.3 does *not* seem to require the texture-vectors
+  to lie in an axis plane, and if you write with that assumption
+  (projecting the points), things get distorted.
+
+  U/V Axis/Shift are straight from the 4-vectors, param[3]
+  is rot which is ignored (implicit from the axes), while
+  param[4,5] are UV scales.  Diferent from the bsp-format
+  is that the axes are normalized to length 1, and you
+  divide by the scale to get the .bsp-version of the axis.
+  (Zoner's HL tools source, textures.cpp) *)
+
+procedure WC33Params( BrushNum,Facenum:Integer; Params: TFaceParams;UAxis, VAxis : TVect; UShift, VShift: Double;Surface: TFace);
+
+ var
+  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
+ begin
+   PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
+   PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
+    { note p.i.t.a sign-flip }
+   PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
+   with Surface do
+   begin
+     TexNorm:=Cross(UAxis,VAxis);
+     Normalise(TexNorm);
+     PlanePoint:=VecScale(Dist, Normale);
+     (* could perhaps be optimized by 'partial evaluation' *)
+     try
+       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
+       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
+       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
+       SetThreePointsEx(NP0,NP1,NP2,Normale);
+     except
+       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum));
+     end;
+  end;
+ end;
 
 
 function ReadEntityList(Root: TTreeMapBrush; const SourceFile: String; BSP: QBsp) : Char;
@@ -112,7 +164,7 @@ var
  S, S1,S2: String;
  NumericValue: Double;
  P: TPolyhedron;
- Surface: TFace;
+ Surface: TDispFace;
  WorldSpawn: Boolean;
  Entities, MapStructure : TTreeMapGroup;
 
@@ -322,52 +374,6 @@ expected one.
 
 
 
-(* The wc3.3 220 map format texture rep is quite close
-  to the texinfo_t data structure used by qbsp.  This
-  consists of 2 axes lying in one of the three planes
-  normal to the axes, plus offsets, & the formula for
-  computing the texture coordinate of a point xyz on
-  a face is:
-   u = x * u_axis.x + y * u_axis.y + z * u_axis.z + u_offset
-   v = x * v_axis.x + y * v_axis.y + z * v_axis.z + v_offset
-  (Max McGuire's Quake2 BSP file format tutorial on
-   www.flipcode.com)
-
-  However wc3.3 does *not* seem to require the texture-vectors
-  to lie in an axis plane, and if you write with that assumption
-  (projecting the points), things get distorted.
-
-  U/V Axis/Shift are straight from the 4-vectors, param[3]
-  is rot which is ignored (implicit from the axes), while
-  param[4,5] are UV scales.  Diferent from the bsp-format
-  is that the axes are normalized to length 1, and you
-  divide by the scale to get the .bsp-version of the axis.
-  (Zoner's HL tools source, textures.cpp) *)
-
-procedure WC33Params;
- var
-  PP0, PP1, PP2, NP0, NP1, NP2, PlanePoint, TexNorm : TVect;
- begin
-   PP0:=VecSum(VecScale(-UShift*Params[4], UAxis),VecScale(-VShift*Params[5], VAxis));
-   PP1:=VecSum(PP0,VecScale(Params[4]*128,UAxis));
-    { note p.i.t.a sign-flip }
-   PP2:=VecSum(PP0,VecScale(-Params[5]*128,VAxis));
-   with Surface do
-   begin
-     TexNorm:=Cross(UAxis,VAxis);
-     Normalise(TexNorm);
-     PlanePoint:=VecScale(Dist, Normale);
-     (* could perhaps be optimized by 'partial evaluation' *)
-     try
-       NP0:=ProjectPointToPlane(PP0, TexNorm, PlanePoint, Normale);
-       NP1:=ProjectPointToPlane(PP1, TexNorm, PlanePoint, Normale);
-       NP2:=ProjectPointToPlane(PP2, TexNorm, PlanePoint, Normale);
-       SetThreePointsEx(NP0,NP1,NP2,Normale);
-     except
-       g_MapError.AddText('Problem with texture scale of face '+IntToStr(FaceNum)+ ' in brush '+IntToStr(BrushNum));
-     end;
-  end;
- end;
 
  procedure ReadHL2Solid(parentgroup: TTreeMapSpec);
  // tbd , visgroups, entities, groups
@@ -377,6 +383,10 @@ procedure WC33Params;
  var
    V : t_vectarray ;
    u_txdata,v_txdata :  t_txarray;
+   aryn: array of double;
+   aryd: array of double;
+   row:integer;
+   nrows:integer;
 
   //"(-512 0 64) (0 0 64) (0 -512 64)"
   function readface(s:string): t_vectarray;
@@ -465,7 +475,7 @@ procedure WC33Params;
       begin
         // read plane
         v:=ReadFace(s);
-        Surface:=TFace.Create(LoadStr1(139), P);
+        Surface:=TDispFace.Create(LoadStr1(139), P);
         P.SubElements.Add(Surface);
         Surface.SetThreePoints(V[1], V[3], V[2]);
         if not Surface.LoadData then
@@ -505,7 +515,7 @@ procedure WC33Params;
       ReadSymbol(sStringQuotedToken);
     end; // side attributes
 
-    WC33Params;
+    WC33Params( FaceNum,BrushNum,Params,UAxis, VAxis , UShift, VShift,Surface);
 
     if (SymbolType=sStringToken) and (CompareText(S,'dispinfo')=0) then
     begin
@@ -513,11 +523,16 @@ procedure WC33Params;
       ReadSymbol(sCurlyBracketLeft);
 
       // read dispinfo attributes    ( tbd wat is dat)
+      nrows:=0;
       while SymbolType=sStringQuotedToken do
       begin
         S1:=S;
         ReadSymbol(sStringQuotedToken);
-        S1:=S;
+        if lowercase(s1)='power' then
+        begin
+          surface.setpower(strtoint(s));
+          nrows:=surface.meshsize;
+        end;
         ReadSymbol(sStringQuotedToken);
       end;
 
@@ -525,6 +540,7 @@ procedure WC33Params;
       while (SymbolType=sStringToken)  do
       begin
         ReadSymbol(sStringToken);
+        row:=0;
         S1:=S;
         //Log(S);
         ReadSymbol(sCurlyBracketLeft);
@@ -536,7 +552,21 @@ procedure WC33Params;
           ReadSymbol(sStringQuotedToken);
           //Log(s);
           //Log('>'+S1+'_'+S2+'='+S);
-          P.Specifics.Add(S1+'_'+S2+'='+S);
+
+          if lowercase(s1)='normals' then
+          begin
+            setlength(aryn,3*nrows);
+            ReadValues(S,aryn);
+            surface.addnormals(aryn);
+          end;
+          if lowercase(s1)='distances' then
+          begin
+            setlength(aryd,nrows);
+            ReadValues(S,aryd);
+            surface.adddists(row,aryd);
+            inc(row);
+          end;
+          Surface.Specifics.Add(S1+'_'+S2+'='+S);
           ReadSymbol(sStringQuotedToken);
         end;
         ReadSymbol(sCurlyBracketRight);
