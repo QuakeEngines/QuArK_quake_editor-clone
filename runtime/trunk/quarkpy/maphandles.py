@@ -411,6 +411,31 @@ class EdgeHandle(qhandles.GenericHandle):
             cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
 #            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
+class SpecialHandle(qhandles.GenericHandle):
+    undomsg = "drag edge"
+    hint = "control point for height"
+
+    def __init__(self, base, dist):
+        pos = base
+        qhandles.GenericHandle.__init__(self, pos)
+
+    def menu(self, editor, view):
+        self.click(editor)
+        editor.layout.clickedview = view
+        return self.OriginItems(editor, view)
+
+    def draw(self, view, cv, draghandle=None):
+        p = view.proj(self.pos)
+        oldcolor = cv.pencolor
+#        p1 = view.proj(self.vtx1)
+#        p2 = view.proj(self.vtx2)
+        cv.pencolor = oldcolor
+        if p.visible:
+            cv.reset()
+            cv.brushcolor = view.darkcolor
+            radius = 3
+            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+#            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
 
 class VertexHandle(qhandles.GenericHandle):
@@ -1851,6 +1876,10 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.38  2004/12/29 16:40:22  alexander
+#introduced new PointSpecHandle which allows to have additional 3d control points on entities.
+#which specifics are used for these points is controlled similar to the angle specific list
+#
 #Revision 1.37  2003/03/15 20:54:20  cdunde
 #To update hints and add infobase links
 #

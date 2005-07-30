@@ -15,9 +15,12 @@ $Id$
 
 6.4.1 alpha 4
 =============
+ * [alexander]: HL2/Source
+     - enable display of trigger links in map
+     - enable display of cones of light spots
 
  * [cbxpm]:  HL2
-		 - Added HL2-Prefabs (custom addon)
+     - Added HL2-Prefabs (custom addon)
      - Defaults.qrk: Added file association .vmf (Valve map format)
      - DataHL2.qrk / base.qrk: Added custom polys for use with specific brush entities
 

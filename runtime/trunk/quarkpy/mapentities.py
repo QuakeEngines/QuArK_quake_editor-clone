@@ -11,10 +11,14 @@ Map Editor Entities manager
 #$Header$
 
 
-import quarkx
+import quarkx,sys,math
+
 from maputils import *
 import maphandles
 import mapoptions
+import qhandles
+
+
 
 
 #
@@ -313,8 +317,11 @@ class PolyhedronType(EntityManager):
         Tex1 = qmenu.item("&Texture...", mapbtns.texturebrowser, "choose texture of polyhedron")
         return h + [Tex1] + mapmenus.MenuTexFlags(editor) + [qmenu.sep]
 
-
-
+def line(u,p0,p1):
+  f0=1-u
+  res=quarkx.vect( p0.x*f0 + p1.x*u , p0.y*f0 + p1.y*u , p0.z*f0 + p1.z*u)
+  return res
+  
 class FaceType(EntityManager):
     "Polyhedron Faces"
 
@@ -327,6 +334,8 @@ class FaceType(EntityManager):
 
     def drawsel(o, view, mode):
         view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelFaceColor"))
+
+
 
     def handles(o, editor, view):
         #
@@ -367,6 +376,33 @@ class FaceType(EntityManager):
             # Add these new handles to the list.
             #
             h = h + [h2, h1]
+        
+        try:
+          #print "vtx"
+          #for vtx in o.vertices: 
+          #   print vtx
+          if len(o.dists)!=0:
+            #print "dists"
+            delta=1.0/len(o.dists)
+            #print delta
+            u=delta/2.0
+            for dists in o.dists:
+              pa=line(u,vtx[0],vtx[3])
+              pb=line(u,vtx[1],vtx[2])
+              #print u,pa,pb
+              u=u+delta
+              #print dists
+              v=delta/2.0
+              oldpointpos=pa
+              for d in dists:
+                p=line(v,pa,pb)
+                print u,v,p,d
+                pointpos= d*o.normal+p               
+                h=h+ [maphandles.SpecialHandle(pointpos,100)]
+                v=v+delta
+        except:
+          exctype, value = sys.exc_info()[:2]
+          print exctype, value
         return h
 
     def menu(o, editor):
@@ -601,15 +637,37 @@ class DefaultDrawEntityLines:
                         #color = makeRGBcolor(L3[0], L3[1], L3[2])
 
                     lightfactor, = quarkx.setupsubset()["LightFactor"]
-                    radius = radius * view.scale(org) * lightfactor
+                    dispradius = radius * view.scale(org) * lightfactor
                     cv = view.canvas()
                     cv.pencolor = color
 #                    cv.penwidth = 2 # DECKER - Make this a configurable size
                     cv.penwidth = mapoptions.getThinLineThickness()
                     cv.brushstyle = BS_CLEAR
-                    cv.ellipse(org1.x-radius, org1.y-radius, org1.x+radius, org1.y+radius)
+                    cv.ellipse(org1.x-dispradius, org1.y-dispradius, org1.x+dispradius, org1.y+dispradius)
+                    
+                    try:
+                       direct=quarkx.vect(entity["angles"])
+                       entity["pitch"]='%f' % - direct.x
+                       cone=float(entity['_cone'])
+                       for i in range(18):
+                       	 phi=i*2.0*3.14159/18
+                         dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
+                         cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
+                       cone=float(entity['_inner_cone'])
+                       cv.pencolor = makeRGBcolor(100,100,100)
+                       for i in range(9):
+                       	 phi=i*2.0*3.14159/9
+                         dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
+                         cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
+                    except:
+                      #pass
+                      exctype, value = sys.exc_info()[:2]
+                      print exctype, value
+                      #print "sorry"
+                      
                 except:
                     pass
+
         if entity["target"] is not None:
            self.drawentityarrows("targetname", entity["target"], org, 0, color, view, entities, processentities)
            # Rowdy: allow for Doom 3's target -> name instead of (and as well as) target -> targetname
@@ -622,6 +680,11 @@ class DefaultDrawEntityLines:
            self.drawentityarrows("target", entity["name"], org, 1, color, view, entities, processentities)
         if entity["killtarget"] is not None:
            self.drawentityarrows("targetname", entity["killtarget"], org, 0, RED, view, entities, processentities)
+        
+        # display connections for source engine entity connections
+        outputspecifics=filter(lambda x : -1!=x.find('output#'),entity.dictspec.keys())
+        for spec in outputspecifics:
+          self.drawentityarrows("targetname",entity[spec].split(',')[0] , org, 0, RED, view, entities, processentities)
 
 #
 # EntityLines Manager list
@@ -688,6 +751,10 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.36  2004/12/29 16:40:22  alexander
+#introduced new PointSpecHandle which allows to have additional 3d control points on entities.
+#which specifics are used for these points is controlled similar to the angle specific list
+#
 #Revision 1.35  2004/12/26 21:00:00  cdunde
 #To remove file errors and dupe entries.
 #
