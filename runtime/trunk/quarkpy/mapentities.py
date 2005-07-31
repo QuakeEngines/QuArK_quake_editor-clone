@@ -610,7 +610,7 @@ class DefaultDrawEntityLines:
                         radius = float(L5)
                         if entity["rendercolor"]:
                             try:
-                                color = quakecolor(quarkx.vect(entity["rendercolor"]))
+                                color = vectorRGBcolor(quarkx.vect(entity["rendercolor"]))
                             except:
                                 pass
                     elif L1:
@@ -762,6 +762,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.38  2005/07/31 13:16:11  alexander
+#display also spotlight width and length
+#
 #Revision 1.37  2005/07/30 23:07:07  alexander
 #cone showed for light spots and pitch value automatically set when seleting the entity
 #showing height points for displacements
