@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.6  2005/07/05 19:12:48  alexander
+logging to file using loglevels
+
 Revision 1.5  2005/07/04 18:53:20  alexander
 changed steam acces to be a protocol steamaccess://
 
@@ -59,7 +62,6 @@ type
                 class function TypeInfo: String; override;
                 class procedure FileObjectClassInfo(var Info: TFileObjectClassInfo); override;
                 function FindFile(const PakPath: String) : QFileObject; override;
-                function GetFolder(Path: String) : QSteamFSFolder;
               end;
 
  QSteamFS = class(QSteamFSFolder)
@@ -254,63 +256,6 @@ begin
   S:=mem;
 end;
 
-{tbd: scaning the full steam fs is was way slow, thus omitted here.
-the code is here for reference - we could use it later for browsing}
-
-
-Procedure AddTree(steamfshandle: pointer; ParentFolder: QObject;  steamfolderitem : pointer ;currentpath: string; root: boolean; F: TStream);
-var
-  steamfoldersubitems : pointer;
-  Folder,Q: QObject;
-  path,n,name,subname: string;
-  pfileinfo : ^qfileinfo;
-begin
-  name:=  SteamFSFindName(steamfolderitem);
-  if SteamFSFindIsDir(steamfolderitem) <> 0 then
-  begin
-    //handle a folder
-
-    Folder:= QSteamFSFolder.Create( name, ParentFolder) ;
-    ParentFolder.SubElements.Add( Folder );
-    if root then
-      Folder.TvParent:= nil
-    else
-      Folder.TvParent:= ParentFolder;
-
-    //recurse into subelements of folder
-      path:= currentpath + '/*';
-      steamfoldersubitems := SteamFSFindFirst(steamfshandle,Pchar(path)); //returns pff
-      while SteamFSFindName (steamfoldersubitems) <>nil do
-      begin
-        subname:= SteamFSFindName (steamfoldersubitems);
-        AddTree(steamfshandle,ParentFolder,steamfoldersubitems, currentpath+'/'+subname ,False,F);
-        steamfoldersubitems:=  SteamFSFindNext(steamfoldersubitems);
-      end;
-      SteamFSFindFinish(steamfoldersubitems);
-
-  end
-  else
-  begin
-    Q := MakeFileQObject(name , ParentFolder);
-
-    ParentFolder.SubElements.Add( Q );
-
-    n:=Q.GetFullName;
-    if Q is QFileObject then
-      QFileObject(Q).ReadFormat := rf_default
-    else
-      Raise InternalE('LoadedItem '+Q.GetFullName+' '+IntToStr(rf_default));
-    Q.Open(TQStream(F), 0);
-
-    //pass steam file system handle for file access
-    New(pfileinfo);
-    pfileinfo^.steamfshandle:=steamfshandle;
-    pfileinfo^.filename:= currentpath+name;
-    Q.FNode^.PUserdata:=pfileinfo;
-    Q.FNode^.OnAccess:=SteamFSAddRef;
-
-  end;
-end;
 
 procedure QSteamFSFolder.LoadFile(F: TStream; FSize: Integer);
 var
@@ -345,18 +290,6 @@ begin
          if steamfshandle=nil then
            Raise EErrorFmt(5712, [LoadName]); {init steam}
 
-{tbd: scaning the full steam fs is and creating all folder objects is way too slow,
-thus we do this "on demand". i leave the code here for refence if we want to implement browsing
-
-         steamfolderitem := SteamFSFindFirst(steamfshandle,'*'); //returns pff
-         while SteamFSFindName (steamfolderitem) <>nil do
-         begin
-           path:= SteamFSFindName (steamfolderitem);
-           AddTree(steamfshandle,Self,steamfolderitem,path,False,F);
-           steamfolderitem:=  SteamFSFindNext(steamfolderitem);
-         end;
-         SteamFSFindFinish(steamfolderitem);
-}
          self.Protocol:='steamaccess://';
        end;
     else
@@ -409,6 +342,7 @@ begin
           //found in steam fs
           name:= SteamFSFindName (steamfolderitem);
           Folder:= QSteamFSFolder.Create( name, Self) as QSteamFSFolder;
+          Log(LOG_VERBOSE,'Made steam folder object :'+Folder.name);
           QSteamFSFolder(folder).steamfshandle:= steamfshandle;
           Self.SubElements.Add( Folder );
           Folder.TvParent:= Self;
@@ -434,6 +368,7 @@ begin
     if SteamFSFindName (steamfolderitem) <>nil then
     begin
       qfile := MakeFileQObject(PakPath , self);
+      Log(LOG_VERBOSE,'Made steam file object :'+qfile.name);
       self.SubElements.Add( qfile );
       qfile.TvParent:= Self;
       if qfile is QFileObject then
@@ -459,32 +394,6 @@ begin
 
 end;
 
-function QSteamFSFolder.GetFolder(Path: String) : QSteamFSFolder;
-var
- I, J: Integer;
- Folder: QObject;
- S: String;
-begin
-  S:=TypeInfo;
-  S:=S;
- Result:=Self;
- while Path<>'' do
-  begin
-   I:=Pos('/',Path); if I=0 then I:=Length(Path)+1;
-   J:=Pos('\',Path); if J=0 then J:=Length(Path)+1;
-   if I>J then I:=J;
-   Folder:=Self.SubElements.FindName(Copy(Path, 1, I-1) + '.gcffolder');
-   if Folder=Nil then
-    begin
-     Folder:=QSteamFSFolder.Create(Copy(Path, 1, I-1), Self);
-     Self.SubElements.Add(Folder);
-    end;
-   Result:=Folder as QSteamFSFolder;
-   System.Delete(Path, 1, I);
-  end;
-end;
-
- {------------ QGCF ------------}
 
 class function QSteamFS.TypeInfo;
 begin
