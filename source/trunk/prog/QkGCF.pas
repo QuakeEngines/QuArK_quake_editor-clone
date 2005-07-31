@@ -23,6 +23,11 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.8  2005/01/05 15:57:52  alexander
+late dll initialization on LoadFile method
+dependent dlls are checked before
+made dll loading errors or api mismatch errors fatal because there is no means of recovery
+
 Revision 1.7  2005/01/02 15:19:27  alexander
 access files via steam service - first
 
@@ -82,7 +87,7 @@ type
 
 implementation
 
-uses Quarkx, PyObjects, Game, QkObjectClassList;
+uses Quarkx, PyObjects, Game, QkObjectClassList,Logging;
 
 const RequiredGCFAPI=1;
 var
@@ -218,6 +223,7 @@ begin
   begin
     {handle a folder}
     Folder:= QGCFFolder.Create( GCFSubElementName(gcfelement), ParentFolder) ;
+    Log(LOG_VERBOSE,'Made gcf folder object :'+Folder.name);
     ParentFolder.SubElements.Add( Folder );
     if root then
       Folder.TvParent:= nil
@@ -239,6 +245,7 @@ begin
     ParentFolder.SubElements.Add( Q );
 
     n:=Q.GetFullName;
+    Log(LOG_VERBOSE,'Made gcf file object :'+Q.name);
     if Q is QFileObject then
       QFileObject(Q).ReadFormat := rf_default
     else
@@ -270,6 +277,7 @@ begin
            subgcfelement:= GCFGetSubElement(gcfelement,i);
            AddTree(Self,subgcfelement,False,F);
          end;
+         self.Protocol:='gcffile://';
        end;
     else
       inherited;
@@ -301,10 +309,14 @@ begin
         Result:=Nil
       else
         Result:=QGCFFolder(Folder).FindFile(Copy(PakPath, I+1, MaxInt));
+        if assigned(Result) then
+          Result.Protocol:=self.Protocol;
       Exit;
     end;
   end;
   Result:=SubElements.FindName(PakPath) as QFileObject;
+  if assigned(Result) then
+    Result.Protocol:=self.Protocol;
 end;
 
 function QGCFFolder.GetFolder(Path: String) : QGCFFolder;
