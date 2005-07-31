@@ -659,7 +659,7 @@ class DefaultDrawEntityLines:
                        if entity['_cone']:
                          cone=float(entity['_cone'])
                        elif entity['spotlightwidth']:
-                         cone=float(entity['spotlightwidth'])
+                         cone=float(entity['spotlightwidth'])/2.0
                        for i in range(18):
                        	 phi=i*2.0*3.14159/18
                          dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
@@ -762,6 +762,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.39  2005/07/31 13:20:54  alexander
+#fixed spotlight color
+#
 #Revision 1.38  2005/07/31 13:16:11  alexander
 #display also spotlight width and length
 #
