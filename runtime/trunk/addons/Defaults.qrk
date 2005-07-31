@@ -28,6 +28,9 @@ QQRKSRC1
 //$Header$
 
 //$Log$
+//Revision 1.256  2005/07/24 22:13:26  cbxpm
+//added "soundscapes-hl2.qrk"  (hl2 default configuration)
+//
 //Revision 1.255  2005/07/11 18:11:49  alexander
 //calling hl2 : console setting does work only when applaunch is first param
 //
@@ -1323,9 +1326,9 @@ QQRKSRC1
         BaseDir = "hl2"
         MapCommentsPrefix = "//"
         OutputMapFormat = "HL2"
-        AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D
+        AddOns = "DataHL2.qrk"$0D"textures-hl2.qrk"$0D"models-hl2.qrk"$0D"soundscapes-hl2.qrk"$0D
         "textures-hl2-cs.qrk"$0D"base.qrk"$0D"cstrike.qrk"$0D
-        "halflife2.qrk"$0D"hl2mp.qrk"$0D"soundscapes-hl2.qrk"
+        "halflife2.qrk"$0D"hl2mp.qrk"
 
         BuildPgmsDir="<drive>:/steam/SteamApps/<steam user name>/sourcesdk/bin"
         BuildPgm1  = "vbsp.exe"
