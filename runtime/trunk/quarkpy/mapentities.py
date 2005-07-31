@@ -601,11 +601,19 @@ class DefaultDrawEntityLines:
             #        (maximum radius) for lights, and does not have a 'light' specific
             L3 = entity["distance2"]
             L4 = entity["falloff2"]
-            if L1 or L2 or L3 or L4:
+            L5 = entity["spotlightlength"]
+            if L1 or L2 or L3 or L4 or L5:
             # Rowdy: cdunde reported that Torque uses falloff1 (minimum radius) and falloff2
             #        (maximum radius) for lights, and does not have a 'light' specific
                 try:
-                    if L1:
+                    if L5:
+                        radius = float(L5)
+                        if entity["rendercolor"]:
+                            try:
+                                color = quakecolor(quarkx.vect(entity["rendercolor"]))
+                            except:
+                                pass
+                    elif L1:
                         radius = float(L1)
                         if entity["_color"]:
                             try:
@@ -648,7 +656,10 @@ class DefaultDrawEntityLines:
                     try:
                        direct=quarkx.vect(entity["angles"])
                        entity["pitch"]='%f' % - direct.x
-                       cone=float(entity['_cone'])
+                       if entity['_cone']:
+                         cone=float(entity['_cone'])
+                       elif entity['spotlightwidth']:
+                         cone=float(entity['spotlightwidth'])
                        for i in range(18):
                        	 phi=i*2.0*3.14159/18
                          dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
@@ -660,9 +671,9 @@ class DefaultDrawEntityLines:
                          dirvectn=qhandles.angles2vec1(direct.x+cone*math.cos(phi),direct.y+cone*math.sin(phi),direct.z)
                          cv.line(view.proj(org+dirvectn*radius * lightfactor),org1)
                     except:
-                      #pass
-                      exctype, value = sys.exc_info()[:2]
-                      print exctype, value
+                      pass
+                      #exctype, value = sys.exc_info()[:2]
+                      #print exctype, value
                       #print "sorry"
                       
                 except:
@@ -751,6 +762,11 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.37  2005/07/30 23:07:07  alexander
+#cone showed for light spots and pitch value automatically set when seleting the entity
+#showing height points for displacements
+#target links shown for source engine
+#
 #Revision 1.36  2004/12/29 16:40:22  alexander
 #introduced new PointSpecHandle which allows to have additional 3d control points on entities.
 #which specifics are used for these points is controlled similar to the angle specific list
