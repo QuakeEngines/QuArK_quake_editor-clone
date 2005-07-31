@@ -2404,6 +2404,12 @@ QQRKSRC1
         txt = "&"
         hint = "FX Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "FX Color (R G B)"
+      }
       disablereceiveshadows: =
       {
         txt = "&"
@@ -3366,6 +3372,13 @@ QQRKSRC1
         txt = "&"
         hint = "Brightness"
       }
+      _light: =
+      {
+        Txt = "&"
+        Typ = "LU4"
+        Hint = "light color (not the intensity, only the color)"
+      }
+
       style: =
       {
         txt = "&"
@@ -4055,6 +4068,12 @@ QQRKSRC1
         txt = "&"
         hint = "Color"
       }
+      Color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Color"
+      }
       Intensity: =
       {
         txt = "&"
@@ -4100,6 +4119,12 @@ QQRKSRC1
         txt = "&"
         hint = "Sun Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Sun Color (R G B)"
+      }
       size: =
       {
         txt = "&"
@@ -4144,6 +4169,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Color (R G B)"
+      }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Color (R G B)"
       }
       VerticalGlowSize: =
       {
@@ -4265,6 +4296,12 @@ QQRKSRC1
         txt = "&"
         hint = "Base Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Base Color (R G B)"
+      }
       renderamt: =
       {
         txt = "&"
@@ -4349,6 +4386,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Fade Color (R G B)"
+      }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Fade Color (R G B)"
       }
       input#Fade: =
       {
@@ -4792,6 +4835,12 @@ QQRKSRC1
         txt = "&"
         hint = "Beam Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Beam Color (R G B)"
+      }
       Radius: =
       {
         txt = "&"
@@ -5037,6 +5086,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Ember Color (R G B)"
+      }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Ember Color (R G B)"
       }
       spawnflags: =
       {
@@ -5308,10 +5363,22 @@ QQRKSRC1
         txt = "&"
         hint = "Start Color"
       }
+      startcolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Start Color"
+      }
       endcolor: =
       {
         txt = "&"
         hint = "End Color"
+      }
+      endcolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "End Color"
       }
       emittime: =
       {
@@ -5724,10 +5791,22 @@ QQRKSRC1
         txt = "&"
         hint = "Primary Fog Color"
       }
+      fogcolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Primary Fog Color"
+      }
       fogcolor2: =
       {
         txt = "&"
         hint = "Secondary Fog Color"
+      }
+      fogcolor2: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Secondary Fog Color"
       }
       fogdir: =
       {
@@ -5807,6 +5886,12 @@ QQRKSRC1
         txt = "&"
         hint = "Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Color (R G B)"
+      }
       JetLength: =
       {
         txt = "&"
@@ -5873,6 +5958,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Beam Color (R G B)"
+      }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Beam Color (R G B)"
       }
       width: =
       {
@@ -6604,10 +6695,22 @@ QQRKSRC1
         txt = "&"
         hint = "Primary Fog Color"
       }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Primary Fog Color"
+      }
       fogcolor2: =
       {
         txt = "&"
         hint = "Secondary Fog Color"
+      }
+      _color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Secondary Fog Color"
       }
       fogdir: =
       {
@@ -6946,6 +7049,12 @@ QQRKSRC1
         txt = "&"
         hint = "Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Color (R G B)"
+      }
       input#LightOn: =
       {
         txt = "&"
@@ -6980,6 +7089,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Color"
+      }
+      m_Color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Color"
       }
       m_flRadius: =
       {
@@ -7707,10 +7822,22 @@ QQRKSRC1
         txt = "&"
         hint = "Brightness"
       }
+      _light: =
+      {
+        Txt = "&"
+        Typ = "LU4"
+        Hint = "light color (not the intensity, only the color)"
+      }
       _ambient: =
       {
         txt = "&"
         hint = "Ambient"
+      }
+      _ambient: =
+      {
+        Txt = "&"
+        Typ = "LU4"
+        Hint = "light color (not the intensity, only the color)"
       }
     }
     light_spot:form =
@@ -7770,6 +7897,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Light color"
+      }
+      _light: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "light color (not the intensity, only the color)"
       }
       brightness: =
       {
@@ -7900,6 +8033,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Shadow Color"
+      }
+      color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Shadow Color"
       }
       distance: =
       {
@@ -9519,6 +9658,12 @@ QQRKSRC1
         txt = "&"
         hint = "Particle Color (R G B)"
       }
+      Color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Particle Color (R G B)"
+      }
       SpawnRate: =
       {
         txt = "&"
@@ -9597,10 +9742,22 @@ QQRKSRC1
         txt = "&"
         hint = "Particle Color1 (R G B)"
       }
+      Color1: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "light color (not the intensity, only the color)"
+      }
       Color2: =
       {
         txt = "&"
         hint = "Particle Color2 (R G B)"
+      }
+      Color2: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "light color (not the intensity, only the color)"
       }
       material: =
       {
@@ -9695,6 +9852,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Dust color"
+      }
+      color: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Dust color"
       }
       input#SpawnDust: =
       {
@@ -11734,6 +11897,12 @@ QQRKSRC1
         txt = "&"
         hint = "Smoke Color (R G B)"
       }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Smoke Color (R G B)"
+      }
       renderamt: =
       {
         txt = "&"
@@ -13030,6 +13199,12 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Color (R G B)"
+      }
+      rendercolor: =
+      {
+        Txt = "&"
+        Typ = "LU3"
+        Hint = "Color (R G B)"
       }
       preciptype: =
       {
