@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: base.qrk
 
-// common hl2-source entities. last changes july/11/2005 by cbxpm.
+// common hl2-source entities. last changes august/1/2005 by cbxpm.
 
 {
   t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
@@ -398,6 +398,8 @@ QQRKSRC1
           ;desc = "An entity that works like env_soundscape except that it wor"
            "ks in conjunction with trigger_soundscape to determine when a play"
            "er hears it."
+          radius = "128"
+          soundscape = "Nothing"
         }        
         env_spark:e =
         {
@@ -6310,16 +6312,24 @@ QQRKSRC1
         txt = "&"
         hint = "Radius"
       }
-      soundscape: =
-      {
-        txt = "&"
-        hint = "Soundscape"
-        typ = "C"
-        items = "Nothing"$0D"Automatic"$0D"Automatic (dialog)"$0D"Indoor"$0D"O"
-         "utdoor"
-        values = "Nothing"$0D"Automatic"$0D"Automatic_Dialog"$0D"GenericIndoor"
-         $0D"GenericOutdoor"
-      }
+
+// include external soundscape file
+
+			t_soundscapeselect = !
+
+// old dialog		
+//
+//      soundscape: =
+//      {
+//        txt = "&"
+//        hint = "Soundscape"
+//        typ = "C"
+//        items = "Nothing"$0D"Automatic"$0D"Automatic (dialog)"$0D"Indoor"$0D"O"
+//         "utdoor"
+//        values = "Nothing"$0D"Automatic"$0D"Automatic_Dialog"$0D"GenericIndoor"
+//         $0D"GenericOutdoor"
+//      }
+
       position0: =
       {
         txt = "&"
@@ -6392,16 +6402,24 @@ QQRKSRC1
         txt = "&"
         hint = "Radius"
       }
-      soundscape: =
-      {
-        txt = "&"
-        hint = "Soundscape"
-        typ = "C"
-        items = "Nothing"$0D"Automatic"$0D"Automatic (dialog)"$0D"Indoor"$0D"O"
-         "utdoor"
-        values = "Nothing"$0D"Automatic"$0D"Automatic_Dialog"$0D"GenericIndoor"
-         $0D"GenericOutdoor"
-      }
+
+// include external soundscape file
+
+			t_soundscapeselect = !
+
+// old dialog		
+//
+//      soundscape: =
+//      {
+//        txt = "&"
+//        hint = "Soundscape"
+//        typ = "C"
+//        items = "Nothing"$0D"Automatic"$0D"Automatic (dialog)"$0D"Indoor"$0D"O"
+//         "utdoor"
+//        values = "Nothing"$0D"Automatic"$0D"Automatic_Dialog"$0D"GenericIndoor"
+//         $0D"GenericOutdoor"
+//      }
+
       position0: =
       {
         txt = "&"
