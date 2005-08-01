@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: halflife2.qrk
 
-// hl2sp (singleplayer) entities. last changes july/11/2005 by cbxpm.
+// hl2sp (singleplayer) entities. last changes august/1/2005 by cbxpm.
 
 {
   Toolbox Folders.qtx =
@@ -4709,6 +4709,53 @@ QQRKSRC1
       {
         txt = "&"
         hint = "Class name of spawned NPC"
+        typ = "C"
+					items = "npc_alyx"
+					$0D"npc_antlion"
+					$0D"npc_antlionguard"
+					$0D"npc_apcdriver"     
+					$0D"npc_barnacle"     
+					$0D"npc_barney"     
+					$0D"npc_breen"     
+					$0D"npc_bullseye"     
+					$0D"npc_citizen"     
+					$0D"npc_combine_camera"   
+					$0D"npc_combine_s"     
+					$0D"npc_combinedropship"  
+					$0D"npc_combinegunship"   
+					$0D"npc_combinegunship"   
+					$0D"npc_cranedriver"     
+					$0D"npc_crow"     
+					$0D"npc_cscanner"     
+					$0D"npc_dog"     
+					$0D"npc_eli"     
+					$0D"npc_enemyfinder"     
+					$0D"npc_fastzombie"     
+					$0D"npc_gman"     
+					$0D"npc_headcrab"     
+					$0D"npc_headcrab_black"   
+					$0D"npc_headcrab_fast"    
+					$0D"npc_helicopter"     
+					$0D"npc_ichthyosaur"     
+					$0D"npc_kleiner"     
+					$0D"npc_manhack"     
+					$0D"npc_metropolice"     
+					$0D"npc_missiledefense"   
+					$0D"npc_monk"     
+					$0D"npc_mortarsynth"     
+					$0D"npc_mossman"     
+					$0D"npc_pigeon"     
+					$0D"npc_poisonzombie"     
+					$0D"npc_rollermine"     
+					$0D"npc_seagull"     
+					$0D"npc_sniper"     
+					$0D"npc_spotlight"     
+					$0D"npc_stalker"     
+					$0D"npc_strider"     
+					$0D"npc_vehicledriver"    
+					$0D"npc_vortigaunt"     
+					$0D"npc_zombie"     
+					$0D"npc_zombie_torso"
       }
       NPCTargetname: =
       {
