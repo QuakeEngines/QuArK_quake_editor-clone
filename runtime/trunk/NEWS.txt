@@ -18,6 +18,7 @@ $Id$
 
  * [cbxpm]:  HL2 / Source
 
+     - New default addon that supports HL2-Game Sounds via ambient_generic.
      - Improved HL2 NPC_entities.
      - Added HL2-Soundscapes (default addon).
 
