@@ -3707,11 +3707,15 @@ QQRKSRC1
     ambient_generic:form =
     {
       t_Targetname = !
-      message: =
-      {
-        txt = "&"
-        hint = "Sound Name"
-      }
+
+			t_gamesoundselect = !
+
+//      message: =
+//      {
+//        txt = "&"
+//        hint = "Sound Name"
+//      }
+
       health: =
       {
         txt = "&"
