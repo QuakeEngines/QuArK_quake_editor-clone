@@ -19,10 +19,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
+
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.16  2005/08/03 20:54:27  cbxpm
+added two new labels (done by delphi form designer)
+
 Revision 1.15  2003/08/13 04:18:56  silverpaladin
 Cleaned up all Hints and warnings declared by Delphi 5.
 
