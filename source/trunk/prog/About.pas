@@ -23,6 +23,9 @@ http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.15  2003/08/13 04:18:56  silverpaladin
+Cleaned up all Hints and warnings declared by Delphi 5.
+
 Revision 1.14  2003/08/12 03:06:48  silverpaladin
 Test commit.  Added a blank line.
 
@@ -101,6 +104,8 @@ type
     Label1: TLabel;
     Label8: TLabel;
     Label9: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
