@@ -321,9 +321,55 @@ def line(u,p0,p1):
   f0=1-u
   res=quarkx.vect( p0.x*f0 + p1.x*u , p0.y*f0 + p1.y*u , p0.z*f0 + p1.z*u)
   return res
+
+def drawdistnet(o,view):
+  #print "drawsel"
+  for vtx in o.vertices:
+    pass
+    #print 'vtx',vtx
+  try:
+    cp=[]
+    if len(o.dists)!=0:
+      #print "dists"
+      delta=1.0/len(o.dists)
+      #print delta
+      u=delta/2.0
+      for dists in o.dists:
+        cc=[]
+        cp.append(cc)
+        pa=line(u,vtx[2],vtx[1])
+        pb=line(u,vtx[3],vtx[0])
+        #print u,pa,pb
+        u=u+delta
+        #print dists
+        v=delta/2.0
+        oldpointpos=pa
+        for d in dists:
+          p=line(v,pa,pb)
+          #print u,v,p,d
+          pointpos= d*o.normal+p               
+          cc.append(pointpos)
+          v=v+delta
+
+      cp = map(lambda cpline, proj=view.proj: map(proj, cpline), cp)
+      cv=view.canvas()
+      for cpline in cp:
+        for j in range(len(cpline)-1):
+          cv.line(cpline[j], cpline[j+1])
+      
+      cp = apply(map, (None,)+tuple(cp))
+      
+      for cpline in cp:
+        for i in range(len(cpline)-1):
+            cv.line(cpline[i], cpline[i+1])
+
+  except:
+    exctype, value = sys.exc_info()[:2]
+    print exctype, value
   
 class FaceType(EntityManager):
     "Polyhedron Faces"
+
 
     def drawback(o, editor, view, mode):
         #
@@ -331,9 +377,13 @@ class FaceType(EntityManager):
         #
         for src in o.faceof:
             view.drawmap(src, mode)
+        drawdistnet(o,view)
 
     def drawsel(o, view, mode):
         view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelFaceColor"))
+        drawdistnet(o,view)
+
+
 
 
 
@@ -387,8 +437,8 @@ class FaceType(EntityManager):
             #print delta
             u=delta/2.0
             for dists in o.dists:
-              pa=line(u,vtx[0],vtx[3])
-              pb=line(u,vtx[1],vtx[2])
+              pa=line(u,vtx[2],vtx[1])
+              pb=line(u,vtx[3],vtx[0])
               #print u,pa,pb
               u=u+delta
               #print dists
@@ -396,7 +446,7 @@ class FaceType(EntityManager):
               oldpointpos=pa
               for d in dists:
                 p=line(v,pa,pb)
-                print u,v,p,d
+                #print u,v,p,d
                 pointpos= d*o.normal+p               
                 h=h+ [maphandles.SpecialHandle(pointpos,100)]
                 v=v+delta
@@ -404,6 +454,7 @@ class FaceType(EntityManager):
           exctype, value = sys.exc_info()[:2]
           print exctype, value
         return h
+
 
     def menu(o, editor):
         import mapmenus
@@ -762,6 +813,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.40  2005/07/31 13:32:51  alexander
+#halfed  spotlight beam width
+#
 #Revision 1.39  2005/07/31 13:20:54  alexander
 #fixed spotlight color
 #
