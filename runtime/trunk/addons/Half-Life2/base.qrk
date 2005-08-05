@@ -2,7 +2,7 @@ QQRKSRC1
 // This file has been written by QuArK QuArK 6.4 alpha
 // It's the text version of file: base.qrk
 
-// common hl2-source entities. last changes august/1/2005 by cbxpm.
+// common hl2-source entities. last changes august/5/2005 by cbxpm.
 
 {
   t_player_size:incl = { bbox = '-16 -16 -24 16 16 32' }
@@ -6717,7 +6717,7 @@ QQRKSRC1
         txt = "&"
         hint = "Primary Fog Color"
       }
-      _color: =
+      _fogcolor: =
       {
         Txt = "&"
         Typ = "LU3"
@@ -6728,7 +6728,7 @@ QQRKSRC1
         txt = "&"
         hint = "Secondary Fog Color"
       }
-      _color: =
+      _fogcolor2: =
       {
         Txt = "&"
         Typ = "LU3"
