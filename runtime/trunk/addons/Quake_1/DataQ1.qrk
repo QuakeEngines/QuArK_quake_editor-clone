@@ -18,6 +18,9 @@ QQRKSRC1
 //$Header$
 // ----------- REVISION HISTORY ------------
 //$Log$
+//Revision 1.6  2005/06/15 18:31:46  cdunde
+//To correct log
+//
 //Revision 1.5  2005/06/15 18:05:01  cdunde
 //Major updates and changes by Bengt Jardrup
 //
@@ -180,6 +183,7 @@ QQRKSRC1
 	}
 	trigger_counter:e =
 	{
+	origin = "0 0 0"
 	count = "2"
 	;desc = "Counter"
 	}
@@ -231,6 +235,7 @@ QQRKSRC1
 	}
 	trigger_relay:e =
 	{
+	origin = "0 0 0"
 	;desc = "Allows delayed/multiple actions from one trigger"
 	}
 	}
@@ -905,7 +910,7 @@ QQRKSRC1
    	targetname:=
    	{Txt="&"
    	Typ="E"
-   	Hint="Use if train is activated by trigger. Note: train will not start by player's presence"
+   	Hint="Used if train is activated by trigger. Note: train will not start by player's presence"
    	}
    	speed:=
    	{Txt="&"
@@ -1043,28 +1048,43 @@ QQRKSRC1
 
 	trigger_counter:form =
 	{
-	Help = "Acts as an intermediary for an action that takes multiple inputs." $0D $0D "If 'No message' is not set, it will print '1 more..' etc when triggered and 'sequence completed' when finished." $0D $0D "After the counter has been triggered 'count' times, it will fire all of its targets and remove itself."
+	Help = "Acts as an intermediary for an action that takes multiple inputs." $0D $0D "If 'No message' is not set, it will print '1 more..' etc when triggered and 'sequence completed' when finished." $0D $0D "After the counter has been triggered 'count' times, it will fire all of its targets and remove itself." $0D "A custom message can be used as final message, possibly with a delay set."
 	spawnflags: =
 	{Txt="&"
 	Typ="X1"
 	Cap="No message"
 	Hint=""
 	}
+	target: =
+	{Txt="&"
+   	Typ="E"
+	Hint="The name of the entity/ies that this one should trigger ex. 'tcount1'"
+	}
 	targetname: =
 	{Txt="&"
    	Typ="E"
 	Hint="The name of this entity ex. 'Count1'"
 	}
-	target: =
+	message:=
 	{Txt="&"
    	Typ="E"
-	Hint="The name of the entity/ies that this one should trigger ex. 'tcount1'"
+	Hint="Message to display when counter fires"
 	}
 	count: =
 	{Txt="&"
    	Typ="E"
 	Hint="How many times triggered before counter will fire (default 2)"
 	}
+	killtarget:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Removes object with targetname"
+   	}
+   	delay:=
+   	{Txt="&"
+   	Typ="E"
+   	Hint="Delay before trigger occurs"
+   	}
 	}
 
 	trigger_setskill:form =
@@ -1201,6 +1221,11 @@ QQRKSRC1
 	Items="1)secret" $0D "2)beep beep" $0D "3)large switch"
 	values="1"	$0D	"2"	$0D	"3"
 	}
+	targetname: =
+	{Txt="&"
+   	Typ="E"
+	Hint="Used when not triggered by touch"
+	}
 	message: =
 	{Txt="&"
    	Typ="E"
@@ -1234,7 +1259,7 @@ QQRKSRC1
 	dmg: =
 	{Txt="&"
    	Typ="E"
-	Hint="Set 'dmg' to damage amount (default 5)"
+	Hint="Damage amount (default 5)"
 	}
 	}
 
@@ -1642,7 +1667,7 @@ QQRKSRC1
 
 	info_null:form =
 	{
-	Help = "Use for positional target for spotlights etc."
+	Help = "Used as a positional target for spotlights etc."
 	targetname: =
 	{Txt="&"
    	Typ="E"
@@ -1652,7 +1677,7 @@ QQRKSRC1
 
 	info_notnull:form =
 	{
-	Help = "Use for positional target for 'event_lightning' entity."
+	Help = "Used as a positional target for lightning etc."
 	targetname: =
 	{Txt="&"
    	Typ="E"
