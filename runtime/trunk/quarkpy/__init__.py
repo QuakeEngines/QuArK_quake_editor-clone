@@ -109,13 +109,16 @@ def RunQuArK():
     s = "Qu&ArK's web site"
     qmacro.helpfn[s] = "Help4"
     quarkx.helpmenuitem(s)
-    s = "Qu&ArK's Forums site"
+    s = "QuAr&K's Forums site"
     qmacro.helpfn[s] = "Help6"
     quarkx.helpmenuitem(s)
 
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.8  2005/08/10 04:59:18  cdunde
+#To add QuArK's Forums site link to Help menu
+#
 #Revision 1.7  2003/03/17 01:51:13  cdunde
 #Update hints and add infobase links where needed
 #
