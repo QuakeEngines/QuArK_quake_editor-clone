@@ -108,6 +108,8 @@ CR_SQLWAIT     = -17
 CR_NO          = -18
 CR_APPSTART    = -19
 CR_HELP        = -20
+CR_HAND        = -21
+CR_4ARROWS     = -22
 
 # brush styles
 BS_SOLID       = 0
@@ -1459,6 +1461,8 @@ def Help4():
 def Help5():
     htmldoc("help/intro.mapeditor.overview.html") # Takes the user to the Overview page
 
+def Help6():
+    htmldoc("http://quark.ironfoot.co.uk/") # Takes the user to QuArK's Forums web page
 
 #
 # Retrieves all objects with a given type, excluding VF_CANTSELECT groups.
@@ -1488,6 +1492,9 @@ def FindSelectable(root, singletype=None, types=None):
 #
 #
 #$Log$
+#Revision 1.19  2004/12/26 20:03:01  cdunde
+#Added light Color-Picker function for Torque game engine.
+#
 #Revision 1.18  2003/12/17 13:58:59  peter-b
 #- Rewrote defines for setting Python version
 #- Removed back-compatibility with Python 1.5
