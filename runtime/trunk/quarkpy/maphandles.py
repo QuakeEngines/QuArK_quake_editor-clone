@@ -411,13 +411,13 @@ class EdgeHandle(qhandles.GenericHandle):
             cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
 #            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
 
-class SpecialHandle(qhandles.GenericHandle):
+class SpecialHandle(FaceHandle):
     undomsg = "drag edge"
     hint = "control point for height"
 
-    def __init__(self, base, dist):
+    def __init__(self, base, face):
         pos = base
-        qhandles.GenericHandle.__init__(self, pos)
+        FaceHandle.__init__(self, pos,face)
 
     def menu(self, editor, view):
         self.click(editor)
@@ -432,10 +432,36 @@ class SpecialHandle(qhandles.GenericHandle):
         cv.pencolor = oldcolor
         if p.visible:
             cv.reset()
-            cv.brushcolor = view.darkcolor
-            radius = 3
-            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
-#            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+            cv.brushcolor = 0xF000F0
+            radius = 9
+#            cv.ellipse(p.x-radius, p.y-radius, p.x+radius+1, p.y+radius+1)
+            cv.rectangle(p.x-3, p.y-3, p.x+4, p.y+4)
+
+    def drag(self, v1, v2, flags, view):
+        delta = v2-v1
+        g1 = 1
+        if flags&MB_CTRL:
+            pos0 = self.face.origin
+            if pos0 is not None:
+                pos1 = qhandles.aligntogrid(pos0+delta, 1)
+                delta = pos1 - pos0
+                g1 = 0
+        if g1:
+            delta = qhandles.aligntogrid(delta, 0)
+        self.draghint = vtohint(delta)
+        if delta or (flags&MB_REDIMAGE):
+          print "moved",delta
+           # new = self.face.copy()
+           # if self.face.faceof[0].type == ":p":
+           #     delta = self.face.normal * (self.face.normal*delta)  # projection of 'delta' on the 'normal' line
+           # new.translate(delta)
+           # if flags&MB_DRAGGING:    # the red image contains the whole polyhedron(s), not the single face
+           #     new = completeredimage(self.face, new)
+           # else:
+           #     new = [new]
+        else:
+            new = None
+        return [self.face], None #new
 
 
 class VertexHandle(qhandles.GenericHandle):
@@ -1876,6 +1902,11 @@ class UserCenterHandle(CenterHandle):
 # ----------- REVISION HISTORY ------------
 #
 #$Log$
+#Revision 1.39  2005/07/30 23:07:07  alexander
+#cone showed for light spots and pitch value automatically set when seleting the entity
+#showing height points for displacements
+#target links shown for source engine
+#
 #Revision 1.38  2004/12/29 16:40:22  alexander
 #introduced new PointSpecHandle which allows to have additional 3d control points on entities.
 #which specifics are used for these points is controlled similar to the angle specific list

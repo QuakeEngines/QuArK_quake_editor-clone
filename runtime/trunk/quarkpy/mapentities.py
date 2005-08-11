@@ -337,8 +337,8 @@ def drawdistnet(o,view):
       for dists in o.dists:
         cc=[]
         cp.append(cc)
-        pa=line(u,vtx[2],vtx[1])
-        pb=line(u,vtx[3],vtx[0])
+        pa=line(u,vtx[3],vtx[0])
+        pb=line(u,vtx[2],vtx[1])
         #print u,pa,pb
         u=u+delta
         #print dists
@@ -380,7 +380,13 @@ class FaceType(EntityManager):
         drawdistnet(o,view)
 
     def drawsel(o, view, mode):
-        view.drawmap(o, mode | DM_SELECTED, view.setup.getint("SelFaceColor"))
+        if len(o.dists)!=0:
+          color=0xffff00
+          print 'color',color
+        else:
+          color= view.setup.getint("SelFaceColor")
+        print 'color',color
+        view.drawmap(o, mode | DM_SELECTED,color )
         drawdistnet(o,view)
 
 
@@ -437,8 +443,8 @@ class FaceType(EntityManager):
             #print delta
             u=delta/2.0
             for dists in o.dists:
-              pa=line(u,vtx[2],vtx[1])
-              pb=line(u,vtx[3],vtx[0])
+              pa=line(u,vtx[3],vtx[0])
+              pb=line(u,vtx[2],vtx[1])
               #print u,pa,pb
               u=u+delta
               #print dists
@@ -448,7 +454,7 @@ class FaceType(EntityManager):
                 p=line(v,pa,pb)
                 #print u,v,p,d
                 pointpos= d*o.normal+p               
-                h=h+ [maphandles.SpecialHandle(pointpos,100)]
+                h=h+ [maphandles.SpecialHandle(pointpos,o)]
                 v=v+delta
         except:
           exctype, value = sys.exc_info()[:2]
@@ -813,6 +819,9 @@ def LoadEntityForm(sl):
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.41  2005/08/04 20:40:27  alexander
+#draw distance net for displacements
+#
 #Revision 1.40  2005/07/31 13:32:51  alexander
 #halfed  spotlight beam width
 #
