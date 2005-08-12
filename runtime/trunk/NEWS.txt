@@ -16,6 +16,11 @@ $Id$
 6.4.1 alpha 4
 =============
 
+ * [cbxpm]:  General changes
+ 
+     - Added new QuArK Logo (from Leonard).
+     - Added "QuArK Resource Forums" (link - about dialog).
+
  * [Fred] :  Q2 / HL1
 
      - Updated waypoint data types.
