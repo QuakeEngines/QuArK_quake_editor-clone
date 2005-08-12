@@ -88,7 +88,9 @@ def poolitems(item):
     #         This is a "bug" in the QuArK.EXE, caused by having the Duplicator-class inherit from
     #         the Entity-class. Not easy to fix in the QuArK.EXE, so the solution here is to not
     #         search for ":e" types, but have them found when searching for ":d" types.
-    return item.findallsubitems("",":b")+item.findallsubitems("",":d")  #+item.findallsubitems("",":e")
+ #   return item.findallsubitems("",":b")+item.findallsubitems("",":d") #+item.findallsubitems("",":e")
+    # cdunde 8-11-05: Reversed to allow entities to work again, apparetly fixed else ware to correct above.
+    return item.findallsubitems("",":b")+item.findallsubitems("",":d")+item.findallsubitems("",":e")
 
 def pool_specs(list):
     specs = {}
@@ -451,6 +453,9 @@ DupCodes = {"dup origin" : OriginDuplicator }    # see mapdups.py
 
 # ----------- REVISION HISTORY ------------
 #$Log$
+#Revision 1.24  2004/01/26 20:57:46  decker_dk
+#A fix for "poolitems()", which returned duplicates of ":e" objects.
+#
 #Revision 1.23  2003/12/18 21:51:46  peter-b
 #Removed reliance on external string library from Python scripts (second try ;-)
 #
