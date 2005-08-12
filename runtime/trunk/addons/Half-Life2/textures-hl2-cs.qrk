@@ -1,7 +1,7 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 CS Textures from counter-strike source shared.gcf (july/7/2005)"
+  Description = "HL2 CS Textures from counter-strike source shared.gcf (august/12/2005)"
 
 //
 // Materials for Counter Strike Source
@@ -844,15 +844,10 @@ QQRKSRC1
 			decals/arrow_left.wl  = { t_hl2cs=! }
 			decals/arrow_right.wl  = { t_hl2cs=! }
 			decals/CONCRETE/SHOT1.wl  = { t_hl2cs=! }
-			decals/CONCRETE/SHOT1_subrect.wl  = { t_hl2cs=! }
 			decals/CONCRETE/SHOT2.wl  = { t_hl2cs=! }
-			decals/CONCRETE/SHOT2_subrect.wl  = { t_hl2cs=! }
 			decals/CONCRETE/SHOT3.wl  = { t_hl2cs=! }
-			decals/CONCRETE/SHOT3_subrect.wl  = { t_hl2cs=! }
 			decals/CONCRETE/SHOT4.wl  = { t_hl2cs=! }
-			decals/CONCRETE/SHOT4_subrect.wl  = { t_hl2cs=! }
 			decals/CONCRETE/SHOT5.wl  = { t_hl2cs=! }
-			decals/CONCRETE/SHOT5_subrect.wl  = { t_hl2cs=! }
 			decals/decalgraffiti001a_cs.wl  = { t_hl2cs=! }
 			decals/decalgraffiti001b_cs.wl  = { t_hl2cs=! }
 			decals/decalgraffiti001c_cs.wl  = { t_hl2cs=! }
@@ -996,14 +991,9 @@ QQRKSRC1
 			decals/italy_poster5.wl  = { t_hl2cs=! }
 			decals/manhackcut.wl  = { t_hl2cs=! }
 			decals/manhackcut2.wl  = { t_hl2cs=! }
-			decals/manhackcut2_subrect.wl  = { t_hl2cs=! }
 			decals/manhackcut3.wl  = { t_hl2cs=! }
-			decals/manhackcut3_subrect.wl  = { t_hl2cs=! }
-			decals/manhackcut_subrect.wl  = { t_hl2cs=! }
 			decals/metal/shot6.wl  = { t_hl2cs=! }
-			decals/metal/SHOT6_subrect.wl  = { t_hl2cs=! }
 			decals/metal/shot7.wl  = { t_hl2cs=! }
-			decals/metal/SHOT7_subrect.wl  = { t_hl2cs=! }
 			decals/offaddress.wl  = { t_hl2cs=! }
 			decals/offceilingvent.wl  = { t_hl2cs=! }
 			decals/offcertificatea.wl  = { t_hl2cs=! }
@@ -1092,15 +1082,10 @@ QQRKSRC1
 			decals/wires03.wl  = { t_hl2cs=! }
 			decals/wires04.wl  = { t_hl2cs=! }
 			decals/wood/shot1.wl  = { t_hl2cs=! }
-			decals/wood/SHOT1_subrect.wl  = { t_hl2cs=! }
 			decals/wood/shot2.wl  = { t_hl2cs=! }
-			decals/wood/SHOT2_subrect.wl  = { t_hl2cs=! }
 			decals/wood/shot3.wl  = { t_hl2cs=! }
-			decals/wood/SHOT3_subrect.wl  = { t_hl2cs=! }
 			decals/wood/shot4.wl  = { t_hl2cs=! }
-			decals/wood/SHOT4_subrect.wl  = { t_hl2cs=! }
 			decals/wood/shot5.wl  = { t_hl2cs=! }
-			decals/wood/SHOT5_subrect.wl  = { t_hl2cs=! }
 			decals/{arrow_l.wl  = { t_hl2cs=! }
 			decals/{arrow_r.wl  = { t_hl2cs=! }
 			decals/{pstripe1.wl  = { t_hl2cs=! }

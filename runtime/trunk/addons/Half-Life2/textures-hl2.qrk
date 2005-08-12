@@ -1,7 +1,7 @@
 QQRKSRC1
 {
   QuArKProtected = "1"
-  Description = "HL2 Textures from source materials.gcf (july/04/2005)"
+  Description = "HL2 Textures from source materials.gcf (august/12/2005)"
 
 // Materials for HL2 / HL2MP
 
@@ -696,61 +696,39 @@ QQRKSRC1
 				  Decals.txlist =
 				  {
 					Decals/alienflesh/shot1.wl  = { t_hl2=! }
-					Decals/alienflesh/shot1_subrect.wl  = { t_hl2=! }
 					Decals/alienflesh/shot2.wl  = { t_hl2=! }
-					Decals/alienflesh/shot2_subrect.wl  = { t_hl2=! }
 					Decals/alienflesh/shot3.wl  = { t_hl2=! }
-					Decals/alienflesh/shot3_subrect.wl  = { t_hl2=! }
 					Decals/alienflesh/shot4.wl  = { t_hl2=! }
-					Decals/alienflesh/shot4_subrect.wl  = { t_hl2=! }
 					Decals/alienflesh/shot5.wl  = { t_hl2=! }
-					Decals/alienflesh/shot5_subrect.wl  = { t_hl2=! }
 					Decals/Antlion/antlion_splat.wl  = { t_hl2=! }
 					Decals/Antlion/shot1.wl  = { t_hl2=! }
-					Decals/Antlion/shot1_subrect.wl  = { t_hl2=! }
 					Decals/Antlion/shot2.wl  = { t_hl2=! }
-					Decals/Antlion/shot2_subrect.wl  = { t_hl2=! }
 					Decals/Antlion/shot3.wl  = { t_hl2=! }
-					Decals/Antlion/shot3_subrect.wl  = { t_hl2=! }
 					Decals/Antlion/shot4.wl  = { t_hl2=! }
-					Decals/Antlion/shot4_subrect.wl  = { t_hl2=! }
 					Decals/Antlion/shot5.wl  = { t_hl2=! }
-					Decals/Antlion/shot5_subrect.wl  = { t_hl2=! }
 					Decals/beersplash.wl  = { t_hl2=! }
 					Decals/beersplashmodel.wl  = { t_hl2=! }
-					Decals/beersplash_subrect.wl  = { t_hl2=! }
 					Decals/bigshot1.wl  = { t_hl2=! }
 					Decals/bigshot1model.wl  = { t_hl2=! }
-					Decals/bigshot1_subrect.wl  = { t_hl2=! }
 					Decals/bigshot2.wl  = { t_hl2=! }
 					Decals/bigshot2model.wl  = { t_hl2=! }
-					Decals/bigshot2_subrect.wl  = { t_hl2=! }
 					Decals/bigshot3.wl  = { t_hl2=! }
 					Decals/bigshot3model.wl  = { t_hl2=! }
-					Decals/bigshot3_subrect.wl  = { t_hl2=! }
 					Decals/bigshot4.wl  = { t_hl2=! }
 					Decals/bigshot4model.wl  = { t_hl2=! }
-					Decals/bigshot4_subrect.wl  = { t_hl2=! }
 					Decals/bigshot5.wl  = { t_hl2=! }
 					Decals/bigshot5model.wl  = { t_hl2=! }
-					Decals/bigshot5_subrect.wl  = { t_hl2=! }
 					Decals/bills01a.wl  = { t_hl2=! }
 					Decals/bills02a.wl  = { t_hl2=! }
 					Decals/bills03a.wl  = { t_hl2=! }
 					Decals/bills04a.wl  = { t_hl2=! }
 					Decals/bills05a.wl  = { t_hl2=! }
 					Decals/Blood1.wl  = { t_hl2=! }
-					Decals/blood1_subrect.wl  = { t_hl2=! }
 					Decals/Blood2.wl  = { t_hl2=! }
-					Decals/blood2_subrect.wl  = { t_hl2=! }
 					Decals/Blood3.wl  = { t_hl2=! }
-					Decals/blood3_subrect.wl  = { t_hl2=! }
 					Decals/Blood4.wl  = { t_hl2=! }
-					Decals/blood4_subrect.wl  = { t_hl2=! }
 					Decals/Blood5.wl  = { t_hl2=! }
-					Decals/blood5_subrect.wl  = { t_hl2=! }
 					Decals/Blood6.wl  = { t_hl2=! }
-					Decals/blood6_subrect.wl  = { t_hl2=! }
 					Decals/Blood7.wl  = { t_hl2=! }
 					Decals/blood8.wl  = { t_hl2=! }
 					Decals/bloodstain_001.wl  = { t_hl2=! }
@@ -760,44 +738,30 @@ QQRKSRC1
 					Decals/bloodstain_101.wl  = { t_hl2=! }
 					Decals/bloodstain_201.wl  = { t_hl2=! }
 					Decals/bloodyflesh/Blood1.wl  = { t_hl2=! }
-					Decals/bloodyflesh/Blood1_subrect.wl  = { t_hl2=! }
 					Decals/bloodyflesh/Blood2.wl  = { t_hl2=! }
-					Decals/bloodyflesh/Blood2_subrect.wl  = { t_hl2=! }
 					Decals/bloodyflesh/Blood3.wl  = { t_hl2=! }
-					Decals/bloodyflesh/Blood3_subrect.wl  = { t_hl2=! }
 					Decals/bloodyflesh/Blood4.wl  = { t_hl2=! }
-					Decals/bloodyflesh/Blood4_subrect.wl  = { t_hl2=! }
 					Decals/bloodyflesh/Blood5.wl  = { t_hl2=! }
-					Decals/bloodyflesh/Blood5_subrect.wl  = { t_hl2=! }
 					Decals/blood_gunshot_decal.wl  = { t_hl2=! }
 					Decals/blood_gunshot_decalmodel.wl  = { t_hl2=! }
 					Decals/bproof1.wl  = { t_hl2=! }
 					Decals/bproof1model.wl  = { t_hl2=! }
-					Decals/bproof1_subrect.wl  = { t_hl2=! }
 					Decals/break1.wl  = { t_hl2=! }
 					Decals/break1model.wl  = { t_hl2=! }
-					Decals/break1_subrect.wl  = { t_hl2=! }
 					Decals/break2.wl  = { t_hl2=! }
 					Decals/break2model.wl  = { t_hl2=! }
-					Decals/break2_subrect.wl  = { t_hl2=! }
 					Decals/break3.wl  = { t_hl2=! }
 					Decals/break3model.wl  = { t_hl2=! }
-					Decals/break3_subrect.wl  = { t_hl2=! }
 					Decals/burn01a.wl  = { t_hl2=! }
 					Decals/burn02a.wl  = { t_hl2=! }
 					Decals/combineballfade.wl  = { t_hl2=! }
 					Decals/combineballfade2.wl  = { t_hl2=! }
 					Decals/combineballfade3.wl  = { t_hl2=! }
 					Decals/CONCRETE/SHOT1.wl  = { t_hl2=! }
-					Decals/CONCRETE/SHOT1_subrect.wl  = { t_hl2=! }
 					Decals/CONCRETE/SHOT2.wl  = { t_hl2=! }
-					Decals/CONCRETE/SHOT2_subrect.wl  = { t_hl2=! }
 					Decals/CONCRETE/SHOT3.wl  = { t_hl2=! }
-					Decals/CONCRETE/SHOT3_subrect.wl  = { t_hl2=! }
 					Decals/CONCRETE/SHOT4.wl  = { t_hl2=! }
-					Decals/CONCRETE/SHOT4_subrect.wl  = { t_hl2=! }
 					Decals/CONCRETE/SHOT5.wl  = { t_hl2=! }
-					Decals/CONCRETE/SHOT5_subrect.wl  = { t_hl2=! }
 					Decals/debris_concrete001a.wl  = { t_hl2=! }
 					Decals/debris_concrete001b.wl  = { t_hl2=! }
 					Decals/debris_tile001a.wl  = { t_hl2=! }
@@ -948,22 +912,15 @@ QQRKSRC1
 					Decals/decaltiremark001a.wl  = { t_hl2=! }
 					Decals/decalwire002a.wl  = { t_hl2=! }
 					Decals/decal_birdpoop001.wl  = { t_hl2=! }
-					Decals/decal_birdpoop001_subrect.wl  = { t_hl2=! }
 					Decals/decal_birdpoop002.wl  = { t_hl2=! }
-					Decals/decal_birdpoop002_subrect.wl  = { t_hl2=! }
 					Decals/decal_birdpoop003.wl  = { t_hl2=! }
-					Decals/decal_birdpoop003_subrect.wl  = { t_hl2=! }
 					Decals/decal_birdpoop004.wl  = { t_hl2=! }
-					Decals/decal_birdpoop004_subrect.wl  = { t_hl2=! }
 					Decals/decal_crater001a.wl  = { t_hl2=! }
 					Decals/decal_paintsplatterblue001.wl  = { t_hl2=! }
-					Decals/decal_paintsplatterblue001_subrect.wl  = { t_hl2=! }
 					Decals/decal_paintsplatterblue_model.wl  = { t_hl2=! }
 					Decals/decal_paintsplattergreen001.wl  = { t_hl2=! }
-					Decals/decal_paintsplattergreen001_subrect.wl  = { t_hl2=! }
 					Decals/decal_paintsplattergreen_model.wl  = { t_hl2=! }
 					Decals/decal_paintsplatterpink001.wl  = { t_hl2=! }
-					Decals/decal_paintsplatterpink001_subrect.wl  = { t_hl2=! }
 					Decals/decal_paintsplatterpink_model.wl  = { t_hl2=! }
 					Decals/decal_policeline01a.wl  = { t_hl2=! }
 					Decals/decal_posterbreen.wl  = { t_hl2=! }
@@ -989,30 +946,18 @@ QQRKSRC1
 					Decals/decomp_puddle1.wl  = { t_hl2=! }
 					Decals/extinguish1.wl  = { t_hl2=! }
 					Decals/extinguish1model.wl  = { t_hl2=! }
-					Decals/extinguish1_subrect.wl  = { t_hl2=! }
 					Decals/extinguish2.wl  = { t_hl2=! }
 					Decals/extinguish2model.wl  = { t_hl2=! }
-					Decals/extinguish2_subrect.wl  = { t_hl2=! }
 					Decals/flesh/Blood1.wl  = { t_hl2=! }
-					Decals/flesh/Blood1_subrect.wl  = { t_hl2=! }
 					Decals/flesh/Blood2.wl  = { t_hl2=! }
-					Decals/flesh/Blood2_subrect.wl  = { t_hl2=! }
 					Decals/flesh/Blood3.wl  = { t_hl2=! }
-					Decals/flesh/Blood3_subrect.wl  = { t_hl2=! }
 					Decals/flesh/Blood4.wl  = { t_hl2=! }
-					Decals/flesh/Blood4_subrect.wl  = { t_hl2=! }
 					Decals/flesh/Blood5.wl  = { t_hl2=! }
-					Decals/flesh/Blood5_subrect.wl  = { t_hl2=! }
 					Decals/GLASS/shot1.wl  = { t_hl2=! }
-					Decals/GLASS/shot1_subrect.wl  = { t_hl2=! }
 					Decals/GLASS/shot2.wl  = { t_hl2=! }
-					Decals/GLASS/shot2_subrect.wl  = { t_hl2=! }
 					Decals/GLASS/shot3.wl  = { t_hl2=! }
-					Decals/GLASS/shot3_subrect.wl  = { t_hl2=! }
 					Decals/GLASS/shot4.wl  = { t_hl2=! }
-					Decals/GLASS/shot4_subrect.wl  = { t_hl2=! }
 					Decals/GLASS/shot5.wl  = { t_hl2=! }
-					Decals/GLASS/shot5_subrect.wl  = { t_hl2=! }
 					Decals/ivy01.wl  = { t_hl2=! }
 					Decals/ivy02.wl  = { t_hl2=! }
 					Decals/ivy03.wl  = { t_hl2=! }
@@ -1022,20 +967,12 @@ QQRKSRC1
 					Decals/leaves_ground02.wl  = { t_hl2=! }
 					Decals/manhackcut.wl  = { t_hl2=! }
 					Decals/manhackcut2.wl  = { t_hl2=! }
-					Decals/manhackcut2_subrect.wl  = { t_hl2=! }
 					Decals/manhackcut3.wl  = { t_hl2=! }
-					Decals/manhackcut3_subrect.wl  = { t_hl2=! }
-					Decals/manhackcut_subrect.wl  = { t_hl2=! }
 					Decals/METAL/shot1.wl  = { t_hl2=! }
-					Decals/METAL/SHOT1_subrect.wl  = { t_hl2=! }
 					Decals/METAL/shot2.wl  = { t_hl2=! }
-					Decals/METAL/SHOT2_subrect.wl  = { t_hl2=! }
 					Decals/METAL/shot3.wl  = { t_hl2=! }
-					Decals/METAL/SHOT3_subrect.wl  = { t_hl2=! }
 					Decals/METAL/shot4.wl  = { t_hl2=! }
-					Decals/METAL/SHOT4_subrect.wl  = { t_hl2=! }
 					Decals/METAL/shot5.wl  = { t_hl2=! }
-					Decals/METAL/SHOT5_subrect.wl  = { t_hl2=! }
 					Decals/plasmaglowfade.wl  = { t_hl2=! }
 					Decals/Plaster001a.wl  = { t_hl2=! }
 					Decals/Plaster004a.wl  = { t_hl2=! }
@@ -1123,72 +1060,46 @@ QQRKSRC1
 					Decals/rendermodelshadow.wl  = { t_hl2=! }
 					Decals/rendershadow.wl  = { t_hl2=! }
 					Decals/rollermine_crater.wl  = { t_hl2=! }
-					Decals/rollermine_crater_subrect.wl  = { t_hl2=! }
 					Decals/Rubble01a.wl  = { t_hl2=! }
-					Decals/Sand/SHOT1_subrect.wl  = { t_hl2=! }
-					Decals/Sand/SHOT2_subrect.wl  = { t_hl2=! }
-					Decals/Sand/SHOT3_subrect.wl  = { t_hl2=! }
-					Decals/Sand/SHOT4_subrect.wl  = { t_hl2=! }
 					Decals/scorch1.wl  = { t_hl2=! }
 					Decals/scorch1model.wl  = { t_hl2=! }
-					Decals/scorch1_subrect.wl  = { t_hl2=! }
 					Decals/scorch2.wl  = { t_hl2=! }
 					Decals/scorch2model.wl  = { t_hl2=! }
-					Decals/scorch2_subrect.wl  = { t_hl2=! }
 					Decals/scorch3.wl  = { t_hl2=! }
 					Decals/scorchfade.wl  = { t_hl2=! }
 					Decals/scorchfademodel.wl  = { t_hl2=! }
-					Decals/scorchfade_subrect.wl  = { t_hl2=! }
 					Decals/ship_snow1b.wl  = { t_hl2=! }
 					Decals/simpleshadow.wl  = { t_hl2=! }
 					Decals/smscorch1.wl  = { t_hl2=! }
 					Decals/smscorch1model.wl  = { t_hl2=! }
-					Decals/smscorch1_subrect.wl  = { t_hl2=! }
 					Decals/smscorch2.wl  = { t_hl2=! }
 					Decals/smscorch2model.wl  = { t_hl2=! }
-					Decals/smscorch2_subrect.wl  = { t_hl2=! }
 					Decals/smscorch3.wl  = { t_hl2=! }
 					Decals/smscorch3model.wl  = { t_hl2=! }
-					Decals/smscorch3_subrect.wl  = { t_hl2=! }
 					Decals/splash1.wl  = { t_hl2=! }
-					Decals/splash1_subrect.wl  = { t_hl2=! }
 					Decals/splash2.wl  = { t_hl2=! }
-					Decals/splash2_subrect.wl  = { t_hl2=! }
 					Decals/splash3.wl  = { t_hl2=! }
-					Decals/splash3_subrect.wl  = { t_hl2=! }
 					Decals/TrashDecal01a.wl  = { t_hl2=! }
 					Decals/TrashDecal02a.wl  = { t_hl2=! }
 					Decals/TrashDecal03a.wl  = { t_hl2=! }
 					Decals/TrashDecal04a.wl  = { t_hl2=! }
 					Decals/TrashDecal05a.wl  = { t_hl2=! }
 					Decals/unburrow.wl  = { t_hl2=! }
-					Decals/unburrow_subrect.wl  = { t_hl2=! }
 					Decals/WallStain01a.wl  = { t_hl2=! }
 					Decals/WallStain_Frame01a.wl  = { t_hl2=! }
 					Decals/WallStain_Frame02a.wl  = { t_hl2=! }
 					Decals/WallStain_Frame03a.wl  = { t_hl2=! }
 					Decals/WOOD/shot1.wl  = { t_hl2=! }
-					Decals/WOOD/SHOT1_subrect.wl  = { t_hl2=! }
 					Decals/WOOD/shot2.wl  = { t_hl2=! }
-					Decals/WOOD/SHOT2_subrect.wl  = { t_hl2=! }
 					Decals/WOOD/shot3.wl  = { t_hl2=! }
-					Decals/WOOD/SHOT3_subrect.wl  = { t_hl2=! }
 					Decals/WOOD/shot4.wl  = { t_hl2=! }
-					Decals/WOOD/SHOT4_subrect.wl  = { t_hl2=! }
 					Decals/WOOD/shot5.wl  = { t_hl2=! }
-					Decals/WOOD/SHOT5_subrect.wl  = { t_hl2=! }
 					Decals/Yblood1.wl  = { t_hl2=! }
-					Decals/yblood1_subrect.wl  = { t_hl2=! }
 					Decals/Yblood2.wl  = { t_hl2=! }
-					Decals/yblood2_subrect.wl  = { t_hl2=! }
 					Decals/Yblood3.wl  = { t_hl2=! }
-					Decals/yblood3_subrect.wl  = { t_hl2=! }
 					Decals/Yblood4.wl  = { t_hl2=! }
-					Decals/yblood4_subrect.wl  = { t_hl2=! }
 					Decals/Yblood5.wl  = { t_hl2=! }
-					Decals/yblood5_subrect.wl  = { t_hl2=! }
 					Decals/Yblood6.wl  = { t_hl2=! }
-					Decals/yblood6_subrect.wl  = { t_hl2=! }
 				  }
 				  
 				  Detail.txlist =
@@ -3891,7 +3802,6 @@ QQRKSRC1
 					Sprites/fire2.wl  = { t_hl2=! }
 					Sprites/fireburst.wl  = { t_hl2=! }
 					Sprites/fire_floor.wl  = { t_hl2=! }
-					Sprites/fire_floor_subrect.wl  = { t_hl2=! }
 					Sprites/flame01.wl  = { t_hl2=! }
 					Sprites/flame03.wl  = { t_hl2=! }
 					Sprites/flame04.wl  = { t_hl2=! }
