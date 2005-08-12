@@ -128,6 +128,39 @@ QQRKSRC1
         cubemapsize = "0"
       }
     }
+    ambient_generic: =
+    {
+      ambient_generic:e =
+      {
+        origin = "0 0 0"
+         "e sound."
+        health = "10"
+        preset = "0"
+        volstart = "0"
+        fadein = "0"
+        fadeout = "0"
+        pitch = "100"
+        pitchstart = "100"
+        spinup = "0"
+        spindown = "0"
+        lfotype = "0"
+        lforate = "0"
+        lfomodpitch = "0"
+        lfomodvol = "0"
+        cspinup = "0"
+        radius = "1250"
+        spawnflags = "48"
+      }
+    }
+    env_soundscape: =
+    {
+      env_soundscape:e =
+      {
+        origin = "0 0 0"
+        radius = "128"
+        soundscape = "Nothing"
+      }
+		}
   }
   Menu.qrk =
   {
