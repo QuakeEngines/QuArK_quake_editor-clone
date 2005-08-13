@@ -1,11 +1,11 @@
 object AboutBox: TAboutBox
-  Left = 276
-  Top = 271
+  Left = 312
+  Top = 267
   HelpContext = -1
   ActiveControl = Edit1
   BorderStyle = bsDialog
   ClientHeight = 402
-  ClientWidth = 792
+  ClientWidth = 625
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,7 +22,7 @@ object AboutBox: TAboutBox
   object Panel1: TPanel
     Left = 8
     Top = 8
-    Width = 777
+    Width = 609
     Height = 387
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -31,18 +31,18 @@ object AboutBox: TAboutBox
     object Image1: TImage
       Left = 8
       Top = 8
-      Width = 513
+      Width = 350
       Height = 360
     end
     object Bevel1: TBevel
-      Left = 528
+      Left = 368
       Top = 8
       Width = 17
       Height = 361
       Shape = bsLeftLine
     end
     object ProgramIcon: TImage
-      Left = 556
+      Left = 388
       Top = 29
       Width = 32
       Height = 32
@@ -50,7 +50,7 @@ object AboutBox: TAboutBox
       IsControl = True
     end
     object ProductName: TLabel
-      Left = 628
+      Left = 428
       Top = 27
       Width = 17
       Height = 13
@@ -64,7 +64,7 @@ object AboutBox: TAboutBox
       IsControl = True
     end
     object Version: TLabel
-      Left = 597
+      Left = 429
       Top = 45
       Width = 172
       Height = 20
@@ -73,7 +73,7 @@ object AboutBox: TAboutBox
       IsControl = True
     end
     object Label2: TLabel
-      Left = 644
+      Left = 444
       Top = 27
       Width = 22
       Height = 13
@@ -86,7 +86,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label3: TLabel
-      Left = 672
+      Left = 472
       Top = 27
       Width = 13
       Height = 13
@@ -99,7 +99,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label4: TLabel
-      Left = 684
+      Left = 484
       Top = 27
       Width = 16
       Height = 13
@@ -112,7 +112,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label5: TLabel
-      Left = 708
+      Left = 508
       Top = 27
       Width = 9
       Height = 13
@@ -125,7 +125,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label6: TLabel
-      Left = 716
+      Left = 516
       Top = 27
       Width = 22
       Height = 13
@@ -138,7 +138,7 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label7: TLabel
-      Left = 100
+      Left = 20
       Top = 370
       Width = 329
       Height = 11
@@ -153,31 +153,25 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object WebsiteAddress: TLabel
-      Left = 544
-      Top = 272
-      Width = 141
-      Height = 11
-      Caption = 'http://dynamic.gamespy.com/~quark'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Small Fonts'
-      Font.Style = []
-      ParentFont = False
+      Left = 384
+      Top = 288
+      Width = 172
+      Height = 13
+      Caption = 'http://www.planetquake.com/quark'
     end
     object Label10: TLabel
-      Left = 544
-      Top = 65
+      Left = 376
+      Top = 73
       Width = 221
       Height = 13
       Caption = 'Copyright (C) 1996-2005 Armin Rigo and others'
     end
     object UsedCompilerLabel: TLabel
-      Left = 542
+      Left = 422
       Top = 7
-      Width = 211
+      Width = 178
       Height = 11
-      Caption = 'Alpha 4 - Compiled with Delphi 6.0 - August-15-2005'
+      Caption = 'Alpha 4-Compiled with Delphi 6.0-Aug.,15,05'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
@@ -186,55 +180,29 @@ object AboutBox: TAboutBox
       ParentFont = False
     end
     object Label1: TLabel
-      Left = 544
-      Top = 304
-      Width = 173
-      Height = 11
+      Left = 384
+      Top = 328
+      Width = 206
+      Height = 13
       Caption = 'http://www.sourceforge.net/projects/quark'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Small Fonts'
-      Font.Style = []
-      ParentFont = False
     end
     object Label8: TLabel
-      Left = 544
-      Top = 288
+      Left = 384
+      Top = 312
       Width = 90
       Height = 13
       Caption = 'Source Repository:'
     end
     object Label9: TLabel
-      Left = 544
-      Top = 256
+      Left = 384
+      Top = 272
       Width = 56
       Height = 13
       Caption = 'HomePage:'
     end
-    object Label11: TLabel
-      Left = 544
-      Top = 320
-      Width = 117
-      Height = 13
-      Caption = 'QuArK Resource Forums'
-    end
-    object Label12: TLabel
-      Left = 544
-      Top = 336
-      Width = 111
-      Height = 11
-      Caption = 'http://quark.ironfoot.co.uk'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Small Fonts'
-      Font.Style = []
-      ParentFont = False
-    end
     object Memo1: TMemo
-      Left = 544
-      Top = 83
+      Left = 376
+      Top = 91
       Width = 225
       Height = 166
       ParentColor = True
@@ -244,7 +212,7 @@ object AboutBox: TAboutBox
     end
   end
   object OKButton: TButton
-    Left = 623
+    Left = 463
     Top = 360
     Width = 75
     Height = 24

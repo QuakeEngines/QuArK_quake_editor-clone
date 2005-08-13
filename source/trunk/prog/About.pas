@@ -19,11 +19,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 http://www.planetquake.com/quark - Contact information in AUTHORS.TXT
 **************************************************************************)
 
-
 {
 $Header$
  ----------- REVISION HISTORY ------------
 $Log$
+Revision 1.17  2005/08/03 21:08:34  cbxpm
+no changes
+
 Revision 1.16  2005/08/03 20:54:27  cbxpm
 added two new labels (done by delphi form designer)
 
@@ -108,8 +110,6 @@ type
     Label1: TLabel;
     Label8: TLabel;
     Label9: TLabel;
-    Label11: TLabel;
-    Label12: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
